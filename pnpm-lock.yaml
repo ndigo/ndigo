@@ -402,8 +402,8 @@ importers:
         specifier: ~3.2.0
         version: 3.2.0(date-fns@4.1.0)
       ramda:
-        specifier: ~0.31.1
-        version: 0.31.3
+        specifier: ~0.32.0
+        version: 0.32.0
       seedrandom:
         specifier: ~3.0.5
         version: 3.0.5
@@ -4430,8 +4430,8 @@ packages:
     resolution: {integrity: sha512-oEYRyM2VbHL1bcymhLFXb8SK8htd4MPfgWdqJADaUTy3+0K4/5PfEw8szj6rWe2N2asJ1jNNdYqkvIWca1M9dg==}
     dev: false
 
-  /ramda@0.31.3:
-    resolution: {integrity: sha512-xKADKRNnqmDdX59PPKLm3gGmk1ZgNnj3k7DryqWwkamp4TJ6B36DdpyKEQ0EoEYmH2R62bV4Q+S0ym2z8N2f3Q==}
+  /ramda@0.32.0:
+    resolution: {integrity: sha512-GQWAHhxhxWBWA8oIBr1XahFVjQ9Fic6MK9ikijfd4TZHfE2+urfk+irVlR5VOn48uwMgM+loRRBJd6Yjsbc0zQ==}
     dev: false
 
   /react-is@18.3.1:

@@ -12,7 +12,7 @@ const failWith =
             fail(
                 `ParseError 'sepBy' (position ${index}): Expecting to match at least ${n} separated value${n > 1 ? 's' : ''}`
             ),
-    sepByN = (n: number) => (separator: Parser) => (value) =>
+    sepByN = (n: number) => (separator: Parser<any>) => (value) =>
         sepBy(separator)(value).chain(ifElse(lengthLessThanN(n), failWith(n), succeedWith));
 
 export default sepByN;

@@ -9,6 +9,6 @@
     "skipLibCheck": true,
     "target": "ESNext"
   },
-  "exclude": ["node_modules/**/*"],
-  "include": ["**/*"]
+  "exclude": ["node_modules/**/*", "vite.config.ts", "vitest.config.ts"],
+  "include": ["src/**/*", "src/javascript/globals.d.ts"]
 }

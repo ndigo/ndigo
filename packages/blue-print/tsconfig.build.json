@@ -1,0 +1,19 @@
+{
+  "extends": "../../tsconfig.build.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "composite": true,
+    "outDir": "lib",
+    "paths":{
+      "@blue/*": [ "../blue-*/index" ]
+    },
+    "rootDir": "src",
+    "skipLibCheck": true,
+  },
+  "exclude": [
+    "node_modules/**/*"
+  ],
+  "include": [
+    "**/*"
+  ]
+}

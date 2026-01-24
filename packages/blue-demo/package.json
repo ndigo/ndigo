@@ -1,0 +1,61 @@
+{
+  "name": "@blue/demo",
+  "version": "3.0.0-alpha.0",
+  "description": "Blue Demo Web",
+  "files": [
+    "doc",
+    "lib",
+    "index.js",
+    "index.js.map"
+  ],
+  "exports": {
+    "import": "./lib/index.js",
+    "require": "./index.js"
+  },
+  "main": "index.js",
+  "module": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "benchmark": "../../bin/benchmark.sh",
+    "build:lib": "../../bin/build_lib.sh",
+    "build:bundle": "../../bin/build_bundle.sh",
+    "build:all": "../../bin/build_all.sh",
+    "debug:bundle": "../../bin/debug_bundle.sh",
+    "debug:web": "../../bin/debug_web.sh",
+    "doc": "../../bin/doc.sh",
+    "prepublish": "../../bin/prepublish.sh",
+    "profile": "../../bin/profile.sh",
+    "test": "../../bin/test_web.sh"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue.git"
+  },
+  "keywords": [
+    "blue",
+    "bluejs",
+    "blue-js",
+    "blue-demo",
+    "demo",
+    "todomvc"
+  ],
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "dependencies": {
+    "@blue/context": "~3.0.0-alpha",
+    "@blue/core": "~3.0.0-alpha",
+    "@blue/dispatcher": "~3.0.0-alpha",
+    "@blue/util": "~3.0.0-alpha",
+    "todomvc-app-css": "~2.4.2",
+    "todomvc-common": "~1.0.5"
+  },
+  "devDependencies": {
+    "@blue/context": "~3.0.0-alpha",
+    "@blue/core": "~3.0.0-alpha",
+    "@blue/dispatcher": "~3.0.0-alpha",
+    "@blue/util": "~3.0.0-alpha"
+  },
+  "publishConfig": {
+    "registry": "https://artifacts.jpmchase.net/artifactory/api/npm/npm"
+  }
+}

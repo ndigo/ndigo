@@ -1,0 +1,655 @@
+---
+~ElementEventHandlers: &ElementEventHandlers
+  oncopy:
+    $type: object
+  oncut:
+    $type: object
+  onfullscreenchange:
+    $type: object
+  onfullscreenerror:
+    $type: object
+  onpaste:
+    $type: object
+~GlobalEventHandlers: &GlobalEventHandlers
+  onabort:
+    $type: object
+  onanimationcancel:
+    $type: object
+  onanimationend:
+    $type: object
+  onanimationiteration:
+    $type: object
+  onanimationstart:
+    $type: object
+  onauxclick:
+    $type: object
+  onblur:
+    $type: object
+  oncancel:
+    $type: object
+  oncanplay:
+    $type: object
+  oncanplaythrough:
+    $type: object
+  onchange:
+    $type: object
+  onclick:
+    $type: object
+  onclose:
+    $type: object
+  oncontextmenu:
+    $type: object
+  oncuechange:
+    $type: object
+  ondblclick:
+    $type: object
+  ondrag:
+    $type: object
+  ondragend:
+    $type: object
+  ondragenter:
+    $type: object
+  ondragexit:
+    $type: object
+  ondragleave:
+    $type: object
+  ondragover:
+    $type: object
+  ondragstart:
+    $type: object
+  ondrop:
+    $type: object
+  ondurationchange:
+    $type: object
+  onemptied:
+    $type: object
+  onended:
+    $type: object
+  onerror:
+    $type: object
+  onfocus:
+    $type: object
+  ongotpointercapture:
+    $type: object
+  oninput:
+    $type: object
+  oninvalid:
+    $type: object
+  onkeydown:
+    $type: object
+  onkeypress:
+    $type: object
+  onkeyup:
+    $type: object
+  onload:
+    $type: object
+  onloadeddata:
+    $type: object
+  onloadedmetadata:
+    $type: object
+  onloadend:
+    $type: object
+  onloadstart:
+    $type: object
+  onlostpointercapture:
+    $type: object
+  onmousedown:
+    $type: object
+  onmouseenter:
+    $type: object
+  onmouseleave:
+    $type: object
+  onmousemove:
+    $type: object
+  onmouseout:
+    $type: object
+  onmouseover:
+    $type: object
+  onmouseup:
+    $type: object
+  onpause:
+    $type: object
+  onplay:
+    $type: object
+  onplaying:
+    $type: object
+  onpointercancel:
+    $type: object
+  onpointerdown:
+    $type: object
+  onpointerenter:
+    $type: object
+  onpointerleave:
+    $type: object
+  onpointerlockchange:
+    $type: object
+  onpointerlockerror:
+    $type: object
+  onpointermove:
+    $type: object
+  onpointerout:
+    $type: object
+  onpointerover:
+    $type: object
+  onpointerup:
+    $type: object
+  onprogress:
+    $type: object
+  onratechange:
+    $type: object
+  onreset:
+    $type: object
+  onresize:
+    $type: object
+  onscroll:
+    $type: object
+  onsecuritypolicyviolation:
+    $type: object
+  onseeked:
+    $type: object
+  onseeking:
+    $type: object
+  onselect:
+    $type: object
+  onselectstart:
+    $type: object
+  onselectionchange:
+    $type: object
+  onshow:
+    $type: object
+  onsort:
+    $type: object
+  onstalled:
+    $type: object
+  onsubmit:
+    $type: object
+  onsuspend:
+    $type: object
+  ontimeupdate:
+    $type: object
+  ontoggle:
+    $type: object
+  ontouchcancel:
+    $type: object
+  ontouchend:
+    $type: object
+  ontouchmove:
+    $type: object
+  ontouchstart:
+    $type: object
+  ontransitioncancel:
+    $type: object
+  ontransitionend:
+    $type: object
+  ontransitionrun:
+    $type: object
+  ontransitionstart:
+    $type: object
+  onuserproximity:
+    $type: object
+  onvolumechange:
+    $type: object
+  onwaiting:
+    $type: object
+  onwheel:
+    $type: object
+~WindowEventHandlers: &WindowEventHandlers
+  onafterprint:
+    $type: object
+  onbeforeprint:
+    $type: object
+  onbeforeunload:
+    $type: object
+  ondevicelight:
+    $type: object
+  ondevicemotion:
+    $type: object
+  ondeviceorientation:
+    $type: object
+  ondeviceproximity:
+    $type: object
+  onhashchange:
+    $type: object
+  onlanguagechange:
+    $type: object
+  onmessage:
+    $type: object
+  onmessageerror:
+    $type: object
+  onoffline:
+    $type: object
+  ononline:
+    $type: object
+  onpagehide:
+    $type: object
+  onpageshow:
+    $type: object
+  onpopstate:
+    $type: object
+  onstorage:
+    $type: object
+  onunhandledrejection :
+    $type: object
+  onunload:
+    $type: object
+  onuserproximity:
+    $type: object
+~EventTargetMethods: &EventTargetMethods
+  addEventListener:
+    $type: function
+  dispatchEvent:
+    $type: function
+  removeEventListener:
+    $type: function
+<<: *GlobalEventHandlers
+<<: *WindowEventHandlers
+<<: *EventTargetMethods
+AbortController:
+  $type: function
+AbortSignal:
+  $type: function
+alert:
+  $type: function
+atob:
+  $type: function
+Blob:
+  $type: function
+  prototype:
+    $type: object
+    arrayBuffer:
+      $type: function
+    slice:
+      $type: function
+    stream:
+      $type: function
+    text:
+      $type: function
+btoa:
+  $type: function
+caches:
+  $type: object
+cancelAnimationFrame:
+  $type: function
+cancelIdleCallback:
+  $type: function
+clearImmediate:
+  $type: function
+clearInterval:
+  $type: function
+clearTimeout:
+  $type: function
+closed:
+  $type: boolean
+console:
+  $type: object
+  assert:
+    $type: function
+  clear:
+    $type: function
+  count:
+    $type: function
+  debug:
+    $type: function
+  dir:
+    $type: function
+  dirxml:
+    $type: function
+  error:
+    $type: function
+  group:
+    $type: function
+  groupCollapsed:
+    $type: function
+  groupEnd:
+    $type: function
+  info:
+    $type: function
+  log:
+    $type: function
+  markTimeline:
+    $type: function
+  memoryProfile:
+    $type: function
+  memoryProfileEnd:
+    $type: function
+  profile:
+    $type: function
+  profileEnd:
+    $type: function
+  table:
+    $type: function
+  time:
+    $type: function
+  timeEnd:
+    $type: function
+  timeStamp:
+    $type: function
+  trace:
+    $type: function
+  warn:
+    $type: function
+crypto:
+  $type: object
+  getRandomValues:
+    $type: function
+  subtle:
+    $type: object
+customElements:
+  $type: object
+CustomEvent:
+  $type: function
+devicePixelRatio:
+  $type: number
+devtoolsFormatters:
+  $type: object
+document:
+  $type: object
+  <<: *EventTargetMethods
+  body:
+    $type: object
+  compatMode:
+    $type: string
+  cookie:
+    $type: string
+  createElement:
+    $type: function
+  defaultView:
+    $type: object
+  documentElement:
+    $type: object
+    <<: *EventTargetMethods
+    <<: *ElementEventHandlers
+    animate:
+      $type: object
+    classList:
+      $type: object
+    requestFullscreen:
+      $type: function
+  documentMode:
+    $type: number
+  exitFullscreen:
+    $type: function
+  exitPointerLock:
+    $type: function
+  fullscreenElement:
+    $type: object
+  fullscreenEnabled:
+    $type: boolean
+  getAnimations:
+    $type: function
+  hidden:
+    $type: boolean
+  onfullscreenchange:
+    $type: object
+  onfullscreenerror:
+    $type: object
+  onvisibilitychange:
+    $type: object
+  querySelector:
+    $type: function
+  querySelectorAll:
+    $type: function
+  requestPointerLock:
+    $type: function
+  timeline:
+    $type: object
+  visibilityState:
+    $type: string
+DOMParser:
+  $type: function
+EventTarget:
+  $type: function
+fetch:
+  $type: function
+File:
+  $type: function
+FileList:
+  $type: function
+FileReader:
+  $type: function
+getComputedStyle:
+  $type: function
+getDefaultComputedStyle:
+  $type: function
+getSelection:
+  $type: function
+frameElement:
+  $type: object
+frames:
+  $type: object
+history:
+  $type: object
+  back:
+    $type: function
+  go:
+    $type: function
+  pushState:
+    $type: function
+  replaceState:
+    $type: function
+  state:
+    $type: object
+HTMLElement:
+  $type: function
+indexedDB:
+  $type: object
+isSecureContext:
+  $type: boolean
+length:
+  $type: number
+localStorage:
+  $type: object
+location:
+  $type: object
+locationbar:
+  $type: object
+matchMedia:
+  $type: function
+menubar:
+  $type: object
+MessageChannel:
+  $type: function
+MutationObserver:
+  $type: function
+  prototype:
+    $type: object
+    disconnect:
+      $type: function
+    observe:
+      $type: function
+name:
+  $type: string
+navigator:
+  $type: object
+  clipboard:
+    $type: object
+  connection:
+    $type: object
+    downlink:
+      $type: number
+    downlinkMax:
+      $type: number
+    effectiveType:
+      $type: string
+    onchange:
+      $type: object
+    rtt:
+      $type: number
+    saveData:
+      $type: boolean
+    type:
+      $type: string
+  cookieEnabled:
+    $type: boolean
+  deviceMemory:
+    $type: number
+  doNotTrack:
+    $type: string;
+  geolocation:
+    $type: object
+  javaEnabled:
+    $type: function
+  keyboard:
+    $type: object
+    getLayoutMap:
+      $type: function
+    lock:
+      $type: function
+    unlock:
+      $type: function
+  language:
+    $type: string
+  languages:
+    $type: array
+  maxTouchPoints:
+    $type: number
+  mimeTypes:
+    $type: object
+  onLine:
+    $type: boolean
+  oscpu:
+    $type: string
+  permissions:
+    $type: object
+  platform:
+    $type: string
+  plugins:
+    $type: object
+  product:
+    $type: string
+  sendBeacon:
+    $type: function
+  serviceWorker:
+    $type: object
+  storage:
+    $type: object
+  userAgent:
+    $type: string
+  userLanguage:
+    $type: string
+  webdriver:
+    $type: boolean
+  vendor:
+    $type: string
+  vendorSub:
+    $type: string
+  vibrate:
+    $type: function
+Node:
+  $type: function
+Notification:
+  $type: function
+open:
+  $type: function
+opener:
+  $type: object
+origin:
+  $type: string
+parent:
+  $type: object
+performance:
+  $type: object
+  clearMarks:
+    $type: function
+  clearMeasures:
+    $type: function
+  clearResourceTimings:
+    $type: function
+  getEntries:
+    $type: function
+  getEntriesByName:
+    $type: function
+  getEntriesByType:
+    $type: function
+  mark:
+    $type: function
+  measure:
+    $type: function
+  memory:
+    $type: object
+  navigation:
+    $type: object
+  now:
+    $type: function
+  onresourcetimingbufferfull:
+    $type: object
+  setResourceTimingBufferSize:
+    $type: function
+  timing:
+    $type: object
+  timeOrigin:
+    $type: number
+  toJSON:
+    $type: function
+PerformanceObserver:
+  $type: function
+personalbar:
+  $type: object
+postMessage:
+  $type: function
+print:
+  $type: function
+prompt:
+  $type: function
+requestAnimationFrame:
+  $type: function
+requestIdleCallback:
+  $type: function
+screen:
+  $type: object
+screenX:
+  $type: number
+screenY:
+  $type: number
+scrollbars:
+  $type: object
+self:
+  $type: object
+sessionStorage:
+  $type: object
+setImmediate:
+  $type: function
+setInterval:
+  $type: function
+setTimeout:
+  $type: function
+SharedWorker:
+  $type: function
+status:
+  $type: string
+statusbar:
+  $type: object
+styleMedia:
+  $type: object
+  matchMedium:
+    $type: function
+TextDecoder:
+  $type: function
+  prototype:
+    $type: object
+    decode:
+      $type: function
+TextEncoder:
+  $type: function
+  prototype:
+    $type: object
+    encode:
+      $type: function
+toolbar:
+  $type: object
+top:
+  $type: object
+URL:
+  $type: function
+URLSearchParams:
+  $type: function
+visualViewport:
+  $type: object
+  segments:
+    $type: function
+WebGLRenderingContext:
+  $type: function
+window:
+  $type: object
+XMLHttpRequest:
+  $type: function

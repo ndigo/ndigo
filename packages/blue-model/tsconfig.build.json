@@ -1,0 +1,24 @@
+{
+  "extends": "../../tsconfig.build.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "composite": true,
+    "outDir": "lib",
+    "paths":{
+      "@blue/*": [ "../blue-*/index" ]
+    },
+    "rootDir": "src",
+    "skipLibCheck": true,
+  },
+  "exclude": [
+    "node_modules/**/*"
+  ],
+  "include": [
+    "**/*"
+  ],
+  "references": [
+    { "path": "../blue-core/tsconfig.build.json" },
+    { "path": "../blue-context/tsconfig.build.json" },
+    { "path": "../blue-util/tsconfig.build.json" }
+  ]
+}

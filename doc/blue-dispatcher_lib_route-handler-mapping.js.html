@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: blue-dispatcher/lib/route-handler-mapping.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: blue-dispatcher/lib/route-handler-mapping.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @author Jeff Rose
+ * @copyright &amp;copy; JPMorgan Chase &amp; Co. All rights reserved.
+ */
+var __classPrivateFieldGet = (this &amp;&amp; this.__classPrivateFieldGet) || function (receiver, privateMap) {
+    if (!privateMap.has(receiver)) {
+        throw new TypeError("attempted to get private field on non-instance");
+    }
+    return privateMap.get(receiver);
+};
+var __classPrivateFieldSet = (this &amp;&amp; this.__classPrivateFieldSet) || function (receiver, privateMap, value) {
+    if (!privateMap.has(receiver)) {
+        throw new TypeError("attempted to set private field on non-instance");
+    }
+    privateMap.set(receiver, value);
+    return value;
+};
+var _registry, _mappingLookup, _pathLookup, _nameLookup_1, _handlers_1;
+import { createNull, Null, MultiValueMap, GlobPathMatcher } from '@blue/core';
+import { AsNameAware } from '@blue/factory';
+import { AsApplicationContextAware } from '@blue/context';
+import { complement, isFunction, isString, when, startsWith, trim } from '@blue/util';
+import { MappedHandlerInterceptor } from './route-handler-interceptor';
+import RouteHandlerExecutionChain from './route-handler-execution-chain';
+import { RouteHandlerMethod } from './route-handler-method';
+import { RouteMappingInfo, PatternsRouteCondition } from './route-mapping-info';
+import { hasRouteMapping, getRouteMapping } from './route-mapping';
+import { hasMethodParameter, getMethodParameter } from './route-parameter';
+/**
+ * @typedef {string:external | T} module:dispatcher.Maybe&lt;T>
+ */
+/**
+ * @typedef {module:dispatcher.Maybe&lt;*>} module:dispatcher.MaybeHandler
+ */
+/**
+ * Interface to be implemented by objects that define a mapping between routes and handler objects.
+ * A handler will always be wrapped in a {@linkcode module:dispatcher.HandlerExecutionChain|HandlerExecutionChain} instance.
+ * @interface module:router.RouteHandlerMapping
+ */
+/**
+ * Return a handler for this route. The choice may be made on any factor the implementing class chooses.
+ * Returns `null` if no match was found.
+ * @function module:router.RouteHandlerMapping#getHandler
+ * @param {module:dispatcher.Request} route The current route
+ * @returns {module:dispatcher.HandlerExecutionChain} A HandlerExecutionChain instance containing handler object or `null` if no mapping
+ */
+/**
+ * Additional interface that a {@linkcode module:router.RouteHandlerMapping|HandlerMapping} can implement to expose a route matching API aligned with its internal route matching configuration and implementation.
+ * @interface module:dispatcher.MatchableHandlerMapping
+ * @extends module:router.RouteHandlerMapping
+ */
+/**
+ * Determine whether the given route matches the route criteria.
+ * @function module:dispatcher.MatchableHandlerMapping#match
+ * @param {module:dispatcher.Request} route The current route
+ * @param {external:string} pattern
+ * @returns {module:dispatcher.HandlerExecutionChain}
+ */
+const { from, isArray } = Array, { defineProperty, getPrototypeOf } = Reflect, { keys } = Object, { toString } = Object.prototype, doesNotStartWithSlash = complement(startsWith('/')), kind = /^\[object (.+)\]$/, kindOf = (value) => kind.exec(toString.call(value))[1], resolveHandlerWithContext = (context) => (handler) => when(isString, (key) => context.getValue(key))(handler);
+/**
+ * @class module:dispatcher~MappingEntry
+ */
+class MappingEntry {
+    constructor(mapping, handlerMethod, mappingName, directPaths = []) {
+        /**
+         * @member {T} module:dispatcher~MappingEntry#mapping
+         */
+        defineProperty(this, 'mapping', {
+            value: mapping,
+            configurable: true,
+            enumerable: false,
+            writable: false
+        });
+        /**
+         * @member {module:dispatcher.HandlerMethod} module:dispatcher~MappingEntry#handlerMethod
+         */
+        defineProperty(this, 'handlerMethod', {
+            value: handlerMethod,
+            configurable: true,
+            enumerable: false,
+            writable: false
+        });
+        /**
+         * @member {external:string} module:dispatcher~MappingEntry#mappingName
+         */
+        defineProperty(this, 'mappingName', {
+            value: mappingName,
+            configurable: true,
+            enumerable: false,
+            writable: false
+        });
+        /**
+         * @member {external:Array&lt;external:string>} module:dispatcher~MappingEntry#directPaths
+         */
+        defineProperty(this, 'directPaths', {
+            value: directPaths,
+            configurable: true,
+            enumerable: false,
+            writable: false
+        });
+    }
+    get [Symbol.toStringTag]() {
+        return 'MappingEntry';
+    }
+}
+/**
+ * A registry that maintains all mappings to handler methods, exposing methods to perform lookups.
+ * @class module:dispatcher~MappingRegistry
+ */
+class MappingRegistry {
+    constructor() {
+        _registry.set(this, new Map());
+        _mappingLookup.set(this, new Map());
+        _pathLookup.set(this, new MultiValueMap());
+        _nameLookup_1.set(this, new MultiValueMap());
+    }
+    get [(_registry = new WeakMap(), _mappingLookup = new WeakMap(), _pathLookup = new WeakMap(), _nameLookup_1 = new WeakMap(), Symbol.toStringTag)]() {
+        return 'MappingRegistry';
+    }
+    get mappings() {
+        return __classPrivateFieldGet(this, _mappingLookup);
+    }
+    getMappingsByPath(path) {
+        return __classPrivateFieldGet(this, _pathLookup).get(path);
+    }
+    getHandlerMethodsByMappingName(name) {
+        return __classPrivateFieldGet(this, _nameLookup_1).get(name);
+    }
+    register(mapping, handlerMethod) {
+        __classPrivateFieldGet(this, _mappingLookup).set(mapping, handlerMethod);
+        let name;
+        __classPrivateFieldGet(this, _registry).set(mapping, new MappingEntry(mapping, handlerMethod, name));
+    }
+    unregister(mapping) {
+        if (!__classPrivateFieldGet(this, _registry).has(mapping)) {
+            return;
+        }
+        else {
+            const entry = __classPrivateFieldGet(this, _registry).get(mapping);
+            __classPrivateFieldGet(this, _registry).delete(mapping);
+            __classPrivateFieldGet(this, _mappingLookup).delete(entry.mapping);
+            entry.directPaths.forEach((path) => {
+                if (__classPrivateFieldGet(this, _pathLookup).has(path)) {
+                    const list = __classPrivateFieldGet(this, _pathLookup).get(path), index = list.indexOf(entry.mapping);
+                    index !== -1 &amp;&amp; list.splice(index, 1);
+                }
+            });
+            this._removeMappingName(entry);
+        }
+    }
+    _removeMappingName(entry) {
+        const name = entry.mappingName;
+        if (!name) {
+            return;
+        }
+        const _nameLookup = __classPrivateFieldGet(this, _nameLookup_1), oldList = _nameLookup.get(name);
+        if (!oldList) {
+            return;
+        }
+        if (oldList.length &lt;= 1) {
+            _nameLookup.delete(name);
+            return;
+        }
+        const handlerMethod = entry.handlerMethod, newList = oldList.filter((hm) => hm !== handlerMethod);
+        _nameLookup.set(name, newList);
+    }
+}
+/**
+ * @class module:dispatcher~Match
+ * @implements module:core.Serializable
+ */
+class Match {
+    constructor(mapping, handlerMethod) {
+        /**
+         * @member {T} module:dispatcher~Match#mapping
+         */
+        defineProperty(this, 'mapping', {
+            value: mapping,
+            configurable: true,
+            enumerable: false,
+            writable: false
+        });
+        /**
+         * @member {module:dispatcher.HandlerMethod} module:dispatcher~Match#handlerMethod
+         */
+        defineProperty(this, 'handlerMethod', {
+            value: handlerMethod,
+            configurable: true,
+            enumerable: false,
+            writable: false
+        });
+    }
+    get [Symbol.toStringTag]() {
+        return 'Match';
+    }
+    /**
+     * @function module:dispatcher~Match#toString
+     * @returns {external:string}
+     */
+    toString() {
+        return this.mapping.toString();
+    }
+}
+/**
+ * @class module:dispatcher~MatchComparator
+ * @implements module:core.Comparator&lt;module:dispatcher~Match>
+ */
+class MatchComparator {
+    constructor(comparator) {
+        defineProperty(this, 'comparator', {
+            value: comparator,
+            configurable: true,
+            enumerable: false,
+            writable: false
+        });
+    }
+    get [Symbol.toStringTag]() {
+        return 'MatchComparator';
+    }
+    /**
+     * @function module:dispatcher~MatchComparator#compare
+     * @param {module:dispatcher~Match} match1
+     * @param {module:dispatcher~Match} match2
+     * @returns {external:number}
+     */
+    compare(match1, match2) {
+        return this.comparator.compare(match1.mapping, match2.mapping);
+    }
+}
+export class AbstractHandlerMapping extends AsNameAware(AsApplicationContextAware(Null)) {
+    constructor() {
+        super();
+        defineProperty(this, 'defaultHandler', {
+            value: null,
+            configurable: true,
+            enumerable: false,
+            writable: true
+        });
+        defineProperty(this, 'interceptors', {
+            value: [],
+            configurable: true,
+            enumerable: false,
+            writable: false
+        });
+        defineProperty(this, 'pathMatcher', {
+            value: new GlobPathMatcher(),
+            configurable: true,
+            enumerable: false,
+            writable: false
+        });
+    }
+    get [Symbol.toStringTag]() {
+        return 'HandlerMapping';
+    }
+    getHandler(route) {
+        let handler = this._getHandler(route);
+        if (!handler) {
+            handler = this.defaultHandler;
+        }
+        if (!handler) {
+            return null;
+        }
+        handler = resolveHandlerWithContext(this.applicationContext)(handler);
+        return this._getHandlerExecutionChain(handler, route);
+    }
+    _getHandlerExecutionChain(handler, route) {
+        const chain = handler instanceof RouteHandlerExecutionChain ?
+            handler :
+            new RouteHandlerExecutionChain(handler), { interceptors, pathMatcher } = this, length = interceptors === null || interceptors === void 0 ? void 0 : interceptors.length;
+        if (length) {
+            for (let index = 0; index &lt; length; index++) {
+                const interceptor = interceptors[index];
+                if (interceptor instanceof MappedHandlerInterceptor) {
+                    if (interceptor.matches(route.path, pathMatcher)) {
+                        chain.addInterceptor(interceptor.interceptor);
+                    }
+                }
+                else {
+                    chain.addInterceptor(interceptor);
+                }
+            }
+        }
+        return chain;
+    }
+}
+export class AbstractHandlerMethodMapping extends AbstractHandlerMapping {
+    constructor() {
+        super();
+        defineProperty(this, 'mappingRegistry', {
+            value: new MappingRegistry(),
+            configurable: true,
+            enumerable: false,
+            writable: false
+        });
+    }
+    init() {
+        const { applicationContext } = this;
+        keys(applicationContext).forEach((name) => {
+            const value = applicationContext.getValue(name);
+            this._isHandler(value) &amp;&amp; this._detectHandlerMethods(value);
+        });
+    }
+    getHandlerMethods() {
+        return this.mappingRegistry.mappings;
+    }
+    getHandlerMethodsForMappingName(name) {
+        return this.mappingRegistry.getHandlerMethodsByMappingName(name);
+    }
+    registerMapping(mapping, handler, method) {
+        this.mappingRegistry.register(mapping, this._createRequestHandlerMethod(handler, method));
+    }
+    unregisterMapping(mapping) {
+        this.mappingRegistry.unregister(mapping);
+    }
+    _createRequestHandlerMethod(handler, method) {
+        handler = resolveHandlerWithContext(this.applicationContext)(handler);
+        const handlerMethod = new RouteHandlerMethod(handler, method);
+        if (hasMethodParameter(handler, method)) {
+            handlerMethod.parameters = getMethodParameter(handler, method);
+        }
+        return handlerMethod;
+    }
+    /**
+     * Look for methods in the specified handler.
+     * @param {*} handler Either a name or an actual handler instance.
+     * @see {@link module:dispatcher.AbstractHandlerMethodMapping#_getMappingForMethod}
+     */
+    _detectHandlerMethods(handler) {
+        handler = resolveHandlerWithContext(this.applicationContext)(handler);
+        if (handler) {
+            const handlerPrototype = getPrototypeOf(handler);
+            keys(handlerPrototype).forEach((key) => {
+                if (isFunction(handlerPrototype[key]) &amp;&amp; hasRouteMapping(handler, key)) {
+                    const info = this._getMappingForMethod(key, handlerPrototype);
+                    this._registerHandlerMethod(handler, key, info);
+                }
+            });
+        }
+    }
+    _getHandler(route) {
+        const { path } = route;
+        return this._lookupHandlerMethod(path, route);
+    }
+    _lookupHandlerMethod(path, route) {
+        const { mappingRegistry } = this, matches = [], directPathMatches = mappingRegistry.getMappingsByPath(path);
+        if (directPathMatches &amp;&amp; directPathMatches.length) {
+            this._addMatchingMappings(directPathMatches, matches, route);
+        }
+        if (!matches.length) {
+            this._addMatchingMappings(from(mappingRegistry.mappings.keys()), matches, route);
+        }
+        if (matches.length) {
+            const comparator = new MatchComparator(this._getMappingComparator(route));
+            matches.sort(comparator.compare);
+            const bestMatch = matches[0];
+            if (matches.length > 1) {
+                const nextMatch = matches[1];
+                if (comparator.compare(bestMatch, nextMatch) === 0) {
+                    const m1 = bestMatch.handlerMethod.method, m2 = nextMatch.handlerMethod.method;
+                    throw new Error(`Ambiguous handler methods mapped for "${path}": { ${m1}, ${m2} }`);
+                }
+            }
+            this._handleMatch(bestMatch.mapping, path, route);
+            return bestMatch.handlerMethod;
+        }
+        return null;
+    }
+    _handleMatch(mapping, path, route) {
+        // TODO Put this in a categorized spot?
+        route[kindOf(this)] = path;
+    }
+    _registerHandlerMethod(handler, method, mapping) {
+        this.registerMapping(mapping, handler, method);
+    }
+    _addMatchingMappings(mappings, matches, route) {
+        const length = mappings.length;
+        for (let index = 0; index &lt; length; index++) {
+            const match = this._getMatchingMapping(mappings[index], route);
+            if (match) {
+                matches.push(new Match(match, this.mappingRegistry.mappings.get(mappings[index])));
+            }
+        }
+    }
+}
+export class AbstractPathHandlerMapping extends AbstractHandlerMapping {
+    constructor() {
+        super();
+        _handlers_1.set(this, void 0);
+        this.rootHandler = null;
+        this.useTrailingSlashMatch = false;
+        __classPrivateFieldSet(this, _handlers_1, new Map());
+    }
+    lookUpHandler(path, route) {
+        const { applicationContext, pathMatcher, useTrailingSlashMatch } = this, _handlers = __classPrivateFieldGet(this, _handlers_1);
+        let handler;
+        if (_handlers.has(path)) {
+            handler = _handlers.get(path);
+            handler = resolveHandlerWithContext(applicationContext)(handler);
+            return new RouteHandlerExecutionChain(handler);
+        }
+        const matchingPatterns = [];
+        for (let pattern of _handlers.keys()) {
+            if (pathMatcher.match(pattern, path)) {
+                matchingPatterns.push(pattern);
+            }
+            else if (useTrailingSlashMatch) {
+                if (!pattern.endsWith('/') &amp;&amp; pathMatcher.match(`${pattern}/`, path)) {
+                    matchingPatterns.push(`${pattern}/`);
+                }
+            }
+        }
+        let bestMatch = null;
+        //const patternComparator: Comparator&lt;string> = this.pathMatcher.getPatternComparator( path );
+        if (matchingPatterns.length) {
+            // TODO provide sorting function
+            matchingPatterns.sort();
+            bestMatch = matchingPatterns[0];
+        }
+        if (bestMatch) {
+            handler = _handlers.get(bestMatch);
+            if (!handler) {
+                if (bestMatch.endsWith('/')) {
+                    handler = _handlers.get(bestMatch.substring(0, bestMatch.length - 1));
+                }
+                if (!handler) {
+                    throw new Error(`Could not find handler for pattern "${bestMatch}"`);
+                }
+            }
+            handler = resolveHandlerWithContext(this.applicationContext)(handler);
+            return new RouteHandlerExecutionChain(handler);
+        }
+        return null;
+    }
+    match(route, pattern) {
+        const { pathMatcher, useTrailingSlashMatch } = this, path = route.path;
+        if (pathMatcher.match(pattern, path)) {
+            return new RouteMatchResult(pattern, path);
+        }
+        else if (useTrailingSlashMatch) {
+            const patternSlash = `${pattern}/`;
+            if (!pattern.endsWith('/') &amp;&amp; pathMatcher.match(patternSlash, path)) {
+                return new RouteMatchResult(patternSlash, path);
+            }
+        }
+        return null;
+    }
+    _getHandler(route) {
+        let path = route.path, handler = this.lookUpHandler(path, route);
+        if (!handler) {
+            let rawHandler = null;
+            if ('/' === path) {
+                rawHandler = this.rootHandler;
+            }
+            if (!rawHandler) {
+                rawHandler = this.defaultHandler;
+            }
+            if (rawHandler) {
+                rawHandler = resolveHandlerWithContext(this.applicationContext)(rawHandler);
+                handler = new RouteHandlerExecutionChain(rawHandler);
+            }
+        }
+        return handler;
+    }
+    _registerHandler(path, handler) {
+        if (!isArray(path)) {
+            path = [path];
+        }
+        path.forEach((p) => {
+            if (typeof p !== 'string') {
+                throw new TypeError(`Path must be a string`);
+            }
+            if (typeof handler === 'undefined') {
+                throw new TypeError('Handler must be defined');
+            }
+            let resolvedHandler = resolveHandlerWithContext(this.applicationContext)(handler);
+            const mappedHandler = __classPrivateFieldGet(this, _handlers_1).get(p);
+            if (mappedHandler) {
+                if (mappedHandler !== resolvedHandler) {
+                    throw new Error(`Cannot map handler ${handler} to path "${p}". There is already ${mappedHandler} mapped.`);
+                }
+            }
+            else {
+                switch (p) {
+                    case '/':
+                        this.rootHandler = resolvedHandler;
+                        break;
+                    case '/*':
+                        this.defaultHandler = resolvedHandler;
+                        break;
+                    default:
+                        __classPrivateFieldGet(this, _handlers_1).set(p, resolvedHandler);
+                        break;
+                }
+            }
+        });
+    }
+}
+_handlers_1 = new WeakMap();
+export class AbstractDetectingPathHandlerMapping extends AbstractPathHandlerMapping {
+    setApplicationContext(context) {
+        super.setApplicationContext(context);
+        this._detectHandlers();
+    }
+    _detectHandlers() {
+        const names = keys(this.applicationContext);
+        names.forEach((name) => {
+            const paths = this._determinePathsForHandler(name);
+            paths.length &amp;&amp; this._registerHandler(paths, name);
+        });
+    }
+}
+/**
+ * Abstract base class for {@linkcode module:router.RouteHandlerMapping|HandlerMapping} implementations.
+ * @abstract
+ * @class module:dispatcher.AbstractHandlerMapping
+ * @implements module:router.RouteHandlerMapping
+ */
+/**
+ * @member {module:core.ApplicationContext} module:dispatcher.AbstractHandlerMapping#context
+ */
+/**
+ * @member {*} module:dispatcher.AbstractHandlerMapping#defaultHandler
+ */
+/**
+ * Look up a handler for the given route, returning null if no specific one is found.
+ * @protected
+ * @abstract
+ * @function module:dispatcher.AbstractHandlerMapping#_getHandler
+ * @param {module:dispatcher.Request} route The current route
+ * @returns {module:dispatcher.HandlerExecutionChain}
+ */
+/**
+ * Abstract base class for path-mapped {@linkcode module:router.RouteHandlerMapping|HandlerMapping} implementations. Provides infrastructure for mapping handlers to paths.
+ * @abstract
+ * @class module:dispatcher.AbstractPathHandlerMapping
+ * @extends module:dispatcher.AbstractHandlerMapping
+ * @implements module:dispatcher.MatchableHandlerMapping
+ */
+/**
+ * Abstract implementation of the {@linkcode module:router.RouteHandlerMapping|HandlerMapping} interface, detecting path mappings for handlers.
+ * @abstract
+ * @class module:dispatcher.AbstractDetectingPathHandlerMapping
+ * @extends module:dispatcher.AbstractPathHandlerMapping
+ */
+/**
+ * Register all handlers found in the current Context.
+ * The actual path determination for a handler is up to the {@linkcode module:dispatcher.AbstractDetectingPathHandlerMapping#_determinePathsForHandler|_determinePathsForHandler} implementation.
+ * @protected
+ * @function module:dispatcher.AbstractDetectingPathHandlerMapping#_detectHandlers
+ */
+/**
+ * Determine the paths for the given handler.
+ * @protected
+ * @abstract
+ * @function module:dispatcher.AbstractDetectingPathHandlerMapping#_determinePathsForHandler
+ * @param {external:string} name
+ * @returns {external:Array&lt;external:string>} The paths determined for the handler or an empty array if none found
+ */
+/**
+ * Implementation of the {@linkcode module:router.RouteHandlerMapping|HandlerMapping} interface that map from paths to handlers with names that start with slash ("/").
+ * &lt;p>This is the default implementation used by {@link module:dispatcher.Dispatcher|the dispatcher} along with {@linkcode module:dispatcher.MetadataHandlerMapping|MetadataHandlerMapping}.
+ * &lt;p>The mapping is from path to handler name. An incoming path "/foo" would map to a handler named "/foo".
+ * &lt;p>Supports direct matches and wildcard matches.
+ * @class module:dispatcher.NamePathHandlerMapping
+ * @extends module:dispatcher.AbstractDetectingPathHandlerMapping
+ */
+export class NamePathHandlerMapping extends AbstractDetectingPathHandlerMapping {
+    get [Symbol.toStringTag]() {
+        return 'NamePathHandlerMapping';
+    }
+    _determinePathsForHandler(name) {
+        const paths = [];
+        name.startsWith('/') &amp;&amp; paths.push(...name.split(' '));
+        return paths;
+    }
+}
+/**
+ * Creates {@linkcode module:dispatcher.RequestMappingInfo|RequestMappingInfo} instances from class-level `route:handler` metadata and method-level `route:mapping` metadata. Metadata is usually applied using {@linkcode module:dispatcher.RequestMapping|@RequestHandler} and {@linkcode module:dispatcher.RequestMapping|@RequestMapping} decorators.
+ * @class module:dispatcher.MetadataHandlerMapping
+ * @extends module:dispatcher.AbstractHandlerMethodMapping&lt;module:dispatcher.RequestMappingInfo>
+ * @implements module:dispatcher.MatchableHandlerMapping
+ */
+export class MetadataHandlerMapping extends AbstractHandlerMethodMapping {
+    get [Symbol.toStringTag]() {
+        return 'MetadataHandlerMapping';
+    }
+    match(route, pattern) {
+        const info = new RouteMappingInfo(pattern), matchingInfo = info.getMatchingCondition(route);
+        if (!matchingInfo) {
+            return null;
+        }
+        const patterns = matchingInfo.patternsCondition.patterns;
+        return new RouteMatchResult(patterns[Symbol.iterator]().next().value, route.path);
+    }
+    _getMappingForMethod(method, handler) {
+        const methodMapping = getRouteMapping(handler, method);
+        let methodInfo;
+        if (methodMapping) {
+            methodInfo = new RouteMappingInfo(methodMapping.value, new PatternsRouteCondition(methodMapping.value));
+            const handlerMapping = getRouteMapping(handler.constructor);
+            if (handlerMapping) {
+                const handlerInfo = new RouteMappingInfo(handlerMapping.value, new PatternsRouteCondition(handlerMapping.value));
+                methodInfo = handlerInfo.merge(methodInfo);
+            }
+        }
+        return methodInfo;
+    }
+    _getMappingComparator(route) {
+        return {
+            compare: (info1, info2) => info1.compareTo(info2, route)
+        };
+    }
+    _getMatchingMapping(mapping, route) {
+        return mapping.getMatchingCondition(route);
+    }
+    _handleMatch(mapping, path, route) {
+        super._handleMatch(mapping, path, route);
+        let bestPattern;
+        const patterns = mapping.patternsCondition.patterns;
+        if (!patterns.size) {
+            bestPattern = path;
+        }
+        else {
+            bestPattern = patterns[Symbol.iterator]().next().value;
+        }
+        defineProperty(route, 'pattern', {
+            value: bestPattern,
+            configurable: true,
+            enumerable: false,
+            writable: true
+        });
+    }
+    _handleNoMatch(mappings, path, route) {
+        return null;
+    }
+    _isHandler(value) {
+        return hasRouteMapping(value) || ('constructor' in value &amp;&amp; hasRouteMapping(value.constructor));
+    }
+}
+/**
+ * @class module:router.RouteMatchResult
+ */
+export class RouteMatchResult {
+    constructor(pattern, path) {
+        /**
+         * @member {external:string} module:router.RouteMatchResult#pattern
+         */
+        defineProperty(this, 'pattern', {
+            value: pattern,
+            configurable: true,
+            enumerable: true,
+            writable: false
+        });
+        /**
+         * @member {external:string} module:router.RouteMatchResult#path
+         */
+        defineProperty(this, 'path', {
+            value: path,
+            configurable: true,
+            enumerable: true,
+            writable: false
+        });
+    }
+    get [Symbol.toStringTag]() {
+        return 'RouteMatchResult';
+    }
+    toJSON() {
+        const json = createNull();
+        json.pattern = this.pattern;
+        json.path = this.path;
+        return json;
+    }
+}
+/**
+ * Implementation of the {@linkcode module:router.RouteHandlerMapping|HandlerMapping} interface to map from paths to handlers.
+ * @class module:dispatcher.SimplePathHandlerMapping
+ * @extends module:dispatcher.AbstractPathHandlerMapping
+ * @param {module:core.ApplicationContext} [context]
+ * @param {external:Map&lt;external:string, module:dispatcher.MaybeHandler>} [mappings]
+ */
+export class SimplePathHandlerMapping extends AbstractPathHandlerMapping {
+    constructor() {
+        super();
+        /**
+         * @member {external:Map&lt;external:string,module:dispatcher.MaybeHandler>} module:dispatcher.SimplePathHandlerMapping#mappings
+         */
+        this.mappings = new Map();
+    }
+    get [Symbol.toStringTag]() {
+        return 'SimplePathHandlerMapping';
+    }
+    /**
+     * @function module:dispatcher.SimplePathHandlerMapping#setApplicationContext
+     * @param {module:core.ApplicationContext} context The application context to be set.
+     */
+    setApplicationContext(context) {
+        super.setApplicationContext(context);
+        const mappings = this.mappings;
+        this.registerHandlers(mappings);
+    }
+    /**
+     * Map paths to handlers or handler names, merging it into the existing mappings if any.
+     * @function module:dispatcher.SimplePathHandlerMapping#setMappings
+     * @param {external:Object} mappings The path mappings
+     */
+    setMappings(mappings) {
+        keys(mappings).forEach((path) => this.mappings.set(path, mappings[path]));
+    }
+    /**
+     * @function module:dispatcher.SimplePathHandlerMapping#registerHandlers
+     * @param {external:Map&lt;external:string,module:dispatcher.MaybeHandler>} mappings
+     */
+    registerHandlers(mappings) {
+        mappings &amp;&amp; mappings.size &amp;&amp; mappings.forEach((handler, path) => {
+            path = when(doesNotStartWithSlash, (p) => `/${p}`)(path);
+            handler = when(isString, trim)(handler);
+            this._registerHandler(path, handler);
+        });
+    }
+}
+//# sourceMappingURL=route-handler-mapping.js.map</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-component.html">component</a></li><li><a href="module-content.html">content</a></li><li><a href="module-context.html">context</a></li><li><a href="module-core.html">core</a></li><li><a href="module-dispatcher.html">dispatcher</a></li><li><a href="module-factory.html">factory</a></li><li><a href="module-fill.html">fill</a></li><li><a href="module-has.html">has</a></li><li><a href="module-http.html">http</a></li><li><a href="module-legacy.html">legacy</a></li><li><a href="module-logger.html">logger</a></li><li><a href="module-logger-stream.html">logger-stream</a></li><li><a href="module-model.html">model</a></li><li><a href="module-parser.html">parser</a></li><li><a href="module-print.html">print</a></li><li><a href="module-router.html">router</a></li><li><a href="module-util.html">util</a></li><li><a href="module-validate.html">validate</a></li><li><a href="module-view.html">view</a></li></ul><h3>Externals</h3><ul><li><a href="external-Arguments.html">Arguments</a></li><li><a href="external-Array.html">Array</a></li><li><a href="external-ArrayLike.html">ArrayLike</a></li><li><a href="external-bigint.html">bigint</a></li><li><a href="external-Body.html">Body</a></li><li><a href="external-BodyInit.html">BodyInit</a></li><li><a href="external-boolean.html">boolean</a></li><li><a href="external-ClassDecorator.html">ClassDecorator</a></li><li><a href="external-Date.html">Date</a></li><li><a href="external-date-fns.html">date-fns</a></li><li><a href="external-date-fns-tz.html">date-fns-tz</a></li><li><a href="external-Error.html">Error</a></li><li><a href="external-fetch.html">fetch</a></li><li><a href="external-Function.html">Function</a></li><li><a href="external-Global.html">Global</a></li><li><a href="external-Headers.html">Headers</a></li><li><a href="external-HeadersInit.html">HeadersInit</a></li><li><a href="external-Iterable.html">Iterable</a></li><li><a href="external-IterableIterator.html">IterableIterator</a></li><li><a href="external-Iterator.html">Iterator</a></li><li><a href="external-IteratorResult.html">IteratorResult</a></li><li><a href="external-Map.html">Map</a></li><li><a href="external-MethodDecorator.html">MethodDecorator</a></li><li><a href="external-null.html">null</a></li><li><a href="external-number.html">number</a></li><li><a href="external-Object.html">Object</a></li><li><a href="external-objectmodel.html">objectmodel</a></li><li><a href="external-ParameterDecorator.html">ParameterDecorator</a></li><li><a href="external-Promise.html">Promise</a></li><li><a href="external-PropertyDecorator.html">PropertyDecorator</a></li><li><a href="external-PropertyDescriptor.html">PropertyDescriptor</a></li><li><a href="external-PropertyDescriptorMap.html">PropertyDescriptorMap</a></li><li><a href="external-PropertyKey.html">PropertyKey</a></li><li><a href="external-Proxy.html">Proxy</a></li><li><a href="external-ProxyHandler.html">ProxyHandler</a></li><li><a href="external-ramda.html">ramda</a></li><li><a href="external-Record.html">Record</a></li><li><a href="external-RegExp.html">RegExp</a></li><li><a href="external-Request.html">Request</a></li><li><a href="external-RequestInfo.html">RequestInfo</a></li><li><a href="external-RequestInit.html">RequestInit</a></li><li><a href="external-Response.html">Response</a></li><li><a href="external-ResponseInit.html">ResponseInit</a></li><li><a href="external-seedrandom.html">seedrandom</a></li><li><a href="external-Set.html">Set</a></li><li><a href="external-slug.html">slug</a></li><li><a href="external-string.html">string</a></li><li><a href="external-symbol.html">symbol</a></li><li><a href="external-undefined.html">undefined</a></li><li><a href="external-void.html">void</a></li><li><a href="external-WeakMap.html">WeakMap</a></li><li><a href="external-WeakSet.html">WeakSet</a></li><li><a href="external-Window.html">Window</a></li></ul><h3>Classes</h3><ul><li><a href="CompositeConstraint.html">CompositeConstraint</a></li><li><a href="module.html#.exports">exports</a></li><li><a href="module-component.ComponentAndView.html">ComponentAndView</a></li><li><a href="module-component.GenericDomainComponent.html">GenericDomainComponent</a></li><li><a href="module-context.AbstractEnvironment.html">AbstractEnvironment</a></li><li><a href="module-context.ApplicationContextAwareProcessor.html">ApplicationContextAwareProcessor</a></li><li><a href="module-context.ConfigurationProcessor.html">ConfigurationProcessor</a></li><li><a href="module-context.DefaultResourceLoader.html">DefaultResourceLoader</a></li><li><a href="module-context.Emitter.html">Emitter</a></li><li><a href="module-context.EventLogger.html">EventLogger</a></li><li><a href="module-context.GenericApplicationContext.html">GenericApplicationContext</a></li><li><a href="module-context.MetadataConfigApplicationContext.html">MetadataConfigApplicationContext</a></li><li><a href="module-context.PrototypalPropertyResolver.html">PrototypalPropertyResolver</a></li><li><a href="module-context.ProxiedGenericApplicationContext.html">ProxiedGenericApplicationContext</a></li><li><a href="module-context.UnresolvedResource.html">UnresolvedResource</a></li><li><a href="module-context.URLResource.html">URLResource</a></li><li><a href="module-context-ConfigurationClassParser.html">ConfigurationClassParser</a></li><li><a href="module-core.AbstractValueComparator.html">AbstractValueComparator</a></li><li><a href="module-core.ComparableComparator.html">ComparableComparator</a></li><li><a href="module-core.Deferred.html">Deferred</a></li><li><a href="module-core.EntriesIterator.html">EntriesIterator</a></li><li><a href="module-core.EqualsPathComparator.html">EqualsPathComparator</a></li><li><a href="module-core.EqualsPathMatcher.html">EqualsPathMatcher</a></li><li><a href="module-core.EqualsURLMatcher.html">EqualsURLMatcher</a></li><li><a href="module-core.GlobPathMatcher.html">GlobPathMatcher</a></li><li><a href="module-core.GlobPatternComparator.html">GlobPatternComparator</a></li><li><a href="module-core.IndexedIterator.html">IndexedIterator</a></li><li><a href="module-core.KeysIterator.html">KeysIterator</a></li><li><a href="module-core.likePropertyValues.html">likePropertyValues</a></li><li><a href="module-core.MediaType.html">MediaType</a></li><li><a href="module-core.MultiValueMap.html">MultiValueMap</a></li><li><a href="module-core.Null.html">Null</a></li><li><a href="module-core.PropertyValue.html">PropertyValue</a></li><li><a href="module-core.RangeIterator.html">RangeIterator</a></li><li><a href="module-core.ResizableRingBuffer.html">ResizableRingBuffer</a></li><li><a href="module-core.RingBuffer.html">RingBuffer</a></li><li><a href="module-core.ValuesIterator.html">ValuesIterator</a></li><li><a href="module-core-DateComparator.html">DateComparator</a></li><li><a href="module-core-NaturalComparator.html">NaturalComparator</a></li><li><a href="module-core-NumberComparator.html">NumberComparator</a></li><li><a href="module-core-PredicateComparator.html">PredicateComparator</a></li><li><a href="module-core-QualityFactorComparator.html">QualityFactorComparator</a></li><li><a href="module-core-SpecificityComparator.html">SpecificityComparator</a></li><li><a href="module-core-StringComparator.html">StringComparator</a></li><li><a href="module-dispatcher.AbstractCookieValueMethodArgumentResolver.html">AbstractCookieValueMethodArgumentResolver</a></li><li><a href="module-dispatcher.AbstractDetectingPathHandlerMapping.html">AbstractDetectingPathHandlerMapping</a></li><li><a href="module-dispatcher.AbstractHandlerMapping.html">AbstractHandlerMapping</a></li><li><a href="module-dispatcher.AbstractHandlerMethodAdapter.html">AbstractHandlerMethodAdapter</a></li><li><a href="module-dispatcher.AbstractHandlerMethodErrorResolver.html">AbstractHandlerMethodErrorResolver</a></li><li><a href="module-dispatcher.AbstractLanguageResolver.html">AbstractLanguageResolver</a></li><li><a href="module-dispatcher.AbstractNamedValueMethodArgumentResolver.html">AbstractNamedValueMethodArgumentResolver</a></li><li><a href="module-dispatcher.AbstractNameValueExpression.html">AbstractNameValueExpression</a></li><li><a href="module-dispatcher.AbstractPathHandlerMapping.html">AbstractPathHandlerMapping</a></li><li><a href="module-dispatcher.AbstractPathViewController.html">AbstractPathViewController</a></li><li><a href="module-dispatcher.AbstractRouteCondition.html">AbstractRouteCondition</a></li><li><a href="module-dispatcher.AbstractRouteErrorResolver.html">AbstractRouteErrorResolver</a></li><li><a href="module-dispatcher.AbstractThemeResolver.html">AbstractThemeResolver</a></li><li><a href="module-dispatcher.BrowserDispatcher.html">BrowserDispatcher</a></li><li><a href="module-dispatcher.CompositeRouteCondition.html">CompositeRouteCondition</a></li><li><a href="module-dispatcher.ControllerHandlerAdapter.html">ControllerHandlerAdapter</a></li><li><a href="module-dispatcher.CookieThemeResolver.html">CookieThemeResolver</a></li><li><a href="module-dispatcher.DefaultRouteErrorResolver.html">DefaultRouteErrorResolver</a></li><li><a href="module-dispatcher.DefaultRouteToViewNameTranslator.html">DefaultRouteToViewNameTranslator</a></li><li><a href="module-dispatcher.ErrorHandlerMethod.html">ErrorHandlerMethod</a></li><li><a href="module-dispatcher.FixedThemeResolver.html">FixedThemeResolver</a></li><li><a href="module-dispatcher.IllegalStateError.html">IllegalStateError</a></li><li><a href="module-dispatcher.MappedHandlerInterceptor.html">MappedHandlerInterceptor</a></li><li><a href="module-dispatcher.MatrixParameterMethodArgumentResolver.html">MatrixParameterMethodArgumentResolver</a></li><li><a href="module-dispatcher.MetadataErrorResolver.html">MetadataErrorResolver</a></li><li><a href="module-dispatcher.MetadataHandlerAdapter.html">MetadataHandlerAdapter</a></li><li><a href="module-dispatcher.MetadataHandlerMapping.html">MetadataHandlerMapping</a></li><li><a href="module-dispatcher.MetadataManager.html">MetadataManager</a></li><li><a href="module-dispatcher.MetadataScanner.html">MetadataScanner</a></li><li><a href="module-dispatcher.ModelAndView.html">ModelAndView</a></li><li><a href="module-dispatcher.NamePathHandlerMapping.html">NamePathHandlerMapping</a></li><li><a href="module-dispatcher.NavigatorLanguageResolver.html">NavigatorLanguageResolver</a></li><li><a href="module-dispatcher.NoHandlerFoundError.html">NoHandlerFoundError</a></li><li><a href="module-dispatcher.NoViewFoundError.html">NoViewFoundError</a></li><li><a href="module-dispatcher.ParamExpression.html">ParamExpression</a></li><li><a href="module-dispatcher.ParamsRouteCondition.html">ParamsRouteCondition</a></li><li><a href="module-dispatcher.PathViewController.html">PathViewController</a></li><li><a href="module-dispatcher.PatternsRouteCondition.html">PatternsRouteCondition</a></li><li><a href="module-dispatcher.QueryValueMethodArgumentResolver.html">QueryValueMethodArgumentResolver</a></li><li><a href="module-dispatcher.RouteBindingError.html">RouteBindingError</a></li><li><a href="module-dispatcher.RouteHandlerExecutionChain.html">RouteHandlerExecutionChain</a></li><li><a href="module-dispatcher.SimpleMappingErrorResolver.html">SimpleMappingErrorResolver</a></li><li><a href="module-dispatcher.SimplePathHandlerMapping.html">SimplePathHandlerMapping</a></li><li><a href="module-dispatcher-MappingEntry.html">MappingEntry</a></li><li><a href="module-dispatcher-MappingRegistry.html">MappingRegistry</a></li><li><a href="module-dispatcher-Match.html">Match</a></li><li><a href="module-dispatcher-MatchComparator.html">MatchComparator</a></li><li><a href="module-dispatcher-StrategyUtil.html">StrategyUtil</a></li><li><a href="module-factory.AbstractFactory.html">AbstractFactory</a></li><li><a href="module-factory.DefaultFactory.html">DefaultFactory</a></li><li><a href="module-factory.ProxiedFactory.html">ProxiedFactory</a></li><li><a href="module-factory.RegistryProxyHandler.html">RegistryProxyHandler</a></li><li><a href="module-http.AbstractURLComparator.html">AbstractURLComparator</a></li><li><a href="module-http.ContentTypeInterceptor.html">ContentTypeInterceptor</a></li><li><a href="module-http.DataParameterInterceptor.html">DataParameterInterceptor</a></li><li><a href="module-http.EqualsURLComparator.html">EqualsURLComparator</a></li><li><a href="module-http.HTTP.html">HTTP</a></li><li><a href="module-http.HTTPExecutionChain.html">HTTPExecutionChain</a></li><li><a href="module-http.HTTPHeader.html">HTTPHeader</a></li><li><a href="module-http.IfModifiedInterceptor.html">IfModifiedInterceptor</a></li><li><a href="module-http.MappedHTTPInterceptor.html">MappedHTTPInterceptor</a></li><li><a href="module-http.MappedResponseClassHTTPInterceptor.html">MappedResponseClassHTTPInterceptor</a></li><li><a href="module-http.MappedResponseCodeHTTPInterceptor.html">MappedResponseCodeHTTPInterceptor</a></li><li><a href="module-http.NotOKInterceptor.html">NotOKInterceptor</a></li><li><a href="module-http.ResponseStatus.html">ResponseStatus</a></li><li><a href="module-http.ResponseTypeInterceptor.html">ResponseTypeInterceptor</a></li><li><a href="module-http.TimeoutInterceptor.html">TimeoutInterceptor</a></li><li><a href="module-logger.AbstractAppender.html">AbstractAppender</a></li><li><a href="module-logger.AbstractBatchAppender.html">AbstractBatchAppender</a></li><li><a href="module-logger.Level.html">Level</a></li><li><a href="module-logger.StackTraceErrorHandler.html">StackTraceErrorHandler</a></li><li><a href="module-logger.WindowErrorHandler.html">WindowErrorHandler</a></li><li><a href="module-model.ArrayModel.html">ArrayModel</a></li><li><a href="module-model.BasicModel.html">BasicModel</a></li><li><a href="module-model.EventModel.html">EventModel</a></li><li><a href="module-model.FunctionModel.html">FunctionModel</a></li><li><a href="module-model.MapModel.html">MapModel</a></li><li><a href="module-model.Model.html">Model</a></li><li><a href="module-model.ObjectModel.html">ObjectModel</a></li><li><a href="module-model.SetModel.html">SetModel</a></li><li><a href="module-router.MappedRouterInterceptor.html">MappedRouterInterceptor</a></li><li><a href="module-router.PathRoute.html">PathRoute</a></li><li><a href="module-router.PathRouteSegment.html">PathRouteSegment</a></li><li><a href="module-router.RouteConditionHolder.html">RouteConditionHolder</a></li><li><a href="module-router.RouteHandlerMethod.html">RouteHandlerMethod</a></li><li><a href="module-router.RouteMatchResult.html">RouteMatchResult</a></li><li><a href="module-router.RouterExecutionChain.html">RouterExecutionChain</a></li><li><a href="module-validate.Type.html">Type</a></li><li><a href="module-view.AbstractCachingViewResolver.html">AbstractCachingViewResolver</a></li><li><a href="module-view.AbstractPathBasedView.html">AbstractPathBasedView</a></li><li><a href="module-view.AbstractPathBasedViewResolver.html">AbstractPathBasedViewResolver</a></li><li><a href="module-view.AbstractTemplateView.html">AbstractTemplateView</a></li><li><a href="module-view.AbstractView.html">AbstractView</a></li><li><a href="module-view.ImportViewResolver.html">ImportViewResolver</a></li><li><a href="module-view.NameViewResolver.html">NameViewResolver</a></li><li><a href="module-view.RerouteView.html">RerouteView</a></li><li><a href="module-view.UnresolvedView.html">UnresolvedView</a></li><li><a href="module-view.ViewResolverComposite.html">ViewResolverComposite</a></li></ul><h3>Namespaces</h3><ul><li><a href="module-core.MediaTypes.html">MediaTypes</a></li><li><a href="module-http.HTTPHeaders.html">HTTPHeaders</a></li><li><a href="module-http.ResponseStatuses.html">ResponseStatuses</a></li><li><a href="module-legacy.is.html">is</a></li><li><a href="module-legacy.util.html">util</a></li><li><a href="module-legacy.util.array.html">array</a></li><li><a href="module-legacy.util.function.html">function</a></li><li><a href="module-legacy.util.lang.html">lang</a></li><li><a href="module-legacy.util.object.html">object</a></li><li><a href="module-legacy.util.random.html">random</a></li><li><a href="module-legacy.util.string.html">string</a></li><li><a href="module-validate.constraints.html">constraints</a></li><li><a href="module-validate.formats.html">formats</a></li><li><a href="module-validate.types.html">types</a></li></ul><h3>Mixins</h3><ul><li><a href="module-content.AsContentSourceAware.html">AsContentSourceAware</a></li><li><a href="module-context.AsApplicationContextAware.html">AsApplicationContextAware</a></li><li><a href="module-context.AsAsyncEventEmitter.html">AsAsyncEventEmitter</a></li><li><a href="module-context.AsConditionalEventEmitter.html">AsConditionalEventEmitter</a></li><li><a href="module-context.AsEnvironmentAware.html">AsEnvironmentAware</a></li><li><a href="module-context.AsEventEmitter.html">AsEventEmitter</a></li><li><a href="module-context.AsEventHandlers.html">AsEventHandlers</a></li><li><a href="module-context.AsModuleResourceLoader.html">AsModuleResourceLoader</a></li><li><a href="module-context.AsNodeEventEmitter.html">AsNodeEventEmitter</a></li><li><a href="module-context.AsPositionalEventEmitter.html">AsPositionalEventEmitter</a></li><li><a href="module-context.AsResourceLoaderAware.html">AsResourceLoaderAware</a></li><li><a href="module-core.AsEnumerableRingBuffer.html">AsEnumerableRingBuffer</a></li><li><a href="module-factory.AsAware.html">AsAware</a></li><li><a href="module-factory.AsEnumerableRegistry.html">AsEnumerableRegistry</a></li><li><a href="module-factory.AsFactoryAware.html">AsFactoryAware</a></li><li><a href="module-factory.AsNameAware.html">AsNameAware</a></li></ul><h3>Interfaces</h3><ul><li><a href="external-ResponseAwareHTTPInterceptor.html">external:ResponseAwareHTTPInterceptor</a></li><li><a href="module-content.ContentSource.html">ContentSource</a></li><li><a href="module-content.ContentSourceAware.html">ContentSourceAware</a></li><li><a href="module-content.Theme.html">Theme</a></li><li><a href="module-content.ThemeSource.html">ThemeSource</a></li><li><a href="module-context.ApplicationContext.html">ApplicationContext</a></li><li><a href="module-context.ApplicationContextAware.html">ApplicationContextAware</a></li><li><a href="module-context.ApplicationEventEmitterAware.html">ApplicationEventEmitterAware</a></li><li><a href="module-context.AsyncEventEmitter.html">AsyncEventEmitter</a></li><li><a href="module-context.ConfigurablePropertyResolver.html">ConfigurablePropertyResolver</a></li><li><a href="module-context.Environment.html">Environment</a></li><li><a href="module-context.EnvironmentAware.html">EnvironmentAware</a></li><li><a href="module-context.EnvironmentSource.html">EnvironmentSource</a></li><li><a href="module-context.EventEmitter.html">EventEmitter</a></li><li><a href="module-context.PropertyResolver.html">PropertyResolver</a></li><li><a href="module-context.Resource.html">Resource</a></li><li><a href="module-context.ResourceLoader.html">ResourceLoader</a></li><li><a href="module-context.ResourceLoaderAware.html">ResourceLoaderAware</a></li><li><a href="module-core.AsyncEnumerable.html">AsyncEnumerable</a></li><li><a href="module-core.ChildNode.html">ChildNode</a></li><li><a href="module-core.Comparable.html">Comparable</a></li><li><a href="module-core.Comparator.html">Comparator</a></li><li><a href="module-core.Constructable.html">Constructable</a></li><li><a href="module-core.Enumerable.html">Enumerable</a></li><li><a href="module-core.Equatable.html">Equatable</a></li><li><a href="module-core.MappedPathMatcher.html">MappedPathMatcher</a></li><li><a href="module-core.Matchable.html">Matchable</a></li><li><a href="module-core.ParentNode.html">ParentNode</a></li><li><a href="module-core.PatternMatcher.html">PatternMatcher</a></li><li><a href="module-core.PropertyValues.html">PropertyValues</a></li><li><a href="module-core.Serializable.html">Serializable</a></li><li><a href="module-core.StringComparable.html">StringComparable</a></li><li><a href="module-core.TreeNode.html">TreeNode</a></li><li><a href="module-dispatcher.Controller.html">Controller</a></li><li><a href="module-dispatcher.ErrorResolverStrategy.html">ErrorResolverStrategy</a></li><li><a href="module-dispatcher.HandlerAdapter.html">HandlerAdapter</a></li><li><a href="module-dispatcher.HandlerMethod.html">HandlerMethod</a></li><li><a href="module-dispatcher.HandlerMethodArgumentResolver.html">HandlerMethodArgumentResolver</a></li><li><a href="module-dispatcher.Invocable.html">Invocable</a></li><li><a href="module-dispatcher.LanguageResolver.html">LanguageResolver</a></li><li><a href="module-dispatcher.LanguageResolverStrategy.html">LanguageResolverStrategy</a></li><li><a href="module-dispatcher.MatchableHandlerMapping.html">MatchableHandlerMapping</a></li><li><a href="module-dispatcher.NameValueExpression.html">NameValueExpression</a></li><li><a href="module-dispatcher.RequestToViewNameTranslatorStrategy.html">RequestToViewNameTranslatorStrategy</a></li><li><a href="module-dispatcher.RouteHandlerAdapterStrategy.html">RouteHandlerAdapterStrategy</a></li><li><a href="module-dispatcher.RouteHandlerMappingStrategy.html">RouteHandlerMappingStrategy</a></li><li><a href="module-dispatcher.RouteHandlerMethodMappingNamingStrategy.html">RouteHandlerMethodMappingNamingStrategy</a></li><li><a href="module-dispatcher.ThemeResolver.html">ThemeResolver</a></li><li><a href="module-dispatcher.ThemeResolverStrategy.html">ThemeResolverStrategy</a></li><li><a href="module-dispatcher.ViewMappingStrategy.html">ViewMappingStrategy</a></li><li><a href="module-dispatcher.ViewResolverStrategy.html">ViewResolverStrategy</a></li><li><a href="module-factory.AsyncDestroyable.html">AsyncDestroyable</a></li><li><a href="module-factory.Aware.html">Aware</a></li><li><a href="module-factory.ConfigurableFactory.html">ConfigurableFactory</a></li><li><a href="module-factory.ConstructionAwareProcessor.html">ConstructionAwareProcessor</a></li><li><a href="module-factory.Destroyable.html">Destroyable</a></li><li><a href="module-factory.DestructionAwareProcessor.html">DestructionAwareProcessor</a></li><li><a href="module-factory.EntryRegistryProcessor.html">EntryRegistryProcessor</a></li><li><a href="module-factory.EnumerableRegistry.html">EnumerableRegistry</a></li><li><a href="module-factory.Factory.html">Factory</a></li><li><a href="module-factory.FactoryAware.html">FactoryAware</a></li><li><a href="module-factory.HierarchicalFactory.html">HierarchicalFactory</a></li><li><a href="module-factory.Initializable.html">Initializable</a></li><li><a href="module-factory.InitializationAwareProcessor.html">InitializationAwareProcessor</a></li><li><a href="module-factory.NameAware.html">NameAware</a></li><li><a href="module-factory.Registry.html">Registry</a></li><li><a href="module-has.Has.html">Has</a></li><li><a href="module-has.JavaScriptAPIs.html">JavaScriptAPIs</a></li><li><a href="module-has.JavaScriptFeatures.html">JavaScriptFeatures</a></li><li><a href="module-has.NodeAPIs.html">NodeAPIs</a></li><li><a href="module-has.NodeFeatures.html">NodeFeatures</a></li><li><a href="module-has.WebAPIs.html">WebAPIs</a></li><li><a href="module-has.WebFeatures.html">WebFeatures</a></li><li><a href="module-http.ClientErrorAwareHTTPInterceptor.html">ClientErrorAwareHTTPInterceptor</a></li><li><a href="module-http.CompletionAwareHTTPInterceptor.html">CompletionAwareHTTPInterceptor</a></li><li><a href="module-http.ErrorAwareHTTPInterceptor.html">ErrorAwareHTTPInterceptor</a></li><li><a href="module-http.HTTPAware.html">HTTPAware</a></li><li><a href="module-http.InformationAwareHTTPInterceptor.html">InformationAwareHTTPInterceptor</a></li><li><a href="module-http.InitializationAwareHTTPInterceptor.html">InitializationAwareHTTPInterceptor</a></li><li><a href="module-http.RedirectAwareHTTPInterceptor.html">RedirectAwareHTTPInterceptor</a></li><li><a href="module-http.RequestAwareHTTPInterceptor.html">RequestAwareHTTPInterceptor</a></li><li><a href="module-http.ResponseCodeAwareHTTPInterceptor.html">ResponseCodeAwareHTTPInterceptor</a></li><li><a href="module-http.ServerErrorAwareHTTPInterceptor.html">ServerErrorAwareHTTPInterceptor</a></li><li><a href="module-http.SuccessAwareHTTPInterceptor.html">SuccessAwareHTTPInterceptor</a></li><li><a href="module-http.URLMatcher.html">URLMatcher</a></li><li><a href="module-logger.Appender.html">Appender</a></li><li><a href="module-logger.AsyncAppender.html">AsyncAppender</a></li><li><a href="module-logger.AsyncErrorHandler.html">AsyncErrorHandler</a></li><li><a href="module-logger.BatchAppender.html">BatchAppender</a></li><li><a href="module-logger.ErrorHandler.html">ErrorHandler</a></li><li><a href="module-logger.LevelComparator.html">LevelComparator</a></li><li><a href="module-parser.Parser.html">Parser</a></li><li><a href="module-parser.Stringifier.html">Stringifier</a></li><li><a href="module-router.Route.html">Route</a></li><li><a href="module-router.RouteCondition.html">RouteCondition</a></li><li><a href="module-router.RouteDispatcher.html">RouteDispatcher</a></li><li><a href="module-router.RouteErrorResolver.html">RouteErrorResolver</a></li><li><a href="module-router.RouteHandlerInterceptor.html">RouteHandlerInterceptor</a></li><li><a href="module-router.RouteHandlerMapping.html">RouteHandlerMapping</a></li><li><a href="module-router.Router.html">Router</a></li><li><a href="module-router.RouteRenderer.html">RouteRenderer</a></li><li><a href="module-router.RouteSegment.html">RouteSegment</a></li><li><a href="module-router.RouteToViewNameTranslator.html">RouteToViewNameTranslator</a></li><li><a href="module-view.MediaTypeFileExtensionResolver.html">MediaTypeFileExtensionResolver</a></li><li><a href="module-view.View.html">View</a></li><li><a href="module-view.ViewMapping.html">ViewMapping</a></li><li><a href="module-view.ViewResolver.html">ViewResolver</a></li></ul><h3>Global</h3><ul><li><a href="global.html#__classPrivateFieldGet">__classPrivateFieldGet</a></li><li><a href="global.html#__classPrivateFieldSet">__classPrivateFieldSet</a></li><li><a href="global.html#charMatcher">charMatcher</a></li><li><a href="global.html#code">code</a></li><li><a href="global.html#defineProperty">defineProperty</a></li><li><a href="global.html#entityMap">entityMap</a></li><li><a href="global.html#escapeHtml">escapeHtml</a></li><li><a href="global.html#fills">fills</a></li><li><a href="global.html#getEntries">getEntries</a></li><li><a href="global.html#isConstraintSet">isConstraintSet</a></li><li><a href="global.html#isDigits">isDigits</a></li><li><a href="global.html#isMoney">isMoney</a></li><li><a href="global.html#isPatternMatch">isPatternMatch</a></li><li><a href="global.html#isRange">isRange</a></li><li><a href="global.html#pluck">pluck</a></li><li><a href="global.html#reduce">reduce</a></li><li><a href="global.html#text">text</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.6</a>
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

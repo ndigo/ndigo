@@ -55,8 +55,6 @@ Key packages and their dependencies:
 - **blue-content**: Content handling
 - **blue-logger**: Logging utilities
 - **blue-validate**: Validation utilities
-- **blue-fill**: Polyfills
-- **blue-has**: Feature detection
 - **blue-print**: Printing utilities
 - **blue-platform-web**: Web platform specifics
 
@@ -201,7 +199,6 @@ The framework uses decorators and reflect-metadata (v0.2.2) for dependency injec
 - blue-factory (dependency)
 - blue-context (peer dependency)
 - blue-dispatcher (peer dependency)
-- blue-fill (dependency)
 
 ### Dual Module Format
 

@@ -44,8 +44,6 @@ pnpm lint
 - [blue-dispatcher](packages/blue-dispatcher/README.md)
 - [blue-domain](packages/blue-domain/README.md)
 - [blue-factory](packages/blue-factory/README.md)
-- [blue-fill](packages/blue-fill/README.md)
-- [blue-has](packages/blue-has/README.md)
 - [blue-http](packages/blue-http/README.md)
 - [blue-logger](packages/blue-logger/README.md)
 - [blue-model](packages/blue-model/README.md)

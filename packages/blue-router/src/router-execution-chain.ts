@@ -14,7 +14,7 @@ export default class RouterExecutionChain {
 
     interceptorIndex: number;
 
-    get [ Symbol.toStringTag ](): string {
+    get [Symbol.toStringTag](): string {
         return 'RouterExecutionChain';
     }
 
@@ -22,13 +22,13 @@ export default class RouterExecutionChain {
         return this.#interceptors;
     }
 
-    constructor( chain: RouterExecutionChain | RouterInterceptor[] = null ){
+    constructor(chain: RouterExecutionChain | RouterInterceptor[] = null) {
         this.#interceptors = null;
 
-        if( chain instanceof RouterExecutionChain ){
-            chain && this.addInterceptors( chain.interceptors );
+        if (chain instanceof RouterExecutionChain) {
+            chain && this.addInterceptors(chain.interceptors);
         } else {
-            chain && this.addInterceptors( chain );
+            chain && this.addInterceptors(chain);
         }
 
         this.interceptorIndex = -1;
@@ -38,12 +38,12 @@ export default class RouterExecutionChain {
      * @function module:router.RouterExecutionChain#addInterceptor
      * @param {module:router.RouterInterceptor} interceptor
      */
-    addInterceptor( interceptor: RouterInterceptor ): void {
-        if( interceptor ){
-            if( !this.#interceptors ){
+    addInterceptor(interceptor: RouterInterceptor): void {
+        if (interceptor) {
+            if (!this.#interceptors) {
                 this.#interceptors = [];
             }
-            this.#interceptors.push( interceptor );
+            this.#interceptors.push(interceptor);
         }
     }
 
@@ -51,11 +51,11 @@ export default class RouterExecutionChain {
      * @function module:router.RouterExecutionChain#addInterceptors
      * @param {external:Array<module:router.RouterInterceptor>} interceptors
      */
-    addInterceptors( interceptors: RouterInterceptor[] ): void {
+    addInterceptors(interceptors: RouterInterceptor[]): void {
         const length = interceptors?.length;
-        if( length ){
-            for( let index = 0; index < length; index++ ){
-                this.addInterceptor( interceptors[ index ] );
+        if (length) {
+            for (let index = 0; index < length; index++) {
+                this.addInterceptor(interceptors[index]);
             }
         }
     }
@@ -64,14 +64,13 @@ export default class RouterExecutionChain {
      * @function module:router.RouterExecutionChain#applyPostRoute
      * @param {module:router.Route} route
      */
-    applyPostRoute( route: Route ): void {
-        const
-            interceptors = this.#interceptors,
+    applyPostRoute(route: Route): void {
+        const interceptors = this.#interceptors,
             length = interceptors.length;
-        if( length ){
+        if (length) {
             let index = 0;
-            for( ; index < length; index++ ){
-                interceptors[ index ].postRoute( route );
+            for (; index < length; index++) {
+                interceptors[index].postRoute(route);
             }
         }
     }
@@ -80,14 +79,13 @@ export default class RouterExecutionChain {
      * @function module:router.RouterExecutionChain#applyPreRoute
      * @param {module:router.Route} route
      */
-    applyPreRoute( route: Route ): boolean {
-        const
-            interceptors = this.#interceptors,
+    applyPreRoute(route: Route): boolean {
+        const interceptors = this.#interceptors,
             length = interceptors.length;
-        if( length ){
+        if (length) {
             let index = 0;
-            for( ; index < length; index++ ){
-                if( interceptors[ index ].preRoute( route ) === false ){
+            for (; index < length; index++) {
+                if (interceptors[index].preRoute(route) === false) {
                     return false;
                 }
                 this.interceptorIndex = index;

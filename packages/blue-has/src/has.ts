@@ -56,9 +56,7 @@ export interface JavaScriptAPIs extends JavaScriptFeatures {
     template_literals?: boolean;
 }
 
-export interface NodeAPIs extends NodeFeatures {
-
-}
+export interface NodeAPIs extends NodeFeatures {}
 
 export interface WebAPIs extends WebFeatures {
     abort_api?: boolean;
@@ -437,30 +435,25 @@ export interface Has extends JavaScriptAPIs, NodeAPIs, WebAPIs {}
  * @extends module:has.WebAPIs
  */
 
-const
-    hasReflect = typeof Reflect === 'object',
+const hasReflect = typeof Reflect === 'object',
     hasReflectDefineProperty = hasReflect && typeof Reflect.defineProperty === 'function',
     hasReflectDeleteProperty = hasReflect && typeof Reflect.deleteProperty === 'function',
     hasReflectSetPrototypeOf = hasReflect && typeof Reflect.setPrototypeOf === 'function',
-
-    defineProperty = hasReflectDefineProperty ?
-        Reflect.defineProperty :
-        Object.defineProperty,
-    deleteProperty = hasReflectDeleteProperty ?
-        Reflect.deleteProperty :
-        ( target: object, key: PropertyKey ) => delete target[ key ],
-    setPrototypeOf = hasReflectSetPrototypeOf ?
-        Reflect.setPrototypeOf :
-        Object.setPrototypeOf,
+    defineProperty = hasReflectDefineProperty ? Reflect.defineProperty : Object.defineProperty,
+    deleteProperty = hasReflectDeleteProperty
+        ? Reflect.deleteProperty
+        : (target: object, key: PropertyKey) => delete target[key],
+    setPrototypeOf = hasReflectSetPrototypeOf ? Reflect.setPrototypeOf : Object.setPrototypeOf,
     keys = Object.keys,
-    createNull = Object.create.bind( Object, null );
+    createNull = Object.create.bind(Object, null);
 
-export const defineReadOnlyProperty = <T = any>( target: object, propertyKey: PropertyKey, value: T ) => defineProperty( target, propertyKey, {
-    value: value,
-    configurable: true,
-    enumerable: true,
-    writable: false
-} );
+export const defineReadOnlyProperty = <T = any>(target: object, propertyKey: PropertyKey, value: T) =>
+    defineProperty(target, propertyKey, {
+        value: value,
+        configurable: true,
+        enumerable: true,
+        writable: false,
+    });
 
 /**
  * The `prototype` of {@link module:has.has} on which feature detectors are defined.
@@ -472,12 +465,12 @@ export const had: Has = createNull();
  * @const {module:has.Has} module:has.has
  */
 export const has: Has = createNull();
-setPrototypeOf( has, had );
+setPrototypeOf(has, had);
 
-defineReadOnlyProperty( has, 'reflect', hasReflect );
-defineReadOnlyProperty( has, 'reflect_defineproperty', hasReflectDefineProperty );
-defineReadOnlyProperty( has, 'reflect_deleteproperty', hasReflectDeleteProperty );
-defineReadOnlyProperty( has, 'reflect_setprototypeof', hasReflectSetPrototypeOf );
+defineReadOnlyProperty(has, 'reflect', hasReflect);
+defineReadOnlyProperty(has, 'reflect_defineproperty', hasReflectDefineProperty);
+defineReadOnlyProperty(has, 'reflect_deleteproperty', hasReflectDeleteProperty);
+defineReadOnlyProperty(has, 'reflect_setprototypeof', hasReflectSetPrototypeOf);
 
 /**
  * Defines a feature detector on {@link module:has~had}. When the feature detection runs, the results are cached on {@link module:has.has}.
@@ -485,36 +478,35 @@ defineReadOnlyProperty( has, 'reflect_setprototypeof', hasReflectSetPrototypeOf 
  * @param {external:string} id
  * @param {external:Function} test
  */
-export const defineDetector = ( id: string, test: ( has: Has ) => boolean ) => {
-    defineProperty( had, id, {
-        get: function(){
+export const defineDetector = (id: string, test: (has: Has) => boolean) => {
+    defineProperty(had, id, {
+        get: function () {
             let result = false;
             try {
-                result = test( has );
-            } catch( e ){}
-            defineReadOnlyProperty( has, id, result );
+                result = test(has);
+            } catch (e) {}
+            defineReadOnlyProperty(has, id, result);
             return result;
         },
         configurable: true,
-        enumerable: true
-    } );
+        enumerable: true,
+    });
 };
 
 /**
  * @function module:has.defineDetectors
  * @param {external:Function} tests
  */
-export const defineDetectors = ( tests: ( has: Has ) => { [ id: string ]: () => boolean } ) => {
-    const
-        detectors = tests( has ),
-        define = ( id ) => defineDetector( id, detectors[ id ] );
-    keys( detectors ).forEach( define );
+export const defineDetectors = (tests: (has: Has) => { [id: string]: () => boolean }) => {
+    const detectors = tests(has),
+        define = (id) => defineDetector(id, detectors[id]);
+    keys(detectors).forEach(define);
 };
 
 /**
  * @function module:has.resetDetector
  * @param {external:string} id
  */
-export const resetDetector = ( id: string ) => {
-    deleteProperty( has, id );
+export const resetDetector = (id: string) => {
+    deleteProperty(has, id);
 };

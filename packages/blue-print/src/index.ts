@@ -7,7 +7,7 @@ import Fingerprint2 from '../node_modules/@fingerprintjs/fingerprintjs/fingerpri
 
 type impression = boolean | number | string;
 
-type Impression = { [ key: string ]: impression | impression[] }
+type Impression = { [key: string]: impression | impression[] };
 
 export type Fingerprint = Impression[];
 
@@ -32,15 +32,15 @@ export type Fingerprint = Impression[];
  * A unique device signature
  * @const {external:Promise<module:print.Fingerprint[]>} module:print.fingerprint
  */
-export const fingerprint = new Promise<Fingerprint>( function( resolve, reject ){
+export const fingerprint = new Promise<Fingerprint>(function (resolve, reject) {
     // @ts-ignore: ¯\_(ツ)_/¯
-    requestIdleCallback( function(){
+    requestIdleCallback(function () {
         try {
-            Fingerprint2.get( resolve );
-        } catch( e ){
-            reject( e );
+            Fingerprint2.get(resolve);
+        } catch (e) {
+            reject(e);
         }
-    } );
-} );
+    });
+});
 
 export default fingerprint;

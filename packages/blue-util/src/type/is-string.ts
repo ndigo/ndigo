@@ -19,6 +19,6 @@ import { is } from 'ramda';
  * isString( {} );
  * //=> false
  */
-const isString = is( String ) as ( value ) => value is string;
+const isString = is(String) as (value) => value is string;
 
 export default isString;

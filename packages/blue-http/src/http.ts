@@ -13,32 +13,37 @@ export type HTTPInit = RequestInit & {
     method?: HTTPMethod;
 };
 
-export type Fetch = ( input: RequestInfo, init?: RequestInit ) => Promise<Response>;
+export type Fetch = (input: RequestInfo, init?: RequestInit) => Promise<Response>;
 
 export interface CompletionAwareHTTPInterceptor {
-    postComplete( request: Request, response: Response ): void;
+    postComplete(request: Request, response: Response): void;
 }
 
 export interface ErrorAwareHTTPInterceptor {
-    postError( error: Error, request: Request, http: HTTP ): Promise<Response | undefined>;
+    postError(error: Error, request: Request, http: HTTP): Promise<Response | undefined>;
 }
 
 export interface InitializationAwareHTTPInterceptor<T extends HTTPInit = HTTPInit> {
-    preInit( url: URL, settings: T ): boolean;
+    preInit(url: URL, settings: T): boolean;
 }
 
 export interface RequestAwareHTTPInterceptor {
-    preRequest( request: Request, http: HTTP ): Promise<Request | void>;
+    preRequest(request: Request, http: HTTP): Promise<Request | void>;
 }
 
 export interface ResponseAwareHTTPInterceptor<T extends HTTPInit = HTTPInit> {
-    postResponse( response: Response, settings: T ): Promise<void>;
+    postResponse(response: Response, settings: T): Promise<void>;
 }
 
-export type HTTPInterceptor = CompletionAwareHTTPInterceptor | ErrorAwareHTTPInterceptor | InitializationAwareHTTPInterceptor | RequestAwareHTTPInterceptor | ResponseAwareHTTPInterceptor;
+export type HTTPInterceptor =
+    | CompletionAwareHTTPInterceptor
+    | ErrorAwareHTTPInterceptor
+    | InitializationAwareHTTPInterceptor
+    | RequestAwareHTTPInterceptor
+    | ResponseAwareHTTPInterceptor;
 
 export interface HTTPAware extends Aware {
-    setHTTP( http: HTTP ): void;
+    setHTTP(http: HTTP): void;
 }
 
 /**
@@ -158,75 +163,88 @@ export interface HTTPAware extends Aware {
  * @param {module:http.HTTP} http
  */
 
-export const
-    { assign, freeze } = Object,
+export const { assign, freeze } = Object,
     { defineProperty } = Reflect,
-
     defaults: HTTPInit = {
         cache: 'default',
         credentials: 'same-origin',
         method: 'GET',
         mode: 'cors',
-        redirect: 'follow'
+        redirect: 'follow',
     },
-
     patternCache = new Map<string, WildcardExp>(),
-    isRequest = is( Request ) as ( value ) => value is Request;
+    isRequest = is(Request) as (value) => value is Request;
 
 /**
  * @function module:http.likeCompletionAwareHTTPInterceptor
  * @param {*} value The value to be tested
  * @returns {external:boolean} Whether or not the value is like a {@link module:http.CompletionAwareHTTPInterceptor}.
  */
-export const likeCompletionAwareHTTPInterceptor = like( { postComplete: Function } ) as ( value ) => value is CompletionAwareHTTPInterceptor;
+export const likeCompletionAwareHTTPInterceptor = like({ postComplete: Function }) as (
+    value
+) => value is CompletionAwareHTTPInterceptor;
 
 /**
  * @function module:http.likeErrorAwareHTTPInterceptor
  * @param {*} value The value to be tested
  * @returns {external:boolean} Whether or not the value is like a {@link module:http.ErrorAwareHTTPInterceptor}.
  */
-export const likeErrorAwareHTTPInterceptor = like( { postError: Function } ) as ( value ) => value is ErrorAwareHTTPInterceptor;
+export const likeErrorAwareHTTPInterceptor = like({ postError: Function }) as (
+    value
+) => value is ErrorAwareHTTPInterceptor;
 
 /**
  * @function module:http.likeInitializationAwareHTTPInterceptor
  * @param {*} value The value to be tested
  * @returns {external:boolean} Whether or not the value is like a {@link module:http.InitializationAwareHTTPInterceptor}.
  */
-export const likeInitializationAwareHTTPInterceptor = like( { preInit: Function } ) as ( value ) => value is InitializationAwareHTTPInterceptor;
+export const likeInitializationAwareHTTPInterceptor = like({ preInit: Function }) as (
+    value
+) => value is InitializationAwareHTTPInterceptor;
 
 /**
  * @function module:http.likeRequestAwareHTTPInterceptor
  * @param {*} value The value to be tested
  * @returns {external:boolean} Whether or not the value is like a {@link module:http.RequestAwareHTTPInterceptor}.
  */
-export const likeRequestAwareHTTPInterceptor = like( { preRequest: Function } ) as ( value ) => value is RequestAwareHTTPInterceptor;
+export const likeRequestAwareHTTPInterceptor = like({ preRequest: Function }) as (
+    value
+) => value is RequestAwareHTTPInterceptor;
 
 /**
  * @function module:http.likeResponseAwareHTTPInterceptor
  * @param {*} value The value to be tested
  * @returns {external:boolean} Whether or not the value is like a {@link external:ResponseAwareHTTPInterceptor}.
  */
-export const likeResponseAwareHTTPInterceptor = like( { postResponse: Function } ) as ( value ) => value is ResponseAwareHTTPInterceptor;
+export const likeResponseAwareHTTPInterceptor = like({ postResponse: Function }) as (
+    value
+) => value is ResponseAwareHTTPInterceptor;
 
 /**
  * @function module:http.likeHTTPInterceptor
  * @param {*} value The value to be tested
  * @returns {external:boolean} Whether or not the value is like a {@link module:http.HTTPInterceptor}.
  */
-export const likeHTTPInterceptor = anyPass( [ likeCompletionAwareHTTPInterceptor, likeErrorAwareHTTPInterceptor, likeInitializationAwareHTTPInterceptor, likeRequestAwareHTTPInterceptor, likeResponseAwareHTTPInterceptor ] ) as ( value ) => value is ResponseAwareHTTPInterceptor;
+export const likeHTTPInterceptor = anyPass([
+    likeCompletionAwareHTTPInterceptor,
+    likeErrorAwareHTTPInterceptor,
+    likeInitializationAwareHTTPInterceptor,
+    likeRequestAwareHTTPInterceptor,
+    likeResponseAwareHTTPInterceptor,
+]) as (value) => value is ResponseAwareHTTPInterceptor;
 
 export class WildcardMatcher implements PatternMatcher<string, string> {
-    match( pattern: string, value: string ): boolean {
+    match(pattern: string, value: string): boolean {
         let wcex: WildcardExp;
 
-        if( patternCache.has( pattern ) ){
-            wcex = patternCache.get( pattern );
+        if (patternCache.has(pattern)) {
+            wcex = patternCache.get(pattern);
         } else {
-            wcex = new WildcardExp( pattern );
-            patternCache.set( pattern, wcex );
+            wcex = new WildcardExp(pattern);
+            patternCache.set(pattern, wcex);
         }
 
-        return wcex.test( value );
+        return wcex.test(value);
     }
 }
 
@@ -238,7 +256,14 @@ export class WildcardMatcher implements PatternMatcher<string, string> {
  * @implements module:http.RequestAwareHTTPInterceptor
  * @implements external:ResponseAwareHTTPInterceptor
  */
-export class MappedHTTPInterceptor implements CompletionAwareHTTPInterceptor, ErrorAwareHTTPInterceptor, InitializationAwareHTTPInterceptor, RequestAwareHTTPInterceptor, ResponseAwareHTTPInterceptor {
+export class MappedHTTPInterceptor
+    implements
+        CompletionAwareHTTPInterceptor,
+        ErrorAwareHTTPInterceptor,
+        InitializationAwareHTTPInterceptor,
+        RequestAwareHTTPInterceptor,
+        ResponseAwareHTTPInterceptor
+{
     #excludePatterns: string[];
     #includePatterns: string[];
     #interceptor: HTTPInterceptor;
@@ -249,38 +274,37 @@ export class MappedHTTPInterceptor implements CompletionAwareHTTPInterceptor, Er
         return this.#interceptor;
     }
 
-    constructor( interceptor: HTTPInterceptor, includePatterns: string[], excludePatterns?: string[] ){
+    constructor(interceptor: HTTPInterceptor, includePatterns: string[], excludePatterns?: string[]) {
         this.#interceptor = interceptor;
         this.urlMatcher = new WildcardMatcher();
-        this.setExcludePatterns( excludePatterns );
-        this.setIncludePatterns( includePatterns );
+        this.setExcludePatterns(excludePatterns);
+        this.setIncludePatterns(includePatterns);
     }
 
-    matches( url: string, matcher?: WildcardMatcher ): boolean {
+    matches(url: string, matcher?: WildcardMatcher): boolean {
         const urlMatcher = matcher || this.urlMatcher;
 
-        if( urlMatcher ){
-            const
-                excludePatterns = this.#excludePatterns ?? [],
+        if (urlMatcher) {
+            const excludePatterns = this.#excludePatterns ?? [],
                 includePatterns = this.#includePatterns ?? [];
             let index: number, length: number;
 
-            if( excludePatterns.length ){
+            if (excludePatterns.length) {
                 length = excludePatterns.length;
-                for( index = 0; index < length; index++ ){
-                    if( urlMatcher.match( excludePatterns[ index ], url ) ){
+                for (index = 0; index < length; index++) {
+                    if (urlMatcher.match(excludePatterns[index], url)) {
                         return false;
                     }
                 }
             }
 
-            if( !includePatterns.length ){
+            if (!includePatterns.length) {
                 return true;
             }
 
             length = includePatterns.length;
-            for( index = 0; index < length; index++ ){
-                if( urlMatcher.match( includePatterns[ index ], url ) ){
+            for (index = 0; index < length; index++) {
+                if (urlMatcher.match(includePatterns[index], url)) {
                     return true;
                 }
             }
@@ -289,53 +313,53 @@ export class MappedHTTPInterceptor implements CompletionAwareHTTPInterceptor, Er
         return false;
     }
 
-    async postError( error: Error, request: Request, http: HTTP ): Promise<Response | undefined> {
+    async postError(error: Error, request: Request, http: HTTP): Promise<Response | undefined> {
         const interceptor = this.#interceptor;
-        if( likeErrorAwareHTTPInterceptor( interceptor ) ){
-            return await interceptor.postError( error, request, http );
+        if (likeErrorAwareHTTPInterceptor(interceptor)) {
+            return await interceptor.postError(error, request, http);
         }
     }
 
-    postComplete( request: Request, response: Response ): void {
+    postComplete(request: Request, response: Response): void {
         const interceptor = this.#interceptor;
-        if( likeCompletionAwareHTTPInterceptor( interceptor ) ){
-            interceptor.postComplete( request, response );
+        if (likeCompletionAwareHTTPInterceptor(interceptor)) {
+            interceptor.postComplete(request, response);
         }
     }
 
-    async postResponse( response: Response, settings: HTTPInit ): Promise<void> {
+    async postResponse(response: Response, settings: HTTPInit): Promise<void> {
         const interceptor = this.#interceptor;
-        if( likeResponseAwareHTTPInterceptor( interceptor ) ){
-            await interceptor.postResponse( response, settings );
+        if (likeResponseAwareHTTPInterceptor(interceptor)) {
+            await interceptor.postResponse(response, settings);
         }
     }
 
-    preInit( url: URL, settings: HTTPInit ): boolean {
+    preInit(url: URL, settings: HTTPInit): boolean {
         const interceptor = this.#interceptor;
-        if( likeInitializationAwareHTTPInterceptor( interceptor ) ){
-            return interceptor.preInit( url, settings );
+        if (likeInitializationAwareHTTPInterceptor(interceptor)) {
+            return interceptor.preInit(url, settings);
         }
         return true;
     }
 
-    async preRequest( request: Request, http: HTTP ): Promise<Request | void> {
+    async preRequest(request: Request, http: HTTP): Promise<Request | void> {
         const interceptor = this.#interceptor;
-        if( likeRequestAwareHTTPInterceptor( interceptor ) ){
-            return interceptor.preRequest( request, http );
+        if (likeRequestAwareHTTPInterceptor(interceptor)) {
+            return interceptor.preRequest(request, http);
         }
         return request;
     }
 
-    setExcludePatterns( excludePatterns: string[] = [] ): void {
+    setExcludePatterns(excludePatterns: string[] = []): void {
         this.#excludePatterns = excludePatterns;
     }
 
-    setIncludePatterns( includePatterns: string[] = [] ): void {
+    setIncludePatterns(includePatterns: string[] = []): void {
         this.#includePatterns = includePatterns;
     }
 }
 
-const isMappedHTTPInterceptor = is( MappedHTTPInterceptor ) as ( value ) => value is MappedHTTPInterceptor;
+const isMappedHTTPInterceptor = is(MappedHTTPInterceptor) as (value) => value is MappedHTTPInterceptor;
 
 /**
  * @class module:http.HTTPExecutionChain
@@ -359,7 +383,7 @@ export class HTTPExecutionChain {
      */
     interceptorIndex: number;
 
-    get [ Symbol.toStringTag ](): string {
+    get [Symbol.toStringTag](): string {
         return 'HTTPExecutionChain';
     }
 
@@ -370,7 +394,7 @@ export class HTTPExecutionChain {
         return this.#interceptors;
     }
 
-    constructor( http: HTTP | HTTPExecutionChain, interceptors: HTTPInterceptor[] = null ){
+    constructor(http: HTTP | HTTPExecutionChain, interceptors: HTTPInterceptor[] = null) {
         this.#hasCompletionAwareInterceptors = false;
         this.#hasErrorAwareInterceptors = false;
         this.#hasInitializationAwareInterceptors = false;
@@ -379,13 +403,13 @@ export class HTTPExecutionChain {
 
         this.#interceptors = null;
 
-        if( isHTTPExecutionChain( http ) ){
+        if (isHTTPExecutionChain(http)) {
             const chain = http;
             this.http = chain.http;
-            chain.interceptors?.length && this.addInterceptors( chain.interceptors );
+            chain.interceptors?.length && this.addInterceptors(chain.interceptors);
         } else {
             this.http = http;
-            interceptors?.length && this.addInterceptors( interceptors );
+            interceptors?.length && this.addInterceptors(interceptors);
         }
 
         this.interceptorIndex = -1;
@@ -395,13 +419,13 @@ export class HTTPExecutionChain {
      * @function module:http.HttpExecutionChain#addInterceptor
      * @param {module:http.HttpInterceptor} interceptor
      */
-    addInterceptor( interceptor: HTTPInterceptor ): void {
-        if( interceptor ){
-            if( !this.#interceptors ){
+    addInterceptor(interceptor: HTTPInterceptor): void {
+        if (interceptor) {
+            if (!this.#interceptors) {
                 this.#interceptors = [];
             }
-            this._checkInterceptorType( interceptor );
-            this.#interceptors.push( interceptor );
+            this._checkInterceptorType(interceptor);
+            this.#interceptors.push(interceptor);
         }
     }
 
@@ -409,11 +433,11 @@ export class HTTPExecutionChain {
      * @function module:http.HttpExecutionChain#addInterceptors
      * @param {external:Array<module:http.HttpInterceptor>} interceptors
      */
-    addInterceptors( interceptors: HTTPInterceptor[] ): void {
+    addInterceptors(interceptors: HTTPInterceptor[]): void {
         const length = interceptors?.length;
-        if( length ){
-            for( let index = 0; index < length; index++ ){
-                this.addInterceptor( interceptors[ index ] );
+        if (length) {
+            for (let index = 0; index < length; index++) {
+                this.addInterceptor(interceptors[index]);
             }
         }
     }
@@ -421,17 +445,16 @@ export class HTTPExecutionChain {
     /**
      * @function module:http.HttpExecutionChain#applyPostError
      */
-    async applyPostError( error: Error, request: Request, http: HTTP ): Promise<Response | undefined> {
-        if( this.#hasErrorAwareInterceptors ){
-            const
-                interceptors = this.#interceptors,
+    async applyPostError(error: Error, request: Request, http: HTTP): Promise<Response | undefined> {
+        if (this.#hasErrorAwareInterceptors) {
+            const interceptors = this.#interceptors,
                 length = interceptors.length;
             let index = 0;
-            if( length ){
-                for( ; index < length; index++ ){
-                    const interceptor = interceptors[ index ];
-                    if( likeErrorAwareHTTPInterceptor( interceptor ) ){
-                        return await interceptor.postError( error, request, http );
+            if (length) {
+                for (; index < length; index++) {
+                    const interceptor = interceptors[index];
+                    if (likeErrorAwareHTTPInterceptor(interceptor)) {
+                        return await interceptor.postError(error, request, http);
                     }
                 }
             }
@@ -441,17 +464,16 @@ export class HTTPExecutionChain {
     /**
      * @function module:http.HttpExecutionChain#applyPostComplete
      */
-    applyPostComplete( request: Request, response: Response ): void {
-        if( this.#hasCompletionAwareInterceptors ){
-            const
-                interceptors = this.#interceptors,
+    applyPostComplete(request: Request, response: Response): void {
+        if (this.#hasCompletionAwareInterceptors) {
+            const interceptors = this.#interceptors,
                 length = interceptors.length;
             let index = 0;
-            if( length ){
-                for( ; index < length; index++ ){
-                    const interceptor = interceptors[ index ];
-                    if( likeCompletionAwareHTTPInterceptor( interceptor ) ){
-                        interceptor.postComplete( request, response );
+            if (length) {
+                for (; index < length; index++) {
+                    const interceptor = interceptors[index];
+                    if (likeCompletionAwareHTTPInterceptor(interceptor)) {
+                        interceptor.postComplete(request, response);
                     }
                 }
             }
@@ -461,17 +483,16 @@ export class HTTPExecutionChain {
     /**
      * @function module:http.HttpExecutionChain#applyPostSuccess
      */
-    async applyPostResponse( response: Response, settings: HTTPInit ): Promise<void> {
-        if( this.#hasResponseAwareInterceptors ){
-            const
-                interceptors = this.#interceptors,
+    async applyPostResponse(response: Response, settings: HTTPInit): Promise<void> {
+        if (this.#hasResponseAwareInterceptors) {
+            const interceptors = this.#interceptors,
                 length = interceptors.length;
             let index = 0;
-            if( length ){
-                for( ; index < length; index++ ){
-                    const interceptor = interceptors[ index ];
-                    if( likeResponseAwareHTTPInterceptor( interceptor ) ){
-                        await interceptor.postResponse( response, settings );
+            if (length) {
+                for (; index < length; index++) {
+                    const interceptor = interceptors[index];
+                    if (likeResponseAwareHTTPInterceptor(interceptor)) {
+                        await interceptor.postResponse(response, settings);
                     }
                 }
             }
@@ -481,17 +502,16 @@ export class HTTPExecutionChain {
     /**
      * @function module:http.HttpExecutionChain#applyPreInit
      */
-    applyPreInit( url: URL, settings: HTTPInit ): boolean {
-        if( this.#hasInitializationAwareInterceptors ){
-            const
-                interceptors = this.#interceptors,
+    applyPreInit(url: URL, settings: HTTPInit): boolean {
+        if (this.#hasInitializationAwareInterceptors) {
+            const interceptors = this.#interceptors,
                 length = interceptors.length;
             let index = 0;
-            if( length ){
-                for( ; index < length; index++ ){
-                    const interceptor = interceptors[ index ];
-                    if( likeInitializationAwareHTTPInterceptor( interceptor ) ){
-                        if( interceptor.preInit( url, settings ) === false ){
+            if (length) {
+                for (; index < length; index++) {
+                    const interceptor = interceptors[index];
+                    if (likeInitializationAwareHTTPInterceptor(interceptor)) {
+                        if (interceptor.preInit(url, settings) === false) {
                             return false;
                         }
                         this.interceptorIndex = index;
@@ -505,19 +525,18 @@ export class HTTPExecutionChain {
     /**
      * @function module:http.HttpExecutionChain#applyPreRequest
      */
-    async applyPreRequest( request: Request, http: HTTP ): Promise<Request> {
-        if( this.#hasRequestAwareInterceptors ){
-            const
-                interceptors = this.#interceptors,
+    async applyPreRequest(request: Request, http: HTTP): Promise<Request> {
+        if (this.#hasRequestAwareInterceptors) {
+            const interceptors = this.#interceptors,
                 length = interceptors.length;
             let index = 0;
-            if( length ){
+            if (length) {
                 let currentRequest = request;
-                for( ; index < length; index++ ){
-                    const interceptor = interceptors[ index ];
-                    if( likeRequestAwareHTTPInterceptor( interceptor ) ){
-                        const newRequest = await interceptor.preRequest( currentRequest, http );
-                        if( isRequest( newRequest ) ){
+                for (; index < length; index++) {
+                    const interceptor = interceptors[index];
+                    if (likeRequestAwareHTTPInterceptor(interceptor)) {
+                        const newRequest = await interceptor.preRequest(currentRequest, http);
+                        if (isRequest(newRequest)) {
                             currentRequest = newRequest;
                         }
                     }
@@ -533,26 +552,26 @@ export class HTTPExecutionChain {
      * @function module:http.HttpExecutionChain#_checkInterceptorType
      * @param {module:http.HttpInterceptor} interceptor
      */
-    _checkInterceptorType( interceptor: HTTPInterceptor ): void {
-        if( !this.#hasCompletionAwareInterceptors ){
-            this.#hasCompletionAwareInterceptors = likeCompletionAwareHTTPInterceptor( interceptor );
+    _checkInterceptorType(interceptor: HTTPInterceptor): void {
+        if (!this.#hasCompletionAwareInterceptors) {
+            this.#hasCompletionAwareInterceptors = likeCompletionAwareHTTPInterceptor(interceptor);
         }
-        if( !this.#hasErrorAwareInterceptors ){
-            this.#hasErrorAwareInterceptors = likeErrorAwareHTTPInterceptor( interceptor );
+        if (!this.#hasErrorAwareInterceptors) {
+            this.#hasErrorAwareInterceptors = likeErrorAwareHTTPInterceptor(interceptor);
         }
-        if( !this.#hasInitializationAwareInterceptors ){
-            this.#hasInitializationAwareInterceptors = likeInitializationAwareHTTPInterceptor( interceptor );
+        if (!this.#hasInitializationAwareInterceptors) {
+            this.#hasInitializationAwareInterceptors = likeInitializationAwareHTTPInterceptor(interceptor);
         }
-        if( !this.#hasRequestAwareInterceptors ){
-            this.#hasRequestAwareInterceptors = likeRequestAwareHTTPInterceptor( interceptor );
+        if (!this.#hasRequestAwareInterceptors) {
+            this.#hasRequestAwareInterceptors = likeRequestAwareHTTPInterceptor(interceptor);
         }
-        if( !this.#hasResponseAwareInterceptors ){
-            this.#hasResponseAwareInterceptors = likeResponseAwareHTTPInterceptor( interceptor );
+        if (!this.#hasResponseAwareInterceptors) {
+            this.#hasResponseAwareInterceptors = likeResponseAwareHTTPInterceptor(interceptor);
         }
     }
 }
 
-const isHTTPExecutionChain = is( HTTPExecutionChain ) as ( value ) => value is HTTPExecutionChain;
+const isHTTPExecutionChain = is(HTTPExecutionChain) as (value) => value is HTTPExecutionChain;
 
 /**
  * @class module:http.HTTP
@@ -564,7 +583,7 @@ export class HTTP {
     #interceptors: HTTPInterceptor[];
     settings: HTTPInit;
 
-    get [ Symbol.toStringTag ](): string {
+    get [Symbol.toStringTag](): string {
         return 'HTTP';
     }
 
@@ -575,12 +594,14 @@ export class HTTP {
         return this.#interceptors;
     }
 
-    constructor( interceptors: HTTPInterceptor[] = [], init: HTTPInit = defaults, fetch = globalThis.fetch.bind( globalThis ) ){
+    constructor(
+        interceptors: HTTPInterceptor[] = [],
+        init: HTTPInit = defaults,
+        fetch = globalThis.fetch.bind(globalThis)
+    ) {
         this.#interceptors = interceptors;
         this.#fetch = fetch;
-        this.settings = init === defaults ?
-            assign( {}, init ) :
-            assign( {}, defaults, init );
+        this.settings = init === defaults ? assign({}, init) : assign({}, defaults, init);
     }
 
     /**
@@ -590,50 +611,45 @@ export class HTTP {
      * @param {module:http.HTTPInit} [init={}]
      * @returns {external:Promise<external:Response>}
      */
-    async request( input: string, init: HTTPInit = null ): Promise<Response> {
-        const
-            settings = init === null ?
-                assign( {}, this.settings ) :
-                assign( {}, this.settings, init ),
-            url = new URL( input, location.href );
+    async request(input: string, init: HTTPInit = null): Promise<Response> {
+        const settings = init === null ? assign({}, this.settings) : assign({}, this.settings, init),
+            url = new URL(input, location.href);
 
         let response: Response;
 
         // No interceptors, so simplify execution
-        if( !this.#interceptors.length ){
-            freeze( settings );
+        if (!this.#interceptors.length) {
+            freeze(settings);
 
-            const request = new Request( url.toString(), settings );
+            const request = new Request(url.toString(), settings);
             try {
-                response = await this.#fetch( request );
-            } catch( error ){
-                response = new ResponseError( null, error );
+                response = await this.#fetch(request);
+            } catch (error) {
+                response = new ResponseError(null, error);
             }
 
-        // One or more interceptors, so complex execution
+            // One or more interceptors, so complex execution
         } else {
-            const chain = this._getHTTPExecutionChain( this, input );
+            const chain = this._getHTTPExecutionChain(this, input);
 
-            if( chain.applyPreInit( url, settings ) === false ){
-                return new Response( null, settings );
+            if (chain.applyPreInit(url, settings) === false) {
+                return new Response(null, settings);
             }
 
-            freeze( settings );
+            freeze(settings);
 
-            const request = await chain.applyPreRequest( new Request( url.toString(), settings ), this );
+            const request = await chain.applyPreRequest(new Request(url.toString(), settings), this);
             try {
-                response = await this.#fetch( request );
-                await chain.applyPostResponse( response, settings );
-            } catch( error ){
-                response = await chain.applyPostError( error, request, this );
+                response = await this.#fetch(request);
+                await chain.applyPostResponse(response, settings);
+            } catch (error) {
+                response = await chain.applyPostError(error, request, this);
 
-                if( !likeResponse( response ) ){
-                    response = likeResponse( error ) ?
-                        error :
-                        new ResponseError( null, error );
+                if (!likeResponse(response)) {
+                    response = likeResponse(error) ? error : new ResponseError(null, error);
                 }
             } finally {
-                chain.applyPostComplete( request, response );
+                chain.applyPostComplete(request, response);
             }
         }
 
@@ -647,10 +663,10 @@ export class HTTP {
      * @param {module:http.HTTPInit} [init={}]
      * @returns {external:Promise<external:Response>}
      */
-    async connect( input: string, init: HTTPInit = {} ): Promise<Response> {
+    async connect(input: string, init: HTTPInit = {}): Promise<Response> {
         init ??= {};
         init.method = 'CONNECT';
-        return this.request( input, init );
+        return this.request(input, init);
     }
 
     /**
@@ -660,10 +676,10 @@ export class HTTP {
      * @param {module:http.HTTPInit} [init={}]
      * @returns {external:Promise<external:Response>}
      */
-    async delete( input: string, init: HTTPInit = {} ): Promise<Response> {
+    async delete(input: string, init: HTTPInit = {}): Promise<Response> {
         init ??= {};
         init.method = 'DELETE';
-        return this.request( input, init );
+        return this.request(input, init);
     }
 
     /**
@@ -673,10 +689,10 @@ export class HTTP {
      * @param {module:http.HTTPInit} [init={}]
      * @returns {external:Promise<external:Response>}
      */
-    async get( input: string, init: HTTPInit = {} ): Promise<Response> {
+    async get(input: string, init: HTTPInit = {}): Promise<Response> {
         init ??= {};
         init.method = 'GET';
-        return this.request( input, init );
+        return this.request(input, init);
     }
 
     /**
@@ -686,10 +702,10 @@ export class HTTP {
      * @param {module:http.HTTPInit} [init={}]
      * @returns {external:Promise<external:Response>}
      */
-    async head( input: string, init: HTTPInit = {} ): Promise<Response> {
+    async head(input: string, init: HTTPInit = {}): Promise<Response> {
         init ??= {};
         init.method = 'HEAD';
-        return this.request( input, init );
+        return this.request(input, init);
     }
 
     /**
@@ -699,10 +715,10 @@ export class HTTP {
      * @param {module:http.HTTPInit} [init={}]
      * @returns {external:Promise<external:Response>}
      */
-    async options( input: string, init: HTTPInit = {} ): Promise<Response> {
+    async options(input: string, init: HTTPInit = {}): Promise<Response> {
         init ??= {};
         init.method = 'OPTIONS';
-        return this.request( input, init );
+        return this.request(input, init);
     }
 
     /**
@@ -712,10 +728,10 @@ export class HTTP {
      * @param {module:http.HTTPInit} [init={}]
      * @returns {external:Promise<external:Response>}
      */
-    async patch( input: string, init: HTTPInit = {} ): Promise<Response> {
+    async patch(input: string, init: HTTPInit = {}): Promise<Response> {
         init ??= {};
         init.method = 'PATCH';
-        return this.request( input, init );
+        return this.request(input, init);
     }
 
     /**
@@ -725,10 +741,10 @@ export class HTTP {
      * @param {module:http.HTTPInit} [init={}]
      * @returns {external:Promise<external:Response>}
      */
-    async post( input: string, init: HTTPInit = {} ): Promise<Response> {
+    async post(input: string, init: HTTPInit = {}): Promise<Response> {
         init ??= {};
         init.method = 'POST';
-        return this.request( input, init );
+        return this.request(input, init);
     }
 
     /**
@@ -738,10 +754,10 @@ export class HTTP {
      * @param {module:http.HTTPInit} [init={}]
      * @returns {external:Promise<external:Response>}
      */
-    async put( input: string, init: HTTPInit = {} ): Promise<Response> {
+    async put(input: string, init: HTTPInit = {}): Promise<Response> {
         init ??= {};
         init.method = 'PUT';
-        return this.request( input, init );
+        return this.request(input, init);
     }
 
     /**
@@ -751,10 +767,10 @@ export class HTTP {
      * @param {module:http.HTTPInit} [init={}]
      * @returns {external:Promise<external:Response>}
      */
-    async trace( input: string, init: HTTPInit = {} ): Promise<Response> {
+    async trace(input: string, init: HTTPInit = {}): Promise<Response> {
         init ??= {};
         init.method = 'TRACE';
-        return this.request( input, init );
+        return this.request(input, init);
     }
 
     /**
@@ -764,23 +780,20 @@ export class HTTP {
      * @param {external:string} url
      * @returns {module:http.HTTPExecutionChain}
      */
-    protected _getHTTPExecutionChain( http: HTTP | HTTPExecutionChain, url: string ): HTTPExecutionChain {
-        const
-            chain = isHTTPExecutionChain( http ) ?
-                http :
-                new HTTPExecutionChain( http ),
+    protected _getHTTPExecutionChain(http: HTTP | HTTPExecutionChain, url: string): HTTPExecutionChain {
+        const chain = isHTTPExecutionChain(http) ? http : new HTTPExecutionChain(http),
             interceptors = this.#interceptors,
             length = interceptors?.length;
 
-        if( length ){
-            for( let index = 0; index < length; index++ ){
-                const interceptor = interceptors[ index ];
-                if( isMappedHTTPInterceptor( interceptor ) ){
-                    if( interceptor.matches( url ) ){
-                        chain.addInterceptor( interceptor.interceptor );
+        if (length) {
+            for (let index = 0; index < length; index++) {
+                const interceptor = interceptors[index];
+                if (isMappedHTTPInterceptor(interceptor)) {
+                    if (interceptor.matches(url)) {
+                        chain.addInterceptor(interceptor.interceptor);
                     }
                 } else {
-                    chain.addInterceptor( interceptor );
+                    chain.addInterceptor(interceptor);
                 }
             }
         }

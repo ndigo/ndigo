@@ -26,7 +26,10 @@ export declare class PropertyValue implements Equatable, Serializable {
     toJSON(): JSONValue;
     toString(): string;
 }
-export declare class MutablePropertyValues extends RingBuffer<PropertyValue> implements ArrayLike<PropertyValue>, Equatable, Iterable<PropertyValue>, Serializable {
+export declare class MutablePropertyValues
+    extends RingBuffer<PropertyValue>
+    implements ArrayLike<PropertyValue>, Equatable, Iterable<PropertyValue>, Serializable
+{
     get propertyValues(): PropertyValue[];
     get [Symbol.toStringTag](): string;
     constructor(properties?: Iterable<PropertyValue>);

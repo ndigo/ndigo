@@ -26,4 +26,4 @@ import rangeN from './range-n';
  * //=> [ 50, 51, 52 ]
  * @see {@link module:util.rangeBy}
  */
-export default rangeN( 1 ) as ( from: number, to?: number ) => number[];
+export default rangeN(1) as (from: number, to?: number) => number[];

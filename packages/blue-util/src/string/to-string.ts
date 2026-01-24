@@ -5,9 +5,7 @@
 import { T, toString as _toString, always, cond, identity, isNil } from 'ramda';
 import isString from '../type/is-string';
 
-const
-    emptyString = always( '' ),
-
+const emptyString = always(''),
     /**
      * Returns the string representation of the given value. `eval`'ing the output
      * should result in a value equivalent to the input value. Many of the built-in
@@ -51,10 +49,10 @@ const
      * toString( new Date('2001-02-03T04:05:06Z' ) );
      * //=> 'new Date( "2001-02-03T04:05:06.000Z" )'
      */
-    toString: ( value: any ) => string = cond<any, string>( [
-        [ isNil, emptyString ],
-        [ isString, identity ],
-        [ T, _toString ]
-    ] );
+    toString: (value: any) => string = cond<any, string>([
+        [isNil, emptyString],
+        [isString, identity],
+        [T, _toString],
+    ]);
 
 export default toString;

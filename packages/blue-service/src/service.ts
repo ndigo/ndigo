@@ -3,34 +3,54 @@
  */
 import { createNull, MediaType } from '@blue/core';
 import { AsyncDestroyable } from '@blue/factory';
-import { HTTPInit, HTTPInterceptor, ContentTypeInit, DataParameterInit, ResponseTypeInit, IfModifiedInit, TimeoutInit, DataParameterInterceptor, ContentTypeInterceptor, ResponseTypeInterceptor, TimeoutInterceptor, IfModifiedInterceptor } from '@blue/http';
+import {
+    HTTPInit,
+    HTTPInterceptor,
+    ContentTypeInit,
+    DataParameterInit,
+    ResponseTypeInit,
+    IfModifiedInit,
+    TimeoutInit,
+    DataParameterInterceptor,
+    ContentTypeInterceptor,
+    ResponseTypeInterceptor,
+    TimeoutInterceptor,
+    IfModifiedInterceptor,
+} from '@blue/http';
 
-export type ServiceInit = HTTPInit & ContentTypeInit & DataParameterInit & ResponseTypeInit & IfModifiedInit & TimeoutInit & {
-
-};
+export type ServiceInit = HTTPInit &
+    ContentTypeInit &
+    DataParameterInit &
+    ResponseTypeInit &
+    IfModifiedInit &
+    TimeoutInit & {};
 
 export interface CompletionAwareServiceInterceptor {
-    postRequest( request: Request ): void;
+    postRequest(request: Request): void;
 }
 
 export interface ErrorAwareServiceInterceptor {
-    postFailure( error: Error, request: Request ): void;
+    postFailure(error: Error, request: Request): void;
 }
 
 export interface InitializationAwareServiceInterceptor<T extends ServiceInit = ServiceInit> {
-    preInit( url: URL, settings: T ): boolean;
+    preInit(url: URL, settings: T): boolean;
 }
 
 export interface RequestAwareServiceInterceptor {
-    preRequest( request: Request ): Promise<Request | void>;
+    preRequest(request: Request): Promise<Request | void>;
 }
 
 export interface ResponseAwareServiceInterceptor<T extends ServiceInit = ServiceInit> {
-    postSuccess( response: Response, settings: T ): Promise<void>;
+    postSuccess(response: Response, settings: T): Promise<void>;
 }
 
-type ServiceInterceptor = CompletionAwareServiceInterceptor | ErrorAwareServiceInterceptor | InitializationAwareServiceInterceptor | RequestAwareServiceInterceptor | ResponseAwareServiceInterceptor;
-
+type ServiceInterceptor =
+    | CompletionAwareServiceInterceptor
+    | ErrorAwareServiceInterceptor
+    | InitializationAwareServiceInterceptor
+    | RequestAwareServiceInterceptor
+    | ResponseAwareServiceInterceptor;
 
 /**
  * @interface module:service.CompletionAwareServiceInterceptor
@@ -87,16 +107,14 @@ type ServiceInterceptor = CompletionAwareServiceInterceptor | ErrorAwareServiceI
  * @typedef {module:service.CompletionAwareServiceInterceptor|module:service.ErrorAwareServiceInterceptor|module:service.InitializationAwareServiceInterceptor|module:service.RequestAwareServiceInterceptor|module:service.ResultAwareServiceInterceptor} module:service.ServiceInterceptor
  */
 
-const
-    { defineProperty } = Reflect,
+const { defineProperty } = Reflect,
     defaults = {},
-
     httpInterceptors: HTTPInterceptor[] = [
         new ContentTypeInterceptor(),
         new DataParameterInterceptor(),
         new ResponseTypeInterceptor(),
         new IfModifiedInterceptor(),
-        new TimeoutInterceptor( 5000 )
+        new TimeoutInterceptor(5000),
     ];
 
 let serviceId = 0;
@@ -118,21 +136,21 @@ export class MappedServiceInterceptor {
         return this.#interceptor;
     }
 
-    constructor( interceptor: ServiceInterceptor, includePatterns: string[], excludePatterns?: string[] ){
+    constructor(interceptor: ServiceInterceptor, includePatterns: string[], excludePatterns?: string[]) {
         this.#interceptor = interceptor;
-        this.setExcludePatterns( excludePatterns );
-        this.setIncludePatterns( includePatterns );
+        this.setExcludePatterns(excludePatterns);
+        this.setIncludePatterns(includePatterns);
     }
 
-    matches( path: string, matcher? ): boolean {
+    matches(path: string, matcher?): boolean {
         return true;
     }
 
-    setExcludePatterns( excludePatterns: string[] = [] ): void {
+    setExcludePatterns(excludePatterns: string[] = []): void {
         this.#excludePatterns = excludePatterns;
     }
 
-    setIncludePatterns( includePatterns: string[] = [] ): void {
+    setIncludePatterns(includePatterns: string[] = []): void {
         this.#includePatterns = includePatterns;
     }
 }
@@ -146,7 +164,7 @@ class ServiceExecutionChain {
     service: Service;
     interceptorIndex: number;
 
-    get [ Symbol.toStringTag ](): string {
+    get [Symbol.toStringTag](): string {
         return 'ServiceExecutionChain';
     }
 
@@ -154,16 +172,16 @@ class ServiceExecutionChain {
         return this.#interceptors;
     }
 
-    constructor( service: Service | ServiceExecutionChain, interceptors: ServiceInterceptor[] = null ){
+    constructor(service: Service | ServiceExecutionChain, interceptors: ServiceInterceptor[] = null) {
         this.#interceptors = null;
 
-        if( service instanceof ServiceExecutionChain ){
+        if (service instanceof ServiceExecutionChain) {
             const chain = service;
             this.service = chain.service;
-            interceptors && this.addInterceptors( chain.interceptors );
+            interceptors && this.addInterceptors(chain.interceptors);
         } else {
             this.service = service;
-            interceptors && this.addInterceptors( interceptors );
+            interceptors && this.addInterceptors(interceptors);
         }
 
         this.interceptorIndex = -1;
@@ -173,12 +191,12 @@ class ServiceExecutionChain {
      * @function module:service.ServiceExecutionChain#addInterceptor
      * @param {module:service.ServiceInterceptor} interceptor
      */
-    addInterceptor( interceptor: ServiceInterceptor ): void {
-        if( interceptor ){
-            if( !this.#interceptors ){
+    addInterceptor(interceptor: ServiceInterceptor): void {
+        if (interceptor) {
+            if (!this.#interceptors) {
                 this.#interceptors = [];
             }
-            this.#interceptors.push( interceptor );
+            this.#interceptors.push(interceptor);
         }
     }
 
@@ -186,11 +204,11 @@ class ServiceExecutionChain {
      * @function module:service.ServiceExecutionChain#addInterceptors
      * @param {external:Array<module:service.ServiceInterceptor>} interceptors
      */
-    addInterceptors( interceptors: ServiceInterceptor[] ): void {
+    addInterceptors(interceptors: ServiceInterceptor[]): void {
         const length = interceptors?.length;
-        if( length ){
-            for( let index = 0; index < length; index++ ){
-                this.addInterceptor( interceptors[ index ] );
+        if (length) {
+            for (let index = 0; index < length; index++) {
+                this.addInterceptor(interceptors[index]);
             }
         }
     }
@@ -204,69 +222,62 @@ class Service implements AsyncDestroyable {
     name: string;
     destroyed: boolean;
 
-    get [ Symbol.toStringTag ](): string {
-        return `Service:${ this.name }`;
+    get [Symbol.toStringTag](): string {
+        return `Service:${this.name}`;
     }
 
-    set serviceCalls( newServiceCalls ){
+    set serviceCalls(newServiceCalls) {}
 
-    }
-
-    constructor( name: string, init: ServiceInit ){
+    constructor(name: string, init: ServiceInit) {
         this.#serviceCalls = createNull();
 
-        defineProperty( this, 'name', {
+        defineProperty(this, 'name', {
             value: name,
             configurable: true,
             enumerable: false,
-            writable: false
-        } );
-        defineProperty( this, 'id', {
+            writable: false,
+        });
+        defineProperty(this, 'id', {
             value: nextServiceId(),
             configurable: true,
             enumerable: false,
-            writable: false
-        } );
+            writable: false,
+        });
     }
 
     destroy(): Promise<void> {
-        throw new Error( 'Method not implemented.' );
+        throw new Error('Method not implemented.');
     }
 
-    addServiceCall( name, settings ){
-        this.#serviceCalls[ name ] = createNull();
-        this[ name ] = ( data, init ) => {
+    addServiceCall(name, settings) {
+        this.#serviceCalls[name] = createNull();
+        this[name] = (data, init) => {
             /*const
                 settings = Object.assign( {}, defaults, init ),
                 chain = this._getServiceExecutionChain( this, input ),
                 url = new URL( input );
 */
-
         };
     }
 
-    protected _getServiceExecutionChain( service: Service | ServiceExecutionChain, url: string ): ServiceExecutionChain {
-        const
-            chain = service instanceof ServiceExecutionChain ?
-                service :
-                new ServiceExecutionChain( service ),
+    protected _getServiceExecutionChain(service: Service | ServiceExecutionChain, url: string): ServiceExecutionChain {
+        const chain = service instanceof ServiceExecutionChain ? service : new ServiceExecutionChain(service),
             interceptors = this.#interceptors,
             length = interceptors?.length;
 
-        if( length ){
-            for( let index = 0; index < length; index++ ){
-                const interceptor = interceptors[ index ];
-                if( interceptor instanceof MappedServiceInterceptor ){
-                    if( interceptor.matches( url ) ){
-                        chain.addInterceptor( interceptor.interceptor );
+        if (length) {
+            for (let index = 0; index < length; index++) {
+                const interceptor = interceptors[index];
+                if (interceptor instanceof MappedServiceInterceptor) {
+                    if (interceptor.matches(url)) {
+                        chain.addInterceptor(interceptor.interceptor);
                     }
                 } else {
-                    chain.addInterceptor( interceptor );
+                    chain.addInterceptor(interceptor);
                 }
             }
         }
 
         return chain;
     }
-
 }

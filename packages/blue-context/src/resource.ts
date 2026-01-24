@@ -13,11 +13,11 @@ export interface Resource<T = any> {
 }
 
 export interface ResourceLoader {
-    getResource( location: string ): Promise<Resource>;
+    getResource(location: string): Promise<Resource>;
 }
 
 export interface ResourceLoaderAware extends Aware {
-    setResourceLoader( loader: ResourceLoader ): void;
+    setResourceLoader(loader: ResourceLoader): void;
 }
 
 /**
@@ -49,51 +49,49 @@ export interface ResourceLoaderAware extends Aware {
  * @returns {module:context.Resource} A resource handle for the specified resource location.
  */
 
-const
-    { defineProperty } = Reflect,
-
+const { defineProperty } = Reflect,
     startsWithProtocol = /^(?:[a-z]+:)?\/\//i,
-
-    isAbsoluteURL = test( startsWithProtocol );
+    isAbsoluteURL = test(startsWithProtocol);
 
 /**
  * @mixin module:context.AsResourceLoaderAware
  * @implements module:context.ResourceLoaderAware
  * @returns {module:context.Constructable<module:context.ResourceLoaderAware>}
  */
-export const AsResourceLoaderAware = <T extends Constructable>( superclass: T ): Constructable<ResourceLoaderAware> & T => class extends AsAware( superclass ) implements ResourceLoaderAware {
-    loader: ResourceLoader;
+export const AsResourceLoaderAware = <T extends Constructable>(superclass: T): Constructable<ResourceLoaderAware> & T =>
+    class extends AsAware(superclass) implements ResourceLoaderAware {
+        loader: ResourceLoader;
 
-    setResourceLoader( loader: ResourceLoader ): void {
-        defineProperty( this, 'loader', {
-            value: loader,
-            configurable: true,
-            enumerable: false,
-            writable: false
-        } );
-    }
-};
+        setResourceLoader(loader: ResourceLoader): void {
+            defineProperty(this, 'loader', {
+                value: loader,
+                configurable: true,
+                enumerable: false,
+                writable: false,
+            });
+        }
+    };
 
 /**
  * @function module:context.likeResource
  * @param {*} value The value to be tested
  * @returns {external:boolean} Whether or not the `value` is {@linkcode module:context.Resource|Resource}
  */
-export const likeResource = like( { exists: Boolean } ) as ( value ) => value is Resource;
+export const likeResource = like({ exists: Boolean }) as (value) => value is Resource;
 
 /**
  * @function module:context.likeResourceLoader
  * @param {*} value The value to be tested
  * @returns {external:boolean} Whether or not the `value` is {@linkcode module:context.ResourceLoader|ResourceLoader}
  */
-export const likeResourceLoader = like( { getResource: Function } ) as ( value ) => value is ResourceLoader;
+export const likeResourceLoader = like({ getResource: Function }) as (value) => value is ResourceLoader;
 
 /**
  * @function module:context.likeResourceLoaderAware
  * @param {*} value The value to be tested
  * @returns {external:boolean} Whether or not the `value` is {@linkcode module:context.ResourceLoaderAware|ResourceLoaderAware}
  */
-export const likeResourceLoaderAware = like( { setResourceLoader: Function } ) as ( value ) => value is ResourceLoaderAware;
+export const likeResourceLoaderAware = like({ setResourceLoader: Function }) as (value) => value is ResourceLoaderAware;
 
 /**
  * @class module:context.URLResource
@@ -106,29 +104,27 @@ export class URLResource<T = any> implements Resource<T> {
         return true;
     }
 
-    constructor( path: string, value: T ){
-        const url = isAbsoluteURL( path ) ?
-            new URL( path ) :
-            new URL( path, location.href );
+    constructor(path: string, value: T) {
+        const url = isAbsoluteURL(path) ? new URL(path) : new URL(path, location.href);
 
         // If there is no file extension, assume it's JavaScript
-        if( url.pathname.lastIndexOf( '.' ) === -1 ){
+        if (url.pathname.lastIndexOf('.') === -1) {
             url.pathname += '.js';
         }
 
-        defineProperty( this, 'url', {
+        defineProperty(this, 'url', {
             value: url,
             configurable: true,
             enumerable: false,
-            writable: false
-        } );
+            writable: false,
+        });
 
-        defineProperty( this, 'value', {
+        defineProperty(this, 'value', {
             value: value,
             configurable: true,
             enumerable: false,
-            writable: false
-        } );
+            writable: false,
+        });
     }
 }
 
@@ -143,19 +139,19 @@ export class UnresolvedResource implements Resource<Error> {
         return false;
     }
 
-    constructor( path: string, value: Error ){
-        defineProperty( this, 'path', {
+    constructor(path: string, value: Error) {
+        defineProperty(this, 'path', {
             value: path,
             configurable: true,
             enumerable: false,
-            writable: false
-        } );
-        defineProperty( this, 'value', {
+            writable: false,
+        });
+        defineProperty(this, 'value', {
             value: value,
             configurable: true,
             enumerable: false,
-            writable: false
-        } );
+            writable: false,
+        });
     }
 }
 
@@ -163,19 +159,20 @@ export class UnresolvedResource implements Resource<Error> {
  * @mixin module:context.AsModuleResourceLoader
  * @implements module:context.ResourceLoader
  */
-export const AsModuleResourceLoader = <T extends Constructable>( superclass: T ): Constructable<ResourceLoader> & T => class extends superclass implements ResourceLoader {
-    async getResource( location: string ): Promise<Resource> {
-        try {
-            const value = await import( location );
-            return new URLResource( location, value );
-        } catch( error ){
-            throw new UnresolvedResource( location, error );
+export const AsModuleResourceLoader = <T extends Constructable>(superclass: T): Constructable<ResourceLoader> & T =>
+    class extends superclass implements ResourceLoader {
+        async getResource(location: string): Promise<Resource> {
+            try {
+                const value = await import(location);
+                return new URLResource(location, value);
+            } catch (error) {
+                throw new UnresolvedResource(location, error);
+            }
         }
-    }
-};
+    };
 
 /**
  * @class module:context.DefaultResourceLoader
  * @mixes module:context.AsModuleResourceLoader
  */
-export class DefaultResourceLoader extends AsModuleResourceLoader( Null ) {}
+export class DefaultResourceLoader extends AsModuleResourceLoader(Null) {}

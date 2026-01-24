@@ -1,11 +1,11 @@
 import { routeMapping, ModelAndView } from '@blue/dispatcher';
 
-@routeMapping( '' )
+@routeMapping('')
 class IndexController {
-    @routeMapping( '/index' )
-    handleIndex( route ){
-        console.log( 'IndexController::Handling Route', route );
-        return new ModelAndView( 'todoApp', {} );
+    @routeMapping('/index')
+    handleIndex(route) {
+        console.log('IndexController::Handling Route', route);
+        return new ModelAndView('todoApp', {});
     }
 }
 

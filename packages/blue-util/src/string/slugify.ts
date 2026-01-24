@@ -24,10 +24,12 @@ import slug from 'slug';
  * slugify( '~', 'Lorem Ipsum Dolor' );
  * //=> "lorem~ipsum~dolor"
  */
-const slugify = curry( ( delimiter: string, value: string ): string => pipe(
-    removeNonWord,
-    ( val: string ) => slug( val, { remove: null, replacement: delimiter, lower: false } ),
-    toLower
-)( value ) );
+const slugify = curry((delimiter: string, value: string): string =>
+    pipe(
+        removeNonWord,
+        (val: string) => slug(val, { remove: null, replacement: delimiter, lower: false }),
+        toLower
+    )(value)
+);
 
 export default slugify;

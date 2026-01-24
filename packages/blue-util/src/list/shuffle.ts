@@ -17,18 +17,17 @@ import randInt from '../math/rand-int';
  * shuffle( list );
  * //=> [ "a", "c", "b" ]
  */
-export default function shuffle<T = any>( list: ArrayLike<T> ): T[] {
-    const
-        length = list.length,
+export default function shuffle<T = any>(list: ArrayLike<T>): T[] {
+    const length = list.length,
         result: T[] = [];
     let index = -1,
         position: number;
 
-    while( ++index < length ){
-        position = randInt( 0, index );
-        result[ index ] = result[ position ];
-        result[ position ] = list[ index ];
+    while (++index < length) {
+        position = randInt(0, index);
+        result[index] = result[position];
+        result[position] = list[index];
     }
 
     return result;
-};
+}

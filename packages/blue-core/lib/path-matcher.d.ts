@@ -48,5 +48,7 @@ export declare class GlobPatternInfo {
     constructor(pattern?: string);
     protected _initCounters(): void;
 }
-export declare const AsPathMatcherFilter: <T extends Constructable>(superclass: T) => Constructable<PathMatcherFilter> & T;
+export declare const AsPathMatcherFilter: <T extends Constructable>(
+    superclass: T
+) => Constructable<PathMatcherFilter> & T;
 //# sourceMappingURL=path-matcher.d.ts.map

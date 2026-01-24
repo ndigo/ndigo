@@ -8,12 +8,6 @@
     "rootDir": "src",
     "sourceMap": true
   },
-  "exclude": [
-    "node_modules",
-    "test"
-  ],
-  "references": [
-    { "path": "../blue-context/tsconfig.build.json" },
-    { "path": "../blue-router/tsconfig.build.json" }
-  ]
+  "exclude": ["node_modules", "test"],
+  "references": [{ "path": "../blue-context/tsconfig.build.json" }, { "path": "../blue-router/tsconfig.build.json" }]
 }

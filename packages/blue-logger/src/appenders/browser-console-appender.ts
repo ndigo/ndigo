@@ -12,50 +12,50 @@ export class BrowserConsoleAppender extends AbstractAppender {
     protected readonly levels: string[];
     readonly levelMapping;
 
-    constructor( levelMapping = {} ){
+    constructor(levelMapping = {}) {
         super();
 
-        defineProperty( this, 'levelMapping', {
+        defineProperty(this, 'levelMapping', {
             value: levelMapping,
             configurable: true,
             enumerable: false,
-            writable: false
-        } );
+            writable: false,
+        });
 
-        defineProperty( this, 'levels', {
-            value: [ 'debug', 'error', 'info', 'warn' ],
+        defineProperty(this, 'levels', {
+            value: ['debug', 'error', 'info', 'warn'],
             configurable: true,
             enumerable: false,
-            writable: false
-        } );
+            writable: false,
+        });
     }
 
-    append( entry: Entry ): void {
-        this.appendMessage( entry.level, this.layout.format( entry ) );
+    append(entry: Entry): void {
+        this.appendMessage(entry.level, this.layout.format(entry));
     }
 
-    appendMessage( level: Level, message: string ): void {
-        let mappedLevel = this.levelMapping[ level.name ];
+    appendMessage(level: Level, message: string): void {
+        let mappedLevel = this.levelMapping[level.name];
 
-        if( !mappedLevel ){
-            mappedLevel = this.levels.indexOf( level.name ) !== -1 ? level.name : 'log';
+        if (!mappedLevel) {
+            mappedLevel = this.levels.indexOf(level.name) !== -1 ? level.name : 'log';
         }
 
-        switch( mappedLevel ){
+        switch (mappedLevel) {
             case 'debug':
-                console.debug( message );
+                console.debug(message);
                 break;
             case 'error':
-                console.error( message );
+                console.error(message);
                 break;
             case 'info':
-                console.info( message );
+                console.info(message);
                 break;
             case 'warn':
-                console.warn( message );
+                console.warn(message);
                 break;
             default:
-                console.log( message );
+                console.log(message);
                 break;
         }
     }

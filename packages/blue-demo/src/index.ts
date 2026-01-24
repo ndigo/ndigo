@@ -7,6 +7,6 @@ import './todo-item-view';
 
 const dispatcher = new BrowserDispatcher();
 //new HashRouter( ( route ) => dispatcher.dispatch( route ) );
-dispatcher.initStrategies( todoContext );
+dispatcher.initStrategies(todoContext);
 
 location.hash = '/index';

@@ -21,11 +21,11 @@ import { AsViewResolverStrategy } from './strategies/view-resolver-strategy';
 import { AsStrategyInitializer } from './strategies/strategy-initializer';
 
 export interface RouteDispatcher {
-    dispatch( route: Route ): Promise<void>;
+    dispatch(route: Route): Promise<void>;
 }
 
 export interface RouteRenderer {
-    render( mv: ModelAndView, route: Route ): Promise<void>;
+    render(mv: ModelAndView, route: Route): Promise<void>;
 }
 
 /**
@@ -79,45 +79,57 @@ export interface RouteRenderer {
  * @mixes module:dispatcher.AsViewMappingStrategy
  * @mixes module:dispatcher.AsViewResolverStrategy
  */
-export class BrowserDispatcher extends AsViewResolverStrategy( AsRouteErrorResolverStrategy( AsThemeResolverStrategy( AsRouteToViewNameTranslatorStrategy( AsLanguageResolverStrategy( AsRouteHandlerMappingStrategy( AsRouteHandlerAdapterStrategy( AsStrategyInitializer( Null ) ) ) ) ) ) ) ) implements RouteDispatcher, RouteRenderer {
+export class BrowserDispatcher
+    extends AsViewResolverStrategy(
+        AsRouteErrorResolverStrategy(
+            AsThemeResolverStrategy(
+                AsRouteToViewNameTranslatorStrategy(
+                    AsLanguageResolverStrategy(
+                        AsRouteHandlerMappingStrategy(AsRouteHandlerAdapterStrategy(AsStrategyInitializer(Null)))
+                    )
+                )
+            )
+        )
+    )
+    implements RouteDispatcher, RouteRenderer
+{
     defaultViewName: string = 'index';
 
-    get [ Symbol.toStringTag ](): string {
+    get [Symbol.toStringTag](): string {
         return 'BrowserDispatcher';
     }
 
-    async dispatch( route: Route ): Promise<void> {
+    async dispatch(route: Route): Promise<void> {
         let dispatchError: Error = null,
             mappedHandler: RouteHandlerExecutionChain = null,
             mv: ModelAndView = null;
-        console.log( 'Dispatcher::dispatch', route );
+        console.log('Dispatcher::dispatch', route);
         try {
-            mappedHandler = this.getHandler( route );
-            console.log( '- Dispatcher::Mapped Handler', mappedHandler );
-            if( !mappedHandler ){
-                throw new NoHandlerFoundError( route );
+            mappedHandler = this.getHandler(route);
+            console.log('- Dispatcher::Mapped Handler', mappedHandler);
+            if (!mappedHandler) {
+                throw new NoHandlerFoundError(route);
             }
 
-            const handlerAdapter: RouteHandlerAdapter = this.getHandlerAdapter( mappedHandler.handler );
-            console.log( '- Dispatcher::Handler Adapter', handlerAdapter );
+            const handlerAdapter: RouteHandlerAdapter = this.getHandlerAdapter(mappedHandler.handler);
+            console.log('- Dispatcher::Handler Adapter', handlerAdapter);
 
-            if( mappedHandler.applyPreHandle( route ) === false ){
+            if (mappedHandler.applyPreHandle(route) === false) {
                 return;
             }
 
-            mv = await handlerAdapter.handle( route, mappedHandler.handler );
-            this._applyDefaultViewName( route, mv );
-            mappedHandler.applyPostHandle( route, mv );
-        } catch( error ){
+            mv = await handlerAdapter.handle(route, mappedHandler.handler);
+            this._applyDefaultViewName(route, mv);
+            mappedHandler.applyPostHandle(route, mv);
+        } catch (error) {
             dispatchError = error;
         }
 
-        return this._processDispatchResult( route, mappedHandler, mv, dispatchError )
-            .catch( function( error: Error ){
-                mappedHandler?.triggerCompleteHandle( route, error );
-                // TODO Using logging system
-                console.log( error );
-            } );
+        return this._processDispatchResult(route, mappedHandler, mv, dispatchError).catch(function (error: Error) {
+            mappedHandler?.triggerCompleteHandle(route, error);
+            // TODO Using logging system
+            console.log(error);
+        });
     }
 
     /**
@@ -127,63 +139,62 @@ export class BrowserDispatcher extends AsViewResolverStrategy( AsRouteErrorResol
      * @param {module:router.Route} route
      * @returns {external:Promise}
      */
-    async render( mv: ModelAndView, route: Route ): Promise<void> {
-        console.log( 'Dispatcher::render', mv, route );
-        const
-            language = this.languageResolver ? this.languageResolver.resolveLanguage( route ): '',
+    async render(mv: ModelAndView, route: Route): Promise<void> {
+        console.log('Dispatcher::render', mv, route);
+        const language = this.languageResolver ? this.languageResolver.resolveLanguage(route) : '',
             viewName = mv.viewName;
 
         let view: View;
 
-        if( viewName ){
-            console.log( 'Dispatcher::render::viewName', viewName );
-            view = await this._resolveViewName( viewName, language );
-            if( !view ){
-                throw new NoViewFoundError( viewName, route );
+        if (viewName) {
+            console.log('Dispatcher::render::viewName', viewName);
+            view = await this._resolveViewName(viewName, language);
+            if (!view) {
+                throw new NoViewFoundError(viewName, route);
             }
         } else {
             view = mv.view;
-            if( !view ){
-                throw new NoViewFoundError( viewName, route );
+            if (!view) {
+                throw new NoViewFoundError(viewName, route);
             }
         }
 
         try {
-            view.render( mv, route );
-        } catch( e ){
+            view.render(mv, route);
+        } catch (e) {
             // TODO ADD A REAL CATCH BLOCK
-            console.log( 'UNABLE TO RENDER' );
+            console.log('UNABLE TO RENDER');
         }
     }
 
-    protected _processHandlerError( route: Route, handler, error: Error ): ModelAndView {
+    protected _processHandlerError(route: Route, handler, error: Error): ModelAndView {
         let mav: ModelAndView = null;
-        console.log( 'Dispatcher::_processHandlerError', route, handler, error.message );
-        this.errorResolvers.some( function( resolver: RouteErrorResolver ): boolean {
-            mav = resolver.resolveError( route, handler, error );
-            console.log( 'Dispatcher::_processHandlerError::resolver', resolver, mav );
+        console.log('Dispatcher::_processHandlerError', route, handler, error.message);
+        this.errorResolvers.some(function (resolver: RouteErrorResolver): boolean {
+            mav = resolver.resolveError(route, handler, error);
+            console.log('Dispatcher::_processHandlerError::resolver', resolver, mav);
             return !!mav;
-        } );
+        });
 
-        if( mav ){
-            if( !mav.view && !mav.viewName ){
+        if (mav) {
+            if (!mav.view && !mav.viewName) {
                 mav.viewName = this.defaultViewName;
             }
             return mav;
         }
 
-        throw new TypeError( 'view name is undefined' );
+        throw new TypeError('view name is undefined');
     }
 
-    protected async _resolveViewName( viewName: string, language: string ): Promise<View> {
-        console.log( 'Dispatcher::resolveViewName', viewName, language );
+    protected async _resolveViewName(viewName: string, language: string): Promise<View> {
+        console.log('Dispatcher::resolveViewName', viewName, language);
         let index = 0,
             view: View = null;
         const length = this.viewResolvers.length;
 
-        for( ; index < length; index++ ){
-            view = await this.viewResolvers[ index ].resolveViewName( viewName, language );
-            if( view ){
+        for (; index < length; index++) {
+            view = await this.viewResolvers[index].resolveViewName(viewName, language);
+            if (view) {
                 return view;
             }
         }
@@ -191,30 +202,35 @@ export class BrowserDispatcher extends AsViewResolverStrategy( AsRouteErrorResol
         return view;
     }
 
-    private _applyDefaultViewName( route: Route, mv: ModelAndView ){
-        console.log( 'Dispatcher::_applyDefaultViewName', route, mv );
-        if( mv && !mv.hasView ){
-            const defaultViewName = this.getDefaultViewName( route );
-            if( defaultViewName ){
+    private _applyDefaultViewName(route: Route, mv: ModelAndView) {
+        console.log('Dispatcher::_applyDefaultViewName', route, mv);
+        if (mv && !mv.hasView) {
+            const defaultViewName = this.getDefaultViewName(route);
+            if (defaultViewName) {
                 mv.viewName = defaultViewName;
             }
         }
     }
 
-    private async _processDispatchResult( route: Route, mappedHandler: RouteHandlerExecutionChain, mv: ModelAndView, error: Error ): Promise<void> {
-        console.log( 'Dispatcher::_processDispatchResult', route, mappedHandler, mv, error && error.message );
-        if( error ){
+    private async _processDispatchResult(
+        route: Route,
+        mappedHandler: RouteHandlerExecutionChain,
+        mv: ModelAndView,
+        error: Error
+    ): Promise<void> {
+        console.log('Dispatcher::_processDispatchResult', route, mappedHandler, mv, error && error.message);
+        if (error) {
             const handler = mappedHandler instanceof RouteHandlerExecutionChain ? mappedHandler.handler : null;
-            mv = this._processHandlerError( route, handler, error );
+            mv = this._processHandlerError(route, handler, error);
         }
 
-        if( mv ){
+        if (mv) {
             try {
-                await this.render( mv, route );
-                mappedHandler ?? mappedHandler.triggerCompleteHandle( route, null );
-            } catch( e ){
+                await this.render(mv, route);
+                mappedHandler ?? mappedHandler.triggerCompleteHandle(route, null);
+            } catch (e) {
                 // TODO Better error handling. Use logger.
-                console.error( e );
+                console.error(e);
             }
         }
     }

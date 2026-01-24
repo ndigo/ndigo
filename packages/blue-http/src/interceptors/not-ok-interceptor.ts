@@ -17,9 +17,9 @@ export class NotOKInterceptor implements ResponseAwareHTTPInterceptor {
      * @param {module:http.HTTPInit} settings The HTTP request settings
      * @returns {external:Promise<external:void>}
      */
-    async postResponse( response: Response, settings: HTTPInit ): Promise<void> {
-        if( !response.ok ){
-            throw new ResponseError( response, 'Status Code is not 200-299' );
+    async postResponse(response: Response, settings: HTTPInit): Promise<void> {
+        if (!response.ok) {
+            throw new ResponseError(response, 'Status Code is not 200-299');
         }
     }
 }

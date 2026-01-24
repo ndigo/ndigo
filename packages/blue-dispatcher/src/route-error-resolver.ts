@@ -11,7 +11,7 @@ import { errorMapping, likeErrorHandler } from './error-mapping';
 import { $aware } from '@blue/factory';
 
 export interface RouteErrorResolver {
-    resolveError( route: Route, handler, error: Error ): ModelAndView;
+    resolveError(route: Route, handler, error: Error): ModelAndView;
 }
 
 /**
@@ -29,23 +29,21 @@ export interface RouteErrorResolver {
  * @returns {module:dispatcher.ModelAndView} A corresponding `ModelAndView` to forward to or `null`.
  */
 
-const
-    { defineProperty, getPrototypeOf } = Reflect,
+const { defineProperty, getPrototypeOf } = Reflect,
     { keys } = Object,
-    getErrorHandlerMethodForError = function( errorHandler, error ): ErrorHandlerMethod {
-        const
-            /**
+    getErrorHandlerMethodForError = function (errorHandler, error): ErrorHandlerMethod {
+        const /**
              * ! THIS DID NOT WORK UNLESS getPrototypeOf WAS USED!!!!
              */
-            handlerKeys = keys( getPrototypeOf( errorHandler ) ),
+            handlerKeys = keys(getPrototypeOf(errorHandler)),
             length = handlerKeys.length;
-        if( length ){
-            for( let index = 0; index < length; index++ ){
-                const key = handlerKeys[ index ];
-                if( errorMapping.has( errorHandler, key ) ){
-                    const errorClasses = errorMapping.get( errorHandler, key );
-                    if( errorClasses.some( ( errorClass ) => error instanceof errorClass ) ){
-                        return new ErrorHandlerMethod( errorHandler, key );
+        if (length) {
+            for (let index = 0; index < length; index++) {
+                const key = handlerKeys[index];
+                if (errorMapping.has(errorHandler, key)) {
+                    const errorClasses = errorMapping.get(errorHandler, key);
+                    if (errorClasses.some((errorClass) => error instanceof errorClass)) {
+                        return new ErrorHandlerMethod(errorHandler, key);
                     }
                 }
             }
@@ -58,36 +56,36 @@ export abstract class AbstractRouteErrorResolver implements RouteErrorResolver {
     mappedHandlers: any[];
     mappedHandlerClasses: Constructable[];
 
-    get [ Symbol.toStringTag ](): string {
+    get [Symbol.toStringTag](): string {
         return 'HandlerErrorResolver';
     }
 
-    constructor(){
+    constructor() {
         this.mappedHandlers = null;
-        this.mappedHandlerClasses = [ Object ];
+        this.mappedHandlerClasses = [Object];
     }
 
-    resolveError( route: Route, handler, error: Error ): ModelAndView {
-        if( this._shouldApplyTo( route, handler ) ){
-            const result: ModelAndView = this._resolveError( route, handler, error );
+    resolveError(route: Route, handler, error: Error): ModelAndView {
+        if (this._shouldApplyTo(route, handler)) {
+            const result: ModelAndView = this._resolveError(route, handler, error);
             return result;
         } else {
             return null;
         }
     }
 
-    protected _shouldApplyTo( route: Route, handler: object ): boolean {
+    protected _shouldApplyTo(route: Route, handler: object): boolean {
         const { mappedHandlers, mappedHandlerClasses } = this;
-        if( handler ){
-            if( mappedHandlers && mappedHandlers.indexOf( handler ) !== -1 ){
+        if (handler) {
+            if (mappedHandlers && mappedHandlers.indexOf(handler) !== -1) {
                 return true;
             }
-            if( mappedHandlerClasses ){
+            if (mappedHandlerClasses) {
                 const length = mappedHandlerClasses.length;
-                if( length ){
-                    for( let index = 0; index < length; index++ ){
-                        const mappedHandlerClass = mappedHandlerClasses[ index ];
-                        if( handler instanceof mappedHandlerClass ){
+                if (length) {
+                    for (let index = 0; index < length; index++) {
+                        const mappedHandlerClass = mappedHandlerClasses[index];
+                        if (handler instanceof mappedHandlerClass) {
                             return true;
                         }
                     }
@@ -95,28 +93,32 @@ export abstract class AbstractRouteErrorResolver implements RouteErrorResolver {
             }
         }
 
-        return ( !mappedHandlers && !mappedHandlerClasses );
+        return !mappedHandlers && !mappedHandlerClasses;
     }
 
-    protected abstract _resolveError( route: Route, handler: object, error: Error ): ModelAndView;
+    protected abstract _resolveError(route: Route, handler: object, error: Error): ModelAndView;
 }
 
 export abstract class AbstractHandlerMethodErrorResolver extends AbstractRouteErrorResolver {
-    protected _shouldApplyTo( route: Route, handler: object ): boolean {
-        if( !handler ){
-            return super._shouldApplyTo( route, null );
-        } else if( handler instanceof RouteHandlerMethod ){
-            return super._shouldApplyTo( route, ( handler as RouteHandlerMethod ).handler );
+    protected _shouldApplyTo(route: Route, handler: object): boolean {
+        if (!handler) {
+            return super._shouldApplyTo(route, null);
+        } else if (handler instanceof RouteHandlerMethod) {
+            return super._shouldApplyTo(route, (handler as RouteHandlerMethod).handler);
         }
 
         return false;
     }
 
-    protected _resolveError( route: Route, handler: object, error: Error ): ModelAndView {
-        return this._resolveHandlerMethodError( route, handler as RouteHandlerMethod, error );
+    protected _resolveError(route: Route, handler: object, error: Error): ModelAndView {
+        return this._resolveHandlerMethodError(route, handler as RouteHandlerMethod, error);
     }
 
-    protected abstract _resolveHandlerMethodError( route: Route, handlerMethod: RouteHandlerMethod, error: Error ): ModelAndView;
+    protected abstract _resolveHandlerMethodError(
+        route: Route,
+        handlerMethod: RouteHandlerMethod,
+        error: Error
+    ): ModelAndView;
 }
 
 /**
@@ -145,25 +147,25 @@ export abstract class AbstractHandlerMethodErrorResolver extends AbstractRouteEr
  * @extends module:dispatcher.AbstractRouteErrorResolver
  */
 export class DefaultRouteErrorResolver extends AbstractRouteErrorResolver {
-    protected _resolveError( route: Route, handler: object, error: Error ): ModelAndView {
+    protected _resolveError(route: Route, handler: object, error: Error): ModelAndView {
         try {
-            switch( error.constructor ){
+            switch (error.constructor) {
                 case FrameworkError: {
                     // TODO provide real implementation
-                    return new ModelAndView( 'default' );
+                    return new ModelAndView('default');
                 }
                 case ApplicationError: {
                     // TODO provide real implementation
-                    return new ModelAndView( 'default' );
+                    return new ModelAndView('default');
                 }
                 default: {
                     // TODO provide real implementation
-                    return new ModelAndView( 'default' );
+                    return new ModelAndView('default');
                 }
             }
-        } catch( e ){
+        } catch (e) {
             // TODO Use real logger
-            console.warn( 'Failure while trying to resolve error', e );
+            console.warn('Failure while trying to resolve error', e);
         }
 
         return null;
@@ -180,40 +182,38 @@ export class DefaultRouteErrorResolver extends AbstractRouteErrorResolver {
 export class MetadataErrorResolver extends AbstractHandlerMethodErrorResolver implements ApplicationContextAware {
     applicationContext: ApplicationContext;
 
-    get [ $aware ](): boolean {
+    get [$aware](): boolean {
         return true;
     }
 
-    setApplicationContext( applicationContext: ApplicationContext ): void {
-        defineProperty( this, 'applicationContext', {
+    setApplicationContext(applicationContext: ApplicationContext): void {
+        defineProperty(this, 'applicationContext', {
             value: applicationContext,
             configurable: true,
             enumerable: false,
-            writable: false
-        } );
+            writable: false,
+        });
     }
 
-    protected _getErrorHandlerMethod( handlerMethod: RouteHandlerMethod, error: Error ): ErrorHandlerMethod {
+    protected _getErrorHandlerMethod(handlerMethod: RouteHandlerMethod, error: Error): ErrorHandlerMethod {
         let errorHandlerMethod: ErrorHandlerMethod = null;
 
-        if( handlerMethod ){
-            errorHandlerMethod = getErrorHandlerMethodForError( handlerMethod.handler, error );
+        if (handlerMethod) {
+            errorHandlerMethod = getErrorHandlerMethodForError(handlerMethod.handler, error);
         }
 
-        if( !errorHandlerMethod ){
+        if (!errorHandlerMethod) {
             const { applicationContext } = this;
-            if( applicationContext ){
-                const
-                    contextKeys = keys( applicationContext ),
+            if (applicationContext) {
+                const contextKeys = keys(applicationContext),
                     length = contextKeys.length;
-                if( length ){
-                    for( let index = 0; index < length; index++ ){
-                        const
-                            key = contextKeys[ index ],
-                            value = applicationContext.getValue( key );
-                        if( likeErrorHandler( value ) ){
-                            errorHandlerMethod = getErrorHandlerMethodForError( value, error );
-                            if( errorHandlerMethod ){
+                if (length) {
+                    for (let index = 0; index < length; index++) {
+                        const key = contextKeys[index],
+                            value = applicationContext.getValue(key);
+                        if (likeErrorHandler(value)) {
+                            errorHandlerMethod = getErrorHandlerMethodForError(value, error);
+                            if (errorHandlerMethod) {
                                 return errorHandlerMethod;
                             }
                         }
@@ -225,16 +225,16 @@ export class MetadataErrorResolver extends AbstractHandlerMethodErrorResolver im
         return errorHandlerMethod;
     }
 
-    protected _resolveHandlerMethodError( route: Route, handlerMethod: RouteHandlerMethod, error: Error ): ModelAndView {
-        const errorHandlerMethod = this._getErrorHandlerMethod( handlerMethod, error );
+    protected _resolveHandlerMethodError(route: Route, handlerMethod: RouteHandlerMethod, error: Error): ModelAndView {
+        const errorHandlerMethod = this._getErrorHandlerMethod(handlerMethod, error);
 
-        if( !errorHandlerMethod ){
+        if (!errorHandlerMethod) {
             return null;
         }
 
         try {
-            return errorHandlerMethod.invoke( route, error, handlerMethod );
-        } catch( e ){
+            return errorHandlerMethod.invoke(route, error, handlerMethod);
+        } catch (e) {
             return null;
         }
     }
@@ -250,33 +250,33 @@ export class SimpleMappingErrorResolver extends AbstractRouteErrorResolver {
     defaultErrorView: string;
     errorMappings: Map<string, string>;
 
-    get [ Symbol.toStringTag ](): string {
+    get [Symbol.toStringTag](): string {
         return 'SimpleMappingErrorResolver';
     }
 
-    constructor( defaultErrorView?: string ){
+    constructor(defaultErrorView?: string) {
         super();
         /**
          * @member {external:Map} module:dispatcher.SimpleMappingErrorResolver#defaultErrorView
          */
-        defineProperty( this, 'defaultErrorView', {
+        defineProperty(this, 'defaultErrorView', {
             value: defaultErrorView || null,
             configurable: true,
             enumerable: false,
-            writable: true
-        } );
+            writable: true,
+        });
         /**
          * Set the mappings between error class names and error view names. The error class name can be a substring, with no wildcard support.
          *
          * Consider carefully how specific the pattern is. For example, "Error" will match nearly anything, and will probably hide other rules.
          * @member {external:Map} module:dispatcher.SimpleMappingErrorResolver#errorMappings
          */
-        defineProperty( this, 'errorMappings', {
+        defineProperty(this, 'errorMappings', {
             value: new Map<string, string>(),
             configurable: true,
             enumerable: false,
-            writable: false
-        } );
+            writable: false,
+        });
     }
 
     /**
@@ -290,15 +290,12 @@ export class SimpleMappingErrorResolver extends AbstractRouteErrorResolver {
      * @param {external:Error} error The error that was thrown during execution.
      * @returns {module:dispatcher.ModelAndView} The corresponding `ModelAndView` to forward to or `null` for default processing in the resolution chain.
      */
-    protected _resolveError( route: Route, handler: object, error: Error ): ModelAndView {
-        const
-            { errorMappings } = this,
-            errorView: string = errorMappings.has( error.name ) ?
-                errorMappings.get( error.name ) :
-                this.defaultErrorView;
+    protected _resolveError(route: Route, handler: object, error: Error): ModelAndView {
+        const { errorMappings } = this,
+            errorView: string = errorMappings.has(error.name) ? errorMappings.get(error.name) : this.defaultErrorView;
 
-        if( errorView ){
-            const mv = new ModelAndView( errorView );
+        if (errorView) {
+            const mv = new ModelAndView(errorView);
             //mv.error = error;
             return mv;
         }

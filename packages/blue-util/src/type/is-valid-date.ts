@@ -8,10 +8,8 @@ import isNumber from './is-number';
 import { either, F, ifElse, is } from 'ramda';
 import { isValid } from 'date-fns/fp';
 
-const
-    isDate = is( Date ) as unknown as ( value ) => value is Date,
-    isPossibleDate = either<any>( isDate, isNumber ),
-
+const isDate = is(Date) as unknown as (value) => value is Date,
+    isPossibleDate = either<any>(isDate, isNumber),
     /**
      * Determines whether a given value is a valid date.
      * @function module:util.isValidDate
@@ -38,6 +36,6 @@ const
      * //=> false
      * @see {@link http://es5.github.io/#x15.9.1.1}
      */
-    isValidDate = ifElse( isPossibleDate, isValid, F ) as ( value ) => value is Date;
+    isValidDate = ifElse(isPossibleDate, isValid, F) as (value) => value is Date;
 
 export default isValidDate;

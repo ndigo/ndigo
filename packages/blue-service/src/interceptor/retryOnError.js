@@ -7,58 +7,67 @@
  */
 /* eslint-disable vars-on-top */
 /* eslint-disable one-var */
- define( function(){
+define(function () {
     'use strict';
     return {
-        around: function( joinpoint ){
+        around: function (joinpoint) {
             var retryLimit = 0,
                 retryBufferInterval = 0,
-                retryHeader= '',
+                retryHeader = '',
                 retryStatusCodes = [],
-                isRetryStatus = function( retryStatusCodes, resStatusCode ){
-                    if( Array.isArray( retryStatusCodes ) && retryStatusCodes.length > 0 && retryStatusCodes.indexOf( resStatusCode ) < 0 ){
+                isRetryStatus = function (retryStatusCodes, resStatusCode) {
+                    if (
+                        Array.isArray(retryStatusCodes) &&
+                        retryStatusCodes.length > 0 &&
+                        retryStatusCodes.indexOf(resStatusCode) < 0
+                    ) {
                         return false;
                     }
                     return true;
                 };
-            return new Promise( function( resolve, reject ){
-                var args0 = joinpoint.args.length && joinpoint.args[ 0 ];
+            return new Promise(function (resolve, reject) {
+                var args0 = joinpoint.args.length && joinpoint.args[0];
                 retryLimit = args0.retryLimit || retryLimit;
                 retryBufferInterval = args0.retryBufferInterval || retryBufferInterval;
                 retryHeader = args0.retryHeader || retryHeader;
                 retryStatusCodes = args0.retryStatusCodes || retryStatusCodes;
                 var getRetryBufferInterval = function (interval) {
-                    var bufferInterval = pasrseInt(interval);
-                    //Numeric Range 1-120 seconds
-                    if(typeof(bufferInterval) === 'number' && bufferInterval > 0 && bufferInterval <= 120){
-                        return parseInt(bufferInterval)*1000;
-                    } else { 
-                        return 0;
-                    }
-                },
-                noop = function () {};
-                var request = function(){
-                    joinpoint.proceed()
-                        .then( resolve )
-                        .catch( function( response ){
+                        var bufferInterval = pasrseInt(interval);
+                        //Numeric Range 1-120 seconds
+                        if (typeof bufferInterval === 'number' && bufferInterval > 0 && bufferInterval <= 120) {
+                            return parseInt(bufferInterval) * 1000;
+                        } else {
+                            return 0;
+                        }
+                    },
+                    noop = function () {};
+                var request = function () {
+                    joinpoint
+                        .proceed()
+                        .then(resolve)
+                        .catch(function (response) {
                             var error = response || { getResponseHeader: noop };
                             if (retryHeader) {
                                 //convert seconds to milliseconds
-                                retryBufferInterval =  getRetryBufferInterval(error.getResponseHeader(retryHeader));
+                                retryBufferInterval = getRetryBufferInterval(error.getResponseHeader(retryHeader));
                             }
-                            if( retryBufferInterval >= 0 && retryLimit > 0 && isRetryStatus( retryStatusCodes, response.status ) ){
+                            if (
+                                retryBufferInterval >= 0 &&
+                                retryLimit > 0 &&
+                                isRetryStatus(retryStatusCodes, response.status)
+                            ) {
                                 // retry service
-                                setTimeout( function(){
+                                setTimeout(function () {
                                     request();
-                                }, retryBufferInterval );
+                                }, retryBufferInterval);
                             } else {
-                                reject( response );
+                                reject(response);
                             }
                             retryLimit--;
-                        } );
+                        });
                 };
                 request();
-            } );
-        }
+            });
+        },
     };
-} );
+});

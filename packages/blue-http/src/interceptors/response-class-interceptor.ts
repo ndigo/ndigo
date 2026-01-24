@@ -13,26 +13,31 @@ import ResponseStatus from '../response-status';
  */
 
 export interface InformationAwareHTTPInterceptor {
-    postInformationalResponse( response: Response, settings: HTTPInit ): Promise<JSONObject | void>;
+    postInformationalResponse(response: Response, settings: HTTPInit): Promise<JSONObject | void>;
 }
 
 export interface SuccessAwareHTTPInterceptor {
-    postSuccessfulResponse( response: Response, settings: HTTPInit ): Promise<JSONObject | void>;
+    postSuccessfulResponse(response: Response, settings: HTTPInit): Promise<JSONObject | void>;
 }
 
 export interface RedirectAwareHTTPInterceptor {
-    postRedirectResponse( response: Response, settings: HTTPInit ): Promise<JSONObject | void>;
+    postRedirectResponse(response: Response, settings: HTTPInit): Promise<JSONObject | void>;
 }
 
 export interface ClientErrorAwareHTTPInterceptor {
-    postClientErrorResponse( response: Response, settings: HTTPInit ): Promise<JSONObject | void>;
+    postClientErrorResponse(response: Response, settings: HTTPInit): Promise<JSONObject | void>;
 }
 
 export interface ServerErrorAwareHTTPInterceptor {
-    postServerErrorResponse( response: Response, settings: HTTPInit ): Promise<JSONObject | void>;
+    postServerErrorResponse(response: Response, settings: HTTPInit): Promise<JSONObject | void>;
 }
 
-export type ResponseClassAwareHTTPInterceptor = InformationAwareHTTPInterceptor | SuccessAwareHTTPInterceptor | RedirectAwareHTTPInterceptor |  ClientErrorAwareHTTPInterceptor | ServerErrorAwareHTTPInterceptor;
+export type ResponseClassAwareHTTPInterceptor =
+    | InformationAwareHTTPInterceptor
+    | SuccessAwareHTTPInterceptor
+    | RedirectAwareHTTPInterceptor
+    | ClientErrorAwareHTTPInterceptor
+    | ServerErrorAwareHTTPInterceptor;
 
 /**
  * @interface module:http.InformationAwareHTTPInterceptor
@@ -98,35 +103,45 @@ export type ResponseClassAwareHTTPInterceptor = InformationAwareHTTPInterceptor 
  * @param {*} value
  * @returns {external:boolean} Whether or not a value is like {@link module:http.InformationAwareHTTPInterceptor}.
  */
-export const likeInformationAwareHTTPInterceptor = like( { postInformationalResponse: Function } ) as ( value ) => value is InformationAwareHTTPInterceptor;
+export const likeInformationAwareHTTPInterceptor = like({ postInformationalResponse: Function }) as (
+    value
+) => value is InformationAwareHTTPInterceptor;
 
 /**
  * @function module:http.likeSuccessAwareHTTPInterceptor
  * @param {*} value
  * @returns {external:boolean} Whether or not a value is like {@link module:http.SuccessAwareHTTPInterceptor}.
  */
-export const likeSuccessAwareHTTPInterceptor     = like( { postSuccessfulResponse: Function } ) as ( value ) => value is SuccessAwareHTTPInterceptor;
+export const likeSuccessAwareHTTPInterceptor = like({ postSuccessfulResponse: Function }) as (
+    value
+) => value is SuccessAwareHTTPInterceptor;
 
 /**
  * @function module:http.likeRedirectAwareHTTPInterceptor
  * @param {*} value
  * @returns {external:boolean} Whether or not a value is like {@link module:http.RedirectAwareHTTPInterceptor}.
  */
-export const likeRedirectAwareHTTPInterceptor    = like( { postRedirectResponse: Function } ) as ( value ) => value is RedirectAwareHTTPInterceptor;
+export const likeRedirectAwareHTTPInterceptor = like({ postRedirectResponse: Function }) as (
+    value
+) => value is RedirectAwareHTTPInterceptor;
 
 /**
  * @function module:http.likeClientErrorAwareHTTPInterceptor
  * @param {*} value
  * @returns {external:boolean} Whether or not a value is like {@link module:http.ClientErrorAwareHTTPInterceptor}.
  */
-export const likeClientErrorAwareHTTPInterceptor = like( { postClientErrorResponse: Function } ) as ( value ) => value is ClientErrorAwareHTTPInterceptor;
+export const likeClientErrorAwareHTTPInterceptor = like({ postClientErrorResponse: Function }) as (
+    value
+) => value is ClientErrorAwareHTTPInterceptor;
 
 /**
  * @function module:http.likeServerErrorAwareHTTPInterceptor
  * @param {*} value
  * @returns {external:boolean} Whether or not a value is like {@link module:http.ServerErrorAwareHTTPInterceptor}.
  */
-export const likeServerErrorAwareHTTPInterceptor = like( { postServerErrorResponse: Function } ) as ( value ) => value is ServerErrorAwareHTTPInterceptor;
+export const likeServerErrorAwareHTTPInterceptor = like({ postServerErrorResponse: Function }) as (
+    value
+) => value is ServerErrorAwareHTTPInterceptor;
 
 /**
  * @class module:http.MappedResponseClassHTTPInterceptor
@@ -145,17 +160,17 @@ export class MappedResponseClassHTTPInterceptor implements ResponseAwareHTTPInte
      * @readonly
      * @member {module:http.ResponseClassAwareHTTPInterceptor} module:http.MappedResponseClassHTTPInterceptor#interceptor
      */
-    get interceptor(){
+    get interceptor() {
         return this.#interceptor;
     }
 
-    constructor( interceptor ){
+    constructor(interceptor) {
         this.#interceptor = interceptor;
-        this.#hasInformationAwareInterceptor = likeInformationAwareHTTPInterceptor( interceptor );
-        this.#hasSuccessAwareInterceptor = likeSuccessAwareHTTPInterceptor( interceptor );
-        this.#hasRedirectAwareInterceptor = likeRedirectAwareHTTPInterceptor( interceptor );
-        this.#hasClientErrorAwareInterceptor = likeClientErrorAwareHTTPInterceptor( interceptor );
-        this.#hasServerErrorAwareInterceptor = likeServerErrorAwareHTTPInterceptor( interceptor );
+        this.#hasInformationAwareInterceptor = likeInformationAwareHTTPInterceptor(interceptor);
+        this.#hasSuccessAwareInterceptor = likeSuccessAwareHTTPInterceptor(interceptor);
+        this.#hasRedirectAwareInterceptor = likeRedirectAwareHTTPInterceptor(interceptor);
+        this.#hasClientErrorAwareInterceptor = likeClientErrorAwareHTTPInterceptor(interceptor);
+        this.#hasServerErrorAwareInterceptor = likeServerErrorAwareHTTPInterceptor(interceptor);
     }
 
     /**
@@ -165,23 +180,32 @@ export class MappedResponseClassHTTPInterceptor implements ResponseAwareHTTPInte
      * @param {module:http.HTTPInit} settings
      * @returns {external:Promise<external:void>}
      */
-    async postResponse( response: Response, settings: HTTPInit ): Promise<void> {
-        if( response.ok && this.#hasSuccessAwareInterceptor ){
-            await ( this.#interceptor as SuccessAwareHTTPInterceptor ).postSuccessfulResponse( response, settings );
+    async postResponse(response: Response, settings: HTTPInit): Promise<void> {
+        if (response.ok && this.#hasSuccessAwareInterceptor) {
+            await (this.#interceptor as SuccessAwareHTTPInterceptor).postSuccessfulResponse(response, settings);
         } else {
-            const status = ResponseStatus.for( response );
-            if( status.isInformationClass && this.#hasInformationAwareInterceptor ){
-                await ( this.#interceptor as InformationAwareHTTPInterceptor ).postInformationalResponse( response, settings );
-            } else if( status.isRedirectClass && this.#hasRedirectAwareInterceptor ){
-                await ( this.#interceptor as RedirectAwareHTTPInterceptor ).postRedirectResponse( response, settings );
-            } else if( status.isClientErrorClass && this.#hasClientErrorAwareInterceptor ){
-                await ( this.#interceptor as ClientErrorAwareHTTPInterceptor ).postClientErrorResponse( response, settings );
-            } else if( status.isServerErrorClass && this.#hasServerErrorAwareInterceptor ){
-                await ( this.#interceptor as ServerErrorAwareHTTPInterceptor ).postServerErrorResponse( response, settings );
-            } else if( response instanceof ResponseError ){
+            const status = ResponseStatus.for(response);
+            if (status.isInformationClass && this.#hasInformationAwareInterceptor) {
+                await (this.#interceptor as InformationAwareHTTPInterceptor).postInformationalResponse(
+                    response,
+                    settings
+                );
+            } else if (status.isRedirectClass && this.#hasRedirectAwareInterceptor) {
+                await (this.#interceptor as RedirectAwareHTTPInterceptor).postRedirectResponse(response, settings);
+            } else if (status.isClientErrorClass && this.#hasClientErrorAwareInterceptor) {
+                await (this.#interceptor as ClientErrorAwareHTTPInterceptor).postClientErrorResponse(
+                    response,
+                    settings
+                );
+            } else if (status.isServerErrorClass && this.#hasServerErrorAwareInterceptor) {
+                await (this.#interceptor as ServerErrorAwareHTTPInterceptor).postServerErrorResponse(
+                    response,
+                    settings
+                );
+            } else if (response instanceof ResponseError) {
                 throw response;
             } else {
-                throw new ResponseError( response, `Invalid status code: ${ status.code }` );
+                throw new ResponseError(response, `Invalid status code: ${status.code}`);
             }
         }
     }

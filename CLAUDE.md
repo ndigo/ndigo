@@ -3,6 +3,7 @@
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 **Additional Documentation:**
+
 - `MIGRATION-2025.md` - Breaking changes and migration guide for the January 2025 dependency modernization
 - `MIGRATION-TOOLING-2025.md` - Tooling migration guide (Yarn→pnpm, Lerna→Nx, Jest→Vitest)
 - `MIGRATION-VITE-2025.md` - Build tool migration guide (webpack→Vite)
@@ -14,10 +15,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 BlueJS is a modular JavaScript/TypeScript framework organized as a Lerna monorepo with Yarn workspaces. The framework provides core abstractions and utilities for building web applications, including routing, views, models, context management, and HTTP handling.
 
 **Requirements:**
+
 - Node.js ≥18.0.0
 - pnpm ≥8.0.0
 
 **Technology Stack (as of January 2025):**
+
 - TypeScript 5.7.2 (ES2022 target)
 - ESLint 9.17.0 (flat config)
 - Nx 20.3.2 (monorepo management)
@@ -28,12 +31,14 @@ BlueJS is a modular JavaScript/TypeScript framework organized as a Lerna monorep
 ## Repository Structure
 
 This is a monorepo containing 20+ packages under `packages/`, each with a consistent structure:
+
 - `src/` - TypeScript source files
 - `lib/` - Compiled ESM output (generated)
 - `index.js` - Compiled CommonJS bundle (generated)
 - `test/` - Tests using Karma for browser testing
 
 Key packages and their dependencies:
+
 - **blue-core**: Foundation interfaces and utilities (Iterable, Comparable, Equatable, MediaType, etc.)
 - **blue-util**: Utility functions, depends on blue-parser
 - **blue-parser**: Parsing utilities
@@ -80,6 +85,7 @@ nx graph              # Visualize package dependencies
 ```
 
 **Build Process:**
+
 - `build:lib` - TypeScript compiler creates ESM output in `lib/`
 - `build:bundle` - Vite creates optimized bundles (index.js, index.cjs) with source maps
 - Nx intelligently caches builds and only rebuilds what changed
@@ -107,28 +113,37 @@ nx run-many -t test --coverage
 ```
 
 Tests are configured using:
+
 - `vitest.config.ts` - Root Vitest configuration
 - Individual packages can override with their own vitest.config.ts
 - Some packages may still use Karma for browser testing (bin/test_web.sh)
 
-### Linting
+### Code Formatting and Linting
 
 ```bash
+# Format code (from root or package directory)
+pnpm format           # Format all code with Prettier
+pnpm format:check     # Check formatting without modifying files
+
 # Lint code (from root or package directory)
 pnpm lint             # Lint all code
 npx eslint <path>     # ESLint 9 with TypeScript support
 ```
 
-ESLint uses flat config format (`eslint.config.mjs`) and enforces:
-- Space in parens: `( value )` not `(value)`
-- Template string spacing: `${ value }` not `${value}`
-- Array bracket spacing: `[ 1, 2, 3 ]` not `[1, 2, 3]`
-- No space after keywords: `if(`, `for(`, `while(`, `switch(`, `catch(`
-- Space before/after arrows: `( x ) => x + 1`
-- Semicolons required
-- TypeScript-specific rules via @typescript-eslint v8
+**Prettier** (`prettier.config.mjs`) handles code formatting:
 
-**Note:** ESLint 9 requires flat config format. The configuration is in `eslint.config.mjs` (not `.eslintrc.js`).
+- 4-space indentation for JavaScript/TypeScript
+- 2-space indentation for JSON/YAML
+- Single quotes for strings
+- Semicolons required
+- LF line endings
+- 120 character line width
+
+**ESLint** (`eslint.config.mjs`) handles code quality:
+
+- TypeScript-specific rules via @typescript-eslint v8
+- Integrated with Prettier (formatting rules disabled)
+- Flat config format (ESLint 9 requirement)
 
 ### Documentation
 
@@ -160,8 +175,8 @@ Follow the conventions defined in the main README:
 - **is** prefix for type/inheritance checks (e.g., `isString()` uses `typeof` or `instanceof`)
 - **like** prefix for duck-typing/interface checks (e.g., `likeController()` checks for expected properties)
 - **as** prefix for mixins that apply functionality:
-  - Class mixins: `AsEventEmitter( Component )` returns enhanced class
-  - Function mixins: `asEventEmitter( component )` adds methods to instance
+    - Class mixins: `AsEventEmitter( Component )` returns enhanced class
+    - Function mixins: `asEventEmitter( component )` adds methods to instance
 - **Configurable** suffix denotes interfaces/classes with setters for normally readonly properties
 
 ## TypeScript Configuration
@@ -182,6 +197,7 @@ Follow the conventions defined in the main README:
 ### Dependency Injection
 
 The framework uses decorators and reflect-metadata (v0.2.2) for dependency injection through the blue-context package. Many packages declare `reflect-metadata` as a peer dependency. The following packages include reflect-metadata:
+
 - blue-factory (dependency)
 - blue-context (peer dependency)
 - blue-dispatcher (peer dependency)
@@ -190,6 +206,7 @@ The framework uses decorators and reflect-metadata (v0.2.2) for dependency injec
 ### Dual Module Format
 
 Packages export both ESM and CommonJS:
+
 - `lib/index.js` - ESM output from TypeScript
 - `index.js` - CommonJS bundle from webpack
 - package.json specifies both via `exports`, `main`, and `module` fields
@@ -203,6 +220,7 @@ All packages use centralized build scripts in `bin/` rather than duplicating log
 ### Runtime Dependencies
 
 **blue-util package:**
+
 - `date-fns`: ~4.1.0 (ESM-first, improved tree-shaking)
 - `date-fns-tz`: ~3.2.0 (timezone support)
 - `ramda`: ~0.31.1 (functional programming utilities)
@@ -210,14 +228,17 @@ All packages use centralized build scripts in `bin/` rather than duplicating log
 - `seedrandom`: ~3.0.5 (deterministic random numbers)
 
 **blue-model package:**
+
 - `objectmodel`: ~4.4.6 (runtime type checking)
 
 **blue-factory and others:**
+
 - `reflect-metadata`: ~0.2.2 (decorator metadata support)
 
 ### Development Dependencies (Root)
 
 **Build Tools:**
+
 - `typescript`: ~5.7.2
 - `webpack`: ~5.97.1
 - `webpack-cli`: ~5.1.4
@@ -225,17 +246,20 @@ All packages use centralized build scripts in `bin/` rather than duplicating log
 - `terser-webpack-plugin`: ~5.3.10
 
 **Linting:**
+
 - `eslint`: ~9.17.0 (flat config format)
 - `@typescript-eslint/eslint-plugin`: ~8.18.2
 - `@typescript-eslint/parser`: ~8.18.2
 
 **Testing:**
+
 - `vitest`: ~2.1.8
 - `@vitest/ui`: ~2.1.8
 - `jsdom`: ~25.0.1 (browser environment)
 - `msw`: ~2.7.0 (API mocking)
 
 **Monorepo & Build:**
+
 - `nx`: ~20.3.2
 - `pnpm`: 8.15.0 (package manager)
 
@@ -256,16 +280,18 @@ All packages use centralized build scripts in `bin/` rather than duplicating log
 ## Testing Strategy
 
 The framework uses Vitest as the primary test runner, which provides:
+
 - Fast test execution with native ESM support
 - Compatible API with Jest for easy migration
 - Built-in watch mode and UI
 - Excellent TypeScript support
 
 Some packages may also use:
+
 - Karma for browser-specific testing (bin/test_web.sh)
 - Mocha for legacy Node.js tests
 
-Vitest configuration is in `vitest.config.ts` at the root, with path aliases for all @blue/* packages.
+Vitest configuration is in `vitest.config.ts` at the root, with path aliases for all @blue/\* packages.
 
 ## Building in Dependency Order
 
@@ -286,6 +312,7 @@ nx affected:graph             # See what's affected
 ```
 
 Nx automatically:
+
 - Resolves build order based on package dependencies
 - Caches build outputs for unchanged packages
 - Runs builds in parallel where possible
@@ -294,6 +321,7 @@ Nx automatically:
 ## Publishing
 
 Packages are configured to publish to an internal JPMorgan Chase Artifactory registry:
+
 ```
 https://artifacts.jpmchase.net/artifactory/api/npm/npm
 ```
@@ -303,12 +331,14 @@ All packages are scoped under `@blue/` and use semver with alpha pre-release ide
 ## Modernization Status (January 2025)
 
 **✅ Phase 1 Completed (Initial Modernization):**
+
 - All dependencies updated to latest stable versions
 - TypeScript 5.7.2 with ES2022 target
 - ESLint 9 with flat config format
 - Node.js requirement: ≥18.0.0
 
 **✅ Phase 2 Completed (Tooling Upgrade):**
+
 - Migrated from Yarn to **pnpm** (faster, more efficient)
 - Migrated from Lerna to **Nx** (better caching, task orchestration)
 - Migrated from Jest to **Vitest** (faster, native ESM, better DX)

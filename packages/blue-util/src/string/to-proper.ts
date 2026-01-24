@@ -18,9 +18,6 @@ const regex = /^\w|\s\w/g;
  * toProper( 'lorem-ipsum-dolor' );
  * //=> "Lorem Ipsum Dolor"
  */
-const toProper: ( value: string ) => string = pipe(
-    toLower,
-    ( value: string ): string => value.replace( regex, toUpper )
-);
+const toProper: (value: string) => string = pipe(toLower, (value: string): string => value.replace(regex, toUpper));
 
 export default toProper;

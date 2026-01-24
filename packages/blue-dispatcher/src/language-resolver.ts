@@ -4,22 +4,22 @@
 import { Route } from '@blue/router';
 
 export interface LanguageResolver {
-    resolveLanguage( route: Route ): string;
+    resolveLanguage(route: Route): string;
 }
 
 export abstract class AbstractLanguageResolver implements LanguageResolver {
     readonly defaultLanguage: string;
 
-    constructor( defaultLanguage: string ){
-        Reflect.defineProperty( this, 'defaultLanguage', {
+    constructor(defaultLanguage: string) {
+        Reflect.defineProperty(this, 'defaultLanguage', {
             value: defaultLanguage,
             configurable: true,
             enumerable: false,
-            writable: false
-        } );
+            writable: false,
+        });
     }
 
-    abstract resolveLanguage( route: Route ): string;
+    abstract resolveLanguage(route: Route): string;
 }
 
 /**
@@ -42,8 +42,7 @@ export abstract class AbstractLanguageResolver implements LanguageResolver {
  * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/NavigatorLanguage}
  */
 export class NavigatorLanguageResolver extends AbstractLanguageResolver {
-
-    get [ Symbol.toStringTag ](): string {
+    get [Symbol.toStringTag](): string {
         return 'NavigatorLanguageResolver';
     }
 
@@ -51,14 +50,14 @@ export class NavigatorLanguageResolver extends AbstractLanguageResolver {
      * @function module:dispatcher.resolveLanguage
      * @param {module:router.Route} route
      */
-    resolveLanguage( route: Route ): string {
+    resolveLanguage(route: Route): string {
         let lang: string;
 
-        if( navigator ){
-            if( navigator.language ){
+        if (navigator) {
+            if (navigator.language) {
                 lang = navigator.language;
-            } else if( navigator.languages && navigator.languages.length ){
-                lang = navigator.languages[ 0 ];
+            } else if (navigator.languages && navigator.languages.length) {
+                lang = navigator.languages[0];
             }
         } else {
             lang = this.defaultLanguage;

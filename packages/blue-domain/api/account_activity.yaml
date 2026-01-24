@@ -89,10 +89,10 @@ settings:
   accountActivityErrorHeader: true
   accountActivityErrorAdvisory: true
   # transaction details
-  transactionPostedDateLabel:  # This transaction posted on ..
+  transactionPostedDateLabel: # This transaction posted on ..
     dataTokens:
       transactions.transactionPostedDate: true
-  printAccountActivityLabel: true  # print activity
+  printAccountActivityLabel: true # print activity
   transactionDetailsAda: true # about this transaction
   #transactionNumberLabel: true # "Transaction #"
   merchantNameLabel: true
@@ -105,19 +105,19 @@ settings:
   #
   accountPendingChargesLabel: true
   # XS
-  seeDetailsLabel: true  # uses the request / exit actions to expand collapse
+  seeDetailsLabel: true # uses the request / exit actions to expand collapse
   #
   rewardPointsRedeemedLabel: true # Chase Ultimate Rewards used
   rewardCalculationHeader: true # Rewards earned with this transaction
-  totalRewardCalculationUnit:  # for total rewards/ points/ dollars
+  totalRewardCalculationUnit: # for total rewards/ points/ dollars
     dataTokens:
       transactionRewards.totalTransactionRewardsEarned: true
       rewardsTypeId: true
-  rewardCalculationHelpMessage: true  # How we calculate ...
+  rewardCalculationHelpMessage: true # How we calculate ...
   retroactiveRewardsMessage: true # You earned retroactive rewards....
   retroactiveRewardsHelpMessage: true
   requestRetroactiveRewardsHelpMessageAda: true
-  noAccountActivityMessage: true  # You have no recent activity
+  noAccountActivityMessage: true # You have no recent activity
   pendingLabel: true # Pending
   transactionsAda: true #table level caption
   requestCreditCardAccountAda: true

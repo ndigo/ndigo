@@ -7,9 +7,9 @@ import { PathMatcher, AsPathMatcherFilter, Null } from '@blue/core';
 import { Route } from '@blue/router';
 
 export interface RouteHandlerInterceptor {
-    completeHandle( route: Route, handler, error: Error ): void;
-    postHandle( route: Route, handler, modelAndView: ModelAndView ): void;
-    preHandle( route: Route, handler ): boolean;
+    completeHandle(route: Route, handler, error: Error): void;
+    postHandle(route: Route, handler, modelAndView: ModelAndView): void;
+    preHandle(route: Route, handler): boolean;
 }
 
 /**
@@ -47,7 +47,7 @@ export interface RouteHandlerInterceptor {
  * @class module:dispatcher.MappedHandlerInterceptor
  * @implements module:router.RouteHandlerInterceptor
  */
-export class MappedHandlerInterceptor extends AsPathMatcherFilter( Null ) implements RouteHandlerInterceptor {
+export class MappedHandlerInterceptor extends AsPathMatcherFilter(Null) implements RouteHandlerInterceptor {
     #interceptor: RouteHandlerInterceptor;
 
     pathMatcher: PathMatcher;
@@ -56,23 +56,23 @@ export class MappedHandlerInterceptor extends AsPathMatcherFilter( Null ) implem
         return this.#interceptor;
     }
 
-    constructor( interceptor: RouteHandlerInterceptor, includePatterns: string[], excludePatterns?: string[] ){
+    constructor(interceptor: RouteHandlerInterceptor, includePatterns: string[], excludePatterns?: string[]) {
         super();
         this.#interceptor = interceptor;
-        this.setExcludePatterns( excludePatterns );
-        this.setIncludePatterns( includePatterns );
+        this.setExcludePatterns(excludePatterns);
+        this.setIncludePatterns(includePatterns);
     }
 
-    completeHandle( route: Route, handler, error: Error = null ): void {
-        this.#interceptor.completeHandle( route, handler, error );
+    completeHandle(route: Route, handler, error: Error = null): void {
+        this.#interceptor.completeHandle(route, handler, error);
     }
 
-    postHandle( route: Route, handler, modelAndView: ModelAndView ): void {
-        this.#interceptor.postHandle( route, handler, modelAndView );
+    postHandle(route: Route, handler, modelAndView: ModelAndView): void {
+        this.#interceptor.postHandle(route, handler, modelAndView);
     }
 
-    preHandle( route: Route, handler ): boolean {
-        return this.#interceptor.preHandle( route, handler );
+    preHandle(route: Route, handler): boolean {
+        return this.#interceptor.preHandle(route, handler);
     }
 }
 

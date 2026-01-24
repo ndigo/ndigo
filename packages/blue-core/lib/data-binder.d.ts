@@ -1,7 +1,6 @@
 import { FrameworkError } from './error';
 import { MutablePropertyValues, PropertyValues } from './property-value';
-export declare class BindError extends FrameworkError {
-}
+export declare class BindError extends FrameworkError {}
 export declare class DataBinder {
     #private;
     get requiredFields(): string[];

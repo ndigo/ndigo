@@ -8,7 +8,7 @@ import { Null } from '@blue/core';
 import { AsNameAware } from '@blue/factory';
 import { is } from '@blue/util';
 
-const isLevel = is( Level ) as ( value ) => value is Level;
+const isLevel = is(Level) as (value) => value is Level;
 
 /**
  * @class module:context.EventLogger
@@ -17,7 +17,10 @@ const isLevel = is( Level ) as ( value ) => value is Level;
  * @implements module:logger.LevelComparator
  * @extends module:core.Null
  */
-export class EventLogger extends AsLevelComparator( AsEventEmitter( AsNameAware( Null ) ) ) implements EventEmitter, Logger, LevelComparator {
+export class EventLogger
+    extends AsLevelComparator(AsEventEmitter(AsNameAware(Null)))
+    implements EventEmitter, Logger, LevelComparator
+{
     name: string;
 
     #threshold: Level;
@@ -26,23 +29,22 @@ export class EventLogger extends AsLevelComparator( AsEventEmitter( AsNameAware(
         return this.#threshold;
     }
 
-    set threshold( newThreshold: Level ){
-        if( isLevel( newThreshold ) ){
-            this.emtest( 'change', this.#threshold, newThreshold );
+    set threshold(newThreshold: Level) {
+        if (isLevel(newThreshold)) {
+            this.emtest('change', this.#threshold, newThreshold);
             this.#threshold = newThreshold;
         }
     }
 
-    constructor(){
+    constructor() {
         super();
         this.threshold = Level.ALL;
     }
 
-    log( level: Level, message: loggable[] ): void {
-        if( this.compare( this.threshold, level ) >= 0 ){
-            const entry = newEntry( this.name, level, message );
-            this.emit( `log:${ level.name }`, entry );
+    log(level: Level, message: loggable[]): void {
+        if (this.compare(this.threshold, level) >= 0) {
+            const entry = newEntry(this.name, level, message);
+            this.emit(`log:${level.name}`, entry);
         }
     }
-
 }

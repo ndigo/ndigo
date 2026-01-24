@@ -6,20 +6,20 @@ import { both, like } from '@blue/util';
 //import { Constructable } from '@blue/core';
 
 // TODO Use the @blue/core version once it updates -JBR
-type Constructable<T = {}> = new ( ...args: any[] ) => T;
+type Constructable<T = {}> = new (...args: any[]) => T;
 
 /**
  * @const {external:symbol} module:factory.$aware
  */
-export const $aware: unique symbol = Symbol.for( '@@aware' );
+export const $aware: unique symbol = Symbol.for('@@aware');
 
 export interface Aware {
-    readonly [ $aware ]: boolean;
+    readonly [$aware]: boolean;
 }
 
 export interface NameAware extends Aware {
     readonly name: string;
-    setName( name: string ): void;
+    setName(name: string): void;
 }
 
 /**
@@ -52,11 +52,12 @@ export interface NameAware extends Aware {
  * @implements module:factory.Aware
  * @returns {module:factory.Constructable<module:factory.Aware>}
  */
-export const AsAware = <T extends Constructable>( superclass: T ): Constructable<Aware> & T => class extends superclass implements Aware {
-    get [ $aware ](): boolean {
-        return true;
-    }
-};
+export const AsAware = <T extends Constructable>(superclass: T): Constructable<Aware> & T =>
+    class extends superclass implements Aware {
+        get [$aware](): boolean {
+            return true;
+        }
+    };
 
 /**
  * @readonly
@@ -68,21 +69,22 @@ export const AsAware = <T extends Constructable>( superclass: T ): Constructable
  * @implements module:factory.NameAware
  * @returns {module:factory.Constructable<module:factory.NameAware>}
  */
-export const AsNameAware = <T extends Constructable>( superclass: T ): Constructable<NameAware> & T => class extends AsAware( superclass ) implements NameAware {
-    readonly name: string;
+export const AsNameAware = <T extends Constructable>(superclass: T): Constructable<NameAware> & T =>
+    class extends AsAware(superclass) implements NameAware {
+        readonly name: string;
 
-    /**
-     * @function module:factory.AsNameAware#setName
-     * @param {external:string} name
-     */
-    setName( name: string ): void {
-        Reflect.defineProperty( this, 'name', {
-            get: () => name,
-            configurable: true,
-            enumerable: true
-        } );
-    }
-};
+        /**
+         * @function module:factory.AsNameAware#setName
+         * @param {external:string} name
+         */
+        setName(name: string): void {
+            Reflect.defineProperty(this, 'name', {
+                get: () => name,
+                configurable: true,
+                enumerable: true,
+            });
+        }
+    };
 
 /**
  * @readonly
@@ -100,7 +102,7 @@ export const AsNameAware = <T extends Constructable>( superclass: T ): Construct
  * @param {*} value
  * @returns {external:boolean} Whether or not the `value` is {@linkcode module:factory.Aware|Aware}.
  */
-export const likeAware = like( { [ $aware ]: Boolean } ) as ( value ) => value is Aware;
+export const likeAware = like({ [$aware]: Boolean }) as (value) => value is Aware;
 
 /**
  * @function module:factory.likeAwareAnd
@@ -113,11 +115,11 @@ export const likeAware = like( { [ $aware ]: Boolean } ) as ( value ) => value i
  * likeAwareAndYellow( { color: 'yellow' } ); // false
  * likeAwareAndYellow( { '@@aware': true, color: 'yellow' } ); // true
  */
-export const likeAwareAnd = both( likeAware ) as ( predicate ) => ( value ) => boolean;
+export const likeAwareAnd = both(likeAware) as (predicate) => (value) => boolean;
 
 /**
  * @function module:factory.likeNameAware
  * @param {*} value
  * @returns {external:boolean} Whether or not the `value` is {@linkcode module:factory.NameAware|NameAware}.
  */
-export const likeNameAware = likeAwareAnd( like( { setName: Function } ) ) as ( value ) => value is NameAware;
+export const likeNameAware = likeAwareAnd(like({ setName: Function })) as (value) => value is NameAware;

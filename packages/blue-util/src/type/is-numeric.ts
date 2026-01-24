@@ -7,11 +7,9 @@ import { both, complement, cond, isEmpty, pipe, F, T, trim } from 'ramda';
 import isNumber from './is-number';
 import isString from './is-string';
 
-export type Numeric = number | `${ number }`;
+export type Numeric = number | `${number}`;
 
-const
-    isNotEmptyString = both( isString, pipe( trim, complement( isEmpty ) ) ),
-
+const isNotEmptyString = both(isString, pipe(trim, complement(isEmpty))),
     /**
      * Determines whether a given value is numeric, i.e. a number or a string containing a number. The {@linkcode module:util.isNumber|isNumber} method determines whether the value, parsed or not, is a number.
      * @function module:util.isNumeric
@@ -31,10 +29,10 @@ const
      * //=> false
      * @see {@link module:util.isNumber}
      */
-    isNumeric = cond<any, boolean>( [
-        [ isNumber, T ],
-        [ isNotEmptyString, ( value ) => isNumber( +value ) ],
-        [ T, F ]
-    ] ) as ( value ) => value is Numeric;
+    isNumeric = cond<any, boolean>([
+        [isNumber, T],
+        [isNotEmptyString, (value) => isNumber(+value)],
+        [T, F],
+    ]) as (value) => value is Numeric;
 
 export default isNumeric;

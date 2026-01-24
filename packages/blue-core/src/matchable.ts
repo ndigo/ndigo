@@ -3,11 +3,11 @@
  */
 
 export interface Matchable<TValue> {
-    matches( value: TValue ): boolean;
+    matches(value: TValue): boolean;
 }
 
 export interface PatternMatcher<TPattern, TValue> {
-    match( pattern: TPattern, value: TValue ): boolean;
+    match(pattern: TPattern, value: TValue): boolean;
 }
 
 /**

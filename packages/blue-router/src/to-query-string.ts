@@ -72,42 +72,42 @@ const
 export default toQueryString;
 */
 
-const
-    isNotEmpty = complement( isEmpty ),
+const isNotEmpty = complement(isEmpty),
+    arrayStringifier = (key: string, value: string, index?: number): string =>
+        value === null ? encode(key) : `${encode(key)}=${encode(value)}`,
+    toQueryString = (object): string =>
+        object
+            ? Object.keys(object)
+                  .sort()
+                  .map(function (key: string): string {
+                      const value = object[key];
 
-    arrayStringifier = ( key: string, value: string, index?: number ): string => value === null ? encode( key ) : `${ encode( key ) }=${ encode( value ) }`,
+                      if (value === undefined) {
+                          return '';
+                      }
 
-    toQueryString = ( object ): string => object ? Object
-        .keys( object )
-        .sort()
-        .map( function( key: string ): string {
-            const value = object[ key ];
+                      if (value === null) {
+                          return encode(key);
+                      }
 
-            if( value === undefined ){
-                return '';
-            }
+                      if (Array.isArray(value)) {
+                          const result: string[] = [];
 
-            if( value === null ){
-                return encode( key );
-            }
+                          value.slice().forEach(function (val: string): void {
+                              if (val === undefined) {
+                                  return;
+                              }
+                              result.push(arrayStringifier(key, val, result.length));
+                          });
 
-            if( Array.isArray( value ) ){
-                const result: string[] = [];
+                          return result.join('&');
+                      }
 
-                value.slice().forEach( function( val: string ): void {
-                    if( val === undefined ){
-                        return;
-                    }
-                    result.push( arrayStringifier( key, val, result.length ) );
-                } );
-
-                return result.join( '&' );
-            }
-
-            return `${ encode( key ) }=${ encode( value ) }`;
-        } )
-        .filter( isNotEmpty )
-        .join( '&' ) : '';
+                      return `${encode(key)}=${encode(value)}`;
+                  })
+                  .filter(isNotEmpty)
+                  .join('&')
+            : '';
 
 /**
  * Parses an object to query string.

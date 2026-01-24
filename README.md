@@ -103,30 +103,43 @@ nx run-many -t test --coverage
 
 ## Code Style
 
-The project uses ESLint 9 with flat config (`eslint.config.mjs`):
+The project uses Prettier for code formatting and ESLint 9 for code quality checks:
 
 ```bash
+# Format code
+pnpm format
+
+# Check formatting
+pnpm format:check
+
 # Run linter
 pnpm lint
 ```
 
-**Style Rules:**
-- Space in parens: `( value )` not `(value)`
-- Template string spacing: `${ value }` not `${value}`
-- Array bracket spacing: `[ 1, 2, 3 ]` not `[1, 2, 3]`
-- No space after keywords: `if(`, `for(`, `while(`, `switch(`, `catch(`
-- Space before/after arrows: `( x ) => x + 1`
+**Configuration:**
+
+- Prettier: `prettier.config.mjs`
+- ESLint: `eslint.config.mjs` (flat config)
+
+**Formatting Rules:**
+
+- 4-space indentation for JavaScript/TypeScript
+- 2-space indentation for JSON/YAML
+- Single quotes for strings
 - Semicolons required
+- LF line endings
+- 120 character line width
+- Trailing commas (ES5)
 
 # Terminology
 
 ## Naming Conventions
 
-* **PascalCase** for classes and class mixins, e.g. `MyClass`
-* **camelCase** for variables, properties, and methods, e.g. `myMethod`
-* **is** prefix for type/inheritance checks (uses `typeof` or `instanceof`), e.g. `isString( value )`
-* **like** prefix for duck-typing/interface checks, e.g. `likeController( value )` checks for expected properties
-* **as** prefix for mixins that apply functionality:
-    * Class mixins: `AsEventEmitter( Component )` produces a new class with combined capabilities
-    * Function mixins: `asEventEmitter( component )` adds event emitter methods to the instance
-* **Configurable** suffix denotes interfaces/classes with setters for normally readonly properties
+- **PascalCase** for classes and class mixins, e.g. `MyClass`
+- **camelCase** for variables, properties, and methods, e.g. `myMethod`
+- **is** prefix for type/inheritance checks (uses `typeof` or `instanceof`), e.g. `isString( value )`
+- **like** prefix for duck-typing/interface checks, e.g. `likeController( value )` checks for expected properties
+- **as** prefix for mixins that apply functionality:
+    - Class mixins: `AsEventEmitter( Component )` produces a new class with combined capabilities
+    - Function mixins: `asEventEmitter( component )` adds event emitter methods to the instance
+- **Configurable** suffix denotes interfaces/classes with setters for normally readonly properties

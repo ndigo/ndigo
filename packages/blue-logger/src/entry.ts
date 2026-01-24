@@ -23,14 +23,14 @@ export type Entry = {
  * @param {external:Array<module:logger.loggable>} message
  * @param {external:string} [source]
  */
-export const newEntry = ( category: string, level: Level, message: loggable[], source?: string ): Entry => ( {
+export const newEntry = (category: string, level: Level, message: loggable[], source?: string): Entry => ({
     message: message,
-    error: message[ 0 ] instanceof Error,
+    error: message[0] instanceof Error,
     level: level,
     category: category,
     source: source,
-    timestamp: Date.now()
-} );
+    timestamp: Date.now(),
+});
 
 /**
  * @typedef {module:core.serializable | external:Error} module:logger.loggable

@@ -9,3 +9,13 @@ npm-debug.log
 tmp
 tsconfig.tsbuildinfo
 yarn-error.log
+
+# Nx cache
+.nx/cache
+.nx/workspace-data
+
+# pnpm
+.pnpm-debug.log
+
+# Vitest
+.vitest

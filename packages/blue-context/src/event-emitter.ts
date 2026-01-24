@@ -881,3 +881,181 @@ export const AsEventEmitter = <T extends Constructable>(
     };
     return EmitterClass as Constructable<EventEmitter> & T;
 };
+
+// Additional interfaces and types for async and conditional event emitters
+export interface AsyncEventEmitter extends EventEmitter {
+    tick(type: EventType, ...data: any[]): Promise<void>;
+}
+
+export interface ConditionalEventEmitter extends EventEmitter {
+    once(type: EventType, listener: Function): this;
+    many(type: EventType, times: number, listener: Function): this;
+    until(type: EventType, listener: Function): this;
+}
+
+// Helper function for async emission
+async function tickAllEvents(emitter: EventEmitter, type: EventType, data: any[]): Promise<void> {
+    return new Promise<void>(function (resolve, reject): void {
+        queueMicrotask(() => {
+            const result = emitter.emit(type, ...data);
+            result ? resolve() : reject();
+        });
+    });
+}
+
+// AsAsyncEventEmitter mixin
+export const AsAsyncEventEmitter = <T extends Constructable<EventEmitter>>(
+    superclass: T
+) => {
+    const result = class extends (superclass as any) {
+        async tick(type: string | symbol, ...data: any[]): Promise<void> {
+            return tickAllEvents(this as unknown as EventEmitter, type, data);
+        }
+    };
+    return result as Constructable<AsyncEventEmitter> & T;
+};
+
+// AsConditionalEventEmitter mixin
+export const AsConditionalEventEmitter = <T extends Constructable<EventEmitter>>(
+    superclass: T
+) => {
+    const result = class extends (superclass as any) {
+        many(type: string | symbol, times: number, listener: Function): this {
+            // Shift arguments if type is not provided
+            if (typeof type === 'number' && typeof times === 'function' && typeof listener === 'undefined') {
+                listener = times;
+                times = type as number;
+                type = (this.constructor as any).every || '*';
+            }
+
+            if (typeof times !== 'number' || times <= 0) {
+                throw new TypeError('times must be a positive number');
+            }
+
+            if (typeof listener !== 'function') {
+                throw new TypeError('listener must be a function');
+            }
+
+            let count = 0;
+            const wrapper: EventListener = (...args: any[]) => {
+                count++;
+                listener(...args);
+                if (count >= times) {
+                    (this as any).off(type, wrapper);
+                }
+            };
+            (wrapper as any).listener = listener;
+
+            (this as any).on(type, wrapper);
+            return this;
+        }
+
+        once(type: string | symbol, listener: Function): this {
+            // Shift arguments if type is not provided
+            if (typeof type === 'function' && typeof listener === 'undefined') {
+                listener = type;
+                type = (this.constructor as any).every || '*';
+            }
+
+            if (typeof listener !== 'function') {
+                throw new TypeError('listener must be a function');
+            }
+
+            const wrapper: EventListener = (...args: any[]) => {
+                (this as any).off(type, wrapper);
+                listener(...args);
+            };
+            (wrapper as any).listener = listener;
+
+            (this as any).on(type, wrapper);
+            return this;
+        }
+
+        until(type: string | symbol, listener: Function): this {
+            // Shift arguments if type is not provided
+            if (typeof type === 'function' && typeof listener === 'undefined') {
+                listener = type;
+                type = (this.constructor as any).every || '*';
+            }
+
+            if (typeof listener !== 'function') {
+                throw new TypeError('listener must be a function');
+            }
+
+            const wrapper: EventListener = (...args: any[]) => {
+                const result = listener(...args);
+                if (result) {
+                    (this as any).off(type, wrapper);
+                }
+            };
+            (wrapper as any).listener = listener;
+
+            (this as any).on(type, wrapper);
+            return this;
+        }
+    };
+    return result as Constructable<ConditionalEventEmitter> & T;
+};
+
+// Concrete Emitter class
+const Null = class {};
+const EmitterBase = AsEventEmitter(Null);
+
+export class Emitter extends EmitterBase {
+    static readonly every: string = '*';
+    static readonly version: string = '3.0.0';
+
+    destroyed: boolean = false;
+
+    constructor(mapping?: EventHandlers) {
+        super();
+        Object.defineProperty(this, 'destroyed', {
+            value: false,
+            configurable: true,
+            enumerable: false,
+            writable: true,
+        });
+    }
+
+    clear(type?: EventType): this {
+        if (type) {
+            const events = (this as any)[$events];
+            if (events && events[type]) {
+                delete events[type];
+            }
+        } else {
+            (this as any)[$events] = createNull();
+        }
+        return this;
+    }
+
+    toJSON(): any {
+        if (this.destroyed) {
+            return 'destroyed';
+        }
+        const json: any = {};
+        const types = (this as any).eventTypes();
+        json.listenerCount = {};
+        for (const type of types) {
+            json.listenerCount[type.toString()] = (this as any).listenerCount(type);
+        }
+        return json;
+    }
+
+    toString(): string {
+        return `EventEmitter ${JSON.stringify(this.toJSON())}`.trim();
+    }
+
+    destroy(): void {
+        if (!this.destroyed) {
+            Object.defineProperty(this, 'destroyed', {
+                value: true,
+                configurable: false,
+                enumerable: false,
+                writable: false,
+            });
+            (this as any).emit(':destroy');
+            this.clear();
+        }
+    }
+}

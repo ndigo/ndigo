@@ -5,6 +5,7 @@ import { Level } from './level';
 import { Logger } from './logger';
 import { BrowserConsoleAppender } from './appenders/browser-console-appender';
 import { loggable } from './entry';
+import { SeverityNumber } from '@opentelemetry/api-logs';
 type Constructable<T = {}> = new (...args: any[]) => T;
 export declare class SyslogLevel extends Level {
     static EMERG: Level;
@@ -15,7 +16,25 @@ export declare class SyslogLevel extends Level {
     static NOTICE: Level;
     static INFO: Level;
     static DEBUG: Level;
+    /**
+     * Convert a Syslog level to OpenTelemetry SeverityNumber
+     *
+     * @param level - The Syslog level to convert
+     * @returns The corresponding OpenTelemetry SeverityNumber
+     */
+    static toSeverity(level: Level): SeverityNumber;
+    /**
+     * Convert an OpenTelemetry SeverityNumber to a Syslog level
+     *
+     * @param severityNumber - The severity number to convert
+     * @returns The corresponding Syslog level
+     */
+    static fromSeverity(severityNumber: SeverityNumber): Level;
 }
+/**
+ * Syslog level to OpenTelemetry severity mapping table
+ */
+export declare const SyslogLevelToSeverity: Record<string, SeverityNumber>;
 export declare const SyslogColor: {
     emerg: string;
     alert: string;

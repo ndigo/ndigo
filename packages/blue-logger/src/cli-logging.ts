@@ -6,6 +6,7 @@ import { Level } from './level';
 import { Logger } from './logger';
 import { BrowserConsoleAppender } from './appenders/browser-console-appender';
 import { loggable } from './entry';
+import { SeverityNumber } from '@opentelemetry/api-logs';
 
 // TODO Use the @blue/core version once it updates -JBR
 type Constructable<T = {}> = new (...args: any[]) => T;
@@ -21,7 +22,60 @@ export class CLILevel extends Level {
     static VERBOSE = new Level('verbose', 80000);
     static INPUT = new Level('input', 90000);
     static SILLY = new Level('silly', 100000);
+
+    /**
+     * Convert a CLI level to OpenTelemetry SeverityNumber
+     *
+     * @param level - The CLI level to convert
+     * @returns The corresponding OpenTelemetry SeverityNumber
+     */
+    static toSeverity(level: Level): SeverityNumber {
+        return CLILevelToSeverity[level.name.toLowerCase()] || SeverityNumber.UNSPECIFIED;
+    }
+
+    /**
+     * Convert an OpenTelemetry SeverityNumber to a CLI level
+     *
+     * @param severityNumber - The severity number to convert
+     * @returns The corresponding CLI level
+     */
+    static fromSeverity(severityNumber: SeverityNumber): Level {
+        if (severityNumber >= SeverityNumber.ERROR) {
+            return CLILevel.ERROR;
+        }
+        if (severityNumber >= SeverityNumber.WARN) {
+            return CLILevel.WARN;
+        }
+        if (severityNumber >= SeverityNumber.INFO) {
+            return CLILevel.INFO;
+        }
+        if (severityNumber >= SeverityNumber.DEBUG) {
+            return CLILevel.DEBUG;
+        }
+        if (severityNumber >= SeverityNumber.TRACE) {
+            return CLILevel.SILLY;
+        }
+        return Level.OFF;
+    }
 }
+
+/**
+ * CLI level to OpenTelemetry severity mapping table
+ */
+export const CLILevelToSeverity: Record<string, SeverityNumber> = {
+    error: SeverityNumber.ERROR,
+    warn: SeverityNumber.WARN,
+    help: SeverityNumber.INFO,
+    data: SeverityNumber.INFO,
+    info: SeverityNumber.INFO,
+    debug: SeverityNumber.DEBUG,
+    prompt: SeverityNumber.INFO,
+    verbose: SeverityNumber.DEBUG,
+    input: SeverityNumber.DEBUG,
+    silly: SeverityNumber.TRACE,
+    off: SeverityNumber.UNSPECIFIED,
+    all: SeverityNumber.UNSPECIFIED,
+};
 
 export const CLIColor = {
     error: 'red',

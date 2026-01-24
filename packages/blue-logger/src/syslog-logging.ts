@@ -7,6 +7,7 @@ import { Logger } from './logger';
 import { BrowserConsoleAppender } from './appenders/browser-console-appender';
 import { loggable } from './entry';
 import { like } from '@blue/util';
+import { SeverityNumber } from '@opentelemetry/api-logs';
 
 // TODO Use the @blue/core version once it updates -JBR
 type Constructable<T = {}> = new (...args: any[]) => T;
@@ -20,7 +21,61 @@ export class SyslogLevel extends Level {
     static NOTICE = new Level('notice', 60000);
     static INFO = new Level('info', 70000);
     static DEBUG = new Level('debug', 80000);
+
+    /**
+     * Convert a Syslog level to OpenTelemetry SeverityNumber
+     *
+     * @param level - The Syslog level to convert
+     * @returns The corresponding OpenTelemetry SeverityNumber
+     */
+    static toSeverity(level: Level): SeverityNumber {
+        return SyslogLevelToSeverity[level.name.toLowerCase()] || SeverityNumber.UNSPECIFIED;
+    }
+
+    /**
+     * Convert an OpenTelemetry SeverityNumber to a Syslog level
+     *
+     * @param severityNumber - The severity number to convert
+     * @returns The corresponding Syslog level
+     */
+    static fromSeverity(severityNumber: SeverityNumber): Level {
+        if (severityNumber >= SeverityNumber.FATAL4) {
+            return SyslogLevel.EMERG;
+        }
+        if (severityNumber >= SeverityNumber.FATAL) {
+            return SyslogLevel.ALERT;
+        }
+        if (severityNumber >= SeverityNumber.ERROR) {
+            return SyslogLevel.ERROR;
+        }
+        if (severityNumber >= SeverityNumber.WARN) {
+            return SyslogLevel.WARNING;
+        }
+        if (severityNumber >= SeverityNumber.INFO) {
+            return SyslogLevel.INFO;
+        }
+        if (severityNumber >= SeverityNumber.DEBUG) {
+            return SyslogLevel.DEBUG;
+        }
+        return Level.OFF;
+    }
 }
+
+/**
+ * Syslog level to OpenTelemetry severity mapping table
+ */
+export const SyslogLevelToSeverity: Record<string, SeverityNumber> = {
+    emerg: SeverityNumber.FATAL4,
+    alert: SeverityNumber.FATAL,
+    crit: SeverityNumber.FATAL,
+    error: SeverityNumber.ERROR,
+    warning: SeverityNumber.WARN,
+    notice: SeverityNumber.WARN,
+    info: SeverityNumber.INFO,
+    debug: SeverityNumber.DEBUG,
+    off: SeverityNumber.UNSPECIFIED,
+    all: SeverityNumber.UNSPECIFIED,
+};
 
 export const SyslogColor = {
     emerg: 'red',

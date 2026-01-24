@@ -1,0 +1,11 @@
+.awcache
+.nyc_output
+.vscode
+archive
+coverage
+lerna-debug.log
+node_modules
+npm-debug.log
+tmp
+tsconfig.tsbuildinfo
+yarn-error.log

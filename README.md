@@ -1,36 +1,38 @@
 # BlueJS
 
-A modular JavaScript/TypeScript framework organized as a Lerna monorepo with Yarn workspaces.
+A modular JavaScript/TypeScript framework organized as an Nx monorepo with pnpm workspaces.
 
 ## Requirements
 
 - **Node.js:** ≥18.0.0
-- **npm:** ≥9.0.0
-- **Yarn:** ≥1.22.0 (Yarn 4 enabled via corepack)
+- **pnpm:** ≥8.0.0
 
 ## Technology Stack
 
 - **TypeScript:** 5.7.2 (ES2022 target)
 - **ESLint:** 9.17.0 (flat config)
-- **Lerna:** 8.2.4 (monorepo management)
+- **Nx:** 20.3.2 (monorepo management)
+- **pnpm:** 8.15.0 (package manager)
+- **Vitest:** 2.1.8 (testing framework)
 - **webpack:** 5.97.1 (bundling)
-- **Jest:** 29.7.0 (testing)
 
 ## Getting Started
 
 ```bash
-# Enable Yarn via corepack (first time only)
+# Enable pnpm via corepack (first time only)
 corepack enable
-corepack prepare yarn@stable --activate
 
 # Install dependencies
-yarn install
+pnpm install
 
 # Build all packages
-npx lerna run build:lib --stream
+pnpm build
+
+# Run tests
+pnpm test
 
 # Lint code
-npx eslint .
+pnpm lint
 ```
 
 ## Packages
@@ -62,32 +64,53 @@ npx eslint .
 ## Build Commands
 
 ```bash
-# Build a single package (from package directory)
-yarn build:lib        # Compile TypeScript to ESM in lib/
-yarn build:bundle     # Create webpack bundle as index.js
-yarn build:all        # Both lib and bundle
+# Build all packages (from root)
+pnpm build            # Build lib for all packages
+pnpm build:all        # Build lib and bundles
 
-# Build all packages in parallel
-yarn on:all build:lib
-yarn on:all build:bundle
+# Build with Nx directly
+nx run-many -t build:lib
+nx run-many -t build:all
 
-# Build in dependency order (recommended)
-npx lerna run build:lib --stream
+# Build specific package
+nx run @blue/core:build:lib
+cd packages/blue-core && pnpm build:lib
+
+# View dependency graph
+nx graph
 ```
 
 ## Testing
 
 ```bash
-# Run tests for a single package (from package directory)
-yarn test             # Uses Karma for browser testing
+# Run all tests (from root)
+pnpm test                    # Run all tests with Vitest
+nx run-many -t test          # Nx directly
 
-# Run tests for all packages
-yarn on:all test
+# Run specific package tests
+nx run @blue/core:test
+cd packages/blue-core && pnpm test
+
+# Run tests in watch mode
+pnpm vitest --watch
+
+# Run tests with UI
+pnpm vitest --ui
+
+# Run with coverage
+nx run-many -t test --coverage
 ```
 
 ## Code Style
 
 The project uses ESLint 9 with flat config (`eslint.config.mjs`):
+
+```bash
+# Run linter
+pnpm lint
+```
+
+**Style Rules:**
 - Space in parens: `( value )` not `(value)`
 - Template string spacing: `${ value }` not `${value}`
 - Array bracket spacing: `[ 1, 2, 3 ]` not `[1, 2, 3]`

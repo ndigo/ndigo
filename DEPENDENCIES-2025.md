@@ -7,8 +7,7 @@ This document provides a quick reference for all dependency versions after the 2
 | Requirement | Version |
 |-------------|---------|
 | Node.js | ≥18.0.0 |
-| npm | ≥9.0.0 |
-| Yarn | ≥1.22.0 (Yarn 4 active) |
+| pnpm | ≥8.0.0 (Package Manager) |
 
 ## Root DevDependencies (package.json)
 
@@ -32,8 +31,9 @@ This document provides a quick reference for all dependency versions after the 2
 
 | Package | Version |
 |---------|---------|
-| jest | ~29.7.0 |
-| ts-jest | ~29.2.5 |
+| vitest | ~2.1.8 |
+| @vitest/ui | ~2.1.8 |
+| jsdom | ~25.0.1 |
 | msw | ~2.7.0 |
 
 ### Build Tools
@@ -54,7 +54,13 @@ This document provides a quick reference for all dependency versions after the 2
 
 | Package | Version |
 |---------|---------|
-| lerna | ^8.2.4 |
+| nx | ~20.3.2 |
+
+### Package Manager
+
+| Package | Version |
+|---------|---------|
+| pnpm | 8.15.0 |
 
 ### Documentation
 
@@ -206,24 +212,35 @@ This document provides a quick reference for all dependency versions after the 2
 ```bash
 # Check versions
 node --version          # Should show v18+
-npm --version           # Should show v9+
-yarn --version          # Should show v4.x
+pnpm --version          # Should show v8+
+npx nx --version        # Should show v20+
 
 # Verify installation
-yarn install            # Should complete without errors
+pnpm install            # Should complete without errors
 
 # Check linting
-npx eslint .            # Should run with flat config
+pnpm lint               # Should run with flat config
 
 # Check TypeScript
 npx tsc --version       # Should show 5.7.2
 
 # Build packages
-npx lerna run build:lib --stream
+pnpm build              # Build all packages with Nx
+
+# Run tests
+pnpm test               # Run all tests with Vitest
+
+# View dependency graph
+nx graph                # Open interactive visualization
 ```
 
 ## Update Date
 
 **Last Updated:** January 23, 2025
 
-**Modernization Status:** ✅ Complete (infrastructure ready, code updates needed)
+**Modernization Status:**
+- ✅ Phase 1 Complete: Dependencies modernized (TypeScript 5.7, ESLint 9, etc.)
+- ✅ Phase 2 Complete: Tooling upgraded (pnpm, Nx, Vitest)
+- ⚠️ Code updates needed: Ramda API changes, date-fns-tz imports
+
+**See also:** `MIGRATION-TOOLING-2025.md` for tooling migration details

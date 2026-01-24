@@ -1,0 +1,72 @@
+{
+  "name": "@blue/logger",
+  "version": "3.0.0-alpha.0",
+  "description": "Blue Logger",
+  "files": [
+    "doc",
+    "lib",
+    "index.js",
+    "index.js.map"
+  ],
+  "exports": {
+    "import": "./lib/index.js",
+    "require": "./index.js"
+  },
+  "main": "index.js",
+  "module": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "benchmark": "../../bin/benchmark.sh",
+    "build:lib": "../../bin/build_lib.sh",
+    "build:bundle": "../../bin/build_bundle.sh",
+    "build:all": "../../bin/build_all.sh",
+    "doc": "../../bin/doc.sh",
+    "prepublish": "../../bin/prepublish.sh",
+    "test": "../../bin/test_web.sh",
+    "debug:bundle": "../../bin/debug_bundle.sh",
+    "debug:web": "../../bin/debug_web.sh"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue.git"
+  },
+  "keywords": [
+    "blue",
+    "bluejs",
+    "blue-js",
+    "log",
+    "logger",
+    "logging"
+  ],
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "dependencies": {
+    "@opentelemetry/api": "~1.4.0",
+    "@opentelemetry/context-async-hooks": "~1.9.1",
+    "@opentelemetry/context-zone": "~1.9.1",
+    "@opentelemetry/context-zone-peer-dep": "~1.9.1",
+    "@opentelemetry/core": "~1.9.1",
+    "@opentelemetry/exporter-jaeger": "~1.9.1",
+    "@opentelemetry/exporter-zipkin": "~1.9.1",
+    "@opentelemetry/propagator-b3": "~1.9.1",
+    "@opentelemetry/propagator-jaeger": "~1.9.1",
+    "@opentelemetry/resources": "~1.9.1",
+    "@opentelemetry/sdk-metrics": "~1.9.1",
+    "@opentelemetry/sdk-trace-base": "~1.9.1",
+    "@opentelemetry/sdk-trace-web": "~1.9.1",
+    "@opentelemetry/semantic-conventions": "~1.9.1",
+    "@opentelemetry/shim-opentracing": "~1.9.1",
+    "stacktrace-js": "~2.0.2",
+    "zone.js": "~0.12.0"
+  },
+  "devDependencies": {
+    "@blue/core": "~3.0.0-alpha",
+    "@blue/util": "~3.0.0-alpha",
+    "pino": "^8.10.0",
+    "winston": "^3.3.3"
+  },
+  "peerDependencies": {
+    "@blue/core": "~3.0.0-alpha",
+    "@blue/util": "~3.0.0-alpha"
+  }
+}

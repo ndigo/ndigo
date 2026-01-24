@@ -1,0 +1,132 @@
+name: ACCOUNT_ACTIVITY
+data:
+  accounts:
+    type: List
+    items:
+      accountId: Description
+      accountDisplayName: Description
+  accountId:
+    type: Description
+  productId:
+    type: Description
+  transactions:
+    type: List
+    items:
+      transactionId: Description
+      transactionDescription: Description
+      transactionDate: Date
+      transactionPostedDate: Date
+      transactionType: Description
+      transactionAmount: Money
+      merchantName: Description
+      merchantAddress: Description
+      transactionNumber: Description
+      transactionChannel: Description
+      rewardPointsRedeemed: Description
+      amazonCardOrderNumber: Description
+  transactionDetails:
+    type: Description
+  totalNumberOfPendingTransactions:
+    type: Numbers
+  totalPendingTransactionAmount:
+    type: Money
+  transactionRewards:
+    type: List
+    items:
+      rewardsEarned: Description
+      rewardsDescription: Description
+      totalTransactionRewardsEarned: Description
+  rewardsTypeId:
+    type: Description
+  lastActivityDetailsUpdatedDate:
+    type: Description
+  lastActivityDetailsFailedDate:
+    type: Description
+  lastActivityAccountOptionsUpdatedDate:
+    type: Description
+  lastActivityUpdatedDate:
+    type: Description
+  activityErrorDisplayedState:
+    type: OnOff
+  accountActivityDisplayedState:
+    type: OnOff
+  accountOptionsErrorDisplayedState:
+    type: OnOff
+  retroactiveRewardsOverflow:
+    type: OnOff
+  printRecentAccountActivityDetails:
+    type: OnOff
+  summaryErrorDisplayedState:
+    type: OnOff
+  lastInitialAccountOptionsSelectionDate:
+    type: OnOff
+  loaderAccountActivityDisplayedState:
+    type: OnOff
+  multiAccountCustomerState:
+    type: OnOff
+actions:
+  # account selector action
+  requestCreditCardAccount: true
+  #expand collapse module actions
+  requestAccountActivity: true
+  exitAccountActivity: true
+  #
+  requestRecentTransactionDetails: true
+  exitRecentTransactionDetails: true
+  #tooltip
+  requestAccountActivityHelpMessage: true
+  # footer link - See all transactions
+  requestAllRecentTransactions: true
+  #
+  printAccountActivity: true
+  requestAmazonCardOrderHistory: true
+  requestRetroactiveRewardsHelpMessage: true
+  exitRetroactiveRewardsHelpMessage: true
+  #
+  requestRewardCalculationHelpMessage: true
+settings:
+  accountActivityHeader: true # Activity since last statement  - header
+  accountActivityErrorHeader: true
+  accountActivityErrorAdvisory: true
+  # transaction details
+  transactionPostedDateLabel:  # This transaction posted on ..
+    dataTokens:
+      transactions.transactionPostedDate: true
+  printAccountActivityLabel: true  # print activity
+  transactionDetailsAda: true # about this transaction
+  #transactionNumberLabel: true # "Transaction #"
+  merchantNameLabel: true
+  pointsLabel: true
+  #tooltip
+  accountActivityHelpMessage: true
+  requestAccountActivityHelpMessageAda: true
+  # footer link - See all transactions
+  requestAllRecentTransactionsLabel: true
+  #
+  accountPendingChargesLabel: true
+  # XS
+  seeDetailsLabel: true  # uses the request / exit actions to expand collapse
+  #
+  rewardPointsRedeemedLabel: true # Chase Ultimate Rewards used
+  rewardCalculationHeader: true # Rewards earned with this transaction
+  totalRewardCalculationUnit:  # for total rewards/ points/ dollars
+    dataTokens:
+      transactionRewards.totalTransactionRewardsEarned: true
+      rewardsTypeId: true
+  rewardCalculationHelpMessage: true  # How we calculate ...
+  retroactiveRewardsMessage: true # You earned retroactive rewards....
+  retroactiveRewardsHelpMessage: true
+  requestRetroactiveRewardsHelpMessageAda: true
+  noAccountActivityMessage: true  # You have no recent activity
+  pendingLabel: true # Pending
+  transactionsAda: true #table level caption
+  requestCreditCardAccountAda: true
+  dateAda: true
+  cardTransactionDescriptionAda: true
+  transactionAmountAda: true
+  requestRecentTransactionDetailsLabel: true
+  exitRecentTransactionDetailsLabel: true
+  printTransactionDetailsAda: true
+  rfidTransactionIconAda: true
+  additionalTransactionDetailsHeader: true
+  mathematicalSymbolNumberSignLabel: true

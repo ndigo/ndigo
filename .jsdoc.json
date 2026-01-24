@@ -1,0 +1,26 @@
+{
+    "opts": {
+        "destination": "./doc",
+        "encoding": "utf8",
+        "recurse": true,
+        "template": "./node_modules/@blue/jsdoc-plugin-topics/template"
+    },
+    "plugins": [
+        "plugins/markdown",
+        "@blue/jsdoc-plugin-topics"
+    ],
+    "source": {
+        "includePattern": "(packages/blue\\-.+/)?lib/.+\\.js(doc|x)?$",
+        "excludePattern": ".*/(archive|node_modules|profile|src|test)/.+"
+    },
+    "sourceType": "module",
+    "tags": {
+        "allowUnknownTags": true,
+        "dictionaries": [ "jsdoc" ]
+    },
+    "templates": {
+        "default": {
+            "includeDate": false
+        }
+    }
+}

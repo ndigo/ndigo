@@ -1,0 +1,58 @@
+# This is an initial draft of a possible API format -JBR
+---
+es5_array:
+  - array_every
+  - array_filter
+  - array_foreach
+  - array_indexof
+  - array_isarray
+  - array_lastindexof
+  - array_map
+  - array_some
+  - array_reduce
+  - array_reduceright
+es5_date:
+  - date_toisostring
+  - date_tojson
+  - date_now
+es5_function:
+  - function_bind
+es5_object:
+  - object_create
+  - object_defineproperty
+  - object_defineproperties
+  - object_freeze
+  - object_getownpropertydescriptor
+  - object_getownpropertynames
+  - object_getprototypeof
+  - object_isextensible
+  - object_isfrozen
+  - object_issealed
+  - object_keys
+  - object_preventextensions
+  - object_seal
+es5_string:
+  - string_trim
+es5:
+  - es5_array
+  - es5_date
+  - es5_function
+  - es5_object
+  - es5_string
+  - es5_syntax
+  - es5_undefined
+  - json
+  - strict_mode
+es6_array:
+  - array_copywithin
+  - array_entries
+  - array_fill
+  - array_find
+  - array_findindex
+  - array_from
+  - array_keys
+  - array_of
+  - array_values
+
+
+

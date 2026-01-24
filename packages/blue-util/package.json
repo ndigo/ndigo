@@ -1,0 +1,61 @@
+{
+  "name": "@blue/util",
+  "version": "3.0.0-alpha.0",
+  "description": "Blue Utility",
+  "type": "module",
+  "files": [
+    "doc",
+    "lib",
+    "index.js",
+    "index.js.map"
+  ],
+  "exports": {
+    ".": {
+      "import": "./lib/index.js",
+      "require": "./index.js"
+    }
+  },
+  "main": "index.js",
+  "module": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build:lib": "../../bin/build_lib.sh",
+    "build:bundle": "../../bin/build_bundle.sh",
+    "build:all": "../../bin/build_all.sh",
+    "doc": "../../bin/doc.sh",
+    "prepublish": "../../bin/prepublish.sh",
+    "test": "jest",
+    "debug:bundle": "../../bin/debug_bundle.sh",
+    "debug:web": "../../bin/debug_web.sh"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue.git"
+  },
+  "keywords": [
+    "blue",
+    "bluejs",
+    "blue-js",
+    "blue-util",
+    "functional",
+    "fp",
+    "util",
+    "utilities",
+    "utility"
+  ],
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "dependencies": {
+    "date-fns": "~4.1.0",
+    "date-fns-tz": "~3.2.0",
+    "ramda": "~0.31.1",
+    "seedrandom": "~3.0.5",
+    "slug": "~11.0.1"
+  },
+  "devDependencies": {
+    "@types/ramda": "~0.31.1",
+    "@types/seedrandom": "~3.0.8",
+    "@types/slug": "~5.0.9"
+  },
+  "sideEffects": false
+}

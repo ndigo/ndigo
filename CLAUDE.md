@@ -3,7 +3,8 @@
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 **Additional Documentation:**
-- `MIGRATION-2025.md` - Breaking changes and migration guide for the January 2025 modernization
+- `MIGRATION-2025.md` - Breaking changes and migration guide for the January 2025 dependency modernization
+- `MIGRATION-TOOLING-2025.md` - Tooling migration guide (Yarn→pnpm, Lerna→Nx, Jest→Vitest)
 - `DEPENDENCIES-2025.md` - Complete list of dependency versions and comparisons
 - `README.md` - Getting started and project overview
 
@@ -13,14 +14,14 @@ BlueJS is a modular JavaScript/TypeScript framework organized as a Lerna monorep
 
 **Requirements:**
 - Node.js ≥18.0.0
-- npm ≥9.0.0
-- Yarn ≥1.22.0 (Yarn 4 enabled via corepack)
+- pnpm ≥8.0.0
 
 **Technology Stack (as of January 2025):**
 - TypeScript 5.7.2 (ES2022 target)
 - ESLint 9.17.0 (flat config)
-- Lerna 8.2.4
-- Jest 29.7.0 + ts-jest 29.2.5
+- Nx 20.3.2 (monorepo management)
+- Vitest 2.1.8 (testing framework)
+- pnpm 8.15.0 (package manager)
 - webpack 5.97.1
 
 ## Repository Structure
@@ -57,39 +58,55 @@ Key packages and their dependencies:
 
 ### Building
 
-All packages use shared build scripts in `bin/`:
+Packages use Nx for efficient monorepo builds with caching:
 
 ```bash
-# Build a single package (from package directory)
-yarn build:lib        # Compile TypeScript to ESM in lib/
-yarn build:bundle     # Create webpack bundle as index.js
-yarn build:all        # Both lib and bundle
+# Build all packages (from root)
+pnpm build            # Build lib for all packages
+pnpm build:all        # Build lib and bundles for all packages
+nx run-many -t build:lib     # Nx directly
 
-# Build all packages in parallel (from root)
-yarn on:all build:lib
-yarn on:all build:bundle
+# Build specific package
+nx run @blue/core:build:lib
+cd packages/blue-core && pnpm build:lib
+
+# Build with dependency graph
+nx graph              # Visualize package dependencies
 ```
 
-The `on:all` script runs a command across all packages in parallel. When run from a package directory, it only operates on that package.
+Nx intelligently caches builds and only rebuilds what changed, dramatically improving build times.
 
 ### Testing
 
 ```bash
-# Run tests for a single package (from package directory)
-yarn test             # Uses Karma for browser testing (bin/test_web.sh)
+# Run tests for all packages (from root)
+pnpm test             # Run all tests with Vitest
+nx run-many -t test   # Nx directly
 
-# Some packages also have Node.js tests
-# See bin/test_node.sh which uses Mocha with nyc for coverage
+# Run tests for specific package
+nx run @blue/core:test
+cd packages/blue-core && pnpm test
+
+# Run tests in watch mode
+nx run @blue/core:test --watch
+
+# Run tests with UI
+pnpm vitest --ui
+
+# Run tests with coverage
+nx run-many -t test --coverage
 ```
 
 Tests are configured using:
-- `jest.config.ts` - Jest configuration with ts-jest preset
-- Individual packages may have Karma or Mocha configs
+- `vitest.config.ts` - Root Vitest configuration
+- Individual packages can override with their own vitest.config.ts
+- Some packages may still use Karma for browser testing (bin/test_web.sh)
 
 ### Linting
 
 ```bash
 # Lint code (from root or package directory)
+pnpm lint             # Lint all code
 npx eslint <path>     # ESLint 9 with TypeScript support
 ```
 
@@ -204,12 +221,14 @@ All packages use centralized build scripts in `bin/` rather than duplicating log
 - `@typescript-eslint/parser`: ~8.18.2
 
 **Testing:**
-- `jest`: ~29.7.0
-- `ts-jest`: ~29.2.5
+- `vitest`: ~2.1.8
+- `@vitest/ui`: ~2.1.8
+- `jsdom`: ~25.0.1 (browser environment)
 - `msw`: ~2.7.0 (API mocking)
 
-**Monorepo:**
-- `lerna`: ^8.2.4
+**Monorepo & Build:**
+- `nx`: ~20.3.2
+- `pnpm`: 8.15.0 (package manager)
 
 ### Breaking Changes from Previous Versions
 
@@ -227,21 +246,41 @@ All packages use centralized build scripts in `bin/` rather than duplicating log
 
 ## Testing Strategy
 
-The framework primarily targets browser environments, using Karma for testing. Some packages may also have Node.js-specific tests using Mocha. The Jest configuration is set up but may not be actively used by all packages.
+The framework uses Vitest as the primary test runner, which provides:
+- Fast test execution with native ESM support
+- Compatible API with Jest for easy migration
+- Built-in watch mode and UI
+- Excellent TypeScript support
+
+Some packages may also use:
+- Karma for browser-specific testing (bin/test_web.sh)
+- Mocha for legacy Node.js tests
+
+Vitest configuration is in `vitest.config.ts` at the root, with path aliases for all @blue/* packages.
 
 ## Building in Dependency Order
 
-Due to inter-package dependencies, building packages in the correct order is important:
+Nx automatically handles build order based on the dependency graph:
 
 ```bash
-# Build all packages in dependency order using Lerna
-npx lerna run build:lib --stream
+# Build all packages in correct dependency order
+pnpm build                    # Uses nx run-many with dependency resolution
+nx run-many -t build:lib      # Nx directly
 
-# Alternative: Build all packages in parallel (may have dependency issues)
-yarn on:all build:lib
+# View dependency graph
+nx graph                      # Opens interactive visualization
+nx show project @blue/core --web  # Show specific package deps
+
+# Affected builds (only build what changed)
+nx affected -t build:lib      # Build only affected packages
+nx affected:graph             # See what's affected
 ```
 
-Lerna 8 automatically resolves the build order based on package dependencies. If you encounter module resolution errors during build, ensure dependent packages are built first.
+Nx automatically:
+- Resolves build order based on package dependencies
+- Caches build outputs for unchanged packages
+- Runs builds in parallel where possible
+- Only rebuilds affected packages after changes
 
 ## Publishing
 
@@ -254,13 +293,17 @@ All packages are scoped under `@blue/` and use semver with alpha pre-release ide
 
 ## Modernization Status (January 2025)
 
-**✅ Completed:**
+**✅ Phase 1 Completed (Initial Modernization):**
 - All dependencies updated to latest stable versions
 - TypeScript 5.7.2 with ES2022 target
 - ESLint 9 with flat config format
-- Lerna 8 with improved performance
 - Node.js requirement: ≥18.0.0
-- Yarn 4 enabled via corepack
+
+**✅ Phase 2 Completed (Tooling Upgrade):**
+- Migrated from Yarn to **pnpm** (faster, more efficient)
+- Migrated from Lerna to **Nx** (better caching, task orchestration)
+- Migrated from Jest to **Vitest** (faster, native ESM, better DX)
+- Removed legacy configuration files
 
 **⚠️ Known Issues Requiring Code Updates:**
 

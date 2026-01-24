@@ -24,7 +24,7 @@
     "build:all": "../../bin/build_all.sh",
     "doc": "../../bin/doc.sh",
     "prepublish": "../../bin/prepublish.sh",
-    "test": "jest",
+    "test": "vitest run",
     "debug:bundle": "../../bin/debug_bundle.sh",
     "debug:web": "../../bin/debug_web.sh"
   },

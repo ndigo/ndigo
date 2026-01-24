@@ -1,5 +1,0 @@
-# Blue Fill
-
-## Description
-
-## Documentation

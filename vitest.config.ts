@@ -29,8 +29,6 @@ export default defineConfig({
             '@blue/content': resolve(__dirname, './packages/blue-content/src'),
             '@blue/domain': resolve(__dirname, './packages/blue-domain/src'),
             '@blue/validate': resolve(__dirname, './packages/blue-validate/src'),
-            '@blue/fill': resolve(__dirname, './packages/blue-fill/src'),
-            '@blue/has': resolve(__dirname, './packages/blue-has/src'),
             '@blue/print': resolve(__dirname, './packages/blue-print/src'),
             '@blue/platform-web': resolve(__dirname, './packages/blue-platform-web/src'),
             '@blue/dispatcher': resolve(__dirname, './packages/blue-dispatcher/src'),

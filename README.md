@@ -14,7 +14,7 @@ A modular JavaScript/TypeScript framework organized as an Nx monorepo with pnpm 
 - **Nx:** 20.3.2 (monorepo management)
 - **pnpm:** 8.15.0 (package manager)
 - **Vitest:** 2.1.8 (testing framework)
-- **webpack:** 5.97.1 (bundling)
+- **Vite:** 6.0.7 (bundler)
 
 ## Getting Started
 

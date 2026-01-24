@@ -5,6 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 **Additional Documentation:**
 - `MIGRATION-2025.md` - Breaking changes and migration guide for the January 2025 dependency modernization
 - `MIGRATION-TOOLING-2025.md` - Tooling migration guide (Yarn→pnpm, Lerna→Nx, Jest→Vitest)
+- `MIGRATION-VITE-2025.md` - Build tool migration guide (webpack→Vite)
 - `DEPENDENCIES-2025.md` - Complete list of dependency versions and comparisons
 - `README.md` - Getting started and project overview
 
@@ -21,8 +22,8 @@ BlueJS is a modular JavaScript/TypeScript framework organized as a Lerna monorep
 - ESLint 9.17.0 (flat config)
 - Nx 20.3.2 (monorepo management)
 - Vitest 2.1.8 (testing framework)
+- Vite 6.0.7 (bundler)
 - pnpm 8.15.0 (package manager)
-- webpack 5.97.1
 
 ## Repository Structure
 
@@ -58,23 +59,31 @@ Key packages and their dependencies:
 
 ### Building
 
-Packages use Nx for efficient monorepo builds with caching:
+Packages use Nx for efficient monorepo builds with caching and Vite for fast bundling:
 
 ```bash
 # Build all packages (from root)
-pnpm build            # Build lib for all packages
-pnpm build:all        # Build lib and bundles for all packages
+pnpm build            # Build TypeScript (lib/) for all packages
+pnpm build:all        # Build lib and Vite bundles for all packages
 nx run-many -t build:lib     # Nx directly
 
 # Build specific package
 nx run @blue/core:build:lib
 cd packages/blue-core && pnpm build:lib
 
+# Build bundles with Vite
+nx run-many -t build:bundle  # Creates ESM and CommonJS bundles
+cd packages/blue-core && pnpm build:bundle
+
 # Build with dependency graph
 nx graph              # Visualize package dependencies
 ```
 
-Nx intelligently caches builds and only rebuilds what changed, dramatically improving build times.
+**Build Process:**
+- `build:lib` - TypeScript compiler creates ESM output in `lib/`
+- `build:bundle` - Vite creates optimized bundles (index.js, index.cjs) with source maps
+- Nx intelligently caches builds and only rebuilds what changed
+- Vite provides near-instant builds with HMR and optimized output
 
 ### Testing
 
@@ -303,6 +312,7 @@ All packages are scoped under `@blue/` and use semver with alpha pre-release ide
 - Migrated from Yarn to **pnpm** (faster, more efficient)
 - Migrated from Lerna to **Nx** (better caching, task orchestration)
 - Migrated from Jest to **Vitest** (faster, native ESM, better DX)
+- Migrated from webpack to **Vite** (faster builds, better DX)
 - Removed legacy configuration files
 
 **⚠️ Known Issues Requiring Code Updates:**

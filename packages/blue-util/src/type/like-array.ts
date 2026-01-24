@@ -3,7 +3,23 @@
  * @see {@link https://ramdajs.com/docs/}
  */
 
-import { __, both, cond, dec, either, F, gt, has, isNil, length, pipe, propEq, propSatisfies, T, toString } from 'ramda';
+import {
+    __,
+    both,
+    cond,
+    dec,
+    either,
+    F,
+    gt,
+    has,
+    isNil,
+    length,
+    pipe,
+    propEq,
+    propSatisfies,
+    T,
+    toString,
+} from 'ramda';
 import isString from './is-string';
 
 /**
@@ -26,22 +42,21 @@ import isString from './is-string';
  * likeArray( {} );
  * //=> false
  */
-const
-    nodeTypeEqualsOne = propEq( 'nodeType', 1 ),
-    lengthEqualsZero = propEq( 'length', 0 ),
-    lengthGreaterThanZero = propSatisfies( gt( __, 0 ), 'length' ),
-    lastIndex = pipe( length, dec, toString ),
-    hasZero = has( '0' ),
-    hasLastIndex = ( value ) => has( lastIndex( value ), value ),
-    isNotObject = ( value ) => typeof value !== 'object',
-    likeArray = cond<any, boolean>( [
-        [ isNil, F ],
-        [ either<any>( Array.isArray, isString ), T ],
-        [ isNotObject, F ],
-        [ nodeTypeEqualsOne, lengthGreaterThanZero ],
-        [ lengthEqualsZero, T ],
-        [ lengthGreaterThanZero, both<any>( hasZero, hasLastIndex ) ],
-        [ T, F ]
-    ] ) as ( value ) => value is ArrayLike<any>;
+const nodeTypeEqualsOne = propEq('nodeType', 1),
+    lengthEqualsZero = propEq('length', 0),
+    lengthGreaterThanZero = propSatisfies(gt(__, 0), 'length'),
+    lastIndex = pipe(length, dec, toString),
+    hasZero = has('0'),
+    hasLastIndex = (value) => has(lastIndex(value), value),
+    isNotObject = (value) => typeof value !== 'object',
+    likeArray = cond<any, boolean>([
+        [isNil, F],
+        [either<any>(Array.isArray, isString), T],
+        [isNotObject, F],
+        [nodeTypeEqualsOne, lengthGreaterThanZero],
+        [lengthEqualsZero, T],
+        [lengthGreaterThanZero, both<any>(hasZero, hasLastIndex)],
+        [T, F],
+    ]) as (value) => value is ArrayLike<any>;
 
 export default likeArray;

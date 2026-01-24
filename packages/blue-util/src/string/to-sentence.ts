@@ -18,9 +18,6 @@ const regex = /(^\w)|\.\s+(\w)/gm;
  * toSentence( 'lorem-ipsum-dolor' );
  * //=> "Lorem ipsum dolor"
  */
-const toSentence: ( value: string ) => string = pipe(
-    toLower,
-    ( value: string ): string => value.replace( regex, toUpper )
-);
+const toSentence: (value: string) => string = pipe(toLower, (value: string): string => value.replace(regex, toUpper));
 
 export default toSentence;

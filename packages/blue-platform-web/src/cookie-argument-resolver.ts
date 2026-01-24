@@ -4,7 +4,4 @@
 
 import { AbstractNamedValueMethodArgumentResolver } from '@blue/dispatcher';
 
-
-export abstract class AbstractCookieValueMethodArgumentResolver extends AbstractNamedValueMethodArgumentResolver {
-
-}
+export abstract class AbstractCookieValueMethodArgumentResolver extends AbstractNamedValueMethodArgumentResolver {}

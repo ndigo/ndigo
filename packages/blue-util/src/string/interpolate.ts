@@ -5,14 +5,16 @@
 
 import { defaultTo, path, pipe, split } from 'ramda';
 
-const
-    stache = /\{\{([^\}]+)\}\}/g, //mustache-like
-    defaultToEmptyString = defaultTo( '' ),
-    splitOnDot = split( '.' ),
-
-    interpolate = ( template: string, replacements: string | any[] | { [ key: string ]: any }, syntax: RegExp = stache ): string => {
-        const replacer = ( match, value ) => defaultToEmptyString( path( splitOnDot( value ), replacements ) ) as string;
-        return pipe( defaultToEmptyString, ( val: string ): string => val.replace( syntax, replacer ) )( template );
+const stache = /\{\{([^\}]+)\}\}/g, //mustache-like
+    defaultToEmptyString = defaultTo(''),
+    splitOnDot = split('.'),
+    interpolate = (
+        template: string,
+        replacements: string | any[] | { [key: string]: any },
+        syntax: RegExp = stache
+    ): string => {
+        const replacer = (match, value) => defaultToEmptyString(path(splitOnDot(value), replacements)) as string;
+        return pipe(defaultToEmptyString, (val: string): string => val.replace(syntax, replacer))(template);
     };
 
 /**

@@ -19,20 +19,19 @@ import { curryN, slice, split, trim } from 'ramda';
  * trailingSplit( ",", "a,b,c," );
  * //=> [ "a", "b", "c" ]
  */
-const trailingSplit = curryN( 2, ( separator: string, text: string ): string[] => {
-    text = trim( text );
+const trailingSplit = curryN(2, (separator: string, text: string): string[] => {
+    text = trim(text);
 
     const length = text.length;
 
-    if( length && text.indexOf( separator ) !== -1 ){
-        const
-            tail = length - 1,
-            isSeparatorTrailing = text[ tail ] === separator,
-            isEmptyString = isSeparatorTrailing && text[ length - 2 ] === separator;
-        return split( separator, ( isSeparatorTrailing && !isEmptyString ? slice( 0, tail, text ) : text ) );
+    if (length && text.indexOf(separator) !== -1) {
+        const tail = length - 1,
+            isSeparatorTrailing = text[tail] === separator,
+            isEmptyString = isSeparatorTrailing && text[length - 2] === separator;
+        return split(separator, isSeparatorTrailing && !isEmptyString ? slice(0, tail, text) : text);
     }
 
-    return [ text ];
-} );
+    return [text];
+});
 
 export default trailingSplit;

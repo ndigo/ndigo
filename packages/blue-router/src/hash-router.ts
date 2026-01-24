@@ -8,53 +8,51 @@ import { RouterInterceptor, RouterInterceptorRegistry } from './router-intercept
 //type RouteSource = 'private' | 'public' | 'external';
 //type RouteResult = 'aborted' | 'completed';
 //type RouteTransaction = Route & { source: RouteSource; result: RouteResult };
-type HashChangeHandler = ( event: HashChangeEvent ) => void;
+type HashChangeHandler = (event: HashChangeEvent) => void;
 type RouteHistory = RingBuffer<RouteTransaction>;
 
 enum RouteAccess {
     PUBLIC,
-    PRIVATE
-};
+    PRIVATE,
+}
 
 enum RouteSource {
     EXTERNAL,
-    INTERNAL
+    INTERNAL,
 }
 
-const
-    { defineProperty } = Reflect,
-
-    constructURL = constructN( 1, URL ) as ( value: string ) => URL,
-    getHashProperty = prop( 'hash' ) as ( value: object ) => string,
-    removeFirstCharacter = slice( 1, Infinity ) as ( value: string ) => string,
-    extractRouteFromURL = pipe( constructURL, getHashProperty, removeFirstCharacter );
+const { defineProperty } = Reflect,
+    constructURL = constructN(1, URL) as (value: string) => URL,
+    getHashProperty = prop('hash') as (value: object) => string,
+    removeFirstCharacter = slice(1, Infinity) as (value: string) => string,
+    extractRouteFromURL = pipe(constructURL, getHashProperty, removeFirstCharacter);
 
 class RouteTransaction {
     route: string;
     access: RouteAccess;
     source: RouteSource;
 
-    constructor( route: string, access: RouteAccess, source: RouteSource ){
-        defineProperty( this, 'route', {
+    constructor(route: string, access: RouteAccess, source: RouteSource) {
+        defineProperty(this, 'route', {
             value: route,
             configurable: true,
             enumerable: true,
-            writable: false
-        } );
+            writable: false,
+        });
 
-        defineProperty( this, 'access', {
+        defineProperty(this, 'access', {
             value: access,
             configurable: true,
             enumerable: true,
-            writable: false
-        } );
+            writable: false,
+        });
 
-        defineProperty( this, 'source', {
+        defineProperty(this, 'source', {
             value: source,
             configurable: true,
             enumerable: true,
-            writable: false
-        } );
+            writable: false,
+        });
     }
 }
 
@@ -80,84 +78,80 @@ export default class HashRouter implements Router, RouterInterceptorRegistry {
         return this.#history;
     }
 
-    constructor( callback: RouterCallback ){
-        defineProperty( this, 'callback', {
+    constructor(callback: RouterCallback) {
+        defineProperty(this, 'callback', {
             value: callback,
             configurable: true,
             enumerable: false,
-            writable: false
-        } );
+            writable: false,
+        });
 
-        this.#handler = ( event: HashChangeEvent ) => this._onHashChange( event );
-        this.#history = new RingBuffer<RouteTransaction>( 256 );
+        this.#handler = (event: HashChangeEvent) => this._onHashChange(event);
+        this.#history = new RingBuffer<RouteTransaction>(256);
         this.#interceptors = [];
 
-        const
-            currentRoute = removeFirstCharacter( location.hash ) || '/',
-            routeTx = new RouteTransaction( currentRoute, RouteAccess.PUBLIC, RouteSource.EXTERNAL );
+        const currentRoute = removeFirstCharacter(location.hash) || '/',
+            routeTx = new RouteTransaction(currentRoute, RouteAccess.PUBLIC, RouteSource.EXTERNAL);
 
-        this.#route = new PathRoute( currentRoute );
-        this.#history.put( routeTx );
+        this.#route = new PathRoute(currentRoute);
+        this.#history.put(routeTx);
 
-        defineProperty( this, 'destroyed', {
+        defineProperty(this, 'destroyed', {
             value: false,
             configurable: true,
             enumerable: false,
-            writable: false
-        } );
+            writable: false,
+        });
 
-        addEventListener( 'hashchange', this.#handler );
+        addEventListener('hashchange', this.#handler);
     }
 
-    addInterceptor( interceptor: RouterInterceptor ): void {
+    addInterceptor(interceptor: RouterInterceptor): void {
         // TODO Check for duplicates and deny?
-        this.#interceptors.push( interceptor );
+        this.#interceptors.push(interceptor);
     }
 
-    destroy(){
-        if( !this.destroyed ){
-            defineProperty( this, 'destroyed', {
+    destroy() {
+        if (!this.destroyed) {
+            defineProperty(this, 'destroyed', {
                 value: true,
                 configurable: true,
                 enumerable: false,
-                writable: false
-            } );
+                writable: false,
+            });
 
-            removeEventListener( 'hashchange', this.#handler );
+            removeEventListener('hashchange', this.#handler);
         }
     }
 
-    setRoute( newRoute: string, isPublic = true ){
-        if( this._setRoute( newRoute ) ){
-            const
-                routeAccess = isPublic ? RouteAccess.PUBLIC : RouteAccess.PRIVATE,
-                routeTx = new RouteTransaction( this.route, routeAccess, RouteSource.INTERNAL );
-            this.#history.put( routeTx );
-            this.callback( this.route );
+    setRoute(newRoute: string, isPublic = true) {
+        if (this._setRoute(newRoute)) {
+            const routeAccess = isPublic ? RouteAccess.PUBLIC : RouteAccess.PRIVATE,
+                routeTx = new RouteTransaction(this.route, routeAccess, RouteSource.INTERNAL);
+            this.#history.put(routeTx);
+            this.callback(this.route);
         }
     }
 
-    protected _onHashChange( event: HashChangeEvent ){
-        const newRoute = extractRouteFromURL( event.newURL );
-        if( this._setRoute( newRoute ) ){
-            const
-                route = this.route,
-                routeTx = new RouteTransaction( route, RouteAccess.PUBLIC, RouteSource.EXTERNAL );
-            this.#history.put( routeTx );
-            this.callback( route );
+    protected _onHashChange(event: HashChangeEvent) {
+        const newRoute = extractRouteFromURL(event.newURL);
+        if (this._setRoute(newRoute)) {
+            const route = this.route,
+                routeTx = new RouteTransaction(route, RouteAccess.PUBLIC, RouteSource.EXTERNAL);
+            this.#history.put(routeTx);
+            this.callback(route);
         }
     }
 
-    protected _setRoute( newRoute: string ): boolean {
-        const
-            route = new PathRoute( newRoute ),
-            chain = new RouterExecutionChain( this.#interceptors );
+    protected _setRoute(newRoute: string): boolean {
+        const route = new PathRoute(newRoute),
+            chain = new RouterExecutionChain(this.#interceptors);
         let isCompleted = false;
 
         try {
-            if( chain.applyPreRoute( route ) === false ){
+            if (chain.applyPreRoute(route) === false) {
                 const oldRoute = this.route;
-                if( location.hash !== oldRoute ){
+                if (location.hash !== oldRoute) {
                     location.hash = oldRoute;
                 }
                 return isCompleted;
@@ -165,10 +159,10 @@ export default class HashRouter implements Router, RouterInterceptorRegistry {
 
             this.#route = route;
 
-            chain.applyPostRoute( route );
+            chain.applyPostRoute(route);
 
             isCompleted = true;
-        } catch( e ){}
+        } catch (e) {}
 
         return isCompleted;
     }

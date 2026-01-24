@@ -9,8 +9,5 @@ export class SiteBuilder {
     #site: Site;
     #router: Router;
 
-    constructor(){
-
-    }
-
+    constructor() {}
 }

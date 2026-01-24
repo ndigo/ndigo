@@ -14,29 +14,29 @@ export default class Deferred<T> {
      * @function module:core.Deferred#resolve
      * @param {T} [value] If this value is not a promise, including undefined, it becomes the fulfillment value of the associated promise. If this value is a promise, then the associated promise will be resolved to the passed promise, and follow the state as the provided promise (including any future transitions).
      */
-    resolve: ( value?: T | PromiseLike<T> ) => void;
+    resolve: (value?: T | PromiseLike<T>) => void;
 
     /**
      * Rejects the associated promise with the specified reason. If the promise has already been resolved, either to a value, a rejection, or another promise, this method does nothing.
      * @function module:core.Deferred#reject
      * @param {*} [reason] The rejection reason for the associated promise. Although the reason can be undefined, it is generally an {@link external:Error} object, like in exception handling.
      */
-    reject: ( reason?: any ) => void;
+    reject: (reason?: any) => void;
 
-    get [ Symbol.toStringTag ](): string {
+    get [Symbol.toStringTag](): string {
         return 'Deferred';
     }
 
-    constructor(){
+    constructor() {
         this.resolve = null;
         this.reject = null;
 
-        this.promise = new Promise<T>( ( resolve, reject ): void => {
+        this.promise = new Promise<T>((resolve, reject): void => {
             this.resolve = resolve;
             this.reject = reject;
-        } );
+        });
 
-        Object.freeze( this );
+        Object.freeze(this);
     }
 }
 

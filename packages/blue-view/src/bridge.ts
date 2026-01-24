@@ -14,27 +14,27 @@ const defineProperty = Reflect.defineProperty;
 // }
 
 export class Bridge {
-    readonly spec: { [ key: string ]: any };
+    readonly spec: { [key: string]: any };
     name: string;
 
-    constructor( spec: { [ key: string ]: any } ) {
-        defineProperty( this, 'spec', {
+    constructor(spec: { [key: string]: any }) {
+        defineProperty(this, 'spec', {
             value: spec,
             configurable: true,
             enumerable: false,
-            writable: false
-        } );
+            writable: false,
+        });
 
-        this.name = spec.name || "ANONYMOUS BRIDGE";
+        this.name = spec.name || 'ANONYMOUS BRIDGE';
     }
 
     disable(): void {
         // not yet implemented
     }
     enable(): void {
-        throw new Error( "Method not implemented." );
+        throw new Error('Method not implemented.');
     }
     on(): void {
-        throw new Error( "Method not implemented." );
+        throw new Error('Method not implemented.');
     }
 }

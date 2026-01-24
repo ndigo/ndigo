@@ -3,16 +3,12 @@
   "compilerOptions": {
     "baseUrl": ".",
     "composite": true,
-    "lib": [ "DOM", "ESNext" ],
+    "lib": ["DOM", "ESNext"],
     "outDir": "lib",
     "rootDir": "src",
     "skipLibCheck": true,
     "target": "ESNext"
   },
-  "exclude": [
-    "node_modules/**/*"
-  ],
-  "include": [
-    "**/*"
-  ]
+  "exclude": ["node_modules/**/*"],
+  "include": ["**/*"]
 }

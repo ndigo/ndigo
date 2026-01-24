@@ -5,8 +5,7 @@
 
 import like from './like';
 
-const
-    /**
+const /**
      * Determines whether a given object is thenable, i.e. has a `then` method.
      * @function module:util.likePromise
      * @category Type
@@ -21,6 +20,6 @@ const
      * likePromise( {} );
      * //=> false
      */
-    likePromise = like( { then: Function } ) as ( value ) => value is PromiseLike<any>;
+    likePromise = like({ then: Function }) as (value) => value is PromiseLike<any>;
 
 export default likePromise;

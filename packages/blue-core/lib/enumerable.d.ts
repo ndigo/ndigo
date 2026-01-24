@@ -43,11 +43,11 @@ export interface AsyncEnumerable<K extends PropertyKey, V> {
  * @interface module:core.AsyncEnumerable
  */
 /**
-* @callback module:core.AsyncEnumerable~ForEachCallback
-* @param {*} value
-* @param {*} key
-* @param {EnumeraAsyncEnumerableble} list
-*/
+ * @callback module:core.AsyncEnumerable~ForEachCallback
+ * @param {*} value
+ * @param {*} key
+ * @param {EnumeraAsyncEnumerableble} list
+ */
 /**
  * @function module:core.AsyncEnumerable#entries
  * @returns {external:Iterator}
@@ -70,5 +70,5 @@ export interface AsyncEnumerable<K extends PropertyKey, V> {
  * @param {*} value The value to be tested
  * @returns {external:boolean} Whether or not the `value` is {@linkcode module:core.Enumerable|Enumerable} or {@linkcode module:core.AsyncEnumerable|AsyncEnumerable}.
  */
-export declare const likeEnumerable: (value: any) => value is (AsyncEnumerable<any, any> | Enumerable<any, any>);
+export declare const likeEnumerable: (value: any) => value is AsyncEnumerable<any, any> | Enumerable<any, any>;
 //# sourceMappingURL=enumerable.d.ts.map

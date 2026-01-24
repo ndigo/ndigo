@@ -13,7 +13,7 @@ import { ApplicationContext, AsApplicationContextAware, likeApplicationContextAw
  */
 
 export interface ViewResolver {
-    resolveViewName( name: string, language?: any ): Promise<View>;
+    resolveViewName(name: string, language?: any): Promise<View>;
 }
 
 /**
@@ -23,57 +23,56 @@ export interface ViewResolver {
 class UnresolvedView implements View {
     readonly mediaType: MediaType = null;
 
-    render( model: any, request: any ): void {
+    render(model: any, request: any): void {
         return;
     }
 }
 
-const
-    defineProperty = Reflect.defineProperty,
+const defineProperty = Reflect.defineProperty,
     unresolvedView: View = new UnresolvedView();
 
 export abstract class AbstractCachingViewResolver implements ViewResolver {
-    readonly cache: { [ key: string ]: View };
+    readonly cache: { [key: string]: View };
     isCaching: boolean;
 
-    constructor(){
-        defineProperty( this, 'cache', {
+    constructor() {
+        defineProperty(this, 'cache', {
             value: createNull(),
             configurable: true,
             enumerable: false,
-            writable: false
-        } );
+            writable: false,
+        });
         this.isCaching = true;
     }
 
-    async resolveViewName( name: string, language?: any ): Promise<View> {
+    async resolveViewName(name: string, language?: any): Promise<View> {
         let view: View;
-        if( !this.isCaching ){
-            view = await this._createView( name, language );
+        if (!this.isCaching) {
+            view = await this._createView(name, language);
         } else {
-            const key: string = this._createCacheKey( name, language );
-            view = this.cache[ key ];
-            if( !view ){
-                view = await this._createView( name, language );
-                if( !view ){
+            const key: string = this._createCacheKey(name, language);
+            view = this.cache[key];
+            if (!view) {
+                view = await this._createView(name, language);
+                if (!view) {
                     view = unresolvedView;
                 } else {
-                    this.cache[ key ] = view;
+                    this.cache[key] = view;
                 }
             }
         }
         return view === unresolvedView ? null : view;
     }
 
-    protected async _createView( name: string, language?: any ): Promise<View> {
-        return this._loadView( name, language );
+    protected async _createView(name: string, language?: any): Promise<View> {
+        return this._loadView(name, language);
     }
 
-    protected _createCacheKey( name: string, language?: any ): string {
-        return `${ name }${ language ? '_' + language : '' }`;
+    protected _createCacheKey(name: string, language?: any): string {
+        return `${name}${language ? '_' + language : ''}`;
     }
 
-    protected abstract _loadView( name: string, language?: any ): Promise<View>;
+    protected abstract _loadView(name: string, language?: any): Promise<View>;
 }
 
 export abstract class AbstractPathBasedViewResolver extends AbstractCachingViewResolver {
@@ -81,9 +80,9 @@ export abstract class AbstractPathBasedViewResolver extends AbstractCachingViewR
     prefix: string;
     suffix: string;
     viewClass: Constructable<View>;
-    viewNames: ( string | RegExp )[];
+    viewNames: (string | RegExp)[];
 
-    constructor(){
+    constructor() {
         super();
         this.mediaType = MediaTypes.APPLICATION_JAVASCRIPT;
         this.prefix = '';
@@ -91,28 +90,27 @@ export abstract class AbstractPathBasedViewResolver extends AbstractCachingViewR
         this.viewNames = null;
     }
 
-    supports( name: string, language?: any ): boolean {
+    supports(name: string, language?: any): boolean {
         let isSupported: boolean = !!this.viewNames;
 
-        if( !isSupported ){
-            isSupported = this.viewNames.some( function( viewName: string | RegExp ){
-                if( viewName instanceof RegExp ){
-                    return viewName.test( name );
-                } else if( typeof viewName === 'string' ){
+        if (!isSupported) {
+            isSupported = this.viewNames.some(function (viewName: string | RegExp) {
+                if (viewName instanceof RegExp) {
+                    return viewName.test(name);
+                } else if (typeof viewName === 'string') {
                     return viewName === name;
                 }
-            } );
+            });
         }
 
         return isSupported;
     }
 
-    protected _buildView( name: string ): View {
+    protected _buildView(name: string): View {
         // TODO Update this to represent how views are really created
         // As a result this could become async
-        const
-            ViewClass = this.viewClass,
-            view: AbstractPathBasedView = new ViewClass( `${ this.prefix }${ name }${ this.suffix }` ) as AbstractPathBasedView;
+        const ViewClass = this.viewClass,
+            view: AbstractPathBasedView = new ViewClass(`${this.prefix}${name}${this.suffix}`) as AbstractPathBasedView;
         view.mediaType = this.mediaType;
         return view;
     }
@@ -157,11 +155,12 @@ export abstract class AbstractPathBasedViewResolver extends AbstractCachingViewR
  * @extends module:view.AbstractPathBasedViewResolver
  */
 export class ImportViewResolver extends AbstractPathBasedViewResolver {
-    protected async _loadView( name: string, language?: any ): Promise<View> {
-        const
-            path: string = `${ this.prefix }${ name }${ this.suffix }`,
-            ViewClass: Constructable<View> = await import( /* webpackIgnore: true */ path ).then( ( module ) => module.default );
-        console.log( 'View', name, ViewClass );
+    protected async _loadView(name: string, language?: any): Promise<View> {
+        const path: string = `${this.prefix}${name}${this.suffix}`,
+            ViewClass: Constructable<View> = await import(/* webpackIgnore: true */ path).then(
+                (module) => module.default
+            );
+        console.log('View', name, ViewClass);
         return new ViewClass();
     }
 }
@@ -173,16 +172,16 @@ export class ImportViewResolver extends AbstractPathBasedViewResolver {
  * @class module:view.NameViewResolver
  * @implements module:view.ViewResolver
  */
-export class NameViewResolver extends AsApplicationContextAware( Null ) implements ViewResolver {
+export class NameViewResolver extends AsApplicationContextAware(Null) implements ViewResolver {
     readonly applicationContext: ApplicationContext;
 
-    async resolveViewName( name: string, language?: any ): Promise<View> {
+    async resolveViewName(name: string, language?: any): Promise<View> {
         const { applicationContext } = this;
 
         let view: View = null;
 
-        if( applicationContext.hasValue( name ) ){
-            view = applicationContext.getValue( name );
+        if (applicationContext.hasValue(name)) {
+            view = applicationContext.getValue(name);
         }
 
         return await view;
@@ -197,63 +196,59 @@ export class NameViewResolver extends AsApplicationContextAware( Null ) implemen
  * @mixes module:context.AsApplicationContextAware
  * @extends module:core.Null
  */
-export class ViewResolverComposite extends AsApplicationContextAware( Null ) implements Initializable, ViewResolver {
+export class ViewResolverComposite extends AsApplicationContextAware(Null) implements Initializable, ViewResolver {
     readonly viewResolvers: ViewResolver[];
 
-    constructor( viewResolvers: ViewResolver[] = [] ){
+    constructor(viewResolvers: ViewResolver[] = []) {
         super();
 
-        defineProperty( this, 'viewResolvers', {
+        defineProperty(this, 'viewResolvers', {
             value: viewResolvers,
             configurable: true,
             enumerable: false,
-            writable: false
-        } );
+            writable: false,
+        });
     }
 
-    init( ...args: any[] ): void {
-        const
-            { viewResolvers } = this;
-            length = viewResolvers.length;
-        if( length ){
+    init(...args: any[]): void {
+        const { viewResolvers } = this;
+        length = viewResolvers.length;
+        if (length) {
             let index = 0;
-            for( ; index < length; index++ ){
-                const viewResolver = viewResolvers[ index ];
-                if( likeInitializable( viewResolver ) ){
-                    viewResolver.init( args );
+            for (; index < length; index++) {
+                const viewResolver = viewResolvers[index];
+                if (likeInitializable(viewResolver)) {
+                    viewResolver.init(args);
                 }
             }
         }
     }
 
-    async resolveViewName( name: string, language?: any ): Promise<View> {
-        const
-            { viewResolvers } = this;
-            length = viewResolvers.length;
-        if( length ){
+    async resolveViewName(name: string, language?: any): Promise<View> {
+        const { viewResolvers } = this;
+        length = viewResolvers.length;
+        if (length) {
             let index = 0;
-            for( ; index < length; index++ ){
-                const
-                    viewResolver = viewResolvers[ index ],
-                    view = await viewResolver.resolveViewName( name, language );
-                    if( view ){
-                        return view;
-                    }
+            for (; index < length; index++) {
+                const viewResolver = viewResolvers[index],
+                    view = await viewResolver.resolveViewName(name, language);
+                if (view) {
+                    return view;
+                }
             }
         }
         return null;
     }
 
-    setApplicationContext( applicationContext: ApplicationContext ){
-        const
-            { viewResolvers } = this;
-            length = viewResolvers.length;
-        if( length ){
+    setApplicationContext(applicationContext: ApplicationContext) {
+        const { viewResolvers } = this;
+        length = viewResolvers.length;
+        if (length) {
             let index = 0;
-            for( ; index < length; index++ ){
-                const viewResolver = viewResolvers[ index ];
-                if( likeApplicationContextAware( viewResolver ) ){
-                    viewResolver.setApplicationContext( applicationContext );
+            for (; index < length; index++) {
+                const viewResolver = viewResolvers[index];
+                if (likeApplicationContextAware(viewResolver)) {
+                    viewResolver.setApplicationContext(applicationContext);
                 }
             }
         }

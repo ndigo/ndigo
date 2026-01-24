@@ -9,7 +9,7 @@ import { HTTPInit, ResponseAwareHTTPInterceptor } from '../http';
  */
 
 export interface ResponseCodeAwareHTTPInterceptor {
-    [ statusCode: number ]: ( response: Response, settings: HTTPInit ) => Promise<void>;
+    [statusCode: number]: (response: Response, settings: HTTPInit) => Promise<void>;
 }
 
 /**
@@ -28,11 +28,11 @@ export class MappedResponseCodeHTTPInterceptor implements ResponseAwareHTTPInter
      * @readonly
      * @member {module:http.ResponseCodeAwareHTTPInterceptor} module:http.MappedResponseCodeHTTPInterceptor#interceptor
      */
-    get interceptor(){
+    get interceptor() {
         return this.#interceptor;
     }
 
-    constructor( interceptor: ResponseCodeAwareHTTPInterceptor ){
+    constructor(interceptor: ResponseCodeAwareHTTPInterceptor) {
         this.#interceptor = interceptor;
     }
 
@@ -43,10 +43,10 @@ export class MappedResponseCodeHTTPInterceptor implements ResponseAwareHTTPInter
      * @param {module:http.HTTPInit} settings
      * @returns {external:Promise<external:void>}
      */
-    async postResponse( response: Response, settings: HTTPInit ): Promise<void> {
+    async postResponse(response: Response, settings: HTTPInit): Promise<void> {
         const { status } = response;
-        if( status in this.#interceptor ){
-            await this.#interceptor[ status ]( response, settings );
+        if (status in this.#interceptor) {
+            await this.#interceptor[status](response, settings);
         }
     }
 }

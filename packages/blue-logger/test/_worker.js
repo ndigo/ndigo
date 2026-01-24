@@ -1,13 +1,10 @@
-const { rest, setupWorker } = require( 'msw' );
+const { rest, setupWorker } = require('msw');
 
 const handlers = [
-    rest.post( '/log/:duration', ( { params }, response, context ) => {
+    rest.post('/log/:duration', ({ params }, response, context) => {
         const { duration } = params;
-        return response(
-            context.delay( Number( duration ) ),
-            context.body( 'OK' )
-        );
-    } )
+        return response(context.delay(Number(duration)), context.body('OK'));
+    }),
 ];
 
-export const worker = setupWorker( ...handlers );
+export const worker = setupWorker(...handlers);

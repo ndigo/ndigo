@@ -22,52 +22,52 @@ const standardTypes = {
     AccountNumber: {
         constraints: [
             {
-                type: 'AlphaNumeric'
+                type: 'AlphaNumeric',
             },
             {
                 type: 'Length',
                 params: {
                     min: 8,
-                    max: 16
-                }
-            }
-        ]
+                    max: 16,
+                },
+            },
+        ],
     },
 
     // BLUEJS-913 - Alphanumeric, min 7 characters and ends with 4 digits
     AccountMaskNumber: {
         constraints: [
             {
-                type: 'AlphaNumeric'
+                type: 'AlphaNumeric',
             },
             {
                 type: 'Length',
                 params: {
-                    min: 7
-                }
+                    min: 7,
+                },
             },
             {
                 type: 'Numbers',
                 params: {
                     min: 4,
-                    max: 4
-                }
+                    max: 4,
+                },
             },
             {
                 type: 'Pattern',
                 params: {
-                    regex: '/(\\d){4}$/'
-                }
-            }
-        ]
+                    regex: '/(\\d){4}$/',
+                },
+            },
+        ],
     },
 
     AddressLine: {
         constraints: [
             {
-                type: 'AddressLine'
-            }
-        ]
+                type: 'AddressLine',
+            },
+        ],
     },
 
     AlertsProfileNickname: {
@@ -75,10 +75,10 @@ const standardTypes = {
             {
                 type: 'Pattern',
                 params: {
-                    regex: '/[A-Z a-z 0-9 _]$/'
-                }
-            }
-        ]
+                    regex: '/[A-Z a-z 0-9 _]$/',
+                },
+            },
+        ],
     },
 
     Category: {
@@ -86,45 +86,45 @@ const standardTypes = {
             {
                 type: 'Length',
                 params: {
-                    min: 2
-                }
-            }
-        ]
+                    min: 2,
+                },
+            },
+        ],
     },
 
     City: {
         constraints: [
             {
-                type: 'City'
-            }
-        ]
+                type: 'City',
+            },
+        ],
     },
 
     Description: {
         constraints: [
             {
-                type: 'NotBlank'
-            }
-        ]
+                type: 'NotBlank',
+            },
+        ],
     },
 
     Date: {
         constraints: [
             {
-                type: 'Date'
-            }
-        ]
+                type: 'Date',
+            },
+        ],
     },
 
     Email: {
         constraints: [
             {
-                type: 'NotPhoneEmail'
+                type: 'NotPhoneEmail',
             },
             {
-                type: 'Email'
-            }
-        ]
+                type: 'Email',
+            },
+        ],
     },
 
     Frequency: {
@@ -132,69 +132,68 @@ const standardTypes = {
             {
                 type: 'Enum',
                 params: {
-                    value: 'Daily Weekly Monthly'
-                }
-            }
-        ]
+                    value: 'Daily Weekly Monthly',
+                },
+            },
+        ],
     },
 
     Id: {
         constraints: [
             {
-                type: 'AlphaNumeric'
+                type: 'AlphaNumeric',
             },
             {
                 type: 'Length',
                 params: {
-                    min: 6
-                }
+                    min: 6,
+                },
             },
             {
                 type: 'Numbers',
                 params: {
-                    min: 1
-                }
-            }
-        ]
+                    min: 1,
+                },
+            },
+        ],
     },
 
     IdentificationCode: {
         constraints: [
             {
-                type: 'Integer'
+                type: 'Integer',
             },
             {
                 type: 'Length',
                 params: {
-                    max: 8
-                }
-
-            }
-        ]
+                    max: 8,
+                },
+            },
+        ],
     },
 
     List: {
-        constraints: []
+        constraints: [],
     },
 
     Money: {
         constraints: [
             {
-                type: 'Money'
-            }
-        ]
+                type: 'Money',
+            },
+        ],
     },
 
     Noop: {
-        constraints: []
+        constraints: [],
     },
 
     OnOff: {
         constraints: [
             {
-                type: 'Boolean'
-            }
-        ]
+                type: 'Boolean',
+            },
+        ],
     },
 
     Password: {
@@ -203,40 +202,40 @@ const standardTypes = {
                 type: 'Length',
                 params: {
                     min: 8,
-                    max: 32
-                }
+                    max: 32,
+                },
             },
             {
                 type: 'Numbers',
                 params: {
-                    min: 1
-                }
+                    min: 1,
+                },
             },
             {
                 type: 'Characters',
                 params: {
-                    min: 1
-                }
+                    min: 1,
+                },
             },
             {
                 type: 'Pattern',
                 params: {
-                    regex: '/^[\\w!@#$%^*()_+\\-=\\[\\]{};\':\\|,.\\/?~]*$/'	// jshint ignore:line
-                }
+                    regex: "/^[\\w!@#$%^*()_+\\-=\\[\\]{};':\\|,.\\/?~]*$/", // jshint ignore:line
+                },
             },
             {
                 type: 'NonConsecutiveAlphaNumerics',
                 params: {
-                    maxSeqential: 3
-                }
+                    maxSeqential: 3,
+                },
             },
             {
                 type: 'NonRepeatingAlphaNumerics',
                 params: {
-                    maxRepeating: 2
-                }
-            }
-        ]
+                    maxRepeating: 2,
+                },
+            },
+        ],
     },
 
     Payee: {
@@ -244,48 +243,48 @@ const standardTypes = {
             {
                 type: 'Length',
                 params: {
-                    max: 30
-                }
-            }
-        ]
+                    max: 30,
+                },
+            },
+        ],
     },
 
     Phone: {
         constraints: [
             {
-                type: 'PhoneNorthAmerica'
+                type: 'PhoneNorthAmerica',
             },
             {
                 type: 'Length',
                 params: {
                     min: 10,
-                    max: 12
-                }
-            }
-        ]
+                    max: 12,
+                },
+            },
+        ],
     },
 
     PostalCode: {
         constraints: [
             {
-                type: 'PostalCode'
-            }
-        ]
+                type: 'PostalCode',
+            },
+        ],
     },
 
     // BlueJS-529
     ProspectApplicantId: {
         constraints: [
             {
-                type: 'AlphaNumeric'
+                type: 'AlphaNumeric',
             },
             {
                 type: 'Length',
                 params: {
-                    min: 6
-                }
-            }
-        ]
+                    min: 6,
+                },
+            },
+        ],
     },
 
     Rate: {
@@ -294,49 +293,49 @@ const standardTypes = {
                 type: 'Digits',
                 params: {
                     integer: 0,
-                    fraction: 2
-                }
+                    fraction: 2,
+                },
             },
             {
                 type: 'Range',
                 params: {
                     min: 0,
-                    max: 0.99
-                }
-            }
-        ]
+                    max: 0.99,
+                },
+            },
+        ],
     },
 
     RoutingNumber: {
         constraints: [
             {
-                type: 'RoutingNumber'
-            }
-        ]
+                type: 'RoutingNumber',
+            },
+        ],
     },
 
     // BLUEJS-556
     RSAToken: {
         constraints: [
             {
-                type: 'Numeric'
+                type: 'Numeric',
             },
             {
                 type: 'Length',
                 params: {
                     min: 6,
-                    max: 35
-                }
-            }
-        ]
+                    max: 35,
+                },
+            },
+        ],
     },
 
     SimpleUserId: {
         constraints: [
             {
-                type: 'NonRepeatingSequence'
-            }
-        ]
+                type: 'NonRepeatingSequence',
+            },
+        ],
     },
 
     TaxpayerIdentification: {
@@ -344,81 +343,81 @@ const standardTypes = {
             {
                 type: 'Pattern',
                 params: {
-                    regex: '^(\\d{3}-\\d{2}-\\d{4}|\\d{9}|\\d{2}-\\d{7}|XXX-XX-XXXX|XX-XXXXXXX)$'
-                }
-            }
-        ]
+                    regex: '^(\\d{3}-\\d{2}-\\d{4}|\\d{9}|\\d{2}-\\d{7}|XXX-XX-XXXX|XX-XXXXXXX)$',
+                },
+            },
+        ],
     },
 
     UserId: {
         constraints: [
             {
-                type: 'AlphaNumeric'
+                type: 'AlphaNumeric',
             },
             {
                 type: 'Length',
                 params: {
                     min: 8,
-                    max: 32
-                }
+                    max: 32,
+                },
             },
             {
                 type: 'Characters',
                 params: {
-                    min: 1
-                }
+                    min: 1,
+                },
             },
             {
                 type: 'Numbers',
                 params: {
-                    min: 1
-                }
-            }
-        ]
+                    min: 1,
+                },
+            },
+        ],
     },
 
     UserSecurityCode: {
         constraints: [
             {
-                type: 'AlphaNumeric'
+                type: 'AlphaNumeric',
             },
             {
                 type: 'Length',
                 params: {
                     min: 8,
-                    max: 32
-                }
+                    max: 32,
+                },
             },
             {
                 type: 'Characters',
                 params: {
-                    min: 1
-                }
+                    min: 1,
+                },
             },
             {
                 type: 'Numbers',
                 params: {
-                    min: 1
-                }
-            }
-        ]
+                    min: 1,
+                },
+            },
+        ],
     },
 
     ZipCode: {
         constraints: [
             {
-                type: 'ZipCode'
-            }
-        ]
+                type: 'ZipCode',
+            },
+        ],
     },
 
     ZipCodeExtension: {
         constraints: [
             {
-                type: 'ZipCodeExtension'
-            }
-        ]
-    }
+                type: 'ZipCodeExtension',
+            },
+        ],
+    },
 };
 
 export default standardTypes;

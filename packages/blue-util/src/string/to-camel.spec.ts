@@ -1,34 +1,33 @@
 import toCamel from './to-camel';
 
-describe( 'toCamel', function(){
-
-    test( 'it should convert hyphenated text to camelCase', function(){
+describe('toCamel', function () {
+    test('it should convert hyphenated text to camelCase', function () {
         const str = 'lorem-ipsum-dolor';
-        expect( toCamel( str ) ).toBe( 'loremIpsumDolor' );
-    } );
+        expect(toCamel(str)).toBe('loremIpsumDolor');
+    });
 
-    test( 'it should convert spaces to camelCase', function(){
+    test('it should convert spaces to camelCase', function () {
         const str = '  lorem ipsum  dolor  ';
-        expect( toCamel( str ) ).toBe( 'loremIpsumDolor' );
-    } );
+        expect(toCamel(str)).toBe('loremIpsumDolor');
+    });
 
-    test( 'it should convert underscores to camelCase', function(){
+    test('it should convert underscores to camelCase', function () {
         const str = 'lorem_ipsum_dolor';
-        expect( toCamel( str ) ).toBe( 'loremIpsumDolor' );
-    } );
+        expect(toCamel(str)).toBe('loremIpsumDolor');
+    });
 
-    test( 'it should remove non word', function(){
+    test('it should remove non word', function () {
         const str = ' #$  lorem ipsum ^ &:  dolor ++ ';
-        expect( toCamel( str ) ).toBe( 'loremIpsumDolor' );
-    } );
+        expect(toCamel(str)).toBe('loremIpsumDolor');
+    });
 
-    test( 'it should replace accents', function(){
+    test('it should replace accents', function () {
         const str = 'spéçïãl chârs';
-        expect( toCamel( str ) ).toBe( 'specialChars' );
-    } );
+        expect(toCamel(str)).toBe('specialChars');
+    });
 
-    test( 'it should do it all at once', function(){
+    test('it should do it all at once', function () {
         const str = '  %$ & lorem Ipsum @ dolor spéçïãl  ! chârs  )( )  ';
-        expect( toCamel( str ) ).toBe( 'loremIpsumDolorSpecialChars' );
-    } );
-} );
+        expect(toCamel(str)).toBe('loremIpsumDolorSpecialChars');
+    });
+});

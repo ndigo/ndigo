@@ -7,9 +7,9 @@ import { keypathExpression } from '@blue/parser';
 import { complement, isNil, like, path, pathSatisfies, reduce } from '@blue/util';
 
 export interface PropertyResolver {
-    getProperty( key: string, defaultValue?: JSONValue ): JSONValue;
-    getRequiredProperty( key: string ): JSONValue;
-    hasProperty( key: string ): boolean;
+    getProperty(key: string, defaultValue?: JSONValue): JSONValue;
+    getRequiredProperty(key: string): JSONValue;
+    hasProperty(key: string): boolean;
 }
 
 export interface ConfigurablePropertyResolver extends PropertyResolver {
@@ -49,19 +49,16 @@ export interface ConfigurablePropertyResolver extends PropertyResolver {
  * @extends module:context.PropertyResolver
  */
 
-const
-    { defineProperty, getPrototypeOf, setPrototypeOf } = Reflect,
-    pathIsDefined = pathSatisfies( complement( isNil ) ),
-
-    linkPrototype = ( current, next ) => {
-        setPrototypeOf( next, null );
-        setPrototypeOf( current, next );
-        return getPrototypeOf( current );
+const { defineProperty, getPrototypeOf, setPrototypeOf } = Reflect,
+    pathIsDefined = pathSatisfies(complement(isNil)),
+    linkPrototype = (current, next) => {
+        setPrototypeOf(next, null);
+        setPrototypeOf(current, next);
+        return getPrototypeOf(current);
     },
-
-    toPrototypeChain = ( list: JSONObject[] ): JSONObject => {
+    toPrototypeChain = (list: JSONObject[]): JSONObject => {
         const data: JSONObject = createNull();
-        reduce( linkPrototype, data )( list );
+        reduce(linkPrototype, data)(list);
         return data;
     };
 
@@ -70,7 +67,11 @@ const
  * @param {*} value The value to be tested.
  * @return {external:boolean} Whether or not the value is like a {@linkcode module:context.PropertyResolver|PropertyResolver}.
  */
-export const likePropertyResolver = like( { getProperty: Function, getRequiredProperty: Function, hasProperty: Function } ) as ( value ) => value is PropertyResolver;
+export const likePropertyResolver = like({
+    getProperty: Function,
+    getRequiredProperty: Function,
+    hasProperty: Function,
+}) as (value) => value is PropertyResolver;
 
 /**
  * @class module:context.PrototypalPropertyResolver
@@ -87,17 +88,17 @@ export class PrototypalPropertyResolver implements ConfigurablePropertyResolver 
         return this.#propertySources;
     }
 
-    set propertySources( propertySources ){
+    set propertySources(propertySources) {
         this.#propertySources = propertySources;
-        defineProperty( this, 'properties', {
-            value: propertySources.length === 1 ? propertySources[ 0 ] : toPrototypeChain( propertySources ),
+        defineProperty(this, 'properties', {
+            value: propertySources.length === 1 ? propertySources[0] : toPrototypeChain(propertySources),
             configurable: true,
             enumerable: false,
-            writable: false
-        } );
+            writable: false,
+        });
     }
 
-    constructor( propertySources: JSONObject[] ){
+    constructor(propertySources: JSONObject[]) {
         /**
          * @member {module:core.JSONObject} module:context.PrototypalPropertyResolver#properties
          */
@@ -111,9 +112,9 @@ export class PrototypalPropertyResolver implements ConfigurablePropertyResolver 
      * @param {module:core.JSONValue} [defaultValue]
      * @returns {module:core.JSONValue}
      */
-    getProperty( key: string, defaultValue?: JSONValue ): JSONValue {
-        const keypath = keypathExpression.run( key ).result;
-        return keypath ? path( keypath, this.properties ) ?? defaultValue : defaultValue;
+    getProperty(key: string, defaultValue?: JSONValue): JSONValue {
+        const keypath = keypathExpression.run(key).result;
+        return keypath ? (path(keypath, this.properties) ?? defaultValue) : defaultValue;
     }
 
     /**
@@ -121,10 +122,10 @@ export class PrototypalPropertyResolver implements ConfigurablePropertyResolver 
      * @param {external:string} key
      * @returns {module:core.JSONValue}
      */
-    getRequiredProperty( key: string ): JSONValue {
-        const value = this.getProperty( key );
-        if( typeof value === 'undefined' ){
-            throw new Error( `Required property "${ key }" missing` );
+    getRequiredProperty(key: string): JSONValue {
+        const value = this.getProperty(key);
+        if (typeof value === 'undefined') {
+            throw new Error(`Required property "${key}" missing`);
         }
         return value;
     }
@@ -134,8 +135,8 @@ export class PrototypalPropertyResolver implements ConfigurablePropertyResolver 
      * @param {external:string} key
      * @returns {external:boolean}
      */
-    hasProperty( key: string ): boolean {
-        const keypath = keypathExpression.run( key ).result;
-        return keypath ? pathIsDefined( keypath, this.properties ) : false;
+    hasProperty(key: string): boolean {
+        const keypath = keypathExpression.run(key).result;
+        return keypath ? pathIsDefined(keypath, this.properties) : false;
     }
 }

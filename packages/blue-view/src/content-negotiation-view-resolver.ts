@@ -9,11 +9,11 @@ import { ViewResolver } from './view-resolver';
 
 export interface MediaTypeFileExtensionResolver {
     getAllFileExtenstions(): string[];
-    resolveFileExtensions( mediaType: MediaType ): string[];
+    resolveFileExtensions(mediaType: MediaType): string[];
 }
 
 export interface ContentNegotiationStrategy {
-    resolveMediaTypes( request: any ): MediaType[];
+    resolveMediaTypes(request: any): MediaType[];
 }
 
 /**
@@ -22,31 +22,31 @@ export interface ContentNegotiationStrategy {
  * @interface module:view.MediaTypeFileExtensionResolver
  */
 
-const
-    isDefined = complement( isNil ),
-    hasFunction = propSatisfies( isFunction ),
-    hasGetAllFileExtenstions = hasFunction( 'getAllFileExtenstions' ),
-    hasResolveFileExtensions = hasFunction( 'resolveFileExtensions' );
+const isDefined = complement(isNil),
+    hasFunction = propSatisfies(isFunction),
+    hasGetAllFileExtenstions = hasFunction('getAllFileExtenstions'),
+    hasResolveFileExtensions = hasFunction('resolveFileExtensions');
 
-export const likeMediaTypeFileExtensionResolver = ( value: any ): value is MediaTypeFileExtensionResolver => allPass( [ isDefined, hasGetAllFileExtenstions, hasResolveFileExtensions ] )( value );
+export const likeMediaTypeFileExtensionResolver = (value: any): value is MediaTypeFileExtensionResolver =>
+    allPass([isDefined, hasGetAllFileExtenstions, hasResolveFileExtensions])(value);
 
 export class MappingMediaTypeFileExtensionResolver implements MediaTypeFileExtensionResolver {
     mediaTypes: Map<string, MediaType>;
     fileExtensions: MultiValueMap<MediaType, string>;
     allFileExtensions: string[];
 
-    constructor( mediaTypes: Map<string, MediaType> ){
+    constructor(mediaTypes: Map<string, MediaType>) {
         this.mediaTypes = new Map<string, MediaType>();
         this.fileExtensions = new MultiValueMap<MediaType, string>();
         this.allFileExtensions = [];
 
-        if( mediaTypes && mediaTypes.size ){
-            mediaTypes.forEach( function( mediaType: MediaType, extension: string ){
+        if (mediaTypes && mediaTypes.size) {
+            mediaTypes.forEach(function (mediaType: MediaType, extension: string) {
                 const lowerCaseExtension: string = extension.toLowerCase();
-                this.mediaTypes.set( lowerCaseExtension, mediaType );
-                this.fileExtensions.add( mediaType, lowerCaseExtension );
-                this.allFileExtensions.push( lowerCaseExtension );
-            }, this );
+                this.mediaTypes.set(lowerCaseExtension, mediaType);
+                this.fileExtensions.add(mediaType, lowerCaseExtension);
+                this.allFileExtensions.push(lowerCaseExtension);
+            }, this);
         }
     }
 
@@ -55,74 +55,72 @@ export class MappingMediaTypeFileExtensionResolver implements MediaTypeFileExten
     }
 
     getAllMediaTypes(): MediaType[] {
-        return [ ...this.mediaTypes.values() ];
+        return [...this.mediaTypes.values()];
     }
 
-    lookupMediaType( extension: string ): MediaType {
-        return this.mediaTypes.get( extension.toLowerCase() );
+    lookupMediaType(extension: string): MediaType {
+        return this.mediaTypes.get(extension.toLowerCase());
     }
 
-    resolveFileExtensions( mediaType: MediaType ): string[] {
-        return this.fileExtensions.get( mediaType );
+    resolveFileExtensions(mediaType: MediaType): string[] {
+        return this.fileExtensions.get(mediaType);
     }
 }
 
 export class FixedContentNegotiationStrategy implements ContentNegotiationStrategy {
     mediaTypes: MediaType[];
 
-    constructor( mediaTypes: MediaType | MediaType[] ){
-        this.mediaTypes = Array.isArray( mediaTypes ) ?
-            mediaTypes :
-            [ mediaTypes ];
+    constructor(mediaTypes: MediaType | MediaType[]) {
+        this.mediaTypes = Array.isArray(mediaTypes) ? mediaTypes : [mediaTypes];
     }
 
-    resolveMediaTypes( request: any ): MediaType[] {
+    resolveMediaTypes(request: any): MediaType[] {
         return this.mediaTypes;
     }
 }
 
-export abstract class AbstractMappingContentNegotiationStrategy extends MappingMediaTypeFileExtensionResolver implements ContentNegotiationStrategy {
-
-    resolveMediaTypes( request: any ): MediaType[] {
-        throw new Error( "Method not implemented." );
+export abstract class AbstractMappingContentNegotiationStrategy
+    extends MappingMediaTypeFileExtensionResolver
+    implements ContentNegotiationStrategy
+{
+    resolveMediaTypes(request: any): MediaType[] {
+        throw new Error('Method not implemented.');
     }
 
-    resolveMediaTypeKey( request: any, key: string ): MediaType[] {
+    resolveMediaTypeKey(request: any, key: string): MediaType[] {
         return null;
     }
 }
 
 export class PathExtensionContentNegotiationStrategy implements ContentNegotiationStrategy {
-    resolveMediaTypes( request: any ): MediaType[] {
-        throw new Error( "Method not implemented." );
+    resolveMediaTypes(request: any): MediaType[] {
+        throw new Error('Method not implemented.');
     }
-
 }
 
 export class ContentNegotiationManager implements ContentNegotiationStrategy, MediaTypeFileExtensionResolver {
     strategies: ContentNegotiationStrategy[];
     resolvers: MediaTypeFileExtensionResolver[];
 
-    constructor( strategies: ContentNegotiationStrategy[] = [] ){
+    constructor(strategies: ContentNegotiationStrategy[] = []) {
         this.resolvers = [];
         this.strategies = strategies;
-        this.strategies.forEach( function( strategy ){
-            likeMediaTypeFileExtensionResolver( strategy ) && this.resolvers.push( strategy );
-        }, this );
+        this.strategies.forEach(function (strategy) {
+            likeMediaTypeFileExtensionResolver(strategy) && this.resolvers.push(strategy);
+        }, this);
     }
 
     getAllFileExtenstions(): string[] {
-        throw new Error( "Method not implemented." );
+        throw new Error('Method not implemented.');
     }
 
-    resolveFileExtensions( mediaType: MediaType ): string[] {
-        throw new Error( "Method not implemented." );
+    resolveFileExtensions(mediaType: MediaType): string[] {
+        throw new Error('Method not implemented.');
     }
 
-    resolveMediaTypes( request: any ): MediaType[] {
-        throw new Error( "Method not implemented." );
+    resolveMediaTypes(request: any): MediaType[] {
+        throw new Error('Method not implemented.');
     }
-
 }
 
 export class ContentNegotiationViewResolver implements ViewResolver {
@@ -130,17 +128,16 @@ export class ContentNegotiationViewResolver implements ViewResolver {
     defaultViews: View[];
     viewResolvers: ViewResolver[];
 
-    constructor( manager: ContentNegotiationManager ){
+    constructor(manager: ContentNegotiationManager) {
         this.contentNegotiationManager = manager;
     }
 
-    getMediaTypes( request: any ): MediaType[] {
+    getMediaTypes(request: any): MediaType[] {
         this.contentNegotiationManager;
         return null;
     }
 
-    resolveViewName( name: string, language?: any ): Promise<View> {
-        throw new Error( "Method not implemented." );
+    resolveViewName(name: string, language?: any): Promise<View> {
+        throw new Error('Method not implemented.');
     }
-
 }

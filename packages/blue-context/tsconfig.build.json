@@ -4,15 +4,13 @@
     "baseUrl": ".",
     "composite": true,
     "outDir": "lib",
-    "paths":{
-      "@blue/*": [ "../blue-*/index" ]
+    "paths": {
+      "@blue/*": ["../blue-*/index"]
     },
     "rootDir": "src",
-    "skipLibCheck": true,
+    "skipLibCheck": true
   },
-  "exclude": [
-    "node_modules/**/*"
-  ],
+  "exclude": ["node_modules/**/*"],
   "references": [
     { "path": "../blue-core/tsconfig.build.json" },
     { "path": "../blue-content/tsconfig.build.json" },

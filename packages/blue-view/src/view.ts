@@ -9,25 +9,25 @@ import { toMatrixString, toQueryString } from '@blue/router';
 
 export interface View {
     mediaType: MediaType;
-    render( model, request ): void;
+    render(model, request): void;
 }
 
-export abstract class AbstractView extends AsNameAware( AsApplicationContextAware( Null ) ) implements Serializable, View {
+export abstract class AbstractView extends AsNameAware(AsApplicationContextAware(Null)) implements Serializable, View {
     mediaType: MediaType;
     name: string;
 
-    get [ Symbol.toStringTag ](): string {
-        return `View:${ this.name }`;
+    get [Symbol.toStringTag](): string {
+        return `View:${this.name}`;
     }
 
-    constructor(){
+    constructor() {
         super();
-        this.mediaType = MediaTypes.TEXT_HTML.withCharset( 'UTF-8' );
+        this.mediaType = MediaTypes.TEXT_HTML.withCharset('UTF-8');
     }
 
-    render( model: any, request: any ): void {
-        const viewModel = this._createViewModel( model, request );
-        this._renderView( viewModel, request );
+    render(model: any, request: any): void {
+        const viewModel = this._createViewModel(model, request);
+        this._renderView(viewModel, request);
     }
 
     toJSON(): JSONObject {
@@ -41,30 +41,30 @@ export abstract class AbstractView extends AsNameAware( AsApplicationContextAwar
         return this.name;
     }
 
-    protected _createViewModel( model: any, request: any ): any {
+    protected _createViewModel(model: any, request: any): any {
         return model;
     }
 
-    protected abstract _renderView( viewModel: any, request: any ): void;
+    protected abstract _renderView(viewModel: any, request: any): void;
 }
 
 // TODO Implement Initializable?
 export abstract class AbstractPathBasedView extends AbstractView {
     path: string;
 
-    get [ Symbol.toStringTag ](): string {
-        return `PathBasedView:${ this.path }`;
+    get [Symbol.toStringTag](): string {
+        return `PathBasedView:${this.path}`;
     }
 
-    constructor( path: string = null ){
+    constructor(path: string = null) {
         super();
-        if( path ){
-            Reflect.defineProperty( this, 'path', {
+        if (path) {
+            Reflect.defineProperty(this, 'path', {
                 value: path,
                 configurable: true,
                 enumerable: false,
-                writable: false
-            } );
+                writable: false,
+            });
         }
     }
 
@@ -76,7 +76,7 @@ export abstract class AbstractPathBasedView extends AbstractView {
 }
 
 export abstract class AbstractTemplateView extends AbstractPathBasedView {
-    protected abstract _renderTemplate( templateModel: any, request: any ): void;
+    protected abstract _renderTemplate(templateModel: any, request: any): void;
 }
 
 /**
@@ -139,23 +139,21 @@ export abstract class AbstractTemplateView extends AbstractPathBasedView {
 export class RerouteView extends AbstractPathBasedView {
     contextRelative: boolean;
 
-    constructor( path: string, contextRelative: boolean = false ){
-        super( path );
+    constructor(path: string, contextRelative: boolean = false) {
+        super(path);
         this.contextRelative = contextRelative;
     }
 
-    protected _createTargetPath( model: any, request: any ): string {
-        const data: string = this.contextRelative ?
-            toMatrixString( model ) :
-            toQueryString( model );
-        return `${ this.path }${ data }`;
+    protected _createTargetPath(model: any, request: any): string {
+        const data: string = this.contextRelative ? toMatrixString(model) : toQueryString(model);
+        return `${this.path}${data}`;
     }
 
-    protected _renderView( viewModel: any, request: any ): void {
-        const targetPath: string = this._createTargetPath( viewModel, request );
+    protected _renderView(viewModel: any, request: any): void {
+        const targetPath: string = this._createTargetPath(viewModel, request);
 
         // TODO USE ROUTER
-        history.pushState( null, null, targetPath );
+        history.pushState(null, null, targetPath);
     }
 }
 

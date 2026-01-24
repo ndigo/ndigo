@@ -13,7 +13,7 @@ export interface AsyncDestroyable extends Destroyable {
 }
 
 export interface Initializable {
-    init( ...args: any[] ): void;
+    init(...args: any[]): void;
 }
 
 /**
@@ -48,11 +48,11 @@ export interface Initializable {
  * @param {*} value
  * @returns {external:boolean} Whether or not the `value` is {@linkcode module:factory.Destroyable|Destroyable}.
  */
-export const likeDestroyable = like( { destroy: Function, destroyed: Boolean } ) as ( value ) => value is Destroyable;
+export const likeDestroyable = like({ destroy: Function, destroyed: Boolean }) as (value) => value is Destroyable;
 
 /**
  * @function module:factory.likeInitializable
  * @param {*} value
  * @returns {external:boolean} Whether or not the `value` is {@linkcode module:factory.Initializable|Initializable}.
  */
-export const likeInitializable = like( { init: Function } ) as ( value ) => value is Initializable;
+export const likeInitializable = like({ init: Function }) as (value) => value is Initializable;

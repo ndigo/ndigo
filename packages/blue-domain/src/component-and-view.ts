@@ -10,8 +10,8 @@ import { DomainComponent } from './component';
  * @extends module:dispatcher.ModelAndView
  */
 export class ComponentAndView extends ModelAndView {
-    get [ Symbol.toStringTag ](): string {
-        return `ComponentAndView:${ this.viewName }`;
+    get [Symbol.toStringTag](): string {
+        return `ComponentAndView:${this.viewName}`;
     }
 
     component: DomainComponent;

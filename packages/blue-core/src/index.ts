@@ -17,7 +17,7 @@
  * @see {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array}
  */
 
- /**
+/**
  * @global
  * @external ArrayLike
  * @see {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Indexed_collections}
@@ -79,7 +79,7 @@
  * @see {@link external:Iterator|Iterator}
  */
 
- /**
+/**
  * @function external:IterableIterator.next
  * @returns {external:IteratorResult}
  */

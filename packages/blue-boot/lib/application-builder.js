@@ -44,8 +44,7 @@ export class ApplicationBuilder {
     parent(...sources) {
         if (this.#parent === null) {
             this.#parent = new ApplicationBuilder(sources);
-        }
-        else {
+        } else {
             this.#parent.sources(sources);
         }
         return this.#parent;
@@ -70,9 +69,8 @@ export class ApplicationBuilder {
     run(...args) {
         if (this.#running) {
             return this.#context;
-        }
-        else {
-            this.#context = this.build().run( /*args*/);
+        } else {
+            this.#context = this.build().run(/*args*/);
         }
         return this.#context;
     }

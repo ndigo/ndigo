@@ -2,54 +2,72 @@
  * @author Jeff Rose
  * @module model
  */
-import { isPrimitive, } from '@blue/core';
-import { __, both, complement, equals, filter, gt, isEmpty, isFuture, isPast, isNumber, isString, length, lt, T, trim, uniq } from '@blue/util';
+import { isPrimitive } from '@blue/core';
+import {
+    __,
+    both,
+    complement,
+    equals,
+    filter,
+    gt,
+    isEmpty,
+    isFuture,
+    isPast,
+    isNumber,
+    isString,
+    length,
+    lt,
+    T,
+    trim,
+    uniq,
+} from '@blue/util';
 import { BasicModel } from '../node_modules/objectmodel/src/object-model';
 
-const
-    { isFinite, isInteger, isSafeInteger } = Number,
-    isDense = ( arr: Array<any> ) => equals( length( filter( T, arr ) ), length( arr ) ),
-    greaterThanZero = gt( __, 0 ),
-    lessThanZero = lt( __, 0 ),
-    isFalsy = ( x ) => !x,
-    isTruthy = ( x ) => !!x,
-    isNotBlank = complement( both( isString, isEmpty ) ),
-    isNegativeNumber = both( isNumber, lessThanZero ) as ( value ) => value is number,
-    isPositiveNumber = both( isNumber, greaterThanZero ) as ( value ) => value is number,
-    isNotEmpty = complement( isEmpty ),
-    isNormalized = ( str: string ) => str.normalize() === str,
-    isTrimmed = ( str: string ) => trim( str ) === str,
-    isUnique = ( arr: Array<any> ) => equals( uniq( arr ), arr );
+const { isFinite, isInteger, isSafeInteger } = Number,
+    isDense = (arr: Array<any>) => equals(length(filter(T, arr)), length(arr)),
+    greaterThanZero = gt(__, 0),
+    lessThanZero = lt(__, 0),
+    isFalsy = (x) => !x,
+    isTruthy = (x) => !!x,
+    isNotBlank = complement(both(isString, isEmpty)),
+    isNegativeNumber = both(isNumber, lessThanZero) as (value) => value is number,
+    isPositiveNumber = both(isNumber, greaterThanZero) as (value) => value is number,
+    isNotEmpty = complement(isEmpty),
+    isNormalized = (str: string) => str.normalize() === str,
+    isTrimmed = (str: string) => trim(str) === str,
+    isUnique = (arr: Array<any>) => equals(uniq(arr), arr);
 
 // eslint-disable-next-line no-undef
-export const Primitive = BasicModel( [ BigInt, Boolean, Number, String, Symbol, null, undefined ] ).assert( isPrimitive ).as( 'Primitive' );
+export const Primitive = BasicModel([BigInt, Boolean, Number, String, Symbol, null, undefined])
+    .assert(isPrimitive)
+    .as('Primitive');
 
 // Booleans-like
-export const Falsy = BasicModel( Primitive ).assert( isFalsy ).as( 'Falsy' );
-export const Truthy = BasicModel( [ Primitive, Object ] ).assert( isTruthy ).as( 'Truthy' );
+export const Falsy = BasicModel(Primitive).assert(isFalsy).as('Falsy');
+export const Truthy = BasicModel([Primitive, Object]).assert(isTruthy).as('Truthy');
 
 // Numbers
-export const Integer = BasicModel( Number ).assert( isInteger ).as( 'Integer' );
-export const SafeInteger = BasicModel( Number ).assert( isSafeInteger ).as( 'SafeInteger' );
-export const FiniteNumber = BasicModel( Number ).assert( isFinite ).as( 'FiniteNumber' );
-export const PositiveNumber = BasicModel( Number ).assert( isPositiveNumber ).as( 'PositiveNumber' );
-export const NegativeNumber = BasicModel( Number ).assert( isNegativeNumber ).as( 'NegativeNumber' );
-export const PositiveInteger = PositiveNumber.extend().assert( isInteger ).as( 'PositiveInteger' );
-export const NegativeInteger = NegativeNumber.extend().assert( isInteger ).as( 'NegativeInteger' );
+export const Integer = BasicModel(Number).assert(isInteger).as('Integer');
+export const SafeInteger = BasicModel(Number).assert(isSafeInteger).as('SafeInteger');
+export const FiniteNumber = BasicModel(Number).assert(isFinite).as('FiniteNumber');
+export const PositiveNumber = BasicModel(Number).assert(isPositiveNumber).as('PositiveNumber');
+export const NegativeNumber = BasicModel(Number).assert(isNegativeNumber).as('NegativeNumber');
+export const PositiveInteger = PositiveNumber.extend().assert(isInteger).as('PositiveInteger');
+export const NegativeInteger = NegativeNumber.extend().assert(isInteger).as('NegativeInteger');
 
 // Strings
-export const FullString = BasicModel( String ).assert( isNotBlank ).as( 'FullString' );
-export const NormalizedString = BasicModel( String ).assert( isNormalized ).as( 'NormalizedString' );
-export const TrimmedString = BasicModel( String ).assert( isTrimmed ).as( 'TrimmedString' );
+export const FullString = BasicModel(String).assert(isNotBlank).as('FullString');
+export const NormalizedString = BasicModel(String).assert(isNormalized).as('NormalizedString');
+export const TrimmedString = BasicModel(String).assert(isTrimmed).as('TrimmedString');
 
 // Dates
-export const PastDate = BasicModel( Date ).assert( isPast ).as( 'PastDate' );
-export const FutureDate = BasicModel( Date ).assert( isFuture ).as( 'FutureDate' );
+export const PastDate = BasicModel(Date).assert(isPast).as('PastDate');
+export const FutureDate = BasicModel(Date).assert(isFuture).as('FutureDate');
 
 // Arrays
-export const FullArray = BasicModel( Array ).assert( isNotEmpty ).as( 'FullArray' );
-export const UniqueArray = BasicModel( Array ).assert( isUnique ).as( 'UniqueArray' );
-export const DenseArray = BasicModel( Array ).assert( isDense ).as( 'DenseArray' );
+export const FullArray = BasicModel(Array).assert(isNotEmpty).as('FullArray');
+export const UniqueArray = BasicModel(Array).assert(isUnique).as('UniqueArray');
+export const DenseArray = BasicModel(Array).assert(isDense).as('DenseArray');
 
 // Others
-export const PromiseOf = ( model ) => ( p ) => BasicModel( Promise )( p ).then( ( x ) => model( x ) );
+export const PromiseOf = (model) => (p) => BasicModel(Promise)(p).then((x) => model(x));

@@ -2,11 +2,18 @@
  * @author Jeff Rose
  */
 
-import { Comparable, createNull, Equatable, JSONObject, numberComparator, Serializable, stringComparator } from '@blue/core';
+import {
+    Comparable,
+    createNull,
+    Equatable,
+    JSONObject,
+    numberComparator,
+    Serializable,
+    stringComparator,
+} from '@blue/core';
 import { likeResponse } from './like-response';
 
-const
-    { assign } = Object,
+const { assign } = Object,
     { defineProperty } = Reflect,
     statuses = new Map<number, ResponseStatus>();
 
@@ -23,31 +30,31 @@ export default class ResponseStatus implements Comparable<ResponseStatus>, Equat
     readonly code: number;
     readonly text: string;
 
-    static for( response: Response ): ResponseStatus;
-    static for( code: number, text?: string ): ResponseStatus;
-    static for( codeOrResponse: number | Response, text?: string ): ResponseStatus {
+    static for(response: Response): ResponseStatus;
+    static for(code: number, text?: string): ResponseStatus;
+    static for(codeOrResponse: number | Response, text?: string): ResponseStatus {
         let code: number;
 
-        if( likeResponse( codeOrResponse ) ){
+        if (likeResponse(codeOrResponse)) {
             code = codeOrResponse.status;
             text = codeOrResponse.statusText;
         } else {
             code = codeOrResponse;
         }
 
-        if( statuses.has( code ) ){
-            return statuses.get( code );
-        } else if( text?.length ){
-            const status = new ResponseStatus( code, text );
-            statuses.set( code, status );
+        if (statuses.has(code)) {
+            return statuses.get(code);
+        } else if (text?.length) {
+            const status = new ResponseStatus(code, text);
+            statuses.set(code, status);
             return status;
         }
 
         return null;
     }
 
-    get [ Symbol.toStringTag ](): string {
-        return `ResponseStatus:${ this.code }`;
+    get [Symbol.toStringTag](): string {
+        return `ResponseStatus:${this.code}`;
     }
 
     /**
@@ -90,25 +97,25 @@ export default class ResponseStatus implements Comparable<ResponseStatus>, Equat
         return 500 <= this.code && this.code <= 599;
     }
 
-    constructor( code: number, text: string ){
+    constructor(code: number, text: string) {
         /**
          * @member {external:number} code
          */
-        defineProperty( this, 'code', {
+        defineProperty(this, 'code', {
             value: code,
             configurable: true,
             enumerable: true,
-            writable: false
-        } );
+            writable: false,
+        });
         /**
          * @member {external:string} text
          */
-        defineProperty( this, 'text', {
+        defineProperty(this, 'text', {
             value: text,
             configurable: true,
             enumerable: true,
-            writable: false
-        } );
+            writable: false,
+        });
     }
 
     /**
@@ -116,18 +123,18 @@ export default class ResponseStatus implements Comparable<ResponseStatus>, Equat
      * @param {module:http.ResponseStatus} value
      * @returns {external:number}
      */
-    compareTo( value: ResponseStatus ): number {
+    compareTo(value: ResponseStatus): number {
         let comparison: number;
 
         // Compare code
-        comparison = numberComparator.compare( this.code, value.code );
-        if( comparison !== 0 ){
+        comparison = numberComparator.compare(this.code, value.code);
+        if (comparison !== 0) {
             return comparison;
         }
 
         // Compare text
-        comparison = stringComparator.compare( this.text, value.text );
-        if( comparison !== 0 ){
+        comparison = stringComparator.compare(this.text, value.text);
+        if (comparison !== 0) {
             return comparison;
         }
 
@@ -139,8 +146,8 @@ export default class ResponseStatus implements Comparable<ResponseStatus>, Equat
      * @param {module:http.ResponseStatus} value
      * @returns {external:boolean}
      */
-    equals( value: ResponseStatus ): boolean {
-        return this.compareTo( value ) === 0;
+    equals(value: ResponseStatus): boolean {
+        return this.compareTo(value) === 0;
     }
 
     /**
@@ -149,8 +156,8 @@ export default class ResponseStatus implements Comparable<ResponseStatus>, Equat
      * @param {external:HeadersInit} [headers={}]
      * @returns {external:Response}
      */
-    createResponse( body: BodyInit, headers: HeadersInit = {} ): Response {
-        return new Response( body, assign( this.toResponseInit(), { headers } ) );
+    createResponse(body: BodyInit, headers: HeadersInit = {}): Response {
+        return new Response(body, assign(this.toResponseInit(), { headers }));
     }
 
     /**
@@ -184,7 +191,7 @@ export default class ResponseStatus implements Comparable<ResponseStatus>, Equat
      * @returns {external:string}
      */
     toString(): string {
-        return `${ this.code } ${ this.text }`;
+        return `${this.code} ${this.text}`;
     }
 }
 

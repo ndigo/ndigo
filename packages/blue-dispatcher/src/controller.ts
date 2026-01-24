@@ -6,7 +6,7 @@ import { ModelAndView } from './model-and-view';
 import { PathRoute, Route } from '@blue/router';
 
 export interface Controller {
-    handleRoute( route: Route ): ModelAndView;
+    handleRoute(route: Route): ModelAndView;
 }
 
 /**
@@ -20,16 +20,16 @@ export interface Controller {
  */
 
 export abstract class AbstractPathViewController implements Controller {
-    get [ Symbol.toStringTag ](): string {
+    get [Symbol.toStringTag](): string {
         return 'Controller';
     }
 
-    handleRoute( route: Route ): ModelAndView {
-        const viewName = this._getViewNameForRoute( route );
-        return new ModelAndView( viewName );
+    handleRoute(route: Route): ModelAndView {
+        const viewName = this._getViewNameForRoute(route);
+        return new ModelAndView(viewName);
     }
 
-    protected abstract _getViewNameForRoute( route: Route ): string;
+    protected abstract _getViewNameForRoute(route: Route): string;
 }
 
 /**
@@ -71,7 +71,7 @@ export class PathViewController extends AbstractPathViewController {
         return this.#prefix;
     }
 
-    set prefix( newPrefix: string ){
+    set prefix(newPrefix: string) {
         this._viewNameCache.size && this._viewNameCache.clear();
         this.#prefix = newPrefix;
     }
@@ -80,12 +80,12 @@ export class PathViewController extends AbstractPathViewController {
         return this.#suffix;
     }
 
-    set suffix( newSuffix: string ){
+    set suffix(newSuffix: string) {
         this._viewNameCache.size && this._viewNameCache.clear();
         this.#suffix = newSuffix;
     }
 
-    constructor(){
+    constructor() {
         super();
 
         this._viewNameCache = new Map<string, string>();
@@ -105,8 +105,8 @@ export class PathViewController extends AbstractPathViewController {
      * @param {module:router.Route} route
      * @returns {external:string}
      */
-    protected _getViewNameForRoute( route: Route ): string {
-        return this._getViewNameForPath( route.path );
+    protected _getViewNameForRoute(route: Route): string {
+        return this._getViewNameForPath(route.path);
     }
 
     /**
@@ -115,14 +115,14 @@ export class PathViewController extends AbstractPathViewController {
      * @param {external:string} path
      * @returns {external:string}
      */
-    protected _getViewNameForPath( path: string ): string {
-        let viewName = this._viewNameCache.get( path );
+    protected _getViewNameForPath(path: string): string {
+        let viewName = this._viewNameCache.get(path);
 
-        if( !viewName ){
-            const route = new PathRoute( path );
+        if (!viewName) {
+            const route = new PathRoute(path);
 
-            viewName = `${ this.prefix }${ route.path }${ this.suffix }`;
-            this._viewNameCache.set( path, viewName );
+            viewName = `${this.prefix}${route.path}${this.suffix}`;
+            this._viewNameCache.set(path, viewName);
         }
 
         return viewName;

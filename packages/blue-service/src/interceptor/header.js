@@ -15,16 +15,16 @@
  * 		 sessionStore.set( 'serviceheader', 'headervalue' );
  * }
  */
-define( function( require ){
+define(function (require) {
     'use strict';
-    var sessionStore = new ( require( 'blue/store/enumerable/session' ) )( 'servicesettings' );
+    var sessionStore = new (require('blue/store/enumerable/session'))('servicesettings');
 
     return {
-        before: function headerInterceptor( settings ){
+        before: function headerInterceptor(settings) {
             // var	intercepted = this;
             // {} is jquery ajax default
-            settings.header = sessionStore.get( 'serviceheader' ) || {};
+            settings.header = sessionStore.get('serviceheader') || {};
             return settings;
-        }
+        },
     };
-} );
+});

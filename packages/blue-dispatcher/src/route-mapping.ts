@@ -15,17 +15,18 @@ type RouteMappingConfiguration = RouteMappingValue & {
     private: boolean;
 };
 
-const
-    ROUTE_MAPPING = 'route:mapping',
+const ROUTE_MAPPING = 'route:mapping',
     defaultMapping: RouteMappingConfiguration = {
         value: '/**',
-        private: false
+        private: false,
     },
     { defineMetadata, getMetadata, hasMetadata } = Reflect,
-
-    withDefaults = mergeRight( defaultMapping ),
-    configurationOf = objOf<string>( 'value' ) as ( value: string ) => RouteMappingValue,
-    toRouteMappingConfiguration = when<string | RouteMappingConfiguration, RouteMappingConfiguration>( isString, compose( withDefaults, configurationOf ) );
+    withDefaults = mergeRight(defaultMapping),
+    configurationOf = objOf<string>('value') as (value: string) => RouteMappingValue,
+    toRouteMappingConfiguration = when<string | RouteMappingConfiguration, RouteMappingConfiguration>(
+        isString,
+        compose(withDefaults, configurationOf)
+    );
 
 /**
  * @function module:dispatcher.defineRouteMapping
@@ -33,7 +34,8 @@ const
  * @param {*} target
  * @param {external:string|external:symbol} [propertyKey]
  */
-export const defineRouteMapping = ( value, target, propertyKey: string | symbol = void 0 ): void => defineMetadata( ROUTE_MAPPING, value, target, propertyKey );
+export const defineRouteMapping = (value, target, propertyKey: string | symbol = void 0): void =>
+    defineMetadata(ROUTE_MAPPING, value, target, propertyKey);
 
 /**
  * @function module:dispatcher.getRouteMapping
@@ -41,7 +43,8 @@ export const defineRouteMapping = ( value, target, propertyKey: string | symbol 
  * @param {external:string|external:symbol} [propertyKey]
  * @returns {*}
  */
-export const getRouteMapping = ( target, propertyKey: string | symbol = void 0 ): any => getMetadata( ROUTE_MAPPING, target, propertyKey );
+export const getRouteMapping = (target, propertyKey: string | symbol = void 0): any =>
+    getMetadata(ROUTE_MAPPING, target, propertyKey);
 
 /**
  * @function module:dispatcher.hasRouteMapping
@@ -49,28 +52,29 @@ export const getRouteMapping = ( target, propertyKey: string | symbol = void 0 )
  * @param {external:string|external:symbol} [propertyKey]
  * @returns {external:boolean} Whether or not the `target` and optional `propertyKey` has a route mapping defined.
  */
-export const hasRouteMapping = ( target, propertyKey: string | symbol = void 0 ): boolean => hasMetadata( ROUTE_MAPPING, target, propertyKey );
+export const hasRouteMapping = (target, propertyKey: string | symbol = void 0): boolean =>
+    hasMetadata(ROUTE_MAPPING, target, propertyKey);
 
 /**
  * @function module:router.RouteMapping
  * @param {external:string} route
  */
-export const routeMapping = ( route: string | RouteMappingConfiguration = defaultMapping ) => {
-    const conf = toRouteMappingConfiguration( route );
-    return function( target: Object, propertyKey?: string | symbol, descriptor?: PropertyDescriptor ): any {
-        if( propertyKey ){
-            defineRouteMapping( conf, target, propertyKey );
+export const routeMapping = (route: string | RouteMappingConfiguration = defaultMapping) => {
+    const conf = toRouteMappingConfiguration(route);
+    return function (target: Object, propertyKey?: string | symbol, descriptor?: PropertyDescriptor): any {
+        if (propertyKey) {
+            defineRouteMapping(conf, target, propertyKey);
             descriptor.enumerable = true;
-            console.log( '@RouteMapping', conf, target, propertyKey );
+            console.log('@RouteMapping', conf, target, propertyKey);
             return descriptor;
         } else {
-            defineRouteMapping( conf, target );
-            console.log( '@RouteMapping', conf, target );
+            defineRouteMapping(conf, target);
+            console.log('@RouteMapping', conf, target);
             return target;
         }
     };
 };
 
-export const publicMapping = ( route: string ) => routeMapping( { value: route, private: false } );
+export const publicMapping = (route: string) => routeMapping({ value: route, private: false });
 
-export const privateMapping = ( route: string ) => routeMapping( { value: route, private: true } );
+export const privateMapping = (route: string) => routeMapping({ value: route, private: true });

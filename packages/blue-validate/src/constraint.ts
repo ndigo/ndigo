@@ -14,9 +14,9 @@ export type ValidationResults<T = serializable, U = any> = {
     value: T;
     isValid: boolean;
     violations: Constraint<T>[];
-}
+};
 
-export type constraint<T = serializable> = ( params: Params, value: T ) => boolean;
+export type constraint<T = serializable> = (params: Params, value: T) => boolean;
 
 export interface Constraint<T = serializable> {
     validate: constraint<T>;
@@ -25,37 +25,35 @@ export interface Constraint<T = serializable> {
 export class CompositeConstraint<T = serializable> implements Constraint<T> {
     constraints: Constraint<T>[];
 
-    constructor( constraints: Constraint<T>[] ){
-        if( !constraints.length ){
-            throw new Error( '"constraints" cannot be empty' );
+    constructor(constraints: Constraint<T>[]) {
+        if (!constraints.length) {
+            throw new Error('"constraints" cannot be empty');
         }
 
-        Reflect.defineProperty( this, 'constraints', {
+        Reflect.defineProperty(this, 'constraints', {
             value: constraints,
             configurable: true,
             enumerable: false,
-            writable: false
-        } );
+            writable: false,
+        });
     }
 
-    validate( params: Params, value: T ): boolean {
+    validate(params: Params, value: T): boolean {
         let valid = false,
             violations: Constraint<T>[] = [];
 
-        const
-            constraints = this.constraints,
-            validateConstraint = ( constraint: Constraint<T> ): boolean => {
-                const result = constraint.validate( params, value );
-                if( !result ){
-                    violations.push( constraint );
+        const constraints = this.constraints,
+            validateConstraint = (constraint: Constraint<T>): boolean => {
+                const result = constraint.validate(params, value);
+                if (!result) {
+                    violations.push(constraint);
                 }
                 return result;
             };
 
-        if( Array.isArray( constraints ) && constraints.length ){
-            valid = constraints.length === 1 ?
-                validateConstraint( constraints[ 0 ] ) :
-                constraints.every( validateConstraint );
+        if (Array.isArray(constraints) && constraints.length) {
+            valid =
+                constraints.length === 1 ? validateConstraint(constraints[0]) : constraints.every(validateConstraint);
         }
 
         return valid;

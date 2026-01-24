@@ -15,7 +15,7 @@ export default class RouteHandlerExecutionChain {
     handler: object;
     interceptorIndex: number;
 
-    get [ Symbol.toStringTag ](): string {
+    get [Symbol.toStringTag](): string {
         return 'HandlerExecutionChain';
     }
 
@@ -23,16 +23,16 @@ export default class RouteHandlerExecutionChain {
         return this.#interceptors;
     }
 
-    constructor( handler: object | RouteHandlerExecutionChain, interceptors: RouteHandlerInterceptor[] = null ){
+    constructor(handler: object | RouteHandlerExecutionChain, interceptors: RouteHandlerInterceptor[] = null) {
         this.#interceptors = null;
 
-        if( handler instanceof RouteHandlerExecutionChain ){
+        if (handler instanceof RouteHandlerExecutionChain) {
             const chain = handler;
             this.handler = chain.handler;
-            interceptors && this.addInterceptors( chain.interceptors );
+            interceptors && this.addInterceptors(chain.interceptors);
         } else {
             this.handler = handler;
-            interceptors && this.addInterceptors( interceptors );
+            interceptors && this.addInterceptors(interceptors);
         }
 
         this.interceptorIndex = -1;
@@ -42,12 +42,12 @@ export default class RouteHandlerExecutionChain {
      * @function module:dispatcher.RouteHandlerExecutionChain#addInterceptor
      * @param {module:router.RouteHandlerInterceptor} interceptor
      */
-    addInterceptor( interceptor: RouteHandlerInterceptor ): void {
-        if( interceptor ){
-            if( !this.#interceptors ){
+    addInterceptor(interceptor: RouteHandlerInterceptor): void {
+        if (interceptor) {
+            if (!this.#interceptors) {
                 this.#interceptors = [];
             }
-            this.#interceptors.push( interceptor );
+            this.#interceptors.push(interceptor);
         }
     }
 
@@ -55,11 +55,11 @@ export default class RouteHandlerExecutionChain {
      * @function module:dispatcher.RouteHandlerExecutionChain#addInterceptors
      * @param {external:Array<module:router.RouteHandlerInterceptor>} interceptors
      */
-    addInterceptors( interceptors: RouteHandlerInterceptor[] ): void {
+    addInterceptors(interceptors: RouteHandlerInterceptor[]): void {
         const length = interceptors?.length;
-        if( length ){
-            for( let index = 0; index < length; index++ ){
-                this.addInterceptor( interceptors[ index ] );
+        if (length) {
+            for (let index = 0; index < length; index++) {
+                this.addInterceptor(interceptors[index]);
             }
         }
     }
@@ -69,14 +69,13 @@ export default class RouteHandlerExecutionChain {
      * @param {module:router.Route} route
      * @param {module:dispatcher.ModelAndView} mv
      */
-    applyPostHandle( route: Route, mv: ModelAndView ): void {
-        const
-            interceptors = this.#interceptors,
+    applyPostHandle(route: Route, mv: ModelAndView): void {
+        const interceptors = this.#interceptors,
             length = interceptors?.length;
         let index = 0;
-        if( length ){
-            for( ; index < length; index++ ){
-                interceptors[ index ].postHandle( route, this.handler, mv );
+        if (length) {
+            for (; index < length; index++) {
+                interceptors[index].postHandle(route, this.handler, mv);
             }
         }
     }
@@ -85,14 +84,13 @@ export default class RouteHandlerExecutionChain {
      * @function module:dispatcher.RouteHandlerExecutionChain#applyPreHandle
      * @param {module:router.Route} route
      */
-    applyPreHandle( route: Route ): boolean {
-        const
-            interceptors = this.#interceptors,
+    applyPreHandle(route: Route): boolean {
+        const interceptors = this.#interceptors,
             length = interceptors?.length;
         let index = 0;
-        if( length ){
-            for( ; index < length; index++ ){
-                if( interceptors[ index ].preHandle( route, this.handler ) === false ){
+        if (length) {
+            for (; index < length; index++) {
+                if (interceptors[index].preHandle(route, this.handler) === false) {
                     return false;
                 }
                 this.interceptorIndex = index;
@@ -106,16 +104,15 @@ export default class RouteHandlerExecutionChain {
      * @param {module:router.Route} route
      * @param {external:Error} error
      */
-    triggerCompleteHandle( route: Route, error: Error = null ): void {
-        const
-            interceptors = this.#interceptors,
+    triggerCompleteHandle(route: Route, error: Error = null): void {
+        const interceptors = this.#interceptors,
             length = interceptors?.length;
         let index = 0;
-        if( length ){
-            for( ; index < length; index++ ){
+        if (length) {
+            for (; index < length; index++) {
                 try {
-                    interceptors[ index ].completeHandle( route, this.handler, error );
-                } catch( e ){
+                    interceptors[index].completeHandle(route, this.handler, error);
+                } catch (e) {
                     // Handle this
                 }
             }

@@ -12,7 +12,7 @@ export type CurrencyFormat = {
 };
 
 export type CurrencyFormats = {
-    [ name: string ]: CurrencyFormat;
+    [name: string]: CurrencyFormat;
 };
 
 /**
@@ -33,13 +33,33 @@ export type CurrencyFormats = {
  * @namespace module:validate.formats
  */
 
-const
-    WHITE_SPACES = [
-        ' ', '\n', '\r', '\t', '\f', '\v', '\u00A0', '\u1680', '\u180E',
-        '\u2000', '\u2001', '\u2002', '\u2003', '\u2004', '\u2005', '\u2006',
-        '\u2007', '\u2008', '\u2009', '\u200A', '\u2028', '\u2029', '\u202F',
-        '\u205F', '\u3000'
-    ];
+const WHITE_SPACES = [
+    ' ',
+    '\n',
+    '\r',
+    '\t',
+    '\f',
+    '\v',
+    '\u00A0',
+    '\u1680',
+    '\u180E',
+    '\u2000',
+    '\u2001',
+    '\u2002',
+    '\u2003',
+    '\u2004',
+    '\u2005',
+    '\u2006',
+    '\u2007',
+    '\u2008',
+    '\u2009',
+    '\u200A',
+    '\u2028',
+    '\u2029',
+    '\u202F',
+    '\u205F',
+    '\u3000',
+];
 
 /**
  * A regular expression matching an address line.
@@ -93,7 +113,8 @@ export const DEFAULT_DATE_FORMAT = 'MM/DD/YYYY';
  * A regular expression matching email addresses.
  * @constant {external:RegExp} module:validate.formats.EMAIL_REGEX
  */
-export const EMAIL_REGEX = /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9]){1,}?$/i;
+export const EMAIL_REGEX =
+    /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9]){1,}?$/i;
 
 /**
  * A regular expression matching integers.
@@ -210,7 +231,8 @@ export const SSN_FORMAT = /^\d{9}$|^\d{3}-\d{2}-\d{4}$/;
  * - Group numbers of all zeroes, 000, 00, 0000
  * @constant {external:RegExp} module:validate.formats.SSN_OAO_FORMAT
  */
-export const SSN_OAO_FORMAT = /^(?!9|000|666|123(-?)45\1{1}6789|([1-578])\2{2}(-?)\2{2}\3\2{4})\d{3}(-?)(?!00)\d{2}\4(?!0000)\d{4}$/;
+export const SSN_OAO_FORMAT =
+    /^(?!9|000|666|123(-?)45\1{1}6789|([1-578])\2{2}(-?)\2{2}\3\2{4})\d{3}(-?)(?!00)\d{2}\4(?!0000)\d{4}$/;
 
 /**
  * A regular expression matching SSN valid groups.
@@ -228,13 +250,14 @@ export const SSN_VALID_GROUPS_FORMAT = /^(?!000|666|9|\d{3}(?:-?)00|\d{3}(-?)\d{
  * A regular expression matching a URL.
  * @constant {external:RegExp} module:validate.formats.URL_REGEX
  */
-export const URL_REGEX = /^([a-z]([a-z]|\d|\+|-|\.)*):(\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!$&'()*+,;=]|:)*@)?((\[(|(v[\da-f]{1,}\.(([a-z]|\d|-|\.|_|~)|[!$&'()*+,;=]|:)+))\])|((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!$&'()*+,;=])*)(:\d*)?)(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!$&'()*+,;=]|:|@)*)*|(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!$&'()*+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!$&'()*+,;=]|:|@)*)*)?)|((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!$&'()*+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!$&'()*+,;=]|:|@)*)*)|((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!$&'()*+,;=]|:|@)){0})(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!$&'()*+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!$&'()*+,;=]|:|@)|\/|\?)*)?$/i;
+export const URL_REGEX =
+    /^([a-z]([a-z]|\d|\+|-|\.)*):(\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!$&'()*+,;=]|:)*@)?((\[(|(v[\da-f]{1,}\.(([a-z]|\d|-|\.|_|~)|[!$&'()*+,;=]|:)+))\])|((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!$&'()*+,;=])*)(:\d*)?)(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!$&'()*+,;=]|:|@)*)*|(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!$&'()*+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!$&'()*+,;=]|:|@)*)*)?)|((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!$&'()*+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!$&'()*+,;=]|:|@)*)*)|((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!$&'()*+,;=]|:|@)){0})(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!$&'()*+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!$&'()*+,;=]|:|@)|\/|\?)*)?$/i;
 
 /**
  * A regular expression matching whitespace.
  * @constant {external:RegExp} module:validate.formats.WHITESPACE_REGEX
  */
-export const WHITESPACE_REGEX = new RegExp( `[${ WHITE_SPACES.join( '' ) }]`, 'g' );
+export const WHITESPACE_REGEX = new RegExp(`[${WHITE_SPACES.join('')}]`, 'g');
 
 /**
  * A regular expression matching a zip code extension.
@@ -253,12 +276,12 @@ export const ZIP_CODE_REGEX = /^[0-9]{5}$/;
  * @constant {CurrencyFormats} module:validate.formats.currencyFormats
  */
 export const currencyFormats: CurrencyFormats = {
-    'USD': {
+    USD: {
         decimal: '.',
         decimalDigits: 2,
         kDelim: ',',
         symbol: '$',
         symbolBegin: true,
-        regex: /^\s*\$?((\d+|\d{1,3}(,\d{3})*)(\.\d{0,2})?|\.\d{1,2})\s*$/
-    }
+        regex: /^\s*\$?((\d+|\d{1,3}(,\d{3})*)(\.\d{0,2})?|\.\d{1,2})\s*$/,
+    },
 };

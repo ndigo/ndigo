@@ -8,29 +8,33 @@ import { Registry } from './registry';
 import { Factory } from './factory';
 
 export interface InitializationAwareProcessor {
-    processAfterInitialization<T = any>( name: string, instance: T ): T;
-    processBeforeInitialization<T = any>( name: string, instance: T ): T;
+    processAfterInitialization<T = any>(name: string, instance: T): T;
+    processBeforeInitialization<T = any>(name: string, instance: T): T;
 }
 
 export interface ConstructionAwareProcessor {
-    processAfterConstruction<T = any>( name: string, instance: T ): boolean;
-    processBeforeConstruction<T = any>( name: string, constructor: Function, argumentsList?: any[] ): T | null;
-    processProperties<T = any>( properties: PropertyDescriptorMap, name: string, instance: T ): PropertyDescriptorMap;
+    processAfterConstruction<T = any>(name: string, instance: T): boolean;
+    processBeforeConstruction<T = any>(name: string, constructor: Function, argumentsList?: any[]): T | null;
+    processProperties<T = any>(properties: PropertyDescriptorMap, name: string, instance: T): PropertyDescriptorMap;
 }
 
 export interface DestructionAwareProcessor {
-    processBeforeDestruction<T extends Destroyable>( name: string, instance: T ): void;
+    processBeforeDestruction<T extends Destroyable>(name: string, instance: T): void;
 }
 
 export interface EntryRegistryProcessor {
-    processEntryRegistry( registry: Registry ): void;
+    processEntryRegistry(registry: Registry): void;
 }
 
 export interface FactoryPostProcessor {
-    postProcessFactory( factory: Factory ): void;
+    postProcessFactory(factory: Factory): void;
 }
 
-export type EntryProcessor = InitializationAwareProcessor | ConstructionAwareProcessor | DestructionAwareProcessor | EntryRegistryProcessor;
+export type EntryProcessor =
+    | InitializationAwareProcessor
+    | ConstructionAwareProcessor
+    | DestructionAwareProcessor
+    | EntryRegistryProcessor;
 
 /**
  * Factory hook that allows for custom modification of new instances, e.g. checking for marker interfaces or wrapping them with proxies.
@@ -56,7 +60,6 @@ export type EntryProcessor = InitializationAwareProcessor | ConstructionAwarePro
  * @param {T} instance The instance
  * @returns {T}
  */
-
 
 /**
  * Subinterface of {@link module:factory.EntryProcessor} that adds a before-construction callback, and a callback after construction but before explicit properties are set.
@@ -141,34 +144,50 @@ export type EntryProcessor = InitializationAwareProcessor | ConstructionAwarePro
  * @param {*} value The value to be tested
  * @returns {external:boolean} Whether or not the `value` provided is an {@linkcode module:factory.InitializationAwareProcessor|InitializationAwareProcessor}.
  */
-export const likeInitializationAwareProcessor = like( { processAfterInitialization: Function, processBeforeInitialization: Function } ) as ( value ) => value is InitializationAwareProcessor;
+export const likeInitializationAwareProcessor = like({
+    processAfterInitialization: Function,
+    processBeforeInitialization: Function,
+}) as (value) => value is InitializationAwareProcessor;
 
 /**
  * @function module:factory.likeConstructionAwareProcessor
  * @param {*} value The value to be tested
  * @returns {external:boolean} Whether or not the `value` provided is a {@linkcode module:factory.ConstructionAwareProcessor|ConstructionAwareProcessor}.
  */
-export const likeConstructionAwareProcessor = like( { processAfterConstruction: Function, processBeforeConstruction: Function, processProperties: Function } ) as ( value ) => value is ConstructionAwareProcessor;
+export const likeConstructionAwareProcessor = like({
+    processAfterConstruction: Function,
+    processBeforeConstruction: Function,
+    processProperties: Function,
+}) as (value) => value is ConstructionAwareProcessor;
 /**
  * @function module:factory.likeDestructionAwareProcessor
  * @param {*} value The value to be tested
  * @returns {external:boolean} Whether or not the `value` provided is a {@linkcode module:factory.DestructionAwareProcessor|DestructionAwareProcessor}.
  */
-export const likeDestructionAwareProcessor = like( { processBeforeDestruction: Function } ) as ( value ) => value is DestructionAwareProcessor;
+export const likeDestructionAwareProcessor = like({ processBeforeDestruction: Function }) as (
+    value
+) => value is DestructionAwareProcessor;
 
 /**
  * @function module:factory.likeEntryRegistryProcessor
  * @param {*} value The value to be tested
  * @returns {external:boolean} Whether or not the `value` provided is a {@linkcode module:factory.EntryRegistryProcessor|EntryRegistryProcessor}.
  */
-export const likeEntryRegistryProcessor = like( { processEntryRegistry: Function } ) as ( value ) => value is EntryRegistryProcessor;
+export const likeEntryRegistryProcessor = like({ processEntryRegistry: Function }) as (
+    value
+) => value is EntryRegistryProcessor;
 
 /**
  * @function module:factory.likeEntryProcessor
  * @param {*} value The value to be tested
  * @returns {external:boolean} Whether or not the `value` provided is an {@linkcode module:factory.EntryProcessor|EntryProcessor}.
  */
-export const likeEntryProcessor = anyPass( [ likeConstructionAwareProcessor, likeInitializationAwareProcessor, likeDestructionAwareProcessor, likeEntryRegistryProcessor ] ) as ( value ) => value is EntryProcessor;
+export const likeEntryProcessor = anyPass([
+    likeConstructionAwareProcessor,
+    likeInitializationAwareProcessor,
+    likeDestructionAwareProcessor,
+    likeEntryRegistryProcessor,
+]) as (value) => value is EntryProcessor;
 
 /*
 export class InjectDecoratorEntryProcessor extends AsFactoryAware( Null ) implements ConstructionAwareProcessor {

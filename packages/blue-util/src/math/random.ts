@@ -7,11 +7,11 @@ import alea from 'seedrandom/lib/alea';
 
 function seed(): string {
     try {
-        const values = new Uint8Array( 256 );
-        crypto.getRandomValues( values );
-        return String.fromCharCode.apply( 0, values );
-    } catch( e ){
-        return String( Date.now );
+        const values = new Uint8Array(256);
+        crypto.getRandomValues(values);
+        return String.fromCharCode.apply(0, values);
+    } catch (e) {
+        return String(Date.now);
     }
 }
 
@@ -26,6 +26,6 @@ function seed(): string {
  * random();
  * //=> 0.3752569768646784
  */
-const random: () => number = alea( seed(), { entropy: true } ).double;
+const random: () => number = alea(seed(), { entropy: true }).double;
 
 export default random;

@@ -3,8 +3,7 @@
  * @see {@link https://github.com/janl/mustache.js/blob/master/mustache.js#L73}
  */
 
-const
-    entityMap: { [ entity: string ]: string } = {
+const entityMap: { [entity: string]: string } = {
         '&': '&amp;',
         '<': '&lt;',
         '>': '&gt;',
@@ -12,11 +11,11 @@ const
         "'": '&#39;',
         '/': '&#x2F;',
         '`': '&#x60;',
-        '=': '&#x3D;'
+        '=': '&#x3D;',
     },
     decodedEntities = /[&<>"'`=\/]/g,
-    encodeEntity = ( entity: string ): string => entityMap[ entity ],
-    encodeHTML = ( value: string ): string => value.replace( decodedEntities, encodeEntity );
+    encodeEntity = (entity: string): string => entityMap[entity],
+    encodeHTML = (value: string): string => value.replace(decodedEntities, encodeEntity);
 
 /**
  * @function module:util.encodeHTML

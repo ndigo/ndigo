@@ -6,8 +6,8 @@ import { like } from '@blue/util';
 import { Comparator, PatternMatcher } from '@blue/core';
 
 export interface URLMatcher extends PatternMatcher<string, string> {
-    getPatternComparator( url: string ): Comparator<string>;
-    match( pattern: string, url: string ): boolean;
+    getPatternComparator(url: string): Comparator<string>;
+    match(pattern: string, url: string): boolean;
 }
 
 /**
@@ -39,21 +39,23 @@ const { defineProperty } = Reflect;
  * @param {*} value
  * @returns {external:boolean} Whether or not the `value` is a {@linkcode module:http.URLMatcher|URLMatcher}.
  */
-export const likeURLMatcher = like( { getPatternComparator: Function, match: Function } ) as ( value ) => value is URLMatcher;
+export const likeURLMatcher = like({ getPatternComparator: Function, match: Function }) as (
+    value
+) => value is URLMatcher;
 
 abstract class AbstractURLComparator implements Comparator<string> {
     readonly url: string;
 
-    constructor( url: string ){
-        defineProperty( this, 'url', {
+    constructor(url: string) {
+        defineProperty(this, 'url', {
             value: url,
             configurable: true,
             enumerable: false,
-            writable: false
-        } );
+            writable: false,
+        });
     }
 
-    abstract compare( pattern1: string, pattern2: string ): number;
+    abstract compare(pattern1: string, pattern2: string): number;
 }
 
 /**
@@ -67,17 +69,16 @@ abstract class AbstractURLComparator implements Comparator<string> {
  * @extends module:http.AbstractURLComparator
  */
 class EqualsURLComparator extends AbstractURLComparator {
-    compare( pattern1: string, pattern2: string ): number {
-        const
-            { url } = this,
+    compare(pattern1: string, pattern2: string): number {
+        const { url } = this,
             pattern1EqualsURL = pattern1 === url,
             pattern2EqualsURL = pattern2 === url;
 
-        if( pattern1EqualsURL && pattern2EqualsURL ){
+        if (pattern1EqualsURL && pattern2EqualsURL) {
             return 0;
-        } else if( pattern1EqualsURL ){
+        } else if (pattern1EqualsURL) {
             return -1;
-        } else if( pattern2EqualsURL ){
+        } else if (pattern2EqualsURL) {
             return 1;
         }
 
@@ -90,11 +91,11 @@ class EqualsURLComparator extends AbstractURLComparator {
  * @extends module:http.URLMatcher
  */
 export class EqualsURLMatcher implements URLMatcher {
-    getPatternComparator( path: string ): Comparator<string> {
-        return new EqualsURLComparator( path );
+    getPatternComparator(path: string): Comparator<string> {
+        return new EqualsURLComparator(path);
     }
 
-    match( pattern: string, url: string ): boolean {
+    match(pattern: string, url: string): boolean {
         return pattern === url;
     }
 }

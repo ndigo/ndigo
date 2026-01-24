@@ -19,6 +19,6 @@ import { append, curry, join } from 'ramda';
  * trailingJoin( ",", [ "a", "b", "c" ] );
  * //=> "a,b,c,"
  */
-const trailingJoin = curry( ( separator: string, list: any[] ): string => join( separator, append( '', list ) ) );
+const trailingJoin = curry((separator: string, list: any[]): string => join(separator, append('', list)));
 
 export default trailingJoin;

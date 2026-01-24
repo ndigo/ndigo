@@ -8,10 +8,8 @@ import { pipe, toUpper } from 'ramda';
 
 import toCamel from './to-camel';
 
-const
-    // Lower case letters at the beginning of a string
+const // Lower case letters at the beginning of a string
     lowerCaseLetters = /^[a-z]/,
-
     /**
      * Returns the pascal case version of a string.
      * @function module:util.toPascal
@@ -23,9 +21,8 @@ const
      * //=> "LoremIpsumDolor"
      * @see {@link http://wiki.c2.com/?PascalCase}
      */
-    toPascal: ( value: string ) => string = pipe(
-        toCamel,
-        ( value: string ): string => value.replace( lowerCaseLetters, toUpper )
+    toPascal: (value: string) => string = pipe(toCamel, (value: string): string =>
+        value.replace(lowerCaseLetters, toUpper)
     );
 
 export default toPascal;

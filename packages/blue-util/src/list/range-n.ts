@@ -5,9 +5,7 @@
 
 import { curryN } from 'ramda';
 
-const
-    { abs, max } = Math,
-
+const { abs, max } = Math,
     /**
      * @function module:util.rangeN
      * @category List
@@ -24,34 +22,33 @@ const
      * //=> [ 2, 5, 8 ]
      * @see {@link module:util.range}
      */
-    rangeN = curryN( 2, ( step: number, from: number, to?: number ): number[] => {
-        if( to === void 0 ){
+    rangeN = curryN(2, (step: number, from: number, to?: number): number[] => {
+        if (to === void 0) {
             to = from;
         }
 
         // fix negative zero
-        if( step === 0 ){
+        if (step === 0) {
             step = 0;
         }
-        if( from === 0 ){
+        if (from === 0) {
             from = 0;
         }
-        if( to === 0 ){
+        if (to === 0) {
             to = 0;
         }
 
-        step = max( abs( step ), 1 );
+        step = max(abs(step), 1);
 
-        const
-            descending = from > to,
+        const descending = from > to,
             result: number[] = [];
 
-        while( descending ? from > to : from < to ){
-            result.push( from );
+        while (descending ? from > to : from < to) {
+            result.push(from);
             from = descending ? from - step : from + step;
         }
 
         return result;
-    } );
+    });
 
 export default rangeN;

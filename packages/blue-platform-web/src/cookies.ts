@@ -17,51 +17,56 @@ export interface Cookie {
 }
 
 export interface CookieJar {
-    get( key: string ): JSONValue;
-    getJSON( key: string ): JSONValue;
-    remove( key: string, attributes ): string;
-    set( key: string, value: string, attributes ): string;
+    get(key: string): JSONValue;
+    getJSON(key: string): JSONValue;
+    remove(key: string, attributes): string;
+    set(key: string, value: string, attributes): string;
 }
 
 const { assign } = Object;
 
-function init( converter ): CookieJar {
+function init(converter): CookieJar {
     const api = createNull();
 
-    function set( key: string, value: string, attributes ): string {
-        if( typeof document === 'undefined' ){
+    function set(key: string, value: string, attributes): string {
+        if (typeof document === 'undefined') {
             return;
         }
 
-        attributes = assign( { path: '/' }, api.defaults, attributes );
+        attributes = assign({ path: '/' }, api.defaults, attributes);
 
-        if( typeof attributes.expires === 'number' ){
-            attributes.expires = new Date( Date.now() * 1 + attributes.expires * 864e+5 );
+        if (typeof attributes.expires === 'number') {
+            attributes.expires = new Date(Date.now() * 1 + attributes.expires * 864e5);
         }
 
         // We're using "expires" because "max-age" is not supported by IE
         attributes.expires = attributes.expires ? attributes.expires.toUTCString() : '';
 
         try {
-            const result = JSON.stringify( value );
-            if( /^[\{\[]/.test( result ) ){
+            const result = JSON.stringify(value);
+            if (/^[\{\[]/.test(result)) {
                 value = result;
             }
-        } catch( e ){}
+        } catch (e) {}
 
-        value = converter.write ?
-            converter.write( value, key ) :
-            encodeURIComponent( String( value ) ).replace( /%(23|24|26|2B|3A|3C|3E|3D|2F|3F|40|5B|5D|5E|60|7B|7D|7C)/g, decodeURIComponent );
+        value = converter.write
+            ? converter.write(value, key)
+            : encodeURIComponent(String(value)).replace(
+                  /%(23|24|26|2B|3A|3C|3E|3D|2F|3F|40|5B|5D|5E|60|7B|7D|7C)/g,
+                  decodeURIComponent
+              );
 
-        key = encodeURIComponent( String( key ) ).replace( /%(23|24|26|2B|5E|60|7C)/g, decodeURIComponent ).replace( /[\(\)]/g, escape );
+        key = encodeURIComponent(String(key))
+            .replace(/%(23|24|26|2B|5E|60|7C)/g, decodeURIComponent)
+            .replace(/[\(\)]/g, escape);
 
         let stringifiedAttributes = '';
-        for( const attributeName in attributes ){
-            if( !attributes[ attributeName ] ){
+        for (const attributeName in attributes) {
+            if (!attributes[attributeName]) {
                 continue;
             }
             stringifiedAttributes += '; ' + attributeName;
-            if( attributes[ attributeName ] === true ){
+            if (attributes[attributeName] === true) {
                 continue;
             }
 
@@ -72,21 +77,21 @@ function init( converter ): CookieJar {
             // Consume the characters of the unparsed-attributes up to,
             // not including, the first %x3B (";") character.
             // ...
-            stringifiedAttributes += '=' + attributes[ attributeName ].split( ' ;' )[ 0 ];
+            stringifiedAttributes += '=' + attributes[attributeName].split(' ;')[0];
         }
 
-        return ( document.cookie = key + '=' + value + stringifiedAttributes );
+        return (document.cookie = key + '=' + value + stringifiedAttributes);
     }
 
-    function get( key: string, json: boolean ): JSONValue {
-        const jar: JSONObject = cookieExpression.run( document.cookie );
-        return key ? json ? JSON.parse( jar[ key ] as string ) : jar[ key ] : jar;
+    function get(key: string, json: boolean): JSONValue {
+        const jar: JSONObject = cookieExpression.run(document.cookie);
+        return key ? (json ? JSON.parse(jar[key] as string) : jar[key]) : jar;
     }
 
     api.set = set;
-    api.get = ( key: string ): JSONValue => get( key, false /* read as raw */ );
-    api.getJSON = ( key: string ): JSONValue => get( key, true /* read as json */ );
-    api.remove = ( key: string, attributes ): string => set( key, '', assign( attributes, { expires: -1 } ) );
+    api.get = (key: string): JSONValue => get(key, false /* read as raw */);
+    api.getJSON = (key: string): JSONValue => get(key, true /* read as json */);
+    api.remove = (key: string, attributes): string => set(key, '', assign(attributes, { expires: -1 }));
 
     api.defaults = {};
 
@@ -95,4 +100,4 @@ function init( converter ): CookieJar {
     return api;
 }
 
-export default init( function(){} );
+export default init(function () {});

@@ -19,10 +19,10 @@ import empty from '../function/empty';
  * isEmpty( { length: 0 } );         //=> false
  * isEmpty( Uint8Array.from( '' ) ); //=> true
  */
-const isEmpty = ( x ): boolean => {
-    let result = _isEmpty( x );
-    if( x != null && result === false ){
-        result = pipe( empty, equals( x ) )( x );
+const isEmpty = (x): boolean => {
+    let result = _isEmpty(x);
+    if (x != null && result === false) {
+        result = pipe(empty, equals(x))(x);
     }
     return result;
 };

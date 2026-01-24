@@ -7,9 +7,8 @@
 import { both, F, partial, pipe, T, tryCatch } from 'ramda';
 import isFunction from './is-function';
 
-const
-    construct = partial( Reflect.construct, [ String, [] ] ),
-    constructAndReturnTrue = pipe( construct, T );
+const construct = partial(Reflect.construct, [String, []]),
+    constructAndReturnTrue = pipe(construct, T);
 
 /**
  * Determines whether a given value is a constructor, i.e. creates instances using `new`.
@@ -18,6 +17,6 @@ const
  * @returns {external:boolean} Whether or not `value` is a constructor.
  * @category Type
  */
-const isConstructor = ( value ): value is Function => both<any>( isFunction, tryCatch( constructAndReturnTrue, F ) )( value );
+const isConstructor = (value): value is Function => both<any>(isFunction, tryCatch(constructAndReturnTrue, F))(value);
 
 export default isConstructor;

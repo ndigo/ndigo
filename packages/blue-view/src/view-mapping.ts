@@ -8,7 +8,7 @@ import { ApplicationContext, AsApplicationContextAware } from '@blue/context';
 import { Route } from '@blue/router';
 
 export interface ViewMapping {
-    getTarget( route: Route ): any;
+    getTarget(route: Route): any;
 }
 
 /**
@@ -22,50 +22,50 @@ export interface ViewMapping {
 
 const { defineProperty } = Reflect;
 
-export abstract class AbstractViewMapping extends AsNameAware( AsApplicationContextAware( Null ) ) implements ViewMapping {
+export abstract class AbstractViewMapping extends AsNameAware(AsApplicationContextAware(Null)) implements ViewMapping {
     applicationContext: ApplicationContext;
     defaultTarget: any;
     interceptors: any[];
     pathMatcher: PathMatcher;
 
-    get [ Symbol.toStringTag ](): string {
+    get [Symbol.toStringTag](): string {
         return 'ViewMapping';
     }
 
-    constructor(){
+    constructor() {
         super();
-        defineProperty( this, 'defaultTarget', {
+        defineProperty(this, 'defaultTarget', {
             value: null,
             configurable: true,
             enumerable: false,
-            writable: true
-        } );
-        defineProperty( this, 'interceptors', {
+            writable: true,
+        });
+        defineProperty(this, 'interceptors', {
             value: [],
             configurable: true,
             enumerable: false,
-            writable: false
-        } );
-        defineProperty( this, 'pathMatcher', {
+            writable: false,
+        });
+        defineProperty(this, 'pathMatcher', {
             value: new GlobPathMatcher(),
             configurable: true,
             enumerable: false,
-            writable: false
-        } );
+            writable: false,
+        });
     }
 
-    getTarget( route: Route ): any {
-        let target = this._getTarget( route );
+    getTarget(route: Route): any {
+        let target = this._getTarget(route);
 
-        if( !target ){
+        if (!target) {
             target = this.defaultTarget;
         }
-        if( !target ){
+        if (!target) {
             return null;
         }
     }
 
-    protected abstract _getTarget( route: Route ): any;
+    protected abstract _getTarget(route: Route): any;
 }
 
 export abstract class AbstractPathViewMapping extends AbstractViewMapping {
@@ -74,16 +74,16 @@ export abstract class AbstractPathViewMapping extends AbstractViewMapping {
 
     protected readonly _targets: Map<string, any>;
 
-    constructor(){
+    constructor() {
         super();
         this.rootTarget = null;
         this.useTrailingSlashMatch = false;
 
-        defineProperty( this, '_targets', {
+        defineProperty(this, '_targets', {
             value: new Map<string, string | any>(),
             configurable: true,
             enumerable: false,
-            writable: false
-        } );
+            writable: false,
+        });
     }
 }

@@ -11,17 +11,17 @@
  * @see {@link module:util.pair}
  * @see {@link module:util.toPairs}
  */
-const fromRepeatedPairs = ( pairs: [ any, any ][] ): { any?: any | any[] } => {
+const fromRepeatedPairs = (pairs: [any, any][]): { any?: any | any[] } => {
     const result = {};
     let index = 0;
-    while( index < pairs.length ){
-        const [ key, value ] = pairs[ index ];
-        if( !( result.hasOwnProperty( key ) ) ){
-            result[ key ] = value;
-        } else if( Array.isArray( result[ key ] ) ){
-            result[ key ].push( value );
+    while (index < pairs.length) {
+        const [key, value] = pairs[index];
+        if (!result.hasOwnProperty(key)) {
+            result[key] = value;
+        } else if (Array.isArray(result[key])) {
+            result[key].push(value);
         } else {
-            result[ key ] = [ result[ key ], value ];
+            result[key] = [result[key], value];
         }
         index += 1;
     }

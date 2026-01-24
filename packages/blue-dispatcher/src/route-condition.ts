@@ -9,9 +9,9 @@ export interface NameValueExpression<T> {
 }
 
 export interface RouteCondition<T = any> {
-    merge( value: T ): T;
-    getMatchingCondition( route: Route ): T;
-    compareTo( value: T, route?: Route ): number;
+    merge(value: T): T;
+    getMatchingCondition(route: Route): T;
+    compareTo(value: T, route?: Route): number;
 }
 
 /**
@@ -69,56 +69,56 @@ const { defineProperty } = Reflect;
  * @param {*} value
  * @returns {external:boolean} Whether or not the `value` is a {@linkcode module:router.RouteCondition|RouteCondition}.
  */
-export const likeRouteCondition = like( { merge: Function, getMatchingCondition: Function } ) as ( value ) => value is RouteCondition;
+export const likeRouteCondition = like({ merge: Function, getMatchingCondition: Function }) as (
+    value
+) => value is RouteCondition;
 
 export abstract class AbstractNameValueExpression<T> implements NameValueExpression<T>, Serializable {
     readonly isNegated: boolean;
     readonly name: string;
     readonly value?: T;
 
-    readonly abstract isCaseSensitiveName: boolean;
+    abstract readonly isCaseSensitiveName: boolean;
 
-    constructor( expression: string ){
-        const index = expression.indexOf( '=' );
-        if( index === -1 ){
-            defineProperty( this, 'isNegated', {
-                value: expression.startsWith( '!' ),
+    constructor(expression: string) {
+        const index = expression.indexOf('=');
+        if (index === -1) {
+            defineProperty(this, 'isNegated', {
+                value: expression.startsWith('!'),
                 configurable: true,
                 enumerable: false,
-                writable: false
-            } );
-            defineProperty( this, 'name', {
-                value: this.isNegated ? expression.substring( 1 ) : expression,
+                writable: false,
+            });
+            defineProperty(this, 'name', {
+                value: this.isNegated ? expression.substring(1) : expression,
                 configurable: true,
                 enumerable: false,
-                writable: false
-            } );
+                writable: false,
+            });
         } else {
-            defineProperty( this, 'isNegated', {
-                value: index > 0 && expression[ index - 1 ] === '!',
+            defineProperty(this, 'isNegated', {
+                value: index > 0 && expression[index - 1] === '!',
                 configurable: true,
                 enumerable: false,
-                writable: false
-            } );
-            defineProperty( this, 'name', {
-                value: this.isNegated ? expression.substring( 0, index - 1 ) : expression.substring( 0, index ),
+                writable: false,
+            });
+            defineProperty(this, 'name', {
+                value: this.isNegated ? expression.substring(0, index - 1) : expression.substring(0, index),
                 configurable: true,
                 enumerable: false,
-                writable: false
-            } );
-            defineProperty( this, 'value', {
-                value: this.parseValue( expression.substring( index + 1 ) ),
+                writable: false,
+            });
+            defineProperty(this, 'value', {
+                value: this.parseValue(expression.substring(index + 1)),
                 configurable: true,
                 enumerable: false,
-                writable: false
-            } );
+                writable: false,
+            });
         }
     }
 
-    match( route: Route ): boolean {
-        let isMatch = this.value ?
-            this.matchValue( route ) :
-            this.matchName( route );
+    match(route: Route): boolean {
+        let isMatch = this.value ? this.matchValue(route) : this.matchName(route);
         return this.isNegated !== isMatch;
     }
 
@@ -128,17 +128,17 @@ export abstract class AbstractNameValueExpression<T> implements NameValueExpress
 
     toString(): string {
         const negate = this.isNegated ? '!' : '';
-        return this.value !== void 0 ?
-            `${ this.name }${ negate }=${ this.value }` :
-            `${ negate }${ this.name }`;
+        return this.value !== void 0 ? `${this.name}${negate}=${this.value}` : `${negate}${this.name}`;
     }
 
-    abstract matchName( route: Route ): boolean;
-    abstract matchValue( route: Route ): boolean;
-    abstract parseValue( valueExpression: string ): T;
+    abstract matchName(route: Route): boolean;
+    abstract matchValue(route: Route): boolean;
+    abstract parseValue(valueExpression: string): T;
 }
 
-export abstract class AbstractRouteCondition<T extends AbstractRouteCondition<T>> implements Equatable, RouteCondition<T>, Serializable {
+export abstract class AbstractRouteCondition<T extends AbstractRouteCondition<T>>
+    implements Equatable, RouteCondition<T>, Serializable
+{
     get isEmpty(): boolean {
         return this.content.length === 0;
     }
@@ -146,11 +146,11 @@ export abstract class AbstractRouteCondition<T extends AbstractRouteCondition<T>
     abstract content: any[];
     abstract infix: string;
 
-    equals( value ): boolean {
-        if( this === value ){
+    equals(value): boolean {
+        if (this === value) {
             return true;
         }
-        if( value === void 0 || this.constructor !== value.constructor ){
+        if (value === void 0 || this.constructor !== value.constructor) {
             return false;
         }
         return this.toString() === value.toString();
@@ -161,14 +161,14 @@ export abstract class AbstractRouteCondition<T extends AbstractRouteCondition<T>
     }
 
     toString(): string {
-        return `[${ this.content.join( this.infix ) }]`;
+        return `[${this.content.join(this.infix)}]`;
     }
 
-    abstract merge( other: T ): T;
+    abstract merge(other: T): T;
 
-    abstract getMatchingCondition( route: Route ): T;
+    abstract getMatchingCondition(route: Route): T;
 
-    abstract compareTo( value: T, route?: Route ): number;
+    abstract compareTo(value: T, route?: Route): number;
 }
 
 /**
@@ -200,23 +200,21 @@ export class RouteConditionHolder extends AbstractRouteCondition<RouteConditionH
     readonly condition: RouteCondition;
 
     get content(): RouteCondition[] {
-        return this.condition ?
-            [ this.condition ] :
-            [];
+        return this.condition ? [this.condition] : [];
     }
 
     get infix(): string {
         return ' ';
     }
 
-    constructor( routeCondition: RouteCondition = null ){
+    constructor(routeCondition: RouteCondition = null) {
         super();
-        defineProperty( this, 'condition', {
+        defineProperty(this, 'condition', {
             value: routeCondition,
             configurable: true,
             enumerable: false,
-            writable: false
-        } );
+            writable: false,
+        });
     }
 
     /**
@@ -225,38 +223,36 @@ export class RouteConditionHolder extends AbstractRouteCondition<RouteConditionH
      * @param {module:router.RouteConditionHolder} other
      * @returns {module:router.RouteConditionHolder}
      */
-    merge( other: RouteConditionHolder ): RouteConditionHolder {
-        if( !this.condition && !other.condition ){
+    merge(other: RouteConditionHolder): RouteConditionHolder {
+        if (!this.condition && !other.condition) {
             return this;
-        } else if( !this.condition ){
+        } else if (!this.condition) {
             return other;
-        } else if( !other.condition ){
+        } else if (!other.condition) {
             return this;
         } else {
-            const combined = this.condition.merge( other.condition );
-            return new RouteConditionHolder( combined );
+            const combined = this.condition.merge(other.condition);
+            return new RouteConditionHolder(combined);
         }
     }
 
-    getMatchingCondition( route: Route ): RouteConditionHolder {
-        if( !this.condition ){
+    getMatchingCondition(route: Route): RouteConditionHolder {
+        if (!this.condition) {
             return this;
         }
-        const match: RouteCondition = this.condition.getMatchingCondition( route );
-        return match ?
-            new RouteConditionHolder( match ) :
-            null;
+        const match: RouteCondition = this.condition.getMatchingCondition(route);
+        return match ? new RouteConditionHolder(match) : null;
     }
 
-    compareTo( value: RouteConditionHolder, route?: Route ): number {
-        if( !this.condition && !value.condition ){
+    compareTo(value: RouteConditionHolder, route?: Route): number {
+        if (!this.condition && !value.condition) {
             return 0;
-        } else if( !this.condition ){
+        } else if (!this.condition) {
             return 1;
-        } else if( !value.condition ){
+        } else if (!value.condition) {
             return -1;
         } else {
-            return this.condition.compareTo( value.condition, route );
+            return this.condition.compareTo(value.condition, route);
         }
     }
 }
@@ -281,91 +277,87 @@ export class CompositeRouteCondition extends AbstractRouteCondition<CompositeRou
     }
 
     get conditions(): RouteCondition[] {
-        return this._unwrap( ...this.routeConditions );
+        return this._unwrap(...this.routeConditions);
     }
 
     get content(): RouteCondition[] {
-        return !this.isEmpty ?
-            this.conditions :
-            [];
+        return !this.isEmpty ? this.conditions : [];
     }
 
     readonly routeConditions: RouteConditionHolder[];
 
-    constructor( ...routeConditions: RouteCondition[] | RouteConditionHolder[] ){
+    constructor(...routeConditions: RouteCondition[] | RouteConditionHolder[]) {
         super();
-        if( routeConditions.length ){
-            if( likeRouteCondition( routeConditions[ 0 ] ) ){
-                defineProperty( this, 'routeConditions', {
-                    value: this._wrap( ...routeConditions ),
+        if (routeConditions.length) {
+            if (likeRouteCondition(routeConditions[0])) {
+                defineProperty(this, 'routeConditions', {
+                    value: this._wrap(...routeConditions),
                     configurable: true,
                     enumerable: false,
-                    writable: false
-                } );
+                    writable: false,
+                });
             } else {
-                defineProperty( this, 'routeConditions', {
+                defineProperty(this, 'routeConditions', {
                     value: routeConditions,
                     configurable: true,
                     enumerable: false,
-                    writable: false
-                } );
+                    writable: false,
+                });
             }
         }
     }
 
     /**
-	 * If one instance is empty, return the other. If both instances have conditions, combine the individual conditions after ensuring they are of the same type and number.
+     * If one instance is empty, return the other. If both instances have conditions, combine the individual conditions after ensuring they are of the same type and number.
      * @function module:dispatcher.CompositeRouteCondition#merge
      * @param {module:dispatcher.CompositeRouteCondition} other
      * @returns {module:dispatcher.CompositeRouteCondition}
-	 */
-    merge( other: CompositeRouteCondition ): CompositeRouteCondition {
-        if( this.isEmpty && other.isEmpty ){
+     */
+    merge(other: CompositeRouteCondition): CompositeRouteCondition {
+        if (this.isEmpty && other.isEmpty) {
             return this;
-        } else if( other.isEmpty ){
+        } else if (other.isEmpty) {
             return this;
-        } else if( this.isEmpty ){
+        } else if (this.isEmpty) {
             return other;
         } else {
-            const
-                length = this.length,
-                combinedConditions: RouteConditionHolder[] = new Array<RouteConditionHolder>( length );
-            for( let index = 0; index < length; index++ ){
-                combinedConditions[ index ] = this.routeConditions[ index ].merge( other.routeConditions[ index ] );
+            const length = this.length,
+                combinedConditions: RouteConditionHolder[] = new Array<RouteConditionHolder>(length);
+            for (let index = 0; index < length; index++) {
+                combinedConditions[index] = this.routeConditions[index].merge(other.routeConditions[index]);
             }
-            return new CompositeRouteCondition( ...combinedConditions );
+            return new CompositeRouteCondition(...combinedConditions);
         }
     }
 
-    getMatchingCondition( route: Route ): CompositeRouteCondition {
-        if( this.isEmpty ){
+    getMatchingCondition(route: Route): CompositeRouteCondition {
+        if (this.isEmpty) {
             return this;
         }
-        const
-            length = this.length,
-            matchingConditions: RouteConditionHolder[] = new Array<RouteConditionHolder>( length );
-        for( let index = 0; index < length; index++ ){
-            matchingConditions[ index ] = this.routeConditions[ index ].getMatchingCondition( route );
-            if( matchingConditions[ index ] === null ){
+        const length = this.length,
+            matchingConditions: RouteConditionHolder[] = new Array<RouteConditionHolder>(length);
+        for (let index = 0; index < length; index++) {
+            matchingConditions[index] = this.routeConditions[index].getMatchingCondition(route);
+            if (matchingConditions[index] === null) {
                 return null;
             }
         }
-        return new CompositeRouteCondition( ...matchingConditions );
+        return new CompositeRouteCondition(...matchingConditions);
     }
 
-    compareTo( value: CompositeRouteCondition, route?: Route ): number {
-        if( this.isEmpty && value.isEmpty ){
+    compareTo(value: CompositeRouteCondition, route?: Route): number {
+        if (this.isEmpty && value.isEmpty) {
             return 0;
-        } else if( this.isEmpty ){
+        } else if (this.isEmpty) {
             return 1;
-        } else if( value.isEmpty ){
+        } else if (value.isEmpty) {
             return -1;
         } else {
             const length = this.length;
             let index = 0;
-            for( ; index < length; index++ ){
-                const result = this.routeConditions[ index ].compareTo( value.routeConditions[ index ], route );
-                if( result !== 0 ){
+            for (; index < length; index++) {
+                const result = this.routeConditions[index].compareTo(value.routeConditions[index], route);
+                if (result !== 0) {
                     return result;
                 }
             }
@@ -373,11 +365,11 @@ export class CompositeRouteCondition extends AbstractRouteCondition<CompositeRou
         }
     }
 
-    private _wrap( ...conditions: RouteCondition[] ): RouteConditionHolder[] {
-        return conditions.map( ( condition ) => new RouteConditionHolder( condition ) );
+    private _wrap(...conditions: RouteCondition[]): RouteConditionHolder[] {
+        return conditions.map((condition) => new RouteConditionHolder(condition));
     }
 
-    private _unwrap( ...wrappedConditions: RouteConditionHolder[] ): RouteCondition[] {
-        return wrappedConditions.map( ( wrappedCondition ) => wrappedCondition.condition );
+    private _unwrap(...wrappedConditions: RouteConditionHolder[]): RouteCondition[] {
+        return wrappedConditions.map((wrappedCondition) => wrappedCondition.condition);
     }
 }

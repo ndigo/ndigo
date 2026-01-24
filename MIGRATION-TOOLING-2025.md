@@ -5,6 +5,7 @@ This document describes the tooling modernization performed after the initial 20
 ## Overview
 
 The BlueJS monorepo has been migrated to use modern, efficient tooling:
+
 - **Yarn → pnpm** (package manager)
 - **Lerna → Nx** (monorepo management)
 - **Jest → Vitest** (testing framework)
@@ -14,6 +15,7 @@ The BlueJS monorepo has been migrated to use modern, efficient tooling:
 ### pnpm vs Yarn
 
 **Benefits:**
+
 - **Faster installs**: Up to 2x faster than Yarn
 - **Disk space efficient**: Uses content-addressable storage, sharing packages across projects
 - **Strict dependencies**: Better at catching dependency issues
@@ -23,6 +25,7 @@ The BlueJS monorepo has been migrated to use modern, efficient tooling:
 ### Nx vs Lerna
 
 **Benefits:**
+
 - **Intelligent task orchestration**: Understands task dependencies
 - **Advanced caching**: Local and distributed caching for builds/tests
 - **Affected commands**: Only run tasks for changed packages
@@ -33,6 +36,7 @@ The BlueJS monorepo has been migrated to use modern, efficient tooling:
 ### Vitest vs Jest
 
 **Benefits:**
+
 - **Faster**: 5-10x faster than Jest in many cases
 - **Native ESM**: First-class ESM support, no configuration needed
 - **Vite-powered**: Leverages Vite's transform pipeline
@@ -46,6 +50,7 @@ The BlueJS monorepo has been migrated to use modern, efficient tooling:
 ### Package Manager: Yarn → pnpm
 
 **Files Changed:**
+
 - ✅ Created `pnpm-workspace.yaml` - Workspace configuration
 - ✅ Created `.npmrc` - pnpm configuration
 - ❌ Removed `yarn.lock`
@@ -58,7 +63,7 @@ The BlueJS monorepo has been migrated to use modern, efficient tooling:
 ```yaml
 # pnpm-workspace.yaml
 packages:
-  - 'packages/*'
+    - 'packages/*'
 ```
 
 ```ini
@@ -71,34 +76,35 @@ auto-install-peers=true
 ```json
 // package.json
 {
-  "engines": {
-    "node": ">=18.0.0",
-    "pnpm": ">=8.0.0"
-  },
-  "packageManager": "pnpm@8.15.0",
-  "pnpm": {
-    "overrides": {
-      "braces": ">=2.3.1",
-      "handlebars": ">=4.7.7",
-      "https-proxy-agent": ">=2.2.3"
+    "engines": {
+        "node": ">=18.0.0",
+        "pnpm": ">=8.0.0"
+    },
+    "packageManager": "pnpm@8.15.0",
+    "pnpm": {
+        "overrides": {
+            "braces": ">=2.3.1",
+            "handlebars": ">=4.7.7",
+            "https-proxy-agent": ">=2.2.3"
+        }
     }
-  }
 }
 ```
 
 **Command Changes:**
 
-| Task | Old (Yarn) | New (pnpm) |
-|------|-----------|-----------|
-| Install | `yarn install` | `pnpm install` |
-| Add dependency | `yarn add <pkg>` | `pnpm add <pkg>` |
-| Add dev dep | `yarn add -D <pkg>` | `pnpm add -D <pkg>` |
-| Run script | `yarn <script>` | `pnpm <script>` |
+| Task              | Old (Yarn)                        | New (pnpm)                       |
+| ----------------- | --------------------------------- | -------------------------------- |
+| Install           | `yarn install`                    | `pnpm install`                   |
+| Add dependency    | `yarn add <pkg>`                  | `pnpm add <pkg>`                 |
+| Add dev dep       | `yarn add -D <pkg>`               | `pnpm add -D <pkg>`              |
+| Run script        | `yarn <script>`                   | `pnpm <script>`                  |
 | Workspace command | `yarn workspace @blue/core <cmd>` | `pnpm --filter @blue/core <cmd>` |
 
 ### Monorepo Tool: Lerna → Nx
 
 **Files Changed:**
+
 - ✅ Created `nx.json` - Nx configuration with caching
 - ❌ Removed `lerna.json`
 - 📝 Updated `package.json` - Replaced lerna with nx
@@ -108,26 +114,26 @@ auto-install-peers=true
 ```json
 // nx.json
 {
-  "targetDefaults": {
-    "build:lib": {
-      "dependsOn": ["^build:lib"],
-      "cache": true,
-      "outputs": ["{projectRoot}/lib"]
+    "targetDefaults": {
+        "build:lib": {
+            "dependsOn": ["^build:lib"],
+            "cache": true,
+            "outputs": ["{projectRoot}/lib"]
+        },
+        "test": {
+            "dependsOn": ["build:lib"],
+            "cache": true
+        }
     },
-    "test": {
-      "dependsOn": ["build:lib"],
-      "cache": true
+    "tasksRunnerOptions": {
+        "default": {
+            "runner": "nx/tasks-runners/default",
+            "options": {
+                "cacheableOperations": ["build:lib", "build:bundle", "test", "lint"],
+                "parallel": 3
+            }
+        }
     }
-  },
-  "tasksRunnerOptions": {
-    "default": {
-      "runner": "nx/tasks-runners/default",
-      "options": {
-        "cacheableOperations": ["build:lib", "build:bundle", "test", "lint"],
-        "parallel": 3
-      }
-    }
-  }
 }
 ```
 
@@ -140,13 +146,13 @@ auto-install-peers=true
 
 **Command Changes:**
 
-| Task | Old (Lerna) | New (Nx) |
-|------|------------|---------|
-| Build all | `lerna run build:lib` | `nx run-many -t build:lib` |
-| Test all | `lerna run test` | `nx run-many -t test` |
+| Task       | Old (Lerna)                          | New (Nx)                      |
+| ---------- | ------------------------------------ | ----------------------------- |
+| Build all  | `lerna run build:lib`                | `nx run-many -t build:lib`    |
+| Test all   | `lerna run test`                     | `nx run-many -t test`         |
 | Run on one | `lerna run build --scope @blue/core` | `nx run @blue/core:build:lib` |
-| Affected | N/A | `nx affected -t build:lib` |
-| Visualize | N/A | `nx graph` |
+| Affected   | N/A                                  | `nx affected -t build:lib`    |
+| Visualize  | N/A                                  | `nx graph`                    |
 
 **Affected Commands:**
 
@@ -166,6 +172,7 @@ nx affected:graph
 ### Testing: Jest → Vitest
 
 **Files Changed:**
+
 - ✅ Created `vitest.config.ts` - Vitest configuration
 - ❌ Removed `jest.config.ts`
 - 📝 Updated all package.json test scripts
@@ -178,27 +185,28 @@ nx affected:graph
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
-  test: {
-    globals: true,
-    environment: 'jsdom',
-    include: ['**/*.{test,spec}.{js,ts,jsx,tsx}'],
-    coverage: {
-      provider: 'v8',
-      reporter: ['text', 'json', 'html']
-    }
-  },
-  resolve: {
-    alias: {
-      '@blue/core': resolve(__dirname, './packages/blue-core/src'),
-      // ... all packages aliased
-    }
-  }
+    test: {
+        globals: true,
+        environment: 'jsdom',
+        include: ['**/*.{test,spec}.{js,ts,jsx,tsx}'],
+        coverage: {
+            provider: 'v8',
+            reporter: ['text', 'json', 'html'],
+        },
+    },
+    resolve: {
+        alias: {
+            '@blue/core': resolve(__dirname, './packages/blue-core/src'),
+            // ... all packages aliased
+        },
+    },
 });
 ```
 
 **Test Script Changes:**
 
 All package.json files updated:
+
 ```json
 // Before
 {
@@ -224,9 +232,9 @@ Vitest is largely compatible with Jest:
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 
 describe('MyComponent', () => {
-  it('should work', () => {
-    expect(true).toBe(true);
-  });
+    it('should work', () => {
+        expect(true).toBe(true);
+    });
 });
 ```
 
@@ -251,35 +259,40 @@ pnpm vitest path/to/test.spec.ts
 If you're updating a local clone:
 
 - [ ] Remove old dependencies:
-  ```bash
-  rm -rf node_modules yarn.lock .yarn
-  ```
+
+    ```bash
+    rm -rf node_modules yarn.lock .yarn
+    ```
 
 - [ ] Enable pnpm:
-  ```bash
-  corepack enable
-  ```
+
+    ```bash
+    corepack enable
+    ```
 
 - [ ] Install with pnpm:
-  ```bash
-  pnpm install
-  ```
+
+    ```bash
+    pnpm install
+    ```
 
 - [ ] Verify build:
-  ```bash
-  pnpm build
-  ```
+
+    ```bash
+    pnpm build
+    ```
 
 - [ ] Run tests:
-  ```bash
-  pnpm test
-  ```
+
+    ```bash
+    pnpm test
+    ```
 
 - [ ] Explore Nx:
-  ```bash
-  nx graph              # View dependency graph
-  nx affected:graph     # See affected packages
-  ```
+    ```bash
+    nx graph              # View dependency graph
+    nx affected:graph     # See affected packages
+    ```
 
 ## New Workflows
 
@@ -372,6 +385,7 @@ $ nx affected -t build:lib
 **Issue:** Package can't find a dependency
 
 **Solution:** pnpm is stricter about dependencies. Add it to package.json:
+
 ```bash
 cd packages/<package>
 pnpm add <missing-dep>
@@ -382,6 +396,7 @@ pnpm add <missing-dep>
 **Issue:** `nx: command not found`
 
 **Solution:** Use pnpm to run it:
+
 ```bash
 pnpm nx <command>
 # or
@@ -390,9 +405,10 @@ npx nx <command>
 
 ### Vitest: Import error
 
-**Issue:** Can't import @blue/* packages in tests
+**Issue:** Can't import @blue/\* packages in tests
 
 **Solution:** Path aliases are configured in `vitest.config.ts`. Verify the package path exists:
+
 ```typescript
 resolve: {
   alias: {
@@ -406,6 +422,7 @@ resolve: {
 **Issue:** Build output seems stale
 
 **Solution:** Clear Nx cache:
+
 ```bash
 nx reset
 ```
@@ -415,6 +432,7 @@ nx reset
 **Issue:** Import works in dev but fails in CI
 
 **Solution:** pnpm correctly caught a missing dependency. Add it:
+
 ```bash
 pnpm add <dependency>
 ```

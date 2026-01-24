@@ -8,7 +8,7 @@ export type AppResetInit = ServiceInit & { appResetHeader?: string; appResetCode
 
 const defaults: AppResetInit = {
     appResetHeader: 'Alt-Location',
-    appResetCode: 205
+    appResetCode: 205,
 };
 
 /**
@@ -16,12 +16,14 @@ const defaults: AppResetInit = {
  * @implements module:http.ResultAwareServiceInterceptor
  */
 export class AppResetInterceptor implements ResponseAwareServiceInterceptor<AppResetInit> {
-    async postSuccess( response: Response, settings: AppResetInit ): Promise<void> {
-        settings = Object.assign( {}, defaults, settings );
-        const
-            header = settings.appResetHeader,
+    async postSuccess(response: Response, settings: AppResetInit): Promise<void> {
+        settings = Object.assign({}, defaults, settings);
+        const header = settings.appResetHeader,
             statusCode = settings.appResetCode;
-        response.headers.has( header ) && response.status === statusCode && location?.hostname !== 'localhost' && location.reload();
+        response.headers.has(header) &&
+            response.status === statusCode &&
+            location?.hostname !== 'localhost' &&
+            location.reload();
     }
 }
 

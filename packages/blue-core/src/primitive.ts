@@ -18,8 +18,8 @@ export type primitive = boolean | null | number | string | symbol | bigint | und
  * @returns {external:boolean} Whether or not a value is primitive
  * @see {@link module:core.primitive}
  */
-export const isPrimitive = ( value ): value is primitive => {
-    switch( typeof value ){
+export const isPrimitive = (value): value is primitive => {
+    switch (typeof value) {
         case 'bigint':
         case 'boolean':
         case 'number':
@@ -40,4 +40,4 @@ export const isPrimitive = ( value ): value is primitive => {
  * @returns {external:boolean} Whether or not a value is non-primitive
  * @see {@link module:core.primitive}
  */
-export const isNotPrimitive = complement( isPrimitive ) as ( value ) => value is object;
+export const isNotPrimitive = complement(isPrimitive) as (value) => value is object;

@@ -24,7 +24,7 @@ export {
      * //=> Thu Sep 11 2014 00:00:00
      *
      */
-    addDays
+    addDays,
 } from 'date-fns/fp';
 
 export {
@@ -47,7 +47,7 @@ export {
      * //=> Mon Sep 15 2014 00:00:00 (skipped weekend days)
      *
      */
-    addBusinessDays
+    addBusinessDays,
 } from 'date-fns/fp';
 
 export {
@@ -70,7 +70,7 @@ export {
      * //=> Fri Jul 11 2014 01:00:00
      *
      */
-    addHours
+    addHours,
 } from 'date-fns/fp';
 
 export {
@@ -94,7 +94,7 @@ export {
      * addFiveWeeks( date );
      * //=> Fri Jun 26 2015 00:00:00
      */
-    addISOWeekYears
+    addISOWeekYears,
 } from 'date-fns/fp';
 
 export {
@@ -116,7 +116,7 @@ export {
      * add750Milliseconds( date );
      * //=> Thu Jul 10 2014 12:45:30.750
      */
-    addMilliseconds
+    addMilliseconds,
 } from 'date-fns/fp';
 
 export {
@@ -138,7 +138,7 @@ export {
      * addThirtyMinutes( date );
      * //=> Thu Jul 10 2014 12:30:00
      */
-    addMinutes
+    addMinutes,
 } from 'date-fns/fp';
 
 export {
@@ -160,7 +160,7 @@ export {
      * addFiveMonths( date );
      * //=> Sun Feb 01 2015 00:00:00
      */
-    addMonths
+    addMonths,
 } from 'date-fns/fp';
 
 export {
@@ -182,7 +182,7 @@ export {
      * addOneQuarter( date );
      * //=> Mon Dec 01 2014 00:00:00
      */
-    addQuarters
+    addQuarters,
 } from 'date-fns/fp';
 
 export {
@@ -204,7 +204,7 @@ export {
      * addThirtySeconds( date );
      * //=> Thu Jul 10 2014 12:45:30
      */
-    addSeconds
+    addSeconds,
 } from 'date-fns/fp';
 
 export {
@@ -226,7 +226,7 @@ export {
      * addFourWeeks( date );
      * //=> Mon Sep 29 2014 00:00:00
      */
-    addWeeks
+    addWeeks,
 } from 'date-fns/fp';
 
 export {
@@ -248,7 +248,7 @@ export {
      * addFiveYears( date );
      * //=> Sun Sep 01 2019 00:00:00
      */
-    addYears
+    addYears,
 } from 'date-fns/fp';
 
 export {
@@ -276,7 +276,7 @@ export {
      * const result = differenceFromStart( end );
      * //=> 136
      */
-    differenceInBusinessDays
+    differenceInBusinessDays,
 } from 'date-fns/fp';
 
 export {
@@ -302,7 +302,7 @@ export {
      * const result = differenceFromStart( end );
      * //=> 1
      */
-    differenceInCalendarDays
+    differenceInCalendarDays,
 } from 'date-fns/fp';
 
 export {
@@ -328,7 +328,7 @@ export {
      * const result = differenceFromStart( end );
      * //=> 2
      */
-    differenceInCalendarISOWeekYears
+    differenceInCalendarISOWeekYears,
 } from 'date-fns/fp';
 
 export {
@@ -355,7 +355,7 @@ export {
      * const result = differenceFromStart( end );
      * //=> 3
      */
-    differenceInCalendarISOWeeks
+    differenceInCalendarISOWeeks,
 } from 'date-fns/fp';
 
 export {
@@ -380,7 +380,7 @@ export {
      * const result = differenceFromStart( end );
      * //=> 3
      */
-    differenceInCalendarMonths
+    differenceInCalendarMonths,
 } from 'date-fns/fp';
 
 export {
@@ -405,7 +405,7 @@ export {
      * const result = differenceFromStart( end );
      * //=> 3
      */
-    differenceInCalendarQuarters
+    differenceInCalendarQuarters,
 } from 'date-fns/fp';
 
 export {
@@ -430,7 +430,7 @@ export {
      * const result = differenceFromStart( end );
      * //=> 3
      */
-    differenceInCalendarWeeks
+    differenceInCalendarWeeks,
 } from 'date-fns/fp';
 
 export {
@@ -455,7 +455,7 @@ export {
      * const result = differenceFromStart( end );
      * //=> 2
      */
-    differenceInCalendarYears
+    differenceInCalendarYears,
 } from 'date-fns/fp';
 
 export {
@@ -492,124 +492,66 @@ export {
      * const result = differenceInDays( start )( end );
      * //=> 92
      */
-    differenceInDays
+    differenceInDays,
 } from 'date-fns/fp';
 
-export {
-    differenceInHours
-} from 'date-fns/fp';
+export { differenceInHours } from 'date-fns/fp';
 
-export {
-    differenceInISOWeekYears
-} from 'date-fns/fp';
+export { differenceInISOWeekYears } from 'date-fns/fp';
 
-export {
-    differenceInMilliseconds
-} from 'date-fns/fp';
+export { differenceInMilliseconds } from 'date-fns/fp';
 
-export {
-    differenceInMinutes
-} from 'date-fns/fp';
+export { differenceInMinutes } from 'date-fns/fp';
 
-export {
-    differenceInMonths
-} from 'date-fns/fp';
+export { differenceInMonths } from 'date-fns/fp';
 
-export {
-    differenceInQuarters
-} from 'date-fns/fp';
+export { differenceInQuarters } from 'date-fns/fp';
 
-export {
-    differenceInSeconds
-} from 'date-fns/fp';
+export { differenceInSeconds } from 'date-fns/fp';
 
-export {
-    differenceInWeeks
-} from 'date-fns/fp';
+export { differenceInWeeks } from 'date-fns/fp';
 
-export {
-    differenceInYears
-} from 'date-fns/fp';
+export { differenceInYears } from 'date-fns/fp';
 
-export {
-    eachDayOfInterval
-} from 'date-fns/fp';
+export { eachDayOfInterval } from 'date-fns/fp';
 
-export {
-    eachHourOfInterval
-} from 'date-fns/fp';
+export { eachHourOfInterval } from 'date-fns/fp';
 
-export {
-    eachMonthOfInterval
-} from 'date-fns/fp';
+export { eachMonthOfInterval } from 'date-fns/fp';
 
-export {
-    eachQuarterOfInterval
-} from 'date-fns/fp';
+export { eachQuarterOfInterval } from 'date-fns/fp';
 
-export {
-    eachWeekOfInterval
-} from 'date-fns/fp';
+export { eachWeekOfInterval } from 'date-fns/fp';
 
-export {
-    eachWeekendOfInterval
-} from 'date-fns/fp';
+export { eachWeekendOfInterval } from 'date-fns/fp';
 
-export {
-    eachWeekendOfMonth
-} from 'date-fns/fp';
+export { eachWeekendOfMonth } from 'date-fns/fp';
 
-export {
-    eachWeekendOfYear
-} from 'date-fns/fp';
+export { eachWeekendOfYear } from 'date-fns/fp';
 
-export {
-    eachYearOfInterval
-} from 'date-fns/fp';
+export { eachYearOfInterval } from 'date-fns/fp';
 
-export {
-    endOfDay
-} from 'date-fns/fp';
+export { endOfDay } from 'date-fns/fp';
 
-export {
-    endOfDecade
-} from 'date-fns/fp';
+export { endOfDecade } from 'date-fns/fp';
 
-export {
-    endOfHour
-} from 'date-fns/fp';
+export { endOfHour } from 'date-fns/fp';
 
-export {
-    endOfISOWeek
-} from 'date-fns/fp';
+export { endOfISOWeek } from 'date-fns/fp';
 
-export {
-    endOfISOWeekYear
-} from 'date-fns/fp';
+export { endOfISOWeekYear } from 'date-fns/fp';
 
-export {
-    endOfMinute
-} from 'date-fns/fp';
+export { endOfMinute } from 'date-fns/fp';
 
-export {
-    endOfMonth
-} from 'date-fns/fp';
+export { endOfMonth } from 'date-fns/fp';
 
-export {
-    endOfQuarter
-} from 'date-fns/fp';
+export { endOfQuarter } from 'date-fns/fp';
 
-export {
-    endOfSecond
-} from 'date-fns/fp';
+export { endOfSecond } from 'date-fns/fp';
 
-export {
-    endOfWeek
-} from 'date-fns/fp';
+export { endOfWeek } from 'date-fns/fp';
 
-export {
-    endOfYear
-} from 'date-fns/fp';
+export { endOfYear } from 'date-fns/fp';
 
 export {
     formatDistance,
@@ -667,7 +609,7 @@ export {
     startOfSecond,
     startOfWeek,
     startOfWeekYear,
-    startOfYear
+    startOfYear,
 } from 'date-fns/fp';
 
 export {
@@ -699,7 +641,7 @@ export {
      * const result = isPast( new Date( 2014, 6, 2 ) );
      * //=> true
      */
-    isPast
+    isPast,
 } from 'date-fns';
 
 export {
@@ -1055,5 +997,5 @@ export {
      * const result = zonedTimeToUTC(new Date(2014, 5, 25, 10, 0, 0), 'America/Los_Angeles')
      * //=> 2014-06-25T17:00:00.000Z
      */
-    zonedTimeToUtc as zonedTimeToUTC
+    zonedTimeToUtc as zonedTimeToUTC,
 } from 'date-fns-tz/fp';

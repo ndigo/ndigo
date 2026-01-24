@@ -3,6 +3,6 @@
  */
 
 export interface Validator {
-    supports( value ): boolean;
-    validate( value ): void;
+    supports(value): boolean;
+    validate(value): void;
 }

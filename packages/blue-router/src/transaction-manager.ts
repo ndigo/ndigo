@@ -1,8 +1,7 @@
-
 export interface SavepointManager {
     createSavepoint(): any;
-    releaseSavepoint( savepoint );
-    rollbackToSavepoint( savepoint );
+    releaseSavepoint(savepoint);
+    rollbackToSavepoint(savepoint);
 }
 
 export interface TransactionExecution {
@@ -12,9 +11,9 @@ export interface TransactionExecution {
 }
 
 export interface TransactionManager {
-    commit( status );
-    getTransaction( definition ): any;
-    rollback( status );
+    commit(status);
+    getTransaction(definition): any;
+    rollback(status);
 }
 
 export interface TransactionStatus extends SavepointManager, TransactionExecution {
@@ -31,18 +30,18 @@ export abstract class AbstractTransactionStatus implements TransactionStatus {
     savepoint;
 
     hasSavepoint(): boolean {
-        throw new Error( "Method not implemented." );
+        throw new Error('Method not implemented.');
     }
 
-    createSavepoint(){
-        throw new Error( "Method not implemented." );
+    createSavepoint() {
+        throw new Error('Method not implemented.');
     }
 
-    releaseSavepoint( savepoint: any ){
-        throw new Error( "Method not implemented." );
+    releaseSavepoint(savepoint: any) {
+        throw new Error('Method not implemented.');
     }
 
-    rollbackToSavepoint( savepoint: any ){
-        throw new Error( "Method not implemented." );
+    rollbackToSavepoint(savepoint: any) {
+        throw new Error('Method not implemented.');
     }
 }

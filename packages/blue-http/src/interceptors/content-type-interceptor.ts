@@ -25,12 +25,11 @@ export class ContentTypeInterceptor implements InitializationAwareHTTPIntercepto
      * @param {module:http.ContentTypeInit} settings The HTTP request settings, including the `contentType` setting.
      * @returns {external:boolean} Whether or not the http request should continue execution.
      */
-    preInit( url: URL, settings: ContentTypeInit ): boolean {
-        if( 'contentType' in settings ){
-            const
-                { contentType } = settings,
-                headers = new Headers( settings.headers ?? {} );
-            CONTENT_TYPE.set( headers, typeof contentType === 'string' ? contentType : contentType.toString() );
+    preInit(url: URL, settings: ContentTypeInit): boolean {
+        if ('contentType' in settings) {
+            const { contentType } = settings,
+                headers = new Headers(settings.headers ?? {});
+            CONTENT_TYPE.set(headers, typeof contentType === 'string' ? contentType : contentType.toString());
             settings.headers = headers;
         }
         return true;

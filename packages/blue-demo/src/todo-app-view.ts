@@ -1,4 +1,4 @@
-const templateTodo = document.createElement( 'template' );
+const templateTodo = document.createElement('template');
 templateTodo.innerHTML = `
     <section class="todoapp">
         <header class="header">
@@ -36,62 +36,62 @@ export default class MyTodoApp extends HTMLElement {
     checked;
     index;
 
-    constructor(){
+    constructor() {
         super();
         // Do not use shadow DOM to avoid problems when testing with selenium
         // this._root = this.attachShadow({ 'mode': 'open' });
         // initial state
         this.#list = [
             { text: 'my initial todo', checked: false },
-            { text: 'Learn about Web Components', checked: true }
+            { text: 'Learn about Web Components', checked: true },
         ];
     }
 
-    connectedCallback(){
-        this.appendChild( templateTodo.content.cloneNode( true ) );
-        this.$input = this.querySelector( 'todo-input' );
-        this.$listContainer = this.querySelector( '.todo-list' );
-        this.$input.addEventListener( 'onSubmit', this.addItem.bind( this ) );
+    connectedCallback() {
+        this.appendChild(templateTodo.content.cloneNode(true));
+        this.$input = this.querySelector('todo-input');
+        this.$listContainer = this.querySelector('.todo-list');
+        this.$input.addEventListener('onSubmit', this.addItem.bind(this));
         this._render();
     }
 
-    addItem( e ){
-        this.#list.push( { text: e.detail, checked: false, } );
+    addItem(e) {
+        this.#list.push({ text: e.detail, checked: false });
         this._render();
     }
 
-    removeItem( e ){
-        this.#list.splice( e.detail, 1 );
+    removeItem(e) {
+        this.#list.splice(e.detail, 1);
         this._render();
     }
 
-    toggleItem( e ){
-        const item = this.#list[ e.detail ];
-        this.#list[ e.detail ] = Object.assign( {}, item, {
-            checked: !item.checked
-        } );
+    toggleItem(e) {
+        const item = this.#list[e.detail];
+        this.#list[e.detail] = Object.assign({}, item, {
+            checked: !item.checked,
+        });
         this._render();
     }
 
-    disconnectedCallback(){}
+    disconnectedCallback() {}
 
-    _render(){
-        console.log( 'MyTodoApp::_render' );
-        if( !this.$listContainer ) return;
+    _render() {
+        console.log('MyTodoApp::_render');
+        if (!this.$listContainer) return;
         // empty the list
         this.$listContainer.innerHTML = '';
-        this.#list.forEach( ( item, index ) => {
-            let $item = document.createElement( 'todo-item' );
-            $item.setAttribute( 'text', item.text );
+        this.#list.forEach((item, index) => {
+            let $item = document.createElement('todo-item');
+            $item.setAttribute('text', item.text);
             // @ts-ignore: ¯\_(ツ)_/¯
             $item.checked = item.checked;
             // @ts-ignore: ¯\_(ツ)_/¯
             $item.index = index;
-            $item.addEventListener( 'onRemove', this.removeItem.bind( this ) );
-            $item.addEventListener( 'onToggle', this.toggleItem.bind( this ) );
-            this.$listContainer.appendChild( $item );
-        } );
+            $item.addEventListener('onRemove', this.removeItem.bind(this));
+            $item.addEventListener('onToggle', this.toggleItem.bind(this));
+            this.$listContainer.appendChild($item);
+        });
     }
 }
 
-window.customElements.define( 'todo-app', MyTodoApp );
+window.customElements.define('todo-app', MyTodoApp);

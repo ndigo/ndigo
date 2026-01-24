@@ -49,7 +49,7 @@ export {
      * F();
      * //=> false
      */
-    F
+    F,
 } from 'ramda';
 
 export {
@@ -63,7 +63,7 @@ export {
      * T();
      * //=> true
      */
-    T
+    T,
 } from 'ramda';
 
 export {
@@ -91,7 +91,7 @@ export {
      * greet( 'Alice' );
      * //=> 'Hello, Alice!'
      */
-    __
+    __,
 } from 'ramda';
 
 export {
@@ -110,7 +110,7 @@ export {
      * add( 7 )( 10 );
      * //=> 17
      */
-    add
+    add,
 } from 'ramda';
 
 export {
@@ -135,7 +135,7 @@ export {
      * indexedMap( ( val, idx ) => idx + '-' + val, [ 'f', 'o', 'o', 'b', 'a', 'r' ] );
      * //=> [ '0-f', '1-o', '2-o', '3-b', '4-a', '5-r' ]
      */
-    addIndex
+    addIndex,
 } from 'ramda';
 
 export {
@@ -158,7 +158,7 @@ export {
      * adjust( -1, toUpper, [ 'a', 'b', 'c', 'd' ] );
      * //=> [ 'a', 'b', 'c', 'D' ]
      */
-    adjust
+    adjust,
 } from 'ramda';
 
 export {
@@ -186,7 +186,7 @@ export {
      * all( equals3 )( [ 3, 3, 1, 3 ] );
      * //=> false
      */
-    all
+    all,
 } from 'ramda';
 
 export {
@@ -214,7 +214,7 @@ export {
      * isQueenOfSpades( { rank: 'Q', suit: '♠︎' } );
      * //=> true
      */
-    allPass
+    allPass,
 } from 'ramda';
 
 export {
@@ -234,7 +234,7 @@ export {
      * t();
      * //=> 'Tee'
      */
-    always
+    always,
 } from 'ramda';
 
 export {
@@ -257,7 +257,7 @@ export {
      * and( false, false );
      * //=> false
      */
-    and
+    and,
 } from 'ramda';
 
 export {
@@ -283,7 +283,7 @@ export {
      *  andThen( pick( [ 'firstName', 'lastName' ] ) )
      * );
      */
-    andThen
+    andThen,
 } from 'ramda';
 
 export {
@@ -312,7 +312,7 @@ export {
      * any( lessThan2 )( [ 1, 2 ] );
      * //=> true
      */
-    any
+    any,
 } from 'ramda';
 
 export {
@@ -342,7 +342,7 @@ export {
      * isBlackCard( { rank: 'Q', suit: '♦' } );
      * //=> false
      */
-    anyPass
+    anyPass,
 } from 'ramda';
 
 export {
@@ -365,7 +365,7 @@ export {
      * // when only two functions are passed
      * ap( concat, toUpper )( 'Ramda' ) //=> 'RamdaRAMDA'
      */
-    ap
+    ap,
 } from 'ramda';
 
 export {
@@ -389,7 +389,7 @@ export {
      * aperture( 7, [ 1, 2, 3, 4, 5 ] );
      * //=> []
      */
-    aperture
+    aperture,
 } from 'ramda';
 
 export {
@@ -411,7 +411,7 @@ export {
      * append( [ 'tests' ], [ 'write', 'more' ] );
      * //=> [ 'write', 'more', [ 'tests' ] ]
      */
-    append
+    append,
 } from 'ramda';
 
 export {
@@ -432,7 +432,7 @@ export {
      * apply( Math.max, nums );
      * //=> 42
      */
-    apply
+    apply,
 } from 'ramda';
 
 export {
@@ -456,7 +456,7 @@ export {
      * getMetrics( 2, 4 );
      * //=> { sum: 6, nested: { mul: 8 } }
      */
-    applySpec
+    applySpec,
 } from 'ramda';
 
 export {
@@ -478,7 +478,7 @@ export {
      * t42( add( 1 ) );
      * //=> 43
      */
-    applyTo
+    applyTo,
 } from 'ramda';
 
 export {
@@ -504,7 +504,7 @@ export {
      * const peopleByYoungestFirst = sort( byAge, people );
      * //=> [ { name: 'Mikhail', age: 62 }, { name: 'Emma', age: 70 }, { name: 'Peter', age: 78 } ]
      */
-    ascend
+    ascend,
 } from 'ramda';
 
 export {
@@ -526,7 +526,7 @@ export {
      * assoc( 'c', 3, { a: 1, b: 2 } );
      * //=> {a: 1, b: 2, c: 3}
      */
-    assoc
+    assoc,
 } from 'ramda';
 
 export {
@@ -551,7 +551,7 @@ export {
      * assocPath( [ 'a', 'b', 'c' ], 42, { a: 5 } );
      * //=> { a: { b: { c: 42 } } }
      */
-    assocPath
+    assocPath,
 } from 'ramda';
 
 export {
@@ -582,7 +582,7 @@ export {
      * takesTwoArgs( 1, 2, 3 );
      * //=> [ 1, 2, undefined ]
      */
-    binary
+    binary,
 } from 'ramda';
 
 export {
@@ -604,7 +604,7 @@ export {
      * pipe( assoc( 'a', 2 ), tap( log ), assoc( 'a', 3 ) )( { a: 1 } ); //=> { a: 3 }
      * // logs {a: 2}
      */
-    bind
+    bind,
 } from 'ramda';
 
 export {
@@ -635,7 +635,7 @@ export {
      * both( Maybe.Just( false ), Maybe.Just( 55 ) ); // => Maybe.Just( false )
      * both( [ false, false, 'a' ], [ 11 ] ); //=> [ false, false, 11 ]
      */
-    both
+    both,
 } from 'ramda';
 
 export {
@@ -660,7 +660,7 @@ export {
      * format( { indent: 2, value: 'foo\nbar\nbaz\n' } );
      * //=> '  foo\n  bar\n  baz\n'
      */
-    call
+    call,
 } from 'ramda';
 
 export {
@@ -686,7 +686,7 @@ export {
      * chain( duplicate, [ 1, 2, 3 ] ); //=> [ 1, 1, 2, 2, 3, 3 ]
      * chain( append, head )( [ 1, 2, 3 ] ); //=> [ 1, 2, 3, 1 ]
      */
-    chain
+    chain,
 } from 'ramda';
 
 export {
@@ -706,7 +706,7 @@ export {
      * clamp( 1, 10, 15 ) // => 10
      * clamp( 1, 10, 4 )  // => 4
      */
-    clamp
+    clamp,
 } from 'ramda';
 
 export {
@@ -727,7 +727,7 @@ export {
      * objects === objectsClone; //=> false
      * objects[ 0 ] === objectsClone[ 0 ]; //=> false
      */
-    clone
+    clone,
 } from 'ramda';
 
 export {
@@ -750,7 +750,7 @@ export {
      * const peopleByIncreasingAge = sort( byAge, people );
      * //=> [ { name: 'Mikhail', age: 62 },{ name: 'Emma', age: 70 }, { name: 'Peter', age: 78 } ]
      */
-    comparator
+    comparator,
 } from 'ramda';
 
 export {
@@ -773,7 +773,7 @@ export {
      * isNil( 7 ); //=> false
      * isNotNil( 7 ); //=> true
      */
-    complement
+    complement,
 } from 'ramda';
 
 export {
@@ -795,7 +795,7 @@ export {
      * yellGreeting( 'James', 'Bond' ); //=> "THE NAME'S BOND, JAMES BOND"
      * compose( Math.abs, add( 1 ), multiply( 2 ) )( -4 ) //=> 7
      */
-    compose
+    compose,
 } from 'ramda';
 
 export {
@@ -818,7 +818,7 @@ export {
      * composeWhileNotNil( [ inc, prop( 'age' ) ] )( { age: 1 } ) //=> 2
      * composeWhileNotNil( [ inc, prop( 'age' ) ] )( {} ) //=> undefined
      */
-    composeWith
+    composeWith,
 } from 'ramda';
 
 export {
@@ -842,7 +842,7 @@ export {
      * concat( [ 4, 5, 6 ], [ 1, 2, 3 ] ); //=> [ 4, 5, 6, 1, 2, 3 ]
      * concat( [], [] ); //=> []
      */
-    concat
+    concat,
 } from 'ramda';
 
 export {
@@ -872,7 +872,7 @@ export {
      * fn( 50 ); //=> 'nothing special happens at 50°C'
      * fn( 100 ); //=> 'water boils at 100°C'
      */
-    cond
+    cond,
 } from 'ramda';
 
 export {
@@ -905,7 +905,7 @@ export {
      * const sightNewAnimal = compose( animalSighting, AnimalConstructor );
      * map( sightNewAnimal, animalTypes ); //=> [ "It's a Lion!", "It's a Tiger!", "It's a Bear!" ]
      */
-    construct
+    construct,
 } from 'ramda';
 
 export {
@@ -941,7 +941,7 @@ export {
      * // Add a dollop of Potato Chips
      * // Add a dollop of Ketchup
      */
-    constructN
+    constructN,
 } from 'ramda';
 
 export {
@@ -969,7 +969,7 @@ export {
      *
      * @symb converge( f, [ g, h ] )( a, b ) = f( g( a, b ), h( a, b ) )
      */
-    converge
+    converge,
 } from 'ramda';
 
 export {
@@ -993,7 +993,7 @@ export {
      * const letters = [ 'a', 'b', 'A', 'a', 'B', 'c' ];
      * countBy( toLower )( letters );   //=> { 'a': 3, 'b': 2, 'c': 1 }
      */
-    countBy
+    countBy,
 } from 'ramda';
 
 export {
@@ -1034,7 +1034,7 @@ export {
      * const g = f( 3 );
      * g( 4 ); //=> 10
      */
-    curry
+    curry,
 } from 'ramda';
 
 export {
@@ -1076,7 +1076,7 @@ export {
      * const g = f( 3 );
      * g( 4 ); //=> 10
      */
-    curryN
+    curryN,
 } from 'ramda';
 
 export {
@@ -1091,7 +1091,7 @@ export {
      * @example
      * dec( 42 ); //=> 41
      */
-    dec
+    dec,
 } from 'ramda';
 
 export {
@@ -1113,7 +1113,7 @@ export {
      * // parseInt( 'string' ) results in NaN
      * defaultTo42( parseInt( 'string' ) ); //=> 42
      */
-    defaultTo
+    defaultTo,
 } from 'ramda';
 
 export {
@@ -1139,7 +1139,7 @@ export {
      * const peopleByOldestFirst = sort( byAge, people );
      * //=> [ { name: 'Peter', age: 78 }, { name: 'Emma', age: 70 }, { name: 'Mikhail', age: 62 } ]
      */
-    descend
+    descend,
 } from 'ramda';
 
 export {
@@ -1162,7 +1162,7 @@ export {
      * difference( [ 7, 6, 5, 4, 3 ], [ 1, 2, 3, 4 ] ); //=> [ 7, 6, 5 ]
      * difference( [ { a: 1 }, { b: 2 } ], [ { a: 1 }, { c: 3 } ] ) //=> [ { b: 2 } ]
      */
-    difference
+    difference,
 } from 'ramda';
 
 export {
@@ -1186,7 +1186,7 @@ export {
      * const l2 = [ { a: 3 }, { a: 4 } ];
      * differenceWith( cmp, l1, l2 ); //=> [ { a: 1 }, { a: 2 } ]
      */
-    differenceWith
+    differenceWith,
 } from 'ramda';
 
 export {
@@ -1203,7 +1203,7 @@ export {
      * @example
      * dissoc( 'b', { a: 1, b: 2, c: 3 } ); //=> { a: 1, c: 3 }
      */
-    dissoc
+    dissoc,
 } from 'ramda';
 
 export {
@@ -1221,7 +1221,7 @@ export {
      * @example
      * dissocPath( [ 'a', 'b', 'c' ], { a: { b: { c: 42 } } } ); //=> { a: { b: {} } }
      */
-    dissocPath
+    dissocPath,
 } from 'ramda';
 
 export {
@@ -1244,7 +1244,7 @@ export {
      * const reciprocal = divide( 1 );
      * reciprocal( 4 );   //=> 0.25
      */
-    divide
+    divide,
 } from 'ramda';
 
 export {
@@ -1270,7 +1270,7 @@ export {
      * drop( 4, [ 'foo', 'bar', 'baz' ] ); //=> []
      * drop( 3, 'ramda' );               //=> 'da'
      */
-    drop
+    drop,
 } from 'ramda';
 
 export {
@@ -1295,7 +1295,7 @@ export {
      * dropLast( 4, [ 'foo', 'bar', 'baz' ] ); //=> []
      * dropLast( 3, 'ramda' );               //=> 'ra'
      */
-    dropLast
+    dropLast,
 } from 'ramda';
 
 export {
@@ -1322,7 +1322,7 @@ export {
      * dropLastWhile( lteThree, [ 1, 2, 3, 4, 3, 2, 1 ] ); //=> [ 1, 2, 3, 4 ]
      * dropLastWhile( x => x !== 'd' , 'Ramda' ); //=> 'Ramd'
      */
-    dropLastWhile
+    dropLastWhile,
 } from 'ramda';
 
 export {
@@ -1340,7 +1340,7 @@ export {
      * @example
      * dropRepeats( [ 1, 1, 1, 2, 3, 4, 4, 2, 2 ] ); //=> [ 1, 2, 3, 4, 2 ]
      */
-    dropRepeats
+    dropRepeats,
 } from 'ramda';
 
 export {
@@ -1362,7 +1362,7 @@ export {
      * const l = [ 1, -1, 1, 3, 4, -4, -4, -5, 5, 3, 3 ];
      * dropRepeatsWith( eqBy( Math.abs ), l ); //=> [ 1, 3, 4, -5, 3 ]
      */
-    dropRepeatsWith
+    dropRepeatsWith,
 } from 'ramda';
 
 export {
@@ -1389,7 +1389,7 @@ export {
      * dropWhile( lteTwo, [ 1, 2, 3, 4, 3, 2, 1 ] ); //=> [ 3, 4, 3, 2, 1 ]
      * dropWhile( x => x !== 'd' , 'Ramda' ); //=> 'da'
      */
-    dropWhile
+    dropWhile,
 } from 'ramda';
 
 export {
@@ -1419,7 +1419,7 @@ export {
      * either( Maybe.Just( false ), Maybe.Just( 55 ) ); // => Maybe.Just( 55 )
      * either( [ false, false, 'a' ], [ 11 ] ) // => [ 11, 11, "a" ]
      */
-    either
+    either,
 } from 'ramda';
 
 export {
@@ -1440,7 +1440,7 @@ export {
      * endsWith( [ 'c'], [ 'a', 'b', 'c' ] ) //=> true
      * endsWith( [ 'b'], [ 'a', 'b', 'c' ] ) //=> false
      */
-    endsWith
+    endsWith,
 } from 'ramda';
 
 export {
@@ -1457,7 +1457,7 @@ export {
      * @example
      * eqBy( Math.abs, 5, -5 ); //=> true
      */
-    eqBy
+    eqBy,
 } from 'ramda';
 
 export {
@@ -1477,7 +1477,7 @@ export {
      * eqProps( 'a', o1, o2 ); //=> false
      * eqProps( 'c', o1, o2 ); //=> true
      */
-    eqProps
+    eqProps,
 } from 'ramda';
 
 export {
@@ -1502,7 +1502,7 @@ export {
      * const b = {}; b.v = b;
      * equals( a, b ); //=> true
      */
-    equals
+    equals,
 } from 'ramda';
 
 export {
@@ -1529,7 +1529,7 @@ export {
      * };
      * evolve( transformations, tomato ); //=> { firstName: 'Tomato', data: { elapsed: 101, remaining: 1399 }, id: 123 }
      */
-    evolve
+    evolve,
 } from 'ramda';
 
 export {
@@ -1556,7 +1556,7 @@ export {
      * filter( isEven, [ 1, 2, 3, 4 ] ); //=> [2, 4]
      * filter( isEven, { a: 1, b: 2, c: 3, d: 4 } ); //=> { b: 2, d: 4 }
      */
-    filter
+    filter,
 } from 'ramda';
 
 export {
@@ -1580,7 +1580,7 @@ export {
      * find( propEq( 'a', 2 ) )( xs ); //=> { a: 2 }
      * find( propEq( 'a', 4 ) )( xs ); //=> undefined
      */
-    find
+    find,
 } from 'ramda';
 
 export {
@@ -1602,7 +1602,7 @@ export {
      * findIndex( propEq( 'a', 2 ) )( xs ); //=> 1
      * findIndex( propEq( 'a', 4 ) )( xs ); //=> -1
      */
-    findIndex
+    findIndex,
 } from 'ramda';
 
 export {
@@ -1626,7 +1626,7 @@ export {
      * findLast( propEq( 'a', 1 ) )( xs ); //=> { a: 1, b: 1 }
      * findLast( propEq( 'a', 4 ) )( xs ); //=> undefined
      */
-    findLast
+    findLast,
 } from 'ramda';
 
 export {
@@ -1648,7 +1648,7 @@ export {
      * findLastIndex( propEq( 'a', 1 ) )( xs ); //=> 1
      * findLastIndex( propEq( 'a', 4 ) )( xs ); //=> -1
      */
-    findLastIndex
+    findLastIndex,
 } from 'ramda';
 
 export {
@@ -1665,7 +1665,7 @@ export {
      * flatten( [ 1, 2, [ 3, 4 ], 5, [ 6, [ 7, 8, [ 9, [ 10, 11] , 12 ] ] ] ] );
      * //=> [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ]
      */
-    flatten
+    flatten,
 } from 'ramda';
 
 export {
@@ -1682,7 +1682,7 @@ export {
      * mergeThree( 1, 2, 3 ); //=> [ 1, 2, 3 ]
      * flip( mergeThree )( 1, 2, 3 ); //=> [ 2, 1, 3 ]
      */
-    flip
+    flip,
 } from 'ramda';
 
 export {
@@ -1715,7 +1715,7 @@ export {
      * // logs 7
      * // logs 8
      */
-    forEach
+    forEach,
 } from 'ramda';
 
 export {
@@ -1735,7 +1735,7 @@ export {
      * // logs x:1
      * // logs y:2
      */
-    forEachObjIndexed
+    forEachObjIndexed,
 } from 'ramda';
 
 export {
@@ -1751,7 +1751,7 @@ export {
      * @example
      * fromPairs( [ [ 'a', 1 ], [ 'b', 2 ], [ 'c', 3 ] ] ); //=> { a: 1, b: 2, c: 3 }
      */
-    fromPairs
+    fromPairs,
 } from 'ramda';
 
 export {
@@ -1793,7 +1793,7 @@ export {
      * //   'F': [ { name: 'Eddy', score: 58 } ]
      * // }
      */
-    groupBy
+    groupBy,
 } from 'ramda';
 
 export {
@@ -1818,7 +1818,7 @@ export {
      * groupWith( eqBy( isVowel ), 'aestiou' );
      * //=> [ 'ae', 'st', 'iou' ]
      */
-    groupWith
+    groupWith,
 } from 'ramda';
 
 export {
@@ -1838,7 +1838,7 @@ export {
      * gt( 'a', 'z' ); //=> false
      * gt( 'z', 'a' ); //=> true
      */
-    gt
+    gt,
 } from 'ramda';
 
 export {
@@ -1859,7 +1859,7 @@ export {
      * gte( 'a', 'z' ); //=> false
      * gte( 'z', 'a' ); //=> true
      */
-    gte
+    gte,
 } from 'ramda';
 
 export {
@@ -1883,7 +1883,7 @@ export {
      * pointHas( 'y' );  //=> true
      * pointHas( 'z' );  //=> false
      */
-    has
+    has,
 } from 'ramda';
 
 export {
@@ -1910,7 +1910,7 @@ export {
      * hasIn( 'width', square ); //=> true
      * hasIn( 'area', square );  //=> true
      */
-    hasIn
+    hasIn,
 } from 'ramda';
 
 export {
@@ -1930,7 +1930,7 @@ export {
      * hasPath( [ 'a', 'b' ], { a: { c: 2 } } );         // => false
      * hasPath( [ 'a', 'b' ], {});                       // => false
      */
-    hasPath
+    hasPath,
 } from 'ramda';
 
 export {
@@ -1951,7 +1951,7 @@ export {
      * head( 'abc' ); //=> 'a'
      * head( '' ); //=> ''
      */
-    head
+    head,
 } from 'ramda';
 
 export {
@@ -1976,7 +1976,7 @@ export {
      * identical( 0, -0 ); //=> false
      * identical( NaN, NaN ); //=> true
      */
-    identical
+    identical,
 } from 'ramda';
 
 export {
@@ -1993,7 +1993,7 @@ export {
      * const obj = {};
      * identity( obj ) === obj; //=> true
      */
-    identity
+    identity,
 } from 'ramda';
 
 export {
@@ -2020,7 +2020,7 @@ export {
      * incCount( {} );           //=> { count: 1 }
      * incCount( { count: 1 } ); //=> { count: 2 }
      */
-    ifElse
+    ifElse,
 } from 'ramda';
 
 export {
@@ -2035,7 +2035,7 @@ export {
      * @example
      * inc( 42 ); //=> 43
      */
-    inc
+    inc,
 } from 'ramda';
 
 export {
@@ -2057,7 +2057,7 @@ export {
      * includes( [ 42 ], [ [ 42 ] ] ); //=> true
      * includes( 'ba', 'banana' ); //=>true
      */
-    includes
+    includes,
 } from 'ramda';
 
 export {
@@ -2080,7 +2080,7 @@ export {
      * indexBy( prop( 'id' ), list );
      * //=> { abc: { id: 'abc', title: 'B' }, xyz: { id: 'xyz', title: 'A' } }
      */
-    indexBy
+    indexBy,
 } from 'ramda';
 
 export {
@@ -2099,7 +2099,7 @@ export {
      * indexOf( 3, [ 1, 2, 3, 4 ] ); //=> 2
      * indexOf( 10, [ 1, 2, 3, 4 ] ); //=> -1
      */
-    indexOf
+    indexOf,
 } from 'ramda';
 
 export {
@@ -2123,7 +2123,7 @@ export {
      * intest( 'a' );    //=> ''
      * intest( '' );     //=> ''
      */
-    init
+    init,
 } from 'ramda';
 
 export {
@@ -2159,7 +2159,7 @@ export {
      * );
      * //=> [ { id: 456, name: 'Stephen Stills' }, { id: 177, name: 'Neil Young' } ]
      */
-    innerJoin
+    innerJoin,
 } from 'ramda';
 
 export {
@@ -2177,7 +2177,7 @@ export {
      * @example
      * insert( 2 , 'x', [ 1, 2, 3, 4 ] ); //=> [ 1, 2, 'x', 3, 4 ]
      */
-    insert
+    insert,
 } from 'ramda';
 
 export {
@@ -2195,7 +2195,7 @@ export {
      * @example
      * insertAll( 2, [ 'x', 'y', 'z' ], [ 1, 2, 3, 4 ] ); //=> [ 1, 2, 'x', 'y', 'z', 3, 4 ]
      */
-    insertAll
+    insertAll,
 } from 'ramda';
 
 export {
@@ -2211,7 +2211,7 @@ export {
      * @example
      * intersection( [ 1, 2, 3, 4 ], [ 7, 6, 5, 4, 3 ] ); //=> [4, 3]
      */
-    intersection
+    intersection,
 } from 'ramda';
 
 export {
@@ -2228,7 +2228,7 @@ export {
      * @example
      * intersperse( 'a', [ 'b', 'n', 'n', 's' ] ); //=> [ 'b', 'a', 'n', 'a', 'n', 'a', 's' ]
      */
-    intersperse
+    intersperse,
 } from 'ramda';
 
 export {
@@ -2268,7 +2268,7 @@ export {
      * const intoArray = into( [] );
      * intoArray( transducer, numbers ); //=> [ 2, 3 ]
      */
-    into
+    into,
 } from 'ramda';
 
 export {
@@ -2290,7 +2290,7 @@ export {
      * invert( raceResultsByFirstName );
      * //=> { 'alice': [ 'first', 'third' ], 'jake':[ 'second' ] }
      */
-    invert
+    invert,
 } from 'ramda';
 
 export {
@@ -2317,7 +2317,7 @@ export {
      * invertObj( raceResults );
      * //=> { 'alice': '0', 'jake':'1' }
      */
-    invertObj
+    invertObj,
 } from 'ramda';
 
 export {
@@ -2340,7 +2340,7 @@ export {
      * const sliceFrom6 = invoker( 2, 'slice' )( 6 );
      * sliceFrom6( 8, 'abcdefghijklm' ); //=> 'gh'
      */
-    invoker
+    invoker,
 } from 'ramda';
 
 export {
@@ -2363,7 +2363,7 @@ export {
      * is( Object, 's' ); //=> false
      * is( Number, {} ); //=> false
      */
-    is
+    is,
 } from 'ramda';
 
 export {
@@ -2380,7 +2380,7 @@ export {
      * isNil( 0 ); //=> false
      * isNil( [] ); //=> false
      */
-    isNil
+    isNil,
 } from 'ramda';
 
 export {
@@ -2399,7 +2399,7 @@ export {
      * spacer( [ 'a', 2, 3.4 ] );   //=> 'a 2 3.4'
      * join( '|', [ 1, 2, 3 ] );    //=> '1|2|3'
      */
-    join
+    join,
 } from 'ramda';
 
 export {
@@ -2415,7 +2415,7 @@ export {
      * const getRange = juxt( [ Math.min, Math.max ] );
      * getRange( 3, 4, 9, -3 ); //=> [ -3, 9 ]
      */
-    juxt
+    juxt,
 } from 'ramda';
 
 export {
@@ -2434,7 +2434,7 @@ export {
      * @example
      * keys( { a: 1, b: 2, c: 3 } ); //=> [ 'a', 'b', 'c' ]
      */
-    keys
+    keys,
 } from 'ramda';
 
 export {
@@ -2456,7 +2456,7 @@ export {
      * const f = new F();
      * keysIn( f ); //=> [ 'x', 'y' ]
      */
-    keysIn
+    keysIn,
 } from 'ramda';
 
 export {
@@ -2477,7 +2477,7 @@ export {
      * last( 'abc' ); //=> 'c'
      * last( '' ); //=> ''
      */
-    last
+    last,
 } from 'ramda';
 
 export {
@@ -2496,7 +2496,7 @@ export {
      * lastIndexOf( 3, [ -1, 3, 3, 0, 1, 2, 3, 4 ] ); //=> 6
      * lastIndexOf( 10, [ 1, 2, 3, 4 ] ); //=> -1
      */
-    lastIndexOf
+    lastIndexOf,
 } from 'ramda';
 
 export {
@@ -2511,7 +2511,7 @@ export {
      * length( [] ); //=> 0
      * length( [ 1, 2, 3 ] ); //=> 3
      */
-    length
+    length,
 } from 'ramda';
 
 export {
@@ -2537,7 +2537,7 @@ export {
      * set( xLens, 4, { x: 1, y: 2 } );        //=> { x: 4, y: 2 }
      * over( xLens, negate, { x: 1, y: 2 } );  //=> { x: -1, y: 2 }
      */
-    lens
+    lens,
 } from 'ramda';
 
 export {
@@ -2559,7 +2559,7 @@ export {
      * set( headLens, 'x', [ 'a', 'b', 'c' ] );      //=> [ 'x', 'b', 'c' ]
      * over( headLens, toUpper, [ 'a', 'b', 'c' ] ); //=> [ 'A', 'b', 'c' ]
      */
-    lensIndex
+    lensIndex,
 } from 'ramda';
 
 export {
@@ -2584,7 +2584,7 @@ export {
      * over( xHeadYLens, negate, { x: [ { y: 2, z: 3 }, { y: 4, z: 5 } ] } );
      * //=> { x: [ { y: -2, z: 3 }, { y: 4, z: 5 } ] }
      */
-    lensPath
+    lensPath,
 } from 'ramda';
 
 export {
@@ -2605,7 +2605,7 @@ export {
      * set( xLens, 4, { x: 1, y: 2 } );        //=> { x: 4, y: 2 }
      * over( xLens, negate, { x: 1, y: 2 } );  //=> { x: -1, y: 2 }
      */
-    lensProp
+    lensProp,
 } from 'ramda';
 
 export {
@@ -2624,7 +2624,7 @@ export {
      * const madd5 = lift( ( a, b, c, d, e ) => a + b + c + d + e );
      * madd5( [ 1, 2 ], [ 3 ], [ 4, 5 ], [ 6 ], [ 7, 8 ] ); //=> [ 21, 22, 22, 23, 22, 23, 23, 24 ]
      */
-    lift
+    lift,
 } from 'ramda';
 
 export {
@@ -2643,7 +2643,7 @@ export {
      * const madd3 = liftN( 3, ( ...args ) => sum( args ) );
      * madd3( [ 1, 2, 3 ], [ 1, 2, 3 ], [ 1 ] ); //=> [ 3, 4, 5, 4, 5, 6, 5, 6, 7 ]
      */
-    liftN
+    liftN,
 } from 'ramda';
 
 export {
@@ -2663,7 +2663,7 @@ export {
      * lt( 'a', 'z' ); //=> true
      * lt( 'z', 'a' ); //=> false
      */
-    lt
+    lt,
 } from 'ramda';
 
 export {
@@ -2684,7 +2684,7 @@ export {
      * lte( 'a', 'z' ); //=> true
      * lte( 'z', 'a' ); //=> false
      */
-    lte
+    lte,
 } from 'ramda';
 
 export {
@@ -2715,7 +2715,7 @@ export {
      * map( double, [ 1, 2, 3 ] ); //=> [ 2, 4, 6 ]
      * map( double, { x: 1, y: 2, z: 3 } ); //=> { x: 2, y: 4, z: 6 }
      */
-    map
+    map,
 } from 'ramda';
 
 export {
@@ -2742,7 +2742,7 @@ export {
      * const appender = ( a, b ) => [ a + b, a + b ];
      * mapAccum( appender, 0, digits ); //=> [ '01234', [ '01', '012', '0123', '01234' ] ]
      */
-    mapAccum
+    mapAccum,
 } from 'ramda';
 
 export {
@@ -2771,7 +2771,7 @@ export {
      * const appender = ( a, b ) => [ b + a, b + a ];
      * mapAccumRight( appender, 5, digits ); //=> [ '12345', [ '12345', '2345', '345', '45' ] ]
      */
-    mapAccumRight
+    mapAccumRight,
 } from 'ramda';
 
 export {
@@ -2791,7 +2791,7 @@ export {
      * const prependKeyAndDouble = ( num, key, obj ) => key + ( num * 2 );
      * mapObjIndexed( prependKeyAndDouble, xyz ); //=> { x: 'x2', y: 'y4', z: 'z6' }
      */
-    mapObjIndexed
+    mapObjIndexed,
 } from 'ramda';
 
 export {
@@ -2812,7 +2812,7 @@ export {
      * match( /a/, 'b' ); //=> []
      * match( /a/, null ); //=> TypeError: null does not have a method named "match"
      */
-    match
+    match,
 } from 'ramda';
 
 export {
@@ -2846,7 +2846,7 @@ export {
      * seventeenMod( 4 );  //=> 1
      * seventeenMod( 10 ); //=> 7
      */
-    mathMod
+    mathMod,
 } from 'ramda';
 
 export {
@@ -2864,7 +2864,7 @@ export {
      * max( 789, 123 ); //=> 789
      * max( 'a', 'b' ); //=> 'b'
      */
-    max
+    max,
 } from 'ramda';
 
 export {
@@ -2888,7 +2888,7 @@ export {
      * reduce( maxBy( square ), 0, [ 3, -5, 4, 1, -2 ] ); //=> -5
      * reduce( maxBy( square ), 0, [] ); //=> 0
      */
-    maxBy
+    maxBy,
 } from 'ramda';
 
 export {
@@ -2904,7 +2904,7 @@ export {
      * mean( [ 2, 7, 9 ] ); //=> 6
      * mean( [] ); //=> NaN
      */
-    mean
+    mean,
 } from 'ramda';
 
 export {
@@ -2921,7 +2921,7 @@ export {
      * median( [ 7, 2, 10, 9 ] ); //=> 8
      * median( [] ); //=> NaN
      */
-    median
+    median,
 } from 'ramda';
 
 export {
@@ -2950,7 +2950,7 @@ export {
      * factorial( 5 ); //=> 120
      * count; //=> 1
      */
-    memoizeWith
+    memoizeWith,
 } from 'ramda';
 
 export {
@@ -2966,7 +2966,7 @@ export {
      * mergeAll( [ { foo: 1 }, { bar: 2 }, { baz: 3 } ] ); //=> { foo: 1, bar: 2, baz: 3 }
      * mergeAll( [ { foo: 1 }, { foo: 2 }, { bar: 2 } ] ); //=> { foo: 2, bar: 2 }
      */
-    mergeAll
+    mergeAll,
 } from 'ramda';
 
 export {
@@ -2992,7 +2992,7 @@ export {
      * );
      * //=> { name: 'fred', age: 10, contact: { email: 'moo@example.com' }}
      */
-    mergeDeepLeft
+    mergeDeepLeft,
 } from 'ramda';
 
 export {
@@ -3018,7 +3018,7 @@ export {
      * );
      * //=> { name: 'fred', age: 40, contact: { email: 'baa@example.com' } }
      */
-    mergeDeepRight
+    mergeDeepRight,
 } from 'ramda';
 
 export {
@@ -3048,7 +3048,7 @@ export {
      * );
      * //=> { a: true, b: true, c: { values: [10, 20, 15, 35] }}
      */
-    mergeDeepWith
+    mergeDeepWith,
 } from 'ramda';
 
 export {
@@ -3079,7 +3079,7 @@ export {
      * );
      * //=> { a: true, b: true, c: { thing: 'bar', values: [ 10, 20, 15, 35 ] } }
      */
-    mergeDeepWithKey
+    mergeDeepWithKey,
 } from 'ramda';
 
 export {
@@ -3105,7 +3105,7 @@ export {
      * resetToDefault( { x: 5, y: 2 } );
      * //=> { x: 0, y: 2 }
      */
-    mergeLeft
+    mergeLeft,
 } from 'ramda';
 
 export {
@@ -3130,7 +3130,7 @@ export {
      * const withDefaults = mergeRight( { x : 0, y: 0 } );
      * withDefaults( { y: 2 } ); //=> { x: 0, y: 2 }
      */
-    mergeRight
+    mergeRight,
 } from 'ramda';
 
 export {
@@ -3157,7 +3157,7 @@ export {
      * );
      * //=> { a: true, b: true, values: [ 10, 20, 15, 35 ] }
      */
-    mergeWith
+    mergeWith,
 } from 'ramda';
 
 export {
@@ -3188,7 +3188,7 @@ export {
      * );
      * //=> { a: true, b: true, c: { thing: 'bar', values: [ 10, 20, 15, 35 ] } }
      */
-    mergeWithKey
+    mergeWithKey,
 } from 'ramda';
 
 export {
@@ -3206,7 +3206,7 @@ export {
      * min( 789, 123 ); //=> 123
      * min( 'a', 'b' ); //=> 'a'
      */
-    min
+    min,
 } from 'ramda';
 
 export {
@@ -3230,7 +3230,7 @@ export {
      * reduce( minBy( square ), Infinity, [ 3, -5, 4, 1, -2 ] ); //=> 1
      * reduce( minBy( square ), Infinity, [] ); //=> Infinity
      */
-    minBy
+    minBy,
 } from 'ramda';
 
 export {
@@ -3261,7 +3261,7 @@ export {
      * isOdd( 21 );
      * //=> 1
      */
-    modulo
+    modulo,
 } from 'ramda';
 
 export {
@@ -3284,7 +3284,7 @@ export {
      * multiply( 2, 5 );
      * //=> 10
      */
-    multiply
+    multiply,
 } from 'ramda';
 
 export {
@@ -3315,7 +3315,7 @@ export {
      * takesOneArg( 1, 2 );
      * //=> [ 1, undefined ]
      */
-    nAry
+    nAry,
 } from 'ramda';
 
 export {
@@ -3330,7 +3330,7 @@ export {
      * negate( 42 );
      * //=> -42
      */
-    negate
+    negate,
 } from 'ramda';
 
 export {
@@ -3357,7 +3357,7 @@ export {
      * none( isOdd, [ 1, 3, 5, 7, 8, 11 ] );
      * //=> false
      */
-    none
+    none,
 } from 'ramda';
 
 export {
@@ -3380,7 +3380,7 @@ export {
      * not( 1 );
      * //=> false
      */
-    not
+    not,
 } from 'ramda';
 
 export {
@@ -3407,7 +3407,7 @@ export {
      * nth( 3, 'abc' );
      * //=> ''
      */
-    nth
+    nth,
 } from 'ramda';
 
 export {
@@ -3424,7 +3424,7 @@ export {
      * nthArg( -1 )( 'a', 'b', 'c' );
      * //=> 'c'
      */
-    nthArg
+    nthArg,
 } from 'ramda';
 
 export {
@@ -3450,7 +3450,7 @@ export {
      * yellGreeting( { first: 'James', last: 'Bond' } ); //=> "THE NAME'S BOND, JAMES BOND"
      * o( multiply( 10 ), add( 10 ) )( -4 ) //=> 60
      */
-    o
+    o,
 } from 'ramda';
 
 export {
@@ -3472,7 +3472,7 @@ export {
      * matchPhrases( [ 'foo', 'bar', 'baz' ] );
      * //=> { must: [ { match_phrase: 'foo' }, { match_phrase: 'bar' }, { match_phrase: 'baz' } ] }
      */
-    objOf
+    objOf,
 } from 'ramda';
 
 export {
@@ -3492,7 +3492,7 @@ export {
      * of( [ 42 ] );
      * //=> [ [ 42 ] ]
      */
-    of
+    of,
 } from 'ramda';
 
 export {
@@ -3509,7 +3509,7 @@ export {
      * omit( [ 'a', 'd' ], { a: 1, b: 2, c: 3, d: 4 } );
      * //=> { b: 2, c: 3 }
      */
-    omit
+    omit,
 } from 'ramda';
 
 export {
@@ -3530,7 +3530,7 @@ export {
      * addOneOnce( addOneOnce( 50 ) );
      * //=> 11
      */
-    once
+    once,
 } from 'ramda';
 
 export {
@@ -3554,7 +3554,7 @@ export {
      * or( false, false );
      * //=> false
      */
-    or
+    or,
 } from 'ramda';
 
 export {
@@ -3581,7 +3581,7 @@ export {
      * );
      * recoverFromFailure( 12345 ).then( console.log )
      */
-    otherwise
+    otherwise,
 } from 'ramda';
 
 export {
@@ -3605,7 +3605,7 @@ export {
      * over( headLens, toUpper, [ 'foo', 'bar', 'baz' ] );
      * //=> ['FOO', 'bar', 'baz']
      */
-    over
+    over,
 } from 'ramda';
 
 export {
@@ -3623,7 +3623,7 @@ export {
      * pair( 'foo', 'bar' );
      * //=> [ 'foo', 'bar' ]
      */
-    pair
+    pair,
 } from 'ramda';
 
 export {
@@ -3651,7 +3651,7 @@ export {
      * sayHelloToMs( 'Jane', 'Jones' );
      * //=> 'Hello, Ms. Jane Jones!'
      */
-    partial
+    partial,
 } from 'ramda';
 
 export {
@@ -3673,7 +3673,7 @@ export {
      * greetMsJaneJones( 'Hello' );
      * //=> 'Hello, Ms. Jane Jones!'
      */
-    partialRight
+    partialRight,
 } from 'ramda';
 
 export {
@@ -3698,7 +3698,7 @@ export {
      * partition( includes( 's' ), { a: 'sss', b: 'ttt', foo: 'bars' } );
      * //=> [ { a: 'sss', foo: 'bars' }, { b: 'ttt' } ]
      */
-    partition
+    partition,
 } from 'ramda';
 
 export {
@@ -3722,7 +3722,7 @@ export {
      * path( [ 'a', 'b', -2 ], { a: { b: [ 1, 2, 3 ] } } );
      * //=> 2
      */
-    path
+    path,
 } from 'ramda';
 
 export {
@@ -3746,7 +3746,7 @@ export {
      * filter( isFamous, users );
      * //=> [ user1 ]
      */
-    pathEq
+    pathEq,
 } from 'ramda';
 
 export {
@@ -3766,7 +3766,7 @@ export {
      * pathOr( 'N/A', [ 'a', 'b' ], { c: { b: 2 } } );
      * //=> "N/A"
      */
-    pathOr
+    pathOr,
 } from 'ramda';
 
 export {
@@ -3786,7 +3786,7 @@ export {
      * pathSatisfies( ( y ) => y > 0, [ 'x', 'y' ], { x: { y: 2 } } );
      * //=> true
      */
-    pathSatisfies
+    pathSatisfies,
 } from 'ramda';
 
 export {
@@ -3807,7 +3807,7 @@ export {
      * pick( [ 'a', 'e', 'f' ], { a: 1, b: 2, c: 3, d: 4 } );
      * //=> { a: 1 }
      */
-    pick
+    pick,
 } from 'ramda';
 
 export {
@@ -3827,7 +3827,7 @@ export {
      * pickAll( [ 'a', 'e', 'f' ], { a: 1, b: 2, c: 3, d: 4 } );
      * //=> { a: 1, e: undefined, f: undefined }
      */
-    pickAll
+    pickAll,
 } from 'ramda';
 
 export {
@@ -3847,7 +3847,7 @@ export {
      * pickBy( isUpperCase, { a: 1, b: 2, A: 3, B: 4 } );
      * //=> { A: 3, B: 4 }
      */
-    pickBy
+    pickBy,
 } from 'ramda';
 
 export {
@@ -3870,7 +3870,7 @@ export {
      * f( 3, 4 );
      * //=> -(3^4) + 1
      */
-    pipe
+    pipe,
 } from 'ramda';
 
 export {
@@ -3893,7 +3893,7 @@ export {
      * const f = pipeWhileNotNil( [ Math.pow, negate, inc ] )
      * f( 3, 4 ); // -(3^4) + 1
      */
-    pipeWith
+    pipeWith,
 } from 'ramda';
 
 export {
@@ -3917,7 +3917,7 @@ export {
      * pluck( 'val', { a: { val: 3 }, b: { val: 5 } } );
      * //=> { a: 3, b: 5 }
      */
-    pluck
+    pluck,
 } from 'ramda';
 
 export {
@@ -3935,7 +3935,7 @@ export {
      * prepend( 'fee', [ 'fi', 'fo', 'fum' ] );
      * //=> [ 'fee', 'fi', 'fo', 'fum' ]
      */
-    prepend
+    prepend,
 } from 'ramda';
 
 export {
@@ -3951,7 +3951,7 @@ export {
      * product( [ 2, 4, 6, 8, 100, 1 ] );
      * //=> 38400
      */
-    product
+    product,
 } from 'ramda';
 
 export {
@@ -3971,7 +3971,7 @@ export {
      * project( [ 'name', 'grade' ], kids );
      * //=> [ { name: 'Abby', grade: 2 }, { name: 'Fred', grade: 7 } ]
      */
-    project
+    project,
 } from 'ramda';
 
 export {
@@ -3997,7 +3997,7 @@ export {
      * compose( inc, prop( 'x' ) )( { x: 3 } )
      * //=> 4
      */
-    prop
+    prop,
 } from 'ramda';
 
 export {
@@ -4026,7 +4026,7 @@ export {
      * filter( hasBrownHair, kids );
      * //=> [ fred, rusty ]
      */
-    propEq
+    propEq,
 } from 'ramda';
 
 export {
@@ -4049,7 +4049,7 @@ export {
      * propIs( Number, 'x', {} );
      * //=> false
      */
-    propIs
+    propIs,
 } from 'ramda';
 
 export {
@@ -4078,7 +4078,7 @@ export {
      * favoriteWithDefault( alice );
      * //=> 'Ramda'
      */
-    propOr
+    propOr,
 } from 'ramda';
 
 export {
@@ -4099,11 +4099,11 @@ export {
      * propSatisfies( ( x ) => x > 0, 'x', { x: 1, y: 2 } );
      * //=> true
      */
-    propSatisfies
+    propSatisfies,
 } from 'ramda';
 
 export {
-   /**
+    /**
      * Acts as multiple `prop`: array of keys in, array of values out. Preserves
      * order.
      *
@@ -4123,7 +4123,7 @@ export {
      * fullName( { last: 'Bullet-Tooth', age: 33, first: 'Tony' } );
      * //=> 'Tony Bullet-Tooth'
      */
-    props
+    props,
 } from 'ramda';
 
 export {
@@ -4169,7 +4169,7 @@ export {
      * //   / \              / \
      * //  0   1            0   1
      */
-    reduce
+    reduce,
 } from 'ramda';
 
 export {
@@ -4210,7 +4210,7 @@ export {
      * reduceBy( groupNames, [], toGrade, students );
      * //=> { "A": [ "Dora" ], "B": [ "Abby", "Curt" ], "F": [ "Bart" ] }
      */
-    reduceBy
+    reduceBy,
 } from 'ramda';
 
 export {
@@ -4251,7 +4251,7 @@ export {
      * //         / \              / \
      * //        4   0            4   0
      */
-    reduceRight
+    reduceRight,
 } from 'ramda';
 
 export {
@@ -4282,7 +4282,7 @@ export {
      * reduceWhile( isOdd, add, 111, ys );
      * //=> 111
      */
-    reduceWhile
+    reduceWhile,
 } from 'ramda';
 
 export {
@@ -4312,7 +4312,7 @@ export {
      * );
      * //=> [ 1, 2, 3 ]
      */
-    reduced
+    reduced,
 } from 'ramda';
 
 export {
@@ -4337,7 +4337,7 @@ export {
      * reject( isOdd, { a: 1, b: 2, c: 3, d: 4 } );
      * //=> { b: 2, d: 4 }
      */
-    reject
+    reject,
 } from 'ramda';
 
 export {
@@ -4358,7 +4358,7 @@ export {
      * remove( 2, 3, [ 1, 2, 3, 4, 5, 6, 7, 8 ] );
      * //=> [ 1, 2, 6, 7, 8 ]
      */
-    remove
+    remove,
 } from 'ramda';
 
 export {
@@ -4381,7 +4381,7 @@ export {
      * repeatedObjs[ 0 ] === repeatedObjs[ 1 ];
      * //=> true
      */
-    repeat
+    repeat,
 } from 'ramda';
 
 export {
@@ -4409,7 +4409,7 @@ export {
      * replace( /foo/g, 'bar', 'foo foo foo' );
      * //=> 'bar bar bar'
      */
-    replace
+    replace,
 } from 'ramda';
 
 export {
@@ -4432,7 +4432,7 @@ export {
      * reverse( 'a' );        //=> 'a'
      * reverse( '' );         //=> ''
      */
-    reverse
+    reverse,
 } from 'ramda';
 
 export {
@@ -4454,7 +4454,7 @@ export {
      * const factorials = scan( multiply, 1, numbers );
      * //=> [ 1, 1, 2, 6, 24 ]
      */
-    scan
+    scan,
 } from 'ramda';
 
 export {
@@ -4480,7 +4480,7 @@ export {
      * set( xLens, 8, { x: 1, y: 2 } );
      * //=> { x: 8, y: 2 }
      */
-    set
+    set,
 } from 'ramda';
 
 export {
@@ -4508,7 +4508,7 @@ export {
      * slice( 0, 3, 'ramda' );
      * //=> 'ram'
      */
-    slice
+    slice,
 } from 'ramda';
 
 export {
@@ -4529,7 +4529,7 @@ export {
      * sort( diff, [ 4, 2, 7, 5 ] );
      * //=> [ 2, 4, 5, 7 ]
      */
-    sort
+    sort,
 } from 'ramda';
 
 export {
@@ -4565,7 +4565,7 @@ export {
      * sortByNameCaseInsensitive( people );
      * //=> [alice, bob, clara]
      */
-    sortBy
+    sortBy,
 } from 'ramda';
 
 export {
@@ -4599,7 +4599,7 @@ export {
      * ageNameSort( people );
      * //=> [ alice, clara, bob ]
      */
-    sortWith
+    sortWith,
 } from 'ramda';
 
 export {
@@ -4621,7 +4621,7 @@ export {
      * split( '.', 'a.b.c.xyz.d ' );
      * //=> [ 'a', 'b', 'c', 'xyz', 'd' ]
      */
-    split
+    split,
 } from 'ramda';
 
 export {
@@ -4641,7 +4641,7 @@ export {
      * splitAt( -1, 'foobar' );
      * //=> [ 'fooba', 'r' ]
      */
-    splitAt
+    splitAt,
 } from 'ramda';
 
 export {
@@ -4659,7 +4659,7 @@ export {
      * splitEvery( 3, 'foobarbaz' );
      * //=> [ 'foo', 'bar', 'baz' ]
      */
-    splitEvery
+    splitEvery,
 } from 'ramda';
 
 export {
@@ -4680,7 +4680,7 @@ export {
      * splitWhen( equals( 2 ), [ 1, 2, 3, 1, 2, 3 ] );
      * //=> [ [ 1 ], [ 2, 3, 1, 2, 3 ] ]
      */
-    splitWhen
+    splitWhen,
 } from 'ramda';
 
 export {
@@ -4706,7 +4706,7 @@ export {
      * startsWith( [ 'b' ], [ 'a', 'b', 'c' ] );
      * //=> false
      */
-    startsWith
+    startsWith,
 } from 'ramda';
 
 export {
@@ -4734,7 +4734,7 @@ export {
      * complementaryAngle( 72 );
      * //=> 18
      */
-    subtract
+    subtract,
 } from 'ramda';
 
 export {
@@ -4750,7 +4750,7 @@ export {
      * sum( [ 2, 4, 6, 8, 100, 1 ] );
      * //=> 121
      */
-    sum
+    sum,
 } from 'ramda';
 
 export {
@@ -4772,7 +4772,7 @@ export {
      * symmetricDifference( [ 7, 6, 5, 4, 3 ], [ 1, 2, 3, 4 ] );
      * //=> [7,6,5,1,2]
      */
-    symmetricDifference
+    symmetricDifference,
 } from 'ramda';
 
 export {
@@ -4798,7 +4798,7 @@ export {
      * symmetricDifferenceWith( eqA, l1, l2 );
      * //=> [ { a: 1 }, { a: 2 }, { a: 5 }, { a: 6 } ]
      */
-    symmetricDifferenceWith
+    symmetricDifferenceWith,
 } from 'ramda';
 
 export {
@@ -4826,7 +4826,7 @@ export {
      * tail( 'a' );    //=> ''
      * tail( '' );     //=> ''
      */
-    tail
+    tail,
 } from 'ramda';
 
 export {
@@ -4864,7 +4864,7 @@ export {
      * takeFive( personnel );
      * //=> [ 'Dave Brubeck', 'Paul Desmond', 'Eugene Wright', 'Joe Morello', 'Gerry Mulligan' ]
      */
-    take
+    take,
 } from 'ramda';
 
 export {
@@ -4890,7 +4890,7 @@ export {
      * takeLast( 3, 'ramda' );
      * //=> 'mda'
      */
-    takeLast
+    takeLast,
 } from 'ramda';
 
 export {
@@ -4915,7 +4915,7 @@ export {
      * takeLastWhile( ( x ) => x !== 'R' , 'Ramda' );
      * //=> 'amda'
      */
-    takeLastWhile
+    takeLastWhile,
 } from 'ramda';
 
 export {
@@ -4945,7 +4945,7 @@ export {
      * takeWhile( ( x ) => x !== 'd' , 'Ramda' );
      * //=> 'Ram'
      */
-    takeWhile
+    takeWhile,
 } from 'ramda';
 
 export {
@@ -4964,7 +4964,7 @@ export {
      * tap( sayX, 100 ); //=> 100
      * // logs 'x is 100'
      */
-    tap
+    tap,
 } from 'ramda';
 
 export {
@@ -4983,7 +4983,7 @@ export {
      * test( /^y/, 'xyz' );
      * //=> false
      */
-    test
+    test,
 } from 'ramda';
 
 export {
@@ -5002,7 +5002,7 @@ export {
      * thunkify( identity )( 42 )(); //=> 42
      * thunkify( ( a, b ) => a + b )( 25, 17 )(); //=> 42
      */
-    thunkify
+    thunkify,
 } from 'ramda';
 
 export {
@@ -5024,7 +5024,7 @@ export {
      * times( identity, 5 );
      * //=> [ 0, 1, 2, 3, 4 ]
      */
-    times
+    times,
 } from 'ramda';
 
 export {
@@ -5040,7 +5040,7 @@ export {
      * toLower( 'XYZ' );
      * //=> 'xyz'
      */
-    toLower
+    toLower,
 } from 'ramda';
 
 export {
@@ -5058,7 +5058,7 @@ export {
      * @example
      * toPairs( { a: 1, b: 2, c: 3 } ); //=> [ [ 'a', 1 ], [ 'b', 2 ], [ 'c', 3 ] ]
      */
-    toPairs
+    toPairs,
 } from 'ramda';
 
 export {
@@ -5078,7 +5078,7 @@ export {
      * const f = new F();
      * toPairsIn( f ); //=> [ [ 'x', 'X' ], [ 'y', 'Y' ] ]
      */
-    toPairsIn
+    toPairsIn,
 } from 'ramda';
 
 export {
@@ -5093,7 +5093,7 @@ export {
      * @example
      * toUpper( 'abc' ); //=> 'ABC'
      */
-    toUpper
+    toUpper,
 } from 'ramda';
 
 export {
@@ -5143,7 +5143,7 @@ export {
      * const firstOddTransducer = compose( filter( isOdd ), take( 1 ) );
      * transduce( firstOddTransducer, flip( append ), [], range( 0, 100 ) ); //=> [ 1 ]
      */
-    transduce
+    transduce,
 } from 'ramda';
 
 export {
@@ -5163,7 +5163,7 @@ export {
      * // If some of the rows are shorter than the following rows, their elements are skipped:
      * transpose( [ [ 10, 11 ], [ 20 ], [], [ 30, 31, 32 ] ] ) //=> [ [ 10, 20, 30 ], [ 11, 31 ], [ 32 ] ]
      */
-    transpose
+    transpose,
 } from 'ramda';
 
 export {
@@ -5189,7 +5189,7 @@ export {
      * traverse( Maybe.of, safeDiv( 10 ), [ 2, 4, 5 ] ); //=> Maybe.Just( [ 5, 2.5, 2 ] )
      * traverse( Maybe.of, safeDiv( 10 ), [ 2, 0, 5 ] ); //=> Maybe.Nothing
      */
-    traverse
+    traverse,
 } from 'ramda';
 
 export {
@@ -5206,7 +5206,7 @@ export {
      * trim( '   xyz  ' ); //=> 'xyz'
      * map( trim, split( ',', 'x, y, z' ) ); //=> [ 'x', 'y', 'z' ]
      */
-    trim
+    trim,
 } from 'ramda';
 
 export {
@@ -5229,7 +5229,7 @@ export {
      * tryCatch( () => { throw 'foo' }, always( 'catched' ) )( 'bar' ) // => 'catched'
      * tryCatch( times( identity ), always( [] ) )( 's' ) // => []
      */
-    tryCatch
+    tryCatch,
 } from 'ramda';
 
 export {
@@ -5254,7 +5254,7 @@ export {
      * type( () => {} ); //=> "Function"
      * type( undefined ); //=> "Undefined"
      */
-    type
+    type,
 } from 'ramda';
 
 export {
@@ -5277,7 +5277,7 @@ export {
      * @example
      * unapply( JSON.stringify )( 1, 2, 3 ); //=> '[ 1, 2, 3 ]'
      */
-    unapply
+    unapply,
 } from 'ramda';
 
 export {
@@ -5302,7 +5302,7 @@ export {
      * // Only 1 argument is passed to the wrapped function
      * takesOneArg( 1, 2 ); //=> [ 1, undefined ]
      */
-    unary
+    unary,
 } from 'ramda';
 
 export {
@@ -5320,7 +5320,7 @@ export {
      * const uncurriedAddFour = uncurryN( 4, addFour );
      * uncurriedAddFour( 1, 2, 3, 4 ) ; //=> 10
      */
-    uncurryN
+    uncurryN,
 } from 'ramda';
 
 export {
@@ -5344,7 +5344,7 @@ export {
      * const f = ( n ) => n > 50 ? false : [ -n, n + 10 ];
      * unfold( f, 10 ); //=> [ -10, -20, -30, -40, -50 ]
      */
-    unfold
+    unfold,
 } from 'ramda';
 
 export {
@@ -5360,7 +5360,7 @@ export {
      * @example
      * union( [ 1, 2, 3 ], [ 2, 3, 4 ] ); //=> [ 1, 2, 3, 4 ]
      */
-    union
+    union,
 } from 'ramda';
 
 export {
@@ -5382,7 +5382,7 @@ export {
      * const l2 = [ { a: 1 }, { a: 4 } ];
      * unionWith( eqBy( prop( 'a' ) ), l1, l2 ); //=> [ { a: 1 }, { a: 2 }, { a: 4 } ]
      */
-    unionWith
+    unionWith,
 } from 'ramda';
 
 export {
@@ -5399,7 +5399,7 @@ export {
      * uniq( [ 1, '1' ] );         //=> [ 1, '1' ]
      * uniq( [ [ 42 ], [ 42 ] ] ); //=> [ [ 42 ] ]
      */
-    uniq
+    uniq,
 } from 'ramda';
 
 export {
@@ -5417,7 +5417,7 @@ export {
      * @example
      * uniqBy( Math.abs, [ -1, -5, 2, 10, 1, 2 ] ); //=> [ -1, -5, 2, 10 ]
      */
-    uniqBy
+    uniqBy,
 } from 'ramda';
 
 export {
@@ -5440,7 +5440,7 @@ export {
      * uniqWith( strEq )( [ 1, '1', 1 ] );    //=> [ 1 ]
      * uniqWith( strEq )( [ '1', 1, 1 ] );    //=> [ '1' ]
      */
-    uniqWith
+    uniqWith,
 } from 'ramda';
 
 export {
@@ -5465,7 +5465,7 @@ export {
      * safeInc( null ); //=> null
      * safeInc( 1 ); //=> 2
      */
-    unless
+    unless,
 } from 'ramda';
 
 export {
@@ -5482,7 +5482,7 @@ export {
      * unnest( [ 1, [ 2 ], [ [ 3 ] ] ] ); //=> [ 1, 2, [ 3 ] ]
      * unnest( [ [ 1, 2 ], [ 3, 4 ], [ 5, 6 ] ] ); //=> [ 1, 2, 3, 4, 5, 6 ]
      */
-    unnest
+    unnest,
 } from 'ramda';
 
 export {
@@ -5502,7 +5502,7 @@ export {
      * import { __, gt, multiply, until } from '@blue/util';
      * until( gt( __, 100 ), multiply( 2 ) )( 1 ) // => 128
      */
-    until
+    until,
 } from 'ramda';
 
 export {
@@ -5521,7 +5521,7 @@ export {
      * update( 1, '_', [ 'a', 'b', 'c' ] );      //=> ['a', '_', 'c']
      * update( -1, '_', [ 'a', 'b', 'c' ] );     //=> ['a', 'b', '_']
      */
-    update
+    update,
 } from 'ramda';
 
 export {
@@ -5550,7 +5550,7 @@ export {
      * useWith( Math.pow, [ dec, inc ] )( 3, 4 );   //=> 32
      * useWith( Math.pow, [ dec, inc ] )( 3 )( 4 ); //=> 32
      */
-    useWith
+    useWith,
 } from 'ramda';
 
 export {
@@ -5568,7 +5568,7 @@ export {
      * @example
      * values( { a: 1, b: 2, c: 3 } ); //=> [ 1, 2, 3 ]
      */
-    values
+    values,
 } from 'ramda';
 
 export {
@@ -5590,7 +5590,7 @@ export {
      * const f = new F();
      * valuesIn( f ); //=> [ 'X', 'Y' ]
      */
-    valuesIn
+    valuesIn,
 } from 'ramda';
 
 export {
@@ -5612,7 +5612,7 @@ export {
      * view( xLens, { x: 1, y: 2 } );  //=> 1
      * view( xLens, { x: 4, y: 2 } );  //=> 4
      */
-    view
+    view,
 } from 'ramda';
 
 export {
@@ -5641,7 +5641,7 @@ export {
      * truncate( '12345' );         //=> '12345'
      * truncate( '0123456789ABC' ); //=> '0123456789…'
      */
-    when
+    when,
 } from 'ramda';
 
 export {
@@ -5678,7 +5678,7 @@ export {
      * pred( { a: 'foo', b: 'xxx', x: 10, y: 19 } ); //=> false
      * pred( { a: 'foo', b: 'xxx', x: 11, y: 20 } ); //=> false
      */
-    where
+    where,
 } from 'ramda';
 
 export {
@@ -5707,7 +5707,7 @@ export {
      * pred( { a: 1, b: 2, c: 3 } );  //=> true
      * pred( { a: 1, b: 1 } );        //=> false
      */
-    whereEq
+    whereEq,
 } from 'ramda';
 
 export {
@@ -5728,7 +5728,7 @@ export {
      * @example
      * without( [ 1, 2 ], [ 1, 2, 1, 3, 4 ] ); //=> [ 3, 4 ]
      */
-    without
+    without,
 } from 'ramda';
 
 export {
@@ -5745,7 +5745,7 @@ export {
      * xprod( [ 1, 2 ], [ 'a', 'b' ] );
      * //=> [ [ 1, 'a' ], [ 1, 'b' ], [ 2, 'a' ], [ 2, 'b' ] ]
      */
-    xprod
+    xprod,
 } from 'ramda';
 
 export {
@@ -5764,7 +5764,7 @@ export {
      * zip( [ 1, 2, 3 ], [ 'a', 'b', 'c' ] );
      * //=> [ [ 1, 'a' ], [ 2, 'b' ], [ 3, 'c' ] ]
      */
-    zip
+    zip,
 } from 'ramda';
 
 export {
@@ -5782,7 +5782,7 @@ export {
      * zipObj( [ 'a', 'b', 'c' ], [ 1, 2, 3 ] );
      * //=> { a: 1, b: 2, c: 3 }
      */
-    zipObj
+    zipObj,
 } from 'ramda';
 
 export {
@@ -5804,7 +5804,7 @@ export {
      * zipWith( f, [ 1, 2, 3 ], [ 'a', 'b', 'c' ] );
      * //=> [ f( 1, 'a' ), f( 2, 'b' ), f( 3, 'c' ) ]
      */
-    zipWith
+    zipWith,
 } from 'ramda';
 
 export {
@@ -5830,7 +5830,7 @@ export {
      * sequence( of, Nothing() );           //=> [ Nothing() ]
      */
     // @ts-ignore
-    sequence
+    sequence,
 } from 'ramda';
 
 // Date

@@ -7,8 +7,7 @@ import standardTypes from './standard-types';
 //config      = module.config(),
 //customTypes = config.types,
 
-const
-    customTypes = {},
-    types = Object.assign( {}, standardTypes, customTypes );
+const customTypes = {},
+    types = Object.assign({}, standardTypes, customTypes);
 
 export default types;

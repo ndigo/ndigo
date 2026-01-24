@@ -1,67 +1,73 @@
-(globalThis["webpackChunkblue_fill"] = globalThis["webpackChunkblue_fill"] || []).push([[172],{
+(globalThis['webpackChunkblue_fill'] = globalThis['webpackChunkblue_fill'] || []).push([
+    [172],
+    {
+        /***/ 772: /***/ () => {
+            function _typeof(obj) {
+                if (typeof Symbol === 'function' && typeof Symbol.iterator === 'symbol') {
+                    _typeof = function (obj) {
+                        return typeof obj;
+                    };
+                } else {
+                    _typeof = function (obj) {
+                        return obj &&
+                            typeof Symbol === 'function' &&
+                            obj.constructor === Symbol &&
+                            obj !== Symbol.prototype
+                            ? 'symbol'
+                            : typeof obj;
+                    };
+                }
 
-/***/ 772:
-/***/ (() => {
+                return _typeof(obj);
+            }
 
-function _typeof(obj) {
-  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
-    _typeof = function (obj) {
-      return typeof obj;
-    };
-  } else {
-    _typeof = function (obj) {
-      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-    };
-  }
+            var isString = function isString(val) {
+                return typeof val === 'string';
+            };
 
-  return _typeof(obj);
-}
+            var isBlob = function isBlob(val) {
+                return val instanceof Blob;
+            };
 
-var isString = function isString(val) {
-  return typeof val === 'string';
-};
+            polyfill.call(
+                (typeof window === 'undefined' ? 'undefined' : _typeof(window)) === 'object' ? window : false || {}
+            );
 
-var isBlob = function isBlob(val) {
-  return val instanceof Blob;
-};
+            function polyfill() {
+                if (!('navigator' in this)) {
+                    this.navigator = {};
+                }
 
-polyfill.call((typeof window === "undefined" ? "undefined" : _typeof(window)) === 'object' ? window :  false || {});
+                if (typeof this.navigator.sendBeacon !== 'function') {
+                    this.navigator.sendBeacon = sendBeacon.bind(this);
+                }
+            }
 
-function polyfill() {
-  if (!('navigator' in this)) {
-    this.navigator = {};
-  }
+            function sendBeacon(url, data) {
+                var event = this.event && this.event.type;
+                var sync = event === 'unload' || event === 'beforeunload';
+                var xhr = 'XMLHttpRequest' in this ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP');
+                xhr.open('POST', url, !sync);
+                xhr.withCredentials = true;
+                xhr.setRequestHeader('Accept', '*/*');
 
-  if (typeof this.navigator.sendBeacon !== 'function') {
-    this.navigator.sendBeacon = sendBeacon.bind(this);
-  }
-}
+                if (isString(data)) {
+                    xhr.setRequestHeader('Content-Type', 'text/plain;charset=UTF-8');
+                    xhr.responseType = 'text';
+                } else if (isBlob(data) && data.type) {
+                    xhr.setRequestHeader('Content-Type', data.type);
+                }
 
-function sendBeacon(url, data) {
-  var event = this.event && this.event.type;
-  var sync = event === 'unload' || event === 'beforeunload';
-  var xhr = 'XMLHttpRequest' in this ? new XMLHttpRequest() : new ActiveXObject('Microsoft.XMLHTTP');
-  xhr.open('POST', url, !sync);
-  xhr.withCredentials = true;
-  xhr.setRequestHeader('Accept', '*/*');
+                try {
+                    xhr.send(data);
+                } catch (error) {
+                    return false;
+                }
 
-  if (isString(data)) {
-    xhr.setRequestHeader('Content-Type', 'text/plain;charset=UTF-8');
-    xhr.responseType = 'text';
-  } else if (isBlob(data) && data.type) {
-    xhr.setRequestHeader('Content-Type', data.type);
-  }
+                return true;
+            }
 
-  try {
-    xhr.send(data);
-  } catch (error) {
-    return false;
-  }
-
-  return true;
-}
-
-
-/***/ })
-
-}]);
+            /***/
+        },
+    },
+]);

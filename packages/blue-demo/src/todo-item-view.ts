@@ -1,4 +1,4 @@
-const templateTodoItem = document.createElement( 'template' );
+const templateTodoItem = document.createElement('template');
 templateTodoItem.innerHTML = `
     <li class="item">
         <div class="view">
@@ -28,32 +28,32 @@ export default class TodoItem extends HTMLElement {
     }
 
     connectedCallback() {
-        this.appendChild( templateTodoItem.content.cloneNode( true ) );
-        this.$item = this.querySelector( '.item' );
-        this.$removeButton = this.querySelector( '.destroy' );
-        this.$text = this.querySelector( 'label' );
-        this.$checkbox = this.querySelector( 'input' );
-        this.$removeButton.addEventListener( 'click', ( e ) => {
+        this.appendChild(templateTodoItem.content.cloneNode(true));
+        this.$item = this.querySelector('.item');
+        this.$removeButton = this.querySelector('.destroy');
+        this.$text = this.querySelector('label');
+        this.$checkbox = this.querySelector('input');
+        this.$removeButton.addEventListener('click', (e) => {
             e.preventDefault();
-            this.dispatchEvent( new CustomEvent( 'onRemove', { detail: this.index } ) );
-        } );
-        this.$checkbox.addEventListener( 'click', ( e ) => {
+            this.dispatchEvent(new CustomEvent('onRemove', { detail: this.index }));
+        });
+        this.$checkbox.addEventListener('click', (e) => {
             e.preventDefault();
-            this.dispatchEvent( new CustomEvent( 'onToggle', { detail: this.index } ) );
-        } );
+            this.dispatchEvent(new CustomEvent('onToggle', { detail: this.index }));
+        });
         this._render();
     }
 
-    disconnectedCallback() { }
+    disconnectedCallback() {}
 
     static get observedAttributes() {
-        return [ 'text' ];
+        return ['text'];
     }
-    attributeChangedCallback( name, oldValue, newValue ) {
+    attributeChangedCallback(name, oldValue, newValue) {
         this.#text = newValue;
     }
 
-    set index( value ) {
+    set index(value) {
         this.#index = value;
     }
 
@@ -61,26 +61,25 @@ export default class TodoItem extends HTMLElement {
         return this.#index;
     }
 
-    set checked( value ) {
-        this.#checked = Boolean( value );
+    set checked(value) {
+        this.#checked = Boolean(value);
     }
 
     get checked() {
-        return this.hasAttribute( 'checked' );
+        return this.hasAttribute('checked');
     }
 
     _render() {
-        if( !this.$item ) return;
+        if (!this.$item) return;
         this.$text.textContent = this.#text;
-        if( this.#checked ) {
-            this.$item.classList.add( 'completed' );
-            this.$checkbox.setAttribute( 'checked', '' );
+        if (this.#checked) {
+            this.$item.classList.add('completed');
+            this.$checkbox.setAttribute('checked', '');
         } else {
-            this.$item.classList.remove( 'completed' );
-            this.$checkbox.removeAttribute( 'checked' );
+            this.$item.classList.remove('completed');
+            this.$checkbox.removeAttribute('checked');
         }
-
     }
 }
 
-window.customElements.define( 'todo-item', TodoItem );
+window.customElements.define('todo-item', TodoItem);

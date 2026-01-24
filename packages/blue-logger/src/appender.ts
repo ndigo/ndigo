@@ -10,18 +10,18 @@ import { ErrorHandler } from './error-handler';
 export interface Appender {
     errorHandler: ErrorHandler;
     layout: Layout;
-    append( entry: Entry ): void;
+    append(entry: Entry): void;
 }
 
 export interface AsyncAppender extends Appender {
-    append( entry: Entry ): Promise<void>;
+    append(entry: Entry): Promise<void>;
 }
 
 export interface AppenderRegistry<T extends Appender> {
     appenders: T[];
-    addAppender( appender: T ): void;
+    addAppender(appender: T): void;
     clearAppenders(): void;
-    removeAppender( appender: T ): void;
+    removeAppender(appender: T): void;
 }
 
 export interface BatchAppender extends Appender {
@@ -40,12 +40,12 @@ export abstract class AbstractAppender extends Null implements Appender {
     errorHandler: ErrorHandler;
     layout: Layout;
 
-    constructor(){
+    constructor() {
         super();
         this.layout = new NullLayout();
     }
 
-    abstract append( entry: Entry ): void;
+    abstract append(entry: Entry): void;
 }
 
 export abstract class AbstractBatchAppender extends AbstractAppender implements BatchAppender {
@@ -53,34 +53,34 @@ export abstract class AbstractBatchAppender extends AbstractAppender implements 
     batchSize: number;
     layout: BatchLayout;
 
-    constructor(){
+    constructor() {
         super();
         this.batchSize = 1;
-        defineProperty( this, 'entries', {
+        defineProperty(this, 'entries', {
             value: [],
             configurable: true,
             enumerable: true,
-            writable: false
-        } );
+            writable: false,
+        });
     }
 
-    append( entry: Entry ): void {
-        this.entries.push( entry );
+    append(entry: Entry): void {
+        this.entries.push(entry);
 
         const length: number = this.entries.length;
 
-        if( length >= this.batchSize ){
-            const batch: Entry[] = new Array( length );
+        if (length >= this.batchSize) {
+            const batch: Entry[] = new Array(length);
 
-            for( let index = 0; index < length; index++ ){
-                batch[ index ] = this.entries.shift();
+            for (let index = 0; index < length; index++) {
+                batch[index] = this.entries.shift();
             }
 
-            this.appendBatch( batch );
+            this.appendBatch(batch);
         }
     }
 
-    abstract appendBatch( entries: Entry[] ): void;
+    abstract appendBatch(entries: Entry[]): void;
 }
 
 /**

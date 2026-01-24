@@ -76,8 +76,7 @@ declare class DateComparator extends PredicateComparator<Date> {
  * @class module:core~NumberComparator
  * @extends module:core~NaturalComparator
  */
-declare class NumberComparator extends NaturalComparator<number> {
-}
+declare class NumberComparator extends NaturalComparator<number> {}
 /**
  * @class module:core~StringComparator
  * @extends module:core~NaturalComparator

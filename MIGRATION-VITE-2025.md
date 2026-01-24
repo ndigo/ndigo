@@ -11,12 +11,14 @@ The BlueJS monorepo has migrated from webpack 5 to Vite 6 for faster builds and 
 ### Performance Benefits
 
 **Build Speed:**
+
 - **Development**: Vite uses native ESM in development, no bundling needed
 - **Production**: Vite (powered by Rollup) is 10-50x faster than webpack
 - **HMR**: Instant Hot Module Replacement, updates in <50ms
 - **Cold start**: Near-instant server start
 
 **Developer Experience:**
+
 - Simpler configuration (50-80% less code)
 - Better error messages
 - Built-in TypeScript support
@@ -25,21 +27,22 @@ The BlueJS monorepo has migrated from webpack 5 to Vite 6 for faster builds and 
 
 ### Feature Comparison
 
-| Feature | webpack 5 | Vite 6 |
-|---------|-----------|--------|
-| Dev server start | ~5-10s | <1s |
-| HMR speed | 500ms-2s | <50ms |
-| Production build | 2-5 min | 30s-1min |
-| Config complexity | High | Low |
-| TypeScript | Needs ts-loader | Built-in |
-| Code splitting | Manual | Automatic |
-| Tree shaking | Good | Excellent |
+| Feature           | webpack 5       | Vite 6    |
+| ----------------- | --------------- | --------- |
+| Dev server start  | ~5-10s          | <1s       |
+| HMR speed         | 500ms-2s        | <50ms     |
+| Production build  | 2-5 min         | 30s-1min  |
+| Config complexity | High            | Low       |
+| TypeScript        | Needs ts-loader | Built-in  |
+| Code splitting    | Manual          | Automatic |
+| Tree shaking      | Good            | Excellent |
 
 ## Migration Details
 
 ### Dependencies Changed
 
 **Removed:**
+
 - `webpack` ~5.97.1
 - `webpack-cli` ~5.1.4
 - `ts-loader` ~9.5.1
@@ -51,6 +54,7 @@ The BlueJS monorepo has migrated from webpack 5 to Vite 6 for faster builds and 
 - `circular-dependency-plugin` ~5.2.2
 
 **Added:**
+
 - `vite` ~6.0.7
 - `vite-plugin-dts` ~4.3.0 (TypeScript declaration generation)
 - `@vitejs/plugin-basic-ssl` ~1.1.0 (HTTPS in dev mode)
@@ -66,39 +70,39 @@ const TerserPlugin = require('terser-webpack-plugin');
 const TsConfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 
 module.exports = {
-  entry: './src/index.ts',
-  externals: /^@blue\/.+$/,
-  module: {
-    rules: [
-      {
-        test: /\.tsx?$/,
-        exclude: /node_modules/,
-        loader: 'ts-loader',
-        options: {
-          configFile: 'tsconfig.build.json',
-          transpileOnly: true
-        }
-      },
-      {
-        test: /\.(png|jpe?g|gif|pdf)$/i,
-        loader: 'url-loader'
-      }
-    ]
-  },
-  optimization: {
-    minimizer: [new TerserPlugin()]
-  },
-  output: {
-    filename: 'index.js',
-    library: {
-      name: 'Blue',
-      type: 'umd'
-    }
-  },
-  resolve: {
-    extensions: ['.ts', '.js'],
-    plugins: [new TsConfigPathsPlugin()]
-  }
+    entry: './src/index.ts',
+    externals: /^@blue\/.+$/,
+    module: {
+        rules: [
+            {
+                test: /\.tsx?$/,
+                exclude: /node_modules/,
+                loader: 'ts-loader',
+                options: {
+                    configFile: 'tsconfig.build.json',
+                    transpileOnly: true,
+                },
+            },
+            {
+                test: /\.(png|jpe?g|gif|pdf)$/i,
+                loader: 'url-loader',
+            },
+        ],
+    },
+    optimization: {
+        minimizer: [new TerserPlugin()],
+    },
+    output: {
+        filename: 'index.js',
+        library: {
+            name: 'Blue',
+            type: 'umd',
+        },
+    },
+    resolve: {
+        extensions: ['.ts', '.js'],
+        plugins: [new TsConfigPathsPlugin()],
+    },
 };
 ```
 
@@ -115,27 +119,27 @@ import { resolve } from 'path';
 import dts from 'vite-plugin-dts';
 
 export default defineConfig({
-  plugins: [
-    dts({
-      outDir: 'lib',
-      include: ['src/**/*'],
-      exclude: ['**/*.spec.ts', '**/*.test.ts'],
-    }),
-  ],
-  build: {
-    lib: {
-      entry: resolve(__dirname, 'src/index.ts'),
-      name: 'blue-core',
-      formats: ['es', 'cjs'],
-      fileName: (format) => `index.${format === 'es' ? 'js' : 'cjs'}`,
+    plugins: [
+        dts({
+            outDir: 'lib',
+            include: ['src/**/*'],
+            exclude: ['**/*.spec.ts', '**/*.test.ts'],
+        }),
+    ],
+    build: {
+        lib: {
+            entry: resolve(__dirname, 'src/index.ts'),
+            name: 'blue-core',
+            formats: ['es', 'cjs'],
+            fileName: (format) => `index.${format === 'es' ? 'js' : 'cjs'}`,
+        },
+        outDir: '.',
+        sourcemap: true,
+        rollupOptions: {
+            external: [/^@blue\//, 'reflect-metadata', /^node:.*/],
+        },
+        target: 'es2022',
     },
-    outDir: '.',
-    sourcemap: true,
-    rollupOptions: {
-      external: [/^@blue\//, 'reflect-metadata', /^node:.*/],
-    },
-    target: 'es2022',
-  },
 });
 ```
 
@@ -164,6 +168,7 @@ export default defineConfig({
 #### Before (webpack)
 
 **Output:**
+
 - `index.js` - UMD bundle (universal module definition)
 - `index.js.map` - Source map
 - Size: ~500KB (typical package)
@@ -175,6 +180,7 @@ export default defineConfig({
 #### After (Vite)
 
 **Output:**
+
 - `index.js` - ESM bundle (modern)
 - `index.cjs` - CommonJS bundle (Node compatibility)
 - `index.js.map` - ESM source map
@@ -191,9 +197,9 @@ export default defineConfig({
 
 ```json
 {
-  "main": "index.js",         // UMD bundle
-  "module": "lib/index.js",   // ESM from TypeScript
-  "types": "lib/index.d.ts"
+    "main": "index.js", // UMD bundle
+    "module": "lib/index.js", // ESM from TypeScript
+    "types": "lib/index.d.ts"
 }
 ```
 
@@ -201,13 +207,13 @@ export default defineConfig({
 
 ```json
 {
-  "main": "index.cjs",        // CommonJS bundle
-  "module": "index.js",       // ESM bundle
-  "types": "lib/index.d.ts",
-  "exports": {
-    "import": "./index.js",   // ESM
-    "require": "./index.cjs"  // CommonJS
-  }
+    "main": "index.cjs", // CommonJS bundle
+    "module": "index.js", // ESM bundle
+    "types": "lib/index.d.ts",
+    "exports": {
+        "import": "./index.js", // ESM
+        "require": "./index.cjs" // CommonJS
+    }
 }
 ```
 
@@ -298,6 +304,7 @@ vite preview
 ### 3. Optimized Dependencies
 
 Vite automatically optimizes dependencies:
+
 - Pre-bundles CommonJS modules
 - Converts to ESM
 - Caches for performance
@@ -305,6 +312,7 @@ Vite automatically optimizes dependencies:
 ### 4. CSS and Assets
 
 If packages need CSS or assets:
+
 ```typescript
 // Automatic handling, no configuration needed
 import './styles.css';
@@ -331,26 +339,29 @@ console.log(import.meta.env.PROD);
 ### 2. No webpack-specific APIs
 
 If code used webpack-specific features:
+
 ```javascript
 // ❌ No longer available
-require.context()
-require.ensure()
-module.hot.accept()
+require.context();
+require.ensure();
+module.hot.accept();
 
 // ✅ Use instead
-import.meta.glob()        // Glob imports
-import.meta.hot.accept() // HMR in Vite
+import.meta.glob(); // Glob imports
+import.meta.hot.accept(); // HMR in Vite
 ```
 
 ### 3. Asset URLs
 
 **Before:**
+
 ```javascript
 import logo from './logo.png';
 // Returns URL
 ```
 
 **After:**
+
 ```javascript
 import logo from './logo.png';
 // Returns URL (same behavior)
@@ -368,32 +379,32 @@ import { resolve } from 'path';
 import dts from 'vite-plugin-dts';
 
 export default defineConfig({
-  plugins: [
-    dts({
-      outDir: 'lib',
-      include: ['src/**/*'],
-      exclude: ['**/*.spec.ts', '**/*.test.ts'],
-    }),
-  ],
-  build: {
-    lib: {
-      entry: resolve(__dirname, 'src/index.ts'),
-      name: 'packageName',
-      formats: ['es', 'cjs'],
-      fileName: (format) => `index.${format === 'es' ? 'js' : 'cjs'}`,
+    plugins: [
+        dts({
+            outDir: 'lib',
+            include: ['src/**/*'],
+            exclude: ['**/*.spec.ts', '**/*.test.ts'],
+        }),
+    ],
+    build: {
+        lib: {
+            entry: resolve(__dirname, 'src/index.ts'),
+            name: 'packageName',
+            formats: ['es', 'cjs'],
+            fileName: (format) => `index.${format === 'es' ? 'js' : 'cjs'}`,
+        },
+        outDir: '.',
+        emptyOutDir: false,
+        sourcemap: true,
+        rollupOptions: {
+            external: [
+                /^@blue\//, // External @blue packages
+                'reflect-metadata', // External dependencies
+                /^node:.*/, // Node built-ins
+            ],
+        },
+        target: 'es2022',
     },
-    outDir: '.',
-    emptyOutDir: false,
-    sourcemap: true,
-    rollupOptions: {
-      external: [
-        /^@blue\//,           // External @blue packages
-        'reflect-metadata',   // External dependencies
-        /^node:.*/,          // Node built-ins
-      ],
-    },
-    target: 'es2022',
-  },
 });
 ```
 
@@ -406,13 +417,13 @@ import { defineConfig } from 'vite';
 import legacy from '@vitejs/plugin-legacy';
 
 export default defineConfig({
-  plugins: [
-    dts(),
-    legacy({
-      targets: ['defaults', 'not IE 11']
-    })
-  ],
-  // ...
+    plugins: [
+        dts(),
+        legacy({
+            targets: ['defaults', 'not IE 11'],
+        }),
+    ],
+    // ...
 });
 ```
 
@@ -420,14 +431,14 @@ export default defineConfig({
 
 ```typescript
 export default defineConfig({
-  build: {
-    rollupOptions: {
-      external: [
-        /^@blue\//,
-        'my-custom-dep',  // Add custom externals
-      ],
+    build: {
+        rollupOptions: {
+            external: [
+                /^@blue\//,
+                'my-custom-dep', // Add custom externals
+            ],
+        },
     },
-  },
 });
 ```
 
@@ -435,15 +446,15 @@ export default defineConfig({
 
 ```typescript
 export default defineConfig({
-  build: {
-    lib: {
-      entry: {
-        main: resolve(__dirname, 'src/index.ts'),
-        utils: resolve(__dirname, 'src/utils.ts'),
-      },
-      formats: ['es', 'cjs'],
+    build: {
+        lib: {
+            entry: {
+                main: resolve(__dirname, 'src/index.ts'),
+                utils: resolve(__dirname, 'src/utils.ts'),
+            },
+            formats: ['es', 'cjs'],
+        },
     },
-  },
 });
 ```
 
@@ -454,6 +465,7 @@ export default defineConfig({
 **Problem:** Vite can't resolve a module
 
 **Solution:**
+
 1. Check if it's properly listed in `package.json` dependencies
 2. Add to `external` in vite.config.ts if it's a peer dependency
 3. Check path aliases in vite config
@@ -463,6 +475,7 @@ export default defineConfig({
 **Problem:** Types not generated or errors during build
 
 **Solution:**
+
 ```typescript
 // In vite.config.ts
 plugins: [
@@ -478,8 +491,10 @@ plugins: [
 **Problem:** Build warnings about circular deps
 
 **Solution:** Vite warns but continues (unlike webpack's circular-dependency-plugin)
+
 - Review and refactor circular deps
 - Or suppress warnings if intentional:
+
 ```typescript
 build: {
   rollupOptions: {
@@ -496,8 +511,10 @@ build: {
 **Problem:** Bundle is larger than expected
 
 **Solution:**
+
 1. Check external dependencies are marked as external
 2. Enable tree-shaking:
+
 ```typescript
 build: {
   rollupOptions: {
@@ -514,6 +531,7 @@ build: {
 **Problem:** Can't debug in browser
 
 **Solution:**
+
 ```typescript
 build: {
   sourcemap: true,  // or 'inline' for inline maps
@@ -559,6 +577,7 @@ pnpm build:all      # TypeScript + Vite bundles
 ### Production Build
 
 Same commands, Vite automatically optimizes for production:
+
 - Minification
 - Tree-shaking
 - Code splitting
@@ -570,27 +589,27 @@ Actual build times on BlueJS monorepo:
 
 ### Single Package Build
 
-| Task | webpack | Vite | Improvement |
-|------|---------|------|-------------|
-| Cold build | 45s | 8s | **5.6x faster** |
-| Cached build | 12s | 3s | **4x faster** |
-| Watch rebuild | 8s | 0.5s | **16x faster** |
+| Task          | webpack | Vite | Improvement     |
+| ------------- | ------- | ---- | --------------- |
+| Cold build    | 45s     | 8s   | **5.6x faster** |
+| Cached build  | 12s     | 3s   | **4x faster**   |
+| Watch rebuild | 8s      | 0.5s | **16x faster**  |
 
 ### Full Monorepo Build
 
-| Task | webpack | Vite | Improvement |
-|------|---------|------|-------------|
-| All packages (cold) | ~15min | ~3min | **5x faster** |
-| All packages (cached) | ~8min | ~1min | **8x faster** |
-| Single package rebuild | ~45s | ~8s | **5.6x faster** |
+| Task                   | webpack | Vite  | Improvement     |
+| ---------------------- | ------- | ----- | --------------- |
+| All packages (cold)    | ~15min  | ~3min | **5x faster**   |
+| All packages (cached)  | ~8min   | ~1min | **8x faster**   |
+| Single package rebuild | ~45s    | ~8s   | **5.6x faster** |
 
 ### Development Experience
 
-| Metric | webpack | Vite | Improvement |
-|--------|---------|------|-------------|
-| Dev server start | 10s | 0.8s | **12.5x faster** |
-| HMR update | 1.5s | 45ms | **33x faster** |
-| Error feedback | 2-3s | <100ms | **20-30x faster** |
+| Metric           | webpack | Vite   | Improvement       |
+| ---------------- | ------- | ------ | ----------------- |
+| Dev server start | 10s     | 0.8s   | **12.5x faster**  |
+| HMR update       | 1.5s    | 45ms   | **33x faster**    |
+| Error feedback   | 2-3s    | <100ms | **20-30x faster** |
 
 ## Resources
 

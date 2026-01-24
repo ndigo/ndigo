@@ -53,7 +53,9 @@ export declare class ResizableRingBuffer<T> extends RingBuffer<T> {
  * @implements module:core.Enumerable
  * @returns {module:core.Constructable<module:core.RingBuffer,module:core.Enumerable>}
  */
-export declare const AsEnumerableRingBuffer: <T extends Constructable<RingBuffer>, K extends keyof T, V>(superclass: T) => Constructable<Enumerable<K, V> & RingBuffer> & T;
+export declare const AsEnumerableRingBuffer: <T extends Constructable<RingBuffer>, K extends keyof T, V>(
+    superclass: T
+) => Constructable<Enumerable<K, V> & RingBuffer> & T;
 /**
  * Extension of the {@linkcode external:Map|Map} interface that stores multiple values under a single key.
  * @class module:core.MultiValueMap

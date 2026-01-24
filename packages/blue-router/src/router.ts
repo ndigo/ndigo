@@ -1,6 +1,6 @@
 import { RouterInterceptorRegistry, RouterInterceptor } from './router-interceptor';
 
-export type RouterCallback = ( route: string ) => void;
+export type RouterCallback = (route: string) => void;
 
 export interface Router {
     readonly route: string;
@@ -13,9 +13,9 @@ export abstract class AbstractRouter implements Router, RouterInterceptorRegistr
     route: string;
     callback: RouterCallback;
 
-    addInterceptor( interceptor: RouterInterceptor ): void {
-        if( this.#interceptors.indexOf( interceptor ) === -1 ){
-            this.#interceptors.push( interceptor );
+    addInterceptor(interceptor: RouterInterceptor): void {
+        if (this.#interceptors.indexOf(interceptor) === -1) {
+            this.#interceptors.push(interceptor);
         }
     }
 }

@@ -8,7 +8,7 @@ import { Params /*, Constraint, ValidationConstraints*/ } from './standard-const
 const defineProperty = Reflect.defineProperty;
 
 export interface Validator {
-    validate( value: serializable, name: string, params: Params ): ValidationResults;
+    validate(value: serializable, name: string, params: Params): ValidationResults;
 }
 
 /*
@@ -41,42 +41,40 @@ export class ConstraintValidator implements Validator {
 export default class TypeValidator {
     readonly types: Map<string, Type>;
 
-    constructor( types ){
-        defineProperty( this, 'types', {
+    constructor(types) {
+        defineProperty(this, 'types', {
             value: new Map<string, Type>(),
             configurable: true,
             enumerable: false,
-            writable: false
-        } );
-        this.register( types );
+            writable: false,
+        });
+        this.register(types);
     }
 
-    register( types ){
-        for( const name in types ){
-            this.types.set( name, new Type( name, types[ name ] ) );
+    register(types) {
+        for (const name in types) {
+            this.types.set(name, new Type(name, types[name]));
         }
     }
 
     availableTypes(): string[] {
-        return Array.from( this.types.keys() );
+        return Array.from(this.types.keys());
     }
 
-    hasType( name: string ): boolean {
-        return this.types.has( name );
+    hasType(name: string): boolean {
+        return this.types.has(name);
     }
 
-    validate( value: serializable, name: string, params ): ValidationResults {
+    validate(value: serializable, name: string, params): ValidationResults {
         // Is the type defined?
-        if( !this.hasType( name ) ){
-            throw new TypeError( `Type "${ name }" does not exist` );
+        if (!this.hasType(name)) {
+            throw new TypeError(`Type "${name}" does not exist`);
         }
 
-        const
-            // Get the type
-            type = this.types.get( name ),
-
+        const // Get the type
+            type = this.types.get(name),
             // Get the results of validation
-            results = type.validate( value, params );
+            results = type.validate(value, params);
 
         return results;
     }

@@ -20,20 +20,19 @@ import randInt from '../math/rand-int';
  * sampleOne( list );
  * //=> [ "b" ]
  */
-const
-    sampleOne = <T = any>( list: ArrayLike<T> ): T => Array.prototype.splice.call( list, randInt( 0, list.length - 1 ), 1 )[ 0 ],
-    sample = curry( <T = any>( n: number, list: ArrayLike<T> ): T[] => {
-        const
-            length = list.length,
+const sampleOne = <T = any>(list: ArrayLike<T>): T =>
+        Array.prototype.splice.call(list, randInt(0, list.length - 1), 1)[0],
+    sample = curry(<T = any>(n: number, list: ArrayLike<T>): T[] => {
+        const length = list.length,
             result: T[] = [];
 
-        n = Math.max( Math.min( n, length ), 1 );
+        n = Math.max(Math.min(n, length), 1);
 
-        while( n-- ){
-            result.push( sampleOne<T>( list ) );
+        while (n--) {
+            result.push(sampleOne<T>(list));
         }
 
         return result;
-    } );
+    });
 
 export default sample;

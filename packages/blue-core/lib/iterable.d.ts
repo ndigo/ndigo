@@ -11,8 +11,26 @@ export type ArrayEntry<Value extends readonly unknown[]> = [number, Value[number
 export type MapEntry<Value> = [MapKey<Value>, MapValue<Value>];
 export type ObjectEntry<Value> = [keyof Value, Value[keyof Value]];
 export type SetEntry<Value> = Value extends Set<infer ValueType> ? [ValueType, ValueType] : never;
-export type Entry<Value> = Value extends Map<unknown, unknown> ? MapEntry<Value> : Value extends Set<unknown> ? SetEntry<Value> : Value extends unknown[] ? ArrayEntry<Value> : Value extends object ? ObjectEntry<Value> : never;
-export type Entries<Value> = Value extends Map<unknown, unknown> ? MapEntries<Value> : Value extends Set<unknown> ? SetEntries<Value> : Value extends unknown[] ? ArrayEntries<Value> : Value extends object ? ObjectEntries<Value> : never;
+export type Entry<Value> =
+    Value extends Map<unknown, unknown>
+        ? MapEntry<Value>
+        : Value extends Set<unknown>
+          ? SetEntry<Value>
+          : Value extends unknown[]
+            ? ArrayEntry<Value>
+            : Value extends object
+              ? ObjectEntry<Value>
+              : never;
+export type Entries<Value> =
+    Value extends Map<unknown, unknown>
+        ? MapEntries<Value>
+        : Value extends Set<unknown>
+          ? SetEntries<Value>
+          : Value extends unknown[]
+            ? ArrayEntries<Value>
+            : Value extends object
+              ? ObjectEntries<Value>
+              : never;
 /**
  * @function module:core.isEntry
  * @param {*} value The value to be tested

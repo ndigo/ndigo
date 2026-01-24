@@ -8,7 +8,7 @@ import { StrategyInitializer } from './strategy-initializer';
 
 export interface ViewMappingStrategy {
     viewMapping;
-    initViewMapping( context: ApplicationContext ): void;
+    initViewMapping(context: ApplicationContext): void;
 }
 
 /**
@@ -17,16 +17,19 @@ export interface ViewMappingStrategy {
 
 export const defaultViewMapping = null;
 
-export const AsViewMappingStrategy = <T extends Constructable<StrategyInitializer>>( superclass: T ): Constructable<ViewMappingStrategy> & T => class extends superclass implements ViewMappingStrategy {
-    readonly viewMappingKey = 'viewMapping';
+export const AsViewMappingStrategy = <T extends Constructable<StrategyInitializer>>(
+    superclass: T
+): Constructable<ViewMappingStrategy> & T =>
+    class extends superclass implements ViewMappingStrategy {
+        readonly viewMappingKey = 'viewMapping';
 
-    viewMapping;
+        viewMapping;
 
-    initViewMapping( context: ApplicationContext ){
-        const { viewMappingKey } = this;
+        initViewMapping(context: ApplicationContext) {
+            const { viewMappingKey } = this;
 
-        this.initStrategy( context, viewMappingKey, 'viewMapping', defaultViewMapping );
+            this.initStrategy(context, viewMappingKey, 'viewMapping', defaultViewMapping);
 
-        console.log( 'Dispatcher::initViewMapping', this.viewMapping );
-    }
-};
+            console.log('Dispatcher::initViewMapping', this.viewMapping);
+        }
+    };

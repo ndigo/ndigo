@@ -8,86 +8,103 @@ import { toPascal } from '@blue/util';
 
 export interface StrategyInitializer {
     strategies: string[];
-    addStrategy( name: string ): void;
-    getDefaultStrategy<T>( context: ApplicationContext, key: string, strategy: T ): T;
-    initStrategies( context: ApplicationContext ): void;
-    initCollectionStrategy<T = any>( context: ApplicationContext, collectionStrategyKey: string, strategyKey: string, name: string, defaultStrategy: T[] ): void;
-    initStrategy<T = any>( context: ApplicationContext, strategyKey: string, name: string, defaultStrategy: T ): void;
+    addStrategy(name: string): void;
+    getDefaultStrategy<T>(context: ApplicationContext, key: string, strategy: T): T;
+    initStrategies(context: ApplicationContext): void;
+    initCollectionStrategy<T = any>(
+        context: ApplicationContext,
+        collectionStrategyKey: string,
+        strategyKey: string,
+        name: string,
+        defaultStrategy: T[]
+    ): void;
+    initStrategy<T = any>(context: ApplicationContext, strategyKey: string, name: string, defaultStrategy: T): void;
 }
 
 const { isArray } = Array;
 
-export const AsStrategyInitializer = <T extends Constructable>( superclass: T ): Constructable<StrategyInitializer> & T => class extends superclass implements StrategyInitializer {
-    initialized: boolean;
-    strategies: string[];
+export const AsStrategyInitializer = <T extends Constructable>(superclass: T): Constructable<StrategyInitializer> & T =>
+    class extends superclass implements StrategyInitializer {
+        initialized: boolean;
+        strategies: string[];
 
-    addStrategy( name: string ): void {
-        if( this.initialized ){
-            throw new IllegalStateError( 'Cannot add strategy after initialization' );
+        addStrategy(name: string): void {
+            if (this.initialized) {
+                throw new IllegalStateError('Cannot add strategy after initialization');
+            }
+
+            if (!this.strategies) {
+                this.strategies = [];
+            }
+
+            name && this.strategies.push(name);
         }
 
-        if( !this.strategies ){
-            this.strategies = [];
+        getDefaultStrategy<T = any>(context: ApplicationContext, key: string, strategy: T): T {
+            context.setValue<T>(key, strategy);
+            return context.getValue<T>(key);
         }
 
-        name && this.strategies.push( name );
-    }
+        initStrategies(context: ApplicationContext): void {
+            if (!this.initialized) {
+                this.initialized = true;
 
-    getDefaultStrategy<T = any>( context: ApplicationContext, key: string, strategy: T ): T {
-        context.setValue<T>( key, strategy );
-        return context.getValue<T>( key );
-    }
+                const length = this.strategies.length;
+                let index = 0,
+                    initializer: string,
+                    strategy: string;
 
-    initStrategies( context: ApplicationContext ): void {
-        if( !this.initialized ){
-            this.initialized = true;
-
-            const length = this.strategies.length;
-            let index = 0,
-                initializer: string,
-                strategy: string;
-
-            for( ; index < length; index++ ){
-                strategy = this.strategies[ index ];
-                initializer = `init${ toPascal( strategy ) }`;
-                if( typeof this[ initializer ] !== 'function' ){
-                    throw new TypeError( `Strategy ${ strategy } initializer ${ initializer } is not implemented` );
+                for (; index < length; index++) {
+                    strategy = this.strategies[index];
+                    initializer = `init${toPascal(strategy)}`;
+                    if (typeof this[initializer] !== 'function') {
+                        throw new TypeError(`Strategy ${strategy} initializer ${initializer} is not implemented`);
+                    }
+                    this[initializer](context);
                 }
-                this[ initializer ]( context );
+
+                console.log('StrategyInitializer::Initialized');
+            }
+        }
+
+        initCollectionStrategy<T = any>(
+            context: ApplicationContext,
+            collectionStrategyKey: string,
+            strategyKey: string,
+            name: string,
+            defaultStrategy: T[]
+        ): void {
+            if (context.hasValue(collectionStrategyKey)) {
+                const collection = context.getValue<Enumerable<PropertyKey, T>>(collectionStrategyKey);
+                if (isArray(collection)) {
+                    this[name] = collection;
+                } else {
+                    this[name] = [];
+                    collection.forEach((value) => this[name].push(value));
+                }
+            } else if (context.hasValue(strategyKey)) {
+                this[name] = [context.getValue<T>(strategyKey)];
             }
 
-            console.log( 'StrategyInitializer::Initialized' );
-        }
-    }
-
-    initCollectionStrategy<T = any>( context: ApplicationContext, collectionStrategyKey: string, strategyKey: string, name: string, defaultStrategy: T[] ): void {
-        if( context.hasValue( collectionStrategyKey ) ){
-            const collection = context.getValue<Enumerable<PropertyKey, T>>( collectionStrategyKey );
-            if( isArray( collection ) ){
-                this[ name ] = collection;
-            } else {
-                this[ name ] = [];
-                collection.forEach( ( value ) => this[ name ].push( value ) );
+            // Fall back to default strategy
+            if (!this[name]) {
+                this[name] = this.getDefaultStrategy<T[]>(context, collectionStrategyKey, defaultStrategy);
             }
-        } else if( context.hasValue( strategyKey ) ){
-            this[ name ] = [ context.getValue<T>( strategyKey ) ];
         }
 
-        // Fall back to default strategy
-        if( !this[ name ] ){
-            this[ name ] = this.getDefaultStrategy<T[]>( context, collectionStrategyKey, defaultStrategy );
-        }
-    }
+        initStrategy<T = any>(
+            context: ApplicationContext,
+            strategyKey: string,
+            name: string,
+            defaultStrategy: T
+        ): void {
+            if (context.hasValue(strategyKey)) {
+                this[name] = context.getValue<T>(strategyKey);
+            }
 
-    initStrategy<T = any>( context: ApplicationContext, strategyKey: string, name: string, defaultStrategy: T ): void {
-        if( context.hasValue( strategyKey ) ){
-            this[ name ] = context.getValue<T>( strategyKey );
+            // Fall back to default strategy
+            if (!this[name]) {
+                this[name] = this.getDefaultStrategy<T>(context, strategyKey, defaultStrategy);
+            }
         }
-
-        // Fall back to default strategy
-        if( !this[ name ] ){
-            this[ name ] = this.getDefaultStrategy<T>( context, strategyKey, defaultStrategy );
-        }
-    }
-};
-
+    };

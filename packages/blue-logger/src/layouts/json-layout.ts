@@ -14,38 +14,38 @@ export class JSONLayout extends NullLayout {
     readonly batchHeader: string;
     readonly batchSeparator: string;
 
-    constructor(){
+    constructor() {
         super();
 
-        defineProperty( this, 'mediaType', {
+        defineProperty(this, 'mediaType', {
             value: MediaTypes.APPLICATION_JSON,
             configurable: true,
             enumerable: false,
-            writable: false
-        } );
-        defineProperty( this, 'batchFooter', {
+            writable: false,
+        });
+        defineProperty(this, 'batchFooter', {
             value: ']',
             configurable: true,
             enumerable: false,
-            writable: false
-        } );
-        defineProperty( this, 'batchHeader', {
+            writable: false,
+        });
+        defineProperty(this, 'batchHeader', {
             value: '[',
             configurable: true,
             enumerable: false,
-            writable: false
-        } );
-        defineProperty( this, 'batchSeparator', {
+            writable: false,
+        });
+        defineProperty(this, 'batchSeparator', {
             value: ',',
             configurable: true,
             enumerable: false,
-            writable: false
-        } );
+            writable: false,
+        });
     }
 
-    format( entry: Entry ): string {
-        const formatted: JSONObject = Object.assign( createNull(), entry );
-        formatted.message = entry.message.join( ' ' );
-        return JSON.stringify( formatted );
+    format(entry: Entry): string {
+        const formatted: JSONObject = Object.assign(createNull(), entry);
+        formatted.message = entry.message.join(' ');
+        return JSON.stringify(formatted);
     }
 }

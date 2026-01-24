@@ -13,26 +13,26 @@ import Cookies from './cookies';
 export class CookieThemeResolver extends AbstractThemeResolver {
     readonly cookieName: string;
 
-    get [ Symbol.toStringTag ](): string {
-        return `CookieThemeResolver:${ this.cookieName }`;
+    get [Symbol.toStringTag](): string {
+        return `CookieThemeResolver:${this.cookieName}`;
     }
 
-    constructor( cookieName: string, defaultThemeName: string ){
-        super( defaultThemeName );
+    constructor(cookieName: string, defaultThemeName: string) {
+        super(defaultThemeName);
         /**
          * @member {external:string} module:dispatcher.CookieThemeResolver#cookieName
          */
-        Reflect.defineProperty( this, 'cookieName', {
+        Reflect.defineProperty(this, 'cookieName', {
             value: cookieName,
             configurable: true,
             enumerable: false,
-            writable: false
-        } );
+            writable: false,
+        });
     }
 
-    resolveTheme( route: Route ): string {
+    resolveTheme(route: Route): string {
         // @ts-ignore: ¯\_(ツ)_/¯
-        const themeName: string = Cookies.get( this.cookieName ) as string || this.defaultThemeName;
+        const themeName: string = (Cookies.get(this.cookieName) as string) || this.defaultThemeName;
         return themeName;
     }
 }

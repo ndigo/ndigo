@@ -1,6 +1,8 @@
 import { Serializable } from './serializable';
 import { Constructable } from './constructable';
-export declare const AsSerializableError: <T extends Constructable<Error>>(superclass: T) => Constructable<Serializable> & T;
+export declare const AsSerializableError: <T extends Constructable<Error>>(
+    superclass: T
+) => Constructable<Serializable> & T;
 declare const ApplicationError_base: Constructable<Serializable> & ErrorConstructor;
 export declare class ApplicationError extends ApplicationError_base {
     get [Symbol.toStringTag](): string;

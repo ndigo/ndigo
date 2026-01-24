@@ -7,8 +7,8 @@ import fill from './fill';
 
 let module: Promise<any>;
 
-if( has.navigator ){
-    fill( 'navigator_sendbeacon', () => module = import( 'navigator.sendbeacon' ) );
+if (has.navigator) {
+    fill('navigator_sendbeacon', () => (module = import('navigator.sendbeacon')));
 }
 
 export default module || Promise.resolve();

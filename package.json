@@ -21,6 +21,8 @@
     "build:all": "nx run-many -t build:all",
     "test": "nx run-many -t test",
     "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "doc": "rm -rf ./doc & node --max_old_space_size=12288 ./node_modules/.bin/jsdoc ./ -c ./.jsdoc.json"
   },
   "repository": {
@@ -54,10 +56,13 @@
     "cross-env": "~7.0.3",
     "debug": "~4.3.7",
     "eslint": "~9.17.0",
+    "eslint-config-prettier": "~9.1.0",
+    "eslint-plugin-prettier": "~5.2.1",
     "jsdoc": "~4.0.4",
     "jsdom": "~25.0.1",
     "msw": "~2.7.0",
     "nx": "~20.3.2",
+    "prettier": "~3.4.2",
     "process": "~0.11.10",
     "reflect-metadata": "~0.2.2",
     "ts-node": "~10.9.2",

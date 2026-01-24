@@ -17,6 +17,7 @@ import sample from '../list/sample';
  * guid();
  * //=> "5de3d09b-e79c-4727-932b-48c49228d508"
  */
-const guid = (): string => `${ randHex( 8 ) }-${ randHex( 4 ) }-4${ randHex( 3 ) }-${ sample( 1, [ 8, 9, 'a', 'b' ] ) + randHex( 3 ) }-${ randHex( 12 ) }`;
+const guid = (): string =>
+    `${randHex(8)}-${randHex(4)}-4${randHex(3)}-${sample(1, [8, 9, 'a', 'b']) + randHex(3)}-${randHex(12)}`;
 
 export default guid;

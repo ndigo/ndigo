@@ -8,8 +8,8 @@ import { has, had } from './has';
 
 detect();
 
-if( has.object_freeze ){
-    Object.freeze( had );
+if (has.object_freeze) {
+    Object.freeze(had);
 }
 
 export { defineDetector, defineDetectors, resetDetector } from './has';

@@ -12,4 +12,4 @@ The `Factory` API provides the underlaying basis for IoC functionality in BlueJS
 
 ## References
 
-* https://stackoverflow.com/questions/3058/what-is-inversion-of-control
+- https://stackoverflow.com/questions/3058/what-is-inversion-of-control

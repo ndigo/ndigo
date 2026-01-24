@@ -1,7 +1,7 @@
 import decode from './decode-uri-component';
 
 const fixtures = {
-    'test': 'test',
+    test: 'test',
     'a+b': 'a b',
     'a+b+c+d': 'a b c d',
     '=a': '=a',
@@ -31,20 +31,19 @@ const fixtures = {
     '%C2x': '\uFFFDx',
     '%C2%B5': 'µ',
     '%C2%B5%': 'µ%',
-    '%%C2%B5%': '%µ%'
+    '%%C2%B5%': '%µ%',
 };
 
-describe( 'decodeURIComponent', function(){
-
-    test( 'it should encode', function(){
-        const keys = Object.keys( fixtures ),
+describe('decodeURIComponent', function () {
+    test('it should encode', function () {
+        const keys = Object.keys(fixtures),
             length = keys.length;
         let index = 0,
             key;
 
-        for( ; index < length; index += 1 ){
-            key = keys[ index ];
-            expect( decode( key ) ).toBe( fixtures[ key ] );
+        for (; index < length; index += 1) {
+            key = keys[index];
+            expect(decode(key)).toBe(fixtures[key]);
         }
-    } );
-} );
+    });
+});

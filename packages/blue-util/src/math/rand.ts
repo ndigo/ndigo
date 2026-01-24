@@ -17,6 +17,6 @@ import random from './random';
  * rand( 0, 10 );
  * //=> 5.987042
  */
-const rand = ( min = Number.MIN_SAFE_INTEGER, max = Number.MAX_SAFE_INTEGER ) => min + ( max - min ) * random();
+const rand = (min = Number.MIN_SAFE_INTEGER, max = Number.MAX_SAFE_INTEGER) => min + (max - min) * random();
 
 export default rand;

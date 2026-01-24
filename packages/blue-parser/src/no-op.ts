@@ -6,12 +6,11 @@
 // @ts-ignore
 import { Parser } from 'arcsecond';
 
-const
-    updateResult = ( state, result ) => ( { ...state, result } ),
-    noop = new Parser( function( state ){
-        if( state.isError ) return state;
+const updateResult = (state, result) => ({ ...state, result }),
+    noop = new Parser(function (state) {
+        if (state.isError) return state;
         const results = null;
-        return updateResult( state, results );
-    } );
+        return updateResult(state, results);
+    });
 
 export default noop;

@@ -8,8 +8,8 @@ import { MethodParameter, MethodParameterType } from './route-parameter';
 import { defaultTo, isNil } from '@blue/util';
 
 export interface HandlerMethodArgumentResolver {
-    supportsParameter( parameter: MethodParameter ): boolean;
-    resolveArgument( parameter: MethodParameter, route: Route, mapping ): any;
+    supportsParameter(parameter: MethodParameter): boolean;
+    resolveArgument(parameter: MethodParameter, route: Route, mapping): any;
 }
 
 /**
@@ -33,16 +33,16 @@ export interface HandlerMethodArgumentResolver {
 export abstract class AbstractNamedValueMethodArgumentResolver implements HandlerMethodArgumentResolver {
     #factory: Factory;
 
-    constructor( factory?: Factory ){
+    constructor(factory?: Factory) {
         this.#factory = factory;
     }
 
-    handleMissingValue( name: string ){
-        throw TypeError( `"${ name }" cannot be undefined or null` );
+    handleMissingValue(name: string) {
+        throw TypeError(`"${name}" cannot be undefined or null`);
     }
 
-    abstract resolveArgument( parameter: MethodParameter, route: Route, mapping ): any;
-    abstract supportsParameter( parameter: MethodParameter ): boolean;
+    abstract resolveArgument(parameter: MethodParameter, route: Route, mapping): any;
+    abstract supportsParameter(parameter: MethodParameter): boolean;
 }
 
 /**
@@ -72,30 +72,33 @@ export abstract class AbstractNamedValueMethodArgumentResolver implements Handle
  * @extends module:dispatcher.AbstractNamedValueMethodArgumentResolver
  */
 export class MatrixValueMethodArgumentResolver extends AbstractNamedValueMethodArgumentResolver {
-    resolveArgument( parameter: MethodParameter, route: Route, mapping ): any {
-        const resolveValue = defaultTo( parameter.defaultValue );
-        let index = -1, name = mapping.value.slice( 1 ), segment, value;
-        while( segment = route[ ++index ] ){
-            if( !segment ){
+    resolveArgument(parameter: MethodParameter, route: Route, mapping): any {
+        const resolveValue = defaultTo(parameter.defaultValue);
+        let index = -1,
+            name = mapping.value.slice(1),
+            segment,
+            value;
+        while ((segment = route[++index])) {
+            if (!segment) {
                 break;
             }
             // @ts-ignore: ¯\_(ツ)_/¯
-            if( segment.name === name ){
-                value = segment.data[ parameter.name ];
-                if( !isNil( value ) ){
+            if (segment.name === name) {
+                value = segment.data[parameter.name];
+                if (!isNil(value)) {
                     break;
                 }
             }
         }
-        if( isNil( value ) ){
-            value = resolveValue( route.data[ parameter.name ] );
+        if (isNil(value)) {
+            value = resolveValue(route.data[parameter.name]);
         }
-        isNil( value ) && parameter.required && this.handleMissingValue( parameter.name );
+        isNil(value) && parameter.required && this.handleMissingValue(parameter.name);
         return value;
     }
 
-    supportsParameter( parameter: MethodParameter ): boolean {
-        return MethodParameterType.MATRIX.equals( parameter.type );
+    supportsParameter(parameter: MethodParameter): boolean {
+        return MethodParameterType.MATRIX.equals(parameter.type);
     }
 }
 
@@ -104,15 +107,14 @@ export class MatrixValueMethodArgumentResolver extends AbstractNamedValueMethodA
  * @extends module:dispatcher.AbstractNamedValueMethodArgumentResolver
  */
 export class QueryValueMethodArgumentResolver extends AbstractNamedValueMethodArgumentResolver {
-    resolveArgument( parameter: MethodParameter, route: Route, mapping ): any {
-        const
-            resolveValue = defaultTo( parameter.defaultValue ),
-            value = resolveValue( route.data[ parameter.name ] );
-        isNil( value ) && parameter.required && this.handleMissingValue( parameter.name );
+    resolveArgument(parameter: MethodParameter, route: Route, mapping): any {
+        const resolveValue = defaultTo(parameter.defaultValue),
+            value = resolveValue(route.data[parameter.name]);
+        isNil(value) && parameter.required && this.handleMissingValue(parameter.name);
         return value;
     }
 
-    supportsParameter( parameter: MethodParameter ): boolean {
-        return MethodParameterType.QUERY.equals( parameter.type );
+    supportsParameter(parameter: MethodParameter): boolean {
+        return MethodParameterType.QUERY.equals(parameter.type);
     }
 }

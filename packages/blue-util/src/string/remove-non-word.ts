@@ -18,6 +18,6 @@ const nonWord = /[^\x20\x2D0-9A-Z\x5Fa-z\xC0-\xD6\xD8-\xF6\xF8-\xFF]/g;
  * removeNonWord( "lorem ~!@#$%^&*()_+`-={}[]|\\:\";'/?><., ipsum" );
  * //=> "lorem - ipsum"
  */
-const removeNonWord: ( value: string ) => string = replace( nonWord, '' );
+const removeNonWord: (value: string) => string = replace(nonWord, '');
 
 export default removeNonWord;

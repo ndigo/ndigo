@@ -2,10 +2,8 @@
  * @author Jeff Rose
  */
 export type JSONValue = boolean | null | number | string | JSONObject | JSONArray;
-export interface JSONObject extends Record<string, JSONValue> {
-}
-export interface JSONArray extends Array<JSONValue> {
-}
+export interface JSONObject extends Record<string, JSONValue> {}
+export interface JSONArray extends Array<JSONValue> {}
 export interface Serializable {
     toString(): string;
     toJSON?(): JSONValue;

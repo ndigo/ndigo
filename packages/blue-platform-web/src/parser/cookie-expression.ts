@@ -12,15 +12,14 @@
 import { char, everyCharUntil, regex, sepByN, sequenceOf, str, takeRight } from '@blue/parser';
 import { fromPairs } from '@blue/util';
 
-const
-    validCharacters = /^[^;,\s]*/,
+const validCharacters = /^[^;,\s]*/,
     percentEncoded = /(%[0-9A-Za-z]{2})+/g,
-    percentDecode = ( value: string ): string => value.replace( percentEncoded, decodeURIComponent ),
-    equalsSign = char( '=' ),
-    cookie = sequenceOf( [
-        everyCharUntil( equalsSign ).map( percentDecode ),
-        takeRight( equalsSign )( regex( validCharacters ) ).map( percentDecode )
-    ] ),
-    cookies = sepByN( 0 )( str( '; ' ) )( cookie ).map( fromPairs );
+    percentDecode = (value: string): string => value.replace(percentEncoded, decodeURIComponent),
+    equalsSign = char('='),
+    cookie = sequenceOf([
+        everyCharUntil(equalsSign).map(percentDecode),
+        takeRight(equalsSign)(regex(validCharacters)).map(percentDecode),
+    ]),
+    cookies = sepByN(0)(str('; '))(cookie).map(fromPairs);
 
 export default cookies;

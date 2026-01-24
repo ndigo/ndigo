@@ -5,29 +5,51 @@
 import { Serializable, JSONValue } from './serializable';
 import { Comparator, StringComparable, stringComparator, numberComparator } from './comparable';
 import { Null } from './null';
-import { always, complement, cond, fromPairs, identity, ifElse, isEmpty, isNumber, isString, map, pipe, reduce, split, T, toPairs } from '@blue/util';
+import {
+    always,
+    complement,
+    cond,
+    fromPairs,
+    identity,
+    ifElse,
+    isEmpty,
+    isNumber,
+    isString,
+    map,
+    pipe,
+    reduce,
+    split,
+    T,
+    toPairs,
+} from '@blue/util';
 import { Matchable } from './matchable';
 
-export type QualityFactor = `;q=${ 0.1 | 0.2 | 0.3 | 0.4 | 0.5 | 0.6 | 0.7 | 0.8 | 0.9 | '1.0' }`;
-export type SupportedMediaType = '*' | 'application' | 'audio' | 'font' | 'image' | 'message' | 'model' | 'multipart' | 'text' | 'video';
+export type QualityFactor = `;q=${0.1 | 0.2 | 0.3 | 0.4 | 0.5 | 0.6 | 0.7 | 0.8 | 0.9 | '1.0'}`;
+export type SupportedMediaType =
+    | '*'
+    | 'application'
+    | 'audio'
+    | 'font'
+    | 'image'
+    | 'message'
+    | 'model'
+    | 'multipart'
+    | 'text'
+    | 'video';
 
-const
-    { freeze, keys } = Object,
+const { freeze, keys } = Object,
     { parseFloat } = Number,
-
     typeRegistry = new Map<string, MediaType>(),
-
-    alwaysEmptyString = always( '' ),
-    alwaysOne = always( 1.0 ),
-    splitOnEquals = split( '=' ) as ( value: `${ string }=${ string }` ) => [ string, string ],
-
+    alwaysEmptyString = always(''),
+    alwaysOne = always(1.0),
+    splitOnEquals = split('=') as (value: `${string}=${string}`) => [string, string],
     WILDCARD: SupportedMediaType = '*',
     QUALITY_FACTOR_PARAM = 'q';
 
 export type MediaTypeParameters = {
-    [ name: string ]: string | number | boolean;
-    [ QUALITY_FACTOR_PARAM ]?: string | number;
-}
+    [name: string]: string | number | boolean;
+    [QUALITY_FACTOR_PARAM]?: string | number;
+};
 
 /**
  * "*" or "application" or "audio" or "font" or "image" or "message" or "model" or "multipart" or "text" or "video"
@@ -43,10 +65,14 @@ export type MediaTypeParameters = {
  * @see {@link https://developer.mozilla.org/en-US/docs/Glossary/Quality_values}
  */
 
-const stringifyParameters = ifElse( complement( isEmpty ),
-    pipe( toPairs, reduce( ( result, [ key, value ]: [ string, string ] ) => `${ result };${ key }=${ value }` , '' ) ),
+const stringifyParameters = ifElse(
+    complement(isEmpty),
+    pipe(
+        toPairs,
+        reduce((result, [key, value]: [string, string]) => `${result};${key}=${value}`, '')
+    ),
     alwaysEmptyString
-) as ( value: MediaTypeParameters ) => string;
+) as (value: MediaTypeParameters) => string;
 
 /**
  * Comparator to sort `MediaType` in order of specificity.
@@ -54,41 +80,40 @@ const stringifyParameters = ifElse( complement( isEmpty ),
  * @implements module:core.Comparator
  */
 class SpecificityComparator<T extends MediaType> implements Comparator<T> {
-    compare( mediaType1: T, mediaType2: T ): number {
+    compare(mediaType1: T, mediaType2: T): number {
         // */* < audio/*
-        if( mediaType1.isWildcardType && !mediaType2.isWildcardType ){
+        if (mediaType1.isWildcardType && !mediaType2.isWildcardType) {
             return 1;
-        // audio/* > */*
-        } else if( !mediaType1.isWildcardType && mediaType2.isWildcardType ){
+            // audio/* > */*
+        } else if (!mediaType1.isWildcardType && mediaType2.isWildcardType) {
             return -1;
-        // audio/basic == text/html
-        } else if( mediaType1.type !== mediaType2.type ){
+            // audio/basic == text/html
+        } else if (mediaType1.type !== mediaType2.type) {
             return 0;
-        // mediaType1.type === mediaType2.type
+            // mediaType1.type === mediaType2.type
         } else {
             // audio/* < audio/basic
-            if( mediaType1.isWildcardSubtype && !mediaType2.isWildcardSubtype ){
+            if (mediaType1.isWildcardSubtype && !mediaType2.isWildcardSubtype) {
                 return 1;
-            // audio/basic > audio/*
-            } else if( !mediaType1.isWildcardSubtype && mediaType2.isWildcardSubtype ){
+                // audio/basic > audio/*
+            } else if (!mediaType1.isWildcardSubtype && mediaType2.isWildcardSubtype) {
                 return -1;
-            // audio/basic == audio/wave
-            } else if( mediaType1.subtype !== mediaType2.subtype ){
+                // audio/basic == audio/wave
+            } else if (mediaType1.subtype !== mediaType2.subtype) {
                 return 0;
-            // mediaType1.subtype === mediaType2.subtype
+                // mediaType1.subtype === mediaType2.subtype
             } else {
                 // audio/basic;level=1 < audio/basic
-                return this.compareParameters( mediaType1, mediaType2 );
+                return this.compareParameters(mediaType1, mediaType2);
             }
         }
     }
 
-    compareParameters( mediaType1: T, mediaType2: T ): number {
-        const
-            paramsSize1 = keys( mediaType1.parameters ).length,
-            paramsSize2 = keys( mediaType2.parameters ).length;
+    compareParameters(mediaType1: T, mediaType2: T): number {
+        const paramsSize1 = keys(mediaType1.parameters).length,
+            paramsSize2 = keys(mediaType2.parameters).length;
         // audio/basic;level=1 < audio/basic
-        return numberComparator.compare( paramsSize2, paramsSize1 );
+        return numberComparator.compare(paramsSize2, paramsSize1);
     }
 }
 
@@ -102,15 +127,14 @@ const specificityComparator = new SpecificityComparator();
  * @implements module:core.Comparator
  */
 class QualityFactorComparator implements Comparator<MediaType> {
-    compare( mediaType1: MediaType, mediaType2: MediaType ): number {
-        const
-            quality1 = mediaType1.qualityFactor,
+    compare(mediaType1: MediaType, mediaType2: MediaType): number {
+        const quality1 = mediaType1.qualityFactor,
             quality2 = mediaType2.qualityFactor,
-            qualityComparison = numberComparator.compare( quality2, quality1 );
-        return qualityComparison !== 0 ?
-            // audio/*;q=0.7 < audio/*;q=0.3
-            qualityComparison :
-            specificityComparator.compare( mediaType1, mediaType2 );
+            qualityComparison = numberComparator.compare(quality2, quality1);
+        return qualityComparison !== 0
+            ? // audio/*;q=0.7 < audio/*;q=0.3
+              qualityComparison
+            : specificityComparator.compare(mediaType1, mediaType2);
     }
 }
 
@@ -138,8 +162,8 @@ export default class MediaType extends Null implements Serializable, StringCompa
     readonly type: SupportedMediaType;
     readonly vendor: boolean;
 
-    get [ Symbol.toStringTag ](): string {
-        return `MediaType:${ this.toString() }`;
+    get [Symbol.toStringTag](): string {
+        return `MediaType:${this.toString()}`;
     }
 
     get isWildcardType(): boolean {
@@ -151,44 +175,45 @@ export default class MediaType extends Null implements Serializable, StringCompa
     }
 
     get qualityFactor(): number {
-        return cond( [
-            [ isString, parseFloat ],
-            [ isNumber, identity ],
-            [ T, alwaysOne ]
-        ] )( this.parameters[ QUALITY_FACTOR_PARAM ] );
+        return cond([
+            [isString, parseFloat],
+            [isNumber, identity],
+            [T, alwaysOne],
+        ])(this.parameters[QUALITY_FACTOR_PARAM]);
     }
 
-    static for( mediaType: string ): MediaType;
-    static for( type: SupportedMediaType, subtype: string, parameters?: MediaTypeParameters ): MediaType;
-    static for( typeOrExpression: SupportedMediaType | string, subtype: string = null, parameters: MediaTypeParameters = {} ): MediaType {
-        const
-            isParsed = isString( subtype ),
-            mediaTypeExpression = isParsed ?
-                `${ typeOrExpression as SupportedMediaType }/${ subtype }${ stringifyParameters( parameters ) }` :
-                typeOrExpression;
+    static for(mediaType: string): MediaType;
+    static for(type: SupportedMediaType, subtype: string, parameters?: MediaTypeParameters): MediaType;
+    static for(
+        typeOrExpression: SupportedMediaType | string,
+        subtype: string = null,
+        parameters: MediaTypeParameters = {}
+    ): MediaType {
+        const isParsed = isString(subtype),
+            mediaTypeExpression = isParsed
+                ? `${typeOrExpression as SupportedMediaType}/${subtype}${stringifyParameters(parameters)}`
+                : typeOrExpression;
 
-        if( mediaTypeExpression?.length ){
-            if( !typeRegistry.has( mediaTypeExpression ) ){
-                if( isParsed ){
-                    const mediaType = new MediaType( typeOrExpression as SupportedMediaType, subtype, parameters );
-                    typeRegistry.set( mediaTypeExpression, mediaType );
+        if (mediaTypeExpression?.length) {
+            if (!typeRegistry.has(mediaTypeExpression)) {
+                if (isParsed) {
+                    const mediaType = new MediaType(typeOrExpression as SupportedMediaType, subtype, parameters);
+                    typeRegistry.set(mediaTypeExpression, mediaType);
                 } else {
-                    const
-                        [ type, subtype ] = mediaTypeExpression.split( '/' ) as [ SupportedMediaType, string ],
-                        parts: string[] = subtype.split( ';' );
+                    const [type, subtype] = mediaTypeExpression.split('/') as [SupportedMediaType, string],
+                        parts: string[] = subtype.split(';');
 
                     // Remove the subtype
                     parts.shift();
 
-                    const
-                        // @ts-ignore: Cannot make the types for fromPairs happy -JBR
-                        parameters = parts.length ? pipe( map( splitOnEquals, parts ), fromPairs ) : {},
-                        mediaType = new MediaType( type, subtype, parameters );
+                    const // @ts-ignore: Cannot make the types for fromPairs happy -JBR
+                        parameters = parts.length ? pipe(map(splitOnEquals, parts), fromPairs) : {},
+                        mediaType = new MediaType(type, subtype, parameters);
 
-                    typeRegistry.set( mediaTypeExpression, mediaType );
+                    typeRegistry.set(mediaTypeExpression, mediaType);
                 }
             }
-            return typeRegistry.get( mediaTypeExpression );
+            return typeRegistry.get(mediaTypeExpression);
         }
 
         return null;
@@ -198,7 +223,7 @@ export default class MediaType extends Null implements Serializable, StringCompa
 
     static specificityComparator = specificityComparator;
 
-    constructor( type: SupportedMediaType = WILDCARD, subtype: string = WILDCARD, parameters: MediaTypeParameters = {} ){
+    constructor(type: SupportedMediaType = WILDCARD, subtype: string = WILDCARD, parameters: MediaTypeParameters = {}) {
         super();
 
         this.type = type;
@@ -208,25 +233,25 @@ export default class MediaType extends Null implements Serializable, StringCompa
         this.personal = false;
         this.experimental = false;
 
-        if( subtype.indexOf( '+' ) !== -1 && subtype.substr( -1 ) !== '+' ){
-            const fixes = subtype.split( '+', 2 );
-            this.subtype = fixes[ 0 ];
-            this.facets = fixes[ 0 ].split( '.' );
-            this.suffix = fixes[ 1 ];
+        if (subtype.indexOf('+') !== -1 && subtype.substr(-1) !== '+') {
+            const fixes = subtype.split('+', 2);
+            this.subtype = fixes[0];
+            this.facets = fixes[0].split('.');
+            this.suffix = fixes[1];
         } else {
             this.subtype = subtype;
-            this.facets = subtype.split( '.' );
+            this.facets = subtype.split('.');
             this.suffix = null;
         }
 
-        if( this.facets.length > 0 ){
-            const first = this.facets[ 0 ];
+        if (this.facets.length > 0) {
+            const first = this.facets[0];
             this.vendor = first === 'vnd';
             this.personal = first === 'prs';
-            this.experimental = first === 'x' && this.subtype.substring( 0, 2 ).toLowerCase() === 'x-';
+            this.experimental = first === 'x' && this.subtype.substring(0, 2).toLowerCase() === 'x-';
         }
 
-        freeze( this );
+        freeze(this);
     }
 
     /**
@@ -234,47 +259,50 @@ export default class MediaType extends Null implements Serializable, StringCompa
      * @param {module:core.MediaType} mediaType
      * @returns {external:number}
      */
-    compareTo( mediaType: MediaType ): number {
+    compareTo(mediaType: MediaType): number {
         let comparison: number;
 
         // Compare type
-        comparison = stringComparator.compare( this.type, mediaType.type );
-        if( comparison !== 0 ){
+        comparison = stringComparator.compare(this.type, mediaType.type);
+        if (comparison !== 0) {
             return comparison;
         }
 
         // Compare subtype
-        comparison = stringComparator.compare( this.subtype, mediaType.subtype );
-        if( comparison !== 0 ){
+        comparison = stringComparator.compare(this.subtype, mediaType.subtype);
+        if (comparison !== 0) {
             return comparison;
         }
 
         // Compare parameter lengths
-        const
-            p1 = keys( this.parameters ),
-            p2 = keys( mediaType.parameters ),
+        const p1 = keys(this.parameters),
+            p2 = keys(mediaType.parameters),
             l1 = p1.length,
             l2 = p2.length;
         comparison = l1 - l2;
-        if( comparison !== 0 ){
+        if (comparison !== 0) {
             return comparison;
         }
 
         // Compare individual parameters
-        let index = 0, k1: string, v1: string, k2: string, v2: string;
-        for( ; index < l1; index++ ){
+        let index = 0,
+            k1: string,
+            v1: string,
+            k2: string,
+            v2: string;
+        for (; index < l1; index++) {
             // Compare parameter keys
-            k1 = p1[ index ];
-            k2 = p2[ index ];
-            comparison = stringComparator.compare( k1, k2 );
-            if( comparison !== 0 ){
+            k1 = p1[index];
+            k2 = p2[index];
+            comparison = stringComparator.compare(k1, k2);
+            if (comparison !== 0) {
                 return comparison;
             }
             // Compare parameter values
-            v1 = String( this.parameters[ k1 ] );
-            v2 = String( mediaType.parameters[ k2 ] );
-            comparison = stringComparator.compare( v1, v2 );
-            if( comparison !== 0 ){
+            v1 = String(this.parameters[k1]);
+            v2 = String(mediaType.parameters[k2]);
+            comparison = stringComparator.compare(v1, v2);
+            if (comparison !== 0) {
                 return comparison;
             }
         }
@@ -287,47 +315,50 @@ export default class MediaType extends Null implements Serializable, StringCompa
      * @param {module:core.MediaType} mediaType
      * @returns {external:number}
      */
-    compareToIgnoreCase( mediaType: MediaType ): number {
+    compareToIgnoreCase(mediaType: MediaType): number {
         let comparison: number;
 
         // Compare type
-        comparison = stringComparator.compareIgnoreCase( this.type, mediaType.type );
-        if( comparison !== 0 ){
+        comparison = stringComparator.compareIgnoreCase(this.type, mediaType.type);
+        if (comparison !== 0) {
             return comparison;
         }
 
         // Compare subtype
-        comparison = stringComparator.compareIgnoreCase( this.subtype, mediaType.subtype );
-        if( comparison !== 0 ){
+        comparison = stringComparator.compareIgnoreCase(this.subtype, mediaType.subtype);
+        if (comparison !== 0) {
             return comparison;
         }
 
         // Compare parameter lengths
-        const
-            p1 = keys( this.parameters ),
-            p2 = keys( mediaType.parameters ),
+        const p1 = keys(this.parameters),
+            p2 = keys(mediaType.parameters),
             l1 = p1.length,
             l2 = p2.length;
         comparison = l1 - l2;
-        if( comparison !== 0 ){
+        if (comparison !== 0) {
             return comparison;
         }
 
         // Compare individual parameters
-        let index = 0, k1: string, v1: string, k2: string, v2: string;
-        for( ; index < l1; index++ ){
+        let index = 0,
+            k1: string,
+            v1: string,
+            k2: string,
+            v2: string;
+        for (; index < l1; index++) {
             // Compare parameter keys
-            k1 = p1[ index ];
-            k2 = p2[ index ];
-            comparison = stringComparator.compareIgnoreCase( k1, k2 );
-            if( comparison !== 0 ){
+            k1 = p1[index];
+            k2 = p2[index];
+            comparison = stringComparator.compareIgnoreCase(k1, k2);
+            if (comparison !== 0) {
                 return comparison;
             }
             // Compare parameter values
-            v1 = String( this.parameters[ k1 ] );
-            v2 = String( mediaType.parameters[ k2 ] );
-            comparison = stringComparator.compareIgnoreCase( v1, v2 );
-            if( comparison !== 0 ){
+            v1 = String(this.parameters[k1]);
+            v2 = String(mediaType.parameters[k2]);
+            comparison = stringComparator.compareIgnoreCase(v1, v2);
+            if (comparison !== 0) {
                 return comparison;
             }
         }
@@ -335,8 +366,8 @@ export default class MediaType extends Null implements Serializable, StringCompa
         return 0;
     }
 
-    equals( mediaType: MediaType ): boolean {
-        return this.compareTo( mediaType ) === 0;
+    equals(mediaType: MediaType): boolean {
+        return this.compareTo(mediaType) === 0;
     }
 
     /**
@@ -346,11 +377,11 @@ export default class MediaType extends Null implements Serializable, StringCompa
      * @param {external:string} endings
      * @returns {external:Blob} A new blob of the media type
      */
-    createBlob( data?: BlobPart[], endings: EndingType = 'transparent' ): Blob {
-        return new Blob( data, {
+    createBlob(data?: BlobPart[], endings: EndingType = 'transparent'): Blob {
+        return new Blob(data, {
             type: this.toString(),
-            endings: endings
-        } );
+            endings: endings,
+        });
     }
 
     /**
@@ -361,31 +392,30 @@ export default class MediaType extends Null implements Serializable, StringCompa
      * @param {module:core.MediaType} value
      * @returns {external:boolean} If this `MediaType` includes the given `MediaType`.
      */
-    includes( value: MediaType = null ): boolean {
-        if( !value ){
+    includes(value: MediaType = null): boolean {
+        if (!value) {
             return false;
         }
-        if( this.isWildcardType ){
+        if (this.isWildcardType) {
             // */* includes anything
             return true;
-        } else if( this.type === value.type ){
-            if( this.subtype === value.subtype ){
+        } else if (this.type === value.type) {
+            if (this.subtype === value.subtype) {
                 return true;
             }
-            if( this.isWildcardSubtype ){
+            if (this.isWildcardSubtype) {
                 // Wildcard with suffix, e.g. application/*+xml
-                const thisPlusIndex = this.subtype.lastIndexOf( '+' );
-                if( thisPlusIndex === -1 ){
+                const thisPlusIndex = this.subtype.lastIndexOf('+');
+                if (thisPlusIndex === -1) {
                     return true;
                 } else {
                     // application/*+xml includes application/soap+xml
-                    const valuePlusIndex = value.subtype.lastIndexOf( '+' );
-                    if( valuePlusIndex !== -1 ){
-                        const
-                            thisSubtypeNoSuffix = this.subtype.substring( 0, thisPlusIndex ),
-                            thisSubtypeSuffix = this.subtype.substring( thisPlusIndex + 1 ),
-                            valueSubtypeSuffix = value.subtype.substring( valuePlusIndex + 1 );
-                        if( thisSubtypeSuffix === valueSubtypeSuffix && WILDCARD === thisSubtypeNoSuffix ){
+                    const valuePlusIndex = value.subtype.lastIndexOf('+');
+                    if (valuePlusIndex !== -1) {
+                        const thisSubtypeNoSuffix = this.subtype.substring(0, thisPlusIndex),
+                            thisSubtypeSuffix = this.subtype.substring(thisPlusIndex + 1),
+                            valueSubtypeSuffix = value.subtype.substring(valuePlusIndex + 1);
+                        if (thisSubtypeSuffix === valueSubtypeSuffix && WILDCARD === thisSubtypeNoSuffix) {
                             return true;
                         }
                     }
@@ -395,10 +425,10 @@ export default class MediaType extends Null implements Serializable, StringCompa
         return false;
     }
 
-    matches( mediaType: MediaType ): boolean {
-        if( this.type === WILDCARD || mediaType.type === WILDCARD ){
+    matches(mediaType: MediaType): boolean {
+        if (this.type === WILDCARD || mediaType.type === WILDCARD) {
             return true;
-        } else if( this.type === mediaType.type && ( this.subtype === WILDCARD || mediaType.subtype === WILDCARD ) ){
+        } else if (this.type === mediaType.type && (this.subtype === WILDCARD || mediaType.subtype === WILDCARD)) {
             return true;
         } else {
             return this.type === mediaType.type && this.subtype === mediaType.subtype;
@@ -410,16 +440,14 @@ export default class MediaType extends Null implements Serializable, StringCompa
     }
 
     toString(): string {
-        const
-            mediaTypeString = this.suffix === null ?
-                `${ this.type }/${ this.subtype }` :
-                `${ this.type }/${ this.subtype }+${ this.suffix }`,
-            parameterString = stringifyParameters( this.parameters ),
-            result = `${ mediaTypeString }${ parameterString }`;
+        const mediaTypeString =
+                this.suffix === null ? `${this.type}/${this.subtype}` : `${this.type}/${this.subtype}+${this.suffix}`,
+            parameterString = stringifyParameters(this.parameters),
+            result = `${mediaTypeString}${parameterString}`;
         return result;
     }
 
-    withCharset( charset: string ): MediaType {
-        return new MediaType( this.type, this.subtype, { charset: charset } );
+    withCharset(charset: string): MediaType {
+        return new MediaType(this.type, this.subtype, { charset: charset });
     }
 }

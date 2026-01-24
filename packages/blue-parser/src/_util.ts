@@ -2,8 +2,10 @@
  * @author Jeff Rose
  */
 
+// @ts-ignore - Module resolution issue with monorepo paths
 import { __, join, lt, propSatisfies } from '@blue/util';
 
+// @ts-ignore - Module resolution issue with monorepo paths
 export {
     always,
     both,

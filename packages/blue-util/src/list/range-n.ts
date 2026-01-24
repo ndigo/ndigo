@@ -5,6 +5,12 @@
 
 import { curryN } from 'ramda';
 
+type RangeNFunction = {
+    (step: number, from: number, to?: number): number[];
+    (step: number): (from: number, to?: number) => number[];
+    (step: number, from: number): (to?: number) => number[];
+};
+
 const { abs, max } = Math,
     /**
      * @function module:util.rangeN
@@ -22,7 +28,7 @@ const { abs, max } = Math,
      * //=> [ 2, 5, 8 ]
      * @see {@link module:util.range}
      */
-    rangeN = curryN(2, (step: number, from: number, to?: number): number[] => {
+    rangeN: RangeNFunction = curryN(3, (step: number, from: number, to?: number): number[] => {
         if (to === void 0) {
             to = from;
         }

@@ -22,6 +22,11 @@ import {
 
 export type LikeDescriptor = { [key: string]: Function | true };
 
+type LikeFunction = {
+    (descriptor: LikeDescriptor, value: any): boolean;
+    (descriptor: LikeDescriptor): (value: any) => boolean;
+};
+
 /**
  * Determines whether a given value matches the criteria.
  * @function module:util.like
@@ -54,4 +59,6 @@ const isDefined = complement(isNil),
     toPredicates = pipe(toPairs, map(toPredicate), prepend(isDefined)),
     likeDescriptor = pipe(toPredicates, allPass) as (descriptor: LikeDescriptor) => (value) => boolean,
     like = (descriptor: LikeDescriptor, value): boolean => likeDescriptor(descriptor)(value);
-export default curry(like);
+
+const likeCurried: LikeFunction = curry(like);
+export default likeCurried;

@@ -975,7 +975,10 @@ export {
      * const result = utcToZonedTime('2014-06-25T10:00:00.000Z', 'America/New_York')
      * //=> Jun 25 2014 06:00:00
      */
-    utcToZonedTime,
+    toZonedTime as utcToZonedTime,
+} from 'date-fns-tz/fp';
+
+export {
     /**
      * @function module:util.zonedTimeToUTC
      * @category Date
@@ -997,5 +1000,5 @@ export {
      * const result = zonedTimeToUTC(new Date(2014, 5, 25, 10, 0, 0), 'America/Los_Angeles')
      * //=> 2014-06-25T17:00:00.000Z
      */
-    zonedTimeToUtc as zonedTimeToUTC,
+    fromZonedTime as zonedTimeToUTC,
 } from 'date-fns-tz/fp';

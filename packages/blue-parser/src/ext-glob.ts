@@ -74,7 +74,7 @@ const dotLiteral = '\\.',
         ).map(joinOnEmptyString)
     ),
     extGlobPatternList = betweenParentheses(pipeSeparated(extGlobPattern)),
-    extGlobSequence = (value) => [possibly(value), extGlobPatternList],
+    extGlobSequence = (value) => [possibly(value), extGlobPatternList] as any,
     onlyOne = sequenceOf(extGlobSequence(char('@'))),
     zeroOrMore = sequenceOf(extGlobSequence(asterisk)),
     oneOrMore = sequenceOf(extGlobSequence(plusSign)),
@@ -83,6 +83,6 @@ const dotLiteral = '\\.',
     extGlob = sequenceOf([
         choice([anythingBut, onlyOne, oneOrMore, zeroOrMore, zeroOrOne]),
         possibly(endOfInput.map(T)),
-    ]).map(mapExtGlob);
+    ]).map(mapExtGlob as any);
 
 export default extGlob;

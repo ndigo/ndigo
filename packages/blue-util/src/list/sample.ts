@@ -6,6 +6,11 @@
 import { curry } from 'ramda';
 import randInt from '../math/rand-int';
 
+type SampleFunction = {
+    <T = any>(n: number, list: ArrayLike<T>): T[];
+    <T = any>(n: number): (list: ArrayLike<T>) => T[];
+};
+
 /**
  * @function module:util.sample
  * @category List
@@ -22,7 +27,7 @@ import randInt from '../math/rand-int';
  */
 const sampleOne = <T = any>(list: ArrayLike<T>): T =>
         Array.prototype.splice.call(list, randInt(0, list.length - 1), 1)[0],
-    sample = curry(<T = any>(n: number, list: ArrayLike<T>): T[] => {
+    sample: SampleFunction = curry(<T = any>(n: number, list: ArrayLike<T>): T[] => {
         const length = list.length,
             result: T[] = [];
 

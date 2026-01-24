@@ -106,73 +106,73 @@ export default () => {
         (has) => has.arraybuffer_prototype && typeof ArrayBuffer.prototype.slice === 'number'
     );
     // @ts-ignore Detecting a feature that may not be supported by TypeScript
-    defineDetector('asynciterator', () => typeof AsyncIterator === 'function');
+    defineDetector('asynciterator', () => typeof (globalThis as any).AsyncIterator === 'function');
     // @ts-ignore Detecting a feature that may not be supported by TypeScript
-    defineDetector('asynciterator_from', (has) => has.asynciterator && typeof AsyncIterator.from === 'function');
+    defineDetector('asynciterator_from', (has) => has.asynciterator && typeof (globalThis as any).AsyncIterator.from === 'function');
     // @ts-ignore Detecting a feature that may not be supported by TypeScript
     defineDetector(
         'asynciterator_prototype',
-        (has) => has.asynciterator && typeof AsyncIterator.prototype === 'object'
+        (has) => has.asynciterator && typeof (globalThis as any).AsyncIterator.prototype === 'object'
     );
     // @ts-ignore Detecting a feature that may not be supported by TypeScript
     defineDetector(
         'asynciterator_asindexedpairs',
-        (has) => has.asynciterator_prototype && typeof AsyncIterator.prototype.asIndexedPairs === 'function'
+        (has) => has.asynciterator_prototype && typeof (globalThis as any).AsyncIterator.prototype.asIndexedPairs === 'function'
     );
     // @ts-ignore Detecting a feature that may not be supported by TypeScript
     defineDetector(
         'asynciterator_drop',
-        (has) => has.asynciterator_prototype && typeof AsyncIterator.prototype.drop === 'function'
+        (has) => has.asynciterator_prototype && typeof (globalThis as any).AsyncIterator.prototype.drop === 'function'
     );
     // @ts-ignore Detecting a feature that may not be supported by TypeScript
     defineDetector(
         'asynciterator_every',
-        (has) => has.asynciterator_prototype && typeof AsyncIterator.prototype.every === 'function'
+        (has) => has.asynciterator_prototype && typeof (globalThis as any).AsyncIterator.prototype.every === 'function'
     );
     // @ts-ignore Detecting a feature that may not be supported by TypeScript
     defineDetector(
         'asynciterator_filter',
-        (has) => has.asynciterator_prototype && typeof AsyncIterator.prototype.filter === 'function'
+        (has) => has.asynciterator_prototype && typeof (globalThis as any).AsyncIterator.prototype.filter === 'function'
     );
     // @ts-ignore Detecting a feature that may not be supported by TypeScript
     defineDetector(
         'asynciterator_find',
-        (has) => has.asynciterator_prototype && typeof AsyncIterator.prototype.find === 'function'
+        (has) => has.asynciterator_prototype && typeof (globalThis as any).AsyncIterator.prototype.find === 'function'
     );
     // @ts-ignore Detecting a feature that may not be supported by TypeScript
     defineDetector(
         'asynciterator_flatmap',
-        (has) => has.asynciterator_prototype && typeof AsyncIterator.prototype.flatMap === 'function'
+        (has) => has.asynciterator_prototype && typeof (globalThis as any).AsyncIterator.prototype.flatMap === 'function'
     );
     // @ts-ignore Detecting a feature that may not be supported by TypeScript
     defineDetector(
         'asynciterator_foreach',
-        (has) => has.asynciterator_prototype && typeof AsyncIterator.prototype.forEach === 'function'
+        (has) => has.asynciterator_prototype && typeof (globalThis as any).AsyncIterator.prototype.forEach === 'function'
     );
     // @ts-ignore Detecting a feature that may not be supported by TypeScript
     defineDetector(
         'asynciterator_map',
-        (has) => has.asynciterator_prototype && typeof AsyncIterator.prototype.map === 'function'
+        (has) => has.asynciterator_prototype && typeof (globalThis as any).AsyncIterator.prototype.map === 'function'
     );
     // @ts-ignore Detecting a feature that may not be supported by TypeScript
     defineDetector(
         'asynciterator_reduce',
-        (has) => has.asynciterator_prototype && typeof AsyncIterator.prototype.reduce === 'function'
+        (has) => has.asynciterator_prototype && typeof (globalThis as any).AsyncIterator.prototype.reduce === 'function'
     );
     // @ts-ignore Detecting a feature that may not be supported by TypeScript
     defineDetector(
         'asynciterator_some',
-        (has) => has.asynciterator_prototype && typeof AsyncIterator.prototype.some === 'function'
+        (has) => has.asynciterator_prototype && typeof (globalThis as any).AsyncIterator.prototype.some === 'function'
     );
     // @ts-ignore Detecting a feature that may not be supported by TypeScript
     defineDetector(
         'asynciterator_take',
-        (has) => has.asynciterator_prototype && typeof AsyncIterator.prototype.take === 'function'
+        (has) => has.asynciterator_prototype && typeof (globalThis as any).AsyncIterator.prototype.take === 'function'
     );
     // @ts-ignore Detecting a feature that may not be supported by TypeScript
     defineDetector(
         'asynciterator_toarray',
-        (has) => has.asynciterator_prototype && typeof AsyncIterator.prototype.toArray === 'function'
+        (has) => has.asynciterator_prototype && typeof (globalThis as any).AsyncIterator.prototype.toArray === 'function'
     );
     // @ts-ignore Detecting a feature that may not be supported by TypeScript
     defineDetector('bigint', () => typeof BigInt === 'function');
@@ -2418,156 +2418,156 @@ export default () => {
         (has) => has.uint8array_prototype && typeof Uint8Array.prototype.values === 'function'
     );
     // @ts-ignore Detecting a feature that may not be supported by TypeScript
-    defineDetector('uint8arrayclamped', () => typeof Uint8ArrayClamped === 'function');
+    defineDetector('uint8arrayclamped', () => typeof (globalThis as any).Uint8ClampedArray === 'function');
     // @ts-ignore Detecting a feature that may not be supported by TypeScript
     defineDetector(
         'uint8arrayclamped_from',
-        (has) => has.uint8arrayclamped && typeof Uint8ArrayClamped.from === 'function'
+        (has) => has.uint8arrayclamped && typeof (globalThis as any).Uint8ClampedArray.from === 'function'
     );
     // @ts-ignore Detecting a feature that may not be supported by TypeScript
     defineDetector(
         'uint8arrayclamped_of',
-        (has) => has.uint8arrayclamped && typeof Uint8ArrayClamped.of === 'function'
+        (has) => has.uint8arrayclamped && typeof (globalThis as any).Uint8ClampedArray.of === 'function'
     );
     // @ts-ignore Detecting a feature that may not be supported by TypeScript
     defineDetector(
         'uint8arrayclamped_prototype',
-        (has) => has.uint8arrayclamped && typeof Uint8ArrayClamped.prototype === 'object'
+        (has) => has.uint8arrayclamped && typeof (globalThis as any).Uint8ClampedArray.prototype === 'object'
     );
     // @ts-ignore Detecting a feature that may not be supported by TypeScript
     defineDetector(
         'uint8arrayclamped_buffer',
-        (has) => has.uint8arrayclamped_prototype && typeof Uint8ArrayClamped.prototype.buffer === 'object'
+        (has) => has.uint8arrayclamped_prototype && typeof (globalThis as any).Uint8ClampedArray.prototype.buffer === 'object'
     );
     // @ts-ignore Detecting a feature that may not be supported by TypeScript
     defineDetector(
         'uint8arrayclamped_bytelength',
-        (has) => has.uint8arrayclamped_prototype && typeof Uint8ArrayClamped.prototype.byteLength === 'number'
+        (has) => has.uint8arrayclamped_prototype && typeof (globalThis as any).Uint8ClampedArray.prototype.byteLength === 'number'
     );
     // @ts-ignore Detecting a feature that may not be supported by TypeScript
     defineDetector(
         'uint8arrayclamped_byteoffset',
-        (has) => has.uint8arrayclamped_prototype && typeof Uint8ArrayClamped.prototype.byteOffset === 'number'
+        (has) => has.uint8arrayclamped_prototype && typeof (globalThis as any).Uint8ClampedArray.prototype.byteOffset === 'number'
     );
     // @ts-ignore Detecting a feature that may not be supported by TypeScript
     defineDetector(
         'uint8arrayclamped_length',
-        (has) => has.uint8arrayclamped_prototype && typeof Uint8ArrayClamped.prototype.length === 'number'
+        (has) => has.uint8arrayclamped_prototype && typeof (globalThis as any).Uint8ClampedArray.prototype.length === 'number'
     );
     // @ts-ignore Detecting a feature that may not be supported by TypeScript
     defineDetector(
         'uint8arrayclamped_at',
-        (has) => has.uint8arrayclamped_prototype && typeof Uint8ArrayClamped.prototype.at === 'function'
+        (has) => has.uint8arrayclamped_prototype && typeof (globalThis as any).Uint8ClampedArray.prototype.at === 'function'
     );
     // @ts-ignore Detecting a feature that may not be supported by TypeScript
     defineDetector(
         'uint8arrayclamped_copywithin',
-        (has) => has.uint8arrayclamped_prototype && typeof Uint8ArrayClamped.prototype.copyWithin === 'function'
+        (has) => has.uint8arrayclamped_prototype && typeof (globalThis as any).Uint8ClampedArray.prototype.copyWithin === 'function'
     );
     // @ts-ignore Detecting a feature that may not be supported by TypeScript
     defineDetector(
         'uint8arrayclamped_every',
-        (has) => has.uint8arrayclamped_prototype && typeof Uint8ArrayClamped.prototype.every === 'function'
+        (has) => has.uint8arrayclamped_prototype && typeof (globalThis as any).Uint8ClampedArray.prototype.every === 'function'
     );
     // @ts-ignore Detecting a feature that may not be supported by TypeScript
     defineDetector(
         'uint8arrayclamped_fill',
-        (has) => has.uint8arrayclamped_prototype && typeof Uint8ArrayClamped.prototype.fill === 'function'
+        (has) => has.uint8arrayclamped_prototype && typeof (globalThis as any).Uint8ClampedArray.prototype.fill === 'function'
     );
     // @ts-ignore Detecting a feature that may not be supported by TypeScript
     defineDetector(
         'uint8arrayclamped_filter',
-        (has) => has.uint8arrayclamped_prototype && typeof Uint8ArrayClamped.prototype.filter === 'function'
+        (has) => has.uint8arrayclamped_prototype && typeof (globalThis as any).Uint8ClampedArray.prototype.filter === 'function'
     );
     // @ts-ignore Detecting a feature that may not be supported by TypeScript
     defineDetector(
         'uint8arrayclamped_filterout',
-        (has) => has.uint8arrayclamped_prototype && typeof Uint8ArrayClamped.prototype.filterOut === 'function'
+        (has) => has.uint8arrayclamped_prototype && typeof (globalThis as any).Uint8ClampedArray.prototype.filterOut === 'function'
     );
     // @ts-ignore Detecting a feature that may not be supported by TypeScript
     defineDetector(
         'uint8arrayclamped_find',
-        (has) => has.uint8arrayclamped_prototype && typeof Uint8ArrayClamped.prototype.find === 'function'
+        (has) => has.uint8arrayclamped_prototype && typeof (globalThis as any).Uint8ClampedArray.prototype.find === 'function'
     );
     // @ts-ignore Detecting a feature that may not be supported by TypeScript
     defineDetector(
         'uint8arrayclamped_findindex',
-        (has) => has.uint8arrayclamped_prototype && typeof Uint8ArrayClamped.prototype.findIndex === 'function'
+        (has) => has.uint8arrayclamped_prototype && typeof (globalThis as any).Uint8ClampedArray.prototype.findIndex === 'function'
     );
     // @ts-ignore Detecting a feature that may not be supported by TypeScript
     defineDetector(
         'uint8arrayclamped_includes',
-        (has) => has.uint8arrayclamped_prototype && typeof Uint8ArrayClamped.prototype.includes === 'function'
+        (has) => has.uint8arrayclamped_prototype && typeof (globalThis as any).Uint8ClampedArray.prototype.includes === 'function'
     );
     // @ts-ignore Detecting a feature that may not be supported by TypeScript
     defineDetector(
         'uint8arrayclamped_indexof',
-        (has) => has.uint8arrayclamped_prototype && typeof Uint8ArrayClamped.prototype.indexOf === 'function'
+        (has) => has.uint8arrayclamped_prototype && typeof (globalThis as any).Uint8ClampedArray.prototype.indexOf === 'function'
     );
     // @ts-ignore Detecting a feature that may not be supported by TypeScript
     defineDetector(
         'uint8arrayclamped_join',
-        (has) => has.uint8arrayclamped_prototype && typeof Uint8ArrayClamped.prototype.join === 'function'
+        (has) => has.uint8arrayclamped_prototype && typeof (globalThis as any).Uint8ClampedArray.prototype.join === 'function'
     );
     // @ts-ignore Detecting a feature that may not be supported by TypeScript
     defineDetector(
         'uint8arrayclamped_lastindexof',
-        (has) => has.uint8arrayclamped_prototype && typeof Uint8ArrayClamped.prototype.lastIndexOf === 'function'
+        (has) => has.uint8arrayclamped_prototype && typeof (globalThis as any).Uint8ClampedArray.prototype.lastIndexOf === 'function'
     );
     // @ts-ignore Detecting a feature that may not be supported by TypeScript
     defineDetector(
         'uint8arrayclamped_map',
-        (has) => has.uint8arrayclamped_prototype && typeof Uint8ArrayClamped.prototype.map === 'function'
+        (has) => has.uint8arrayclamped_prototype && typeof (globalThis as any).Uint8ClampedArray.prototype.map === 'function'
     );
     // @ts-ignore Detecting a feature that may not be supported by TypeScript
     defineDetector(
         'uint8arrayclamped_reduce',
-        (has) => has.uint8arrayclamped_prototype && typeof Uint8ArrayClamped.prototype.reduce === 'function'
+        (has) => has.uint8arrayclamped_prototype && typeof (globalThis as any).Uint8ClampedArray.prototype.reduce === 'function'
     );
     // @ts-ignore Detecting a feature that may not be supported by TypeScript
     defineDetector(
         'uint8arrayclamped_reduceright',
-        (has) => has.uint8arrayclamped_prototype && typeof Uint8ArrayClamped.prototype.reduceRight === 'function'
+        (has) => has.uint8arrayclamped_prototype && typeof (globalThis as any).Uint8ClampedArray.prototype.reduceRight === 'function'
     );
     // @ts-ignore Detecting a feature that may not be supported by TypeScript
     defineDetector(
         'uint8arrayclamped_reverse',
-        (has) => has.uint8arrayclamped_prototype && typeof Uint8ArrayClamped.prototype.reverse === 'function'
+        (has) => has.uint8arrayclamped_prototype && typeof (globalThis as any).Uint8ClampedArray.prototype.reverse === 'function'
     );
     // @ts-ignore Detecting a feature that may not be supported by TypeScript
     defineDetector(
         'uint8arrayclamped_slice',
-        (has) => has.uint8arrayclamped_prototype && typeof Uint8ArrayClamped.prototype.slice === 'function'
+        (has) => has.uint8arrayclamped_prototype && typeof (globalThis as any).Uint8ClampedArray.prototype.slice === 'function'
     );
     // @ts-ignore Detecting a feature that may not be supported by TypeScript
     defineDetector(
         'uint8arrayclamped_some',
-        (has) => has.uint8arrayclamped_prototype && typeof Uint8ArrayClamped.prototype.some === 'function'
+        (has) => has.uint8arrayclamped_prototype && typeof (globalThis as any).Uint8ClampedArray.prototype.some === 'function'
     );
     // @ts-ignore Detecting a feature that may not be supported by TypeScript
     defineDetector(
         'uint8arrayclamped_sort',
-        (has) => has.uint8arrayclamped_prototype && typeof Uint8ArrayClamped.prototype.sort === 'function'
+        (has) => has.uint8arrayclamped_prototype && typeof (globalThis as any).Uint8ClampedArray.prototype.sort === 'function'
     );
     // @ts-ignore Detecting a feature that may not be supported by TypeScript
     defineDetector(
         'uint8arrayclamped_foreach',
-        (has) => has.uint8arrayclamped_prototype && typeof Uint8ArrayClamped.prototype.forEach === 'function'
+        (has) => has.uint8arrayclamped_prototype && typeof (globalThis as any).Uint8ClampedArray.prototype.forEach === 'function'
     );
     // @ts-ignore Detecting a feature that may not be supported by TypeScript
     defineDetector(
         'uint8arrayclamped_entries',
-        (has) => has.uint8arrayclamped_prototype && typeof Uint8ArrayClamped.prototype.entries === 'function'
+        (has) => has.uint8arrayclamped_prototype && typeof (globalThis as any).Uint8ClampedArray.prototype.entries === 'function'
     );
     // @ts-ignore Detecting a feature that may not be supported by TypeScript
     defineDetector(
         'uint8arrayclamped_keys',
-        (has) => has.uint8arrayclamped_prototype && typeof Uint8ArrayClamped.prototype.keys === 'function'
+        (has) => has.uint8arrayclamped_prototype && typeof (globalThis as any).Uint8ClampedArray.prototype.keys === 'function'
     );
     // @ts-ignore Detecting a feature that may not be supported by TypeScript
     defineDetector(
         'uint8arrayclamped_values',
-        (has) => has.uint8arrayclamped_prototype && typeof Uint8ArrayClamped.prototype.values === 'function'
+        (has) => has.uint8arrayclamped_prototype && typeof (globalThis as any).Uint8ClampedArray.prototype.values === 'function'
     );
     // @ts-ignore Detecting a feature that may not be supported by TypeScript
     defineDetector('uint16array', () => typeof Uint16Array === 'function');

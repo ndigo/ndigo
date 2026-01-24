@@ -5,6 +5,11 @@
 
 import { append, curry, join } from 'ramda';
 
+type TrailingJoinFunction = {
+    (separator: string, list: any[]): string;
+    (separator: string): (list: any[]) => string;
+};
+
 /**
  * Returns a string made by inserting the separator after each element and concatenating all the elements into a single string.
  * @function module:util.trailingJoin
@@ -19,6 +24,8 @@ import { append, curry, join } from 'ramda';
  * trailingJoin( ",", [ "a", "b", "c" ] );
  * //=> "a,b,c,"
  */
-const trailingJoin = curry((separator: string, list: any[]): string => join(separator, append('', list)));
+const trailingJoin: TrailingJoinFunction = curry((separator: string, list: any[]): string =>
+    join(separator, append('', list))
+);
 
 export default trailingJoin;

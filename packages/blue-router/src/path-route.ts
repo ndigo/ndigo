@@ -147,7 +147,10 @@ export class PathRoute implements Route, Serializable {
     readonly raw: string;
 
     get length(): number {
-        return pipe(keys, map(parseInt), reduce<number, number>(max, -1))(this) + 1;
+        const keysArray = keys(this) as readonly string[];
+        const indices = map(parseInt)(keysArray);
+        const maxIndex = reduce<number, number>(max, -1)(indices);
+        return maxIndex + 1;
         /*
         return Object.keys( this ).reduce( function( maxIndex: number, key: string ){
             index = key === '' ? NaN : Number( key );

@@ -1,0 +1,12 @@
+export const MyComponent = (superclass) => class extends superclass {
+    onInit() { }
+    onDestroy() { }
+};
+export class MyOtherComponent {
+}
+export const MyOther = (context) => {
+    console.log();
+    return class {
+    };
+};
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiZXhhbXBsZS5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbIi4uL3NyYy9leGFtcGxlLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUdBLE1BQU0sQ0FBQyxNQUFNLFdBQVcsR0FBRyxDQUN2QixVQUFhLEVBQ3FCLEVBQUUsQ0FDcEMsS0FBTSxTQUFRLFVBQVU7SUFDcEIsTUFBTSxLQUFJLENBQUM7SUFFWCxTQUFTLEtBQUksQ0FBQztDQUNqQixDQUFDO0FBRU4sTUFBTSxPQUFPLGdCQUFnQjtDQUFHO0FBRWhDLE1BQU0sQ0FBQyxNQUFNLE9BQU8sR0FBRyxDQUFDLE9BQU8sRUFBRSxFQUFFO0lBQy9CLE9BQU8sQ0FBQyxHQUFHLEVBQUUsQ0FBQztJQUNkLE9BQU87S0FBUSxDQUFDO0FBQ3BCLENBQUMsQ0FBQyJ9

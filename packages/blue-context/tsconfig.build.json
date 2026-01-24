@@ -10,7 +10,8 @@
     "rootDir": "src",
     "skipLibCheck": true
   },
-  "exclude": ["node_modules/**/*", "**/*.spec.ts", "**/*.test.ts", "vite.config.ts", "vitest.config.ts"],
+  "exclude": ["node_modules/**/*", "**/*.spec.ts", "**/*.test.ts", "vite.config.ts", "vitest.config.ts", "test/**/*"],
+  "include": ["src/**/*"],
   "references": [
     { "path": "../blue-core/tsconfig.build.json" },
     { "path": "../blue-content/tsconfig.build.json" },

@@ -9,10 +9,10 @@ import { NullLayout } from './null-layout';
 const defineProperty = Reflect.defineProperty;
 
 export class JSONLayout extends NullLayout {
-    readonly mediaType: MediaType;
-    readonly batchFooter: string;
-    readonly batchHeader: string;
-    readonly batchSeparator: string;
+    declare readonly mediaType: MediaType;
+    declare readonly batchFooter: string;
+    declare readonly batchHeader: string;
+    declare readonly batchSeparator: string;
 
     constructor() {
         super();

@@ -139,10 +139,11 @@ export const likeApplicationContextAware = likeAwareAnd(like({ setApplicationCon
  * @mixes module:context.AsEventEmitter
  * @mixes module:context.AsModuleResourceLoader
  */
-export class GenericApplicationContext
-    extends AsEventEmitter(AsModuleResourceLoader(DefaultFactory))
-    implements ConfigurableApplicationContext
-{
+// GenericApplicationContext extends AsEventEmitter(AsModuleResourceLoader(DefaultFactory))
+// which provides EventEmitter and ResourceLoader functionality via mixins.
+// TypeScript 5.7 has stricter checking for mixin implementations, so we don't explicitly
+// declare 'implements ConfigurableApplicationContext' here - the mixin chain provides it.
+export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLoader(DefaultFactory)) {
     #environment: Environment;
     #id: number;
     #name: string;
@@ -173,7 +174,7 @@ export class GenericApplicationContext
 
     get path(): string {
         const path: string[] = [];
-        let ctx: ApplicationContext = this;
+        let ctx = this as unknown as ApplicationContext;
 
         this.name && path.unshift(this.name);
 
@@ -221,7 +222,8 @@ export class GenericApplicationContext
 
         if (data) {
             for (const key in data) {
-                this.setValue(key, data[key]);
+                // setValue comes from DefaultFactory mixin
+                (this as any).setValue(key, data[key]);
             }
         }
     }
@@ -363,7 +365,7 @@ export class ApplicationContextAwareProcessor implements InitializationAwareProc
             likeEnvironmentAware(value) && value.setEnvironment(applicationContext.environment);
             likeResourceLoaderAware(value) && value.setResourceLoader(applicationContext);
             likeApplicationEventEmitterAware(value) && value.setApplicationEventEmitter(applicationContext);
-            likeContentSourceAware(value) && value.setContentSource(applicationContext);
+            likeContentSourceAware(value) && (value as any).setContentSource(applicationContext);
             likeApplicationContextAware(value) && value.setApplicationContext(applicationContext);
         }
 

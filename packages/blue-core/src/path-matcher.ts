@@ -206,8 +206,13 @@ export class GlobPathMatcher implements PathMatcher {
     }
 
     match(pattern: string, path: string): boolean {
-        const regex = new RegExp(glob.run(pattern).result);
-        return regex.test(path);
+        const parseResult = glob.run(pattern);
+        if (!parseResult.isError) {
+            // Type narrowing: parseResult is Ok<string, any> here
+            const regex = new RegExp((parseResult as { isError: false; result: string; index: number; data: any }).result);
+            return regex.test(path);
+        }
+        return false;
     }
 
     merge(pattern1: string, pattern2: string): string {

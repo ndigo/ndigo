@@ -180,8 +180,10 @@ export class NameViewResolver extends AsApplicationContextAware(Null) implements
 
         let view: View = null;
 
-        if (applicationContext.hasValue(name)) {
-            view = applicationContext.getValue(name);
+        // ApplicationContext extends ConfigurableFactory which extends Registry
+        // Registry provides hasValue and getValue methods
+        if ((applicationContext as any).hasValue(name)) {
+            view = (applicationContext as any).getValue(name);
         }
 
         return await view;

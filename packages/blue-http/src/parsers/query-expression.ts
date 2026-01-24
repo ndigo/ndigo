@@ -3,6 +3,7 @@
  */
 import { fromRepeatedPairs, replace, decodeURIComponent as decode } from '@blue/util';
 import { char, choice, coroutine, possibly, regex, sepByN, sequenceOf } from '@blue/parser';
+import { JSONObject } from '@blue/core';
 
 const replacePlusWithSpace = replace(/\+/g, ' '),
     // Removes '=' from the value array
@@ -21,10 +22,10 @@ const replacePlusWithSpace = replace(/\+/g, ' '),
     queryParameter = sequenceOf([queryKey, sequenceOf([possibly(equals), possibly(queryValue)])]).map(filterEquals),
     queryParameterList = separatedByAmpersand(queryParameter);
 
-export const queryExpression = coroutine(function* () {
+export const queryExpression: { run: (value: string) => any } = coroutine(function* () {
     yield possibly(prefix);
     const pairs = yield queryParameterList;
     return fromRepeatedPairs(pairs);
-});
+}) as any;
 
 export default queryExpression;

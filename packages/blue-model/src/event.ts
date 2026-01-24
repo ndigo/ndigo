@@ -1,6 +1,16 @@
 import { asEventEmitter } from '@blue/context';
-import { Model, initModel, getTraps } from '../node_modules/objectmodel/src/object-model';
-import { extend, merge } from '../node_modules/objectmodel/src/helpers';
+import { Model } from 'objectmodel';
+
+// Import internal functions from objectmodel source
+// These functions are exported from the source but not typed in the public API
+// We use namespace imports with type assertions to work around missing type exports
+import * as objectModelInternal from '../node_modules/objectmodel/src/object-model.js';
+import * as helpersInternal from '../node_modules/objectmodel/src/helpers.js';
+
+const initModel: any = (objectModelInternal as any).initModel;
+const getTraps: any = (objectModelInternal as any).getTraps;
+const extend: any = (helpersInternal as any).extend;
+const merge: any = (helpersInternal as any).merge;
 
 const initEventModel = function (obj, model, _this) {
     if (obj instanceof model) {

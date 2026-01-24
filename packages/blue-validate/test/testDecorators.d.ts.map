@@ -1,1 +1,1 @@
-{"version":3,"file":"testDecorators.d.ts","sourceRoot":"","sources":["testDecorators.ts"],"names":[],"mappings":"AAEA,qBAAa,IAAI;IAEb,GAAG,EAAE,MAAM,CAAC;IAEZ,GAAG,EAAE,MAAM,CAAC;gBAEC,IAAI,EAAE,MAAM,EAAE,IAAI,EAAE,MAAM;IAIvC,IAAI,CAAE,IAAI,EAAE,MAAM,EAAE,IAAI,EAAE,MAAM;CAInC"}
+{"version":3,"file":"testDecorators.d.ts","sourceRoot":"","sources":["testDecorators.ts"],"names":[],"mappings":"AAEA,qBAAa,IAAI;IAEb,GAAG,EAAE,MAAM,CAAC;IAEZ,GAAG,EAAE,MAAM,CAAC;gBAEA,IAAI,EAAE,MAAM,EAAE,IAAI,EAAE,MAAM;IAItC,IAAI,CAAC,IAAI,EAAE,MAAM,EAAE,IAAI,EAAE,MAAM;CAIlC"}

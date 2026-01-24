@@ -4,7 +4,7 @@
 
 import { Entry } from '../entry';
 import { AbstractLayout } from '../layout';
-import { format as formatDate } from '@blue/util';
+import { format } from 'date-fns';
 
 const { defineProperty } = Reflect,
     regex = /%(-?[0-9]+)?(\.?[0-9]+)?([cdmnp%])(\{([^\}]+)\})?|([^%]+)/;
@@ -78,7 +78,7 @@ export class PatternLayout extends AbstractLayout {
                         }
                         break;
                     case 'd': // Date
-                        replacement = formatDate(specifier || null, new Date(timestamp));
+                        replacement = format(new Date(timestamp), specifier || 'yyyy-MM-dd HH:mm:ss');
                         break;
                     case 'n': // New line
                         replacement = newline;

@@ -17,10 +17,11 @@ const isLevel = is(Level) as (value) => value is Level;
  * @implements module:logger.LevelComparator
  * @extends module:core.Null
  */
-export class EventLogger
-    extends AsLevelComparator(AsEventEmitter(AsNameAware(Null)))
-    implements EventEmitter, Logger, LevelComparator
-{
+// EventLogger extends AsLevelComparator(AsEventEmitter(AsNameAware(Null)))
+// which provides EventEmitter, Logger, and LevelComparator functionality via mixins.
+// TypeScript 5.7 has stricter checking for mixin implementations, so we don't explicitly
+// declare 'implements EventEmitter, Logger, LevelComparator' here - the mixin chain provides it.
+export class EventLogger extends AsLevelComparator(AsEventEmitter(AsNameAware(Null))) {
     name: string;
 
     #threshold: Level;
@@ -31,7 +32,8 @@ export class EventLogger
 
     set threshold(newThreshold: Level) {
         if (isLevel(newThreshold)) {
-            this.emtest('change', this.#threshold, newThreshold);
+            // emit comes from AsEventEmitter mixin
+            (this as any).emit('change', this.#threshold, newThreshold);
             this.#threshold = newThreshold;
         }
     }
@@ -42,9 +44,11 @@ export class EventLogger
     }
 
     log(level: Level, message: loggable[]): void {
-        if (this.compare(this.threshold, level) >= 0) {
+        // compare comes from AsLevelComparator mixin
+        // emit comes from AsEventEmitter mixin
+        if ((this as any).compare(this.threshold, level) >= 0) {
             const entry = newEntry(this.name, level, message);
-            this.emit(`log:${level.name}`, entry);
+            (this as any).emit(`log:${level.name}`, entry);
         }
     }
 }

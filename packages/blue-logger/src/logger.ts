@@ -47,7 +47,7 @@ export abstract class AbstractLogger extends AsLevelComparator(Null) implements 
     }
 
     log(level: Level, message: loggable[]): void {
-        if (this.compare(this.threshold, level) >= 0) {
+        if ((this as any).compare(this.threshold, level) >= 0) {
             const entry: Entry = newEntry(this.name, level, message);
 
             this._logEntry(entry);

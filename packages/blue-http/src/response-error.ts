@@ -120,6 +120,10 @@ export class ResponseError extends FrameworkError implements Error, Response {
     text(): Promise<string> {
         return this.#response.text();
     }
+
+    bytes(): Promise<Uint8Array> {
+        return this.#response.bytes();
+    }
 }
 
 export default ResponseError;

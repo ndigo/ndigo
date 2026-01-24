@@ -1,0 +1,10 @@
+/**
+ * @author Jeff Rose
+ */
+// @ts-ignore - Module resolution issue with monorepo paths
+import { __, join, lt, propSatisfies } from '@blue/util';
+// @ts-ignore - Module resolution issue with monorepo paths
+export { always, both, cond, comparator, complement, compose, curryN, decodeURIComponent, defaultTo, either, encodeURIComponent, equals, filter, flatten, forEachObjIndexed, head, identity, ifElse, isEmpty, isNil, isString, join, keys, last, length, lt, map, of, pipe, prop, propSatisfies, rangeN, replace, sort, split, T, test, trailingJoin, trailingSplit, when, xprod, } from '@blue/util';
+export const joinOnEmptyString = join('');
+export const lengthLessThanN = (n) => propSatisfies(lt(__, n), 'length');
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiX3V0aWwuanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi9zcmMvX3V0aWwudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7O0dBRUc7QUFFSCwyREFBMkQ7QUFDM0QsT0FBTyxFQUFFLEVBQUUsRUFBRSxJQUFJLEVBQUUsRUFBRSxFQUFFLGFBQWEsRUFBRSxNQUFNLFlBQVksQ0FBQztBQUV6RCwyREFBMkQ7QUFDM0QsT0FBTyxFQUNILE1BQU0sRUFDTixJQUFJLEVBQ0osSUFBSSxFQUNKLFVBQVUsRUFDVixVQUFVLEVBQ1YsT0FBTyxFQUNQLE1BQU0sRUFDTixrQkFBa0IsRUFDbEIsU0FBUyxFQUNULE1BQU0sRUFDTixrQkFBa0IsRUFDbEIsTUFBTSxFQUNOLE1BQU0sRUFDTixPQUFPLEVBQ1AsaUJBQWlCLEVBQ2pCLElBQUksRUFDSixRQUFRLEVBQ1IsTUFBTSxFQUNOLE9BQU8sRUFDUCxLQUFLLEVBQ0wsUUFBUSxFQUNSLElBQUksRUFDSixJQUFJLEVBQ0osSUFBSSxFQUNKLE1BQU0sRUFDTixFQUFFLEVBQ0YsR0FBRyxFQUNILEVBQUUsRUFDRixJQUFJLEVBQ0osSUFBSSxFQUNKLGFBQWEsRUFDYixNQUFNLEVBQ04sT0FBTyxFQUNQLElBQUksRUFDSixLQUFLLEVBQ0wsQ0FBQyxFQUNELElBQUksRUFDSixZQUFZLEVBQ1osYUFBYSxFQUNiLElBQUksRUFDSixLQUFLLEdBQ1IsTUFBTSxZQUFZLENBQUM7QUFFcEIsTUFBTSxDQUFDLE1BQU0saUJBQWlCLEdBQUcsSUFBSSxDQUFDLEVBQUUsQ0FBQyxDQUFDO0FBRTFDLE1BQU0sQ0FBQyxNQUFNLGVBQWUsR0FBRyxDQUFDLENBQVMsRUFBRSxFQUFFLENBQUMsYUFBYSxDQUFDLEVBQUUsQ0FBQyxFQUFFLEVBQUUsQ0FBQyxDQUFDLEVBQUUsUUFBUSxDQUFDLENBQUMifQ==

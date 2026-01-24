@@ -12,7 +12,17 @@ import { pipe, split, uniq } from '@blue/util';
 
 type ProfileMetadata = string[];
 
-const { defineMetadata, defineProperty, getMetadata, getOwnPropertyDescriptor, hasMetadata } = Reflect,
+const {
+        defineMetadata,
+        defineProperty,
+        getMetadata,
+        getOwnPropertyDescriptor,
+        hasMetadata,
+    } = Reflect as typeof Reflect & {
+        defineMetadata: (metadataKey: any, metadataValue: any, target: any, propertyKey?: string | symbol) => void;
+        getMetadata: (metadataKey: any, target: any, propertyKey?: string | symbol) => any;
+        hasMetadata: (metadataKey: any, target: any, propertyKey?: string | symbol) => boolean;
+    },
     { isArray } = Array,
     CONFIG_CONSTRUCTOR = 'config:constructor',
     CONFIG_PROFILE = 'config:profile',

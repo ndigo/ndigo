@@ -6,7 +6,7 @@ import { Entry } from '../entry';
 import { AbstractBatchLayout } from '../layout';
 
 export class NullLayout extends AbstractBatchLayout {
-    batchSeparator: string;
+    declare batchSeparator: string;
 
     constructor() {
         super();

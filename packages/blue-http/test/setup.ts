@@ -1,0 +1,18 @@
+import { beforeAll } from 'vitest';
+
+// Mock location object for browser-specific code
+beforeAll(() => {
+    if (typeof location === 'undefined') {
+        (globalThis as any).location = {
+            href: 'http://localhost/',
+            origin: 'http://localhost',
+            protocol: 'http:',
+            host: 'localhost',
+            hostname: 'localhost',
+            port: '',
+            pathname: '/',
+            search: '',
+            hash: '',
+        };
+    }
+});

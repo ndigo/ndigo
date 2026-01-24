@@ -51,7 +51,7 @@ export abstract class AbstractAppender extends Null implements Appender {
 export abstract class AbstractBatchAppender extends AbstractAppender implements BatchAppender {
     readonly entries: Entry[];
     batchSize: number;
-    layout: BatchLayout;
+    declare layout: BatchLayout;
 
     constructor() {
         super();

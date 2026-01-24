@@ -9,10 +9,10 @@ import { NullLayout } from './null-layout';
 const defineProperty = Reflect.defineProperty;
 
 export class XMLLayout extends NullLayout {
-    readonly mediaType: MediaType;
-    batchFooter: string;
-    batchHeader: string;
-    batchSeparator: string;
+    declare readonly mediaType: MediaType;
+    declare batchFooter: string;
+    declare batchHeader: string;
+    declare batchSeparator: string;
 
     constructor() {
         super();

@@ -21,7 +21,7 @@ import {
     trim,
     uniq,
 } from '@blue/util';
-import { BasicModel } from '../node_modules/objectmodel/src/object-model';
+import { BasicModel } from 'objectmodel';
 
 const { isFinite, isInteger, isSafeInteger } = Number,
     isDense = (arr: Array<any>) => equals(length(filter(T, arr)), length(arr)),
@@ -56,18 +56,18 @@ export const PositiveInteger = PositiveNumber.extend().assert(isInteger).as('Pos
 export const NegativeInteger = NegativeNumber.extend().assert(isInteger).as('NegativeInteger');
 
 // Strings
-export const FullString = BasicModel(String).assert(isNotBlank).as('FullString');
-export const NormalizedString = BasicModel(String).assert(isNormalized).as('NormalizedString');
-export const TrimmedString = BasicModel(String).assert(isTrimmed).as('TrimmedString');
+export const FullString = BasicModel(String).assert(isNotBlank as any).as('FullString');
+export const NormalizedString = BasicModel(String).assert(isNormalized as any).as('NormalizedString');
+export const TrimmedString = BasicModel(String).assert(isTrimmed as any).as('TrimmedString');
 
 // Dates
-export const PastDate = BasicModel(Date).assert(isPast).as('PastDate');
-export const FutureDate = BasicModel(Date).assert(isFuture).as('FutureDate');
+export const PastDate = BasicModel(Date).assert(isPast as any).as('PastDate');
+export const FutureDate = BasicModel(Date).assert(isFuture as any).as('FutureDate');
 
 // Arrays
-export const FullArray = BasicModel(Array).assert(isNotEmpty).as('FullArray');
-export const UniqueArray = BasicModel(Array).assert(isUnique).as('UniqueArray');
-export const DenseArray = BasicModel(Array).assert(isDense).as('DenseArray');
+export const FullArray = BasicModel(Array).assert(isNotEmpty as any).as('FullArray');
+export const UniqueArray = BasicModel(Array).assert(isUnique as any).as('UniqueArray');
+export const DenseArray = BasicModel(Array).assert(isDense as any).as('DenseArray');
 
 // Others
 export const PromiseOf = (model) => (p) => BasicModel(Promise)(p).then((x) => model(x));

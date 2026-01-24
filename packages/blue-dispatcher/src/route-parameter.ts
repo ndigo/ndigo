@@ -41,7 +41,9 @@ const METHOD_PARAMETER = 'method:parameter',
     likeMethodParameterInfo = like({ name: String, mapping: String, required: Boolean, defaultValue: String }) as (
         value
     ) => value is MethodParameterInfo,
-    isStringOrLikeMethodParameterInfo = either(isString, likeMethodParameterInfo),
+    isStringOrLikeMethodParameterInfo = either(isString, likeMethodParameterInfo as (value: any) => boolean) as (
+        value: any
+    ) => value is string | MethodParameterInfo,
     isNotString = complement(isString),
     namedObj = objOf('name') as <T = any>(value: T) => { name: T },
     // TODO NEED TO ALLOW FOR DIFFERENT DEFAULT INFO

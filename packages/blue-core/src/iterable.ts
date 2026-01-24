@@ -52,7 +52,7 @@ const { isArray } = Array,
     hasEntries = hasFunction('entries'),
     hasKeys = hasFunction('keys'),
     hasValues = hasFunction('values'),
-    invokeEntries = invoker(0, 'entries') as <T>(value: object) => ObjectEntries<T>,
+    invokeEntries = invoker(0, 'entries'),
     invokeKeys = invoker(0, 'keys'),
     invokeValues = invoker(0, 'values');
 
@@ -125,7 +125,7 @@ export class EntriesIterator<T = any> implements IterableIterator<Entry<T>> {
         this.#iterator = cond([
             [hasEntries, invokeEntries],
             [T, pipe(entries, indexedIterator)],
-        ])(target);
+        ])(target) as Iterator<Entry<T>>;
     }
 
     [Symbol.iterator](): IterableIterator<Entry<T>> {

@@ -25,7 +25,8 @@ export interface ScopedFactory {
 }
 
 const SCOPE = 'scope',
-    { defineMetadata, defineProperty, getMetadata, hasMetadata } = Reflect;
+    { defineProperty } = Reflect,
+    { defineMetadata, getMetadata, hasMetadata } = Reflect as any;
 
 /**
  * @function module:factory.defineScope

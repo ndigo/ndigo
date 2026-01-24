@@ -7,7 +7,7 @@ import { toQueryString } from '@blue/router';
 import { Entry, NullLayout } from '@blue/logger';
 
 export class HTTPPostLayout extends NullLayout {
-    readonly mediaType: MediaType;
+    declare readonly mediaType: MediaType;
 
     constructor() {
         super();

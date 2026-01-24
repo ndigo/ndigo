@@ -132,7 +132,12 @@ export const qs = curry( ( f: Function, xf: Transformer<JSONValue, string> ) => 
 
 class QueryString implements Parser, Stringifier {
     parse(value: string): JSONObject {
-        return queryExpression.run(value).result;
+        const parseResult = queryExpression.run(value);
+        if (!parseResult.isError) {
+            // Type narrowing: parseResult is Ok<JSONObject, string> here
+            return (parseResult as { isError: false; result: JSONObject; index: number; data: string }).result;
+        }
+        return {};
     }
     stringify(value: any): string {
         return toQueryString(value);

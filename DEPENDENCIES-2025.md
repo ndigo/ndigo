@@ -40,15 +40,10 @@ This document provides a quick reference for all dependency versions after the 2
 
 | Package | Version |
 |---------|---------|
-| webpack | ~5.97.1 |
-| webpack-cli | ~5.1.4 |
-| ts-loader | ~9.5.1 |
-| terser-webpack-plugin | ~5.3.10 |
-| fork-ts-checker-webpack-plugin | ~9.0.2 |
-| tsconfig-paths-webpack-plugin | ~4.1.0 |
-| file-loader | ~6.2.0 |
-| url-loader | ~4.1.1 |
-| circular-dependency-plugin | ~5.2.2 |
+| vite | ~6.0.7 |
+| vite-plugin-dts | ~4.3.0 |
+| @vitejs/plugin-basic-ssl | ~1.1.0 |
+| typescript | ~5.7.2 |
 
 ### Monorepo Management
 

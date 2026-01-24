@@ -5,7 +5,7 @@ const config: JestConfigWithTsJest = {
     ...rootConfig,
 
     rootDir: '.',
-    displayName: 'parser'
+    displayName: 'parser',
 };
 
 export default config;

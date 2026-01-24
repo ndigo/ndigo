@@ -35,71 +35,72 @@
  * Remember that a redirect status code counts as an error. In the case of a chain of redirects longer
  * than three, the error handler will execute with that redirect status code.
  */
-define( function(){
+define(function () {
     'use strict';
 
-    var	redirectMax = 3,
+    var redirectMax = 3,
         redirectCodes = {
-            '300': true,
-            '301': true,
-            '302': true,
-            '303': true,
-            '305': true,
-            '306': true,
-            '307': true,
-            '308': true
+            300: true,
+            301: true,
+            302: true,
+            303: true,
+            305: true,
+            306: true,
+            307: true,
+            308: true,
         },
         // determine if a function has been provided at given path
-        getFunction = function( obj, path ){
-            var parts = path.split( '.' );
-            while( obj = obj[ parts.shift() ] ){
-                if( obj.constructor === Function ){
+        getFunction = function (obj, path) {
+            var parts = path.split('.');
+            while ((obj = obj[parts.shift()])) {
+                if (obj.constructor === Function) {
                     return obj;
                 }
             }
         };
 
     return {
-        around: function statusInterceptor( joinpoint ){
-            var	cnt = 1,
-                settings = joinpoint.args[ 0 ];
-            return new Promise( function( resolve, reject ){
-                var placeRequest = function(){
-                    joinpoint.proceed()
-                        .then( function( response ){
-                            var func = getFunction( settings, 'handleSuccess' );
-                            if( func ){
-                                return resolve( func.call( response, response ) );
+        around: function statusInterceptor(joinpoint) {
+            var cnt = 1,
+                settings = joinpoint.args[0];
+            return new Promise(function (resolve, reject) {
+                var placeRequest = function () {
+                    joinpoint
+                        .proceed()
+                        .then(function (response) {
+                            var func = getFunction(settings, 'handleSuccess');
+                            if (func) {
+                                return resolve(func.call(response, response));
                             }
-                            if( func = getFunction( settings, 'handleStatus.200' ) ){
-                                func.call( response, response );
+                            if ((func = getFunction(settings, 'handleStatus.200'))) {
+                                func.call(response, response);
                             }
-                            resolve( response );
-                        } )
-                        .catch( function( response ){
+                            resolve(response);
+                        })
+                        .catch(function (response) {
                             var func,
                                 status = response.status,
-                                isRedirect = redirectCodes[ status ];
+                                isRedirect = redirectCodes[status];
 
-                            if( isRedirect && settings.redirect && cnt++ < redirectMax ){
+                            if (isRedirect && settings.redirect && cnt++ < redirectMax) {
                                 // update location
                                 // we may want to clone settings object before manipulating it
-                                settings.url = response.getResponseHeader( 'Location' );
+                                settings.url = response.getResponseHeader('Location');
                                 // try again
                                 return placeRequest();
                             }
 
-                            if( func = getFunction( settings, 'handleError' ) ){
-                                func.call( response, response );
+                            if ((func = getFunction(settings, 'handleError'))) {
+                                func.call(response, response);
                             }
-                            if( func = getFunction( settings, 'handleStatus.' + status ) ){
-                                func.call( response, response );
+                            if ((func = getFunction(settings, 'handleStatus.' + status))) {
+                                func.call(response, response);
                             }
-                            reject( response );
-                        } );
+                            reject(response);
+                        });
                 };
                 placeRequest();
-            } );
-        }
+            });
+        },
     };
-} );
+});

@@ -21,6 +21,6 @@ import { is } from 'ramda';
  * isFunction( {} );
  * //=> false
  */
-const isFunction = is( Function ) as ( value ) => value is Function;
+const isFunction = is(Function) as (value) => value is Function;
 
 export default isFunction;

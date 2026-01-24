@@ -19,7 +19,7 @@ export default class Entry<T> {
         return this.#value;
     }
 
-    constructor( name: string, value: T, scope: string ){
+    constructor(name: string, value: T, scope: string) {
         this.#name = name;
         this.#value = value;
         this.#scope = scope;

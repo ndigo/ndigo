@@ -2,7 +2,6 @@
  * @author Jeff Rose
  */
 export class Site {
-    constructor(router, applications) {
-    }
+    constructor(router, applications) {}
 }
 //# sourceMappingURL=site.js.map

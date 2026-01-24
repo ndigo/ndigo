@@ -1,0 +1,29 @@
+# Generated files and build artifacts
+doc/
+lib/
+coverage/
+*.map
+
+# Lock files
+pnpm-lock.yaml
+yarn.lock
+package-lock.json
+
+# Build outputs
+*.js.map
+*.cjs.map
+index.js
+index.cjs
+
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Cache and temp files
+.nx/
+.cache/
+.vitest/
+*.log
+
+# Archive (legacy code)
+archive/

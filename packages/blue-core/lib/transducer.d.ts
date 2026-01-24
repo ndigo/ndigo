@@ -11,8 +11,12 @@ export type Reduced<T> = {
 };
 export type MaybeReduced<T = any> = T | Reduced<T>;
 export type QuittingReducer<TResult = any, TInput = any> = (result: TResult, input: TInput) => MaybeReduced<TResult>;
-export type Transducer<TInput = any, TOutput = any> = <TComplete, TResult = any>(xf?: CompletingTransformer<TResult, TComplete, TOutput>) => CompletingTransformer<TResult, TComplete, TInput>;
-export declare class DelegatingTransformer<TResult, TComplete, TInput> implements CompletingTransformer<TResult, TComplete, TInput> {
+export type Transducer<TInput = any, TOutput = any> = <TComplete, TResult = any>(
+    xf?: CompletingTransformer<TResult, TComplete, TOutput>
+) => CompletingTransformer<TResult, TComplete, TInput>;
+export declare class DelegatingTransformer<TResult, TComplete, TInput>
+    implements CompletingTransformer<TResult, TComplete, TInput>
+{
     readonly xf: CompletingTransformer<TResult, TComplete, TInput>;
     constructor(xf: CompletingTransformer<TResult, TComplete, TInput>);
     ['@@transducer/init']?(): TResult;
@@ -61,7 +65,10 @@ export declare class XToMap<T, K, V> implements Transformer<Map<K, V>, T> {
     ['@@transducer/result']?(result: Map<K, V>): Map<K, V>;
     ['@@transducer/step'](result: Map<K, V>, input: T): MaybeReduced<Map<K, V>>;
 }
-export declare const toMap: <T, K, V>(getKey: (item: T) => K, getValue: (item: T) => V) => () => Transformer<Map<K, V>, T>;
+export declare const toMap: <T, K, V>(
+    getKey: (item: T) => K,
+    getValue: (item: T) => V
+) => () => Transformer<Map<K, V>, T>;
 export declare class XToMultiValueMap<T, K, V> implements Transformer<MultiValueMap<K, V>, T> {
     private readonly _getKey;
     private readonly _getValue;
@@ -70,7 +77,10 @@ export declare class XToMultiValueMap<T, K, V> implements Transformer<MultiValue
     ['@@transducer/result']?(result: MultiValueMap<K, V>): MultiValueMap<K, V>;
     ['@@transducer/step'](result: MultiValueMap<K, V>, input: T): MaybeReduced<MultiValueMap<K, V>>;
 }
-export declare const toMultiValueMap: <T, K, V>(getKey: (item: T) => K, getValue: (item: T) => V) => () => Transformer<MultiValueMap<K, V>, T>;
+export declare const toMultiValueMap: <T, K, V>(
+    getKey: (item: T) => K,
+    getValue: (item: T) => V
+) => () => Transformer<MultiValueMap<K, V>, T>;
 export declare class XToRecord<T, U> implements Transformer<Record<string, U>, T> {
     private readonly _getKey;
     private readonly _getValue;
@@ -79,7 +89,10 @@ export declare class XToRecord<T, U> implements Transformer<Record<string, U>, T
     ['@@transducer/result']?(result: Record<string, U>): Record<string, U>;
     ['@@transducer/step'](result: Record<string, U>, input: T): MaybeReduced<Record<string, U>>;
 }
-export declare const toRecord: <T, U>(getKey: (item: T) => string, getValue: (item: T) => U) => () => Transformer<Record<string, U>, T>;
+export declare const toRecord: <T, U>(
+    getKey: (item: T) => string,
+    getValue: (item: T) => U
+) => () => Transformer<Record<string, U>, T>;
 export declare class XToSet<T> implements Transformer<Set<T>, T> {
     readonly set: Set<T>;
     constructor(set?: Set<T>);
@@ -88,7 +101,11 @@ export declare class XToSet<T> implements Transformer<Set<T>, T> {
     ['@@transducer/step'](result: Set<T>, input: T): MaybeReduced<Set<T>>;
 }
 export declare const toSet: <T = any>(set?: Set<T>) => () => Transformer<Set<T>, T>;
-export declare const dispatchable: (methodNames: string[], xf: Transducer, fn: Function) => (target: any, ...args: any[]) => any;
+export declare const dispatchable: (
+    methodNames: string[],
+    xf: Transducer,
+    fn: Function
+) => (target: any, ...args: any[]) => any;
 /**
  * * Developer Notes
  * ? Should this be in blue-util?

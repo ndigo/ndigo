@@ -4,7 +4,6 @@
 export class SiteBuilder {
     #site;
     #router;
-    constructor() {
-    }
+    constructor() {}
 }
 //# sourceMappingURL=site-builder.js.map

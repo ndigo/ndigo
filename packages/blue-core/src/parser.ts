@@ -3,11 +3,11 @@
  */
 
 export interface Parser<T = any> {
-    parse( value: string ): T;
+    parse(value: string): T;
 }
 
 export interface Stringifier<T = any> {
-    stringify( value: T ): string;
+    stringify(value: T): string;
 }
 
 /**

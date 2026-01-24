@@ -8,7 +8,7 @@ import { is } from '@blue/util';
 const { defineProperty } = Reflect;
 
 // TODO Use the @blue/core version once it updates -JBR
-type Constructable<T = {}> = new ( ...args: any[] ) => T;
+type Constructable<T = {}> = new (...args: any[]) => T;
 
 /**
  * @class module:logger.Level
@@ -21,18 +21,18 @@ export class Level implements Comparable<Level>, Serializable {
     /**
      * @member {module:logger.Level} module:logger.Level.OFF
      */
-    static OFF = new Level( 'off', 0 );
+    static OFF = new Level('off', 0);
 
     /**
      * @member {module:logger.Level} module:logger.Level.ALL
      */
-    static ALL = new Level( 'all', Number.MAX_VALUE );
+    static ALL = new Level('all', Number.MAX_VALUE);
 
     /**
      * @readonly
      * @member {external:string} module:logger.Level#name
      */
-    readonly name: string
+    readonly name: string;
 
     /**
      * @readonly
@@ -40,24 +40,24 @@ export class Level implements Comparable<Level>, Serializable {
      */
     readonly value: number;
 
-    get [ Symbol.toStringTag ](): string {
-        return `Level:${ this.name }`;
+    get [Symbol.toStringTag](): string {
+        return `Level:${this.name}`;
     }
 
-    constructor( name: string, value: number ){
-        defineProperty( this, 'name', {
+    constructor(name: string, value: number) {
+        defineProperty(this, 'name', {
             value: name,
             configurable: true,
             enumerable: false,
-            writable: false
-        } );
+            writable: false,
+        });
 
-        defineProperty( this, 'value', {
+        defineProperty(this, 'value', {
             value: value,
             configurable: true,
             enumerable: false,
-            writable: false
-        } );
+            writable: false,
+        });
     }
 
     /**
@@ -65,14 +65,14 @@ export class Level implements Comparable<Level>, Serializable {
      * @param {module:logger.Level} value
      * @returns {external:number}
      */
-    compareTo( value: Level ): number {
-        if( !isLevel( value ) ){
-            throw new TypeError( 'value must be an instance of Level' );
+    compareTo(value: Level): number {
+        if (!isLevel(value)) {
+            throw new TypeError('value must be an instance of Level');
         }
 
-        if( this.value < value.value ){
+        if (this.value < value.value) {
             return -1;
-        } else if( this.value > value.value ){
+        } else if (this.value > value.value) {
             return 1;
         } else {
             return 0;
@@ -98,7 +98,7 @@ export class Level implements Comparable<Level>, Serializable {
 
 export interface LevelComparator extends Comparator<Level> {}
 
-const isLevel = is( Level );
+const isLevel = is(Level);
 
 // Setting the return type to "Constructable<LevelComparator> & T" forces importing modules to also import LevelComparator
 /**
@@ -106,25 +106,26 @@ const isLevel = is( Level );
  * @param {T} superclass
  * @returns {module:core.Constructable<module:logger.AsLevelComparator>}
  */
-export const AsLevelComparator = <T extends Constructable>( superclass: T ): Constructable<LevelComparator> & T => class extends superclass implements LevelComparator {
-    compare( level1: Level, level2: Level ): number {
-        if( !isLevel( level1 ) ){
-            throw new TypeError( 'level1 must be an instance of Level' );
-        }
+export const AsLevelComparator = <T extends Constructable>(superclass: T): Constructable<LevelComparator> & T =>
+    class extends superclass implements LevelComparator {
+        compare(level1: Level, level2: Level): number {
+            if (!isLevel(level1)) {
+                throw new TypeError('level1 must be an instance of Level');
+            }
 
-        if( !isLevel( level2 ) ){
-            throw new TypeError( 'level2 must be an instance of Level' );
-        }
+            if (!isLevel(level2)) {
+                throw new TypeError('level2 must be an instance of Level');
+            }
 
-        if( level1.value < level2.value ){
-            return -1;
-        } else if( level1.value > level2.value ){
-            return 1;
-        } else {
-            return 0;
+            if (level1.value < level2.value) {
+                return -1;
+            } else if (level1.value > level2.value) {
+                return 1;
+            } else {
+                return 0;
+            }
         }
-    }
-};
+    };
 
 /**
  * @interface module:logger.LevelComparator

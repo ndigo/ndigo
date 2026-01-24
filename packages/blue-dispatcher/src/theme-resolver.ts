@@ -5,7 +5,7 @@
 import { Route } from '@blue/router';
 
 export interface ThemeResolver {
-    resolveTheme( route: Route ): string;
+    resolveTheme(route: Route): string;
 }
 
 /**
@@ -23,20 +23,20 @@ const { defineProperty } = Reflect;
 export abstract class AbstractThemeResolver implements ThemeResolver {
     readonly defaultThemeName: string;
 
-    get [ Symbol.toStringTag ](): string {
+    get [Symbol.toStringTag](): string {
         return 'ThemeResolver';
     }
 
-    constructor( defaultThemeName: string ){
-        defineProperty( this, 'defaultThemeName', {
+    constructor(defaultThemeName: string) {
+        defineProperty(this, 'defaultThemeName', {
             value: defaultThemeName,
             configurable: true,
             enumerable: false,
-            writable: false
-        } );
+            writable: false,
+        });
     }
 
-    abstract resolveTheme( route: Route ): string;
+    abstract resolveTheme(route: Route): string;
 }
 
 /**
@@ -61,7 +61,7 @@ export abstract class AbstractThemeResolver implements ThemeResolver {
  * @extends {module:dispatcher.AbstractThemeResolver}
  */
 export class FixedThemeResolver extends AbstractThemeResolver {
-    resolveTheme( route: Route ): string {
+    resolveTheme(route: Route): string {
         return this.defaultThemeName;
     }
 }

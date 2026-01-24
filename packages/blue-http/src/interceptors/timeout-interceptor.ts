@@ -4,16 +4,20 @@
 
 import ResponseError from '../response-error';
 import { __, allPass, gt, isNumber } from '@blue/util';
-import { CompletionAwareHTTPInterceptor, ErrorAwareHTTPInterceptor, HTTPInit, InitializationAwareHTTPInterceptor } from '../http';
+import {
+    CompletionAwareHTTPInterceptor,
+    ErrorAwareHTTPInterceptor,
+    HTTPInit,
+    InitializationAwareHTTPInterceptor,
+} from '../http';
 import { REQUEST_TIMEOUT } from '../response-statuses';
 
 export type TimeoutInit = HTTPInit & { timeout?: number };
 
-const
-    { defineProperty } = Reflect,
+const { defineProperty } = Reflect,
     { isInteger } = Number,
-    greaterThanZero = gt( __, 0 ),
-    isPositiveNumber = allPass( [ isNumber, isInteger, greaterThanZero ] );
+    greaterThanZero = gt(__, 0),
+    isPositiveNumber = allPass([isNumber, isInteger, greaterThanZero]);
 
 /**
  * @class module:http.TimeoutInterceptor
@@ -21,25 +25,30 @@ const
  * @implements module:http.ErrorAwareHTTPInterceptor
  * @implements module:http.InitializationAwareHTTPInterceptor
  */
-export class TimeoutInterceptor implements InitializationAwareHTTPInterceptor<TimeoutInit>, ErrorAwareHTTPInterceptor, CompletionAwareHTTPInterceptor {
+export class TimeoutInterceptor
+    implements
+        InitializationAwareHTTPInterceptor<TimeoutInit>,
+        ErrorAwareHTTPInterceptor,
+        CompletionAwareHTTPInterceptor
+{
     #timeoutId: number;
 
     readonly timeout: number;
 
-    constructor( timeout: number ){
-        if( !isPositiveNumber( timeout ) ){
-            throw new TypeError( `timeout must be a positive integer` );
+    constructor(timeout: number) {
+        if (!isPositiveNumber(timeout)) {
+            throw new TypeError(`timeout must be a positive integer`);
         }
 
         /**
          * @readonly
          * @member {external:number} module:http.TimeoutInterceptor#timeout
          */
-        defineProperty( this, 'timeout', {
+        defineProperty(this, 'timeout', {
             get: () => timeout,
             configurable: true,
-            enumerable: true
-        } );
+            enumerable: true,
+        });
 
         this.#timeoutId = null;
     }
@@ -50,18 +59,15 @@ export class TimeoutInterceptor implements InitializationAwareHTTPInterceptor<Ti
      * @param {module:http.TimeoutInit} settings The HTTP request settings, including the `timeout` setting.
      * @returns {external:boolean} Whether or not the http request should continue execution.
      */
-    preInit( url: URL, settings: TimeoutInit ): boolean {
-        const
-            controller = new AbortController(),
+    preInit(url: URL, settings: TimeoutInit): boolean {
+        const controller = new AbortController(),
             fetchTimeout = () => controller.abort();
 
         settings.signal = controller.signal;
-        settings.timeout = isPositiveNumber( settings.timeout ) ?
-            settings.timeout :
-            this.timeout;
+        settings.timeout = isPositiveNumber(settings.timeout) ? settings.timeout : this.timeout;
 
         // @ts-ignore: TypeScript is confusing Web setTimeout with Node setTimeout -JBR
-        this.#timeoutId = setTimeout( fetchTimeout, settings.timeout );
+        this.#timeoutId = setTimeout(fetchTimeout, settings.timeout);
         return true;
     }
 
@@ -72,11 +78,11 @@ export class TimeoutInterceptor implements InitializationAwareHTTPInterceptor<Ti
      * @param {external:Request} request The HTTP request
      * @returns {exteral:Promise<external:Response | external:undefined>}
      */
-    async postError( error: Error, request: Request ): Promise<Response | undefined> {
-        if( error.name === 'AbortError' ){
+    async postError(error: Error, request: Request): Promise<Response | undefined> {
+        if (error.name === 'AbortError') {
             this._clearTimeout();
         }
-        return new ResponseError( REQUEST_TIMEOUT.createResponse( null ), error );
+        return new ResponseError(REQUEST_TIMEOUT.createResponse(null), error);
     }
 
     /**
@@ -84,14 +90,14 @@ export class TimeoutInterceptor implements InitializationAwareHTTPInterceptor<Ti
      * @param {external:Request} request The HTTP request
      * @param {external:Response} response The HTTP response
      */
-    postComplete( request: Request, response: Response ): void {
-        if( this.#timeoutId !== null ){
+    postComplete(request: Request, response: Response): void {
+        if (this.#timeoutId !== null) {
             this._clearTimeout();
         }
     }
 
-    private _clearTimeout(){
-        clearTimeout( this.#timeoutId );
+    private _clearTimeout() {
+        clearTimeout(this.#timeoutId);
         this.#timeoutId = null;
     }
 }

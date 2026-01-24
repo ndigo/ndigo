@@ -20,6 +20,6 @@ const nonPrintable = /[^\x20-\x7E]/g;
  * //=> "lorem-ipsum"
  * @category String
  */
-const removeNonPrintable: ( value: string ) => string = replace( nonPrintable, '' );
+const removeNonPrintable: (value: string) => string = replace(nonPrintable, '');
 
 export default removeNonPrintable;

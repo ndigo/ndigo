@@ -22,195 +22,199 @@
  * {json: 1234}
  */
 /* eslint-disable complexity */
-define( function( require ){
+define(function (require) {
     'use strict';
 
     var globalStore = {},
-        Deferred = require( 'blue/deferred' ),
+        Deferred = require('blue/deferred'),
         // todo: ignore querystring params until proper cxo adoption
         ignoreQueryString = true,
         cachePropName = 'cache',
         validTypes = {
             DELETE: 1,
             ONCE: 1,
-            SESSION: 1
+            SESSION: 1,
         },
-
-        dataMatch = function( a, b ){
+        dataMatch = function (a, b) {
             var key,
-                aKeys = Object.keys( a || {} ),
-                bKeys = Object.keys( b || {} );
+                aKeys = Object.keys(a || {}),
+                bKeys = Object.keys(b || {});
             // dummy check
-            if( aKeys.length !== bKeys.length ){ return false; }
-            if( !aKeys.length ){ return true; }
-            // value checks
-            for( key in a ){
-                if( a[ key ] !== b[ key ] ){ return false; }
+            if (aKeys.length !== bKeys.length) {
+                return false;
             }
-            for( key in b ){
-                if( a[ key ] !== b[ key ] ){ return false; }
+            if (!aKeys.length) {
+                return true;
+            }
+            // value checks
+            for (key in a) {
+                if (a[key] !== b[key]) {
+                    return false;
+                }
+            }
+            for (key in b) {
+                if (a[key] !== b[key]) {
+                    return false;
+                }
             }
             return true;
         },
-
         // get (key, data)
         // BLUEJS-4733 - handling overlapping service calls by
         // returning existing request promise if available. Extra "noDelete"
         // parameter is used to allow cache to be queried internally without
         // accidentally destroying a one-time cache.
-        getCache = function( cacheKey, requestData, noDelete ){
+        getCache = function (cacheKey, requestData, noDelete) {
             var response,
-                responses = globalStore[ cacheKey ] || [],
+                responses = globalStore[cacheKey] || [],
                 x = responses.length;
 
             // search for data match
-            while( x-- ){
-                response = responses[ x ];
-                if( dataMatch( requestData, response.request ) ){
+            while (x--) {
+                response = responses[x];
+                if (dataMatch(requestData, response.request)) {
                     // BLUEJS-4733 - see comment above
-                    if( !noDelete && response.usage === 'ONCE' ){
+                    if (!noDelete && response.usage === 'ONCE') {
                         // clean up once type cache entries
-                        responses.splice( x, 1 );
+                        responses.splice(x, 1);
                         // clean up empty cache entries
-                        !responses.length && delete globalStore[ cacheKey ];
+                        !responses.length && delete globalStore[cacheKey];
                     }
                     // return cached service response
                     return response.response;
                 }
             }
         },
-
-        setCache = function( cacheKey, replaceWith ){
+        setCache = function (cacheKey, replaceWith) {
             var response,
                 // are we adding or deleting data?
                 add = replaceWith.response && replaceWith.usage !== 'DELETE',
-                responses = globalStore[ cacheKey ] || ( add
-                    // ensure cache store exists
-                    ? globalStore[cacheKey] = [] // jshint ignore:line
-                    // removing, so return fake store
-                    : [] ),
+                responses =
+                    globalStore[cacheKey] ||
+                    (add
+                        ? // ensure cache store exists
+                          (globalStore[cacheKey] = []) // jshint ignore:line
+                        : // removing, so return fake store
+                          []),
                 request = replaceWith.request || {},
                 x = responses.length;
             // search for data match
-            while( x-- ){
-                response = responses[ x ];
-                if( dataMatch( request, response.request ) ){
-                    if( add ){
+            while (x--) {
+                response = responses[x];
+                if (dataMatch(request, response.request)) {
+                    if (add) {
                         // replace existing cache
-                        responses[ x ] = replaceWith;
+                        responses[x] = replaceWith;
                     } else {
                         // delete existing cache
-                        responses.splice( x, 1 );
+                        responses.splice(x, 1);
                         // clean up empty cache entries
-                        !responses.length && delete globalStore[ cacheKey ];
+                        !responses.length && delete globalStore[cacheKey];
                     }
                     return;
                 }
             }
             // no match found, add new entry
-            add && responses.push( replaceWith );
+            add && responses.push(replaceWith);
         },
-
-        asyncResult = function( response ){
-            return new Promise( function( resolve ){
+        asyncResult = function (response) {
+            return new Promise(function (resolve) {
                 // Force cached values to return asynchronously so their behavior matches a real service
-                setTimeout( function(){
-                    resolve( response );
-                }, 0 );
-            } );
+                setTimeout(function () {
+                    resolve(response);
+                }, 0);
+            });
         },
-
-        processData = function( cacheProp, response ){
-            var x, rawKey, cacheKey, cacheEntry,
-                cache = ( response || {} )[ cacheProp ];
+        processData = function (cacheProp, response) {
+            var x,
+                rawKey,
+                cacheKey,
+                cacheEntry,
+                cache = (response || {})[cacheProp];
             // validate cache container
-            if( cache && cache.constructor === Array && ( x = cache.length ) ){
-                while( x-- ){
-                    cacheEntry = cache[ x ] || {};
+            if (cache && cache.constructor === Array && (x = cache.length)) {
+                while (x--) {
+                    cacheEntry = cache[x] || {};
                     // validate cache entry
-                    if(
-                        !cacheEntry.url ||
-                        !cacheEntry.response ||
-                        !validTypes[ cacheEntry.usage ]
-                    ){
+                    if (!cacheEntry.url || !cacheEntry.response || !validTypes[cacheEntry.usage]) {
                         continue;
                     }
                     // save/update cache entry
-                    rawKey = cacheEntry.url,
-                    cacheKey = ignoreQueryString ? rawKey.split( '?' )[ 0 ] : rawKey;
-                    setCache( cacheKey, cacheEntry );
+                    (rawKey = cacheEntry.url), (cacheKey = ignoreQueryString ? rawKey.split('?')[0] : rawKey);
+                    setCache(cacheKey, cacheEntry);
                 }
             }
         };
 
     return {
-        around: function cacheInterceptor( joinpoint ){
+        around: function cacheInterceptor(joinpoint) {
             var deferred,
-                settings = joinpoint.args[ 0 ],
-                requestURL = ignoreQueryString ? settings.url.split( '?' )[ 0 ] : settings.url,
+                settings = joinpoint.args[0],
+                requestURL = ignoreQueryString ? settings.url.split('?')[0] : settings.url,
                 requestData = settings.data || {},
                 cacheProp = settings.cachePropName || cachePropName,
-                cacheResponse = validTypes[ settings.cacheResponse ] && settings.cacheResponse,
+                cacheResponse = validTypes[settings.cacheResponse] && settings.cacheResponse,
                 cacheData = settings.cacheData,
-                cacheInject = cacheData && validTypes[ cacheData.usage ] && cacheData.usage,
+                cacheInject = cacheData && validTypes[cacheData.usage] && cacheData.usage,
                 response = cacheInject && cacheData.response;
 
             // data forced into cache
-            if( cacheInject ){
+            if (cacheInject) {
                 // save/update/clear cache entry
-                setCache( requestURL, {
+                setCache(requestURL, {
                     usage: cacheInject,
                     request: requestData,
-                    response: response
-                } );
-                processData( cacheProp, response );
-                return asyncResult( response );
+                    response: response,
+                });
+                processData(cacheProp, response);
+                return asyncResult(response);
 
-            // response forced into cache
-            // BLUEJS-4733 - Only trigger new http request (and cache storage) if there
-            // is no matching request in process. Uses modified "getCache" that will
-            // return result in a non-destructive way even for one-time caches.
-            } else if( cacheResponse && !getCache( requestURL, requestData, true ) ){
+                // response forced into cache
+                // BLUEJS-4733 - Only trigger new http request (and cache storage) if there
+                // is no matching request in process. Uses modified "getCache" that will
+                // return result in a non-destructive way even for one-time caches.
+            } else if (cacheResponse && !getCache(requestURL, requestData, true)) {
                 deferred = new Deferred();
                 // save/update cache entry
-                setCache( requestURL, {
+                setCache(requestURL, {
                     usage: cacheResponse,
                     request: requestData,
-                    response: deferred.promise
-                } );
+                    response: deferred.promise,
+                });
 
-            // already cached data
-            } else if( ( response = getCache( requestURL, requestData ) ) ){
-                return asyncResult( response );
+                // already cached data
+            } else if ((response = getCache(requestURL, requestData))) {
+                return asyncResult(response);
             }
 
-            return joinpoint.proceed()
-                .then( function( response ){
-                    processData( cacheProp, response );
+            return joinpoint
+                .proceed()
+                .then(function (response) {
+                    processData(cacheProp, response);
                     // check if caching was requested for this service
-                    if( cacheResponse ){
+                    if (cacheResponse) {
                         // update cache entry
-                        setCache( requestURL, {
+                        setCache(requestURL, {
                             usage: cacheResponse,
                             request: requestData,
-                            response: response
-                        } );
-                        deferred.resolve( response );
+                            response: response,
+                        });
+                        deferred.resolve(response);
                     }
                     return response;
-                } )
-                .catch( function( ex ){
+                })
+                .catch(function (ex) {
                     // check if caching was requested for this service
-                    if( cacheResponse ){
+                    if (cacheResponse) {
                         // delete cache entry
-                        setCache( requestURL, {
+                        setCache(requestURL, {
                             usage: 'DELETE',
-                            request: requestData
-                        } );
-                        deferred.reject( ex );
+                            request: requestData,
+                        });
+                        deferred.reject(ex);
                     }
-                    throw  ex;
-                } );
-        }
+                    throw ex;
+                });
+        },
     };
-} );
+});

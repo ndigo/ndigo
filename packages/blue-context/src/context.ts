@@ -5,12 +5,44 @@
 import { JSONObject, Constructable, escalate } from '@blue/core';
 import { ContentSource, likeContentSourceAware, likeContentSource } from '@blue/content';
 import { allPass, like } from '@blue/util';
-import { AsEventEmitter, EventEmitter, likeApplicationEventEmitterAware, likeEventEmitter, EventType } from './event-emitter';
-import { ConfigurableFactory, Destroyable, likeDestroyable, likeFactory, likeRegistry, DefaultFactory, RegistryProxyHandler, InitializationAwareProcessor, likeAwareAnd, Aware, AsAware, likeAware } from '@blue/factory';
-import { EnvironmentSource, likeEnvironmentSource, Environment, likeEnvironmentAware, StandardEnvironment, ConfigurableEnvironment } from './environment';
+import {
+    AsEventEmitter,
+    EventEmitter,
+    likeApplicationEventEmitterAware,
+    likeEventEmitter,
+    EventType,
+} from './event-emitter';
+import {
+    ConfigurableFactory,
+    Destroyable,
+    likeDestroyable,
+    likeFactory,
+    likeRegistry,
+    DefaultFactory,
+    RegistryProxyHandler,
+    InitializationAwareProcessor,
+    likeAwareAnd,
+    Aware,
+    AsAware,
+    likeAware,
+} from '@blue/factory';
+import {
+    EnvironmentSource,
+    likeEnvironmentSource,
+    Environment,
+    likeEnvironmentAware,
+    StandardEnvironment,
+    ConfigurableEnvironment,
+} from './environment';
 import { ResourceLoader, likeResourceLoader, AsModuleResourceLoader, likeResourceLoaderAware } from './resource';
 
-export interface ApplicationContext extends ConfigurableFactory, ContentSource, Destroyable, EventEmitter, EnvironmentSource, ResourceLoader {
+export interface ApplicationContext
+    extends ConfigurableFactory,
+        ContentSource,
+        Destroyable,
+        EventEmitter,
+        EnvironmentSource,
+        ResourceLoader {
     readonly createdTimestamp: number;
     readonly id: number;
     readonly name: string;
@@ -22,14 +54,14 @@ export interface ApplicationContext extends ConfigurableFactory, ContentSource, 
 }
 
 export interface ApplicationContextAware extends Aware {
-    setApplicationContext( applicationContext: ApplicationContext ): void;
+    setApplicationContext(applicationContext: ApplicationContext): void;
 }
 
 export interface ConfigurableApplicationContext extends ApplicationContext {
-    setEnvironment( environment: ConfigurableEnvironment ): void;
-    setId( id: number ): void;
-    setName( name: string ): void;
-    setParent( parent: ApplicationContext ): void;
+    setEnvironment(environment: ConfigurableEnvironment): void;
+    setId(id: number): void;
+    setName(name: string): void;
+    setParent(parent: ApplicationContext): void;
 }
 
 /**
@@ -74,21 +106,31 @@ const { defineProperty } = Reflect;
 
 let uuid = 0;
 
-export const $ChildContext: unique symbol = Symbol( '@@context/child' );
+export const $ChildContext: unique symbol = Symbol('@@context/child');
 
 /**
  * @function module:context.likeApplicationContext
  * @param {*} value The value to be tested
  * @returns {external:boolean} Whether or not the `value` is {@linkcode module:context.ApplicationContext|ApplicationContext}
  */
-export const likeApplicationContext = allPass( [ likeContentSource, likeDestroyable, likeEnvironmentSource, likeEventEmitter, likeFactory, likeRegistry, likeResourceLoader ] ) as ( value ) => value is ApplicationContext;
+export const likeApplicationContext = allPass([
+    likeContentSource,
+    likeDestroyable,
+    likeEnvironmentSource,
+    likeEventEmitter,
+    likeFactory,
+    likeRegistry,
+    likeResourceLoader,
+]) as (value) => value is ApplicationContext;
 
 /**
  * @function module:context.likeApplicationContextAware
  * @param {*} value The value to be tested
  * @returns {external:boolean} Whether or not the `value` is {@linkcode module:context.ApplicationContextAware|ApplicationContextAware}
  */
-export const likeApplicationContextAware = likeAwareAnd( like( { setApplicationContext: Function } ) ) as ( value ) => value is ApplicationContextAware;
+export const likeApplicationContextAware = likeAwareAnd(like({ setApplicationContext: Function })) as (
+    value
+) => value is ApplicationContextAware;
 
 /**
  * @class module:context.GenericApplicationContext
@@ -97,7 +139,10 @@ export const likeApplicationContextAware = likeAwareAnd( like( { setApplicationC
  * @mixes module:context.AsEventEmitter
  * @mixes module:context.AsModuleResourceLoader
  */
-export class GenericApplicationContext extends AsEventEmitter( AsModuleResourceLoader( DefaultFactory ) ) implements ConfigurableApplicationContext {
+export class GenericApplicationContext
+    extends AsEventEmitter(AsModuleResourceLoader(DefaultFactory))
+    implements ConfigurableApplicationContext
+{
     #environment: Environment;
     #id: number;
     #name: string;
@@ -108,7 +153,7 @@ export class GenericApplicationContext extends AsEventEmitter( AsModuleResourceL
     destroyedTimestamp?: number;
 
     get environment(): Environment {
-        if( !this.#environment ){
+        if (!this.#environment) {
             this.#environment = this._createEnvironment();
         }
         return this.#environment;
@@ -130,53 +175,53 @@ export class GenericApplicationContext extends AsEventEmitter( AsModuleResourceL
         const path: string[] = [];
         let ctx: ApplicationContext = this;
 
-        this.name && path.unshift( this.name );
+        this.name && path.unshift(this.name);
 
-        while( ctx.parent ){
+        while (ctx.parent) {
             ctx = ctx.parent;
-            path.unshift( ctx.name );
+            path.unshift(ctx.name);
         }
 
-        return path.join( '/' );
+        return path.join('/');
     }
 
-    constructor( name?: string, data?: JSONObject ){
+    constructor(name?: string, data?: JSONObject) {
         super();
 
         this.#environment = null;
         this.#name = name ?? null;
         this.#parent = null;
 
-        this.setId( ++uuid );
+        this.setId(++uuid);
 
-        defineProperty( this, 'createdTimestamp', {
+        defineProperty(this, 'createdTimestamp', {
             value: Date.now(),
             configurable: true,
             enumerable: false,
-            writable: false
-        } );
-        defineProperty( this, 'root', {
+            writable: false,
+        });
+        defineProperty(this, 'root', {
             value: this,
             configurable: true,
             enumerable: false,
-            writable: false
-        } );
-        defineProperty( this, 'destroyed', {
+            writable: false,
+        });
+        defineProperty(this, 'destroyed', {
             value: false,
             configurable: true,
             enumerable: false,
-            writable: false
-        } );
-        defineProperty( this, 'destroyedTimestamp', {
+            writable: false,
+        });
+        defineProperty(this, 'destroyedTimestamp', {
             value: -1,
             configurable: true,
             enumerable: false,
-            writable: false
-        } );
+            writable: false,
+        });
 
-        if( data ){
-            for( const key in data ){
-                this.setValue( key, data[ key ] );
+        if (data) {
+            for (const key in data) {
+                this.setValue(key, data[key]);
             }
         }
     }
@@ -187,46 +232,46 @@ export class GenericApplicationContext extends AsEventEmitter( AsModuleResourceL
     }
     */
 
-    bubble( type: EventType, ...data: any[] ): void {
-        escalate<ApplicationContext>( this, ( parentContext ) => parentContext.emit( type, ...data ), true );
+    bubble(type: EventType, ...data: any[]): void {
+        escalate<ApplicationContext>(this, (parentContext) => parentContext.emit(type, ...data), true);
     }
 
     destroy(): void {
-        if( !this.destroyed ){
-            defineProperty( this, 'destroyed', {
+        if (!this.destroyed) {
+            defineProperty(this, 'destroyed', {
                 value: true,
                 configurable: true,
                 enumerable: false,
-                writable: false
-            } );
-            defineProperty( this, 'destroyedTimestamp', {
+                writable: false,
+            });
+            defineProperty(this, 'destroyedTimestamp', {
                 value: Date.now(),
                 configurable: true,
                 enumerable: false,
-                writable: false
-            } );
+                writable: false,
+            });
 
             // Destroy things
         }
     }
 
-    getContent( key: string, language: string ): string {
-        throw new Error( "Method not implemented." );
+    getContent(key: string, language: string): string {
+        throw new Error('Method not implemented.');
     }
 
-    setEnvironment( environment: ConfigurableEnvironment ): void {
+    setEnvironment(environment: ConfigurableEnvironment): void {
         this.#environment = environment;
     }
 
-    setId( id: number ): void {
+    setId(id: number): void {
         this.#id = id;
     }
 
-    setName( name: string ): void {
+    setName(name: string): void {
         this.#name = name;
     }
 
-    setParent( parent: ApplicationContext ): void {
+    setParent(parent: ApplicationContext): void {
         this.#parent = parent;
     }
 
@@ -241,11 +286,11 @@ export class GenericApplicationContext extends AsEventEmitter( AsModuleResourceL
  * @extends module:context.GenericApplicationContext
  */
 export class ProxiedGenericApplicationContext extends GenericApplicationContext implements Record<string, any> {
-    [ key: string ]: any;
+    [key: string]: any;
 
-    constructor( name: string, data?: JSONObject ){
-        super( name, data );
-        return new Proxy( this, new RegistryProxyHandler<this>() );
+    constructor(name: string, data?: JSONObject) {
+        super(name, data);
+        return new Proxy(this, new RegistryProxyHandler<this>());
     }
 }
 
@@ -253,26 +298,29 @@ export class ProxiedGenericApplicationContext extends GenericApplicationContext 
  * @mixin module:context.AsApplicationContextAware
  * @implements module:context.ApplicationContextAware
  */
-export const AsApplicationContextAware = <T extends Constructable>( superclass: T ): Constructable<ApplicationContextAware> & T => class extends AsAware( superclass ) implements ApplicationContextAware {
-    readonly applicationContext: ApplicationContext;
+export const AsApplicationContextAware = <T extends Constructable>(
+    superclass: T
+): Constructable<ApplicationContextAware> & T =>
+    class extends AsAware(superclass) implements ApplicationContextAware {
+        readonly applicationContext: ApplicationContext;
 
-    /**
-     * @function module:context.AsApplicationContextAware#setApplicationContext
-     * @param {module:context.ApplicationContext} applicationContext The application context to be set.
-     */
-    setApplicationContext( applicationContext: ApplicationContext ): void {
         /**
-         * @readonly
-         * @member {module:context.ApplicationContext} module:context.AsApplicationContextAware#applicationContext
+         * @function module:context.AsApplicationContextAware#setApplicationContext
+         * @param {module:context.ApplicationContext} applicationContext The application context to be set.
          */
-        defineProperty( this, 'applicationContext', {
-            value: applicationContext,
-            configurable: true,
-            enumerable: false,
-            writable: false
-        } );
-    }
-};
+        setApplicationContext(applicationContext: ApplicationContext): void {
+            /**
+             * @readonly
+             * @member {module:context.ApplicationContext} module:context.AsApplicationContextAware#applicationContext
+             */
+            defineProperty(this, 'applicationContext', {
+                value: applicationContext,
+                configurable: true,
+                enumerable: false,
+                writable: false,
+            });
+        }
+    };
 
 /**
  * Create a new ApplicationContextAwareProcessor for the given context.
@@ -292,31 +340,31 @@ export const AsApplicationContextAware = <T extends Constructable>( superclass: 
 export class ApplicationContextAwareProcessor implements InitializationAwareProcessor {
     readonly applicationContext: ApplicationContext;
 
-    constructor( applicationContext: ApplicationContext ){
+    constructor(applicationContext: ApplicationContext) {
         /**
          * @readonly
          * @member {module:context.ApplicationContext} module:context.ApplicationContextAwareProcessor#applicationContext
          */
-        defineProperty( this, 'applicationContext', {
+        defineProperty(this, 'applicationContext', {
             value: applicationContext,
             configurable: true,
             enumerable: false,
-            writable: false
-        } );
+            writable: false,
+        });
     }
 
-    processAfterInitialization<T = any>( name: string, value: T ): T {
+    processAfterInitialization<T = any>(name: string, value: T): T {
         return value;
     }
 
-    processBeforeInitialization<T = any>( name: string, value: T ): T {
-        if( likeAware( value ) ){
+    processBeforeInitialization<T = any>(name: string, value: T): T {
+        if (likeAware(value)) {
             const { applicationContext } = this;
-            likeEnvironmentAware( value ) && value.setEnvironment( applicationContext.environment );
-            likeResourceLoaderAware( value ) && value.setResourceLoader( applicationContext );
-            likeApplicationEventEmitterAware( value ) && value.setApplicationEventEmitter( applicationContext );
-            likeContentSourceAware( value ) && value.setContentSource( applicationContext );
-            likeApplicationContextAware( value ) && value.setApplicationContext( applicationContext );
+            likeEnvironmentAware(value) && value.setEnvironment(applicationContext.environment);
+            likeResourceLoaderAware(value) && value.setResourceLoader(applicationContext);
+            likeApplicationEventEmitterAware(value) && value.setApplicationEventEmitter(applicationContext);
+            likeContentSourceAware(value) && value.setContentSource(applicationContext);
+            likeApplicationContextAware(value) && value.setApplicationContext(applicationContext);
         }
 
         return value;

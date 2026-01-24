@@ -9,10 +9,10 @@ All dependencies were updated to their latest stable versions as of January 2025
 ## Requirements Changes
 
 | Package | Old Version | New Version |
-|---------|-------------|-------------|
-| Node.js | ≥12.16.1 | **≥18.0.0** |
-| npm | ≥5.6.0 | **≥9.0.0** |
-| Yarn | ≥1.6.0 | **≥1.22.0** |
+| ------- | ----------- | ----------- |
+| Node.js | ≥12.16.1    | **≥18.0.0** |
+| npm     | ≥5.6.0      | **≥9.0.0**  |
+| Yarn    | ≥1.6.0      | **≥1.22.0** |
 
 **Action Required:** Ensure your development environment meets the new requirements.
 
@@ -21,6 +21,7 @@ All dependencies were updated to their latest stable versions as of January 2025
 ### TypeScript 4.9 → 5.7
 
 **Changes:**
+
 - Target updated from ES2019 to **ES2022**
 - Native support for private class fields (`#field` syntax)
 - Stricter type checking
@@ -28,6 +29,7 @@ All dependencies were updated to their latest stable versions as of January 2025
 - `skipLibCheck: true` added for faster builds
 
 **Action Required:**
+
 - Code using private fields now compiles correctly
 - Review any new type errors from stricter checking
 - Some implicit types may need explicit annotations
@@ -35,12 +37,14 @@ All dependencies were updated to their latest stable versions as of January 2025
 ### ESLint 8 → 9 (Breaking)
 
 **Changes:**
+
 - **Flat config format is mandatory**
 - Configuration file changed from `.eslintrc.js` to `eslint.config.mjs`
 - Different plugin loading mechanism
 - `.eslintignore` no longer supported (use `ignores` in config)
 
 **Migration:**
+
 ```bash
 # Old
 eslint . --config .eslintrc.js
@@ -50,6 +54,7 @@ npx eslint .  # Uses eslint.config.mjs automatically
 ```
 
 **Action Required:**
+
 - Use the new `eslint.config.mjs` configuration
 - Remove any references to `.eslintrc.js`
 - Ignores are now specified in the config file
@@ -57,23 +62,26 @@ npx eslint .  # Uses eslint.config.mjs automatically
 ### @typescript-eslint 5 → 8
 
 **Changes:**
+
 - Updated rules to match TypeScript 5.7
 - Some rules renamed or removed:
-  - `@typescript-eslint/member-delimiter-style` → removed
-  - `@typescript-eslint/no-parameter-properties` → removed
-  - `@typescript-eslint/no-var-requires` → `@typescript-eslint/no-require-imports`
-  - `@typescript-eslint/no-triple-slash-reference` → `@typescript-eslint/triple-slash-reference`
+    - `@typescript-eslint/member-delimiter-style` → removed
+    - `@typescript-eslint/no-parameter-properties` → removed
+    - `@typescript-eslint/no-var-requires` → `@typescript-eslint/no-require-imports`
+    - `@typescript-eslint/no-triple-slash-reference` → `@typescript-eslint/triple-slash-reference`
 
 **Action Required:** Configuration already updated in `eslint.config.mjs`
 
 ### Lerna 6 → 8
 
 **Changes:**
+
 - `useWorkspaces` option removed (automatically uses package manager's workspace config)
 - Better integration with Nx for caching
 - Improved performance
 
 **Migration:**
+
 ```json
 // Old lerna.json
 {
@@ -94,20 +102,23 @@ npx eslint .  # Uses eslint.config.mjs automatically
 ### date-fns 2.x → 4.x (blue-util)
 
 **Changes:**
+
 - ESM-first architecture (better tree-shaking)
 - Some function signatures changed
 - Improved TypeScript types
 - Better timezone handling
 
 **Common Issues:**
+
 - Import paths may need adjustment
 - Some advanced functions have new APIs
 
 **Migration Example:**
+
 ```typescript
 // Most common functions remain compatible
 import { format, addDays } from 'date-fns';
-format(new Date(), 'yyyy-MM-dd');  // ✅ Still works
+format(new Date(), 'yyyy-MM-dd'); // ✅ Still works
 
 // Check date-fns changelog for advanced features
 ```
@@ -117,11 +128,13 @@ format(new Date(), 'yyyy-MM-dd');  // ✅ Still works
 ### date-fns-tz 2.x → 3.x (blue-util)
 
 **Changes:**
+
 - Follows date-fns v4 updates
 - Module resolution changes
 - Import path for `/fp` submodule changed
 
 **Known Issue:**
+
 ```typescript
 // Old (may not work)
 import { formatInTimeZone } from 'date-fns-tz/fp';
@@ -134,29 +147,33 @@ import { formatInTimeZone } from 'date-fns-tz/fp';
 ### Ramda 0.30 → 0.31 (blue-util) ⚠️
 
 **Breaking Change:**
+
 ```typescript
 // Old API (0.30)
-R.range(0, 10, 2);  // [0, 2, 4, 6, 8]  ❌ No longer works
+R.range(0, 10, 2); // [0, 2, 4, 6, 8]  ❌ No longer works
 
 // New API (0.31)
-R.range(0, 10);     // [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]  ✅
+R.range(0, 10); // [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]  ✅
 ```
 
 **Impact:** 52 test failures in `packages/blue-util/src/list/range-n.spec.ts`
 
 **Action Required:**
+
 1. Review all uses of `R.range()` in the codebase
 2. Implement custom step logic if needed:
+
 ```typescript
 // Custom range with step
-const rangeStep = (start, end, step) =>
-  R.range(start, end).filter((_, i) => i % step === 0);
+const rangeStep = (start, end, step) => R.range(start, end).filter((_, i) => i % step === 0);
 ```
+
 3. Update tests to use new API
 
 ### slug 8.x → 11.x (blue-util)
 
 **Changes:**
+
 - API refinements
 - Better Unicode support
 - TypeScript improvements
@@ -166,6 +183,7 @@ const rangeStep = (start, end, step) =>
 ### reflect-metadata 0.1 → 0.2
 
 **Changes:**
+
 - Minimal breaking changes
 - Internal improvements
 - Decorator metadata API remains stable
@@ -183,6 +201,7 @@ const rangeStep = (start, end, step) =>
 ### Jest 29.4 → 29.7
 
 **Changes:**
+
 - Bug fixes and performance improvements
 - Better ESM support
 - No breaking changes in this minor update
@@ -192,6 +211,7 @@ const rangeStep = (start, end, step) =>
 ### webpack 5.75 → 5.97
 
 **Changes:**
+
 - Performance improvements
 - Bug fixes
 - Better compatibility with modern tools
@@ -201,20 +221,22 @@ const rangeStep = (start, end, step) =>
 ### MSW 1.x → 2.x
 
 **Breaking Changes:**
+
 - New request/response API
 - Different handler setup
 - Setup function changes
 
 **Migration Example:**
+
 ```typescript
 // Old (MSW 1.x)
 rest.get('/api/user', (req, res, ctx) => {
-  return res(ctx.json({ name: 'John' }));
+    return res(ctx.json({ name: 'John' }));
 });
 
 // New (MSW 2.x)
 http.get('/api/user', () => {
-  return HttpResponse.json({ name: 'John' });
+    return HttpResponse.json({ name: 'John' });
 });
 ```
 
@@ -223,12 +245,14 @@ http.get('/api/user', () => {
 ## Yarn 4 Migration
 
 **Changes:**
+
 - Yarn migrated to v4 automatically during install
 - New `.yarnrc.yml` format
 - Different caching behavior
 - Resolutions syntax changed
 
 **Migration:**
+
 ```json
 // Old resolutions (Yarn 1)
 "resolutions": {
@@ -248,10 +272,12 @@ http.get('/api/user', () => {
 ### TypeScript Compilation
 
 **Old Target (ES2019):**
+
 - Private fields not supported
 - Required workarounds for modern features
 
 **New Target (ES2022):**
+
 - Native private class fields: `#field`
 - Top-level await support
 - Better async/await handling
@@ -262,11 +288,13 @@ http.get('/api/user', () => {
 ### Linting
 
 **Old Command:**
+
 ```bash
 yarn eslint .
 ```
 
 **New Command:**
+
 ```bash
 npx eslint .  # Uses flat config automatically
 ```
@@ -276,11 +304,13 @@ npx eslint .  # Uses flat config automatically
 ## File Changes Summary
 
 **Created:**
+
 - `eslint.config.mjs` - New ESLint flat config
 - `tsconfig.base.json` - Base TypeScript config for project references
 - `MIGRATION-2025.md` - This file
 
 **Modified:**
+
 - `package.json` - All devDependencies updated, engines updated
 - `tsconfig.build.json` - Target ES2022, skipLibCheck added
 - `lerna.json` - Removed useWorkspaces
@@ -289,6 +319,7 @@ npx eslint .  # Uses flat config automatically
 - 6 package.json files in packages/ - Runtime dependencies updated
 
 **Deleted:**
+
 - `.eslintrc.js` - Replaced by eslint.config.mjs
 - `.eslintignore` - Functionality moved to eslint.config.mjs
 
@@ -353,14 +384,15 @@ yarn install
 ## Support
 
 For issues related to this migration:
+
 1. Check this migration guide first
 2. Review the updated `CLAUDE.md` for current best practices
 3. Consult package-specific documentation for breaking changes
 4. Check library migration guides:
-   - [date-fns v4 changelog](https://github.com/date-fns/date-fns/releases)
-   - [Ramda v0.31 changelog](https://github.com/ramda/ramda/releases)
-   - [ESLint v9 migration guide](https://eslint.org/docs/latest/use/migrate-to-9.0.0)
-   - [MSW v2 migration guide](https://mswjs.io/docs/migrations/1.x-to-2.x)
+    - [date-fns v4 changelog](https://github.com/date-fns/date-fns/releases)
+    - [Ramda v0.31 changelog](https://github.com/ramda/ramda/releases)
+    - [ESLint v9 migration guide](https://eslint.org/docs/latest/use/migrate-to-9.0.0)
+    - [MSW v2 migration guide](https://mswjs.io/docs/migrations/1.x-to-2.x)
 
 ## Timeline
 

@@ -8,7 +8,7 @@ import { MediaType, MediaTypes } from '@blue/core';
 export interface Layout {
     mediaType: MediaType;
 
-    format( entry: Entry ): string;
+    format(entry: Entry): string;
 }
 
 export interface BatchLayout extends Layout {
@@ -16,17 +16,17 @@ export interface BatchLayout extends Layout {
     batchHeader: string;
     batchSeparator: string;
 
-    formatBatch( entries: Entry[] ): string;
+    formatBatch(entries: Entry[]): string;
 }
 
 export abstract class AbstractLayout implements Layout {
     mediaType: MediaType;
 
-    constructor(){
+    constructor() {
         this.mediaType = MediaTypes.TEXT_PLAIN;
     }
 
-    abstract format( entry: Entry ): string;
+    abstract format(entry: Entry): string;
 }
 
 export abstract class AbstractBatchLayout extends AbstractLayout implements BatchLayout {
@@ -34,12 +34,12 @@ export abstract class AbstractBatchLayout extends AbstractLayout implements Batc
     batchHeader: string;
     batchSeparator: string;
 
-    constructor(){
+    constructor() {
         super();
         this.batchFooter = '';
         this.batchHeader = '';
         this.batchSeparator = '';
     }
 
-    abstract formatBatch( entries: Entry[] ): string;
+    abstract formatBatch(entries: Entry[]): string;
 }

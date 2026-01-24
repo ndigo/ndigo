@@ -5,7 +5,7 @@
 import { Route } from '@blue/router';
 
 export interface RouteToViewNameTranslator {
-    getViewName( route: Route ): string;
+    getViewName(route: Route): string;
 }
 
 /**
@@ -18,8 +18,7 @@ export interface RouteToViewNameTranslator {
  * @returns {external:string}
  */
 
-const
-    { defineProperty } = Reflect,
+const { defineProperty } = Reflect,
     slash = '/';
 
 /**
@@ -31,37 +30,37 @@ export class DefaultRouteToViewNameTranslator implements RouteToViewNameTranslat
     separator: string;
     suffix: string;
 
-    constructor(){
-        defineProperty( this, 'prefix', {
+    constructor() {
+        defineProperty(this, 'prefix', {
             value: '',
             configurable: true,
             enumerable: false,
-            writable: true
-        } );
-        defineProperty( this, 'separator', {
+            writable: true,
+        });
+        defineProperty(this, 'separator', {
             value: slash,
             configurable: true,
             enumerable: false,
-            writable: true
-        } );
-        defineProperty( this, 'suffix', {
+            writable: true,
+        });
+        defineProperty(this, 'suffix', {
             value: '',
             configurable: true,
             enumerable: false,
-            writable: true
-        } );
+            writable: true,
+        });
     }
 
     /**
      * @function module:dispatcher.DefaultRouteToViewNameTranslator#getViewName
      * @param {module:router.Route} route
      */
-    getViewName( route: Route ): string {
-        console.log( 'DefaultRouteToViewNameTranslator::getViewName', route );
-        let viewName: string = `${ this.prefix }${ route.path }${ this.suffix }`;
+    getViewName(route: Route): string {
+        console.log('DefaultRouteToViewNameTranslator::getViewName', route);
+        let viewName: string = `${this.prefix}${route.path}${this.suffix}`;
 
-        if( this.separator !== slash ){
-            viewName = viewName.replace( slash, this.separator );
+        if (this.separator !== slash) {
+            viewName = viewName.replace(slash, this.separator);
         }
 
         return viewName;

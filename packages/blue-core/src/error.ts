@@ -8,43 +8,42 @@ import { Constructable } from './constructable';
 
 const { setPrototypeOf } = Reflect;
 
-export const AsSerializableError = <T extends Constructable<Error>>( superclass: T ): Constructable<Serializable> & T => class extends superclass implements Serializable {
-    toJSON(): JSONObject {
-        const json = createNull();
-        json.name = this.name;
-        json.message = this.message;
-        json.stack = this.stack;
-        return json;
-    }
+export const AsSerializableError = <T extends Constructable<Error>>(superclass: T): Constructable<Serializable> & T =>
+    class extends superclass implements Serializable {
+        toJSON(): JSONObject {
+            const json = createNull();
+            json.name = this.name;
+            json.message = this.message;
+            json.stack = this.stack;
+            return json;
+        }
 
-    toString(): string {
-        return this.message;
-    }
-};
+        toString(): string {
+            return this.message;
+        }
+    };
 
-export class ApplicationError extends AsSerializableError( Error ) {
-
-    get [ Symbol.toStringTag ](): string {
+export class ApplicationError extends AsSerializableError(Error) {
+    get [Symbol.toStringTag](): string {
         return 'ApplicationError';
     }
 
-    constructor( message?: string ){
-        super( message );
+    constructor(message?: string) {
+        super(message);
         this.name = 'ApplicationError';
-        setPrototypeOf( this, new.target.prototype );
+        setPrototypeOf(this, new.target.prototype);
     }
 }
 
-export class FrameworkError extends AsSerializableError( Error ) {
-
-    get [ Symbol.toStringTag ](): string {
+export class FrameworkError extends AsSerializableError(Error) {
+    get [Symbol.toStringTag](): string {
         return 'FrameworkError';
     }
 
-    constructor( message?: string ){
-        super( message );
+    constructor(message?: string) {
+        super(message);
         this.name = 'FrameworkError';
-        setPrototypeOf( this, new.target.prototype );
+        setPrototypeOf(this, new.target.prototype);
     }
 }
 
@@ -53,12 +52,12 @@ export class FrameworkError extends AsSerializableError( Error ) {
  * @extends module:core.FrameworkError
  */
 export class IllegalStateError extends FrameworkError {
-    get [ Symbol.toStringTag ](): string {
+    get [Symbol.toStringTag](): string {
         return 'IllegalStateError';
     }
 
-    constructor( message: string = 'Unable to complete operation due to misconfiguration' ){
-        super( message );
+    constructor(message: string = 'Unable to complete operation due to misconfiguration') {
+        super(message);
     }
 }
 

@@ -10,7 +10,7 @@ import { createNull } from './null';
 
 export interface PropertyValues extends Iterable<PropertyValue> {
     readonly propertyValues: PropertyValue[];
-    getPropertyValue( propertyName: string ): PropertyValue;
+    getPropertyValue(propertyName: string): PropertyValue;
 }
 
 /**
@@ -28,12 +28,15 @@ export interface PropertyValues extends Iterable<PropertyValue> {
  * @returns {module:core.PropertyValue} The property value or `null` if none
  */
 
-const isString = is( String ) as ( value ) => value is string;
+const isString = is(String) as (value) => value is string;
 
 /**
  * @class module:core.likePropertyValues
  */
-export const likePropertyValues = both( likeIterable, like( { propertyValues: Array, getPropertyValue: Function } ) as any ) as ( value ) => value is PropertyValues;
+export const likePropertyValues = both(
+    likeIterable,
+    like({ propertyValues: Array, getPropertyValue: Function }) as any
+) as (value) => value is PropertyValues;
 
 /**
  * An object that holds information and value for an individual property.
@@ -47,38 +50,38 @@ export class PropertyValue implements Equatable, Serializable {
 
     optional: boolean;
 
-    get [ Symbol.toStringTag ](): string {
-        return `PropertyValue:${ this.#name }`;
+    get [Symbol.toStringTag](): string {
+        return `PropertyValue:${this.#name}`;
     }
 
     get name(): string {
         return this.#name;
     }
 
-    get value(){
+    get value() {
         return this.#value;
     }
 
-    constructor( name: string, value ){
+    constructor(name: string, value) {
         this.#name = name;
         this.#value = value;
         this.optional = false;
     }
 
-    equals( value ): boolean {
-        if( value === this ){
+    equals(value): boolean {
+        if (value === this) {
             return true;
         }
-        if( !( value instanceof PropertyValue ) ){
+        if (!(value instanceof PropertyValue)) {
             return false;
         }
-        return this.name === value.name && equates( this.value, value.value );
+        return this.name === value.name && equates(this.value, value.value);
     }
 
     toJSON(): JSONValue {
         const json = createNull();
         json.name = this.#name;
-        json.value = serialize( this.#value );
+        json.value = serialize(this.#value);
         return json;
     }
 
@@ -87,44 +90,46 @@ export class PropertyValue implements Equatable, Serializable {
     }
 }
 
-export class MutablePropertyValues extends RingBuffer<PropertyValue> implements ArrayLike<PropertyValue>, Equatable, Iterable<PropertyValue>, Serializable {
-
+export class MutablePropertyValues
+    extends RingBuffer<PropertyValue>
+    implements ArrayLike<PropertyValue>, Equatable, Iterable<PropertyValue>, Serializable
+{
     get propertyValues(): PropertyValue[] {
-        return [ ...this ];
+        return [...this];
     }
 
-    get [ Symbol.toStringTag ](): string {
+    get [Symbol.toStringTag](): string {
         return 'PropertyValues';
     }
 
-    constructor( properties?: Iterable<PropertyValue> ){
-        super( 32 );
-        if( likeIterable( properties ) ){
-            for( const property of properties ){
-                this.put( property );
+    constructor(properties?: Iterable<PropertyValue>) {
+        super(32);
+        if (likeIterable(properties)) {
+            for (const property of properties) {
+                this.put(property);
             }
         }
     }
 
-    addPropertyValue( name: string, value );
-    addPropertyValue( pv: PropertyValue );
-    addPropertyValue( nameOrPropertyValue: string | PropertyValue, value? ){
-        if( isString( nameOrPropertyValue ) ){
-            this.put( new PropertyValue( nameOrPropertyValue, value ) );
+    addPropertyValue(name: string, value);
+    addPropertyValue(pv: PropertyValue);
+    addPropertyValue(nameOrPropertyValue: string | PropertyValue, value?) {
+        if (isString(nameOrPropertyValue)) {
+            this.put(new PropertyValue(nameOrPropertyValue, value));
         } else {
-            this.put( nameOrPropertyValue );
+            this.put(nameOrPropertyValue);
         }
     }
 
-    equals( value ): boolean {
+    equals(value): boolean {
         let result = value === this;
 
-        if( !result && likePropertyValues( value ) && this.length === value.propertyValues.length ){
+        if (!result && likePropertyValues(value) && this.length === value.propertyValues.length) {
             const length = this.length;
-            for( let index = 0; index < length; index++ ){
-                const pv = this[ index ];
-                result = equates( value.getPropertyValue( pv.name )?.value, pv.value );
-                if( !result ){
+            for (let index = 0; index < length; index++) {
+                const pv = this[index];
+                result = equates(value.getPropertyValue(pv.name)?.value, pv.value);
+                if (!result) {
                     break;
                 }
             }
@@ -133,17 +138,17 @@ export class MutablePropertyValues extends RingBuffer<PropertyValue> implements 
         return result;
     }
 
-    getValue( propertyName: string ){
-        const pv = this.getPropertyValue( propertyName );
+    getValue(propertyName: string) {
+        const pv = this.getPropertyValue(propertyName);
         return pv?.value ?? null;
     }
 
-    getPropertyValue( propertyName: string ): PropertyValue {
+    getPropertyValue(propertyName: string): PropertyValue {
         const length = this.length;
-        if( length ){
-            for( let index = 0; index < length; index++ ){
-                const pv = this[ index ];
-                if( pv.name === propertyName ){
+        if (length) {
+            for (let index = 0; index < length; index++) {
+                const pv = this[index];
+                if (pv.name === propertyName) {
                     return pv;
                 }
             }

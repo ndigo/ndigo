@@ -228,7 +228,7 @@
     $type: object
   onstorage:
     $type: object
-  onunhandledrejection :
+  onunhandledrejection:
     $type: object
   onunload:
     $type: object

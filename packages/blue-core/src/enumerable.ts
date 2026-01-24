@@ -5,15 +5,15 @@
 import { like } from '@blue/util';
 
 export interface Enumerable<K extends PropertyKey, V> {
-    entries(): Iterator<[ K, V ]>;
-    forEach( callback: ( value: V, key: K, list: Enumerable<K, V> ) => void, context?: any ): void;
+    entries(): Iterator<[K, V]>;
+    forEach(callback: (value: V, key: K, list: Enumerable<K, V>) => void, context?: any): void;
     keys(): Iterator<K>;
     values(): Iterator<V>;
 }
 
 export interface AsyncEnumerable<K extends PropertyKey, V> {
-    entries(): AsyncIterator<[ K, V ]>;
-    forEach( callback: ( value: V, key: K, list: AsyncEnumerable<K, V> ) => void, context?: any ): void;
+    entries(): AsyncIterator<[K, V]>;
+    forEach(callback: (value: V, key: K, list: AsyncEnumerable<K, V>) => void, context?: any): void;
     keys(): AsyncIterator<K>;
     values(): AsyncIterator<V>;
 }
@@ -54,7 +54,7 @@ export interface AsyncEnumerable<K extends PropertyKey, V> {
  * @interface module:core.AsyncEnumerable
  */
 
- /**
+/**
  * @callback module:core.AsyncEnumerable~ForEachCallback
  * @param {*} value
  * @param {*} key
@@ -87,4 +87,6 @@ export interface AsyncEnumerable<K extends PropertyKey, V> {
  * @param {*} value The value to be tested
  * @returns {external:boolean} Whether or not the `value` is {@linkcode module:core.Enumerable|Enumerable} or {@linkcode module:core.AsyncEnumerable|AsyncEnumerable}.
  */
-export const likeEnumerable = like( { entries: Function, forEach: Function, keys: Function, values: Function } ) as ( value ) => value is ( AsyncEnumerable<any, any> | Enumerable<any, any> );
+export const likeEnumerable = like({ entries: Function, forEach: Function, keys: Function, values: Function }) as (
+    value
+) => value is AsyncEnumerable<any, any> | Enumerable<any, any>;

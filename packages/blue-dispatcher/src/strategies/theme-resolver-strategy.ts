@@ -9,38 +9,40 @@ import { StrategyInitializer } from './strategy-initializer';
 
 export interface ThemeResolverStrategy {
     themeResolver: ThemeResolver;
-    initThemeResolver( context: ApplicationContext ): void;
+    initThemeResolver(context: ApplicationContext): void;
 }
 
 /**
  * @interface module:dispatcher.ThemeResolverStrategy
  */
 
-const
-    { defineProperty } = Reflect,
+const { defineProperty } = Reflect,
     THEME_RESOLVER = 'themeResolver',
-    defaultThemeResolver: ThemeResolver = new FixedThemeResolver( '' );
+    defaultThemeResolver: ThemeResolver = new FixedThemeResolver('');
 
-export const AsThemeResolverStrategy = <T extends Constructable<StrategyInitializer>>( superclass: T ): Constructable<ThemeResolverStrategy> & T => class extends superclass implements ThemeResolverStrategy {
-    readonly themeResolverKey: string;
+export const AsThemeResolverStrategy = <T extends Constructable<StrategyInitializer>>(
+    superclass: T
+): Constructable<ThemeResolverStrategy> & T =>
+    class extends superclass implements ThemeResolverStrategy {
+        readonly themeResolverKey: string;
 
-    themeResolver: ThemeResolver;
+        themeResolver: ThemeResolver;
 
-    constructor( ...args: any[] ){
-        super( ...args );
-        defineProperty( this, 'themeResolverKey', {
-            get: () => THEME_RESOLVER,
-            configurable: true,
-            enumerable: true
-        } );
-        this.addStrategy( THEME_RESOLVER );
-    }
+        constructor(...args: any[]) {
+            super(...args);
+            defineProperty(this, 'themeResolverKey', {
+                get: () => THEME_RESOLVER,
+                configurable: true,
+                enumerable: true,
+            });
+            this.addStrategy(THEME_RESOLVER);
+        }
 
-    initThemeResolver( context: ApplicationContext ){
-        const { themeResolverKey } = this;
+        initThemeResolver(context: ApplicationContext) {
+            const { themeResolverKey } = this;
 
-        this.initStrategy( context, themeResolverKey, THEME_RESOLVER, defaultThemeResolver );
+            this.initStrategy(context, themeResolverKey, THEME_RESOLVER, defaultThemeResolver);
 
-        console.log( 'Dispatcher::initThemeResolver', this.themeResolver );
-    }
-};
+            console.log('Dispatcher::initThemeResolver', this.themeResolver);
+        }
+    };

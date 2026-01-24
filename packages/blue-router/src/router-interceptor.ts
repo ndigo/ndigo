@@ -2,8 +2,8 @@ import { Route } from './route';
 import { PathMatcher, AsPathMatcherFilter, Null, PathMatcherFilter } from '@blue/core';
 
 export interface RouterInterceptor {
-    postRoute?( route: Route ): void;
-    preRoute?( route: Route ): boolean;
+    postRoute?(route: Route): void;
+    preRoute?(route: Route): boolean;
 }
 
 /**
@@ -21,14 +21,14 @@ export interface RouterInterceptor {
  */
 
 export interface RouterInterceptorRegistry {
-    addInterceptor( interceptor: RouterInterceptor ): void;
+    addInterceptor(interceptor: RouterInterceptor): void;
 }
 
 /**
  * @class module:router.MappedRouterInterceptor
  * @implements module:router.RouterInterceptor
  */
-export class MappedRouterInterceptor extends AsPathMatcherFilter( Null ) implements RouterInterceptor, PathMatcherFilter {
+export class MappedRouterInterceptor extends AsPathMatcherFilter(Null) implements RouterInterceptor, PathMatcherFilter {
     #interceptor: RouterInterceptor;
 
     pathMatcher: PathMatcher;
@@ -37,7 +37,7 @@ export class MappedRouterInterceptor extends AsPathMatcherFilter( Null ) impleme
         return this.#interceptor;
     }
 
-    constructor( interceptor: RouterInterceptor, includePatterns: string[], excludePatterns?: string[] ){
+    constructor(interceptor: RouterInterceptor, includePatterns: string[], excludePatterns?: string[]) {
         super();
         this.#interceptor = interceptor;
         // TODO TYPESCRIPT DOESN'T LIKE THIS FOR SOME REASON
@@ -45,11 +45,11 @@ export class MappedRouterInterceptor extends AsPathMatcherFilter( Null ) impleme
         //this.setIncludePatterns( includePatterns );
     }
 
-    postRoute( route: Route ): void {
-        this.#interceptor.postRoute( route );
+    postRoute(route: Route): void {
+        this.#interceptor.postRoute(route);
     }
 
-    preRoute( route: Route ): boolean {
-        return this.#interceptor.preRoute( route );
+    preRoute(route: Route): boolean {
+        return this.#interceptor.preRoute(route);
     }
 }

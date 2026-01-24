@@ -29,8 +29,7 @@ export class Application {
         try {
             const environment = this._prepareEnvironment(args);
             context = this._prepareContext(environment, args);
-        }
-        catch (e) {
+        } catch (e) {
             throw new IllegalStateError();
         }
         return context;
@@ -63,8 +62,7 @@ export class Application {
      * @param {module:context.Environment} environment
      * @param {external:Array<external:string>} args
      */
-    _configureProfiles(environment, args) {
-    }
+    _configureProfiles(environment, args) {}
     _configurePropertySources(environment, args) {
         if (this.#properties) {
             environment.propertySources.push(this.#properties);
@@ -81,9 +79,7 @@ export class Application {
         return env;
     }
     _getOrCreateEnvironment() {
-        return this.#environemnt ?
-            this.#environemnt :
-            new StandardEnvironment();
+        return this.#environemnt ? this.#environemnt : new StandardEnvironment();
     }
 }
 //# sourceMappingURL=application.js.map

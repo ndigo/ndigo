@@ -14,48 +14,48 @@ export class SimpleLogger extends AbstractLogger implements AppenderRegistry<App
     readonly appenders: Appender[];
     threshold: Level;
 
-    constructor( name: string, appenders: Appender[] = [] ){
+    constructor(name: string, appenders: Appender[] = []) {
         super();
 
-        defineProperty( this, 'name', {
+        defineProperty(this, 'name', {
             value: name,
             configurable: true,
             enumerable: false,
-            writable: false
-        } );
-        defineProperty( this, 'appenders', {
+            writable: false,
+        });
+        defineProperty(this, 'appenders', {
             value: appenders,
             configurable: true,
             enumerable: false,
-            writable: false
-        } );
+            writable: false,
+        });
 
         this.threshold = Level.ALL;
     }
 
-    addAppender( appender: Appender ): void {
-        this.appenders.push( appender );
+    addAppender(appender: Appender): void {
+        this.appenders.push(appender);
     }
 
     clearAppenders(): void {
         let index = this.appenders.length;
-        while( index-- ){
+        while (index--) {
             this.appenders.pop();
         }
     }
 
-    protected _logEntry( entry: Entry ): void {
+    protected _logEntry(entry: Entry): void {
         const length = this.appenders.length;
         let index = 0;
-        for( ; index < length; index++ ){
-            this.appenders[ index ].append( entry );
+        for (; index < length; index++) {
+            this.appenders[index].append(entry);
         }
     }
 
-    removeAppender( appender: Appender ): void {
-        const index = this.appenders.indexOf( appender );
-        if( index !== -1 ){
-            this.appenders.splice( index, 1 );
+    removeAppender(appender: Appender): void {
+        const index = this.appenders.indexOf(appender);
+        if (index !== -1) {
+            this.appenders.splice(index, 1);
         }
     }
 }

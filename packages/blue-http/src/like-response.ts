@@ -4,11 +4,11 @@
 
 import { anyPass, is, like } from '@blue/util';
 
-const isResponse = is( Response ) as ( value ) => value is Response;
+const isResponse = is(Response) as (value) => value is Response;
 
-export const likeResponse = anyPass( [
+export const likeResponse = anyPass([
     isResponse,
-    like( {
+    like({
         body: ReadableStream,
         bodyUsed: Boolean,
         headers: Headers,
@@ -24,6 +24,6 @@ export const likeResponse = anyPass( [
         blob: Function,
         formData: Function,
         json: Function,
-        text: Function
-    } )
-] ) as ( value ) => value is Response;
+        text: Function,
+    }),
+]) as (value) => value is Response;

@@ -8,7 +8,7 @@ export interface RouteSegment extends Serializable {
 }
 
 export interface Route extends ArrayLike<RouteSegment>, Serializable {
-    [ n: number ]: RouteSegment;
+    [n: number]: RouteSegment;
 
     data: JSONObject;
     dataString?: string;

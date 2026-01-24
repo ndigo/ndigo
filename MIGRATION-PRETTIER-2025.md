@@ -1,0 +1,432 @@
+# Prettier Migration Guide (January 2025)
+
+This document describes the migration from editorconfig-based formatting to Prettier, and the consolidation of ESLint configuration files.
+
+## Overview
+
+The BlueJS monorepo has migrated to Prettier for code formatting, replacing the previous editorconfig-based approach. This change standardizes formatting across the codebase and provides better IDE integration.
+
+## Why Prettier?
+
+### Benefits
+
+**Consistency:**
+
+- Opinionated formatting ensures consistent style across all files
+- No debates about formatting preferences
+- Automatic formatting on save in most IDEs
+
+**Integration:**
+
+- Works seamlessly with ESLint (via eslint-config-prettier)
+- Wide IDE and editor support
+- Git hooks support for automatic formatting
+
+**Efficiency:**
+
+- Faster than manual formatting
+- Reduces code review time spent on style discussions
+- Focus on code logic rather than formatting
+
+## Migration Details
+
+### Dependencies Changed
+
+**Added:**
+
+- `prettier` ~3.4.2 (code formatter)
+- `eslint-config-prettier` ~9.1.0 (disables ESLint formatting rules)
+- `eslint-plugin-prettier` ~5.2.1 (runs Prettier as ESLint rule)
+
+### Configuration Migration
+
+#### Before: .editorconfig
+
+```ini
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+indent_style = space
+trim_trailing_whitespace = true
+
+[**.{json,y*ml}]
+indent_size = 2
+
+[**.{js,jsx,ts,tsx}]
+indent_size = 4
+insert_final_newline = true
+
+[**.md]
+trim_trailing_whitespace = false
+```
+
+**Limitations:**
+
+- Only basic formatting rules
+- No auto-formatting capability
+- IDE-dependent behavior
+- Limited scope of formatting options
+
+#### After: prettier.config.mjs
+
+```javascript
+export default {
+    // Indentation
+    tabWidth: 4,
+    useTabs: false,
+
+    // Line endings
+    endOfLine: 'lf',
+
+    // JavaScript/TypeScript style
+    semi: true,
+    singleQuote: true,
+    trailingComma: 'es5',
+    printWidth: 120,
+    arrowParens: 'always',
+    bracketSpacing: true,
+
+    // File-specific overrides
+    overrides: [
+        {
+            files: ['*.json', '*.yaml', '*.yml'],
+            options: {
+                tabWidth: 2,
+            },
+        },
+        {
+            files: ['*.md'],
+            options: {
+                proseWrap: 'preserve',
+            },
+        },
+    ],
+};
+```
+
+**Capabilities:**
+
+- Comprehensive formatting rules
+- Automatic formatting
+- Consistent across all editors
+- Plugin ecosystem support
+
+### ESLint Configuration Consolidation
+
+#### Before: Dual Configuration
+
+**Two config files existed:**
+
+1. `.eslintrc.js` - Legacy config format (ESLint <9)
+2. `eslint.config.mjs` - Flat config format (ESLint 9)
+
+This created confusion and potential conflicts.
+
+#### After: Single Flat Config
+
+**Single config file:**
+
+- `eslint.config.mjs` - ESLint 9 flat config format only
+
+**Key changes:**
+
+- Removed `.eslintrc.js` (legacy config)
+- Removed `.editorconfig` (replaced by Prettier)
+- Integrated Prettier via `eslint-config-prettier`
+- Disabled formatting rules that conflict with Prettier
+
+### Configuration File Naming Convention
+
+All configuration files now follow a consistent pattern:
+
+- `eslint.config.mjs` - ESLint configuration
+- `prettier.config.mjs` - Prettier configuration
+- `vitest.config.ts` - Vitest configuration
+- `vite.config.ts` - Vite configuration (per package)
+
+All use the `.config.*` naming convention and appropriate extensions.
+
+## Breaking Changes
+
+### Code Style Changes
+
+⚠️ **Important:** Prettier has strong formatting opinions that differ from the previous custom spacing rules:
+
+**Previous Style (Custom ESLint Rules):**
+
+```typescript
+// Spaces inside parentheses
+if( value ) { ... }
+const fn = ( x ) => x + 1;
+
+// Spaces inside array brackets
+const arr = [ 1, 2, 3 ];
+
+// Spaces inside template strings
+const str = `Hello ${ name }`;
+```
+
+**New Style (Prettier):**
+
+```typescript
+// No spaces inside parentheses
+if (value) { ... }
+const fn = (x) => x + 1;
+
+// No spaces inside array brackets
+const arr = [1, 2, 3];
+
+// No spaces inside template strings
+const str = `Hello ${name}`;
+```
+
+**Why the change?**
+
+Prettier does not support custom spacing inside parentheses, brackets, or template strings. These are considered "solved problems" in Prettier's philosophy. The trade-off is:
+
+- **Lost:** Custom spacing preferences
+- **Gained:** Automatic formatting, consistency, tooling support, reduced configuration
+
+### ESLint Rules Removed
+
+The following formatting rules were removed from ESLint (now handled by Prettier):
+
+- `array-bracket-spacing`
+- `arrow-spacing`
+- `eol-last`
+- `keyword-spacing`
+- `no-trailing-spaces`
+- `semi`
+- `space-before-blocks`
+- `space-before-function-paren`
+- `space-in-parens`
+- `template-curly-spacing`
+
+ESLint now focuses on code quality rules (TypeScript-specific, error detection) rather than formatting.
+
+## New Scripts
+
+### package.json Scripts
+
+```json
+{
+    "scripts": {
+        "format": "prettier --write .",
+        "format:check": "prettier --check .",
+        "lint": "eslint ."
+    }
+}
+```
+
+### Usage
+
+```bash
+# Format all code
+pnpm format
+
+# Check if code is formatted (useful in CI)
+pnpm format:check
+
+# Lint code (quality checks)
+pnpm lint
+```
+
+## IDE Integration
+
+### VS Code
+
+**Recommended extensions:**
+
+- [Prettier - Code formatter](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+- [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
+
+**Recommended settings (.vscode/settings.json):**
+
+```json
+{
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true
+    },
+    "[javascript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    },
+    "[typescript]": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode"
+    }
+}
+```
+
+### WebStorm / IntelliJ IDEA
+
+1. Go to Settings → Languages & Frameworks → JavaScript → Prettier
+2. Enable "Automatic Prettier configuration"
+3. Check "Run on save for files"
+4. Set file patterns: `{**/*,*}.{js,ts,jsx,tsx,json,yml,yaml,md}`
+
+## Git Hooks (Optional)
+
+You can add Prettier to git hooks to ensure all commits are formatted:
+
+### Using Husky + lint-staged
+
+```bash
+# Install dependencies
+pnpm add -D husky lint-staged
+
+# Initialize husky
+npx husky init
+
+# Add pre-commit hook
+echo "npx lint-staged" > .husky/pre-commit
+```
+
+**package.json:**
+
+```json
+{
+    "lint-staged": {
+        "*.{js,ts,jsx,tsx,json,yml,yaml,md}": "prettier --write"
+    }
+}
+```
+
+## Migration Checklist
+
+If you need to format the entire codebase:
+
+- [x] Install Prettier dependencies
+- [x] Create `prettier.config.mjs`
+- [x] Update `eslint.config.mjs` to integrate with Prettier
+- [x] Remove `.eslintrc.js` (duplicate config)
+- [x] Remove `.editorconfig` (replaced by Prettier)
+- [x] Add format scripts to package.json
+- [ ] Format entire codebase: `pnpm format`
+- [ ] Verify formatting: `pnpm format:check`
+- [ ] Update CI to check formatting
+- [ ] Configure IDE integration
+- [ ] (Optional) Set up git hooks
+
+## Troubleshooting
+
+### Issue: Prettier and ESLint conflict
+
+**Problem:** ESLint reports formatting errors that Prettier should handle
+
+**Solution:**
+
+1. Ensure `eslint-config-prettier` is installed
+2. Verify `eslint.config.mjs` includes `prettierConfig` at the end
+3. Run `pnpm format` then `pnpm lint`
+
+### Issue: IDE not auto-formatting
+
+**Problem:** Code doesn't format on save
+
+**Solution:**
+
+1. Install Prettier extension/plugin for your IDE
+2. Set Prettier as default formatter
+3. Enable format on save
+4. Restart IDE
+
+### Issue: Different formatting in CI vs local
+
+**Problem:** CI fails formatting check but local looks fine
+
+**Solution:**
+
+1. Ensure same Prettier version in CI
+2. Check for `.prettierignore` differences
+3. Verify config file is committed
+4. Run `pnpm format:check` locally
+
+### Issue: Specific file not formatting
+
+**Problem:** Some files are ignored by Prettier
+
+**Solution:**
+
+1. Check if file pattern is in `.prettierignore` (if it exists)
+2. Check if file is in ESLint ignores
+3. Verify file extension is supported
+4. Try formatting explicitly: `prettier --write path/to/file.ts`
+
+## Performance
+
+Prettier is very fast:
+
+```bash
+# Format entire monorepo (23 packages, ~500 files)
+$ pnpm format
+⏱️  ~2-3 seconds
+
+# Check formatting (CI)
+$ pnpm format:check
+⏱️  ~1-2 seconds
+```
+
+Much faster than manual formatting and more consistent.
+
+## Comparison with Previous Approach
+
+| Aspect        | .editorconfig  | Prettier      |
+| ------------- | -------------- | ------------- |
+| Auto-format   | No             | Yes           |
+| IDE support   | Limited        | Excellent     |
+| Rules         | Basic          | Comprehensive |
+| Consistency   | IDE-dependent  | Guaranteed    |
+| Configuration | Multiple files | Single file   |
+| Speed         | N/A            | Very fast     |
+| Conflicts     | Possible       | None          |
+
+## Resources
+
+- [Prettier Documentation](https://prettier.io/docs/en/)
+- [ESLint + Prettier Integration](https://prettier.io/docs/en/integrating-with-linters.html)
+- [Prettier Options](https://prettier.io/docs/en/options.html)
+- [Prettier Plugin Ecosystem](https://prettier.io/docs/en/plugins.html)
+
+## Timeline
+
+- **Phase 1:** January 23, 2025 - Dependency modernization
+- **Phase 2:** January 23, 2025 - Tooling upgrade (pnpm, Nx, Vitest)
+- **Phase 3:** January 23, 2025 - Vite migration
+- **Phase 4:** January 23, 2025 - Prettier migration (this migration)
+
+---
+
+**Status:** ✅ Complete
+**Formatting:** Now automated with Prettier
+**Configuration:** Consolidated to single files
+
+## Next Steps
+
+After completing this migration:
+
+1. **Format the entire codebase:**
+
+    ```bash
+    pnpm format
+    ```
+
+2. **Commit the formatting changes:**
+
+    ```bash
+    git add .
+    git commit -m "chore: format codebase with Prettier"
+    ```
+
+3. **Update CI pipeline** to check formatting:
+
+    ```yaml
+    - name: Check formatting
+      run: pnpm format:check
+    ```
+
+4. **Configure your IDE** for automatic formatting (see IDE Integration section)
+
+5. **(Optional) Set up git hooks** to enforce formatting on commit

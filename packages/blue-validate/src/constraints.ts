@@ -8,8 +8,7 @@ import standardConstraints from './standard-constraints';
 //config			  = module.config(),
 //customConstraints = config.constraints,
 
-const
-    customConstraints = {},
-    constants = Object.assign( {}, standardConstraints, customConstraints );
+const customConstraints = {},
+    constants = Object.assign({}, standardConstraints, customConstraints);
 
 export default constants;

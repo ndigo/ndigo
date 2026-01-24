@@ -11,15 +11,15 @@ import { MethodParameter } from './route-parameter';
 import { getRouteMapping } from './route-mapping';
 
 export interface Invocable {
-    invoke<T = any>( ...args: any ): T;
+    invoke<T = any>(...args: any): T;
 }
 
 export interface HandlerMethod extends Invocable {
-    invoke<ModelAndView>( route: Route, ...args: any ): ModelAndView;
+    invoke<ModelAndView>(route: Route, ...args: any): ModelAndView;
 }
 
 export interface RouteHandlerMethodMappingNamingStrategy<T = any> {
-    getName( handlerMethod: RouteHandlerMethod, mapping: T ): string;
+    getName(handlerMethod: RouteHandlerMethod, mapping: T): string;
 }
 
 /**
@@ -63,9 +63,9 @@ export class RouteHandlerMethod implements HandlerMethod, Serializable {
     parameters: MethodParameter[];
     argumentResolvers: HandlerMethodArgumentResolver[];
 
-    constructor( handler: object, method: string, ...args: any[] );
-    constructor( factory: Factory, name: string, method: string, ...args: any[] );
-    constructor( factoryOrHandler: Factory | object, nameOrMethod: string, ...args: any[] ){
+    constructor(handler: object, method: string, ...args: any[]);
+    constructor(factory: Factory, name: string, method: string, ...args: any[]);
+    constructor(factoryOrHandler: Factory | object, nameOrMethod: string, ...args: any[]) {
         /**
          * @member {module:factory.Factory} module:router.RouteHandlerMethod#factory
          */
@@ -86,64 +86,64 @@ export class RouteHandlerMethod implements HandlerMethod, Serializable {
          * @member {external:Array<*>} module:router.RouteHandlerMethod#parameters
          */
 
-        if( likeFactory( factoryOrHandler ) ){
-            defineProperty( this, 'factory', {
+        if (likeFactory(factoryOrHandler)) {
+            defineProperty(this, 'factory', {
                 value: factoryOrHandler,
                 configurable: true,
                 enumerable: false,
-                writable: false
-            } );
-            defineProperty( this, 'name', {
+                writable: false,
+            });
+            defineProperty(this, 'name', {
                 value: nameOrMethod,
                 configurable: true,
                 enumerable: false,
-                writable: false
-            } );
-            defineProperty( this, 'handler', {
-                value: this.factory.getInstance( this.name ),
+                writable: false,
+            });
+            defineProperty(this, 'handler', {
+                value: this.factory.getInstance(this.name),
                 configurable: true,
                 enumerable: false,
-                writable: false
-            } );
-            defineProperty( this, 'method', {
+                writable: false,
+            });
+            defineProperty(this, 'method', {
                 value: args.shift(),
                 configurable: true,
                 enumerable: false,
-                writable: false
-            } );
+                writable: false,
+            });
         } else {
-            defineProperty( this, 'factory', {
+            defineProperty(this, 'factory', {
                 value: null,
                 configurable: true,
                 enumerable: false,
-                writable: false
-            } );
-            defineProperty( this, 'name', {
+                writable: false,
+            });
+            defineProperty(this, 'name', {
                 value: null,
                 configurable: true,
                 enumerable: false,
-                writable: false
-            } );
-            defineProperty( this, 'handler', {
+                writable: false,
+            });
+            defineProperty(this, 'handler', {
                 value: factoryOrHandler,
                 configurable: true,
                 enumerable: false,
-                writable: false
-            } );
-            defineProperty( this, 'method', {
+                writable: false,
+            });
+            defineProperty(this, 'method', {
                 value: nameOrMethod,
                 configurable: true,
                 enumerable: false,
-                writable: false
-            } );
+                writable: false,
+            });
         }
 
-        defineProperty( this, 'parameters', {
+        defineProperty(this, 'parameters', {
             value: args.length ? args : [],
             configurable: true,
             enumerable: false,
-            writable: true
-        } );
+            writable: true,
+        });
     }
 
     /**
@@ -151,31 +151,39 @@ export class RouteHandlerMethod implements HandlerMethod, Serializable {
      * @param {module:router.Request} route
      * @returns {module:dispatcher.ModelAndView}
      */
-    invoke<ModelAndView>( route: Route, ...foo: any[] ): ModelAndView {
+    invoke<ModelAndView>(route: Route, ...foo: any[]): ModelAndView {
         /**
          * * Hardcoding route as a parameter is a bit of a cop-out. It would be better to allow them to pick parameters, etc. as arguments. -JBR
          */
 
-        const
-            { argumentResolvers, parameters } = this,
+        const { argumentResolvers, parameters } = this,
             parametersLength = parameters.length,
-            args = new Array( parametersLength ),
-            mapping = getRouteMapping( this.handler, this.method );
-        console.log( 'RouteHandlerMethod::invoke', this.method, getRouteMapping( this.handler, this.method ), parametersLength, parameters, argumentResolvers );
-        if( parametersLength ){
-            for( let index = 0; index < parametersLength; index++ ){
-                const
-                    parameter = parameters[ index ],
-                    resolver = argumentResolvers.find( ( resolver ) => resolver.supportsParameter( parameter ) );
+            args = new Array(parametersLength),
+            mapping = getRouteMapping(this.handler, this.method);
+        console.log(
+            'RouteHandlerMethod::invoke',
+            this.method,
+            getRouteMapping(this.handler, this.method),
+            parametersLength,
+            parameters,
+            argumentResolvers
+        );
+        if (parametersLength) {
+            for (let index = 0; index < parametersLength; index++) {
+                const parameter = parameters[index],
+                    resolver = argumentResolvers.find((resolver) => resolver.supportsParameter(parameter));
 
-                args[ index ] = resolver ?
-                    resolver.resolveArgument( parameter, route, mapping ) :
-                    void 0;
-                console.log( 'RouteHandlerMethod::invoke::parameter', index, parameter.type, argumentResolvers.find( ( resolver ) => resolver.supportsParameter( parameter ) ) );
+                args[index] = resolver ? resolver.resolveArgument(parameter, route, mapping) : void 0;
+                console.log(
+                    'RouteHandlerMethod::invoke::parameter',
+                    index,
+                    parameter.type,
+                    argumentResolvers.find((resolver) => resolver.supportsParameter(parameter))
+                );
             }
         }
 
-        return this.handler[ this.method ]( ...args );
+        return this.handler[this.method](...args);
     }
 
     /**
@@ -183,7 +191,7 @@ export class RouteHandlerMethod implements HandlerMethod, Serializable {
      * @returns {external:string}
      */
     toString(): string {
-        return `${ type( this.handler ) }#${ this.method }( ${ JSON.stringify( this.parameters ) } )`;
+        return `${type(this.handler)}#${this.method}( ${JSON.stringify(this.parameters)} )`;
     }
 }
 
@@ -192,7 +200,7 @@ export class RouteHandlerMethod implements HandlerMethod, Serializable {
  * @extends module:router.RouteHandlerMethod
  */
 export class ErrorHandlerMethod extends RouteHandlerMethod {
-    invoke<ModelAndView>( route: Route, error: Error, handlerMethod: RouteHandlerMethod ): ModelAndView {
-        return super.invoke( route, error, handlerMethod );
+    invoke<ModelAndView>(route: Route, error: Error, handlerMethod: RouteHandlerMethod): ModelAndView {
+        return super.invoke(route, error, handlerMethod);
     }
 }

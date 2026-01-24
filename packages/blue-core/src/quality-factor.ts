@@ -10,32 +10,30 @@ import { Comparator, numberComparator } from './comparable';
  * * which are often used in media types and http headers. -JBR
  */
 
-export type QualityFactorParameter = `;q=${ 0.1 | 0.2 | 0.3 | 0.4 | 0.5 | 0.6 | 0.7 | 0.8 | 0.9 | '1.0' }`;
+export type QualityFactorParameter = `;q=${0.1 | 0.2 | 0.3 | 0.4 | 0.5 | 0.6 | 0.7 | 0.8 | 0.9 | '1.0'}`;
 
 export interface Qualifiable {
     readonly qualityFactor: number;
 }
 
-const
-    { isNaN } = Number,
-    alwaysOne = always( parseFloat( '1.0' ) );
+const { isNaN } = Number,
+    alwaysOne = always(parseFloat('1.0'));
 
-export const parseQualityFactor = cond( [
-    [ isString, pipe( parseFloat, ifElse( isNaN, alwaysOne, identity ) ) ],
-    [ isNumber, identity ],
-    [ T, alwaysOne ]
-] );
+export const parseQualityFactor = cond([
+    [isString, pipe(parseFloat, ifElse(isNaN, alwaysOne, identity))],
+    [isNumber, identity],
+    [T, alwaysOne],
+]);
 
 /**
  * @class module:core~QualityFactorComparator
  * @implements module:core.Comparator
  */
 class QualityFactorComparator implements Comparator<Qualifiable> {
-    compare( q1: Qualifiable, q2: Qualifiable ): number {
-        const
-            quality1 = parseQualityFactor( q1.qualityFactor ),
-            quality2 = parseQualityFactor( q2.qualityFactor );
-        return numberComparator.compare( quality2, quality1 );
+    compare(q1: Qualifiable, q2: Qualifiable): number {
+        const quality1 = parseQualityFactor(q1.qualityFactor),
+            quality2 = parseQualityFactor(q2.qualityFactor);
+        return numberComparator.compare(quality2, quality1);
     }
 }
 

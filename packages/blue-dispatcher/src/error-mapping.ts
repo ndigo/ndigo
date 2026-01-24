@@ -6,31 +6,33 @@ import 'reflect-metadata';
 import { Constructable } from '@blue/core';
 import { both, complement, either, isNil, propIs, propSatisfies } from '@blue/util';
 
-const
-    ERROR_HANDLER = 'error:handler',
+const ERROR_HANDLER = 'error:handler',
     ERROR_MAPPING = 'error:mapping',
     { assign } = Object,
     { defineMetadata, deleteMetadata, getMetadata, getOwnPropertyDescriptor, hasMetadata } = Reflect,
-
-    hasFunction = propIs( Function ),
-
-    defineErrorHandler = ( target ): void => defineMetadata( ERROR_HANDLER, true, target ),
-    defineErrorMapping = ( value, target, propertyKey: string | symbol ): void => defineMetadata( ERROR_MAPPING, value, target, propertyKey ),
-    deleteErrorHandler = ( target ) => deleteMetadata( ERROR_HANDLER, target ),
-    deleteErrorMapping = ( target, propertyKey: string | symbol ) => deleteMetadata( ERROR_MAPPING, target, propertyKey ),
-    getErrorHandler = ( target ): boolean => getMetadata( ERROR_HANDLER, target ),
-    getErrorMapping = ( target, propertyKey: string | symbol ): Constructable<Error>[] => getMetadata( ERROR_MAPPING, target, propertyKey ),
-    hasErrorHandler = ( target ): boolean => hasMetadata( ERROR_HANDLER, target ),
-    hasErrorMapping = ( target, propertyKey: string | symbol ): boolean => hasMetadata( ERROR_MAPPING, target, propertyKey ),
-    eh = ( target ) => defineErrorHandler( target ),
-    em = ( errorClass: Constructable<Error> | Constructable<Error>[] = Error ) => ( target, propertyKey: string | symbol, descriptor: PropertyDescriptor ): PropertyDescriptor => {
-        defineErrorMapping( Array.isArray( errorClass ) ? errorClass : [ errorClass ], target, propertyKey );
-        if( !descriptor ){
-            descriptor = getOwnPropertyDescriptor( target, propertyKey );
-        }
-        descriptor.enumerable = true;
-        return descriptor;
-    };
+    hasFunction = propIs(Function),
+    defineErrorHandler = (target): void => defineMetadata(ERROR_HANDLER, true, target),
+    defineErrorMapping = (value, target, propertyKey: string | symbol): void =>
+        defineMetadata(ERROR_MAPPING, value, target, propertyKey),
+    deleteErrorHandler = (target) => deleteMetadata(ERROR_HANDLER, target),
+    deleteErrorMapping = (target, propertyKey: string | symbol) => deleteMetadata(ERROR_MAPPING, target, propertyKey),
+    getErrorHandler = (target): boolean => getMetadata(ERROR_HANDLER, target),
+    getErrorMapping = (target, propertyKey: string | symbol): Constructable<Error>[] =>
+        getMetadata(ERROR_MAPPING, target, propertyKey),
+    hasErrorHandler = (target): boolean => hasMetadata(ERROR_HANDLER, target),
+    hasErrorMapping = (target, propertyKey: string | symbol): boolean =>
+        hasMetadata(ERROR_MAPPING, target, propertyKey),
+    eh = (target) => defineErrorHandler(target),
+    em =
+        (errorClass: Constructable<Error> | Constructable<Error>[] = Error) =>
+        (target, propertyKey: string | symbol, descriptor: PropertyDescriptor): PropertyDescriptor => {
+            defineErrorMapping(Array.isArray(errorClass) ? errorClass : [errorClass], target, propertyKey);
+            if (!descriptor) {
+                descriptor = getOwnPropertyDescriptor(target, propertyKey);
+            }
+            descriptor.enumerable = true;
+            return descriptor;
+        };
 
 /**
  * @function module:dispatcher.errorHandler
@@ -41,7 +43,7 @@ const
 /**
  * @const {external:ClassDecorator} module:dispatcher.errorHandler(2)
  */
-export const errorHandler = assign( eh, {
+export const errorHandler = assign(eh, {
     /**
      * @function module:dispatcher.errorHandler.define
      * @param {*} target
@@ -63,15 +65,17 @@ export const errorHandler = assign( eh, {
      * @param {*} target
      * @returns {external:boolean} Whether or not the `target` is defined as an error handler.
      */
-    has: hasErrorHandler
-} );
+    has: hasErrorHandler,
+});
 
-const
-    isDefined = complement( isNil ),
-    hasConstructor = hasFunction( 'constructor' ),
-    constructorIsErrorHandler = propSatisfies( hasErrorHandler, 'constructor' );
+const isDefined = complement(isNil),
+    hasConstructor = hasFunction('constructor'),
+    constructorIsErrorHandler = propSatisfies(hasErrorHandler, 'constructor');
 
-export const likeErrorHandler = both( isDefined, either( hasErrorHandler, both( hasConstructor, constructorIsErrorHandler ) ) );
+export const likeErrorHandler = both(
+    isDefined,
+    either(hasErrorHandler, both(hasConstructor, constructorIsErrorHandler))
+);
 
 /**
  * @function module:dispatcher.errorMapping
@@ -82,7 +86,7 @@ export const likeErrorHandler = both( isDefined, either( hasErrorHandler, both( 
 /**
  * @const {external:ClassDecorator} module:dispatcher.errorMapping(2)
  */
-export const errorMapping = assign( em, {
+export const errorMapping = assign(em, {
     /**
      * @function module:dispatcher.errorMapping.define
      * @param {*} value
@@ -109,5 +113,5 @@ export const errorMapping = assign( em, {
      * @param {external:string|external:symbol} propertyKey
      * @returns {external:boolean} Whether or not the `target` and `propertyKey` is defined as an error mapping.
      */
-    has: hasErrorMapping
-} );
+    has: hasErrorMapping,
+});

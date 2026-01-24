@@ -4,16 +4,16 @@
 
 import { comparator, isBefore, like } from '@blue/util';
 
-export type comparison<T> = ( value1: T, value2: T ) => number;
+export type comparison<T> = (value1: T, value2: T) => number;
 
-export type predicate<T> = ( value1: T, value2: T ) => boolean;
+export type predicate<T> = (value1: T, value2: T) => boolean;
 
 export interface Comparable<T> {
-    compareTo( value: T ): number;
+    compareTo(value: T): number;
 }
 
 export interface StringComparable<T> extends Comparable<T> {
-    compareToIgnoreCase( value: T ): number;
+    compareToIgnoreCase(value: T): number;
 }
 
 export interface Comparator<T> {
@@ -55,27 +55,26 @@ export interface Comparator<T> {
  * @property {module:core.comparison} compare
  */
 
-const
-    { defineProperty } = Reflect,
-    naturalPredicate = <T>( value1: T, value2: T ): boolean => value1 < value2;
+const { defineProperty } = Reflect,
+    naturalPredicate = <T>(value1: T, value2: T): boolean => value1 < value2;
 
 export abstract class AbstractValueComparator implements Comparator<string> {
     readonly value: string;
 
-    get [ Symbol.toStringTag ](): string {
+    get [Symbol.toStringTag](): string {
         return 'ValueComparator';
     }
 
-    constructor( value: string ){
-        defineProperty( this, 'value', {
+    constructor(value: string) {
+        defineProperty(this, 'value', {
             value: value,
             configurable: true,
             enumerable: false,
-            writable: false
-        } );
+            writable: false,
+        });
     }
 
-    abstract compare( pattern1: string, pattern2: string ): number;
+    abstract compare(pattern1: string, pattern2: string): number;
 }
 
 /**
@@ -87,43 +86,46 @@ export abstract class AbstractValueComparator implements Comparator<string> {
 /**
  * @function module:core.likeComparable
  */
-export const likeComparable = like( { compareTo: Function } ) as ( value ) => value is Comparable<any>;
+export const likeComparable = like({ compareTo: Function }) as (value) => value is Comparable<any>;
 
 /**
  * @function module:core.likeComparator
  */
-export const likeComparator = like( { compare: Function } ) as ( value ) => value is Comparator<any>;
+export const likeComparator = like({ compare: Function }) as (value) => value is Comparator<any>;
 
 /**
  * @const {module:core.comparison} module:core.naturalComparison
  */
-export const naturalComparison = comparator( naturalPredicate );
+export const naturalComparison = comparator(naturalPredicate);
 
 /**
  * @const {external:Function} module:core.invertComparison
  * @param {module:core.comparison} compare The comparison to invert
  * @returns {module:core.comparison} The inverted comparison
  */
-export const invertComparison = <T>( compare: comparison<T> ): comparison<T> => ( value1: T, value2: T ) => -compare( value1, value2 );
+export const invertComparison =
+    <T>(compare: comparison<T>): comparison<T> =>
+    (value1: T, value2: T) =>
+        -compare(value1, value2);
 
 /**
  * @class module:core~PredicateComparator
  * @implements module:core.Comparator
  */
 class PredicateComparator<T> implements Comparator<T> {
-    get [ Symbol.toStringTag ](): string {
+    get [Symbol.toStringTag](): string {
         return 'PredicateComparator';
     }
 
     compare: comparison<T>;
 
-    constructor( pred: predicate<T> ){
-        defineProperty( this, 'compare', {
-            value: comparator<T>( pred ),
+    constructor(pred: predicate<T>) {
+        defineProperty(this, 'compare', {
+            value: comparator<T>(pred),
             configurable: true,
             enumerable: false,
-            writable: false
-        } );
+            writable: false,
+        });
     }
 }
 
@@ -132,8 +134,8 @@ class PredicateComparator<T> implements Comparator<T> {
  * @extends module:core~PredicateComparator
  */
 class NaturalComparator<T> extends PredicateComparator<T> {
-    constructor(){
-        super( naturalPredicate );
+    constructor() {
+        super(naturalPredicate);
     }
 }
 
@@ -143,8 +145,8 @@ class NaturalComparator<T> extends PredicateComparator<T> {
  * @implements module:core.Comparator
  */
 class ComparableComparator<T extends Comparable<T>> implements Comparator<T> {
-    compare( value1: T, value2: T ): number {
-        return value1.compareTo( value2 );
+    compare(value1: T, value2: T): number {
+        return value1.compareTo(value2);
     }
 }
 
@@ -153,8 +155,8 @@ class ComparableComparator<T extends Comparable<T>> implements Comparator<T> {
  * @extends module:core~PredicateComparator
  */
 class DateComparator extends PredicateComparator<Date> {
-    constructor(){
-        super( isBefore );
+    constructor() {
+        super(isBefore);
     }
 }
 
@@ -169,8 +171,12 @@ class NumberComparator extends NaturalComparator<number> {}
  * @extends module:core~NaturalComparator
  */
 class StringComparator extends NaturalComparator<string> {
-    compareIgnoreCase( value1: string, value2: string ): number {
-        return typeof value1 === 'string' && typeof value2 === 'string' && this.compare( value1.toLowerCase(), value2.toLowerCase() );
+    compareIgnoreCase(value1: string, value2: string): number {
+        return (
+            typeof value1 === 'string' &&
+            typeof value2 === 'string' &&
+            this.compare(value1.toLowerCase(), value2.toLowerCase())
+        );
     }
 }
 

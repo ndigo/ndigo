@@ -4,7 +4,7 @@
 
 import { LogRecordExporter, ReadableLogRecord } from '@opentelemetry/sdk-logs';
 import { ExportResult, ExportResultCode } from '@opentelemetry/core';
-import { BatchLayout, Layout } from '../../layout';
+import { BatchLayout } from '../../layout';
 import { JSONLayout } from '../../layouts/json-layout';
 import { logRecordToEntry } from '../entry-to-logrecord';
 

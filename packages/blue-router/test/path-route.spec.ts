@@ -1,0 +1,75 @@
+import { describe, test, expect } from 'vitest';
+import { PathRoute } from '../src/path-route';
+
+describe('PathRoute', () => {
+    test('it should parse route strings', () => {
+        const routeString = '/foo;a=1;b=2/bar;c=3;d=4/baz';
+        const route = new PathRoute(routeString);
+        const segment1 = route[0];
+        const segment2 = route[1];
+        const segment3 = route[2];
+
+        expect(segment1).toHaveProperty('name');
+        expect(segment1.name).toBe('foo');
+        expect(segment1).toHaveProperty('data');
+        expect(segment1.data).toHaveProperty('a');
+        expect(segment1.data?.a).toBe('1');
+        expect(segment1.data).toHaveProperty('b');
+        expect(segment1.data?.b).toBe('2');
+
+        expect(segment2).toHaveProperty('name');
+        expect(segment2.name).toBe('bar');
+        expect(segment2).toHaveProperty('data');
+        expect(segment2.data).toHaveProperty('c');
+        expect(segment2.data?.c).toBe('3');
+        expect(segment2.data).toHaveProperty('d');
+        expect(segment2.data?.d).toBe('4');
+
+        expect(segment3).toHaveProperty('name');
+        expect(segment3.name).toBe('baz');
+        expect(segment3.data).toBe(null);
+
+        expect(route).toHaveProperty('data');
+        expect(route.data).toBe(null);
+
+        expect(route.id).toBeTypeOf('number');
+        expect(route.length).toBe(3);
+
+        expect(route.toString()).toBe(routeString);
+    });
+
+    test('it should parse query strings', () => {
+        const routeString = '/foo/bar?a=1&b=2&c=3';
+        const route = new PathRoute(routeString);
+
+        expect(route).toHaveProperty('data');
+        expect(route.data).toHaveProperty('a');
+        expect(route.data?.a).toBe('1');
+        expect(route.data).toHaveProperty('b');
+        expect(route.data?.b).toBe('2');
+        expect(route.data).toHaveProperty('c');
+        expect(route.data?.c).toBe('3');
+
+        expect(route.toString()).toBe(routeString);
+    });
+
+    test('it should remove your unnecessary semicolons', () => {
+        const route = new PathRoute('/foo;a=1;b=2/bar;c=3;d=4/baz;?e=5&f=6&g=7');
+        expect(route.toString()).toBe('/foo;a=1;b=2/bar;c=3;d=4/baz?e=5&f=6&g=7');
+    });
+
+    test('it should ignore trailing slashes', () => {
+        const route = new PathRoute('/foo/bar/');
+        expect(route.toString()).toBe('/foo/bar');
+    });
+
+    test('it should ignore double slashes', () => {
+        const route = new PathRoute('/foo//bar');
+        expect(route.toString()).toBe('/foo/bar');
+    });
+
+    test('it should assume a leading slash', () => {
+        const route = new PathRoute('foo/bar');
+        expect(route.toString()).toBe('/foo/bar');
+    });
+});

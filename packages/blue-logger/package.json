@@ -22,7 +22,8 @@
     "build:all": "../../bin/build_all.sh",
     "doc": "../../bin/doc.sh",
     "prepublish": "../../bin/prepublish.sh",
-    "test": "../../bin/test_web.sh",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "debug:bundle": "../../bin/debug_bundle.sh",
     "debug:web": "../../bin/debug_web.sh"
   },

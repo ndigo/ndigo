@@ -48,4 +48,26 @@ export declare const likeEventEmitter: (value: any) => value is EventEmitter;
  * // Hello!
  */
 export declare const AsEventEmitter: <T extends Constructable>(superclass: T) => Constructable<EventEmitter> & T;
+export interface AsyncEventEmitter extends EventEmitter {
+    tick(type: EventType, ...data: any[]): Promise<void>;
+}
+export interface ConditionalEventEmitter extends EventEmitter {
+    once(type: EventType, listener: Function): this;
+    many(type: EventType, times: number, listener: Function): this;
+    until(type: EventType, listener: Function): this;
+}
+export declare const AsAsyncEventEmitter: <T extends Constructable<EventEmitter>>(superclass: T) => Constructable<AsyncEventEmitter> & T;
+export declare const AsConditionalEventEmitter: <T extends Constructable<EventEmitter>>(superclass: T) => Constructable<ConditionalEventEmitter> & T;
+declare const EmitterBase: any;
+export declare class Emitter extends EmitterBase {
+    static readonly every: string;
+    static readonly version: string;
+    destroyed: boolean;
+    constructor(mapping?: EventHandlers);
+    clear(type?: EventType): this;
+    toJSON(): any;
+    toString(): string;
+    destroy(): void;
+}
+export {};
 //# sourceMappingURL=event-emitter.d.ts.map

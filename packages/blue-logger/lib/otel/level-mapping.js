@@ -112,7 +112,7 @@ export function severityToLevel(severityNumber, severityText) {
         }
     }
     // Fall back to severity number mapping (Apache scheme)
-    return SeverityToApacheLevel[severityNumber] ?? Level.ALL;
+    return SeverityToApacheLevel[severityNumber] ?? Level.OFF;
 }
 /**
  * Helper function to find a Level by name from a specific scheme

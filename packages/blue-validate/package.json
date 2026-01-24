@@ -25,7 +25,7 @@
     "doc": "../../bin/doc.sh",
     "prepublish": "../../bin/prepublish.sh",
     "profile": "../../bin/profile.sh",
-    "test": "../../bin/test_web.sh"
+    "test": "vitest run"
   },
   "repository": {
     "type": "git",

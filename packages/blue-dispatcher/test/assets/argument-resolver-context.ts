@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { expect } from 'vitest';
 import {
     ApplicationContextAwareProcessor,
     configuration,
@@ -15,7 +15,7 @@ import { queryValue, matrixValue } from '../../src/route-parameter';
 class HelloController {
     // /hello/there;name=Jack?name=John
     @routeMapping('/there')
-    handleThere(@queryValue('name') n1, @matrixValue('name') n2) {
+    handleThere(@queryValue('name') n1: string, @matrixValue('name') n2: string) {
         expect(n1).toBe('John');
         expect(n2).toBe('Jack');
         return new ModelAndView('test');

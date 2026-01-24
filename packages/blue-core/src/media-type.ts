@@ -179,7 +179,7 @@ export default class MediaType extends Null implements Serializable, StringCompa
             [isString, parseFloat],
             [isNumber, identity],
             [T, alwaysOne],
-        ])(this.parameters[QUALITY_FACTOR_PARAM]);
+        ])(this.parameters[QUALITY_FACTOR_PARAM]) as number;
     }
 
     static for(mediaType: string): MediaType;

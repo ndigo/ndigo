@@ -31,8 +31,8 @@ export const parseQualityFactor = cond([
  */
 class QualityFactorComparator implements Comparator<Qualifiable> {
     compare(q1: Qualifiable, q2: Qualifiable): number {
-        const quality1 = parseQualityFactor(q1.qualityFactor),
-            quality2 = parseQualityFactor(q2.qualityFactor);
+        const quality1 = parseQualityFactor(q1.qualityFactor) as number,
+            quality2 = parseQualityFactor(q2.qualityFactor) as number;
         return numberComparator.compare(quality2, quality1);
     }
 }

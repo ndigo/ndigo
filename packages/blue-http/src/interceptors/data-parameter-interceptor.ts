@@ -37,8 +37,8 @@ const getEntries = pipe(ifElse(isString, QueryString.parse, identity), entriesIt
         is(Uint16Array),
         is(Uint32Array),
     ]),
-    isArrayBufferView = either(isTypedArray, isDataView),
-    isBufferSource = either(isArrayBuffer, isArrayBufferView),
+    isArrayBufferView = (value: any): boolean => isTypedArray(value) || isDataView(value),
+    isBufferSource = (value: any): boolean => isArrayBuffer(value) || isArrayBufferView(value),
     isBlob = is(Blob),
     isFormData = is(FormData),
     isURLSearchParams = is(URLSearchParams),
@@ -75,8 +75,8 @@ export class DataParameterInterceptor implements InitializationAwareHTTPIntercep
             const { data, method } = settings;
             if (isBodyless(method)) {
                 const entries = getEntries(data);
-                if (entries) {
-                    for (const [key, value] of entries) {
+                if (entries && typeof entries[Symbol.iterator] === 'function') {
+                    for (const [key, value] of entries as Iterable<[string, any]>) {
                         url.searchParams.set(String(key), String(value));
                     }
                 }

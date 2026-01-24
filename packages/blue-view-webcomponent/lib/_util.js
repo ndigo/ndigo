@@ -1,0 +1,10 @@
+/**
+ * @author Jeff Rose
+ */
+import { both, complement, is, isNil, propSatisfies } from '@blue/util';
+export * from '@blue/util';
+export const isDefined = complement(isNil);
+export const isFunction = is(Function);
+export const hasFunction = propSatisfies(isFunction);
+export const isDefinedAnd = both(isDefined);
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiX3V0aWwuanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi9zcmMvX3V0aWwudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7O0dBRUc7QUFFSCxPQUFPLEVBQUUsSUFBSSxFQUFFLFVBQVUsRUFBRSxFQUFFLEVBQUUsS0FBSyxFQUFFLGFBQWEsRUFBRSxNQUFNLFlBQVksQ0FBQztBQUV4RSxjQUFjLFlBQVksQ0FBQztBQUUzQixNQUFNLENBQUMsTUFBTSxTQUFTLEdBQUcsVUFBVSxDQUFDLEtBQUssQ0FBQyxDQUFDO0FBRTNDLE1BQU0sQ0FBQyxNQUFNLFVBQVUsR0FBRyxFQUFFLENBQUMsUUFBUSxDQUFpQyxDQUFDO0FBRXZFLE1BQU0sQ0FBQyxNQUFNLFdBQVcsR0FBeUMsYUFBYSxDQUFDLFVBQVUsQ0FBQyxDQUFDO0FBRTNGLE1BQU0sQ0FBQyxNQUFNLFlBQVksR0FBc0MsSUFBSSxDQUFDLFNBQVMsQ0FBQyxDQUFDIn0=

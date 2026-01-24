@@ -330,8 +330,10 @@ const emitEvent = (emitter: EventEmitter, type: EventType, data: any[], emitEver
  * @param {module:context.EventListener} l2
  * @returns {external:boolean} Whether or not the listeners are equal
  */
-const eventListenerEquals = (l1: EventListener, l2: EventListener): boolean =>
-    either(equals(l2), propEq('listener', l2))(l1);
+const eventListenerEquals = (l1: EventListener, l2: EventListener): boolean => {
+    // Check if l1 equals l2 directly, or if l1.listener equals l2
+    return l1 === l2 || (hasListener(l1) && l1.listener === l2);
+};
 
 /**
  * Executes a listener using the internal `execute*` functions based on the number of arguments.
@@ -569,7 +571,7 @@ const handleMany = (handler: EventHandler, isFunction: boolean, emitter: EventEm
  * @param {*} value The value to be tested.
  * @return {external:boolean} Whether or not the value is an event handler.
  */
-const isEventHandler = either(isFunction, isArray) as (value) => value is EventHandler;
+const isEventHandler = (value: any): value is EventHandler => isFunction(value) || isArray(value);
 
 /**
  * @function module:core~removeEventListener
@@ -640,8 +642,11 @@ const spliceList = <T = any>(list: T[], index: number): void => {
  * greeter.emtest( 'hello' ); // true
  * // Hello!
  */
-export const AsEventEmitter = <T extends Constructable>(superclass: T): Constructable<EventEmitter> & T =>
-    class extends superclass implements EventEmitter {
+export const AsEventEmitter = <T extends Constructable>(
+    superclass: T
+): Constructable<EventEmitter> & T => {
+    // TypeScript 5.7 requires explicit type assertion for mixin pattern
+    const EmitterClass = class extends (superclass as new (...args: any[]) => any) implements EventEmitter {
         get [Symbol.toStringTag](): string {
             return 'EventEmitter';
         }
@@ -874,3 +879,5 @@ export const AsEventEmitter = <T extends Constructable>(superclass: T): Construc
             return this;
         }
     };
+    return EmitterClass as Constructable<EventEmitter> & T;
+};

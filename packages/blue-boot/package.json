@@ -46,10 +46,12 @@
   "license": "ISC",
   "devDependencies": {
     "@blue/context": "~3.0.0-alpha",
+    "@blue/core": "~3.0.0-alpha",
     "@blue/router": "~3.0.0-alpha"
   },
   "peerDependencies": {
     "@blue/context": "~3.0.0-alpha",
+    "@blue/core": "~3.0.0-alpha",
     "@blue/router": "~3.0.0-alpha"
   },
   "publishConfig": {

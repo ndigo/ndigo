@@ -50,7 +50,10 @@ export interface ConfigurablePropertyResolver extends PropertyResolver {
  */
 
 const { defineProperty, getPrototypeOf, setPrototypeOf } = Reflect,
-    pathIsDefined = pathSatisfies(complement(isNil)),
+    pathIsDefined = (keypath: string[], obj: any): boolean => {
+        const predicate = complement(isNil);
+        return pathSatisfies(predicate, keypath, obj) as boolean;
+    },
     linkPrototype = (current, next) => {
         setPrototypeOf(next, null);
         setPrototypeOf(current, next);
@@ -113,8 +116,13 @@ export class PrototypalPropertyResolver implements ConfigurablePropertyResolver 
      * @returns {module:core.JSONValue}
      */
     getProperty(key: string, defaultValue?: JSONValue): JSONValue {
-        const keypath = keypathExpression.run(key).result;
-        return keypath ? (path(keypath, this.properties) ?? defaultValue) : defaultValue;
+        const parseResult = keypathExpression.run(key);
+        if (!parseResult.isError) {
+            // Type narrowing: parseResult is Ok<T, D> here
+            const keypath = (parseResult as { isError: false; result: any; index: number; data: any }).result;
+            return keypath ? (path(keypath, this.properties) ?? defaultValue) : defaultValue;
+        }
+        return defaultValue;
     }
 
     /**
@@ -136,7 +144,12 @@ export class PrototypalPropertyResolver implements ConfigurablePropertyResolver 
      * @returns {external:boolean}
      */
     hasProperty(key: string): boolean {
-        const keypath = keypathExpression.run(key).result;
-        return keypath ? pathIsDefined(keypath, this.properties) : false;
+        const parseResult = keypathExpression.run(key);
+        if (!parseResult.isError) {
+            // Type narrowing: parseResult is Ok<T, D> here
+            const keypath = (parseResult as { isError: false; result: any; index: number; data: any }).result;
+            return keypath ? pathIsDefined(keypath, this.properties) : false;
+        }
+        return false;
     }
 }

@@ -1,0 +1,4 @@
+import { StandardEnvironment } from '@blue/context';
+export class BrowserEnvironment extends StandardEnvironment {
+}
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiYnJvd2VyLWVudmlyb25tZW50LmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiLi4vc3JjL2Jyb3dlci1lbnZpcm9ubWVudC50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQSxPQUFPLEVBQUUsbUJBQW1CLEVBQUUsTUFBTSxlQUFlLENBQUM7QUFFcEQsTUFBTSxPQUFPLGtCQUFtQixTQUFRLG1CQUFtQjtDQUFHIn0=

@@ -74,9 +74,13 @@ export class DataBinder {
             for (let index = 0; index < length; index++) {
                 const key = propertyKeys[index],
                     property = properties[key],
-                    keypath = keypathExpression.run(property.name).result;
-                if (keypath) {
-                    result = assocPath(keypath, property.value, result);
+                    parseResult = keypathExpression.run(property.name);
+                if (!parseResult.isError) {
+                    // Type narrowing: parseResult is Ok<T, D> here
+                    const keypath = (parseResult as { isError: false; result: any; index: number; data: any }).result;
+                    if (keypath) {
+                        result = assocPath(keypath, property.value, result);
+                    }
                 }
             }
             this.#result = result;

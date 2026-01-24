@@ -92,7 +92,7 @@ export class Application {
     protected _prepareContext(environment: ConfigurableEnvironment, args: string[]): ApplicationContext {
         const context = new GenericApplicationContext();
         context.setEnvironment(environment);
-        return context;
+        return context as unknown as ApplicationContext;
     }
 
     protected _prepareEnvironment(args: string[]): ConfigurableEnvironment {

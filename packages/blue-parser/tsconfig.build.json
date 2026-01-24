@@ -4,9 +4,6 @@
     "baseUrl": ".",
     "composite": true,
     "outDir": "lib",
-    "paths": {
-      "@blue/*": ["../blue-*/lib", "../blue-*/src"]
-    },
     "rootDir": "src",
     "skipLibCheck": true
   },

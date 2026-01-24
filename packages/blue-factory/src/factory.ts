@@ -319,7 +319,7 @@ export abstract class AbstractFactory implements ConfigurableFactory {
                         // Indexed Collection, e.g. Array, where entry is [ index, value ]
                         [isNumber, () => `${name}[${String(key)}]`],
                         // Keyed Collection, e.g. Map, where entry is [ key, value ]
-                        [isString, identity],
+                        [isString, () => String(key)],
                         [T, alwaysName],
                     ])(key);
 

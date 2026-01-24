@@ -10,9 +10,9 @@ import { AbstractLogger } from '../logger';
 const defineProperty = Reflect.defineProperty;
 
 export class SimpleLogger extends AbstractLogger implements AppenderRegistry<Appender> {
-    readonly name: string;
+    declare readonly name: string;
     readonly appenders: Appender[];
-    threshold: Level;
+    declare threshold: Level;
 
     constructor(name: string, appenders: Appender[] = []) {
         super();

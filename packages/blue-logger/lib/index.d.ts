@@ -14,4 +14,5 @@ export * from './apache-logging';
 export * from './cli-logging';
 export * from './npm-logging';
 export * from './syslog-logging';
+export * from './otel';
 //# sourceMappingURL=index.d.ts.map

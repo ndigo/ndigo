@@ -7,6 +7,7 @@ import { Logger } from './logger';
 import { BrowserConsoleAppender } from './appenders/browser-console-appender';
 import { loggable } from './entry';
 import { like } from '@blue/util';
+import { SeverityNumber } from '@opentelemetry/api-logs';
 
 // TODO Use the @blue/core version once it updates -JBR
 type Constructable<T = {}> = new (...args: any[]) => T;
@@ -19,7 +20,57 @@ export class NPMLevel extends Level {
     static VERBOSE = new Level('verbose', 50000);
     static DEBUG = new Level('debug', 60000);
     static SILLY = new Level('silly', 70000);
+
+    /**
+     * Convert an NPM level to OpenTelemetry SeverityNumber
+     *
+     * @param level - The NPM level to convert
+     * @returns The corresponding OpenTelemetry SeverityNumber
+     */
+    static toSeverity(level: Level): SeverityNumber {
+        return NPMLevelToSeverity[level.name.toLowerCase()] || SeverityNumber.UNSPECIFIED;
+    }
+
+    /**
+     * Convert an OpenTelemetry SeverityNumber to an NPM level
+     *
+     * @param severityNumber - The severity number to convert
+     * @returns The corresponding NPM level
+     */
+    static fromSeverity(severityNumber: SeverityNumber): Level {
+        if (severityNumber >= SeverityNumber.ERROR) {
+            return NPMLevel.ERROR;
+        }
+        if (severityNumber >= SeverityNumber.WARN) {
+            return NPMLevel.WARN;
+        }
+        if (severityNumber >= SeverityNumber.INFO) {
+            return NPMLevel.INFO;
+        }
+        if (severityNumber >= SeverityNumber.DEBUG) {
+            return NPMLevel.DEBUG;
+        }
+        if (severityNumber >= SeverityNumber.TRACE) {
+            return NPMLevel.SILLY;
+        }
+        return Level.OFF;
+    }
 }
+
+/**
+ * NPM level to OpenTelemetry severity mapping table
+ */
+export const NPMLevelToSeverity: Record<string, SeverityNumber> = {
+    error: SeverityNumber.ERROR,
+    warn: SeverityNumber.WARN,
+    info: SeverityNumber.INFO,
+    http: SeverityNumber.INFO,
+    verbose: SeverityNumber.DEBUG,
+    debug: SeverityNumber.DEBUG,
+    silly: SeverityNumber.TRACE,
+    off: SeverityNumber.UNSPECIFIED,
+    all: SeverityNumber.UNSPECIFIED,
+};
 
 export const NPMColor = {
     error: 'red',

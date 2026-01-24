@@ -24,3 +24,8 @@ export * from './route-mapping-info';
 export * from './route-parameter';
 export * from './route-to-view-name-translator';
 export * from './theme-resolver';
+
+// Logger modules
+export * from './logger/http-appender';
+export * from './logger/http-post-layout';
+export * from './logger/otel-http-exporter';

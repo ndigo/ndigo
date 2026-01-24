@@ -7,6 +7,7 @@ import { Logger } from './logger';
 import { BrowserConsoleAppender } from './appenders/browser-console-appender';
 import { loggable } from './entry';
 import { like } from '@blue/util';
+import { SeverityNumber } from '@opentelemetry/api-logs';
 
 // TODO Use the @blue/core version once it updates -JBR
 type Constructable<T = {}> = new (...args: any[]) => T;
@@ -18,7 +19,59 @@ export class ApacheLevel extends Level {
     static INFO = new Level('info', 40000);
     static DEBUG = new Level('debug', 50000);
     static TRACE = new Level('trace', 60000);
+
+    /**
+     * Convert an Apache level to OpenTelemetry SeverityNumber
+     *
+     * @param level - The Apache level to convert
+     * @returns The corresponding OpenTelemetry SeverityNumber
+     */
+    static toSeverity(level: Level): SeverityNumber {
+        return ApacheLevelToSeverity[level.name.toLowerCase()] || SeverityNumber.UNSPECIFIED;
+    }
+
+    /**
+     * Convert an OpenTelemetry SeverityNumber to an Apache level
+     *
+     * @param severityNumber - The severity number to convert
+     * @returns The corresponding Apache level
+     */
+    static fromSeverity(severityNumber: SeverityNumber): Level {
+        if (severityNumber >= SeverityNumber.FATAL) {
+            return ApacheLevel.FATAL;
+        }
+        if (severityNumber >= SeverityNumber.ERROR) {
+            return ApacheLevel.ERROR;
+        }
+        if (severityNumber >= SeverityNumber.WARN) {
+            return ApacheLevel.WARN;
+        }
+        if (severityNumber >= SeverityNumber.INFO) {
+            return ApacheLevel.INFO;
+        }
+        if (severityNumber >= SeverityNumber.DEBUG) {
+            return ApacheLevel.DEBUG;
+        }
+        if (severityNumber >= SeverityNumber.TRACE) {
+            return ApacheLevel.TRACE;
+        }
+        return Level.OFF;
+    }
 }
+
+/**
+ * Apache level to OpenTelemetry severity mapping table
+ */
+export const ApacheLevelToSeverity: Record<string, SeverityNumber> = {
+    fatal: SeverityNumber.FATAL,
+    error: SeverityNumber.ERROR,
+    warn: SeverityNumber.WARN,
+    info: SeverityNumber.INFO,
+    debug: SeverityNumber.DEBUG,
+    trace: SeverityNumber.TRACE,
+    off: SeverityNumber.UNSPECIFIED,
+    all: SeverityNumber.UNSPECIFIED,
+};
 
 export const ApacheColor = {
     fatal: 'red',

@@ -5,6 +5,7 @@ import { Level } from './level';
 import { Logger } from './logger';
 import { BrowserConsoleAppender } from './appenders/browser-console-appender';
 import { loggable } from './entry';
+import { SeverityNumber } from '@opentelemetry/api-logs';
 type Constructable<T = {}> = new (...args: any[]) => T;
 export declare class NPMLevel extends Level {
     static ERROR: Level;
@@ -14,7 +15,25 @@ export declare class NPMLevel extends Level {
     static VERBOSE: Level;
     static DEBUG: Level;
     static SILLY: Level;
+    /**
+     * Convert an NPM level to OpenTelemetry SeverityNumber
+     *
+     * @param level - The NPM level to convert
+     * @returns The corresponding OpenTelemetry SeverityNumber
+     */
+    static toSeverity(level: Level): SeverityNumber;
+    /**
+     * Convert an OpenTelemetry SeverityNumber to an NPM level
+     *
+     * @param severityNumber - The severity number to convert
+     * @returns The corresponding NPM level
+     */
+    static fromSeverity(severityNumber: SeverityNumber): Level;
 }
+/**
+ * NPM level to OpenTelemetry severity mapping table
+ */
+export declare const NPMLevelToSeverity: Record<string, SeverityNumber>;
 export declare const NPMColor: {
     error: string;
     warn: string;

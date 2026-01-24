@@ -5,6 +5,11 @@
 
 import { curryN, slice, split, trim } from 'ramda';
 
+type TrailingSplitFunction = {
+    (separator: string, text: string): string[];
+    (separator: string): (text: string) => string[];
+};
+
 /**
  * Splits a string into an array of strings based on the given separator.
  * @function module:util.trailingSplit
@@ -19,7 +24,7 @@ import { curryN, slice, split, trim } from 'ramda';
  * trailingSplit( ",", "a,b,c," );
  * //=> [ "a", "b", "c" ]
  */
-const trailingSplit = curryN(2, (separator: string, text: string): string[] => {
+const trailingSplit: TrailingSplitFunction = curryN(2, (separator: string, text: string): string[] => {
     text = trim(text);
 
     const length = text.length;

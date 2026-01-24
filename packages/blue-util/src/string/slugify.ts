@@ -10,6 +10,11 @@ import { curry, pipe, toLower } from 'ramda';
 import removeNonWord from './remove-non-word';
 import slug from 'slug';
 
+type SlugifyFunction = {
+    (delimiter: string, value: string): string;
+    (delimiter: string): (value: string) => string;
+};
+
 /**
  * Converts a string into a slug.
  * @function module:util.slugify
@@ -24,7 +29,7 @@ import slug from 'slug';
  * slugify( '~', 'Lorem Ipsum Dolor' );
  * //=> "lorem~ipsum~dolor"
  */
-const slugify = curry((delimiter: string, value: string): string =>
+const slugify: SlugifyFunction = curry((delimiter: string, value: string): string =>
     pipe(
         removeNonWord,
         (val: string) => slug(val, { remove: null, replacement: delimiter, lower: false }),

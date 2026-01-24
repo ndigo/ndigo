@@ -7,21 +7,21 @@ const ampersand = /&/,
     comma = /,/,
     createNull = Object.create.bind(Object, null),
     // "a|b|c|" -> ["a","b","c"]
-    splitOnPipe = trailingsplit('|'),
+    splitOnPipe = trailingSplit('|'),
     // "a=b" -> ["a","b"]
     splitOnEqual = split('='),
     // "a&b&" -> ["a","b"]
     // "ab" -> "ab"
-    splitOnAmpersand: (value: string) => string | string[] = when(test(ampersand), trailingsplit('&')),
+    splitOnAmpersand: (value: string) => string | string[] = when(test(ampersand), trailingSplit('&')),
     // "a,b,c," -> ["a","b","c"]
-    splitOnComma: (value: string) => string | string[] = when(test(comma), trailingsplit(',')),
+    splitOnComma: (value: string) => string | string[] = when(test(comma), trailingSplit(',')),
     // "a,b,c," -> ["a","b","c"]
     // ["a,b,","c,d,"] -> [["a","b"],["c","d"]]
-    splitAllOnComma: (value: string | string[]) => string[] | string[][] = ifElse(
+    splitAllOnComma = ifElse(
         Array.isArray,
         map(splitOnComma),
         splitOnComma
-    );
+    ) as (value: string | string[]) => string[] | string[][];
 
 /**
  * Parses a piped list string into an object.

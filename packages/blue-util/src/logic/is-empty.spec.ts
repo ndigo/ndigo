@@ -1,3 +1,5 @@
+import { describe, test, expect } from 'vitest';
+
 import isEmpty from './is-empty';
 
 describe('isEmpty', function () {

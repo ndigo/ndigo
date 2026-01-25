@@ -1,3 +1,5 @@
+import { describe, test, expect } from 'vitest';
+
 import { range } from 'ramda';
 import regExpRange from './reg-exp-range';
 

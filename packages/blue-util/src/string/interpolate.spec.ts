@@ -1,3 +1,5 @@
+import { describe, test, expect } from 'vitest';
+
 import interpolate from './interpolate';
 
 describe('interpolate', function () {

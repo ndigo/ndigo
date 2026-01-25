@@ -1,3 +1,5 @@
+import { describe, test, expect } from 'vitest';
+
 import likeArray from './like-array';
 
 describe('isArrayLike', function () {

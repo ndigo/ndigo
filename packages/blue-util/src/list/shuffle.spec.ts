@@ -1,3 +1,4 @@
+import { describe, test, expect } from 'vitest';
 import shuffle from './shuffle';
 
 describe('shuffle', function () {

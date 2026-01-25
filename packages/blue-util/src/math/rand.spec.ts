@@ -1,3 +1,5 @@
+import { describe, test, expect } from 'vitest';
+
 import rand from './rand';
 
 describe('rand', function () {

@@ -1,3 +1,5 @@
+import { describe, test, expect } from 'vitest';
+
 import rangeN from './range-n';
 
 const exact = (actual, expected) => {

@@ -1,3 +1,5 @@
+import { describe, test, expect } from 'vitest';
+
 import guid from './guid';
 
 describe('guid', function () {

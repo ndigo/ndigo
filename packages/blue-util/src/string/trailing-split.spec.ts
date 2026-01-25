@@ -1,3 +1,5 @@
+import { describe, test, expect } from 'vitest';
+
 import trailingSplit from './trailing-split';
 
 describe('trailingSplit', function () {

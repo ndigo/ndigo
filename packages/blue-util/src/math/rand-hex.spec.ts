@@ -1,3 +1,5 @@
+import { describe, test, expect } from 'vitest';
+
 import randHex from './rand-hex';
 
 describe('randHex', function () {

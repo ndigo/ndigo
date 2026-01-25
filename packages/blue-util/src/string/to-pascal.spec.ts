@@ -1,3 +1,5 @@
+import { describe, test, expect } from 'vitest';
+
 import toPascal from './to-pascal';
 
 describe('toPascal', function () {

@@ -1,3 +1,5 @@
+import { describe, test, expect } from 'vitest';
+
 import toRegExp from './to-reg-exp';
 
 describe('toRegExp', function () {

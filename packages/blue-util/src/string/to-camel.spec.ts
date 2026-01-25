@@ -1,3 +1,5 @@
+import { describe, test, expect } from 'vitest';
+
 import toCamel from './to-camel';
 
 describe('toCamel', function () {

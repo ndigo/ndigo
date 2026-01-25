@@ -1,3 +1,5 @@
+import { describe, test, expect } from 'vitest';
+
 import toString from './to-string';
 
 describe('toString', function () {

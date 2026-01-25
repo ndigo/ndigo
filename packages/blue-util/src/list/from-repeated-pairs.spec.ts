@@ -1,3 +1,5 @@
+import { describe, test, expect } from 'vitest';
+
 import fromRepeatedPairs from './from-repeated-pairs';
 
 describe('fromRepeatedPairs', function () {

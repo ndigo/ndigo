@@ -1,3 +1,5 @@
+import { describe, test, expect } from 'vitest';
+
 import trailingJoin from './trailing-join';
 
 describe('trailingJoin', function () {

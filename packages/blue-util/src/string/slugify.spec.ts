@@ -1,3 +1,5 @@
+import { describe, test, expect } from 'vitest';
+
 import slugify from './slugify';
 
 describe('slugify', function () {

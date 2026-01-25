@@ -1,3 +1,5 @@
+import { describe, test, expect } from 'vitest';
+
 import toSentence from './to-sentence';
 
 describe('toSentence', function () {

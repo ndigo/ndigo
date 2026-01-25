@@ -1,3 +1,5 @@
+import { describe, test, expect } from 'vitest';
+
 import isConstructor from './is-constructor';
 
 describe('isConstructor', function () {

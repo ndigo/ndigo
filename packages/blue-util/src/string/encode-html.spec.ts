@@ -1,3 +1,5 @@
+import { describe, test, expect } from 'vitest';
+
 import encodeHTML from './encode-html';
 
 describe('encodeHTML', function () {

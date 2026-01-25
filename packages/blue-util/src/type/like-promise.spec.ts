@@ -1,3 +1,5 @@
+import { describe, test, expect } from 'vitest';
+
 import likePromise from './like-promise';
 
 describe('likePromise', function () {

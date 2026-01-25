@@ -1,3 +1,5 @@
+import { describe, test, expect } from 'vitest';
+
 import toProper from './to-proper';
 
 describe('toProper', function () {

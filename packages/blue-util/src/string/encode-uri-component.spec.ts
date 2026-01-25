@@ -1,3 +1,5 @@
+import { describe, test, expect } from 'vitest';
+
 import encode from './encode-uri-component';
 
 describe('encodeURIComponent', function () {

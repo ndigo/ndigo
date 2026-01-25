@@ -1,3 +1,5 @@
+import { describe, test, expect } from 'vitest';
+
 import randInt from './rand-int';
 
 describe('randInt', function () {

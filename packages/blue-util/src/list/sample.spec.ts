@@ -1,3 +1,5 @@
+import { describe, test, expect } from 'vitest';
+
 import sample from './sample';
 
 describe('sample', function () {

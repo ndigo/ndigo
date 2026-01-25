@@ -1,3 +1,5 @@
+import { describe, test, expect } from 'vitest';
+
 import decodeHTML from './decode-html';
 
 describe('decodeHTML', function () {

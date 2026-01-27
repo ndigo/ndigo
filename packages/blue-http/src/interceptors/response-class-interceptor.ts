@@ -40,58 +40,48 @@ export type ResponseClassAwareHTTPInterceptor =
     | ServerErrorAwareHTTPInterceptor;
 
 /**
- * @interface module:http.InformationAwareHTTPInterceptor
  */
 
 /**
- * @function module:http.InformationAwareHTTPInterceptor#postInformationalResponse
  * @param {exteral:Response} response The http response
  * @param {module:http.HTTPInit} settings The http request settings
- * @returns {external:Promise<module:core.JSONObject | undefined>}
+ * @returns {Promise<module:core.JSONObject | undefined>}
  */
 
 /**
- * @interface module:http.SuccessAwareHTTPInterceptor
  */
 
 /**
- * @function module:http.SuccessAwareHTTPInterceptor#postSuccessfulResponse
  * @param {exteral:Response} response The http response
  * @param {module:http.HTTPInit} settings The http request settings
- * @returns {external:Promise<module:core.JSONObject | undefined>}
+ * @returns {Promise<module:core.JSONObject | undefined>}
  */
 
 /**
- * @interface module:http.RedirectAwareHTTPInterceptor
  */
 
 /**
- * @function module:http.RedirectAwareHTTPInterceptor#postRedirectResponse
  * @param {exteral:Response} response The http response
  * @param {module:http.HTTPInit} settings The http request settings
- * @returns {external:Promise<module:core.JSONObject | undefined>}
+ * @returns {Promise<module:core.JSONObject | undefined>}
  */
 
 /**
- * @interface module:http.ClientErrorAwareHTTPInterceptor
  */
 
 /**
- * @function module:http.ClientErrorAwareHTTPInterceptor#postClientErrorResponse
  * @param {exteral:Response} response The http response
  * @param {module:http.HTTPInit} settings The http request settings
- * @returns {external:Promise<module:core.JSONObject | undefined>}
+ * @returns {Promise<module:core.JSONObject | undefined>}
  */
 
 /**
- * @interface module:http.ServerErrorAwareHTTPInterceptor
  */
 
 /**
- * @function module:http.ServerErrorAwareHTTPInterceptor#postServerErrorResponse
  * @param {exteral:Response} response The http response
  * @param {module:http.HTTPInit} settings The http request settings
- * @returns {external:Promise<module:core.JSONObject | undefined>}
+ * @returns {Promise<module:core.JSONObject | undefined>}
  */
 
 /**
@@ -99,52 +89,46 @@ export type ResponseClassAwareHTTPInterceptor =
  */
 
 /**
- * @function module:http.likeInformationAwareHTTPInterceptor
  * @param {*} value
- * @returns {external:boolean} Whether or not a value is like {@link module:http.InformationAwareHTTPInterceptor}.
+ * @returns {boolean} Whether or not a value is like {@link InformationAwareHTTPInterceptor}.
  */
 export const likeInformationAwareHTTPInterceptor = like({ postInformationalResponse: Function }) as (
     value
 ) => value is InformationAwareHTTPInterceptor;
 
 /**
- * @function module:http.likeSuccessAwareHTTPInterceptor
  * @param {*} value
- * @returns {external:boolean} Whether or not a value is like {@link module:http.SuccessAwareHTTPInterceptor}.
+ * @returns {boolean} Whether or not a value is like {@link SuccessAwareHTTPInterceptor}.
  */
 export const likeSuccessAwareHTTPInterceptor = like({ postSuccessfulResponse: Function }) as (
     value
 ) => value is SuccessAwareHTTPInterceptor;
 
 /**
- * @function module:http.likeRedirectAwareHTTPInterceptor
  * @param {*} value
- * @returns {external:boolean} Whether or not a value is like {@link module:http.RedirectAwareHTTPInterceptor}.
+ * @returns {boolean} Whether or not a value is like {@link RedirectAwareHTTPInterceptor}.
  */
 export const likeRedirectAwareHTTPInterceptor = like({ postRedirectResponse: Function }) as (
     value
 ) => value is RedirectAwareHTTPInterceptor;
 
 /**
- * @function module:http.likeClientErrorAwareHTTPInterceptor
  * @param {*} value
- * @returns {external:boolean} Whether or not a value is like {@link module:http.ClientErrorAwareHTTPInterceptor}.
+ * @returns {boolean} Whether or not a value is like {@link ClientErrorAwareHTTPInterceptor}.
  */
 export const likeClientErrorAwareHTTPInterceptor = like({ postClientErrorResponse: Function }) as (
     value
 ) => value is ClientErrorAwareHTTPInterceptor;
 
 /**
- * @function module:http.likeServerErrorAwareHTTPInterceptor
  * @param {*} value
- * @returns {external:boolean} Whether or not a value is like {@link module:http.ServerErrorAwareHTTPInterceptor}.
+ * @returns {boolean} Whether or not a value is like {@link ServerErrorAwareHTTPInterceptor}.
  */
 export const likeServerErrorAwareHTTPInterceptor = like({ postServerErrorResponse: Function }) as (
     value
 ) => value is ServerErrorAwareHTTPInterceptor;
 
 /**
- * @class module:http.MappedResponseClassHTTPInterceptor
  * @implements module:http.ResponseAwareHTTPInterceptor
  * @param {module:http.ResponseClassAwareHTTPInterceptor} interceptor
  */
@@ -158,8 +142,7 @@ export class MappedResponseClassHTTPInterceptor implements ResponseAwareHTTPInte
 
     /**
      * @readonly
-     * @member {module:http.ResponseClassAwareHTTPInterceptor} module:http.MappedResponseClassHTTPInterceptor#interceptor
-     */
+         */
     get interceptor() {
         return this.#interceptor;
     }
@@ -175,10 +158,9 @@ export class MappedResponseClassHTTPInterceptor implements ResponseAwareHTTPInte
 
     /**
      * @async
-     * @function module:http.MappedResponseClassHTTPInterceptor#postResponse
-     * @param {external:Response} response
+         * @param {Response} response
      * @param {module:http.HTTPInit} settings
-     * @returns {external:Promise<external:void>}
+     * @returns {Promise<external:void>}
      */
     async postResponse(response: Response, settings: HTTPInit): Promise<void> {
         if (response.ok && this.#hasSuccessAwareInterceptor) {

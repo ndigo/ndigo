@@ -3,10 +3,9 @@
  */
 /**
  * Generates a pseudo-random hexidecimal of the provided `size`.
- * @function module:util.randHex
  * @category Math
- * @param {external:number} [size=6] The size of the hexidecimal.
- * @returns {external:string} A pseudo-random hexidecimal of the provided `size`.
+ * @param {number} [size=6] The size of the hexidecimal.
+ * @returns {string} A pseudo-random hexidecimal of the provided `size`.
  * @example
  * randHex();
  * // "dd8575"

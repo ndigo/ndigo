@@ -4,10 +4,9 @@
  */
 /**
  * Determines whether a given object is a function.
- * @function module:util.isFunction
  * @category Type
  * @param {*} value The value to be tested.
- * @returns {external:boolean} Whether or not `value` is a function.
+ * @returns {boolean} Whether or not `value` is a function.
  * @example
  * isFunction( new Function() );
  * //=> true

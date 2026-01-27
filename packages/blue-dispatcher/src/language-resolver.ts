@@ -23,21 +23,17 @@ export abstract class AbstractLanguageResolver implements LanguageResolver {
 }
 
 /**
- * @interface module:dispatcher.LanguageResolver
  */
 
 /**
- * @function module:dispatcher.LanguageResolver#resolveLanguage
  */
 
 /**
  * @abstract
- * @class module:dispatcher.AbstractLanguageResolver
  * @implements {module:dispatcher.LanguageResolver}
  */
 
 /**
- * @class module:dispatcher.NavigatorLanguageResolver
  * @extends {module:dispatcher.AbstractLanguageResolver}
  * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/NavigatorLanguage}
  */
@@ -47,8 +43,7 @@ export class NavigatorLanguageResolver extends AbstractLanguageResolver {
     }
 
     /**
-     * @function module:dispatcher.resolveLanguage
-     * @param {module:router.Route} route
+         * @param {module:router.Route} route
      */
     resolveLanguage(route: Route): string {
         let lang: string;

@@ -1,7 +1,6 @@
 /**
  * @author Jeff Rose
- * @module parser
- * @requires util
+ * @see util
  * @see {@link https://github.com/francisrstokes/arcsecond}
  */
 

@@ -39,15 +39,13 @@ const questionMark = '?',
 let routeId = 0;
 
 /**
- * @function module:router~nextRouteId
- * @returns {external:number} The next route id
+ * @returns {number} The next route id
  */
 function nextRouteId(): number {
     return ++routeId;
 }
 
 /**
- * @class module:router.PathRouteSegment
  */
 export class PathRouteSegment implements RouteSegment, Serializable {
     readonly name: string;
@@ -133,7 +131,6 @@ export class PathRouteSegment implements RouteSegment, Serializable {
 }
 
 /**
- * @class module:router.PathRoute
  * @implements module:router.Route
  * @implements module:core.Serializable
  */

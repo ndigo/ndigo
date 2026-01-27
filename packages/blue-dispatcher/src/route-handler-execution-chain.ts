@@ -7,7 +7,6 @@ import { ModelAndView } from './model-and-view';
 import { Route } from '@blue/router';
 
 /**
- * @class module:dispatcher.RouteHandlerExecutionChain
  */
 export default class RouteHandlerExecutionChain {
     #interceptors: RouteHandlerInterceptor[];
@@ -39,8 +38,7 @@ export default class RouteHandlerExecutionChain {
     }
 
     /**
-     * @function module:dispatcher.RouteHandlerExecutionChain#addInterceptor
-     * @param {module:router.RouteHandlerInterceptor} interceptor
+         * @param {module:router.RouteHandlerInterceptor} interceptor
      */
     addInterceptor(interceptor: RouteHandlerInterceptor): void {
         if (interceptor) {
@@ -52,8 +50,7 @@ export default class RouteHandlerExecutionChain {
     }
 
     /**
-     * @function module:dispatcher.RouteHandlerExecutionChain#addInterceptors
-     * @param {external:Array<module:router.RouteHandlerInterceptor>} interceptors
+         * @param {Array<module:router.RouteHandlerInterceptor>} interceptors
      */
     addInterceptors(interceptors: RouteHandlerInterceptor[]): void {
         const length = interceptors?.length;
@@ -65,8 +62,7 @@ export default class RouteHandlerExecutionChain {
     }
 
     /**
-     * @function module:dispatcher.RouteHandlerExecutionChain#applyPostHandle
-     * @param {module:router.Route} route
+         * @param {module:router.Route} route
      * @param {module:dispatcher.ModelAndView} mv
      */
     applyPostHandle(route: Route, mv: ModelAndView): void {
@@ -81,8 +77,7 @@ export default class RouteHandlerExecutionChain {
     }
 
     /**
-     * @function module:dispatcher.RouteHandlerExecutionChain#applyPreHandle
-     * @param {module:router.Route} route
+         * @param {module:router.Route} route
      */
     applyPreHandle(route: Route): boolean {
         const interceptors = this.#interceptors,
@@ -100,9 +95,8 @@ export default class RouteHandlerExecutionChain {
     }
 
     /**
-     * @function module:dispatcher.RouteHandlerExecutionChain#triggerCompleteHandle
-     * @param {module:router.Route} route
-     * @param {external:Error} error
+         * @param {module:router.Route} route
+     * @param {Error} error
      */
     triggerCompleteHandle(route: Route, error: Error = null): void {
         const interceptors = this.#interceptors,

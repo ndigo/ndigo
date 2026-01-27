@@ -5,9 +5,8 @@
  */
 /**
  * Parses a piped list string into an object.
- * @function module:util.removeNonWord
- * @param {external:string} value The string to be transformed.
- * @returns {external:string} The `value` with the non-word characters removed.
+ * @param {string} value The string to be transformed.
+ * @returns {string} The `value` with the non-word characters removed.
  * @category String
  * @example
  * removeNonWord( "lorem ~!@#$%^&*()_+`-={}[]|\\:\";'/?><., ipsum" );

@@ -73,8 +73,7 @@ export interface ConfigurableApplicationContext extends ApplicationContext {
  * * The ability to resolve content.
  * * Inheritance from a parent context unless it is the root context.
  *
- * In addition to standard {@linkcode module:factory.Factory|Factory} lifecycle capabilities, `ApplicationContext` implementations detect and invoke {@linkcode module:context.ApplicationContextAware|ApplicationContextAware} values as well as {@linkcode module:context.ResourceLoaderAware|ResourceLoaderAware}.
- * @interface module:context.ApplicationContext
+ * In addition to standard {@link Factory|Factory} lifecycle capabilities, `ApplicationContext` implementations detect and invoke {@link ApplicationContextAware|ApplicationContextAware} values as well as {@link ResourceLoaderAware|ResourceLoaderAware}.
  * @extends module:factory.ConfigurableFactory
  * @extends module:content.ContentSource
  * @extends module:core.Destroyable
@@ -84,21 +83,19 @@ export interface ConfigurableApplicationContext extends ApplicationContext {
  */
 
 /**
- * Interface to be implemented by any object that wishes to be notified of the {@linkcode module:context.ApplicationContext|ApplicationContext} that it runs in.
+ * Interface to be implemented by any object that wishes to be notified of the {@link ApplicationContext|ApplicationContext} that it runs in.
  *
  * Implementing this interface makes sense for example when an object requires access to a set of collaborating values.
  *
- * This interface can also be implemented if an object needs access to file resources, i.e. wants to call {@linkcode module:context.ResourceLoader#getResource|getResource}, wants to emit an application event, or requires access to the {@linkcode module:context.ContentSource|ContentSource}. However, it is preferable to implement the more specific {@linkcode module:context.ResourceLoaderAware|ResourceLoaderAware}, {@linkcode module:context.ApplicationEventEmitterAware|ApplicationEventEmitterAware} or {@linkcode module:context.ContentSourceAware|ContentSourceAware} interface in such a specific scenario.
+ * This interface can also be implemented if an object needs access to file resources, i.e. wants to call {@link ResourceLoader#getResource|getResource}, wants to emit an application event, or requires access to the {@link ContentSource|ContentSource}. However, it is preferable to implement the more specific {@link ResourceLoaderAware|ResourceLoaderAware}, {@link ApplicationEventEmitterAware|ApplicationEventEmitterAware} or {@link ContentSourceAware|ContentSourceAware} interface in such a specific scenario.
  *
- * {@linkcode module:context.AsApplicationContextAware|AsApplicationContextAware} is a convenience mixin for application objects, implementing this interface.
- * @interface module:context.ApplicationContextAware
+ * {@link AsApplicationContextAware|AsApplicationContextAware} is a convenience mixin for application objects, implementing this interface.
  */
 
 /**
  * Set the ApplicationContext that this object runs in. Normally this call will be used to initialize the object.
  *
  * Invoked after population of normal value properties but before an `init` callback.
- * @function module:context.ApplicationContextAware#setApplicationContext
  * @param {module:context.ApplicationContext} context The ApplicationContext to be used by this object.
  */
 
@@ -109,9 +106,8 @@ let uuid = 0;
 export const $ChildContext: unique symbol = Symbol('@@context/child');
 
 /**
- * @function module:context.likeApplicationContext
  * @param {*} value The value to be tested
- * @returns {external:boolean} Whether or not the `value` is {@linkcode module:context.ApplicationContext|ApplicationContext}
+ * @returns {boolean} Whether or not the `value` is {@link ApplicationContext|ApplicationContext}
  */
 export const likeApplicationContext = allPass([
     likeContentSource,
@@ -124,20 +120,18 @@ export const likeApplicationContext = allPass([
 ]) as (value) => value is ApplicationContext;
 
 /**
- * @function module:context.likeApplicationContextAware
  * @param {*} value The value to be tested
- * @returns {external:boolean} Whether or not the `value` is {@linkcode module:context.ApplicationContextAware|ApplicationContextAware}
+ * @returns {boolean} Whether or not the `value` is {@link ApplicationContextAware|ApplicationContextAware}
  */
 export const likeApplicationContextAware = likeAwareAnd(like({ setApplicationContext: Function })) as (
     value
 ) => value is ApplicationContextAware;
 
 /**
- * @class module:context.GenericApplicationContext
  * @implements module:context.ConfigurableApplicationContext
  * @extends module:factory.DefaultFactory
- * @mixes module:context.AsEventEmitter
- * @mixes module:context.AsModuleResourceLoader
+ * @see module:context.AsEventEmitter
+ * @see module:context.AsModuleResourceLoader
  */
 // GenericApplicationContext extends AsEventEmitter(AsModuleResourceLoader(DefaultFactory))
 // which provides EventEmitter and ResourceLoader functionality via mixins.
@@ -283,7 +277,6 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
 }
 
 /**
- * @class module:context.ProxiedGenericApplicationContext
  * @implements external:Record
  * @extends module:context.GenericApplicationContext
  */
@@ -297,7 +290,7 @@ export class ProxiedGenericApplicationContext extends GenericApplicationContext 
 }
 
 /**
- * @mixin module:context.AsApplicationContextAware
+ * @see module:context.AsApplicationContextAware
  * @implements module:context.ApplicationContextAware
  */
 export const AsApplicationContextAware = <T extends Constructable>(
@@ -307,14 +300,12 @@ export const AsApplicationContextAware = <T extends Constructable>(
         readonly applicationContext: ApplicationContext;
 
         /**
-         * @function module:context.AsApplicationContextAware#setApplicationContext
-         * @param {module:context.ApplicationContext} applicationContext The application context to be set.
+                 * @param {module:context.ApplicationContext} applicationContext The application context to be set.
          */
         setApplicationContext(applicationContext: ApplicationContext): void {
             /**
              * @readonly
-             * @member {module:context.ApplicationContext} module:context.AsApplicationContextAware#applicationContext
-             */
+                         */
             defineProperty(this, 'applicationContext', {
                 value: applicationContext,
                 configurable: true,
@@ -326,18 +317,16 @@ export const AsApplicationContextAware = <T extends Constructable>(
 
 /**
  * Create a new ApplicationContextAwareProcessor for the given context.
- * @classdesc
- * An {@linkcode module:factory.InitializationAwareProcessor|InitializationAwareProcessor} implementation that passes the ApplicationContext to value that implement the {@linkcode module:context.EnvironmentAware|EnvironmentAware}, {@linkcode module:context.ResourceLoaderAware|ResourceLoaderAware}, {@linkcode module:context.ApplicationEventEmitterAware|ApplicationEventEmitterAware}, {@linkcode module:context.ContentSourceAware|ContentSourceAware}, and/or {@linkcode module:context.ApplicationContextAware|ApplicationContextAware} interfaces.
+  * An {@link InitializationAwareProcessor|InitializationAwareProcessor} implementation that passes the ApplicationContext to value that implement the {@link EnvironmentAware|EnvironmentAware}, {@link ResourceLoaderAware|ResourceLoaderAware}, {@link ApplicationEventEmitterAware|ApplicationEventEmitterAware}, {@link ContentSourceAware|ContentSourceAware}, and/or {@link ApplicationContextAware|ApplicationContextAware} interfaces.
  *
  * Implemented interfaces are satisfied in order of their mention above.
- * @class module:context.ApplicationContextAwareProcessor
  * @implements module:factory.InitializationAwareProcessor
  * @param {module:context.ApplicationContext} applicationContext
- * @see {@link module:context.EnvironmentAware}
- * @see {@link module:context.ResourceLoaderAware}
- * @see {@link module:context.ApplicationEventEmitterAware}
- * @see {@link module:context.ContentSourceAware}
- * @see {@link module:context.ApplicationContextAware}
+ * @see {@link EnvironmentAware}
+ * @see {@link ResourceLoaderAware}
+ * @see {@link ApplicationEventEmitterAware}
+ * @see {@link ContentSourceAware}
+ * @see {@link ApplicationContextAware}
  */
 export class ApplicationContextAwareProcessor implements InitializationAwareProcessor {
     readonly applicationContext: ApplicationContext;
@@ -345,8 +334,7 @@ export class ApplicationContextAwareProcessor implements InitializationAwareProc
     constructor(applicationContext: ApplicationContext) {
         /**
          * @readonly
-         * @member {module:context.ApplicationContext} module:context.ApplicationContextAwareProcessor#applicationContext
-         */
+                 */
         defineProperty(this, 'applicationContext', {
             value: applicationContext,
             configurable: true,

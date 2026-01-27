@@ -3,7 +3,6 @@
  */
 import { like } from '@blue/util';
 /**
- * @interface module:core.Enumerable
  */
 /**
  * @callback module:core.Enumerable~ForEachCallback
@@ -12,24 +11,19 @@ import { like } from '@blue/util';
  * @param {Enumerable} list
  */
 /**
- * @function module:core.Enumerable#entries
- * @returns {external:Iterator}
+ * @returns {Iterator}
  */
 /**
- * @function module:core.Enumerable#forEach
  * @param {module:core.Enumerable~ForEachCallback} callback
  * @param {*} [context]
  */
 /**
- * @function module:core.Enumerable#keys
- * @returns {external:Iterator}
+ * @returns {Iterator}
  */
 /**
- * @function module:core.Enumerable#values
- * @returns {external:Iterator}
+ * @returns {Iterator}
  */
 /**
- * @interface module:core.AsyncEnumerable
  */
 /**
  * @callback module:core.AsyncEnumerable~ForEachCallback
@@ -38,26 +32,21 @@ import { like } from '@blue/util';
  * @param {EnumeraAsyncEnumerableble} list
  */
 /**
- * @function module:core.AsyncEnumerable#entries
- * @returns {external:Iterator}
+ * @returns {Iterator}
  */
 /**
- * @function module:core.AsyncEnumerable#forEach
  * @param {module:core.AsyncEnumerable~ForEachCallback} callback
  * @param {*} [context]
  */
 /**
- * @function module:core.AsyncEnumerable#keys
- * @returns {external:Iterator}
+ * @returns {Iterator}
  */
 /**
- * @function module:core.AsyncEnumerable#values
- * @returns {external:Iterator}
+ * @returns {Iterator}
  */
 /**
- * @function module:core.likeEnumerable
  * @param {*} value The value to be tested
- * @returns {external:boolean} Whether or not the `value` is {@linkcode module:core.Enumerable|Enumerable} or {@linkcode module:core.AsyncEnumerable|AsyncEnumerable}.
+ * @returns {boolean} Whether or not the `value` is {@link Enumerable|Enumerable} or {@link AsyncEnumerable|AsyncEnumerable}.
  */
 export const likeEnumerable = like({ entries: Function, forEach: Function, keys: Function, values: Function });
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiZW51bWVyYWJsZS5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbIi4uL3NyYy9lbnVtZXJhYmxlLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBOztHQUVHO0FBRUgsT0FBTyxFQUFFLElBQUksRUFBRSxNQUFNLFlBQVksQ0FBQztBQWdCbEM7O0dBRUc7QUFFSDs7Ozs7R0FLRztBQUVIOzs7R0FHRztBQUVIOzs7O0dBSUc7QUFFSDs7O0dBR0c7QUFFSDs7O0dBR0c7QUFFSDs7R0FFRztBQUVIOzs7OztHQUtHO0FBRUg7OztHQUdHO0FBRUg7Ozs7R0FJRztBQUVIOzs7R0FHRztBQUVIOzs7R0FHRztBQUVIOzs7O0dBSUc7QUFDSCxNQUFNLENBQUMsTUFBTSxjQUFjLEdBQUcsSUFBSSxDQUFDLEVBQUUsT0FBTyxFQUFFLFFBQVEsRUFBRSxPQUFPLEVBQUUsUUFBUSxFQUFFLElBQUksRUFBRSxRQUFRLEVBQUUsTUFBTSxFQUFFLFFBQVEsRUFBRSxDQUUvQyxDQUFDIn0=
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiZW51bWVyYWJsZS5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbIi4uL3NyYy9lbnVtZXJhYmxlLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBOztHQUVHO0FBRUgsT0FBTyxFQUFFLElBQUksRUFBRSxNQUFNLFlBQVksQ0FBQztBQWdCbEM7R0FDRztBQUVIOzs7OztHQUtHO0FBRUg7O0dBRUc7QUFFSDs7O0dBR0c7QUFFSDs7R0FFRztBQUVIOztHQUVHO0FBRUg7R0FDRztBQUVIOzs7OztHQUtHO0FBRUg7O0dBRUc7QUFFSDs7O0dBR0c7QUFFSDs7R0FFRztBQUVIOztHQUVHO0FBRUg7OztHQUdHO0FBQ0gsTUFBTSxDQUFDLE1BQU0sY0FBYyxHQUFHLElBQUksQ0FBQyxFQUFFLE9BQU8sRUFBRSxRQUFRLEVBQUUsT0FBTyxFQUFFLFFBQVEsRUFBRSxJQUFJLEVBQUUsUUFBUSxFQUFFLE1BQU0sRUFBRSxRQUFRLEVBQUUsQ0FFL0MsQ0FBQyJ9

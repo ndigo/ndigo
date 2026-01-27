@@ -6,11 +6,10 @@ import random from './random';
 
 /**
  * Generates a pseudo-random number between `min` and `max`.
- * @function module:util.rand
  * @category Math
- * @param {external:number} [min=Number.MIN_SAFE_INTEGER]
- * @param {external:number} [max=Number.MAX_SAFE_INTEGER]
- * @returns {external:number} A pseudo-random number between `min` and `max`.
+ * @param {number} [min=Number.MIN_SAFE_INTEGER]
+ * @param {number} [max=Number.MAX_SAFE_INTEGER]
+ * @returns {number} A pseudo-random number between `min` and `max`.
  * @example
  * rand( 0, 10 );
  * //=> 7.369723

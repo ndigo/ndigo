@@ -36,42 +36,35 @@ export interface ConfigurableEnvironment extends Environment {
  * Interface representing the environment in which the current application is running.
  * Two key aspects of the application environment: **profiles** and **properties**.
  * A **profile** is a named, logical group of values to be registered with the container only if the given profile is **active**.
- * The role of the `Environment` with relation to profiles is in determining which profiles (if any) are currently {@link module:context.Environment#activeProfiles|active}, and which profiles (if any) should be {@link module:context.Environment#defaultProfiles|active by default}.
+ * The role of the `Environment` with relation to profiles is in determining which profiles (if any) are currently {@link Environment#activeProfiles|active}, and which profiles (if any) should be {@link Environment#defaultProfiles|active by default}.
  * **Properties** may originate from a variety of sources. The role of the environment object with relation to properties is to provide a convenient interface for configuring property sources and resolving properties from them.
- * Values managed within an {@linkcode module:context.ApplicationContext|ApplicationContext} may register to be {@linkcode module:context.EnvironmentAware|EnvironmentAware} in order to get the profile state and resolve properties directly.
- * @interface module:context.Environment
+ * Values managed within an {@link ApplicationContext|ApplicationContext} may register to be {@link EnvironmentAware|EnvironmentAware} in order to get the profile state and resolve properties directly.
  * @extends module:context.PropertyResolver
  */
 
 /**
  * The set of profiles explicitly made active for this environment. Profiles are used for creating logical groupings of bean definitions to be registered conditionally, for example based on deployment environment.
- * If no profiles have explicitly been specified as active, then any {@link module:context.Environment#defaultProfiles|default profiles} will be activated.
- * @member {external:Array<external:string>} module:context.Environment#activeProfiles
- * @see {@link module:context.Environment#defaultProfiles}
+ * If no profiles have explicitly been specified as active, then any {@link Environment#defaultProfiles|default profiles} will be activated.
+ * @see {@link Environment#defaultProfiles}
  */
 
 /**
  * The set of profiles to be active by default when no active profiles have been set explicitly.
- * @member {external:Array<external:string>} module:context.Environment#defaultProfiles
- * @see {@link module:context.Environment#activeProfiles}
+ * @see {@link Environment#activeProfiles}
  */
 
 /**
- * @interface module:context.EnvironmentAware
  * @extends module:factory.Aware
  */
 
 /**
- * @function module:context.EnvironmentAware#setEnvironment
- * @param {module:context.Environment} environment The {@linkcode module:context.Environment|Environment} to be set.
+ * @param {module:context.Environment} environment The {@link Environment|Environment} to be set.
  */
 
 /**
- * @interface module:context.EnvironmentSource
  */
 
 /**
- * @member {module:context.Environment} module:context.EnvironmentSource#environment
  */
 
 const { defineProperty } = Reflect;
@@ -152,14 +145,13 @@ export abstract class AbstractEnvironment implements ConfigurableEnvironment {
 }
 
 /**
- * Base class for {@linkcode module:context.Environment|Environment} implementations.
+ * Base class for {@link Environment|Environment} implementations.
  * @abstract
- * @class module:context.AbstractEnvironment
  * @implements module:context.Environment
  */
 
 /**
- * @mixin module:context.AsEnvironmentAware
+ * @see module:context.AsEnvironmentAware
  * @implements module:context.EnvironmentAware
  * @returns {module:context.Constructable<module:context.EnvironmentAware>}
  */
@@ -178,9 +170,8 @@ export const AsEnvironmentAware = <T extends Constructable>(superclass: T): Cons
     };
 
 /**
- * @function module:context.likeEnvironment
  * @param {*} value The value to be tested
- * @returns {external:boolean} Whether or not the `value` is {@linkcode module:context.Environment|Environment}
+ * @returns {boolean} Whether or not the `value` is {@link Environment|Environment}
  */
 export const likeEnvironment = both(
     likePropertyResolver,
@@ -188,9 +179,8 @@ export const likeEnvironment = both(
 ) as (value) => value is Environment;
 
 /**
- * @function module:context.likeEnvironmentAware
  * @param {*} value The value to be tested
- * @returns {external:boolean} Whether or not the `value` is {@linkcode module:context.EnvironmentAware|EnvironmentAware}
+ * @returns {boolean} Whether or not the `value` is {@link EnvironmentAware|EnvironmentAware}
  */
 export const likeEnvironmentAware = likeAwareAnd(like({ setEnvironment: Function })) as (
     value
@@ -199,9 +189,8 @@ export const likeEnvironmentAware = likeAwareAnd(like({ setEnvironment: Function
 const hasEnvironmentProperty = propSatisfies(likeEnvironment, 'environment');
 
 /**
- * @function module:context.likeEnvironmentSource
  * @param {*} value The value to be tested
- * @returns {external:boolean} Whether or not the `value` is {@linkcode module:context.EnvironmentSource|EnvironmentSource}
+ * @returns {boolean} Whether or not the `value` is {@link EnvironmentSource|EnvironmentSource}
  */
 export const likeEnvironmentSource = both(complement(isNil), hasEnvironmentProperty) as (
     value

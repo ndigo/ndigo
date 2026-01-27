@@ -123,41 +123,41 @@ export type ValidationConstraints = {
 };
 
 /**
- * @typedef {external:Object} Params
+ * @typedef {Object} Params
  * @property {*} value
  */
 
 /**
  * @typedef {Params} DateParams
- * @property {external:string} format
+ * @property {string} format
  */
 
 /**
  * @typedef {Params} DigitsParams
- * @property {external:number} integer The maximum number of integral digits accepted for this number.
- * @property {external:number} fraction The number of fractional digits accepted for this number.
+ * @property {number} integer The maximum number of integral digits accepted for this number.
+ * @property {number} fraction The number of fractional digits accepted for this number.
  */
 
 /**
  * @typedef {Params} MoneyParams
- * @property {external:number} currencyFormat
- * @property {external:number} integer
+ * @property {number} currencyFormat
+ * @property {number} integer
  */
 
 /**
  * @typedef {Params} NonConsecutiveAlphaNumericsParams
- * @property {external:number} maxSequential
+ * @property {number} maxSequential
  */
 
 /**
  * @typedef {Params} NonRepeatingAlphaNumericsParams
- * @property {external:number} maxRepeating
+ * @property {number} maxRepeating
  */
 
 /**
  * @typedef {Params} PatternParams
- * @property {external:string|external:RegExp} regex
- * @property {external:string} flags
+ * @property {string|external:RegExp} regex
+ * @property {string} flags
  */
 
 const { parseFloat, parseInt } = Number,
@@ -210,12 +210,12 @@ const { parseFloat, parseInt } = Number,
     isCity: constraint = both(isSingleSpaced, test(CITY_REGEX)),
     /**
      * Validates a value with a set of constraints, requiring a minimum to be true
-     * @param {external:string} value value to validate
-     * @param {external:Object} params expected parameters
-     * @param {external:Object} params.constraint set of constraints as an array
-     * @param {external:Object} params.constraint.type constraint name
-     * @param {external:Object} params.constraint.params constraint params
-     * @param {external:Object} params.min the minimum number of constraints in the set that must be true
+     * @param {string} value value to validate
+     * @param {Object} params expected parameters
+     * @param {Object} params.constraint set of constraints as an array
+     * @param {Object} params.constraint.type constraint name
+     * @param {Object} params.constraint.params constraint params
+     * @param {Object} params.min the minimum number of constraints in the set that must be true
      */
     isConstraintSet: constraint = (value, params: SetParams) => {
         const _value = value;
@@ -260,7 +260,7 @@ const { parseFloat, parseInt } = Number,
     },
     /**
      * Validates digits to have a certain amount of decimal numbers and/or integer numbers
-     * @param {external:string} The value expected
+     * @param {string} The value expected
      * @param {DigitsParams} params parameters
      */
     isDigits: constraint<string> = (value, params: DigitsParams = { integer: -1, fraction: -1 }): boolean => {
@@ -318,18 +318,16 @@ const { parseFloat, parseInt } = Number,
     isLength: constraint = (value, params: RangeParams) => rangeValidator(valueCount(value), params),
     /**
      * Validates a number to be less than
-     * @function module:validate.constraints~isMax
-     * @param {external:string|external:number} value The value to be tested
+         * @param {string|external:number} value The value to be tested
      * @param {Param} params
-     * @returns {external:boolean} Whether or not the `value` is less than or equal to `params.value`.
+     * @returns {boolean} Whether or not the `value` is less than or equal to `params.value`.
      */
     isMax: constraint<string> = (value, params: Params = {}) => lte(parseFloat(value as any), parseFloat(params.value)),
     /**
      * Validates a number to be greater than
-     * @function module:validate.constraints~isMin
-     * @param {external:string|external:number} value The value to be tested
+         * @param {string|external:number} value The value to be tested
      * @param {Param} params
-     * @returns {external:boolean} Whether or not the `value` is greater than or equal to `params.value`.
+     * @returns {boolean} Whether or not the `value` is greater than or equal to `params.value`.
      */
     isMin: constraint<string> = (value, params: Params = {}) => gte(parseFloat(value as any), parseFloat(params.value)),
     /** Validates currency based on these rules (BLUEJS-741) */
@@ -427,9 +425,9 @@ const { parseFloat, parseInt } = Number,
     },
     /**
      * Validates a regular expression pattern
-     * @param {external:string} The value expected
-     * @param {external:string|external:RegExp} regexp The regular expression to be used
-     * @param {external:string} flags The flags to be used with the regular expression
+     * @param {string} The value expected
+     * @param {string|external:RegExp} regexp The regular expression to be used
+     * @param {string} flags The flags to be used with the regular expression
      */
     isPatternMatch = (value: string, regexp: pattern, flags?: string): boolean => {
         regexp = ifElse(isString, removeSlashes, identity)(regexp);
@@ -446,10 +444,10 @@ const { parseFloat, parseInt } = Number,
     isPostalCode: constraint = patternConstraint({ regex: POSTAL_CODE_REGEX }) as unknown as constraint<serializable>,
     /**
      * Validates a range
-     * @param {external:string} The value expected
-     * @param {external:Object} params Expected parameters
-     * @param {external:Object} params.min Lowest amount in the range
-     * @param {external:Object} params.max Highest amount in the range
+     * @param {string} The value expected
+     * @param {Object} params Expected parameters
+     * @param {Object} params.min Lowest amount in the range
+     * @param {Object} params.max Highest amount in the range
      */
     isRange: constraint = (value, params: RangeParams) => rangeValidator(value, params),
     isReal: constraint = patternConstraint({ regex: REAL_REGEX }) as unknown as constraint<serializable>,
@@ -476,12 +474,11 @@ const { parseFloat, parseInt } = Number,
     isSsnValidGroups: constraint = patternConstraint({ regex: SSN_VALID_GROUPS_FORMAT }) as unknown as constraint<serializable>,
     /**
      * Validates a value as a valid step in a possible range
-     * @function module:validate.constraints.Step.validator
-     * @param {external:string} value The value expected
-     * @param {external:Object} params Expected parameters
-     * @param {external:Object} params.min Lowest amount in the range
-     * @param {external:Object} params.max Highest amount in the range
-     * @param {external:Object} params.step Incremental or decremental step amount
+         * @param {string} value The value expected
+     * @param {Object} params Expected parameters
+     * @param {Object} params.min Lowest amount in the range
+     * @param {Object} params.max Highest amount in the range
+     * @param {Object} params.step Incremental or decremental step amount
      */
     isStep: constraint = (value, params: StepParams = { step: 1 }) => {
         const parsed = Number(value),
@@ -521,78 +518,67 @@ const { parseFloat, parseInt } = Number,
  */
 const standardConstraints: ValidationConstraints = {
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.AddressLine
-     */
+         */
     AddressLine: {
         validate: isAddressLine,
     },
 
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.Alpha
-     */
+         */
     Alpha: {
         validate: isAlpha,
     },
 
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.AlphaNumeric
-     */
+         */
     AlphaNumeric: {
         validate: isAlphaNumeric,
     },
 
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.AlphaNumericPlus
-     */
+         */
     AlphaNumericPlus: {
         validate: isAlphaNumericPlus,
     },
 
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.Blank
-     */
+         */
     Blank: {
         validate: isBlank,
     },
 
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.Boolean
-     */
+         */
     Boolean: {
         validate: isBoolean,
     },
 
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.Capitals
-     */
+         */
     Capitals: {
         validate: isCapitals,
     },
 
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.Characters
-     */
+         */
     Characters: {
         validate: isCharacters,
     },
 
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.City
-     */
+         */
     City: {
         validate: isCity,
     },
 
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.ConstraintSet
-     */
+         */
     ConstraintSet: {
         validate: isConstraintSet,
     },
 
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.Date
-     */
+         */
     Date: {
         validate: (value: temporal, params: DateParams = {}) => {
             const { format } = params;
@@ -601,43 +587,37 @@ const standardConstraints: ValidationConstraints = {
     },
 
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.Date18YearsOld
-     */
+         */
     Date18YearsOld: {
         validate: isDate18YearsOld,
     },
 
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.DateRange
-     */
+         */
     DateRange: {
         validate: isDateRange,
     },
 
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.Digits
-     */
+         */
     Digits: {
         validate: isDigits,
     },
 
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.Email
-     */
+         */
     Email: {
         validate: isEmail,
     },
 
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.Enum
-     */
+         */
     Enum: {
         validate: isEnum,
     },
 
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.Future
-     */
+         */
     Future: {
         validate: (value: temporal, params: DateParams = {}) => {
             const { format } = params;
@@ -646,134 +626,115 @@ const standardConstraints: ValidationConstraints = {
     },
 
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.Integer
-     */
+         */
     Integer: {
         validate: isInteger,
     },
 
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.ITINRange
-     */
+         */
     ITINRange: {
         validate: isITINRange,
     },
 
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.Length
-     */
+         */
     Length: {
         validate: isLength,
     },
 
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.Max
-     */
+         */
     Max: {
         validate: isMax,
     },
 
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.Min
-     */
+         */
     Min: {
         validate: isMin,
     },
 
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.Money
-     */
+         */
     Money: {
         validate: isMoney,
     },
 
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.MustBeginWith
-     */
+         */
     MustBeginWith: {
         validate: isMustBeginWith,
     },
 
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.NotBlank
-     */
+         */
     NotBlank: {
         validate: isNotBlank,
     },
 
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.NotBeginWith
-     */
+         */
     NotBeginWith: {
         validate: isNotBeginWith,
     },
 
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.NotBeginWith1
-     */
+         */
     NotBeginWith1: {
         validate: isNotBeginWith1,
     },
 
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.NonConsecutiveAlphaNumerics
-     */
+         */
     NonConsecutiveAlphaNumerics: {
         validate: isNonConsecutiveAlphaNumerics,
     },
 
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.NonRepeatingAlphaNumerics
-     */
+         */
     NonRepeatingAlphaNumerics: {
         validate: isNonRepeatingAlphaNumerics,
     },
 
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.NonRepeatingSequence
-     */
+         */
     NonRepeatingSequence: {
         validate: isNonRepeatingSequence,
     },
 
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.NotPhoneEmail
-     */
+         */
     NotPhoneEmail: {
         validate: isNotAPhoneEmail,
     },
 
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.Numbers
-     */
+         */
     Numbers: {
         validate: isNumbers,
     },
 
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.Numeric
-     */
+         */
     Numeric: {
         validate: isNumeric,
     },
 
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.PasswordCharacters
-     */
+         */
     PasswordCharacters: {
         validate: isPasswordCharacters,
     },
 
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.PasswordSymbols
-     */
+         */
     PasswordSymbols: {
         validate: isPasswordSymbols,
     },
 
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.Past
-     */
+         */
     Past: {
         validate: (value: temporal, params: DateParams = {}) => {
             const { format } = params;
@@ -782,8 +743,7 @@ const standardConstraints: ValidationConstraints = {
     },
 
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.Pattern
-     */
+         */
     Pattern: {
         validate: (value: string, params: PatternParams = {}) => {
             const { regex, flags } = params;
@@ -792,113 +752,97 @@ const standardConstraints: ValidationConstraints = {
     },
 
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.PersonalName
-     */
+         */
     PersonalName: {
         validate: isPersonalName,
     },
 
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.PhoneNorthAmerica
-     */
+         */
     PhoneNorthAmerica: {
         validate: isPhoneNorthAmerica,
     },
 
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.PhoneOao
-     */
+         */
     PhoneOao: {
         validate: isPhoneOao,
     },
 
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.PostalCode
-     */
+         */
     PostalCode: {
         validate: isPostalCode,
     },
 
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.Range
-     */
+         */
     Range: {
         validate: isRange,
     },
 
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.Real
-     */
+         */
     Real: {
         validate: isReal,
     },
 
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.RoutingNumber
-     */
+         */
     RoutingNumber: {
         validate: isRoutingNumber,
     },
 
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.Ssn
-     */
+         */
     Ssn: {
         validate: isSsn,
     },
 
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.SsnExclude
-     */
+         */
     SsnExclude: {
         validate: isSsnExclude,
     },
 
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.SsnOao
-     */
+         */
     SsnOao: {
         validate: isSsnOao,
     },
 
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.SsnValidGroups
-     */
+         */
     SsnValidGroups: {
         validate: isSsnValidGroups,
     },
 
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.Specials
-     */
+         */
     Specials: {
         validate: isSpecials,
     },
 
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.Step
-     */
+         */
     Step: {
         validate: isStep,
     },
 
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.URL
-     */
+         */
     URL: {
         validate: isUrl,
     },
 
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.ZipCode
-     */
+         */
     ZipCode: {
         validate: isZipCode,
     },
 
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.ZipCodeExtension
-     */
+         */
     ZipCodeExtension: {
         validate: isZipCodeExtension,
     },

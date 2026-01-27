@@ -24,10 +24,9 @@ import isString from './is-string';
 
 /**
  * Determines whether a given object is an array-like.
- * @function module:util.likeArray
  * @category Type
  * @param {*} value The value to be tested.
- * @returns {external:boolean} Whether or not `value` is an array-like.
+ * @returns {boolean} Whether or not `value` is an array-like.
  * @example
  * likeArray( [] );
  * //=> true

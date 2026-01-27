@@ -12,7 +12,6 @@ export interface Qualifiable {
 }
 export declare const parseQualityFactor: (...args: unknown[]) => unknown;
 /**
- * @class module:core~QualityFactorComparator
  * @implements module:core.Comparator
  */
 declare class QualityFactorComparator implements Comparator<Qualifiable> {

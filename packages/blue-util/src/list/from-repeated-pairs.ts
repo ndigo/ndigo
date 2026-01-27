@@ -5,14 +5,13 @@
 
 /**
  * Creates a new object from a list key-value pairs. If a key appears in multiple pairs, the corresponding value will be an array.
- * @function module:util.fromRepeatedPairs
  * @category List
- * @see {@link module:util.fromPairs}
- * @see {@link module:util.pair}
- * @see {@link module:util.toPairs}
+ * @see {@link fromPairs}
+ * @see {@link pair}
+ * @see {@link toPairs}
  */
 const fromRepeatedPairs = (pairs: [any, any][]): { any?: any | any[] } => {
-    const result = {};
+    const result: Record<any, any> = {};
     let index = 0;
     while (index < pairs.length) {
         const [key, value] = pairs[index];

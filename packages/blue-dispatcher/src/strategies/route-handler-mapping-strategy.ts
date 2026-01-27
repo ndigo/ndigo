@@ -21,7 +21,6 @@ const { defineProperty } = Reflect,
     defaultRouteHandlerMappings: RouteHandlerMapping[] = [new NamePathHandlerMapping(), new MetadataHandlerMapping()];
 
 /**
- * @interface module:dispatcher.RouteHandlerMappingStrategy
  */
 
 export const AsRouteHandlerMappingStrategy = <T extends Constructable<StrategyInitializer>>(

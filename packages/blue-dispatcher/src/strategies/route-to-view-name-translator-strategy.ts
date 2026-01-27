@@ -15,7 +15,6 @@ export interface RouteToViewNameTranslatorStrategy {
 }
 
 /**
- * @interface module:dispatcher.RequestToViewNameTranslatorStrategy
  */
 
 const { defineProperty } = Reflect,
@@ -55,9 +54,8 @@ export const AsRouteToViewNameTranslatorStrategy = <T extends Constructable<Stra
 
         /**
          * Translate the supplied route into a default view name.
-         * @function module:dispatcher.RouteToViewNameTranslatorStrategy#getDefaultViewName
-         * @param {module:router.Route} route The current route
-         * @returns {external:string} The view name or `null` if no default found.
+                 * @param {module:router.Route} route The current route
+         * @returns {string} The view name or `null` if no default found.
          */
         getDefaultViewName(route: Route): string {
             return this.routeToViewNameTranslator ? this.routeToViewNameTranslator.getViewName(route) : null;

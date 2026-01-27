@@ -18,9 +18,8 @@ const regExpFlags = /[gimsuy]+/g,
 
 /**
  * Returns a regular expression for the given `pattern`.
- * @function module:util.toRegExp
- * @param {external:string} value
- * @returns {external:RegExp}
+ * @param {string} value
+ * @returns {RegExp}
  * @example
  * toRegExp( 'foo' );
  * //=> /foo/

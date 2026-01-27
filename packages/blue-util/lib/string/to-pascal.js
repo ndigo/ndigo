@@ -9,9 +9,8 @@ const // Lower case letters at the beginning of a string
 lowerCaseLetters = /^[a-z]/, 
 /**
  * Returns the pascal case version of a string.
- * @function module:util.toPascal
- * @param {external:string} value
- * @returns {external:string}
+     * @param {string} value
+ * @returns {string}
  * @category String
  * @example
  * toPascal( 'lorem-ipsum-dolor' );
@@ -20,4 +19,4 @@ lowerCaseLetters = /^[a-z]/,
  */
 toPascal = pipe(toCamel, (value) => value.replace(lowerCaseLetters, toUpper));
 export default toPascal;
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoidG8tcGFzY2FsLmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiLi4vLi4vc3JjL3N0cmluZy90by1wYXNjYWwudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7Ozs7R0FJRztBQUVILE9BQU8sRUFBRSxJQUFJLEVBQUUsT0FBTyxFQUFFLE1BQU0sT0FBTyxDQUFDO0FBRXRDLE9BQU8sT0FBTyxNQUFNLFlBQVksQ0FBQztBQUVqQyxNQUFNLGtEQUFrRDtBQUNwRCxnQkFBZ0IsR0FBRyxRQUFRO0FBQzNCOzs7Ozs7Ozs7O0dBVUc7QUFDSCxRQUFRLEdBQThCLElBQUksQ0FBQyxPQUFPLEVBQUUsQ0FBQyxLQUFhLEVBQVUsRUFBRSxDQUMxRSxLQUFLLENBQUMsT0FBTyxDQUFDLGdCQUFnQixFQUFFLE9BQU8sQ0FBQyxDQUMzQyxDQUFDO0FBRU4sZUFBZSxRQUFRLENBQUMifQ==
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoidG8tcGFzY2FsLmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiLi4vLi4vc3JjL3N0cmluZy90by1wYXNjYWwudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7Ozs7R0FJRztBQUVILE9BQU8sRUFBRSxJQUFJLEVBQUUsT0FBTyxFQUFFLE1BQU0sT0FBTyxDQUFDO0FBRXRDLE9BQU8sT0FBTyxNQUFNLFlBQVksQ0FBQztBQUVqQyxNQUFNLGtEQUFrRDtBQUNwRCxnQkFBZ0IsR0FBRyxRQUFRO0FBQzNCOzs7Ozs7Ozs7R0FTRztBQUNILFFBQVEsR0FBOEIsSUFBSSxDQUFDLE9BQU8sRUFBRSxDQUFDLEtBQWEsRUFBVSxFQUFFLENBQzFFLEtBQUssQ0FBQyxPQUFPLENBQUMsZ0JBQWdCLEVBQUUsT0FBTyxDQUFDLENBQzNDLENBQUM7QUFFTixlQUFlLFFBQVEsQ0FBQyJ9

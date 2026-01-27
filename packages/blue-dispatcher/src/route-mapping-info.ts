@@ -39,7 +39,6 @@ export class AccessExpression extends AbstractNameValueExpression<boolean> {
 
 /**
  * Parses and matches a single param expression to a route.
- * @class module:dispatcher.ParamExpression
  * @extends module:dispatcher.AbstractNameValueExpression<external:string>
  * @param {...external:string} [patterns] 0 or more route patterns; if 0 the condition will match to every route.
  */
@@ -82,8 +81,7 @@ export class ParamExpression extends AbstractNameValueExpression<string> {
 }
 
 /**
- * A logical conjunction (' && ') route condition that matches a route against a set parameter expressions with syntax defined in {@linkcode module:dispatcher.RouteMapping|RouteMapping}.
- * @class module:dispatcher.ParamsRouteCondition
+ * A logical conjunction (' && ') route condition that matches a route against a set parameter expressions with syntax defined in {@link RouteMapping|RouteMapping}.
  * @extends module:dispatcher.AbstractRouteCondition
  */
 export class ParamsRouteCondition extends AbstractRouteCondition<ParamsRouteCondition> {
@@ -141,9 +139,8 @@ export class ParamsRouteCondition extends AbstractRouteCondition<ParamsRouteCond
      * Compare to another condition based on parameter expressions. A condition is considered to be a more specific match, if it has:
      * - A greater number of expressions.
      * - A greater number of non-negated expressions with a concrete value.
-     * @function module:dispatcher.ParamsRouteCondition#compareTo
-     * @param {module:dispatcher.ParamsRouteCondition} value
-     * @returns {external:number}
+         * @param {module:dispatcher.ParamsRouteCondition} value
+     * @returns {number}
      */
     compareTo(value: ParamsRouteCondition, route?: Route): number {
         const result = value.expressions.size - this.expressions.size;
@@ -172,17 +169,15 @@ export class ParamsRouteCondition extends AbstractRouteCondition<ParamsRouteCond
 
 /**
  * Creates a new instance with the given route patterns. Each pattern that is not empty and does not start with "/" is prepended with "/".
- * @class module:dispatcher.PatternsRouteCondition
  * @extends module:dispatcher.AbstractRouteCondition<module:dispatcher.PatternsRouteConditionPatternsRouteCondition>
  * @param {...external:string} [patterns] 0 or more route patterns; if 0 the condition will match to every route.
  */
 /**
- * @class module:dispatcher.PatternsRouteCondition
  * @extends module:dispatcher.AbstractRouteCondition<module:dispatcher.PatternsRouteConditionPatternsRouteCondition>
- * @param {external:Array<external:string>} patterns the route patterns to use; if 0, the condition will match to every route.
+ * @param {Array<external:string>} patterns the route patterns to use; if 0, the condition will match to every route.
  * @param {module:core.PathMatcher} pathMatcher
- * @param {external:boolean} useTrailingSlashMatch whether to match irrespective of a trailing slash
- * @param {external:Array<external:string>} [fileExtensions] a list of file extensions to consider for path matching
+ * @param {boolean} useTrailingSlashMatch whether to match irrespective of a trailing slash
+ * @param {Array<external:string>} [fileExtensions] a list of file extensions to consider for path matching
  */
 export class PatternsRouteCondition extends AbstractRouteCondition<PatternsRouteCondition> {
     readonly pathMatcher: PathMatcher;

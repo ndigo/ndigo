@@ -61,7 +61,7 @@ const {
     toUniqueArray = pipe(splitOnComma, uniq);
 
 /**
- * Indicates that a class declares one or more {@linkcode module:context.@entry|@entry} methods and may be processed to provide the method results at runtime. For example:
+ * Indicates that a class declares one or more {@link @entry|@entry} methods and may be processed to provide the method results at runtime. For example:
  * ```javascript
  * &#064;Configuration
  * class FooBarConfig {
@@ -75,14 +75,13 @@ const {
  *  }
  * }
  * ```
- * {@linkcode module:context.@configuration|@configuration} classes are bootstrapped using the {@linkcode module:context.MetadataConfigApplicationContext|MetadataConfigApplicationContext}.
+ * {@link @configuration|@configuration} classes are bootstrapped using the {@link MetadataConfigApplicationContext|MetadataConfigApplicationContext}.
  * ```javascript
  * const context = new MetadataConfigApplicationContext( 'foobar' );
  * context.register( FooBarConfig );
  * context.getValue( 'foo' ); // "foo"
  * ```
- * @const {external:ClassDecorator} module:context.@configuration
- * @see {@linkcode module:context.MetadataConfigApplicationContext|MetadataConfigApplicationContext}
+ * @see {@link MetadataConfigApplicationContext|MetadataConfigApplicationContext}
  */
 export const configuration: ClassDecorator = <TFunction extends Function>(target: TFunction): TFunction | void => {
     if (!hasConfigurationMetadata(target)) {
@@ -92,9 +91,8 @@ export const configuration: ClassDecorator = <TFunction extends Function>(target
 };
 
 /**
- * @function module:context.@profile
- * @param {external:string} name
- * @returns {external:ClassDecorator}
+ * @param {string} name
+ * @returns {ClassDecorator}
  */
 export const profile =
     (name: string) => (target, propertyKey?: string | symbol, descriptor?: TypedPropertyDescriptor<any>) => {
@@ -106,9 +104,8 @@ export const profile =
     };
 
 /**
- * @function module:context.@property
- * @param {external:string} path
- * @returns {external:ClassDecorator}
+ * @param {string} path
+ * @returns {ClassDecorator}
  */
 export const property =
     (path: string): PropertyDecorator =>
@@ -123,9 +120,8 @@ export const property =
     };
 
 /**
- * @function module:context.@propertySource
  * @param {module:core.JSONObject | module:core.Enumerable<external:string,module:core.JSONValue>} propertySource
- * @returns {external:ClassDecorator}
+ * @returns {ClassDecorator}
  */
 export const propertySource =
     (propertySource: JSONObject | Enumerable<string, JSONValue>): ClassDecorator =>
@@ -148,7 +144,6 @@ export const propertySource =
     };
 
 /**
- * @const {external:MethodDecorator | external:Function} module:context.@entry
  */
 export const entry = (
     targetOrKey: Object | string,
@@ -185,10 +180,8 @@ export const entry = (
 };
 
 /**
- * @classdesc
- * Parses a {@linkcode module:context.@configuration|@configuration} class definition.
- * @class module:context~ConfigurationClassParser
- * @see {@link module:context.MetadataConfigApplicationContext}
+  * Parses a {@link @configuration|@configuration} class definition.
+ * @see {@link MetadataConfigApplicationContext}
  */
 class ConfigurationParser {
     readonly environment: Environment;
@@ -231,8 +224,7 @@ class ConfigurationParser {
 
     /**
      * Process the given `@configuration` decorator metadata.
-     * @function module:context~ConfigurationClassParser#processConfiguration
-     */
+         */
     processConfiguration(configuration) {
         for (const key in configuration) {
             if (
@@ -249,8 +241,7 @@ class ConfigurationParser {
 
     /**
      * Process the given `@property` decorator metadata.
-     * @function module:context~ConfigurationClassParser#processProperty
-     */
+         */
     processProperty(configuration) {
         for (const key in configuration) {
             if (hasPropertyMetadata(configuration, key)) {
@@ -268,25 +259,22 @@ class ConfigurationParser {
 
     /**
      * Process the given `@propertySource` decorator metadata.
-     * @function module:context~ConfigurationClassParser#processPropertySource
-     */
+         */
     processPropertySource(propertySource: JSONObject[]) {
         (this.environment as ConfigurableEnvironment).propertySources = propertySource;
     }
 
     /**
      * Process the given `@entry` decorator metadata.
-     * @function module:context~ConfigurationClassParser#processValue
-     */
+         */
     processEntry(name: string, value: () => any) {
         this.registry.setValue(name, value());
     }
 
     /**
      * @private
-     * @function module:context~ConfigurationClassParser#_isActiveProfile
-     * @param {external:Array<external:string>} profiles
-     * @returns {external:boolean} Whether or not the profiles provided are active
+         * @param {Array<external:string>} profiles
+     * @returns {boolean} Whether or not the profiles provided are active
      */
     private _isActiveProfile(profiles: string[]): boolean {
         const activeProfiles = this.environment.activeProfiles,
@@ -302,12 +290,10 @@ class ConfigurationParser {
 }
 
 /**
- * @classdesc
- * A {@linkcode module:factory.EntryRegistryProcessor|EntryRegistryProcessor} used for processing of {@linkcode module:context.@configuration|@configuration} classes.
- * This processor should be prioritized as it is important that any {@linkcode module:context.@entry|@entry} methods declared in the `@configuration` classes have their values registered before any other {@linkcode module:factory.EntryProcessor|EntryProcessor} executes.
- * @class module:context.ConfigurationProcessor
- * @mixes module:context.AsEnvironmentAware
- * @mixes module:context.AsResourceLoaderAware
+  * A {@link EntryRegistryProcessor|EntryRegistryProcessor} used for processing of {@link @configuration|@configuration} classes.
+ * This processor should be prioritized as it is important that any {@link @entry|@entry} methods declared in the `@configuration` classes have their values registered before any other {@link EntryProcessor|EntryProcessor} executes.
+ * @see module:context.AsEnvironmentAware
+ * @see module:context.AsResourceLoaderAware
  * @implements module:factory.EntryRegistryProcessor
  * @implements module:context.EnvironmentAware
  * @implements module:context.ResourceLoaderAware
@@ -329,7 +315,6 @@ export class ConfigurationProcessor
 }
 
 /**
- * @class module:context.MetadataConfigApplicationContext
  * @extends module:context.GenericApplicationContext
  */
 export class MetadataConfigApplicationContext extends GenericApplicationContext {
@@ -341,8 +326,7 @@ export class MetadataConfigApplicationContext extends GenericApplicationContext 
     }
 
     /**
-     * @function module:context.MetadataConfigApplicationContext#register
-     * @param {Object} configClass The configuration class
+         * @param {Object} configClass The configuration class
      */
     register(configClass): void {
         this.#configurationParser.parse([configClass]);

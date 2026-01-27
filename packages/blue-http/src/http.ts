@@ -48,18 +48,17 @@ export interface HTTPAware extends Aware {
 
 /**
  * HTTP request Methods
- * @typedef {external:string} module:http.HTTPMethod
+ * @typedef {string} module:http.HTTPMethod
  * @see {@link https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods}
  */
 
 /**
- * @typedef {external:RequestInit} module:http.HTTPInit
+ * @typedef {RequestInit} module:http.HTTPInit
  * @property {module:http.HTTPMethod} [method] The HTTP request method
  */
 
 /**
  * Interface that allows for the execution of custom behavior after an HTTP request is completed. It executes whether the request was successful or not.
- * @interface module:http.CompletionAwareHTTPInterceptor
  * @example
  * class LogInterceptor implements CompletionAwareHTTPInterceptor {
  *  postComplete( request, response ){
@@ -74,14 +73,12 @@ export interface HTTPAware extends Aware {
  */
 
 /**
- * @function module:http.CompletionAwareHTTPInterceptor#postComplete
- * @param {external:Request} request The HTTP request
- * @param {external:Response} response The HTTP response
+ * @param {Request} request The HTTP request
+ * @param {Response} response The HTTP response
  */
 
 /**
  * Interface that allows for the execution of custom behavior after an HTTP request fails. If `postError` returns a `Response`, it will be the return value of the request.
- * @interface module:http.ErrorAwareHTTPInterceptor
  * @example
  * class RetryInterceptor implements ErrorAwareHTTPInterceptor {
  *  postError( error, request, http ){
@@ -95,47 +92,40 @@ export interface HTTPAware extends Aware {
  */
 
 /**
- * @function module:http.ErrorAwareHTTPInterceptor#postError
- * @param {external:Error} error
- * @param {external:Request} request
+ * @param {Error} error
+ * @param {Request} request
  * @param {module:http.HTTP} http
- * @returns {external:Promise<external:Response | external:undefined>} An optional response
+ * @returns {Promise<external:Response | external:undefined>} An optional response
  */
 
 /**
  * Interface that allows for the execution of custom behavior before an HTTP request is initialized.
- * @interface module:http.InitializationAwareHTTPInterceptor
  */
 
 /**
- * @function module:http.InitializationAwareHTTPInterceptor#preInit
- * @param {external:URL} url
+ * @param {URL} url
  * @param {module:http.HTTPInit} settings
- * @returns {external:boolean}
+ * @returns {boolean}
  */
 
 /**
  * Interface that allows for the execution of custom behavior before an HTTP request is executed.
- * @interface module:http.RequestAwareHTTPInterceptor
  */
 
 /**
- * @function module:http.RequestAwareHTTPInterceptor#preRequest
- * @param {external:Request} request
+ * @param {Request} request
  * @param {module:http.HTTP} http
- * @returns {external:Promise<external:Request|void>}
+ * @returns {Promise<external:Request|void>}
  */
 
 /**
  * Interface that allows for the execution of custom behavior after a response is successfully returned.
- * @interface external:ResponseAwareHTTPInterceptor
  */
 
 /**
- * @function external:ResponseAwareHTTPInterceptor#postResponse
- * @param {external:Response} response
+ * @param {Response} response
  * @param {module:http.HTTPInit} settings
- * @returns {external:Promise<void>}
+ * @returns {Promise<void>}
  */
 
 /**
@@ -146,20 +136,18 @@ export interface HTTPAware extends Aware {
  * 3. `postResponse` or `postError`
  * 5. `postComplete`
  * @typedef {module:http.CompletionAwareHTTPInterceptor|module:http.ErrorAwareHTTPInterceptor|module:http.InitializationAwareHTTPInterceptor|module:http.RequestAwareHTTPInterceptor|external:ResponseAwareHTTPInterceptor} module:http.HTTPInterceptor
- * @see {@link module:http.CompletionAwareHTTPInterceptor}
- * @see {@link module:http.ErrorAwareHTTPInterceptor}
- * @see {@link module:http.InitializationAwareHTTPInterceptor}
- * @see {@link module:http.RequestAwareHTTPInterceptor}
- * @see {@link module:http.ResponseAwareHTTPInterceptor}
+ * @see {@link CompletionAwareHTTPInterceptor}
+ * @see {@link ErrorAwareHTTPInterceptor}
+ * @see {@link InitializationAwareHTTPInterceptor}
+ * @see {@link RequestAwareHTTPInterceptor}
+ * @see {@link ResponseAwareHTTPInterceptor}
  */
 
 /**
- * @interface module:http.HTTPAware
  * @extends module:factory.Aware
  */
 
 /**
- * @function module:http.HTTPAware#setHTTP
  * @param {module:http.HTTP} http
  */
 
@@ -176,54 +164,48 @@ export const { assign, freeze } = Object,
     isRequest = is(Request) as (value) => value is Request;
 
 /**
- * @function module:http.likeCompletionAwareHTTPInterceptor
  * @param {*} value The value to be tested
- * @returns {external:boolean} Whether or not the value is like a {@link module:http.CompletionAwareHTTPInterceptor}.
+ * @returns {boolean} Whether or not the value is like a {@link CompletionAwareHTTPInterceptor}.
  */
 export const likeCompletionAwareHTTPInterceptor = like({ postComplete: Function }) as (
     value
 ) => value is CompletionAwareHTTPInterceptor;
 
 /**
- * @function module:http.likeErrorAwareHTTPInterceptor
  * @param {*} value The value to be tested
- * @returns {external:boolean} Whether or not the value is like a {@link module:http.ErrorAwareHTTPInterceptor}.
+ * @returns {boolean} Whether or not the value is like a {@link ErrorAwareHTTPInterceptor}.
  */
 export const likeErrorAwareHTTPInterceptor = like({ postError: Function }) as (
     value
 ) => value is ErrorAwareHTTPInterceptor;
 
 /**
- * @function module:http.likeInitializationAwareHTTPInterceptor
  * @param {*} value The value to be tested
- * @returns {external:boolean} Whether or not the value is like a {@link module:http.InitializationAwareHTTPInterceptor}.
+ * @returns {boolean} Whether or not the value is like a {@link InitializationAwareHTTPInterceptor}.
  */
 export const likeInitializationAwareHTTPInterceptor = like({ preInit: Function }) as (
     value
 ) => value is InitializationAwareHTTPInterceptor;
 
 /**
- * @function module:http.likeRequestAwareHTTPInterceptor
  * @param {*} value The value to be tested
- * @returns {external:boolean} Whether or not the value is like a {@link module:http.RequestAwareHTTPInterceptor}.
+ * @returns {boolean} Whether or not the value is like a {@link RequestAwareHTTPInterceptor}.
  */
 export const likeRequestAwareHTTPInterceptor = like({ preRequest: Function }) as (
     value
 ) => value is RequestAwareHTTPInterceptor;
 
 /**
- * @function module:http.likeResponseAwareHTTPInterceptor
  * @param {*} value The value to be tested
- * @returns {external:boolean} Whether or not the value is like a {@link external:ResponseAwareHTTPInterceptor}.
+ * @returns {boolean} Whether or not the value is like a {@link external:ResponseAwareHTTPInterceptor}.
  */
 export const likeResponseAwareHTTPInterceptor = like({ postResponse: Function }) as (
     value
 ) => value is ResponseAwareHTTPInterceptor;
 
 /**
- * @function module:http.likeHTTPInterceptor
  * @param {*} value The value to be tested
- * @returns {external:boolean} Whether or not the value is like a {@link module:http.HTTPInterceptor}.
+ * @returns {boolean} Whether or not the value is like a {@link HTTPInterceptor}.
  */
 export const likeHTTPInterceptor = anyPass([
     likeCompletionAwareHTTPInterceptor,
@@ -249,7 +231,6 @@ export class WildcardMatcher implements PatternMatcher<string, string> {
 }
 
 /**
- * @class module:http.MappedHTTPInterceptor
  * @implements module:http.CompletionAwareHTTPInterceptor
  * @implements module:http.ErrorAwareHTTPInterceptor
  * @implements module:http.InitializationAwareHTTPInterceptor
@@ -362,7 +343,6 @@ export class MappedHTTPInterceptor
 const isMappedHTTPInterceptor = is(MappedHTTPInterceptor) as (value) => value is MappedHTTPInterceptor;
 
 /**
- * @class module:http.HTTPExecutionChain
  */
 export class HTTPExecutionChain {
     #interceptors: HTTPInterceptor[];
@@ -374,13 +354,11 @@ export class HTTPExecutionChain {
     #hasResponseAwareInterceptors: boolean;
 
     /**
-     * @member {module:http.HTTP} module:http.HTTPExecutionChain#http
-     */
+         */
     http: HTTP;
 
     /**
-     * @member {exteral:number} module:http.HTTPExecutionChain#interceptorIndex
-     */
+         */
     interceptorIndex: number;
 
     get [Symbol.toStringTag](): string {
@@ -388,8 +366,7 @@ export class HTTPExecutionChain {
     }
 
     /**
-     * @member {external:Array<module:http.HTTPInterceptor>} module:http.HTTPExecutionChain#interceptors
-     */
+         */
     get interceptors(): HTTPInterceptor[] {
         return this.#interceptors;
     }
@@ -416,8 +393,7 @@ export class HTTPExecutionChain {
     }
 
     /**
-     * @function module:http.HttpExecutionChain#addInterceptor
-     * @param {module:http.HttpInterceptor} interceptor
+         * @param {module:http.HttpInterceptor} interceptor
      */
     addInterceptor(interceptor: HTTPInterceptor): void {
         if (interceptor) {
@@ -430,8 +406,7 @@ export class HTTPExecutionChain {
     }
 
     /**
-     * @function module:http.HttpExecutionChain#addInterceptors
-     * @param {external:Array<module:http.HttpInterceptor>} interceptors
+         * @param {Array<module:http.HttpInterceptor>} interceptors
      */
     addInterceptors(interceptors: HTTPInterceptor[]): void {
         const length = interceptors?.length;
@@ -443,8 +418,7 @@ export class HTTPExecutionChain {
     }
 
     /**
-     * @function module:http.HttpExecutionChain#applyPostError
-     */
+         */
     async applyPostError(error: Error, request: Request, http: HTTP): Promise<Response | undefined> {
         if (this.#hasErrorAwareInterceptors) {
             const interceptors = this.#interceptors,
@@ -462,8 +436,7 @@ export class HTTPExecutionChain {
     }
 
     /**
-     * @function module:http.HttpExecutionChain#applyPostComplete
-     */
+         */
     applyPostComplete(request: Request, response: Response): void {
         if (this.#hasCompletionAwareInterceptors) {
             const interceptors = this.#interceptors,
@@ -481,8 +454,7 @@ export class HTTPExecutionChain {
     }
 
     /**
-     * @function module:http.HttpExecutionChain#applyPostSuccess
-     */
+         */
     async applyPostResponse(response: Response, settings: HTTPInit): Promise<void> {
         if (this.#hasResponseAwareInterceptors) {
             const interceptors = this.#interceptors,
@@ -500,8 +472,7 @@ export class HTTPExecutionChain {
     }
 
     /**
-     * @function module:http.HttpExecutionChain#applyPreInit
-     */
+         */
     applyPreInit(url: URL, settings: HTTPInit): boolean {
         if (this.#hasInitializationAwareInterceptors) {
             const interceptors = this.#interceptors,
@@ -523,8 +494,7 @@ export class HTTPExecutionChain {
     }
 
     /**
-     * @function module:http.HttpExecutionChain#applyPreRequest
-     */
+         */
     async applyPreRequest(request: Request, http: HTTP): Promise<Request> {
         if (this.#hasRequestAwareInterceptors) {
             const interceptors = this.#interceptors,
@@ -549,8 +519,7 @@ export class HTTPExecutionChain {
 
     /**
      * @protected
-     * @function module:http.HttpExecutionChain#_checkInterceptorType
-     * @param {module:http.HttpInterceptor} interceptor
+         * @param {module:http.HttpInterceptor} interceptor
      */
     _checkInterceptorType(interceptor: HTTPInterceptor): void {
         if (!this.#hasCompletionAwareInterceptors) {
@@ -574,9 +543,8 @@ export class HTTPExecutionChain {
 const isHTTPExecutionChain = is(HTTPExecutionChain) as (value) => value is HTTPExecutionChain;
 
 /**
- * @class module:http.HTTP
- * @param {external:Array<module:http.HTTPInterceptor>} [interceptors=[]]
- * @param {external:fetch} [fetch]
+ * @param {Array<module:http.HTTPInterceptor>} [interceptors=[]]
+ * @param {fetch} [fetch]
  */
 export class HTTP {
     #fetch: Fetch;
@@ -588,8 +556,7 @@ export class HTTP {
     }
 
     /**
-     * @member {external:Array<module:http.HTTPInterceptor>} module:http.HTTP#interceptors
-     */
+         */
     get interceptors(): HTTPInterceptor[] {
         return this.#interceptors;
     }
@@ -606,10 +573,9 @@ export class HTTP {
 
     /**
      * @async
-     * @function module:http.HTTP#request
-     * @param {external:string} input
+         * @param {string} input
      * @param {module:http.HTTPInit} [init={}]
-     * @returns {external:Promise<external:Response>}
+     * @returns {Promise<external:Response>}
      */
     async request(input: string, init: HTTPInit = null): Promise<Response> {
         const settings = init === null ? assign({}, this.settings) : assign({}, this.settings, init),
@@ -658,10 +624,9 @@ export class HTTP {
 
     /**
      * @async
-     * @function module:http.HTTP#connect
-     * @param {external:string} input
+         * @param {string} input
      * @param {module:http.HTTPInit} [init={}]
-     * @returns {external:Promise<external:Response>}
+     * @returns {Promise<external:Response>}
      */
     async connect(input: string, init: HTTPInit = {}): Promise<Response> {
         init ??= {};
@@ -671,10 +636,9 @@ export class HTTP {
 
     /**
      * @async
-     * @function module:http.HTTP#delete
-     * @param {external:string} input
+         * @param {string} input
      * @param {module:http.HTTPInit} [init={}]
-     * @returns {external:Promise<external:Response>}
+     * @returns {Promise<external:Response>}
      */
     async delete(input: string, init: HTTPInit = {}): Promise<Response> {
         init ??= {};
@@ -684,10 +648,9 @@ export class HTTP {
 
     /**
      * @async
-     * @function module:http.HTTP#get
-     * @param {external:string} input
+         * @param {string} input
      * @param {module:http.HTTPInit} [init={}]
-     * @returns {external:Promise<external:Response>}
+     * @returns {Promise<external:Response>}
      */
     async get(input: string, init: HTTPInit = {}): Promise<Response> {
         init ??= {};
@@ -697,10 +660,9 @@ export class HTTP {
 
     /**
      * @async
-     * @function module:http.HTTP#head
-     * @param {external:string} input
+         * @param {string} input
      * @param {module:http.HTTPInit} [init={}]
-     * @returns {external:Promise<external:Response>}
+     * @returns {Promise<external:Response>}
      */
     async head(input: string, init: HTTPInit = {}): Promise<Response> {
         init ??= {};
@@ -710,10 +672,9 @@ export class HTTP {
 
     /**
      * @async
-     * @function module:http.HTTP#options
-     * @param {external:string} input
+         * @param {string} input
      * @param {module:http.HTTPInit} [init={}]
-     * @returns {external:Promise<external:Response>}
+     * @returns {Promise<external:Response>}
      */
     async options(input: string, init: HTTPInit = {}): Promise<Response> {
         init ??= {};
@@ -723,10 +684,9 @@ export class HTTP {
 
     /**
      * @async
-     * @function module:http.HTTP#patch
-     * @param {external:string} input
+         * @param {string} input
      * @param {module:http.HTTPInit} [init={}]
-     * @returns {external:Promise<external:Response>}
+     * @returns {Promise<external:Response>}
      */
     async patch(input: string, init: HTTPInit = {}): Promise<Response> {
         init ??= {};
@@ -736,10 +696,9 @@ export class HTTP {
 
     /**
      * @async
-     * @function module:http.HTTP#post
-     * @param {external:string} input
+         * @param {string} input
      * @param {module:http.HTTPInit} [init={}]
-     * @returns {external:Promise<external:Response>}
+     * @returns {Promise<external:Response>}
      */
     async post(input: string, init: HTTPInit = {}): Promise<Response> {
         init ??= {};
@@ -749,10 +708,9 @@ export class HTTP {
 
     /**
      * @async
-     * @function module:http.HTTP#put
-     * @param {external:string} input
+         * @param {string} input
      * @param {module:http.HTTPInit} [init={}]
-     * @returns {external:Promise<external:Response>}
+     * @returns {Promise<external:Response>}
      */
     async put(input: string, init: HTTPInit = {}): Promise<Response> {
         init ??= {};
@@ -762,10 +720,9 @@ export class HTTP {
 
     /**
      * @async
-     * @function module:http.HTTP#trace
-     * @param {external:string} input
+         * @param {string} input
      * @param {module:http.HTTPInit} [init={}]
-     * @returns {external:Promise<external:Response>}
+     * @returns {Promise<external:Response>}
      */
     async trace(input: string, init: HTTPInit = {}): Promise<Response> {
         init ??= {};
@@ -775,9 +732,8 @@ export class HTTP {
 
     /**
      * @protected
-     * @function module:http.HTTP#_getHTTPExecutionChain
-     * @param {module:http.HTTP|module:http.HTTPExecutionChain} http
-     * @param {external:string} url
+         * @param {module:http.HTTP|module:http.HTTPExecutionChain} http
+     * @param {string} url
      * @returns {module:http.HTTPExecutionChain}
      */
     protected _getHTTPExecutionChain(http: HTTP | HTTPExecutionChain, url: string): HTTPExecutionChain {

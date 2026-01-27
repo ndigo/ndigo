@@ -20,10 +20,9 @@ declare const
  *
  *     toString( new Point( 1, 2 ) ); //=> 'new Point(1, 2)'
  *
- * @function module:util.toString
- * @category String
+     * @category String
  * @param {*} val
- * @return {external:string}
+ * @returns {string}
  * @example
  * toString( null );
  * //=> ""

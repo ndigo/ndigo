@@ -57,14 +57,12 @@ const { isArray } = Array,
     invokeValues = invoker(0, 'values');
 
 /**
- * @function module:core.isEntry
  * @param {*} value The value to be tested
  * @returns {boolean} Whether or not the value is an entry
  */
 export const isEntry = (value: any): value is Entry<any> => isArray(value) && value.length === 2;
 
 /**
- * @function module:core.isEntries
  * @param {*} value The value to be tested
  * @returns {boolean} Whether or not the value is a list of entries
  */
@@ -72,7 +70,6 @@ export const isEntries = (value: any): value is Entry<any> =>
     isArray(value) && (value.length ? isEntry(value[0]) : true);
 
 /**
- * @function module:core.likeIterable
  * @param {*} value The value to be tested
  * @returns {boolean} Whether or not the value is iterable
  */
@@ -80,9 +77,8 @@ export const likeIterable = (value: any): value is Iterable<any> =>
     complement(isNil)(value) && value[Symbol.iterator] !== undefined;
 
 /**
- * @class module:core.IndexedIterator
- * @implements {external:IterableIterator}
- * @param {external:ArrayLike} indexed An indexed collection
+ * @implements {IterableIterator}
+ * @param {ArrayLike} indexed An indexed collection
  */
 export class IndexedIterator<T = any> implements IterableIterator<T> {
     #indexed: ArrayLike<T>;
@@ -107,16 +103,14 @@ export class IndexedIterator<T = any> implements IterableIterator<T> {
 }
 
 /**
- * @function module:core.indexedIterator
- * @param {external:ArrayLike} indexed An indexed collection
- * @returns {external:IndexedIterator} An indexed iterator
+ * @param {ArrayLike} indexed An indexed collection
+ * @returns {IndexedIterator} An indexed iterator
  */
 export const indexedIterator = <T = any>(indexed: ArrayLike<T>): IterableIterator<T> => new IndexedIterator<T>(indexed);
 
 /**
- * @class module:core.EntriesIterator
  * @implements external:IterableIterator
- * @param {external:Object} target A non-primitive value
+ * @param {Object} target A non-primitive value
  */
 export class EntriesIterator<T = any> implements IterableIterator<Entry<T>> {
     #iterator: Iterator<Entry<T>>;
@@ -138,16 +132,14 @@ export class EntriesIterator<T = any> implements IterableIterator<Entry<T>> {
 }
 
 /**
- * @function module:core.entriesIterator
- * @param {external:Object} target A non-primitive value
+ * @param {Object} target A non-primitive value
  * @returns {module:core.EntriesIterator} An entries iterator
  */
 export const entriesIterator = <T = any>(target: object): IterableIterator<Entry<T>> => new EntriesIterator<T>(target);
 
 /**
- * @class module:core.KeysIterator
  * @implements external:IterableIterator
- * @param {external:Object} target A non-primitive value
+ * @param {Object} target A non-primitive value
  */
 export class KeysIterator implements IterableIterator<PropertyKey> {
     #iterator: Iterator<PropertyKey>;
@@ -169,16 +161,14 @@ export class KeysIterator implements IterableIterator<PropertyKey> {
 }
 
 /**
- * @function module:core.keysIterator
- * @param {external:Object} target A non-primitive value
+ * @param {Object} target A non-primitive value
  * @returns {module:core.KeysIterator} A keys iterator
  */
 export const keysIterator = (target: object): IterableIterator<PropertyKey> => new KeysIterator(target);
 
 /**
- * @class module:core.ValuesIterator
  * @implements external:IterableIterator
- * @param {external:Object} target A non-primitive value
+ * @param {Object} target A non-primitive value
  */
 export class ValuesIterator<T = any> implements IterableIterator<T> {
     #iterator: Iterator<T>;
@@ -200,18 +190,16 @@ export class ValuesIterator<T = any> implements IterableIterator<T> {
 }
 
 /**
- * @function module:core.valuesIterator
- * @param {external:Object} target A non-primitive value
+ * @param {Object} target A non-primitive value
  * @returns {module:core.ValuesIterator} A values iterator
  */
 export const valuesIterator = <T = any>(target: object): IterableIterator<T> => new ValuesIterator<T>(target);
 
 /**
- * @class module:core.RangeIterator
- * @implements {external:IterableIterator}
- * @param {external:number} startOrEnd The start or end of the range
- * @param {external:number} [end] The end of the range
- * @param {external:number} [step=1] The amount by which values are incremented
+ * @implements {IterableIterator}
+ * @param {number} startOrEnd The start or end of the range
+ * @param {number} [end] The end of the range
+ * @param {number} [step=1] The amount by which values are incremented
  */
 export class RangeIterator implements IterableIterator<number> {
     #end: number;
@@ -255,19 +243,17 @@ export class RangeIterator implements IterableIterator<number> {
 }
 
 /**
- * @function module:core.rangeIterator
- * @param {external:number} startOrEnd The start or end of the range
- * @param {external:number} [end] The end of the range
- * @param {external:number} [step=1] The amount by which values are incremented
+ * @param {number} startOrEnd The start or end of the range
+ * @param {number} [end] The end of the range
+ * @param {number} [step=1] The amount by which values are incremented
  * @returns {module:core.RangeIterator} An range iterator
  */
 export const rangeIterator = (startOrEnd: number, end?: number, step?: number): IterableIterator<number> =>
     new RangeIterator(startOrEnd, end, step);
 
 /**
- * @function module:core.getIterator
- * @param {external:Iterable} collection An iterable collection
- * @returns {external:Iterator} An iterator created from the collection
+ * @param {Iterable} collection An iterable collection
+ * @returns {Iterator} An iterator created from the collection
  */
 export const getIterator = cond([
     [likeIterable, (iterable) => iterable[Symbol.iterator]()],

@@ -55,10 +55,9 @@ const isNull = equals(null),
 
 /**
  * Parses an object to matrix string.
- * @function module:router.toMatrixString
  * @category Object
- * @param {external:Object} object
- * @returns {external:string}
+ * @param {Object} object
+ * @returns {string}
  * @example
  * toMatrixString( { e:6, a:1, b:2, c:[ 3,4 ], d:5 } );
  * //=> "a=1;b=2;c=3,4;d=5;e=6"

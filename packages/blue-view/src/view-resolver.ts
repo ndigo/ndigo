@@ -17,7 +17,6 @@ export interface ViewResolver {
 }
 
 /**
- * @class module:view.UnresolvedView
  * @implements module:view.View
  */
 class UnresolvedView implements View {
@@ -122,36 +121,31 @@ export abstract class AbstractPathBasedViewResolver extends AbstractCachingViewR
  * View state doesn't change during the running of the application, so implementations are free to cache views.
  *
  * Implementations are encouraged to support internationalization, i.e. localized view resolution.
- * @interface module:view.ViewResolver
  */
 
 /**
  * Resolve the given view by name.
  *
  * To allow for ViewResolver chaining, a ViewResolver should return `null` if a view with the given name is not defined in it.
- * @function module:view.ViewResolver#resolveViewName
- * @param {external:string} viewName The name of the view to resolve.
+ * @param {string} viewName The name of the view to resolve.
  * @param {*} [language]
  * @returns {module:view.View} The resolved view.
  */
 
 /**
- * Convenient base class for {@link module:view.ViewResolver|`ViewResolver`} implementations. Caches {@link module:view.View|`View`} instances once resolved.
- * Subclasses need to implement the {@link module:view.ViewResolver#loadView|`loadView`} method, building the instance for the specific view name and locale.
+ * Convenient base class for {@link ViewResolver|`ViewResolver`} implementations. Caches {@link View|`View`} instances once resolved.
+ * Subclasses need to implement the {@link ViewResolver#loadView|`loadView`} method, building the instance for the specific view name and locale.
  * @abstract
- * @class module:view.AbstractCachingViewResolver
  * @implements module:view.ViewResolver
- * @see {@link module:view.ViewResolver#loadView}
+ * @see {@link ViewResolver#loadView}
  */
 
 /**
  * @abstract
- * @class module:view.AbstractPathBasedViewResolver
  * @extends module:view.AbstractCachingViewResolver
  */
 
 /**
- * @class module:view.ImportViewResolver
  * @extends module:view.AbstractPathBasedViewResolver
  */
 export class ImportViewResolver extends AbstractPathBasedViewResolver {
@@ -166,10 +160,9 @@ export class ImportViewResolver extends AbstractPathBasedViewResolver {
 }
 
 /**
- * A simple implementation of {@link module:view.ViewResolver|`ViewResolver`} that interprets a view name as a value in the current application context.
+ * A simple implementation of {@link ViewResolver|`ViewResolver`} that interprets a view name as a value in the current application context.
  *
  * This resolver can be handy for small applications, keeping all definitions ranging from controllers to views in the same place.
- * @class module:view.NameViewResolver
  * @implements module:view.ViewResolver
  */
 export class NameViewResolver extends AsApplicationContextAware(Null) implements ViewResolver {
@@ -191,11 +184,10 @@ export class NameViewResolver extends AsApplicationContextAware(Null) implements
 }
 
 /**
- * A {@link module:view.ViewResolver|`ViewResolver`} that delegates to others.
- * @class module:view.ViewResolverComposite
+ * A {@link ViewResolver|`ViewResolver`} that delegates to others.
  * @implements module:core.Initializable
  * @implements module:core.ViewResolver
- * @mixes module:context.AsApplicationContextAware
+ * @see module:context.AsApplicationContextAware
  * @extends module:core.Null
  */
 export class ViewResolverComposite extends AsApplicationContextAware(Null) implements Initializable, ViewResolver {

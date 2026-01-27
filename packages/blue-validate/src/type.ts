@@ -43,9 +43,8 @@ const { assign } = Object,
     };
 
 /**
- * @class module:validate.Type
- * @param {external:string} name
- * @param {external:Object} definition
+ * @param {string} name
+ * @param {Object} definition
  */
 class Type {
     readonly name: string;
@@ -92,8 +91,7 @@ class Type {
     }
 
     /**
-     * @function module:validate.Type#validator
-     * @param value
+         * @param value
      * @param params
      */
     validator(value, params) {
@@ -110,8 +108,7 @@ class Type {
     }
 
     /**
-     * @function module:validate.Type#validate
-     * @param value
+         * @param value
      * @param params
      */
     validate(value, params = {}): ValidationResults {

@@ -19,36 +19,30 @@ const TAG_MAPPING = 'tag:mapping',
         };
 
 /**
- * @function module:dispatcher.TagMapping
- * @param {external:string} tagName
- * @returns {external:Function}
+ * @param {string} tagName
+ * @returns {Function}
  */
 
 /**
- * @const {external:ClassDecorator} module:dispatcher.TagMapping(2)
  */
 export const TagMapping = assign(tagMapping, {
     /**
-     * @function module:dispatcher.TagMapping.define
-     * @param {*} value
+         * @param {*} value
      * @param {*} target
      */
     define: defineTagMapping,
     /**
-     * @function module:dispatcher.TagMapping.delete
-     * @param {*} target
+         * @param {*} target
      */
     delete: deleteTagMapping,
     /**
-     * @function module:dispatcher.TagMapping.get
-     * @param {*} target
-     * @returns {external:string}
+         * @param {*} target
+     * @returns {string}
      */
     get: getTagMapping,
     /**
-     * @function module:dispatcher.TagMapping.has
-     * @param {*} target
-     * @returns {external:boolean} Whether or not the `target` has a tag mapping.
+         * @param {*} target
+     * @returns {boolean} Whether or not the `target` has a tag mapping.
      */
     has: hasTagMapping,
 });

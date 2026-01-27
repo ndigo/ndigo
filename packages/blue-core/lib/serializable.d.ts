@@ -12,31 +12,26 @@ export interface Serializable {
 }
 export type serializable = JSONValue | Serializable;
 /**
- * @function module:core.isJSONArray
  * @param {*} value
- * @returns {external:boolean}
+ * @returns {boolean}
  */
 export declare const isJSONArray: (value: any) => value is JSONArray;
 /**
- * @function module:core.isJSONObject
  * @param {*} value
- * @returns {external:boolean}
+ * @returns {boolean}
  */
 export declare const isJSONObject: (value: any) => value is JSONObject;
 /**
- * @function module:core.isJSONValue
  * @param {*} value
- * @returns {external:boolean}
+ * @returns {boolean}
  */
 export declare const isJSONValue: (value: any) => value is JSONValue;
 /**
- * @function module:core.likeSerializable
  * @param {*} value
- * @returns {external:boolean}
+ * @returns {boolean}
  */
 export declare const likeSerializable: (value: any) => value is serializable;
 /**
- * @function module:core.serialize
  * @param {*} value
  * @returns {module:core.JSONValue}
  */

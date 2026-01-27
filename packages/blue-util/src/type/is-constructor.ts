@@ -12,11 +12,10 @@ const construct = partial(Reflect.construct, [String, []]),
 
 /**
  * Determines whether a given value is a constructor, i.e. creates instances using `new`.
- * @function module:util.isConstructor
  * @param {*} value The value to be tested.
- * @returns {external:boolean} Whether or not `value` is a constructor.
+ * @returns {boolean} Whether or not `value` is a constructor.
  * @category Type
  */
-const isConstructor = (value): value is Function => both<any>(isFunction, tryCatch(constructAndReturnTrue, F))(value);
+const isConstructor = (value: any): value is Function => both<any>(isFunction, tryCatch(constructAndReturnTrue, F))(value);
 
 export default isConstructor;

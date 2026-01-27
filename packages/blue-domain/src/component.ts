@@ -45,7 +45,6 @@ const { defineProperty, deleteProperty } = Reflect,
 let uuid = 0;
 
 /**
- * @class module:component.GenericDomainComponent
  */
 export class GenericDomainComponent extends AsEventEmitter(Null) implements DomainComponent {
     id: number;

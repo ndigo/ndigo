@@ -53,54 +53,44 @@ type ServiceInterceptor =
     | ResponseAwareServiceInterceptor;
 
 /**
- * @interface module:service.CompletionAwareServiceInterceptor
  */
 
 /**
- * @function module:service.CompletionAwareServiceInterceptor#postRequest
- * @param {external:Request} request
+ * @param {Request} request
  */
 
 /**
- * @interface module:service.ErrorAwareServiceInterceptor
  */
 
 /**
- * @function module:service.ErrorAwareServiceInterceptor#postFailure
- * @param {external:Error} error
- * @param {external:Request} request
+ * @param {Error} error
+ * @param {Request} request
  */
 
 /**
- * @interface module:service.InitializationAwareServiceInterceptor
  */
 
 /**
- * @function module:service.InitializationAwareServiceInterceptor#preInit
- * @param {external:URL} url
+ * @param {URL} url
  * @param {module:service.ServiceInit} settings
- * @returns {external:boolean}
+ * @returns {boolean}
  */
 
 /**
- * @interface module:service.RequestAwareServiceInterceptor
  */
 
 /**
- * @function module:service.RequestAwareServiceInterceptor#preRequest
- * @param {external:Request} request
- * @returns {external:Promise<external:Request|void>}
+ * @param {Request} request
+ * @returns {Promise<external:Request|void>}
  */
 
 /**
- * @interface module:service.ResultAwareServiceInterceptor
  */
 
 /**
- * @function module:service.ResultAwareServiceInterceptor#postSuccess
  * @param {module:http.HTTPResult} result
  * @param {module:service.ServiceInit} settings
- * @returns {external:Promise<void>}
+ * @returns {Promise<void>}
  */
 
 /**
@@ -120,8 +110,7 @@ const { defineProperty } = Reflect,
 let serviceId = 0;
 
 /**
- * @function module:service~nextServiceId
- * @returns {external:number} The next service id
+ * @returns {number} The next service id
  */
 function nextServiceId(): number {
     return ++serviceId;
@@ -156,7 +145,6 @@ export class MappedServiceInterceptor {
 }
 
 /**
- * @class module:service.ServiceExecutionChain
  */
 class ServiceExecutionChain {
     #interceptors: ServiceInterceptor[];
@@ -188,8 +176,7 @@ class ServiceExecutionChain {
     }
 
     /**
-     * @function module:service.ServiceExecutionChain#addInterceptor
-     * @param {module:service.ServiceInterceptor} interceptor
+         * @param {module:service.ServiceInterceptor} interceptor
      */
     addInterceptor(interceptor: ServiceInterceptor): void {
         if (interceptor) {
@@ -201,8 +188,7 @@ class ServiceExecutionChain {
     }
 
     /**
-     * @function module:service.ServiceExecutionChain#addInterceptors
-     * @param {external:Array<module:service.ServiceInterceptor>} interceptors
+         * @param {Array<module:service.ServiceInterceptor>} interceptors
      */
     addInterceptors(interceptors: ServiceInterceptor[]): void {
         const length = interceptors?.length;

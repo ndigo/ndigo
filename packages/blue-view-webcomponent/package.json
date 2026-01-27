@@ -49,8 +49,5 @@
     "@blue/core": "~3.0.0-alpha",
     "@blue/util": "~3.0.0-alpha",
     "@blue/view": "~3.0.0-alpha"
-  },
-  "publishConfig": {
-    "registry": "https://artifacts.jpmchase.net/artifactory/api/npm/npm"
   }
 }

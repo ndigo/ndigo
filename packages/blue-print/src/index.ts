@@ -1,6 +1,5 @@
 /**
  * @author Jeff Rose
- * @module print
  */
 
 import Fingerprint2 from '../node_modules/@fingerprintjs/fingerprintjs/fingerprint2.js';
@@ -13,24 +12,23 @@ export type Fingerprint = Impression[];
 
 /**
  * @typedef module:print.impression
- * @type {external:boolean|external:number|external:string}
+ * @type {boolean|external:number|external:string}
  */
 
 /**
  * @typedef module:print.Impression
- * @type {external:Object}
- * @property {external:string} key
+ * @type {Object}
+ * @property {string} key
  * @property {module:print.impression|external:Array<module:print.impression>} value
  */
 
 /**
  * @typedef module:print.Fingerprint
- * @type {external:Array<module:print.Impression>}
+ * @type {Array<module:print.Impression>}
  */
 
 /**
  * A unique device signature
- * @const {external:Promise<module:print.Fingerprint[]>} module:print.fingerprint
  */
 export const fingerprint = new Promise<Fingerprint>(function (resolve, reject) {
     // @ts-ignore: ¯\_(ツ)_/¯

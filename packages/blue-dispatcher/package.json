@@ -61,8 +61,5 @@
     "@blue/util": "~3.0.0-alpha",
     "@blue/view": "~3.0.0-alpha",
     "reflect-metadata": "0.2.2"
-  },
-  "publishConfig": {
-    "registry": "https://artifacts.jpmchase.net/artifactory/api/npm/npm"
   }
 }

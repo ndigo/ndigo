@@ -1,10 +1,9 @@
 /**
  * @author Jeff Rose
- * @module component
- * @requires core
- * @requires context
- * @requires dispatcher
- * @requires util
+ * @see core
+ * @see context
+ * @see dispatcher
+ * @see util
  */
 
 export * from './component';

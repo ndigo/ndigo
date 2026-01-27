@@ -16,23 +16,19 @@ export interface AsyncErrorHandler extends ErrorHandler {
 }
 
 /**
- * @interface module:logger.ErrorHandler
  */
 
 /**
- * @function module:logger.ErrorHandler#handleError
  * @param {module:Logger.Entry} entry
  */
 
 /**
- * @interface module:logger.AsyncErrorHandler
  * @extends module:logger.ErrorHandler
  */
 
 /**
- * @function module:logger.AsyncErrorHandler#handleError
  * @param {module:Logger.Entry} entry
- * @returns {external:Promise<external:void>}
+ * @returns {Promise<external:void>}
  */
 
 const { defineProperty } = Reflect,
@@ -42,7 +38,6 @@ const { defineProperty } = Reflect,
     serializeFrames = pipe(map(serializeFrame), joinOnEmptyString) as (frames: StackFrame[]) => string;
 
 /**
- * @class module:logger.StackTraceErrorHandler
  * @implements module:logger.AsyncErrorHandler
  */
 export class StackTraceErrorHandler implements AsyncErrorHandler {
@@ -67,7 +62,6 @@ export class StackTraceErrorHandler implements AsyncErrorHandler {
 }
 
 /**
- * @class module:logger.WindowErrorHandler
  * @implements module:logger.ErrorHandler
  */
 export class WindowErrorHandler implements ErrorHandler {

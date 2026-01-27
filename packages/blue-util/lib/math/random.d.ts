@@ -4,9 +4,8 @@
  */
 /**
  * Generates a pseudo-random number.
- * @function module:util.random
  * @category Math
- * @returns {external:number} A pseudo-random number between `0` and `1`.
+ * @returns {number} A pseudo-random number between `0` and `1`.
  * @example
  * random();
  * //=> 0.9282578795792454

@@ -57,8 +57,5 @@
     "@blue/parser": "~3.0.0-alpha",
     "@blue/util": "~3.0.0-alpha"
   },
-  "sideEffects": false,
-  "publishConfig": {
-    "registry": "https://artifacts.jpmchase.net/artifactory/api/npm/npm"
-  }
+  "sideEffects": false
 }

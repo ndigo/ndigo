@@ -33,9 +33,8 @@ const commaMatcher = /,/,
         }, createNull()),
     /**
      * Parses a matrix string into an object.
-     * @function module:router.fromMatrixString
-     * @param {external:string} text The matrix string
-     * @returns {external:Object} The parsed matrix string.
+         * @param {string} text The matrix string
+     * @returns {Object} The parsed matrix string.
      * @category String
      */
     fromMatrixString = (text: string): { [key: string]: string } => {

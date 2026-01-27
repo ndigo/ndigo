@@ -35,35 +35,29 @@ const ERROR_HANDLER = 'error:handler',
         };
 
 /**
- * @function module:dispatcher.errorHandler
- * @param {external:Error} errorClass
- * @returns {external:Function}
+ * @param {Error} errorClass
+ * @returns {Function}
  */
 
 /**
- * @const {external:ClassDecorator} module:dispatcher.errorHandler(2)
  */
 export const errorHandler = assign(eh, {
     /**
-     * @function module:dispatcher.errorHandler.define
-     * @param {*} target
+         * @param {*} target
      */
     define: defineErrorHandler,
     /**
-     * @function module:dispatcher.errorHandler.delete
-     * @param {*} target
+         * @param {*} target
      */
     delete: deleteErrorHandler,
     /**
-     * @function module:dispatcher.errorHandler.get
-     * @param {*} target
-     * @returns {external:boolean}
+         * @param {*} target
+     * @returns {boolean}
      */
     get: getErrorHandler,
     /**
-     * @function module:dispatcher.errorHandler.has
-     * @param {*} target
-     * @returns {external:boolean} Whether or not the `target` is defined as an error handler.
+         * @param {*} target
+     * @returns {boolean} Whether or not the `target` is defined as an error handler.
      */
     has: hasErrorHandler,
 });
@@ -78,40 +72,34 @@ export const likeErrorHandler = both(
 );
 
 /**
- * @function module:dispatcher.errorMapping
- * @param {external:Error} errorClass
- * @returns {external:Function}
+ * @param {Error} errorClass
+ * @returns {Function}
  */
 
 /**
- * @const {external:ClassDecorator} module:dispatcher.errorMapping(2)
  */
 export const errorMapping = assign(em, {
     /**
-     * @function module:dispatcher.errorMapping.define
-     * @param {*} value
+         * @param {*} value
      * @param {*} target
-     * @param {external:string|external:symbol} propertyKey
+     * @param {string|external:symbol} propertyKey
      */
     define: defineErrorMapping,
     /**
-     * @function module:dispatcher.errorMapping.delete
-     * @param {*} target
-     * @param {external:string|external:symbol} propertyKey
+         * @param {*} target
+     * @param {string|external:symbol} propertyKey
      */
     delete: deleteErrorMapping,
     /**
-     * @function module:dispatcher.errorMapping.get
-     * @param {*} target
-     * @param {external:string|external:symbol} propertyKey
-     * @returns {external:Array<module:core.Constructable<external:Error>>}
+         * @param {*} target
+     * @param {string|external:symbol} propertyKey
+     * @returns {Array<module:core.Constructable<external:Error>>}
      */
     get: getErrorMapping,
     /**
-     * @function module:dispatcher.errorMapping.has
-     * @param {*} target
-     * @param {external:string|external:symbol} propertyKey
-     * @returns {external:boolean} Whether or not the `target` and `propertyKey` is defined as an error mapping.
+         * @param {*} target
+     * @param {string|external:symbol} propertyKey
+     * @returns {boolean} Whether or not the `target` and `propertyKey` is defined as an error mapping.
      */
     has: hasErrorMapping,
 });

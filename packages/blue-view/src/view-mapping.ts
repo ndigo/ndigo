@@ -12,11 +12,9 @@ export interface ViewMapping {
 }
 
 /**
- * @interface module:view.ViewMapping
  */
 
 /**
- * @function module:view.ViewMapping#getTarget
  * @param {module:router.Route} route
  */
 

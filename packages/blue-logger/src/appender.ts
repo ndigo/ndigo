@@ -84,62 +84,50 @@ export abstract class AbstractBatchAppender extends AbstractAppender implements 
 }
 
 /**
- * @interface module:logger.Appender
  */
 
 /**
- * @member {module:logger.ErrorHandler} module:logger.Appender#errorHandler
  */
 
 /**
- * @member {module:logger.Layout} module:logger.Appender#layout
  */
 
 /**
- * @function module:logger.Appender#append
  * @param {module:logger.Entry} entry
  */
 
 /**
- * @interface module:logger.AsyncAppender
  * @extends module:logger.Appender
  */
 
 /**
- * @function module:logger.AsyncAppender#append
  * @param {module:logger.Entry} entry
- * @returns {external:Promise}
+ * @returns {Promise}
  */
 
 /**
- * @interface module:logger.BatchAppender
  * @extends module:logger.Appender
  */
 
 /**
- * @member {external:number} module:logger.BatchAppender#batchSize
  */
 
 /**
- * @member {module:logger.BatchLayout} module:logger.BatchAppender#layout
  */
 
 /**
  * @abstract
- * @class module:logger.AbstractAppender
  * @implements module:logger.Appender
- * @param {external:string} name
+ * @param {string} name
  */
 
 /**
  * @abstract
- * @function module:logger.AbstractAppender#append
  * @param {module:logger.Entry} entry
  */
 
 /**
  * @abstract
- * @class module:logger.AbstractBatchAppender
  * @extends module:logger.AbstractAppender
  * @implements module:logger.BatchAppender
  */

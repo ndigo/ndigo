@@ -1,6 +1,5 @@
 /**
  * @author Jeff Rose
- * @module model
  */
 import { isPrimitive } from '@blue/core';
 import {

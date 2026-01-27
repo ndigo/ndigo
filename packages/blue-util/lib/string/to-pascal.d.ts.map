@@ -1,1 +1,1 @@
-{"version":3,"file":"to-pascal.d.ts","sourceRoot":"","sources":["../../src/string/to-pascal.ts"],"names":[],"mappings":"AAAA;;;;GAIG;AAMH,QAAA;AAEI;;;;;;;;;;GAUG;AACH,QAAQ,EAAE,CAAC,KAAK,EAAE,MAAM,KAAK,MAE5B,CAAC;AAEN,eAAe,QAAQ,CAAC"}
+{"version":3,"file":"to-pascal.d.ts","sourceRoot":"","sources":["../../src/string/to-pascal.ts"],"names":[],"mappings":"AAAA;;;;GAIG;AAMH,QAAA;AAEI;;;;;;;;;GASG;AACH,QAAQ,EAAE,CAAC,KAAK,EAAE,MAAM,KAAK,MAE5B,CAAC;AAEN,eAAe,QAAQ,CAAC"}

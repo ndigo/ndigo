@@ -7,11 +7,10 @@ import isNumber from './is-number';
 import isString from './is-string';
 const isNotEmptyString = both(isString, pipe(trim, complement(isEmpty))), 
 /**
- * Determines whether a given value is numeric, i.e. a number or a string containing a number. The {@linkcode module:util.isNumber|isNumber} method determines whether the value, parsed or not, is a number.
- * @function module:util.isNumeric
- * @category Type
+ * Determines whether a given value is numeric, i.e. a number or a string containing a number. The {@link isNumber|isNumber} method determines whether the value, parsed or not, is a number.
+     * @category Type
  * @param {*} value The value to be tested.
- * @returns {external:boolean} Whether or not `value` is numeric.
+ * @returns {boolean} Whether or not `value` is numeric.
  * @example
  * isNumeric( new Number( 1 ) );
  * //=> true
@@ -23,7 +22,7 @@ const isNotEmptyString = both(isString, pipe(trim, complement(isEmpty))),
  * //=> false
  * isNumeric( Infinity );
  * //=> false
- * @see {@link module:util.isNumber}
+ * @see {@link isNumber}
  */
 isNumeric = cond([
     [isNumber, T],
@@ -31,4 +30,4 @@ isNumeric = cond([
     [T, F],
 ]);
 export default isNumeric;
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaXMtbnVtZXJpYy5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbIi4uLy4uL3NyYy90eXBlL2lzLW51bWVyaWMudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7OztHQUdHO0FBRUgsT0FBTyxFQUFFLElBQUksRUFBRSxVQUFVLEVBQUUsSUFBSSxFQUFFLE9BQU8sRUFBRSxJQUFJLEVBQUUsQ0FBQyxFQUFFLENBQUMsRUFBRSxJQUFJLEVBQUUsTUFBTSxPQUFPLENBQUM7QUFDMUUsT0FBTyxRQUFRLE1BQU0sYUFBYSxDQUFDO0FBQ25DLE9BQU8sUUFBUSxNQUFNLGFBQWEsQ0FBQztBQUluQyxNQUFNLGdCQUFnQixHQUFHLElBQUksQ0FBQyxRQUFRLEVBQUUsSUFBSSxDQUFDLElBQUksRUFBRSxVQUFVLENBQUMsT0FBTyxDQUFDLENBQUMsQ0FBQztBQUNwRTs7Ozs7Ozs7Ozs7Ozs7Ozs7O0dBa0JHO0FBQ0gsU0FBUyxHQUFHLElBQUksQ0FBZTtJQUMzQixDQUFDLFFBQVEsRUFBRSxDQUFDLENBQUM7SUFDYixDQUFDLGdCQUFnQixFQUFFLENBQUMsS0FBSyxFQUFFLEVBQUUsQ0FBQyxRQUFRLENBQUMsQ0FBQyxLQUFLLENBQUMsQ0FBQztJQUMvQyxDQUFDLENBQUMsRUFBRSxDQUFDLENBQUM7Q0FDVCxDQUFnQyxDQUFDO0FBRXRDLGVBQWUsU0FBUyxDQUFDIn0=
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaXMtbnVtZXJpYy5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbIi4uLy4uL3NyYy90eXBlL2lzLW51bWVyaWMudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7OztHQUdHO0FBRUgsT0FBTyxFQUFFLElBQUksRUFBRSxVQUFVLEVBQUUsSUFBSSxFQUFFLE9BQU8sRUFBRSxJQUFJLEVBQUUsQ0FBQyxFQUFFLENBQUMsRUFBRSxJQUFJLEVBQUUsTUFBTSxPQUFPLENBQUM7QUFDMUUsT0FBTyxRQUFRLE1BQU0sYUFBYSxDQUFDO0FBQ25DLE9BQU8sUUFBUSxNQUFNLGFBQWEsQ0FBQztBQUluQyxNQUFNLGdCQUFnQixHQUFHLElBQUksQ0FBQyxRQUFRLEVBQUUsSUFBSSxDQUFDLElBQUksRUFBRSxVQUFVLENBQUMsT0FBTyxDQUFDLENBQUMsQ0FBQztBQUNwRTs7Ozs7Ozs7Ozs7Ozs7Ozs7R0FpQkc7QUFDSCxTQUFTLEdBQUcsSUFBSSxDQUFlO0lBQzNCLENBQUMsUUFBUSxFQUFFLENBQUMsQ0FBQztJQUNiLENBQUMsZ0JBQWdCLEVBQUUsQ0FBQyxLQUFLLEVBQUUsRUFBRSxDQUFDLFFBQVEsQ0FBQyxDQUFDLEtBQUssQ0FBQyxDQUFDO0lBQy9DLENBQUMsQ0FBQyxFQUFFLENBQUMsQ0FBQztDQUNULENBQWdDLENBQUM7QUFFdEMsZUFBZSxTQUFTLENBQUMifQ==

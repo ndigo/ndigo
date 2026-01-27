@@ -16,16 +16,14 @@ export interface RouteErrorResolver {
 
 /**
  * Interface to be implemented by classes that can resolve errors thrown during route mapping or execution. Implementors are typically registered as values in the application context.
- * @interface module:router.RouteErrorResolver
  */
 
 /**
- * Try to resolve the error that was thrown during route handler execution, returning a {@linkcode module:dispatcher.ModelAndView|ModelAndView} that represents the specific error page, if appropriate.
+ * Try to resolve the error that was thrown during route handler execution, returning a {@link ModelAndView|ModelAndView} that represents the specific error page, if appropriate.
  * The returned `ModelAndView` may be empty to indicate the error has been resolved but that no view should be rendered.
- * @function module:router.RouteErrorResolver#resolveError
  * @param {module:router.Route} route The current route
  * @param {*} handler The executed route handler or `null` if none chosen at the time of the error.
- * @param {external:Error} error
+ * @param {Error} error
  * @returns {module:dispatcher.ModelAndView} A corresponding `ModelAndView` to forward to or `null`.
  */
 
@@ -123,27 +121,23 @@ export abstract class AbstractHandlerMethodErrorResolver extends AbstractRouteEr
 
 /**
  * @abstract
- * @class module:dispatcher.AbstractRouteErrorResolver
  * @implements module:router.RouteErrorResolver
  */
 
 /**
  * @abstract
  * @protected
- * @function module:dispatcher.AbstractRouteErrorResolver#_resolveError
  */
 
 /**
  * @abstract
- * @class module:dispatcher.AbstractHandlerMethodErrorResolver
  * @extends module:dispatcher.AbstractRouteErrorResolver
  */
 
 /**
- * The default implementation of the {@linkcode module:router.RouteErrorResolver|RouteErrorResolver} interface, resolving standard BlueJS exceptions.
+ * The default implementation of the {@link RouteErrorResolver|RouteErrorResolver} interface, resolving standard BlueJS exceptions.
  *
- * This error resolver is enabled by default in the {@linkcode module:dispatcher.WebDispatcher|WebDispatcher}.
- * @class module:dispatcher.DefaultRouteErrorResolver
+ * This error resolver is enabled by default in the {@link WebDispatcher|WebDispatcher}.
  * @extends module:dispatcher.AbstractRouteErrorResolver
  */
 export class DefaultRouteErrorResolver extends AbstractRouteErrorResolver {
@@ -173,8 +167,7 @@ export class DefaultRouteErrorResolver extends AbstractRouteErrorResolver {
 }
 
 /**
- * An {@linkcode module:dispatcher.AbstractRouteErrorResolver|AbstractRouteErrorResolver} that resolves exceptions through 'error:mapping' metadata.
- * @class module:dispatcher.MetadataErrorResolver
+ * An {@link AbstractRouteErrorResolver|AbstractRouteErrorResolver} that resolves exceptions through 'error:mapping' metadata.
  * @extends module:dispatcher.AbstractRouteErrorResolver
  * @implements module:context.ApplicationContextAware
  * @implements module:context.Initializable
@@ -241,10 +234,9 @@ export class MetadataErrorResolver extends AbstractHandlerMethodErrorResolver im
 }
 
 /**
- * {@linkcode module:router.RouteErrorResolver|RouteErrorResolver} implementation that allows for mapping exception class names to view names, either for a set of given handlers or for all handlers in the {@linkcode module:dispatcher.Dispatcher|Dispatcher}.
- * @class module:dispatcher.SimpleMappingErrorResolver
+ * {@link RouteErrorResolver|RouteErrorResolver} implementation that allows for mapping exception class names to view names, either for a set of given handlers or for all handlers in the {@link Dispatcher|Dispatcher}.
  * @extends module:dispatcher.AbstractRouteErrorResolver
- * @see {@link module:dispatcher.Dispatcher}
+ * @see {@link Dispatcher}
  */
 export class SimpleMappingErrorResolver extends AbstractRouteErrorResolver {
     defaultErrorView: string;
@@ -257,8 +249,7 @@ export class SimpleMappingErrorResolver extends AbstractRouteErrorResolver {
     constructor(defaultErrorView?: string) {
         super();
         /**
-         * @member {external:Map} module:dispatcher.SimpleMappingErrorResolver#defaultErrorView
-         */
+                 */
         defineProperty(this, 'defaultErrorView', {
             value: defaultErrorView || null,
             configurable: true,
@@ -269,8 +260,7 @@ export class SimpleMappingErrorResolver extends AbstractRouteErrorResolver {
          * Set the mappings between error class names and error view names. The error class name can be a substring, with no wildcard support.
          *
          * Consider carefully how specific the pattern is. For example, "Error" will match nearly anything, and will probably hide other rules.
-         * @member {external:Map} module:dispatcher.SimpleMappingErrorResolver#errorMappings
-         */
+                 */
         defineProperty(this, 'errorMappings', {
             value: new Map<string, string>(),
             configurable: true,
@@ -284,10 +274,9 @@ export class SimpleMappingErrorResolver extends AbstractRouteErrorResolver {
      *
      * May be overridden in subclasses, in order to apply specific error checks.
      * @protected
-     * @function module:dispatcher.SimpleMappingErrorResolver#_resolveError
-     * @param {module:router.Route} route The current route.
+         * @param {module:router.Route} route The current route.
      * @param {*} handler The executed handler or `null` if none chosen at the time of the error.
-     * @param {external:Error} error The error that was thrown during execution.
+     * @param {Error} error The error that was thrown during execution.
      * @returns {module:dispatcher.ModelAndView} The corresponding `ModelAndView` to forward to or `null` for default processing in the resolution chain.
      */
     protected _resolveError(route: Route, handler: object, error: Error): ModelAndView {

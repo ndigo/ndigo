@@ -4,10 +4,9 @@
  */
 declare const /**
      * Determines whether a given object is thenable, i.e. has a `then` method.
-     * @function module:util.likePromise
-     * @category Type
+         * @category Type
      * @param {*} value The value to be tested.
-     * @returns {external:boolean} Whether or not `value` is thenable.
+     * @returns {boolean} Whether or not `value` is thenable.
      * @example
      * const promise = new Promise( ... );
      * likePromise( promise );

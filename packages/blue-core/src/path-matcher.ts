@@ -26,31 +26,27 @@ export interface PathMatcherFilter {
  * Combines two patterns into a new pattern.
  *
  * The approach used for combining the two pattern depends on the underlying implementation.
- * @function module:core.PathMatcher#merge
- * @param {external:string} pattern1 The first pattern
- * @param {external:string} pattern2 The second pattern
- * @returns {external:string} The combination of the two patterns
+ * @param {string} pattern1 The first pattern
+ * @param {string} pattern2 The second pattern
+ * @returns {string} The combination of the two patterns
  */
 
 /**
- * Given a full path, returns a {@linkcode module:core.Comparator|Comparator} suitable for sorting patterns in order of explicitness for that path.
+ * Given a full path, returns a {@link Comparator|Comparator} suitable for sorting patterns in order of explicitness for that path.
  *
  * The approach used depends on the underlying implementation.
- * @function module:core.PathMatcher#getPatternComparator
- * @param {external:string} path The full path to use for comparison
+ * @param {string} path The full path to use for comparison
  * @returns {module:core.Comparator} A comparator capable of sorting patterns in order of explicitness
  */
 
 /**
  * Match the given `path` against the given `pattern`, according to this PathMatcher's matching strategy.
- * @function module:core.PathMatcher#match
- * @param {external:string} pattern The pattern to match against
- * @param {external:string} path The path to test
- * @returns {external:boolean} Whether or not the `path` matched.
+ * @param {string} pattern The pattern to match against
+ * @param {string} path The path to test
+ * @returns {boolean} Whether or not the `path` matched.
  */
 
 /**
- * @interface module:core.MappedPathMatcher
  */
 
 const DOT = '.',
@@ -62,16 +58,14 @@ const DOT = '.',
     SLASH_GLOBSTAR = `${SLASH}${GLOBSTAR}`;
 
 /**
- * @function module:core.likePathMatcher
  * @param {*} value
- * @returns {external:boolean} Whether or not the `value` is a {@linkcode module:core.PathMatcher|PathMatcher}.
+ * @returns {boolean} Whether or not the `value` is a {@link PathMatcher|PathMatcher}.
  */
 export const likePathMatcher = like({ getPatternComparator: Function, match: Function, merge: Function }) as (
     value
 ) => value is PathMatcher;
 
 /**
- * @class module:core.EqualsPathComparator
  * @extends module:core.AbstractStringComparator
  */
 class EqualsPathComparator extends AbstractValueComparator {
@@ -93,7 +87,6 @@ class EqualsPathComparator extends AbstractValueComparator {
 }
 
 /**
- * @class module:core.GlobPatternComparator
  * @extends module:core.AbstractStringComparator
  */
 class GlobPatternComparator extends AbstractValueComparator {
@@ -148,7 +141,6 @@ class GlobPatternComparator extends AbstractValueComparator {
 }
 
 /**
- * @class module:core.EqualsPathMatcher
  * @extends module:core.PathMatcher
  */
 export class EqualsPathMatcher implements PathMatcher {
@@ -197,7 +189,6 @@ export class EqualsPathMatcher implements PathMatcher {
 }
 
 /**
- * @class module:core.GlobPathMatcher
  * @extends module:core.PathMatcher
  */
 export class GlobPathMatcher implements PathMatcher {

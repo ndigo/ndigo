@@ -29,35 +29,31 @@ const ROUTE_MAPPING = 'route:mapping',
     );
 
 /**
- * @function module:dispatcher.defineRouteMapping
  * @param {*} value
  * @param {*} target
- * @param {external:string|external:symbol} [propertyKey]
+ * @param {string|external:symbol} [propertyKey]
  */
 export const defineRouteMapping = (value, target, propertyKey: string | symbol = void 0): void =>
     defineMetadata(ROUTE_MAPPING, value, target, propertyKey);
 
 /**
- * @function module:dispatcher.getRouteMapping
  * @param {*} target
- * @param {external:string|external:symbol} [propertyKey]
+ * @param {string|external:symbol} [propertyKey]
  * @returns {*}
  */
 export const getRouteMapping = (target, propertyKey: string | symbol = void 0): any =>
     getMetadata(ROUTE_MAPPING, target, propertyKey);
 
 /**
- * @function module:dispatcher.hasRouteMapping
  * @param {*} target
- * @param {external:string|external:symbol} [propertyKey]
- * @returns {external:boolean} Whether or not the `target` and optional `propertyKey` has a route mapping defined.
+ * @param {string|external:symbol} [propertyKey]
+ * @returns {boolean} Whether or not the `target` and optional `propertyKey` has a route mapping defined.
  */
 export const hasRouteMapping = (target, propertyKey: string | symbol = void 0): boolean =>
     hasMetadata(ROUTE_MAPPING, target, propertyKey);
 
 /**
- * @function module:router.RouteMapping
- * @param {external:string} route
+ * @param {string} route
  */
 export const routeMapping = (route: string | RouteMappingConfiguration = defaultMapping) => {
     const conf = toRouteMappingConfiguration(route);

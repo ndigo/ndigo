@@ -9,13 +9,11 @@ export interface ThemeResolver {
 }
 
 /**
- * @interface module:dispatcher.ThemeResolver
  */
 
 /**
- * @function module:dispatcher.ThemeResolver#resolveTheme
  * @param {module:dispatcher.Route} route
- * @returns {external:string} The theme name
+ * @returns {string} The theme name
  */
 
 const { defineProperty } = Reflect;
@@ -41,23 +39,19 @@ export abstract class AbstractThemeResolver implements ThemeResolver {
 
 /**
  * @abstract
- * @class module:dispatcher.AbstractThemeResolver
  * @implements {module:dispatcher.ThemeResolver}
  */
 
 /**
- * @member {external:string} module:dispatcher.AbstractThemeResolver#defaultThemeName
  */
 
 /**
  * @abstract
- * @function module:dispatcher.AbstractThemeResolver#resolveTheme
  * @param {module:dispatcher.Route} route
- * @returns {external:string} The theme name
+ * @returns {string} The theme name
  */
 
 /**
- * @class module:dispatcher.FixedThemeResolver
  * @extends {module:dispatcher.AbstractThemeResolver}
  */
 export class FixedThemeResolver extends AbstractThemeResolver {

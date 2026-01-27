@@ -54,7 +54,6 @@ pnpm lint
 - [blue-util](packages/blue-util/README.md)
 - [blue-validate](packages/blue-validate/README.md)
 - [blue-view](packages/blue-view/README.md)
-- [blue-view-ractive](packages/blue-view-ractive/README.md)
 - [blue-view-webcomponent](packages/blue-view-webcomponent/README.md)
 
 # Development

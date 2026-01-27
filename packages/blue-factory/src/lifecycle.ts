@@ -17,42 +17,34 @@ export interface Initializable {
 }
 
 /**
- * @interface module:factory.Destroyable
- * @property {external:boolean} destroyed
+ * @property {boolean} destroyed
  */
 
 /**
- * @function module:factory.Destroyable#destroy
  */
 
 /**
- * @interface module:factory.AsyncDestroyable
  * @extends module:factory.Destroyable
  */
 
 /**
- * @function module:factory.AsyncDestroyable#destroy
- * @returns {external:Promise}
+ * @returns {Promise}
  */
 
 /**
- * @interface module:factory.Initializable
  */
 
 /**
- * @function module:factory.Initializable#init
  */
 
 /**
- * @function module:factory.likeDestroyable
  * @param {*} value
- * @returns {external:boolean} Whether or not the `value` is {@linkcode module:factory.Destroyable|Destroyable}.
+ * @returns {boolean} Whether or not the `value` is {@link Destroyable|Destroyable}.
  */
 export const likeDestroyable = like({ destroy: Function, destroyed: Boolean }) as (value) => value is Destroyable;
 
 /**
- * @function module:factory.likeInitializable
  * @param {*} value
- * @returns {external:boolean} Whether or not the `value` is {@linkcode module:factory.Initializable|Initializable}.
+ * @returns {boolean} Whether or not the `value` is {@link Initializable|Initializable}.
  */
 export const likeInitializable = like({ init: Function }) as (value) => value is Initializable;

@@ -4,8 +4,7 @@
 /**
  * Generates a pseudo-random Globally Unique Identifier (v4).
  * Since the total number of GUIDs is 2^122 the chance of generating the same value twice is negligible.
- * @function module:util.guid
- * @returns {external:string}
+ * @returns {string}
  * @category Math
  * @example
  * guid();

@@ -26,7 +26,6 @@ export const parseQualityFactor = cond([
 ]);
 
 /**
- * @class module:core~QualityFactorComparator
  * @implements module:core.Comparator
  */
 class QualityFactorComparator implements Comparator<Qualifiable> {

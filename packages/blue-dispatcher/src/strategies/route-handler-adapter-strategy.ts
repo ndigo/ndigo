@@ -14,25 +14,21 @@ export interface RouteHandlerAdapterStrategy {
 }
 
 /**
- * @interface module:dispatcher.RouteHandlerAdapterStrategy
  */
 
 /**
- * @member {external:Array<module:dispatcher.HandlerAdapter>} module:dispatcher.RouteHandlerAdapterStrategy#handlerAdapters
  */
 
 /**
- * Initialize the handler adapters used by the class. If no handler adapters are defined, it defaults to {@linkcode module:dispatcher.ControllerHandlerAdapter|ControllerHandlerAdapter}.
- * @function module:dispatcher.RouteHandlerAdapterStrategy#initHandlerAdapters
+ * Initialize the handler adapters used by the class. If no handler adapters are defined, it defaults to {@link ControllerHandlerAdapter|ControllerHandlerAdapter}.
  * @param {module:core.ApplicationContext} context
  */
 
 /**
  * Return the handler adapter for the given handler.
- * @function module:dispatcher.RouteHandlerAdapterStrategy#getHandlerAdapter
  * @param {module:dispatcher.MaybeHandler} handler The handler to find an adapter for.
  * @returns {module:dispatcher.HandlerAdapter} The adapter for the handler.
- * @throws {external:Error} If no adapter can be found for the handler.
+ * @throws {Error} If no adapter can be found for the handler.
  */
 
 const { defineProperty } = Reflect,

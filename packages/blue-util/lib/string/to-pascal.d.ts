@@ -6,9 +6,8 @@
 declare const 
 /**
  * Returns the pascal case version of a string.
- * @function module:util.toPascal
- * @param {external:string} value
- * @returns {external:string}
+     * @param {string} value
+ * @returns {string}
  * @category String
  * @example
  * toPascal( 'lorem-ipsum-dolor' );

@@ -30,7 +30,6 @@ const { defineProperty } = Reflect,
     };
 
 /**
- * @class module:core.RingBuffer
  * @implements external:ArrayLike
  * @implements external:Iterable
  * @implements module:core.Serializable
@@ -194,7 +193,6 @@ defineProperty(RingBuffer, 'MIN_CAPACITY', {
 });
 
 /**
- * @class module:core.ResizableRingBuffer
  * @extends module:core.RingBuffer
  */
 export class ResizableRingBuffer<T> extends RingBuffer<T> {
@@ -203,9 +201,8 @@ export class ResizableRingBuffer<T> extends RingBuffer<T> {
     }
 
     /**
-     * @function module:core.ResizableRingBuffer#put
-     * @param {external:Array} items
-     * @returns {external:number} The number of items
+         * @param {Array} items
+     * @returns {number} The number of items
      */
     put(...items: T[]): number {
         const length = this.length,
@@ -220,9 +217,8 @@ export class ResizableRingBuffer<T> extends RingBuffer<T> {
     }
 
     /**
-     * @function module:core.ResizableRingBuffer#resizeTo
-     * @param {external:number} newCapacity
-     * @returns {external:number} The number of items
+         * @param {number} newCapacity
+     * @returns {number} The number of items
      */
     resizeTo(newCapacity: number): void {
         const oldCapacity = this._capacity,
@@ -252,7 +248,7 @@ export class ResizableRingBuffer<T> extends RingBuffer<T> {
 }
 
 /**
- * @mixin module:core.AsEnumerableRingBuffer
+ * @see module:core.AsEnumerableRingBuffer
  * @implements module:core.Enumerable
  * @returns {module:core.Constructable<module:core.RingBuffer,module:core.Enumerable>}
  */
@@ -283,8 +279,7 @@ export const AsEnumerableRingBuffer = <T extends Constructable<RingBuffer>, K ex
     };
 
 /**
- * Extension of the {@linkcode external:Map|Map} interface that stores multiple values under a single key.
- * @class module:core.MultiValueMap
+ * Extension of the {@link external:Map|Map} interface that stores multiple values under a single key.
  * @extends external:Map
  */
 export class MultiValueMap<K, V> extends Map<K, V[]> {
@@ -293,8 +288,7 @@ export class MultiValueMap<K, V> extends Map<K, V[]> {
     }
 
     /**
-     * @function module:core.MultiValueMap#add
-     * @param {*} key
+         * @param {*} key
      * @param {*} value
      * @returns {module:core.MultiValueMap} this
      */

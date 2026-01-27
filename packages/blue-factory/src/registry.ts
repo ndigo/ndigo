@@ -13,13 +13,11 @@ export interface Registry {
 
 /**
  * Interface that defines a registry for shared instances
- * @interface module:factory.Registry
  */
 
 /**
- * @function module:factory.likeRegistry
  * @param {*} value The value to be tested
- * @returns {external:boolean} Whether or not the `value` provided is a {@linkcode module:factory.Registry|Registry}.
+ * @returns {boolean} Whether or not the `value` provided is a {@link Registry|Registry}.
  */
 export const likeRegistry = like({
     destroyValue: Function,
@@ -29,11 +27,10 @@ export const likeRegistry = like({
 }) as (value) => value is Registry;
 
 /**
- * A handler implementation that when applied to a {@linkcode module:factory.Registry|Registry} instance via {@linkcode external:Proxy|Proxy} causes the registry
- * to behave like a plain object. This is used to implement {@linkcode module:factory.ProxiedFactory|ProxiedFactory}.
- * @class module:factory.RegistryProxyHandler
+ * A handler implementation that when applied to a {@link Registry|Registry} instance via {@link external:Proxy|Proxy} causes the registry
+ * to behave like a plain object. This is used to implement {@link ProxiedFactory|ProxiedFactory}.
  * @implements external:ProxyHandler
- * @see {@link module:factory.ProxiedFactory}
+ * @see {@link ProxiedFactory}
  */
 export class RegistryProxyHandler<T extends Registry> implements ProxyHandler<T> {
     deleteProperty(target: T, key: PropertyKey): boolean {

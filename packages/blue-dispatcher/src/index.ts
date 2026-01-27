@@ -1,10 +1,9 @@
 /**
  * @author Jeff Rose
- * @module dispatcher
- * @requires core
- * @requires util
- * @requires router
- * @requires view
+ * @see core
+ * @see util
+ * @see router
+ * @see view
  */
 
 export * from './argument-resolver';

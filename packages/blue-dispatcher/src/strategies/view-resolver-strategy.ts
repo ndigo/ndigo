@@ -13,7 +13,6 @@ export interface ViewResolverStrategy {
 }
 
 /**
- * @interface module:dispatcher.ViewResolverStrategy
  */
 
 const { defineProperty } = Reflect,

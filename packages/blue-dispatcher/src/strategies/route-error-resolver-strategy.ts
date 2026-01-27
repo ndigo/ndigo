@@ -13,7 +13,6 @@ export interface RouteErrorResolverStrategy {
 }
 
 /**
- * @interface module:dispatcher.ErrorResolverStrategy
  */
 
 const { defineProperty } = Reflect,

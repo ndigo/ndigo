@@ -48,7 +48,6 @@ export class FrameworkError extends AsSerializableError(Error) {
 }
 
 /**
- * @class module:core.IllegalStateError
  * @extends module:core.FrameworkError
  */
 export class IllegalStateError extends FrameworkError {

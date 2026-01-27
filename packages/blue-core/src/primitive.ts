@@ -8,15 +8,14 @@ export type primitive = boolean | null | number | string | symbol | bigint | und
 
 /**
  * A primitive is data that is not an object and has no methods.
- * @typedef {external:boolean | external:number | external:string | external:symbol | external:bigint | external:undefined} module:core.primitive
+ * @typedef {boolean | external:number | external:string | external:symbol | external:bigint | external:undefined} module:core.primitive
  * @see {@link https://developer.mozilla.org/en-US/docs/Glossary/Primitive}
  */
 
 /**
- * @function module:core.isPrimitive
  * @param {*} value
- * @returns {external:boolean} Whether or not a value is primitive
- * @see {@link module:core.primitive}
+ * @returns {boolean} Whether or not a value is primitive
+ * @see {@link primitive}
  */
 export const isPrimitive = (value): value is primitive => {
     switch (typeof value) {
@@ -35,9 +34,8 @@ export const isPrimitive = (value): value is primitive => {
 };
 
 /**
- * @function module:core.isNotPrimitive
  * @param {*} value
- * @returns {external:boolean} Whether or not a value is non-primitive
- * @see {@link module:core.primitive}
+ * @returns {boolean} Whether or not a value is non-primitive
+ * @see {@link primitive}
  */
 export const isNotPrimitive = complement(isPrimitive) as (value) => value is object;

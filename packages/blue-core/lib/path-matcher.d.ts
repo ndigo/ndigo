@@ -16,13 +16,11 @@ export interface PathMatcherFilter {
     setIncludePatterns(includePatterns: string[]): void;
 }
 /**
- * @function module:core.likePathMatcher
  * @param {*} value
- * @returns {external:boolean} Whether or not the `value` is a {@linkcode module:core.PathMatcher|PathMatcher}.
+ * @returns {boolean} Whether or not the `value` is a {@link PathMatcher|PathMatcher}.
  */
 export declare const likePathMatcher: (value: any) => value is PathMatcher;
 /**
- * @class module:core.EqualsPathMatcher
  * @extends module:core.PathMatcher
  */
 export declare class EqualsPathMatcher implements PathMatcher {
@@ -31,7 +29,6 @@ export declare class EqualsPathMatcher implements PathMatcher {
     match(pattern: string, path: string): boolean;
 }
 /**
- * @class module:core.GlobPathMatcher
  * @extends module:core.PathMatcher
  */
 export declare class GlobPathMatcher implements PathMatcher {

@@ -1,25 +1,23 @@
 /**
  * @author Jeff Rose
- * @module print
  */
 import Fingerprint2 from '../node_modules/@fingerprintjs/fingerprintjs/fingerprint2.js';
 /**
  * @typedef module:print.impression
- * @type {external:boolean|external:number|external:string}
+ * @type {boolean|external:number|external:string}
  */
 /**
  * @typedef module:print.Impression
- * @type {external:Object}
- * @property {external:string} key
+ * @type {Object}
+ * @property {string} key
  * @property {module:print.impression|external:Array<module:print.impression>} value
  */
 /**
  * @typedef module:print.Fingerprint
- * @type {external:Array<module:print.Impression>}
+ * @type {Array<module:print.Impression>}
  */
 /**
  * A unique device signature
- * @const {external:Promise<module:print.Fingerprint[]>} module:print.fingerprint
  */
 export const fingerprint = new Promise(function (resolve, reject) {
     // @ts-ignore: ¯\_(ツ)_/¯
@@ -33,4 +31,4 @@ export const fingerprint = new Promise(function (resolve, reject) {
     });
 });
 export default fingerprint;
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi9zcmMvaW5kZXgudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7OztHQUdHO0FBRUgsT0FBTyxZQUFZLE1BQU0sOERBQThELENBQUM7QUFReEY7OztHQUdHO0FBRUg7Ozs7O0dBS0c7QUFFSDs7O0dBR0c7QUFFSDs7O0dBR0c7QUFDSCxNQUFNLENBQUMsTUFBTSxXQUFXLEdBQUcsSUFBSSxPQUFPLENBQWMsVUFBVSxPQUFPLEVBQUUsTUFBTTtJQUN6RSx3QkFBd0I7SUFDeEIsbUJBQW1CLENBQUM7UUFDaEIsSUFBSSxDQUFDO1lBQ0QsWUFBWSxDQUFDLEdBQUcsQ0FBQyxPQUFPLENBQUMsQ0FBQztRQUM5QixDQUFDO1FBQUMsT0FBTyxDQUFDLEVBQUUsQ0FBQztZQUNULE1BQU0sQ0FBQyxDQUFDLENBQUMsQ0FBQztRQUNkLENBQUM7SUFDTCxDQUFDLENBQUMsQ0FBQztBQUNQLENBQUMsQ0FBQyxDQUFDO0FBRUgsZUFBZSxXQUFXLENBQUMifQ==
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi9zcmMvaW5kZXgudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7O0dBRUc7QUFFSCxPQUFPLFlBQVksTUFBTSw4REFBOEQsQ0FBQztBQVF4Rjs7O0dBR0c7QUFFSDs7Ozs7R0FLRztBQUVIOzs7R0FHRztBQUVIOztHQUVHO0FBQ0gsTUFBTSxDQUFDLE1BQU0sV0FBVyxHQUFHLElBQUksT0FBTyxDQUFjLFVBQVUsT0FBTyxFQUFFLE1BQU07SUFDekUsd0JBQXdCO0lBQ3hCLG1CQUFtQixDQUFDO1FBQ2hCLElBQUksQ0FBQztZQUNELFlBQVksQ0FBQyxHQUFHLENBQUMsT0FBTyxDQUFDLENBQUM7UUFDOUIsQ0FBQztRQUFDLE9BQU8sQ0FBQyxFQUFFLENBQUM7WUFDVCxNQUFNLENBQUMsQ0FBQyxDQUFDLENBQUM7UUFDZCxDQUFDO0lBQ0wsQ0FBQyxDQUFDLENBQUM7QUFDUCxDQUFDLENBQUMsQ0FBQztBQUVILGVBQWUsV0FBVyxDQUFDIn0=

@@ -4,10 +4,9 @@
  */
 /**
  * Determines whether a given value is an actual finite number. The logic differs from `typeof`, which considers `NaN` and `Infinity` to be numbers and instances of `Number` to be objects.
- * @function module:util.isNumber
  * @category Type
  * @param {*} value The value to be tested.
- * @returns {external:boolean} Whether or not `value` is a number.
+ * @returns {boolean} Whether or not `value` is a number.
  * @example
  * typeof new Number( 1 ) === 'number';
  * //=> false

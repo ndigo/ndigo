@@ -64,17 +64,15 @@ export class DelegatingTransformer<TResult, TComplete, TInput>
  * Determines whether an value is reduced. This is done using the transformer protocol; an object with the protocol-
  * specified `reduced` property is assumed to be reduced. If a result of a transformation is reduced, it means that the
  * transformation is complete and the channel should be closed.
- * @function module:core.likeReduced
  * @param {*} value The value being checked for reduction.
- * @return {boolean} Whether ot not the value has been reduced.
+ * @returns {boolean} Whether ot not the value has been reduced.
  */
 export const likeReduced = like({ '@@transducer/reduced': true }) as (value) => value is Reduced<any>;
 
 /**
  * Determines whether a value is a transformer.
- * @function module:core.likeTransformer
  * @param {*} value The value being checked.
- * @return {boolean} Whether or not the value is a transformer.
+ * @returns {boolean} Whether or not the value is a transformer.
  */
 export const likeTransformer = like({ '@@transducer/step': Function }) as (value) => value is Transformer<any, any>;
 

@@ -16,7 +16,6 @@ type EntryToLogRecordOptions = any;
 const isLevel = is(Level) as (value) => value is Level;
 
 /**
- * @class module:context.EventLogger
  * @implements module:context.EventEmitter
  * @implements module:logger.Logger
  * @implements module:logger.LevelComparator

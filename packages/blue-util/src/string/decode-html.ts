@@ -19,9 +19,8 @@ const entityMap: { [entity: string]: string } = {
     decodeHTML = (value: string): string => value.replace(leadingZeroes, '&#').replace(encodedEntities, decodeEntity);
 
 /**
- * @function module:util.decodeHTML
- * @param {external:string} value The encoded string
- * @returns {external:string} The decoded string
+ * @param {string} value The encoded string
+ * @returns {string} The decoded string
  * @example
  * decodeHTML( '&lt;div&gt;' );
  * //=> "<div>"

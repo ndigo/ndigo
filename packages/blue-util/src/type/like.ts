@@ -29,10 +29,9 @@ type LikeFunction = {
 
 /**
  * Determines whether a given value matches the criteria.
- * @function module:util.like
  * @category Type
  * @param {*} value The value to be tested.
- * @returns {external:boolean} Whether or not `value` matches the criteria.
+ * @returns {boolean} Whether or not `value` matches the criteria.
  * @example
  * const wxy = { w: true, x: Number, y: Number };
  * like( wxy, { w: {}, x: 123, y: 456 } );

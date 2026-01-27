@@ -9,7 +9,6 @@ import { isString } from '@blue/util';
 const { defineProperty } = Reflect;
 
 /**
- * @class module:dispatcher.NoHandlerFoundError
  * @extends module:core.FrameworkError
  */
 export class NoHandlerFoundError extends FrameworkError {
@@ -31,7 +30,6 @@ export class NoHandlerFoundError extends FrameworkError {
 }
 
 /**
- * @class module:dispatcher.NoViewFoundError
  * @extends module:core.FrameworkError
  */
 export class NoViewFoundError extends FrameworkError {
@@ -60,8 +58,7 @@ export class NoViewFoundError extends FrameworkError {
 }
 
 /**
- * An error that represents a failure to retrieve a required {@linkcode module:router.Route|Route} property.
- * @class module:dispatcher.RouteBindingError
+ * An error that represents a failure to retrieve a required {@link Route|Route} property.
  * @extends module:core.FrameworkError
  */
 export class RouteBindingError extends FrameworkError {

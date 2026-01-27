@@ -17,9 +17,8 @@ export interface ContentNegotiationStrategy {
 }
 
 /**
- * Strategy to resolve {@link module:core.MediaType} to a list of file extensions.
+ * Strategy to resolve {@link MediaType} to a list of file extensions.
  * For example resolve "application/json" to "json".
- * @interface module:view.MediaTypeFileExtensionResolver
  */
 
 const isDefined = complement(isNil),

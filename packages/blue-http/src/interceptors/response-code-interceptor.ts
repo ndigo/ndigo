@@ -13,11 +13,9 @@ export interface ResponseCodeAwareHTTPInterceptor {
 }
 
 /**
- * @interface module:http.ResponseCodeAwareHTTPInterceptor
  */
 
 /**
- * @class module:http.MappedResponseCodeHTTPInterceptor
  * @implements module:http.ResponseAwareHTTPInterceptor
  * @param {module:http.ResponseCodeAwareHTTPInterceptor} interceptor
  */
@@ -26,8 +24,7 @@ export class MappedResponseCodeHTTPInterceptor implements ResponseAwareHTTPInter
 
     /**
      * @readonly
-     * @member {module:http.ResponseCodeAwareHTTPInterceptor} module:http.MappedResponseCodeHTTPInterceptor#interceptor
-     */
+         */
     get interceptor() {
         return this.#interceptor;
     }
@@ -38,10 +35,9 @@ export class MappedResponseCodeHTTPInterceptor implements ResponseAwareHTTPInter
 
     /**
      * @async
-     * @function module:http.MappedResponseCodeHTTPInterceptor#postResponse
-     * @param {external:Response} response
+         * @param {Response} response
      * @param {module:http.HTTPInit} settings
-     * @returns {external:Promise<external:void>}
+     * @returns {Promise<external:void>}
      */
     async postResponse(response: Response, settings: HTTPInit): Promise<void> {
         const { status } = response;

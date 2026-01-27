@@ -19,7 +19,6 @@ export interface AsyncEnumerable<K extends PropertyKey, V> {
 }
 
 /**
- * @interface module:core.Enumerable
  */
 
 /**
@@ -30,28 +29,23 @@ export interface AsyncEnumerable<K extends PropertyKey, V> {
  */
 
 /**
- * @function module:core.Enumerable#entries
- * @returns {external:Iterator}
+ * @returns {Iterator}
  */
 
 /**
- * @function module:core.Enumerable#forEach
  * @param {module:core.Enumerable~ForEachCallback} callback
  * @param {*} [context]
  */
 
 /**
- * @function module:core.Enumerable#keys
- * @returns {external:Iterator}
+ * @returns {Iterator}
  */
 
 /**
- * @function module:core.Enumerable#values
- * @returns {external:Iterator}
+ * @returns {Iterator}
  */
 
 /**
- * @interface module:core.AsyncEnumerable
  */
 
 /**
@@ -62,30 +56,25 @@ export interface AsyncEnumerable<K extends PropertyKey, V> {
  */
 
 /**
- * @function module:core.AsyncEnumerable#entries
- * @returns {external:Iterator}
+ * @returns {Iterator}
  */
 
 /**
- * @function module:core.AsyncEnumerable#forEach
  * @param {module:core.AsyncEnumerable~ForEachCallback} callback
  * @param {*} [context]
  */
 
 /**
- * @function module:core.AsyncEnumerable#keys
- * @returns {external:Iterator}
+ * @returns {Iterator}
  */
 
 /**
- * @function module:core.AsyncEnumerable#values
- * @returns {external:Iterator}
+ * @returns {Iterator}
  */
 
 /**
- * @function module:core.likeEnumerable
  * @param {*} value The value to be tested
- * @returns {external:boolean} Whether or not the `value` is {@linkcode module:core.Enumerable|Enumerable} or {@linkcode module:core.AsyncEnumerable|AsyncEnumerable}.
+ * @returns {boolean} Whether or not the `value` is {@link Enumerable|Enumerable} or {@link AsyncEnumerable|AsyncEnumerable}.
  */
 export const likeEnumerable = like({ entries: Function, forEach: Function, keys: Function, values: Function }) as (
     value

@@ -30,65 +30,58 @@ export interface ApplicationEventEmitterAware extends Aware {
 }
 
 /**
- * A {@link external:Function| function} bound to an emitter {@link module:context.EventType|event type}. Any data transmitted with the event will be passed into the listener as arguments.
+ * A {@link external:Function| function} bound to an emitter {@link EventType|event type}. Any data transmitted with the event will be passed into the listener as arguments.
  * @callback module:context.EventListener
  * @param {...*} data The arguments passed by the `emit`.
  */
 
 /**
- * An {@link module:context.EventListener| event listener} or a list of event listeners.
+ * An {@link EventListener| event listener} or a list of event listeners.
  * @callback module:context.EventHandler
  */
 
 /**
- * An {@link external:Object|object} that maps {@link module:context.EventType|event types} to an {@link module:context.EventHandler|event handler}.
- * @typedef {external:Object} module:context.EventHandlers
+ * An {@link external:Object|object} that maps {@link EventType|event types} to an {@link EventHandler|event handler}.
+ * @typedef {Object} module:context.EventHandlers
  */
 
 /**
  * A {@link external:string} or {@link external:symbol} that represents the type of event fired by the Emitter.
- * @typedef {external:string|external:symbol} module:context.EventType
+ * @typedef {string|external:symbol} module:context.EventType
  */
 
 /**
- * @interface module:context.EventEmitter
  */
 
 /**
- * @function module:context.EventEmitter#emit
  * @param {module:context.EventType} type
  * @param {...*} data
- * @returns {external:boolean}
+ * @returns {boolean}
  */
 
 /**
- * @function module:context.EventEmitter#eventTypes
- * @returns {external:Array<module:context.EventType>}
+ * @returns {Array<module:context.EventType>}
  */
 
 /**
- * @function module:context.EventEmitter#listenerCount
  * @param {module:context.EventType} type
- * @returns {external:number}
+ * @returns {number}
  */
 
 /**
- * @function module:context.EventEmitter#listeners
  * @param {module:context.EventType} type
- * @returns {external:Array<external:Function>}
+ * @returns {Array<external:Function>}
  */
 
 /**
- * @function module:context.EventEmitter#on
  * @param {module:context.EventType} type
- * @param {external:Function} listener
+ * @param {Function} listener
  * @returns {module:context.EventEmitter}
  */
 
 /**
- * @function module:context.EventEmitter#off
  * @param {module:context.EventType} type
- * @param {external:Function} listener
+ * @param {Function} listener
  * @returns {module:context.EventEmitter}
  */
 
@@ -104,16 +97,14 @@ const $events = '@@emitter/events',
     lastIndexOfColon = lastIndexOf(':') as (value: string) => number;
 
 /**
- * @function module:context.likeApplicationEventEmitterAware
  */
 export const likeApplicationEventEmitterAware = likeAwareAnd(like({ setApplicationEventEmitter: Function })) as (
     value
 ) => value is ApplicationEventEmitterAware;
 
 /**
- * @function module:context.likeEventEmitter
  * @param {*} value The value to be tested
- * @returns {external:boolean} Whether or not the `value` is {@linkcode module:context.EventEmitter|EventEmitter}
+ * @returns {boolean} Whether or not the `value` is {@link EventEmitter|EventEmitter}
  */
 export const likeEventEmitter = like({
     emit: Function,
@@ -126,7 +117,6 @@ export const likeEventEmitter = like({
 }) as (value) => value is EventEmitter;
 
 /**
- * @function module:core~addEventHandler
  * @param {module:context.EventEmitter} emitter The emitter on which the event would be emitted.
  * @param {module:context.EventType} type The event type.
  * @param {module:context.EventHandler} handler The event handler.
@@ -150,7 +140,6 @@ const addEventHandler = (emitter: EventEmitter, type: EventType, handler: EventH
 };
 
 /**
- * @function module:core~addEventHandlers
  * @param {module:context.EventEmitter} emitter The emitter on which the event would be emitted.
  * @param {module:context.EventHandlers} mappings The event mapping.
  */
@@ -178,11 +167,10 @@ const addEventHandlers = (emitter: EventEmitter, mappings: EventHandlers, prefix
 };
 
 /**
- * @function module:core~addEventListener
  * @param {module:context.EventEmitter} emitter The emitter on which the event would be emitted.
  * @param {module:context.EventType} type The event type.
  * @param {module:context.EventListener} listener The event callback.
- * @param {external:number} index
+ * @param {number} index
  */
 const addEventListener = (emitter: EventEmitter, type: EventType, listener: EventListener, index: number): void => {
     // Define the event registry if it does not exist
@@ -224,7 +212,6 @@ const addEventListener = (emitter: EventEmitter, type: EventType, listener: Even
 };
 
 /**
- * @function module:core~defineEventsProperty
  * @param {*} target The target on which the property will be created.
  * @param {module:context.EventHandlers} value The initial value of the event map.
  */
@@ -243,12 +230,11 @@ const defineEventsProperty = (target: any, value: EventHandlers): void => {
 };
 
 /**
- * @function module:core~emitAllEvents
  * @param {module:context.EventEmitter} emitter The emitter on which the event `type` will be emitted.
  * @param {module:context.EventType} type The event type.
- * @param {external:Array} data The data to be passed with the event.
- * @return {external:boolean} Whether or not a listener for the given event type was executed.
- * @throws {external:Error} If `type` is `error` and no listeners are subscribed.
+ * @param {Array} data The data to be passed with the event.
+ * @returns {boolean} Whether or not a listener for the given event type was executed.
+ * @throws {Error} If `type` is `error` and no listeners are subscribed.
  */
 const emitAllEvents = (emitter: EventEmitter, type: EventType, data: any[]): boolean => {
     let executed = false,
@@ -268,9 +254,8 @@ const emitAllEvents = (emitter: EventEmitter, type: EventType, data: any[]): boo
 };
 
 /**
- * @function module:core~emitErrors
  * @param {module:context.EventEmitter} emitter The emitter on which the `errors` will be emitted.
- * @param {external:Array<Error>} errors The array of errors to be emitted.
+ * @param {Array<Error>} errors The array of errors to be emitted.
  */
 const emitErrors = (emitter: EventEmitter, errors: Error[]): void => {
     const length = errors.length;
@@ -280,13 +265,12 @@ const emitErrors = (emitter: EventEmitter, errors: Error[]): void => {
 };
 
 /**
- * @function module:core~emitEvent
  * @param {module:context.EventEmitter} emitter The emitter on which the event `type` will be emitted.
  * @param {module:context.EventType} type The event type.
- * @param {external:Array} data The data to be passed with the event.
- * @param {external:boolean} emitEvery Whether or not listeners for all types will be executed.
- * @return {external:boolean} Whether or not a listener for the given event type was executed.
- * @throws {external:Error} If `type` is `error` and no listeners are subscribed.
+ * @param {Array} data The data to be passed with the event.
+ * @param {boolean} emitEvery Whether or not listeners for all types will be executed.
+ * @returns {boolean} Whether or not a listener for the given event type was executed.
+ * @throws {Error} If `type` is `error` and no listeners are subscribed.
  */
 const emitEvent = (emitter: EventEmitter, type: EventType, data: any[], emitEvery: boolean): boolean => {
     const _events = emitter[$events],
@@ -325,10 +309,9 @@ const emitEvent = (emitter: EventEmitter, type: EventType, data: any[], emitEver
 };
 
 /**
- * @function module:core~eventListenerEquals
  * @param {module:context.EventListener} l1
  * @param {module:context.EventListener} l2
- * @returns {external:boolean} Whether or not the listeners are equal
+ * @returns {boolean} Whether or not the listeners are equal
  */
 const eventListenerEquals = (l1: EventListener, l2: EventListener): boolean => {
     // Check if l1 equals l2 directly, or if l1.listener equals l2
@@ -337,9 +320,8 @@ const eventListenerEquals = (l1: EventListener, l2: EventListener): boolean => {
 
 /**
  * Executes a listener using the internal `execute*` functions based on the number of arguments.
- * @function module:core~executeHandler
  * @param {module:context.EventHandler} handler
- * @param {external:Array} data
+ * @param {Array} data
  * @param {*} scope
  */
 const executeHandler = (handler: EventHandler, data: any[], scope): void => {
@@ -365,17 +347,15 @@ const executeHandler = (handler: EventHandler, data: any[], scope): void => {
 };
 
 /**
- * @function module:core~getEventTypes
  * @param {module:context.EventEmitter} emitter The emitter on which event types will be retrieved.
- * @return {external:Array<module:context.EventType>} The list of event types registered to the emitter.
+ * @returns {Array<module:context.EventType>} The list of event types registered to the emitter.
  */
 const getEventTypes = (emitter: EventEmitter): EventType[] => keys(emitter[$events]);
 
 /**
  * Execute a listener with no arguments.
- * @function module:core~handleMany
  * @param {module:context.EventHandler} handler One or more {@link EventListener|listeners} that will be executed on the `emitter`.
- * @param {external:boolean} isFunction Whether or not the `handler` is a {@link Function|function}.
+ * @param {boolean} isFunction Whether or not the `handler` is a {@link Function|function}.
  * @param {module:context.EventEmitter} emitter The emitter.
  */
 const handleEmpty = (handler: EventHandler, isFunction: boolean, emitter: EventEmitter): void => {
@@ -409,9 +389,8 @@ const handleEmpty = (handler: EventHandler, isFunction: boolean, emitter: EventE
 
 /**
  * Execute a listener with one argument.
- * @function module:core~handleOne
  * @param {module:context.EventHandler} handler One or more {@link EventListener|listeners} that will be executed on the `emitter`.
- * @param {external:boolean} isFunction Whether or not the `handler` is a {@link Function|function}.
+ * @param {boolean} isFunction Whether or not the `handler` is a {@link Function|function}.
  * @param {module:context.EventEmitter} emitter The emitter.
  * @param {*} arg1 The first argument.
  */
@@ -446,9 +425,8 @@ const handleOne = (handler: EventHandler, isFunction: boolean, emitter: EventEmi
 
 /**
  * Execute a listener with two arguments.
- * @function module:core~handleTwo
  * @param {module:context.EventHandler} handler One or more {@link EventListener|listeners} that will be executed on the `emitter`.
- * @param {external:boolean} isFunction Whether or not the `handler` is a {@link Function|function}.
+ * @param {boolean} isFunction Whether or not the `handler` is a {@link Function|function}.
  * @param {module:context.EventEmitter} emitter The emitter.
  * @param {*} arg1 The first argument.
  * @param {*} arg2 The second argument.
@@ -484,9 +462,8 @@ const handleTwo = (handler: EventHandler, isFunction: boolean, emitter: EventEmi
 
 /**
  * Execute a listener with three arguments.
- * @function module:core~handleThree
  * @param {module:context.EventHandler} handler One or more {@link EventListener|listeners} that will be executed on the `emitter`.
- * @param {external:boolean} isFunction Whether or not the `handler` is a {@link Function|function}.
+ * @param {boolean} isFunction Whether or not the `handler` is a {@link Function|function}.
  * @param {module:context.EventEmitter} emitter The emitter.
  * @param {*} arg1 The first argument.
  * @param {*} arg2 The second argument.
@@ -530,11 +507,10 @@ const handleThree = (
 
 /**
  * Execute a listener with four or more arguments.
- * @function module:core~handleMany
  * @param {module:context.EventHandler} handler One or more {@link EventListener|listeners} that will be executed on the `emitter`.
- * @param {external:boolean} isFunction Whether or not the `handler` is a {@link Function|function}.
+ * @param {boolean} isFunction Whether or not the `handler` is a {@link Function|function}.
  * @param {module:context.EventEmitter} emitter The emitter.
- * @param {external:Array} args Four or more arguments.
+ * @param {Array} args Four or more arguments.
  */
 const handleMany = (handler: EventHandler, isFunction: boolean, emitter: EventEmitter, args: any[]): void => {
     const errors: Error[] = [];
@@ -567,14 +543,12 @@ const handleMany = (handler: EventHandler, isFunction: boolean, emitter: EventEm
 
 /**
  * Checks whether or not a value is an event handler.
- * @function module:core~isEventHandler
  * @param {*} value The value to be tested.
- * @return {external:boolean} Whether or not the value is an event handler.
+ * @returns {boolean} Whether or not the value is an event handler.
  */
 const isEventHandler = (value: any): value is EventHandler => isFunction(value) || isArray(value);
 
 /**
- * @function module:core~removeEventListener
  * @param {module:context.EventEmitter} emitter The emitter from which the listener would be removed.
  * @param {module:context.EventType} type The event type.
  * @param {module:context.EventListener} listener The event callback.
@@ -614,9 +588,8 @@ const removeEventListener = (emitter: EventEmitter, type: EventType, listener: E
 
 /**
  * Faster than `Array.prototype.splice`
- * @function module:core~spliceList
- * @param {external:Array} list
- * @param {external:number} index
+ * @param {Array} list
+ * @param {number} index
  */
 const spliceList = <T = any>(list: T[], index: number): void => {
     const length = list.length;
@@ -631,7 +604,7 @@ const spliceList = <T = any>(list: T[], index: number): void => {
 };
 
 /**
- * @mixin module:context.AsEventEmitter
+ * @see module:context.AsEventEmitter
  * @implements module:context.EventEmitter
  * @returns {module:core.Constructable<module:context.EventEmitter>}
  * @example
@@ -657,10 +630,9 @@ export const AsEventEmitter = <T extends Constructable>(
          * The `type` can be namespaced using `:`, which will result in multiple events being triggered in succession. Listeners can be associated with the fully namespaced `type` or a subset of the `type`.
          *
          * Returns `true` if the event had listeners, `false` otherwise.
-         * @function module:context.AsEventEmitter#emit
-         * @param {module:context.EventType} type The event type.
+                 * @param {module:context.EventType} type The event type.
          * @param {...*} [data] The data passed into the listeners.
-         * @return {external:boolean} Whether or not the event had listeners.
+         * @returns {boolean} Whether or not the event had listeners.
          * @since 1.0.0
          * @example <caption>Emitting an event</caption>
          * const greeter = new Emitter();
@@ -695,8 +667,7 @@ export const AsEventEmitter = <T extends Constructable>(
         }
 
         /**
-         * @function module:context.AsEventEmitter#eventTypes
-         * @return {external:Array<module:context.EventType>} The list of event types registered to the emitter.
+                 * @returns {Array<module:context.EventType>} The list of event types registered to the emitter.
          * @since 2.0.0
          * @example
          * const greeter = new Emitter();
@@ -711,9 +682,8 @@ export const AsEventEmitter = <T extends Constructable>(
         }
 
         /**
-         * @function module:context.AsEventEmitter#listenerCount
-         * @param {module:context.EventType} type The event type.
-         * @return {external:number} The number of listeners for that event type within the given emitter.
+                 * @param {module:context.EventType} type The event type.
+         * @returns {number} The number of listeners for that event type within the given emitter.
          * @since 1.0.0
          * @example
          * const greeter = new Emitter();
@@ -743,9 +713,8 @@ export const AsEventEmitter = <T extends Constructable>(
         }
 
         /**
-         * @function module:context.AsEventEmitter#listeners
-         * @param {module:context.EventType} type The event type.
-         * @return {external:number} The number of listeners for that event type within the given emitter.
+                 * @param {module:context.EventType} type The event type.
+         * @returns {number} The number of listeners for that event type within the given emitter.
          * @since 1.0.0
          * @example
          * const hello = function(){
@@ -784,10 +753,9 @@ export const AsEventEmitter = <T extends Constructable>(
          * Adds a listener for the specified event `type`. If no `type` is given the listener will be triggered any event `type`.
          *
          * No checks are made to see if the `listener` has already been added. Multiple calls passing the same combination `type` and `listener` will result in the `listener` being added multiple times.
-         * @function module:context.AsEventEmitter#on
-         * @param {module:context.EventType} [type] The event type.
+                 * @param {module:context.EventType} [type] The event type.
          * @param {module:context.EventListener} listener The event callback.
-         * @return {module:context.EventEmitter} The emitter.
+         * @returns {module:context.EventEmitter} The emitter.
          * @since 1.0.0
          * @emits {:on} when listeners are added
          * @example <caption>Listen to all event types</caption>
@@ -828,10 +796,9 @@ export const AsEventEmitter = <T extends Constructable>(
          * Removes the `listener` for the specified event `type`. If no `type` is given it is assumed the `listener` is not associated with a specific `type`.
          *
          * If any single listener has been added multiple times for the specified `type`, then `emitter.off()` must be called multiple times to remove each instance.
-         * @function module:context.AsEventEmitter#off
-         * @param {module:context.EventType} type The event type.
+                 * @param {module:context.EventType} type The event type.
          * @param {module:context.EventListener} listener The event callback.
-         * @return {module:context.EventEmitter} The emitter.
+         * @returns {module:context.EventEmitter} The emitter.
          * @since 1.0.0
          * @emits {:off} when listeners are removed
          * @example <caption>Remove a listener from any event type</caption>

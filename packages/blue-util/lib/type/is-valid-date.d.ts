@@ -6,16 +6,15 @@
 declare const 
 /**
  * Determines whether a given value is a valid date.
- * @function module:util.isValidDate
- * @category Type
+     * @category Type
  * @summary Is the given value a valid date?
  *
  * @description
  * Returns false if argument is and invalid date and true otherwise.
  * Invalid Date is a Date, whose time value is NaN.
- * @param {external:Date|external:Number} date The date to validate
- * @returns {external:boolean} the date is valid
- * @throws {external:TypeError} 1 argument required
+ * @param {Date|external:Number} date The date to validate
+ * @returns {boolean} the date is valid
+ * @throws {TypeError} 1 argument required
  * @example
  * // For the valid date:
  * var result = isValidDate( new Date( 2014, 1, 31 ) )

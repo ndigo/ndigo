@@ -8,19 +8,15 @@ export interface Stringifier<T = any> {
     stringify(value: T): string;
 }
 /**
- * @interface module:parser.Parser
  */
 /**
- * @function module:parser.Parser#parse
- * @param {external:string} value
+ * @param {string} value
  * @returns {T}
  */
 /**
- * @interface module:parser.Stringifier
  */
 /**
- * @function module:parser.Stringifier#stringify
  * @param {T} value
- * @returns {external:string}
+ * @returns {string}
  */
 //# sourceMappingURL=parser.d.ts.map

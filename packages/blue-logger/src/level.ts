@@ -11,33 +11,28 @@ const { defineProperty } = Reflect;
 type Constructable<T = {}> = new (...args: any[]) => T;
 
 /**
- * @class module:logger.Level
  * @implements module:core.Comparable
  * @implements module:core.Serializable
- * @param {external:string} name
- * @param {external:number} value
+ * @param {string} name
+ * @param {number} value
  */
 export class Level implements Comparable<Level>, Serializable {
     /**
-     * @member {module:logger.Level} module:logger.Level.OFF
-     */
+         */
     static OFF = new Level('off', 0);
 
     /**
-     * @member {module:logger.Level} module:logger.Level.ALL
-     */
+         */
     static ALL = new Level('all', Number.MAX_VALUE);
 
     /**
      * @readonly
-     * @member {external:string} module:logger.Level#name
-     */
+         */
     readonly name: string;
 
     /**
      * @readonly
-     * @member {external:number} module:logger.Level#value
-     */
+         */
     readonly value: number;
 
     get [Symbol.toStringTag](): string {
@@ -61,9 +56,8 @@ export class Level implements Comparable<Level>, Serializable {
     }
 
     /**
-     * @function module:logger.Level#compareTo
-     * @param {module:logger.Level} value
-     * @returns {external:number}
+         * @param {module:logger.Level} value
+     * @returns {number}
      */
     compareTo(value: Level): number {
         if (!isLevel(value)) {
@@ -80,16 +74,14 @@ export class Level implements Comparable<Level>, Serializable {
     }
 
     /**
-     * @function module:logger.Level#toJSON
-     * @returns {external:string}
+         * @returns {string}
      */
     toJSON(): string {
         return this.toString();
     }
 
     /**
-     * @function module:logger.Level#toString
-     * @returns {external:string} The string representation of the level
+         * @returns {string} The string representation of the level
      */
     toString(): string {
         return this.name;
@@ -102,7 +94,6 @@ const isLevel = is(Level);
 
 // Setting the return type to "Constructable<LevelComparator> & T" forces importing modules to also import LevelComparator
 /**
- * @function module:logger.AsLevelComparator
  * @param {T} superclass
  * @returns {module:core.Constructable<module:logger.AsLevelComparator>}
  */
@@ -128,6 +119,5 @@ export const AsLevelComparator = <T extends Constructable>(superclass: T): Const
     };
 
 /**
- * @interface module:logger.LevelComparator
  * @extends {module:core.Comparator}
  */

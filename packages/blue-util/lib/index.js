@@ -1,11 +1,10 @@
 /**
  * @author Jeff Rose
- * @module util
- * @requires external:date-fns
- * @requires external:date-fns-tz
- * @requires external:ramda
- * @requires external:seedrandom
- * @requires external:slug
+ * @see external:date-fns
+ * @see external:date-fns-tz
+ * @see external:ramda
+ * @see external:seedrandom
+ * @see external:slug
  */
 /**
  * @global
@@ -36,9 +35,8 @@ export {
 /**
  * A function that always returns `false`. Any passed in parameters are ignored.
  *
- * @function module:util.F
- * @category Function
- * @return {external:boolean} False
+     * @category Function
+ * @returns {boolean} False
  * @example
  * F();
  * //=> false
@@ -48,9 +46,8 @@ export {
 /**
  * A function that always returns `true`. Any passed in parameters are ignored.
  *
- * @function module:util.T
- * @category Function
- * @return {external:boolean} True
+     * @category Function
+ * @returns {boolean} True
  * @example
  * T();
  * //=> true
@@ -86,12 +83,11 @@ export {
 /**
  * Adds two values.
  *
- * @function module:util.add
- * @category Math
- * @param {external:number} a
- * @param {external:number} b
- * @return {external:number}
- * @see {@link module:util.subtract|subtract}
+     * @category Math
+ * @param {number} a
+ * @param {number} b
+ * @returns {number}
+ * @see {@link subtract|subtract}
  * @example
  * add( 2, 3 );
  * //=>  5
@@ -110,11 +106,10 @@ export {
  * parameter, and where the list is the last parameter. (This latter might be
  * unimportant if the list parameter is not used.)
  *
- * @function module:util.addIndex
- * @category Function
+     * @category Function
  * @category List
- * @param {external:function} fn A list iteration function that does not pass index or list to its callback
- * @return {external:function} An altered list iteration function that passes (item, index, list) to its callback
+ * @param {function} fn A list iteration function that does not pass index or list to its callback
+ * @returns {function} An altered list iteration function that passes (item, index, list) to its callback
  * @example
  * import { addIndex, map } from '@blue/util';
  * const indexedMap = addIndex( map );
@@ -124,17 +119,34 @@ export {
 addIndex, } from 'ramda';
 export { 
 /**
+ * As with `addIndex`, `addIndexRight` creates a new list iteration function from an existing one by adding two new
+ * parameters to its callback function: the current index, and the entire list.
+ *
+ * Unlike `addIndex`, `addIndexRight` iterates from the right to the left.
+ *
+     * @category Function
+ * @param {function} fn A list iteration function that does not pass index or list to its callback
+ * @returns {function} An altered list iteration function that passes (item, index, list) to its callback
+ * @example
+ * import { addIndexRight, map, reverse } from '@blue/util';
+ * const revmap = (fn, ary) => map(fn, reverse(ary));
+ * const revmapIndexed = addIndexRight(revmap);
+ * revmapIndexed((val, idx) => idx + '-' + val, ['f', 'o', 'o', 'b', 'a', 'r']);
+ * //=> [ '5-r', '4-a', '3-b', '2-o', '1-o', '0-f' ]
+ */
+addIndexRight, } from 'ramda';
+export { 
+/**
  * Applies a function to the value at the given index of an array, returning a
  * new copy of the array with the element at the given index replaced with the
  * result of the function application.
  *
- * @function module:util.adjust
- * @category List
- * @param {external:number} idx The index.
- * @param {external:function} fn The function to apply.
- * @param {external:ArrayLike} list An array-like object whose value at the supplied index will be replaced.
- * @return {external:Array} A copy of the supplied array-like object with the element at index `idx` replaced with the value returned by applying `fn` to the existing element.
- * @see {@link module:util.update|update}
+     * @category List
+ * @param {number} idx The index.
+ * @param {function} fn The function to apply.
+ * @param {ArrayLike} list An array-like object whose value at the supplied index will be replaced.
+ * @returns {Array} A copy of the supplied array-like object with the element at index `idx` replaced with the value returned by applying `fn` to the existing element.
+ * @see {@link update|update}
  * @example
  * import { adjust, toUpper } from '@blue/util';
  * adjust( 1, toUpper, [ 'a', 'b', 'c', 'd' ] );
@@ -152,14 +164,13 @@ export {
  *
  * Acts as a transducer if a transformer is given in list position.
  *
- * @function module:util.all
- * @category List
- * @param {external:function} fn The predicate function.
- * @param {external:Array} list The array to consider.
- * @return {external:boolean} `true` if the predicate is satisfied by every element, `false` otherwise.
- * @see {@link module:util.any|any}
- * @see {@link module:util.none|none}
- * @see {@link module:util.transduce|transduce}
+     * @category List
+ * @param {function} fn The predicate function.
+ * @param {Array} list The array to consider.
+ * @returns {boolean} `true` if the predicate is satisfied by every element, `false` otherwise.
+ * @see {@link any|any}
+ * @see {@link none|none}
+ * @see {@link transduce|transduce}
  * @example
  * import { all, equals } from '@blue/util';
  * const equals3 = equals( 3 );
@@ -178,11 +189,10 @@ export {
  * The function returned is a curried function whose arity matches that of the
  * highest-arity predicate.
  *
- * @function module:util.allPass
- * @category Logic
- * @param {external:Array} predicates An array of predicates to check
- * @return {external:function} The combined predicate
- * @see {@link module:util.anyPass|anyPass}
+     * @category Logic
+ * @param {Array} predicates An array of predicates to check
+ * @returns {function} The combined predicate
+ * @see {@link anyPass|anyPass}
  * @example
  * import { allPass, propEq } from '@blue/util';
  * const isQueen = propEq( 'rank', 'Q' );
@@ -203,10 +213,9 @@ export {
  * This function is known as `const`, `constant`, or `K` (for K combinator) in
  * other languages and libraries.
  *
- * @function module:util.always
- * @category Function
+     * @category Function
  * @param {*} val The value to wrap in a function
- * @return {external:function} A Function :: * -> val.
+ * @returns {function} A Function :: * -> val.
  * @example
  * const t = always( 'Tee' );
  * t();
@@ -217,12 +226,11 @@ export {
 /**
  * Returns `true` if both arguments are `true`; `false` otherwise.
  *
- * @function module:util.and
- * @category Logic
+     * @category Logic
  * @param {*} a
  * @param {*} b
- * @return {*} the first argument if it is falsy, otherwise the second argument.
- * @see {@link module:util.both|both}
+ * @returns {*} the first argument if it is falsy, otherwise the second argument.
+ * @see {@link both|both}
  * @example
  * and( true, true );
  * //=> true
@@ -240,12 +248,11 @@ export {
  * a successfully resolved promise. This is useful for working with promises
  * inside function compositions.
  *
- * @function module:util.andThen
- * @category Function
- * @param {external:function} onSuccess The function to apply. Can return a value or a promise of a value.
- * @param {external:Promise} p
- * @return {external:Promise} The result of calling `p.andThen(onSuccess)`
- * @see {@link module:util.otherwise|otherwise}
+     * @category Function
+ * @param {function} onSuccess The function to apply. Can return a value or a promise of a value.
+ * @param {Promise} p
+ * @returns {Promise} The result of calling `p.andThen(onSuccess)`
+ * @see {@link otherwise|otherwise}
  * @example
  * import { pick, pipe, andThen } from '@blue/util';
  * const makeQuery = ( email ) => ( { query: { email } } );
@@ -267,14 +274,13 @@ export {
  *
  * Acts as a transducer if a transformer is given in list position.
  *
- * @function module:util.any
- * @category List
- * @param {external:function} fn The predicate function.
- * @param {external:Array} list The array to consider.
- * @return {external:boolean} `true` if the predicate is satisfied by at least one element, `false` otherwise.
- * @see {@link module:util.all|all}
- * @see {@link module:util.none|none}
- * @see {@link module:util.transduce|transduce}
+     * @category List
+ * @param {function} fn The predicate function.
+ * @param {Array} list The array to consider.
+ * @returns {boolean} `true` if the predicate is satisfied by at least one element, `false` otherwise.
+ * @see {@link all|all}
+ * @see {@link none|none}
+ * @see {@link transduce|transduce}
  * @example
  * import { any, flip, lt } from '@blue/util';
  * const lessThan0 = flip( lt )( 0 );
@@ -294,11 +300,10 @@ export {
  * The function returned is a curried function whose arity matches that of the
  * highest-arity predicate.
  *
- * @function module:util.anyPass
- * @category Logic
- * @param {external:Array} predicates An array of predicates to check
- * @return {external:function} The combined predicate
- * @see {@link module:util.all|all}Pass
+     * @category Logic
+ * @param {Array} predicates An array of predicates to check
+ * @returns {function} The combined predicate
+ * @see {@link all|all}Pass
  * @example
  * import { anyPass, propEq } from '@blue/util';
  * const isClub = propEq( 'suit', '♣' );
@@ -320,11 +325,10 @@ export {
  * Dispatches to the `ap` method of the second argument, if present. Also
  * treats curried functions as applicatives.
  *
- * @function module:util.ap
- * @category Function
+     * @category Function
  * @param {*} applyF
  * @param {*} applyX
- * @return {*}
+ * @returns {*}
  * @example
  * import { add, ap, concat, multiply, toUpper } from '@blue/util';
  * ap( [ multiply( 2 ), add( 3 ) ], [ 1, 2 , 3 ] ); //=> [ 2, 4, 6, 4, 5, 6 ]
@@ -341,12 +345,11 @@ export {
  *
  * Acts as a transducer if a transformer is given in list position.
  *
- * @function module:util.aperture
- * @category List
- * @param {external:number} n The size of the tuples to create
- * @param {external:Array} list The list to split into `n`-length tuples
- * @return {external:Array} The resulting list of `n`-length tuples
- * @see {@link module:util.transduce|transduce}
+     * @category List
+ * @param {number} n The size of the tuples to create
+ * @param {Array} list The list to split into `n`-length tuples
+ * @returns {Array} The resulting list of `n`-length tuples
+ * @see {@link transduce|transduce}
  * @example
  * aperture( 2, [ 1, 2, 3, 4, 5 ] );
  * //=> [ [ 1, 2 ], [ 2, 3 ], [ 3, 4 ], [ 4, 5 ] ]
@@ -361,12 +364,11 @@ export {
  * Returns a new list containing the contents of the given list, followed by
  * the given element.
  *
- * @function module:util.append
- * @category List
+     * @category List
  * @param {*} el The element to add to the end of the new list.
- * @param {external:Array} list The list of elements to add a new item to list.
- * @return {external:Array} A new list containing the elements of the old list followed by `el`.
- * @see {@link module:util.prepend|prepend}
+ * @param {Array} list The list of elements to add a new item to list.
+ * @returns {Array} A new list containing the elements of the old list followed by `el`.
+ * @see {@link prepend|prepend}
  * @example
  * append( 'tests', [ 'write', 'more' ] );
  * //=> [ 'write', 'more', 'tests' ]
@@ -382,13 +384,12 @@ export {
  * creating a fixed-arity function from a variadic function. `fn` should be a
  * bound function if context is significant.
  *
- * @function module:util.apply
- * @category Function
- * @param {external:function} fn The function which will be called with `args`
- * @param {external:Array} args The arguments to call `fn` with
- * @return {*} result The result, equivalent to `fn(...args)`
- * @see {@link module:util.call|call}
- * @see {@link module:util.unapply|unapply}
+     * @category Function
+ * @param {function} fn The function which will be called with `args`
+ * @param {Array} args The arguments to call `fn` with
+ * @returns {*} result The result, equivalent to `fn(...args)`
+ * @see {@link call|call}
+ * @see {@link unapply|unapply}
  * @example
  * const nums = [ 1, 2, 3, -99, 42, 6, 7 ];
  * apply( Math.max, nums );
@@ -401,12 +402,11 @@ export {
  * function producing an object of the same structure, by mapping each property
  * to the result of calling its associated function with the supplied arguments.
  *
- * @function module:util.applySpec
- * @category Function
- * @param {external:Object} spec an object recursively mapping properties to functions for producing the values for these properties.
- * @return {external:function} A function that returns an object of the same structure as `spec', with each property set to the value returned by calling its associated function with the supplied arguments.
- * @see {@link module:util.converge|converge}
- * @see {@link module:util.juxt|juxt}
+     * @category Function
+ * @param {Object} spec an object recursively mapping properties to functions for producing the values for these properties.
+ * @returns {function} A function that returns an object of the same structure as `spec', with each property set to the value returned by calling its associated function with the supplied arguments.
+ * @see {@link converge|converge}
+ * @see {@link juxt|juxt}
  * @example
  * import { add, applySpec, multiply } from '@blue/util';
  * const getMetrics = applySpec( {
@@ -423,11 +423,10 @@ export {
  *
  * This function is also known as the `thrush` combinator.
  *
- * @function module:util.applyTo
- * @category Function
+     * @category Function
  * @param {*} x The value
- * @param {external:function} f The function to apply
- * @return {*} The result of applying `f` to `x`
+ * @param {function} f The function to apply
+ * @returns {*} The result of applying `f` to `x`
  * @example
  * import { add, applyTo, identity } from '@blue/util';
  * const t42 = applyTo( 42 );
@@ -442,13 +441,12 @@ export {
  * Makes an ascending comparator function out of a function that returns a value
  * that can be compared with `<` and `>`.
  *
- * @function module:util.ascend
- * @category Function
- * @param {external:function} fn A function of arity one that returns a value that can be compared
+     * @category Function
+ * @param {function} fn A function of arity one that returns a value that can be compared
  * @param {*} a The first item to be compared.
  * @param {*} b The second item to be compared.
- * @return {external:number} `-1` if fn(a) < fn(b), `1` if fn(b) < fn(a), otherwise `0`
- * @see {@link module:util.descend|descend}
+ * @returns {number} `-1` if fn(a) < fn(b), `1` if fn(b) < fn(a), otherwise `0`
+ * @see {@link descend|descend}
  * @example
  * import { ascend, prop, sort } from '@blue/util';
  * const byAge = ascend( prop( 'age' ) );
@@ -463,19 +461,37 @@ export {
 ascend, } from 'ramda';
 export { 
 /**
+ * Makes an ascending comparator function out of a function that returns a value
+ * that can be compared with natural sorting using localeCompare.
+ *
+     * @category Function
+ * @param {string} locales A string with a BCP 47 language tag, or an array of such strings. Corresponds to the locales parameter of the Intl.Collator() constructor.
+ * @param {function} fn A function of arity one that returns a string that can be compared
+ * @param {*} a The first item to be compared.
+ * @param {*} b The second item to be compared.
+ * @returns {number} `-1` if a occurs before b, `1` if a occurs after b, otherwise `0`
+ * @see {@link ascend|ascend}
+ * @example
+ * import { ascendNatural, identity, sort } from '@blue/util';
+ * const unsorted = ['3', '1', '10', 'Ørjan', 'Bob', 'Älva'];
+ * sort(ascendNatural('en', identity), unsorted);
+ * // => ['1', '3', '10', 'Älva', 'Bob', 'Ørjan']
+ */
+ascendNatural, } from 'ramda';
+export { 
+/**
  * Makes a shallow clone of an object, setting or overriding the specified
  * property with the given value. Note that this copies and flattens prototype
  * properties onto the new object as well. All non-primitive properties are
  * copied by reference.
  *
- * @function module:util.assoc
- * @category Object
- * @param {external:string} prop The property name to set
+     * @category Object
+ * @param {string} prop The property name to set
  * @param {*} val The new value
- * @param {external:Object} obj The object to clone
- * @return {external:Object} A new object equivalent to the original except for the changed property.
- * @see {@link module:util.dissoc|dissoc}
- * @see {@link module:util.pick|pick}
+ * @param {Object} obj The object to clone
+ * @returns {Object} A new object equivalent to the original except for the changed property.
+ * @see {@link dissoc|dissoc}
+ * @see {@link pick|pick}
  * @example
  * assoc( 'c', 3, { a: 1, b: 2 } );
  * //=> {a: 1, b: 2, c: 3}
@@ -488,14 +504,13 @@ export {
  * that path. Note that this copies and flattens prototype properties onto the
  * new object as well. All non-primitive properties are copied by reference.
  *
- * @function module:util.assocPath
- * @category Object
+     * @category Object
  * @typedefn Idx = String | Int
- * @param {external:Array} path the path to set
+ * @param {Array} path the path to set
  * @param {*} val The new value
- * @param {external:Object} obj The object to clone
- * @return {external:Object} A new object equivalent to the original except along the specified path.
- * @see {@link module:util.dissoc|dissoc}Path
+ * @param {Object} obj The object to clone
+ * @returns {Object} A new object equivalent to the original except along the specified path.
+ * @see {@link dissoc|dissoc}Path
  * @example
  * assocPath( [ 'a', 'b', 'c' ], 42, { a: { b: { c: 0 } } } );
  * //=> { a: { b: { c: 42 } } }
@@ -510,12 +525,11 @@ export {
  * exactly 2 parameters. Any extraneous parameters will not be passed to the
  * supplied function.
  *
- * @function module:util.binary
- * @category Function
- * @param {external:function} fn The function to wrap.
- * @return {external:function} A new function wrapping `fn`. The new function is guaranteed to be of arity 2.
- * @see {@link module:util.n|n}Ary
- * @see {@link module:util.unary|unary}
+     * @category Function
+ * @param {function} fn The function to wrap.
+ * @returns {function} A new function wrapping `fn`. The new function is guaranteed to be of arity 2.
+ * @see {@link n|n}Ary
+ * @see {@link unary|unary}
  * @example
  * const takesThreeArgs = function( a, b, c ){
  *  return [ a, b, c ];
@@ -539,13 +553,12 @@ export {
  * Note: `bind` does not provide the additional argument-binding capabilities of
  * [Function.prototype.bind](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind).
  *
- * @function module:util.bind
- * @category Function
+     * @category Function
  * @category Object
- * @param {external:function} fn The function to bind to context
- * @param {external:Object} thisObj The context to bind `fn` to
- * @return {external:function} A function that will execute in the context of `thisObj`.
- * @see {@link module:util.partial|partial}
+ * @param {function} fn The function to bind to context
+ * @param {Object} thisObj The context to bind `fn` to
+ * @returns {function} A function that will execute in the context of `thisObj`.
+ * @see {@link partial|partial}
  * @example
  * import { assoc, bind, pipe, tap } from '@blue/util';
  * const log = bind( console.log, console );
@@ -565,12 +578,11 @@ export {
  * In addition to functions, `both` also accepts any fantasy-land compatible
  * applicative functor.
  *
- * @function module:util.both
- * @category Logic
- * @param {external:function} f A predicate
- * @param {external:function} g Another predicate
- * @return {external:function} a function that applies its arguments to `f` and `g` and `&&`s their outputs together.
- * @see {@link module:util.and|and}
+     * @category Logic
+ * @param {function} f A predicate
+ * @param {function} g Another predicate
+ * @returns {function} a function that applies its arguments to `f` and `g` and `&&`s their outputs together.
+ * @see {@link and|and}
  * @example
  * import { __, both, gt, lt } from '@blue/util';
  * const gt10 = gt( __, 10 )
@@ -590,12 +602,11 @@ export {
  * remaining branches produce values to be passed to that function as its
  * arguments.
  *
- * @function module:util.call
- * @category Function
- * @param {external:function} fn The function to apply to the remaining arguments.
+     * @category Function
+ * @param {function} fn The function to apply to the remaining arguments.
  * @param {...*} args Any number of positional arguments.
- * @return {*}
- * @see {@link module:util.apply|apply}
+ * @returns {*}
+ * @see {@link apply|apply}
  * @example
  * import { add, both, call, converge, pipe, join, repeat, replace } from '@blue/util';
  * call( add, 1, 2 ); //=> 3
@@ -617,11 +628,10 @@ export {
  *
  * Acts as a transducer if a transformer is given in list position.
  *
- * @function module:util.chain
- * @category List
- * @param {external:function} fn The function to map with
- * @param {external:Array} list The list to map over
- * @return {external:Array} The result of flat-mapping `list` with `fn`
+     * @category List
+ * @param {function} fn The function to map with
+ * @param {Array} list The list to map over
+ * @returns {Array} The result of flat-mapping `list` with `fn`
  * @example
  * import { append, chain, head } from '@blue/util';
  * const duplicate = n => [ n, n ];
@@ -635,12 +645,11 @@ export {
  *
  * Also works for other ordered types such as Strings and Dates.
  *
- * @function module:util.clamp
- * @category Relation
- * @param {external:number} minimum The lower limit of the clamp (inclusive)
- * @param {external:number} maximum The upper limit of the clamp (inclusive)
- * @param {external:number} value Value to be clamped
- * @return {external:number} Returns `minimum` when `val < minimum`, `maximum` when `val > maximum`, returns `val` otherwise
+     * @category Relation
+ * @param {number} minimum The lower limit of the clamp (inclusive)
+ * @param {number} maximum The upper limit of the clamp (inclusive)
+ * @param {number} value Value to be clamped
+ * @returns {number} Returns `minimum` when `val < minimum`, `maximum` when `val > maximum`, returns `val` otherwise
  * @example
  * clamp( 1, 10, -5 ) // => 1
  * clamp( 1, 10, 15 ) // => 10
@@ -655,10 +664,9 @@ export {
  *
  * Dispatches to a `clone` method if present.
  *
- * @function module:util.clone
- * @category Object
+     * @category Object
  * @param {*} value The object or array to clone
- * @return {*} A deeply cloned copy of `val`
+ * @returns {*} A deeply cloned copy of `val`
  * @example
  * const objects = [ {}, {}, {} ];
  * const objectsClone = clone( objects );
@@ -668,13 +676,39 @@ export {
 clone, } from 'ramda';
 export { 
 /**
+ * Splits a list into sub-lists, based on the result of calling a key-returning function on each element,
+ * and grouping the results according to values returned.
+ *
+     * @category List
+ * @param {function} fn Function :: a -> Idx
+ * @param {Array} list The array to group
+ * @returns {Array} An array of arrays where each sub-array contains items for which the String-returning function has returned the same value.
+ * @see {@link groupBy|groupBy}
+ * @see {@link partition|partition}
+ * @example
+ * import { collectBy, prop } from '@blue/util';
+ * collectBy(prop('type'), [
+ *   {type: 'breakfast', item: '☕️'},
+ *   {type: 'lunch', item: '🌯'},
+ *   {type: 'dinner', item: '🍝'},
+ *   {type: 'breakfast', item: '🥐'},
+ *   {type: 'lunch', item: '🍕'}
+ * ]);
+ * // [ [ {type: 'breakfast', item: '☕️'},
+ * //     {type: 'breakfast', item: '🥐'} ],
+ * //   [ {type: 'lunch', item: '🌯'},
+ * //     {type: 'lunch', item: '🍕'} ],
+ * //   [ {type: 'dinner', item: '🍝'} ] ]
+ */
+collectBy, } from 'ramda';
+export { 
+/**
  * Makes a comparator function out of a function that reports whether the first
  * element is less than the second.
  *
- * @function module:util.comparator
- * @category Function
- * @param {external:function} pred A predicate function of arity two which will return `true` if the first argument is less than the second, `false` otherwise
- * @return {external:function} A Function :: a -> b -> Int that returns `-1` if a < b, `1` if b < a, otherwise `0`
+     * @category Function
+ * @param {function} pred A predicate function of arity two which will return `true` if the first argument is less than the second, `false` otherwise
+ * @returns {function} A Function :: a -> b -> Int that returns `-1` if a < b, `1` if b < a, otherwise `0`
  * @example
  * import { comparator, sort } from '@blue/util';
  * const byAge = comparator( ( a, b ) => a.age < b.age );
@@ -694,11 +728,10 @@ export {
  *
  * `complement` may be applied to any functor
  *
- * @function module:util.complement
- * @category Logic
- * @param {external:function} f
- * @return {external:function}
- * @see {@link module:util.not|not}
+     * @category Logic
+ * @param {function} f
+ * @returns {function}
+ * @see {@link not|not}
  * @example
  * import { complement, isNil } from '@blue/util';
  * const isNotNil = complement( isNil );
@@ -715,11 +748,10 @@ export {
  *
  * **Note:** The result of compose is not automatically curried.
  *
- * @function module:util.compose
- * @category Function
+     * @category Function
  * @param {...external:function} ...functions The functions to compose
- * @return {external:function}
- * @see {@link module:util.pipe|pipe}
+ * @returns {function}
+ * @see {@link pipe|pipe}
  * @example
  * import { add, compose, multiply, toUpper } from '@blue/util';
  * const classyGreeting = ( firstName, lastName ) => `The name's ${ lastName }, ${ firstName } ${ lastName }`;
@@ -736,12 +768,11 @@ export {
  * **Note:** The result of compose is not automatically curried. Transforming function is not used on the
  * last argument.
  *
- * @function module:util.composeWith
- * @category Function
+     * @category Function
  * @param {...Function} ...functions The functions to compose
- * @return {external:function}
- * @see {@link module:util.compose|compose}
- * @see {@link module:util.pipe|pipe}
+ * @returns {function}
+ * @see {@link compose|compose}
+ * @see {@link pipe|pipe}
  * @example
  * import { composeWith, inc, isNil, prop } from '@blue/util';
  * const composeWhileNotNil = composeWith( ( f, res ) => isNil( res ) ? res : f( res ) );
@@ -760,11 +791,10 @@ export {
  * Dispatches to the `concat` method of the first argument, if present.
  * Can also concatenate two members of a [fantasy-land compatible semigroup](https://github.com/fantasyland/fantasy-land#semigroup).
  *
- * @function module:util.concat
- * @category List
- * @param {external:Array | external:string} firstList The first list
- * @param {external:Array | external:string} secondList The second list
- * @return {external:Array | external:string} A list consisting of the elements of `firstList` followed by the elements of `secondList`.
+     * @category List
+ * @param {Array | external:string} firstList The first list
+ * @param {Array | external:string} secondList The second list
+ * @returns {Array | external:string} A list consisting of the elements of `firstList` followed by the elements of `secondList`.
  * @example
  * concat( 'ABC', 'DEF' ); // 'ABCDEF'
  * concat( [ 4, 5, 6 ], [ 1, 2, 3 ] ); //=> [ 4, 5, 6, 1, 2, 3 ]
@@ -780,13 +810,12 @@ export {
  * arguments to the corresponding transformer. If none of the predicates
  * matches, `fn` returns undefined.
  *
- * @function module:util.cond
- * @category Logic
- * @param {external:Array} pairs A list of [predicate, transformer]
- * @return {external:function}
- * @see {@link module:util.if|if}Else
- * @see {@link module:util.unless|unless}
- * @see {@link module:util.when|when}
+     * @category Logic
+ * @param {Array} pairs A list of [predicate, transformer]
+ * @returns {function}
+ * @see {@link if|if}Else
+ * @see {@link unless|unless}
+ * @see {@link when|when}
  * @example
  * import { always, cond, equals, T } from '@blue/util';
  * const fn = cond( [
@@ -804,11 +833,10 @@ export {
  * Wraps a constructor function inside a curried function that can be called
  * with the same arguments and returns the same type.
  *
- * @function module:util.construct
- * @category Function
- * @param {external:function} fn The constructor function to wrap.
- * @return {external:function} A wrapped, curried constructor function.
- * @see {@link module:util.invoker|invoker}
+     * @category Function
+ * @param {function} fn The constructor function to wrap.
+ * @returns {function} A wrapped, curried constructor function.
+ * @see {@link invoker|invoker}
  * @example
  * import { compose, construct, invoker, map } from '@blue/util';
  * // Constructor function
@@ -836,11 +864,10 @@ export {
  * with the same arguments and returns the same type. The arity of the function
  * returned is specified to allow using variadic constructor functions.
  *
- * @function module:util.constructN
- * @category Function
- * @param {external:number} n The arity of the constructor function.
- * @param {external:function} Fn The constructor function to wrap.
- * @return {external:function} A wrapped, curried constructor function.
+     * @category Function
+ * @param {number} n The arity of the constructor function.
+ * @param {function} Fn The constructor function to wrap.
+ * @returns {function} A wrapped, curried constructor function.
  * @example
  * import { constructN, join, map } from '@blue/util';
  * // Variadic Constructor function
@@ -873,12 +900,11 @@ export {
  * arguments. The results of each branching function are passed as arguments
  * to the converging function to produce the return value.
  *
- * @function module:util.converge
- * @category Function
- * @param {external:function} after A function. `after` will be invoked with the return values of `fn1` and `fn2` as its arguments.
- * @param {external:Array} functions A list of functions.
- * @return {external:function} A new function.
- * @see {@link module:util.use|use}With
+     * @category Function
+ * @param {function} after A function. `after` will be invoked with the return values of `fn1` and `fn2` as its arguments.
+ * @param {Array} functions A list of functions.
+ * @returns {function} A new function.
+ * @see {@link use|use}With
  * @example
  * import { concat, converge, divide, length, sum, toLower, toUpper } from '@blue/util';
  * const average = converge( divide, [ sum, length ] )
@@ -892,6 +918,20 @@ export {
 converge, } from 'ramda';
 export { 
 /**
+ * Returns the number of items in a given `list` matching the predicate `f`
+ *
+     * @category List
+ * @param {function} predicate The function to match items against.
+ * @param {Array} list The list to count elements from.
+ * @returns {number} The count of items matching the predicate.
+ * @example
+ * import { count } from '@blue/util';
+ * const even = x => x % 2 == 0;
+ * count(even, [1, 2, 3, 4, 5]); // => 2
+ */
+count, } from 'ramda';
+export { 
+/**
  * Counts the elements of a list according to how many match each value of a
  * key generated by the supplied function. Returns an object mapping the keys
  * produced by `fn` to the number of occurrences in the list. Note that all
@@ -899,11 +939,10 @@ export {
  *
  * Acts as a transducer if a transformer is given in list position.
  *
- * @function module:util.countBy
- * @category Relation
- * @param {external:function} fn The function used to map values to keys.
- * @param {external:Array} list The list to count elements from.
- * @return {external:Object} An object mapping keys to number of occurrences in the list.
+     * @category Relation
+ * @param {function} fn The function used to map values to keys.
+ * @param {Array} list The list to count elements from.
+ * @returns {Object} An object mapping keys to number of occurrences in the list.
  * @example
  * import { countBy, toLower } from '@blue/util';
  * const numbers = [ 1.0, 1.1, 1.2, 2.0, 3.0, 2.2 ];
@@ -937,12 +976,11 @@ export {
  *   - `g(_, 2)(1, 3)`
  *   - `g(_, 2)(_, 3)(1)`
  *
- * @function module:util.curry
- * @category Function
- * @param {external:function} fn The function to curry.
- * @return {external:function} A new, curried function.
- * @see {@link module:util.curry|curry}N
- * @see {@link module:util.partial|partial}
+     * @category Function
+ * @param {function} fn The function to curry.
+ * @returns {function} A new, curried function.
+ * @see {@link curry|curry}N
+ * @see {@link partial|partial}
  * @example
  * const addFourNumbers = ( a, b, c, d ) => a + b + c + d;
  * const curriedAddFourNumbers = curry( addFourNumbers );
@@ -976,12 +1014,11 @@ export {
  *   - `g(_, 2)(1, 3)`
  *   - `g(_, 2)(_, 3)(1)`
  *
- * @function module:util.curryN
- * @category Function
- * @param {external:number} length The arity for the returned function.
- * @param {external:function} fn The function to curry.
- * @return {external:function} A new, curried function.
- * @see {@link module:util.curry|curry}
+     * @category Function
+ * @param {number} length The arity for the returned function.
+ * @param {function} fn The function to curry.
+ * @returns {function} A new, curried function.
+ * @see {@link curry|curry}
  * @example
  * import { curryN, sum } from '@blue/util';
  * const sumArgs = ( ...args ) => sum( args );
@@ -995,11 +1032,10 @@ export {
 /**
  * Decrements its argument.
  *
- * @function module:util.dec
- * @category Math
- * @param {external:number} n
- * @return {external:number} n - 1
- * @see {@link module:util.inc|inc}
+     * @category Math
+ * @param {number} n
+ * @returns {number} n - 1
+ * @see {@link inc|inc}
  * @example
  * dec( 42 ); //=> 41
  */
@@ -1009,11 +1045,10 @@ export {
  * Returns the second argument if it is not `null`, `undefined` or `NaN`;
  * otherwise the first argument is returned.
  *
- * @function module:util.defaultTo
- * @category Logic
+     * @category Logic
  * @param {a} default The default value.
  * @param {b} val `val` will be returned instead of `default` unless `val` is `null`, `undefined` or `NaN`.
- * @return {*} The second value if it is not `null`, `undefined` or `NaN`, otherwise the default value
+ * @returns {*} The second value if it is not `null`, `undefined` or `NaN`, otherwise the default value
  * @example
  * const defaultTo42 = defaultTo( 42 );
  * defaultTo42( null );  //=> 42
@@ -1029,13 +1064,12 @@ export {
  * Makes a descending comparator function out of a function that returns a value
  * that can be compared with `<` and `>`.
  *
- * @function module:util.descend
- * @category Function
- * @param {external:function} fn A function of arity one that returns a value that can be compared
+     * @category Function
+ * @param {function} fn A function of arity one that returns a value that can be compared
  * @param {*} a The first item to be compared.
  * @param {*} b The second item to be compared.
- * @return {external:number} `-1` if fn(a) > fn(b), `1` if fn(b) > fn(a), otherwise `0`
- * @see {@link module:util.ascend|ascend}
+ * @returns {number} `-1` if fn(a) > fn(b), `1` if fn(b) > fn(a), otherwise `0`
+ * @see {@link ascend|ascend}
  * @example
  * import { descend, prop, sort } from '@blue/util';
  * const byAge = descend( prop( 'age' ) );
@@ -1050,19 +1084,37 @@ export {
 descend, } from 'ramda';
 export { 
 /**
+ * Makes a descending comparator function out of a function that returns a value
+ * that can be compared with natural sorting using localeCompare.
+ *
+     * @category Function
+ * @param {string} locales A string with a BCP 47 language tag, or an array of such strings. Corresponds to the locales parameter of the Intl.Collator() constructor.
+ * @param {function} fn A function of arity one that returns a string that can be compared
+ * @param {*} a The first item to be compared.
+ * @param {*} b The second item to be compared.
+ * @returns {number} `-1` if a occurs after b, `1` if a occurs before b, otherwise `0`
+ * @see {@link descend|descend}
+ * @example
+ * import { descendNatural, identity, sort } from '@blue/util';
+ * const unsorted = ['3', '1', '10', 'Ørjan', 'Bob', 'Älva'];
+ * sort(descendNatural('en', identity), unsorted);
+ * // => ['Ørjan', 'Bob', 'Älva', '10', '3', '1']
+ */
+descendNatural, } from 'ramda';
+export { 
+/**
  * Finds the set (i.e. no duplicates) of all elements in the first list not
  * contained in the second list. Objects and Arrays are compared in terms of
  * value equality, not reference equality.
  *
- * @function module:util.difference
- * @category Relation
- * @param {external:Array} list1 The first list.
- * @param {external:Array} list2 The second list.
- * @return {external:Array} The elements in `list1` that are not in `list2`.
- * @see {@link module:util.difference|difference}With
- * @see {@link module:util.symmetric|symmetric}Difference
- * @see {@link module:util.symmetric|symmetric}DifferenceWith
- * @see {@link module:util.without|without}
+     * @category Relation
+ * @param {Array} list1 The first list.
+ * @param {Array} list2 The second list.
+ * @returns {Array} The elements in `list1` that are not in `list2`.
+ * @see {@link difference|difference}With
+ * @see {@link symmetric|symmetric}Difference
+ * @see {@link symmetric|symmetric}DifferenceWith
+ * @see {@link without|without}
  * @example
  * difference( [ 1, 2, 3, 4 ], [ 7, 6, 5, 4, 3 ] ); //=> [ 1, 2 ]
  * difference( [ 7, 6, 5, 4, 3 ], [ 1, 2, 3, 4 ] ); //=> [ 7, 6, 5 ]
@@ -1075,15 +1127,14 @@ export {
  * contained in the second list. Duplication is determined according to the
  * value returned by applying the supplied predicate to two list elements.
  *
- * @function module:util.differenceWith
- * @category Relation
- * @param {external:function} pred A predicate used to test whether two items are equal.
- * @param {external:Array} list1 The first list.
- * @param {external:Array} list2 The second list.
- * @return {external:Array} The elements in `list1` that are not in `list2`.
- * @see {@link module:util.difference|difference}
- * @see {@link module:util.symmetric|symmetric}Difference
- * @see {@link module:util.symmetric|symmetric}DifferenceWith
+     * @category Relation
+ * @param {function} pred A predicate used to test whether two items are equal.
+ * @param {Array} list1 The first list.
+ * @param {Array} list2 The second list.
+ * @returns {Array} The elements in `list1` that are not in `list2`.
+ * @see {@link difference|difference}
+ * @see {@link symmetric|symmetric}Difference
+ * @see {@link symmetric|symmetric}DifferenceWith
  * @example
  * const cmp = ( x, y ) => x.a === y.a;
  * const l1 = [ { a: 1 }, { a: 2 }, { a: 3 } ];
@@ -1095,13 +1146,12 @@ export {
 /**
  * Returns a new object that does not contain a `prop` property.
  *
- * @function module:util.dissoc
- * @category Object
- * @param {external:string} prop The name of the property to dissociate
- * @param {external:Object} obj The object to clone
- * @return {external:Object} A new object equivalent to the original but without the specified property
- * @see {@link module:util.assoc|assoc}
- * @see {@link module:util.omit|omit}
+     * @category Object
+ * @param {string} prop The name of the property to dissociate
+ * @param {Object} obj The object to clone
+ * @returns {Object} A new object equivalent to the original but without the specified property
+ * @see {@link assoc|assoc}
+ * @see {@link omit|omit}
  * @example
  * dissoc( 'b', { a: 1, b: 2, c: 3 } ); //=> { a: 1, c: 3 }
  */
@@ -1112,12 +1162,11 @@ export {
  * Note that this copies and flattens prototype properties onto the new object
  * as well. All non-primitive properties are copied by reference.
  *
- * @function module:util.dissocPath
- * @category Object
- * @param {external:Array} path The path to the value to omit
- * @param {external:Object} obj The object to clone
- * @return {external:Object} A new object without the property at path
- * @see {@link module:util.assocPath|assocPath}
+     * @category Object
+ * @param {Array} path The path to the value to omit
+ * @param {Object} obj The object to clone
+ * @returns {Object} A new object without the property at path
+ * @see {@link assocPath|assocPath}
  * @example
  * dissocPath( [ 'a', 'b', 'c' ], { a: { b: { c: 42 } } } ); //=> { a: { b: {} } }
  */
@@ -1126,12 +1175,11 @@ export {
 /**
  * Divides two numbers. Equivalent to `a / b`.
  *
- * @function module:util.divide
- * @category Math
- * @param {external:number} a The first value.
- * @param {external:number} b The second value.
- * @return {external:number} The result of `a / b`.
- * @see {@link module:util.multiply|multiply}
+     * @category Math
+ * @param {number} a The first value.
+ * @param {number} b The second value.
+ * @returns {number} The result of `a / b`.
+ * @see {@link multiply|multiply}
  * @example
  * import { __, divide } from '@blue/util';
  * divide( 71, 100 ); //=> 0.71
@@ -1150,15 +1198,14 @@ export {
  *
  * Dispatches to the `drop` method of the second argument, if present.
  *
- * @function module:util.drop
- * @category List
- * @param {external:number} n
+     * @category List
+ * @param {number} n
  * @param {*} list
- * @return {*} A copy of list without the first `n` elements
- * @see {@link module:util.take|take}
- * @see {@link module:util.transduce|transduce}
- * @see {@link module:util.dropLast|dropLast}
- * @see {@link module:util.dropWhile|dropWhile}
+ * @returns {*} A copy of list without the first `n` elements
+ * @see {@link take|take}
+ * @see {@link transduce|transduce}
+ * @see {@link dropLast|dropLast}
+ * @see {@link dropWhile|dropWhile}
  * @example
  * drop( 1, [ 'foo', 'bar', 'baz' ] ); //=> [ 'bar', 'baz' ]
  * drop( 2, [ 'foo', 'bar', 'baz' ] ); //=> [ 'baz' ]
@@ -1173,15 +1220,14 @@ export {
  *
  * Acts as a transducer if a transformer is given in list position.
  *
- * @function module:util.dropLast
- * @category List
- * @param {external:number} n The number of elements of `list` to skip.
- * @param {external:Array} list The list of elements to consider.
- * @return {external:Array} A copy of the list with only the first `list.length - n` elements
- * @see {@link module:util.takeLast|takeLast}
- * @see {@link module:util.drop|drop}
- * @see {@link module:util.dropWhile|dropWhile}
- * @see {@link module:util.dropLastWhile|dropLastWhile}
+     * @category List
+ * @param {number} n The number of elements of `list` to skip.
+ * @param {Array} list The list of elements to consider.
+ * @returns {Array} A copy of the list with only the first `list.length - n` elements
+ * @see {@link takeLast|takeLast}
+ * @see {@link drop|drop}
+ * @see {@link dropWhile|dropWhile}
+ * @see {@link dropLastWhile|dropLastWhile}
  * @example
  * dropLast( 1, [ 'foo', 'bar', 'baz' ] ); //=> [ 'foo', 'bar' ]
  * dropLast( 2, [ 'foo', 'bar', 'baz' ] ); //=> [ 'foo' ]
@@ -1200,15 +1246,14 @@ export {
  *
  * Acts as a transducer if a transformer is given in list position.
  *
- * @function module:util.dropLastWhile
- * @category List
- * @param {external:function} predicate The function to be called on each element
- * @param {external:Array} xs The collection to iterate over.
- * @return {external:Array} A new array without any trailing elements that return `falsy` values from the `predicate`.
- * @see {@link module:util.takeLastWhile|takeLastWhile}
- * @see {@link module:util.addIndex|addIndex}
- * @see {@link module:util.drop|drop}
- * @see {@link module:util.dropWhile|dropWhile}
+     * @category List
+ * @param {function} predicate The function to be called on each element
+ * @param {Array} xs The collection to iterate over.
+ * @returns {Array} A new array without any trailing elements that return `falsy` values from the `predicate`.
+ * @see {@link takeLastWhile|takeLastWhile}
+ * @see {@link addIndex|addIndex}
+ * @see {@link drop|drop}
+ * @see {@link dropWhile|dropWhile}
  * @example
  * const lteThree = x => x <= 3;
  * dropLastWhile( lteThree, [ 1, 2, 3, 4, 3, 2, 1 ] ); //=> [ 1, 2, 3, 4 ]
@@ -1222,15 +1267,29 @@ export {
  *
  * Acts as a transducer if a transformer is given in list position.
  *
- * @function module:util.dropRepeats
- * @category List
- * @param {external:Array} list The array to consider.
- * @return {external:Array} `list` without repeating elements.
- * @see {@link module:util.transduce|transduce}
+     * @category List
+ * @param {Array} list The array to consider.
+ * @returns {Array} `list` without repeating elements.
+ * @see {@link transduce|transduce}
  * @example
  * dropRepeats( [ 1, 1, 1, 2, 3, 4, 4, 2, 2 ] ); //=> [ 1, 2, 3, 4, 2 ]
  */
 dropRepeats, } from 'ramda';
+export { 
+/**
+ * Returns a new list without any consecutively repeating elements. Equality is determined by applying the supplied function to each pair of consecutive elements.
+ *
+     * @category List
+ * @param {function} f A function that is passed a list element and returns a value to be compared.
+ * @param {Array} list The array to consider.
+ * @returns {Array} `list` without repeating elements.
+ * @see {@link dropRepeatsWith|dropRepeatsWith}
+ * @example
+ * import { dropRepeatsBy } from '@blue/util';
+ * const l = [ 1, -1, 1, 3, 4, -4, -4, -5, 5, 3, 3 ];
+ * dropRepeatsBy( Math.abs, l ); //=> [ 1, 3, 4, -5, 3 ]
+ */
+dropRepeatsBy, } from 'ramda';
 export { 
 /**
  * Returns a new list without any consecutively repeating elements. Equality is
@@ -1239,12 +1298,11 @@ export {
  *
  * Acts as a transducer if a transformer is given in list position.
  *
- * @function module:util.dropRepeatsWith
- * @category List
- * @param {external:function} pred A predicate used to test whether two items are equal.
- * @param {external:Array} list The array to consider.
- * @return {external:Array} `list` without repeating elements.
- * @see {@link module:util.transduce|transduce}
+     * @category List
+ * @param {function} pred A predicate used to test whether two items are equal.
+ * @param {Array} list The array to consider.
+ * @returns {Array} `list` without repeating elements.
+ * @see {@link transduce|transduce}
  * @example
  * import { dropRepeatsWith, eqBy } from '@blue/util';
  * const l = [ 1, -1, 1, 3, 4, -4, -4, -5, 5, 3, 3 ];
@@ -1262,14 +1320,13 @@ export {
  *
  * Acts as a transducer if a transformer is given in list position.
  *
- * @function module:util.dropWhile
- * @category List
- * @param {external:function} fn The function called per iteration.
- * @param {external:Array} xs The collection to iterate over.
- * @return {external:Array} A new array.
- * @see {@link module:util.takeWhile|takeWhile}
- * @see {@link module:util.transduce|transduce}
- * @see {@link module:util.addIndex|addIndex}
+     * @category List
+ * @param {function} fn The function called per iteration.
+ * @param {Array} xs The collection to iterate over.
+ * @returns {Array} A new array.
+ * @see {@link takeWhile|takeWhile}
+ * @see {@link transduce|transduce}
+ * @see {@link addIndex|addIndex}
  * @example
  * const lteTwo = x => x <= 2;
  * dropWhile( lteTwo, [ 1, 2, 3, 4, 3, 2, 1 ] ); //=> [ 3, 4, 3, 2, 1 ]
@@ -1287,12 +1344,11 @@ export {
  * In addition to functions, `R.either` also accepts any fantasy-land compatible
  * applicative functor.
  *
- * @function module:util.either
- * @category Logic
- * @param {external:function} f a predicate
- * @param {external:function} g another predicate
- * @return {external:function} a function that applies its arguments to `f` and `g` and `||`s their outputs together.
- * @see {@link module:util.or|or}
+     * @category Logic
+ * @param {function} f a predicate
+ * @param {function} g another predicate
+ * @returns {function} a function that applies its arguments to `f` and `g` and `||`s their outputs together.
+ * @see {@link or|or}
  * @example
  * const gt10 = x => x > 10;
  * const even = x => x % 2 === 0;
@@ -1310,12 +1366,11 @@ export {
  *
  * Similarly, checks if a string ends with the provided substring.
  *
- * @function module:util.endsWith
- * @category List
+     * @category List
  * @param {*} suffix
  * @param {*} list
- * @return {external:boolean}
- * @see {@link module:util.startsWith|startsWith}
+ * @returns {boolean}
+ * @see {@link startsWith|startsWith}
  * @example
  * endsWith( 'c', 'abc' )                //=> true
  * endsWith( 'b', 'abc' )                //=> false
@@ -1328,12 +1383,11 @@ export {
  * Takes a function and two values in its domain and returns `true` if the
  * values map to the same value in the codomain; `false` otherwise.
  *
- * @function module:util.eqBy
- * @category Relation
- * @param {external:function} f
+     * @category Relation
+ * @param {function} f
  * @param {*} x
  * @param {*} y
- * @return {external:boolean}
+ * @returns {boolean}
  * @example
  * eqBy( Math.abs, 5, -5 ); //=> true
  */
@@ -1343,12 +1397,11 @@ export {
  * Reports whether two objects have the same value, in [`equals`](#equals)
  * terms, for the specified property. Useful as a curried predicate.
  *
- * @function module:util.eqProps
- * @category Object
- * @param {external:string} prop The name of the property to compare
- * @param {external:Object} obj1
- * @param {external:Object} obj2
- * @return {external:boolean}
+     * @category Object
+ * @param {string} prop The name of the property to compare
+ * @param {Object} obj1
+ * @param {Object} obj2
+ * @returns {boolean}
  * @example
  * const o1 = { a: 1, b: 2, c: 3, d: 4 };
  * const o2 = { a: 10, b: 20, c: 3, d: 40 };
@@ -1364,11 +1417,10 @@ export {
  * Dispatches symmetrically to the `equals` methods of both arguments, if
  * present.
  *
- * @function module:util.equals
- * @category Relation
+     * @category Relation
  * @param {*} a
  * @param {*} b
- * @return {external:boolean}
+ * @returns {boolean}
  * @example
  * equals( 1, 1 ); //=> true
  * equals( 1, '1' ); //=> false
@@ -1388,11 +1440,10 @@ export {
  * A `transformation` function will not be invoked if its corresponding key
  * does not exist in the evolved object.
  *
- * @function module:util.evolve
- * @category Object
- * @param {external:Object} transformations The object specifying transformation functions to apply to the object.
- * @param {external:Object} object The object to be transformed.
- * @return {external:Object} The transformed object.
+     * @category Object
+ * @param {Object} transformations The object specifying transformation functions to apply to the object.
+ * @param {Object} object The object to be transformed.
+ * @returns {Object} The transformed object.
  * @example
  * import { add, evolve, trim } from '@blue/util';
  * const tomato = { firstName: '  Tomato ', data: { elapsed: 100, remaining: 1400 }, id: 123 };
@@ -1415,14 +1466,13 @@ export {
  *
  * Acts as a transducer if a transformer is given in list position.
  *
- * @function module:util.filter
- * @category List
- * @param {external:function} pred
- * @param {external:Array} filterable
- * @return {external:Array} Filterable
- * @see {@link module:util.reject|reject}
- * @see {@link module:util.transduce|transduce}
- * @see {@link module:util.addIndex|addIndex}
+     * @category List
+ * @param {function} pred
+ * @param {Array} filterable
+ * @returns {Array} Filterable
+ * @see {@link reject|reject}
+ * @see {@link transduce|transduce}
+ * @see {@link addIndex|addIndex}
  * @example
  * const isEven = n => n % 2 === 0;
  * filter( isEven, [ 1, 2, 3, 4 ] ); //=> [2, 4]
@@ -1438,12 +1488,11 @@ export {
  *
  * Acts as a transducer if a transformer is given in list position.
  *
- * @function module:util.find
- * @category List
- * @param {external:function} fn The predicate function used to determine if the element is the desired one.
- * @param {external:Array} list The array to consider.
- * @return {external:Object} The element found, or `undefined`.
- * @see {@link module:util.transduce|transduce}
+     * @category List
+ * @param {function} fn The predicate function used to determine if the element is the desired one.
+ * @param {Array} list The array to consider.
+ * @returns {Object} The element found, or `undefined`.
+ * @see {@link transduce|transduce}
  * @example
  * import { find, propEq } from '@blue/util';
  * const xs = [ { a: 1 }, { a: 2 }, { a: 3 } ];
@@ -1458,12 +1507,11 @@ export {
  *
  * Acts as a transducer if a transformer is given in list position.
  *
- * @function module:util.findIndex
- * @category List
- * @param {external:function} fn The predicate function used to determine if the element is the desired one.
- * @param {external:Array} list The array to consider.
- * @return {external:number} The index of the element found, or `-1`.
- * @see {@link module:util.transduce|transduce}
+     * @category List
+ * @param {function} fn The predicate function used to determine if the element is the desired one.
+ * @param {Array} list The array to consider.
+ * @returns {number} The index of the element found, or `-1`.
+ * @see {@link transduce|transduce}
  * @example
  * import { findIndex, propEq } from '@blue/util';
  * const xs = [ { a: 1 }, { a: 2 }, { a: 3 } ];
@@ -1478,14 +1526,13 @@ export {
  *
  * Acts as a transducer if a transformer is given in list position.
  *
- * @function module:util.findLast
- * @category List
+     * @category List
  * @sig (a -> Boolean) -> [a] -> a | undefined
- * @param {external:function} fn The predicate function used to determine if the element is the
+ * @param {function} fn The predicate function used to determine if the element is the
  * desired one.
- * @param {external:Array} list The array to consider.
- * @return {external:Object} The element found, or `undefined`.
- * @see {@link module:util.transduce|transduce}
+ * @param {Array} list The array to consider.
+ * @returns {Object} The element found, or `undefined`.
+ * @see {@link transduce|transduce}
  * @example
  * import { findLast, propEq } from '@blue/util';
  * const xs = [ { a: 1, b: 0 }, { a:1, b: 1 } ];
@@ -1500,12 +1547,11 @@ export {
  *
  * Acts as a transducer if a transformer is given in list position.
  *
- * @function module:util.findLastIndex
- * @category List
- * @param {external:function} fn The predicate function used to determine if the element is the desired one.
- * @param {external:Array} list The array to consider.
- * @return {external:number} The index of the element found, or `-1`.
- * @see {@link module:util.transduce|transduce}
+     * @category List
+ * @param {function} fn The predicate function used to determine if the element is the desired one.
+ * @param {Array} list The array to consider.
+ * @returns {number} The index of the element found, or `-1`.
+ * @see {@link transduce|transduce}
  * @example
  * import { findLastIndex, propEq } from '@blue/util';
  * const xs = [ { a: 1, b: 0 }, { a:1, b: 1 } ];
@@ -1518,11 +1564,10 @@ export {
  * Returns a new list by pulling every item out of it (and all its sub-arrays)
  * and putting them in a new array, depth-first.
  *
- * @function module:util.flatten
- * @category List
- * @param {external:Array} list The array to consider.
- * @return {external:Array} The flattened list.
- * @see {@link module:util.unnest|unnest}
+     * @category List
+ * @param {Array} list The array to consider.
+ * @returns {Array} The flattened list.
+ * @see {@link unnest|unnest}
  * @example
  * flatten( [ 1, 2, [ 3, 4 ], 5, [ 6, [ 7, 8, [ 9, [ 10, 11] , 12 ] ] ] ] );
  * //=> [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 ]
@@ -1533,10 +1578,9 @@ export {
  * Returns a new function much like the supplied one, except that the first two
  * arguments' order is reversed.
  *
- * @function module:util.flip
- * @category Function
- * @param {external:function} fn The function to invoke with its first two parameters reversed.
- * @return {*} The result of invoking `fn` with its first two parameters' order reversed.
+     * @category Function
+ * @param {function} fn The function to invoke with its first two parameters reversed.
+ * @returns {*} The result of invoking `fn` with its first two parameters' order reversed.
  * @example
  * const mergeThree = ( a, b, c ) => [].concat( a, b, c );
  * mergeThree( 1, 2, 3 ); //=> [ 1, 2, 3 ]
@@ -1560,12 +1604,11 @@ export {
  *
  * Dispatches to the `forEach` method of the second argument, if present.
  *
- * @function module:util.forEach
- * @category List
- * @param {external:function} fn The function to invoke. Receives one argument, `value`.
- * @param {external:Array} list The list to iterate over.
- * @return {external:Array} The original list.
- * @see {@link module:util.addIndex|addIndex}
+     * @category List
+ * @param {function} fn The function to invoke. Receives one argument, `value`.
+ * @param {Array} list The list to iterate over.
+ * @returns {Array} The original list.
+ * @see {@link addIndex|addIndex}
  * @example
  * const printXPlusFive = x => console.log( x + 5 );
  * forEach( printXPlusFive, [ 1, 2, 3 ] ); //=> [1, 2, 3]
@@ -1580,11 +1623,10 @@ export {
  *
  * `fn` receives three argument: *(value, key, obj)*.
  *
- * @function module:util.forEachObjIndexed
- * @category Object
- * @param {external:function} fn The function to invoke. Receives three argument, `value`, `key`, `obj`.
- * @param {external:Object} obj The object to iterate over.
- * @return {external:Object} The original object.
+     * @category Object
+ * @param {function} fn The function to invoke. Receives three argument, `value`, `key`, `obj`.
+ * @param {Object} obj The object to iterate over.
+ * @returns {Object} The original object.
  * @example
  * const printKeyConcatValue = ( value, key ) => console.log( key + ':' + value );
  * forEachObjIndexed( printKeyConcatValue, { x: 1, y: 2 } ); //=> { x: 1, y: 2 }
@@ -1596,12 +1638,11 @@ export {
 /**
  * Creates a new object from a list key-value pairs. If a key appears in multiple pairs, the rightmost pair is included in the object.
  *
- * @function module:util.fromPairs
- * @category List
- * @param {external:Array} pairs An array of two-element arrays that will be the keys and values of the output object.
- * @return {external:Object} The object made by pairing up `keys` and `values`.
- * @see {@link module:util.toPairs|toPairs}
- * @see {@link module:util.pair|pair}
+     * @category List
+ * @param {Array} pairs An array of two-element arrays that will be the keys and values of the output object.
+ * @returns {Object} The object made by pairing up `keys` and `values`.
+ * @see {@link toPairs|toPairs}
+ * @see {@link pair|pair}
  * @example
  * fromPairs( [ [ 'a', 1 ], [ 'b', 2 ], [ 'c', 3 ] ] ); //=> { a: 1, b: 2, c: 3 }
  */
@@ -1616,13 +1657,12 @@ export {
  *
  * Acts as a transducer if a transformer is given in list position.
  *
- * @function module:util.groupBy
- * @category List
- * @param {external:function} fn Function :: a -> String
- * @param {external:Array} list The array to group
- * @return {external:Object} An object with the output of `fn` for keys, mapped to arrays of elements that produced that key when passed to `fn`.
- * @see {@link module:util.reduceBy|reduceBy}
- * @see {@link module:util.transduce|transduce}
+     * @category List
+ * @param {function} fn Function :: a -> String
+ * @param {Array} list The array to group
+ * @returns {Object} An object with the output of `fn` for keys, mapped to arrays of elements that produced that key when passed to `fn`.
+ * @see {@link reduceBy|reduceBy}
+ * @see {@link transduce|transduce}
  * @example
  * const byGrade = groupBy( function( student ){
  *  const score = student.score;
@@ -1652,11 +1692,10 @@ export {
  * all satisfied pairwise comparison according to the provided function.
  * Only adjacent elements are passed to the comparison function.
  *
- * @function module:util.groupWith
- * @category List
- * @param {external:function} fn Function for determining whether two given (adjacent) elements should be in the same group
- * @param {external:Array} list The array to group. Also accepts a string, which will be treated as a list of characters.
- * @return {List} A list that contains sublists of elements, whose concatenations are equal to the original list.
+     * @category List
+ * @param {function} fn Function for determining whether two given (adjacent) elements should be in the same group
+ * @param {Array} list The array to group. Also accepts a string, which will be treated as a list of characters.
+ * @returns {List} A list that contains sublists of elements, whose concatenations are equal to the original list.
  * @example
  * import { eqBy, equals, groupWith } from '@blue/util';
  * groupWith( equals, [ 0, 1, 1, 2, 3, 5, 8, 13, 21 ] );
@@ -1673,12 +1712,11 @@ export {
 /**
  * Returns `true` if the first argument is greater than the second; `false` otherwise.
  *
- * @function module:util.gt
- * @category Relation
+     * @category Relation
  * @param {*} a
  * @param {*} b
- * @return {external:boolean}
- * @see {@link module:util.lt|lt}
+ * @returns {boolean}
+ * @see {@link lt|lt}
  * @example
  * gt( 2, 1 ); //=> true
  * gt( 2, 2 ); //=> false
@@ -1692,12 +1730,11 @@ export {
  * Returns `true` if the first argument is greater than or equal to the second;
  * `false` otherwise.
  *
- * @function module:util.gte
- * @category Relation
- * @param {external:number} a
- * @param {external:number} b
- * @return {external:boolean}
- * @see {@link module:util.lte|lte}
+     * @category Relation
+ * @param {number} a
+ * @param {number} b
+ * @returns {boolean}
+ * @see {@link lte|lte}
  * @example
  * gte( 2, 1 ); //=> true
  * gte( 2, 2 ); //=> true
@@ -1710,11 +1747,10 @@ export {
 /**
  * Returns whether or not an object has an own property with the specified name
  *
- * @function module:util.has
- * @category Object
- * @param {external:string} prop The name of the property to check for.
- * @param {external:Object} obj The object to query.
- * @return {external:boolean} Whether the property exists.
+     * @category Object
+ * @param {string} prop The name of the property to check for.
+ * @param {Object} obj The object to query.
+ * @returns {boolean} Whether the property exists.
  * @example
  * import { __, has } from '@blue/util';
  * const hasName = has( 'name' );
@@ -1733,11 +1769,10 @@ export {
  * Returns whether or not an object or its prototype chain has a property with
  * the specified name
  *
- * @function module:util.hasIn
- * @category Object
- * @param {external:string} prop The name of the property to check for.
- * @param {external:Object} obj The object to query.
- * @return {external:boolean} Whether the property exists.
+     * @category Object
+ * @param {string} prop The name of the property to check for.
+ * @param {Object} obj The object to query.
+ * @returns {boolean} Whether the property exists.
  * @example
  * import { __, has } from '@blue/util';
  * function Rectangle( width, height ){
@@ -1758,12 +1793,11 @@ export {
  * Returns whether or not a path exists in an object. Only the object's
  * own properties are checked.
  *
- * @function module:util.hasPath
- * @category Object
- * @param {external:Array} path The path to use.
- * @param {external:Object} obj The object to check the path in.
- * @return {external:boolean} Whether the path exists.
- * @see {@link module:util.has|has}
+     * @category Object
+ * @param {Array} path The path to use.
+ * @param {Object} obj The object to check the path in.
+ * @returns {boolean} Whether the path exists.
+ * @see {@link has|has}
  * @example
  * hasPath( [ 'a', 'b' ], { a: { b: 2 } } );         // => true
  * hasPath( [ 'a', 'b' ], { a: { b: undefined } } ); // => true
@@ -1776,13 +1810,12 @@ export {
  * Returns the first element of the given list or string. In some libraries
  * this function is named `first`.
  *
- * @function module:util.head
- * @category List
- * @param {external:Array | external:string} list
- * @return {*}
- * @see {@link module:util.tail|tail}
- * @see {@link module:util.init|init}
- * @see {@link module:util.last|last}
+     * @category List
+ * @param {Array | external:string} list
+ * @returns {*}
+ * @see {@link tail|tail}
+ * @see {@link init|init}
+ * @see {@link last|last}
  * @example
  * head( [ 'fi', 'fo', 'fum' ] ); //=> 'fi'
  * head( [] ); //=> undefined
@@ -1798,11 +1831,10 @@ export {
  *
  * Note this is merely a curried version of ES6 `Object.is`.
  *
- * @function module:util.identical
- * @category Relation
+     * @category Relation
  * @param {*} a
  * @param {*} b
- * @return {external:boolean}
+ * @returns {boolean}
  * @example
  * const o = {};
  * identical( o, o ); //=> true
@@ -1818,10 +1850,9 @@ export {
  * A function that does nothing but return the parameter supplied to it. Good
  * as a default or placeholder function.
  *
- * @function module:util.identity
- * @category Function
+     * @category Function
  * @param {*} x The value to return.
- * @return {*} The input value, `x`.
+ * @returns {*} The input value, `x`.
  * @example
  * identity( 1 ); //=> 1
  * const obj = {};
@@ -1833,15 +1864,14 @@ export {
  * Creates a function that will process either the `onTrue` or the `onFalse`
  * function depending upon the result of the `condition` predicate.
  *
- * @function module:util.ifElse
- * @category Logic
- * @param {external:function} condition A predicate function
- * @param {external:function} onTrue A function to invoke when the `condition` evaluates to a truthy value.
- * @param {external:function} onFalse A function to invoke when the `condition` evaluates to a falsy value.
- * @return {external:function} A new function that will process either the `onTrue` or the `onFalse` function depending upon the result of the `condition` predicate.
- * @see {@link module:util.unless|unless}
- * @see {@link module:util.when|when}
- * @see {@link module:util.cond|cond}
+     * @category Logic
+ * @param {function} condition A predicate function
+ * @param {function} onTrue A function to invoke when the `condition` evaluates to a truthy value.
+ * @param {function} onFalse A function to invoke when the `condition` evaluates to a falsy value.
+ * @returns {function} A new function that will process either the `onTrue` or the `onFalse` function depending upon the result of the `condition` predicate.
+ * @see {@link unless|unless}
+ * @see {@link when|when}
+ * @see {@link cond|cond}
  * @example
  * import { assoc, has, ifElse, inc, lensProp, over } from '@blue/util';
  * const incCount = ifElse(
@@ -1857,11 +1887,10 @@ export {
 /**
  * Increments its argument.
  *
- * @function module:util.inc
- * @category Math
- * @param {external:number} n
- * @return {external:number} n + 1
- * @see {@link module:util.dec|dec}
+     * @category Math
+ * @param {number} n
+ * @returns {number} n + 1
+ * @see {@link dec|dec}
  * @example
  * inc( 42 ); //=> 43
  */
@@ -1872,12 +1901,11 @@ export {
  * terms, to at least one element of the given list; `false` otherwise.
  * Works also with strings.
  *
- * @function module:util.includes
- * @category List
- * @param {external:Object} a The item to compare against.
- * @param {external:Array} list The array to consider.
- * @return {external:boolean} `true` if an equivalent item is in the list, `false` otherwise.
- * @see {@link module:util.any|any}
+     * @category List
+ * @param {Object} a The item to compare against.
+ * @param {Array} list The array to consider.
+ * @returns {boolean} `true` if an equivalent item is in the list, `false` otherwise.
+ * @see {@link any|any}
  * @example
  * includes( 3, [ 1, 2, 3 ] ); //=> true
  * includes( 4, [ 1, 2, 3 ] ); //=> false
@@ -1895,11 +1923,10 @@ export {
  *
  * Acts as a transducer if a transformer is given in list position.
  *
- * @function module:util.indexBy
- * @category List
- * @param {external:function} fn Function :: a -> String
- * @param {external:Array} array The array of objects to index
- * @return {external:Object} An object indexing each array element by the given property.
+     * @category List
+ * @param {function} fn Function :: a -> String
+ * @param {Array} array The array of objects to index
+ * @returns {Object} An object indexing each array element by the given property.
  * @example
  * import { indexBy, prop } from '@blue/util';
  * const list = [ { id: 'xyz', title: 'A' }, { id: 'abc', title: 'B' } ];
@@ -1913,12 +1940,11 @@ export {
  * if the item is not included in the array. [`R.equals`](#equals) is used to
  * determine equality.
  *
- * @function module:util.indexOf
- * @category List
+     * @category List
  * @param {*} target The item to find.
- * @param {external:Array} xs The array to search in.
- * @return {external:number} the index of the target, or -1 if the target is not found.
- * @see {@link module:util.lastIndexOf|lastIndexOf}
+ * @param {Array} xs The array to search in.
+ * @returns {number} the index of the target, or -1 if the target is not found.
+ * @see {@link lastIndexOf|lastIndexOf}
  * @example
  * indexOf( 3, [ 1, 2, 3, 4 ] ); //=> 2
  * indexOf( 10, [ 1, 2, 3, 4 ] ); //=> -1
@@ -1928,13 +1954,12 @@ export {
 /**
  * Returns all but the last element of the given list or string.
  *
- * @function module:util.init
- * @category List
+     * @category List
  * @param {*} list
- * @return {*}
- * @see {@link module:util.last|last}
- * @see {@link module:util.head|head}
- * @see {@link module:util.tail|tail}
+ * @returns {*}
+ * @see {@link last|last}
+ * @see {@link head|head}
+ * @see {@link tail|tail}
  * @example
  * init( [ 1, 2, 3 ] );  //=> [ 1, 2 ]
  * init( [ 1, 2 ] );     //=> [ 1 ]
@@ -1959,13 +1984,12 @@ export {
  * that its values are in the same order as they appear in `xs`. Duplicates are
  * not removed, so `xs'` may contain duplicates if `xs` contains duplicates.
  *
- * @function module:util.innerJoin
- * @category Relation
- * @param {external:function} pred
- * @param {external:Array} xs
- * @param {external:Array} ys
- * @return {external:Array}
- * @see {@link module:util.intersection|intersection}
+     * @category Relation
+ * @param {function} pred
+ * @param {Array} xs
+ * @param {Array} ys
+ * @returns {Array}
+ * @see {@link intersection|intersection}
  * @example
  * innerJoin( ( record, id ) => record.id === id,
  *  [
@@ -1986,12 +2010,11 @@ export {
  * this is not destructive_: it returns a copy of the list with the changes.
  * <small>No lists have been harmed in the application of this function.</small>
  *
- * @function module:util.insert
- * @category List
- * @param {external:number} index The position to insert the element
+     * @category List
+ * @param {number} index The position to insert the element
  * @param {*} elt The element to insert into the Array
- * @param {external:Array} list The list to insert into
- * @return {external:Array} A new Array with `elt` inserted at `index`.
+ * @param {Array} list The list to insert into
+ * @returns {Array} A new Array with `elt` inserted at `index`.
  * @example
  * insert( 2 , 'x', [ 1, 2, 3, 4 ] ); //=> [ 1, 2, 'x', 3, 4 ]
  */
@@ -2002,12 +2025,11 @@ export {
  * destructive_: it returns a copy of the list with the changes.
  * <small>No lists have been harmed in the application of this function.</small>
  *
- * @function module:util.insertAll
- * @category List
- * @param {external:number} index The position to insert the sub-list
- * @param {external:Array} elts The sub-list to insert into the Array
- * @param {external:Array} list The list to insert the sub-list into
- * @return {external:Array} A new Array with `elts` inserted starting at `index`.
+     * @category List
+ * @param {number} index The position to insert the sub-list
+ * @param {Array} elts The sub-list to insert into the Array
+ * @param {Array} list The list to insert the sub-list into
+ * @returns {Array} A new Array with `elts` inserted starting at `index`.
  * @example
  * insertAll( 2, [ 'x', 'y', 'z' ], [ 1, 2, 3, 4 ] ); //=> [ 1, 2, 'x', 'y', 'z', 3, 4 ]
  */
@@ -2016,12 +2038,11 @@ export {
 /**
  * Combines two lists into a set (i.e. no duplicates) composed of those elements common to both lists.
  *
- * @function module:util.intersection
- * @category Relation
- * @param {external:Array} list1 The first list.
- * @param {external:Array} list2 The second list.
- * @return {external:Array} The list of elements found in both `list1` and `list2`.
- * @see {@link module:util.innerJoin|innerJoin}
+     * @category Relation
+ * @param {Array} list1 The first list.
+ * @param {Array} list2 The second list.
+ * @returns {Array} The list of elements found in both `list1` and `list2`.
+ * @see {@link innerJoin|innerJoin}
  * @example
  * intersection( [ 1, 2, 3, 4 ], [ 7, 6, 5, 4, 3 ] ); //=> [4, 3]
  */
@@ -2032,11 +2053,10 @@ export {
  *
  * Dispatches to the `intersperse` method of the second argument, if present.
  *
- * @function module:util.intersperse
- * @category List
+     * @category List
  * @param {*} separator The element to add to the list.
- * @param {external:Array} list The list to be interposed.
- * @return {external:Array} The new list.
+ * @param {Array} list The list to be interposed.
+ * @returns {Array} The new list.
  * @example
  * intersperse( 'a', [ 'b', 'n', 'n', 's' ] ); //=> [ 'b', 'a', 'n', 'a', 'n', 'a', 's' ]
  */
@@ -2061,13 +2081,12 @@ export {
  * The iteration is performed with [`reduce`](#reduce) after initializing the
  * transducer.
  *
- * @function module:util.into
- * @category List
+     * @category List
  * @param {*} acc The initial accumulator value.
- * @param {external:function} xf The transducer function. Receives a transformer and returns a transformer.
- * @param {external:Array} list The list to iterate over.
- * @return {*} The final, accumulated value.
- * @see {@link module:util.transduce|transduce}
+ * @param {function} xf The transducer function. Receives a transformer and returns a transformer.
+ * @param {Array} list The list to iterate over.
+ * @returns {*} The final, accumulated value.
+ * @see {@link transduce|transduce}
  * @example
  * import { add, compose, map, into, take } from '@blue/util';
  * const numbers = [ 1, 2, 3, 4 ];
@@ -2084,11 +2103,10 @@ export {
  * Same as [`invertObj`](#invertObj), however this accounts for objects with
  * duplicate values by putting the values into an array.
  *
- * @function module:util.invert
- * @category Object
- * @param {external:Object} obj The object or array to invert
- * @return {external:Object} out A new object with keys in an array.
- * @see {@link module:util.invertObj|invertObj}
+     * @category Object
+ * @param {Object} obj The object or array to invert
+ * @returns {Object} out A new object with keys in an array.
+ * @see {@link invertObj|invertObj}
  * @example
  * const raceResultsByFirstName = {
  *  first: 'alice',
@@ -2105,11 +2123,10 @@ export {
  * values of the given object, which are coerced to strings, as keys. Note
  * that the last key found is preferred when handling the same value.
  *
- * @function module:util.invertObj
- * @category Object
- * @param {external:Object} obj The object or array to invert
- * @return {external:Object} out A new object
- * @see {@link module:util.invert|invert}
+     * @category Object
+ * @param {Object} obj The object or array to invert
+ * @returns {Object} out A new object
+ * @see {@link invert|invert}
  * @example
  * const raceResults = {
  *  first: 'alice',
@@ -2132,12 +2149,11 @@ export {
  * The returned function is curried and accepts `arity + 1` parameters where
  * the final parameter is the target object.
  *
- * @function module:util.invoker
- * @category Function
- * @param {external:number} arity Number of arguments the returned function should take before the target object.
- * @param {external:string} method Name of the method to call.
- * @return {external:function} A new curried function.
- * @see {@link module:util.construct|construct}
+     * @category Function
+ * @param {number} arity Number of arguments the returned function should take before the target object.
+ * @param {string} method Name of the method to call.
+ * @returns {function} A new curried function.
+ * @see {@link construct|construct}
  * @example
  * const sliceFrom = invoker( 1, 'slice' );
  * sliceFrom (6, 'abcdefghijklm' ); //=> 'ghijklm'
@@ -2150,11 +2166,10 @@ export {
  * See if an object (`val`) is an instance of the supplied constructor. This
  * function will check up the inheritance chain, if any.
  *
- * @function module:util.is
- * @category Type
- * @param {external:Object} ctor A constructor
+     * @category Type
+ * @param {Object} ctor A constructor
  * @param {*} val The value to test
- * @return {external:boolean}
+ * @returns {boolean}
  * @example
  * is( Object, {} ); //=> true
  * is( Number, 1 ); //=> true
@@ -2170,10 +2185,9 @@ export {
 /**
  * Checks if the input value is `null` or `undefined`.
  *
- * @function module:util.isNil
- * @category Type
+     * @category Type
  * @param {*} x The value to test.
- * @return {external:boolean} `true` if `x` is `undefined` or `null`, otherwise `false`.
+ * @returns {boolean} `true` if `x` is `undefined` or `null`, otherwise `false`.
  * @example
  * isNil( null ); //=> true
  * isNil( undefined ); //=> true
@@ -2186,12 +2200,11 @@ export {
  * Returns a string made by inserting the `separator` between each element and
  * concatenating all the elements into a single string.
  *
- * @function module:util.join
- * @category List
+     * @category List
  * @param {Number|String} separator The string used to separate the elements.
- * @param {external:Array} xs The elements to join into a string.
- * @return {external:string} str The string made by concatenating `xs` with `separator`.
- * @see {@link module:util.split|split}
+ * @param {Array} xs The elements to join into a string.
+ * @returns {string} str The string made by concatenating `xs` with `separator`.
+ * @see {@link split|split}
  * @example
  * const spacer = join( ' ' );
  * spacer( [ 'a', 2, 3.4 ] );   //=> 'a 2 3.4'
@@ -2202,11 +2215,10 @@ export {
 /**
  * juxt applies a list of functions to a list of values.
  *
- * @function module:util.juxt
- * @category Function
- * @param {external:Array} fns An array of functions
- * @return {external:function} A function that returns a list of values after applying each of the original `fns` to its parameters.
- * @see {@link module:util.applySpec|applySpec}
+     * @category Function
+ * @param {Array} fns An array of functions
+ * @returns {function} A function that returns a list of values after applying each of the original `fns` to its parameters.
+ * @see {@link applySpec|applySpec}
  * @example
  * const getRange = juxt( [ Math.min, Math.max ] );
  * getRange( 3, 4, 9, -3 ); //=> [ -3, 9 ]
@@ -2219,12 +2231,11 @@ export {
  * Note that the order of the output array is not guaranteed to be consistent
  * across different JS platforms.
  *
- * @function module:util.keys
- * @category Object
- * @param {external:Object} obj The object to extract properties from
- * @return {external:Array} An array of the object's own properties.
- * @see {@link module:util.keysIn|keysIn}
- * @see {@link module:util.values|values}
+     * @category Object
+ * @param {Object} obj The object to extract properties from
+ * @returns {Array} An array of the object's own properties.
+ * @see {@link keysIn|keysIn}
+ * @see {@link values|values}
  * @example
  * keys( { a: 1, b: 2, c: 3 } ); //=> [ 'a', 'b', 'c' ]
  */
@@ -2236,12 +2247,11 @@ export {
  * Note that the order of the output array is not guaranteed to be consistent
  * across different JS platforms.
  *
- * @function module:util.keysIn
- * @category Object
- * @param {external:Object} obj The object to extract properties from
- * @return {external:Array} An array of the object's own and prototype properties.
- * @see {@link module:util.keys|keys}
- * @see {@link module:util.valuesIn|valuesIn}
+     * @category Object
+ * @param {Object} obj The object to extract properties from
+ * @returns {Array} An array of the object's own and prototype properties.
+ * @see {@link keys|keys}
+ * @see {@link valuesIn|valuesIn}
  * @example
  * const F = function(){ this.x = 'X'; };
  * F.prototype.y = 'Y';
@@ -2253,14 +2263,13 @@ export {
 /**
  * Returns the last element of the given list or string.
  *
- * @function module:util.last
- * @category List
+     * @category List
  * @sig String -> String
  * @param {*} list
- * @return {*}
- * @see {@link module:util.init|init}
- * @see {@link module:util.head|head}
- * @see {@link module:util.tail|tail}
+ * @returns {*}
+ * @see {@link init|init}
+ * @see {@link head|head}
+ * @see {@link tail|tail}
  * @example
  * last( [ 'fi', 'fo', 'fum' ] ); //=> 'fum'
  * last( [] ); //=> undefined
@@ -2274,12 +2283,11 @@ export {
  * the item is not included in the array. [`R.equals`](#equals) is used to
  * determine equality.
  *
- * @function module:util.lastIndexOf
- * @category List
+     * @category List
  * @param {*} target The item to find.
- * @param {external:Array} xs The array to search in.
- * @return {external:number} the index of the target, or -1 if the target is not found.
- * @see {@link module:util.indexOf|indexOf}
+ * @param {Array} xs The array to search in.
+ * @returns {number} the index of the target, or -1 if the target is not found.
+ * @see {@link indexOf|indexOf}
  * @example
  * lastIndexOf( 3, [ -1, 3, 3, 0, 1, 2, 3, 4 ] ); //=> 6
  * lastIndexOf( 10, [ 1, 2, 3, 4 ] ); //=> -1
@@ -2289,10 +2297,9 @@ export {
 /**
  * Returns the number of elements in the array by returning `list.length`.
  *
- * @function module:util.length
- * @category List
- * @param {external:Array} list The array to inspect.
- * @return {external:number} The length of the array.
+     * @category List
+ * @param {Array} list The array to inspect.
+ * @returns {number} The length of the array.
  * @example
  * length( [] ); //=> 0
  * length( [ 1, 2, 3 ] ); //=> 3
@@ -2304,16 +2311,15 @@ export {
  * the value of the focus; the setter "sets" the value of the focus. The setter
  * should not mutate the data structure.
  *
- * @function module:util.lens
- * @category Object
- * @param {external:function} getter
- * @param {external:function} setter
- * @return {Lens}
- * @see {@link module:util.view|view}
- * @see {@link module:util.set|set}
- * @see {@link module:util.over|over}
- * @see {@link module:util.lensIndex|lensIndex}
- * @see {@link module:util.lensProp|lensProp}
+     * @category Object
+ * @param {function} getter
+ * @param {function} setter
+ * @returns {Lens}
+ * @see {@link view|view}
+ * @see {@link set|set}
+ * @see {@link over|over}
+ * @see {@link lensIndex|lensIndex}
+ * @see {@link lensProp|lensProp}
  * @example
  * import { assoc, lens, negate, over, prop, set, view } from '@blue/util';
  * const xLens = lens( prop( 'x' ), assoc( 'x' ) );
@@ -2326,14 +2332,13 @@ export {
 /**
  * Returns a lens whose focus is the specified index.
  *
- * @function module:util.lensIndex
- * @category Object
- * @param {external:number} n
- * @return {Lens}
- * @see {@link module:util.view|view}
- * @see {@link module:util.set|set}
- * @see {@link module:util.over|over}
- * @see {@link module:util.nth|nth}
+     * @category Object
+ * @param {number} n
+ * @returns {Lens}
+ * @see {@link view|view}
+ * @see {@link set|set}
+ * @see {@link over|over}
+ * @see {@link nth|nth}
  * @example
  * import { lensIndex, over, set, toUpper, view } from '@blue/util';
  * const headLens = lensIndex( 0 );
@@ -2346,13 +2351,12 @@ export {
 /**
  * Returns a lens whose focus is the specified path.
  *
- * @function module:util.lensPath
- * @category Object
- * @param {external:Array} path The path to use.
- * @return {Lens}
- * @see {@link module:util.view|view}
- * @see {@link module:util.set|set}
- * @see {@link module:util.over|over}
+     * @category Object
+ * @param {Array} path The path to use.
+ * @returns {Lens}
+ * @see {@link view|view}
+ * @see {@link set|set}
+ * @see {@link over|over}
  * @example
  * import { lensPath, negate, over, set, view } from '@blue/util';
  * const xHeadYLens = lensPath( [ 'x', 0, 'y' ] );
@@ -2369,13 +2373,12 @@ export {
 /**
  * Returns a lens whose focus is the specified property.
  *
- * @function module:util.lensProp
- * @category Object
- * @param {external:string} k
- * @return {Lens}
- * @see {@link module:util.view|view}
- * @see {@link module:util.set|set}
- * @see {@link module:util.over|over}
+     * @category Object
+ * @param {string} k
+ * @returns {Lens}
+ * @see {@link view|view}
+ * @see {@link set|set}
+ * @see {@link over|over}
  * @example
  * import { lensProp, negate, over, set, view } from '@blue/util';
  * const xLens = lensProp( 'x' );
@@ -2389,11 +2392,10 @@ export {
  * "lifts" a function of arity > 1 so that it may "map over" a list, Function or other
  * object that satisfies the [FantasyLand Apply spec](https://github.com/fantasyland/fantasy-land#apply).
  *
- * @function module:util.lift
- * @category Function
- * @param {external:function} fn The function to lift into higher context
- * @return {external:function} The lifted function.
- * @see {@link module:util.liftN|liftN}
+     * @category Function
+ * @param {function} fn The function to lift into higher context
+ * @returns {function} The lifted function.
+ * @see {@link liftN|liftN}
  * @example
  * const madd3 = lift( ( a, b, c ) => a + b + c );
  * madd3( [ 1, 2, 3 ], [ 1, 2, 3 ], [ 1 ] ); //=> [ 3, 4, 5, 4, 5, 6, 5, 6, 7 ]
@@ -2406,12 +2408,11 @@ export {
  * "lifts" a function to be the specified arity, so that it may "map over" that
  * many lists, Functions or other objects that satisfy the [FantasyLand Apply spec](https://github.com/fantasyland/fantasy-land#apply).
  *
- * @function module:util.liftN
- * @category Function
- * @param {external:function} fn The function to lift into higher context
- * @return {external:function} The lifted function.
- * @see {@link module:util.lift|lift}
- * @see {@link module:util.ap|ap}
+     * @category Function
+ * @param {function} fn The function to lift into higher context
+ * @returns {function} The lifted function.
+ * @see {@link lift|lift}
+ * @see {@link ap|ap}
  * @example
  * import { liftN, sum } from '@blue/util';
  * const madd3 = liftN( 3, ( ...args ) => sum( args ) );
@@ -2422,12 +2423,11 @@ export {
 /**
  * Returns `true` if the first argument is less than the second; `false` otherwise.
  *
- * @function module:util.lt
- * @category Relation
+     * @category Relation
  * @param {*} a
  * @param {*} b
- * @return {external:boolean}
- * @see {@link module:util.gt|gt}
+ * @returns {boolean}
+ * @see {@link gt|gt}
  * @example
  * lt( 2, 1 ); //=> false
  * lt( 2, 2 ); //=> false
@@ -2441,12 +2441,11 @@ export {
  * Returns `true` if the first argument is less than or equal to the second;
  * `false` otherwise.
  *
- * @function module:util.lte
- * @category Relation
- * @param {external:number} a
- * @param {external:number} b
- * @return {external:boolean}
- * @see {@link module:util.gte|gte}
+     * @category Relation
+ * @param {number} a
+ * @param {number} b
+ * @returns {boolean}
+ * @see {@link gte|gte}
  * @example
  * lte( 2, 1 ); //=> false
  * lte( 2, 2 ); //=> true
@@ -2471,13 +2470,12 @@ export {
  *
  * Also treats functions as functors and will compose them together.
  *
- * @function module:util.map
- * @category List
- * @param {external:function} fn The function to be called on every element of the input `list`.
- * @param {external:Array} list The list to be iterated over.
- * @return {external:Array} The new list.
- * @see {@link module:util.transduce|transduce}
- * @see {@link module:util.addIndex|addIndex}
+     * @category List
+ * @param {function} fn The function to be called on every element of the input `list`.
+ * @param {Array} list The list to be iterated over.
+ * @returns {Array} The new list.
+ * @see {@link transduce|transduce}
+ * @see {@link addIndex|addIndex}
  * @example
  * const double = x => x * 2;
  * map( double, [ 1, 2, 3 ] ); //=> [ 2, 4, 6 ]
@@ -2494,15 +2492,14 @@ export {
  * The iterator function receives two arguments, *acc* and *value*, and should
  * return a tuple *[acc, value]*.
  *
- * @function module:util.mapAccum
- * @category List
- * @param {external:function} fn The function to be called on every element of the input `list`.
+     * @category List
+ * @param {function} fn The function to be called on every element of the input `list`.
  * @param {*} acc The accumulator value.
- * @param {external:Array} list The list to iterate over.
- * @return {*} The final, accumulated value.
- * @see {@link module:util.scan|scan}
- * @see {@link module:util.addIndex|addIndex}
- * @see {@link module:util.mapAccumRight|mapAccumRight}
+ * @param {Array} list The list to iterate over.
+ * @returns {*} The final, accumulated value.
+ * @see {@link scan|scan}
+ * @see {@link addIndex|addIndex}
+ * @see {@link mapAccumRight|mapAccumRight}
  * @example
  * const digits = [ '1', '2', '3', '4' ];
  * const appender = ( a, b ) => [ a + b, a + b ];
@@ -2522,14 +2519,13 @@ export {
  * The iterator function receives two arguments, *acc* and *value*, and should
  * return a tuple *[acc, value]*.
  *
- * @function module:util.mapAccumRight
- * @category List
- * @param {external:function} fn The function to be called on every element of the input `list`.
+     * @category List
+ * @param {function} fn The function to be called on every element of the input `list`.
  * @param {*} acc The accumulator value.
- * @param {external:Array} list The list to iterate over.
- * @return {*} The final, accumulated value.
- * @see {@link module:util.addIndex|addIndex}
- * @see {@link module:util.mapAccum|mapAccum}
+ * @param {Array} list The list to iterate over.
+ * @returns {*} The final, accumulated value.
+ * @see {@link addIndex|addIndex}
+ * @see {@link mapAccum|mapAccum}
  * @example
  * const digits = [ '1', '2', '3', '4' ];
  * const appender = ( a, b ) => [ b + a, b + a ];
@@ -2542,12 +2538,11 @@ export {
  * arguments: *(value, key, obj)*. If only the value is significant, use
  * [`map`](#map) instead.
  *
- * @function module:util.mapObjIndexed
- * @category Object
- * @param {external:function} fn
- * @param {external:Object} obj
- * @return {external:Object}
- * @see {@link module:util.map|map}
+     * @category Object
+ * @param {function} fn
+ * @param {Object} obj
+ * @returns {Object}
+ * @see {@link map|map}
  * @example
  * const xyz = { x: 1, y: 2, z: 3 };
  * const prependKeyAndDouble = ( num, key, obj ) => key + ( num * 2 );
@@ -2561,12 +2556,11 @@ export {
  * [`String.prototype.match`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/match)
  * which returns `null` when there are no matches.
  *
- * @function module:util.match
- * @category String
+     * @category String
  * @param {RegExp} rx A regular expression.
- * @param {external:string} str The string to match against
- * @return {external:Array} The list of matches or empty array.
- * @see {@link module:util.test|test}
+ * @param {string} str The string to match against
+ * @returns {Array} The list of matches or empty array.
+ * @see {@link test|test}
  * @example
  * match( /([a-z]a)/g, 'bananas' ); //=> [ 'ba', 'na', 'na' ]
  * match( /a/, 'b' ); //=> []
@@ -2580,12 +2574,11 @@ export {
  * `-17 % 5` is `-2`, `mathMod(-17, 5)` is `3`. `mathMod` requires Integer
  * arguments, and returns NaN when the modulus is zero or negative.
  *
- * @function module:util.mathMod
- * @category Math
- * @param {external:number} m The dividend.
- * @param {external:number} p the modulus.
- * @return {external:number} The result of `b mod a`.
- * @see {@link module:util.modulo|modulo}
+     * @category Math
+ * @param {number} m The dividend.
+ * @param {number} p the modulus.
+ * @returns {number} The result of `b mod a`.
+ * @see {@link modulo|modulo}
  * @example
  * import { __, mathMod } from '@blue/util';
  * mathMod( -17, 5 );  //=> 3
@@ -2609,13 +2602,12 @@ export {
 /**
  * Returns the larger of its two arguments.
  *
- * @function module:util.max
- * @category Relation
+     * @category Relation
  * @param {*} a
  * @param {*} b
- * @return {*}
- * @see {@link module:util.maxBy|maxBy}
- * @see {@link module:util.min|min}
+ * @returns {*}
+ * @see {@link maxBy|maxBy}
+ * @see {@link min|min}
  * @example
  * max( 789, 123 ); //=> 789
  * max( 'a', 'b' ); //=> 'b'
@@ -2626,14 +2618,13 @@ export {
  * Takes a function and two values, and returns whichever value produces the
  * larger result when passed to the provided function.
  *
- * @function module:util.maxBy
- * @category Relation
- * @param {external:function} f
+     * @category Relation
+ * @param {function} f
  * @param {*} a
  * @param {*} b
- * @return {*}
- * @see {@link module:util.max|max}
- * @see {@link module:util.minBy|minBy}
+ * @returns {*}
+ * @see {@link max|max}
+ * @see {@link minBy|minBy}
  * @example
  * import { maxBy, reduce } from '@blue/util';
  * //  square :: Number -> Number
@@ -2647,11 +2638,10 @@ export {
 /**
  * Returns the mean of the given list of numbers.
  *
- * @function module:util.mean
- * @category Math
- * @param {external:Array} list
- * @return {external:number}
- * @see {@link module:util.median|median}
+     * @category Math
+ * @param {Array} list
+ * @returns {number}
+ * @see {@link median|median}
  * @example
  * mean( [ 2, 7, 9 ] ); //=> 6
  * mean( [] ); //=> NaN
@@ -2661,11 +2651,10 @@ export {
 /**
  * Returns the median of the given list of numbers.
  *
- * @function module:util.median
- * @category Math
- * @param {external:Array} list
- * @return {external:number}
- * @see {@link module:util.mean|mean}
+     * @category Math
+ * @param {Array} list
+ * @returns {number}
+ * @see {@link mean|mean}
  * @example
  * median( [ 2, 9, 7 ] ); //=> 7
  * median( [ 7, 2, 10, 9 ] ); //=> 8
@@ -2681,11 +2670,10 @@ export {
  * returned.
  *
  *
- * @function module:util.memoizeWith
- * @category Function
- * @param {external:function} fn The function to generate the cache key.
- * @param {external:function} fn The function to memoize.
- * @return {external:function} Memoized version of `fn`.
+     * @category Function
+ * @param {function} fn The function to generate the cache key.
+ * @param {function} fn The function to memoize.
+ * @returns {function} Memoized version of `fn`.
  * @example
  * import { identity, memoizeWith, product, range } from '@blue/util';
  * let count = 0;
@@ -2703,11 +2691,10 @@ export {
 /**
  * Merges a list of objects together into one object.
  *
- * @function module:util.mergeAll
- * @category List
- * @param {external:Array} list An array of objects
- * @return {external:Object} A merged object.
- * @see {@link module:util.reduce|reduce}
+     * @category List
+ * @param {Array} list An array of objects
+ * @returns {Object} A merged object.
+ * @see {@link reduce|reduce}
  * @example
  * mergeAll( [ { foo: 1 }, { bar: 2 }, { baz: 3 } ] ); //=> { foo: 1, bar: 2, baz: 3 }
  * mergeAll( [ { foo: 1 }, { foo: 2 }, { bar: 2 } ] ); //=> { foo: 2, bar: 2 }
@@ -2720,15 +2707,14 @@ export {
  * - and both values are objects, the two values will be recursively merged
  * - otherwise the value from the first object will be used.
  *
- * @function module:util.mergeDeepLeft
- * @category Object
- * @param {external:Object} lObj
- * @param {external:Object} rObj
- * @return {external:Object}
- * @see {@link module:util.merge|merge}
- * @see {@link module:util.mergeDeepRight|mergeDeepRight}
- * @see {@link module:util.mergeDeepWith|mergeDeepWith}
- * @see {@link module:util.mergeDeepWithKey|mergeDeepWithKey}
+     * @category Object
+ * @param {Object} lObj
+ * @param {Object} rObj
+ * @returns {Object}
+ * @see {@link merge|merge}
+ * @see {@link mergeDeepRight|mergeDeepRight}
+ * @see {@link mergeDeepWith|mergeDeepWith}
+ * @see {@link mergeDeepWithKey|mergeDeepWithKey}
  * @example
  * mergeDeepLeft(
  *  { name: 'fred', age: 10, contact: { email: 'moo@example.com' } },
@@ -2744,15 +2730,14 @@ export {
  * - and both values are objects, the two values will be recursively merged
  * - otherwise the value from the second object will be used.
  *
- * @function module:util.mergeDeepRight
- * @category Object
- * @param {external:Object} lObj
- * @param {external:Object} rObj
- * @return {external:Object}
- * @see {@link module:util.merge|merge}
- * @see {@link module:util.mergeDeepLeft|mergeDeepLeft}
- * @see {@link module:util.mergeDeepWith|mergeDeepWith}
- * @see {@link module:util.mergeDeepWithKey|mergeDeepWithKey}
+     * @category Object
+ * @param {Object} lObj
+ * @param {Object} rObj
+ * @returns {Object}
+ * @see {@link merge|merge}
+ * @see {@link mergeDeepLeft|mergeDeepLeft}
+ * @see {@link mergeDeepWith|mergeDeepWith}
+ * @see {@link mergeDeepWithKey|mergeDeepWithKey}
  * @example
  * mergeDeepRight(
  *  { name: 'fred', age: 10, contact: { email: 'moo@example.com' } },
@@ -2772,14 +2757,13 @@ export {
  * If a key only exists in one object, the value will be associated with the key
  * of the resulting object.
  *
- * @function module:util.mergeDeepWith
- * @category Object
- * @param {external:function} fn
- * @param {external:Object} lObj
- * @param {external:Object} rObj
- * @return {external:Object}
- * @see {@link module:util.mergeWith|mergeWith}
- * @see {@link module:util.mergeDeepWithKey|mergeDeepWithKey}
+     * @category Object
+ * @param {function} fn
+ * @param {Object} lObj
+ * @param {Object} rObj
+ * @returns {Object}
+ * @see {@link mergeWith|mergeWith}
+ * @see {@link mergeDeepWithKey|mergeDeepWithKey}
  * @example
  * import { concat, mergeDeepWith } from '@blue/util';
  * mergeDeepWith( concat,
@@ -2800,14 +2784,13 @@ export {
  * If a key only exists in one object, the value will be associated with the key
  * of the resulting object.
  *
- * @function module:util.mergeDeepWithKey
- * @category Object
- * @param {external:function} fn
- * @param {external:Object} lObj
- * @param {external:Object} rObj
- * @return {external:Object}
- * @see {@link module:util.mergeWithKey|mergeWithKey}
- * @see {@link module:util.mergeDeepWith|mergeDeepWith}
+     * @category Object
+ * @param {function} fn
+ * @param {Object} lObj
+ * @param {Object} rObj
+ * @returns {Object}
+ * @see {@link mergeWithKey|mergeWithKey}
+ * @see {@link mergeDeepWith|mergeDeepWith}
  * @example
  * import { concat, mergeDeepWith } from '@blue/util';
  * let concatValues = ( k, l, r ) => k == 'values' ? concat( l, r ) : r
@@ -2824,15 +2807,14 @@ export {
  * the own properties of the second object. If a key exists in both objects,
  * the value from the first object will be used.
  *
- * @function module:util.mergeLeft
- * @category Object
- * @param {external:Object} l
- * @param {external:Object} r
- * @return {external:Object}
- * @see {@link module:util.mergeRight|mergeRight}
- * @see {@link module:util.mergeDeepLeft|mergeDeepLeft}
- * @see {@link module:util.mergeWith|mergeWith}
- * @see {@link module:util.mergeWithKey|mergeWithKey}
+     * @category Object
+ * @param {Object} l
+ * @param {Object} r
+ * @returns {Object}
+ * @see {@link mergeRight|mergeRight}
+ * @see {@link mergeDeepLeft|mergeDeepLeft}
+ * @see {@link mergeWith|mergeWith}
+ * @see {@link mergeWithKey|mergeWithKey}
  * @example
  * mergeLeft( { 'age': 40 }, { 'name': 'fred', 'age': 10 } );
  * //=> { 'name': 'fred', 'age': 40 }
@@ -2848,15 +2830,14 @@ export {
  * the own properties of the second object. If a key exists in both objects,
  * the value from the second object will be used.
  *
- * @function module:util.mergeRight
- * @category Object
- * @param {external:Object} l
- * @param {external:Object} r
- * @return {external:Object}
- * @see {@link module:util.mergeLeft|mergeLeft}
- * @see {@link module:util.mergeDeepRight|mergeDeepRight}
- * @see {@link module:util.mergeWith|mergeWith}
- * @see {@link module:util.mergeWithKey|mergeWithKey}
+     * @category Object
+ * @param {Object} l
+ * @param {Object} r
+ * @returns {Object}
+ * @see {@link mergeLeft|mergeLeft}
+ * @see {@link mergeDeepRight|mergeDeepRight}
+ * @see {@link mergeWith|mergeWith}
+ * @see {@link mergeWithKey|mergeWithKey}
  * @example
  * mergeRight( { 'name': 'fred', 'age': 10 }, { 'age': 40 } );
  * //=> { 'name': 'fred', 'age': 40 }
@@ -2872,15 +2853,14 @@ export {
  * associated with the key in each object, with the result being used as the
  * value associated with the key in the returned object.
  *
- * @function module:util.mergeWith
- * @category Object
- * @param {external:function} fn
- * @param {external:Object} l
- * @param {external:Object} r
- * @return {external:Object}
- * @see {@link module:util.mergeDeepWith|mergeDeepWith}
- * @see {@link module:util.merge|merge}
- * @see {@link module:util.mergeWithKey|mergeWithKey}
+     * @category Object
+ * @param {function} fn
+ * @param {Object} l
+ * @param {Object} r
+ * @returns {Object}
+ * @see {@link mergeDeepWith|mergeDeepWith}
+ * @see {@link merge|merge}
+ * @see {@link mergeWithKey|mergeWithKey}
  * @example
  * import { concat, mergeWith } from '@blue/util';
  * mergeWith( concat,
@@ -2901,14 +2881,13 @@ export {
  * If a key only exists in one object, the value will be associated with the key
  * of the resulting object.
  *
- * @function module:util.mergeWithKey
- * @category Object
- * @param {external:function} fn
- * @param {external:Object} lObj
- * @param {external:Object} rObj
- * @return {external:Object}
- * @see {@link module:util.mergeWithKey|mergeWithKey}
- * @see {@link module:util.mergeDeepWith|mergeDeepWith}
+     * @category Object
+ * @param {function} fn
+ * @param {Object} lObj
+ * @param {Object} rObj
+ * @returns {Object}
+ * @see {@link mergeWithKey|mergeWithKey}
+ * @see {@link mergeDeepWith|mergeDeepWith}
  * @example
  * import { concat, mergeWith } from '@blue/util';
  * let concatValues = ( k, l, r ) => k == 'values' ? concat( l, r ) : r
@@ -2923,13 +2902,12 @@ export {
 /**
  * Returns the smaller of its two arguments.
  *
- * @function module:util.min
- * @category Relation
+     * @category Relation
  * @param {*} a
  * @param {*} b
- * @return {*}
- * @see {@link module:util.minBy|minBy}
- * @see {@link module:util.max|max}
+ * @returns {*}
+ * @see {@link minBy|minBy}
+ * @see {@link max|max}
  * @example
  * min( 789, 123 ); //=> 123
  * min( 'a', 'b' ); //=> 'a'
@@ -2940,14 +2918,13 @@ export {
  * Takes a function and two values, and returns whichever value produces the
  * smaller result when passed to the provided function.
  *
- * @function module:util.minBy
- * @category Relation
- * @param {external:function} f
+     * @category Relation
+ * @param {function} f
  * @param {*} a
  * @param {*} b
- * @return {*}
- * @see {@link module:util.min|min}
- * @see {@link module:util.maxBy|maxBy}
+ * @returns {*}
+ * @see {@link min|min}
+ * @see {@link maxBy|maxBy}
  * @example
  * import { minBy, reduce } from '@blue/util';
  * //  square :: Number -> Number
@@ -2963,12 +2940,11 @@ export {
  * that this function preserves the JavaScript-style behavior for modulo. For
  * mathematical modulo see [`mathMod`](#mathMod).
  *
- * @function module:util.modulo
- * @category Math
- * @param {external:number} a The value to the divide.
- * @param {external:number} b The pseudo-modulus
- * @return {external:number} The result of `b % a`.
- * @see {@link module:util.mathMod|mathMod}
+     * @category Math
+ * @param {number} a The value to the divide.
+ * @param {number} b The pseudo-modulus
+ * @returns {number} The result of `b % a`.
+ * @see {@link mathMod|mathMod}
  * @example
  * import { __, modulo } from '@blue/util';
  * modulo( 17, 3 );
@@ -2990,12 +2966,11 @@ export {
 /**
  * Multiplies two numbers. Equivalent to `a * b` but curried.
  *
- * @function module:util.multiply
- * @category Math
- * @param {external:number} a The first value.
- * @param {external:number} b The second value.
- * @return {external:number} The result of `a * b`.
- * @see {@link module:util.divide|divide}
+     * @category Math
+ * @param {number} a The first value.
+ * @param {number} b The second value.
+ * @returns {number} The result of `a * b`.
+ * @see {@link divide|divide}
  * @example
  * const double = multiply( 2 );
  * const triple = multiply( 3 );
@@ -3013,13 +2988,12 @@ export {
  * exactly `n` parameters. Any extraneous parameters will not be passed to the
  * supplied function.
  *
- * @function module:util.nAry
- * @category Function
- * @param {external:number} n The desired arity of the new function.
- * @param {external:function} fn The function to wrap.
- * @return {external:function} A new function wrapping `fn`. The new function is guaranteed to be of arity `n`.
- * @see {@link module:util.binary|binary}
- * @see {@link module:util.unary|unary}
+     * @category Function
+ * @param {number} n The desired arity of the new function.
+ * @param {function} fn The function to wrap.
+ * @returns {function} A new function wrapping `fn`. The new function is guaranteed to be of arity `n`.
+ * @see {@link binary|binary}
+ * @see {@link unary|unary}
  * @example
  * const takesTwoArgs = ( a, b ) => [ a, b ];
  *
@@ -3040,10 +3014,9 @@ export {
 /**
  * Negates its argument.
  *
- * @function module:util.negate
- * @category Math
- * @param {external:number} n
- * @return {external:number}
+     * @category Math
+ * @param {number} n
+ * @returns {number}
  * @example
  * negate( 42 );
  * //=> -42
@@ -3058,13 +3031,12 @@ export {
  *
  * Acts as a transducer if a transformer is given in list position.
  *
- * @function module:util.none
- * @category List
- * @param {external:function} fn The predicate function.
- * @param {external:Array} list The array to consider.
- * @return {external:boolean} `true` if the predicate is not satisfied by every element, `false` otherwise.
- * @see {@link module:util.all|all}
- * @see {@link module:util.any|any}
+     * @category List
+ * @param {function} fn The predicate function.
+ * @param {Array} list The array to consider.
+ * @returns {boolean} `true` if the predicate is not satisfied by every element, `false` otherwise.
+ * @see {@link all|all}
+ * @see {@link any|any}
  * @example
  * const isEven = n => n % 2 === 0;
  * const isOdd = n => n % 2 === 1;
@@ -3079,11 +3051,10 @@ export {
  * A function that returns the `!` of its argument. It will return `true` when
  * passed false-y value, and `false` when passed a truth-y one.
  *
- * @function module:util.not
- * @category Logic
+     * @category Logic
  * @param {*} a any value
- * @return {external:boolean} the logical inverse of passed argument.
- * @see {@link module:util.complement|complement}
+ * @returns {boolean} the logical inverse of passed argument.
+ * @see {@link complement|complement}
  * @example
  * not( true );
  * //=> false
@@ -3100,11 +3071,10 @@ export {
  * Returns the nth element of the given list or string. If n is negative the
  * element at index length + n is returned.
  *
- * @function module:util.nth
- * @category List
- * @param {external:number} offset
+     * @category List
+ * @param {number} offset
  * @param {*} list
- * @return {*}
+ * @returns {*}
  * @example
  * const list = [ 'foo', 'bar', 'baz', 'quux' ];
  * nth( 1, list );
@@ -3124,10 +3094,9 @@ export {
 /**
  * Returns a function which returns its nth argument.
  *
- * @function module:util.nthArg
- * @category Function
- * @param {external:number} n
- * @return {external:function}
+     * @category Function
+ * @param {number} n
+ * @returns {function}
  * @example
  * nthArg( 1 )( 'a', 'b', 'c' );
  * //=> 'b'
@@ -3144,13 +3113,12 @@ export {
  * limited to accepting only 2 unary functions. The name o was chosen because
  * of its similarity to the mathematical composition operator ∘.
  *
- * @function module:util.o
- * @category Function
- * @param {external:function} f
- * @param {external:function} g
- * @return {external:function}
- * @see {@link module:util.compose|compose}
- * @see {@link module:util.pipe|pipe}
+     * @category Function
+ * @param {function} f
+ * @param {function} g
+ * @returns {function}
+ * @see {@link compose|compose}
+ * @see {@link pipe|pipe}
  * @example
  * import { add, multiply, o, toUpper } from '@blue/util';
  * const classyGreeting = ( name ) => `The name's ${ name.last }, ${ name.first } ${ name.last }`;
@@ -3163,12 +3131,11 @@ export {
 /**
  * Creates an object containing a single key:value pair.
  *
- * @function module:util.objOf
- * @category Object
- * @param {external:string} key
+     * @category Object
+ * @param {string} key
  * @param {*} val
- * @return {external:Object}
- * @see {@link module:util.pair|pair}
+ * @returns {Object}
+ * @see {@link pair|pair}
  * @example
  * import { compose, map, objOf } from '@blue/util';
  * const matchPhrases = compose(
@@ -3186,10 +3153,9 @@ export {
  * Note this `of` is different from the ES6 `of`; See
  * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/of
  *
- * @function module:util.of
- * @category Function
+     * @category Function
  * @param {*} x any value
- * @return {external:Array} An array wrapping `x`.
+ * @returns {Array} An array wrapping `x`.
  * @example
  * of( null );
  * //=> [ null ]
@@ -3201,12 +3167,11 @@ export {
 /**
  * Returns a partial copy of an object omitting the keys specified.
  *
- * @function module:util.omit
- * @category Object
- * @param {external:Array} names an array of String property names to omit from the new object
- * @param {external:Object} obj The object to copy from
- * @return {external:Object} A new object with properties from `names` not on it.
- * @see {@link module:util.pick|pick}
+     * @category Object
+ * @param {Array} names an array of String property names to omit from the new object
+ * @param {Object} obj The object to copy from
+ * @returns {Object} A new object with properties from `names` not on it.
+ * @see {@link pick|pick}
  * @example
  * omit( [ 'a', 'd' ], { a: 1, b: 2, c: 3, d: 4 } );
  * //=> { b: 2, c: 3 }
@@ -3219,10 +3184,9 @@ export {
  * the returned function is invoked. The first value calculated is returned in
  * subsequent invocations.
  *
- * @function module:util.once
- * @category Function
- * @param {external:function} fn The function to wrap in a call-only-once wrapper.
- * @return {external:function} The wrapped function.
+     * @category Function
+ * @param {function} fn The function to wrap in a call-only-once wrapper.
+ * @returns {function} The wrapped function.
  * @example
  * const addOneOnce = once( x => x + 1 );
  * addOneOnce( 10 );
@@ -3236,12 +3200,11 @@ export {
  * Returns `true` if one or both of its arguments are `true`. Returns `false`
  * if both arguments are `false`.
  *
- * @function module:util.or
- * @category Logic
+     * @category Logic
  * @param {Any} a
  * @param {Any} b
- * @return {Any} the first argument if truthy, otherwise the second argument.
- * @see {@link module:util.either|either}
+ * @returns {Any} the first argument if truthy, otherwise the second argument.
+ * @see {@link either|either}
  * @example
  * or( true, true );
  * //=> true
@@ -3259,12 +3222,11 @@ export {
  * a failed promise. This is useful for handling rejected promises
  * inside function compositions.
  *
- * @function module:util.otherwise
- * @category Function
- * @param {external:function} onFailure The function to apply. Can return a value or a promise of a value.
- * @param {external:Promise} p
- * @return {external:Promise} The result of calling `p.then(null, onFailure)`
- * @see {@link module:util.then|then}
+     * @category Function
+ * @param {function} onFailure The function to apply. Can return a value or a promise of a value.
+ * @param {Promise} p
+ * @returns {Promise} The result of calling `p.then(null, onFailure)`
+ * @see {@link then|then}
  * @example
  * import { otherwise, pick, pipe, then } from '@blue/util';
  * const failedFetch = ( id ) => Promise.reject( 'bad ID' );
@@ -3284,15 +3246,14 @@ export {
  * focused by the given lens to the result of applying the given function to
  * the focused value.
  *
- * @function module:util.over
- * @category Object
+     * @category Object
  * @param {Lens} lens
  * @param {*} v
  * @param {*} x
- * @return {*}
- * @see {@link module:util.prop|prop}
- * @see {@link module:util.lensIndex|lensIndex}
- * @see {@link module:util.lensProp|lensProp}
+ * @returns {*}
+ * @see {@link prop|prop}
+ * @see {@link lensIndex|lensIndex}
+ * @see {@link lensProp|lensProp}
  * @example
  * import { lensIndex, over, toUpper } from '@blue/util';
  * const headLens = lensIndex( 0 );
@@ -3304,13 +3265,12 @@ export {
 /**
  * Takes two arguments, `fst` and `snd`, and returns `[fst, snd]`.
  *
- * @function module:util.pair
- * @category List
+     * @category List
  * @param {*} fst
  * @param {*} snd
- * @return {external:Array}
- * @see {@link module:util.objOf|objOf}
- * @see {@link module:util.of|of}
+ * @returns {Array}
+ * @see {@link objOf|objOf}
+ * @see {@link of|of}
  * @example
  * pair( 'foo', 'bar' );
  * //=> [ 'foo', 'bar' ]
@@ -3322,13 +3282,12 @@ export {
  * When applied, `g` returns the result of applying `f` to the arguments
  * provided initially followed by the arguments provided to `g`.
  *
- * @function module:util.partial
- * @category Function
- * @param {external:function} f
- * @param {external:Array} args
- * @return {external:function}
- * @see {@link module:util.partialRight|partialRight}
- * @see {@link module:util.curry|curry}
+     * @category Function
+ * @param {function} f
+ * @param {Array} args
+ * @returns {function}
+ * @see {@link partialRight|partialRight}
+ * @see {@link curry|curry}
  * @example
  * const multiply2 = ( a, b ) => a * b;
  * const double = partial( multiply2, [ 2 ] );
@@ -3348,12 +3307,11 @@ export {
  * When applied, `g` returns the result of applying `f` to the arguments
  * provided to `g` followed by the arguments provided initially.
  *
- * @function module:util.partialRight
- * @category Function
- * @param {external:function} f
- * @param {external:Array} args
- * @return {external:function}
- * @see {@link module:util.partial|partial}
+     * @category Function
+ * @param {function} f
+ * @param {Array} args
+ * @returns {function}
+ * @see {@link partial|partial}
  * @example
  * const greet = ( salutation, title, firstName, lastName ) => `${ salutation }, ${ title } ${ firstName } ${ lastName }!`;
  *
@@ -3369,13 +3327,12 @@ export {
  * satisfy, the predicate, respectively. Filterable objects include plain objects or any object
  * that has a filter method such as `Array`.
  *
- * @function module:util.partition
- * @category List
- * @param {external:function} pred A predicate to determine which side the element belongs to.
- * @param {external:Array} filterable the list (or other filterable) to partition.
- * @return {external:Array} An array, containing first the subset of elements that satisfy the predicate, and second the subset of elements that do not satisfy.
- * @see {@link module:util.filter|filter}
- * @see {@link module:util.reject|reject}
+     * @category List
+ * @param {function} pred A predicate to determine which side the element belongs to.
+ * @param {Array} filterable the list (or other filterable) to partition.
+ * @returns {Array} An array, containing first the subset of elements that satisfy the predicate, and second the subset of elements that do not satisfy.
+ * @see {@link filter|filter}
+ * @see {@link reject|reject}
  * @example
  * import { includes, partition } from '@blue/util';
  * partition( includes( 's' ), [ 'sss', 'ttt', 'foo', 'bars' ] );
@@ -3389,13 +3346,12 @@ export {
 /**
  * Retrieve the value at a given path.
  *
- * @function module:util.path
- * @category Object
- * @param {external:Array} path The path to use.
- * @param {external:Object} obj The object to retrieve the nested property from.
- * @return {*} The data at `path`.
- * @see {@link module:util.prop|prop}
- * @see {@link module:util.nth|nth}
+     * @category Object
+ * @param {Array} path The path to use.
+ * @param {Object} obj The object to retrieve the nested property from.
+ * @returns {*} The data at `path`.
+ * @see {@link prop|prop}
+ * @see {@link nth|nth}
  * @example
  * path( [ 'a', 'b' ], { a: { b: 2 } } );
  * //=> 2
@@ -3412,12 +3368,11 @@ export {
  * Determines whether a nested path on an object has a specific value, in
  * [`equals`](#equals) terms. Most likely used to filter a list.
  *
- * @function module:util.pathEq
- * @category Relation
- * @param {external:Array} path The path of the nested property to use
+     * @category Relation
+ * @param {Array} path The path of the nested property to use
  * @param {*} val The value to compare the nested property with
- * @param {external:Object} obj The object to check the nested property in
- * @return {external:boolean} `true` if the value equals the nested object property, `false` otherwise.
+ * @param {Object} obj The object to check the nested property in
+ * @returns {boolean} `true` if the value equals the nested object property, `false` otherwise.
  * @example
  * import { filter, pathEq } from '@blue/util';
  * const user1 = { address: { zipCode: 90210 } };
@@ -3434,12 +3389,11 @@ export {
  * If the given, non-null object has a value at the given path, returns the
  * value at that path. Otherwise returns the provided default value.
  *
- * @function module:util.pathOr
- * @category Object
+     * @category Object
  * @param {*} d The default value.
- * @param {external:Array} p The path to use.
- * @param {external:Object} obj The object to retrieve the nested property from.
- * @return {*} The data at `path` of the supplied object or the default value.
+ * @param {Array} p The path to use.
+ * @param {Object} obj The object to retrieve the nested property from.
+ * @returns {*} The data at `path` of the supplied object or the default value.
  * @example
  * pathOr( 'N/A', [ 'a', 'b' ], { a: { b: 2 } } );
  * //=> 2
@@ -3452,14 +3406,13 @@ export {
  * Returns `true` if the specified object property at given path satisfies the
  * given predicate; `false` otherwise.
  *
- * @function module:util.pathSatisfies
- * @category Logic
- * @param {external:function} pred
- * @param {external:Array} propPath
+     * @category Logic
+ * @param {function} pred
+ * @param {Array} propPath
  * @param {*} obj
- * @return {external:boolean}
- * @see {@link module:util.propSatisfies|propSatisfies}
- * @see {@link module:util.path|path}
+ * @returns {boolean}
+ * @see {@link propSatisfies|propSatisfies}
+ * @see {@link path|path}
  * @example
  * pathSatisfies( ( y ) => y > 0, [ 'x', 'y' ], { x: { y: 2 } } );
  * //=> true
@@ -3470,13 +3423,12 @@ export {
  * Returns a partial copy of an object containing only the keys specified. If
  * the key does not exist, the property is ignored.
  *
- * @function module:util.pick
- * @category Object
- * @param {external:Array} names an array of String property names to copy onto a new object
- * @param {external:Object} obj The object to copy from
- * @return {external:Object} A new object with only properties from `names` on it.
- * @see {@link module:util.omit|omit}
- * @see {@link module:util.props|props}
+     * @category Object
+ * @param {Array} names an array of String property names to copy onto a new object
+ * @param {Object} obj The object to copy from
+ * @returns {Object} A new object with only properties from `names` on it.
+ * @see {@link omit|omit}
+ * @see {@link props|props}
  * @example
  * pick( [ 'a', 'd' ], { a: 1, b: 2, c: 3, d: 4 } );
  * //=> { a: 1, d: 4 }
@@ -3489,12 +3441,11 @@ export {
  * Similar to `pick` except that this one includes a `key: undefined` pair for
  * properties that don't exist.
  *
- * @function module:util.pickAll
- * @category Object
- * @param {external:Array} names an array of String property names to copy onto a new object
- * @param {external:Object} obj The object to copy from
- * @return {external:Object} A new object with only properties from `names` on it.
- * @see {@link module:util.pick|pick}
+     * @category Object
+ * @param {Array} names an array of String property names to copy onto a new object
+ * @param {Object} obj The object to copy from
+ * @returns {Object} A new object with only properties from `names` on it.
+ * @see {@link pick|pick}
  * @example
  * pickAll( [ 'a', 'd' ], { a: 1, b: 2, c: 3, d: 4 } );
  * //=> { a: 1, d: 4 }
@@ -3507,13 +3458,12 @@ export {
  * Returns a partial copy of an object containing only the keys that satisfy
  * the supplied predicate.
  *
- * @function module:util.pickBy
- * @category Object
- * @param {external:function} pred A predicate to determine whether or not a key should be included on the output object.
- * @param {external:Object} obj The object to copy from
- * @return {external:Object} A new object with only properties that satisfy `pred` on it.
- * @see {@link module:util.pick|pick}
- * @see {@link module:util.filter|filter}
+     * @category Object
+ * @param {function} pred A predicate to determine whether or not a key should be included on the output object.
+ * @param {Object} obj The object to copy from
+ * @returns {Object} A new object with only properties that satisfy `pred` on it.
+ * @see {@link pick|pick}
+ * @see {@link filter|filter}
  * @example
  * const isUpperCase = ( val, key ) => key.toUpperCase() === key;
  * pickBy( isUpperCase, { a: 1, b: 2, A: 3, B: 4 } );
@@ -3529,11 +3479,10 @@ export {
  *
  * **Note:** The result of pipe is not automatically curried.
  *
- * @function module:util.pipe
- * @category Function
+     * @category Function
  * @param {...Function} functions
- * @return {external:function}
- * @see {@link module:util.compose|compose}
+ * @returns {function}
+ * @see {@link compose|compose}
  * @example
  * import { inc, negate, pipe } from '@blue/util';
  * const f = pipe( Math.pow, negate, inc );
@@ -3549,12 +3498,12 @@ export {
  * **Note:** The result of pipeWith is not automatically curried. Transforming function is not used on the
  * first argument.
  *
- * @function module:util.pipeWith
+     * @sig ((a, b, ..., n) → o) → ((o → p), (p → q), ..., (y → z)) → ((a, b, ..., n) → z)
  * @category Function
  * @param {...Function} functions
- * @return {external:function}
- * @see {@link module:util.composeWith|composeWith}
- * @see {@link module:util.pipe|pipe}
+ * @returns {function}
+ * @see {@link composeWith|composeWith}
+ * @see {@link pipe|pipe}
  * @example
  * import { inc, isNil, negate, pipeWith } from '@blue/util';
  * const pipeWhileNotNil = pipeWith( ( f, res ) => isNil( res ) ? res : f( res ) );
@@ -3568,12 +3517,11 @@ export {
  *
  * `pluck` will work on any [functor](https://github.com/fantasyland/fantasy-land#functor) in addition to arrays, as it is equivalent to `R.map(R.prop(k), f)`.
  *
- * @function module:util.pluck
- * @category List
- * @param {external:number|external:string} key The key name to pluck off of each object.
- * @param {external:Array} f The array or functor to consider.
- * @return {external:Array} The list of values for the given key.
- * @see {@link module:util.props|props}
+     * @category List
+ * @param {number|external:string} key The key name to pluck off of each object.
+ * @param {Array} f The array or functor to consider.
+ * @returns {Array} The list of values for the given key.
+ * @see {@link props|props}
  * @example
  * const getAges = pluck( 'age' );
  * getAges( [ { name: 'fred', age: 29 }, { name: 'wilma', age: 27 } ] );
@@ -3589,12 +3537,11 @@ export {
  * Returns a new list with the given element at the front, followed by the
  * contents of the list.
  *
- * @function module:util.prepend
- * @category List
+     * @category List
  * @param {*} el The item to add to the head of the output list.
- * @param {external:Array} list The array to add to the tail of the output list.
- * @return {external:Array} A new array.
- * @see {@link module:util.append|append}
+ * @param {Array} list The array to add to the tail of the output list.
+ * @returns {Array} A new array.
+ * @see {@link append|append}
  * @example
  * prepend( 'fee', [ 'fi', 'fo', 'fum' ] );
  * //=> [ 'fee', 'fi', 'fo', 'fum' ]
@@ -3604,11 +3551,10 @@ export {
 /**
  * Multiplies together all the elements of a list.
  *
- * @function module:util.product
- * @category Math
- * @param {external:Array} list An array of numbers
- * @return {external:number} The product of all the numbers in the list.
- * @see {@link module:util.reduce|reduce}
+     * @category Math
+ * @param {Array} list An array of numbers
+ * @returns {number} The product of all the numbers in the list.
+ * @see {@link reduce|reduce}
  * @example
  * product( [ 2, 4, 6, 8, 100, 1 ] );
  * //=> 38400
@@ -3618,12 +3564,11 @@ export {
 /**
  * Reasonable analog to SQL `select` statement.
  *
- * @function module:util.project
- * @category Object
+     * @category Object
  * @category Relation
- * @param {external:Array} props The property names to project
- * @param {external:Array} objs The objects to query
- * @return {external:Array} An array of objects with just the `props` properties.
+ * @param {Array} props The property names to project
+ * @param {Array} objs The objects to query
+ * @returns {Array} An array of objects with just the `props` properties.
  * @example
  * const abby = { name: 'Abby', age: 7, hair: 'blond', grade: 2 };
  * const fred = { name: 'Fred', age: 12, hair: 'brown', grade: 7 };
@@ -3637,13 +3582,12 @@ export {
  * Returns a function that when supplied an object returns the indicated
  * property of that object, if it exists.
  *
- * @function module:util.prop
- * @category Object
+     * @category Object
  * @param {String|Number} p The property name or array index
- * @param {external:Object} obj The object to query
- * @return {*} The value at `obj.p`.
- * @see {@link module:util.path|path}
- * @see {@link module:util.nth|nth}
+ * @param {Object} obj The object to query
+ * @returns {*} The value at `obj.p`.
+ * @see {@link path|path}
+ * @see {@link nth|nth}
  * @example
  * import { compose, inc, prop } from '@blue/util';
  * prop( 'x', { x: 100 } );
@@ -3662,15 +3606,14 @@ export {
  * [`equals`](#equals) terms, to the given value; `false` otherwise.
  * You can test multiple properties with [`whereEq`](#whereEq).
  *
- * @function module:util.propEq
- * @category Relation
- * @param {external:string} name
+     * @category Relation
+ * @param {string} name
  * @param {*} val
  * @param {*} obj
- * @return {external:boolean}
- * @see {@link module:util.whereEq|whereEq}
- * @see {@link module:util.propSatisfies|propSatisfies}
- * @see {@link module:util.equals|equals}
+ * @returns {boolean}
+ * @see {@link whereEq|whereEq}
+ * @see {@link propSatisfies|propSatisfies}
+ * @see {@link equals|equals}
  * @example
  * import { filter, propEq } from '@blue/util';
  * const abby = { name: 'Abby', age: 7, hair: 'blond' };
@@ -3687,14 +3630,13 @@ export {
 /**
  * Returns `true` if the specified object property is of the given type; `false` otherwise.
  *
- * @function module:util.propIs
- * @category Type
- * @param {external:function} type
- * @param {external:string} name
+     * @category Type
+ * @param {function} type
+ * @param {string} name
  * @param {*} obj
- * @return {external:boolean}
- * @see {@link module:util.is|is}
- * @see {@link module:util.propSatisfies|propSatisfies}
+ * @returns {boolean}
+ * @see {@link is|is}
+ * @see {@link propSatisfies|propSatisfies}
  * @example
  * propIs( Number, 'x', { x: 1, y: 2 } );
  * //=> true
@@ -3710,12 +3652,11 @@ export {
  * returns the value of that property. Otherwise returns the provided default
  * value.
  *
- * @function module:util.propOr
- * @category Object
+     * @category Object
  * @param {*} val The default value.
- * @param {external:string} p The name of the property to return.
- * @param {external:Object} obj The object to query.
- * @return {*} The value of given property of the supplied object or the default value.
+ * @param {string} p The name of the property to return.
+ * @param {Object} obj The object to query.
+ * @returns {*} The value of given property of the supplied object or the default value.
  * @example
  * import { prop, propOr } from '@blue/util';
  * const alice = {
@@ -3736,15 +3677,14 @@ export {
  * Returns `true` if the specified object property satisfies the given
  * predicate; `false` otherwise. You can test multiple properties with [`where`](#where).
  *
- * @function module:util.propSatisfies
- * @category Logic
- * @param {external:function} pred
- * @param {external:string} name
+     * @category Logic
+ * @param {function} pred
+ * @param {string} name
  * @param {*} obj
- * @return {external:boolean}
- * @see {@link module:util.where|where}
- * @see {@link module:util.propEq|propEq}
- * @see {@link module:util.propIs|propIs}
+ * @returns {boolean}
+ * @see {@link where|where}
+ * @see {@link propEq|propEq}
+ * @see {@link propIs|propIs}
  * @example
  * propSatisfies( ( x ) => x > 0, 'x', { x: 1, y: 2 } );
  * //=> true
@@ -3755,11 +3695,10 @@ export {
  * Acts as multiple `prop`: array of keys in, array of values out. Preserves
  * order.
  *
- * @function module:util.props
- * @category Object
- * @param {external:Array} ps The property names to fetch
- * @param {external:Object} obj The object to query
- * @return {external:Array} The corresponding values or partially applied function.
+     * @category Object
+ * @param {Array} ps The property names to fetch
+ * @param {Object} obj The object to query
+ * @returns {Array} The corresponding values or partially applied function.
  * @example
  * import { compose, props, join } from '@blue/util';
  * props( [ 'x', 'y' ], { x: 1, y: 2 } );
@@ -3793,15 +3732,14 @@ export {
  * doing so, it is up to the user to handle the [`reduced`](#reduced)
  * shortcuting, as this is not implemented by `reduce`.
  *
- * @function module:util.reduce
- * @category List
- * @param {external:function} fn The iterator function. Receives two values, the accumulator and the current element from the array.
+     * @category List
+ * @param {function} fn The iterator function. Receives two values, the accumulator and the current element from the array.
  * @param {*} acc The accumulator value.
- * @param {external:Array} list The list to iterate over.
- * @return {*} The final, accumulated value.
- * @see {@link module:util.reduced|reduced}
- * @see {@link module:util.addIndex|addIndex}
- * @see {@link module:util.reduceRight|reduceRight}
+ * @param {Array} list The list to iterate over.
+ * @returns {*} The final, accumulated value.
+ * @see {@link reduced|reduced}
+ * @see {@link addIndex|addIndex}
+ * @see {@link reduceRight|reduceRight}
  * @example
  * import { reduce, subtract } from '@blue/util';
  * reduce( subtract, 0, [ 1, 2, 3, 4 ] ); // => ( ( ( ( 0 - 1 ) - 2 ) - 3 ) - 4 ) = -10
@@ -3826,15 +3764,14 @@ export {
  *
  * Acts as a transducer if a transformer is given in list position.
  *
- * @function module:util.reduceBy
- * @category List
- * @param {external:function} valueFn The function that reduces the elements of each group to a single value. Receives two values, accumulator for a particular group and the current element.
+     * @category List
+ * @param {function} valueFn The function that reduces the elements of each group to a single value. Receives two values, accumulator for a particular group and the current element.
  * @param {*} acc The (initial) accumulator value for each group.
- * @param {external:function} keyFn The function that maps the list's element into a key.
- * @param {external:Array} list The array to group.
- * @return {external:Object} An object with the output of `keyFn` for keys, mapped to the output of `valueFn` for elements which produced that key when passed to `keyFn`.
- * @see {@link module:util.groupBy|groupBy}
- * @see {@link module:util.reduce|reduce}
+ * @param {function} keyFn The function that maps the list's element into a key.
+ * @param {Array} list The array to group.
+ * @returns {Object} An object with the output of `keyFn` for keys, mapped to the output of `valueFn` for elements which produced that key when passed to `keyFn`.
+ * @see {@link groupBy|groupBy}
+ * @see {@link reduce|reduce}
  * @example
  * import { reduce, subtract } from '@blue/util';
  * const groupNames = ( acc, { name } ) => acc.concat( name )
@@ -3872,14 +3809,13 @@ export {
  * on this behavior, see:
  * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduceRight#Description
  *
- * @function module:util.reduceRight
- * @category List
- * @param {external:function} fn The iterator function. Receives two values, the current element from the array and the accumulator.
+     * @category List
+ * @param {function} fn The iterator function. Receives two values, the current element from the array and the accumulator.
  * @param {*} acc The accumulator value.
- * @param {external:Array} list The list to iterate over.
- * @return {*} The final, accumulated value.
- * @see {@link module:util.reduce|reduce}
- * @see {@link module:util.addIndex|addIndex}
+ * @param {Array} list The list to iterate over.
+ * @returns {*} The final, accumulated value.
+ * @see {@link reduce|reduce}
+ * @see {@link addIndex|addIndex}
  * @example
  * import { reduceRight, subtract } from '@blue/util';
  * reduceRight( subtract, 0, [ 1, 2, 3, 4 ] ); // => ( 1 - ( 2 - ( 3 - ( 4 - 0 ) ) ) ) = -2
@@ -3902,15 +3838,14 @@ export {
  * returns `false`, it "short-circuits" the iteration and returns the current
  * value of the accumulator.
  *
- * @function module:util.reduceWhile
- * @category List
- * @param {external:function} pred The predicate. It is passed the accumulator and the current element.
- * @param {external:function} fn The iterator function. Receives two values, the accumulator and the current element.
+     * @category List
+ * @param {function} pred The predicate. It is passed the accumulator and the current element.
+ * @param {function} fn The iterator function. Receives two values, the accumulator and the current element.
  * @param {*} a The accumulator value.
- * @param {external:Array} list The list to iterate over.
- * @return {*} The final, accumulated value.
- * @see {@link module:util.reduce|reduce}
- * @see {@link module:util.reduced|reduced}
+ * @param {Array} list The list to iterate over.
+ * @returns {*} The final, accumulated value.
+ * @see {@link reduce|reduce}
+ * @see {@link reduced|reduced}
  * @example
  * import { add, reduceWhile } from '@blue/util';
  * const isOdd = ( acc, x ) => x % 2 === 1;
@@ -3934,13 +3869,12 @@ export {
  * - [`reduceWhile`](#reduceWhile)
  * - [`transduce`](#transduce)
  *
- * @function module:util.reduced
- * @category List
+     * @category List
  * @param {*} x The final value of the reduce.
- * @return {*} The wrapped value.
- * @see {@link module:util.reduce|reduce}
- * @see {@link module:util.reduceWhile|reduceWhile}
- * @see {@link module:util.transduce|transduce}
+ * @returns {*} The wrapped value.
+ * @see {@link reduce|reduce}
+ * @see {@link reduceWhile|reduceWhile}
+ * @see {@link transduce|transduce}
  * @example
  * import { reduce, reduced } from '@blue/util';
  * reduce(
@@ -3958,14 +3892,13 @@ export {
  * Acts as a transducer if a transformer is given in list position. Filterable
  * objects include plain objects or any object that has a filter method such as `Array`.
  *
- * @function module:util.reject
- * @category List
- * @param {external:function} pred
- * @param {external:Array} filterable
- * @return {external:Array}
- * @see {@link module:util.filter|filter}
- * @see {@link module:util.transduce|transduce}
- * @see {@link module:util.addIndex|addIndex}
+     * @category List
+ * @param {function} pred
+ * @param {Array} filterable
+ * @returns {Array}
+ * @see {@link filter|filter}
+ * @see {@link transduce|transduce}
+ * @see {@link addIndex|addIndex}
  * @example
  * const isOdd = ( n ) => n % 2 === 1;
  * reject( isOdd, [ 1, 2, 3, 4 ] );
@@ -3981,13 +3914,12 @@ export {
  * the list with the changes.
  * <small>No lists have been harmed in the application of this function.</small>
  *
- * @function module:util.remove
- * @category List
- * @param {external:number} start The position to start removing elements
- * @param {external:number} count The number of elements to remove
- * @param {external:Array} list The list to remove from
- * @return {external:Array} A new Array with `count` elements from `start` removed.
- * @see {@link module:util.without|without}
+     * @category List
+ * @param {number} start The position to start removing elements
+ * @param {number} count The number of elements to remove
+ * @param {Array} list The list to remove from
+ * @returns {Array} A new Array with `count` elements from `start` removed.
+ * @see {@link without|without}
  * @example
  * remove( 2, 3, [ 1, 2, 3, 4, 5, 6, 7, 8 ] );
  * //=> [ 1, 2, 6, 7, 8 ]
@@ -3997,12 +3929,11 @@ export {
 /**
  * Returns a fixed list of size `n` containing a specified identical value.
  *
- * @function module:util.repeat
- * @category List
+     * @category List
  * @param {*} value The value to repeat.
- * @param {external:number} n The desired size of the output list.
- * @return {external:Array} A new array containing `n` `value`s.
- * @see {@link module:util.times|times}
+ * @param {number} n The desired size of the output list.
+ * @returns {Array} A new array containing `n` `value`s.
+ * @see {@link times|times}
  * @example
  * repeat( 'hi', 5 );
  * //=> [ 'hi', 'hi', 'hi', 'hi', 'hi' ]
@@ -4022,13 +3953,12 @@ export {
  * `String.prototype.replace()` function, so the second parameter can also be a
  * function.
  *
- * @function module:util.replace
- * @category String
+     * @category String
  * @sig RegExp|String -> String -> String -> String
  * @param {RegExp|String} pattern A regular expression or a substring to match.
- * @param {external:string} replacement The string to replace the matches with.
- * @param {external:string} str The String to do the search and replacement in.
- * @return {external:string} The result.
+ * @param {string} replacement The string to replace the matches with.
+ * @param {string} str The String to do the search and replacement in.
+ * @returns {string} The result.
  * @example
  * replace( 'foo', 'bar', 'foo foo foo' );
  * //=> 'bar foo foo'
@@ -4045,10 +3975,9 @@ export {
  * Returns a new list or string with the elements or characters in reverse
  * order.
  *
- * @function module:util.reverse
- * @category List
- * @param {external:Array | external:string} list
- * @return {external:Array | external:string}
+     * @category List
+ * @param {Array | external:string} list
+ * @returns {Array | external:string}
  * @example
  * reverse( [ 1, 2, 3 ] );//=> [ 3, 2, 1 ]
  * reverse( [ 1, 2 ] );   //=> [ 2, 1 ]
@@ -4066,14 +3995,13 @@ export {
  * Scan is similar to [`reduce`](#reduce), but returns a list of successively
  * reduced values from the left
  *
- * @function module:util.scan
- * @category List
- * @param {external:function} fn The iterator function. Receives two values, the accumulator and the current element from the array
+     * @category List
+ * @param {function} fn The iterator function. Receives two values, the accumulator and the current element from the array
  * @param {*} acc The accumulator value.
- * @param {external:Array} list The list to iterate over.
- * @return {external:Array} A list of all intermediately reduced values.
- * @see {@link module:util.reduce|reduce}
- * @see {@link module:util.mapAccum|mapAccum}
+ * @param {Array} list The list to iterate over.
+ * @returns {Array} A list of all intermediately reduced values.
+ * @see {@link reduce|reduce}
+ * @see {@link mapAccum|mapAccum}
  * @example
  * import { multiply, scan } from '@blue/util';
  * const numbers = [ 1, 2, 3, 4 ];
@@ -4086,15 +4014,14 @@ export {
  * Returns the result of "setting" the portion of the given data structure
  * focused by the given lens to the given value.
  *
- * @function module:util.set
- * @category Object
+     * @category Object
  * @param {Lens} lens
  * @param {*} v
  * @param {*} x
- * @return {*}
- * @see {@link module:util.prop|prop}
- * @see {@link module:util.lensIndex|lensIndex}
- * @see {@link module:util.lensProp|lensProp}
+ * @returns {*}
+ * @see {@link prop|prop}
+ * @see {@link lensIndex|lensIndex}
+ * @see {@link lensProp|lensProp}
  * @example
  * import { lensProp, set } from '@blue/util';
  * const xLens = lensProp( 'x' );
@@ -4112,12 +4039,11 @@ export {
  *
  * Dispatches to the `slice` method of the third argument, if present.
  *
- * @function module:util.slice
- * @category List
- * @param {external:number} fromIndex The start index (inclusive).
- * @param {external:number} toIndex The end index (exclusive).
+     * @category List
+ * @param {number} fromIndex The start index (inclusive).
+ * @param {number} toIndex The end index (exclusive).
  * @param {*} list
- * @return {*}
+ * @returns {*}
  * @example
  * slice( 1, 3, [ 'a', 'b', 'c', 'd' ] );
  * //=> ['b', 'c']
@@ -4139,11 +4065,10 @@ export {
  * are equal. Please note that this is a **copy** of the list. It does not
  * modify the original.
  *
- * @function module:util.sort
- * @category List
- * @param {external:function} comparator A sorting function :: a -> b -> Int
- * @param {external:Array} list The list to sort
- * @return {external:Array} a new array with its elements sorted by the comparator function.
+     * @category List
+ * @param {function} comparator A sorting function :: a -> b -> Int
+ * @param {Array} list The list to sort
+ * @returns {Array} a new array with its elements sorted by the comparator function.
  * @example
  * const diff = ( a, b ) => a - b;
  * sort( diff, [ 4, 2, 7, 5 ] );
@@ -4154,11 +4079,10 @@ export {
 /**
  * Sorts the list according to the supplied function.
  *
- * @function module:util.sortBy
- * @category Relation
- * @param {external:function} fn
- * @param {external:Array} list The list to sort.
- * @return {external:Array} A new list sorted by the keys generated by `fn`.
+     * @category Relation
+ * @param {function} fn
+ * @param {Array} list The list to sort.
+ * @returns {Array} A new list sorted by the keys generated by `fn`.
  * @example
  * import { compose, prop, sortBy, toLower } from '@blue/util';
  * const sortByFirstItem = sortBy( prop( 0 ) );
@@ -4188,11 +4112,10 @@ export {
 /**
  * Sorts a list according to a list of comparators.
  *
- * @function module:util.sortWith
- * @category Relation
- * @param {external:Array} functions A list of comparator functions.
- * @param {external:Array} list The list to sort.
- * @return {external:Array} A new list sorted according to the comarator functions.
+     * @category Relation
+ * @param {Array} functions A list of comparator functions.
+ * @param {Array} list The list to sort.
+ * @returns {Array} A new list sorted according to the comarator functions.
  * @example
  * import { ascend, descend, prop, sortWith } from '@blue/util';
  * const alice = {
@@ -4221,12 +4144,11 @@ export {
  * Splits a string into an array of strings based on the given
  * separator.
  *
- * @function module:util.split
- * @category String
+     * @category String
  * @param {String|RegExp} sep The pattern.
- * @param {external:string} str The string to separate into an array.
- * @return {external:Array} The array of strings from `str` separated by `str`.
- * @see {@link module:util.join|join}
+ * @param {string} str The string to separate into an array.
+ * @returns {Array} The array of strings from `str` separated by `str`.
+ * @see {@link join|join}
  * @example
  * import { split, tail } from '@blue/util';
  * const pathComponents = split( '/' );
@@ -4240,11 +4162,10 @@ export {
 /**
  * Splits a given list or string at a given index.
  *
- * @function module:util.splitAt
- * @category List
- * @param {external:number} index The index where the array/string is split.
- * @param {external:Array | external:string} array The array/string to be split.
- * @return {external:Array}
+     * @category List
+ * @param {number} index The index where the array/string is split.
+ * @param {Array | external:string} array The array/string to be split.
+ * @returns {Array}
  * @example
  * splitAt( 1, [ 1, 2, 3 ] );
  * //=> [ [ 1 ], [ 2, 3 ] ]
@@ -4258,11 +4179,10 @@ export {
 /**
  * Splits a collection into slices of the specified length.
  *
- * @function module:util.splitEvery
- * @category List
- * @param {external:number} n
- * @param {external:Array} list
- * @return {external:Array}
+     * @category List
+ * @param {number} n
+ * @param {Array} list
+ * @returns {Array}
  * @example
  * splitEvery( 3, [ 1, 2, 3, 4, 5, 6, 7 ] );
  * //=> [ [ 1, 2, 3 ], [ 4, 5, 6 ], [ 7 ] ]
@@ -4278,11 +4198,10 @@ export {
  *  - none of the elements of the first output list satisfies the predicate; and
  *  - if the second output list is non-empty, its first element satisfies the predicate.
  *
- * @function module:util.splitWhen
- * @category List
- * @param {external:function} pred The predicate that determines where the array is split.
- * @param {external:Array} list The array to be split.
- * @return {external:Array}
+     * @category List
+ * @param {function} pred The predicate that determines where the array is split.
+ * @param {Array} list The array to be split.
+ * @returns {Array}
  * @example
  * import { equals, splitWhen } from '@blue/util';
  * splitWhen( equals( 2 ), [ 1, 2, 3, 1, 2, 3 ] );
@@ -4295,12 +4214,11 @@ export {
  *
  * Similarly, checks if a string starts with the provided substring.
  *
- * @function module:util.startsWith
- * @category List
+     * @category List
  * @param {*} prefix
  * @param {*} list
- * @return {external:boolean}
- * @see {@link module:util.endsWith|endsWith}
+ * @returns {boolean}
+ * @see {@link endsWith|endsWith}
  * @example
  * import { equals, splitWhen } from '@blue/util';
  * startsWith( 'a', 'abc' );
@@ -4317,12 +4235,11 @@ export {
 /**
  * Subtracts its second argument from its first argument.
  *
- * @function module:util.subtract
- * @category Math
- * @param {external:number} a The first value.
- * @param {external:number} b The second value.
- * @return {external:number} The result of `a - b`.
- * @see {@link module:util.add|add}
+     * @category Math
+ * @param {number} a The first value.
+ * @param {number} b The second value.
+ * @returns {number} The result of `a - b`.
+ * @see {@link add|add}
  * @example
  * import { __, subtract } from '@blue/util';
  * subtract( 10, 8 );
@@ -4343,11 +4260,10 @@ export {
 /**
  * Adds together all the elements of a list.
  *
- * @function module:util.sum
- * @category Math
- * @param {external:Array} list An array of numbers
- * @return {external:number} The sum of all the numbers in the list.
- * @see {@link module:util.reduce|reduce}
+     * @category Math
+ * @param {Array} list An array of numbers
+ * @returns {number} The sum of all the numbers in the list.
+ * @see {@link reduce|reduce}
  * @example
  * sum( [ 2, 4, 6, 8, 100, 1 ] );
  * //=> 121
@@ -4358,14 +4274,13 @@ export {
  * Finds the set (i.e. no duplicates) of all elements contained in the first or
  * second list, but not both.
  *
- * @function module:util.symmetricDifference
- * @category Relation
- * @param {external:Array} list1 The first list.
- * @param {external:Array} list2 The second list.
- * @return {external:Array} The elements in `list1` or `list2`, but not both.
- * @see {@link module:util.symmetricDifferenceWith|symmetricDifferenceWith}
- * @see {@link module:util.difference|difference}
- * @see {@link module:util.differenceWith|differenceWith}
+     * @category Relation
+ * @param {Array} list1 The first list.
+ * @param {Array} list2 The second list.
+ * @returns {Array} The elements in `list1` or `list2`, but not both.
+ * @see {@link symmetricDifferenceWith|symmetricDifferenceWith}
+ * @see {@link difference|difference}
+ * @see {@link differenceWith|differenceWith}
  * @example
  * symmetricDifference( [ 1, 2, 3, 4 ], [ 7, 6, 5, 4, 3 ] );
  * //=> [1,2,7,6,5]
@@ -4379,15 +4294,14 @@ export {
  * second list, but not both. Duplication is determined according to the value
  * returned by applying the supplied predicate to two list elements.
  *
- * @function module:util.symmetricDifferenceWith
- * @category Relation
- * @param {external:function} pred A predicate used to test whether two items are equal.
- * @param {external:Array} list1 The first list.
- * @param {external:Array} list2 The second list.
- * @return {external:Array} The elements in `list1` or `list2`, but not both.
- * @see {@link module:util.symmetricDifference|symmetricDifference}
- * @see {@link module:util.difference|difference}
- * @see {@link module:util.differenceWith|differenceWith}
+     * @category Relation
+ * @param {function} pred A predicate used to test whether two items are equal.
+ * @param {Array} list1 The first list.
+ * @param {Array} list2 The second list.
+ * @returns {Array} The elements in `list1` or `list2`, but not both.
+ * @see {@link symmetricDifference|symmetricDifference}
+ * @see {@link difference|difference}
+ * @see {@link differenceWith|differenceWith}
  * @example
  * import { eqBy, prop, symmetricDifferenceWith } from '@blue/util';
  * const eqA = eqBy( prop( 'a' ) );
@@ -4404,13 +4318,12 @@ export {
  *
  * Dispatches to the `slice` method of the first argument, if present.
  *
- * @function module:util.tail
- * @category List
+     * @category List
  * @param {*} list
- * @return {*}
- * @see {@link module:util.head|head}
- * @see {@link module:util.init|init}
- * @see {@link module:util.last|last}
+ * @returns {*}
+ * @see {@link head|head}
+ * @see {@link init|init}
+ * @see {@link last|last}
  * @example
  * tail( [ 1, 2, 3 ] );  //=> [ 2, 3 ]
  * tail( [ 1, 2 ] );     //=> [ 2 ]
@@ -4430,12 +4343,11 @@ export {
  *
  * Dispatches to the `take` method of the second argument, if present.
  *
- * @function module:util.take
- * @category List
- * @param {external:number} n
+     * @category List
+ * @param {number} n
  * @param {*} list
- * @return {*}
- * @see {@link module:util.drop|drop}
+ * @returns {*}
+ * @see {@link drop|drop}
  * @example
  * take( 1, [ 'foo', 'bar', 'baz' ] ); //=> [ 'foo' ]
  * take( 2, [ 'foo', 'bar', 'baz' ] ); //=> [ 'foo', 'bar' ]
@@ -4464,12 +4376,11 @@ export {
  * Returns a new list containing the last `n` elements of the given list.
  * If `n > list.length`, returns a list of `list.length` elements.
  *
- * @function module:util.takeLast
- * @category List
- * @param {external:number} n The number of elements to return.
- * @param {external:Array} xs The collection to consider.
- * @return {external:Array}
- * @see {@link module:util.dropLast|dropLast}
+     * @category List
+ * @param {number} n The number of elements to return.
+ * @param {Array} xs The collection to consider.
+ * @returns {Array}
+ * @see {@link dropLast|dropLast}
  * @example
  * takeLast( 1, [ 'foo', 'bar', 'baz' ] );
  * //=> [ 'baz' ]
@@ -4491,13 +4402,12 @@ export {
  * predicate function to fail. The predicate function is passed one argument:
  * *(value)*.
  *
- * @function module:util.takeLastWhile
- * @category List
- * @param {external:function} fn The function called per iteration.
- * @param {external:Array} xs The collection to iterate over.
- * @return {external:Array} A new array.
- * @see {@link module:util.dropLastWhile|dropLastWhile}
- * @see {@link module:util.addIndex|addIndex}
+     * @category List
+ * @param {function} fn The function called per iteration.
+ * @param {Array} xs The collection to iterate over.
+ * @returns {Array} A new array.
+ * @see {@link dropLastWhile|dropLastWhile}
+ * @see {@link addIndex|addIndex}
  * @example
  * const isNotOne = ( x ) => x !== 1;
  * takeLastWhile( isNotOne, [ 1, 2, 3, 4 ] );
@@ -4518,14 +4428,13 @@ export {
  *
  * Acts as a transducer if a transformer is given in list position.
  *
- * @function module:util.takeWhile
- * @category List
- * @param {external:function} fn The function called per iteration.
- * @param {external:Array} xs The collection to iterate over.
- * @return {external:Array} A new array.
- * @see {@link module:util.dropWhile|dropWhile}
- * @see {@link module:util.transduce|transduce}
- * @see {@link module:util.addIndex|addIndex}
+     * @category List
+ * @param {function} fn The function called per iteration.
+ * @param {Array} xs The collection to iterate over.
+ * @returns {Array} A new array.
+ * @see {@link dropWhile|dropWhile}
+ * @see {@link transduce|transduce}
+ * @see {@link addIndex|addIndex}
  * @example
  * const isNotFour = ( x ) => x !== 4;
  * takeWhile( isNotFour, [ 1, 2, 3, 4, 3, 2, 1 ] );
@@ -4540,11 +4449,10 @@ export {
  *
  * Acts as a transducer if a transformer is given as second parameter.
  *
- * @function module:util.tap
- * @category Function
- * @param {external:function} fn The function to call with `x`. The return value of `fn` will be thrown away.
+     * @category Function
+ * @param {function} fn The function to call with `x`. The return value of `fn` will be thrown away.
  * @param {*} x
- * @return {*} `x`.
+ * @returns {*} `x`.
  * @example
  * const sayX = ( x ) => console.log( 'x is ' + x );
  * tap( sayX, 100 ); //=> 100
@@ -4555,12 +4463,11 @@ export {
 /**
  * Determines whether a given string matches a given regular expression.
  *
- * @function module:util.test
- * @category String
+     * @category String
  * @param {RegExp} pattern
- * @param {external:string} str
- * @return {external:boolean}
- * @see {@link module:util.match|match}
+ * @param {string} str
+ * @returns {boolean}
+ * @see {@link match|match}
  * @example
  * test( /^x/, 'xyz' );
  * //=> true
@@ -4573,12 +4480,11 @@ export {
  * Creates a thunk out of a function. A thunk delays a calculation until
  * its result is needed, providing lazy evaluation of arguments.
  *
- * @function module:util.thunkify
- * @category Function
- * @param {external:function} fn A function to wrap in a thunk
- * @return {external:function} Expects arguments for `fn` and returns a new function that, when called, applies those arguments to `fn`.
- * @see {@link module:util.partial|partial}
- * @see {@link module:util.partialRight|partialRight}
+     * @category Function
+ * @param {function} fn A function to wrap in a thunk
+ * @returns {function} Expects arguments for `fn` and returns a new function that, when called, applies those arguments to `fn`.
+ * @see {@link partial|partial}
+ * @see {@link partialRight|partialRight}
  * @example
  * import { identity, thunkify } from '@blue/util';
  * thunkify( identity )( 42 )(); //=> 42
@@ -4593,12 +4499,11 @@ export {
  * `fn` is passed one argument: The current value of `n`, which begins at `0`
  * and is gradually incremented to `n - 1`.
  *
- * @function module:util.times
- * @category List
- * @param {external:function} fn The function to invoke. Passed one argument, the current value of `n`.
- * @param {external:number} n A value between `0` and `n - 1`. Increments after each function call.
- * @return {external:Array} An array containing the return values of all calls to `fn`.
- * @see {@link module:util.repeat|repeat}
+     * @category List
+ * @param {function} fn The function to invoke. Passed one argument, the current value of `n`.
+ * @param {number} n A value between `0` and `n - 1`. Increments after each function call.
+ * @returns {Array} An array containing the return values of all calls to `fn`.
+ * @see {@link repeat|repeat}
  * @example
  * import { identity, times } from '@blue/util';
  * times( identity, 5 );
@@ -4609,11 +4514,10 @@ export {
 /**
  * The lower case version of a string.
  *
- * @function module:util.toLower
- * @category String
- * @param {external:string} str The string to lower case.
- * @return {external:string} The lower case version of `str`.
- * @see {@link module:util.toUpper|toUpper}
+     * @category String
+ * @param {string} str The string to lower case.
+ * @returns {string} The lower case version of `str`.
+ * @see {@link toUpper|toUpper}
  * @example
  * toLower( 'XYZ' );
  * //=> 'xyz'
@@ -4626,11 +4530,10 @@ export {
  * Note that the order of the output array is not guaranteed to be consistent
  * across different JS platforms.
  *
- * @function module:util.toPairs
- * @category Object
- * @param {external:Object} obj The object to extract from
- * @return {external:Array} An array of key, value arrays from the object's own properties.
- * @see {@link module:util.fromPairs|fromPairs}
+     * @category Object
+ * @param {Object} obj The object to extract from
+ * @returns {Array} An array of key, value arrays from the object's own properties.
+ * @see {@link fromPairs|fromPairs}
  * @example
  * toPairs( { a: 1, b: 2, c: 3 } ); //=> [ [ 'a', 1 ], [ 'b', 2 ], [ 'c', 3 ] ]
  */
@@ -4642,10 +4545,9 @@ export {
  * output array is not guaranteed to be consistent across different JS
  * platforms.
  *
- * @function module:util.toPairsIn
- * @category Object
- * @param {external:Object} obj The object to extract from
- * @return {external:Array} An array of key, value arrays from the object's own and prototype properties.
+     * @category Object
+ * @param {Object} obj The object to extract from
+ * @returns {Array} An array of key, value arrays from the object's own and prototype properties.
  * @example
  * const F = function() { this.x = 'X'; };
  * F.prototype.y = 'Y';
@@ -4657,11 +4559,10 @@ export {
 /**
  * The upper case version of a string.
  *
- * @function module:util.toUpper
- * @category String
- * @param {external:string} str The string to upper case.
- * @return {external:string} The upper case version of `str`.
- * @see {@link module:util.toLower|toLower}
+     * @category String
+ * @param {string} str The string to upper case.
+ * @returns {string} The upper case version of `str`.
+ * @see {@link toLower|toLower}
  * @example
  * toUpper( 'abc' ); //=> 'ABC'
  */
@@ -4691,18 +4592,17 @@ export {
  *
  * The iteration is performed with [`reduce`](#reduce) after initializing the transducer.
  *
- * @function module:util.transduce
- * @category List
- * @param {external:function} xf The transducer function. Receives a transformer and returns a transformer.
- * @param {external:function} fn The iterator function. Receives two values, the accumulator and the
+     * @category List
+ * @param {function} xf The transducer function. Receives a transformer and returns a transformer.
+ * @param {function} fn The iterator function. Receives two values, the accumulator and the
  *        current element from the array. Wrapped as transformer, if necessary, and used to
  *        initialize the transducer
  * @param {*} acc The initial accumulator value.
- * @param {external:Array} list The list to iterate over.
- * @return {*} The final, accumulated value.
- * @see {@link module:util.reduce|reduce}
- * @see {@link module:util.reduced|reduced}
- * @see {@link module:util.into|into}
+ * @param {Array} list The list to iterate over.
+ * @returns {*} The final, accumulated value.
+ * @see {@link reduce|reduce}
+ * @see {@link reduced|reduced}
+ * @see {@link into|into}
  * @example
  * import { add, append, compose, filter, flip, map, range, take, transduce } from '@blue/util';
  * const numbers = [ 1, 2, 3, 4 ];
@@ -4720,10 +4620,9 @@ export {
  * When passed a list of `n` lists of length `x`,
  * returns a list of `x` lists of length `n`.
  *
- * @function module:util.transpose
- * @category List
- * @param {external:Array} list A 2D list
- * @return {external:Array} A 2D list
+     * @category List
+ * @param {Array} list A 2D list
+ * @returns {Array} A 2D list
  * @example
  * transpose( [ [ 1, 'a' ], [ 2, 'b' ], [ 3, 'c' ] ] ) //=> [ [ 1, 2, 3 ], [ 'a', 'b', 'c' ] ]
  * transpose( [ [ 1, 2, 3 ], [ 'a', 'b', 'c' ] ] ) //=> [ [ 1, 'a' ], [ 2, 'b' ], [ 3, 'c' ] ]
@@ -4741,13 +4640,12 @@ export {
  *
  * Dispatches to the `traverse` method of the third argument, if present.
  *
- * @function module:util.traverse
- * @category List
- * @param {external:function} of
- * @param {external:function} f
+     * @category List
+ * @param {function} of
+ * @param {function} f
  * @param {*} traversable
- * @return {*}
- * @see {@link module:util.sequence|sequence}
+ * @returns {*}
+ * @see {@link sequence|sequence}
  * @example
  * // Returns `Maybe.Nothing` if the given divisor is `0`
  * const safeDiv = ( n ) => d => d === 0 ? Maybe.Nothing() : Maybe.Just( n / d )
@@ -4760,11 +4658,10 @@ export {
 /**
  * Removes (strips) whitespace from both ends of the string.
  *
- * @function module:util.trim
- * @category String
+     * @category String
  * @sig String -> String
- * @param {external:string} str The string to trim.
- * @return {external:string} Trimmed version of `str`.
+ * @param {string} str The string to trim.
+ * @returns {string} Trimmed version of `str`.
  * @example
  * import { map, split, trim } from '@blue/util';
  * trim( '   xyz  ' ); //=> 'xyz'
@@ -4780,11 +4677,10 @@ export {
  * composition with this function, both the `tryer` and `catcher` functions
  * must return the same type of results.
  *
- * @function module:util.tryCatch
- * @category Function
- * @param {external:function} tryer The function that may throw.
- * @param {external:function} catcher The function that will be evaluated if `tryer` throws.
- * @return {external:function} A new function that will catch exceptions and send then to the catcher.
+     * @category Function
+ * @param {function} tryer The function that may throw.
+ * @param {function} catcher The function that will be evaluated if `tryer` throws.
+ * @returns {function} A new function that will catch exceptions and send then to the catcher.
  * @example
  * import { always, F, identity, prop, times, tryCatch } from '@blue/util';
  * tryCatch( prop( 'x' ), F )( { x: true } ); //=> true
@@ -4799,10 +4695,9 @@ export {
  * attempt to distinguish user Object types any further, reporting them all as
  * 'Object'.
  *
- * @function module:util.type
- * @category Type
+     * @category Type
  * @param {*} val The value to test
- * @return {external:string}
+ * @returns {string}
  * @example
  * type( {} ); //=> "Object"
  * type( 1 ); //=> "Number"
@@ -4827,11 +4722,10 @@ export {
  * In other words, `unapply` derives a variadic function from a function which
  * takes an array. `unapply` is the inverse of [`apply`](#apply).
  *
- * @function module:util.unapply
- * @category Function
- * @param {external:function} fn
- * @return {external:function}
- * @see {@link module:util.apply|apply}
+     * @category Function
+ * @param {function} fn
+ * @returns {function}
+ * @see {@link apply|apply}
  * @example
  * unapply( JSON.stringify )( 1, 2, 3 ); //=> '[ 1, 2, 3 ]'
  */
@@ -4842,12 +4736,11 @@ export {
  * exactly 1 parameter. Any extraneous parameters will not be passed to the
  * supplied function.
  *
- * @function module:util.unary
- * @category Function
- * @param {external:function} fn The function to wrap.
- * @return {external:function} A new function wrapping `fn`. The new function is guaranteed to be of arity 1.
- * @see {@link module:util.binary|binary}
- * @see {@link module:util.nAry|nAry}
+     * @category Function
+ * @param {function} fn The function to wrap.
+ * @returns {function} A new function wrapping `fn`. The new function is guaranteed to be of arity 1.
+ * @see {@link binary|binary}
+ * @see {@link nAry|nAry}
  * @example
  * const takesTwoArgs = ( a, b ) => [ a, b ];
  * takesTwoArgs.length; //=> 2
@@ -4863,12 +4756,11 @@ export {
 /**
  * Returns a function of arity `n` from a (manually) curried function.
  *
- * @function module:util.uncurryN
- * @category Function
- * @param {external:number} length The arity for the returned function.
- * @param {external:function} fn The function to uncurry.
- * @return {external:function} A new function.
- * @see {@link module:util.curry|curry}
+     * @category Function
+ * @param {number} length The arity for the returned function.
+ * @param {function} fn The function to uncurry.
+ * @returns {function} A new function.
+ * @see {@link curry|curry}
  * @example
  * const addFour = ( a ) => ( b ) => ( c ) => ( d ) => a + b + c + d;
  * const uncurriedAddFour = uncurryN( 4, addFour );
@@ -4884,14 +4776,13 @@ export {
  *
  * The iterator function receives one argument: *(seed)*.
  *
- * @function module:util.unfold
- * @category List
- * @param {external:function} fn The iterator function. receives one argument, `seed`, and returns
+     * @category List
+ * @param {function} fn The iterator function. receives one argument, `seed`, and returns
  *        either false to quit iteration or an array of length two to proceed. The element
  *        at index 0 of this array will be added to the resulting array, and the element
  *        at index 1 will be passed to the next call to `fn`.
  * @param {*} seed The seed value.
- * @return {external:Array} The final list.
+ * @returns {Array} The final list.
  * @example
  * const f = ( n ) => n > 50 ? false : [ -n, n + 10 ];
  * unfold( f, 10 ); //=> [ -10, -20, -30, -40, -50 ]
@@ -4902,11 +4793,10 @@ export {
  * Combines two lists into a set (i.e. no duplicates) composed of the elements
  * of each list.
  *
- * @function module:util.union
- * @category Relation
- * @param {external:Array} as The first list.
- * @param {external:Array} bs The second list.
- * @return {external:Array} The first and second lists concatenated, with duplicates removed.
+     * @category Relation
+ * @param {Array} as The first list.
+ * @param {Array} bs The second list.
+ * @returns {Array} The first and second lists concatenated, with duplicates removed.
  * @example
  * union( [ 1, 2, 3 ], [ 2, 3, 4 ] ); //=> [ 1, 2, 3, 4 ]
  */
@@ -4917,13 +4807,12 @@ export {
  * of each list. Duplication is determined according to the value returned by
  * applying the supplied predicate to two list elements.
  *
- * @function module:util.unionWith
- * @category Relation
- * @param {external:function} pred A predicate used to test whether two items are equal.
- * @param {external:Array} list1 The first list.
- * @param {external:Array} list2 The second list.
- * @return {external:Array} The first and second lists concatenated, with duplicates removed.
- * @see {@link module:util.union|union}
+     * @category Relation
+ * @param {function} pred A predicate used to test whether two items are equal.
+ * @param {Array} list1 The first list.
+ * @param {Array} list2 The second list.
+ * @returns {Array} The first and second lists concatenated, with duplicates removed.
+ * @see {@link union|union}
  * @example
  * import { eqBy, prop, union } from '@blue/util';
  * const l1 = [ { a: 1 }, { a: 2 } ];
@@ -4936,10 +4825,9 @@ export {
  * Returns a new list containing only one copy of each element in the original
  * list. [`equals`](#equals) is used to determine equality.
  *
- * @function module:util.uniq
- * @category List
- * @param {external:Array} list The array to consider.
- * @return {external:Array} The list of unique items.
+     * @category List
+ * @param {Array} list The array to consider.
+ * @returns {Array} The list of unique items.
  * @example
  * uniq( [ 1, 1, 2, 1 ] );     //=> [ 1, 2 ]
  * uniq( [ 1, '1' ] );         //=> [ 1, '1' ]
@@ -4953,11 +4841,10 @@ export {
  * each list element. Prefers the first item if the supplied function produces
  * the same value on two items. [`equals`](#equals) is used for comparison.
  *
- * @function module:util.uniqBy
- * @category List
- * @param {external:function} fn A function used to produce a value to use during comparisons.
- * @param {external:Array} list The array to consider.
- * @return {external:Array} The list of unique items.
+     * @category List
+ * @param {function} fn A function used to produce a value to use during comparisons.
+ * @param {Array} list The array to consider.
+ * @returns {Array} The list of unique items.
  * @example
  * uniqBy( Math.abs, [ -1, -5, 2, 10, 1, 2 ] ); //=> [ -1, -5, 2, 10 ]
  */
@@ -4969,11 +4856,10 @@ export {
  * two list elements. Prefers the first item if two items compare equal based
  * on the predicate.
  *
- * @function module:util.uniqWith
- * @category List
- * @param {external:function} pred A predicate used to test whether two items are equal.
- * @param {external:Array} list The array to consider.
- * @return {external:Array} The list of unique items.
+     * @category List
+ * @param {function} pred A predicate used to test whether two items are equal.
+ * @param {Array} list The array to consider.
+ * @returns {Array} The list of unique items.
  * @example
  * import { eqBy, uniqWith } from '@blue/util';
  * const strEq = eqBy( String );
@@ -4990,15 +4876,14 @@ export {
  * calling the `whenFalseFn` function with the same argument. If the predicate
  * is satisfied, the argument is returned as is.
  *
- * @function module:util.unless
- * @category Logic
- * @param {external:function} pred        A predicate function
- * @param {external:function} whenFalseFn A function to invoke when the `pred` evaluates to a falsy value.
+     * @category Logic
+ * @param {function} pred        A predicate function
+ * @param {function} whenFalseFn A function to invoke when the `pred` evaluates to a falsy value.
  * @param {*}        x           An object to test with the `pred` function and pass to `whenFalseFn` if necessary.
- * @return {*} Either `x` or the result of applying `x` to `whenFalseFn`.
- * @see {@link module:util.ifElse|ifElse}
- * @see {@link module:util.when|when}
- * @see {@link module:util.cond|cond}
+ * @returns {*} Either `x` or the result of applying `x` to `whenFalseFn`.
+ * @see {@link ifElse|ifElse}
+ * @see {@link when|when}
+ * @see {@link cond|cond}
  * @example
  * import { inc, isNil, unless } from '@blue/util';
  * let safeInc = unless( isNil, inc );
@@ -5010,12 +4895,11 @@ export {
 /**
  * Shorthand for `chain( identity )`, which removes one level of nesting from any [Chain](https://github.com/fantasyland/fantasy-land#chain).
  *
- * @function module:util.unnest
- * @category List
+     * @category List
  * @param {*} list
- * @return {*}
- * @see {@link module:util.flatten|flatten}
- * @see {@link module:util.chain|chain}
+ * @returns {*}
+ * @see {@link flatten|flatten}
+ * @see {@link chain|chain}
  * @example
  * unnest( [ 1, [ 2 ], [ [ 3 ] ] ] ); //=> [ 1, 2, [ 3 ] ]
  * unnest( [ [ 1, 2 ], [ 3, 4 ], [ 5, 6 ] ] ); //=> [ 1, 2, 3, 4, 5, 6 ]
@@ -5028,12 +4912,11 @@ export {
  * It does so by applying the transformation until the predicate is satisfied,
  * at which point it returns the satisfactory value.
  *
- * @function module:util.until
- * @category Logic
- * @param {external:function} pred A predicate function
- * @param {external:function} fn The iterator function
+     * @category Logic
+ * @param {function} pred A predicate function
+ * @param {function} fn The iterator function
  * @param {*} init Initial value
- * @return {*} Final value that satisfies predicate
+ * @returns {*} Final value that satisfies predicate
  * @example
  * import { __, gt, multiply, until } from '@blue/util';
  * until( gt( __, 100 ), multiply( 2 ) )( 1 ) // => 128
@@ -5044,13 +4927,12 @@ export {
  * Returns a new copy of the array with the element at the provided index
  * replaced with the given value.
  *
- * @function module:util.update
- * @category List
- * @param {external:number} idx The index to update.
+     * @category List
+ * @param {number} idx The index to update.
  * @param {*} x The value to exist at the given index of the returned array.
  * @param {Array|Arguments} list The source array-like object to be updated.
- * @return {external:Array} A copy of `list` with the value at index `idx` replaced with `x`.
- * @see {@link module:util.adjust|adjust}
+ * @returns {Array} A copy of `list` with the value at index `idx` replaced with `x`.
+ * @see {@link adjust|adjust}
  * @example
  * update( 1, '_', [ 'a', 'b', 'c' ] );      //=> ['a', '_', 'c']
  * update( -1, '_', [ 'a', 'b', 'c' ] );     //=> ['a', 'b', '_']
@@ -5069,12 +4951,11 @@ export {
  * transformed, although you can ignore them, it's best to pass an identity
  * function so that the new function reports the correct arity.
  *
- * @function module:util.useWith
- * @category Function
- * @param {external:function} fn The function to wrap.
- * @param {external:Array} transformers A list of transformer functions
- * @return {external:function} The wrapped function.
- * @see {@link module:util.converge|converge}
+     * @category Function
+ * @param {function} fn The function to wrap.
+ * @param {Array} transformers A list of transformer functions
+ * @returns {function} The wrapped function.
+ * @see {@link converge|converge}
  * @example
  * import { dec, identity, inc, useWith } from '@blue/util';
  * useWith( Math.pow, [ identity, identity ] )( 3, 4 );   //=> 81
@@ -5089,12 +4970,11 @@ export {
  * Note that the order of the output array is not guaranteed across different
  * JS platforms.
  *
- * @function module:util.values
- * @category Object
- * @param {external:Object} obj The object to extract values from
- * @return {external:Array} An array of the values of the object's own properties.
- * @see {@link module:util.valuesIn|valuesIn}
- * @see {@link module:util.keys|keys}
+     * @category Object
+ * @param {Object} obj The object to extract values from
+ * @returns {Array} An array of the values of the object's own properties.
+ * @see {@link valuesIn|valuesIn}
+ * @see {@link keys|keys}
  * @example
  * values( { a: 1, b: 2, c: 3 } ); //=> [ 1, 2, 3 ]
  */
@@ -5106,12 +4986,11 @@ export {
  * Note that the order of the output array is not guaranteed to be consistent
  * across different JS platforms.
  *
- * @function module:util.valuesIn
- * @category Object
- * @param {external:Object} obj The object to extract values from
- * @return {external:Array} An array of the values of the object's own and prototype properties.
- * @see {@link module:util.values|values}
- * @see {@link module:util.keysIn|keysIn}
+     * @category Object
+ * @param {Object} obj The object to extract values from
+ * @returns {Array} An array of the values of the object's own and prototype properties.
+ * @see {@link values|values}
+ * @see {@link keysIn|keysIn}
  * @example
  * const F = function(){ this.x = 'X'; };
  * F.prototype.y = 'Y';
@@ -5124,14 +5003,13 @@ export {
  * Returns a "view" of the given data structure, determined by the given lens.
  * The lens's focus determines which portion of the data structure is visible.
  *
- * @function module:util.view
- * @category Object
+     * @category Object
  * @param {Lens} lens
  * @param {*} x
- * @return {*}
- * @see {@link module:util.prop|prop}
- * @see {@link module:util.lensIndex|lensIndex}
- * @see {@link module:util.lensProp|lensProp}
+ * @returns {*}
+ * @see {@link prop|prop}
+ * @see {@link lensIndex|lensIndex}
+ * @see {@link lensProp|lensProp}
  * @example
  * import { lensProp, view } from '@blue/util';
  * const xLens = lensProp( 'x' );
@@ -5146,15 +5024,14 @@ export {
  * the `whenTrueFn` function with the same argument. If the predicate is not
  * satisfied, the argument is returned as is.
  *
- * @function module:util.when
- * @category Logic
- * @param {external:function} pred       A predicate function
- * @param {external:function} whenTrueFn A function to invoke when the `condition` evaluates to a truthy value.
+     * @category Logic
+ * @param {function} pred       A predicate function
+ * @param {function} whenTrueFn A function to invoke when the `condition` evaluates to a truthy value.
  * @param {*}        x          An object to test with the `pred` function and pass to `whenTrueFn` if necessary.
- * @return {*} Either `x` or the result of applying `x` to `whenTrueFn`.
- * @see {@link module:util.ifElse|ifElse}
- * @see {@link module:util.unless|unless}
- * @see {@link module:util.cond|cond}
+ * @returns {*} Either `x` or the result of applying `x` to `whenTrueFn`.
+ * @see {@link ifElse|ifElse}
+ * @see {@link unless|unless}
+ * @see {@link cond|cond}
  * @example
  * import { __, append, gt, join, pipe, propSatisfies, take, when } from '@blue/util';
  * // truncate :: String -> String
@@ -5177,13 +5054,12 @@ export {
  * `where` is well suited to declaratively expressing constraints for other
  * functions such as [`filter`](#filter) and [`find`](#find).
  *
- * @function module:util.where
- * @category Object
- * @param {external:Object} spec
- * @param {external:Object} testObj
- * @return {external:boolean}
- * @see {@link module:util.propSatisfies|propSatisfies}
- * @see {@link module:util.whereEq|whereEq}
+     * @category Object
+ * @param {Object} spec
+ * @param {Object} testObj
+ * @returns {boolean}
+ * @see {@link propSatisfies|propSatisfies}
+ * @see {@link whereEq|whereEq}
  * @example
  * import { __, complement, equals, gt, lt, where } from '@blue/util';
  * // pred :: Object -> Boolean
@@ -5204,6 +5080,30 @@ where, } from 'ramda';
 export { 
 /**
  * Takes a spec object and a test object; returns true if the test satisfies
+ * the spec, false otherwise. An object satisfies the spec if, for each of the spec's
+ * own properties, accessing that property of the object gives the same
+ * value (in `R.equals` terms) as accessing that property of the spec.
+ *
+ * `whereAny` is well suited to declaratively expressing constraints for other
+ * functions such as `filter` and `find`.
+ *
+     * @category Object
+ * @param {Object} spec
+ * @param {Object} testObj
+ * @returns {boolean}
+ * @see {@link where|where}
+ * @see {@link whereEq|whereEq}
+ * @example
+ * import { whereAny } from '@blue/util';
+ * const spec = {x: 2, y: 1};
+ * whereAny(spec, {w: 10, x: 2, y: 1, z: 3}); //=> true
+ * whereAny(spec, {w: 10, x: 2, y: 2, z: 3}); //=> true
+ * whereAny(spec, {w: 10, x: 3, y: 3, z: 3}); //=> false
+ */
+whereAny, } from 'ramda';
+export { 
+/**
+ * Takes a spec object and a test object; returns true if the test satisfies
  * the spec, false otherwise. An object satisfies the spec if, for each of the
  * spec's own properties, accessing that property of the object gives the same
  * value (in [`equals`](#equals) terms) as accessing that property of the
@@ -5211,13 +5111,12 @@ export {
  *
  * `whereEq` is a specialization of [`where`](#where).
  *
- * @function module:util.whereEq
- * @category Object
- * @param {external:Object} spec
- * @param {external:Object} testObj
- * @return {external:boolean}
- * @see {@link module:util.propEq|propEq}
- * @see {@link module:util.where|where}
+     * @category Object
+ * @param {Object} spec
+ * @param {Object} testObj
+ * @returns {boolean}
+ * @see {@link propEq|propEq}
+ * @see {@link where|where}
  * @example
  * // pred :: Object -> Boolean
  * const pred = whereEq( { a: 1, b: 2 } );
@@ -5235,14 +5134,13 @@ export {
  *
  * Acts as a transducer if a transformer is given in list position.
  *
- * @function module:util.without
- * @category List
- * @param {external:Array} list1 The values to be removed from `list2`.
- * @param {external:Array} list2 The array to remove values from.
- * @return {external:Array} The new array without values in `list1`.
- * @see {@link module:util.transduce|transduce}
- * @see {@link module:util.difference|difference}
- * @see {@link module:util.remove|remove}
+     * @category List
+ * @param {Array} list1 The values to be removed from `list2`.
+ * @param {Array} list2 The array to remove values from.
+ * @returns {Array} The new array without values in `list1`.
+ * @see {@link transduce|transduce}
+ * @see {@link difference|difference}
+ * @see {@link remove|remove}
  * @example
  * without( [ 1, 2 ], [ 1, 2, 1, 3, 4 ] ); //=> [ 3, 4 ]
  */
@@ -5252,11 +5150,10 @@ export {
  * Creates a new list out of the two supplied by creating each possible pair
  * from the lists.
  *
- * @function module:util.xprod
- * @category List
- * @param {external:Array} as The first list.
- * @param {external:Array} bs The second list.
- * @return {external:Array} The list made by combining each possible pair from `as` and `bs` into pairs (`[a, b]`).
+     * @category List
+ * @param {Array} as The first list.
+ * @param {Array} bs The second list.
+ * @returns {Array} The list made by combining each possible pair from `as` and `bs` into pairs (`[a, b]`).
  * @example
  * xprod( [ 1, 2 ], [ 'a', 'b' ] );
  * //=> [ [ 1, 'a' ], [ 1, 'b' ], [ 2, 'a' ], [ 2, 'b' ] ]
@@ -5269,11 +5166,10 @@ export {
  * shorter of the two input lists.
  * Note: `zip` is equivalent to `zipWith(function(a, b) { return [a, b] })`.
  *
- * @function module:util.zip
- * @category List
- * @param {external:Array} list1 The first array to consider.
- * @param {external:Array} list2 The second array to consider.
- * @return {external:Array} The list made by pairing up same-indexed elements of `list1` and `list2`.
+     * @category List
+ * @param {Array} list1 The first array to consider.
+ * @param {Array} list2 The second array to consider.
+ * @returns {Array} The list made by pairing up same-indexed elements of `list1` and `list2`.
  * @example
  * zip( [ 1, 2, 3 ], [ 'a', 'b', 'c' ] );
  * //=> [ [ 1, 'a' ], [ 2, 'b' ], [ 3, 'c' ] ]
@@ -5285,11 +5181,10 @@ export {
  * Key/value pairing is truncated to the length of the shorter of the two lists.
  * Note: `zipObj` is equivalent to `pipe(zip, fromPairs)`.
  *
- * @function module:util.zipObj
- * @category List
- * @param {external:Array} keys The array that will be properties on the output object.
- * @param {external:Array} values The list of values on the output object.
- * @return {external:Object} The object made by pairing up same-indexed elements of `keys` and `values`.
+     * @category List
+ * @param {Array} keys The array that will be properties on the output object.
+ * @param {Array} values The list of values on the output object.
+ * @returns {Object} The object made by pairing up same-indexed elements of `keys` and `values`.
  * @example
  * zipObj( [ 'a', 'b', 'c' ], [ 1, 2, 3 ] );
  * //=> { a: 1, b: 2, c: 3 }
@@ -5301,12 +5196,11 @@ export {
  * equally-positioned pair in the lists. The returned list is truncated to the
  * length of the shorter of the two input lists.
  *
- * @function module:util.zipWith
- * @category List
- * @param {external:function} fn The function used to combine the two elements into one value.
- * @param {external:Array} list1 The first array to consider.
- * @param {external:Array} list2 The second array to consider.
- * @return {external:Array} The list made by combining same-indexed elements of `list1` and `list2` using `fn`.
+     * @category List
+ * @param {function} fn The function used to combine the two elements into one value.
+ * @param {Array} list1 The first array to consider.
+ * @param {Array} list2 The second array to consider.
+ * @returns {Array} The list made by combining same-indexed elements of `list1` and `list2` using `fn`.
  * @example
  * const f = ( x, y ) => {
  *  // ...
@@ -5323,12 +5217,11 @@ export {
  *
  * Dispatches to the `sequence` method of the second argument, if present.
  *
- * @function module:util.sequence
- * @category List
- * @param {external:function} of
+     * @category List
+ * @param {function} of
  * @param {*} traversable
- * @return {*}
- * @see {@link module:util.traverse|traverse}
+ * @returns {*}
+ * @see {@link traverse|traverse}
  * @example
  * import { of, sequence } from '@blue/util';
  * sequence( Maybe.of, [ Just( 1 ), Just( 2 ), Just( 3 ) ] ); //=> Just( [ 1, 2, 3 ] )
@@ -5386,4 +5279,4 @@ export { default as isString } from './type/is-string';
 export { default as like } from './type/like';
 export { default as likeArray } from './type/like-array';
 export { default as likePromise } from './type/like-promise';
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi9zcmMvaW5kZXgudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7Ozs7Ozs7O0dBUUc7QUFFSDs7OztHQUlHO0FBRUg7Ozs7R0FJRztBQUVIOzs7O0dBSUc7QUFFSDs7OztHQUlHO0FBRUg7Ozs7R0FJRztBQUVILE9BQU87QUFDSDs7Ozs7Ozs7O0dBU0c7QUFDSCxDQUFDLEdBQ0osTUFBTSxPQUFPLENBQUM7QUFFZixPQUFPO0FBQ0g7Ozs7Ozs7OztHQVNHO0FBQ0gsQ0FBQyxHQUNKLE1BQU0sT0FBTyxDQUFDO0FBRWYsT0FBTztBQUNIOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OztHQXVCRztBQUNILEVBQUUsR0FDTCxNQUFNLE9BQU8sQ0FBQztBQUVmLE9BQU87QUFDSDs7Ozs7Ozs7Ozs7Ozs7R0FjRztBQUNILEdBQUcsR0FDTixNQUFNLE9BQU8sQ0FBQztBQUVmLE9BQU87QUFDSDs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7R0FvQkc7QUFDSCxRQUFRLEdBQ1gsTUFBTSxPQUFPLENBQUM7QUFFZixPQUFPO0FBQ0g7Ozs7Ozs7Ozs7Ozs7Ozs7OztHQWtCRztBQUNILE1BQU0sR0FDVCxNQUFNLE9BQU8sQ0FBQztBQUVmLE9BQU87QUFDSDs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7R0F1Qkc7QUFDSCxHQUFHLEdBQ04sTUFBTSxPQUFPLENBQUM7QUFFZixPQUFPO0FBQ0g7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7O0dBdUJHO0FBQ0gsT0FBTyxHQUNWLE1BQU0sT0FBTyxDQUFDO0FBRWYsT0FBTztBQUNIOzs7Ozs7Ozs7Ozs7Ozs7R0FlRztBQUNILE1BQU0sR0FDVCxNQUFNLE9BQU8sQ0FBQztBQUVmLE9BQU87QUFDSDs7Ozs7Ozs7Ozs7Ozs7Ozs7O0dBa0JHO0FBQ0gsR0FBRyxHQUNOLE1BQU0sT0FBTyxDQUFDO0FBRWYsT0FBTztBQUNIOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7R0FxQkc7QUFDSCxPQUFP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
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi9zcmMvaW5kZXgudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7Ozs7Ozs7R0FPRztBQUVIOzs7O0dBSUc7QUFFSDs7OztHQUlHO0FBRUg7Ozs7R0FJRztBQUVIOzs7O0dBSUc7QUFFSDs7OztHQUlHO0FBRUgsT0FBTztBQUNIOzs7Ozs7OztHQVFHO0FBQ0gsQ0FBQyxHQUNKLE1BQU0sT0FBTyxDQUFDO0FBRWYsT0FBTztBQUNIOzs7Ozs7OztHQVFHO0FBQ0gsQ0FBQyxHQUNKLE1BQU0sT0FBTyxDQUFDO0FBRWYsT0FBTztBQUNIOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7OztHQXVCRztBQUNILEVBQUUsR0FDTCxNQUFNLE9BQU8sQ0FBQztBQUVmLE9BQU87QUFDSDs7Ozs7Ozs7Ozs7OztHQWFHO0FBQ0gsR0FBRyxHQUNOLE1BQU0sT0FBTyxDQUFDO0FBRWYsT0FBTztBQUNIOzs7Ozs7Ozs7Ozs7Ozs7Ozs7O0dBbUJHO0FBQ0gsUUFBUSxHQUNYLE1BQU0sT0FBTyxDQUFDO0FBRWYsT0FBTztBQUNIOzs7Ozs7Ozs7Ozs7Ozs7R0FlRztBQUNILGFBQWEsR0FDaEIsTUFBTSxPQUFPLENBQUM7QUFFZixPQUFPO0FBQ0g7Ozs7Ozs7Ozs7Ozs7Ozs7O0dBaUJHO0FBQ0gsTUFBTSxHQUNULE1BQU0sT0FBTyxDQUFDO0FBRWYsT0FBTztBQUNIOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7O0dBc0JHO0FBQ0gsR0FBRyxHQUNOLE1BQU0sT0FBTyxDQUFDO0FBRWYsT0FBTztBQUNIOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7O0dBc0JHO0FBQ0gsT0FBTyxHQUNWLE1BQU0sT0FBTyxDQUFDO0FBRWYsT0FBTztBQUNIOzs7Ozs7Ozs7Ozs7OztHQWNHO0FBQ0gsTUFBTSxHQUNULE1BQU0sT0FBTyxDQUFDO0FBRWYsT0FBTztBQUNIOzs7Ozs7Ozs7Ozs7Ozs7OztHQWlCRztBQUNILEdBQUcsR0FDTixNQUFNLE9BQU8s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

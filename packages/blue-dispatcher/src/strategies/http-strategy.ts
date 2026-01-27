@@ -25,25 +25,20 @@ export interface HTTPStrategy {
 }
 
 /**
- * @interface module:dispatcher.HTTPStrategy
  */
 
 /**
- * @member {external:Array<module:http.HTTPInterceptor>} module:dispatcher.HTTPStrategy#httpInterceptors
  */
 
 /**
- * @member {module:http.HTTPInit} module:dispatcher.HTTPStrategy#httpSettings
  */
 
 /**
- * @function module:dispatcher.HTTPStrategy#initHTTP
  * @param {module:context.ApplicationContext} context
  */
 
 /**
- * @function module:dispatcher.HTTPStrategy#getHTTP
- * @param {external:fetch} [fetch]
+ * @param {fetch} [fetch]
  * @returns {module:http.HTTP}
  */
 

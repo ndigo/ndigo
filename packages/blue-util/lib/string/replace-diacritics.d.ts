@@ -6,10 +6,9 @@
 declare const 
 /**
  * Replace accented chars with regular ones
- * @function module:util.replaceDiacritics
- * @category String
- * @param {external:string} value The string to be transformed.
- * @returns {external:string} The `value` with the accented characters replaced with regular ones.
+     * @category String
+ * @param {string} value The string to be transformed.
+ * @returns {string} The `value` with the accented characters replaced with regular ones.
  * @example
  * replaceDiacritics( "spéçïãl çhârs" );
  * //=> "special chars"

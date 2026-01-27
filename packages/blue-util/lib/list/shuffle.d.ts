@@ -3,10 +3,9 @@
  * @see {@link https://ramdajs.com/docs/}
  */
 /**
- * @function module:util.shuffle
  * @category List
- * @param {external:ArrayLike} list The list to be shuffled.
- * @returns {external:Array} The shuffled list.
+ * @param {ArrayLike} list The list to be shuffled.
+ * @returns {Array} The shuffled list.
  * @example
  * let list = [ "a", "b", "c" ];
  * shuffle( list );

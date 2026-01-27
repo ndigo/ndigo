@@ -1,6 +1,5 @@
 /**
  * @author Jeff Rose
- * @module validate
  */
 
 import * as formats from './formats';

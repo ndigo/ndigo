@@ -19,3 +19,8 @@ yarn-error.log
 
 # Vitest
 .vitest
+
+# Documentation
+doc/
+docs/
+docs-ts/

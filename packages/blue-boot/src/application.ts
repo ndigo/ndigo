@@ -13,8 +13,7 @@ import { IllegalStateError, JSONObject } from '@blue/core';
 
 /**
  * Class that can be used to bootstrap and launch an application.
- * @class module:boot.Application
- * @param {external:string} name The name of the application
+ * @param {string} name The name of the application
  */
 export class Application {
     #environemnt: ConfigurableEnvironment;
@@ -31,9 +30,8 @@ export class Application {
     }
 
     /**
-     * Run the Spring application, creating and refreshing a new {@linkcode module:context.ApplicationContext|ApplicationContext}.
-     * @function module:boot.Application#run
-     * @param {*} args
+     * Run the Spring application, creating and refreshing a new {@link ApplicationContext|ApplicationContext}.
+         * @param {*} args
      */
     run(...args: string[]): ConfigurableApplicationContext {
         let context;
@@ -66,9 +64,8 @@ export class Application {
 
     /**
      * @protected
-     * @function module:boot.Application#_configureEnvironment
-     * @param {module:context.Environment} environment
-     * @param {external:Array<external:string>} args
+         * @param {module:context.Environment} environment
+     * @param {Array<external:string>} args
      */
     protected _configureEnvironment(environment: ConfigurableEnvironment, args: string[]): void {
         this._configurePropertySources(environment, args);
@@ -77,9 +74,8 @@ export class Application {
 
     /**
      * @protected
-     * @function module:boot.Application#_configureProfiles
-     * @param {module:context.Environment} environment
-     * @param {external:Array<external:string>} args
+         * @param {module:context.Environment} environment
+     * @param {Array<external:string>} args
      */
     protected _configureProfiles(environment: ConfigurableEnvironment, args: string[]): void {}
 

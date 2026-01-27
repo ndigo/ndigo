@@ -10,9 +10,8 @@ const charMatcher = /[!'()*]/g,
 
 /**
  * A stricter URI encode adhering to {@link https://tools.ietf.org/html/rfc3986|RFC 3986}
- * @function module:util.encodeURIComponent
- * @param {external:string} value A string value
- * @returns {external:string} The encoded string
+ * @param {string} value A string value
+ * @returns {string} The encoded string
  * @example
  * encodeURIComponent( 'unicorn!foobar' );
  * //=> 'unicorn%21foobar'

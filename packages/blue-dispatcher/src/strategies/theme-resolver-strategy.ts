@@ -13,7 +13,6 @@ export interface ThemeResolverStrategy {
 }
 
 /**
- * @interface module:dispatcher.ThemeResolverStrategy
  */
 
 const { defineProperty } = Reflect,

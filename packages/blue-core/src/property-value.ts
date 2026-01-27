@@ -14,24 +14,20 @@ export interface PropertyValues extends Iterable<PropertyValue> {
 }
 
 /**
- * @interface module:core.PropertyValues
  * @extends external:Iterable<module:core.PropertyValue>
  */
 
 /**
- * @member {module:core.PropertyValue[]} module:core.PropertyValues#propertyValues
  */
 
 /**
- * @function module:core.PropertyValues#getPropertyValue
- * @param {external:string} propertyName
+ * @param {string} propertyName
  * @returns {module:core.PropertyValue} The property value or `null` if none
  */
 
 const isString = is(String) as (value) => value is string;
 
 /**
- * @class module:core.likePropertyValues
  */
 export const likePropertyValues = both(
     likeIterable,
@@ -40,7 +36,6 @@ export const likePropertyValues = both(
 
 /**
  * An object that holds information and value for an individual property.
- * @class module:core.PropertyValue
  * @implements module:core.Equatable
  * @implements module:core.Serializable
  */

@@ -5,10 +5,9 @@
 import like from './like';
 const /**
      * Determines whether a given object is thenable, i.e. has a `then` method.
-     * @function module:util.likePromise
-     * @category Type
+         * @category Type
      * @param {*} value The value to be tested.
-     * @returns {external:boolean} Whether or not `value` is thenable.
+     * @returns {boolean} Whether or not `value` is thenable.
      * @example
      * const promise = new Promise( ... );
      * likePromise( promise );
@@ -19,4 +18,4 @@ const /**
      * //=> false
      */ likePromise = like({ then: Function });
 export default likePromise;
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoibGlrZS1wcm9taXNlLmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiLi4vLi4vc3JjL3R5cGUvbGlrZS1wcm9taXNlLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBOzs7R0FHRztBQUVILE9BQU8sSUFBSSxNQUFNLFFBQVEsQ0FBQztBQUUxQixNQUFNOzs7Ozs7Ozs7Ozs7OztPQWNDLENBQ0gsV0FBVyxHQUFHLElBQUksQ0FBQyxFQUFFLElBQUksRUFBRSxRQUFRLEVBQUUsQ0FBeUMsQ0FBQztBQUVuRixlQUFlLFdBQVcsQ0FBQyJ9
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoibGlrZS1wcm9taXNlLmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiLi4vLi4vc3JjL3R5cGUvbGlrZS1wcm9taXNlLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBOzs7R0FHRztBQUVILE9BQU8sSUFBSSxNQUFNLFFBQVEsQ0FBQztBQUUxQixNQUFNOzs7Ozs7Ozs7Ozs7O09BYUMsQ0FDSCxXQUFXLEdBQUcsSUFBSSxDQUFDLEVBQUUsSUFBSSxFQUFFLFFBQVEsRUFBRSxDQUF5QyxDQUFDO0FBRW5GLGVBQWUsV0FBVyxDQUFDIn0=

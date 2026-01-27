@@ -16,23 +16,20 @@ export interface ContentSourceAware extends Aware {
 
 /**
  * Strategy interface for resolving content.
- * @interface module:content.ContentSource
  */
 
 /**
- * @function module:content.ContentSource#getContent
- * @param {external:string} key
- * @param {external:string} language
- * @returns {external:string}
+ * @param {string} key
+ * @param {string} language
+ * @returns {string}
  */
 
 /**
- * @interface module:content.ContentSourceAware
  * @extends module:content.Aware
  */
 
 /**
- * @mixin module:content.AsContentSourceAware
+ * @see module:content.AsContentSourceAware
  * @implements module:content.ContentSourceAware
  * @returns {module:content.Constructable<module:content.ContentSourceAware>}
  */
@@ -51,16 +48,14 @@ export const AsContentSourceAware = <T extends Constructable>(superclass: T): Co
     };
 
 /**
- * @function module:content.likeContentSource
  * @param {*} value The value to be tested
- * @returns {external:boolean} Whether or not the `value` is {@linkcode module:content.ContentSource|ContentSource}
+ * @returns {boolean} Whether or not the `value` is {@link ContentSource|ContentSource}
  */
 export const likeContentSource = like({ getContent: Function }) as (value) => value is ContentSource;
 
 /**
- * @function module:content.likeContentSourceAware
  * @param {*} value The value to be tested
- * @returns {external:boolean} Whether or not the `value` is {@linkcode module:content.ContentSourceAware|ContentSourceAware}
+ * @returns {boolean} Whether or not the `value` is {@link ContentSourceAware|ContentSourceAware}
  */
 export const likeContentSourceAware = likeAwareAnd(like({ setContentSource: Function })) as (
     value

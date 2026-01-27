@@ -5,9 +5,8 @@
  */
 /**
  * Determines whether a given value is a constructor, i.e. creates instances using `new`.
- * @function module:util.isConstructor
  * @param {*} value The value to be tested.
- * @returns {external:boolean} Whether or not `value` is a constructor.
+ * @returns {boolean} Whether or not `value` is a constructor.
  * @category Type
  */
 declare const isConstructor: (value: any) => value is Function;

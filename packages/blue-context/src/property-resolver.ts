@@ -18,34 +18,29 @@ export interface ConfigurablePropertyResolver extends PropertyResolver {
 
 /**
  * Interface for resolving properties against any underlying source.
- * @interface module:context.PropertyResolver
  */
 
 /**
  * Return whether the given property key is available for resolution.
- * @function module:context.PropertyResolver#hasProperty
- * @param {external:string} key The property name to resolve
- * @returns {external:boolean}
+ * @param {string} key The property name to resolve
+ * @returns {boolean}
  */
 
 /**
  * Return the property value associated with the given `key` or `defaultValue`, if provided, and the key cannot be resolved.
- * @function module:context.PropertyResolver#getProperty
- * @param {external:string} key The property name to resolve
+ * @param {string} key The property name to resolve
  * @param {T} [defaultValue] The default value to return if no value is found
  * @returns {T}
  */
 
 /**
  * Return the property value associated with the given `key` or throw an error if it cannot be resolved.
- * @function module:context.PropertyResolver#getRequiredProperty
- * @param {external:string} key The property name to resolve
+ * @param {string} key The property name to resolve
  * @returns {T}
- * @throws {external:Error} If the property cannot be resolved.
+ * @throws {Error} If the property cannot be resolved.
  */
 
 /**
- * @interface module:context.ConfigurablePropertyResolver
  * @extends module:context.PropertyResolver
  */
 
@@ -66,9 +61,8 @@ const { defineProperty, getPrototypeOf, setPrototypeOf } = Reflect,
     };
 
 /**
- * @function module:context.likePropertyResolver
  * @param {*} value The value to be tested.
- * @return {external:boolean} Whether or not the value is like a {@linkcode module:context.PropertyResolver|PropertyResolver}.
+ * @returns {boolean} Whether or not the value is like a {@link PropertyResolver|PropertyResolver}.
  */
 export const likePropertyResolver = like({
     getProperty: Function,
@@ -77,7 +71,6 @@ export const likePropertyResolver = like({
 }) as (value) => value is PropertyResolver;
 
 /**
- * @class module:context.PrototypalPropertyResolver
  * @implements module:context.PropertyResolver
  */
 export class PrototypalPropertyResolver implements ConfigurablePropertyResolver {
@@ -85,8 +78,7 @@ export class PrototypalPropertyResolver implements ConfigurablePropertyResolver 
     readonly properties: JSONObject;
 
     /**
-     * @member {external:Array<module:core.JSONObject>} module:context.PrototypalPropertyResolver#propertySources
-     */
+         */
     get propertySources(): JSONObject[] {
         return this.#propertySources;
     }
@@ -103,15 +95,13 @@ export class PrototypalPropertyResolver implements ConfigurablePropertyResolver 
 
     constructor(propertySources: JSONObject[]) {
         /**
-         * @member {module:core.JSONObject} module:context.PrototypalPropertyResolver#properties
-         */
+                 */
 
         this.propertySources = propertySources;
     }
 
     /**
-     * @function module:context.PrototypalPropertyResolver#getProperty
-     * @param {external:string} key
+         * @param {string} key
      * @param {module:core.JSONValue} [defaultValue]
      * @returns {module:core.JSONValue}
      */
@@ -126,8 +116,7 @@ export class PrototypalPropertyResolver implements ConfigurablePropertyResolver 
     }
 
     /**
-     * @function module:context.PrototypalPropertyResolver#getRequiredProperty
-     * @param {external:string} key
+         * @param {string} key
      * @returns {module:core.JSONValue}
      */
     getRequiredProperty(key: string): JSONValue {
@@ -139,9 +128,8 @@ export class PrototypalPropertyResolver implements ConfigurablePropertyResolver 
     }
 
     /**
-     * @function module:context.PrototypalPropertyResolver#hasProperty
-     * @param {external:string} key
-     * @returns {external:boolean}
+         * @param {string} key
+     * @returns {boolean}
      */
     hasProperty(key: string): boolean {
         const parseResult = keypathExpression.run(key);

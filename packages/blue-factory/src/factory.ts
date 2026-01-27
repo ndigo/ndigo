@@ -66,41 +66,35 @@ export interface FactoryAware extends Aware {
  * On teardown, the follow lfecycle should apply:
  * 1. `processBeforeDestruction`
  * 2. `destroy`
- * @interface module:factory.Factory
- * @see {@link module:factory.NameAware}
- * @see {@link module:factory.FactoryAware}
- * @see {@link module:context.EnvironmentAware}
- * @see {@link module:context.ApplicationEventEmitterAware}
- * @see {@link module:content.ContentSourceAware}
- * @see {@link module:context.ApplicationContextAware}
+ * @see {@link NameAware}
+ * @see {@link FactoryAware}
+ * @see {@link EnvironmentAware}
+ * @see {@link ApplicationEventEmitterAware}
+ * @see {@link ContentSourceAware}
+ * @see {@link ApplicationContextAware}
  */
 
 /**
  * Return an instance of the specified value.
- * @function module:factory.Factory#getInstance
- * @param {external:string} name The name of the value.
+ * @param {string} name The name of the value.
  * @returns {*} An instance of the value specified by the `name`.
  */
 
 /**
- * @interface module:factory.HierarchicalFactory
  * @extends module:factory.Factory
  */
 
 /**
- * @interface module:factory.ConfigurableFactory
  * @extends module:factory.HierarchicalFactory
  * @extends module:factory.Registry
  */
 
 /**
- * Interface to be implemented by values that wish to be aware of their owning {@linkcode module:factory.Factory|Factory}.
- * @interface module:factory.FactoryAware
+ * Interface to be implemented by values that wish to be aware of their owning {@link Factory|Factory}.
  */
 
 /**
  * Setter that supplies the owning factory to the instance.
- * @function module:factory.FactoryAware#setFactory
  * @param {module:factory.Factory} factory
  */
 
@@ -111,7 +105,7 @@ const { create, keys } = Object,
 type Constructable<T = {}> = new (...args: any[]) => T;
 
 /**
- * @mixin module:factory.AsFactoryAware
+ * @see module:factory.AsFactoryAware
  * @implements module:factory.FactoryAware
  * @returns {module:factory.Constructable<module:factory.FactoryAware>}
  */
@@ -120,13 +114,11 @@ export const AsFactoryAware = <T extends Constructable>(superclass: T): Construc
         readonly factory: Factory;
 
         /**
-         * @function module:factory.AsFactoryAware#setFactory
-         * @param {module:factory.Factory} factory
+                 * @param {module:factory.Factory} factory
          */
         setFactory(factory: Factory): void {
             /**
-             * @member {module:factory.Factory} module:factory.AsFactoryAware#factory
-             */
+                         */
             defineProperty(this, 'factory', {
                 get: () => factory,
                 configurable: true,
@@ -136,30 +128,26 @@ export const AsFactoryAware = <T extends Constructable>(superclass: T): Construc
     };
 
 /**
- * @function module:factory.likeFactory
  * @param {*} value The value to be tested
- * @returns {external:boolean} Whether or not the `value` provided is a {@linkcode module:factory.Factory|Factory}.
+ * @returns {boolean} Whether or not the `value` provided is a {@link Factory|Factory}.
  */
 export const likeFactory = like({ getInstance: Function }) as (value) => value is Factory;
 
 /**
- * @function module:factory.likeFactoryAware
  * @param {*} value The value to be tested
- * @returns {external:boolean} Whether or not the `value` provided is {@linkcode module:factory.FactoryAware|FactoryAware}.
+ * @returns {boolean} Whether or not the `value` provided is {@link FactoryAware|FactoryAware}.
  */
 export const likeFactoryAware = likeAwareAnd(like({ setFactory: Function })) as (value) => value is FactoryAware;
 
 /**
- * @function module:factory.likeHierarchicalFactory
  * @param {*} value The value to be tested
- * @returns {external:boolean} Whether or not the `value` provided is {@linkcode module:factory.HierarchicalFactory|HierarchicalFactory}.
+ * @returns {boolean} Whether or not the `value` provided is {@link HierarchicalFactory|HierarchicalFactory}.
  */
 export const likeHierarchicalFactory = both(likeFactory, like({ parent: true, hasOwnValue: Function }));
 
 /**
- * @function module:factory.likeConfigurableFactory
  * @param {*} value The value to be tested
- * @returns {external:boolean} Whether or not the `value` provided is {@linkcode module:factory.ConfigurableFactory|ConfigurableFactory}.
+ * @returns {boolean} Whether or not the `value` provided is {@link ConfigurableFactory|ConfigurableFactory}.
  */
 export const likeConfigurableFactory = both(
     likeHierarchicalFactory,
@@ -534,21 +522,17 @@ export abstract class AbstractFactory implements ConfigurableFactory {
 
 /**
  * @abstract
- * @class module:factory.AbstractFactory
  * @implements module:factory.ConfigurableFactory
  */
 
 /**
- * @member {external:Array<module:factory.EntryProcessor>} module:factory.AbstractFactory#processors
  */
 
 /**
- * @function module:factory.AbstractFactory#addProcessor
  * @param {module:factory.EntryProcessor} processor
  */
 
 /**
- * @class module:factory.DefaultFactory
  * @extends module:factory.AbstractFactory
  * @example
  * const factory = new DefaultFactory();
@@ -564,7 +548,6 @@ export abstract class AbstractFactory implements ConfigurableFactory {
 export class DefaultFactory extends AbstractFactory {}
 
 /**
- * @class module:factory.ProxiedFactory
  * @extends module:factory.DefaultFactory
  * @implements external:Record
  * @example
@@ -575,7 +558,7 @@ export class DefaultFactory extends AbstractFactory {}
  * delete factory.foo
  * 'foo' in factory;
  * //=> false
- * @see {@link module:factory.DefaultFactory}
+ * @see {@link DefaultFactory}
  */
 export class ProxiedFactory extends DefaultFactory implements Record<string, any> {
     [key: string]: any;

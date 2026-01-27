@@ -20,7 +20,6 @@ const { defineProperty } = Reflect,
     isPositiveNumber = allPass([isNumber, isInteger, greaterThanZero]);
 
 /**
- * @class module:http.TimeoutInterceptor
  * @implements module:http.CompletionAwareHTTPInterceptor
  * @implements module:http.ErrorAwareHTTPInterceptor
  * @implements module:http.InitializationAwareHTTPInterceptor
@@ -42,8 +41,7 @@ export class TimeoutInterceptor
 
         /**
          * @readonly
-         * @member {external:number} module:http.TimeoutInterceptor#timeout
-         */
+                 */
         defineProperty(this, 'timeout', {
             get: () => timeout,
             configurable: true,
@@ -54,10 +52,9 @@ export class TimeoutInterceptor
     }
 
     /**
-     * @function module:http.TimeoutInterceptor#preInit
-     * @param {external:URL} url The requested URL.
+         * @param {URL} url The requested URL.
      * @param {module:http.TimeoutInit} settings The HTTP request settings, including the `timeout` setting.
-     * @returns {external:boolean} Whether or not the http request should continue execution.
+     * @returns {boolean} Whether or not the http request should continue execution.
      */
     preInit(url: URL, settings: TimeoutInit): boolean {
         const controller = new AbortController(),
@@ -73,9 +70,8 @@ export class TimeoutInterceptor
 
     /**
      * @async
-     * @function module:http.TimeoutInterceptor#postError
-     * @param {external:Error} error The error that was thrown
-     * @param {external:Request} request The HTTP request
+         * @param {Error} error The error that was thrown
+     * @param {Request} request The HTTP request
      * @returns {exteral:Promise<external:Response | external:undefined>}
      */
     async postError(error: Error, request: Request): Promise<Response | undefined> {
@@ -86,9 +82,8 @@ export class TimeoutInterceptor
     }
 
     /**
-     * @function module:http.TimeoutInterceptor#postComplete
-     * @param {external:Request} request The HTTP request
-     * @param {external:Response} response The HTTP response
+         * @param {Request} request The HTTP request
+     * @param {Response} response The HTTP response
      */
     postComplete(request: Request, response: Response): void {
         if (this.#timeoutId !== null) {

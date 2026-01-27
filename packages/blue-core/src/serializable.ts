@@ -33,29 +33,26 @@ export interface Serializable {
 export type serializable = JSONValue | Serializable;
 
 /**
- * @typedef {external:boolean | external:number | external:string | module:core.JSONObject | module:core.JSONArray} module:core.JSONValue
+ * @typedef {boolean | external:number | external:string | module:core.JSONObject | module:core.JSONArray} module:core.JSONValue
  */
 
 /**
- * @typedef {external:Record<external:string, module:core.JSONValue>} module:core.JSONObject
+ * @typedef {Record<external:string, module:core.JSONValue>} module:core.JSONObject
  */
 
 /**
- * @typedef {external:Array<module:core.JSONValue>} module:core.JSONArray
+ * @typedef {Array<module:core.JSONValue>} module:core.JSONArray
  */
 
 /**
- * @interface module:core.Serializable
  */
 
 /**
- * @function module:core.Serializable#toJSON
  * @returns {module:core.JSONValue}
  */
 
 /**
- * @function module:core.Serializable#toString
- * @returns {external:string}
+ * @returns {string}
  */
 
 /**
@@ -73,23 +70,20 @@ const { isArray } = Array,
     _isJSONValue = (value) => equals(parse(stringify(value)), value);
 
 /**
- * @function module:core.isJSONArray
  * @param {*} value
- * @returns {external:boolean}
+ * @returns {boolean}
  */
 export const isJSONArray = both(isArray, _isJSONValue) as (value) => value is JSONArray;
 
 /**
- * @function module:core.isJSONObject
  * @param {*} value
- * @returns {external:boolean}
+ * @returns {boolean}
  */
 export const isJSONObject = allPass([isNotPrimitive, isNotArray, _isJSONValue]) as (value) => value is JSONObject;
 
 /**
- * @function module:core.isJSONValue
  * @param {*} value
- * @returns {external:boolean}
+ * @returns {boolean}
  */
 export const isJSONValue = (value): value is JSONValue => {
     switch (typeof value) {
@@ -105,14 +99,12 @@ export const isJSONValue = (value): value is JSONValue => {
 };
 
 /**
- * @function module:core.likeSerializable
  * @param {*} value
- * @returns {external:boolean}
+ * @returns {boolean}
  */
 export const likeSerializable = anyPass([isJSONValue, hasToJSON, hasToString]) as (value) => value is serializable;
 
 /**
- * @function module:core.serialize
  * @param {*} value
  * @returns {module:core.JSONValue}
  */

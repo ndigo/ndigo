@@ -11,22 +11,18 @@ export interface PatternMatcher<TPattern, TValue> {
 }
 
 /**
- * @interface module:core.Matchable
  */
 
 /**
- * @function module:core.Matchable#matches
  * @param {*} value
- * @returns {external:boolean}
+ * @returns {boolean}
  */
 
 /**
- * @interface module:core.PatternMatcher
  */
 
 /**
- * @function module:core.PatternMatcher#match
  * @param {*} pattern
  * @param {*} value
- * @returns {external:boolean}
+ * @returns {boolean}
  */

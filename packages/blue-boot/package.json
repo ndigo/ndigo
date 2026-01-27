@@ -54,8 +54,5 @@
     "@blue/context": "~3.0.0-alpha",
     "@blue/core": "~3.0.0-alpha",
     "@blue/router": "~3.0.0-alpha"
-  },
-  "publishConfig": {
-    "registry": "https://artifacts.jpmchase.net/artifactory/api/npm/npm"
   }
 }

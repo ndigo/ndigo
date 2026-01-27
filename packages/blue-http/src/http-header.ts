@@ -91,7 +91,6 @@ function setHeader(headers: HeadersInit, name: string, value): void {
 }
 
 /**
- * @class module:http.HTTPHeader
  * @implements module:core.Serializable
  */
 export class HTTPHeader implements Serializable {
@@ -104,8 +103,7 @@ export class HTTPHeader implements Serializable {
     constructor(name: string) {
         /**
          * @readonly
-         * @member {external:string} module:http.HTTPHeader#name
-         */
+                 */
         defineProperty(this, 'name', {
             value: name,
             configurable: true,
@@ -134,16 +132,14 @@ export class HTTPHeader implements Serializable {
     }
 
     /**
-     * @function module:http.HTTPHeader#toJSON
-     * @returns {module:core.JSONObject} A JSON representation of the HTTP header
+         * @returns {module:core.JSONObject} A JSON representation of the HTTP header
      */
     toJSON(): JSONValue {
         return this.name;
     }
 
     /**
-     * @function module:http.HTTPHeader#toString
-     * @returns {external:string} A string representation of the HTTP header
+         * @returns {string} A string representation of the HTTP header
      */
     toString(): string {
         return this.name;

@@ -26,32 +26,27 @@ export interface Comparator<T> {
  * @callback module:core.comparison
  * @param {T} value1
  * @param {T} value2
- * @returns {external:number} A negative integer, zero, or a positive integer as the first argument is less than, equal to, or greater than the second.
+ * @returns {number} A negative integer, zero, or a positive integer as the first argument is less than, equal to, or greater than the second.
  */
 
 /**
- * @interface module:core.Comparable
  */
 
 /**
  * Compares this object with the specified object for order. Returns a negative integer, zero, or a positive integer as this object is less than, equal to, or greater than the specified object.
- * @function module:core.Comparable#compareTo
- * @returns {external:number} A negative integer, zero, or a positive integer as this object is less than, equal to, or greater than the specified object.
+ * @returns {number} A negative integer, zero, or a positive integer as this object is less than, equal to, or greater than the specified object.
  */
 
 /**
- * @interface module:core.StringComparable
  * @extends module:core.Comparable
  */
 
 /**
  * Compares this string-based object with the specified string-based object for order, ignoring case. Returns a negative integer, zero, or a positive integer as this object is less than, equal to, or greater than the specified object.
- * @function module:core.StringComparable#compareToIgnoreCase
- * @returns {external:number} A negative integer, zero, or a positive integer as this object is less than, equal to, or greater than the specified object.
+ * @returns {number} A negative integer, zero, or a positive integer as this object is less than, equal to, or greater than the specified object.
  */
 
 /**
- * @interface module:core.Comparator
  * @property {module:core.comparison} compare
  */
 
@@ -79,27 +74,22 @@ export abstract class AbstractValueComparator implements Comparator<string> {
 
 /**
  * @abstract
- * @class module:core.AbstractValueComparator
  * @implements module:core.Comparator<external:string>
  */
 
 /**
- * @function module:core.likeComparable
  */
 export const likeComparable = like({ compareTo: Function }) as (value) => value is Comparable<any>;
 
 /**
- * @function module:core.likeComparator
  */
 export const likeComparator = like({ compare: Function }) as (value) => value is Comparator<any>;
 
 /**
- * @const {module:core.comparison} module:core.naturalComparison
  */
 export const naturalComparison = comparator(naturalPredicate);
 
 /**
- * @const {external:Function} module:core.invertComparison
  * @param {module:core.comparison} compare The comparison to invert
  * @returns {module:core.comparison} The inverted comparison
  */
@@ -109,7 +99,6 @@ export const invertComparison =
         -compare(value1, value2);
 
 /**
- * @class module:core~PredicateComparator
  * @implements module:core.Comparator
  */
 class PredicateComparator<T> implements Comparator<T> {
@@ -130,7 +119,6 @@ class PredicateComparator<T> implements Comparator<T> {
 }
 
 /**
- * @class module:core~NaturalComparator
  * @extends module:core~PredicateComparator
  */
 class NaturalComparator<T> extends PredicateComparator<T> {
@@ -141,7 +129,6 @@ class NaturalComparator<T> extends PredicateComparator<T> {
 
 /**
  * Comparator that adapts Comparables to the Comparator interface. Mainly for internal use in other Comparators, when supposed to work on Comparables.
- * @class module:core.ComparableComparator
  * @implements module:core.Comparator
  */
 class ComparableComparator<T extends Comparable<T>> implements Comparator<T> {
@@ -151,7 +138,6 @@ class ComparableComparator<T extends Comparable<T>> implements Comparator<T> {
 }
 
 /**
- * @class module:core~DateComparator
  * @extends module:core~PredicateComparator
  */
 class DateComparator extends PredicateComparator<Date> {
@@ -161,13 +147,11 @@ class DateComparator extends PredicateComparator<Date> {
 }
 
 /**
- * @class module:core~NumberComparator
  * @extends module:core~NaturalComparator
  */
 class NumberComparator extends NaturalComparator<number> {}
 
 /**
- * @class module:core~StringComparator
  * @extends module:core~NaturalComparator
  */
 class StringComparator extends NaturalComparator<string> {
@@ -181,21 +165,17 @@ class StringComparator extends NaturalComparator<string> {
 }
 
 /**
- * @const {module:core~ComparableComparator} module:core.comparableComparator
  */
 export const comparableComparator = new ComparableComparator();
 
 /**
- * @const {module:core~DateComparator} module:core.dateComparator
  */
 export const dateComparator = new DateComparator();
 
 /**
- * @const {module:core~NumberComparator} module:core.numberComparator
  */
 export const numberComparator = new NumberComparator();
 
 /**
- * @const {module:core~StringComparator} module:core.stringComparator
  */
 export const stringComparator = new StringComparator();

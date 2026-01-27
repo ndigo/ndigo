@@ -22,30 +22,26 @@ export interface ResourceLoaderAware extends Aware {
 
 /**
  * Interface for a resource descriptor that abstracts from the actual type of underlying resource, such as a file.
- * @interface module:context.Resource
  */
 
 /**
- * Strategy interface for loading resources (e.g. file system resources). An {@linkcode module:context.ApplicationContext|ApplicationContext} is required to provide this functionality.
+ * Strategy interface for loading resources (e.g. file system resources). An {@link ApplicationContext|ApplicationContext} is required to provide this functionality.
  *
  * Value properties of type Resource and Resource array can be populated from Strings when running in an ApplicationContext, using the particular context's resource loading strategy.
- * @interface module:context.ResourceLoader
  */
 
 /**
- * Interface to be implemented by any object that wishes to be notified of the {@linkcode module:context.ResourceLoader|ResourceLoader} (typically the {@linkcode module:context.ApplicationContext|ApplicationContext}) that it runs in. This is an alternative to a full ApplicationContext dependency via the {@linkcode module:context.ApplicationContextAware|ApplicationContextAware} interface.
+ * Interface to be implemented by any object that wishes to be notified of the {@link ResourceLoader|ResourceLoader} (typically the {@link ApplicationContext|ApplicationContext}) that it runs in. This is an alternative to a full ApplicationContext dependency via the {@link ApplicationContextAware|ApplicationContextAware} interface.
  *
- * You typically need a ResourceLoader when your application object has to access a variety of file resources whose names are calculated. A good strategy is to make the object use a {@linkcode module:context.DefaultResourceLoader|DefaultResourceLoader} but still implement ResourceLoaderAware to allow for overriding when running in an ApplicationContext.
- * @interface module:context.ResourceLoaderAware
+ * You typically need a ResourceLoader when your application object has to access a variety of file resources whose names are calculated. A good strategy is to make the object use a {@link DefaultResourceLoader|DefaultResourceLoader} but still implement ResourceLoaderAware to allow for overriding when running in an ApplicationContext.
  * @extends module:context.Aware
  */
 
 /**
  * Return a Resource handle for the specified resource location.
  *
- * Note that a Resource handle does not imply an existing resource; you need to invoke {@linkcode module:context.Resource#exists|Resource#exists} to check for existence.
- * @function module:context.ResourceLoader#getResource
- * @param {external:string} location The resource location
+ * Note that a Resource handle does not imply an existing resource; you need to invoke {@link Resource#exists|Resource#exists} to check for existence.
+ * @param {string} location The resource location
  * @returns {module:context.Resource} A resource handle for the specified resource location.
  */
 
@@ -54,7 +50,7 @@ const { defineProperty } = Reflect,
     isAbsoluteURL = test(startsWithProtocol);
 
 /**
- * @mixin module:context.AsResourceLoaderAware
+ * @see module:context.AsResourceLoaderAware
  * @implements module:context.ResourceLoaderAware
  * @returns {module:context.Constructable<module:context.ResourceLoaderAware>}
  */
@@ -73,28 +69,24 @@ export const AsResourceLoaderAware = <T extends Constructable>(superclass: T): C
     };
 
 /**
- * @function module:context.likeResource
  * @param {*} value The value to be tested
- * @returns {external:boolean} Whether or not the `value` is {@linkcode module:context.Resource|Resource}
+ * @returns {boolean} Whether or not the `value` is {@link Resource|Resource}
  */
 export const likeResource = like({ exists: Boolean }) as (value) => value is Resource;
 
 /**
- * @function module:context.likeResourceLoader
  * @param {*} value The value to be tested
- * @returns {external:boolean} Whether or not the `value` is {@linkcode module:context.ResourceLoader|ResourceLoader}
+ * @returns {boolean} Whether or not the `value` is {@link ResourceLoader|ResourceLoader}
  */
 export const likeResourceLoader = like({ getResource: Function }) as (value) => value is ResourceLoader;
 
 /**
- * @function module:context.likeResourceLoaderAware
  * @param {*} value The value to be tested
- * @returns {external:boolean} Whether or not the `value` is {@linkcode module:context.ResourceLoaderAware|ResourceLoaderAware}
+ * @returns {boolean} Whether or not the `value` is {@link ResourceLoaderAware|ResourceLoaderAware}
  */
 export const likeResourceLoaderAware = like({ setResourceLoader: Function }) as (value) => value is ResourceLoaderAware;
 
 /**
- * @class module:context.URLResource
  */
 export class URLResource<T = any> implements Resource<T> {
     readonly url: URL;
@@ -129,7 +121,6 @@ export class URLResource<T = any> implements Resource<T> {
 }
 
 /**
- * @class module:context.UnresolvedResource
  * @implements module:context.Resource
  */
 export class UnresolvedResource implements Resource<Error> {
@@ -156,7 +147,7 @@ export class UnresolvedResource implements Resource<Error> {
 }
 
 /**
- * @mixin module:context.AsModuleResourceLoader
+ * @see module:context.AsModuleResourceLoader
  * @implements module:context.ResourceLoader
  */
 export const AsModuleResourceLoader = <T extends Constructable>(
@@ -177,7 +168,6 @@ export const AsModuleResourceLoader = <T extends Constructable>(
 };
 
 /**
- * @class module:context.DefaultResourceLoader
- * @mixes module:context.AsModuleResourceLoader
+ * @see module:context.AsModuleResourceLoader
  */
 export class DefaultResourceLoader extends AsModuleResourceLoader(Null) {}

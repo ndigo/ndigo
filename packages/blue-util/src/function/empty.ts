@@ -21,8 +21,7 @@ const isArrayBuffer = is(ArrayBuffer),
 /**
  * Returns the empty value of its argument's type. @blue/util defines the empty value of Array (`[]`), Object (`{}`), String (`''`), Map (`new Map()`), Set (`new Set()`), WeakMap (`new WeakMap()`), WeakSet (`new WeakSet()`) and Arguments. Other types are supported if they define `<Type>.empty`, `<Type>.prototype.empty` or implement the [FantasyLand Monoid spec](https://github.com/fantasyland/fantasy-land#monoid).
  * Dispatches to the `empty` method of the first argument, if present.
- * @function module:util.empty
- * @returns {external:boolean}
+ * @returns {boolean}
  * @category Function
  * @example
  * empty( Just( 42 ) );               //=> Nothing()

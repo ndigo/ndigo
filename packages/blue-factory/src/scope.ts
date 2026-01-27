@@ -29,32 +29,28 @@ const SCOPE = 'scope',
     { defineMetadata, getMetadata, hasMetadata } = Reflect as any;
 
 /**
- * @function module:factory.defineScope
  * @param {*} value
  * @param {*} target
- * @param {external:string|external:symbol} [propertyKey]
+ * @param {string|external:symbol} [propertyKey]
  */
 export const defineScope = (value, target): void => defineMetadata(SCOPE, value, target);
 
 /**
- * @function module:factory.getScope
  * @param {*} target
- * @param {external:string|external:symbol} [propertyKey]
+ * @param {string|external:symbol} [propertyKey]
  * @returns {*}
  */
 export const getScope = (target): any => getMetadata(SCOPE, target);
 
 /**
- * @function module:factory.hasScope
  * @param {*} target
- * @param {external:string|external:symbol} [propertyKey]
- * @returns {external:boolean} Whether or not the `target` and optional `propertyKey` has a scope mapping defined.
+ * @param {string|external:symbol} [propertyKey]
+ * @returns {boolean} Whether or not the `target` and optional `propertyKey` has a scope mapping defined.
  */
 export const hasScope = (target): boolean => hasMetadata(SCOPE, target);
 
 /**
- * @function module:factory.Scope
- * @param {external:string} scope
+ * @param {string} scope
  */
 export const scope =
     (scope: PossibleScope) =>

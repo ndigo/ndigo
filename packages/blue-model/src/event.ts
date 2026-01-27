@@ -26,7 +26,6 @@ const initEventModel = function (obj, model, _this) {
 };
 
 /**
- * @class module:model.EventModel
  * @extends module:model.Model
  */
 

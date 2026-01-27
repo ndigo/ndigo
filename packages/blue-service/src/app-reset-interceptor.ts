@@ -12,7 +12,6 @@ const defaults: AppResetInit = {
 };
 
 /**
- * @class module:http.AppResetInterceptor
  * @implements module:http.ResultAwareServiceInterceptor
  */
 export class AppResetInterceptor implements ResponseAwareServiceInterceptor<AppResetInit> {

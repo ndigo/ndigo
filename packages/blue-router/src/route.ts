@@ -18,44 +18,34 @@ export interface Route extends ArrayLike<RouteSegment>, Serializable {
 }
 
 /**
- * @interface module:router.RouteSegment
  * @extends module:core.Serializable
  */
 
 /**
- * @member {external:string} module:router.RouteSegment#name
  */
 
 /**
- * @member {module:core.JSONObject} module:router.RouteSegment#data
  */
 
 /**
- * @member {external:string} [module:router.RouteSegment#dataString]
  */
 
 /**
- * @member {external:string} module:router.RouteSegment#raw
  */
 
 /**
- * @interface module:router.Route
  * @extends external:ArrayLike<router.RouteSegment>
  * @extends module:core.Serializable
  */
 
 /**
- * @member {module:core.JSONObject} module:router.Route#data
  */
 
 /**
- * @member {external:string} [module:router.Route#dataString]
  */
 
 /**
- * @member {external:string} module:router.Route#path
  */
 
 /**
- * @member {external:string} module:router.Route#raw
  */

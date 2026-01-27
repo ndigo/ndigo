@@ -14,39 +14,30 @@ export interface TreeNode<T = any> extends ChildNode<T>, ParentNode<T> {
     removeChild(node: T): boolean;
 }
 /**
- * @interface module:core.ChildNode
  */
 /**
- * @member {T} module:core.ChildNode#parent
  */
 /**
- * @interface module:core.ParentNode
  */
 /**
- * @member {external:Array<T>} module:core.ParentNode#children
  */
 /**
- * @interface module:core.TreeNode
  * @extends module:core.ChildNode
  * @extends module:core.ParentNode
  */
 /**
- * @member {T} module:core.TreeNode#root
  */
 /**
- * @function module:core.TreeNode#hasChild
  * @param {T} node
- * @returns {external:boolean}
+ * @returns {boolean}
  */
 /**
- * @function module:core.TreeNode#newChild
  * @param {...*} args
  * @returns {T}
  */
 /**
- * @function module:core.TreeNode#removeChild
  * @param {T} node
- * @returns {external:boolean}
+ * @returns {boolean}
  */
 export declare function direct<T extends ParentNode>(node: T, callback: (node: T) => any, inclusive?: boolean): void;
 export declare function escalate<T extends ChildNode>(node: T, callback: (node: T) => any, inclusive?: boolean): void;

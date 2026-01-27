@@ -12,7 +12,7 @@ export type DataParameterInit = HTTPInit & { data?: DataInit };
 
 /**
  * @typedef {module:http.HTTPInit} module:http.DataParameterInit
- * @property {external:BodyInit} [data]
+ * @property {BodyInit} [data]
  */
 
 /**
@@ -60,15 +60,14 @@ const getEntries = pipe(ifElse(isString, QueryString.parse, identity), entriesIt
     ]) as (value: DataInit) => BodyInit;
 
 /**
- * @class module:http.DataParameterInterceptor
  * @implements module:http.InitializationAwareHTTPInterceptor
  */
 export class DataParameterInterceptor implements InitializationAwareHTTPInterceptor<DataParameterInit> {
     /**
      * module:http.DataParameterInterceptor#preInit
-     * @param {external:URL} url The requested URL.
+     * @param {URL} url The requested URL.
      * @param {module:http.DataParameterInit} settings The HTTP request settings, including the `data` setting.
-     * @returns {external:boolean} Whether or not the http request should continue execution.
+     * @returns {boolean} Whether or not the http request should continue execution.
      */
     preInit(url: URL, settings: DataParameterInit): boolean {
         if ('data' in settings) {

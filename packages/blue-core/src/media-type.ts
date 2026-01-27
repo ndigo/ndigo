@@ -53,15 +53,15 @@ export type MediaTypeParameters = {
 
 /**
  * "*" or "application" or "audio" or "font" or "image" or "message" or "model" or "multipart" or "text" or "video"
- * @typedef {external:string} module:core.SupportedMediaType
+ * @typedef {string} module:core.SupportedMediaType
  */
 
 /**
- * @typedef {external:Object} module:core.MediaTypeParameters
+ * @typedef {Object} module:core.MediaTypeParameters
  */
 
 /**
- * @typedef {external:string} module:core.QualityFactor
+ * @typedef {string} module:core.QualityFactor
  * @see {@link https://developer.mozilla.org/en-US/docs/Glossary/Quality_values}
  */
 
@@ -76,7 +76,6 @@ const stringifyParameters = ifElse(
 
 /**
  * Comparator to sort `MediaType` in order of specificity.
- * @class module:core~SpecificityComparator
  * @implements module:core.Comparator
  */
 class SpecificityComparator<T extends MediaType> implements Comparator<T> {
@@ -118,12 +117,10 @@ class SpecificityComparator<T extends MediaType> implements Comparator<T> {
 }
 
 /**
- * @const {module:core~SpecificityComparator} module:core.specificityComparator
  */
 const specificityComparator = new SpecificityComparator();
 
 /**
- * @class module:core~QualityFactorComparator
  * @implements module:core.Comparator
  */
 class QualityFactorComparator implements Comparator<MediaType> {
@@ -139,14 +136,12 @@ class QualityFactorComparator implements Comparator<MediaType> {
 }
 
 /**
- * @const {module:core~QualityFactorComparator} module:core.qualityFactorComparator
  */
 const qualityFactorComparator = new QualityFactorComparator();
 
 /**
- * @class module:core.MediaType
  * @param {module:core.SupportedMediaType} type='*'
- * @param {external:string} subtype='*'
+ * @param {string} subtype='*'
  * @param {module:core.MediaTypeParameters} parameters={}
  * @extends module:core.Null
  * @implements module:core.Serializable
@@ -255,9 +250,8 @@ export default class MediaType extends Null implements Serializable, StringCompa
     }
 
     /**
-     * @function module:core.MediaType#compareTo
-     * @param {module:core.MediaType} mediaType
-     * @returns {external:number}
+         * @param {module:core.MediaType} mediaType
+     * @returns {number}
      */
     compareTo(mediaType: MediaType): number {
         let comparison: number;
@@ -311,9 +305,8 @@ export default class MediaType extends Null implements Serializable, StringCompa
     }
 
     /**
-     * @function module:core.MediaType#compareToIgnoreCase
-     * @param {module:core.MediaType} mediaType
-     * @returns {external:number}
+         * @param {module:core.MediaType} mediaType
+     * @returns {number}
      */
     compareToIgnoreCase(mediaType: MediaType): number {
         let comparison: number;
@@ -372,10 +365,9 @@ export default class MediaType extends Null implements Serializable, StringCompa
 
     /**
      * Creates a new blob of the media type with the given parameters
-     * @function module:core.MediaType#createBlob
-     * @param {external:BufferSource | externsl:Blob | external:string } data
-     * @param {external:string} endings
-     * @returns {external:Blob} A new blob of the media type
+         * @param {BufferSource | externsl:Blob | external:string } data
+     * @param {string} endings
+     * @returns {Blob} A new blob of the media type
      */
     createBlob(data?: BlobPart[], endings: EndingType = 'transparent'): Blob {
         return new Blob(data, {
@@ -388,9 +380,8 @@ export default class MediaType extends Null implements Serializable, StringCompa
      * Indicates whether the `MediaType` includes the given `MediaType`.
      *
      * For example, `text/*` includes `text/plain` and `text/html`, `application/*+xml` includes `application/soap+xml`, etc.
-     * @function module:core.MediaType#includes
-     * @param {module:core.MediaType} value
-     * @returns {external:boolean} If this `MediaType` includes the given `MediaType`.
+         * @param {module:core.MediaType} value
+     * @returns {boolean} If this `MediaType` includes the given `MediaType`.
      */
     includes(value: MediaType = null): boolean {
         if (!value) {

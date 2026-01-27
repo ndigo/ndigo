@@ -23,25 +23,22 @@ export interface RouteHandlerAdapter {
 }
 
 /**
- * Interface that must be implemented for each handler type to handle a route. This interface is used to allow the {@link module:dispatcher.Dispatcher} to be extensible. The `Dispatcher` accesses all installed handlers through this interface, meaning that it does not contain code specific to any handler type.
+ * Interface that must be implemented for each handler type to handle a route. This interface is used to allow the {@link Dispatcher} to be extensible. The `Dispatcher` accesses all installed handlers through this interface, meaning that it does not contain code specific to any handler type.
  *
  * This interface is not intended for application developers. It is available to developers who want to create their own workflow.
- * @interface module:dispatcher.HandlerAdapter
  */
 
 /**
  * Use the given handler to handle this route.
- * @function module:dispatcher.HandlerAdapter#handle
  * @param {module:router.Route} route
  * @param {*} handler The handler to use. It must have previously been passed to the `supports` method of this interface, which must have returned `true`.
- * @returns {external:Promise<module:dispatcher.ModelAndView>}
+ * @returns {Promise<module:dispatcher.ModelAndView>}
  */
 
 /**
  * Given a handler instance, return whether or not this `HandlerAdapter` can support it. Typical RouteHandlerAdapters will base the decision on the handler type. RouteHandlerAdapters will usually only support one handler type each.
- * @function module:dispatcher.HandlerAdapter#supports
  * @param {*} handler The handler to check
- * @returns {external:boolean} Whether or not the given handler is supported
+ * @returns {boolean} Whether or not the given handler is supported
  * @example
  * class MyHandlerAdapter {
  *  supports( handler ){
@@ -55,9 +52,8 @@ const { getPrototypeOf } = Reflect,
     isNotArray = complement(Array.isArray);
 
 /**
- * @function module:dispatcher.likeController
  * @param {*} value The value to be tested
- * @returns {external:boolean} Whether or not the `value` is a {@linkcode module:dispatcher.Controller|Controller}
+ * @returns {boolean} Whether or not the `value` is a {@link Controller|Controller}
  */
 export const likeController = like({ handleRoute: Function }) as (value) => value is Controller;
 
@@ -81,19 +77,16 @@ export abstract class AbstractHandlerMethodAdapter
 
 /**
  * @abstract
- * @class module:dispatcher.AbstractHandlerMethodAdapter
  * @implements module:dispatcher.HandlerAdapter
  */
 
 /**
- * This implementation expects the handler to be a {@linkcode module:dispatcher.HandlerMethod|HandlerMethod}.
- * @function module:dispatcher.AbstractHandlerMethodAdapter#supports
+ * This implementation expects the handler to be a {@link HandlerMethod|HandlerMethod}.
  * @param handler The handler instance to check
  * @returns Whether or not this adapter can adapt the given handler
  */
 
 /**
- * @class module:dispatcher.ControllerHandlerAdapter
  * @implements module:dispatcher.HandlerAdapter
  */
 export class ControllerHandlerAdapter implements RouteHandlerAdapter {
@@ -111,8 +104,7 @@ export class ControllerHandlerAdapter implements RouteHandlerAdapter {
 }
 
 /**
- * Implementation of {@link module:dispatcher.AbstractHandlerMethodAdapter} that supports {@linkcode module:dispatcher.HandlerMethod|HandlerMethods} decorated with `route:mapping` metadata. This is usually applied using {@linkcode module:router.RouteMapping|@RouteMapping}.
- * @class module:dispatcher.MetadataHandlerAdapter
+ * Implementation of {@link AbstractHandlerMethodAdapter} that supports {@link HandlerMethod|HandlerMethods} decorated with `route:mapping` metadata. This is usually applied using {@link RouteMapping|@RouteMapping}.
  * @extends module:dispatcher.AbstractHandlerMethodAdapter
  * @implements module:core.Initializable
  */

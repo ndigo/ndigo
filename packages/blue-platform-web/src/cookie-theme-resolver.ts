@@ -7,7 +7,6 @@ import { Route } from '@blue/router';
 import Cookies from './cookies';
 
 /**
- * @class module:dispatcher.CookieThemeResolver
  * @extends module:dispatcher.AbstractThemeResolver
  */
 export class CookieThemeResolver extends AbstractThemeResolver {
@@ -20,8 +19,7 @@ export class CookieThemeResolver extends AbstractThemeResolver {
     constructor(cookieName: string, defaultThemeName: string) {
         super(defaultThemeName);
         /**
-         * @member {external:string} module:dispatcher.CookieThemeResolver#cookieName
-         */
+                 */
         Reflect.defineProperty(this, 'cookieName', {
             value: cookieName,
             configurable: true,

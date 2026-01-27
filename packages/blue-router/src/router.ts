@@ -21,5 +21,4 @@ export abstract class AbstractRouter implements Router, RouterInterceptorRegistr
 }
 
 /**
- * @interface module:router.Router
  */

@@ -1,8 +1,7 @@
 /**
  * @author Jeff Rose
- * @module logger
- * @requires core
- * @requires util
+ * @see core
+ * @see util
  */
 
 export * from './appenders';

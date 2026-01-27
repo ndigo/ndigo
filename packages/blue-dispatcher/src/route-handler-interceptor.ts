@@ -24,27 +24,22 @@ export interface RouteHandlerInterceptor {
  * or common handler behavior like locale or theme changes. Its main purpose
  * is to allow for factoring out repetitive handler code.
  *
- * @interface module:router.RouteHandlerInterceptor
  */
 
 /**
  * Callback after completion of route processing, that is, after rendering the view. Will be called on any outcome of handler execution, thus allows for proper resource cleanup.
- * @function module:router.RouteHandlerInterceptor#completeHandle
  */
 
 /**
  * Intercept the execution of a handler. Called after RouteHandlerAdapter actually invoked the handler, but before the Dispatcher renders the view.
- * @function module:router.RouteHandlerInterceptor#postHandle
  */
 
 /**
  * Intercept the execution of a handler. Called after HandlerMapping determined
  * an appropriate handler object, but before RouteHandlerAdapter invokes the handler.
- * @function module:router.RouteHandlerInterceptor#preHandle
  */
 
 /**
- * @class module:dispatcher.MappedHandlerInterceptor
  * @implements module:router.RouteHandlerInterceptor
  */
 export class MappedHandlerInterceptor extends AsPathMatcherFilter(Null) implements RouteHandlerInterceptor {

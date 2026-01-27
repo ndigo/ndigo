@@ -35,10 +35,9 @@ const accented = /[\xC0-\xFF\u0152\u0153\u0160\u0161\u0178\u0192\uA732\uA733]/g,
     replaceAccentP = pipe(replace(upperP, 'P'), replace(lowerP, 'p')),
     /**
      * Replace accented chars with regular ones
-     * @function module:util.replaceDiacritics
-     * @category String
-     * @param {external:string} value The string to be transformed.
-     * @returns {external:string} The `value` with the accented characters replaced with regular ones.
+         * @category String
+     * @param {string} value The string to be transformed.
+     * @returns {string} The `value` with the accented characters replaced with regular ones.
      * @example
      * replaceDiacritics( "spéçïãl çhârs" );
      * //=> "special chars"

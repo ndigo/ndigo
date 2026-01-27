@@ -44,8 +44,5 @@
   "dependencies": {
     "@fingerprintjs/fingerprintjs": "~2.1.4"
   },
-  "sideEffects": false,
-  "publishConfig": {
-    "registry": "https://artifacts.jpmchase.net/artifactory/api/npm/npm"
-  }
+  "sideEffects": false
 }

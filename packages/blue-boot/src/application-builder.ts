@@ -7,7 +7,6 @@ import { JSONObject } from '@blue/core';
 import { Application } from './application';
 
 /**
- * @class module:boot.ApplicationBuilder
  */
 export class ApplicationBuilder {
     #application: Application;

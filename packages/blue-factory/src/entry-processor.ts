@@ -38,46 +38,41 @@ export type EntryProcessor =
 
 /**
  * Factory hook that allows for custom modification of new instances, e.g. checking for marker interfaces or wrapping them with proxies.
- * @interface module:factory.InitializationAwareProcessor
  */
 
 /**
- * Apply this {@link module:factory.EntryProcessor} to the given new instance _before_ any initialization callbacks. The instance will already be populated with property values. The returned instance may be a wrapper around the original.
+ * Apply this {@link EntryProcessor} to the given new instance _before_ any initialization callbacks. The instance will already be populated with property values. The returned instance may be a wrapper around the original.
  *
  * The default implementation returns the given instance as-is.
- * @function module:factory.InitializationAwareProcessor#processBeforeInitialization
- * @param {external:string} name The name of instance
+ * @param {string} name The name of instance
  * @param {T} instance The instance
  * @returns {T} The instance to use, either the original or a wrapped one; if `null`, no subsequent EntryProcessors will be invoked.
  */
 
 /**
- * Apply this {@link module:factory.EntryProcessor} to the given new instance _after_ any initialization callbacks. The instance will already be populated with property values. The returned instance may be a wrapper around the original.
+ * Apply this {@link EntryProcessor} to the given new instance _after_ any initialization callbacks. The instance will already be populated with property values. The returned instance may be a wrapper around the original.
  *
  * The default implementation returns the given instance as-is.
- * @function module:factory.InitializationAwareProcessor#processAfterInitialization
- * @param {external:string} name The name of instance
+ * @param {string} name The name of instance
  * @param {T} instance The instance
  * @returns {T}
  */
 
 /**
- * Subinterface of {@link module:factory.EntryProcessor} that adds a before-construction callback, and a callback after construction but before explicit properties are set.
+ * Subinterface of {@link EntryProcessor} that adds a before-construction callback, and a callback after construction but before explicit properties are set.
  *
  * Typically used to suppress default construction for specific values.
  *
  * *Note:* This interface is mainly for internal use within the framework.
- * @interface module:factory.ConstructionAwareProcessor
  */
 
 /**
  * Apply this EntryProcessor _before the target value gets constructed_. The returned value may be a proxy instead of the target instance, effectively supressing default construction.
  *
  * The default implementation returns `null`.
- * @function module:factory.ConstructionAwareProcessor#processBeforeConstruction
- * @param {external:string} name The name of instance
- * @param {external:Function} constructor The constructor
- * @param {external:Array} [argumentsList=[]] The list of arguments supplied to the `constructor`.
+ * @param {string} name The name of instance
+ * @param {Function} constructor The constructor
+ * @param {Array} [argumentsList=[]] The list of arguments supplied to the `constructor`.
  * @returns {T | null} The instance to expose instead of a default instance, or `null` to proceed with default construction.
  */
 
@@ -87,51 +82,43 @@ export type EntryProcessor =
  * This is the ideal callback for performing custom field injection on the given instance.
  *
  * The default implementation returns `true`.
- * @function module:factory.ConstructionAwareProcessor#processAfterConstruction
- * @param {external:string} name The name of instance
+ * @param {string} name The name of instance
  * @param {T} instance The instance without properties having been set yet.
- * @returns {external:boolean} `true` if properties should be set on the instance; `false` if property population should be skipped. Normal implementations should return `true`. Returning `false` will also prevent any subsequent ConstructionAwarePostProcessors being invoked on this instance.
+ * @returns {boolean} `true` if properties should be set on the instance; `false` if property population should be skipped. Normal implementations should return `true`. Returning `false` will also prevent any subsequent ConstructionAwarePostProcessors being invoked on this instance.
  */
 
 /**
  * Process the given property values before the factory applies them to the given instance.
  *
  * The default implementation returns the properties as-is.
- * @function module:factory.ConstructionAwareProcessor#processProperties
- * @param {external:PropertyDescriptorMap} properties The name of instance
- * @param {external:string} name The name of instance
+ * @param {PropertyDescriptorMap} properties The name of instance
+ * @param {string} name The name of instance
  * @param {T} instance The instance without properties having been set yet.
- * @returns {external:PropertyDescriptorMap} The property values to apply to the given instance.
+ * @returns {PropertyDescriptorMap} The property values to apply to the given instance.
  */
 
 /**
  * Factory hook that allows for custom modification of new instances, e.g. checking for marker interfaces or wrapping them with proxies.
- * @interface module:factory.DestructionAwareProcessor
  */
 
 /**
  * Apply this EntryProcessor to the given instance before its destruction.
- * @function module:factory.DestructionAwareProcessor#processBeforeDestruction
- * @param {external:string} name The name of instance
+ * @param {string} name The name of instance
  * @param {T} instance The instance to be destroyed.
  */
 
 /**
  * Factory hook that allows for modification of an application context's values.
- * @interface module:factory.EntryRegistryProcessor
  */
 
 /**
- * @function module:factory.EntryRegistryProcessor#processEntryRegistry
  * @param {module:factory.Registry} registry
  */
 
 /**
- * @interface module:factory.FactoryPostProcessor
  */
 
 /**
- * @function module:factory.FactoryPostProcessor#postProcessFactory
  * @param {module:Factory.Factory} factory
  */
 
@@ -140,9 +127,8 @@ export type EntryProcessor =
  */
 
 /**
- * @function module:factory.likeInitializationAwareProcessor
  * @param {*} value The value to be tested
- * @returns {external:boolean} Whether or not the `value` provided is an {@linkcode module:factory.InitializationAwareProcessor|InitializationAwareProcessor}.
+ * @returns {boolean} Whether or not the `value` provided is an {@link InitializationAwareProcessor|InitializationAwareProcessor}.
  */
 export const likeInitializationAwareProcessor = like({
     processAfterInitialization: Function,
@@ -150,9 +136,8 @@ export const likeInitializationAwareProcessor = like({
 }) as (value) => value is InitializationAwareProcessor;
 
 /**
- * @function module:factory.likeConstructionAwareProcessor
  * @param {*} value The value to be tested
- * @returns {external:boolean} Whether or not the `value` provided is a {@linkcode module:factory.ConstructionAwareProcessor|ConstructionAwareProcessor}.
+ * @returns {boolean} Whether or not the `value` provided is a {@link ConstructionAwareProcessor|ConstructionAwareProcessor}.
  */
 export const likeConstructionAwareProcessor = like({
     processAfterConstruction: Function,
@@ -160,27 +145,24 @@ export const likeConstructionAwareProcessor = like({
     processProperties: Function,
 }) as (value) => value is ConstructionAwareProcessor;
 /**
- * @function module:factory.likeDestructionAwareProcessor
  * @param {*} value The value to be tested
- * @returns {external:boolean} Whether or not the `value` provided is a {@linkcode module:factory.DestructionAwareProcessor|DestructionAwareProcessor}.
+ * @returns {boolean} Whether or not the `value` provided is a {@link DestructionAwareProcessor|DestructionAwareProcessor}.
  */
 export const likeDestructionAwareProcessor = like({ processBeforeDestruction: Function }) as (
     value
 ) => value is DestructionAwareProcessor;
 
 /**
- * @function module:factory.likeEntryRegistryProcessor
  * @param {*} value The value to be tested
- * @returns {external:boolean} Whether or not the `value` provided is a {@linkcode module:factory.EntryRegistryProcessor|EntryRegistryProcessor}.
+ * @returns {boolean} Whether or not the `value` provided is a {@link EntryRegistryProcessor|EntryRegistryProcessor}.
  */
 export const likeEntryRegistryProcessor = like({ processEntryRegistry: Function }) as (
     value
 ) => value is EntryRegistryProcessor;
 
 /**
- * @function module:factory.likeEntryProcessor
  * @param {*} value The value to be tested
- * @returns {external:boolean} Whether or not the `value` provided is an {@linkcode module:factory.EntryProcessor|EntryProcessor}.
+ * @returns {boolean} Whether or not the `value` provided is an {@link EntryProcessor|EntryProcessor}.
  */
 export const likeEntryProcessor = anyPass([
     likeConstructionAwareProcessor,

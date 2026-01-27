@@ -1,8 +1,7 @@
 /**
  * @author Jeff Rose
- * @module core
- * @requires parser
- * @requires util
+ * @see parser
+ * @see util
  */
 /**
  * @global
@@ -55,7 +54,7 @@
 /**
  * @global
  * @external Iterable
- * @property {external:symbol} Symbol.iterator
+ * @property {symbol} Symbol.iterator
  * @see {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols#The_iterable_protocol}
  */
 /**
@@ -63,13 +62,12 @@
  * @external IterableIterator
  * @extends external:Iterable
  * @extends external:Iterator
- * @property {external:symbol} Symbol.iterator
+ * @property {symbol} Symbol.iterator
  * @see {@link external:Iterable|Iterable}
  * @see {@link external:Iterator|Iterator}
  */
 /**
- * @function external:IterableIterator.next
- * @returns {external:IteratorResult}
+ * @returns {IteratorResult}
  */
 /**
  * @global
@@ -84,8 +82,7 @@
  * @see {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols#The_iterator_protocol}
  */
 /**
- * @function external:Iterator.next
- * @returns {external:IteratorResult}
+ * @returns {IteratorResult}
  */
 /**
  * @global

@@ -7,8 +7,7 @@ import empty from '../function/empty';
 
 /**
  * Returns `true` if the given value is its type's empty value; `false` otherwise.
- * @function module:util.isEmpty
- * @returns {external:boolean}
+ * @returns {boolean}
  * @category Logic
  * @example
  * isEmpty( [ 1, 2, 3 ] );           //=> false

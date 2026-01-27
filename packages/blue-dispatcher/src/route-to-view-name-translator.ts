@@ -9,20 +9,17 @@ export interface RouteToViewNameTranslator {
 }
 
 /**
- * @interface module:router.RouteToViewNameTranslator
  */
 
 /**
- * @function module:router.RouteToViewNameTranslator#getViewName
  * @param {module:router.Route} route
- * @returns {external:string}
+ * @returns {string}
  */
 
 const { defineProperty } = Reflect,
     slash = '/';
 
 /**
- * @class module:dispatcher.DefaultRouteToViewNameTranslator
  * @implements module:router.RouteToViewNameTranslator
  */
 export class DefaultRouteToViewNameTranslator implements RouteToViewNameTranslator {
@@ -52,8 +49,7 @@ export class DefaultRouteToViewNameTranslator implements RouteToViewNameTranslat
     }
 
     /**
-     * @function module:dispatcher.DefaultRouteToViewNameTranslator#getViewName
-     * @param {module:router.Route} route
+         * @param {module:router.Route} route
      */
     getViewName(route: Route): string {
         console.log('DefaultRouteToViewNameTranslator::getViewName', route);
@@ -68,13 +64,10 @@ export class DefaultRouteToViewNameTranslator implements RouteToViewNameTranslat
 }
 
 /**
- * @member {external:string} module:dispatcher.DefaultRouteToViewNameTranslator#prefix=''
  */
 
 /**
- * @member {external:string} module:dispatcher.DefaultRouteToViewNameTranslator#separator='/'
  */
 
 /**
- * @member {external:string} module:dispatcher.DefaultRouteToViewNameTranslator#suffix=''
  */

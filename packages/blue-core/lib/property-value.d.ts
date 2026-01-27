@@ -9,12 +9,10 @@ export interface PropertyValues extends Iterable<PropertyValue> {
     getPropertyValue(propertyName: string): PropertyValue;
 }
 /**
- * @class module:core.likePropertyValues
  */
 export declare const likePropertyValues: (value: any) => value is PropertyValues;
 /**
  * An object that holds information and value for an individual property.
- * @class module:core.PropertyValue
  * @implements module:core.Equatable
  * @implements module:core.Serializable
  */

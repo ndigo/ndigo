@@ -12,7 +12,6 @@ export interface ViewMappingStrategy {
 }
 
 /**
- * @interface module:dispatcher.ViewMappingStrategy
  */
 
 export const defaultViewMapping = null;

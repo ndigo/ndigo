@@ -6,9 +6,8 @@
 declare const 
 /**
  * Returns the camel case version of a string.
- * @function module:util.toCamel
- * @param {external:string} value
- * @returns {external:string}
+     * @param {string} value
+ * @returns {string}
  * @category String
  * @example
  * toCamel( 'lorem-ipsum-dolor' );

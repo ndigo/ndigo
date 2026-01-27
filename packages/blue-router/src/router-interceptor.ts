@@ -7,16 +7,13 @@ export interface RouterInterceptor {
 }
 
 /**
- * @interface module:router.RouterInterceptor
  */
 
 /**
- * @function module:router.RouterInterceptor#postRoute
  * @param {module:router.Route} route
  */
 
 /**
- * @function module:router.RouterInterceptor#preRoute
  * @param {module:router.Route} route
  */
 
@@ -25,7 +22,6 @@ export interface RouterInterceptorRegistry {
 }
 
 /**
- * @class module:router.MappedRouterInterceptor
  * @implements module:router.RouterInterceptor
  */
 export class MappedRouterInterceptor extends AsPathMatcherFilter(Null) implements RouterInterceptor, PathMatcherFilter {

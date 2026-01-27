@@ -14,9 +14,8 @@ const { defineProperty, getMetadata, getMetadataKeys } = Reflect;
 
 /**
  * Create a new MetadataScanner for a given target.
- * @class module:dispatcher.MetadataScanner
  * @classdesc Scan an object for metadata defined on the object’s values and cache the resulting property names for subsequent scans.
- * @param {external:Record} target
+ * @param {Record} target
  */
 export class MetadataScanner {
     _cache: MultiValueMap<string, string>;
@@ -27,8 +26,7 @@ export class MetadataScanner {
 
         /**
          * @private
-         * @member {external:Record} module:dispatcher.MetadataScanner#_target
-         */
+                 */
         defineProperty(this, '_target', {
             value: target,
             configurable: false,
@@ -39,9 +37,8 @@ export class MetadataScanner {
 
     /**
      * @private
-     * @function module:dispatcher.MetadataScanner#_primeCache
-     * @param {external:string} metadataKey
-     * @returns {external:Array<external:string>} The property names on the target that have metadata.
+         * @param {string} metadataKey
+     * @returns {Array<external:string>} The property names on the target that have metadata.
      */
     private _primeCache(metadataKey: string) {
         const target = this._target;
@@ -62,9 +59,8 @@ export class MetadataScanner {
 
     /**
      * Get the property names of the target object that have the requested metadata.
-     * @function module:dispatcher.MetadataScanner#get
-     * @param {external:string} metadataKey
-     * @returns {external:Array<external:string>} The property names on the target that have metadata.
+         * @param {string} metadataKey
+     * @returns {Array<external:string>} The property names on the target that have metadata.
      */
     get(metadataKey: string) {
         const cache = this._cache;
@@ -80,8 +76,7 @@ export class MetadataScanner {
 
     /**
      * Clear the metadata cache for the target object.
-     * @function module:dispatcher.MetadataScanner#clear
-     */
+         */
     clear(): void {
         this._cache.clear();
     }
@@ -89,7 +84,6 @@ export class MetadataScanner {
 
 /**
  * Create a WeakMap to store instances of Metadata Scanners
- * @class module:dispatcher.MetadataManager
  * @classdesc Store Metadata Scanners for performant retrieval across an entire application
  */
 class MetadataManager {
@@ -104,10 +98,9 @@ class MetadataManager {
      * Look first for a metadataScanner instance for the target object in the scanner map.
      * If an instance is not found then make one, add that to the scanner map, and return
      * the properties with the requested metadata.
-     * @function module:dispatcher.MetadataManager#get
-     * @param {external:Record} target
+         * @param {Record} target
      * @param {string} metadataKey
-     * @returns {external:Array<external:string>} The property names on the target that have metadata.
+     * @returns {Array<external:string>} The property names on the target that have metadata.
      */
     get(target: Record<string, any>, metadataKey: string) {
         const scannerMap = this._scannerMap;

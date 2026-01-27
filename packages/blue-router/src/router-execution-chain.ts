@@ -6,7 +6,6 @@ import { RouterInterceptor } from './router-interceptor';
 import { Route } from './route';
 
 /**
- * @class module:router.RouterExecutionChain
  * @implements module:core.Serializable
  */
 export default class RouterExecutionChain {
@@ -35,8 +34,7 @@ export default class RouterExecutionChain {
     }
 
     /**
-     * @function module:router.RouterExecutionChain#addInterceptor
-     * @param {module:router.RouterInterceptor} interceptor
+         * @param {module:router.RouterInterceptor} interceptor
      */
     addInterceptor(interceptor: RouterInterceptor): void {
         if (interceptor) {
@@ -48,8 +46,7 @@ export default class RouterExecutionChain {
     }
 
     /**
-     * @function module:router.RouterExecutionChain#addInterceptors
-     * @param {external:Array<module:router.RouterInterceptor>} interceptors
+         * @param {Array<module:router.RouterInterceptor>} interceptors
      */
     addInterceptors(interceptors: RouterInterceptor[]): void {
         const length = interceptors?.length;
@@ -61,8 +58,7 @@ export default class RouterExecutionChain {
     }
 
     /**
-     * @function module:router.RouterExecutionChain#applyPostRoute
-     * @param {module:router.Route} route
+         * @param {module:router.Route} route
      */
     applyPostRoute(route: Route): void {
         const interceptors = this.#interceptors,
@@ -76,8 +72,7 @@ export default class RouterExecutionChain {
     }
 
     /**
-     * @function module:router.RouterExecutionChain#applyPreRoute
-     * @param {module:router.Route} route
+         * @param {module:router.Route} route
      */
     applyPreRoute(route: Route): boolean {
         const interceptors = this.#interceptors,

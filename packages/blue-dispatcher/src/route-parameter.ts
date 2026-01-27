@@ -14,7 +14,7 @@ export type MethodParameterInfo = {
 };
 
 /**
- * @typedef {external:Object} module:dispatcher.MethodParameterInfo
+ * @typedef {Object} module:dispatcher.MethodParameterInfo
  */
 
 const METHOD_PARAMETER = 'method:parameter',
@@ -158,11 +158,10 @@ export class MethodParameter implements Serializable {
 }
 
 /**
- * @function module:dispatcher.defineCookieValue
  * @param {module:dispatcher.MethodParameterInfo} info
- * @param {external:number} parameterIndex
- * @param {external:Object} target
- * @param {external:string|external:symbol} propertyKey
+ * @param {number} parameterIndex
+ * @param {Object} target
+ * @param {string|external:symbol} propertyKey
  */
 export const defineCookieValue = (
     info: MethodParameterInfo,
@@ -172,11 +171,10 @@ export const defineCookieValue = (
 ): void => defineMethodParameter(MethodParameterType.COOKIE, info, parameterIndex, target, propertyKey);
 
 /**
- * @function module:dispatcher.defineMatrixValue
  * @param {module:dispatcher.MethodParameterInfo} info
- * @param {external:number} parameterIndex
- * @param {external:Object} target
- * @param {external:string|external:symbol} propertyKey
+ * @param {number} parameterIndex
+ * @param {Object} target
+ * @param {string|external:symbol} propertyKey
  */
 export const defineMatrixValue = (
     info: MethodParameterInfo,
@@ -186,11 +184,10 @@ export const defineMatrixValue = (
 ): void => defineMethodParameter(MethodParameterType.MATRIX, info, parameterIndex, target, propertyKey);
 
 /**
- * @function module:dispatcher.defineQueryValue
  * @param {module:dispatcher.MethodParameterInfo} info
- * @param {external:number} parameterIndex
- * @param {external:Object} target
- * @param {external:string|external:symbol} propertyKey
+ * @param {number} parameterIndex
+ * @param {Object} target
+ * @param {string|external:symbol} propertyKey
  */
 export const defineQueryValue = (
     info: MethodParameterInfo,
@@ -200,13 +197,11 @@ export const defineQueryValue = (
 ): void => defineMethodParameter(MethodParameterType.QUERY, info, parameterIndex, target, propertyKey);
 
 /**
- * @function module:dispatcher.cookieValue(1)
- * @param {external:string|module:dispatcher.MethodParameterInfo} info
- * @returns {external:ParameterDecorator}
+ * @param {string|module:dispatcher.MethodParameterInfo} info
+ * @returns {ParameterDecorator}
  */
 
 /**
- * @const {external:ParameterDecorator} module:dispatcher.cookieValue(2)
  */
 export const cookieValue = (
     infoOrTarget: string | MethodParameterInfo | Object,
@@ -230,13 +225,11 @@ export const cookieValue = (
 };
 
 /**
- * @function module:dispatcher.matrixValue(1)
- * @param {external:string|module:dispatcher.matrixValueInfo} info
- * @returns {external:ParameterDecorator}
+ * @param {string|module:dispatcher.matrixValueInfo} info
+ * @returns {ParameterDecorator}
  */
 
 /**
- * @const {external:ParameterDecorator} module:dispatcher.matrixValue(2)
  */
 export const matrixValue = (
     infoOrTarget: string | MethodParameterInfo | Object,
@@ -260,13 +253,11 @@ export const matrixValue = (
 };
 
 /**
- * @function module:dispatcher.queryValue(1)
- * @param {external:string|module:dispatcher.MethodParameterInfo} info
- * @returns {external:ParameterDecorator}
+ * @param {string|module:dispatcher.MethodParameterInfo} info
+ * @returns {ParameterDecorator}
  */
 
 /**
- * @const {external:ParameterDecorator} module:dispatcher.queryValue(2)
  */
 export const queryValue = (
     infoOrTarget: string | MethodParameterInfo | Object,

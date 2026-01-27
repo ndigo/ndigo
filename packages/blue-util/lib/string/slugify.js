@@ -9,11 +9,10 @@ import removeNonWord from './remove-non-word';
 import slug from 'slug';
 /**
  * Converts a string into a slug.
- * @function module:util.slugify
  * @category String
- * @param {external:string} delimiter The character with which spaces will be replaced.
- * @param {external:string} value The value to be slugified.
- * @returns {external:string} The slugified string.
+ * @param {string} delimiter The character with which spaces will be replaced.
+ * @param {string} value The value to be slugified.
+ * @returns {string} The slugified string.
  * @example
  * const hyphenate = slugify( '-' );
  * hyphenate( 'Lorem Ipsum Dolor' );
@@ -23,4 +22,4 @@ import slug from 'slug';
  */
 const slugify = curry((delimiter, value) => pipe(removeNonWord, (val) => slug(val, { remove: null, replacement: delimiter, lower: false }), toLower)(value));
 export default slugify;
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoic2x1Z2lmeS5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbIi4uLy4uL3NyYy9zdHJpbmcvc2x1Z2lmeS50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTs7Ozs7R0FLRztBQUVILE9BQU8sRUFBRSxLQUFLLEVBQUUsSUFBSSxFQUFFLE9BQU8sRUFBRSxNQUFNLE9BQU8sQ0FBQztBQUU3QyxPQUFPLGFBQWEsTUFBTSxtQkFBbUIsQ0FBQztBQUM5QyxPQUFPLElBQUksTUFBTSxNQUFNLENBQUM7QUFPeEI7Ozs7Ozs7Ozs7Ozs7R0FhRztBQUNILE1BQU0sT0FBTyxHQUFvQixLQUFLLENBQUMsQ0FBQyxTQUFpQixFQUFFLEtBQWEsRUFBVSxFQUFFLENBQ2hGLElBQUksQ0FDQSxhQUFhLEVBQ2IsQ0FBQyxHQUFXLEVBQUUsRUFBRSxDQUFDLElBQUksQ0FBQyxHQUFHLEVBQUUsRUFBRSxNQUFNLEVBQUUsSUFBSSxFQUFFLFdBQVcsRUFBRSxTQUFTLEVBQUUsS0FBSyxFQUFFLEtBQUssRUFBRSxDQUFDLEVBQ2xGLE9BQU8sQ0FDVixDQUFDLEtBQUssQ0FBQyxDQUNYLENBQUM7QUFFRixlQUFlLE9BQU8sQ0FBQyJ9
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoic2x1Z2lmeS5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbIi4uLy4uL3NyYy9zdHJpbmcvc2x1Z2lmeS50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTs7Ozs7R0FLRztBQUVILE9BQU8sRUFBRSxLQUFLLEVBQUUsSUFBSSxFQUFFLE9BQU8sRUFBRSxNQUFNLE9BQU8sQ0FBQztBQUU3QyxPQUFPLGFBQWEsTUFBTSxtQkFBbUIsQ0FBQztBQUM5QyxPQUFPLElBQUksTUFBTSxNQUFNLENBQUM7QUFPeEI7Ozs7Ozs7Ozs7OztHQVlHO0FBQ0gsTUFBTSxPQUFPLEdBQW9CLEtBQUssQ0FBQyxDQUFDLFNBQWlCLEVBQUUsS0FBYSxFQUFVLEVBQUUsQ0FDaEYsSUFBSSxDQUNBLGFBQWEsRUFDYixDQUFDLEdBQVcsRUFBRSxFQUFFLENBQUMsSUFBSSxDQUFDLEdBQUcsRUFBRSxFQUFFLE1BQU0sRUFBRSxJQUFJLEVBQUUsV0FBVyxFQUFFLFNBQVMsRUFBRSxLQUFLLEVBQUUsS0FBSyxFQUFFLENBQUMsRUFDbEYsT0FBTyxDQUNWLENBQUMsS0FBSyxDQUFDLENBQ1gsQ0FBQztBQUVGLGVBQWUsT0FBTyxDQUFDIn0=

@@ -7,7 +7,6 @@ import { View, AbstractView } from '@blue/view';
 type Model<T = any> = { [key: string]: T } | Map<string, T>;
 
 /**
- * @class module:dispatcher.ModelAndView
  */
 export class ModelAndView {
     model: Model;
@@ -37,19 +36,15 @@ export class ModelAndView {
             this.model = model;
         }
         /**
-         * @member {external:boolean} module:dispatcher.ModelAndView#hasView
-         */
+                 */
 
         /**
-         * @member {*} module:dispatcher.ModelAndView#model
-         */
+                 */
 
         /**
-         * @member {external:string} module:dispatcher.ModelAndView#viewName
-         */
+                 */
 
         /**
-         * @member {module:view.View} module:dispatcher.ModelAndView#view
-         */
+                 */
     }
 }

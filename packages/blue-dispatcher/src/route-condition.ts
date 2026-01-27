@@ -16,58 +16,49 @@ export interface RouteCondition<T = any> {
 
 /**
  * A contract for `"name!=value"` style expression used to specify route parameters.
- * @interface module:dispatcher.NameValueExpression
  */
 
 /**
- * @member {external:boolean} module:dispatcher.NameValueExpression#isNegated
  */
 
 /**
- * @member {external:string} module:dispatcher.NameValueExpression#name
  */
 
 /**
- * @member {*} module:dispatcher.NameValueExpression#value
  */
 
 /**
  * Contract for route mapping conditions.
  *
- * Request conditions can be combined via {@linkcode module:router.RouteCondition#merge|merge()}, matched to a route via {@linkcode module:router.RouteCondition#getMatchingCondition|getMatchingCondition()}, and compared to each other via {@linkcode module:router.RouteCondition#compareTo|compareTo()} to determine which is a closer match to the given route.
- * @interface module:router.RouteCondition
+ * Request conditions can be combined via {@link RouteCondition#merge|merge()}, matched to a route via {@link RouteCondition#getMatchingCondition|getMatchingCondition()}, and compared to each other via {@link RouteCondition#compareTo|compareTo()} to determine which is a closer match to the given route.
  */
 
 /**
  * Merge this condition with another such as conditions from a type-level and method-level `RequestMapping` decorator.
- * @function module:router.RouteCondition#merge
  * @param {*} value
- * @return {*}
+ * @returns {*}
  */
 
 /**
  * Check if the condition matches the route returning a potentially new instance created for the current route.
  *
  * For example a condition with multiple path patterns may return a new instance only with those patterns that match the route.
- * @function module:router.RouteCondition#getMatchingCondition
  * @param {module:dispatcher.Request} route
- * @return {*} A condition instance in case of a match or `null` otherwise.
+ * @returns {*} A condition instance in case of a match or `null` otherwise.
  */
 
 /**
  * Compare this condition to another condition, optionally in the context of a specific route. This method assumes both instances have been obtained via `getMatchingCondition`.
- * @function module:router.RouteCondition#compareTo
  * @param {*} value
  * @param {module:dispatcher.Request} [route]
- * @return {external:number}
+ * @returns {number}
  */
 
 const { defineProperty } = Reflect;
 
 /**
- * @function module:dispatcher.likeRouteCondition
  * @param {*} value
- * @returns {external:boolean} Whether or not the `value` is a {@linkcode module:router.RouteCondition|RouteCondition}.
+ * @returns {boolean} Whether or not the `value` is a {@link RouteCondition|RouteCondition}.
  */
 export const likeRouteCondition = like({ merge: Function, getMatchingCondition: Function }) as (
     value
@@ -174,26 +165,22 @@ export abstract class AbstractRouteCondition<T extends AbstractRouteCondition<T>
 /**
  * Supports "name=value" style expressions.
  * @abstract
- * @class module:dispatcher.AbstractNameValueExpression
  * @implements module:dispatcher.NameValueExpression
- * @see {@link module:dispatcher.ParamExpression}
+ * @see {@link ParamExpression}
  */
 
 /**
- * A base class for {@linkcode module:router.RouteCondition|RouteCondition} types.
+ * A base class for {@link RouteCondition|RouteCondition} types.
  * @abstract
- * @class module:dispatcher.AbstractRouteCondition
  * @implements module:router.RouteCondition
  */
 
 /**
  * The discrete items a route condition is composed of, e.g. URL patterns, param expressions, etc.
  * @abstract
- * @member module:dispatcher.AbstractRouteCondition#content
  */
 
 /**
- * @class module:router.RouteConditionHolder
  * @extends module:dispatcher.AbstractRouteCondition<module:router.RouteConditionHolder>
  */
 export class RouteConditionHolder extends AbstractRouteCondition<RouteConditionHolder> {
@@ -219,8 +206,7 @@ export class RouteConditionHolder extends AbstractRouteCondition<RouteConditionH
 
     /**
      * Combine the route conditions held by the two RouteConditionHolder instances after making sure the conditions are of the same type. Or if one holder is empty, the other holder is returned.
-     * @function module:router.RouteConditionHolder#merge
-     * @param {module:router.RouteConditionHolder} other
+         * @param {module:router.RouteConditionHolder} other
      * @returns {module:router.RouteConditionHolder}
      */
     merge(other: RouteConditionHolder): RouteConditionHolder {
@@ -258,10 +244,9 @@ export class RouteConditionHolder extends AbstractRouteCondition<RouteConditionH
 }
 
 /**
- * Implements the {@linkcode module:router.RouteCondition|RouteCondition} contract by delegating to multiple `RouteCondition` types and using a logical conjunction (' && ') to ensure all conditions match a given route.
+ * Implements the {@link RouteCondition|RouteCondition} contract by delegating to multiple `RouteCondition` types and using a logical conjunction (' && ') to ensure all conditions match a given route.
  *
  * When `CompositeRouteCondition` instances are combined or compared they are expected to (a) contain the same number of conditions and (b) that conditions in the respective index are of the same type. It is acceptable to provide `null` conditions or no conditions at all to the constructor.
- * @class module:dispatcher.CompositeRouteCondition
  */
 export class CompositeRouteCondition extends AbstractRouteCondition<CompositeRouteCondition> {
     get infix(): string {
@@ -309,8 +294,7 @@ export class CompositeRouteCondition extends AbstractRouteCondition<CompositeRou
 
     /**
      * If one instance is empty, return the other. If both instances have conditions, combine the individual conditions after ensuring they are of the same type and number.
-     * @function module:dispatcher.CompositeRouteCondition#merge
-     * @param {module:dispatcher.CompositeRouteCondition} other
+         * @param {module:dispatcher.CompositeRouteCondition} other
      * @returns {module:dispatcher.CompositeRouteCondition}
      */
     merge(other: CompositeRouteCondition): CompositeRouteCondition {

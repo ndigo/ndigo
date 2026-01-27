@@ -17,11 +17,10 @@ type SlugifyFunction = {
 
 /**
  * Converts a string into a slug.
- * @function module:util.slugify
  * @category String
- * @param {external:string} delimiter The character with which spaces will be replaced.
- * @param {external:string} value The value to be slugified.
- * @returns {external:string} The slugified string.
+ * @param {string} delimiter The character with which spaces will be replaced.
+ * @param {string} value The value to be slugified.
+ * @returns {string} The slugified string.
  * @example
  * const hyphenate = slugify( '-' );
  * hyphenate( 'Lorem Ipsum Dolor' );

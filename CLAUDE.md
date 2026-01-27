@@ -46,7 +46,6 @@ Key packages and their dependencies:
 - **blue-factory**: Factory and instantiation patterns
 - **blue-router**: Routing functionality, depends on blue-core
 - **blue-view**: View layer abstractions, depends on blue-context, blue-core, blue-factory, blue-router
-- **blue-view-ractive**: Ractive.js view implementation
 - **blue-view-webcomponent**: Web Components view implementation
 - **blue-model**: Model layer using objectmodel library
 - **blue-http**: HTTP client functionality
@@ -146,9 +145,20 @@ npx eslint <path>     # ESLint 9 with TypeScript support
 ### Documentation
 
 ```bash
-# Generate JSDoc documentation (from package directory)
-yarn doc              # Uses JSDoc with config from .jsdoc.json
+# Generate documentation (from root directory)
+pnpm doc              # Generate documentation (default: markdown)
+pnpm doc:md           # Generate markdown documentation with TypeDoc
+pnpm doc:html         # Generate HTML documentation with TypeDoc
+pnpm doc:json         # Generate JSON API documentation
+pnpm doc:watch        # Watch mode - regenerate on changes
 ```
+
+Documentation is generated using **TypeDoc** with TSDoc comments:
+
+- Output directory: `docs-ts/` (markdown) or `docs/` (HTML)
+- Configuration: `typedoc.json`
+- Custom plugin: `scripts/typedoc-plugin-sig.js` (for `@sig` tags)
+- 856 markdown files generated across 19 packages
 
 ### Other Commands
 
@@ -317,13 +327,35 @@ Nx automatically:
 
 ## Publishing
 
-Packages are configured to publish to an internal JPMorgan Chase Artifactory registry:
-
-```
-https://artifacts.jpmchase.net/artifactory/api/npm/npm
-```
-
 All packages are scoped under `@blue/` and use semver with alpha pre-release identifiers (e.g., `3.0.0-alpha.0`).
+
+The project is being prepared for publication to npm. When ready to publish, add to individual package.json files:
+
+```json
+"publishConfig": {
+  "access": "public",
+  "registry": "https://registry.npmjs.org"
+}
+```
+
+## pnpm Configuration
+
+The project uses a minimal `.npmrc` configuration optimized for performance and modern conventions:
+
+**Key Settings:**
+
+- `strict-peer-dependencies=false` - Allows flexible peer deps in monorepo
+- `auto-install-peers=true` - Automatically installs missing peer dependencies
+- `link-workspace-packages=true` - Symlinks workspace packages for faster development
+- `save-workspace-protocol=rolling` - Uses `workspace:*` for local packages
+- `engine-strict=true` - Enforces Node.js version requirements
+- Selective hoisting for tooling (`@types/*`, `eslint*`, `prettier*`, `vite*`, `vitest*`)
+
+**Performance Features:**
+
+- Uses pnpm's dependency isolation (no `shamefully-hoist`)
+- Offline-first package resolution (`prefer-offline=true`)
+- Intelligent caching and minimal duplication
 
 ## Modernization Status (January 2025)
 

@@ -10,11 +10,9 @@ export interface Controller {
 }
 
 /**
- * @interface module:dispatcher.Controller
  */
 
 /**
- * @function module:dispatcher.Controller#handleRoute
  * @param {module:router.Route} route
  * @returns {module:dispatcher.ModelAndView}
  */
@@ -38,12 +36,10 @@ export abstract class AbstractPathViewController implements Controller {
 
 /**
  * @abstract
- * @class module:dispatcher.AbstractPathViewController
  * @implements module:dispatcher.Controller
  */
 
 /**
- * @function module:dispatcher.AbstractPathViewController#handleRoute
  * @param {module:router.Route} route
  * @returns {module:dispatcher.ModelAndView}
  */
@@ -51,15 +47,13 @@ export abstract class AbstractPathViewController implements Controller {
 /**
  * @abstract
  * @protected
- * @function module:dispatcher.AbstractPathViewController#_getViewNameForRoute
  * @param {module:router.Route} route
- * @returns {external:string}
+ * @returns {string}
  */
 
 /**
- * Simple {@linkcode module:dispatcher.Controller|Controller} implementation that transforms the path of a route into a view name.
+ * Simple {@link Controller|Controller} implementation that transforms the path of a route into a view name.
  * Can optionaly prepend a prefix and/or append a suffix a build the view name from the path.
- * @class module:dispatcher.PathViewController
  * @extends module:dispatcher.AbstractPathViewController
  */
 export class PathViewController extends AbstractPathViewController {
@@ -90,20 +84,17 @@ export class PathViewController extends AbstractPathViewController {
 
         this._viewNameCache = new Map<string, string>();
         /**
-         * @member {external:string} module:dispatcher.PathViewController#prefix=''
-         */
+                 */
         this.prefix = '';
         /**
-         * @member {external:string} module:dispatcher.PathViewController#suffix=''
-         */
+                 */
         this.suffix = '';
     }
 
     /**
      * @protected
-     * @function module:dispatcher.PathViewController#_getViewNameForRoute
-     * @param {module:router.Route} route
-     * @returns {external:string}
+         * @param {module:router.Route} route
+     * @returns {string}
      */
     protected _getViewNameForRoute(route: Route): string {
         return this._getViewNameForPath(route.path);
@@ -111,9 +102,8 @@ export class PathViewController extends AbstractPathViewController {
 
     /**
      * @protected
-     * @function module:dispatcher.PathViewController#_getViewNameForPath
-     * @param {external:string} path
-     * @returns {external:string}
+         * @param {string} path
+     * @returns {string}
      */
     protected _getViewNameForPath(path: string): string {
         let viewName = this._viewNameCache.get(path);

@@ -1,1 +1,1 @@
-{"version":3,"file":"rand.d.ts","sourceRoot":"","sources":["../../src/math/rand.ts"],"names":[],"mappings":"AAAA;;GAEG;AAIH;;;;;;;;;;;;GAYG;AACH,QAAA,MAAM,IAAI,wCAAiG,CAAC;AAE5G,eAAe,IAAI,CAAC"}
+{"version":3,"file":"rand.d.ts","sourceRoot":"","sources":["../../src/math/rand.ts"],"names":[],"mappings":"AAAA;;GAEG;AAIH;;;;;;;;;;;GAWG;AACH,QAAA,MAAM,IAAI,wCAAiG,CAAC;AAE5G,eAAe,IAAI,CAAC"}

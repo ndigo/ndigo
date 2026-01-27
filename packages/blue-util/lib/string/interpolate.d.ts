@@ -7,11 +7,10 @@ declare const interpolate: (template: string, replacements: string | any[] | {
 }, syntax?: RegExp) => string;
 /**
  * String interpolation. Format/replace tokens with object properties.
- * @function module:util.interpolate
- * @param {external:string} template
- * @param {external:Object} replacements
- * @param {external:string} [syntax]
- * @returns {external:string}
+ * @param {string} template
+ * @param {Object} replacements
+ * @param {string} [syntax]
+ * @returns {string}
  * @example
  * let tmpl;
  *

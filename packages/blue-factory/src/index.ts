@@ -1,8 +1,7 @@
 /**
  * @author Jeff Rose
- * @module factory
- * @requires core
- * @requires util
+ * @see core
+ * @see util
  */
 
 export * from './aware';

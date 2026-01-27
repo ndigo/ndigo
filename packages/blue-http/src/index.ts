@@ -1,9 +1,8 @@
 /**
  * @author Jeff Rose
- * @module http
- * @requires core
- * @requires parser
- * @requires util
+ * @see core
+ * @see parser
+ * @see util
  */
 
 /**

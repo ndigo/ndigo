@@ -1,8 +1,7 @@
 /**
  * @author Jeff Rose
- * @module router
- * @requires core
- * @requires util
+ * @see core
+ * @see util
  */
 
 export * from './route';

@@ -10,9 +10,8 @@ const regex = /^\w|\s\w/g;
 
 /**
  * Returns the proper case version of a string.
- * @function module:util.toProper
- * @param {external:string} value
- * @returns {external:string}
+ * @param {string} value
+ * @returns {string}
  * @category String
  * @example
  * toProper( 'lorem-ipsum-dolor' );

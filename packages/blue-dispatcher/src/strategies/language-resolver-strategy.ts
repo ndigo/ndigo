@@ -13,7 +13,6 @@ export interface LanguageResolverStrategy {
 }
 
 /**
- * @interface module:dispatcher.LanguageResolverStrategy
  */
 
 const { defineProperty } = Reflect,

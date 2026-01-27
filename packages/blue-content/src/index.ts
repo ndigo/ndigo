@@ -1,9 +1,8 @@
 /**
  * @author Jeff Rose
- * @module content
- * @requires core
- * @requires factory
- * @requires util
+ * @see core
+ * @see factory
+ * @see util
  */
 
 export * from './content';

@@ -12,10 +12,9 @@ type TrailingSplitFunction = {
 
 /**
  * Splits a string into an array of strings based on the given separator.
- * @function module:util.trailingSplit
- * @param {external:string} separator
- * @param {external:string} text
- * @returns {external:Array<external:string>}
+ * @param {string} separator
+ * @param {string} text
+ * @returns {Array<external:string>}
  * @category String
  * @example
  * const trailingSplitOnPipe = trailingSplit( "|" );

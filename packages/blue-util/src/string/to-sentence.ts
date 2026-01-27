@@ -10,9 +10,8 @@ const regex = /(^\w)|\.\s+(\w)/gm;
 
 /**
  * Returns the sentence case version of a string.
- * @function module:util.toSentence
- * @param {external:string} value
- * @returns {external:string}
+ * @param {string} value
+ * @returns {string}
  * @category String
  * @example
  * toSentence( 'lorem-ipsum-dolor' );

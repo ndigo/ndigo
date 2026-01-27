@@ -51,8 +51,5 @@
     "@blue/factory": "~3.0.0-alpha",
     "@blue/router": "~3.0.0-alpha",
     "@blue/util": "~3.0.0-alpha"
-  },
-  "publishConfig": {
-    "registry": "https://artifacts.jpmchase.net/artifactory/api/npm/npm"
   }
 }

@@ -23,34 +23,29 @@ export interface RouteHandlerMethodMappingNamingStrategy<T = any> {
 }
 
 /**
- * @interface module:dispatcher.Invocable
  */
 
 /**
  * Encapsulates information about a handler method consisting of a `method` and `handler`.
- * @interface module:dispatcher.HandlerMethod
  * @extends module:dispatcher.Invocable
  */
 
 /**
  * A strategy for assigning a name to a route handler method's mapping.
  *
- * The strategy can be configured on {@linkcode module:dispatcher.AbstractHandlerMethodMapping|AbstractHandlerMethodMapping}.
+ * The strategy can be configured on {@link AbstractHandlerMethodMapping|AbstractHandlerMethodMapping}.
  * It is used to assign a name to the mapping of every registered handler method.
- * @interface module:dispatcher.RouteHandlerMethodMappingNamingStrategy
  */
 
 /**
- * @function module:dispatcher.RouteHandlerMethodMappingNamingStrategy#getName
  * @param {*} handlerMethod
  * @param {*} mapping
- * @returns {external:string} The name
+ * @returns {string} The name
  */
 
 const { defineProperty } = Reflect;
 
 /**
- * @class module:router.RouteHandlerMethod
  * @implements module:dispatcher.HandlerMethod
  * @implements module:core.Serializable
  */
@@ -67,24 +62,19 @@ export class RouteHandlerMethod implements HandlerMethod, Serializable {
     constructor(factory: Factory, name: string, method: string, ...args: any[]);
     constructor(factoryOrHandler: Factory | object, nameOrMethod: string, ...args: any[]) {
         /**
-         * @member {module:factory.Factory} module:router.RouteHandlerMethod#factory
-         */
+                 */
 
         /**
-         * @member {external:string} module:router.RouteHandlerMethod#name
-         */
+                 */
 
         /**
-         * @member {*} module:router.RouteHandlerMethod#handler
-         */
+                 */
 
         /**
-         * @member {external:string} module:router.RouteHandlerMethod#method
-         */
+                 */
 
         /**
-         * @member {external:Array<*>} module:router.RouteHandlerMethod#parameters
-         */
+                 */
 
         if (likeFactory(factoryOrHandler)) {
             defineProperty(this, 'factory', {
@@ -147,8 +137,7 @@ export class RouteHandlerMethod implements HandlerMethod, Serializable {
     }
 
     /**
-     * @function module:router.RouteHandlerMethod#invoke
-     * @param {module:router.Request} route
+         * @param {module:router.Request} route
      * @returns {module:dispatcher.ModelAndView}
      */
     invoke<ModelAndView>(route: Route, ...foo: any[]): ModelAndView {
@@ -187,8 +176,7 @@ export class RouteHandlerMethod implements HandlerMethod, Serializable {
     }
 
     /**
-     * @function module:router.RouteHandlerMethod#toString
-     * @returns {external:string}
+         * @returns {string}
      */
     toString(): string {
         return `${type(this.handler)}#${this.method}( ${JSON.stringify(this.parameters)} )`;
@@ -196,7 +184,6 @@ export class RouteHandlerMethod implements HandlerMethod, Serializable {
 }
 
 /**
- * @class module:dispatcher.ErrorHandlerMethod
  * @extends module:router.RouteHandlerMethod
  */
 export class ErrorHandlerMethod extends RouteHandlerMethod {

@@ -17,11 +17,10 @@ export type Entry = {
 };
 
 /**
- * @function module:logger.newEntry
- * @param {external:string} category
+ * @param {string} category
  * @param {module:logger.Level} level
- * @param {external:Array<module:logger.loggable>} message
- * @param {external:string} [source]
+ * @param {Array<module:logger.loggable>} message
+ * @param {string} [source]
  */
 export const newEntry = (category: string, level: Level, message: loggable[], source?: string): Entry => ({
     message: message,
@@ -37,11 +36,11 @@ export const newEntry = (category: string, level: Level, message: loggable[], so
  */
 
 /**
- * @typedef {external:Object} module:logger.Entry
- * @property {external:string} category
- * @property {external:boolean} [error]
+ * @typedef {Object} module:logger.Entry
+ * @property {string} category
+ * @property {boolean} [error]
  * @property {module:logger.Level} level
- * @property {external:Array<module:logger.loggable>} message
- * @property {external:string} [source]
- * @property {external:number} timestamp
+ * @property {Array<module:logger.loggable>} message
+ * @property {string} [source]
+ * @property {number} timestamp
  */

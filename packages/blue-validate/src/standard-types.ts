@@ -8,7 +8,7 @@
 
 /**
  * @typedef BusinessType
- * @property {external:Array} constraints
+ * @property {Array} constraints
  */
 
 const standardTypes = {
@@ -17,8 +17,7 @@ const standardTypes = {
     // As per Jon Spy 6/26 len varies by LoB/Acct-Type; details pending from Enterprise
     // CIG zero-pads to 23 before writing to Profile after triggered online/offline CAMM call
     /**
-     * @member {BusinessType} module:validate.types.AccountNumber
-     */
+         */
     AccountNumber: {
         constraints: [
             {

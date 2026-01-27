@@ -15,7 +15,6 @@ export declare class FrameworkError extends FrameworkError_base {
     constructor(message?: string);
 }
 /**
- * @class module:core.IllegalStateError
  * @extends module:core.FrameworkError
  */
 export declare class IllegalStateError extends FrameworkError {

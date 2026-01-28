@@ -37,12 +37,12 @@ export declare class RingBuffer<T = any> implements ArrayLike<T>, Iterable<T>, S
 export declare class ResizableRingBuffer<T> extends RingBuffer<T> {
     get [Symbol.toStringTag](): string;
     /**
-         * @param {Array} items
+     * @param {Array} items
      * @returns {number} The number of items
      */
     put(...items: T[]): number;
     /**
-         * @param {number} newCapacity
+     * @param {number} newCapacity
      * @returns {number} The number of items
      */
     resizeTo(newCapacity: number): void;
@@ -60,7 +60,7 @@ export declare const AsEnumerableRingBuffer: <T extends Constructable<RingBuffer
 export declare class MultiValueMap<K, V> extends Map<K, V[]> {
     get [Symbol.toStringTag](): string;
     /**
-         * @param {*} key
+     * @param {*} key
      * @param {*} value
      * @returns {module:core.MultiValueMap} this
      */

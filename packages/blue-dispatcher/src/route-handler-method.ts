@@ -62,19 +62,19 @@ export class RouteHandlerMethod implements HandlerMethod, Serializable {
     constructor(factory: Factory, name: string, method: string, ...args: any[]);
     constructor(factoryOrHandler: Factory | object, nameOrMethod: string, ...args: any[]) {
         /**
-                 */
+         */
 
         /**
-                 */
+         */
 
         /**
-                 */
+         */
 
         /**
-                 */
+         */
 
         /**
-                 */
+         */
 
         if (likeFactory(factoryOrHandler)) {
             defineProperty(this, 'factory', {
@@ -137,7 +137,7 @@ export class RouteHandlerMethod implements HandlerMethod, Serializable {
     }
 
     /**
-         * @param {module:router.Request} route
+     * @param {module:router.Request} route
      * @returns {module:dispatcher.ModelAndView}
      */
     invoke<ModelAndView>(route: Route, ...foo: any[]): ModelAndView {
@@ -176,7 +176,7 @@ export class RouteHandlerMethod implements HandlerMethod, Serializable {
     }
 
     /**
-         * @returns {string}
+     * @returns {string}
      */
     toString(): string {
         return `${type(this.handler)}#${this.method}( ${JSON.stringify(this.parameters)} )`;

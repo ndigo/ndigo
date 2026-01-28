@@ -206,7 +206,7 @@ export class RouteConditionHolder extends AbstractRouteCondition<RouteConditionH
 
     /**
      * Combine the route conditions held by the two RouteConditionHolder instances after making sure the conditions are of the same type. Or if one holder is empty, the other holder is returned.
-         * @param {module:router.RouteConditionHolder} other
+     * @param {module:router.RouteConditionHolder} other
      * @returns {module:router.RouteConditionHolder}
      */
     merge(other: RouteConditionHolder): RouteConditionHolder {
@@ -294,7 +294,7 @@ export class CompositeRouteCondition extends AbstractRouteCondition<CompositeRou
 
     /**
      * If one instance is empty, return the other. If both instances have conditions, combine the individual conditions after ensuring they are of the same type and number.
-         * @param {module:dispatcher.CompositeRouteCondition} other
+     * @param {module:dispatcher.CompositeRouteCondition} other
      * @returns {module:dispatcher.CompositeRouteCondition}
      */
     merge(other: CompositeRouteCondition): CompositeRouteCondition {

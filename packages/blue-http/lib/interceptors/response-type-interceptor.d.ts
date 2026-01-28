@@ -17,24 +17,21 @@ export type ResponseTypeSettings = HTTPInit & {
     responseType: MediaType | true;
 };
 /**
- * @class module:http.ResponseTypeInterceptor
  * @implements module:http.InitializationAwareHTTPInterceptor
  * @implements module:http.ResponseAwareHTTPInterceptor
  */
 export declare class ResponseTypeInterceptor implements InitializationAwareHTTPInterceptor<ResponseTypeInit>, ResponseAwareHTTPInterceptor<ResponseTypeSettings> {
     /**
-     * @function module:http.ResponseTypeInterceptor#preInit
-     * @param {external:URL} url The requested URL.
+     * @param {URL} url The requested URL.
      * @param {module:http.ResponseTypeInit} settings The HTTP request settings, including the `responseType` setting.
-     * @returns {external:boolean} Whether or not the http request should continue execution.
+     * @returns {boolean} Whether or not the http request should continue execution.
      */
     preInit(url: URL, settings: ResponseTypeInit): boolean;
     /**
      * @async
-     * @function module:http.ResponseTypeInterceptor#postResponse
-     * @param {external:Response} response
+     * @param {Response} response
      * @param {module:http.ResponseTypeSettings} settings
-     * @returns {external:Promise<external:void>}
+     * @returns {Promise<external:void>}
      */
     postResponse(response: Response, settings: ResponseTypeSettings): Promise<void>;
 }

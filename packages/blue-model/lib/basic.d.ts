@@ -1,3 +1,4 @@
+export { BasicModel } from 'objectmodel';
 export declare const Primitive: import("objectmodel/src/object-model").BasicModel<(NumberConstructor | SymbolConstructor | BigIntConstructor | BooleanConstructor | StringConstructor)[]>;
 export declare const Falsy: import("objectmodel/src/object-model").BasicModel<import("objectmodel/src/object-model").BasicModel<(NumberConstructor | SymbolConstructor | BigIntConstructor | BooleanConstructor | StringConstructor)[]>>;
 export declare const Truthy: import("objectmodel/src/object-model").BasicModel<(import("objectmodel/src/object-model").BasicModel<(NumberConstructor | SymbolConstructor | BigIntConstructor | BooleanConstructor | StringConstructor)[]> | ObjectConstructor)[]>;

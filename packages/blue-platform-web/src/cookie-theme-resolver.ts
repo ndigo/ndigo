@@ -19,7 +19,7 @@ export class CookieThemeResolver extends AbstractThemeResolver {
     constructor(cookieName: string, defaultThemeName: string) {
         super(defaultThemeName);
         /**
-                 */
+         */
         Reflect.defineProperty(this, 'cookieName', {
             value: cookieName,
             configurable: true,

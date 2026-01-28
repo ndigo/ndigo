@@ -4,7 +4,7 @@
 import { JSONObject, Constructable } from '@blue/core';
 import { ContentSource } from '@blue/content';
 import { EventEmitter, EventType } from './event-emitter';
-import { ConfigurableFactory, Destroyable, InitializationAwareProcessor, Aware } from '@blue/factory';
+import { ConfigurableFactory, Destroyable, DefaultFactory, InitializationAwareProcessor, Aware } from '@blue/factory';
 import { EnvironmentSource, Environment, ConfigurableEnvironment } from './environment';
 import { ResourceLoader } from './resource';
 export interface ApplicationContext extends ConfigurableFactory, ContentSource, Destroyable, EventEmitter, EnvironmentSource, ResourceLoader {
@@ -26,24 +26,21 @@ export interface ConfigurableApplicationContext extends ApplicationContext {
 }
 export declare const $ChildContext: unique symbol;
 /**
- * @function module:context.likeApplicationContext
  * @param {*} value The value to be tested
- * @returns {external:boolean} Whether or not the `value` is {@linkcode module:context.ApplicationContext|ApplicationContext}
+ * @returns {boolean} Whether or not the `value` is {@link ApplicationContext|ApplicationContext}
  */
 export declare const likeApplicationContext: (value: any) => value is ApplicationContext;
 /**
- * @function module:context.likeApplicationContextAware
  * @param {*} value The value to be tested
- * @returns {external:boolean} Whether or not the `value` is {@linkcode module:context.ApplicationContextAware|ApplicationContextAware}
+ * @returns {boolean} Whether or not the `value` is {@link ApplicationContextAware|ApplicationContextAware}
  */
 export declare const likeApplicationContextAware: (value: any) => value is ApplicationContextAware;
-declare const GenericApplicationContext_base: any;
+declare const GenericApplicationContext_base: Constructable<EventEmitter> & Constructable<ResourceLoader> & typeof DefaultFactory;
 /**
- * @class module:context.GenericApplicationContext
  * @implements module:context.ConfigurableApplicationContext
  * @extends module:factory.DefaultFactory
- * @mixes module:context.AsEventEmitter
- * @mixes module:context.AsModuleResourceLoader
+ * @see module:context.AsEventEmitter
+ * @see module:context.AsModuleResourceLoader
  */
 export declare class GenericApplicationContext extends GenericApplicationContext_base {
     #private;
@@ -66,7 +63,6 @@ export declare class GenericApplicationContext extends GenericApplicationContext
     protected _createEnvironment(): Environment;
 }
 /**
- * @class module:context.ProxiedGenericApplicationContext
  * @implements external:Record
  * @extends module:context.GenericApplicationContext
  */
@@ -75,24 +71,22 @@ export declare class ProxiedGenericApplicationContext extends GenericApplication
     constructor(name: string, data?: JSONObject);
 }
 /**
- * @mixin module:context.AsApplicationContextAware
+ * @see module:context.AsApplicationContextAware
  * @implements module:context.ApplicationContextAware
  */
 export declare const AsApplicationContextAware: <T extends Constructable>(superclass: T) => Constructable<ApplicationContextAware> & T;
 /**
  * Create a new ApplicationContextAwareProcessor for the given context.
- * @classdesc
- * An {@linkcode module:factory.InitializationAwareProcessor|InitializationAwareProcessor} implementation that passes the ApplicationContext to value that implement the {@linkcode module:context.EnvironmentAware|EnvironmentAware}, {@linkcode module:context.ResourceLoaderAware|ResourceLoaderAware}, {@linkcode module:context.ApplicationEventEmitterAware|ApplicationEventEmitterAware}, {@linkcode module:context.ContentSourceAware|ContentSourceAware}, and/or {@linkcode module:context.ApplicationContextAware|ApplicationContextAware} interfaces.
+ * An {@link InitializationAwareProcessor|InitializationAwareProcessor} implementation that passes the ApplicationContext to value that implement the {@link EnvironmentAware|EnvironmentAware}, {@link ResourceLoaderAware|ResourceLoaderAware}, {@link ApplicationEventEmitterAware|ApplicationEventEmitterAware}, {@link ContentSourceAware|ContentSourceAware}, and/or {@link ApplicationContextAware|ApplicationContextAware} interfaces.
  *
  * Implemented interfaces are satisfied in order of their mention above.
- * @class module:context.ApplicationContextAwareProcessor
  * @implements module:factory.InitializationAwareProcessor
  * @param {module:context.ApplicationContext} applicationContext
- * @see {@link module:context.EnvironmentAware}
- * @see {@link module:context.ResourceLoaderAware}
- * @see {@link module:context.ApplicationEventEmitterAware}
- * @see {@link module:context.ContentSourceAware}
- * @see {@link module:context.ApplicationContextAware}
+ * @see {@link EnvironmentAware}
+ * @see {@link ResourceLoaderAware}
+ * @see {@link ApplicationEventEmitterAware}
+ * @see {@link ContentSourceAware}
+ * @see {@link ApplicationContextAware}
  */
 export declare class ApplicationContextAwareProcessor implements InitializationAwareProcessor {
     readonly applicationContext: ApplicationContext;

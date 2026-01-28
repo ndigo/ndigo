@@ -54,4 +54,3 @@ describe('HashRouter', () => {
         expect(router.history.length).toBeGreaterThan(0);
     });
 });
-

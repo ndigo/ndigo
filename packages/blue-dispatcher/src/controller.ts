@@ -84,16 +84,16 @@ export class PathViewController extends AbstractPathViewController {
 
         this._viewNameCache = new Map<string, string>();
         /**
-                 */
+         */
         this.prefix = '';
         /**
-                 */
+         */
         this.suffix = '';
     }
 
     /**
      * @protected
-         * @param {module:router.Route} route
+     * @param {module:router.Route} route
      * @returns {string}
      */
     protected _getViewNameForRoute(route: Route): string {
@@ -102,7 +102,7 @@ export class PathViewController extends AbstractPathViewController {
 
     /**
      * @protected
-         * @param {string} path
+     * @param {string} path
      * @returns {string}
      */
     protected _getViewNameForPath(path: string): string {

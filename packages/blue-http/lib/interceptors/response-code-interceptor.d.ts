@@ -9,10 +9,8 @@ export interface ResponseCodeAwareHTTPInterceptor {
     [statusCode: number]: (response: Response, settings: HTTPInit) => Promise<void>;
 }
 /**
- * @interface module:http.ResponseCodeAwareHTTPInterceptor
  */
 /**
- * @class module:http.MappedResponseCodeHTTPInterceptor
  * @implements module:http.ResponseAwareHTTPInterceptor
  * @param {module:http.ResponseCodeAwareHTTPInterceptor} interceptor
  */
@@ -20,16 +18,14 @@ export declare class MappedResponseCodeHTTPInterceptor implements ResponseAwareH
     #private;
     /**
      * @readonly
-     * @member {module:http.ResponseCodeAwareHTTPInterceptor} module:http.MappedResponseCodeHTTPInterceptor#interceptor
      */
     get interceptor(): ResponseCodeAwareHTTPInterceptor;
     constructor(interceptor: ResponseCodeAwareHTTPInterceptor);
     /**
      * @async
-     * @function module:http.MappedResponseCodeHTTPInterceptor#postResponse
-     * @param {external:Response} response
+     * @param {Response} response
      * @param {module:http.HTTPInit} settings
-     * @returns {external:Promise<external:void>}
+     * @returns {Promise<external:void>}
      */
     postResponse(response: Response, settings: HTTPInit): Promise<void>;
 }

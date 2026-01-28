@@ -81,9 +81,7 @@ describe('OTel Entry Conversion', () => {
         });
 
         it('should handle objects in message gracefully', () => {
-            const entry = newEntry('test-category', ApacheLevel.INFO, [
-                { complex: { nested: 'object' } },
-            ]);
+            const entry = newEntry('test-category', ApacheLevel.INFO, [{ complex: { nested: 'object' } }]);
             const logRecord = entryToLogRecord(entry);
 
             expect(logRecord.body).toContain('complex');

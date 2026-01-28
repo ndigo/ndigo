@@ -4,7 +4,6 @@
 import { AbstractThemeResolver } from '@blue/dispatcher';
 import { Route } from '@blue/router';
 /**
- * @class module:dispatcher.CookieThemeResolver
  * @extends module:dispatcher.AbstractThemeResolver
  */
 export declare class CookieThemeResolver extends AbstractThemeResolver {

@@ -7,13 +7,11 @@ export interface URLMatcher extends PatternMatcher<string, string> {
     match(pattern: string, url: string): boolean;
 }
 /**
- * @function module:core.likeURLMatcher
  * @param {*} value
- * @returns {external:boolean} Whether or not the `value` is a {@linkcode module:http.URLMatcher|URLMatcher}.
+ * @returns {boolean} Whether or not the `value` is a {@link URLMatcher|URLMatcher}.
  */
 export declare const likeURLMatcher: (value: any) => value is URLMatcher;
 /**
- * @class module:core.EqualsURLMatcher
  * @extends module:http.URLMatcher
  */
 export declare class EqualsURLMatcher implements URLMatcher {

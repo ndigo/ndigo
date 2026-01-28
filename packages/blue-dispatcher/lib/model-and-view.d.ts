@@ -6,7 +6,6 @@ type Model<T = any> = {
     [key: string]: T;
 } | Map<string, T>;
 /**
- * @class module:dispatcher.ModelAndView
  */
 export declare class ModelAndView {
     model: Model;

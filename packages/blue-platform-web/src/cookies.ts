@@ -3,6 +3,7 @@
  */
 
 import { createNull, JSONObject, JSONValue } from '@blue/core';
+import { Parser, Ok } from 'arcsecond';
 import cookieExpression from './parser/cookie-expression';
 
 export interface Cookie {
@@ -84,7 +85,14 @@ function init(converter): CookieJar {
     }
 
     function get(key: string, json: boolean): JSONValue {
-        const jar: JSONObject = cookieExpression.run(document.cookie);
+        const parseResult = (cookieExpression as Parser<Array<[string, string]>>).run(document.cookie);
+        if (parseResult.isError) {
+            console.error('Cookie parsing error:', parseResult.error);
+            return createNull();
+        }
+        const rawCookies: Array<[string, string]> = (parseResult as Ok<Array<[string, string]>, string>).result;
+
+        const jar: JSONObject = Object.fromEntries(rawCookies) as JSONObject;
         return key ? (json ? JSON.parse(jar[key] as string) : jar[key]) : jar;
     }
 

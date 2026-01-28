@@ -12,19 +12,6 @@ const getTraps: any = (objectModelInternal as any).getTraps;
 const extend: any = (helpersInternal as any).extend;
 const merge: any = (helpersInternal as any).merge;
 
-const initEventModel = function (obj, model, _this) {
-    if (obj instanceof model) {
-        return obj;
-    }
-    merge(_this, model.default);
-    if (model.parentClass) {
-        merge(obj, new model.parentClass(obj));
-    }
-    merge(_this, obj);
-    asEventEmitter.call(_this);
-    return _this;
-};
-
 /**
  * @extends module:model.Model
  */
@@ -34,7 +21,7 @@ export function EventModel(def) {
         def,
         EventModel,
         Object,
-        initEventModel,
+        null,
         function (model) {
             const traps = getTraps(model, def),
                 set = traps.set;

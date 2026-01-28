@@ -6,11 +6,10 @@
  */
 /**
  * @typedef BusinessType
- * @property {external:Array} constraints
+ * @property {Array} constraints
  */
 declare const standardTypes: {
     /**
-     * @member {BusinessType} module:validate.types.AccountNumber
      */
     AccountNumber: {
         constraints: ({

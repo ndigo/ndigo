@@ -1,13 +1,13 @@
 /**
  * @author Jeff Rose
  */
-import { PathMatcher } from '@blue/core';
+import { Null, PathMatcher } from '@blue/core';
 import { ApplicationContext } from '@blue/context';
 import { Route } from '@blue/router';
 export interface ViewMapping {
     getTarget(route: Route): any;
 }
-declare const AbstractViewMapping_base: any;
+declare const AbstractViewMapping_base: (new (...args: any[]) => import("@blue/factory").NameAware) & import("@blue/core").Constructable<import("@blue/context").ApplicationContextAware> & typeof Null;
 export declare abstract class AbstractViewMapping extends AbstractViewMapping_base implements ViewMapping {
     applicationContext: ApplicationContext;
     defaultTarget: any;

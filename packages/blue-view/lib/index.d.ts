@@ -1,6 +1,5 @@
 /**
  * @author Jeff Rose
- * @module view
  */
 export * from './bridge';
 export * from './view';

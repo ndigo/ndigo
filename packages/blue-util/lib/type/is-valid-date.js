@@ -9,7 +9,7 @@ import { isValid } from 'date-fns/fp';
 const isDate = is(Date), isPossibleDate = either(isDate, isNumber), 
 /**
  * Determines whether a given value is a valid date.
-     * @category Type
+ * @category Type
  * @summary Is the given value a valid date?
  *
  * @description

@@ -24,7 +24,7 @@ export class MappedResponseCodeHTTPInterceptor implements ResponseAwareHTTPInter
 
     /**
      * @readonly
-         */
+     */
     get interceptor() {
         return this.#interceptor;
     }
@@ -35,7 +35,7 @@ export class MappedResponseCodeHTTPInterceptor implements ResponseAwareHTTPInter
 
     /**
      * @async
-         * @param {Response} response
+     * @param {Response} response
      * @param {module:http.HTTPInit} settings
      * @returns {Promise<external:void>}
      */

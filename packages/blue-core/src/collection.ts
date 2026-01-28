@@ -201,7 +201,7 @@ export class ResizableRingBuffer<T> extends RingBuffer<T> {
     }
 
     /**
-         * @param {Array} items
+     * @param {Array} items
      * @returns {number} The number of items
      */
     put(...items: T[]): number {
@@ -217,7 +217,7 @@ export class ResizableRingBuffer<T> extends RingBuffer<T> {
     }
 
     /**
-         * @param {number} newCapacity
+     * @param {number} newCapacity
      * @returns {number} The number of items
      */
     resizeTo(newCapacity: number): void {
@@ -288,7 +288,7 @@ export class MultiValueMap<K, V> extends Map<K, V[]> {
     }
 
     /**
-         * @param {*} key
+     * @param {*} key
      * @param {*} value
      * @returns {module:core.MultiValueMap} this
      */

@@ -5,7 +5,6 @@ import { ApplicationContext, ConfigurableEnvironment } from '@blue/context';
 import { JSONObject } from '@blue/core';
 import { Application } from './application';
 /**
- * @class module:boot.ApplicationBuilder
  */
 export declare class ApplicationBuilder {
     #private;

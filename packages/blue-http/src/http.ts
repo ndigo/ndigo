@@ -354,11 +354,11 @@ export class HTTPExecutionChain {
     #hasResponseAwareInterceptors: boolean;
 
     /**
-         */
+     */
     http: HTTP;
 
     /**
-         */
+     */
     interceptorIndex: number;
 
     get [Symbol.toStringTag](): string {
@@ -366,7 +366,7 @@ export class HTTPExecutionChain {
     }
 
     /**
-         */
+     */
     get interceptors(): HTTPInterceptor[] {
         return this.#interceptors;
     }
@@ -393,7 +393,7 @@ export class HTTPExecutionChain {
     }
 
     /**
-         * @param {module:http.HttpInterceptor} interceptor
+     * @param {module:http.HttpInterceptor} interceptor
      */
     addInterceptor(interceptor: HTTPInterceptor): void {
         if (interceptor) {
@@ -406,7 +406,7 @@ export class HTTPExecutionChain {
     }
 
     /**
-         * @param {Array<module:http.HttpInterceptor>} interceptors
+     * @param {Array<module:http.HttpInterceptor>} interceptors
      */
     addInterceptors(interceptors: HTTPInterceptor[]): void {
         const length = interceptors?.length;
@@ -418,7 +418,7 @@ export class HTTPExecutionChain {
     }
 
     /**
-         */
+     */
     async applyPostError(error: Error, request: Request, http: HTTP): Promise<Response | undefined> {
         if (this.#hasErrorAwareInterceptors) {
             const interceptors = this.#interceptors,
@@ -436,7 +436,7 @@ export class HTTPExecutionChain {
     }
 
     /**
-         */
+     */
     applyPostComplete(request: Request, response: Response): void {
         if (this.#hasCompletionAwareInterceptors) {
             const interceptors = this.#interceptors,
@@ -454,7 +454,7 @@ export class HTTPExecutionChain {
     }
 
     /**
-         */
+     */
     async applyPostResponse(response: Response, settings: HTTPInit): Promise<void> {
         if (this.#hasResponseAwareInterceptors) {
             const interceptors = this.#interceptors,
@@ -472,7 +472,7 @@ export class HTTPExecutionChain {
     }
 
     /**
-         */
+     */
     applyPreInit(url: URL, settings: HTTPInit): boolean {
         if (this.#hasInitializationAwareInterceptors) {
             const interceptors = this.#interceptors,
@@ -494,7 +494,7 @@ export class HTTPExecutionChain {
     }
 
     /**
-         */
+     */
     async applyPreRequest(request: Request, http: HTTP): Promise<Request> {
         if (this.#hasRequestAwareInterceptors) {
             const interceptors = this.#interceptors,
@@ -519,7 +519,7 @@ export class HTTPExecutionChain {
 
     /**
      * @protected
-         * @param {module:http.HttpInterceptor} interceptor
+     * @param {module:http.HttpInterceptor} interceptor
      */
     _checkInterceptorType(interceptor: HTTPInterceptor): void {
         if (!this.#hasCompletionAwareInterceptors) {
@@ -556,7 +556,7 @@ export class HTTP {
     }
 
     /**
-         */
+     */
     get interceptors(): HTTPInterceptor[] {
         return this.#interceptors;
     }
@@ -573,7 +573,7 @@ export class HTTP {
 
     /**
      * @async
-         * @param {string} input
+     * @param {string} input
      * @param {module:http.HTTPInit} [init={}]
      * @returns {Promise<external:Response>}
      */
@@ -624,7 +624,7 @@ export class HTTP {
 
     /**
      * @async
-         * @param {string} input
+     * @param {string} input
      * @param {module:http.HTTPInit} [init={}]
      * @returns {Promise<external:Response>}
      */
@@ -636,7 +636,7 @@ export class HTTP {
 
     /**
      * @async
-         * @param {string} input
+     * @param {string} input
      * @param {module:http.HTTPInit} [init={}]
      * @returns {Promise<external:Response>}
      */
@@ -648,7 +648,7 @@ export class HTTP {
 
     /**
      * @async
-         * @param {string} input
+     * @param {string} input
      * @param {module:http.HTTPInit} [init={}]
      * @returns {Promise<external:Response>}
      */
@@ -660,7 +660,7 @@ export class HTTP {
 
     /**
      * @async
-         * @param {string} input
+     * @param {string} input
      * @param {module:http.HTTPInit} [init={}]
      * @returns {Promise<external:Response>}
      */
@@ -672,7 +672,7 @@ export class HTTP {
 
     /**
      * @async
-         * @param {string} input
+     * @param {string} input
      * @param {module:http.HTTPInit} [init={}]
      * @returns {Promise<external:Response>}
      */
@@ -684,7 +684,7 @@ export class HTTP {
 
     /**
      * @async
-         * @param {string} input
+     * @param {string} input
      * @param {module:http.HTTPInit} [init={}]
      * @returns {Promise<external:Response>}
      */
@@ -696,7 +696,7 @@ export class HTTP {
 
     /**
      * @async
-         * @param {string} input
+     * @param {string} input
      * @param {module:http.HTTPInit} [init={}]
      * @returns {Promise<external:Response>}
      */
@@ -708,7 +708,7 @@ export class HTTP {
 
     /**
      * @async
-         * @param {string} input
+     * @param {string} input
      * @param {module:http.HTTPInit} [init={}]
      * @returns {Promise<external:Response>}
      */
@@ -720,7 +720,7 @@ export class HTTP {
 
     /**
      * @async
-         * @param {string} input
+     * @param {string} input
      * @param {module:http.HTTPInit} [init={}]
      * @returns {Promise<external:Response>}
      */
@@ -732,7 +732,7 @@ export class HTTP {
 
     /**
      * @protected
-         * @param {module:http.HTTP|module:http.HTTPExecutionChain} http
+     * @param {module:http.HTTP|module:http.HTTPExecutionChain} http
      * @param {string} url
      * @returns {module:http.HTTPExecutionChain}
      */

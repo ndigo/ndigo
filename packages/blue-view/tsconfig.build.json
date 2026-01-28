@@ -8,12 +8,5 @@
     "skipLibCheck": true
   },
   "exclude": ["node_modules/**/*", "**/*.spec.ts", "**/*.test.ts", "vite.config.ts", "vitest.config.ts", "test/**/*"],
-  "include": ["src/**/*"],
-  "references": [
-    { "path": "../blue-core/tsconfig.build.json" },
-    { "path": "../blue-context/tsconfig.build.json" },
-    { "path": "../blue-factory/tsconfig.build.json" },
-    { "path": "../blue-router/tsconfig.build.json" },
-    { "path": "../blue-util/tsconfig.build.json" }
-  ]
+  "include": ["src/**/*"]
 }

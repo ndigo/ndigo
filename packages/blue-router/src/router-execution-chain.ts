@@ -34,7 +34,7 @@ export default class RouterExecutionChain {
     }
 
     /**
-         * @param {module:router.RouterInterceptor} interceptor
+     * @param {module:router.RouterInterceptor} interceptor
      */
     addInterceptor(interceptor: RouterInterceptor): void {
         if (interceptor) {
@@ -46,7 +46,7 @@ export default class RouterExecutionChain {
     }
 
     /**
-         * @param {Array<module:router.RouterInterceptor>} interceptors
+     * @param {Array<module:router.RouterInterceptor>} interceptors
      */
     addInterceptors(interceptors: RouterInterceptor[]): void {
         const length = interceptors?.length;
@@ -58,7 +58,7 @@ export default class RouterExecutionChain {
     }
 
     /**
-         * @param {module:router.Route} route
+     * @param {module:router.Route} route
      */
     applyPostRoute(route: Route): void {
         const interceptors = this.#interceptors,
@@ -72,7 +72,7 @@ export default class RouterExecutionChain {
     }
 
     /**
-         * @param {module:router.Route} route
+     * @param {module:router.Route} route
      */
     applyPreRoute(route: Route): boolean {
         const interceptors = this.#interceptors,

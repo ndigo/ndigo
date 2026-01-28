@@ -5,85 +5,69 @@ import { like } from '@blue/util';
 import ResponseError from '../response-error';
 import ResponseStatus from '../response-status';
 /**
- * @interface module:http.InformationAwareHTTPInterceptor
  */
 /**
- * @function module:http.InformationAwareHTTPInterceptor#postInformationalResponse
  * @param {exteral:Response} response The http response
  * @param {module:http.HTTPInit} settings The http request settings
- * @returns {external:Promise<module:core.JSONObject | undefined>}
+ * @returns {Promise<module:core.JSONObject | undefined>}
  */
 /**
- * @interface module:http.SuccessAwareHTTPInterceptor
  */
 /**
- * @function module:http.SuccessAwareHTTPInterceptor#postSuccessfulResponse
  * @param {exteral:Response} response The http response
  * @param {module:http.HTTPInit} settings The http request settings
- * @returns {external:Promise<module:core.JSONObject | undefined>}
+ * @returns {Promise<module:core.JSONObject | undefined>}
  */
 /**
- * @interface module:http.RedirectAwareHTTPInterceptor
  */
 /**
- * @function module:http.RedirectAwareHTTPInterceptor#postRedirectResponse
  * @param {exteral:Response} response The http response
  * @param {module:http.HTTPInit} settings The http request settings
- * @returns {external:Promise<module:core.JSONObject | undefined>}
+ * @returns {Promise<module:core.JSONObject | undefined>}
  */
 /**
- * @interface module:http.ClientErrorAwareHTTPInterceptor
  */
 /**
- * @function module:http.ClientErrorAwareHTTPInterceptor#postClientErrorResponse
  * @param {exteral:Response} response The http response
  * @param {module:http.HTTPInit} settings The http request settings
- * @returns {external:Promise<module:core.JSONObject | undefined>}
+ * @returns {Promise<module:core.JSONObject | undefined>}
  */
 /**
- * @interface module:http.ServerErrorAwareHTTPInterceptor
  */
 /**
- * @function module:http.ServerErrorAwareHTTPInterceptor#postServerErrorResponse
  * @param {exteral:Response} response The http response
  * @param {module:http.HTTPInit} settings The http request settings
- * @returns {external:Promise<module:core.JSONObject | undefined>}
+ * @returns {Promise<module:core.JSONObject | undefined>}
  */
 /**
  * @typedef {module:http.InformationAwareHTTPInterceptor|module:http.SuccessAwareHTTPInterceptor|module:http.RedirectAwareHTTPInterceptor|module:http.ClientErrorAwareHTTPInterceptor|module:http.ServerErrorAwareHTTPInterceptor} module:http.ResponseClassAwareHTTPInterceptor
  */
 /**
- * @function module:http.likeInformationAwareHTTPInterceptor
  * @param {*} value
- * @returns {external:boolean} Whether or not a value is like {@link module:http.InformationAwareHTTPInterceptor}.
+ * @returns {boolean} Whether or not a value is like {@link InformationAwareHTTPInterceptor}.
  */
 export const likeInformationAwareHTTPInterceptor = like({ postInformationalResponse: Function });
 /**
- * @function module:http.likeSuccessAwareHTTPInterceptor
  * @param {*} value
- * @returns {external:boolean} Whether or not a value is like {@link module:http.SuccessAwareHTTPInterceptor}.
+ * @returns {boolean} Whether or not a value is like {@link SuccessAwareHTTPInterceptor}.
  */
 export const likeSuccessAwareHTTPInterceptor = like({ postSuccessfulResponse: Function });
 /**
- * @function module:http.likeRedirectAwareHTTPInterceptor
  * @param {*} value
- * @returns {external:boolean} Whether or not a value is like {@link module:http.RedirectAwareHTTPInterceptor}.
+ * @returns {boolean} Whether or not a value is like {@link RedirectAwareHTTPInterceptor}.
  */
 export const likeRedirectAwareHTTPInterceptor = like({ postRedirectResponse: Function });
 /**
- * @function module:http.likeClientErrorAwareHTTPInterceptor
  * @param {*} value
- * @returns {external:boolean} Whether or not a value is like {@link module:http.ClientErrorAwareHTTPInterceptor}.
+ * @returns {boolean} Whether or not a value is like {@link ClientErrorAwareHTTPInterceptor}.
  */
 export const likeClientErrorAwareHTTPInterceptor = like({ postClientErrorResponse: Function });
 /**
- * @function module:http.likeServerErrorAwareHTTPInterceptor
  * @param {*} value
- * @returns {external:boolean} Whether or not a value is like {@link module:http.ServerErrorAwareHTTPInterceptor}.
+ * @returns {boolean} Whether or not a value is like {@link ServerErrorAwareHTTPInterceptor}.
  */
 export const likeServerErrorAwareHTTPInterceptor = like({ postServerErrorResponse: Function });
 /**
- * @class module:http.MappedResponseClassHTTPInterceptor
  * @implements module:http.ResponseAwareHTTPInterceptor
  * @param {module:http.ResponseClassAwareHTTPInterceptor} interceptor
  */
@@ -96,7 +80,6 @@ export class MappedResponseClassHTTPInterceptor {
     #hasServerErrorAwareInterceptor;
     /**
      * @readonly
-     * @member {module:http.ResponseClassAwareHTTPInterceptor} module:http.MappedResponseClassHTTPInterceptor#interceptor
      */
     get interceptor() {
         return this.#interceptor;
@@ -111,10 +94,9 @@ export class MappedResponseClassHTTPInterceptor {
     }
     /**
      * @async
-     * @function module:http.MappedResponseClassHTTPInterceptor#postResponse
-     * @param {external:Response} response
+     * @param {Response} response
      * @param {module:http.HTTPInit} settings
-     * @returns {external:Promise<external:void>}
+     * @returns {Promise<external:void>}
      */
     async postResponse(response, settings) {
         if (response.ok && this.#hasSuccessAwareInterceptor) {
@@ -143,4 +125,4 @@ export class MappedResponseClassHTTPInterceptor {
         }
     }
 }
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoicmVzcG9uc2UtY2xhc3MtaW50ZXJjZXB0b3IuanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi8uLi9zcmMvaW50ZXJjZXB0b3JzL3Jlc3BvbnNlLWNsYXNzLWludGVyY2VwdG9yLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBOztHQUVHO0FBR0gsT0FBTyxFQUFFLElBQUksRUFBRSxNQUFNLFlBQVksQ0FBQztBQUVsQyxPQUFPLGFBQWEsTUFBTSxtQkFBbUIsQ0FBQztBQUM5QyxPQUFPLGNBQWMsTUFBTSxvQkFBb0IsQ0FBQztBQWlDaEQ7O0dBRUc7QUFFSDs7Ozs7R0FLRztBQUVIOztHQUVHO0FBRUg7Ozs7O0dBS0c7QUFFSDs7R0FFRztBQUVIOzs7OztHQUtHO0FBRUg7O0dBRUc7QUFFSDs7Ozs7R0FLRztBQUVIOztHQUVHO0FBRUg7Ozs7O0dBS0c7QUFFSDs7R0FFRztBQUVIOzs7O0dBSUc7QUFDSCxNQUFNLENBQUMsTUFBTSxtQ0FBbUMsR0FBRyxJQUFJLENBQUMsRUFBRSx5QkFBeUIsRUFBRSxRQUFRLEVBQUUsQ0FFbEQsQ0FBQztBQUU5Qzs7OztHQUlHO0FBQ0gsTUFBTSxDQUFDLE1BQU0sK0JBQStCLEdBQUcsSUFBSSxDQUFDLEVBQUUsc0JBQXNCLEVBQUUsUUFBUSxFQUFFLENBRS9DLENBQUM7QUFFMUM7Ozs7R0FJRztBQUNILE1BQU0sQ0FBQyxNQUFNLGdDQUFnQyxHQUFHLElBQUksQ0FBQyxFQUFFLG9CQUFvQixFQUFFLFFBQVEsRUFBRSxDQUU3QyxDQUFDO0FBRTNDOzs7O0dBSUc7QUFDSCxNQUFNLENBQUMsTUFBTSxtQ0FBbUMsR0FBRyxJQUFJLENBQUMsRUFBRSx1QkFBdUIsRUFBRSxRQUFRLEVBQUUsQ0FFaEQsQ0FBQztBQUU5Qzs7OztHQUlHO0FBQ0gsTUFBTSxDQUFDLE1BQU0sbUNBQW1DLEdBQUcsSUFBSSxDQUFDLEVBQUUsdUJBQXVCLEVBQUUsUUFBUSxFQUFFLENBRWhELENBQUM7QUFFOUM7Ozs7R0FJRztBQUNI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
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoicmVzcG9uc2UtY2xhc3MtaW50ZXJjZXB0b3IuanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi8uLi9zcmMvaW50ZXJjZXB0b3JzL3Jlc3BvbnNlLWNsYXNzLWludGVyY2VwdG9yLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBOztHQUVHO0FBR0gsT0FBTyxFQUFFLElBQUksRUFBRSxNQUFNLFlBQVksQ0FBQztBQUVsQyxPQUFPLGFBQWEsTUFBTSxtQkFBbUIsQ0FBQztBQUM5QyxPQUFPLGNBQWMsTUFBTSxvQkFBb0IsQ0FBQztBQWlDaEQ7R0FDRztBQUVIOzs7O0dBSUc7QUFFSDtHQUNHO0FBRUg7Ozs7R0FJRztBQUVIO0dBQ0c7QUFFSDs7OztHQUlHO0FBRUg7R0FDRztBQUVIOzs7O0dBSUc7QUFFSDtHQUNHO0FBRUg7Ozs7R0FJRztBQUVIOztHQUVHO0FBRUg7OztHQUdHO0FBQ0gsTUFBTSxDQUFDLE1BQU0sbUNBQW1DLEdBQUcsSUFBSSxDQUFDLEVBQUUseUJBQXlCLEVBQUUsUUFBUSxFQUFFLENBRWxELENBQUM7QUFFOUM7OztHQUdHO0FBQ0gsTUFBTSxDQUFDLE1BQU0sK0JBQStCLEdBQUcsSUFBSSxDQUFDLEVBQUUsc0JBQXNCLEVBQUUsUUFBUSxFQUFFLENBRS9DLENBQUM7QUFFMUM7OztHQUdHO0FBQ0gsTUFBTSxDQUFDLE1BQU0sZ0NBQWdDLEdBQUcsSUFBSSxDQUFDLEVBQUUsb0JBQW9CLEVBQUUsUUFBUSxFQUFFLENBRTdDLENBQUM7QUFFM0M7OztHQUdHO0FBQ0gsTUFBTSxDQUFDLE1BQU0sbUNBQW1DLEdBQUcsSUFBSSxDQUFDLEVBQUUsdUJBQXVCLEVBQUUsUUFBUSxFQUFFLENBRWhELENBQUM7QUFFOUM7OztHQUdHO0FBQ0gsTUFBTSxDQUFDLE1BQU0sbUNBQW1DLEdBQUcsSUFBSSxDQUFDLEVBQUUsdUJBQXVCLEVBQUUsUUFBUSxFQUFFLENBRWhELENBQUM7QUFFOUM7OztHQUdHO0FBQ0gsTUFBTSxPQUFPLGtDQUFrQztJQUMzQyxZQUFZLENBQW9DO0lBQ2hELCtCQUErQixDQUFVO0lBQ3pDLDJCQUEyQixDQUFVO0lBQ3JDLDRCQUE0QixDQUFVO0lBQ3RDLCtCQUErQixDQUFVO0lBQ3pDLCtCQUErQixDQUFVO0lBRXpDOztPQUVHO0lBQ0gsSUFBSSxXQUFXO1FBQ1gsT0FBTyxJQUFJLENBQUMsWUFBWSxDQUFDO0lBQzdCLENBQUM7SUFFRCxZQUFZLFdBQVc7UUFDbkIsSUFBSSxDQUFDLFlBQVksR0FBRyxXQUFXLENBQUM7UUFDaEMsSUFBSSxDQUFDLCtCQUErQixHQUFHLG1DQUFtQyxDQUFDLFdBQVcsQ0FBQyxDQUFDO1FBQ3hGLElBQUksQ0FBQywyQkFBMkIsR0FBRywrQkFBK0IsQ0FBQyxXQUFXLENBQUMsQ0FBQztRQUNoRixJQUFJLENBQUMsNEJBQTRCLEdBQUcsZ0NBQWdDLENBQUMsV0FBVyxDQUFDLENBQUM7UUFDbEYsSUFBSSxDQUFDLCtCQUErQixHQUFHLG1DQUFtQyxDQUFDLFdBQVcsQ0FBQyxDQUFDO1FBQ3hGLElBQUksQ0FBQywrQkFBK0IsR0FBRyxtQ0FBbUMsQ0FBQyxXQUFXLENBQUMsQ0FBQztJQUM1RixDQUFDO0lBRUQ7Ozs7O09BS0c7SUFDSCxLQUFLLENBQUMsWUFBWSxDQUFDLFFBQWtCLEVBQUUsUUFBa0I7UUFDckQsSUFBSSxRQUFRLENBQUMsRUFBRSxJQUFJLElBQUksQ0FBQywyQkFBMkIsRUFBRSxDQUFDO1lBQ2xELE1BQU8sSUFBSSxDQUFDLFlBQTRDLENBQUMsc0JBQXNCLENBQUMsUUFBUSxFQUFFLFFBQVEsQ0FBQyxDQUFDO1FBQ3hHLENBQUM7YUFBTSxDQUFDO1lBQ0osTUFBTSxNQUFNLEdBQUcsY0FBYyxDQUFDLEdBQUcsQ0FBQyxRQUFRLENBQUMsQ0FBQztZQUM1QyxJQUFJLE1BQU0sQ0FBQyxrQkFBa0IsSUFBSSxJQUFJLENBQUMsK0JBQStCLEVBQUUsQ0FBQztnQkFDcEUsTUFBTyxJQUFJLENBQUMsWUFBZ0QsQ0FBQyx5QkFBeUIsQ0FDbEYsUUFBUSxFQUNSLFFBQVEsQ0FDWCxDQUFDO1lBQ04sQ0FBQztpQkFBTSxJQUFJLE1BQU0sQ0FBQyxlQUFlLElBQUksSUFBSSxDQUFDLDRCQUE0QixFQUFFLENBQUM7Z0JBQ3JFLE1BQU8sSUFBSSxDQUFDLFlBQTZDLENBQUMsb0JBQW9CLENBQUMsUUFBUSxFQUFFLFFBQVEsQ0FBQyxDQUFDO1lBQ3ZHLENBQUM7aUJBQU0sSUFBSSxNQUFNLENBQUMsa0JBQWtCLElBQUksSUFBSSxDQUFDLCtCQUErQixFQUFFLENBQUM7Z0JBQzNFLE1BQU8sSUFBSSxDQUFDLFlBQWdELENBQUMsdUJBQXVCLENBQ2hGLFFBQVEsRUFDUixRQUFRLENBQ1gsQ0FBQztZQUNOLENBQUM7aUJBQU0sSUFBSSxNQUFNLENBQUMsa0JBQWtCLElBQUksSUFBSSxDQUFDLCtCQUErQixFQUFFLENBQUM7Z0JBQzNFLE1BQU8sSUFBSSxDQUFDLFlBQWdELENBQUMsdUJBQXVCLENBQ2hGLFFBQVEsRUFDUixRQUFRLENBQ1gsQ0FBQztZQUNOLENBQUM7aUJBQU0sSUFBSSxRQUFRLFlBQVksYUFBYSxFQUFFLENBQUM7Z0JBQzNDLE1BQU0sUUFBUSxDQUFDO1lBQ25CLENBQUM7aUJBQU0sQ0FBQztnQkFDSixNQUFNLElBQUksYUFBYSxDQUFDLFFBQVEsRUFBRSx3QkFBd0IsTUFBTSxDQUFDLElBQUksRUFBRSxDQUFDLENBQUM7WUFDN0UsQ0FBQztRQUNMLENBQUM7SUFDTCxDQUFDO0NBQ0oifQ==

@@ -68,7 +68,7 @@ export const AsNameAware = <T extends Constructable>(superclass: T): Constructab
         readonly name: string;
 
         /**
-                 * @param {string} name
+         * @param {string} name
          */
         setName(name: string): void {
             Reflect.defineProperty(this, 'name', {

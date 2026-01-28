@@ -2,7 +2,7 @@
  * @author Jeff Rose
  */
 import { Aware } from '@blue/factory';
-import { Constructable } from '@blue/core';
+import { Constructable, Null } from '@blue/core';
 export interface Resource<T = any> {
     readonly exists: boolean;
     readonly value: T;
@@ -14,31 +14,27 @@ export interface ResourceLoaderAware extends Aware {
     setResourceLoader(loader: ResourceLoader): void;
 }
 /**
- * @mixin module:context.AsResourceLoaderAware
+ * @see module:context.AsResourceLoaderAware
  * @implements module:context.ResourceLoaderAware
  * @returns {module:context.Constructable<module:context.ResourceLoaderAware>}
  */
 export declare const AsResourceLoaderAware: <T extends Constructable>(superclass: T) => Constructable<ResourceLoaderAware> & T;
 /**
- * @function module:context.likeResource
  * @param {*} value The value to be tested
- * @returns {external:boolean} Whether or not the `value` is {@linkcode module:context.Resource|Resource}
+ * @returns {boolean} Whether or not the `value` is {@link Resource|Resource}
  */
 export declare const likeResource: (value: any) => value is Resource;
 /**
- * @function module:context.likeResourceLoader
  * @param {*} value The value to be tested
- * @returns {external:boolean} Whether or not the `value` is {@linkcode module:context.ResourceLoader|ResourceLoader}
+ * @returns {boolean} Whether or not the `value` is {@link ResourceLoader|ResourceLoader}
  */
 export declare const likeResourceLoader: (value: any) => value is ResourceLoader;
 /**
- * @function module:context.likeResourceLoaderAware
  * @param {*} value The value to be tested
- * @returns {external:boolean} Whether or not the `value` is {@linkcode module:context.ResourceLoaderAware|ResourceLoaderAware}
+ * @returns {boolean} Whether or not the `value` is {@link ResourceLoaderAware|ResourceLoaderAware}
  */
 export declare const likeResourceLoaderAware: (value: any) => value is ResourceLoaderAware;
 /**
- * @class module:context.URLResource
  */
 export declare class URLResource<T = any> implements Resource<T> {
     readonly url: URL;
@@ -47,7 +43,6 @@ export declare class URLResource<T = any> implements Resource<T> {
     constructor(path: string, value: T);
 }
 /**
- * @class module:context.UnresolvedResource
  * @implements module:context.Resource
  */
 export declare class UnresolvedResource implements Resource<Error> {
@@ -56,14 +51,13 @@ export declare class UnresolvedResource implements Resource<Error> {
     constructor(path: string, value: Error);
 }
 /**
- * @mixin module:context.AsModuleResourceLoader
+ * @see module:context.AsModuleResourceLoader
  * @implements module:context.ResourceLoader
  */
 export declare const AsModuleResourceLoader: <T extends Constructable>(superclass: T) => Constructable<ResourceLoader> & T;
-declare const DefaultResourceLoader_base: any;
+declare const DefaultResourceLoader_base: Constructable<ResourceLoader> & typeof Null;
 /**
- * @class module:context.DefaultResourceLoader
- * @mixes module:context.AsModuleResourceLoader
+ * @see module:context.AsModuleResourceLoader
  */
 export declare class DefaultResourceLoader extends DefaultResourceLoader_base {
 }

@@ -8,24 +8,22 @@ import alea from 'seedrandom/lib/alea';
 function seed(): string {
     try {
         const values = new Uint8Array(256);
-        
-        // Try Web Crypto API first
+
+        // Try Web Crypto API (available in modern browsers and Node.js 15+)
         if (typeof globalThis.crypto !== 'undefined' && globalThis.crypto.getRandomValues) {
             globalThis.crypto.getRandomValues(values);
-        } 
-        // Try Node.js crypto
-        else if (typeof require !== 'undefined') {
-            const nodeCrypto = require('crypto');
-            nodeCrypto.randomFillSync(values);
+        } else {
+            // Fallback to less secure random if no crypto implementation is available
+            console.warn('No cryptographic implementation available, falling back to Math.random for seed.');
+            for (let i = 0; i < 256; i++) {
+                values[i] = Math.floor(Math.random() * 256);
+            }
         }
-        else {
-            throw new Error('No crypto implementation available');
-        }
-        
+
         // Convert to base64 for compact representation
         return btoa(String.fromCharCode(...values));
     } catch (e) {
-        console.warn('Failed to generate cryptographic seed, using timestamp:', e);
+        console.warn('Failed to generate cryptographic seed, using timestamp as fallback:', e);
         return `${Date.now()}-${Math.random()}`;
     }
 }

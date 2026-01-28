@@ -26,21 +26,21 @@ const VIEW_MAPPING = 'view:mapping',
  */
 export const ViewMapping = assign(viewMapping, {
     /**
-         * @param {*} value
+     * @param {*} value
      * @param {*} target
      */
     define: defineViewMapping,
     /**
-         * @param {*} target
+     * @param {*} target
      */
     delete: deleteViewMapping,
     /**
-         * @param {*} target
+     * @param {*} target
      * @returns {string}
      */
     get: getViewMapping,
     /**
-         * @param {*} target
+     * @param {*} target
      * @returns {boolean} Whether or not the `target` has a view mapping.
      */
     has: hasViewMapping,

@@ -26,17 +26,15 @@ export interface ApplicationEventEmitterAware extends Aware {
     setApplicationEventEmitter(eventEmitter: EventEmitter): void;
 }
 /**
- * @function module:context.likeApplicationEventEmitterAware
  */
 export declare const likeApplicationEventEmitterAware: (value: any) => value is ApplicationEventEmitterAware;
 /**
- * @function module:context.likeEventEmitter
  * @param {*} value The value to be tested
- * @returns {external:boolean} Whether or not the `value` is {@linkcode module:context.EventEmitter|EventEmitter}
+ * @returns {boolean} Whether or not the `value` is {@link EventEmitter|EventEmitter}
  */
 export declare const likeEventEmitter: (value: any) => value is EventEmitter;
 /**
- * @mixin module:context.AsEventEmitter
+ * @see module:context.AsEventEmitter
  * @implements module:context.EventEmitter
  * @returns {module:core.Constructable<module:context.EventEmitter>}
  * @example
@@ -48,6 +46,7 @@ export declare const likeEventEmitter: (value: any) => value is EventEmitter;
  * // Hello!
  */
 export declare const AsEventEmitter: <T extends Constructable>(superclass: T) => Constructable<EventEmitter> & T;
+export declare const asEventEmitter: (target: any) => EventEmitter;
 export interface AsyncEventEmitter extends EventEmitter {
     tick(type: EventType, ...data: any[]): Promise<void>;
 }
@@ -58,7 +57,9 @@ export interface ConditionalEventEmitter extends EventEmitter {
 }
 export declare const AsAsyncEventEmitter: <T extends Constructable<EventEmitter>>(superclass: T) => Constructable<AsyncEventEmitter> & T;
 export declare const AsConditionalEventEmitter: <T extends Constructable<EventEmitter>>(superclass: T) => Constructable<ConditionalEventEmitter> & T;
-declare const EmitterBase: any;
+declare const EmitterBase: Constructable<EventEmitter> & {
+    new (): {};
+};
 export declare class Emitter extends EmitterBase {
     static readonly every: string;
     static readonly version: string;

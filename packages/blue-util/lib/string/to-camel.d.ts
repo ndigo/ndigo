@@ -6,7 +6,7 @@
 declare const 
 /**
  * Returns the camel case version of a string.
-     * @param {string} value
+ * @param {string} value
  * @returns {string}
  * @category String
  * @example

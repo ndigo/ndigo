@@ -76,7 +76,7 @@ const isArray = Array.isArray,
     },
     /**
      * Parses a query string into an object.
-         * @param {string} text The query string
+     * @param {string} text The query string
      * @returns {Object} The parsed query string.
      * @category String
      */

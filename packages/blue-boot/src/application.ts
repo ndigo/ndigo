@@ -31,7 +31,7 @@ export class Application {
 
     /**
      * Run the Spring application, creating and refreshing a new {@link ApplicationContext|ApplicationContext}.
-         * @param {*} args
+     * @param {*} args
      */
     run(...args: string[]): ConfigurableApplicationContext {
         let context;
@@ -64,7 +64,7 @@ export class Application {
 
     /**
      * @protected
-         * @param {module:context.Environment} environment
+     * @param {module:context.Environment} environment
      * @param {Array<external:string>} args
      */
     protected _configureEnvironment(environment: ConfigurableEnvironment, args: string[]): void {
@@ -74,7 +74,7 @@ export class Application {
 
     /**
      * @protected
-         * @param {module:context.Environment} environment
+     * @param {module:context.Environment} environment
      * @param {Array<external:string>} args
      */
     protected _configureProfiles(environment: ConfigurableEnvironment, args: string[]): void {}

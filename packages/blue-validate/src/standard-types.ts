@@ -17,7 +17,7 @@ const standardTypes = {
     // As per Jon Spy 6/26 len varies by LoB/Acct-Type; details pending from Enterprise
     // CIG zero-pads to 23 before writing to Profile after triggered online/offline CAMM call
     /**
-         */
+     */
     AccountNumber: {
         constraints: [
             {

@@ -19,7 +19,6 @@ export interface MatchableHandlerMapping extends RouteHandlerMapping {
 }
 /**
  * A registry that maintains all mappings to handler methods, exposing methods to perform lookups.
- * @class module:dispatcher~MappingRegistry
  */
 declare class MappingRegistry<T = any> {
     #private;
@@ -56,7 +55,7 @@ export declare abstract class AbstractHandlerMethodMapping<T> extends AbstractHa
     /**
      * Look for methods in the specified handler.
      * @param {*} handler Either a name or an actual handler instance.
-     * @see {@link module:dispatcher.AbstractHandlerMethodMapping#_getMappingForMethod}
+     * @see {@link AbstractHandlerMethodMapping#_getMappingForMethod}
      */
     protected _detectHandlerMethods(handler: MaybeHandler): void;
     protected _getHandler(route: Route): any;
@@ -85,58 +84,49 @@ export declare abstract class AbstractDetectingPathHandlerMapping extends Abstra
     protected abstract _determinePathsForHandler(name: string): string[];
 }
 /**
- * Abstract base class for {@linkcode module:router.RouteHandlerMapping|HandlerMapping} implementations.
+ * Abstract base class for {@link RouteHandlerMapping|HandlerMapping} implementations.
  * @abstract
- * @class module:dispatcher.AbstractHandlerMapping
  * @implements module:router.RouteHandlerMapping
  */
 /**
- * @member {module:core.ApplicationContext} module:dispatcher.AbstractHandlerMapping#context
  */
 /**
- * @member {*} module:dispatcher.AbstractHandlerMapping#defaultHandler
  */
 /**
  * Look up a handler for the given route, returning null if no specific one is found.
  * @protected
  * @abstract
- * @function module:dispatcher.AbstractHandlerMapping#_getHandler
  * @param {module:dispatcher.Request} route The current route
  * @returns {module:dispatcher.HandlerExecutionChain}
  */
 /**
- * Abstract base class for path-mapped {@linkcode module:router.RouteHandlerMapping|HandlerMapping} implementations. Provides infrastructure for mapping handlers to paths.
+ * Abstract base class for path-mapped {@link RouteHandlerMapping|HandlerMapping} implementations. Provides infrastructure for mapping handlers to paths.
  * @abstract
- * @class module:dispatcher.AbstractPathHandlerMapping
  * @extends module:dispatcher.AbstractHandlerMapping
  * @implements module:dispatcher.MatchableHandlerMapping
  */
 /**
- * Abstract implementation of the {@linkcode module:router.RouteHandlerMapping|HandlerMapping} interface, detecting path mappings for handlers.
+ * Abstract implementation of the {@link RouteHandlerMapping|HandlerMapping} interface, detecting path mappings for handlers.
  * @abstract
- * @class module:dispatcher.AbstractDetectingPathHandlerMapping
  * @extends module:dispatcher.AbstractPathHandlerMapping
  */
 /**
  * Register all handlers found in the current Context.
- * The actual path determination for a handler is up to the {@linkcode module:dispatcher.AbstractDetectingPathHandlerMapping#_determinePathsForHandler|_determinePathsForHandler} implementation.
+ * The actual path determination for a handler is up to the {@link AbstractDetectingPathHandlerMapping#_determinePathsForHandler|_determinePathsForHandler} implementation.
  * @protected
- * @function module:dispatcher.AbstractDetectingPathHandlerMapping#_detectHandlers
  */
 /**
  * Determine the paths for the given handler.
  * @protected
  * @abstract
- * @function module:dispatcher.AbstractDetectingPathHandlerMapping#_determinePathsForHandler
- * @param {external:string} name
- * @returns {external:Array<external:string>} The paths determined for the handler or an empty array if none found
+ * @param {string} name
+ * @returns {Array<external:string>} The paths determined for the handler or an empty array if none found
  */
 /**
- * Implementation of the {@linkcode module:router.RouteHandlerMapping|HandlerMapping} interface that map from paths to handlers with names that start with slash ("/").
- * <p>This is the default implementation used by {@link module:dispatcher.Dispatcher|the dispatcher} along with {@linkcode module:dispatcher.MetadataHandlerMapping|MetadataHandlerMapping}.
+ * Implementation of the {@link RouteHandlerMapping|HandlerMapping} interface that map from paths to handlers with names that start with slash ("/").
+ * <p>This is the default implementation used by {@link Dispatcher|the dispatcher} along with {@link MetadataHandlerMapping|MetadataHandlerMapping}.
  * <p>The mapping is from path to handler name. An incoming path "/foo" would map to a handler named "/foo".
  * <p>Supports direct matches and wildcard matches.
- * @class module:dispatcher.NamePathHandlerMapping
  * @extends module:dispatcher.AbstractDetectingPathHandlerMapping
  */
 export declare class NamePathHandlerMapping extends AbstractDetectingPathHandlerMapping {
@@ -144,8 +134,7 @@ export declare class NamePathHandlerMapping extends AbstractDetectingPathHandler
     protected _determinePathsForHandler(name: string): string[];
 }
 /**
- * Creates {@linkcode module:dispatcher.RequestMappingInfo|RequestMappingInfo} instances from class-level `route:handler` metadata and method-level `route:mapping` metadata. Metadata is usually applied using {@linkcode module:dispatcher.RequestMapping|@RequestHandler} and {@linkcode module:dispatcher.RequestMapping|@RequestMapping} decorators.
- * @class module:dispatcher.MetadataHandlerMapping
+ * Creates {@link RequestMappingInfo|RequestMappingInfo} instances from class-level `route:handler` metadata and method-level `route:mapping` metadata. Metadata is usually applied using {@link RequestMapping|@RequestHandler} and {@link RequestMapping|@RequestMapping} decorators.
  * @extends module:dispatcher.AbstractHandlerMethodMapping<module:dispatcher.RequestMappingInfo>
  * @implements module:dispatcher.MatchableHandlerMapping
  */
@@ -160,7 +149,6 @@ export declare class MetadataHandlerMapping extends AbstractHandlerMethodMapping
     protected _isHandler(value: any): boolean;
 }
 /**
- * @class module:router.RouteMatchResult
  */
 export declare class RouteMatchResult {
     readonly pattern: string;
@@ -170,32 +158,28 @@ export declare class RouteMatchResult {
     toJSON(): JSONValue;
 }
 /**
- * Implementation of the {@linkcode module:router.RouteHandlerMapping|HandlerMapping} interface to map from paths to handlers.
- * @class module:dispatcher.SimplePathHandlerMapping
+ * Implementation of the {@link RouteHandlerMapping|HandlerMapping} interface to map from paths to handlers.
  * @extends module:dispatcher.AbstractPathHandlerMapping
  * @param {module:core.ApplicationContext} [context]
- * @param {external:Map<external:string, module:dispatcher.MaybeHandler>} [mappings]
+ * @param {Map<external:string, module:dispatcher.MaybeHandler>} [mappings]
  */
 export declare class SimplePathHandlerMapping extends AbstractPathHandlerMapping {
     mappings: Map<string, MaybeHandler>;
     get [Symbol.toStringTag](): string;
     constructor();
     /**
-     * @function module:dispatcher.SimplePathHandlerMapping#setApplicationContext
      * @param {module:core.ApplicationContext} context The application context to be set.
      */
     setApplicationContext(context: ApplicationContext): void;
     /**
      * Map paths to handlers or handler names, merging it into the existing mappings if any.
-     * @function module:dispatcher.SimplePathHandlerMapping#setMappings
-     * @param {external:Object} mappings The path mappings
+     * @param {Object} mappings The path mappings
      */
     setMappings(mappings: {
         [path: string]: MaybeHandler;
     }): void;
     /**
-     * @function module:dispatcher.SimplePathHandlerMapping#registerHandlers
-     * @param {external:Map<external:string,module:dispatcher.MaybeHandler>} mappings
+     * @param {Map<external:string,module:dispatcher.MaybeHandler>} mappings
      */
     registerHandlers(mappings: Map<string, MaybeHandler>): void;
 }

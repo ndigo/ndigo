@@ -24,6 +24,7 @@ npx ts-node examples/otel-basic.ts
 ```
 
 **Features:**
+
 - BlueLoggerProvider setup
 - Console exporter with PatternLayout
 - Logging at different levels
@@ -38,6 +39,7 @@ npx ts-node examples/otel-with-context.ts
 ```
 
 **Features:**
+
 - Automatic trace/span ID injection
 - Nested span contexts
 - Distributed tracing integration
@@ -52,6 +54,7 @@ npx ts-node examples/migration-dual-mode.ts
 ```
 
 **Features:**
+
 - Traditional Appender logging
 - OTel exporter logging
 - Wrapper for dual output
@@ -70,6 +73,7 @@ npx ts-node examples/otel-http-export.ts
 ```
 
 **Features:**
+
 - HTTP endpoint export
 - Batch processing
 - JSON layout
@@ -93,6 +97,7 @@ Each example follows this pattern:
 ## Customization
 
 Feel free to modify these examples to:
+
 - Try different layouts (JSON, XML, Pattern)
 - Experiment with batch processor settings
 - Add custom exporters

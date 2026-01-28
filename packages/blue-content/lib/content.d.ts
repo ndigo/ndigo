@@ -11,34 +11,29 @@ export interface ContentSourceAware extends Aware {
 }
 /**
  * Strategy interface for resolving content.
- * @interface module:content.ContentSource
  */
 /**
- * @function module:content.ContentSource#getContent
- * @param {external:string} key
- * @param {external:string} language
- * @returns {external:string}
+ * @param {string} key
+ * @param {string} language
+ * @returns {string}
  */
 /**
- * @interface module:content.ContentSourceAware
  * @extends module:content.Aware
  */
 /**
- * @mixin module:content.AsContentSourceAware
+ * @see module:content.AsContentSourceAware
  * @implements module:content.ContentSourceAware
  * @returns {module:content.Constructable<module:content.ContentSourceAware>}
  */
 export declare const AsContentSourceAware: <T extends Constructable>(superclass: T) => Constructable<ContentSourceAware> & T;
 /**
- * @function module:content.likeContentSource
  * @param {*} value The value to be tested
- * @returns {external:boolean} Whether or not the `value` is {@linkcode module:content.ContentSource|ContentSource}
+ * @returns {boolean} Whether or not the `value` is {@link ContentSource|ContentSource}
  */
 export declare const likeContentSource: (value: any) => value is ContentSource;
 /**
- * @function module:content.likeContentSourceAware
  * @param {*} value The value to be tested
- * @returns {external:boolean} Whether or not the `value` is {@linkcode module:content.ContentSourceAware|ContentSourceAware}
+ * @returns {boolean} Whether or not the `value` is {@link ContentSourceAware|ContentSourceAware}
  */
 export declare const likeContentSourceAware: (value: any) => value is ContentSourceAware;
 //# sourceMappingURL=content.d.ts.map

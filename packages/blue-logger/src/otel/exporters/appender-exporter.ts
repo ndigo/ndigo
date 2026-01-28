@@ -84,7 +84,10 @@ export class AppenderLogRecordExporter implements LogRecordExporter {
     /**
      * Asynchronous export for async appenders
      */
-    private async exportAsync(logs: ReadableLogRecord[], resultCallback: (result: ExportResult) => void): Promise<void> {
+    private async exportAsync(
+        logs: ReadableLogRecord[],
+        resultCallback: (result: ExportResult) => void
+    ): Promise<void> {
         try {
             const asyncAppender = this.appender as AsyncAppender;
 

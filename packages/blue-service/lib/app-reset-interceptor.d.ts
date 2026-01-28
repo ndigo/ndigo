@@ -7,7 +7,6 @@ export type AppResetInit = ServiceInit & {
     appResetCode?: number;
 };
 /**
- * @class module:http.AppResetInterceptor
  * @implements module:http.ResultAwareServiceInterceptor
  */
 export declare class AppResetInterceptor implements ResponseAwareServiceInterceptor<AppResetInit> {

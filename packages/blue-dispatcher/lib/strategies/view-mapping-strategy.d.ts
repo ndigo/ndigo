@@ -9,7 +9,6 @@ export interface ViewMappingStrategy {
     initViewMapping(context: ApplicationContext): void;
 }
 /**
- * @interface module:dispatcher.ViewMappingStrategy
  */
 export declare const defaultViewMapping: any;
 export declare const AsViewMappingStrategy: <T extends Constructable<StrategyInitializer>>(superclass: T) => Constructable<ViewMappingStrategy> & T;

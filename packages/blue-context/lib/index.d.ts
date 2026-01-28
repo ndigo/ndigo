@@ -1,10 +1,9 @@
 /**
  * @author Jeff Rose
- * @module context
- * @requires content
- * @requires core
- * @requires factory
- * @requires util
+ * @see content
+ * @see core
+ * @see factory
+ * @see util
  */
 export * from './context';
 export * from './configuration';

@@ -41,7 +41,7 @@ export class TimeoutInterceptor
 
         /**
          * @readonly
-                 */
+         */
         defineProperty(this, 'timeout', {
             get: () => timeout,
             configurable: true,
@@ -52,7 +52,7 @@ export class TimeoutInterceptor
     }
 
     /**
-         * @param {URL} url The requested URL.
+     * @param {URL} url The requested URL.
      * @param {module:http.TimeoutInit} settings The HTTP request settings, including the `timeout` setting.
      * @returns {boolean} Whether or not the http request should continue execution.
      */
@@ -70,7 +70,7 @@ export class TimeoutInterceptor
 
     /**
      * @async
-         * @param {Error} error The error that was thrown
+     * @param {Error} error The error that was thrown
      * @param {Request} request The HTTP request
      * @returns {exteral:Promise<external:Response | external:undefined>}
      */
@@ -82,7 +82,7 @@ export class TimeoutInterceptor
     }
 
     /**
-         * @param {Request} request The HTTP request
+     * @param {Request} request The HTTP request
      * @param {Response} response The HTTP response
      */
     postComplete(request: Request, response: Response): void {

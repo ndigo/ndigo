@@ -11,7 +11,7 @@ import ResponseError from '../response-error';
 export class NotOKInterceptor implements ResponseAwareHTTPInterceptor {
     /**
      * @async
-         * @param {Response} response The HTTP response
+     * @param {Response} response The HTTP response
      * @param {module:http.HTTPInit} settings The HTTP request settings
      * @returns {Promise<external:void>}
      */

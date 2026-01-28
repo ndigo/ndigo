@@ -9,7 +9,7 @@
  * @see {@link https://github.com/francisrstokes/arcsecond}
  * @see {@link https://ramdajs.com/docs/#fromPairs}
  */
-import { char, everyCharUntil, regex, sepByN, sequenceOf, str, takeRight } from '@blue/parser';
+import { Parser, char, everyCharUntil, regex, sepBy, sequenceOf, str, takeRight } from 'arcsecond';
 import { fromPairs } from '@blue/util';
 
 const validCharacters = /^[^;,\s]*/,
@@ -20,6 +20,6 @@ const validCharacters = /^[^;,\s]*/,
         everyCharUntil(equalsSign).map(percentDecode),
         takeRight(equalsSign)(regex(validCharacters)).map(percentDecode),
     ]),
-    cookies = sepByN(0)(str('; '))(cookie).map(fromPairs);
+    cookies = sepBy(str('; '))(cookie).map(fromPairs as any);
 
 export default cookies;

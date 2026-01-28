@@ -23,12 +23,6 @@
       "@blue/service": ["./packages/blue-service/src"]
     }
   },
-  "include": [
-    "packages/*/src/**/*"
-  ],
-  "exclude": [
-    "**/node_modules/**/*",
-    "**/*.spec.ts",
-    "**/*.test.ts"
-  ]
+  "include": ["packages/*/src/**/*"],
+  "exclude": ["**/node_modules/**/*", "**/*.spec.ts", "**/*.test.ts"]
 }

@@ -10,17 +10,14 @@ export interface HandlerMethodArgumentResolver {
 }
 /**
  * Strategy interface for resolving method parameters into argument values in the context of a given route.
- * @interface module:dispatcher.HandlerMethodArgumentResolver
  */
 /**
- * Whether the given {@link module:RouteParameter|route parameter} is supported by this resolver.
- * @function module:dispatcher.HandlerMethodArgumentResolver#supportsParameter
+ * Whether the given {@link
  * @param {*} parameter The method parameter to check.
- * @returns {external:boolean} Whether or not the given method parameter is supported by this resolver.
+ * @returns {boolean} Whether or not the given method parameter is supported by this resolver.
  */
 /**
  * Resolves a method parameter into an argument value from a given route.
- * @function module:dispatcher.HandlerMethodArgumentResolver#resolveArgument
  * @returns {*} The resolved argument value, or `null` if not resolvable.
  */
 export declare abstract class AbstractNamedValueMethodArgumentResolver implements HandlerMethodArgumentResolver {
@@ -39,19 +36,16 @@ export declare abstract class AbstractNamedValueMethodArgumentResolver implement
  * * Handle missing argument values when argument values are required
  * * Optionally handle a resolved value
  *
- * A {@linkcode module:factory.Factory|Factory} must be supplied to the class constructor.
+ * A {@link Factory|Factory} must be supplied to the class constructor.
  * @abstract
- * @class module:dispatcher.AbstractNamedValueMethodArgumentResolver
  * @implements module:dispatcher.HandlerMethodArgumentResolver
  * @param {module:factory.Factory} factory A factory for resolving values
  */
 /**
  * @abstract
- * @class module:dispatcher.AbstractCookieValueMethodArgumentResolver
  * @implements module:dispatcher.HandlerMethodArgumentResolver
  */
 /**
- * @class module:dispatcher.MatrixParameterMethodArgumentResolver
  * @extends module:dispatcher.AbstractNamedValueMethodArgumentResolver
  */
 export declare class MatrixValueMethodArgumentResolver extends AbstractNamedValueMethodArgumentResolver {
@@ -59,7 +53,6 @@ export declare class MatrixValueMethodArgumentResolver extends AbstractNamedValu
     supportsParameter(parameter: MethodParameter): boolean;
 }
 /**
- * @class module:dispatcher.QueryValueMethodArgumentResolver
  * @extends module:dispatcher.AbstractNamedValueMethodArgumentResolver
  */
 export declare class QueryValueMethodArgumentResolver extends AbstractNamedValueMethodArgumentResolver {

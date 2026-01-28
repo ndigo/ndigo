@@ -200,7 +200,9 @@ export class GlobPathMatcher implements PathMatcher {
         const parseResult = glob.run(pattern);
         if (!parseResult.isError) {
             // Type narrowing: parseResult is Ok<string, any> here
-            const regex = new RegExp((parseResult as { isError: false; result: string; index: number; data: any }).result);
+            const regex = new RegExp(
+                (parseResult as { isError: false; result: string; index: number; data: any }).result
+            );
             return regex.test(path);
         }
         return false;

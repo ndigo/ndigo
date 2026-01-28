@@ -1,0 +1,131 @@
+/**
+ * @author Jeff Rose
+ */
+import { Level } from './level';
+import { BrowserConsoleAppender } from './appenders/browser-console-appender';
+import { like } from '@blue/util';
+import { SeverityNumber } from '@opentelemetry/api-logs';
+export class SyslogLevel extends Level {
+    static EMERG = new Level('emerg', 10000);
+    static ALERT = new Level('alert', 20000);
+    static CRIT = new Level('crit', 30000);
+    static ERROR = new Level('error', 40000);
+    static WARNING = new Level('warning', 50000);
+    static NOTICE = new Level('notice', 60000);
+    static INFO = new Level('info', 70000);
+    static DEBUG = new Level('debug', 80000);
+    /**
+     * Convert a Syslog level to OpenTelemetry SeverityNumber
+     *
+     * @param level - The Syslog level to convert
+     * @returns The corresponding OpenTelemetry SeverityNumber
+     */
+    static toSeverity(level) {
+        return SyslogLevelToSeverity[level.name.toLowerCase()] || SeverityNumber.UNSPECIFIED;
+    }
+    /**
+     * Convert an OpenTelemetry SeverityNumber to a Syslog level
+     *
+     * @param severityNumber - The severity number to convert
+     * @returns The corresponding Syslog level
+     */
+    static fromSeverity(severityNumber) {
+        if (severityNumber >= SeverityNumber.FATAL4) {
+            return SyslogLevel.EMERG;
+        }
+        if (severityNumber >= SeverityNumber.FATAL) {
+            return SyslogLevel.ALERT;
+        }
+        if (severityNumber >= SeverityNumber.ERROR) {
+            return SyslogLevel.ERROR;
+        }
+        if (severityNumber >= SeverityNumber.WARN) {
+            return SyslogLevel.WARNING;
+        }
+        if (severityNumber >= SeverityNumber.INFO) {
+            return SyslogLevel.INFO;
+        }
+        if (severityNumber >= SeverityNumber.DEBUG) {
+            return SyslogLevel.DEBUG;
+        }
+        return Level.OFF;
+    }
+}
+/**
+ * Syslog level to OpenTelemetry severity mapping table
+ */
+export const SyslogLevelToSeverity = {
+    emerg: SeverityNumber.FATAL4,
+    alert: SeverityNumber.FATAL,
+    crit: SeverityNumber.FATAL,
+    error: SeverityNumber.ERROR,
+    warning: SeverityNumber.WARN,
+    notice: SeverityNumber.WARN,
+    info: SeverityNumber.INFO,
+    debug: SeverityNumber.DEBUG,
+    off: SeverityNumber.UNSPECIFIED,
+    all: SeverityNumber.UNSPECIFIED,
+};
+export const SyslogColor = {
+    emerg: 'red',
+    alert: 'yellow',
+    crit: 'red',
+    error: 'red',
+    warning: 'red',
+    notice: 'yellow',
+    info: 'green',
+    debug: 'blue',
+};
+export const SyslogBrowserConsoleLevelMapping = {
+    emerg: 'error',
+    alert: 'warn',
+    crit: 'error',
+    error: 'error',
+    warning: 'error',
+    notice: 'warn',
+    info: 'info',
+    debug: 'debug',
+};
+export class SyslogBrowserConsoleAppender extends BrowserConsoleAppender {
+    constructor() {
+        super(SyslogBrowserConsoleLevelMapping);
+    }
+}
+export const likeSyslogLogger = like({
+    emerg: Function,
+    alert: Function,
+    crit: Function,
+    error: Function,
+    warning: Function,
+    notice: Function,
+    info: Function,
+    debug: Function,
+});
+export const AsSyslogLogger = (superclass) => class extends superclass {
+    threshold = Level.ALL;
+    emerg(...message) {
+        this.log(SyslogLevel.EMERG, message);
+    }
+    alert(...message) {
+        this.log(SyslogLevel.ALERT, message);
+    }
+    crit(...message) {
+        this.log(SyslogLevel.CRIT, message);
+    }
+    error(...message) {
+        this.log(SyslogLevel.ERROR, message);
+    }
+    warning(...message) {
+        this.log(SyslogLevel.WARNING, message);
+    }
+    notice(...message) {
+        this.log(SyslogLevel.NOTICE, message);
+    }
+    info(...message) {
+        this.log(SyslogLevel.INFO, message);
+    }
+    debug(...message) {
+        this.log(SyslogLevel.DEBUG, message);
+    }
+};
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoic3lzbG9nLWxvZ2dpbmcuanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi9zcmMvc3lzbG9nLWxvZ2dpbmcudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7O0dBRUc7QUFFSCxPQUFPLEVBQUUsS0FBSyxFQUFFLE1BQU0sU0FBUyxDQUFDO0FBRWhDLE9BQU8sRUFBRSxzQkFBc0IsRUFBRSxNQUFNLHNDQUFzQyxDQUFDO0FBRTlFLE9BQU8sRUFBRSxJQUFJLEVBQUUsTUFBTSxZQUFZLENBQUM7QUFDbEMsT0FBTyxFQUFFLGNBQWMsRUFBRSxNQUFNLHlCQUF5QixDQUFDO0FBS3pELE1BQU0sT0FBTyxXQUFZLFNBQVEsS0FBSztJQUNsQyxNQUFNLENBQUMsS0FBSyxHQUFHLElBQUksS0FBSyxDQUFDLE9BQU8sRUFBRSxLQUFLLENBQUMsQ0FBQztJQUN6QyxNQUFNLENBQUMsS0FBSyxHQUFHLElBQUksS0FBSyxDQUFDLE9BQU8sRUFBRSxLQUFLLENBQUMsQ0FBQztJQUN6QyxNQUFNLENBQUMsSUFBSSxHQUFHLElBQUksS0FBSyxDQUFDLE1BQU0sRUFBRSxLQUFLLENBQUMsQ0FBQztJQUN2QyxNQUFNLENBQUMsS0FBSyxHQUFHLElBQUksS0FBSyxDQUFDLE9BQU8sRUFBRSxLQUFLLENBQUMsQ0FBQztJQUN6QyxNQUFNLENBQUMsT0FBTyxHQUFHLElBQUksS0FBSyxDQUFDLFNBQVMsRUFBRSxLQUFLLENBQUMsQ0FBQztJQUM3QyxNQUFNLENBQUMsTUFBTSxHQUFHLElBQUksS0FBSyxDQUFDLFFBQVEsRUFBRSxLQUFLLENBQUMsQ0FBQztJQUMzQyxNQUFNLENBQUMsSUFBSSxHQUFHLElBQUksS0FBSyxDQUFDLE1BQU0sRUFBRSxLQUFLLENBQUMsQ0FBQztJQUN2QyxNQUFNLENBQUMsS0FBSyxHQUFHLElBQUksS0FBSyxDQUFDLE9BQU8sRUFBRSxLQUFLLENBQUMsQ0FBQztJQUV6Qzs7Ozs7T0FLRztJQUNILE1BQU0sQ0FBQyxVQUFVLENBQUMsS0FB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

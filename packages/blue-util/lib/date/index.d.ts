@@ -7,7 +7,7 @@ export {
 /**
  * Add the specified number of days to the given date.
  *
-     * @category Date
+ * @category Date
  * @param {number} amount The amount of days to be added. Positive decimals will be rounded using `Math.floor`, decimals less than zero will be rounded using `Math.ceil`.
  * @param {Date|external:number} date The date to be changed.
  * @returns {Date} The new date with the days added.
@@ -27,7 +27,7 @@ export {
 /**
  * Add the specified number of business days (Mon - Fri) to the given date, ignoring weekends.
  *
-     * @category Date
+ * @category Date
  * @param {number} amount The amount of business days to be added. Positive decimals will be rounded using `Math.floor`, decimals less than zero will be rounded using `Math.ceil`.
  * @param {Date|external:number} date The date to be changed.
  * @returns {Date} The new date with the business days added.
@@ -47,7 +47,7 @@ export {
 /**
  * Add the specified number of hours to the given date.
  *
-     * @category Date
+ * @category Date
  * @param {number} amount The amount of hours to be added. Positive decimals will be rounded using `Math.floor`, decimals less than zero will be rounded using `Math.ceil`.
  * @param {Date|external:number} date The date to be changed.
  * @returns {Date} The new date with the hours added.
@@ -69,7 +69,7 @@ export {
  *
  * ISO week-numbering year: http://en.wikipedia.org/wiki/ISO_week_date
  *
-     * @category Date
+ * @category Date
  * @param {number} amount The amount of ISO week-numbering years to be added. Positive decimals will be rounded using `Math.floor`, decimals less than zero will be rounded using `Math.ceil`.
  * @param {Date|external:number} date The date to be changed.
  * @returns {Date} The new date with the ISO week-numbering years added.
@@ -88,7 +88,7 @@ export {
 /**
  * Add the specified number of milliseconds to the given date.
  *
-     * @category Date
+ * @category Date
  * @param {number} amount The amount of milliseconds to be added. Positive decimals will be rounded using `Math.floor`, decimals less than zero will be rounded using `Math.ceil`.
  * @param {Date|external:number} date The date to be changed.
  * @returns {Date} The new date with the milliseconds added.
@@ -107,7 +107,7 @@ export {
 /**
  * Add the specified number of minutes to the given date.
  *
-     * @category Date
+ * @category Date
  * @param {number} amount The amount of minutes to be added. Positive decimals will be rounded using `Math.floor`, decimals less than zero will be rounded using `Math.ceil`.
  * @param {Date|external:number} date The date to be changed.
  * @returns {Date} The new date with the minutes added.
@@ -126,7 +126,7 @@ export {
 /**
  * Add the specified number of months to the given date.
  *
-     * @category Date
+ * @category Date
  * @param {number} amount The amount of months to be added. Positive decimals will be rounded using `Math.floor`, decimals less than zero will be rounded using `Math.ceil`.
  * @param {Date|external:number} date The date to be changed.
  * @returns {Date} The new date with the months added.
@@ -145,7 +145,7 @@ export {
 /**
  * Add the specified number of quarters to the given date.
  *
-     * @category Date
+ * @category Date
  * @param {number} amount The amount of quarters to be added. Positive decimals will be rounded using `Math.floor`, decimals less than zero will be rounded using `Math.ceil`.
  * @param {Date|external:number} date The date to be changed.
  * @returns {Date} The new date with the quarters added.
@@ -164,7 +164,7 @@ export {
 /**
  * Add the specified number of seconds to the given date.
  *
-     * @category Date
+ * @category Date
  * @param {number} amount The amount of seconds to be added. Positive decimals will be rounded using `Math.floor`, decimals less than zero will be rounded using `Math.ceil`.
  * @param {Date|external:number} date The date to be changed.
  * @returns {Date} The new date with the seconds added.
@@ -183,7 +183,7 @@ export {
 /**
  * Add the specified number of weeks to the given date.
  *
-     * @category Date
+ * @category Date
  * @param {number} amount The amount of weeks to be added. Positive decimals will be rounded using `Math.floor`, decimals less than zero will be rounded using `Math.ceil`.
  * @param {Date|external:number} date The date to be changed.
  * @returns {Date} The new date with the weeks added.
@@ -202,7 +202,7 @@ export {
 /**
  * Add the specified number of years to the given date.
  *
-     * @category Date
+ * @category Date
  * @param {number} amount The amount of years to be added. Positive decimals will be rounded using `Math.floor`, decimals less than zero will be rounded using `Math.ceil`.
  * @param {Date|external:number} date The date to be changed.
  * @returns {Date} The new date with the years added.
@@ -223,7 +223,7 @@ export {
  * Business days being days that arent in the weekend.
  * Like {@link differenceInCalendarDays|differenceInCalendarDays}, the function removes the times from the dates before calculating the difference.
  *
-     * @category Date
+ * @category Date
  * @param {Date|external:number} start The earlier date.
  * @param {Date|external:number} end The later date.
  * @returns {number} The number of business days.
@@ -246,7 +246,7 @@ export {
 /**
  * Get the number of calendar day periods between the given dates.This means that the times are removed from the dates and then the difference in days is calculated.
  *
-     * @category Date
+ * @category Date
  * @param {Date|external:number} start The earlier date.
  * @param {Date|external:number} end The later date.
  * @returns {number} The number of calendar days.
@@ -269,7 +269,7 @@ export {
 /**
  * Get the number of calendar ISO week-numbering years between the given dates.
  * ISO week-numbering year: http://en.wikipedia.org/wiki/ISO_week_date
-     * @category Date
+ * @category Date
  * @param {Date|external:number} start The earlier date.
  * @param {Date|external:number} end The later date.
  * @returns {number} The number of calendar ISO week-numbering years.
@@ -293,7 +293,7 @@ export {
  * Get the number of calendar ISO weeks between the given dates.
  *
  * ISO week-numbering year: http://en.wikipedia.org/wiki/ISO_week_date
-     * @category Date
+ * @category Date
  * @param {Date|external:number} start The earlier date.
  * @param {Date|external:number} end The later date.
  * @returns {number} The number of calendar ISO weeks.
@@ -315,7 +315,7 @@ differenceInCalendarISOWeeks, } from 'date-fns/fp';
 export { 
 /**
  * Get the number of calendar months between the given dates.
-     * @category Date
+ * @category Date
  * @param {Date|external:number} start The earlier date.
  * @param {Date|external:number} end The later date.
  * @returns {number} The number of calendar months.
@@ -337,7 +337,7 @@ differenceInCalendarMonths, } from 'date-fns/fp';
 export { 
 /**
  * Get the number of calendar quarters between the given dates.
-     * @category Date
+ * @category Date
  * @param {Date|external:number} start The earlier date.
  * @param {Date|external:number} end The later date.
  * @returns {number} The number of calendar quarters.
@@ -359,7 +359,7 @@ differenceInCalendarQuarters, } from 'date-fns/fp';
 export { 
 /**
  * Get the number of calendar quarters between the given dates.
-     * @category Date
+ * @category Date
  * @param {Date|external:number} start The earlier date.
  * @param {Date|external:number} end The later date.
  * @returns {number} The number of calendar weeks.
@@ -381,7 +381,7 @@ differenceInCalendarWeeks, } from 'date-fns/fp';
 export { 
 /**
  * Get the number of calendar years between the given dates.
-     * @category Date
+ * @category Date
  * @param {Date|external:number} start The earlier date.
  * @param {Date|external:number} end The later date.
  * @returns {number} The number of calendar years.
@@ -408,7 +408,7 @@ export {
  *
  * To ignore DST and only measure exact 24-hour periods, use this instead:
  * `Math.floor( differenceInHours( start, end ) / 24 ) | 0`.
-     * @category Date
+ * @category Date
  * @param {Date|external:number} start The earlier date.
  * @param {Date|external:number} end The later date.
  * @returns {number} The number of calendar years.
@@ -466,7 +466,7 @@ export { endOfYear } from 'date-fns/fp';
 export { formatDistance, formatDuration, getDate, getDay, getDayOfYear, getDaysInMonth, getDaysInYear, getDecade, getHours, getISODay, getISOWeek, getISOWeekYear, getISOWeeksInYear, getMilliseconds, getMinutes, getMonth, getOverlappingDaysInIntervals, getQuarter, getSeconds, getTime, getUnixTime, getWeek, getWeekOfMonth, getWeekYear, getWeeksInMonth, getYear, isAfter, isBefore, set, setDate, setDay, setDayOfYear, setHours, setISODay, setISOWeek, setISOWeekYear, setMilliseconds, setMinutes, setMonth, setQuarter, setSeconds, setWeek, setWeekYear, setYear, startOfDay, startOfDecade, startOfHour, startOfISOWeek, startOfISOWeekYear, startOfMinute, startOfMonth, startOfQuarter, startOfSecond, startOfWeek, startOfWeekYear, startOfYear, } from 'date-fns/fp';
 export { 
 /**
-     * @category Date
+ * @category Date
  * @summary Is the given date in the future?
  *
  * @description
@@ -481,7 +481,7 @@ export {
  */
 isFuture, 
 /**
-     * @category Date
+ * @category Date
  * @summary Is the given date in the past?
  *
  * @param {Date|external:number} date
@@ -494,7 +494,7 @@ isFuture,
 isPast, } from 'date-fns';
 export { 
 /**
-     * @category Date
+ * @category Date
  * @summary Format the date.
  *
  * @description
@@ -765,7 +765,7 @@ export {
  */
 format, 
 /**
-     * @category Date
+ * @category Date
  * @summary Convert the given argument to an instance of Date.
  *
  * @description
@@ -822,7 +822,7 @@ toDate,
 toZonedTime as utcToZonedTime, } from 'date-fns-tz/fp';
 export { 
 /**
-     * @category Date
+ * @category Date
  * @summary Get the UTC date/time from a date representing local time in a given time zone
  *
  * @description

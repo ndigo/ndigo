@@ -12,7 +12,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-BlueJS is a modular JavaScript/TypeScript framework organized as a Lerna monorepo with Yarn workspaces. The framework provides core abstractions and utilities for building web applications, including routing, views, models, context management, and HTTP handling.
+BlueJS is a modular JavaScript/TypeScript framework organized as an **Nx monorepo** with **pnpm workspaces**. The framework provides core abstractions and utilities for building web applications, including routing, views, models, context management, and HTTP handling.
 
 **Requirements:**
 
@@ -21,23 +21,48 @@ BlueJS is a modular JavaScript/TypeScript framework organized as a Lerna monorep
 
 **Technology Stack (as of January 2025):**
 
-- TypeScript 5.7.2 (ES2022 target)
+- TypeScript 5.7.3 (ES2022 target, Bundler module resolution)
 - ESLint 9.17.0 (flat config)
-- Nx 20.3.2 (monorepo management)
-- Vitest 2.1.8 (testing framework)
-- Vite 6.0.7 (bundler)
+- Nx 20.3.4 (monorepo management, task orchestration, caching)
+- Vitest 2.1.9 (testing framework)
+- Vite 6.0.15 (bundler for production builds)
 - pnpm 8.15.0 (package manager)
+- Prettier 3.4.2 (code formatting)
 
 ## Repository Structure
 
-This is a monorepo containing 20+ packages under `packages/`, each with a consistent structure:
+This is a monorepo containing **20 packages** under `packages/`, each with a consistent structure:
 
 - `src/` - TypeScript source files
 - `lib/` - Compiled ESM output (generated)
 - `index.js` - Compiled CommonJS bundle (generated)
-- `test/` - Tests using Karma for browser testing
+- `index.cjs` - Compiled CommonJS bundle from Vite (generated)
+- `test/` - Vitest tests
 
-Key packages and their dependencies:
+**All Packages:**
+
+- @blue/boot
+- @blue/content
+- @blue/context
+- @blue/core
+- @blue/demo
+- @blue/dispatcher
+- @blue/domain
+- @blue/factory
+- @blue/http
+- @blue/logger
+- @blue/model
+- @blue/parser
+- @blue/platform-web
+- @blue/print
+- @blue/router
+- @blue/service
+- @blue/util
+- @blue/validate
+- @blue/view
+- @blue/view-webcomponent
+
+**Key packages and their dependencies:**
 
 - **blue-core**: Foundation interfaces and utilities (Iterable, Comparable, Equatable, MediaType, etc.)
 - **blue-util**: Utility functions, depends on blue-parser
@@ -52,10 +77,13 @@ Key packages and their dependencies:
 - **blue-dispatcher**: Request dispatching, depends on blue-http, blue-router, blue-view
 - **blue-domain**: Domain modeling
 - **blue-content**: Content handling
-- **blue-logger**: Logging utilities
+- **blue-logger**: Logging utilities with OpenTelemetry support
 - **blue-validate**: Validation utilities
 - **blue-print**: Printing utilities
 - **blue-platform-web**: Web platform specifics
+- **blue-boot**: Application bootstrapping
+- **blue-service**: Service layer utilities
+- **blue-demo**: Demo applications and examples
 
 ## Development Commands
 
@@ -174,6 +202,25 @@ yarn benchmark
 yarn profile
 ```
 
+## Nx Configuration
+
+The project uses Nx (`nx.json`) for efficient task orchestration and caching:
+
+**Key Features:**
+
+- **Dependency-aware builds**: Nx automatically resolves build order based on package dependencies
+- **Intelligent caching**: Build outputs are cached and reused when unchanged
+- **Parallel execution**: Runs up to 3 tasks in parallel (configurable)
+- **Affected commands**: Only build/test packages affected by changes
+
+**Target Definitions:**
+
+- `build:lib` - Depends on upstream packages' `build:lib`, caches output in `lib/`
+- `build:bundle` - Depends on `build:lib`, creates Vite bundles
+- `build:all` - Runs both `build:lib` and `build:bundle`
+- `test` - Depends on `build:lib`, runs Vitest tests
+- `lint` - Runs ESLint with caching
+
 ## Code Conventions
 
 Follow the conventions defined in the main README:
@@ -189,10 +236,10 @@ Follow the conventions defined in the main README:
 
 ## TypeScript Configuration
 
-- TypeScript: 5.7.2
+- TypeScript: 5.7.3
 - Target: ES2022 (supports private class fields with `#field` syntax)
 - Module: ESNext (with ESM output)
-- Module Resolution: Node
+- Module Resolution: Bundler
 - Decorators enabled (`experimentalDecorators`, `emitDecoratorMetadata`)
 - Source maps: inline
 - Declaration files and maps generated
@@ -215,7 +262,7 @@ The framework uses decorators and reflect-metadata (v0.2.2) for dependency injec
 Packages export both ESM and CommonJS:
 
 - `lib/index.js` - ESM output from TypeScript
-- `index.js` - CommonJS bundle from webpack
+- `index.js` - CommonJS bundle from Vite
 - package.json specifies both via `exports`, `main`, and `module` fields
 
 ### Shared Build Infrastructure
@@ -230,7 +277,7 @@ All packages use centralized build scripts in `bin/` rather than duplicating log
 
 - `date-fns`: ~4.1.0 (ESM-first, improved tree-shaking)
 - `date-fns-tz`: ~3.2.0 (timezone support)
-- `ramda`: ~0.31.1 (functional programming utilities)
+- `ramda`: ~0.32.0 (functional programming utilities)
 - `slug`: ~11.0.1 (URL slug generation)
 - `seedrandom`: ~3.0.5 (deterministic random numbers)
 
@@ -247,10 +294,8 @@ All packages use centralized build scripts in `bin/` rather than duplicating log
 **Build Tools:**
 
 - `typescript`: ~5.7.2
-- `webpack`: ~5.97.1
-- `webpack-cli`: ~5.1.4
-- `ts-loader`: ~9.5.1
-- `terser-webpack-plugin`: ~5.3.10
+- `vite`: ~6.0.7
+- `vite-plugin-dts`: ~4.3.0
 
 **Linting:**
 
@@ -275,6 +320,8 @@ All packages use centralized build scripts in `bin/` rather than duplicating log
 **date-fns v4:** Better tree-shaking, some API changes in advanced functions. Most common functions remain compatible.
 
 **ramda v0.31:** `R.range()` function changed from 3 arguments `(start, end, step)` to 2 arguments `(start, end)`. The step parameter was removed.
+
+**ramda v0.32:** Minor updates from v0.31. Most APIs remain compatible.
 
 **slug v11:** API updates from v8. Check migration guide if using advanced features.
 
@@ -376,12 +423,26 @@ The project uses a minimal `.npmrc` configuration optimized for performance and 
 
 **⚠️ Known Issues Requiring Code Updates:**
 
-1. **Ramda 0.31 API Changes**: `R.range()` function signature changed from 3 arguments to 2 arguments. The step parameter was removed. This affects `packages/blue-util/src/list/range-n.spec.ts` with ~52 test failures.
+1. **blue-logger Missing date-fns Dependency**: The logger package uses `date-fns` in `src/layouts/pattern-layout.ts` but doesn't declare it as a dependency. Needs to add `date-fns` to package dependencies.
 
-2. **date-fns-tz v3 Import**: Module resolution issue with `date-fns-tz/fp` import in `packages/blue-util/src/date/index.ts`. May need moduleResolution update or import path adjustment.
+2. **blue-util Test Failures**: 2 test failures in blue-util package:
 
-3. **Parser Type Inference**: Some type errors in parser code due to TypeScript 5.7 stricter type checking. Requires explicit type annotations.
+    - `test/list/range-n.spec.ts` - Related to Ramda 0.32 API changes
+    - `test/type/like-array.spec.ts` - Array-like detection issue
 
-**Status:** Build infrastructure is fully operational. The remaining TypeScript errors are concentrated in test files and utility functions. Production code can continue development while these are addressed incrementally.
+3. **Multiple Package Test Failures**: Several packages have test failures that need investigation:
+
+    - @blue/core (1 test failure)
+    - @blue/parser
+    - @blue/content
+    - @blue/factory
+    - @blue/service
+    - @blue/http
+    - @blue/validate
+    - @blue/print
+
+4. **date-fns-tz v3 Import**: Module resolution issue with `date-fns-tz/fp` import in `packages/blue-util/src/date/index.ts`. May need moduleResolution update or import path adjustment.
+
+**Status:** Build infrastructure is fully operational. TypeScript builds complete successfully with caching. Test failures are localized to specific packages and don't block development. Issues should be addressed incrementally.
 
 **For Migration Details:** See `MIGRATION-2025.md` for complete breaking changes documentation and migration strategies.

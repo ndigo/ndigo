@@ -9,7 +9,7 @@ const // Lower case letters at the beginning of a string
 lowerCaseLetters = /^[a-z]/, 
 /**
  * Returns the pascal case version of a string.
-     * @param {string} value
+ * @param {string} value
  * @returns {string}
  * @category String
  * @example

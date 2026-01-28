@@ -7,13 +7,7 @@
  * - A/B testing OTel features
  */
 
-import {
-    BlueLoggerProvider,
-    LayoutAwareConsoleExporter,
-    PatternLayout,
-    SimpleLogger,
-    ConsoleAppender,
-} from '../src';
+import { BlueLoggerProvider, LayoutAwareConsoleExporter, PatternLayout, SimpleLogger, ConsoleAppender } from '../src';
 import { SimpleLogRecordProcessor } from '@opentelemetry/sdk-logs';
 import { ApacheLevel } from '../src/apache-logging';
 
@@ -40,7 +34,7 @@ class DualLogger {
         private otel: ReturnType<typeof otelProvider.createLogger>
     ) {}
 
-    log(level: typeof ApacheLevel[keyof typeof ApacheLevel], message: any[]) {
+    log(level: (typeof ApacheLevel)[keyof typeof ApacheLevel], message: any[]) {
         // Log to traditional system
         this.traditional.log(level, message);
 

@@ -38,7 +38,7 @@ export default class RouteHandlerExecutionChain {
     }
 
     /**
-         * @param {module:router.RouteHandlerInterceptor} interceptor
+     * @param {module:router.RouteHandlerInterceptor} interceptor
      */
     addInterceptor(interceptor: RouteHandlerInterceptor): void {
         if (interceptor) {
@@ -50,7 +50,7 @@ export default class RouteHandlerExecutionChain {
     }
 
     /**
-         * @param {Array<module:router.RouteHandlerInterceptor>} interceptors
+     * @param {Array<module:router.RouteHandlerInterceptor>} interceptors
      */
     addInterceptors(interceptors: RouteHandlerInterceptor[]): void {
         const length = interceptors?.length;
@@ -62,7 +62,7 @@ export default class RouteHandlerExecutionChain {
     }
 
     /**
-         * @param {module:router.Route} route
+     * @param {module:router.Route} route
      * @param {module:dispatcher.ModelAndView} mv
      */
     applyPostHandle(route: Route, mv: ModelAndView): void {
@@ -77,7 +77,7 @@ export default class RouteHandlerExecutionChain {
     }
 
     /**
-         * @param {module:router.Route} route
+     * @param {module:router.Route} route
      */
     applyPreHandle(route: Route): boolean {
         const interceptors = this.#interceptors,
@@ -95,7 +95,7 @@ export default class RouteHandlerExecutionChain {
     }
 
     /**
-         * @param {module:router.Route} route
+     * @param {module:router.Route} route
      * @param {Error} error
      */
     triggerCompleteHandle(route: Route, error: Error = null): void {

@@ -14,9 +14,8 @@ export interface RouteHandlerAdapter {
     supports(handler: any): boolean;
 }
 /**
- * @function module:dispatcher.likeController
  * @param {*} value The value to be tested
- * @returns {external:boolean} Whether or not the `value` is a {@linkcode module:dispatcher.Controller|Controller}
+ * @returns {boolean} Whether or not the `value` is a {@link Controller|Controller}
  */
 export declare const likeController: (value: any) => value is Controller;
 declare const AbstractHandlerMethodAdapter_base: import("@blue/core").Constructable<import("@blue/context").ApplicationContextAware> & typeof Null;
@@ -29,17 +28,14 @@ export declare abstract class AbstractHandlerMethodAdapter extends AbstractHandl
 }
 /**
  * @abstract
- * @class module:dispatcher.AbstractHandlerMethodAdapter
  * @implements module:dispatcher.HandlerAdapter
  */
 /**
- * This implementation expects the handler to be a {@linkcode module:dispatcher.HandlerMethod|HandlerMethod}.
- * @function module:dispatcher.AbstractHandlerMethodAdapter#supports
+ * This implementation expects the handler to be a {@link HandlerMethod|HandlerMethod}.
  * @param handler The handler instance to check
  * @returns Whether or not this adapter can adapt the given handler
  */
 /**
- * @class module:dispatcher.ControllerHandlerAdapter
  * @implements module:dispatcher.HandlerAdapter
  */
 export declare class ControllerHandlerAdapter implements RouteHandlerAdapter {
@@ -48,8 +44,7 @@ export declare class ControllerHandlerAdapter implements RouteHandlerAdapter {
     supports(handler: any): boolean;
 }
 /**
- * Implementation of {@link module:dispatcher.AbstractHandlerMethodAdapter} that supports {@linkcode module:dispatcher.HandlerMethod|HandlerMethods} decorated with `route:mapping` metadata. This is usually applied using {@linkcode module:router.RouteMapping|@RouteMapping}.
- * @class module:dispatcher.MetadataHandlerAdapter
+ * Implementation of {@link AbstractHandlerMethodAdapter} that supports {@link HandlerMethod|HandlerMethods} decorated with `route:mapping` metadata. This is usually applied using {@link RouteMapping|@RouteMapping}.
  * @extends module:dispatcher.AbstractHandlerMethodAdapter
  * @implements module:core.Initializable
  */

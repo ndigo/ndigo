@@ -1,0 +1,79 @@
+# Migration Guide: ESM-Only Modernization (January 2025)
+
+This document outlines the complete migration of the BlueJS monorepo to an **ESM-only** architecture. All CommonJS/UMD bundling for library packages has been removed, with Vite being retained exclusively for the `@blue/demo` application.
+
+## Overview
+
+The BlueJS monorepo has been streamlined to use ECMAScript Modules (ESM) as its sole module format. This change aligns with modern JavaScript development practices, leverages native ESM support in Node.js environments (v18.0.0+), and simplifies the build and consumption of BlueJS packages.
+
+## Rationale for ESM-Only
+
+- **Modern Ecosystem Alignment**: Node.js and the broader JavaScript ecosystem have fully embraced ESM. Moving to ESM-only simplifies development and integration with modern tools and libraries.
+- **Simpler Package Structure**: Eliminating dual-module builds (ESM + CommonJS) reduces complexity in `package.json` configurations, build scripts, and the overall distribution of packages.
+- **Improved Performance**: Native ESM offers better static analysis capabilities, enabling more efficient tree-shaking by bundlers, resulting in smaller application bundles for consumers.
+- **Reduced Overhead**: Without the need for separate bundling processes for CommonJS/UMD, build times are faster and the development workflow is more streamlined.
+
+## Breaking Changes for Consumers
+
+This is a **breaking change** for any consumers of BlueJS packages that:
+
+- **Are not running Node.js v18.0.0 or higher.**
+- **Rely on CommonJS `require()` syntax** to import BlueJS packages.
+
+**Action Required:**
+
+- All consumers must ensure their environment supports ESM.
+- Replace all `require('@blue/package')` statements with `import ... from '@blue/package'` or dynamic `import('@blue/package')`.
+
+## Technical Details of the Conversion
+
+### Removed Build Infrastructure
+
+The following elements related to CommonJS/UMD bundling have been removed:
+
+- **Bundle Files**: All `index.js` and `index.cjs` files (and their corresponding source maps) from the root of each package have been deleted. Library packages now only expose their `lib/` directory which contains the TypeScript-compiled ESM output.
+- **Vite Configuration for Libraries**: `vite.config.ts` files (and their compiled `.js` outputs) have been removed from all library packages (e.g., `@blue/boot`, `@blue/print`). Vite is now exclusively configured and used within the `@blue/demo` application.
+- **Bundle-Related Scripts**: The following scripts have been removed from `package.json` files across all packages:
+    - `build:bundle`
+    - `build:all`
+    - `debug:bundle`
+    - `prepublish`
+- **Obsolete Build Scripts**: `bin/build_bundle.sh` and `bin/debug_bundle.sh` have been deleted.
+- **Package.json Fields**: The `main` and `module` fields have been removed from package.json files, as the `exports` field now solely defines the ESM entry point. The `exports` field now points directly to `./lib/index.js`.
+- **`files` Array Updates**: The `files` array in each `package.json` has been updated to only include `lib` and `doc` directories, reflecting the removal of root-level bundle files.
+
+### Code Changes
+
+- **Dynamic `require()` to `import()`**: The one instance of dynamic `require()` in `packages/blue-context/src/event-logger.ts` has been converted to an asynchronous dynamic `import()`. This involved updating the `enableOTel` method to be `async` and ensuring any potential callers handle the `Promise` returned by the asynchronous operation.
+
+### `package.json` Example (ESM-Only)
+
+```json
+{
+    "name": "@blue/core",
+    "version": "3.0.0-alpha.0",
+    "description": "Blue Core",
+    "type": "module",
+    "files": ["doc", "lib"],
+    "exports": "./lib/index.js",
+    "types": "lib/index.d.ts",
+    "scripts": {
+        "build:lib": "../../bin/build_lib.sh",
+        "test": "vitest run",
+        "test:watch": "vitest",
+        "doc": "../../bin/doc.sh",
+        "benchmark": "../../bin/benchmark.sh",
+        "profile": "../../bin/profile.sh",
+        "debug:web": "../../bin/debug_web.sh"
+    }
+    // ... other fields
+}
+```
+
+## `blue-demo` Application
+
+The `@blue/demo` package remains a Vite-based application. Its `vite.config.ts` and associated scripts are unchanged, ensuring it continues to function as the demonstration and testbed environment for the ESM-only BlueJS libraries.
+
+## Conclusion
+
+This migration significantly modernizes the BlueJS monorepo, making it more efficient, maintainable, and aligned with current JavaScript development standards. Consumers are encouraged to update their projects to leverage the benefits of ESM.

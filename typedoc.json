@@ -24,7 +24,7 @@
     "packages/blue-parser/src/index.ts"
   ],
   "exclude": ["**/node_modules/**", "**/test/**", "archive/**"],
-  "out": "docs-ts",
+  "out": "doc-md",
   "plugin": ["typedoc-plugin-markdown"],
   "readme": "README.md",
   "categorizeByGroup": true,

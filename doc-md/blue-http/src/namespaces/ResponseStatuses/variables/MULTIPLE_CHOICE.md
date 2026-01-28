@@ -1,0 +1,13 @@
+[**BlueJS Framework v3.0.0-alpha.0**](../../../../../README.md)
+
+***
+
+[BlueJS Framework](../../../../../modules.md) / [blue-http/src](../../../README.md) / [ResponseStatuses](../README.md) / MULTIPLE\_CHOICE
+
+# Variable: MULTIPLE\_CHOICE
+
+> `const` **MULTIPLE\_CHOICE**: `ResponseStatus`
+
+Defined in: packages/blue-http/src/response-statuses.ts:100
+
+The request has more than one possible response. The user-agent or user should choose one of them. (There is no standardized way of choosing one of the responses, but HTML links to the possibilities are recommended so the user can pick.)

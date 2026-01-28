@@ -1,0 +1,13 @@
+[**BlueJS Framework v3.0.0-alpha.0**](../../../../../README.md)
+
+***
+
+[BlueJS Framework](../../../../../modules.md) / [blue-http/src](../../../README.md) / [ResponseStatuses](../README.md) / UNAVAILABLE\_FOR\_LEGAL\_REASONS
+
+# Variable: UNAVAILABLE\_FOR\_LEGAL\_REASONS
+
+> `const` **UNAVAILABLE\_FOR\_LEGAL\_REASONS**: `ResponseStatus`
+
+Defined in: packages/blue-http/src/response-statuses.ts:289
+
+The user-agent requested a resource that cannot legally be provided, such as a web page censored by a government.

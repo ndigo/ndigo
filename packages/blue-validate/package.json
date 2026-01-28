@@ -10,10 +10,7 @@
   "exports": "./lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
-    "benchmark": "../../bin/benchmark.sh",
-    "build:lib": "../../bin/build_lib.sh",
-    "doc": "../../bin/doc.sh",
-    "profile": "../../bin/profile.sh",
+    "build:lib": "tsc -b tsconfig.build.json",
     "test": "vitest run"
   },
   "repository": {

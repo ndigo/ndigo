@@ -13,12 +13,9 @@
   },
   "types": "lib/index.d.ts",
   "scripts": {
-    "benchmark": "../../bin/benchmark.sh",
-    "build:lib": "../../bin/build_lib.sh",
-    "doc": "../../bin/doc.sh",
+    "build:lib": "tsc -b tsconfig.build.json",
     "test": "vitest run",
-    "test:watch": "vitest",
-    "debug:web": "../../bin/debug_web.sh"
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@opentelemetry/api": "~1.9.0",

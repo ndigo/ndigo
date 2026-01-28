@@ -11,7 +11,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "../../bin/test_web.sh"
+    "test": "vitest run"
   },
   "repository": {
     "type": "git",

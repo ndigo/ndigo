@@ -1,0 +1,13 @@
+[**BlueJS Framework v3.0.0-alpha.0**](../../../../../README.md)
+
+***
+
+[BlueJS Framework](../../../../../modules.md) / [blue-http/src](../../../README.md) / [ResponseStatuses](../README.md) / CREATED
+
+# Variable: CREATED
+
+> `const` **CREATED**: `ResponseStatus`
+
+Defined in: packages/blue-http/src/response-statuses.ts:51
+
+The request has succeeded and a new resource has been created as a result. This is typically the response sent after `POST` requests, or some `PUT` requests.

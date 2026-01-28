@@ -183,7 +183,7 @@ pnpm doc:watch        # Watch mode - regenerate on changes
 
 Documentation is generated using **TypeDoc** with TSDoc comments:
 
-- Output directory: `docs-ts/` (markdown) or `docs/` (HTML)
+- Output directory: `doc-md/` (markdown) or `doc-html/` (HTML)
 - Configuration: `typedoc.json`
 - Custom plugin: `scripts/typedoc-plugin-sig.js` (for `@sig` tags)
 - 856 markdown files generated across 19 packages

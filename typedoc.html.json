@@ -24,7 +24,7 @@
     "packages/blue-parser/src/index.ts"
   ],
   "exclude": ["**/node_modules/**", "**/test/**", "archive/**"],
-  "out": "docs",
+  "out": "doc-html",
   "readme": "README.md",
   "categorizeByGroup": true,
   "categoryOrder": ["Function", "List", "Object", "String", "Type", "Logic", "Math", "Relation", "*"],

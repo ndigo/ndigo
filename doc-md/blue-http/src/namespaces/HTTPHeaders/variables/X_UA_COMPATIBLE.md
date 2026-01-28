@@ -1,0 +1,15 @@
+[**BlueJS Framework v3.0.0-alpha.0**](../../../../../README.md)
+
+***
+
+[BlueJS Framework](../../../../../modules.md) / [blue-http/src](../../../README.md) / [HTTPHeaders](../README.md) / X\_UA\_COMPATIBLE
+
+# Variable: X\_UA\_COMPATIBLE
+
+> `const` **X\_UA\_COMPATIBLE**: [`HTTPHeader`](../../../classes/HTTPHeader.md)
+
+Defined in: packages/blue-http/src/http-headers.ts:725
+
+## Constant
+
+module:http.HTTPHeaders.X_UA_COMPATIBLE

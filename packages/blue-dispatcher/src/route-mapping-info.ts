@@ -139,7 +139,7 @@ export class ParamsRouteCondition extends AbstractRouteCondition<ParamsRouteCond
      * Compare to another condition based on parameter expressions. A condition is considered to be a more specific match, if it has:
      * - A greater number of expressions.
      * - A greater number of non-negated expressions with a concrete value.
-         * @param {module:dispatcher.ParamsRouteCondition} value
+     * @param {module:dispatcher.ParamsRouteCondition} value
      * @returns {number}
      */
     compareTo(value: ParamsRouteCondition, route?: Route): number {

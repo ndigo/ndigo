@@ -35,7 +35,7 @@ export {
 /**
  * A function that always returns `false`. Any passed in parameters are ignored.
  *
-     * @category Function
+ * @category Function
  * @returns {boolean} False
  * @example
  * F();
@@ -46,7 +46,7 @@ export {
 /**
  * A function that always returns `true`. Any passed in parameters are ignored.
  *
-     * @category Function
+ * @category Function
  * @returns {boolean} True
  * @example
  * T();
@@ -83,7 +83,7 @@ export {
 /**
  * Adds two values.
  *
-     * @category Math
+ * @category Math
  * @param {number} a
  * @param {number} b
  * @returns {number}
@@ -106,7 +106,7 @@ export {
  * parameter, and where the list is the last parameter. (This latter might be
  * unimportant if the list parameter is not used.)
  *
-     * @category Function
+ * @category Function
  * @category List
  * @param {function} fn A list iteration function that does not pass index or list to its callback
  * @returns {function} An altered list iteration function that passes (item, index, list) to its callback
@@ -124,7 +124,7 @@ export {
  *
  * Unlike `addIndex`, `addIndexRight` iterates from the right to the left.
  *
-     * @category Function
+ * @category Function
  * @param {function} fn A list iteration function that does not pass index or list to its callback
  * @returns {function} An altered list iteration function that passes (item, index, list) to its callback
  * @example
@@ -141,7 +141,7 @@ export {
  * new copy of the array with the element at the given index replaced with the
  * result of the function application.
  *
-     * @category List
+ * @category List
  * @param {number} idx The index.
  * @param {function} fn The function to apply.
  * @param {ArrayLike} list An array-like object whose value at the supplied index will be replaced.
@@ -164,7 +164,7 @@ export {
  *
  * Acts as a transducer if a transformer is given in list position.
  *
-     * @category List
+ * @category List
  * @param {function} fn The predicate function.
  * @param {Array} list The array to consider.
  * @returns {boolean} `true` if the predicate is satisfied by every element, `false` otherwise.
@@ -189,7 +189,7 @@ export {
  * The function returned is a curried function whose arity matches that of the
  * highest-arity predicate.
  *
-     * @category Logic
+ * @category Logic
  * @param {Array} predicates An array of predicates to check
  * @returns {function} The combined predicate
  * @see {@link anyPass|anyPass}
@@ -213,7 +213,7 @@ export {
  * This function is known as `const`, `constant`, or `K` (for K combinator) in
  * other languages and libraries.
  *
-     * @category Function
+ * @category Function
  * @param {*} val The value to wrap in a function
  * @returns {function} A Function :: * -> val.
  * @example
@@ -226,7 +226,7 @@ export {
 /**
  * Returns `true` if both arguments are `true`; `false` otherwise.
  *
-     * @category Logic
+ * @category Logic
  * @param {*} a
  * @param {*} b
  * @returns {*} the first argument if it is falsy, otherwise the second argument.
@@ -248,7 +248,7 @@ export {
  * a successfully resolved promise. This is useful for working with promises
  * inside function compositions.
  *
-     * @category Function
+ * @category Function
  * @param {function} onSuccess The function to apply. Can return a value or a promise of a value.
  * @param {Promise} p
  * @returns {Promise} The result of calling `p.andThen(onSuccess)`
@@ -274,7 +274,7 @@ export {
  *
  * Acts as a transducer if a transformer is given in list position.
  *
-     * @category List
+ * @category List
  * @param {function} fn The predicate function.
  * @param {Array} list The array to consider.
  * @returns {boolean} `true` if the predicate is satisfied by at least one element, `false` otherwise.
@@ -300,7 +300,7 @@ export {
  * The function returned is a curried function whose arity matches that of the
  * highest-arity predicate.
  *
-     * @category Logic
+ * @category Logic
  * @param {Array} predicates An array of predicates to check
  * @returns {function} The combined predicate
  * @see {@link all|all}Pass
@@ -325,7 +325,7 @@ export {
  * Dispatches to the `ap` method of the second argument, if present. Also
  * treats curried functions as applicatives.
  *
-     * @category Function
+ * @category Function
  * @param {*} applyF
  * @param {*} applyX
  * @returns {*}
@@ -345,7 +345,7 @@ export {
  *
  * Acts as a transducer if a transformer is given in list position.
  *
-     * @category List
+ * @category List
  * @param {number} n The size of the tuples to create
  * @param {Array} list The list to split into `n`-length tuples
  * @returns {Array} The resulting list of `n`-length tuples
@@ -364,7 +364,7 @@ export {
  * Returns a new list containing the contents of the given list, followed by
  * the given element.
  *
-     * @category List
+ * @category List
  * @param {*} el The element to add to the end of the new list.
  * @param {Array} list The list of elements to add a new item to list.
  * @returns {Array} A new list containing the elements of the old list followed by `el`.
@@ -384,7 +384,7 @@ export {
  * creating a fixed-arity function from a variadic function. `fn` should be a
  * bound function if context is significant.
  *
-     * @category Function
+ * @category Function
  * @param {function} fn The function which will be called with `args`
  * @param {Array} args The arguments to call `fn` with
  * @returns {*} result The result, equivalent to `fn(...args)`
@@ -402,7 +402,7 @@ export {
  * function producing an object of the same structure, by mapping each property
  * to the result of calling its associated function with the supplied arguments.
  *
-     * @category Function
+ * @category Function
  * @param {Object} spec an object recursively mapping properties to functions for producing the values for these properties.
  * @returns {function} A function that returns an object of the same structure as `spec', with each property set to the value returned by calling its associated function with the supplied arguments.
  * @see {@link converge|converge}
@@ -423,7 +423,7 @@ export {
  *
  * This function is also known as the `thrush` combinator.
  *
-     * @category Function
+ * @category Function
  * @param {*} x The value
  * @param {function} f The function to apply
  * @returns {*} The result of applying `f` to `x`
@@ -441,7 +441,7 @@ export {
  * Makes an ascending comparator function out of a function that returns a value
  * that can be compared with `<` and `>`.
  *
-     * @category Function
+ * @category Function
  * @param {function} fn A function of arity one that returns a value that can be compared
  * @param {*} a The first item to be compared.
  * @param {*} b The second item to be compared.
@@ -464,7 +464,7 @@ export {
  * Makes an ascending comparator function out of a function that returns a value
  * that can be compared with natural sorting using localeCompare.
  *
-     * @category Function
+ * @category Function
  * @param {string} locales A string with a BCP 47 language tag, or an array of such strings. Corresponds to the locales parameter of the Intl.Collator() constructor.
  * @param {function} fn A function of arity one that returns a string that can be compared
  * @param {*} a The first item to be compared.
@@ -485,7 +485,7 @@ export {
  * properties onto the new object as well. All non-primitive properties are
  * copied by reference.
  *
-     * @category Object
+ * @category Object
  * @param {string} prop The property name to set
  * @param {*} val The new value
  * @param {Object} obj The object to clone
@@ -504,7 +504,7 @@ export {
  * that path. Note that this copies and flattens prototype properties onto the
  * new object as well. All non-primitive properties are copied by reference.
  *
-     * @category Object
+ * @category Object
  * @typedefn Idx = String | Int
  * @param {Array} path the path to set
  * @param {*} val The new value
@@ -525,7 +525,7 @@ export {
  * exactly 2 parameters. Any extraneous parameters will not be passed to the
  * supplied function.
  *
-     * @category Function
+ * @category Function
  * @param {function} fn The function to wrap.
  * @returns {function} A new function wrapping `fn`. The new function is guaranteed to be of arity 2.
  * @see {@link n|n}Ary
@@ -553,7 +553,7 @@ export {
  * Note: `bind` does not provide the additional argument-binding capabilities of
  * [Function.prototype.bind](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind).
  *
-     * @category Function
+ * @category Function
  * @category Object
  * @param {function} fn The function to bind to context
  * @param {Object} thisObj The context to bind `fn` to
@@ -578,7 +578,7 @@ export {
  * In addition to functions, `both` also accepts any fantasy-land compatible
  * applicative functor.
  *
-     * @category Logic
+ * @category Logic
  * @param {function} f A predicate
  * @param {function} g Another predicate
  * @returns {function} a function that applies its arguments to `f` and `g` and `&&`s their outputs together.
@@ -602,7 +602,7 @@ export {
  * remaining branches produce values to be passed to that function as its
  * arguments.
  *
-     * @category Function
+ * @category Function
  * @param {function} fn The function to apply to the remaining arguments.
  * @param {...*} args Any number of positional arguments.
  * @returns {*}
@@ -628,7 +628,7 @@ export {
  *
  * Acts as a transducer if a transformer is given in list position.
  *
-     * @category List
+ * @category List
  * @param {function} fn The function to map with
  * @param {Array} list The list to map over
  * @returns {Array} The result of flat-mapping `list` with `fn`
@@ -645,7 +645,7 @@ export {
  *
  * Also works for other ordered types such as Strings and Dates.
  *
-     * @category Relation
+ * @category Relation
  * @param {number} minimum The lower limit of the clamp (inclusive)
  * @param {number} maximum The upper limit of the clamp (inclusive)
  * @param {number} value Value to be clamped
@@ -664,7 +664,7 @@ export {
  *
  * Dispatches to a `clone` method if present.
  *
-     * @category Object
+ * @category Object
  * @param {*} value The object or array to clone
  * @returns {*} A deeply cloned copy of `val`
  * @example
@@ -679,7 +679,7 @@ export {
  * Splits a list into sub-lists, based on the result of calling a key-returning function on each element,
  * and grouping the results according to values returned.
  *
-     * @category List
+ * @category List
  * @param {function} fn Function :: a -> Idx
  * @param {Array} list The array to group
  * @returns {Array} An array of arrays where each sub-array contains items for which the String-returning function has returned the same value.
@@ -706,7 +706,7 @@ export {
  * Makes a comparator function out of a function that reports whether the first
  * element is less than the second.
  *
-     * @category Function
+ * @category Function
  * @param {function} pred A predicate function of arity two which will return `true` if the first argument is less than the second, `false` otherwise
  * @returns {function} A Function :: a -> b -> Int that returns `-1` if a < b, `1` if b < a, otherwise `0`
  * @example
@@ -728,7 +728,7 @@ export {
  *
  * `complement` may be applied to any functor
  *
-     * @category Logic
+ * @category Logic
  * @param {function} f
  * @returns {function}
  * @see {@link not|not}
@@ -748,7 +748,7 @@ export {
  *
  * **Note:** The result of compose is not automatically curried.
  *
-     * @category Function
+ * @category Function
  * @param {...external:function} ...functions The functions to compose
  * @returns {function}
  * @see {@link pipe|pipe}
@@ -768,7 +768,7 @@ export {
  * **Note:** The result of compose is not automatically curried. Transforming function is not used on the
  * last argument.
  *
-     * @category Function
+ * @category Function
  * @param {...Function} ...functions The functions to compose
  * @returns {function}
  * @see {@link compose|compose}
@@ -791,7 +791,7 @@ export {
  * Dispatches to the `concat` method of the first argument, if present.
  * Can also concatenate two members of a [fantasy-land compatible semigroup](https://github.com/fantasyland/fantasy-land#semigroup).
  *
-     * @category List
+ * @category List
  * @param {Array | external:string} firstList The first list
  * @param {Array | external:string} secondList The second list
  * @returns {Array | external:string} A list consisting of the elements of `firstList` followed by the elements of `secondList`.
@@ -810,7 +810,7 @@ export {
  * arguments to the corresponding transformer. If none of the predicates
  * matches, `fn` returns undefined.
  *
-     * @category Logic
+ * @category Logic
  * @param {Array} pairs A list of [predicate, transformer]
  * @returns {function}
  * @see {@link if|if}Else
@@ -833,7 +833,7 @@ export {
  * Wraps a constructor function inside a curried function that can be called
  * with the same arguments and returns the same type.
  *
-     * @category Function
+ * @category Function
  * @param {function} fn The constructor function to wrap.
  * @returns {function} A wrapped, curried constructor function.
  * @see {@link invoker|invoker}
@@ -864,7 +864,7 @@ export {
  * with the same arguments and returns the same type. The arity of the function
  * returned is specified to allow using variadic constructor functions.
  *
-     * @category Function
+ * @category Function
  * @param {number} n The arity of the constructor function.
  * @param {function} Fn The constructor function to wrap.
  * @returns {function} A wrapped, curried constructor function.
@@ -900,7 +900,7 @@ export {
  * arguments. The results of each branching function are passed as arguments
  * to the converging function to produce the return value.
  *
-     * @category Function
+ * @category Function
  * @param {function} after A function. `after` will be invoked with the return values of `fn1` and `fn2` as its arguments.
  * @param {Array} functions A list of functions.
  * @returns {function} A new function.
@@ -920,7 +920,7 @@ export {
 /**
  * Returns the number of items in a given `list` matching the predicate `f`
  *
-     * @category List
+ * @category List
  * @param {function} predicate The function to match items against.
  * @param {Array} list The list to count elements from.
  * @returns {number} The count of items matching the predicate.
@@ -939,7 +939,7 @@ export {
  *
  * Acts as a transducer if a transformer is given in list position.
  *
-     * @category Relation
+ * @category Relation
  * @param {function} fn The function used to map values to keys.
  * @param {Array} list The list to count elements from.
  * @returns {Object} An object mapping keys to number of occurrences in the list.
@@ -976,7 +976,7 @@ export {
  *   - `g(_, 2)(1, 3)`
  *   - `g(_, 2)(_, 3)(1)`
  *
-     * @category Function
+ * @category Function
  * @param {function} fn The function to curry.
  * @returns {function} A new, curried function.
  * @see {@link curry|curry}N
@@ -1014,7 +1014,7 @@ export {
  *   - `g(_, 2)(1, 3)`
  *   - `g(_, 2)(_, 3)(1)`
  *
-     * @category Function
+ * @category Function
  * @param {number} length The arity for the returned function.
  * @param {function} fn The function to curry.
  * @returns {function} A new, curried function.
@@ -1032,7 +1032,7 @@ export {
 /**
  * Decrements its argument.
  *
-     * @category Math
+ * @category Math
  * @param {number} n
  * @returns {number} n - 1
  * @see {@link inc|inc}
@@ -1045,7 +1045,7 @@ export {
  * Returns the second argument if it is not `null`, `undefined` or `NaN`;
  * otherwise the first argument is returned.
  *
-     * @category Logic
+ * @category Logic
  * @param {a} default The default value.
  * @param {b} val `val` will be returned instead of `default` unless `val` is `null`, `undefined` or `NaN`.
  * @returns {*} The second value if it is not `null`, `undefined` or `NaN`, otherwise the default value
@@ -1064,7 +1064,7 @@ export {
  * Makes a descending comparator function out of a function that returns a value
  * that can be compared with `<` and `>`.
  *
-     * @category Function
+ * @category Function
  * @param {function} fn A function of arity one that returns a value that can be compared
  * @param {*} a The first item to be compared.
  * @param {*} b The second item to be compared.
@@ -1087,7 +1087,7 @@ export {
  * Makes a descending comparator function out of a function that returns a value
  * that can be compared with natural sorting using localeCompare.
  *
-     * @category Function
+ * @category Function
  * @param {string} locales A string with a BCP 47 language tag, or an array of such strings. Corresponds to the locales parameter of the Intl.Collator() constructor.
  * @param {function} fn A function of arity one that returns a string that can be compared
  * @param {*} a The first item to be compared.
@@ -1107,7 +1107,7 @@ export {
  * contained in the second list. Objects and Arrays are compared in terms of
  * value equality, not reference equality.
  *
-     * @category Relation
+ * @category Relation
  * @param {Array} list1 The first list.
  * @param {Array} list2 The second list.
  * @returns {Array} The elements in `list1` that are not in `list2`.
@@ -1127,7 +1127,7 @@ export {
  * contained in the second list. Duplication is determined according to the
  * value returned by applying the supplied predicate to two list elements.
  *
-     * @category Relation
+ * @category Relation
  * @param {function} pred A predicate used to test whether two items are equal.
  * @param {Array} list1 The first list.
  * @param {Array} list2 The second list.
@@ -1146,7 +1146,7 @@ export {
 /**
  * Returns a new object that does not contain a `prop` property.
  *
-     * @category Object
+ * @category Object
  * @param {string} prop The name of the property to dissociate
  * @param {Object} obj The object to clone
  * @returns {Object} A new object equivalent to the original but without the specified property
@@ -1162,7 +1162,7 @@ export {
  * Note that this copies and flattens prototype properties onto the new object
  * as well. All non-primitive properties are copied by reference.
  *
-     * @category Object
+ * @category Object
  * @param {Array} path The path to the value to omit
  * @param {Object} obj The object to clone
  * @returns {Object} A new object without the property at path
@@ -1175,7 +1175,7 @@ export {
 /**
  * Divides two numbers. Equivalent to `a / b`.
  *
-     * @category Math
+ * @category Math
  * @param {number} a The first value.
  * @param {number} b The second value.
  * @returns {number} The result of `a / b`.
@@ -1198,7 +1198,7 @@ export {
  *
  * Dispatches to the `drop` method of the second argument, if present.
  *
-     * @category List
+ * @category List
  * @param {number} n
  * @param {*} list
  * @returns {*} A copy of list without the first `n` elements
@@ -1220,7 +1220,7 @@ export {
  *
  * Acts as a transducer if a transformer is given in list position.
  *
-     * @category List
+ * @category List
  * @param {number} n The number of elements of `list` to skip.
  * @param {Array} list The list of elements to consider.
  * @returns {Array} A copy of the list with only the first `list.length - n` elements
@@ -1246,7 +1246,7 @@ export {
  *
  * Acts as a transducer if a transformer is given in list position.
  *
-     * @category List
+ * @category List
  * @param {function} predicate The function to be called on each element
  * @param {Array} xs The collection to iterate over.
  * @returns {Array} A new array without any trailing elements that return `falsy` values from the `predicate`.
@@ -1267,7 +1267,7 @@ export {
  *
  * Acts as a transducer if a transformer is given in list position.
  *
-     * @category List
+ * @category List
  * @param {Array} list The array to consider.
  * @returns {Array} `list` without repeating elements.
  * @see {@link transduce|transduce}
@@ -1279,7 +1279,7 @@ export {
 /**
  * Returns a new list without any consecutively repeating elements. Equality is determined by applying the supplied function to each pair of consecutive elements.
  *
-     * @category List
+ * @category List
  * @param {function} f A function that is passed a list element and returns a value to be compared.
  * @param {Array} list The array to consider.
  * @returns {Array} `list` without repeating elements.
@@ -1298,7 +1298,7 @@ export {
  *
  * Acts as a transducer if a transformer is given in list position.
  *
-     * @category List
+ * @category List
  * @param {function} pred A predicate used to test whether two items are equal.
  * @param {Array} list The array to consider.
  * @returns {Array} `list` without repeating elements.
@@ -1320,7 +1320,7 @@ export {
  *
  * Acts as a transducer if a transformer is given in list position.
  *
-     * @category List
+ * @category List
  * @param {function} fn The function called per iteration.
  * @param {Array} xs The collection to iterate over.
  * @returns {Array} A new array.
@@ -1344,7 +1344,7 @@ export {
  * In addition to functions, `R.either` also accepts any fantasy-land compatible
  * applicative functor.
  *
-     * @category Logic
+ * @category Logic
  * @param {function} f a predicate
  * @param {function} g another predicate
  * @returns {function} a function that applies its arguments to `f` and `g` and `||`s their outputs together.
@@ -1366,7 +1366,7 @@ export {
  *
  * Similarly, checks if a string ends with the provided substring.
  *
-     * @category List
+ * @category List
  * @param {*} suffix
  * @param {*} list
  * @returns {boolean}
@@ -1383,7 +1383,7 @@ export {
  * Takes a function and two values in its domain and returns `true` if the
  * values map to the same value in the codomain; `false` otherwise.
  *
-     * @category Relation
+ * @category Relation
  * @param {function} f
  * @param {*} x
  * @param {*} y
@@ -1397,7 +1397,7 @@ export {
  * Reports whether two objects have the same value, in [`equals`](#equals)
  * terms, for the specified property. Useful as a curried predicate.
  *
-     * @category Object
+ * @category Object
  * @param {string} prop The name of the property to compare
  * @param {Object} obj1
  * @param {Object} obj2
@@ -1417,7 +1417,7 @@ export {
  * Dispatches symmetrically to the `equals` methods of both arguments, if
  * present.
  *
-     * @category Relation
+ * @category Relation
  * @param {*} a
  * @param {*} b
  * @returns {boolean}
@@ -1440,7 +1440,7 @@ export {
  * A `transformation` function will not be invoked if its corresponding key
  * does not exist in the evolved object.
  *
-     * @category Object
+ * @category Object
  * @param {Object} transformations The object specifying transformation functions to apply to the object.
  * @param {Object} object The object to be transformed.
  * @returns {Object} The transformed object.
@@ -1466,7 +1466,7 @@ export {
  *
  * Acts as a transducer if a transformer is given in list position.
  *
-     * @category List
+ * @category List
  * @param {function} pred
  * @param {Array} filterable
  * @returns {Array} Filterable
@@ -1488,7 +1488,7 @@ export {
  *
  * Acts as a transducer if a transformer is given in list position.
  *
-     * @category List
+ * @category List
  * @param {function} fn The predicate function used to determine if the element is the desired one.
  * @param {Array} list The array to consider.
  * @returns {Object} The element found, or `undefined`.
@@ -1507,7 +1507,7 @@ export {
  *
  * Acts as a transducer if a transformer is given in list position.
  *
-     * @category List
+ * @category List
  * @param {function} fn The predicate function used to determine if the element is the desired one.
  * @param {Array} list The array to consider.
  * @returns {number} The index of the element found, or `-1`.
@@ -1526,7 +1526,7 @@ export {
  *
  * Acts as a transducer if a transformer is given in list position.
  *
-     * @category List
+ * @category List
  * @sig (a -> Boolean) -> [a] -> a | undefined
  * @param {function} fn The predicate function used to determine if the element is the
  * desired one.
@@ -1547,7 +1547,7 @@ export {
  *
  * Acts as a transducer if a transformer is given in list position.
  *
-     * @category List
+ * @category List
  * @param {function} fn The predicate function used to determine if the element is the desired one.
  * @param {Array} list The array to consider.
  * @returns {number} The index of the element found, or `-1`.
@@ -1564,7 +1564,7 @@ export {
  * Returns a new list by pulling every item out of it (and all its sub-arrays)
  * and putting them in a new array, depth-first.
  *
-     * @category List
+ * @category List
  * @param {Array} list The array to consider.
  * @returns {Array} The flattened list.
  * @see {@link unnest|unnest}
@@ -1578,7 +1578,7 @@ export {
  * Returns a new function much like the supplied one, except that the first two
  * arguments' order is reversed.
  *
-     * @category Function
+ * @category Function
  * @param {function} fn The function to invoke with its first two parameters reversed.
  * @returns {*} The result of invoking `fn` with its first two parameters' order reversed.
  * @example
@@ -1604,7 +1604,7 @@ export {
  *
  * Dispatches to the `forEach` method of the second argument, if present.
  *
-     * @category List
+ * @category List
  * @param {function} fn The function to invoke. Receives one argument, `value`.
  * @param {Array} list The list to iterate over.
  * @returns {Array} The original list.
@@ -1623,7 +1623,7 @@ export {
  *
  * `fn` receives three argument: *(value, key, obj)*.
  *
-     * @category Object
+ * @category Object
  * @param {function} fn The function to invoke. Receives three argument, `value`, `key`, `obj`.
  * @param {Object} obj The object to iterate over.
  * @returns {Object} The original object.
@@ -1638,7 +1638,7 @@ export {
 /**
  * Creates a new object from a list key-value pairs. If a key appears in multiple pairs, the rightmost pair is included in the object.
  *
-     * @category List
+ * @category List
  * @param {Array} pairs An array of two-element arrays that will be the keys and values of the output object.
  * @returns {Object} The object made by pairing up `keys` and `values`.
  * @see {@link toPairs|toPairs}
@@ -1657,7 +1657,7 @@ export {
  *
  * Acts as a transducer if a transformer is given in list position.
  *
-     * @category List
+ * @category List
  * @param {function} fn Function :: a -> String
  * @param {Array} list The array to group
  * @returns {Object} An object with the output of `fn` for keys, mapped to arrays of elements that produced that key when passed to `fn`.
@@ -1692,7 +1692,7 @@ export {
  * all satisfied pairwise comparison according to the provided function.
  * Only adjacent elements are passed to the comparison function.
  *
-     * @category List
+ * @category List
  * @param {function} fn Function for determining whether two given (adjacent) elements should be in the same group
  * @param {Array} list The array to group. Also accepts a string, which will be treated as a list of characters.
  * @returns {List} A list that contains sublists of elements, whose concatenations are equal to the original list.
@@ -1712,7 +1712,7 @@ export {
 /**
  * Returns `true` if the first argument is greater than the second; `false` otherwise.
  *
-     * @category Relation
+ * @category Relation
  * @param {*} a
  * @param {*} b
  * @returns {boolean}
@@ -1730,7 +1730,7 @@ export {
  * Returns `true` if the first argument is greater than or equal to the second;
  * `false` otherwise.
  *
-     * @category Relation
+ * @category Relation
  * @param {number} a
  * @param {number} b
  * @returns {boolean}
@@ -1747,7 +1747,7 @@ export {
 /**
  * Returns whether or not an object has an own property with the specified name
  *
-     * @category Object
+ * @category Object
  * @param {string} prop The name of the property to check for.
  * @param {Object} obj The object to query.
  * @returns {boolean} Whether the property exists.
@@ -1769,7 +1769,7 @@ export {
  * Returns whether or not an object or its prototype chain has a property with
  * the specified name
  *
-     * @category Object
+ * @category Object
  * @param {string} prop The name of the property to check for.
  * @param {Object} obj The object to query.
  * @returns {boolean} Whether the property exists.
@@ -1793,7 +1793,7 @@ export {
  * Returns whether or not a path exists in an object. Only the object's
  * own properties are checked.
  *
-     * @category Object
+ * @category Object
  * @param {Array} path The path to use.
  * @param {Object} obj The object to check the path in.
  * @returns {boolean} Whether the path exists.
@@ -1810,7 +1810,7 @@ export {
  * Returns the first element of the given list or string. In some libraries
  * this function is named `first`.
  *
-     * @category List
+ * @category List
  * @param {Array | external:string} list
  * @returns {*}
  * @see {@link tail|tail}
@@ -1831,7 +1831,7 @@ export {
  *
  * Note this is merely a curried version of ES6 `Object.is`.
  *
-     * @category Relation
+ * @category Relation
  * @param {*} a
  * @param {*} b
  * @returns {boolean}
@@ -1850,7 +1850,7 @@ export {
  * A function that does nothing but return the parameter supplied to it. Good
  * as a default or placeholder function.
  *
-     * @category Function
+ * @category Function
  * @param {*} x The value to return.
  * @returns {*} The input value, `x`.
  * @example
@@ -1864,7 +1864,7 @@ export {
  * Creates a function that will process either the `onTrue` or the `onFalse`
  * function depending upon the result of the `condition` predicate.
  *
-     * @category Logic
+ * @category Logic
  * @param {function} condition A predicate function
  * @param {function} onTrue A function to invoke when the `condition` evaluates to a truthy value.
  * @param {function} onFalse A function to invoke when the `condition` evaluates to a falsy value.
@@ -1887,7 +1887,7 @@ export {
 /**
  * Increments its argument.
  *
-     * @category Math
+ * @category Math
  * @param {number} n
  * @returns {number} n + 1
  * @see {@link dec|dec}
@@ -1901,7 +1901,7 @@ export {
  * terms, to at least one element of the given list; `false` otherwise.
  * Works also with strings.
  *
-     * @category List
+ * @category List
  * @param {Object} a The item to compare against.
  * @param {Array} list The array to consider.
  * @returns {boolean} `true` if an equivalent item is in the list, `false` otherwise.
@@ -1923,7 +1923,7 @@ export {
  *
  * Acts as a transducer if a transformer is given in list position.
  *
-     * @category List
+ * @category List
  * @param {function} fn Function :: a -> String
  * @param {Array} array The array of objects to index
  * @returns {Object} An object indexing each array element by the given property.
@@ -1940,7 +1940,7 @@ export {
  * if the item is not included in the array. [`R.equals`](#equals) is used to
  * determine equality.
  *
-     * @category List
+ * @category List
  * @param {*} target The item to find.
  * @param {Array} xs The array to search in.
  * @returns {number} the index of the target, or -1 if the target is not found.
@@ -1954,7 +1954,7 @@ export {
 /**
  * Returns all but the last element of the given list or string.
  *
-     * @category List
+ * @category List
  * @param {*} list
  * @returns {*}
  * @see {@link last|last}
@@ -1984,7 +1984,7 @@ export {
  * that its values are in the same order as they appear in `xs`. Duplicates are
  * not removed, so `xs'` may contain duplicates if `xs` contains duplicates.
  *
-     * @category Relation
+ * @category Relation
  * @param {function} pred
  * @param {Array} xs
  * @param {Array} ys
@@ -2010,7 +2010,7 @@ export {
  * this is not destructive_: it returns a copy of the list with the changes.
  * <small>No lists have been harmed in the application of this function.</small>
  *
-     * @category List
+ * @category List
  * @param {number} index The position to insert the element
  * @param {*} elt The element to insert into the Array
  * @param {Array} list The list to insert into
@@ -2025,7 +2025,7 @@ export {
  * destructive_: it returns a copy of the list with the changes.
  * <small>No lists have been harmed in the application of this function.</small>
  *
-     * @category List
+ * @category List
  * @param {number} index The position to insert the sub-list
  * @param {Array} elts The sub-list to insert into the Array
  * @param {Array} list The list to insert the sub-list into
@@ -2038,7 +2038,7 @@ export {
 /**
  * Combines two lists into a set (i.e. no duplicates) composed of those elements common to both lists.
  *
-     * @category Relation
+ * @category Relation
  * @param {Array} list1 The first list.
  * @param {Array} list2 The second list.
  * @returns {Array} The list of elements found in both `list1` and `list2`.
@@ -2053,7 +2053,7 @@ export {
  *
  * Dispatches to the `intersperse` method of the second argument, if present.
  *
-     * @category List
+ * @category List
  * @param {*} separator The element to add to the list.
  * @param {Array} list The list to be interposed.
  * @returns {Array} The new list.
@@ -2081,7 +2081,7 @@ export {
  * The iteration is performed with [`reduce`](#reduce) after initializing the
  * transducer.
  *
-     * @category List
+ * @category List
  * @param {*} acc The initial accumulator value.
  * @param {function} xf The transducer function. Receives a transformer and returns a transformer.
  * @param {Array} list The list to iterate over.
@@ -2103,7 +2103,7 @@ export {
  * Same as [`invertObj`](#invertObj), however this accounts for objects with
  * duplicate values by putting the values into an array.
  *
-     * @category Object
+ * @category Object
  * @param {Object} obj The object or array to invert
  * @returns {Object} out A new object with keys in an array.
  * @see {@link invertObj|invertObj}
@@ -2123,7 +2123,7 @@ export {
  * values of the given object, which are coerced to strings, as keys. Note
  * that the last key found is preferred when handling the same value.
  *
-     * @category Object
+ * @category Object
  * @param {Object} obj The object or array to invert
  * @returns {Object} out A new object
  * @see {@link invert|invert}
@@ -2149,7 +2149,7 @@ export {
  * The returned function is curried and accepts `arity + 1` parameters where
  * the final parameter is the target object.
  *
-     * @category Function
+ * @category Function
  * @param {number} arity Number of arguments the returned function should take before the target object.
  * @param {string} method Name of the method to call.
  * @returns {function} A new curried function.
@@ -2166,7 +2166,7 @@ export {
  * See if an object (`val`) is an instance of the supplied constructor. This
  * function will check up the inheritance chain, if any.
  *
-     * @category Type
+ * @category Type
  * @param {Object} ctor A constructor
  * @param {*} val The value to test
  * @returns {boolean}
@@ -2185,7 +2185,7 @@ export {
 /**
  * Checks if the input value is `null` or `undefined`.
  *
-     * @category Type
+ * @category Type
  * @param {*} x The value to test.
  * @returns {boolean} `true` if `x` is `undefined` or `null`, otherwise `false`.
  * @example
@@ -2200,7 +2200,7 @@ export {
  * Returns a string made by inserting the `separator` between each element and
  * concatenating all the elements into a single string.
  *
-     * @category List
+ * @category List
  * @param {Number|String} separator The string used to separate the elements.
  * @param {Array} xs The elements to join into a string.
  * @returns {string} str The string made by concatenating `xs` with `separator`.
@@ -2215,7 +2215,7 @@ export {
 /**
  * juxt applies a list of functions to a list of values.
  *
-     * @category Function
+ * @category Function
  * @param {Array} fns An array of functions
  * @returns {function} A function that returns a list of values after applying each of the original `fns` to its parameters.
  * @see {@link applySpec|applySpec}
@@ -2231,7 +2231,7 @@ export {
  * Note that the order of the output array is not guaranteed to be consistent
  * across different JS platforms.
  *
-     * @category Object
+ * @category Object
  * @param {Object} obj The object to extract properties from
  * @returns {Array} An array of the object's own properties.
  * @see {@link keysIn|keysIn}
@@ -2247,7 +2247,7 @@ export {
  * Note that the order of the output array is not guaranteed to be consistent
  * across different JS platforms.
  *
-     * @category Object
+ * @category Object
  * @param {Object} obj The object to extract properties from
  * @returns {Array} An array of the object's own and prototype properties.
  * @see {@link keys|keys}
@@ -2263,7 +2263,7 @@ export {
 /**
  * Returns the last element of the given list or string.
  *
-     * @category List
+ * @category List
  * @sig String -> String
  * @param {*} list
  * @returns {*}
@@ -2283,7 +2283,7 @@ export {
  * the item is not included in the array. [`R.equals`](#equals) is used to
  * determine equality.
  *
-     * @category List
+ * @category List
  * @param {*} target The item to find.
  * @param {Array} xs The array to search in.
  * @returns {number} the index of the target, or -1 if the target is not found.
@@ -2297,7 +2297,7 @@ export {
 /**
  * Returns the number of elements in the array by returning `list.length`.
  *
-     * @category List
+ * @category List
  * @param {Array} list The array to inspect.
  * @returns {number} The length of the array.
  * @example
@@ -2311,7 +2311,7 @@ export {
  * the value of the focus; the setter "sets" the value of the focus. The setter
  * should not mutate the data structure.
  *
-     * @category Object
+ * @category Object
  * @param {function} getter
  * @param {function} setter
  * @returns {Lens}
@@ -2332,7 +2332,7 @@ export {
 /**
  * Returns a lens whose focus is the specified index.
  *
-     * @category Object
+ * @category Object
  * @param {number} n
  * @returns {Lens}
  * @see {@link view|view}
@@ -2351,7 +2351,7 @@ export {
 /**
  * Returns a lens whose focus is the specified path.
  *
-     * @category Object
+ * @category Object
  * @param {Array} path The path to use.
  * @returns {Lens}
  * @see {@link view|view}
@@ -2373,7 +2373,7 @@ export {
 /**
  * Returns a lens whose focus is the specified property.
  *
-     * @category Object
+ * @category Object
  * @param {string} k
  * @returns {Lens}
  * @see {@link view|view}
@@ -2392,7 +2392,7 @@ export {
  * "lifts" a function of arity > 1 so that it may "map over" a list, Function or other
  * object that satisfies the [FantasyLand Apply spec](https://github.com/fantasyland/fantasy-land#apply).
  *
-     * @category Function
+ * @category Function
  * @param {function} fn The function to lift into higher context
  * @returns {function} The lifted function.
  * @see {@link liftN|liftN}
@@ -2408,7 +2408,7 @@ export {
  * "lifts" a function to be the specified arity, so that it may "map over" that
  * many lists, Functions or other objects that satisfy the [FantasyLand Apply spec](https://github.com/fantasyland/fantasy-land#apply).
  *
-     * @category Function
+ * @category Function
  * @param {function} fn The function to lift into higher context
  * @returns {function} The lifted function.
  * @see {@link lift|lift}
@@ -2423,7 +2423,7 @@ export {
 /**
  * Returns `true` if the first argument is less than the second; `false` otherwise.
  *
-     * @category Relation
+ * @category Relation
  * @param {*} a
  * @param {*} b
  * @returns {boolean}
@@ -2441,7 +2441,7 @@ export {
  * Returns `true` if the first argument is less than or equal to the second;
  * `false` otherwise.
  *
-     * @category Relation
+ * @category Relation
  * @param {number} a
  * @param {number} b
  * @returns {boolean}
@@ -2470,7 +2470,7 @@ export {
  *
  * Also treats functions as functors and will compose them together.
  *
-     * @category List
+ * @category List
  * @param {function} fn The function to be called on every element of the input `list`.
  * @param {Array} list The list to be iterated over.
  * @returns {Array} The new list.
@@ -2492,7 +2492,7 @@ export {
  * The iterator function receives two arguments, *acc* and *value*, and should
  * return a tuple *[acc, value]*.
  *
-     * @category List
+ * @category List
  * @param {function} fn The function to be called on every element of the input `list`.
  * @param {*} acc The accumulator value.
  * @param {Array} list The list to iterate over.
@@ -2519,7 +2519,7 @@ export {
  * The iterator function receives two arguments, *acc* and *value*, and should
  * return a tuple *[acc, value]*.
  *
-     * @category List
+ * @category List
  * @param {function} fn The function to be called on every element of the input `list`.
  * @param {*} acc The accumulator value.
  * @param {Array} list The list to iterate over.
@@ -2538,7 +2538,7 @@ export {
  * arguments: *(value, key, obj)*. If only the value is significant, use
  * [`map`](#map) instead.
  *
-     * @category Object
+ * @category Object
  * @param {function} fn
  * @param {Object} obj
  * @returns {Object}
@@ -2556,7 +2556,7 @@ export {
  * [`String.prototype.match`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/match)
  * which returns `null` when there are no matches.
  *
-     * @category String
+ * @category String
  * @param {RegExp} rx A regular expression.
  * @param {string} str The string to match against
  * @returns {Array} The list of matches or empty array.
@@ -2574,7 +2574,7 @@ export {
  * `-17 % 5` is `-2`, `mathMod(-17, 5)` is `3`. `mathMod` requires Integer
  * arguments, and returns NaN when the modulus is zero or negative.
  *
-     * @category Math
+ * @category Math
  * @param {number} m The dividend.
  * @param {number} p the modulus.
  * @returns {number} The result of `b mod a`.
@@ -2602,7 +2602,7 @@ export {
 /**
  * Returns the larger of its two arguments.
  *
-     * @category Relation
+ * @category Relation
  * @param {*} a
  * @param {*} b
  * @returns {*}
@@ -2618,7 +2618,7 @@ export {
  * Takes a function and two values, and returns whichever value produces the
  * larger result when passed to the provided function.
  *
-     * @category Relation
+ * @category Relation
  * @param {function} f
  * @param {*} a
  * @param {*} b
@@ -2638,7 +2638,7 @@ export {
 /**
  * Returns the mean of the given list of numbers.
  *
-     * @category Math
+ * @category Math
  * @param {Array} list
  * @returns {number}
  * @see {@link median|median}
@@ -2651,7 +2651,7 @@ export {
 /**
  * Returns the median of the given list of numbers.
  *
-     * @category Math
+ * @category Math
  * @param {Array} list
  * @returns {number}
  * @see {@link mean|mean}
@@ -2670,7 +2670,7 @@ export {
  * returned.
  *
  *
-     * @category Function
+ * @category Function
  * @param {function} fn The function to generate the cache key.
  * @param {function} fn The function to memoize.
  * @returns {function} Memoized version of `fn`.
@@ -2691,7 +2691,7 @@ export {
 /**
  * Merges a list of objects together into one object.
  *
-     * @category List
+ * @category List
  * @param {Array} list An array of objects
  * @returns {Object} A merged object.
  * @see {@link reduce|reduce}
@@ -2707,7 +2707,7 @@ export {
  * - and both values are objects, the two values will be recursively merged
  * - otherwise the value from the first object will be used.
  *
-     * @category Object
+ * @category Object
  * @param {Object} lObj
  * @param {Object} rObj
  * @returns {Object}
@@ -2730,7 +2730,7 @@ export {
  * - and both values are objects, the two values will be recursively merged
  * - otherwise the value from the second object will be used.
  *
-     * @category Object
+ * @category Object
  * @param {Object} lObj
  * @param {Object} rObj
  * @returns {Object}
@@ -2757,7 +2757,7 @@ export {
  * If a key only exists in one object, the value will be associated with the key
  * of the resulting object.
  *
-     * @category Object
+ * @category Object
  * @param {function} fn
  * @param {Object} lObj
  * @param {Object} rObj
@@ -2784,7 +2784,7 @@ export {
  * If a key only exists in one object, the value will be associated with the key
  * of the resulting object.
  *
-     * @category Object
+ * @category Object
  * @param {function} fn
  * @param {Object} lObj
  * @param {Object} rObj
@@ -2807,7 +2807,7 @@ export {
  * the own properties of the second object. If a key exists in both objects,
  * the value from the first object will be used.
  *
-     * @category Object
+ * @category Object
  * @param {Object} l
  * @param {Object} r
  * @returns {Object}
@@ -2830,7 +2830,7 @@ export {
  * the own properties of the second object. If a key exists in both objects,
  * the value from the second object will be used.
  *
-     * @category Object
+ * @category Object
  * @param {Object} l
  * @param {Object} r
  * @returns {Object}
@@ -2853,7 +2853,7 @@ export {
  * associated with the key in each object, with the result being used as the
  * value associated with the key in the returned object.
  *
-     * @category Object
+ * @category Object
  * @param {function} fn
  * @param {Object} l
  * @param {Object} r
@@ -2881,7 +2881,7 @@ export {
  * If a key only exists in one object, the value will be associated with the key
  * of the resulting object.
  *
-     * @category Object
+ * @category Object
  * @param {function} fn
  * @param {Object} lObj
  * @param {Object} rObj
@@ -2902,7 +2902,7 @@ export {
 /**
  * Returns the smaller of its two arguments.
  *
-     * @category Relation
+ * @category Relation
  * @param {*} a
  * @param {*} b
  * @returns {*}
@@ -2918,7 +2918,7 @@ export {
  * Takes a function and two values, and returns whichever value produces the
  * smaller result when passed to the provided function.
  *
-     * @category Relation
+ * @category Relation
  * @param {function} f
  * @param {*} a
  * @param {*} b
@@ -2940,7 +2940,7 @@ export {
  * that this function preserves the JavaScript-style behavior for modulo. For
  * mathematical modulo see [`mathMod`](#mathMod).
  *
-     * @category Math
+ * @category Math
  * @param {number} a The value to the divide.
  * @param {number} b The pseudo-modulus
  * @returns {number} The result of `b % a`.
@@ -2966,7 +2966,7 @@ export {
 /**
  * Multiplies two numbers. Equivalent to `a * b` but curried.
  *
-     * @category Math
+ * @category Math
  * @param {number} a The first value.
  * @param {number} b The second value.
  * @returns {number} The result of `a * b`.
@@ -2988,7 +2988,7 @@ export {
  * exactly `n` parameters. Any extraneous parameters will not be passed to the
  * supplied function.
  *
-     * @category Function
+ * @category Function
  * @param {number} n The desired arity of the new function.
  * @param {function} fn The function to wrap.
  * @returns {function} A new function wrapping `fn`. The new function is guaranteed to be of arity `n`.
@@ -3014,7 +3014,7 @@ export {
 /**
  * Negates its argument.
  *
-     * @category Math
+ * @category Math
  * @param {number} n
  * @returns {number}
  * @example
@@ -3031,7 +3031,7 @@ export {
  *
  * Acts as a transducer if a transformer is given in list position.
  *
-     * @category List
+ * @category List
  * @param {function} fn The predicate function.
  * @param {Array} list The array to consider.
  * @returns {boolean} `true` if the predicate is not satisfied by every element, `false` otherwise.
@@ -3051,7 +3051,7 @@ export {
  * A function that returns the `!` of its argument. It will return `true` when
  * passed false-y value, and `false` when passed a truth-y one.
  *
-     * @category Logic
+ * @category Logic
  * @param {*} a any value
  * @returns {boolean} the logical inverse of passed argument.
  * @see {@link complement|complement}
@@ -3071,7 +3071,7 @@ export {
  * Returns the nth element of the given list or string. If n is negative the
  * element at index length + n is returned.
  *
-     * @category List
+ * @category List
  * @param {number} offset
  * @param {*} list
  * @returns {*}
@@ -3094,7 +3094,7 @@ export {
 /**
  * Returns a function which returns its nth argument.
  *
-     * @category Function
+ * @category Function
  * @param {number} n
  * @returns {function}
  * @example
@@ -3113,7 +3113,7 @@ export {
  * limited to accepting only 2 unary functions. The name o was chosen because
  * of its similarity to the mathematical composition operator ∘.
  *
-     * @category Function
+ * @category Function
  * @param {function} f
  * @param {function} g
  * @returns {function}
@@ -3131,7 +3131,7 @@ export {
 /**
  * Creates an object containing a single key:value pair.
  *
-     * @category Object
+ * @category Object
  * @param {string} key
  * @param {*} val
  * @returns {Object}
@@ -3153,7 +3153,7 @@ export {
  * Note this `of` is different from the ES6 `of`; See
  * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/of
  *
-     * @category Function
+ * @category Function
  * @param {*} x any value
  * @returns {Array} An array wrapping `x`.
  * @example
@@ -3167,7 +3167,7 @@ export {
 /**
  * Returns a partial copy of an object omitting the keys specified.
  *
-     * @category Object
+ * @category Object
  * @param {Array} names an array of String property names to omit from the new object
  * @param {Object} obj The object to copy from
  * @returns {Object} A new object with properties from `names` not on it.
@@ -3184,7 +3184,7 @@ export {
  * the returned function is invoked. The first value calculated is returned in
  * subsequent invocations.
  *
-     * @category Function
+ * @category Function
  * @param {function} fn The function to wrap in a call-only-once wrapper.
  * @returns {function} The wrapped function.
  * @example
@@ -3200,7 +3200,7 @@ export {
  * Returns `true` if one or both of its arguments are `true`. Returns `false`
  * if both arguments are `false`.
  *
-     * @category Logic
+ * @category Logic
  * @param {Any} a
  * @param {Any} b
  * @returns {Any} the first argument if truthy, otherwise the second argument.
@@ -3222,7 +3222,7 @@ export {
  * a failed promise. This is useful for handling rejected promises
  * inside function compositions.
  *
-     * @category Function
+ * @category Function
  * @param {function} onFailure The function to apply. Can return a value or a promise of a value.
  * @param {Promise} p
  * @returns {Promise} The result of calling `p.then(null, onFailure)`
@@ -3246,7 +3246,7 @@ export {
  * focused by the given lens to the result of applying the given function to
  * the focused value.
  *
-     * @category Object
+ * @category Object
  * @param {Lens} lens
  * @param {*} v
  * @param {*} x
@@ -3265,7 +3265,7 @@ export {
 /**
  * Takes two arguments, `fst` and `snd`, and returns `[fst, snd]`.
  *
-     * @category List
+ * @category List
  * @param {*} fst
  * @param {*} snd
  * @returns {Array}
@@ -3282,7 +3282,7 @@ export {
  * When applied, `g` returns the result of applying `f` to the arguments
  * provided initially followed by the arguments provided to `g`.
  *
-     * @category Function
+ * @category Function
  * @param {function} f
  * @param {Array} args
  * @returns {function}
@@ -3307,7 +3307,7 @@ export {
  * When applied, `g` returns the result of applying `f` to the arguments
  * provided to `g` followed by the arguments provided initially.
  *
-     * @category Function
+ * @category Function
  * @param {function} f
  * @param {Array} args
  * @returns {function}
@@ -3327,7 +3327,7 @@ export {
  * satisfy, the predicate, respectively. Filterable objects include plain objects or any object
  * that has a filter method such as `Array`.
  *
-     * @category List
+ * @category List
  * @param {function} pred A predicate to determine which side the element belongs to.
  * @param {Array} filterable the list (or other filterable) to partition.
  * @returns {Array} An array, containing first the subset of elements that satisfy the predicate, and second the subset of elements that do not satisfy.
@@ -3346,7 +3346,7 @@ export {
 /**
  * Retrieve the value at a given path.
  *
-     * @category Object
+ * @category Object
  * @param {Array} path The path to use.
  * @param {Object} obj The object to retrieve the nested property from.
  * @returns {*} The data at `path`.
@@ -3368,7 +3368,7 @@ export {
  * Determines whether a nested path on an object has a specific value, in
  * [`equals`](#equals) terms. Most likely used to filter a list.
  *
-     * @category Relation
+ * @category Relation
  * @param {Array} path The path of the nested property to use
  * @param {*} val The value to compare the nested property with
  * @param {Object} obj The object to check the nested property in
@@ -3389,7 +3389,7 @@ export {
  * If the given, non-null object has a value at the given path, returns the
  * value at that path. Otherwise returns the provided default value.
  *
-     * @category Object
+ * @category Object
  * @param {*} d The default value.
  * @param {Array} p The path to use.
  * @param {Object} obj The object to retrieve the nested property from.
@@ -3406,7 +3406,7 @@ export {
  * Returns `true` if the specified object property at given path satisfies the
  * given predicate; `false` otherwise.
  *
-     * @category Logic
+ * @category Logic
  * @param {function} pred
  * @param {Array} propPath
  * @param {*} obj
@@ -3423,7 +3423,7 @@ export {
  * Returns a partial copy of an object containing only the keys specified. If
  * the key does not exist, the property is ignored.
  *
-     * @category Object
+ * @category Object
  * @param {Array} names an array of String property names to copy onto a new object
  * @param {Object} obj The object to copy from
  * @returns {Object} A new object with only properties from `names` on it.
@@ -3441,7 +3441,7 @@ export {
  * Similar to `pick` except that this one includes a `key: undefined` pair for
  * properties that don't exist.
  *
-     * @category Object
+ * @category Object
  * @param {Array} names an array of String property names to copy onto a new object
  * @param {Object} obj The object to copy from
  * @returns {Object} A new object with only properties from `names` on it.
@@ -3458,7 +3458,7 @@ export {
  * Returns a partial copy of an object containing only the keys that satisfy
  * the supplied predicate.
  *
-     * @category Object
+ * @category Object
  * @param {function} pred A predicate to determine whether or not a key should be included on the output object.
  * @param {Object} obj The object to copy from
  * @returns {Object} A new object with only properties that satisfy `pred` on it.
@@ -3479,7 +3479,7 @@ export {
  *
  * **Note:** The result of pipe is not automatically curried.
  *
-     * @category Function
+ * @category Function
  * @param {...Function} functions
  * @returns {function}
  * @see {@link compose|compose}
@@ -3498,7 +3498,7 @@ export {
  * **Note:** The result of pipeWith is not automatically curried. Transforming function is not used on the
  * first argument.
  *
-     * @sig ((a, b, ..., n) → o) → ((o → p), (p → q), ..., (y → z)) → ((a, b, ..., n) → z)
+ * @sig ((a, b, ..., n) → o) → ((o → p), (p → q), ..., (y → z)) → ((a, b, ..., n) → z)
  * @category Function
  * @param {...Function} functions
  * @returns {function}
@@ -3517,7 +3517,7 @@ export {
  *
  * `pluck` will work on any [functor](https://github.com/fantasyland/fantasy-land#functor) in addition to arrays, as it is equivalent to `R.map(R.prop(k), f)`.
  *
-     * @category List
+ * @category List
  * @param {number|external:string} key The key name to pluck off of each object.
  * @param {Array} f The array or functor to consider.
  * @returns {Array} The list of values for the given key.
@@ -3537,7 +3537,7 @@ export {
  * Returns a new list with the given element at the front, followed by the
  * contents of the list.
  *
-     * @category List
+ * @category List
  * @param {*} el The item to add to the head of the output list.
  * @param {Array} list The array to add to the tail of the output list.
  * @returns {Array} A new array.
@@ -3551,7 +3551,7 @@ export {
 /**
  * Multiplies together all the elements of a list.
  *
-     * @category Math
+ * @category Math
  * @param {Array} list An array of numbers
  * @returns {number} The product of all the numbers in the list.
  * @see {@link reduce|reduce}
@@ -3564,7 +3564,7 @@ export {
 /**
  * Reasonable analog to SQL `select` statement.
  *
-     * @category Object
+ * @category Object
  * @category Relation
  * @param {Array} props The property names to project
  * @param {Array} objs The objects to query
@@ -3582,7 +3582,7 @@ export {
  * Returns a function that when supplied an object returns the indicated
  * property of that object, if it exists.
  *
-     * @category Object
+ * @category Object
  * @param {String|Number} p The property name or array index
  * @param {Object} obj The object to query
  * @returns {*} The value at `obj.p`.
@@ -3606,7 +3606,7 @@ export {
  * [`equals`](#equals) terms, to the given value; `false` otherwise.
  * You can test multiple properties with [`whereEq`](#whereEq).
  *
-     * @category Relation
+ * @category Relation
  * @param {string} name
  * @param {*} val
  * @param {*} obj
@@ -3630,7 +3630,7 @@ export {
 /**
  * Returns `true` if the specified object property is of the given type; `false` otherwise.
  *
-     * @category Type
+ * @category Type
  * @param {function} type
  * @param {string} name
  * @param {*} obj
@@ -3652,7 +3652,7 @@ export {
  * returns the value of that property. Otherwise returns the provided default
  * value.
  *
-     * @category Object
+ * @category Object
  * @param {*} val The default value.
  * @param {string} p The name of the property to return.
  * @param {Object} obj The object to query.
@@ -3677,7 +3677,7 @@ export {
  * Returns `true` if the specified object property satisfies the given
  * predicate; `false` otherwise. You can test multiple properties with [`where`](#where).
  *
-     * @category Logic
+ * @category Logic
  * @param {function} pred
  * @param {string} name
  * @param {*} obj
@@ -3695,7 +3695,7 @@ export {
  * Acts as multiple `prop`: array of keys in, array of values out. Preserves
  * order.
  *
-     * @category Object
+ * @category Object
  * @param {Array} ps The property names to fetch
  * @param {Object} obj The object to query
  * @returns {Array} The corresponding values or partially applied function.
@@ -3732,7 +3732,7 @@ export {
  * doing so, it is up to the user to handle the [`reduced`](#reduced)
  * shortcuting, as this is not implemented by `reduce`.
  *
-     * @category List
+ * @category List
  * @param {function} fn The iterator function. Receives two values, the accumulator and the current element from the array.
  * @param {*} acc The accumulator value.
  * @param {Array} list The list to iterate over.
@@ -3764,7 +3764,7 @@ export {
  *
  * Acts as a transducer if a transformer is given in list position.
  *
-     * @category List
+ * @category List
  * @param {function} valueFn The function that reduces the elements of each group to a single value. Receives two values, accumulator for a particular group and the current element.
  * @param {*} acc The (initial) accumulator value for each group.
  * @param {function} keyFn The function that maps the list's element into a key.
@@ -3809,7 +3809,7 @@ export {
  * on this behavior, see:
  * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduceRight#Description
  *
-     * @category List
+ * @category List
  * @param {function} fn The iterator function. Receives two values, the current element from the array and the accumulator.
  * @param {*} acc The accumulator value.
  * @param {Array} list The list to iterate over.
@@ -3838,7 +3838,7 @@ export {
  * returns `false`, it "short-circuits" the iteration and returns the current
  * value of the accumulator.
  *
-     * @category List
+ * @category List
  * @param {function} pred The predicate. It is passed the accumulator and the current element.
  * @param {function} fn The iterator function. Receives two values, the accumulator and the current element.
  * @param {*} a The accumulator value.
@@ -3869,7 +3869,7 @@ export {
  * - [`reduceWhile`](#reduceWhile)
  * - [`transduce`](#transduce)
  *
-     * @category List
+ * @category List
  * @param {*} x The final value of the reduce.
  * @returns {*} The wrapped value.
  * @see {@link reduce|reduce}
@@ -3892,7 +3892,7 @@ export {
  * Acts as a transducer if a transformer is given in list position. Filterable
  * objects include plain objects or any object that has a filter method such as `Array`.
  *
-     * @category List
+ * @category List
  * @param {function} pred
  * @param {Array} filterable
  * @returns {Array}
@@ -3914,7 +3914,7 @@ export {
  * the list with the changes.
  * <small>No lists have been harmed in the application of this function.</small>
  *
-     * @category List
+ * @category List
  * @param {number} start The position to start removing elements
  * @param {number} count The number of elements to remove
  * @param {Array} list The list to remove from
@@ -3929,7 +3929,7 @@ export {
 /**
  * Returns a fixed list of size `n` containing a specified identical value.
  *
-     * @category List
+ * @category List
  * @param {*} value The value to repeat.
  * @param {number} n The desired size of the output list.
  * @returns {Array} A new array containing `n` `value`s.
@@ -3953,7 +3953,7 @@ export {
  * `String.prototype.replace()` function, so the second parameter can also be a
  * function.
  *
-     * @category String
+ * @category String
  * @sig RegExp|String -> String -> String -> String
  * @param {RegExp|String} pattern A regular expression or a substring to match.
  * @param {string} replacement The string to replace the matches with.
@@ -3975,7 +3975,7 @@ export {
  * Returns a new list or string with the elements or characters in reverse
  * order.
  *
-     * @category List
+ * @category List
  * @param {Array | external:string} list
  * @returns {Array | external:string}
  * @example
@@ -3995,7 +3995,7 @@ export {
  * Scan is similar to [`reduce`](#reduce), but returns a list of successively
  * reduced values from the left
  *
-     * @category List
+ * @category List
  * @param {function} fn The iterator function. Receives two values, the accumulator and the current element from the array
  * @param {*} acc The accumulator value.
  * @param {Array} list The list to iterate over.
@@ -4014,7 +4014,7 @@ export {
  * Returns the result of "setting" the portion of the given data structure
  * focused by the given lens to the given value.
  *
-     * @category Object
+ * @category Object
  * @param {Lens} lens
  * @param {*} v
  * @param {*} x
@@ -4039,7 +4039,7 @@ export {
  *
  * Dispatches to the `slice` method of the third argument, if present.
  *
-     * @category List
+ * @category List
  * @param {number} fromIndex The start index (inclusive).
  * @param {number} toIndex The end index (exclusive).
  * @param {*} list
@@ -4065,7 +4065,7 @@ export {
  * are equal. Please note that this is a **copy** of the list. It does not
  * modify the original.
  *
-     * @category List
+ * @category List
  * @param {function} comparator A sorting function :: a -> b -> Int
  * @param {Array} list The list to sort
  * @returns {Array} a new array with its elements sorted by the comparator function.
@@ -4079,7 +4079,7 @@ export {
 /**
  * Sorts the list according to the supplied function.
  *
-     * @category Relation
+ * @category Relation
  * @param {function} fn
  * @param {Array} list The list to sort.
  * @returns {Array} A new list sorted by the keys generated by `fn`.
@@ -4112,7 +4112,7 @@ export {
 /**
  * Sorts a list according to a list of comparators.
  *
-     * @category Relation
+ * @category Relation
  * @param {Array} functions A list of comparator functions.
  * @param {Array} list The list to sort.
  * @returns {Array} A new list sorted according to the comarator functions.
@@ -4144,7 +4144,7 @@ export {
  * Splits a string into an array of strings based on the given
  * separator.
  *
-     * @category String
+ * @category String
  * @param {String|RegExp} sep The pattern.
  * @param {string} str The string to separate into an array.
  * @returns {Array} The array of strings from `str` separated by `str`.
@@ -4162,7 +4162,7 @@ export {
 /**
  * Splits a given list or string at a given index.
  *
-     * @category List
+ * @category List
  * @param {number} index The index where the array/string is split.
  * @param {Array | external:string} array The array/string to be split.
  * @returns {Array}
@@ -4179,7 +4179,7 @@ export {
 /**
  * Splits a collection into slices of the specified length.
  *
-     * @category List
+ * @category List
  * @param {number} n
  * @param {Array} list
  * @returns {Array}
@@ -4198,7 +4198,7 @@ export {
  *  - none of the elements of the first output list satisfies the predicate; and
  *  - if the second output list is non-empty, its first element satisfies the predicate.
  *
-     * @category List
+ * @category List
  * @param {function} pred The predicate that determines where the array is split.
  * @param {Array} list The array to be split.
  * @returns {Array}
@@ -4214,7 +4214,7 @@ export {
  *
  * Similarly, checks if a string starts with the provided substring.
  *
-     * @category List
+ * @category List
  * @param {*} prefix
  * @param {*} list
  * @returns {boolean}
@@ -4235,7 +4235,7 @@ export {
 /**
  * Subtracts its second argument from its first argument.
  *
-     * @category Math
+ * @category Math
  * @param {number} a The first value.
  * @param {number} b The second value.
  * @returns {number} The result of `a - b`.
@@ -4260,7 +4260,7 @@ export {
 /**
  * Adds together all the elements of a list.
  *
-     * @category Math
+ * @category Math
  * @param {Array} list An array of numbers
  * @returns {number} The sum of all the numbers in the list.
  * @see {@link reduce|reduce}
@@ -4274,7 +4274,7 @@ export {
  * Finds the set (i.e. no duplicates) of all elements contained in the first or
  * second list, but not both.
  *
-     * @category Relation
+ * @category Relation
  * @param {Array} list1 The first list.
  * @param {Array} list2 The second list.
  * @returns {Array} The elements in `list1` or `list2`, but not both.
@@ -4294,7 +4294,7 @@ export {
  * second list, but not both. Duplication is determined according to the value
  * returned by applying the supplied predicate to two list elements.
  *
-     * @category Relation
+ * @category Relation
  * @param {function} pred A predicate used to test whether two items are equal.
  * @param {Array} list1 The first list.
  * @param {Array} list2 The second list.
@@ -4318,7 +4318,7 @@ export {
  *
  * Dispatches to the `slice` method of the first argument, if present.
  *
-     * @category List
+ * @category List
  * @param {*} list
  * @returns {*}
  * @see {@link head|head}
@@ -4343,7 +4343,7 @@ export {
  *
  * Dispatches to the `take` method of the second argument, if present.
  *
-     * @category List
+ * @category List
  * @param {number} n
  * @param {*} list
  * @returns {*}
@@ -4376,7 +4376,7 @@ export {
  * Returns a new list containing the last `n` elements of the given list.
  * If `n > list.length`, returns a list of `list.length` elements.
  *
-     * @category List
+ * @category List
  * @param {number} n The number of elements to return.
  * @param {Array} xs The collection to consider.
  * @returns {Array}
@@ -4402,7 +4402,7 @@ export {
  * predicate function to fail. The predicate function is passed one argument:
  * *(value)*.
  *
-     * @category List
+ * @category List
  * @param {function} fn The function called per iteration.
  * @param {Array} xs The collection to iterate over.
  * @returns {Array} A new array.
@@ -4428,7 +4428,7 @@ export {
  *
  * Acts as a transducer if a transformer is given in list position.
  *
-     * @category List
+ * @category List
  * @param {function} fn The function called per iteration.
  * @param {Array} xs The collection to iterate over.
  * @returns {Array} A new array.
@@ -4449,7 +4449,7 @@ export {
  *
  * Acts as a transducer if a transformer is given as second parameter.
  *
-     * @category Function
+ * @category Function
  * @param {function} fn The function to call with `x`. The return value of `fn` will be thrown away.
  * @param {*} x
  * @returns {*} `x`.
@@ -4463,7 +4463,7 @@ export {
 /**
  * Determines whether a given string matches a given regular expression.
  *
-     * @category String
+ * @category String
  * @param {RegExp} pattern
  * @param {string} str
  * @returns {boolean}
@@ -4480,7 +4480,7 @@ export {
  * Creates a thunk out of a function. A thunk delays a calculation until
  * its result is needed, providing lazy evaluation of arguments.
  *
-     * @category Function
+ * @category Function
  * @param {function} fn A function to wrap in a thunk
  * @returns {function} Expects arguments for `fn` and returns a new function that, when called, applies those arguments to `fn`.
  * @see {@link partial|partial}
@@ -4499,7 +4499,7 @@ export {
  * `fn` is passed one argument: The current value of `n`, which begins at `0`
  * and is gradually incremented to `n - 1`.
  *
-     * @category List
+ * @category List
  * @param {function} fn The function to invoke. Passed one argument, the current value of `n`.
  * @param {number} n A value between `0` and `n - 1`. Increments after each function call.
  * @returns {Array} An array containing the return values of all calls to `fn`.
@@ -4514,7 +4514,7 @@ export {
 /**
  * The lower case version of a string.
  *
-     * @category String
+ * @category String
  * @param {string} str The string to lower case.
  * @returns {string} The lower case version of `str`.
  * @see {@link toUpper|toUpper}
@@ -4530,7 +4530,7 @@ export {
  * Note that the order of the output array is not guaranteed to be consistent
  * across different JS platforms.
  *
-     * @category Object
+ * @category Object
  * @param {Object} obj The object to extract from
  * @returns {Array} An array of key, value arrays from the object's own properties.
  * @see {@link fromPairs|fromPairs}
@@ -4545,7 +4545,7 @@ export {
  * output array is not guaranteed to be consistent across different JS
  * platforms.
  *
-     * @category Object
+ * @category Object
  * @param {Object} obj The object to extract from
  * @returns {Array} An array of key, value arrays from the object's own and prototype properties.
  * @example
@@ -4559,7 +4559,7 @@ export {
 /**
  * The upper case version of a string.
  *
-     * @category String
+ * @category String
  * @param {string} str The string to upper case.
  * @returns {string} The upper case version of `str`.
  * @see {@link toLower|toLower}
@@ -4592,7 +4592,7 @@ export {
  *
  * The iteration is performed with [`reduce`](#reduce) after initializing the transducer.
  *
-     * @category List
+ * @category List
  * @param {function} xf The transducer function. Receives a transformer and returns a transformer.
  * @param {function} fn The iterator function. Receives two values, the accumulator and the
  *        current element from the array. Wrapped as transformer, if necessary, and used to
@@ -4620,7 +4620,7 @@ export {
  * When passed a list of `n` lists of length `x`,
  * returns a list of `x` lists of length `n`.
  *
-     * @category List
+ * @category List
  * @param {Array} list A 2D list
  * @returns {Array} A 2D list
  * @example
@@ -4640,7 +4640,7 @@ export {
  *
  * Dispatches to the `traverse` method of the third argument, if present.
  *
-     * @category List
+ * @category List
  * @param {function} of
  * @param {function} f
  * @param {*} traversable
@@ -4658,7 +4658,7 @@ export {
 /**
  * Removes (strips) whitespace from both ends of the string.
  *
-     * @category String
+ * @category String
  * @sig String -> String
  * @param {string} str The string to trim.
  * @returns {string} Trimmed version of `str`.
@@ -4677,7 +4677,7 @@ export {
  * composition with this function, both the `tryer` and `catcher` functions
  * must return the same type of results.
  *
-     * @category Function
+ * @category Function
  * @param {function} tryer The function that may throw.
  * @param {function} catcher The function that will be evaluated if `tryer` throws.
  * @returns {function} A new function that will catch exceptions and send then to the catcher.
@@ -4695,7 +4695,7 @@ export {
  * attempt to distinguish user Object types any further, reporting them all as
  * 'Object'.
  *
-     * @category Type
+ * @category Type
  * @param {*} val The value to test
  * @returns {string}
  * @example
@@ -4722,7 +4722,7 @@ export {
  * In other words, `unapply` derives a variadic function from a function which
  * takes an array. `unapply` is the inverse of [`apply`](#apply).
  *
-     * @category Function
+ * @category Function
  * @param {function} fn
  * @returns {function}
  * @see {@link apply|apply}
@@ -4736,7 +4736,7 @@ export {
  * exactly 1 parameter. Any extraneous parameters will not be passed to the
  * supplied function.
  *
-     * @category Function
+ * @category Function
  * @param {function} fn The function to wrap.
  * @returns {function} A new function wrapping `fn`. The new function is guaranteed to be of arity 1.
  * @see {@link binary|binary}
@@ -4756,7 +4756,7 @@ export {
 /**
  * Returns a function of arity `n` from a (manually) curried function.
  *
-     * @category Function
+ * @category Function
  * @param {number} length The arity for the returned function.
  * @param {function} fn The function to uncurry.
  * @returns {function} A new function.
@@ -4776,7 +4776,7 @@ export {
  *
  * The iterator function receives one argument: *(seed)*.
  *
-     * @category List
+ * @category List
  * @param {function} fn The iterator function. receives one argument, `seed`, and returns
  *        either false to quit iteration or an array of length two to proceed. The element
  *        at index 0 of this array will be added to the resulting array, and the element
@@ -4793,7 +4793,7 @@ export {
  * Combines two lists into a set (i.e. no duplicates) composed of the elements
  * of each list.
  *
-     * @category Relation
+ * @category Relation
  * @param {Array} as The first list.
  * @param {Array} bs The second list.
  * @returns {Array} The first and second lists concatenated, with duplicates removed.
@@ -4807,7 +4807,7 @@ export {
  * of each list. Duplication is determined according to the value returned by
  * applying the supplied predicate to two list elements.
  *
-     * @category Relation
+ * @category Relation
  * @param {function} pred A predicate used to test whether two items are equal.
  * @param {Array} list1 The first list.
  * @param {Array} list2 The second list.
@@ -4825,7 +4825,7 @@ export {
  * Returns a new list containing only one copy of each element in the original
  * list. [`equals`](#equals) is used to determine equality.
  *
-     * @category List
+ * @category List
  * @param {Array} list The array to consider.
  * @returns {Array} The list of unique items.
  * @example
@@ -4841,7 +4841,7 @@ export {
  * each list element. Prefers the first item if the supplied function produces
  * the same value on two items. [`equals`](#equals) is used for comparison.
  *
-     * @category List
+ * @category List
  * @param {function} fn A function used to produce a value to use during comparisons.
  * @param {Array} list The array to consider.
  * @returns {Array} The list of unique items.
@@ -4856,7 +4856,7 @@ export {
  * two list elements. Prefers the first item if two items compare equal based
  * on the predicate.
  *
-     * @category List
+ * @category List
  * @param {function} pred A predicate used to test whether two items are equal.
  * @param {Array} list The array to consider.
  * @returns {Array} The list of unique items.
@@ -4876,7 +4876,7 @@ export {
  * calling the `whenFalseFn` function with the same argument. If the predicate
  * is satisfied, the argument is returned as is.
  *
-     * @category Logic
+ * @category Logic
  * @param {function} pred        A predicate function
  * @param {function} whenFalseFn A function to invoke when the `pred` evaluates to a falsy value.
  * @param {*}        x           An object to test with the `pred` function and pass to `whenFalseFn` if necessary.
@@ -4895,7 +4895,7 @@ export {
 /**
  * Shorthand for `chain( identity )`, which removes one level of nesting from any [Chain](https://github.com/fantasyland/fantasy-land#chain).
  *
-     * @category List
+ * @category List
  * @param {*} list
  * @returns {*}
  * @see {@link flatten|flatten}
@@ -4912,7 +4912,7 @@ export {
  * It does so by applying the transformation until the predicate is satisfied,
  * at which point it returns the satisfactory value.
  *
-     * @category Logic
+ * @category Logic
  * @param {function} pred A predicate function
  * @param {function} fn The iterator function
  * @param {*} init Initial value
@@ -4927,7 +4927,7 @@ export {
  * Returns a new copy of the array with the element at the provided index
  * replaced with the given value.
  *
-     * @category List
+ * @category List
  * @param {number} idx The index to update.
  * @param {*} x The value to exist at the given index of the returned array.
  * @param {Array|Arguments} list The source array-like object to be updated.
@@ -4951,7 +4951,7 @@ export {
  * transformed, although you can ignore them, it's best to pass an identity
  * function so that the new function reports the correct arity.
  *
-     * @category Function
+ * @category Function
  * @param {function} fn The function to wrap.
  * @param {Array} transformers A list of transformer functions
  * @returns {function} The wrapped function.
@@ -4970,7 +4970,7 @@ export {
  * Note that the order of the output array is not guaranteed across different
  * JS platforms.
  *
-     * @category Object
+ * @category Object
  * @param {Object} obj The object to extract values from
  * @returns {Array} An array of the values of the object's own properties.
  * @see {@link valuesIn|valuesIn}
@@ -4986,7 +4986,7 @@ export {
  * Note that the order of the output array is not guaranteed to be consistent
  * across different JS platforms.
  *
-     * @category Object
+ * @category Object
  * @param {Object} obj The object to extract values from
  * @returns {Array} An array of the values of the object's own and prototype properties.
  * @see {@link values|values}
@@ -5003,7 +5003,7 @@ export {
  * Returns a "view" of the given data structure, determined by the given lens.
  * The lens's focus determines which portion of the data structure is visible.
  *
-     * @category Object
+ * @category Object
  * @param {Lens} lens
  * @param {*} x
  * @returns {*}
@@ -5024,7 +5024,7 @@ export {
  * the `whenTrueFn` function with the same argument. If the predicate is not
  * satisfied, the argument is returned as is.
  *
-     * @category Logic
+ * @category Logic
  * @param {function} pred       A predicate function
  * @param {function} whenTrueFn A function to invoke when the `condition` evaluates to a truthy value.
  * @param {*}        x          An object to test with the `pred` function and pass to `whenTrueFn` if necessary.
@@ -5054,7 +5054,7 @@ export {
  * `where` is well suited to declaratively expressing constraints for other
  * functions such as [`filter`](#filter) and [`find`](#find).
  *
-     * @category Object
+ * @category Object
  * @param {Object} spec
  * @param {Object} testObj
  * @returns {boolean}
@@ -5087,7 +5087,7 @@ export {
  * `whereAny` is well suited to declaratively expressing constraints for other
  * functions such as `filter` and `find`.
  *
-     * @category Object
+ * @category Object
  * @param {Object} spec
  * @param {Object} testObj
  * @returns {boolean}
@@ -5111,7 +5111,7 @@ export {
  *
  * `whereEq` is a specialization of [`where`](#where).
  *
-     * @category Object
+ * @category Object
  * @param {Object} spec
  * @param {Object} testObj
  * @returns {boolean}
@@ -5134,7 +5134,7 @@ export {
  *
  * Acts as a transducer if a transformer is given in list position.
  *
-     * @category List
+ * @category List
  * @param {Array} list1 The values to be removed from `list2`.
  * @param {Array} list2 The array to remove values from.
  * @returns {Array} The new array without values in `list1`.
@@ -5150,7 +5150,7 @@ export {
  * Creates a new list out of the two supplied by creating each possible pair
  * from the lists.
  *
-     * @category List
+ * @category List
  * @param {Array} as The first list.
  * @param {Array} bs The second list.
  * @returns {Array} The list made by combining each possible pair from `as` and `bs` into pairs (`[a, b]`).
@@ -5166,7 +5166,7 @@ export {
  * shorter of the two input lists.
  * Note: `zip` is equivalent to `zipWith(function(a, b) { return [a, b] })`.
  *
-     * @category List
+ * @category List
  * @param {Array} list1 The first array to consider.
  * @param {Array} list2 The second array to consider.
  * @returns {Array} The list made by pairing up same-indexed elements of `list1` and `list2`.
@@ -5181,7 +5181,7 @@ export {
  * Key/value pairing is truncated to the length of the shorter of the two lists.
  * Note: `zipObj` is equivalent to `pipe(zip, fromPairs)`.
  *
-     * @category List
+ * @category List
  * @param {Array} keys The array that will be properties on the output object.
  * @param {Array} values The list of values on the output object.
  * @returns {Object} The object made by pairing up same-indexed elements of `keys` and `values`.
@@ -5196,7 +5196,7 @@ export {
  * equally-positioned pair in the lists. The returned list is truncated to the
  * length of the shorter of the two input lists.
  *
-     * @category List
+ * @category List
  * @param {function} fn The function used to combine the two elements into one value.
  * @param {Array} list1 The first array to consider.
  * @param {Array} list2 The second array to consider.
@@ -5217,7 +5217,7 @@ export {
  *
  * Dispatches to the `sequence` method of the second argument, if present.
  *
-     * @category List
+ * @category List
  * @param {function} of
  * @param {*} traversable
  * @returns {*}

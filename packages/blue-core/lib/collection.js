@@ -161,7 +161,7 @@ export class ResizableRingBuffer extends RingBuffer {
         return 'ResizableRingBuffer';
     }
     /**
-         * @param {Array} items
+     * @param {Array} items
      * @returns {number} The number of items
      */
     put(...items) {
@@ -172,7 +172,7 @@ export class ResizableRingBuffer extends RingBuffer {
         return super.put.apply(this, items);
     }
     /**
-         * @param {number} newCapacity
+     * @param {number} newCapacity
      * @returns {number} The number of items
      */
     resizeTo(newCapacity) {
@@ -231,7 +231,7 @@ export class MultiValueMap extends Map {
         return 'MultiValueMap';
     }
     /**
-         * @param {*} key
+     * @param {*} key
      * @param {*} value
      * @returns {module:core.MultiValueMap} this
      */

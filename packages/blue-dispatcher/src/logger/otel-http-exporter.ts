@@ -12,7 +12,7 @@ import { $aware } from '@blue/factory';
 // Import conversion function
 let logRecordToEntry: any;
 try {
-    const otelModule = require('@blue/logger/lib/otel/entry-to-logrecord');
+    const otelModule = await import('@blue/logger/otel/entry-to-logrecord');
     logRecordToEntry = otelModule.logRecordToEntry;
 } catch {
     // OTel module not available

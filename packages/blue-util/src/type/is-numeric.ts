@@ -12,7 +12,7 @@ export type Numeric = number | `${number}`;
 const isNotEmptyString = both(isString, pipe(trim, complement(isEmpty))),
     /**
      * Determines whether a given value is numeric, i.e. a number or a string containing a number. The {@link isNumber|isNumber} method determines whether the value, parsed or not, is a number.
-         * @category Type
+     * @category Type
      * @param {*} value The value to be tested.
      * @returns {boolean} Whether or not `value` is numeric.
      * @example

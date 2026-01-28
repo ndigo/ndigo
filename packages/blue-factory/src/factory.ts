@@ -114,11 +114,11 @@ export const AsFactoryAware = <T extends Constructable>(superclass: T): Construc
         readonly factory: Factory;
 
         /**
-                 * @param {module:factory.Factory} factory
+         * @param {module:factory.Factory} factory
          */
         setFactory(factory: Factory): void {
             /**
-                         */
+             */
             defineProperty(this, 'factory', {
                 get: () => factory,
                 configurable: true,

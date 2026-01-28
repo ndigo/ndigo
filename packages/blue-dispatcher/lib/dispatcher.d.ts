@@ -16,47 +16,41 @@ declare const BrowserDispatcher_base: import("@blue/core").Constructable<import(
  * An interface for creating application dispatchers. Dispatches to registered handlers for processing a route, providing convenient mapping and exception handling facilities.
  *
  * It can be used with just about any workflow, with the installation of the appropriate strategies and adapter classes.
- * @interface module:router.RouteDispatcher
  */
 /**
  * Initialize the strategy objects that this dispatcher uses.
- * @function module:router.RouteDispatcher#initStrategies
  * @param {module:core.ApplicationContext} context
  */
 /**
  * Process the route by dispatching to the handler.
- * @function module:router.RouteDispatcher#dispatch
  * @param {module:router.Route} route
- * @returns {external:Promise}
+ * @returns {Promise}
  */
 /**
- * @interface module:router.RouteRenderer
  */
 /**
- * @function module:router.RouteRenderer#render
  * @param {module:dispatcher.ModelAndView} mv
  * @param {module:router.Route} route
- * @returns {external:Promise}
+ * @returns {Promise}
  */
 /**
  * Dispatcher for brower-based handlers.
- * * It can use any {@linkcode module:router.RouteHandlerMapping|RouteHandlerMapping} implementation - pre-built or provided as part of an application - to control the routing of routes to handlers. Default is {@linkcode module:dispatcher.NamePathHandlerMapping|NamePathHandlerMapping} and {@linkcode module:dispatcher.MetadataHandlerMapping|MetadataHandlerMapping}. HandlerMapping objects can be defined as values in the application context, implementing the HandlerMapping interface, overriding the default HandlerMapping if present. HandlerMappings can be given any value name.
- * * It can use any {@linkcode module:dispatcher.HandlerAdapter|HandlerAdapter}; this allows for using any handler interface. Default adapters are {@linkcode module:dispatcher.MetadataHandlerAdapter|MetadataHandlerAdapter}, {@linkcode module:dispatcher.ControllerHandlerAdapter|ControllerHandlerAdapter}, for {@linkcode module:router.RouteMappingHandler|RouteMappingHandler} and {@linkcode module:dispatcher.Controller|Controller} interfaces, respectively. A default {@linkcode module:dispatcher.MetadataHandlerAdapter|MetadataHandlerAdapter} will be registered as well. RouteHandlerAdapter objects can be added as values in the application context, overriding the default RouteHandlerAdapters. Like HandlerMappings, RouteHandlerAdapters can be given any name.
- * * The dispatcher's error resolution strategy can be specified via a {@linkcode module:router.RouteHandlerErrorResolver|HandlerErrorResolver}, for example mapping certain exceptions to error pages. Default is {@linkcode module:dispatcher.DefaultRouteHandlerErrorResolver|DefaultRouteHandlerErrorResolver}. HandlerErrorResolvers can be overridden through the application context. HandlerErrorResolver can be given any name.
- * * Its view resolution strategy can be specified via a {@linkcode module:view.ViewResolver|ViewResolver} implementation, resolving symbolic view names into {@linkcode module:view.View|View} objects. Default is {@linkcode module:dispatcher.InternalResourceViewResolver|InternalResourceViewResolver}. ViewResolver objects can be added as values in the application context, overriding the default ViewResolver. ViewResolvers can be given any name.
- * * Its language resolution strategy is determined by a {@linkcode module:dispatcher.LanguageResolver|LanguageResolver}. The out-of-the-box implementation works via {@linkcode https://developer.mozilla.org/en-US/docs/Web/API/Navigator|navigator} object. The LanguageResolver name is "languageResolver"; default is {@linkcode module:dispatcher.NavigatorLanguageResolver|NavigatorLanguageResolver}.
- * * Its theme resolution strategy is determined by a {@linkcode module:dispatcher.ThemeResolver|ThemeResolver}. Implementations for a fixed theme and cookie resolved theme are included. The ThemeResolver name is "themeResolver"; default is {@linkcode module:dispatcher.FixedThemeResolver|FixedThemeResolver}.
- * @class module:dispatcher.BrowserDispatcher
+ * * It can use any {@link RouteHandlerMapping|RouteHandlerMapping} implementation - pre-built or provided as part of an application - to control the routing of routes to handlers. Default is {@link NamePathHandlerMapping|NamePathHandlerMapping} and {@link MetadataHandlerMapping|MetadataHandlerMapping}. HandlerMapping objects can be defined as values in the application context, implementing the HandlerMapping interface, overriding the default HandlerMapping if present. HandlerMappings can be given any value name.
+ * * It can use any {@link HandlerAdapter|HandlerAdapter}; this allows for using any handler interface. Default adapters are {@link MetadataHandlerAdapter|MetadataHandlerAdapter}, {@link ControllerHandlerAdapter|ControllerHandlerAdapter}, for {@link RouteMappingHandler|RouteMappingHandler} and {@link Controller|Controller} interfaces, respectively. A default {@link MetadataHandlerAdapter|MetadataHandlerAdapter} will be registered as well. RouteHandlerAdapter objects can be added as values in the application context, overriding the default RouteHandlerAdapters. Like HandlerMappings, RouteHandlerAdapters can be given any name.
+ * * The dispatcher's error resolution strategy can be specified via a {@link RouteHandlerErrorResolver|HandlerErrorResolver}, for example mapping certain exceptions to error pages. Default is {@link DefaultRouteHandlerErrorResolver|DefaultRouteHandlerErrorResolver}. HandlerErrorResolvers can be overridden through the application context. HandlerErrorResolver can be given any name.
+ * * Its view resolution strategy can be specified via a {@link ViewResolver|ViewResolver} implementation, resolving symbolic view names into {@link View|View} objects. Default is {@link InternalResourceViewResolver|InternalResourceViewResolver}. ViewResolver objects can be added as values in the application context, overriding the default ViewResolver. ViewResolvers can be given any name.
+ * * Its language resolution strategy is determined by a {@link LanguageResolver|LanguageResolver}. The out-of-the-box implementation works via {@link https://developer.mozilla.org/en-US/docs/Web/API/Navigator|navigator} object. The LanguageResolver name is "languageResolver"; default is {@link NavigatorLanguageResolver|NavigatorLanguageResolver}.
+ * * Its theme resolution strategy is determined by a {@link ThemeResolver|ThemeResolver}. Implementations for a fixed theme and cookie resolved theme are included. The ThemeResolver name is "themeResolver"; default is {@link FixedThemeResolver|FixedThemeResolver}.
  * @implements module:router.RouteDispatcher
  * @implements module:router.RouteRenderer
- * @mixes module:dispatcher.AsRouteHandlerAdapterStrategy
- * @mixes module:dispatcher.AsRouteHandlerMappingStrategy
- * @mixes module:dispatcher.AsRouteErrorResolverStrategy
- * @mixes module:dispatcher.AsLanguageResolverStrategy
- * @mixes module:dispatcher.AsRouteToViewNameTranslatorStrategy
- * @mixes module:dispatcher.AsThemeResolverStrategy
- * @mixes module:dispatcher.AsViewMappingStrategy
- * @mixes module:dispatcher.AsViewResolverStrategy
+ * @see module:dispatcher.AsRouteHandlerAdapterStrategy
+ * @see module:dispatcher.AsRouteHandlerMappingStrategy
+ * @see module:dispatcher.AsRouteErrorResolverStrategy
+ * @see module:dispatcher.AsLanguageResolverStrategy
+ * @see module:dispatcher.AsRouteToViewNameTranslatorStrategy
+ * @see module:dispatcher.AsThemeResolverStrategy
+ * @see module:dispatcher.AsViewMappingStrategy
+ * @see module:dispatcher.AsViewResolverStrategy
  */
 export declare class BrowserDispatcher extends BrowserDispatcher_base implements RouteDispatcher, RouteRenderer {
     defaultViewName: string;
@@ -64,10 +58,9 @@ export declare class BrowserDispatcher extends BrowserDispatcher_base implements
     dispatch(route: Route): Promise<void>;
     /**
      * Render the given `ModelAndView`. This is the last stage of handling a route.
-     * @function module:dispatcher.BrowserDispatcher#render
      * @param {module:dispatcher.ModelAndView} mv
      * @param {module:router.Route} route
-     * @returns {external:Promise}
+     * @returns {Promise}
      */
     render(mv: ModelAndView, route: Route): Promise<void>;
     protected _processHandlerError(route: Route, handler: any, error: Error): ModelAndView;

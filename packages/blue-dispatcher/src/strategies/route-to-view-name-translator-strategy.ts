@@ -54,7 +54,7 @@ export const AsRouteToViewNameTranslatorStrategy = <T extends Constructable<Stra
 
         /**
          * Translate the supplied route into a default view name.
-                 * @param {module:router.Route} route The current route
+         * @param {module:router.Route} route The current route
          * @returns {string} The view name or `null` if no default found.
          */
         getDefaultViewName(route: Route): string {

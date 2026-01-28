@@ -12,7 +12,7 @@ const isDate = is(Date) as unknown as (value) => value is Date,
     isPossibleDate = either<any>(isDate, isNumber),
     /**
      * Determines whether a given value is a valid date.
-         * @category Type
+     * @category Type
      * @summary Is the given value a valid date?
      *
      * @description

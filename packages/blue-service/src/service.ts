@@ -176,7 +176,7 @@ class ServiceExecutionChain {
     }
 
     /**
-         * @param {module:service.ServiceInterceptor} interceptor
+     * @param {module:service.ServiceInterceptor} interceptor
      */
     addInterceptor(interceptor: ServiceInterceptor): void {
         if (interceptor) {
@@ -188,7 +188,7 @@ class ServiceExecutionChain {
     }
 
     /**
-         * @param {Array<module:service.ServiceInterceptor>} interceptors
+     * @param {Array<module:service.ServiceInterceptor>} interceptors
      */
     addInterceptors(interceptors: ServiceInterceptor[]): void {
         const length = interceptors?.length;

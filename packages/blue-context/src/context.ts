@@ -300,12 +300,12 @@ export const AsApplicationContextAware = <T extends Constructable>(
         readonly applicationContext: ApplicationContext;
 
         /**
-                 * @param {module:context.ApplicationContext} applicationContext The application context to be set.
+         * @param {module:context.ApplicationContext} applicationContext The application context to be set.
          */
         setApplicationContext(applicationContext: ApplicationContext): void {
             /**
              * @readonly
-                         */
+             */
             defineProperty(this, 'applicationContext', {
                 value: applicationContext,
                 configurable: true,
@@ -317,7 +317,7 @@ export const AsApplicationContextAware = <T extends Constructable>(
 
 /**
  * Create a new ApplicationContextAwareProcessor for the given context.
-  * An {@link InitializationAwareProcessor|InitializationAwareProcessor} implementation that passes the ApplicationContext to value that implement the {@link EnvironmentAware|EnvironmentAware}, {@link ResourceLoaderAware|ResourceLoaderAware}, {@link ApplicationEventEmitterAware|ApplicationEventEmitterAware}, {@link ContentSourceAware|ContentSourceAware}, and/or {@link ApplicationContextAware|ApplicationContextAware} interfaces.
+ * An {@link InitializationAwareProcessor|InitializationAwareProcessor} implementation that passes the ApplicationContext to value that implement the {@link EnvironmentAware|EnvironmentAware}, {@link ResourceLoaderAware|ResourceLoaderAware}, {@link ApplicationEventEmitterAware|ApplicationEventEmitterAware}, {@link ContentSourceAware|ContentSourceAware}, and/or {@link ApplicationContextAware|ApplicationContextAware} interfaces.
  *
  * Implemented interfaces are satisfied in order of their mention above.
  * @implements module:factory.InitializationAwareProcessor
@@ -334,7 +334,7 @@ export class ApplicationContextAwareProcessor implements InitializationAwareProc
     constructor(applicationContext: ApplicationContext) {
         /**
          * @readonly
-                 */
+         */
         defineProperty(this, 'applicationContext', {
             value: applicationContext,
             configurable: true,

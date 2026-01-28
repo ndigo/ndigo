@@ -1,12 +1,12 @@
 /**
  * @author Jeff Rose
  */
-import { JSONObject, MediaType, Serializable } from '@blue/core';
+import { JSONObject, MediaType, Serializable, Null } from '@blue/core';
 export interface View {
     mediaType: MediaType;
     render(model: any, request: any): void;
 }
-declare const AbstractView_base: any;
+declare const AbstractView_base: (new (...args: any[]) => import("@blue/factory").NameAware) & import("@blue/core").Constructable<import("@blue/context").ApplicationContextAware> & typeof Null;
 export declare abstract class AbstractView extends AbstractView_base implements Serializable, View {
     mediaType: MediaType;
     name: string;
@@ -32,23 +32,19 @@ export declare abstract class AbstractTemplateView extends AbstractPathBasedView
  *
  * View implementations may differ widely. This interface is designed to avoid restricting the range of possible implementations.
  *
- * They are likely to be instantiated by a {@link module:view.ViewResolver|`ViewResolver`} .
- * @interface module:view.View
+ * They are likely to be instantiated by a {@link ViewResolver|`ViewResolver`} .
  */
 /**
  * The media type of the view
- * @member {module:core.MediaType} module:view.View#mediaType
  */
 /**
  * Render the view given the specified model.
- * @function module:view.View#render
  * @param {*} model The data model
  * @param {*} request The current request
  */
 /**
- * Abstract base class for {@link module:view.View|`View`} implementations. Subclasses need to implement the actual rendering.
+ * Abstract base class for {@link View|`View`} implementations. Subclasses need to implement the actual rendering.
  * @abstract
- * @class module:view.AbstractView
  * @implements module:view.View
  * @implements module:core.NameAware
  * @implements module:core.Serializable
@@ -56,25 +52,21 @@ export declare abstract class AbstractTemplateView extends AbstractPathBasedView
 /**
  * Abstract base class for path-based views.
  * @abstract
- * @class module:view.AbstractPathBasedView
  * @extends module:view.AbstractView
  */
 /**
  * Abstract base class for template-based views.
  * @abstract
- * @class module:view.AbstractTemplateView
  * @extends module:view.AbstractPathBasedView
  */
 /**
  * @abstract
  * @protected
- * @function module:view.AbstractTemplateView#_renderTemplate
  * @param {*} templateModel The template data model
  * @param {*} request The current request
  */
 /**
  * View that reroutes to an absolute, context relative, or current request relative route.
- * @class module:view.RerouteView
  * @extends module:view.AbstractPathBasedView
  */
 export declare class RerouteView extends AbstractPathBasedView {

@@ -37,33 +37,29 @@ export declare abstract class AbstractEnvironment implements ConfigurableEnviron
     protected _isActiveProfile(profile: string): boolean;
 }
 /**
- * Base class for {@linkcode module:context.Environment|Environment} implementations.
+ * Base class for {@link Environment|Environment} implementations.
  * @abstract
- * @class module:context.AbstractEnvironment
  * @implements module:context.Environment
  */
 /**
- * @mixin module:context.AsEnvironmentAware
+ * @see module:context.AsEnvironmentAware
  * @implements module:context.EnvironmentAware
  * @returns {module:context.Constructable<module:context.EnvironmentAware>}
  */
 export declare const AsEnvironmentAware: <T extends Constructable>(superclass: T) => Constructable<EnvironmentAware> & T;
 /**
- * @function module:context.likeEnvironment
  * @param {*} value The value to be tested
- * @returns {external:boolean} Whether or not the `value` is {@linkcode module:context.Environment|Environment}
+ * @returns {boolean} Whether or not the `value` is {@link Environment|Environment}
  */
 export declare const likeEnvironment: (value: any) => value is Environment;
 /**
- * @function module:context.likeEnvironmentAware
  * @param {*} value The value to be tested
- * @returns {external:boolean} Whether or not the `value` is {@linkcode module:context.EnvironmentAware|EnvironmentAware}
+ * @returns {boolean} Whether or not the `value` is {@link EnvironmentAware|EnvironmentAware}
  */
 export declare const likeEnvironmentAware: (value: any) => value is EnvironmentAware;
 /**
- * @function module:context.likeEnvironmentSource
  * @param {*} value The value to be tested
- * @returns {external:boolean} Whether or not the `value` is {@linkcode module:context.EnvironmentSource|EnvironmentSource}
+ * @returns {boolean} Whether or not the `value` is {@link EnvironmentSource|EnvironmentSource}
  */
 export declare const likeEnvironmentSource: (value: any) => value is EnvironmentSource;
 export declare class MockEnvironment extends AbstractEnvironment {

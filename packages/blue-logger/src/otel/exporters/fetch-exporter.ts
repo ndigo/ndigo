@@ -132,9 +132,7 @@ export class FetchLogRecordExporter implements LogRecordExporter {
                     if (!timedOut) {
                         if (!response.ok) {
                             reject(
-                                new Error(
-                                    `HTTP request failed with status ${response.status}: ${response.statusText}`
-                                )
+                                new Error(`HTTP request failed with status ${response.status}: ${response.statusText}`)
                             );
                         } else {
                             resolve(response);

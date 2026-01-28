@@ -17,7 +17,7 @@ export interface HandlerMethodArgumentResolver {
  */
 
 /**
- * Whether the given {@link 
+ * Whether the given {@link
  * @param {*} parameter The method parameter to check.
  * @returns {boolean} Whether or not the given method parameter is supported by this resolver.
  */

@@ -6,7 +6,7 @@
 declare const 
 /**
  * Determines whether a given value is a valid date.
-     * @category Type
+ * @category Type
  * @summary Is the given value a valid date?
  *
  * @description

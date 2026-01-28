@@ -199,12 +199,18 @@ const { parseFloat, parseInt } = Number,
 
         return test(matcher, value);
     }) as unknown as constraint<serializable>,
-    isAddressLine: constraint = patternConstraint({ regex: ADDRESS_LINE_REGEX }) as unknown as constraint<serializable>,
-    isAlpha: constraint = patternConstraint({ regex: ALPHA_REGEX }) as unknown as constraint<serializable>,
-    isAlphaNumeric: constraint = patternConstraint({ regex: ALPHA_NUMERIC_REGEX }) as unknown as constraint<serializable>,
-    isAlphaNumericPlus: constraint = patternConstraint({ regex: ALPHA_NUMERIC_PLUS_REGEX }) as unknown as constraint<serializable>,
+    isAddressLine: constraint = patternConstraint({
+        regex: ADDRESS_LINE_REGEX.source,
+    }) as unknown as constraint<serializable>,
+    isAlpha: constraint = patternConstraint({ regex: ALPHA_REGEX.source }) as unknown as constraint<serializable>,
+    isAlphaNumeric: constraint = patternConstraint({
+        regex: ALPHA_NUMERIC_REGEX.source,
+    }) as unknown as constraint<serializable>,
+    isAlphaNumericPlus: constraint = patternConstraint({
+        regex: ALPHA_NUMERIC_PLUS_REGEX.source,
+    }) as unknown as constraint<serializable>,
     isBlank: constraint = pipe(toString, removeWhitespace, isEmpty) as unknown as constraint<serializable>,
-    isBoolean: constraint = patternConstraint({ regex: BOOLEAN_REGEX }) as unknown as constraint<serializable>,
+    isBoolean: constraint = patternConstraint({ regex: BOOLEAN_REGEX.source }) as unknown as constraint<serializable>,
     isCapitals: constraint = (value, params: RangeParams = { min: 1 }) => rangeValidator(upperCaseCount(value), params),
     isCharacters: constraint = (value, params: RangeParams = { min: 1 }) => rangeValidator(alphaCount(value), params),
     isCity: constraint = both(isSingleSpaced, test(CITY_REGEX)),
@@ -285,7 +291,7 @@ const { parseFloat, parseInt } = Number,
 
         return result;
     },
-    isEmail: constraint = patternConstraint({ regex: EMAIL_REGEX }) as unknown as constraint<serializable>,
+    isEmail: constraint = patternConstraint({ regex: EMAIL_REGEX.source }) as unknown as constraint<serializable>,
     isEnum: constraint = (value, params: Params = {}): boolean => {
         const enumeration = isString(params.value)
             ? params.value.split(' ')
@@ -303,7 +309,7 @@ const { parseFloat, parseInt } = Number,
         console.log('FIX');
         return true;
     },
-    isInteger: constraint = patternConstraint({ regex: INTEGER_REGEX }) as unknown as constraint<serializable>,
+    isInteger: constraint = patternConstraint({ regex: INTEGER_REGEX.source }) as unknown as constraint<serializable>,
     isITINRange: constraint = (value) => {
         const text = toString(value),
             length: number = text.length;
@@ -318,14 +324,14 @@ const { parseFloat, parseInt } = Number,
     isLength: constraint = (value, params: RangeParams) => rangeValidator(valueCount(value), params),
     /**
      * Validates a number to be less than
-         * @param {string|external:number} value The value to be tested
+     * @param {string|external:number} value The value to be tested
      * @param {Param} params
      * @returns {boolean} Whether or not the `value` is less than or equal to `params.value`.
      */
     isMax: constraint<string> = (value, params: Params = {}) => lte(parseFloat(value as any), parseFloat(params.value)),
     /**
      * Validates a number to be greater than
-         * @param {string|external:number} value The value to be tested
+     * @param {string|external:number} value The value to be tested
      * @param {Param} params
      * @returns {boolean} Whether or not the `value` is greater than or equal to `params.value`.
      */
@@ -402,7 +408,9 @@ const { parseFloat, parseInt } = Number,
         const regex = new RegExp(regexString, 'gi');
         return !regex.test(value);
     },
-    isNonRepeatingSequence: constraint = complement(test(REPEATING_SEQUENCE_REGEX)) as unknown as constraint<serializable>,
+    isNonRepeatingSequence: constraint = complement(
+        test(REPEATING_SEQUENCE_REGEX)
+    ) as unknown as constraint<serializable>,
     isNotAPhoneEmail: constraint = complement(test(NOT_PHONE_EMAIL_REGEX)) as unknown as constraint<serializable>,
     isNotBeginWith: constraint = (value: string, params: Params = {}) => {
         value = toString(value);
@@ -411,8 +419,10 @@ const { parseFloat, parseInt } = Number,
     isNotBeginWith1: constraint = (value: string | number) => isNotBeginWith(value, { value: '1' }),
     isNotBlank: constraint = complement(isBlank),
     isNumbers: constraint = (value, params: RangeParams = { min: 1 }) => rangeValidator(numberCount(value), params),
-    isNumeric: constraint = patternConstraint({ regex: NUMERIC_REGEX }) as unknown as constraint<serializable>,
-    isPasswordCharacters: constraint = patternConstraint({ regex: PASSWORD_FORMAT }) as unknown as constraint<serializable>,
+    isNumeric: constraint = patternConstraint({ regex: NUMERIC_REGEX.source }) as unknown as constraint<serializable>,
+    isPasswordCharacters: constraint = patternConstraint({
+        regex: PASSWORD_FORMAT.source,
+    }) as unknown as constraint<serializable>,
     isPasswordSymbols: constraint = (value, params: RangeParams = { min: 1 }) =>
         rangeValidator(passwordSymbolCount(value), params),
     isPast = (value: temporal, format: string = DEFAULT_DATE_FORMAT): boolean => {
@@ -438,10 +448,16 @@ const { parseFloat, parseInt } = Number,
 
         return test(matcher, value);
     },
-    isPersonalName: constraint = patternConstraint({ regex: NAME_REGEX }) as unknown as constraint<serializable>,
-    isPhoneNorthAmerica: constraint = patternConstraint({ regex: PHONE_NORTH_AMERICA }) as unknown as constraint<serializable>,
-    isPhoneOao: constraint = patternConstraint({ regex: PHONE_OAO_FORMAT }) as unknown as constraint<serializable>,
-    isPostalCode: constraint = patternConstraint({ regex: POSTAL_CODE_REGEX }) as unknown as constraint<serializable>,
+    isPersonalName: constraint = patternConstraint({ regex: NAME_REGEX.source }) as unknown as constraint<serializable>,
+    isPhoneNorthAmerica: constraint = patternConstraint({
+        regex: PHONE_NORTH_AMERICA.source,
+    }) as unknown as constraint<serializable>,
+    isPhoneOao: constraint = patternConstraint({
+        regex: PHONE_OAO_FORMAT.source,
+    }) as unknown as constraint<serializable>,
+    isPostalCode: constraint = patternConstraint({
+        regex: POSTAL_CODE_REGEX.source,
+    }) as unknown as constraint<serializable>,
     /**
      * Validates a range
      * @param {string} The value expected
@@ -450,7 +466,7 @@ const { parseFloat, parseInt } = Number,
      * @param {Object} params.max Highest amount in the range
      */
     isRange: constraint = (value, params: RangeParams) => rangeValidator(value, params),
-    isReal: constraint = patternConstraint({ regex: REAL_REGEX }) as unknown as constraint<serializable>,
+    isReal: constraint = patternConstraint({ regex: REAL_REGEX.source }) as unknown as constraint<serializable>,
     isRoutingNumber: constraint<string> = (value): boolean => {
         let n = 0,
             i = 0;
@@ -468,13 +484,17 @@ const { parseFloat, parseInt } = Number,
         return n !== 0 && n % 10 === 0;
     },
     isSpecials: constraint = (value, params: RangeParams = { min: 1 }) => rangeValidator(specialsCount(value), params),
-    isSsn: constraint = patternConstraint({ regex: SSN_FORMAT }) as unknown as constraint<serializable>,
-    isSsnExclude: constraint = patternConstraint({ regex: SSN_EXCLUDE_FORMAT }) as unknown as constraint<serializable>,
-    isSsnOao: constraint = patternConstraint({ regex: SSN_OAO_FORMAT }) as unknown as constraint<serializable>,
-    isSsnValidGroups: constraint = patternConstraint({ regex: SSN_VALID_GROUPS_FORMAT }) as unknown as constraint<serializable>,
+    isSsn: constraint = patternConstraint({ regex: SSN_FORMAT.source }) as unknown as constraint<serializable>,
+    isSsnExclude: constraint = patternConstraint({
+        regex: SSN_EXCLUDE_FORMAT.source,
+    }) as unknown as constraint<serializable>,
+    isSsnOao: constraint = patternConstraint({ regex: SSN_OAO_FORMAT.source }) as unknown as constraint<serializable>,
+    isSsnValidGroups: constraint = patternConstraint({
+        regex: SSN_VALID_GROUPS_FORMAT.source,
+    }) as unknown as constraint<serializable>,
     /**
      * Validates a value as a valid step in a possible range
-         * @param {string} value The value expected
+     * @param {string} value The value expected
      * @param {Object} params Expected parameters
      * @param {Object} params.min Lowest amount in the range
      * @param {Object} params.max Highest amount in the range
@@ -486,7 +506,7 @@ const { parseFloat, parseInt } = Number,
 
         return rangeValidator(parsed, params) && parsed % step === 0;
     },
-    isUrl: constraint = patternConstraint({ regex: URL_REGEX }) as unknown as constraint<serializable>,
+    isUrl: constraint = patternConstraint({ regex: URL_REGEX.source }) as unknown as constraint<serializable>,
     isValidDate = (value: temporal, format = DEFAULT_DATE_FORMAT): boolean => {
         /*const date = isString( value ) ?
             moment( value, format, true ) :
@@ -495,9 +515,12 @@ const { parseFloat, parseInt } = Number,
         console.log('FIX');
         return true;
     },
-    isZipCode: constraint = patternConstraint({ regex: ZIP_CODE_REGEX }) as unknown as constraint<serializable>,
-    isZipCodeExtension: constraint = patternConstraint({ regex: ZIP_CODE_EXTENSION_REGEX }) as unknown as constraint<serializable>,
+    isZipCode: constraint = patternConstraint({ regex: ZIP_CODE_REGEX.source }) as unknown as constraint<serializable>,
+    isZipCodeExtension: constraint = patternConstraint({
+        regex: ZIP_CODE_EXTENSION_REGEX.source,
+    }) as unknown as constraint<serializable>,
     rangeValidator: constraint = function (value, params: RangeParams = {}): boolean {
+        const valueToCompare = Number(value);
         let min: number, max: number;
 
         // Process params
@@ -508,9 +531,7 @@ const { parseFloat, parseInt } = Number,
             max = defaultToMaxValue(Number(params.max));
         }
 
-        value = Number(value);
-
-        return value >= min && value <= max;
+        return valueToCompare >= min && valueToCompare <= max;
     };
 
 /**
@@ -518,67 +539,67 @@ const { parseFloat, parseInt } = Number,
  */
 const standardConstraints: ValidationConstraints = {
     /**
-         */
+     */
     AddressLine: {
         validate: isAddressLine,
     },
 
     /**
-         */
+     */
     Alpha: {
         validate: isAlpha,
     },
 
     /**
-         */
+     */
     AlphaNumeric: {
         validate: isAlphaNumeric,
     },
 
     /**
-         */
+     */
     AlphaNumericPlus: {
         validate: isAlphaNumericPlus,
     },
 
     /**
-         */
+     */
     Blank: {
         validate: isBlank,
     },
 
     /**
-         */
+     */
     Boolean: {
         validate: isBoolean,
     },
 
     /**
-         */
+     */
     Capitals: {
         validate: isCapitals,
     },
 
     /**
-         */
+     */
     Characters: {
         validate: isCharacters,
     },
 
     /**
-         */
+     */
     City: {
         validate: isCity,
     },
 
     /**
-         */
+     */
     ConstraintSet: {
         validate: isConstraintSet,
     },
 
     /**
-         */
+     */
     Date: {
         validate: (value: temporal, params: DateParams = {}) => {
             const { format } = params;
@@ -587,37 +608,37 @@ const standardConstraints: ValidationConstraints = {
     },
 
     /**
-         */
+     */
     Date18YearsOld: {
         validate: isDate18YearsOld,
     },
 
     /**
-         */
+     */
     DateRange: {
         validate: isDateRange,
     },
 
     /**
-         */
+     */
     Digits: {
         validate: isDigits,
     },
 
     /**
-         */
+     */
     Email: {
         validate: isEmail,
     },
 
     /**
-         */
+     */
     Enum: {
         validate: isEnum,
     },
 
     /**
-         */
+     */
     Future: {
         validate: (value: temporal, params: DateParams = {}) => {
             const { format } = params;
@@ -626,115 +647,115 @@ const standardConstraints: ValidationConstraints = {
     },
 
     /**
-         */
+     */
     Integer: {
         validate: isInteger,
     },
 
     /**
-         */
+     */
     ITINRange: {
         validate: isITINRange,
     },
 
     /**
-         */
+     */
     Length: {
         validate: isLength,
     },
 
     /**
-         */
+     */
     Max: {
         validate: isMax,
     },
 
     /**
-         */
+     */
     Min: {
         validate: isMin,
     },
 
     /**
-         */
+     */
     Money: {
         validate: isMoney,
     },
 
     /**
-         */
+     */
     MustBeginWith: {
         validate: isMustBeginWith,
     },
 
     /**
-         */
+     */
     NotBlank: {
         validate: isNotBlank,
     },
 
     /**
-         */
+     */
     NotBeginWith: {
         validate: isNotBeginWith,
     },
 
     /**
-         */
+     */
     NotBeginWith1: {
         validate: isNotBeginWith1,
     },
 
     /**
-         */
+     */
     NonConsecutiveAlphaNumerics: {
         validate: isNonConsecutiveAlphaNumerics,
     },
 
     /**
-         */
+     */
     NonRepeatingAlphaNumerics: {
         validate: isNonRepeatingAlphaNumerics,
     },
 
     /**
-         */
+     */
     NonRepeatingSequence: {
         validate: isNonRepeatingSequence,
     },
 
     /**
-         */
+     */
     NotPhoneEmail: {
         validate: isNotAPhoneEmail,
     },
 
     /**
-         */
+     */
     Numbers: {
         validate: isNumbers,
     },
 
     /**
-         */
+     */
     Numeric: {
         validate: isNumeric,
     },
 
     /**
-         */
+     */
     PasswordCharacters: {
         validate: isPasswordCharacters,
     },
 
     /**
-         */
+     */
     PasswordSymbols: {
         validate: isPasswordSymbols,
     },
 
     /**
-         */
+     */
     Past: {
         validate: (value: temporal, params: DateParams = {}) => {
             const { format } = params;
@@ -743,7 +764,7 @@ const standardConstraints: ValidationConstraints = {
     },
 
     /**
-         */
+     */
     Pattern: {
         validate: (value: string, params: PatternParams = {}) => {
             const { regex, flags } = params;
@@ -752,97 +773,97 @@ const standardConstraints: ValidationConstraints = {
     },
 
     /**
-         */
+     */
     PersonalName: {
         validate: isPersonalName,
     },
 
     /**
-         */
+     */
     PhoneNorthAmerica: {
         validate: isPhoneNorthAmerica,
     },
 
     /**
-         */
+     */
     PhoneOao: {
         validate: isPhoneOao,
     },
 
     /**
-         */
+     */
     PostalCode: {
         validate: isPostalCode,
     },
 
     /**
-         */
+     */
     Range: {
         validate: isRange,
     },
 
     /**
-         */
+     */
     Real: {
         validate: isReal,
     },
 
     /**
-         */
+     */
     RoutingNumber: {
         validate: isRoutingNumber,
     },
 
     /**
-         */
+     */
     Ssn: {
         validate: isSsn,
     },
 
     /**
-         */
+     */
     SsnExclude: {
         validate: isSsnExclude,
     },
 
     /**
-         */
+     */
     SsnOao: {
         validate: isSsnOao,
     },
 
     /**
-         */
+     */
     SsnValidGroups: {
         validate: isSsnValidGroups,
     },
 
     /**
-         */
+     */
     Specials: {
         validate: isSpecials,
     },
 
     /**
-         */
+     */
     Step: {
         validate: isStep,
     },
 
     /**
-         */
+     */
     URL: {
         validate: isUrl,
     },
 
     /**
-         */
+     */
     ZipCode: {
         validate: isZipCode,
     },
 
     /**
-         */
+     */
     ZipCodeExtension: {
         validate: isZipCodeExtension,
     },

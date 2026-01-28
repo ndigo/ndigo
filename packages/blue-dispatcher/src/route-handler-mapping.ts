@@ -93,7 +93,7 @@ class MappingEntry<T = any> {
 
     constructor(mapping: T, handlerMethod: RouteHandlerMethod, mappingName: string, directPaths: string[] = []) {
         /**
-                 */
+         */
         defineProperty(this, 'mapping', {
             value: mapping,
             configurable: true,
@@ -101,7 +101,7 @@ class MappingEntry<T = any> {
             writable: false,
         });
         /**
-                 */
+         */
         defineProperty(this, 'handlerMethod', {
             value: handlerMethod,
             configurable: true,
@@ -109,7 +109,7 @@ class MappingEntry<T = any> {
             writable: false,
         });
         /**
-                 */
+         */
         defineProperty(this, 'mappingName', {
             value: mappingName,
             configurable: true,
@@ -117,7 +117,7 @@ class MappingEntry<T = any> {
             writable: false,
         });
         /**
-                 */
+         */
         defineProperty(this, 'directPaths', {
             value: directPaths,
             configurable: true,
@@ -219,7 +219,7 @@ class Match<T> implements Serializable {
 
     constructor(mapping: T, handlerMethod: RouteHandlerMethod) {
         /**
-                 */
+         */
         defineProperty(this, 'mapping', {
             value: mapping,
             configurable: true,
@@ -228,7 +228,7 @@ class Match<T> implements Serializable {
         });
 
         /**
-                 */
+         */
         defineProperty(this, 'handlerMethod', {
             value: handlerMethod,
             configurable: true,
@@ -238,7 +238,7 @@ class Match<T> implements Serializable {
     }
 
     /**
-         * @returns {string}
+     * @returns {string}
      */
     toString(): string {
         return this.mapping.toString();
@@ -265,7 +265,7 @@ class MatchComparator<T> implements Comparator<Match<T>> {
     }
 
     /**
-         * @param {module:dispatcher~Match} match1
+     * @param {module:dispatcher~Match} match1
      * @param {module:dispatcher~Match} match2
      * @returns {number}
      */
@@ -795,7 +795,7 @@ export class RouteMatchResult {
 
     constructor(pattern: string, path: string) {
         /**
-                 */
+         */
         defineProperty(this, 'pattern', {
             value: pattern,
             configurable: true,
@@ -803,7 +803,7 @@ export class RouteMatchResult {
             writable: false,
         });
         /**
-                 */
+         */
         defineProperty(this, 'path', {
             value: path,
             configurable: true,
@@ -836,12 +836,12 @@ export class SimplePathHandlerMapping extends AbstractPathHandlerMapping {
     constructor() {
         super();
         /**
-                 */
+         */
         this.mappings = new Map<string, MaybeHandler>();
     }
 
     /**
-         * @param {module:core.ApplicationContext} context The application context to be set.
+     * @param {module:core.ApplicationContext} context The application context to be set.
      */
     setApplicationContext(context: ApplicationContext): void {
         super.setApplicationContext(context);
@@ -851,14 +851,14 @@ export class SimplePathHandlerMapping extends AbstractPathHandlerMapping {
 
     /**
      * Map paths to handlers or handler names, merging it into the existing mappings if any.
-         * @param {Object} mappings The path mappings
+     * @param {Object} mappings The path mappings
      */
     setMappings(mappings: { [path: string]: MaybeHandler }): void {
         keys(mappings).forEach((path: string) => this.mappings.set(path, mappings[path]));
     }
 
     /**
-         * @param {Map<external:string,module:dispatcher.MaybeHandler>} mappings
+     * @param {Map<external:string,module:dispatcher.MaybeHandler>} mappings
      */
     registerHandlers(mappings: Map<string, MaybeHandler>): void {
         mappings &&

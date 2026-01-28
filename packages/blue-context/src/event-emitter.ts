@@ -615,9 +615,7 @@ const spliceList = <T = any>(list: T[], index: number): void => {
  * greeter.emtest( 'hello' ); // true
  * // Hello!
  */
-export const AsEventEmitter = <T extends Constructable>(
-    superclass: T
-): Constructable<EventEmitter> & T => {
+export const AsEventEmitter = <T extends Constructable>(superclass: T): Constructable<EventEmitter> & T => {
     // TypeScript 5.7 requires explicit type assertion for mixin pattern
     const EmitterClass = class extends (superclass as new (...args: any[]) => any) implements EventEmitter {
         get [Symbol.toStringTag](): string {
@@ -630,7 +628,7 @@ export const AsEventEmitter = <T extends Constructable>(
          * The `type` can be namespaced using `:`, which will result in multiple events being triggered in succession. Listeners can be associated with the fully namespaced `type` or a subset of the `type`.
          *
          * Returns `true` if the event had listeners, `false` otherwise.
-                 * @param {module:context.EventType} type The event type.
+         * @param {module:context.EventType} type The event type.
          * @param {...*} [data] The data passed into the listeners.
          * @returns {boolean} Whether or not the event had listeners.
          * @since 1.0.0
@@ -667,7 +665,7 @@ export const AsEventEmitter = <T extends Constructable>(
         }
 
         /**
-                 * @returns {Array<module:context.EventType>} The list of event types registered to the emitter.
+         * @returns {Array<module:context.EventType>} The list of event types registered to the emitter.
          * @since 2.0.0
          * @example
          * const greeter = new Emitter();
@@ -682,7 +680,7 @@ export const AsEventEmitter = <T extends Constructable>(
         }
 
         /**
-                 * @param {module:context.EventType} type The event type.
+         * @param {module:context.EventType} type The event type.
          * @returns {number} The number of listeners for that event type within the given emitter.
          * @since 1.0.0
          * @example
@@ -713,7 +711,7 @@ export const AsEventEmitter = <T extends Constructable>(
         }
 
         /**
-                 * @param {module:context.EventType} type The event type.
+         * @param {module:context.EventType} type The event type.
          * @returns {number} The number of listeners for that event type within the given emitter.
          * @since 1.0.0
          * @example
@@ -753,7 +751,7 @@ export const AsEventEmitter = <T extends Constructable>(
          * Adds a listener for the specified event `type`. If no `type` is given the listener will be triggered any event `type`.
          *
          * No checks are made to see if the `listener` has already been added. Multiple calls passing the same combination `type` and `listener` will result in the `listener` being added multiple times.
-                 * @param {module:context.EventType} [type] The event type.
+         * @param {module:context.EventType} [type] The event type.
          * @param {module:context.EventListener} listener The event callback.
          * @returns {module:context.EventEmitter} The emitter.
          * @since 1.0.0
@@ -796,7 +794,7 @@ export const AsEventEmitter = <T extends Constructable>(
          * Removes the `listener` for the specified event `type`. If no `type` is given it is assumed the `listener` is not associated with a specific `type`.
          *
          * If any single listener has been added multiple times for the specified `type`, then `emitter.off()` must be called multiple times to remove each instance.
-                 * @param {module:context.EventType} type The event type.
+         * @param {module:context.EventType} type The event type.
          * @param {module:context.EventListener} listener The event callback.
          * @returns {module:context.EventEmitter} The emitter.
          * @since 1.0.0
@@ -846,7 +844,21 @@ export const AsEventEmitter = <T extends Constructable>(
             return this;
         }
     };
-    return EmitterClass as Constructable<EventEmitter> & T;
+    return EmitterClass as unknown as Constructable<EventEmitter> & T;
+};
+
+export const asEventEmitter = (target: any): EventEmitter => {
+    const emitter = new Emitter(); // Create a concrete Emitter instance
+    // Copy methods from the Emitter instance to the target
+    target.emit = emitter.emit.bind(target);
+    target.eventTypes = emitter.eventTypes.bind(target);
+    target.listenerCount = emitter.listenerCount.bind(target);
+    target.listeners = emitter.listeners.bind(target);
+    target.on = emitter.on.bind(target);
+    target.off = emitter.off.bind(target);
+    // Also copy the internal events property if needed for proper functioning
+    target[$events] = emitter[$events];
+    return target as EventEmitter;
 };
 
 // Additional interfaces and types for async and conditional event emitters
@@ -871,9 +883,7 @@ async function tickAllEvents(emitter: EventEmitter, type: EventType, data: any[]
 }
 
 // AsAsyncEventEmitter mixin
-export const AsAsyncEventEmitter = <T extends Constructable<EventEmitter>>(
-    superclass: T
-) => {
+export const AsAsyncEventEmitter = <T extends Constructable<EventEmitter>>(superclass: T) => {
     const result = class extends (superclass as any) {
         async tick(type: string | symbol, ...data: any[]): Promise<void> {
             return tickAllEvents(this as unknown as EventEmitter, type, data);
@@ -883,9 +893,7 @@ export const AsAsyncEventEmitter = <T extends Constructable<EventEmitter>>(
 };
 
 // AsConditionalEventEmitter mixin
-export const AsConditionalEventEmitter = <T extends Constructable<EventEmitter>>(
-    superclass: T
-) => {
+export const AsConditionalEventEmitter = <T extends Constructable<EventEmitter>>(superclass: T) => {
     const result = class extends (superclass as any) {
         many(type: string | symbol, times: number, listener: Function): this {
             // Shift arguments if type is not provided

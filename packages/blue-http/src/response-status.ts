@@ -58,42 +58,42 @@ export default class ResponseStatus implements Comparable<ResponseStatus>, Equat
 
     /**
      * Whether or not the response status code is between 100 and 199.
-         */
+     */
     get isInformationClass(): boolean {
         return 100 <= this.code && this.code <= 199;
     }
 
     /**
      * Whether or not the response status code is between 200 and 299.
-         */
+     */
     get isSuccessClass(): boolean {
         return 200 <= this.code && this.code <= 299;
     }
 
     /**
      * Whether or not the response status code is between 300 and 399.
-         */
+     */
     get isRedirectClass(): boolean {
         return 300 <= this.code && this.code <= 399;
     }
 
     /**
      * Whether or not the response status code is between 400 and 499.
-         */
+     */
     get isClientErrorClass(): boolean {
         return 400 <= this.code && this.code <= 499;
     }
 
     /**
      * Whether or not the response status code is between 500 and 599.
-         */
+     */
     get isServerErrorClass(): boolean {
         return 500 <= this.code && this.code <= 599;
     }
 
     constructor(code: number, text: string) {
         /**
-                 */
+         */
         defineProperty(this, 'code', {
             value: code,
             configurable: true,
@@ -101,7 +101,7 @@ export default class ResponseStatus implements Comparable<ResponseStatus>, Equat
             writable: false,
         });
         /**
-                 */
+         */
         defineProperty(this, 'text', {
             value: text,
             configurable: true,
@@ -111,7 +111,7 @@ export default class ResponseStatus implements Comparable<ResponseStatus>, Equat
     }
 
     /**
-         * @param {module:http.ResponseStatus} value
+     * @param {module:http.ResponseStatus} value
      * @returns {number}
      */
     compareTo(value: ResponseStatus): number {
@@ -133,7 +133,7 @@ export default class ResponseStatus implements Comparable<ResponseStatus>, Equat
     }
 
     /**
-         * @param {module:http.ResponseStatus} value
+     * @param {module:http.ResponseStatus} value
      * @returns {boolean}
      */
     equals(value: ResponseStatus): boolean {
@@ -141,7 +141,7 @@ export default class ResponseStatus implements Comparable<ResponseStatus>, Equat
     }
 
     /**
-         * @param {BodyInit} body
+     * @param {BodyInit} body
      * @param {HeadersInit} [headers={}]
      * @returns {Response}
      */
@@ -150,7 +150,7 @@ export default class ResponseStatus implements Comparable<ResponseStatus>, Equat
     }
 
     /**
-         * @returns {module:core.JSONObject}
+     * @returns {module:core.JSONObject}
      */
     toJSON(): JSONObject {
         const json = createNull();
@@ -162,7 +162,7 @@ export default class ResponseStatus implements Comparable<ResponseStatus>, Equat
     }
 
     /**
-         * @returns {ResponseInit}
+     * @returns {ResponseInit}
      */
     toResponseInit(): ResponseInit {
         const init: ResponseInit = createNull();
@@ -174,7 +174,7 @@ export default class ResponseStatus implements Comparable<ResponseStatus>, Equat
     }
 
     /**
-         * @returns {string}
+     * @returns {string}
      */
     toString(): string {
         return `${this.code} ${this.text}`;

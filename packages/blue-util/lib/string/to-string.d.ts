@@ -20,7 +20,7 @@ declare const
  *
  *     toString( new Point( 1, 2 ) ); //=> 'new Point(1, 2)'
  *
-     * @category String
+ * @category String
  * @param {*} val
  * @returns {string}
  * @example

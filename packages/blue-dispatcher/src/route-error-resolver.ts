@@ -249,7 +249,7 @@ export class SimpleMappingErrorResolver extends AbstractRouteErrorResolver {
     constructor(defaultErrorView?: string) {
         super();
         /**
-                 */
+         */
         defineProperty(this, 'defaultErrorView', {
             value: defaultErrorView || null,
             configurable: true,
@@ -260,7 +260,7 @@ export class SimpleMappingErrorResolver extends AbstractRouteErrorResolver {
          * Set the mappings between error class names and error view names. The error class name can be a substring, with no wildcard support.
          *
          * Consider carefully how specific the pattern is. For example, "Error" will match nearly anything, and will probably hide other rules.
-                 */
+         */
         defineProperty(this, 'errorMappings', {
             value: new Map<string, string>(),
             configurable: true,
@@ -274,7 +274,7 @@ export class SimpleMappingErrorResolver extends AbstractRouteErrorResolver {
      *
      * May be overridden in subclasses, in order to apply specific error checks.
      * @protected
-         * @param {module:router.Route} route The current route.
+     * @param {module:router.Route} route The current route.
      * @param {*} handler The executed handler or `null` if none chosen at the time of the error.
      * @param {Error} error The error that was thrown during execution.
      * @returns {module:dispatcher.ModelAndView} The corresponding `ModelAndView` to forward to or `null` for default processing in the resolution chain.

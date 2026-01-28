@@ -160,7 +160,10 @@ export class BlueLoggerProvider implements LoggerProvider {
      * const logger = provider.createLogger('my-app');
      * ```
      */
-    static fromAppenders(appenders: Appender[], config: Omit<BlueLoggerProviderConfig, 'processors'> = {}): BlueLoggerProvider {
+    static fromAppenders(
+        appenders: Appender[],
+        config: Omit<BlueLoggerProviderConfig, 'processors'> = {}
+    ): BlueLoggerProvider {
         // Create processors from appenders
         const processors: LogRecordProcessor[] = appenders.map((appender) => {
             const exporter = new AppenderLogRecordExporter(appender);
@@ -233,23 +236,14 @@ export class BlueLoggerProvider implements LoggerProvider {
  * const logger = provider.createLogger('my-app');
  * ```
  */
-export function createSimpleConsoleProvider(config: Omit<BlueLoggerProviderConfig, 'processors'> = {}): BlueLoggerProvider {
-    // Import dynamically to avoid circular dependency
-    // Note: This uses synchronous import in CommonJS, which works at runtime after transpilation
-    try {
-        const { LayoutAwareConsoleExporter } = require('./exporters/console-exporter');
-        return new BlueLoggerProvider({
-            ...config,
-            processors: [new SimpleLogRecordProcessor(new LayoutAwareConsoleExporter())],
-        });
-    } catch (error) {
-        // Fallback for development/test environments where require paths differ
-        // This shouldn't happen in production since modules are compiled
-        throw new Error(
-            'LayoutAwareConsoleExporter not available. ' +
-                'Use BlueLoggerProvider constructor with explicit exporter instead.'
-        );
-    }
+export async function createSimpleConsoleProvider(
+    config: Omit<BlueLoggerProviderConfig, 'processors'> = {}
+): Promise<BlueLoggerProvider> {
+    const { LayoutAwareConsoleExporter } = await import('./exporters/console-exporter');
+    return new BlueLoggerProvider({
+        ...config,
+        processors: [new SimpleLogRecordProcessor(new LayoutAwareConsoleExporter())],
+    });
 }
 
 /**
@@ -264,19 +258,12 @@ export function createSimpleConsoleProvider(config: Omit<BlueLoggerProviderConfi
  * const logger = provider.createLogger('my-app');
  * ```
  */
-export function createBatchConsoleProvider(config: Omit<BlueLoggerProviderConfig, 'processors'> = {}): BlueLoggerProvider {
-    // Import dynamically to avoid circular dependency
-    try {
-        const { LayoutAwareConsoleExporter } = require('./exporters/console-exporter');
-        return new BlueLoggerProvider({
-            ...config,
-            processors: [new BatchLogRecordProcessor(new LayoutAwareConsoleExporter())],
-        });
-    } catch (error) {
-        // Fallback for development/test environments where require paths differ
-        throw new Error(
-            'LayoutAwareConsoleExporter not available. ' +
-                'Use BlueLoggerProvider constructor with explicit exporter instead.'
-        );
-    }
+export async function createBatchConsoleProvider(
+    config: Omit<BlueLoggerProviderConfig, 'processors'> = {}
+): Promise<BlueLoggerProvider> {
+    const { LayoutAwareConsoleExporter } = await import('./exporters/console-exporter');
+    return new BlueLoggerProvider({
+        ...config,
+        processors: [new BatchLogRecordProcessor(new LayoutAwareConsoleExporter())],
+    });
 }

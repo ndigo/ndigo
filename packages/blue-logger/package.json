@@ -2,45 +2,24 @@
   "name": "@blue/logger",
   "version": "3.0.0-alpha.0",
   "description": "Blue Logger",
+  "type": "module",
   "files": [
     "doc",
-    "lib",
-    "index.js",
-    "index.js.map"
+    "lib"
   ],
   "exports": {
-    "import": "./lib/index.js",
-    "require": "./index.js"
+    ".": "./lib/index.js",
+    "./otel/entry-to-logrecord": "./lib/otel/entry-to-logrecord.js"
   },
-  "main": "index.js",
-  "module": "lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
     "benchmark": "../../bin/benchmark.sh",
     "build:lib": "../../bin/build_lib.sh",
-    "build:bundle": "../../bin/build_bundle.sh",
-    "build:all": "../../bin/build_all.sh",
     "doc": "../../bin/doc.sh",
-    "prepublish": "../../bin/prepublish.sh",
     "test": "vitest run",
     "test:watch": "vitest",
-    "debug:bundle": "../../bin/debug_bundle.sh",
     "debug:web": "../../bin/debug_web.sh"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue.git"
-  },
-  "keywords": [
-    "blue",
-    "bluejs",
-    "blue-js",
-    "log",
-    "logger",
-    "logging"
-  ],
-  "author": "Jeff Rose <jeff_rose@outlook.com>",
-  "license": "ISC",
   "dependencies": {
     "@opentelemetry/api": "~1.9.0",
     "@opentelemetry/api-logs": "~0.211.0",
@@ -60,7 +39,8 @@
     "@opentelemetry/semantic-conventions": "~1.9.1",
     "@opentelemetry/shim-opentracing": "~1.9.1",
     "stacktrace-js": "~2.0.2",
-    "zone.js": "~0.12.0"
+    "zone.js": "~0.12.0",
+    "date-fns": "~4.1.0"
   },
   "devDependencies": {
     "@blue/core": "~3.0.0-alpha",

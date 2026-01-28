@@ -19,7 +19,7 @@ const exporter = new FetchLogRecordExporter('http://localhost:8080/api/logs', {
     timeout: 10000, // 10 second timeout
     headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer your-api-token',
+        Authorization: 'Bearer your-api-token',
     },
 });
 
@@ -65,16 +65,20 @@ for (let i = 1; i <= 10; i++) {
 console.log('Logs queued for export...');
 
 // Force flush to send immediately
-provider.forceFlush().then(() => {
-    console.log('Logs flushed to HTTP endpoint');
+provider
+    .forceFlush()
+    .then(() => {
+        console.log('Logs flushed to HTTP endpoint');
 
-    // Shutdown
-    return provider.shutdown();
-}).then(() => {
-    console.log('Provider shutdown complete');
-}).catch((error) => {
-    console.error('Export error:', error.message);
-});
+        // Shutdown
+        return provider.shutdown();
+    })
+    .then(() => {
+        console.log('Provider shutdown complete');
+    })
+    .catch((error) => {
+        console.error('Export error:', error.message);
+    });
 
 /**
  * To test this example, you can use a simple HTTP server:

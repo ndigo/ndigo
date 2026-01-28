@@ -6,7 +6,7 @@
 declare const 
 /**
  * Replace accented chars with regular ones
-     * @category String
+ * @category String
  * @param {string} value The string to be transformed.
  * @returns {string} The `value` with the accented characters replaced with regular ones.
  * @example

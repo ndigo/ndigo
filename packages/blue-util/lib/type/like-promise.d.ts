@@ -4,7 +4,7 @@
  */
 declare const /**
      * Determines whether a given object is thenable, i.e. has a `then` method.
-         * @category Type
+     * @category Type
      * @param {*} value The value to be tested.
      * @returns {boolean} Whether or not `value` is thenable.
      * @example

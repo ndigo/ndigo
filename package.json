@@ -3,22 +3,15 @@
   "private": true,
   "version": "3.0.0-alpha.0",
   "description": "The BlueJS framework",
+  "type": "module",
   "files": [
     "doc",
-    "index.js",
-    "index.js.map",
     "lib"
   ],
-  "exports": {
-    "import": "./lib/index.js",
-    "require": "./index.js"
-  },
-  "main": "index.js",
-  "module": "lib/index.js",
+  "exports": "./lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
     "build": "nx run-many -t build:lib",
-    "build:all": "nx run-many -t build:all",
     "test": "nx run-many -t test",
     "lint": "eslint .",
     "format": "prettier --write .",
@@ -70,12 +63,10 @@
     "process": "~0.11.10",
     "reflect-metadata": "~0.2.2",
     "ts-node": "~10.9.2",
-    "typedoc": "^0.28.0",
-    "typedoc-plugin-markdown": "^4.9.0",
+    "typedoc": "^0.27.9",
+    "typedoc-plugin-markdown": "^4.3.0",
     "typescript": "~5.7.2",
     "util": "~0.12.4",
-    "vite": "~6.0.7",
-    "vite-plugin-dts": "~4.3.0",
     "vitest": "~2.1.8"
   },
   "pnpm": {

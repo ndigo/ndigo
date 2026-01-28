@@ -43,7 +43,7 @@ export class NavigatorLanguageResolver extends AbstractLanguageResolver {
     }
 
     /**
-         * @param {module:router.Route} route
+     * @param {module:router.Route} route
      */
     resolveLanguage(route: Route): string {
         let lang: string;

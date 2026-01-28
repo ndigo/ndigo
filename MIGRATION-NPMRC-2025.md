@@ -12,6 +12,7 @@ Successfully modernized `.npmrc` configuration to use pnpm best practices, remov
 ### 1. Updated `.npmrc` Configuration
 
 **Before (3 settings):**
+
 ```ini
 shamefully-hoist=true
 strict-peer-dependencies=false
@@ -19,6 +20,7 @@ auto-install-peers=true
 ```
 
 **After (9 settings, optimized for performance):**
+
 ```ini
 # Monorepo Compatibility
 strict-peer-dependencies=false
@@ -47,6 +49,7 @@ prefer-offline=true
 **Packages cleaned:** 17 packages in `packages/*/package.json`
 
 **Removed `publishConfig` sections:**
+
 ```json
 // REMOVED FROM ALL PACKAGES:
 "publishConfig": {
@@ -55,6 +58,7 @@ prefer-offline=true
 ```
 
 **Packages affected:**
+
 - blue-boot
 - blue-content
 - blue-context
@@ -76,21 +80,25 @@ prefer-offline=true
 ### 3. Updated Documentation
 
 **Files updated:**
+
 - `CLAUDE.md` - Removed Artifactory references, added pnpm configuration documentation
 - `MIGRATION-NPMRC-2025.md` - This file
 
 ## Performance Improvements
 
 ### node_modules Size
+
 - **Before:** 435 MB (with `shamefully-hoist=true`)
 - **After:** 351 MB (with selective hoisting)
 - **Reduction:** 84 MB (19% smaller)
 
 ### Install Time
+
 - Clean install: **18.3 seconds**
 - Using pnpm's intelligent caching and dependency isolation
 
 ### Benefits
+
 - ✅ Better dependency isolation (no phantom dependencies)
 - ✅ Smaller disk footprint
 - ✅ Faster subsequent installs (prefer-offline)
@@ -100,6 +108,7 @@ prefer-offline=true
 ## Key Configuration Details
 
 ### Removed Settings (using defaults)
+
 - `shamefully-hoist` - Removed (default is `false`, uses pnpm isolation)
 - `lockfile` - Removed (default is `true`)
 - Registry settings - Removed (preparing for npm publication)
@@ -107,26 +116,31 @@ prefer-offline=true
 ### Added Settings
 
 **`link-workspace-packages=true`**
+
 - Standard for monorepos
 - Symlinks `@blue/*` packages for local development
 
 **`save-workspace-protocol=rolling`**
+
 - Uses `workspace:*` in dependencies
 - Auto-resolves to latest workspace version during development
 - Better for active development phase
 
 **`public-hoist-pattern[]`**
+
 - Selectively hoists only tooling packages
-- @types/* - TypeScript type definitions (IDE resolution)
+- @types/\* - TypeScript type definitions (IDE resolution)
 - eslint*, prettier* - Linting/formatting plugins need to find each other
 - vite*, vitest* - Build and test tooling
 
 **`engine-strict=true`**
+
 - Enforces `"engines": { "node": ">=18.0.0" }` from package.json
 - Prevents installation on incompatible Node versions
 - Good for future contributors
 
 **`prefer-offline=true`**
+
 - Uses cache first, network second
 - Faster repeated installs
 - Works well with any registry
@@ -134,17 +148,19 @@ prefer-offline=true
 ## Verification
 
 ### Tests Performed
+
 ✅ Clean install from scratch  
 ✅ Packages build successfully (17 packages with `lib/` output)  
 ✅ Selective hoisting verified (tooling at root, packages isolated)  
 ✅ node_modules structure correct  
-✅ pnpm and Node.js working  
+✅ pnpm and Node.js working
 
 ### Module Resolution
+
 - ✅ eslint, prettier, typescript hoisted to root
-- ✅ @types/* packages hoisted for IDE TypeScript resolution
+- ✅ @types/\* packages hoisted for IDE TypeScript resolution
 - ✅ vite, vitest and plugins hoisted
-- ✅ @blue/* workspace packages use pnpm's isolated structure
+- ✅ @blue/\* workspace packages use pnpm's isolated structure
 
 ## Future Publishing
 
@@ -158,6 +174,7 @@ When ready to publish to npm, add to each package.json:
 ```
 
 Or use pnpm's `--publish-branch` and `--registry` flags:
+
 ```bash
 pnpm publish --registry https://registry.npmjs.org --access public
 ```
@@ -165,12 +182,14 @@ pnpm publish --registry https://registry.npmjs.org --access public
 ## Rollback Instructions
 
 If issues arise, restore from git:
+
 ```bash
 git checkout .npmrc packages/*/package.json
 pnpm install
 ```
 
 Or manually restore old settings:
+
 ```ini
 # Old .npmrc (not recommended)
 shamefully-hoist=true

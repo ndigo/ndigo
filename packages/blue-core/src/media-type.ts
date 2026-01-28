@@ -250,7 +250,7 @@ export default class MediaType extends Null implements Serializable, StringCompa
     }
 
     /**
-         * @param {module:core.MediaType} mediaType
+     * @param {module:core.MediaType} mediaType
      * @returns {number}
      */
     compareTo(mediaType: MediaType): number {
@@ -305,7 +305,7 @@ export default class MediaType extends Null implements Serializable, StringCompa
     }
 
     /**
-         * @param {module:core.MediaType} mediaType
+     * @param {module:core.MediaType} mediaType
      * @returns {number}
      */
     compareToIgnoreCase(mediaType: MediaType): number {
@@ -365,7 +365,7 @@ export default class MediaType extends Null implements Serializable, StringCompa
 
     /**
      * Creates a new blob of the media type with the given parameters
-         * @param {BufferSource | externsl:Blob | external:string } data
+     * @param {BufferSource | externsl:Blob | external:string } data
      * @param {string} endings
      * @returns {Blob} A new blob of the media type
      */
@@ -380,7 +380,7 @@ export default class MediaType extends Null implements Serializable, StringCompa
      * Indicates whether the `MediaType` includes the given `MediaType`.
      *
      * For example, `text/*` includes `text/plain` and `text/html`, `application/*+xml` includes `application/soap+xml`, etc.
-         * @param {module:core.MediaType} value
+     * @param {module:core.MediaType} value
      * @returns {boolean} If this `MediaType` includes the given `MediaType`.
      */
     includes(value: MediaType = null): boolean {

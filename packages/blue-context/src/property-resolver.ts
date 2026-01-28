@@ -78,7 +78,7 @@ export class PrototypalPropertyResolver implements ConfigurablePropertyResolver 
     readonly properties: JSONObject;
 
     /**
-         */
+     */
     get propertySources(): JSONObject[] {
         return this.#propertySources;
     }
@@ -95,13 +95,13 @@ export class PrototypalPropertyResolver implements ConfigurablePropertyResolver 
 
     constructor(propertySources: JSONObject[]) {
         /**
-                 */
+         */
 
         this.propertySources = propertySources;
     }
 
     /**
-         * @param {string} key
+     * @param {string} key
      * @param {module:core.JSONValue} [defaultValue]
      * @returns {module:core.JSONValue}
      */
@@ -116,7 +116,7 @@ export class PrototypalPropertyResolver implements ConfigurablePropertyResolver 
     }
 
     /**
-         * @param {string} key
+     * @param {string} key
      * @returns {module:core.JSONValue}
      */
     getRequiredProperty(key: string): JSONValue {
@@ -128,7 +128,7 @@ export class PrototypalPropertyResolver implements ConfigurablePropertyResolver 
     }
 
     /**
-         * @param {string} key
+     * @param {string} key
      * @returns {boolean}
      */
     hasProperty(key: string): boolean {

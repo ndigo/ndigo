@@ -27,21 +27,21 @@ const TAG_MAPPING = 'tag:mapping',
  */
 export const TagMapping = assign(tagMapping, {
     /**
-         * @param {*} value
+     * @param {*} value
      * @param {*} target
      */
     define: defineTagMapping,
     /**
-         * @param {*} target
+     * @param {*} target
      */
     delete: deleteTagMapping,
     /**
-         * @param {*} target
+     * @param {*} target
      * @returns {string}
      */
     get: getTagMapping,
     /**
-         * @param {*} target
+     * @param {*} target
      * @returns {boolean} Whether or not the `target` has a tag mapping.
      */
     has: hasTagMapping,

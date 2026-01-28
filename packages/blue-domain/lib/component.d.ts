@@ -25,7 +25,6 @@ export interface DomainComponent extends Initializable, EventEmitter, AsyncDestr
 }
 declare const GenericDomainComponent_base: import("@blue/core").Constructable<EventEmitter> & typeof Null;
 /**
- * @class module:component.GenericDomainComponent
  */
 export declare class GenericDomainComponent extends GenericDomainComponent_base implements DomainComponent {
     id: number;

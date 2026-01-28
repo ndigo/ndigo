@@ -33,54 +33,45 @@ export declare class MethodParameter implements Serializable {
     toString(): string;
 }
 /**
- * @function module:dispatcher.defineCookieValue
  * @param {module:dispatcher.MethodParameterInfo} info
- * @param {external:number} parameterIndex
- * @param {external:Object} target
- * @param {external:string|external:symbol} propertyKey
+ * @param {number} parameterIndex
+ * @param {Object} target
+ * @param {string|external:symbol} propertyKey
  */
 export declare const defineCookieValue: (info: MethodParameterInfo, parameterIndex: number, target: Object, propertyKey: string | symbol) => void;
 /**
- * @function module:dispatcher.defineMatrixValue
  * @param {module:dispatcher.MethodParameterInfo} info
- * @param {external:number} parameterIndex
- * @param {external:Object} target
- * @param {external:string|external:symbol} propertyKey
+ * @param {number} parameterIndex
+ * @param {Object} target
+ * @param {string|external:symbol} propertyKey
  */
 export declare const defineMatrixValue: (info: MethodParameterInfo, parameterIndex: number, target: Object, propertyKey: string | symbol) => void;
 /**
- * @function module:dispatcher.defineQueryValue
  * @param {module:dispatcher.MethodParameterInfo} info
- * @param {external:number} parameterIndex
- * @param {external:Object} target
- * @param {external:string|external:symbol} propertyKey
+ * @param {number} parameterIndex
+ * @param {Object} target
+ * @param {string|external:symbol} propertyKey
  */
 export declare const defineQueryValue: (info: MethodParameterInfo, parameterIndex: number, target: Object, propertyKey: string | symbol) => void;
 /**
- * @function module:dispatcher.cookieValue(1)
- * @param {external:string|module:dispatcher.MethodParameterInfo} info
- * @returns {external:ParameterDecorator}
+ * @param {string|module:dispatcher.MethodParameterInfo} info
+ * @returns {ParameterDecorator}
  */
 /**
- * @const {external:ParameterDecorator} module:dispatcher.cookieValue(2)
  */
 export declare const cookieValue: (infoOrTarget: string | MethodParameterInfo | Object, propertyKey?: string | symbol, parameterIndex?: number) => any;
 /**
- * @function module:dispatcher.matrixValue(1)
- * @param {external:string|module:dispatcher.matrixValueInfo} info
- * @returns {external:ParameterDecorator}
+ * @param {string|module:dispatcher.matrixValueInfo} info
+ * @returns {ParameterDecorator}
  */
 /**
- * @const {external:ParameterDecorator} module:dispatcher.matrixValue(2)
  */
 export declare const matrixValue: (infoOrTarget: string | MethodParameterInfo | Object, propertyKey?: string | symbol, parameterIndex?: number) => any;
 /**
- * @function module:dispatcher.queryValue(1)
- * @param {external:string|module:dispatcher.MethodParameterInfo} info
- * @returns {external:ParameterDecorator}
+ * @param {string|module:dispatcher.MethodParameterInfo} info
+ * @returns {ParameterDecorator}
  */
 /**
- * @const {external:ParameterDecorator} module:dispatcher.queryValue(2)
  */
 export declare const queryValue: (infoOrTarget: string | MethodParameterInfo | Object, propertyKey?: string | symbol, parameterIndex?: number) => any;
 //# sourceMappingURL=route-parameter.d.ts.map

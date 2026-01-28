@@ -142,7 +142,7 @@ export class MappedResponseClassHTTPInterceptor implements ResponseAwareHTTPInte
 
     /**
      * @readonly
-         */
+     */
     get interceptor() {
         return this.#interceptor;
     }
@@ -158,7 +158,7 @@ export class MappedResponseClassHTTPInterceptor implements ResponseAwareHTTPInte
 
     /**
      * @async
-         * @param {Response} response
+     * @param {Response} response
      * @param {module:http.HTTPInit} settings
      * @returns {Promise<external:void>}
      */

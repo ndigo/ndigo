@@ -91,7 +91,7 @@ class Type {
     }
 
     /**
-         * @param value
+     * @param value
      * @param params
      */
     validator(value, params) {
@@ -108,7 +108,7 @@ class Type {
     }
 
     /**
-         * @param value
+     * @param value
      * @param params
      */
     validate(value, params = {}): ValidationResults {

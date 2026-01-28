@@ -4,35 +4,35 @@
 import { ALPHA_REGEX, ALPHA_NUMERIC_REGEX, ALPHA_NUMERIC_PLUS_REGEX, ADDRESS_LINE_REGEX, POSTAL_CODE_REGEX, ZIP_CODE_REGEX, ZIP_CODE_EXTENSION_REGEX, CITY_REGEX, DEFAULT_DATE_FORMAT, BOOLEAN_REGEX, WHITESPACE_REGEX, NOT_A_CAPITAL_REGEX, NOT_AN_ALPHA_REGEX, EMAIL_REGEX, NOT_PHONE_EMAIL_REGEX, INTEGER_REGEX, currencyFormats, REPEATING_SEQUENCE_REGEX, NOT_A_NUMBER_REGEX, NUMERIC_REGEX, PASSWORD_FORMAT, NOT_A_PASSWORD_SYMBOL, NAME_REGEX, REAL_REGEX, ANY_ALPHA_NUMERIC_REGEX, SSN_FORMAT, SSN_EXCLUDE_FORMAT, SSN_OAO_FORMAT, SSN_VALID_GROUPS_FORMAT, URL_REGEX, PHONE_NORTH_AMERICA, PHONE_OAO_FORMAT, } from './formats';
 import { any, both, complement, defaultTo, equals, isEmpty, is, pipe, prop, replace, split, test, toString, ifElse, identity, propSatisfies, when, append, lte, gte, curry, } from '@blue/util';
 /**
- * @typedef {external:Object} Params
+ * @typedef {Object} Params
  * @property {*} value
  */
 /**
  * @typedef {Params} DateParams
- * @property {external:string} format
+ * @property {string} format
  */
 /**
  * @typedef {Params} DigitsParams
- * @property {external:number} integer The maximum number of integral digits accepted for this number.
- * @property {external:number} fraction The number of fractional digits accepted for this number.
+ * @property {number} integer The maximum number of integral digits accepted for this number.
+ * @property {number} fraction The number of fractional digits accepted for this number.
  */
 /**
  * @typedef {Params} MoneyParams
- * @property {external:number} currencyFormat
- * @property {external:number} integer
+ * @property {number} currencyFormat
+ * @property {number} integer
  */
 /**
  * @typedef {Params} NonConsecutiveAlphaNumericsParams
- * @property {external:number} maxSequential
+ * @property {number} maxSequential
  */
 /**
  * @typedef {Params} NonRepeatingAlphaNumericsParams
- * @property {external:number} maxRepeating
+ * @property {number} maxRepeating
  */
 /**
  * @typedef {Params} PatternParams
- * @property {external:string|external:RegExp} regex
- * @property {external:string} flags
+ * @property {string|external:RegExp} regex
+ * @property {string} flags
  */
 const { parseFloat, parseInt } = Number, appendEmptyString = append(''), defaultToZero = defaultTo(0), defaultToMaxValue = defaultTo(Number.MAX_VALUE), isOne = equals(1), isArray = Array.isArray, isUndefined = equals(void 0), isDefined = complement(isUndefined), isString = is(String), lengthIsOne = propSatisfies(isOne, 'length'), splitOnDot = split(/\./), isSingleSpaced = complement(pipe(split(' '), any(isEmpty))), lengthOf = prop('length'), removeAnyAlphaNumber = replace(ANY_ALPHA_NUMERIC_REGEX, ''), removeLowerCase = replace(NOT_A_CAPITAL_REGEX, ''), removeNonAlpha = replace(NOT_AN_ALPHA_REGEX, ''), removeNonNumber = replace(NOT_A_NUMBER_REGEX, ''), removeNonPasswordSymbol = replace(NOT_A_PASSWORD_SYMBOL, ''), removeLeadingSlash = replace(/^\//, ''), removeTrailingSlash = replace(/\/$/, ''), removeTrailingSlashAndFlags = replace(/\/[^/]*$/, ''), removeSlashes = pipe(removeLeadingSlash, removeTrailingSlash), removeSlashesAndFlags = pipe(removeLeadingSlash, removeTrailingSlashAndFlags), removeWhitespace = replace(WHITESPACE_REGEX, ''), alphaCount = pipe(toString, removeNonAlpha, lengthOf), numberCount = pipe(toString, removeNonNumber, lengthOf), passwordSymbolCount = pipe(toString, removeNonPasswordSymbol, lengthOf), specialsCount = pipe(toString, removeAnyAlphaNumber, lengthOf), upperCaseCount = pipe(toString, removeLowerCase, lengthOf), valueCount = pipe(toString, lengthOf), patternConstraint = curry(({ regex, flags = null }, value) => {
     regex = ifElse(isString, removeSlashes, identity)(regex);
@@ -40,15 +40,21 @@ const { parseFloat, parseInt } = Number, appendEmptyString = append(''), default
         ? new RegExp(pipe(toString, removeSlashesAndFlags)(regex), flags)
         : new RegExp(regex);
     return test(matcher, value);
-}), isAddressLine = patternConstraint({ regex: ADDRESS_LINE_REGEX }), isAlpha = patternConstraint({ regex: ALPHA_REGEX }), isAlphaNumeric = patternConstraint({ regex: ALPHA_NUMERIC_REGEX }), isAlphaNumericPlus = patternConstraint({ regex: ALPHA_NUMERIC_PLUS_REGEX }), isBlank = pipe(toString, removeWhitespace, isEmpty), isBoolean = patternConstraint({ regex: BOOLEAN_REGEX }), isCapitals = (value, params = { min: 1 }) => rangeValidator(upperCaseCount(value), params), isCharacters = (value, params = { min: 1 }) => rangeValidator(alphaCount(value), params), isCity = both(isSingleSpaced, test(CITY_REGEX)), 
+}), isAddressLine = patternConstraint({
+    regex: ADDRESS_LINE_REGEX.source,
+}), isAlpha = patternConstraint({ regex: ALPHA_REGEX.source }), isAlphaNumeric = patternConstraint({
+    regex: ALPHA_NUMERIC_REGEX.source,
+}), isAlphaNumericPlus = patternConstraint({
+    regex: ALPHA_NUMERIC_PLUS_REGEX.source,
+}), isBlank = pipe(toString, removeWhitespace, isEmpty), isBoolean = patternConstraint({ regex: BOOLEAN_REGEX.source }), isCapitals = (value, params = { min: 1 }) => rangeValidator(upperCaseCount(value), params), isCharacters = (value, params = { min: 1 }) => rangeValidator(alphaCount(value), params), isCity = both(isSingleSpaced, test(CITY_REGEX)), 
 /**
  * Validates a value with a set of constraints, requiring a minimum to be true
- * @param {external:string} value value to validate
- * @param {external:Object} params expected parameters
- * @param {external:Object} params.constraint set of constraints as an array
- * @param {external:Object} params.constraint.type constraint name
- * @param {external:Object} params.constraint.params constraint params
- * @param {external:Object} params.min the minimum number of constraints in the set that must be true
+ * @param {string} value value to validate
+ * @param {Object} params expected parameters
+ * @param {Object} params.constraint set of constraints as an array
+ * @param {Object} params.constraint.type constraint name
+ * @param {Object} params.constraint.params constraint params
+ * @param {Object} params.min the minimum number of constraints in the set that must be true
  */
 isConstraintSet = (value, params) => {
     const _value = value;
@@ -86,7 +92,7 @@ isConstraintSet = (value, params) => {
 }, 
 /**
  * Validates digits to have a certain amount of decimal numbers and/or integer numbers
- * @param {external:string} The value expected
+ * @param {string} The value expected
  * @param {DigitsParams} params parameters
  */
 isDigits = (value, params = { integer: -1, fraction: -1 }) => {
@@ -106,7 +112,7 @@ isDigits = (value, params = { integer: -1, fraction: -1 }) => {
         }
     }
     return result;
-}, isEmail = patternConstraint({ regex: EMAIL_REGEX }), isEnum = (value, params = {}) => {
+}, isEmail = patternConstraint({ regex: EMAIL_REGEX.source }), isEnum = (value, params = {}) => {
     const enumeration = isString(params.value)
         ? params.value.split(' ')
         : !isArray(params.value)
@@ -120,7 +126,7 @@ isDigits = (value, params = { integer: -1, fraction: -1 }) => {
     //return date.isValid() && date.isAfter();
     console.log('FIX');
     return true;
-}, isInteger = patternConstraint({ regex: INTEGER_REGEX }), isITINRange = (value) => {
+}, isInteger = patternConstraint({ regex: INTEGER_REGEX.source }), isITINRange = (value) => {
     const text = toString(value), length = text.length;
     let n = length < 4 ? 0 : Number(text[3]);
     if (length > 4 && n >= 7) {
@@ -130,18 +136,16 @@ isDigits = (value, params = { integer: -1, fraction: -1 }) => {
 }, isLength = (value, params) => rangeValidator(valueCount(value), params), 
 /**
  * Validates a number to be less than
- * @function module:validate.constraints~isMax
- * @param {external:string|external:number} value The value to be tested
+ * @param {string|external:number} value The value to be tested
  * @param {Param} params
- * @returns {external:boolean} Whether or not the `value` is less than or equal to `params.value`.
+ * @returns {boolean} Whether or not the `value` is less than or equal to `params.value`.
  */
 isMax = (value, params = {}) => lte(parseFloat(value), parseFloat(params.value)), 
 /**
  * Validates a number to be greater than
- * @function module:validate.constraints~isMin
- * @param {external:string|external:number} value The value to be tested
+ * @param {string|external:number} value The value to be tested
  * @param {Param} params
- * @returns {external:boolean} Whether or not the `value` is greater than or equal to `params.value`.
+ * @returns {boolean} Whether or not the `value` is greater than or equal to `params.value`.
  */
 isMin = (value, params = {}) => gte(parseFloat(value), parseFloat(params.value)), 
 /** Validates currency based on these rules (BLUEJS-741) */
@@ -196,7 +200,9 @@ isMoney = (value, params = { format: 'USD' }) => (params.currencyFormat || curre
 }, isNonRepeatingSequence = complement(test(REPEATING_SEQUENCE_REGEX)), isNotAPhoneEmail = complement(test(NOT_PHONE_EMAIL_REGEX)), isNotBeginWith = (value, params = {}) => {
     value = toString(value);
     return value.length === 0 || value[0] !== params.value;
-}, isNotBeginWith1 = (value) => isNotBeginWith(value, { value: '1' }), isNotBlank = complement(isBlank), isNumbers = (value, params = { min: 1 }) => rangeValidator(numberCount(value), params), isNumeric = patternConstraint({ regex: NUMERIC_REGEX }), isPasswordCharacters = patternConstraint({ regex: PASSWORD_FORMAT }), isPasswordSymbols = (value, params = { min: 1 }) => rangeValidator(passwordSymbolCount(value), params), isPast = (value, format = DEFAULT_DATE_FORMAT) => {
+}, isNotBeginWith1 = (value) => isNotBeginWith(value, { value: '1' }), isNotBlank = complement(isBlank), isNumbers = (value, params = { min: 1 }) => rangeValidator(numberCount(value), params), isNumeric = patternConstraint({ regex: NUMERIC_REGEX.source }), isPasswordCharacters = patternConstraint({
+    regex: PASSWORD_FORMAT.source,
+}), isPasswordSymbols = (value, params = { min: 1 }) => rangeValidator(passwordSymbolCount(value), params), isPast = (value, format = DEFAULT_DATE_FORMAT) => {
     //const date = isString( value ) ?
     //    moment( value, format, true ) :
     //    moment( value );
@@ -206,9 +212,9 @@ isMoney = (value, params = { format: 'USD' }) => (params.currencyFormat || curre
 }, 
 /**
  * Validates a regular expression pattern
- * @param {external:string} The value expected
- * @param {external:string|external:RegExp} regexp The regular expression to be used
- * @param {external:string} flags The flags to be used with the regular expression
+ * @param {string} The value expected
+ * @param {string|external:RegExp} regexp The regular expression to be used
+ * @param {string} flags The flags to be used with the regular expression
  */
 isPatternMatch = (value, regexp, flags) => {
     regexp = ifElse(isString, removeSlashes, identity)(regexp);
@@ -216,15 +222,21 @@ isPatternMatch = (value, regexp, flags) => {
         ? new RegExp(pipe(toString, removeSlashesAndFlags)(regexp), flags)
         : new RegExp(regexp);
     return test(matcher, value);
-}, isPersonalName = patternConstraint({ regex: NAME_REGEX }), isPhoneNorthAmerica = patternConstraint({ regex: PHONE_NORTH_AMERICA }), isPhoneOao = patternConstraint({ regex: PHONE_OAO_FORMAT }), isPostalCode = patternConstraint({ regex: POSTAL_CODE_REGEX }), 
+}, isPersonalName = patternConstraint({ regex: NAME_REGEX.source }), isPhoneNorthAmerica = patternConstraint({
+    regex: PHONE_NORTH_AMERICA.source,
+}), isPhoneOao = patternConstraint({
+    regex: PHONE_OAO_FORMAT.source,
+}), isPostalCode = patternConstraint({
+    regex: POSTAL_CODE_REGEX.source,
+}), 
 /**
  * Validates a range
- * @param {external:string} The value expected
- * @param {external:Object} params Expected parameters
- * @param {external:Object} params.min Lowest amount in the range
- * @param {external:Object} params.max Highest amount in the range
+ * @param {string} The value expected
+ * @param {Object} params Expected parameters
+ * @param {Object} params.min Lowest amount in the range
+ * @param {Object} params.max Highest amount in the range
  */
-isRange = (value, params) => rangeValidator(value, params), isReal = patternConstraint({ regex: REAL_REGEX }), isRoutingNumber = (value) => {
+isRange = (value, params) => rangeValidator(value, params), isReal = patternConstraint({ regex: REAL_REGEX.source }), isRoutingNumber = (value) => {
     let n = 0, i = 0;
     const length = value.length;
     value = toString(value);
@@ -235,27 +247,33 @@ isRange = (value, params) => rangeValidator(value, params), isReal = patternCons
                 parseInt(value.charAt(i + 2), 10);
     }
     return n !== 0 && n % 10 === 0;
-}, isSpecials = (value, params = { min: 1 }) => rangeValidator(specialsCount(value), params), isSsn = patternConstraint({ regex: SSN_FORMAT }), isSsnExclude = patternConstraint({ regex: SSN_EXCLUDE_FORMAT }), isSsnOao = patternConstraint({ regex: SSN_OAO_FORMAT }), isSsnValidGroups = patternConstraint({ regex: SSN_VALID_GROUPS_FORMAT }), 
+}, isSpecials = (value, params = { min: 1 }) => rangeValidator(specialsCount(value), params), isSsn = patternConstraint({ regex: SSN_FORMAT.source }), isSsnExclude = patternConstraint({
+    regex: SSN_EXCLUDE_FORMAT.source,
+}), isSsnOao = patternConstraint({ regex: SSN_OAO_FORMAT.source }), isSsnValidGroups = patternConstraint({
+    regex: SSN_VALID_GROUPS_FORMAT.source,
+}), 
 /**
  * Validates a value as a valid step in a possible range
- * @function module:validate.constraints.Step.validator
- * @param {external:string} value The value expected
- * @param {external:Object} params Expected parameters
- * @param {external:Object} params.min Lowest amount in the range
- * @param {external:Object} params.max Highest amount in the range
- * @param {external:Object} params.step Incremental or decremental step amount
+ * @param {string} value The value expected
+ * @param {Object} params Expected parameters
+ * @param {Object} params.min Lowest amount in the range
+ * @param {Object} params.max Highest amount in the range
+ * @param {Object} params.step Incremental or decremental step amount
  */
 isStep = (value, params = { step: 1 }) => {
     const parsed = Number(value), step = Number(params.step);
     return rangeValidator(parsed, params) && parsed % step === 0;
-}, isUrl = patternConstraint({ regex: URL_REGEX }), isValidDate = (value, format = DEFAULT_DATE_FORMAT) => {
+}, isUrl = patternConstraint({ regex: URL_REGEX.source }), isValidDate = (value, format = DEFAULT_DATE_FORMAT) => {
     /*const date = isString( value ) ?
         moment( value, format, true ) :
         moment( value );
     return date.isValid();*/
     console.log('FIX');
     return true;
-}, isZipCode = patternConstraint({ regex: ZIP_CODE_REGEX }), isZipCodeExtension = patternConstraint({ regex: ZIP_CODE_EXTENSION_REGEX }), rangeValidator = function (value, params = {}) {
+}, isZipCode = patternConstraint({ regex: ZIP_CODE_REGEX.source }), isZipCodeExtension = patternConstraint({
+    regex: ZIP_CODE_EXTENSION_REGEX.source,
+}), rangeValidator = function (value, params = {}) {
+    const valueToCompare = Number(value);
     let min, max;
     // Process params
     if (isDefined(params.value)) {
@@ -265,75 +283,63 @@ isStep = (value, params = { step: 1 }) => {
         min = defaultToZero(Number(params.min));
         max = defaultToMaxValue(Number(params.max));
     }
-    value = Number(value);
-    return value >= min && value <= max;
+    return valueToCompare >= min && valueToCompare <= max;
 };
 /**
  * @namespace module:validate.constraints
  */
 const standardConstraints = {
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.AddressLine
      */
     AddressLine: {
         validate: isAddressLine,
     },
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.Alpha
      */
     Alpha: {
         validate: isAlpha,
     },
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.AlphaNumeric
      */
     AlphaNumeric: {
         validate: isAlphaNumeric,
     },
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.AlphaNumericPlus
      */
     AlphaNumericPlus: {
         validate: isAlphaNumericPlus,
     },
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.Blank
      */
     Blank: {
         validate: isBlank,
     },
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.Boolean
      */
     Boolean: {
         validate: isBoolean,
     },
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.Capitals
      */
     Capitals: {
         validate: isCapitals,
     },
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.Characters
      */
     Characters: {
         validate: isCharacters,
     },
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.City
      */
     City: {
         validate: isCity,
     },
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.ConstraintSet
      */
     ConstraintSet: {
         validate: isConstraintSet,
     },
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.Date
      */
     Date: {
         validate: (value, params = {}) => {
@@ -342,37 +348,31 @@ const standardConstraints = {
         },
     },
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.Date18YearsOld
      */
     Date18YearsOld: {
         validate: isDate18YearsOld,
     },
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.DateRange
      */
     DateRange: {
         validate: isDateRange,
     },
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.Digits
      */
     Digits: {
         validate: isDigits,
     },
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.Email
      */
     Email: {
         validate: isEmail,
     },
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.Enum
      */
     Enum: {
         validate: isEnum,
     },
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.Future
      */
     Future: {
         validate: (value, params = {}) => {
@@ -381,115 +381,96 @@ const standardConstraints = {
         },
     },
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.Integer
      */
     Integer: {
         validate: isInteger,
     },
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.ITINRange
      */
     ITINRange: {
         validate: isITINRange,
     },
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.Length
      */
     Length: {
         validate: isLength,
     },
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.Max
      */
     Max: {
         validate: isMax,
     },
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.Min
      */
     Min: {
         validate: isMin,
     },
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.Money
      */
     Money: {
         validate: isMoney,
     },
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.MustBeginWith
      */
     MustBeginWith: {
         validate: isMustBeginWith,
     },
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.NotBlank
      */
     NotBlank: {
         validate: isNotBlank,
     },
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.NotBeginWith
      */
     NotBeginWith: {
         validate: isNotBeginWith,
     },
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.NotBeginWith1
      */
     NotBeginWith1: {
         validate: isNotBeginWith1,
     },
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.NonConsecutiveAlphaNumerics
      */
     NonConsecutiveAlphaNumerics: {
         validate: isNonConsecutiveAlphaNumerics,
     },
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.NonRepeatingAlphaNumerics
      */
     NonRepeatingAlphaNumerics: {
         validate: isNonRepeatingAlphaNumerics,
     },
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.NonRepeatingSequence
      */
     NonRepeatingSequence: {
         validate: isNonRepeatingSequence,
     },
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.NotPhoneEmail
      */
     NotPhoneEmail: {
         validate: isNotAPhoneEmail,
     },
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.Numbers
      */
     Numbers: {
         validate: isNumbers,
     },
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.Numeric
      */
     Numeric: {
         validate: isNumeric,
     },
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.PasswordCharacters
      */
     PasswordCharacters: {
         validate: isPasswordCharacters,
     },
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.PasswordSymbols
      */
     PasswordSymbols: {
         validate: isPasswordSymbols,
     },
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.Past
      */
     Past: {
         validate: (value, params = {}) => {
@@ -498,7 +479,6 @@ const standardConstraints = {
         },
     },
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.Pattern
      */
     Pattern: {
         validate: (value, params = {}) => {
@@ -507,101 +487,85 @@ const standardConstraints = {
         },
     },
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.PersonalName
      */
     PersonalName: {
         validate: isPersonalName,
     },
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.PhoneNorthAmerica
      */
     PhoneNorthAmerica: {
         validate: isPhoneNorthAmerica,
     },
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.PhoneOao
      */
     PhoneOao: {
         validate: isPhoneOao,
     },
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.PostalCode
      */
     PostalCode: {
         validate: isPostalCode,
     },
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.Range
      */
     Range: {
         validate: isRange,
     },
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.Real
      */
     Real: {
         validate: isReal,
     },
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.RoutingNumber
      */
     RoutingNumber: {
         validate: isRoutingNumber,
     },
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.Ssn
      */
     Ssn: {
         validate: isSsn,
     },
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.SsnExclude
      */
     SsnExclude: {
         validate: isSsnExclude,
     },
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.SsnOao
      */
     SsnOao: {
         validate: isSsnOao,
     },
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.SsnValidGroups
      */
     SsnValidGroups: {
         validate: isSsnValidGroups,
     },
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.Specials
      */
     Specials: {
         validate: isSpecials,
     },
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.Step
      */
     Step: {
         validate: isStep,
     },
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.URL
      */
     URL: {
         validate: isUrl,
     },
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.ZipCode
      */
     ZipCode: {
         validate: isZipCode,
     },
     /**
-     * @member {module:validate.constraints~Constraint} module:validate.constraints.ZipCodeExtension
      */
     ZipCodeExtension: {
         validate: isZipCodeExtension,
     },
 };
 export default standardConstraints;
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoic3RhbmRhcmQtY29uc3RyYWludHMuanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi9zcmMvc3RhbmRhcmQtY29uc3RyYWludHMudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7O0dBRUc7QUFFSCxPQUFPLEVBQ0gsV0FBVyxFQUNYLG1CQUFtQixFQUNuQix3QkFBd0IsRUFDeEIsa0JBQWtCLEVBQ2xCLGlCQUFpQixFQUNqQixjQUFjLEVBQ2Qsd0JBQXdCLEVBQ3hCLFVBQVUsRUFDVixtQkFBbUIsRUFDbkIsYUFBYSxFQUNiLGdCQUFnQixFQUNoQixtQkFBbUIsRUFDbkIsa0JBQWtCLEVBQ2xCLFdBQVcsRUFDWCxxQkFBcUIsRUFDckIsYUFBYSxFQUNiLGVBQWUsRUFDZix3QkFBd0IsRUFDeEIsa0JBQWtCLEVBQ2xCLGFBQWEsRUFDYixlQUFlLEVBQ2YscUJBQXFCLEVBQ3JCLFVBQVUsRUFDVixVQUFVLEVBQ1YsdUJBQXVCLEVBQ3ZCLFVBQVUsRUFDVixrQkFBa0IsRUFDbEIsY0FBYyxFQUNkLHVCQUF1QixFQUN2QixTQUFTLEVBQ1QsbUJBQW1CLEVBQ25CLGdCQUFnQixHQUVuQixNQUFNLFdBQVcsQ0FBQztBQUNuQixPQUFPLEVBQ0gsR0FBRyxFQUNILElBQUksRUFDSixVQUFVLEVBQ1YsU0FBUyxFQUNULE1BQU0sRUFDTixPQUFPLEVBQ1AsRUFBRSxFQUNGLElBQUksRUFDSixJQUFJLEVBQ0osT0FBTyxFQUNQLEtBQUssRUFDTCxJQUFJLEVBQ0osUUFBUSxFQUNSLE1BQU0sRUFDTixRQUFRLEVBQ1IsYUFBYSxFQUNiLElBQUksRUFDSixNQUFNLEVBQ04sR0FBRyxFQUNILEdBQUcsRUFDSCxLQUFLLEdBQ1IsTUFBTSxZQUFZLENBQUM7QUErRHBCOzs7R0FHRztBQUVIOzs7R0FHRztBQUVIOzs7O0dBSUc7QUFFSDs7OztHQUlHO0FBRUg7OztHQUdHO0FBRUg7OztHQUdHO0FBRUg7Ozs7R0FJRztBQUVILE1BQU0sRUFBRSxVQUFVLEVBQUUs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
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoic3RhbmRhcmQtY29uc3RyYWludHMuanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi9zcmMvc3RhbmRhcmQtY29uc3RyYWludHMudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQUE7O0dBRUc7QUFFSCxPQUFPLEVBQ0gsV0FBVyxFQUNYLG1CQUFtQixFQUNuQix3QkFBd0IsRUFDeEIsa0JBQWtCLEVBQ2xCLGlCQUFpQixFQUNqQixjQUFjLEVBQ2Qsd0JBQXdCLEVBQ3hCLFVBQVUsRUFDVixtQkFBbUIsRUFDbkIsYUFBYSxFQUNiLGdCQUFnQixFQUNoQixtQkFBbUIsRUFDbkIsa0JBQWtCLEVBQ2xCLFdBQVcsRUFDWCxxQkFBcUIsRUFDckIsYUFBYSxFQUNiLGVBQWUsRUFDZix3QkFBd0IsRUFDeEIsa0JBQWtCLEVBQ2xCLGFBQWEsRUFDYixlQUFlLEVBQ2YscUJBQXFCLEVBQ3JCLFVBQVUsRUFDVixVQUFVLEVBQ1YsdUJBQXVCLEVBQ3ZCLFVBQVUsRUFDVixrQkFBa0IsRUFDbEIsY0FBYyxFQUNkLHVCQUF1QixFQUN2QixTQUFTLEVBQ1QsbUJBQW1CLEVBQ25CLGdCQUFnQixHQUVuQixNQUFNLFdBQVcsQ0FBQztBQUNuQixPQUFPLEVBQ0gsR0FBRyxFQUNILElBQUksRUFDSixVQUFVLEVBQ1YsU0FBUyxFQUNULE1BQU0sRUFDTixPQUFPLEVBQ1AsRUFBRSxFQUNGLElBQUksRUFDSixJQUFJLEVBQ0osT0FBTyxFQUNQLEtBQUssRUFDTCxJQUFJLEVBQ0osUUFBUSxFQUNSLE1BQU0sRUFDTixRQUFRLEVBQ1IsYUFBYSxFQUNiLElBQUksRUFDSixNQUFNLEVBQ04sR0FBRyxFQUNILEdBQUcsRUFDSCxLQUFLLEdBQ1IsTUFBTSxZQUFZLENBQUM7QUErRHBCOzs7R0FHRztBQUVIOzs7R0FHRztBQUVIOzs7O0dBSUc7QUFFSDs7OztHQUlHO0FBRUg7OztHQUdHO0FBRUg7OztHQUdHO0FBRUg7Ozs7R0FJRztBQUVILE1BQU0sRUFBRSxVQUFVLEVBQUUs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

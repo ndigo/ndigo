@@ -18,21 +18,21 @@ type Constructable<T = {}> = new (...args: any[]) => T;
  */
 export class Level implements Comparable<Level>, Serializable {
     /**
-         */
+     */
     static OFF = new Level('off', 0);
 
     /**
-         */
+     */
     static ALL = new Level('all', Number.MAX_VALUE);
 
     /**
      * @readonly
-         */
+     */
     readonly name: string;
 
     /**
      * @readonly
-         */
+     */
     readonly value: number;
 
     get [Symbol.toStringTag](): string {
@@ -56,7 +56,7 @@ export class Level implements Comparable<Level>, Serializable {
     }
 
     /**
-         * @param {module:logger.Level} value
+     * @param {module:logger.Level} value
      * @returns {number}
      */
     compareTo(value: Level): number {
@@ -74,14 +74,14 @@ export class Level implements Comparable<Level>, Serializable {
     }
 
     /**
-         * @returns {string}
+     * @returns {string}
      */
     toJSON(): string {
         return this.toString();
     }
 
     /**
-         * @returns {string} The string representation of the level
+     * @returns {string} The string representation of the level
      */
     toString(): string {
         return this.name;

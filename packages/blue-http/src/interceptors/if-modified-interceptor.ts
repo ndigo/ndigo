@@ -28,7 +28,7 @@ export class IfModifiedInterceptor
     }
 
     /**
-         * @param {URL} url The requested URL.
+     * @param {URL} url The requested URL.
      * @param {module:http.IfModifiedInit} settings The HTTP request settings, including the `ifModified` setting.
      * @returns {boolean} Whether or not the http request should continue execution.
      */
@@ -45,7 +45,7 @@ export class IfModifiedInterceptor
 
     /**
      * @async
-         * @param {Response} response
+     * @param {Response} response
      * @param {module:http.IfModifiedInit} settings
      * @returns {Promise<external:void>}
      */

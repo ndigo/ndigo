@@ -13,7 +13,6 @@ export interface RouteHandlerMappingStrategy {
     getHandler(route: Route): RouteHandlerExecutionChain;
 }
 /**
- * @interface module:dispatcher.RouteHandlerMappingStrategy
  */
 export declare const AsRouteHandlerMappingStrategy: <T extends Constructable<StrategyInitializer>>(superclass: T) => Constructable<RouteHandlerMappingStrategy> & T;
 //# sourceMappingURL=route-handler-mapping-strategy.d.ts.map

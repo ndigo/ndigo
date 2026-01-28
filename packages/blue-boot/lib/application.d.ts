@@ -5,16 +5,14 @@ import { ApplicationContext, ConfigurableApplicationContext, ConfigurableEnviron
 import { JSONObject } from '@blue/core';
 /**
  * Class that can be used to bootstrap and launch an application.
- * @class module:boot.Application
- * @param {external:string} name The name of the application
+ * @param {string} name The name of the application
  */
 export declare class Application {
     #private;
     get sources(): Set<Function>;
     constructor(sources: Function[]);
     /**
-     * Run the Spring application, creating and refreshing a new {@linkcode module:context.ApplicationContext|ApplicationContext}.
-     * @function module:boot.Application#run
+     * Run the Spring application, creating and refreshing a new {@link ApplicationContext|ApplicationContext}.
      * @param {*} args
      */
     run(...args: string[]): ConfigurableApplicationContext;
@@ -24,16 +22,14 @@ export declare class Application {
     setProperties(properties: JSONObject): void;
     /**
      * @protected
-     * @function module:boot.Application#_configureEnvironment
      * @param {module:context.Environment} environment
-     * @param {external:Array<external:string>} args
+     * @param {Array<external:string>} args
      */
     protected _configureEnvironment(environment: ConfigurableEnvironment, args: string[]): void;
     /**
      * @protected
-     * @function module:boot.Application#_configureProfiles
      * @param {module:context.Environment} environment
-     * @param {external:Array<external:string>} args
+     * @param {Array<external:string>} args
      */
     protected _configureProfiles(environment: ConfigurableEnvironment, args: string[]): void;
     protected _configurePropertySources(environment: ConfigurableEnvironment, args: string[]): void;

@@ -5,7 +5,7 @@
 import { curryN } from 'ramda';
 const { abs, max } = Math, 
 /**
-     * @category List
+ * @category List
  * @param {number} step The amount by which the first number will be incremented or decremented.
  * @param {number} from The first number in the list.
  * @param {number} [to=from] One more or less than the last number in the list. If it is not provided, `to` will be set to `from` and an empty array will be returned.

@@ -1,13 +1,14 @@
 /**
  * @author Jeff Rose
  */
-import { loggable, Level } from '@blue/logger';
+import { loggable, Level, LevelComparator } from '@blue/logger';
+import { EventEmitter } from './event-emitter';
+import { Null } from '@blue/core';
 type BlueLoggerProvider = any;
 type OTelLoggerAPI = any;
 type EntryToLogRecordOptions = any;
-declare const EventLogger_base: any;
+declare const EventLogger_base: (new (...args: any[]) => LevelComparator) & import("@blue/core").Constructable<EventEmitter> & (new (...args: any[]) => import("@blue/factory").NameAware) & typeof Null;
 /**
- * @class module:context.EventLogger
  * @implements module:context.EventEmitter
  * @implements module:logger.Logger
  * @implements module:logger.LevelComparator
@@ -40,7 +41,7 @@ export declare class EventLogger extends EventLogger_base {
      * logger.log(Level.INFO, ['Application started']);
      * ```
      */
-    enableOTel(provider: BlueLoggerProvider, options?: EntryToLogRecordOptions): void;
+    enableOTel(provider: BlueLoggerProvider, options?: EntryToLogRecordOptions): Promise<void>;
     /**
      * Disable OpenTelemetry integration
      *

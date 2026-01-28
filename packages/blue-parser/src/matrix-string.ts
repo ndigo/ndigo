@@ -76,7 +76,7 @@ const commaMatcher = /,/,
         }, createNull()),
     /**
      * Parses a matrix string into an object.
-         * @param {string} text The matrix string
+     * @param {string} text The matrix string
      * @returns {Object} The parsed matrix string.
      * @category String
      */

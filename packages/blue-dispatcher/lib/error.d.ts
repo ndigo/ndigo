@@ -4,7 +4,6 @@
 import { FrameworkError } from '@blue/core';
 import { Route } from '@blue/router';
 /**
- * @class module:dispatcher.NoHandlerFoundError
  * @extends module:core.FrameworkError
  */
 export declare class NoHandlerFoundError extends FrameworkError {
@@ -13,7 +12,6 @@ export declare class NoHandlerFoundError extends FrameworkError {
     constructor(route: Route);
 }
 /**
- * @class module:dispatcher.NoViewFoundError
  * @extends module:core.FrameworkError
  */
 export declare class NoViewFoundError extends FrameworkError {
@@ -23,8 +21,7 @@ export declare class NoViewFoundError extends FrameworkError {
     constructor(viewName: string, route: Route);
 }
 /**
- * An error that represents a failure to retrieve a required {@linkcode module:router.Route|Route} property.
- * @class module:dispatcher.RouteBindingError
+ * An error that represents a failure to retrieve a required {@link Route|Route} property.
  * @extends module:core.FrameworkError
  */
 export declare class RouteBindingError extends FrameworkError {

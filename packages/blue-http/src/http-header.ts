@@ -103,7 +103,7 @@ export class HTTPHeader implements Serializable {
     constructor(name: string) {
         /**
          * @readonly
-                 */
+         */
         defineProperty(this, 'name', {
             value: name,
             configurable: true,
@@ -132,14 +132,14 @@ export class HTTPHeader implements Serializable {
     }
 
     /**
-         * @returns {module:core.JSONObject} A JSON representation of the HTTP header
+     * @returns {module:core.JSONObject} A JSON representation of the HTTP header
      */
     toJSON(): JSONValue {
         return this.name;
     }
 
     /**
-         * @returns {string} A string representation of the HTTP header
+     * @returns {string} A string representation of the HTTP header
      */
     toString(): string {
         return this.name;

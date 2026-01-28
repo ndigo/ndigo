@@ -16,7 +16,6 @@ export interface RouteHandlerMethodMappingNamingStrategy<T = any> {
     getName(handlerMethod: RouteHandlerMethod, mapping: T): string;
 }
 /**
- * @class module:router.RouteHandlerMethod
  * @implements module:dispatcher.HandlerMethod
  * @implements module:core.Serializable
  */
@@ -30,19 +29,16 @@ export declare class RouteHandlerMethod implements HandlerMethod, Serializable {
     constructor(handler: object, method: string, ...args: any[]);
     constructor(factory: Factory, name: string, method: string, ...args: any[]);
     /**
-     * @function module:router.RouteHandlerMethod#invoke
      * @param {module:router.Request} route
      * @returns {module:dispatcher.ModelAndView}
      */
     invoke<ModelAndView>(route: Route, ...foo: any[]): ModelAndView;
     /**
-     * @function module:router.RouteHandlerMethod#toString
-     * @returns {external:string}
+     * @returns {string}
      */
     toString(): string;
 }
 /**
- * @class module:dispatcher.ErrorHandlerMethod
  * @extends module:router.RouteHandlerMethod
  */
 export declare class ErrorHandlerMethod extends RouteHandlerMethod {

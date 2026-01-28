@@ -17,11 +17,9 @@ const ampersand = /&/,
     splitOnComma: (value: string) => string | string[] = when(test(comma), trailingSplit(',')),
     // "a,b,c," -> ["a","b","c"]
     // ["a,b,","c,d,"] -> [["a","b"],["c","d"]]
-    splitAllOnComma = ifElse(
-        Array.isArray,
-        map(splitOnComma),
-        splitOnComma
-    ) as (value: string | string[]) => string[] | string[][];
+    splitAllOnComma = ifElse(Array.isArray, map(splitOnComma), splitOnComma) as (
+        value: string | string[]
+    ) => string[] | string[][];
 
 /**
  * Parses a piped list string into an object.

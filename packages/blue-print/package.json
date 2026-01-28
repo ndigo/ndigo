@@ -2,31 +2,17 @@
   "name": "@blue/print",
   "version": "3.0.0-alpha.0",
   "description": "Blue Fingerprint",
+  "type": "module",
   "files": [
     "doc",
-    "lib",
-    "index.js",
-    "index.js.map"
+    "lib"
   ],
-  "exports": {
-    "import": "./lib/index.js",
-    "require": "./index.js"
-  },
-  "main": "index.js",
-  "module": "lib/index.js",
+  "exports": "./lib/index.js",
   "types": "lib/index.d.ts",
   "scripts": {
-    "benchmark": "../../bin/benchmark.sh",
     "build:lib": "../../bin/build_lib.sh",
-    "build:bundle": "../../bin/build_bundle.sh",
-    "build:all": "../../bin/build_all.sh",
-    "debug:bundle": "../../bin/debug_bundle.sh",
-    "debug:web": "../../bin/debug_web.sh",
     "doc": "../../bin/doc.sh",
-    "prepublish": "../../bin/prepublish.sh",
-    "profile": "../../bin/profile.sh",
-    "test": "vitest run",
-    "test:watch": "vitest"
+    "test": "vitest run"
   },
   "repository": {
     "type": "git",

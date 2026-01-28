@@ -26,7 +26,7 @@ export class MetadataScanner {
 
         /**
          * @private
-                 */
+         */
         defineProperty(this, '_target', {
             value: target,
             configurable: false,
@@ -37,7 +37,7 @@ export class MetadataScanner {
 
     /**
      * @private
-         * @param {string} metadataKey
+     * @param {string} metadataKey
      * @returns {Array<external:string>} The property names on the target that have metadata.
      */
     private _primeCache(metadataKey: string) {
@@ -59,7 +59,7 @@ export class MetadataScanner {
 
     /**
      * Get the property names of the target object that have the requested metadata.
-         * @param {string} metadataKey
+     * @param {string} metadataKey
      * @returns {Array<external:string>} The property names on the target that have metadata.
      */
     get(metadataKey: string) {
@@ -76,7 +76,7 @@ export class MetadataScanner {
 
     /**
      * Clear the metadata cache for the target object.
-         */
+     */
     clear(): void {
         this._cache.clear();
     }
@@ -98,7 +98,7 @@ class MetadataManager {
      * Look first for a metadataScanner instance for the target object in the scanner map.
      * If an instance is not found then make one, add that to the scanner map, and return
      * the properties with the requested metadata.
-         * @param {Record} target
+     * @param {Record} target
      * @param {string} metadataKey
      * @returns {Array<external:string>} The property names on the target that have metadata.
      */

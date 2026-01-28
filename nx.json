@@ -7,24 +7,282 @@
       "inputs": ["production", "^production"],
       "outputs": ["{projectRoot}/lib"]
     },
-    "build:bundle": {
-      "dependsOn": ["build:lib"],
-      "cache": true,
-      "inputs": ["production", "^production"],
-      "outputs": ["{projectRoot}/index.js", "{projectRoot}/index.js.map"]
-    },
-    "build:all": {
-      "dependsOn": ["build:lib", "build:bundle"],
-      "cache": true
-    },
-    "test": {
-      "dependsOn": ["build:lib"],
-      "cache": true,
-      "inputs": ["default", "^production"]
-    },
-    "lint": {
-      "cache": true,
-      "inputs": ["default", "{workspaceRoot}/eslint.config.mjs"]
+
+    "projects": {
+      "blue-demo": {
+        "root": "packages/blue-demo",
+        "projectType": "application",
+        "targets": {
+          "dev": {
+            "executor": "nx:run-commands",
+            "options": {
+              "command": "pnpm dev",
+              "cwd": "packages/blue-demo"
+            },
+            "outputs": []
+          },
+          "build": {
+            "executor": "nx:run-commands",
+            "options": {
+              "command": "pnpm build",
+              "cwd": "packages/blue-demo"
+            },
+            "outputs": ["{projectRoot}/dist"]
+          }
+        }
+      },
+      "@blue/boot": {
+        "root": "packages/blue-boot",
+        "projectType": "library",
+        "targets": {
+          "build:lib": {
+            "executor": "nx:run-commands",
+            "options": {
+              "command": "pnpm build:lib",
+              "cwd": "packages/blue-boot"
+            },
+            "outputs": ["{projectRoot}/lib"]
+          }
+        }
+      },
+      "@blue/content": {
+        "root": "packages/blue-content",
+        "projectType": "library",
+        "targets": {
+          "build:lib": {
+            "executor": "nx:run-commands",
+            "options": {
+              "command": "pnpm build:lib",
+              "cwd": "packages/blue-content"
+            },
+            "outputs": ["{projectRoot}/lib"]
+          }
+        }
+      },
+      "@blue/core": {
+        "root": "packages/blue-core",
+        "projectType": "library",
+        "targets": {
+          "build:lib": {
+            "executor": "nx:run-commands",
+            "options": {
+              "command": "pnpm build:lib",
+              "cwd": "packages/blue-core"
+            },
+            "outputs": ["{projectRoot}/lib"]
+          }
+        }
+      },
+      "@blue/dispatcher": {
+        "root": "packages/blue-dispatcher",
+        "projectType": "library",
+        "targets": {
+          "build:lib": {
+            "executor": "nx:run-commands",
+            "options": {
+              "command": "pnpm build:lib",
+              "cwd": "packages/blue-dispatcher"
+            },
+            "outputs": ["{projectRoot}/lib"]
+          }
+        }
+      },
+      "@blue/domain": {
+        "root": "packages/blue-domain",
+        "projectType": "library",
+        "targets": {
+          "build:lib": {
+            "executor": "nx:run-commands",
+            "options": {
+              "command": "pnpm build:lib",
+              "cwd": "packages/blue-domain"
+            },
+            "outputs": ["{projectRoot}/lib"]
+          }
+        }
+      },
+      "@blue/factory": {
+        "root": "packages/blue-factory",
+        "projectType": "library",
+        "targets": {
+          "build:lib": {
+            "executor": "nx:run-commands",
+            "options": {
+              "command": "pnpm build:lib",
+              "cwd": "packages/blue-factory"
+            },
+            "outputs": ["{projectRoot}/lib"]
+          }
+        }
+      },
+      "@blue/http": {
+        "root": "packages/blue-http",
+        "projectType": "library",
+        "targets": {
+          "build:lib": {
+            "executor": "nx:run-commands",
+            "options": {
+              "command": "pnpm build:lib",
+              "cwd": "packages/blue-http"
+            },
+            "outputs": ["{projectRoot}/lib"]
+          }
+        }
+      },
+      "@blue/logger": {
+        "root": "packages/blue-logger",
+        "projectType": "library",
+        "targets": {
+          "build:lib": {
+            "executor": "nx:run-commands",
+            "options": {
+              "command": "pnpm build:lib",
+              "cwd": "packages/blue-logger"
+            },
+            "outputs": ["{projectRoot}/lib"]
+          }
+        }
+      },
+      "@blue/model": {
+        "root": "packages/blue-model",
+        "projectType": "library",
+        "targets": {
+          "build:lib": {
+            "executor": "nx:run-commands",
+            "options": {
+              "command": "pnpm build:lib",
+              "cwd": "packages/blue-model"
+            },
+            "outputs": ["{projectRoot}/lib"]
+          }
+        }
+      },
+      "@blue/parser": {
+        "root": "packages/blue-parser",
+        "projectType": "library",
+        "targets": {
+          "build:lib": {
+            "executor": "nx:run-commands",
+            "options": {
+              "command": "pnpm build:lib",
+              "cwd": "packages/blue-parser"
+            },
+            "outputs": ["{projectRoot}/lib"]
+          }
+        }
+      },
+      "@blue/platform-web": {
+        "root": "packages/blue-platform-web",
+        "projectType": "library",
+        "targets": {
+          "build:lib": {
+            "executor": "nx:run-commands",
+            "options": {
+              "command": "pnpm build:lib",
+              "cwd": "packages/blue-platform-web"
+            },
+            "outputs": ["{projectRoot}/lib"]
+          }
+        }
+      },
+      "@blue/print": {
+        "root": "packages/blue-print",
+        "projectType": "library",
+        "targets": {
+          "build:lib": {
+            "executor": "nx:run-commands",
+            "options": {
+              "command": "pnpm build:lib",
+              "cwd": "packages/blue-print"
+            },
+            "outputs": ["{projectRoot}/lib"]
+          }
+        }
+      },
+      "@blue/router": {
+        "root": "packages/blue-router",
+        "projectType": "library",
+        "targets": {
+          "build:lib": {
+            "executor": "nx:run-commands",
+            "options": {
+              "command": "pnpm build:lib",
+              "cwd": "packages/blue-router"
+            },
+            "outputs": ["{projectRoot}/lib"]
+          }
+        }
+      },
+      "@blue/service": {
+        "root": "packages/blue-service",
+        "projectType": "library",
+        "targets": {
+          "build:lib": {
+            "executor": "nx:run-commands",
+            "options": {
+              "command": "pnpm build:lib",
+              "cwd": "packages/blue-service"
+            },
+            "outputs": ["{projectRoot}/lib"]
+          }
+        }
+      },
+      "@blue/util": {
+        "root": "packages/blue-util",
+        "projectType": "library",
+        "targets": {
+          "build:lib": {
+            "executor": "nx:run-commands",
+            "options": {
+              "command": "pnpm build:lib",
+              "cwd": "packages/blue-util"
+            },
+            "outputs": ["{projectRoot}/lib"]
+          }
+        }
+      },
+      "@blue/validate": {
+        "root": "packages/blue-validate",
+        "projectType": "library",
+        "targets": {
+          "build:lib": {
+            "executor": "nx:run-commands",
+            "options": {
+              "command": "pnpm build:lib",
+              "cwd": "packages/blue-validate"
+            },
+            "outputs": ["{projectRoot}/lib"]
+          }
+        }
+      },
+      "@blue/view": {
+        "root": "packages/blue-view",
+        "projectType": "library",
+        "targets": {
+          "build:lib": {
+            "executor": "nx:run-commands",
+            "options": {
+              "command": "pnpm build:lib",
+              "cwd": "packages/blue-view"
+            },
+            "outputs": ["{projectRoot}/lib"]
+          }
+        }
+      },
+      "@blue/view-webcomponent": {
+        "root": "packages/blue-view-webcomponent",
+        "projectType": "library",
+        "targets": {
+          "build:lib": {
+            "executor": "nx:run-commands",
+            "options": {
+              "command": "pnpm build:lib",
+              "cwd": "packages/blue-view-webcomponent"
+            },
+            "outputs": ["{projectRoot}/lib"]
+          }
+        }
+      }
     }
   },
   "namedInputs": {
@@ -41,6 +299,30 @@
   "plugins": [],
   "generators": {},
   "defaultProject": "@blue/core",
+  "projects": {
+    "blue-demo": {
+      "root": "packages/blue-demo",
+      "projectType": "application",
+      "targets": {
+        "dev": {
+          "executor": "nx:run-commands",
+          "options": {
+            "command": "pnpm dev",
+            "cwd": "packages/blue-demo"
+          },
+          "outputs": []
+        },
+        "build": {
+          "executor": "nx:run-commands",
+          "options": {
+            "command": "pnpm build",
+            "cwd": "packages/blue-demo"
+          },
+          "outputs": ["{projectRoot}/dist"]
+        }
+      }
+    }
+  },
   "affected": {
     "defaultBase": "master"
   },
@@ -48,7 +330,7 @@
     "default": {
       "runner": "nx/tasks-runners/default",
       "options": {
-        "cacheableOperations": ["build:lib", "build:bundle", "build:all", "test", "lint"],
+        "cacheableOperations": ["build:lib", "build:all", "test", "lint"],
         "parallel": 3
       }
     }

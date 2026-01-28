@@ -16,6 +16,7 @@ const construct = partial(Reflect.construct, [String, []]),
  * @returns {boolean} Whether or not `value` is a constructor.
  * @category Type
  */
-const isConstructor = (value: any): value is Function => both<any>(isFunction, tryCatch(constructAndReturnTrue, F))(value);
+const isConstructor = (value: any): value is Function =>
+    both<any>(isFunction, tryCatch(constructAndReturnTrue, F))(value);
 
 export default isConstructor;

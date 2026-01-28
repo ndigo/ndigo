@@ -12,17 +12,12 @@ import { pipe, split, uniq } from '@blue/util';
 
 type ProfileMetadata = string[];
 
-const {
-        defineMetadata,
-        defineProperty,
-        getMetadata,
-        getOwnPropertyDescriptor,
-        hasMetadata,
-    } = Reflect as typeof Reflect & {
-        defineMetadata: (metadataKey: any, metadataValue: any, target: any, propertyKey?: string | symbol) => void;
-        getMetadata: (metadataKey: any, target: any, propertyKey?: string | symbol) => any;
-        hasMetadata: (metadataKey: any, target: any, propertyKey?: string | symbol) => boolean;
-    },
+const { defineMetadata, defineProperty, getMetadata, getOwnPropertyDescriptor, hasMetadata } =
+        Reflect as typeof Reflect & {
+            defineMetadata: (metadataKey: any, metadataValue: any, target: any, propertyKey?: string | symbol) => void;
+            getMetadata: (metadataKey: any, target: any, propertyKey?: string | symbol) => any;
+            hasMetadata: (metadataKey: any, target: any, propertyKey?: string | symbol) => boolean;
+        },
     { isArray } = Array,
     CONFIG_CONSTRUCTOR = 'config:constructor',
     CONFIG_PROFILE = 'config:profile',
@@ -180,7 +175,7 @@ export const entry = (
 };
 
 /**
-  * Parses a {@link @configuration|@configuration} class definition.
+ * Parses a {@link @configuration|@configuration} class definition.
  * @see {@link MetadataConfigApplicationContext}
  */
 class ConfigurationParser {
@@ -224,7 +219,7 @@ class ConfigurationParser {
 
     /**
      * Process the given `@configuration` decorator metadata.
-         */
+     */
     processConfiguration(configuration) {
         for (const key in configuration) {
             if (
@@ -241,7 +236,7 @@ class ConfigurationParser {
 
     /**
      * Process the given `@property` decorator metadata.
-         */
+     */
     processProperty(configuration) {
         for (const key in configuration) {
             if (hasPropertyMetadata(configuration, key)) {
@@ -259,21 +254,21 @@ class ConfigurationParser {
 
     /**
      * Process the given `@propertySource` decorator metadata.
-         */
+     */
     processPropertySource(propertySource: JSONObject[]) {
         (this.environment as ConfigurableEnvironment).propertySources = propertySource;
     }
 
     /**
      * Process the given `@entry` decorator metadata.
-         */
+     */
     processEntry(name: string, value: () => any) {
         this.registry.setValue(name, value());
     }
 
     /**
      * @private
-         * @param {Array<external:string>} profiles
+     * @param {Array<external:string>} profiles
      * @returns {boolean} Whether or not the profiles provided are active
      */
     private _isActiveProfile(profiles: string[]): boolean {
@@ -290,7 +285,7 @@ class ConfigurationParser {
 }
 
 /**
-  * A {@link EntryRegistryProcessor|EntryRegistryProcessor} used for processing of {@link @configuration|@configuration} classes.
+ * A {@link EntryRegistryProcessor|EntryRegistryProcessor} used for processing of {@link @configuration|@configuration} classes.
  * This processor should be prioritized as it is important that any {@link @entry|@entry} methods declared in the `@configuration` classes have their values registered before any other {@link EntryProcessor|EntryProcessor} executes.
  * @see module:context.AsEnvironmentAware
  * @see module:context.AsResourceLoaderAware
@@ -326,7 +321,7 @@ export class MetadataConfigApplicationContext extends GenericApplicationContext 
     }
 
     /**
-         * @param {Object} configClass The configuration class
+     * @param {Object} configClass The configuration class
      */
     register(configClass): void {
         this.#configurationParser.parse([configClass]);

@@ -128,7 +128,7 @@ export class BrowserDispatcher
 
     /**
      * Render the given `ModelAndView`. This is the last stage of handling a route.
-         * @param {module:dispatcher.ModelAndView} mv
+     * @param {module:dispatcher.ModelAndView} mv
      * @param {module:router.Route} route
      * @returns {Promise}
      */

@@ -74,7 +74,7 @@ export class ResponseTypeInterceptor
     implements InitializationAwareHTTPInterceptor<ResponseTypeInit>, ResponseAwareHTTPInterceptor<ResponseTypeSettings>
 {
     /**
-         * @param {URL} url The requested URL.
+     * @param {URL} url The requested URL.
      * @param {module:http.ResponseTypeInit} settings The HTTP request settings, including the `responseType` setting.
      * @returns {boolean} Whether or not the http request should continue execution.
      */
@@ -109,7 +109,7 @@ export class ResponseTypeInterceptor
 
     /**
      * @async
-         * @param {Response} response
+     * @param {Response} response
      * @param {module:http.ResponseTypeSettings} settings
      * @returns {Promise<external:void>}
      */

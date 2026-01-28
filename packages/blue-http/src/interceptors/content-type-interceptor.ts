@@ -19,7 +19,7 @@ export type ContentTypeInit = HTTPInit & { contentType?: string | MediaType };
 export class ContentTypeInterceptor implements InitializationAwareHTTPInterceptor<ContentTypeInit> {
     /**
      * If the `contentType` setting exists, it inserts the value as an HTTP request header.
-         * @param {URL} url The requested URL.
+     * @param {URL} url The requested URL.
      * @param {module:http.ContentTypeInit} settings The HTTP request settings, including the `contentType` setting.
      * @returns {boolean} Whether or not the http request should continue execution.
      */

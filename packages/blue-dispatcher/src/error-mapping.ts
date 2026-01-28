@@ -43,20 +43,20 @@ const ERROR_HANDLER = 'error:handler',
  */
 export const errorHandler = assign(eh, {
     /**
-         * @param {*} target
+     * @param {*} target
      */
     define: defineErrorHandler,
     /**
-         * @param {*} target
+     * @param {*} target
      */
     delete: deleteErrorHandler,
     /**
-         * @param {*} target
+     * @param {*} target
      * @returns {boolean}
      */
     get: getErrorHandler,
     /**
-         * @param {*} target
+     * @param {*} target
      * @returns {boolean} Whether or not the `target` is defined as an error handler.
      */
     has: hasErrorHandler,
@@ -80,24 +80,24 @@ export const likeErrorHandler = both(
  */
 export const errorMapping = assign(em, {
     /**
-         * @param {*} value
+     * @param {*} value
      * @param {*} target
      * @param {string|external:symbol} propertyKey
      */
     define: defineErrorMapping,
     /**
-         * @param {*} target
+     * @param {*} target
      * @param {string|external:symbol} propertyKey
      */
     delete: deleteErrorMapping,
     /**
-         * @param {*} target
+     * @param {*} target
      * @param {string|external:symbol} propertyKey
      * @returns {Array<module:core.Constructable<external:Error>>}
      */
     get: getErrorMapping,
     /**
-         * @param {*} target
+     * @param {*} target
      * @param {string|external:symbol} propertyKey
      * @returns {boolean} Whether or not the `target` and `propertyKey` is defined as an error mapping.
      */

@@ -150,9 +150,7 @@ export class UnresolvedResource implements Resource<Error> {
  * @see module:context.AsModuleResourceLoader
  * @implements module:context.ResourceLoader
  */
-export const AsModuleResourceLoader = <T extends Constructable>(
-    superclass: T
-): Constructable<ResourceLoader> & T => {
+export const AsModuleResourceLoader = <T extends Constructable>(superclass: T): Constructable<ResourceLoader> & T => {
     // TypeScript 5.7 requires explicit type assertion for mixin pattern
     const LoaderClass = class extends (superclass as new (...args: any[]) => any) implements ResourceLoader {
         async getResource(location: string): Promise<Resource> {

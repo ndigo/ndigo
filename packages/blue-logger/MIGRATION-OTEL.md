@@ -7,33 +7,36 @@ This guide helps you migrate blue-logger from the traditional Log4J/Commons Logg
 ## Why OpenTelemetry?
 
 **Benefits:**
+
 - **Trace Correlation**: Automatically link logs to distributed traces
 - **Standardization**: Industry-standard telemetry with vendor-neutral APIs
 - **Interoperability**: Works with Jaeger, Zipkin, Prometheus, and OTel Collector
 - **Future-proof**: Active CNCF project with growing ecosystem
 
 **Backward Compatibility:**
+
 - All existing blue-logger interfaces preserved
 - Appenders continue to work via adapter pattern
 - Gradual migration supported - use both approaches simultaneously
 
 ## Architecture Comparison
 
-| Traditional (Log4J)      | OpenTelemetry              | Notes                                   |
-|--------------------------|----------------------------|-----------------------------------------|
-| Logger                   | Logger                     | Same interface, OTel-backed impl available |
-| Appender                 | LogRecordExporter          | Adapter available for existing Appenders |
-| BatchAppender            | BatchLogRecordProcessor    | Batching moved to processor layer       |
-| Layout                   | Exporter serialization     | Layouts work in OTel exporters          |
-| Level                    | SeverityNumber/Text        | Bidirectional mapping utilities         |
-| Entry                    | LogRecord                  | Conversion functions provided           |
-| AppenderRegistry         | LoggerProvider             | Provider manages processor chain        |
+| Traditional (Log4J) | OpenTelemetry           | Notes                                      |
+| ------------------- | ----------------------- | ------------------------------------------ |
+| Logger              | Logger                  | Same interface, OTel-backed impl available |
+| Appender            | LogRecordExporter       | Adapter available for existing Appenders   |
+| BatchAppender       | BatchLogRecordProcessor | Batching moved to processor layer          |
+| Layout              | Exporter serialization  | Layouts work in OTel exporters             |
+| Level               | SeverityNumber/Text     | Bidirectional mapping utilities            |
+| Entry               | LogRecord               | Conversion functions provided              |
+| AppenderRegistry    | LoggerProvider          | Provider manages processor chain           |
 
 ## Quick Start
 
 ### Installation
 
 Dependencies are already included in `@blue/logger` 3.0.0+:
+
 - `@opentelemetry/api-logs@~0.211.0`
 - `@opentelemetry/sdk-logs@~0.211.0`
 
@@ -88,15 +91,14 @@ import { BlueLoggerProvider } from '@blue/logger';
 import { ConsoleAppender } from '@blue/logger';
 
 // Create provider from existing appenders
-const provider = BlueLoggerProvider.fromAppenders([
-    new ConsoleAppender()
-]);
+const provider = BlueLoggerProvider.fromAppenders([new ConsoleAppender()]);
 
 const logger = provider.createLogger('my-app');
 // Logger works exactly as before
 ```
 
 **Benefits:**
+
 - Zero code changes for existing loggers
 - Test OTel features in parallel
 - Easy rollback
@@ -106,6 +108,7 @@ const logger = provider.createLogger('my-app');
 Replace Appenders with OTel exporters:
 
 **Before:**
+
 ```typescript
 import { SimpleLogger } from '@blue/logger';
 import { ConsoleAppender } from '@blue/logger';
@@ -115,6 +118,7 @@ logger.addAppender(new ConsoleAppender());
 ```
 
 **After:**
+
 ```typescript
 import { BlueLoggerProvider, LayoutAwareConsoleExporter } from '@blue/logger';
 import { SimpleLogRecordProcessor } from '@opentelemetry/sdk-logs';
@@ -151,6 +155,7 @@ function log(level, message) {
 All blue-logger level schemes map to OTel SeverityNumber:
 
 ### Apache Logging
+
 ```typescript
 import { ApacheLevel } from '@blue/logger';
 import { SeverityNumber } from '@opentelemetry/api-logs';
@@ -164,6 +169,7 @@ ApacheLevel.TRACE  → SeverityNumber.TRACE  (1)
 ```
 
 ### Conversion Utilities
+
 ```typescript
 import { ApacheLevel, levelToSeverity, severityToLevel } from '@blue/logger';
 
@@ -176,7 +182,7 @@ const level = severityToLevel(SeverityNumber.ERROR, 'error');
 // ApacheLevel.ERROR
 
 // Static methods on level classes
-ApacheLevel.toSeverity(ApacheLevel.ERROR);   // SeverityNumber.ERROR
+ApacheLevel.toSeverity(ApacheLevel.ERROR); // SeverityNumber.ERROR
 ApacheLevel.fromSeverity(SeverityNumber.ERROR); // ApacheLevel.ERROR
 ```
 
@@ -189,7 +195,7 @@ import { LayoutAwareConsoleExporter, PatternLayout } from '@blue/logger';
 
 const exporter = new LayoutAwareConsoleExporter({
     layout: new PatternLayout('[%d] %c %p - %m'),
-    useColors: true
+    useColors: true,
 });
 ```
 
@@ -203,15 +209,15 @@ const exporter = new FetchLogRecordExporter('https://logs.example.com/api/logs',
     layout: new JSONLayout(),
     timeout: 10000,
     headers: {
-        'Authorization': 'Bearer token123'
-    }
+        Authorization: 'Bearer token123',
+    },
 });
 
 const processor = new BatchLogRecordProcessor(exporter, {
     maxQueueSize: 2048,
     maxExportBatchSize: 512,
     scheduledDelayMillis: 5000,
-    exportTimeoutMillis: 30000
+    exportTimeoutMillis: 30000,
 });
 ```
 
@@ -237,7 +243,7 @@ import { HTTPLogRecordExporter } from '@blue/dispatcher';
 import { HTTP } from '@blue/http';
 
 const exporter = new HTTPLogRecordExporter('/api/logs', {
-    timeout: 10000
+    timeout: 10000,
 });
 
 // Inject HTTP service (via DI framework or manually)
@@ -293,7 +299,7 @@ class CustomLayout extends AbstractBatchLayout {
     }
 
     formatBatch(entries) {
-        return entries.map(e => this.format(e)).join('\n');
+        return entries.map((e) => this.format(e)).join('\n');
     }
 }
 ```
@@ -310,72 +316,78 @@ const resource = new Resource({
     'service.name': 'my-service',
     'service.version': '1.0.0',
     'service.instance.id': 'instance-123',
-    'deployment.environment': 'production'
+    'deployment.environment': 'production',
 });
 
 const provider = new BlueLoggerProvider({
     resource,
-    processors: [processor]
+    processors: [processor],
 });
 ```
 
 ## Best Practices
 
 1. **Use Context-Aware Loggers for Microservices**
-   ```typescript
-   const logger = new ContextAwareLogger('service-name', otelLogger);
-   ```
+
+    ```typescript
+    const logger = new ContextAwareLogger('service-name', otelLogger);
+    ```
 
 2. **Configure Batching for Production**
-   ```typescript
-   const processor = new BatchLogRecordProcessor(exporter, {
-       maxQueueSize: 2048,
-       maxExportBatchSize: 512,
-       scheduledDelayMillis: 5000
-   });
-   ```
+
+    ```typescript
+    const processor = new BatchLogRecordProcessor(exporter, {
+        maxQueueSize: 2048,
+        maxExportBatchSize: 512,
+        scheduledDelayMillis: 5000,
+    });
+    ```
 
 3. **Set Appropriate Timeouts**
-   ```typescript
-   const exporter = new FetchLogRecordExporter(url, {
-       timeout: 10000  // 10 seconds
-   });
-   ```
+
+    ```typescript
+    const exporter = new FetchLogRecordExporter(url, {
+        timeout: 10000, // 10 seconds
+    });
+    ```
 
 4. **Use Resource Attributes**
-   ```typescript
-   const resource = new Resource({
-       'service.name': 'my-service',
-       'service.version': process.env.VERSION
-   });
-   ```
+
+    ```typescript
+    const resource = new Resource({
+        'service.name': 'my-service',
+        'service.version': process.env.VERSION,
+    });
+    ```
 
 5. **Shutdown Gracefully**
-   ```typescript
-   process.on('SIGTERM', async () => {
-       await provider.shutdown();
-       process.exit(0);
-   });
-   ```
+    ```typescript
+    process.on('SIGTERM', async () => {
+        await provider.shutdown();
+        process.exit(0);
+    });
+    ```
 
 ## Troubleshooting
 
 ### Logs Not Appearing
 
 Check processor configuration:
+
 ```typescript
 // Use SimpleLogRecordProcessor for immediate export (debugging)
 const processor = new SimpleLogRecordProcessor(exporter);
 
 // Or check batch processor settings
 const processor = new BatchLogRecordProcessor(exporter, {
-    scheduledDelayMillis: 1000  // Flush every second
+    scheduledDelayMillis: 1000, // Flush every second
 });
 ```
 
 ### Trace IDs Not Included
 
 Ensure using ContextAwareLogger:
+
 ```typescript
 const logger = new ContextAwareLogger('my-app', otelLogger);
 
@@ -389,17 +401,19 @@ if (!span) {
 ### Performance Issues
 
 Use batching and adjust batch size:
+
 ```typescript
 const processor = new BatchLogRecordProcessor(exporter, {
-    maxQueueSize: 4096,         // Increase queue
-    maxExportBatchSize: 1024,   // Larger batches
-    scheduledDelayMillis: 10000 // Less frequent exports
+    maxQueueSize: 4096, // Increase queue
+    maxExportBatchSize: 1024, // Larger batches
+    scheduledDelayMillis: 10000, // Less frequent exports
 });
 ```
 
 ### Type Errors
 
 Ensure compatible OTel versions:
+
 ```json
 {
     "@opentelemetry/api": "~1.9.0",

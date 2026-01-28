@@ -49,7 +49,7 @@ export class DefaultRouteToViewNameTranslator implements RouteToViewNameTranslat
     }
 
     /**
-         * @param {module:router.Route} route
+     * @param {module:router.Route} route
      */
     getViewName(route: Route): string {
         console.log('DefaultRouteToViewNameTranslator::getViewName', route);

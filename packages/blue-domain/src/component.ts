@@ -61,7 +61,7 @@ export class GenericDomainComponent extends AsEventEmitter(Null) implements Doma
 
     set data(newData: DomainData) {
         const initData = initializeData(this);
-        forEachObjIndexed(initData, newData);
+        forEachObjIndexed(initData as any, newData);
         deleteProperty(this, 'data');
     }
 

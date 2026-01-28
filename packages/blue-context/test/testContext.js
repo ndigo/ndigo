@@ -1,17 +1,31 @@
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-import { configuration, entry, MetadataConfigApplicationContext, profile, propertySource, property, } from '../src/configuration';
-class Bar {
-}
-class Qux {
-}
+var __decorate =
+    (this && this.__decorate) ||
+    function (decorators, target, key, desc) {
+        var c = arguments.length,
+            r = c < 3 ? target : desc === null ? (desc = Object.getOwnPropertyDescriptor(target, key)) : desc,
+            d;
+        if (typeof Reflect === 'object' && typeof Reflect.decorate === 'function')
+            r = Reflect.decorate(decorators, target, key, desc);
+        else
+            for (var i = decorators.length - 1; i >= 0; i--)
+                if ((d = decorators[i])) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+        return c > 3 && r && Object.defineProperty(target, key, r), r;
+    };
+var __metadata =
+    (this && this.__metadata) ||
+    function (k, v) {
+        if (typeof Reflect === 'object' && typeof Reflect.metadata === 'function') return Reflect.metadata(k, v);
+    };
+import {
+    configuration,
+    entry,
+    MetadataConfigApplicationContext,
+    profile,
+    propertySource,
+    property,
+} from '../src/configuration';
+class Bar {}
+class Qux {}
 let TestConfiguration = class TestConfiguration {
     fooValue;
     fuuValue;
@@ -32,56 +46,73 @@ let TestConfiguration = class TestConfiguration {
         return new Qux();
     }
 };
-__decorate([
-    property('foo') // Get value for property "foo" from the property source
-    ,
-    __metadata("design:type", Object)
-], TestConfiguration.prototype, "fooValue", void 0);
-__decorate([
-    property('fuu[1]') // Get value for property "fuu[1]" from the property source
-    ,
-    __metadata("design:type", Object)
-], TestConfiguration.prototype, "fuuValue", void 0);
-__decorate([
-    profile('test') // Run only if the active profile is "test"
-    ,
-    entry('bar') // Create an entry "bar" in context with the result from the factory
-    ,
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
-], TestConfiguration.prototype, "testBar", null);
-__decorate([
-    profile('dev') // Run only if the active profile is "dev"
-    ,
-    entry('bar') // Create an entry "bar" in context with the result from the factory
-    ,
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
-], TestConfiguration.prototype, "devBar", null);
-__decorate([
-    profile('test') // Run only if the active profile is "test"
-    ,
-    entry // Create an entry "foo" in context with the result from the factory
-    ,
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
-], TestConfiguration.prototype, "foo", null);
-__decorate([
-    profile('test') // Run only if the active profile is "test"
-    ,
-    entry // Create an entry "fuu" in context with the result from the factory
-    ,
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
-], TestConfiguration.prototype, "fuu", null);
-TestConfiguration = __decorate([
-    configuration,
-    propertySource({ foo: 12, bar: 34, fuu: [56, 78] })
-], TestConfiguration);
+__decorate(
+    [
+        property('foo'), // Get value for property "foo" from the property source
+        __metadata('design:type', Object),
+    ],
+    TestConfiguration.prototype,
+    'fooValue',
+    void 0
+);
+__decorate(
+    [
+        property('fuu[1]'), // Get value for property "fuu[1]" from the property source
+        __metadata('design:type', Object),
+    ],
+    TestConfiguration.prototype,
+    'fuuValue',
+    void 0
+);
+__decorate(
+    [
+        profile('test'), // Run only if the active profile is "test"
+        entry('bar'), // Create an entry "bar" in context with the result from the factory
+        __metadata('design:type', Function),
+        __metadata('design:paramtypes', []),
+        __metadata('design:returntype', void 0),
+    ],
+    TestConfiguration.prototype,
+    'testBar',
+    null
+);
+__decorate(
+    [
+        profile('dev'), // Run only if the active profile is "dev"
+        entry('bar'), // Create an entry "bar" in context with the result from the factory
+        __metadata('design:type', Function),
+        __metadata('design:paramtypes', []),
+        __metadata('design:returntype', void 0),
+    ],
+    TestConfiguration.prototype,
+    'devBar',
+    null
+);
+__decorate(
+    [
+        profile('test'), // Run only if the active profile is "test"
+        entry, // Create an entry "foo" in context with the result from the factory
+        __metadata('design:type', Function),
+        __metadata('design:paramtypes', []),
+        __metadata('design:returntype', void 0),
+    ],
+    TestConfiguration.prototype,
+    'foo',
+    null
+);
+__decorate(
+    [
+        profile('test'), // Run only if the active profile is "test"
+        entry, // Create an entry "fuu" in context with the result from the factory
+        __metadata('design:type', Function),
+        __metadata('design:paramtypes', []),
+        __metadata('design:returntype', void 0),
+    ],
+    TestConfiguration.prototype,
+    'fuu',
+    null
+);
+TestConfiguration = __decorate([configuration, propertySource({ foo: 12, bar: 34, fuu: [56, 78] })], TestConfiguration);
 const context = new MetadataConfigApplicationContext('test');
 context.environment.activeProfiles = ['test'];
 // This value is being defined programmatically rather than using decorators

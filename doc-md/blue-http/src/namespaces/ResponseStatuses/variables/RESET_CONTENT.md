@@ -1,0 +1,13 @@
+[**BlueJS Framework v3.0.0-alpha.0**](../../../../../README.md)
+
+***
+
+[BlueJS Framework](../../../../../modules.md) / [blue-http/src](../../../README.md) / [ResponseStatuses](../README.md) / RESET\_CONTENT
+
+# Variable: RESET\_CONTENT
+
+> `const` **RESET\_CONTENT**: `ResponseStatus`
+
+Defined in: packages/blue-http/src/response-statuses.ts:71
+
+Tells the user-agent to reset the document which sent this request.

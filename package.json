@@ -19,7 +19,7 @@
     "doc": "pnpm doc:md",
     "doc:md": "typedoc",
     "doc:html": "typedoc --options typedoc.html.json",
-    "doc:json": "typedoc --json docs-ts/api.json",
+    "doc:json": "typedoc --json doc-md/api.json",
     "doc:watch": "typedoc --watch"
   },
   "repository": {

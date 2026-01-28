@@ -1,0 +1,13 @@
+[**BlueJS Framework v3.0.0-alpha.0**](../../../../../README.md)
+
+***
+
+[BlueJS Framework](../../../../../modules.md) / [blue-http/src](../../../README.md) / [ResponseStatuses](../README.md) / PAYMENT\_REQUIRED
+
+# Variable: PAYMENT\_REQUIRED
+
+> `const` **PAYMENT\_REQUIRED**: `ResponseStatus`
+
+Defined in: packages/blue-http/src/response-statuses.ts:159
+
+This response code is reserved for future use. The initial aim for creating this code was using it for digital payment systems, however this status code is used very rarely and no standard convention exists.

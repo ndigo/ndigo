@@ -1,74 +1,47 @@
 /**
  * @author Jeff Rose
- * @see {@link https://nodejs.org/api/events.html#events_class_eventemitter}
- * @see {@link https://github.com/jeffrose/emitter}
  */
 import { Constructable } from '@blue/core';
-import { Aware } from '@blue/factory';
-export type EventListener = {
-    (...args: any[]): void;
-    listener?: EventListener;
-};
-export type EventHandler = EventListener | EventListener[];
-export type EventHandlers = {
-    [type: string]: EventHandler;
-};
-export type EventType = string | symbol;
-export interface EventEmitter {
-    emit(type: EventType, ...data: any[]): boolean;
-    eventTypes(): EventType[];
-    listenerCount(type: EventType): number;
-    listeners(type: EventType): Function[];
-    on(type: EventType, listener: Function): this;
-    off(type: EventType, listener: Function): this;
+export interface Listener {
+    once?: boolean;
+    fn(...data: unknown[]): void;
 }
-export interface ApplicationEventEmitterAware extends Aware {
-    setApplicationEventEmitter(eventEmitter: EventEmitter): void;
+export type ListenerResult = void | boolean | Promise<void> | Promise<boolean>;
+export interface EventEmitter<T> extends EventEmitter {
+    emit(event: T, ...data: unknown[]): boolean;
+    eventNames(): T[];
+    getMaxListeners(): number;
+    listenerCount(event: T, fn?: (...args: any[]) => any): number;
+    listeners(event: T): Listener[];
+    off(event: T, fn: (...args: any[]) => any): this;
+    on(event: T, fn: (...args: any[]) => any, once?: boolean): this;
+    once(event: T, fn: (...args: any[]) => any): this;
+    removeAllListeners(event?: T): this;
+    removeListener(event: T, fn: (...args: any[]) => any): this;
+    setMaxListeners(n: number): this;
+}
+export interface Emittable<T = any> {
+    addEventListener(event: T, listener: (...args: any[]) => any): void;
+    removeEventListener(event: T, listener: (...args: any[]) => any): void;
 }
 /**
+ * @param {*} value
+ * @returns {boolean} Whether or not a value is {@link Emittable|Emittable}.
  */
-export declare const likeApplicationEventEmitterAware: (value: any) => value is ApplicationEventEmitterAware;
+export declare const likeEmittable: (value: any) => value is Emittable;
 /**
- * @param {*} value The value to be tested
- * @returns {boolean} Whether or not the `value` is {@link EventEmitter|EventEmitter}
+ * @param {*} value
+ * @returns {boolean} Whether or not a value is {@link Listener|Listener}.
  */
-export declare const likeEventEmitter: (value: any) => value is EventEmitter;
+export declare const likeListener: (value: any) => value is Listener;
 /**
- * @see module:context.AsEventEmitter
- * @implements module:context.EventEmitter
- * @returns {module:core.Constructable<module:context.EventEmitter>}
- * @example
- * const
- *  MyEmitter = AsEventEmitter( {} ),
- *  greeter = new MyEmitter();
- * greeter.on( 'hello', () => console.log( 'Hello!' ) );
- * greeter.emtest( 'hello' ); // true
- * // Hello!
+ * @template T
+ * @param {module:core.Constructable<T>} [superclass=Object] The superclass to extend
+ * @returns {module:core.Constructable<T>} A class definition
  */
-export declare const AsEventEmitter: <T extends Constructable>(superclass: T) => Constructable<EventEmitter> & T;
-export declare const asEventEmitter: (target: any) => EventEmitter;
-export interface AsyncEventEmitter extends EventEmitter {
-    tick(type: EventType, ...data: any[]): Promise<void>;
+export declare const AsEventEmitter: <T extends Constructable>(superclass: T) => T & Constructable<EventEmitter>;
+declare const EventEmitter_base: any;
+export declare class EventEmitter extends EventEmitter_base {
 }
-export interface ConditionalEventEmitter extends EventEmitter {
-    once(type: EventType, listener: Function): this;
-    many(type: EventType, times: number, listener: Function): this;
-    until(type: EventType, listener: Function): this;
-}
-export declare const AsAsyncEventEmitter: <T extends Constructable<EventEmitter>>(superclass: T) => Constructable<AsyncEventEmitter> & T;
-export declare const AsConditionalEventEmitter: <T extends Constructable<EventEmitter>>(superclass: T) => Constructable<ConditionalEventEmitter> & T;
-declare const EmitterBase: Constructable<EventEmitter> & {
-    new (): {};
-};
-export declare class Emitter extends EmitterBase {
-    static readonly every: string;
-    static readonly version: string;
-    destroyed: boolean;
-    constructor(mapping?: EventHandlers);
-    clear(type?: EventType): this;
-    toJSON(): any;
-    toString(): string;
-    destroy(): void;
-}
-export {};
+export default EventEmitter;
 //# sourceMappingURL=event-emitter.d.ts.map

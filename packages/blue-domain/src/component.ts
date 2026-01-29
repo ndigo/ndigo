@@ -1,7 +1,8 @@
 import { JSONValue, JSONObject, Null, Serializable, createNull } from '@blue/core';
 import { AsEventEmitter, EventEmitter } from '@blue/context';
 import { AsyncDestroyable, Initializable } from '@blue/factory';
-import { forEachObjIndexed, curryN } from '@blue/util';
+import { curryN } from '@blue/util/function';
+import { forEachObjIndexed } from '@blue/util/object';
 
 export type DomainActions = {
     [action: string]: (data: JSONObject) => void;

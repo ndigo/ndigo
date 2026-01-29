@@ -4,7 +4,7 @@
 
 import { FrameworkError } from '@blue/core';
 import { IM_A_TEAPOT } from './response-statuses';
-import { is } from '@blue/util';
+import { is } from '@blue/util/types';
 import { likeResponse } from './like-response';
 
 const { defineProperty } = Reflect,

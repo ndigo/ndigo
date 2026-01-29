@@ -3,23 +3,12 @@
  * @see {@link https://ramdajs.com/docs/}
  */
 
-import {
-    always,
-    complement,
-    cond,
-    curryN,
-    equals,
-    filter,
-    isEmpty,
-    join,
-    keys,
-    map,
-    pipe,
-    T,
-    encodeURIComponent as encodeValue,
-    comparator,
-    sort,
-} from '@blue/util';
+import { always, comparator, curryN, pipe, T } from '@blue/util/function';
+import { filter, join, map, sort } from '@blue/util/list';
+import { cond, complement, isEmpty } from '@blue/util/logic';
+import { keys } from '@blue/util/object';
+import { equals } from '@blue/util/relation';
+import { encodeURIComponent as encodeValue } from '@blue/util/string';
 
 const alwaysEmptyString = always(''),
     isNull = equals(null),

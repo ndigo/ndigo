@@ -5,7 +5,7 @@
 import { FrameworkError } from './error';
 import { MutablePropertyValues, PropertyValues } from './property-value';
 import { keypathExpression } from '@blue/parser';
-import { assocPath } from '@blue/util';
+import { assocPath } from '@blue/util/object';
 
 const { keys } = Object;
 

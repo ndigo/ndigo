@@ -6,7 +6,7 @@ import { EntriesIterator, IndexedIterator, KeysIterator, ValuesIterator } from '
 import { Serializable, JSONArray, serialize } from './serializable';
 import { Enumerable } from './enumerable';
 import { Constructable } from './constructable';
-import { likeArray } from '@blue/util';
+import { likeArray } from '@blue/util/types';
 
 const { defineProperty } = Reflect,
     { max, min } = Math,

@@ -1,21 +1,12 @@
 import { RouteSegment, Route } from './route';
 import { JSONValue, Serializable, JSONObject, createNull } from '@blue/core';
-import {
-    both,
-    complement,
-    filter,
-    isEmpty,
-    isNil,
-    join,
-    pipe,
-    replace,
-    split,
-    trim,
-    keys,
-    map,
-    max,
-    reduce,
-} from '@blue/util';
+import { pipe } from '@blue/util/function';
+import { filter, join, map, reduce } from '@blue/util/list';
+import { both, complement, isEmpty } from '@blue/util/logic';
+import { keys } from '@blue/util/object';
+import { max } from '@blue/util/relation';
+import { replace, split, trim } from '@blue/util/string';
+import { isNil } from '@blue/util/types';
 import fromMatrixString from './from-matrix-string';
 import toMatrixString from './to-matrix-string';
 import toQueryString from './to-query-string';

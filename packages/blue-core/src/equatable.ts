@@ -3,7 +3,8 @@
  */
 
 import { primitive, isPrimitive } from './primitive';
-import { equals, like } from '@blue/util';
+import { equals } from '@blue/util/relation';
+import { like } from '@blue/util/types';
 
 export interface Equatable<T = any> {
     equals(value: T): boolean;

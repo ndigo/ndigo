@@ -12,104 +12,222 @@ import randInt from './rand-int.js';
 import random from './random.js';
 /**
  * Adds two values.
+ *
  * @category Math
  * @param {number} a
  * @param {number} b
  * @returns {number}
+ * @see {@link subtract|subtract}
+ * @example
+ * add( 2, 3 );
+ * //=>  5
+ * add( 7 )( 10 );
+ * //=> 17
  */
 export { add };
 /**
  * Decrements its argument.
+ *
  * @category Math
  * @param {number} n
- * @returns {number}
+ * @returns {number} n - 1
+ * @see {@link inc|inc}
+ * @example
+ * dec( 42 ); //=> 41
  */
 export { dec };
 /**
  * Divides two numbers. Equivalent to `a / b`.
+ *
  * @category Math
  * @param {number} a The first value.
  * @param {number} b The second value.
- * @returns {number}
+ * @returns {number} The result of `a / b`.
+ * @see {@link multiply|multiply}
+ * @example
+ * import { __, divide } from '@blue/util';
+ * divide( 71, 100 ); //=> 0.71
+ *
+ * const half = divide( __, 2 );
+ * half( 42 ); //=> 21
+ *
+ * const reciprocal = divide( 1 );
+ * reciprocal( 4 );   //=> 0.25
  */
 export { divide };
 /**
  * Increments its argument.
+ *
  * @category Math
  * @param {number} n
- * @returns {number}
+ * @returns {number} n + 1
+ * @see {@link dec|dec}
+ * @example
+ * inc( 42 ); //=> 43
  */
 export { inc };
 /**
- * Divides the first parameter by the second and returns the remainder.
+ * `mathMod` behaves like the modulo operator should mathematically, unlike the
+ * `%` operator (and by extension, [`R.modulo`](#modulo)). So while
+ * `-17 % 5` is `-2`, `mathMod(-17, 5)` is `3`. `mathMod` requires Integer
+ * arguments, and returns NaN when the modulus is zero or negative.
+ *
  * @category Math
- * @param {number} a The value to the get the modulus of.
- * @param {number} b An integer.
- * @returns {number}
+ * @param {number} m The dividend.
+ * @param {number} p the modulus.
+ * @returns {number} The result of `b mod a`.
+ * @see {@link modulo|modulo}
+ * @example
+ * import { __, mathMod } from '@blue/util';
+ * mathMod( -17, 5 );  //=> 3
+ * mathMod( 17, 5 );   //=> 2
+ * mathMod( 17, -5 );  //=> NaN
+ * mathMod( 17, 0 );   //=> NaN
+ * mathMod( 17.2, 5 ); //=> NaN
+ * mathMod( 17, 5.3 ); //=> NaN
+ *
+ * const clock = mathMod( __, 12 );
+ * clock( 15 ); //=> 3
+ * clock( 24 ); //=> 0
+ *
+ * const seventeenMod = mathMod( 17 );
+ * seventeenMod( 3 );  //=> 2
+ * seventeenMod( 4 );  //=> 1
+ * seventeenMod( 10 ); //=> 7
  */
 export { mathMod };
 /**
  * Returns the mean of the given list of numbers.
+ *
  * @category Math
  * @param {Array} list
  * @returns {number}
+ * @see {@link median|median}
+ * @example
+ * mean( [ 2, 7, 9 ] ); //=> 6
+ * mean( [] ); //=> NaN
  */
 export { mean };
 /**
  * Returns the median of the given list of numbers.
+ *
  * @category Math
  * @param {Array} list
  * @returns {number}
+ * @see {@link mean|mean}
+ * @example
+ * median( [ 2, 9, 7 ] ); //=> 7
+ * median( [ 7, 2, 10, 9 ] ); //=> 8
+ * median( [] ); //=> NaN
  */
 export { median };
 /**
- * Divides the first parameter by the second and returns the remainder.
+ * Divides the first parameter by the second and returns the remainder. Note
+ * that this function preserves the JavaScript-style behavior for modulo. For
+ * mathematical modulo see [`mathMod`](#mathMod).
+ *
  * @category Math
- * @param {number} a The value to the get the modulus of.
- * @param {number} b An integer.
- * @returns {number}
+ * @param {number} a The value to the divide.
+ * @param {number} b The pseudo-modulus
+ * @returns {number} The result of `b % a`.
+ * @see {@link mathMod|mathMod}
+ * @example
+ * import { __, modulo } from '@blue/util';
+ * modulo( 17, 3 );
+ * //=> 2
+ * // JS behavior:
+ * modulo( -17, 3 );
+ * //=> -2
+ * modulo( 17, -3 );
+ * //=> 2
+ *
+ * const isOdd = modulo( __, 2 );
+ * isOdd( 42 );
+ * //=> 0
+ * isOdd( 21 );
+ * //=> 1
  */
 export { modulo };
 /**
- * Multiplies two numbers. Equivalent to `a * b`.
+ * Multiplies two numbers. Equivalent to `a * b` but curried.
+ *
  * @category Math
  * @param {number} a The first value.
  * @param {number} b The second value.
- * @returns {number}
+ * @returns {number} The result of `a * b`.
+ * @see {@link divide|divide}
+ * @example
+ * const double = multiply( 2 );
+ * const triple = multiply( 3 );
+ * double( 3 );
+ * //=>  6
+ * triple( 4 );
+ * //=> 12
+ * multiply( 2, 5 );
+ * //=> 10
  */
 export { multiply };
 /**
  * Negates its argument.
+ *
  * @category Math
  * @param {number} n
  * @returns {number}
+ * @example
+ * negate( 42 );
+ * //=> -42
  */
 export { negate };
 /**
  * Multiplies together all the elements of a list.
+ *
  * @category Math
  * @param {Array} list An array of numbers
- * @returns {number}
+ * @returns {number} The product of all the numbers in the list.
+ * @see {@link reduce|reduce}
+ * @example
+ * product( [ 2, 4, 6, 8, 100, 1 ] );
+ * //=> 38400
  */
 export { product };
 /**
  * Subtracts its second argument from its first argument.
+ *
  * @category Math
  * @param {number} a The first value.
  * @param {number} b The second value.
- * @returns {number}
+ * @returns {number} The result of `a - b`.
+ * @see {@link add|add}
+ * @example
+ * import { __, subtract } from '@blue/util';
+ * subtract( 10, 8 );
+ * //=> 2
+ *
+ * const minus5 = subtract( __, 5 );
+ * minus5( 17 );
+ * //=> 12
+ *
+ * const complementaryAngle = subtract( 90 );
+ * complementaryAngle( 30 );
+ * //=> 60
+ * complementaryAngle( 72 );
+ * //=> 18
  */
 export { subtract };
 /**
  * Adds together all the elements of a list.
+ *
  * @category Math
  * @param {Array} list An array of numbers
- * @returns {number}
+ * @returns {number} The sum of all the numbers in the list.
+ * @see {@link reduce|reduce}
+ * @example
+ * sum( [ 2, 4, 6, 8, 100, 1 ] );
+ * //=> 121
  */
 export { sum };
 // Export custom functions
 export { guid, rand, randHex, randInt, random };
-// Default export: namespace object
 export default {
     add,
     dec,
@@ -130,4 +248,4 @@ export default {
     subtract,
     sum,
 };
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi8uLi9zcmMvbWF0aC9pbmRleC50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTs7O0dBR0c7QUFFSCw0Q0FBNEM7QUFDNUMsT0FBTyxFQUFFLEdBQUcsRUFBRSxHQUFHLEVBQUUsTUFBTSxFQUFFLEdBQUcsRUFBRSxPQUFPLEVBQUUsSUFBSSxFQUFFLE1BQU0sRUFBRSxNQUFNLEVBQUUsUUFBUSxFQUFFLE1BQU0sRUFBRSxPQUFPLEVBQUUsUUFBUSxFQUFFLEdBQUcsRUFBRSxNQUFNLE9BQU8sQ0FBQztBQUV2SCx3Q0FBd0M7QUFDeEMsT0FBTyxJQUFJLE1BQU0sV0FBVyxDQUFDO0FBQzdCLE9BQU8sSUFBSSxNQUFNLFdBQVcsQ0FBQztBQUM3QixPQUFPLE9BQU8sTUFBTSxlQUFlLENBQUM7QUFDcEMsT0FBTyxPQUFPLE1BQU0sZUFBZSxDQUFDO0FBQ3BDLE9BQU8sTUFBTSxNQUFNLGFBQWEsQ0FBQztBQUVqQzs7Ozs7O0dBTUc7QUFDSCxPQUFPLEVBQUUsR0FBRyxFQUFFLENBQUM7QUFFZjs7Ozs7R0FLRztBQUNILE9BQU8sRUFBRSxHQUFHLEVBQUUsQ0FBQztBQUVmOzs7Ozs7R0FNRztBQUNILE9BQU8sRUFBRSxNQUFNLEVBQUUsQ0FBQztBQUVsQjs7Ozs7R0FLRztBQUNILE9BQU8sRUFBRSxHQUFHLEVBQUUsQ0FBQztBQUVmOzs7Ozs7R0FNRztBQUNILE9BQU8sRUFBRSxPQUFPLEVBQUUsQ0FBQztBQUVuQjs7Ozs7R0FLRztBQUNILE9BQU8sRUFBRSxJQUFJLEVBQUUsQ0FBQztBQUVoQjs7Ozs7R0FLRztBQUNILE9BQU8sRUFBRSxNQUFNLEVBQUUsQ0FBQztBQUVsQjs7Ozs7O0dBTUc7QUFDSCxPQUFPLEVBQUUsTUFBTSxFQUFFLENBQUM7QUFFbEI7Ozs7OztHQU1HO0FBQ0gsT0FBTyxFQUFFLFFBQVEsRUFBRSxDQUFDO0FBRXBCOzs7OztHQUtHO0FBQ0gsT0FBTyxFQUFFLE1BQU0sRUFBRSxDQUFDO0FBRWxCOzs7OztHQUtHO0FBQ0gsT0FBTyxFQUFFLE9BQU8sRUFBRSxDQUFDO0FBRW5COzs7Ozs7R0FNRztBQUNILE9BQU8sRUFBRSxRQUFRLEVBQUUsQ0FBQztBQUVwQjs7Ozs7R0FLRztBQUNILE9BQU8sRUFBRSxHQUFHLEVBQUUsQ0FBQztBQUVmLDBCQUEwQjtBQUMxQixPQUFPLEVBQUUsSUFBSSxFQUFFLElBQUksRUFBRSxPQUFPLEVBQUUsT0FBTyxFQUFFLE1BQU0sRUFBRSxDQUFDO0FBRWhELG1DQUFtQztBQUNuQyxlQUFlO0lBQ1gsR0FBRztJQUNILEdBQUc7SUFDSCxNQUFNO0lBQ04sSUFBSTtJQUNKLEdBQUc7SUFDSCxPQUFPO0lBQ1AsSUFBSTtJQUNKLE1BQU07SUFDTixNQUFNO0lBQ04sUUFBUTtJQUNSLE1BQU07SUFDTixPQUFPO0lBQ1AsSUFBSTtJQUNKLE9BQU87SUFDUCxPQUFPO0lBQ1AsTUFBTTtJQUNOLFFBQVE7SUFDUixHQUFHO0NBQ04sQ0FBQyJ9
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi8uLi9zcmMvbWF0aC9pbmRleC50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTs7O0dBR0c7QUFFSCw0Q0FBNEM7QUFDNUMsT0FBTyxFQUFFLEdBQUcsRUFBRSxHQUFHLEVBQUUsTUFBTSxFQUFFLEdBQUcsRUFBRSxPQUFPLEVBQUUsSUFBSSxFQUFFLE1BQU0sRUFBRSxNQUFNLEVBQUUsUUFBUSxFQUFFLE1BQU0sRUFBRSxPQUFPLEVBQUUsUUFBUSxFQUFFLEdBQUcsRUFBRSxNQUFNLE9BQU8sQ0FBQztBQUV2SCx3Q0FBd0M7QUFDeEMsT0FBTyxJQUFJLE1BQU0sV0FBVyxDQUFDO0FBQzdCLE9BQU8sSUFBSSxNQUFNLFdBQVcsQ0FBQztBQUM3QixPQUFPLE9BQU8sTUFBTSxlQUFlLENBQUM7QUFDcEMsT0FBTyxPQUFPLE1BQU0sZUFBZSxDQUFDO0FBQ3BDLE9BQU8sTUFBTSxNQUFNLGFBQWEsQ0FBQztBQUVqQzs7Ozs7Ozs7Ozs7OztHQWFHO0FBQ0gsT0FBTyxFQUFFLEdBQUcsRUFBRSxDQUFDO0FBRWY7Ozs7Ozs7OztHQVNHO0FBQ0gsT0FBTyxFQUFFLEdBQUcsRUFBRSxDQUFDO0FBRWY7Ozs7Ozs7Ozs7Ozs7Ozs7O0dBaUJHO0FBQ0gsT0FBTyxFQUFFLE1BQU0sRUFBRSxDQUFDO0FBRWxCOzs7Ozs7Ozs7R0FTRztBQUNILE9BQU8sRUFBRSxHQUFHLEVBQUUsQ0FBQztBQUVmOzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7O0dBNEJHO0FBQ0gsT0FBTyxFQUFFLE9BQU8sRUFBRSxDQUFDO0FBRW5COzs7Ozs7Ozs7O0dBVUc7QUFDSCxPQUFPLEVBQUUsSUFBSSxFQUFFLENBQUM7QUFFaEI7Ozs7Ozs7Ozs7O0dBV0c7QUFDSCxPQUFPLEVBQUUsTUFBTSxFQUFFLENBQUM7QUFFbEI7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7R0F5Qkc7QUFDSCxPQUFPLEVBQUUsTUFBTSxFQUFFLENBQUM7QUFFbEI7Ozs7Ozs7Ozs7Ozs7Ozs7O0dBaUJHO0FBQ0gsT0FBTyxFQUFFLFFBQVEsRUFBRSxDQUFDO0FBRXBCOzs7Ozs7Ozs7R0FTRztBQUNILE9BQU8sRUFBRSxNQUFNLEVBQUUsQ0FBQztBQUVsQjs7Ozs7Ozs7OztHQVVHO0FBQ0gsT0FBTyxFQUFFLE9BQU8sRUFBRSxDQUFDO0FBRW5COzs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7O0dBc0JHO0FBQ0gsT0FBTyxFQUFFLFFBQVEsRUFBRSxDQUFDO0FBRXBCOzs7Ozs7Ozs7O0dBVUc7QUFDSCxPQUFPLEVBQUUsR0FBRyxFQUFFLENBQUM7QUFFZiwwQkFBMEI7QUFDMUIsT0FBTyxFQUFFLElBQUksRUFBRSxJQUFJLEVBQUUsT0FBTyxFQUFFLE9BQU8sRUFBRSxNQUFNLEVBQUUsQ0FBQztBQUVoRCxlQUFlO0lBQ1gsR0FBRztJQUNILEdBQUc7SUFDSCxNQUFNO0lBQ04sSUFBSTtJQUNKLEdBQUc7SUFDSCxPQUFPO0lBQ1AsSUFBSTtJQUNKLE1BQU07SUFDTixNQUFNO0lBQ04sUUFBUTtJQUNSLE1BQU07SUFDTixPQUFPO0lBQ1AsSUFBSTtJQUNKLE9BQU87SUFDUCxPQUFPO0lBQ1AsTUFBTTtJQUNOLFFBQVE7SUFDUixHQUFHO0NBQ04sQ0FBQyJ9

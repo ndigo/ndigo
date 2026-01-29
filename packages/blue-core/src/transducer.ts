@@ -6,7 +6,7 @@
  * @see {@link https://github.com/dphilipson/transducist}
  */
 
-import { like } from '@blue/util';
+import { like } from '@blue/util/types';
 import { MultiValueMap } from './collection';
 
 const defineProperty = Reflect.defineProperty;

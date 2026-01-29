@@ -2,7 +2,9 @@
  * @author Jeff Rose
  */
 
-import { always, cond, identity, ifElse, isNumber, isString, pipe, T } from '@blue/util';
+import { always, identity, pipe, T } from '@blue/util/function';
+import { cond, ifElse } from '@blue/util/logic';
+import { isNumber, isString } from '@blue/util/types';
 import { Comparator, numberComparator } from './comparable';
 
 /**

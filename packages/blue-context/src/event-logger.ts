@@ -6,7 +6,7 @@ import { Logger, loggable, newEntry, AsLevelComparator, Level, LevelComparator }
 import { AsEventEmitter, EventEmitter } from './event-emitter';
 import { Null } from '@blue/core';
 import { AsNameAware } from '@blue/factory';
-import { is } from '@blue/util';
+import { is } from '@blue/util/types';
 
 // Optional OTel imports - these are only used when OTel mode is enabled
 type BlueLoggerProvider = any;

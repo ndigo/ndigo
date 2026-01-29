@@ -5,7 +5,8 @@
 import { Null, likeComparator } from '@blue/core';
 import { AsLevelComparator, Level, LevelComparator } from './level';
 import { Entry, loggable, newEntry } from './entry';
-import { allPass, like } from '@blue/util';
+import { allPass } from '@blue/util/logic';
+import { like } from '@blue/util/types';
 
 export interface Asserter {
     assert(value: any, message?: string, ...optionalParams: any[]): void;

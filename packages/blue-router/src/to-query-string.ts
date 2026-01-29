@@ -3,7 +3,8 @@
  * @see {@link https://ramdajs.com/docs/}
  */
 
-import { complement, isEmpty, encodeURIComponent as encode } from '@blue/util';
+import { complement, isEmpty } from '@blue/util/logic';
+import { encodeURIComponent as encode } from '@blue/util/string';
 
 //import { JSONValue, DelegatingTransformer, Reduced, Transformer } from '@blue/core';
 

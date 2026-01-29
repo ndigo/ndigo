@@ -4,7 +4,8 @@
 import { RingBuffer } from './collection';
 import { JSONValue, Serializable, serialize } from './serializable';
 import { Equatable, equates } from './equatable';
-import { both, is, like } from '@blue/util';
+import { both } from '@blue/util/logic';
+import { is, like } from '@blue/util/types';
 import { likeIterable } from './iterable';
 import { createNull } from './null';
 

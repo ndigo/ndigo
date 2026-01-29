@@ -1,4 +1,6 @@
-import { constructN, pipe, prop, slice } from '@blue/util';
+import { constructN, pipe } from '@blue/util/function';
+import { slice } from '@blue/util/list';
+import { prop } from '@blue/util/object';
 import { PathRoute } from './path-route';
 import { Router, RouterCallback } from './router';
 import { RingBuffer } from '@blue/core';

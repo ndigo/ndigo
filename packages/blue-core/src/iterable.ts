@@ -2,7 +2,10 @@
  * @author Jeff Rose
  */
 
-import { cond, complement, isNil, likeArray, T, invoker, pipe, propIs } from '@blue/util';
+import { T, invoker, pipe } from '@blue/util/function';
+import { complement, cond } from '@blue/util/logic';
+import { prop } from '@blue/util/object';
+import { likeArray, isNil, is } from '@blue/util/types';
 
 type MapKey<Value> = Value extends Map<infer KeyType, unknown> ? KeyType : unknown;
 
@@ -48,6 +51,7 @@ export type Entries<Value> =
 
 const { isArray } = Array,
     { entries, keys, values } = Object,
+    propIs = (type) => (name) => (obj) => is(type, prop(name, obj)),
     hasFunction = propIs(Function),
     hasEntries = hasFunction('entries'),
     hasKeys = hasFunction('keys'),

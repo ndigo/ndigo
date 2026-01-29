@@ -2,7 +2,7 @@
  * @author Jeff Rose
  */
 
-import { like } from '@blue/util';
+import { like } from '@blue/util/types';
 
 export interface Enumerable<K extends PropertyKey, V> {
     entries(): Iterator<[K, V]>;

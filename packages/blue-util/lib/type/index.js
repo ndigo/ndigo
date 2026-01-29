@@ -15,46 +15,60 @@ import like from './like.js';
 import likeArray from './like-array.js';
 import likePromise from './like-promise.js';
 /**
- * Checks if a value is an instance of a particular type.
+ * See if an object (`val`) is an instance of the supplied constructor. This
+ * function will check up the inheritance chain, if any.
+ *
  * @category Type
- * @param {*} ctor A constructor
+ * @param {Object} ctor A constructor
  * @param {*} val The value to test
  * @returns {boolean}
+ * @example
+ * is( Object, {} ); //=> true
+ * is( Number, 1 ); //=> true
+ * is( Object, 1 ); //=> false
+ * is( String, 's' ); //=> true
+ * is( String, new String('') ); //=> true
+ * is( Object, new String('') ); //=> true
+ * is( Object, 's' ); //=> false
+ * is( Number, {} ); //=> false
  */
 export { is };
 /**
- * Checks if the input value is null or undefined.
+ * Checks if the input value is `null` or `undefined`.
+ *
  * @category Type
- * @param {*} x The value to test
- * @returns {boolean}
+ * @param {*} x The value to test.
+ * @returns {boolean} `true` if `x` is `undefined` or `null`, otherwise `false`.
+ * @example
+ * isNil( null ); //=> true
+ * isNil( undefined ); //=> true
+ * isNil( 0 ); //=> false
+ * isNil( [] ); //=> false
  */
 export { isNil };
 /**
- * Checks if the input value is not null or undefined.
- * @category Type
- * @param {*} x The value to test
- * @returns {boolean}
- */
-export { isNotNil };
-/**
- * Returns true if the specified object property is of the given type; false otherwise.
- * @category Type
- * @param {Function} type A constructor
- * @param {string} name Property name
- * @param {*} obj Object to test
- * @returns {boolean}
- */
-export { propIs };
-/**
- * Gives a single-word string description of the (native) type of a value.
+ * Gives a single-word string description of the (native) type of a value,
+ * returning such answers as 'Object', 'Number', 'Array', or 'Null'. Does not
+ * attempt to distinguish user Object types any further, reporting them all as
+ * 'Object'.
+ *
  * @category Type
  * @param {*} val The value to test
  * @returns {string}
+ * @example
+ * type( {} ); //=> "Object"
+ * type( 1 ); //=> "Number"
+ * type( false ); //=> "Boolean"
+ * type( 's' ); //=> "String"
+ * type( null ); //=> "Null"
+ * type( [] ); //=> "Array"
+ * type( /[A-z]/ ); //=> "RegExp"
+ * type( () => {} ); //=> "Function"
+ * type( undefined ); //=> "Undefined"
  */
 export { type };
 // Export custom functions
 export { isConstructor, isFunction, isNumber, isNumeric, isString, isValidDate, like, likeArray, likePromise };
-// Default export: namespace object
 export default {
     is,
     isConstructor,
@@ -71,4 +85,4 @@ export default {
     propIs,
     type,
 };
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi8uLi9zcmMvdHlwZS9pbmRleC50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTs7O0dBR0c7QUFFSCw0Q0FBNEM7QUFDNUMsT0FBTyxFQUFFLEVBQUUsRUFBRSxLQUFLLEVBQUUsUUFBUSxFQUFFLE1BQU0sRUFBRSxJQUFJLEVBQUUsTUFBTSxPQUFPLENBQUM7QUFFMUQsd0NBQXdDO0FBQ3hDLE9BQU8sYUFBYSxNQUFNLHFCQUFxQixDQUFDO0FBQ2hELE9BQU8sVUFBVSxNQUFNLGtCQUFrQixDQUFDO0FBQzFDLE9BQU8sUUFBUSxNQUFNLGdCQUFnQixDQUFDO0FBQ3RDLE9BQU8sU0FBUyxNQUFNLGlCQUFpQixDQUFDO0FBQ3hDLE9BQU8sUUFBUSxNQUFNLGdCQUFnQixDQUFDO0FBQ3RDLE9BQU8sV0FBVyxNQUFNLG9CQUFvQixDQUFDO0FBQzdDLE9BQU8sSUFBSSxNQUFNLFdBQVcsQ0FBQztBQUM3QixPQUFPLFNBQVMsTUFBTSxpQkFBaUIsQ0FBQztBQUN4QyxPQUFPLFdBQVcsTUFBTSxtQkFBbUIsQ0FBQztBQUU1Qzs7Ozs7O0dBTUc7QUFDSCxPQUFPLEVBQUUsRUFBRSxFQUFFLENBQUM7QUFFZDs7Ozs7R0FLRztBQUNILE9BQU8sRUFBRSxLQUFLLEVBQUUsQ0FBQztBQUVqQjs7Ozs7R0FLRztBQUNILE9BQU8sRUFBRSxRQUFRLEVBQUUsQ0FBQztBQUVwQjs7Ozs7OztHQU9HO0FBQ0gsT0FBTyxFQUFFLE1BQU0sRUFBRSxDQUFDO0FBRWxCOzs7OztHQUtHO0FBQ0gsT0FBTyxFQUFFLElBQUksRUFBRSxDQUFDO0FBRWhCLDBCQUEwQjtBQUMxQixPQUFPLEVBQUUsYUFBYSxFQUFFLFVBQVUsRUFBRSxRQUFRLEVBQUUsU0FBUyxFQUFFLFFBQVEsRUFBRSxXQUFXLEVBQUUsSUFBSSxFQUFFLFNBQVMsRUFBRSxXQUFXLEVBQUUsQ0FBQztBQUUvRyxtQ0FBbUM7QUFDbkMsZUFBZTtJQUNYLEVBQUU7SUFDRixhQUFhO0lBQ2IsVUFBVTtJQUNWLEtBQUs7SUFDTCxRQUFRO0lBQ1IsUUFBUTtJQUNSLFNBQVM7SUFDVCxRQUFRO0lBQ1IsV0FBVztJQUNYLElBQUk7SUFDSixTQUFTO0lBQ1QsV0FBVztJQUNYLE1BQU07SUFDTixJQUFJO0NBQ1AsQ0FBQyJ9
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiaW5kZXguanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi8uLi9zcmMvdHlwZS9pbmRleC50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTs7O0dBR0c7QUFFSCw0Q0FBNEM7QUFDNUMsT0FBTyxFQUFFLEVBQUUsRUFBRSxLQUFLLEVBQUUsUUFBUSxFQUFFLE1BQU0sRUFBRSxJQUFJLEVBQUUsTUFBTSxPQUFPLENBQUM7QUFFMUQsd0NBQXdDO0FBQ3hDLE9BQU8sYUFBYSxNQUFNLHFCQUFxQixDQUFDO0FBQ2hELE9BQU8sVUFBVSxNQUFNLGtCQUFrQixDQUFDO0FBQzFDLE9BQU8sUUFBUSxNQUFNLGdCQUFnQixDQUFDO0FBQ3RDLE9BQU8sU0FBUyxNQUFNLGlCQUFpQixDQUFDO0FBQ3hDLE9BQU8sUUFBUSxNQUFNLGdCQUFnQixDQUFDO0FBQ3RDLE9BQU8sV0FBVyxNQUFNLG9CQUFvQixDQUFDO0FBQzdDLE9BQU8sSUFBSSxNQUFNLFdBQVcsQ0FBQztBQUM3QixPQUFPLFNBQVMsTUFBTSxpQkFBaUIsQ0FBQztBQUN4QyxPQUFPLFdBQVcsTUFBTSxtQkFBbUIsQ0FBQztBQUU1Qzs7Ozs7Ozs7Ozs7Ozs7Ozs7R0FpQkc7QUFDSCxPQUFPLEVBQUUsRUFBRSxFQUFFLENBQUM7QUFFZDs7Ozs7Ozs7Ozs7R0FXRztBQUNILE9BQU8sRUFBRSxLQUFLLEVBQUUsQ0FBQztBQUVqQjs7Ozs7Ozs7Ozs7Ozs7Ozs7OztHQW1CRztBQUNILE9BQU8sRUFBRSxJQUFJLEVBQUUsQ0FBQztBQUVoQiwwQkFBMEI7QUFDMUIsT0FBTyxFQUFFLGFBQWEsRUFBRSxVQUFVLEVBQUUsUUFBUSxFQUFFLFNBQVMsRUFBRSxRQUFRLEVBQUUsV0FBVyxFQUFFLElBQUksRUFBRSxTQUFTLEVBQUUsV0FBVyxFQUFFLENBQUM7QUFFL0csZUFBZTtJQUNYLEVBQUU7SUFDRixhQUFhO0lBQ2IsVUFBVTtJQUNWLEtBQUs7SUFDTCxRQUFRO0lBQ1IsUUFBUTtJQUNSLFNBQVM7SUFDVCxRQUFRO0lBQ1IsV0FBVztJQUNYLElBQUk7SUFDSixTQUFTO0lBQ1QsV0FBVztJQUNYLE1BQU07SUFDTixJQUFJO0NBQ1AsQ0FBQyJ9

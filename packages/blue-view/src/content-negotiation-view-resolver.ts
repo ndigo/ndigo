@@ -3,7 +3,10 @@
  */
 
 import { MediaType, MultiValueMap } from '@blue/core';
-import { allPass, complement, isFunction, isNil, propSatisfies } from '@blue/util';
+import { complement } from '@blue/util/logic';
+import { allPass } from '@blue/util/logic';
+import { isFunction, isNil } from '@blue/util/types';
+import { propSatisfies } from 'ramda';
 import { View } from './view';
 import { ViewResolver } from './view-resolver';
 

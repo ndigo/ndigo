@@ -2,7 +2,7 @@
  * @author Jeff Rose
  */
 
-import { decodeURIComponent as decode } from '@blue/util';
+import { decodeURIComponent as decode } from '@blue/util/string';
 
 type ListParser = (key: string, value: string, accumulator: any) => void;
 

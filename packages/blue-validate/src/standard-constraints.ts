@@ -37,29 +37,14 @@ import {
     PHONE_OAO_FORMAT,
     CurrencyFormat,
 } from './formats';
-import {
-    any,
-    both,
-    complement,
-    defaultTo,
-    equals,
-    isEmpty,
-    is,
-    pipe,
-    prop,
-    replace,
-    split,
-    test,
-    toString,
-    ifElse,
-    identity,
-    propSatisfies,
-    when,
-    append,
-    lte,
-    gte,
-    curry,
-} from '@blue/util';
+import { curry, identity, pipe } from '@blue/util/function';
+import { any, append } from '@blue/util/list';
+import { both, complement, defaultTo, isEmpty, ifElse, when } from '@blue/util/logic';
+import { prop } from '@blue/util/object';
+import { equals, gte, lte } from '@blue/util/relation';
+import { replace, split, test, toString } from '@blue/util/string';
+import { is } from '@blue/util/types';
+import { propSatisfies } from 'ramda';
 import { serializable } from '@blue/core';
 
 type Counter = (value) => number;

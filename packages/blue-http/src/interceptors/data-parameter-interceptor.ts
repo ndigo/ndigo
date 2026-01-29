@@ -2,7 +2,9 @@
  * @author Jeff Rose
  */
 
-import { cond, either, isString, pipe, identity, ifElse, is, T, anyPass } from '@blue/util';
+import { identity, pipe, T } from '@blue/util/function';
+import { anyPass, cond, either, ifElse } from '@blue/util/logic';
+import { is, isString } from '@blue/util/types';
 import QueryString from '../query-string';
 import { HTTPInit, HTTPMethod, InitializationAwareHTTPInterceptor } from '../http';
 import { entriesIterator } from '@blue/core';

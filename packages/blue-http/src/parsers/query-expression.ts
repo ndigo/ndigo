@@ -1,9 +1,12 @@
 /**
  * @author Jeff Rose
  */
-import { fromRepeatedPairs, replace, decodeURIComponent as decode } from '@blue/util';
+import list from '@blue/util/list';
+import { replace, decodeURIComponent as decode } from '@blue/util/string';
 import { char, choice, coroutine, possibly, regex, sepByN, sequenceOf } from '@blue/parser';
 import { JSONObject } from '@blue/core';
+
+const { fromRepeatedPairs } = list;
 
 const replacePlusWithSpace = replace(/\+/g, ' '),
     // Removes '=' from the value array

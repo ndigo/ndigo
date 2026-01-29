@@ -3,52 +3,26 @@
  */
 
 // @ts-ignore - Module resolution issue with monorepo paths
-import { __, join, lt, propSatisfies } from '@blue/util';
+import { __ } from '@blue/util/function';
+import { join } from '@blue/util/list';
+import { lt } from '@blue/util/relation';
+import { propSatisfies } from 'ramda';
+import list from '@blue/util/list';
 
 // @ts-ignore - Module resolution issue with monorepo paths
-export {
-    always,
-    both,
-    cond,
-    comparator,
-    complement,
-    compose,
-    curryN,
-    decodeURIComponent,
-    defaultTo,
-    either,
-    encodeURIComponent,
-    equals,
-    filter,
-    flatten,
-    forEachObjIndexed,
-    head,
-    identity,
-    ifElse,
-    isEmpty,
-    isNil,
-    isString,
-    join,
-    keys,
-    last,
-    length,
-    lt,
-    map,
-    of,
-    pipe,
-    prop,
-    propSatisfies,
-    rangeN,
-    replace,
-    sort,
-    split,
-    T,
-    test,
-    trailingJoin,
-    trailingSplit,
-    when,
-    xprod,
-} from '@blue/util';
+export { always, comparator, compose, curryN, identity, of, pipe, T } from '@blue/util/function';
+export { filter, flatten, head, join, last, length, map, sort } from '@blue/util/list';
+export { both, complement, cond, defaultTo, either, ifElse, isEmpty, when } from '@blue/util/logic';
+export { forEachObjIndexed, keys, prop } from '@blue/util/object';
+export { equals, lt } from '@blue/util/relation';
+export { decodeURIComponent, encodeURIComponent, replace, split, test, trailingSplit } from '@blue/util/string';
+export { isNil, isString } from '@blue/util/types';
+export { propSatisfies } from 'ramda';
+
+// Export custom list functions from default export
+export const rangeN = list.rangeN;
+export const trailingJoin = list.trailingJoin;
+export const xprod = list.xprod;
 
 export const joinOnEmptyString = join('');
 

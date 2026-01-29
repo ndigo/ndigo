@@ -3,7 +3,7 @@
  */
 
 import { Comparable, Comparator, Serializable } from '@blue/core';
-import { is } from '@blue/util';
+import { is } from '@blue/util/types';
 
 const { defineProperty } = Reflect;
 

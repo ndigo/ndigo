@@ -23,7 +23,7 @@ export interface DomainComponent extends Initializable, EventEmitter, AsyncDestr
     states: DomainStates;
     validate(property: string): void;
 }
-declare const GenericDomainComponent_base: import("@blue/core").Constructable<EventEmitter> & typeof Null;
+declare const GenericDomainComponent_base: typeof Null & import("@blue/core").Constructable<any>;
 /**
  */
 export declare class GenericDomainComponent extends GenericDomainComponent_base implements DomainComponent {

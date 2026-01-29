@@ -5,7 +5,8 @@
 import { fromError, StackFrame } from '../node_modules/stacktrace-js/stacktrace';
 import { Appender } from './appender';
 import { Entry } from './entry';
-import { map, pipe, join } from '@blue/util';
+import { pipe } from '@blue/util/function';
+import { join, map } from '@blue/util/list';
 
 export interface ErrorHandler {
     handleError(entry: Entry): void;

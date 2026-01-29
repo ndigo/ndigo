@@ -5,23 +5,12 @@
 import { Serializable, JSONValue } from './serializable';
 import { Comparator, StringComparable, stringComparator, numberComparator } from './comparable';
 import { Null } from './null';
-import {
-    always,
-    complement,
-    cond,
-    fromPairs,
-    identity,
-    ifElse,
-    isEmpty,
-    isNumber,
-    isString,
-    map,
-    pipe,
-    reduce,
-    split,
-    T,
-    toPairs,
-} from '@blue/util';
+import { always, identity, pipe, T } from '@blue/util/function';
+import { fromPairs, map, reduce } from '@blue/util/list';
+import { complement, cond, ifElse, isEmpty } from '@blue/util/logic';
+import { toPairs } from '@blue/util/object';
+import { split } from '@blue/util/string';
+import { isNumber, isString } from '@blue/util/types';
 import { Matchable } from './matchable';
 
 export type QualityFactor = `;q=${0.1 | 0.2 | 0.3 | 0.4 | 0.5 | 0.6 | 0.7 | 0.8 | 0.9 | '1.0'}`;

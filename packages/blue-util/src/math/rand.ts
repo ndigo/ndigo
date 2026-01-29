@@ -2,7 +2,7 @@
  * @author Jeff Rose
  */
 
-import random from './random';
+import random from './random.js';
 
 /**
  * Generates a pseudo-random number between `min` and `max`.

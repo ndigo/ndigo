@@ -3,7 +3,7 @@
  * @see {@link https://ramdajs.com/docs/}
  */
 
-import randInt from '../math/rand-int';
+import randInt from '../math/rand-int.js';
 
 /**
  * @category List

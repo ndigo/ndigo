@@ -5,7 +5,7 @@
  */
 
 import { both, F, partial, pipe, T, tryCatch } from 'ramda';
-import isFunction from './is-function';
+import isFunction from './is-function.js';
 
 const construct = partial(Reflect.construct, [String, []]),
     constructAndReturnTrue = pipe(construct, T);

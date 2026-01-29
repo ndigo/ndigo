@@ -6,7 +6,7 @@
 
 import { pipe, toUpper } from 'ramda';
 
-import toCamel from './to-camel';
+import toCamel from './to-camel.js';
 
 const // Lower case letters at the beginning of a string
     lowerCaseLetters = /^[a-z]/,

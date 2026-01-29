@@ -20,7 +20,7 @@ import {
     T,
     toString,
 } from 'ramda';
-import isString from './is-string';
+import isString from './is-string.js';
 
 /**
  * Determines whether a given object is an array-like.

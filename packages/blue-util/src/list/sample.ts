@@ -4,7 +4,7 @@
  */
 
 import { curry } from 'ramda';
-import randInt from '../math/rand-int';
+import randInt from '../math/rand-int.js';
 
 type SampleFunction = {
     <T = any>(n: number, list: ArrayLike<T>): T[];

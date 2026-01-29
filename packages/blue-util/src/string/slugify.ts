@@ -7,7 +7,7 @@
 
 import { curry, pipe, toLower } from 'ramda';
 
-import removeNonWord from './remove-non-word';
+import removeNonWord from './remove-non-word.js';
 import slug from 'slug';
 
 type SlugifyFunction = {

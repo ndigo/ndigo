@@ -141,6 +141,7 @@ export {
      * Unlike `addIndex`, `addIndexRight` iterates from the right to the left.
      *
      * @category Function
+     * @category List
      * @param {function} fn A list iteration function that does not pass index or list to its callback
      * @returns {function} An altered list iteration function that passes (item, index, list) to its callback
      * @example
@@ -5824,7 +5825,7 @@ export {
 } from 'ramda';
 
 // Date
-export * from './date/index';
+export * from './date/index.js';
 
 // List
 export { default as fromRepeatedPairs } from './list/from-repeated-pairs';
@@ -5870,3 +5871,13 @@ export { default as isString } from './type/is-string';
 export { default as like } from './type/like';
 export { default as likeArray } from './type/like-array';
 export { default as likePromise } from './type/like-promise';
+
+// Category modules
+export * as fn from './function/index.js';
+export * as list from './list/index.js';
+export * as logic from './logic/index.js';
+export * as math from './math/index.js';
+export * as object from './object/index.js';
+export * as relation from './relation/index.js';
+export * as string from './string/index.js';
+export { default as types } from './type/index.js';

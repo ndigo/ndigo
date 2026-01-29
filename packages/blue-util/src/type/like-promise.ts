@@ -3,7 +3,7 @@
  * @see {@link https://ramdajs.com/docs/}
  */
 
-import like from './like';
+import like from './like.js';
 
 const /**
      * Determines whether a given object is thenable, i.e. has a `then` method.

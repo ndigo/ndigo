@@ -3,7 +3,7 @@
  * @see {@link https://ramdajs.com/docs/}
  * @see {@link https://github.com/micromatch/to-regex-range}
  */
-import { Numeric } from '../type/is-numeric';
+import { Numeric } from '../type/is-numeric.js';
 type RangeToken = {
     pattern: string;
     count: number[];

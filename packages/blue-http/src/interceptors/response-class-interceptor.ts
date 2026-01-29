@@ -3,7 +3,7 @@
  */
 
 import { JSONObject } from '@blue/core';
-import { like } from '@blue/util';
+import { like } from '@blue/util/types';
 import { HTTPInit, ResponseAwareHTTPInterceptor } from '../http';
 import ResponseError from '../response-error';
 import ResponseStatus from '../response-status';

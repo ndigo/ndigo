@@ -3,7 +3,9 @@
  */
 
 import { entriesIterator, JSONObject, MediaType, MediaTypes } from '@blue/core';
-import { cond, is, isString, identity, T } from '@blue/util';
+import { identity, T } from '@blue/util/function';
+import { cond } from '@blue/util/logic';
+import { is, isString } from '@blue/util/types';
 import { HTTPInit, InitializationAwareHTTPInterceptor, ResponseAwareHTTPInterceptor } from '../http';
 import { CONTENT_TYPE } from '../http-headers';
 import ResponseError from '../response-error';

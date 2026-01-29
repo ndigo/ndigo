@@ -2,7 +2,8 @@
  * @author Jeff Rose
  */
 
-import { pipe, replace, split, trim, decodeURIComponent as decode } from '@blue/util';
+import { pipe } from '@blue/util/function';
+import { replace, split, trim, decodeURIComponent as decode } from '@blue/util/string';
 
 type Sortable = string[] | { [key: string]: string };
 

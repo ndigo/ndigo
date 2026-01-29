@@ -35,7 +35,7 @@ export declare const likeApplicationContext: (value: any) => value is Applicatio
  * @returns {boolean} Whether or not the `value` is {@link ApplicationContextAware|ApplicationContextAware}
  */
 export declare const likeApplicationContextAware: (value: any) => value is ApplicationContextAware;
-declare const GenericApplicationContext_base: Constructable<EventEmitter> & Constructable<ResourceLoader> & typeof DefaultFactory;
+declare const GenericApplicationContext_base: Constructable<ResourceLoader> & typeof DefaultFactory & Constructable<any>;
 /**
  * @implements module:context.ConfigurableApplicationContext
  * @extends module:factory.DefaultFactory

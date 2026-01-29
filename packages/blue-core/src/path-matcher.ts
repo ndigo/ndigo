@@ -2,7 +2,7 @@
  * @author Jeff Rose
  */
 
-import { like } from '@blue/util';
+import { like } from '@blue/util/types';
 import { AbstractValueComparator, Comparator } from './comparable';
 import { Constructable } from './constructable';
 import { glob } from '@blue/parser';

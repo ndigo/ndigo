@@ -2,7 +2,7 @@
  * @author Jeff Rose
  */
 
-import { like } from '@blue/util';
+import { like } from '@blue/util/types';
 import { Comparator, PatternMatcher } from '@blue/core';
 
 export interface URLMatcher extends PatternMatcher<string, string> {

@@ -2,7 +2,8 @@
  * @author Jeff Rose
  */
 
-import { anyPass, is, like } from '@blue/util';
+import { anyPass } from '@blue/util/logic';
+import { is, like } from '@blue/util/types';
 
 const isResponse = is(Response) as (value) => value is Response;
 

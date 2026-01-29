@@ -6,7 +6,7 @@ import { Level } from './level';
 import { Logger } from './logger';
 import { BrowserConsoleAppender } from './appenders/browser-console-appender';
 import { loggable } from './entry';
-import { like } from '@blue/util';
+import { like } from '@blue/util/types';
 import { SeverityNumber } from '@opentelemetry/api-logs';
 
 // TODO Use the @blue/core version once it updates -JBR

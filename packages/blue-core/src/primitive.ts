@@ -2,7 +2,7 @@
  * @author Jeff Rose
  */
 
-import { complement } from '@blue/util';
+import { complement } from '@blue/util/logic';
 
 export type primitive = boolean | null | number | string | symbol | bigint | undefined;
 

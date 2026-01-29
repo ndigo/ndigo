@@ -3,7 +3,10 @@
  */
 
 import constraints from './constraints';
-import { complement, equals, is, toString } from '@blue/util';
+import { complement } from '@blue/util/logic';
+import { equals } from '@blue/util/relation';
+import { toString } from '@blue/util/string';
+import { is } from '@blue/util/types';
 
 type TypeDefinition = {
     constraints: any[];

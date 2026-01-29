@@ -1,7 +1,7 @@
 export { BasicModel } from 'objectmodel';
-export declare const Primitive: import("objectmodel/src/object-model").BasicModel<(NumberConstructor | SymbolConstructor | BigIntConstructor | BooleanConstructor | StringConstructor)[]>;
-export declare const Falsy: import("objectmodel/src/object-model").BasicModel<import("objectmodel/src/object-model").BasicModel<(NumberConstructor | SymbolConstructor | BigIntConstructor | BooleanConstructor | StringConstructor)[]>>;
-export declare const Truthy: import("objectmodel/src/object-model").BasicModel<(import("objectmodel/src/object-model").BasicModel<(NumberConstructor | SymbolConstructor | BigIntConstructor | BooleanConstructor | StringConstructor)[]> | ObjectConstructor)[]>;
+export declare const Primitive: import("objectmodel/src/object-model").BasicModel<(SymbolConstructor | BigIntConstructor | BooleanConstructor | NumberConstructor | StringConstructor)[]>;
+export declare const Falsy: import("objectmodel/src/object-model").BasicModel<import("objectmodel/src/object-model").BasicModel<(SymbolConstructor | BigIntConstructor | BooleanConstructor | NumberConstructor | StringConstructor)[]>>;
+export declare const Truthy: import("objectmodel/src/object-model").BasicModel<(import("objectmodel/src/object-model").BasicModel<(SymbolConstructor | BigIntConstructor | BooleanConstructor | NumberConstructor | StringConstructor)[]> | ObjectConstructor)[]>;
 export declare const Integer: import("objectmodel/src/object-model").BasicModel<NumberConstructor>;
 export declare const SafeInteger: import("objectmodel/src/object-model").BasicModel<NumberConstructor>;
 export declare const FiniteNumber: import("objectmodel/src/object-model").BasicModel<NumberConstructor>;

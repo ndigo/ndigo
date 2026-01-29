@@ -3,7 +3,10 @@
  */
 
 import ResponseError from '../response-error';
-import { __, allPass, gt, isNumber } from '@blue/util';
+import { __ } from '@blue/util/function';
+import { allPass } from '@blue/util/logic';
+import { gt } from '@blue/util/relation';
+import { isNumber } from '@blue/util/types';
 import {
     CompletionAwareHTTPInterceptor,
     ErrorAwareHTTPInterceptor,

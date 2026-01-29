@@ -2,7 +2,7 @@
  * @author Jeff Rose
  */
 
-import { like } from '@blue/util';
+import { like } from '@blue/util/types';
 
 export type Constructable<T = {}> = new (...args: any[]) => T;
 

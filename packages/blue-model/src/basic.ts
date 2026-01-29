@@ -2,24 +2,13 @@
  * @author Jeff Rose
  */
 import { isPrimitive } from '@blue/core';
-import {
-    __,
-    both,
-    complement,
-    equals,
-    filter,
-    gt,
-    isEmpty,
-    isFuture,
-    isPast,
-    isNumber,
-    isString,
-    length,
-    lt,
-    T,
-    trim,
-    uniq,
-} from '@blue/util';
+import { __, T } from '@blue/util/function';
+import { filter, length, uniq } from '@blue/util/list';
+import { both, complement, isEmpty } from '@blue/util/logic';
+import { equals, gt, lt } from '@blue/util/relation';
+import { trim } from '@blue/util/string';
+import { isNumber, isString } from '@blue/util/types';
+import { isFuture, isPast } from '@blue/util/date';
 import { BasicModel } from 'objectmodel';
 export { BasicModel } from 'objectmodel';
 

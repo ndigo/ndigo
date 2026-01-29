@@ -4,7 +4,7 @@
  * @see {@link https://date-fns.org/}
  */
 
-import isNumber from './is-number';
+import isNumber from './is-number.js';
 import { either, F, ifElse, is } from 'ramda';
 import { isValid } from 'date-fns/fp';
 

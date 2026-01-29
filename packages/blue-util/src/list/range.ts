@@ -3,7 +3,7 @@
  * @see {@link https://ramdajs.com/docs/}
  */
 
-import rangeN from './range-n';
+import rangeN from './range-n.js';
 
 /**
  * Returns a list of numbers from `from` (inclusive) to `to` (exclusive).

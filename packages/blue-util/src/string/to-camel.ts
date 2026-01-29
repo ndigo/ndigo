@@ -6,8 +6,8 @@
 
 import { pipe, replace, toLower, toUpper } from 'ramda';
 
-import removeNonWord from './remove-non-word';
-import replaceDiacritics from './replace-diacritics';
+import removeNonWord from './remove-non-word.js';
+import replaceDiacritics from './replace-diacritics.js';
 
 const // Underscores and hyphens
     dashes = /[\-_]/g,

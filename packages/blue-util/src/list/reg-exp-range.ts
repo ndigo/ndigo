@@ -5,9 +5,9 @@
  */
 
 import { test, zip } from 'ramda';
-import isNumber from '../type/is-number';
-import isNumeric, { Numeric } from '../type/is-numeric';
-import { naturalSort } from '../_natural-sort';
+import isNumber from '../type/is-number.js';
+import isNumeric, { Numeric } from '../type/is-numeric.js';
+import { naturalSort } from '../_natural-sort.js';
 
 type RangeToken = {
     pattern: string;

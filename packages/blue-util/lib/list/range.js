@@ -2,7 +2,7 @@
  * @author Jeff Rose
  * @see {@link https://ramdajs.com/docs/}
  */
-import rangeN from './range-n';
+import rangeN from './range-n.js';
 /**
  * Returns a list of numbers from `from` (inclusive) to `to` (exclusive).
  *
@@ -24,4 +24,4 @@ import rangeN from './range-n';
  * @see {@link rangeBy}
  */
 export default rangeN(1);
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoicmFuZ2UuanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi8uLi9zcmMvbGlzdC9yYW5nZS50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTs7O0dBR0c7QUFFSCxPQUFPLE1BQU0sTUFBTSxXQUFXLENBQUM7QUFFL0I7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7R0FtQkc7QUFDSCxlQUFlLE1BQU0sQ0FBQyxDQUFDLENBQTRDLENBQUMifQ==
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoicmFuZ2UuanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi8uLi9zcmMvbGlzdC9yYW5nZS50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTs7O0dBR0c7QUFFSCxPQUFPLE1BQU0sTUFBTSxjQUFjLENBQUM7QUFFbEM7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7R0FtQkc7QUFDSCxlQUFlLE1BQU0sQ0FBQyxDQUFDLENBQTRDLENBQUMifQ==

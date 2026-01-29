@@ -3,7 +3,7 @@
  * @see {@link https://ramdajs.com/docs/}
  */
 import { T, toString as _toString, always, cond, identity, isNil } from 'ramda';
-import isString from '../type/is-string';
+import isString from '../type/is-string.js';
 
 const emptyString = always(''),
     /**

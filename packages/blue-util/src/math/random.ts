@@ -3,7 +3,7 @@
  * @see {@link https://github.com/davidbau/seedrandom}
  */
 
-import alea from 'seedrandom/lib/alea';
+import alea from 'seedrandom/lib/alea.js';
 
 function seed(): string {
     try {

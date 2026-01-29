@@ -2,7 +2,7 @@
  * @author Jeff Rose
  */
 
-import randInt from './rand-int';
+import randInt from './rand-int.js';
 
 /**
  * Generates a pseudo-random hexidecimal of the provided `size`.

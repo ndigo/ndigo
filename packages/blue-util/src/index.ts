@@ -1492,6 +1492,28 @@ export {
 
 export {
     /**
+     * Returns the empty value of its argument's type. Ramda defines the empty
+     * value of Array (`[]`), Object (`{}`), String (`''`), Map (`new Map()`), Set (`new Set()`),
+     * TypedArray (`Uint8Array []`, `Float32Array []`, etc), and Arguments. Other
+     * types are supported if they define `<Type>.empty`,
+     * `<Type>.prototype.empty` or implement the
+     * [FantasyLand Monoid spec](https://github.com/fantasyland/fantasy-land#monoid).
+     *
+     * Dispatches to the `empty` method of the first argument, if present.
+     *
+     * @category Function
+     * @param {*} x The value
+     * @returns {*} The empty value
+     * @example
+     * empty( [ 1, 2, 3 ] ); //=> []
+     * empty( 'unicorns' ); //=> ''
+     * empty( { x: 1, y: 2 } ); //=> {}
+     */
+    empty,
+} from 'ramda';
+
+export {
+    /**
      * Checks if a list ends with the provided sublist.
      *
      * Similarly, checks if a string ends with the provided substring.
@@ -2395,6 +2417,28 @@ export {
 
 export {
     /**
+     * Returns `true` if the given value is its type's empty value; `false`
+     * otherwise.
+     *
+     * @category Logic
+     * @param {*} x The value to test
+     * @returns {boolean} `true` if `x` is empty, `false` otherwise
+     * @see {@link empty|empty}
+     * @see {@link isNotEmpty|isNotEmpty}
+     * @example
+     * isEmpty( [ 1, 2, 3 ] );           //=> false
+     * isEmpty( [] );                    //=> true
+     * isEmpty( '' );                    //=> true
+     * isEmpty( null );                  //=> false
+     * isEmpty( {} );                    //=> true
+     * isEmpty( { length: 0 } );         //=> false
+     * isEmpty( Uint8Array.from( '' ) ); //=> true
+     */
+    isEmpty,
+} from 'ramda';
+
+export {
+    /**
      * Checks if the input value is `null` or `undefined`.
      *
      * @category Type
@@ -2407,6 +2451,45 @@ export {
      * isNil( [] ); //=> false
      */
     isNil,
+} from 'ramda';
+
+export {
+    /**
+     * Returns `false` if the given value is its type's empty value; `true`
+     * otherwise.
+     *
+     * @category Logic
+     * @param {*} x The value to test
+     * @returns {boolean} `false` if `x` is empty, `true` otherwise
+     * @see {@link empty|empty}
+     * @see {@link isEmpty|isEmpty}
+     * @example
+     * isNotEmpty( [ 1, 2, 3 ] );           //=> true
+     * isNotEmpty( [] );                    //=> false
+     * isNotEmpty( '' );                    //=> false
+     * isNotEmpty( null );                  //=> true
+     * isNotEmpty( {} );                    //=> false
+     * isNotEmpty( { length: 0 } );         //=> true
+     * isNotEmpty( Uint8Array.from( '' ) ); //=> false
+     */
+    isNotEmpty,
+} from 'ramda';
+
+export {
+    /**
+     * Checks if the input value is not `null` and not `undefined`.
+     *
+     * @category Type
+     * @param {*} x The value to test.
+     * @returns {boolean} `true` if `x` is not `undefined` or not `null`, otherwise `false`.
+     * @see {@link isNil|isNil}
+     * @example
+     * isNotNil( null ); //=> false
+     * isNotNil( undefined ); //=> false
+     * isNotNil( 0 ); //=> true
+     * isNotNil( [] ); //=> true
+     */
+    isNotNil,
 } from 'ramda';
 
 export {
@@ -5743,9 +5826,6 @@ export {
 // Date
 export * from './date/index';
 
-// Function
-export { default as empty } from './function/empty';
-
 // List
 export { default as fromRepeatedPairs } from './list/from-repeated-pairs';
 export { default as range } from './list/range';
@@ -5754,9 +5834,6 @@ export { default as regExpRange } from './list/reg-exp-range';
 export { default as sample } from './list/sample';
 export { default as shuffle } from './list/shuffle';
 export { default as trailingJoin } from './list/trailing-join';
-
-// Logic
-export { default as isEmpty } from './logic/is-empty';
 
 // Math
 export { default as guid } from './math/guid';

@@ -4,8 +4,8 @@
  */
 
 import { both, complement, cond, isEmpty, pipe, F, T, trim } from 'ramda';
-import isNumber from './is-number';
-import isString from './is-string';
+import isNumber from './is-number.js';
+import isString from './is-string.js';
 
 export type Numeric = number | `${number}`;
 

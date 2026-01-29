@@ -2,8 +2,8 @@
  * @author Jeff Rose
  */
 
-import randHex from './rand-hex';
-import sample from '../list/sample';
+import randHex from './rand-hex.js';
+import sample from '../list/sample.js';
 
 /**
  * Generates a pseudo-random Globally Unique Identifier (v4).

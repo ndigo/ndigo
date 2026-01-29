@@ -4,7 +4,8 @@
 
 import { JSONObject, Constructable, escalate } from '@blue/core';
 import { ContentSource, likeContentSourceAware, likeContentSource } from '@blue/content';
-import { allPass, like } from '@blue/util';
+import { allPass } from '@blue/util/logic';
+import { like } from '@blue/util/types';
 import {
     AsEventEmitter,
     EventEmitter,

@@ -13,41 +13,56 @@ import like from './like.js';
 import likeArray from './like-array.js';
 import likePromise from './like-promise.js';
 /**
- * Checks if a value is an instance of a particular type.
+ * See if an object (`val`) is an instance of the supplied constructor. This
+ * function will check up the inheritance chain, if any.
+ *
  * @category Type
- * @param {*} ctor A constructor
+ * @param {Object} ctor A constructor
  * @param {*} val The value to test
  * @returns {boolean}
+ * @example
+ * is( Object, {} ); //=> true
+ * is( Number, 1 ); //=> true
+ * is( Object, 1 ); //=> false
+ * is( String, 's' ); //=> true
+ * is( String, new String('') ); //=> true
+ * is( Object, new String('') ); //=> true
+ * is( Object, 's' ); //=> false
+ * is( Number, {} ); //=> false
  */
 export { is };
 /**
- * Checks if the input value is null or undefined.
+ * Checks if the input value is `null` or `undefined`.
+ *
  * @category Type
- * @param {*} x The value to test
- * @returns {boolean}
+ * @param {*} x The value to test.
+ * @returns {boolean} `true` if `x` is `undefined` or `null`, otherwise `false`.
+ * @example
+ * isNil( null ); //=> true
+ * isNil( undefined ); //=> true
+ * isNil( 0 ); //=> false
+ * isNil( [] ); //=> false
  */
 export { isNil };
 /**
- * Checks if the input value is not null or undefined.
- * @category Type
- * @param {*} x The value to test
- * @returns {boolean}
- */
-export { isNotNil };
-/**
- * Returns true if the specified object property is of the given type; false otherwise.
- * @category Type
- * @param {Function} type A constructor
- * @param {string} name Property name
- * @param {*} obj Object to test
- * @returns {boolean}
- */
-export { propIs };
-/**
- * Gives a single-word string description of the (native) type of a value.
+ * Gives a single-word string description of the (native) type of a value,
+ * returning such answers as 'Object', 'Number', 'Array', or 'Null'. Does not
+ * attempt to distinguish user Object types any further, reporting them all as
+ * 'Object'.
+ *
  * @category Type
  * @param {*} val The value to test
  * @returns {string}
+ * @example
+ * type( {} ); //=> "Object"
+ * type( 1 ); //=> "Number"
+ * type( false ); //=> "Boolean"
+ * type( 's' ); //=> "String"
+ * type( null ); //=> "Null"
+ * type( [] ); //=> "Array"
+ * type( /[A-z]/ ); //=> "RegExp"
+ * type( () => {} ); //=> "Function"
+ * type( undefined ); //=> "Undefined"
  */
 export { type };
 export { isConstructor, isFunction, isNumber, isNumeric, isString, isValidDate, like, likeArray, likePromise };

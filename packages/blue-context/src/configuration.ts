@@ -8,7 +8,9 @@ import { Environment, AsEnvironmentAware, StandardEnvironment, ConfigurableEnvir
 import { EntryRegistryProcessor, Registry } from '@blue/factory';
 import { AsResourceLoaderAware } from './resource';
 import { Enumerable, Null, JSONObject, likeEnumerable, createNull, JSONValue } from '@blue/core';
-import { pipe, split, uniq } from '@blue/util';
+import { pipe } from '@blue/util/function';
+import { uniq } from '@blue/util/list';
+import { split } from '@blue/util/string';
 
 type ProfileMetadata = string[];
 

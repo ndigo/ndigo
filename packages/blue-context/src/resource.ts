@@ -3,7 +3,8 @@
  */
 
 import { AsAware, Aware } from '@blue/factory';
-import { like, test } from '@blue/util';
+import { test } from '@blue/util/string';
+import { like } from '@blue/util/types';
 
 import { Constructable, Null } from '@blue/core';
 

@@ -4,7 +4,11 @@
 
 import { JSONValue, JSONObject, createNull } from '@blue/core';
 import { keypathExpression } from '@blue/parser';
-import { complement, isNil, like, path, pathSatisfies, reduce } from '@blue/util';
+import { complement } from '@blue/util/logic';
+import { reduce } from '@blue/util/list';
+import { path } from '@blue/util/object';
+import { like, isNil } from '@blue/util/types';
+import { pathSatisfies } from 'ramda';
 
 export interface PropertyResolver {
     getProperty(key: string, defaultValue?: JSONValue): JSONValue;

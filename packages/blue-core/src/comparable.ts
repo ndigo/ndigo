@@ -2,7 +2,9 @@
  * @author Jeff Rose
  */
 
-import { comparator, isBefore, like } from '@blue/util';
+import { comparator } from '@blue/util/function';
+import { isBefore } from '@blue/util/date';
+import { like } from '@blue/util/types';
 
 export type comparison<T> = (value1: T, value2: T) => number;
 

@@ -5,7 +5,8 @@
 import { PatternMatcher, WildcardExp } from '@blue/core';
 import { Aware } from '@blue/factory';
 import ResponseError from './response-error';
-import { anyPass, is, like } from '@blue/util';
+import { anyPass } from '@blue/util/logic';
+import { is, like } from '@blue/util/types';
 import { likeResponse } from './like-response';
 
 export type HTTPMethod = 'CONNECT' | 'DELETE' | 'GET' | 'HEAD' | 'OPTIONS' | 'PATCH' | 'POST' | 'PUT' | 'TRACE';

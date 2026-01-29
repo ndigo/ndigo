@@ -3,7 +3,9 @@
  */
 
 import { isEntries, isJSONObject, JSONValue, Serializable } from '@blue/core';
-import { always, is, cond, T, isString } from '@blue/util';
+import { always, T } from '@blue/util/function';
+import { cond } from '@blue/util/logic';
+import { is, isString } from '@blue/util/types';
 
 const { defineProperty, deleteProperty, get, set } = Reflect,
     alwaysNull = always(null),

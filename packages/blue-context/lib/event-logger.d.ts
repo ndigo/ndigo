@@ -2,12 +2,11 @@
  * @author Jeff Rose
  */
 import { loggable, Level, LevelComparator } from '@blue/logger';
-import { EventEmitter } from './event-emitter';
 import { Null } from '@blue/core';
 type BlueLoggerProvider = any;
 type OTelLoggerAPI = any;
 type EntryToLogRecordOptions = any;
-declare const EventLogger_base: (new (...args: any[]) => LevelComparator) & import("@blue/core").Constructable<EventEmitter> & (new (...args: any[]) => import("@blue/factory").NameAware) & typeof Null;
+declare const EventLogger_base: (new (...args: any[]) => LevelComparator) & (new (...args: any[]) => import("@blue/factory").NameAware) & typeof Null & import("@blue/core").Constructable<any>;
 /**
  * @implements module:context.EventEmitter
  * @implements module:logger.Logger

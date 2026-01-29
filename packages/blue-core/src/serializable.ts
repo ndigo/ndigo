@@ -2,20 +2,12 @@
  * @author Jeff Rose
  */
 
-import {
-    allPass,
-    anyPass,
-    both,
-    complement,
-    cond,
-    equals,
-    identity,
-    invoker,
-    map,
-    mergeLeft,
-    propIs,
-    T,
-} from '@blue/util';
+import { identity, invoker, T } from '@blue/util/function';
+import { map } from '@blue/util/list';
+import { allPass, anyPass, both, complement, cond } from '@blue/util/logic';
+import { mergeLeft, prop } from '@blue/util/object';
+import { equals } from '@blue/util/relation';
+import { is } from '@blue/util/types';
 import { createNull } from './null';
 import { isNotPrimitive } from './primitive';
 
@@ -61,6 +53,7 @@ export type serializable = JSONValue | Serializable;
 
 const { isArray } = Array,
     { parse, stringify } = JSON,
+    propIs = (type) => (name) => (obj) => is(type, prop(name, obj)),
     hasFunction = propIs(Function),
     hasToJSON = hasFunction('toJSON'),
     hasToString = hasFunction('toString'),

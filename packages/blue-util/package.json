@@ -9,6 +9,7 @@
   ],
   "exports": {
     ".": "./lib/index.js",
+    "./date": "./lib/date/index.js",
     "./function": "./lib/function/index.js",
     "./list": "./lib/list/index.js",
     "./logic": "./lib/logic/index.js",
@@ -21,6 +22,9 @@
   "types": "lib/index.d.ts",
   "typesVersions": {
     "*": {
+      "date": [
+        "./lib/date/index.d.ts"
+      ],
       "function": [
         "./lib/function/index.d.ts"
       ],

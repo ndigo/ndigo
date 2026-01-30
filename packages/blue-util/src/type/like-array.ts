@@ -16,7 +16,6 @@ import {
     isNil,
     length,
     pipe,
-    propEq,
     propSatisfies,
     T,
     toString,
@@ -27,7 +26,7 @@ import isString from './is-string.js';
  * Determines whether a given object is an array-like.
  * @category Type
  * @param {*} value The value to be tested.
- * @returns {boolean} Whether or not `value` is an array-like.
+ * @returns {boolean} Whether or not  is an array-like.
  * @example
  * likeArray( [] );
  * //=> true

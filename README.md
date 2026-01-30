@@ -35,12 +35,15 @@ pnpm test
 pnpm lint
 ```
 
+## Applications
+
+- [blue-demo](apps/blue-demo/README.md)
+
 ## Packages
 
 - [blue-content](packages/blue-content/README.md)
 - [blue-context](packages/blue-context/README.md)
 - [blue-core](packages/blue-core/README.md)
-- [blue-demo](packages/blue-demo/README.md)
 - [blue-dispatcher](packages/blue-dispatcher/README.md)
 - [blue-domain](packages/blue-domain/README.md)
 - [blue-factory](packages/blue-factory/README.md)

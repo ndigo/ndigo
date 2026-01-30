@@ -10,14 +10,14 @@
 
     "projects": {
       "blue-demo": {
-        "root": "packages/blue-demo",
+        "root": "apps/blue-demo",
         "projectType": "application",
         "targets": {
           "dev": {
             "executor": "nx:run-commands",
             "options": {
               "command": "pnpm dev",
-              "cwd": "packages/blue-demo"
+              "cwd": "apps/blue-demo"
             },
             "outputs": []
           },
@@ -25,7 +25,7 @@
             "executor": "nx:run-commands",
             "options": {
               "command": "pnpm build",
-              "cwd": "packages/blue-demo"
+              "cwd": "apps/blue-demo"
             },
             "outputs": ["{projectRoot}/dist"]
           }
@@ -301,14 +301,14 @@
   "defaultProject": "@blue/core",
   "projects": {
     "blue-demo": {
-      "root": "packages/blue-demo",
+      "root": "apps/blue-demo",
       "projectType": "application",
       "targets": {
         "dev": {
           "executor": "nx:run-commands",
           "options": {
             "command": "pnpm dev",
-            "cwd": "packages/blue-demo"
+            "cwd": "apps/blue-demo"
           },
           "outputs": []
         },
@@ -316,7 +316,7 @@
           "executor": "nx:run-commands",
           "options": {
             "command": "pnpm build",
-            "cwd": "packages/blue-demo"
+            "cwd": "apps/blue-demo"
           },
           "outputs": ["{projectRoot}/dist"]
         }

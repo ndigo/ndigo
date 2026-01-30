@@ -265,9 +265,9 @@ function executeHandler(handler: EventHandler, data: any[], scope: any): void {
 
 const getEventTypes = (emitter: EventEmitter): EventType[] => ((emitter as any)[$events] ? (keys((emitter as any)[$events]) as any) : []);
 
-const isEventHandler = either(isFunction, isArray) as (value: unknown) => value is EventHandler;
+const isEventHandler = (value: unknown): value is EventHandler => isFunction(value) || isArray(value);
 
-const isEventType = either(isString, isSymbol) as (value: unknown) => value is EventType;
+const isEventType = (value: unknown): value is EventType => isString(value) || isSymbol(value);
 
 const isPositiveNumber = allPass([isNumber, greaterThanOrEqualZero]) as (value: unknown) => value is number;
 

@@ -101,6 +101,19 @@ class MatrixString implements Parser<JSONObject> {
     parse(value: string): JSONObject {
         return fromMatrixString(value);
     }
+    run(value: string): any {
+        try {
+            return {
+                isError: false,
+                result: this.parse(value),
+            };
+        } catch (e: any) {
+            return {
+                isError: true,
+                error: e.message,
+            };
+        }
+    }
 }
 
 export default new MatrixString();

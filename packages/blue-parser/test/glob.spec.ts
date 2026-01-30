@@ -1,4 +1,5 @@
-import glob from './glob';
+import { describe, it, expect, test } from 'vitest';
+import glob from '../src/glob';
 
 describe('glob', function () {
     const tests = [
@@ -84,7 +85,7 @@ describe('glob', function () {
             actual = regex.test(fixture);
 
         it(`should${expected ? '' : ' not'} match ${fixture} with ${pattern}`, function () {
-            expect(actual).to.be[expected];
+            expect(actual).toBe(expected);
         });
     });
 });

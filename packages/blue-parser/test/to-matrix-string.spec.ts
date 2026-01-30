@@ -1,4 +1,5 @@
-import toMatrixString from './to-matrix-string';
+import { describe, it, expect, test } from 'vitest';
+import toMatrixString from '../src/to-matrix-string';
 
 describe('toMatrixString', function () {
     test('it should stringify', function () {

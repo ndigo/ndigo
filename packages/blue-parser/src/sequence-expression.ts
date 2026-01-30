@@ -105,6 +105,8 @@ const dots = '..',
     ),
     sequenceStep = sequenceOf([optionalSign, digits]).map(parseStep),
     optionalStepSuffix = possibly(sequenceOf([sequenceOperator, sequenceStep])).map(defaultTo(singleStep)),
-    sequenceExpression = sequenceOf([sequencePoint, sequenceOperator, sequencePoint, optionalStepSuffix]).map(toArray);
+    sequenceExpression = lookAhead(sequenceOf([sequencePoint, sequenceOperator]))
+        .chain(() => sequenceOf([sequencePoint, sequenceOperator, sequencePoint, optionalStepSuffix]))
+        .map(toArray);
 
 export default sequenceExpression;

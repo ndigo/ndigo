@@ -1,6 +1,7 @@
+import { describe, it, expect, test } from 'vitest';
 import { expectSuccess, expectFailure } from './_expect';
 import { char, letter } from 'arcsecond';
-import sepByN from './sep-by-n';
+import sepByN from '../src/sep-by-n';
 
 describe('sepByN', function () {
     test('it should require n matches', function () {

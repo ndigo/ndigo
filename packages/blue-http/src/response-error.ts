@@ -14,18 +14,18 @@ export class ResponseError extends FrameworkError implements Error, Response {
     #originalError: Error;
     #response: Response;
 
-    body: ReadableStream<Uint8Array>;
-    bodyUsed: boolean;
-    headers: Headers;
-    name: string;
-    message: string;
-    ok: boolean;
-    redirected: boolean;
-    stack?: string;
-    status: number;
-    statusText: string;
-    type: ResponseType;
-    url: string;
+    declare body: ReadableStream<Uint8Array>;
+    declare bodyUsed: boolean;
+    declare headers: Headers;
+    declare name: string;
+    declare message: string;
+    declare ok: boolean;
+    declare redirected: boolean;
+    declare stack?: string;
+    declare status: number;
+    declare statusText: string;
+    declare type: ResponseType;
+    declare url: string;
 
     get [Symbol.toStringTag](): string {
         return 'ResponseError';

@@ -48,8 +48,11 @@ export class EventLogger extends AsLevelComparator(AsEventEmitter(AsNameAware(Nu
         }
     }
 
-    constructor() {
+    constructor(name?: string) {
         super();
+        if (typeof name === 'string') {
+            (this as any).setName(name);
+        }
         this.threshold = Level.ALL;
     }
 
@@ -119,13 +122,15 @@ export class EventLogger extends AsLevelComparator(AsEventEmitter(AsNameAware(Nu
         return this.#otelLogger;
     }
 
-    log(level: Level, message: loggable[]): void {
+    log(level: Level, message: loggable | loggable[]): void {
         // compare comes from AsLevelComparator mixin
         // emit comes from AsEventEmitter mixin
         if ((this as any).compare(this.threshold, level) >= 0) {
-            const entry = newEntry(this.name, level, message);
+            const payload = Array.isArray(message) ? message : [message];
+            const entry = newEntry(this.name, level, payload);
 
-            // Existing behavior: Emit event (ALWAYS happens)
+            // Emit namespaced event. The emitter implementation also emits parent namespaces,
+            // so `log:info` also triggers `log`.
             (this as any).emit(`log:${level.name}`, entry);
 
             // New behavior: Also emit to OTel if enabled (opt-in)

@@ -53,13 +53,13 @@ describe('DefaultFactory', () => {
 
         const empty = factory!.getInstance('empty');
         expect(empty).toBeInstanceOf(EmptyPrototype);
-        expect(processor!.processBeforeConstruction).toHaveBeenCalledWith('empty', EmptyPrototype);
+        expect(processor!.processBeforeConstruction).toHaveBeenCalledWith('empty', EmptyPrototype, []);
         expect(processor!.processProperties).toHaveBeenCalledWith({}, 'empty', empty);
         expect(processor!.processAfterConstruction).toHaveBeenCalledWith('empty', empty);
 
         const test = factory!.getInstance('test');
         expect(test).toBeInstanceOf(TestPrototype);
-        expect(processor!.processBeforeConstruction).toHaveBeenCalledWith('test', TestPrototype);
+        expect(processor!.processBeforeConstruction).toHaveBeenCalledWith('test', TestPrototype, []);
         expect(processor!.processProperties).toHaveBeenCalledWith({}, 'test', test);
         expect(processor!.processAfterConstruction).toHaveBeenCalledWith('test', test);
 

@@ -14,7 +14,8 @@ describe('removeNonPrintable', function () {
     });
 
     test('it should keep printable ASCII characters', function () {
-        const input = ' !#$ %&\'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~';
+        const input =
+            " !#$ %&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
         expect(removeNonPrintable(input)).toBe(input);
     });
 

@@ -234,7 +234,7 @@ const { parseFloat, parseInt } = Number,
             : new RegExp(regex);
 
         return test(matcher, value);
-    }) as unknown as constraint<serializable>,
+    }),
     isAddressLine: constraint = patternConstraint({
         regex: ADDRESS_LINE_REGEX.source,
     }) as unknown as constraint<serializable>,
@@ -246,7 +246,7 @@ const { parseFloat, parseInt } = Number,
         regex: ALPHA_NUMERIC_PLUS_REGEX.source,
     }) as unknown as constraint<serializable>,
     isBlank: constraint = pipe(toString, removeWhitespace, isEmpty) as unknown as constraint<serializable>,
-    isBoolean: constraint = patternConstraint({ regex: BOOLEAN_REGEX }) as unknown as constraint<serializable>,
+    isBoolean: constraint = patternConstraint({ regex: BOOLEAN_REGEX }) as unknown as constraint,
     isCapitals: constraint = (value, params: RangeParams = { min: 1 }) => rangeValidator(upperCaseCount(value), params),
     isCharacters: constraint = (value, params: RangeParams = { min: 1 }) => rangeValidator(alphaCount(value), params),
     isCity: constraint = both(isSingleSpaced, test(CITY_REGEX)),
@@ -278,7 +278,7 @@ const { parseFloat, parseInt } = Number,
         //    valid	= data.isValid() && moment().diff( data, 'years' ) > 17;
         //return valid;
         const format = params.format || DEFAULT_DATE_FORMAT;
-        const date = normalizeToDate(value, format);
+        const date = normalizeToDate(value as any, format);
         if (!date) {
             return false;
         }
@@ -312,7 +312,7 @@ const { parseFloat, parseInt } = Number,
         // }
         // return valid;
         const format = params.format || DEFAULT_DATE_FORMAT;
-        const date = normalizeToDate(value, format);
+        const date = normalizeToDate(value as any, format);
         if (!date) {
             return false;
         }
@@ -373,7 +373,7 @@ const { parseFloat, parseInt } = Number,
 
         return result;
     },
-    isEmail: constraint = patternConstraint({ regex: EMAIL_REGEX }) as unknown as constraint<serializable>,
+    isEmail: constraint = patternConstraint({ regex: EMAIL_REGEX }) as unknown as constraint,
     isEnum: constraint = (value, params: Params = {}): boolean => {
         const enumeration = isString(params.value)
             ? params.value.split(' ')
@@ -388,7 +388,7 @@ const { parseFloat, parseInt } = Number,
         //    moment( value, format, true ) :
         //    moment( value );
         //return date.isValid() && date.isAfter();
-        const date = normalizeToDate(value, format);
+        const date = normalizeToDate(value as any, format);
         if (!date) {
             return false;
         }
@@ -518,7 +518,7 @@ const { parseFloat, parseInt } = Number,
         //    moment( value, format, true ) :
         //    moment( value );
         //return date.isValid() && date.isBefore();
-        const date = normalizeToDate(value, format);
+        const date = normalizeToDate(value as any, format);
         if (!date) {
             return false;
         }

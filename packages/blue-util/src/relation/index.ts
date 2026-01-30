@@ -3,34 +3,7 @@
  * @module relation
  */
 
-import {
-    clamp,
-    countBy,
-    difference,
-    differenceWith,
-    eqBy,
-    equals,
-    gt,
-    gte,
-    identical,
-    innerJoin,
-    intersection,
-    lt,
-    lte,
-    max,
-    maxBy,
-    min,
-    minBy,
-    pathEq,
-    project,
-    propEq,
-    sortBy,
-    sortWith,
-    symmetricDifference,
-    symmetricDifferenceWith,
-    union,
-    unionWith,
-} from 'ramda';
+import { clamp, countBy, difference, differenceWith, eqBy, equals, gt, gte, identical, innerJoin, intersection, lt, lte, max, maxBy, min, minBy, pathEq, project, propEq, sortBy, sortWith, symmetricDifference, symmetricDifferenceWith, union, unionWith } from 'ramda';
 
 /**
  * Restricts a number to be within a range.

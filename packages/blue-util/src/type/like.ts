@@ -4,21 +4,7 @@
  * @see {@link https://ramdajs.com/docs/}
  */
 
-import {
-    allPass,
-    complement,
-    curry,
-    either,
-    equals,
-    has,
-    is,
-    isNil,
-    map,
-    pipe,
-    prepend,
-    propSatisfies,
-    toPairs,
-} from 'ramda';
+import { allPass, complement, curry, either, equals, has, is, isNil, map, pipe, prepend, propSatisfies, toPairs } from 'ramda';
 
 export type LikeDescriptor = { [key: string]: Function | true };
 

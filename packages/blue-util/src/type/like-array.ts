@@ -3,23 +3,8 @@
  * @see {@link https://ramdajs.com/docs/}
  */
 
-import {
-    __,
-    both,
-    cond,
-    dec,
-    either,
-    equals,
-    F,
-    gt,
-    has,
-    isNil,
-    length,
-    pipe,
-    propSatisfies,
-    T,
-    toString,
-} from 'ramda';
+
+import { __, both, cond, dec, either, equals, F, gt, has, isNil, length, pipe, propSatisfies, T, toString } from 'ramda';
 import isString from './is-string.js';
 
 /**

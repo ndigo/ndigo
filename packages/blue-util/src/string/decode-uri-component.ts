@@ -8,7 +8,7 @@ import { concat, join, match, reduce, replace, unapply } from 'ramda';
 
 const token = '%[a-f0-9]{2}',
     singleMatcher = new RegExp(token, 'gi'),
-    multiMatcher = new RegExp(`(${token})+`, 'gi'),
+    multiMatcher = new RegExp(`(?:${token})+|${token}|.`, 'gi'),
     plusMatcher = /\+/g,
     concatAll = unapply(reduce<string[], string[]>(concat, [])),
     joinOnEmptyString = join('') as (value: string[]) => string,
@@ -19,6 +19,7 @@ function decode(input: string): string {
     try {
         return decodeURIComponent(input);
     } catch (error) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         let tokens = matchSingleToken(input),
             index = 1;
 
@@ -36,6 +37,7 @@ function decodeURIComponentList(components: string[], index: number = 1): string
         // Try to decode the entire string first
         return [decodeURIComponent(joinOnEmptyString(components))];
     } catch (error) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         // Do nothing
     }
 
@@ -52,7 +54,7 @@ function decodeURIComponentList(components: string[], index: number = 1): string
 }
 
 function enhancedDecodeURIComponent(input: string): string {
-    // Keep track of all the replacements and prefill the map with the `BOM`
+    // Keep track of all the replacements and prefill the map with the
     const replaceMap: { [key: string]: string } = {
         '%FE%FF': '\uFFFD\uFFFD',
         '%FF%FE': '\uFFFD\uFFFD',
@@ -64,6 +66,7 @@ function enhancedDecodeURIComponent(input: string): string {
             // Decode as big chunks as possible
             replaceMap[match[0]] = decodeURIComponent(match[0]);
         } catch (error) {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const result: string = decode(match[0]);
 
             if (result !== match[0]) {
@@ -73,7 +76,7 @@ function enhancedDecodeURIComponent(input: string): string {
         match = multiMatcher.exec(input);
     }
 
-    // Add `%C2` at the end of the map to make sure it does not replace the combinator before everything else
+    // Add  at the end of the map to make sure it does not replace the combinator before everything else
     replaceMap['%C2'] = '\uFFFD';
 
     const entries = Object.keys(replaceMap),
@@ -105,6 +108,7 @@ export default function (value: string): string {
         // Try the built in decoder first
         return decodeURIComponent(replacePlusWithSpace(value));
     } catch (error) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         // Fallback to a more advanced decoder
         return enhancedDecodeURIComponent(value);
     }

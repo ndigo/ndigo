@@ -1,7 +1,0 @@
-/**
- * @author Jeff Rose
- */
-import { AbstractNamedValueMethodArgumentResolver } from '@blue/dispatcher';
-export class AbstractCookieValueMethodArgumentResolver extends AbstractNamedValueMethodArgumentResolver {
-}
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiY29va2llLWFyZ3VtZW50LXJlc29sdmVyLmpzIiwic291cmNlUm9vdCI6IiIsInNvdXJjZXMiOlsiLi4vc3JjL2Nvb2tpZS1hcmd1bWVudC1yZXNvbHZlci50cyJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiQUFBQTs7R0FFRztBQUVILE9BQU8sRUFBRSx3Q0FBd0MsRUFBRSxNQUFNLGtCQUFrQixDQUFDO0FBRTVFLE1BQU0sT0FBZ0IseUNBQTBDLFNBQVEsd0NBQXdDO0NBQUcifQ==

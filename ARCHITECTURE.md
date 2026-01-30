@@ -42,7 +42,7 @@ The framework is organized into 7 distinct layers of increasing abstraction:
 
 ## Roadmap
 
-1. **Phase 1: Foundation (Current)**: Stabilize `@blue/util` and `@blue/parser` with 100% test coverage.
+1. **Phase 1: Foundation (Current)**: Stabilize `@blue/util` (100% coverage) and execute the [Parser Enhancement Plan](./PARSER_ENHANCEMENT_PLAN.md) for `@blue/parser`.
 2. **Phase 2: Core**: Finalize dependency injection and lifecycle hooks in `@blue/core`.
 3. **Phase 3: Dispatch**: Implement the universal event/request dispatcher.
 4. **Phase 4: Ecosystem**: Develop ORM and Auth modules.

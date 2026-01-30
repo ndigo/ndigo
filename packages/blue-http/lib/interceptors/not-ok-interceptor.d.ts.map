@@ -1,1 +1,0 @@
-{"version":3,"file":"not-ok-interceptor.d.ts","sourceRoot":"","sources":["../../src/interceptors/not-ok-interceptor.ts"],"names":[],"mappings":"AAAA;;GAEG;AAEH,OAAO,EAAE,QAAQ,EAAE,4BAA4B,EAAE,MAAM,SAAS,CAAC;AAGjE;;GAEG;AACH,qBAAa,gBAAiB,YAAW,4BAA4B;IACjE;;;;;OAKG;IACG,YAAY,CAAC,QAAQ,EAAE,QAAQ,EAAE,QAAQ,EAAE,QAAQ,GAAG,OAAO,CAAC,IAAI,CAAC;CAK5E"}

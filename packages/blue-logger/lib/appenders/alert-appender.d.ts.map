@@ -1,1 +1,0 @@
-{"version":3,"file":"alert-appender.d.ts","sourceRoot":"","sources":["../../src/appenders/alert-appender.ts"],"names":[],"mappings":"AAAA;;GAEG;AAEH,OAAO,EAAE,gBAAgB,EAAE,MAAM,aAAa,CAAC;AAC/C,OAAO,EAAE,KAAK,EAAE,MAAM,UAAU,CAAC;AAEjC,qBAAa,aAAc,SAAQ,gBAAgB;IAC/C,MAAM,CAAC,KAAK,EAAE,KAAK,GAAG,IAAI;CAG7B"}

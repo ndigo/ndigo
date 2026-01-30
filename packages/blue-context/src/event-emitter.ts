@@ -1,308 +1,762 @@
 /**
  * @author Jeff Rose
+ * @see {@link https://nodejs.org/api/events.html#events_class_eventemitter}
+ * @see {@link https://github.com/jeffrose/emitter}
  */
 
-import { JSONValue } from '@blue/core';
-import { EventEmitter as BaseEventEmitter } from 'events';
-import { Constructable } from '@blue/core';
-import { either, complement } from '@blue/util/logic';
-import { lastIndexOf } from '@blue/util/list';
-import { prop } from '@blue/util/object';
-import { equals } from '@blue/util/relation';
-import { propEq } from '@blue/util/relation';
-import { isFunction, isNil, like, is } from '@blue/util/types';
-import { Aware, likeAwareAnd } from '@blue/factory';
+import { Constructable, JSONValue, Serializable, Null, createNull } from '@blue/core';
+import { __ } from '@blue/util/function';
+import { allPass, either } from '@blue/util/logic';
+import { equals, gte, propEq } from '@blue/util/relation';
+import { is, isFunction, isNil, isNumber, isString, like, propIs } from '@blue/util/types';
+import { Aware, Destroyable, likeAwareAnd } from '@blue/factory';
 
-// propIs helper since it's not exported from @blue/util/types
-const propIs = (type: any) => (name: string) => (obj: any) => is(type, prop(name, obj));
+export type EventListener = { (...args: any[]): void; listener?: EventListener };
 
-const { freeze, keys } = Object,
-    { defineProperty } = Reflect,
-    isNotNil = complement(isNil);
+export type EventHandler = EventListener | EventListener[];
 
-export interface Listener {
-    once?: boolean;
-    fn(...data: unknown[]): void;
+export type EventHandlers = { [type: string]: EventHandler };
+
+export type EventType = string | symbol;
+
+export interface EventEmitter {
+    emit(type: EventType, ...data: any[]): boolean;
+    eventTypes(): EventType[];
+    listenerCount(type: EventType): number;
+    listeners(type: EventType): Function[];
+    on(type: EventType, listener: Function): this;
+    off(type: EventType, listener: Function): this;
 }
 
-export type ListenerResult = void | boolean | Promise<void> | Promise<boolean>;
+export interface AsyncEventEmitter extends EventEmitter {
+    tick(type: EventType, ...data: any[]): Promise<void>;
+}
 
-export type EventType = PropertyKey;
+export interface ConditionalEventEmitter extends EventEmitter {
+    many(type: EventType, times: number, listener: Function): this;
+    once(type: EventType, listener: Function): this;
+    until(type: EventType, listener: Function): this;
+}
 
-export interface EventEmitter<T = EventType> {
-    emit(event: T, ...data: unknown[]): boolean;
-    eventNames(): T[];
-    getMaxListeners(): number;
-    listenerCount(event: T, fn?: (...args: any[]) => any): number;
-    listeners(event: T): Listener[];
-    off(event: T, fn: (...args: any[]) => any): this;
-    on(event: T, fn: (...args: any[]) => any, once?: boolean): this;
-    once(event: T, fn: (...args: any[]) => any): this;
-    removeAllListeners(event?: T): this;
-    removeListener(event: T, fn: (...args: any[]) => any): this;
-    setMaxListeners(n: number): this;
+export interface PositionalEventEmitter extends EventEmitter {
+    at(type: EventType, index: number, listener: Function): this;
+    first(type: EventType, listener: Function): this;
 }
 
 export interface ApplicationEventEmitterAware extends Aware {
-    setApplicationEventEmitter(eventEmitter: EventEmitter<EventType>): void;
+    setApplicationEventEmitter(eventEmitter: EventEmitter): void;
 }
 
-export const likeApplicationEventEmitterAware = likeAwareAnd(like({
-    setApplicationEventEmitter: Function,
-})) as (value: unknown) => value is ApplicationEventEmitterAware;
+export const likeApplicationEventEmitterAware = likeAwareAnd(
+    like({
+        setApplicationEventEmitter: Function,
+    }),
+) as (value: unknown) => value is ApplicationEventEmitterAware;
 
-/**
- * @param {*} value
- * @returns {boolean} Whether or not a value is {@link EventEmitter|EventEmitter}.
- */
 export const likeEventEmitter = like({
     emit: Function,
-    eventNames: Function,
-    getMaxListeners: Function,
+    eventTypes: Function,
     listenerCount: Function,
     listeners: Function,
     off: Function,
     on: Function,
-    once: Function,
-    removeAllListeners: Function,
-    removeListener: Function,
-    setMaxListeners: Function,
 }) as (value: unknown) => value is EventEmitter;
 
-/**
- * @template T
- * @param {module:core.Constructable<T>} [superclass=Object] The superclass to extend
- * @returns {module:core.Constructable<T>} A class definition
- */
-export const AsEventEmitter = <TEvent = EventType, TBase extends Constructable = Constructable>(
-    superclass: TBase,
-): TBase & Constructable<EventEmitter<TEvent>> =>
-    class extends superclass implements EventEmitter<TEvent> {
-        #events: Map<TEvent, Listener[]>;
-        #maxListeners: number;
+const $events = '@@emitter/events',
+    $every = '@@emitter/every',
+    onMatcher = /^on(.+)$/;
 
-        constructor(...args: any[]) {
-            super(...args);
-            // Private fields are not enumerable; direct assignment is sufficient.
-            this.#events = new Map<TEvent, Listener[]>();
-            this.#maxListeners = 10;
+const { defineProperty, deleteProperty, getPrototypeOf } = Reflect,
+    { hasOwnProperty } = Object.prototype,
+    { isNaN } = Number,
+    { keys } = Object,
+    { isArray } = Array,
+    greaterThanOrEqualZero = gte(__, 0),
+    isSymbol = is(Symbol) as (value: unknown) => value is symbol,
+    hasFunction = propIs(Function),
+    hasListener = hasFunction('listener'),
+    lastIndexOfColon = (value: string): number => value.lastIndexOf(':');
+
+function addConditionalEventListener(emitter: EventEmitter, type: EventType, listener: EventListener): void {
+    const conditionalListener: EventListener = function (): void {
+        const done = listener.apply(emitter, arguments as any);
+        if (done === true) {
+            // When a conditional listener removes itself (once/many/until), tests expect
+            // ':off' meta events to include only the event type (no listener argument).
+            removeEventListener(emitter, type, conditionalListener, false);
         }
+    };
 
-        /**
-         * @param {*} event The event type
-         * @param {...*} data The event payload
-         * @returns {boolean} Returns `true` if the event had listeners, `false` otherwise
-         */
-        emit(event: TEvent, ...data: unknown[]): boolean {
-            if (this.#events.has(event)) {
-                const listeners = this.#events.get(event),
-                    length = listeners.length;
-                let index = 0;
-                for (; index < length; index++) {
-                    const listener = listeners[index],
-                        fn = listener.fn;
-                    fn.apply(this, data);
-                    if (listener.once) {
-                        this.off(event, listener.fn);
-                    }
-                }
-                return true;
-            } else {
-                return false;
+    conditionalListener.listener = listener.listener || listener;
+    addEventListener(emitter, type, conditionalListener, NaN);
+}
+
+function addEventHandler(emitter: EventEmitter, type: EventType, handler: EventHandler): void {
+    if (isArray(handler)) {
+        for (let index = 0; index < handler.length; index += 1) {
+            addEventListener(emitter, type, handler[index], NaN);
+        }
+    } else {
+        addEventListener(emitter, type, handler, NaN);
+    }
+}
+
+function addEventHandlers(emitter: EventEmitter, mappings: EventHandlers, prefixed: boolean = false): void {
+    for (const key in mappings) {
+        let type: EventType;
+
+        if (!prefixed) {
+            type = key;
+        } else {
+            const parts = onMatcher.exec(key);
+            if (parts) {
+                const capitalizedType = parts[1];
+                type = `${capitalizedType[0].toLowerCase()}${capitalizedType.slice(1)}`;
             }
         }
 
-        /**
-         * @returns {Array} A list of events for which the emitter has registered listeners
-         */
-        eventNames(): TEvent[] {
-            return [...this.#events.keys()];
+        if (type) {
+            const handler = mappings[type as string];
+            isEventHandler(handler) && addEventHandler(emitter, type, handler);
+        }
+    }
+}
+
+function defineEventsProperty(target: any, value: any): void {
+    const hasEvents: boolean = hasOwnProperty.call(target, $events),
+        targetPrototype = getPrototypeOf(target);
+
+    if (!hasEvents || (targetPrototype && target[$events] === targetPrototype[$events])) {
+        defineProperty(target, $events, {
+            value,
+            configurable: true,
+            enumerable: false,
+            writable: true,
+        });
+    }
+}
+
+function addEventListener(emitter: EventEmitter, type: EventType, listener: EventListener, index: number): void {
+    defineEventsProperty(emitter as any, createNull());
+
+    const _events = (emitter as any)[$events];
+
+    if (_events[':on']) {
+        emitEvent(emitter, ':on', [type], false);
+
+        // Emitting ':on' may have changed the registry.
+        _events[':on'] = (emitter as any)[$events][':on'];
+    }
+
+    if (!_events[type]) {
+        _events[type] = listener;
+    } else if (isArray(_events[type])) {
+        switch (isNaN(index) || index) {
+            case true:
+                _events[type].push(listener);
+                break;
+            case 0:
+                _events[type].unshift(listener);
+                break;
+            default:
+                _events[type].splice(index, 0, listener);
+                break;
+        }
+    } else {
+        _events[type] = index === 0 ? [listener, _events[type]] : [_events[type], listener];
+    }
+
+    (emitter as any)[$events] = _events;
+}
+
+function addFiniteEventListener(emitter: EventEmitter, type: EventType, times: number, listener: EventListener): void {
+    const finiteListener: EventListener = function (): boolean {
+        listener.apply(this, arguments as any);
+        return --times === 0;
+    };
+
+    finiteListener.listener = listener.listener || listener;
+    addConditionalEventListener(emitter, type, finiteListener);
+}
+
+function emitAllEvents(emitter: EventEmitter, type: EventType, data: any[]): boolean {
+    let executed = false,
+        index = typeof type === 'string' ? lastIndexOfColon(type) : -1;
+
+    while (index > 0) {
+        executed = (type && emitEvent(emitter, type, data, false)) || executed;
+        type = (type as string).substring(0, index);
+        index = lastIndexOfColon(type as string);
+    }
+
+    executed = (type && emitEvent(emitter, type, data, type !== $every)) || executed;
+    return executed;
+}
+
+function emitErrors(emitter: EventEmitter, errors: Error[]): void {
+    for (let index = 0; index < errors.length; index += 1) {
+        emitEvent(emitter, 'error', [errors[index]], false);
+    }
+}
+
+function emitEvent(emitter: EventEmitter, type: EventType, data: any[], emitEvery: boolean): boolean {
+    const _events = (emitter as any)[$events];
+    let executed = false;
+
+    if (!isNil(_events)) {
+        if (type === 'error' && !_events.error) {
+            if (data[0] instanceof Error) {
+                throw data[0];
+            }
+            throw new Error('Uncaught, unspecified "error" event.');
         }
 
-        /**
-         * @returns {number} The current max listener value for the `EventEmitter`, which is either set by {@link setMaxListeners} or defaults to 10.
-         */
-        getMaxListeners(): number {
-            return this.#maxListeners;
+        let listener: EventListener = _events[type];
+        if (!isNil(listener)) {
+            executeHandler(listener as any, data, emitter);
+            executed = true;
         }
 
-        /**
-         * @param {*} event The event type
-         * @param {Function} [fn] The listener
-         * @returns {number} The number of listeners listening to the event named `event`.
-         */
-        listenerCount(event: TEvent, fn?: (...args: unknown[]) => unknown): number {
-            let count = 0;
-            if (this.#events.has(event)) {
-                const listeners = this.#events.get(event),
-                    filter = isFunction(fn) ? (listener: Listener) => listener.fn === fn : () => true,
-                    length = listeners.length;
-                let index = 0;
-                for (; index < length; index++) {
-                    if (filter(listeners[index])) {
-                        count++;
-                    }
+        if (emitEvery) {
+            listener = _events[$every];
+            if (!isNil(listener)) {
+                executeHandler(listener as any, data, emitter);
+                executed = true;
+            }
+        }
+    }
+
+    return executed;
+}
+
+function eventListenerEquals(handler: EventListener | undefined, listener: EventListener): boolean {
+    if (typeof handler === 'undefined') {
+        return false;
+    }
+
+    if (handler === listener) {
+        return true;
+    }
+
+    return typeof (handler as any).listener !== 'undefined' && (handler as any).listener === listener;
+}
+
+function executeHandler(handler: EventHandler, data: any[], scope: any): void {
+    const isFn = isFunction(handler);
+
+    switch (data.length) {
+        case 0:
+            handleEmpty(handler, isFn, scope);
+            break;
+        case 1:
+            handleOne(handler, isFn, scope, data[0]);
+            break;
+        case 2:
+            handleTwo(handler, isFn, scope, data[0], data[1]);
+            break;
+        case 3:
+            handleThree(handler, isFn, scope, data[0], data[1], data[2]);
+            break;
+        default:
+            handleMany(handler, isFn, scope, data);
+            break;
+    }
+}
+
+const getEventTypes = (emitter: EventEmitter): EventType[] => ((emitter as any)[$events] ? (keys((emitter as any)[$events]) as any) : []);
+
+const isEventHandler = either(isFunction, isArray) as (value: unknown) => value is EventHandler;
+
+const isEventType = either(isString, isSymbol) as (value: unknown) => value is EventType;
+
+const isPositiveNumber = allPass([isNumber, greaterThanOrEqualZero]) as (value: unknown) => value is number;
+
+function handleEmpty(handler: EventHandler, isFn: boolean, emitter: EventEmitter): void {
+    const errors: Error[] = [];
+
+    if (isFn) {
+        try {
+            (handler as EventListener).call(emitter);
+        } catch (error) {
+            errors.push(error as Error);
+        }
+    } else {
+        const listeners: EventListener[] = (handler as EventListener[]).slice();
+        for (let index = 0; index < listeners.length; index += 1) {
+            try {
+                listeners[index].call(emitter);
+            } catch (error) {
+                errors.push(error as Error);
+            }
+        }
+    }
+
+    if (errors.length) {
+        emitErrors(emitter, errors);
+    }
+}
+
+function handleOne(handler: EventHandler, isFn: boolean, emitter: EventEmitter, arg1: any): void {
+    const errors: Error[] = [];
+
+    if (isFn) {
+        try {
+            (handler as EventListener).call(emitter, arg1);
+        } catch (error) {
+            errors.push(error as Error);
+        }
+    } else {
+        const listeners: EventListener[] = (handler as EventListener[]).slice();
+        for (let index = 0; index < listeners.length; index += 1) {
+            try {
+                listeners[index].call(emitter, arg1);
+            } catch (error) {
+                errors.push(error as Error);
+            }
+        }
+    }
+
+    if (errors.length) {
+        emitErrors(emitter, errors);
+    }
+}
+
+function handleTwo(handler: EventHandler, isFn: boolean, emitter: EventEmitter, arg1: any, arg2: any): void {
+    const errors: Error[] = [];
+
+    if (isFn) {
+        try {
+            (handler as EventListener).call(emitter, arg1, arg2);
+        } catch (error) {
+            errors.push(error as Error);
+        }
+    } else {
+        const listeners: EventListener[] = (handler as EventListener[]).slice();
+        for (let index = 0; index < listeners.length; index += 1) {
+            try {
+                listeners[index].call(emitter, arg1, arg2);
+            } catch (error) {
+                errors.push(error as Error);
+            }
+        }
+    }
+
+    if (errors.length) {
+        emitErrors(emitter, errors);
+    }
+}
+
+function handleThree(handler: EventHandler, isFn: boolean, emitter: EventEmitter, arg1: any, arg2: any, arg3: any): void {
+    const errors: Error[] = [];
+
+    if (isFn) {
+        try {
+            (handler as EventListener).call(emitter, arg1, arg2, arg3);
+        } catch (error) {
+            errors.push(error as Error);
+        }
+    } else {
+        const listeners: EventListener[] = (handler as EventListener[]).slice();
+        for (let index = 0; index < listeners.length; index += 1) {
+            try {
+                listeners[index].call(emitter, arg1, arg2, arg3);
+            } catch (error) {
+                errors.push(error as Error);
+            }
+        }
+    }
+
+    if (errors.length) {
+        emitErrors(emitter, errors);
+    }
+}
+
+function handleMany(handler: EventHandler, isFn: boolean, emitter: EventEmitter, args: any[]): void {
+    const errors: Error[] = [];
+
+    if (isFn) {
+        try {
+            (handler as EventListener).apply(emitter, args);
+        } catch (error) {
+            errors.push(error as Error);
+        }
+    } else {
+        const listeners: EventListener[] = (handler as EventListener[]).slice();
+        for (let index = 0; index < listeners.length; index += 1) {
+            try {
+                listeners[index].apply(emitter, args);
+            } catch (error) {
+                errors.push(error as Error);
+            }
+        }
+    }
+
+    if (errors.length) {
+        emitErrors(emitter, errors);
+    }
+}
+
+function removeEventHandler(emitter: EventEmitter, type: EventType, handler: EventHandler): void {
+    if (typeof handler === 'function') {
+        removeEventListener(emitter, type, handler);
+    } else if (isArray(handler)) {
+        let index = handler.length;
+        while (index--) {
+            removeEventListener(emitter, type, handler[index]);
+        }
+    }
+}
+
+function removeAllEventListeners(emitter: EventEmitter, type?: EventType): void {
+    if ((emitter as any)[$events]) {
+        if (!(emitter as any)[$events][':off']) {
+            if (isEventType(type)) {
+                (emitter as any)[$events] = createNull();
+            } else if (type && (emitter as any)[$events][type]) {
+                deleteProperty((emitter as any)[$events], type);
+            }
+        } else if (isEventType(type)) {
+            const types: EventType[] = getEventTypes(emitter);
+            for (let index = 0; index < types.length; index += 1) {
+                if (types[index] === ':off') {
+                    continue;
                 }
+                removeAllEventListeners(emitter, types[index]);
+            }
+
+            removeAllEventListeners(emitter, ':off');
+            (emitter as any)[$events] = createNull();
+        } else {
+            const handler: EventHandler = (emitter as any)[$events][type];
+            removeEventHandler(emitter, type, handler);
+            deleteProperty((emitter as any)[$events], type);
+        }
+    }
+}
+
+function spliceList<T = any>(list: T[], index: number): void {
+    const length = list.length;
+    let i = index,
+        j = i + 1;
+
+    for (; j < length; i += 1, j += 1) {
+        list[i] = list[j];
+    }
+
+    list.pop();
+}
+
+function removeEventListener(
+    emitter: EventEmitter,
+    type: EventType,
+    listener: EventListener,
+    includeListenerInMeta: boolean = true,
+): void {
+    const handler: EventHandler = (emitter as any)[$events][type];
+
+    if (eventListenerEquals(handler as EventListener, listener)) {
+        deleteProperty((emitter as any)[$events], type);
+        if ((emitter as any)[$events][':off']) {
+            emitEvent(emitter, ':off', includeListenerInMeta ? [type, listener] : [type], false);
+        }
+    } else if (isArray(handler)) {
+        let index = -1;
+
+        for (let i = handler.length; i-- > 0; ) {
+            if (eventListenerEquals(handler[i], listener)) {
+                index = i;
+                break;
+            }
+        }
+
+        if (index > -1) {
+            if (handler.length === 1) {
+                handler.length = 0;
+                deleteProperty((emitter as any)[$events], type);
+            } else {
+                spliceList(handler, index);
+            }
+
+            if ((emitter as any)[$events][':off']) {
+                emitEvent(emitter, ':off', includeListenerInMeta ? [type, listener] : [type], false);
+            }
+        }
+    }
+}
+
+async function tickAllEvents(emitter: EventEmitter, type: EventType, data: any[]): Promise<void> {
+    return new Promise<void>(function (resolve, reject): void {
+        queueMicrotask(() => (emitAllEvents(emitter, type, data) ? resolve() : reject()));
+    });
+}
+
+export const AsAsyncEventEmitter = <T extends Constructable<EventEmitter>>(
+    superclass: T,
+): Constructable<AsyncEventEmitter> & T =>
+    class extends superclass implements AsyncEventEmitter {
+        async tick(type: string | symbol, ...data: any[]): Promise<void> {
+            return tickAllEvents(this as unknown as EventEmitter, type, data);
+        }
+    };
+
+export const AsConditionalEventEmitter = <T extends Constructable<EventEmitter>>(
+    superclass: T,
+): Constructable<ConditionalEventEmitter> & T =>
+    class extends superclass implements ConditionalEventEmitter {
+        many(type: string | symbol = $every, times: number, listener: Function): this {
+            if (typeof type === 'number' && typeof times === 'function' && typeof listener === 'undefined') {
+                listener = times;
+                times = type;
+                type = $every;
+            }
+
+            if (!isPositiveNumber(times)) {
+                throw new TypeError('times must be a positive number');
+            }
+
+            if (typeof listener !== 'function') {
+                throw new TypeError('listener must be a function');
+            }
+
+            addFiniteEventListener(this as unknown as EventEmitter, type, times, listener as EventListener);
+            return this;
+        }
+
+        once(type: string | symbol = $every, listener: Function): this {
+            if (typeof type === 'function' && typeof listener === 'undefined') {
+                listener = type;
+                type = $every;
+            }
+
+            if (typeof listener !== 'function') {
+                throw new TypeError('listener must be a function');
+            }
+
+            addFiniteEventListener(this as unknown as EventEmitter, type, 1, listener as EventListener);
+            return this;
+        }
+
+        until(type: string | symbol = $every, listener: Function): this {
+            if (typeof type === 'function' && typeof listener === 'undefined') {
+                listener = type;
+                type = $every;
+            }
+
+            if (typeof listener !== 'function') {
+                throw new TypeError('listener must be a function');
+            }
+
+            addConditionalEventListener(this as unknown as EventEmitter, type, listener as EventListener);
+            return this;
+        }
+    };
+
+export const AsPositionalEventEmitter = <T extends Constructable<EventEmitter>>(
+    superclass: T,
+): Constructable<PositionalEventEmitter> & T =>
+    class extends superclass implements PositionalEventEmitter {
+        at(type: string | symbol = $every, index: number, listener: Function): this {
+            if (typeof type === 'number' && typeof index === 'function' && typeof listener === 'undefined') {
+                listener = index;
+                index = type;
+                type = $every;
+            }
+
+            if (!isPositiveNumber(index)) {
+                throw new TypeError('index must be a positive number');
+            }
+
+            if (typeof listener !== 'function') {
+                throw new TypeError('listener must be a function');
+            }
+
+            addEventListener(this as unknown as EventEmitter, type, listener as EventListener, index);
+            return this;
+        }
+
+        first(type: string | symbol = $every, listener: Function): this {
+            if (typeof type === 'function' && typeof listener === 'undefined') {
+                listener = type;
+                type = $every;
+            }
+
+            if (typeof listener !== 'function') {
+                throw new TypeError('listener must be a function');
+            }
+
+            addEventListener(this as unknown as EventEmitter, type, listener as EventListener, 0);
+            return this;
+        }
+    };
+
+export const AsEventEmitter = <T extends Constructable>(superclass: T): Constructable<EventEmitter> & T =>
+    class extends superclass implements EventEmitter {
+        get [Symbol.toStringTag](): string {
+            return 'EventEmitter';
+        }
+
+        emit(type: string | symbol, ...data: any[]): boolean {
+            return emitAllEvents(this as unknown as EventEmitter, type, data);
+        }
+
+        eventTypes(): (string | symbol)[] {
+            return getEventTypes(this as unknown as EventEmitter);
+        }
+
+        listenerCount(type: string | symbol): number {
+            let count: number;
+            if (!(this as any)[$events] || !(this as any)[$events][type]) {
+                count = 0;
+            } else if (typeof (this as any)[$events][type] === 'function') {
+                count = 1;
+            } else {
+                count = (this as any)[$events][type].length;
             }
             return count;
         }
 
-        /**
-         * @param {*} event The event type
-         * @returns {Array<module:context.Listener>} A copy of the array of listeners for the event named `event`.
-         */
-        listeners(event: TEvent): Listener[] {
-            const listeners = this.#events.get(event);
-            return listeners ? [...listeners] : [];
-        }
+        listeners(type: string | symbol): Function[] {
+            let listeners: EventListener[];
 
-        /**
-         * @param {*} event The event type
-         * @param {Function} fn The listener
-         * @returns {module:context.EventEmitter} A reference to the `EventEmitter`, so that calls can be chained.
-         */
-        off(event: TEvent, fn: (...args: unknown[]) => unknown): this {
-            if (this.#events.has(event)) {
-                const listeners = this.#events.get(event);
-                const index = listeners.findIndex(listener => listener.fn === fn);
-                if (index !== -1) {
-                    listeners.splice(index, 1);
-                }
-                if (!listeners.length) {
-                    this.#events.delete(event);
-                }
-            }
-            return this;
-        }
-
-        /**
-         * @param {*} event The event type
-         * @param {Function} fn The listener
-         * @param {boolean} [once=false] `true` if the listener should be automatically removed when first invoked.
-         * @returns {module:context.EventEmitter} A reference to the `EventEmitter`, so that calls can be chained.
-         */
-        on(event: TEvent, fn: (...args: unknown[]) => unknown, once = false): this {
-            if (isNotNil(event)) {
-                if (!isFunction(fn)) {
-                    throw new TypeError('Listener must be a function');
-                }
-
-                const listener = { fn, once };
-
-                if (!this.#events.has(event)) {
-                    this.#events.set(event, []);
-                }
-
-                const listeners = this.#events.get(event);
-                // Only add if not already present based on the function reference
-                if (!listeners.some(l => l.fn === fn)) {
-                    listeners.push(listener);
-                }
-            }
-            return this;
-        }
-
-        /**
-         * @param {*} event The event type
-         * @param {Function} fn The listener
-         * @returns {module:context.EventEmitter} A reference to the `EventEmitter`, so that calls can be chained.
-         */
-        once(event: TEvent, fn: (...args: unknown[]) => unknown): this {
-            return this.on(event, fn, true);
-        }
-
-        /**
-         * @param {*} [event] The event type
-         * @returns {module:context.EventEmitter} A reference to the `EventEmitter`, so that calls can be chained.
-         */
-        removeAllListeners(event?: TEvent): this {
-            if (isNotNil(event)) {
-                this.#events.delete(event);
+            if (!(this as any)[$events] || !(this as any)[$events][type]) {
+                listeners = [];
             } else {
-                this.#events.clear();
+                const handler: EventHandler = (this as any)[$events][type];
+
+                if (typeof handler === 'undefined') {
+                    listeners = [];
+                } else if (typeof handler === 'function') {
+                    listeners = [handler];
+                } else {
+                    listeners = handler.slice();
+                }
             }
+
+            return listeners;
+        }
+
+        on(type: string | symbol = $every, listener: Function): this {
+            if (typeof listener === 'undefined') {
+                if (typeof type === 'function') {
+                    listener = type;
+                    type = $every;
+                } else if (typeof type === 'object') {
+                    addEventHandlers(this as unknown as EventEmitter, type as unknown as EventHandlers, false);
+                    return this;
+                }
+            }
+
+            addEventListener(this as unknown as EventEmitter, type, listener as EventListener, NaN);
             return this;
         }
 
-        /**
-         * @param {*} event The event type
-         * @param {Function} fn The listener
-         * @returns {module:context.EventEmitter} A reference to the `EventEmitter`, so that calls can be chained.
-         */
-        removeListener(event: TEvent, fn: (...args: unknown[]) => unknown): this {
-            return this.off(event, fn);
-        }
-
-        /**
-         * @param {number} n The number of listeners
-         * @returns {module:context.EventEmitter} A reference to the `EventEmitter`, so that calls can be chained.
-         */
-        setMaxListeners(n: number): this {
-            this.#maxListeners = n;
-            return this;
-        }
-
-        toJSON(): JSONValue {
-            const eventNames = this.eventNames(),
-                length = eventNames.length,
-                result: Record<string, JSONValue> = {};
-            let index = 0;
-            for (; index < length; index++) {
-                const key = eventNames[index];
-                result[String(key)] = this.listenerCount(key);
+        off(type: string | symbol, listener: Function): this {
+            if (typeof type === 'function' && typeof listener === 'undefined') {
+                listener = type;
+                type = $every;
             }
-            return result;
+
+            if (typeof listener !== 'function') {
+                throw new TypeError('listener must be a function');
+            }
+
+            if (!(this as any)[$events] || !(this as any)[$events][type]) {
+                return this;
+            }
+
+            removeEventListener(this as unknown as EventEmitter, type, listener as EventListener);
+            return this;
         }
     };
 
-export class EventEmitterClass extends AsEventEmitter(Object as Constructable) {}
+export class Emitter extends AsEventEmitter(Null) implements Destroyable, Serializable {
+    static readonly every: string = $every;
+    static readonly version: string = '3.0.0';
 
-const internalEmitterKey = '@@emitter/events';
+    destroyed: boolean;
 
-export type EventEmitterTarget<TEvent = EventType> = EventEmitter<TEvent> & {
-    '@@emitter/events'?: EventEmitter<TEvent>;
+    constructor(mapping?: EventHandlers) {
+        super();
+
+        defineProperty(this, 'destroyed', {
+            value: false,
+            configurable: true,
+            enumerable: false,
+            writable: false,
+        });
+
+        typeof mapping !== 'undefined' && addEventHandlers(this as unknown as EventEmitter, mapping, false);
+    }
+
+    clear(type?: EventType): this {
+        removeAllEventListeners(this as unknown as EventEmitter, type);
+        return this;
+    }
+
+    toJSON(): JSONValue {
+        const json: { listenerCount?: { [type: string]: number } } = createNull();
+        const types = keys((this as any)[$events] || createNull());
+
+        json.listenerCount = createNull();
+        for (let index = 0; index < types.length; index += 1) {
+            const type = types[index];
+            json.listenerCount[type] = this.listenerCount(type);
+        }
+
+        return json as unknown as JSONValue;
+    }
+
+    toString(): string {
+        return `${this[Symbol.toStringTag]} ${JSON.stringify(this.toJSON())}`.trim();
+    }
+
+    destroy(): void {
+        if (!this.destroyed) {
+            defineProperty(this, 'destroyed', {
+                value: true,
+                configurable: false,
+                enumerable: false,
+                writable: false,
+            });
+            emitEvent(this as unknown as EventEmitter, ':destroy', [], false);
+            this.clear();
+            this.toJSON = () => 'destroyed';
+        }
+    }
+}
+
+// Back-compat alias: older API exposed `EventEmitter` behavior as a function mixin name.
+// The current mixin is `AsEventEmitter` and the public class is `Emitter`.
+
+export type EventEmitterTarget = EventEmitter & {
+    '@@emitter/events'?: Emitter;
 };
 
-/**
- * Function mixin that applies {@link EventEmitter} behavior to an existing object.
- */
-export const asEventEmitter = <TTarget extends object, TEvent = EventType>(target: TTarget): TTarget & EventEmitter<TEvent> => {
+export const asEventEmitter = <TTarget extends object>(target: TTarget): TTarget & EventEmitter => {
     if (!target || typeof target !== 'object') {
         throw new TypeError('asEventEmitter target must be an object');
     }
 
     if (likeEventEmitter(target)) {
-        return target as TTarget & EventEmitter<TEvent>;
+        return target as TTarget & EventEmitter;
     }
 
-    const t = target as EventEmitterTarget<TEvent>;
-    const emitter: EventEmitter<TEvent> = new EventEmitterClass() as unknown as EventEmitter<TEvent>;
+    const t = target as unknown as EventEmitterTarget;
+    const emitter = new Emitter();
 
-    defineProperty(t, internalEmitterKey, {
+    defineProperty(t, $events, {
         value: emitter,
         configurable: true,
         enumerable: false,
         writable: false,
     });
 
-    const forward = <K extends keyof EventEmitter<TEvent>>(key: K) =>
-        function (this: EventEmitterTarget<TEvent>, ...args: any[]) {
-            return (this[internalEmitterKey] as any)[key](...args);
+    const forward = (key: keyof EventEmitter) =>
+        function (this: EventEmitterTarget, ...args: any[]) {
+            return (this[$events] as any)[key](...args);
         };
 
-    ([
-        'emit',
-        'eventNames',
-        'getMaxListeners',
-        'listenerCount',
-        'listeners',
-        'off',
-        'on',
-        'once',
-        'removeAllListeners',
-        'removeListener',
-        'setMaxListeners',
-    ] as (keyof EventEmitter<TEvent>)[]).forEach((key) => {
+    (['emit', 'eventTypes', 'listenerCount', 'listeners', 'off', 'on'] as (keyof EventEmitter)[]).forEach((key) => {
         defineProperty(t, key, {
             value: forward(key),
             configurable: true,
@@ -311,7 +765,7 @@ export const asEventEmitter = <TTarget extends object, TEvent = EventType>(targe
         });
     });
 
-    return target as TTarget & EventEmitter<TEvent>;
+    return target as TTarget & EventEmitter;
 };
 
-export default EventEmitterClass;
+export default Emitter;

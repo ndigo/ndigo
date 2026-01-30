@@ -48,6 +48,14 @@ import string from './string/index.js';
 import types from './type/index.js';
 import * as date from './date/index.js';
 
+// Back-compat: named exports from the package root.
+// Prefer subpath imports (e.g. `@blue/util/list`) but keep a small set here
+// for older compiled artifacts that import from `@blue/util`.
+export { pipe, compose } from './function/index.js';
+export { join, map } from './list/index.js';
+export { allPass } from './logic/index.js';
+export { is, like } from './type/index.js';
+
 // Named category exports
 export { fn, list, logic, math, object, relation, string, types, date };
 

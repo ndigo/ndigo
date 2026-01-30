@@ -9,6 +9,7 @@ import {
     cond,
     dec,
     either,
+    equals,
     F,
     gt,
     has,
@@ -41,8 +42,8 @@ import isString from './is-string.js';
  * likeArray( {} );
  * //=> false
  */
-const nodeTypeEqualsOne = propEq('nodeType', 1),
-    lengthEqualsZero = propEq('length', 0),
+const nodeTypeEqualsOne = propSatisfies(equals(1), 'nodeType'),
+    lengthEqualsZero = propSatisfies(equals(0), 'length'),
     lengthGreaterThanZero = propSatisfies(gt(__, 0), 'length'),
     lastIndex = pipe(length, dec, toString),
     hasZero = has('0'),

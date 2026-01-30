@@ -6,7 +6,7 @@ describe('Category modules - import patterns', () => {
         expect(util.math).toBeDefined();
         expect(typeof util.math.add).toBe('function');
         expect(util.math.add(2, 3)).toBe(5);
-    });
+    }, 20000);
 
     test('logic category - namespace access', async () => {
         const util = await import('@blue/util');

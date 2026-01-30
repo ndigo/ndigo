@@ -22,6 +22,7 @@ export interface CookieJar {
     getJSON(key: string): JSONValue;
     remove(key: string, attributes): string;
     set(key: string, value: string, attributes): string;
+    run(input: string): unknown;
 }
 
 const { assign } = Object;
@@ -100,6 +101,9 @@ function init(converter): CookieJar {
     api.get = (key: string): JSONValue => get(key, false /* read as raw */);
     api.getJSON = (key: string): JSONValue => get(key, true /* read as json */);
     api.remove = (key: string, attributes): string => set(key, '', assign(attributes, { expires: -1 }));
+
+    // Expose cookie parser for consumers/tests that want direct parsing.
+    api.run = (input: string): unknown => (cookieExpression as Parser<unknown>).run(input);
 
     api.defaults = {};
 

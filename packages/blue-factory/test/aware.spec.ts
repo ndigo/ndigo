@@ -20,8 +20,8 @@ describe('AsAware', () => {
     });
 
     test('it should create aware instances', () => {
-        expect(aware).toHaveProperty($aware, true);
-        expect(nameAware).toHaveProperty($aware, true);
+        expect(Reflect.get(aware, $aware)).toBe(true);
+        expect(Reflect.get(nameAware, $aware)).toBe(true);
 
         nameAware.setName('test');
 

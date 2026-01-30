@@ -16,6 +16,7 @@ export default defineConfig({
             '@blue/util/string': resolve(__dirname, './src/string'),
             '@blue/util/list': resolve(__dirname, './src/list'),
             '@blue/util/type': resolve(__dirname, './src/type'),
+            '@blue/util/types': resolve(__dirname, './src/type'),
             '@blue/util/math': resolve(__dirname, './src/math'),
             '@blue/util/logic': resolve(__dirname, './src/logic'),
             '@blue/util/function': resolve(__dirname, './src/function'),

@@ -27,10 +27,11 @@ const { abs, max } = Math,
      * //=> [ 2, 5, 8 ]
      * @see {@link range}
      */
-    rangeN: RangeNFunction = curryN(3, (step: number, from: number, to?: number): number[] => {
-        if (to === void 0) {
-            to = from;
-        }
+     rangeN: RangeNFunction = curryN(2, (step: number, from: number, to?: number): number[] => {
+         if (to === void 0) {
+             // If only `step` and `from` are provided, treat it as an empty range.
+             return [];
+         }
 
         // fix negative zero
         if (step === 0) {

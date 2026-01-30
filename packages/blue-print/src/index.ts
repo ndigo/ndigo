@@ -10,6 +10,19 @@ type Impression = { [key: string]: impression | impression[] };
 
 export type Fingerprint = Impression[];
 
+type IdleDeadline = {
+    didTimeout: boolean;
+    timeRemaining(): number;
+};
+
+type RequestIdleCallback = (callback: (deadline: IdleDeadline) => void) => unknown;
+
+const scheduleIdle = (globalThis as unknown as { requestIdleCallback?: RequestIdleCallback }).requestIdleCallback
+    ? (callback: (deadline: IdleDeadline) => void) =>
+          (globalThis as unknown as { requestIdleCallback: RequestIdleCallback }).requestIdleCallback(callback)
+    : (callback: (deadline: IdleDeadline) => void) =>
+          setTimeout(() => callback({ didTimeout: false, timeRemaining: () => 0 }), 0);
+
 /**
  * @typedef module:print.impression
  * @type {boolean|external:number|external:string}
@@ -31,8 +44,7 @@ export type Fingerprint = Impression[];
  * A unique device signature
  */
 export const fingerprint = new Promise<Fingerprint>(function (resolve, reject) {
-    // @ts-ignore: ¯\_(ツ)_/¯
-    requestIdleCallback(function () {
+    scheduleIdle(function () {
         try {
             Fingerprint2.get(resolve);
         } catch (e) {

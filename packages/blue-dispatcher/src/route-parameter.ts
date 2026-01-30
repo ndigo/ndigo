@@ -3,7 +3,10 @@
  */
 
 import 'reflect-metadata';
-import { complement, either, isString, like, mergeRight, objOf, pipe, when } from '@blue/util';
+import { complement, either, when } from '@blue/util/logic';
+import { pipe } from '@blue/util/function';
+import { mergeRight, objOf } from '@blue/util/object';
+import { isString, like } from '@blue/util/types';
 import { Serializable, JSONObject, createNull, Equatable } from '@blue/core';
 
 export type MethodParameterInfo = {

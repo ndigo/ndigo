@@ -4,7 +4,7 @@
 
 import { Constructable, JSONValue, JSONObject } from '@blue/core';
 import { both, complement } from '@blue/util/logic';
-import { propSatisfies } from "ramda";
+import { propSatisfies } from '@blue/util/logic';
 import { like, isNil } from '@blue/util/types';
 import { AsAware, Aware, likeAwareAnd } from '@blue/factory';
 import {

@@ -3,7 +3,10 @@
  */
 
 import 'reflect-metadata';
-import { compose, isString, mergeRight, objOf, when } from '@blue/util';
+import { compose } from '@blue/util/function';
+import { when } from '@blue/util/logic';
+import { mergeRight, objOf } from '@blue/util/object';
+import { isString } from '@blue/util/types';
 
 type RouteMappingValue = {
     value: string;

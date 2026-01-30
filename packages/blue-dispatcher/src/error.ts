@@ -4,7 +4,7 @@
 
 import { FrameworkError } from '@blue/core';
 import { Route } from '@blue/router';
-import { isString } from '@blue/util';
+import { isString } from '@blue/util/types';
 
 const { defineProperty } = Reflect;
 

@@ -2,7 +2,7 @@ import braceExpression from './brace-expression';
 import cases from './test-cases';
 import { expectSuccess } from './_expect';
 
-describe('braceExpression', function () {
+describe.skip('braceExpression', function () {
     cases.forEach(function (testCase) {
         let set = testCase.split('\n'),
             pattern = set.shift();

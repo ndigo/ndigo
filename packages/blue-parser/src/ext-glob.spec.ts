@@ -1,6 +1,6 @@
 import extGlob from './ext-glob';
 
-xdescribe('ext-glob', function () {
+describe.skip('ext-glob', function () {
     const tests = [
         ['a', '!(a)', false],
         ['a', '(b)', false],
@@ -20,7 +20,7 @@ xdescribe('ext-glob', function () {
             if (actual !== expected) {
                 console.log(pattern, result.result);
             }
-            expect(actual).to.be[expected];
+            expect(actual).toBe(expected);
         });
     });
 });

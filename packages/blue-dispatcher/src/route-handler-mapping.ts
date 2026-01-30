@@ -15,7 +15,10 @@ import {
 import { AsNameAware, Initializable } from '@blue/factory';
 import { ApplicationContext, AsApplicationContextAware } from '@blue/context';
 import { Route } from '@blue/router';
-import { complement, isFunction, isString, when, startsWith, trim } from '@blue/util';
+import { complement, when } from '@blue/util/logic';
+import { startsWith } from '@blue/util/list';
+import { trim } from '@blue/util/string';
+import { isFunction, isString } from '@blue/util/types';
 import { RouteHandlerInterceptor, MappedHandlerInterceptor } from './route-handler-interceptor';
 import RouteHandlerExecutionChain from './route-handler-execution-chain';
 import { RouteHandlerMethod, RouteHandlerMethodMappingNamingStrategy } from './route-handler-method';
@@ -303,6 +306,15 @@ export abstract class AbstractHandlerMapping
         });
         defineProperty(this, 'pathMatcher', {
             value: new GlobPathMatcher(),
+            configurable: true,
+            enumerable: false,
+            writable: false,
+        });
+    }
+
+    setApplicationContext(applicationContext: ApplicationContext): void {
+        defineProperty(this, 'applicationContext', {
+            value: applicationContext,
             configurable: true,
             enumerable: false,
             writable: false,
@@ -722,7 +734,7 @@ export class MetadataHandlerMapping
             return null;
         }
         const patterns = matchingInfo.patternsCondition.patterns;
-        return new RouteMatchResult(patterns[Symbol.iterator]().next().value, route.path);
+        return new RouteMatchResult(patterns[Symbol.iterator]().next().value as string, route.path);
     }
 
     protected _getMappingForMethod(method: string, handler: any): RouteMappingInfo {
@@ -763,7 +775,7 @@ export class MetadataHandlerMapping
         if (!patterns.size) {
             bestPattern = path;
         } else {
-            bestPattern = patterns[Symbol.iterator]().next().value;
+            bestPattern = patterns[Symbol.iterator]().next().value as string;
         }
 
         defineProperty(route, 'pattern', {

@@ -2,7 +2,8 @@
  * @author Jeff Rose
  */
 
-import { both, complement, is, isNil, propSatisfies } from '@blue/util';
+import { both, complement, propSatisfies } from '@blue/util/logic';
+import { is, isNil } from '@blue/util/types';
 
 export * from '@blue/util';
 

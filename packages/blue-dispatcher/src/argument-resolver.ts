@@ -5,7 +5,8 @@
 import { Factory } from '@blue/factory';
 import { Route } from '@blue/router';
 import { MethodParameter, MethodParameterType } from './route-parameter';
-import { defaultTo, isNil } from '@blue/util';
+import { defaultTo } from '@blue/util/logic';
+import { isNil } from '@blue/util/types';
 
 export interface HandlerMethodArgumentResolver {
     supportsParameter(parameter: MethodParameter): boolean;

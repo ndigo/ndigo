@@ -44,7 +44,7 @@ import { prop } from '@blue/util/object';
 import { equals, gte, lte } from '@blue/util/relation';
 import { replace, split, test, toString } from '@blue/util/string';
 import { is } from '@blue/util/types';
-import { propSatisfies } from 'ramda';
+import { propSatisfies } from '@blue/util/logic';
 import { serializable } from '@blue/core';
 
 type Counter = (value) => number;

@@ -6,7 +6,7 @@ import '../node_modules/reflect-metadata/Reflect';
 //import { Constructable } from '@blue/core';
 import { Factory } from './factory';
 import { Registry } from './registry';
-import { isConstructor } from '@blue/util';
+import { isConstructor } from '@blue/util/types';
 import Entry from './entry';
 
 export type KnownScope = 'singleton' | 'prototype' | 'route';

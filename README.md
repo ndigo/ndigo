@@ -143,3 +143,31 @@ pnpm lint
     - Class mixins: `AsEventEmitter( Component )` produces a new class with combined capabilities
     - Function mixins: `asEventEmitter( component )` adds event emitter methods to the instance
 - **Configurable** suffix denotes interfaces/classes with setters for normally readonly properties
+
+## File & Module Conventions
+
+### Underscore-Prefix Pattern
+
+Files prefixed with an underscore (`_*.ts`) are **internal to their package** and should not be considered part of the public API:
+
+**Source files (`packages/*/src/_*.ts`):**
+- Internal utilities and helper functions
+- Implementation details not intended for external consumption
+- Re-exports from dependencies organized for internal use
+- Example: `_util.ts`, `_parser.ts`, `_natural-sort.ts`
+
+**Test files (`packages/*/test/_*.ts`):**
+- Test helper utilities and fixtures
+- Custom assertion helpers
+- Mock/worker implementations for testing
+- Example: `_expect.ts`, `_worker.ts`
+
+**Guidelines:**
+- ❌ Do NOT export underscore-prefixed modules in `index.ts`
+- ❌ Do NOT import underscore modules from other packages
+- ✅ Use only within the same package
+- ✅ Document purpose in file-level JSDoc comments
+
+### Public API Surface
+
+Each package's public API is defined by its `src/index.ts` file. Only modules explicitly exported there are considered public and stable.

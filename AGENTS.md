@@ -95,6 +95,16 @@ pnpm format
     - **Development:** Add to `devDependencies`.
     - **Cross-Package:** List `@blue/*` dependencies in both `devDependencies` and `peerDependencies`.
 
+### Internal vs Public Modules
+
+- **Public Modules:** Exported via `packages/<package-name>/src/index.ts`. These form the stable, documented API.
+- **Internal Modules:** Files prefixed with underscore (`_*.ts`) are implementation details:
+    - **Source:** `src/_*.ts` - Internal utilities, helpers, re-exports
+    - **Tests:** `test/_*.ts` - Test helpers, fixtures, custom assertions
+    - ❌ **Never export** underscore files in public API
+    - ❌ **Never import** underscore files across packages
+    - ✅ **Only use** within the same package
+
 ### Error Handling
 
 - Use specific error classes (e.g., `IllegalStateError` from `@blue/core`) rather than generic `Error` where possible.

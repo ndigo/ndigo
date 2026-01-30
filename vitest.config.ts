@@ -18,15 +18,16 @@ export default defineConfig({
         // Use ordered aliases so package-root aliases don't accidentally
         // capture subpath imports like `@blue/util/types`.
         alias: [
-            { find: /^@blue\/util\/date$/, replacement: resolve(__dirname, './packages/blue-util/src/date') },
-            { find: /^@blue\/util\/function$/, replacement: resolve(__dirname, './packages/blue-util/src/function') },
-            { find: /^@blue\/util\/list$/, replacement: resolve(__dirname, './packages/blue-util/src/list') },
-            { find: /^@blue\/util\/logic$/, replacement: resolve(__dirname, './packages/blue-util/src/logic') },
-            { find: /^@blue\/util\/math$/, replacement: resolve(__dirname, './packages/blue-util/src/math') },
-            { find: /^@blue\/util\/object$/, replacement: resolve(__dirname, './packages/blue-util/src/object') },
-            { find: /^@blue\/util\/relation$/, replacement: resolve(__dirname, './packages/blue-util/src/relation') },
-            { find: /^@blue\/util\/string$/, replacement: resolve(__dirname, './packages/blue-util/src/string') },
-            { find: /^@blue\/util\/types$/, replacement: resolve(__dirname, './packages/blue-util/src/type') },
+            { find: /^@blue\/util\/date/, replacement: resolve(__dirname, './packages/blue-util/src/date') },
+            { find: /^@blue\/util\/function/, replacement: resolve(__dirname, './packages/blue-util/src/function') },
+            { find: /^@blue\/util\/list/, replacement: resolve(__dirname, './packages/blue-util/src/list') },
+            { find: /^@blue\/util\/logic/, replacement: resolve(__dirname, './packages/blue-util/src/logic') },
+            { find: /^@blue\/util\/math/, replacement: resolve(__dirname, './packages/blue-util/src/math') },
+            { find: /^@blue\/util\/object/, replacement: resolve(__dirname, './packages/blue-util/src/object') },
+            { find: /^@blue\/util\/relation/, replacement: resolve(__dirname, './packages/blue-util/src/relation') },
+            { find: /^@blue\/util\/string/, replacement: resolve(__dirname, './packages/blue-util/src/string') },
+            { find: /^@blue\/util\/types/, replacement: resolve(__dirname, './packages/blue-util/src/type') },
+            { find: /^@blue\/util\/type/, replacement: resolve(__dirname, './packages/blue-util/src/type') },
 
             { find: /^@blue\/logger\/otel\/entry-to-logrecord$/, replacement: resolve(__dirname, './packages/blue-logger/src/otel/entry-to-logrecord') },
 

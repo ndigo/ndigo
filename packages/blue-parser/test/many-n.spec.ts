@@ -1,6 +1,7 @@
+import { describe, it, expect, test } from 'vitest';
 import { expectSuccess, expectFailure } from './_expect';
 import { digit } from 'arcsecond';
-import manyN from './many-n';
+import manyN from '../src/many-n';
 
 describe('manyN', function () {
     test('it should require n matches', function () {

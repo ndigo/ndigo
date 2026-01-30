@@ -1,7 +1,8 @@
+import { describe, it, expect, test } from 'vitest';
 import { expectSuccess, expectFailure } from './_expect';
-import matrixString from './matrix-string';
+import matrixString from '../src/matrix-string';
 
-describe.skip('matrixString', function () {
+describe('matrixString', function () {
     test('it should parse matrix strings starting with a `;`', function () {
         expectSuccess(matrixString, ';foo=bar', { foo: 'bar' });
 });

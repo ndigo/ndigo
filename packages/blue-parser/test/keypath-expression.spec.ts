@@ -1,5 +1,6 @@
+import { describe, it, expect, test } from 'vitest';
 import { expectSuccess } from './_expect';
-import keypathExpression from './keypath-expression';
+import keypathExpression from '../src/keypath-expression';
 
 describe('keypathExpression', function () {
     test('it should handle identifiers', function () {

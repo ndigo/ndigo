@@ -5,8 +5,7 @@
 
 import { allPass, complement, is } from 'ramda';
 
-const { isFinite, isNaN } = Number,
-    isNotNaN = complement(isNaN),
+const isNotNaN = complement(isNaN),
     _isNumber = is(Number);
 
 /**

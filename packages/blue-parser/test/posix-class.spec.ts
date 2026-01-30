@@ -1,4 +1,5 @@
-import posixClass from './posix-class';
+import { describe, it, expect, test } from 'vitest';
+import posixClass from '../src/posix-class';
 
 describe('posixClass', function () {
     test('it should parse POSIX character classes', function () {

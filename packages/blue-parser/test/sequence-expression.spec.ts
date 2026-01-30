@@ -1,5 +1,6 @@
+import { describe, it, expect, test } from 'vitest';
 import { expectFailure, expectSuccess } from './_expect';
-import sequenceExpression from './sequence-expression';
+import sequenceExpression from '../src/sequence-expression';
 
 import { between, char } from 'arcsecond';
 

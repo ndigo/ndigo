@@ -80,9 +80,7 @@ const // String constants
 
             let next = yield listItem;
             while (next) {
-                const item = yield next[1] === LEFT_BRACE
-                    ? braceExpression(everyCharUntil(reservedSymbol))
-                    : validString;
+                const item = yield next[1] === LEFT_BRACE ? braceExpression(everyCharUntil(reservedSymbol)) : validString;
                 result.push(item);
                 if ((yield lookAhead(choice([comma, rightBrace]))) === COMMA) {
                     yield comma;

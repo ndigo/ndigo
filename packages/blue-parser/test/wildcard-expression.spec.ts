@@ -1,5 +1,6 @@
+import { describe, it, expect, test } from 'vitest';
 import { expectSuccess } from './_expect';
-import wildcardExpression from './wildcard-expression';
+import wildcardExpression from '../src/wildcard-expression';
 
 describe('wildcardExpression', function () {
     test('it should parse wildcards', function () {

@@ -41,8 +41,7 @@ const dotLiteral = '\\.',
         }
 
         const negationPrefix = '(?:(?!(?:',
-            negationSuffix =
-                extGlobStar !== star || eos || patterns.length === 1 ? `)$))${extGlobStar}` : `))${extGlobStar})`;
+            negationSuffix = `)$))${extGlobStar}`;
         return cond([
             [equalsAtOrNull, () => `(${patterns})`],
             [equals('!'), () => `${negationPrefix}${patterns}${negationSuffix}`],

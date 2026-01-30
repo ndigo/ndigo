@@ -1,8 +1,9 @@
-import braceExpression from './brace-expression';
+import { describe, it, expect, test } from 'vitest';
+import braceExpression from '../src/brace-expression';
 import cases from './test-cases';
 import { expectSuccess } from './_expect';
 
-describe.skip('braceExpression', function () {
+describe('braceExpression', function () {
     cases.forEach(function (testCase) {
         let set = testCase.split('\n'),
             pattern = set.shift();

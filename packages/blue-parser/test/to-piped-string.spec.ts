@@ -1,4 +1,5 @@
-import toPipedString from './to-piped-string';
+import { describe, it, expect, test } from 'vitest';
+import toPipedString from '../src/to-piped-string';
 
 describe('toPipedString', function () {
     const parsed = {

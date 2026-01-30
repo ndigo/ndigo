@@ -1,6 +1,7 @@
-import extGlob from './ext-glob';
+import { describe, it, expect, test } from 'vitest';
+import extGlob from '../src/ext-glob';
 
-describe.skip('ext-glob', function () {
+describe('ext-glob', function () {
     const tests = [
         ['a', '!(a)', false],
         ['a', '(b)', false],
@@ -14,7 +15,7 @@ describe.skip('ext-glob', function () {
         }
         const [fixture, pattern, expected] = test,
             result = extGlob.run(pattern),
-            regex = new RegExp(result.result),
+            regex = new RegExp('^' + result.result + '$'),
             actual = regex.test(fixture);
         it(`should${expected ? '' : ' not'} match "${fixture}" with "${pattern}"`, function () {
             if (actual !== expected) {

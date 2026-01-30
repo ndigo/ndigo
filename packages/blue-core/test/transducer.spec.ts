@@ -9,7 +9,8 @@ import {
     toMap,
     toSet,
 } from '../src/transducer';
-import { compose, identity, into } from '@blue/util';
+import { compose, identity } from '@blue/util/function';
+import { into } from '@blue/util/list';
 
 class XDoubleTransformer extends DelegatingTransformer {
     ['@@transducer/step'](result: any, input: any): any {

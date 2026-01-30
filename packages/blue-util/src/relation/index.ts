@@ -375,6 +375,13 @@ export { minBy };
 export { project };
 
 /**
+ * Returns `true` if the specified object property equals the given value.
+ *
+ * @category Relation
+ */
+export { propEq };
+
+/**
  * Finds the set (i.e. no duplicates) of all elements contained in the first or
  * second list, but not both.
  *

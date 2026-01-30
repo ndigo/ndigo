@@ -6,7 +6,7 @@ import { MediaType, MultiValueMap } from '@blue/core';
 import { complement } from '@blue/util/logic';
 import { allPass } from '@blue/util/logic';
 import { isFunction, isNil } from '@blue/util/types';
-import { propSatisfies } from 'ramda';
+import { propSatisfies } from '@blue/util/logic';
 import { View } from './view';
 import { ViewResolver } from './view-resolver';
 

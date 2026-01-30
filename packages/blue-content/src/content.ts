@@ -2,7 +2,7 @@
  * @author Jeff Rose
  */
 
-import { like } from '@blue/util';
+import { like } from '@blue/util/types';
 import { Constructable } from '@blue/core';
 import { likeAwareAnd, Aware, AsAware } from '@blue/factory';
 

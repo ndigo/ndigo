@@ -33,7 +33,6 @@ const dotLiteral = '\\.',
     //toRegex = compose( newRegex, bindValue, groupValue ),
 
     mapExtGlob = ([[operator, patternList], eos]: [[string, string[]], boolean]): string => {
-        console.log('ExtGlob', operator, patternList, eos);
         const patterns = joinOnPipe(patternList);
         let extGlobStar = star;
 

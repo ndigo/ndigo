@@ -1,10 +1,10 @@
 import { expectSuccess, expectFailure } from './_expect';
 import matrixString from './matrix-string';
 
-xdescribe('matrixString', function () {
+describe.skip('matrixString', function () {
     test('it should parse matrix strings starting with a `;`', function () {
         expectSuccess(matrixString, ';foo=bar', { foo: 'bar' });
-    });
+});
 
     test('it should parse a matrix string', function () {
         expectSuccess(matrixString, 'foo=bar', { foo: 'bar' });

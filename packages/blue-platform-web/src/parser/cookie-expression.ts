@@ -10,7 +10,7 @@
  * @see {@link https://ramdajs.com/docs/#fromPairs}
  */
 import { Parser, char, everyCharUntil, regex, sepBy, sequenceOf, str, takeRight } from 'arcsecond';
-import { fromPairs } from '@blue/util';
+import { fromPairs } from '@blue/util/list';
 
 const validCharacters = /^[^;,\s]*/,
     percentEncoded = /(%[0-9A-Za-z]{2})+/g,

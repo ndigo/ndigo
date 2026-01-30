@@ -3,7 +3,8 @@
  */
 
 import { Destroyable } from './lifecycle';
-import { anyPass, like } from '@blue/util';
+import { anyPass } from '@blue/util/logic';
+import { like } from '@blue/util/types';
 import { Registry } from './registry';
 import { Factory } from './factory';
 

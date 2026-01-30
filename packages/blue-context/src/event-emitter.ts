@@ -3,14 +3,15 @@
  */
 
 import { JSONValue } from '@blue/core';
-import { EventEmitter as BaseEventEmitter } from '@blue/platform';
+import { EventEmitter as BaseEventEmitter } from 'events';
 import { Constructable } from '@blue/core';
 import { either, complement } from '@blue/util/logic';
 import { lastIndexOf } from '@blue/util/list';
 import { prop } from '@blue/util/object';
-import { propEq } from 'ramda';
 import { equals } from '@blue/util/relation';
+import { propEq } from '@blue/util/relation';
 import { isFunction, isNil, like, is } from '@blue/util/types';
+import { Aware, likeAwareAnd } from '@blue/factory';
 
 // propIs helper since it's not exported from @blue/util/types
 const propIs = (type: any) => (name: string) => (obj: any) => is(type, prop(name, obj));
@@ -26,7 +27,9 @@ export interface Listener {
 
 export type ListenerResult = void | boolean | Promise<void> | Promise<boolean>;
 
-export interface EventEmitter<T> extends EventEmitter {
+export type EventType = PropertyKey;
+
+export interface EventEmitter<T = EventType> {
     emit(event: T, ...data: unknown[]): boolean;
     eventNames(): T[];
     getMaxListeners(): number;
@@ -40,49 +43,49 @@ export interface EventEmitter<T> extends EventEmitter {
     setMaxListeners(n: number): this;
 }
 
-export interface Emittable<T = any> {
-    addEventListener(event: T, listener: (...args: any[]) => any): void;
-    removeEventListener(event: T, listener: (...args: any[]) => any): void;
+export interface ApplicationEventEmitterAware extends Aware {
+    setApplicationEventEmitter(eventEmitter: EventEmitter<EventType>): void;
 }
 
-/**
- * @param {*} value
- * @returns {boolean} Whether or not a value is {@link Emittable|Emittable}.
- */
-export const likeEmittable = like({ addEventListener: Function, removeEventListener: Function }) as (
-    value
-) => value is Emittable;
+export const likeApplicationEventEmitterAware = likeAwareAnd(like({
+    setApplicationEventEmitter: Function,
+})) as (value: unknown) => value is ApplicationEventEmitterAware;
 
 /**
  * @param {*} value
- * @returns {boolean} Whether or not a value is {@link Listener|Listener}.
+ * @returns {boolean} Whether or not a value is {@link EventEmitter|EventEmitter}.
  */
-export const likeListener = either(isFunction, like({ fn: Function })) as (value) => value is Listener;
+export const likeEventEmitter = like({
+    emit: Function,
+    eventNames: Function,
+    getMaxListeners: Function,
+    listenerCount: Function,
+    listeners: Function,
+    off: Function,
+    on: Function,
+    once: Function,
+    removeAllListeners: Function,
+    removeListener: Function,
+    setMaxListeners: Function,
+}) as (value: unknown) => value is EventEmitter;
 
 /**
  * @template T
  * @param {module:core.Constructable<T>} [superclass=Object] The superclass to extend
  * @returns {module:core.Constructable<T>} A class definition
  */
-export const AsEventEmitter = <T extends Constructable>(superclass: T): T & Constructable<EventEmitter> =>
-    class extends superclass {
-        #events: Map<PropertyKey, Listener[]>;
+export const AsEventEmitter = <TEvent = EventType, TBase extends Constructable = Constructable>(
+    superclass: TBase,
+): TBase & Constructable<EventEmitter<TEvent>> =>
+    class extends superclass implements EventEmitter<TEvent> {
+        #events: Map<TEvent, Listener[]>;
         #maxListeners: number;
 
         constructor(...args: any[]) {
             super(...args);
-            defineProperty(this, '_events', {
-                value: new Map(),
-                configurable: true,
-                enumerable: false,
-                writable: false,
-            });
-            defineProperty(this, '_maxListeners', {
-                value: 10,
-                configurable: true,
-                enumerable: false,
-                writable: true,
-            });
+            // Private fields are not enumerable; direct assignment is sufficient.
+            this.#events = new Map<TEvent, Listener[]>();
+            this.#maxListeners = 10;
         }
 
         /**
@@ -90,17 +93,17 @@ export const AsEventEmitter = <T extends Constructable>(superclass: T): T & Cons
          * @param {...*} data The event payload
          * @returns {boolean} Returns `true` if the event had listeners, `false` otherwise
          */
-        emit(event, ...data: unknown[]): boolean {
+        emit(event: TEvent, ...data: unknown[]): boolean {
             if (this.#events.has(event)) {
                 const listeners = this.#events.get(event),
                     length = listeners.length;
                 let index = 0;
                 for (; index < length; index++) {
                     const listener = listeners[index],
-                        fn = likeListener(listener) ? listener.fn : listener;
+                        fn = listener.fn;
                     fn.apply(this, data);
                     if (listener.once) {
-                        this.off(event, listener);
+                        this.off(event, listener.fn);
                     }
                 }
                 return true;
@@ -112,7 +115,7 @@ export const AsEventEmitter = <T extends Constructable>(superclass: T): T & Cons
         /**
          * @returns {Array} A list of events for which the emitter has registered listeners
          */
-        eventNames(): PropertyKey[] {
+        eventNames(): TEvent[] {
             return [...this.#events.keys()];
         }
 
@@ -128,11 +131,11 @@ export const AsEventEmitter = <T extends Constructable>(superclass: T): T & Cons
          * @param {Function} [fn] The listener
          * @returns {number} The number of listeners listening to the event named `event`.
          */
-        listenerCount(event, fn?: (...args: unknown[]) => unknown): number {
+        listenerCount(event: TEvent, fn?: (...args: unknown[]) => unknown): number {
             let count = 0;
             if (this.#events.has(event)) {
                 const listeners = this.#events.get(event),
-                    filter = isFunction(fn) ? propEq('fn', fn) : () => true,
+                    filter = isFunction(fn) ? (listener: Listener) => listener.fn === fn : () => true,
                     length = listeners.length;
                 let index = 0;
                 for (; index < length; index++) {
@@ -148,7 +151,7 @@ export const AsEventEmitter = <T extends Constructable>(superclass: T): T & Cons
          * @param {*} event The event type
          * @returns {Array<module:context.Listener>} A copy of the array of listeners for the event named `event`.
          */
-        listeners(event): Listener[] {
+        listeners(event: TEvent): Listener[] {
             const listeners = this.#events.get(event);
             return listeners ? [...listeners] : [];
         }
@@ -158,11 +161,10 @@ export const AsEventEmitter = <T extends Constructable>(superclass: T): T & Cons
          * @param {Function} fn The listener
          * @returns {module:context.EventEmitter} A reference to the `EventEmitter`, so that calls can be chained.
          */
-        off(event, fn: (...args: unknown[]) => unknown): this {
+        off(event: TEvent, fn: (...args: unknown[]) => unknown): this {
             if (this.#events.has(event)) {
                 const listeners = this.#events.get(event);
-                const listener = likeListener(fn) ? fn : { fn };
-                const index = lastIndexOf(listener, listeners);
+                const index = listeners.findIndex(listener => listener.fn === fn);
                 if (index !== -1) {
                     listeners.splice(index, 1);
                 }
@@ -179,7 +181,7 @@ export const AsEventEmitter = <T extends Constructable>(superclass: T): T & Cons
          * @param {boolean} [once=false] `true` if the listener should be automatically removed when first invoked.
          * @returns {module:context.EventEmitter} A reference to the `EventEmitter`, so that calls can be chained.
          */
-        on(event, fn: (...args: unknown[]) => unknown, once = false): this {
+        on(event: TEvent, fn: (...args: unknown[]) => unknown, once = false): this {
             if (isNotNil(event)) {
                 if (!isFunction(fn)) {
                     throw new TypeError('Listener must be a function');
@@ -192,8 +194,8 @@ export const AsEventEmitter = <T extends Constructable>(superclass: T): T & Cons
                 }
 
                 const listeners = this.#events.get(event);
-                const index = lastIndexOf(listener, listeners);
-                if (index === -1) {
+                // Only add if not already present based on the function reference
+                if (!listeners.some(l => l.fn === fn)) {
                     listeners.push(listener);
                 }
             }
@@ -205,7 +207,7 @@ export const AsEventEmitter = <T extends Constructable>(superclass: T): T & Cons
          * @param {Function} fn The listener
          * @returns {module:context.EventEmitter} A reference to the `EventEmitter`, so that calls can be chained.
          */
-        once(event, fn: (...args: unknown[]) => unknown): this {
+        once(event: TEvent, fn: (...args: unknown[]) => unknown): this {
             return this.on(event, fn, true);
         }
 
@@ -213,7 +215,7 @@ export const AsEventEmitter = <T extends Constructable>(superclass: T): T & Cons
          * @param {*} [event] The event type
          * @returns {module:context.EventEmitter} A reference to the `EventEmitter`, so that calls can be chained.
          */
-        removeAllListeners(event?: PropertyKey): this {
+        removeAllListeners(event?: TEvent): this {
             if (isNotNil(event)) {
                 this.#events.delete(event);
             } else {
@@ -227,7 +229,7 @@ export const AsEventEmitter = <T extends Constructable>(superclass: T): T & Cons
          * @param {Function} fn The listener
          * @returns {module:context.EventEmitter} A reference to the `EventEmitter`, so that calls can be chained.
          */
-        removeListener(event, fn: (...args: unknown[]) => unknown): this {
+        removeListener(event: TEvent, fn: (...args: unknown[]) => unknown): this {
             return this.off(event, fn);
         }
 
@@ -241,18 +243,75 @@ export const AsEventEmitter = <T extends Constructable>(superclass: T): T & Cons
         }
 
         toJSON(): JSONValue {
-            const keys = this.eventNames(),
-                length = keys.length,
+            const eventNames = this.eventNames(),
+                length = eventNames.length,
                 result: Record<string, JSONValue> = {};
             let index = 0;
             for (; index < length; index++) {
-                const key = keys[index];
+                const key = eventNames[index];
                 result[String(key)] = this.listenerCount(key);
             }
             return result;
         }
     };
 
-export class EventEmitter extends AsEventEmitter(BaseEventEmitter) {}
+export class EventEmitterClass extends AsEventEmitter(Object as Constructable) {}
 
-export default EventEmitter;
+const internalEmitterKey = '@@emitter/events';
+
+export type EventEmitterTarget<TEvent = EventType> = EventEmitter<TEvent> & {
+    '@@emitter/events'?: EventEmitter<TEvent>;
+};
+
+/**
+ * Function mixin that applies {@link EventEmitter} behavior to an existing object.
+ */
+export const asEventEmitter = <TTarget extends object, TEvent = EventType>(target: TTarget): TTarget & EventEmitter<TEvent> => {
+    if (!target || typeof target !== 'object') {
+        throw new TypeError('asEventEmitter target must be an object');
+    }
+
+    if (likeEventEmitter(target)) {
+        return target as TTarget & EventEmitter<TEvent>;
+    }
+
+    const t = target as EventEmitterTarget<TEvent>;
+    const emitter: EventEmitter<TEvent> = new EventEmitterClass() as unknown as EventEmitter<TEvent>;
+
+    defineProperty(t, internalEmitterKey, {
+        value: emitter,
+        configurable: true,
+        enumerable: false,
+        writable: false,
+    });
+
+    const forward = <K extends keyof EventEmitter<TEvent>>(key: K) =>
+        function (this: EventEmitterTarget<TEvent>, ...args: any[]) {
+            return (this[internalEmitterKey] as any)[key](...args);
+        };
+
+    ([
+        'emit',
+        'eventNames',
+        'getMaxListeners',
+        'listenerCount',
+        'listeners',
+        'off',
+        'on',
+        'once',
+        'removeAllListeners',
+        'removeListener',
+        'setMaxListeners',
+    ] as (keyof EventEmitter<TEvent>)[]).forEach((key) => {
+        defineProperty(t, key, {
+            value: forward(key),
+            configurable: true,
+            enumerable: false,
+            writable: false,
+        });
+    });
+
+    return target as TTarget & EventEmitter<TEvent>;
+};
+
+export default EventEmitterClass;

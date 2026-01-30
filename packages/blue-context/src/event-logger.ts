@@ -77,7 +77,7 @@ export class EventLogger extends AsLevelComparator(AsEventEmitter(AsNameAware(Nu
     async enableOTel(provider: BlueLoggerProvider, options?: EntryToLogRecordOptions): Promise<void> {
         try {
             // Dynamically import OTel utilities to avoid hard dependency
-            const { entryToLogRecord } = await import('@blue/logger/lib/otel/entry-to-logrecord');
+            const { entryToLogRecord } = await import('@blue/logger/otel/entry-to-logrecord');
 
             this.#otelLogger = provider.getLogger(this.name);
             this.#entryToLogRecord = entryToLogRecord;

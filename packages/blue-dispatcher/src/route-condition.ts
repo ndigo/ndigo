@@ -1,5 +1,5 @@
 import { Serializable, Equatable, JSONValue } from '@blue/core';
-import { like } from '@blue/util';
+import { like } from '@blue/util/types';
 import { Route } from '@blue/router';
 
 export interface NameValueExpression<T> {

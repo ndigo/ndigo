@@ -1,7 +1,7 @@
 import { expectFailure, expectSuccess } from './_expect';
 import sequenceExpression from './sequence-expression';
 
-const { between, char } = require('arcsecond');
+import { between, char } from 'arcsecond';
 
 describe('sequenceExpression', function () {
     test('it should handle ascending sequences', function () {

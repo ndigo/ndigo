@@ -13,8 +13,10 @@ import {
     endOfInput,
     everyCharUntil,
     lookAhead,
+    many,
     recursiveParser,
     regex,
+    sepBy,
     sequenceOf,
     str,
 } from 'arcsecond';
@@ -34,10 +36,6 @@ const // String constants
     UNESCAPED_LEFT_BRACE = `${UNESCAPED}${LEFT_BRACE}`,
     // Regular expressions
     notReservedSymbol = new RegExp(`${CARAT}[${CARAT}${COMMA}${LEFT_BRACE}${RIGHT_BRACE}]`),
-    unescapedComma = new RegExp(`${CARAT}${UNESCAPED}${COMMA}`),
-    unescapedLeftBrace = new RegExp(`${CARAT}${UNESCAPED_LEFT_BRACE}`),
-    unescapedRightBrace = new RegExp(`${CARAT}${UNESCAPED}${RIGHT_BRACE}`),
-    optionalStringFollowedByLeftBrace = new RegExp(`${CARAT}${OPTIONAL_STRING}${UNESCAPED_LEFT_BRACE}`),
     // Utility methods
     { isArray } = Array,
     parsePrefix = (value) => (value?.length - 1 > 0 ? str(value.slice(0, -1)) : noop),
@@ -65,34 +63,22 @@ const // String constants
         regex(notReservedSymbol),
     ]),
     validString = optional(validChar).map(joinOnEmptyString),
-    comma = regex(unescapedComma),
-    leftBrace = regex(unescapedLeftBrace),
-    rightBrace = regex(unescapedRightBrace),
+    comma = char(COMMA),
+    leftBrace = char(LEFT_BRACE),
+    rightBrace = char(RIGHT_BRACE),
     reservedSymbol = choice([leftBrace, rightBrace, comma, endOfInput]),
     betweenBraces = between(leftBrace)(rightBrace),
-    prefix = lookAhead(regex(optionalStringFollowedByLeftBrace)).chain(parsePrefix),
-    braceItem = recursiveParser(() => choice([sequenceExpression, listExpression])),
-    braceExpression = (suffix) => sequenceOf([prefix.map(toArray), braceItem, suffix.map(toArray)]).map(xprod3),
-    listItem = lookAhead(sequenceOf([validString, reservedSymbol])),
-    listExpression = betweenBraces(
-        coroutine(function* () {
-            const result: any[] = [];
+    prefix = lookAhead(regex(new RegExp(`${CARAT}${OPTIONAL_STRING}${UNESCAPED_LEFT_BRACE}`))).chain(parsePrefix),
+    braceItem = recursiveParser(() =>
+        betweenBraces(
+            choice([sequenceOf([_sequenceExpression, lookAhead(rightBrace)]).map((args) => args[0]), listContent])
+        )
+    ),
+    bracePart = choice([braceItem, validChar.map((v) => [v])]),
+    braceContent = many(bracePart).map((parts) => (parts.length ? xprodAll(...parts) : [''])),
+    listContent = sepBy(comma)(braceContent).map(flatten),
+    braceExpression = (suffix) => sequenceOf([prefix.map(toArray), braceItem, suffix.map(toArray)]).map(xprod3);
 
-            let next = yield listItem;
-            while (next) {
-                const item = yield next[1] === LEFT_BRACE ? braceExpression(everyCharUntil(reservedSymbol)) : validString;
-                result.push(item);
-                if ((yield lookAhead(choice([comma, rightBrace]))) === COMMA) {
-                    yield comma;
-                    next = yield listItem;
-                } else {
-                    next = null;
-                }
-            }
 
-            return result;
-        })
-    ).map(flatten),
-    sequenceExpression = betweenBraces(_sequenceExpression);
 
 export default braceExpression(choice([braceExpression(anyString), anyString]));

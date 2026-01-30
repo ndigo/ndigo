@@ -26,7 +26,7 @@ function createDocMap(categoryName) {
         // Clean up the doc string - remove leading 4 spaces from each line
         const docLines = item.doc.split('\n');
         const cleanedDoc = docLines
-            .map((line) => line.startsWith('    ') ? line.slice(4) : line)
+            .map((line) => (line.startsWith('    ') ? line.slice(4) : line))
             .join('\n')
             .trim();
         docMap.set(item.name, cleanedDoc);
@@ -43,7 +43,7 @@ function updateCategoryFile(categoryName, filePath, docMap) {
     let lines = content.split('\n');
 
     // Find where ramda imports end
-    const ramdaImportEndIndex = lines.findIndex(line => line.includes("} from 'ramda';"));
+    const ramdaImportEndIndex = lines.findIndex((line) => line.includes("} from 'ramda';"));
     if (ramdaImportEndIndex === -1) {
         console.log(`⚠️  No ramda imports found in ${filePath}`);
         return { documented: 0, notFound: 0 };
@@ -53,7 +53,14 @@ function updateCategoryFile(categoryName, filePath, docMap) {
     const ramdaFunctions = [];
     for (let i = 0; i <= ramdaImportEndIndex; i++) {
         const line = lines[i].trim();
-        if (line && !line.startsWith('import') && !line.startsWith('//') && !line.includes('ramda') && !line.includes('{') && !line.includes('}')) {
+        if (
+            line &&
+            !line.startsWith('import') &&
+            !line.startsWith('//') &&
+            !line.includes('ramda') &&
+            !line.includes('{') &&
+            !line.includes('}')
+        ) {
             const match = line.match(/^(\w+),?/);
             if (match) ramdaFunctions.push(match[1]);
         }
@@ -63,8 +70,10 @@ function updateCategoryFile(categoryName, filePath, docMap) {
     let firstExportIndex = -1;
     for (let i = ramdaImportEndIndex + 1; i < lines.length; i++) {
         // Look for either a JSDoc comment or an export statement
-        if ((lines[i].trim().startsWith('/**') || lines[i].trim().startsWith('export {')) &&
-            !lines[i].includes('export default')) {
+        if (
+            (lines[i].trim().startsWith('/**') || lines[i].trim().startsWith('export {')) &&
+            !lines[i].includes('export default')
+        ) {
             firstExportIndex = i;
             break;
         }
@@ -88,8 +97,7 @@ function updateCategoryFile(categoryName, filePath, docMap) {
     let customSectionStart = customExportIndex;
     if (customExportIndex > 0) {
         for (let i = customExportIndex - 1; i >= firstExportIndex; i--) {
-            if (lines[i].includes('// Custom functions') || 
-                lines[i].includes('// Export custom functions')) {
+            if (lines[i].includes('// Custom functions') || lines[i].includes('// Export custom functions')) {
                 customSectionStart = i;
                 break;
             }
@@ -107,7 +115,7 @@ function updateCategoryFile(categoryName, filePath, docMap) {
     let documented = 0;
     let notFound = 0;
 
-    ramdaFunctions.forEach(funcName => {
+    ramdaFunctions.forEach((funcName) => {
         const doc = docMap.get(funcName);
         if (doc) {
             newExports.push(doc);
@@ -121,12 +129,7 @@ function updateCategoryFile(categoryName, filePath, docMap) {
     });
 
     // Combine everything
-    const newContent = [
-        ...prefix,
-        '',
-        ...newExports,
-        ...suffix
-    ].join('\n');
+    const newContent = [...prefix, '', ...newExports, ...suffix].join('\n');
 
     writeFileSync(fullPath, newContent, 'utf-8');
     return { documented, notFound };

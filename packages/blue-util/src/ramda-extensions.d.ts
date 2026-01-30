@@ -3,8 +3,6 @@
  * These augment the existing ramda module definitions
  */
 
-import * as R from 'ramda';
-
 declare module 'ramda' {
     /**
      * As with addIndex, addIndexRight creates a new list iteration function from an existing one

@@ -1,27 +1,11 @@
 {
-  "extends": "../../tsconfig.base.json",
-  "compilerOptions": {
-    "baseUrl": ".",
-    "paths": {
-      "@blue/core": ["./packages/blue-core/src"],
-      "@blue/util": ["./packages/blue-util/src"],
-      "@blue/parser": ["./packages/blue-parser/src"],
-      "@blue/context": ["./packages/blue-context/src"],
-      "@blue/factory": ["./packages/blue-factory/src"],
-      "@blue/router": ["./packages/blue-router/src"],
-      "@blue/view": ["./packages/blue-view/src"],
-      "@blue/http": ["./packages/blue-http/src"],
-      "@blue/model": ["./packages/blue-model/src"],
-      "@blue/logger": ["./packages/blue-logger/src"],
-      "@blue/content": ["./packages/blue-content/src"],
-      "@blue/domain": ["./packages/blue-domain/src"],
-      "@blue/validate": ["./packages/blue-validate/src"],
-      "@blue/print": ["./packages/blue-print/src"],
-      "@blue/boot": ["./packages/blue-boot/src"],
-      "@blue/service": ["./packages/blue-service/src"],
-      "@blue/dispatcher": ["./packages/blue-dispatcher/src"],
-      "@blue/view-webcomponent": ["./packages/blue-view-webcomponent/src"],
-      "@blue/platform-web": ["./packages/blue-platform-web/src"]
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "baseUrl": ".",
+        "paths": {
+            "@blue/util": [
+                "./src"
+            ]
+        }
     }
-  }
 }

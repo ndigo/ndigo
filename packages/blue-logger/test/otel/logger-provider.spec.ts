@@ -208,7 +208,7 @@ describe('BlueLoggerProvider', () => {
             // Skip this test in dev/test mode where require paths are different
             // The factory function works fine after compilation
             try {
-                provider = createSimpleConsoleProvider();
+                provider = await createSimpleConsoleProvider();
                 expect(provider).toBeInstanceOf(BlueLoggerProvider);
 
                 const processors = provider.getProcessors();
@@ -219,14 +219,14 @@ describe('BlueLoggerProvider', () => {
             }
         });
 
-        it('should accept config options', () => {
+        it('should accept config options', async () => {
             // Skip this test in dev/test mode where require paths are different
             try {
                 const customResource = new Resource({
                     'service.name': 'console-test',
                 });
 
-                provider = createSimpleConsoleProvider({
+                provider = await createSimpleConsoleProvider({
                     resource: customResource,
                 });
 

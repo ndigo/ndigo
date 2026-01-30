@@ -52,6 +52,57 @@ type Counter = (value) => number;
 type temporal = string | Date;
 type pattern = string | RegExp;
 
+const DATE_PATTERN = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/;
+
+const daysInMonth = (year: number, month: number): number => {
+    // month is 1-12
+    return new Date(year, month, 0).getDate();
+};
+
+const normalizeToDate = (value: temporal, format: string = DEFAULT_DATE_FORMAT): Date | null => {
+    if (value instanceof Date) {
+        return Number.isNaN(value.getTime()) ? null : new Date(value.getTime());
+    }
+
+    if (!is(String)(value)) {
+        return null;
+    }
+
+    const text = String(value).trim();
+
+    // Only strict-parse the default date format for now.
+    if (format !== DEFAULT_DATE_FORMAT) {
+        return null;
+    }
+
+    const match = DATE_PATTERN.exec(text);
+    if (!match) {
+        return null;
+    }
+
+    const month = Number(match[1]);
+    const day = Number(match[2]);
+    const year = Number(match[3]);
+
+    if (month < 1 || month > 12) {
+        return null;
+    }
+
+    const maxDay = daysInMonth(year, month);
+    if (day < 1 || day > maxDay) {
+        return null;
+    }
+
+    const date = new Date(year, month - 1, day);
+    return Number.isNaN(date.getTime()) ? null : date;
+};
+
+const startOfDay = (date: Date): Date => {
+    const copy = new Date(date.getTime());
+    copy.setHours(0, 0, 0, 0);
+    return copy;
+};
+
 export type Params<T = any> = {
     value?: T;
 };
@@ -195,7 +246,7 @@ const { parseFloat, parseInt } = Number,
         regex: ALPHA_NUMERIC_PLUS_REGEX.source,
     }) as unknown as constraint<serializable>,
     isBlank: constraint = pipe(toString, removeWhitespace, isEmpty) as unknown as constraint<serializable>,
-    isBoolean: constraint = patternConstraint({ regex: BOOLEAN_REGEX.source }) as unknown as constraint<serializable>,
+    isBoolean: constraint = patternConstraint({ regex: BOOLEAN_REGEX }) as unknown as constraint<serializable>,
     isCapitals: constraint = (value, params: RangeParams = { min: 1 }) => rangeValidator(upperCaseCount(value), params),
     isCharacters: constraint = (value, params: RangeParams = { min: 1 }) => rangeValidator(alphaCount(value), params),
     isCity: constraint = both(isSingleSpaced, test(CITY_REGEX)),
@@ -226,8 +277,22 @@ const { parseFloat, parseInt } = Number,
         //    data	= moment( value, format, true ),
         //    valid	= data.isValid() && moment().diff( data, 'years' ) > 17;
         //return valid;
-        console.log('FIX');
-        return true;
+        const format = params.format || DEFAULT_DATE_FORMAT;
+        const date = normalizeToDate(value, format);
+        if (!date) {
+            return false;
+        }
+
+        const today = startOfDay(new Date());
+        const dob = startOfDay(date);
+
+        let age = today.getFullYear() - dob.getFullYear();
+        const monthDelta = today.getMonth() - dob.getMonth();
+        if (monthDelta < 0 || (monthDelta === 0 && today.getDate() < dob.getDate())) {
+            age -= 1;
+        }
+
+        return age >= 18;
     },
     isDateRange: constraint = (value, params: DateParams & RangeParams = {}) => {
         // const
@@ -246,7 +311,39 @@ const { parseFloat, parseInt } = Number,
         //     valid = date.isSame( max ) || date.isBefore( max );
         // }
         // return valid;
-        console.log('FIX');
+        const format = params.format || DEFAULT_DATE_FORMAT;
+        const date = normalizeToDate(value, format);
+        if (!date) {
+            return false;
+        }
+
+        const target = startOfDay(date).getTime();
+
+        if (isDefined(params.value)) {
+            const expected = normalizeToDate(params.value as any, format);
+            return !!expected && target === startOfDay(expected).getTime();
+        }
+
+        if (isDefined(params.min)) {
+            const minDate = normalizeToDate(params.min as any, format);
+            if (!minDate) {
+                return false;
+            }
+            if (target < startOfDay(minDate).getTime()) {
+                return false;
+            }
+        }
+
+        if (isDefined(params.max)) {
+            const maxDate = normalizeToDate(params.max as any, format);
+            if (!maxDate) {
+                return false;
+            }
+            if (target > startOfDay(maxDate).getTime()) {
+                return false;
+            }
+        }
+
         return true;
     },
     /**
@@ -276,7 +373,7 @@ const { parseFloat, parseInt } = Number,
 
         return result;
     },
-    isEmail: constraint = patternConstraint({ regex: EMAIL_REGEX.source }) as unknown as constraint<serializable>,
+    isEmail: constraint = patternConstraint({ regex: EMAIL_REGEX }) as unknown as constraint<serializable>,
     isEnum: constraint = (value, params: Params = {}): boolean => {
         const enumeration = isString(params.value)
             ? params.value.split(' ')
@@ -291,8 +388,14 @@ const { parseFloat, parseInt } = Number,
         //    moment( value, format, true ) :
         //    moment( value );
         //return date.isValid() && date.isAfter();
-        console.log('FIX');
-        return true;
+        const date = normalizeToDate(value, format);
+        if (!date) {
+            return false;
+        }
+
+        const target = startOfDay(date).getTime();
+        const today = startOfDay(new Date()).getTime();
+        return target > today;
     },
     isInteger: constraint = patternConstraint({ regex: INTEGER_REGEX.source }) as unknown as constraint<serializable>,
     isITINRange: constraint = (value) => {
@@ -415,8 +518,14 @@ const { parseFloat, parseInt } = Number,
         //    moment( value, format, true ) :
         //    moment( value );
         //return date.isValid() && date.isBefore();
-        console.log('FIX');
-        return true;
+        const date = normalizeToDate(value, format);
+        if (!date) {
+            return false;
+        }
+
+        const target = startOfDay(date).getTime();
+        const today = startOfDay(new Date()).getTime();
+        return target < today;
     },
     /**
      * Validates a regular expression pattern
@@ -497,8 +606,7 @@ const { parseFloat, parseInt } = Number,
             moment( value, format, true ) :
             moment( value );
         return date.isValid();*/
-        console.log('FIX');
-        return true;
+        return !!normalizeToDate(value, format);
     },
     isZipCode: constraint = patternConstraint({ regex: ZIP_CODE_REGEX.source }) as unknown as constraint<serializable>,
     isZipCodeExtension: constraint = patternConstraint({

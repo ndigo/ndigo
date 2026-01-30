@@ -8,7 +8,7 @@ import { complement } from '@blue/util/logic';
 import { reduce } from '@blue/util/list';
 import { path } from '@blue/util/object';
 import { like, isNil } from '@blue/util/types';
-import { pathSatisfies } from 'ramda';
+import { pathSatisfies } from '@blue/util/logic';
 
 export interface PropertyResolver {
     getProperty(key: string, defaultValue?: JSONValue): JSONValue;

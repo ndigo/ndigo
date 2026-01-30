@@ -4,7 +4,9 @@
 
 import 'reflect-metadata';
 import { Constructable } from '@blue/core';
-import { both, complement, either, isNil, propIs, propSatisfies } from '@blue/util';
+import { both, complement, either, propSatisfies } from '@blue/util/logic';
+import { propIs } from '@blue/util/types';
+import { isNil } from '@blue/util/types';
 
 const ERROR_HANDLER = 'error:handler',
     ERROR_MAPPING = 'error:mapping',

@@ -137,7 +137,7 @@ describe('ApplicationContextAwareProcessor', () => {
 });
 
 /* Older tests
-xdescribe( 'Context', () => {
+describe.skip( 'Context', () => {
 
     test( 'it should be a constructor', () => {
         expect( RootContext && RootContext.constructor ).toBe( Function );

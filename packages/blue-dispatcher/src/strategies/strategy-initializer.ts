@@ -4,7 +4,7 @@
 
 import { ApplicationContext } from '@blue/context';
 import { Constructable, Enumerable, IllegalStateError } from '@blue/core';
-import { toPascal } from '@blue/util';
+import { toPascal } from '@blue/util/string';
 
 export interface StrategyInitializer {
     strategies: string[];

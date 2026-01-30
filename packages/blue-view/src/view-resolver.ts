@@ -206,13 +206,12 @@ export class ViewResolverComposite extends AsApplicationContextAware(Null) imple
 
     init(...args: any[]): void {
         const { viewResolvers } = this;
-        length = viewResolvers.length;
+        const length = viewResolvers.length;
         if (length) {
-            let index = 0;
-            for (; index < length; index++) {
+            for (let index = 0; index < length; index++) {
                 const viewResolver = viewResolvers[index];
                 if (likeInitializable(viewResolver)) {
-                    viewResolver.init(args);
+                    (viewResolver as any).init(...args);
                 }
             }
         }
@@ -220,10 +219,9 @@ export class ViewResolverComposite extends AsApplicationContextAware(Null) imple
 
     async resolveViewName(name: string, language?: any): Promise<View> {
         const { viewResolvers } = this;
-        length = viewResolvers.length;
+        const length = viewResolvers.length;
         if (length) {
-            let index = 0;
-            for (; index < length; index++) {
+            for (let index = 0; index < length; index++) {
                 const viewResolver = viewResolvers[index],
                     view = await viewResolver.resolveViewName(name, language);
                 if (view) {
@@ -236,13 +234,12 @@ export class ViewResolverComposite extends AsApplicationContextAware(Null) imple
 
     setApplicationContext(applicationContext: ApplicationContext) {
         const { viewResolvers } = this;
-        length = viewResolvers.length;
+        const length = viewResolvers.length;
         if (length) {
-            let index = 0;
-            for (; index < length; index++) {
+            for (let index = 0; index < length; index++) {
                 const viewResolver = viewResolvers[index];
                 if (likeApplicationContextAware(viewResolver)) {
-                    viewResolver.setApplicationContext(applicationContext);
+                    (viewResolver as any).setApplicationContext(applicationContext);
                 }
             }
         }

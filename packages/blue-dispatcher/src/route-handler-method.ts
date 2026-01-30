@@ -5,7 +5,7 @@
 import { Factory, likeFactory } from '@blue/factory';
 import { Route } from '@blue/router';
 import { Serializable } from '@blue/core';
-import { type } from '@blue/util';
+import { type } from '@blue/util/types';
 import { HandlerMethodArgumentResolver } from './argument-resolver';
 import { MethodParameter } from './route-parameter';
 import { getRouteMapping } from './route-mapping';

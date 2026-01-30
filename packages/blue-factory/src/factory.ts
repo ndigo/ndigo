@@ -4,20 +4,12 @@
 
 import { /*Constructable,*/ likeEnumerable, isPrimitive, entriesIterator } from '@blue/core';
 import { Destroyable, Initializable, likeDestroyable, likeInitializable } from './lifecycle';
-import {
-    always,
-    both,
-    cond,
-    equals,
-    has,
-    identity,
-    isConstructor,
-    isFunction,
-    isNumber,
-    isString,
-    like,
-    T,
-} from '@blue/util';
+import { always, identity, T } from '@blue/util/function';
+import { cond } from '@blue/util/logic';
+import { both } from '@blue/util/logic';
+import { has } from '@blue/util/object';
+import { equals } from '@blue/util/relation';
+import { isConstructor, isFunction, isNumber, isString, like } from '@blue/util/types';
 import { Aware, AsAware, likeAwareAnd, likeAware, likeNameAware } from './aware';
 import { Registry, RegistryProxyHandler } from './registry';
 import { defineScope, getScope, hasScope, PrototypeScope, SingletonScope } from './scope';

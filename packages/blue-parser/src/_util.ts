@@ -6,7 +6,7 @@
 import { __ } from '@blue/util/function';
 import { join } from '@blue/util/list';
 import { lt } from '@blue/util/relation';
-import { propSatisfies } from 'ramda';
+import { propSatisfies } from '@blue/util/logic';
 import list from '@blue/util/list';
 
 // @ts-ignore - Module resolution issue with monorepo paths
@@ -17,7 +17,7 @@ export { forEachObjIndexed, keys, prop } from '@blue/util/object';
 export { equals, lt } from '@blue/util/relation';
 export { decodeURIComponent, encodeURIComponent, replace, split, test, trailingSplit } from '@blue/util/string';
 export { isNil, isString } from '@blue/util/types';
-export { propSatisfies } from 'ramda';
+export { propSatisfies } from '@blue/util/logic';
 
 // Export custom list functions from default export
 export const rangeN = list.rangeN;

@@ -2,7 +2,8 @@
  * @author Jeff Rose
  */
 
-import { complement, like } from '@blue/util';
+import { complement } from '@blue/util/logic';
+import { like } from '@blue/util/types';
 import { ModelAndView } from './model-and-view';
 import { Controller } from './controller';
 import { Route } from '@blue/router';

@@ -262,6 +262,23 @@ export { ifElse };
  */
 export { isEmpty };
 
+export { pathSatisfies };
+
+/**
+ * Returns `true` if the specified object property satisfies the given predicate.
+ *
+ * @category Logic
+ * @param {function} pred The predicate to apply to the property value
+ * @param {string} name The property name
+ * @param {*} obj The object to test
+ * @returns {boolean}
+ * @example
+ * import { __, gt, propSatisfies } from '@blue/util';
+ * const hasLongName = propSatisfies( gt( __, 10 ), 'length' );
+ * hasLongName( 'short' ); //=> false
+ */
+export { propSatisfies };
+
 /**
  * A function that returns the `!` of its argument. It will return `true` when
  * passed false-y value, and `false` when passed a truth-y one.

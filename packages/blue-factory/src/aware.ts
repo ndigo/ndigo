@@ -2,7 +2,8 @@
  * @author Jeff Rose
  */
 
-import { both, like } from '@blue/util';
+import { both } from '@blue/util/logic';
+import { like } from '@blue/util/types';
 //import { Constructable } from '@blue/core';
 
 // TODO Use the @blue/core version once it updates -JBR

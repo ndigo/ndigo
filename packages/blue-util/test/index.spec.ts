@@ -1,17 +1,8 @@
 import { describe, test, expect } from 'vitest';
 
-import {
-    andThen,
-    hasPath,
-    innerJoin,
-    mergeLeft,
-    mergeRight,
-    o,
-    otherwise,
-    pipeWith,
-    sequence,
-    thunkify,
-} from '@blue/util/index';
+import { andThen, o, otherwise, pipeWith, thunkify } from '@blue/util/function';
+import { hasPath, mergeLeft, mergeRight } from '@blue/util/object';
+import { innerJoin } from '@blue/util/relation';
 
 describe('index', function () {
     /**
@@ -58,12 +49,6 @@ describe('index', function () {
     describe('pipeWith', function () {
         test('it should be a function', function () {
             expect(pipeWith).toBeInstanceOf(Function);
-        });
-    });
-
-    describe('sequence', function () {
-        test('it should be a function', function () {
-            expect(sequence).toBeInstanceOf(Function);
         });
     });
 

@@ -4,7 +4,7 @@
  */
 // @ts-ignore
 import { anyCharExcept, between, char, choice, digit, digits, letter, sequenceOf } from 'arcsecond';
-import { flatten, joinOnEmptyString, of, last } from './_util';
+import { flatten, joinOnEmptyString, last } from './_util';
 import { atLeastOne, optional, leftBracket, rightBracket } from './_parser';
 
 const writeIdentifier = ([start, parts = []]: [string, string[]]) => `${start}${joinOnEmptyString(parts)}`,
@@ -28,6 +28,6 @@ const writeIdentifier = ([start, parts = []]: [string, string[]]) => `${start}${
     ),
     memberExpression = choice([computedMemberExpression, staticMemberExpression]);
 
-const keypathExpression = choice([memberExpression, identifier.map(of)]);
+const keypathExpression = choice([memberExpression, identifier.map((value: string) => [value])]);
 
 export default keypathExpression;

@@ -3,8 +3,6 @@
  * @module function
  */
 
-import * as R from 'ramda';
-
 /**
  * A function that always returns `false`. Any passed in parameters are ignored.
  *
@@ -1071,5 +1069,3 @@ export { uncurryN } from 'ramda';
  * useWith( Math.pow, [ dec, inc ] )( 3 )( 4 ); //=> 32
  */
 export { useWith } from 'ramda';
-
-

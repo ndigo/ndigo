@@ -3,7 +3,7 @@
  * @module function
  */
 
-import { F, T, __, addIndex, addIndexRight, always, andThen, ap, apply, applySpec, applyTo, ascend, ascendNatural, binary, bind, call, comparator, compose, composeWith, construct, constructN, converge, curry, curryN, descend, descendNatural, empty, flip, identity, invoker, juxt, lift, liftN, memoizeWith, nAry, nthArg, o, of, once, otherwise, partial, partialRight, pipe, pipeWith, tap, thunkify, tryCatch, unapply, unary, uncurryN, useWith } from 'ramda';
+import * as R from 'ramda';
 
 /**
  * A function that always returns `false`. Any passed in parameters are ignored.
@@ -14,7 +14,7 @@ import { F, T, __, addIndex, addIndexRight, always, andThen, ap, apply, applySpe
  * F();
  * //=> false
  */
-export { F };
+export { F } from 'ramda';
 
 /**
  * A function that always returns `true`. Any passed in parameters are ignored.
@@ -25,7 +25,7 @@ export { F };
  * T();
  * //=> true
  */
-export { T };
+export { T } from 'ramda';
 
 /**
  * A special placeholder value used to specify "gaps" within curried functions,
@@ -51,7 +51,7 @@ export { T };
  * greet( 'Alice' );
  * //=> 'Hello, Alice!'
  */
-export { __ };
+export { __ } from 'ramda';
 
 /**
  * Creates a new list iteration function from an existing one by adding two new
@@ -73,7 +73,7 @@ export { __ };
  * indexedMap( ( val, idx ) => idx + '-' + val, [ 'f', 'o', 'o', 'b', 'a', 'r' ] );
  * //=> [ '0-f', '1-o', '2-o', '3-b', '4-a', '5-r' ]
  */
-export { addIndex };
+export { addIndex } from 'ramda';
 
 /**
  * As with `addIndex`, `addIndexRight` creates a new list iteration function from an existing one by adding two new
@@ -92,7 +92,7 @@ export { addIndex };
  * revmapIndexed((val, idx) => idx + '-' + val, ['f', 'o', 'o', 'b', 'a', 'r']);
  * //=> [ '5-r', '4-a', '3-b', '2-o', '1-o', '0-f' ]
  */
-export { addIndexRight };
+export { addIndexRight } from 'ramda';
 
 /**
  * Returns a function that always returns the given value. Note that for
@@ -109,7 +109,7 @@ export { addIndexRight };
  * t();
  * //=> 'Tee'
  */
-export { always };
+export { always } from 'ramda';
 
 /**
  * Returns the result of applying the onSuccess function to the value inside
@@ -132,7 +132,7 @@ export { always };
  *  andThen( pick( [ 'firstName', 'lastName' ] ) )
  * );
  */
-export { andThen };
+export { andThen } from 'ramda';
 
 /**
  * ap applies a list of functions to a list of values.
@@ -152,7 +152,7 @@ export { andThen };
  * // when only two functions are passed
  * ap( concat, toUpper )( 'Ramda' ) //=> 'RamdaRAMDA'
  */
-export { ap };
+export { ap } from 'ramda';
 
 /**
  * Applies function `fn` to the argument list `args`. This is useful for
@@ -170,7 +170,7 @@ export { ap };
  * apply( Math.max, nums );
  * //=> 42
  */
-export { apply };
+export { apply } from 'ramda';
 
 /**
  * Given a spec object recursively mapping properties to functions, creates a
@@ -191,7 +191,7 @@ export { apply };
  * getMetrics( 2, 4 );
  * //=> { sum: 6, nested: { mul: 8 } }
  */
-export { applySpec };
+export { applySpec } from 'ramda';
 
 /**
  * Takes a value and applies a function to it.
@@ -210,7 +210,7 @@ export { applySpec };
  * t42( add( 1 ) );
  * //=> 43
  */
-export { applyTo };
+export { applyTo } from 'ramda';
 
 /**
  * Makes an ascending comparator function out of a function that returns a value
@@ -233,7 +233,7 @@ export { applyTo };
  * const peopleByYoungestFirst = sort( byAge, people );
  * //=> [ { name: 'Mikhail', age: 62 }, { name: 'Emma', age: 70 }, { name: 'Peter', age: 78 } ]
  */
-export { ascend };
+export { ascend } from 'ramda';
 
 /**
  * Makes an ascending comparator function out of a function that returns a value
@@ -252,7 +252,7 @@ export { ascend };
  * sort(ascendNatural('en', identity), unsorted);
  * // => ['1', '3', '10', 'Älva', 'Bob', 'Ørjan']
  */
-export { ascendNatural };
+export { ascendNatural } from 'ramda';
 
 /**
  * Wraps a function of any arity (including nullary) in a function that accepts
@@ -280,7 +280,7 @@ export { ascendNatural };
  * takesTwoArgs( 1, 2, 3 );
  * //=> [ 1, 2, undefined ]
  */
-export { binary };
+export { binary } from 'ramda';
 
 /**
  * Creates a function that is bound to a context.
@@ -299,7 +299,7 @@ export { binary };
  * pipe( assoc( 'a', 2 ), tap( log ), assoc( 'a', 3 ) )( { a: 1 } ); //=> { a: 3 }
  * // logs {a: 2}
  */
-export { bind };
+export { bind } from 'ramda';
 
 /**
  * Returns the result of calling its first argument with the remaining
@@ -321,7 +321,7 @@ export { bind };
  * format( { indent: 2, value: 'foo\nbar\nbaz\n' } );
  * //=> '  foo\n  bar\n  baz\n'
  */
-export { call };
+export { call } from 'ramda';
 
 /**
  * Makes a comparator function out of a function that reports whether the first
@@ -341,7 +341,7 @@ export { call };
  * const peopleByIncreasingAge = sort( byAge, people );
  * //=> [ { name: 'Mikhail', age: 62 },{ name: 'Emma', age: 70 }, { name: 'Peter', age: 78 } ]
  */
-export { comparator };
+export { comparator } from 'ramda';
 
 /**
  * Performs right-to-left function composition. The last argument may have
@@ -360,7 +360,7 @@ export { comparator };
  * yellGreeting( 'James', 'Bond' ); //=> "THE NAME'S BOND, JAMES BOND"
  * compose( Math.abs, add( 1 ), multiply( 2 ) )( -4 ) //=> 7
  */
-export { compose };
+export { compose } from 'ramda';
 
 /**
  * Performs right-to-left function composition using transforming function. The last argument may have
@@ -380,7 +380,7 @@ export { compose };
  * composeWhileNotNil( [ inc, prop( 'age' ) ] )( { age: 1 } ) //=> 2
  * composeWhileNotNil( [ inc, prop( 'age' ) ] )( {} ) //=> undefined
  */
-export { composeWith };
+export { composeWith } from 'ramda';
 
 /**
  * Wraps a constructor function inside a curried function that can be called
@@ -410,7 +410,7 @@ export { composeWith };
  * const sightNewAnimal = compose( animalSighting, AnimalConstructor );
  * map( sightNewAnimal, animalTypes ); //=> [ "It's a Lion!", "It's a Tiger!", "It's a Bear!" ]
  */
-export { construct };
+export { construct } from 'ramda';
 
 /**
  * Wraps a constructor function inside a curried function that can be called
@@ -443,7 +443,7 @@ export { construct };
  * // Add a dollop of Potato Chips
  * // Add a dollop of Ketchup
  */
-export { constructN };
+export { constructN } from 'ramda';
 
 /**
  * Accepts a converging function and a list of branching functions and returns
@@ -468,7 +468,7 @@ export { constructN };
  *
  * @symb converge( f, [ g, h ] )( a, b ) = f( g( a, b ), h( a, b ) )
  */
-export { converge };
+export { converge } from 'ramda';
 
 /**
  * Returns a curried equivalent of the provided function. The curried function
@@ -506,7 +506,7 @@ export { converge };
  * const g = f( 3 );
  * g( 4 ); //=> 10
  */
-export { curry };
+export { curry } from 'ramda';
 
 /**
  * Returns a curried equivalent of the provided function, with the specified
@@ -545,7 +545,7 @@ export { curry };
  * const g = f( 3 );
  * g( 4 ); //=> 10
  */
-export { curryN };
+export { curryN } from 'ramda';
 
 /**
  * Makes a descending comparator function out of a function that returns a value
@@ -568,7 +568,7 @@ export { curryN };
  * const peopleByOldestFirst = sort( byAge, people );
  * //=> [ { name: 'Peter', age: 78 }, { name: 'Emma', age: 70 }, { name: 'Mikhail', age: 62 } ]
  */
-export { descend };
+export { descend } from 'ramda';
 
 /**
  * Makes a descending comparator function out of a function that returns a value
@@ -587,7 +587,7 @@ export { descend };
  * sort(descendNatural('en', identity), unsorted);
  * // => ['Ørjan', 'Bob', 'Älva', '10', '3', '1']
  */
-export { descendNatural };
+export { descendNatural } from 'ramda';
 
 /**
  * Returns the empty value of its argument's type. Ramda defines the empty
@@ -607,7 +607,7 @@ export { descendNatural };
  * empty( 'unicorns' ); //=> ''
  * empty( { x: 1, y: 2 } ); //=> {}
  */
-export { empty };
+export { empty } from 'ramda';
 
 /**
  * Returns a new function much like the supplied one, except that the first two
@@ -621,7 +621,7 @@ export { empty };
  * mergeThree( 1, 2, 3 ); //=> [ 1, 2, 3 ]
  * flip( mergeThree )( 1, 2, 3 ); //=> [ 2, 1, 3 ]
  */
-export { flip };
+export { flip } from 'ramda';
 
 /**
  * A function that does nothing but return the parameter supplied to it. Good
@@ -635,7 +635,7 @@ export { flip };
  * const obj = {};
  * identity( obj ) === obj; //=> true
  */
-export { identity };
+export { identity } from 'ramda';
 
 /**
  * Turns a named method with a specified arity into a function that can be
@@ -655,7 +655,7 @@ export { identity };
  * const sliceFrom6 = invoker( 2, 'slice' )( 6 );
  * sliceFrom6( 8, 'abcdefghijklm' ); //=> 'gh'
  */
-export { invoker };
+export { invoker } from 'ramda';
 
 /**
  * juxt applies a list of functions to a list of values.
@@ -668,7 +668,7 @@ export { invoker };
  * const getRange = juxt( [ Math.min, Math.max ] );
  * getRange( 3, 4, 9, -3 ); //=> [ -3, 9 ]
  */
-export { juxt };
+export { juxt } from 'ramda';
 
 /**
  * "lifts" a function of arity > 1 so that it may "map over" a list, Function or other
@@ -684,7 +684,7 @@ export { juxt };
  * const madd5 = lift( ( a, b, c, d, e ) => a + b + c + d + e );
  * madd5( [ 1, 2 ], [ 3 ], [ 4, 5 ], [ 6 ], [ 7, 8 ] ); //=> [ 21, 22, 22, 23, 22, 23, 23, 24 ]
  */
-export { lift };
+export { lift } from 'ramda';
 
 /**
  * "lifts" a function to be the specified arity, so that it may "map over" that
@@ -700,7 +700,7 @@ export { lift };
  * const madd3 = liftN( 3, ( ...args ) => sum( args ) );
  * madd3( [ 1, 2, 3 ], [ 1, 2, 3 ], [ 1 ] ); //=> [ 3, 4, 5, 4, 5, 6, 5, 6, 7 ]
  */
-export { liftN };
+export { liftN } from 'ramda';
 
 /**
  * Creates a new function that, when invoked, caches the result of calling `fn`
@@ -726,7 +726,7 @@ export { liftN };
  * factorial( 5 ); //=> 120
  * count; //=> 1
  */
-export { memoizeWith };
+export { memoizeWith } from 'ramda';
 
 /**
  * Wraps a function of any arity (including nullary) in a function that accepts
@@ -754,7 +754,7 @@ export { memoizeWith };
  * takesOneArg( 1, 2 );
  * //=> [ 1, undefined ]
  */
-export { nAry };
+export { nAry } from 'ramda';
 
 /**
  * Returns a function which returns its nth argument.
@@ -768,7 +768,7 @@ export { nAry };
  * nthArg( -1 )( 'a', 'b', 'c' );
  * //=> 'c'
  */
-export { nthArg };
+export { nthArg } from 'ramda';
 
 /**
  * `o` is a curried composition function that returns a unary function.
@@ -791,7 +791,7 @@ export { nthArg };
  * yellGreeting( { first: 'James', last: 'Bond' } ); //=> "THE NAME'S BOND, JAMES BOND"
  * o( multiply( 10 ), add( 10 ) )( -4 ) //=> 60
  */
-export { o };
+export { o } from 'ramda';
 
 /**
  * Returns a singleton array containing the value provided.
@@ -808,7 +808,7 @@ export { o };
  * of( [ 42 ] );
  * //=> [ [ 42 ] ]
  */
-export { of };
+export { of } from 'ramda';
 
 /**
  * Accepts a function `fn` and returns a function that guards invocation of
@@ -826,7 +826,7 @@ export { of };
  * addOneOnce( addOneOnce( 50 ) );
  * //=> 11
  */
-export { once };
+export { once } from 'ramda';
 
 /**
  * Returns the result of applying the onFailure function to the value inside
@@ -850,7 +850,7 @@ export { once };
  * );
  * recoverFromFailure( 12345 ).then( console.log )
  */
-export { otherwise };
+export { otherwise } from 'ramda';
 
 /**
  * Takes a function `f` and a list of arguments, and returns a function `g`.
@@ -875,7 +875,7 @@ export { otherwise };
  * sayHelloToMs( 'Jane', 'Jones' );
  * //=> 'Hello, Ms. Jane Jones!'
  */
-export { partial };
+export { partial } from 'ramda';
 
 /**
  * Takes a function `f` and a list of arguments, and returns a function `g`.
@@ -894,7 +894,7 @@ export { partial };
  * greetMsJaneJones( 'Hello' );
  * //=> 'Hello, Ms. Jane Jones!'
  */
-export { partialRight };
+export { partialRight } from 'ramda';
 
 /**
  * Performs left-to-right function composition. The first argument may have
@@ -914,7 +914,7 @@ export { partialRight };
  * f( 3, 4 );
  * //=> -(3^4) + 1
  */
-export { pipe };
+export { pipe } from 'ramda';
 
 /**
  * Performs left-to-right function composition using transforming function. The first argument may have
@@ -935,7 +935,7 @@ export { pipe };
  * const f = pipeWhileNotNil( [ Math.pow, negate, inc ] )
  * f( 3, 4 ); // -(3^4) + 1
  */
-export { pipeWith };
+export { pipeWith } from 'ramda';
 
 /**
  * Runs the given function with the supplied object, then returns the object.
@@ -951,7 +951,7 @@ export { pipeWith };
  * tap( sayX, 100 ); //=> 100
  * // logs 'x is 100'
  */
-export { tap };
+export { tap } from 'ramda';
 
 /**
  * Creates a thunk out of a function. A thunk delays a calculation until
@@ -967,7 +967,7 @@ export { tap };
  * thunkify( identity )( 42 )(); //=> 42
  * thunkify( ( a, b ) => a + b )( 25, 17 )(); //=> 42
  */
-export { thunkify };
+export { thunkify } from 'ramda';
 
 /**
  * `tryCatch` takes two functions, a `tryer` and a `catcher`. The returned
@@ -987,7 +987,7 @@ export { thunkify };
  * tryCatch( () => { throw 'foo' }, always( 'catched' ) )( 'bar' ) // => 'catched'
  * tryCatch( times( identity ), always( [] ) )( 's' ) // => []
  */
-export { tryCatch };
+export { tryCatch } from 'ramda';
 
 /**
  * Takes a function `fn`, which takes a single array argument, and returns a
@@ -1007,7 +1007,7 @@ export { tryCatch };
  * @example
  * unapply( JSON.stringify )( 1, 2, 3 ); //=> '[ 1, 2, 3 ]'
  */
-export { unapply };
+export { unapply } from 'ramda';
 
 /**
  * Wraps a function of any arity (including nullary) in a function that accepts
@@ -1029,7 +1029,7 @@ export { unapply };
  * // Only 1 argument is passed to the wrapped function
  * takesOneArg( 1, 2 ); //=> [ 1, undefined ]
  */
-export { unary };
+export { unary } from 'ramda';
 
 /**
  * Returns a function of arity `n` from a (manually) curried function.
@@ -1044,7 +1044,7 @@ export { unary };
  * const uncurriedAddFour = uncurryN( 4, addFour );
  * uncurriedAddFour( 1, 2, 3, 4 ) ; //=> 10
  */
-export { uncurryN };
+export { uncurryN } from 'ramda';
 
 /**
  * Accepts a function `fn` and a list of transformer functions and returns a
@@ -1070,58 +1070,6 @@ export { uncurryN };
  * useWith( Math.pow, [ dec, inc ] )( 3, 4 );   //=> 32
  * useWith( Math.pow, [ dec, inc ] )( 3 )( 4 ); //=> 32
  */
-export { useWith };
+export { useWith } from 'ramda';
 
-export default {
-    F,
-    T,
-    __,
-    addIndex,
-    addIndexRight,
-    always,
-    andThen,
-    ap,
-    apply,
-    applySpec,
-    applyTo,
-    ascend,
-    ascendNatural,
-    binary,
-    bind,
-    call,
-    comparator,
-    compose,
-    composeWith,
-    construct,
-    constructN,
-    converge,
-    curry,
-    curryN,
-    descend,
-    descendNatural,
-    empty,
-    flip,
-    identity,
-    invoker,
-    juxt,
-    lift,
-    liftN,
-    memoizeWith,
-    nAry,
-    nthArg,
-    o,
-    of,
-    once,
-    otherwise,
-    partial,
-    partialRight,
-    pipe,
-    pipeWith,
-    tap,
-    thunkify,
-    tryCatch,
-    unapply,
-    unary,
-    uncurryN,
-    useWith,
-};
+

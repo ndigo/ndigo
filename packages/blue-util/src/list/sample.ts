@@ -39,4 +39,4 @@ const sampleOne = <T = any>(list: ArrayLike<T>): T =>
         return result;
     });
 
-export default sample;
+export { sample };

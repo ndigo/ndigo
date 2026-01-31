@@ -27,4 +27,4 @@ const trailingJoin: TrailingJoinFunction = curry((separator: string, list: any[]
     join(separator, append('', list))
 );
 
-export default trailingJoin;
+export { trailingJoin };

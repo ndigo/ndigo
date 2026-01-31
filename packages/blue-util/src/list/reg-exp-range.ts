@@ -270,4 +270,4 @@ const regExpRange = (from: Numeric, to: Numeric = void 0, init: RegExpRangeInit 
 regExpRange.cache = new Map<string, RegExpRangeState>();
 regExpRange.clearCache = () => regExpRange.cache.clear();
 
-export default regExpRange;
+export { regExpRange };

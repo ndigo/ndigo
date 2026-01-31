@@ -57,4 +57,4 @@ const { abs, max } = Math,
         return result;
     });
 
-export default rangeN;
+export { rangeN };

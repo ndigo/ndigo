@@ -75,7 +75,7 @@ importers:
         version: 0.27.9(typescript@5.7.3)
       typedoc-plugin-markdown:
         specifier: ^4.3.0
-        version: 4.3.0(typedoc@0.27.9)
+        version: 4.9.0(typedoc@0.27.9)
       typescript:
         specifier: ~5.7.2
         version: 5.7.3
@@ -433,9 +433,6 @@ importers:
       date-fns-tz:
         specifier: ~3.2.0
         version: 3.2.0(date-fns@4.1.0)
-      ramda:
-        specifier: ~0.32.0
-        version: 0.32.0
       seedrandom:
         specifier: ~3.0.5
         version: 3.0.5
@@ -443,15 +440,15 @@ importers:
         specifier: ~11.0.1
         version: 11.0.1
     devDependencies:
-      '@types/ramda':
-        specifier: ~0.31.1
-        version: 0.31.1
       '@types/seedrandom':
         specifier: ~3.0.8
         version: 3.0.8
       '@types/slug':
         specifier: ~5.0.9
         version: 5.0.9
+      types-ramda:
+        specifier: 0.31.0
+        version: 0.31.0
 
   packages/blue-validate:
     devDependencies:
@@ -2077,12 +2074,6 @@ packages:
     resolution: {integrity: sha512-X47y/mPNzxviAGY5TcYPtYL8JsY3kAq2n8fMmKoRCxq/c4v4pyGNCzM2R6+M5/umG4ZfHuT+sgqDYqWc9rJ6ww==}
     dependencies:
       undici-types: 6.20.0
-    dev: true
-
-  /@types/ramda@0.31.1:
-    resolution: {integrity: sha512-Vt6sFXnuRpzaEj+yeutA0q3bcAsK7wdPuASIzR9LXqL4gJPyFw8im9qchlbp4ltuf3kDEIRmPJTD/Fkg60dn7g==}
-    dependencies:
-      types-ramda: 0.31.0
     dev: true
 
   /@types/seedrandom@3.0.8:
@@ -4478,10 +4469,6 @@ packages:
     resolution: {integrity: sha512-tYC1Q1hgyRuHgloV/YXs2w15unPVh8qfu/qCTfhTYamaw7fyhumKa2yGpdSo87vY32rIclj+4fWYQXUMs9EHvg==}
     dev: true
 
-  /ramda@0.32.0:
-    resolution: {integrity: sha512-GQWAHhxhxWBWA8oIBr1XahFVjQ9Fic6MK9ikijfd4TZHfE2+urfk+irVlR5VOn48uwMgM+loRRBJd6Yjsbc0zQ==}
-    dev: false
-
   /react-is@18.3.1:
     resolution: {integrity: sha512-/LLMVyas0ljjAtoYiPqYiL8VWXzUUdThrmU5+n20DZv+a+ClRoevUzw5JxU+Ieh5/c87ytoTBV9G1FiKfNJdmg==}
     dev: true
@@ -5051,11 +5038,11 @@ packages:
     engines: {node: '>=16'}
     dev: true
 
-  /typedoc-plugin-markdown@4.3.0(typedoc@0.27.9):
-    resolution: {integrity: sha512-yAR7+JGSwHWNzQhS8AFlGX6GmbWnK7/Q2Y8hHy5pkL/WB9ooJqhsI6B1abldhM3lOQCWqCdkzu9yFMPuvl2HUw==}
+  /typedoc-plugin-markdown@4.9.0(typedoc@0.27.9):
+    resolution: {integrity: sha512-9Uu4WR9L7ZBgAl60N/h+jqmPxxvnC9nQAlnnO/OujtG2ubjnKTVUFY1XDhcMY+pCqlX3N2HsQM2QTYZIU9tJuw==}
     engines: {node: '>= 18'}
     peerDependencies:
-      typedoc: 0.27.x
+      typedoc: 0.28.x
     dependencies:
       typedoc: 0.27.9(typescript@5.7.3)
     dev: true

@@ -11,9 +11,7 @@
     "target": "ES2022",
     "skipLibCheck": true,
     "paths": {
-      "@blue/platform": [
-        "packages/blue-platform-web/src"
-      ]
+      "@blue/platform": ["packages/blue-platform-web/src"]
     }
   }
 }

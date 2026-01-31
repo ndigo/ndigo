@@ -5,8 +5,17 @@
     "composite": true,
     "outDir": "lib",
     "rootDir": "src",
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "types": ["types-ramda"]
   },
-  "exclude": ["node_modules/**/*", "**/*.spec.ts", "**/*.test.ts", "vite.config.ts", "vitest.config.ts"],
+  "exclude": [
+    "node_modules/**/*",
+    "../../node_modules/@types/ramda/**/*",
+    "./node_modules/@types/ramda/**/*",
+    "**/*.spec.ts",
+    "**/*.test.ts",
+    "vite.config.ts",
+    "vitest.config.ts"
+  ],
   "include": ["src/**/*"]
 }

@@ -38,14 +38,14 @@
  */
 
 // Import category modules
-import fn from './function/index.js';
-import list from './list/index.js';
-import logic from './logic/index.js';
-import math from './math/index.js';
-import object from './object/index.js';
-import relation from './relation/index.js';
-import string from './string/index.js';
-import types from './type/index.js';
+import * as fn from './function/index.js';
+import * as list from './list/index.js';
+import * as logic from './logic/index.js';
+import * as math from './math/index.js';
+import * as object from './object/index.js';
+import * as relation from './relation/index.js';
+import * as string from './string/index.js';
+import * as types from './type/index.js';
 import * as date from './date/index.js';
 
 // Back-compat: named exports from the package root.

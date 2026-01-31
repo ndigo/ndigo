@@ -11,6 +11,13 @@ tsconfig.tsbuildinfo
 yarn-error.log
 
 # TypeScript build output
+**/src/**/*.js
+**/src/**/*.d.ts.map
+# Note: .d.ts files are allowed in src/ for intentional type definition files
+# (e.g., ramda-extensions.d.ts). Be mindful when committing .d.ts files.
+**/test/**/*.js
+**/test/**/*.d.ts.map
+**/test/**/*.d.ts
 **/lib/
 *.tsbuildinfo
 

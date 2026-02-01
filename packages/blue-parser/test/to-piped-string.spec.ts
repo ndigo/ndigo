@@ -1,4 +1,4 @@
-import { describe, it, expect, test } from 'vitest';
+import { describe, expect, test } from 'vitest';
 import toPipedString from '../src/to-piped-string';
 
 describe('toPipedString', function () {

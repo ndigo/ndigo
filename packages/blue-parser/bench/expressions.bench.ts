@@ -1,6 +1,5 @@
 import { bench, describe } from 'vitest';
 import { braceExpression, sequenceExpression } from '../src';
-import { flatten } from '../src/_util';
 import cases from '../test/test-cases';
 
 const braceCases = cases.map((testCase) => {

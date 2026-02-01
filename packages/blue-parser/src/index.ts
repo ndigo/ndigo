@@ -25,6 +25,11 @@ export {
     withData,
 } from './_parser.js';
 
-export { default as braceExpression } from './brace-expression.parser.js';
+export type { Ok, Parser } from 'arcsecond';
+
+export { default as braceExpression } from './brace-expression.js';
+export { default as glob } from './glob.js';
+export { default as keypathExpression } from './keypath-expression.js';
 export { default as noop } from './no-op.js';
 export { default as sequenceExpression } from './sequence-expression.js';
+export { default as wildcardExpression } from './wildcard-expression.js';

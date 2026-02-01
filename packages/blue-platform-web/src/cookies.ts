@@ -3,7 +3,7 @@
  */
 
 import { createNull, JSONObject, JSONValue } from '@blue/core';
-import { Parser, Ok } from 'arcsecond';
+import type { Parser, Ok } from '@blue/parser';
 import cookieExpression from './parser/cookie-expression';
 
 export interface Cookie {

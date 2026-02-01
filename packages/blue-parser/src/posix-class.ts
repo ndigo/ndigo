@@ -42,7 +42,7 @@ const wrapInBrackets = (value) => `[${value}]`,
         xdigit,
     ]),
     betweenBrackets = between(str('[:'))(str(':]')),
-    posixError = (message: string, index: number): string =>
+    posixError = (_message: string, index: number): string =>
         `ParseError (position ${index}): Expecting POSIX character class.`,
     posixClass = pipeParsers([
         betweenBrackets(sequenceOf([possibly(exclamationPoint.map(() => '^')), characterClass]).map(joinAndWrap)),

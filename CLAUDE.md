@@ -4,11 +4,73 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **Additional Documentation:**
 
-- `MIGRATION-2025.md` - Breaking changes and migration guide for the January 2025 dependency modernization
-- `MIGRATION-TOOLING-2025.md` - Tooling migration guide (Yarn→pnpm, Lerna→Nx, Jest→Vitest)
-- `MIGRATION-VITE-2025.md` - Build tool migration guide (webpack→Vite)
-- `DEPENDENCIES-2025.md` - Complete list of dependency versions and comparisons
+- `docs/migrations/` - Migration guides for breaking changes (see directory for all migrations)
+- `docs/plans/` - Implementation plans for major features (see directory for all plans)
+- `docs/reference/` - Reference documentation (dependencies, tooling, etc.)
+- `docs/audits/` - Codebase audits and analysis reports
+- `ARCHITECTURE.md` - Architecture principles and patterns
+- `AGENTS.md` - Comprehensive guidelines for AI agents and developers
 - `README.md` - Getting started and project overview
+
+## ⚠️ Critical Architectural Rules
+
+These rules are **non-negotiable** and must be followed in all code changes:
+
+### 1. Library Integration Layer Pattern
+
+**Rule:** External dependencies must be imported through their designated integration layer package, never directly.
+
+**Integration Layers:**
+
+- `@blue/util` encapsulates: `ramda`, `date-fns`, `date-fns-tz`, `seedrandom`, `slug`
+- `@blue/parser` encapsulates: `arcsecond`
+- `@blue/model` encapsulates: `objectmodel`
+
+**Examples:**
+
+```typescript
+// ✅ CORRECT
+import * as R from '@blue/util';           // Use integration layer
+import { parseDate } from '@blue/util';    // Use integration layer
+
+// ❌ WRONG
+import * as R from 'ramda';                // Direct import forbidden
+import { format } from 'date-fns';         // Direct import forbidden
+```
+
+**Exception:** Test files (`*.spec.ts`) may import external libraries for mocking.
+
+**Why:** Centralizes version control, enables safer migrations, improves bundle optimization, and maintains API stability.
+
+**See:** `ARCHITECTURE.md` "Dependency Management Strategy" for complete details.
+
+### 2. ESM-Only Module System
+
+**Rule:** Use ES modules exclusively. No CommonJS (`require`, `module.exports`).
+
+```typescript
+// ✅ CORRECT
+import { foo } from './bar.js';
+export const baz = 42;
+
+// ❌ WRONG
+const foo = require('./bar');
+module.exports = { baz: 42 };
+```
+
+### 3. Internal Module Convention
+
+**Rule:** Files prefixed with underscore (`_*.ts`) are internal and must never be:
+- Exported in `src/index.ts`
+- Imported across package boundaries
+
+```typescript
+// ✅ CORRECT (within same package)
+import { helper } from './_util.js';
+
+// ❌ WRONG (cross-package)
+import { helper } from '@blue/core/_util';  // Never import underscore files
+```
 
 ## Overview
 

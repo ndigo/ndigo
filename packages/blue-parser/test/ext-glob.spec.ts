@@ -1,7 +1,8 @@
-import { describe, it, expect, test } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import extGlob from '../src/ext-glob';
+import { expectSuccess } from './_expect';
 
-describe('ext-glob', function () {
+describe('extGlob', () => {
     const tests = [
         ['a', '!(a)', false],
         ['a', '(b)', false],
@@ -9,19 +10,17 @@ describe('ext-glob', function () {
         ['c.js', '!(*.js)', false],
     ];
 
-    tests.forEach(function (test) {
-        if (!Array.isArray(test)) {
-            return;
-        }
-        const [fixture, pattern, expected] = test,
-            result = extGlob.run(pattern),
-            regex = new RegExp('^' + result.result + '$'),
-            actual = regex.test(fixture);
-        it(`should${expected ? '' : ' not'} match "${fixture}" with "${pattern}"`, function () {
-            if (actual !== expected) {
-                console.log(pattern, result.result);
-            }
-            expect(actual).toBe(expected);
+    for (const [fixture, pattern, expected] of tests) {
+        it(`should${expected ? '' : ' not'} match "${fixture}" with "${pattern}"`, () => {
+            const result = extGlob.run(pattern);
+            expectSuccess(result, (res) => {
+                const regex = new RegExp(`^${res}$`);
+                const actual = regex.test(fixture);
+                if (actual !== expected) {
+                    console.log(pattern, res);
+                }
+                expect(actual).toBe(expected);
+            });
         });
-    });
+    }
 });

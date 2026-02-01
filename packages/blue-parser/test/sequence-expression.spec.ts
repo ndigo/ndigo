@@ -1,11 +1,11 @@
-import { describe, it, expect, test } from 'vitest';
+import { describe, it } from 'vitest';
 import { expectFailure, expectSuccess } from './_expect';
 import sequenceExpression from '../src/sequence-expression';
 
 import { between, char } from 'arcsecond';
 
-describe('sequenceExpression', function () {
-    test('it should handle ascending sequences', function () {
+describe('sequenceExpression', () => {
+    it('should handle ascending sequences', () => {
         expectSuccess(sequenceExpression, 'A..D', ['A', 'B', 'C', 'D']);
         expectSuccess(sequenceExpression, '1..4', ['1', '2', '3', '4']);
         expectSuccess(sequenceExpression, 'a..Z', ['a', '`', '_', '^', ']', '\\', '[', 'Z']);
@@ -71,12 +71,12 @@ describe('sequenceExpression', function () {
         ]);
     });
 
-    test('it should handle descending sequences', function () {
+    it('should handle descending sequences', () => {
         expectSuccess(sequenceExpression, '5..1', ['5', '4', '3', '2', '1']);
         expectSuccess(sequenceExpression, 'd..a', ['d', 'c', 'b', 'a']);
     });
 
-    test('it should handle negative numbers', function () {
+    it('should handle negative numbers', () => {
         expectSuccess(sequenceExpression, '2..-2', ['2', '1', '0', '-1', '-2']);
         expectSuccess(sequenceExpression, '-50..-0..5', [
             '-50',
@@ -95,7 +95,7 @@ describe('sequenceExpression', function () {
         expectSuccess(sequenceExpression, '-1..1', ['-1', '0', '1']);
     });
 
-    test('it should handle steps', function () {
+    it('should handle steps', () => {
         expectSuccess(sequenceExpression, '1..10..2', ['1', '3', '5', '7', '9']);
         expectSuccess(sequenceExpression, '1..5..1', ['1', '2', '3', '4', '5']);
         expectSuccess(sequenceExpression, '5..1..1', ['5', '4', '3', '2', '1']);
@@ -139,7 +139,7 @@ describe('sequenceExpression', function () {
         ]);
     });
 
-    test('it should handle padding', function () {
+    it('should handle padding', () => {
         const result = ['01', '02', '03', '04'];
         expectSuccess(sequenceExpression, '01..04', result);
         expectSuccess(sequenceExpression, '1..04', result);
@@ -266,7 +266,7 @@ describe('sequenceExpression', function () {
         expectSuccess(sequenceExpression, '0001..-5..-2', ['0001', '-001', '-003', '-005']);
     });
 
-    test('it should work within other parsers', function () {
+    it('should work within other parsers', () => {
         const betweenBraces = between(char('('))(char(')'));
         expectSuccess(betweenBraces(sequenceExpression), '(-10..00)', [
             '-10',
@@ -284,7 +284,7 @@ describe('sequenceExpression', function () {
         expectSuccess(betweenBraces(sequenceExpression), '(d..a)', ['d', 'c', 'b', 'a']);
     });
 
-    test('it should return semantic errors', function () {
+    it('should return semantic errors', () => {
         expectFailure(
             sequenceExpression,
             '&..9',

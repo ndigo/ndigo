@@ -85,6 +85,16 @@ pnpm format
 - **Types:** Avoid `any` where possible, though strictly enforced rules are currently relaxed. Use proper generics.
 - **Documentation:** Use **TSDoc** syntax (`/** ... */`) for all public APIs.
 
+### Dependency Import Rules
+
+A common source of errors in this repository is incorrectly importing dependencies that have complex or inconsistent ESM/CJS dual-exports. To avoid this, follow these rules:
+
+- **`ramda`**: This library's ESM type definitions are structured in a way that requires a namespace import.
+    - ❌ **Incorrect**: `import R from 'ramda';`
+    - ✅ **Correct**: `import * as R from 'ramda';`
+
+This will prevent `TypeError` exceptions at runtime. The build process may not always catch this, so it is critical to adhere to this rule during development and code review.
+
 ### Architecture & File Structure
 
 - **Location:** Source code in `packages/<package-name>/src/`.

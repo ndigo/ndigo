@@ -4,15 +4,16 @@ This directory contains reference documentation for dependencies, configurations
 
 ## Available References
 
-- [2025-01-23-DEPENDENCIES-REFERENCE.md](./2025-01-23-DEPENDENCIES-REFERENCE.md) - Complete dependency version reference
+- [2025-01-23_DEPENDENCIES_REFERENCE.md](./2025-01-23_DEPENDENCIES_REFERENCE.md) - Complete dependency version reference
 
 ## Naming Convention
 
-Reference files follow the format: `YYYY-MM-DD-DESCRIPTION.md`
+Reference files follow the format: `YYYY-MM-DD_DESCRIPTION.md`
 
 Where:
-- `YYYY-MM-DD` - Date the reference was created or last updated
-- `DESCRIPTION` - Brief description in ALL CAPS
+- `YYYY-MM-DD` - Date the reference was created or last updated (ISO 8601 format)
+- `_` - Underscore separator (consistent with UPPER_SNAKE_CASE constants)
+- `DESCRIPTION` - Brief description in ALL_CAPS with underscores for multi-word phrases
 
 ## Purpose
 

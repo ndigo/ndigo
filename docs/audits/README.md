@@ -4,15 +4,16 @@ This directory contains audit reports analyzing various aspects of the BlueJS co
 
 ## Available Audits
 
-- [2025-02-01-DEPENDENCY-AUDIT.md](./2025-02-01-DEPENDENCY-AUDIT.md) - Library Integration Layer compliance audit
+- [2025-02-01_DEPENDENCY_AUDIT.md](./2025-02-01_DEPENDENCY_AUDIT.md) - Library Integration Layer compliance audit
 
 ## Naming Convention
 
-Audit files follow the format: `YYYY-MM-DD-DESCRIPTION.md`
+Audit files follow the format: `YYYY-MM-DD_DESCRIPTION.md`
 
 Where:
-- `YYYY-MM-DD` - Date the audit was performed
-- `DESCRIPTION` - Brief description in ALL CAPS
+- `YYYY-MM-DD` - Date the audit was performed (ISO 8601 format)
+- `_` - Underscore separator (consistent with UPPER_SNAKE_CASE constants)
+- `DESCRIPTION` - Brief description in ALL_CAPS with underscores for multi-word phrases
 
 ## Purpose
 

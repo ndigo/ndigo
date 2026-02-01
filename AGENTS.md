@@ -95,6 +95,85 @@ A common source of errors in this repository is incorrectly importing dependenci
 
 This will prevent `TypeError` exceptions at runtime. The build process may not always catch this, so it is critical to adhere to this rule during development and code review.
 
+### Library Integration Layer Pattern
+
+**Critical Rule:** External dependencies must be imported through their designated integration layer packages, never directly.
+
+**Integration Layer Packages:**
+
+| Package | Encapsulates | Import From |
+| :--- | :--- | :--- |
+| `@blue/util` | `ramda`, `date-fns`, `date-fns-tz`, `seedrandom`, `slug` | `@blue/util` |
+| `@blue/parser` | `arcsecond` | `@blue/parser` |
+| `@blue/model` | `objectmodel` | `@blue/model` |
+
+**Import Rules by Package Type:**
+
+1. **Integration Layer Packages** (`@blue/util`, `@blue/parser`, `@blue/model`):
+   - ✅ May import directly from their encapsulated libraries
+   - ✅ Must re-export functionality through `src/index.ts`
+
+2. **All Other Packages** (`@blue/core`, `@blue/context`, etc.):
+   - ✅ Must import from integration layer packages
+   - ❌ Must never import directly from encapsulated libraries
+
+3. **Test Files** (`*.spec.ts`, `*.test.ts`):
+   - ✅ May import external libraries for mocking purposes
+   - ✅ May import directly for test utilities (e.g., `vitest`, `jsdom`)
+
+**Code Examples:**
+
+```typescript
+// ✅ CORRECT: Import from integration layer
+import * as R from '@blue/util';
+import { parseDate, formatDate } from '@blue/util';
+import { choice, sequenceOf } from '@blue/parser';
+
+// ❌ INCORRECT: Direct import bypasses integration layer
+import * as R from 'ramda';              // Wrong! Use @blue/util
+import { format } from 'date-fns';       // Wrong! Use @blue/util
+import { choice } from 'arcsecond';      // Wrong! Use @blue/parser
+
+// ✅ CORRECT: Test files may import for mocking
+// In test/my-service.spec.ts
+import { vi } from 'vitest';
+import * as R from 'ramda';  // OK in tests for mocking
+vi.mock('ramda');
+```
+
+**Common Violations to Avoid:**
+
+```typescript
+// ❌ In @blue/core/src/container.ts
+import * as R from 'ramda';  // WRONG: Not in integration layer
+
+// ✅ Correct version:
+import * as R from '@blue/util';
+
+// ❌ In @blue/router/src/matcher.ts
+import { choice, sequenceOf } from 'arcsecond';  // WRONG
+
+// ✅ Correct version:
+import { choice, sequenceOf } from '@blue/parser';
+```
+
+**Enforcement:**
+
+When reviewing or writing code:
+
+1. **Check imports** at the top of every file
+2. **Verify** no direct imports from `ramda`, `date-fns`, `arcsecond`, `objectmodel`, etc.
+3. **Use search** to find violations: `rg "from ['\"]ramda['\"]" --type ts`
+4. **In tests**, direct imports are OK for mocking but document why
+
+**Updating Rules:**
+
+When adding new integration layers or encapsulated libraries:
+
+1. Update this section with the new mapping
+2. Update `ARCHITECTURE.md` "Dependency Management Strategy" section
+3. Update `CLAUDE.md` "Critical Architectural Rules" section
+
 ### Architecture & File Structure
 
 - **Location:** Source code in `packages/<package-name>/src/`.
@@ -126,7 +205,8 @@ This will prevent `TypeError` exceptions at runtime. The build process may not a
 1.  **Read:** Analyze existing code and `package.json` first.
 2.  **Plan:** Check `MIGRATION-2025.md` or `CLAUDE.md` for recent architectural shifts.
 3.  **Implement:** Adhere to the ESM-only mandate.
-4.  **Verify:** Always run `pnpm build` and `pnpm test` (or specific package build/test) before finishing.
+4.  **Check Dependencies:** Verify imports follow the Library Integration Layer pattern (no direct imports from encapsulated libraries).
+5.  **Verify:** Always run `pnpm build` and `pnpm test` (or specific package build/test) before finishing.
 
 ### Creating New Files
 

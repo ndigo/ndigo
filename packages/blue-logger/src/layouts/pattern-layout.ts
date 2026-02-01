@@ -4,7 +4,7 @@
 
 import { Entry } from '../entry';
 import { AbstractLayout } from '../layout';
-import { format } from 'date-fns';
+import { format } from '@blue/util/date';
 
 const { defineProperty } = Reflect,
     regex = /%(-?[0-9]+)?(\.?[0-9]+)?([cdmnp%])(\{([^\}]+)\})?|([^%]+)/;

@@ -9,7 +9,8 @@
  * @see {@link https://github.com/francisrstokes/arcsecond}
  * @see {@link https://ramdajs.com/docs/#fromPairs}
  */
-import { Parser, char, everyCharUntil, regex, sepBy, sequenceOf, str, takeRight } from 'arcsecond';
+import type { Parser } from '@blue/parser';
+import { char, everyCharUntil, regex, sepBy, sequenceOf, str, takeRight } from '@blue/parser';
 import { fromPairs } from '@blue/util/list';
 
 const validCharacters = /^[^;,\s]*/,

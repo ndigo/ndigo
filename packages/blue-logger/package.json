@@ -36,8 +36,7 @@
     "@opentelemetry/semantic-conventions": "~1.9.1",
     "@opentelemetry/shim-opentracing": "~1.9.1",
     "stacktrace-js": "~2.0.2",
-    "zone.js": "~0.12.0",
-    "date-fns": "~4.1.0"
+    "zone.js": "~0.12.0"
   },
   "devDependencies": {
     "@blue/core": "~3.0.0-alpha",

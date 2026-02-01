@@ -4,15 +4,16 @@ This directory contains detailed implementation plans for major features and enh
 
 ## Available Plans
 
-- [2025-01-30-PARSER-ENHANCEMENT.md](./2025-01-30-PARSER-ENHANCEMENT.md) - Parser enhancement and optimization plan
+- [2025-01-30_PARSER_ENHANCEMENT.md](./2025-01-30_PARSER_ENHANCEMENT.md) - Parser enhancement and optimization plan
 
 ## Naming Convention
 
-Plan files follow the format: `YYYY-MM-DD-DESCRIPTION.md`
+Plan files follow the format: `YYYY-MM-DD_DESCRIPTION.md`
 
 Where:
-- `YYYY-MM-DD` - Date the plan was created
-- `DESCRIPTION` - Brief description in ALL CAPS
+- `YYYY-MM-DD` - Date the plan was created (ISO 8601 format)
+- `_` - Underscore separator (consistent with UPPER_SNAKE_CASE constants)
+- `DESCRIPTION` - Brief description in ALL_CAPS with underscores for multi-word phrases
 
 ## Purpose
 

@@ -156,7 +156,7 @@ Files beginning with underscore (`_`) are **internal implementation details**:
 
 ## Roadmap
 
-1. **Phase 1: Foundation (Current)**: Stabilize `@blue/util` (100% coverage) and execute the [Parser Enhancement Plan](./docs/plans/2025-01-30-PARSER-ENHANCEMENT.md) for `@blue/parser`.
+1. **Phase 1: Foundation (Current)**: Stabilize `@blue/util` (100% coverage) and execute the [Parser Enhancement Plan](./docs/plans/2025-01-30_PARSER_ENHANCEMENT.md) for `@blue/parser`.
 2. **Phase 2: Core**: Finalize dependency injection and lifecycle hooks in `@blue/core`.
 3. **Phase 3: Dispatch**: Implement the universal event/request dispatcher.
 4. **Phase 4: Ecosystem**: Develop ORM and Auth modules.

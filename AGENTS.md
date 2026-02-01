@@ -10,7 +10,50 @@ This document provides essential instructions for AI agents (and human developer
 - **Package Manager:** pnpm >= 8.0.0.
 - **Node Version:** >= 18.0.0.
 
-## 2. Core Commands
+## 2. Documentation Guide
+
+### STYLE_GUIDE vs ARCHITECTURE
+
+The project maintains two complementary documentation files for different purposes:
+
+**STYLE_GUIDE.md - "How to Write Code"**
+- **Focus:** Concrete implementation rules, naming, and formatting conventions
+- **Audience:** All developers (including AI agents) writing code daily
+- **Content:**
+  - File naming conventions (kebab-case, underscore prefix, etc.)
+  - Code naming conventions (camelCase, PascalCase, UPPER_SNAKE_CASE)
+  - Prettier formatting rules (indentation, quotes, semicolons, etc.)
+  - Module organization structure
+  - Special patterns (internal files, test helpers, mixins)
+  - Before/after examples of correct usage
+
+**Think:** "How do I name this file/variable/class?" and "How should this code be formatted?"
+
+**ARCHITECTURE.md - "Why the System Works This Way"**
+- **Focus:** High-level design decisions, patterns, principles, and rationale
+- **Audience:** Architects and senior developers understanding system design
+- **Content:**
+  - Core philosophy and design principles
+  - Layered architecture organization
+  - Design patterns (Strategy, Factory, Observer, Decorator, etc.)
+  - Dependency management strategy (Library Integration Layer)
+  - Module visibility concepts and API design
+  - Roadmap and development phases
+
+**Think:** "Why is the system designed this way?" and "What are the architectural patterns?"
+
+**The Dividing Line:**
+
+| Concern | ARCHITECTURE.md | STYLE_GUIDE.md |
+| :--- | :--- | :--- |
+| Dependency Management | "Use Library Integration Layer pattern" | "Import from @blue/util, not from ramda" |
+| Code Organization | "Use Strategy Pattern for parsers" | "Name parser files: kebab-case.ts in src/" |
+| Module Visibility | "Internal modules are implementation details" | "Prefix internal files with underscore: _util.ts" |
+| Naming Philosophy | "Use `is` prefix for type checks, `like` for duck-typing" | "isString checks with typeof, returns boolean" |
+
+**Maintenance Note:** When updating the dividing line explanation, update it in both `README.md` and `AGENTS.md` to keep them synchronized.
+
+## 3. Core Commands
 
 ### Installation
 
@@ -57,7 +100,7 @@ pnpm lint
 pnpm format
 ```
 
-## 3. Code Style & Conventions
+## 4. Code Style & Conventions
 
 ### Formatting
 
@@ -198,7 +241,7 @@ When adding new integration layers or encapsulated libraries:
 
 - Use specific error classes (e.g., `IllegalStateError` from `@blue/core`) rather than generic `Error` where possible.
 
-## 4. Workflows
+## 5. Workflows
 
 ### Modifying Code
 
@@ -212,3 +255,55 @@ When adding new integration layers or encapsulated libraries:
 
 - Ensure standard file headers (author/copyright) if observed in adjacent files.
 - Add to `exports` in `package.json` if the file needs to be part of the public API.
+
+## 6. Documentation Standards
+
+### Documentation Directory Structure
+
+All project documentation (except root-level guides) should be organized under `docs/`:
+
+```
+docs/
+├── migrations/     # Breaking changes and upgrade guides
+├── plans/          # Implementation plans for features
+├── reference/      # Technical references and specifications
+└── audits/         # Codebase analysis and compliance reports
+```
+
+**Naming Convention:** `YYYY-MM-DD_DESCRIPTION.md`
+
+Where:
+- `YYYY-MM-DD` - ISO 8601 date (creation or last major update)
+- `_` - Underscore separator (consistent with UPPER_SNAKE_CASE for constants)
+- `DESCRIPTION` - Brief description in ALL_CAPS with underscores for multi-word phrases
+
+**Examples:**
+- ✅ `2025-01-23_DEPENDENCIES.md`
+- ✅ `2025-02-01_DEPENDENCY_AUDIT.md`
+- ✅ `2025-01-30_PARSER_ENHANCEMENT.md`
+- ❌ `2025-01-23-dependencies.md` (lowercase, hyphen separator)
+- ❌ `dependencies-2025.md` (date at end)
+
+### When Creating New Documentation
+
+**Migration Guides** (`docs/migrations/`):
+- Document breaking changes
+- Provide upgrade paths
+- Include before/after examples
+
+**Implementation Plans** (`docs/plans/`):
+- Detail technical specifications
+- Outline implementation steps
+- Include testing strategy
+
+**Audit Reports** (`docs/audits/`):
+- Analyze codebase patterns
+- Identify violations or inconsistencies
+- Recommend improvements
+
+**Reference Docs** (`docs/reference/`):
+- Document dependency versions
+- Provide configuration references
+- Include comparison tables
+
+**Each directory has a README.md** that indexes all documents in that category.

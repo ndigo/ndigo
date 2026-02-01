@@ -131,6 +131,49 @@ pnpm lint
 - 120 character line width
 - Trailing commas (ES5)
 
+## Documentation Guide
+
+### STYLE_GUIDE vs ARCHITECTURE
+
+The project maintains two complementary documentation files for different purposes:
+
+**STYLE_GUIDE.md - "How to Write Code"**
+- **Focus:** Concrete implementation rules, naming, and formatting conventions
+- **Audience:** All developers (including AI agents) writing code daily
+- **Content:**
+  - File naming conventions (kebab-case, underscore prefix, etc.)
+  - Code naming conventions (camelCase, PascalCase, UPPER_SNAKE_CASE)
+  - Prettier formatting rules (indentation, quotes, semicolons, etc.)
+  - Module organization structure
+  - Special patterns (internal files, test helpers, mixins)
+  - Before/after examples of correct usage
+
+**Think:** "How do I name this file/variable/class?" and "How should this code be formatted?"
+
+**ARCHITECTURE.md - "Why the System Works This Way"**
+- **Focus:** High-level design decisions, patterns, principles, and rationale
+- **Audience:** Architects and senior developers understanding system design
+- **Content:**
+  - Core philosophy and design principles
+  - Layered architecture organization
+  - Design patterns (Strategy, Factory, Observer, Decorator, etc.)
+  - Dependency management strategy (Library Integration Layer)
+  - Module visibility concepts and API design
+  - Roadmap and development phases
+
+**Think:** "Why is the system designed this way?" and "What are the architectural patterns?"
+
+**The Dividing Line:**
+
+| Concern | ARCHITECTURE.md | STYLE_GUIDE.md |
+| :--- | :--- | :--- |
+| Dependency Management | "Use Library Integration Layer pattern" | "Import from @blue/util, not from ramda" |
+| Code Organization | "Use Strategy Pattern for parsers" | "Name parser files: kebab-case.ts in src/" |
+| Module Visibility | "Internal modules are implementation details" | "Prefix internal files with underscore: _util.ts" |
+| Naming Philosophy | "Use `is` prefix for type checks, `like` for duck-typing" | "isString checks with typeof, returns boolean" |
+
+**Maintenance Note:** When updating the dividing line explanation, update it in both `README.md` and `AGENTS.md` to keep them synchronized.
+
 # Terminology
 
 ## Naming Conventions

@@ -1,17 +1,17 @@
-import { describe, it, expect, test } from 'vitest';
-import { expectSuccess, expectFailure } from './_expect';
+import { describe, it, expect } from 'vitest';
+import { expectSuccess } from './_expect';
 import matrixString from '../src/matrix-string';
 
-describe('matrixString', function () {
-    test('it should parse matrix strings starting with a `;`', function () {
+describe('matrixString', () => {
+    it('should parse matrix strings starting with a `;`', () => {
         expectSuccess(matrixString, ';foo=bar', { foo: 'bar' });
-});
+    });
 
-    test('it should parse a matrix string', function () {
+    it('should parse a matrix string', () => {
         expectSuccess(matrixString, 'foo=bar', { foo: 'bar' });
     });
 
-    test('it should parse multiple matrix strings', function () {
+    it('should parse multiple matrix strings', () => {
         expectSuccess(matrixString, 'foo=bar;key=val', {
             foo: 'bar',
             key: 'val',
@@ -19,7 +19,7 @@ describe('matrixString', function () {
         expectSuccess(matrixString, 'a=b,c', { a: ['b', 'c'] });
     });
 
-    test('it should parse matrix strings without a value', function () {
+    it('should parse matrix strings without a value', () => {
         expectSuccess(matrixString, 'foo', { foo: null });
         expectSuccess(matrixString, 'foo;key', {
             foo: null,
@@ -32,22 +32,22 @@ describe('matrixString', function () {
         expectSuccess(matrixString, 'a=,', { a: ['', ''] });
     });
 
-    test('it should return empty object if no matrix string can be found', function () {
+    it('should return empty object if no matrix string can be found', () => {
         expectSuccess(matrixString, ';', {});
         expectSuccess(matrixString, ' ', {});
     });
 
-    test('it should handle `+` correctly', function () {
-        expect(matrixString.parse('foo+faz=bar+baz++')).toEqual({ 'foo faz': 'bar baz  ' });
+    it('should handle `+` correctly', () => {
+        expectSuccess(matrixString, 'foo+faz=bar+baz++', { 'foo faz': 'bar baz  ' });
     });
 
-    test('it should parse matrix strings params including embedded `=`', function () {
-        expect(matrixString.parse(';param=http%3A%2F%2Fsomeurl%3Fid%3D2837')).toEqual({
+    it('should parse matrix strings params including embedded `=`', () => {
+        expectSuccess(matrixString, ';param=http%3A%2F%2Fsomeurl%3Fid%3D2837', {
             param: 'http://someurl?id=2837',
         });
     });
 
-    test('it should parse matrix strings params including raw `=`', function () {
-        expect(matrixString.parse(';param=http://someurl?id=2837')).toEqual({ param: 'http://someurl?id=2837' });
+    it('should parse matrix strings params including raw `=`', () => {
+        expectSuccess(matrixString, ';param=http://someurl?id=2837', { param: 'http://someurl?id=2837' });
     });
 });

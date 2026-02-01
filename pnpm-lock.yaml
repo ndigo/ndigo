@@ -64,6 +64,9 @@ importers:
       process:
         specifier: ~0.11.10
         version: 0.11.10
+      ramda:
+        specifier: ~0.32.0
+        version: 0.32.0
       reflect-metadata:
         specifier: ~0.2.2
         version: 0.2.2
@@ -4467,6 +4470,10 @@ packages:
 
   /quick-format-unescaped@4.0.4:
     resolution: {integrity: sha512-tYC1Q1hgyRuHgloV/YXs2w15unPVh8qfu/qCTfhTYamaw7fyhumKa2yGpdSo87vY32rIclj+4fWYQXUMs9EHvg==}
+    dev: true
+
+  /ramda@0.32.0:
+    resolution: {integrity: sha512-GQWAHhxhxWBWA8oIBr1XahFVjQ9Fic6MK9ikijfd4TZHfE2+urfk+irVlR5VOn48uwMgM+loRRBJd6Yjsbc0zQ==}
     dev: true
 
   /react-is@18.3.1:

@@ -20,7 +20,8 @@ import {
     sequenceOf,
     str,
 } from 'arcsecond';
-import { cond, flatten, identity, isNil, joinOnEmptyString, last, map, pipe, T, xprod } from './_util';
+import { cond, flatten, identity, isNil, joinOnEmptyString, last, T } from './_util';
+import { xprodAll, xprod3 } from './_xprod';
 import { default as _sequenceExpression } from './sequence-expression';
 import { anyString, optional } from './_parser';
 import noop from './no-op';
@@ -44,15 +45,6 @@ const // String constants
         [isNil, () => []],
         [T, (v) => [v]],
     ]),
-    xprodAndJoinOnString = (list1: any[], list2: any[]): string[] => pipe(xprod(list1), map(joinOnEmptyString))(list2),
-    xprodAll = (list1: any[], list2?: any[], ...lists: any[][]): string[] =>
-        list2 && list2.length ? xprodAll(xprodAndJoinOnString(list1, list2), ...lists) : list1,
-    xprod3 = ([prefix, expression, suffix]) =>
-        prefix.length
-            ? xprodAll(prefix, expression, suffix)
-            : suffix.length
-              ? xprodAll(expression, suffix)
-              : expression,
     // Parsers
     escapedChar = (c: string) => sequenceOf([char('\\'), char(c)]).map(last),
     validChar = choice([
@@ -75,10 +67,8 @@ const // String constants
         )
     ),
     bracePart = choice([braceItem, validChar.map((v) => [v])]),
-    braceContent = many(bracePart).map((parts) => (parts.length ? xprodAll(...parts) : [''])),
+    braceContent = many(bracePart).map((parts) => (parts.length ? xprodAll(...(parts as any[])) : [''])),
     listContent = sepBy(comma)(braceContent).map(flatten),
     braceExpression = (suffix) => sequenceOf([prefix.map(toArray), braceItem, suffix.map(toArray)]).map(xprod3);
-
-
 
 export default braceExpression(choice([braceExpression(anyString), anyString]));

@@ -1,5 +1,5 @@
 import { describe, it, expect, test } from 'vitest';
-import braceExpression from '../src/brace-expression';
+import braceExpression from '../src/brace-expression.parser';
 import cases from './test-cases';
 import { expectSuccess } from './_expect';
 

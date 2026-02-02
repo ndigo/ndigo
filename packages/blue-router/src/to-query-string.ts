@@ -3,7 +3,7 @@
  * @see {@link https://ramdajs.com/docs/}
  */
 
-import { complement, isEmpty } from '@blue/util/logic';
+import { isEmpty, isNotEmpty } from '@blue/util/logic';
 import { encodeURIComponent as encode } from '@blue/util/string';
 
 //import { JSONValue, DelegatingTransformer, Reduced, Transformer } from '@blue/core';
@@ -73,8 +73,7 @@ const
 export default toQueryString;
 */
 
-const isNotEmpty = complement(isEmpty),
-    arrayStringifier = (key: string, value: string, index?: number): string =>
+const arrayStringifier = (key: string, value: string, index?: number): string =>
         value === null ? encode(key) : `${encode(key)}=${encode(value)}`,
     toQueryString = (object): string =>
         object

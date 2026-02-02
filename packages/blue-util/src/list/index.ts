@@ -99,10 +99,10 @@ const {
 import fromRepeatedPairs from './from-repeated-pairs.js';
 import range from './range.js';
 import rangeN from './range-n.js';
-import regExpRange from './reg-exp-range.js';
-import sample from './sample.js';
+import { regExpRange } from './reg-exp-range.js';
+import { sample } from './sample.js';
 import shuffle from './shuffle.js';
-import trailingJoin from './trailing-join.js';
+import { trailingJoin } from './trailing-join.js';
 
 /**
  * Creates a new list iteration function from an existing one by adding two new

@@ -28,6 +28,7 @@ const isNotEmptyString = both(isString, pipe(trim, complement(isEmpty))),
      * //=> false
      * @see {@link isNumber}
      */
+    // @ts-expect-error - cond is typed as any in our ramda.d.ts
     isNumeric = cond<any, boolean>([
         [isNumber, T],
         [isNotEmptyString, (value) => isNumber(+value)],

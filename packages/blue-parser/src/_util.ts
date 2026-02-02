@@ -3,10 +3,10 @@
  */
 
 // @ts-ignore - Module resolution issue with monorepo paths
-import { __ } from '@blue/util/function';
-import { join } from '@blue/util/list';
+import { __, pipe, T } from '@blue/util/function';
+import { join, map } from '@blue/util/list';
 import { lt } from '@blue/util/relation';
-import { propSatisfies } from '@blue/util/logic';
+import { cond, isEmpty, propSatisfies } from '@blue/util/logic';
 import list from '@blue/util/list';
 
 // @ts-ignore - Module resolution issue with monorepo paths
@@ -27,3 +27,19 @@ export const xprod = list.xprod;
 export const joinOnEmptyString = join('');
 
 export const lengthLessThanN = (n: number) => propSatisfies(lt(__, n), 'length');
+
+// Cross-product utilities for brace expression expansion
+export const xprodAndJoinOnString = (list1: any[], list2: any[]): string[] =>
+    pipe(xprod(list1), map(joinOnEmptyString))(list2);
+
+export const xprodAll = cond([
+    [isEmpty, () => []],
+    [lengthLessThanN(2), (lists) => lists[0]],
+    [T, (lists) => {
+        const [list1, list2, ...rest] = lists;
+        return xprodAll([xprodAndJoinOnString(list1, list2), ...rest]);
+    }],
+]);
+
+export const xprod3 = ([prefix, expression, suffix]) =>
+    prefix.length ? xprodAll([prefix, expression, suffix]) : suffix.length ? xprodAll([expression, suffix]) : expression;

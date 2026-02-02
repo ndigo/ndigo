@@ -3,7 +3,7 @@
  */
 
 import randHex from './rand-hex.js';
-import sample from '../list/sample.js';
+import { sample } from '../list/sample.js';
 
 /**
  * Generates a pseudo-random Globally Unique Identifier (v4).

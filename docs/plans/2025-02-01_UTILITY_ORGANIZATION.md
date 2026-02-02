@@ -1,7 +1,7 @@
 # Utility Organization Implementation Plan
 
 **Date:** February 1, 2025  
-**Status:** Phase 2 Complete - Utility Predicates Extracted  
+**Status:** Phase 2 Complete - Phase 3 Ongoing (Guideline Mode)  
 **Reference:** STYLE_GUIDE.md Section 4.5
 
 ## Overview
@@ -182,7 +182,29 @@ find packages -name "_*.ts" -path "*/src/*" | sort
 - Consistency: All packages now use the same functions
 - Maintainability: Single source of truth (ramda via @blue/util)
 
-## Phase 3: Create Internal Files (As Needed)
+## Phase 3: Create Internal Files (Ongoing - Guideline Mode)
+
+### Important: This is NOT a Scanning Task
+
+Phase 3 is fundamentally different from Phases 1 and 2:
+
+- **Phase 1 & 2:** Proactive remediation - scan codebase, identify issues, fix them
+- **Phase 3:** Ongoing guideline - follow rules naturally during development
+
+**Do NOT treat Phase 3 as "scan all packages and create internal files."**
+
+❌ **Incorrect Approach:**
+1. Scan `@blue/dispatcher` for utilities used by 4+ files
+2. Create `_util.ts` and move utilities there
+3. Move to next package and repeat
+
+✅ **Correct Approach:**
+1. While fixing a bug in `@blue/dispatcher/src/error-handler.ts`
+2. Notice `formatErrorCode()` is duplicated in 5 files
+3. Create `_util.ts` with `formatErrorCode()` as local utility
+4. Update all 5 files to import from `_util.ts`
+
+**Philosophy:** Internal files emerge organically from real development work, not from proactive scanning campaigns.
 
 ### When to Create
 

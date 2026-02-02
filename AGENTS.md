@@ -276,6 +276,22 @@ When organizing helper functions and utilities, follow the extraction hierarchy:
 
 **See:** STYLE_GUIDE.md Sections 4.5 and 4.6 for detailed patterns and examples.
 
+#### Phase 3: Ongoing Practice (Not a Scanning Task)
+
+**Important:** Creating internal files is an **ongoing guideline**, not a discrete task to execute.
+
+❌ **Do NOT:**
+- Proactively scan packages for 4-file duplication patterns
+- Create internal files "just in case"
+- Extract utilities before they're actually duplicated
+
+✅ **DO:**
+- Create internal files when you naturally discover duplication during development
+- Follow thresholds: 4+ files for cross-category utilities within a package
+- Use appropriate naming: `_util.ts` (mixed), `_validators.ts` (domain), `_natural-sort.ts` (algorithm)
+
+**Example:** While working in `@blue/logger`, you notice `formatTimestamp` appears in 5 files → create `_formatters.ts` following the guidelines in STYLE_GUIDE.md Section 4.5.
+
 ## 5. Workflows
 
 ### Modifying Code

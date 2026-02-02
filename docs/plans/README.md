@@ -6,7 +6,8 @@ This directory contains detailed implementation plans for major features and enh
 
 - [2025-01-30_PARSER_ENHANCEMENT.md](./2025-01-30_PARSER_ENHANCEMENT.md) - Parser enhancement and optimization plan
 - [2025-02-01_FILE_REFACTORING.md](./2025-02-01_FILE_REFACTORING.md) - File size refactoring plan for 15 large files
-- [2025-02-01_UTILITY_ORGANIZATION.md](./2025-02-01_UTILITY_ORGANIZATION.md) - Utility organization violations and remediation plan (Phase 1 Complete)
+- [2025-02-01_UTILITY_ORGANIZATION.md](./2025-02-01_UTILITY_ORGANIZATION.md) - Utility organization violations and remediation plan (Phase 2 Complete)
+- [ESLINT_PLUGIN.md](./ESLINT_PLUGIN.md) - Custom ESLint plugin for architectural enforcement
 - [INTERNAL_FILE_NAMING_REVIEW.md](./INTERNAL_FILE_NAMING_REVIEW.md) - Future review of internal file naming convention
 
 ## Incomplete Plans
@@ -17,7 +18,8 @@ These plans have been created but not yet implemented:
 |------|--------|---------|-------------|
 | `INTERNAL_FILE_NAMING_REVIEW.md` | Not Started | 2025-02-01 | Review and re-evaluate internal file naming convention |
 | `2025-02-01_FILE_REFACTORING.md` | Not Started | 2025-02-01 | Refactor files >300 lines that violate SRP |
-| `2025-02-01_UTILITY_ORGANIZATION.md` | Phase 1 Complete | 2025-02-01 | Extract duplicated utilities (Phase 2+ pending) |
+| `ESLINT_PLUGIN.md` | Not Started | 2025-02-01 | Create @blue/eslint-plugin with 3 architectural rules |
+| `2025-02-01_UTILITY_ORGANIZATION.md` | Phase 2 Complete | 2025-02-01 | Extract duplicated utilities (Phase 3 ongoing guideline) |
 
 **Note:** At the start of each session, review this list and consider if any plans should be addressed.
 

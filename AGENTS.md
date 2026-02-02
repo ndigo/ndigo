@@ -241,6 +241,41 @@ When adding new integration layers or encapsulated libraries:
 
 - Use specific error classes (e.g., `IllegalStateError` from `@blue/core`) rather than generic `Error` where possible.
 
+### Utility Function Organization
+
+When organizing helper functions and utilities, follow the extraction hierarchy:
+
+**Decision Tree:**
+1. **1 file uses** → Keep inline (regexes, functional constants)
+2. **3+ files (same category)** → Extract to dedicated file (e.g., `remove-non-word.ts`)
+3. **4+ files (cross-category)** → Add to internal file (e.g., `_util.ts`, `_validators.ts`)
+4. **Multiple packages** → Promote to `@blue/util`
+
+**Critical Rule:** Internal files (`_util.ts`, `_parser.ts`, etc.) must contain **actual local utility functions**, not just pass-through re-exports.
+
+> Decision rule: If deleting all re-export lines leaves an empty file, don't create it.
+
+**Internal File Naming:**
+- `_util.ts` - Mixed-purpose utilities (often with `@blue/util` re-exports)
+- `_<domain>.ts` - Domain-specific collections (e.g., `_validators.ts`, `_parsers.ts`)
+- `_<algorithm>.ts` - Specific implementations (e.g., `_natural-sort.ts`)
+
+**Example: Node.js uses descriptive names** like `_http_agent.js`, `_http_common.js` rather than generic `_util.js` for everything.
+
+**File Size Targets:**
+- **Ideal:** 20-150 lines (median: 61 lines)
+- **Review:** >200 lines with multiple responsibilities
+- **Refactor:** >300 lines (likely violates SRP)
+
+**Acceptable Large Files:**
+- Constant collections (e.g., `http-headers.ts`: 725 lines, 124 constants)
+- Complex classes with single responsibility
+- Framework integration modules
+
+**Important:** Once a package has `_util.ts`, add new cross-file utilities there directly instead of waiting for the 4-file threshold.
+
+**See:** STYLE_GUIDE.md Sections 4.5 and 4.6 for detailed patterns and examples.
+
 ## 5. Workflows
 
 ### Modifying Code

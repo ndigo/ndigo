@@ -107,6 +107,8 @@ When adding or modifying integration layer rules, remember to update:
 - The "Library Integration Layer Pattern" section in `AGENTS.md`
 - The "Critical Architectural Rules" section in `CLAUDE.md`
 
+**See also:** [STYLE_GUIDE.md Section 4.5](./STYLE_GUIDE.md#45-utility-function-organization) for concrete implementation guidelines on organizing utilities within packages, including the critical rule that internal files (`_util.ts`, `_parser.ts`) must contain actual local utilities, not just re-exports.
+
 ## Design Patterns
 
 - **Strategy Pattern**: Used extensively in parsers and routers.

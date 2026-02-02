@@ -17,8 +17,7 @@ import {
     sequenceOf,
     str,
 } from 'arcsecond';
-import { cond, flatten, identity, isNil, last, T } from './_util';
-import { xprodAll, xprod3 } from './_xprod';
+import { cond, flatten, identity, isNil, last, T, xprodAll, xprod3 } from './_util';
 import { default as _sequenceExpression } from './sequence-expression';
 import { anyString } from './_parser';
 import noop from './no-op';

@@ -5,7 +5,7 @@
 
 import { always, comparator, curryN, pipe, T } from '@blue/util/function';
 import { filter, join, map, sort } from '@blue/util/list';
-import { cond, complement, isEmpty } from '@blue/util/logic';
+import { cond, complement, isEmpty, isNotEmpty } from '@blue/util/logic';
 import { keys } from '@blue/util/object';
 import { equals } from '@blue/util/relation';
 import { encodeURIComponent as encodeValue } from '@blue/util/string';
@@ -14,7 +14,6 @@ const alwaysEmptyString = always(''),
     isNull = equals(null),
     isUndefined = equals(undefined),
     isDefined = complement(isUndefined),
-    isNotEmpty = complement(isEmpty),
     // ["a","b","c","#"] -> ["a","b","c","%23"]
     encodeValues = map(encodeValue),
     // ["a","",{},"b",[],"c"] -> ["a","b","c"]

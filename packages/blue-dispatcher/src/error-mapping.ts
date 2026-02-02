@@ -4,9 +4,8 @@
 
 import 'reflect-metadata';
 import { Constructable } from '@blue/core';
-import { both, complement, either, propSatisfies } from '@blue/util/logic';
-import { propIs } from '@blue/util/types';
-import { isNil } from '@blue/util/types';
+import { both, either, propSatisfies } from '@blue/util/logic';
+import { propIs, isNotNil } from '@blue/util/types';
 
 const ERROR_HANDLER = 'error:handler',
     ERROR_MAPPING = 'error:mapping',
@@ -64,12 +63,11 @@ export const errorHandler = assign(eh, {
     has: hasErrorHandler,
 });
 
-const isDefined = complement(isNil),
-    hasConstructor = hasFunction('constructor'),
+const hasConstructor = hasFunction('constructor'),
     constructorIsErrorHandler = propSatisfies(hasErrorHandler, 'constructor');
 
 export const likeErrorHandler = both(
-    isDefined,
+    isNotNil,
     either(hasErrorHandler, both(hasConstructor, constructorIsErrorHandler))
 );
 

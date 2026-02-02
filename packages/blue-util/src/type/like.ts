@@ -4,7 +4,7 @@
  * @see {@link https://ramdajs.com/docs/}
  */
 
-import { allPass, complement, curry, either, equals, has, is, isNil, map, pipe, prepend, propSatisfies, toPairs } from 'ramda';
+import { allPass, curry, either, equals, has, is, isNotNil, map, pipe, prepend, propSatisfies, toPairs } from 'ramda';
 
 export type LikeDescriptor = { [key: string]: Function | true };
 
@@ -36,12 +36,11 @@ type LikeFunction = {
  * //=> false
  * @see {@link https://en.wikipedia.org/wiki/Duck_typing}
  */
-const isDefined = complement(isNil),
-    isNull = equals(null),
+const isNull = equals(null),
     toPredicate = ([key, type]: [string, Function | true]) =>
         type === true ? has(key) : propSatisfies(either(is(type as any), isNull), key),
     // @ts-ignore
-    toPredicates = pipe(toPairs, map(toPredicate), prepend(isDefined)),
+    toPredicates = pipe(toPairs, map(toPredicate), prepend(isNotNil)),
     likeDescriptor = pipe(toPredicates, allPass) as (descriptor: LikeDescriptor) => (value) => boolean,
     like = (descriptor: LikeDescriptor, value): boolean => likeDescriptor(descriptor)(value);
 

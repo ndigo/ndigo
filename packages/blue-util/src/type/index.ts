@@ -51,6 +51,20 @@ export { is };
  */
 export { isNil };
 
+/**
+ * Checks if the input value is not `null` or `undefined`.
+ *
+ * @category Type
+ * @param {*} x The value to test.
+ * @returns {boolean} `false` if `x` is `undefined` or `null`, otherwise `true`.
+ * @example
+ * isNotNil( null ); //=> false
+ * isNotNil( undefined ); //=> false
+ * isNotNil( 0 ); //=> true
+ * isNotNil( [] ); //=> true
+ */
+export { isNotNil };
+
 export { propIs };
 
 /**

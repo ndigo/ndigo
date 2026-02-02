@@ -12,7 +12,7 @@ import list from '@blue/util/list';
 // @ts-ignore - Module resolution issue with monorepo paths
 export { always, comparator, compose, curryN, identity, of, pipe, T } from '@blue/util/function';
 export { filter, flatten, head, join, last, length, map, sort } from '@blue/util/list';
-export { both, complement, cond, defaultTo, either, ifElse, isEmpty, when } from '@blue/util/logic';
+export { both, complement, cond, defaultTo, either, ifElse, isEmpty, isNotEmpty, when } from '@blue/util/logic';
 export { forEachObjIndexed, keys, prop } from '@blue/util/object';
 export { equals, lt } from '@blue/util/relation';
 export { decodeURIComponent, encodeURIComponent, replace, split, test, trailingSplit } from '@blue/util/string';

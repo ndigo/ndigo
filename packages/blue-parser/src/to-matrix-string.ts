@@ -10,6 +10,7 @@ import {
     equals,
     filter,
     isEmpty,
+    isNotEmpty,
     join,
     keys,
     map,
@@ -23,7 +24,6 @@ import {
 const isNull = equals(null),
     isUndefined = equals(undefined),
     isDefined = complement(isUndefined),
-    isNotEmpty = complement(isEmpty),
     // ["a","b","c","#"] -> ["a","b","c","%23"]
     encodeValues = map(encodeValue),
     // ["a","",{},"b",[],"c"] -> ["a","b","c"]

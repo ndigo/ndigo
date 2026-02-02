@@ -4,7 +4,7 @@
 import { isPrimitive } from '@blue/core';
 import { __, T } from '@blue/util/function';
 import { filter, length, uniq } from '@blue/util/list';
-import { both, complement, isEmpty } from '@blue/util/logic';
+import { both, complement, isEmpty, isNotEmpty } from '@blue/util/logic';
 import { equals, gt, lt } from '@blue/util/relation';
 import { trim } from '@blue/util/string';
 import { isNumber, isString } from '@blue/util/types';
@@ -21,7 +21,6 @@ const { isFinite, isInteger, isSafeInteger } = Number,
     isNotBlank = complement(both(isString, isEmpty)),
     isNegativeNumber = both(isNumber, lessThanZero) as (value) => value is number,
     isPositiveNumber = both(isNumber, greaterThanZero) as (value) => value is number,
-    isNotEmpty = complement(isEmpty),
     isNormalized = (str: string) => str.normalize() === str,
     isTrimmed = (str: string) => trim(str) === str,
     isUnique = (arr: Array<any>) => equals(uniq(arr), arr);

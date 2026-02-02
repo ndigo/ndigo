@@ -262,6 +262,26 @@ export { ifElse };
  */
 export { isEmpty };
 
+/**
+ * Returns `false` if the given value is its type's empty value; `true`
+ * otherwise.
+ *
+ * @category Logic
+ * @param {*} x The value to test
+ * @returns {boolean} `false` if `x` is empty, `true` otherwise
+ * @see {@link empty|empty}
+ * @see {@link isEmpty|isEmpty}
+ * @example
+ * isNotEmpty( [ 1, 2, 3 ] );           //=> true
+ * isNotEmpty( [] );                    //=> false
+ * isNotEmpty( '' );                    //=> false
+ * isNotEmpty( null );                  //=> true
+ * isNotEmpty( {} );                    //=> false
+ * isNotEmpty( { length: 0 } );         //=> true
+ * isNotEmpty( Uint8Array.from( '' ) ); //=> false
+ */
+export { isNotEmpty };
+
 export { pathSatisfies };
 
 /**

@@ -3,10 +3,8 @@
  */
 
 import { MediaType, MultiValueMap } from '@blue/core';
-import { complement } from '@blue/util/logic';
-import { allPass } from '@blue/util/logic';
-import { isFunction, isNil } from '@blue/util/types';
-import { propSatisfies } from '@blue/util/logic';
+import { allPass, propSatisfies } from '@blue/util/logic';
+import { isFunction, isNotNil } from '@blue/util/types';
 import { View } from './view';
 import { ViewResolver } from './view-resolver';
 
@@ -24,13 +22,12 @@ export interface ContentNegotiationStrategy {
  * For example resolve "application/json" to "json".
  */
 
-const isDefined = complement(isNil),
-    hasFunction = propSatisfies(isFunction),
+const hasFunction = propSatisfies(isFunction),
     hasGetAllFileExtenstions = hasFunction('getAllFileExtenstions'),
     hasResolveFileExtensions = hasFunction('resolveFileExtensions');
 
 export const likeMediaTypeFileExtensionResolver = (value: any): value is MediaTypeFileExtensionResolver =>
-    allPass([isDefined, hasGetAllFileExtenstions, hasResolveFileExtensions])(value);
+    allPass([isNotNil, hasGetAllFileExtenstions, hasResolveFileExtensions])(value);
 
 export class MappingMediaTypeFileExtensionResolver implements MediaTypeFileExtensionResolver {
     mediaTypes: Map<string, MediaType>;

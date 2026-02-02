@@ -1,5 +1,7 @@
 /**
  * @author Jeff Rose
+ * @see {@link https://medium.com/javascript-scene/transducers-efficient-data-processing-pipelines-in-javascript-7985330fe73d}
+ * @see {@link https://vonheikemen.github.io/devlog/web-development/transducers-in-javascript/}
  * @see {@link https://github.com/cognitect-labs/transducers-js/issues/20}
  * @see {@link https://github.com/cognitect-labs/transducers-js#transformer-protocol}
  * @see {@link https://github.com/jlongster/transducers.js#the-transducer-protocol}

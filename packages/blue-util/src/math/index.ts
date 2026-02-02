@@ -4,7 +4,20 @@
  */
 
 // Import Ramda Math functions for re-export
-import { add, dec, divide, inc, mathMod, mean, median, modulo, multiply, negate, product, subtract, sum } from 'ramda';
+import * as R from 'ramda';
+const add = R.add;
+const dec = R.dec;
+const divide = R.divide;
+const inc = R.inc;
+const mathMod = R.mathMod;
+const mean = R.mean;
+const median = R.median;
+const modulo = R.modulo;
+const multiply = R.multiply;
+const negate = R.negate;
+const product = R.product;
+const subtract = R.subtract;
+const sum = R.sum;
 
 // Import custom functions for re-export
 import guid from './guid.js';

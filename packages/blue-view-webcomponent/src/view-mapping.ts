@@ -2,19 +2,37 @@
  * @author Jeff Rose
  */
 
-import 'reflect-metadata';
+import '@tsmetadata/polyfill';
 
 const VIEW_MAPPING = 'view:mapping',
     { assign } = Object,
-    { defineMetadata, deleteMetadata, getMetadata, hasMetadata } = Reflect,
-    defineViewMapping = (value, target): void => defineMetadata(VIEW_MAPPING, value, target),
-    deleteViewMapping = (target) => deleteMetadata(VIEW_MAPPING, target),
-    getViewMapping = (target): string => getMetadata(VIEW_MAPPING, target),
-    hasViewMapping = (target): boolean => hasMetadata(VIEW_MAPPING, target),
+    getConstructor = (target: any): any => (typeof target === 'function' ? target : target?.constructor),
+    defineViewMapping = (value: string, target: any): void => {
+        const ctor = getConstructor(target);
+        if (!ctor[Symbol.metadata]) {
+            ctor[Symbol.metadata] = {};
+        }
+        ctor[Symbol.metadata][VIEW_MAPPING] = value;
+    },
+    deleteViewMapping = (target: any): void => {
+        const ctor = getConstructor(target);
+        if (ctor[Symbol.metadata]) {
+            delete ctor[Symbol.metadata][VIEW_MAPPING];
+        }
+    },
+    getViewMapping = (target: any): string | undefined => {
+        const ctor = getConstructor(target);
+        return ctor?.[Symbol.metadata]?.[VIEW_MAPPING];
+    },
+    hasViewMapping = (target: any): boolean => {
+        const ctor = getConstructor(target);
+        return ctor?.[Symbol.metadata]?.[VIEW_MAPPING] !== undefined;
+    },
     viewMapping =
-        (viewName: string): ClassDecorator =>
-        (target) => {
-            defineViewMapping(viewName, target);
+        (viewName: string) =>
+        <T extends new (...args: any[]) => any>(target: T, context: ClassDecoratorContext): T => {
+            context.metadata[VIEW_MAPPING] = viewName;
+            return target;
         };
 
 /**

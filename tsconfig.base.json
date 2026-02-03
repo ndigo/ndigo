@@ -2,9 +2,7 @@
   "compilerOptions": {
     "declaration": true,
     "declarationMap": true,
-    "emitDecoratorMetadata": true,
     "esModuleInterop": true,
-    "experimentalDecorators": true,
     "inlineSourceMap": true,
     "module": "ESNext",
     "moduleResolution": "Bundler",

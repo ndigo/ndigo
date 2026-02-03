@@ -30,8 +30,8 @@ function example() {
 
 ```json
 {
-  "name": "@blue/core",
-  "version": "3.0.0-alpha.0"
+    "name": "@blue/core",
+    "version": "3.0.0-alpha.0"
 }
 ```
 
@@ -52,8 +52,8 @@ const value = 42;
 export default MyClass;
 
 // ❌ Wrong
-const value = 42
-export default MyClass
+const value = 42;
+export default MyClass;
 ```
 
 ### Quotes
@@ -68,8 +68,8 @@ const message = 'Hello, world!';
 import { foo } from '@blue/util';
 
 // ❌ Wrong
-const message = "Hello, world!";
-import { foo } from "@blue/util";
+const message = 'Hello, world!';
+import { foo } from '@blue/util';
 ```
 
 ### Trailing Commas
@@ -82,19 +82,19 @@ import { foo } from "@blue/util";
 // ✅ Correct
 const obj = {
     name: 'example',
-    value: 42,  // ← trailing comma
+    value: 42, // ← trailing comma
 };
 
 const arr = [
     'first',
     'second',
-    'third',  // ← trailing comma
+    'third', // ← trailing comma
 ];
 
 // ❌ Wrong: No trailing comma in function parameters (not valid in ES5)
 function example(
     arg1: string,
-    arg2: number,  // ← Prettier will remove this
+    arg2: number // ← Prettier will remove this
 ) {}
 ```
 
@@ -115,7 +115,7 @@ const fn = (x) => x * 2;
 const fn2 = (x, y) => x + y;
 
 // ❌ Wrong
-const fn = x => x * 2;
+const fn = (x) => x * 2;
 ```
 
 ### Bracket Spacing
@@ -126,12 +126,12 @@ const fn = x => x * 2;
 
 ```typescript
 // ✅ Correct
-const obj = { name: 'example', value: 42 };  // spaces around braces
-const arr = [1, 2, 3];  // no spaces in arrays
+const obj = { name: 'example', value: 42 }; // spaces around braces
+const arr = [1, 2, 3]; // no spaces in arrays
 
 // ❌ Wrong
-const obj = {name: 'example', value: 42};  // missing spaces
-const arr = [ 1, 2, 3 ];  // extra spaces
+const obj = { name: 'example', value: 42 }; // missing spaces
+const arr = [1, 2, 3]; // extra spaces
 ```
 
 ### Markdown Files
@@ -168,6 +168,7 @@ All TypeScript source files use lowercase with hyphens separating words.
 Files prefixed with underscore are internal implementation details.
 
 **Rules:**
+
 - ❌ **Never export** in public API (`index.ts`)
 - ❌ **Never import** across package boundaries
 - ✅ **Only use** within the same package
@@ -191,12 +192,13 @@ import { helper } from '../_util';
 
 // ❌ Wrong: Import across packages
 // In packages/blue-core/src/media-type.ts
-import { helper } from '@blue/util/_util';  // NEVER DO THIS
+import { helper } from '@blue/util/_util'; // NEVER DO THIS
 ```
 
 ### Test Files
 
 **Unit Tests:**
+
 - **Pattern:** `kebab-case.spec.ts`
 - **Location:** `test/` directory at package root
 - Test specifications use the same naming as their source files, with `.spec.ts` suffix
@@ -211,6 +213,7 @@ import { helper } from '@blue/util/_util';  // NEVER DO THIS
 ```
 
 **Benchmark/Performance Tests:**
+
 - **Pattern:** `*.js` (JavaScript)
 - **Location:** `benchmark/` directory at package root
 - **Note:** Currently JavaScript; may migrate to `*.bench.ts` in future
@@ -318,6 +321,7 @@ Root-level documentation uses all caps, dated documentation uses ISO 8601 date w
 **Format:** `YYYY-MM-DD_DESCRIPTION.md`
 
 Where:
+
 - `YYYY-MM-DD` - ISO 8601 date with hyphens
 - `_` - Underscore separator (consistent with UPPER_SNAKE_CASE)
 - `DESCRIPTION` - ALL_CAPS with underscores for multi-word phrases
@@ -435,16 +439,13 @@ function likePromise(value: unknown): value is PromiseLike<any> {
 }
 
 function likeController(value: unknown): value is ControllerLike {
-    return value != null && 
-           typeof value === 'object' &&
-           'handle' in value &&
-           typeof (value as any).handle === 'function';
+    return (
+        value != null && typeof value === 'object' && 'handle' in value && typeof (value as any).handle === 'function'
+    );
 }
 
 function likeComparable<T>(value: unknown): value is Comparable<T> {
-    return value != null && 
-           typeof value === 'object' &&
-           'compareTo' in value;
+    return value != null && typeof value === 'object' && 'compareTo' in value;
 }
 ```
 
@@ -460,30 +461,30 @@ All class names, interface names, and type names use PascalCase.
 
 ```typescript
 // ✅ Correct
-class MediaType extends Null implements Serializable { }
-class DataBinder { }
-class SpecificityComparator<T> implements Comparator<T> { }
-class PredicateComparator<T> implements Comparator<T> { }
-class EventModel { }
+class MediaType extends Null implements Serializable {}
+class DataBinder {}
+class SpecificityComparator<T> implements Comparator<T> {}
+class PredicateComparator<T> implements Comparator<T> {}
+class EventModel {}
 ```
 
 **Abstract Classes:**
 
 ```typescript
 // ✅ Correct
-abstract class AbstractValueComparator implements Comparator<string> { }
-abstract class BaseController { }
+abstract class AbstractValueComparator implements Comparator<string> {}
+abstract class BaseController {}
 ```
 
 **Interfaces:**
 
 ```typescript
 // ✅ Correct
-interface Comparable<T> { }
-interface StringComparable<T> extends Comparable<T> { }
-interface Comparator<T> { }
-interface Serializable { }
-interface ControllerLike { }
+interface Comparable<T> {}
+interface StringComparable<T> extends Comparable<T> {}
+interface Comparator<T> {}
+interface Serializable {}
+interface ControllerLike {}
 ```
 
 ### Private Fields
@@ -501,13 +502,13 @@ class DataBinder {
     #target: any;
     #result: any;
     #requiredFields: Set<string>;
-    
+
     constructor(name: string) {
         this.#name = name;
     }
-    
+
     get name() {
-        return this.#name;  // Accessor for private field
+        return this.#name; // Accessor for private field
     }
 }
 ```
@@ -519,7 +520,7 @@ class DataBinder {
 class OldComponent {
     private _enabled: boolean;
     private _hasView: boolean;
-    
+
     // These are deprecated:
     __viewName: string;
     __enabled: boolean;
@@ -563,6 +564,37 @@ type serializable = string | number | boolean | null | undefined;
 ```
 
 **Rationale:** Complex structural types are treated like interfaces (PascalCase), while simple type aliases and functional types use camelCase for consistency with function naming.
+
+### 3.8. Decorators
+
+**Pattern:** `camelCase`
+
+Decorator functions follow standard function naming conventions (camelCase).
+
+**Examples:**
+
+```typescript
+// ✅ Correct: Decorators use camelCase
+@configuration
+class AppConfig {
+    @entry
+    databaseConnection() { }
+}
+
+@routeMapping('/api/users')
+class UserController { }
+
+@pattern({ regex: /^[A-Z][a-z]+$/ })
+firstName: string;
+
+@scope('singleton')
+class UserService { }
+
+@viewMapping('user-profile')
+class UserProfileView { }
+```
+
+**Rationale:** Decorators are functions that modify classes, methods, fields, or parameters. Following standard function naming conventions (camelCase) maintains consistency with JavaScript/TypeScript ecosystem patterns and TC39 decorator standards.
 
 ---
 
@@ -625,12 +657,14 @@ export { slugify } from './slugify';
 ### Internal vs Public Modules
 
 **Public Modules:**
+
 - Exported via `src/index.ts`
 - Stable API subject to semantic versioning
 - Documented with TSDoc
 - Safe for cross-package use
 
-**Internal Modules (_prefix):**
+**Internal Modules (\_prefix):**
+
 - NOT exported in `index.ts`
 - Implementation details
 - Can change without notice
@@ -652,6 +686,7 @@ Multiple packages          → Promote to @blue/util
 ```
 
 **Key Thresholds:**
+
 - **Inline:** Used by only 1 file
 - **Extract:** Used by 3+ files in same category (e.g., all string utilities)
 - **Package-wide:** Used by 4+ files across categories, or once `_util.ts` exists
@@ -687,6 +722,7 @@ export default toCamel;
 ```
 
 **When to use inline utilities:**
+
 - Regexes specific to one function
 - Partially-applied functions used as pipeline steps
 - File-specific configuration constants
@@ -709,13 +745,13 @@ import { replace } from 'ramda';
  * @param {string} value The string to be transformed.
  * @returns {string} The `value` with the non-word characters removed.
  */
-const removeNonWord: (value: string) => string = 
-    replace(/[^\x20\x2D0-9A-Z\x5Fa-z\xC0-\xD6\xD8-\xF6\xF8-\xFF]/g, '');
+const removeNonWord: (value: string) => string = replace(/[^\x20\x2D0-9A-Z\x5Fa-z\xC0-\xD6\xD8-\xF6\xF8-\xFF]/g, '');
 
 export default removeNonWord;
 ```
 
 **Guidelines for extracted utilities:**
+
 - Single export per file (focused utility modules)
 - Import using relative paths from same category
 - Typically 10-50 lines
@@ -750,12 +786,14 @@ export const lengthLessThanN = (n: number) => propSatisfies(lt(__, n), 'length')
 ```
 
 **Current packages with `_util.ts`:**
+
 - `@blue/parser/src/_util.ts` (30 lines)
 - `@blue/context/src/_util.ts`
 - `@blue/view-webcomponent/src/_util.ts`
 - `@blue/platform-web/src/_util.ts`
 
 **Guidelines:**
+
 - Combines re-exports with package-specific utilities
 - Internal only (never exported in `index.ts`)
 - Used by multiple modules within the package
@@ -776,7 +814,7 @@ Internal files (`_util.ts`, `_parser.ts`, etc.) should **only be created when th
 ```typescript
 /**
  * Internal utilities for @blue/parser package.
- * 
+ *
  * @internal - Do not export in index.ts or import across package boundaries
  * @author Jeff Rose
  */
@@ -790,8 +828,8 @@ import { propSatisfies } from '@blue/util/logic';
 export { pipe, compose, map, filter };
 
 // LOCAL UTILITIES (this is what justifies the file's existence!)
-export const joinOnEmptyString = join('');  // ✅ Partial application
-export const lengthLessThanN = (n: number) => propSatisfies(lt(__, n), 'length');  // ✅ New function
+export const joinOnEmptyString = join(''); // ✅ Partial application
+export const lengthLessThanN = (n: number) => propSatisfies(lt(__, n), 'length'); // ✅ New function
 ```
 
 **Why this is correct:** The file creates actual utility functions (`joinOnEmptyString`, `lengthLessThanN`). The re-exports are convenience infrastructure to support these utilities and consuming modules.
@@ -801,7 +839,7 @@ export const lengthLessThanN = (n: number) => propSatisfies(lt(__, n), 'length')
 ```typescript
 /**
  * Internal utilities for @blue/http package.
- * 
+ *
  * @internal - Do not export in index.ts or import across package boundaries
  * @author Jeff Rose
  */
@@ -824,12 +862,14 @@ export { pipe, identity } from '@blue/util/function';
 ##### When to Create Internal Files
 
 **✅ Create when:**
+
 - You have local helper functions unique to the package
 - You need composed/partial functions (e.g., `join('')`, `lt(10)`)
 - You have package-specific adaptations of general utilities
 - Multiple files (4+) would share these utilities
 
 **❌ Don't create when:**
+
 - Just to centralize imports for convenience
 - Only for pass-through re-exports without local utilities
 - You want to save a few import lines
@@ -839,24 +879,29 @@ export { pipe, identity } from '@blue/util/function';
 Internal files don't always need to be named `_util.ts`. Choose a name that reflects the **purpose and content**:
 
 **Generic Mixed Utilities:**
+
 - `_util.ts` - Re-exports from `@blue/util` + mixed-purpose helpers
 
 **Domain-Specific Collections:**
+
 - `_parser.ts` - Collection of internal parser primitives
 - `_validators.ts` - Collection of internal validation helpers
 - `_formatters.ts` - Collection of internal formatting functions
 - `_http-common.ts` - HTTP-specific shared utilities (Node.js convention)
 
 **Specific Implementations:**
+
 - `_natural-sort.ts` - Natural sorting algorithm
 - `_media-type-parser.ts` - Specific parsing logic
 
 **Test Helpers:**
+
 - `test/_expect.ts` - Custom test assertions
 - `test/_fixtures.ts` - Shared test data
 - `test/_worker.ts` - Test worker utilities
 
 **Example: Node.js uses descriptive names:**
+
 - `lib/_http_agent.js` ✅
 - `lib/_http_client.js` ✅
 - `lib/_http_common.js` ✅
@@ -874,31 +919,39 @@ Test utilities           → test/_<purpose>.ts
 ##### Example Progression
 
 **Stage 1: Inline (single file uses)**
+
 ```typescript
 // In packages/blue-http/src/request.ts
 const parseAcceptHeader = (header: string) => header.split(',').map(trim);
 ```
 
 **Stage 2: Extract to dedicated file (3+ files use)**
+
 ```typescript
 // packages/blue-http/src/_header-parser.ts
 export const parseAcceptHeader = (header: string) => header.split(',').map(trim);
-export const parseContentType = (header: string) => { /* ... */ };
-export const parseCacheControl = (header: string) => { /* ... */ };
+export const parseContentType = (header: string) => {
+    /* ... */
+};
+export const parseCacheControl = (header: string) => {
+    /* ... */
+};
 ```
 
 **Stage 3: Add to `_util.ts` (becomes cross-cutting)**
+
 ```typescript
 // packages/blue-http/src/_util.ts
 import { split, map, trim } from '@blue/util/list';
 
-export { split, map, trim };  // Re-exports
+export { split, map, trim }; // Re-exports
 
 // Cross-cutting utilities used by multiple domains
 export const parseAcceptHeader = (header: string) => header.split(',').map(trim);
 ```
 
 **Stage 4: Promote to @blue/util (multiple packages use)**
+
 ```typescript
 // packages/blue-util/src/http/parse-accept-header.ts
 export const parseAcceptHeader = (header: string) => header.split(',').map(trim);
@@ -911,8 +964,9 @@ export const parseAcceptHeader = (header: string) => header.split(',').map(trim)
 **See:** `docs/plans/INTERNAL_FILE_NAMING_REVIEW.md` for the evaluation framework.
 
 **Triggers for review:**
-- >5 internal files per package (indicates need for directory structure)
-- >10% internal file ratio (too many internal files)
+
+- > 5 internal files per package (indicates need for directory structure)
+- > 10% internal file ratio (too many internal files)
 - Significant organizational challenges emerge
 
 #### Promoted to `@blue/util`
@@ -920,11 +974,13 @@ export const parseAcceptHeader = (header: string) => header.split(',').map(trim)
 Promote utilities to `@blue/util` when they're used by **multiple packages** or are truly universal.
 
 **When to promote:**
+
 - Function is used by 2+ packages
 - Logic is universally applicable (not domain-specific)
 - Fits into existing `@blue/util` categories (`/string`, `/list`, `/function`, etc.)
 
 **Process:**
+
 1. Move to appropriate category in `@blue/util`
 2. Add comprehensive TSDoc documentation
 3. Add thorough test coverage
@@ -989,11 +1045,13 @@ export const HTTPHeader = Object.freeze({
 ```
 
 **Guidelines:**
+
 - **Inline:** 1-5 constants specific to one module
 - **Extract:** 10+ constants forming a cohesive collection
 - **Large files OK:** Constant collections can exceed 500 lines if single responsibility
 
 **Real examples:**
+
 - `http-headers.ts`: 725 lines, 124 HTTPHeader constants
 - `response-statuses.ts`: 348 lines, HTTP status code constants
 - `media-type.ts`: 433 lines, media type constants
@@ -1057,7 +1115,7 @@ export const deepClone = ...;  // Should be promoted to @blue/util
 import { helper } from './module-a';
 
 // module-a.ts
-import { utility } from './_util';  // CIRCULAR!
+import { utility } from './_util'; // CIRCULAR!
 
 // ✅ Correct: Extract shared code to third file or inline in one
 ```
@@ -1072,14 +1130,15 @@ Maintaining appropriate file sizes improves code readability, testability, and m
 
 **Codebase analysis (250 TypeScript files):**
 
-| Size Range | Count | Percentage | Assessment |
-| :--- | :--- | :--- | :--- |
-| ≤50 lines | 109 files | 43% | Small, focused modules |
-| 51-150 lines | 93 files | 37% | **Ideal range** |
-| 151-300 lines | 33 files | 13% | Large but acceptable |
-| >300 lines | 15 files | 6% | Requires review |
+| Size Range    | Count     | Percentage | Assessment             |
+| :------------ | :-------- | :--------- | :--------------------- |
+| ≤50 lines     | 109 files | 43%        | Small, focused modules |
+| 51-150 lines  | 93 files  | 37%        | **Ideal range**        |
+| 151-300 lines | 33 files  | 13%        | Large but acceptable   |
+| >300 lines    | 15 files  | 6%         | Requires review        |
 
 **Statistics:**
+
 - **Median:** 61 lines
 - **Average:** 106 lines
 - **Target:** 20-150 lines per file
@@ -1139,7 +1198,7 @@ Complex setup required for every test suggests too many dependencies.
 ```typescript
 // ❌ Wrong: >200 lines doing multiple things
 // 965 lines: packages/blue-validate/src/standard-constraints.ts
-// Contains: string validation, number validation, date validation, 
+// Contains: string validation, number validation, date validation,
 //           type checking, format validation, helpers, types
 // Should split by validation category
 ```
@@ -1177,7 +1236,7 @@ export class UserService {
 // Before: route-handler.ts (350 lines)
 class RouteHandler {
     // ... main logic
-    
+
     private parseParams(route: string): Record<string, string> { ... }
     private normalizeRoute(route: string): string { ... }
     private validateRoute(route: string): boolean { ... }
@@ -1230,6 +1289,7 @@ export const HTTPHeader = Object.freeze({
 ```
 
 **Real examples:**
+
 - `http-headers.ts`: 725 lines (124 HTTPHeader constants)
 - `response-statuses.ts`: 348 lines (HTTP status codes)
 - `media-type.ts`: 433 lines (media type constants)
@@ -1254,6 +1314,7 @@ export const HTTPHeader = Object.freeze({
 ```
 
 **Criteria for acceptable large files:**
+
 - Single cohesive responsibility (high cohesion)
 - All code serves the same purpose
 - Natural unit that's hard to split
@@ -1266,12 +1327,12 @@ export const HTTPHeader = Object.freeze({
 ```typescript
 // ✅ Ideal: 1 main export, 0-6 inline helpers
 // packages/blue-util/src/string/to-camel.ts (46 lines)
-const dashes = /[\-_]/g;  // Helper 1
-const spaces = /\s+/g;    // Helper 2
-const removeSpaces = replace(spaces, '');  // Helper 3
+const dashes = /[\-_]/g; // Helper 1
+const spaces = /\s+/g; // Helper 2
+const removeSpaces = replace(spaces, ''); // Helper 3
 // ... 3 more inline helpers
 
-export default toCamel;  // Single export
+export default toCamel; // Single export
 ```
 
 **Service Modules:**
@@ -1301,6 +1362,7 @@ export const ACCEPT_ENCODING = 'Accept-Encoding';
 ```
 
 **Rule of Thumb:**
+
 - **1-2 exports:** Utility module (ideal)
 - **3-7 exports:** Service/class module (good)
 - **8-15 exports:** Consider splitting (review)
@@ -1378,8 +1440,8 @@ import { UserService } from '../src/user-service';
 import { USER_ROLES } from '../src/user-constants';
 
 // Split test files if needed to match source structure
-user-service.spec.ts
-user-validation.spec.ts
+user - service.spec.ts;
+user - validation.spec.ts;
 ```
 
 **6. Verify Test Coverage Maintained**
@@ -1407,6 +1469,7 @@ Ref: STYLE_GUIDE.md Section 4.6"
 ```
 
 **Best Practices:**
+
 - Make incremental changes (one extraction at a time)
 - Run tests after each extraction
 - Commit working changes before next extraction
@@ -1429,7 +1492,7 @@ const EventEmitterMixin = AsEventEmitter(Base);
 class MyService extends AsEventEmitter(BaseService) {
     constructor() {
         super();
-        this.emit('initialized');  // From mixin
+        this.emit('initialized'); // From mixin
     }
 }
 
@@ -1441,7 +1504,7 @@ class MyService extends AsEventEmitter(BaseService) {
 ```typescript
 // ✅ Correct: Function mixins
 const component = {};
-asEventEmitter(component);  // Adds event emitter methods to instance
+asEventEmitter(component); // Adds event emitter methods to instance
 
 component.on('event', handler);
 component.emit('event', data);
@@ -1481,7 +1544,7 @@ Files or classes marked as deprecated/legacy code.
 
 ```typescript
 // ⚠️ Legacy marker in filename
-old-component.legacy.js
+old - component.legacy.js;
 
 // ⚠️ Legacy marker in class name
 class OldComponent {
@@ -1500,13 +1563,13 @@ Here's a complete example demonstrating all conventions:
 ```typescript
 /**
  * Media type parser and comparator.
- * 
+ *
  * @module
  */
 
 // Imports: Always use single quotes
 import * as R from '@blue/util';
-import { AbstractValueComparator } from './_util';  // Internal import OK in same package
+import { AbstractValueComparator } from './_util'; // Internal import OK in same package
 
 // True constants: UPPER_SNAKE_CASE
 const DEFAULT_QUALITY = 1.0;
@@ -1522,7 +1585,7 @@ type MediaTypeParams = {
     [key: string]: string | number;
 };
 
-type qualityValue = number;  // Simple alias: camelCase
+type qualityValue = number; // Simple alias: camelCase
 
 // Interfaces: PascalCase
 interface Comparable<T> {
@@ -1535,37 +1598,37 @@ class MediaType implements Comparable<MediaType> {
     #type: string;
     #subtype: string;
     #parameters: MediaTypeParams;
-    
+
     // Constructor
     constructor(type: string, subtype: string, parameters: MediaTypeParams = {}) {
         this.#type = type;
         this.#subtype = subtype;
         this.#parameters = parameters;
     }
-    
+
     // Getters: camelCase
     get type(): string {
         return this.#type;
     }
-    
+
     get subtype(): string {
         return this.#subtype;
     }
-    
+
     // Methods: camelCase
     compareTo(other: MediaType): number {
         return this.specificity - other.specificity;
     }
-    
+
     getParameter(name: string): string | number | undefined {
         return this.#parameters[name];
     }
-    
+
     // Predicate method: is* prefix
     isWildcard(): boolean {
         return this.#type === WILDCARD || this.#subtype === WILDCARD;
     }
-    
+
     // Static factory: camelCase
     static for(type: string, subtype: string): MediaType {
         return new MediaType(type, subtype);
@@ -1610,17 +1673,19 @@ export type { MediaTypeParams, Comparable };
 **IMPORTANT:** When `prettier.config.mjs` is modified, update Section 1 of this guide to reflect the new formatting rules.
 
 **Process:**
+
 1. Make changes to `prettier.config.mjs`
 2. Update corresponding section in `STYLE_GUIDE.md`
 3. Run `pnpm format` to apply new formatting
 4. Document the change in commit message:
-   ```
-   style: update prettier config and style guide
-   
-   Changed [setting] from [old] to [new].
-   
-   Updated STYLE_GUIDE.md Section 1 to document the new formatting rule.
-   ```
+
+    ```
+    style: update prettier config and style guide
+
+    Changed [setting] from [old] to [new].
+
+    Updated STYLE_GUIDE.md Section 1 to document the new formatting rule.
+    ```
 
 ### When Establishing New Patterns
 
@@ -1640,4 +1705,4 @@ When making style decisions, document the rationale in git commit messages and c
 
 **Last Updated:** February 1, 2025
 
-*This guide is a living document. When code style evolves, update this guide to reflect current practices.*
+_This guide is a living document. When code style evolves, update this guide to reflect current practices._

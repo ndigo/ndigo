@@ -70,9 +70,6 @@ importers:
       ramda:
         specifier: ~0.32.0
         version: 0.32.0
-      reflect-metadata:
-        specifier: ~0.2.2
-        version: 0.2.2
       ts-node:
         specifier: ~10.9.2
         version: 10.9.2(@types/node@22.10.10)(typescript@5.7.3)
@@ -242,10 +239,6 @@ importers:
         version: link:../blue-validate
 
   packages/blue-factory:
-    dependencies:
-      reflect-metadata:
-        specifier: ~0.2.2
-        version: 0.2.2
     devDependencies:
       '@blue/core':
         specifier: ~3.0.0-alpha
@@ -4504,9 +4497,6 @@ packages:
     resolution: {integrity: sha512-57frrGM/OCTLqLOAh0mhVA9VBMHd+9U7Zb2THMGdBUoZVOtGbJzjxsYGDJ3A9AYYCP4hn6y1TVbaOfzWtm5GFg==}
     engines: {node: '>= 12.13.0'}
     dev: true
-
-  /reflect-metadata@0.2.2:
-    resolution: {integrity: sha512-urBwgfrvVP/eAyXx4hluJivBKzuEbSQs9rKWCrCkbSxNv8mxPcUZKeuoF3Uy4mJl3Lwprp6yy5/39VWigZ4K6Q==}
 
   /require-directory@2.1.1:
     resolution: {integrity: sha512-fGxEI7+wsG9xrvdjsrlmL22OMTTiHRwAMroiEeMgq8gzoLC/PQr7RsRDSTLUg/bZAZtF+TVIkHc6/4RIKrui+Q==}

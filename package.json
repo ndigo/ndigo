@@ -63,7 +63,6 @@
     "prettier": "~3.4.2",
     "process": "~0.11.10",
     "ramda": "~0.32.0",
-    "reflect-metadata": "~0.2.2",
     "ts-node": "~10.9.2",
     "typedoc": "^0.27.9",
     "typedoc-plugin-markdown": "^4.3.0",

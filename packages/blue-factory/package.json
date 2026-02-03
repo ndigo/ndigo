@@ -29,9 +29,6 @@
   ],
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
-  "dependencies": {
-    "reflect-metadata": "~0.2.2"
-  },
   "devDependencies": {
     "@blue/core": "~3.0.0-alpha",
     "@blue/util": "~3.0.0-alpha"

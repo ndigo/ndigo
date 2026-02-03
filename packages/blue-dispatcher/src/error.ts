@@ -103,3 +103,105 @@ export class RouteBindingError extends FrameworkError {
         }
     }
 }
+
+/**
+ * Base error for method parameter binding issues.
+ * Analogous to Spring's ServletRequestBindingException.
+ *
+ * @extends module:core.FrameworkError
+ */
+export class ParameterBindingError extends FrameworkError {
+    readonly parameterName: string;
+    readonly methodName: string;
+    readonly controllerName: string;
+
+    get [Symbol.toStringTag](): string {
+        return 'ParameterBindingError';
+    }
+
+    constructor(message: string, parameterName?: string, methodName?: string, controllerName?: string) {
+        super(message);
+        this.name = 'ParameterBindingError';
+
+        defineProperty(this, 'parameterName', {
+            value: parameterName ?? null,
+            configurable: false,
+            enumerable: false,
+            writable: false,
+        });
+        defineProperty(this, 'methodName', {
+            value: methodName ?? null,
+            configurable: false,
+            enumerable: false,
+            writable: false,
+        });
+        defineProperty(this, 'controllerName', {
+            value: controllerName ?? null,
+            configurable: false,
+            enumerable: false,
+            writable: false,
+        });
+    }
+}
+
+/**
+ * Thrown when parameter mapping configuration is invalid.
+ * This is a CONFIGURATION error (application startup time).
+ *
+ * @extends module:dispatcher.ParameterBindingError
+ */
+export class InvalidParameterMappingError extends ParameterBindingError {
+    get [Symbol.toStringTag](): string {
+        return 'InvalidParameterMappingError';
+    }
+
+    constructor(message: string, parameterName?: string, methodName?: string, controllerName?: string) {
+        super(message, parameterName, methodName, controllerName);
+        this.name = 'InvalidParameterMappingError';
+    }
+}
+
+/**
+ * Thrown when a required parameter is missing from the request.
+ * This is a RUNTIME error (request processing time).
+ * Analogous to Spring's MissingServletRequestParameterException.
+ *
+ * @extends module:dispatcher.ParameterBindingError
+ */
+export class MissingParameterError extends ParameterBindingError {
+    readonly parameterType: string;
+    readonly required: boolean;
+
+    get [Symbol.toStringTag](): string {
+        return 'MissingParameterError';
+    }
+
+    constructor(
+        parameterName: string,
+        parameterType: string,
+        methodName?: string,
+        controllerName?: string,
+        required: boolean = true
+    ) {
+        super(
+            `Required ${parameterType} parameter '${parameterName}' is missing`,
+            parameterName,
+            methodName,
+            controllerName
+        );
+        this.name = 'MissingParameterError';
+
+        defineProperty(this, 'parameterType', {
+            value: parameterType,
+            configurable: false,
+            enumerable: false,
+            writable: false,
+        });
+        defineProperty(this, 'required', {
+            value: required,
+            configurable: false,
+            enumerable: false,
+            writable: false,
+        });
+    }
+}

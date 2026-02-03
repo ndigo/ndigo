@@ -2,69 +2,59 @@
  * @author Jeff Rose
  */
 
-import 'reflect-metadata';
-import { complement, either, when } from '@blue/util/logic';
-import { pipe } from '@blue/util/function';
-import { mergeRight, objOf } from '@blue/util/object';
+import '@tsmetadata/polyfill';
+import { complement, either } from '@blue/util/logic';
 import { isString, like } from '@blue/util/types';
 import { Serializable, JSONObject, createNull, Equatable } from '@blue/core';
+import { getFunctionParamNames } from './_decorator-util';
 
-export type MethodParameterInfo = {
+const { keys } = Object;
+const { defineProperty, getOwnPropertyDescriptor } = Reflect;
+
+/**
+ * Factory function return type - describes a parameter extraction
+ */
+export type ParameterExtractor = {
+    type: MethodParameterType;
     name: string;
-    mapping: string;
-    required?: boolean;
-    defaultValue?: string;
+    required: boolean;
+    defaultValue: string | null;
 };
 
 /**
- * @typedef {Object} module:dispatcher.MethodParameterInfo
+ * Parameter map for @routeParams decorator
  */
+export type RouteParameterMap = Record<string, ParameterExtractor>;
 
-const METHOD_PARAMETER = 'method:parameter',
-    { assign, keys } = Object,
-    { defineMetadata, defineProperty, getMetadata, hasMetadata } = Reflect,
-    defaultMethodParameterInfo = {
-        name: null,
-        mapping: null,
-        required: false,
-        defaultValue: null,
-    },
-    defineMethodParameter = (
-        type: MethodParameterType,
-        info: MethodParameterInfo,
-        parameterIndex: number,
-        target: Object,
-        propertyKey: string | symbol
-    ): void => {
-        const parameters = hasMethodParameter(target, propertyKey) ? getMethodParameter(target, propertyKey) : [];
-        parameters[parameterIndex] = new MethodParameter(type, info.name, info.required, info.defaultValue);
-        console.log('defineMethodParameter::parameters', parameters);
-        defineMetadata(METHOD_PARAMETER, parameters, target, propertyKey);
-    },
-    likeMethodParameterInfo = like({ name: String, mapping: String, required: Boolean, defaultValue: String }) as (
-        value
-    ) => value is MethodParameterInfo,
-    isStringOrLikeMethodParameterInfo = either(isString, likeMethodParameterInfo as (value: any) => boolean) as (
-        value: any
-    ) => value is string | MethodParameterInfo,
-    isNotString = complement(isString),
-    namedObj = objOf('name') as <T = any>(value: T) => { name: T },
-    // TODO NEED TO ALLOW FOR DIFFERENT DEFAULT INFO
-    toMethodParameterInfo = pipe(when(isString, namedObj), mergeRight(defaultMethodParameterInfo));
+/**
+ * Helper to get metadata from class constructor
+ */
+function getMetadata(target: any): Record<string, any> {
+    if (typeof target === 'function' && target[Symbol.metadata]) {
+        return target[Symbol.metadata];
+    }
+    if (target && target.constructor && target.constructor[Symbol.metadata]) {
+        return target.constructor[Symbol.metadata];
+    }
+    return {};
+}
 
+/**
+ * Method parameter type enum
+ */
 export class MethodParameterType implements Equatable, Serializable {
     static COOKIE: MethodParameterType;
     static MATRIX: MethodParameterType;
     static QUERY: MethodParameterType;
 
-    static fromType(type: string): MethodParameterType {
-        const types = keys(this),
-            length = types.length;
+    static fromType(type: string): MethodParameterType | null {
+        const types = keys(this);
+        const length = types.length;
 
         for (let index = 0; index < length; index++) {
-            const key = types[index],
-                parameterType: MethodParameterType = MethodParameterType[key];
-            if (parameterType.type === type) {
+            const key = types[index];
+            const parameterType: MethodParameterType = MethodParameterType[key];
+            if (parameterType && parameterType.type === type) {
                 return parameterType;
             }
         }
@@ -104,19 +94,22 @@ MethodParameterType.COOKIE = new MethodParameterType('cookie:value');
 MethodParameterType.MATRIX = new MethodParameterType('matrix:value');
 MethodParameterType.QUERY = new MethodParameterType('query:value');
 
-export const getMethodParameter = (target: Object, propertyKey: string | symbol): MethodParameter[] =>
-    getMetadata(METHOD_PARAMETER, target, propertyKey);
-
-export const hasMethodParameter = (target: Object, propertyKey: string | symbol): boolean =>
-    hasMetadata(METHOD_PARAMETER, target, propertyKey);
-
+/**
+ * Method parameter metadata
+ */
 export class MethodParameter implements Serializable {
     readonly name: string;
     readonly type: MethodParameterType;
     readonly required: boolean;
-    readonly defaultValue: string;
+    readonly defaultValue: string | null;
 
-    constructor(type: MethodParameterType, name: string, required: boolean = false, defaultValue: string = null) {
+    constructor(
+        type: MethodParameterType,
+        name: string,
+        required: boolean = false,
+        defaultValue: string | null = null
+    ) {
+        const isNotString = complement(isString);
         if (isNotString(name)) {
             throw new TypeError(`"name" must be a string but was ${name}`);
         }
@@ -161,124 +154,127 @@ export class MethodParameter implements Serializable {
 }
 
 /**
- * @param {module:dispatcher.MethodParameterInfo} info
- * @param {number} parameterIndex
- * @param {Object} target
- * @param {string|external:symbol} propertyKey
+ * Factory function: Create a query parameter extractor
+ *
+ * @example
+ * @routeParams({
+ *   page: queryValue('page'),
+ *   limit: queryValue('limit', { required: true, defaultValue: '10' })
+ * })
  */
-export const defineCookieValue = (
-    info: MethodParameterInfo,
-    parameterIndex: number,
-    target: Object,
-    propertyKey: string | symbol
-): void => defineMethodParameter(MethodParameterType.COOKIE, info, parameterIndex, target, propertyKey);
+export function queryValue(
+    name: string,
+    options: { required?: boolean; defaultValue?: string } = {}
+): ParameterExtractor {
+    return {
+        type: MethodParameterType.QUERY,
+        name,
+        required: options.required ?? false,
+        defaultValue: options.defaultValue ?? null,
+    };
+}
 
 /**
- * @param {module:dispatcher.MethodParameterInfo} info
- * @param {number} parameterIndex
- * @param {Object} target
- * @param {string|external:symbol} propertyKey
+ * Factory function: Create a matrix parameter extractor
+ *
+ * @example
+ * @routeParams({
+ *   color: matrixValue('color'),
+ *   size: matrixValue('size', { required: true })
+ * })
  */
-export const defineMatrixValue = (
-    info: MethodParameterInfo,
-    parameterIndex: number,
-    target: Object,
-    propertyKey: string | symbol
-): void => defineMethodParameter(MethodParameterType.MATRIX, info, parameterIndex, target, propertyKey);
+export function matrixValue(
+    name: string,
+    options: { required?: boolean; defaultValue?: string } = {}
+): ParameterExtractor {
+    return {
+        type: MethodParameterType.MATRIX,
+        name,
+        required: options.required ?? false,
+        defaultValue: options.defaultValue ?? null,
+    };
+}
 
 /**
- * @param {module:dispatcher.MethodParameterInfo} info
- * @param {number} parameterIndex
- * @param {Object} target
- * @param {string|external:symbol} propertyKey
+ * Factory function: Create a cookie parameter extractor
+ *
+ * @example
+ * @routeParams({
+ *   session: cookieValue('SESSIONID'),
+ *   token: cookieValue('AUTH_TOKEN', { required: true })
+ * })
  */
-export const defineQueryValue = (
-    info: MethodParameterInfo,
-    parameterIndex: number,
-    target: Object,
-    propertyKey: string | symbol
-): void => defineMethodParameter(MethodParameterType.QUERY, info, parameterIndex, target, propertyKey);
+export function cookieValue(
+    name: string,
+    options: { required?: boolean; defaultValue?: string } = {}
+): ParameterExtractor {
+    return {
+        type: MethodParameterType.COOKIE,
+        name,
+        required: options.required ?? false,
+        defaultValue: options.defaultValue ?? null,
+    };
+}
 
 /**
- * @param {string|module:dispatcher.MethodParameterInfo} info
- * @returns {ParameterDecorator}
+ * @routeParams decorator - Maps parameter names to extractors
+ *
+ * Replaces legacy parameter decorators with a method-level decorator.
+ * Uses function parameter name extraction to map extractors to positions.
+ *
+ * @example
+ * // Old (legacy - not supported in TC39):
+ * handleRequest(@queryValue('page') page: string) {}
+ *
+ * // New (TC39):
+ * @routeParams({
+ *   page: queryValue('page')
+ * })
+ * handleRequest(page: string) {}
  */
+export function routeParams(paramMap: RouteParameterMap) {
+    return function (target: any, context: ClassMethodDecoratorContext): void {
+        // Extract parameter names from the method
+        const paramNames = getFunctionParamNames(target);
+
+        // Convert paramMap to array indexed by parameter position
+        const parameters: MethodParameter[] = [];
+
+        for (const [paramName, extractor] of Object.entries(paramMap)) {
+            const index = paramNames.indexOf(paramName);
+            if (index === -1) {
+                throw new Error(
+                    `Parameter "${paramName}" not found in method signature. ` +
+                        `Available parameters: ${paramNames.join(', ')}`
+                );
+            }
+
+            parameters[index] = new MethodParameter(
+                extractor.type,
+                extractor.name,
+                extractor.required,
+                extractor.defaultValue
+            );
+        }
+
+        // Store in metadata
+        context.metadata[`method:parameter:${String(context.name)}`] = parameters;
+
+        console.log('@routeParams', paramMap, 'mapped to', parameters, 'for', context.name);
+    };
+}
 
 /**
+ * Get method parameters
  */
-export const cookieValue = (
-    infoOrTarget: string | MethodParameterInfo | Object,
-    propertyKey?: string | symbol,
-    parameterIndex?: number
-): any => {
-    // Called as Function
-    if (isStringOrLikeMethodParameterInfo(infoOrTarget)) {
-        const info: MethodParameterInfo = assign({}, defaultMethodParameterInfo, toMethodParameterInfo(infoOrTarget));
-        return (target: Object, propertyKey: string | symbol, parameterIndex: number): void => {
-            defineCookieValue(info, parameterIndex, target, propertyKey);
-            console.log('@cookieValue', info, parameterIndex, target, propertyKey);
-        };
-
-        // Called as ParameterDecorator
-    } else {
-        const info: MethodParameterInfo = assign({}, defaultMethodParameterInfo);
-        defineCookieValue(info, parameterIndex, infoOrTarget, propertyKey);
-        console.log('@cookieValue', info, parameterIndex, infoOrTarget, propertyKey);
-    }
-};
+export function getMethodParameter(target: any, propertyKey: string | symbol): MethodParameter[] | undefined {
+    const metadata = getMetadata(target);
+    return metadata[`method:parameter:${String(propertyKey)}`];
+}
 
 /**
- * @param {string|module:dispatcher.matrixValueInfo} info
- * @returns {ParameterDecorator}
+ * Check if method has parameters
  */
-
-/**
- */
-export const matrixValue = (
-    infoOrTarget: string | MethodParameterInfo | Object,
-    propertyKey?: string | symbol,
-    parameterIndex?: number
-): any => {
-    // Called as Function
-    if (isStringOrLikeMethodParameterInfo(infoOrTarget)) {
-        const info: MethodParameterInfo = assign({}, defaultMethodParameterInfo, toMethodParameterInfo(infoOrTarget));
-        return (target: Object, propertyKey: string | symbol, parameterIndex: number): void => {
-            defineMatrixValue(info, parameterIndex, target, propertyKey);
-            console.log('@matrixValue', info, parameterIndex, target, propertyKey);
-        };
-
-        // Called as ParameterDecorator
-    } else {
-        const info: MethodParameterInfo = assign({}, defaultMethodParameterInfo);
-        defineMatrixValue(info, parameterIndex, infoOrTarget, propertyKey);
-        console.log('@matrixValue', info, parameterIndex, infoOrTarget, propertyKey);
-    }
-};
-
-/**
- * @param {string|module:dispatcher.MethodParameterInfo} info
- * @returns {ParameterDecorator}
- */
-
-/**
- */
-export const queryValue = (
-    infoOrTarget: string | MethodParameterInfo | Object,
-    propertyKey?: string | symbol,
-    parameterIndex?: number
-): any => {
-    // Called as Function
-    if (isStringOrLikeMethodParameterInfo(infoOrTarget)) {
-        const info: MethodParameterInfo = assign({}, defaultMethodParameterInfo, toMethodParameterInfo(infoOrTarget));
-        return (target: Object, propertyKey: string | symbol, parameterIndex: number): void => {
-            defineQueryValue(info, parameterIndex, target, propertyKey);
-            console.log('@queryValue', info, parameterIndex, target, propertyKey);
-        };
-
-        // Called as ParameterDecorator
-    } else {
-        const info: MethodParameterInfo = assign({}, defaultMethodParameterInfo);
-        defineQueryValue(info, parameterIndex, infoOrTarget, propertyKey);
-        console.log('@queryValue', info, parameterIndex, infoOrTarget, propertyKey);
-    }
-};
+export function hasMethodParameter(target: any, propertyKey: string | symbol): boolean {
+    return getMethodParameter(target, propertyKey) !== undefined;
+}

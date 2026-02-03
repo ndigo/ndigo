@@ -2,69 +2,97 @@
  * @author Jeff Rose
  */
 
-import 'reflect-metadata';
+import '@tsmetadata/polyfill';
 import { Constructable } from '@blue/core';
 import { both, either, propSatisfies } from '@blue/util/logic';
 import { propIs, isNotNil } from '@blue/util/types';
 
-const ERROR_HANDLER = 'error:handler',
-    ERROR_MAPPING = 'error:mapping',
-    { assign } = Object,
-    { defineMetadata, deleteMetadata, getMetadata, getOwnPropertyDescriptor, hasMetadata } = Reflect,
-    hasFunction = propIs(Function),
-    defineErrorHandler = (target): void => defineMetadata(ERROR_HANDLER, true, target),
-    defineErrorMapping = (value, target, propertyKey: string | symbol): void =>
-        defineMetadata(ERROR_MAPPING, value, target, propertyKey),
-    deleteErrorHandler = (target) => deleteMetadata(ERROR_HANDLER, target),
-    deleteErrorMapping = (target, propertyKey: string | symbol) => deleteMetadata(ERROR_MAPPING, target, propertyKey),
-    getErrorHandler = (target): boolean => getMetadata(ERROR_HANDLER, target),
-    getErrorMapping = (target, propertyKey: string | symbol): Constructable<Error>[] =>
-        getMetadata(ERROR_MAPPING, target, propertyKey),
-    hasErrorHandler = (target): boolean => hasMetadata(ERROR_HANDLER, target),
-    hasErrorMapping = (target, propertyKey: string | symbol): boolean =>
-        hasMetadata(ERROR_MAPPING, target, propertyKey),
-    eh = (target) => defineErrorHandler(target),
-    em =
-        (errorClass: Constructable<Error> | Constructable<Error>[] = Error) =>
-        (target, propertyKey: string | symbol, descriptor: PropertyDescriptor): PropertyDescriptor => {
-            defineErrorMapping(Array.isArray(errorClass) ? errorClass : [errorClass], target, propertyKey);
-            if (!descriptor) {
-                descriptor = getOwnPropertyDescriptor(target, propertyKey);
+const { assign, getOwnPropertyDescriptor } = Object;
+const { defineProperty } = Reflect;
+const hasFunction = propIs(Function);
+
+/**
+ * Helper to get metadata from class constructor
+ */
+function getMetadata(target: any): Record<string, any> {
+    if (typeof target === 'function' && target[Symbol.metadata]) {
+        return target[Symbol.metadata];
+    }
+    if (target && target.constructor && target.constructor[Symbol.metadata]) {
+        return target.constructor[Symbol.metadata];
+    }
+    return {};
+}
+
+/**
+ * @errorHandler decorator - marks a class as an error handler
+ */
+function errorHandlerDecorator(target: any, context: ClassDecoratorContext): any {
+    context.metadata['error:handler'] = true;
+    return target;
+}
+
+/**
+ * Get error handler status
+ */
+const getErrorHandler = (target: any): boolean => {
+    const metadata = getMetadata(target);
+    return metadata['error:handler'] === true;
+};
+
+/**
+ * Check if target has error handler metadata
+ */
+const hasErrorHandler = (target: any): boolean => {
+    return getErrorHandler(target);
+};
+
+/**
+ * @errorMapping decorator - maps error classes to handler methods
+ */
+function errorMappingDecorator(errorClass: Constructable<Error> | Constructable<Error>[] = Error) {
+    return function (target: any, context: ClassMethodDecoratorContext): void {
+        const errors = Array.isArray(errorClass) ? errorClass : [errorClass];
+        context.metadata[`error:mapping:${String(context.name)}`] = errors;
+
+        // Make method enumerable
+        context.addInitializer(function (this: any) {
+            const descriptor = getOwnPropertyDescriptor(Object.getPrototypeOf(this), context.name);
+            if (descriptor && !descriptor.enumerable) {
+                defineProperty(Object.getPrototypeOf(this), context.name, {
+                    ...descriptor,
+                    enumerable: true,
+                });
             }
-            descriptor.enumerable = true;
-            return descriptor;
-        };
+        });
+    };
+}
 
 /**
- * @param {Error} errorClass
- * @returns {Function}
+ * Get error mapping for a method
  */
+const getErrorMapping = (target: any, propertyKey: string | symbol): Constructable<Error>[] => {
+    const metadata = getMetadata(target);
+    return metadata[`error:mapping:${String(propertyKey)}`];
+};
 
 /**
+ * Check if method has error mapping
  */
-export const errorHandler = assign(eh, {
-    /**
-     * @param {*} target
-     */
-    define: defineErrorHandler,
-    /**
-     * @param {*} target
-     */
-    delete: deleteErrorHandler,
-    /**
-     * @param {*} target
-     * @returns {boolean}
-     */
+const hasErrorMapping = (target: any, propertyKey: string | symbol): boolean => {
+    return getErrorMapping(target, propertyKey) !== undefined;
+};
+
+/**
+ * Export errorHandler with utility methods
+ */
+export const errorHandler = assign(errorHandlerDecorator, {
     get: getErrorHandler,
-    /**
-     * @param {*} target
-     * @returns {boolean} Whether or not the `target` is defined as an error handler.
-     */
     has: hasErrorHandler,
 });
 
-const hasConstructor = hasFunction('constructor'),
-    constructorIsErrorHandler = propSatisfies(hasErrorHandler, 'constructor');
+const hasConstructor = hasFunction('constructor');
+const constructorIsErrorHandler = propSatisfies(hasErrorHandler, 'constructor');
 
 export const likeErrorHandler = both(
     isNotNil,
@@ -72,34 +100,9 @@ export const likeErrorHandler = both(
 );
 
 /**
- * @param {Error} errorClass
- * @returns {Function}
+ * Export errorMapping with utility methods
  */
-
-/**
- */
-export const errorMapping = assign(em, {
-    /**
-     * @param {*} value
-     * @param {*} target
-     * @param {string|external:symbol} propertyKey
-     */
-    define: defineErrorMapping,
-    /**
-     * @param {*} target
-     * @param {string|external:symbol} propertyKey
-     */
-    delete: deleteErrorMapping,
-    /**
-     * @param {*} target
-     * @param {string|external:symbol} propertyKey
-     * @returns {Array<module:core.Constructable<external:Error>>}
-     */
+export const errorMapping = assign(errorMappingDecorator, {
     get: getErrorMapping,
-    /**
-     * @param {*} target
-     * @param {string|external:symbol} propertyKey
-     * @returns {boolean} Whether or not the `target` and `propertyKey` is defined as an error mapping.
-     */
     has: hasErrorMapping,
 });

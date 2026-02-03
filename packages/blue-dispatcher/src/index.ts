@@ -10,6 +10,7 @@ export * from './argument-resolver';
 export * from './controller';
 export * from './dispatcher';
 export * from './error';
+export * from './error-mapping';
 export * from './route-handler-adapter';
 export * from './route-error-resolver';
 export * from './route-handler-execution-chain';

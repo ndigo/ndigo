@@ -2,20 +2,38 @@
  * @author Jeff Rose
  */
 
-import 'reflect-metadata';
+import '@tsmetadata/polyfill';
 
 const TAG_MAPPING = 'tag:mapping',
     { assign } = Object,
-    { defineMetadata, deleteMetadata, getMetadata, hasMetadata } = Reflect,
-    defineTagMapping = (value, target): void => defineMetadata(TAG_MAPPING, value, target),
-    deleteTagMapping = (target) => deleteMetadata(TAG_MAPPING, target),
-    getTagMapping = (target): string => getMetadata(TAG_MAPPING, target),
-    hasTagMapping = (target): boolean => hasMetadata(TAG_MAPPING, target),
+    getConstructor = (target: any): any => (typeof target === 'function' ? target : target?.constructor),
+    defineTagMapping = (value: string, target: any): void => {
+        const ctor = getConstructor(target);
+        if (!ctor[Symbol.metadata]) {
+            ctor[Symbol.metadata] = {};
+        }
+        ctor[Symbol.metadata][TAG_MAPPING] = value;
+    },
+    deleteTagMapping = (target: any): void => {
+        const ctor = getConstructor(target);
+        if (ctor[Symbol.metadata]) {
+            delete ctor[Symbol.metadata][TAG_MAPPING];
+        }
+    },
+    getTagMapping = (target: any): string | undefined => {
+        const ctor = getConstructor(target);
+        return ctor?.[Symbol.metadata]?.[TAG_MAPPING];
+    },
+    hasTagMapping = (target: any): boolean => {
+        const ctor = getConstructor(target);
+        return ctor?.[Symbol.metadata]?.[TAG_MAPPING] !== undefined;
+    },
     tagMapping =
-        (tagName: string): ClassDecorator =>
-        (target) => {
-            defineTagMapping(tagName, target);
+        (tagName: string) =>
+        <T extends new (...args: any[]) => any>(target: T, context: ClassDecoratorContext): T => {
+            context.metadata[TAG_MAPPING] = tagName;
             customElements.define(tagName, target as unknown as CustomElementConstructor);
+            return target;
         };
 
 /**

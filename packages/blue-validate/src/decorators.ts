@@ -11,25 +11,25 @@ type PatternDecoratorParams = {
 
 /**
  * TC39 Stage 3 decorator that validates property values against a regex pattern.
- * 
+ *
  * Logs validation errors to console but still allows the value to be set.
  * This is a non-blocking validation decorator for development feedback.
- * 
+ *
  * Uses per-instance Symbol storage to prevent shared state issues.
- * 
+ *
  * @param params - Configuration object containing regex pattern and optional flags
  * @returns Field decorator function
- * 
+ *
  * @example
  * class User {
- *   @Pattern({ regex: /^[a-z]+$/ })
+ *   @pattern({ regex: /^[a-z]+$/ })
  *   username: string;
  * }
  */
-export function Pattern(params: PatternDecoratorParams) {
+export function pattern(params: PatternDecoratorParams) {
     return function (value: undefined, context: ClassFieldDecoratorContext) {
         if (context.kind !== 'field') {
-            throw new Error('@Pattern can only be applied to class fields');
+            throw new Error('@pattern can only be applied to class fields');
         }
 
         const propertyName = context.name;
@@ -41,10 +41,10 @@ export function Pattern(params: PatternDecoratorParams) {
 
             // Get the current value (already set by the field initializer)
             const currentValue = this[propertyName];
-            
+
             // Store it in our symbol
             this[storageSymbol] = currentValue;
-            
+
             // Delete the field property
             delete this[propertyName];
 

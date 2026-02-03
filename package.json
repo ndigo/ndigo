@@ -44,6 +44,7 @@
   },
   "homepage": "https://bitbucketdc-digital.jpmchase.net/projects/BLUEJS/repos/blue/browse",
   "devDependencies": {
+    "@tsmetadata/polyfill": "^1.1.3",
     "@types/node": "~22.10.2",
     "@typescript-eslint/eslint-plugin": "~8.18.2",
     "@typescript-eslint/parser": "~8.18.2",

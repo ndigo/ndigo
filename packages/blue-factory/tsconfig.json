@@ -1,0 +1,13 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "experimentalDecorators": false,
+    "emitDecoratorMetadata": false,
+    "useDefineForClassFields": true,
+    "paths": {
+      "@blue/*": ["../blue-*/src"]
+    }
+  },
+  "include": ["src/**/*", "test/**/*"]
+}

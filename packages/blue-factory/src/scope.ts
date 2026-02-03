@@ -2,7 +2,7 @@
  * @author Jeff Rose
  */
 
-import '../node_modules/reflect-metadata/Reflect';
+import '@tsmetadata/polyfill';
 //import { Constructable } from '@blue/core';
 import { Factory } from './factory';
 import { Registry } from './registry';
@@ -24,46 +24,84 @@ export interface ScopedFactory {
     registerScope(name: string, scope: Scope): void;
 }
 
-const SCOPE = 'scope',
-    { defineProperty } = Reflect,
-    { defineMetadata, getMetadata, hasMetadata } = Reflect as any;
+const SCOPE_KEY = 'scope:mapping',
+    { defineProperty } = Reflect;
 
 /**
- * @param {*} value
- * @param {*} target
- * @param {string|external:symbol} [propertyKey]
+ * Helper function to get constructor from class or instance
+ * @param {*} target - Class constructor or instance
+ * @returns {Function} Constructor function
  */
-export const defineScope = (value, target): void => defineMetadata(SCOPE, value, target);
+const getConstructor = (target: any): any => {
+    return typeof target === 'function' ? target : target?.constructor;
+};
 
 /**
- * @param {*} target
- * @param {string|external:symbol} [propertyKey]
- * @returns {*}
+ * Defines scope metadata on a class
+ * @param {*} value - Scope name
+ * @param {*} target - Class constructor
  */
-export const getScope = (target): any => getMetadata(SCOPE, target);
+export const defineScope = (value: PossibleScope, target: any): void => {
+    const ctor = getConstructor(target);
+    if (!ctor) return;
+
+    // Ensure metadata object exists
+    if (!ctor[Symbol.metadata]) {
+        ctor[Symbol.metadata] = {};
+    }
+
+    ctor[Symbol.metadata][SCOPE_KEY] = value;
+};
 
 /**
- * @param {*} target
- * @param {string|external:symbol} [propertyKey]
- * @returns {boolean} Whether or not the `target` and optional `propertyKey` has a scope mapping defined.
+ * Retrieves scope metadata from a class or instance
+ * @param {*} target - Class constructor or instance
+ * @returns {*} Scope name or undefined
  */
-export const hasScope = (target): boolean => hasMetadata(SCOPE, target);
+export const getScope = (target: any): PossibleScope | undefined => {
+    const ctor = getConstructor(target);
+    return ctor?.[Symbol.metadata]?.[SCOPE_KEY];
+};
 
 /**
- * @param {string} scope
+ * Checks if target has scope metadata
+ * @param {*} target - Class constructor or instance
+ * @returns {boolean} Whether or not the target has a scope mapping defined
  */
-export const scope =
-    (scope: PossibleScope) =>
-    (target: Object): any => {
-        defineScope(scope, target);
-        console.log('@Scope', scope, target);
+export const hasScope = (target: any): boolean => {
+    const ctor = getConstructor(target);
+    return ctor?.[Symbol.metadata]?.[SCOPE_KEY] !== undefined;
+};
+
+/**
+ * TC39 decorator for defining scope on a class
+ * @param {string} scopeName - The scope name (singleton, prototype, route, etc.)
+ * @returns {ClassDecorator} TC39 class decorator
+ */
+export function scope(scopeName: PossibleScope) {
+    return function <T extends new (...args: any[]) => any>(target: T, context: ClassDecoratorContext): T {
+        // Store scope in TC39 metadata
+        context.metadata[SCOPE_KEY] = scopeName;
+
+        console.log('@scope', scopeName, target);
+
         return target;
     };
+}
 
+/**
+ * Decorator for singleton scope (convenience factory)
+ */
 export const singletonScope = scope('singleton');
 
+/**
+ * Decorator for prototype scope (convenience factory)
+ */
 export const prototypeScope = scope('prototype');
 
+/**
+ * Decorator for hash/route scope (convenience factory)
+ */
 export const hashScope = scope('hash');
 
 export class PrototypeScope implements Scope {

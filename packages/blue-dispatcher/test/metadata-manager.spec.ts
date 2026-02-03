@@ -1,21 +1,43 @@
 import { describe, test, beforeEach, afterEach, expect, vi } from 'vitest';
 import metadataManager, { MetadataScanner } from '../src/metadata-manager';
 
+/**
+ * TC39 Decorator Migration Tests
+ *
+ * These tests verify that MetadataScanner correctly reads Symbol.metadata
+ * instead of the legacy Reflect.defineMetadata API.
+ */
+
 describe('metadataManager', () => {
     describe('MetadataScanner', () => {
         let metadataScanner: MetadataScanner;
         let target: any;
 
-        const Target = function Target() {} as any;
-        Target.prototype = Object.create(null);
-        Target.prototype.constructor = Target;
-        Target.prototype.handleEveryone = function () {};
-        Target.prototype.handleWorld = function () {};
+        // Create a test class with TC39 metadata
+        class Target {
+            static [Symbol.metadata] = {
+                'request:mapping:handleEveryone': true,
+                'request:mapping:handleWorld': function () {},
+            };
+
+            handleEveryone() {}
+            handleWorld() {}
+        }
+
+        // Instance target with method-level metadata
+        class InstanceTarget {
+            static [Symbol.metadata] = {
+                'error:handler:errorHandler': 10,
+                'error:handler:errorHandler2': 'madeupvalue',
+                'different:metadata:errorHandler2': 'anothermadeupcalue',
+            };
+
+            errorHandler() {}
+            errorHandler2() {}
+        }
 
         beforeEach(() => {
-            target = new Target();
-            target.errorHandler = function () {};
-            target.errorHandler2 = function () {};
+            target = new InstanceTarget();
         });
 
         afterEach(() => {
@@ -32,9 +54,6 @@ describe('metadataManager', () => {
         });
 
         test('it should populate an empty cache and then return the requested metadata', () => {
-            Reflect.defineMetadata('request:mapping', true, Target.prototype, 'handleEveryone');
-            Reflect.defineMetadata('request:mapping', function () {}, Target.prototype, 'handleWorld');
-
             metadataScanner = new MetadataScanner(Target.prototype);
 
             expect(metadataScanner._cache.size).toBe(0);
@@ -43,10 +62,6 @@ describe('metadataManager', () => {
         });
 
         test("it should prime the cache once with all the metadata defined on the target's properties", () => {
-            Reflect.defineMetadata('error:handler', 10, target, 'errorHandler');
-            Reflect.defineMetadata('error:handler', 'madeupvalue', target, 'errorHandler2');
-            Reflect.defineMetadata('different:metadata', 'anothermadeupcalue', target, 'errorHandler2');
-
             metadataScanner = new MetadataScanner(target);
             expect(metadataScanner._cache.size).toBe(0);
 
@@ -61,8 +76,6 @@ describe('metadataManager', () => {
         });
 
         test("it should return undefined if metadata isn't in cache", () => {
-            Reflect.defineMetadata('error:handler', false, target, 'errorHandler');
-
             metadataScanner = new MetadataScanner(target);
             // prime the cache
             metadataScanner.get('error:handler');
@@ -71,24 +84,69 @@ describe('metadataManager', () => {
         });
 
         test('it should clear the cache', () => {
-            Reflect.defineMetadata('error:handler', false, target, 'errorHandler');
             metadataScanner = new MetadataScanner(target);
             metadataScanner.get('error:handler');
 
-            expect(metadataScanner._cache.size).toBe(1);
+            // Cache is primed with all metadata keys: 'error:handler' and 'different:metadata'
+            expect(metadataScanner._cache.size).toBe(2);
             metadataScanner.clear();
             expect(metadataScanner._cache.size).toBe(0);
+        });
+
+        test('it should handle class-level metadata (no property suffix)', () => {
+            class ClassLevelTarget {
+                static [Symbol.metadata] = {
+                    'route:mapping': '/api',
+                    'route:mapping:getUsers': '/users',
+                };
+                getUsers() {}
+            }
+
+            metadataScanner = new MetadataScanner(ClassLevelTarget);
+            const classLevel = metadataScanner.get('route:mapping');
+
+            // Should return both class-level (empty string) and method-level (property names)
+            expect(classLevel).toBeDefined();
+            expect(classLevel).toContain(''); // Class-level
+            expect(classLevel).toContain('getUsers'); // Method-level
+        });
+
+        test('it should work with constructor as target', () => {
+            metadataScanner = new MetadataScanner(Target);
+            expect(metadataScanner.get('request:mapping')).toEqual(['handleEveryone', 'handleWorld']);
+        });
+
+        test('it should work with instance as target', () => {
+            const instance = new Target();
+            metadataScanner = new MetadataScanner(instance);
+            expect(metadataScanner.get('request:mapping')).toEqual(['handleEveryone', 'handleWorld']);
+        });
+
+        test('it should return undefined for target without Symbol.metadata', () => {
+            class NoMetadata {}
+            metadataScanner = new MetadataScanner(NoMetadata);
+            expect(metadataScanner.get('any:key')).toBeUndefined();
         });
     });
 
     let target: any;
     let scannerMapGetSpy: any;
 
+    // Test MetadataManager with TC39 metadata
+    class MappingTarget {
+        static [Symbol.metadata] = {
+            'request:mapping:handleMapping': true,
+            'request:mapping:handleSurprise': 10,
+            'error:handling:handleError': function () {},
+        };
+
+        handleMapping() {}
+        handleError() {}
+        handleSurprise() {}
+    }
+
     beforeEach(() => {
-        target = {};
-        target.handleMapping = function () {};
-        target.handleError = function () {};
-        target.handleSurprise = function () {};
+        target = new MappingTarget();
         scannerMapGetSpy = vi.spyOn(metadataManager._scannerMap, 'get');
     });
 
@@ -102,16 +160,21 @@ describe('metadataManager', () => {
     });
 
     test('it should return properties on an object that have metadata', () => {
-        Reflect.defineMetadata('request:mapping', true, target, 'handleMapping');
-        Reflect.defineMetadata('request:mapping', 10, target, 'handleSurprise');
-        Reflect.defineMetadata('error:handling', function () {}, target, 'handleError');
-
         // add target object MetadataScanner to WeakMap
         expect(metadataManager.get(target, 'request:mapping')).toEqual(['handleMapping', 'handleSurprise']);
         expect(scannerMapGetSpy).toHaveBeenCalledTimes(0);
 
         // get metadata properties from target object via WeakMap
         expect(metadataManager.get(target, 'error:handling')).toEqual(['handleError']);
+        expect(scannerMapGetSpy).toHaveBeenCalledTimes(1);
+    });
+
+    test('it should cache scanners in WeakMap', () => {
+        const result1 = metadataManager.get(target, 'request:mapping');
+        const result2 = metadataManager.get(target, 'request:mapping');
+
+        expect(result1).toEqual(result2);
+        // First call creates scanner (0 calls), second call uses cached scanner (1 call)
         expect(scannerMapGetSpy).toHaveBeenCalledTimes(1);
     });
 });

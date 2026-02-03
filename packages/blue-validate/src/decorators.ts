@@ -1,36 +1,82 @@
+/**
+ * @author Jeff Rose
+ */
+
 import constraints from './constraints';
-//import types from './types';
-//import TypeValidator from './validator';
 
-const { defineProperty, deleteProperty } = Reflect;
-//validator = new TypeValidator( types );
+type PatternDecoratorParams = {
+    regex: RegExp | string;
+    flags?: string;
+};
 
-/*
-declare type ClassDecorator = <TFunction extends Function>(target: TFunction) => TFunction | void;
-declare type PropertyDecorator = (target: Object, propertyKey: string | symbol) => void;
-declare type MethodDecorator = <T>(target: Object, propertyKey: string | symbol, descriptor: TypedPropertyDescriptor<T>) => TypedPropertyDescriptor<T> | void;
-declare type ParameterDecorator = (target: Object, propertyKey: string | symbol, parameterIndex: number) => void;
-*/
+/**
+ * TC39 Stage 3 decorator that validates property values against a regex pattern.
+ * 
+ * Logs validation errors to console but still allows the value to be set.
+ * This is a non-blocking validation decorator for development feedback.
+ * 
+ * Uses per-instance Symbol storage to prevent shared state issues.
+ * 
+ * @param params - Configuration object containing regex pattern and optional flags
+ * @returns Field decorator function
+ * 
+ * @example
+ * class User {
+ *   @Pattern({ regex: /^[a-z]+$/ })
+ *   username: string;
+ * }
+ */
+export function Pattern(params: PatternDecoratorParams) {
+    return function (value: undefined, context: ClassFieldDecoratorContext) {
+        if (context.kind !== 'field') {
+            throw new Error('@Pattern can only be applied to class fields');
+        }
 
-export const Pattern = function (params) {
-    console.log('PARAMS', params);
-    return function (target: Object, propertyKey: PropertyKey): void {
-        let currentValue = target[propertyKey];
-        const getter = () => currentValue,
-            setter = (newValue) => {
-                console.log('PROPERTY', target, propertyKey, newValue);
-                //!validator.validate( newValue, 'Pattern', params ).isValid && console.error( 'YOU BAD DATA FILE' );
-                !constraints.Pattern.validate(newValue, params) && console.error('YOU BAD DATA FILE');
-                currentValue = newValue;
-            };
+        const propertyName = context.name;
 
-        if (deleteProperty(target, propertyKey)) {
-            defineProperty(target, propertyKey, {
-                get: getter,
-                set: setter,
+        // Add an initializer that runs after the field is created
+        context.addInitializer(function (this: any) {
+            // Create a unique symbol for storing the actual value
+            const storageSymbol = Symbol(`__pattern_${String(propertyName)}`);
+
+            // Get the current value (already set by the field initializer)
+            const currentValue = this[propertyName];
+            
+            // Store it in our symbol
+            this[storageSymbol] = currentValue;
+            
+            // Delete the field property
+            delete this[propertyName];
+
+            // Define the property with getter/setter
+            Object.defineProperty(this, propertyName, {
+                get(this: any) {
+                    return this[storageSymbol];
+                },
+                set(this: any, newValue: any) {
+                    // Validate the new value
+                    // Note: Pattern validator doesn't handle null/undefined properly,
+                    // so we check for them explicitly
+                    let isValid: boolean;
+                    if (newValue === null || newValue === undefined) {
+                        isValid = false;
+                    } else {
+                        isValid = constraints.Pattern.validate(newValue, {
+                            regex: params.regex,
+                            flags: params.flags,
+                        } as any);
+                    }
+
+                    if (!isValid) {
+                        console.error('YOU BAD DATA FILE');
+                    }
+
+                    // Set the value regardless of validation (non-blocking)
+                    this[storageSymbol] = newValue;
+                },
                 configurable: true,
                 enumerable: true,
             });
-        }
+        });
     };
-};
+}

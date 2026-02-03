@@ -170,9 +170,6 @@ importers:
       '@blue/util':
         specifier: ~3.0.0-alpha
         version: link:../blue-util
-      reflect-metadata:
-        specifier: 0.2.2
-        version: 0.2.2
 
   packages/blue-core:
     devDependencies:
@@ -219,9 +216,6 @@ importers:
       '@blue/view':
         specifier: ~3.0.0-alpha
         version: link:../blue-view
-      reflect-metadata:
-        specifier: 0.2.2
-        version: 0.2.2
 
   packages/blue-domain:
     devDependencies:

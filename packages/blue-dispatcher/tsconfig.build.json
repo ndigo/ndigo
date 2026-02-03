@@ -3,6 +3,8 @@
   "compilerOptions": {
     "baseUrl": ".",
     "composite": true,
+    "experimentalDecorators": false,
+    "emitDecoratorMetadata": false,
     "outDir": "lib",
     "rootDir": "src",
     "skipLibCheck": true

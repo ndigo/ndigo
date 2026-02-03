@@ -8,9 +8,9 @@ export default mergeConfig(
             target: 'es2022',
             tsconfigRaw: {
                 compilerOptions: {
-                    experimentalDecorators: true,
-                    emitDecoratorMetadata: true,
-                    useDefineForClassFields: false,
+                    experimentalDecorators: false,
+                    emitDecoratorMetadata: false,
+                    useDefineForClassFields: true,
                 },
             },
         },

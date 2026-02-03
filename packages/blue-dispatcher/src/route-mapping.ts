@@ -2,7 +2,7 @@
  * @author Jeff Rose
  */
 
-import 'reflect-metadata';
+import '@tsmetadata/polyfill';
 import { compose } from '@blue/util/function';
 import { when } from '@blue/util/logic';
 import { mergeRight, objOf } from '@blue/util/object';
@@ -16,63 +16,89 @@ type RouteMappingConfiguration = RouteMappingValue & {
     name?: string;
     params?: string;
     private: boolean;
+    path?: string; // Computed path combining class and method routes
 };
 
-const ROUTE_MAPPING = 'route:mapping',
-    defaultMapping: RouteMappingConfiguration = {
-        value: '/**',
-        private: false,
-    },
-    { defineMetadata, getMetadata, hasMetadata } = Reflect,
-    withDefaults = mergeRight(defaultMapping),
-    configurationOf = objOf<string>('value') as (value: string) => RouteMappingValue,
-    toRouteMappingConfiguration = when<string | RouteMappingConfiguration, RouteMappingConfiguration>(
-        isString,
-        compose(withDefaults, configurationOf)
-    );
+const { defineProperty, getOwnPropertyDescriptor } = Reflect;
+
+const defaultMapping: RouteMappingConfiguration = {
+    value: '/**',
+    private: false,
+};
+
+const withDefaults = mergeRight(defaultMapping);
+const configurationOf = objOf('value') as (value: string) => RouteMappingValue;
+const toRouteMappingConfiguration = when(isString, compose(withDefaults, configurationOf)) as (
+    value: string | RouteMappingConfiguration
+) => RouteMappingConfiguration;
 
 /**
- * @param {*} value
- * @param {*} target
- * @param {string|external:symbol} [propertyKey]
+ * Helper to get metadata from class constructor
  */
-export const defineRouteMapping = (value, target, propertyKey: string | symbol = void 0): void =>
-    defineMetadata(ROUTE_MAPPING, value, target, propertyKey);
+function getMetadata(target: any): Record<string, any> {
+    if (typeof target === 'function' && target[Symbol.metadata]) {
+        return target[Symbol.metadata];
+    }
+    if (target && target.constructor && target.constructor[Symbol.metadata]) {
+        return target.constructor[Symbol.metadata];
+    }
+    return {};
+}
 
 /**
- * @param {*} target
- * @param {string|external:symbol} [propertyKey]
- * @returns {*}
+ * Get route mapping from class or method
+ * @param target - Class constructor or prototype
+ * @param propertyKey - Optional method name
  */
-export const getRouteMapping = (target, propertyKey: string | symbol = void 0): any =>
-    getMetadata(ROUTE_MAPPING, target, propertyKey);
+export const getRouteMapping = (target: any, propertyKey?: string | symbol): RouteMappingConfiguration | undefined => {
+    const metadata = getMetadata(target);
+    if (propertyKey) {
+        return metadata[`route:mapping:${String(propertyKey)}`];
+    }
+    return metadata['route:mapping'];
+};
 
 /**
- * @param {*} target
- * @param {string|external:symbol} [propertyKey]
- * @returns {boolean} Whether or not the `target` and optional `propertyKey` has a route mapping defined.
+ * Check if route mapping exists
+ * @param target - Class constructor or prototype
+ * @param propertyKey - Optional method name
  */
-export const hasRouteMapping = (target, propertyKey: string | symbol = void 0): boolean =>
-    hasMetadata(ROUTE_MAPPING, target, propertyKey);
+export const hasRouteMapping = (target: any, propertyKey?: string | symbol): boolean => {
+    return getRouteMapping(target, propertyKey) !== undefined;
+};
 
 /**
- * @param {string} route
+ * TC39 Stage 3 decorator for route mapping
+ * Works as both class and method decorator
  */
-export const routeMapping = (route: string | RouteMappingConfiguration = defaultMapping) => {
+export function routeMapping(route: string | RouteMappingConfiguration = defaultMapping) {
     const conf = toRouteMappingConfiguration(route);
-    return function (target: Object, propertyKey?: string | symbol, descriptor?: PropertyDescriptor): any {
-        if (propertyKey) {
-            defineRouteMapping(conf, target, propertyKey);
-            descriptor.enumerable = true;
-            console.log('@RouteMapping', conf, target, propertyKey);
-            return descriptor;
-        } else {
-            defineRouteMapping(conf, target);
+
+    return function (target: any, context: ClassDecoratorContext | ClassMethodDecoratorContext): any {
+        if (context.kind === 'class') {
+            // Class decorator
+            context.metadata['route:mapping'] = conf;
             console.log('@RouteMapping', conf, target);
             return target;
+        } else if (context.kind === 'method') {
+            // Method decorator
+            context.metadata[`route:mapping:${String(context.name)}`] = conf;
+
+            // Make method enumerable so it can be discovered via for...in
+            context.addInitializer(function (this: any) {
+                const descriptor = getOwnPropertyDescriptor(Object.getPrototypeOf(this), context.name);
+                if (descriptor && !descriptor.enumerable) {
+                    defineProperty(Object.getPrototypeOf(this), context.name, {
+                        ...descriptor,
+                        enumerable: true,
+                    });
+                }
+            });
+
+            console.log('@RouteMapping', conf, target, context.name);
         }
     };
-};
+}
 
 export const publicMapping = (route: string) => routeMapping({ value: route, private: false });
 

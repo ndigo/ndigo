@@ -2,7 +2,7 @@
  * @author Jeff Rose
  */
 
-import '../node_modules/reflect-metadata/Reflect';
+import '@tsmetadata/polyfill';
 import { GenericApplicationContext } from './context';
 import { Environment, AsEnvironmentAware, StandardEnvironment, ConfigurableEnvironment } from './environment';
 import { EntryRegistryProcessor, Registry } from '@blue/factory';
@@ -14,48 +14,64 @@ import { split } from '@blue/util/string';
 
 type ProfileMetadata = string[];
 
-const { defineMetadata, defineProperty, getMetadata, getOwnPropertyDescriptor, hasMetadata } =
-        Reflect as typeof Reflect & {
-            defineMetadata: (metadataKey: any, metadataValue: any, target: any, propertyKey?: string | symbol) => void;
-            getMetadata: (metadataKey: any, target: any, propertyKey?: string | symbol) => any;
-            hasMetadata: (metadataKey: any, target: any, propertyKey?: string | symbol) => boolean;
-        },
+const { defineProperty, getOwnPropertyDescriptor } = Reflect,
     { isArray } = Array,
     CONFIG_CONSTRUCTOR = 'config:constructor',
     CONFIG_PROFILE = 'config:profile',
     CONFIG_PROPERTY = 'config:property',
     CONFIG_PROPERTY_SOURCE = 'config:property:source',
     CONFIG_ENTRY = 'config:entry',
-    defineConfigurationMetadata = (target): void => defineMetadata(CONFIG_CONSTRUCTOR, true, target),
-    defineProfileMetadata = (value: string | string[], target, propertyKey?: string | symbol): void =>
-        defineMetadata(CONFIG_PROFILE, isArray(value) ? value : value.split(','), target, propertyKey),
-    definePropertyMetadata = (value: string, target, propertyKey: string | symbol) =>
-        defineMetadata(CONFIG_PROPERTY, value, target, propertyKey),
-    definePropertySourceMetadata = (value: JSONObject[], target): void => {
-        if (isArray(value)) {
-            defineMetadata(CONFIG_PROPERTY_SOURCE, value, target);
-        } else {
-            throw new TypeError('value must be an array of JSON objects');
-        }
-    },
-    defineEntryMetadata = (value, target, propertyKey: string | symbol): void =>
-        defineMetadata(CONFIG_ENTRY, value, target, propertyKey),
-    getProfileMetadata = (target, propertyKey?: string | symbol): ProfileMetadata =>
-        getMetadata(CONFIG_PROFILE, target, propertyKey),
-    getPropertyMetadata = (target, propertyKey: string | symbol): string =>
-        getMetadata(CONFIG_PROPERTY, target, propertyKey),
-    getPropertySourceMetadata = (target): JSONObject[] => getMetadata(CONFIG_PROPERTY_SOURCE, target),
-    getEntryMetadata = (target, propertyKey: string | symbol): string => getMetadata(CONFIG_ENTRY, target, propertyKey),
-    hasConfigurationMetadata = (target): boolean => hasMetadata(CONFIG_CONSTRUCTOR, target),
-    hasProfileMetadata = (target, propertyKey?: string | symbol): boolean =>
-        hasMetadata(CONFIG_PROFILE, target, propertyKey),
-    hasPropertyMetadata = (target, propertyKey: string | symbol): boolean =>
-        hasMetadata(CONFIG_PROPERTY, target, propertyKey),
-    hasPropertySourceMetadata = (target): boolean => hasMetadata(CONFIG_PROPERTY_SOURCE, target),
-    hasEntryMetadata = (target, propertyKey: string | symbol): boolean =>
-        hasMetadata(CONFIG_ENTRY, target, propertyKey),
     splitOnComma = split(','),
-    toUniqueArray = pipe(splitOnComma, uniq);
+    toUniqueArray = pipe(splitOnComma, uniq),
+    // Helper to get metadata from a class constructor
+    getMetadata = (target: any): Record<string, any> => {
+        if (!target || typeof target !== 'function') {
+            return {};
+        }
+        return (target as any)[Symbol.metadata] || {};
+    },
+    // Helper to get metadata from an instance
+    getInstanceMetadata = (instance: any): Record<string, any> => {
+        if (!instance || typeof instance !== 'object') {
+            return {};
+        }
+        const constructor = instance.constructor;
+        return getMetadata(constructor);
+    },
+    // Metadata getter functions
+    hasConfigurationMetadata = (target): boolean => getMetadata(target)[CONFIG_CONSTRUCTOR] === true,
+    hasProfileMetadata = (target, propertyKey?: string | symbol): boolean => {
+        const metadata = getInstanceMetadata(target) || getMetadata(target);
+        if (propertyKey) {
+            return metadata[`${CONFIG_PROFILE}:${String(propertyKey)}`] !== undefined;
+        }
+        return metadata[CONFIG_PROFILE] !== undefined;
+    },
+    hasPropertyMetadata = (target, propertyKey: string | symbol): boolean => {
+        const metadata = getInstanceMetadata(target) || getMetadata(target);
+        return metadata[`${CONFIG_PROPERTY}:${String(propertyKey)}`] !== undefined;
+    },
+    hasPropertySourceMetadata = (target): boolean => getMetadata(target)[CONFIG_PROPERTY_SOURCE] !== undefined,
+    hasEntryMetadata = (target, propertyKey: string | symbol): boolean => {
+        const metadata = getInstanceMetadata(target) || getMetadata(target);
+        return metadata[`${CONFIG_ENTRY}:${String(propertyKey)}`] !== undefined;
+    },
+    getProfileMetadata = (target, propertyKey?: string | symbol): ProfileMetadata => {
+        const metadata = getInstanceMetadata(target) || getMetadata(target);
+        if (propertyKey) {
+            return metadata[`${CONFIG_PROFILE}:${String(propertyKey)}`];
+        }
+        return metadata[CONFIG_PROFILE];
+    },
+    getPropertyMetadata = (target, propertyKey: string | symbol): string => {
+        const metadata = getInstanceMetadata(target) || getMetadata(target);
+        return metadata[`${CONFIG_PROPERTY}:${String(propertyKey)}`];
+    },
+    getPropertySourceMetadata = (target): JSONObject[] => getMetadata(target)[CONFIG_PROPERTY_SOURCE],
+    getEntryMetadata = (target, propertyKey: string | symbol): string => {
+        const metadata = getInstanceMetadata(target) || getMetadata(target);
+        return metadata[`${CONFIG_ENTRY}:${String(propertyKey)}`];
+    };
 
 /**
  * Indicates that a class declares one or more {@link @entry|@entry} methods and may be processed to provide the method results at runtime. For example:
@@ -80,49 +96,66 @@ const { defineMetadata, defineProperty, getMetadata, getOwnPropertyDescriptor, h
  * ```
  * @see {@link MetadataConfigApplicationContext|MetadataConfigApplicationContext}
  */
-export const configuration: ClassDecorator = <TFunction extends Function>(target: TFunction): TFunction | void => {
-    if (!hasConfigurationMetadata(target)) {
-        defineConfigurationMetadata(target);
-    }
+export function configuration<T extends new (...args: any[]) => any>(
+    target: T,
+    context: ClassDecoratorContext
+): T {
+    context.metadata[CONFIG_CONSTRUCTOR] = true;
     return target;
-};
+}
 
 /**
  * @param {string} name
  * @returns {ClassDecorator}
  */
-export const profile =
-    (name: string) => (target, propertyKey?: string | symbol, descriptor?: TypedPropertyDescriptor<any>) => {
-        defineProfileMetadata(toUniqueArray(name), target, propertyKey);
-        if (propertyKey && !descriptor) {
-            descriptor = getOwnPropertyDescriptor(target, propertyKey);
+export function profile(name: string) {
+    return function (target: any, context: ClassDecoratorContext | ClassMethodDecoratorContext) {
+        const profiles = toUniqueArray(name);
+
+        if (context.kind === 'class') {
+            context.metadata[CONFIG_PROFILE] = profiles;
+        } else if (context.kind === 'method') {
+            // Store method-level metadata with method name as key
+            context.metadata[`${CONFIG_PROFILE}:${String(context.name)}`] = profiles;
         }
-        return propertyKey ? descriptor : target;
+
+        return target;
     };
+}
 
 /**
  * @param {string} path
  * @returns {ClassDecorator}
  */
-export const property =
-    (path: string): PropertyDecorator =>
-    (target: Object, propertyKey: string | symbol): void => {
-        definePropertyMetadata(path, target, propertyKey);
-        defineProperty(target, propertyKey, {
-            value: null,
-            configurable: true,
-            enumerable: true,
-            writable: false,
+export function property(path: string) {
+    return function (value: undefined, context: ClassFieldDecoratorContext) {
+        if (context.kind !== 'field') {
+            throw new Error('@property can only be applied to class fields');
+        }
+
+        // Store metadata
+        context.metadata[`${CONFIG_PROPERTY}:${String(context.name)}`] = path;
+
+        // Return initializer that sets up the property
+        context.addInitializer(function (this: any) {
+            // The property will be set to null by the ConfigurationParser
+            // when it resolves the property value from sources
+            defineProperty(this, context.name, {
+                value: null,
+                configurable: true,
+                enumerable: true,
+                writable: false,
+            });
         });
     };
+}
 
 /**
  * @param {module:core.JSONObject | module:core.Enumerable<external:string,module:core.JSONValue>} propertySource
  * @returns {ClassDecorator}
  */
-export const propertySource =
-    (propertySource: JSONObject | Enumerable<string, JSONValue>): ClassDecorator =>
-    <TFunction extends Function>(target: TFunction) => {
+export function propertySource(propertySource: JSONObject | Enumerable<string, JSONValue>) {
+    return function <T extends new (...args: any[]) => any>(target: T, context: ClassDecoratorContext): T {
         let ps: JSONObject;
         if (likeEnumerable(propertySource)) {
             ps = createNull();
@@ -130,51 +163,73 @@ export const propertySource =
         } else {
             ps = propertySource;
         }
-        if (hasPropertySourceMetadata(target)) {
-            const propertySources = getPropertySourceMetadata(target);
-            propertySources.unshift(ps);
-            definePropertySourceMetadata(propertySources, target);
-        } else {
-            definePropertySourceMetadata([ps], target);
-        }
+
+        // Get existing sources or create new array
+        const existing = (context.metadata[CONFIG_PROPERTY_SOURCE] as JSONObject[]) || [];
+        existing.unshift(ps);
+        context.metadata[CONFIG_PROPERTY_SOURCE] = existing;
+
         return target;
     };
+}
 
 /**
+ * Decorator for marking methods as entry points that will be processed by ConfigurationParser
+ * 
+ * Can be used in two ways:
+ * - Without arguments: @entry() - uses method name as entry name
+ * - With custom name: @entry('customName') - uses provided name as entry name
  */
-export const entry = (
-    targetOrKey: Object | string,
-    propertyKey?: string | symbol,
-    descriptor?: TypedPropertyDescriptor<any>
-): any => {
-    // Called as a Function
-    if (typeof targetOrKey === 'string') {
-        return (
-            target: Object,
-            propertyKey: string | symbol,
-            descriptor: TypedPropertyDescriptor<any>
-        ): TypedPropertyDescriptor<any> | void => {
-            defineEntryMetadata(targetOrKey, target, propertyKey);
-            if (!descriptor) {
-                descriptor = getOwnPropertyDescriptor(target, propertyKey);
+export function entry(nameOrTarget?: string): any {
+    // Called with argument: @entry('customName')
+    if (typeof nameOrTarget === 'string') {
+        const customName = nameOrTarget;
+        return function (target: any, context: ClassMethodDecoratorContext) {
+            if (context.kind !== 'method') {
+                throw new Error('@entry can only be applied to methods');
             }
-            if (!descriptor.enumerable) {
-                descriptor.enumerable = true;
-            }
-            return descriptor;
+            context.metadata[`${CONFIG_ENTRY}:${String(context.name)}`] = customName;
+            
+            // Make the method enumerable so it can be found by for...in loops
+            context.addInitializer(function (this: any) {
+                const descriptor = getOwnPropertyDescriptor(this, context.name) ||
+                    getOwnPropertyDescriptor(Object.getPrototypeOf(this), context.name);
+                if (descriptor && !descriptor.enumerable) {
+                    defineProperty(Object.getPrototypeOf(this), context.name, {
+                        ...descriptor,
+                        enumerable: true,
+                    });
+                }
+            });
+            
+            return target;
         };
-        // Called as a Decorator
-    } else {
-        defineEntryMetadata(propertyKey, targetOrKey, propertyKey);
-        if (!descriptor) {
-            descriptor = getOwnPropertyDescriptor(targetOrKey, propertyKey);
-        }
-        if (!descriptor.enumerable) {
-            descriptor.enumerable = true;
-        }
-        return descriptor;
     }
-};
+
+    // Called without argument: @entry()
+    // In this case, nameOrTarget is undefined and we return a decorator
+    return function (target: any, context: ClassMethodDecoratorContext) {
+        if (context.kind !== 'method') {
+            throw new Error('@entry can only be applied to methods');
+        }
+        // Use the method name as the entry name
+        context.metadata[`${CONFIG_ENTRY}:${String(context.name)}`] = String(context.name);
+        
+        // Make the method enumerable so it can be found by for...in loops
+        context.addInitializer(function (this: any) {
+            const descriptor = getOwnPropertyDescriptor(this, context.name) ||
+                getOwnPropertyDescriptor(Object.getPrototypeOf(this), context.name);
+            if (descriptor && !descriptor.enumerable) {
+                defineProperty(Object.getPrototypeOf(this), context.name, {
+                    ...descriptor,
+                    enumerable: true,
+                });
+            }
+        });
+        
+        return target;
+    };
+}
 
 /**
  * Parses a {@link @configuration|@configuration} class definition.

@@ -4,6 +4,8 @@
     "baseUrl": ".",
     "composite": true,
     "outDir": "lib",
+    "experimentalDecorators": false,
+    "emitDecoratorMetadata": false,
     "paths": {
       "@blue/*": ["../blue-*"]
     },

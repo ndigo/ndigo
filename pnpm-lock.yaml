@@ -13,6 +13,9 @@ importers:
 
   .:
     devDependencies:
+      '@tsmetadata/polyfill':
+        specifier: ^1.1.3
+        version: 1.1.3
       '@types/node':
         specifier: ~22.10.2
         version: 22.10.10
@@ -325,9 +328,6 @@ importers:
       '@opentelemetry/shim-opentracing':
         specifier: ~1.9.1
         version: 1.9.1(@opentelemetry/api@1.9.0)
-      date-fns:
-        specifier: ~4.1.0
-        version: 4.1.0
       stacktrace-js:
         specifier: ~2.0.2
         version: 2.0.2
@@ -436,6 +436,9 @@ importers:
       date-fns-tz:
         specifier: ~3.2.0
         version: 3.2.0(date-fns@4.1.0)
+      ramda:
+        specifier: ~0.32.0
+        version: 0.32.0
       seedrandom:
         specifier: ~3.0.5
         version: 3.0.5
@@ -2043,6 +2046,10 @@ packages:
 
   /@tsconfig/node16@1.0.4:
     resolution: {integrity: sha512-vxhUy4J8lyeyinH7Azl1pdd43GJhZH/tP2weN8TntQblOY+A0XbT8DJk1/oCPuOOyg/Ja757rG0CgHcWC8OfMA==}
+    dev: true
+
+  /@tsmetadata/polyfill@1.1.3:
+    resolution: {integrity: sha512-uSRn4aPO4F3wlSG/cPCAvclF9Sxf01OizWfWbSoSYsSHAK8LnYdua9iJAm7v2ePUrGWMP4ZCn9QjniZEKZHyFg==}
     dev: true
 
   /@tybys/wasm-util@0.9.0:
@@ -4474,7 +4481,6 @@ packages:
 
   /ramda@0.32.0:
     resolution: {integrity: sha512-GQWAHhxhxWBWA8oIBr1XahFVjQ9Fic6MK9ikijfd4TZHfE2+urfk+irVlR5VOn48uwMgM+loRRBJd6Yjsbc0zQ==}
-    dev: true
 
   /react-is@18.3.1:
     resolution: {integrity: sha512-/LLMVyas0ljjAtoYiPqYiL8VWXzUUdThrmU5+n20DZv+a+ClRoevUzw5JxU+Ieh5/c87ytoTBV9G1FiKfNJdmg==}

@@ -1,13 +1,13 @@
 /**
  * @author Jeff Rose
- * 
- * Tests for @Pattern decorator
+ *
+ * Tests for @pattern decorator
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { Pattern } from '../src/decorators';
+import { pattern } from '../src/decorators';
 
-describe('@Pattern Decorator', () => {
+describe('@pattern Decorator', () => {
     let consoleErrorSpy: any;
 
     beforeEach(() => {
@@ -21,7 +21,7 @@ describe('@Pattern Decorator', () => {
     describe('Basic Validation', () => {
         it('allows setting values that match the pattern', () => {
             class Example {
-                @Pattern({ regex: /^[a-z]+$/ })
+                @pattern({ regex: /^[a-z]+$/ })
                 username: string;
             }
 
@@ -34,7 +34,7 @@ describe('@Pattern Decorator', () => {
 
         it('logs error but still sets value for invalid patterns', () => {
             class Example {
-                @Pattern({ regex: /^[a-z]+$/ })
+                @pattern({ regex: /^[a-z]+$/ })
                 username: string;
             }
 
@@ -47,7 +47,7 @@ describe('@Pattern Decorator', () => {
 
         it('validates on every property assignment', () => {
             class Example {
-                @Pattern({ regex: /^[0-9]+$/ })
+                @pattern({ regex: /^[0-9]+$/ })
                 code: string;
             }
 
@@ -73,10 +73,10 @@ describe('@Pattern Decorator', () => {
     describe('Multiple Decorated Properties', () => {
         it('validates each property independently', () => {
             class User {
-                @Pattern({ regex: /^[a-z]+$/ })
+                @pattern({ regex: /^[a-z]+$/ })
                 username: string;
 
-                @Pattern({ regex: /^[A-Z0-9]+$/ })
+                @pattern({ regex: /^[A-Z0-9]+$/ })
                 code: string;
             }
 
@@ -103,7 +103,7 @@ describe('@Pattern Decorator', () => {
     describe('Instance Isolation', () => {
         it('each instance maintains its own value', () => {
             class Example {
-                @Pattern({ regex: /^[a-z]+$/ })
+                @pattern({ regex: /^[a-z]+$/ })
                 name: string;
             }
 
@@ -119,7 +119,7 @@ describe('@Pattern Decorator', () => {
 
         it('validation is independent per instance', () => {
             class Example {
-                @Pattern({ regex: /^[a-z]+$/ })
+                @pattern({ regex: /^[a-z]+$/ })
                 value: string;
             }
 
@@ -140,7 +140,7 @@ describe('@Pattern Decorator', () => {
     describe('Property Descriptor', () => {
         it('property is enumerable', () => {
             class Example {
-                @Pattern({ regex: /^[a-z]+$/ })
+                @pattern({ regex: /^[a-z]+$/ })
                 decorated: string;
 
                 normal: string;
@@ -157,7 +157,7 @@ describe('@Pattern Decorator', () => {
 
         it('property is configurable', () => {
             class Example {
-                @Pattern({ regex: /^[a-z]+$/ })
+                @pattern({ regex: /^[a-z]+$/ })
                 value: string;
             }
 
@@ -174,7 +174,7 @@ describe('@Pattern Decorator', () => {
     describe('Complex Patterns', () => {
         it('validates phone numbers', () => {
             class Contact {
-                @Pattern({ regex: /^\d{3}-\d{4}$/ })
+                @pattern({ regex: /^\d{3}-\d{4}$/ })
                 phone: string;
             }
 
@@ -189,7 +189,7 @@ describe('@Pattern Decorator', () => {
 
         it('validates email-like patterns', () => {
             class User {
-                @Pattern({ regex: /^[a-z]+@[a-z]+\.[a-z]+$/ })
+                @pattern({ regex: /^[a-z]+@[a-z]+\.[a-z]+$/ })
                 email: string;
             }
 
@@ -206,7 +206,7 @@ describe('@Pattern Decorator', () => {
     describe('Initial Values', () => {
         it('handles undefined initial value', () => {
             class Example {
-                @Pattern({ regex: /^[a-z]+$/ })
+                @pattern({ regex: /^[a-z]+$/ })
                 value: string;
             }
 
@@ -217,7 +217,7 @@ describe('@Pattern Decorator', () => {
 
         it('validates when setting undefined explicitly', () => {
             class Example {
-                @Pattern({ regex: /^[a-z]+$/ })
+                @pattern({ regex: /^[a-z]+$/ })
                 value: string;
             }
 
@@ -233,12 +233,12 @@ describe('@Pattern Decorator', () => {
     describe('Inheritance', () => {
         it('works correctly in inheritance hierarchies', () => {
             class Base {
-                @Pattern({ regex: /^[a-z]+$/ })
+                @pattern({ regex: /^[a-z]+$/ })
                 baseValue: string;
             }
 
             class Derived extends Base {
-                @Pattern({ regex: /^[A-Z]+$/ })
+                @pattern({ regex: /^[A-Z]+$/ })
                 derivedValue: string;
             }
 
@@ -256,7 +256,7 @@ describe('@Pattern Decorator', () => {
     describe('Edge Cases', () => {
         it('handles null values', () => {
             class Example {
-                @Pattern({ regex: /^[a-z]+$/ })
+                @pattern({ regex: /^[a-z]+$/ })
                 value: string;
             }
 
@@ -269,12 +269,12 @@ describe('@Pattern Decorator', () => {
 
         it('handles empty strings correctly based on pattern', () => {
             class Example1 {
-                @Pattern({ regex: /^[a-z]+$/ })
+                @pattern({ regex: /^[a-z]+$/ })
                 requiresChars: string;
             }
 
             class Example2 {
-                @Pattern({ regex: /^[a-z]*$/ })
+                @pattern({ regex: /^[a-z]*$/ })
                 allowsEmpty: string;
             }
 
@@ -290,7 +290,7 @@ describe('@Pattern Decorator', () => {
 
         it('handles number coercion', () => {
             class Example {
-                @Pattern({ regex: /^[0-9]+$/ })
+                @pattern({ regex: /^[0-9]+$/ })
                 value: any;
             }
 

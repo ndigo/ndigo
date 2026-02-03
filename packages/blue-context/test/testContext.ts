@@ -15,10 +15,10 @@ class Qux {}
 @propertySource({ foo: 12, bar: 34, fuu: [56, 78] })
 class TestConfiguration {
     @property('foo') // Get value for property "foo" from the property source
-    fooValue;
+    fooValue: any;
 
     @property('fuu[1]') // Get value for property "fuu[1]" from the property source
-    fuuValue;
+    fuuValue: any;
 
     @profile('test') // Run only if the active profile is "test"
     @entry('bar') // Create an entry "bar" in context with the result from the factory
@@ -33,13 +33,13 @@ class TestConfiguration {
     }
 
     @profile('test') // Run only if the active profile is "test"
-    @entry // Create an entry "foo" in context with the result from the factory
+    @entry() // Create an entry "foo" in context with the result from the factory
     foo() {
         return this.fooValue;
     }
 
     @profile('test') // Run only if the active profile is "test"
-    @entry // Create an entry "fuu" in context with the result from the factory
+    @entry() // Create an entry "fuu" in context with the result from the factory
     fuu() {
         return this.fuuValue;
     }
@@ -54,6 +54,7 @@ const context = new MetadataConfigApplicationContext('test');
 context.environment.activeProfiles = ['test'];
 
 // This value is being defined programmatically rather than using decorators
+// With TC39 decorators, we need to manually add to Symbol.metadata
 Reflect.defineProperty(TestConfiguration.prototype, 'baz', {
     value: function () {
         return this.fooValue;
@@ -62,7 +63,9 @@ Reflect.defineProperty(TestConfiguration.prototype, 'baz', {
     enumerable: true,
     writable: false,
 });
-Reflect.defineMetadata('config:entry', 'baz', TestConfiguration.prototype, 'baz');
+// Add the entry metadata using the TC39 approach
+(TestConfiguration as any)[Symbol.metadata] = (TestConfiguration as any)[Symbol.metadata] || {};
+(TestConfiguration as any)[Symbol.metadata]['config:entry:baz'] = 'baz';
 
 context.register(TestConfiguration);
 

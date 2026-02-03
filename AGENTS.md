@@ -17,39 +17,42 @@ This document provides essential instructions for AI agents (and human developer
 The project maintains two complementary documentation files for different purposes:
 
 **STYLE_GUIDE.md - "How to Write Code"**
+
 - **Focus:** Concrete implementation rules, naming, and formatting conventions
 - **Audience:** All developers (including AI agents) writing code daily
 - **Content:**
-  - File naming conventions (kebab-case, underscore prefix, etc.)
-  - Code naming conventions (camelCase, PascalCase, UPPER_SNAKE_CASE)
-  - Prettier formatting rules (indentation, quotes, semicolons, etc.)
-  - Module organization structure
-  - Special patterns (internal files, test helpers, mixins)
-  - Before/after examples of correct usage
+    - File naming conventions (kebab-case, underscore prefix, etc.)
+    - Code naming conventions (camelCase, PascalCase, UPPER_SNAKE_CASE)
+    - Prettier formatting rules (indentation, quotes, semicolons, etc.)
+    - Module organization structure
+    - Special patterns (internal files, test helpers, mixins)
+    - Before/after examples of correct usage
 
 **Think:** "How do I name this file/variable/class?" and "How should this code be formatted?"
 
 **ARCHITECTURE.md - "Why the System Works This Way"**
+
 - **Focus:** High-level design decisions, patterns, principles, and rationale
 - **Audience:** Architects and senior developers understanding system design
 - **Content:**
-  - Core philosophy and design principles
-  - Layered architecture organization
-  - Design patterns (Strategy, Factory, Observer, Decorator, etc.)
-  - Dependency management strategy (Library Integration Layer)
-  - Module visibility concepts and API design
-  - Roadmap and development phases
+    - Core philosophy and design principles
+    - Layered architecture organization
+    - Design patterns (Strategy, Factory, Observer, Decorator, etc.)
+    - Dependency management strategy (Library Integration Layer)
+    - Module visibility concepts and API design
+    - Roadmap and development phases
 
 **Think:** "Why is the system designed this way?" and "What are the architectural patterns?"
 
 **The Dividing Line:**
 
-| Concern | ARCHITECTURE.md | STYLE_GUIDE.md |
-| :--- | :--- | :--- |
-| Dependency Management | "Use Library Integration Layer pattern" | "Import from @blue/util, not from ramda" |
-| Code Organization | "Use Strategy Pattern for parsers" | "Name parser files: kebab-case.ts in src/" |
-| Module Visibility | "Internal modules are implementation details" | "Prefix internal files with underscore: _util.ts" |
-| Naming Philosophy | "Use `is` prefix for type checks, `like` for duck-typing" | "isString checks with typeof, returns boolean" |
+| Concern               | ARCHITECTURE.md                                           | STYLE_GUIDE.md                                            |
+| :-------------------- | :-------------------------------------------------------- | :-------------------------------------------------------- |
+| Dependency Management | "Use Library Integration Layer pattern"                   | "Import from @blue/util, not from ramda"                  |
+| Code Organization     | "Use Strategy Pattern for parsers"                        | "Name parser files: kebab-case.ts in src/"                |
+| Module Visibility     | "Internal modules are implementation details"             | "Prefix internal files with underscore: \_util.ts"        |
+| Naming Philosophy     | "Use `is` prefix for type checks, `like` for duck-typing" | "isString checks with typeof, returns boolean"            |
+| Decorators            | "Decorators enable separation of concerns"                | "@routeMapping uses camelCase, stores in Symbol.metadata" |
 
 **Maintenance Note:** When updating the dividing line explanation, update it in both `README.md` and `AGENTS.md` to keep them synchronized.
 
@@ -128,6 +131,13 @@ pnpm format
 - **Types:** Avoid `any` where possible, though strictly enforced rules are currently relaxed. Use proper generics.
 - **Documentation:** Use **TSDoc** syntax (`/** ... */`) for all public APIs.
 
+### TC39 Decorators
+
+- **Standard:** BlueJS uses modern **TC39 Stage 3 decorators**.
+- **Polyfill:** The `@tsmetadata/polyfill` is used to support `Symbol.metadata`.
+- **Legacy:** `reflect-metadata` and the old `experimentalDecorators` flag are **no longer used**.
+- **Further Reading:** For a deep dive into the architecture, see the "Decorators & Separation of Concerns" section in `ARCHITECTURE.md`.
+
 ### Dependency Import Rules
 
 A common source of errors in this repository is incorrectly importing dependencies that have complex or inconsistent ESM/CJS dual-exports. To avoid this, follow these rules:
@@ -144,25 +154,27 @@ This will prevent `TypeError` exceptions at runtime. The build process may not a
 
 **Integration Layer Packages:**
 
-| Package | Encapsulates | Import From |
-| :--- | :--- | :--- |
-| `@blue/util` | `ramda`, `date-fns`, `date-fns-tz`, `seedrandom`, `slug` | `@blue/util` |
-| `@blue/parser` | `arcsecond` | `@blue/parser` |
-| `@blue/model` | `objectmodel` | `@blue/model` |
+| Package        | Encapsulates                                             | Import From    |
+| :------------- | :------------------------------------------------------- | :------------- |
+| `@blue/util`   | `ramda`, `date-fns`, `date-fns-tz`, `seedrandom`, `slug` | `@blue/util`   |
+| `@blue/parser` | `arcsecond`                                              | `@blue/parser` |
+| `@blue/model`  | `objectmodel`                                            | `@blue/model`  |
 
 **Import Rules by Package Type:**
 
 1. **Integration Layer Packages** (`@blue/util`, `@blue/parser`, `@blue/model`):
-   - ✅ May import directly from their encapsulated libraries
-   - ✅ Must re-export functionality through `src/index.ts`
+
+    - ✅ May import directly from their encapsulated libraries
+    - ✅ Must re-export functionality through `src/index.ts`
 
 2. **All Other Packages** (`@blue/core`, `@blue/context`, etc.):
-   - ✅ Must import from integration layer packages
-   - ❌ Must never import directly from encapsulated libraries
+
+    - ✅ Must import from integration layer packages
+    - ❌ Must never import directly from encapsulated libraries
 
 3. **Test Files** (`*.spec.ts`, `*.test.ts`):
-   - ✅ May import external libraries for mocking purposes
-   - ✅ May import directly for test utilities (e.g., `vitest`, `jsdom`)
+    - ✅ May import external libraries for mocking purposes
+    - ✅ May import directly for test utilities (e.g., `vitest`, `jsdom`)
 
 **Code Examples:**
 
@@ -173,14 +185,14 @@ import { parseDate, formatDate } from '@blue/util';
 import { choice, sequenceOf } from '@blue/parser';
 
 // ❌ INCORRECT: Direct import bypasses integration layer
-import * as R from 'ramda';              // Wrong! Use @blue/util
-import { format } from 'date-fns';       // Wrong! Use @blue/util
-import { choice } from 'arcsecond';      // Wrong! Use @blue/parser
+import * as R from 'ramda'; // Wrong! Use @blue/util
+import { format } from 'date-fns'; // Wrong! Use @blue/util
+import { choice } from 'arcsecond'; // Wrong! Use @blue/parser
 
 // ✅ CORRECT: Test files may import for mocking
 // In test/my-service.spec.ts
 import { vi } from 'vitest';
-import * as R from 'ramda';  // OK in tests for mocking
+import * as R from 'ramda'; // OK in tests for mocking
 vi.mock('ramda');
 ```
 
@@ -188,13 +200,13 @@ vi.mock('ramda');
 
 ```typescript
 // ❌ In @blue/core/src/container.ts
-import * as R from 'ramda';  // WRONG: Not in integration layer
+import * as R from 'ramda'; // WRONG: Not in integration layer
 
 // ✅ Correct version:
 import * as R from '@blue/util';
 
 // ❌ In @blue/router/src/matcher.ts
-import { choice, sequenceOf } from 'arcsecond';  // WRONG
+import { choice, sequenceOf } from 'arcsecond'; // WRONG
 
 // ✅ Correct version:
 import { choice, sequenceOf } from '@blue/parser';
@@ -216,6 +228,15 @@ When adding new integration layers or encapsulated libraries:
 1. Update this section with the new mapping
 2. Update `ARCHITECTURE.md` "Dependency Management Strategy" section
 3. Update `CLAUDE.md` "Critical Architectural Rules" section
+
+### Decorator Naming and Conventions
+
+**Critical Rule:** All decorators must use `camelCase` to align with standard TypeScript method and function naming. PascalCase is reserved for classes and types.
+
+- ✅ **Correct:** `@routeMapping`, `@injectable`
+- ❌ **Incorrect:** `@RouteMapping`, `@Injectable`
+
+This convention is detailed in **STYLE_GUIDE.md Section 3.8**. Adherence is critical for distinguishing decorators from classes at a glance.
 
 ### Architecture & File Structure
 
@@ -246,6 +267,7 @@ When adding new integration layers or encapsulated libraries:
 When organizing helper functions and utilities, follow the extraction hierarchy:
 
 **Decision Tree:**
+
 1. **1 file uses** → Keep inline (regexes, functional constants)
 2. **3+ files (same category)** → Extract to dedicated file (e.g., `remove-non-word.ts`)
 3. **4+ files (cross-category)** → Add to internal file (e.g., `_util.ts`, `_validators.ts`)
@@ -256,6 +278,7 @@ When organizing helper functions and utilities, follow the extraction hierarchy:
 > Decision rule: If deleting all re-export lines leaves an empty file, don't create it.
 
 **Internal File Naming:**
+
 - `_util.ts` - Mixed-purpose utilities (often with `@blue/util` re-exports)
 - `_<domain>.ts` - Domain-specific collections (e.g., `_validators.ts`, `_parsers.ts`)
 - `_<algorithm>.ts` - Specific implementations (e.g., `_natural-sort.ts`)
@@ -263,11 +286,13 @@ When organizing helper functions and utilities, follow the extraction hierarchy:
 **Example: Node.js uses descriptive names** like `_http_agent.js`, `_http_common.js` rather than generic `_util.js` for everything.
 
 **File Size Targets:**
+
 - **Ideal:** 20-150 lines (median: 61 lines)
 - **Review:** >200 lines with multiple responsibilities
 - **Refactor:** >300 lines (likely violates SRP)
 
 **Acceptable Large Files:**
+
 - Constant collections (e.g., `http-headers.ts`: 725 lines, 124 constants)
 - Complex classes with single responsibility
 - Framework integration modules
@@ -281,11 +306,13 @@ When organizing helper functions and utilities, follow the extraction hierarchy:
 **Important:** Creating internal files is an **ongoing guideline**, not a discrete task to execute.
 
 ❌ **Do NOT:**
+
 - Proactively scan packages for 4-file duplication patterns
 - Create internal files "just in case"
 - Extract utilities before they're actually duplicated
 
 ✅ **DO:**
+
 - Create internal files when you naturally discover duplication during development
 - Follow thresholds: 4+ files for cross-category utilities within a package
 - Use appropriate naming: `_util.ts` (mixed), `_validators.ts` (domain), `_natural-sort.ts` (algorithm)
@@ -324,11 +351,13 @@ docs/
 **Naming Convention:** `YYYY-MM-DD_DESCRIPTION.md`
 
 Where:
+
 - `YYYY-MM-DD` - ISO 8601 date (creation or last major update)
 - `_` - Underscore separator (consistent with UPPER_SNAKE_CASE for constants)
 - `DESCRIPTION` - Brief description in ALL_CAPS with underscores for multi-word phrases
 
 **Examples:**
+
 - ✅ `2025-01-23_DEPENDENCIES.md`
 - ✅ `2025-02-01_DEPENDENCY_AUDIT.md`
 - ✅ `2025-01-30_PARSER_ENHANCEMENT.md`
@@ -338,21 +367,25 @@ Where:
 ### When Creating New Documentation
 
 **Migration Guides** (`docs/migrations/`):
+
 - Document breaking changes
 - Provide upgrade paths
 - Include before/after examples
 
 **Implementation Plans** (`docs/plans/`):
+
 - Detail technical specifications
 - Outline implementation steps
 - Include testing strategy
 
 **Audit Reports** (`docs/audits/`):
+
 - Analyze codebase patterns
 - Identify violations or inconsistencies
 - Recommend improvements
 
 **Reference Docs** (`docs/reference/`):
+
 - Document dependency versions
 - Provide configuration references
 - Include comparison tables

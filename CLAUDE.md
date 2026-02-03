@@ -30,12 +30,12 @@ These rules are **non-negotiable** and must be followed in all code changes:
 
 ```typescript
 // ✅ CORRECT
-import * as R from '@blue/util';           // Use integration layer
-import { parseDate } from '@blue/util';    // Use integration layer
+import * as R from '@blue/util'; // Use integration layer
+import { parseDate } from '@blue/util'; // Use integration layer
 
 // ❌ WRONG
-import * as R from 'ramda';                // Direct import forbidden
-import { format } from 'date-fns';         // Direct import forbidden
+import * as R from 'ramda'; // Direct import forbidden
+import { format } from 'date-fns'; // Direct import forbidden
 ```
 
 **Exception:** Test files (`*.spec.ts`) may import external libraries for mocking.
@@ -61,6 +61,7 @@ module.exports = { baz: 42 };
 ### 3. Internal Module Convention
 
 **Rule:** Files prefixed with underscore (`_*.ts`) are internal and must never be:
+
 - Exported in `src/index.ts`
 - Imported across package boundaries
 
@@ -69,7 +70,7 @@ module.exports = { baz: 42 };
 import { helper } from './_util.js';
 
 // ❌ WRONG (cross-package)
-import { helper } from '@blue/core/_util';  // Never import underscore files
+import { helper } from '@blue/core/_util'; // Never import underscore files
 ```
 
 ## Overview
@@ -302,7 +303,8 @@ Follow the conventions defined in the main README:
 - Target: ES2022 (supports private class fields with `#field` syntax)
 - Module: ESNext (with ESM output)
 - Module Resolution: Bundler
-- Decorators enabled (`experimentalDecorators`, `emitDecoratorMetadata`)
+- TC39 Stage 3 Decorators enabled (legacy `experimentalDecorators` disabled)
+- Uses `@tsmetadata/polyfill` for Symbol.metadata support
 - Source maps: inline
 - Declaration files and maps generated
 - Skip lib check: enabled for faster builds
@@ -311,13 +313,23 @@ Follow the conventions defined in the main README:
 
 ## Architecture Patterns
 
-### Dependency Injection
+### Decorators & Dependency Injection
 
-The framework uses decorators and reflect-metadata (v0.2.2) for dependency injection through the blue-context package. Many packages declare `reflect-metadata` as a peer dependency. The following packages include reflect-metadata:
+The framework uses TC39 Stage 3 decorators for dependency injection, request routing, lifecycle management, validation, and view resolution. Decorators store metadata using `Symbol.metadata` with the `@tsmetadata/polyfill` for cross-platform compatibility.
 
-- blue-factory (dependency)
-- blue-context (peer dependency)
-- blue-dispatcher (peer dependency)
+**Key Decorator Categories:**
+
+- **Configuration & DI:** `@configuration`, `@entry`, `@property`, `@propertySource`, `@profile`
+- **Request Routing:** `@routeMapping`, `@errorMapping`, `@errorHandler`
+- **Lifecycle Management:** `@scope`, `@singletonScope`, `@prototypeScope`, `@hashScope`
+- **Validation:** `@pattern`
+- **View Resolution:** `@viewMapping`, `@tagMapping`
+
+**Decorator Naming:** All decorators use `camelCase` naming (e.g., `@routeMapping`, not `@RouteMapping`). See STYLE_GUIDE.md Section 3.8.
+
+**Metadata System:** The `@blue/dispatcher` package includes `MetadataManager` for efficient metadata caching and retrieval using `Symbol.metadata`.
+
+**For architectural details:** See ARCHITECTURE.md "Decorators & Separation of Concerns" section.
 
 ### Dual Module Format
 
@@ -349,7 +361,7 @@ All packages use centralized build scripts in `bin/` rather than duplicating log
 
 **blue-factory and others:**
 
-- `reflect-metadata`: ~0.2.2 (decorator metadata support)
+- `@tsmetadata/polyfill`: Latest (TC39 Symbol.metadata polyfill for decorator support)
 
 ### Development Dependencies (Root)
 
@@ -387,7 +399,7 @@ All packages use centralized build scripts in `bin/` rather than duplicating log
 
 **slug v11:** API updates from v8. Check migration guide if using advanced features.
 
-**reflect-metadata v0.2:** Minimal breaking changes. Decorator metadata API remains stable.
+**TC39 Decorator Migration (February 2025):** Migrated from legacy TypeScript decorators to TC39 Stage 3 standard. All 16 decorators across 5 packages updated. Replaced `reflect-metadata` with `@tsmetadata/polyfill`. See `docs/plans/2025-02-01_DECORATOR_MIGRATION.md` for details.
 
 **ESLint v9:** Requires flat config format (`eslint.config.mjs`). The old `.eslintrc.js` format is no longer supported.
 

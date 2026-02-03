@@ -34,8 +34,7 @@
     "@blue/factory": "~3.0.0-alpha",
     "@blue/logger": "~3.0.0-alpha",
     "@blue/parser": "~3.0.0-alpha",
-    "@blue/util": "~3.0.0-alpha",
-    "reflect-metadata": "0.2.2"
+    "@blue/util": "~3.0.0-alpha"
   },
   "peerDependencies": {
     "@blue/content": "~3.0.0-alpha",
@@ -43,7 +42,6 @@
     "@blue/factory": "~3.0.0-alpha",
     "@blue/logger": "~3.0.0-alpha",
     "@blue/parser": "~3.0.0-alpha",
-    "@blue/util": "~3.0.0-alpha",
-    "reflect-metadata": "0.2.2"
+    "@blue/util": "~3.0.0-alpha"
   }
 }

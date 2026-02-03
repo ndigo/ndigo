@@ -39,8 +39,7 @@
     "@blue/parser": "~3.0.0-alpha",
     "@blue/router": "~3.0.0-alpha",
     "@blue/util": "~3.0.0-alpha",
-    "@blue/view": "~3.0.0-alpha",
-    "reflect-metadata": "0.2.2"
+    "@blue/view": "~3.0.0-alpha"
   },
   "peerDependencies": {
     "@blue/context": "~3.0.0-alpha",
@@ -52,7 +51,6 @@
     "@blue/router": "~3.0.0-alpha",
     "@blue/util": "~3.0.0-alpha",
     "@blue/view": "~3.0.0-alpha",
-    "reflect-metadata": "0.2.2",
     "@opentelemetry/sdk-logs": "~0.211.0",
     "@opentelemetry/core": "~1.9.1"
   }

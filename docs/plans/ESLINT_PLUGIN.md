@@ -513,7 +513,47 @@ This rule [description].
 [edge cases where rule should be disabled]
 ```
 
-**4.2: Update Plugin README**
+**4.2: Additional Enforcement Mechanisms**
+
+Beyond ESLint rules, implement complementary validation mechanisms:
+
+**Pre-commit Hook:**
+
+```bash
+#!/bin/bash
+# Fail if underscore files are exported in index.ts
+if grep -r "from '\.\/_" packages/*/src/index.ts; then
+  echo "Error: Internal files (_*.ts) should not be exported in index.ts"
+  exit 1
+fi
+```
+
+**Package.json Exports Field:**
+
+```json
+{
+  "exports": {
+    ".": "./lib/index.js",
+    "./package.json": "./package.json"
+    // Explicitly omit lib/_*.js from exports
+  }
+}
+```
+
+**Periodic Validation Script:**
+
+```bash
+#!/bin/bash
+# Find all internal files and verify they contain local utilities
+find packages -name "_*.ts" -path "*/src/*" | while read file; do
+  echo "Checking: $file"
+  # Could integrate with custom validation logic
+done
+```
+
+**Reference:** `docs/plans/2025-02-01_UTILITY_ORGANIZATION.md` lines 277-313
+
+**4.3: Update Plugin README**
 
 **File:** `packages/blue-eslint-plugin/README.md`
 
@@ -524,13 +564,13 @@ Include:
 - Configuration options
 - Troubleshooting
 
-**4.3: Update Project Documentation**
+**4.4: Update Project Documentation**
 
 Update the following files to mention ESLint enforcement:
 
 - `AGENTS.md` - Section 4 (Library Integration Layer)
 - `ARCHITECTURE.md` - Dependency Management Strategy
-- `docs/plans/2025-02-01_UTILITY_ORGANIZATION.md` - Phase 4 validation section
+- This plan replaces validation mechanisms from `docs/plans/2025-02-01_UTILITY_ORGANIZATION.md`
 
 ---
 

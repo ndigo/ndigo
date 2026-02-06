@@ -28,10 +28,12 @@
   "license": "ISC",
   "devDependencies": {
     "@blue/core": "~3.0.0-alpha",
+    "@blue/http": "~3.0.0-alpha",
     "@blue/util": "~3.0.0-alpha"
   },
   "peerDependencies": {
     "@blue/core": "~3.0.0-alpha",
+    "@blue/http": "~3.0.0-alpha",
     "@blue/util": "~3.0.0-alpha"
   }
 }

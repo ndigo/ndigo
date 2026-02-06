@@ -396,6 +396,9 @@ importers:
       '@blue/core':
         specifier: ~3.0.0-alpha
         version: link:../blue-core
+      '@blue/http':
+        specifier: ~3.0.0-alpha
+        version: link:../blue-http
       '@blue/util':
         specifier: ~3.0.0-alpha
         version: link:../blue-util

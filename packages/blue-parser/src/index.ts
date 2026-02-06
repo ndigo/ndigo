@@ -12,6 +12,7 @@ export {
     lookAhead,
     many,
     many1,
+    possibly,
     optional,
     recursiveParser,
     regex,

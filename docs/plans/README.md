@@ -7,6 +7,9 @@ This directory contains detailed implementation plans for major features and enh
 - [2025-01-30_PARSER_ENHANCEMENT.md](./2025-01-30_PARSER_ENHANCEMENT.md) - Parser enhancement and optimization plan
 - [2025-02-01_FILE_REFACTORING.md](./2025-02-01_FILE_REFACTORING.md) - File size refactoring plan for 15 large files
 - [2025-02-03_URL_PARSING_DUPLICATION.md](./2025-02-03_URL_PARSING_DUPLICATION.md) - URL parsing code duplication resolution
+- [2025-02-06_HTTP_FEATURE_MATRIX.md](./2025-02-06_HTTP_FEATURE_MATRIX.md) - **Quick reference** - HTTP feature comparison table (start here)
+- [2025-02-06_HTTP_FEATURE_SUMMARY.md](./2025-02-06_HTTP_FEATURE_SUMMARY.md) - **Executive summary** of HTTP feature survey with implementation roadmap
+- [2025-02-06_HTTP_FEATURE_COMPARISON.md](./2025-02-06_HTTP_FEATURE_COMPARISON.md) - **Full analysis** - 150+ feature comparison (@blue/http vs Spring/Axios/Fetch)
 - [ESLINT_PLUGIN.md](./ESLINT_PLUGIN.md) - Custom ESLint plugin for architectural enforcement
 - [INTERNAL_FILE_NAMING_REVIEW.md](./INTERNAL_FILE_NAMING_REVIEW.md) - Future review of internal file naming convention
 

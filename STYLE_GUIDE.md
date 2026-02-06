@@ -350,6 +350,24 @@ export const TEXT_HTML = MediaType.for('text', 'html');
 export const IMAGE_PNG = MediaType.for('image', 'png');
 ```
 
+**Regular Expression Patterns** (primitive regex constants):
+
+```typescript
+// ✅ Correct: Regex patterns use UPPER_SNAKE_CASE
+const QUERY_KEY_PATTERN = /^[A-Za-z+:/?[\]0-9%]+/;
+const MATRIX_VALUE_PATTERN = /^[^;]*/;
+const ALPHA_REGEX = /^[a-zA-Z]+$/;
+const PERCENT_ENCODED_PATTERN = /(%[0-9A-Za-z]{2})+/g;
+
+// Used in parser combinators
+const queryKey = regex(QUERY_KEY_PATTERN).map(replacePlusWithSpace).map(decode);
+
+// ❌ Wrong: Inline patterns instead of named constants
+const queryKey = regex(/^[A-Za-z+:/?[\]0-9%]+/) // Bad: inline pattern
+    .map(replacePlusWithSpace)
+    .map(decode);
+```
+
 **Functional Constants** (composed functions, still immutable):
 
 ```typescript
@@ -361,7 +379,7 @@ const specificityComparator = new SpecificityComparator();
 const upperCaseCount: Counter = pipe(toString, removeLowerCase, lengthOf);
 ```
 
-**Rationale:** Distinguishes primitive values from higher-order functions. While both are immutable, primitive constants represent data, while functional constants represent behavior.
+**Rationale:** Distinguishes primitive values (including regex patterns) from higher-order functions. While both are immutable, primitive constants represent data, while functional constants represent behavior. Regular expression patterns use `UPPER_SNAKE_CASE` to match the convention in `@blue/validate` (e.g., `ALPHA_REGEX`, `NUMERIC_REGEX`) and make them easily identifiable.
 
 ### Variables and Functions
 

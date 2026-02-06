@@ -1,8 +1,8 @@
 /**
  * @author Jeff Rose
- * @see {@link https://ramdajs.com/docs/}
  */
-
+import { JSONObject, Parser, Stringifier } from '@blue/core';
+import matrixExpression from './parsers/matrix-expression';
 import { always, comparator, curryN, pipe, T } from '@blue/util/function';
 import { filter, join, map, sort } from '@blue/util/list';
 import { cond, complement, isEmpty, isNotEmpty } from '@blue/util/logic';
@@ -39,18 +39,26 @@ const alwaysEmptyString = always(''),
     naturalComparator = comparator<any>((a, b): boolean => a < b),
     naturalSort = sort(naturalComparator),
     toMatrixString = (object): string => {
-        // @ts-ignore: ¯\_(ツ)_/¯
+        // @ts-ignore: ¯\\_(ツ)_/¯
         const encodeParams = map(encodeParam(object));
         return object ? pipe(keys, naturalSort, encodeParams, filterEmpty, joinOnSemicolon)(object) : '';
     };
 
-/**
- * Parses an object to matrix string.
- * @category Object
- * @param {Object} object
- * @returns {string}
- * @example
- * toMatrixString( { e:6, a:1, b:2, c:[ 3,4 ], d:5 } );
- * //=> "a=1;b=2;c=3,4;d=5;e=6"
- */
-export default toMatrixString;
+class MatrixString implements Parser, Stringifier {
+    parse(value: string): JSONObject {
+        const trimmed = (value || '').trim();
+        if (!trimmed || trimmed === ';') {
+            return {};
+        }
+        const parseResult = matrixExpression.run(trimmed);
+        if (!parseResult.isError) {
+            return (parseResult as { isError: false; result: JSONObject; index: number; data: string }).result;
+        }
+        return {};
+    }
+    stringify(value: any): string {
+        return toMatrixString(value);
+    }
+}
+
+export default new MatrixString();

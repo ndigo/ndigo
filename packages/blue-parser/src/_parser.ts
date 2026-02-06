@@ -19,6 +19,7 @@ export {
     lookAhead,
     many,
     many1,
+    possibly,
     recursiveParser,
     regex,
     sepBy,

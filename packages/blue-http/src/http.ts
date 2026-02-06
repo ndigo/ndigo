@@ -17,7 +17,7 @@ export type HTTPInit = RequestInit & {
 export type Fetch = (input: RequestInfo, init?: RequestInit) => Promise<Response>;
 
 export interface CompletionAwareHTTPInterceptor {
-    postComplete(request: Request, response: Response): void;
+    postComplete(request: Request, response: Response | ResponseError): void;
 }
 
 export interface ErrorAwareHTTPInterceptor {
@@ -302,7 +302,7 @@ export class MappedHTTPInterceptor
         }
     }
 
-    postComplete(request: Request, response: Response): void {
+    postComplete(request: Request, response: Response | ResponseError): void {
         const interceptor = this.#interceptor;
         if (likeCompletionAwareHTTPInterceptor(interceptor)) {
             interceptor.postComplete(request, response);
@@ -438,7 +438,7 @@ export class HTTPExecutionChain {
 
     /**
      */
-    applyPostComplete(request: Request, response: Response): void {
+    applyPostComplete(request: Request, response: Response | ResponseError): void {
         if (this.#hasCompletionAwareInterceptors) {
             const interceptors = this.#interceptors,
                 length = interceptors.length;
@@ -582,7 +582,7 @@ export class HTTP {
         const settings = init === null ? assign({}, this.settings) : assign({}, this.settings, init),
             url = new URL(input, location.href);
 
-        let response: Response;
+        let response: Response | ResponseError;
 
         // No interceptors, so simplify execution
         if (!this.#interceptors.length) {
@@ -618,6 +618,11 @@ export class HTTP {
             } finally {
                 chain.applyPostComplete(request, response);
             }
+        }
+
+        // Ensure we only return Response, not ResponseError
+        if (response instanceof ResponseError) {
+            return new Response(null, { status: 500, statusText: 'Internal Server Error' });
         }
 
         return response;

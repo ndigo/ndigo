@@ -13,14 +13,16 @@ import type { Parser } from '@blue/parser';
 import { char, everyCharUntil, regex, sepBy, sequenceOf, str, takeRight } from '@blue/parser';
 import { fromPairs } from '@blue/util/list';
 
-const validCharacters = /^[^;,\s]*/,
-    percentEncoded = /(%[0-9A-Za-z]{2})+/g,
-    percentDecode = (value: string): string => value.replace(percentEncoded, decodeURIComponent),
+const COOKIE_VALUE_PATTERN = /^[^;,\s]*/,
+    PERCENT_ENCODED_PATTERN = /(%[0-9A-Za-z]{2})+/g,
+    percentDecode = (value: string): string => value.replace(PERCENT_ENCODED_PATTERN, decodeURIComponent),
     equalsSign = char('='),
+    // Parse a single cookie as key-value pair
     cookie = sequenceOf([
         everyCharUntil(equalsSign).map(percentDecode),
-        takeRight(equalsSign)(regex(validCharacters)).map(percentDecode),
+        takeRight(equalsSign)(regex(COOKIE_VALUE_PATTERN)).map(percentDecode),
     ]),
+    // Parse multiple cookies separated by semicolon-space
     cookies = sepBy(str('; '))(cookie).map(fromPairs as any);
 
 export default cookies;

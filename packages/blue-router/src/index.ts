@@ -8,7 +8,13 @@ export * from './route';
 export * from './router';
 export * from './path-route';
 export { default as HashRouter } from './hash-router';
-export { default as fromMatrixString } from './from-matrix-string';
-export { default as fromQueryString } from './from-query-string';
-export { default as toMatrixString } from './to-matrix-string';
-export { default as toQueryString } from './to-query-string';
+// Re-export from @blue/http for backward compatibility
+import { QueryString, MatrixString } from '@blue/http';
+
+export const fromQueryString = QueryString.parse.bind(QueryString);
+export const toQueryString = QueryString.stringify.bind(QueryString);
+export const fromMatrixString = MatrixString.parse.bind(MatrixString);
+export const toMatrixString = MatrixString.stringify.bind(MatrixString);
+
+// Also export the classes directly
+export { QueryString, MatrixString };

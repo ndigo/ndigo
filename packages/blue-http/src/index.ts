@@ -69,3 +69,5 @@ export * from './interceptors';
 export * from './response-status';
 export { HTTPHeaders };
 export { ResponseStatuses };
+export { default as QueryString } from './query-string';
+export { default as MatrixString } from './matrix-string';

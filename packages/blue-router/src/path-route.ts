@@ -7,10 +7,7 @@ import { keys } from '@blue/util/object';
 import { max } from '@blue/util/relation';
 import { replace, split, trim } from '@blue/util/string';
 import { isNil } from '@blue/util/types';
-import fromMatrixString from './from-matrix-string';
-import toMatrixString from './to-matrix-string';
-import toQueryString from './to-query-string';
-import fromQueryString from './from-query-string';
+import { QueryString, MatrixString } from '@blue/http';
 
 const questionMark = '?',
     semicolon = ';',
@@ -76,13 +73,13 @@ export class PathRouteSegment implements RouteSegment, Serializable {
                 });
             } else {
                 defineProperty(this, 'data', {
-                    value: fromMatrixString(dataString),
+                    value: MatrixString.parse(dataString),
                     configurable: true,
                     enumerable: false,
                     writable: false,
                 });
                 defineProperty(this, 'dataString', {
-                    value: toMatrixString(this.data),
+                    value: MatrixString.stringify(this.data),
                     configurable: true,
                     enumerable: false,
                     writable: false,
@@ -115,7 +112,7 @@ export class PathRouteSegment implements RouteSegment, Serializable {
 
     toString(): string {
         const { data, dataString, name } = this,
-            matrixString = data && !dataString ? toMatrixString(data) : dataString;
+            matrixString = data && !dataString ? MatrixString.stringify(data) : dataString;
         return matrixString ? `${name}${semicolon}${matrixString}` : name;
     }
 }
@@ -136,7 +133,7 @@ export class PathRoute implements Route, Serializable {
     get length(): number {
         const keysArray = keys(this) as readonly string[];
         const indices = map(parseInt)(keysArray);
-        const maxIndex = reduce<number, number>(max, -1)(indices);
+        const maxIndex = reduce(max, -1)(indices) as number;
         return maxIndex + 1;
         /*
         return Object.keys( this ).reduce( function( maxIndex: number, key: string ){
@@ -190,13 +187,13 @@ export class PathRoute implements Route, Serializable {
 
         if (queryString) {
             defineProperty(this, 'data', {
-                value: fromQueryString(queryString),
+                value: QueryString.parse(queryString),
                 configurable: true,
                 enumerable: false,
                 writable: false,
             });
             defineProperty(this, 'dataString', {
-                value: toQueryString(this.data),
+                value: QueryString.stringify(this.data),
                 configurable: true,
                 enumerable: false,
                 writable: false,
@@ -236,7 +233,7 @@ export class PathRoute implements Route, Serializable {
     toString(): string {
         const { data, dataString, length } = this,
             segments: string[] = [],
-            queryString = data && !dataString ? toQueryString(data) : dataString;
+            queryString = data && !dataString ? QueryString.stringify(data) : dataString;
         let index = 0,
             output = '';
 

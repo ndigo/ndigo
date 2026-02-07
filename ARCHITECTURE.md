@@ -823,6 +823,38 @@ The framework is organized into 7 distinct layers of increasing abstraction:
 | **1: Support**     | `@blue/parser`, `@blue/router`, `@blue/validate` | Schema parsing, Routing logic, and Validation            | `RequestMapping` / `Validator` |
 | **0: Foundation**  | `@blue/util`, `@blue/print`                      | Low-level utilities (Ramda/date-fns) and Terminal output | Commons / Core Utils           |
 
+### Architecture Overview
+
+The following diagram illustrates the dependency flow between architectural layers:
+
+```mermaid
+graph TD
+    App[6: Application Layer<br/>@blue/demo]
+    Int[5: Integration Layer<br/>@blue/orm, @blue/auth]
+    Disp[4: Dispatch Layer<br/>@blue/dispatcher]
+    Comp[3: Component Layer<br/>@blue/controller]
+    Core[2: Core Layer<br/>@blue/core]
+    Supp[1: Support Layer<br/>@blue/parser, @blue/router, @blue/validate]
+    Found[0: Foundation Layer<br/>@blue/util, @blue/print]
+
+    App --> Int
+    Int --> Disp
+    Disp --> Comp
+    Comp --> Core
+    Core --> Supp
+    Supp --> Found
+
+    style App fill:#e1f5ff
+    style Int fill:#fff4e1
+    style Disp fill:#f5e1ff
+    style Comp fill:#e1ffe5
+    style Core fill:#ffe1e1
+    style Supp fill:#fff9e1
+    style Found fill:#e1f0ff
+```
+
+**Key Principle:** Higher layers depend on lower layers, never the reverse.
+
 ## Dependency Management Strategy
 
 ### Library Integration Layer Pattern

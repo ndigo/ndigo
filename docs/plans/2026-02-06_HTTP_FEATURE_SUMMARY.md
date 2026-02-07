@@ -1,8 +1,8 @@
 # HTTP Feature Survey - Executive Summary
 
-**Date:** 2025-02-06  
-**Status:** Research Complete  
-**Full Document:** [2025-02-06_HTTP_FEATURE_COMPARISON.md](./2025-02-06_HTTP_FEATURE_COMPARISON.md)
+**Date:** 2026-02-06  
+**Status:** Research Complete, `baseURL` Implemented, Further Implementation Pending  
+**Full Document:** [2026-02-06_HTTP_FEATURE_COMPARISON.md](./2026-02-06_HTTP_FEATURE_COMPARISON.md)
 
 ---
 
@@ -12,6 +12,7 @@ Comprehensive comparison of **@blue/http** against:
 - **Spring Framework RestClient** (Java enterprise standard, inspiration source)
 - **Axios** (JavaScript ecosystem leader)
 - **Fetch API** (Web standard, foundation layer)
+- **Node.js http/https** (Native Node.js modules for low-level control)
 
 **Total Features Analyzed:** 150+ across 16 categories
 
@@ -37,6 +38,8 @@ Comprehensive comparison of **@blue/http** against:
 
 7. **Built on Fetch API** - Leverages native browser/Node.js APIs
 
+8. **Base URL Configuration** - Now supported for resolving relative URLs.
+
 ### Critical Gaps ❌
 
 **High Priority (Must Have):**
@@ -47,15 +50,17 @@ Comprehensive comparison of **@blue/http** against:
 4. ❌ **XSRF Protection** - No automatic CSRF token handling (Browser)
 5. ❌ **Progress Tracking** - No upload/download progress callbacks (Browser)
 6. ❌ **Basic Auth Helper** - No convenience method for HTTP Basic auth
+7. ❌ **Node.js Connection Pooling** - No native `http.Agent`/`https.Agent` integration (Node)
+8. ❌ **Node.js Client Certificates** - No native client certificate support (Node)
 
 **Medium Priority (Should Have):**
 
-7. ❌ **Custom Validate Status** - No `validateStatus: (status) => boolean`
-8. ❌ **Interceptor Management** - Cannot remove interceptors at runtime
-9. ❌ **Form Shortcuts** - No `postForm()`, `putForm()` methods
-10. ❌ **Proxy Support** - No Node.js proxy configuration (Node)
-11. ❌ **Error Categorization** - Limited error type discrimination
-12. ❌ **Range Request Helper** - No byte range convenience API
+9. ❌ **Custom Validate Status** - No `validateStatus: (status) => boolean`
+10. ❌ **Interceptor Management** - Cannot remove interceptors at runtime
+11. ❌ **Form Shortcuts** - No `postForm()`, `putForm()` methods
+12. ❌ **Node.js Proxy Support** - No native proxy configuration (Node)
+13. ❌ **Error Categorization** - Limited error type discrimination
+14. ❌ **Range Request Helper** - No byte range convenience API
 
 ---
 
@@ -63,7 +68,15 @@ Comprehensive comparison of **@blue/http** against:
 
 ### Phase 1: Foundation (Weeks 1-2)
 
-**1. Instance System with Config Defaults**
+1. ✅ **Base URL Configuration (Implemented)**
+   ```typescript
+   const api = new HTTP([], { baseURL: 'https://api.example.com/' });
+   api.get('users'); // Resolves to https://api.example.com/users
+   ```
+   - **Complexity:** Low
+   - **Impact:** Critical for ergonomic URL handling
+
+2. **Instance System with Config Defaults**
 ```typescript
 const api = HTTP.create({
     baseURL: 'https://api.example.com',
@@ -75,7 +88,11 @@ const api = HTTP.create({
 - **Impact:** Foundation for all other features
 - **Alignment:** Axios mental model, Spring builder pattern
 
-**2. Query Params Config**
+---
+
+### Phase 2: Request/Response Enhancement (Weeks 3-4)
+
+3. **Query Params Config**
 ```typescript
 api.get('/search', {
     params: { q: 'typescript', page: 1 }
@@ -86,11 +103,7 @@ api.get('/search', {
 - **Impact:** Major DX improvement
 - **Alignment:** Axios API
 
----
-
-### Phase 2: Request/Response Enhancement (Weeks 3-4)
-
-**3. Transform Pipeline**
+4. **Transform Pipeline**
 ```typescript
 const api = HTTP.create({
     transformRequest: [(data) => ({ ...data, timestamp: Date.now() })],
@@ -101,7 +114,7 @@ const api = HTTP.create({
 - **Impact:** Composable data transformations
 - **Alignment:** Axios pattern
 
-**6. HTTP Basic Auth Helper**
+5. **HTTP Basic Auth Helper**
 ```typescript
 api.get('/protected', {
     auth: { username: 'user', password: 'pass' }
@@ -115,7 +128,7 @@ api.get('/protected', {
 
 ### Phase 3: Browser Features (Weeks 5-6)
 
-**4. XSRF Protection** 🔵 Browser-only
+6. **XSRF Protection** 🔵 Browser-only
 ```typescript
 const api = HTTP.create({
     xsrfCookieName: 'XSRF-TOKEN',
@@ -126,7 +139,7 @@ const api = HTTP.create({
 - **Impact:** Critical security feature
 - **Implementation:** Built-in interceptor
 
-**5. Progress Tracking** 🔵 Browser-only
+7. **Progress Tracking** 🔵 Browser-only
 ```typescript
 api.post('/upload', formData, {
     onUploadProgress: (event) => {
@@ -142,12 +155,14 @@ api.post('/upload', formData, {
 
 ### Phase 4: Polish & Node.js (Weeks 7-8)
 
-**7. Custom Validate Status**
-**8. Interceptor Management**
-**9. Form Shortcuts**
-**10. Node.js Proxy Support** 🟣 Node-only
-**11. Error Categorization**
-**12. Range Request Helper**
+8. **Custom Validate Status**
+9. **Interceptor Management**
+10. **Form Shortcuts**
+11. **Node.js Proxy Support** 🟣 Node-only
+12. **Error Categorization**
+13. **Range Request Helper**
+14. **Node.js Connection Pooling** 🟣 Node-only
+15. **Node.js Client Certificates** 🟣 Node-only
 
 ---
 
@@ -164,6 +179,12 @@ api.post('/upload', formData, {
 - Proxy configuration
 - Custom HTTP agents
 - Socket path support
+- Connection pooling
+- Client certificates
+- Custom DNS resolution
+- TLS session resumption
+- Native streaming integration
+- Max content/body length
 
 **Detection Strategy:**
 ```typescript
@@ -333,7 +354,7 @@ Migration guide for developers coming from Axios:
 
 ## Related Documents
 
-- **Full Analysis:** [2025-02-06_HTTP_FEATURE_COMPARISON.md](./2025-02-06_HTTP_FEATURE_COMPARISON.md)
+- **Full Analysis:** [2026-02-06_HTTP_FEATURE_COMPARISON.md](./2026-02-06_HTTP_FEATURE_COMPARISON.md)
 - **Spring Research Plan:** (Reference to research plan document)
 - **ARCHITECTURE.md:** HTTP Client Architecture section
 - **@blue/http README:** Package documentation
@@ -353,4 +374,4 @@ Migration guide for developers coming from Axios:
 
 **End of Executive Summary**
 
-For detailed feature-by-feature comparison, implementation details, code examples, and API design proposals, see the full document: [2025-02-06_HTTP_FEATURE_COMPARISON.md](./2025-02-06_HTTP_FEATURE_COMPARISON.md)
+For detailed feature-by-feature comparison, implementation details, code examples, and API design proposals, see the full document: [2026-02-06_HTTP_FEATURE_COMPARISON.md](./2026-02-06_HTTP_FEATURE_COMPARISON.md)

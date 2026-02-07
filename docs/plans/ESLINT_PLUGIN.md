@@ -1,6 +1,6 @@
 # ESLint Plugin Implementation Plan
 
-**Date:** February 1, 2025  
+**Date:** February 1, 2026  
 **Status:** Planning - Not Started  
 **Priority:** Medium  
 **Package:** `@blue/eslint-plugin`
@@ -36,7 +36,7 @@ Provide automated enforcement of architectural constraints to prevent common vio
 
 **Problem:** Developers accidentally import encapsulated libraries directly instead of through their integration layer packages.
 
-**Reference:** `docs/audits/2025-02-01_DEPENDENCY_AUDIT.md` lines 248-295
+**Reference:** `docs/audits/2026-02-01_DEPENDENCY_AUDIT.md` lines 248-295
 
 **Violations to Prevent:**
 
@@ -86,7 +86,7 @@ import { Model } from '@blue/model';
 
 **Problem:** Developers import internal (`_*.ts`) files across package boundaries, exposing implementation details.
 
-**Reference:** `docs/plans/2025-02-01_UTILITY_ORGANIZATION.md` lines 256-269
+**Reference:** `docs/plans/2026-02-01_UTILITY_ORGANIZATION.md` lines 256-269
 
 **Violations to Prevent:**
 
@@ -141,7 +141,7 @@ import { parseQuery } from '@blue/parser';
 
 **Problem:** Developers accidentally export internal files in `index.ts`, making them part of the public API.
 
-**Reference:** `docs/plans/2025-02-01_UTILITY_ORGANIZATION.md` lines 271-279
+**Reference:** `docs/plans/2026-02-01_UTILITY_ORGANIZATION.md` lines 271-279
 
 **Violations to Prevent:**
 
@@ -551,7 +551,7 @@ find packages -name "_*.ts" -path "*/src/*" | while read file; do
 done
 ```
 
-**Reference:** `docs/plans/2025-02-01_UTILITY_ORGANIZATION.md` lines 277-313
+**Reference:** `docs/plans/2026-02-01_UTILITY_ORGANIZATION.md` lines 277-313
 
 **4.3: Update Plugin README**
 
@@ -570,7 +570,7 @@ Update the following files to mention ESLint enforcement:
 
 - `AGENTS.md` - Section 4 (Library Integration Layer)
 - `ARCHITECTURE.md` - Dependency Management Strategy
-- This plan replaces validation mechanisms from `docs/plans/2025-02-01_UTILITY_ORGANIZATION.md`
+- This plan replaces validation mechanisms from `docs/plans/2026-02-01_UTILITY_ORGANIZATION.md`
 
 ---
 
@@ -821,8 +821,8 @@ For each rule, test:
 ## References
 
 - **Library Integration Layer:** `AGENTS.md` Section 4, `ARCHITECTURE.md`
-- **Internal Files:** `docs/plans/2025-02-01_UTILITY_ORGANIZATION.md`
-- **Dependency Audit:** `docs/audits/2025-02-01_DEPENDENCY_AUDIT.md` lines 248-295
+- **Internal Files:** `docs/plans/2026-02-01_UTILITY_ORGANIZATION.md`
+- **Dependency Audit:** `docs/audits/2026-02-01_DEPENDENCY_AUDIT.md` lines 248-295
 - **ESLint Plugin Guide:** https://eslint.org/docs/latest/extend/custom-rules
 - **TypeScript ESLint:** https://typescript-eslint.io/developers/custom-rules
 

@@ -4,13 +4,13 @@ This directory contains migration guides documenting breaking changes and upgrad
 
 ## Available Migrations
 
-- [2025-01-23_DEPENDENCIES.md](./2025-01-23_DEPENDENCIES.md) - Dependency modernization (Ramda, date-fns, etc.)
-- [2025-01-23_PRETTIER.md](./2025-01-23_PRETTIER.md) - Prettier code formatting setup
-- [2025-01-23_TOOLING.md](./2025-01-23_TOOLING.md) - Tooling migration (Yarn→pnpm, Lerna→Nx, Jest→Vitest)
-- [2025-01-23_VITE.md](./2025-01-23_VITE.md) - Build tool migration (webpack→Vite)
-- [2025-01-27_DOCS.md](./2025-01-27_DOCS.md) - Documentation generation setup
-- [2025-01-27_NPMRC.md](./2025-01-27_NPMRC.md) - pnpm configuration optimization
-- [2025-01-28_ESM_ONLY.md](./2025-01-28_ESM_ONLY.md) - ESM-only module system migration
+- [2026-01-23_DEPENDENCIES.md](./2026-01-23_DEPENDENCIES.md) - Dependency modernization (Ramda, date-fns, etc.)
+- [2026-01-23_PRETTIER.md](./2026-01-23_PRETTIER.md) - Prettier code formatting setup
+- [2026-01-23_TOOLING.md](./2026-01-23_TOOLING.md) - Tooling migration (Yarn→pnpm, Lerna→Nx, Jest→Vitest)
+- [2026-01-23_VITE.md](./2026-01-23_VITE.md) - Build tool migration (webpack→Vite)
+- [2026-01-27_DOCS.md](./2026-01-27_DOCS.md) - Documentation generation setup
+- [2026-01-27_NPMRC.md](./2026-01-27_NPMRC.md) - pnpm configuration optimization
+- [2026-01-28_ESM_ONLY.md](./2026-01-28_ESM_ONLY.md) - ESM-only module system migration
 
 ## Naming Convention
 

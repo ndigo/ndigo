@@ -2,7 +2,7 @@
  * @author Jeff Rose
  */
 
-import { AbstractBatchAppender, Entry } from '@blue/logger';
+import { AbstractBatchAppender, Entry, JSONLayout, BatchLayout } from '@blue/logger';
 import { TimeoutInit, HTTPAware, HTTP, HTTPHeaders } from '@blue/http';
 import { $aware } from '@blue/factory';
 
@@ -17,6 +17,7 @@ const { CONTENT_LENGTH, CONTENT_TYPE } = HTTPHeaders,
     };
 
 export class HTTPAppender extends AbstractBatchAppender implements HTTPAware {
+    layout: BatchLayout;
     #http: HTTP;
     appending: Promise<Response>;
     readonly url: string;
@@ -28,6 +29,7 @@ export class HTTPAppender extends AbstractBatchAppender implements HTTPAware {
 
     constructor(url: string, init: HTTPAppenderInit = defaults) {
         super();
+        this.layout = new JSONLayout();
         this.appending = Promise.resolve(null);
 
         defineProperty(this, 'url', {

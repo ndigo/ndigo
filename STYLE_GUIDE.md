@@ -614,6 +614,973 @@ class UserProfileView { }
 
 **Rationale:** Decorators are functions that modify classes, methods, fields, or parameters. Following standard function naming conventions (camelCase) maintains consistency with JavaScript/TypeScript ecosystem patterns and TC39 decorator standards.
 
+### 3.9. Acronym Casing [CONVENTION: Code Review]
+
+**Pattern:** Consistent casing for acronyms across all contexts
+
+Acronyms must use **consistent casing**: all-uppercase in type names (classes/interfaces), and all-lowercase OR all-uppercase in identifiers (variables/parameters/functions). Never use mixed-case acronyms like `Http`, `Json`, or `Xml`.
+
+**Type Names (Classes/Interfaces/Types):**
+
+```typescript
+// ✅ Correct: All-uppercase acronyms in types
+class HTTPTransformer {}
+interface JSONParser {}
+type XMLDocument = string;
+class URLBuilder {}
+interface APIClient {}
+class HTMLRenderer {}
+interface DTOMapper {}
+
+// Real examples from @blue/http
+export class HTTP {}
+export interface HTTPConfig {}
+export interface HTTPInterceptor {}
+export class HTTPAppender {}
+export interface JSONObject {}
+export interface JSONArray {}
+export class XMLLayout {}
+export class URLResource<T> {}
+
+// ❌ Wrong: Mixed-case acronyms
+class HttpTransformer {} // Should be HTTPTransformer
+interface JsonParser {} // Should be JSONParser
+type XmlDocument = string; // Should be XMLDocument
+class UrlBuilder {} // Should be URLBuilder
+```
+
+**Variable Names (camelCase):**
+
+```typescript
+// ✅ Correct: All-lowercase acronyms at start, all-uppercase in middle/end
+const httpTransformer: HTTPTransformer = new HTTPTransformer();
+const jsonParser: JSONParser = new JSONParser();
+const xmlDocument: XMLDocument = '<root></root>';
+const urlBuilder: URLBuilder = new URLBuilder();
+
+// ✅ Also correct: All-uppercase acronyms in variable names
+const myHTTPConfig: HTTPConfig = { timeout: 5000 };
+const userJSONData: JSONObject = { name: 'Alice' };
+const rawHTMLContent: string = '<div>content</div>';
+
+// Real examples from codebase
+const httpAppender: HTTPAppender = new HTTPAppender();
+const jsonLayout: JSONLayout = new JSONLayout();
+const urlResource: URLResource = new URLResource('/path');
+
+// ❌ Wrong: Mixed-case in variables
+const hTTPTransformer = ...;   // Should be httpTransformer or myHTTPTransformer
+const jSONParser = ...;        // Should be jsonParser or userJSONData
+const xMLDocument = ...;       // Should be xmlDocument or rawXMLContent
+```
+
+**Function Names (camelCase):**
+
+```typescript
+// ✅ Correct: Same rules as variables
+function parseHTTPRequest(request: Request): HTTPRequest {}
+function formatJSONResponse(data: object): JSONObject {}
+function buildURL(base: string, params: object): URL {}
+function renderHTML(template: string): HTMLElement {}
+
+// ❌ Wrong: Mixed-case in function names
+function parseHttpRequest() {} // Should be parseHTTPRequest
+function formatJsonResponse() {} // Should be formatJSONResponse
+```
+
+**Constants (UPPER_SNAKE_CASE):**
+
+```typescript
+// ✅ Correct: All-uppercase for both acronym and constant
+const HTTP_TIMEOUT = 5000;
+const JSON_MIME_TYPE = 'application/json';
+const XML_ENCODING = 'utf-8';
+const API_BASE_URL = 'https://api.example.com';
+const HTML_DOCTYPE = '<!DOCTYPE html>';
+
+// ❌ Wrong: Mixed-case in constants
+const Http_Timeout = 5000; // Should be HTTP_TIMEOUT
+const JSON_Mime_Type = '...'; // Should be JSON_MIME_TYPE
+```
+
+**Common Acronyms in BlueJS:**
+
+Examples from the codebase (not an exhaustive list):
+
+- **HTTP** - HyperText Transfer Protocol
+- **JSON** - JavaScript Object Notation
+- **XML** - eXtensible Markup Language
+- **URL** / **URI** - Uniform Resource Locator/Identifier
+- **API** - Application Programming Interface
+- **HTML** - HyperText Markup Language
+- **CSS** - Cascading Style Sheets
+- **DTO** - Data Transfer Object
+- **DAO** - Data Access Object
+- **UUID** - Universally Unique Identifier
+- **OTEL** - OpenTelemetry
+
+**Rationale:** Consistent acronym casing improves readability and prevents confusion. Modern tooling (autocomplete, minification) eliminates concerns about verbosity. The all-uppercase pattern in type names clearly identifies acronyms, while the all-lowercase or all-uppercase pattern in identifiers maintains readability.
+
+**Note:** This rule applies to ALL code contexts—classes, interfaces, types, variables, functions, parameters, and constants.
+
+### 3.10. Transducers [CONVENTION: Code Review]
+
+**Pattern:** `X*` for transformer classes, `x*` for factories (when applicable)
+
+Transducers enable composable, efficient data transformations using a three-arity protocol (`init`, `step`, `result`). BlueJS follows the naming conventions established in Clojure and Ramda.js.
+
+**Transformer Classes:**
+
+Transformer classes implement the transducer protocol and use the `X*` prefix (capital X).
+
+```typescript
+// ✅ Correct: Transformer classes use X* prefix
+class XCount<T = any> implements Transformer<number, T> {
+    ['@@transducer/init']?(): number {
+        return 0;
+    }
+
+    ['@@transducer/result']?(result: number): number {
+        return result;
+    }
+
+    ['@@transducer/step'](result: number): MaybeReduced<number> {
+        return result + 1;
+    }
+}
+
+class XToArray<T = any> implements Transformer<T[], T> {
+    ['@@transducer/step'](result: T[], input: T): MaybeReduced<T[]> {
+        result.push(input);
+        return result;
+    }
+}
+
+// Custom transducer extending base
+class XDoubleTransformer extends DelegatingTransformer {
+    ['@@transducer/step'](result: any, input: any): any {
+        return this.xf['@@transducer/step'](result, input * 2);
+    }
+}
+
+// ❌ Wrong: Missing X prefix
+class CountTransformer {} // Should be XCount
+class ToArrayTransformer {} // Should be XToArray
+class DoubleTransformer {} // Should be XDoubleTransformer
+```
+
+**Factory Functions: Two Valid Patterns**
+
+BlueJS recognizes two valid factory patterns based on whether the factory requires parameters:
+
+**Pattern 1: Three-Tier (Zero-Argument Factories)**
+
+Use for transformers that require no configuration. The intermediate factory layer improves API clarity.
+
+```typescript
+// ✅ Correct: Three-tier pattern for zero-argument factories
+class XCount<T = any> {
+    /* ... */
+}
+export const xCount = <T = any>(): Transformer<number, T> => new XCount<T>();
+export const count = () => xCount;
+
+// Usage
+const result = into([], count(), [1, 2, 3, 4]); // 4
+
+class XToArray<T = any> {
+    /* ... */
+}
+export const xToArray = <T = any>(): Transformer<T[], T> => new XToArray<T>();
+export const toArray = () => xToArray;
+
+// Usage
+const result = into([], toArray(), 'abc'); // ['a', 'b', 'c']
+```
+
+**Pattern 2: Two-Tier (Parameterized Factories)**
+
+Use for transformers that require configuration parameters. Skip the intermediate layer to avoid redundant wrapper functions.
+
+```typescript
+// ✅ Correct: Two-tier pattern for parameterized factories
+class XToMap<T, K, V> {
+    constructor(
+        private readonly _getKey: (item: T) => K,
+        private readonly _getValue: (item: T) => V
+    ) {}
+    /* ... */
+}
+
+export const toMap =
+    <T, K, V>(getKey: (item: T) => K, getValue: (item: T) => V) =>
+    (): Transformer<Map<K, V>, T> =>
+        new XToMap<T, K, V>(getKey, getValue);
+
+// Usage
+const items = [
+    { id: 1, name: 'Alice' },
+    { id: 2, name: 'Bob' },
+];
+const result = into(
+    new Map(),
+    toMap(
+        (item) => item.id,
+        (item) => item.name
+    ),
+    items
+); // Map { 1 => 'Alice', 2 => 'Bob' }
+
+// ❌ Wrong: Redundant intermediate layer for parameterized factory
+const xToMap =
+    <T, K, V>(getKey, getValue) =>
+    (): Transformer =>
+        new XToMap(getKey, getValue);
+const toMap = <T, K, V>(getKey, getValue) => xToMap(getKey, getValue); // Unnecessary!
+```
+
+**Selection Criteria:**
+
+| Factory Type        | Use Pattern | Rationale                                        |
+| :------------------ | :---------- | :----------------------------------------------- |
+| Zero-argument       | Three-tier  | Clearer API, follows Ramda/Clojure convention    |
+| Requires parameters | Two-tier    | Avoids redundant wrapper, simpler implementation |
+
+**Real Examples from `@blue/core`:**
+
+- **Three-tier:** `XCount → xCount() → count()`, `XToArray → xToArray() → toArray()`
+- **Two-tier:** `XToMap → toMap(getKey, getValue)`, `XToRecord → toRecord(getKey, getValue)`, `XToSet → toSet(initialSet?)`
+
+**Variable Naming:**
+
+Use `xf` (preferred) or `xform` for transducer variables.
+
+```typescript
+// ✅ Correct: Use xf for transducer variables
+const xf = compose(map(double), filter(isEven));
+const result = into([], xf, [1, 2, 3, 4]);
+
+class DelegatingTransformer<TResult, TComplete, TInput> {
+    readonly xf: CompletingTransformer<TResult, TComplete, TInput>;
+
+    constructor(xf: CompletingTransformer<TResult, TComplete, TInput>) {
+        this.xf = xf;
+    }
+
+    ['@@transducer/step'](result: TResult, input: TInput): MaybeReduced<TResult> {
+        return this.xf['@@transducer/step'](result, input);
+    }
+}
+
+// ✅ Acceptable: Use xform for clarity in complex contexts
+const xform = pipe(
+    filter(isValid),
+    map(normalize),
+    dedupe()
+);
+
+// ❌ Wrong: Non-standard variable names
+const transformer = compose(...);  // Use xf
+const transducer = map(double);    // Use xf
+const t = filter(isEven);          // Too cryptic, use xf
+```
+
+**Protocol Method Names:**
+
+Use `@@transducer/*` symbol-based protocol methods to ensure interoperability with the JavaScript transducer ecosystem.
+
+```typescript
+// ✅ Correct: Use protocol method names
+class XCustomTransformer implements Transformer<TResult, TInput> {
+    ['@@transducer/init']?(): TResult {
+        // Initialize accumulator
+    }
+
+    ['@@transducer/result']?(result: TResult): TResult {
+        // Finalize result (optional completion step)
+    }
+
+    ['@@transducer/step'](result: TResult, input: TInput): MaybeReduced<TResult> {
+        // Transform and accumulate
+    }
+}
+
+// ✅ Correct: Use protocol symbols for reduced values
+const reduced = {
+    ['@@transducer/reduced']: true,
+    ['@@transducer/value']: finalValue,
+};
+
+// ❌ Wrong: Non-standard method names
+class BadTransformer {
+    init() {} // Should be ['@@transducer/init']
+    step(result, input) {} // Should be ['@@transducer/step']
+    result(value) {} // Should be ['@@transducer/result']
+}
+```
+
+**Protocol Methods:**
+
+| Method                 | Purpose                                   | Required |
+| :--------------------- | :---------------------------------------- | :------- |
+| `@@transducer/init`    | Initialize the accumulator                | Optional |
+| `@@transducer/step`    | Process each input and update accumulator | Required |
+| `@@transducer/result`  | Finalize/complete the result              | Optional |
+| `@@transducer/reduced` | Mark value as reduced (early termination) | Protocol |
+| `@@transducer/value`   | Extract value from reduced result         | Protocol |
+
+**Descriptive Term Composition:**
+
+When composing transducer class names with descriptive terms:
+
+**Add Domain Context When:**
+
+- The transducer is specific to a domain package (`@blue/http`, `@blue/router`)
+- The transformation involves domain-specific concepts (query strings, routes, headers)
+
+**Omit Domain Context When:**
+
+- The transducer is generic and reusable across packages (`@blue/core`)
+- The transformation is a common operation (count, toArray, filter)
+
+**Naming Pattern:** `X[Domain][Action][Target]`
+
+```typescript
+// ✅ Generic utilities (no domain context)
+class XCount {} // Simple count operation
+class XToArray {} // Generic array conversion
+class XFilter {} // Generic filtering
+
+// ✅ Domain-specific (add context)
+class XToQueryString {} // HTTP query string conversion (in @blue/http)
+class XParseJSON {} // JSON parsing (HTTP context)
+class XToRoutePath {} // Router path conversion (in @blue/router)
+class XMatchRoute {} // Router matching operation
+
+// ✅ Protocol-specific (protocol prefix)
+class XHTTPToJSON {} // HTTP-to-JSON conversion
+class XWSMessage {} // WebSocket message handling
+
+// ❌ Wrong: Over-specified
+class XHTTPQueryStringToJSON {} // Too verbose, context clear from package
+
+// ❌ Wrong: Under-specified in domain package
+class XToString {} // Too generic in @blue/http (should be XToQueryString)
+```
+
+**Rationale:** Import paths provide package context (`@blue/http/XToQueryString`), so names only need enough specificity to be clear within their package.
+
+**Helper Functions:**
+
+Transducer helper functions use descriptive names without prefixes.
+
+```typescript
+// ✅ Correct: Descriptive helper function names
+function reduce<T>(value: T): Reduced<T> {
+    return likeReduced(value)
+        ? value
+        : {
+              ['@@transducer/reduced']: true,
+              ['@@transducer/value']: value,
+          };
+}
+
+const likeReduced = like({ '@@transducer/reduced': true }) as (value) => value is Reduced<any>;
+const likeTransformer = like({ '@@transducer/step': Function }) as (value) => value is Transformer;
+
+// ❌ Wrong: Unnecessary prefixes
+function xReduce(value) {} // Just reduce()
+function transducerLikeReduced(value) {} // Just likeReduced()
+```
+
+**Complete Example:**
+
+```typescript
+// From packages/blue-core/src/transducer.ts
+
+// Base class for delegation pattern
+export class DelegatingTransformer<TResult, TComplete, TInput>
+    implements CompletingTransformer<TResult, TComplete, TInput>
+{
+    readonly xf: CompletingTransformer<TResult, TComplete, TInput>;
+
+    constructor(xf: CompletingTransformer<TResult, TComplete, TInput>) {
+        this.xf = xf;
+    }
+
+    ['@@transducer/step'](result: TResult, input: TInput): MaybeReduced<TResult> {
+        return this.xf['@@transducer/step'](result, input);
+    }
+}
+
+// ✅ Three-tier pattern (zero-argument)
+export class XCount<T = any> implements Transformer<number, T> {
+    ['@@transducer/init']?(): number {
+        return 0;
+    }
+    ['@@transducer/result']?(result: number): number {
+        return result;
+    }
+    ['@@transducer/step'](result: number): MaybeReduced<number> {
+        return result + 1;
+    }
+}
+
+export const xCount = <T = any>(): Transformer<number, T> => new XCount<T>();
+export const count = () => xCount;
+
+// ✅ Two-tier pattern (parameterized)
+export class XToMap<T, K, V> implements Transformer<Map<K, V>, T> {
+    constructor(
+        private readonly _getKey: (item: T) => K,
+        private readonly _getValue: (item: T) => V
+    ) {}
+
+    ['@@transducer/init']?(): Map<K, V> {
+        return new Map<K, V>();
+    }
+    ['@@transducer/result']?(result: Map<K, V>): Map<K, V> {
+        return result;
+    }
+    ['@@transducer/step'](result: Map<K, V>, input: T): MaybeReduced<Map<K, V>> {
+        result.set(this._getKey(input), this._getValue(input));
+        return result;
+    }
+}
+
+export const toMap =
+    <T, K, V>(getKey: (item: T) => K, getValue: (item: T) => V) =>
+    (): Transformer<Map<K, V>, T> =>
+        new XToMap<T, K, V>(getKey, getValue);
+
+// Usage in application code
+import { into } from '@blue/util/list';
+import { compose } from '@blue/util/function';
+import { count, toArray, toMap } from '@blue/core';
+
+// Zero-argument transducers
+const total = into([], count(), [1, 2, 3, 4]); // 4
+const items = into([], toArray(), 'abc'); // ['a', 'b', 'c']
+
+// Parameterized transducers
+const users = [
+    { id: 1, name: 'Alice' },
+    { id: 2, name: 'Bob' },
+];
+const userMap = into(
+    new Map(),
+    toMap(
+        (u) => u.id,
+        (u) => u.name
+    ),
+    users
+); // Map { 1 => 'Alice', 2 => 'Bob' }
+
+// Composition
+class XDouble extends DelegatingTransformer {
+    ['@@transducer/step'](result: any, input: any): any {
+        return this.xf['@@transducer/step'](result, input * 2);
+    }
+}
+
+class XEven extends DelegatingTransformer {
+    ['@@transducer/step'](result: any, input: any): any {
+        return input % 2 === 0 ? this.xf['@@transducer/step'](result, input) : result;
+    }
+}
+
+const xDouble = (xf: any) => new XDouble(xf);
+const xEven = (xf: any) => new XEven(xf);
+
+const result = into([], compose(xEven, xDouble), [1, 2, 3, 4]); // [4, 8]
+```
+
+**See also:** [ARCHITECTURE.md Section 6](./ARCHITECTURE.md#transducers) for detailed design philosophy, composition patterns, and interoperability guidance.
+
+### 3.11. Interfaces and Abstract Classes [CONVENTION: Code Review]
+
+**Pattern:** Description-first for classes, Abstract prefix for abstract classes
+
+**Interface Naming:**
+
+Interfaces use the `[Domain][Role]` pattern to indicate their responsibility within a specific domain.
+
+```typescript
+// ✅ Correct: Interface naming with domain context
+interface HTTPTransformer {
+    transform(request: HTTPRequest): HTTPResponse;
+}
+
+interface DataTransformer {
+    transform(data: RawData): CleanData;
+}
+
+interface ViewResolver {
+    resolve(name: string): View;
+}
+
+interface RouteHandlerAdapter {
+    handle(route: Route): void;
+}
+
+// Real examples from codebase
+export interface MediaTypeFileExtensionResolver {
+    resolveFileExtensions(mediaType: MediaType): string[];
+}
+
+export interface RouteHandlerMapping {
+    getHandler(route: Route): Handler | null;
+}
+
+// ❌ Wrong: Too generic (causes import conflicts)
+interface Transformer {} // Use HTTPTransformer, DataTransformer, etc.
+interface Resolver {} // Use ViewResolver, PropertyResolver, etc.
+interface Handler {} // Use RouteHandler, ErrorHandler, etc.
+```
+
+**Concrete Class Naming:**
+
+Concrete classes implementing interfaces use the **description-first pattern**: `[Description][Role]`
+
+The description comes BEFORE the role/interface name to prevent import conflicts and provide clear semantic meaning.
+
+```typescript
+// ✅ Correct: Description BEFORE role
+class UserDataTransformer implements DataTransformer {
+    transform(data: UserRawData): User {
+        return new User(data.name, data.email);
+    }
+}
+
+class OrderDataTransformer implements DataTransformer {
+    transform(data: OrderRawData): Order {
+        return new Order(data.id, data.items);
+    }
+}
+
+class PaymentHTTPTransformer implements HTTPTransformer {
+    transform(request: HTTPRequest): HTTPResponse {
+        // Payment-specific transformation
+    }
+}
+
+// Real examples from codebase
+export class MappingMediaTypeFileExtensionResolver implements MediaTypeFileExtensionResolver {
+    // Maps media types to file extensions
+}
+
+export class ContentNegotiationViewResolver implements ViewResolver {
+    // Resolves views based on content negotiation
+}
+
+export class ControllerHandlerAdapter implements RouteHandlerAdapter {
+    // Adapts controller methods to route handlers
+}
+
+// ❌ Wrong: Role before description
+class DataTransformerUser {} // Should be UserDataTransformer
+class TransformerUserData {} // Should be UserDataTransformer
+class HandlerPaymentHTTP {} // Should be PaymentHTTPHandler
+```
+
+**Abstract Class Naming:**
+
+Abstract classes use the `Abstract` prefix followed by the description-first pattern: `Abstract[Description][Role]`
+
+```typescript
+// ✅ Correct: Abstract prefix with description-first
+abstract class AbstractUserDataTransformer implements DataTransformer {
+    // Common transformation logic for user data
+    abstract transform(data: UserRawData): User;
+
+    protected validateData(data: UserRawData): boolean {
+        return data != null && data.name && data.email;
+    }
+}
+
+abstract class AbstractHandlerMapping implements RouteHandlerMapping {
+    // Base implementation for handler mappings
+    abstract getHandler(route: Route): Handler | null;
+
+    protected logMapping(route: Route): void {
+        console.log(`Mapping route: ${route.path}`);
+    }
+}
+
+// Real examples from codebase
+export abstract class AbstractCachingViewResolver implements ViewResolver {
+    // Base class with caching logic for view resolvers
+}
+
+export abstract class AbstractPathBasedViewResolver extends AbstractCachingViewResolver {
+    // Path-based view resolution with caching
+}
+
+export abstract class AbstractHandlerMethodAdapter implements RouteHandlerAdapter {
+    // Base adapter for handler methods
+}
+
+// ❌ Wrong: No Abstract prefix (looks like concrete class)
+abstract class UserDataTransformer {} // Should be AbstractUserDataTransformer
+abstract class HandlerMapping {} // Should be AbstractHandlerMapping
+
+// ❌ Wrong: Using "Base" instead of "Abstract"
+abstract class BaseUserDataTransformer {} // Use Abstract, not Base
+```
+
+**Inheritance Chains:**
+
+When building inheritance hierarchies, maintain the description-first and Abstract prefix patterns:
+
+```typescript
+// ✅ Correct: Clear inheritance chain
+abstract class AbstractHandlerMapping implements RouteHandlerMapping {
+    abstract getHandler(route: Route): Handler | null;
+}
+
+abstract class AbstractPathHandlerMapping extends AbstractHandlerMapping {
+    // Adds path matching logic
+    protected matchPath(pattern: string, path: string): boolean {
+        // Implementation
+    }
+}
+
+abstract class AbstractDetectingPathHandlerMapping extends AbstractPathHandlerMapping {
+    // Adds auto-detection logic
+    protected detectHandlers(): Handler[] {
+        // Implementation
+    }
+}
+
+class NamePathHandlerMapping extends AbstractDetectingPathHandlerMapping {
+    // Concrete implementation using name-based path mapping
+    getHandler(route: Route): Handler | null {
+        // Implementation
+    }
+}
+
+// Real example from @blue/view
+export abstract class AbstractCachingViewResolver implements ViewResolver {
+    // Base with caching
+}
+
+export abstract class AbstractPathBasedViewResolver extends AbstractCachingViewResolver {
+    // Adds path-based resolution
+}
+
+export class ImportViewResolver extends AbstractPathBasedViewResolver {
+    // Concrete implementation using ES6 imports
+}
+```
+
+**Multiple Interface Implementation:**
+
+The description-first pattern prevents conflicts when implementing multiple interfaces:
+
+```typescript
+// ✅ Correct: No import conflicts with description-first pattern
+import { HTTPTransformer } from '@blue/http';
+import { DataTransformer } from '@blue/data';
+
+class PaymentProcessor implements HTTPTransformer, DataTransformer {
+    // Implements both interfaces
+    transform(request: HTTPRequest): HTTPResponse {
+        // HTTP transformation
+    }
+
+    transform(data: RawData): CleanData {
+        // Data transformation (overload)
+    }
+}
+
+// ✅ Correct: Multiple interfaces from different packages
+import { ViewResolver } from '@blue/view';
+import { ResourceLoader } from '@blue/context';
+
+class TemplateViewResolver implements ViewResolver, ResourceLoader {
+    resolve(name: string): View {}
+    loadResource(path: string): Resource {}
+}
+```
+
+**Pattern Summary:**
+
+| Pattern                       | Example                                     | Used For         |
+| :---------------------------- | :------------------------------------------ | :--------------- |
+| `[Domain][Role]`              | `HTTPTransformer`, `ViewResolver`           | Interfaces       |
+| `[Description][Role]`         | `UserDataTransformer`, `PaymentHTTPHandler` | Concrete classes |
+| `Abstract[Description][Role]` | `AbstractUserDataTransformer`               | Abstract classes |
+
+**Rationale:**
+
+1. **Description-first prevents import conflicts** - Multiple packages can define `DataTransformer` interface without collision when implementing classes use descriptive prefixes
+2. **Abstract prefix signals inheritance** - Immediately identifies base classes vs concrete implementations
+3. **Consistent with Spring Framework** - Follows established enterprise patterns (e.g., `AbstractHandlerMapping`, `AbstractPathMatchingResourcePatternResolver`)
+4. **Autocomplete-friendly** - Modern IDEs make long names effortless; clarity trumps brevity
+
+### 3.12. Role-Based Suffixes [CONVENTION: Code Review]
+
+**Pattern:** Use semantic suffixes to convey component responsibility
+
+BlueJS uses role-based suffixes inspired by Spring Framework to indicate the responsibility and behavior of classes/interfaces. These suffixes provide instant semantic understanding and create a shared vocabulary across the codebase.
+
+**Core Suffixes and Their Meanings:**
+
+**Processing & Handling:**
+
+| Suffix         | Meaning                                                              | Examples                                          |
+| :------------- | :------------------------------------------------------------------- | :------------------------------------------------ |
+| `*Handler`     | Processes requests, events, or commands; orchestrates handling logic | `RouteHandler`, `ErrorHandler`, `EventHandler`    |
+| `*Processor`   | Executes specific operations or transformations; processes inputs    | `EntryProcessor`, `DestructionAwareProcessor`     |
+| `*Interceptor` | Intercepts calls to add cross-cutting concerns (logging, auth, etc.) | `HTTPInterceptor`, `ResponseClassHTTPInterceptor` |
+
+**Adaptation & Translation:**
+
+| Suffix         | Meaning                                                       | Examples                                        |
+| :------------- | :------------------------------------------------------------ | :---------------------------------------------- |
+| `*Adapter`     | Adapts one interface to another; translates between protocols | `RouteHandlerAdapter`, `MetadataHandlerAdapter` |
+| `*Transformer` | Transforms data structure (NOT transducers; see Section 3.10) | `DataTransformer`, `PayloadTransformer`         |
+| `*Converter`   | Converts between types or formats; typically bidirectional    | `MessageConverter`, `TypeConverter`             |
+
+**Resolution & Discovery:**
+
+| Suffix      | Meaning                                                      | Examples                                               |
+| :---------- | :----------------------------------------------------------- | :----------------------------------------------------- |
+| `*Resolver` | Resolves, determines, or locates values based on criteria    | `ViewResolver`, `PropertyResolver`, `ArgumentResolver` |
+| `*Strategy` | Encapsulates algorithm or behavior choice (Strategy pattern) | `ContentNegotiationStrategy`, `HTTPStrategy`           |
+
+**Creation & Lifecycle:**
+
+| Suffix     | Meaning                                                   | Examples                                          |
+| :--------- | :-------------------------------------------------------- | :------------------------------------------------ |
+| `*Factory` | Creates instances or manages object creation lifecycle    | `Factory`, `HierarchicalFactory`, `ScopedFactory` |
+| `*Builder` | Constructs complex objects step-by-step (Builder pattern) | `QueryBuilder`, `URLBuilder`                      |
+
+**Storage & Coordination:**
+
+| Suffix        | Meaning                                                      | Examples                                       |
+| :------------ | :----------------------------------------------------------- | :--------------------------------------------- |
+| `*Registry`   | Stores and retrieves registered objects; acts as catalog     | `Registry`, `MappingRegistry`                  |
+| `*Manager`    | Manages lifecycle or coordinates multiple components         | `ContentNegotiationManager`, `MetadataManager` |
+| `*Repository` | Abstracts data access/persistence layer (Repository pattern) | `UserRepository`, `OrderRepository`            |
+
+**Application Layer (MVC):**
+
+| Suffix        | Meaning                                             | Examples                            |
+| :------------ | :-------------------------------------------------- | :---------------------------------- |
+| `*Controller` | Handles web requests and routes (MVC pattern)       | `UserController`, `ErrorController` |
+| `*Service`    | Contains business logic and orchestrates operations | `UserService`, `PaymentService`     |
+
+**Usage Examples:**
+
+```typescript
+// ✅ Correct: Suffixes convey clear responsibility
+
+// Handler processes requests/events
+interface ErrorHandler {
+    handle(error: Error): void;
+}
+
+class RouteErrorHandler implements ErrorHandler {
+    handle(error: Error): void {
+        // Error handling logic
+    }
+}
+
+// Adapter adapts one interface to another
+interface RouteHandlerAdapter {
+    handle(route: Route): void;
+}
+
+class ControllerHandlerAdapter implements RouteHandlerAdapter {
+    handle(route: Route): void {
+        // Adapt controller method to handler
+    }
+}
+
+// Resolver determines/locates values
+interface ViewResolver {
+    resolve(name: string): View;
+}
+
+class ContentNegotiationViewResolver implements ViewResolver {
+    resolve(name: string): View {
+        // Resolve view based on content negotiation
+    }
+}
+
+// Strategy encapsulates algorithm choice
+interface ContentNegotiationStrategy {
+    negotiate(request: Request): MediaType;
+}
+
+class PathExtensionContentNegotiationStrategy implements ContentNegotiationStrategy {
+    negotiate(request: Request): MediaType {
+        // Negotiate based on path extension
+    }
+}
+
+// Factory creates instances
+interface Factory {
+    getInstance(name: string): any;
+}
+
+class DefaultFactory implements Factory {
+    getInstance(name: string): any {
+        // Factory creation logic
+    }
+}
+
+// Registry stores/retrieves registered objects
+interface Registry {
+    register(name: string, value: any): void;
+    get(name: string): any;
+}
+
+class MappingRegistry implements Registry {
+    register(name: string, value: any): void {}
+    get(name: string): any {}
+}
+
+// Controller handles web requests
+class UserController {
+    @routeMapping({ method: 'GET', path: '/users' })
+    listUsers(): User[] {
+        // Return list of users
+    }
+}
+
+// Service contains business logic
+class UserService {
+    createUser(data: UserData): User {
+        // Business logic for user creation
+    }
+
+    validateUser(user: User): boolean {
+        // Validation logic
+    }
+}
+
+// ❌ Wrong: Suffix doesn't match actual responsibility
+class UserHandler {
+    // Acts like a Service (contains business logic)
+    validateUser(user: User): boolean {} // Should be UserService
+}
+
+class DataResolver {
+    // Acts like a Transformer (transforms data)
+    transform(data: RawData): CleanData {} // Should be DataTransformer
+}
+
+class PaymentProcessor {
+    // Acts like a Service (business logic)
+    processPayment(payment: Payment): boolean {} // Should be PaymentService
+}
+```
+
+**Real Examples from BlueJS:**
+
+```typescript
+// From @blue/dispatcher
+export interface RouteHandlerAdapter {}
+export abstract class AbstractHandlerMethodAdapter implements RouteHandlerAdapter {}
+export class ControllerHandlerAdapter implements RouteHandlerAdapter {}
+export class MetadataHandlerAdapter extends AbstractHandlerMethodAdapter {}
+
+export interface HandlerMethodArgumentResolver {}
+export abstract class AbstractNamedValueMethodArgumentResolver {}
+export class MatrixValueMethodArgumentResolver extends AbstractNamedValueMethodArgumentResolver {}
+export class QueryValueMethodArgumentResolver extends AbstractNamedValueMethodArgumentResolver {}
+
+// From @blue/view
+export interface ViewResolver {}
+export abstract class AbstractCachingViewResolver implements ViewResolver {}
+export abstract class AbstractPathBasedViewResolver extends AbstractCachingViewResolver {}
+export class ImportViewResolver extends AbstractPathBasedViewResolver {}
+export class ContentNegotiationViewResolver implements ViewResolver {}
+
+export interface ContentNegotiationStrategy {}
+export class PathExtensionContentNegotiationStrategy implements ContentNegotiationStrategy {}
+export class FixedContentNegotiationStrategy implements ContentNegotiationStrategy {}
+
+// From @blue/factory
+export interface Factory {}
+export interface HierarchicalFactory extends Factory {}
+export interface ConfigurableFactory extends HierarchicalFactory {}
+export abstract class AbstractFactory implements ConfigurableFactory {}
+export class DefaultFactory extends AbstractFactory {}
+
+export interface Registry {}
+export class MappingRegistry implements Registry {}
+
+// From @blue/http
+export interface HTTPInterceptor {}
+export class MappedHTTPInterceptor implements HTTPInterceptor {}
+export class MappedResponseClassHTTPInterceptor implements ResponseAwareHTTPInterceptor {}
+
+export class HTTPAppender {}
+export class HTTPLogRecordExporter {}
+
+// From @blue/context
+export interface PropertyResolver {}
+export interface ConfigurablePropertyResolver extends PropertyResolver {}
+export class PrototypalPropertyResolver implements ConfigurablePropertyResolver {}
+
+export class ContentNegotiationManager {}
+export class MetadataManager {}
+```
+
+**Combining with Description-First Pattern:**
+
+Role-based suffixes work seamlessly with the description-first pattern from Section 3.11:
+
+```typescript
+// ✅ Correct: [Description][Role] with semantic suffix
+class UserDataTransformer implements DataTransformer {}
+class PaymentHTTPInterceptor implements HTTPInterceptor {}
+class OrderViewResolver implements ViewResolver {}
+class AuthenticationStrategy implements Strategy {}
+
+// ✅ Correct: Abstract classes
+abstract class AbstractUserFactory implements Factory {}
+abstract class AbstractHandlerMethodAdapter implements HandlerAdapter {}
+abstract class AbstractContentNegotiationStrategy implements ContentNegotiationStrategy {}
+```
+
+**Anti-Patterns to Avoid:**
+
+```typescript
+// ❌ Avoid: Generic helper/util suffixes (use specific role suffixes)
+class DataHelper {} // Use DataTransformer, DataProcessor, or DataService
+class UserUtil {} // Use UserService, UserFactory, or UserValidator
+class StringHelper {} // Use StringFormatter, StringConverter, or StringParser
+
+// ❌ Avoid: Suffix doesn't match behavior
+class DataHandler {
+    // Actually transforms data
+    transform(data: Data): TransformedData {} // Should be DataTransformer
+}
+
+class UserResolver {
+    // Actually creates users
+    create(data: UserData): User {} // Should be UserFactory or UserService
+}
+```
+
+**Rationale:**
+
+- **Shared Vocabulary** - Consistent suffixes create common understanding across the team
+- **Instant Recognition** - Developers immediately understand a component's role from its name
+- **Spring Framework Alignment** - Leverages established enterprise patterns familiar to Java/Spring developers
+- **Semantic Clarity** - `*Handler` processes, `*Resolver` locates, `*Factory` creates—no ambiguity
+- **Autocomplete-Friendly** - Modern tooling makes specific, descriptive names effortless
+
+**When in Doubt:**
+
+1. Ask: "What is this component's PRIMARY responsibility?"
+2. Choose the suffix that best matches that responsibility
+3. If no standard suffix fits, consider if the class has too many responsibilities (SRP violation)
+
 ---
 
 ## 4. Module Organization

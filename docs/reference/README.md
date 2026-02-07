@@ -4,7 +4,7 @@ This directory contains reference documentation for dependencies, configurations
 
 ## Available References
 
-- [2025-01-23_DEPENDENCIES_REFERENCE.md](./2025-01-23_DEPENDENCIES_REFERENCE.md) - Complete dependency version reference
+- [2026-01-23_DEPENDENCIES_REFERENCE.md](./2026-01-23_DEPENDENCIES_REFERENCE.md) - Complete dependency version reference
 
 ## Naming Convention
 

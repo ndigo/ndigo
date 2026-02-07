@@ -1,8 +1,8 @@
 # Quick Reference: HTTP Client Feature Matrix
 
-**Date:** 2025-02-06  
+**Date:** 2026-02-06  
 **Purpose:** At-a-glance feature comparison table  
-**Full Analysis:** [2025-02-06_HTTP_FEATURE_COMPARISON.md](./2025-02-06_HTTP_FEATURE_COMPARISON.md)
+**Full Analysis:** [2026-02-06_HTTP_FEATURE_COMPARISON.md](./2026-02-06_HTTP_FEATURE_COMPARISON.md)
 
 ---
 
@@ -20,23 +20,29 @@
 
 ## Core Features Comparison
 
-| Feature | @blue/http | Spring | Axios | Fetch | Priority |
-|---------|-----------|--------|-------|-------|----------|
-| **Instance System** | ❌ | ✅ | ✅ | ❌ | 🔴 HIGH |
-| **Config Defaults** | ❌ | ✅ | ✅ | ❌ | 🔴 HIGH |
-| **Base URL** | ❌ | ✅ | ✅ | ❌ | 🔴 HIGH |
-| **Query Params Config** | 🟡 | ✅ | ✅ | 🟡 | 🔴 HIGH |
-| **Transform Pipeline** | 🟡 | ✅ | ✅ | ❌ | 🔴 HIGH |
-| **Basic Auth Helper** | 🟡 | ✅ | ✅ | 🟡 | 🔴 HIGH |
-| **XSRF Protection** 🔵 | ❌ | 🟡 | ✅ | ❌ | 🔴 HIGH |
-| **Upload Progress** 🔵 | ❌ | ❌ | ✅ | 🟡 | 🔴 HIGH |
-| **Download Progress** 🔵 | ❌ | ❌ | ✅ | 🟡 | 🔴 HIGH |
-| **Validate Status** | 🟡 | ✅ | ✅ | ❌ | 🟠 MEDIUM |
-| **Interceptor Management** | ❌ | 🟡 | ✅ | ❌ | 🟠 MEDIUM |
-| **Form Shortcuts** | ❌ | ✅ | ✅ | ❌ | 🟠 MEDIUM |
-| **Proxy Support** 🟣 | ❌ | ✅ | ✅ | ❌ | 🟠 MEDIUM |
-| **Error Categorization** | 🟡 | ✅ | ✅ | ❌ | 🟠 MEDIUM |
-| **Range Request Helper** | 🟡 | ✅ | 🟡 | 🟡 | 🟠 MEDIUM |
+| Feature | @blue/http | Spring | Axios | Fetch | Node http | Node https | Priority |
+|---------|-----------|--------|-------|-------|-----------|------------|----------|
+| **Instance System** | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | 🔴 HIGH |
+| **Config Defaults** | 🟡 | ✅ | ✅ | ❌ | ✅ | ✅ | 🔴 HIGH |
+| **Base URL** | ✅ | ✅ | ✅ | ❌ | ✅ | ✅ | 🔴 HIGH |
+| **Query Params Config** | 🟡 | ✅ | ✅ | 🟡 | ❌ | ❌ | 🔴 HIGH |
+| **Transform Pipeline** | 🟡 | ✅ | ✅ | ❌ | ❌ | ❌ | 🔴 HIGH |
+| **Basic Auth Helper** | 🟡 | ✅ | ✅ | 🟡 | ✅ | ✅ | 🔴 HIGH |
+| **XSRF Protection** 🔵 | ❌ | 🟡 | ✅ | ❌ | ❌ | ❌ | 🔴 HIGH |
+| **Upload Progress** 🔵 | ❌ | ❌ | ✅ | 🟡 | ❌ | ❌ | 🔴 HIGH |
+| **Download Progress** 🔵 | ❌ | ❌ | ✅ | 🟡 | ❌ | ❌ | 🔴 HIGH |
+| **Validate Status** | 🟡 | ✅ | ✅ | ❌ | ✅ | ✅ | 🟠 MEDIUM |
+| **Interceptor Management** | ❌ | 🟡 | ✅ | ❌ | ❌ | ❌ | 🟠 MEDIUM |
+| **Form Shortcuts** | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | 🟠 MEDIUM |
+| **Proxy Support** 🟣 | ❌ | ✅ | ✅ | ❌ | ✅ | ✅ | 🟠 MEDIUM |
+| **Error Categorization** | 🟡 | ✅ | ✅ | ❌ | ❌ | ❌ | 🟠 MEDIUM |
+| **Range Request Helper** | 🟡 | ✅ | 🟡 | 🟡 | ❌ | ❌ | 🟠 MEDIUM |
+| **Connection Pooling** | ❌ | ✅ | ✅ | ❌ | ✅ | ✅ | 🟠 MEDIUM |
+| **Client Certificates** | ❌ | ✅ | ✅ | ❌ | ❌ | ✅ | 🟠 MEDIUM |
+| **Custom DNS** | ❌ | ✅ | ❌ | ❌ | ✅ | ✅ | 🟢 LOW |
+| **TLS Session Resumption** | ❌ | ✅ | ❌ | ❌ | ❌ | ✅ | 🟢 LOW |
+| **Socket Timeout** | ✅ | ✅ | ✅ | 🟡 | ✅ | ✅ | 🟢 LOW |
+| **Streaming (Node.js Streams)** | ❌ | ✅ | 🟡 | ❌ | ✅ | ✅ | 🟢 LOW |
 
 ---
 
@@ -59,54 +65,31 @@
 ### 🔴 HIGH Priority Gaps (Must Have)
 
 1. ❌ **Instance System** - No `HTTP.create()` for config reuse
-2. ❌ **Query Params** - No `params: {}` convenience
-3. ❌ **Transform Pipeline** - No composable transformations
-4. ❌ **XSRF Protection** 🔵 - No automatic CSRF handling
-5. ❌ **Progress Tracking** 🔵 - No upload/download progress
-6. 🟡 **Basic Auth** - No convenience helper
+2. ✅ **Base URL** - Now supported for resolving relative URLs.
+3. ❌ **Query Params** - No `params: {}` convenience
+4. ❌ **Transform Pipeline** - No composable transformations
+5. ❌ **XSRF Protection** 🔵 - No automatic CSRF handling
+6. ❌ **Progress Tracking** 🔵 - No upload/download progress
+7. 🟡 **Basic Auth** - No convenience helper
 
 ### 🟠 MEDIUM Priority Gaps (Should Have)
 
-7. 🟡 **Validate Status** - Fixed 4xx/5xx logic
-8. ❌ **Interceptor Management** - Cannot remove at runtime
-9. ❌ **Form Shortcuts** - No `postForm()` methods
-10. ❌ **Proxy** 🟣 - No Node.js proxy config
-11. 🟡 **Error Categories** - Limited error discrimination
-12. 🟡 **Range Requests** - No convenience API
+8. 🟡 **Validate Status** - Fixed 4xx/5xx logic
+9. ❌ **Interceptor Management** - Cannot remove at runtime
+10. ❌ **Form Shortcuts** - No `postForm()` methods
+11. ❌ **Proxy** 🟣 - No Node.js proxy config (though Node.js native http/https support this)
+12. 🟡 **Error Categories** - Limited error discrimination
+13. 🟡 **Range Requests** - No convenience API
+14. ❌ **Connection Pooling** 🟣 - No Node.js http.Agent integration
+15. ❌ **Client Certificates** 🟣 - No Node.js https client cert support
 
----
+### 🟢 LOW Priority Gaps (Could Have)
 
-## Platform-Specific Features
+16. ❌ **Custom DNS** 🟣 - No Node.js custom DNS resolution
+17. ❌ **TLS Session Resumption** 🟣 - No Node.js TLS session caching
+18. ❌ **Streaming (Node.js Streams)** 🟣 - No native Node.js streams integration
 
-### Browser-Only 🔵
-
-| Feature | @blue/http | Axios | Priority |
-|---------|-----------|-------|----------|
-| XSRF Protection | ❌ | ✅ | 🔴 HIGH |
-| Upload Progress | ❌ | ✅ | 🔴 HIGH |
-| Download Progress | ❌ | ✅ | 🔴 HIGH |
-| CORS Credentials | ✅ | ✅ | ✅ Supported |
-
-### Node.js-Only 🟣
-
-| Feature | @blue/http | Axios | Priority |
-|---------|-----------|-------|----------|
-| Proxy Support | ❌ | ✅ | 🟠 MEDIUM |
-| HTTP Agent | ❌ | ✅ | 🟠 MEDIUM |
-| Socket Path | ❌ | ✅ | 🟢 LOW |
-| Max Content Length | ❌ | ✅ | 🟢 LOW |
-
----
-
-## Implementation Priority Matrix
-
-| Priority | Count | Features |
-|----------|-------|----------|
-| 🔴 HIGH | 6 | Instance System, Query Params, Transforms, XSRF, Progress (2), Basic Auth |
-| 🟠 MEDIUM | 6 | Validate Status, Interceptor Mgmt, Form Shortcuts, Proxy, Error Categories, Range Helper |
-| 🟢 LOW | 5 | MediaType w/ Quality, CacheControl Builder, Content-Disposition Parser, HTTP Agent, Max Lengths |
-
-**Total Identified Gaps:** 17 features
+**Total Identified Gaps:** 18 features
 
 ---
 
@@ -174,17 +157,18 @@
 | **Spring RestClient** | Builder + Message Converters | Enterprise patterns, type safety, rich abstractions | Java/Spring ecosystem |
 | **Axios** | Promise + Config | Simple API, progress tracking, XSRF protection | General web apps, file uploads |
 | **Fetch API** | Promise + Options | Web standard, no dependencies, streaming | Native browser/Node.js, minimal overhead |
+| **Node.js http/https** | Callback/Stream + Low-level | Fine-grained control over sockets, TLS, proxies, streaming | Node.js backend services, custom networking |
 
 ---
 
 ## Recommended Reading Order
 
 1. **Quick Start:** This document (you are here)
-2. **Executive Summary:** [2025-02-06_HTTP_FEATURE_SUMMARY.md](./2025-02-06_HTTP_FEATURE_SUMMARY.md)
-3. **Full Analysis:** [2025-02-06_HTTP_FEATURE_COMPARISON.md](./2025-02-06_HTTP_FEATURE_COMPARISON.md)
+2. **Executive Summary:** [2026-02-06_HTTP_FEATURE_SUMMARY.md](./2026-02-06_HTTP_FEATURE_SUMMARY.md)
+3. **Full Analysis:** [2026-02-06_HTTP_FEATURE_COMPARISON.md](./2026-02-06_HTTP_FEATURE_COMPARISON.md)
 4. **Implementation:** (Future document with detailed API designs)
 
 ---
 
-**Last Updated:** 2025-02-06  
-**Status:** Research Complete, Implementation Pending
+**Last Updated:** 2026-02-06  
+**Status:** Research Complete, `baseURL` Implemented, Further Implementation Pending

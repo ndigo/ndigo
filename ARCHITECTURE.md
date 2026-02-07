@@ -11,15 +11,27 @@ BlueJS is a JavaScript-first application framework inspired by the design princi
 3. [Layered Architecture](#layered-architecture)
 4. [Dependency Management Strategy](#dependency-management-strategy)
 5. [Design Patterns](#design-patterns)
-6. [Decorators & Separation of Concerns](#decorators--separation-of-concerns)
+6. [Transducers](#transducers)
+    - [Overview](#overview)
+    - [Philosophy](#philosophy)
+    - [The Transducer Protocol](#the-transducer-protocol)
+    - [Factory Patterns](#factory-patterns)
+    - [Composition](#composition)
+    - [Stateful Transducers](#stateful-transducers)
+    - [Early Termination](#early-termination)
+    - [Interoperability](#interoperability)
+    - [Performance Considerations](#performance-considerations-1)
+    - [Testing Transducers](#testing-transducers)
+    - [Further Reading](#further-reading)
+7. [Decorators & Separation of Concerns](#decorators--separation-of-concerns)
     - [Cross-Cutting Concerns](#cross-cutting-concerns)
     - [Decorator Metadata](#decorator-metadata)
-    - [Performance Considerations](#performance-considerations)
+    - [Performance Considerations](#performance-considerations-2)
     - [Creating Custom Decorators](#creating-custom-decorators)
     - [Standards Compliance](#standards-compliance)
-7. [Naming Conventions](#naming-conventions)
-8. [Module Visibility & API Design](#module-visibility--api-design)
-9. [Roadmap](#roadmap)
+8. [Naming Conventions](#naming-conventions)
+9. [Module Visibility & API Design](#module-visibility--api-design)
+10. [Roadmap](#roadmap)
 
 ## Core Philosophy
 
@@ -1056,6 +1068,579 @@ When implementing this pattern:
 5. **Defaults**: Provide sensible defaults in factory, require explicit values in constructor
 
 **See also:** `@blue/http` package for a complete implementation example.
+
+## Transducers
+
+### Overview
+
+Transducers are composable algorithmic transformations that decouple transformation operations from data structure traversal. They provide an efficient, memory-friendly way to build data processing pipelines without creating intermediate collections.
+
+**Key Benefits:**
+
+- **Composable**: Build complex transformations from simple, reusable pieces
+- **Efficient**: Process data in a single pass without creating intermediate collections
+- **Polymorphic**: Same transformation works across different collection types (arrays, strings, sets, maps)
+- **Lazy**: Transformations only execute when data flows through the pipeline
+- **Interoperable**: Compatible with Ramda, RxJS, and the broader JavaScript transducer ecosystem
+
+### Philosophy
+
+BlueJS embraces transducers as a functional programming pattern for building efficient, composable data transformation pipelines. Unlike traditional array methods (`map`, `filter`, `reduce`), which create intermediate arrays at each step, transducers compose transformations algebraically and execute them in a single pass.
+
+**Traditional Approach (Intermediate Collections):**
+
+```javascript
+// ❌ Creates 3 intermediate arrays
+const numbers = [1, 2, 3, 4, 5, 6];
+const doubled = numbers.map((x) => x * 2); // [2, 4, 6, 8, 10, 12]
+const evens = doubled.filter((x) => x % 2 === 0); // [2, 4, 6, 8, 10, 12]
+const sum = evens.reduce((a, b) => a + b, 0); // 42
+```
+
+**Transducer Approach (Single Pass):**
+
+```javascript
+// ✅ Single pass, no intermediate arrays
+const xf = compose(
+    map((x) => x * 2),
+    filter((x) => x % 2 === 0)
+);
+const sum = transduce(xf, add, 0, [1, 2, 3, 4, 5, 6]); // 42
+```
+
+### The Transducer Protocol
+
+Transducers follow a three-arity protocol with three required methods:
+
+**Protocol Methods:**
+
+| Method                | Purpose                  | Required     | Signature                                                   |
+| :-------------------- | :----------------------- | :----------- | :---------------------------------------------------------- |
+| `@@transducer/init`   | Initialize accumulator   | Optional     | `() => TResult`                                             |
+| `@@transducer/step`   | Process each input item  | **Required** | `(result: TResult, input: TInput) => MaybeReduced<TResult>` |
+| `@@transducer/result` | Finalize/complete result | Optional     | `(result: TResult) => TComplete`                            |
+
+**Additional Protocol Symbols:**
+
+| Symbol                 | Purpose                                   | Usage                             |
+| :--------------------- | :---------------------------------------- | :-------------------------------- |
+| `@@transducer/reduced` | Mark value as reduced (early termination) | Set to `true` on result object    |
+| `@@transducer/value`   | Extract value from reduced result         | Contains the actual reduced value |
+
+**Example Implementation:**
+
+```typescript
+class XCount<T = any> implements Transformer<number, T> {
+    // Initialize accumulator to 0
+    ['@@transducer/init']?(): number {
+        return 0;
+    }
+
+    // Finalize result (identity in this case)
+    ['@@transducer/result']?(result: number): number {
+        return result;
+    }
+
+    // Process each input by incrementing count
+    ['@@transducer/step'](result: number, input: T): MaybeReduced<number> {
+        return result + 1;
+    }
+}
+```
+
+### Factory Patterns
+
+BlueJS uses two distinct factory patterns for transducers, chosen based on whether the transformer requires configuration parameters.
+
+#### Pattern 1: Three-Tier (Zero-Argument Factories)
+
+For transformers that require no configuration, use a three-tier pattern with an intermediate factory layer.
+
+**Structure:**
+
+```
+Transformer Class → Factory Function → Convenience Wrapper
+    XCount      →     xCount()     →      count()
+```
+
+**Implementation:**
+
+```typescript
+// Transformer class
+export class XCount<T = any> implements Transformer<number, T> {
+    ['@@transducer/init']?(): number {
+        return 0;
+    }
+    ['@@transducer/result']?(result: number): number {
+        return result;
+    }
+    ['@@transducer/step'](result: number): MaybeReduced<number> {
+        return result + 1;
+    }
+}
+
+// Intermediate factory
+export const xCount = <T = any>(): Transformer<number, T> => new XCount<T>();
+
+// Convenience wrapper
+export const count = () => xCount;
+
+// Usage
+import { into } from '@blue/util/list';
+import { count } from '@blue/core';
+
+const total = into([], count(), [1, 2, 3, 4]); // 4
+```
+
+**Rationale:**
+
+- **Clarity**: Three distinct layers make the API structure explicit
+- **Ramda Compatibility**: Matches Ramda's transducer conventions
+- **Consistency**: Uniform pattern across zero-argument transducers
+
+#### Pattern 2: Two-Tier (Parameterized Factories)
+
+For transformers requiring configuration, use a two-tier pattern that skips the intermediate layer.
+
+**Structure:**
+
+```
+Transformer Class → Parameterized Factory
+    XToMap      →  toMap(getKey, getValue)
+```
+
+**Implementation:**
+
+```typescript
+// Transformer class
+export class XToMap<T, K, V> implements Transformer<Map<K, V>, T> {
+    constructor(
+        private readonly _getKey: (item: T) => K,
+        private readonly _getValue: (item: T) => V
+    ) {}
+
+    ['@@transducer/init']?(): Map<K, V> {
+        return new Map<K, V>();
+    }
+    ['@@transducer/result']?(result: Map<K, V>): Map<K, V> {
+        return result;
+    }
+    ['@@transducer/step'](result: Map<K, V>, input: T): MaybeReduced<Map<K, V>> {
+        result.set(this._getKey(input), this._getValue(input));
+        return result;
+    }
+}
+
+// Parameterized factory (no intermediate layer)
+export const toMap =
+    <T, K, V>(getKey: (item: T) => K, getValue: (item: T) => V) =>
+    (): Transformer<Map<K, V>, T> =>
+        new XToMap<T, K, V>(getKey, getValue);
+
+// Usage
+import { into } from '@blue/util/list';
+import { toMap } from '@blue/core';
+
+const users = [
+    { id: 1, name: 'Alice' },
+    { id: 2, name: 'Bob' },
+];
+const userMap = into(
+    new Map(),
+    toMap(
+        (u) => u.id,
+        (u) => u.name
+    ),
+    users
+); // Map { 1 => 'Alice', 2 => 'Bob' }
+```
+
+**Rationale:**
+
+- **Simplicity**: Avoids redundant wrapper when parameters are required
+- **Ergonomics**: Direct parameter passing is clearer than curried factories
+- **Performance**: One less function call in the chain
+
+**Pattern Selection Criteria:**
+
+| Criteria             | Three-Tier               | Two-Tier                        |
+| :------------------- | :----------------------- | :------------------------------ |
+| Parameters required? | No                       | Yes                             |
+| Examples             | `XCount`, `XToArray`     | `XToMap`, `XToRecord`, `XToSet` |
+| API clarity          | Higher (explicit layers) | Higher (direct parameters)      |
+
+### Composition
+
+Transducers compose using standard function composition, applying transformations from **right to left** (standard mathematical composition order).
+
+**Basic Composition:**
+
+```typescript
+import { compose } from '@blue/util/function';
+import { into } from '@blue/util/list';
+
+// Define custom transducers
+class XDouble extends DelegatingTransformer {
+    ['@@transducer/step'](result: any, input: any): any {
+        return this.xf['@@transducer/step'](result, input * 2);
+    }
+}
+
+class XEven extends DelegatingTransformer {
+    ['@@transducer/step'](result: any, input: any): any {
+        return input % 2 === 0 ? this.xf['@@transducer/step'](result, input) : result;
+    }
+}
+
+const xDouble = (xf: any) => new XDouble(xf);
+const xEven = (xf: any) => new XEven(xf);
+
+// Compose: xEven filters BEFORE xDouble doubles
+// Order: right-to-left (xDouble applied first, then xEven filters)
+const xf = compose(xEven, xDouble);
+
+const result = into([], xf, [1, 2, 3, 4]); // [4, 8]
+// Explanation: [1,2,3,4] → double → [2,4,6,8] → filterEven → [4,8]
+```
+
+**Delegation Pattern:**
+
+The `DelegatingTransformer` base class enables composition by delegating `step` calls to an inner transformer (`xf`):
+
+```typescript
+export class DelegatingTransformer<TResult, TComplete, TInput>
+    implements CompletingTransformer<TResult, TComplete, TInput>
+{
+    readonly xf: CompletingTransformer<TResult, TComplete, TInput>;
+
+    constructor(xf: CompletingTransformer<TResult, TComplete, TInput>) {
+        this.xf = xf;
+    }
+
+    ['@@transducer/step'](result: TResult, input: TInput): MaybeReduced<TResult> {
+        return this.xf['@@transducer/step'](result, input);
+    }
+}
+```
+
+**Composition Order:**
+
+```typescript
+// Right-to-left composition (standard mathematical order)
+const xf = compose(f, g, h); // Applies h, then g, then f
+
+// Equivalent to:
+const xf = (x) => f(g(h(x)));
+```
+
+### Stateful Transducers
+
+Transducers can maintain internal state across transformation steps.
+
+**Example: Deduplication**
+
+```typescript
+class XDedupe<T> extends DelegatingTransformer<T[], T[], T> {
+    private seen = new Set<T>();
+
+    ['@@transducer/step'](result: T[], input: T): MaybeReduced<T[]> {
+        if (this.seen.has(input)) {
+            return result; // Skip duplicate
+        }
+        this.seen.add(input);
+        return this.xf['@@transducer/step'](result, input);
+    }
+
+    ['@@transducer/result']?(result: T[]): T[] {
+        this.seen.clear(); // Clean up state
+        return this.xf['@@transducer/result']?.(result) ?? result;
+    }
+}
+
+const xDedupe = <T>(xf: any) => new XDedupe<T>(xf);
+
+// Usage
+const result = into([], xDedupe, [1, 2, 2, 3, 3, 3, 4]); // [1, 2, 3, 4]
+```
+
+**Example: Windowing**
+
+```typescript
+class XTake<T> extends DelegatingTransformer<T[], T[], T> {
+    private taken = 0;
+
+    constructor(
+        private readonly n: number,
+        xf: CompletingTransformer<T[], T[], T>
+    ) {
+        super(xf);
+    }
+
+    ['@@transducer/step'](result: T[], input: T): MaybeReduced<T[]> {
+        if (this.taken >= this.n) {
+            return reduce(result); // Early termination
+        }
+        this.taken++;
+        return this.xf['@@transducer/step'](result, input);
+    }
+}
+
+const xTake =
+    <T>(n: number) =>
+    (xf: any) =>
+        new XTake<T>(n, xf);
+
+// Usage
+const result = into([], xTake(3), [1, 2, 3, 4, 5]); // [1, 2, 3]
+```
+
+### Early Termination
+
+Transducers can signal early termination using the `reduced` protocol.
+
+**Reduced Values:**
+
+A reduced value signals that the transformation is complete and no further inputs should be processed:
+
+```typescript
+export type Reduced<T> = {
+    ['@@transducer/reduced']: boolean;
+    ['@@transducer/value']: T;
+};
+
+export function reduce<T = any>(value: T): Reduced<T> {
+    return likeReduced(value)
+        ? value
+        : {
+              ['@@transducer/reduced']: true,
+              ['@@transducer/value']: value,
+          };
+}
+```
+
+**Example: Find First Match**
+
+```typescript
+class XFindFirst<T> extends DelegatingTransformer<T | undefined, T | undefined, T> {
+    constructor(
+        private readonly predicate: (item: T) => boolean,
+        xf: CompletingTransformer<T | undefined, T | undefined, T>
+    ) {
+        super(xf);
+    }
+
+    ['@@transducer/step'](result: T | undefined, input: T): MaybeReduced<T | undefined> {
+        if (this.predicate(input)) {
+            return reduce(input); // Found! Terminate early
+        }
+        return result;
+    }
+}
+
+const xFindFirst =
+    <T>(predicate: (item: T) => boolean) =>
+    (xf: any) =>
+        new XFindFirst<T>(predicate, xf);
+
+// Usage
+const firstEven = into(
+    undefined,
+    xFindFirst((x: number) => x % 2 === 0),
+    [1, 3, 5, 6, 7, 8]
+); // 6 (stops processing after finding first match)
+```
+
+### Interoperability
+
+BlueJS transducers are compatible with the broader JavaScript transducer ecosystem.
+
+**Ramda Integration:**
+
+```typescript
+import { transduce, map, filter, add } from 'ramda';
+import { xCount } from '@blue/core';
+
+// Use BlueJS transducers with Ramda's transduce
+const xf = xCount();
+const result = transduce(xf, add, 0, [1, 2, 3, 4]); // 4
+
+// Use Ramda transducers with BlueJS utilities
+import { into } from '@blue/util/list';
+const xf2 = compose(
+    map((x) => x * 2),
+    filter((x) => x > 5)
+);
+const result2 = into([], xf2, [1, 2, 3, 4, 5]); // [6, 8, 10]
+```
+
+**RxJS Integration:**
+
+RxJS operators can be adapted to work with transducers:
+
+```typescript
+import { map, filter } from 'rxjs/operators';
+import { xCount } from '@blue/core';
+
+// BlueJS transducers work alongside RxJS operators
+// (requires adapter implementation)
+```
+
+**transducers-js Compatibility:**
+
+BlueJS follows the same protocol as [cognitect-labs/transducers-js](https://github.com/cognitect-labs/transducers-js):
+
+- `@@transducer/init`, `@@transducer/step`, `@@transducer/result` methods
+- `@@transducer/reduced` and `@@transducer/value` for early termination
+- Compatible with any library following the transducer protocol
+
+### Performance Considerations
+
+**When to Use Transducers:**
+
+✅ **Good Fit:**
+
+- Processing large collections where memory efficiency matters
+- Complex transformation pipelines with multiple steps
+- Need to avoid intermediate collections
+- Transformations that work across different collection types
+- Performance-critical code paths
+
+❌ **Not Always Necessary:**
+
+- Small collections (< 100 items) where overhead exceeds benefits
+- Simple single-step transformations (use `map`/`filter` directly)
+- Transformations that only work on specific data structures
+- Prototyping where readability trumps performance
+
+**Performance Characteristics:**
+
+| Operation         | Traditional    | Transducers    |
+| :---------------- | :------------- | :------------- |
+| Memory            | O(n) per step  | O(1) constant  |
+| Passes            | Multiple       | Single         |
+| Overhead          | Array creation | Function calls |
+| Early termination | Full traversal | Immediate stop |
+
+**Benchmarks (Conceptual):**
+
+```typescript
+// Traditional: 3 passes, 2 intermediate arrays
+const result1 = [1, 2, 3, 4, 5]
+    .map((x) => x * 2) // [2,4,6,8,10]
+    .filter((x) => x > 5) // [6,8,10]
+    .reduce((a, b) => a + b, 0); // 24
+
+// Transducers: 1 pass, 0 intermediate arrays
+const xf = compose(
+    map((x) => x * 2),
+    filter((x) => x > 5)
+);
+const result2 = transduce(xf, add, 0, [1, 2, 3, 4, 5]); // 24
+
+// For large datasets (10,000+ items):
+// Traditional: ~2-3x slower, ~2-3x memory usage
+// Transducers: Faster, constant memory
+```
+
+### Testing Transducers
+
+**Unit Testing Strategy:**
+
+```typescript
+import { describe, test, expect } from 'vitest';
+import { into } from '@blue/util/list';
+import { XCount, count } from '@blue/core';
+
+describe('XCount', () => {
+    test('counts items in array', () => {
+        const result = into([], count(), [1, 2, 3, 4]);
+        expect(result).toBe(4);
+    });
+
+    test('counts characters in string', () => {
+        const result = into([], count(), 'hello');
+        expect(result).toBe(5);
+    });
+
+    test('handles empty collections', () => {
+        const result = into([], count(), []);
+        expect(result).toBe(0);
+    });
+});
+```
+
+**Testing Composition:**
+
+```typescript
+describe('Transducer composition', () => {
+    test('composes transformations correctly', () => {
+        const xf = compose(xEven, xDouble);
+        const result = into([], xf, [1, 2, 3, 4]);
+        expect(result).toEqual([4, 8]); // Only even numbers, doubled
+    });
+
+    test('maintains composition order', () => {
+        const xf1 = compose(xDouble, xEven); // Filter then double
+        const xf2 = compose(xEven, xDouble); // Double then filter
+
+        const result1 = into([], xf1, [1, 2, 3, 4]);
+        const result2 = into([], xf2, [1, 2, 3, 4]);
+
+        expect(result1).not.toEqual(result2); // Different orders yield different results
+    });
+});
+```
+
+**Testing Early Termination:**
+
+```typescript
+describe('Early termination', () => {
+    test('stops processing on reduced value', () => {
+        const processSpy = vi.fn();
+
+        class XSpyTransformer extends DelegatingTransformer {
+            ['@@transducer/step'](result: any, input: any): any {
+                processSpy(input);
+                if (input === 3) return reduce(result);
+                return this.xf['@@transducer/step'](result, input);
+            }
+        }
+
+        const xSpy = (xf: any) => new XSpyTransformer(xf);
+        into([], xSpy, [1, 2, 3, 4, 5]);
+
+        expect(processSpy).toHaveBeenCalledTimes(3); // Only 1, 2, 3
+        expect(processSpy).not.toHaveBeenCalledWith(4);
+        expect(processSpy).not.toHaveBeenCalledWith(5);
+    });
+});
+```
+
+### Further Reading
+
+**Core Concepts:**
+
+- [Clojure Transducers Reference](https://clojure.org/reference/transducers) - Original transducer design
+- [Rich Hickey: Transducers Talk](https://www.youtube.com/watch?v=6mTbuzafcII) - Conceptual foundation
+- [Eric Elliott: Transducers in JavaScript](https://medium.com/javascript-scene/transducers-efficient-data-processing-pipelines-in-javascript-7985330fe73d) - JavaScript-specific introduction
+
+**Implementations:**
+
+- [cognitect-labs/transducers-js](https://github.com/cognitect-labs/transducers-js) - JavaScript reference implementation
+- [Ramda Transducers](https://ramdajs.com/docs/#transduce) - Ramda's transducer support
+- [transducers.js](https://github.com/jlongster/transducers.js) - Alternative implementation
+
+**Related Patterns:**
+
+- [Iterator Protocol](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols) - JavaScript iteration
+- [Generator Functions](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*) - Lazy evaluation
+- [Pipeline Operator](https://github.com/tc39/proposal-pipeline-operator) - Proposed JavaScript feature
+
+**BlueJS Documentation:**
+
+- [STYLE_GUIDE.md Section 3.10](./STYLE_GUIDE.md#310-transducers-convention-code-review) - Transducer naming conventions
+- [packages/blue-core/src/transducer.ts](../packages/blue-core/src/transducer.ts) - Source implementation
+- [packages/blue-core/test/transducer.spec.ts](../packages/blue-core/test/transducer.spec.ts) - Test examples
 
 ## Decorators & Separation of Concerns
 

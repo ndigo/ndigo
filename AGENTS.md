@@ -19,6 +19,14 @@ pnpm lint            # Check code quality
 
 ⚠️ **Section 4.7 (Decorator Naming)** - All decorators MUST use camelCase
 
+⚠️ **STYLE_GUIDE.md Section 3.9 (Acronym Casing)** - Use all-uppercase in types (HTTPTransformer), all-lowercase or all-uppercase in identifiers (httpTransformer or myHTTPData)
+
+⚠️ **STYLE_GUIDE.md Section 3.10 (Transducers)** - Transformer classes use X\* prefix (XCount, XToArray), variables use xf
+
+⚠️ **STYLE_GUIDE.md Section 3.11 (Interfaces/Abstract Classes)** - Use description-first pattern (UserDataTransformer implements DataTransformer), Abstract prefix for abstract classes
+
+⚠️ **STYLE_GUIDE.md Section 3.12 (Role-Based Suffixes)** - Use semantic suffixes: *Handler (processes), *Resolver (locates), *Strategy (algorithm), *Factory (creates)
+
 **Pre-Commit Validation:**
 
 ```bash
@@ -26,6 +34,15 @@ pnpm lint            # Check code quality
 rg "from ['\"]ramda['\"]" --type ts      # Should return nothing
 rg "from ['\"]date-fns['\"]" --type ts   # Should return nothing
 rg "from ['\"]arcsecond['\"]" --type ts  # Should return nothing
+
+# Verify no mixed-case acronyms
+rg "(class|interface|type) \w*(Http|Json|Xml|Url|Api|Html|Dto|Uuid|Uri)\w*" --type ts  # Should return nothing
+
+# Verify transducer naming (no non-X transformer classes in transducer.ts)
+rg "^export class [A-Z][a-z]+Transformer" packages/blue-core/src/transducer.ts  # Should return nothing
+
+# Verify Abstract prefix usage
+rg "^(export )?abstract class [A-Z]" --type ts | rg -v "^(export )?abstract class Abstract"  # Should return nothing
 ```
 
 ---
@@ -180,6 +197,23 @@ pnpm format
 - **Mixins:**
     - Class Mixins: `PascalCase` with `As` prefix (e.g., `AsEventEmitter(Base)`).
     - Function Mixins: `camelCase` with `as` prefix (e.g., `asEventEmitter(target)`).
+- **Acronyms:** All-uppercase in types (e.g., `HTTPTransformer`, `JSONParser`), all-lowercase or all-uppercase in identifiers (e.g., `httpTransformer`, `myHTTPData`).
+- **Transducers:**
+    - Transformer classes: `X*` prefix (e.g., `XCount`, `XToArray`, `XToMap`).
+    - Variables: `xf` or `xform` (e.g., `const xf = compose(...)`).
+- **Interfaces/Abstract Classes:**
+    - Interfaces: `[Domain][Role]` (e.g., `HTTPTransformer`, `DataTransformer`).
+    - Concrete classes: `[Description][Role]` (e.g., `UserDataTransformer`).
+    - Abstract classes: `Abstract[Description][Role]` (e.g., `AbstractUserDataTransformer`).
+- **Role-Based Suffixes:**
+    - `*Handler` - Processes requests/events.
+    - `*Adapter` - Adapts interfaces.
+    - `*Resolver` - Resolves/locates values.
+    - `*Strategy` - Encapsulates algorithms.
+    - `*Factory` - Creates instances.
+    - `*Registry` - Stores registered objects.
+    - `*Service` - Business logic.
+    - `*Controller` - Web request handlers.
 
 ### TypeScript
 

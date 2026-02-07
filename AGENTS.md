@@ -2,6 +2,34 @@
 
 This document provides essential instructions for AI agents (and human developers) working in the BlueJS repository.
 
+## Quick Start for AI Agents
+
+**Essential Commands:**
+
+```bash
+pnpm install          # Install dependencies
+pnpm build           # Build all packages (~30s)
+pnpm test            # Run all tests (~2min)
+pnpm lint            # Check code quality
+```
+
+**Critical - Read Before Coding:**
+
+⚠️ **Section 4.4 (Library Integration Layer)** - Most common error: importing ramda/date-fns directly instead of through @blue/util
+
+⚠️ **Section 4.7 (Decorator Naming)** - All decorators MUST use camelCase
+
+**Pre-Commit Validation:**
+
+```bash
+# Verify no direct imports of encapsulated libraries
+rg "from ['\"]ramda['\"]" --type ts      # Should return nothing
+rg "from ['\"]date-fns['\"]" --type ts   # Should return nothing
+rg "from ['\"]arcsecond['\"]" --type ts  # Should return nothing
+```
+
+---
+
 ## 1. Project Overview & Environment
 
 - **Type:** Nx Monorepo with pnpm workspaces.

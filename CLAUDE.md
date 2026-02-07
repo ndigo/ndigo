@@ -73,6 +73,79 @@ import { helper } from './_util.js';
 import { helper } from '@blue/core/_util'; // Never import underscore files
 ```
 
+## Design Principles Reference
+
+When implementing features or refactoring code, apply these foundational principles documented in detail in ARCHITECTURE.md Section 2 "Foundational Principles":
+
+### SOLID Principles
+
+- **Single Responsibility (SRP)**: Classes, functions, and modules should have one reason to change
+
+    - Each class encapsulates a single concern
+    - Functions do one thing well
+    - Modules address one specific domain
+
+- **Open-Closed (OCP)**: Open for extension, closed for modification
+
+    - Use composition over inheritance
+    - Leverage Strategy and Factory patterns
+    - Extend through TypeScript interfaces and generics
+
+- **Liskov Substitution (LSP)**: Subtypes must be substitutable for their base types
+
+    - Honor base class contracts
+    - TypeScript's structural typing helps enforce this
+    - Avoid the Rectangle/Square anti-pattern
+
+- **Interface Segregation (ISP)**: Clients shouldn't depend on interfaces they don't use
+
+    - Keep interfaces small and focused
+    - Compose multiple small interfaces for complex types
+    - Design role-based interfaces
+
+- **Dependency Inversion (DIP)**: Depend on abstractions, not concretions
+    - Use TypeScript interfaces for contracts
+    - Inject dependencies via constructors
+    - Leverage BlueJS ApplicationContext for DI
+
+### DRY Principle (Don't Repeat Yourself)
+
+**Core Concept:** Every piece of knowledge should have a single, authoritative representation.
+
+**Apply with Judgment:**
+
+- **Rule of Three**: Wait for the third occurrence before abstracting
+- **Prefer duplication over wrong abstraction** (Sandi Metz)
+- **AHA Programming**: Avoid Hasty Abstractions - optimize for change, not cleverness
+- Consider whether duplication is **accidental** (looks similar) vs **essential** (same knowledge)
+
+**Balance with Other Principles:**
+
+- DRY + KISS: Simplicity trumps cleverness
+- DRY + YAGNI: Don't abstract for hypothetical future cases
+- DRY + SRP: When they conflict, prefer SRP
+
+**Practical Guidelines:**
+
+- Extract functions when you have actual duplication (3+ occurrences)
+- Use TypeScript utility types for type-level DRY (`Pick`, `Omit`, `Partial`)
+- Apply Library Integration Layer pattern for shared dependencies
+- Follow utility organization hierarchy (STYLE_GUIDE.md Section 4.5)
+
+### When to Apply Each Principle
+
+**During Code Review:**
+
+- [ ] Does each class/function have a single, clear responsibility? (SRP)
+- [ ] Can new behavior be added without modifying existing code? (OCP)
+- [ ] Are subclasses truly substitutable for their base types? (LSP)
+- [ ] Are interfaces small and focused on client needs? (ISP)
+- [ ] Do dependencies flow toward abstractions? (DIP)
+- [ ] Is duplication representing the same knowledge or just accidental similarity? (DRY)
+- [ ] Will abstraction make future changes easier, not harder? (DRY + YAGNI)
+
+**See:** ARCHITECTURE.md "Foundational Principles" for detailed examples, code samples, anti-patterns, and recovery strategies.
+
 ## Overview
 
 BlueJS is a modular JavaScript/TypeScript framework organized as an **Nx monorepo** with **pnpm workspaces**. The framework provides core abstractions and utilities for building web applications, including routing, views, models, context management, and HTTP handling.

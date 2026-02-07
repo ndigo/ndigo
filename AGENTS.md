@@ -56,6 +56,35 @@ The project maintains two complementary documentation files for different purpos
 
 **Maintenance Note:** When updating the dividing line explanation, update it in both `README.md` and `AGENTS.md` to keep them synchronized.
 
+### Design Principles (SOLID & DRY)
+
+ARCHITECTURE.md now includes comprehensive guidance on SOLID and DRY principles adapted for JavaScript/TypeScript. When writing or refactoring code, refer to these principles:
+
+**SOLID Principles:**
+
+- **S**ingle Responsibility: Classes/functions should have one reason to change
+- **O**pen-Closed: Open for extension, closed for modification
+- **L**iskov Substitution: Subtypes must be substitutable for base types
+- **I**nterface Segregation: Clients shouldn't depend on unused interfaces
+- **D**ependency Inversion: Depend on abstractions, not concretions
+
+**DRY Principle (Don't Repeat Yourself):**
+
+- Apply the **Rule of Three**: Wait for three occurrences before abstracting
+- **Prefer duplication over the wrong abstraction** (Sandi Metz)
+- Consider **AHA programming** (Avoid Hasty Abstractions)
+- Balance DRY with KISS (simplicity) and YAGNI (don't over-engineer)
+
+**Quick Reference:**
+
+- Use TypeScript interfaces for DIP and ISP
+- Favor composition over inheritance
+- Use dependency injection (ApplicationContext)
+- Extract functions/classes when you have actual duplication, not hypothetical
+- Keep abstractions simple and focused
+
+**See:** ARCHITECTURE.md Section 2 "Foundational Principles" for detailed examples, anti-patterns, and practical guidelines.
+
 ## 3. Core Commands
 
 ### Installation

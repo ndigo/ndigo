@@ -12,7 +12,7 @@ This document defines the concrete implementation rules, naming conventions, and
 
 These rules are enforced by Prettier (`prettier.config.mjs`). When Prettier configuration changes, this section must be updated.
 
-### Indentation
+### Indentation [AUTOMATED: Prettier]
 
 - **TypeScript/JavaScript:** 4 spaces
 - **JSON/YAML:** 2 spaces
@@ -35,13 +35,13 @@ function example() {
 }
 ```
 
-### Line Endings
+### Line Endings [AUTOMATED: Prettier]
 
 - **Always use LF** (`\n`) on all platforms
 - **Never use CRLF** (`\r\n`)
 - Configured: `endOfLine: 'lf'`
 
-### Semicolons
+### Semicolons [AUTOMATED: Prettier]
 
 - **Always required** at the end of statements
 - Configured: `semi: true`
@@ -56,7 +56,7 @@ const value = 42;
 export default MyClass;
 ```
 
-### Quotes
+### Quotes [AUTOMATED: Prettier]
 
 - **Single quotes** for strings in TypeScript/JavaScript
 - **Double quotes** for JSX attributes
@@ -72,7 +72,7 @@ const message = 'Hello, world!';
 import { foo } from '@blue/util';
 ```
 
-### Trailing Commas
+### Trailing Commas [AUTOMATED: Prettier]
 
 - **ES5 style** - Use trailing commas where valid in ES5
 - Helps with cleaner git diffs
@@ -98,13 +98,13 @@ function example(
 ) {}
 ```
 
-### Print Width
+### Print Width [AUTOMATED: Prettier]
 
 - **Maximum 120 characters** per line
 - Prettier will automatically wrap at this width
 - Configured: `printWidth: 120`
 
-### Arrow Functions
+### Arrow Functions [AUTOMATED: Prettier]
 
 - **Always use parentheses** around parameters
 - Configured: `arrowParens: 'always'`
@@ -118,7 +118,7 @@ const fn2 = (x, y) => x + y;
 const fn = (x) => x * 2;
 ```
 
-### Bracket Spacing
+### Bracket Spacing [AUTOMATED: Prettier]
 
 - **Use spaces inside object literal braces**
 - **Arrays do not get spaces** (standard JavaScript)
@@ -134,7 +134,7 @@ const obj = { name: 'example', value: 42 }; // missing spaces
 const arr = [1, 2, 3]; // extra spaces
 ```
 
-### Markdown Files
+### Markdown Files [AUTOMATED: Prettier]
 
 - **Preserve prose wrapping** - Do not reflow markdown text
 - Configured: `proseWrap: 'preserve'`
@@ -143,7 +143,7 @@ const arr = [1, 2, 3]; // extra spaces
 
 ## 2. File Naming Conventions
 
-### Source Files
+### Source Files [CONVENTION: Code Review]
 
 **Pattern:** `kebab-case.ts`
 
@@ -161,7 +161,7 @@ All TypeScript source files use lowercase with hyphens separating words.
 
 **Rationale:** Kebab-case is URL-friendly, avoids case-sensitivity issues across file systems, and is widely adopted in JavaScript/TypeScript ecosystems.
 
-### Internal/Private Files
+### Internal/Private Files [CONVENTION: Code Review]
 
 **Pattern:** `_kebab-case.ts`
 
@@ -195,7 +195,7 @@ import { helper } from '../_util';
 import { helper } from '@blue/util/_util'; // NEVER DO THIS
 ```
 
-### Test Files
+### Test Files [CONVENTION: Code Review]
 
 **Unit Tests:**
 
@@ -225,7 +225,7 @@ import { helper } from '@blue/util/_util'; // NEVER DO THIS
 ✅ benchmark/logging.js
 ```
 
-### Test Helper Files
+### Test Helper Files [CONVENTION: Code Review]
 
 **Pattern:** `_kebab-case.ts` (preferred) or `testCamelCase.ts` (legacy)
 
@@ -258,7 +258,7 @@ export const expectSuccess = <T>(parser: Parser<T>, input: string) => {
 };
 ```
 
-### Type Declaration Files
+### Type Declaration Files [CONVENTION: Code Review]
 
 **Pattern:** `kebab-case.d.ts`
 
@@ -271,7 +271,7 @@ TypeScript declaration files use kebab-case with `.d.ts` extension.
 ✅ ramda-extensions.d.ts
 ```
 
-### Configuration Files
+### Configuration Files [CONVENTION: Code Review]
 
 **Pattern:** `kebab-case.config.ts` or `kebab-case.json`
 
@@ -289,7 +289,7 @@ Configuration files use kebab-case with appropriate extensions.
 ✅ eslint.config.mjs
 ```
 
-### Documentation Files
+### Documentation Files [CONVENTION: Code Review]
 
 **Pattern:** `UPPER_SNAKE_CASE.md` or `YYYY-MM-DD_DESCRIPTION.md`
 
@@ -330,7 +330,7 @@ Where:
 
 ## 3. Code Naming Conventions
 
-### Constants
+### Constants [CONVENTION: Code Review]
 
 **Pattern:** `UPPER_SNAKE_CASE` for true constants, `camelCase` for functional constants
 
@@ -381,7 +381,7 @@ const upperCaseCount: Counter = pipe(toString, removeLowerCase, lengthOf);
 
 **Rationale:** Distinguishes primitive values (including regex patterns) from higher-order functions. While both are immutable, primitive constants represent data, while functional constants represent behavior. Regular expression patterns use `UPPER_SNAKE_CASE` to match the convention in `@blue/validate` (e.g., `ALPHA_REGEX`, `NUMERIC_REGEX`) and make them easily identifiable.
 
-### Variables and Functions
+### Variables and Functions [CONVENTION: Code Review]
 
 **Pattern:** `camelCase`
 
@@ -415,7 +415,7 @@ const transform = (value: string) => value.toUpperCase();
 const add = (a: number, b: number) => a + b;
 ```
 
-### Predicate Functions
+### Predicate Functions [CONVENTION: Code Review]
 
 **Pattern:** `isType` prefix for type/inheritance checks
 
@@ -440,7 +440,7 @@ function isValidDate(value: temporal, format: string): boolean {
 }
 ```
 
-### Duck Typing Functions
+### Duck Typing Functions [CONVENTION: Code Review]
 
 **Pattern:** `likeType` prefix for structural/interface checks
 
@@ -469,7 +469,7 @@ function likeComparable<T>(value: unknown): value is Comparable<T> {
 
 **Rationale:** Clear distinction between runtime type checks (`is`) and structural compatibility checks (`like`).
 
-### Classes and Interfaces
+### Classes and Interfaces [CONVENTION: Code Review]
 
 **Pattern:** `PascalCase`
 
@@ -505,7 +505,7 @@ interface Serializable {}
 interface ControllerLike {}
 ```
 
-### Private Fields
+### Private Fields [CONVENTION: Code Review]
 
 **Pattern:** `#privateField` (modern) or `_legacyPrivate` (legacy)
 
@@ -547,7 +547,7 @@ class OldComponent {
 
 **Rationale:** `#` provides true privacy at the language level (ES2022+), while `_` is just a convention. New code should use `#`.
 
-### Type Definitions
+### Type Definitions [CONVENTION: Code Review]
 
 **Pattern:** `PascalCase` for complex types, `camelCase` for simple type aliases
 
@@ -583,7 +583,7 @@ type serializable = string | number | boolean | null | undefined;
 
 **Rationale:** Complex structural types are treated like interfaces (PascalCase), while simple type aliases and functional types use camelCase for consistency with function naming.
 
-### 3.8. Decorators
+### 3.8. Decorators [CONVENTION: Code Review]
 
 **Pattern:** `camelCase`
 
@@ -618,7 +618,7 @@ class UserProfileView { }
 
 ## 4. Module Organization
 
-### Directory Structure
+### Directory Structure [CONVENTION: Code Review]
 
 ```
 packages/
@@ -641,7 +641,7 @@ packages/
     └── tsconfig.build.json
 ```
 
-### Barrel Exports (index.ts)
+### Barrel Exports (index.ts) [CONVENTION: Code Review]
 
 **Public API Definition:**
 
@@ -672,7 +672,7 @@ export { slugify } from './slugify';
 // (no export for _helpers.ts)
 ```
 
-### Internal vs Public Modules
+### Internal vs Public Modules [CONVENTION: Code Review]
 
 **Public Modules:**
 
@@ -688,7 +688,7 @@ export { slugify } from './slugify';
 - Can change without notice
 - Package-private only
 
-### 4.5 Utility Function Organization
+### 4.5 Utility Function Organization [CONVENTION: Code Review]
 
 Organizing helper functions and utilities follows a clear hierarchy based on usage patterns found across the codebase.
 
@@ -1140,7 +1140,7 @@ import { utility } from './_util'; // CIRCULAR!
 
 **See also:** [ARCHITECTURE.md - Dependency Management Strategy](./ARCHITECTURE.md#dependency-management-strategy) for guidance on when to promote utilities to `@blue/util`.
 
-### 4.6 File Size and Module Breakdown
+### 4.6 File Size and Module Breakdown [CONVENTION: Code Review]
 
 Maintaining appropriate file sizes improves code readability, testability, and maintainability.
 
@@ -1497,7 +1497,7 @@ Ref: STYLE_GUIDE.md Section 4.6"
 
 ## 6. Special Patterns
 
-### Mixin Naming
+### Mixin Naming [CONVENTION: Code Review]
 
 **Pattern:** `As*` for class mixins, `as*` for function mixins
 
@@ -1532,7 +1532,7 @@ component.emit('event', data);
 
 **Rationale:** Capitalized `As*` indicates class-level composition (returns new class), lowercase `as*` indicates instance-level augmentation (modifies existing object).
 
-### Configurable Suffix
+### Configurable Suffix [CONVENTION: Code Review]
 
 **Pattern:** `*Configurable` for interfaces/classes with setters
 
@@ -1554,7 +1554,7 @@ interface ViewResolverConfigurable extends ViewResolver {
 
 **Rationale:** Clear signal that this variant allows mutation of normally immutable properties.
 
-### Legacy Code Markers
+### Legacy Code Markers [CONVENTION: Code Review]
 
 **Pattern:** `*.legacy.js` or `Old*` prefix
 

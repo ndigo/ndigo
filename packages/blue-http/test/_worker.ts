@@ -133,6 +133,10 @@ const handlers = [
     }),
     http.get('http://localhost/dataParameter', async () => HttpResponse.text(null)),
     http.post('http://localhost/dataParameter', async () => HttpResponse.text(null)),
+    http.get('http://localhost/api/v1/users', async () => HttpResponse.text('users-v1')),
+    http.get('http://localhost/api/users', async () => HttpResponse.text('users')),
+    http.get('http://other.com/request', async () => HttpResponse.text('other-request')),
+    http.get('http://localhost:3000/request', async () => HttpResponse.text('request-3000')),
 ];
 
 export const server = setupServer(...handlers);

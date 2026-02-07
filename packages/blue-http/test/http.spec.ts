@@ -82,6 +82,170 @@ describe('HTTP', () => {
         expect(http.interceptors).toHaveLength(3);
         expect(text).toBe('');
     });
+
+    describe('HTTP.create() factory method', () => {
+        test('should create HTTP instance with empty config', () => {
+            const http = HTTP.create();
+            expect(http).toBeInstanceOf(HTTP);
+            expect(http.interceptors).toHaveLength(0);
+        });
+
+        test('should create HTTP instance with baseURL', async () => {
+            const http = HTTP.create({
+                baseURL: 'http://localhost/',
+            });
+            const response = await http.get('request');
+            expect(response.url).toBe('http://localhost/request');
+        });
+
+        test('should create HTTP instance with headers', async () => {
+            const mockFetch = async (request: Request) => {
+                expect(request.headers.get('X-Custom-Header')).toBe('test-value');
+                return new Response('ok');
+            };
+
+            const http = HTTP.create({
+                baseURL: 'http://localhost/',
+                headers: { 'X-Custom-Header': 'test-value' },
+                fetch: mockFetch,
+            });
+
+            await http.get('request');
+        });
+
+        test('should create HTTP instance with params', async () => {
+            const http = HTTP.create({
+                baseURL: 'http://localhost/',
+                params: { key: 'value', foo: 'bar' },
+            });
+            const response = await http.get('request');
+            const url = new URL(response.url);
+            expect(url.searchParams.get('key')).toBe('value');
+            expect(url.searchParams.get('foo')).toBe('bar');
+        });
+
+        test('should create HTTP instance with all config options', async () => {
+            const mockFetch = async (request: Request) => {
+                expect(request.headers.get('Authorization')).toBe('Bearer token');
+                const url = new URL(request.url);
+                expect(url.searchParams.get('version')).toBe('v2');
+                return new Response('ok');
+            };
+
+            const http = HTTP.create({
+                baseURL: 'http://localhost/',
+                headers: { Authorization: 'Bearer token' },
+                params: { version: 'v2' },
+                fetch: mockFetch,
+            });
+
+            await http.get('request');
+        });
+
+        test('should accept interceptors in config', async () => {
+            const http = HTTP.create({
+                baseURL: 'http://localhost/',
+                interceptors: [new TestInterceptor() as any, new ExceptInterceptor() as any],
+            });
+
+            expect(http.interceptors).toHaveLength(2);
+            const response = await http.get('request');
+            expect(response.url).toMatch(requestPath);
+        });
+
+        test('should accept empty interceptors array', () => {
+            const http = HTTP.create({
+                baseURL: 'http://localhost/',
+                interceptors: [],
+            });
+
+            expect(http.interceptors).toHaveLength(0);
+        });
+
+        test('should work with multiple interceptors', async () => {
+            const http = HTTP.create({
+                baseURL: 'http://localhost/',
+                interceptors: [
+                    new TestInterceptor() as any,
+                    new ExceptInterceptor() as any,
+                    new TestInterceptor() as any,
+                ],
+            });
+
+            expect(http.interceptors).toHaveLength(3);
+            const response = await http.get('request');
+            expect(response.url).toMatch(requestPath);
+        });
+
+        test('should accept custom fetch implementation', async () => {
+            let customFetchCalled = false;
+            const customFetch = async (input: RequestInfo | URL, init?: RequestInit) => {
+                customFetchCalled = true;
+                return new Response('custom response');
+            };
+
+            const http = HTTP.create({
+                baseURL: 'http://localhost/',
+                fetch: customFetch,
+            });
+
+            await http.get('request');
+            expect(customFetchCalled).toBe(true);
+        });
+
+        test('should default to globalThis.fetch when fetch not provided', async () => {
+            const http = HTTP.create({
+                baseURL: 'http://localhost/',
+            });
+
+            const response = await http.get('request');
+            expect(response).toBeInstanceOf(Response);
+        });
+
+        test('should handle undefined config', () => {
+            const http = HTTP.create(undefined);
+            expect(http).toBeInstanceOf(HTTP);
+            expect(http.interceptors).toHaveLength(0);
+        });
+
+        test('should produce same result as constructor with empty interceptors', async () => {
+            const config = {
+                baseURL: 'http://localhost/',
+                headers: { 'X-Test': 'value' },
+                params: { key: 'value' },
+            };
+
+            const http1 = HTTP.create(config);
+            const http2 = new HTTP([], config);
+
+            expect(http1.interceptors).toHaveLength(http2.interceptors.length);
+            expect(http1.settings).toEqual(http2.settings);
+
+            const response1 = await http1.get('request');
+            const response2 = await http2.get('request');
+
+            expect(response1.url).toBe(response2.url);
+        });
+
+        test('should produce same result as constructor with interceptors', async () => {
+            const interceptors = [new TestInterceptor() as any, new ExceptInterceptor() as any];
+            const config = {
+                baseURL: 'http://localhost/',
+                headers: { 'X-Test': 'value' },
+            };
+
+            const http1 = HTTP.create({ ...config, interceptors });
+            const http2 = new HTTP(interceptors, config);
+
+            expect(http1.interceptors).toHaveLength(http2.interceptors.length);
+            expect(http1.settings).toEqual(http2.settings);
+
+            const response1 = await http1.get('request');
+            const response2 = await http2.get('request');
+
+            expect(response1.url).toBe(response2.url);
+        });
+    });
 });
 
 describe('HTTPExecutionChain', () => {

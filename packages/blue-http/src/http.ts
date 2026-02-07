@@ -10,9 +10,46 @@ import { is, like } from '@blue/util/types';
 import { likeResponse } from './like-response';
 
 export type HTTPMethod = 'CONNECT' | 'DELETE' | 'GET' | 'HEAD' | 'OPTIONS' | 'PATCH' | 'POST' | 'PUT' | 'TRACE';
+/**
+ * Extended RequestInit with HTTP-specific options.
+ * @property {HTTPMethod} [method] - The HTTP request method
+ * @property {string} [baseURL] - Base URL for resolving relative URLs.
+ *   If provided, relative URLs will be resolved against this base.
+ *   Absolute URLs ignore this option.
+ *   **Important**: Must include trailing slash if using path segments.
+ * @example
+ * // Correct - with trailing slash
+ * { baseURL: 'https://api.github.com/' }
+ * { baseURL: 'https://api.github.com/v3/' }
+ *
+ * // Incorrect - will drop last segment
+ * { baseURL: 'https://api.github.com/v3' }  // 'users' → '/users' not '/v3/users'
+ */
 export type HTTPInit = RequestInit & {
     method?: HTTPMethod;
+    baseURL?: string; // ← ADDED
+    headers?: HeadersInit;
+    params?: URLSearchParams | string[][] | Record<string, string> | string;
 };
+
+/**
+ * Configuration options for creating an HTTP client instance via HTTP.create().
+ * This interface extends HTTPInit with additional factory-specific options.
+ * @property {HTTPInterceptor[]} [interceptors] - Optional HTTP interceptors to apply to all requests
+ * @property {Fetch} [fetch] - Optional custom fetch implementation (defaults to globalThis.fetch)
+ */
+export interface HTTPConfig extends HTTPInit {
+    /**
+     * Optional HTTP interceptors to apply to all requests.
+     */
+    interceptors?: HTTPInterceptor[];
+
+    /**
+     * Optional custom fetch implementation.
+     * Defaults to globalThis.fetch if not provided.
+     */
+    fetch?: Fetch;
+}
 
 export type Fetch = (input: RequestInfo, init?: RequestInit) => Promise<Response>;
 
@@ -562,6 +599,76 @@ export class HTTP {
         return this.#interceptors;
     }
 
+    /**
+     * Create a new HTTP client instance with optional configuration.
+     *
+     * This is the recommended way to create HTTP clients for direct use.
+     * For dependency injection scenarios (e.g., with ApplicationContext),
+     * use the constructor directly.
+     *
+     * @param config - Configuration options for the HTTP client
+     * @param config.baseURL - Base URL for resolving relative URLs
+     * @param config.headers - Default headers to include in all requests
+     * @param config.params - Default query parameters to include in all requests
+     * @param config.interceptors - Optional HTTP interceptors
+     * @param config.fetch - Optional custom fetch implementation (defaults to globalThis.fetch)
+     *
+     * @returns A configured HTTP client instance
+     *
+     * @example
+     * // Direct construction (recommended for standalone use)
+     * const api = HTTP.create({
+     *     baseURL: 'https://api.example.com/',
+     *     headers: { 'Authorization': 'Bearer token123' },
+     *     params: { 'version': 'v2' }
+     * });
+     *
+     * @example
+     * // With interceptors
+     * const api = HTTP.create({
+     *     baseURL: 'https://api.example.com/',
+     *     interceptors: [
+     *         new TimeoutInterceptor(5000),
+     *         new LoggingInterceptor()
+     *     ]
+     * });
+     *
+     * @see {@link HTTP.constructor} for dependency injection scenarios
+     */
+    static create(config: HTTPConfig = {}): HTTP {
+        const { interceptors = [], fetch, ...init } = config;
+        return new HTTP(interceptors, init, fetch);
+    }
+
+    /**
+     * Create a new HTTP client instance.
+     *
+     * This constructor is designed for dependency injection scenarios where
+     * interceptors, settings, and fetch implementation are managed by a
+     * container (e.g., ApplicationContext with AsHTTPStrategy).
+     *
+     * For direct construction, prefer using the static factory method HTTP.create().
+     *
+     * @param interceptors - Array of HTTP interceptors to apply
+     * @param init - Initial configuration settings
+     * @param fetch - Fetch implementation (defaults to globalThis.fetch)
+     *
+     * @example
+     * // Dependency injection pattern (AsHTTPStrategy)
+     * getHTTP(fetch: Fetch = globalThis.fetch): HTTP {
+     *     const { httpInterceptors, httpSettings } = this;
+     *     return new HTTP(httpInterceptors, httpSettings, fetch);
+     * }
+     *
+     * @example
+     * // Direct construction (when DI is not used)
+     * const http = new HTTP(
+     *     [new TimeoutInterceptor(5000)],
+     *     { baseURL: 'https://api.example.com/' }
+     * );
+     *
+     * @see {@link HTTP.create} for a cleaner API when not using DI
+     */
     constructor(
         interceptors: HTTPInterceptor[] = [],
         init: HTTPInit = defaults,
@@ -579,8 +686,31 @@ export class HTTP {
      * @returns {Promise<external:Response>}
      */
     async request(input: string, init: HTTPInit = null): Promise<Response> {
-        const settings = init === null ? assign({}, this.settings) : assign({}, this.settings, init),
-            url = new URL(input, location.href);
+        const settings = init === null ? assign({}, this.settings) : assign({}, this.settings, init);
+
+        const instanceHeaders = new Headers(this.settings.headers || {});
+        const requestHeaders = new Headers(settings.headers || {});
+
+        requestHeaders.forEach((value, key) => {
+            instanceHeaders.set(key, value);
+        });
+        settings.headers = instanceHeaders;
+
+        const baseURL = settings.baseURL || (typeof location !== 'undefined' ? location.href : 'http://localhost/');
+        const url = new URL(input, baseURL);
+
+        // Merge instance and request query parameters
+        const mergedParams = new URLSearchParams(this.settings.params || {});
+        if (settings.params) {
+            new URLSearchParams(settings.params).forEach((value, key) => {
+                mergedParams.set(key, value);
+            });
+        }
+
+        // Append merged params to the URL
+        mergedParams.forEach((value, key) => {
+            url.searchParams.set(key, value);
+        });
 
         let response: Response | ResponseError;
 
@@ -597,7 +727,7 @@ export class HTTP {
 
             // One or more interceptors, so complex execution
         } else {
-            const chain = this._getHTTPExecutionChain(this, input);
+            const chain = this._getHTTPExecutionChain(this, url.href);
 
             if (chain.applyPreInit(url, settings) === false) {
                 return new Response(null, settings);
@@ -618,11 +748,6 @@ export class HTTP {
             } finally {
                 chain.applyPostComplete(request, response);
             }
-        }
-
-        // Ensure we only return Response, not ResponseError
-        if (response instanceof ResponseError) {
-            return new Response(null, { status: 500, statusText: 'Internal Server Error' });
         }
 
         return response;

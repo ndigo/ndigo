@@ -953,6 +953,110 @@ BlueJS leverages established design patterns to achieve flexibility, extensibili
 
 **See also:** [Foundational Principles](#foundational-principles) for detailed SOLID and DRY guidance, including when and how to apply these patterns.
 
+### Constructor-Factory Dual Pattern
+
+BlueJS employs a **Constructor-Factory Dual Pattern** in several core classes, where the constructor is optimized for dependency injection scenarios, and a static factory method provides a cleaner API for direct instantiation.
+
+#### Pattern Structure
+
+```typescript
+class Service {
+    // Constructor: Optimized for DI - accepts pre-configured dependencies
+    constructor(dependency1: Dependency1, dependency2: Dependency2, config: Config) {
+        // Dependencies are injected by container
+    }
+
+    // Static Factory: Optimized for direct use - accepts simple config
+    static create(options: Options = {}): Service {
+        // Factory creates dependencies from options
+        const dependency1 = new Dependency1(options.dep1Config);
+        const dependency2 = new Dependency2(options.dep2Config);
+        return new Service(dependency1, dependency2, options.config);
+    }
+}
+```
+
+#### When to Use Each Pattern
+
+**Use Constructor When:**
+
+- Working with ApplicationContext or DI containers
+- Dependencies are managed by framework
+- Following IoC (Inversion of Control) principles
+- Multiple dependencies need separate configuration
+
+**Use Static Factory When:**
+
+- Direct instantiation in tests or scripts
+- Standalone usage without DI
+- Creating multiple configured instances
+- Simpler API is preferred
+
+#### Example: HTTP Client
+
+The `HTTP` class in `@blue/http` demonstrates this pattern:
+
+**DI Pattern (Constructor):**
+
+```typescript
+// In AsHTTPStrategy mixin (packages/blue-dispatcher)
+class Application extends AsHTTPStrategy(StrategyInitializer) {
+    initHTTP(context: ApplicationContext): void {
+        // Framework collects interceptors from DI container
+        this.initCollectionStrategy(
+            context,
+            'httpInterceptors',
+            'httpInterceptor',
+            HTTP_INTERCEPTORS,
+            defaultHTTPInterceptors // 5 built-in interceptors
+        );
+        // Framework loads settings from configuration
+        this.initStrategy(context, 'httpSettings', HTTP_SETTINGS, {});
+    }
+
+    getHTTP(fetch?: Fetch): HTTP {
+        // Three separate concerns, managed by DI container
+        return new HTTP(
+            this.httpInterceptors, // From DI container
+            this.httpSettings, // From config
+            fetch // Injected for testability
+        );
+    }
+}
+```
+
+**Direct Pattern (Static Factory):**
+
+```typescript
+// In tests, scripts, or standalone usage
+const api = HTTP.create({
+    baseURL: 'https://api.example.com/',
+    headers: { Authorization: 'Bearer token' },
+    params: { version: 'v2' },
+    interceptors: [new TimeoutInterceptor(5000), new LoggingInterceptor()],
+});
+```
+
+#### Benefits
+
+1. **Separation of Concerns**: Constructor parameters represent distinct concerns (behavior, configuration, implementation)
+2. **Flexibility**: Both DI and direct usage patterns are supported
+3. **Testability**: Constructor allows full control over dependencies for testing
+4. **Ergonomics**: Static factory provides clean API for common use cases
+5. **Backward Compatibility**: Adding factory method doesn't break existing constructor usage
+
+#### Implementation Guidelines
+
+When implementing this pattern:
+
+1. **Constructor signature**: Design for DI - accept fully-constructed dependencies
+2. **Factory signature**: Design for convenience - accept simple options/config objects
+3. **Documentation**: Clearly document which pattern to use when
+4. **Consistency**: Use consistent naming (`create()` for factory methods)
+5. **Defaults**: Provide sensible defaults in factory, require explicit values in constructor
+
+**See also:** `@blue/http` package for a complete implementation example.
+
 ## Decorators & Separation of Concerns
 
 ### Overview

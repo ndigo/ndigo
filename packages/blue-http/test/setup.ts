@@ -4,7 +4,7 @@ import { beforeAll } from 'vitest';
 beforeAll(() => {
     if (typeof location === 'undefined') {
         (globalThis as any).location = {
-            href: 'http://localhost/',
+            href: 'http://localhost:3000/',
             origin: 'http://localhost',
             protocol: 'http:',
             host: 'localhost',

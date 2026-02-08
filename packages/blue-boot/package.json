@@ -1,6 +1,6 @@
 {
   "name": "@blue/boot",
-  "version": "3.0.0-alpha.0",
+  "version": "0.0.1",
   "description": "Blue Boot",
   "type": "module",
   "files": [
@@ -32,13 +32,13 @@
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
   "devDependencies": {
-    "@blue/context": "~3.0.0-alpha",
-    "@blue/core": "~3.0.0-alpha",
-    "@blue/router": "~3.0.0-alpha"
+    "@blue/context": "~0.0.1",
+    "@blue/core": "~0.0.1",
+    "@blue/router": "~0.0.1"
   },
   "peerDependencies": {
-    "@blue/context": "~3.0.0-alpha",
-    "@blue/core": "~3.0.0-alpha",
-    "@blue/router": "~3.0.0-alpha"
+    "@blue/context": "~0.0.1",
+    "@blue/core": "~0.0.1",
+    "@blue/router": "~0.0.1"
   }
 }

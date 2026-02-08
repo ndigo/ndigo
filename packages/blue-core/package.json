@@ -1,6 +1,6 @@
 {
   "name": "@blue/core",
-  "version": "3.0.0-alpha.0",
+  "version": "0.0.1",
   "description": "Blue Core",
   "type": "module",
   "files": [
@@ -27,12 +27,12 @@
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
   "devDependencies": {
-    "@blue/parser": "~3.0.0-alpha",
-    "@blue/util": "~3.0.0-alpha"
+    "@blue/parser": "~0.0.1",
+    "@blue/util": "~0.0.1"
   },
   "peerDependencies": {
-    "@blue/parser": "~3.0.0-alpha",
-    "@blue/util": "~3.0.0-alpha"
+    "@blue/parser": "~0.0.1",
+    "@blue/util": "~0.0.1"
   },
   "sideEffects": false
 }

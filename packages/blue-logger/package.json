@@ -1,6 +1,6 @@
 {
   "name": "@blue/logger",
-  "version": "3.0.0-alpha.0",
+  "version": "0.0.1",
   "description": "Blue Logger",
   "type": "module",
   "files": [
@@ -39,13 +39,13 @@
     "zone.js": "~0.12.0"
   },
   "devDependencies": {
-    "@blue/core": "~3.0.0-alpha",
-    "@blue/util": "~3.0.0-alpha",
+    "@blue/core": "~0.0.1",
+    "@blue/util": "~0.0.1",
     "pino": "^8.10.0",
     "winston": "^3.3.3"
   },
   "peerDependencies": {
-    "@blue/core": "~3.0.0-alpha",
-    "@blue/util": "~3.0.0-alpha"
+    "@blue/core": "~0.0.1",
+    "@blue/util": "~0.0.1"
   }
 }

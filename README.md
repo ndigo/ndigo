@@ -16,6 +16,22 @@ A modular JavaScript/TypeScript framework organized as an Nx monorepo with pnpm 
 - **Vitest:** 2.1.8 (testing framework)
 - **Vite:** 6.0.7 (bundler)
 
+## Versioning
+
+All BlueJS packages and applications are currently at version **0.0.1**, indicating active development status. During this phase:
+
+- **Breaking changes may occur without notice** as the framework evolves
+- APIs are subject to change based on development needs
+- No stability guarantees are provided
+
+Once the framework reaches stability, all packages will follow **[Semantic Versioning 2.0.0](https://semver.org/)**:
+
+- **MAJOR** version: Breaking changes and incompatible API changes
+- **MINOR** version: New features added in a backward-compatible manner
+- **PATCH** version: Backward-compatible bug fixes
+
+The transition to `1.0.0` will signal the first stable release with semantic versioning guarantees.
+
 ## Getting Started
 
 ```bash
@@ -138,39 +154,41 @@ pnpm lint
 The project maintains two complementary documentation files for different purposes:
 
 **STYLE_GUIDE.md - "How to Write Code"**
+
 - **Focus:** Concrete implementation rules, naming, and formatting conventions
 - **Audience:** All developers (including AI agents) writing code daily
 - **Content:**
-  - File naming conventions (kebab-case, underscore prefix, etc.)
-  - Code naming conventions (camelCase, PascalCase, UPPER_SNAKE_CASE)
-  - Prettier formatting rules (indentation, quotes, semicolons, etc.)
-  - Module organization structure
-  - Special patterns (internal files, test helpers, mixins)
-  - Before/after examples of correct usage
+    - File naming conventions (kebab-case, underscore prefix, etc.)
+    - Code naming conventions (camelCase, PascalCase, UPPER_SNAKE_CASE)
+    - Prettier formatting rules (indentation, quotes, semicolons, etc.)
+    - Module organization structure
+    - Special patterns (internal files, test helpers, mixins)
+    - Before/after examples of correct usage
 
 **Think:** "How do I name this file/variable/class?" and "How should this code be formatted?"
 
 **ARCHITECTURE.md - "Why the System Works This Way"**
+
 - **Focus:** High-level design decisions, patterns, principles, and rationale
 - **Audience:** Architects and senior developers understanding system design
 - **Content:**
-  - Core philosophy and design principles
-  - Layered architecture organization
-  - Design patterns (Strategy, Factory, Observer, Decorator, etc.)
-  - Dependency management strategy (Library Integration Layer)
-  - Module visibility concepts and API design
-  - Roadmap and development phases
+    - Core philosophy and design principles
+    - Layered architecture organization
+    - Design patterns (Strategy, Factory, Observer, Decorator, etc.)
+    - Dependency management strategy (Library Integration Layer)
+    - Module visibility concepts and API design
+    - Roadmap and development phases
 
 **Think:** "Why is the system designed this way?" and "What are the architectural patterns?"
 
 **The Dividing Line:**
 
-| Concern | ARCHITECTURE.md | STYLE_GUIDE.md |
-| :--- | :--- | :--- |
-| Dependency Management | "Use Library Integration Layer pattern" | "Import from @blue/util, not from ramda" |
-| Code Organization | "Use Strategy Pattern for parsers" | "Name parser files: kebab-case.ts in src/" |
-| Module Visibility | "Internal modules are implementation details" | "Prefix internal files with underscore: _util.ts" |
-| Naming Philosophy | "Use `is` prefix for type checks, `like` for duck-typing" | "isString checks with typeof, returns boolean" |
+| Concern               | ARCHITECTURE.md                                           | STYLE_GUIDE.md                                     |
+| :-------------------- | :-------------------------------------------------------- | :------------------------------------------------- |
+| Dependency Management | "Use Library Integration Layer pattern"                   | "Import from @blue/util, not from ramda"           |
+| Code Organization     | "Use Strategy Pattern for parsers"                        | "Name parser files: kebab-case.ts in src/"         |
+| Module Visibility     | "Internal modules are implementation details"             | "Prefix internal files with underscore: \_util.ts" |
+| Naming Philosophy     | "Use `is` prefix for type checks, `like` for duck-typing" | "isString checks with typeof, returns boolean"     |
 
 **Maintenance Note:** When updating the dividing line explanation, update it in both `README.md` and `AGENTS.md` to keep them synchronized.
 
@@ -194,18 +212,21 @@ The project maintains two complementary documentation files for different purpos
 Files prefixed with an underscore (`_*.ts`) are **internal to their package** and should not be considered part of the public API:
 
 **Source files (`packages/*/src/_*.ts`):**
+
 - Internal utilities and helper functions
 - Implementation details not intended for external consumption
 - Re-exports from dependencies organized for internal use
 - Example: `_util.ts`, `_parser.ts`, `_natural-sort.ts`
 
 **Test files (`packages/*/test/_*.ts`):**
+
 - Test helper utilities and fixtures
 - Custom assertion helpers
 - Mock/worker implementations for testing
 - Example: `_expect.ts`, `_worker.ts`
 
 **Guidelines:**
+
 - ❌ Do NOT export underscore-prefixed modules in `index.ts`
 - ❌ Do NOT import underscore modules from other packages
 - ✅ Use only within the same package

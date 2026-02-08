@@ -92,19 +92,19 @@ importers:
   apps/blue-demo:
     dependencies:
       '@blue/context':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../../packages/blue-context
       '@blue/core':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../../packages/blue-core
       '@blue/dispatcher':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../../packages/blue-dispatcher
       '@blue/util':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../../packages/blue-util
       '@blue/view':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../../packages/blue-view
       todomvc-app-css:
         specifier: ~2.4.2
@@ -126,55 +126,55 @@ importers:
   packages/blue-boot:
     devDependencies:
       '@blue/context':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-context
       '@blue/core':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-core
       '@blue/router':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-router
 
   packages/blue-content:
     devDependencies:
       '@blue/core':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-core
       '@blue/factory':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-factory
       '@blue/util':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-util
 
   packages/blue-context:
     devDependencies:
       '@blue/content':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-content
       '@blue/core':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-core
       '@blue/factory':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-factory
       '@blue/logger':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-logger
       '@blue/parser':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-parser
       '@blue/util':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-util
 
   packages/blue-core:
     devDependencies:
       '@blue/parser':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-parser
       '@blue/util':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-util
 
   packages/blue-dispatcher:
@@ -187,79 +187,79 @@ importers:
         version: 0.211.0(@opentelemetry/api@1.4.1)
     devDependencies:
       '@blue/context':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-context
       '@blue/core':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-core
       '@blue/factory':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-factory
       '@blue/http':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-http
       '@blue/logger':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-logger
       '@blue/parser':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-parser
       '@blue/router':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-router
       '@blue/util':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-util
       '@blue/view':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-view
 
   packages/blue-domain:
     devDependencies:
       '@blue/context':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-context
       '@blue/core':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-core
       '@blue/dispatcher':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-dispatcher
       '@blue/factory':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-factory
       '@blue/model':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-model
       '@blue/util':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-util
       '@blue/validate':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-validate
 
   packages/blue-factory:
     devDependencies:
       '@blue/core':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-core
       '@blue/util':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-util
 
   packages/blue-http:
     devDependencies:
       '@blue/core':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-core
       '@blue/factory':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-factory
       '@blue/parser':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-parser
       '@blue/util':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-util
 
   packages/blue-logger:
@@ -323,10 +323,10 @@ importers:
         version: 0.12.0
     devDependencies:
       '@blue/core':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-core
       '@blue/util':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-util
       pino:
         specifier: ^8.10.0
@@ -342,13 +342,13 @@ importers:
         version: 4.4.6
     devDependencies:
       '@blue/context':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-context
       '@blue/core':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-core
       '@blue/util':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-util
 
   packages/blue-parser:
@@ -358,28 +358,28 @@ importers:
         version: 5.0.0
     devDependencies:
       '@blue/util':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-util
 
   packages/blue-platform-web:
     devDependencies:
       '@blue/context':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-context
       '@blue/core':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-core
       '@blue/dispatcher':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-dispatcher
       '@blue/parser':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-parser
       '@blue/router':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-router
       '@blue/util':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-util
       arcsecond:
         specifier: ~5.0.0
@@ -394,28 +394,28 @@ importers:
   packages/blue-router:
     devDependencies:
       '@blue/core':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-core
       '@blue/http':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-http
       '@blue/util':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-util
 
   packages/blue-service:
     devDependencies:
       '@blue/core':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-core
       '@blue/factory':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-factory
       '@blue/http':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-http
       '@blue/util':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-util
 
   packages/blue-util:
@@ -449,40 +449,40 @@ importers:
   packages/blue-validate:
     devDependencies:
       '@blue/core':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-core
       '@blue/util':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-util
 
   packages/blue-view:
     devDependencies:
       '@blue/context':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-context
       '@blue/core':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-core
       '@blue/factory':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-factory
       '@blue/router':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-router
       '@blue/util':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-util
 
   packages/blue-view-webcomponent:
     devDependencies:
       '@blue/core':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-core
       '@blue/util':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-util
       '@blue/view':
-        specifier: ~3.0.0-alpha
+        specifier: ~0.0.1
         version: link:../blue-view
 
 packages:

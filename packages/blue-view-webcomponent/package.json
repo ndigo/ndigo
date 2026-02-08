@@ -1,6 +1,6 @@
 {
   "name": "@blue/view-webcomponent",
-  "version": "3.0.0-alpha.0",
+  "version": "0.0.1",
   "description": "Blue View Web Components",
   "type": "module",
   "files": [
@@ -27,13 +27,13 @@
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
   "devDependencies": {
-    "@blue/core": "~3.0.0-alpha",
-    "@blue/util": "~3.0.0-alpha",
-    "@blue/view": "~3.0.0-alpha"
+    "@blue/core": "~0.0.1",
+    "@blue/util": "~0.0.1",
+    "@blue/view": "~0.0.1"
   },
   "peerDependencies": {
-    "@blue/core": "~3.0.0-alpha",
-    "@blue/util": "~3.0.0-alpha",
-    "@blue/view": "~3.0.0-alpha"
+    "@blue/core": "~0.0.1",
+    "@blue/util": "~0.0.1",
+    "@blue/view": "~0.0.1"
   }
 }

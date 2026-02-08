@@ -96,7 +96,7 @@ export class HTTPLogRecordExporter implements LogRecordExporter, HTTPAware {
 
             // Build headers
             const headers = new Headers();
-            CONTENT_TYPE.set(headers, this.layout.mediaType.withCharset('utf-8'));
+            CONTENT_TYPE.set(headers, this.layout.mediaType.toContentType());
             CONTENT_LENGTH.set(headers, content.length);
 
             // Build request settings

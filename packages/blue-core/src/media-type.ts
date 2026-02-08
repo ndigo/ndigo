@@ -166,6 +166,26 @@ export default class MediaType extends Null implements Serializable, StringCompa
         ])(this.parameters[QUALITY_FACTOR_PARAM]) as number;
     }
 
+    /**
+     * Returns the base media type without parameters or suffix.
+     *
+     * Provides simple string format for matching (e.g., "text/html", "application/json").
+     *
+     * @returns Base type as "type/subtype" string
+     *
+     * @example
+     * ```typescript
+     * const mt = MediaType.for('text/html;charset=UTF-8');
+     * mt.baseType; // "text/html"
+     *
+     * const mt2 = MediaType.for('application/atom+xml');
+     * mt2.baseType; // "application/atom" (excludes suffix)
+     * ```
+     */
+    get baseType(): string {
+        return `${this.type}/${this.subtype}`;
+    }
+
     static for(mediaType: string): MediaType;
     static for(type: SupportedMediaType, subtype: string, parameters?: MediaTypeParameters): MediaType;
     static for(
@@ -184,14 +204,15 @@ export default class MediaType extends Null implements Serializable, StringCompa
                     const mediaType = new MediaType(typeOrExpression as SupportedMediaType, subtype, parameters);
                     typeRegistry.set(mediaTypeExpression, mediaType);
                 } else {
-                    const [type, subtype] = mediaTypeExpression.split('/') as [SupportedMediaType, string],
-                        parts: string[] = subtype.split(';');
+                    const [type, fullSubtype] = mediaTypeExpression.split('/') as [SupportedMediaType, string],
+                        parts: string[] = fullSubtype.split(';'),
+                        subtype = parts[0];
 
                     // Remove the subtype
                     parts.shift();
 
                     const // @ts-ignore: Cannot make the types for fromPairs happy -JBR
-                        parameters = parts.length ? pipe(map(splitOnEquals, parts), fromPairs) : {},
+                        parameters = parts.length ? fromPairs(map(splitOnEquals, parts)) : {},
                         mediaType = new MediaType(type, subtype, parameters);
 
                     typeRegistry.set(mediaTypeExpression, mediaType);
@@ -427,7 +448,66 @@ export default class MediaType extends Null implements Serializable, StringCompa
         return result;
     }
 
-    withCharset(charset: string): MediaType {
-        return new MediaType(this.type, this.subtype, { charset: charset });
+    /**
+     * Returns the default charset for this media type, if known.
+     *
+     * Currently returns 'utf-8' for all text/* and application/json media types.
+     *
+     * @returns {string | null} The default charset or null if unknown
+     */
+    getDefaultCharset(): string | null {
+        return this.type === 'text' || (this.type === 'application' && this.subtype === 'json') ? 'utf-8' : null;
     }
+
+    /**
+     * Formats the media type for use in an HTTP Content-Type header.
+     *
+     * Optionally adds a default charset if none is present and the media type supports it.
+     *
+     * @param {Object} [options] Formatting options
+     * @param {boolean} [options.autoCharset=true] Whether to automatically add a default charset
+     * @returns {string} The formatted Content-Type string
+     */
+    toContentType(options?: { autoCharset?: boolean }): string {
+        const base = this.toString();
+        const autoCharset = options?.autoCharset ?? true;
+
+        if (autoCharset && !this.parameters.charset) {
+            const charset = this.getDefaultCharset();
+            return charset ? `${base};charset=${charset}` : base;
+        }
+
+        return base;
+    }
+
+    withCharset(charset: string): MediaType {
+        return new MediaType(this.type, this.subtype, { ...this.parameters, charset });
+    }
+}
+
+/**
+ * Parses a media type string into a MediaType instance.
+ *
+ * Standalone function for functional programming style and Transform Pipeline usage.
+ *
+ * @param {string} value - Media type string (e.g., "text/html;charset=UTF-8")
+ * @returns {MediaType} MediaType instance from registry
+ * @throws {Error} If value is invalid or cannot be parsed
+ */
+export function parseMediaType(value: string): MediaType {
+    if (!value || typeof value !== 'string') {
+        throw new Error(`Invalid media type: expected non-empty string, got ${typeof value}`);
+    }
+
+    const trimmed = value.trim();
+    if (!trimmed) {
+        throw new Error('Invalid media type: empty string');
+    }
+
+    const result = MediaType.for(trimmed);
+    if (!result) {
+        throw new Error(`Invalid media type: could not parse "${value}"`);
+    }
+
+    return result;
 }

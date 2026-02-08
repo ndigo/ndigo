@@ -54,7 +54,7 @@ export class HTTPAppender extends AbstractBatchAppender implements HTTPAware {
                 headers: new Headers(),
             });
 
-        CONTENT_TYPE.set(settings.headers, this.layout.mediaType.withCharset('utf-8'));
+        CONTENT_TYPE.set(settings.headers, this.layout.mediaType.toContentType());
         CONTENT_LENGTH.set(settings.headers, content.length);
 
         this.appending = new Promise<Response>(function (resolve, reject): void {

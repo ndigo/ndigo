@@ -51,6 +51,10 @@ rg "^export class [A-Z][a-z]+Transformer" packages/blue-core/src/transducer.ts  
 
 # Verify Abstract prefix usage
 rg "^(export )?abstract class [A-Z]" --type ts | rg -v "^(export )?abstract class Abstract"  # Should return nothing
+
+# Verify no UPPER_SNAKE_CASE RegExp constants (objects, not primitives per @blue/core/primitive.ts)
+rg "^export const [A-Z_]+.*= /" packages/*/src --type ts  # Should return nothing
+rg "^const [A-Z_]+.*= /" packages/*/src --type ts        # Should return nothing
 ```
 
 ---

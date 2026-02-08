@@ -332,35 +332,61 @@ Where:
 
 ### Constants [CONVENTION: Code Review]
 
-**Pattern:** `UPPER_SNAKE_CASE` for true constants, `camelCase` for functional constants
+**Pattern:** `UPPER_SNAKE_CASE` for primitive constants and semantic enum-like values, `camelCase` for all other constants
 
-**True Constants** (immutable primitive values):
+**Primitive Constants** (immutable primitive values per `@blue/core/src/primitive.ts`):
+
+Primitive types: `boolean | null | number | string | symbol | bigint | undefined`
 
 ```typescript
-// ✅ Correct: Primitive constants use UPPER_SNAKE_CASE
-const ALPHA_REGEX = /^[a-zA-Z]+$/;
-const ALPHA_NUMERIC_REGEX = /^[a-zA-Z0-9]+$/;
-const DEFAULT_DATE_FORMAT = 'MM/DD/YYYY';
+// ✅ Correct: Primitive string constants use UPPER_SNAKE_CASE
 const WILDCARD: SupportedMediaType = '*';
 const QUALITY_FACTOR_PARAM = 'q';
-const MAX_RETRIES = 3;
+const DEFAULT_DATE_FORMAT = 'MM/DD/YYYY';
 
+// ✅ Correct: Primitive number constants use UPPER_SNAKE_CASE
+const MAX_RETRIES = 3;
+const DEFAULT_TIMEOUT = 5000;
+const HTTP_OK = 200;
+
+// ✅ Correct: Primitive boolean constants use UPPER_SNAKE_CASE
+const DEBUG_ENABLED = true;
+const STRICT_MODE = false;
+```
+
+**Semantic Enum-Like Constants** (immutable object instances acting as enums):
+
+```typescript
+// ✅ Correct: HTTPHeader instances (enum-like semantics) use UPPER_SNAKE_CASE
+export const CONTENT_TYPE = new HTTPHeader('Content-Type');
+export const AUTHORIZATION = new HTTPHeader('Authorization');
+
+// ✅ Correct: MediaType instances (enum-like semantics) use UPPER_SNAKE_CASE
 export const APPLICATION_JSON = MediaType.for('application', 'json');
 export const TEXT_HTML = MediaType.for('text', 'html');
 export const IMAGE_PNG = MediaType.for('image', 'png');
 ```
 
-**Regular Expression Patterns** (primitive regex constants):
+**Object Constants** (RegExp patterns, object literals, arrays):
+
+All non-primitive constants use `camelCase`, including RegExp patterns and other immutable objects.
 
 ```typescript
-// ✅ Correct: Regex patterns use UPPER_SNAKE_CASE
-const QUERY_KEY_PATTERN = /^[A-Za-z+:/?[\]0-9%]+/;
-const MATRIX_VALUE_PATTERN = /^[^;]*/;
-const ALPHA_REGEX = /^[a-zA-Z]+$/;
-const PERCENT_ENCODED_PATTERN = /(%[0-9A-Za-z]{2})+/g;
+// ✅ Correct: RegExp patterns use camelCase (they are objects, not primitives)
+const alphaRegex = /^[a-zA-Z]+$/;
+const alphaNumericRegex = /^[a-zA-Z0-9]+$/;
+const queryKeyPattern = /^[A-Za-z+:/?[\]0-9%]+/;
+const matrixValuePattern = /^[^;]*/;
+const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+const percentEncodedPattern = /(%[0-9A-Za-z]{2})+/g;
 
-// Used in parser combinators
-const queryKey = regex(QUERY_KEY_PATTERN).map(replacePlusWithSpace).map(decode);
+// ✅ Correct: Used in parser combinators
+const queryKey = regex(queryKeyPattern).map(replacePlusWithSpace).map(decode);
+
+// ❌ Wrong: RegExp patterns with UPPER_SNAKE_CASE (objects, not primitives)
+const ALPHA_REGEX = /^[a-zA-Z]+$/; // Should be: alphaRegex
+const QUERY_KEY_PATTERN = /^[A-Z]+$/; // Should be: queryKeyPattern
+const EMAIL_REGEX = /^[a-z@.]+$/; // Should be: emailRegex
 
 // ❌ Wrong: Inline patterns instead of named constants
 const queryKey = regex(/^[A-Za-z+:/?[\]0-9%]+/) // Bad: inline pattern
@@ -379,7 +405,7 @@ const specificityComparator = new SpecificityComparator();
 const upperCaseCount: Counter = pipe(toString, removeLowerCase, lengthOf);
 ```
 
-**Rationale:** Distinguishes primitive values (including regex patterns) from higher-order functions. While both are immutable, primitive constants represent data, while functional constants represent behavior. Regular expression patterns use `UPPER_SNAKE_CASE` to match the convention in `@blue/validate` (e.g., `ALPHA_REGEX`, `NUMERIC_REGEX`) and make them easily identifiable.
+**Rationale:** Distinguishes true primitive values (per `@blue/core/src/primitive.ts`: string, number, boolean, null, undefined, symbol, bigint) from all other constants. RegExp objects, arrays, and object literals are not primitives—they have methods and are mutable in structure—so they use camelCase. Semantic enum-like constants (HTTPHeader, MediaType instances) use UPPER_SNAKE_CASE as a special case because they represent immutable enum values in the public API. This follows JavaScript's semantic distinction: primitives use uppercase (Math.PI, Number.MAX_VALUE), objects use camelCase.
 
 ### Variables and Functions [CONVENTION: Code Review]
 

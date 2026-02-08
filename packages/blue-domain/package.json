@@ -1,6 +1,6 @@
 {
   "name": "@blue/domain",
-  "version": "3.0.0-alpha.0",
+  "version": "0.0.1",
   "description": "Blue Domain",
   "type": "module",
   "files": [
@@ -29,21 +29,21 @@
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
   "devDependencies": {
-    "@blue/context": "~3.0.0-alpha",
-    "@blue/core": "~3.0.0-alpha",
-    "@blue/dispatcher": "~3.0.0-alpha",
-    "@blue/factory": "~3.0.0-alpha",
-    "@blue/model": "~3.0.0-alpha",
-    "@blue/util": "~3.0.0-alpha",
-    "@blue/validate": "~3.0.0-alpha"
+    "@blue/context": "~0.0.1",
+    "@blue/core": "~0.0.1",
+    "@blue/dispatcher": "~0.0.1",
+    "@blue/factory": "~0.0.1",
+    "@blue/model": "~0.0.1",
+    "@blue/util": "~0.0.1",
+    "@blue/validate": "~0.0.1"
   },
   "peerDependencies": {
-    "@blue/context": "~3.0.0-alpha",
-    "@blue/core": "~3.0.0-alpha",
-    "@blue/dispatcher": "~3.0.0-alpha",
-    "@blue/factory": "~3.0.0-alpha",
-    "@blue/model": "~3.0.0-alpha",
-    "@blue/util": "~3.0.0-alpha",
-    "@blue/validate": "~3.0.0-alpha"
+    "@blue/context": "~0.0.1",
+    "@blue/core": "~0.0.1",
+    "@blue/dispatcher": "~0.0.1",
+    "@blue/factory": "~0.0.1",
+    "@blue/model": "~0.0.1",
+    "@blue/util": "~0.0.1",
+    "@blue/validate": "~0.0.1"
   }
 }

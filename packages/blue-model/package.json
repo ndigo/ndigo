@@ -1,6 +1,6 @@
 {
   "name": "@blue/model",
-  "version": "3.0.0-alpha.0",
+  "version": "0.0.1",
   "description": "Blue Model",
   "type": "module",
   "files": [
@@ -32,13 +32,13 @@
     "objectmodel": "~4.4.6"
   },
   "devDependencies": {
-    "@blue/context": "~3.0.0-alpha",
-    "@blue/core": "~3.0.0-alpha",
-    "@blue/util": "~3.0.0-alpha"
+    "@blue/context": "~0.0.1",
+    "@blue/core": "~0.0.1",
+    "@blue/util": "~0.0.1"
   },
   "peerDependencies": {
-    "@blue/context": "~3.0.0-alpha",
-    "@blue/core": "~3.0.0-alpha",
-    "@blue/util": "~3.0.0-alpha"
+    "@blue/context": "~0.0.1",
+    "@blue/core": "~0.0.1",
+    "@blue/util": "~0.0.1"
   }
 }

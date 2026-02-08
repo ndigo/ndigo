@@ -1,6 +1,6 @@
 {
   "name": "@blue/parser",
-  "version": "3.0.0-alpha.0",
+  "version": "0.0.1",
   "description": "Blue Parser",
   "type": "module",
   "files": [
@@ -32,10 +32,10 @@
     "arcsecond": "~5.0.0"
   },
   "peerDependencies": {
-    "@blue/util": "~3.0.0-alpha"
+    "@blue/util": "~0.0.1"
   },
   "devDependencies": {
-    "@blue/util": "~3.0.0-alpha"
+    "@blue/util": "~0.0.1"
   },
   "sideEffects": false
 }

@@ -32,7 +32,7 @@ export class FetchAppender extends AbstractBatchAppender {
             settings = Object.assign({}, defaults, this.options, {
                 body: content,
                 headers: new Headers({
-                    'Content-Type': this.layout.mediaType.withCharset('utf-8').toString(),
+                    'Content-Type': this.layout.mediaType.toContentType(),
                     'Content-Length': String(content.length),
                 }),
             });

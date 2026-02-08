@@ -1,6 +1,7 @@
 /**
  * @author Jeff Rose
  */
+/// <reference lib="dom" />
 
 import { PatternMatcher, WildcardExp } from '@blue/core';
 import { Aware } from '@blue/factory';

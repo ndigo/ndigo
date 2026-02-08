@@ -3067,6 +3067,515 @@ If still unsure, **check similar methods in the codebase** for established patte
 
 ---
 
+### 3.15. Type-Safe Enums [CONVENTION: Code Review]
+
+**Pattern:** `PascalCase` for class names, `UPPER_SNAKE_CASE` for enum constants
+
+Type-safe enums use classes to create enumeration constants with enhanced capabilities beyond built-in TypeScript enums. This pattern provides methods, inheritance, factory functions, and full serialization control.
+
+**See also:** [ARCHITECTURE.md Type-Safe Enum Pattern](./ARCHITECTURE.md#type-safe-enum-pattern) for when to use this pattern vs built-in enums.
+
+#### Class Naming
+
+Type-safe enum classes follow standard class naming conventions:
+
+```typescript
+// ✅ Correct: PascalCase for enum class
+export class MethodParameterType {
+    /* ... */
+}
+export class Level {
+    /* ... */
+}
+export class SyslogLevel extends Level {
+    /* ... */
+}
+export class ResponseStatus {
+    /* ... */
+}
+
+// ❌ Wrong: Other casings
+export class methodParameterType {
+    /* ... */
+} // Wrong: camelCase
+export class method_parameter_type {
+    /* ... */
+} // Wrong: snake_case
+export class METHODPARAMETERTYPE {
+    /* ... */
+} // Wrong: all caps
+```
+
+**Rationale:** Enum classes are classes and should follow standard PascalCase convention.
+
+#### Static Constant Naming
+
+Enum constant values use `UPPER_SNAKE_CASE` to match built-in enum conventions:
+
+```typescript
+// ✅ Correct: UPPER_SNAKE_CASE for enum constants
+class Level {
+    static OFF = new Level('off', 0);
+    static ALL = new Level('all', Number.MAX_VALUE);
+}
+
+class MethodParameterType {
+    static COOKIE = new MethodParameterType('cookie:value');
+    static MATRIX = new MethodParameterType('matrix:value');
+    static QUERY = new MethodParameterType('query:value');
+}
+
+class ResponseStatus {
+    static OK = ResponseStatus.for(200, 'OK');
+    static NOT_FOUND = ResponseStatus.for(404, 'Not Found');
+    static INTERNAL_SERVER_ERROR = ResponseStatus.for(500, 'Internal Server Error');
+}
+
+// ❌ Wrong: Other casings
+static cookie = new MethodParameterType('cookie');  // Wrong: camelCase
+static Cookie = new MethodParameterType('cookie');  // Wrong: PascalCase
+static COOKIE_VALUE = new MethodParameterType('cookie');  // Redundant suffix
+```
+
+**Rationale:** Matches built-in enum constant naming and clearly distinguishes constants from methods.
+
+#### Implementation Patterns
+
+**Inline Assignment (Recommended):**
+
+Modern ES2022+ style with inline static initialization:
+
+```typescript
+export class Level implements Comparable<Level>, Serializable {
+    static OFF = new Level('off', 0);
+    static ALL = new Level('all', Number.MAX_VALUE);
+
+    readonly name: string;
+    readonly value: number;
+
+    get [Symbol.toStringTag](): string {
+        return `Level:${this.name}`;
+    }
+
+    constructor(name: string, value: number) {
+        Reflect.defineProperty(this, 'name', {
+            value: name,
+            writable: false,
+            enumerable: false,
+            configurable: true,
+        });
+        Reflect.defineProperty(this, 'value', {
+            value: value,
+            writable: false,
+            enumerable: false,
+            configurable: true,
+        });
+    }
+
+    compareTo(other: Level): number {
+        return this.value - other.value;
+    }
+
+    toJSON(): string {
+        return this.name;
+    }
+
+    toString(): string {
+        return this.name;
+    }
+}
+```
+
+**Post-Class Assignment (Alternative):**
+
+Traditional style with forward declaration and post-class initialization:
+
+```typescript
+export class MethodParameterType implements Equatable, Serializable {
+    static COOKIE: MethodParameterType;
+    static QUERY: MethodParameterType;
+
+    readonly type: string;
+
+    get [Symbol.toStringTag](): string {
+        return `MethodParameterType:${this.type}`;
+    }
+
+    constructor(type: string) {
+        Reflect.defineProperty(this, 'type', {
+            value: type,
+            writable: false,
+            enumerable: false,
+            configurable: true,
+        });
+    }
+
+    equals(other: any): boolean {
+        return other instanceof MethodParameterType && other.type === this.type;
+    }
+
+    toJSON(): string {
+        return this.type;
+    }
+
+    toString(): string {
+        return this.type;
+    }
+}
+
+// Post-class assignment
+MethodParameterType.COOKIE = new MethodParameterType('cookie:value');
+MethodParameterType.QUERY = new MethodParameterType('query:value');
+```
+
+**Preference:** Use inline assignment for new code. Both styles are acceptable.
+
+#### Required Methods
+
+All type-safe enums should implement these core methods:
+
+**Equality Check (Equatable):**
+
+```typescript
+equals(other: any): boolean {
+    return other instanceof EnumType && other.value === this.value;
+}
+```
+
+**Serialization (Serializable):**
+
+```typescript
+toJSON(): string | JSONObject {
+    return this.value;  // Simple string, or structured object
+}
+
+toString(): string {
+    return this.value;
+}
+```
+
+**Debug String:**
+
+```typescript
+get [Symbol.toStringTag](): string {
+    return `EnumType:${this.value}`;
+}
+```
+
+**Ordering (Comparable - Optional):**
+
+```typescript
+compareTo(other: EnumType): number {
+    return this.numericValue - other.numericValue;
+}
+```
+
+#### Property Immutability
+
+Use `Reflect.defineProperty` to ensure true immutability:
+
+```typescript
+constructor(value: string) {
+    Reflect.defineProperty(this, 'value', {
+        value: value,
+        writable: false,      // Immutable - cannot be changed
+        enumerable: false,    // Hidden from JSON.stringify loops
+        configurable: true,   // Allows property descriptor changes
+    });
+}
+```
+
+**Why not `readonly`?**
+
+The `readonly` keyword only provides compile-time protection. `Reflect.defineProperty` with `writable: false` provides runtime immutability, preventing accidental modification even through reflection or type casting.
+
+**Rationale:** Enum constants must be truly immutable to maintain singleton identity and type safety.
+
+#### Factory Method Naming
+
+Static factory methods follow these naming conventions:
+
+**Lookup Methods:**
+
+```typescript
+// ✅ Correct: from* prefix for parsing/lookup
+static fromType(type: string): EnumType | null { /* ... */ }
+static fromValue(value: number): EnumType | null { /* ... */ }
+static fromString(str: string): EnumType | null { /* ... */ }
+
+// ✅ Correct: for* prefix for factory with caching
+static for(code: number, reason: string): ResponseStatus { /* ... */ }
+
+// ❌ Wrong: Inconsistent naming
+static getByType(type: string) { /* ... */ }  // Use fromType
+static parse(str: string) { /* ... */ }       // Use fromString
+```
+
+**Conversion Methods:**
+
+```typescript
+// ✅ Correct: to* prefix for conversion
+static toSeverity(level: Level): SeverityNumber { /* ... */ }
+static toOrdinal(value: EnumType): number { /* ... */ }
+
+// ✅ Correct: from* prefix for reverse conversion
+static fromSeverity(severity: SeverityNumber): Level { /* ... */ }
+static fromOrdinal(ordinal: number): EnumType { /* ... */ }
+```
+
+**Rationale:** Follows established convention from STYLE_GUIDE.md Section 3.14 (Method Naming).
+
+#### Interface Implementation
+
+Type-safe enums typically implement one or more standard interfaces:
+
+**Basic Enum (Equatable + Serializable):**
+
+```typescript
+export class SimpleEnum implements Equatable, Serializable {
+    static VALUE_ONE = new SimpleEnum('one');
+    static VALUE_TWO = new SimpleEnum('two');
+
+    readonly value: string;
+
+    constructor(value: string) {
+        /* ... */
+    }
+
+    equals(other: any): boolean {
+        return other instanceof SimpleEnum && other.value === this.value;
+    }
+
+    toJSON(): string {
+        return this.value;
+    }
+
+    toString(): string {
+        return this.value;
+    }
+}
+```
+
+**Ordered Enum (Comparable + Serializable):**
+
+```typescript
+export class OrderedEnum implements Comparable<OrderedEnum>, Serializable {
+    static LOW = new OrderedEnum('low', 1);
+    static MEDIUM = new OrderedEnum('medium', 2);
+    static HIGH = new OrderedEnum('high', 3);
+
+    readonly name: string;
+    readonly priority: number;
+
+    constructor(name: string, priority: number) {
+        /* ... */
+    }
+
+    compareTo(other: OrderedEnum): number {
+        return this.priority - other.priority;
+    }
+
+    toJSON(): string {
+        return this.name;
+    }
+
+    toString(): string {
+        return this.name;
+    }
+}
+```
+
+#### Usage Examples
+
+**Identity Checks (Reference Equality):**
+
+```typescript
+// ✅ Correct: Reference equality for identity
+if (paramType === MethodParameterType.COOKIE) {
+    // Process cookie parameter
+}
+
+// ✅ Correct: Value equality for comparison
+if (paramType.equals(otherType)) {
+    // Types are semantically equal
+}
+
+// ❌ Wrong: String comparison (fragile, bypasses type safety)
+if (paramType.toString() === 'cookie:value') {
+    // Don't do this - loses type safety
+}
+```
+
+**Ordering:**
+
+```typescript
+// ✅ Correct: Use compareTo() for ordering
+const levels = [Level.ERROR, Level.INFO, Level.DEBUG];
+levels.sort((a, b) => a.compareTo(b));
+
+if (currentLevel.compareTo(Level.ERROR) <= 0) {
+    // Critical or error level
+}
+
+// ❌ Wrong: Direct comparison operators
+if (level1 > level2) {
+    // Won't work - compares references
+}
+```
+
+**Serialization:**
+
+```typescript
+// ✅ Correct: Automatic serialization via toJSON()
+const config = {
+    level: Level.INFO,
+    paramType: MethodParameterType.QUERY,
+};
+const json = JSON.stringify(config);
+// Result: {"level":"info","paramType":"query:value"}
+
+// ✅ Correct: Manual string conversion
+const levelString = level.toString(); // "info"
+```
+
+**Factory Method Usage:**
+
+```typescript
+// ✅ Correct: Parse external input to enum constant
+const paramType = MethodParameterType.fromType(request.paramType);
+if (paramType === null) {
+    throw new Error(`Unknown parameter type: ${request.paramType}`);
+}
+
+// ✅ Correct: Type-safe comparison after parsing
+if (paramType === MethodParameterType.COOKIE) {
+    // Handle cookie parameter
+}
+```
+
+#### Inheritance
+
+Type-safe enums support inheritance for shared behavior:
+
+```typescript
+// Base enum class
+export class Level implements Comparable<Level>, Serializable {
+    static OFF = new Level('off', 0);
+    static ALL = new Level('all', Number.MAX_VALUE);
+
+    readonly name: string;
+    readonly value: number;
+
+    constructor(name: string, value: number) {
+        /* ... */
+    }
+
+    // Shared behavior
+    compareTo(other: Level): number {
+        return this.value - other.value;
+    }
+
+    toJSON(): string {
+        return this.name;
+    }
+
+    toString(): string {
+        return this.name;
+    }
+}
+
+// Specialized subclass
+export class SyslogLevel extends Level {
+    static EMERG = new Level('emerg', 10000);
+    static ERROR = new Level('error', 40000);
+    // ... more constants
+
+    // Additional conversion methods
+    static toSeverity(level: Level): SeverityNumber {
+        /* ... */
+    }
+    static fromSeverity(severity: SeverityNumber): Level {
+        /* ... */
+    }
+}
+```
+
+**Use Case:** Logging level hierarchies with different standard sets (Syslog, CLI, NPM, Apache) sharing comparison logic.
+
+#### When to Use Type-Safe Enums vs Built-in Enums
+
+**Use Type-Safe Enum Pattern When:**
+
+- ✅ Need instance methods (equals, compareTo, custom logic)
+- ✅ Need factory methods (fromType, conversion methods)
+- ✅ Rich data model (multiple properties per constant)
+- ✅ Inheritance hierarchies needed
+- ✅ Part of public API (predictable serialization)
+- ✅ Large value sets (8+ values)
+
+**Use Built-in TypeScript Enum When:**
+
+- ✅ Simple constants (no behavior)
+- ✅ Internal use only (not in public API)
+- ✅ Small value sets (2-5 values)
+- ✅ No methods or logic needed
+
+**See:** ARCHITECTURE.md Type-Safe Enum Pattern for detailed decision guide.
+
+#### Documentation
+
+Always document enum constants with JSDoc:
+
+```typescript
+export class HttpMethod implements Equatable, Serializable {
+    /**
+     * HTTP GET method - retrieves resources without side effects.
+     * Safe and idempotent.
+     */
+    static GET = new HttpMethod('GET', true, true);
+
+    /**
+     * HTTP POST method - creates new resources.
+     * Not safe, not idempotent.
+     */
+    static POST = new HttpMethod('POST', false, false);
+
+    /**
+     * HTTP PUT method - updates existing resources.
+     * Not safe, but idempotent.
+     */
+    static PUT = new HttpMethod('PUT', false, true);
+
+    readonly name: string;
+    readonly safe: boolean;
+    readonly idempotent: boolean;
+
+    constructor(name: string, safe: boolean, idempotent: boolean) {
+        /* ... */
+    }
+}
+```
+
+#### Examples from Codebase
+
+**Simple Type-Safe Enum:**
+
+- `MethodParameterType` - `@blue/dispatcher/src/route-parameter.ts`
+
+**Enum Hierarchy:**
+
+- `Level` (base), `SyslogLevel`, `CLILevel`, `NPMLevel`, `ApacheLevel` - `@blue/logger/src/*.ts`
+
+**Factory Registry Pattern:**
+
+- `ResponseStatus` - `@blue/http/src/response-status.ts`
+
+**Built-in Enum (Appropriate Use):**
+
+- `RouteAccess`, `RouteSource` - `@blue/router/src/hash-router.ts`
+
+---
+
 ## 4. Module Organization
 
 ### Directory Structure [CONVENTION: Code Review]

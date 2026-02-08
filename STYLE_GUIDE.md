@@ -1581,6 +1581,1490 @@ class UserResolver {
 2. Choose the suffix that best matches that responsibility
 3. If no standard suffix fits, consider if the class has too many responsibilities (SRP violation)
 
+### 3.13. Properties vs Methods [CONVENTION: Code Review]
+
+**Pattern:** Choose based on computation cost, side effects, and semantic meaning
+
+JavaScript/TypeScript allows both properties (with getters) and methods. BlueJS favors properties for cheap, intrinsic data access, and methods for operations that involve external lookups, transformations, or potential failures.
+
+This section provides clear guidelines on when to use each approach.
+
+#### When to Use Properties
+
+**Use properties when ALL of these conditions are met:**
+
+- ✅ O(1) or trivial computation (simple field access, basic concatenation)
+- ✅ No side effects (idempotent, safe to call multiple times)
+- ✅ No external dependencies (doesn't query database, registry, file system)
+- ✅ Always succeeds (never returns null for legitimate values)
+- ✅ Feels like "what this object IS" (intrinsic attribute)
+
+**Real Examples from BlueJS:**
+
+```typescript
+// From @blue/core/media-type.ts
+class MediaType {
+    // ✅ Correct: Properties for direct field access
+    readonly type: SupportedMediaType; // Direct field
+    readonly subtype: string; // Direct field
+    readonly parameters: MediaTypeParameters; // Direct field
+
+    // ✅ Correct: Properties for cheap computation
+    get isWildcardType(): boolean {
+        // Simple comparison
+        return this.type === '*';
+    }
+
+    get isWildcardSubtype(): boolean {
+        // Simple comparison
+        return this.subtype === '*';
+    }
+
+    get qualityFactor(): number {
+        // Parse from stored parameters
+        return cond([
+            [isString, parseFloat],
+            [isNumber, identity],
+            [T, alwaysOne],
+        ])(this.parameters['q']) as number;
+    }
+}
+
+// From @blue/http/response-status.ts
+class ResponseStatus {
+    // ✅ Correct: Properties for range checks
+    get isInformationClass(): boolean {
+        return 100 <= this.code && this.code <= 199;
+    }
+
+    get isSuccessClass(): boolean {
+        return 200 <= this.code && this.code <= 299;
+    }
+
+    get isClientErrorClass(): boolean {
+        return 400 <= this.code && this.code <= 499;
+    }
+}
+
+// From @blue/dispatcher/route-condition.ts
+class RouteCondition {
+    // ✅ Correct: Properties for simple checks
+    get isEmpty(): boolean {
+        return this.conditions.length === 0;
+    }
+
+    get length(): number {
+        return this.conditions.length;
+    }
+
+    get content(): RouteCondition[] {
+        return this.conditions;
+    }
+}
+
+// From @blue/core/collection.ts
+class BoundedCollection {
+    // ✅ Correct: Properties for collection state
+    get capacity(): number {
+        return this.#capacity;
+    }
+
+    get isEmpty(): boolean {
+        return this.length === 0;
+    }
+
+    get isFull(): boolean {
+        return this.length >= this.#capacity;
+    }
+
+    get length(): number {
+        return this.items.length;
+    }
+}
+
+// From @blue/factory/factory.ts
+abstract class AbstractFactory {
+    #parent: Factory;
+
+    // ✅ Correct: Property for stored reference
+    get parent(): Factory {
+        return this.#parent;
+    }
+}
+```
+
+**Counter-Examples (What NOT to Do):**
+
+```typescript
+// ❌ Wrong: Method call wrapped in property
+class BadMediaType {
+    get extensions(): string[] {
+        return this.getExtensions(); // Just call the method directly!
+    }
+
+    getExtensions(): string[] {
+        return MIME_DB.get(this.baseType)?.extensions ?? [];
+    }
+}
+
+// ❌ Wrong: External lookup as property (use get-method)
+class BadMediaType {
+    get defaultCharset(): string | null {
+        // Queries external MIME database - use getDefaultCharset() method
+        return MIME_DB.get(this.baseType)?.charset ?? null;
+    }
+}
+
+// ❌ Wrong: Expensive computation as property
+class BadRoute {
+    get allPossiblePaths(): string[] {
+        // Generates all combinations - expensive! Use method
+        return this.generateAllPermutations();
+    }
+}
+
+// ❌ Wrong: get* method for simple field access (use property)
+class BadExample {
+    #name: string;
+
+    getName(): string {
+        // Just use: get name()
+        return this.#name;
+    }
+}
+```
+
+#### When to Use Get-Methods
+
+**Use get-methods when ANY of these conditions are met:**
+
+- ✅ Requires external data (database, registry, file system, network)
+- ✅ May fail or return null for legitimate queries
+- ✅ Non-trivial computation (O(n), recursive, expensive)
+- ✅ Tristate return (true/false/null or success/failure/unknown)
+- ✅ Feels like "fetching" or "retrieving"
+
+**Real Examples from BlueJS:**
+
+```typescript
+// From @blue/factory/factory.ts
+interface Factory {
+    // ✅ Correct: get* for registry lookup (may fail)
+    getInstance<T = any>(name: string): T;
+}
+
+interface ConfigurableFactory extends Factory {
+    // ✅ Correct: get* for scope lookup
+    getScope(name: string): Scope;
+    getScopeNames(): string[];
+}
+
+// From @blue/context/property-resolver.ts
+interface PropertyResolver {
+    // ✅ Correct: get* for external property lookup
+    getProperty(key: string, defaultValue?: JSONValue): JSONValue;
+    getRequiredProperty(key: string): JSONValue; // May throw
+}
+
+class PrototypalPropertyResolver implements PropertyResolver {
+    getProperty(key: string, defaultValue?: JSONValue): JSONValue {
+        const parseResult = keypathExpression.run(key);
+        if (!parseResult.isError) {
+            const keypath = parseResult.result;
+            return keypath ? (path(keypath, this.properties) ?? defaultValue) : defaultValue;
+        }
+        return defaultValue;
+    }
+
+    getRequiredProperty(key: string): JSONValue {
+        const value = this.getProperty(key);
+        if (typeof value === 'undefined') {
+            throw new Error(`Required property "${key}" missing`);
+        }
+        return value;
+    }
+}
+
+// From @blue/dispatcher/route-handler-mapping.ts
+interface RouteHandlerMapping {
+    // ✅ Correct: get* for handler lookup (may return null)
+    getHandler(route: Route): RouteHandlerExecutionChain;
+}
+
+class AbstractRouteHandlerMapping {
+    getHandler(route: Route): RouteHandlerExecutionChain {
+        // Complex lookup logic with potential null return
+    }
+
+    getMappingsByPath(path: string): T[] {
+        // Filters internal registry
+    }
+
+    getHandlerMethodsByMappingName(name: string): RouteHandlerMethod[] {
+        // Queries internal mapping registry
+    }
+}
+
+// From @blue/logger/otel/blue-logger-provider.ts
+class BlueLoggerProvider {
+    // ✅ Correct: get* for external SDK access
+    getLogger(name: string, version?: string, options?: LoggerOptions): OTelLoggerAPI {
+        // Creates/retrieves logger from external SDK
+    }
+
+    getSDKProvider(): SDKLoggerProvider {
+        // Returns external OpenTelemetry SDK provider
+    }
+
+    getResource(): Resource {
+        // Returns external OpenTelemetry resource
+    }
+
+    getProcessors(): LogRecordProcessor[] {
+        // Returns registered processors
+    }
+}
+
+// From @blue/context/event-logger.ts
+class EventLogger {
+    // ✅ Correct: get* that may return undefined
+    getOTelLogger(): OTelLoggerAPI | undefined {
+        // May return undefined if OpenTelemetry not initialized
+    }
+}
+
+// Proposed for MediaType
+class MediaType {
+    // ✅ Correct: get* for external MIME database lookup
+    getDefaultCharset(): string | null {
+        // Queries MIME_DB - external data source
+        return MIME_DB.get(this.baseType)?.charset ?? null;
+    }
+
+    // ✅ Correct: get* for tristate return
+    getCompressibility(): boolean | null {
+        // Returns true (compressible), false (not), null (unknown)
+        const entry = MIME_DB.get(this.baseType);
+        return entry?.compressible ?? null;
+    }
+}
+```
+
+**Why Get-Methods, Not Properties?**
+
+```typescript
+// ❌ Wrong: External lookup as property
+get defaultCharset(): string | null {
+    return MIME_DB.get(this.baseType)?.charset ?? null;
+}
+
+// ✅ Correct: External lookup as method
+getDefaultCharset(): string | null {
+    return MIME_DB.get(this.baseType)?.charset ?? null;
+}
+
+// Rationale:
+// 1. Queries external data source (MIME_DB)
+// 2. Returns null for unknown types (tristate: exists/doesn't exist/unknown)
+// 3. Semantically feels like "retrieving" not "accessing"
+// 4. Debuggers won't auto-evaluate methods (avoids side effects during debugging)
+```
+
+#### When to Use To-Methods
+
+**Use to-methods when:**
+
+- ✅ Transforms to a different format or representation
+- ✅ Takes optional parameters to control transformation
+- ✅ Creates a new representation (doesn't just access data)
+- ✅ Feels like "converting to X"
+
+**Real Examples from BlueJS:**
+
+```typescript
+// From @blue/core/media-type.ts
+class MediaType implements Serializable {
+    // ✅ Correct: to* for string representation
+    toString(): string {
+        const mediaTypeString =
+            this.suffix === null ? `${this.type}/${this.subtype}` : `${this.type}/${this.subtype}+${this.suffix}`;
+        const parameterString = stringifyParameters(this.parameters);
+        return `${mediaTypeString}${parameterString}`;
+    }
+
+    // ✅ Correct: to* for JSON serialization
+    toJSON(): JSONValue {
+        return this.toString();
+    }
+}
+
+// From @blue/http/response-status.ts
+class ResponseStatus implements Serializable {
+    toString(): string {
+        return `${this.code} ${this.text}`;
+    }
+
+    toJSON(): JSONObject {
+        return {
+            code: this.code,
+            text: this.text,
+        };
+    }
+}
+
+// From @blue/core/property-value.ts
+class PropertyValue {
+    toString(): string {
+        return `PropertyValue(${this.name}=${this.value})`;
+    }
+}
+
+// Proposed for MediaType
+class MediaType {
+    // ✅ Correct: to* with options for Content-Type header
+    toContentType(options?: { autoCharset?: boolean }): string {
+        const base = this.toString();
+        if (options?.autoCharset && !this.parameters.charset) {
+            const charset = this.getDefaultCharset();
+            return charset ? `${base};charset=${charset}` : base;
+        }
+        return base;
+    }
+}
+```
+
+**To-Methods vs Properties:**
+
+```typescript
+// ✅ Correct: toString() is a method (standard protocol)
+toString(): string {
+    return this.serialize();
+}
+
+// ❌ Wrong: toString as property (breaks ecosystem expectations)
+get toString(): string {
+    return this.serialize();
+}
+
+// ✅ Correct: baseType is a property (cheap concat, no parameters)
+get baseType(): string {
+    return `${this.type}/${this.subtype}`;
+}
+
+// ✅ Correct: toContentType is a method (takes options)
+toContentType(options?: ContentTypeOptions): string {
+    // Complex transformation with options
+}
+```
+
+#### Decision Matrix
+
+| Use Case                    | Method Type | Rationale                        | Example                           |
+| :-------------------------- | :---------- | :------------------------------- | :-------------------------------- |
+| Stored field access         | Property    | O(1) lookup, no computation      | `mediaType.type`                  |
+| Simple boolean check        | Property    | Trivial comparison               | `mediaType.isWildcardType`        |
+| Cheap concatenation         | Property    | String template, no side effects | `mediaType.baseType`              |
+| Range check                 | Property    | Simple arithmetic                | `responseStatus.isSuccessClass`   |
+| Array length                | Property    | Direct field access              | `collection.length`               |
+| External DB lookup          | Get-method  | Queries external source          | `getDefaultCharset()`             |
+| May return null             | Get-method  | Tristate/optional return         | `getCompressibility()`            |
+| Registry lookup             | Get-method  | May fail, external data          | `factory.getInstance(name)`       |
+| File system access          | Get-method  | I/O operation                    | `resource.getResource(path)`      |
+| SDK access                  | Get-method  | External library                 | `logger.getSDKProvider()`         |
+| String serialization        | To-method   | Protocol method (toString)       | `toString()`                      |
+| Format transformation       | To-method   | Creates new representation       | `toJSON()`                        |
+| Transformation with options | To-method   | Parameterized conversion         | `toContentType(options)`          |
+| Parser invocation           | Get-method  | May fail, computational          | `getProperty(key, defaultValue?)` |
+
+#### Edge Cases
+
+**Tristate Returns (true/false/null):**
+
+```typescript
+// ✅ Correct: Get-method for tristate boolean
+getCompressibility(): boolean | null {
+    // true = compressible, false = not compressible, null = unknown
+    return MIME_DB.get(this.baseType)?.compressible ?? null;
+}
+
+// ❌ Wrong: Property for tristate (suggests simple access)
+get compressibility(): boolean | null {
+    return MIME_DB.get(this.baseType)?.compressible ?? null;
+}
+```
+
+**Boolean Properties (is/has prefix):**
+
+```typescript
+// ✅ Correct: Boolean properties use is/has prefix
+get isWildcardType(): boolean {
+    return this.type === '*';
+}
+
+get hasParameters(): boolean {
+    return Object.keys(this.parameters).length > 0;
+}
+
+get isEmpty(): boolean {
+    return this.length === 0;
+}
+
+// From @blue/dispatcher/model-and-view.ts
+get hasView(): boolean {
+    return this.view != null;
+}
+```
+
+**Property That Calls Method (Usually Wrong):**
+
+```typescript
+// ❌ Anti-pattern: Property wrapping method call
+get extensions(): string[] {
+    return this.getExtensions(); // Why have both?
+}
+
+getExtensions(): string[] {
+    return MIME_DB.get(this.baseType)?.extensions ?? [];
+}
+
+// ✅ Correct: Choose one based on semantics
+// If it's intrinsic and cheap → property only
+get extensions(): string[] {
+    return MIME_DB.get(this.baseType)?.extensions ?? [];
+}
+
+// OR if it's external lookup → method only
+getExtensions(): string[] {
+    return MIME_DB.get(this.baseType)?.extensions ?? [];
+}
+```
+
+**Getter/Setter Pairs:**
+
+```typescript
+// ✅ Correct: Getter/setter for field access
+class PrototypalPropertyResolver {
+    #propertySources: JSONObject[];
+
+    get propertySources(): JSONObject[] {
+        return this.#propertySources;
+    }
+
+    set propertySources(propertySources: JSONObject[]) {
+        this.#propertySources = propertySources;
+        // Additional logic to update internal state
+    }
+}
+
+// ❌ Wrong: get* method with set* method for simple field
+class BadExample {
+    #name: string;
+
+    getName(): string {
+        // Should be: get name()
+        return this.#name;
+    }
+
+    setName(name: string): void {
+        // Should be: set name()
+        this.#name = name;
+    }
+}
+```
+
+#### Complete Example: MediaType (Current + Proposed API)
+
+```typescript
+class MediaType {
+    // STORED FIELDS (direct access)
+    readonly type: SupportedMediaType;
+    readonly subtype: string;
+    readonly parameters: MediaTypeParameters;
+
+    // PROPERTIES (cheap, intrinsic)
+    get isWildcardType(): boolean {
+        return this.type === '*';
+    }
+
+    get isWildcardSubtype(): boolean {
+        return this.subtype === '*';
+    }
+
+    get qualityFactor(): number {
+        return parseFloat(this.parameters['q'] ?? '1.0');
+    }
+
+    // Proposed: Simple concatenation
+    get baseType(): string {
+        return `${this.type}/${this.subtype}`;
+    }
+
+    // Proposed: Static map lookup (O(1))
+    get extensions(): string[] {
+        return MIME_DB.get(this.baseType)?.extensions ?? [];
+    }
+
+    get defaultExtension(): string | null {
+        return this.extensions[0] ?? null;
+    }
+
+    // GET-METHODS (external data, may fail)
+    // Proposed: External MIME database lookup
+    getDefaultCharset(): string | null {
+        return MIME_DB.get(this.baseType)?.charset ?? null;
+    }
+
+    // Proposed: Tristate return
+    getCompressibility(): boolean | null {
+        const entry = MIME_DB.get(this.baseType);
+        return entry?.compressible ?? null;
+    }
+
+    // TO-METHODS (transformation, serialization)
+    toString(): string {
+        const base = this.suffix ? `${this.type}/${this.subtype}+${this.suffix}` : `${this.type}/${this.subtype}`;
+        const params = stringifyParameters(this.parameters);
+        return `${base}${params}`;
+    }
+
+    toJSON(): JSONValue {
+        return this.toString();
+    }
+
+    // Proposed: Transformation with options
+    toContentType(options?: { autoCharset?: boolean }): string {
+        const base = this.toString();
+        if (options?.autoCharset && !this.parameters.charset) {
+            const charset = this.getDefaultCharset();
+            return charset ? `${base};charset=${charset}` : base;
+        }
+        return base;
+    }
+}
+```
+
+#### Rationale
+
+**Why This Matters:**
+
+1. **Consistency** - Predictable API surface for consumers
+2. **Performance Expectations** - Properties signal "cheap," methods signal "may be expensive"
+3. **Side Effects** - Properties should be safe to call anytime, methods may have side effects
+4. **Debugging** - Debuggers treat properties and methods differently (auto-evaluation)
+5. **API Design** - Clear semantic meaning improves developer experience
+
+**Influenced By:**
+
+- JavaScript ecosystem conventions (Array.length, String.length, Map.size)
+- Java Bean conventions (getters for properties, methods for operations)
+- TypeScript guidance (properties for data access, methods for operations)
+- Spring Framework patterns (get\* methods for external lookups)
+
+#### When in Doubt
+
+Ask yourself:
+
+1. **Is it cheap?** (O(1), no I/O) → Property
+2. **Is it intrinsic?** (part of what the object IS) → Property
+3. **Does it query external data?** → Get-method
+4. **Can it fail or return null?** → Get-method
+5. **Does it transform to another format?** → To-method
+6. **Does it take parameters?** → Method (get-method or to-method)
+
+If still unsure, **prefer a method** - it's safer and more flexible for future changes.
+
+### 3.14. Method Naming Conventions [CONVENTION: Code Review]
+
+**Pattern:** Use conventional prefixes to signal method behavior and return expectations
+
+Method names should clearly communicate their purpose, behavior, and expected return values. BlueJS uses standardized prefixes inspired by JavaBeans, Spring Framework, and JavaScript ecosystem conventions.
+
+This section establishes clear rules for method naming across the entire codebase.
+
+#### Accessor Prefixes
+
+**Methods that retrieve or check values without mutation:**
+
+| Prefix  | Meaning                       | Returns              | Side Effects | May Fail          | Examples                                               |
+| :------ | :---------------------------- | :------------------- | :----------- | :---------------- | :----------------------------------------------------- |
+| `get*`  | Retrieves/fetches value       | Value or null/undef  | None         | Yes (may be null) | `getHandler()`, `getInstance()`, `getDefaultCharset()` |
+| `is*`   | Type/state check              | boolean              | None         | No                | `isValid()`, `isString()`, `isWildcardType()`          |
+| `has*`  | Presence/ownership check      | boolean              | None         | No                | `hasProperty()`, `hasView()`, `hasOwnValue()`          |
+| `like*` | Duck-typing check (structural | boolean (type guard) | None         | No                | `likeArray()`, `likePromise()`, `likeReduced()`        |
+
+##### get\* - Retrieval/Fetching
+
+**Use when:** Retrieving values from external sources, registries, or performing lookups that may fail
+
+```typescript
+// From @blue/factory/factory.ts
+interface Factory {
+    // ✅ Correct: get* for registry lookup (may return null)
+    getInstance<T = any>(name: string): T;
+}
+
+interface ConfigurableFactory extends Factory {
+    // ✅ Correct: get* for scope lookup
+    getScope(name: string): Scope;
+    getScopeNames(): string[];
+}
+
+// From @blue/context/property-resolver.ts
+interface PropertyResolver {
+    // ✅ Correct: get* for external property lookup
+    getProperty(key: string, defaultValue?: JSONValue): JSONValue;
+    getRequiredProperty(key: string): JSONValue; // May throw
+}
+
+class PrototypalPropertyResolver implements PropertyResolver {
+    getProperty(key: string, defaultValue?: JSONValue): JSONValue {
+        const parseResult = keypathExpression.run(key);
+        if (!parseResult.isError) {
+            const keypath = parseResult.result;
+            return keypath ? (path(keypath, this.properties) ?? defaultValue) : defaultValue;
+        }
+        return defaultValue;
+    }
+
+    getRequiredProperty(key: string): JSONValue {
+        const value = this.getProperty(key);
+        if (typeof value === 'undefined') {
+            throw new Error(`Required property "${key}" missing`);
+        }
+        return value;
+    }
+}
+
+// From @blue/dispatcher/route-handler-mapping.ts
+class AbstractRouteHandlerMapping {
+    // ✅ Correct: get* for complex lookups
+    getHandler(route: Route): RouteHandlerExecutionChain {
+        // Complex lookup logic with potential null return
+    }
+
+    getMappingsByPath(path: string): T[] {
+        // Filters internal registry
+    }
+
+    getHandlerMethodsByMappingName(name: string): RouteHandlerMethod[] {
+        // Queries internal mapping registry
+    }
+
+    getHandlerMethods(): Map<T, RouteHandlerMethod> {
+        // Returns all registered handlers
+    }
+}
+
+// From @blue/logger/otel/blue-logger-provider.ts
+class BlueLoggerProvider {
+    // ✅ Correct: get* for external SDK access
+    getLogger(name: string, version?: string, options?: LoggerOptions): OTelLoggerAPI {
+        // Creates/retrieves logger from external SDK
+    }
+
+    getSDKProvider(): SDKLoggerProvider {
+        // Returns external OpenTelemetry SDK provider
+    }
+
+    getResource(): Resource {
+        // Returns external OpenTelemetry resource
+    }
+
+    getProcessors(): LogRecordProcessor[] {
+        // Returns registered processors
+    }
+}
+
+// From @blue/context/event-logger.ts
+class EventLogger {
+    // ✅ Correct: get* that may return undefined
+    getOTelLogger(): OTelLoggerAPI | undefined {
+        // May return undefined if OpenTelemetry not initialized
+    }
+}
+
+// From @blue/view/content-negotiation-view-resolver.ts
+class ContentNegotiationViewResolver {
+    // ✅ Correct: get* for collecting from multiple sources
+    getAllFileExtenstions(): string[] {
+        // Aggregates extensions from all resolvers
+    }
+
+    getMediaTypes(request: any): MediaType[] {
+        // Extracts media types from request
+    }
+}
+
+// Proposed for MediaType
+class MediaType {
+    // ✅ Correct: get* for external MIME database lookup
+    getDefaultCharset(): string | null {
+        return MIME_DB.get(this.baseType)?.charset ?? null;
+    }
+
+    getCompressibility(): boolean | null {
+        const entry = MIME_DB.get(this.baseType);
+        return entry?.compressible ?? null;
+    }
+}
+
+// ❌ Wrong: get* for simple field access (use property)
+class BadExample {
+    #name: string;
+
+    getName(): string {
+        // Just use: get name()
+        return this.#name;
+    }
+}
+```
+
+##### is\* - Type/State Checks
+
+**Use when:** Checking types with typeof/instanceof or checking boolean state
+
+```typescript
+// From @blue/util/types.ts
+// ✅ Correct: is* for type checks
+function isString(value: unknown): value is string {
+    return typeof value === 'string';
+}
+
+function isNumber(value: unknown): value is number {
+    return typeof value === 'number' && !Number.isNaN(value);
+}
+
+function isConstructor(value: unknown): value is Constructor {
+    return typeof value === 'function' && value.prototype !== undefined;
+}
+
+function isFunction(value: unknown): value is Function {
+    return typeof value === 'function';
+}
+
+function isPrimitive(value: unknown): boolean {
+    return value == null || typeof value !== 'object';
+}
+
+// From @blue/validate (validation predicates)
+function isValidDate(value: temporal, format: string): boolean {
+    return !isNaN(Date.parse(value));
+}
+
+// ✅ Correct: is* for boolean state checks (as properties)
+class MediaType {
+    get isWildcardType(): boolean {
+        return this.type === '*';
+    }
+
+    get isWildcardSubtype(): boolean {
+        return this.subtype === '*';
+    }
+}
+
+class ResponseStatus {
+    get isInformationClass(): boolean {
+        return this.code >= 100 && this.code < 200;
+    }
+
+    get isSuccessClass(): boolean {
+        return this.code >= 200 && this.code < 300;
+    }
+
+    get isClientErrorClass(): boolean {
+        return this.code >= 400 && this.code < 500;
+    }
+}
+
+// ❌ Wrong: is* that returns null (use get*)
+function isCompressible(mediaType: MediaType): boolean | null {
+    // Should be: getCompressibility()
+    return mediaType.getCompressibility();
+}
+```
+
+##### has\* - Presence/Ownership Checks
+
+**Use when:** Checking for presence of properties, items, or capabilities
+
+```typescript
+// From @blue/context/property-resolver.ts
+interface PropertyResolver {
+    // ✅ Correct: has* for presence check
+    hasProperty(key: string): boolean;
+}
+
+class PrototypalPropertyResolver implements PropertyResolver {
+    hasProperty(key: string): boolean {
+        const parseResult = keypathExpression.run(key);
+        if (!parseResult.isError) {
+            const keypath = parseResult.result;
+            return keypath ? pathIsDefined(keypath, this.properties) : false;
+        }
+        return false;
+    }
+}
+
+// From @blue/factory/factory.ts
+interface HierarchicalFactory extends Factory {
+    // ✅ Correct: has* for ownership check
+    hasOwnValue(name: string): boolean;
+}
+
+// From @blue/dispatcher/model-and-view.ts
+class ModelAndView {
+    // ✅ Correct: has* as property for simple check
+    get hasView(): boolean {
+        return this.view != null;
+    }
+}
+
+// From @blue/core/media-type.ts (proposed)
+class MediaType {
+    // ✅ Correct: has* for parameter presence
+    get hasParameters(): boolean {
+        return Object.keys(this.parameters).length > 0;
+    }
+
+    hasParameter(name: string): boolean {
+        return name in this.parameters;
+    }
+}
+
+// Standard JavaScript examples
+class Map<K, V> {
+    has(key: K): boolean; // Built-in JavaScript
+}
+
+class Set<T> {
+    has(value: T): boolean; // Built-in JavaScript
+}
+```
+
+##### like\* - Duck-Typing Checks
+
+**Use when:** Checking structural compatibility without typeof/instanceof
+
+```typescript
+// From @blue/core
+// ✅ Correct: like* for duck typing
+function likeArray(value: unknown): value is ArrayLike<any> {
+    return value != null && typeof value === 'object' && 'length' in value;
+}
+
+function likePromise(value: unknown): value is PromiseLike<any> {
+    return value != null && typeof (value as any).then === 'function';
+}
+
+// From @blue/dispatcher
+function likeController(value: unknown): value is ControllerLike {
+    return (
+        value != null && typeof value === 'object' && 'handle' in value && typeof (value as any).handle === 'function'
+    );
+}
+
+// From @blue/core/transducer.ts
+function likeReduced(value): value is Reduced<any> {
+    return value != null && value['@@transducer/reduced'] === true;
+}
+
+function likeTransformer(value): value is Transformer {
+    return value != null && typeof value['@@transducer/step'] === 'function';
+}
+
+// From @blue/factory
+const likeFactory = like({ getInstance: Function }) as (value) => value is Factory;
+
+const likeFactoryAware = likeAwareAnd(like({ setFactory: Function })) as (value) => value is FactoryAware;
+
+const likeHierarchicalFactory = both(likeFactory, like({ parent: true, hasOwnValue: Function }));
+
+// From @blue/http
+function likeResponse(value: unknown): value is Response {
+    return value != null && typeof value === 'object' && 'status' in value && 'statusText' in value;
+}
+```
+
+#### Mutation Prefixes
+
+**Methods that modify state:**
+
+| Prefix    | Meaning                 | Returns        | Side Effects   | Examples                                       |
+| :-------- | :---------------------- | :------------- | :------------- | :--------------------------------------------- |
+| `set*`    | Sets value              | void or this   | Mutates object | `setProperty()`, `setFactory()`, `setParent()` |
+| `add*`    | Adds to collection      | void or this   | Mutates        | `add()`, `addProcessor()`, `addListener()`     |
+| `remove*` | Removes from collection | boolean / this | Mutates        | `remove()`, `removeListener()`                 |
+| `clear*`  | Empties collection      | void           | Mutates        | `clear()`, `clearCache()`                      |
+| `update*` | Modifies existing value | void or this   | Mutates        | `updateProperty()`, `updateStatus()`           |
+| `delete*` | Removes/destroys        | boolean        | Mutates        | `delete()`, `deleteEntry()`                    |
+
+**Examples:**
+
+```typescript
+// From @blue/factory/aware.ts
+interface FactoryAware extends Aware {
+    // ✅ Correct: set* for mutating reference
+    setFactory(factory: Factory): void;
+}
+
+// From @blue/factory/factory.ts
+interface ConfigurableFactory extends Factory {
+    // ✅ Correct: set* for parent assignment
+    setParent(parent: Factory): void;
+
+    // ✅ Correct: add* for collection mutation
+    addProcessor(processor: EntryProcessor): void;
+}
+
+abstract class AbstractFactory implements ConfigurableFactory {
+    #parent: Factory;
+
+    setParent(parent: Factory): void {
+        this.#parent = parent;
+    }
+
+    addProcessor(processor: EntryProcessor): void {
+        const index = this.processors.indexOf(processor);
+        if (index !== -1) {
+            this.processors.splice(index, 1);
+        }
+        this.processors.push(processor);
+    }
+}
+
+// From @blue/core/data-binder.ts
+class DataBinder {
+    #requiredFields: Set<string>;
+
+    // ✅ Correct: Getter/setter pair for field with validation
+    get requiredFields(): string[] {
+        if (!this.#requiredFields) {
+            this.#requiredFields = new Set<string>();
+        }
+        return [...this.#requiredFields];
+    }
+
+    set requiredFields(fields: string[]) {
+        this.#requiredFields = new Set<string>();
+        if (fields?.length) {
+            for (let index = 0; index < fields.length; index++) {
+                this.#requiredFields.add(fields[index]);
+            }
+        }
+    }
+}
+
+// From @blue/factory/registry.ts
+interface Registry {
+    // ✅ Correct: Mutation methods
+    set(name: string, value: any): void;
+    delete(name: string): boolean;
+    clear(): void;
+}
+
+// ✅ Correct: Fluent API (return this)
+class Builder {
+    #name: string;
+    #properties: Map<string, any>;
+
+    setName(name: string): this {
+        this.#name = name;
+        return this;
+    }
+
+    addProperty(key: string, value: any): this {
+        this.#properties.set(key, value);
+        return this;
+    }
+
+    build(): Product {
+        return new Product(this.#name, this.#properties);
+    }
+}
+
+// ❌ Wrong: set* that doesn't mutate (use with*)
+class BadMediaType {
+    setCharset(charset: string): MediaType {
+        // Returns new instance - should be withCharset()
+        return new MediaType(this.type, this.subtype, { charset });
+    }
+}
+
+// ✅ Correct: with* for immutable updates
+class MediaType {
+    withCharset(charset: string): MediaType {
+        return new MediaType(this.type, this.subtype, {
+            ...this.parameters,
+            charset,
+        });
+    }
+}
+```
+
+#### Factory/Creation Prefixes
+
+**Methods that create new instances:**
+
+| Prefix    | Meaning                    | Returns            | Parameters    | Examples                                     |
+| :-------- | :------------------------- | :----------------- | :------------ | :------------------------------------------- |
+| `create*` | Creates new instance       | New object         | Configuration | `create()`, `createBlob()`, `createLogger()` |
+| `from*`   | Parses/converts from input | New object or null | Source data   | `fromExtension()`, `fromRequest()`, `from()` |
+| `parse*`  | Parses string to object    | Object or throws   | String input  | `parse()`, `parseInt()`, `parseFloat()`      |
+| `of*`     | Factory with varargs       | New object         | Variable args | `of()`, `Array.of()`, `Promise.of()`         |
+| `make*`   | Alternative to create      | New object         | Configuration | `make()`, `makeHandler()`                    |
+
+**Examples:**
+
+```typescript
+// From @blue/core/media-type.ts
+class MediaType {
+    // ✅ Correct: Static factory method
+    static for(mediaType: string): MediaType;
+    static for(type: SupportedMediaType, subtype: string, parameters?: MediaTypeParameters): MediaType;
+    static for(
+        typeOrExpression: SupportedMediaType | string,
+        subtype?: string,
+        parameters?: MediaTypeParameters
+    ): MediaType {
+        // Factory logic with singleton registry
+    }
+
+    // ✅ Correct: create* for instance creation
+    createBlob(data?: BlobPart[], endings: EndingType = 'transparent'): Blob {
+        return new Blob(data, {
+            type: this.toString(),
+            endings: endings,
+        });
+    }
+}
+
+// Proposed for MediaType
+class MediaType {
+    // ✅ Correct: from* for conversions/parsing (may return null)
+    static fromExtension(ext: string): MediaType | null {
+        const entry = MIME_DB.findByExtension(ext);
+        return entry ? MediaType.for(entry.type) : null;
+    }
+
+    static fromFilePath(path: string): MediaType | null {
+        const ext = path.split('.').pop();
+        return this.fromExtension(ext);
+    }
+
+    static fromRequest(request: Request): MediaType | null {
+        const contentType = request.headers.get('Content-Type');
+        return contentType ? MediaType.for(contentType) : null;
+    }
+
+    static fromResponse(response: Response): MediaType | null {
+        const contentType = response.headers.get('Content-Type');
+        return contentType ? MediaType.for(contentType) : null;
+    }
+}
+
+// From @blue/http/response-status.ts
+class ResponseStatus {
+    // ✅ Correct: Static factory (overloaded)
+    static for(response: Response): ResponseStatus;
+    static for(code: number, text?: string): ResponseStatus;
+    static for(codeOrResponse: number | Response, text?: string): ResponseStatus {
+        // Factory with singleton registry
+    }
+}
+
+// From @blue/util/list.ts
+import { fromPairs } from '@blue/util/list';
+
+const pairs: [string, number][] = [
+    ['a', 1],
+    ['b', 2],
+];
+const obj = fromPairs(pairs); // { a: 1, b: 2 }
+
+// ✅ Correct: parse* for string parsing (may throw)
+class MediaType {
+    static parse(mediaTypeString: string): MediaType {
+        if (!mediaTypeString) {
+            throw new Error('Invalid media type');
+        }
+        return MediaType.for(mediaTypeString);
+    }
+}
+
+// Standard JavaScript examples
+const num = parseInt('42', 10);
+const float = parseFloat('3.14');
+const date = Date.parse('2025-01-01');
+const json = JSON.parse('{"key":"value"}');
+
+// ✅ Correct: of* for varargs factories
+class MediaType {
+    static of(type: string, subtype: string, ...parameters: [string, string][]): MediaType {
+        const params = fromPairs(parameters);
+        return MediaType.for(type, subtype, params);
+    }
+}
+
+// Standard JavaScript
+const arr = Array.of(1, 2, 3); // [1, 2, 3]
+const promise = Promise.resolve(42);
+```
+
+#### Transformation Prefixes
+
+**Methods that convert between formats:**
+
+| Prefix     | Meaning                  | Returns              | Parameters         | Examples                                    |
+| :--------- | :----------------------- | :------------------- | :----------------- | :------------------------------------------ |
+| `to*`      | Converts to format       | String or object     | Often accepts opts | `toString()`, `toJSON()`, `toContentType()` |
+| `format*`  | Formats to string        | String               | May accept format  | `format()`, `formatDate()`                  |
+| `convert*` | Bidirectional conversion | Converted value      | None               | `convert()`, `convertToUTC()`               |
+| `with*`    | Creates copy with change | New instance (immut) | New value          | `withCharset()`, `withParameter()`          |
+
+**Examples:**
+
+```typescript
+// From @blue/core/media-type.ts
+class MediaType implements Serializable {
+    // ✅ Correct: to* for string representation
+    toString(): string {
+        const mediaTypeString =
+            this.suffix === null ? `${this.type}/${this.subtype}` : `${this.type}/${this.subtype}+${this.suffix}`;
+        const parameterString = stringifyParameters(this.parameters);
+        return `${mediaTypeString}${parameterString}`;
+    }
+
+    // ✅ Correct: to* for JSON serialization
+    toJSON(): JSONValue {
+        return this.toString();
+    }
+
+    // ✅ Correct: with* for immutable updates
+    withCharset(charset: string): MediaType {
+        return new MediaType(this.type, this.subtype, {
+            ...this.parameters,
+            charset,
+        });
+    }
+}
+
+// Proposed for MediaType
+class MediaType {
+    // ✅ Correct: to* with options for transformation
+    toContentType(options?: { autoCharset?: boolean }): string {
+        const base = this.toString();
+        if (options?.autoCharset && !this.parameters.charset) {
+            const charset = this.getDefaultCharset();
+            return charset ? `${base};charset=${charset}` : base;
+        }
+        return base;
+    }
+
+    // ✅ Correct: with* for immutable parameter updates
+    withParameter(key: string, value: string): MediaType {
+        return new MediaType(this.type, this.subtype, {
+            ...this.parameters,
+            [key]: value,
+        });
+    }
+}
+
+// From @blue/http/response-status.ts
+class ResponseStatus implements Serializable {
+    toString(): string {
+        return `${this.code} ${this.text}`;
+    }
+
+    toJSON(): JSONObject {
+        return {
+            code: this.code,
+            text: this.text,
+        };
+    }
+}
+
+// From @blue/core/property-value.ts
+class PropertyValue {
+    toString(): string {
+        return `PropertyValue(${this.name}=${this.value})`;
+    }
+}
+
+// Real JavaScript examples
+const arr = [1, 2, 3];
+arr.toString(); // "1,2,3"
+
+const obj = { name: 'Alice' };
+JSON.stringify(obj); // '{"name":"Alice"}'
+
+const date = new Date();
+date.toISOString(); // "2025-02-07T12:00:00.000Z"
+date.toLocaleDateString(); // "2/7/2025"
+
+// ❌ Wrong: with* that mutates (use set*)
+class BadBuilder {
+    withName(name: string): this {
+        this.#name = name; // Mutates! Should be setName()
+        return this;
+    }
+}
+```
+
+#### Special Patterns
+
+##### Async Methods
+
+**Pattern 1: Prefix with `async`** (preferred for new code)
+
+```typescript
+// ✅ Correct: async prefix for async operations
+async function asyncLoadResource(path: string): Promise<Resource> {
+    const response = await fetch(path);
+    return response.json();
+}
+
+class ResourceLoader {
+    async asyncLoad(path: string): Promise<Resource> {
+        return await fetch(path).then((r) => r.json());
+    }
+}
+```
+
+**Pattern 2: Return Promise** (acceptable in established code)
+
+```typescript
+// ✅ Acceptable: Async implied by Promise return
+class ResourceLoader {
+    load(path: string): Promise<Resource> {
+        return fetch(path).then((r) => r.json());
+    }
+}
+
+// From @blue/context/resource.ts
+interface ResourceLoader {
+    getResource(location: string): Promise<Resource>;
+}
+```
+
+##### Stream/Observable Methods
+
+**Pattern: `*Async` suffix or return Observable**
+
+```typescript
+// ✅ Correct: *Async suffix for streams
+class EventStream {
+    watchAsync(): Observable<Event> {
+        return new Observable((observer) => {
+            // Stream events
+        });
+    }
+}
+
+// ✅ Acceptable: Implied by return type
+class EventStream {
+    watch(): Observable<Event> {
+        return new Observable((observer) => {
+            // Stream events
+        });
+    }
+}
+```
+
+##### Predicate Methods
+
+**Pattern: Always return boolean (or type guard)**
+
+```typescript
+// ✅ Correct: Predicates return boolean
+function isValid(value: unknown): boolean {
+    return value != null;
+}
+
+// ✅ Correct: Type guard predicates
+function isString(value: unknown): value is string {
+    return typeof value === 'string';
+}
+
+// ❌ Wrong: Predicate returns tristate
+function isCompressible(type: MediaType): boolean | null {
+    // Should be: getCompressibility()
+    return type.getCompressibility();
+}
+```
+
+##### Mutator Methods
+
+**Pattern: Return void or this (for chaining)**
+
+```typescript
+// ✅ Correct: Mutator returns void
+class Registry {
+    set(name: string, value: any): void {
+        this.entries.set(name, value);
+    }
+
+    clear(): void {
+        this.entries.clear();
+    }
+}
+
+// ✅ Correct: Mutator returns this (fluent API)
+class Builder {
+    #name: string;
+    #properties: Map<string, any>;
+
+    setName(name: string): this {
+        this.#name = name;
+        return this;
+    }
+
+    addProperty(key: string, value: any): this {
+        this.#properties.set(key, value);
+        return this;
+    }
+
+    build(): Product {
+        return new Product(this.#name, this.#properties);
+    }
+}
+
+// Usage
+const product = new Builder().setName('Widget').addProperty('color', 'blue').addProperty('size', 'large').build();
+```
+
+#### Anti-Patterns
+
+##### get\* for Simple Field Access
+
+```typescript
+// ❌ Wrong: get* method for simple field access
+class BadExample {
+    #name: string;
+
+    getName(): string {
+        return this.#name;
+    }
+}
+
+// ✅ Correct: Property for simple field access
+class GoodExample {
+    #name: string;
+
+    get name(): string {
+        return this.#name;
+    }
+}
+```
+
+##### set\* That Doesn't Mutate
+
+```typescript
+// ❌ Wrong: set* that returns new instance
+class BadMediaType {
+    setCharset(charset: string): MediaType {
+        // Returns new instance - not mutating!
+        return new MediaType(this.type, this.subtype, { charset });
+    }
+}
+
+// ✅ Correct: with* for immutable updates
+class GoodMediaType {
+    withCharset(charset: string): MediaType {
+        return new MediaType(this.type, this.subtype, {
+            ...this.parameters,
+            charset,
+        });
+    }
+}
+```
+
+##### is\* That Returns Null
+
+```typescript
+// ❌ Wrong: is* returns tristate
+function isCompressible(type: MediaType): boolean | null {
+    return type.getCompressibility();
+}
+
+// ✅ Correct: get* for tristate returns
+function getCompressibility(type: MediaType): boolean | null {
+    return MIME_DB.get(type.baseType)?.compressible ?? null;
+}
+```
+
+##### to\* That Doesn't Transform
+
+```typescript
+// ❌ Wrong: to* that just accesses data
+class BadMediaType {
+    toBaseType(): string {
+        // Just accessing/concatenating - should be property
+        return `${this.type}/${this.subtype}`;
+    }
+}
+
+// ✅ Correct: Property for simple access
+class GoodMediaType {
+    get baseType(): string {
+        return `${this.type}/${this.subtype}`;
+    }
+}
+```
+
+#### Complete Reference Table
+
+| Prefix    | Use Case               | Returns              | Side Effects | May Fail | Example              |
+| :-------- | :--------------------- | :------------------- | :----------- | :------- | :------------------- |
+| `get*`    | Retrieve from external | Value or null        | None         | Yes      | `getHandler(route)`  |
+| `is*`     | Type/state check       | boolean              | None         | No       | `isWildcardType()`   |
+| `has*`    | Presence check         | boolean              | None         | No       | `hasProperty(key)`   |
+| `like*`   | Duck-typing check      | boolean (type guard) | None         | No       | `likeArray(value)`   |
+| `set*`    | Mutate value           | void or this         | Mutates      | No       | `setProperty(k, v)`  |
+| `add*`    | Add to collection      | void or this         | Mutates      | No       | `addProcessor(p)`    |
+| `remove*` | Remove from collection | boolean or this      | Mutates      | No       | `removeListener(fn)` |
+| `clear*`  | Empty collection       | void                 | Mutates      | No       | `clearCache()`       |
+| `update*` | Modify existing        | void or this         | Mutates      | No       | `updateStatus(s)`    |
+| `delete*` | Remove/destroy         | boolean              | Mutates      | No       | `deleteEntry(k)`     |
+| `create*` | Create instance        | New object           | None         | No       | `createBlob(data)`   |
+| `from*`   | Parse/convert from     | Object or null       | None         | Yes      | `fromExtension(ext)` |
+| `parse*`  | Parse string           | Object or throws     | None         | Yes      | `parse(str)`         |
+| `of*`     | Varargs factory        | New object           | None         | No       | `of(...args)`        |
+| `to*`     | Transform to format    | String/object        | None         | No       | `toString()`         |
+| `format*` | Format to string       | String               | None         | No       | `formatDate(d)`      |
+| `with*`   | Immutable update       | New instance         | None         | No       | `withCharset(cs)`    |
+
+#### Rationale
+
+**Why This Matters:**
+
+1. **Predictability** - Developers instantly understand method behavior from name
+2. **Consistency** - Same patterns across entire codebase
+3. **API Design** - Clear contracts between callers and implementations
+4. **Ecosystem Alignment** - Follows JavaScript/TypeScript/Java conventions
+5. **Tooling Support** - IDEs can provide better autocomplete and suggestions
+
+**Influenced By:**
+
+- JavaBeans naming conventions (get\*, set\*, is\*)
+- Spring Framework patterns (get\* for external lookups)
+- JavaScript standard library (Array.from, Array.of, toString, toJSON)
+- TypeScript type guard conventions (is\* predicates)
+- Functional programming (from\*, to\* transformations)
+- Immutable data structures (with\* for copies)
+
+#### When in Doubt
+
+Ask yourself:
+
+1. **Does it retrieve from external source?** → `get*`
+2. **Does it check type or state?** → `is*` or `has*`
+3. **Does it mutate the object?** → `set*`, `add*`, `remove*`
+4. **Does it create new instance?** → `create*`, `from*`, `of*`
+5. **Does it transform to different format?** → `to*`, `format*`
+6. **Does it return new immutable copy?** → `with*`
+
+If still unsure, **check similar methods in the codebase** for established patterns.
+
 ---
 
 ## 4. Module Organization

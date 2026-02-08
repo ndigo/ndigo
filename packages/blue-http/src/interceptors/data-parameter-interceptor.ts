@@ -3,7 +3,7 @@
  */
 
 import { identity, pipe, T } from '@blue/util/function';
-import { anyPass, cond, either, ifElse } from '@blue/util/logic';
+import { anyPass, cond, ifElse } from '@blue/util/logic';
 import { is, isString } from '@blue/util/types';
 import QueryString from '../query-string';
 import { HTTPInit, HTTPMethod, InitializationAwareHTTPInterceptor } from '../http';
@@ -18,7 +18,7 @@ export type DataParameterInit = HTTPInit & { data?: DataInit };
  */
 
 /**
- * * This interceptor could be more robust, e.g. it could do additional data processing,
+ * * @todo This interceptor could be more robust, e.g. it could do additional data processing,
  * * set a consistent Content-Type header, and/or read an existing Content-Type header
  * * to affect processing. -JBR
  */
@@ -45,8 +45,8 @@ const getEntries = pipe(ifElse(isString, QueryString.parse, identity), entriesIt
     isFormData = is(FormData),
     isURLSearchParams = is(URLSearchParams),
     isReadableStream = is(ReadableStream),
-    /*
-     * parseData() could be turned into an ifElse() where the identity() results are joined within an anyPass()...
+    /** 
+     * @todo parseData() could be turned into an ifElse() where the identity() results are joined within an anyPass()...
      * ifElse( anyPass( [ isBlob, isBufferSource, ... ] ), identity, JSON.stringify );
      * I don't know if there are performance implications to either approach but I thought this approach laid out the logic more clearly.
      * -JBR

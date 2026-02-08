@@ -5,7 +5,7 @@ import { JSONObject, Parser, Stringifier } from '@blue/core';
 import matrixExpression from './parsers/matrix-expression';
 import { always, comparator, curryN, pipe, T } from '@blue/util/function';
 import { filter, join, map, sort } from '@blue/util/list';
-import { cond, complement, isEmpty, isNotEmpty } from '@blue/util/logic';
+import { cond, complement, isNotEmpty } from '@blue/util/logic';
 import { keys } from '@blue/util/object';
 import { equals } from '@blue/util/relation';
 import { encodeURIComponent as encodeValue } from '@blue/util/string';

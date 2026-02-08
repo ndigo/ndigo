@@ -1876,6 +1876,13 @@ BlueJS is fully compliant with modern JavaScript standards for decorators:
     - `As*` (PascalCase) for Class Mixins: `class MyService extends AsEventEmitter(Base)`.
     - `as*` (camelCase) for Function Mixins: `asEventEmitter(target)`.
 
+**For comprehensive naming guidelines, see:**
+
+- **STYLE_GUIDE.md Section 3.13** - Properties vs Methods (when to use properties, get-methods, or to-methods)
+- **STYLE_GUIDE.md Section 3.14** - Method Naming Conventions (get\*, is\*, has\*, set\*, from\*, to\*, with\*, etc.)
+
+These sections provide detailed decision matrices, examples from the codebase, and rationale for choosing between different API design patterns.
+
 ## Module Visibility & API Design
 
 ### Public API Surface

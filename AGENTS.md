@@ -29,6 +29,10 @@ pnpm lint            # Check code quality
 
 ⚠️ **STYLE_GUIDE.md Section 3.12 (Role-Based Suffixes)** - Use semantic suffixes: *Handler (processes), *Resolver (locates), *Strategy (algorithm), *Factory (creates)
 
+⚠️ **STYLE_GUIDE.md Section 3.13 (Properties vs Methods)** - Properties for cheap/intrinsic data (O(1), no side effects), get-methods for external lookups (may fail/return null), to-methods for transformations
+
+⚠️ **STYLE_GUIDE.md Section 3.14 (Method Naming)** - Use conventional prefixes: get* (retrieve), is* (type check), has* (presence), set* (mutate), from*/to* (convert), with\* (immutable copy)
+
 **Pre-Commit Validation:**
 
 ```bash
@@ -425,9 +429,12 @@ When organizing helper functions and utilities, follow the extraction hierarchy:
         - `@blue/model` - Object validation (objectmodel) - Use for data validation
         - `@blue/core` - Core primitives, containers, patterns - Use for application context, DI, base types
 3.  **Plan:** Check `MIGRATION-2025.md` or `CLAUDE.md` for recent architectural shifts.
-4.  **Implement:** Adhere to the ESM-only mandate and follow patterns discovered in research phase.
-5.  **Check Dependencies:** Verify imports follow the Library Integration Layer pattern (no direct imports from encapsulated libraries).
-6.  **Verify:** Always run `pnpm build` and `pnpm test` (or specific package build/test) before finishing.
+4.  **Design Decisions:** Consider API design patterns:
+    - **Property vs Method:** Use properties for cheap/intrinsic data (O(1), no side effects), get-methods for external lookups (may fail/return null), to-methods for transformations (STYLE_GUIDE.md Section 3.13)
+    - **Method Naming:** Use conventional prefixes: get\* (retrieve), is\* (type check), has\* (presence), set\* (mutate), from\*/to\* (convert), with\* (immutable copy) (STYLE_GUIDE.md Section 3.14)
+5.  **Implement:** Adhere to the ESM-only mandate and follow patterns discovered in research phase.
+6.  **Check Dependencies:** Verify imports follow the Library Integration Layer pattern (no direct imports from encapsulated libraries).
+7.  **Verify:** Always run `pnpm build` and `pnpm test` (or specific package build/test) before finishing.
 
 ### Creating New Files
 

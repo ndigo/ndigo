@@ -33,6 +33,8 @@ pnpm lint            # Check code quality
 
 ⚠️ **STYLE_GUIDE.md Section 3.14 (Method Naming)** - Use conventional prefixes: get* (retrieve), is* (type check), has* (presence), set* (mutate), from*/to* (convert), with\* (immutable copy)
 
+⚠️ **STYLE_GUIDE.md Section 3.15 (Type-Safe Enums)** - Use class-based pattern for enums with methods/inheritance, built-in enums for simple constants
+
 **Pre-Commit Validation:**
 
 ```bash

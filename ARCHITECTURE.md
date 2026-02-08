@@ -1642,6 +1642,628 @@ describe('Early termination', () => {
 - [packages/blue-core/src/transducer.ts](../packages/blue-core/src/transducer.ts) - Source implementation
 - [packages/blue-core/test/transducer.spec.ts](../packages/blue-core/test/transducer.spec.ts) - Test examples
 
+## Type-Safe Enum Pattern
+
+### Overview
+
+The **Type-Safe Enum Pattern** (also known as the Java Enum Pattern or Class-Based Enum Pattern) is a design pattern that uses classes to create type-safe enumeration constants with capabilities beyond built-in enums. This pattern provides methods, inheritance, factory functions, and full control over serialization—features unavailable in TypeScript's built-in `enum` keyword.
+
+**Historical Context:**
+
+This pattern was popularized by Joshua Bloch in "Effective Java" (Item 21) before Java 5 introduced built-in enums in 2004. Even after enums became standard, the pattern remained valuable for scenarios requiring rich behavior. In TypeScript, where built-in enums have [well-documented limitations](https://www.typescriptlang.org/docs/handbook/enums.html), the type-safe enum pattern provides a powerful alternative for complex enumeration requirements.
+
+**Key Characteristics:**
+
+- **Singleton Instances**: Each enum constant is a singleton instance of the enum class
+- **Immutability**: Properties are immutable using `Reflect.defineProperty`
+- **Type Safety**: Reference equality checks (`===`) provide reliable identity
+- **Rich Behavior**: Support for methods, interfaces, and inheritance
+- **Serialization Control**: Full control via `toJSON()` and `toString()`
+- **Factory Methods**: Static methods for lookup and conversion
+
+**BlueJS Usage:**
+
+The pattern is used in 6 locations across 2 packages:
+
+- **@blue/dispatcher**: `MethodParameterType` (3 constants: COOKIE, MATRIX, QUERY)
+- **@blue/logger**: `Level` hierarchy (5 classes with 33 total constants across different logging standards)
+
+### When to Use
+
+Understanding when to use the Type-Safe Enum Pattern versus built-in enums is critical for maintaining appropriate complexity levels.
+
+#### Use Type-Safe Enum Pattern When:
+
+✅ **Instance methods needed** - equals(), compareTo(), or custom business logic  
+✅ **Factory methods needed** - fromType(), fromValue(), or conversion methods  
+✅ **Rich data model** - Multiple properties per enum constant (name, value, metadata)  
+✅ **Inheritance hierarchies** - Shared behavior across enum families  
+✅ **Public API** - External contracts requiring predictable serialization  
+✅ **Type-safe identity** - Reference equality checks (===) for comparisons  
+✅ **Large value sets** - 8+ values requiring organization and documentation  
+✅ **Runtime extensibility** - Ability to subclass for custom variants
+
+**Example from codebase:**
+
+```typescript
+// ✅ Good: Type-Safe Enum with ordering and conversion
+export class Level implements Comparable<Level>, Serializable {
+    static OFF = new Level('off', 0);
+    static ALL = new Level('all', Number.MAX_VALUE);
+
+    readonly name: string;
+    readonly value: number;
+
+    constructor(name: string, value: number) {
+        Reflect.defineProperty(this, 'name', { value: name, writable: false, enumerable: false, configurable: true });
+        Reflect.defineProperty(this, 'value', { value: value, writable: false, enumerable: false, configurable: true });
+    }
+
+    compareTo(other: Level): number {
+        return this.value - other.value;
+    }
+
+    toJSON(): string {
+        return this.name;
+    }
+
+    toString(): string {
+        return this.name;
+    }
+}
+
+// Specialized subclass with conversion methods
+export class SyslogLevel extends Level {
+    static EMERG = new Level('emerg', 10000);
+    static ERROR = new Level('error', 40000);
+    // ... 6 more levels
+
+    static toSeverity(level: Level): SeverityNumber {
+        // Convert to OpenTelemetry severity
+    }
+
+    static fromSeverity(severity: SeverityNumber): Level {
+        // Convert from OpenTelemetry severity
+    }
+}
+```
+
+#### Use Built-in TypeScript Enum When:
+
+✅ **Simple constants** - No additional behavior beyond the values themselves  
+✅ **Internal use only** - Not exposed in public API (enums have serialization quirks)  
+✅ **Small value sets** - 2-5 values that are self-explanatory  
+✅ **No methods needed** - Pure data constants without logic  
+✅ **Compile-time only** - No runtime lookup, conversion, or validation needed
+
+**Example from codebase:**
+
+```typescript
+// ✅ Good: Built-in enum for simple internal constants
+enum RouteAccess {
+    PUBLIC,
+    PRIVATE,
+}
+
+enum RouteSource {
+    EXTERNAL,
+    INTERNAL,
+}
+
+// Used internally in RouteTransaction
+class RouteTransaction {
+    constructor(route: string, access: RouteAccess, source: RouteSource) {
+        // Simple usage, no methods, no conversion
+    }
+}
+```
+
+#### Quick Decision Matrix
+
+| Criterion                 | Built-in Enum | Type-Safe Enum    | Factory Registry\* |
+| :------------------------ | :------------ | :---------------- | :----------------- |
+| **Complexity**            | Simple        | Medium            | Complex            |
+| **Value Count**           | 2-5           | 6-20              | 20+                |
+| **Methods Needed**        | No            | Yes               | Yes                |
+| **Factory Methods**       | No            | Optional          | Required           |
+| **Inheritance**           | No            | Yes               | Optional           |
+| **Runtime Creation**      | No            | No                | Yes                |
+| **Public API**            | Avoid         | ✅ Preferred      | ✅ Preferred       |
+| **Serialization Control** | Limited       | ✅ Full           | ✅ Full            |
+| **Identity Checks**       | Unreliable    | ✅ Reliable (===) | ✅ Reliable (===)  |
+
+\* See [Related Pattern: Factory Registry](#related-pattern-factory-registry) below
+
+### Pattern Variations
+
+The Type-Safe Enum Pattern has two implementation styles in the BlueJS codebase. Both are valid; the inline style is preferred for new code.
+
+#### Variation 1: Inline Static Assignment (Recommended)
+
+Static properties are initialized inline with `new ClassName()`. This is the more modern ES2022+ style:
+
+```typescript
+export class Level implements Comparable<Level>, Serializable {
+    static OFF = new Level('off', 0);
+    static ALL = new Level('all', Number.MAX_VALUE);
+
+    readonly name: string;
+    readonly value: number;
+
+    get [Symbol.toStringTag](): string {
+        return `Level:${this.name}`;
+    }
+
+    constructor(name: string, value: number) {
+        Reflect.defineProperty(this, 'name', {
+            value: name,
+            writable: false,
+            enumerable: false,
+            configurable: true,
+        });
+        Reflect.defineProperty(this, 'value', {
+            value: value,
+            writable: false,
+            enumerable: false,
+            configurable: true,
+        });
+    }
+
+    compareTo(other: Level): number {
+        return this.value - other.value;
+    }
+
+    toJSON(): string {
+        return this.name;
+    }
+
+    toString(): string {
+        return this.name;
+    }
+}
+```
+
+**Characteristics:**
+
+- ✅ More concise and readable
+- ✅ Modern ES2022+ style
+- ✅ Preferred for new implementations
+- ✅ No separate initialization step
+
+**Example:** `Level`, `SyslogLevel`, `CLILevel`, `NPMLevel`, `ApacheLevel` in `@blue/logger`
+
+#### Variation 2: Post-Class Assignment
+
+Static properties are forward-declared without initialization, then assigned after the class definition:
+
+```typescript
+export class MethodParameterType implements Equatable, Serializable {
+    static COOKIE: MethodParameterType;
+    static MATRIX: MethodParameterType;
+    static QUERY: MethodParameterType;
+
+    readonly type: string;
+
+    get [Symbol.toStringTag](): string {
+        return `MethodParameterType:${this.type}`;
+    }
+
+    constructor(type: string) {
+        Reflect.defineProperty(this, 'type', {
+            value: type,
+            writable: false,
+            enumerable: false,
+            configurable: true,
+        });
+    }
+
+    equals(other: any): boolean {
+        return other instanceof MethodParameterType && other.type === this.type;
+    }
+
+    toJSON(): string {
+        return this.type;
+    }
+
+    toString(): string {
+        return this.type;
+    }
+}
+
+// Post-class assignment
+MethodParameterType.COOKIE = new MethodParameterType('cookie:value');
+MethodParameterType.MATRIX = new MethodParameterType('matrix:value');
+MethodParameterType.QUERY = new MethodParameterType('query:value');
+```
+
+**Characteristics:**
+
+- More verbose
+- Traditional pre-ES2022 style
+- Allows forward references in constructor (rare need)
+- Still valid but less preferred
+
+**Example:** `MethodParameterType` in `@blue/dispatcher`
+
+**Recommendation:** Use inline assignment for new code. Both styles are acceptable in existing code.
+
+### Inheritance Hierarchies
+
+One of the key advantages of the Type-Safe Enum Pattern is support for inheritance, enabling shared behavior across enum families.
+
+**Example: Logging Level Hierarchy**
+
+```typescript
+// Base class with common behavior
+export class Level implements Comparable<Level>, Serializable {
+    static OFF = new Level('off', 0);
+    static ALL = new Level('all', Number.MAX_VALUE);
+
+    readonly name: string;
+    readonly value: number;
+
+    constructor(name: string, value: number) {
+        Reflect.defineProperty(this, 'name', { value: name, writable: false, enumerable: false, configurable: true });
+        Reflect.defineProperty(this, 'value', { value: value, writable: false, enumerable: false, configurable: true });
+    }
+
+    // Shared comparison logic
+    compareTo(other: Level): number {
+        return this.value - other.value;
+    }
+
+    toJSON(): string {
+        return this.name;
+    }
+
+    toString(): string {
+        return this.name;
+    }
+}
+
+// Specialized subclass for Syslog standard
+export class SyslogLevel extends Level {
+    static EMERG = new Level('emerg', 10000);
+    static ALERT = new Level('alert', 20000);
+    static CRIT = new Level('crit', 30000);
+    static ERROR = new Level('error', 40000);
+    static WARNING = new Level('warning', 50000);
+    static NOTICE = new Level('notice', 60000);
+    static INFO = new Level('info', 70000);
+    static DEBUG = new Level('debug', 80000);
+
+    // Conversion to OpenTelemetry format
+    static toSeverity(level: Level): SeverityNumber {
+        if (level.compareTo(SyslogLevel.EMERG) === 0) return SeverityNumber.FATAL;
+        if (level.compareTo(SyslogLevel.ERROR) <= 0) return SeverityNumber.ERROR;
+        if (level.compareTo(SyslogLevel.WARNING) <= 0) return SeverityNumber.WARN;
+        if (level.compareTo(SyslogLevel.INFO) <= 0) return SeverityNumber.INFO;
+        return SeverityNumber.DEBUG;
+    }
+
+    // Conversion from OpenTelemetry format
+    static fromSeverity(severity: SeverityNumber): Level {
+        if (severity >= SeverityNumber.FATAL) return SyslogLevel.EMERG;
+        if (severity >= SeverityNumber.ERROR) return SyslogLevel.ERROR;
+        if (severity >= SeverityNumber.WARN) return SyslogLevel.WARNING;
+        if (severity >= SeverityNumber.INFO) return SyslogLevel.INFO;
+        return SyslogLevel.DEBUG;
+    }
+}
+
+// Additional specializations with different level sets
+export class CLILevel extends Level {
+    /* 10 CLI-specific levels */
+}
+export class NPMLevel extends Level {
+    /* 7 NPM-style levels */
+}
+export class ApacheLevel extends Level {
+    /* 6 Log4j-style levels */
+}
+```
+
+**Use Case:** Multiple logging standards (Syslog, CLI, NPM, Apache) sharing comparison and serialization logic while providing standard-specific levels and conversion methods.
+
+### Factory Methods
+
+Static factory methods enable runtime lookup and conversion, a common requirement for enum patterns.
+
+#### Pattern 1: Lookup by String Value
+
+```typescript
+export class MethodParameterType {
+    static COOKIE = new MethodParameterType('cookie:value');
+    static MATRIX = new MethodParameterType('matrix:value');
+    static QUERY = new MethodParameterType('query:value');
+
+    static fromType(type: string): MethodParameterType | null {
+        const keys = Object.keys(this);
+        for (const key of keys) {
+            const paramType: MethodParameterType = MethodParameterType[key];
+            if (paramType && paramType.type === type) {
+                return paramType;
+            }
+        }
+        return null;
+    }
+
+    readonly type: string;
+    constructor(type: string) {
+        /* ... */
+    }
+}
+
+// Usage
+const paramType = MethodParameterType.fromType('cookie:value');
+if (paramType === MethodParameterType.COOKIE) {
+    // Type-safe comparison
+}
+```
+
+#### Pattern 2: Bidirectional Conversion
+
+```typescript
+export class SyslogLevel extends Level {
+    // Convert TO external format (OpenTelemetry)
+    static toSeverity(level: Level): SeverityNumber {
+        if (level.compareTo(SyslogLevel.EMERG) === 0) return SeverityNumber.FATAL;
+        if (level.compareTo(SyslogLevel.ERROR) <= 0) return SeverityNumber.ERROR;
+        // ...
+    }
+
+    // Convert FROM external format (OpenTelemetry)
+    static fromSeverity(severity: SeverityNumber): Level {
+        if (severity >= SeverityNumber.FATAL) return SyslogLevel.EMERG;
+        if (severity >= SeverityNumber.ERROR) return SyslogLevel.ERROR;
+        // ...
+    }
+}
+
+// Usage
+const otelSeverity = SyslogLevel.toSeverity(level); // Level → SeverityNumber
+const syslogLevel = SyslogLevel.fromSeverity(otelSeverity); // SeverityNumber → Level
+```
+
+### Common Interfaces
+
+Type-safe enums typically implement one or more standard interfaces to provide expected behavior:
+
+#### Equatable - Value Equality
+
+```typescript
+interface Equatable {
+    equals(other: any): boolean;
+}
+
+export class MethodParameterType implements Equatable {
+    equals(other: any): boolean {
+        return other instanceof MethodParameterType && other.type === this.type;
+    }
+}
+
+// Usage
+const type1 = MethodParameterType.COOKIE;
+const type2 = getParameterType();
+if (type1.equals(type2)) {
+    // Value-based equality
+}
+```
+
+#### Serializable - JSON Representation
+
+```typescript
+interface Serializable {
+    toJSON(): string | JSONObject;
+    toString(): string;
+}
+
+export class Level implements Serializable {
+    toJSON(): string {
+        return this.name; // Serialize as simple string
+    }
+
+    toString(): string {
+        return this.name;
+    }
+}
+
+// Usage
+const json = JSON.stringify({ level: Level.INFO });
+// Result: {"level":"info"}
+```
+
+#### Comparable - Ordering
+
+```typescript
+interface Comparable<T> {
+    compareTo(other: T): number;
+}
+
+export class Level implements Comparable<Level> {
+    compareTo(other: Level): number {
+        return this.value - other.value;
+    }
+}
+
+// Usage
+const levels = [Level.ERROR, Level.INFO, Level.DEBUG];
+levels.sort((a, b) => a.compareTo(b)); // Sort by severity
+```
+
+### Implementation Checklist
+
+When creating a new type-safe enum:
+
+- [ ] **Class Definition**: Declare class implementing appropriate interfaces (Equatable, Serializable, Comparable)
+- [ ] **Static Constants**: Define enum values as static properties (UPPER_SNAKE_CASE)
+- [ ] **Constructor**: Accept parameters for enum properties
+- [ ] **Immutability**: Use `Reflect.defineProperty` with `writable: false` for all properties
+- [ ] **Symbol.toStringTag**: Add getter for better debugging (`EnumType:${value}`)
+- [ ] **equals()**: Implement value-based equality check (if Equatable)
+- [ ] **compareTo()**: Implement ordering logic (if Comparable)
+- [ ] **toJSON()**: Define JSON serialization format (if Serializable)
+- [ ] **toString()**: Define string representation (if Serializable)
+- [ ] **Factory Methods**: Add static `from*()` methods for lookup/conversion (if needed)
+- [ ] **Documentation**: Document each enum constant and its meaning with JSDoc
+- [ ] **Tests**: Write tests for equality, serialization, ordering, and factory methods
+
+### Related Pattern: Factory Registry
+
+For very large or dynamic enum sets (50+ values), consider the **Factory Registry Pattern** as an alternative. This pattern uses a factory method with internal caching instead of predefined static constants.
+
+**Key Differences:**
+
+| Aspect        | Type-Safe Enum                | Factory Registry               |
+| :------------ | :---------------------------- | :----------------------------- |
+| **Constants** | Static properties on class    | Separate constants file        |
+| **Creation**  | Fixed at definition time      | Dynamic at runtime             |
+| **Caching**   | Implicit (singletons)         | Explicit (Map/WeakMap)         |
+| **Use Case**  | Known fixed set (6-20 values) | Large/dynamic set (50+ values) |
+
+**Example: ResponseStatus**
+
+```typescript
+// Class with factory method (response-status.ts)
+export class ResponseStatus implements Comparable<ResponseStatus>, Equatable, Serializable {
+    private static cache = new Map<string, ResponseStatus>();
+
+    static for(code: number, reason: string): ResponseStatus {
+        const key = `${code}:${reason}`;
+        if (!this.cache.has(key)) {
+            this.cache.set(key, new ResponseStatus(code, reason));
+        }
+        return this.cache.get(key)!;
+    }
+
+    readonly code: number;
+    readonly reason: string;
+
+    private constructor(code: number, reason: string) {
+        Reflect.defineProperty(this, 'code', { value: code, writable: false, enumerable: false, configurable: true });
+        Reflect.defineProperty(this, 'reason', {
+            value: reason,
+            writable: false,
+            enumerable: false,
+            configurable: true,
+        });
+    }
+
+    // ... equals, compareTo, toJSON, toString
+}
+
+// Separate constants file (response-statuses.ts)
+export const OK = ResponseStatus.for(200, 'OK');
+export const CREATED = ResponseStatus.for(201, 'Created');
+export const NOT_FOUND = ResponseStatus.for(404, 'Not Found');
+// ... 60+ more HTTP status codes
+```
+
+**When to Use Factory Registry:**
+
+- ✅ 50+ possible values (e.g., HTTP status codes 100-599)
+- ✅ Runtime instance creation needed (dynamic values)
+- ✅ Caching required to ensure identity (singleton behavior)
+- ✅ Separate constant definition beneficial (organization)
+
+**Example in BlueJS:** `ResponseStatus` in `@blue/http` manages 60+ HTTP status codes using this pattern.
+
+### Usage Examples
+
+#### Identity Checks (Reference Equality)
+
+```typescript
+// ✅ Correct: Reference equality for identity
+if (paramType === MethodParameterType.COOKIE) {
+    // Process cookie parameter
+}
+
+// ✅ Correct: Value equality for comparison
+if (paramType.equals(otherType)) {
+    // Types are semantically equal
+}
+
+// ❌ Wrong: String comparison (fragile, bypasses type safety)
+if (paramType.toString() === 'cookie:value') {
+    // Don't do this - loses type safety
+}
+```
+
+#### Ordering and Comparison
+
+```typescript
+// ✅ Correct: Use compareTo() for ordering
+const levels = [Level.ERROR, Level.INFO, Level.DEBUG];
+levels.sort((a, b) => a.compareTo(b));
+
+if (currentLevel.compareTo(Level.ERROR) <= 0) {
+    // Critical or error level
+}
+
+// ❌ Wrong: Direct comparison operators don't work
+if (level1 > level2) {
+    // Won't work as expected
+}
+```
+
+#### Serialization
+
+```typescript
+// ✅ Correct: Automatic serialization via toJSON()
+const config = {
+    level: Level.INFO,
+    paramType: MethodParameterType.QUERY,
+};
+const json = JSON.stringify(config);
+// Result: {"level":"info","paramType":"query:value"}
+
+// ✅ Correct: Manual string conversion
+const levelString = level.toString(); // "info"
+```
+
+#### Factory Method Lookup
+
+```typescript
+// ✅ Correct: Parse external input to enum constant
+const paramType = MethodParameterType.fromType(request.paramType);
+if (paramType === null) {
+    throw new Error(`Unknown parameter type: ${request.paramType}`);
+}
+
+// ✅ Correct: Conversion between formats
+const severity = SyslogLevel.toSeverity(level);
+const level = SyslogLevel.fromSeverity(severity);
+```
+
+### Examples from Codebase
+
+**Simple Type-Safe Enum:**
+
+- `MethodParameterType` - [@blue/dispatcher/src/route-parameter.ts](../packages/blue-dispatcher/src/route-parameter.ts) (lines 45-95)
+
+**Enum Hierarchy with Inheritance:**
+
+- `Level` (base class) - [@blue/logger/src/level.ts](../packages/blue-logger/src/level.ts)
+- `SyslogLevel` (subclass) - [@blue/logger/src/syslog-logging.ts](../packages/blue-logger/src/syslog-logging.ts)
+- `CLILevel` (subclass) - [@blue/logger/src/cli-logging.ts](../packages/blue-logger/src/cli-logging.ts)
+- `NPMLevel` (subclass) - [@blue/logger/src/npm-logging.ts](../packages/blue-logger/src/npm-logging.ts)
+- `ApacheLevel` (subclass) - [@blue/logger/src/apache-logging.ts](../packages/blue-logger/src/apache-logging.ts)
+
+**Factory Registry Pattern:**
+
+- `ResponseStatus` - [@blue/http/src/response-status.ts](../packages/blue-http/src/response-status.ts)
+- HTTP Status Constants - [@blue/http/src/response-statuses.ts](../packages/blue-http/src/response-statuses.ts)
+
+**Built-in Enum (Appropriate Use):**
+
+- `RouteAccess` and `RouteSource` - [@blue/router/src/hash-router.ts](../packages/blue-router/src/hash-router.ts) (lines 16-24)
+
+### See Also
+
+- [STYLE_GUIDE.md Section 3.15](./STYLE_GUIDE.md#315-type-safe-enums-convention-code-review) - Type-Safe Enum naming conventions (class names, constants, methods)
+- [Decorators & Separation of Concerns](#decorators--separation-of-concerns) - Using enums with decorators
+- [Design Patterns](#design-patterns) - Related patterns (Factory, Singleton)
+
 ## Decorators & Separation of Concerns
 
 ### Overview

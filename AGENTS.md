@@ -15,6 +15,8 @@ pnpm lint            # Check code quality
 
 **Critical - Read Before Coding:**
 
+⚠️ **Section 5 (Research Workflow)** - ALWAYS perform two-step reconnaissance before writing code: (1) scan target package for patterns/utilities, (2) scan @blue/util, @blue/parser, etc. for reusable code
+
 ⚠️ **Section 4.4 (Library Integration Layer)** - Most common error: importing ramda/date-fns directly instead of through @blue/util
 
 ⚠️ **Section 4.7 (Decorator Naming)** - All decorators MUST use camelCase
@@ -415,10 +417,17 @@ When organizing helper functions and utilities, follow the extraction hierarchy:
 ### Modifying Code
 
 1.  **Read:** Analyze existing code and `package.json` first.
-2.  **Plan:** Check `MIGRATION-2025.md` or `CLAUDE.md` for recent architectural shifts.
-3.  **Implement:** Adhere to the ESM-only mandate.
-4.  **Check Dependencies:** Verify imports follow the Library Integration Layer pattern (no direct imports from encapsulated libraries).
-5.  **Verify:** Always run `pnpm build` and `pnpm test` (or specific package build/test) before finishing.
+2.  **Research:** Before writing code, perform two-step reconnaissance to avoid duplication and maintain consistency:
+    - **Step 1 - Scan target package:** Search for related functionality, established patterns, internal utilities (`_util.ts`, `_parsers.ts`), naming conventions, and design patterns currently in use.
+    - **Step 2 - Scan related packages:** Check common utilities and specialized tools:
+        - `@blue/util` - Common utilities (ramda, date-fns, string utils) - **Check first!**
+        - `@blue/parser` - String parsing (arcsecond wrappers) - Use for parsing URLs, queries, expressions
+        - `@blue/model` - Object validation (objectmodel) - Use for data validation
+        - `@blue/core` - Core primitives, containers, patterns - Use for application context, DI, base types
+3.  **Plan:** Check `MIGRATION-2025.md` or `CLAUDE.md` for recent architectural shifts.
+4.  **Implement:** Adhere to the ESM-only mandate and follow patterns discovered in research phase.
+5.  **Check Dependencies:** Verify imports follow the Library Integration Layer pattern (no direct imports from encapsulated libraries).
+6.  **Verify:** Always run `pnpm build` and `pnpm test` (or specific package build/test) before finishing.
 
 ### Creating New Files
 

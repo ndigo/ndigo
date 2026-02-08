@@ -273,7 +273,7 @@ export * from './equatable';
 export * from './error';
 export * from './iterable';
 export * from './matchable';
-export { default as MediaType } from './media-type';
+export { default as MediaType, parseMediaType } from './media-type';
 export * from './null';
 export * from './path-matcher';
 export * from './parser';

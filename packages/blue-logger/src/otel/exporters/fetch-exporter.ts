@@ -81,7 +81,7 @@ export class FetchLogRecordExporter implements LogRecordExporter {
 
         // Build headers
         const headers = new Headers(this.options.headers || {});
-        headers.set('Content-Type', this.layout.mediaType.withCharset('utf-8').toString());
+        headers.set('Content-Type', this.layout.mediaType.toContentType());
         headers.set('Content-Length', String(content.length));
 
         // Build fetch options

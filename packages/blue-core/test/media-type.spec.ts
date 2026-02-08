@@ -1,5 +1,5 @@
 import { describe, test, expect } from 'vitest';
-import MediaType from '../src/media-type';
+import MediaType, { parseMediaType } from '../src/media-type';
 import * as MediaTypes from '../src/media-types';
 
 describe('MediaType', () => {
@@ -243,5 +243,61 @@ describe('MediaType', () => {
             textHtmlType = new MediaType('text', 'html', parameters);
 
         expect(Object.prototype.toString.call(textHtmlType)).toBe('[object MediaType:text/html;charset=UTF-8]');
+    });
+
+    test('it should provide baseType', () => {
+        expect(MediaTypes.TEXT_HTML.baseType).toBe('text/html');
+        expect(MediaType.for('application/atom+xml').baseType).toBe('application/atom');
+        expect(MediaType.for('application/json;charset=utf-8').baseType).toBe('application/json');
+    });
+
+    test('it should provide default charset', () => {
+        expect(MediaTypes.TEXT_HTML.getDefaultCharset()).toBe('utf-8');
+        expect(MediaTypes.APPLICATION_JSON.getDefaultCharset()).toBe('utf-8');
+        expect(MediaTypes.IMAGE_PNG.getDefaultCharset()).toBe(null);
+    });
+
+    test('it should format for Content-Type header', () => {
+        expect(MediaTypes.TEXT_HTML.toContentType()).toBe('text/html;charset=utf-8');
+        expect(MediaTypes.APPLICATION_JSON.toContentType()).toBe('application/json;charset=utf-8');
+        expect(MediaTypes.IMAGE_PNG.toContentType()).toBe('image/png');
+
+        // Should respect existing charset
+        expect(MediaType.for('text/html;charset=ISO-8859-1').toContentType()).toBe('text/html;charset=ISO-8859-1');
+
+        // Should support opt-out
+        expect(MediaTypes.TEXT_HTML.toContentType({ autoCharset: false })).toBe('text/html');
+    });
+
+    test('it should fix withCharset bug and preserve parameters', () => {
+        const mt = MediaType.for('multipart/form-data;boundary=abc123');
+        const withCharset = mt.withCharset('utf-8');
+        expect(withCharset.toString()).toBe('multipart/form-data;boundary=abc123;charset=utf-8');
+        expect(withCharset.parameters).toEqual({ boundary: 'abc123', charset: 'utf-8' });
+    });
+});
+
+describe('parseMediaType', () => {
+    test('should parse basic media type', () => {
+        const mt = parseMediaType('text/html');
+        expect(mt.type).toBe('text');
+        expect(mt.subtype).toBe('html');
+        expect(mt.parameters).toEqual({});
+    });
+
+    test('should parse with parameters', () => {
+        const mt = parseMediaType('text/html;charset=UTF-8');
+        expect(mt.parameters).toEqual({ charset: 'UTF-8' });
+    });
+
+    test('should throw on invalid input', () => {
+        expect(() => parseMediaType('')).toThrow();
+        expect(() => parseMediaType(null as any)).toThrow();
+    });
+
+    test('should use registry', () => {
+        const mt1 = parseMediaType('application/json');
+        const mt2 = parseMediaType('application/json');
+        expect(mt1).toBe(mt2);
     });
 });

@@ -7,8 +7,8 @@ import { char, choice, possibly, regex, sepBy, sequenceOf } from '@blue/parser';
 
 const { fromRepeatedPairs } = list;
 
-const QUERY_KEY_PATTERN = /^[A-Za-z+:/?[\]0-9%]+/,
-    QUERY_VALUE_PATTERN = /^[A-Za-z+:/?[\]0-9%=]+/,
+const queryKeyRule = /^[A-Za-z+:/?[\]0-9%]+/,
+    queryValueRule = /^[A-Za-z+:/?[\]0-9%=]+/,
     replacePlusWithSpace = replace(/\+/g, ' '),
     // Removes '=' from the value array
     // e.g. [ "foo", [ "=", "bar" ] ] -> [ "foo", "bar" ]
@@ -19,9 +19,9 @@ const QUERY_KEY_PATTERN = /^[A-Za-z+:/?[\]0-9%]+/,
     equals = char('='),
     prefix = choice([ampersand, char('?'), char('#')]),
     // Matches query parameter keys: alphanumeric and specific URL characters
-    queryKey = regex(QUERY_KEY_PATTERN).map(replacePlusWithSpace).map(decode),
+    queryKey = regex(queryKeyRule).map(replacePlusWithSpace).map(decode),
     // Matches query parameter values: keys plus equals sign
-    queryValue = regex(QUERY_VALUE_PATTERN).map(replacePlusWithSpace).map(decode),
+    queryValue = regex(queryValueRule).map(replacePlusWithSpace).map(decode),
     separatedByDelimiter = sepBy(delimiter),
     queryParameter = sequenceOf([queryKey, sequenceOf([possibly(equals), possibly(queryValue)])]).map(filterEquals),
     queryParameterList = separatedByDelimiter(queryParameter);

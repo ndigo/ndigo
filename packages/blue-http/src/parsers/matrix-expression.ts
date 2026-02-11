@@ -7,8 +7,8 @@ import { char, choice, possibly, regex, sepBy, sequenceOf, takeRight } from '@bl
 
 const { fromRepeatedPairs } = list;
 
-const MATRIX_KEY_PATTERN = /^[^=;]+/,
-    MATRIX_VALUE_PATTERN = /^[^;]*/,
+const matrixKeyRule = /^[^=;]+/,
+    matrixValueRule = /^[^;]*/,
     replacePlusWithSpace = replace(/\+/g, ' '),
     // Takes [key, value] or [key] and returns [key, value_or_null]
     // Also handles comma-separated values for matrix strings
@@ -40,9 +40,9 @@ const MATRIX_KEY_PATTERN = /^[^=;]+/,
     semicolon = char(';'),
     equals = char('='),
     // Match any character that is not a semicolon or an equals sign
-    matrixKey = regex(MATRIX_KEY_PATTERN).map(replacePlusWithSpace).map(decode),
+    matrixKey = regex(matrixKeyRule).map(replacePlusWithSpace).map(decode),
     // Match any character that is not a semicolon (allows empty values)
-    matrixValue = regex(MATRIX_VALUE_PATTERN).map(replacePlusWithSpace).map(decode),
+    matrixValue = regex(matrixValueRule).map(replacePlusWithSpace).map(decode),
     // key=value
     keyValue = sequenceOf([matrixKey, takeRight(equals)(matrixValue)]),
     // key (treat value as null)

@@ -63,45 +63,45 @@ const WHITE_SPACES = [
 
 /**
  * A regular expression matching an address line.
- * @constant {RegExp} module:validate.formats.ADDRESS_LINE_REGEX
+ * @constant {RegExp} module:validate.formats.addressLineRule
  */
-export const ADDRESS_LINE_REGEX = /^[a-zA-Z0-9.#&$/,:'\- ]{0,40}$/;
+export const addressLineRule = /^[a-zA-Z0-9.#&$/,:'\- ]{0,40}$/;
 
 /**
  * A regular expression matching only letters and numbers.
- * @constant {RegExp} module:validate.formats.ALPHA_NUMERIC_REGEX
+ * @constant {RegExp} module:validate.formats.alphaNumericRule
  */
-export const ALPHA_NUMERIC_REGEX = /^[0-9A-Za-z]*$/;
+export const alphaNumericRule = /^[0-9A-Za-z]*$/;
 
 /**
  * A regular expression matching letters, numbers, and symbols.
- * @constant {RegExp} module:validate.formats.ALPHA_NUMERIC_PLUS_REGEX
+ * @constant {RegExp} module:validate.formats.alphaNumericPlusRule
  */
-export const ALPHA_NUMERIC_PLUS_REGEX = /^[a-zA-Z0-9.#&$/,:'\- ]*$/;
+export const alphaNumericPlusRule = /^[a-zA-Z0-9.#&$/,:'\- ]*$/;
 
 /**
  * A regular expression matching letters.
- * @constant {RegExp} module:validate.formats.ALPHA_REGEX
+ * @constant {RegExp} module:validate.formats.alphaRule
  */
-export const ALPHA_REGEX = /^[A-Za-z]*$/;
+export const alphaRule = /^[A-Za-z]*$/;
 
 /**
  * A regular expression matching letters and numbers.
- * @constant {RegExp} module:validate.formats.ANY_ALPHA_NUMERIC_REGEX
+ * @constant {RegExp} module:validate.formats.anyAlphaNumericRule
  */
-export const ANY_ALPHA_NUMERIC_REGEX = /[0-9A-Za-z]/g;
+export const anyAlphaNumericRule = /[0-9A-Za-z]/g;
 
 /**
  * A regular expression matching booleans.
- * @constant {RegExp} module:validate.formats.BOOLEAN_REGEX
+ * @constant {RegExp} module:validate.formats.booleanRule
  */
-export const BOOLEAN_REGEX = /^(true|false)$/i;
+export const booleanRule = /^(true|false)$/i;
 
 /**
  * A regular expression matching a city.
- * @constant {RegExp} module:validate.formats.CITY_REGEX
+ * @constant {RegExp} module:validate.formats.cityRule
  */
-export const CITY_REGEX = /^[a-zA-Z0-9. ',-]{0,32}$/;
+export const cityRule = /^[a-zA-Z0-9. ',-]{0,32}$/;
 
 /**
  * A date string
@@ -111,96 +111,96 @@ export const DEFAULT_DATE_FORMAT = 'MM/DD/YYYY';
 
 /**
  * A regular expression matching email addresses.
- * @constant {RegExp} module:validate.formats.EMAIL_REGEX
+ * @constant {RegExp} module:validate.formats.emailRule
  */
-export const EMAIL_REGEX =
+export const emailRule =
     /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9]){1,}?$/i;
 
 /**
  * A regular expression matching integers.
- * @constant {RegExp} module:validate.formats.INTEGER_REGEX
+ * @constant {RegExp} module:validate.formats.integerRule
  */
-export const INTEGER_REGEX = /^-?[0-9]*$/;
+export const integerRule = /^-?[0-9]*$/;
 
 /**
  * A regular expression matching names.
- * @constant {RegExp} module:validate.formats.NAME_REGEX
+ * @constant {RegExp} module:validate.formats.nameRule
  */
-export const NAME_REGEX = /^[a-zA-Z\. '-]*$/;
+export const nameRule = /^[a-zA-Z\. '-]*$/;
 
 /**
  * A regular expression matching lowercase letters.
- * @constant {RegExp} module:validate.formats.NOT_A_CAPITAL_REGEX
+ * @constant {RegExp} module:validate.formats.notACapitalRule
  */
-export const NOT_A_CAPITAL_REGEX = /[^A-Z]/g;
+export const notACapitalRule = /[^A-Z]/g;
 
 /**
  * A regular expression matching non-numbers.
- * @constant {RegExp} module:validate.formats.NOT_A_NUMBER_REGEX
+ * @constant {RegExp} module:validate.formats.notANumberRule
  */
-export const NOT_A_NUMBER_REGEX = /[^0-9]/g;
+export const notANumberRule = /[^0-9]/g;
 
 /**
  * A regular expression matching non-password symbols.
- * @constant {RegExp} module:validate.formats.NOT_A_PASSWORD_SYMBOL
+ * @constant {RegExp} module:validate.formats.notAPasswordSymbolRule
  */
-export const NOT_A_PASSWORD_SYMBOL = /[^!#$%+\/=@~]/g;
+export const notAPasswordSymbolRule = /[^!#$%+\/=@~]/g;
 
 /**
  * A regular expression matching non-phone number email addresses.
- * @constant {RegExp} module:validate.formats.NOT_AN_ALPHA_REGEX
+ * @constant {RegExp} module:validate.formats.notAnAlphaRule
  */
-export const NOT_AN_ALPHA_REGEX = /[^a-zA-Z]/g;
+export const notAnAlphaRule = /[^a-zA-Z]/g;
 
 /**
  * A regular expression matching non-phone number email addresses.
- * @constant {RegExp} module:validate.formats.NOT_PHONE_EMAIL_REGEX
+ * @constant {RegExp} module:validate.formats.notPhoneEmailRule
  */
-export const NOT_PHONE_EMAIL_REGEX = /^\d{10}@/;
+export const notPhoneEmailRule = /^\d{10}@/;
 
 /**
  * A regular expression matching numbers.
- * @constant {RegExp} module:validate.formats.NUMERIC_REGEX
+ * @constant {RegExp} module:validate.formats.numericRule
  */
-export const NUMERIC_REGEX = /^[0-9]*$/;
+export const numericRule = /^[0-9]*$/;
 
 /**
  * A regular expression matching passwords.
- * @constant {RegExp} module:validate.formats.PASSWORD_FORMAT
+ * @constant {RegExp} module:validate.formats.passwordRule
  */
-export const PASSWORD_FORMAT = /^[A-Za-z0-9!#$%+/=@~]*$/;
+export const passwordRule = /^[A-Za-z0-9!#$%+/=@~]*$/;
 
 /**
  * A regular expression matching North American phone numbers.
- * @constant {RegExp} module:validate.formats.PHONE_NORTH_AMERICA
+ * @constant {RegExp} module:validate.formats.phoneNorthAmericaRule
  */
-export const PHONE_NORTH_AMERICA = /^\d{10}$|^\d{3}-\d{3}-\d{4}$/;
+export const phoneNorthAmericaRule = /^\d{10}$|^\d{3}-\d{3}-\d{4}$/;
 
 /**
  * A regular expression matching non-blacklisted phone numbers per Online Account Opening (OAO).
- * @constant {RegExp} module:validate.formats.PHONE_OAO_FORMAT
+ * @constant {RegExp} module:validate.formats.phoneOaoRule
  */
-export const PHONE_OAO_FORMAT = /^(?!(?:012-?345-?6789|987-?654-?3210))(?:\d{3}(-?)\d{3}\1\d{4})$/;
+export const phoneOaoRule = /^(?!(?:012-?345-?6789|987-?654-?3210))(?:\d{3}(-?)\d{3}\1\d{4})$/;
 
 /**
  * A regular expression matching postal codes.
- * @constant {RegExp} module:validate.formats.POSTAL_CODE_REGEX
+ * @constant {RegExp} module:validate.formats.postalCodeRule
  */
-export const POSTAL_CODE_REGEX = /^[a-zA-Z0-9]{0,9}$/;
+export const postalCodeRule = /^[a-zA-Z0-9]{0,9}$/;
 
 /**
  * A regular expression matching real numbers.
- * @constant {RegExp} module:validate.formats.REAL_REGEX
+ * @constant {RegExp} module:validate.formats.realRule
  */
-export const REAL_REGEX = /^-?([0-9]+(\.[0-9]+)?|\.[0-9]+)$/;
+export const realRule = /^-?([0-9]+(\.[0-9]+)?|\.[0-9]+)$/;
 
 /**
- * @constant {RegExp} module:validate.formats.REPEATING_SEQUENCE_REGEX
+ * @constant {RegExp} module:validate.formats.repeatingSequenceRule
  * @example
- * REPEATING_SEQUENCE_REGEX.test('111a!'); // is true, Since we have repeating sequence '111'
- * REPEATING_SEQUENCE_REGEX.test('123a!'); // is false, Since we don't have a repeating sequence
+ * repeatingSequenceRule.test('111a!'); // is true, Since we have repeating sequence '111'
+ * repeatingSequenceRule.test('123a!'); // is false, Since we don't have a repeating sequence
  */
-export const REPEATING_SEQUENCE_REGEX = /(.)\1/;
+export const repeatingSequenceRule = /(.)\1/;
 
 /**
  * A regular expression matching SSN Exclude Format.
@@ -211,13 +211,13 @@ export const REPEATING_SEQUENCE_REGEX = /(.)\1/;
  * - 123456789, 123-45-6789, 987654321, 987-65-4321
  * @constant {RegExp} module:validate.formats.SSN_FORMAT
  */
-export const SSN_EXCLUDE_FORMAT = /^(?!123(-?)45\1{1}6789|987(-?)65\2{1}4321).*$/;
+export const ssnExcludeRule = /^(?!123(-?)45\1{1}6789|987(-?)65\2{1}4321).*$/;
 
 /**
  * A regular expression matching SSN.
- * @constant {RegExp} module:validate.formats.SSN_FORMAT
+ * @constant {RegExp} module:validate.formats.ssnRule
  */
-export const SSN_FORMAT = /^\d{9}$|^\d{3}-\d{2}-\d{4}$/;
+export const ssnRule = /^\d{9}$|^\d{3}-\d{2}-\d{4}$/;
 
 /**
  * A regular expression matching SSN OAO Format.
@@ -229,9 +229,9 @@ export const SSN_FORMAT = /^\d{9}$|^\d{3}-\d{2}-\d{4}$/;
  * - 123456789 and 123-45-6789
  * - Any SSN where all digits are the same digit, 111-11-1111, 222-22-2222, ...
  * - Group numbers of all zeroes, 000, 00, 0000
- * @constant {RegExp} module:validate.formats.SSN_OAO_FORMAT
+ * @constant {RegExp} module:validate.formats.ssnOaoRule
  */
-export const SSN_OAO_FORMAT =
+export const ssnOaoRule =
     /^(?!9|000|666|123(-?)45\1{1}6789|([1-578])\2{2}(-?)\2{2}\3\2{4})\d{3}(-?)(?!00)\d{2}\4(?!0000)\d{4}$/;
 
 /**
@@ -242,34 +242,34 @@ export const SSN_OAO_FORMAT =
  * This format excludes:
  * - Area group numbers (first three digits) of 000, 666, 900-999
  * - Group numbers of all zeroes, 000, 00, 0000
- * @constant {RegExp} module:validate.formats.SSN_VALID_GROUPS_FORMAT
+ * @constant {RegExp} module:validate.formats.ssnValidGroupsRule
  */
-export const SSN_VALID_GROUPS_FORMAT = /^(?!000|666|9|\d{3}(?:-?)00|\d{3}(-?)\d{2}\1(?:0000)).*$/;
+export const ssnValidGroupsRule = /^(?!000|666|9|\d{3}(?:-?)00|\d{3}(-?)\d{2}\1(?:0000)).*$/;
 
 /**
  * A regular expression matching a URL.
- * @constant {RegExp} module:validate.formats.URL_REGEX
+ * @constant {RegExp} module:validate.formats.urlRule
  */
-export const URL_REGEX =
+export const urlRule =
     /^([a-z]([a-z]|\d|\+|-|\.)*):(\/\/(((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!$&'()*+,;=]|:)*@)?((\[(|(v[\da-f]{1,}\.(([a-z]|\d|-|\.|_|~)|[!$&'()*+,;=]|:)+))\])|((\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5])\.(\d|[1-9]\d|1\d\d|2[0-4]\d|25[0-5]))|(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!$&'()*+,;=])*)(:\d*)?)(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!$&'()*+,;=]|:|@)*)*|(\/((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!$&'()*+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!$&'()*+,;=]|:|@)*)*)?)|((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!$&'()*+,;=]|:|@)+(\/(([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!$&'()*+,;=]|:|@)*)*)|((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!$&'()*+,;=]|:|@)){0})(\?((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!$&'()*+,;=]|:|@)|[\uE000-\uF8FF]|\/|\?)*)?(#((([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(%[\da-f]{2})|[!$&'()*+,;=]|:|@)|\/|\?)*)?$/i;
 
 /**
  * A regular expression matching whitespace.
- * @constant {RegExp} module:validate.formats.WHITESPACE_REGEX
+ * @constant {RegExp} module:validate.formats.whitespaceRule
  */
-export const WHITESPACE_REGEX = new RegExp(`[${WHITE_SPACES.join('')}]`, 'g');
+export const whitespaceRule = new RegExp(`[${WHITE_SPACES.join('')}]`, 'g');
 
 /**
  * A regular expression matching a zip code extension.
- * @constant {RegExp} module:validate.formats.ZIP_CODE_EXTENSION_REGEX=/^([0-9]{4})?$/
+ * @constant {RegExp} module:validate.formats.zipCodeExtensionRule=/^([0-9]{4})?$/
  */
-export const ZIP_CODE_EXTENSION_REGEX = /^([0-9]{4})?$/;
+export const zipCodeExtensionRule = /^([0-9]{4})?$/;
 
 /**
  * A regular expression matching a zip code.
- * @constant {RegExp} module:validate.formats.ZIP_CODE_REGEX=/^[0-9]{5}$/
+ * @constant {RegExp} module:validate.formats.zipCodeRule=/^[0-9]{5}$/
  */
-export const ZIP_CODE_REGEX = /^[0-9]{5}$/;
+export const zipCodeRule = /^[0-9]{5}$/;
 
 /**
  * An object for matching currency, specifically USD.

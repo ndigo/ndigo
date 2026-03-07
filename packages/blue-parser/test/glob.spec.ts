@@ -1,9 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import glob from '../src/glob';
-import { expectSuccess } from './_expect';
 
 describe('glob', () => {
-    const tests = [
+    const tests: [string, string, boolean][] = [
         ['a', 'a*', true],
         ['abc', 'a*', true],
         ['abd', 'a*', true],
@@ -80,11 +79,11 @@ describe('glob', () => {
     for (const [fixture, pattern, expected] of tests) {
         it(`should${expected ? '' : ' not'} match ${fixture} with ${pattern}`, () => {
             const result = glob.run(pattern);
-            expectSuccess(result, (res) => {
-                const regex = new RegExp(res);
-                const actual = regex.test(fixture as string);
-                expect(actual).toBe(expected);
-            });
+            expect(result.isError).toBe(false);
+            const parserResult = result as any;
+            const regex = new RegExp(String(parserResult.result));
+            const actual = regex.test(fixture as string);
+            expect(actual).toBe(expected);
         });
     }
 });

@@ -12,10 +12,11 @@
 import type { Parser } from '@blue/parser';
 import { char, everyCharUntil, regex, sepBy, sequenceOf, str, takeRight } from '@blue/parser';
 import { fromPairs } from '@blue/util/list';
+import { decodeURIComponent as decode } from '@blue/util/string';
 
 const cookieValueRule = /^[^;,\s]*/,
     percentEncodedRule = /(%[0-9A-Za-z]{2})+/g,
-    percentDecode = (value: string): string => value.replace(percentEncodedRule, decodeURIComponent),
+    percentDecode = (value: string): string => value.replace(percentEncodedRule, decode),
     equalsSign = char('='),
     // Parse a single cookie as key-value pair
     cookie = sequenceOf([

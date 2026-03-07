@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'vitest';
 
-import trailingJoin from '@blue/util/list/trailing-join';
+import { trailingJoin } from '@blue/util/list/trailing-join';
 
 describe('trailingJoin', function () {
     test('it should join a list w/ a trailing separator', function () {

@@ -96,10 +96,7 @@ const { defineProperty, getOwnPropertyDescriptor } = Reflect,
  * ```
  * @see {@link MetadataConfigApplicationContext|MetadataConfigApplicationContext}
  */
-export function configuration<T extends new (...args: any[]) => any>(
-    target: T,
-    context: ClassDecoratorContext
-): T {
+export function configuration<T extends new (...args: any[]) => any>(target: T, context: ClassDecoratorContext): T {
     context.metadata[CONFIG_CONSTRUCTOR] = true;
     return target;
 }
@@ -175,49 +172,23 @@ export function propertySource(propertySource: JSONObject | Enumerable<string, J
 
 /**
  * Decorator for marking methods as entry points that will be processed by ConfigurationParser
- * 
+ *
  * Can be used in two ways:
  * - Without arguments: @entry() - uses method name as entry name
  * - With custom name: @entry('customName') - uses provided name as entry name
  */
-export function entry(nameOrTarget?: string): any {
-    // Called with argument: @entry('customName')
-    if (typeof nameOrTarget === 'string') {
-        const customName = nameOrTarget;
-        return function (target: any, context: ClassMethodDecoratorContext) {
-            if (context.kind !== 'method') {
-                throw new Error('@entry can only be applied to methods');
-            }
-            context.metadata[`${CONFIG_ENTRY}:${String(context.name)}`] = customName;
-            
-            // Make the method enumerable so it can be found by for...in loops
-            context.addInitializer(function (this: any) {
-                const descriptor = getOwnPropertyDescriptor(this, context.name) ||
-                    getOwnPropertyDescriptor(Object.getPrototypeOf(this), context.name);
-                if (descriptor && !descriptor.enumerable) {
-                    defineProperty(Object.getPrototypeOf(this), context.name, {
-                        ...descriptor,
-                        enumerable: true,
-                    });
-                }
-            });
-            
-            return target;
-        };
-    }
-
-    // Called without argument: @entry()
-    // In this case, nameOrTarget is undefined and we return a decorator
+function createEntryDecorator(entryName?: string) {
     return function (target: any, context: ClassMethodDecoratorContext) {
         if (context.kind !== 'method') {
             throw new Error('@entry can only be applied to methods');
         }
-        // Use the method name as the entry name
-        context.metadata[`${CONFIG_ENTRY}:${String(context.name)}`] = String(context.name);
-        
+
+        context.metadata[`${CONFIG_ENTRY}:${String(context.name)}`] = entryName ?? String(context.name);
+
         // Make the method enumerable so it can be found by for...in loops
         context.addInitializer(function (this: any) {
-            const descriptor = getOwnPropertyDescriptor(this, context.name) ||
+            const descriptor =
+                getOwnPropertyDescriptor(this, context.name) ||
                 getOwnPropertyDescriptor(Object.getPrototypeOf(this), context.name);
             if (descriptor && !descriptor.enumerable) {
                 defineProperty(Object.getPrototypeOf(this), context.name, {
@@ -226,9 +197,24 @@ export function entry(nameOrTarget?: string): any {
                 });
             }
         });
-        
+
         return target;
     };
+}
+
+export function entry(nameOrTarget?: string | any, maybeContext?: ClassMethodDecoratorContext): any {
+    // @entry('customName')
+    if (typeof nameOrTarget === 'string') {
+        return createEntryDecorator(nameOrTarget);
+    }
+
+    // @entry (no parentheses) legacy usage support
+    if (typeof maybeContext === 'object' && maybeContext !== null) {
+        return createEntryDecorator()(nameOrTarget, maybeContext);
+    }
+
+    // @entry()
+    return createEntryDecorator();
 }
 
 /**

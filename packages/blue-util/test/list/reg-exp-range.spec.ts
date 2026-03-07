@@ -1,7 +1,7 @@
 import { describe, test, expect } from 'vitest';
 
 import { range } from 'ramda';
-import regExpRange from '@blue/util/list/reg-exp-range';
+import { regExpRange } from '@blue/util/list/reg-exp-range';
 
 const inRange = (min, max, num) => min <= num && max >= num,
     toBoundRegExp = (value) => new RegExp(`^${value}$`),

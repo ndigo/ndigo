@@ -26,8 +26,7 @@ const queryKeyRule = /^[A-Za-z+:/?[\]0-9%]+/,
     queryParameter = sequenceOf([queryKey, sequenceOf([possibly(equals), possibly(queryValue)])]).map(filterEquals),
     queryParameterList = separatedByDelimiter(queryParameter);
 
-export const queryExpression = sequenceOf([possibly(prefix), queryParameterList]).map(([prefix, pairs]) => {
-    // console.log('Query Pairs:', JSON.stringify(pairs));
+export const queryExpression = sequenceOf([possibly(prefix), queryParameterList]).map(([_prefix, pairs]) => {
     return fromRepeatedPairs(pairs as [any, any][]);
 });
 

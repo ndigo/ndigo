@@ -3,6 +3,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "composite": true,
+    "declarationMap": false,
     "outDir": "lib",
     "experimentalDecorators": false,
     "emitDecoratorMetadata": false,

@@ -12,6 +12,7 @@ import { toPairs } from '@blue/util/object';
 import { split } from '@blue/util/string';
 import { isNumber, isString } from '@blue/util/types';
 import { Matchable } from './matchable';
+import { IllegalStateError } from './error';
 
 export type QualityFactor = `;q=${0.1 | 0.2 | 0.3 | 0.4 | 0.5 | 0.6 | 0.7 | 0.8 | 0.9 | '1.0'}`;
 export type SupportedMediaType =
@@ -211,8 +212,9 @@ export default class MediaType extends Null implements Serializable, StringCompa
                     // Remove the subtype
                     parts.shift();
 
-                    const // @ts-ignore: Cannot make the types for fromPairs happy -JBR
-                        parameters = parts.length ? fromPairs(map(splitOnEquals, parts)) : {},
+                    const parsedParameters: unknown = parts.length ? fromPairs(map(splitOnEquals, parts)) : {};
+                    const // @ts-expect-error: Cannot make the types for fromPairs happy -JBR
+                        parameters: MediaTypeParameters = parsedParameters,
                         mediaType = new MediaType(type, subtype, parameters);
 
                     typeRegistry.set(mediaTypeExpression, mediaType);
@@ -238,7 +240,7 @@ export default class MediaType extends Null implements Serializable, StringCompa
         this.personal = false;
         this.experimental = false;
 
-        if (subtype.indexOf('+') !== -1 && subtype.substr(-1) !== '+') {
+        if (subtype.indexOf('+') !== -1 && subtype.slice(-1) !== '+') {
             const fixes = subtype.split('+', 2);
             this.subtype = fixes[0];
             this.facets = fixes[0].split('.');
@@ -492,21 +494,21 @@ export default class MediaType extends Null implements Serializable, StringCompa
  *
  * @param {string} value - Media type string (e.g., "text/html;charset=UTF-8")
  * @returns {MediaType} MediaType instance from registry
- * @throws {Error} If value is invalid or cannot be parsed
+ * @throws {IllegalStateError} If value is invalid or cannot be parsed
  */
 export function parseMediaType(value: string): MediaType {
     if (!value || typeof value !== 'string') {
-        throw new Error(`Invalid media type: expected non-empty string, got ${typeof value}`);
+        throw new IllegalStateError(`Invalid media type: expected non-empty string, got ${typeof value}`);
     }
 
     const trimmed = value.trim();
     if (!trimmed) {
-        throw new Error('Invalid media type: empty string');
+        throw new IllegalStateError('Invalid media type: empty string');
     }
 
     const result = MediaType.for(trimmed);
     if (!result) {
-        throw new Error(`Invalid media type: could not parse "${value}"`);
+        throw new IllegalStateError(`Invalid media type: could not parse "${value}"`);
     }
 
     return result;

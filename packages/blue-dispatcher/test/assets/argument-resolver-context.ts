@@ -9,13 +9,17 @@ import { TestErrorResolver, TestViewResolver } from '../test-strategies';
 
 import { routeMapping } from '../../src/route-mapping';
 import { ModelAndView } from '../../src/model-and-view';
-import { queryValue, matrixValue } from '../../src/route-parameter';
+import { queryValue, matrixValue, routeParams } from '../../src/route-parameter';
 
 @routeMapping('/hello')
 class HelloController {
     // /hello/there;name=Jack?name=John
     @routeMapping('/there')
-    handleThere(@queryValue('name') n1: string, @matrixValue('name') n2: string) {
+    @routeParams({
+        n1: queryValue('name'),
+        n2: matrixValue('name'),
+    })
+    handleThere(n1: string, n2: string) {
         expect(n1).toBe('John');
         expect(n2).toBe('Jack');
         return new ModelAndView('test');

@@ -49,8 +49,8 @@ import { serializable } from '@blue/core';
 
 type Counter = (value) => number;
 
-type temporal = string | Date;
-type pattern = string | RegExp;
+type Temporal = string | Date;
+type Pattern = string | RegExp;
 
 const dateRule = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/;
 
@@ -59,7 +59,7 @@ const daysInMonth = (year: number, month: number): number => {
     return new Date(year, month, 0).getDate();
 };
 
-const normalizeToDate = (value: temporal, format: string = DEFAULT_DATE_FORMAT): Date | null => {
+const normalizeToDate = (value: Temporal, format: string = DEFAULT_DATE_FORMAT): Date | null => {
     if (value instanceof Date) {
         return Number.isNaN(value.getTime()) ? null : new Date(value.getTime());
     }
@@ -263,10 +263,11 @@ const { parseFloat, parseInt } = Number,
         const _value = value;
         return rangeValidator(
             params.constraints.reduce(function (previousValue, constraint) {
-                return (
-                    previousValue +
-                    (Number(standardConstraints[constraint.type].validate(_value, constraint.params)) || 0)
-                );
+                const type = constraint.type;
+                if (!type || !Object.prototype.hasOwnProperty.call(standardConstraints, type)) {
+                    return previousValue;
+                }
+                return previousValue + (Number(standardConstraints[type].validate(_value, constraint.params)) || 0);
             }, 0),
             params
         );
@@ -383,7 +384,7 @@ const { parseFloat, parseInt } = Number,
 
         return enumeration.indexOf(value) !== -1;
     },
-    isFuture = (value: temporal, format: string = DEFAULT_DATE_FORMAT): boolean => {
+    isFuture = (value: Temporal, format: string = DEFAULT_DATE_FORMAT): boolean => {
         //const date = isString( value ) ?
         //    moment( value, format, true ) :
         //    moment( value );
@@ -445,8 +446,8 @@ const { parseFloat, parseInt } = Number,
         }
 
         // Check for sequentials going forward (e.g. 'abc' or '123')
-        for (var i = 0; i < count - 1; ++i) {
-            var currentCharCode = valuesArray[i].toLowerCase().charCodeAt(0),
+        for (let i = 0; i < count - 1; ++i) {
+            const currentCharCode = valuesArray[i].toLowerCase().charCodeAt(0),
                 nextCharCode = valuesArray[i + 1].toLowerCase().charCodeAt(0);
 
             // numbers: 48-57
@@ -465,14 +466,18 @@ const { parseFloat, parseInt } = Number,
             }
         }
 
+        // Reset counter before checking backward sequences
+        currentConsecutive = 1;
+
         // Check for sequentials going backwards (e.g. '321' or 'cba')
-        for (i = count - 1; i >= 1; --i) {
-            var reverseCurrentCharCode = valuesArray[i].charCodeAt(0),
-                previousCharCode = valuesArray[i - 1].charCodeAt(0);
+        for (let i = count - 1; i >= 1; --i) {
+            const reverseCurrentCharCode = valuesArray[i].toLowerCase().charCodeAt(0),
+                previousCharCode = valuesArray[i - 1].toLowerCase().charCodeAt(0);
 
             if (
                 reverseCurrentCharCode === previousCharCode - 1 &&
-                ((currentCharCode > 48 && currentCharCode <= 57) || (currentCharCode > 97 && currentCharCode <= 122))
+                ((reverseCurrentCharCode >= 48 && reverseCurrentCharCode <= 57) ||
+                    (reverseCurrentCharCode >= 97 && reverseCurrentCharCode <= 122))
             ) {
                 currentConsecutive++;
                 if (currentConsecutive === maxSequential) {
@@ -511,7 +516,7 @@ const { parseFloat, parseInt } = Number,
     }) as unknown as constraint<serializable>,
     isPasswordSymbols: constraint = (value, params: RangeParams = { min: 1 }) =>
         rangeValidator(passwordSymbolCount(value), params),
-    isPast = (value: temporal, format: string = DEFAULT_DATE_FORMAT): boolean => {
+    isPast = (value: Temporal, format: string = DEFAULT_DATE_FORMAT): boolean => {
         //const date = isString( value ) ?
         //    moment( value, format, true ) :
         //    moment( value );
@@ -531,7 +536,7 @@ const { parseFloat, parseInt } = Number,
      * @param {string|external:RegExp} regexp The regular expression to be used
      * @param {string} flags The flags to be used with the regular expression
      */
-    isPatternMatch = (value: string, regexp: pattern, flags?: string): boolean => {
+    isPatternMatch = (value: string, regexp: Pattern, flags?: string): boolean => {
         regexp = ifElse(isString, removeSlashes, identity)(regexp);
 
         const matcher: RegExp = isString(flags)
@@ -599,7 +604,7 @@ const { parseFloat, parseInt } = Number,
         return rangeValidator(parsed, params) && parsed % step === 0;
     },
     isUrl: constraint = patternConstraint({ regex: urlRule.source }) as unknown as constraint<serializable>,
-    isValidDate = (value: temporal, format = DEFAULT_DATE_FORMAT): boolean => {
+    isValidDate = (value: Temporal, format = DEFAULT_DATE_FORMAT): boolean => {
         /*const date = isString( value ) ?
             moment( value, format, true ) :
             moment( value );
@@ -692,7 +697,7 @@ const standardConstraints: ValidationConstraints = {
     /**
      */
     Date: {
-        validate: (value: temporal, params: DateParams = {}) => {
+        validate: (value: Temporal, params: DateParams = {}) => {
             const { format } = params;
             return isValidDate(value, format);
         },
@@ -731,7 +736,7 @@ const standardConstraints: ValidationConstraints = {
     /**
      */
     Future: {
-        validate: (value: temporal, params: DateParams = {}) => {
+        validate: (value: Temporal, params: DateParams = {}) => {
             const { format } = params;
             return isFuture(value, format);
         },
@@ -848,7 +853,7 @@ const standardConstraints: ValidationConstraints = {
     /**
      */
     Past: {
-        validate: (value: temporal, params: DateParams = {}) => {
+        validate: (value: Temporal, params: DateParams = {}) => {
             const { format } = params;
             return isPast(value, format);
         },

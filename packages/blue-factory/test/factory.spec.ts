@@ -1,7 +1,7 @@
 import { describe, test, expect, beforeEach, afterEach, vi } from 'vitest';
 import { AsFactoryAware, DefaultFactory, ProxiedFactory } from '../src/factory';
 import { $aware } from '../src/aware';
-import { prototypeScope, singletonScope } from '../src/scope';
+import { prototypeScope, scope, singletonScope, type Scope } from '../src/scope';
 
 class EmptyPrototype {}
 
@@ -21,6 +21,11 @@ describe('DefaultFactory', () => {
 
     @prototypeScope
     class PrototypeScopedPrototype {
+        value = Math.random();
+    }
+
+    @scope('custom')
+    class CustomScopedPrototype {
         value = Math.random();
     }
 
@@ -121,6 +126,25 @@ describe('DefaultFactory', () => {
         expect(scopeNames).toContain('prototype');
         expect(scopeNames).toContain('route');
         expect(scopeNames).toContain('hash');
+    });
+
+    test('it should resolve values using registered custom scopes', () => {
+        const customScope: Scope = {
+            destroyValue: vi.fn(),
+            getValue: vi.fn((_name: string, objectFactory: () => any) => objectFactory()),
+        };
+
+        factory!.registerScope('custom', customScope);
+        factory!.setValue('customScoped', CustomScopedPrototype);
+
+        const a = factory!.getValue<CustomScopedPrototype>('customScoped');
+        const b = factory!.getValue<CustomScopedPrototype>('customScoped');
+
+        expect(a).toBeInstanceOf(CustomScopedPrototype);
+        expect(b).toBeInstanceOf(CustomScopedPrototype);
+        expect(a).not.toBe(b);
+        expect(customScope.getValue).toHaveBeenCalledTimes(2);
+        expect(customScope.getValue).toHaveBeenCalledWith('customScoped', expect.any(Function));
     });
 
     test('it should create aware instances', () => {

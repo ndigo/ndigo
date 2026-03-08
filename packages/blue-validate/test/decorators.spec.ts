@@ -1,5 +1,6 @@
 import { describe, test, expect, vi } from 'vitest';
 import { constrained, email, length, min, notBlank, pattern, validated } from '../src/decorators';
+import { validationGroup } from '../src/group';
 
 describe('validation decorators', () => {
     test('named decorators validate values', () => {
@@ -97,5 +98,33 @@ describe('validation decorators', () => {
         expect(result.failedProperties.has('slug')).toBe(false);
 
         warnSpy.mockRestore();
+    });
+
+    test('validated supports group-specific evaluation', () => {
+        const onCreate = validationGroup('create');
+        const onUpdate = validationGroup('update');
+
+        @validated({ groups: [onCreate] })
+        class Payload {
+            @pattern({ regex: /^[a-z]+$/, groups: [onCreate] })
+            createSlug: string;
+
+            @pattern({ regex: /^[A-Z]+$/, groups: [onUpdate] })
+            updateCode: string;
+        }
+
+        const payload = new Payload();
+        payload.createSlug = 'INVALID';
+        payload.updateCode = 'invalid';
+
+        const defaultResult = (payload as any).validate();
+        expect(defaultResult.isValid).toBe(false);
+        expect(defaultResult.failedProperties.has('createSlug')).toBe(true);
+        expect(defaultResult.failedProperties.has('updateCode')).toBe(false);
+
+        const updateResult = (payload as any).validate({ groups: [onUpdate] });
+        expect(updateResult.isValid).toBe(false);
+        expect(updateResult.failedProperties.has('updateCode')).toBe(true);
+        expect(updateResult.failedProperties.has('createSlug')).toBe(false);
     });
 });

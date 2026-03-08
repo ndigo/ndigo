@@ -6,6 +6,8 @@
 import { PatternMatcher, WildcardExp } from '@blue/core';
 import { Aware } from '@blue/factory';
 import ResponseError from './response-error';
+import { TransformInterceptor } from './interceptors/transform-interceptor';
+import type { Transform } from './transformers/http-transformer';
 import { anyPass } from '@blue/util/logic';
 import { is, like } from '@blue/util/types';
 import { likeResponse } from './like-response';
@@ -46,6 +48,16 @@ export interface HTTPConfig extends HTTPInit {
     interceptors?: HTTPInterceptor[];
 
     /**
+     * Optional request body transforms applied in interceptor pipeline.
+     */
+    requestTransforms?: Transform[];
+
+    /**
+     * Optional response body transforms applied in interceptor pipeline.
+     */
+    responseTransforms?: Transform[];
+
+    /**
      * Optional custom fetch implementation.
      * Defaults to globalThis.fetch if not provided.
      */
@@ -71,7 +83,7 @@ export interface RequestAwareHTTPInterceptor {
 }
 
 export interface ResponseAwareHTTPInterceptor<T extends HTTPInit = HTTPInit> {
-    postResponse(response: Response, settings: T): Promise<void>;
+    postResponse(response: Response, settings: T): Promise<Response | void>;
 }
 
 export type HTTPInterceptor =
@@ -347,10 +359,10 @@ export class MappedHTTPInterceptor
         }
     }
 
-    async postResponse(response: Response, settings: HTTPInit): Promise<void> {
+    async postResponse(response: Response, settings: HTTPInit): Promise<Response | void> {
         const interceptor = this.#interceptor;
         if (likeResponseAwareHTTPInterceptor(interceptor)) {
-            await interceptor.postResponse(response, settings);
+            return await interceptor.postResponse(response, settings);
         }
     }
 
@@ -494,20 +506,28 @@ export class HTTPExecutionChain {
 
     /**
      */
-    async applyPostResponse(response: Response, settings: HTTPInit): Promise<void> {
+    async applyPostResponse(response: Response, settings: HTTPInit): Promise<Response> {
         if (this.#hasResponseAwareInterceptors) {
             const interceptors = this.#interceptors,
                 length = interceptors.length;
             let index = 0;
+            let currentResponse: Response = response;
             if (length) {
                 for (; index < length; index++) {
                     const interceptor = interceptors[index];
                     if (likeResponseAwareHTTPInterceptor(interceptor)) {
-                        await interceptor.postResponse(response, settings);
+                        const transformed = await interceptor.postResponse(currentResponse, settings);
+                        if (likeResponse(transformed)) {
+                            currentResponse = transformed;
+                        }
                     }
                 }
             }
+
+            return currentResponse;
         }
+
+        return response;
     }
 
     /**
@@ -637,8 +657,15 @@ export class HTTP {
      * @see {@link HTTP.constructor} for dependency injection scenarios
      */
     static create(config: HTTPConfig = {}): HTTP {
-        const { interceptors = [], fetch, ...init } = config;
-        return new HTTP(interceptors, init, fetch);
+        const { interceptors = [], fetch, requestTransforms = [], responseTransforms = [], ...init } = config;
+
+        const resolvedInterceptors: HTTPInterceptor[] = [...interceptors];
+
+        if (requestTransforms.length || responseTransforms.length) {
+            resolvedInterceptors.push(new TransformInterceptor(requestTransforms, responseTransforms));
+        }
+
+        return new HTTP(resolvedInterceptors, init, fetch);
     }
 
     /**
@@ -739,7 +766,7 @@ export class HTTP {
             const request = await chain.applyPreRequest(new Request(url.toString(), settings), this);
             try {
                 response = await this.#fetch(request);
-                await chain.applyPostResponse(response, settings);
+                response = await chain.applyPostResponse(response, settings);
             } catch (error) {
                 response = await chain.applyPostError(error, request, this);
 

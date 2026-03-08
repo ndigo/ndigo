@@ -10,3 +10,4 @@ export * from './interceptors/response-type-interceptor';
 export * from './interceptors/if-modified-interceptor';
 export * from './interceptors/not-ok-interceptor';
 export * from './interceptors/timeout-interceptor';
+export * from './interceptors/transform-interceptor';

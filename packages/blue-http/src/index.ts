@@ -67,6 +67,7 @@ export * from './http';
 export * from './http-header';
 export * from './interceptors';
 export * from './response-status';
+export * from './transformers';
 export { HTTPHeaders };
 export { ResponseStatuses };
 export { default as QueryString } from './query-string';

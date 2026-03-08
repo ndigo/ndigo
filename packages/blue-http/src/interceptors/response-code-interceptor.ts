@@ -39,7 +39,7 @@ export class MappedResponseCodeHTTPInterceptor implements ResponseAwareHTTPInter
      * @param {module:http.HTTPInit} settings
      * @returns {Promise<external:void>}
      */
-    async postResponse(response: Response, settings: HTTPInit): Promise<void> {
+    async postResponse(response: Response, settings: HTTPInit): Promise<Response | void> {
         const { status } = response;
         if (status in this.#interceptor) {
             await this.#interceptor[status](response, settings);

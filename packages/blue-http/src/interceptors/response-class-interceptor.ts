@@ -162,7 +162,7 @@ export class MappedResponseClassHTTPInterceptor implements ResponseAwareHTTPInte
      * @param {module:http.HTTPInit} settings
      * @returns {Promise<external:void>}
      */
-    async postResponse(response: Response, settings: HTTPInit): Promise<void> {
+    async postResponse(response: Response, settings: HTTPInit): Promise<Response | void> {
         if (response.ok && this.#hasSuccessAwareInterceptor) {
             await (this.#interceptor as SuccessAwareHTTPInterceptor).postSuccessfulResponse(response, settings);
         } else {

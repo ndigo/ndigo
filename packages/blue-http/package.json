@@ -7,7 +7,16 @@
     "doc",
     "lib"
   ],
-  "exports": "./lib/index.js",
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "import": "./lib/index.js"
+    },
+    "./transformers": {
+      "types": "./lib/transformers/index.d.ts",
+      "import": "./lib/transformers/index.js"
+    }
+  },
   "types": "lib/index.d.ts",
   "scripts": {
     "build:lib": "tsc -b tsconfig.build.json",

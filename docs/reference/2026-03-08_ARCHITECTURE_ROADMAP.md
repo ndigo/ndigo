@@ -117,28 +117,28 @@ This needs explicit boundary decisions before deepening service abstractions.
 
 ## 6) Package Maturity Snapshot (March 2026)
 
-| Layer | Package | Maturity | Notes |
-| :---- | :------ | :------- | :---- |
-| Integration | `@blue/util` | ✅ Mature | Stable integration layer for utility dependencies |
-| Integration | `@blue/parser` | ✅ Mature | Stable parser combinator integration |
-| Integration | `@blue/model` | ✅ Mature | Stable object model integration |
-| Foundation | `@blue/core` | ✅ Mature | Strong primitives/transducer foundation |
-| Infrastructure | `@blue/factory` | 🟡 Advancing | Scope implementations are now integrated; evaluate optional split into `AbstractFactoryBase` + `AbstractScopedFactory` after stabilization |
-| Infrastructure | `@blue/content` | 🔴 ~10% | Contracts mostly only |
-| Infrastructure | `@blue/validate` | 🟡 Functional | Validation surface exists |
-| Context | `@blue/context` | 🟡 ~65% | Strong event/config patterns, content source incomplete |
-| Web Infra | `@blue/http` | ✅ Mature | Interceptor + transform pipeline in place |
-| Web Infra | `@blue/router` | 🟡 ~50% | Route primitives/hash routing usable, transactions incomplete |
-| Web Infra | `@blue/telemetry` | ✅ Recently built | OTel alignment and severity mapping complete |
-| Request Processing | `@blue/dispatcher` | 🟡 ~60% | Core front-controller flow works |
-| Request Processing | `@blue/view` | 🟡 ~40% | Contracts/resolvers in place, rendering implementation light |
-| Request Processing | `@blue/view-webcomponent` | 🟡 ~25% | Decorators solid, runtime rendering/export surface incomplete |
-| Application | `@blue/service` | 🟡 ~30% | Core concepts present, implementation incomplete |
-| Application | `@blue/domain` | 🔴 ~15% | Minimal adoption and test coverage |
-| Application | `@blue/platform-web` | 🟡 ~35% | Useful browser pieces, several stubs |
-| Application | `@blue/print` | ✅ Narrow scope | Focused package, mostly complete |
-| Bootstrap | `@blue/boot` | 🔴 ~20% | Boot scaffolding present, orchestration incomplete |
-| Demo | `blue-demo` | 🟡 Working core flow | Dispatch integration works, feature completeness pending |
+| Layer              | Package                   | Maturity             | Notes                                                                                                                                      |
+| :----------------- | :------------------------ | :------------------- | :----------------------------------------------------------------------------------------------------------------------------------------- |
+| Integration        | `@blue/util`              | ✅ Mature            | Stable integration layer for utility dependencies                                                                                          |
+| Integration        | `@blue/parser`            | ✅ Mature            | Stable parser combinator integration                                                                                                       |
+| Integration        | `@blue/model`             | ✅ Mature            | Stable object model integration                                                                                                            |
+| Foundation         | `@blue/core`              | ✅ Mature            | Strong primitives/transducer foundation                                                                                                    |
+| Infrastructure     | `@blue/factory`           | 🟡 Advancing         | Scope implementations are now integrated; evaluate optional split into `AbstractFactoryBase` + `AbstractScopedFactory` after stabilization |
+| Infrastructure     | `@blue/content`           | 🔴 ~10%              | Contracts mostly only                                                                                                                      |
+| Infrastructure     | `@blue/validate`          | 🟡 Functional        | Validation surface exists; redesign direction documented in `docs/plans/2026-03-08_VALIDATE_DESIGN.md`                                     |
+| Context            | `@blue/context`           | 🟡 ~65%              | Strong event/config patterns, content source incomplete                                                                                    |
+| Web Infra          | `@blue/http`              | ✅ Mature            | Interceptor + transform pipeline in place                                                                                                  |
+| Web Infra          | `@blue/router`            | 🟡 ~50%              | Route primitives/hash routing usable, transactions incomplete                                                                              |
+| Web Infra          | `@blue/telemetry`         | ✅ Recently built    | OTel alignment and severity mapping complete                                                                                               |
+| Request Processing | `@blue/dispatcher`        | 🟡 ~60%              | Core front-controller flow works                                                                                                           |
+| Request Processing | `@blue/view`              | 🟡 ~40%              | Contracts/resolvers in place, rendering implementation light                                                                               |
+| Request Processing | `@blue/view-webcomponent` | 🟡 ~25%              | Decorators solid, runtime rendering/export surface incomplete                                                                              |
+| Application        | `@blue/service`           | 🟡 ~30%              | Core concepts present, implementation incomplete                                                                                           |
+| Application        | `@blue/domain`            | 🔴 ~15%              | Minimal adoption and test coverage                                                                                                         |
+| Application        | `@blue/platform-web`      | 🟡 ~35%              | Useful browser pieces, several stubs                                                                                                       |
+| Application        | `@blue/print`             | ✅ Narrow scope      | Focused package, mostly complete                                                                                                           |
+| Bootstrap          | `@blue/boot`              | 🔴 ~20%              | Boot scaffolding present, orchestration incomplete                                                                                         |
+| Demo               | `blue-demo`               | 🟡 Working core flow | Dispatch integration works, feature completeness pending                                                                                   |
 
 ## 7) Open Architectural Questions
 

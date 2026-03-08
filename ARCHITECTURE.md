@@ -23,15 +23,26 @@ BlueJS is a JavaScript-first application framework inspired by the design princi
     - [Performance Considerations](#performance-considerations-1)
     - [Testing Transducers](#testing-transducers)
     - [Further Reading](#further-reading)
-7. [Decorators & Separation of Concerns](#decorators--separation-of-concerns)
+7. [Type-Safe Enum Pattern](#type-safe-enum-pattern)
+    - [Overview](#overview-1)
+    - [When to Use](#when-to-use)
+    - [Pattern Variations](#pattern-variations)
+    - [Inheritance Hierarchies](#inheritance-hierarchies)
+    - [Factory Methods](#factory-methods)
+    - [Common Interfaces](#common-interfaces)
+    - [Implementation Checklist](#implementation-checklist)
+    - [Related Pattern: Factory Registry](#related-pattern-factory-registry)
+    - [Usage Examples](#usage-examples)
+    - [Examples from Codebase](#examples-from-codebase)
+8. [Decorators & Separation of Concerns](#decorators--separation-of-concerns)
     - [Cross-Cutting Concerns](#cross-cutting-concerns)
     - [Decorator Metadata](#decorator-metadata)
     - [Performance Considerations](#performance-considerations-2)
     - [Creating Custom Decorators](#creating-custom-decorators)
     - [Standards Compliance](#standards-compliance)
-8. [Naming Conventions](#naming-conventions)
-9. [Module Visibility & API Design](#module-visibility--api-design)
-10. [Roadmap](#roadmap)
+9. [Naming Conventions](#naming-conventions)
+10. [Module Visibility & API Design](#module-visibility--api-design)
+11. [Roadmap](#roadmap)
 
 ## Core Philosophy
 
@@ -823,49 +834,127 @@ When reviewing code, check for:
 
 ## Layered Architecture
 
-The framework is organized into 7 distinct layers of increasing abstraction:
+The framework is organized into 8 architectural layers with clear dependency direction and platform-aware boundaries:
 
-| Layer              | Packages                                         | Description                                              | Spring MVC Analogue            |
-| :----------------- | :----------------------------------------------- | :------------------------------------------------------- | :----------------------------- |
-| **6: App**         | `@blue/demo`                                     | Reference implementations and applications               | User Application               |
-| **5: Integration** | `@blue/orm`, `@blue/auth`                        | Persistence, Security, and external service connectors   | Spring Data / Security         |
-| **4: Dispatch**    | `@blue/dispatcher`                               | The request/event routing and handling engine            | `DispatcherServlet`            |
-| **3: Component**   | `@blue/controller`                               | Application components, services, and controllers        | `@Controller` / `@Service`     |
-| **2: Core**        | `@blue/core`                                     | DI container, Lifecycle management, Events, and Errors   | `ApplicationContext`           |
-| **1: Support**     | `@blue/parser`, `@blue/router`, `@blue/validate` | Schema parsing, Routing logic, and Validation            | `RequestMapping` / `Validator` |
-| **0: Foundation**  | `@blue/util`, `@blue/print`                      | Low-level utilities (Ramda/date-fns) and Terminal output | Commons / Core Utils           |
+| Layer                      | Packages                                                             | Description                                                                 | Spring MVC Analogue                           |
+| :------------------------- | :------------------------------------------------------------------- | :-------------------------------------------------------------------------- | :-------------------------------------------- |
+| **7: Bootstrap**           | `@blue/boot`                                                         | Application bootstrap, startup orchestration, and site/app lifecycle        | `SpringApplication`                           |
+| **6: Application**         | `@blue/service`, `@blue/domain`, `@blue/platform-web`, `@blue/print` | Business services, domain model, platform adapters, browser fingerprinting  | User application + platform adapters          |
+| **5: Request Processing**  | `@blue/dispatcher`, `@blue/view`, `@blue/view-webcomponent`          | Front controller, handler execution, and view resolution/rendering adapters | `DispatcherServlet` + `ViewResolver`          |
+| **4: Web Infrastructure**  | `@blue/http`, `@blue/router`, `@blue/telemetry`                      | HTTP client/interceptors/transforms, routing primitives, observability      | HTTP stack + routing + observability          |
+| **3: Application Context** | `@blue/context`                                                      | Application context, environment, events, configuration metadata            | `ApplicationContext`                          |
+| **2: Infrastructure**      | `@blue/factory`, `@blue/content`, `@blue/validate`                   | IoC container internals, i18n/theming contracts, validation                 | `BeanFactory` + `MessageSource` + `Validator` |
+| **1: Foundation**          | `@blue/core`                                                         | Core primitives, collection types, transducers, path matching, errors       | Spring Core                                   |
+| **0: Integration Layer**   | `@blue/util`, `@blue/parser`, `@blue/model`                          | Encapsulated third-party libraries via stable BlueJS wrappers               | Commons / utility integration layer           |
+
+The `blue-demo` app sits above these layers as a reference implementation and integration proving ground.
+
+### Platform Portability
+
+BlueJS is intentionally designed for **platform portability**. The isomorphic core (factory/context/dispatcher/domain/service/content/validate with foundational packages) can execute in browser, Node.js, or hybrid deployments. Platform-specific behavior is isolated in adapter packages such as `@blue/platform-web` and `@blue/view-webcomponent`.
+
+This architecture supports multiple deployment topologies:
+
+1. **Full-browser**: Dispatch, service, and view all run client-side
+2. **Hybrid split**: View in browser with dispatch/service in Node.js
+3. **Configurable split point**: Boundary can shift based on latency, security, and UX requirements
+
+Future platform bindings (for example `@blue/platform-node`) can provide server-specific router/environment/resource implementations without changing isomorphic core contracts.
 
 ### Architecture Overview
 
-The following diagram illustrates the dependency flow between architectural layers:
+The following diagram illustrates dependency flow and major package groupings:
 
 ```mermaid
 graph TD
-    App[6: Application Layer<br/>@blue/demo]
-    Int[5: Integration Layer<br/>@blue/orm, @blue/auth]
-    Disp[4: Dispatch Layer<br/>@blue/dispatcher]
-    Comp[3: Component Layer<br/>@blue/controller]
-    Core[2: Core Layer<br/>@blue/core]
-    Supp[1: Support Layer<br/>@blue/parser, @blue/router, @blue/validate]
-    Found[0: Foundation Layer<br/>@blue/util, @blue/print]
+    subgraph L7["Layer 7: Bootstrap"]
+        Boot[@blue/boot]
+    end
 
-    App --> Int
-    Int --> Disp
-    Disp --> Comp
-    Comp --> Core
-    Core --> Supp
-    Supp --> Found
+    subgraph L6["Layer 6: Application"]
+        Service[@blue/service]
+        Domain[@blue/domain]
+        PlatformWeb[@blue/platform-web]
+        Print[@blue/print]
+    end
 
-    style App fill:#e1f5ff
-    style Int fill:#fff4e1
-    style Disp fill:#f5e1ff
-    style Comp fill:#e1ffe5
-    style Core fill:#ffe1e1
-    style Supp fill:#fff9e1
-    style Found fill:#e1f0ff
+    subgraph L5["Layer 5: Request Processing"]
+        Dispatcher[@blue/dispatcher]
+        View[@blue/view]
+        ViewWebComponent[@blue/view-webcomponent]
+    end
+
+    subgraph L4["Layer 4: Web Infrastructure"]
+        Http[@blue/http]
+        Router[@blue/router]
+        Telemetry[@blue/telemetry]
+    end
+
+    subgraph L3["Layer 3: Application Context"]
+        Context[@blue/context]
+    end
+
+    subgraph L2["Layer 2: Infrastructure"]
+        Factory[@blue/factory]
+        Content[@blue/content]
+        Validate[@blue/validate]
+    end
+
+    subgraph L1["Layer 1: Foundation"]
+        Core[@blue/core]
+    end
+
+    subgraph L0["Layer 0: Integration Layer"]
+        Util[@blue/util]
+        Parser[@blue/parser]
+        Model[@blue/model]
+    end
+
+    Boot --> Context
+    Boot --> Dispatcher
+    Service --> Http
+    Service --> Telemetry
+    Domain --> Core
+    PlatformWeb --> Context
+    PlatformWeb --> Router
+    Dispatcher --> Context
+    Dispatcher --> Router
+    Dispatcher --> View
+    ViewWebComponent --> View
+    Http --> Core
+    Http --> Parser
+    Router --> Core
+    Context --> Factory
+    Context --> Core
+    Factory --> Core
+    Content --> Core
+    Validate --> Core
+    Core --> Util
+    Parser --> Util
+    Model --> Util
+
+    style Boot fill:#f0f0f0
+    style Service fill:#fff4e1
+    style Domain fill:#fff4e1
+    style PlatformWeb fill:#fff4e1
+    style Print fill:#fff4e1
+    style Dispatcher fill:#f5e1ff
+    style View fill:#f5e1ff
+    style ViewWebComponent fill:#f5e1ff
+    style Http fill:#e1f5ff
+    style Router fill:#e1f5ff
+    style Telemetry fill:#e1f5ff
+    style Context fill:#e1ffe5
+    style Factory fill:#ffe1e1
+    style Content fill:#ffe1e1
+    style Validate fill:#ffe1e1
+    style Core fill:#fff9e1
+    style Util fill:#e1f0ff
+    style Parser fill:#e1f0ff
+    style Model fill:#e1f0ff
 ```
 
-**Key Principle:** Higher layers depend on lower layers, never the reverse.
+**Key Principle:** Higher layers depend on lower layers, never the reverse. Some cross-layer dependencies inside adjacent architectural tiers are intentional for integration and orchestration.
 
 ## Dependency Management Strategy
 
@@ -1663,10 +1752,12 @@ This pattern was popularized by Joshua Bloch in "Effective Java" (Item 21) befor
 
 **BlueJS Usage:**
 
-The pattern is used in 6 locations across 2 packages:
+The pattern is actively used in `@blue/dispatcher`, with a related factory-registry variant in `@blue/http`:
 
 - **@blue/dispatcher**: `MethodParameterType` (3 constants: COOKIE, MATRIX, QUERY)
-- **@blue/logger**: `Level` hierarchy (5 classes with 33 total constants across different logging standards)
+- **@blue/http**: `ResponseStatus` and `response-statuses` (factory registry variant for large constant sets)
+
+The former `@blue/logger` package also used a rich inheritance-based type-safe enum hierarchy. That package was removed in favor of `@blue/telemetry`, which now uses functional severity mappings (`SeverityMapping`, `levelToSeverityNumber()`, `severityNumberToLevel()`).
 
 ### When to Use
 
@@ -1683,7 +1774,7 @@ Understanding when to use the Type-Safe Enum Pattern versus built-in enums is cr
 ✅ **Large value sets** - 8+ values requiring organization and documentation  
 ✅ **Runtime extensibility** - Ability to subclass for custom variants
 
-**Example from codebase:**
+**Historical example from the former `@blue/logger` package (removed in favor of `@blue/telemetry`):**
 
 ```typescript
 // ✅ Good: Type-Safe Enum with ordering and conversion
@@ -1830,7 +1921,7 @@ export class Level implements Comparable<Level>, Serializable {
 - ✅ Preferred for new implementations
 - ✅ No separate initialization step
 
-**Example:** `Level`, `SyslogLevel`, `CLILevel`, `NPMLevel`, `ApacheLevel` in `@blue/logger`
+**Historical Example:** The `Level` hierarchy (`Level`, `SyslogLevel`, `CLILevel`, `NPMLevel`, `ApacheLevel`) existed in the former `@blue/logger` package. It was replaced by functional severity mappings in `@blue/telemetry/severity`.
 
 #### Variation 2: Post-Class Assignment
 
@@ -1890,6 +1981,8 @@ MethodParameterType.QUERY = new MethodParameterType('query:value');
 ### Inheritance Hierarchies
 
 One of the key advantages of the Type-Safe Enum Pattern is support for inheritance, enabling shared behavior across enum families.
+
+**Note:** The logging hierarchy below is an architectural reference from the former `@blue/logger` package (now removed). It remains a useful example of when inheritance-based enums are appropriate.
 
 **Example: Logging Level Hierarchy**
 
@@ -1963,7 +2056,7 @@ export class ApacheLevel extends Level {
 }
 ```
 
-**Use Case:** Multiple logging standards (Syslog, CLI, NPM, Apache) sharing comparison and serialization logic while providing standard-specific levels and conversion methods.
+**Use Case (historical):** Multiple logging standards (Syslog, CLI, NPM, Apache) shared comparison and serialization logic while providing standard-specific levels and conversion methods.
 
 ### Factory Methods
 
@@ -2002,6 +2095,8 @@ if (paramType === MethodParameterType.COOKIE) {
 ```
 
 #### Pattern 2: Bidirectional Conversion
+
+This pattern was previously used by `@blue/logger`. In current BlueJS, `@blue/telemetry` performs bidirectional conversion using `SeverityMapping` implementations and helper functions.
 
 ```typescript
 export class SyslogLevel extends Level {
@@ -2243,11 +2338,10 @@ const level = SyslogLevel.fromSeverity(severity);
 
 **Enum Hierarchy with Inheritance:**
 
-- `Level` (base class) - [@blue/logger/src/level.ts](../packages/blue-logger/src/level.ts)
-- `SyslogLevel` (subclass) - [@blue/logger/src/syslog-logging.ts](../packages/blue-logger/src/syslog-logging.ts)
-- `CLILevel` (subclass) - [@blue/logger/src/cli-logging.ts](../packages/blue-logger/src/cli-logging.ts)
-- `NPMLevel` (subclass) - [@blue/logger/src/npm-logging.ts](../packages/blue-logger/src/npm-logging.ts)
-- `ApacheLevel` (subclass) - [@blue/logger/src/apache-logging.ts](../packages/blue-logger/src/apache-logging.ts)
+- Historical reference: Inheritance hierarchy existed in removed `@blue/logger`
+- Current replacement approach: `SeverityMapping` interface - [@blue/telemetry/src/severity/severity-mapping.ts](../packages/blue-telemetry/src/severity/severity-mapping.ts)
+- Mapping implementations (syslog/npm/apache/cli) - [@blue/telemetry/src/severity/\_severity-mappings.ts](../packages/blue-telemetry/src/severity/_severity-mappings.ts)
+- Conversion helpers - [@blue/telemetry/src/severity/severity.ts](../packages/blue-telemetry/src/severity/severity.ts)
 
 **Factory Registry Pattern:**
 
@@ -2541,11 +2635,22 @@ Files beginning with underscore (`_`) are **internal implementation details**:
 
 ## Roadmap
 
-1. **Phase 1: Foundation (Current)**: Stabilize `@blue/util` (100% coverage) and execute the [Parser Enhancement Plan](./docs/plans/2025-01-30_PARSER_ENHANCEMENT.md) for `@blue/parser`.
-2. **Phase 2: Core**: Finalize dependency injection and lifecycle hooks in `@blue/core`.
-3. **Phase 3: Dispatch**: Implement the universal event/request dispatcher.
-4. **Phase 4: Ecosystem**: Develop ORM and Auth modules.
-5. **Phase 5: Applications**: Release reference demos and documentation site.
+### Current Status (March 2026)
+
+- **Foundation is stable**: `@blue/util`, `@blue/parser`, `@blue/model`, and `@blue/core` are mature and broadly reusable.
+- **IoC/context are functional**: `@blue/factory` and `@blue/context` provide working DI/context patterns, with some infrastructure stubs still open.
+- **Web stack is operational**: `@blue/http`, `@blue/router`, and `@blue/dispatcher` support a complete dispatch flow demonstrated in `blue-demo`.
+- **Observability migrated**: `@blue/telemetry` now owns tracing/metrics/logging concerns; `@blue/logger` has been removed.
+- **View/application layers are partial**: `@blue/view`, `@blue/view-webcomponent`, `@blue/service`, `@blue/domain`, and `@blue/boot` require focused completion work.
+
+### Near-Term Priorities
+
+1. End-to-end telemetry integration in `blue-demo`
+2. Convention automation via `@blue/eslint-plugin`
+3. `@blue/auth` MVP definition and implementation
+4. `@blue/orm` MVP definition and implementation
+
+For strategic architecture direction (platform portability, boot lifecycle, boundary decisions, and package maturity), see [2026-03-08_ARCHITECTURE_ROADMAP.md](./docs/reference/2026-03-08_ARCHITECTURE_ROADMAP.md).
 
 ---
 

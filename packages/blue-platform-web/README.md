@@ -18,10 +18,15 @@ pnpm add @blue/platform-web
 ## Usage
 
 ```typescript
-import { Cookies } from '@blue/platform-web';
+import { Cookies, configureCookieThemeResolver } from '@blue/platform-web';
+import { GenericApplicationContext } from '@blue/context';
 
 Cookies.set('theme', 'dark');
 Cookies.get('theme');
+
+const context = new GenericApplicationContext('app');
+context.setThemeName('default');
+configureCookieThemeResolver(context, 'theme');
 ```
 
 ## Development

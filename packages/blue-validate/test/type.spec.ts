@@ -1,6 +1,7 @@
 import { describe, test, expect } from 'vitest';
 import types from '../src/types';
 import Type from '../src/type';
+import { validationGroup } from '../src/group';
 
 Object.keys(types).forEach((name) => ((Type as any)[name] = new Type(name, types[name as keyof typeof types])));
 
@@ -58,6 +59,32 @@ describe('Type', () => {
         expect(() => {
             new Type({} as any);
         }).toThrow(TypeError);
+    });
+
+    describe('validation groups', () => {
+        const createGroup = validationGroup('create');
+        const updateGroup = validationGroup('update');
+
+        test('it should evaluate only matching grouped constraints', () => {
+            const groupedType = new Type('GroupedType', {
+                constraints: [
+                    {
+                        type: 'NotBlank',
+                    },
+                    {
+                        type: 'Length',
+                        params: {
+                            min: 5,
+                        },
+                        groups: [createGroup],
+                    },
+                ],
+            });
+
+            expect(groupedType.validate('abc', { groups: [updateGroup] }).isValid).toBe(true);
+            expect(groupedType.validate('abc', { groups: [createGroup] }).isValid).toBe(false);
+            expect(groupedType.validate('abcde', { groups: [createGroup] }).isValid).toBe(true);
+        });
     });
 
     describe('AccountMaskNumber', () => {
@@ -148,8 +175,7 @@ describe('Type', () => {
         });
     });
 
-    // TODO Figure out when/how to pass in data format so moment doesn't log warnings
-    describe.skip('Date', () => {
+    describe('Date', () => {
         test('it should validate dates', () => {
             //Pass
             expect(_Date.validate('11/15/1976').isValid).toBe(true);
@@ -203,13 +229,10 @@ describe('Type', () => {
         });
     });
 
-    // TODO This constraint is broken!
-    describe.skip('Id', () => {
+    describe('Id', () => {
         test('it should validate ids', () => {
             //Pass
-            const result = Id.validate('abcde1');
-            console.log('RESULT', result.failedConstraints[0]);
-            expect(result.isValid).toBe(true);
+            expect(Id.validate('abcde1').isValid).toBe(true);
             expect(Id.validate('abc123').isValid).toBe(true);
 
             //Fail

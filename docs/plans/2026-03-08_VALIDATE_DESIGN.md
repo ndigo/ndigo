@@ -38,12 +38,12 @@ Relevant takeaways for BlueJS:
 
 ### TypeScript Library Landscape
 
-| Library | Strengths | Risks | Fit for Encapsulated Blue API |
-| :------ | :-------- | :---- | :---------------------------- |
-| Zod | Mature ecosystem, strong TS ergonomics, sync/async parse | Bigger footprint than smaller alternatives | Strong candidate for adapter backend |
-| Yup | Mature and familiar | Larger bundle, weaker modern TS ergonomics | Secondary candidate |
-| Valibot | Small, modular, tree-shake friendly | Smaller ecosystem | Strong candidate when size/perf prioritized |
-| ArkType | Advanced type-level expressiveness | Niche API, lower familiarity | Experimental candidate |
+| Library | Strengths                                                | Risks                                      | Fit for Encapsulated Blue API               |
+| :------ | :------------------------------------------------------- | :----------------------------------------- | :------------------------------------------ |
+| Zod     | Mature ecosystem, strong TS ergonomics, sync/async parse | Bigger footprint than smaller alternatives | Strong candidate for adapter backend        |
+| Yup     | Mature and familiar                                      | Larger bundle, weaker modern TS ergonomics | Secondary candidate                         |
+| Valibot | Small, modular, tree-shake friendly                      | Smaller ecosystem                          | Strong candidate when size/perf prioritized |
+| ArkType | Advanced type-level expressiveness                       | Niche API, lower familiarity               | Experimental candidate                      |
 
 No option should be exposed directly to consumers of non-integration packages.
 
@@ -169,6 +169,14 @@ Implementation should begin only after explicit approval on:
 2. **pilot backend choice** (Zod vs Valibot vs defer),
 3. **decorator semantics** (non-blocking feedback vs blocking validation behavior),
 4. **group model** (naming and API shape for contextual validation sets).
+
+### Approved Decisions (2026-03-08)
+
+1. **Track selection:** Track B (adapter-ready increment)
+2. **Pilot backend choice:** Zod
+3. **Decorator semantics:** blocking by default with configurable non-blocking mode
+4. **Group model:** Symbol/enum groups
+5. **Decorator surface:** factory + selective named decorators now, keep path open for full-per-constraint decorators later
 
 ---
 

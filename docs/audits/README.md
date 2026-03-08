@@ -4,6 +4,7 @@ This directory contains audit reports analyzing various aspects of the BlueJS co
 
 ## Available Audits
 
+- [2026-03-08_PACKAGE_ANALYSIS.md](./2026-03-08_PACKAGE_ANALYSIS.md) - Monorepo package maturity and documentation audit
 - [2026-02-01_DEPENDENCY_AUDIT.md](./2026-02-01_DEPENDENCY_AUDIT.md) - Library Integration Layer compliance audit
 
 ## Naming Convention

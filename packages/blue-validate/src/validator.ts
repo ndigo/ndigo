@@ -2,13 +2,15 @@
  * @author Jeff Rose
  */
 import Type, { ValidationResults } from './type';
+import { ValidationOptions } from './type';
 import { serializable } from '@blue/core';
-import { Params /*, Constraint, ValidationConstraints*/ } from './standard-constraints';
+import { TypeDefinition } from './types';
+import { ValidationBackendAdapter } from './_validation-backend-adapter';
 
 const defineProperty = Reflect.defineProperty;
 
 export interface Validator {
-    validate(value: serializable, name: string, params: Params): ValidationResults;
+    validate(value: serializable, name: string, params?: ValidationOptions): ValidationResults;
 }
 
 /*
@@ -38,22 +40,31 @@ export class ConstraintValidator implements Validator {
 }
 */
 
-export default class TypeValidator {
+export default class TypeValidator implements Validator {
     readonly types: Map<string, Type>;
+    readonly backend: ValidationBackendAdapter;
 
-    constructor(types) {
+    constructor(types: Record<string, TypeDefinition>, backend?: ValidationBackendAdapter) {
         defineProperty(this, 'types', {
             value: new Map<string, Type>(),
             configurable: true,
             enumerable: false,
             writable: false,
         });
-        this.register(types);
+
+        defineProperty(this, 'backend', {
+            value: backend,
+            configurable: true,
+            enumerable: false,
+            writable: false,
+        });
+
+        this.register(types, backend);
     }
 
-    register(types) {
+    register(types: Record<string, TypeDefinition>, backend = this.backend): void {
         for (const name in types) {
-            this.types.set(name, new Type(name, types[name]));
+            this.types.set(name, new Type(name, types[name], backend));
         }
     }
 
@@ -65,7 +76,7 @@ export default class TypeValidator {
         return this.types.has(name);
     }
 
-    validate(value: serializable, name: string, params): ValidationResults {
+    validate(value: serializable, name: string, params: ValidationOptions = {}): ValidationResults {
         // Is the type defined?
         if (!this.hasType(name)) {
             throw new TypeError(`Type "${name}" does not exist`);

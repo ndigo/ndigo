@@ -2,48 +2,37 @@
  * @author Jeff Rose
  */
 
-import constraints from './constraints';
 import { complement } from '@blue/util/logic';
 import { equals } from '@blue/util/relation';
 import { toString } from '@blue/util/string';
 import { is } from '@blue/util/types';
+import { TypeDefinition } from './types';
+import { ValidationGroup, defaultValidationGroup } from './group';
+import { ValidationBackendAdapter } from './_validation-backend-adapter';
+import { NativeValidationBackendAdapter } from './_native-validation-backend-adapter';
 
-type TypeDefinition = {
-    constraints: any[];
+type ConstraintConfig = TypeDefinition['constraints'][number];
+const defaultValidationBackend = new NativeValidationBackendAdapter();
+
+export type ValidationOptions = Record<string, unknown> & {
+    groups?: ValidationGroup[];
 };
 
 export type ValidationResults = {
-    value;
+    value: unknown;
     isValid: boolean;
     validationName: string;
-    validationParams;
-    failedConstraints;
+    validationParams: ValidationOptions;
+    failedConstraints: ConstraintConfig[];
 };
-
-let lang;
 
 const { assign } = Object,
     { defineProperty } = Reflect,
     isArray = Array.isArray,
-    isFunction = is(Function),
     isNotArray = complement(isArray),
-    isNotFunction = complement(isFunction),
     isString = is(String),
     isNotString = complement(isString),
-    isUndefined = equals(void 0),
-    // language setting optimization
-    clearLang = function () {
-        lang = '';
-    },
-    getLang = function () {
-        if (!lang) {
-            // set language
-            lang = /*settings.get( 'language' ) || settings.get( 'contentLanguage' ) ||*/ 'en-us';
-            // clear lang once this thread finishes
-            setTimeout(clearLang, 0);
-        }
-        return lang;
-    };
+    isUndefined = equals(void 0);
 
 /**
  * @param {string} name
@@ -51,9 +40,14 @@ const { assign } = Object,
  */
 class Type {
     readonly name: string;
-    readonly constraints: any[];
+    readonly constraints: ConstraintConfig[];
+    readonly backend: ValidationBackendAdapter;
 
-    constructor(name: string, definition: TypeDefinition) {
+    constructor(
+        name: string,
+        definition: TypeDefinition,
+        backend: ValidationBackendAdapter = defaultValidationBackend
+    ) {
         // Ensure the list of constraints is provided
         if (isNotArray(definition.constraints)) {
             throw new TypeError(`Property "constraints" must be provided for type: ${name}`);
@@ -73,19 +67,22 @@ class Type {
             writable: false,
         });
 
+        defineProperty(this, 'backend', {
+            value: backend,
+            configurable: true,
+            enumerable: false,
+            writable: false,
+        });
+
         // Is this a standard type definition which has constraints
         this.constraints.forEach(function (constraint) {
             if (isUndefined(constraint.type)) {
                 throw new TypeError(
                     `Property "type" is undefined for constraints within definition of type "${this.name}"`
                 );
-            } else if (isUndefined(constraints[constraint.type])) {
+            } else if (!this.backend.hasConstraint(constraint.type)) {
                 throw new TypeError(
                     `Constraint "${constraint.type}" does not exist, and is being used by type "${this.name}"`
-                );
-            } else if (isNotFunction(constraints[constraint.type].validate)) {
-                throw new TypeError(
-                    `Constraint "${constraint.type}" does not have a method "validator", and is being used by type "${this.name}"`
                 );
             }
             // Make sure we always have params defined
@@ -93,17 +90,29 @@ class Type {
         }, this);
     }
 
+    #resolveConstraints(params: ValidationOptions): ConstraintConfig[] {
+        const groups = Array.isArray(params.groups) ? params.groups : [defaultValidationGroup];
+
+        return this.constraints.filter((constraint) => {
+            if (!Array.isArray(constraint.groups) || !constraint.groups.length) {
+                return true;
+            }
+
+            return constraint.groups.some((group) => groups.includes(group));
+        });
+    }
+
     /**
      * @param value
      * @param params
      */
-    validator(value, params) {
-        const language = getLang();
-        return this.constraints.every(function (constraint) {
+    validator(value: unknown, params: ValidationOptions = {}) {
+        return this.#resolveConstraints(params).every(function (constraint) {
             // @note param extension is basic (can not extend two different constraints of the same type, use case is to edgy)
             // @note params extension affect performance
             // @note params will expect to have params specific to the constraint, otherwise it will use the first level params
-            return (constraints[constraint.type][language] || constraints[constraint.type]).validate(
+            return this.backend.validateConstraint(
+                constraint.type,
                 value,
                 assign({}, constraint.params, params[constraint.type] || params)
             );
@@ -114,23 +123,23 @@ class Type {
      * @param value
      * @param params
      */
-    validate(value, params = {}): ValidationResults {
+    validate(value: unknown, params: ValidationOptions = {}): ValidationResults {
         isNotArray(value) && isNotString(value) && (value = toString(value) || '');
 
         // Default to the current type as the constraint in case no constraints were defined but a validator was
-        const constraintsConfig = this.constraints,
-            language = getLang();
+        const constraintsConfig = this.#resolveConstraints(params);
 
         // Not running directly through the validator, because it only returns a boolean and we want a more comprehensive object (the list of failed constraints) while validating
         const failedConstraints = constraintsConfig.filter(function (config) {
             // @note params extension is basic (can not extend two different constraints of the same type, use case is to edgy).
             // @note params extension affect performance
             // @note params will expect to have params specific to the constraint, otherwise it will use the first level params
-            return !(constraints[config.type][language] || constraints[config.type]).validate(
+            return !this.backend.validateConstraint(
+                config.type,
                 value,
                 assign({}, config.params, params[config.type] || params)
             );
-        });
+        }, this);
 
         return {
             value: value,

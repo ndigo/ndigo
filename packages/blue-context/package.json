@@ -32,7 +32,6 @@
     "@blue/content": "~0.0.1",
     "@blue/core": "~0.0.1",
     "@blue/factory": "~0.0.1",
-    "@blue/logger": "~0.0.1",
     "@blue/parser": "~0.0.1",
     "@blue/util": "~0.0.1"
   },
@@ -40,7 +39,6 @@
     "@blue/content": "~0.0.1",
     "@blue/core": "~0.0.1",
     "@blue/factory": "~0.0.1",
-    "@blue/logger": "~0.0.1",
     "@blue/parser": "~0.0.1",
     "@blue/util": "~0.0.1"
   }

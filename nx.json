@@ -129,15 +129,15 @@
           }
         }
       },
-      "@blue/logger": {
-        "root": "packages/blue-logger",
+      "@blue/telemetry": {
+        "root": "packages/blue-telemetry",
         "projectType": "library",
         "targets": {
           "build:lib": {
             "executor": "nx:run-commands",
             "options": {
               "command": "pnpm build:lib",
-              "cwd": "packages/blue-logger"
+              "cwd": "packages/blue-telemetry"
             },
             "outputs": ["{projectRoot}/lib"]
           }

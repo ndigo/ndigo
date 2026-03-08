@@ -12,7 +12,7 @@
       "@blue/view": ["./packages/blue-view/src"],
       "@blue/http": ["./packages/blue-http/src"],
       "@blue/model": ["./packages/blue-model/src"],
-      "@blue/logger": ["./packages/blue-logger/src"],
+      "@blue/telemetry": ["./packages/blue-telemetry/src"],
       "@blue/content": ["./packages/blue-content/src"],
       "@blue/domain": ["./packages/blue-domain/src"],
       "@blue/validate": ["./packages/blue-validate/src"],

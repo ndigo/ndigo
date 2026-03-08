@@ -29,6 +29,3 @@ export * from './theme-resolver';
 export { AbstractThemeResolver } from './theme-resolver';
 
 // Logger modules
-export * from './logger/http-appender';
-export * from './logger/http-post-layout';
-export * from './logger/otel-http-exporter';

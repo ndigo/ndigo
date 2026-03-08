@@ -3,7 +3,7 @@
  */
 
 import { JSONObject, Constructable, escalate } from '@blue/core';
-import { ContentSource, likeContentSourceAware, likeContentSource } from '@blue/content';
+import { ContentSource, StaticContentSource, likeContentSourceAware, likeContentSource } from '@blue/content';
 import { allPass } from '@blue/util/logic';
 import { like } from '@blue/util/types';
 import {
@@ -59,6 +59,7 @@ export interface ApplicationContextAware extends Aware {
 }
 
 export interface ConfigurableApplicationContext extends ApplicationContext {
+    setContentSource(contentSource: ContentSource): void;
     setEnvironment(environment: ConfigurableEnvironment): void;
     setId(id: number): void;
     setName(name: string): void;
@@ -139,6 +140,7 @@ export const likeApplicationContextAware = likeAwareAnd(like({ setApplicationCon
 // TypeScript 5.7 has stricter checking for mixin implementations, so we don't explicitly
 // declare 'implements ConfigurableApplicationContext' here - the mixin chain provides it.
 export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLoader(DefaultFactory)) {
+    #contentSource: ContentSource;
     #environment: Environment;
     #id: number;
     #name: string;
@@ -153,6 +155,10 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
             this.#environment = this._createEnvironment();
         }
         return this.#environment;
+    }
+
+    get contentSource(): ContentSource {
+        return this.#contentSource;
     }
 
     get id(): number {
@@ -184,6 +190,7 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
     constructor(name?: string, data?: JSONObject) {
         super();
 
+        this.#contentSource = new StaticContentSource();
         this.#environment = null;
         this.#name = name ?? null;
         this.#parent = null;
@@ -253,7 +260,17 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
     }
 
     getContent(key: string, language: string): string {
-        throw new Error('Method not implemented.');
+        const value = this.#contentSource?.getContent(key, language);
+
+        if (value !== key || !this.parent) {
+            return value;
+        }
+
+        return this.parent.getContent(key, language);
+    }
+
+    setContentSource(contentSource: ContentSource): void {
+        this.#contentSource = contentSource;
     }
 
     setEnvironment(environment: ConfigurableEnvironment): void {

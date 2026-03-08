@@ -3,6 +3,7 @@
  */
 
 import { AbstractThemeResolver } from '@blue/dispatcher';
+import { ApplicationContext } from '@blue/context';
 import { Route } from '@blue/router';
 import Cookies from './cookies';
 
@@ -16,7 +17,7 @@ export class CookieThemeResolver extends AbstractThemeResolver {
         return `CookieThemeResolver:${this.cookieName}`;
     }
 
-    constructor(cookieName: string, defaultThemeName: string) {
+    constructor(cookieName: string = 'theme', defaultThemeName: string = 'default') {
         super(defaultThemeName);
         /**
          */
@@ -33,4 +34,23 @@ export class CookieThemeResolver extends AbstractThemeResolver {
         const themeName: string = (Cookies.get(this.cookieName) as string) || this.defaultThemeName;
         return themeName;
     }
+
+    static fromApplicationContext(
+        applicationContext: ApplicationContext,
+        cookieName: string = 'theme'
+    ): CookieThemeResolver {
+        return new CookieThemeResolver(cookieName, applicationContext.themeName || 'default');
+    }
 }
+
+/**
+ * Registers a cookie-backed theme resolver into the given context.
+ */
+export const configureCookieThemeResolver = (
+    applicationContext: ApplicationContext,
+    cookieName: string = 'theme'
+): CookieThemeResolver => {
+    const resolver = CookieThemeResolver.fromApplicationContext(applicationContext, cookieName);
+    applicationContext.setValue('themeResolver', resolver);
+    return resolver;
+};

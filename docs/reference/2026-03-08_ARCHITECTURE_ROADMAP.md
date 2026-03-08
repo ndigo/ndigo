@@ -123,7 +123,7 @@ This needs explicit boundary decisions before deepening service abstractions.
 | Integration | `@blue/parser` | ✅ Mature | Stable parser combinator integration |
 | Integration | `@blue/model` | ✅ Mature | Stable object model integration |
 | Foundation | `@blue/core` | ✅ Mature | Strong primitives/transducer foundation |
-| Infrastructure | `@blue/factory` | 🟡 ~70% | Core IoC works, scope implementations incomplete |
+| Infrastructure | `@blue/factory` | 🟡 Advancing | Scope implementations are now integrated; evaluate optional split into `AbstractFactoryBase` + `AbstractScopedFactory` after stabilization |
 | Infrastructure | `@blue/content` | 🔴 ~10% | Contracts mostly only |
 | Infrastructure | `@blue/validate` | 🟡 Functional | Validation surface exists |
 | Context | `@blue/context` | 🟡 ~65% | Strong event/config patterns, content source incomplete |
@@ -147,6 +147,7 @@ This needs explicit boundary decisions before deepening service abstractions.
 3. What is the minimal viable `Site` model for multi-app/hybrid deployment?
 4. Which browser-only pieces should move from general packages into `@blue/platform-web`?
 5. What should `@blue/platform-node` include in its first MVP?
+6. Should factory scoping remain integrated by default, or split into a base factory plus scoped extension once usage patterns stabilize?
 
 ## 8) Rough Sequencing
 

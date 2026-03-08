@@ -115,7 +115,7 @@ export class ResponseTypeInterceptor
      * @param {module:http.ResponseTypeSettings} settings
      * @returns {Promise<external:void>}
      */
-    async postResponse(response: Response, settings: ResponseTypeSettings): Promise<void> {
+    async postResponse(response: Response, settings: ResponseTypeSettings): Promise<Response | void> {
         if ('responseType' in settings) {
             const { responseType, responseParsers } = settings;
             let mediaType: MediaType, parser;

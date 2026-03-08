@@ -10,6 +10,40 @@ export interface ContentSource {
     getContent(key: string, language: string): string;
 }
 
+export type ContentDictionary = Record<string, Record<string, string>>;
+
+/**
+ * In-memory content source with language fallback support.
+ */
+export class StaticContentSource implements ContentSource {
+    #content: ContentDictionary;
+    #defaultLanguage: string;
+
+    constructor(content: ContentDictionary = {}, defaultLanguage = 'en') {
+        this.#content = content;
+        this.#defaultLanguage = defaultLanguage;
+    }
+
+    getContent(key: string, language: string): string {
+        const entry = this.#content[key] || {};
+
+        if (typeof entry[language] === 'string') {
+            return entry[language];
+        }
+
+        if (typeof entry[this.#defaultLanguage] === 'string') {
+            return entry[this.#defaultLanguage];
+        }
+
+        return key;
+    }
+
+    hasContent(key: string, language: string): boolean {
+        const entry = this.#content[key] || {};
+        return typeof entry[language] === 'string' || typeof entry[this.#defaultLanguage] === 'string';
+    }
+}
+
 export interface ContentSourceAware extends Aware {
     setContentSource(contentSource: ContentSource): void;
 }

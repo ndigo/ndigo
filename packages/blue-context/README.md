@@ -9,6 +9,7 @@ Blue Context provides application context, environment, configuration decorators
 - Environment and property resolution APIs
 - Event emitter support and context-aware mixins
 - Content source integration with parent-context fallback
+- Theme name and resolver support
 - Resource loading abstractions
 
 ## Installation
@@ -35,6 +36,8 @@ context.setContentSource(
 
 context.getValue('name');
 context.getContent('greeting', 'en');
+context.setThemeName('default');
+context.getTheme().name;
 ```
 
 ## Development

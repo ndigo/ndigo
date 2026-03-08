@@ -131,6 +131,9 @@ importers:
       '@blue/core':
         specifier: ~0.0.1
         version: link:../blue-core
+      '@blue/platform-web':
+        specifier: ~0.0.1
+        version: link:../blue-platform-web
       '@blue/router':
         specifier: ~0.0.1
         version: link:../blue-router

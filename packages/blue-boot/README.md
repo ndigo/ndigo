@@ -17,8 +17,19 @@ pnpm add @blue/boot
 
 ## Usage
 
-`@blue/boot` currently acts as a framework-level package. It is typically consumed by BlueJS application setup code rather
-than imported directly by leaf business modules.
+```typescript
+import { GenericApplicationContext } from '@blue/context';
+import { configureBrowserTheme } from '@blue/boot';
+
+const context = new GenericApplicationContext('app');
+
+configureBrowserTheme(context, {
+    themeName: 'default',
+    cookieName: 'theme',
+});
+```
+
+`@blue/boot` provides framework-level bootstrap helpers and is typically consumed by application setup code.
 
 ## Development
 

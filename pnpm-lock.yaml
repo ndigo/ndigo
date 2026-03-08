@@ -377,9 +377,6 @@ importers:
       '@blue/router':
         specifier: ~0.0.1
         version: link:../blue-router
-      '@blue/util':
-        specifier: ~0.0.1
-        version: link:../blue-util
 
   packages/blue-util:
     dependencies:
@@ -410,6 +407,10 @@ importers:
         version: 0.31.0
 
   packages/blue-validate:
+    dependencies:
+      zod:
+        specifier: ^4.3.6
+        version: 4.3.6
     devDependencies:
       '@blue/core':
         specifier: ~0.0.1
@@ -5263,3 +5264,7 @@ packages:
     resolution: {integrity: sha512-U/PBtDf35ff0D8X8D0jfdzHYEPFxAI7jJlxZXwCSez5M3190m+QobIfh+sWDWSHMCWWJN2AWamkegn6vr6YBTw==}
     engines: {node: '>=18'}
     dev: true
+
+  /zod@4.3.6:
+    resolution: {integrity: sha512-rftlrkhHZOcjDwkGlnUtZZkvaPHCsDATp4pGpuOOMDaTdDDXF91wuVDJoWoPsKX/3YPQ5fHuF3STjcYyKr+Qhg==}
+    dev: false

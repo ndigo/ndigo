@@ -34,4 +34,6 @@ yarn-error.log
 # Documentation
 doc/
 docs/
+!docs/plans/
+!docs/plans/**
 docs-ts/

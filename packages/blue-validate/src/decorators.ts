@@ -5,7 +5,7 @@
 import '@tsmetadata/polyfill';
 import constraints, { hasConstraint } from './constraints';
 import { ConstraintViolationError } from './error';
-import { ValidationGroup } from './group';
+import { defaultValidationGroup, ValidationGroup } from './group';
 
 type ValidationMode = 'blocking' | 'non-blocking';
 
@@ -47,7 +47,22 @@ type ClassValidationResult = {
     failedProperties: Set<string>;
 };
 
+type ClassValidationOptions = {
+    groups?: ValidationGroup[];
+};
+
 const validationFieldMetadataKey = 'validate:fields';
+
+const includesAnyGroup = (
+    constraintGroups: ValidationGroup[] | undefined,
+    activeGroups: ValidationGroup[]
+): boolean => {
+    if (!Array.isArray(constraintGroups) || !constraintGroups.length) {
+        return true;
+    }
+
+    return constraintGroups.some((group) => activeGroups.includes(group));
+};
 
 const createViolationError = (propertyName: string | symbol, constraintName: string, message?: string) => {
     const defaultMessage = `Constraint "${constraintName}" failed for field "${String(propertyName)}"`;
@@ -139,8 +154,13 @@ const defineFieldValidation = (
             set(this: any, newValue: unknown) {
                 const metadata = readFieldMetadata(this);
                 const constraintsForField = metadata[String(propertyName)] || [];
+                const activeGroups = [defaultValidationGroup];
 
                 constraintsForField.forEach((entry) => {
+                    if (!includesAnyGroup(entry.groups, activeGroups)) {
+                        return;
+                    }
+
                     validateConstraintValue(
                         entry.constraint,
                         newValue,
@@ -258,12 +278,20 @@ export const validated =
         };
 
         Object.defineProperty(target.prototype, 'validate', {
-            value: function (): ClassValidationResult {
+            value: function (options: ClassValidationOptions = {}): ClassValidationResult {
                 const metadata = readFieldMetadata(this);
                 const failures = new Set<string>();
+                const activeGroups =
+                    options.groups && options.groups.length
+                        ? options.groups
+                        : config.groups && config.groups.length
+                          ? config.groups
+                          : [defaultValidationGroup];
 
                 Object.keys(metadata).forEach((fieldName) => {
-                    const fieldConfigList = metadata[fieldName] || [];
+                    const fieldConfigList = (metadata[fieldName] || []).filter((entry) =>
+                        includesAnyGroup(entry.groups, activeGroups)
+                    );
                     const value = this[fieldName];
 
                     const hasBlockingFailure = fieldConfigList.some((fieldConfig) => {

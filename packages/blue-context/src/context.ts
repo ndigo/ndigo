@@ -3,7 +3,15 @@
  */
 
 import { JSONObject, Constructable, escalate } from '@blue/core';
-import { ContentSource, StaticContentSource, likeContentSourceAware, likeContentSource } from '@blue/content';
+import {
+    ContentSource,
+    StaticContentSource,
+    Theme,
+    ThemeResolver,
+    StaticThemeResolver,
+    likeContentSourceAware,
+    likeContentSource,
+} from '@blue/content';
 import { allPass } from '@blue/util/logic';
 import { like } from '@blue/util/types';
 import {
@@ -48,10 +56,13 @@ export interface ApplicationContext
     readonly id: number;
     readonly name: string;
     readonly path: string;
+    readonly themeName: string;
 
     parent: ApplicationContext;
 
     destroyedTimestamp?: number;
+
+    getTheme(name?: string): Theme;
 }
 
 export interface ApplicationContextAware extends Aware {
@@ -64,6 +75,8 @@ export interface ConfigurableApplicationContext extends ApplicationContext {
     setId(id: number): void;
     setName(name: string): void;
     setParent(parent: ApplicationContext): void;
+    setThemeName(themeName: string): void;
+    setThemeResolver(themeResolver: ThemeResolver): void;
 }
 
 /**
@@ -141,10 +154,13 @@ export const likeApplicationContextAware = likeAwareAnd(like({ setApplicationCon
 // declare 'implements ConfigurableApplicationContext' here - the mixin chain provides it.
 export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLoader(DefaultFactory)) {
     #contentSource: ContentSource;
+    #customThemeResolver: boolean;
     #environment: Environment;
     #id: number;
     #name: string;
     #parent: ApplicationContext;
+    #themeName: string;
+    #themeResolver: ThemeResolver;
 
     createdTimestamp: number;
     destroyed: boolean;
@@ -187,13 +203,20 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
         return path.join('/');
     }
 
+    get themeName(): string {
+        return this.#themeName;
+    }
+
     constructor(name?: string, data?: JSONObject) {
         super();
 
         this.#contentSource = new StaticContentSource();
+        this.#customThemeResolver = false;
         this.#environment = null;
         this.#name = name ?? null;
         this.#parent = null;
+        this.#themeName = 'default';
+        this.#themeResolver = null;
 
         this.setId(++uuid);
 
@@ -269,8 +292,20 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
         return this.parent.getContent(key, language);
     }
 
+    getTheme(name?: string): Theme {
+        if (!this.#themeResolver) {
+            this.#themeResolver = this._createThemeResolver();
+        }
+
+        return this.#themeResolver.getTheme(name || this.#themeName);
+    }
+
     setContentSource(contentSource: ContentSource): void {
         this.#contentSource = contentSource;
+
+        if (!this.#customThemeResolver) {
+            this.#themeResolver = null;
+        }
     }
 
     setEnvironment(environment: ConfigurableEnvironment): void {
@@ -289,8 +324,29 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
         this.#parent = parent;
     }
 
+    setThemeName(themeName: string): void {
+        this.#themeName = themeName;
+    }
+
+    setThemeResolver(themeResolver: ThemeResolver): void {
+        this.#customThemeResolver = true;
+        this.#themeResolver = themeResolver;
+    }
+
     protected _createEnvironment(): Environment {
         return new StandardEnvironment();
+    }
+
+    protected _createThemeResolver(): ThemeResolver {
+        return new StaticThemeResolver(
+            [
+                {
+                    name: this.#themeName,
+                    contentSource: this.#contentSource,
+                },
+            ],
+            this.#themeName
+        );
     }
 }
 

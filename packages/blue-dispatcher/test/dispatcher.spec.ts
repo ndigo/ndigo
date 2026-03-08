@@ -2,13 +2,15 @@ import { describe, test, beforeEach, afterEach, expect } from 'vitest';
 import { BrowserDispatcher } from '../src/dispatcher';
 import dispatcherContext from './assets/dispatcher-context';
 import { handleRouteSpy, renderSpy, resolveLanguageSpy, testModel } from './test-strategies';
+import { MetadataConfigApplicationContext } from '@blue/context';
+import { Route } from '@blue/router';
 
 describe('BrowserDispatcher', () => {
-    const fooRoute = { path: '/foo' },
-        barRoute = { path: '/bar' },
-        bazRoute = { path: '/baz' },
-        quxRoute = { path: '/qux' },
-        helloWorldRoute = { path: '/hello/world' };
+    const fooRoute: Route = { path: '/foo' } as any,
+        barRoute: Route = { path: '/bar' } as any,
+        bazRoute: Route = { path: '/baz' } as any,
+        quxRoute: Route = { path: '/qux' } as any,
+        helloWorldRoute: Route = { path: '/hello/world' } as any;
 
     describe('instance', () => {
         let dispatcher: BrowserDispatcher;
@@ -45,6 +47,16 @@ describe('BrowserDispatcher', () => {
             expect(resolveLanguageSpy).toHaveBeenCalledWith(bazRoute);
             expect(resolveLanguageSpy).toHaveBeenCalledWith(quxRoute);
             console.log('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<');
+        });
+
+        test('it should use context theme when no theme resolver is provided', () => {
+            const themeContext = new MetadataConfigApplicationContext('theme-context');
+            themeContext.setThemeName('night');
+
+            const themeDispatcher = new BrowserDispatcher();
+            themeDispatcher.initStrategies(themeContext);
+
+            expect(themeDispatcher.themeResolver.resolveTheme(fooRoute)).toBe('night');
         });
     });
 });

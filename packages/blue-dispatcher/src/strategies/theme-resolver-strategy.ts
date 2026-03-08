@@ -4,7 +4,8 @@
 
 import { ApplicationContext } from '@blue/context';
 import { Constructable } from '@blue/core';
-import { FixedThemeResolver, ThemeResolver } from '../theme-resolver';
+import { AbstractThemeResolver, FixedThemeResolver, ThemeResolver } from '../theme-resolver';
+import { Route } from '@blue/router';
 import { StrategyInitializer } from './strategy-initializer';
 
 export interface ThemeResolverStrategy {
@@ -16,8 +17,29 @@ export interface ThemeResolverStrategy {
  */
 
 const { defineProperty } = Reflect,
-    THEME_RESOLVER = 'themeResolver',
-    defaultThemeResolver: ThemeResolver = new FixedThemeResolver('');
+    THEME_RESOLVER = 'themeResolver';
+
+class ContextThemeResolver extends AbstractThemeResolver {
+    readonly #context: ApplicationContext;
+
+    constructor(context: ApplicationContext) {
+        super(context.themeName || 'default');
+        this.#context = context;
+    }
+
+    resolveTheme(route: Route): string {
+        return this.#context.getTheme().name;
+    }
+}
+
+const createDefaultThemeResolver = (context: ApplicationContext): ThemeResolver => {
+    try {
+        const theme = context.getTheme();
+        return new FixedThemeResolver(theme?.name || context.themeName || 'default');
+    } catch {
+        return new ContextThemeResolver(context);
+    }
+};
 
 export const AsThemeResolverStrategy = <T extends Constructable<StrategyInitializer>>(
     superclass: T
@@ -40,7 +62,7 @@ export const AsThemeResolverStrategy = <T extends Constructable<StrategyInitiali
         initThemeResolver(context: ApplicationContext) {
             const { themeResolverKey } = this;
 
-            this.initStrategy(context, themeResolverKey, THEME_RESOLVER, defaultThemeResolver);
+            this.initStrategy(context, themeResolverKey, THEME_RESOLVER, createDefaultThemeResolver(context));
 
             console.log('Dispatcher::initThemeResolver', this.themeResolver);
         }

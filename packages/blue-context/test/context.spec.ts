@@ -4,7 +4,7 @@ import {
     ProxiedGenericApplicationContext,
     ApplicationContextAwareProcessor,
 } from '../src/context';
-import { StaticContentSource } from '@blue/content';
+import { StaticContentSource, StaticThemeResolver } from '@blue/content';
 import { MockEnvironment } from '../src/environment';
 
 describe('GenericApplicationContext', () => {
@@ -75,6 +75,29 @@ describe('GenericApplicationContext', () => {
 
         context.setParent(parent);
         expect(context.getContent('welcome', 'en')).toBe('Welcome parent');
+    });
+
+    test('it should resolve theme from configured theme name', () => {
+        context.setThemeName('night');
+        const theme = context.getTheme();
+
+        expect(theme.name).toBe('night');
+    });
+
+    test('it should resolve theme from custom theme resolver', () => {
+        context.setThemeResolver(
+            new StaticThemeResolver(
+                [
+                    {
+                        name: 'light',
+                        contentSource: new StaticContentSource(),
+                    },
+                ],
+                'light'
+            )
+        );
+
+        expect(context.getTheme().name).toBe('light');
     });
 });
 

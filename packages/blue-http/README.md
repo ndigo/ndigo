@@ -7,6 +7,7 @@ Blue HTTP is a robust HTTP client built on the Fetch API, providing advanced int
 - **Interceptor System**: A 5-hook interceptor system (`preInit`, `preRequest`, `postResponse`, `postError`, `postComplete`) allows for granular control over the HTTP request lifecycle.
 - **URL Pattern Matching**: `MappedHTTPInterceptor` enables conditional application of interceptors based on URL patterns.
 - **Built-in Interceptors**: Includes 8 ready-to-use interceptors for common use cases like `Timeout`, `ContentType`, and `ResponseClass`.
+- **Body Transform Pipeline**: Request/response body transforms via `requestTransforms` and `responseTransforms`.
 - **RFC-Compliant Parsers**: Sophisticated query and matrix string parsers.
 - **Response Status & Header Abstractions**: Provides comprehensive status code and header name constants for type-safe usage.
 
@@ -181,6 +182,31 @@ const http = HTTP.create({
 // ... make requests, logs will appear ...
 ```
 
+### Body Transformations
+
+Blue HTTP supports composable request/response body transformations.
+
+```typescript
+import { HTTP } from '@blue/http';
+
+const http = HTTP.create({
+    requestTransforms: [(body) => ({ ...body, requestId: crypto.randomUUID() })],
+    responseTransforms: [(body) => ({ ...body, parsed: true })],
+});
+```
+
+You can also use specialized transformers from the subpath export:
+
+```typescript
+import {
+    JSONTransformer,
+    CompositionTransformer,
+    TransducerTransformer,
+    FormDataTransformer,
+    URLSearchParamsTransformer,
+} from '@blue/http/transformers';
+```
+
 ## API
 
 ### `HTTP.create(config?: HTTPConfig)`
@@ -192,6 +218,8 @@ Creates a new HTTP client instance using the static factory method (recommended 
     - `headers`: Default headers to include in all requests
     - `params`: Default query parameters to include in all requests
     - `interceptors`: Optional HTTP interceptors
+    - `requestTransforms`: Optional request body transforms
+    - `responseTransforms`: Optional response body transforms
     - `fetch`: Optional custom fetch implementation (defaults to `globalThis.fetch`)
 
 **Example:**
@@ -222,6 +250,8 @@ Configuration options for `HTTP.create()`:
 ```typescript
 export interface HTTPConfig extends HTTPInit {
     interceptors?: HTTPInterceptor[];
+    requestTransforms?: Transform[];
+    responseTransforms?: Transform[];
     fetch?: Fetch;
 }
 ```
@@ -250,7 +280,7 @@ An interface defining hooks for the request lifecycle:
 
 - `preInit(url: URL, settings: HTTPInit): boolean`
 - `preRequest(request: Request, http: HTTP): Promise<Request | void>`
-- `postResponse(response: Response, settings: HTTPInit): Promise<void>`
+- `postResponse(response: Response, settings: HTTPInit): Promise<Response | void>`
 - `postError(error: Error, request: Request, http: HTTP): Promise<Response | undefined>`
 - `postComplete(request: Request, response: Response | ResponseError): void`
 

@@ -57,6 +57,7 @@ pnpm lint
 
 ## Packages
 
+- [blue-boot](packages/blue-boot/README.md)
 - [blue-content](packages/blue-content/README.md)
 - [blue-context](packages/blue-context/README.md)
 - [blue-core](packages/blue-core/README.md)
@@ -64,12 +65,13 @@ pnpm lint
 - [blue-domain](packages/blue-domain/README.md)
 - [blue-factory](packages/blue-factory/README.md)
 - [blue-http](packages/blue-http/README.md)
-- [blue-logger](packages/blue-logger/README.md)
 - [blue-model](packages/blue-model/README.md)
 - [blue-parser](packages/blue-parser/README.md)
 - [blue-platform-web](packages/blue-platform-web/README.md)
 - [blue-print](packages/blue-print/README.md)
 - [blue-router](packages/blue-router/README.md)
+- [blue-service](packages/blue-service/README.md)
+- [blue-telemetry](packages/blue-telemetry/README.md)
 - [blue-util](packages/blue-util/README.md)
 - [blue-validate](packages/blue-validate/README.md)
 - [blue-view](packages/blue-view/README.md)

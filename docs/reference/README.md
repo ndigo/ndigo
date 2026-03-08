@@ -5,6 +5,7 @@ This directory contains reference documentation for dependencies, configurations
 ## Available References
 
 - [2026-01-23_DEPENDENCIES_REFERENCE.md](./2026-01-23_DEPENDENCIES_REFERENCE.md) - Complete dependency version reference
+- [2026-03-08_ARCHITECTURE_ROADMAP.md](./2026-03-08_ARCHITECTURE_ROADMAP.md) - Architecture roadmap, platform vision, and package maturity
 
 ## Naming Convention
 

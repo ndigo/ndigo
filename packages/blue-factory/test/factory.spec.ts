@@ -1,6 +1,7 @@
 import { describe, test, expect, beforeEach, afterEach, vi } from 'vitest';
 import { AsFactoryAware, DefaultFactory, ProxiedFactory } from '../src/factory';
 import { $aware } from '../src/aware';
+import { prototypeScope, singletonScope } from '../src/scope';
 
 class EmptyPrototype {}
 
@@ -11,6 +12,16 @@ describe('DefaultFactory', () => {
         destroy = vi.fn();
         init = vi.fn();
         setName = vi.fn();
+    }
+
+    @singletonScope
+    class SingletonScopedPrototype {
+        value = Math.random();
+    }
+
+    @prototypeScope
+    class PrototypeScopedPrototype {
+        value = Math.random();
     }
 
     class TestProcessor {
@@ -66,6 +77,28 @@ describe('DefaultFactory', () => {
         expect(Object.prototype.toString.call(factory)).toBe('[object Factory]');
     });
 
+    test('it should respect singleton scope metadata in getValue', () => {
+        factory!.setValue('singletonScoped', SingletonScopedPrototype);
+
+        const a = factory!.getValue<SingletonScopedPrototype>('singletonScoped');
+        const b = factory!.getValue<SingletonScopedPrototype>('singletonScoped');
+
+        expect(a).toBeInstanceOf(SingletonScopedPrototype);
+        expect(b).toBeInstanceOf(SingletonScopedPrototype);
+        expect(a).toBe(b);
+    });
+
+    test('it should respect prototype scope metadata in getValue', () => {
+        factory!.setValue('prototypeScoped', PrototypeScopedPrototype);
+
+        const a = factory!.getValue<PrototypeScopedPrototype>('prototypeScoped');
+        const b = factory!.getValue<PrototypeScopedPrototype>('prototypeScoped');
+
+        expect(a).toBeInstanceOf(PrototypeScopedPrototype);
+        expect(b).toBeInstanceOf(PrototypeScopedPrototype);
+        expect(a).not.toBe(b);
+    });
+
     test('it should manage processors', () => {
         const processor2 = new TestProcessor();
         factory!.addProcessor(processor2 as any);
@@ -79,6 +112,15 @@ describe('DefaultFactory', () => {
         expect(factory!.processors).toHaveProperty('length', 2);
         expect(factory!.processors).toHaveProperty('0', processor2);
         expect(factory!.processors).toHaveProperty('1', processor);
+    });
+
+    test('it should expose and manage registered scopes', () => {
+        const scopeNames = factory!.getScopeNames();
+
+        expect(scopeNames).toContain('singleton');
+        expect(scopeNames).toContain('prototype');
+        expect(scopeNames).toContain('route');
+        expect(scopeNames).toContain('hash');
     });
 
     test('it should create aware instances', () => {
@@ -144,8 +186,7 @@ describe('DefaultFactory', () => {
         expect(processor!.processAfterInitialization).toHaveBeenCalledWith('list[1]', test2);
 
         factory!.setValue('numbers', [1, 2, 3]);
-
-        const numbers = factory!.getValue('numbers');
+        factory!.getValue('numbers');
     });
 });
 

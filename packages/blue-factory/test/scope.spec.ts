@@ -5,7 +5,7 @@
  * and that helper functions and mixins can read the metadata.
  */
 
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import {
     scope,
     singletonScope,
@@ -14,10 +14,10 @@ import {
     defineScope,
     getScope,
     hasScope,
-    AsScopedFactory,
-    type PossibleScope,
+    HashScope,
+    PrototypeScope,
+    SingletonScope,
 } from '../src/scope';
-import { Factory } from '../src/factory';
 
 describe('Scope Decorators - TC39 Behavioral Tests', () => {
     describe('@scope decorator', () => {
@@ -175,49 +175,65 @@ describe('Scope Decorators - TC39 Behavioral Tests', () => {
         });
     });
 
-    describe('AsScopedFactory Mixin Integration', () => {
-        it('should register and retrieve scoped values', () => {
-            @singletonScope
-            class SingletonService {
-                value = Math.random();
-            }
+    describe('Scope Implementations', () => {
+        it('SingletonScope should cache and destroy values', () => {
+            const singleton = new SingletonScope();
+            const objectFactory = vi.fn(() => ({ id: Math.random() }));
 
-            expect(hasScope(SingletonService)).toBe(true);
-            expect(getScope(SingletonService)).toBe('singleton');
+            const a = singleton.getValue('value', objectFactory);
+            const b = singleton.getValue('value', objectFactory);
+
+            expect(a).toBe(b);
+            expect(objectFactory).toHaveBeenCalledTimes(1);
+
+            singleton.destroyValue('value');
+
+            const c = singleton.getValue('value', objectFactory);
+            expect(c).not.toBe(a);
+            expect(objectFactory).toHaveBeenCalledTimes(2);
         });
 
-        it('should handle multiple scope types', () => {
-            @singletonScope
-            class SingletonService {}
+        it('PrototypeScope should always create a new value', () => {
+            const prototype = new PrototypeScope();
+            const objectFactory = vi.fn(() => ({ id: Math.random() }));
 
-            @prototypeScope
-            class PrototypeService {}
+            const a = prototype.getValue('value', objectFactory);
+            const b = prototype.getValue('value', objectFactory);
 
-            @hashScope
-            class HashService {}
+            expect(a).not.toBe(b);
+            expect(objectFactory).toHaveBeenCalledTimes(2);
 
-            expect(getScope(SingletonService)).toBe('singleton');
-            expect(getScope(PrototypeService)).toBe('prototype');
-            expect(getScope(HashService)).toBe('hash');
+            expect(() => prototype.destroyValue('value')).not.toThrow();
         });
 
-        it('should return undefined for non-decorated constructors', () => {
-            class PlainService {}
+        it('HashScope should isolate values by key', () => {
+            const hash = new HashScope();
+            const objectFactory = vi.fn(() => ({ id: Math.random() }));
 
-            // getScope should return undefined for non-decorated class
-            expect(getScope(PlainService)).toBeUndefined();
-            expect(hasScope(PlainService)).toBe(false);
+            hash.setCurrentKey('k1');
+            const k1a = hash.getValue('value', objectFactory);
+            const k1b = hash.getValue('value', objectFactory);
+
+            hash.setCurrentKey('k2');
+            const k2a = hash.getValue('value', objectFactory);
+
+            expect(k1a).toBe(k1b);
+            expect(k1a).not.toBe(k2a);
+            expect(objectFactory).toHaveBeenCalledTimes(2);
+
+            hash.endScope('k2');
+            hash.setCurrentKey('k2');
+            const k2b = hash.getValue('value', objectFactory);
+
+            expect(k2a).not.toBe(k2b);
+            expect(objectFactory).toHaveBeenCalledTimes(3);
         });
 
-        it('should work with getScope helper from instances', () => {
-            @singletonScope
-            class Service {}
+        it('HashScope should throw when no active key exists', () => {
+            const hash = new HashScope();
 
-            const instance = new Service();
-
-            // getScope works with both class and instance
-            expect(getScope(Service)).toBe('singleton');
-            expect(getScope(instance)).toBe('singleton');
+            expect(() => hash.getValue('value', () => ({ id: 1 }))).toThrow('No active hash scope context');
+            expect(() => hash.destroyValue('value')).toThrow('No active hash scope context');
         });
     });
 

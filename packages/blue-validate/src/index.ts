@@ -7,6 +7,7 @@ import types from './types';
 import Type from './type';
 
 export * from './constraints';
+export * from './backend';
 export * from './decorators';
 export * from './error';
 export * from './group';

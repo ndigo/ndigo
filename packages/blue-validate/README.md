@@ -21,7 +21,7 @@ pnpm add @blue/validate
 ## Usage
 
 ```typescript
-import { TypeValidator, types, registerConstraint, constrained, pattern } from '@blue/validate';
+import { TypeValidator, createTypeValidator, types, registerConstraint, constrained, pattern } from '@blue/validate';
 
 registerConstraint('AlwaysTrue', {
     validate: () => true,
@@ -29,6 +29,9 @@ registerConstraint('AlwaysTrue', {
 
 const validator = new TypeValidator(types);
 validator.validate('abc123', 'UserId', {});
+
+const hybridValidator = createTypeValidator(types, 'hybrid');
+hybridValidator.validate('test@test.com', 'Email', {});
 
 class User {
     @pattern({ regex: /^[a-z]+$/ })

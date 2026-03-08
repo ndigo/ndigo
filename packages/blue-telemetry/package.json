@@ -29,14 +29,12 @@
   },
   "devDependencies": {
     "@blue/core": "~0.0.1",
-    "@blue/util": "~0.0.1",
     "@blue/context": "~0.0.1",
     "@blue/router": "~0.0.1",
     "@blue/dispatcher": "~0.0.1"
   },
   "peerDependencies": {
     "@blue/core": "~0.0.1",
-    "@blue/util": "~0.0.1",
     "@blue/context": "~0.0.1",
     "@blue/router": "~0.0.1",
     "@blue/dispatcher": "~0.0.1"

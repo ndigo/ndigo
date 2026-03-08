@@ -8,6 +8,7 @@ Blue Context provides application context, environment, configuration decorators
 - TC39 decorators for configuration workflows
 - Environment and property resolution APIs
 - Event emitter support and context-aware mixins
+- Content source integration with parent-context fallback
 - Resource loading abstractions
 
 ## Installation
@@ -20,11 +21,20 @@ pnpm add @blue/context
 
 ```typescript
 import { GenericApplicationContext } from '@blue/context';
+import { StaticContentSource } from '@blue/content';
 
 const context = new GenericApplicationContext('app');
 context.setValue('name', 'blue');
+context.setContentSource(
+    new StaticContentSource({
+        greeting: {
+            en: 'Hello',
+        },
+    })
+);
 
 context.getValue('name');
+context.getContent('greeting', 'en');
 ```
 
 ## Development

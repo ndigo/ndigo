@@ -4,6 +4,7 @@ import {
     ProxiedGenericApplicationContext,
     ApplicationContextAwareProcessor,
 } from '../src/context';
+import { StaticContentSource } from '@blue/content';
 import { MockEnvironment } from '../src/environment';
 
 describe('GenericApplicationContext', () => {
@@ -48,6 +49,32 @@ describe('GenericApplicationContext', () => {
     test('it should accept an initial property set', () => {
         context = new GenericApplicationContext('test', { foo: 'bar' });
         expect(context.getValue('foo')).toBe('bar');
+    });
+
+    test('it should resolve content from local content source', () => {
+        context.setContentSource(
+            new StaticContentSource({
+                greeting: {
+                    en: 'Hello',
+                },
+            })
+        );
+
+        expect(context.getContent('greeting', 'en')).toBe('Hello');
+    });
+
+    test('it should resolve content from parent context fallback', () => {
+        const parent = new GenericApplicationContext('parent');
+        parent.setContentSource(
+            new StaticContentSource({
+                welcome: {
+                    en: 'Welcome parent',
+                },
+            })
+        );
+
+        context.setParent(parent);
+        expect(context.getContent('welcome', 'en')).toBe('Welcome parent');
     });
 });
 

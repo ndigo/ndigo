@@ -80,7 +80,7 @@ export function createLibConfig(options: {
                 '@blue/view': resolve(__dirname, './packages/blue-view/src'),
                 '@blue/http': resolve(__dirname, './packages/blue-http/src'),
                 '@blue/model': resolve(__dirname, './packages/blue-model/src'),
-                '@blue/logger': resolve(__dirname, './packages/blue-logger/src'),
+                '@blue/telemetry': resolve(__dirname, './packages/blue-telemetry/src'),
                 '@blue/content': resolve(__dirname, './packages/blue-content/src'),
                 '@blue/domain': resolve(__dirname, './packages/blue-domain/src'),
                 '@blue/validate': resolve(__dirname, './packages/blue-validate/src'),

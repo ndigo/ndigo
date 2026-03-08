@@ -27,15 +27,12 @@
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
   "dependencies": {
-    "@opentelemetry/sdk-logs": "~0.211.0",
-    "@opentelemetry/core": "~1.9.1"
   },
   "devDependencies": {
     "@blue/context": "~0.0.1",
     "@blue/core": "~0.0.1",
     "@blue/factory": "~0.0.1",
     "@blue/http": "~0.0.1",
-    "@blue/logger": "~0.0.1",
     "@blue/parser": "~0.0.1",
     "@blue/router": "~0.0.1",
     "@blue/util": "~0.0.1",
@@ -46,12 +43,9 @@
     "@blue/core": "~0.0.1",
     "@blue/factory": "~0.0.1",
     "@blue/http": "~0.0.1",
-    "@blue/logger": "~0.0.1",
     "@blue/parser": "~0.0.1",
     "@blue/router": "~0.0.1",
     "@blue/util": "~0.0.1",
-    "@blue/view": "~0.0.1",
-    "@opentelemetry/sdk-logs": "~0.211.0",
-    "@opentelemetry/core": "~1.9.1"
+    "@blue/view": "~0.0.1"
   }
 }

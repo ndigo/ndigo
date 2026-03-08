@@ -2,9 +2,9 @@
  * @author Jeff Rose
  */
 
-import { /*Constructable,*/ likeEnumerable, isPrimitive, entriesIterator } from '@blue/core';
+import { Constructable, FrameworkError, likeEnumerable, isPrimitive, entriesIterator } from '@blue/core';
 import { Destroyable, Initializable, likeDestroyable, likeInitializable } from './lifecycle';
-import { always, identity, T } from '@blue/util/function';
+import { always, T } from '@blue/util/function';
 import { cond } from '@blue/util/logic';
 import { both } from '@blue/util/logic';
 import { has } from '@blue/util/object';
@@ -12,14 +12,14 @@ import { equals } from '@blue/util/relation';
 import { isConstructor, isFunction, isNumber, isString, like } from '@blue/util/types';
 import { Aware, AsAware, likeAwareAnd, likeAware, likeNameAware } from './aware';
 import { Registry, RegistryProxyHandler } from './registry';
-import { defineScope, getScope, hasScope, PrototypeScope, SingletonScope } from './scope';
+import { getScope, HashScope, PossibleScope, PrototypeScope, Scope, ScopedFactory, SingletonScope } from './scope';
+import ScopeRegistry from './_scope-registry';
 import {
     EntryProcessor,
     likeConstructionAwareProcessor,
     likeDestructionAwareProcessor,
     likeInitializationAwareProcessor,
 } from './entry-processor';
-import Entry from './entry';
 
 export interface Factory {
     getInstance<T = any>(name: string): T;
@@ -93,8 +93,9 @@ export interface FactoryAware extends Aware {
 const { create, keys } = Object,
     { construct, defineProperty, deleteProperty } = Reflect;
 
-// TODO Use the @blue/core version once it updates -JBR
-type Constructable<T = {}> = new (...args: any[]) => T;
+const getErrorMessage = (e: unknown): string => {
+    return e instanceof Error ? e.message : String(e);
+};
 
 /**
  * @see module:factory.AsFactoryAware
@@ -146,8 +147,9 @@ export const likeConfigurableFactory = both(
     like({ addProcessor: Function, setParent: Function })
 );
 
-export abstract class AbstractFactory implements ConfigurableFactory {
+export abstract class AbstractFactory implements ConfigurableFactory, ScopedFactory {
     #parent: Factory;
+    #scopeRegistry: ScopeRegistry;
 
     processors: EntryProcessor[];
 
@@ -164,6 +166,8 @@ export abstract class AbstractFactory implements ConfigurableFactory {
     }
 
     constructor() {
+        this.#scopeRegistry = new ScopeRegistry();
+
         this.processors = [];
         defineProperty(this, 'hasConstructionAwareProcessors', {
             value: false,
@@ -183,6 +187,11 @@ export abstract class AbstractFactory implements ConfigurableFactory {
             enumerable: false,
             writable: false,
         });
+
+        this.registerScope('prototype', new PrototypeScope());
+        this.registerScope('route', new HashScope());
+        this.registerScope('hash', this.getScope('route'));
+        this.registerScope('singleton', new SingletonScope());
     }
 
     addProcessor(processor: EntryProcessor): void {
@@ -218,13 +227,24 @@ export abstract class AbstractFactory implements ConfigurableFactory {
     }
 
     destroyValue(name: string): void {
-        if (this.hasValue(name)) {
-            const value = this.getValue(name);
+        if (!this.hasValue(name)) {
+            return;
+        }
+
+        if (this.hasInstance(name)) {
+            const value = this[name];
             if (likeDestroyable(value)) {
                 this._applyProcessorsBeforeDestruction(name, value);
                 value.destroy();
             }
             deleteProperty(this, name);
+        }
+
+        if (this.hasConstructor(name)) {
+            const constructor = this[`$${name}`],
+                scopeName = getScope(constructor) ?? 'singleton';
+
+            this.destroyScopedValue(scopeName, name);
         }
     }
 
@@ -233,16 +253,42 @@ export abstract class AbstractFactory implements ConfigurableFactory {
     }
 
     getValue<T = any>(name: string, argumentsList: any[] = []): T {
-        if (!this.hasInstance(name) && this.hasConstructor(name)) {
-            defineProperty(this, name, {
-                value: this._create(name, argumentsList),
-                configurable: true,
-                enumerable: false,
-                writable: false,
-            });
+        if (this.hasInstance(name)) {
+            return this[name];
+        }
+
+        if (this.hasConstructor(name)) {
+            const constructor = this[`$${name}`],
+                scopeName = getScope(constructor) ?? 'singleton',
+                scope = this.getScope(scopeName);
+
+            const value = scope.getValue<T>(name, () => this._create<T>(name, argumentsList));
+
+            if (scopeName === 'singleton') {
+                defineProperty(this, name, {
+                    value,
+                    configurable: true,
+                    enumerable: false,
+                    writable: false,
+                });
+            }
+
+            return value;
         }
 
         return this[name];
+    }
+
+    destroyScopedValue(scopeName: PossibleScope, valueName: string): void {
+        this.#scopeRegistry.destroyScopedValue(scopeName, valueName);
+    }
+
+    getScope(name: PossibleScope): Scope {
+        return this.#scopeRegistry.getScope(name);
+    }
+
+    getScopeNames(): PossibleScope[] {
+        return this.#scopeRegistry.getScopeNames();
     }
 
     hasConstructor(name: string): boolean {
@@ -259,6 +305,10 @@ export abstract class AbstractFactory implements ConfigurableFactory {
 
     hasValue(name: string): boolean {
         return this.hasInstance(name) || this.hasConstructor(name);
+    }
+
+    registerScope(name: PossibleScope, scope: Scope): void {
+        this.#scopeRegistry.registerScope(name, scope);
     }
 
     setParent(parent: Factory): void {
@@ -417,8 +467,7 @@ export abstract class AbstractFactory implements ConfigurableFactory {
             }
             instance = this._initialize<T>(name, instance);
         } catch (e) {
-            // TODO Do proper error handling
-            console.error(e);
+            throw new FrameworkError(`Failed to configure entry '${name}': ${getErrorMessage(e)}`);
         }
 
         return instance;
@@ -435,8 +484,7 @@ export abstract class AbstractFactory implements ConfigurableFactory {
                 instance = construct(constructor, argumentsList);
             }
         } catch (e) {
-            // TODO Do proper error handling
-            console.error(e);
+            throw new FrameworkError(`Failed to create entry '${name}': ${getErrorMessage(e)}`);
         }
 
         return this._configure<T>(name, instance);
@@ -449,7 +497,7 @@ export abstract class AbstractFactory implements ConfigurableFactory {
             if (likeInitializable(instance)) {
                 this._invokeInit(name, instance);
             }
-        } catch (e) {}
+        } catch {}
 
         instance = this._applyProcessorsAfterInitialization(name, instance);
 
@@ -485,11 +533,11 @@ export abstract class AbstractFactory implements ConfigurableFactory {
             }
         }
 
-        // TODO Add better handling of empty processedProperties
-        processedProperties &&
+        if (processedProperties) {
             keys(processedProperties).forEach(function (key) {
                 defineProperty(processedValue as unknown as object, key, processedProperties[key]);
             });
+        }
     }
 
     private _invokeAware(name: string, instance: Aware): Aware {
@@ -506,8 +554,7 @@ export abstract class AbstractFactory implements ConfigurableFactory {
         try {
             instance.init();
         } catch (e) {
-            // TODO Do proper error handling
-            console.error(e);
+            throw new FrameworkError(`Initialization failed for entry '${name}': ${getErrorMessage(e)}`);
         }
     }
 }

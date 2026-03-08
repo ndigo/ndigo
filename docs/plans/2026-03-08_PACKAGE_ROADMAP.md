@@ -102,3 +102,4 @@ Success criteria:
 - Author telemetry migration reference document (examples + recommended defaults)
 - Draft eslint-plugin rule specification document
 - Open MVP design docs for `@blue/auth` and `@blue/orm`
+- Add a post-stabilization architecture checkpoint for `@blue/factory` to evaluate splitting `AbstractFactoryBase` and `AbstractScopedFactory` once real non-scoped usage requirements are known

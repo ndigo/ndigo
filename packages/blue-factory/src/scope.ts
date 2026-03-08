@@ -3,29 +3,25 @@
  */
 
 import '@tsmetadata/polyfill';
-//import { Constructable } from '@blue/core';
-import { Factory } from './factory';
-import { Registry } from './registry';
-import { isConstructor } from '@blue/util/types';
-import Entry from './entry';
+import { IllegalStateError } from '@blue/core';
 
-export type KnownScope = 'singleton' | 'prototype' | 'route';
+export type KnownScope = 'singleton' | 'prototype' | 'route' | 'hash';
 export type PossibleScope = KnownScope | string;
+export type ObjectFactory<T = any> = () => T;
 
 export interface Scope {
     destroyValue(name: string): void;
-    getValue<T = any>(name: string, factory): T;
+    getValue<T = any>(name: string, objectFactory: ObjectFactory<T>): T;
 }
 
 export interface ScopedFactory {
     destroyScopedValue(scopeName: string, valueName: string): void;
     getScope(name: string): Scope;
-    getScopeNames(): string[];
+    getScopeNames(): PossibleScope[];
     registerScope(name: string, scope: Scope): void;
 }
 
-const SCOPE_KEY = 'scope:mapping',
-    { defineProperty } = Reflect;
+const SCOPE_KEY = 'scope:mapping';
 
 /**
  * Helper function to get constructor from class or instance
@@ -83,8 +79,6 @@ export function scope(scopeName: PossibleScope) {
         // Store scope in TC39 metadata
         context.metadata[SCOPE_KEY] = scopeName;
 
-        console.log('@scope', scopeName, target);
-
         return target;
     };
 }
@@ -105,91 +99,85 @@ export const prototypeScope = scope('prototype');
 export const hashScope = scope('hash');
 
 export class PrototypeScope implements Scope {
-    destroyValue(name: string): void {
-        throw new Error('Method not implemented.');
+    destroyValue(_name: string): void {
+        // Intentionally no-op. Prototype values are not cached/tracked.
     }
-    getValue<T = any>(name: string, factory: any): T {
-        throw new Error('Method not implemented.');
+
+    getValue<T = any>(_name: string, objectFactory: ObjectFactory<T>): T {
+        return objectFactory();
     }
 }
 
 export class HashScope implements Scope {
-    destroyValue(name: string): void {
-        throw new Error('Method not implemented.');
+    #scopeMap: Map<string, Map<string, any>> = new Map<string, Map<string, any>>();
+    #currentKey: string | null = null;
+
+    endScope(key: string): void {
+        this.#scopeMap.delete(key);
+        if (this.#currentKey === key) {
+            this.#currentKey = null;
+        }
     }
-    getValue<T = any>(name: string, factory: any): T {
-        throw new Error('Method not implemented.');
+
+    getCurrentKey(): string | null {
+        return this.#currentKey;
+    }
+
+    setCurrentKey(key: string): void {
+        this.#currentKey = key;
+
+        if (!this.#scopeMap.has(key)) {
+            this.#scopeMap.set(key, new Map<string, any>());
+        }
+    }
+
+    destroyValue(name: string): void {
+        if (!this.#currentKey) {
+            throw new IllegalStateError('No active hash scope context. Call setCurrentKey() first.');
+        }
+
+        const scope = this.#scopeMap.get(this.#currentKey);
+        scope?.delete(name);
+    }
+
+    getValue<T = any>(name: string, objectFactory: ObjectFactory<T>): T {
+        if (!this.#currentKey) {
+            throw new IllegalStateError('No active hash scope context. Call setCurrentKey() first.');
+        }
+
+        const scope = this.#scopeMap.get(this.#currentKey);
+        if (!scope.has(name)) {
+            scope.set(name, objectFactory());
+        }
+
+        return scope.get(name) as T;
     }
 }
 
 export class SingletonScope implements Scope {
+    #instances: Map<string, any> = new Map<string, any>();
+    #destructionCallbacks: Map<string, () => void> = new Map<string, () => void>();
+
     destroyValue(name: string): void {
-        throw new Error('Method not implemented.');
+        const callback = this.#destructionCallbacks.get(name);
+
+        if (callback) {
+            callback();
+            this.#destructionCallbacks.delete(name);
+        }
+
+        this.#instances.delete(name);
     }
-    getValue<T = any>(name: string, factory: any): T {
-        throw new Error('Method not implemented.');
+
+    getValue<T = any>(name: string, objectFactory: ObjectFactory<T>): T {
+        if (!this.#instances.has(name)) {
+            this.#instances.set(name, objectFactory());
+        }
+
+        return this.#instances.get(name) as T;
+    }
+
+    registerDestructionCallback(name: string, callback: () => void): void {
+        this.#destructionCallbacks.set(name, callback);
     }
 }
-
-const ps = new PrototypeScope(),
-    hs = new HashScope(),
-    ss = new SingletonScope();
-
-// TODO Use the @blue/core version once it updates -JBR
-type Constructable<T = {}> = new (...args: any[]) => T;
-
-export const AsScopedFactory = <T extends Constructable>(superclass: T): Constructable<ScopedFactory> & T =>
-    class extends superclass implements ScopedFactory {
-        #scopes: Map<PossibleScope, Scope>;
-
-        constructor(...args: any[]) {
-            super(...args);
-            this.#scopes = new Map<PossibleScope, Scope>();
-
-            // Register default scopes
-            this.registerScope('prototype', ps);
-            this.registerScope('route', hs);
-            this.registerScope('singleton', ss);
-        }
-
-        destroyScopedValue(scopeName: PossibleScope, valueName: string): void {
-            const scope = this.#scopes.get(scopeName);
-            scope ?? scope.destroyValue(valueName);
-        }
-
-        getScope(name: PossibleScope): Scope {
-            return this.#scopes.get(name);
-        }
-
-        getScopeNames(): PossibleScope[] {
-            return [...this.#scopes.keys()];
-        }
-
-        getValue<T = any>(name: string, argumentsList: any[] = []): T {
-            const entry: Entry<T> = this[`$${name}`],
-                scopeName = entry.scope,
-                scope = this.#scopes.get(scopeName);
-
-            scope.getValue<T>(name, () => {});
-
-            return this[name];
-        }
-
-        registerScope(name: PossibleScope, scope: Scope): void {
-            if (!this.#scopes.has(name)) {
-                this.#scopes.set(name, scope);
-            }
-        }
-
-        setValue<T = any>(name: string, value: T): void {
-            const scopeName = getScope(value) ?? (isConstructor(value) ? 'prototype' : 'singleton'),
-                entry = new Entry<T>(name, value, scopeName);
-
-            defineProperty(this, `$${name}`, {
-                value: entry,
-                configurable: true,
-                enumerable: true,
-                writable: false,
-            });
-        }
-    };

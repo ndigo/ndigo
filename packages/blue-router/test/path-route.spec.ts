@@ -72,4 +72,29 @@ describe('PathRoute', () => {
         const route = new PathRoute('foo/bar');
         expect(route.toString()).toBe('/foo/bar');
     });
+
+    test('it should resolve path params using colon syntax', () => {
+        const route = new PathRoute('/users/42/orders/abc');
+        const params = route.resolveParams('/users/:userId/orders/:orderId');
+
+        expect(params?.userId).toBe('42');
+        expect(params?.orderId).toBe('abc');
+        expect(route.params).toEqual(params);
+        expect(route.matches('/users/:userId/orders/:orderId')).toBe(true);
+    });
+
+    test('it should resolve path params using brace syntax', () => {
+        const route = new PathRoute('/products/123/reviews/9');
+        const params = route.resolveParams('/products/{productId}/reviews/{reviewId}');
+
+        expect(params?.productId).toBe('123');
+        expect(params?.reviewId).toBe('9');
+    });
+
+    test('it should return null for non-matching path patterns', () => {
+        const route = new PathRoute('/users/42');
+
+        expect(route.resolveParams('/accounts/:id')).toBe(null);
+        expect(route.matches('/accounts/:id')).toBe(false);
+    });
 });

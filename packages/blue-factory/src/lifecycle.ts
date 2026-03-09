@@ -2,6 +2,8 @@
  * @author Jeff Rose
  */
 import { like } from '@blue/util/types';
+import { allPass } from '@blue/util/logic';
+import { Registry } from './registry';
 
 export interface Destroyable {
     destroyed: boolean;
@@ -14,6 +16,33 @@ export interface AsyncDestroyable extends Destroyable {
 
 export interface Initializable {
     init(...args: any[]): void;
+}
+
+export interface Closeable {
+    close(): void;
+}
+
+export interface AsyncCloseable extends Closeable {
+    close(): Promise<void>;
+}
+
+export interface Lifecycle {
+    readonly isRunning: boolean;
+    start(): void;
+    stop(): void;
+}
+
+export interface Phased {
+    readonly phase: number;
+}
+
+export interface SmartLifecycle extends Lifecycle, Phased {
+    readonly isAutoStartup: boolean;
+}
+
+export interface LifecycleProcessor extends Lifecycle {
+    onClose(registry: Registry): void;
+    onRefresh(registry: Registry): void;
 }
 
 /**
@@ -48,3 +77,97 @@ export const likeDestroyable = like({ destroy: Function, destroyed: Boolean }) a
  * @returns {boolean} Whether or not the `value` is {@link Initializable|Initializable}.
  */
 export const likeInitializable = like({ init: Function }) as (value) => value is Initializable;
+
+/**
+ * @param {*} value
+ * @returns {boolean} Whether or not the `value` is {@link Closeable|Closeable}.
+ */
+export const likeCloseable = like({ close: Function }) as (value) => value is Closeable;
+
+/**
+ * @param {*} value
+ * @returns {boolean} Whether or not the `value` is {@link Lifecycle|Lifecycle}.
+ */
+export const likeLifecycle = like({ isRunning: Boolean, start: Function, stop: Function }) as (
+    value
+) => value is Lifecycle;
+
+/**
+ * @param {*} value
+ * @returns {boolean} Whether or not the `value` is {@link Phased|Phased}.
+ */
+export const likePhased = like({ phase: Number }) as (value) => value is Phased;
+
+/**
+ * @param {*} value
+ * @returns {boolean} Whether or not the `value` is {@link SmartLifecycle|SmartLifecycle}.
+ */
+export const likeSmartLifecycle = allPass([likeLifecycle, likePhased, like({ isAutoStartup: Boolean })]) as (
+    value
+) => value is SmartLifecycle;
+
+/**
+ * @implements module:factory.LifecycleProcessor
+ */
+export class DefaultLifecycleProcessor implements LifecycleProcessor {
+    isRunning: boolean;
+
+    constructor() {
+        this.isRunning = false;
+    }
+
+    onClose(registry: Registry): void {
+        const stopTargets = this._resolveLifecycleTargets(registry)
+            .filter(likeSmartLifecycle)
+            .sort((a, b) => b.phase - a.phase);
+
+        for (const target of stopTargets) {
+            if (target.isRunning) {
+                target.stop();
+            }
+        }
+
+        this.stop();
+    }
+
+    onRefresh(registry: Registry): void {
+        const startTargets = this._resolveLifecycleTargets(registry)
+            .filter(likeSmartLifecycle)
+            .filter((target) => target.isAutoStartup)
+            .sort((a, b) => a.phase - b.phase);
+
+        for (const target of startTargets) {
+            if (!target.isRunning) {
+                target.start();
+            }
+        }
+
+        this.start();
+    }
+
+    start(): void {
+        this.isRunning = true;
+    }
+
+    stop(): void {
+        this.isRunning = false;
+    }
+
+    private _resolveLifecycleTargets(registry: Registry): Lifecycle[] {
+        const values: Lifecycle[] = [];
+
+        for (const key of Reflect.ownKeys(registry as object)) {
+            if (typeof key !== 'string' || key.startsWith('$') || !registry.hasValue(key)) {
+                continue;
+            }
+
+            const value = registry.getValue(key);
+
+            if (likeLifecycle(value)) {
+                values.push(value);
+            }
+        }
+
+        return values;
+    }
+}

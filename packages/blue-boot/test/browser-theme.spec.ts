@@ -1,10 +1,19 @@
 import { describe, test, expect } from 'vitest';
 import { GenericApplicationContext } from '@blue/context';
-import { configureBrowserTheme } from '../src/browser-theme';
+
+if (typeof (globalThis as any).DOMParser === 'undefined') {
+    (globalThis as any).DOMParser = class DOMParser {
+        parseFromString(): Document {
+            return null as unknown as Document;
+        }
+    };
+}
 
 describe('configureBrowserTheme', () => {
-    test('registers themeResolver strategy in context', () => {
+    test('registers themeResolver strategy in context', async () => {
         const context = new GenericApplicationContext('app');
+
+        const { configureBrowserTheme } = await import('../src/browser-theme');
 
         const resolver = configureBrowserTheme(context);
 
@@ -12,8 +21,10 @@ describe('configureBrowserTheme', () => {
         expect(resolver.cookieName).toBe('theme');
     });
 
-    test('applies custom theme name and cookie name', () => {
+    test('applies custom theme name and cookie name', async () => {
         const context = new GenericApplicationContext('app');
+
+        const { configureBrowserTheme } = await import('../src/browser-theme');
 
         const resolver = configureBrowserTheme(context, {
             themeName: 'night',

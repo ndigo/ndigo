@@ -3,7 +3,14 @@ import { Application } from '../src/application';
 
 describe('Application', () => {
     test('it should create instances', () => {
-        const app = new Application('hello-world', [() => void 0]);
-        expect(true).toBe(true);
+        const app = new Application([() => void 0]);
+        expect(app).toBeInstanceOf(Application);
+    });
+
+    test('it should run and refresh context', () => {
+        const app = new Application([() => void 0]);
+        const context = app.run();
+
+        expect(context.isActive).toBe(true);
     });
 });

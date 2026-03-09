@@ -43,7 +43,6 @@ export interface FactoryAware extends Aware {
  * This interface is implemented by objects that hold a number of value definitions, each uniquely identified by a {@link external:string|string} name.
  *
  * The point of this approach is that the `Factory` is a central registry of application components and centralizes configuration.
- *! THIS NEEDS TO BE UPDATED. IT'S MISSING LIFECYCLE HOOKS.
  * `Factory` implementations should support the standard lifecycle as much as possible. The full set of initialization methods and their standard order is:
  * 1. NameAware's `setName`
  * 2. FactoryAware's `setFactory`
@@ -55,9 +54,12 @@ export interface FactoryAware extends Aware {
  * 8. `init`
  * 9. `processAfterInitialization`
  *
- * On teardown, the follow lfecycle should apply:
+ * On refresh, `LifecycleProcessor#onRefresh` should start `SmartLifecycle` values in ascending phase order.
+ *
+ * On teardown, the full lifecycle should apply:
  * 1. `processBeforeDestruction`
  * 2. `destroy`
+ * 3. `LifecycleProcessor#onClose` (stop `SmartLifecycle` values in descending phase order)
  * @see {@link NameAware}
  * @see {@link FactoryAware}
  * @see {@link EnvironmentAware}

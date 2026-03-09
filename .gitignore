@@ -40,3 +40,5 @@ docs/
 !docs/reference/
 !docs/reference/**
 docs-ts/
+playwright-report/
+test-results/

@@ -2,4 +2,21 @@
 
 A draft implementation of a ToDoMVC application using BlueJS 3.
 
-Run `python -m SimpleHTTPServer 7800` and access `localhost:7800' in the browser
+## Development
+
+```bash
+pnpm --filter @blue/demo dev
+```
+
+## Unit Tests
+
+```bash
+pnpm --filter @blue/demo test
+```
+
+## Browser E2E Tests (Playwright)
+
+```bash
+pnpm --filter @blue/demo build
+pnpm --filter @blue/demo test:e2e
+```

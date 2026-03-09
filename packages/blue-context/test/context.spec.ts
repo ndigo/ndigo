@@ -6,6 +6,7 @@ import {
 } from '../src/context';
 import { StaticContentSource, StaticThemeResolver } from '@blue/content';
 import { MockEnvironment } from '../src/environment';
+import { EntryRegistryProcessor } from '@blue/factory';
 
 describe('GenericApplicationContext', () => {
     let context: GenericApplicationContext;
@@ -36,14 +37,91 @@ describe('GenericApplicationContext', () => {
 
         const parentContext = new GenericApplicationContext('parent');
 
-        Reflect.defineProperty(context, 'parent', {
-            value: parentContext,
-            configurable: true,
-            enumerable: false,
-            writable: false,
-        });
+        context.setParent(parentContext);
 
         expect(context.path).toBe('parent/test');
+    });
+
+    test('it should manage child contexts', () => {
+        const child = context.newChild('child') as GenericApplicationContext;
+
+        expect(context.hasChild(child)).toBe(true);
+        expect(child.parent).toBe(context);
+        expect(child.path).toBe('test/child');
+        expect(context.removeChild(child)).toBe(true);
+        expect(context.hasChild(child)).toBe(false);
+    });
+
+    test('it should refresh and initialize constructor entries', () => {
+        class TestValue {
+            initialized = false;
+
+            init(): void {
+                this.initialized = true;
+            }
+        }
+
+        context.setValue('testValue', TestValue);
+        context.refresh();
+
+        expect((context as any).isActive).toBe(true);
+        expect(context.getValue<TestValue>('testValue').initialized).toBe(true);
+    });
+
+    test('it should run registry processors during refresh', () => {
+        const processor: EntryRegistryProcessor = {
+            processEntryRegistry(registry): void {
+                registry.setValue('fromProcessor', 123);
+            },
+        };
+
+        context.addProcessor(processor);
+        context.refresh();
+
+        expect(context.getValue<number>('fromProcessor')).toBe(123);
+    });
+
+    test('it should bubble events up the context tree', () => {
+        const parent = new GenericApplicationContext('parent');
+        context.setParent(parent);
+
+        const parentListener = vi.fn();
+        const childListener = vi.fn();
+
+        parent.on('test:event', parentListener);
+        context.on('test:event', childListener);
+
+        context.bubble('test:event', { hello: 'world' });
+
+        expect(childListener).toHaveBeenCalledTimes(1);
+        expect(parentListener).toHaveBeenCalledTimes(1);
+    });
+
+    test('it should broadcast events down the context tree', () => {
+        const child = context.newChild('child') as GenericApplicationContext;
+        const parentListener = vi.fn();
+        const childListener = vi.fn();
+
+        context.on('broadcast:event', parentListener);
+        child.on('broadcast:event', childListener);
+
+        context.broadcast('broadcast:event', 1, 2, 3);
+
+        expect(parentListener).toHaveBeenCalledTimes(1);
+        expect(childListener).toHaveBeenCalledTimes(1);
+    });
+
+    test('it should close and cascade destruction to child contexts', () => {
+        const child = context.newChild('child') as GenericApplicationContext;
+        const destroyListener = vi.fn();
+
+        child.on('context:destroy', destroyListener);
+        context.refresh();
+        context.close();
+
+        expect(context.destroyed).toBe(true);
+        expect(child.destroyed).toBe(true);
+        expect(destroyListener).toHaveBeenCalledTimes(1);
     });
 
     test('it should accept an initial property set', () => {

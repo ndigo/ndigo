@@ -3,7 +3,6 @@
  */
 
 import {
-    ApplicationContext,
     ConfigurableApplicationContext,
     ConfigurableEnvironment,
     GenericApplicationContext,
@@ -16,7 +15,7 @@ import { IllegalStateError, JSONObject } from '@blue/core';
  * @param {string} name The name of the application
  */
 export class Application {
-    #environemnt: ConfigurableEnvironment;
+    #environment: ConfigurableEnvironment;
     #name: string;
     #properties: JSONObject;
     #sources: Set<Function>;
@@ -39,7 +38,7 @@ export class Application {
         try {
             const environment = this._prepareEnvironment(args);
             context = this._prepareContext(environment, args);
-        } catch (e) {
+        } catch {
             throw new IllegalStateError();
         }
 
@@ -47,7 +46,7 @@ export class Application {
     }
 
     setEnvironment(environment: ConfigurableEnvironment): void {
-        this.#environemnt = environment;
+        this.#environment = environment;
     }
 
     setName(name: string): void {
@@ -85,10 +84,11 @@ export class Application {
         }
     }
 
-    protected _prepareContext(environment: ConfigurableEnvironment, args: string[]): ApplicationContext {
+    protected _prepareContext(environment: ConfigurableEnvironment, args: string[]): ConfigurableApplicationContext {
         const context = new GenericApplicationContext();
         context.setEnvironment(environment);
-        return context as unknown as ApplicationContext;
+        context.refresh();
+        return context;
     }
 
     protected _prepareEnvironment(args: string[]): ConfigurableEnvironment {
@@ -98,6 +98,6 @@ export class Application {
     }
 
     private _getOrCreateEnvironment(): ConfigurableEnvironment {
-        return this.#environemnt ? this.#environemnt : new StandardEnvironment();
+        return this.#environment ? this.#environment : new StandardEnvironment();
     }
 }

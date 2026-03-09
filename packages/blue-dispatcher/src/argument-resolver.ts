@@ -112,3 +112,22 @@ export class QueryValueMethodArgumentResolver extends AbstractNamedValueMethodAr
         return MethodParameterType.QUERY.equals(parameter.type);
     }
 }
+
+/**
+ * @extends module:dispatcher.AbstractNamedValueMethodArgumentResolver
+ */
+export class PathValueMethodArgumentResolver extends AbstractNamedValueMethodArgumentResolver {
+    resolveArgument(parameter: MethodParameter, route: Route, mapping): any {
+        const resolveValue = defaultTo(parameter.defaultValue),
+            params = route.params,
+            value = resolveValue(params?.[parameter.name]);
+
+        isNil(value) && parameter.required && this.handleMissingValue(parameter.name);
+
+        return value;
+    }
+
+    supportsParameter(parameter: MethodParameter): boolean {
+        return MethodParameterType.PATH.equals(parameter.type);
+    }
+}

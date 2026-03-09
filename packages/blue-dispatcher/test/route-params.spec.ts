@@ -10,6 +10,7 @@ import {
     queryValue,
     matrixValue,
     cookieValue,
+    pathValue,
     getMethodParameter,
     hasMethodParameter,
     MethodParameterType,
@@ -44,6 +45,13 @@ describe('@routeParams - TC39 Parameter Injection Pattern', () => {
             const extractor = cookieValue('session');
             expect(extractor.type).toEqual(MethodParameterType.COOKIE);
             expect(extractor.name).toBe('session');
+            expect(extractor.required).toBe(false);
+        });
+
+        it('pathValue should create path parameter extractor', () => {
+            const extractor = pathValue('userId');
+            expect(extractor.type).toEqual(MethodParameterType.PATH);
+            expect(extractor.name).toBe('userId');
             expect(extractor.required).toBe(false);
         });
     });
@@ -85,15 +93,17 @@ describe('@routeParams - TC39 Parameter Injection Pattern', () => {
                     page: queryValue('page'),
                     session: cookieValue('SESSIONID'),
                     color: matrixValue('color'),
+                    userId: pathValue('userId'),
                 })
-                handleMixed(page: string, session: string, color: string) {}
+                handleMixed(page: string, session: string, color: string, userId: string) {}
             }
 
             const params = getMethodParameter(TestController.prototype, 'handleMixed');
-            expect(params).toHaveLength(3);
+            expect(params).toHaveLength(4);
             expect(params![0].type).toEqual(MethodParameterType.QUERY);
             expect(params![1].type).toEqual(MethodParameterType.COOKIE);
             expect(params![2].type).toEqual(MethodParameterType.MATRIX);
+            expect(params![3].type).toEqual(MethodParameterType.PATH);
         });
 
         it('should handle sparse parameters (not all decorated)', () => {
@@ -134,6 +144,8 @@ describe('@routeParams - TC39 Parameter Injection Pattern', () => {
                     })
                     handleQuery(page: string) {}
                 }
+
+                return TestController;
             }).toThrow('Parameter "wrongName" not found in method signature');
         });
     });

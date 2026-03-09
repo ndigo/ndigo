@@ -3,13 +3,13 @@
  */
 
 import '@tsmetadata/polyfill';
-import { complement, either } from '@blue/util/logic';
-import { isString, like } from '@blue/util/types';
+import { complement } from '@blue/util/logic';
+import { isString } from '@blue/util/types';
 import { Serializable, JSONObject, createNull, Equatable } from '@blue/core';
 import { getFunctionParamNames } from './_decorator-util';
 
 const { keys } = Object;
-const { defineProperty, getOwnPropertyDescriptor } = Reflect;
+const { defineProperty } = Reflect;
 
 /**
  * Factory function return type - describes a parameter extraction
@@ -45,6 +45,7 @@ function getMetadata(target: any): Record<string, any> {
 export class MethodParameterType implements Equatable, Serializable {
     static COOKIE: MethodParameterType;
     static MATRIX: MethodParameterType;
+    static PATH: MethodParameterType;
     static QUERY: MethodParameterType;
 
     static fromType(type: string): MethodParameterType | null {
@@ -92,6 +93,7 @@ export class MethodParameterType implements Equatable, Serializable {
 
 MethodParameterType.COOKIE = new MethodParameterType('cookie:value');
 MethodParameterType.MATRIX = new MethodParameterType('matrix:value');
+MethodParameterType.PATH = new MethodParameterType('path:value');
 MethodParameterType.QUERY = new MethodParameterType('query:value');
 
 /**
@@ -168,6 +170,26 @@ export function queryValue(
 ): ParameterExtractor {
     return {
         type: MethodParameterType.QUERY,
+        name,
+        required: options.required ?? false,
+        defaultValue: options.defaultValue ?? null,
+    };
+}
+
+/**
+ * Factory function: Create a path parameter extractor
+ *
+ * @example
+ * @routeParams({
+ *   userId: pathValue('userId')
+ * })
+ */
+export function pathValue(
+    name: string,
+    options: { required?: boolean; defaultValue?: string } = {}
+): ParameterExtractor {
+    return {
+        type: MethodParameterType.PATH,
         name,
         required: options.required ?? false,
         defaultValue: options.defaultValue ?? null,

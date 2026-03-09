@@ -2,7 +2,7 @@
  * @author Jeff Rose
  */
 
-import { JSONObject, Constructable, escalate } from '@blue/core';
+import { JSONObject, Constructable, direct, escalate } from '@blue/core';
 import {
     ContentSource,
     StaticContentSource,
@@ -23,12 +23,14 @@ import {
 } from './event-emitter';
 import {
     ConfigurableFactory,
+    DefaultLifecycleProcessor,
     Destroyable,
+    LifecycleProcessor,
     likeDestroyable,
+    likeEntryRegistryProcessor,
     likeFactory,
     likeRegistry,
     DefaultFactory,
-    RegistryProxyHandler,
     InitializationAwareProcessor,
     likeAwareAnd,
     Aware,
@@ -53,7 +55,9 @@ export interface ApplicationContext
         EnvironmentSource,
         ResourceLoader {
     readonly createdTimestamp: number;
+    readonly children: readonly ApplicationContext[];
     readonly id: number;
+    readonly isActive: boolean;
     readonly name: string;
     readonly path: string;
     readonly themeName: string;
@@ -62,7 +66,14 @@ export interface ApplicationContext
 
     destroyedTimestamp?: number;
 
+    broadcast(type: EventType, ...data: any[]): void;
+    bubble(type: EventType, ...data: any[]): void;
+    close(): void;
     getTheme(name?: string): Theme;
+    hasChild(node: ApplicationContext): boolean;
+    newChild(name?: string, data?: JSONObject): ApplicationContext;
+    refresh(): void;
+    removeChild(node: ApplicationContext): boolean;
 }
 
 export interface ApplicationContextAware extends Aware {
@@ -114,11 +125,9 @@ export interface ConfigurableApplicationContext extends ApplicationContext {
  * @param {module:context.ApplicationContext} context The ApplicationContext to be used by this object.
  */
 
-const { defineProperty } = Reflect;
+const { defineProperty, ownKeys } = Reflect;
 
 let uuid = 0;
-
-export const $ChildContext: unique symbol = Symbol('@@context/child');
 
 /**
  * @param {*} value The value to be tested
@@ -153,10 +162,13 @@ export const likeApplicationContextAware = likeAwareAnd(like({ setApplicationCon
 // TypeScript 5.7 has stricter checking for mixin implementations, so we don't explicitly
 // declare 'implements ConfigurableApplicationContext' here - the mixin chain provides it.
 export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLoader(DefaultFactory)) {
+    #children: GenericApplicationContext[];
     #contentSource: ContentSource;
     #customThemeResolver: boolean;
     #environment: Environment;
     #id: number;
+    #isActive: boolean;
+    #lifecycleProcessor: LifecycleProcessor;
     #name: string;
     #parent: ApplicationContext;
     #themeName: string;
@@ -177,8 +189,16 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
         return this.#contentSource;
     }
 
+    get children(): readonly ApplicationContext[] {
+        return this.#children;
+    }
+
     get id(): number {
         return this.#id;
+    }
+
+    get isActive(): boolean {
+        return this.#isActive;
     }
 
     get name(): string {
@@ -211,8 +231,11 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
         super();
 
         this.#contentSource = new StaticContentSource();
+        this.#children = [];
         this.#customThemeResolver = false;
         this.#environment = null;
+        this.#isActive = false;
+        this.#lifecycleProcessor = null;
         this.#name = name ?? null;
         this.#parent = null;
         this.#themeName = 'default';
@@ -253,33 +276,64 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
         }
     }
 
-    /*
-    broadcast( type: EventType, ...data: any[] ): void {
-        direct<ApplicationContext>( this, ( parentContext ) => parentContext.emit( type, ...data ), true );
+    broadcast(type: EventType, ...data: any[]): void {
+        direct<any>(
+            this as any,
+            (targetContext: ApplicationContext) => {
+                targetContext.emit(type, ...data);
+            },
+            true
+        );
     }
-    */
 
     bubble(type: EventType, ...data: any[]): void {
         escalate<ApplicationContext>(this, (parentContext) => parentContext.emit(type, ...data), true);
     }
 
-    destroy(): void {
-        if (!this.destroyed) {
-            defineProperty(this, 'destroyed', {
-                value: true,
-                configurable: true,
-                enumerable: false,
-                writable: false,
-            });
-            defineProperty(this, 'destroyedTimestamp', {
-                value: Date.now(),
-                configurable: true,
-                enumerable: false,
-                writable: false,
-            });
-
-            // Destroy things
+    close(): void {
+        if (this.destroyed) {
+            return;
         }
+
+        this.emit('context:close', this);
+
+        for (const child of [...this.#children]) {
+            child.close();
+        }
+
+        this.#lifecycleProcessor?.onClose(this);
+        this._destroyValues();
+
+        if (this.parent instanceof GenericApplicationContext) {
+            this.parent.removeChild(this);
+        }
+
+        defineProperty(this, 'destroyed', {
+            value: true,
+            configurable: true,
+            enumerable: false,
+            writable: false,
+        });
+        defineProperty(this, 'destroyedTimestamp', {
+            value: Date.now(),
+            configurable: true,
+            enumerable: false,
+            writable: false,
+        });
+
+        this.#isActive = false;
+        this.emit('context:destroy', this);
+
+        for (const eventType of this.eventTypes()) {
+            const listeners = this.listeners(eventType);
+            for (const listener of listeners) {
+                this.off(eventType, listener);
+            }
+        }
+    }
+
+    destroy(): void {
+        this.close();
     }
 
     getContent(key: string, language: string): string {
@@ -298,6 +352,49 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
         }
 
         return this.#themeResolver.getTheme(name || this.#themeName);
+    }
+
+    hasChild(node: ApplicationContext): boolean {
+        return this.#children.includes(node as GenericApplicationContext);
+    }
+
+    newChild(name?: string, data?: JSONObject): ApplicationContext {
+        const child = new GenericApplicationContext(name, data);
+        child.setParent(this);
+        return child;
+    }
+
+    refresh(): void {
+        if (this.#isActive) {
+            return;
+        }
+
+        this.emit('context:preparing', this);
+
+        this._prepareFactory();
+        this._postProcessFactory();
+        this._invokeRegistryProcessors();
+        this._finishFactoryInitialization();
+        this._onRefresh();
+
+        if (!this.#lifecycleProcessor) {
+            this.#lifecycleProcessor = new DefaultLifecycleProcessor();
+        }
+
+        this.#lifecycleProcessor.onRefresh(this);
+        this.#isActive = true;
+        this.emit('context:refresh', this);
+    }
+
+    removeChild(node: ApplicationContext): boolean {
+        const index = this.#children.indexOf(node as GenericApplicationContext);
+
+        if (index === -1) {
+            return false;
+        }
+
+        this.#children.splice(index, 1);
+        return true;
     }
 
     setContentSource(contentSource: ContentSource): void {
@@ -321,7 +418,22 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
     }
 
     setParent(parent: ApplicationContext): void {
+        if (this.#parent instanceof GenericApplicationContext) {
+            this.#parent.removeChild(this);
+        }
+
         this.#parent = parent;
+
+        if (parent instanceof GenericApplicationContext && !parent.hasChild(this)) {
+            parent.#children.push(this);
+        }
+
+        defineProperty(this, 'root', {
+            value: this._resolveRoot(),
+            configurable: true,
+            enumerable: false,
+            writable: false,
+        });
     }
 
     setThemeName(themeName: string): void {
@@ -348,6 +460,75 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
             this.#themeName
         );
     }
+
+    protected _destroyValues(): void {
+        const constructorKeys: string[] = [];
+
+        for (const key of ownKeys(this)) {
+            if (typeof key !== 'string') {
+                continue;
+            }
+
+            if (key.startsWith('$')) {
+                constructorKeys.push(key.slice(1));
+            }
+        }
+
+        for (const key of constructorKeys) {
+            key && this.destroyValue(key);
+        }
+    }
+
+    protected _finishFactoryInitialization(): void {
+        for (const key of ownKeys(this)) {
+            if (typeof key !== 'string' || !key.startsWith('$')) {
+                continue;
+            }
+
+            const name = key.slice(1);
+
+            if (name && this.hasValue(name)) {
+                this.getValue(name);
+            }
+        }
+    }
+
+    protected _onRefresh(): void {}
+
+    protected _postProcessFactory(): void {}
+
+    protected _prepareFactory(): void {
+        const hasAwareProcessor = this.processors.some(
+            (processor) => processor instanceof ApplicationContextAwareProcessor
+        );
+
+        if (!hasAwareProcessor) {
+            this.addProcessor(new ApplicationContextAwareProcessor(this));
+        }
+    }
+
+    protected _invokeRegistryProcessors(): void {
+        const { processors } = this;
+        const length = processors.length;
+
+        for (let index = 0; index < length; index++) {
+            const processor = processors[index];
+
+            if (likeEntryRegistryProcessor(processor)) {
+                processor.processEntryRegistry(this);
+            }
+        }
+    }
+
+    private _resolveRoot(): ApplicationContext {
+        let root: ApplicationContext = this;
+
+        while (root.parent) {
+            root = root.parent;
+        }
+
+        return root;
+    }
 }
 
 /**
@@ -359,7 +540,34 @@ export class ProxiedGenericApplicationContext extends GenericApplicationContext 
 
     constructor(name: string, data?: JSONObject) {
         super(name, data);
-        return new Proxy(this, new RegistryProxyHandler<this>());
+
+        const target = this;
+
+        return new Proxy(this, {
+            deleteProperty(_t, key: PropertyKey): boolean {
+                try {
+                    target.destroyValue(key as string);
+                    return true;
+                } catch {
+                    return false;
+                }
+            },
+            get(_t, key: PropertyKey): any {
+                const value = target.getValue(key as string);
+                return typeof value === 'function' ? value.bind(target) : value;
+            },
+            has(_t, key: PropertyKey): boolean {
+                return target.hasValue(key as string);
+            },
+            set(_t, key: PropertyKey, value: any): boolean {
+                try {
+                    target.setValue(key as string, value);
+                    return true;
+                } catch {
+                    return false;
+                }
+            },
+        });
     }
 }
 

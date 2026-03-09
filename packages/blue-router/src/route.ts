@@ -13,6 +13,7 @@ export interface Route extends ArrayLike<RouteSegment>, Serializable {
     data: JSONObject;
     dataString?: string;
     id: number;
+    params: JSONObject;
     path: string;
     raw: string;
 }

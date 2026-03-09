@@ -2,7 +2,7 @@ import { RouteSegment, Route } from './route';
 import { JSONValue, Serializable, JSONObject, createNull } from '@blue/core';
 import { pipe } from '@blue/util/function';
 import { filter, join, map, reduce } from '@blue/util/list';
-import { both, complement, isEmpty, isNotEmpty } from '@blue/util/logic';
+import { both, complement, isNotEmpty } from '@blue/util/logic';
 import { keys } from '@blue/util/object';
 import { max } from '@blue/util/relation';
 import { replace, split, trim } from '@blue/util/string';
@@ -20,6 +20,9 @@ const questionMark = '?',
     removeLeadingSlash = replace(leadingSlash, ''),
     splitOnQuestionMark = split(questionMark),
     splitOnSlash = split(slash),
+    startsWithColon = (value: string): boolean => value.startsWith(':'),
+    startsWithBrace = (value: string): boolean => value.startsWith('{'),
+    endsWithBrace = (value: string): boolean => value.endsWith('}'),
     splitPathIntoSegments = pipe(splitOnSlash, filter(isNotNilAndNotEmpty)) as (value: string) => string[],
     splitRouteIntoParts = pipe(trim, removeLeadingSlash, splitOnQuestionMark);
 
@@ -127,6 +130,7 @@ export class PathRoute implements Route, Serializable {
     readonly data: JSONObject;
     readonly dataString?: string;
     readonly id: number;
+    params: JSONObject;
     readonly path: string;
     readonly raw: string;
 
@@ -159,6 +163,13 @@ export class PathRoute implements Route, Serializable {
             configurable: true,
             enumerable: false,
             writable: false,
+        });
+
+        defineProperty(this, 'params', {
+            value: null,
+            configurable: true,
+            enumerable: false,
+            writable: true,
         });
 
         const parts = splitRouteIntoParts(route),
@@ -221,6 +232,7 @@ export class PathRoute implements Route, Serializable {
 
         json.id = this.id;
         json.data = this.data;
+        json.params = this.params;
         json.length = length;
 
         for (; index < length; index++) {
@@ -244,5 +256,52 @@ export class PathRoute implements Route, Serializable {
         output = `${slash}${segments.join(slash)}`;
 
         return queryString ? `${output}${questionMark}${queryString}` : output;
+    }
+
+    matches(pattern: string): boolean {
+        return isNotNil(this.resolveParams(pattern));
+    }
+
+    resolveParams(pattern: string): JSONObject | null {
+        const patternParts = splitRouteIntoParts(pattern),
+            patternSegments = splitPathIntoSegments(patternParts[0]),
+            params: JSONObject = createNull(),
+            length = this.length;
+
+        if (patternSegments.length !== length) {
+            return null;
+        }
+
+        for (let index = 0; index < length; index++) {
+            const routeSegment = this[index],
+                patternSegment = patternSegments[index],
+                paramName = this._resolveParamName(patternSegment);
+
+            if (!paramName) {
+                if (patternSegment !== routeSegment.name) {
+                    return null;
+                }
+
+                continue;
+            }
+
+            params[paramName] = routeSegment.name;
+        }
+
+        this.params = params;
+
+        return params;
+    }
+
+    private _resolveParamName(patternSegment: string): string | null {
+        if (startsWithColon(patternSegment) && patternSegment.length > 1) {
+            return patternSegment.slice(1);
+        }
+
+        if (startsWithBrace(patternSegment) && endsWithBrace(patternSegment) && patternSegment.length > 2) {
+            return patternSegment.slice(1, -1);
+        }
+
+        return null;
     }
 }

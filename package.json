@@ -13,7 +13,7 @@
   "scripts": {
     "build": "nx run-many -t build:lib",
     "test": "nx run-many -t test",
-    "test:e2e": "nx run blue-demo:e2e",
+    "test:e2e": "nx run @blue/demo:test:e2e",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",

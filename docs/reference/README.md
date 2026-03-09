@@ -6,12 +6,14 @@ This directory contains reference documentation for dependencies, configurations
 
 - [2026-01-23_DEPENDENCIES_REFERENCE.md](./2026-01-23_DEPENDENCIES_REFERENCE.md) - Complete dependency version reference
 - [2026-03-08_ARCHITECTURE_ROADMAP.md](./2026-03-08_ARCHITECTURE_ROADMAP.md) - Architecture roadmap, platform vision, and package maturity
+- [2026-03-09_ROUTER_MIDDLEWARE_AND_ROUTE_PARAMS.md](./2026-03-09_ROUTER_MIDDLEWARE_AND_ROUTE_PARAMS.md) - Router middleware API and named route-parameter behavior
 
 ## Naming Convention
 
 Reference files follow the format: `YYYY-MM-DD_DESCRIPTION.md`
 
 Where:
+
 - `YYYY-MM-DD` - Date the reference was created or last updated (ISO 8601 format)
 - `_` - Underscore separator (consistent with UPPER_SNAKE_CASE constants)
 - `DESCRIPTION` - Brief description in ALL_CAPS with underscores for multi-word phrases
@@ -19,6 +21,7 @@ Where:
 ## Purpose
 
 Reference documents provide:
+
 - Technical specifications
 - Dependency version tables
 - Configuration references

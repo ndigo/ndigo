@@ -117,28 +117,28 @@ This needs explicit boundary decisions before deepening service abstractions.
 
 ## 6) Package Maturity Snapshot (March 2026)
 
-| Layer              | Package                   | Maturity             | Notes                                                                                                                                      |
-| :----------------- | :------------------------ | :------------------- | :----------------------------------------------------------------------------------------------------------------------------------------- |
-| Integration        | `@blue/util`              | ✅ Mature            | Stable integration layer for utility dependencies                                                                                          |
-| Integration        | `@blue/parser`            | ✅ Mature            | Stable parser combinator integration                                                                                                       |
-| Integration        | `@blue/model`             | ✅ Mature            | Stable object model integration                                                                                                            |
-| Foundation         | `@blue/core`              | ✅ Mature            | Strong primitives/transducer foundation                                                                                                    |
-| Infrastructure     | `@blue/factory`           | 🟡 Advancing         | Scope implementations are now integrated; evaluate optional split into `AbstractFactoryBase` + `AbstractScopedFactory` after stabilization |
-| Infrastructure     | `@blue/content`           | 🔴 ~10%              | Contracts mostly only                                                                                                                      |
-| Infrastructure     | `@blue/validate`          | 🟡 Functional        | Validation surface exists; redesign direction documented in `docs/plans/2026-03-08_VALIDATE_DESIGN.md`                                     |
-| Context            | `@blue/context`           | 🟡 ~65%              | Strong event/config patterns, content source incomplete                                                                                    |
-| Web Infra          | `@blue/http`              | ✅ Mature            | Interceptor + transform pipeline in place                                                                                                  |
-| Web Infra          | `@blue/router`            | 🟡 ~50%              | Route primitives/hash routing usable, transactions incomplete                                                                              |
-| Web Infra          | `@blue/telemetry`         | ✅ Recently built    | OTel alignment and severity mapping complete                                                                                               |
-| Request Processing | `@blue/dispatcher`        | 🟡 ~60%              | Core front-controller flow works                                                                                                           |
-| Request Processing | `@blue/view`              | 🟡 ~40%              | Contracts/resolvers in place, rendering implementation light                                                                               |
-| Request Processing | `@blue/view-webcomponent` | 🟡 ~25%              | Decorators solid, runtime rendering/export surface incomplete                                                                              |
-| Application        | `@blue/service`           | 🟡 ~30%              | Core concepts present, implementation incomplete                                                                                           |
-| Application        | `@blue/domain`            | 🔴 ~15%              | Minimal adoption and test coverage                                                                                                         |
-| Application        | `@blue/platform-web`      | 🟡 ~35%              | Useful browser pieces, several stubs                                                                                                       |
-| Application        | `@blue/print`             | ✅ Narrow scope      | Focused package, mostly complete                                                                                                           |
-| Bootstrap          | `@blue/boot`              | 🔴 ~20%              | Boot scaffolding present, orchestration incomplete                                                                                         |
-| Demo               | `blue-demo`               | 🟡 Working core flow | Dispatch integration works, feature completeness pending                                                                                   |
+| Layer              | Package                   | Maturity             | Notes                                                                                                          |
+| :----------------- | :------------------------ | :------------------- | :------------------------------------------------------------------------------------------------------------- |
+| Integration        | `@blue/util`              | ✅ Mature            | Stable integration layer for utility dependencies                                                              |
+| Integration        | `@blue/parser`            | ✅ Mature            | Stable parser combinator integration                                                                           |
+| Integration        | `@blue/model`             | ✅ Mature            | Stable object model integration                                                                                |
+| Foundation         | `@blue/core`              | ✅ Mature            | Strong primitives/transducer foundation                                                                        |
+| Infrastructure     | `@blue/factory`           | 🟡 Advancing         | Scope implementations are integrated; lifecycle interfaces and processor orchestration are now in place        |
+| Infrastructure     | `@blue/content`           | 🟡 ~45%              | Static content source and static theme resolver implementations are in place with test coverage                |
+| Infrastructure     | `@blue/validate`          | 🟡 Advancing         | Validation redesign complete with registries, group-aware decorators, and backend adapters (`native` + `zod`)  |
+| Context            | `@blue/context`           | 🟡 ~85%              | Content/theme integration is complete; refresh/close lifecycle and tree event propagation are implemented      |
+| Web Infra          | `@blue/http`              | ✅ Mature            | Interceptor + transform pipeline in place                                                                      |
+| Web Infra          | `@blue/router`            | 🟡 ~50%              | Route primitives/hash routing usable, transactions incomplete                                                  |
+| Web Infra          | `@blue/telemetry`         | ✅ Recently built    | OTel alignment and severity mapping complete                                                                   |
+| Request Processing | `@blue/dispatcher`        | 🟡 ~65%              | Core front-controller flow works; context-aware theme resolution strategy is integrated                        |
+| Request Processing | `@blue/view`              | 🟡 ~40%              | Contracts/resolvers in place, rendering implementation light                                                   |
+| Request Processing | `@blue/view-webcomponent` | 🟡 ~25%              | Decorators solid, runtime rendering/export surface incomplete                                                  |
+| Application        | `@blue/service`           | 🟡 ~30%              | Core concepts present, implementation incomplete                                                               |
+| Application        | `@blue/domain`            | 🔴 ~15%              | Minimal adoption and test coverage                                                                             |
+| Application        | `@blue/platform-web`      | 🟡 ~45%              | Cookie theme resolver wiring is improved with context-aware setup helpers                                      |
+| Application        | `@blue/print`             | ✅ Narrow scope      | Focused package, mostly complete                                                                               |
+| Bootstrap          | `@blue/boot`              | 🟡 ~40%              | Browser theme bootstrap support and context refresh wiring are in place; full orchestration remains incomplete |
+| Demo               | `blue-demo`               | 🟡 Working core flow | Dispatch integration works, feature completeness pending                                                       |
 
 ## 7) Open Architectural Questions
 
@@ -153,6 +153,6 @@ This needs explicit boundary decisions before deepening service abstractions.
 
 1. **Stabilize current runtime path**: dispatcher/view-webcomponent/platform-web integration in demo
 2. **Clarify boundaries**: service-vs-http and domain-vs-model decisions
-3. **Complete missing infrastructure**: factory scopes, content sourcing, boot orchestration
+3. **Complete missing infrastructure**: lifecycle orchestration, router completion, and boot auto-configuration
 4. **Add platform expansion**: begin `@blue/platform-node` exploration
 5. **Then grow ecosystem**: auth/orm implementation on stable core boundaries

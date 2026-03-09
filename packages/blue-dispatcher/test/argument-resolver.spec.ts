@@ -4,10 +4,14 @@ import argumemtResolverContext from './assets/argument-resolver-context';
 
 describe('ArgumentResolver', () => {
     const helloThereRequest = {
+        id: 1,
+        length: 2,
         path: '/hello/there',
+        params: { id: '42' },
+        raw: '/hello/there',
         data: { name: 'John' },
-        0: { name: 'hello' },
-        1: { name: 'there', data: { name: 'Jim' } },
+        0: { name: 'hello', raw: 'hello', data: null },
+        1: { name: 'there', raw: 'there;name=Jim', data: { name: 'Jim' } },
     };
 
     describe('instance', () => {

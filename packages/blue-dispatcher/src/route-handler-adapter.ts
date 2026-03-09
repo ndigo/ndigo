@@ -15,6 +15,7 @@ import { getRouteMapping, hasRouteMapping } from './route-mapping';
 import {
     HandlerMethodArgumentResolver,
     MatrixValueMethodArgumentResolver,
+    PathValueMethodArgumentResolver,
     QueryValueMethodArgumentResolver,
 } from './argument-resolver';
 
@@ -118,7 +119,11 @@ export class MetadataHandlerAdapter extends AbstractHandlerMethodAdapter impleme
     }
 
     get defaultArgumentResolvers(): HandlerMethodArgumentResolver[] {
-        return [new MatrixValueMethodArgumentResolver(), new QueryValueMethodArgumentResolver()];
+        return [
+            new PathValueMethodArgumentResolver(),
+            new MatrixValueMethodArgumentResolver(),
+            new QueryValueMethodArgumentResolver(),
+        ];
     }
 
     get [$aware](): boolean {

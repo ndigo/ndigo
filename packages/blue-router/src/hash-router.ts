@@ -5,7 +5,12 @@ import { PathRoute } from './path-route';
 import { Router, RouterCallback } from './router';
 import { RingBuffer } from '@blue/core';
 import RouterExecutionChain from './router-execution-chain';
-import { RouterInterceptor, RouterInterceptorRegistry } from './router-interceptor';
+import {
+    MappedRouterInterceptor,
+    RouterInterceptor,
+    RouterInterceptorRegistry,
+    RouterMiddleware,
+} from './router-interceptor';
 
 //type RouteSource = 'private' | 'public' | 'external';
 //type RouteResult = 'aborted' | 'completed';
@@ -113,6 +118,29 @@ export default class HashRouter implements Router, RouterInterceptorRegistry {
         this.#interceptors.push(interceptor);
     }
 
+    use(
+        interceptorOrPatterns: RouterInterceptor | RouterMiddleware | string | string[],
+        interceptor?: RouterInterceptor | RouterMiddleware,
+        excludePatterns: string[] = []
+    ): void {
+        if (typeof interceptorOrPatterns === 'string' || Array.isArray(interceptorOrPatterns)) {
+            const includePatterns = Array.isArray(interceptorOrPatterns)
+                ? interceptorOrPatterns
+                : [interceptorOrPatterns];
+
+            if (!interceptor) {
+                throw new TypeError('interceptor is required for mapped middleware');
+            }
+
+            this.addInterceptor(
+                new MappedRouterInterceptor(this._toRouterInterceptor(interceptor), includePatterns, excludePatterns)
+            );
+            return;
+        }
+
+        this.addInterceptor(this._toRouterInterceptor(interceptorOrPatterns));
+    }
+
     destroy() {
         if (!this.destroyed) {
             defineProperty(this, 'destroyed', {
@@ -147,7 +175,7 @@ export default class HashRouter implements Router, RouterInterceptorRegistry {
 
     protected _setRoute(newRoute: string): boolean {
         const route = new PathRoute(newRoute),
-            chain = new RouterExecutionChain(this.#interceptors);
+            chain = new RouterExecutionChain(this._resolveInterceptors(route));
         let isCompleted = false;
 
         try {
@@ -164,8 +192,35 @@ export default class HashRouter implements Router, RouterInterceptorRegistry {
             chain.applyPostRoute(route);
 
             isCompleted = true;
-        } catch (e) {}
+        } catch {}
 
         return isCompleted;
+    }
+
+    private _resolveInterceptors(route: PathRoute): RouterInterceptor[] {
+        return this.#interceptors.filter((interceptor) => {
+            if (interceptor instanceof MappedRouterInterceptor) {
+                const matches = interceptor.matchesRoute(route);
+                if (matches) {
+                    interceptor.resolveRouteParams(route);
+                }
+                return matches;
+            }
+
+            return true;
+        });
+    }
+
+    private _toRouterInterceptor(interceptor: RouterInterceptor | RouterMiddleware): RouterInterceptor {
+        if (typeof interceptor === 'function') {
+            return {
+                preRoute(route) {
+                    const result = interceptor(route);
+                    return result === false ? false : true;
+                },
+            };
+        }
+
+        return interceptor;
     }
 }

@@ -17,7 +17,7 @@ describe('HashRouter', () => {
     });
 
     test('it should create a HashRouter instance', () => {
-        const onComplete = () => {};
+        const onComplete = (_route: Route) => {};
         router = new HashRouter(onComplete);
 
         expect(router).toBeDefined();
@@ -26,7 +26,7 @@ describe('HashRouter', () => {
     });
 
     test('it should have initial route', () => {
-        const onComplete = () => {};
+        const onComplete = (_route: Route) => {};
         router = new HashRouter(onComplete);
 
         // Router should be initialized with current location hash or '/'
@@ -34,7 +34,7 @@ describe('HashRouter', () => {
     });
 
     test('it should cleanup on destroy', () => {
-        const onComplete = () => {};
+        const onComplete = (_route: Route) => {};
         router = new HashRouter(onComplete);
 
         expect(router.destroyed).toBe(false);
@@ -49,7 +49,7 @@ describe('HashRouter', () => {
     });
 
     test('it should have a history', () => {
-        const onComplete = () => {};
+        const onComplete = (_route: Route) => {};
         router = new HashRouter(onComplete);
 
         expect(router.history).toBeDefined();
@@ -57,7 +57,7 @@ describe('HashRouter', () => {
     });
 
     test('it should execute global middleware', () => {
-        const onComplete = () => {};
+        const onComplete = (_route: Route) => {};
         router = new HashRouter(onComplete);
 
         const preRoute = vi.fn(() => true);
@@ -75,7 +75,7 @@ describe('HashRouter', () => {
     });
 
     test('it should execute mapped middleware only for matching routes', () => {
-        const onComplete = () => {};
+        const onComplete = (_route: Route) => {};
         router = new HashRouter(onComplete);
 
         const preRoute = vi.fn(() => true);
@@ -91,7 +91,7 @@ describe('HashRouter', () => {
     });
 
     test('it should bind named route params during mapped middleware', () => {
-        const onComplete = () => {};
+        const onComplete = (_route: Route) => {};
         router = new HashRouter(onComplete);
 
         let capturedParams: Record<string, string> | null = null;
@@ -111,7 +111,7 @@ describe('HashRouter', () => {
     });
 
     test('it should support function middleware shorthand', () => {
-        const onComplete = () => {};
+        const onComplete = (_route: Route) => {};
         router = new HashRouter(onComplete);
 
         const middleware = vi.fn((route: Route) => true);
@@ -123,5 +123,62 @@ describe('HashRouter', () => {
 
         expect(middleware).toHaveBeenCalledTimes(1);
         expect(firstCall?.[0]?.params?.teamId).toBe('77');
+    });
+
+    test('it should pass a Route object to callback', () => {
+        const onComplete = vi.fn((_route: Route) => null);
+        router = new HashRouter(onComplete);
+
+        router.setRoute('/users/42');
+
+        const route = onComplete.mock.calls[0]?.[0] as Route;
+
+        expect(onComplete).toHaveBeenCalledTimes(1);
+        expect(route).toBeTruthy();
+        expect(route.path).toBe('users/42');
+    });
+
+    test('it should rollback when preRoute returns false', () => {
+        const onComplete = vi.fn((_route: Route) => null);
+        router = new HashRouter(onComplete);
+        router.setRoute('/original');
+
+        const interceptor: RouterInterceptor = {
+            preRoute: () => false,
+        };
+
+        router.use(interceptor);
+        router.setRoute('/blocked');
+
+        expect(router.route).toBe('/original');
+        expect(onComplete).toHaveBeenCalledTimes(1);
+    });
+
+    test('it should process private routes', () => {
+        const onComplete = vi.fn((_route: Route) => null);
+        router = new HashRouter(onComplete);
+        const initialHash = location.hash;
+
+        router.setRoute('/private-route', false);
+
+        expect(router.route).toBe('/private-route');
+        expect(location.hash).toBe(initialHash);
+        expect(onComplete).toHaveBeenCalledTimes(1);
+    });
+
+    test('it should rollback private route rejection to last public route', () => {
+        const onComplete = vi.fn((_route: Route) => null);
+        router = new HashRouter(onComplete);
+
+        router.setRoute('/public-1');
+        const hashAfterPublic = location.hash;
+
+        router.setRoute('/private-1', false);
+
+        router.use({ preRoute: () => false });
+        router.setRoute('/private-2', false);
+
+        expect(router.route).toBe('/private-1');
+        expect(location.hash).toBe(hashAfterPublic);
     });
 });

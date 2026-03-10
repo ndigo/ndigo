@@ -19,6 +19,7 @@ export interface Environment extends PropertyResolver {
     defaultProfiles: string[];
 
     addActiveProfile(profile: string): void;
+    addDefaultProfile(profile: string): void;
 }
 
 export interface EnvironmentAware extends Aware {
@@ -118,6 +119,10 @@ export abstract class AbstractEnvironment implements ConfigurableEnvironment {
         this.#activeProfiles.add(profile);
     }
 
+    addDefaultProfile(profile: string): void {
+        this.#defaultProfiles.add(profile);
+    }
+
     hasProperty(key: string): boolean {
         return this.#propertyResolver.hasProperty(key);
     }
@@ -138,7 +143,7 @@ export abstract class AbstractEnvironment implements ConfigurableEnvironment {
         environment.activeProfiles.length &&
             environment.activeProfiles.forEach((profile) => this.addActiveProfile(profile));
         environment.defaultProfiles.length &&
-            environment.defaultProfiles.forEach((profile) => this.defaultProfiles.push(profile));
+            environment.defaultProfiles.forEach((profile) => this.addDefaultProfile(profile));
     }
 
     protected _isActiveProfile(profile: string): boolean {
@@ -177,7 +182,7 @@ export const AsEnvironmentAware = <T extends Constructable>(superclass: T): Cons
  */
 export const likeEnvironment = both(
     likePropertyResolver,
-    like({ activeProfiles: Array, defaultProfiles: Array, addActiveProfile: Function })
+    like({ activeProfiles: Array, defaultProfiles: Array, addActiveProfile: Function, addDefaultProfile: Function })
 ) as (value) => value is Environment;
 
 /**

@@ -132,8 +132,7 @@ export class ContentNegotiationViewResolver implements ViewResolver {
     }
 
     getMediaTypes(request: any): MediaType[] {
-        this.contentNegotiationManager;
-        return null;
+        return this.contentNegotiationManager.resolveMediaTypes(request);
     }
 
     resolveViewName(name: string, language?: any): Promise<View> {

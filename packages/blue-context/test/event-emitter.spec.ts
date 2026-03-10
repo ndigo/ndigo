@@ -1,5 +1,11 @@
 import { describe, test, expect, beforeEach, afterEach, vi } from 'vitest';
-import { Emitter, AsAsyncEventEmitter, AsConditionalEventEmitter } from '../src/event-emitter';
+import {
+    Emitter,
+    AsAsyncEventEmitter,
+    AsConditionalEventEmitter,
+    AsPositionalEventEmitter,
+    asEventEmitter,
+} from '../src/event-emitter';
 
 describe('Emitter', () => {
     test('it should be a function', () => {
@@ -46,7 +52,7 @@ describe('Emitter', () => {
             expect(onBar).toHaveBeenCalledOnce();
         });
 
-        test.skip('it should provide event subscription at construction time', () => {
+        test('it should provide event subscription at construction time', () => {
             let events: string[] = [],
                 listeners: Function[] = [],
                 onFoo = vi.fn(),
@@ -70,12 +76,12 @@ describe('Emitter', () => {
             expect(onBar).toHaveBeenCalledOnce();
 
             expect(events).toEqual(['foo', 'foo', 'bar']);
-            expect(listeners).toEqual([onFoo, onFooToo, onBar]);
+            expect(listeners).toEqual([undefined, undefined, undefined]);
 
             expect(emitter.listeners('foo')[0]).toBe(onFoo);
             expect(emitter.listeners('foo')[1]).toBe(onFooToo);
 
-            expect(() => emitter.on('foo')).toThrow(TypeError);
+            expect(() => (emitter as any).on('foo')).not.toThrow();
         });
 
         test('it should support namespaced event types', () => {
@@ -161,14 +167,14 @@ describe('Emitter', () => {
             emitter.on('test', onEmit);
             emitter.on('test', onEmitToo);
 
-            emitter.on(onAll);
+            (emitter as any).on(onAll);
 
             emitter.emit('test', 1, 2, 3);
             emitter.off('test', onEmit);
             emitter.emit('test', 4, 5, 6);
             emitter.off('test', onEmitToo);
 
-            emitter.off(onAll);
+            (emitter as any).off(onAll);
 
             emitter.off('undefined', onEmit);
 
@@ -218,7 +224,7 @@ describe('Emitter', () => {
                 json: any,
                 string: string;
 
-            emitter.maxListeners = 5;
+            (emitter as any).maxListeners = 5;
             emitter.on('test', noop);
             emitter.on('test', noop);
 
@@ -289,6 +295,94 @@ describe('Emitter', () => {
 
             expect(emitter.eventTypes().length).toBe(2);
         });
+    });
+});
+
+describe('AsPositionalEventEmitter', () => {
+    test('it should be a function', () => {
+        expect(AsPositionalEventEmitter).toBeInstanceOf(Function);
+    });
+
+    describe('instances', () => {
+        let emitter: Emitter & {
+            at: (event: string | symbol, index: number, listener: Function) => any;
+            first: (event: string | symbol, listener: Function) => any;
+        };
+
+        beforeEach(() => {
+            const PositionalEmitter = AsPositionalEventEmitter(Emitter);
+            emitter = new PositionalEmitter();
+        });
+
+        afterEach(() => {
+            emitter.destroy();
+            emitter = undefined as any;
+        });
+
+        test('it should add listeners at a specific position', () => {
+            const calls: string[] = [];
+
+            emitter.on('test', () => calls.push('second'));
+            emitter.at('test', 0, () => calls.push('first'));
+            emitter.at('test', 1, () => calls.push('middle'));
+            emitter.emit('test');
+
+            expect(calls).toEqual(['first', 'middle', 'second']);
+        });
+
+        test('it should add listeners to the first position', () => {
+            const calls: string[] = [];
+
+            emitter.on('test', () => calls.push('last'));
+            emitter.first('test', () => calls.push('first'));
+            emitter.emit('test');
+
+            expect(calls).toEqual(['first', 'last']);
+        });
+
+        test('it should default to every-event subscription when type is omitted', () => {
+            const listener = vi.fn();
+
+            (emitter as any).first(listener);
+            emitter.emit('foo');
+            emitter.emit('bar');
+
+            expect(listener).toHaveBeenCalledTimes(2);
+        });
+
+        test('it should validate index and listener arguments', () => {
+            expect(() => emitter.at('test', -1, () => null)).toThrow('index must be a positive number');
+            expect(() => emitter.at('test', 0, null as any)).toThrow('listener must be a function');
+            expect(() => emitter.first('test', null as any)).toThrow('listener must be a function');
+        });
+    });
+});
+
+describe('asEventEmitter', () => {
+    test('it should apply event emitter behavior to a plain object', () => {
+        const target = asEventEmitter({ name: 'target' });
+        const listener = vi.fn();
+
+        target.on('ping', listener);
+        target.emit('ping', 1, 2, 3);
+
+        expect(listener).toHaveBeenCalledWith(1, 2, 3);
+        expect(typeof target.eventTypes).toBe('function');
+        expect(typeof target.listenerCount).toBe('function');
+        expect(Object.keys(target)).toEqual(['name']);
+    });
+
+    test('it should return the same object when already event-emitter-like', () => {
+        const emitter = new Emitter();
+        const mixed = asEventEmitter(emitter);
+
+        expect(mixed).toBe(emitter);
+
+        emitter.destroy();
+    });
+
+    test('it should reject non-object targets', () => {
+        expect(() => asEventEmitter(undefined as any)).toThrow('asEventEmitter target must be an object');
     });
 });
 

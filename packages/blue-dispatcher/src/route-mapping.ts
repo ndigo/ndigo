@@ -78,7 +78,6 @@ export function routeMapping(route: string | RouteMappingConfiguration = default
         if (context.kind === 'class') {
             // Class decorator
             context.metadata['route:mapping'] = conf;
-            console.log('@RouteMapping', conf, target);
             return target;
         } else if (context.kind === 'method') {
             // Method decorator
@@ -94,8 +93,6 @@ export function routeMapping(route: string | RouteMappingConfiguration = default
                     });
                 }
             });
-
-            console.log('@RouteMapping', conf, target, context.name);
         }
     };
 }

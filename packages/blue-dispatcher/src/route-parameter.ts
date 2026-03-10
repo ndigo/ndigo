@@ -281,8 +281,6 @@ export function routeParams(paramMap: RouteParameterMap) {
 
         // Store in metadata
         context.metadata[`method:parameter:${String(context.name)}`] = parameters;
-
-        console.log('@routeParams', paramMap, 'mapped to', parameters, 'for', context.name);
     };
 }
 

@@ -62,8 +62,6 @@ export const AsStrategyInitializer = <T extends Constructable>(superclass: T): C
                     }
                     this[initializer](context);
                 }
-
-                console.log('StrategyInitializer::Initialized');
             }
         }
 

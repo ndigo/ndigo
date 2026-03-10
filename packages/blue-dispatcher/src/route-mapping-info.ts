@@ -446,7 +446,6 @@ export class RouteMappingInfo implements RouteCondition<RouteMappingInfo> {
     }
 
     getMatchingCondition(route: Route): RouteMappingInfo {
-        console.log('RouteMappingInfo::getMatchingCondition', this.name, route);
         const params = this.paramsCondition.getMatchingCondition(route);
         if (!params) {
             return null;
@@ -487,7 +486,6 @@ export class RouteMappingInfo implements RouteCondition<RouteMappingInfo> {
     }
 
     private _mergeNames(value: RouteMappingInfo): string {
-        console.log('RouteMappingInfo::_mergeName', this.name, value.name);
         if (this.name && value.name) {
             return `${this.name}${separator}${value.name}`.replace(/\/\//g, '/');
         } else if (this.name) {

@@ -70,16 +70,12 @@ export const AsRouteHandlerAdapterStrategy = <T extends Constructable<StrategyIn
                 HANDLER_ADAPTERS,
                 defaultRouteHandlerAdapters
             );
-
-            console.log('Dispatcher::initHandlerAdapters', this.handlerAdapters);
         }
 
         getHandlerAdapter(handler): RouteHandlerAdapter {
             const handlerAdapter: RouteHandlerAdapter = this.handlerAdapters.find((handlerAdapter) =>
                 handlerAdapter.supports(handler)
             );
-
-            console.log('Dispatcher::getHandlerAdapter', handlerAdapter);
 
             if (!handlerAdapter) {
                 throw new Error('No handler adapter found for handler');

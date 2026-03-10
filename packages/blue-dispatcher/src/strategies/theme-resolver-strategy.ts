@@ -63,7 +63,5 @@ export const AsThemeResolverStrategy = <T extends Constructable<StrategyInitiali
             const { themeResolverKey } = this;
 
             this.initStrategy(context, themeResolverKey, THEME_RESOLVER, createDefaultThemeResolver(context));
-
-            console.log('Dispatcher::initThemeResolver', this.themeResolver);
         }
     };

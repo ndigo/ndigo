@@ -54,7 +54,5 @@ export const AsRouteErrorResolverStrategy = <T extends Constructable<StrategyIni
                 ERROR_RESOLVERS,
                 defaultRouteErrorResolvers
             );
-
-            console.log('Dispatcher::initRouteErrorResolvers', this.errorResolvers);
         }
     };

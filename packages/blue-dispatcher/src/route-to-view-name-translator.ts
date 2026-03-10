@@ -52,7 +52,6 @@ export class DefaultRouteToViewNameTranslator implements RouteToViewNameTranslat
      * @param {module:router.Route} route
      */
     getViewName(route: Route): string {
-        console.log('DefaultRouteToViewNameTranslator::getViewName', route);
         let viewName: string = `${this.prefix}${route.path}${this.suffix}`;
 
         if (this.separator !== slash) {

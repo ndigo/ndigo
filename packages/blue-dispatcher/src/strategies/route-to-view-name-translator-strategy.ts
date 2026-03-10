@@ -48,8 +48,6 @@ export const AsRouteToViewNameTranslatorStrategy = <T extends Constructable<Stra
                 ROUTE_TO_VIEW_NAME_TRANSLATOR,
                 defaultRouteToViewNameTranslator
             );
-
-            console.log('Dispatcher::initRouteToViewNameTranslator', this.routeToViewNameTranslator);
         }
 
         /**

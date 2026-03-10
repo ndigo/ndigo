@@ -131,8 +131,6 @@ export class MetadataHandlerAdapter extends AbstractHandlerMethodAdapter impleme
     }
 
     async handle(route: Route, handler: RouteHandlerMethod): Promise<ModelAndView> {
-        console.log('MetadataHandlerAdapter::handle', route, handler);
-
         handler.argumentResolvers = this.argumentResolvers;
 
         return await handler.invoke<ModelAndView>(route);

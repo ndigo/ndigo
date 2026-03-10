@@ -211,7 +211,7 @@ export class BrowserDispatcher
         mv: ModelAndView,
         error: Error
     ): Promise<void> {
-        console.log('Dispatcher::_processDispatchResult', route, mappedHandler, mv, error && error.message);
+        console.log('Dispatcher::_processDispatchResult', route, mappedHandler, mv, error?.message);
         if (error) {
             const handler = mappedHandler instanceof RouteHandlerExecutionChain ? mappedHandler.handler : null;
             mv = this._processHandlerError(route, handler, error);
@@ -220,7 +220,7 @@ export class BrowserDispatcher
         if (mv) {
             try {
                 await this.render(mv, route);
-                mappedHandler ?? mappedHandler.triggerCompleteHandle(route, null);
+                mappedHandler?.triggerCompleteHandle(route, null);
             } catch (e) {
                 // TODO Better error handling. Use logger.
                 console.error(e);

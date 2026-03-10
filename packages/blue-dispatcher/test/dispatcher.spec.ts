@@ -1,7 +1,7 @@
-import { describe, test, beforeEach, afterEach, expect } from 'vitest';
+import { describe, test, beforeEach, afterEach, expect, vi } from 'vitest';
 import { BrowserDispatcher } from '../src/dispatcher';
 import dispatcherContext from './assets/dispatcher-context';
-import { handleRouteSpy, renderSpy, resolveLanguageSpy, testModel } from './test-strategies';
+import { completeHandleSpy, handleRouteSpy, renderSpy, resolveLanguageSpy, testModel } from './test-strategies';
 import { MetadataConfigApplicationContext } from '@blue/context';
 import { Route } from '@blue/router';
 
@@ -18,6 +18,7 @@ describe('BrowserDispatcher', () => {
         beforeEach(() => {
             dispatcher = new BrowserDispatcher();
             dispatcher.initStrategies(dispatcherContext);
+            vi.clearAllMocks();
         });
 
         afterEach(() => {
@@ -57,6 +58,12 @@ describe('BrowserDispatcher', () => {
             themeDispatcher.initStrategies(themeContext);
 
             expect(themeDispatcher.themeResolver.resolveTheme(fooRoute)).toBe('night');
+        });
+
+        test('it should trigger completeHandle after successful render', async () => {
+            await dispatcher.dispatch(bazRoute);
+
+            expect(completeHandleSpy).toHaveBeenCalledWith(bazRoute, expect.anything(), null);
         });
     });
 });

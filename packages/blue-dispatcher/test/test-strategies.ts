@@ -11,6 +11,8 @@ export const renderSpy = vi.fn();
 
 export const resolveLanguageSpy = vi.fn().mockReturnValue('en-US');
 
+export const completeHandleSpy = vi.fn();
+
 export class TestController {
     id?: number;
     handleRoute = handleRouteSpy;
@@ -39,6 +41,7 @@ export class TestErrorResolver {
 export class TestHandlerInterceptor {
     completeHandle(route: any, handler: any, error: any) {
         console.log('TestHandlerInterceptor::completeHandle', route, handler, error);
+        completeHandleSpy(route, handler, error);
     }
 
     postHandle(route: any, handler: any, modelAndView: any) {

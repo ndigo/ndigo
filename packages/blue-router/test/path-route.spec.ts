@@ -1,5 +1,6 @@
 import { describe, test, expect } from 'vitest';
 import { PathRoute } from '../src/path-route';
+import { Route } from '../src/route';
 
 describe('PathRoute', () => {
     test('it should parse route strings', () => {
@@ -96,5 +97,38 @@ describe('PathRoute', () => {
 
         expect(route.resolveParams('/accounts/:id')).toBe(null);
         expect(route.matches('/accounts/:id')).toBe(false);
+    });
+
+    test('it should expose path without matrix parameters', () => {
+        const route = new PathRoute('/foo;a=1/bar;b=2');
+
+        expect(route.path).toBe('foo/bar');
+    });
+
+    test('it should serialize route and segment to json', () => {
+        const route = new PathRoute('/users;active=true/42?sort=asc');
+        const json = route.toJSON() as any;
+
+        expect(json.id).toBeTypeOf('number');
+        expect(json.length).toBe(2);
+        expect(json.data.sort).toBe('asc');
+        expect(json[0].name).toBe('users');
+        expect(json[0].data.active).toBe('true');
+    });
+
+    test('it should keep raw input route', () => {
+        const route = new PathRoute('users/42?x=1');
+        expect(route.raw).toBe('users/42?x=1');
+    });
+
+    test('it should support typed route params generics', () => {
+        type UserRouteParams = { userId: string; orderId: string };
+        const route = new PathRoute('/users/42/orders/77');
+        const params = route.resolveParams('/users/:userId/orders/:orderId');
+
+        const typedRoute = route as unknown as Route<UserRouteParams>;
+
+        expect(params?.userId).toBe('42');
+        expect(typedRoute.params?.orderId).toBe('77');
     });
 });

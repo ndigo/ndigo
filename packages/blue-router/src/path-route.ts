@@ -124,13 +124,13 @@ export class PathRouteSegment implements RouteSegment, Serializable {
  * @implements module:router.Route
  * @implements module:core.Serializable
  */
-export class PathRoute implements Route, Serializable {
+export class PathRoute implements Route<Record<string, string>>, Serializable {
     [n: number]: RouteSegment;
 
     readonly data: JSONObject;
     readonly dataString?: string;
     readonly id: number;
-    params: JSONObject;
+    params: Record<string, string> | null;
     readonly path: string;
     readonly raw: string;
 
@@ -262,10 +262,10 @@ export class PathRoute implements Route, Serializable {
         return isNotNil(this.resolveParams(pattern));
     }
 
-    resolveParams(pattern: string): JSONObject | null {
+    resolveParams(pattern: string): Record<string, string> | null {
         const patternParts = splitRouteIntoParts(pattern),
             patternSegments = splitPathIntoSegments(patternParts[0]),
-            params: JSONObject = createNull(),
+            params: Record<string, string> = createNull(),
             length = this.length;
 
         if (patternSegments.length !== length) {

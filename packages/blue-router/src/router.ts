@@ -4,12 +4,13 @@ import {
     RouterMiddleware,
     MappedRouterInterceptor,
 } from './router-interceptor';
+import { Route } from './route';
 
-export type RouterCallback = (route: string) => void;
+export type RouterCallback = (route: Route) => void;
 
 export interface Router {
     readonly route: string;
-    callback: RouterCallback;
+    readonly callback: RouterCallback;
 }
 
 export abstract class AbstractRouter implements Router, RouterInterceptorRegistry {
@@ -19,8 +20,12 @@ export abstract class AbstractRouter implements Router, RouterInterceptorRegistr
         this.#interceptors = [];
     }
 
-    route: string;
-    callback: RouterCallback;
+    abstract get route(): string;
+    abstract readonly callback: RouterCallback;
+
+    protected get interceptors(): RouterInterceptor[] {
+        return this.#interceptors;
+    }
 
     addInterceptor(interceptor: RouterInterceptor): void {
         if (this.#interceptors.indexOf(interceptor) === -1) {

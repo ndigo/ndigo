@@ -2,15 +2,11 @@ import { constructN, pipe } from '@blue/util/function';
 import { slice } from '@blue/util/list';
 import { prop } from '@blue/util/object';
 import { PathRoute } from './path-route';
-import { Router, RouterCallback } from './router';
+import { AbstractRouter, RouterCallback } from './router';
 import { RingBuffer } from '@blue/core';
 import RouterExecutionChain from './router-execution-chain';
-import {
-    MappedRouterInterceptor,
-    RouterInterceptor,
-    RouterInterceptorRegistry,
-    RouterMiddleware,
-} from './router-interceptor';
+import { MappedRouterInterceptor, RouterInterceptor } from './router-interceptor';
+import { DefaultRouteTransactionManager, RouteTransactionManager } from './transaction-manager';
 
 //type RouteSource = 'private' | 'public' | 'external';
 //type RouteResult = 'aborted' | 'completed';
@@ -67,11 +63,12 @@ class RouteTransaction {
  * ? Implement factory.Destroyable? It seems excessive to include @blue/factory just for the interface. Move factory.Destroyable to @blue/core? -JBR
  */
 
-export default class HashRouter implements Router, RouterInterceptorRegistry {
+export default class HashRouter extends AbstractRouter {
     #handler: HashChangeHandler;
     #history: RouteHistory;
-    #interceptors: RouterInterceptor[];
     #route: PathRoute;
+    #lastPublicRoute: string;
+    #transactionManager: RouteTransactionManager;
 
     readonly callback: RouterCallback;
 
@@ -85,7 +82,13 @@ export default class HashRouter implements Router, RouterInterceptorRegistry {
         return this.#history;
     }
 
+    get transactionManager(): RouteTransactionManager {
+        return this.#transactionManager;
+    }
+
     constructor(callback: RouterCallback) {
+        super();
+
         defineProperty(this, 'callback', {
             value: callback,
             configurable: true,
@@ -95,12 +98,13 @@ export default class HashRouter implements Router, RouterInterceptorRegistry {
 
         this.#handler = (event: HashChangeEvent) => this._onHashChange(event);
         this.#history = new RingBuffer<RouteTransaction>(256);
-        this.#interceptors = [];
+        this.#transactionManager = new DefaultRouteTransactionManager();
 
         const currentRoute = removeFirstCharacter(location.hash) || '/',
             routeTx = new RouteTransaction(currentRoute, RouteAccess.PUBLIC, RouteSource.EXTERNAL);
 
         this.#route = new PathRoute(currentRoute);
+        this.#lastPublicRoute = this.#route.toString();
         this.#history.put(routeTx);
 
         defineProperty(this, 'destroyed', {
@@ -111,34 +115,6 @@ export default class HashRouter implements Router, RouterInterceptorRegistry {
         });
 
         addEventListener('hashchange', this.#handler);
-    }
-
-    addInterceptor(interceptor: RouterInterceptor): void {
-        // TODO Check for duplicates and deny?
-        this.#interceptors.push(interceptor);
-    }
-
-    use(
-        interceptorOrPatterns: RouterInterceptor | RouterMiddleware | string | string[],
-        interceptor?: RouterInterceptor | RouterMiddleware,
-        excludePatterns: string[] = []
-    ): void {
-        if (typeof interceptorOrPatterns === 'string' || Array.isArray(interceptorOrPatterns)) {
-            const includePatterns = Array.isArray(interceptorOrPatterns)
-                ? interceptorOrPatterns
-                : [interceptorOrPatterns];
-
-            if (!interceptor) {
-                throw new TypeError('interceptor is required for mapped middleware');
-            }
-
-            this.addInterceptor(
-                new MappedRouterInterceptor(this._toRouterInterceptor(interceptor), includePatterns, excludePatterns)
-            );
-            return;
-        }
-
-        this.addInterceptor(this._toRouterInterceptor(interceptorOrPatterns));
     }
 
     destroy() {
@@ -155,50 +131,56 @@ export default class HashRouter implements Router, RouterInterceptorRegistry {
     }
 
     setRoute(newRoute: string, isPublic = true) {
-        if (this._setRoute(newRoute)) {
+        if (this._setRoute(newRoute, isPublic)) {
             const routeAccess = isPublic ? RouteAccess.PUBLIC : RouteAccess.PRIVATE,
                 routeTx = new RouteTransaction(this.route, routeAccess, RouteSource.INTERNAL);
             this.#history.put(routeTx);
-            this.callback(this.route);
+            if (isPublic) {
+                this.#lastPublicRoute = this.route;
+            }
+            this.callback(this.#route);
         }
     }
 
     protected _onHashChange(event: HashChangeEvent) {
         const newRoute = extractRouteFromURL(event.newURL);
-        if (this._setRoute(newRoute)) {
+        if (this._setRoute(newRoute, true)) {
             const route = this.route,
                 routeTx = new RouteTransaction(route, RouteAccess.PUBLIC, RouteSource.EXTERNAL);
             this.#history.put(routeTx);
-            this.callback(route);
+            this.#lastPublicRoute = route;
+            this.callback(this.#route);
         }
     }
 
-    protected _setRoute(newRoute: string): boolean {
+    protected _setRoute(newRoute: string, syncHash = true): boolean {
         const route = new PathRoute(newRoute),
+            oldRoute = syncHash ? this.route : this.#lastPublicRoute,
+            status = this.#transactionManager.getTransaction(route, oldRoute, syncHash),
             chain = new RouterExecutionChain(this._resolveInterceptors(route));
-        let isCompleted = false;
 
         try {
             if (chain.applyPreRoute(route) === false) {
-                const oldRoute = this.route;
-                if (location.hash !== oldRoute) {
-                    location.hash = oldRoute;
-                }
-                return isCompleted;
+                status.setRollbackOnly();
+                this.#transactionManager.rollback(status);
+                return false;
             }
 
             this.#route = route;
 
             chain.applyPostRoute(route);
 
-            isCompleted = true;
-        } catch {}
+            this.#transactionManager.commit(status);
 
-        return isCompleted;
+            return true;
+        } catch {
+            this.#transactionManager.rollback(status);
+            return false;
+        }
     }
 
     private _resolveInterceptors(route: PathRoute): RouterInterceptor[] {
-        return this.#interceptors.filter((interceptor) => {
+        return this.interceptors.filter((interceptor) => {
             if (interceptor instanceof MappedRouterInterceptor) {
                 const matches = interceptor.matchesRoute(route);
                 if (matches) {
@@ -209,18 +191,5 @@ export default class HashRouter implements Router, RouterInterceptorRegistry {
 
             return true;
         });
-    }
-
-    private _toRouterInterceptor(interceptor: RouterInterceptor | RouterMiddleware): RouterInterceptor {
-        if (typeof interceptor === 'function') {
-            return {
-                preRoute(route) {
-                    const result = interceptor(route);
-                    return result === false ? false : true;
-                },
-            };
-        }
-
-        return interceptor;
     }
 }

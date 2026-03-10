@@ -15,31 +15,26 @@ import { errorMapping, errorHandler } from '../../src/error-mapping';
 class BadController {
     @routeMapping('/bad')
     handleBad(route) {
-        console.log('BadController::Handling Route'); //, route );
         throw new Error('Bad');
     }
 
     @routeMapping('/reference')
     handleReference(route) {
-        console.log('BadController::Handling Route'); //, route );
         throw new ReferenceError('Bad Reference');
     }
 
     @routeMapping('/syntax')
     handleSyntax(route) {
-        console.log('BadController::Handling Route'); //, route );
         throw new SyntaxError('Bad Syntax');
     }
 
     @routeMapping('/range')
     handleRange(route) {
-        console.log('BadController::Handling Route'); //, route );
         throw new RangeError('Bad Range');
     }
 
     @errorMapping(RangeError)
     handleRangeError(route, error, handlerMethod) {
-        console.log('BadController::Handling RangeError'); //, route, error, handlerMethod );
         return new ModelAndView('error');
     }
 }
@@ -48,19 +43,16 @@ class BadController {
 class GlobalErrorHandler {
     @errorMapping(Error)
     handleError(route, error, handlerMethod) {
-        console.log('GlobalErrorHandler::Handling Error'); //, route, error, handlerMethod );
         return new ModelAndView('error');
     }
 
     @errorMapping(TypeError)
     handleTypeError(route, error, handlerMethod) {
-        console.log('GlobalErrorHandler::Handling TypeError'); //, route, error, handlerMethod );
         return new ModelAndView('error');
     }
 
     @errorMapping([ReferenceError, SyntaxError])
     handleOtherErrors(route, error, handlerMethod) {
-        console.log('GlobalErrorHandler::Handling other errors'); //, route, error, handlerMethod );
         return new ModelAndView('error');
     }
 }

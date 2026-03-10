@@ -92,7 +92,7 @@ export abstract class AbstractPathBasedViewResolver extends AbstractCachingViewR
     supports(name: string, language?: any): boolean {
         let isSupported: boolean = !!this.viewNames;
 
-        if (!isSupported) {
+        if (isSupported) {
             isSupported = this.viewNames.some(function (viewName: string | RegExp) {
                 if (viewName instanceof RegExp) {
                     return viewName.test(name);

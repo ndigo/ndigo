@@ -61,6 +61,8 @@ export abstract class AbstractViewMapping extends AsNameAware(AsApplicationConte
         if (!target) {
             return null;
         }
+
+        return target;
     }
 
     protected abstract _getTarget(route: Route): any;

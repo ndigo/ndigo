@@ -7,46 +7,15 @@ export interface RouteSegment extends Serializable {
     raw: string;
 }
 
-export interface Route extends ArrayLike<RouteSegment>, Serializable {
+export interface Route<TParams extends Record<string, string> = Record<string, string>>
+    extends ArrayLike<RouteSegment>,
+        Serializable {
     [n: number]: RouteSegment;
 
     data: JSONObject;
     dataString?: string;
     id: number;
-    params: JSONObject;
+    params: TParams | null;
     path: string;
     raw: string;
 }
-
-/**
- * @extends module:core.Serializable
- */
-
-/**
- */
-
-/**
- */
-
-/**
- */
-
-/**
- */
-
-/**
- * @extends external:ArrayLike<router.RouteSegment>
- * @extends module:core.Serializable
- */
-
-/**
- */
-
-/**
- */
-
-/**
- */
-
-/**
- */

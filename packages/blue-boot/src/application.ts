@@ -5,7 +5,7 @@
 import {
     ConfigurableApplicationContext,
     ConfigurableEnvironment,
-    GenericApplicationContext,
+    MetadataConfigApplicationContext,
     StandardEnvironment,
 } from '@blue/context';
 import { IllegalStateError, JSONObject } from '@blue/core';
@@ -17,6 +17,7 @@ import { IllegalStateError, JSONObject } from '@blue/core';
 export class Application {
     #environment: ConfigurableEnvironment;
     #name: string;
+    #profiles: string[];
     #properties: JSONObject;
     #sources: Set<Function>;
 
@@ -25,6 +26,7 @@ export class Application {
     }
 
     constructor(sources: Function[]) {
+        this.#profiles = [];
         this.#sources = new Set<Function>(sources);
     }
 
@@ -54,7 +56,7 @@ export class Application {
     }
 
     setProfiles(...profiles: string[]): void {
-        profiles;
+        this.#profiles = profiles;
     }
 
     setProperties(properties: JSONObject): void {
@@ -76,7 +78,11 @@ export class Application {
      * @param {module:context.Environment} environment
      * @param {Array<external:string>} args
      */
-    protected _configureProfiles(environment: ConfigurableEnvironment, args: string[]): void {}
+    protected _configureProfiles(environment: ConfigurableEnvironment, args: string[]): void {
+        if (this.#profiles.length) {
+            environment.activeProfiles = this.#profiles;
+        }
+    }
 
     protected _configurePropertySources(environment: ConfigurableEnvironment, args: string[]): void {
         if (this.#properties) {
@@ -85,8 +91,9 @@ export class Application {
     }
 
     protected _prepareContext(environment: ConfigurableEnvironment, args: string[]): ConfigurableApplicationContext {
-        const context = new GenericApplicationContext();
+        const context = new MetadataConfigApplicationContext(this.#name);
         context.setEnvironment(environment);
+        this.#sources.forEach((source) => context.register(source));
         context.refresh();
         return context;
     }

@@ -26,7 +26,6 @@ describe('BrowserDispatcher', () => {
         });
 
         test('it should init strategies on contexts', async () => {
-            console.log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>');
             await Promise.all([
                 dispatcher.dispatch(fooRoute),
                 dispatcher.dispatch(barRoute),
@@ -47,7 +46,6 @@ describe('BrowserDispatcher', () => {
             expect(resolveLanguageSpy).toHaveBeenCalledWith(barRoute);
             expect(resolveLanguageSpy).toHaveBeenCalledWith(bazRoute);
             expect(resolveLanguageSpy).toHaveBeenCalledWith(quxRoute);
-            console.log('<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<');
         });
 
         test('it should use context theme when no theme resolver is provided', () => {

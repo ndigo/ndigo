@@ -30,6 +30,7 @@ export class ApplicationBuilder {
         this.#application = new Application(sources);
         this.#parent = parent;
         this.#profiles = new Set<string>();
+        this.#properties = {};
         this.#running = false;
         this.#sources = new Set<Function>();
     }
@@ -40,8 +41,10 @@ export class ApplicationBuilder {
 
     child(...sources: Function[]): ApplicationBuilder {
         const child = new ApplicationBuilder(sources, this);
-        child.sources(sources);
-        child.properties(this.#properties).environment(this.#environment);
+        child.properties(this.#properties);
+        if (this.#environment) {
+            child.environment(this.#environment);
+        }
         return child;
     }
 
@@ -71,11 +74,14 @@ export class ApplicationBuilder {
     }
 
     properties(properties: JSONObject): ApplicationBuilder {
+        properties = properties || {};
         this.#properties = Object.assign(this.#properties, properties);
         this.#application.setProperties(this.#properties);
         if (this.#parent !== null) {
             this.#parent.properties(this.#properties);
-            this.#parent.environment(this.#environment);
+            if (this.#environment) {
+                this.#parent.environment(this.#environment);
+            }
         }
         return this;
     }
@@ -84,7 +90,8 @@ export class ApplicationBuilder {
         if (this.#running) {
             return this.#context;
         } else {
-            this.#context = this.build().run(/*args*/);
+            this.#context = this.build().run(...args);
+            this.#running = true;
         }
         return this.#context;
     }

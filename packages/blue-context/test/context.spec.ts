@@ -68,6 +68,21 @@ describe('GenericApplicationContext', () => {
         expect(context.getValue<TestValue>('testValue').initialized).toBe(true);
     });
 
+    test('it should refresh only once when already active', () => {
+        const preparing = vi.fn();
+        const refreshed = vi.fn();
+
+        context.on('context:preparing', preparing);
+        context.on('context:refresh', refreshed);
+
+        context.refresh();
+        context.refresh();
+
+        expect(preparing).toHaveBeenCalledTimes(1);
+        expect(refreshed).toHaveBeenCalledTimes(1);
+        expect(context.isActive).toBe(true);
+    });
+
     test('it should run registry processors during refresh', () => {
         const processor: EntryRegistryProcessor = {
             processEntryRegistry(registry): void {
@@ -124,6 +139,62 @@ describe('GenericApplicationContext', () => {
         expect(destroyListener).toHaveBeenCalledTimes(1);
     });
 
+    test('it should close only once when already destroyed', () => {
+        const onClose = vi.fn();
+        const onDestroy = vi.fn();
+
+        context.on('context:close', onClose);
+        context.on('context:destroy', onDestroy);
+
+        context.refresh();
+        context.close();
+
+        const destroyedTimestamp = context.destroyedTimestamp;
+
+        context.close();
+
+        expect(onClose).toHaveBeenCalledTimes(1);
+        expect(onDestroy).toHaveBeenCalledTimes(1);
+        expect(context.destroyedTimestamp).toBe(destroyedTimestamp);
+    });
+
+    test('it should lazily initialize environment when accessed', () => {
+        class TestContext extends GenericApplicationContext {
+            created = 0;
+
+            protected _createEnvironment() {
+                this.created += 1;
+                return super._createEnvironment();
+            }
+        }
+
+        const local = new TestContext('local');
+
+        expect(local.created).toBe(0);
+
+        const first = local.environment;
+        const second = local.environment;
+
+        expect(first).toBe(second);
+        expect(local.created).toBe(1);
+
+        local.destroy();
+    });
+
+    test('it should emit lifecycle events during refresh and close', () => {
+        const events: string[] = [];
+
+        context.on('context:preparing', () => events.push('context:preparing'));
+        context.on('context:refresh', () => events.push('context:refresh'));
+        context.on('context:close', () => events.push('context:close'));
+        context.on('context:destroy', () => events.push('context:destroy'));
+
+        context.refresh();
+        context.close();
+
+        expect(events).toEqual(['context:preparing', 'context:refresh', 'context:close', 'context:destroy']);
+    });
+
     test('it should accept an initial property set', () => {
         context = new GenericApplicationContext('test', { foo: 'bar' });
         expect(context.getValue('foo')).toBe('bar');
@@ -153,6 +224,24 @@ describe('GenericApplicationContext', () => {
 
         context.setParent(parent);
         expect(context.getContent('welcome', 'en')).toBe('Welcome parent');
+    });
+
+    test('it should support re-parenting and root recomputation', () => {
+        const root1 = new GenericApplicationContext('root1');
+        const root2 = new GenericApplicationContext('root2');
+
+        context.setParent(root1);
+        expect(root1.hasChild(context)).toBe(true);
+        expect((context as any).root).toBe(root1);
+
+        context.setParent(root2);
+        expect(root1.hasChild(context)).toBe(false);
+        expect(root2.hasChild(context)).toBe(true);
+        expect((context as any).root).toBe(root2);
+        expect(context.path).toBe('root2/test');
+
+        root1.destroy();
+        root2.destroy();
     });
 
     test('it should resolve theme from configured theme name', () => {
@@ -203,6 +292,14 @@ describe('ProxiedGenericContext', () => {
         expect((context as any).bar).toBe(456);
         expect(context.hasValue('bar')).toBe(true);
         expect('bar' in context).toBe(true);
+    });
+
+    test('it should support delete through proxy', () => {
+        (context as any).foo = 123;
+        expect(context.hasValue('foo')).toBe(true);
+
+        expect(delete (context as any).foo).toBe(true);
+        expect(context.hasValue('foo')).toBe(false);
     });
 });
 
@@ -256,69 +353,4 @@ describe('ApplicationContextAwareProcessor', () => {
         expect(test.setContentSource).toHaveBeenCalledWith(context);
         expect(test.setResourceLoader).toHaveBeenCalledWith(context);
     });
-
-    /*
-    test( '', () => {
-
-    } );
-    */
 });
-
-/* Older tests
-describe.skip( 'Context', () => {
-
-    test( 'it should be a constructor', () => {
-        expect( RootContext && RootContext.constructor ).toBe( Function );
-    } );
-
-    test( 'it should create instances', () => {
-        const context = new RootContext( 'root' );
-        expect( context ).toBeInstanceOf( RootContext );
-        expect( context.bubble ).toBeInstanceOf( Function );;
-        expect( context.broadcast ).toBeInstanceOf( Function );;
-        expect( context.destroy ).toBeInstanceOf( Function );;
-        expect( context.emit ).toBeInstanceOf( Function );;
-        expect( context.hasChild ).toBeInstanceOf( Function );;
-        expect( context.newChild ).toBeInstanceOf( Function );;
-        expect( context.off ).toBeInstanceOf( Function );;
-        expect( context.on ).toBeInstanceOf( Function );;
-        expect( context.removeChild ).toBeInstanceOf( Function );;
-        expect( context.name ).toBe( 'root' );
-        expect( context.path ).toBe( 'root' );
-        expect( context.id ).toBe( 'number' );
-        expect( context.createdTimestamp ).toBe( 'number');
-        expect( context.root ).toBe( context );
-        expect( context.parent ).toBe( null );
-
-    } );
-
-    test( 'it should manage children', () => {
-        const
-            parent = new RootContext( 'root' ),
-            child = parent.newChild( 'child-1' );
-
-        expect( parent.children.indexOf( child ) ).toBe( 0 );
-
-        expect( parent.hasChild( child ) ).toBe( true );
-        expect( parent.hasChild( {} ) ).toBe( false );
-
-        expect( parent.removeChild( child ) ).toBe( true );
-        expect( parent.removeChild( {} ) ).toBe( false );
-        expect( parent.hasChild( child ) ).toBe( false );
-    } );
-
-    test( 'it should be destroyable', () => {
-        const
-            parent = new RootContext( 'root' ),
-            child = parent.newChild( 'child-1' );
-
-        parent.destroy();
-
-        expect( child.destroyed ).toBe( true );
-        expect( child.destroyedTimestamp ).toBe( 'number');
-        expect( parent.destroyed ).toBe( true );
-        expect( parent.destroyedTimestamp ).toBe( 'number');
-    } );
-
-} );
-*/

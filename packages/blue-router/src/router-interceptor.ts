@@ -94,11 +94,11 @@ export class MappedRouterInterceptor extends AsPathMatcherFilter(Null) implement
     }
 
     postRoute(route: Route): void {
-        this.#interceptor.postRoute(route);
+        this.#interceptor.postRoute?.(route);
     }
 
     preRoute(route: Route): boolean {
-        return this.#interceptor.preRoute(route);
+        return this.#interceptor.preRoute?.(route) !== false;
     }
 
     private _isNamedRoutePattern(pattern: string): boolean {

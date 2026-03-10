@@ -22,7 +22,7 @@ export default class RouterExecutionChain {
     }
 
     constructor(chain: RouterExecutionChain | RouterInterceptor[] = null) {
-        this.#interceptors = null;
+        this.#interceptors = [];
 
         if (chain instanceof RouterExecutionChain) {
             chain && this.addInterceptors(chain.interceptors);
@@ -38,9 +38,6 @@ export default class RouterExecutionChain {
      */
     addInterceptor(interceptor: RouterInterceptor): void {
         if (interceptor) {
-            if (!this.#interceptors) {
-                this.#interceptors = [];
-            }
             this.#interceptors.push(interceptor);
         }
     }
@@ -66,7 +63,7 @@ export default class RouterExecutionChain {
         if (length) {
             let index = 0;
             for (; index < length; index++) {
-                interceptors[index].postRoute(route);
+                interceptors[index].postRoute?.(route);
             }
         }
     }
@@ -80,7 +77,7 @@ export default class RouterExecutionChain {
         if (length) {
             let index = 0;
             for (; index < length; index++) {
-                if (interceptors[index].preRoute(route) === false) {
+                if (interceptors[index].preRoute?.(route) === false) {
                     return false;
                 }
                 this.interceptorIndex = index;

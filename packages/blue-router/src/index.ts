@@ -8,6 +8,7 @@ export * from './route';
 export * from './router';
 export * from './path-route';
 export * from './router-interceptor';
+export * from './transaction-manager';
 export { default as HashRouter } from './hash-router';
 // Re-export from @blue/http for backward compatibility
 import { QueryString, MatrixString } from '@blue/http';

@@ -28,7 +28,7 @@ const params = route.resolveParams('/users/:userId/orders/{orderId}');
 // params.orderId === 'abc'
 
 const router = new HashRouter((nextRoute) => {
-    console.log('navigated to', nextRoute);
+    console.log('navigated to', nextRoute.path);
 });
 
 // Global middleware
@@ -42,6 +42,9 @@ router.use('/teams/:teamId', (activeRoute) => {
     console.log(activeRoute.params.teamId);
     return true;
 });
+
+// Private navigation (internal state transition, no hash/history mutation)
+router.setRoute('/teams/42/panel', false);
 ```
 
 ## Middleware and Params

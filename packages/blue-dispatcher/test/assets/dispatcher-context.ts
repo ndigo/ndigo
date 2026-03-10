@@ -27,7 +27,6 @@ import { Route } from '@blue/router';
 class HelloController {
     @routeMapping('/world')
     handleWorld(route: Route) {
-        console.log('HelloController::Handling Route', route);
         return new ModelAndView('test');
     }
 }

@@ -20,13 +20,11 @@ export class TestController {
 
 export class TestControllerHandlerAdapter {
     handle(route: any, handler: any) {
-        console.log('TestControllerHandlerAdapter::Handle', route, handler);
         expect(handler).toBeInstanceOf(TestController);
         return handler.handleRoute(route);
     }
     supports(handler: any) {
         const isSupported = handler instanceof TestController;
-        console.log('TestControllerHandlerAdapter::Supports', isSupported, handler);
         expect(isSupported).toBe(true);
         return isSupported;
     }
@@ -40,16 +38,12 @@ export class TestErrorResolver {
 
 export class TestHandlerInterceptor {
     completeHandle(route: any, handler: any, error: any) {
-        console.log('TestHandlerInterceptor::completeHandle', route, handler, error);
         completeHandleSpy(route, handler, error);
     }
 
-    postHandle(route: any, handler: any, modelAndView: any) {
-        console.log('TestHandlerInterceptor::postHandle', route, handler, modelAndView);
-    }
+    postHandle(route: any, handler: any, modelAndView: any) {}
 
     preHandle(route: any, handler: any) {
-        console.log('TestHandlerInterceptor::preHandle', route, handler);
         return true;
     }
 }
@@ -60,7 +54,6 @@ export class TestLanguageResolver {
 
 export class TestThemeResolver {
     resolveTheme(route: any) {
-        console.log('TestThemeResolver::resolveTheme', route);
         return 'testTheme';
     }
 }
@@ -76,7 +69,6 @@ export class TestView {
 
 export class TestViewResolver {
     resolveViewName(name: string, language: string) {
-        console.log('TestViewResolver::resolveViewName', name, language);
         return Promise.resolve(new TestView(name));
     }
 }

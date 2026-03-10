@@ -7,6 +7,7 @@ This directory contains reference documentation for dependencies, configurations
 - [2026-01-23_DEPENDENCIES_REFERENCE.md](./2026-01-23_DEPENDENCIES_REFERENCE.md) - Complete dependency version reference
 - [2026-03-08_ARCHITECTURE_ROADMAP.md](./2026-03-08_ARCHITECTURE_ROADMAP.md) - Architecture roadmap, platform vision, and package maturity
 - [2026-03-09_ROUTER_MIDDLEWARE_AND_ROUTE_PARAMS.md](./2026-03-09_ROUTER_MIDDLEWARE_AND_ROUTE_PARAMS.md) - Router middleware API and named route-parameter behavior
+- [2026-03-10_LEGACY_ROUTER_PATTERNS.md](./2026-03-10_LEGACY_ROUTER_PATTERNS.md) - Archived legacy-router patterns and migration notes
 
 ## Naming Convention
 

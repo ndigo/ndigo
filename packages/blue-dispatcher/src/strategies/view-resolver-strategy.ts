@@ -54,7 +54,5 @@ export const AsViewResolverStrategy = <T extends Constructable<StrategyInitializ
                 VIEW_RESOLVERS,
                 defaultViewResolvers
             );
-
-            console.log('Dispatcher::initViewResolvers', this.viewResolvers);
         }
     };

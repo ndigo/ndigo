@@ -97,16 +97,13 @@ export class BrowserDispatcher
         let dispatchError: Error = null,
             mappedHandler: RouteHandlerExecutionChain = null,
             mv: ModelAndView = null;
-        console.log('Dispatcher::dispatch', route);
         try {
             mappedHandler = this.getHandler(route);
-            console.log('- Dispatcher::Mapped Handler', mappedHandler);
             if (!mappedHandler) {
                 throw new NoHandlerFoundError(route);
             }
 
             const handlerAdapter: RouteHandlerAdapter = this.getHandlerAdapter(mappedHandler.handler);
-            console.log('- Dispatcher::Handler Adapter', handlerAdapter);
 
             if (mappedHandler.applyPreHandle(route) === false) {
                 return;
@@ -121,8 +118,6 @@ export class BrowserDispatcher
 
         return this._processDispatchResult(route, mappedHandler, mv, dispatchError).catch(function (error: Error) {
             mappedHandler?.triggerCompleteHandle(route, error);
-            // TODO Using logging system
-            console.log(error);
         });
     }
 
@@ -133,14 +128,12 @@ export class BrowserDispatcher
      * @returns {Promise}
      */
     async render(mv: ModelAndView, route: Route): Promise<void> {
-        console.log('Dispatcher::render', mv, route);
         const language = this.languageResolver ? this.languageResolver.resolveLanguage(route) : '',
             viewName = mv.viewName;
 
         let view: View;
 
         if (viewName) {
-            console.log('Dispatcher::render::viewName', viewName);
             view = await this._resolveViewName(viewName, language);
             if (!view) {
                 throw new NoViewFoundError(viewName, route);
@@ -154,18 +147,13 @@ export class BrowserDispatcher
 
         try {
             view.render(mv, route);
-        } catch (e) {
-            // TODO ADD A REAL CATCH BLOCK
-            console.log('UNABLE TO RENDER');
-        }
+        } catch {}
     }
 
     protected _processHandlerError(route: Route, handler, error: Error): ModelAndView {
         let mav: ModelAndView = null;
-        console.log('Dispatcher::_processHandlerError', route, handler, error.message);
         this.errorResolvers.some(function (resolver: RouteErrorResolver): boolean {
             mav = resolver.resolveError(route, handler, error);
-            console.log('Dispatcher::_processHandlerError::resolver', resolver, mav);
             return !!mav;
         });
 
@@ -180,7 +168,6 @@ export class BrowserDispatcher
     }
 
     protected async _resolveViewName(viewName: string, language: string): Promise<View> {
-        console.log('Dispatcher::resolveViewName', viewName, language);
         let index = 0,
             view: View = null;
         const length = this.viewResolvers.length;
@@ -196,7 +183,6 @@ export class BrowserDispatcher
     }
 
     private _applyDefaultViewName(route: Route, mv: ModelAndView) {
-        console.log('Dispatcher::_applyDefaultViewName', route, mv);
         if (mv && !mv.hasView) {
             const defaultViewName = this.getDefaultViewName(route);
             if (defaultViewName) {
@@ -211,7 +197,6 @@ export class BrowserDispatcher
         mv: ModelAndView,
         error: Error
     ): Promise<void> {
-        console.log('Dispatcher::_processDispatchResult', route, mappedHandler, mv, error?.message);
         if (error) {
             const handler = mappedHandler instanceof RouteHandlerExecutionChain ? mappedHandler.handler : null;
             mv = this._processHandlerError(route, handler, error);
@@ -221,10 +206,7 @@ export class BrowserDispatcher
             try {
                 await this.render(mv, route);
                 mappedHandler?.triggerCompleteHandle(route, null);
-            } catch (e) {
-                // TODO Better error handling. Use logger.
-                console.error(e);
-            }
+            } catch {}
         }
     }
 }

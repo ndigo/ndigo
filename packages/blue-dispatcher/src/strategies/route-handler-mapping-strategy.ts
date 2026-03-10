@@ -57,14 +57,11 @@ export const AsRouteHandlerMappingStrategy = <T extends Constructable<StrategyIn
                 HANDLER_MAPPINGS,
                 defaultRouteHandlerMappings
             );
-
-            console.log('Dispatcher::initHandlerMappings', this.handlerMappings);
         }
 
         getHandler(route: Route): RouteHandlerExecutionChain {
             const { handlerMappings } = this,
                 length = handlerMappings.length;
-            console.log('Dispatcher::getHandler', route);
             for (let index = 0; index < length; index++) {
                 const handler = handlerMappings[index].getHandler(route);
                 if (handler) {

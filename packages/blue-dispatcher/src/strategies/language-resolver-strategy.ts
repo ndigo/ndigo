@@ -41,7 +41,5 @@ export const AsLanguageResolverStrategy = <T extends Constructable<StrategyIniti
             const { languageResolverKey } = this;
 
             this.initStrategy(context, languageResolverKey, LANGUAGE_RESOLVER, defaultLanguageResolver);
-
-            console.log('Dispatcher::initLanguageResolver', this.languageResolver);
         }
     };

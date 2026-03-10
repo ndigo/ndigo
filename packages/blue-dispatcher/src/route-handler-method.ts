@@ -149,26 +149,12 @@ export class RouteHandlerMethod implements HandlerMethod, Serializable {
             parametersLength = parameters.length,
             args = new Array(parametersLength),
             mapping = getRouteMapping(this.handler, this.method);
-        console.log(
-            'RouteHandlerMethod::invoke',
-            this.method,
-            getRouteMapping(this.handler, this.method),
-            parametersLength,
-            parameters,
-            argumentResolvers
-        );
         if (parametersLength) {
             for (let index = 0; index < parametersLength; index++) {
                 const parameter = parameters[index],
                     resolver = argumentResolvers.find((resolver) => resolver.supportsParameter(parameter));
 
                 args[index] = resolver ? resolver.resolveArgument(parameter, route, mapping) : void 0;
-                console.log(
-                    'RouteHandlerMethod::invoke::parameter',
-                    index,
-                    parameter.type,
-                    argumentResolvers.find((resolver) => resolver.supportsParameter(parameter))
-                );
             }
         }
 

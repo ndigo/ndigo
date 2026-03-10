@@ -28,7 +28,5 @@ export const AsViewMappingStrategy = <T extends Constructable<StrategyInitialize
             const { viewMappingKey } = this;
 
             this.initStrategy(context, viewMappingKey, 'viewMapping', defaultViewMapping);
-
-            console.log('Dispatcher::initViewMapping', this.viewMapping);
         }
     };

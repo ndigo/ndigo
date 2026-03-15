@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { AbstractViewMapping } from '../src/view-mapping';
+import { AbstractViewMapping, AbstractPathViewMapping } from '../src/view-mapping';
 import { Route } from '@blue/router';
 
 class TestViewMapping extends AbstractViewMapping {
@@ -35,5 +35,19 @@ describe('AbstractViewMapping', () => {
         const mapping = new TestViewMapping(null);
 
         expect(mapping.getTarget(route)).toBeNull();
+    });
+
+    test('it should initialize path view mapping defaults', () => {
+        class TestPathMapping extends AbstractPathViewMapping {
+            protected _getTarget(): any {
+                return null;
+            }
+        }
+
+        const mapping = new TestPathMapping();
+
+        expect(mapping.rootTarget).toBeNull();
+        expect(mapping.useTrailingSlashMatch).toBe(false);
+        expect((mapping as any)._targets).toBeInstanceOf(Map);
     });
 });

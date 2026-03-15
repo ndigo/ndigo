@@ -1,21 +1,15 @@
 /**
  * @author Jeff Rose
  */
-import { createNull, MediaType } from '@blue/core';
+import { createNull } from '@blue/core';
 import { AsyncDestroyable } from '@blue/factory';
 import {
     HTTPInit,
-    HTTPInterceptor,
     ContentTypeInit,
     DataParameterInit,
     ResponseTypeInit,
     IfModifiedInit,
     TimeoutInit,
-    DataParameterInterceptor,
-    ContentTypeInterceptor,
-    ResponseTypeInterceptor,
-    TimeoutInterceptor,
-    IfModifiedInterceptor,
 } from '@blue/http';
 
 export type ServiceInit = HTTPInit &
@@ -52,60 +46,7 @@ type ServiceInterceptor =
     | RequestAwareServiceInterceptor
     | ResponseAwareServiceInterceptor;
 
-/**
- */
-
-/**
- * @param {Request} request
- */
-
-/**
- */
-
-/**
- * @param {Error} error
- * @param {Request} request
- */
-
-/**
- */
-
-/**
- * @param {URL} url
- * @param {module:service.ServiceInit} settings
- * @returns {boolean}
- */
-
-/**
- */
-
-/**
- * @param {Request} request
- * @returns {Promise<external:Request|void>}
- */
-
-/**
- */
-
-/**
- * @param {module:http.HTTPResult} result
- * @param {module:service.ServiceInit} settings
- * @returns {Promise<void>}
- */
-
-/**
- * @typedef {module:service.CompletionAwareServiceInterceptor|module:service.ErrorAwareServiceInterceptor|module:service.InitializationAwareServiceInterceptor|module:service.RequestAwareServiceInterceptor|module:service.ResultAwareServiceInterceptor} module:service.ServiceInterceptor
- */
-
-const { defineProperty } = Reflect,
-    defaults = {},
-    httpInterceptors: HTTPInterceptor[] = [
-        new ContentTypeInterceptor(),
-        new DataParameterInterceptor(),
-        new ResponseTypeInterceptor(),
-        new IfModifiedInterceptor(),
-        new TimeoutInterceptor(5000),
-    ];
+const { defineProperty } = Reflect;
 
 let serviceId = 0;
 
@@ -146,7 +87,7 @@ export class MappedServiceInterceptor {
 
 /**
  */
-class ServiceExecutionChain {
+export class ServiceExecutionChain {
     #interceptors: ServiceInterceptor[];
 
     service: Service;

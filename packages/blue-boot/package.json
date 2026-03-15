@@ -24,23 +24,19 @@
     "blue-js",
     "blue-app",
     "blue-boot",
-    "blue-site",
     "app",
-    "boot",
-    "site"
+    "boot"
   ],
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
   "devDependencies": {
     "@blue/context": "~0.0.1",
     "@blue/core": "~0.0.1",
-    "@blue/platform-web": "~0.0.1",
-    "@blue/router": "~0.0.1"
+    "@blue/platform-web": "~0.0.1"
   },
   "peerDependencies": {
     "@blue/context": "~0.0.1",
     "@blue/core": "~0.0.1",
-    "@blue/platform-web": "~0.0.1",
-    "@blue/router": "~0.0.1"
+    "@blue/platform-web": "~0.0.1"
   }
 }

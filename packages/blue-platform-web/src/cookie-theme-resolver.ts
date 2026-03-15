@@ -21,12 +21,7 @@ export class CookieThemeResolver extends AbstractThemeResolver {
     constructor(cookieName: string = 'theme', defaultThemeName: string = 'default') {
         super(defaultThemeName);
         this.#fallbackThemeName = defaultThemeName;
-        Reflect.defineProperty(this, 'cookieName', {
-            value: cookieName,
-            configurable: true,
-            enumerable: false,
-            writable: false,
-        });
+        this.cookieName = cookieName;
     }
 
     resolveTheme(route: Route): string {

@@ -11,6 +11,7 @@ import Cookies from './cookies';
  * @extends module:dispatcher.AbstractThemeResolver
  */
 export class CookieThemeResolver extends AbstractThemeResolver {
+    #fallbackThemeName: string;
     readonly cookieName: string;
 
     get [Symbol.toStringTag](): string {
@@ -19,8 +20,7 @@ export class CookieThemeResolver extends AbstractThemeResolver {
 
     constructor(cookieName: string = 'theme', defaultThemeName: string = 'default') {
         super(defaultThemeName);
-        /**
-         */
+        this.#fallbackThemeName = defaultThemeName;
         Reflect.defineProperty(this, 'cookieName', {
             value: cookieName,
             configurable: true,
@@ -30,9 +30,14 @@ export class CookieThemeResolver extends AbstractThemeResolver {
     }
 
     resolveTheme(route: Route): string {
-        // @ts-ignore: ¯\_(ツ)_/¯
-        const themeName: string = (Cookies.get(this.cookieName) as string) || this.defaultThemeName;
-        return themeName;
+        const themeName = Cookies.get(this.cookieName);
+        if (typeof themeName === 'string') {
+            return themeName;
+        }
+
+        void route;
+
+        return this.#fallbackThemeName;
     }
 
     static fromApplicationContext(

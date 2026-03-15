@@ -3,7 +3,7 @@
  */
 
 import { createNull, JSONObject, JSONValue } from '@blue/core';
-import type { Parser, Ok } from '@blue/parser';
+import type { Parser } from '@blue/parser';
 import cookieExpression from './parser/cookie-expression';
 import { decodeURIComponent as decode } from '@blue/util/string';
 
@@ -35,9 +35,21 @@ type CookieConverter = {
     write?: (value: string, key: string) => string;
 };
 
+type CookieParser = Parser<JSONObject>;
 type CookieParseResult = ReturnType<Parser<JSONObject>['run']>;
+type CookieParseSuccess = Extract<CookieParseResult, { isError: false }>;
+
+const cookieParser = cookieExpression as CookieParser;
 
 const { assign } = Object;
+
+function parseCookieJar(input: string): CookieParseResult {
+    return cookieParser.run(input);
+}
+
+function isCookieParseSuccess(result: CookieParseResult): result is CookieParseSuccess {
+    return result.isError === false;
+}
 
 function init(converter: CookieConverter = {}): CookieJar {
     const api = createNull();
@@ -98,8 +110,8 @@ function init(converter: CookieConverter = {}): CookieJar {
     }
 
     function get(key: string, json: boolean): JSONValue {
-        const parseResult = (cookieExpression as Parser<JSONObject>).run(document.cookie);
-        if (parseResult.isError) {
+        const parseResult = parseCookieJar(document.cookie);
+        if (!isCookieParseSuccess(parseResult)) {
             const fallbackCookies = String(document.cookie || '').trim();
             if (!fallbackCookies) {
                 return key ? undefined : createNull();
@@ -121,7 +133,7 @@ function init(converter: CookieConverter = {}): CookieJar {
 
             return key ? (json ? JSON.parse(jar[key] as string) : jar[key]) : jar;
         }
-        const jar: JSONObject = (parseResult as Ok<JSONObject, string>).result;
+        const jar: JSONObject = parseResult.result;
         return key ? (json ? JSON.parse(jar[key] as string) : jar[key]) : jar;
     }
 
@@ -132,7 +144,7 @@ function init(converter: CookieConverter = {}): CookieJar {
         set(key, '', assign(attributes, { expires: -1 }));
 
     // Expose cookie parser for consumers/tests that want direct parsing.
-    api.run = (input: string): CookieParseResult => (cookieExpression as Parser<JSONObject>).run(input);
+    api.run = (input: string): CookieParseResult => parseCookieJar(input);
 
     api.defaults = {};
 

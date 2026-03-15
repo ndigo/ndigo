@@ -154,7 +154,6 @@ export class ImportViewResolver extends AbstractPathBasedViewResolver {
             ViewClass: Constructable<View> = await import(/* webpackIgnore: true */ path).then(
                 (module) => module.default
             );
-        console.log('View', name, ViewClass);
         return new ViewClass();
     }
 }

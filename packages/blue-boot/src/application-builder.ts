@@ -55,8 +55,6 @@ export class ApplicationBuilder {
     parent(...sources: Function[]): ApplicationBuilder {
         if (this.#parent === null) {
             this.#parent = new ApplicationBuilder(sources);
-        } else {
-            this.#parent.sources(sources);
         }
 
         return this.#parent;

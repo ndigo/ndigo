@@ -23,7 +23,7 @@ export interface CookieJar {
     getJSON(key: string): JSONValue;
     remove(key: string, attributes?: CookieAttributes): string;
     set(key: string, value: string, attributes?: CookieAttributes): string;
-    run(input: string): unknown;
+    run(input: string): CookieParseResult;
 }
 
 type CookieAttributeValue = string | number | boolean | Date;
@@ -31,9 +31,15 @@ type CookieAttributes = {
     [name: string]: CookieAttributeValue;
 };
 
+type CookieConverter = {
+    write?: (value: string, key: string) => string;
+};
+
+type CookieParseResult = ReturnType<Parser<JSONObject>['run']>;
+
 const { assign } = Object;
 
-function init(converter): CookieJar {
+function init(converter: CookieConverter = {}): CookieJar {
     const api = createNull();
 
     function set(key: string, value: string, attributes?: CookieAttributes): string {
@@ -55,7 +61,7 @@ function init(converter): CookieJar {
             if (/^[\{\[]/.test(result)) {
                 value = result;
             }
-        } catch (e) {}
+        } catch {}
 
         value = converter.write
             ? converter.write(value, key)
@@ -126,7 +132,7 @@ function init(converter): CookieJar {
         set(key, '', assign(attributes, { expires: -1 }));
 
     // Expose cookie parser for consumers/tests that want direct parsing.
-    api.run = (input: string): unknown => (cookieExpression as Parser<unknown>).run(input);
+    api.run = (input: string): CookieParseResult => (cookieExpression as Parser<JSONObject>).run(input);
 
     api.defaults = {};
 
@@ -135,4 +141,4 @@ function init(converter): CookieJar {
     return api;
 }
 
-export default init(function () {});
+export default init();

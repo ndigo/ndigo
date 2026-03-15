@@ -26,6 +26,14 @@ class ChildConfiguration {
     }
 }
 
+@configuration
+class ParentConfiguration {
+    @entry
+    parentValue() {
+        return 'parent';
+    }
+}
+
 describe('ApplicationBuilder', () => {
     test('it should store properties without throwing', () => {
         const builder = new ApplicationBuilder([BuilderConfiguration]);
@@ -85,5 +93,17 @@ describe('ApplicationBuilder', () => {
 
         expect(parentContext.getValue('childValue')).toBeUndefined();
         expect(childContext.getValue('childValue')).toBe('child');
+    });
+
+    test('it should not mutate existing parent sources when calling parent()', () => {
+        const child = new ApplicationBuilder([ChildConfiguration]);
+        const parent = child.parent(ParentConfiguration);
+        const sameParent = child.parent(BuilderConfiguration);
+
+        expect(sameParent).toBe(parent);
+
+        const firstParentContext = parent.run();
+        expect(firstParentContext.getValue('parentValue')).toBe('parent');
+        expect(firstParentContext.getValue('builderName')).toBeUndefined();
     });
 });

@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, test } from 'vitest';
+import type { Ok } from '@blue/parser';
 import Cookies from '../src/cookies';
 
 describe('Cookies', () => {
@@ -10,10 +11,7 @@ describe('Cookies', () => {
     });
 
     test('it should parse cookies through run()', () => {
-        const parseResult = Cookies.run('theme=dark; user=blue') as {
-            isError: boolean;
-            result: Record<string, string>;
-        };
+        const parseResult = Cookies.run('theme=dark; user=blue') as Ok<Record<string, string>, string>;
 
         expect(parseResult.isError).toBe(false);
         expect(parseResult.result).toEqual({ theme: 'dark', user: 'blue' });

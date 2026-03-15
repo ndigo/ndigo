@@ -18,9 +18,27 @@ describe('MappedServiceInterceptor', () => {
         expect(() => mapped.setExcludePatterns(['/v1/internal/**'])).not.toThrow();
     });
 
-    test('it should default match implementation to true', () => {
-        const mapped = new MappedServiceInterceptor({ preInit: () => true }, ['/']);
+    test('it should match include patterns and reject excluded paths', () => {
+        const mapped = new MappedServiceInterceptor(
+            { preInit: () => true },
+            ['/api/**', '/public/*'],
+            ['/api/private/**']
+        );
 
-        expect(mapped.matches('/any/path')).toBe(true);
+        expect(mapped.matches('/api/users')).toBe(true);
+        expect(mapped.matches('/public/home')).toBe(true);
+        expect(mapped.matches('/api/private/settings')).toBe(false);
+        expect(mapped.matches('/other/path')).toBe(false);
+    });
+
+    test('it should use custom matcher when provided', () => {
+        const mapped = new MappedServiceInterceptor({ preInit: () => true }, ['GET:/api/users']);
+
+        const matcher = (path: string, pattern: string): boolean => {
+            return `${path}` === pattern;
+        };
+
+        expect(mapped.matches('GET:/api/users', matcher)).toBe(true);
+        expect(mapped.matches('POST:/api/users', matcher)).toBe(false);
     });
 });

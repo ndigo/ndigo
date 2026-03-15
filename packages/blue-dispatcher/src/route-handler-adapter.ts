@@ -17,6 +17,7 @@ import {
     MatrixValueMethodArgumentResolver,
     PathValueMethodArgumentResolver,
     QueryValueMethodArgumentResolver,
+    likeArgumentResolver,
 } from './argument-resolver';
 
 export interface RouteHandlerAdapter {
@@ -173,7 +174,7 @@ export class MetadataHandlerAdapter extends AbstractHandlerMethodAdapter impleme
         }
 
         if (isNotArray(this.argumentResolvers)) {
-            this.argumentResolvers = this.defaultArgumentResolvers;
+            this.argumentResolvers = [...this._discoverArgumentResolvers(), ...this.defaultArgumentResolvers];
         }
 
         this.handlers = handlers;
@@ -181,5 +182,36 @@ export class MetadataHandlerAdapter extends AbstractHandlerMethodAdapter impleme
 
     _supports(handler: RouteHandlerMethod): boolean {
         return handler instanceof RouteHandlerMethod;
+    }
+
+    private _discoverArgumentResolvers(): HandlerMethodArgumentResolver[] {
+        const { applicationContext } = this;
+        const resolvers: HandlerMethodArgumentResolver[] = [];
+
+        if (!applicationContext) {
+            return resolvers;
+        }
+
+        if (applicationContext.hasValue('argumentResolvers')) {
+            const resolverCollection = applicationContext.getValue<any>('argumentResolvers');
+
+            if (Array.isArray(resolverCollection)) {
+                for (let index = 0; index < resolverCollection.length; index++) {
+                    const resolver = resolverCollection[index];
+                    if (likeArgumentResolver(resolver) && !resolvers.includes(resolver)) {
+                        resolvers.push(resolver);
+                    }
+                }
+            }
+        }
+
+        if (applicationContext.hasValue('argumentResolver')) {
+            const resolver = applicationContext.getValue<any>('argumentResolver');
+            if (likeArgumentResolver(resolver) && !resolvers.includes(resolver)) {
+                resolvers.push(resolver);
+            }
+        }
+
+        return resolvers;
     }
 }

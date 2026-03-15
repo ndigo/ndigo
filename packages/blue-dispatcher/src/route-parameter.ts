@@ -47,6 +47,7 @@ export class MethodParameterType implements Equatable, Serializable {
     static MATRIX: MethodParameterType;
     static PATH: MethodParameterType;
     static QUERY: MethodParameterType;
+    static SESSION: MethodParameterType;
 
     static fromType(type: string): MethodParameterType | null {
         const types = keys(this);
@@ -95,6 +96,7 @@ MethodParameterType.COOKIE = new MethodParameterType('cookie:value');
 MethodParameterType.MATRIX = new MethodParameterType('matrix:value');
 MethodParameterType.PATH = new MethodParameterType('path:value');
 MethodParameterType.QUERY = new MethodParameterType('query:value');
+MethodParameterType.SESSION = new MethodParameterType('session:value');
 
 /**
  * Method parameter metadata
@@ -232,6 +234,27 @@ export function cookieValue(
 ): ParameterExtractor {
     return {
         type: MethodParameterType.COOKIE,
+        name,
+        required: options.required ?? false,
+        defaultValue: options.defaultValue ?? null,
+    };
+}
+
+/**
+ * Factory function: Create a session parameter extractor
+ *
+ * @example
+ * @routeParams({
+ *   userId: sessionValue('userId'),
+ *   token: sessionValue('AUTH_TOKEN', { required: true })
+ * })
+ */
+export function sessionValue(
+    name: string,
+    options: { required?: boolean; defaultValue?: string } = {}
+): ParameterExtractor {
+    return {
+        type: MethodParameterType.SESSION,
         name,
         required: options.required ?? false,
         defaultValue: options.defaultValue ?? null,

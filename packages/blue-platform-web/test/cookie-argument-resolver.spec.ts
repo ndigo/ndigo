@@ -1,0 +1,53 @@
+import { describe, test, expect, beforeEach, vi } from 'vitest';
+import { MethodParameter, MethodParameterType } from '@blue/dispatcher';
+import { BrowserCookieValueMethodArgumentResolver } from '../src/cookie-argument-resolver';
+import Cookies from '../src/cookies';
+
+describe('BrowserCookieValueMethodArgumentResolver', () => {
+    let resolver: BrowserCookieValueMethodArgumentResolver;
+
+    beforeEach(() => {
+        resolver = new BrowserCookieValueMethodArgumentResolver();
+        vi.restoreAllMocks();
+    });
+
+    test('supports cookie parameters', () => {
+        const parameter = new MethodParameter(MethodParameterType.COOKIE, 'theme');
+
+        expect(resolver.supportsParameter(parameter)).toBe(true);
+    });
+
+    test('does not support non-cookie parameters', () => {
+        const parameter = new MethodParameter(MethodParameterType.QUERY, 'theme');
+
+        expect(resolver.supportsParameter(parameter)).toBe(false);
+    });
+
+    test('resolves cookie values by name', () => {
+        vi.spyOn(Cookies, 'get').mockReturnValue('night');
+
+        const parameter = new MethodParameter(MethodParameterType.COOKIE, 'theme');
+        const value = resolver.resolveArgument(parameter, { data: {}, params: null } as any, {} as any);
+
+        expect(value).toBe('night');
+    });
+
+    test('uses default value when cookie is absent', () => {
+        vi.spyOn(Cookies, 'get').mockReturnValue(undefined);
+
+        const parameter = new MethodParameter(MethodParameterType.COOKIE, 'theme', false, 'default');
+        const value = resolver.resolveArgument(parameter, { data: {}, params: null } as any, {} as any);
+
+        expect(value).toBe('default');
+    });
+
+    test('throws when required cookie is absent', () => {
+        vi.spyOn(Cookies, 'get').mockReturnValue(undefined);
+
+        const parameter = new MethodParameter(MethodParameterType.COOKIE, 'theme', true);
+
+        expect(() => resolver.resolveArgument(parameter, { data: {}, params: null } as any, {} as any)).toThrow(
+            '"theme" cannot be undefined or null'
+        );
+    });
+});

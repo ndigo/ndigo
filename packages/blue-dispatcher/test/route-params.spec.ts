@@ -10,6 +10,7 @@ import {
     queryValue,
     matrixValue,
     cookieValue,
+    sessionValue,
     pathValue,
     getMethodParameter,
     hasMethodParameter,
@@ -54,6 +55,14 @@ describe('@routeParams - TC39 Parameter Injection Pattern', () => {
             expect(extractor.name).toBe('userId');
             expect(extractor.required).toBe(false);
         });
+
+        it('sessionValue should create session parameter extractor', () => {
+            const extractor = sessionValue('sessionId');
+            expect(extractor.type).toEqual(MethodParameterType.SESSION);
+            expect(extractor.name).toBe('sessionId');
+            expect(extractor.required).toBe(false);
+            expect(extractor.defaultValue).toBeNull();
+        });
     });
 
     describe('@routeParams Decorator', () => {
@@ -92,18 +101,20 @@ describe('@routeParams - TC39 Parameter Injection Pattern', () => {
                 @routeParams({
                     page: queryValue('page'),
                     session: cookieValue('SESSIONID'),
+                    sessionId: sessionValue('sessionId'),
                     color: matrixValue('color'),
                     userId: pathValue('userId'),
                 })
-                handleMixed(page: string, session: string, color: string, userId: string) {}
+                handleMixed(page: string, session: string, sessionId: string, color: string, userId: string) {}
             }
 
             const params = getMethodParameter(TestController.prototype, 'handleMixed');
-            expect(params).toHaveLength(4);
+            expect(params).toHaveLength(5);
             expect(params![0].type).toEqual(MethodParameterType.QUERY);
             expect(params![1].type).toEqual(MethodParameterType.COOKIE);
-            expect(params![2].type).toEqual(MethodParameterType.MATRIX);
-            expect(params![3].type).toEqual(MethodParameterType.PATH);
+            expect(params![2].type).toEqual(MethodParameterType.SESSION);
+            expect(params![3].type).toEqual(MethodParameterType.MATRIX);
+            expect(params![4].type).toEqual(MethodParameterType.PATH);
         });
 
         it('should handle sparse parameters (not all decorated)', () => {

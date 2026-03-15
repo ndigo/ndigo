@@ -20,17 +20,22 @@ export interface Cookie {
 export interface CookieJar {
     get(key: string): JSONValue;
     getJSON(key: string): JSONValue;
-    remove(key: string, attributes): string;
-    set(key: string, value: string, attributes): string;
+    remove(key: string, attributes?: CookieAttributes): string;
+    set(key: string, value: string, attributes?: CookieAttributes): string;
     run(input: string): unknown;
 }
+
+type CookieAttributeValue = string | number | boolean | Date;
+type CookieAttributes = {
+    [name: string]: CookieAttributeValue;
+};
 
 const { assign } = Object;
 
 function init(converter): CookieJar {
     const api = createNull();
 
-    function set(key: string, value: string, attributes): string {
+    function set(key: string, value: string, attributes?: CookieAttributes): string {
         if (typeof document === 'undefined') {
             return;
         }
@@ -42,7 +47,7 @@ function init(converter): CookieJar {
         }
 
         // We're using "expires" because "max-age" is not supported by IE
-        attributes.expires = attributes.expires ? attributes.expires.toUTCString() : '';
+        attributes.expires = attributes.expires instanceof Date ? attributes.expires.toUTCString() : '';
 
         try {
             const result = JSON.stringify(value);
@@ -60,7 +65,7 @@ function init(converter): CookieJar {
 
         key = encodeURIComponent(String(key))
             .replace(/%(23|24|26|2B|5E|60|7C)/g, decodeURIComponent)
-            .replace(/[\(\)]/g, escape);
+            .replace(/[\(\)]/g, (character: string) => encodeURIComponent(character));
 
         let stringifiedAttributes = '';
         for (const attributeName in attributes) {
@@ -79,28 +84,27 @@ function init(converter): CookieJar {
             // Consume the characters of the unparsed-attributes up to,
             // not including, the first %x3B (";") character.
             // ...
-            stringifiedAttributes += '=' + attributes[attributeName].split(' ;')[0];
+            stringifiedAttributes += '=' + String(attributes[attributeName]).split(' ;')[0];
         }
 
         return (document.cookie = key + '=' + value + stringifiedAttributes);
     }
 
     function get(key: string, json: boolean): JSONValue {
-        const parseResult = (cookieExpression as Parser<Array<[string, string]>>).run(document.cookie);
+        const parseResult = (cookieExpression as Parser<JSONObject>).run(document.cookie);
         if (parseResult.isError) {
             console.error('Cookie parsing error:', parseResult.error);
             return createNull();
         }
-        const rawCookies: Array<[string, string]> = (parseResult as Ok<Array<[string, string]>, string>).result;
-
-        const jar: JSONObject = Object.fromEntries(rawCookies) as JSONObject;
+        const jar: JSONObject = (parseResult as Ok<JSONObject, string>).result;
         return key ? (json ? JSON.parse(jar[key] as string) : jar[key]) : jar;
     }
 
     api.set = set;
     api.get = (key: string): JSONValue => get(key, false /* read as raw */);
     api.getJSON = (key: string): JSONValue => get(key, true /* read as json */);
-    api.remove = (key: string, attributes): string => set(key, '', assign(attributes, { expires: -1 }));
+    api.remove = (key: string, attributes?: CookieAttributes): string =>
+        set(key, '', assign(attributes, { expires: -1 }));
 
     // Expose cookie parser for consumers/tests that want direct parsing.
     api.run = (input: string): unknown => (cookieExpression as Parser<unknown>).run(input);

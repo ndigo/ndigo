@@ -6,8 +6,6 @@ import { ApplicationContext, ConfigurableEnvironment } from '@blue/context';
 import { JSONObject } from '@blue/core';
 import { Application } from './application';
 
-/**
- */
 export class ApplicationBuilder {
     #application: Application;
     #context: ApplicationContext;
@@ -35,7 +33,7 @@ export class ApplicationBuilder {
         this.#sources = new Set<Function>();
     }
 
-    build() {
+    build(): Application {
         return this.#application;
     }
 
@@ -77,16 +75,10 @@ export class ApplicationBuilder {
         properties = properties || {};
         this.#properties = Object.assign(this.#properties, properties);
         this.#application.setProperties(this.#properties);
-        if (this.#parent !== null) {
-            this.#parent.properties(this.#properties);
-            if (this.#environment) {
-                this.#parent.environment(this.#environment);
-            }
-        }
         return this;
     }
 
-    run(...args): ApplicationContext {
+    run(...args: string[]): ApplicationContext {
         if (this.#running) {
             return this.#context;
         } else {
@@ -99,7 +91,9 @@ export class ApplicationBuilder {
     sources(sources: Function[]): ApplicationBuilder {
         const length = sources.length;
         for (let index = 0; index < length; index++) {
-            this.#sources.add(sources[index]);
+            const source = sources[index];
+            this.#sources.add(source);
+            this.#application.sources.add(source);
         }
         return this;
     }

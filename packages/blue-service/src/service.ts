@@ -1,7 +1,7 @@
 /**
  * @author Jeff Rose
  */
-import { createNull } from '@blue/core';
+import { IllegalStateError, createNull } from '@blue/core';
 import { AsyncDestroyable } from '@blue/factory';
 import {
     HTTPInit,
@@ -11,6 +11,7 @@ import {
     IfModifiedInit,
     TimeoutInit,
 } from '@blue/http';
+import { like } from '@blue/util';
 
 export type ServiceInit = HTTPInit &
     ContentTypeInit &
@@ -39,12 +40,42 @@ export interface ResponseAwareServiceInterceptor<T extends ServiceInit = Service
     postSuccess(response: Response, settings: T): Promise<void>;
 }
 
-type ServiceInterceptor =
+export type ServiceInterceptor =
     | CompletionAwareServiceInterceptor
     | ErrorAwareServiceInterceptor
     | InitializationAwareServiceInterceptor
     | RequestAwareServiceInterceptor
     | ResponseAwareServiceInterceptor;
+
+export const likeCompletionAwareServiceInterceptor = like({
+    postRequest: Function,
+}) as (value: unknown) => value is CompletionAwareServiceInterceptor;
+
+export const likeErrorAwareServiceInterceptor = like({
+    postFailure: Function,
+}) as (value: unknown) => value is ErrorAwareServiceInterceptor;
+
+export const likeInitializationAwareServiceInterceptor = like({
+    preInit: Function,
+}) as (value: unknown) => value is InitializationAwareServiceInterceptor;
+
+export const likeRequestAwareServiceInterceptor = like({
+    preRequest: Function,
+}) as (value: unknown) => value is RequestAwareServiceInterceptor;
+
+export const likeResponseAwareServiceInterceptor = like({
+    postSuccess: Function,
+}) as (value: unknown) => value is ResponseAwareServiceInterceptor;
+
+export const likeServiceInterceptor = (value: unknown): value is ServiceInterceptor => {
+    return (
+        likeCompletionAwareServiceInterceptor(value) ||
+        likeErrorAwareServiceInterceptor(value) ||
+        likeInitializationAwareServiceInterceptor(value) ||
+        likeRequestAwareServiceInterceptor(value) ||
+        likeResponseAwareServiceInterceptor(value)
+    );
+};
 
 const { defineProperty } = Reflect;
 
@@ -55,6 +86,17 @@ let serviceId = 0;
  */
 function nextServiceId(): number {
     return ++serviceId;
+}
+
+function globToRegExp(globPattern: string): RegExp {
+    const escapedPattern = globPattern.replace(/[.+?^${}()|[\]\\]/g, '\\$&');
+    const placeholder = '__DOUBLE_STAR__';
+    const regexPattern = escapedPattern
+        .replace(/\*\*/g, placeholder)
+        .replace(/\*/g, '[^/]*')
+        .replace(new RegExp(placeholder, 'g'), '.*');
+
+    return new RegExp(`^${regexPattern}$`);
 }
 
 export class MappedServiceInterceptor {
@@ -72,8 +114,17 @@ export class MappedServiceInterceptor {
         this.setIncludePatterns(includePatterns);
     }
 
-    matches(path: string, matcher?): boolean {
-        return true;
+    matches(path: string, matcher: (path: string, pattern: string) => boolean = null): boolean {
+        const patternMatcher = matcher || ((value, pattern) => globToRegExp(pattern).test(value));
+        const includePatterns = this.#includePatterns || [];
+        const excludePatterns = this.#excludePatterns || [];
+
+        const isIncluded = includePatterns.length
+            ? includePatterns.some((pattern) => patternMatcher(path, pattern))
+            : true;
+        const isExcluded = excludePatterns.some((pattern) => patternMatcher(path, pattern));
+
+        return isIncluded && !isExcluded;
     }
 
     setExcludePatterns(excludePatterns: string[] = []): void {
@@ -85,8 +136,6 @@ export class MappedServiceInterceptor {
     }
 }
 
-/**
- */
 export class ServiceExecutionChain {
     #interceptors: ServiceInterceptor[];
 
@@ -107,7 +156,8 @@ export class ServiceExecutionChain {
         if (service instanceof ServiceExecutionChain) {
             const chain = service;
             this.service = chain.service;
-            interceptors && this.addInterceptors(chain.interceptors);
+            chain.interceptors && this.addInterceptors(chain.interceptors);
+            interceptors && this.addInterceptors(interceptors);
         } else {
             this.service = service;
             interceptors && this.addInterceptors(interceptors);
@@ -120,12 +170,18 @@ export class ServiceExecutionChain {
      * @param {module:service.ServiceInterceptor} interceptor
      */
     addInterceptor(interceptor: ServiceInterceptor): void {
-        if (interceptor) {
-            if (!this.#interceptors) {
-                this.#interceptors = [];
-            }
-            this.#interceptors.push(interceptor);
+        if (!interceptor) {
+            return;
         }
+
+        if (!likeServiceInterceptor(interceptor)) {
+            throw new IllegalStateError('Invalid interceptor: expected a service interceptor implementation.');
+        }
+
+        if (!this.#interceptors) {
+            this.#interceptors = [];
+        }
+        this.#interceptors.push(interceptor);
     }
 
     /**

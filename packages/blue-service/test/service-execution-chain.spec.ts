@@ -1,4 +1,5 @@
 import { describe, expect, test } from 'vitest';
+import { IllegalStateError } from '@blue/core';
 import { ServiceExecutionChain } from '../src/service';
 
 describe('ServiceExecutionChain', () => {
@@ -33,5 +34,28 @@ describe('ServiceExecutionChain', () => {
         const chain = new ServiceExecutionChain({} as any);
 
         expect(chain[Symbol.toStringTag]).toBe('ServiceExecutionChain');
+    });
+
+    test('it should ignore null and undefined interceptors', () => {
+        const chain = new ServiceExecutionChain({} as any);
+
+        expect(() => chain.addInterceptor(null as any)).not.toThrow();
+        expect(() => chain.addInterceptor(undefined as any)).not.toThrow();
+        expect(chain.interceptors).toBeNull();
+    });
+
+    test('it should reject invalid interceptors', () => {
+        const chain = new ServiceExecutionChain({} as any);
+
+        expect(() => chain.addInterceptor({ nope: true } as any)).toThrow(IllegalStateError);
+    });
+
+    test('it should copy and merge interceptors when constructed from another chain', () => {
+        const service = {} as any;
+        const original = new ServiceExecutionChain(service, [{ preInit: () => true }] as any);
+        const copy = new ServiceExecutionChain(original, [{ postRequest: () => void 0 }] as any);
+
+        expect(copy.service).toBe(service);
+        expect(copy.interceptors).toHaveLength(2);
     });
 });

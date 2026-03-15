@@ -25,5 +25,3 @@ export class AppResetInterceptor implements ResponseAwareServiceInterceptor<AppR
             location.reload();
     }
 }
-
-export default AppResetInterceptor;

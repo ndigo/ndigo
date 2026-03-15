@@ -6,8 +6,12 @@ Blue Boot provides application startup primitives for BlueJS.
 
 - Application lifecycle bootstrap helpers
 - Strong integration with `@blue/context`
-- Router wiring support via `@blue/router`
 - ESM-first package for Nx/pnpm monorepo workflows
+
+## Notes
+
+- `Site` and `SiteBuilder` were removed.
+- Use the context tree (`@blue/context`) to orchestrate multiple applications via parent/child contexts.
 
 ## Installation
 

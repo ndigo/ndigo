@@ -27,7 +27,11 @@ export interface CookieJar {
 }
 
 type CookieAttributeValue = string | number | boolean | Date;
-type CookieAttributes = {
+
+/**
+ * Additional attributes to append to a cookie (e.g. path, expires, secure).
+ */
+export type CookieAttributes = {
     [name: string]: CookieAttributeValue;
 };
 
@@ -36,7 +40,11 @@ type CookieConverter = {
 };
 
 type CookieParser = Parser<JSONObject>;
-type CookieParseResult = ReturnType<Parser<JSONObject>['run']>;
+
+/**
+ * Parsed result returned by the cookie parser.
+ */
+export type CookieParseResult = ReturnType<Parser<JSONObject>['run']>;
 type CookieParseSuccess = Extract<CookieParseResult, { isError: false }>;
 
 const cookieParser = cookieExpression as CookieParser;

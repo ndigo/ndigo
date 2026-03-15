@@ -45,4 +45,10 @@ describe('CookieThemeResolver', () => {
         vi.spyOn(Cookies, 'get').mockReturnValue(undefined);
         expect(resolver.resolveTheme({ path: '/hello' } as any)).toBe('forest');
     });
+
+    test('resolver should expose Symbol.toStringTag with cookie name', () => {
+        const resolver = new CookieThemeResolver('tenantTheme', 'default');
+
+        expect(resolver[Symbol.toStringTag]).toBe('CookieThemeResolver:tenantTheme');
+    });
 });

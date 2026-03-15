@@ -1,0 +1,101 @@
+import { describe, expect, test } from 'vitest';
+import {
+    ApplicationContextAwareProcessor,
+    configuration,
+    entry,
+    MetadataConfigApplicationContext,
+} from '@blue/context';
+import { Route } from '@blue/router';
+import { BrowserDispatcher } from '../src/dispatcher';
+import { HandlerMethodArgumentResolver } from '../src/argument-resolver';
+import { ModelAndView } from '../src/model-and-view';
+import { MetadataHandlerAdapter } from '../src/route-handler-adapter';
+import { routeMapping } from '../src/route-mapping';
+import { MethodParameter, MethodParameterType, queryValue, routeParams } from '../src/route-parameter';
+import { TestErrorResolver, TestViewResolver } from './test-strategies';
+
+class CustomQueryArgumentResolver implements HandlerMethodArgumentResolver {
+    supportsParameter(parameter: MethodParameter): boolean {
+        return MethodParameterType.QUERY.equals(parameter.type);
+    }
+
+    resolveArgument(parameter: MethodParameter, route: Route): string {
+        return `custom:${route.data[parameter.name]}`;
+    }
+}
+
+describe('custom argument resolvers', () => {
+    test('prefers context argumentResolvers over defaults', async () => {
+        let capturedName: string | undefined;
+
+        @routeMapping('/hello')
+        class HelloController {
+            @routeMapping('/there')
+            @routeParams({
+                name: queryValue('name'),
+            })
+            handleThere(name: string): ModelAndView {
+                capturedName = name;
+                return new ModelAndView('test');
+            }
+        }
+
+        @configuration
+        class TestConfiguration {
+            @entry
+            argumentResolvers() {
+                return [new CustomQueryArgumentResolver()];
+            }
+
+            @entry
+            errorResolvers() {
+                return [new TestErrorResolver()];
+            }
+
+            @entry
+            helloController() {
+                return new HelloController();
+            }
+
+            @entry
+            viewResolver() {
+                return new TestViewResolver();
+            }
+        }
+
+        const context = new MetadataConfigApplicationContext('test');
+        context.addProcessor(new ApplicationContextAwareProcessor(context));
+        context.register(TestConfiguration);
+
+        const dispatcher = new BrowserDispatcher();
+        dispatcher.initStrategies(context);
+
+        const request = {
+            id: 1,
+            length: 2,
+            path: '/hello/there',
+            params: {},
+            raw: '/hello/there',
+            data: { name: 'John' },
+            0: { name: 'hello', raw: 'hello', data: null },
+            1: { name: 'there', raw: 'there', data: null },
+        };
+
+        await dispatcher.dispatch(request as any);
+
+        expect(capturedName).toBe('custom:John');
+    });
+
+    test('discovers singular argumentResolver from context', () => {
+        const context = new MetadataConfigApplicationContext('test');
+        const customResolver = new CustomQueryArgumentResolver();
+        context.setValue('argumentResolver', customResolver);
+
+        const adapter = new MetadataHandlerAdapter();
+        adapter.setApplicationContext(context as any);
+
+        const resolvers = (adapter as any)._discoverArgumentResolvers() as HandlerMethodArgumentResolver[];
+
+        expect(resolvers).toContain(customResolver);
+    });
+});

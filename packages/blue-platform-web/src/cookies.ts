@@ -5,6 +5,7 @@
 import { createNull, JSONObject, JSONValue } from '@blue/core';
 import type { Parser, Ok } from '@blue/parser';
 import cookieExpression from './parser/cookie-expression';
+import { decodeURIComponent as decode } from '@blue/util/string';
 
 export interface Cookie {
     name: string;
@@ -93,8 +94,26 @@ function init(converter): CookieJar {
     function get(key: string, json: boolean): JSONValue {
         const parseResult = (cookieExpression as Parser<JSONObject>).run(document.cookie);
         if (parseResult.isError) {
-            console.error('Cookie parsing error:', parseResult.error);
-            return createNull();
+            const fallbackCookies = String(document.cookie || '').trim();
+            if (!fallbackCookies) {
+                return key ? undefined : createNull();
+            }
+
+            const pairs = fallbackCookies.split('; ');
+            const jar = pairs.reduce((result: JSONObject, pair: string): JSONObject => {
+                const separatorIndex = pair.indexOf('=');
+                if (separatorIndex < 0) {
+                    return result;
+                }
+
+                const rawKey = pair.slice(0, separatorIndex);
+                const rawValue = pair.slice(separatorIndex + 1);
+                result[decode(rawKey)] = decode(rawValue);
+
+                return result;
+            }, createNull() as JSONObject);
+
+            return key ? (json ? JSON.parse(jar[key] as string) : jar[key]) : jar;
         }
         const jar: JSONObject = (parseResult as Ok<JSONObject, string>).result;
         return key ? (json ? JSON.parse(jar[key] as string) : jar[key]) : jar;

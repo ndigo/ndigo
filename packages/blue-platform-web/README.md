@@ -21,6 +21,7 @@ pnpm add @blue/platform-web
 import {
     argumentValueConverters,
     configureArgumentValueConverterRegistry,
+    configureStrictBrowserArgumentResolvers,
     Cookies,
     configureBrowserArgumentResolvers,
     configureCookieThemeResolver,
@@ -54,6 +55,14 @@ configureArgumentValueConverterRegistry(context, {
 configureBrowserArgumentResolvers(context, {
     state: 'toInt',
     strictNamedConverterLookup: true,
+});
+
+// Convenience helper: strict mode enabled by default.
+configureStrictBrowserArgumentResolvers(context, {
+    registerConverterRegistry: {
+        toInt: argumentValueConverters.number,
+    },
+    state: 'toInt',
 });
 
 // Register cookie-backed theme resolver strategy.

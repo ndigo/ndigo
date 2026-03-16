@@ -44,9 +44,11 @@ function getMetadata(target: any): Record<string, any> {
  */
 export class MethodParameterType implements Equatable, Serializable {
     static COOKIE: MethodParameterType;
+    static MODEL: MethodParameterType;
     static MATRIX: MethodParameterType;
     static PATH: MethodParameterType;
     static QUERY: MethodParameterType;
+    static STATE: MethodParameterType;
     static SESSION: MethodParameterType;
 
     static fromType(type: string): MethodParameterType | null {
@@ -93,9 +95,11 @@ export class MethodParameterType implements Equatable, Serializable {
 }
 
 MethodParameterType.COOKIE = new MethodParameterType('cookie:value');
+MethodParameterType.MODEL = new MethodParameterType('model:value');
 MethodParameterType.MATRIX = new MethodParameterType('matrix:value');
 MethodParameterType.PATH = new MethodParameterType('path:value');
 MethodParameterType.QUERY = new MethodParameterType('query:value');
+MethodParameterType.STATE = new MethodParameterType('state:value');
 MethodParameterType.SESSION = new MethodParameterType('session:value');
 
 /**
@@ -255,6 +259,46 @@ export function sessionValue(
 ): ParameterExtractor {
     return {
         type: MethodParameterType.SESSION,
+        name,
+        required: options.required ?? false,
+        defaultValue: options.defaultValue ?? null,
+    };
+}
+
+/**
+ * Factory function: Create a model parameter extractor
+ *
+ * @example
+ * @routeParams({
+ *   profile: modelValue('profile'),
+ * })
+ */
+export function modelValue(
+    name: string,
+    options: { required?: boolean; defaultValue?: string } = {}
+): ParameterExtractor {
+    return {
+        type: MethodParameterType.MODEL,
+        name,
+        required: options.required ?? false,
+        defaultValue: options.defaultValue ?? null,
+    };
+}
+
+/**
+ * Factory function: Create a history state parameter extractor
+ *
+ * @example
+ * @routeParams({
+ *   token: stateValue('token'),
+ * })
+ */
+export function stateValue(
+    name: string,
+    options: { required?: boolean; defaultValue?: string } = {}
+): ParameterExtractor {
+    return {
+        type: MethodParameterType.STATE,
         name,
         required: options.required ?? false,
         defaultValue: options.defaultValue ?? null,

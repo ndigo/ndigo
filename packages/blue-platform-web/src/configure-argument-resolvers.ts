@@ -5,6 +5,8 @@
 import { ApplicationContext } from '@blue/context';
 import { HandlerMethodArgumentResolver } from '@blue/dispatcher';
 import { BrowserCookieValueMethodArgumentResolver } from './cookie-argument-resolver';
+import { BrowserModelValueMethodArgumentResolver } from './model-argument-resolver';
+import { BrowserStateValueMethodArgumentResolver } from './state-argument-resolver';
 import { BrowserSessionValueMethodArgumentResolver } from './session-argument-resolver';
 
 /**
@@ -15,6 +17,8 @@ export function configureBrowserArgumentResolvers(
 ): HandlerMethodArgumentResolver[] {
     const resolvers: HandlerMethodArgumentResolver[] = [
         new BrowserCookieValueMethodArgumentResolver(),
+        new BrowserModelValueMethodArgumentResolver(),
+        new BrowserStateValueMethodArgumentResolver(),
         new BrowserSessionValueMethodArgumentResolver(),
     ];
 

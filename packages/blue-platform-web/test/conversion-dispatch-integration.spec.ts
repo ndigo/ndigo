@@ -22,6 +22,7 @@ import { BrowserSessionValueMethodArgumentResolver } from '../src/session-argume
 import { BrowserStateValueMethodArgumentResolver } from '../src/state-argument-resolver';
 import { BrowserCookieValueMethodArgumentResolver } from '../src/cookie-argument-resolver';
 import Cookies from '../src/cookies';
+import { argumentValueConverters } from '../src/argument-value-converter';
 
 class TestView {
     render(): void {}
@@ -84,10 +85,18 @@ describe('conversion + error flow integration', () => {
             @entry
             argumentResolvers() {
                 return [
-                    new BrowserCookieValueMethodArgumentResolver(),
-                    new BrowserModelValueMethodArgumentResolver(),
-                    new BrowserStateValueMethodArgumentResolver(),
-                    new BrowserSessionValueMethodArgumentResolver(),
+                    new BrowserCookieValueMethodArgumentResolver(undefined, argumentValueConverters, {
+                        strictNamedLookup: true,
+                    }),
+                    new BrowserModelValueMethodArgumentResolver(undefined, argumentValueConverters, {
+                        strictNamedLookup: true,
+                    }),
+                    new BrowserStateValueMethodArgumentResolver(undefined, argumentValueConverters, {
+                        strictNamedLookup: true,
+                    }),
+                    new BrowserSessionValueMethodArgumentResolver(undefined, argumentValueConverters, {
+                        strictNamedLookup: true,
+                    }),
                 ];
             }
 

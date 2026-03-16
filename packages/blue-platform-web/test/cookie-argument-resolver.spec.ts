@@ -92,4 +92,20 @@ describe('BrowserCookieValueMethodArgumentResolver', () => {
 
         expect(value).toBe(55);
     });
+
+    test('supports optional named converter descriptor for nullish values', () => {
+        vi.spyOn(Cookies, 'get').mockReturnValue(undefined);
+
+        const resolver = new BrowserCookieValueMethodArgumentResolver(undefined, {
+            toInt: (value) => Number(value),
+        });
+
+        const parameter = new MethodParameter(MethodParameterType.COOKIE, 'theme', false, null, {
+            optional: true,
+            use: 'toInt',
+        });
+        const value = resolver.resolveArgument(parameter, { data: {}, params: null } as any, {} as any);
+
+        expect(value).toBeNull();
+    });
 });

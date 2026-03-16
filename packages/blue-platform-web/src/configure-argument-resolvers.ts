@@ -7,9 +7,9 @@ import { HandlerMethodArgumentResolver } from '@blue/dispatcher';
 import {
     ArgumentValueConverter,
     ArgumentValueConverterRegistry,
+    ConverterResolutionOptions,
     ResolverConverterOption,
     argumentValueConverters,
-    identityArgumentValueConverter,
     resolveConverter,
 } from './argument-value-converter';
 import { BrowserCookieValueMethodArgumentResolver } from './cookie-argument-resolver';
@@ -23,6 +23,7 @@ export type BrowserArgumentResolverOptions = {
     session?: ResolverConverterOption;
     state?: ResolverConverterOption;
     converterRegistry?: ArgumentValueConverterRegistry;
+    strictNamedConverterLookup?: boolean;
 };
 
 /**
@@ -36,12 +37,31 @@ export function configureBrowserArgumentResolvers(
         ? applicationContext.getValue<ArgumentValueConverterRegistry>('argumentValueConverterRegistry')
         : null;
     const converterRegistry = options.converterRegistry ?? contextRegistry ?? argumentValueConverters;
+    const converterResolutionOptions: ConverterResolutionOptions = {
+        strictNamedLookup: options.strictNamedConverterLookup ?? false,
+    };
 
     const resolvers: HandlerMethodArgumentResolver[] = [
-        new BrowserCookieValueMethodArgumentResolver(resolveConverter(options.cookie, converterRegistry)),
-        new BrowserModelValueMethodArgumentResolver(resolveConverter(options.model, converterRegistry)),
-        new BrowserStateValueMethodArgumentResolver(resolveConverter(options.state, converterRegistry)),
-        new BrowserSessionValueMethodArgumentResolver(resolveConverter(options.session, converterRegistry)),
+        new BrowserCookieValueMethodArgumentResolver(
+            resolveConverter(options.cookie, converterRegistry, converterResolutionOptions),
+            converterRegistry,
+            converterResolutionOptions
+        ),
+        new BrowserModelValueMethodArgumentResolver(
+            resolveConverter(options.model, converterRegistry, converterResolutionOptions),
+            converterRegistry,
+            converterResolutionOptions
+        ),
+        new BrowserStateValueMethodArgumentResolver(
+            resolveConverter(options.state, converterRegistry, converterResolutionOptions),
+            converterRegistry,
+            converterResolutionOptions
+        ),
+        new BrowserSessionValueMethodArgumentResolver(
+            resolveConverter(options.session, converterRegistry, converterResolutionOptions),
+            converterRegistry,
+            converterResolutionOptions
+        ),
     ];
 
     applicationContext.setValue('argumentResolvers', resolvers);

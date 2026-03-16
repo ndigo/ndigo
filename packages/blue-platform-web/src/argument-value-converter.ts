@@ -13,6 +13,10 @@ export type ArgumentValueConverter = (value: any, context: ArgumentValueConversi
 
 export type ArgumentValueConverterRegistry = Record<string, ArgumentValueConverter>;
 
+export type ConverterResolutionOptions = {
+    strictNamedLookup?: boolean;
+};
+
 export type ResolverConverterOption =
     | ArgumentValueConverter
     | keyof typeof argumentValueConverters
@@ -79,7 +83,8 @@ export const argumentValueConverters: Record<string, ArgumentValueConverter> = {
 
 export function resolveConverter(
     option: ParameterValueConverterReference | ResolverConverterOption | undefined,
-    registry: ArgumentValueConverterRegistry = argumentValueConverters
+    registry: ArgumentValueConverterRegistry = argumentValueConverters,
+    options: ConverterResolutionOptions = {}
 ): ArgumentValueConverter {
     if (!option) {
         return identityArgumentValueConverter;
@@ -90,10 +95,16 @@ export function resolveConverter(
     }
 
     if (typeof option === 'string') {
-        return registry[option] ?? argumentValueConverters[option] ?? identityArgumentValueConverter;
+        const converter = registry[option] ?? argumentValueConverters[option];
+
+        if (!converter && options.strictNamedLookup) {
+            throw new TypeError(`Unknown converter reference: ${option}`);
+        }
+
+        return converter ?? identityArgumentValueConverter;
     }
 
-    const baseConverter = resolveConverter(option.use, registry);
+    const baseConverter = resolveConverter(option.use, registry, options);
 
     return option.optional ? createOptionalConverter(baseConverter) : baseConverter;
 }

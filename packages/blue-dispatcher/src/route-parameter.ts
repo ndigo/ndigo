@@ -19,10 +19,17 @@ export type ParameterExtractor = {
     name: string;
     required: boolean;
     defaultValue: string | null;
-    convert: ParameterValueConverter | null;
+    convert: ParameterValueConverterReference | null;
 };
 
 export type ParameterValueConverter = (value: any, context?: any) => any;
+export type ParameterValueConverterReference =
+    | ParameterValueConverter
+    | string
+    | {
+          optional?: boolean;
+          use: ParameterValueConverter | string;
+      };
 
 /**
  * Parameter map for @routeParams decorator
@@ -113,21 +120,21 @@ export class MethodParameter implements Serializable {
     readonly type: MethodParameterType;
     readonly required: boolean;
     readonly defaultValue: string | null;
-    readonly convert: ParameterValueConverter | null;
+    readonly convert: ParameterValueConverterReference | null;
 
     constructor(
         type: MethodParameterType,
         name: string,
         required: boolean = false,
         defaultValue: string | null = null,
-        convert: ParameterValueConverter | null = null
+        convert: ParameterValueConverterReference | null = null
     ) {
         const isNotString = complement(isString);
         if (isNotString(name)) {
             throw new TypeError(`"name" must be a string but was ${name}`);
         }
-        if (convert !== null && !isFunction(convert)) {
-            throw new TypeError(`"convert" must be a function or null but was ${convert}`);
+        if (convert !== null && !this._isConverterReference(convert)) {
+            throw new TypeError(`"convert" must be a converter reference or null but was ${convert}`);
         }
         defineProperty(this, 'type', {
             value: type,
@@ -167,8 +174,21 @@ export class MethodParameter implements Serializable {
         json.type = this.type;
         json.required = this.required;
         json.defaultValue = this.defaultValue;
-        json.hasConverter = isFunction(this.convert);
+        json.hasConverter = this.convert !== null;
         return json;
+    }
+
+    private _isConverterReference(value: any): value is ParameterValueConverterReference {
+        if (isFunction(value) || isString(value)) {
+            return true;
+        }
+
+        if (value && typeof value === 'object') {
+            const use = value.use;
+            return isFunction(use) || isString(use);
+        }
+
+        return false;
     }
 
     toString(): string {
@@ -187,7 +207,7 @@ export class MethodParameter implements Serializable {
  */
 export function queryValue(
     name: string,
-    options: { required?: boolean; defaultValue?: string; convert?: ParameterValueConverter } = {}
+    options: { required?: boolean; defaultValue?: string; convert?: ParameterValueConverterReference } = {}
 ): ParameterExtractor {
     return {
         type: MethodParameterType.QUERY,
@@ -208,7 +228,7 @@ export function queryValue(
  */
 export function pathValue(
     name: string,
-    options: { required?: boolean; defaultValue?: string; convert?: ParameterValueConverter } = {}
+    options: { required?: boolean; defaultValue?: string; convert?: ParameterValueConverterReference } = {}
 ): ParameterExtractor {
     return {
         type: MethodParameterType.PATH,
@@ -230,7 +250,7 @@ export function pathValue(
  */
 export function matrixValue(
     name: string,
-    options: { required?: boolean; defaultValue?: string; convert?: ParameterValueConverter } = {}
+    options: { required?: boolean; defaultValue?: string; convert?: ParameterValueConverterReference } = {}
 ): ParameterExtractor {
     return {
         type: MethodParameterType.MATRIX,
@@ -252,7 +272,7 @@ export function matrixValue(
  */
 export function cookieValue(
     name: string,
-    options: { required?: boolean; defaultValue?: string; convert?: ParameterValueConverter } = {}
+    options: { required?: boolean; defaultValue?: string; convert?: ParameterValueConverterReference } = {}
 ): ParameterExtractor {
     return {
         type: MethodParameterType.COOKIE,
@@ -274,7 +294,7 @@ export function cookieValue(
  */
 export function sessionValue(
     name: string,
-    options: { required?: boolean; defaultValue?: string; convert?: ParameterValueConverter } = {}
+    options: { required?: boolean; defaultValue?: string; convert?: ParameterValueConverterReference } = {}
 ): ParameterExtractor {
     return {
         type: MethodParameterType.SESSION,
@@ -295,7 +315,7 @@ export function sessionValue(
  */
 export function modelValue(
     name: string,
-    options: { required?: boolean; defaultValue?: string; convert?: ParameterValueConverter } = {}
+    options: { required?: boolean; defaultValue?: string; convert?: ParameterValueConverterReference } = {}
 ): ParameterExtractor {
     return {
         type: MethodParameterType.MODEL,
@@ -316,7 +336,7 @@ export function modelValue(
  */
 export function stateValue(
     name: string,
-    options: { required?: boolean; defaultValue?: string; convert?: ParameterValueConverter } = {}
+    options: { required?: boolean; defaultValue?: string; convert?: ParameterValueConverterReference } = {}
 ): ParameterExtractor {
     return {
         type: MethodParameterType.STATE,

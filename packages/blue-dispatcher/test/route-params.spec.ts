@@ -45,6 +45,18 @@ describe('@routeParams - TC39 Parameter Injection Pattern', () => {
             expect(extractor.convert).toBe(converter);
         });
 
+        it('queryValue should accept named converter option', () => {
+            const extractor = queryValue('limit', { convert: 'number' });
+
+            expect(extractor.convert).toBe('number');
+        });
+
+        it('queryValue should accept optional converter descriptor', () => {
+            const extractor = queryValue('limit', { convert: { optional: true, use: 'number' } });
+
+            expect(extractor.convert).toEqual({ optional: true, use: 'number' });
+        });
+
         it('matrixValue should create matrix parameter extractor', () => {
             const extractor = matrixValue('color');
             expect(extractor.type).toEqual(MethodParameterType.MATRIX);
@@ -197,6 +209,18 @@ describe('@routeParams - TC39 Parameter Injection Pattern', () => {
 
             const params = getMethodParameter(TestController.prototype, 'handleQuery');
             expect(params![0].convert).toBe(converter);
+        });
+
+        it('should preserve named converter options', () => {
+            class TestController {
+                @routeParams({
+                    limit: queryValue('limit', { convert: 'number' }),
+                })
+                handleQuery(limit: string) {}
+            }
+
+            const params = getMethodParameter(TestController.prototype, 'handleQuery');
+            expect(params![0].convert).toBe('number');
         });
 
         it('should throw error if parameter name not found', () => {

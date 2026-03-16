@@ -79,4 +79,17 @@ describe('BrowserCookieValueMethodArgumentResolver', () => {
 
         expect(value).toBe(42);
     });
+
+    test('supports parameter named converter with resolver registry', () => {
+        vi.spyOn(Cookies, 'get').mockReturnValue('55');
+
+        const resolver = new BrowserCookieValueMethodArgumentResolver(undefined, {
+            toInt: (value) => Number(value),
+        });
+
+        const parameter = new MethodParameter(MethodParameterType.COOKIE, 'theme', false, null, 'toInt');
+        const value = resolver.resolveArgument(parameter, { data: {}, params: null } as any, {} as any);
+
+        expect(value).toBe(55);
+    });
 });

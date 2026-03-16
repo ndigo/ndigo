@@ -45,6 +45,15 @@ configureBrowserArgumentResolvers(context, {
     session: { optional: true, use: argumentValueConverters.boolean },
 });
 
+// Optional: provide an app-level converter registry.
+context.setValue('argumentValueConverterRegistry', {
+    toInt: (value) => Number(value),
+});
+
+configureBrowserArgumentResolvers(context, {
+    state: 'toInt',
+});
+
 // Register cookie-backed theme resolver strategy.
 configureCookieThemeResolver(context, 'theme');
 ```

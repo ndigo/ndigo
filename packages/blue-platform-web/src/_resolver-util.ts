@@ -25,7 +25,6 @@ export function convertArgumentValue(
     registry?: ArgumentValueConverterRegistry,
     options?: ConverterResolutionOptions
 ): any {
-    const converter: ArgumentValueConverter = resolveConverter(converterReference, registry, options);
     const context: ArgumentValueConversionContext = {
         name: parameter.name,
         parameter,
@@ -34,6 +33,7 @@ export function convertArgumentValue(
     };
 
     try {
+        const converter: ArgumentValueConverter = resolveConverter(converterReference, registry, options);
         return converter(value, context);
     } catch (error) {
         throw new ParameterConversionError(parameter.name, getParameterTypeName(parameter), error as Error);

@@ -1,5 +1,5 @@
 import { describe, test, expect, beforeEach, vi } from 'vitest';
-import { MethodParameter, MethodParameterType } from '@blue/dispatcher';
+import { MethodParameter, MethodParameterType, ParameterConversionError } from '@blue/dispatcher';
 import { BrowserCookieValueMethodArgumentResolver } from '../src/cookie-argument-resolver';
 import Cookies from '../src/cookies';
 import { argumentValueConverters } from '../src/argument-value-converter';
@@ -107,5 +107,16 @@ describe('BrowserCookieValueMethodArgumentResolver', () => {
         const value = resolver.resolveArgument(parameter, { data: {}, params: null } as any, {} as any);
 
         expect(value).toBeNull();
+    });
+
+    test('strict named lookup wraps missing converter references as ParameterConversionError', () => {
+        vi.spyOn(Cookies, 'get').mockReturnValue('55');
+
+        const resolver = new BrowserCookieValueMethodArgumentResolver(undefined, {}, { strictNamedLookup: true });
+        const parameter = new MethodParameter(MethodParameterType.COOKIE, 'theme', false, null, 'missingConverter');
+
+        expect(() => resolver.resolveArgument(parameter, { data: {}, params: null } as any, {} as any)).toThrow(
+            ParameterConversionError
+        );
     });
 });

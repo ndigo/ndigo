@@ -6,7 +6,7 @@ import { BrowserModelValueMethodArgumentResolver } from '../src/model-argument-r
 import { BrowserStateValueMethodArgumentResolver } from '../src/state-argument-resolver';
 import { BrowserSessionValueMethodArgumentResolver } from '../src/session-argument-resolver';
 import { argumentValueConverters } from '../src/argument-value-converter';
-import { MethodParameter, MethodParameterType } from '@blue/dispatcher';
+import { MethodParameter, MethodParameterType, ParameterConversionError } from '@blue/dispatcher';
 
 describe('configureBrowserArgumentResolvers', () => {
     const originalHistory = globalThis.history;
@@ -139,5 +139,24 @@ describe('configureBrowserArgumentResolvers', () => {
                 state: 'missingConverter',
             })
         ).toThrow('Unknown converter reference: missingConverter');
+    });
+
+    test('strict lookup propagates as ParameterConversionError during resolver execution', () => {
+        const context = new GenericApplicationContext('test');
+        const resolvers = configureBrowserArgumentResolvers(context, {
+            strictNamedConverterLookup: true,
+        });
+
+        const stateResolver = resolvers[2] as BrowserStateValueMethodArgumentResolver;
+        const parameter = new MethodParameter(MethodParameterType.STATE, 'token', false, null, 'missingConverter');
+        const route = { data: {}, params: null } as any;
+
+        Object.defineProperty(globalThis, 'history', {
+            configurable: true,
+            writable: true,
+            value: { state: { token: '77' } },
+        });
+
+        expect(() => stateResolver.resolveArgument(parameter, route, {} as any)).toThrow(ParameterConversionError);
     });
 });

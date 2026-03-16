@@ -5,6 +5,7 @@ import { BrowserCookieValueMethodArgumentResolver } from '../src/cookie-argument
 import { BrowserModelValueMethodArgumentResolver } from '../src/model-argument-resolver';
 import { BrowserStateValueMethodArgumentResolver } from '../src/state-argument-resolver';
 import { BrowserSessionValueMethodArgumentResolver } from '../src/session-argument-resolver';
+import { argumentValueConverters } from '../src/argument-value-converter';
 import { MethodParameter, MethodParameterType } from '@blue/dispatcher';
 
 describe('configureBrowserArgumentResolvers', () => {
@@ -79,7 +80,7 @@ describe('configureBrowserArgumentResolvers', () => {
     test('uses converter registry from application context', () => {
         const context = new GenericApplicationContext('test');
         context.setValue('argumentValueConverterRegistry', {
-            toInt: (value) => Number(value),
+            toInt: argumentValueConverters.number,
         });
 
         const resolvers = configureBrowserArgumentResolvers(context, {
@@ -109,7 +110,7 @@ describe('configureBrowserArgumentResolvers', () => {
 
         const resolvers = configureBrowserArgumentResolvers(context, {
             converterRegistry: {
-                toInt: (value) => Number(value),
+                toInt: argumentValueConverters.number,
             },
             state: 'toInt',
         });

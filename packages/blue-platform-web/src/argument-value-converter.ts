@@ -2,15 +2,12 @@
  * @author Jeff Rose
  */
 
-import { MethodParameter, ParameterValueConverterReference } from '@blue/dispatcher';
+import { ParameterValueConversionContext, ParameterValueConverterReference } from '@blue/dispatcher';
 import { Route } from '@blue/router';
 
-export interface ArgumentValueConversionContext {
-    name: string;
-    parameter: MethodParameter;
+export type ArgumentValueConversionContext = ParameterValueConversionContext & {
     route: Route;
-    mapping: any;
-}
+};
 
 export type ArgumentValueConverter = (value: any, context: ArgumentValueConversionContext) => any;
 

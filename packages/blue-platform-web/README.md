@@ -49,6 +49,18 @@ configureCookieThemeResolver(context, 'theme');
 
 These are resolved at dispatch-time when compatible argument resolvers are registered in the application context.
 
+### Optional Value Conversion
+
+Browser argument resolvers accept an optional value converter callback:
+
+```typescript
+import { BrowserStateValueMethodArgumentResolver } from '@blue/platform-web';
+
+const resolver = new BrowserStateValueMethodArgumentResolver((value) => Number(value));
+```
+
+Use conversion callbacks for lightweight coercion (e.g. `string` → `number`/`boolean`) while keeping parsing responsibilities in dedicated parser utilities.
+
 ## Development
 
 ```bash

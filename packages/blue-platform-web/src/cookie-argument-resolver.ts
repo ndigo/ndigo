@@ -7,18 +7,32 @@ import { Route } from '@blue/router';
 import { defaultTo } from '@blue/util/logic';
 import { isNil } from '@blue/util/types';
 import Cookies from './cookies';
+import { ArgumentValueConverter, identityArgumentValueConverter } from './argument-value-converter';
 
 /**
  * Abstract base class for resolving cookie-backed method arguments.
  */
 export abstract class AbstractCookieValueMethodArgumentResolver extends AbstractNamedValueMethodArgumentResolver {
+    #converter: ArgumentValueConverter;
+
+    constructor(converter: ArgumentValueConverter = identityArgumentValueConverter) {
+        super();
+        this.#converter = converter;
+    }
+
     resolveArgument(parameter: MethodParameter, route: Route, mapping): any {
         const resolveValue = defaultTo(parameter.defaultValue),
-            value = resolveValue(this.resolveName(parameter.name, parameter, route, mapping));
+            value = resolveValue(this.resolveName(parameter.name, parameter, route, mapping)),
+            convertedValue = this.#converter(value, {
+                name: parameter.name,
+                parameter,
+                route,
+                mapping,
+            });
 
-        isNil(value) && parameter.required && this.handleMissingValue(parameter.name);
+        isNil(convertedValue) && parameter.required && this.handleMissingValue(parameter.name);
 
-        return value;
+        return convertedValue;
     }
 
     protected resolveName(name: string, parameter: MethodParameter, route: Route, mapping): any {
@@ -40,6 +54,10 @@ export abstract class AbstractCookieValueMethodArgumentResolver extends Abstract
  * Browser cookie argument resolver using `document.cookie` parsing.
  */
 export class BrowserCookieValueMethodArgumentResolver extends AbstractCookieValueMethodArgumentResolver {
+    constructor(converter: ArgumentValueConverter = identityArgumentValueConverter) {
+        super(converter);
+    }
+
     get [Symbol.toStringTag](): string {
         return 'BrowserCookieValueMethodArgumentResolver';
     }

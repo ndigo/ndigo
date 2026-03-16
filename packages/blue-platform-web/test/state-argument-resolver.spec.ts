@@ -61,4 +61,19 @@ describe('BrowserStateValueMethodArgumentResolver', () => {
             '"token" cannot be undefined or null'
         );
     });
+
+    test('applies converter when provided', () => {
+        vi.stubGlobal('history', {
+            state: {
+                token: '123',
+            },
+        });
+
+        const converter = (value) => Number(value);
+        const convertingResolver = new BrowserStateValueMethodArgumentResolver(converter);
+        const parameter = new MethodParameter(MethodParameterType.STATE, 'token');
+        const value = convertingResolver.resolveArgument(parameter, { data: {}, params: null } as any, {} as any);
+
+        expect(value).toBe(123);
+    });
 });

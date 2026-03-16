@@ -48,7 +48,7 @@ configureBrowserArgumentResolvers(context, {
 
 // Optional: provide an app-level converter registry.
 configureArgumentValueConverterRegistry(context, {
-    toInt: (value) => Number(value),
+    toInt: argumentValueConverters.number,
 });
 
 configureBrowserArgumentResolvers(context, {

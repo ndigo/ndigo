@@ -37,6 +37,12 @@ class ExampleController {
 }
 ```
 
+`convert` supports:
+
+- converter functions
+- named converter references (resolved by resolver registry)
+- optional descriptors: `{ optional: true, use: 'number' }`
+
 ## Development
 
 ```bash

@@ -4,7 +4,7 @@
 
 import '@tsmetadata/polyfill';
 import { complement } from '@blue/util/logic';
-import { isString } from '@blue/util/types';
+import { isFunction, isString } from '@blue/util/types';
 import { Serializable, JSONObject, createNull, Equatable } from '@blue/core';
 import { getFunctionParamNames } from './_decorator-util';
 
@@ -19,7 +19,10 @@ export type ParameterExtractor = {
     name: string;
     required: boolean;
     defaultValue: string | null;
+    convert: ParameterValueConverter | null;
 };
+
+export type ParameterValueConverter = (value: any, context?: any) => any;
 
 /**
  * Parameter map for @routeParams decorator
@@ -110,16 +113,21 @@ export class MethodParameter implements Serializable {
     readonly type: MethodParameterType;
     readonly required: boolean;
     readonly defaultValue: string | null;
+    readonly convert: ParameterValueConverter | null;
 
     constructor(
         type: MethodParameterType,
         name: string,
         required: boolean = false,
-        defaultValue: string | null = null
+        defaultValue: string | null = null,
+        convert: ParameterValueConverter | null = null
     ) {
         const isNotString = complement(isString);
         if (isNotString(name)) {
             throw new TypeError(`"name" must be a string but was ${name}`);
+        }
+        if (convert !== null && !isFunction(convert)) {
+            throw new TypeError(`"convert" must be a function or null but was ${convert}`);
         }
         defineProperty(this, 'type', {
             value: type,
@@ -145,6 +153,12 @@ export class MethodParameter implements Serializable {
             enumerable: false,
             writable: false,
         });
+        defineProperty(this, 'convert', {
+            value: convert,
+            configurable: true,
+            enumerable: false,
+            writable: false,
+        });
     }
 
     toJSON(): JSONObject {
@@ -153,6 +167,7 @@ export class MethodParameter implements Serializable {
         json.type = this.type;
         json.required = this.required;
         json.defaultValue = this.defaultValue;
+        json.hasConverter = isFunction(this.convert);
         return json;
     }
 
@@ -172,13 +187,14 @@ export class MethodParameter implements Serializable {
  */
 export function queryValue(
     name: string,
-    options: { required?: boolean; defaultValue?: string } = {}
+    options: { required?: boolean; defaultValue?: string; convert?: ParameterValueConverter } = {}
 ): ParameterExtractor {
     return {
         type: MethodParameterType.QUERY,
         name,
         required: options.required ?? false,
         defaultValue: options.defaultValue ?? null,
+        convert: options.convert ?? null,
     };
 }
 
@@ -192,13 +208,14 @@ export function queryValue(
  */
 export function pathValue(
     name: string,
-    options: { required?: boolean; defaultValue?: string } = {}
+    options: { required?: boolean; defaultValue?: string; convert?: ParameterValueConverter } = {}
 ): ParameterExtractor {
     return {
         type: MethodParameterType.PATH,
         name,
         required: options.required ?? false,
         defaultValue: options.defaultValue ?? null,
+        convert: options.convert ?? null,
     };
 }
 
@@ -213,13 +230,14 @@ export function pathValue(
  */
 export function matrixValue(
     name: string,
-    options: { required?: boolean; defaultValue?: string } = {}
+    options: { required?: boolean; defaultValue?: string; convert?: ParameterValueConverter } = {}
 ): ParameterExtractor {
     return {
         type: MethodParameterType.MATRIX,
         name,
         required: options.required ?? false,
         defaultValue: options.defaultValue ?? null,
+        convert: options.convert ?? null,
     };
 }
 
@@ -234,13 +252,14 @@ export function matrixValue(
  */
 export function cookieValue(
     name: string,
-    options: { required?: boolean; defaultValue?: string } = {}
+    options: { required?: boolean; defaultValue?: string; convert?: ParameterValueConverter } = {}
 ): ParameterExtractor {
     return {
         type: MethodParameterType.COOKIE,
         name,
         required: options.required ?? false,
         defaultValue: options.defaultValue ?? null,
+        convert: options.convert ?? null,
     };
 }
 
@@ -255,13 +274,14 @@ export function cookieValue(
  */
 export function sessionValue(
     name: string,
-    options: { required?: boolean; defaultValue?: string } = {}
+    options: { required?: boolean; defaultValue?: string; convert?: ParameterValueConverter } = {}
 ): ParameterExtractor {
     return {
         type: MethodParameterType.SESSION,
         name,
         required: options.required ?? false,
         defaultValue: options.defaultValue ?? null,
+        convert: options.convert ?? null,
     };
 }
 
@@ -275,13 +295,14 @@ export function sessionValue(
  */
 export function modelValue(
     name: string,
-    options: { required?: boolean; defaultValue?: string } = {}
+    options: { required?: boolean; defaultValue?: string; convert?: ParameterValueConverter } = {}
 ): ParameterExtractor {
     return {
         type: MethodParameterType.MODEL,
         name,
         required: options.required ?? false,
         defaultValue: options.defaultValue ?? null,
+        convert: options.convert ?? null,
     };
 }
 
@@ -295,13 +316,14 @@ export function modelValue(
  */
 export function stateValue(
     name: string,
-    options: { required?: boolean; defaultValue?: string } = {}
+    options: { required?: boolean; defaultValue?: string; convert?: ParameterValueConverter } = {}
 ): ParameterExtractor {
     return {
         type: MethodParameterType.STATE,
         name,
         required: options.required ?? false,
         defaultValue: options.defaultValue ?? null,
+        convert: options.convert ?? null,
     };
 }
 
@@ -342,7 +364,8 @@ export function routeParams(paramMap: RouteParameterMap) {
                 extractor.type,
                 extractor.name,
                 extractor.required,
-                extractor.defaultValue
+                extractor.defaultValue,
+                extractor.convert
             );
         }
 

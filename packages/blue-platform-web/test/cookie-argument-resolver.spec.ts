@@ -2,6 +2,7 @@ import { describe, test, expect, beforeEach, vi } from 'vitest';
 import { MethodParameter, MethodParameterType } from '@blue/dispatcher';
 import { BrowserCookieValueMethodArgumentResolver } from '../src/cookie-argument-resolver';
 import Cookies from '../src/cookies';
+import { argumentValueConverters } from '../src/argument-value-converter';
 
 describe('BrowserCookieValueMethodArgumentResolver', () => {
     let resolver: BrowserCookieValueMethodArgumentResolver;
@@ -59,6 +60,22 @@ describe('BrowserCookieValueMethodArgumentResolver', () => {
         const parameter = new MethodParameter(MethodParameterType.COOKIE, 'theme');
 
         const value = convertingResolver.resolveArgument(parameter, { data: {}, params: null } as any, {} as any);
+
+        expect(value).toBe(42);
+    });
+
+    test('prefers parameter converter over resolver converter', () => {
+        vi.spyOn(Cookies, 'get').mockReturnValue('42');
+
+        const resolver = new BrowserCookieValueMethodArgumentResolver(argumentValueConverters.boolean);
+        const parameter = new MethodParameter(
+            MethodParameterType.COOKIE,
+            'theme',
+            false,
+            null,
+            argumentValueConverters.number
+        );
+        const value = resolver.resolveArgument(parameter, { data: {}, params: null } as any, {} as any);
 
         expect(value).toBe(42);
     });

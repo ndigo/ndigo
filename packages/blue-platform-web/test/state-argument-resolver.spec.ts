@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { MethodParameter, MethodParameterType } from '@blue/dispatcher';
 import { BrowserStateValueMethodArgumentResolver } from '../src/state-argument-resolver';
+import { argumentValueConverters } from '../src/argument-value-converter';
 
 describe('BrowserStateValueMethodArgumentResolver', () => {
     let resolver: BrowserStateValueMethodArgumentResolver;
@@ -75,5 +76,25 @@ describe('BrowserStateValueMethodArgumentResolver', () => {
         const value = convertingResolver.resolveArgument(parameter, { data: {}, params: null } as any, {} as any);
 
         expect(value).toBe(123);
+    });
+
+    test('prefers parameter converter over resolver converter', () => {
+        vi.stubGlobal('history', {
+            state: {
+                token: '1',
+            },
+        });
+
+        const resolver = new BrowserStateValueMethodArgumentResolver(argumentValueConverters.boolean);
+        const parameter = new MethodParameter(
+            MethodParameterType.STATE,
+            'token',
+            false,
+            null,
+            argumentValueConverters.number
+        );
+        const value = resolver.resolveArgument(parameter, { data: {}, params: null } as any, {} as any);
+
+        expect(value).toBe(1);
     });
 });

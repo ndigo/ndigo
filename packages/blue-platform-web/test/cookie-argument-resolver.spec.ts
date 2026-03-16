@@ -84,7 +84,7 @@ describe('BrowserCookieValueMethodArgumentResolver', () => {
         vi.spyOn(Cookies, 'get').mockReturnValue('55');
 
         const resolver = new BrowserCookieValueMethodArgumentResolver(undefined, {
-            toInt: (value) => Number(value),
+            toInt: argumentValueConverters.number,
         });
 
         const parameter = new MethodParameter(MethodParameterType.COOKIE, 'theme', false, null, 'toInt');
@@ -97,7 +97,7 @@ describe('BrowserCookieValueMethodArgumentResolver', () => {
         vi.spyOn(Cookies, 'get').mockReturnValue(undefined);
 
         const resolver = new BrowserCookieValueMethodArgumentResolver(undefined, {
-            toInt: (value) => Number(value),
+            toInt: argumentValueConverters.number,
         });
 
         const parameter = new MethodParameter(MethodParameterType.COOKIE, 'theme', false, null, {

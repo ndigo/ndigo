@@ -19,12 +19,20 @@ pnpm add @blue/dispatcher
 ## Usage
 
 ```typescript
-import { routeMapping } from '@blue/dispatcher';
+import { routeMapping, routeParams, queryValue } from '@blue/dispatcher';
 
 class ExampleController {
     @routeMapping('/health')
     health() {
         return 'ok';
+    }
+
+    @routeMapping('/users')
+    @routeParams({
+        page: queryValue('page', { convert: 'number' }),
+    })
+    list(page: number) {
+        return page;
     }
 }
 ```

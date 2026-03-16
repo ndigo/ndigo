@@ -60,6 +60,57 @@ configureBrowserArgumentResolvers(context, {
 configureCookieThemeResolver(context, 'theme');
 ```
 
+### End-to-End Conversion Pattern
+
+```typescript
+import { GenericApplicationContext } from '@blue/context';
+import {
+    cookieValue,
+    errorHandler,
+    errorMapping,
+    ParameterConversionError,
+    routeMapping,
+    routeParams,
+    stateValue,
+} from '@blue/dispatcher';
+import {
+    argumentValueConverters,
+    configureArgumentValueConverterRegistry,
+    configureBrowserArgumentResolvers,
+} from '@blue/platform-web';
+
+const context = new GenericApplicationContext('app');
+
+configureArgumentValueConverterRegistry(context, {
+    toInt: argumentValueConverters.number,
+});
+
+configureBrowserArgumentResolvers(context, {
+    state: 'toInt',
+    strictNamedConverterLookup: true,
+});
+
+@routeMapping('/account')
+class AccountController {
+    @routeMapping('/summary')
+    @routeParams({
+        amount: cookieValue('amount', { convert: 'toInt' }),
+        txCount: stateValue('txCount', { convert: { optional: true, use: 'toInt' } }),
+    })
+    summary(amount: number, txCount: number | null) {
+        return { amount, txCount };
+    }
+}
+
+@errorHandler
+class GlobalErrorHandler {
+    @errorMapping(ParameterConversionError)
+    onConversionError(route, error: ParameterConversionError) {
+        return { viewName: 'conversion-error', message: error.message };
+    }
+}
+```
+
 ### Route Parameter Extractors
 
 `@blue/dispatcher` route parameter extractors can now resolve browser-backed cookie and session values:

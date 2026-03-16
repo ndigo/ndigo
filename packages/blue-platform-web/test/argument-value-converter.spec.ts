@@ -62,7 +62,7 @@ describe('argument-value-converter', () => {
 
     test('resolveConverter prefers provided registry for named converters', () => {
         const converter = resolveConverter('toInt', {
-            toInt: (value) => Number(value),
+            toInt: argumentValueConverters.number,
         });
 
         expect(converter('34', {} as any)).toBe(34);

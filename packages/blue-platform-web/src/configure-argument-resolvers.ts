@@ -6,50 +6,24 @@ import { ApplicationContext } from '@blue/context';
 import { HandlerMethodArgumentResolver } from '@blue/dispatcher';
 import {
     ArgumentValueConverter,
+    ArgumentValueConverterRegistry,
+    ResolverConverterOption,
     argumentValueConverters,
-    createOptionalConverter,
     identityArgumentValueConverter,
+    resolveConverter,
 } from './argument-value-converter';
 import { BrowserCookieValueMethodArgumentResolver } from './cookie-argument-resolver';
 import { BrowserModelValueMethodArgumentResolver } from './model-argument-resolver';
 import { BrowserStateValueMethodArgumentResolver } from './state-argument-resolver';
 import { BrowserSessionValueMethodArgumentResolver } from './session-argument-resolver';
 
-export type ResolverConverterOption =
-    | ArgumentValueConverter
-    | keyof typeof argumentValueConverters
-    | {
-          optional?: boolean;
-          use: ArgumentValueConverter | keyof typeof argumentValueConverters;
-      };
-
 export type BrowserArgumentResolverOptions = {
     cookie?: ResolverConverterOption;
     model?: ResolverConverterOption;
     session?: ResolverConverterOption;
     state?: ResolverConverterOption;
+    converterRegistry?: ArgumentValueConverterRegistry;
 };
-
-function resolveConverter(option?: ResolverConverterOption): ArgumentValueConverter {
-    if (!option) {
-        return identityArgumentValueConverter;
-    }
-
-    if (typeof option === 'function') {
-        return option;
-    }
-
-    if (typeof option === 'string') {
-        return argumentValueConverters[option] ?? identityArgumentValueConverter;
-    }
-
-    const baseConverter =
-        typeof option.use === 'function'
-            ? option.use
-            : (argumentValueConverters[option.use] ?? identityArgumentValueConverter);
-
-    return option.optional ? createOptionalConverter(baseConverter) : baseConverter;
-}
 
 /**
  * Registers browser-specific argument resolvers into application context.
@@ -58,11 +32,16 @@ export function configureBrowserArgumentResolvers(
     applicationContext: ApplicationContext,
     options: BrowserArgumentResolverOptions = {}
 ): HandlerMethodArgumentResolver[] {
+    const contextRegistry = applicationContext.hasValue('argumentValueConverterRegistry')
+        ? applicationContext.getValue<ArgumentValueConverterRegistry>('argumentValueConverterRegistry')
+        : null;
+    const converterRegistry = options.converterRegistry ?? contextRegistry ?? argumentValueConverters;
+
     const resolvers: HandlerMethodArgumentResolver[] = [
-        new BrowserCookieValueMethodArgumentResolver(resolveConverter(options.cookie)),
-        new BrowserModelValueMethodArgumentResolver(resolveConverter(options.model)),
-        new BrowserStateValueMethodArgumentResolver(resolveConverter(options.state)),
-        new BrowserSessionValueMethodArgumentResolver(resolveConverter(options.session)),
+        new BrowserCookieValueMethodArgumentResolver(resolveConverter(options.cookie, converterRegistry)),
+        new BrowserModelValueMethodArgumentResolver(resolveConverter(options.model, converterRegistry)),
+        new BrowserStateValueMethodArgumentResolver(resolveConverter(options.state, converterRegistry)),
+        new BrowserSessionValueMethodArgumentResolver(resolveConverter(options.session, converterRegistry)),
     ];
 
     applicationContext.setValue('argumentResolvers', resolvers);

@@ -55,8 +55,8 @@ describe('conversion + error flow integration', () => {
                         return numberValue;
                     },
                 }),
-                profileId: modelValue('profile.id', { convert: (value) => Number(value) }),
-                txCount: stateValue('txCount', { convert: (value) => Number(value) }),
+                profileId: modelValue('profile.id', { convert: 'number' }),
+                txCount: stateValue('txCount', { convert: 'number' }),
                 darkMode: sessionValue('darkMode', { convert: (value) => value === 'true' }),
             })
             pay(amount: number, profileId: number, txCount: number, darkMode: boolean): ModelAndView {

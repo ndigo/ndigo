@@ -2,7 +2,7 @@
  * @author Jeff Rose
  */
 
-import { MethodParameter } from '@blue/dispatcher';
+import { MethodParameter, ParameterValueConverterReference } from '@blue/dispatcher';
 import { Route } from '@blue/router';
 
 export interface ArgumentValueConversionContext {
@@ -13,6 +13,16 @@ export interface ArgumentValueConversionContext {
 }
 
 export type ArgumentValueConverter = (value: any, context: ArgumentValueConversionContext) => any;
+
+export type ArgumentValueConverterRegistry = Record<string, ArgumentValueConverter>;
+
+export type ResolverConverterOption =
+    | ArgumentValueConverter
+    | keyof typeof argumentValueConverters
+    | {
+          optional?: boolean;
+          use: ArgumentValueConverter | keyof typeof argumentValueConverters;
+      };
 
 export const identityArgumentValueConverter: ArgumentValueConverter = (value) => value;
 
@@ -69,3 +79,24 @@ export const argumentValueConverters: Record<string, ArgumentValueConverter> = {
     date: (value) => toDateValue(value),
     json: (value) => toJSONStringValue(value),
 };
+
+export function resolveConverter(
+    option: ParameterValueConverterReference | ResolverConverterOption | undefined,
+    registry: ArgumentValueConverterRegistry = argumentValueConverters
+): ArgumentValueConverter {
+    if (!option) {
+        return identityArgumentValueConverter;
+    }
+
+    if (typeof option === 'function') {
+        return option;
+    }
+
+    if (typeof option === 'string') {
+        return registry[option] ?? argumentValueConverters[option] ?? identityArgumentValueConverter;
+    }
+
+    const baseConverter = resolveConverter(option.use, registry);
+
+    return option.optional ? createOptionalConverter(baseConverter) : baseConverter;
+}

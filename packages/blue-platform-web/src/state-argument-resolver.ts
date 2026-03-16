@@ -6,7 +6,12 @@ import { MethodParameter, MethodParameterType, AbstractNamedValueMethodArgumentR
 import { Route } from '@blue/router';
 import { defaultTo } from '@blue/util/logic';
 import { isNil } from '@blue/util/types';
-import { ArgumentValueConverter, identityArgumentValueConverter } from './argument-value-converter';
+import {
+    ArgumentValueConverter,
+    ArgumentValueConverterRegistry,
+    argumentValueConverters,
+    identityArgumentValueConverter,
+} from './argument-value-converter';
 import { convertArgumentValue } from './_resolver-util';
 
 /**
@@ -14,17 +19,22 @@ import { convertArgumentValue } from './_resolver-util';
  */
 export abstract class AbstractStateValueMethodArgumentResolver extends AbstractNamedValueMethodArgumentResolver {
     #converter: ArgumentValueConverter;
+    #converterRegistry: ArgumentValueConverterRegistry;
 
-    constructor(converter: ArgumentValueConverter = identityArgumentValueConverter) {
+    constructor(
+        converter: ArgumentValueConverter = identityArgumentValueConverter,
+        converterRegistry: ArgumentValueConverterRegistry = argumentValueConverters
+    ) {
         super();
         this.#converter = converter;
+        this.#converterRegistry = converterRegistry;
     }
 
     resolveArgument(parameter: MethodParameter, route: Route, mapping): any {
         const resolveValue = defaultTo(parameter.defaultValue),
             value = resolveValue(this.resolveName(parameter.name, parameter, route, mapping)),
             converter = parameter.convert ?? this.#converter,
-            convertedValue = convertArgumentValue(converter, value, parameter, route, mapping);
+            convertedValue = convertArgumentValue(converter, value, parameter, route, mapping, this.#converterRegistry);
 
         isNil(convertedValue) && parameter.required && this.handleMissingValue(parameter.name);
 
@@ -50,8 +60,11 @@ export abstract class AbstractStateValueMethodArgumentResolver extends AbstractN
  * Browser history state argument resolver.
  */
 export class BrowserStateValueMethodArgumentResolver extends AbstractStateValueMethodArgumentResolver {
-    constructor(converter: ArgumentValueConverter = identityArgumentValueConverter) {
-        super(converter);
+    constructor(
+        converter: ArgumentValueConverter = identityArgumentValueConverter,
+        converterRegistry: ArgumentValueConverterRegistry = argumentValueConverters
+    ) {
+        super(converter, converterRegistry);
     }
 
     get [Symbol.toStringTag](): string {

@@ -59,6 +59,7 @@ Named converter resolution now supports three levels:
 Helper API:
 
 - `configureArgumentValueConverterRegistry(context, registry)`
+- `configureStrictBrowserArgumentResolvers(context, options?)`
 
 ### 5) Strict named lookup mode
 

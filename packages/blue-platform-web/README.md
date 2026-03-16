@@ -92,6 +92,22 @@ Built-in converter presets are exported as `argumentValueConverters`:
 - `date`
 - `json`
 
+You can also supply named converter references in `routeParams` extractor options:
+
+```typescript
+import { modelValue, routeMapping, routeParams } from '@blue/dispatcher';
+
+class AccountController {
+    @routeMapping('/summary')
+    @routeParams({
+        profileId: modelValue('profile.id', { convert: 'number' }),
+    })
+    summary(profileId: number) {
+        return profileId;
+    }
+}
+```
+
 ## Development
 
 ```bash

@@ -22,7 +22,14 @@ export type ParameterExtractor = {
     convert: ParameterValueConverterReference | null;
 };
 
-export type ParameterValueConverter = (value: any, context?: any) => any;
+export interface ParameterValueConversionContext {
+    name: string;
+    parameter: MethodParameter;
+    route: any;
+    mapping: any;
+}
+
+export type ParameterValueConverter = (value: any, context: ParameterValueConversionContext) => any;
 export type ParameterValueConverterReference =
     | ParameterValueConverter
     | string

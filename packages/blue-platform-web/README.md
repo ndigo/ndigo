@@ -20,6 +20,7 @@ pnpm add @blue/platform-web
 ```typescript
 import {
     argumentValueConverters,
+    configureArgumentValueConverterRegistry,
     Cookies,
     configureBrowserArgumentResolvers,
     configureCookieThemeResolver,
@@ -46,12 +47,13 @@ configureBrowserArgumentResolvers(context, {
 });
 
 // Optional: provide an app-level converter registry.
-context.setValue('argumentValueConverterRegistry', {
+configureArgumentValueConverterRegistry(context, {
     toInt: (value) => Number(value),
 });
 
 configureBrowserArgumentResolvers(context, {
     state: 'toInt',
+    strictNamedConverterLookup: true,
 });
 
 // Register cookie-backed theme resolver strategy.

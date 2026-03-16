@@ -18,7 +18,12 @@ pnpm add @blue/platform-web
 ## Usage
 
 ```typescript
-import { Cookies, configureBrowserArgumentResolvers, configureCookieThemeResolver } from '@blue/platform-web';
+import {
+    argumentValueConverters,
+    Cookies,
+    configureBrowserArgumentResolvers,
+    configureCookieThemeResolver,
+} from '@blue/platform-web';
 import { GenericApplicationContext } from '@blue/context';
 
 Cookies.set('theme', 'dark');
@@ -33,6 +38,12 @@ context.setThemeName('default');
 // - BrowserStateValueMethodArgumentResolver
 // - BrowserSessionValueMethodArgumentResolver
 configureBrowserArgumentResolvers(context);
+
+// Use built-in converter presets per resolver type.
+configureBrowserArgumentResolvers(context, {
+    state: 'number',
+    session: { optional: true, use: argumentValueConverters.boolean },
+});
 
 // Register cookie-backed theme resolver strategy.
 configureCookieThemeResolver(context, 'theme');
@@ -60,6 +71,14 @@ const resolver = new BrowserStateValueMethodArgumentResolver((value) => Number(v
 ```
 
 Use conversion callbacks for lightweight coercion (e.g. `string` → `number`/`boolean`) while keeping parsing responsibilities in dedicated parser utilities.
+
+Built-in converter presets are exported as `argumentValueConverters`:
+
+- `identity`
+- `number`
+- `boolean`
+- `date`
+- `json`
 
 ## Development
 

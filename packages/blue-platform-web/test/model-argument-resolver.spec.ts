@@ -51,4 +51,19 @@ describe('BrowserModelValueMethodArgumentResolver', () => {
 
         expect(value).toBe('guest');
     });
+
+    test('applies converter when provided', () => {
+        const converter = (value) => `${value}`.toUpperCase();
+        const convertingResolver = new BrowserModelValueMethodArgumentResolver(converter);
+        const parameter = new MethodParameter(MethodParameterType.MODEL, 'profile.name');
+        const route = {
+            data: {
+                profile: { name: 'Blue', role: 'admin' },
+            },
+        } as any;
+
+        const value = convertingResolver.resolveArgument(parameter, route, {} as any);
+
+        expect(value).toBe('BLUE');
+    });
 });

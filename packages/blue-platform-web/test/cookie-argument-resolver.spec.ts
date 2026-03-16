@@ -50,4 +50,16 @@ describe('BrowserCookieValueMethodArgumentResolver', () => {
             '"theme" cannot be undefined or null'
         );
     });
+
+    test('applies converter when provided', () => {
+        vi.spyOn(Cookies, 'get').mockReturnValue('42');
+
+        const converter = (value) => Number(value);
+        const convertingResolver = new BrowserCookieValueMethodArgumentResolver(converter);
+        const parameter = new MethodParameter(MethodParameterType.COOKIE, 'theme');
+
+        const value = convertingResolver.resolveArgument(parameter, { data: {}, params: null } as any, {} as any);
+
+        expect(value).toBe(42);
+    });
 });

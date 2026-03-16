@@ -63,4 +63,17 @@ describe('BrowserSessionValueMethodArgumentResolver', () => {
             '"sessionId" cannot be undefined or null'
         );
     });
+
+    test('applies converter when provided', () => {
+        vi.stubGlobal('sessionStorage', {
+            getItem: vi.fn(() => 'true'),
+        });
+
+        const converter = (value) => value === 'true';
+        const convertingResolver = new BrowserSessionValueMethodArgumentResolver(converter);
+        const parameter = new MethodParameter(MethodParameterType.SESSION, 'sessionId');
+        const value = convertingResolver.resolveArgument(parameter, { data: {}, params: null } as any, {} as any);
+
+        expect(value).toBe(true);
+    });
 });

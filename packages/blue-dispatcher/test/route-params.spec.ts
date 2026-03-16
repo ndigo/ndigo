@@ -35,6 +35,14 @@ describe('@routeParams - TC39 Parameter Injection Pattern', () => {
             expect(extractor.name).toBe('limit');
             expect(extractor.required).toBe(true);
             expect(extractor.defaultValue).toBe('10');
+            expect(extractor.convert).toBeNull();
+        });
+
+        it('queryValue should accept converter option', () => {
+            const converter = (value) => Number(value);
+            const extractor = queryValue('limit', { convert: converter });
+
+            expect(extractor.convert).toBe(converter);
         });
 
         it('matrixValue should create matrix parameter extractor', () => {
@@ -175,6 +183,20 @@ describe('@routeParams - TC39 Parameter Injection Pattern', () => {
             const params = getMethodParameter(TestController.prototype, 'handleQuery');
             expect(params![0].required).toBe(true);
             expect(params![0].defaultValue).toBe('10');
+        });
+
+        it('should preserve converter options', () => {
+            const converter = (value) => Number(value);
+
+            class TestController {
+                @routeParams({
+                    limit: queryValue('limit', { convert: converter }),
+                })
+                handleQuery(limit: string) {}
+            }
+
+            const params = getMethodParameter(TestController.prototype, 'handleQuery');
+            expect(params![0].convert).toBe(converter);
         });
 
         it('should throw error if parameter name not found', () => {

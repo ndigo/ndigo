@@ -22,7 +22,8 @@ export abstract class AbstractStateValueMethodArgumentResolver extends AbstractN
     resolveArgument(parameter: MethodParameter, route: Route, mapping): any {
         const resolveValue = defaultTo(parameter.defaultValue),
             value = resolveValue(this.resolveName(parameter.name, parameter, route, mapping)),
-            convertedValue = this.#converter(value, {
+            converter = parameter.convert ?? this.#converter,
+            convertedValue = converter(value, {
                 name: parameter.name,
                 parameter,
                 route,

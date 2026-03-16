@@ -1,12 +1,23 @@
-import { describe, expect, test } from 'vitest';
+import { afterEach, describe, expect, test } from 'vitest';
 import { GenericApplicationContext } from '@blue/context';
 import { configureBrowserArgumentResolvers } from '../src/configure-argument-resolvers';
 import { BrowserCookieValueMethodArgumentResolver } from '../src/cookie-argument-resolver';
 import { BrowserModelValueMethodArgumentResolver } from '../src/model-argument-resolver';
 import { BrowserStateValueMethodArgumentResolver } from '../src/state-argument-resolver';
 import { BrowserSessionValueMethodArgumentResolver } from '../src/session-argument-resolver';
+import { MethodParameter, MethodParameterType } from '@blue/dispatcher';
 
 describe('configureBrowserArgumentResolvers', () => {
+    const originalHistory = globalThis.history;
+
+    afterEach(() => {
+        Object.defineProperty(globalThis, 'history', {
+            configurable: true,
+            writable: true,
+            value: originalHistory,
+        });
+    });
+
     test('registers browser argument resolvers in context', () => {
         const context = new GenericApplicationContext('test');
         const resolvers = configureBrowserArgumentResolvers(context);
@@ -42,5 +53,26 @@ describe('configureBrowserArgumentResolvers', () => {
         const resolvers = configureBrowserArgumentResolvers(context);
 
         expect(resolvers[3]).toBeInstanceOf(BrowserSessionValueMethodArgumentResolver);
+    });
+
+    test('accepts named converter presets', () => {
+        const context = new GenericApplicationContext('test');
+        const resolvers = configureBrowserArgumentResolvers(context, {
+            state: 'number',
+        });
+
+        const stateResolver = resolvers[2] as BrowserStateValueMethodArgumentResolver;
+        const parameter = new MethodParameter(MethodParameterType.STATE, 'token');
+        const route = { data: {}, params: null } as any;
+
+        Object.defineProperty(globalThis, 'history', {
+            configurable: true,
+            writable: true,
+            value: { state: { token: '123' } },
+        });
+
+        const value = stateResolver.resolveArgument(parameter, route, {} as any);
+
+        expect(value).toBe(123);
     });
 });

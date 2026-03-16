@@ -1,6 +1,7 @@
 import { describe, test, expect } from 'vitest';
 import { MethodParameter, MethodParameterType } from '@blue/dispatcher';
 import { BrowserModelValueMethodArgumentResolver } from '../src/model-argument-resolver';
+import { argumentValueConverters } from '../src/argument-value-converter';
 
 describe('BrowserModelValueMethodArgumentResolver', () => {
     const resolver = new BrowserModelValueMethodArgumentResolver();
@@ -65,5 +66,25 @@ describe('BrowserModelValueMethodArgumentResolver', () => {
         const value = convertingResolver.resolveArgument(parameter, route, {} as any);
 
         expect(value).toBe('BLUE');
+    });
+
+    test('prefers parameter converter over resolver converter', () => {
+        const resolver = new BrowserModelValueMethodArgumentResolver(argumentValueConverters.boolean);
+        const parameter = new MethodParameter(
+            MethodParameterType.MODEL,
+            'profile.id',
+            false,
+            null,
+            argumentValueConverters.number
+        );
+        const route = {
+            data: {
+                profile: { id: '123' },
+            },
+        } as any;
+
+        const value = resolver.resolveArgument(parameter, route, {} as any);
+
+        expect(value).toBe(123);
     });
 });

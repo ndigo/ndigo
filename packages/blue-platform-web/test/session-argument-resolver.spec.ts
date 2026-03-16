@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { MethodParameter, MethodParameterType } from '@blue/dispatcher';
 import { BrowserSessionValueMethodArgumentResolver } from '../src/session-argument-resolver';
+import { argumentValueConverters } from '../src/argument-value-converter';
 
 describe('BrowserSessionValueMethodArgumentResolver', () => {
     let resolver: BrowserSessionValueMethodArgumentResolver;
@@ -75,5 +76,23 @@ describe('BrowserSessionValueMethodArgumentResolver', () => {
         const value = convertingResolver.resolveArgument(parameter, { data: {}, params: null } as any, {} as any);
 
         expect(value).toBe(true);
+    });
+
+    test('prefers parameter converter over resolver converter', () => {
+        vi.stubGlobal('sessionStorage', {
+            getItem: vi.fn(() => '1'),
+        });
+
+        const resolver = new BrowserSessionValueMethodArgumentResolver(argumentValueConverters.boolean);
+        const parameter = new MethodParameter(
+            MethodParameterType.SESSION,
+            'sessionId',
+            false,
+            null,
+            argumentValueConverters.number
+        );
+        const value = resolver.resolveArgument(parameter, { data: {}, params: null } as any, {} as any);
+
+        expect(value).toBe(1);
     });
 });

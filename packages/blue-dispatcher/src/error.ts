@@ -205,3 +205,51 @@ export class MissingParameterError extends ParameterBindingError {
         });
     }
 }
+
+/**
+ * Thrown when a parameter converter fails at runtime.
+ * This is a RUNTIME error (request processing time).
+ *
+ * @extends module:dispatcher.ParameterBindingError
+ */
+export class ParameterConversionError extends ParameterBindingError {
+    readonly parameterType: string;
+    readonly cause: Error | null;
+
+    get [Symbol.toStringTag](): string {
+        return 'ParameterConversionError';
+    }
+
+    constructor(
+        parameterName: string,
+        parameterType: string,
+        cause?: Error,
+        methodName?: string,
+        controllerName?: string
+    ) {
+        const causeMessage = cause?.message || 'Unknown conversion error';
+
+        super(
+            `Failed to convert ${parameterType} parameter '${parameterName}': ${causeMessage}`,
+            parameterName,
+            methodName,
+            controllerName
+        );
+
+        this.name = 'ParameterConversionError';
+
+        defineProperty(this, 'parameterType', {
+            value: parameterType,
+            configurable: false,
+            enumerable: false,
+            writable: false,
+        });
+
+        defineProperty(this, 'cause', {
+            value: cause ?? null,
+            configurable: false,
+            enumerable: false,
+            writable: false,
+        });
+    }
+}

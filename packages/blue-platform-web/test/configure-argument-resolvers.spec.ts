@@ -2,6 +2,8 @@ import { describe, expect, test } from 'vitest';
 import { GenericApplicationContext } from '@blue/context';
 import { configureBrowserArgumentResolvers } from '../src/configure-argument-resolvers';
 import { BrowserCookieValueMethodArgumentResolver } from '../src/cookie-argument-resolver';
+import { BrowserModelValueMethodArgumentResolver } from '../src/model-argument-resolver';
+import { BrowserStateValueMethodArgumentResolver } from '../src/state-argument-resolver';
 import { BrowserSessionValueMethodArgumentResolver } from '../src/session-argument-resolver';
 
 describe('configureBrowserArgumentResolvers', () => {
@@ -10,7 +12,7 @@ describe('configureBrowserArgumentResolvers', () => {
         const resolvers = configureBrowserArgumentResolvers(context);
 
         expect(Array.isArray(resolvers)).toBe(true);
-        expect(resolvers).toHaveLength(2);
+        expect(resolvers).toHaveLength(4);
         expect(context.getValue('argumentResolvers')).toBe(resolvers);
     });
 
@@ -21,10 +23,24 @@ describe('configureBrowserArgumentResolvers', () => {
         expect(resolvers[0]).toBeInstanceOf(BrowserCookieValueMethodArgumentResolver);
     });
 
-    test('registers session resolver second', () => {
+    test('registers model resolver second', () => {
         const context = new GenericApplicationContext('test');
         const resolvers = configureBrowserArgumentResolvers(context);
 
-        expect(resolvers[1]).toBeInstanceOf(BrowserSessionValueMethodArgumentResolver);
+        expect(resolvers[1]).toBeInstanceOf(BrowserModelValueMethodArgumentResolver);
+    });
+
+    test('registers state resolver third', () => {
+        const context = new GenericApplicationContext('test');
+        const resolvers = configureBrowserArgumentResolvers(context);
+
+        expect(resolvers[2]).toBeInstanceOf(BrowserStateValueMethodArgumentResolver);
+    });
+
+    test('registers session resolver fourth', () => {
+        const context = new GenericApplicationContext('test');
+        const resolvers = configureBrowserArgumentResolvers(context);
+
+        expect(resolvers[3]).toBeInstanceOf(BrowserSessionValueMethodArgumentResolver);
     });
 });

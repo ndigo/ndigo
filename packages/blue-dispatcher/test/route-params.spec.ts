@@ -10,6 +10,8 @@ import {
     queryValue,
     matrixValue,
     cookieValue,
+    modelValue,
+    stateValue,
     sessionValue,
     pathValue,
     getMethodParameter,
@@ -56,10 +58,26 @@ describe('@routeParams - TC39 Parameter Injection Pattern', () => {
             expect(extractor.required).toBe(false);
         });
 
+        it('modelValue should create model parameter extractor', () => {
+            const extractor = modelValue('profile');
+            expect(extractor.type).toEqual(MethodParameterType.MODEL);
+            expect(extractor.name).toBe('profile');
+            expect(extractor.required).toBe(false);
+            expect(extractor.defaultValue).toBeNull();
+        });
+
         it('sessionValue should create session parameter extractor', () => {
             const extractor = sessionValue('sessionId');
             expect(extractor.type).toEqual(MethodParameterType.SESSION);
             expect(extractor.name).toBe('sessionId');
+            expect(extractor.required).toBe(false);
+            expect(extractor.defaultValue).toBeNull();
+        });
+
+        it('stateValue should create state parameter extractor', () => {
+            const extractor = stateValue('token');
+            expect(extractor.type).toEqual(MethodParameterType.STATE);
+            expect(extractor.name).toBe('token');
             expect(extractor.required).toBe(false);
             expect(extractor.defaultValue).toBeNull();
         });
@@ -101,20 +119,32 @@ describe('@routeParams - TC39 Parameter Injection Pattern', () => {
                 @routeParams({
                     page: queryValue('page'),
                     session: cookieValue('SESSIONID'),
+                    profile: modelValue('profile'),
+                    token: stateValue('token'),
                     sessionId: sessionValue('sessionId'),
                     color: matrixValue('color'),
                     userId: pathValue('userId'),
                 })
-                handleMixed(page: string, session: string, sessionId: string, color: string, userId: string) {}
+                handleMixed(
+                    page: string,
+                    session: string,
+                    profile: string,
+                    token: string,
+                    sessionId: string,
+                    color: string,
+                    userId: string
+                ) {}
             }
 
             const params = getMethodParameter(TestController.prototype, 'handleMixed');
-            expect(params).toHaveLength(5);
+            expect(params).toHaveLength(7);
             expect(params![0].type).toEqual(MethodParameterType.QUERY);
             expect(params![1].type).toEqual(MethodParameterType.COOKIE);
-            expect(params![2].type).toEqual(MethodParameterType.SESSION);
-            expect(params![3].type).toEqual(MethodParameterType.MATRIX);
-            expect(params![4].type).toEqual(MethodParameterType.PATH);
+            expect(params![2].type).toEqual(MethodParameterType.MODEL);
+            expect(params![3].type).toEqual(MethodParameterType.STATE);
+            expect(params![4].type).toEqual(MethodParameterType.SESSION);
+            expect(params![5].type).toEqual(MethodParameterType.MATRIX);
+            expect(params![6].type).toEqual(MethodParameterType.PATH);
         });
 
         it('should handle sparse parameters (not all decorated)', () => {

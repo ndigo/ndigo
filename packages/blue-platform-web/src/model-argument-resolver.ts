@@ -9,6 +9,7 @@ import { isNil } from '@blue/util/types';
 import {
     ArgumentValueConverter,
     ArgumentValueConverterRegistry,
+    ConverterResolutionOptions,
     argumentValueConverters,
     identityArgumentValueConverter,
 } from './argument-value-converter';
@@ -20,21 +21,32 @@ import { convertArgumentValue } from './_resolver-util';
 export abstract class AbstractModelValueMethodArgumentResolver extends AbstractNamedValueMethodArgumentResolver {
     #converter: ArgumentValueConverter;
     #converterRegistry: ArgumentValueConverterRegistry;
+    #converterResolutionOptions: ConverterResolutionOptions;
 
     constructor(
         converter: ArgumentValueConverter = identityArgumentValueConverter,
-        converterRegistry: ArgumentValueConverterRegistry = argumentValueConverters
+        converterRegistry: ArgumentValueConverterRegistry = argumentValueConverters,
+        converterResolutionOptions: ConverterResolutionOptions = {}
     ) {
         super();
         this.#converter = converter;
         this.#converterRegistry = converterRegistry;
+        this.#converterResolutionOptions = converterResolutionOptions;
     }
 
     resolveArgument(parameter: MethodParameter, route: Route, mapping): any {
         const resolveValue = defaultTo(parameter.defaultValue),
             value = resolveValue(this.resolveName(parameter.name, parameter, route, mapping)),
             converter = parameter.convert ?? this.#converter,
-            convertedValue = convertArgumentValue(converter, value, parameter, route, mapping, this.#converterRegistry);
+            convertedValue = convertArgumentValue(
+                converter,
+                value,
+                parameter,
+                route,
+                mapping,
+                this.#converterRegistry,
+                this.#converterResolutionOptions
+            );
 
         isNil(convertedValue) && parameter.required && this.handleMissingValue(parameter.name);
 
@@ -65,9 +77,10 @@ export abstract class AbstractModelValueMethodArgumentResolver extends AbstractN
 export class BrowserModelValueMethodArgumentResolver extends AbstractModelValueMethodArgumentResolver {
     constructor(
         converter: ArgumentValueConverter = identityArgumentValueConverter,
-        converterRegistry: ArgumentValueConverterRegistry = argumentValueConverters
+        converterRegistry: ArgumentValueConverterRegistry = argumentValueConverters,
+        converterResolutionOptions: ConverterResolutionOptions = {}
     ) {
-        super(converter, converterRegistry);
+        super(converter, converterRegistry, converterResolutionOptions);
     }
 
     get [Symbol.toStringTag](): string {

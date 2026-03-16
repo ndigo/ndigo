@@ -128,4 +128,15 @@ describe('configureBrowserArgumentResolvers', () => {
 
         expect(value).toBe(77);
     });
+
+    test('strictNamedConverterLookup throws for unknown converter keys', () => {
+        const context = new GenericApplicationContext('test');
+
+        expect(() =>
+            configureBrowserArgumentResolvers(context, {
+                strictNamedConverterLookup: true,
+                state: 'missingConverter',
+            })
+        ).toThrow('Unknown converter reference: missingConverter');
+    });
 });

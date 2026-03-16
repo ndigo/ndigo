@@ -67,4 +67,10 @@ describe('argument-value-converter', () => {
 
         expect(converter('34', {} as any)).toBe(34);
     });
+
+    test('resolveConverter throws in strict mode for unknown names', () => {
+        expect(() => resolveConverter('missing', {}, { strictNamedLookup: true })).toThrow(
+            'Unknown converter reference: missing'
+        );
+    });
 });

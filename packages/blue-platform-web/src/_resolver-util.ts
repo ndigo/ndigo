@@ -8,6 +8,7 @@ import {
     ArgumentValueConversionContext,
     ArgumentValueConverter,
     ArgumentValueConverterRegistry,
+    ConverterResolutionOptions,
     resolveConverter,
 } from './argument-value-converter';
 
@@ -21,9 +22,10 @@ export function convertArgumentValue(
     parameter: MethodParameter,
     route: Route,
     mapping: any,
-    registry?: ArgumentValueConverterRegistry
+    registry?: ArgumentValueConverterRegistry,
+    options?: ConverterResolutionOptions
 ): any {
-    const converter: ArgumentValueConverter = resolveConverter(converterReference, registry);
+    const converter: ArgumentValueConverter = resolveConverter(converterReference, registry, options);
     const context: ArgumentValueConversionContext = {
         name: parameter.name,
         parameter,

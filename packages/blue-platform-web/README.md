@@ -72,6 +72,9 @@ const resolver = new BrowserStateValueMethodArgumentResolver((value) => Number(v
 
 Use conversion callbacks for lightweight coercion (e.g. `string` → `number`/`boolean`) while keeping parsing responsibilities in dedicated parser utilities.
 
+If a converter throws, resolvers wrap the failure in `ParameterConversionError`.
+This allows error resolvers to map conversion failures to dedicated views consistently.
+
 Built-in converter presets are exported as `argumentValueConverters`:
 
 - `identity`

@@ -5,6 +5,7 @@ import {
     MissingParameterError,
     NoHandlerFoundError,
     NoViewFoundError,
+    ParameterConversionError,
     ParameterBindingError,
     RouteBindingError,
 } from '../src/error';
@@ -49,10 +50,14 @@ describe('dispatcher errors', () => {
         const base = new ParameterBindingError('invalid', 'page', 'list', 'UserController');
         const invalid = new InvalidParameterMappingError('bad mapping', 'id', 'get', 'TeamController');
         const missing = new MissingParameterError('token', 'query', 'read', 'AuthController');
+        const conversion = new ParameterConversionError('amount', 'cookie:value', new TypeError('bad number'));
 
         expect(base.parameterName).toBe('page');
         expect(invalid.name).toBe('InvalidParameterMappingError');
         expect(missing.parameterType).toBe('query');
         expect(missing.required).toBe(true);
+        expect(conversion.name).toBe('ParameterConversionError');
+        expect(conversion.parameterType).toBe('cookie:value');
+        expect(conversion.cause).toBeInstanceOf(TypeError);
     });
 });

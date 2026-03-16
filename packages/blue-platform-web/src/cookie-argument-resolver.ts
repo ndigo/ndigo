@@ -8,6 +8,7 @@ import { defaultTo } from '@blue/util/logic';
 import { isNil } from '@blue/util/types';
 import Cookies from './cookies';
 import { ArgumentValueConverter, identityArgumentValueConverter } from './argument-value-converter';
+import { convertArgumentValue } from './_resolver-util';
 
 /**
  * Abstract base class for resolving cookie-backed method arguments.
@@ -24,12 +25,7 @@ export abstract class AbstractCookieValueMethodArgumentResolver extends Abstract
         const resolveValue = defaultTo(parameter.defaultValue),
             value = resolveValue(this.resolveName(parameter.name, parameter, route, mapping)),
             converter = parameter.convert ?? this.#converter,
-            convertedValue = converter(value, {
-                name: parameter.name,
-                parameter,
-                route,
-                mapping,
-            });
+            convertedValue = convertArgumentValue(converter, value, parameter, route, mapping);
 
         isNil(convertedValue) && parameter.required && this.handleMissingValue(parameter.name);
 

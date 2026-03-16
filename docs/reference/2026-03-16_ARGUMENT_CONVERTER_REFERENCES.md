@@ -9,6 +9,7 @@ This enables:
 - reusable named converters (`'number'`, `'boolean'`, custom names)
 - optional conversion wrappers (`{ optional: true, use: ... }`)
 - context-level converter registries for application-wide reuse
+- strict named lookup mode for fail-fast configuration
 
 ## Supported `convert` Forms
 
@@ -62,20 +63,31 @@ Named converters are resolved against:
 
 ```typescript
 import { GenericApplicationContext } from '@blue/context';
-import { configureBrowserArgumentResolvers } from '@blue/platform-web';
+import {
+    argumentValueConverters,
+    configureArgumentValueConverterRegistry,
+    configureBrowserArgumentResolvers,
+} from '@blue/platform-web';
 
 const context = new GenericApplicationContext('app');
 
-context.setValue('argumentValueConverterRegistry', {
-    toInt: (value) => Number(value),
+configureArgumentValueConverterRegistry(context, {
+    toInt: argumentValueConverters.number,
     toFlag: (value) => value === 'yes',
 });
 
 configureBrowserArgumentResolvers(context, {
     state: 'toInt',
     session: { optional: true, use: 'toFlag' },
+    strictNamedConverterLookup: true,
 });
 ```
+
+## Strict Named Lookup
+
+By default, unknown named converters fall back to identity conversion.
+
+Set `strictNamedConverterLookup: true` in `configureBrowserArgumentResolvers(...)` to throw an error when a named converter cannot be found.
 
 ## Error Handling
 

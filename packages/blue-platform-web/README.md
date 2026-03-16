@@ -29,6 +29,8 @@ context.setThemeName('default');
 
 // Register browser-specific method argument resolvers.
 // - BrowserCookieValueMethodArgumentResolver
+// - BrowserModelValueMethodArgumentResolver
+// - BrowserStateValueMethodArgumentResolver
 // - BrowserSessionValueMethodArgumentResolver
 configureBrowserArgumentResolvers(context);
 
@@ -41,6 +43,8 @@ configureCookieThemeResolver(context, 'theme');
 `@blue/dispatcher` route parameter extractors can now resolve browser-backed cookie and session values:
 
 - `cookieValue(name, options?)`
+- `modelValue(name, options?)`
+- `stateValue(name, options?)`
 - `sessionValue(name, options?)`
 
 These are resolved at dispatch-time when compatible argument resolvers are registered in the application context.

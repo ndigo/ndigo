@@ -3,6 +3,7 @@ import {
     argumentValueConverters,
     createOptionalConverter,
     createStringSplitConverter,
+    resolveConverter,
     toBooleanValue,
     toDateValue,
     toJSONStringValue,
@@ -50,5 +51,20 @@ describe('argument-value-converter', () => {
         expect(argumentValueConverters.number('42', null as any)).toBe(42);
         expect(argumentValueConverters.boolean('true', null as any)).toBe(true);
         expect(argumentValueConverters.identity('x', {} as any)).toBe('x');
+    });
+
+    test('resolveConverter supports optional named descriptor', () => {
+        const converter = resolveConverter({ optional: true, use: 'number' });
+
+        expect(converter(null, {} as any)).toBeNull();
+        expect(converter('12', {} as any)).toBe(12);
+    });
+
+    test('resolveConverter prefers provided registry for named converters', () => {
+        const converter = resolveConverter('toInt', {
+            toInt: (value) => Number(value),
+        });
+
+        expect(converter('34', {} as any)).toBe(34);
     });
 });

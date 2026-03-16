@@ -100,4 +100,32 @@ describe('configureBrowserArgumentResolvers', () => {
 
         expect(value).toBe(99);
     });
+
+    test('option-level converterRegistry overrides context registry', () => {
+        const context = new GenericApplicationContext('test');
+        context.setValue('argumentValueConverterRegistry', {
+            toInt: () => 1,
+        });
+
+        const resolvers = configureBrowserArgumentResolvers(context, {
+            converterRegistry: {
+                toInt: (value) => Number(value),
+            },
+            state: 'toInt',
+        });
+
+        const stateResolver = resolvers[2] as BrowserStateValueMethodArgumentResolver;
+        const parameter = new MethodParameter(MethodParameterType.STATE, 'token');
+        const route = { data: {}, params: null } as any;
+
+        Object.defineProperty(globalThis, 'history', {
+            configurable: true,
+            writable: true,
+            value: { state: { token: '77' } },
+        });
+
+        const value = stateResolver.resolveArgument(parameter, route, {} as any);
+
+        expect(value).toBe(77);
+    });
 });

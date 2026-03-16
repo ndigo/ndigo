@@ -75,4 +75,29 @@ describe('configureBrowserArgumentResolvers', () => {
 
         expect(value).toBe(123);
     });
+
+    test('uses converter registry from application context', () => {
+        const context = new GenericApplicationContext('test');
+        context.setValue('argumentValueConverterRegistry', {
+            toInt: (value) => Number(value),
+        });
+
+        const resolvers = configureBrowserArgumentResolvers(context, {
+            state: 'toInt',
+        });
+
+        const stateResolver = resolvers[2] as BrowserStateValueMethodArgumentResolver;
+        const parameter = new MethodParameter(MethodParameterType.STATE, 'token');
+        const route = { data: {}, params: null } as any;
+
+        Object.defineProperty(globalThis, 'history', {
+            configurable: true,
+            writable: true,
+            value: { state: { token: '99' } },
+        });
+
+        const value = stateResolver.resolveArgument(parameter, route, {} as any);
+
+        expect(value).toBe(99);
+    });
 });

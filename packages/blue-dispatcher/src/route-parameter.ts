@@ -14,7 +14,7 @@ const { defineProperty } = Reflect;
 /**
  * Factory function return type - describes a parameter extraction
  */
-export type ParameterExtractor = {
+export type ParameterExtractor<T = any> = {
     type: MethodParameterType;
     name: string;
     required: boolean;
@@ -352,6 +352,38 @@ export function stateValue(
         defaultValue: options.defaultValue ?? null,
         convert: options.convert ?? null,
     };
+}
+
+/**
+ * Wraps a parameter extractor to enforce number conversion.
+ * @example asNumber(queryValue('age'))
+ */
+export function asNumber(extractor: ParameterExtractor): ParameterExtractor<number> {
+    return { ...extractor, convert: 'number' };
+}
+
+/**
+ * Wraps a parameter extractor to enforce boolean conversion.
+ * @example asBoolean(stateValue('isActive'))
+ */
+export function asBoolean(extractor: ParameterExtractor): ParameterExtractor<boolean> {
+    return { ...extractor, convert: 'boolean' };
+}
+
+/**
+ * Wraps a parameter extractor to enforce Date conversion.
+ * @example asDate(cookieValue('lastLogin'))
+ */
+export function asDate(extractor: ParameterExtractor): ParameterExtractor<Date> {
+    return { ...extractor, convert: 'date' };
+}
+
+/**
+ * Wraps a parameter extractor to enforce JSON conversion.
+ * @example asJson<UserProfile>(modelValue('profile'))
+ */
+export function asJson<T = any>(extractor: ParameterExtractor): ParameterExtractor<T> {
+    return { ...extractor, convert: 'json' };
 }
 
 /**

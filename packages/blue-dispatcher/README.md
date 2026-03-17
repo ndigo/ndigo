@@ -19,7 +19,7 @@ pnpm add @blue/dispatcher
 ## Usage
 
 ```typescript
-import { routeMapping, routeParams, queryValue } from '@blue/dispatcher';
+import { routeMapping, routeParams, queryValue, asNumber } from '@blue/dispatcher';
 
 class ExampleController {
     @routeMapping('/health')
@@ -29,7 +29,7 @@ class ExampleController {
 
     @routeMapping('/users')
     @routeParams({
-        page: queryValue('page', { convert: 'number' }),
+        page: asNumber(queryValue('page')),
     })
     list(page: number) {
         return page;
@@ -42,6 +42,24 @@ class ExampleController {
 - converter functions
 - named converter references (resolved by resolver registry)
 - optional descriptors: `{ optional: true, use: 'number' }`
+
+### Typed Converter Wrappers
+
+For better readability and type safety, you can use typed converter wrappers:
+
+- `asNumber(extractor)`
+- `asBoolean(extractor)`
+- `asDate(extractor)`
+- `asJson<T>(extractor)`
+
+```typescript
+@routeParams({
+    age: asNumber(queryValue('age')),
+    isActive: asBoolean(stateValue('active')),
+    profile: asJson<UserProfile>(modelValue('profile'))
+})
+handle(age: number, isActive: boolean, profile: UserProfile) {}
+```
 
 ## Development
 

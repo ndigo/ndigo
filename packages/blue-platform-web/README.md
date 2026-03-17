@@ -17,6 +17,8 @@ pnpm add @blue/platform-web
 
 ## Usage
 
+> **Note**: If you are using `@blue/boot` to launch your application in the browser, these resolvers and converters are registered automatically. Manual configuration is only required for custom setups.
+
 ```typescript
 import {
     argumentValueConverters,

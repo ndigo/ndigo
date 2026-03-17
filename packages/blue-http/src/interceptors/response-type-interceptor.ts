@@ -32,7 +32,7 @@ export type ResponseTypeSettings = HTTPInit & { responseParsers: ResponseParserM
  */
 
 const { defineProperty } = Reflect,
-    domParser = new DOMParser(),
+    domParser = typeof DOMParser !== 'undefined' ? new DOMParser() : null,
     defaultParsers = new Map<MediaType, ResponseParser>(),
     binaryParser: ResponseParser<Blob> = (mediaType: string) => async (response: Response) =>
         new Blob([await response.arrayBuffer()], { type: mediaType }),

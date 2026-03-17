@@ -35,6 +35,15 @@ sessionValue('darkMode', {
 });
 ```
 
+4. Typed Converter Wrappers (Recommended)
+
+```typescript
+import { asNumber, queryValue } from '@blue/dispatcher';
+
+// Wraps an extractor to enforce number conversion
+asNumber(queryValue('page'));
+```
+
 ## Converter Resolution Order
 
 When resolving an argument value:
@@ -92,3 +101,14 @@ Set `strictNamedConverterLookup: true` in `configureBrowserArgumentResolvers(...
 ## Error Handling
 
 If a converter throws, BlueJS wraps it in `ParameterConversionError` so route error resolvers can map conversion failures consistently.
+
+## Typed Converter Wrappers
+
+For better readability and type safety, `@blue/dispatcher` provides fluent wrappers:
+
+- `asNumber(extractor)`
+- `asBoolean(extractor)`
+- `asDate(extractor)`
+- `asJson<T>(extractor)`
+
+These wrappers merge the appropriate `convert` reference into the extractor while preserving other options.

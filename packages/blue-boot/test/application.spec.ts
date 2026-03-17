@@ -1,6 +1,7 @@
-import { describe, test, expect } from 'vitest';
+import { describe, test, expect, vi, afterEach } from 'vitest';
 import { Application } from '../src/application';
 import { configuration, entry, profile } from '@blue/context';
+import { HandlerMethodArgumentResolver } from '@blue/dispatcher';
 
 @configuration
 @profile('dev')
@@ -20,6 +21,10 @@ class SourceConfiguration {
 }
 
 describe('Application', () => {
+    afterEach(() => {
+        vi.unstubAllGlobals();
+    });
+
     test('it should create instances', () => {
         const app = new Application([() => void 0]);
         expect(app).toBeInstanceOf(Application);
@@ -56,5 +61,16 @@ describe('Application', () => {
         const context = app.run();
 
         expect(context.name).toBe('blue-app');
+    });
+
+    test('it should auto-configure web resolvers when window is defined', () => {
+        vi.stubGlobal('window', {});
+
+        const app = new Application([]);
+        const context = app.run();
+
+        expect(context.hasValue('argumentResolvers')).toBe(true);
+        const resolvers = context.getValue<HandlerMethodArgumentResolver[]>('argumentResolvers');
+        expect(resolvers.length).toBeGreaterThan(0);
     });
 });

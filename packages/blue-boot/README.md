@@ -5,8 +5,22 @@ Blue Boot provides application startup primitives for BlueJS.
 ## Features
 
 - Application lifecycle bootstrap helpers
+- Environment-aware auto-configuration
 - Strong integration with `@blue/context`
 - ESM-first package for Nx/pnpm monorepo workflows
+
+## Auto-configuration
+
+`@blue/boot` automatically provisions common framework components based on the environment.
+
+### Web Auto-configuration
+
+When running in a browser environment, `@blue/boot` automatically registers:
+
+- **Argument Resolvers**: Cookie, Model, Session, and State resolvers for `@routeParams`.
+- **Converter Registry**: Built-in converters (number, boolean, date, json) for type-safe parameter extraction.
+
+This behavior is enabled by default when using `Application` or `ApplicationBuilder` in the browser.
 
 ## Notes
 

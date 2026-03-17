@@ -9,6 +9,7 @@ import {
     StandardEnvironment,
 } from '@blue/context';
 import { IllegalStateError, JSONObject } from '@blue/core';
+import { WebAutoConfiguration } from './web-auto-configuration';
 
 /**
  * Class that can be used to bootstrap and launch an application.
@@ -93,6 +94,11 @@ export class Application {
     protected _prepareContext(environment: ConfigurableEnvironment, args: string[]): ConfigurableApplicationContext {
         const context = new MetadataConfigApplicationContext(this.#name);
         context.setEnvironment(environment);
+
+        if (typeof window !== 'undefined') {
+            context.register(WebAutoConfiguration);
+        }
+
         this.#sources.forEach((source) => context.register(source));
         context.refresh();
         return context;

@@ -14,6 +14,10 @@ import {
     stateValue,
     sessionValue,
     pathValue,
+    asNumber,
+    asBoolean,
+    asDate,
+    asJson,
     getMethodParameter,
     hasMethodParameter,
     MethodParameterType,
@@ -100,6 +104,40 @@ describe('@routeParams - TC39 Parameter Injection Pattern', () => {
             expect(extractor.name).toBe('token');
             expect(extractor.required).toBe(false);
             expect(extractor.defaultValue).toBeNull();
+        });
+
+        describe('Typed Converter Wrappers', () => {
+            it('asNumber should wrap extractor with number converter', () => {
+                const extractor = asNumber(queryValue('age', { required: true, defaultValue: '18' }));
+                expect(extractor.convert).toBe('number');
+                expect(extractor.name).toBe('age');
+                expect(extractor.required).toBe(true);
+                expect(extractor.defaultValue).toBe('18');
+            });
+
+            it('asBoolean should wrap extractor with boolean converter', () => {
+                const extractor = asBoolean(stateValue('active'));
+                expect(extractor.convert).toBe('boolean');
+                expect(extractor.name).toBe('active');
+            });
+
+            it('asDate should wrap extractor with date converter', () => {
+                const extractor = asDate(cookieValue('lastLogin'));
+                expect(extractor.convert).toBe('date');
+                expect(extractor.name).toBe('lastLogin');
+            });
+
+            it('asJson should wrap extractor with json converter', () => {
+                const extractor = asJson(modelValue('profile'));
+                expect(extractor.convert).toBe('json');
+                expect(extractor.name).toBe('profile');
+            });
+
+            it('wrappers should override existing converter', () => {
+                const inner = queryValue('age', { convert: (v) => v });
+                const wrapped = asNumber(inner);
+                expect(wrapped.convert).toBe('number');
+            });
         });
     });
 

@@ -6,8 +6,8 @@ templateTodoInput.innerHTML = `
 `;
 
 export default class TodoInput extends HTMLElement {
-    $form;
-    $input;
+    $form: HTMLFormElement | null = null;
+    $input: HTMLInputElement | null = null;
 
     constructor() {
         super();
@@ -20,11 +20,11 @@ export default class TodoInput extends HTMLElement {
         this.appendChild(templateTodoInput.content.cloneNode(true));
         this.$form = this.querySelector('form');
         this.$input = this.querySelector('input');
-        this.$form.addEventListener('submit', (e) => {
+        this.$form!.addEventListener('submit', (e: Event) => {
             e.preventDefault();
-            if (!this.$input.value) return;
-            this.dispatchEvent(new CustomEvent('onSubmit', { detail: this.$input.value }));
-            this.$input.value = '';
+            if (!this.$input!.value) return;
+            this.dispatchEvent(new CustomEvent('onSubmit', { detail: this.$input!.value }));
+            this.$input!.value = '';
         });
     }
 

@@ -10,14 +10,14 @@ templateTodoItem.innerHTML = `
 `;
 
 export default class TodoItem extends HTMLElement {
-    #checked;
-    #index;
-    #text;
+    #checked: boolean;
+    #index: number = 0;
+    #text: string;
 
-    $checkbox;
-    $item;
-    $removeButton;
-    $text;
+    $checkbox: HTMLInputElement | null = null;
+    $item: HTMLElement | null = null;
+    $removeButton: HTMLButtonElement | null = null;
+    $text: HTMLElement | null = null;
 
     constructor() {
         super();
@@ -33,11 +33,11 @@ export default class TodoItem extends HTMLElement {
         this.$removeButton = this.querySelector('.destroy');
         this.$text = this.querySelector('label');
         this.$checkbox = this.querySelector('input');
-        this.$removeButton.addEventListener('click', (e) => {
+        this.$removeButton!.addEventListener('click', (e: Event) => {
             e.preventDefault();
             this.dispatchEvent(new CustomEvent('onRemove', { detail: this.index }));
         });
-        this.$checkbox.addEventListener('click', (e) => {
+        this.$checkbox!.addEventListener('click', (e: Event) => {
             e.preventDefault();
             this.dispatchEvent(new CustomEvent('onToggle', { detail: this.index }));
         });
@@ -49,35 +49,37 @@ export default class TodoItem extends HTMLElement {
     static get observedAttributes() {
         return ['text'];
     }
-    attributeChangedCallback(name, oldValue, newValue) {
+    attributeChangedCallback(name: string, oldValue: string | null, newValue: string) {
+        void name;
+        void oldValue;
         this.#text = newValue;
     }
 
-    set index(value) {
+    set index(value: number) {
         this.#index = value;
     }
 
-    get index() {
+    get index(): number {
         return this.#index;
     }
 
-    set checked(value) {
+    set checked(value: boolean) {
         this.#checked = Boolean(value);
     }
 
-    get checked() {
+    get checked(): boolean {
         return this.hasAttribute('checked');
     }
 
     _render() {
         if (!this.$item) return;
-        this.$text.textContent = this.#text;
+        this.$text!.textContent = this.#text;
         if (this.#checked) {
             this.$item.classList.add('completed');
-            this.$checkbox.setAttribute('checked', '');
+            this.$checkbox!.setAttribute('checked', '');
         } else {
             this.$item.classList.remove('completed');
-            this.$checkbox.removeAttribute('checked');
+            this.$checkbox!.removeAttribute('checked');
         }
     }
 }

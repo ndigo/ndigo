@@ -28,13 +28,18 @@ templateTodo.innerHTML = `
     </section>
 `;
 
-export default class MyTodoApp extends HTMLElement {
-    #list;
+interface TodoItem {
+    text: string;
+    checked: boolean;
+}
 
-    $input;
-    $listContainer;
-    checked;
-    index;
+export default class MyTodoApp extends HTMLElement {
+    #list: TodoItem[];
+
+    $input: any;
+    $listContainer: HTMLElement | null = null;
+    checked: boolean = false;
+    index: number = 0;
 
     constructor() {
         super();
@@ -51,21 +56,21 @@ export default class MyTodoApp extends HTMLElement {
         this.appendChild(templateTodo.content.cloneNode(true));
         this.$input = this.querySelector('todo-input');
         this.$listContainer = this.querySelector('.todo-list');
-        this.$input.addEventListener('onSubmit', this.addItem.bind(this));
+        this.$input.addEventListener('onSubmit', (this.addItem as any).bind(this));
         this._render();
     }
 
-    addItem(e) {
+    addItem(e: CustomEvent) {
         this.#list.push({ text: e.detail, checked: false });
         this._render();
     }
 
-    removeItem(e) {
+    removeItem(e: CustomEvent) {
         this.#list.splice(e.detail, 1);
         this._render();
     }
 
-    toggleItem(e) {
+    toggleItem(e: CustomEvent) {
         const item = this.#list[e.detail];
         this.#list[e.detail] = Object.assign({}, item, {
             checked: !item.checked,
@@ -87,9 +92,9 @@ export default class MyTodoApp extends HTMLElement {
             $item.checked = item.checked;
             // @ts-ignore: ¯\_(ツ)_/¯
             $item.index = index;
-            $item.addEventListener('onRemove', this.removeItem.bind(this));
-            $item.addEventListener('onToggle', this.toggleItem.bind(this));
-            this.$listContainer.appendChild($item);
+            $item.addEventListener('onRemove', (this.removeItem as any).bind(this));
+            $item.addEventListener('onToggle', (this.toggleItem as any).bind(this));
+            this.$listContainer!.appendChild($item);
         });
     }
 }

@@ -4,6 +4,7 @@
     "composite": false,
     "declaration": false,
     "declarationMap": false,
+    "inlineSourceMap": false,
     "sourceMap": true,
     "target": "ES2022",
     "module": "ESNext",

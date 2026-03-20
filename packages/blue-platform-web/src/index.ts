@@ -4,6 +4,7 @@
 
 export * from './browser-environment';
 export * from './argument-value-converter';
+export * from './bind-argument-resolver';
 export * from './configure-argument-resolvers';
 export * from './configure-converter-registry';
 export * from './configure-strict-argument-resolvers';

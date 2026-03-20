@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, test } from 'vitest';
 import { GenericApplicationContext } from '@blue/context';
 import { configureBrowserArgumentResolvers } from '../src/configure-argument-resolvers';
+import { BrowserBindMethodArgumentResolver } from '../src/bind-argument-resolver';
 import { BrowserCookieValueMethodArgumentResolver } from '../src/cookie-argument-resolver';
 import { BrowserModelValueMethodArgumentResolver } from '../src/model-argument-resolver';
 import { BrowserStateValueMethodArgumentResolver } from '../src/state-argument-resolver';
@@ -24,36 +25,43 @@ describe('configureBrowserArgumentResolvers', () => {
         const resolvers = configureBrowserArgumentResolvers(context);
 
         expect(Array.isArray(resolvers)).toBe(true);
-        expect(resolvers).toHaveLength(4);
+        expect(resolvers).toHaveLength(5);
         expect(context.getValue('argumentResolvers')).toBe(resolvers);
     });
 
-    test('registers cookie resolver first', () => {
+    test('registers bind resolver first', () => {
         const context = new GenericApplicationContext('test');
         const resolvers = configureBrowserArgumentResolvers(context);
 
-        expect(resolvers[0]).toBeInstanceOf(BrowserCookieValueMethodArgumentResolver);
+        expect(resolvers[0]).toBeInstanceOf(BrowserBindMethodArgumentResolver);
     });
 
-    test('registers model resolver second', () => {
+    test('registers cookie resolver second', () => {
         const context = new GenericApplicationContext('test');
         const resolvers = configureBrowserArgumentResolvers(context);
 
-        expect(resolvers[1]).toBeInstanceOf(BrowserModelValueMethodArgumentResolver);
+        expect(resolvers[1]).toBeInstanceOf(BrowserCookieValueMethodArgumentResolver);
     });
 
-    test('registers state resolver third', () => {
+    test('registers model resolver third', () => {
         const context = new GenericApplicationContext('test');
         const resolvers = configureBrowserArgumentResolvers(context);
 
-        expect(resolvers[2]).toBeInstanceOf(BrowserStateValueMethodArgumentResolver);
+        expect(resolvers[2]).toBeInstanceOf(BrowserModelValueMethodArgumentResolver);
     });
 
-    test('registers session resolver fourth', () => {
+    test('registers state resolver fourth', () => {
         const context = new GenericApplicationContext('test');
         const resolvers = configureBrowserArgumentResolvers(context);
 
-        expect(resolvers[3]).toBeInstanceOf(BrowserSessionValueMethodArgumentResolver);
+        expect(resolvers[3]).toBeInstanceOf(BrowserStateValueMethodArgumentResolver);
+    });
+
+    test('registers session resolver fifth', () => {
+        const context = new GenericApplicationContext('test');
+        const resolvers = configureBrowserArgumentResolvers(context);
+
+        expect(resolvers[4]).toBeInstanceOf(BrowserSessionValueMethodArgumentResolver);
     });
 
     test('accepts named converter presets', () => {
@@ -62,7 +70,7 @@ describe('configureBrowserArgumentResolvers', () => {
             state: 'number',
         });
 
-        const stateResolver = resolvers[2] as BrowserStateValueMethodArgumentResolver;
+        const stateResolver = resolvers[3] as BrowserStateValueMethodArgumentResolver;
         const parameter = new MethodParameter(MethodParameterType.STATE, 'token');
         const route = { data: {}, params: null } as any;
 
@@ -87,7 +95,7 @@ describe('configureBrowserArgumentResolvers', () => {
             state: 'toInt',
         });
 
-        const stateResolver = resolvers[2] as BrowserStateValueMethodArgumentResolver;
+        const stateResolver = resolvers[3] as BrowserStateValueMethodArgumentResolver;
         const parameter = new MethodParameter(MethodParameterType.STATE, 'token');
         const route = { data: {}, params: null } as any;
 
@@ -115,7 +123,7 @@ describe('configureBrowserArgumentResolvers', () => {
             state: 'toInt',
         });
 
-        const stateResolver = resolvers[2] as BrowserStateValueMethodArgumentResolver;
+        const stateResolver = resolvers[3] as BrowserStateValueMethodArgumentResolver;
         const parameter = new MethodParameter(MethodParameterType.STATE, 'token');
         const route = { data: {}, params: null } as any;
 
@@ -147,7 +155,7 @@ describe('configureBrowserArgumentResolvers', () => {
             strictNamedConverterLookup: true,
         });
 
-        const stateResolver = resolvers[2] as BrowserStateValueMethodArgumentResolver;
+        const stateResolver = resolvers[3] as BrowserStateValueMethodArgumentResolver;
         const parameter = new MethodParameter(MethodParameterType.STATE, 'token', false, null, 'missingConverter');
         const route = { data: {}, params: null } as any;
 

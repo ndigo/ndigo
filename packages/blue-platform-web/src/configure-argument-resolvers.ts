@@ -13,11 +13,13 @@ import {
     resolveConverter,
 } from './argument-value-converter';
 import { BrowserCookieValueMethodArgumentResolver } from './cookie-argument-resolver';
+import { BrowserBindMethodArgumentResolver } from './bind-argument-resolver';
 import { BrowserModelValueMethodArgumentResolver } from './model-argument-resolver';
 import { BrowserStateValueMethodArgumentResolver } from './state-argument-resolver';
 import { BrowserSessionValueMethodArgumentResolver } from './session-argument-resolver';
 
 export type BrowserArgumentResolverOptions = {
+    bind?: ResolverConverterOption;
     cookie?: ResolverConverterOption;
     model?: ResolverConverterOption;
     session?: ResolverConverterOption;
@@ -42,6 +44,11 @@ export function configureBrowserArgumentResolvers(
     };
 
     const resolvers: HandlerMethodArgumentResolver[] = [
+        new BrowserBindMethodArgumentResolver(
+            resolveConverter(options.bind, converterRegistry, converterResolutionOptions),
+            converterRegistry,
+            converterResolutionOptions
+        ),
         new BrowserCookieValueMethodArgumentResolver(
             resolveConverter(options.cookie, converterRegistry, converterResolutionOptions),
             converterRegistry,

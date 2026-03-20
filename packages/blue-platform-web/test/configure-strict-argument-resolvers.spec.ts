@@ -18,7 +18,7 @@ describe('configureStrictBrowserArgumentResolvers', () => {
     test('enforces strict named converter lookup by default', () => {
         const context = new GenericApplicationContext('test');
         const resolvers = configureStrictBrowserArgumentResolvers(context);
-        const stateResolver = resolvers[2];
+        const stateResolver = resolvers[3];
 
         Object.defineProperty(globalThis, 'history', {
             configurable: true,
@@ -61,7 +61,7 @@ describe('configureStrictBrowserArgumentResolvers', () => {
             value: { state: { token: '88' } },
         });
 
-        const stateResolver = resolvers[2];
+        const stateResolver = resolvers[3];
         const parameter = new MethodParameter(MethodParameterType.STATE, 'token');
         const value = stateResolver.resolveArgument(parameter, { data: {}, params: null } as any, {} as any);
 

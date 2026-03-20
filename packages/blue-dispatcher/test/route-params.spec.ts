@@ -18,6 +18,7 @@ import {
     asBoolean,
     asDate,
     asJson,
+    bindValue,
     getMethodParameter,
     hasMethodParameter,
     MethodParameterType,
@@ -104,6 +105,13 @@ describe('@routeParams - TC39 Parameter Injection Pattern', () => {
             expect(extractor.name).toBe('token');
             expect(extractor.required).toBe(false);
             expect(extractor.defaultValue).toBeNull();
+        });
+
+        it('bindValue should create bind parameter extractor', () => {
+            const extractor = bindValue('query', { prefix: 'user.' });
+            expect(extractor.type).toEqual(MethodParameterType.BIND);
+            expect(extractor.name).toBe('query');
+            expect(extractor.prefix).toBe('user.');
         });
 
         describe('Typed Converter Wrappers', () => {

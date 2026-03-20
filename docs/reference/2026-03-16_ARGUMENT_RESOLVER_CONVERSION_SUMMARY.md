@@ -37,6 +37,7 @@ Supported across:
 - `modelValue`
 - `stateValue`
 - `sessionValue`
+- `bindValue`
 
 ### 3) Built-in converter presets
 
@@ -68,6 +69,14 @@ Helper API:
 - `strictNamedConverterLookup: true`
 
 In strict mode, unknown named converters fail fast.
+
+### 6) Data Binding support
+
+`bindValue(source, options?)` allows mapping an entire data source (like query parameters or history state) to a nested object structure.
+
+- Supports dot-notation (`user.name`) and bracket-notation (`tags[0]`) via `@blue/core` `DataBinder`.
+- Supports optional `prefix` filtering.
+- Integrates with the conversion pipeline for post-binding coercion.
 
 ## Error Handling Behavior
 

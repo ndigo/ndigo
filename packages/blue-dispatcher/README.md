@@ -52,6 +52,21 @@ For better readability and type safety, you can use typed converter wrappers:
 - `asDate(extractor)`
 - `asJson<T>(extractor)`
 
+### Data Binding
+
+`bindValue(source, options?)` allows binding an entire data source (query, state, etc.) to a nested object using dot-notation and bracket-notation keys.
+
+```typescript
+import { routeParams, bindValue } from '@blue/dispatcher';
+
+@routeParams({
+    user: bindValue('query', { prefix: 'user.' })
+})
+handle(user: User) {}
+```
+
+If query parameters are `?user.name=Jeff&user.age=30`, the `user` argument will be `{ name: 'Jeff', age: '30' }`.
+
 ```typescript
 @routeParams({
     age: asNumber(queryValue('age')),

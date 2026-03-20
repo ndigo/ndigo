@@ -3,7 +3,7 @@ import { DataBinder } from '../src/data-binder';
 import { MutablePropertyValues } from '../src/property-value';
 
 describe('DataBinder', () => {
-    let db: DataBinder<Record<string, any>>;
+    let db: DataBinder;
     let target: Record<string, any>;
 
     beforeEach(() => {

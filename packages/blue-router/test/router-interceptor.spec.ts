@@ -46,15 +46,15 @@ describe('MappedRouterInterceptor', () => {
         expect(mapped.resolveRouteParams(new PathRoute('/teams/77'))).toBe(null);
     });
 
-    test('it should delegate preRoute and postRoute', () => {
+    test('it should delegate preRoute and postRoute', async () => {
         const preRoute = vi.fn(() => true);
         const postRoute = vi.fn();
         const interceptor: RouterInterceptor = { preRoute, postRoute };
         const mapped = new MappedRouterInterceptor(interceptor, ['/users/*']);
         const route = new PathRoute('/users/42');
 
-        expect(mapped.preRoute(route)).toBe(true);
-        mapped.postRoute(route);
+        expect(await mapped.preRoute(route)).toBe(true);
+        await mapped.postRoute(route);
 
         expect(preRoute).toHaveBeenCalledTimes(1);
         expect(postRoute).toHaveBeenCalledTimes(1);

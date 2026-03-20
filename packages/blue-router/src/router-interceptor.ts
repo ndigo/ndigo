@@ -1,11 +1,11 @@
 import { Route } from './route';
 import { PathMatcher, AsPathMatcherFilter, Null, PathMatcherFilter, GlobPathMatcher } from '@blue/core';
 
-export type RouterMiddleware = (route: Route) => boolean | void;
+export type RouterMiddleware = (route: Route) => boolean | void | Promise<boolean | void>;
 
 export interface RouterInterceptor {
-    postRoute?(route: Route): void;
-    preRoute?(route: Route): boolean;
+    postRoute?(route: Route): void | Promise<void>;
+    preRoute?(route: Route): boolean | Promise<boolean>;
 }
 
 /**
@@ -93,12 +93,12 @@ export class MappedRouterInterceptor extends AsPathMatcherFilter(Null) implement
         return null;
     }
 
-    postRoute(route: Route): void {
-        this.#interceptor.postRoute?.(route);
+    async postRoute(route: Route): Promise<void> {
+        await this.#interceptor.postRoute?.(route);
     }
 
-    preRoute(route: Route): boolean {
-        return this.#interceptor.preRoute?.(route) !== false;
+    async preRoute(route: Route): Promise<boolean> {
+        return (await this.#interceptor.preRoute?.(route)) !== false;
     }
 
     private _isNamedRoutePattern(pattern: string): boolean {

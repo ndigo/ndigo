@@ -130,8 +130,9 @@ export default class HashRouter extends AbstractRouter {
         }
     }
 
-    setRoute(newRoute: string, isPublic = true) {
-        if (this._setRoute(newRoute, isPublic)) {
+    async setRoute(newRoute: string, isPublic = true): Promise<void> {
+        const success = await this._setRoute(newRoute, isPublic);
+        if (success) {
             const routeAccess = isPublic ? RouteAccess.PUBLIC : RouteAccess.PRIVATE,
                 routeTx = new RouteTransaction(this.route, routeAccess, RouteSource.INTERNAL);
             this.#history.put(routeTx);
@@ -144,23 +145,25 @@ export default class HashRouter extends AbstractRouter {
 
     protected _onHashChange(event: HashChangeEvent) {
         const newRoute = extractRouteFromURL(event.newURL);
-        if (this._setRoute(newRoute, true)) {
-            const route = this.route,
-                routeTx = new RouteTransaction(route, RouteAccess.PUBLIC, RouteSource.EXTERNAL);
-            this.#history.put(routeTx);
-            this.#lastPublicRoute = route;
-            this.callback(this.#route);
-        }
+        this._setRoute(newRoute, true).then((success) => {
+            if (success) {
+                const route = this.route,
+                    routeTx = new RouteTransaction(route, RouteAccess.PUBLIC, RouteSource.EXTERNAL);
+                this.#history.put(routeTx);
+                this.#lastPublicRoute = route;
+                this.callback(this.#route);
+            }
+        });
     }
 
-    protected _setRoute(newRoute: string, syncHash = true): boolean {
+    protected async _setRoute(newRoute: string, syncHash = true): Promise<boolean> {
         const route = new PathRoute(newRoute),
             oldRoute = syncHash ? this.route : this.#lastPublicRoute,
             status = this.#transactionManager.getTransaction(route, oldRoute, syncHash),
             chain = new RouterExecutionChain(this._resolveInterceptors(route));
 
         try {
-            if (chain.applyPreRoute(route) === false) {
+            if ((await chain.applyPreRoute(route)) === false) {
                 status.setRollbackOnly();
                 this.#transactionManager.rollback(status);
                 return false;
@@ -168,7 +171,7 @@ export default class HashRouter extends AbstractRouter {
 
             this.#route = route;
 
-            chain.applyPostRoute(route);
+            await chain.applyPostRoute(route);
 
             this.#transactionManager.commit(status);
 

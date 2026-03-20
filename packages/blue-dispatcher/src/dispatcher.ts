@@ -106,6 +106,7 @@ export class BrowserDispatcher
             const handlerAdapter: RouteHandlerAdapter = this.getHandlerAdapter(mappedHandler.handler);
 
             if ((await mappedHandler.applyPreHandle(route)) === false) {
+                await this._processDispatchResult(route, mappedHandler, null, null);
                 return;
             }
 
@@ -113,14 +114,10 @@ export class BrowserDispatcher
             this._applyDefaultViewName(route, mv);
             await mappedHandler.applyPostHandle(route, mv);
         } catch (error) {
-            dispatchError = error;
+            dispatchError = error as Error;
         }
 
-        return this._processDispatchResult(route, mappedHandler, mv, dispatchError).catch(async function (
-            error: Error
-        ) {
-            await mappedHandler?.triggerCompleteHandle(route, error);
-        });
+        await this._processDispatchResult(route, mappedHandler, mv, dispatchError);
     }
 
     /**
@@ -199,17 +196,26 @@ export class BrowserDispatcher
         mv: ModelAndView,
         error: Error
     ): Promise<void> {
-        if (error) {
+        let dispatchError = error;
+
+        if (dispatchError) {
             const handler = mappedHandler instanceof RouteHandlerExecutionChain ? mappedHandler.handler : null;
-            mv = this._processHandlerError(route, handler, error);
+            try {
+                mv = this._processHandlerError(route, handler, dispatchError);
+            } catch (err) {
+                dispatchError = err as Error;
+            }
         }
 
         if (mv) {
             try {
                 await this.render(mv, route);
-                await mappedHandler?.triggerCompleteHandle(route, null);
-            } catch {}
+            } catch (err) {
+                dispatchError = err as Error;
+            }
         }
+
+        await mappedHandler?.triggerCompleteHandle(route, dispatchError);
     }
 }
 

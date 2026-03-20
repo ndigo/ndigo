@@ -17,6 +17,7 @@ import {
     MatrixValueMethodArgumentResolver,
     PathValueMethodArgumentResolver,
     QueryValueMethodArgumentResolver,
+    AttributeValueMethodArgumentResolver,
     likeArgumentResolver,
 } from './argument-resolver';
 
@@ -124,6 +125,7 @@ export class MetadataHandlerAdapter extends AbstractHandlerMethodAdapter impleme
             new PathValueMethodArgumentResolver(),
             new MatrixValueMethodArgumentResolver(),
             new QueryValueMethodArgumentResolver(),
+            new AttributeValueMethodArgumentResolver(),
         ];
     }
 

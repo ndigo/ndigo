@@ -136,3 +136,16 @@ export class PathValueMethodArgumentResolver extends AbstractNamedValueMethodArg
         return MethodParameterType.PATH.equals(parameter.type);
     }
 }
+
+/**
+ * @extends module:dispatcher.AbstractNamedValueMethodArgumentResolver
+ */
+export class AttributeValueMethodArgumentResolver extends AbstractNamedValueMethodArgumentResolver {
+    protected resolveName(name: string, parameter: MethodParameter, route: Route, mapping): any {
+        return route.attributes?.[name];
+    }
+
+    supportsParameter(parameter: MethodParameter): boolean {
+        return MethodParameterType.ATTRIBUTE.equals(parameter.type);
+    }
+}

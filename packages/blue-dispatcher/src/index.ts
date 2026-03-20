@@ -28,4 +28,5 @@ export * from './route-to-view-name-translator';
 export * from './theme-resolver';
 export { AbstractThemeResolver } from './theme-resolver';
 
-// Logger modules
+export * from './logging-interceptor';
+export * from './transaction-interceptor';

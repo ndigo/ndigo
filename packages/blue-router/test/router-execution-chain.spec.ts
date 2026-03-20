@@ -27,13 +27,13 @@ describe('RouterExecutionChain', () => {
         expect(target.interceptors.length).toBe(1);
     });
 
-    test('it should stop pre-route execution when interceptor rejects', () => {
+    test('it should stop pre-route execution when interceptor rejects', async () => {
         const first = vi.fn(() => true);
         const second = vi.fn(() => false);
         const third = vi.fn(() => true);
         const chain = new RouterExecutionChain([{ preRoute: first }, { preRoute: second }, { preRoute: third }]);
 
-        const result = chain.applyPreRoute(new PathRoute('/foo'));
+        const result = await chain.applyPreRoute(new PathRoute('/foo'));
 
         expect(result).toBe(false);
         expect(first).toHaveBeenCalledTimes(1);
@@ -41,12 +41,12 @@ describe('RouterExecutionChain', () => {
         expect(third).not.toHaveBeenCalled();
     });
 
-    test('it should apply post-route callbacks for all interceptors', () => {
+    test('it should apply post-route callbacks for all interceptors', async () => {
         const first = vi.fn();
         const second = vi.fn();
         const chain = new RouterExecutionChain([{ postRoute: first }, { postRoute: second }]);
 
-        chain.applyPostRoute(new PathRoute('/foo'));
+        await chain.applyPostRoute(new PathRoute('/foo'));
 
         expect(first).toHaveBeenCalledTimes(1);
         expect(second).toHaveBeenCalledTimes(1);

@@ -57,13 +57,13 @@ export default class RouterExecutionChain {
     /**
      * @param {module:router.Route} route
      */
-    applyPostRoute(route: Route): void {
+    async applyPostRoute(route: Route): Promise<void> {
         const interceptors = this.#interceptors,
             length = interceptors.length;
         if (length) {
             let index = 0;
             for (; index < length; index++) {
-                interceptors[index].postRoute?.(route);
+                await interceptors[index].postRoute?.(route);
             }
         }
     }
@@ -71,13 +71,13 @@ export default class RouterExecutionChain {
     /**
      * @param {module:router.Route} route
      */
-    applyPreRoute(route: Route): boolean {
+    async applyPreRoute(route: Route): Promise<boolean> {
         const interceptors = this.#interceptors,
             length = interceptors.length;
         if (length) {
             let index = 0;
             for (; index < length; index++) {
-                if (interceptors[index].preRoute?.(route) === false) {
+                if ((await interceptors[index].preRoute?.(route)) === false) {
                     return false;
                 }
                 this.interceptorIndex = index;

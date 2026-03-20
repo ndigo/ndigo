@@ -76,7 +76,31 @@ If query parameters are `?user.name=Jeff&user.age=30`, the `user` argument will 
 handle(age: number, isActive: boolean, profile: UserProfile) {}
 ```
 
-## Development
+## Standard Interceptors
+
+`@blue/dispatcher` provides out-of-the-box interceptors for common middleware patterns:
+
+### `LoggingRouteHandlerInterceptor`
+
+Logs the execution time and outcome of a route handler. Useful for performance monitoring and debugging.
+
+```typescript
+import { LoggingRouteHandlerInterceptor } from '@blue/dispatcher';
+
+const loggingInterceptor = new LoggingRouteHandlerInterceptor();
+```
+
+### `TransactionRouteHandlerInterceptor`
+
+Wraps route handler execution in a transaction. If the handler throws an error, the transaction is rolled back (reverting the browser hash). If the handler succeeds, the transaction is committed.
+
+```typescript
+import { TransactionRouteHandlerInterceptor } from '@blue/dispatcher';
+import { DefaultRouteTransactionManager } from '@blue/router';
+
+const transactionManager = new DefaultRouteTransactionManager();
+const transactionInterceptor = new TransactionRouteHandlerInterceptor(transactionManager);
+```
 
 ```bash
 pnpm --filter @blue/dispatcher build:lib

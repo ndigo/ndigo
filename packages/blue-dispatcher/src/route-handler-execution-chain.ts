@@ -65,13 +65,13 @@ export default class RouteHandlerExecutionChain {
      * @param {module:router.Route} route
      * @param {module:dispatcher.ModelAndView} mv
      */
-    applyPostHandle(route: Route, mv: ModelAndView): void {
+    async applyPostHandle(route: Route, mv: ModelAndView): Promise<void> {
         const interceptors = this.#interceptors,
             length = interceptors?.length;
         let index = 0;
         if (length) {
             for (; index < length; index++) {
-                interceptors[index].postHandle(route, this.handler, mv);
+                await interceptors[index].postHandle(route, this.handler, mv);
             }
         }
     }
@@ -79,13 +79,13 @@ export default class RouteHandlerExecutionChain {
     /**
      * @param {module:router.Route} route
      */
-    applyPreHandle(route: Route): boolean {
+    async applyPreHandle(route: Route): Promise<boolean> {
         const interceptors = this.#interceptors,
             length = interceptors?.length;
         let index = 0;
         if (length) {
             for (; index < length; index++) {
-                if (interceptors[index].preHandle(route, this.handler) === false) {
+                if ((await interceptors[index].preHandle(route, this.handler)) === false) {
                     return false;
                 }
                 this.interceptorIndex = index;
@@ -98,17 +98,13 @@ export default class RouteHandlerExecutionChain {
      * @param {module:router.Route} route
      * @param {Error} error
      */
-    triggerCompleteHandle(route: Route, error: Error = null): void {
+    async triggerCompleteHandle(route: Route, error: Error = null): Promise<void> {
         const interceptors = this.#interceptors,
             length = interceptors?.length;
         let index = 0;
         if (length) {
             for (; index < length; index++) {
-                try {
-                    interceptors[index].completeHandle(route, this.handler, error);
-                } catch (e) {
-                    // Handle this
-                }
+                await interceptors[index].completeHandle(route, this.handler, error);
             }
         }
     }

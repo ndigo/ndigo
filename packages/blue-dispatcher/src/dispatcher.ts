@@ -105,19 +105,21 @@ export class BrowserDispatcher
 
             const handlerAdapter: RouteHandlerAdapter = this.getHandlerAdapter(mappedHandler.handler);
 
-            if (mappedHandler.applyPreHandle(route) === false) {
+            if ((await mappedHandler.applyPreHandle(route)) === false) {
                 return;
             }
 
             mv = await handlerAdapter.handle(route, mappedHandler.handler);
             this._applyDefaultViewName(route, mv);
-            mappedHandler.applyPostHandle(route, mv);
+            await mappedHandler.applyPostHandle(route, mv);
         } catch (error) {
             dispatchError = error;
         }
 
-        return this._processDispatchResult(route, mappedHandler, mv, dispatchError).catch(function (error: Error) {
-            mappedHandler?.triggerCompleteHandle(route, error);
+        return this._processDispatchResult(route, mappedHandler, mv, dispatchError).catch(async function (
+            error: Error
+        ) {
+            await mappedHandler?.triggerCompleteHandle(route, error);
         });
     }
 
@@ -205,7 +207,7 @@ export class BrowserDispatcher
         if (mv) {
             try {
                 await this.render(mv, route);
-                mappedHandler?.triggerCompleteHandle(route, null);
+                await mappedHandler?.triggerCompleteHandle(route, null);
             } catch {}
         }
     }

@@ -7,9 +7,9 @@ import { PathMatcher, AsPathMatcherFilter, Null } from '@blue/core';
 import { Route } from '@blue/router';
 
 export interface RouteHandlerInterceptor {
-    completeHandle(route: Route, handler, error: Error): void;
-    postHandle(route: Route, handler, modelAndView: ModelAndView): void;
-    preHandle(route: Route, handler): boolean;
+    completeHandle(route: Route, handler, error: Error): void | Promise<void>;
+    postHandle(route: Route, handler, modelAndView: ModelAndView): void | Promise<void>;
+    preHandle(route: Route, handler): boolean | Promise<boolean>;
 }
 
 /**
@@ -58,16 +58,16 @@ export class MappedHandlerInterceptor extends AsPathMatcherFilter(Null) implemen
         this.setIncludePatterns(includePatterns);
     }
 
-    completeHandle(route: Route, handler, error: Error = null): void {
-        this.#interceptor.completeHandle(route, handler, error);
+    async completeHandle(route: Route, handler, error: Error = null): Promise<void> {
+        await this.#interceptor.completeHandle(route, handler, error);
     }
 
-    postHandle(route: Route, handler, modelAndView: ModelAndView): void {
-        this.#interceptor.postHandle(route, handler, modelAndView);
+    async postHandle(route: Route, handler, modelAndView: ModelAndView): Promise<void> {
+        await this.#interceptor.postHandle(route, handler, modelAndView);
     }
 
-    preHandle(route: Route, handler): boolean {
-        return this.#interceptor.preHandle(route, handler);
+    async preHandle(route: Route, handler): Promise<boolean> {
+        return await this.#interceptor.preHandle(route, handler);
     }
 }
 

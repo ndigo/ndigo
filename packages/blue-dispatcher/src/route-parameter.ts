@@ -20,6 +20,7 @@ export type ParameterExtractor<T = any> = {
     required: boolean;
     defaultValue: string | null;
     convert: ParameterValueConverterReference | null;
+    prefix?: string | null;
 };
 
 export interface ParameterValueConversionContext {
@@ -67,6 +68,7 @@ export class MethodParameterType implements Equatable, Serializable {
     static QUERY: MethodParameterType;
     static STATE: MethodParameterType;
     static SESSION: MethodParameterType;
+    static BIND: MethodParameterType;
 
     static fromType(type: string): MethodParameterType | null {
         const types = keys(this);
@@ -118,6 +120,7 @@ MethodParameterType.PATH = new MethodParameterType('path:value');
 MethodParameterType.QUERY = new MethodParameterType('query:value');
 MethodParameterType.STATE = new MethodParameterType('state:value');
 MethodParameterType.SESSION = new MethodParameterType('session:value');
+MethodParameterType.BIND = new MethodParameterType('bind:value');
 
 /**
  * Method parameter metadata
@@ -128,13 +131,15 @@ export class MethodParameter implements Serializable {
     readonly required: boolean;
     readonly defaultValue: string | null;
     readonly convert: ParameterValueConverterReference | null;
+    readonly prefix: string | null;
 
     constructor(
         type: MethodParameterType,
         name: string,
         required: boolean = false,
         defaultValue: string | null = null,
-        convert: ParameterValueConverterReference | null = null
+        convert: ParameterValueConverterReference | null = null,
+        prefix: string | null = null
     ) {
         const isNotString = complement(isString);
         if (isNotString(name)) {
@@ -173,6 +178,12 @@ export class MethodParameter implements Serializable {
             enumerable: false,
             writable: false,
         });
+        defineProperty(this, 'prefix', {
+            value: prefix,
+            configurable: true,
+            enumerable: false,
+            writable: false,
+        });
     }
 
     toJSON(): JSONObject {
@@ -182,6 +193,7 @@ export class MethodParameter implements Serializable {
         json.required = this.required;
         json.defaultValue = this.defaultValue;
         json.hasConverter = this.convert !== null;
+        json.prefix = this.prefix;
         return json;
     }
 
@@ -355,6 +367,34 @@ export function stateValue(
 }
 
 /**
+ * Factory function: Create a binding parameter extractor.
+ * Binds an entire source (e.g. query, state) to an object, optionally filtering by prefix.
+ *
+ * @example
+ * @routeParams({
+ *   user: bindValue('query', { prefix: 'user.' })
+ * })
+ */
+export function bindValue(
+    source: 'query' | 'state' | 'session' | 'model' | 'cookie' | 'matrix' | 'path',
+    options: {
+        required?: boolean;
+        defaultValue?: any;
+        convert?: ParameterValueConverterReference;
+        prefix?: string;
+    } = {}
+): ParameterExtractor {
+    return {
+        type: MethodParameterType.BIND,
+        name: source,
+        required: options.required ?? false,
+        defaultValue: options.defaultValue ?? null,
+        convert: options.convert ?? null,
+        prefix: options.prefix ?? null,
+    };
+}
+
+/**
  * Wraps a parameter extractor to enforce number conversion.
  * @example asNumber(queryValue('age'))
  */
@@ -424,7 +464,8 @@ export function routeParams(paramMap: RouteParameterMap) {
                 extractor.name,
                 extractor.required,
                 extractor.defaultValue,
-                extractor.convert
+                extractor.convert,
+                extractor.prefix
             );
         }
 

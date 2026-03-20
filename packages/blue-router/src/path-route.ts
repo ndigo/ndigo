@@ -133,6 +133,7 @@ export class PathRoute implements Route<Record<string, string>>, Serializable {
     params: Record<string, string> | null;
     readonly path: string;
     readonly raw: string;
+    readonly attributes: Record<string, any>;
 
     get length(): number {
         const keysArray = keys(this) as readonly string[];
@@ -170,6 +171,13 @@ export class PathRoute implements Route<Record<string, string>>, Serializable {
             configurable: true,
             enumerable: false,
             writable: true,
+        });
+
+        defineProperty(this, 'attributes', {
+            value: {},
+            configurable: true,
+            enumerable: false,
+            writable: false,
         });
 
         const parts = splitRouteIntoParts(route),

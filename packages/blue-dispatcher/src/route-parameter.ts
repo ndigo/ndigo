@@ -69,6 +69,7 @@ export class MethodParameterType implements Equatable, Serializable {
     static STATE: MethodParameterType;
     static SESSION: MethodParameterType;
     static BIND: MethodParameterType;
+    static ATTRIBUTE: MethodParameterType;
 
     static fromType(type: string): MethodParameterType | null {
         const types = keys(this);
@@ -121,6 +122,7 @@ MethodParameterType.QUERY = new MethodParameterType('query:value');
 MethodParameterType.STATE = new MethodParameterType('state:value');
 MethodParameterType.SESSION = new MethodParameterType('session:value');
 MethodParameterType.BIND = new MethodParameterType('bind:value');
+MethodParameterType.ATTRIBUTE = new MethodParameterType('attribute:value');
 
 /**
  * Method parameter metadata
@@ -391,6 +393,27 @@ export function bindValue(
         defaultValue: options.defaultValue ?? null,
         convert: options.convert ?? null,
         prefix: options.prefix ?? null,
+    };
+}
+
+/**
+ * Factory function: Create a route attribute parameter extractor.
+ *
+ * @example
+ * @routeParams({
+ *   user: attributeValue('user')
+ * })
+ */
+export function attributeValue(
+    name: string,
+    options: { required?: boolean; defaultValue?: any; convert?: ParameterValueConverterReference } = {}
+): ParameterExtractor {
+    return {
+        type: MethodParameterType.ATTRIBUTE,
+        name,
+        required: options.required ?? false,
+        defaultValue: options.defaultValue ?? null,
+        convert: options.convert ?? null,
     };
 }
 

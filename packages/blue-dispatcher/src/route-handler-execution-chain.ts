@@ -99,11 +99,10 @@ export default class RouteHandlerExecutionChain {
      * @param {Error} error
      */
     async triggerCompleteHandle(route: Route, error: Error = null): Promise<void> {
-        const interceptors = this.#interceptors,
-            length = interceptors?.length;
-        let index = 0;
-        if (length) {
-            for (; index < length; index++) {
+        const interceptors = this.#interceptors;
+        let index = this.interceptorIndex;
+        if (interceptors && index >= 0) {
+            for (; index >= 0; index--) {
                 await interceptors[index].completeHandle(route, this.handler, error);
             }
         }

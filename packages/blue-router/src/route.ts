@@ -18,4 +18,5 @@ export interface Route<TParams extends Record<string, string> = Record<string, s
     params: TParams | null;
     path: string;
     raw: string;
+    attributes: Record<string, any>;
 }

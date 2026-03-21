@@ -33,6 +33,10 @@ interface TodoItem {
     checked: boolean;
 }
 
+interface TodoModel {
+    items?: TodoItem[];
+}
+
 export default class MyTodoApp extends HTMLElement {
     #list: TodoItem[];
 
@@ -41,15 +45,17 @@ export default class MyTodoApp extends HTMLElement {
     checked: boolean = false;
     index: number = 0;
 
+    set model(model: TodoModel) {
+        this.#list = model?.items ?? [];
+        this._render();
+    }
+
     constructor() {
         super();
         // Do not use shadow DOM to avoid problems when testing with selenium
         // this._root = this.attachShadow({ 'mode': 'open' });
-        // initial state
-        this.#list = [
-            { text: 'my initial todo', checked: false },
-            { text: 'Learn about Web Components', checked: true },
-        ];
+        // initial state is now passed via model property
+        this.#list = [];
     }
 
     connectedCallback() {

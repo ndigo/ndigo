@@ -46,6 +46,7 @@ export const AsStrategyInitializer = <T extends Constructable>(superclass: T): C
         }
 
         initStrategies(context: ApplicationContext): void {
+            (this as any).applicationContext = context;
             if (!this.initialized) {
                 this.initialized = true;
 

@@ -38,10 +38,10 @@ describe('BrowserDispatcher', () => {
             expect(handleRouteSpy).toHaveBeenCalledWith(barRoute);
             expect(handleRouteSpy).toHaveBeenCalledWith(bazRoute);
             expect(handleRouteSpy).toHaveBeenCalledWith(quxRoute);
-            expect(renderSpy).toHaveBeenCalledWith(testModel, fooRoute);
-            expect(renderSpy).toHaveBeenCalledWith(testModel, barRoute);
-            expect(renderSpy).toHaveBeenCalledWith(testModel, bazRoute);
-            expect(renderSpy).toHaveBeenCalledWith(testModel, quxRoute);
+            expect(renderSpy).toHaveBeenCalledWith(undefined, fooRoute, undefined);
+            expect(renderSpy).toHaveBeenCalledWith(undefined, barRoute, undefined);
+            expect(renderSpy).toHaveBeenCalledWith(undefined, bazRoute, undefined);
+            expect(renderSpy).toHaveBeenCalledWith(undefined, quxRoute, undefined);
             expect(resolveLanguageSpy).toHaveBeenCalledWith(fooRoute);
             expect(resolveLanguageSpy).toHaveBeenCalledWith(barRoute);
             expect(resolveLanguageSpy).toHaveBeenCalledWith(bazRoute);

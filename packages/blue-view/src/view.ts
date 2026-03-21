@@ -7,9 +7,11 @@ import { JSONObject, MediaType, MediaTypes, Serializable, createNull, Null } fro
 import { AsApplicationContextAware } from '@blue/context';
 import { toMatrixString, toQueryString } from '@blue/router';
 
+import { ViewTarget } from './view-target';
+
 export interface View {
     mediaType: MediaType;
-    render(model, request): void;
+    render(model: any, request: any, target?: ViewTarget): void | Promise<void>;
 }
 
 export abstract class AbstractView extends AsNameAware(AsApplicationContextAware(Null)) implements Serializable, View {
@@ -25,9 +27,9 @@ export abstract class AbstractView extends AsNameAware(AsApplicationContextAware
         this.mediaType = MediaTypes.TEXT_HTML.withCharset('UTF-8');
     }
 
-    render(model: any, request: any): void {
+    async render(model: any, request: any, target?: ViewTarget): Promise<void> {
         const viewModel = this._createViewModel(model, request);
-        this._renderView(viewModel, request);
+        await this._renderView(viewModel, request, target);
     }
 
     toJSON(): JSONObject {
@@ -45,7 +47,7 @@ export abstract class AbstractView extends AsNameAware(AsApplicationContextAware
         return model;
     }
 
-    protected abstract _renderView(viewModel: any, request: any): void;
+    protected abstract _renderView(viewModel: any, request: any, target?: ViewTarget): void | Promise<void>;
 }
 
 // TODO Implement Initializable?
@@ -141,7 +143,7 @@ export class RerouteView extends AbstractPathBasedView {
         return `${this.path}${data}`;
     }
 
-    protected _renderView(viewModel: any, request: any): void {
+    protected _renderView(viewModel: any, request: any, target?: ViewTarget): void {
         const targetPath: string = this._createTargetPath(viewModel, request);
 
         // TODO USE ROUTER

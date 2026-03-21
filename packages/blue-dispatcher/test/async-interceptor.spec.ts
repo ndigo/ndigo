@@ -1,5 +1,4 @@
-import { describe, it, expect, vi } from 'vitest';
-import { Route } from '@blue/router';
+import { describe, it, expect } from 'vitest';
 import { BrowserDispatcher } from '../src/dispatcher';
 import { RouteHandlerInterceptor } from '../src/route-handler-interceptor';
 import { ModelAndView } from '../src/model-and-view';

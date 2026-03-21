@@ -3,7 +3,7 @@
  */
 import { JSONObject, Parser, Stringifier } from '@blue/core';
 import queryExpression from './parsers/query-expression';
-import { isEmpty, isNotEmpty } from '@blue/util/logic';
+import { isNotEmpty } from '@blue/util/logic';
 import { encodeURIComponent as encode } from '@blue/util/string';
 
 //import { JSONValue, DelegatingTransformer, Reduced, Transformer } from '@blue/core';

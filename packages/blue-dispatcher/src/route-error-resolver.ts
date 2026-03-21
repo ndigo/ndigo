@@ -227,7 +227,7 @@ export class MetadataErrorResolver extends AbstractHandlerMethodErrorResolver im
 
         try {
             return errorHandlerMethod.invoke(route, error, handlerMethod);
-        } catch (e) {
+        } catch {
             return null;
         }
     }

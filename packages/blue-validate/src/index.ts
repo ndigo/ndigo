@@ -13,6 +13,7 @@ export * from './error';
 export * from './group';
 export * from './types';
 export * from './validator';
+export * from './route-parameter';
 export { CompositeConstraint } from './constraint';
 export type {
     Constraint as CompositeConstraintType,

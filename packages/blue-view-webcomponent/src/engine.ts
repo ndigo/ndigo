@@ -17,6 +17,10 @@ export class DOMElementViewTarget implements ViewTarget {
         this.#element = element;
     }
 
+    get container(): HTMLElement {
+        return this.#element;
+    }
+
     prepare(route: Route): void {
         this.#element.innerHTML = '';
     }
@@ -36,12 +40,28 @@ export class WebComponentViewEngine implements ViewEngine {
             throw new TypeError('WebComponentViewEngine can only render WebComponentView instances.');
         }
 
-        await target.prepare(route);
+        let element: HTMLElement | null = null;
 
-        const element = document.createElement(view.tagName);
+        if (target instanceof DOMElementViewTarget) {
+            const existingElement = target.container.firstElementChild;
+
+            if (
+                existingElement instanceof HTMLElement &&
+                target.container.children.length === 1 &&
+                existingElement.tagName.toLowerCase() === view.tagName.toLowerCase()
+            ) {
+                element = existingElement;
+            }
+        }
+
+        if (!element) {
+            await target.prepare(route);
+            element = document.createElement(view.tagName);
+            (element as any).model = model;
+            await target.commit(element, model, route);
+            return;
+        }
 
         (element as any).model = model;
-
-        await target.commit(element, model, route);
     }
 }

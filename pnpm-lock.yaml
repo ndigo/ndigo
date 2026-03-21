@@ -430,6 +430,9 @@ importers:
       '@blue/core':
         specifier: ~0.0.1
         version: link:../blue-core
+      '@blue/dispatcher':
+        specifier: ~0.0.1
+        version: link:../blue-dispatcher
       '@blue/util':
         specifier: ~0.0.1
         version: link:../blue-util

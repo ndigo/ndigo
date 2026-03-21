@@ -2,7 +2,7 @@
  * @author Jeff Rose
  */
 
-import { ParameterExtractor, ParameterValueConverter } from '@blue/dispatcher';
+import type { ParameterExtractor, ParameterValueConverter } from '@blue/dispatcher';
 import { z } from 'zod';
 import { Validator } from './validator';
 import { ValidationError, ConstraintViolationError } from './error';

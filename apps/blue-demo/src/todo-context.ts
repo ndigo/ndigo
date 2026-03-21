@@ -9,6 +9,7 @@ import { NameViewResolver } from '@blue/view';
 import { DOMElementViewTarget, WebComponentViewEngine } from '@blue/view-webcomponent';
 import IndexController from './index-controller';
 import MyTodoApp from './todo-app-view';
+import TodoService from './todo-service';
 
 @configuration
 class ToDoconfiguration {
@@ -41,6 +42,14 @@ class ToDoconfiguration {
     @entry
     webComponentViewEngine() {
         return new WebComponentViewEngine();
+    }
+
+    @entry
+    todoService() {
+        return new TodoService([
+            { text: 'my initial todo', checked: false },
+            { text: 'Learn about Web Components', checked: true },
+        ]);
     }
 }
 

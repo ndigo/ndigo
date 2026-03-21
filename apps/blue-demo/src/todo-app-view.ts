@@ -35,10 +35,15 @@ interface TodoItem {
 
 interface TodoModel {
     items?: TodoItem[];
+    filter?: 'all' | 'active' | 'completed';
+    service?: {
+        items: TodoItem[];
+    };
 }
 
 export default class MyTodoApp extends HTMLElement {
     #list: TodoItem[];
+    #filter: 'all' | 'active' | 'completed';
 
     $input: any;
     $listContainer: HTMLElement | null = null;
@@ -46,7 +51,13 @@ export default class MyTodoApp extends HTMLElement {
     index: number = 0;
 
     set model(model: TodoModel) {
-        this.#list = model?.items ?? [];
+        if (typeof model?.items !== 'undefined') {
+            this.#list = model.items;
+        } else if (this.#list.length === 0 && model?.service?.items) {
+            this.#list = model.service.items;
+        }
+
+        this.#filter = model?.filter ?? 'all';
         this._render();
     }
 
@@ -56,6 +67,7 @@ export default class MyTodoApp extends HTMLElement {
         // this._root = this.attachShadow({ 'mode': 'open' });
         // initial state is now passed via model property
         this.#list = [];
+        this.#filter = 'all';
     }
 
     connectedCallback() {
@@ -89,9 +101,33 @@ export default class MyTodoApp extends HTMLElement {
     _render() {
         console.log('MyTodoApp::_render');
         if (!this.$listContainer) return;
+
+        const filterLinks = this.querySelectorAll('.filters a');
+        filterLinks.forEach((link) => {
+            const href = link.getAttribute('href');
+            const isSelected =
+                (this.#filter === 'all' && href === '#/') ||
+                (this.#filter === 'active' && href === '#/active') ||
+                (this.#filter === 'completed' && href === '#/completed');
+            link.classList.toggle('selected', isSelected);
+        });
+
+        const filteredList = this.#list.filter((item) => {
+            if (this.#filter === 'active') {
+                return item.checked === false;
+            }
+
+            if (this.#filter === 'completed') {
+                return item.checked === true;
+            }
+
+            return true;
+        });
+
         // empty the list
         this.$listContainer.innerHTML = '';
-        this.#list.forEach((item, index) => {
+        filteredList.forEach((item) => {
+            const index = this.#list.indexOf(item);
             let $item = document.createElement('todo-item');
             $item.setAttribute('text', item.text);
             // @ts-ignore: ¯\_(ツ)_/¯

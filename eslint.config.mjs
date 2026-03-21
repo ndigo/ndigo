@@ -23,12 +23,22 @@ export default [
     // Global ignores
     {
         ignores: [
+            'archive',
+            'doc-html',
             'coverage',
             'lib',
+            'dist',
             'node_modules',
+            'index.js',
             '**/lib/**',
+            '**/dist/**',
+            '**/tmp/**',
+            '**/profile/**',
+            '**/.tmp/**',
+            '**/*.min.js',
             '**/coverage/**',
             '**/node_modules/**',
+            'apps/blue-demo/index.js',
             '*.config.js',
             '*.config.mjs',
             '*.config.ts',

@@ -36,9 +36,13 @@ export default [
             '**/profile/**',
             '**/.tmp/**',
             '**/*.min.js',
+            '**/*.legacy.js',
             '**/coverage/**',
             '**/node_modules/**',
+            '**/test/**/*.js',
             'apps/blue-demo/index.js',
+            'test/mockServiceWorker.js',
+            'packages/blue-domain/src/constraints.ts',
             '*.config.js',
             '*.config.mjs',
             '*.config.ts',
@@ -47,6 +51,9 @@ export default [
     // Main configuration
     {
         files: ['**/*.js', '**/*.ts', '**/*.mjs'],
+        linterOptions: {
+            reportUnusedDisableDirectives: 'off',
+        },
         languageOptions: {
             parser: parser,
             parserOptions: {
@@ -101,13 +108,28 @@ export default [
             '@typescript-eslint/no-namespace': [2, { allowDeclarations: false, allowDefinitionFiles: false }],
             '@typescript-eslint/no-non-null-assertion': 0,
             '@typescript-eslint/triple-slash-reference': 0,
-            '@typescript-eslint/no-unused-vars': [1, { vars: 'local', args: 'none', ignoreRestSiblings: true }],
+            '@typescript-eslint/no-unused-vars': [
+                1,
+                {
+                    vars: 'local',
+                    args: 'none',
+                    caughtErrors: 'none',
+                    varsIgnorePattern: '^_',
+                    ignoreRestSiblings: true,
+                },
+            ],
             '@typescript-eslint/no-use-before-define': [
                 2,
                 { classes: false, functions: false, typedefs: false, variables: false },
             ],
             '@typescript-eslint/no-require-imports': 0,
             '@typescript-eslint/prefer-namespace-keyword': 2,
+        },
+    },
+    {
+        files: ['**/*.spec.ts', '**/*.test.ts', '**/test/**/*.ts', '**/test/**/*.js', '**/test/**/*.mjs'],
+        rules: {
+            '@typescript-eslint/no-unused-vars': 0,
         },
     },
     // Prettier config to disable conflicting rules

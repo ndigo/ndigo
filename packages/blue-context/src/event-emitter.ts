@@ -6,9 +6,9 @@
 
 import { Constructable, JSONValue, Serializable, Null, createNull } from '@blue/core';
 import { __ } from '@blue/util/function';
-import { allPass, either } from '@blue/util/logic';
-import { equals, gte, propEq } from '@blue/util/relation';
-import { is, isFunction, isNil, isNumber, isString, like, propIs } from '@blue/util/types';
+import { allPass } from '@blue/util/logic';
+import { gte } from '@blue/util/relation';
+import { is, isFunction, isNil, isNumber, isString, like } from '@blue/util/types';
 import { Aware, Destroyable, likeAwareAnd } from '@blue/factory';
 
 export type EventListener = { (...args: any[]): void; listener?: EventListener };
@@ -50,7 +50,7 @@ export interface ApplicationEventEmitterAware extends Aware {
 export const likeApplicationEventEmitterAware = likeAwareAnd(
     like({
         setApplicationEventEmitter: Function,
-    }),
+    })
 ) as (value: unknown) => value is ApplicationEventEmitterAware;
 
 export const likeEventEmitter = like({
@@ -73,8 +73,6 @@ const { defineProperty, deleteProperty, getPrototypeOf } = Reflect,
     { isArray } = Array,
     greaterThanOrEqualZero = gte(__, 0),
     isSymbol = is(Symbol) as (value: unknown) => value is symbol,
-    hasFunction = propIs(Function),
-    hasListener = hasFunction('listener'),
     lastIndexOfColon = (value: string): number => value.lastIndexOf(':');
 
 function addConditionalEventListener(emitter: EventEmitter, type: EventType, listener: EventListener): void {
@@ -263,7 +261,8 @@ function executeHandler(handler: EventHandler, data: any[], scope: any): void {
     }
 }
 
-const getEventTypes = (emitter: EventEmitter): EventType[] => ((emitter as any)[$events] ? (keys((emitter as any)[$events]) as any) : []);
+const getEventTypes = (emitter: EventEmitter): EventType[] =>
+    (emitter as any)[$events] ? (keys((emitter as any)[$events]) as any) : [];
 
 const isEventHandler = (value: unknown): value is EventHandler => isFunction(value) || isArray(value);
 
@@ -346,7 +345,14 @@ function handleTwo(handler: EventHandler, isFn: boolean, emitter: EventEmitter, 
     }
 }
 
-function handleThree(handler: EventHandler, isFn: boolean, emitter: EventEmitter, arg1: any, arg2: any, arg3: any): void {
+function handleThree(
+    handler: EventHandler,
+    isFn: boolean,
+    emitter: EventEmitter,
+    arg1: any,
+    arg2: any,
+    arg3: any
+): void {
     const errors: Error[] = [];
 
     if (isFn) {
@@ -450,7 +456,7 @@ function removeEventListener(
     emitter: EventEmitter,
     type: EventType,
     listener: EventListener,
-    includeListenerInMeta: boolean = true,
+    includeListenerInMeta: boolean = true
 ): void {
     const handler: EventHandler = (emitter as any)[$events][type];
 
@@ -491,7 +497,7 @@ async function tickAllEvents(emitter: EventEmitter, type: EventType, data: any[]
 }
 
 export const AsAsyncEventEmitter = <T extends Constructable<EventEmitter>>(
-    superclass: T,
+    superclass: T
 ): Constructable<AsyncEventEmitter> & T =>
     class extends superclass implements AsyncEventEmitter {
         async tick(type: string | symbol, ...data: any[]): Promise<void> {
@@ -500,7 +506,7 @@ export const AsAsyncEventEmitter = <T extends Constructable<EventEmitter>>(
     };
 
 export const AsConditionalEventEmitter = <T extends Constructable<EventEmitter>>(
-    superclass: T,
+    superclass: T
 ): Constructable<ConditionalEventEmitter> & T =>
     class extends superclass implements ConditionalEventEmitter {
         many(type: string | symbol = $every, times: number, listener: Function): this {
@@ -552,7 +558,7 @@ export const AsConditionalEventEmitter = <T extends Constructable<EventEmitter>>
     };
 
 export const AsPositionalEventEmitter = <T extends Constructable<EventEmitter>>(
-    superclass: T,
+    superclass: T
 ): Constructable<PositionalEventEmitter> & T =>
     class extends superclass implements PositionalEventEmitter {
         at(type: string | symbol = $every, index: number, listener: Function): this {

@@ -15,7 +15,6 @@ import { split } from '@blue/util/string';
 type ProfileMetadata = string[];
 
 const { defineProperty, getOwnPropertyDescriptor } = Reflect,
-    { isArray } = Array,
     CONFIG_CONSTRUCTOR = 'config:constructor',
     CONFIG_PROFILE = 'config:profile',
     CONFIG_PROPERTY = 'config:property',

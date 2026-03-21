@@ -5,7 +5,6 @@
 import { ApplicationContext } from '@blue/context';
 import { HandlerMethodArgumentResolver } from '@blue/dispatcher';
 import {
-    ArgumentValueConverter,
     ArgumentValueConverterRegistry,
     ConverterResolutionOptions,
     ResolverConverterOption,

@@ -9,7 +9,6 @@
  * @see {@link https://github.com/francisrstokes/arcsecond}
  * @see {@link https://ramdajs.com/docs/#fromPairs}
  */
-import type { Parser } from '@blue/parser';
 import { char, everyCharUntil, regex, sepBy, sequenceOf, str, takeRight } from '@blue/parser';
 import { fromPairs } from '@blue/util/list';
 import { decodeURIComponent as decode } from '@blue/util/string';

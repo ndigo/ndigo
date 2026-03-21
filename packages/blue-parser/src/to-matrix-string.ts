@@ -9,7 +9,6 @@ import {
     curryN,
     equals,
     filter,
-    isEmpty,
     isNotEmpty,
     join,
     keys,
@@ -46,7 +45,7 @@ const isNull = equals(null),
             [T, (value: string) => joinOnEqual([encodeValue(key), encodeValue(value)])],
         ])(object[key])
     ),
-    naturalComparator = comparator<any>((a, b): boolean => a < b),
+    naturalComparator = comparator((a: any, b: any): boolean => a < b),
     naturalSort = sort(naturalComparator),
     toMatrixString = (object): string => {
         const encodeParams = map(encodeParam(object));

@@ -1,7 +1,7 @@
 import { describe, test, beforeEach, afterEach, expect, vi } from 'vitest';
 import { BrowserDispatcher } from '../src/dispatcher';
 import dispatcherContext from './assets/dispatcher-context';
-import { completeHandleSpy, handleRouteSpy, renderSpy, resolveLanguageSpy, testModel } from './test-strategies';
+import { completeHandleSpy, handleRouteSpy, renderSpy, resolveLanguageSpy } from './test-strategies';
 import { MetadataConfigApplicationContext } from '@blue/context';
 import { Route } from '@blue/router';
 

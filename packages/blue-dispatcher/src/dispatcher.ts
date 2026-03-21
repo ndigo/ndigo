@@ -3,8 +3,9 @@
  */
 
 import { Null } from '@blue/core';
-import { View } from '@blue/view';
+import { View, ViewTarget } from '@blue/view';
 import { Route } from '@blue/router';
+import { ApplicationContext, likeApplicationContextAware } from '@blue/context';
 
 import { NoHandlerFoundError, NoViewFoundError } from './error';
 import { RouteHandlerAdapter } from './route-handler-adapter';
@@ -87,6 +88,7 @@ export class BrowserDispatcher
     )
     implements RouteDispatcher, RouteRenderer
 {
+    applicationContext: ApplicationContext;
     defaultViewName: string = 'index';
 
     get [Symbol.toStringTag](): string {
@@ -144,9 +146,12 @@ export class BrowserDispatcher
             }
         }
 
-        try {
-            view.render(mv, route);
-        } catch {}
+        if (likeApplicationContextAware(view)) {
+            view.setApplicationContext(this.applicationContext);
+        }
+
+        const viewTarget = this.applicationContext.getValue<ViewTarget>('viewTarget');
+        await view.render(mv.model, route, viewTarget);
     }
 
     protected _processHandlerError(route: Route, handler, error: Error): ModelAndView {

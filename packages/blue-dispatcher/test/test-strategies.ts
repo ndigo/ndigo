@@ -60,7 +60,10 @@ export class TestThemeResolver {
 
 export class TestView {
     name: string;
-    render = renderSpy;
+
+    render(model: any, route: any, target?: any) {
+        return renderSpy(model, route, target);
+    }
 
     constructor(name: string) {
         this.name = name;

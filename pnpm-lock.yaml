@@ -109,6 +109,9 @@ importers:
       '@blue/view':
         specifier: ~0.0.1
         version: link:../../packages/blue-view
+      '@blue/view-webcomponent':
+        specifier: ~0.0.1
+        version: link:../../packages/blue-view-webcomponent
       todomvc-app-css:
         specifier: ~2.4.2
         version: 2.4.3
@@ -454,6 +457,9 @@ importers:
       '@blue/core':
         specifier: ~0.0.1
         version: link:../blue-core
+      '@blue/router':
+        specifier: ~0.0.1
+        version: link:../blue-router
       '@blue/util':
         specifier: ~0.0.1
         version: link:../blue-util

@@ -3,15 +3,15 @@ import { AbstractView, AbstractPathBasedView, RerouteView } from '../src/view';
 import { MediaTypes } from '@blue/core';
 
 class TestView extends AbstractView {
-    lastRender: { model: any; request: any } | null = null;
+    lastRender: { model: any; request: any; target: any } | null = null;
 
-    protected _renderView(viewModel: any, request: any): void {
-        this.lastRender = { model: viewModel, request };
+    protected _renderView(viewModel: any, request: any, target?: any): void {
+        this.lastRender = { model: viewModel, request, target };
     }
 }
 
 class TestPathView extends AbstractPathBasedView {
-    protected _renderView(viewModel: any, request: any): void {
+    protected _renderView(viewModel: any, request: any, target?: any): void {
         /* no-op */
     }
 }
@@ -24,14 +24,25 @@ describe('AbstractView', () => {
         expect(view.mediaType.subtype).toBe(MediaTypes.TEXT_HTML.subtype);
     });
 
-    test('it should render using _renderView', () => {
+    test('it should render using _renderView', async () => {
         const view = new TestView();
         const model = { foo: 'bar' };
         const request = { path: '/index' };
 
-        view.render(model, request);
+        await view.render(model, request);
 
-        expect(view.lastRender).toEqual({ model, request });
+        expect(view.lastRender).toEqual({ model, request, target: undefined });
+    });
+
+    test('it should pass a target to _renderView', async () => {
+        const view = new TestView();
+        const model = { foo: 'bar' };
+        const request = { path: '/index' };
+        const target = { commit: () => null };
+
+        await view.render(model, request, target as any);
+
+        expect(view.lastRender).toEqual({ model, request, target });
     });
 
     test('it should serialize to JSON', () => {
@@ -69,11 +80,11 @@ describe('RerouteView', () => {
         expect((view as any)._createTargetPath({ page: '2' }, {})).toBe('/userspage=2');
     });
 
-    test('it should push target path to history', () => {
+    test('it should push target path to history', async () => {
         const spy = vi.spyOn(history, 'pushState').mockImplementation(() => null);
         const view = new RerouteView('/users');
 
-        view.render({ page: '3' }, {});
+        await view.render({ page: '3' }, {});
 
         expect(spy).toHaveBeenCalledWith(null, null, '/userspage=3');
         spy.mockRestore();

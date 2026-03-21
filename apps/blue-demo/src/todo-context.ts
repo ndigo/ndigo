@@ -6,6 +6,7 @@ import {
 } from '@blue/context';
 import { MetadataHandlerMapping } from '@blue/dispatcher';
 import { NameViewResolver } from '@blue/view';
+import { DOMElementViewTarget, WebComponentViewEngine } from '@blue/view-webcomponent';
 import IndexController from './index-controller';
 import MyTodoApp from './todo-app-view';
 
@@ -30,6 +31,16 @@ class ToDoconfiguration {
     @entry
     viewResolver() {
         return new NameViewResolver();
+    }
+
+    @entry
+    viewTarget() {
+        return new DOMElementViewTarget(document.getElementById('app'));
+    }
+
+    @entry
+    webComponentViewEngine() {
+        return new WebComponentViewEngine();
     }
 }
 

@@ -78,6 +78,14 @@ In strict mode, unknown named converters fail fast.
 - Supports optional `prefix` filtering.
 - Integrates with the conversion pipeline for post-binding coercion.
 
+### 7) Zod / @blue/validate Integration
+
+`validatedBy(schema, extractor)` allows wrapping any parameter extractor with a Zod schema or `@blue/validate` validator.
+
+- Provides runtime validation and coercion.
+- Enables compile-time type safety for controller methods.
+- Maps validation failures to `ParameterConversionError`.
+
 ## Error Handling Behavior
 
 Converter failures are wrapped as `ParameterConversionError`.
@@ -106,6 +114,7 @@ configureBrowserArgumentResolvers(context, {
 @routeParams({
     amount: cookieValue('amount', { convert: 'toInt' }),
     txCount: stateValue('txCount', { convert: { optional: true, use: 'toInt' } }),
+    user: validatedBy(UserSchema, bindValue('query'))
 })
-handle(amount: number, txCount: number | null) {}
+handle(amount: number, txCount: number | null, user: User) {}
 ```

@@ -35,11 +35,11 @@ export default class TodoItem extends HTMLElement {
         this.$checkbox = this.querySelector('input');
         this.$removeButton!.addEventListener('click', (e: Event) => {
             e.preventDefault();
-            this.dispatchEvent(new CustomEvent('onRemove', { detail: this.index }));
+            this.dispatchEvent(new CustomEvent('onRemove', { detail: this.index, bubbles: true }));
         });
         this.$checkbox!.addEventListener('click', (e: Event) => {
             e.preventDefault();
-            this.dispatchEvent(new CustomEvent('onToggle', { detail: this.index }));
+            this.dispatchEvent(new CustomEvent('onToggle', { detail: this.index, bubbles: true }));
         });
         this._render();
     }

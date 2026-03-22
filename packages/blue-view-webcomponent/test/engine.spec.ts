@@ -20,6 +20,29 @@ describe('DOMElementViewTarget', () => {
         expect(element.innerHTML).toBe('');
     });
 
+    test('it should remove listeners during prepare', () => {
+        const element = document.createElement('div');
+        const target = new DOMElementViewTarget(element) as DOMElementViewTarget & {
+            setEventMap(eventMap: Record<string, string>): void;
+            setApplicationContext(applicationContext: { emit(type: string, ...data: any[]): boolean }): void;
+        };
+        const applicationContext = {
+            emit: vi.fn(() => true),
+        };
+        target.setApplicationContext(applicationContext);
+        target.setEventMap({ onSubmit: 'user:todo:created' });
+
+        const output = document.createElement('todo-app');
+        target.commit(output, {}, { path: '/index' } as any);
+        target.prepare({ path: '/active' } as any);
+
+        const child = document.createElement('todo-input');
+        output.appendChild(child);
+        child.dispatchEvent(new CustomEvent('onSubmit', { detail: 'new item', bubbles: true }));
+
+        expect(applicationContext.emit).not.toHaveBeenCalled();
+    });
+
     test('it should append output on commit', () => {
         const element = document.createElement('div');
         const output = document.createElement('todo-app');
@@ -39,6 +62,97 @@ describe('DOMElementViewTarget', () => {
         target.clear();
 
         expect(element.innerHTML).toBe('');
+    });
+
+    test('it should forward mapped custom events to application context', () => {
+        const element = document.createElement('div');
+        const target = new DOMElementViewTarget(element) as DOMElementViewTarget & {
+            setEventMap(eventMap: Record<string, string>): void;
+            setApplicationContext(applicationContext: { emit(type: string, ...data: any[]): boolean }): void;
+        };
+        const applicationContext = {
+            emit: vi.fn(() => true),
+        };
+        target.setApplicationContext(applicationContext);
+        target.setEventMap({ onSubmit: 'user:todo:created' });
+
+        const output = document.createElement('todo-app');
+        target.commit(output, {}, { path: '/index' } as any);
+
+        const child = document.createElement('todo-input');
+        output.appendChild(child);
+        child.dispatchEvent(new CustomEvent('onSubmit', { detail: 'new item', bubbles: true }));
+
+        expect(applicationContext.emit).toHaveBeenCalledWith('user:todo:created', 'new item');
+    });
+
+    test('it should not forward unmapped custom events', () => {
+        const element = document.createElement('div');
+        const target = new DOMElementViewTarget(element) as DOMElementViewTarget & {
+            setEventMap(eventMap: Record<string, string>): void;
+            setApplicationContext(applicationContext: { emit(type: string, ...data: any[]): boolean }): void;
+        };
+        const applicationContext = {
+            emit: vi.fn(() => true),
+        };
+        target.setApplicationContext(applicationContext);
+        target.setEventMap({ onSubmit: 'user:todo:created' });
+
+        const output = document.createElement('todo-app');
+        target.commit(output, {}, { path: '/index' } as any);
+
+        const child = document.createElement('todo-input');
+        output.appendChild(child);
+        child.dispatchEvent(new CustomEvent('onRemove', { detail: 0, bubbles: true }));
+
+        expect(applicationContext.emit).not.toHaveBeenCalled();
+    });
+
+    test('it should unlisten and stop forwarding events', () => {
+        const element = document.createElement('div');
+        const target = new DOMElementViewTarget(element) as DOMElementViewTarget & {
+            setEventMap(eventMap: Record<string, string>): void;
+            setApplicationContext(applicationContext: { emit(type: string, ...data: any[]): boolean }): void;
+            unlisten(): void;
+        };
+        const applicationContext = {
+            emit: vi.fn(() => true),
+        };
+        target.setApplicationContext(applicationContext);
+        target.setEventMap({ onToggle: 'user:todo:toggled' });
+
+        const output = document.createElement('todo-app');
+        target.commit(output, {}, { path: '/index' } as any);
+        target.unlisten();
+
+        const child = document.createElement('todo-item');
+        output.appendChild(child);
+        child.dispatchEvent(new CustomEvent('onToggle', { detail: 1, bubbles: true }));
+
+        expect(applicationContext.emit).not.toHaveBeenCalled();
+    });
+
+    test('it should clear listeners on clear', () => {
+        const element = document.createElement('div');
+        const target = new DOMElementViewTarget(element) as DOMElementViewTarget & {
+            setEventMap(eventMap: Record<string, string>): void;
+            setApplicationContext(applicationContext: { emit(type: string, ...data: any[]): boolean }): void;
+        };
+        const applicationContext = {
+            emit: vi.fn(() => true),
+        };
+        target.setApplicationContext(applicationContext);
+        target.setEventMap({ onSubmit: 'user:todo:created' });
+
+        const output = document.createElement('todo-app');
+        target.commit(output, {}, { path: '/index' } as any);
+        target.clear();
+
+        const child = document.createElement('todo-input');
+        output.appendChild(child);
+        child.dispatchEvent(new CustomEvent('onSubmit', { detail: 'new item', bubbles: true }));
+
+        expect(applicationContext.emit).not.toHaveBeenCalled();
     });
 });
 

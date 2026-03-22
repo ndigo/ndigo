@@ -36,9 +36,11 @@ interface TodoItem {
 interface TodoModel {
     items?: TodoItem[];
     filter?: 'all' | 'active' | 'completed';
-    service?: {
-        items: TodoItem[];
-    };
+}
+
+interface TodoItemElement extends HTMLElement {
+    checked: boolean;
+    index: number;
 }
 
 export default class MyTodoApp extends HTMLElement {
@@ -53,8 +55,6 @@ export default class MyTodoApp extends HTMLElement {
     set model(model: TodoModel) {
         if (typeof model?.items !== 'undefined') {
             this.#list = model.items;
-        } else if (this.#list.length === 0 && model?.service?.items) {
-            this.#list = model.service.items;
         }
 
         this.#filter = model?.filter ?? 'all';
@@ -74,25 +74,6 @@ export default class MyTodoApp extends HTMLElement {
         this.appendChild(templateTodo.content.cloneNode(true));
         this.$input = this.querySelector('todo-input');
         this.$listContainer = this.querySelector('.todo-list');
-        this.$input.addEventListener('onSubmit', (this.addItem as any).bind(this));
-        this._render();
-    }
-
-    addItem(e: CustomEvent) {
-        this.#list.push({ text: e.detail, checked: false });
-        this._render();
-    }
-
-    removeItem(e: CustomEvent) {
-        this.#list.splice(e.detail, 1);
-        this._render();
-    }
-
-    toggleItem(e: CustomEvent) {
-        const item = this.#list[e.detail];
-        this.#list[e.detail] = Object.assign({}, item, {
-            checked: !item.checked,
-        });
         this._render();
     }
 
@@ -128,14 +109,10 @@ export default class MyTodoApp extends HTMLElement {
         this.$listContainer.innerHTML = '';
         filteredList.forEach((item) => {
             const index = this.#list.indexOf(item);
-            let $item = document.createElement('todo-item');
+            const $item = document.createElement('todo-item') as TodoItemElement;
             $item.setAttribute('text', item.text);
-            // @ts-ignore: ¯\_(ツ)_/¯
             $item.checked = item.checked;
-            // @ts-ignore: ¯\_(ツ)_/¯
             $item.index = index;
-            $item.addEventListener('onRemove', (this.removeItem as any).bind(this));
-            $item.addEventListener('onToggle', (this.toggleItem as any).bind(this));
             this.$listContainer!.appendChild($item);
         });
     }

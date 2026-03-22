@@ -5,9 +5,18 @@
 import { AbstractTemplateView, ViewTarget } from '@blue/view';
 //import { BlueElement } from './blue-element';
 
+interface ApplicationContextLike {
+    getValue<T = unknown>(name: string): T;
+}
+
+interface WebComponentViewEngineLike {
+    render(view: WebComponentView, model: unknown, target: ViewTarget, route: unknown): Promise<void>;
+}
+
 export class WebComponentView extends AbstractTemplateView {
     tagName: string;
     template: string;
+    readonly applicationContext?: ApplicationContextLike;
 
     constructor(name: string) {
         super();
@@ -24,11 +33,11 @@ export class WebComponentView extends AbstractTemplateView {
             throw new Error('WebComponentView requires a ViewTarget to render.');
         }
 
-        if (!(this as any).applicationContext) {
+        if (!this.applicationContext) {
             throw new Error('WebComponentView requires an ApplicationContext to resolve the ViewEngine.');
         }
 
-        const engine = (this as any).applicationContext.getValue('webComponentViewEngine');
+        const engine = this.applicationContext.getValue<WebComponentViewEngineLike>('webComponentViewEngine');
         if (!engine) {
             throw new Error('No WebComponentViewEngine found in ApplicationContext.');
         }

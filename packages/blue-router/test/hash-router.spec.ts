@@ -181,4 +181,22 @@ describe('HashRouter', () => {
         expect(router.route).toBe('/private-1');
         expect(location.hash).toBe(hashAfterPublic);
     });
+
+    test('it should refresh current route without changing history', async () => {
+        const onComplete = vi.fn((_route: Route) => null);
+        router = new HashRouter(onComplete);
+
+        await router.setRoute('/users/42');
+
+        const before = router.history.length;
+        const firstCallRoute = onComplete.mock.calls[0]?.[0] as Route;
+
+        router.refresh();
+
+        const secondCallRoute = onComplete.mock.calls[1]?.[0] as Route;
+
+        expect(onComplete).toHaveBeenCalledTimes(2);
+        expect(secondCallRoute).toBe(firstCallRoute);
+        expect(router.history.length).toBe(before);
+    });
 });

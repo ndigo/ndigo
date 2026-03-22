@@ -23,7 +23,7 @@ export default class TodoInput extends HTMLElement {
         this.$form!.addEventListener('submit', (e: Event) => {
             e.preventDefault();
             if (!this.$input!.value) return;
-            this.dispatchEvent(new CustomEvent('onSubmit', { detail: this.$input!.value }));
+            this.dispatchEvent(new CustomEvent('onSubmit', { detail: this.$input!.value, bubbles: true }));
             this.$input!.value = '';
         });
     }

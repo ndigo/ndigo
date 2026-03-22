@@ -36,7 +36,17 @@ class ToDoconfiguration {
 
     @entry
     viewTarget() {
-        return new DOMElementViewTarget(document.getElementById('app'));
+        const target = new DOMElementViewTarget(document.getElementById('app'));
+        (
+            target as DOMElementViewTarget & {
+                setEventMap(eventMap: Record<string, string>): void;
+            }
+        ).setEventMap({
+            onSubmit: 'user:todo:created',
+            onRemove: 'user:todo:removed',
+            onToggle: 'user:todo:toggled',
+        });
+        return target;
     }
 
     @entry

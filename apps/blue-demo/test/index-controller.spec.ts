@@ -25,7 +25,6 @@ describe('IndexController', () => {
 
         expect((mv.model as any).filter).toBe('all');
         expect((mv.model as any).items).toEqual(todoService.items);
-        expect((mv.model as any).service).toBe(todoService);
     });
 
     test('handleAll returns filter-only model', () => {

@@ -13,7 +13,6 @@ class IndexController extends AsApplicationContextAware(Null) {
         const todoService = this.applicationContext.getValue<TodoService>('todoService');
         return {
             filter,
-            service: todoService,
             ...(includeItems ? { items: todoService.items } : {}),
         };
     }

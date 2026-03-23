@@ -37,11 +37,7 @@ class ToDoconfiguration {
     @entry
     viewTarget() {
         const target = new DOMElementViewTarget(document.getElementById('app'));
-        (
-            target as DOMElementViewTarget & {
-                setEventMap(eventMap: Record<string, string>): void;
-            }
-        ).setEventMap({
+        target.setEventMap({
             onSubmit: 'user:todo:created',
             onRemove: 'user:todo:removed',
             onToggle: 'user:todo:toggled',

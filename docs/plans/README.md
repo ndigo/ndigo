@@ -4,6 +4,18 @@ Implementation plans for features and technical specifications.
 
 ## Completed Plans
 
+### 2026-03-22 - View Event Architecture
+
+Hardened the Spring MVC-inspired view/event contracts with explicit event-bridge interfaces, router refresh contract, lifecycle cleanup, and legacy Bridge removal.
+
+**Status:** Completed  
+**Commit:** (pending)  
+**Impact:** Architectural hardening - stronger contracts and lifecycle safety
+
+[Read full plan](2026-03-22_VIEW_EVENT_ARCHITECTURE.md)
+
+---
+
 ### 2026-02-08 - RegExp Naming Convention Standardization
 
 Standardized all UPPER_SNAKE_CASE RegExp constants to camelCase with Rule suffix across @blue/validate, @blue/http, and @blue/platform-web packages.

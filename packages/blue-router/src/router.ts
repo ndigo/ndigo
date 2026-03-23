@@ -5,12 +5,14 @@ import {
     MappedRouterInterceptor,
 } from './router-interceptor';
 import { Route } from './route';
+import { PathRoute } from './path-route';
 
 export type RouterCallback = (route: Route) => void;
 
 export interface Router {
     readonly route: string;
     readonly callback: RouterCallback;
+    refresh(): void;
 }
 
 export abstract class AbstractRouter implements Router, RouterInterceptorRegistry {
@@ -67,6 +69,13 @@ export abstract class AbstractRouter implements Router, RouterInterceptorRegistr
         }
 
         return interceptor;
+    }
+
+    refresh(): void {
+        const currentRoute = this.route;
+        if (currentRoute) {
+            this.callback(new PathRoute(currentRoute));
+        }
     }
 }
 

@@ -25,3 +25,15 @@ export interface ViewTarget {
      */
     clear(): void | Promise<void>;
 }
+
+/**
+ * A ViewTarget that also bridges user interaction events from the rendering
+ * surface back to the application layer.
+ */
+export interface EventBridgeViewTarget extends ViewTarget {
+    /**
+     * Configures the mapping of surface event names to application event names.
+     * Only mapped events are forwarded.
+     */
+    setEventMap(eventMap: Record<string, string>): void;
+}

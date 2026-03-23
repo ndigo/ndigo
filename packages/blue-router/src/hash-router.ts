@@ -60,7 +60,11 @@ class RouteTransaction {
 }
 
 /**
- * ? Implement factory.Destroyable? It seems excessive to include @blue/factory just for the interface. Move factory.Destroyable to @blue/core? -JBR
+ * Hash-based router for browser environments.
+ *
+ * This class structurally conforms to the Destroyable shape
+ * (`destroyed` + `destroy()`) without importing the interface,
+ * so `likeDestroyable` checks can still identify it by duck typing.
  */
 
 export default class HashRouter extends AbstractRouter {

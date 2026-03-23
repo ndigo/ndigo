@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import { DOMElementViewTarget, WebComponentViewEngine } from '../src/engine';
+import { DOMElementViewTarget, likeDOMViewTarget, WebComponentViewEngine } from '../src/engine';
 import { WebComponentView } from '../src/view';
 
 describe('DOMElementViewTarget', () => {
@@ -22,10 +22,7 @@ describe('DOMElementViewTarget', () => {
 
     test('it should remove listeners during prepare', () => {
         const element = document.createElement('div');
-        const target = new DOMElementViewTarget(element) as DOMElementViewTarget & {
-            setEventMap(eventMap: Record<string, string>): void;
-            setApplicationContext(applicationContext: { emit(type: string, ...data: any[]): boolean }): void;
-        };
+        const target = new DOMElementViewTarget(element);
         const applicationContext = {
             emit: vi.fn(() => true),
         };
@@ -66,10 +63,7 @@ describe('DOMElementViewTarget', () => {
 
     test('it should forward mapped custom events to application context', () => {
         const element = document.createElement('div');
-        const target = new DOMElementViewTarget(element) as DOMElementViewTarget & {
-            setEventMap(eventMap: Record<string, string>): void;
-            setApplicationContext(applicationContext: { emit(type: string, ...data: any[]): boolean }): void;
-        };
+        const target = new DOMElementViewTarget(element);
         const applicationContext = {
             emit: vi.fn(() => true),
         };
@@ -88,10 +82,7 @@ describe('DOMElementViewTarget', () => {
 
     test('it should not forward unmapped custom events', () => {
         const element = document.createElement('div');
-        const target = new DOMElementViewTarget(element) as DOMElementViewTarget & {
-            setEventMap(eventMap: Record<string, string>): void;
-            setApplicationContext(applicationContext: { emit(type: string, ...data: any[]): boolean }): void;
-        };
+        const target = new DOMElementViewTarget(element);
         const applicationContext = {
             emit: vi.fn(() => true),
         };
@@ -110,11 +101,7 @@ describe('DOMElementViewTarget', () => {
 
     test('it should unlisten and stop forwarding events', () => {
         const element = document.createElement('div');
-        const target = new DOMElementViewTarget(element) as DOMElementViewTarget & {
-            setEventMap(eventMap: Record<string, string>): void;
-            setApplicationContext(applicationContext: { emit(type: string, ...data: any[]): boolean }): void;
-            unlisten(): void;
-        };
+        const target = new DOMElementViewTarget(element);
         const applicationContext = {
             emit: vi.fn(() => true),
         };
@@ -134,10 +121,7 @@ describe('DOMElementViewTarget', () => {
 
     test('it should clear listeners on clear', () => {
         const element = document.createElement('div');
-        const target = new DOMElementViewTarget(element) as DOMElementViewTarget & {
-            setEventMap(eventMap: Record<string, string>): void;
-            setApplicationContext(applicationContext: { emit(type: string, ...data: any[]): boolean }): void;
-        };
+        const target = new DOMElementViewTarget(element);
         const applicationContext = {
             emit: vi.fn(() => true),
         };
@@ -153,6 +137,35 @@ describe('DOMElementViewTarget', () => {
         child.dispatchEvent(new CustomEvent('onSubmit', { detail: 'new item', bubbles: true }));
 
         expect(applicationContext.emit).not.toHaveBeenCalled();
+    });
+
+    test('it should satisfy DOMViewTarget predicate', () => {
+        const target = new DOMElementViewTarget(document.createElement('div'));
+
+        expect(likeDOMViewTarget(target)).toBe(true);
+    });
+
+    test('it should destroy and reject subsequent prepare/commit', () => {
+        const target = new DOMElementViewTarget(document.createElement('div'));
+
+        target.destroy();
+
+        expect(target.destroyed).toBe(true);
+        expect(() => target.prepare({ path: '/index' } as any)).toThrow(
+            'Cannot prepare a destroyed DOMElementViewTarget.'
+        );
+        expect(() => target.commit(document.createElement('todo-app'), {}, { path: '/index' } as any)).toThrow(
+            'Cannot commit to a destroyed DOMElementViewTarget.'
+        );
+    });
+
+    test('it should make destroy idempotent', () => {
+        const target = new DOMElementViewTarget(document.createElement('div'));
+
+        target.destroy();
+        target.destroy();
+
+        expect(target.destroyed).toBe(true);
     });
 });
 

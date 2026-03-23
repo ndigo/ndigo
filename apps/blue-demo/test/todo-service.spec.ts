@@ -12,6 +12,14 @@ describe('TodoService', () => {
                 listeners.set(eventName, handlers);
                 return context;
             }),
+            off: vi.fn((eventName: string, handler: Function) => {
+                const handlers = listeners.get(eventName) ?? [];
+                listeners.set(
+                    eventName,
+                    handlers.filter((registeredHandler) => registeredHandler !== handler)
+                );
+                return context;
+            }),
             getValue: vi.fn((name: string) => {
                 if (name === 'router') {
                     return { refresh };
@@ -41,6 +49,14 @@ describe('TodoService', () => {
                 const handlers = listeners.get(eventName) ?? [];
                 handlers.push(handler);
                 listeners.set(eventName, handlers);
+                return context;
+            }),
+            off: vi.fn((eventName: string, handler: Function) => {
+                const handlers = listeners.get(eventName) ?? [];
+                listeners.set(
+                    eventName,
+                    handlers.filter((registeredHandler) => registeredHandler !== handler)
+                );
                 return context;
             }),
             getValue: vi.fn((name: string) => {
@@ -74,6 +90,14 @@ describe('TodoService', () => {
                 listeners.set(eventName, handlers);
                 return context;
             }),
+            off: vi.fn((eventName: string, handler: Function) => {
+                const handlers = listeners.get(eventName) ?? [];
+                listeners.set(
+                    eventName,
+                    handlers.filter((registeredHandler) => registeredHandler !== handler)
+                );
+                return context;
+            }),
             getValue: vi.fn((name: string) => {
                 if (name === 'router') {
                     return { refresh };
@@ -90,5 +114,51 @@ describe('TodoService', () => {
 
         expect(service.items).toEqual([{ text: 'a', checked: true }]);
         expect(refresh).toHaveBeenCalledTimes(1);
+    });
+
+    test('it should unsubscribe event listeners on destroy', () => {
+        const listeners = new Map<string, Function[]>();
+        const refresh = vi.fn();
+        const context = {
+            on: vi.fn((eventName: string, handler: Function) => {
+                const handlers = listeners.get(eventName) ?? [];
+                handlers.push(handler);
+                listeners.set(eventName, handlers);
+                return context;
+            }),
+            off: vi.fn((eventName: string, handler: Function) => {
+                const handlers = listeners.get(eventName) ?? [];
+                listeners.set(
+                    eventName,
+                    handlers.filter((registeredHandler) => registeredHandler !== handler)
+                );
+                return context;
+            }),
+            getValue: vi.fn((name: string) => {
+                if (name === 'router') {
+                    return { refresh };
+                }
+                return undefined;
+            }),
+        };
+
+        const service = new TodoService([{ text: 'a', checked: false }]);
+        (service as any).setApplicationContext(context);
+        service.init();
+
+        service.destroy();
+
+        expect(service.destroyed).toBe(true);
+        expect(context.off).toHaveBeenCalledTimes(3);
+
+        listeners.get('user:todo:created')?.[0]?.('new item');
+        listeners.get('user:todo:removed')?.[0]?.(0);
+        listeners.get('user:todo:toggled')?.[0]?.(0);
+
+        expect(service.items).toEqual([{ text: 'a', checked: false }]);
+        expect(refresh).not.toHaveBeenCalled();
+
+        service.destroy();
+        expect(service.destroyed).toBe(true);
     });
 });

@@ -2,7 +2,7 @@
  * @author Jeff Rose
  */
 
-import { ViewTarget, ViewEngine, View } from '@blue/view';
+import { EventBridgeViewTarget, ViewEngine, View, ViewTarget } from '@blue/view';
 import { Route } from '@blue/router';
 import { WebComponentView } from './view';
 
@@ -14,11 +14,32 @@ interface ModelAwareElement extends HTMLElement {
     model: unknown;
 }
 
-export class DOMElementViewTarget implements ViewTarget {
+export interface DOMViewTarget extends EventBridgeViewTarget {
+    readonly container: HTMLElement;
+}
+
+export const likeDOMViewTarget = (value: unknown): value is DOMViewTarget => {
+    if (!value || typeof value !== 'object') {
+        return false;
+    }
+
+    const target = value as Partial<DOMViewTarget>;
+
+    return (
+        typeof target.prepare === 'function' &&
+        typeof target.commit === 'function' &&
+        typeof target.clear === 'function' &&
+        typeof target.setEventMap === 'function' &&
+        target.container instanceof HTMLElement
+    );
+};
+
+export class DOMElementViewTarget implements DOMViewTarget {
     #element: HTMLElement;
     #eventMap: Record<string, string>;
     #applicationContext: ApplicationEventEmitter | null;
     #listeners: Map<string, EventListener>;
+    destroyed: boolean;
 
     constructor(
         element: HTMLElement | null,
@@ -34,6 +55,7 @@ export class DOMElementViewTarget implements ViewTarget {
         this.#eventMap = options.eventMap ?? {};
         this.#applicationContext = null;
         this.#listeners = new Map();
+        this.destroyed = false;
     }
 
     get container(): HTMLElement {
@@ -41,16 +63,25 @@ export class DOMElementViewTarget implements ViewTarget {
     }
 
     setApplicationContext(applicationContext: ApplicationEventEmitter): void {
+        if (this.destroyed) {
+            return;
+        }
         this.#applicationContext = applicationContext;
         this.listen();
     }
 
     setEventMap(eventMap: Record<string, string>): void {
+        if (this.destroyed) {
+            return;
+        }
         this.#eventMap = eventMap;
         this.listen();
     }
 
     listen(): void {
+        if (this.destroyed) {
+            return;
+        }
         this.unlisten();
 
         if (!this.#applicationContext) {
@@ -77,18 +108,38 @@ export class DOMElementViewTarget implements ViewTarget {
     }
 
     prepare(route: Route): void {
+        if (this.destroyed) {
+            throw new Error('Cannot prepare a destroyed DOMElementViewTarget.');
+        }
         this.unlisten();
         this.#element.innerHTML = '';
     }
 
     commit(output: HTMLElement, model: any, route: Route): void {
+        if (this.destroyed) {
+            throw new Error('Cannot commit to a destroyed DOMElementViewTarget.');
+        }
         this.#element.appendChild(output);
         this.listen();
     }
 
     clear(): void {
+        if (this.destroyed) {
+            return;
+        }
         this.unlisten();
         this.#element.innerHTML = '';
+    }
+
+    destroy(): void {
+        if (this.destroyed) {
+            return;
+        }
+
+        this.unlisten();
+        this.#element.innerHTML = '';
+        this.#applicationContext = null;
+        this.destroyed = true;
     }
 }
 
@@ -100,7 +151,7 @@ export class WebComponentViewEngine implements ViewEngine {
 
         let element: HTMLElement | null = null;
 
-        if (target instanceof DOMElementViewTarget) {
+        if (likeDOMViewTarget(target)) {
             const existingElement = target.container.firstElementChild;
 
             if (

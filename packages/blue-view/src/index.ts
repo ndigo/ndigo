@@ -2,7 +2,6 @@
  * @author Jeff Rose
  */
 
-export * from './bridge';
 export * from './view';
 export * from './view-engine';
 export * from './view-mapping';

@@ -1020,7 +1020,7 @@ When adding a new external dependency:
 2. **Add** the dependency to the appropriate integration layer package
 3. **Re-export** the necessary APIs through the integration layer's `src/index.ts`
 4. **Document** the integration layer in this table
-5. **Update** `AGENTS.md` and `CLAUDE.md` with the new rule
+5. **Update** `AGENTS.md` and `ARCHITECTURE.md` with the new rule
 
 ### Enforcement
 
@@ -1038,7 +1038,7 @@ When adding or modifying integration layer rules, remember to update:
 
 - This section in `ARCHITECTURE.md`
 - The "Library Integration Layer Pattern" section in `AGENTS.md`
-- The "Critical Architectural Rules" section in `CLAUDE.md`
+- The "Dependency Management Strategy" section in `ARCHITECTURE.md`
 
 **See also:** [STYLE_GUIDE.md Section 4.5](./STYLE_GUIDE.md#45-utility-function-organization) for concrete implementation guidelines on organizing utilities within packages, including the critical rule that internal files (`_util.ts`, `_parser.ts`) must contain actual local utilities, not just re-exports.
 

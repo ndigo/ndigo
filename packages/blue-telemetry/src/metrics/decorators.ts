@@ -1,6 +1,7 @@
 import '@tsmetadata/polyfill';
 import { Counter, Meter, metrics } from '@opentelemetry/api';
 import { LogAttributes } from '../logger/logger';
+import { FeatureMetricAggregator } from './feature-metric-aggregator';
 
 const COUNTED_KEY = 'telemetry:counted';
 
@@ -37,7 +38,14 @@ export function hasCounted(target: any, propertyKey: string | symbol): boolean {
     return getCounted(target, propertyKey) !== undefined;
 }
 
-function createCountedDecorator(name?: string, attributes?: LogAttributes) {
+export interface CountedOptions {
+    attributes?: LogAttributes;
+    featureAggregator?: FeatureMetricAggregator;
+    featureKey?: string;
+    name?: string;
+}
+
+function createCountedDecorator(options: CountedOptions = {}) {
     return function <This, Args extends unknown[], Return>(
         target: (this: This, ...args: Args) => Return,
         context: ClassMethodDecoratorContext<This, (this: This, ...args: Args) => Return>
@@ -46,11 +54,11 @@ function createCountedDecorator(name?: string, attributes?: LogAttributes) {
             throw new TypeError('@counted can only be applied to methods');
         }
 
-        const counterName = name || `${String(context.name)}.count`;
+        const counterName = options.name || `${String(context.name)}.count`;
 
         context.metadata[`${COUNTED_KEY}:${String(context.name)}`] = {
             name: counterName,
-            attributes,
+            attributes: options.attributes,
         };
 
         let counter: Counter | undefined;
@@ -60,19 +68,34 @@ function createCountedDecorator(name?: string, attributes?: LogAttributes) {
                 counter = getMeter().createCounter(counterName);
             }
 
-            counter.add(1, attributes);
+            counter.add(1, options.attributes);
+
+            const featureKey = options.featureKey ?? 'feature';
+            const feature = options.attributes?.[featureKey];
+
+            if (options.featureAggregator && typeof feature === 'string') {
+                options.featureAggregator.incrementCounter(feature, counterName);
+            }
+
             return target.apply(this, args);
         };
     };
 }
 
 export function counted(
-    nameOrTarget?: string | Function,
+    nameOrTarget?: string | CountedOptions | Function,
     attributesOrContext?: LogAttributes | ClassMethodDecoratorContext,
     maybeContext?: ClassMethodDecoratorContext
 ): any {
     if (typeof nameOrTarget === 'string') {
-        return createCountedDecorator(nameOrTarget, attributesOrContext as LogAttributes | undefined);
+        return createCountedDecorator({
+            attributes: attributesOrContext as LogAttributes | undefined,
+            name: nameOrTarget,
+        });
+    }
+
+    if (typeof nameOrTarget === 'object' && nameOrTarget !== null && !('kind' in nameOrTarget)) {
+        return createCountedDecorator(nameOrTarget as CountedOptions);
     }
 
     if (typeof attributesOrContext === 'object' && attributesOrContext !== null && 'kind' in attributesOrContext) {
@@ -83,10 +106,9 @@ export function counted(
     }
 
     if (typeof maybeContext === 'object' && maybeContext !== null && 'kind' in maybeContext) {
-        return createCountedDecorator(undefined, attributesOrContext as LogAttributes | undefined)(
-            nameOrTarget as (this: unknown, ...args: unknown[]) => unknown,
-            maybeContext
-        );
+        return createCountedDecorator({
+            attributes: attributesOrContext as LogAttributes | undefined,
+        })(nameOrTarget as (this: unknown, ...args: unknown[]) => unknown, maybeContext);
     }
 
     return createCountedDecorator();

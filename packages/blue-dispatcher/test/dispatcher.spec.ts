@@ -1,7 +1,8 @@
 import { describe, test, beforeEach, afterEach, expect, vi } from 'vitest';
+import { DISPATCHER } from '../src/context-tokens';
 import { BrowserDispatcher } from '../src/dispatcher';
 import dispatcherContext from './assets/dispatcher-context';
-import { completeHandleSpy, handleRouteSpy, renderSpy, resolveLanguageSpy } from './test-strategies';
+import { completeHandleSpy, destroyViewSpy, handleRouteSpy, renderSpy, resolveLanguageSpy } from './test-strategies';
 import { MetadataConfigApplicationContext } from '@blue/context';
 import { Route } from '@blue/router';
 
@@ -48,6 +49,10 @@ describe('BrowserDispatcher', () => {
             expect(resolveLanguageSpy).toHaveBeenCalledWith(quxRoute);
         });
 
+        test('it should provide DISPATCHER context token', () => {
+            expect(DISPATCHER.description).toBe('dispatcher');
+        });
+
         test('it should use context theme when no theme resolver is provided', () => {
             const themeContext = new MetadataConfigApplicationContext('theme-context');
             themeContext.setThemeName('night');
@@ -62,6 +67,14 @@ describe('BrowserDispatcher', () => {
             await dispatcher.dispatch(bazRoute);
 
             expect(completeHandleSpy).toHaveBeenCalledWith(bazRoute, expect.anything(), null);
+        });
+
+        test('it should destroy previous view instance after route navigation', async () => {
+            await dispatcher.dispatch(fooRoute);
+            await dispatcher.dispatch(barRoute);
+
+            expect(destroyViewSpy).toHaveBeenCalledTimes(1);
+            expect(destroyViewSpy).toHaveBeenCalledWith('test');
         });
     });
 });

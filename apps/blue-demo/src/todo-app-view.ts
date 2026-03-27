@@ -1,3 +1,11 @@
+import { toAccountShellRoute, toTodoShellRoute } from './shell-composition';
+import './shell-nav-view';
+
+const allRoute = `#${toTodoShellRoute('/')}`;
+const activeRoute = `#${toTodoShellRoute('/active')}`;
+const completedRoute = `#${toTodoShellRoute('/completed')}`;
+const accountRoute = `#${toAccountShellRoute('/')}`;
+
 const templateTodo = document.createElement('template');
 templateTodo.innerHTML = `
     <section class="todoapp">
@@ -12,17 +20,7 @@ templateTodo.innerHTML = `
         </section>
         <footer class="footer">
             <span class="todo-count"></span>
-            <ul class="filters">
-                <li>
-                    <a href="#/" class="selected">All</a>
-                </li>
-                <li>
-                    <a href="#/active">Active</a>
-                </li>
-                <li>
-                    <a href="#/completed">Completed</a>
-                </li>
-            </ul>
+            <shell-nav></shell-nav>
             <button class="clear-completed">Clear completed</button>
         </footer>
     </section>
@@ -43,12 +41,17 @@ interface TodoItemElement extends HTMLElement {
     index: number;
 }
 
+interface ShellNavElement extends HTMLElement {
+    model: unknown;
+}
+
 export default class MyTodoApp extends HTMLElement {
     #list: TodoItem[];
     #filter: 'all' | 'active' | 'completed';
 
     $input: any;
     $listContainer: HTMLElement | null = null;
+    $shellNav: HTMLElement | null = null;
     checked: boolean = false;
     index: number = 0;
 
@@ -74,6 +77,7 @@ export default class MyTodoApp extends HTMLElement {
         this.appendChild(templateTodo.content.cloneNode(true));
         this.$input = this.querySelector('todo-input');
         this.$listContainer = this.querySelector('.todo-list');
+        this.$shellNav = this.querySelector('shell-nav');
         this._render();
     }
 
@@ -83,15 +87,33 @@ export default class MyTodoApp extends HTMLElement {
         console.log('MyTodoApp::_render');
         if (!this.$listContainer) return;
 
-        const filterLinks = this.querySelectorAll('.filters a');
-        filterLinks.forEach((link) => {
-            const href = link.getAttribute('href');
-            const isSelected =
-                (this.#filter === 'all' && href === '#/') ||
-                (this.#filter === 'active' && href === '#/active') ||
-                (this.#filter === 'completed' && href === '#/completed');
-            link.classList.toggle('selected', isSelected);
-        });
+        if (this.$shellNav) {
+            (this.$shellNav as ShellNavElement).model = {
+                containerClass: 'filters',
+                items: [
+                    {
+                        href: allRoute,
+                        label: 'All',
+                        selected: this.#filter === 'all',
+                    },
+                    {
+                        href: activeRoute,
+                        label: 'Active',
+                        selected: this.#filter === 'active',
+                    },
+                    {
+                        href: completedRoute,
+                        label: 'Completed',
+                        selected: this.#filter === 'completed',
+                    },
+                    {
+                        href: accountRoute,
+                        label: 'Account',
+                    },
+                ],
+                mode: 'list',
+            };
+        }
 
         const filteredList = this.#list.filter((item) => {
             if (this.#filter === 'active') {

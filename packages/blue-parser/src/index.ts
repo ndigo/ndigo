@@ -1,3 +1,9 @@
+/**
+ * @blue/parser — Integration layer for the arcsecond parser-combinator library.
+ * Re-exports arcsecond primitives and provides BlueJS-specific expression parsers.
+ * @author Jeff Rose
+ */
+
 export {
     anyChar,
     anyString,

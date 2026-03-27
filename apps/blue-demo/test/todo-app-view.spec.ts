@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 
 import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { toAccountShellRoute, toTodoShellRoute } from '../src/shell-composition';
 import '../src/todo-app-view';
 import '../src/todo-input-view';
 import '../src/todo-item-view';
@@ -28,10 +29,12 @@ describe('todo-app view filtering', () => {
         const items = element.querySelectorAll('todo-item');
         expect(items.length).toBe(2);
 
-        const allLink = element.querySelector('a[href="#/"]');
-        const activeLink = element.querySelector('a[href="#/active"]');
+        const allLink = element.querySelector(`a[href="#${toTodoShellRoute('/')}"]`);
+        const activeLink = element.querySelector(`a[href="#${toTodoShellRoute('/active')}"]`);
+        const accountLink = element.querySelector(`a[href="#${toAccountShellRoute('/')}"]`);
         expect(allLink.classList.contains('selected')).toBe(true);
         expect(activeLink.classList.contains('selected')).toBe(false);
+        expect(accountLink).not.toBeNull();
     });
 
     test('filters active/completed and preserves existing list on filter-only model', async () => {

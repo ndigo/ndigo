@@ -5,7 +5,11 @@
  */
 
 export * from './route';
+export * from './context-tokens';
 export * from './router';
+export * from './feature-routing-registry';
+export * from './route-partition';
+export * from './site-router';
 export * from './path-route';
 export * from './router-interceptor';
 export * from './transaction-manager';

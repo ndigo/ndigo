@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import '@tsmetadata/polyfill';
 import { counted, getCounted, hasCounted } from '../src/metrics/decorators';
+import { FeatureMetricAggregator } from '../src/metrics/feature-metric-aggregator';
 import { getTraced, hasTraced, traced } from '../src/trace/decorators';
 
 describe('telemetry decorators (TC39)', () => {
@@ -48,5 +49,31 @@ describe('telemetry decorators (TC39)', () => {
             name: 'service.invocations',
             attributes: undefined,
         });
+    });
+
+    it('aggregates counted metrics per feature when featureAggregator is provided', () => {
+        const featureAggregator = new FeatureMetricAggregator();
+
+        class ExampleService {
+            @counted({
+                attributes: {
+                    feature: 'todo',
+                },
+                featureAggregator,
+                name: 'service.invocations',
+            })
+            invoke(): string {
+                return 'done';
+            }
+        }
+
+        const instance = new ExampleService();
+
+        expect(instance.invoke()).toBe('done');
+        expect(instance.invoke()).toBe('done');
+
+        const metrics = featureAggregator.getFeatureMetrics('todo');
+
+        expect(metrics?.counters.get('service.invocations')).toBe(2);
     });
 });

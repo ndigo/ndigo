@@ -7,8 +7,12 @@
  */
 
 export * from './context';
+export * from './context-hierarchy';
 export * from './configuration';
 export * from './environment';
 export * from './event-emitter';
+export * from './event-gateway';
+export * from './feature-context-mount-manager';
 export * from './property-resolver';
 export * from './resource';
+export { ContextToken, likeContextToken } from '@blue/factory';

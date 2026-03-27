@@ -302,7 +302,7 @@ Root-level documentation uses all caps, dated documentation uses ISO 8601 date w
 ✅ ARCHITECTURE.md
 ✅ STYLE_GUIDE.md
 ✅ AGENTS.md
-✅ CLAUDE.md
+✅ AGENTS.md (formerly CLAUDE.md)
 ```
 
 **Dated Documentation (ISO 8601 + Underscore):**

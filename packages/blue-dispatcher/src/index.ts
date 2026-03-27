@@ -7,6 +7,7 @@
  */
 
 export * from './argument-resolver';
+export * from './context-tokens';
 export { AbstractNamedValueMethodArgumentResolver } from './argument-resolver';
 export * from './controller';
 export * from './dispatcher';

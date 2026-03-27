@@ -272,6 +272,7 @@ export { default as Deferred } from './deferred';
 export * from './enumerable';
 export * from './equatable';
 export * from './error';
+export * from './feature-metric-recorder';
 export * from './iterable';
 export * from './matchable';
 export { default as MediaType, parseMediaType } from './media-type';

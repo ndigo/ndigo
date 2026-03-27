@@ -90,9 +90,14 @@ export class BrowserDispatcher
 {
     applicationContext: ApplicationContext;
     defaultViewName: string = 'index';
+    #activeView: View = null;
 
     get [Symbol.toStringTag](): string {
         return 'BrowserDispatcher';
+    }
+
+    private _isDestroyableView(view: View): view is View & { destroy(): void | Promise<void> } {
+        return !!view && typeof (view as any).destroy === 'function';
     }
 
     async dispatch(route: Route): Promise<void> {
@@ -152,6 +157,17 @@ export class BrowserDispatcher
 
         const viewTarget = this.applicationContext.getValue<ViewTarget>('viewTarget');
         await view.render(mv.model, route, viewTarget);
+
+        const previousView = this.#activeView;
+        this.#activeView = view;
+
+        if (previousView && previousView !== view && this._isDestroyableView(previousView)) {
+            try {
+                await previousView.destroy();
+            } catch {
+                // cleanup failures should not fail route rendering
+            }
+        }
     }
 
     protected _processHandlerError(route: Route, handler, error: Error): ModelAndView {

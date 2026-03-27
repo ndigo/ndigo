@@ -1,4 +1,5 @@
 import { describe, test, expect, beforeEach, afterEach, vi } from 'vitest';
+import { ContextToken } from '../src/context-token';
 import { AsFactoryAware, DefaultFactory, ProxiedFactory } from '../src/factory';
 import { $aware } from '../src/aware';
 import { prototypeScope, scope, singletonScope, type Scope } from '../src/scope';
@@ -211,6 +212,40 @@ describe('DefaultFactory', () => {
 
         factory!.setValue('numbers', [1, 2, 3]);
         factory!.getValue('numbers');
+    });
+
+    test('it should support token-based set/get/has/destroy', () => {
+        const fooToken = new ContextToken<number>('foo');
+
+        factory!.setValue(fooToken, 123);
+
+        expect(factory!.getValue(fooToken)).toBe(123);
+        expect(factory!.getValue<number>('foo')).toBe(123);
+        expect(factory!.hasValue(fooToken)).toBe(true);
+
+        factory!.destroyValue(fooToken);
+
+        expect(factory!.hasValue(fooToken)).toBe(false);
+        expect(factory!.getValue(fooToken)).toBeUndefined();
+    });
+
+    test('it should support token/string interoperability', () => {
+        const fooToken = new ContextToken<number>('foo');
+
+        factory!.setValue('foo', 456);
+        expect(factory!.getValue(fooToken)).toBe(456);
+
+        factory!.setValue(fooToken, 789);
+        expect(factory!.getValue<number>('foo')).toBe(789);
+    });
+
+    test('it should support constructor registration using token', () => {
+        const emptyToken = new ContextToken<any>('empty');
+
+        factory!.setValue(emptyToken, EmptyPrototype);
+
+        const empty = factory!.getValue(emptyToken);
+        expect(empty).toBeInstanceOf(EmptyPrototype);
     });
 });
 

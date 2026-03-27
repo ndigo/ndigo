@@ -11,6 +11,7 @@ import { has } from '@blue/util/object';
 import { equals } from '@blue/util/relation';
 import { isConstructor, isFunction, isNumber, isString, like } from '@blue/util/types';
 import { Aware, AsAware, likeAwareAnd, likeAware, likeNameAware } from './aware';
+import { ContextToken } from './context-token';
 import { Registry, RegistryProxyHandler } from './registry';
 import { getScope, HashScope, PossibleScope, PrototypeScope, Scope, ScopedFactory, SingletonScope } from './scope';
 import ScopeRegistry from './_scope-registry';
@@ -228,7 +229,11 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
         this.processors.push(processor);
     }
 
-    destroyValue(name: string): void {
+    destroyValue<T = any>(token: ContextToken<T>): void;
+    destroyValue(name: string): void;
+    destroyValue<T = any>(nameOrToken: string | ContextToken<T>): void {
+        const name = typeof nameOrToken === 'string' ? nameOrToken : nameOrToken.description;
+
         if (!this.hasValue(name)) {
             return;
         }
@@ -254,7 +259,11 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
         return this.hasConstructor(name) ? this._create<T>(name, argumentsList) : create(this[name]);
     }
 
-    getValue<T = any>(name: string, argumentsList: any[] = []): T {
+    getValue<T = any>(token: ContextToken<T>): T;
+    getValue<T = any>(name: string, argumentsList?: any[]): T;
+    getValue<T = any>(nameOrToken: string | ContextToken<T>, argumentsList: any[] = []): T {
+        const name = typeof nameOrToken === 'string' ? nameOrToken : nameOrToken.description;
+
         if (this.hasInstance(name)) {
             return this[name];
         }
@@ -305,7 +314,10 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
         return has(name, this) || has(`$${name}`, this);
     }
 
-    hasValue(name: string): boolean {
+    hasValue<T = any>(token: ContextToken<T>): boolean;
+    hasValue(name: string): boolean;
+    hasValue<T = any>(nameOrToken: string | ContextToken<T>): boolean {
+        const name = typeof nameOrToken === 'string' ? nameOrToken : nameOrToken.description;
         return this.hasInstance(name) || this.hasConstructor(name);
     }
 
@@ -317,7 +329,11 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
         this.#parent = parent;
     }
 
-    setValue<T = any>(name: string, value: T): void {
+    setValue<T = any>(token: ContextToken<T>, value: T): void;
+    setValue<T = any>(name: string, value: T): void;
+    setValue<T = any>(nameOrToken: string | ContextToken<T>, value: T): void {
+        const name = typeof nameOrToken === 'string' ? nameOrToken : nameOrToken.description;
+
         // Constructor
         if (isConstructor(value)) {
             defineProperty(this, `$${name}`, {
@@ -499,7 +515,9 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
             if (likeInitializable(instance)) {
                 this._invokeInit(name, instance);
             }
-        } catch {}
+        } catch (e) {
+            console.warn(`[Factory] Failed to initialize entry '${name}':`, e);
+        }
 
         instance = this._applyProcessorsAfterInitialization(name, instance);
 

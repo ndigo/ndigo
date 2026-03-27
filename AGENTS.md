@@ -330,7 +330,7 @@ When adding new integration layers or encapsulated libraries:
 
 1. Update this section with the new mapping
 2. Update `ARCHITECTURE.md` "Dependency Management Strategy" section
-3. Update `CLAUDE.md` "Critical Architectural Rules" section
+3. Update `ARCHITECTURE.md` "Dependency Management Strategy" section
 
 ### Decorator Naming and Conventions
 
@@ -434,7 +434,7 @@ When organizing helper functions and utilities, follow the extraction hierarchy:
         - `@blue/parser` - String parsing (arcsecond wrappers) - Use for parsing URLs, queries, expressions
         - `@blue/model` - Object validation (objectmodel) - Use for data validation
         - `@blue/core` - Core primitives, containers, patterns - Use for application context, DI, base types
-3.  **Plan:** Check `MIGRATION-2025.md` or `CLAUDE.md` for recent architectural shifts.
+3.  **Plan:** Check `docs/migrations/` or `ARCHITECTURE.md` for recent architectural shifts.
 4.  **Design Decisions:** Consider API design patterns:
     - **Property vs Method:** Use properties for cheap/intrinsic data (O(1), no side effects), get-methods for external lookups (may fail/return null), to-methods for transformations (STYLE_GUIDE.md Section 3.13)
     - **Method Naming:** Use conventional prefixes: get\* (retrieve), is\* (type check), has\* (presence), set\* (mutate), from\*/to\* (convert), with\* (immutable copy) (STYLE_GUIDE.md Section 3.14)

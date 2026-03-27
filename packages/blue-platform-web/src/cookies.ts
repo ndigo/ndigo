@@ -81,7 +81,9 @@ function init(converter: CookieConverter = {}): CookieJar {
             if (/^[\{\[]/.test(result)) {
                 value = result;
             }
-        } catch {}
+        } catch (e) {
+            console.warn('[Cookies] Failed to stringify cookie value:', e);
+        }
 
         value = converter.write
             ? converter.write(value, key)

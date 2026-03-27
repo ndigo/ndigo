@@ -1,6 +1,6 @@
 import { ApplicationContext, AsApplicationContextAware } from '@blue/context';
 import { Null } from '@blue/core';
-import { Router } from '@blue/router';
+import { ROUTER } from './context-tokens';
 
 interface TodoItem {
     text: string;
@@ -69,7 +69,7 @@ export default class TodoService extends AsApplicationContextAware(Null) {
     }
 
     #refreshCurrentRoute(): void {
-        const router = this.applicationContext.getValue<Router>('router');
+        const router = this.applicationContext.getValue(ROUTER);
         if (router && typeof router.refresh === 'function') {
             router.refresh();
         }

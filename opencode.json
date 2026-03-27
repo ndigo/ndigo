@@ -5,7 +5,7 @@
       "model": "github-copilot/claude-opus-4.6"
     },
     "build": {
-      "model": "github-copilot/gpt-5.3-codex"
+      "model": "github-copilot/claude-opus-4.6"
     },
     "review": {
       "model": "github-copilot/claude-sonnet-4.5"
@@ -14,7 +14,7 @@
       "model": "google/gemini-2.5-flash"
     },
     "implementation-scout": {
-      "model": "github-copilot/claude-sonnet-4.5"
+      "model": "google/gemini-3.0-pro"
     },
     "industry-researcher": {
       "model": "google/gemini-2.5-pro"
@@ -29,34 +29,40 @@
       "model": "github-copilot/claude-sonnet-4.6"
     },
     "security-reviewer": {
-      "model": "github-copilot/claude-sonnet-4.5"
+      "model": "google/gemini-3.0-pro"
     },
     "dependency-reviewer": {
-      "model": "github-copilot/claude-haiku-4.5"
+      "model": "google/gemini-2.5-flash"
     },
     "complexity-reviewer": {
-      "model": "github-copilot/claude-sonnet-4.5"
+      "model": "google/gemini-3.0-pro"
     },
     "documentation-reviewer": {
       "model": "google/gemini-2.5-flash"
     },
     "jsdoc-reviewer": {
-      "model": "github-copilot/claude-haiku-4.5"
+      "model": "google/gemini-2.5-flash"
     },
     "diagram-reviewer": {
       "model": "google/gemini-2.5-flash"
     },
     "accessibility-reviewer": {
-      "model": "github-copilot/claude-haiku-4.5"
+      "model": "google/gemini-2.5-flash"
     },
     "gap-reviewer": {
-      "model": "github-copilot/claude-sonnet-4.5"
+      "model": "google/gemini-3.0-pro"
+    },
+    "source-writer": {
+      "model": "github-copilot/gpt-5.3-codex"
+    },
+    "tooling-writer": {
+      "model": "github-copilot/gpt-5.3-codex"
     },
     "documentation-writer": {
-      "model": "github-copilot/claude-sonnet-4.6"
+      "model": "google/gemini-3.0-pro"
     },
     "jsdoc-writer": {
-      "model": "github-copilot/claude-haiku-4.5"
+      "model": "google/gemini-2.5-flash"
     },
     "diagram-writer": {
       "model": "google/gemini-2.5-flash"
@@ -68,13 +74,13 @@
       "model": "github-copilot/gpt-5.2-codex"
     },
     "quality-runner": {
-      "model": "github-copilot/claude-haiku-4.5"
+      "model": "google/gemini-2.5-flash"
     },
     "troubleshooter": {
       "model": "github-copilot/claude-sonnet-4.6"
     },
     "workflow-executor": {
-      "model": "github-copilot/claude-haiku-4.5"
+      "model": "google/gemini-2.5-flash"
     }
   }
 }

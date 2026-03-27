@@ -3,11 +3,16 @@
  */
 
 import { like } from '@blue/util/types';
+import { ContextToken } from './context-token';
 
 export interface Registry {
+    destroyValue<T = any>(token: ContextToken<T>): void;
     destroyValue(name: string): void;
+    getValue<T = any>(token: ContextToken<T>): T;
     getValue<T = any>(name: string): T;
+    hasValue<T = any>(token: ContextToken<T>): boolean;
     hasValue(name: string): boolean;
+    setValue<T = any>(token: ContextToken<T>, value: T): void;
     setValue<T = any>(name: string, value: T): void;
 }
 

@@ -15,6 +15,22 @@
     "test": "vitest run --passWithNoTests",
     "test:watch": "vitest"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue.git"
+  },
+  "keywords": [
+    "blue",
+    "bluejs",
+    "blue-js",
+    "blue-telemetry",
+    "observability",
+    "opentelemetry",
+    "metrics",
+    "tracing"
+  ],
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
   "dependencies": {
     "@opentelemetry/api": "~1.9.0",
     "@opentelemetry/api-logs": "~0.52.1",

@@ -8,6 +8,7 @@ export const testModel = new ModelAndView('test');
 export const handleRouteSpy = vi.fn().mockReturnValue(testModel);
 
 export const renderSpy = vi.fn();
+export const destroyViewSpy = vi.fn();
 
 export const resolveLanguageSpy = vi.fn().mockReturnValue('en-US');
 
@@ -59,10 +60,16 @@ export class TestThemeResolver {
 }
 
 export class TestView {
+    destroyed = false;
     name: string;
 
     render(model: any, route: any, target?: any) {
         return renderSpy(model, route, target);
+    }
+
+    destroy() {
+        this.destroyed = true;
+        destroyViewSpy(this.name);
     }
 
     constructor(name: string) {

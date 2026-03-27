@@ -103,6 +103,9 @@ importers:
       '@blue/router':
         specifier: ~0.0.1
         version: link:../../packages/blue-router
+      '@blue/telemetry':
+        specifier: ~0.0.1
+        version: link:../../packages/blue-telemetry
       '@blue/util':
         specifier: ~0.0.1
         version: link:../../packages/blue-util
@@ -325,6 +328,9 @@ importers:
       '@blue/core':
         specifier: ~0.0.1
         version: link:../blue-core
+      '@blue/factory':
+        specifier: ~0.0.1
+        version: link:../blue-factory
       '@blue/http':
         specifier: ~0.0.1
         version: link:../blue-http
@@ -457,6 +463,9 @@ importers:
 
   packages/blue-view-webcomponent:
     devDependencies:
+      '@blue/context':
+        specifier: ~0.0.1
+        version: link:../blue-context
       '@blue/core':
         specifier: ~0.0.1
         version: link:../blue-core

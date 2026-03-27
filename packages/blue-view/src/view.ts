@@ -11,10 +11,13 @@ import { ViewTarget } from './view-target';
 
 export interface View {
     mediaType: MediaType;
+    destroyed?: boolean;
+    destroy?(): void | Promise<void>;
     render(model: any, request: any, target?: ViewTarget): void | Promise<void>;
 }
 
 export abstract class AbstractView extends AsNameAware(AsApplicationContextAware(Null)) implements Serializable, View {
+    destroyed: boolean;
     mediaType: MediaType;
     name: string;
 
@@ -24,10 +27,23 @@ export abstract class AbstractView extends AsNameAware(AsApplicationContextAware
 
     constructor() {
         super();
+        this.destroyed = false;
         this.mediaType = MediaTypes.TEXT_HTML.withCharset('UTF-8');
     }
 
+    destroy(): void {
+        if (this.destroyed) {
+            return;
+        }
+
+        this.destroyed = true;
+    }
+
     async render(model: any, request: any, target?: ViewTarget): Promise<void> {
+        if (this.destroyed) {
+            return;
+        }
+
         const viewModel = this._createViewModel(model, request);
         await this._renderView(viewModel, request, target);
     }

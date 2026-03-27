@@ -1,4 +1,5 @@
 import { describe, expect, test, vi } from 'vitest';
+import { ROUTER } from '../src/context-tokens';
 import { AbstractRouter, RouterCallback } from '../src/router';
 import { PathRoute } from '../src/path-route';
 
@@ -18,6 +19,10 @@ class TestRouter extends AbstractRouter {
 }
 
 describe('AbstractRouter', () => {
+    test('it should provide ROUTER context token', () => {
+        expect(ROUTER.description).toBe('router');
+    });
+
     test('it should refresh current route with a new PathRoute', () => {
         const callback = vi.fn();
         const router = new TestRouter(callback, '/users/42');

@@ -1,5 +1,6 @@
 import { describe, expect, test } from 'vitest';
 import { Route } from '@blue/router';
+import { TODO_SERVICE } from '../src/context-tokens';
 import IndexController from '../src/index-controller';
 
 describe('IndexController', () => {
@@ -14,7 +15,10 @@ describe('IndexController', () => {
     function createController(): IndexController {
         const controller = new IndexController();
         (controller as any).setApplicationContext({
-            getValue: (name: string) => (name === 'todoService' ? todoService : null),
+            getValue: (name: string | { description: string }) =>
+                name === 'todoService' || (typeof name !== 'string' && name.description === TODO_SERVICE.description)
+                    ? todoService
+                    : null,
         });
         return controller;
     }

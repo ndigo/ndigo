@@ -54,6 +54,25 @@ describe('AbstractView', () => {
         expect(json.name).toBe('test-view');
         expect(json.mediaType).toBeTruthy();
     });
+
+    test('it should support destroy lifecycle', () => {
+        const view = new TestView();
+
+        expect(view.destroyed).toBe(false);
+
+        view.destroy();
+
+        expect(view.destroyed).toBe(true);
+    });
+
+    test('it should no-op render after destroy', async () => {
+        const view = new TestView();
+        view.destroy();
+
+        await view.render({ foo: 'bar' }, { path: '/index' });
+
+        expect(view.lastRender).toBeNull();
+    });
 });
 
 describe('AbstractPathBasedView', () => {

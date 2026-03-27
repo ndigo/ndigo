@@ -1,14 +1,25 @@
-import { BrowserDispatcher } from '@blue/dispatcher';
-import { HashRouter, Route } from '@blue/router';
+import { composeTodoRuntime, toTodoShellRoute } from './shell-composition';
 import todoContext from './todo-context';
+import './account-app-view';
+import './feature-metrics-panel-view';
+import './shell-nav-view';
 import './todo-app-view';
 import './todo-input-view';
 import './todo-item-view';
 
-const dispatcher = new BrowserDispatcher();
-const router = new HashRouter((route: Route) => dispatcher.dispatch(route));
-dispatcher.initStrategies(todoContext);
-todoContext.setValue('router', router);
-todoContext.setValue('dispatcher', dispatcher);
+const composition = composeTodoRuntime(todoContext);
+const metricsPanel = document.createElement('feature-metrics-panel') as HTMLElement & {
+    aggregator?: unknown;
+    refresh?: () => void;
+    routeHandledRateAlertThreshold?: number;
+};
 
-location.hash = '/index';
+metricsPanel.aggregator = composition.featureMetrics;
+metricsPanel.routeHandledRateAlertThreshold = 5;
+document.body.appendChild(metricsPanel);
+
+window.setInterval(() => {
+    metricsPanel.refresh?.();
+}, 250);
+
+location.hash = toTodoShellRoute('/index');

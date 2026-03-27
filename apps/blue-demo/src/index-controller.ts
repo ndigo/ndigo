@@ -3,14 +3,14 @@ import { Route } from '@blue/router';
 import { WebComponentView } from '@blue/view-webcomponent';
 import { ApplicationContext, AsApplicationContextAware } from '@blue/context';
 import { Null } from '@blue/core';
-import TodoService from './todo-service';
+import { TODO_SERVICE } from './context-tokens';
 
 @routeMapping('')
 class IndexController extends AsApplicationContextAware(Null) {
     readonly applicationContext!: ApplicationContext;
 
     _createModel(filter: 'all' | 'active' | 'completed', includeItems: boolean = true) {
-        const todoService = this.applicationContext.getValue<TodoService>('todoService');
+        const todoService = this.applicationContext.getValue(TODO_SERVICE);
         return {
             filter,
             ...(includeItems ? { items: todoService.items } : {}),

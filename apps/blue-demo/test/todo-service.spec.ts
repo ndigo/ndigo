@@ -1,4 +1,5 @@
 import { describe, expect, test, vi } from 'vitest';
+import { ROUTER } from '../src/context-tokens';
 import TodoService from '../src/todo-service';
 
 describe('TodoService', () => {
@@ -20,8 +21,12 @@ describe('TodoService', () => {
                 );
                 return context;
             }),
-            getValue: vi.fn((name: string) => {
-                if (name === 'router') {
+            getValue: vi.fn((name: string | { description: string }) => {
+                if (
+                    name === ROUTER ||
+                    name === 'router' ||
+                    (!!name && typeof name !== 'string' && name.description === 'router')
+                ) {
                     return { refresh };
                 }
                 return undefined;
@@ -59,8 +64,12 @@ describe('TodoService', () => {
                 );
                 return context;
             }),
-            getValue: vi.fn((name: string) => {
-                if (name === 'router') {
+            getValue: vi.fn((name: string | { description: string }) => {
+                if (
+                    name === ROUTER ||
+                    name === 'router' ||
+                    (!!name && typeof name !== 'string' && name.description === 'router')
+                ) {
                     return { refresh };
                 }
                 return undefined;
@@ -98,8 +107,12 @@ describe('TodoService', () => {
                 );
                 return context;
             }),
-            getValue: vi.fn((name: string) => {
-                if (name === 'router') {
+            getValue: vi.fn((name: string | { description: string }) => {
+                if (
+                    name === ROUTER ||
+                    name === 'router' ||
+                    (!!name && typeof name !== 'string' && name.description === 'router')
+                ) {
                     return { refresh };
                 }
                 return undefined;
@@ -134,8 +147,12 @@ describe('TodoService', () => {
                 );
                 return context;
             }),
-            getValue: vi.fn((name: string) => {
-                if (name === 'router') {
+            getValue: vi.fn((name: string | { description: string }) => {
+                if (
+                    name === ROUTER ||
+                    name === 'router' ||
+                    (!!name && typeof name !== 'string' && name.description === 'router')
+                ) {
                     return { refresh };
                 }
                 return undefined;

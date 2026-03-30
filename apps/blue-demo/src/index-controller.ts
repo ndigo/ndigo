@@ -3,7 +3,10 @@ import { Route } from '@blue/router';
 import { WebComponentView } from '@blue/view-webcomponent';
 import { ApplicationContext, AsApplicationContextAware } from '@blue/context';
 import { Null } from '@blue/core';
+import { traced, getLogger } from '@blue/telemetry';
 import { TODO_SERVICE } from './context-tokens';
+
+const logger = getLogger('blue-demo:index-controller');
 
 @routeMapping('')
 class IndexController extends AsApplicationContextAware(Null) {
@@ -18,29 +21,33 @@ class IndexController extends AsApplicationContextAware(Null) {
     }
 
     @routeMapping('/index')
+    @traced
     handleIndex(route: Route) {
-        console.log('IndexController::Handling Route', route);
+        logger.info('Handling route', { 'route.path': route.path });
         const model = this._createModel('all');
         return new ModelAndView(new WebComponentView('todo-app'), model);
     }
 
     @routeMapping('')
+    @traced
     handleAll(route: Route) {
-        console.log('IndexController::Handling Route', route);
+        logger.info('Handling route', { 'route.path': route.path });
         const model = this._createModel('all', false);
         return new ModelAndView(new WebComponentView('todo-app'), model);
     }
 
     @routeMapping('/active')
+    @traced
     handleActive(route: Route) {
-        console.log('IndexController::Handling Route', route);
+        logger.info('Handling route', { 'route.path': route.path });
         const model = this._createModel('active', false);
         return new ModelAndView(new WebComponentView('todo-app'), model);
     }
 
     @routeMapping('/completed')
+    @traced
     handleCompleted(route: Route) {
-        console.log('IndexController::Handling Route', route);
+        logger.info('Handling route', { 'route.path': route.path });
         const model = this._createModel('completed', false);
         return new ModelAndView(new WebComponentView('todo-app'), model);
     }

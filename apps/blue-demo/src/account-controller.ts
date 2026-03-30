@@ -1,12 +1,16 @@
 import { routeMapping, ModelAndView } from '@blue/dispatcher';
 import { Route } from '@blue/router';
 import { WebComponentView } from '@blue/view-webcomponent';
+import { traced, getLogger } from '@blue/telemetry';
+
+const logger = getLogger('blue-demo:account-controller');
 
 @routeMapping('/account')
 class AccountController {
     @routeMapping('')
+    @traced
     handleIndex(route: Route) {
-        console.log('AccountController::Handling Route', route);
+        logger.info('Handling route', { 'route.path': route.path });
 
         return new ModelAndView(new WebComponentView('account-app'), {
             section: 'overview',
@@ -15,8 +19,9 @@ class AccountController {
     }
 
     @routeMapping('/settings')
+    @traced
     handleSettings(route: Route) {
-        console.log('AccountController::Handling Route', route);
+        logger.info('Handling route', { 'route.path': route.path });
 
         return new ModelAndView(new WebComponentView('account-app'), {
             section: 'settings',

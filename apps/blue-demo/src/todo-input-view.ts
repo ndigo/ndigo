@@ -16,7 +16,6 @@ export default class TodoInput extends HTMLElement {
     }
 
     connectedCallback() {
-        console.log('TodoInput ADDED TO THE DOM');
         this.appendChild(templateTodoInput.content.cloneNode(true));
         this.$form = this.querySelector('form');
         this.$input = this.querySelector('input');
@@ -28,9 +27,7 @@ export default class TodoInput extends HTMLElement {
         });
     }
 
-    disconnectedCallback() {
-        console.log('TodoInput REMOVED TO THE DOM');
-    }
+    disconnectedCallback() {}
 }
 
 window.customElements.define('todo-input', TodoInput);

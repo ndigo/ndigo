@@ -1,3 +1,4 @@
+import './telemetry-setup';
 import { composeTodoRuntime, toTodoShellRoute } from './shell-composition';
 import todoContext from './todo-context';
 import './account-app-view';

@@ -1,6 +1,9 @@
 import { ApplicationContext, AsApplicationContextAware } from '@blue/context';
 import { Null } from '@blue/core';
+import { traced, getLogger } from '@blue/telemetry';
 import { ROUTER } from './context-tokens';
+
+const logger = getLogger('blue-demo:todo-service');
 
 interface TodoItem {
     text: string;
@@ -25,7 +28,10 @@ export default class TodoService extends AsApplicationContextAware(Null) {
         this.destroyed = false;
     }
 
+    @traced
     init() {
+        logger.info('Initializing todo service');
+
         this.#onCreated = (text: string) => {
             this.#items.push({ text, checked: false });
             this.#refreshCurrentRoute();
@@ -50,7 +56,10 @@ export default class TodoService extends AsApplicationContextAware(Null) {
         this.applicationContext.on('user:todo:toggled', this.#onToggled);
     }
 
+    @traced
     destroy(): void {
+        logger.info('Destroying todo service');
+
         if (this.destroyed) {
             return;
         }

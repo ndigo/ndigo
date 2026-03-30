@@ -4,7 +4,8 @@ import {
     MetadataConfigApplicationContext,
     entry,
 } from '@blue/context';
-import { MetadataHandlerMapping } from '@blue/dispatcher';
+import { LoggingRouteHandlerInterceptor, MetadataHandlerMapping } from '@blue/dispatcher';
+import { getLogger } from '@blue/telemetry';
 import { NameViewResolver } from '@blue/view';
 import { DOMElementViewTarget, WebComponentViewEngine } from '@blue/view-webcomponent';
 import AccountController from './account-controller';
@@ -38,7 +39,9 @@ class ToDoconfiguration {
     @entry
     handlerMapping() {
         // TODO Fix the default handler mappings
-        return new MetadataHandlerMapping();
+        const mapping = new MetadataHandlerMapping();
+        mapping.interceptors.push(new LoggingRouteHandlerInterceptor(getLogger('blue-demo:dispatcher')));
+        return mapping;
     }
 
     @entry

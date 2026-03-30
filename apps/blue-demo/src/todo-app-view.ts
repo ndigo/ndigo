@@ -84,7 +84,6 @@ export default class MyTodoApp extends HTMLElement {
     disconnectedCallback() {}
 
     _render() {
-        console.log('MyTodoApp::_render');
         if (!this.$listContainer) return;
 
         if (this.$shellNav) {

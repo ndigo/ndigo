@@ -7,7 +7,18 @@
     "lib"
   ],
   "exports": {
-    ".": "./lib/index.js"
+    ".": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    },
+    "./browser": {
+      "types": "./lib/browser-config.d.ts",
+      "default": "./lib/browser-config.js"
+    },
+    "./node": {
+      "types": "./lib/node-config.d.ts",
+      "default": "./lib/node-config.js"
+    }
   },
   "types": "lib/index.d.ts",
   "scripts": {
@@ -36,7 +47,9 @@
     "@opentelemetry/api-logs": "~0.52.1",
     "@opentelemetry/sdk-node": "~0.52.1",
     "@opentelemetry/sdk-logs": "~0.52.1",
+    "@opentelemetry/sdk-trace-base": "~1.25.1",
     "@opentelemetry/instrumentation": "~0.52.1",
+    "@opentelemetry/resources": "~1.25.1",
     "@opentelemetry/semantic-conventions": "~1.25.1",
     "@opentelemetry/exporter-trace-otlp-http": "~0.52.1",
     "@opentelemetry/exporter-metrics-otlp-http": "~0.52.1",

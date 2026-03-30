@@ -14,7 +14,7 @@
       "model": "google/gemini-2.5-flash"
     },
     "implementation-scout": {
-      "model": "google/gemini-3.0-pro"
+      "model": "google/gemini-3.1-pro-preview"
     },
     "industry-researcher": {
       "model": "google/gemini-2.5-pro"
@@ -29,13 +29,13 @@
       "model": "github-copilot/claude-sonnet-4.6"
     },
     "security-reviewer": {
-      "model": "google/gemini-3.0-pro"
+      "model": "google/gemini-3.1-pro-preview"
     },
     "dependency-reviewer": {
       "model": "google/gemini-2.5-flash"
     },
     "complexity-reviewer": {
-      "model": "google/gemini-3.0-pro"
+      "model": "google/gemini-3.1-pro-preview"
     },
     "documentation-reviewer": {
       "model": "google/gemini-2.5-flash"
@@ -50,7 +50,7 @@
       "model": "google/gemini-2.5-flash"
     },
     "gap-reviewer": {
-      "model": "google/gemini-3.0-pro"
+      "model": "google/gemini-3.1-pro-preview"
     },
     "source-writer": {
       "model": "github-copilot/gpt-5.3-codex"
@@ -59,7 +59,7 @@
       "model": "github-copilot/gpt-5.3-codex"
     },
     "documentation-writer": {
-      "model": "google/gemini-3.0-pro"
+      "model": "google/gemini-3.1-pro-preview"
     },
     "jsdoc-writer": {
       "model": "google/gemini-2.5-flash"

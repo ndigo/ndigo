@@ -29,7 +29,10 @@ export default defineConfig({
             { find: /^@blue\/util\/types/, replacement: resolve(__dirname, './packages/blue-util/src/type') },
             { find: /^@blue\/util\/type/, replacement: resolve(__dirname, './packages/blue-util/src/type') },
 
-            { find: /^@blue\/logger\/otel\/entry-to-logrecord$/, replacement: resolve(__dirname, './packages/blue-logger/src/otel/entry-to-logrecord') },
+            {
+                find: /^@blue\/logger\/otel\/entry-to-logrecord$/,
+                replacement: resolve(__dirname, './packages/blue-logger/src/otel/entry-to-logrecord'),
+            },
 
             { find: /^@blue\/core$/, replacement: resolve(__dirname, './packages/blue-core/src') },
             { find: /^@blue\/util$/, replacement: resolve(__dirname, './packages/blue-util/src') },
@@ -49,6 +52,7 @@ export default defineConfig({
             { find: /^@blue\/dispatcher$/, replacement: resolve(__dirname, './packages/blue-dispatcher/src') },
             { find: /^@blue\/boot$/, replacement: resolve(__dirname, './packages/blue-boot/src') },
             { find: /^@blue\/service$/, replacement: resolve(__dirname, './packages/blue-service/src') },
+            { find: /^@blue\/eslint-plugin$/, replacement: resolve(__dirname, './packages/blue-eslint-plugin/src') },
         ],
     },
 });

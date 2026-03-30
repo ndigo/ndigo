@@ -1,0 +1,111 @@
+/** @author opencode */
+
+import parser from '@typescript-eslint/parser';
+import { RuleTester } from '@typescript-eslint/rule-tester';
+import { noDirectIntegrationImports } from '../../src/rules/no-direct-integration-imports';
+
+const ruleTester = new RuleTester({
+    languageOptions: {
+        parser,
+        parserOptions: {
+            sourceType: 'module',
+            ecmaVersion: 'latest',
+        },
+    },
+});
+
+ruleTester.run('no-direct-integration-imports', noDirectIntegrationImports, {
+    valid: [
+        {
+            code: "import * as R from '@blue/util';",
+            filename: '/packages/blue-core/src/container.ts',
+        },
+        {
+            code: "import * as R from 'ramda';",
+            filename: '/packages/blue-util/src/ramda.ts',
+        },
+        {
+            code: "import { choice } from 'arcsecond';",
+            filename: '/packages/blue-parser/src/parser.ts',
+        },
+        {
+            code: "import * as R from 'ramda';",
+            filename: '/packages/blue-core/test/something.spec.ts',
+        },
+        {
+            code: "import { choice } from '@blue/parser';",
+            filename: '/packages/blue-core/src/matcher.ts',
+        },
+        {
+            code: "import { describe } from 'vitest';",
+            filename: '/packages/blue-core/src/container.ts',
+        },
+    ],
+    invalid: [
+        {
+            code: "import * as R from 'ramda';",
+            filename: '/packages/blue-core/src/container.ts',
+            errors: [
+                {
+                    messageId: 'directImport',
+                    data: {
+                        library: 'ramda',
+                        integrationLayer: '@blue/util',
+                    },
+                },
+            ],
+        },
+        {
+            code: "import { format } from 'date-fns';",
+            filename: '/packages/blue-http/src/query-string.ts',
+            errors: [
+                {
+                    messageId: 'directImport',
+                    data: {
+                        library: 'date-fns',
+                        integrationLayer: '@blue/util',
+                    },
+                },
+            ],
+        },
+        {
+            code: "import { choice } from 'arcsecond';",
+            filename: '/packages/blue-router/src/matcher.ts',
+            errors: [
+                {
+                    messageId: 'directImport',
+                    data: {
+                        library: 'arcsecond',
+                        integrationLayer: '@blue/parser',
+                    },
+                },
+            ],
+        },
+        {
+            code: "export { something } from 'ramda';",
+            filename: '/packages/blue-core/src/index.ts',
+            errors: [
+                {
+                    messageId: 'directImport',
+                    data: {
+                        library: 'ramda',
+                        integrationLayer: '@blue/util',
+                    },
+                },
+            ],
+        },
+        {
+            code: "import { format } from 'date-fns/format';",
+            filename: '/packages/blue-http/src/query-string.ts',
+            errors: [
+                {
+                    messageId: 'directImport',
+                    data: {
+                        library: 'date-fns',
+                        integrationLayer: '@blue/util',
+                    },
+                },
+            ],
+        },
+    ],
+});

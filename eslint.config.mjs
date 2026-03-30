@@ -1,6 +1,7 @@
 import parser from '@typescript-eslint/parser';
 import tsPlugin from '@typescript-eslint/eslint-plugin';
 import prettierConfig from 'eslint-config-prettier';
+import bluePlugin from './packages/blue-eslint-plugin/lib/index.js';
 
 /**
  * ESLint Configuration (Flat Config)
@@ -91,6 +92,7 @@ export default [
         },
         plugins: {
             '@typescript-eslint': tsPlugin,
+            '@blue': bluePlugin,
         },
         rules: {
             // Code quality rules (non-formatting)
@@ -124,6 +126,11 @@ export default [
             ],
             '@typescript-eslint/no-require-imports': 0,
             '@typescript-eslint/prefer-namespace-keyword': 2,
+
+            // BlueJS architecture rules
+            '@blue/no-direct-integration-imports': 1,
+            '@blue/no-internal-file-imports': 2,
+            '@blue/no-internal-file-exports': 2,
         },
     },
     {

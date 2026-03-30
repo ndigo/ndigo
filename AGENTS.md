@@ -38,10 +38,8 @@ pnpm lint            # Check code quality
 **Pre-Commit Validation:**
 
 ```bash
-# Verify no direct imports of encapsulated libraries
-rg "from ['\"]ramda['\"]" --type ts      # Should return nothing
-rg "from ['\"]date-fns['\"]" --type ts   # Should return nothing
-rg "from ['\"]arcsecond['\"]" --type ts  # Should return nothing
+# Integration layer, internal imports, and internal exports are enforced by @blue/eslint-plugin.
+# Run `pnpm lint` to check — no manual rg needed for those.
 
 # Verify no mixed-case acronyms
 rg "(class|interface|type) \w*(Http|Json|Xml|Url|Api|Html|Dto|Uuid|Uri)\w*" --type ts  # Should return nothing
@@ -317,19 +315,28 @@ import { choice, sequenceOf } from '@blue/parser';
 
 **Enforcement:**
 
+These rules are **automatically enforced** by `@blue/eslint-plugin`, which provides three ESLint rules:
+
+| Rule                                  | Severity | Description                                                                                                                                                          |
+| :------------------------------------ | :------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@blue/no-direct-integration-imports` | warn     | Forbids importing encapsulated libraries (ramda, date-fns, arcsecond, etc.) outside their integration layer packages. Allows in integration packages and test files. |
+| `@blue/no-internal-file-imports`      | error    | Forbids `@blue/<pkg>/_*` cross-package imports of internal files.                                                                                                    |
+| `@blue/no-internal-file-exports`      | error    | Forbids `export * from './_*'` barrel re-exports in `*/src/index.ts`. Named re-exports (`export { foo } from './_*'`) are allowed (deliberate/controlled).           |
+
+Run `pnpm lint` to check for violations. These rules are integrated into the root `eslint.config.mjs`.
+
 When reviewing or writing code:
 
-1. **Check imports** at the top of every file
-2. **Verify** no direct imports from `ramda`, `date-fns`, `arcsecond`, `objectmodel`, etc.
-3. **Use search** to find violations: `rg "from ['\"]ramda['\"]" --type ts`
-4. **In tests**, direct imports are OK for mocking but document why
+1. **Run `pnpm lint`** to catch violations automatically
+2. **Check imports** at the top of every file
+3. **In tests**, direct imports are OK for mocking but document why
 
 **Updating Rules:**
 
 When adding new integration layers or encapsulated libraries:
 
 1. Update this section with the new mapping
-2. Update `ARCHITECTURE.md` "Dependency Management Strategy" section
+2. Update `@blue/eslint-plugin` constants in `packages/blue-eslint-plugin/src/_constants.ts`
 3. Update `ARCHITECTURE.md` "Dependency Management Strategy" section
 
 ### Decorator Naming and Conventions

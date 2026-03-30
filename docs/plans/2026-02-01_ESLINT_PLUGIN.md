@@ -1,9 +1,10 @@
 # ESLint Plugin Implementation Plan
 
 **Date:** February 1, 2026  
-**Status:** Planning - Not Started  
+**Status:** ✅ Implemented  
 **Priority:** Medium  
-**Package:** `@blue/eslint-plugin`
+**Package:** `@blue/eslint-plugin`  
+**Implemented:** March 29, 2026
 
 ## Overview
 
@@ -20,12 +21,14 @@ Provide automated enforcement of architectural constraints to prevent common vio
 ### Scope
 
 **In Scope:**
+
 - Custom ESLint rules for architectural enforcement
 - Integration with existing ESLint configuration
 - Documentation and developer guidance
 - CI/CD integration
 
 **Out of Scope:**
+
 - General code style rules (use standard ESLint plugins)
 - TypeScript type checking (use `tsc`)
 - Build-time validation beyond linting
@@ -42,10 +45,10 @@ Provide automated enforcement of architectural constraints to prevent common vio
 
 ```typescript
 // ❌ INCORRECT: Direct import bypasses integration layer
-import * as R from 'ramda';              // Should use @blue/util
-import { format } from 'date-fns';       // Should use @blue/util
-import { choice } from 'arcsecond';      // Should use @blue/parser
-import { Model } from 'objectmodel';     // Should use @blue/model
+import * as R from 'ramda'; // Should use @blue/util
+import { format } from 'date-fns'; // Should use @blue/util
+import { choice } from 'arcsecond'; // Should use @blue/parser
+import { Model } from 'objectmodel'; // Should use @blue/model
 
 // ✅ CORRECT: Import through integration layer
 import * as R from '@blue/util';
@@ -93,8 +96,8 @@ import { Model } from '@blue/model';
 ```typescript
 // ❌ INCORRECT: Importing internal file from another package
 // In @blue/core/src/container.ts
-import { isNotNil } from '@blue/util/_util';           // Internal file!
-import { parseQuery } from '@blue/parser/src/_util';   // Internal file!
+import { isNotNil } from '@blue/util/_util'; // Internal file!
+import { parseQuery } from '@blue/parser/src/_util'; // Internal file!
 
 // ❌ INCORRECT: Relative import across package boundary
 import { helper } from '../../blue-util/src/_util';
@@ -222,38 +225,38 @@ packages/blue-eslint-plugin/
 import { ESLintUtils } from '@typescript-eslint/utils';
 
 const createRule = ESLintUtils.RuleCreator(
-  (name) => `https://github.com/bluelibs/blue/blob/main/docs/eslint-rules/${name}.md`
+    (name) => `https://github.com/bluelibs/blue/blob/main/docs/eslint-rules/${name}.md`
 );
 
 export const exampleRule = createRule({
-  name: 'example-rule',
-  meta: {
-    type: 'problem',
-    docs: {
-      description: 'Rule description',
-      recommended: 'error'
-    },
-    messages: {
-      violation: 'Error message with {{placeholder}}'
-    },
-    schema: [
-      {
-        type: 'object',
-        properties: {
-          // Rule options
+    name: 'example-rule',
+    meta: {
+        type: 'problem',
+        docs: {
+            description: 'Rule description',
+            recommended: 'error',
         },
-        additionalProperties: false
-      }
-    ]
-  },
-  defaultOptions: [{}],
-  create(context, [options]) {
-    return {
-      ImportDeclaration(node) {
-        // Rule logic
-      }
-    };
-  }
+        messages: {
+            violation: 'Error message with {{placeholder}}',
+        },
+        schema: [
+            {
+                type: 'object',
+                properties: {
+                    // Rule options
+                },
+                additionalProperties: false,
+            },
+        ],
+    },
+    defaultOptions: [{}],
+    create(context, [options]) {
+        return {
+            ImportDeclaration(node) {
+                // Rule logic
+            },
+        };
+    },
 });
 ```
 
@@ -267,14 +270,14 @@ import { noInternalFileExports } from './rules/no-internal-file-exports';
 import recommended from './configs/recommended';
 
 export = {
-  rules: {
-    'no-direct-integration-imports': noDirectIntegrationImports,
-    'no-internal-file-imports': noInternalFileImports,
-    'no-internal-file-exports': noInternalFileExports
-  },
-  configs: {
-    recommended
-  }
+    rules: {
+        'no-direct-integration-imports': noDirectIntegrationImports,
+        'no-internal-file-imports': noInternalFileImports,
+        'no-internal-file-exports': noInternalFileExports,
+    },
+    configs: {
+        recommended,
+    },
 };
 ```
 
@@ -283,12 +286,12 @@ export = {
 ```typescript
 // src/configs/recommended.ts
 export default {
-  plugins: ['@blue'],
-  rules: {
-    '@blue/no-direct-integration-imports': 'error',
-    '@blue/no-internal-file-imports': 'error',
-    '@blue/no-internal-file-exports': 'error'
-  }
+    plugins: ['@blue'],
+    rules: {
+        '@blue/no-direct-integration-imports': 'error',
+        '@blue/no-internal-file-imports': 'error',
+        '@blue/no-internal-file-exports': 'error',
+    },
 };
 ```
 
@@ -311,30 +314,30 @@ pnpm init
 
 ```json
 {
-  "name": "@blue/eslint-plugin",
-  "version": "0.1.0",
-  "description": "Custom ESLint rules for BlueJS architectural enforcement",
-  "main": "lib/index.js",
-  "types": "lib/index.d.ts",
-  "files": ["lib"],
-  "scripts": {
-    "build:lib": "tsc -b",
-    "test": "vitest run",
-    "lint": "eslint src --ext .ts"
-  },
-  "dependencies": {
-    "@typescript-eslint/utils": "^6.0.0"
-  },
-  "devDependencies": {
-    "@typescript-eslint/parser": "^6.0.0",
-    "@typescript-eslint/rule-tester": "^6.0.0",
-    "eslint": "^8.0.0",
-    "typescript": "^5.7.0",
-    "vitest": "^1.0.0"
-  },
-  "peerDependencies": {
-    "eslint": "^8.0.0"
-  }
+    "name": "@blue/eslint-plugin",
+    "version": "0.1.0",
+    "description": "Custom ESLint rules for BlueJS architectural enforcement",
+    "main": "lib/index.js",
+    "types": "lib/index.d.ts",
+    "files": ["lib"],
+    "scripts": {
+        "build:lib": "tsc -b",
+        "test": "vitest run",
+        "lint": "eslint src --ext .ts"
+    },
+    "dependencies": {
+        "@typescript-eslint/utils": "^6.0.0"
+    },
+    "devDependencies": {
+        "@typescript-eslint/parser": "^6.0.0",
+        "@typescript-eslint/rule-tester": "^6.0.0",
+        "eslint": "^8.0.0",
+        "typescript": "^5.7.0",
+        "vitest": "^1.0.0"
+    },
+    "peerDependencies": {
+        "eslint": "^8.0.0"
+    }
 }
 ```
 
@@ -342,15 +345,15 @@ pnpm init
 
 ```json
 {
-  "extends": "../../tsconfig.base.json",
-  "compilerOptions": {
-    "outDir": "./lib",
-    "rootDir": "./src",
-    "declaration": true,
-    "declarationMap": true
-  },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "lib", "test"]
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "outDir": "./lib",
+        "rootDir": "./src",
+        "declaration": true,
+        "declarationMap": true
+    },
+    "include": ["src/**/*"],
+    "exclude": ["node_modules", "lib", "test"]
 }
 ```
 
@@ -370,6 +373,7 @@ mkdir -p test/rules
 **File:** `src/rules/no-direct-integration-imports.ts`
 
 **Implementation Steps:**
+
 1. Define encapsulated library mapping
 2. Parse import declarations
 3. Check if import source matches encapsulated library
@@ -378,6 +382,7 @@ mkdir -p test/rules
 6. Report violation with suggested fix
 
 **Test Cases:**
+
 - ✅ Valid: Import from integration layer
 - ✅ Valid: Direct import in integration layer package
 - ✅ Valid: Direct import in test file (if configured)
@@ -389,6 +394,7 @@ mkdir -p test/rules
 **File:** `src/rules/no-internal-file-imports.ts`
 
 **Implementation Steps:**
+
 1. Parse import declarations
 2. Check if import source contains `/_` pattern
 3. Detect if import is from same package (allow)
@@ -396,6 +402,7 @@ mkdir -p test/rules
 5. Report violation with explanation
 
 **Test Cases:**
+
 - ✅ Valid: Internal file import within same package
 - ✅ Valid: Public API import from another package
 - ❌ Invalid: Internal file import via `@blue/pkg/_util`
@@ -407,12 +414,14 @@ mkdir -p test/rules
 **File:** `src/rules/no-internal-file-exports.ts`
 
 **Implementation Steps:**
+
 1. Check if current file is `index.ts` in `src/`
 2. Parse export declarations with sources
 3. Check if export source starts with `./_`
 4. Report violation for any internal file exports
 
 **Test Cases:**
+
 - ✅ Valid: Export from public module
 - ✅ Valid: Export from subdirectory (non-underscore)
 - ✅ Valid: Internal file export in test/index.ts
@@ -432,17 +441,17 @@ mkdir -p test/rules
 import bluePlugin from '@blue/eslint-plugin';
 
 export default [
-  // ... existing config
-  {
-    plugins: {
-      '@blue': bluePlugin
+    // ... existing config
+    {
+        plugins: {
+            '@blue': bluePlugin,
+        },
+        rules: {
+            '@blue/no-direct-integration-imports': 'error',
+            '@blue/no-internal-file-imports': 'error',
+            '@blue/no-internal-file-exports': 'error',
+        },
     },
-    rules: {
-      '@blue/no-direct-integration-imports': 'error',
-      '@blue/no-internal-file-imports': 'error',
-      '@blue/no-internal-file-exports': 'error'
-    }
-  }
 ];
 ```
 
@@ -481,6 +490,7 @@ pnpm test
 **4.1: Create Rule Documentation**
 
 **Files:**
+
 - `docs/eslint-rules/no-direct-integration-imports.md`
 - `docs/eslint-rules/no-internal-file-imports.md`
 - `docs/eslint-rules/no-internal-file-exports.md`
@@ -532,11 +542,11 @@ fi
 
 ```json
 {
-  "exports": {
-    ".": "./lib/index.js",
-    "./package.json": "./package.json"
-    // Explicitly omit lib/_*.js from exports
-  }
+    "exports": {
+        ".": "./lib/index.js",
+        "./package.json": "./package.json"
+        // Explicitly omit lib/_*.js from exports
+    }
 }
 ```
 
@@ -558,6 +568,7 @@ done
 **File:** `packages/blue-eslint-plugin/README.md`
 
 Include:
+
 - Installation instructions
 - Usage examples
 - Rule list with descriptions
@@ -586,43 +597,46 @@ import { RuleTester } from '@typescript-eslint/rule-tester';
 import { noDirectIntegrationImports } from '../../src/rules/no-direct-integration-imports';
 
 const ruleTester = new RuleTester({
-  parser: '@typescript-eslint/parser'
+    parser: '@typescript-eslint/parser',
 });
 
 ruleTester.run('no-direct-integration-imports', noDirectIntegrationImports, {
-  valid: [
-    {
-      code: "import * as R from '@blue/util';",
-      filename: 'packages/blue-core/src/container.ts'
-    },
-    {
-      code: "import * as R from 'ramda';",
-      filename: 'packages/blue-util/src/index.ts'  // Integration layer
-    },
-    {
-      code: "import * as R from 'ramda';",
-      filename: 'packages/blue-core/test/container.spec.ts'  // Test file
-    }
-  ],
-  invalid: [
-    {
-      code: "import * as R from 'ramda';",
-      filename: 'packages/blue-core/src/container.ts',
-      errors: [{
-        messageId: 'directImport',
-        data: {
-          library: 'ramda',
-          integrationLayer: '@blue/util'
-        }
-      }]
-    }
-  ]
+    valid: [
+        {
+            code: "import * as R from '@blue/util';",
+            filename: 'packages/blue-core/src/container.ts',
+        },
+        {
+            code: "import * as R from 'ramda';",
+            filename: 'packages/blue-util/src/index.ts', // Integration layer
+        },
+        {
+            code: "import * as R from 'ramda';",
+            filename: 'packages/blue-core/test/container.spec.ts', // Test file
+        },
+    ],
+    invalid: [
+        {
+            code: "import * as R from 'ramda';",
+            filename: 'packages/blue-core/src/container.ts',
+            errors: [
+                {
+                    messageId: 'directImport',
+                    data: {
+                        library: 'ramda',
+                        integrationLayer: '@blue/util',
+                    },
+                },
+            ],
+        },
+    ],
 });
 ```
 
 ### Integration Tests
 
 **Manual verification checklist:**
+
 1. Run lint on entire monorepo
 2. Verify expected violations are caught
 3. Verify no false positives
@@ -632,6 +646,7 @@ ruleTester.run('no-direct-integration-imports', noDirectIntegrationImports, {
 ### Edge Case Tests
 
 For each rule, test:
+
 - **Namespace imports** - `import * as R`
 - **Named imports** - `import { map }`
 - **Default imports** - `import R`
@@ -673,52 +688,23 @@ For each rule, test:
 
 ---
 
-## Open Questions
+## Open Questions (Resolved)
 
-### 1. Severity Levels
+### 1. Severity Levels ✅
 
-**Question:** Should violations be errors or warnings initially?
+**Decision:** Mixed approach — `no-direct-integration-imports` is set to `warn` for gradual adoption; `no-internal-file-imports` and `no-internal-file-exports` are set to `error` (strict enforcement, zero existing violations).
 
-**Options:**
-- **A: Errors** - Enforce strictly from day one
-- **B: Warnings** - Allow time for gradual adoption
-- **C: Mixed** - Errors for new code, warnings for existing
+### 2. Type-Only Imports ✅
 
-**Recommendation:** Start with warnings, then promote to errors after cleanup sprint.
-
-### 2. Type-Only Imports
-
-**Question:** Should `import type { Foo } from 'ramda'` be allowed?
-
-**Considerations:**
-- Type imports don't add runtime dependencies
-- But they still create coupling to the library's type definitions
-- Type imports could be allowed in integration layers only
-
-**Recommendation:** Treat type imports the same as value imports (disallow).
+**Decision:** Type imports are treated the same as value imports (disallowed). This prevents coupling to library type definitions.
 
 ### 3. Dynamic Imports
 
-**Question:** How to handle `await import('ramda')`?
-
-**Considerations:**
-- Dynamic imports are harder to detect statically
-- Less common in BlueJS codebase
-- Could be deferred to future enhancement
-
-**Recommendation:** Phase 1 focuses on static imports. Add dynamic import detection in Phase 2.
+**Decision:** Deferred. Phase 1 focuses on static `import` and `export` declarations only.
 
 ### 4. Additional Rules
 
-**Question:** Should we add more architectural rules beyond these 3?
-
-**Candidates:**
-- Prevent circular dependencies
-- Enforce naming conventions (kebab-case files)
-- Require JSDoc on public APIs
-- Prevent `any` type usage
-
-**Recommendation:** Start with 3 core rules. Evaluate additional rules based on pain points that emerge.
+**Decision:** Started with the 3 core rules as planned. Additional rules will be evaluated based on pain points.
 
 ---
 
@@ -758,10 +744,12 @@ For each rule, test:
 ### Alternative 1: Manual Code Review
 
 **Pros:**
+
 - No tooling overhead
 - Flexible interpretation
 
 **Cons:**
+
 - Inconsistent enforcement
 - Wastes reviewer time
 - Violations slip through
@@ -771,10 +759,12 @@ For each rule, test:
 ### Alternative 2: TypeScript Path Mapping Restrictions
 
 **Pros:**
+
 - Enforce at compile time
 - No ESLint dependency
 
 **Cons:**
+
 - Can't distinguish test files
 - Can't provide helpful error messages
 - Doesn't handle all cases
@@ -784,10 +774,12 @@ For each rule, test:
 ### Alternative 3: Pre-commit Hooks
 
 **Pros:**
+
 - Catch issues before commit
 - Fast feedback loop
 
 **Cons:**
+
 - Can be bypassed with --no-verify
 - Not enforced in CI
 - Less discoverable
@@ -831,3 +823,31 @@ For each rule, test:
 **Status:** Planning Complete - Ready for Implementation  
 **Author:** OpenCode AI Agent  
 **Last Updated:** February 1, 2025
+
+---
+
+## Implementation Notes (March 29, 2026)
+
+The plugin was implemented with the following deviations from the original plan:
+
+### Structural Simplifications
+
+- No `src/configs/` or `src/utils/` directories — the recommended config is inlined in `src/index.ts`, and package detection logic is embedded directly in each rule (simple path pattern matching).
+- Constants (integration layer mapping) are in `src/_constants.ts` (internal file, following BlueJS conventions).
+- Test setup uses a `test/_setup.ts` bridge to integrate `@typescript-eslint/rule-tester` with Vitest.
+
+### Rule Design Decisions
+
+1. **`no-direct-integration-imports` (warn):** Set to `warn` (not `error`) to allow gradual adoption per the plan's rollout recommendation. Detects integration layer packages by filepath pattern (`packages/blue-util/`, `packages/blue-parser/`, `packages/blue-model/`). Test files (`.spec.ts`, `.test.ts`) are exempt.
+
+2. **`no-internal-file-imports` (error):** Detects `@blue/<pkg>/_*` patterns in import specifiers. Only flags cross-package imports — same-package relative `_*.ts` imports are allowed.
+
+3. **`no-internal-file-exports` (error):** **Key deviation from plan** — The original plan flagged ALL exports from internal files (including named re-exports like `export { foo } from './_util'`). During integration testing, this produced a false positive on `@blue/parser/src/index.ts`, which legitimately uses `export { anyChar, choice, ... } from './_parser.js'` as a controlled integration layer re-export. The rule was **narrowed to only flag `export * from './_*'`** (barrel re-exports), since named re-exports are deliberate and controlled.
+
+### ESM Import Resolution
+
+All relative imports in TypeScript source files use `.js` extensions (e.g., `import { INTEGRATION_MAP } from '../_constants.js'`) to comply with Node.js ESM module resolution requirements.
+
+### Workspace Integration
+
+The plugin is imported in `eslint.config.mjs` via relative path (`./packages/blue-eslint-plugin/lib/index.js`) rather than package name, because pnpm workspaces don't hoist `@blue/*` packages to the root `node_modules/`.

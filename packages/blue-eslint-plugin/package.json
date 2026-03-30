@@ -1,0 +1,48 @@
+{
+  "name": "@blue/eslint-plugin",
+  "version": "0.0.1",
+  "description": "Custom ESLint rules for BlueJS architectural enforcement",
+  "type": "module",
+  "files": [
+    "lib"
+  ],
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    }
+  },
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build:lib": "tsc -b tsconfig.build.json",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@typescript-eslint/utils": "~8.18.2"
+  },
+  "devDependencies": {
+    "@typescript-eslint/rule-tester": "~8.18.2",
+    "@typescript-eslint/parser": "~8.18.2",
+    "eslint": "~9.17.0",
+    "typescript": "~5.7.2",
+    "vitest": "~2.1.8"
+  },
+  "peerDependencies": {
+    "eslint": ">=9.0.0"
+  },
+  "keywords": [
+    "blue",
+    "bluejs",
+    "eslint",
+    "eslint-plugin",
+    "architecture"
+  ],
+  "license": "ISC",
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue.git",
+    "directory": "packages/blue-eslint-plugin"
+  }
+}

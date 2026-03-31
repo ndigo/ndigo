@@ -1,0 +1,31 @@
+{
+  "name": "@blue/hello",
+  "version": "0.0.1",
+  "description": "Blue Hello World - Minimal BlueJS SPA",
+  "type": "module",
+  "private": true,
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "dependencies": {
+    "@blue/context": "~0.0.1",
+    "@blue/core": "~0.0.1",
+    "@blue/dispatcher": "~0.0.1",
+    "@blue/router": "~0.0.1",
+    "@blue/view": "~0.0.1",
+    "@blue/view-webcomponent": "~0.0.1"
+  },
+  "devDependencies": {
+    "@blue/context": "~0.0.1",
+    "@blue/core": "~0.0.1",
+    "@blue/dispatcher": "~0.0.1",
+    "vite": "~6.0.7"
+  }
+}

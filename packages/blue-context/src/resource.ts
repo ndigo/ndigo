@@ -156,7 +156,7 @@ export const AsModuleResourceLoader = <T extends Constructable>(superclass: T): 
     const LoaderClass = class extends (superclass as new (...args: any[]) => any) implements ResourceLoader {
         async getResource(location: string): Promise<Resource> {
             try {
-                const value = await import(location);
+                const value = await import(/* @vite-ignore */ location);
                 return new URLResource(location, value);
             } catch (error) {
                 throw new UnresolvedResource(location, error);

@@ -8,7 +8,7 @@ import { TODO_SERVICE } from './context-tokens';
 
 const logger = getLogger('blue-demo:index-controller');
 
-@routeMapping('')
+@routeMapping('/')
 class IndexController extends AsApplicationContextAware(Null) {
     readonly applicationContext!: ApplicationContext;
 
@@ -28,7 +28,7 @@ class IndexController extends AsApplicationContextAware(Null) {
         return new ModelAndView(new WebComponentView('todo-app'), model);
     }
 
-    @routeMapping('')
+    @routeMapping('/')
     @traced
     handleAll(route: Route) {
         logger.info('Handling route', { 'route.path': route.path });

@@ -154,6 +154,17 @@ export class EqualsPathMatcher implements PathMatcher {
             throw new TypeError('"pattern2" must be a string');
         }
 
+        // Root merging: "/" acts as identity
+        if (pattern1 === SLASH && pattern2 === SLASH) {
+            return SLASH;
+        }
+        if (pattern1 === SLASH) {
+            return pattern2;
+        }
+        if (pattern2 === SLASH) {
+            return pattern1;
+        }
+
         const isEmpty1 = pattern1.length === 0,
             isEmpty2 = pattern2.length === 0,
             hasSlash1 = !isEmpty1 && pattern1.indexOf(SLASH) === 0,
@@ -216,6 +227,17 @@ export class GlobPathMatcher implements PathMatcher {
 
         if (typeof pattern2 !== 'string') {
             throw new TypeError('"pattern2" must be a string');
+        }
+
+        // Root merging: "/" acts as identity
+        if (pattern1 === SLASH && pattern2 === SLASH) {
+            return SLASH;
+        }
+        if (pattern1 === SLASH) {
+            return pattern2;
+        }
+        if (pattern2 === SLASH) {
+            return pattern1;
         }
 
         if (pattern1.endsWith(SLASH_STAR)) {

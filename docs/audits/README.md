@@ -4,6 +4,7 @@ This directory contains audit reports analyzing various aspects of the BlueJS co
 
 ## Available Audits
 
+- [2026-03-30_HOLISTIC_AUDIT.md](./2026-03-30_HOLISTIC_AUDIT.md) - 7-dimension holistic repository audit (architecture, naming, tests, docs, deps, API, DRY)
 - [2026-03-08_PACKAGE_ANALYSIS.md](./2026-03-08_PACKAGE_ANALYSIS.md) - Monorepo package maturity and documentation audit
 - [2026-02-01_DEPENDENCY_AUDIT.md](./2026-02-01_DEPENDENCY_AUDIT.md) - Library Integration Layer compliance audit
 
@@ -12,6 +13,7 @@ This directory contains audit reports analyzing various aspects of the BlueJS co
 Audit files follow the format: `YYYY-MM-DD_DESCRIPTION.md`
 
 Where:
+
 - `YYYY-MM-DD` - Date the audit was performed (ISO 8601 format)
 - `_` - Underscore separator (consistent with UPPER_SNAKE_CASE constants)
 - `DESCRIPTION` - Brief description in ALL_CAPS with underscores for multi-word phrases
@@ -19,6 +21,7 @@ Where:
 ## Purpose
 
 Audit reports provide:
+
 - Comprehensive analysis of specific codebase aspects
 - Identification of patterns and anti-patterns
 - Violation detection

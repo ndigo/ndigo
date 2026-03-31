@@ -2,10 +2,29 @@
  * @author Jeff Rose
  */
 
-import type { ParameterExtractor, ParameterValueConverter } from '@blue/dispatcher';
 import { z } from 'zod';
 import { Validator } from './validator';
 import { ValidationError, ConstraintViolationError } from './error';
+
+/**
+ * Local type aliases for the dispatcher parameter extraction protocol.
+ *
+ * These are structurally compatible with the types in `@blue/dispatcher`
+ * but defined locally to avoid a Layer 2 → Layer 5 dependency.
+ */
+
+/** A function that converts a raw parameter value. */
+type ParameterValueConverter<T = unknown> = (value: any, ...args: any[]) => T;
+
+/** Describes how a single route parameter is extracted. */
+type ParameterExtractor<T = unknown> = {
+    [key: string]: unknown;
+    convert?:
+        | ParameterValueConverter<T>
+        | string
+        | { optional?: boolean; use: ParameterValueConverter<T> | string }
+        | null;
+};
 
 /**
  * Wraps a parameter extractor with a Zod schema for validation and coercion.

@@ -3,6 +3,7 @@
  */
 
 import '@tsmetadata/polyfill';
+import { getSymbolMetadata } from '@blue/core';
 import { compose } from '@blue/util/function';
 import { when } from '@blue/util/logic';
 import { mergeRight, objOf } from '@blue/util/object';
@@ -33,25 +34,12 @@ const toRouteMappingConfiguration = when(isString, compose(withDefaults, configu
 ) => RouteMappingConfiguration;
 
 /**
- * Helper to get metadata from class constructor
- */
-function getMetadata(target: any): Record<string, any> {
-    if (typeof target === 'function' && target[Symbol.metadata]) {
-        return target[Symbol.metadata];
-    }
-    if (target && target.constructor && target.constructor[Symbol.metadata]) {
-        return target.constructor[Symbol.metadata];
-    }
-    return {};
-}
-
-/**
  * Get route mapping from class or method
  * @param target - Class constructor or prototype
  * @param propertyKey - Optional method name
  */
 export const getRouteMapping = (target: any, propertyKey?: string | symbol): RouteMappingConfiguration | undefined => {
-    const metadata = getMetadata(target);
+    const metadata = getSymbolMetadata(target);
     if (propertyKey) {
         return metadata[`route:mapping:${String(propertyKey)}`];
     }

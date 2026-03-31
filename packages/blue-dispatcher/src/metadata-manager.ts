@@ -3,29 +3,13 @@
  * @copyright &copy; JPMorgan Chase & Co. All rights reserved.
  */
 
-import '@tsmetadata/polyfill';
-import { MultiValueMap } from '@blue/core';
+import { MultiValueMap, getSymbolMetadata } from '@blue/core';
 
 const { defineProperty } = Reflect;
 
 /**
  * ! Changing the "private" properties to truly private, i.e. prepending #, breaks the unit tests - JBR
  */
-
-/**
- * Helper to extract Symbol.metadata from a target (constructor or prototype)
- */
-function getSymbolMetadata(target: any): Record<string, any> | null {
-    // If target is a constructor function
-    if (typeof target === 'function' && target[Symbol.metadata]) {
-        return target[Symbol.metadata];
-    }
-    // If target is a prototype or instance
-    if (target && target.constructor && target.constructor[Symbol.metadata]) {
-        return target.constructor[Symbol.metadata];
-    }
-    return null;
-}
 
 /**
  * Create a new MetadataScanner for a given target.

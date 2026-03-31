@@ -302,6 +302,15 @@ importers:
         specifier: ~0.0.1
         version: link:../blue-util
 
+  packages/blue-orm:
+    devDependencies:
+      '@blue/core':
+        specifier: ~0.0.1
+        version: link:../blue-core
+      '@blue/factory':
+        specifier: ~0.0.1
+        version: link:../blue-factory
+
   packages/blue-parser:
     dependencies:
       arcsecond:

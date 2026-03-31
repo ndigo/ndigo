@@ -843,7 +843,7 @@ The framework is organized into 8 architectural layers with clear dependency dir
 | **5: Request Processing**  | `@blue/dispatcher`, `@blue/view`, `@blue/view-webcomponent`          | Front controller, handler execution, and view resolution/rendering adapters | `DispatcherServlet` + `ViewResolver`          |
 | **4: Web Infrastructure**  | `@blue/http`, `@blue/router`, `@blue/telemetry`                      | HTTP client/interceptors/transforms, routing primitives, observability      | HTTP stack + routing + observability          |
 | **3: Application Context** | `@blue/context`                                                      | Application context, environment, events, configuration metadata            | `ApplicationContext`                          |
-| **2: Infrastructure**      | `@blue/factory`, `@blue/content`, `@blue/validate`                   | IoC container internals, i18n/theming contracts, validation                 | `BeanFactory` + `MessageSource` + `Validator` |
+| **2: Infrastructure**      | `@blue/factory`, `@blue/content`, `@blue/validate`, `@blue/orm`      | IoC container internals, i18n/theming, validation, persistence abstractions | `BeanFactory` + `MessageSource` + `Validator` |
 | **1: Foundation**          | `@blue/core`                                                         | Core primitives, collection types, transducers, path matching, errors       | Spring Core                                   |
 | **0: Integration Layer**   | `@blue/util`, `@blue/parser`, `@blue/model`                          | Encapsulated third-party libraries via stable BlueJS wrappers               | Commons / utility integration layer           |
 
@@ -2645,10 +2645,10 @@ Files beginning with underscore (`_`) are **internal implementation details**:
 
 ### Near-Term Priorities
 
-1. End-to-end telemetry integration in `blue-demo`
-2. Convention automation via `@blue/eslint-plugin`
+1. ~~End-to-end telemetry integration in `blue-demo`~~ ✅
+2. ~~Convention automation via `@blue/eslint-plugin`~~ ✅
 3. `@blue/auth` MVP definition and implementation
-4. `@blue/orm` MVP definition and implementation
+4. ~~`@blue/orm` MVP definition and implementation~~ ✅
 
 For strategic architecture direction (platform portability, boot lifecycle, boundary decisions, and package maturity), see [2026-03-08_ARCHITECTURE_ROADMAP.md](./docs/reference/2026-03-08_ARCHITECTURE_ROADMAP.md).
 

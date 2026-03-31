@@ -3,6 +3,7 @@
  */
 
 import '@tsmetadata/polyfill';
+import { FrameworkError } from '@blue/core';
 import { GenericApplicationContext } from './context';
 import { Environment, AsEnvironmentAware, StandardEnvironment, ConfigurableEnvironment } from './environment';
 import { EntryRegistryProcessor, Registry } from '@blue/factory';
@@ -126,7 +127,7 @@ export function profile(name: string) {
 export function property(path: string) {
     return function (value: undefined, context: ClassFieldDecoratorContext) {
         if (context.kind !== 'field') {
-            throw new Error('@property can only be applied to class fields');
+            throw new FrameworkError('@property can only be applied to class fields');
         }
 
         // Store metadata
@@ -179,7 +180,7 @@ export function propertySource(propertySource: JSONObject | Enumerable<string, J
 function createEntryDecorator(entryName?: string) {
     return function (target: any, context: ClassMethodDecoratorContext) {
         if (context.kind !== 'method') {
-            throw new Error('@entry can only be applied to methods');
+            throw new FrameworkError('@entry can only be applied to methods');
         }
 
         context.metadata[`${CONFIG_ENTRY}:${String(context.name)}`] = entryName ?? String(context.name);

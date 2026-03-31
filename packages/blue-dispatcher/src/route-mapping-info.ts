@@ -32,7 +32,7 @@ export class AccessExpression extends AbstractNameValueExpression<boolean> {
     }
 
     parseValue( valueExpression: string ): boolean {
-        throw new Error( "Method not implemented." );
+        throw new FrameworkError('Method not implemented.');
     }
 }
 */

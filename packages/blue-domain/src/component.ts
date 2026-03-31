@@ -1,4 +1,4 @@
-import { JSONValue, JSONObject, Null, Serializable, createNull } from '@blue/core';
+import { FrameworkError, JSONValue, JSONObject, Null, Serializable, createNull } from '@blue/core';
 import { AsEventEmitter, EventEmitter } from '@blue/context';
 import { AsyncDestroyable, Initializable } from '@blue/factory';
 import { curryN } from '@blue/util/function';
@@ -83,11 +83,11 @@ export class GenericDomainComponent extends AsEventEmitter(Null) implements Doma
     }
 
     validate(property: string): void {
-        throw new Error('Method not implemented.');
+        throw new FrameworkError('Method not implemented.');
     }
 
     async destroy(): Promise<void> {
-        throw new Error('Method not implemented.');
+        throw new FrameworkError('Method not implemented.');
     }
 
     toJSON(): JSONObject {

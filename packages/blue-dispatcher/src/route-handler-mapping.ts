@@ -11,6 +11,7 @@ import {
     GlobPathMatcher,
     Comparator,
     Serializable,
+    IllegalStateError,
 } from '@blue/core';
 import { AsNameAware, Initializable } from '@blue/factory';
 import { ApplicationContext, AsApplicationContextAware } from '@blue/context';
@@ -461,7 +462,7 @@ export abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
                 if (comparator.compare(bestMatch, nextMatch) === 0) {
                     const m1 = bestMatch.handlerMethod.method,
                         m2 = nextMatch.handlerMethod.method;
-                    throw new Error(`Ambiguous handler methods mapped for "${path}": { ${m1}, ${m2} }`);
+                    throw new IllegalStateError(`Ambiguous handler methods mapped for "${path}": { ${m1}, ${m2} }`);
                 }
             }
             this._handleMatch(bestMatch.mapping, path, route);
@@ -547,7 +548,7 @@ export abstract class AbstractPathHandlerMapping extends AbstractHandlerMapping 
                     handler = _handlers.get(bestMatch.substring(0, bestMatch.length - 1));
                 }
                 if (!handler) {
-                    throw new Error(`Could not find handler for pattern "${bestMatch}"`);
+                    throw new IllegalStateError(`Could not find handler for pattern "${bestMatch}"`);
                 }
             }
 
@@ -610,7 +611,7 @@ export abstract class AbstractPathHandlerMapping extends AbstractHandlerMapping 
 
             if (mappedHandler) {
                 if (mappedHandler !== resolvedHandler) {
-                    throw new Error(
+                    throw new IllegalStateError(
                         `Cannot map handler ${handler} to path "${p}". There is already ${mappedHandler} mapped.`
                     );
                 }

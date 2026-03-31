@@ -2,7 +2,7 @@
  * @author Jeff Rose
  */
 
-import { serializable } from '@blue/core';
+import { FrameworkError, serializable } from '@blue/core';
 
 export type Params<T = any> = {
     value?: T;
@@ -27,7 +27,7 @@ export class CompositeConstraint<T = serializable> implements Constraint<T> {
 
     constructor(constraints: Constraint<T>[]) {
         if (!constraints.length) {
-            throw new Error('"constraints" cannot be empty');
+            throw new FrameworkError('"constraints" cannot be empty');
         }
 
         Reflect.defineProperty(this, 'constraints', {

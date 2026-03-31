@@ -3,6 +3,7 @@
  */
 
 import { wildcardExpression } from '@blue/parser';
+import { FrameworkError } from './error';
 
 /**
  * @extends external:RegExp
@@ -15,7 +16,7 @@ export default class WildcardExp extends RegExp {
             // Type narrowing: parseResult is Ok<string, any> here
             super((parseResult as { isError: false; result: string; index: number; data: any }).result);
         } else {
-            throw new Error(`Failed to parse wildcard pattern: ${pattern}`);
+            throw new FrameworkError(`Failed to parse wildcard pattern: ${pattern}`);
         }
     }
 }

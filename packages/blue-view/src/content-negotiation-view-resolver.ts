@@ -2,7 +2,7 @@
  * @author Jeff Rose
  */
 
-import { MediaType, MultiValueMap } from '@blue/core';
+import { FrameworkError, MediaType, MultiValueMap } from '@blue/core';
 import { allPass, propSatisfies } from '@blue/util/logic';
 import { isFunction, isNotNil } from '@blue/util/types';
 import { View } from './view';
@@ -83,7 +83,7 @@ export abstract class AbstractMappingContentNegotiationStrategy
     implements ContentNegotiationStrategy
 {
     resolveMediaTypes(request: any): MediaType[] {
-        throw new Error('Method not implemented.');
+        throw new FrameworkError('Method not implemented.');
     }
 
     resolveMediaTypeKey(request: any, key: string): MediaType[] {
@@ -93,7 +93,7 @@ export abstract class AbstractMappingContentNegotiationStrategy
 
 export class PathExtensionContentNegotiationStrategy implements ContentNegotiationStrategy {
     resolveMediaTypes(request: any): MediaType[] {
-        throw new Error('Method not implemented.');
+        throw new FrameworkError('Method not implemented.');
     }
 }
 
@@ -110,15 +110,15 @@ export class ContentNegotiationManager implements ContentNegotiationStrategy, Me
     }
 
     getAllFileExtenstions(): string[] {
-        throw new Error('Method not implemented.');
+        throw new FrameworkError('Method not implemented.');
     }
 
     resolveFileExtensions(mediaType: MediaType): string[] {
-        throw new Error('Method not implemented.');
+        throw new FrameworkError('Method not implemented.');
     }
 
     resolveMediaTypes(request: any): MediaType[] {
-        throw new Error('Method not implemented.');
+        throw new FrameworkError('Method not implemented.');
     }
 }
 
@@ -136,6 +136,6 @@ export class ContentNegotiationViewResolver implements ViewResolver {
     }
 
     resolveViewName(name: string, language?: any): Promise<View> {
-        throw new Error('Method not implemented.');
+        throw new FrameworkError('Method not implemented.');
     }
 }

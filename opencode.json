@@ -1,83 +1,83 @@
 {
   "$schema": "https://opencode.ai/config.json",
   "agent": {
-    "plan": {
-      "model": "github-copilot/claude-opus-4.6"
-    },
-    "build": {
-      "model": "github-copilot/claude-opus-4.6"
-    },
-    "review": {
-      "model": "github-copilot/claude-sonnet-4.5"
-    },
-    "codebase-explorer": {
+    "accessibility-reviewer": {
       "model": "google/gemini-2.5-flash"
-    },
-    "implementation-scout": {
-      "model": "google/gemini-3.1-pro-preview"
-    },
-    "industry-researcher": {
-      "model": "google/gemini-2.5-pro"
-    },
-    "code-reviewer": {
-      "model": "github-copilot/claude-sonnet-4.6"
-    },
-    "style-reviewer": {
-      "model": "github-copilot/claude-haiku-4.5"
     },
     "architecture-reviewer": {
       "model": "github-copilot/claude-sonnet-4.6"
     },
-    "security-reviewer": {
-      "model": "google/gemini-3.1-pro-preview"
+    "build": {
+      "model": "github-copilot/claude-opus-4.6"
     },
-    "dependency-reviewer": {
+    "code-reviewer": {
+      "model": "github-copilot/claude-sonnet-4.6"
+    },
+    "codebase-explorer": {
       "model": "google/gemini-2.5-flash"
     },
     "complexity-reviewer": {
       "model": "google/gemini-3.1-pro-preview"
     },
-    "documentation-reviewer": {
-      "model": "google/gemini-2.5-flash"
-    },
-    "jsdoc-reviewer": {
+    "dependency-reviewer": {
       "model": "google/gemini-2.5-flash"
     },
     "diagram-reviewer": {
       "model": "google/gemini-2.5-flash"
     },
-    "accessibility-reviewer": {
+    "diagram-writer": {
       "model": "google/gemini-2.5-flash"
     },
+    "documentation-reviewer": {
+      "model": "google/gemini-2.5-flash"
+    },
+    "documentation-writer": {
+      "model": "google/gemini-3.1-pro-preview"
+    },
     "gap-reviewer": {
+      "model": "google/gemini-3.1-pro-preview"
+    },
+    "implementation-scout": {
+      "model": "google/gemini-3.1-pro-preview"
+    },
+    "industry-researcher": {
+      "model": "github-copilot/gpt-5.4-mini"
+    },
+    "integration-test-writer": {
+      "model": "github-copilot/gpt-5.2-codex"
+    },
+    "jsdoc-reviewer": {
+      "model": "google/gemini-2.5-flash"
+    },
+    "jsdoc-writer": {
+      "model": "google/gemini-2.5-flash"
+    },
+    "plan": {
+      "model": "github-copilot/claude-opus-4.6"
+    },
+    "quality-runner": {
+      "model": "google/gemini-2.5-flash"
+    },
+    "review": {
+      "model": "github-copilot/claude-sonnet-4.5"
+    },
+    "security-reviewer": {
       "model": "google/gemini-3.1-pro-preview"
     },
     "source-writer": {
       "model": "github-copilot/gpt-5.3-codex"
     },
+    "style-reviewer": {
+      "model": "github-copilot/claude-haiku-4.5"
+    },
     "tooling-writer": {
       "model": "github-copilot/gpt-5.3-codex"
     },
-    "documentation-writer": {
-      "model": "google/gemini-3.1-pro-preview"
-    },
-    "jsdoc-writer": {
-      "model": "google/gemini-2.5-flash"
-    },
-    "diagram-writer": {
-      "model": "google/gemini-2.5-flash"
+    "troubleshooter": {
+      "model": "github-copilot/gpt-5.4-mini"
     },
     "unit-test-writer": {
       "model": "github-copilot/gpt-5.2-codex"
-    },
-    "integration-test-writer": {
-      "model": "github-copilot/gpt-5.2-codex"
-    },
-    "quality-runner": {
-      "model": "google/gemini-2.5-flash"
-    },
-    "troubleshooter": {
-      "model": "github-copilot/claude-sonnet-4.6"
     },
     "workflow-executor": {
       "model": "google/gemini-2.5-flash"

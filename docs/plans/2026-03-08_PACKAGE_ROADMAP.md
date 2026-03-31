@@ -21,7 +21,9 @@ Define near-term roadmap direction for package evolution after `@blue/logger` re
 
 **Goal:** Make `@blue/telemetry` the single supported logging/observability path.
 
-Planned work:
+**Status:** Completed ✅
+
+Delivered:
 
 - Expand real package/app integrations (starting with `blue-demo`)
 - Add migration examples from old logger-style usage to telemetry logger APIs
@@ -37,12 +39,28 @@ Success criteria:
 
 **Goal:** Introduce persistence abstraction aligned with BlueJS patterns.
 
-Proposed scope:
+**Status:** MVP implemented ✅
 
-- Repository and unit-of-work abstractions
+MVP delivers:
+
+- Repository + Data Mapper pattern with in-memory adapter
+- TC39 Stage 3 decorators: `@entity`, `@column`, `@primaryColumn`, `@generated`
+- `DataSource`, `EntityManager`, `Repository<T, ID>`, `UnitOfWork` interfaces
+- `InMemoryDataSource`, `InMemoryEntityManager`, `InMemoryRepository`, `InMemoryUnitOfWork` implementations
+- Auto-generated primary key IDs
+- Full test coverage (52 tests)
+
+See [2026-03-30_ORM_MVP.md](2026-03-30_ORM_MVP.md) for detailed design.
+
+Post-MVP scope:
+
+- Relation decorators (`@oneToMany`, `@manyToOne`, etc.)
+- Query builder / query derivation
+- Entity lifecycle hooks (`@prePersist`, `@postLoad`, etc.)
+- `@transactional` decorator
 - Transaction boundary helpers
-- Adapter pattern for backing stores (SQL/NoSQL)
-- Integration with `@blue/context` and `@blue/factory`
+- Adapter pattern for backing stores (SQL/NoSQL) — `@blue/orm-drizzle`, `@blue/orm-mikro`
+- `@blue/validate` integration for entity validation
 
 Design constraints:
 
@@ -70,7 +88,9 @@ Design constraints:
 
 **Goal:** Encode BlueJS conventions as enforceable lint rules.
 
-Proposed initial rules:
+**Status:** Implemented ✅
+
+Delivers three rules:
 
 - Decorator naming (camelCase)
 - Integration-layer imports (no direct encapsulated dependency imports)

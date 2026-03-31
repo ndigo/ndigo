@@ -275,6 +275,7 @@ export * from './error';
 export * from './feature-metric-recorder';
 export * from './iterable';
 export * from './matchable';
+export * from './metadata';
 export { default as MediaType, parseMediaType } from './media-type';
 export * from './null';
 export * from './path-matcher';

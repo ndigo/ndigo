@@ -32,12 +32,10 @@
     "objectmodel": "~4.4.6"
   },
   "devDependencies": {
-    "@blue/context": "~0.0.1",
     "@blue/core": "~0.0.1",
     "@blue/util": "~0.0.1"
   },
   "peerDependencies": {
-    "@blue/context": "~0.0.1",
     "@blue/core": "~0.0.1",
     "@blue/util": "~0.0.1"
   }

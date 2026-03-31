@@ -1,4 +1,5 @@
 import '@tsmetadata/polyfill';
+import { getSymbolMetadata } from '@blue/core';
 import { SpanStatusCode, Tracer, trace } from '@opentelemetry/api';
 
 const TRACED_KEY = 'telemetry:traced';
@@ -13,20 +14,8 @@ function getTracer(): Tracer {
     return tracedTracer;
 }
 
-function getMetadata(target: any): Record<string, any> {
-    if (typeof target === 'function' && target[Symbol.metadata]) {
-        return target[Symbol.metadata];
-    }
-
-    if (target && target.constructor && target.constructor[Symbol.metadata]) {
-        return target.constructor[Symbol.metadata];
-    }
-
-    return {};
-}
-
 export function getTraced(target: any, propertyKey: string | symbol): string | undefined {
-    return getMetadata(target)[`${TRACED_KEY}:${String(propertyKey)}`];
+    return getSymbolMetadata(target)[`${TRACED_KEY}:${String(propertyKey)}`];
 }
 
 export function hasTraced(target: any, propertyKey: string | symbol): boolean {

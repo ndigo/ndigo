@@ -3,26 +3,13 @@
  */
 
 import '@tsmetadata/polyfill';
-import { Constructable } from '@blue/core';
+import { Constructable, getSymbolMetadata } from '@blue/core';
 import { both, either, propSatisfies } from '@blue/util/logic';
 import { propIs, isNotNil } from '@blue/util/types';
 
 const { assign, getOwnPropertyDescriptor } = Object;
 const { defineProperty } = Reflect;
 const hasFunction = propIs(Function);
-
-/**
- * Helper to get metadata from class constructor
- */
-function getMetadata(target: any): Record<string, any> {
-    if (typeof target === 'function' && target[Symbol.metadata]) {
-        return target[Symbol.metadata];
-    }
-    if (target && target.constructor && target.constructor[Symbol.metadata]) {
-        return target.constructor[Symbol.metadata];
-    }
-    return {};
-}
 
 /**
  * @errorHandler decorator - marks a class as an error handler
@@ -36,7 +23,7 @@ function errorHandlerDecorator(target: any, context: ClassDecoratorContext): any
  * Get error handler status
  */
 const getErrorHandler = (target: any): boolean => {
-    const metadata = getMetadata(target);
+    const metadata = getSymbolMetadata(target);
     return metadata['error:handler'] === true;
 };
 
@@ -72,7 +59,7 @@ function errorMappingDecorator(errorClass: Constructable<Error> | Constructable<
  * Get error mapping for a method
  */
 const getErrorMapping = (target: any, propertyKey: string | symbol): Constructable<Error>[] => {
-    const metadata = getMetadata(target);
+    const metadata = getSymbolMetadata(target);
     return metadata[`error:mapping:${String(propertyKey)}`];
 };
 

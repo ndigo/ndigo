@@ -3,7 +3,7 @@
  */
 
 import '@tsmetadata/polyfill';
-import { getSymbolMetadata } from '@blue/core';
+import { FrameworkError, getSymbolMetadata } from '@blue/core';
 import { compose } from '@blue/util/function';
 import { when } from '@blue/util/logic';
 import { mergeRight, objOf } from '@blue/util/object';
@@ -61,6 +61,10 @@ export const hasRouteMapping = (target: any, propertyKey?: string | symbol): boo
  */
 export function routeMapping(route: string | RouteMappingConfiguration = defaultMapping) {
     const conf = toRouteMappingConfiguration(route);
+
+    if (conf.value === '') {
+        throw new FrameworkError('@routeMapping("") is not allowed. Use @routeMapping("/") for the root route.');
+    }
 
     return function (target: any, context: ClassDecoratorContext | ClassMethodDecoratorContext): any {
         if (context.kind === 'class') {

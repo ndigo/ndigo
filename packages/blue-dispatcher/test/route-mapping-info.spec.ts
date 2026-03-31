@@ -1,5 +1,17 @@
 import { describe, test, expect } from 'vitest';
 import { ParamsRouteCondition, PatternsRouteCondition } from '../src/route-mapping-info';
+import { Route } from '@blue/router';
+
+const createRoute = (path: string, data?: Record<string, string | null>): Route =>
+    ({
+        attributes: {},
+        data: data ?? {},
+        id: 0,
+        length: path.length,
+        params: {},
+        path,
+        raw: path,
+    }) as unknown as Route;
 
 describe('ParamsRouteCondition', () => {
     test('it should be equatable', () => {
@@ -16,7 +28,7 @@ describe('ParamsRouteCondition', () => {
     });
 
     test('it should match parameter names', () => {
-        const route = { path: '/', data: { foo: '', bar: null } },
+        const route = createRoute('/', { foo: '', bar: null }),
             foo = new ParamsRouteCondition('foo'),
             bar = new ParamsRouteCondition('bar'),
             baz = new ParamsRouteCondition('baz'),
@@ -30,7 +42,7 @@ describe('ParamsRouteCondition', () => {
     });
 
     test('it should match negated parameter names', () => {
-        const route = { path: '/' },
+        const route = createRoute('/'),
             notFoo = new ParamsRouteCondition('!foo'),
             matchingNotFoo = notFoo.getMatchingCondition(route);
 
@@ -38,7 +50,7 @@ describe('ParamsRouteCondition', () => {
     });
 
     test('it should match parameter values', () => {
-        const route = { path: '/', data: { foo: 'bar', baz: 'qux' } },
+        const route = createRoute('/', { foo: 'bar', baz: 'qux' }),
             fooBar = new ParamsRouteCondition('foo=bar'),
             bazBar = new ParamsRouteCondition('baz=bar'),
             matchingFooBar = fooBar.getMatchingCondition(route),
@@ -86,17 +98,17 @@ describe('PatternsRouteCondition', () => {
         expect(foo.patterns.values().next().value).toBe('/foo');
     });
 
-    test('it should not prepend slashes to empty patterns', () => {
-        const empty = new PatternsRouteCondition('');
-        expect(empty.patterns.values().next().value).toBe('');
+    test('it should store root pattern as "/"', () => {
+        const root = new PatternsRouteCondition('/');
+        expect(root.patterns.values().next().value).toBe('/');
     });
 
     test('it should merge empty sets', () => {
-        const cond1 = new PatternsRouteCondition(),
-            cond2 = new PatternsRouteCondition(),
-            empty = new PatternsRouteCondition('');
+        const cond1 = new PatternsRouteCondition(new Set<string>()),
+            cond2 = new PatternsRouteCondition(new Set<string>()),
+            merged = cond1.merge(cond2);
 
-        expect(cond1.merge(cond2).equals(empty)).toBe(true);
+        expect(merged.patterns.has('/')).toBe(true);
     });
 
     test('it should merge one pattern w/ empty set', () => {
@@ -117,15 +129,61 @@ describe('PatternsRouteCondition', () => {
 
     test('it should match direct path', () => {
         const cond = new PatternsRouteCondition('/foo'),
-            match = cond.getMatchingCondition({ path: '/foo' });
+            match = cond.getMatchingCondition(createRoute('/foo'));
 
         expect(match).not.toBeNull();
     });
 
     test('it should match patterns', () => {
         const cond = new PatternsRouteCondition('/foo/*'),
-            match = cond.getMatchingCondition({ path: '/foo/bar' });
+            match = cond.getMatchingCondition(createRoute('/foo/bar'));
 
         expect(match).not.toBeNull();
+    });
+
+    test('it should match root pattern to empty path', () => {
+        const cond = new PatternsRouteCondition('/'),
+            match = cond.getMatchingCondition(createRoute(''));
+
+        expect(match).not.toBeNull();
+    });
+
+    test('it should not match root pattern to non-empty path', () => {
+        const cond = new PatternsRouteCondition('/'),
+            match = cond.getMatchingCondition(createRoute('/foo'));
+
+        expect(match).toBeNull();
+    });
+
+    test('it should include root in matching patterns for empty path', () => {
+        const cond = new PatternsRouteCondition('/'),
+            matches = cond.getMatchingPatterns('');
+
+        expect(matches).toContain('/');
+    });
+
+    test('it should match merged root patterns to empty path', () => {
+        const cond1 = new PatternsRouteCondition('/'),
+            cond2 = new PatternsRouteCondition('/'),
+            merged = cond1.merge(cond2),
+            match = merged.getMatchingCondition(createRoute(''));
+
+        expect(match).not.toBeNull();
+    });
+
+    test('it should merge root with path', () => {
+        const cond1 = new PatternsRouteCondition('/'),
+            cond2 = new PatternsRouteCondition('/foo'),
+            merged = cond1.merge(cond2);
+
+        expect(merged.patterns.has('/foo')).toBe(true);
+    });
+
+    test('it should merge path with root', () => {
+        const cond1 = new PatternsRouteCondition('/foo'),
+            cond2 = new PatternsRouteCondition('/'),
+            merged = cond1.merge(cond2);
+
+        expect(merged.patterns.has('/foo')).toBe(true);
     });
 });

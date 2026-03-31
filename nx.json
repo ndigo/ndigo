@@ -52,6 +52,28 @@
           "outputs": []
         }
       }
+    },
+    "@blue/hello": {
+      "root": "apps/blue-hello",
+      "projectType": "application",
+      "targets": {
+        "dev": {
+          "executor": "nx:run-commands",
+          "options": {
+            "command": "pnpm dev",
+            "cwd": "apps/blue-hello"
+          },
+          "outputs": []
+        },
+        "build": {
+          "executor": "nx:run-commands",
+          "options": {
+            "command": "pnpm build",
+            "cwd": "apps/blue-hello"
+          },
+          "outputs": ["{projectRoot}/dist"]
+        }
+      }
     }
   },
   "affected": {

@@ -151,9 +151,7 @@ export abstract class AbstractPathBasedViewResolver extends AbstractCachingViewR
 export class ImportViewResolver extends AbstractPathBasedViewResolver {
     protected async _loadView(name: string, language?: any): Promise<View> {
         const path: string = `${this.prefix}${name}${this.suffix}`,
-            ViewClass: Constructable<View> = await import(/* webpackIgnore: true */ path).then(
-                (module) => module.default
-            );
+            ViewClass: Constructable<View> = await import(/* @vite-ignore */ path).then((module) => module.default);
         return new ViewClass();
     }
 }

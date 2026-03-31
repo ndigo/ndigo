@@ -322,7 +322,7 @@ export class PatternsRouteCondition extends AbstractRouteCondition<PatternsRoute
                 result.add(pattern);
             }
         } else {
-            result.add('');
+            result.add('/');
         }
 
         return new PatternsRouteCondition(result, this);
@@ -340,7 +340,7 @@ export class PatternsRouteCondition extends AbstractRouteCondition<PatternsRoute
         const matches: string[] = [];
         this.patterns.forEach((pattern) => {
             const match = this._getMatchingPattern(pattern, path);
-            if (match) {
+            if (match !== null) {
                 matches.push(match);
             }
         }, this);
@@ -374,6 +374,11 @@ export class PatternsRouteCondition extends AbstractRouteCondition<PatternsRoute
     }
 
     private _getMatchingPattern(pattern: string, path: string): string {
+        // Root pattern "/" matches empty internal path ""
+        if (pattern === '/' && path === '') {
+            return pattern;
+        }
+
         if (pattern === path) {
             return pattern;
         }

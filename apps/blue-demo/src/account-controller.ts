@@ -7,7 +7,7 @@ const logger = getLogger('blue-demo:account-controller');
 
 @routeMapping('/account')
 class AccountController {
-    @routeMapping('')
+    @routeMapping('/')
     @traced
     handleIndex(route: Route) {
         logger.info('Handling route', { 'route.path': route.path });

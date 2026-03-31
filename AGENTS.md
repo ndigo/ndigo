@@ -427,7 +427,7 @@ When organizing helper functions and utilities, follow the extraction hierarchy:
 - Follow thresholds: 4+ files for cross-category utilities within a package
 - Use appropriate naming: `_util.ts` (mixed), `_validators.ts` (domain), `_natural-sort.ts` (algorithm)
 
-**Example:** While working in `@blue/logger`, you notice `formatTimestamp` appears in 5 files → create `_formatters.ts` following the guidelines in STYLE_GUIDE.md Section 4.5.
+**Example:** While working in `@blue/telemetry`, you notice `formatTimestamp` appears in 5 files → create `_formatters.ts` following the guidelines in STYLE_GUIDE.md Section 4.5.
 
 ## 5. Workflows
 

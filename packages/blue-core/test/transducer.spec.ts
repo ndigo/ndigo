@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'vitest';
 import {
-    DelegatingTransformer,
+    XDelegatingTransformer,
     likeReduced,
     likeTransformer,
     reduce,
@@ -12,14 +12,14 @@ import {
 import { compose, identity } from '@blue/util/function';
 import { into } from '@blue/util/list';
 
-class XDoubleTransformer extends DelegatingTransformer {
+class XDoubleTransformer extends XDelegatingTransformer<any, any, any> {
     ['@@transducer/step'](result: any, input: any): any {
         expect(input).toBeTypeOf('number');
         return this.xf['@@transducer/step'](result, input * 2);
     }
 }
 
-class XEvenTransformer extends DelegatingTransformer {
+class XEvenTransformer extends XDelegatingTransformer<any, any, any> {
     ['@@transducer/step'](result: any, input: any): any {
         expect(input).toBeTypeOf('number');
         return input % 2 === 0 ? this.xf['@@transducer/step'](result, input) : result;
@@ -29,7 +29,7 @@ class XEvenTransformer extends DelegatingTransformer {
 const xDouble = (xf: any) => new XDoubleTransformer(xf);
 const xEven = (xf: any) => new XEvenTransformer(xf);
 
-describe('DelegatingTransformer', () => {
+describe('XDelegatingTransformer', () => {
     describe('instances', () => {
         test('it should transduce values', () => {
             const result = into([], xDouble, [1, 2, 3, 4]);

@@ -1,0 +1,174 @@
+/** @author opencode */
+
+import '@tsmetadata/polyfill';
+
+import { IllegalStateError } from '@blue/core';
+import { InMemoryDataSource } from '../src/data-source';
+import { entity, generated, primaryColumn, column } from '../src/decorators';
+import { InMemoryEntityManager } from '../src/entity-manager';
+
+@entity()
+class TestUser {
+    @generated()
+    @primaryColumn()
+    id: number | undefined;
+
+    @column()
+    name: string;
+
+    constructor(name: string) {
+        this.id = undefined;
+        this.name = name;
+    }
+}
+
+@entity('custom_products')
+class TestProduct {
+    @primaryColumn()
+    sku: string;
+
+    @column()
+    title: string;
+
+    constructor(sku: string, title: string) {
+        this.sku = sku;
+        this.title = title;
+    }
+}
+
+@entity()
+class NoPrimaryEntity {
+    @column()
+    name: string;
+
+    constructor(name: string) {
+        this.name = name;
+    }
+}
+
+class PlainClass {
+    value!: string;
+}
+
+describe('InMemoryEntityManager', () => {
+    let dataSource: InMemoryDataSource;
+    let entityManager: InMemoryEntityManager;
+
+    beforeEach(() => {
+        dataSource = new InMemoryDataSource();
+        entityManager = new InMemoryEntityManager(dataSource);
+    });
+
+    describe('persist', () => {
+        it('stores entity by primary key', () => {
+            const user = new TestUser('Ada');
+            user.id = 10;
+
+            entityManager.persist(user);
+
+            const store = dataSource.getStore<TestUser>('TestUser');
+            expect(store.get(10)).toBe(user);
+        });
+
+        it('auto-generates id for generated primary column', () => {
+            const user = new TestUser('Grace');
+
+            entityManager.persist(user);
+
+            expect(user.id).toBe(1);
+        });
+
+        it('preserves manual id when provided', () => {
+            const user = new TestUser('Linus');
+            user.id = 42;
+
+            entityManager.persist(user);
+
+            expect(user.id).toBe(42);
+        });
+
+        it('throws IllegalStateError for non-entity class', () => {
+            const plain = new PlainClass();
+            expect(() => entityManager.persist(plain as unknown as TestUser)).toThrow(IllegalStateError);
+        });
+
+        it('throws IllegalStateError for entity without primary column', () => {
+            const entity = new NoPrimaryEntity('missing');
+            expect(() => entityManager.persist(entity)).toThrow(IllegalStateError);
+        });
+
+        it('increments generated ids across multiple persists', () => {
+            const first = new TestUser('First');
+            const second = new TestUser('Second');
+
+            entityManager.persist(first);
+            entityManager.persist(second);
+
+            expect(first.id).toBe(1);
+            expect(second.id).toBe(2);
+        });
+    });
+
+    describe('find', () => {
+        it('returns persisted entity', () => {
+            const user = new TestUser('Ada');
+            user.id = 7;
+            entityManager.persist(user);
+
+            expect(entityManager.find(TestUser, 7)).toBe(user);
+        });
+
+        it('returns undefined for non-existent id', () => {
+            expect(entityManager.find(TestUser, 1)).toBeUndefined();
+        });
+    });
+
+    describe('findAll', () => {
+        it('returns all entities', () => {
+            const first = new TestUser('A');
+            first.id = 1;
+            const second = new TestUser('B');
+            second.id = 2;
+
+            entityManager.persist(first);
+            entityManager.persist(second);
+
+            expect(entityManager.findAll(TestUser)).toEqual([first, second]);
+        });
+
+        it('returns empty array for unknown entity type', () => {
+            expect(entityManager.findAll(TestProduct)).toEqual([]);
+        });
+    });
+
+    describe('remove', () => {
+        it('removes entity by primary key', () => {
+            const user = new TestUser('Ada');
+            user.id = 7;
+            entityManager.persist(user);
+
+            entityManager.remove(user);
+
+            expect(entityManager.find(TestUser, 7)).toBeUndefined();
+        });
+
+        it('is a no-op if entity not in store', () => {
+            const user = new TestUser('Ada');
+            user.id = 7;
+
+            expect(() => entityManager.remove(user)).not.toThrow();
+        });
+    });
+
+    describe('clear', () => {
+        it('removes all data', () => {
+            const user = new TestUser('Ada');
+            user.id = 7;
+            entityManager.persist(user);
+
+            entityManager.clear();
+
+            expect(entityManager.find(TestUser, 7)).toBeUndefined();
+        });
+    });
+});

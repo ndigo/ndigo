@@ -35,7 +35,7 @@ export type Transducer<TInput = any, TOutput = any> = <TComplete, TResult = any>
     xf?: CompletingTransformer<TResult, TComplete, TOutput>
 ) => CompletingTransformer<TResult, TComplete, TInput>;
 
-export class DelegatingTransformer<TResult, TComplete, TInput>
+export class XDelegatingTransformer<TResult, TComplete, TInput>
     implements CompletingTransformer<TResult, TComplete, TInput>
 {
     readonly xf: CompletingTransformer<TResult, TComplete, TInput>;

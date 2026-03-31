@@ -314,7 +314,7 @@ npx eslint .  # Uses flat config automatically
 - `package.json` - All devDependencies updated, engines updated
 - `tsconfig.build.json` - Target ES2022, skipLibCheck added
 - `lerna.json` - Removed useWorkspaces
-- `CLAUDE.md` - Updated documentation
+- `AGENTS.md` (formerly `CLAUDE.md`) - Updated documentation
 - `README.md` - Added requirements and getting started sections
 - 6 package.json files in packages/ - Runtime dependencies updated
 
@@ -386,7 +386,7 @@ yarn install
 For issues related to this migration:
 
 1. Check this migration guide first
-2. Review the updated `CLAUDE.md` for current best practices
+2. Review the updated `AGENTS.md` for current best practices
 3. Consult package-specific documentation for breaking changes
 4. Check library migration guides:
     - [date-fns v4 changelog](https://github.com/date-fns/date-fns/releases)

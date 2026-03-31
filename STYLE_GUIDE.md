@@ -1831,7 +1831,7 @@ class AbstractRouteHandlerMapping {
     }
 }
 
-// From @blue/logger/otel/blue-logger-provider.ts
+// From @blue/telemetry
 class BlueLoggerProvider {
     // ✅ Correct: get* for external SDK access
     getLogger(name: string, version?: string, options?: LoggerOptions): OTelLoggerAPI {
@@ -2281,7 +2281,7 @@ class AbstractRouteHandlerMapping {
     }
 }
 
-// From @blue/logger/otel/blue-logger-provider.ts
+// From @blue/telemetry
 class BlueLoggerProvider {
     // ✅ Correct: get* for external SDK access
     getLogger(name: string, version?: string, options?: LoggerOptions): OTelLoggerAPI {
@@ -3590,7 +3590,7 @@ export class HttpMethod implements Equatable, Serializable {
 
 **Enum Hierarchy:**
 
-- `Level` (base), `SyslogLevel`, `CLILevel`, `NPMLevel`, `ApacheLevel` - `@blue/logger/src/*.ts`
+- `Level` (base), `SyslogLevel`, `CLILevel`, `NPMLevel`, `ApacheLevel` - `@blue/logger/src/*.ts` (historical, now in `@blue/telemetry`)
 
 **Factory Registry Pattern:**
 

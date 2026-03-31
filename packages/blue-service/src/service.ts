@@ -1,7 +1,7 @@
 /**
  * @author Jeff Rose
  */
-import { IllegalStateError, createNull } from '@blue/core';
+import { FrameworkError, IllegalStateError, createNull } from '@blue/core';
 import { AsyncDestroyable } from '@blue/factory';
 import {
     HTTPInit,
@@ -229,7 +229,7 @@ class Service implements AsyncDestroyable {
     }
 
     destroy(): Promise<void> {
-        throw new Error('Method not implemented.');
+        throw new FrameworkError('Method not implemented.');
     }
 
     addServiceCall(name, settings) {

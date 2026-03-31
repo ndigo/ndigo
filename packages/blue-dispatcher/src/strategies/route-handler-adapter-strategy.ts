@@ -3,7 +3,7 @@
  */
 
 import { ApplicationContext } from '@blue/context';
-import { Constructable } from '@blue/core';
+import { Constructable, IllegalStateError } from '@blue/core';
 import { ControllerHandlerAdapter, MetadataHandlerAdapter, RouteHandlerAdapter } from '../route-handler-adapter';
 import { StrategyInitializer } from './strategy-initializer';
 
@@ -78,7 +78,7 @@ export const AsRouteHandlerAdapterStrategy = <T extends Constructable<StrategyIn
             );
 
             if (!handlerAdapter) {
-                throw new Error('No handler adapter found for handler');
+                throw new IllegalStateError('No handler adapter found for handler');
             }
 
             return handlerAdapter;

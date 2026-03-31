@@ -2,8 +2,6 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "baseUrl": ".",
-    "experimentalDecorators": false,
-    "emitDecoratorMetadata": false,
     "paths": {
       "@blue/*": ["../blue-*/src"]
     }

@@ -2,6 +2,7 @@
  * @author Jeff Rose
  */
 
+import { FrameworkError, IllegalStateError } from '@blue/core';
 import { AbstractTemplateView, ViewTarget } from '@blue/view';
 //import { BlueElement } from './blue-element';
 
@@ -25,21 +26,21 @@ export class WebComponentView extends AbstractTemplateView {
     }
 
     protected _renderTemplate(templateModel: any, request: any): void {
-        throw new Error('Method not implemented.');
+        throw new FrameworkError('Method not implemented.');
     }
 
     protected async _renderView(viewModel: any, request: any, target?: ViewTarget): Promise<void> {
         if (!target) {
-            throw new Error('WebComponentView requires a ViewTarget to render.');
+            throw new IllegalStateError('WebComponentView requires a ViewTarget to render.');
         }
 
         if (!this.applicationContext) {
-            throw new Error('WebComponentView requires an ApplicationContext to resolve the ViewEngine.');
+            throw new IllegalStateError('WebComponentView requires an ApplicationContext to resolve the ViewEngine.');
         }
 
         const engine = this.applicationContext.getValue<WebComponentViewEngineLike>('webComponentViewEngine');
         if (!engine) {
-            throw new Error('No WebComponentViewEngine found in ApplicationContext.');
+            throw new IllegalStateError('No WebComponentViewEngine found in ApplicationContext.');
         }
 
         await engine.render(this, viewModel, target, request);

@@ -3,6 +3,7 @@
  */
 
 import '@tsmetadata/polyfill';
+import { FrameworkError } from '@blue/core';
 import constraints, { hasConstraint } from './constraints';
 import { ConstraintViolationError } from './error';
 import { defaultValidationGroup, ValidationGroup } from './group';
@@ -187,7 +188,7 @@ const createConstraintDecorator =
     (params: T | DecoratorConfig<T> = {} as DecoratorConfig<T>) =>
     (value: undefined, context: ClassFieldDecoratorContext): void => {
         if (context.kind !== 'field') {
-            throw new Error(`@${constraintName} can only be applied to class fields`);
+            throw new FrameworkError(`@${constraintName} can only be applied to class fields`);
         }
 
         const propertyName = context.name;

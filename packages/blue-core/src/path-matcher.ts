@@ -5,6 +5,7 @@
 import { like } from '@blue/util/types';
 import { AbstractValueComparator, Comparator } from './comparable';
 import { Constructable } from './constructable';
+import { FrameworkError } from './error';
 import { glob } from '@blue/parser';
 import { PatternMatcher } from './matchable';
 
@@ -172,7 +173,7 @@ export class EqualsPathMatcher implements PathMatcher {
             } else if (!hasPeriod1 && hasPeriod2) {
                 return `${pattern1}${SLASH}${hasSlash2 ? pattern2.substring(1) : pattern2}`;
             } else if (hasPeriod1 && hasPeriod2) {
-                throw new Error(`Cannot combine "${pattern1}" and "${pattern2}"`);
+                throw new FrameworkError(`Cannot combine "${pattern1}" and "${pattern2}"`);
             }
         }
 

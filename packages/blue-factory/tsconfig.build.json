@@ -4,8 +4,6 @@
     "baseUrl": ".",
     "composite": true,
     "outDir": "lib",
-    "experimentalDecorators": false,
-    "emitDecoratorMetadata": false,
     "useDefineForClassFields": true,
     "paths": {
       "@blue/*": ["../blue-*/index"]

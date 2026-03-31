@@ -4,6 +4,7 @@
 
 import { EventBridgeViewTarget, ViewEngine, View, ViewTarget } from '@blue/view';
 import { Route } from '@blue/router';
+import { IllegalStateError } from '@blue/core';
 import { WebComponentView } from './view';
 
 interface ApplicationEventEmitter {
@@ -109,7 +110,7 @@ export class DOMElementViewTarget implements DOMViewTarget {
 
     prepare(route: Route): void {
         if (this.destroyed) {
-            throw new Error('Cannot prepare a destroyed DOMElementViewTarget.');
+            throw new IllegalStateError('Cannot prepare a destroyed DOMElementViewTarget.');
         }
         this.unlisten();
         this.#element.innerHTML = '';
@@ -117,7 +118,7 @@ export class DOMElementViewTarget implements DOMViewTarget {
 
     commit(output: HTMLElement, model: any, route: Route): void {
         if (this.destroyed) {
-            throw new Error('Cannot commit to a destroyed DOMElementViewTarget.');
+            throw new IllegalStateError('Cannot commit to a destroyed DOMElementViewTarget.');
         }
         this.#element.appendChild(output);
         this.listen();

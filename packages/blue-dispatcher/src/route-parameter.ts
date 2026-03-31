@@ -5,7 +5,7 @@
 import '@tsmetadata/polyfill';
 import { complement } from '@blue/util/logic';
 import { isFunction, isString } from '@blue/util/types';
-import { Serializable, JSONObject, createNull, Equatable } from '@blue/core';
+import { Serializable, JSONObject, createNull, Equatable, getSymbolMetadata, IllegalStateError } from '@blue/core';
 import { getFunctionParamNames } from './_decorator-util';
 
 const { keys } = Object;
@@ -43,19 +43,6 @@ export type ParameterValueConverterReference =
  * Parameter map for @routeParams decorator
  */
 export type RouteParameterMap = Record<string, ParameterExtractor>;
-
-/**
- * Helper to get metadata from class constructor
- */
-function getMetadata(target: any): Record<string, any> {
-    if (typeof target === 'function' && target[Symbol.metadata]) {
-        return target[Symbol.metadata];
-    }
-    if (target && target.constructor && target.constructor[Symbol.metadata]) {
-        return target.constructor[Symbol.metadata];
-    }
-    return {};
-}
 
 /**
  * Method parameter type enum
@@ -476,7 +463,7 @@ export function routeParams(paramMap: RouteParameterMap) {
         for (const [paramName, extractor] of Object.entries(paramMap)) {
             const index = paramNames.indexOf(paramName);
             if (index === -1) {
-                throw new Error(
+                throw new IllegalStateError(
                     `Parameter "${paramName}" not found in method signature. ` +
                         `Available parameters: ${paramNames.join(', ')}`
                 );
@@ -501,7 +488,7 @@ export function routeParams(paramMap: RouteParameterMap) {
  * Get method parameters
  */
 export function getMethodParameter(target: any, propertyKey: string | symbol): MethodParameter[] | undefined {
-    const metadata = getMetadata(target);
+    const metadata = getSymbolMetadata(target);
     return metadata[`method:parameter:${String(propertyKey)}`];
 }
 

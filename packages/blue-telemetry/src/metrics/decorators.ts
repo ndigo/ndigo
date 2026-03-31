@@ -1,4 +1,5 @@
 import '@tsmetadata/polyfill';
+import { getSymbolMetadata } from '@blue/core';
 import { Counter, Meter, metrics } from '@opentelemetry/api';
 import { LogAttributes } from '../logger/logger';
 import { FeatureMetricAggregator } from './feature-metric-aggregator';
@@ -15,23 +16,11 @@ function getMeter(): Meter {
     return countedMeter;
 }
 
-function getMetadata(target: any): Record<string, any> {
-    if (typeof target === 'function' && target[Symbol.metadata]) {
-        return target[Symbol.metadata];
-    }
-
-    if (target && target.constructor && target.constructor[Symbol.metadata]) {
-        return target.constructor[Symbol.metadata];
-    }
-
-    return {};
-}
-
 export function getCounted(
     target: any,
     propertyKey: string | symbol
 ): { name: string; attributes?: LogAttributes } | undefined {
-    return getMetadata(target)[`${COUNTED_KEY}:${String(propertyKey)}`];
+    return getSymbolMetadata(target)[`${COUNTED_KEY}:${String(propertyKey)}`];
 }
 
 export function hasCounted(target: any, propertyKey: string | symbol): boolean {

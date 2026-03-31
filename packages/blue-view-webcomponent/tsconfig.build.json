@@ -6,8 +6,6 @@
     "outDir": "lib",
     "rootDir": "src",
     "skipLibCheck": true,
-    "experimentalDecorators": false,
-    "emitDecoratorMetadata": false,
     "useDefineForClassFields": true
   },
   "exclude": ["node_modules/**/*", "**/*.spec.ts", "**/*.test.ts", "vite.config.ts", "vitest.config.ts", "test/**/*"],

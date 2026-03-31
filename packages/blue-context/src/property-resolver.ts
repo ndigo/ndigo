@@ -2,7 +2,7 @@
  * @author Jeff Rose
  */
 
-import { JSONValue, JSONObject, createNull } from '@blue/core';
+import { IllegalStateError, JSONValue, JSONObject, createNull } from '@blue/core';
 import { keypathExpression } from '@blue/parser';
 import { complement } from '@blue/util/logic';
 import { reduce } from '@blue/util/list';
@@ -126,7 +126,7 @@ export class PrototypalPropertyResolver implements ConfigurablePropertyResolver 
     getRequiredProperty(key: string): JSONValue {
         const value = this.getProperty(key);
         if (typeof value === 'undefined') {
-            throw new Error(`Required property "${key}" missing`);
+            throw new IllegalStateError(`Required property "${key}" missing`);
         }
         return value;
     }

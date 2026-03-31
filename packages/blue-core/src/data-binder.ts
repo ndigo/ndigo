@@ -2,7 +2,7 @@
  * @author Jeff Rose
  */
 
-import { FrameworkError } from './error';
+import { FrameworkError, IllegalStateError } from './error';
 import { MutablePropertyValues, PropertyValues } from './property-value';
 import { keypathExpression } from '@blue/parser';
 import { assocPath } from '@blue/util/object';
@@ -62,7 +62,7 @@ export class DataBinder {
 
     validate() {
         if (!this.target) {
-            throw new Error('No target to validate');
+            throw new IllegalStateError('No target to validate');
         }
     }
 

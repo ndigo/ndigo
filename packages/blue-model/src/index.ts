@@ -5,7 +5,7 @@
  * @see {@link http://objectmodel.js.org/}
  */
 
-import '../node_modules/objectmodel/src/devtool-formatter';
+import 'objectmodel/src/devtool-formatter';
 
 /**
  * @external objectmodel
@@ -66,6 +66,6 @@ import '../node_modules/objectmodel/src/devtool-formatter';
 /**
  */
 
-export * from '../node_modules/objectmodel/src/index';
+export * from 'objectmodel';
 export * from './basic';
 export * from './event';

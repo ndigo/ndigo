@@ -37,30 +37,40 @@ const TAG_MAPPING = 'tag:mapping',
         };
 
 /**
- * @param {string} tagName
- * @returns {Function}
- */
-
-/**
+ * Registers a custom element name and stores it in decorator metadata.
+ *
+ * The decorator also defines the element immediately so the class can be instantiated
+ * through the browser's custom elements registry.
+ *
+ * @param tagName - The custom element tag name to associate with the class.
+ * @returns A class decorator that records and registers the tag name.
  */
 export const TagMapping = assign(tagMapping, {
     /**
-     * @param {*} value
-     * @param {*} target
+     * Writes a tag mapping to the target's metadata.
+     *
+     * @param value - The tag name to store.
+     * @param target - The decorated class or constructor-like target.
      */
     define: defineTagMapping,
     /**
-     * @param {*} target
+     * Removes any stored tag mapping from the target's metadata.
+     *
+     * @param target - The decorated class or constructor-like target.
      */
     delete: deleteTagMapping,
     /**
-     * @param {*} target
-     * @returns {string}
+     * Reads the stored tag mapping for a target.
+     *
+     * @param target - The decorated class or constructor-like target.
+     * @returns The tag name, or `undefined` when none has been recorded.
      */
     get: getTagMapping,
     /**
-     * @param {*} target
-     * @returns {boolean} Whether or not the `target` has a tag mapping.
+     * Tests whether a target has a stored tag mapping.
+     *
+     * @param target - The decorated class or constructor-like target.
+     * @returns `true` when a tag mapping is present.
      */
     has: hasTagMapping,
 });

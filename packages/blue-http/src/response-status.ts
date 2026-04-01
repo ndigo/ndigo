@@ -18,18 +18,41 @@ const { assign } = Object,
     statuses = new Map<number, ResponseStatus>();
 
 /**
+ * Represents an HTTP response status code and reason phrase.
+ *
+ * Instances are cached by code so repeated lookups return the same object when
+ * possible.
+ *
  * @implements module:core.Comparable
  * @implements module:core.Equatable
  * @implements module:core.Serializable
- * @param {number} code
- * @param {string} text
  * @see {@link https://tools.ietf.org/html/rfc2616#section-10}
  */
 export default class ResponseStatus implements Comparable<ResponseStatus>, Equatable, Serializable {
+    /**
+     * The numeric HTTP status code.
+     */
     readonly code: number;
+
+    /**
+     * The reason phrase associated with the status code.
+     */
     readonly text: string;
 
+    /**
+     * Returns a cached status for the given response.
+     *
+     * @param response - The response to inspect.
+     * @returns The matching status, or `null` when the response status is unknown.
+     */
     static for(response: Response): ResponseStatus;
+    /**
+     * Returns a cached status for the given code.
+     *
+     * @param code - The numeric status code.
+     * @param text - Optional reason phrase used when creating a new status.
+     * @returns The matching or newly created status, or `null` when no text is provided.
+     */
     static for(code: number, text?: string): ResponseStatus;
     static for(codeOrResponse: number | Response, text?: string): ResponseStatus {
         let code: number;
@@ -57,40 +80,46 @@ export default class ResponseStatus implements Comparable<ResponseStatus>, Equat
     }
 
     /**
-     * Whether or not the response status code is between 100 and 199.
+     * Whether the status code is in the 1xx informational range.
      */
     get isInformationClass(): boolean {
         return 100 <= this.code && this.code <= 199;
     }
 
     /**
-     * Whether or not the response status code is between 200 and 299.
+     * Whether the status code is in the 2xx success range.
      */
     get isSuccessClass(): boolean {
         return 200 <= this.code && this.code <= 299;
     }
 
     /**
-     * Whether or not the response status code is between 300 and 399.
+     * Whether the status code is in the 3xx redirect range.
      */
     get isRedirectClass(): boolean {
         return 300 <= this.code && this.code <= 399;
     }
 
     /**
-     * Whether or not the response status code is between 400 and 499.
+     * Whether the status code is in the 4xx client error range.
      */
     get isClientErrorClass(): boolean {
         return 400 <= this.code && this.code <= 499;
     }
 
     /**
-     * Whether or not the response status code is between 500 and 599.
+     * Whether the status code is in the 5xx server error range.
      */
     get isServerErrorClass(): boolean {
         return 500 <= this.code && this.code <= 599;
     }
 
+    /**
+     * Creates a new response status.
+     *
+     * @param code - The numeric HTTP status code.
+     * @param text - The reason phrase.
+     */
     constructor(code: number, text: string) {
         /**
          */
@@ -111,8 +140,10 @@ export default class ResponseStatus implements Comparable<ResponseStatus>, Equat
     }
 
     /**
-     * @param {module:http.ResponseStatus} value
-     * @returns {number}
+     * Compares this status with another status.
+     *
+     * @param value - The status to compare against.
+     * @returns A negative, zero, or positive comparison result.
      */
     compareTo(value: ResponseStatus): number {
         let comparison: number;
@@ -133,24 +164,30 @@ export default class ResponseStatus implements Comparable<ResponseStatus>, Equat
     }
 
     /**
-     * @param {module:http.ResponseStatus} value
-     * @returns {boolean}
+     * Tests whether this status matches another status.
+     *
+     * @param value - The status to compare against.
+     * @returns `true` when both code and text match.
      */
     equals(value: ResponseStatus): boolean {
         return this.compareTo(value) === 0;
     }
 
     /**
-     * @param {BodyInit} body
-     * @param {HeadersInit} [headers={}]
-     * @returns {Response}
+     * Creates a `Response` using this status and the supplied body.
+     *
+     * @param body - The response body.
+     * @param headers - Optional headers to apply to the response.
+     * @returns A new `Response` using this status code and text.
      */
     createResponse(body: BodyInit, headers: HeadersInit = {}): Response {
         return new Response(body, assign(this.toResponseInit(), { headers }));
     }
 
     /**
-     * @returns {module:core.JSONObject}
+     * Serializes the status to a JSON object.
+     *
+     * @returns A JSON object containing the status code and text.
      */
     toJSON(): JSONObject {
         const json = createNull();
@@ -162,7 +199,9 @@ export default class ResponseStatus implements Comparable<ResponseStatus>, Equat
     }
 
     /**
-     * @returns {ResponseInit}
+     * Converts the status to `ResponseInit` fields.
+     *
+     * @returns A `ResponseInit` object with `status` and `statusText`.
      */
     toResponseInit(): ResponseInit {
         const init: ResponseInit = createNull();
@@ -174,7 +213,9 @@ export default class ResponseStatus implements Comparable<ResponseStatus>, Equat
     }
 
     /**
-     * @returns {string}
+     * Formats the status as `"<code> <text>"`.
+     *
+     * @returns The formatted status string.
      */
     toString(): string {
         return `${this.code} ${this.text}`;

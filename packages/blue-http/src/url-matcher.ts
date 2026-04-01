@@ -5,6 +5,9 @@
 import { like } from '@blue/util/types';
 import { Comparator, PatternMatcher } from '@blue/core';
 
+/**
+ * Matcher contract for URL-aware pattern ordering.
+ */
 export interface URLMatcher extends PatternMatcher<string, string> {
     getPatternComparator(url: string): Comparator<string>;
     match(pattern: string, url: string): boolean;
@@ -32,8 +35,10 @@ export interface URLMatcher extends PatternMatcher<string, string> {
 const { defineProperty } = Reflect;
 
 /**
- * @param {*} value
- * @returns {boolean} Whether or not the `value` is a {@link URLMatcher|URLMatcher}.
+ * Tests whether a value implements {@link URLMatcher}.
+ *
+ * @param value - The value to test.
+ * @returns `true` when the value exposes URL matching behavior.
  */
 export const likeURLMatcher = like({ getPatternComparator: Function, match: Function }) as (
     value
@@ -81,13 +86,28 @@ class EqualsURLComparator extends AbstractURLComparator {
 }
 
 /**
+ * URL matcher that only accepts exact string matches.
+ *
  * @extends module:http.URLMatcher
  */
 export class EqualsURLMatcher implements URLMatcher {
+    /**
+     * Builds a comparator for exact URL sorting.
+     *
+     * @param path - The URL to compare against.
+     * @returns A comparator that ranks exact matches first.
+     */
     getPatternComparator(path: string): Comparator<string> {
         return new EqualsURLComparator(path);
     }
 
+    /**
+     * Tests whether a pattern exactly matches a URL.
+     *
+     * @param pattern - The pattern to test.
+     * @param url - The URL to compare.
+     * @returns `true` when both strings are identical.
+     */
     match(pattern: string, url: string): boolean {
         return pattern === url;
     }

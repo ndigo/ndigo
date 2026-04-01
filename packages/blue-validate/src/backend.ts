@@ -7,6 +7,12 @@ import { HybridValidationBackendAdapter } from './_hybrid-validation-backend-ada
 import { NativeValidationBackendAdapter } from './_native-validation-backend-adapter';
 import { ZodValidationBackendAdapter } from './_zod-validation-backend-adapter';
 
+/**
+ * Represents the available validation backend names.
+ * - `native`: Uses the built-in BlueJS validation logic.
+ * - `zod`: Integrates with the Zod validation library.
+ * - `hybrid`: Combines native BlueJS validation with Zod for enhanced capabilities.
+ */
 export type ValidationBackendName = 'native' | 'zod' | 'hybrid';
 
 /**

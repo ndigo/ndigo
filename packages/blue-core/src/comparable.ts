@@ -6,62 +6,88 @@ import { comparator } from '@blue/util/function';
 import { isBefore } from '@blue/util/date';
 import { like } from '@blue/util/types';
 
+/**
+ * A function that compares two values for order. Returns a negative integer, zero, or a positive integer
+ * as the first argument is less than, equal to, or greater than the second.
+ * @template T - The type of values being compared.
+ * @param value1 - The first value to compare.
+ * @param value2 - The second value to compare.
+ * @returns A negative integer, zero, or a positive integer as the first argument is less than, equal to, or greater than the second.
+ */
 export type comparison<T> = (value1: T, value2: T) => number;
 
+/**
+ * A function that evaluates a condition between two values, returning a boolean.
+ * @template T - The type of values being evaluated.
+ * @param value1 - The first value.
+ * @param value2 - The second value.
+ * @returns `true` if the condition is met, `false` otherwise.
+ */
 export type predicate<T> = (value1: T, value2: T) => boolean;
 
+/**
+ * Interface for objects that can be compared to another object of the same type.
+ * @template T - The type of the object being compared.
+ */
 export interface Comparable<T> {
+    /**
+     * Compares this object with the specified object for order. Returns a negative integer, zero, or a positive integer
+     * as this object is less than, equal to, or greater than the specified object.
+     * @param value - The object to be compared.
+     * @returns A negative integer, zero, or a positive integer as this object is less than, equal to, or greater than the specified object.
+     */
     compareTo(value: T): number;
 }
 
+/**
+ * Interface for string-based objects that can be compared to another object of the same type, with case-insensitive comparison.
+ * @template T - The type of the string-based object being compared.
+ */
 export interface StringComparable<T> extends Comparable<T> {
+    /**
+     * Compares this string-based object with the specified string-based object for order, ignoring case.
+     * Returns a negative integer, zero, or a positive integer as this object is less than, equal to, or greater than the specified object.
+     * @param value - The object to be compared.
+     * @returns A negative integer, zero, or a positive integer as this object is less than, equal to, or greater than the specified object.
+     */
     compareToIgnoreCase(value: T): number;
 }
 
+/**
+ * Interface for objects that can compare two values of a specific type.
+ * @template T - The type of values being compared.
+ */
 export interface Comparator<T> {
+    /**
+     * Compares its two arguments for order. Returns a negative integer, zero, or a positive integer
+     * as the first argument is less than, equal to, or greater than the second.
+     * @param value1 - The first value to compare.
+     * @param value2 - The second value to compare.
+     * @returns A negative integer, zero, or a positive integer as the first argument is less than, equal to, or greater than the second.
+     */
     compare: comparison<T>;
 }
-
-/**
- * Compares its two arguments for order. Returns a negative integer, zero, or a positive integer as the first argument is less than, equal to, or greater than the second.
- * @template T
- * @callback module:core.comparison
- * @param {T} value1
- * @param {T} value2
- * @returns {number} A negative integer, zero, or a positive integer as the first argument is less than, equal to, or greater than the second.
- */
-
-/**
- */
-
-/**
- * Compares this object with the specified object for order. Returns a negative integer, zero, or a positive integer as this object is less than, equal to, or greater than the specified object.
- * @returns {number} A negative integer, zero, or a positive integer as this object is less than, equal to, or greater than the specified object.
- */
-
-/**
- * @extends module:core.Comparable
- */
-
-/**
- * Compares this string-based object with the specified string-based object for order, ignoring case. Returns a negative integer, zero, or a positive integer as this object is less than, equal to, or greater than the specified object.
- * @returns {number} A negative integer, zero, or a positive integer as this object is less than, equal to, or greater than the specified object.
- */
-
-/**
- * @property {module:core.comparison} compare
- */
 
 const { defineProperty } = Reflect,
     naturalPredicate = <T>(value1: T, value2: T): boolean => value1 < value2;
 
 export abstract class AbstractValueComparator implements Comparator<string> {
+    /**
+     * The string value being compared.
+     */
     readonly value: string;
 
+    /**
+     * The string tag for this class.
+     */
     get [Symbol.toStringTag](): string {
         return 'ValueComparator';
     }
 
+    /**
+     * Creates an instance of AbstractValueComparator.
+     * @param value - The string value to be used for comparison.
+     */
     constructor(value: string) {
         defineProperty(this, 'value', {
             value: value,
@@ -71,29 +97,43 @@ export abstract class AbstractValueComparator implements Comparator<string> {
         });
     }
 
+    /**
+     * Compares two string patterns. This method must be implemented by subclasses.
+     * @param pattern1 - The first string pattern.
+     * @param pattern2 - The second string pattern.
+     * @returns A negative integer, zero, or a positive integer as the first pattern is less than, equal to, or greater than the second.
+     */
     abstract compare(pattern1: string, pattern2: string): number;
 }
 
 /**
- * @abstract
- * @implements module:core.Comparator<external:string>
- */
-
-/**
+ * Type guard to check if a value implements the `Comparable` interface.
+ * @param value - The value to check.
+ * @returns `true` if the value is `Comparable`, `false` otherwise.
  */
 export const likeComparable = like({ compareTo: Function }) as (value) => value is Comparable<any>;
 
 /**
+ * Type guard to check if a value implements the `Comparator` interface.
+ * @param value - The value to check.
+ * @returns `true` if the value is `Comparator`, `false` otherwise.
  */
 export const likeComparator = like({ compare: Function }) as (value) => value is Comparator<any>;
 
 /**
+ * A comparison function that uses natural ordering (less than operator).
+ * @template T - The type of values being compared.
+ * @param value1 - The first value.
+ * @param value2 - The second value.
+ * @returns A negative integer, zero, or a positive integer as the first argument is less than, equal to, or greater than the second.
  */
 export const naturalComparison = comparator(naturalPredicate);
 
 /**
- * @param {module:core.comparison} compare The comparison to invert
- * @returns {module:core.comparison} The inverted comparison
+ * Inverts the order of a given comparison function.
+ * @template T - The type of values being compared.
+ * @param compare - The comparison function to invert.
+ * @returns A new comparison function with inverted order.
  */
 export const invertComparison =
     <T>(compare: comparison<T>): comparison<T> =>
@@ -101,15 +141,26 @@ export const invertComparison =
         -compare(value1, value2);
 
 /**
- * @implements module:core.Comparator
+ * A comparator that uses a predicate function to determine order.
+ * @template T - The type of values being compared.
  */
 class PredicateComparator<T> implements Comparator<T> {
+    /**
+     * The string tag for this class.
+     */
     get [Symbol.toStringTag](): string {
         return 'PredicateComparator';
     }
 
+    /**
+     * The comparison function used by this comparator.
+     */
     compare: comparison<T>;
 
+    /**
+     * Creates an instance of PredicateComparator.
+     * @param pred - The predicate function to use for comparison.
+     */
     constructor(pred: predicate<T>) {
         defineProperty(this, 'compare', {
             value: comparator<T>(pred),
@@ -121,42 +172,66 @@ class PredicateComparator<T> implements Comparator<T> {
 }
 
 /**
- * @extends module:core~PredicateComparator
+ * A comparator that uses natural ordering for comparison.
+ * @template T - The type of values being compared.
+ * @extends PredicateComparator
  */
 class NaturalComparator<T> extends PredicateComparator<T> {
+    /**
+     * Creates an instance of NaturalComparator.
+     */
     constructor() {
         super(naturalPredicate);
     }
 }
 
 /**
- * Comparator that adapts Comparables to the Comparator interface. Mainly for internal use in other Comparators, when supposed to work on Comparables.
- * @implements module:core.Comparator
+ * A comparator that adapts `Comparable` objects to the `Comparator` interface.
+ * @template T - The type of `Comparable` objects being compared.
+ * @implements Comparator
  */
 class ComparableComparator<T extends Comparable<T>> implements Comparator<T> {
+    /**
+     * Compares two `Comparable` objects using their `compareTo` method.
+     * @param value1 - The first `Comparable` object.
+     * @param value2 - The second `Comparable` object.
+     * @returns A negative integer, zero, or a positive integer as the first object is less than, equal to, or greater than the second.
+     */
     compare(value1: T, value2: T): number {
         return value1.compareTo(value2);
     }
 }
 
 /**
- * @extends module:core~PredicateComparator
+ * A comparator for `Date` objects.
+ * @extends PredicateComparator
  */
 class DateComparator extends PredicateComparator<Date> {
+    /**
+     * Creates an instance of DateComparator.
+     */
     constructor() {
         super(isBefore);
     }
 }
 
 /**
- * @extends module:core~NaturalComparator
+ * A comparator for `number` objects.
+ * @extends NaturalComparator
  */
 class NumberComparator extends NaturalComparator<number> {}
 
 /**
- * @extends module:core~NaturalComparator
+ * A comparator for `string` objects, with a method for case-insensitive comparison.
+ * @extends NaturalComparator
  */
 class StringComparator extends NaturalComparator<string> {
+    /**
+     * Compares two strings ignoring case.
+     * @param value1 - The first string.
+     * @param value2 - The second string.
+     * @returns A negative integer, zero, or a positive integer as the first string is less than, equal to, or greater than the second (case-insensitive).
+     */
     compareIgnoreCase(value1: string, value2: string): number {
         return (
             typeof value1 === 'string' &&
@@ -167,17 +242,21 @@ class StringComparator extends NaturalComparator<string> {
 }
 
 /**
+ * A `Comparator` instance for `Comparable` objects.
  */
 export const comparableComparator = new ComparableComparator();
 
 /**
+ * A `Comparator` instance for `Date` objects.
  */
 export const dateComparator = new DateComparator();
 
 /**
+ * A `Comparator` instance for `number` objects.
  */
 export const numberComparator = new NumberComparator();
 
 /**
+ * A `Comparator` instance for `string` objects.
  */
 export const stringComparator = new StringComparator();

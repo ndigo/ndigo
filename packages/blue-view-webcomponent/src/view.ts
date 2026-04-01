@@ -14,11 +14,28 @@ interface WebComponentViewEngineLike {
     render(view: WebComponentView, model: unknown, target: ViewTarget, route: unknown): Promise<void>;
 }
 
+/**
+ * Template view base that delegates rendering to a web component view engine.
+ */
 export class WebComponentView extends AbstractTemplateView {
+    /**
+     * The custom element tag name rendered by this view.
+     */
     tagName: string;
+    /**
+     * The template root used to instantiate the component markup.
+     */
     template: string;
+    /**
+     * Application context used to resolve the web component view engine.
+     */
     readonly applicationContext?: ApplicationContextLike;
 
+    /**
+     * Creates a view bound to a specific custom element tag name.
+     *
+     * @param name - The custom element tag name to render.
+     */
     constructor(name: string) {
         super();
         this.tagName = name;

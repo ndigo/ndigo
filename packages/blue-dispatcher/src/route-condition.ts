@@ -2,36 +2,44 @@ import { Serializable, Equatable, JSONValue } from '@blue/core';
 import { like } from '@blue/util/types';
 import { Route } from '@blue/router';
 
+/**
+ * Describes a parsed name/value expression.
+ */
 export interface NameValueExpression<T> {
     isNegated: boolean;
     name: string;
     value?: T;
 }
 
+/**
+ * Contract for route matching conditions.
+ */
 export interface RouteCondition<T = any> {
+    /**
+     * Merge this condition with another condition of the same type.
+     *
+     * @param value - The condition to merge with.
+     * @returns The merged condition.
+     */
     merge(value: T): T;
+
+    /**
+     * Return the condition that matches a route, or `null` when no match exists.
+     *
+     * @param route - The current route.
+     * @returns A matching condition instance or `null`.
+     */
     getMatchingCondition(route: Route): T;
+
+    /**
+     * Compare this condition with another condition.
+     *
+     * @param value - The condition to compare against.
+     * @param route - The route used to break ties, if needed.
+     * @returns A comparison result compatible with `Array.prototype.sort`.
+     */
     compareTo(value: T, route?: Route): number;
 }
-
-/**
- * A contract for `"name!=value"` style expression used to specify route parameters.
- */
-
-/**
- */
-
-/**
- */
-
-/**
- */
-
-/**
- * Contract for route mapping conditions.
- *
- * Request conditions can be combined via {@link RouteCondition#merge|merge()}, matched to a route via {@link RouteCondition#getMatchingCondition|getMatchingCondition()}, and compared to each other via {@link RouteCondition#compareTo|compareTo()} to determine which is a closer match to the given route.
- */
 
 /**
  * Merge this condition with another such as conditions from a type-level and method-level `RequestMapping` decorator.
@@ -64,6 +72,9 @@ export const likeRouteCondition = like({ merge: Function, getMatchingCondition: 
     value
 ) => value is RouteCondition;
 
+/**
+ * Base class for parsed name/value expressions.
+ */
 export abstract class AbstractNameValueExpression<T> implements NameValueExpression<T>, Serializable {
     readonly isNegated: boolean;
     readonly name: string;
@@ -71,6 +82,11 @@ export abstract class AbstractNameValueExpression<T> implements NameValueExpress
 
     abstract readonly isCaseSensitiveName: boolean;
 
+    /**
+     * Parse a name/value expression.
+     *
+     * @param expression - The expression to parse.
+     */
     constructor(expression: string) {
         const index = expression.indexOf('=');
         if (index === -1) {
@@ -108,15 +124,31 @@ export abstract class AbstractNameValueExpression<T> implements NameValueExpress
         }
     }
 
+    /**
+     * Determine whether this expression matches the given route.
+     *
+     * @param route - The current route.
+     * @returns `true` when the expression matches.
+     */
     match(route: Route): boolean {
         let isMatch = this.value ? this.matchValue(route) : this.matchName(route);
         return this.isNegated !== isMatch;
     }
 
+    /**
+     * Serialize the expression to JSON.
+     *
+     * @returns The string form of the expression.
+     */
     toJSON(): JSONValue {
         return this.toString();
     }
 
+    /**
+     * Convert the expression to its textual form.
+     *
+     * @returns The expression string.
+     */
     toString(): string {
         const negate = this.isNegated ? '!' : '';
         return this.value !== void 0 ? `${this.name}${negate}=${this.value}` : `${negate}${this.name}`;
@@ -130,6 +162,9 @@ export abstract class AbstractNameValueExpression<T> implements NameValueExpress
 export abstract class AbstractRouteCondition<T extends AbstractRouteCondition<T>>
     implements Equatable, RouteCondition<T>, Serializable
 {
+    /**
+     * Whether this condition contains no content.
+     */
     get isEmpty(): boolean {
         return this.content.length === 0;
     }
@@ -137,6 +172,12 @@ export abstract class AbstractRouteCondition<T extends AbstractRouteCondition<T>
     abstract content: any[];
     abstract infix: string;
 
+    /**
+     * Compare this condition to another value.
+     *
+     * @param value - The value to compare.
+     * @returns `true` when both conditions are equivalent.
+     */
     equals(value): boolean {
         if (this === value) {
             return true;
@@ -147,10 +188,20 @@ export abstract class AbstractRouteCondition<T extends AbstractRouteCondition<T>
         return this.toString() === value.toString();
     }
 
+    /**
+     * Serialize the condition to JSON.
+     *
+     * @returns The string form of the condition.
+     */
     toJSON(): JSONValue {
         return this.toString();
     }
 
+    /**
+     * Convert the condition to its textual form.
+     *
+     * @returns The condition string.
+     */
     toString(): string {
         return `[${this.content.join(this.infix)}]`;
     }
@@ -184,6 +235,9 @@ export abstract class AbstractRouteCondition<T extends AbstractRouteCondition<T>
  * @extends module:dispatcher.AbstractRouteCondition<module:router.RouteConditionHolder>
  */
 export class RouteConditionHolder extends AbstractRouteCondition<RouteConditionHolder> {
+    /**
+     * Wrapped condition, when present.
+     */
     readonly condition: RouteCondition;
 
     get content(): RouteCondition[] {
@@ -194,6 +248,11 @@ export class RouteConditionHolder extends AbstractRouteCondition<RouteConditionH
         return ' ';
     }
 
+    /**
+     * Create a holder for an optional condition.
+     *
+     * @param routeCondition - The wrapped condition, if any.
+     */
     constructor(routeCondition: RouteCondition = null) {
         super();
         defineProperty(this, 'condition', {
@@ -209,6 +268,12 @@ export class RouteConditionHolder extends AbstractRouteCondition<RouteConditionH
      * @param {module:router.RouteConditionHolder} other
      * @returns {module:router.RouteConditionHolder}
      */
+    /**
+     * Merge two holders, preserving empty holders when possible.
+     *
+     * @param other - The holder to merge with.
+     * @returns A merged holder.
+     */
     merge(other: RouteConditionHolder): RouteConditionHolder {
         if (!this.condition && !other.condition) {
             return this;
@@ -222,6 +287,12 @@ export class RouteConditionHolder extends AbstractRouteCondition<RouteConditionH
         }
     }
 
+    /**
+     * Return a holder for the wrapped condition when it matches the route.
+     *
+     * @param route - The current route.
+     * @returns A matching holder, or `null`.
+     */
     getMatchingCondition(route: Route): RouteConditionHolder {
         if (!this.condition) {
             return this;
@@ -230,6 +301,13 @@ export class RouteConditionHolder extends AbstractRouteCondition<RouteConditionH
         return match ? new RouteConditionHolder(match) : null;
     }
 
+    /**
+     * Compare two holders by comparing their wrapped conditions.
+     *
+     * @param value - The holder to compare.
+     * @param route - The route used to break ties, if needed.
+     * @returns A comparison result.
+     */
     compareTo(value: RouteConditionHolder, route?: Route): number {
         if (!this.condition && !value.condition) {
             return 0;
@@ -271,6 +349,11 @@ export class CompositeRouteCondition extends AbstractRouteCondition<CompositeRou
 
     readonly routeConditions: RouteConditionHolder[];
 
+    /**
+     * Create a composite condition from one or more route conditions.
+     *
+     * @param routeConditions - Conditions to combine.
+     */
     constructor(...routeConditions: RouteCondition[] | RouteConditionHolder[]) {
         super();
         if (routeConditions.length) {
@@ -297,6 +380,12 @@ export class CompositeRouteCondition extends AbstractRouteCondition<CompositeRou
      * @param {module:dispatcher.CompositeRouteCondition} other
      * @returns {module:dispatcher.CompositeRouteCondition}
      */
+    /**
+     * Merge two composite conditions element by element.
+     *
+     * @param other - The condition to merge with.
+     * @returns The merged composite condition.
+     */
     merge(other: CompositeRouteCondition): CompositeRouteCondition {
         if (this.isEmpty && other.isEmpty) {
             return this;
@@ -314,6 +403,12 @@ export class CompositeRouteCondition extends AbstractRouteCondition<CompositeRou
         }
     }
 
+    /**
+     * Return the subset of conditions that match the route.
+     *
+     * @param route - The current route.
+     * @returns A matching composite condition, or `null`.
+     */
     getMatchingCondition(route: Route): CompositeRouteCondition {
         if (this.isEmpty) {
             return this;
@@ -329,6 +424,13 @@ export class CompositeRouteCondition extends AbstractRouteCondition<CompositeRou
         return new CompositeRouteCondition(...matchingConditions);
     }
 
+    /**
+     * Compare two composite conditions in route-specific context.
+     *
+     * @param value - The condition to compare.
+     * @param route - The route used to break ties, if needed.
+     * @returns A comparison result.
+     */
     compareTo(value: CompositeRouteCondition, route?: Route): number {
         if (this.isEmpty && value.isEmpty) {
             return 0;

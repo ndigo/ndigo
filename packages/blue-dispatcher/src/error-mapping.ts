@@ -71,7 +71,19 @@ const hasErrorMapping = (target: any, propertyKey: string | symbol): boolean => 
 };
 
 /**
- * Export errorHandler with utility methods
+ * `errorHandler` is a decorator and a utility object for managing error handler classes.
+ * When used as a decorator (`@errorHandler`), it marks a class as an error handler.
+ * It also provides `get` and `has` methods to query the error handler status of a class.
+ *
+ * @example
+ * ```typescript
+ * @errorHandler
+ * class MyErrorHandler {
+ *   // ...
+ * }
+ *
+ * const isHandler = errorHandler.has(MyErrorHandler);
+ * ```
  */
 export const errorHandler = assign(errorHandlerDecorator, {
     get: getErrorHandler,
@@ -81,6 +93,14 @@ export const errorHandler = assign(errorHandlerDecorator, {
 const hasConstructor = hasFunction('constructor');
 const constructorIsErrorHandler = propSatisfies(hasErrorHandler, 'constructor');
 
+/**
+ * Checks if a given target object or its constructor is an error handler.
+ * An object is considered an error handler if it has the `@errorHandler` metadata
+ * or if its constructor has the `@errorHandler` metadata.
+ *
+ * @param target The object to check.
+ * @returns `true` if the target or its constructor is an error handler, `false` otherwise.
+ */
 export const likeErrorHandler = both(
     isNotNil,
     either(hasErrorHandler, both(hasConstructor, constructorIsErrorHandler))

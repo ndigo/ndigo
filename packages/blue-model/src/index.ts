@@ -13,59 +13,16 @@ import 'objectmodel/src/devtool-formatter';
  */
 
 /**
- * @param {*} def
- * @param {*} params
+ * Re-exports the ObjectModel public API used by BlueJS model helpers.
  */
-
-/**
- */
-
-/**
- */
-
-/**
- */
-
-/**
- * @param {string} newName
- */
-
-/**
- * @param {Function} assertion
- * @param {*} [description]
- */
-
-/**
- * @param {...*} modelsOrDefinitions
- */
-
-/**
- * @extends module:model.Model
- */
-
-/**
- * @extends module:model.Model
- */
-
-/**
- * @extends module:model.Model
- */
-
-/**
- * @extends module:model.Model
- */
-
-/**
- * @extends module:model.Model
- */
-
-/**
- * @extends module:model.Model
- */
-
-/**
- */
-
 export * from 'objectmodel';
+
+/**
+ * Re-exports BlueJS primitive and derived model helpers.
+ */
 export * from './basic';
+
+/**
+ * Re-exports BlueJS event-aware model helpers.
+ */
 export * from './event';

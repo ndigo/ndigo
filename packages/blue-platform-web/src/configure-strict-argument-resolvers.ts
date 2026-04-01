@@ -8,6 +8,7 @@ import { ArgumentValueConverterRegistry } from './argument-value-converter';
 import { BrowserArgumentResolverOptions, configureBrowserArgumentResolvers } from './configure-argument-resolvers';
 import { configureArgumentValueConverterRegistry } from './configure-converter-registry';
 
+/** Options for strict browser argument resolvers. */
 export type StrictBrowserArgumentResolverOptions = Omit<
     BrowserArgumentResolverOptions,
     'strictNamedConverterLookup'
@@ -17,6 +18,10 @@ export type StrictBrowserArgumentResolverOptions = Omit<
 
 /**
  * Registers browser argument resolvers with strict named converter lookup enabled.
+ *
+ * @param applicationContext - The application context to configure.
+ * @param options - Resolver overrides and optional registry registration.
+ * @returns The resolver instances registered with the context.
  */
 export function configureStrictBrowserArgumentResolvers(
     applicationContext: ApplicationContext,

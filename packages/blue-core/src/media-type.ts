@@ -14,7 +14,15 @@ import { isNumber, isString } from '@blue/util/types';
 import { Matchable } from './matchable';
 import { IllegalStateError } from './error';
 
+/**
+ * Represents a quality factor parameter for media types, typically used in HTTP Accept headers.
+ * It's a number between 0.0 and 1.0, indicating preference.
+ */
 export type QualityFactor = `;q=${0.1 | 0.2 | 0.3 | 0.4 | 0.5 | 0.6 | 0.7 | 0.8 | 0.9 | '1.0'}`;
+/**
+ * Defines the set of supported top-level media types (e.g., 'application', 'audio', 'text').
+ * The wildcard '*' is also supported.
+ */
 export type SupportedMediaType =
     | '*'
     | 'application'
@@ -36,6 +44,10 @@ const { freeze, keys } = Object,
     WILDCARD: SupportedMediaType = '*',
     QUALITY_FACTOR_PARAM = 'q';
 
+/**
+ * Represents the parameters associated with a media type, such as `charset` or `q` (quality factor).
+ * Keys are parameter names, and values can be strings, numbers, or booleans.
+ */
 export type MediaTypeParameters = {
     [name: string]: string | number | boolean;
     [QUALITY_FACTOR_PARAM]?: string | number;
@@ -55,6 +67,12 @@ export type MediaTypeParameters = {
  * @see {@link https://developer.mozilla.org/en-US/docs/Glossary/Quality_values}
  */
 
+/**
+ * Converts a `MediaTypeParameters` object into a formatted string suitable for a media type header.
+ * Parameters are joined with semicolons, e.g., ";charset=utf-8;level=1".
+ * @param value - The `MediaTypeParameters` object to stringify.
+ * @returns A string representation of the parameters, or an empty string if no parameters are present.
+ */
 const stringifyParameters = ifElse(
     complement(isEmpty),
     pipe(

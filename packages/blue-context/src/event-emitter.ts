@@ -11,48 +11,168 @@ import { gte } from '@blue/util/relation';
 import { is, isFunction, isNil, isNumber, isString, like } from '@blue/util/types';
 import { Aware, Destroyable, likeAwareAnd } from '@blue/factory';
 
+/**
+ * Listener function shape used by the emitter implementation.
+ */
 export type EventListener = { (...args: any[]): void; listener?: EventListener };
 
+/**
+ * A single listener or a listener list for an event type.
+ */
 export type EventHandler = EventListener | EventListener[];
 
+/**
+ * Mapping from event type to handler(s).
+ */
 export type EventHandlers = { [type: string]: EventHandler };
 
+/**
+ * Event type supported by the emitter.
+ */
 export type EventType = string | symbol;
 
+/**
+ * Emits and manages event listeners.
+ */
 export interface EventEmitter {
+    /**
+     * Emits an event to the listeners registered for the given type.
+     *
+     * @param type - The event type.
+     * @param data - Event payload values.
+     * @returns `true` when at least one listener ran.
+     */
     emit(type: EventType, ...data: any[]): boolean;
+    /**
+     * Returns the event types with registered listeners.
+     *
+     * @returns The registered event types.
+     */
     eventTypes(): EventType[];
+    /**
+     * Returns the number of listeners for a type.
+     *
+     * @param type - The event type.
+     * @returns The listener count.
+     */
     listenerCount(type: EventType): number;
+    /**
+     * Returns a snapshot of listeners for a type.
+     *
+     * @param type - The event type.
+     * @returns The registered listeners.
+     */
     listeners(type: EventType): Function[];
+    /**
+     * Adds a listener for an event type.
+     *
+     * @param type - The event type.
+     * @param listener - The listener to register.
+     * @returns This emitter.
+     */
     on(type: EventType, listener: Function): this;
+    /**
+     * Removes a listener for an event type.
+     *
+     * @param type - The event type.
+     * @param listener - The listener to remove.
+     * @returns This emitter.
+     */
     off(type: EventType, listener: Function): this;
 }
 
+/**
+ * Event emitter with microtask-based dispatch.
+ */
 export interface AsyncEventEmitter extends EventEmitter {
+    /**
+     * Dispatches an event in a microtask.
+     *
+     * @param type - The event type.
+     * @param data - Event payload values.
+     * @returns A promise that resolves after dispatch.
+     */
     tick(type: EventType, ...data: any[]): Promise<void>;
 }
 
+/**
+ * Event emitter with conditional and finite listeners.
+ */
 export interface ConditionalEventEmitter extends EventEmitter {
+    /**
+     * Registers a listener that fires a fixed number of times.
+     *
+     * @param type - The event type.
+     * @param times - The number of invocations to allow.
+     * @param listener - The listener to register.
+     * @returns This emitter.
+     */
     many(type: EventType, times: number, listener: Function): this;
+    /**
+     * Registers a listener that fires once.
+     *
+     * @param type - The event type.
+     * @param listener - The listener to register.
+     * @returns This emitter.
+     */
     once(type: EventType, listener: Function): this;
+    /**
+     * Registers a listener that removes itself when it returns `true`.
+     *
+     * @param type - The event type.
+     * @param listener - The listener to register.
+     * @returns This emitter.
+     */
     until(type: EventType, listener: Function): this;
 }
 
+/**
+ * Event emitter that supports listener insertion positions.
+ */
 export interface PositionalEventEmitter extends EventEmitter {
+    /**
+     * Inserts a listener at a specific position.
+     *
+     * @param type - The event type.
+     * @param index - The insertion index.
+     * @param listener - The listener to register.
+     * @returns This emitter.
+     */
     at(type: EventType, index: number, listener: Function): this;
+    /**
+     * Inserts a listener at the beginning of the listener list.
+     *
+     * @param type - The event type.
+     * @param listener - The listener to register.
+     * @returns This emitter.
+     */
     first(type: EventType, listener: Function): this;
 }
 
+/**
+ * Receives the application event emitter during initialization.
+ */
 export interface ApplicationEventEmitterAware extends Aware {
+    /**
+     * Receives the application event emitter.
+     *
+     * @param eventEmitter - The event emitter to inject.
+     */
     setApplicationEventEmitter(eventEmitter: EventEmitter): void;
 }
 
+/**
+ * Returns whether a value can receive an application event emitter.
+ */
 export const likeApplicationEventEmitterAware = likeAwareAnd(
     like({
         setApplicationEventEmitter: Function,
     })
 ) as (value: unknown) => value is ApplicationEventEmitterAware;
 
+/**
+ * Returns whether a value behaves like an event emitter.
+ */
 export const likeEventEmitter = like({
     emit: Function,
     eventTypes: Function,
@@ -496,19 +616,40 @@ async function tickAllEvents(emitter: EventEmitter, type: EventType, data: any[]
     });
 }
 
+/**
+ * Adds async event dispatch behavior to a base class.
+ */
 export const AsAsyncEventEmitter = <T extends Constructable<EventEmitter>>(
     superclass: T
 ): Constructable<AsyncEventEmitter> & T =>
     class extends superclass implements AsyncEventEmitter {
+        /**
+         * Dispatches an event on the next microtask.
+         *
+         * @param type - The event type.
+         * @param data - Event payload values.
+         * @returns A promise that resolves after dispatch.
+         */
         async tick(type: string | symbol, ...data: any[]): Promise<void> {
             return tickAllEvents(this as unknown as EventEmitter, type, data);
         }
     };
 
+/**
+ * Adds conditional and finite-listener helpers to a base class.
+ */
 export const AsConditionalEventEmitter = <T extends Constructable<EventEmitter>>(
     superclass: T
 ): Constructable<ConditionalEventEmitter> & T =>
     class extends superclass implements ConditionalEventEmitter {
+        /**
+         * Registers a listener that fires a fixed number of times.
+         *
+         * @param type - The event type.
+         * @param times - The number of invocations to allow.
+         * @param listener - The listener to register.
+         * @returns This emitter.
+         */
         many(type: string | symbol = $every, times: number, listener: Function): this {
             if (typeof type === 'number' && typeof times === 'function' && typeof listener === 'undefined') {
                 listener = times;
@@ -528,6 +669,13 @@ export const AsConditionalEventEmitter = <T extends Constructable<EventEmitter>>
             return this;
         }
 
+        /**
+         * Registers a listener that fires once.
+         *
+         * @param type - The event type.
+         * @param listener - The listener to register.
+         * @returns This emitter.
+         */
         once(type: string | symbol = $every, listener: Function): this {
             if (typeof type === 'function' && typeof listener === 'undefined') {
                 listener = type;
@@ -542,6 +690,13 @@ export const AsConditionalEventEmitter = <T extends Constructable<EventEmitter>>
             return this;
         }
 
+        /**
+         * Registers a listener that removes itself when it returns `true`.
+         *
+         * @param type - The event type.
+         * @param listener - The listener to register.
+         * @returns This emitter.
+         */
         until(type: string | symbol = $every, listener: Function): this {
             if (typeof type === 'function' && typeof listener === 'undefined') {
                 listener = type;
@@ -557,10 +712,21 @@ export const AsConditionalEventEmitter = <T extends Constructable<EventEmitter>>
         }
     };
 
+/**
+ * Adds positional listener insertion helpers to a base class.
+ */
 export const AsPositionalEventEmitter = <T extends Constructable<EventEmitter>>(
     superclass: T
 ): Constructable<PositionalEventEmitter> & T =>
     class extends superclass implements PositionalEventEmitter {
+        /**
+         * Inserts a listener at a specific position.
+         *
+         * @param type - The event type.
+         * @param index - The insertion index.
+         * @param listener - The listener to register.
+         * @returns This emitter.
+         */
         at(type: string | symbol = $every, index: number, listener: Function): this {
             if (typeof type === 'number' && typeof index === 'function' && typeof listener === 'undefined') {
                 listener = index;
@@ -580,6 +746,13 @@ export const AsPositionalEventEmitter = <T extends Constructable<EventEmitter>>(
             return this;
         }
 
+        /**
+         * Inserts a listener at the beginning of the listener list.
+         *
+         * @param type - The event type.
+         * @param listener - The listener to register.
+         * @returns This emitter.
+         */
         first(type: string | symbol = $every, listener: Function): this {
             if (typeof type === 'function' && typeof listener === 'undefined') {
                 listener = type;
@@ -595,20 +768,44 @@ export const AsPositionalEventEmitter = <T extends Constructable<EventEmitter>>(
         }
     };
 
+/**
+ * Adds the core event emitter API to a base class.
+ */
 export const AsEventEmitter = <T extends Constructable>(superclass: T): Constructable<EventEmitter> & T =>
     class extends superclass implements EventEmitter {
+        /**
+         * Identifies the instance as an event emitter.
+         */
         get [Symbol.toStringTag](): string {
             return 'EventEmitter';
         }
 
+        /**
+         * Emits an event to the registered listeners.
+         *
+         * @param type - The event type.
+         * @param data - Event payload values.
+         * @returns `true` when at least one listener ran.
+         */
         emit(type: string | symbol, ...data: any[]): boolean {
             return emitAllEvents(this as unknown as EventEmitter, type, data);
         }
 
+        /**
+         * Returns the event types that currently have listeners.
+         *
+         * @returns The registered event types.
+         */
         eventTypes(): (string | symbol)[] {
             return getEventTypes(this as unknown as EventEmitter);
         }
 
+        /**
+         * Returns the number of listeners for an event type.
+         *
+         * @param type - The event type.
+         * @returns The listener count.
+         */
         listenerCount(type: string | symbol): number {
             let count: number;
             if (!(this as any)[$events] || !(this as any)[$events][type]) {
@@ -621,6 +818,12 @@ export const AsEventEmitter = <T extends Constructable>(superclass: T): Construc
             return count;
         }
 
+        /**
+         * Returns a snapshot of listeners for an event type.
+         *
+         * @param type - The event type.
+         * @returns The registered listeners.
+         */
         listeners(type: string | symbol): Function[] {
             let listeners: EventListener[];
 
@@ -641,6 +844,13 @@ export const AsEventEmitter = <T extends Constructable>(superclass: T): Construc
             return listeners;
         }
 
+        /**
+         * Adds a listener for an event type.
+         *
+         * @param type - The event type.
+         * @param listener - The listener to register.
+         * @returns This emitter.
+         */
         on(type: string | symbol = $every, listener: Function): this {
             if (typeof listener === 'undefined') {
                 if (typeof type === 'function') {
@@ -656,6 +866,13 @@ export const AsEventEmitter = <T extends Constructable>(superclass: T): Construc
             return this;
         }
 
+        /**
+         * Removes a listener for an event type.
+         *
+         * @param type - The event type.
+         * @param listener - The listener to remove.
+         * @returns This emitter.
+         */
         off(type: string | symbol, listener: Function): this {
             if (typeof type === 'function' && typeof listener === 'undefined') {
                 listener = type;
@@ -675,12 +892,20 @@ export const AsEventEmitter = <T extends Constructable>(superclass: T): Construc
         }
     };
 
+/**
+ * Standalone event emitter with destroy and serialization support.
+ */
 export class Emitter extends AsEventEmitter(Null) implements Destroyable, Serializable {
     static readonly every: string = $every;
     static readonly version: string = '3.0.0';
 
     destroyed: boolean;
 
+    /**
+     * Creates an emitter and optionally seeds it with listeners.
+     *
+     * @param mapping - Optional initial event mappings.
+     */
     constructor(mapping?: EventHandlers) {
         super();
 
@@ -694,11 +919,22 @@ export class Emitter extends AsEventEmitter(Null) implements Destroyable, Serial
         typeof mapping !== 'undefined' && addEventHandlers(this as unknown as EventEmitter, mapping, false);
     }
 
+    /**
+     * Removes listeners for one type or for all types.
+     *
+     * @param type - Optional event type to clear.
+     * @returns This emitter.
+     */
     clear(type?: EventType): this {
         removeAllEventListeners(this as unknown as EventEmitter, type);
         return this;
     }
 
+    /**
+     * Serializes the listener counts to JSON.
+     *
+     * @returns A JSON representation of the emitter state.
+     */
     toJSON(): JSONValue {
         const json: { listenerCount?: { [type: string]: number } } = createNull();
         const types = keys((this as any)[$events] || createNull());
@@ -712,10 +948,18 @@ export class Emitter extends AsEventEmitter(Null) implements Destroyable, Serial
         return json as unknown as JSONValue;
     }
 
+    /**
+     * Returns a compact textual summary of the emitter.
+     *
+     * @returns A string representation.
+     */
     toString(): string {
         return `${this[Symbol.toStringTag]} ${JSON.stringify(this.toJSON())}`.trim();
     }
 
+    /**
+     * Destroys the emitter and clears its listeners.
+     */
     destroy(): void {
         if (!this.destroyed) {
             defineProperty(this, 'destroyed', {
@@ -734,10 +978,22 @@ export class Emitter extends AsEventEmitter(Null) implements Destroyable, Serial
 // Back-compat alias: older API exposed `EventEmitter` behavior as a function mixin name.
 // The current mixin is `AsEventEmitter` and the public class is `Emitter`.
 
+/**
+ * Internal target shape used by the object mixin helper.
+ */
 export type EventEmitterTarget = EventEmitter & {
     '@@emitter/events'?: Emitter;
 };
 
+/**
+ * Mixes event emitter behavior into an existing object.
+ */
+/**
+ * Mixes event emitter behavior into an existing object.
+ *
+ * @param target - The object to augment.
+ * @returns The augmented object.
+ */
 export const asEventEmitter = <TTarget extends object>(target: TTarget): TTarget & EventEmitter => {
     if (!target || typeof target !== 'object') {
         throw new TypeError('asEventEmitter target must be an object');

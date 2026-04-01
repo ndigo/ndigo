@@ -8,8 +8,18 @@ import { Constructable } from './constructable';
 
 const { setPrototypeOf } = Reflect;
 
+/**
+ * A mixin that adds serialization capabilities to an Error class, allowing it to be converted to a JSON object.
+ * @template T - The constructor type of the Error class to extend.
+ * @param superclass - The Error class to extend.
+ * @returns A new class that is an Error and also `Serializable`.
+ */
 export const AsSerializableError = <T extends Constructable<Error>>(superclass: T): Constructable<Serializable> & T =>
     class extends superclass implements Serializable {
+        /**
+         * Converts the error instance into a JSON object, including its name, message, and stack trace.
+         * @returns A JSON object representation of the error.
+         */
         toJSON(): JSONObject {
             const json = createNull();
             json.name = this.name;
@@ -18,16 +28,32 @@ export const AsSerializableError = <T extends Constructable<Error>>(superclass: 
             return json;
         }
 
+        /**
+         * Returns a string representation of the error, which is its message.
+         * @returns The error message.
+         */
         toString(): string {
             return this.message;
         }
     };
 
+/**
+ * Represents a general application-level error.
+ * @extends Error
+ * @implements Serializable
+ */
 export class ApplicationError extends AsSerializableError(Error) {
+    /**
+     * The string tag for this class.
+     */
     get [Symbol.toStringTag](): string {
         return 'ApplicationError';
     }
 
+    /**
+     * Creates an instance of ApplicationError.
+     * @param message - The error message.
+     */
     constructor(message?: string) {
         super(message);
         this.name = 'ApplicationError';
@@ -35,11 +61,23 @@ export class ApplicationError extends AsSerializableError(Error) {
     }
 }
 
+/**
+ * Represents an error within the framework itself.
+ * @extends Error
+ * @implements Serializable
+ */
 export class FrameworkError extends AsSerializableError(Error) {
+    /**
+     * The string tag for this class.
+     */
     get [Symbol.toStringTag](): string {
         return 'FrameworkError';
     }
 
+    /**
+     * Creates an instance of FrameworkError.
+     * @param message - The error message.
+     */
     constructor(message?: string) {
         super(message);
         this.name = 'FrameworkError';
@@ -48,13 +86,21 @@ export class FrameworkError extends AsSerializableError(Error) {
 }
 
 /**
- * @extends module:core.FrameworkError
+ * Represents an error indicating that an operation cannot be completed due to an invalid state or misconfiguration.
+ * @extends FrameworkError
  */
 export class IllegalStateError extends FrameworkError {
+    /**
+     * The string tag for this class.
+     */
     get [Symbol.toStringTag](): string {
         return 'IllegalStateError';
     }
 
+    /**
+     * Creates an instance of IllegalStateError.
+     * @param message - The error message. Defaults to 'Unable to complete operation due to misconfiguration'.
+     */
     constructor(message: string = 'Unable to complete operation due to misconfiguration') {
         super(message);
     }

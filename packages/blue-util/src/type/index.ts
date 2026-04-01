@@ -65,6 +65,21 @@ export { isNil };
  */
 export { isNotNil };
 
+/**
+ * Returns `true` if the specified object property is an instance of the
+ * supplied constructor; `false` otherwise.
+ *
+ * @category Type
+ * @param {Object} ctor The constructor to check against
+ * @param {string} name The name of the property to check
+ * @param {Object} obj The object to query
+ * @returns {boolean}
+ * @example
+ * import { propIs } from '@blue/util';
+ * propIs( Number, 'x', { x: 1, y: 2 } ); //=> true
+ * propIs( Number, 'x', { x: 'foo' } ); //=> false
+ * propIs( Number, 'x', {} ); //=> false
+ */
 export { propIs };
 
 /**

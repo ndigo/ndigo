@@ -27,15 +27,40 @@ import { RouteMappingInfo, PatternsRouteCondition } from './route-mapping-info';
 import { hasRouteMapping, getRouteMapping } from './route-mapping';
 import { hasMethodParameter, getMethodParameter } from './route-parameter';
 
+/**
+ * A value that may be supplied directly or by name through the application context.
+ */
 export type Maybe<T> = string | T;
 
+/**
+ * A handler value that may be supplied directly or by name.
+ */
 export type MaybeHandler = Maybe<object>;
 
+/**
+ * Resolves a route to a handler execution chain.
+ */
 export interface RouteHandlerMapping {
+    /**
+     * Resolve the handler for a route.
+     *
+     * @param route - The current route.
+     * @returns The execution chain for the chosen handler, or `null`.
+     */
     getHandler(route: Route): RouteHandlerExecutionChain;
 }
 
+/**
+ * A handler mapping that can also report whether a route matches a pattern.
+ */
 export interface MatchableHandlerMapping extends RouteHandlerMapping {
+    /**
+     * Check whether the route matches a pattern.
+     *
+     * @param route - The current route.
+     * @param pattern - The pattern to test.
+     * @returns A match result, or `null`.
+     */
     match(route: Route, pattern: string): RouteMatchResult;
 }
 
@@ -84,6 +109,7 @@ const { from, isArray } = Array,
             when(isString, (key: string) => context.getValue(key))(handler);
 
 /**
+ * Internal registry entry for a mapping and its resolved handler method.
  */
 class MappingEntry<T = any> {
     readonly mapping: T;
@@ -95,6 +121,14 @@ class MappingEntry<T = any> {
         return 'MappingEntry';
     }
 
+    /**
+     * Create a mapping registry entry.
+     *
+     * @param mapping - The mapping key.
+     * @param handlerMethod - The resolved handler method.
+     * @param mappingName - The mapping name, if any.
+     * @param directPaths - Paths that map directly to this entry.
+     */
     constructor(mapping: T, handlerMethod: RouteHandlerMethod, mappingName: string, directPaths: string[] = []) {
         /**
          */
@@ -132,7 +166,7 @@ class MappingEntry<T = any> {
 }
 
 /**
- * A registry that maintains all mappings to handler methods, exposing methods to perform lookups.
+ * Maintains mapping-to-handler-method lookups.
  */
 class MappingRegistry<T = any> {
     #registry = new Map<T, MappingEntry<T>>();
@@ -144,18 +178,41 @@ class MappingRegistry<T = any> {
         return 'MappingRegistry';
     }
 
+    /**
+     * Return the current mapping table.
+     *
+     * @returns The mapping-to-handler-method map.
+     */
     get mappings(): Map<T, RouteHandlerMethod> {
         return this.#mappingLookup;
     }
 
+    /**
+     * Find mappings that are associated with a path.
+     *
+     * @param path - The request path.
+     * @returns The matching mappings.
+     */
     getMappingsByPath(path: string): T[] {
         return this.#pathLookup.get(path);
     }
 
+    /**
+     * Find handler methods registered under a mapping name.
+     *
+     * @param name - The mapping name.
+     * @returns The matching handler methods.
+     */
     getHandlerMethodsByMappingName(name: string): RouteHandlerMethod[] {
         return this.#nameLookup.get(name);
     }
 
+    /**
+     * Register a mapping and its handler method.
+     *
+     * @param mapping - The mapping key.
+     * @param handlerMethod - The handler method to associate.
+     */
     register(mapping: T, handlerMethod: RouteHandlerMethod) {
         this.#mappingLookup.set(mapping, handlerMethod);
         let name: string;
@@ -278,19 +335,40 @@ class MatchComparator<T> implements Comparator<Match<T>> {
     }
 }
 
+/**
+ * Base class for handler mappings that resolve a route to a handler.
+ */
 export abstract class AbstractHandlerMapping
     extends AsNameAware(AsApplicationContextAware(Null))
     implements RouteHandlerMapping
 {
+    /**
+     * Application context used to resolve named handlers.
+     */
     applicationContext: ApplicationContext;
+
+    /**
+     * Default handler used when no specific mapping matches.
+     */
     defaultHandler;
+
+    /**
+     * Interceptors applied to matched handlers.
+     */
     interceptors: RouteHandlerInterceptor[];
+
+    /**
+     * Path matcher used by path-based mappings.
+     */
     pathMatcher: PathMatcher;
 
     get [Symbol.toStringTag](): string {
         return 'HandlerMapping';
     }
 
+    /**
+     * Create a handler mapping with default path matching behavior.
+     */
     constructor() {
         super();
         defineProperty(this, 'defaultHandler', {
@@ -313,6 +391,11 @@ export abstract class AbstractHandlerMapping
         });
     }
 
+    /**
+     * Store the application context for later handler resolution.
+     *
+     * @param applicationContext - The application context to use.
+     */
     setApplicationContext(applicationContext: ApplicationContext): void {
         defineProperty(this, 'applicationContext', {
             value: applicationContext,
@@ -322,6 +405,12 @@ export abstract class AbstractHandlerMapping
         });
     }
 
+    /**
+     * Resolve a route to a handler execution chain.
+     *
+     * @param route - The current route.
+     * @returns The execution chain, or `null` when no handler matches.
+     */
     getHandler(route: Route): RouteHandlerExecutionChain {
         let handler: any | string | RouteHandlerExecutionChain = this._getHandler(route);
 
@@ -337,6 +426,13 @@ export abstract class AbstractHandlerMapping
         return this._getHandlerExecutionChain(handler, route);
     }
 
+    /**
+     * Build an execution chain for a resolved handler and route.
+     *
+     * @param handler - The resolved handler or existing execution chain.
+     * @param route - The current route.
+     * @returns The execution chain to invoke.
+     */
     protected _getHandlerExecutionChain(
         handler: any | RouteHandlerExecutionChain,
         route: Route
@@ -361,14 +457,32 @@ export abstract class AbstractHandlerMapping
         return chain;
     }
 
+    /**
+     * Resolve the handler for a route without applying defaults or interceptors.
+     *
+     * @param route - The current route.
+     * @returns The handler or execution chain, or `null`.
+     */
     protected abstract _getHandler(route: Route): RouteHandlerExecutionChain;
 }
 
+/**
+ * Base class for mappings that resolve handler methods from application context values.
+ */
 export abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMapping implements Initializable {
+    /**
+     * Naming strategy used when exposing handler methods by name.
+     */
     namingStrategy: RouteHandlerMethodMappingNamingStrategy<T>;
 
+    /**
+     * Registry of route mappings and their handler methods.
+     */
     readonly mappingRegistry: MappingRegistry<T>;
 
+    /**
+     * Create a handler-method mapping with an empty registry.
+     */
     constructor() {
         super();
         defineProperty(this, 'mappingRegistry', {
@@ -379,6 +493,9 @@ export abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
         });
     }
 
+    /**
+     * Detect and register handler methods from the application context.
+     */
     init(): void {
         const { applicationContext } = this;
         keys(applicationContext).forEach((name) => {
@@ -387,22 +504,52 @@ export abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
         });
     }
 
+    /**
+     * Return all registered handler methods.
+     *
+     * @returns The mapping-to-handler-method registry.
+     */
     getHandlerMethods(): Map<T, RouteHandlerMethod> {
         return this.mappingRegistry.mappings;
     }
 
+    /**
+     * Return handler methods registered under a mapping name.
+     *
+     * @param name - The mapping name.
+     * @returns The matching handler methods.
+     */
     getHandlerMethodsForMappingName(name: string): RouteHandlerMethod[] {
         return this.mappingRegistry.getHandlerMethodsByMappingName(name);
     }
 
+    /**
+     * Register a single mapping and handler method.
+     *
+     * @param mapping - The mapping metadata.
+     * @param handler - The handler instance or application-context name.
+     * @param method - The handler method name.
+     */
     registerMapping(mapping: T, handler: MaybeHandler, method: string): void {
         this.mappingRegistry.register(mapping, this._createRequestHandlerMethod(handler, method));
     }
 
+    /**
+     * Remove a mapping from the registry.
+     *
+     * @param mapping - The mapping metadata to remove.
+     */
     unregisterMapping(mapping: T): void {
         this.mappingRegistry.unregister(mapping);
     }
 
+    /**
+     * Create a handler method reference from a handler object and method name.
+     *
+     * @param handler - The handler instance or application-context name.
+     * @param method - The handler method name.
+     * @returns The resolved handler method.
+     */
     protected _createRequestHandlerMethod(handler: MaybeHandler, method: string): RouteHandlerMethod {
         handler = resolveHandlerWithContext(this.applicationContext)(handler);
 
@@ -420,6 +567,11 @@ export abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
      * @param {*} handler Either a name or an actual handler instance.
      * @see {@link AbstractHandlerMethodMapping#_getMappingForMethod}
      */
+    /**
+     * Scan a handler for mapped methods and register them.
+     *
+     * @param handler - The handler instance or application-context name.
+     */
     protected _detectHandlerMethods(handler: MaybeHandler) {
         handler = resolveHandlerWithContext(this.applicationContext)(handler);
 
@@ -435,11 +587,24 @@ export abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
         }
     }
 
+    /**
+     * Resolve a route by looking up the best handler method.
+     *
+     * @param route - The current route.
+     * @returns The resolved handler method, or `null`.
+     */
     protected _getHandler(route: Route): any {
         const { path } = route;
         return this._lookupHandlerMethod(path, route);
     }
 
+    /**
+     * Find the best handler method for a path.
+     *
+     * @param path - The request path.
+     * @param route - The current route.
+     * @returns The best matching handler method, or `null`.
+     */
     protected _lookupHandlerMethod(path: string, route: Route): RouteHandlerMethod {
         const { mappingRegistry } = this,
             matches: Match<T>[] = [],
@@ -472,11 +637,25 @@ export abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
         return null;
     }
 
+    /**
+     * Record route metadata for a successful mapping match.
+     *
+     * @param mapping - The matched mapping.
+     * @param path - The matched path.
+     * @param route - The current route.
+     */
     protected _handleMatch(mapping: T, path: string, route: Route): void {
         // TODO Put this in a categorized spot?
         route[kindOf(this)] = path;
     }
 
+    /**
+     * Register a handler method for the given mapping.
+     *
+     * @param handler - The handler instance or application-context name.
+     * @param method - The method name.
+     * @param mapping - The mapping metadata.
+     */
     protected _registerHandlerMethod(handler: MaybeHandler, method: string, mapping: T): void {
         this.registerMapping(mapping, handler, method);
     }
@@ -497,12 +676,25 @@ export abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
     protected abstract _getMatchingMapping(mapping: T, route: Route): T;
 }
 
+/**
+ * Base class for path-based handler mappings.
+ */
 export abstract class AbstractPathHandlerMapping extends AbstractHandlerMapping implements MatchableHandlerMapping {
+    /**
+     * Handler mapped to the root path.
+     */
     rootHandler: object;
+
+    /**
+     * Whether trailing slash variants should be considered matches.
+     */
     useTrailingSlashMatch: boolean;
 
     readonly #handlers: Map<string, MaybeHandler>;
 
+    /**
+     * Create a path handler mapping with empty path registrations.
+     */
     constructor() {
         super();
         this.rootHandler = null;
@@ -510,6 +702,13 @@ export abstract class AbstractPathHandlerMapping extends AbstractHandlerMapping 
         this.#handlers = new Map<string, MaybeHandler>();
     }
 
+    /**
+     * Look up the handler for a path.
+     *
+     * @param path - The request path.
+     * @param route - The current route.
+     * @returns The resolved execution chain, or `null`.
+     */
     lookUpHandler(path: string, route: Route): RouteHandlerExecutionChain {
         const { applicationContext, pathMatcher, useTrailingSlashMatch } = this,
             _handlers = this.#handlers;
@@ -560,6 +759,13 @@ export abstract class AbstractPathHandlerMapping extends AbstractHandlerMapping 
         return null;
     }
 
+    /**
+     * Check whether a route matches a path pattern.
+     *
+     * @param route - The current route.
+     * @param pattern - The pattern to test.
+     * @returns A match result, or `null`.
+     */
     match(route: Route, pattern: string): RouteMatchResult {
         const { pathMatcher, useTrailingSlashMatch } = this,
             path = route.path;
@@ -574,6 +780,12 @@ export abstract class AbstractPathHandlerMapping extends AbstractHandlerMapping 
         return null;
     }
 
+    /**
+     * Resolve the most appropriate handler for a route.
+     *
+     * @param route - The current route.
+     * @returns The execution chain, or `null`.
+     */
     protected _getHandler(route: Route): RouteHandlerExecutionChain {
         let path = route.path,
             handler = this.lookUpHandler(path, route);
@@ -593,6 +805,12 @@ export abstract class AbstractPathHandlerMapping extends AbstractHandlerMapping 
         return handler;
     }
 
+    /**
+     * Register a handler against one or more paths.
+     *
+     * @param path - One path or many paths to register.
+     * @param handler - The handler instance or application-context name.
+     */
     protected _registerHandler(path: string | string[], handler: MaybeHandler): void {
         if (!isArray(path)) {
             path = [path];
@@ -632,12 +850,23 @@ export abstract class AbstractPathHandlerMapping extends AbstractHandlerMapping 
     }
 }
 
+/**
+ * Base class for path mappings that discover handlers from the application context.
+ */
 export abstract class AbstractDetectingPathHandlerMapping extends AbstractPathHandlerMapping {
+    /**
+     * Store the application context and detect handlers immediately.
+     *
+     * @param context - The application context to use.
+     */
     setApplicationContext(context: ApplicationContext): void {
         super.setApplicationContext(context);
         this._detectHandlers();
     }
 
+    /**
+     * Scan the application context for handlers and register their paths.
+     */
     protected _detectHandlers(): void {
         const names = keys(this.applicationContext);
         names.forEach((name) => {
@@ -646,6 +875,12 @@ export abstract class AbstractDetectingPathHandlerMapping extends AbstractPathHa
         });
     }
 
+    /**
+     * Determine the paths for a handler name.
+     *
+     * @param name - The application-context name.
+     * @returns The paths to register.
+     */
     protected abstract _determinePathsForHandler(name: string): string[];
 }
 
@@ -703,11 +938,20 @@ export abstract class AbstractDetectingPathHandlerMapping extends AbstractPathHa
  * <p>Supports direct matches and wildcard matches.
  * @extends module:dispatcher.AbstractDetectingPathHandlerMapping
  */
+/**
+ * Map handlers by application-context names that start with `/`.
+ */
 export class NamePathHandlerMapping extends AbstractDetectingPathHandlerMapping {
     get [Symbol.toStringTag](): string {
         return 'NamePathHandlerMapping';
     }
 
+    /**
+     * Use slash-prefixed application-context names as route paths.
+     *
+     * @param name - The application-context name.
+     * @returns The derived paths.
+     */
     protected _determinePathsForHandler(name: string): string[] {
         const paths: string[] = [];
         name.startsWith('/') && paths.push(...name.split(' '));
@@ -720,6 +964,9 @@ export class NamePathHandlerMapping extends AbstractDetectingPathHandlerMapping 
  * @extends module:dispatcher.AbstractHandlerMethodMapping<module:dispatcher.RequestMappingInfo>
  * @implements module:dispatcher.MatchableHandlerMapping
  */
+/**
+ * Map handler methods using route mapping metadata.
+ */
 export class MetadataHandlerMapping
     extends AbstractHandlerMethodMapping<RouteMappingInfo>
     implements MatchableHandlerMapping
@@ -728,6 +975,13 @@ export class MetadataHandlerMapping
         return 'MetadataHandlerMapping';
     }
 
+    /**
+     * Check whether the route matches a mapping pattern.
+     *
+     * @param route - The current route.
+     * @param pattern - The pattern to test.
+     * @returns A match result, or `null`.
+     */
     match(route: Route, pattern: string): RouteMatchResult {
         const info: RouteMappingInfo = new RouteMappingInfo(pattern),
             matchingInfo = info.getMatchingCondition(route);
@@ -738,6 +992,13 @@ export class MetadataHandlerMapping
         return new RouteMatchResult(patterns[Symbol.iterator]().next().value as string, route.path);
     }
 
+    /**
+     * Build mapping metadata for a handler method.
+     *
+     * @param method - The handler method name.
+     * @param handler - The handler instance.
+     * @returns The route mapping metadata, or `undefined`.
+     */
     protected _getMappingForMethod(method: string, handler: any): RouteMappingInfo {
         const methodMapping = getRouteMapping(handler, method);
         let methodInfo: RouteMappingInfo;
@@ -756,16 +1017,36 @@ export class MetadataHandlerMapping
         return methodInfo;
     }
 
+    /**
+     * Create a comparator for route mapping metadata.
+     *
+     * @param route - The current route.
+     * @returns A comparator for route mapping info.
+     */
     protected _getMappingComparator(route: Route): Comparator<RouteMappingInfo> {
         return {
             compare: (info1, info2) => info1.compareTo(info2, route),
         };
     }
 
+    /**
+     * Return the mapping when it matches the current route.
+     *
+     * @param mapping - The mapping to test.
+     * @param route - The current route.
+     * @returns A matching mapping, or `null`.
+     */
     protected _getMatchingMapping(mapping: RouteMappingInfo, route: Route): RouteMappingInfo {
         return mapping.getMatchingCondition(route);
     }
 
+    /**
+     * Record the best route pattern and attach it to the route.
+     *
+     * @param mapping - The matched mapping.
+     * @param path - The matched path.
+     * @param route - The current route.
+     */
     protected _handleMatch(mapping: RouteMappingInfo, path: string, route: Route) {
         super._handleMatch(mapping, path, route);
 
@@ -787,25 +1068,53 @@ export class MetadataHandlerMapping
         });
     }
 
+    /**
+     * Handle the no-match case for metadata mappings.
+     *
+     * @param mappings - Candidate mappings.
+     * @param path - The requested path.
+     * @param route - The current route.
+     * @returns Always `null`.
+     */
     protected _handleNoMatch(mappings, path: string, route: Route): RouteHandlerMethod {
         return null;
     }
 
+    /**
+     * Determine whether a value can be treated as a mapped handler.
+     *
+     * @param value - The candidate value.
+     * @returns `true` when route mapping metadata is present.
+     */
     protected _isHandler(value: any): boolean {
         return hasRouteMapping(value) || ('constructor' in value && hasRouteMapping(value.constructor));
     }
 }
 
 /**
+ * Result of matching a route pattern to a path.
  */
 export class RouteMatchResult {
+    /**
+     * The matched pattern.
+     */
     readonly pattern: string;
+
+    /**
+     * The matched path.
+     */
     readonly path: string;
 
     get [Symbol.toStringTag](): string {
         return 'RouteMatchResult';
     }
 
+    /**
+     * Create a route match result.
+     *
+     * @param pattern - The matched pattern.
+     * @param path - The matched path.
+     */
     constructor(pattern: string, path: string) {
         /**
          */
@@ -825,6 +1134,11 @@ export class RouteMatchResult {
         });
     }
 
+    /**
+     * Serialize the match result to JSON.
+     *
+     * @returns A JSON representation of the match.
+     */
     toJSON(): JSONValue {
         const json = createNull();
         json.pattern = this.pattern;
@@ -839,13 +1153,22 @@ export class RouteMatchResult {
  * @param {module:core.ApplicationContext} [context]
  * @param {Map<external:string, module:dispatcher.MaybeHandler>} [mappings]
  */
+/**
+ * Map handlers from explicit path registrations.
+ */
 export class SimplePathHandlerMapping extends AbstractPathHandlerMapping {
+    /**
+     * Explicit path-to-handler mappings.
+     */
     mappings: Map<string, MaybeHandler>;
 
     get [Symbol.toStringTag](): string {
         return 'SimplePathHandlerMapping';
     }
 
+    /**
+     * Create an empty explicit path mapping.
+     */
     constructor() {
         super();
         /**
@@ -855,6 +1178,11 @@ export class SimplePathHandlerMapping extends AbstractPathHandlerMapping {
 
     /**
      * @param {module:core.ApplicationContext} context The application context to be set.
+     */
+    /**
+     * Store the application context and register configured mappings.
+     *
+     * @param context - The application context to use.
      */
     setApplicationContext(context: ApplicationContext): void {
         super.setApplicationContext(context);
@@ -866,12 +1194,22 @@ export class SimplePathHandlerMapping extends AbstractPathHandlerMapping {
      * Map paths to handlers or handler names, merging it into the existing mappings if any.
      * @param {Object} mappings The path mappings
      */
+    /**
+     * Merge explicit path mappings into the registry.
+     *
+     * @param mappings - The path-to-handler map to merge.
+     */
     setMappings(mappings: { [path: string]: MaybeHandler }): void {
         keys(mappings).forEach((path: string) => this.mappings.set(path, mappings[path]));
     }
 
     /**
      * @param {Map<external:string,module:dispatcher.MaybeHandler>} mappings
+     */
+    /**
+     * Register handlers from a map, normalizing paths and handler names.
+     *
+     * @param mappings - The path-to-handler map to register.
      */
     registerHandlers(mappings: Map<string, MaybeHandler>): void {
         mappings &&

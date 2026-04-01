@@ -21,35 +21,31 @@ import {
     likeArgumentResolver,
 } from './argument-resolver';
 
+/**
+ * Adapts a handler instance into route execution.
+ *
+ * Implementations decide whether they support a handler type and how to invoke it for the current route.
+ */
 export interface RouteHandlerAdapter {
+    /**
+     * Handle a route with the given handler.
+     *
+     * The handler should already have been accepted by {@link RouteHandlerAdapter.supports}.
+     *
+     * @param route - The current route.
+     * @param handler - The handler instance selected for the route.
+     * @returns The model and view produced by handler execution.
+     */
     handle(route: Route, handler): Promise<ModelAndView>;
+
+    /**
+     * Determine whether this adapter can handle the given handler instance.
+     *
+     * @param handler - The handler instance to test.
+     * @returns `true` when the handler is supported; otherwise `false`.
+     */
     supports(handler): boolean;
 }
-
-/**
- * Interface that must be implemented for each handler type to handle a route. This interface is used to allow the {@link Dispatcher} to be extensible. The `Dispatcher` accesses all installed handlers through this interface, meaning that it does not contain code specific to any handler type.
- *
- * This interface is not intended for application developers. It is available to developers who want to create their own workflow.
- */
-
-/**
- * Use the given handler to handle this route.
- * @param {module:router.Route} route
- * @param {*} handler The handler to use. It must have previously been passed to the `supports` method of this interface, which must have returned `true`.
- * @returns {Promise<module:dispatcher.ModelAndView>}
- */
-
-/**
- * Given a handler instance, return whether or not this `HandlerAdapter` can support it. Typical RouteHandlerAdapters will base the decision on the handler type. RouteHandlerAdapters will usually only support one handler type each.
- * @param {*} handler The handler to check
- * @returns {boolean} Whether or not the given handler is supported
- * @example
- * class MyHandlerAdapter {
- *  supports( handler ){
- *      return handler instanceof MyHandler;
- *  }
- * }
- */
 
 const { getPrototypeOf } = Reflect,
     { assign, keys } = Object,
@@ -65,6 +61,9 @@ export abstract class AbstractHandlerMethodAdapter
     extends AsApplicationContextAware(Null)
     implements RouteHandlerAdapter
 {
+    /**
+     * Application context used to discover handlers and argument resolvers.
+     */
     applicationContext: ApplicationContext;
 
     get [Symbol.toStringTag](): string {
@@ -75,6 +74,13 @@ export abstract class AbstractHandlerMethodAdapter
         return handler instanceof RouteHandlerMethod && this._supports(handler);
     }
 
+    /**
+     * Handle a route with a method-backed handler.
+     *
+     * @param route - The current route.
+     * @param handler - The resolved route handler method.
+     * @returns The model and view produced by invoking the handler.
+     */
     abstract handle(route: Route, handler: RouteHandlerMethod): Promise<ModelAndView>;
     protected abstract _supports(handler: RouteHandlerMethod): boolean;
 }
@@ -98,10 +104,23 @@ export class ControllerHandlerAdapter implements RouteHandlerAdapter {
         return 'ControllerHandlerAdapter';
     }
 
+    /**
+     * Invoke a controller's {@link Controller.handleRoute} method for the current route.
+     *
+     * @param route - The current route.
+     * @param handler - The controller instance.
+     * @returns The model and view returned by the controller.
+     */
     async handle(route: Route, handler): Promise<ModelAndView> {
         return await (handler as Controller).handleRoute(route);
     }
 
+    /**
+     * Controllers are supported when they expose a `handleRoute` method.
+     *
+     * @param handler - The handler instance to test.
+     * @returns `true` when the handler is controller-like.
+     */
     supports(handler): boolean {
         return likeController(handler);
     }
@@ -113,13 +132,25 @@ export class ControllerHandlerAdapter implements RouteHandlerAdapter {
  * @implements module:core.Initializable
  */
 export class MetadataHandlerAdapter extends AbstractHandlerMethodAdapter implements Initializable {
+    /**
+     * Argument resolvers used to convert route values into handler method arguments.
+     */
     argumentResolvers: HandlerMethodArgumentResolver[];
+
+    /**
+     * Cached handler descriptors discovered from application context metadata.
+     */
     handlers: any[];
 
     get [Symbol.toStringTag](): string {
         return 'MetadataHandlerAdapter';
     }
 
+    /**
+     * Built-in argument resolvers used when no custom resolver collection is present.
+     *
+     * @returns The default resolver chain.
+     */
     get defaultArgumentResolvers(): HandlerMethodArgumentResolver[] {
         return [
             new PathValueMethodArgumentResolver(),
@@ -133,12 +164,24 @@ export class MetadataHandlerAdapter extends AbstractHandlerMethodAdapter impleme
         return true;
     }
 
+    /**
+     * Execute a metadata-mapped handler method.
+     *
+     * @param route - The current route.
+     * @param handler - The resolved route handler method.
+     * @returns The model and view produced by the handler.
+     */
     async handle(route: Route, handler: RouteHandlerMethod): Promise<ModelAndView> {
         handler.argumentResolvers = this.argumentResolvers;
 
         return await handler.invoke<ModelAndView>(route);
     }
 
+    /**
+     * Discover handler methods and argument resolvers from the application context.
+     *
+     * @param args - Reserved for framework initialization hooks.
+     */
     init(...args: any[]): void {
         const { applicationContext } = this,
             contextKeys = keys(applicationContext),
@@ -182,6 +225,12 @@ export class MetadataHandlerAdapter extends AbstractHandlerMethodAdapter impleme
         this.handlers = handlers;
     }
 
+    /**
+     * Metadata adapters only support {@link RouteHandlerMethod} instances.
+     *
+     * @param handler - The handler instance to test.
+     * @returns `true` when the handler is a route handler method.
+     */
     _supports(handler: RouteHandlerMethod): boolean {
         return handler instanceof RouteHandlerMethod;
     }

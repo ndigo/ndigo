@@ -7,6 +7,7 @@ import type { Parser } from '@blue/parser';
 import cookieExpression from './parser/cookie-expression';
 import { decodeURIComponent as decode } from '@blue/util/string';
 
+/** Parsed cookie structure returned by cookie parsing helpers. */
 export interface Cookie {
     name: string;
     value: string;
@@ -18,6 +19,7 @@ export interface Cookie {
     secure?: boolean;
 }
 
+/** Minimal cookie-jar API exposed by the platform-web package. */
 export interface CookieJar {
     get(key: string): JSONValue;
     getJSON(key: string): JSONValue;
@@ -51,14 +53,17 @@ const cookieParser = cookieExpression as CookieParser;
 
 const { assign } = Object;
 
+/** Parses the browser cookie string using the package parser. */
 function parseCookieJar(input: string): CookieParseResult {
     return cookieParser.run(input);
 }
 
+/** Narrows a parse result to a successful parse. */
 function isCookieParseSuccess(result: CookieParseResult): result is CookieParseSuccess {
     return result.isError === false;
 }
 
+/** Creates a cookie-jar API bound to the current browser environment. */
 function init(converter: CookieConverter = {}): CookieJar {
     const api = createNull();
 
@@ -163,4 +168,5 @@ function init(converter: CookieConverter = {}): CookieJar {
     return api;
 }
 
+/** Default cookie jar bound to the current browser environment. */
 export default init();

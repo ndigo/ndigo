@@ -42,7 +42,16 @@ const arrayStringifier = (key: string, value: string, index?: number): string =>
                   .join('&')
             : '';
 
+/**
+ * Parses and serializes query strings using stable key ordering.
+ */
 class QueryString implements Parser, Stringifier {
+    /**
+     * Parses a query string into a JSON object.
+     *
+     * @param value - The query string to parse.
+     * @returns A plain object representation of the query string.
+     */
     parse(value: string): JSONObject {
         const parseResult = queryExpression.run(value);
         if (!parseResult.isError) {
@@ -51,9 +60,18 @@ class QueryString implements Parser, Stringifier {
         }
         return {};
     }
+    /**
+     * Serializes a JSON-like value to a query string.
+     *
+     * @param value - The value to serialize.
+     * @returns The encoded query string.
+     */
     stringify(value: any): string {
         return toQueryString(value);
     }
 }
 
+/**
+ * Query-string parser and serializer singleton.
+ */
 export default new QueryString();

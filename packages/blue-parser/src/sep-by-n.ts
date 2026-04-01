@@ -15,4 +15,5 @@ const failWith =
     sepByN = (n: number) => (separator: Parser<any>) => (value) =>
         sepBy(separator)(value).chain(ifElse(lengthLessThanN(n), failWith(n), succeedWith));
 
+/** Creates a separated-list parser that enforces a minimum item count. */
 export default sepByN;

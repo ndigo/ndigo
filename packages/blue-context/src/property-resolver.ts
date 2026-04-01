@@ -10,13 +10,42 @@ import { path } from '@blue/util/object';
 import { like, isNil } from '@blue/util/types';
 import { pathSatisfies } from '@blue/util/logic';
 
+/**
+ * Resolves property values from a configured set of sources.
+ */
 export interface PropertyResolver {
+    /**
+     * Resolves a property value, falling back to a default when missing.
+     *
+     * @param key - The property name to resolve.
+     * @param defaultValue - The value to return when no property is found.
+     * @returns The resolved property value or the default value.
+     */
     getProperty(key: string, defaultValue?: JSONValue): JSONValue;
+    /**
+     * Returns the resolved property value or throws when missing.
+     *
+     * @param key - The property name to resolve.
+     * @returns The resolved property value.
+     * @throws {IllegalStateError} When the property cannot be resolved.
+     */
     getRequiredProperty(key: string): JSONValue;
+    /**
+     * Returns whether a property key can be resolved.
+     *
+     * @param key - The property name to resolve.
+     * @returns `true` when the property exists.
+     */
     hasProperty(key: string): boolean;
 }
 
+/**
+ * Property resolver that exposes mutable property sources.
+ */
 export interface ConfigurablePropertyResolver extends PropertyResolver {
+    /**
+     * The ordered set of property sources used during resolution.
+     */
     propertySources: JSONObject[];
 }
 
@@ -77,16 +106,25 @@ export const likePropertyResolver = like({
 /**
  * @implements module:context.PropertyResolver
  */
+/**
+ * Property resolver that layers sources through a prototype chain for lookup.
+ */
 export class PrototypalPropertyResolver implements ConfigurablePropertyResolver {
     #propertySources: JSONObject[];
     readonly properties: JSONObject;
 
     /**
+     * The ordered set of configured property sources.
      */
     get propertySources(): JSONObject[] {
         return this.#propertySources;
     }
 
+    /**
+     * Replaces the property sources and rebuilds the prototype chain used for lookups.
+     *
+     * @param propertySources - The new property sources.
+     */
     set propertySources(propertySources) {
         this.#propertySources = propertySources;
         defineProperty(this, 'properties', {
@@ -98,16 +136,15 @@ export class PrototypalPropertyResolver implements ConfigurablePropertyResolver 
     }
 
     constructor(propertySources: JSONObject[]) {
-        /**
-         */
-
         this.propertySources = propertySources;
     }
 
     /**
-     * @param {string} key
-     * @param {module:core.JSONValue} [defaultValue]
-     * @returns {module:core.JSONValue}
+     * Resolves a property value from the configured sources.
+     *
+     * @param key - The property name to resolve.
+     * @param defaultValue - The value to return when the property is missing.
+     * @returns The resolved property value or the default value.
      */
     getProperty(key: string, defaultValue?: JSONValue): JSONValue {
         const parseResult = keypathExpression.run(key);
@@ -120,8 +157,11 @@ export class PrototypalPropertyResolver implements ConfigurablePropertyResolver 
     }
 
     /**
-     * @param {string} key
-     * @returns {module:core.JSONValue}
+     * Resolves a required property value.
+     *
+     * @param key - The property name to resolve.
+     * @returns The resolved property value.
+     * @throws {IllegalStateError} When the property cannot be resolved.
      */
     getRequiredProperty(key: string): JSONValue {
         const value = this.getProperty(key);
@@ -132,8 +172,10 @@ export class PrototypalPropertyResolver implements ConfigurablePropertyResolver 
     }
 
     /**
-     * @param {string} key
-     * @returns {boolean}
+     * Returns whether the property can be resolved.
+     *
+     * @param key - The property name to resolve.
+     * @returns `true` when the property exists.
      */
     hasProperty(key: string): boolean {
         const parseResult = keypathExpression.run(key);

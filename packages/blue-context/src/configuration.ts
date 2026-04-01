@@ -95,6 +95,9 @@ const { defineProperty, getOwnPropertyDescriptor } = Reflect,
  * context.getValue( 'foo' ); // "foo"
  * ```
  * @see {@link MetadataConfigApplicationContext|MetadataConfigApplicationContext}
+ * @param target - The configuration class constructor.
+ * @param context - The decorator context.
+ * @returns The original class constructor.
  */
 export function configuration<T extends new (...args: any[]) => any>(target: T, context: ClassDecoratorContext): T {
     context.metadata[CONFIG_CONSTRUCTOR] = true;
@@ -102,8 +105,10 @@ export function configuration<T extends new (...args: any[]) => any>(target: T, 
 }
 
 /**
- * @param {string} name
- * @returns {ClassDecorator}
+ * Marks a class or method as active only for the named profile(s).
+ *
+ * @param name - A comma-delimited list of profile names.
+ * @returns A decorator that stores profile metadata.
  */
 export function profile(name: string) {
     return function (target: any, context: ClassDecoratorContext | ClassMethodDecoratorContext) {
@@ -121,8 +126,10 @@ export function profile(name: string) {
 }
 
 /**
- * @param {string} path
- * @returns {ClassDecorator}
+ * Binds a class field to a property path resolved from the environment.
+ *
+ * @param path - The property path to resolve.
+ * @returns A field decorator that captures the path in metadata.
  */
 export function property(path: string) {
     return function (value: undefined, context: ClassFieldDecoratorContext) {
@@ -148,8 +155,10 @@ export function property(path: string) {
 }
 
 /**
- * @param {module:core.JSONObject | module:core.Enumerable<external:string,module:core.JSONValue>} propertySource
- * @returns {ClassDecorator}
+ * Adds a property source to a configuration class.
+ *
+ * @param propertySource - The source object or enumerable of key/value pairs.
+ * @returns A class decorator that prepends the source to metadata.
  */
 export function propertySource(propertySource: JSONObject | Enumerable<string, JSONValue>) {
     return function <T extends new (...args: any[]) => any>(target: T, context: ClassDecoratorContext): T {
@@ -171,11 +180,13 @@ export function propertySource(propertySource: JSONObject | Enumerable<string, J
 }
 
 /**
- * Decorator for marking methods as entry points that will be processed by ConfigurationParser
+ * Marks a method as a configuration entry factory.
  *
- * Can be used in two ways:
- * - Without arguments: @entry() - uses method name as entry name
- * - With custom name: @entry('customName') - uses provided name as entry name
+ * Can be used as `@entry()`, `@entry('customName')`, or legacy `@entry`.
+ *
+ * @param nameOrTarget - Entry name or the decorated method target.
+ * @param maybeContext - Decorator context for legacy usage.
+ * @returns A method decorator or the legacy decorator result.
  */
 function createEntryDecorator(entryName?: string) {
     return function (target: any, context: ClassMethodDecoratorContext) {
@@ -202,6 +213,13 @@ function createEntryDecorator(entryName?: string) {
     };
 }
 
+/**
+ * Marks a method as a configuration entry factory.
+ *
+ * @param nameOrTarget - Entry name or the decorated method target.
+ * @param maybeContext - Decorator context for legacy usage.
+ * @returns A decorator when called with a name, or the legacy decorator result.
+ */
 export function entry(nameOrTarget?: string | any, maybeContext?: ClassMethodDecoratorContext): any {
     // @entry('customName')
     if (typeof nameOrTarget === 'string') {
@@ -340,8 +358,16 @@ export class ConfigurationProcessor
     extends AsResourceLoaderAware(AsEnvironmentAware(Null))
     implements EntryRegistryProcessor
 {
+    /**
+     * The environment used for resolving properties.
+     */
     environment: Environment;
 
+    /**
+     * Processes configuration classes registered as entry registries.
+     *
+     * @param registry - The registry to process.
+     */
     processEntryRegistry(registry: Registry): void {
         if (!this.environment) {
             this.environment = new StandardEnvironment();
@@ -364,7 +390,9 @@ export class MetadataConfigApplicationContext extends GenericApplicationContext 
     }
 
     /**
-     * @param {Object} configClass The configuration class
+     * Registers a configuration class for metadata-driven initialization.
+     *
+     * @param configClass - The configuration class to parse.
      */
     register(configClass): void {
         this.#configurationParser.parse([configClass]);

@@ -8,15 +8,24 @@ import { like } from '@blue/util/types';
 
 import { Constructable, Null } from '@blue/core';
 
+/**
+ * Represents a resolved resource handle and its loaded value.
+ */
 export interface Resource<T = any> {
     readonly exists: boolean;
     readonly value: T;
 }
 
+/**
+ * Loads resources from a location string.
+ */
 export interface ResourceLoader {
     getResource(location: string): Promise<Resource>;
 }
 
+/**
+ * Receives a resource loader during initialization.
+ */
 export interface ResourceLoaderAware extends Aware {
     setResourceLoader(loader: ResourceLoader): void;
 }
@@ -53,6 +62,7 @@ const { defineProperty } = Reflect,
 /**
  * @see module:context.AsResourceLoaderAware
  * @implements module:context.ResourceLoaderAware
+ * @param superclass - The base class to extend.
  * @returns {module:context.Constructable<module:context.ResourceLoaderAware>}
  */
 export const AsResourceLoaderAware = <T extends Constructable>(superclass: T): Constructable<ResourceLoaderAware> & T =>
@@ -70,24 +80,33 @@ export const AsResourceLoaderAware = <T extends Constructable>(superclass: T): C
     };
 
 /**
- * @param {*} value The value to be tested
- * @returns {boolean} Whether or not the `value` is {@link Resource|Resource}
+ * Returns whether a value behaves like a resource.
+ *
+ * @param value - The value to test.
+ * @returns `true` when the value looks like a resource.
  */
 export const likeResource = like({ exists: Boolean }) as (value) => value is Resource;
 
 /**
- * @param {*} value The value to be tested
- * @returns {boolean} Whether or not the `value` is {@link ResourceLoader|ResourceLoader}
+ * Returns whether a value behaves like a resource loader.
+ *
+ * @param value - The value to test.
+ * @returns `true` when the value looks like a resource loader.
  */
 export const likeResourceLoader = like({ getResource: Function }) as (value) => value is ResourceLoader;
 
 /**
- * @param {*} value The value to be tested
- * @returns {boolean} Whether or not the `value` is {@link ResourceLoaderAware|ResourceLoaderAware}
+ * Returns whether a value can receive a resource loader.
+ *
+ * @param value - The value to test.
+ * @returns `true` when the value looks like resource-loader aware.
  */
 export const likeResourceLoaderAware = like({ setResourceLoader: Function }) as (value) => value is ResourceLoaderAware;
 
 /**
+ */
+/**
+ * Resource implementation backed by a URL.
  */
 export class URLResource<T = any> implements Resource<T> {
     readonly url: URL;
@@ -123,6 +142,9 @@ export class URLResource<T = any> implements Resource<T> {
 
 /**
  * @implements module:context.Resource
+ */
+/**
+ * Resource wrapper used when loading fails.
  */
 export class UnresolvedResource implements Resource<Error> {
     readonly value: Error;
@@ -168,5 +190,10 @@ export const AsModuleResourceLoader = <T extends Constructable>(superclass: T): 
 
 /**
  * @see module:context.AsModuleResourceLoader
+ * @param superclass - The base class to extend.
+ * @returns A resource-loader mixin applied to the base class.
+ */
+/**
+ * Resource loader that resolves modules through dynamic import.
  */
 export class DefaultResourceLoader extends AsModuleResourceLoader(Null) {}

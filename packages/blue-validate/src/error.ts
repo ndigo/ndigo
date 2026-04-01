@@ -1,5 +1,9 @@
 const { defineProperty, setPrototypeOf } = Reflect;
 
+/**
+ * Base error class for all validation-related failures.
+ * @property {Error} cause - The underlying cause of the validation error, if any.
+ */
 export class ValidationError extends Error {
     cause: Error;
 
@@ -7,6 +11,11 @@ export class ValidationError extends Error {
         return 'ValidationError';
     }
 
+    /**
+     * Creates an instance of ValidationError.
+     * @param {string} message - A descriptive message for the validation error.
+     * @param {Error} [cause] - The original error that caused this validation failure.
+     */
     constructor(message: string, cause: Error = null) {
         super(`Validation failed: "${message}"`);
 
@@ -21,11 +30,19 @@ export class ValidationError extends Error {
     }
 }
 
+/**
+ * Error thrown when one or more validation constraints are violated.
+ */
 export class ConstraintViolationError extends ValidationError {
     get [Symbol.toStringTag](): string {
         return 'ConstraintViolationError';
     }
 
+    /**
+     * Creates an instance of ConstraintViolationError.
+     * @param {string} message - A descriptive message for the constraint violation.
+     * @param {Set<string>} violations - A set of constraint names that were violated.
+     */
     constructor(message: string, violations: Set<string>) {
         super(message);
 

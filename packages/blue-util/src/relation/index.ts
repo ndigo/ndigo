@@ -3,7 +3,34 @@
  * @module relation
  */
 
-import { clamp, countBy, difference, differenceWith, eqBy, equals, gt, gte, identical, innerJoin, intersection, lt, lte, max, maxBy, min, minBy, pathEq, project, propEq, sortBy, sortWith, symmetricDifference, symmetricDifferenceWith, union, unionWith } from 'ramda';
+import {
+    clamp,
+    countBy,
+    difference,
+    differenceWith,
+    eqBy,
+    equals,
+    gt,
+    gte,
+    identical,
+    innerJoin,
+    intersection,
+    lt,
+    lte,
+    max,
+    maxBy,
+    min,
+    minBy,
+    pathEq,
+    project,
+    propEq,
+    sortBy,
+    sortWith,
+    symmetricDifference,
+    symmetricDifferenceWith,
+    union,
+    unionWith,
+} from 'ramda';
 
 /**
  * Restricts a number to be within a range.
@@ -331,6 +358,22 @@ export { min };
 export { minBy };
 
 /**
+ * Returns `true` if the object's property at the given path equals the given
+ * value.
+ *
+ * @category Relation
+ * @param {Array} path The path to use.
+ * @param {*} val The value to compare the property with.
+ * @param {Object} obj The object to check the path in.
+ * @returns {boolean}
+ * @example
+ * import { pathEq } from '@blue/util';
+ * pathEq( [ 'a', 'b' ], 2, { a: { b: 2 } } ); //=> true
+ * pathEq( [ 'a', 'b' ], 1, { a: { b: 2 } } ); //=> false
+ */
+export { pathEq };
+
+/**
  * Reasonable analog to SQL `select` statement.
  *
  * @category Object
@@ -351,8 +394,60 @@ export { project };
  * Returns `true` if the specified object property equals the given value.
  *
  * @category Relation
+ * @param {string} name The name of the property to check.
+ * @param {*} val The value to compare the property with.
+ * @param {Object} obj The object to check.
+ * @returns {boolean} `true` if the property equals the value, `false` otherwise.
+ * @example
+ * import { propEq } from '@blue/util';
+ * propEq('name', 'Alice', { name: 'Alice', age: 30 }); //=> true
+ * propEq('name', 'Bob', { name: 'Alice', age: 30 });   //=> false
  */
 export { propEq };
+
+/**
+ * Sorts the list according to the supplied function.
+ *
+ * @category Relation
+ * @param {function} fn The function to use for sorting.
+ * @param {Array} list The list to sort.
+ * @returns {Array} A new list sorted by the `fn` function.
+ * @example
+ * import { sortBy, prop } from '@blue/util';
+ * const byAge = sortBy(prop('age'));
+ * const people = [{ name: 'Emma', age: 70 }, { name: 'Peter', age: 78 }, { name: 'Mikhail', age: 62 }];
+ * byAge(people); //=> [{ name: 'Mikhail', age: 62 }, { name: 'Emma', age: 70 }, { name: 'Peter', age: 78 }]
+ */
+export { sortBy };
+
+/**
+ * Sorts a list according to a list of comparators.
+ *
+ * @category Relation
+ * @param {Array} comparators A list of comparator functions.
+ * @param {Array} list The list to sort.
+ * @returns {Array} A new list sorted by the `comparators` functions.
+ * @example
+ * import { sortWith, ascend, descend, prop } from '@blue/util';
+ * const byAgeAndName = sortWith([
+ *   descend(prop('age')),
+ *   ascend(prop('name'))
+ * ]);
+ * const people = [
+ *   { name: 'Emma', age: 70 },
+ *   { name: 'Peter', age: 78 },
+ *   { name: 'Mikhail', age: 62 },
+ *   { name: 'Sarah', age: 70 }
+ * ];
+ * byAgeAndName(people);
+ * //=> [
+ * //   { name: 'Peter', age: 78 },
+ * //   { name: 'Emma', age: 70 },
+ * //   { name: 'Sarah', age: 70 },
+ * //   { name: 'Mikhail', age: 62 }
+ * // ]
+ */
+export { sortWith };
 
 /**
  * Finds the set (i.e. no duplicates) of all elements contained in the first or

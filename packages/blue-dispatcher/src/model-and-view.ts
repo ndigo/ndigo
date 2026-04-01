@@ -7,12 +7,27 @@ import { View, AbstractView } from '@blue/view';
 type Model<T = any> = { [key: string]: T } | Map<string, T>;
 
 /**
+ * Holds a view plus its optional model data.
  */
 export class ModelAndView {
+    /**
+     * Model data supplied to the view.
+     */
     model: Model;
+
+    /**
+     * Resolved view name, when known.
+     */
     viewName: string;
+
+    /**
+     * Resolved view instance, when known.
+     */
     view: View;
 
+    /**
+     * Whether this instance has either a view name or view object.
+     */
     get hasView(): boolean {
         return typeof this.viewName === 'string' || typeof this.view !== 'undefined';
     }
@@ -21,6 +36,12 @@ export class ModelAndView {
         return `ModelAndView:${this.viewName}`;
     }
 
+    /**
+     * Create a model and view pair.
+     *
+     * @param view - The view name or view instance.
+     * @param model - Optional model data to expose to the view.
+     */
     constructor(view: View | string, model: Model = null) {
         if (typeof view === 'string') {
             this.viewName = view;

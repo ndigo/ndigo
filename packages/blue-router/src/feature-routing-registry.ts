@@ -8,13 +8,27 @@ export type { FeatureMetricRecorder } from '@blue/core';
 import { Route } from './route';
 import { SiteRouter } from './site-router';
 
+/**
+ * Defines the policy for how features are activated within the `FeatureRoutingRegistry`.
+ * - `'tracked'`: Allows multiple features to be active, tracking each one.
+ * - `'exclusive'`: Only one feature can be active at a time; activating a new feature deactivates the previous one.
+ * @since 1.0.0
+ */
 export type FeatureActivationPolicy = 'tracked' | 'exclusive';
 
+/**
+ * Options for configuring the `FeatureRoutingRegistry`.
+ * @since 1.0.0
+ */
 export interface FeatureRoutingRegistryOptions {
     activationPolicy?: FeatureActivationPolicy;
     metricRecorder?: FeatureMetricRecorder;
 }
 
+/**
+ * Defines the structure for registering a feature with the `FeatureRoutingRegistry`.
+ * @since 1.0.0
+ */
 export interface FeatureRouteRegistration {
     name: string;
     prefix: string;
@@ -23,6 +37,11 @@ export interface FeatureRouteRegistration {
     onRoute: (route: Route) => void;
 }
 
+/**
+ * Manages the registration and activation of features based on routing.
+ * It allows features to be mounted at specific URL prefixes and provides policies for feature activation.
+ * @since 1.0.0
+ */
 export class FeatureRoutingRegistry {
     #activationPolicy: FeatureActivationPolicy;
     #activeFeatureName?: string;
@@ -30,14 +49,30 @@ export class FeatureRoutingRegistry {
     #metricRecorder?: FeatureMetricRecorder;
     #siteRouter: SiteRouter;
 
+    /**
+     * Gets the name of the currently active feature.
+     * @returns The name of the active feature, or `undefined` if no feature is active.
+     * @since 1.0.0
+     */
     get activeFeatureName(): string | undefined {
         return this.#activeFeatureName;
     }
 
+    /**
+     * Gets the underlying `SiteRouter` instance used by the registry.
+     * @returns The `SiteRouter` instance.
+     * @since 1.0.0
+     */
     get siteRouter(): SiteRouter {
         return this.#siteRouter;
     }
 
+    /**
+     * Creates an instance of `FeatureRoutingRegistry`.
+     * @param siteRouter - The `SiteRouter` instance to use for routing. Defaults to a new `SiteRouter`.
+     * @param options - Configuration options for the registry.
+     * @since 1.0.0
+     */
     constructor(siteRouter: SiteRouter = new SiteRouter(), options: FeatureRoutingRegistryOptions = {}) {
         this.#activationPolicy = options.activationPolicy ?? 'tracked';
         this.#activeFeatureName = undefined;
@@ -46,6 +81,14 @@ export class FeatureRoutingRegistry {
         this.#siteRouter = siteRouter;
     }
 
+    /**
+     * Registers a new feature with the routing registry.
+     * Each feature is associated with a unique name and a URL prefix.
+     * @param feature - The `FeatureRouteRegistration` object containing feature details and callbacks.
+     * @returns The current `FeatureRoutingRegistry` instance for chaining.
+     * @throws {TypeError} If a feature with the same name is already registered.
+     * @since 1.0.0
+     */
     registerFeature(feature: FeatureRouteRegistration): this {
         if (this.#featureMap.has(feature.name)) {
             throw new TypeError(`Feature '${feature.name}' is already registered`);
@@ -62,6 +105,14 @@ export class FeatureRoutingRegistry {
         return this;
     }
 
+    /**
+     * Explicitly sets a feature as active by its name.
+     * This will trigger the activation policy (e.g., deactivating other features if policy is 'exclusive').
+     * @param name - The name of the feature to activate.
+     * @returns The current `FeatureRoutingRegistry` instance for chaining.
+     * @throws {TypeError} If the specified feature name is not registered.
+     * @since 1.0.0
+     */
     setActiveFeature(name: string): this {
         if (!this.#featureMap.has(name)) {
             throw new TypeError(`Feature '${name}' is not registered`);
@@ -72,6 +123,13 @@ export class FeatureRoutingRegistry {
         return this;
     }
 
+    /**
+     * Navigates the underlying `SiteRouter` to the given path.
+     * If the navigation is not handled by any registered route, the currently active feature (if any) will be deactivated.
+     * @param path - The path to navigate to.
+     * @returns `true` if the navigation was handled by a registered route, `false` otherwise.
+     * @since 1.0.0
+     */
     navigate(path: string): boolean {
         const handled = this.#siteRouter.navigate(path);
 
@@ -83,6 +141,11 @@ export class FeatureRoutingRegistry {
         return handled;
     }
 
+    /**
+     * Refreshes the routing by calling `refresh` on the underlying `SiteRouter`.
+     * This can re-evaluate the current URL against registered routes.
+     * @since 1.0.0
+     */
     refresh(): void {
         this.#siteRouter.refresh();
     }

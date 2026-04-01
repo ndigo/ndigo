@@ -16,6 +16,9 @@ type RangeToken = {
     value?: string;
 };
 
+/**
+ * Configuration options for `regExpRange`.
+ */
 export type RegExpRangeInit = {
     capture?: boolean;
     relaxZeros?: boolean;
@@ -193,6 +196,50 @@ const { abs, max, min, pow } = Math,
     };
 
 // @ts-ignore
+/**
+ * Generates a regular expression string that matches a range of numbers.
+ * This function is useful for creating efficient regexes for numerical ranges,
+ * especially when dealing with padded numbers or complex ranges.
+ *
+ * @category List
+ * @param {Numeric} from The starting number of the range (inclusive).
+ * @param {Numeric} [to=from] The ending number of the range (inclusive). If omitted, `to` defaults to `from`.
+ * @param {RegExpRangeInit} [init=defaults] Configuration options for generating the regex.
+ * @param {boolean} [init.capture=false] Whether to wrap the resulting regex in a capturing group.
+ * @param {boolean} [init.relaxZeros=true] If `true`, allows optional leading zeros for padded numbers.
+ * @param {boolean} [init.shorthand=false] If `true`, uses `\d` instead of `[0-9]` for digit matching.
+ * @param {boolean} [init.strictZeros=false] If `true`, enforces strict leading zeros (overrides `relaxZeros`).
+ * @param {boolean} [init.wrap=true] Whether to wrap the resulting regex in a non-capturing group `(?:...)` if multiple patterns are generated.
+ * @returns {string} A regular expression string matching the specified number range.
+ * @throws {TypeError} If `from` or `to` are not numeric values.
+ * @example
+ * // Basic range
+ * regExpRange(1, 5); //=> "(?:1|2|3|4|5)"
+ *
+ * // Range with padding
+ * regExpRange("001", "005"); //=> "(?:001|002|003|004|005)"
+ *
+ * // Relaxed zeros (default)
+ * regExpRange("01", "05"); //=> "(?:0?1|0?2|0?3|0?4|0?5)"
+ *
+ * // Strict zeros
+ * regExpRange("01", "05", { strictZeros: true }); //=> "(?:01|02|03|04|05)"
+ *
+ * // Capturing group
+ * regExpRange(10, 12, { capture: true }); //=> "(10|11|12)"
+ *
+ * // Shorthand digits
+ * regExpRange(1, 9, { shorthand: true }); //=> "\d"
+ *
+ * // Single number
+ * regExpRange(42); //=> "42"
+ *
+ * // Negative numbers
+ * regExpRange(-5, -1); //=> "(?:-1|-2|-3|-4|-5)"
+ *
+ * // Mixed positive and negative (handles 0 implicitly)
+ * regExpRange(-2, 2); //=> "(?:-1|-2|0|1|2)"
+ */
 const regExpRange = (from: Numeric, to: Numeric = void 0, init: RegExpRangeInit = defaults) => {
     if (isNumeric(from) === false) {
         throw new TypeError('regExpRange: expected the first argument to be a number');

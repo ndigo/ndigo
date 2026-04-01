@@ -16,6 +16,7 @@ function getParameterTypeName(parameter: MethodParameter): string {
     return parameter.type?.toString?.() || 'unknown';
 }
 
+/** Converts a resolved argument value and wraps conversion failures. */
 export function convertArgumentValue(
     converterReference: ParameterValueConverterReference,
     value: any,

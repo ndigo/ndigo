@@ -12,4 +12,5 @@ const updateResult = (state, result) => ({ ...state, result }),
         return updateResult(state, null);
     });
 
+/** Parser that succeeds without consuming input and yields `null`. */
 export default noop;

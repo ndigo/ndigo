@@ -9,6 +9,8 @@ import { isString } from '@blue/util/types';
 const { defineProperty } = Reflect;
 
 /**
+ * Error thrown when no suitable handler is found for a given route.
+ * This typically indicates a misconfiguration or an unhandled route.
  * @extends module:core.FrameworkError
  */
 export class NoHandlerFoundError extends FrameworkError {
@@ -19,6 +21,10 @@ export class NoHandlerFoundError extends FrameworkError {
     }
 
     constructor(route: Route) {
+        /**
+         * Creates an instance of NoHandlerFoundError.
+         * @param route - The route for which no handler was found.
+         */
         super(`No handler found for route "${route.path}"`);
         defineProperty(this, 'route', {
             value: route,
@@ -30,6 +36,8 @@ export class NoHandlerFoundError extends FrameworkError {
 }
 
 /**
+ * Error thrown when a view cannot be resolved for a given view name and route.
+ * This indicates that the specified view template or component could not be located.
  * @extends module:core.FrameworkError
  */
 export class NoViewFoundError extends FrameworkError {

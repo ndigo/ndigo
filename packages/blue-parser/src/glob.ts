@@ -119,4 +119,5 @@ const dotLiteral = '\\.',
     }),
     glob = choice([commonPatterns, globPatternList]).map(toRegExp);
 
+/** Parses a glob pattern into a regular-expression source string. */
 export default glob;

@@ -105,9 +105,11 @@ function asMinimalEventEmitter(target: any): void {
 }
 
 /**
- * @extends module:model.Model
+ * Creates a model constructor that emits change events for assigned properties.
+ *
+ * @param def - ObjectModel definition used to validate values.
+ * @returns A model constructor with minimal `emit`, `on`, and `off` support.
  */
-
 export function EventModel(def) {
     return initModel(
         def,

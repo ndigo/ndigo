@@ -4,6 +4,13 @@
 import standardTypes from './standard-types';
 import { ValidationGroup } from './group';
 
+/**
+ * Defines the structure for a reusable validation type, composed of multiple constraints.
+ * @property {Array<{ type: string; params?: Record<string, unknown>; groups?: ValidationGroup[] }>} constraints - An array of constraint configurations that make up this type.
+ * @property {string} constraints.type - The name of the constraint to apply.
+ * @property {Record<string, unknown>} [constraints.params] - Parameters specific to the constraint.
+ * @property {ValidationGroup[]} [constraints.groups] - Validation groups to which this constraint belongs within the type.
+ */
 type TypeDefinition = {
     constraints: Array<{
         type: string;

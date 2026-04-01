@@ -5,18 +5,7 @@
  * @see {@link https://wiki-dev.bash-hackers.org/syntax/expansion/brace}
  */
 // @ts-ignore
-import {
-    between,
-    char,
-    choice,
-    lookAhead,
-    many,
-    recursiveParser,
-    regex,
-    sepBy,
-    sequenceOf,
-    str,
-} from 'arcsecond';
+import { between, char, choice, lookAhead, many, recursiveParser, regex, sepBy, sequenceOf, str } from 'arcsecond';
 import { cond, flatten, identity, isNil, last, T, xprodAll, xprod3 } from './_util';
 import { default as _sequenceExpression } from './sequence-expression';
 import { anyString } from './_parser';

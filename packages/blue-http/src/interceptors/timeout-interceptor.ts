@@ -15,6 +15,9 @@ import {
 } from '../http';
 import { REQUEST_TIMEOUT } from '../response-statuses';
 
+/**
+ * Request settings for {@link TimeoutInterceptor}.
+ */
 export type TimeoutInit = HTTPInit & { timeout?: number };
 
 const { defineProperty } = Reflect,
@@ -23,6 +26,8 @@ const { defineProperty } = Reflect,
     isPositiveNumber = allPass([isNumber, isInteger, greaterThanZero]);
 
 /**
+ * Aborts slow requests and converts aborts into timeout responses.
+ *
  * @implements module:http.CompletionAwareHTTPInterceptor
  * @implements module:http.ErrorAwareHTTPInterceptor
  * @implements module:http.InitializationAwareHTTPInterceptor

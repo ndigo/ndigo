@@ -4,17 +4,20 @@
 
 import { complement } from '@blue/util/logic';
 
+/**
+ * A JavaScript primitive value.
+ *
+ * Primitives are the values that are not objects and do not carry methods or state.
+ *
+ * @see {@link https://developer.mozilla.org/en-US/docs/Glossary/Primitive}
+ */
 export type primitive = boolean | null | number | string | symbol | bigint | undefined;
 
 /**
- * A primitive is data that is not an object and has no methods.
- * @typedef {boolean | external:number | external:string | external:symbol | external:bigint | external:undefined} module:core.primitive
- * @see {@link https://developer.mozilla.org/en-US/docs/Glossary/Primitive}
- */
-
-/**
- * @param {*} value
- * @returns {boolean} Whether or not a value is primitive
+ * Tests whether a value is a primitive.
+ *
+ * @param value - Value to test.
+ * @returns `true` when the value is a primitive.
  * @see {@link primitive}
  */
 export const isPrimitive = (value): value is primitive => {
@@ -34,8 +37,10 @@ export const isPrimitive = (value): value is primitive => {
 };
 
 /**
- * @param {*} value
- * @returns {boolean} Whether or not a value is non-primitive
+ * Tests whether a value is not a primitive.
+ *
+ * @param value - Value to test.
+ * @returns `true` when the value is an object.
  * @see {@link primitive}
  */
 export const isNotPrimitive = complement(isPrimitive) as (value) => value is object;

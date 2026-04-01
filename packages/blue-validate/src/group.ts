@@ -2,6 +2,10 @@
  * @author Jeff Rose
  */
 
+/**
+ * Represents a unique validation group, identified by a Symbol.
+ * Validation groups allow applying constraints conditionally based on the context of validation.
+ */
 export type ValidationGroup = symbol;
 
 /**

@@ -10,6 +10,12 @@ import { likeResponse } from './like-response';
 const { defineProperty } = Reflect,
     isError = is(Error) as (value) => value is Error;
 
+/**
+ * Error wrapper that also exposes the `Response` interface.
+ *
+ * It preserves the original response when possible so callers can inspect the
+ * failed payload without losing fetch semantics.
+ */
 export class ResponseError extends FrameworkError implements Error, Response {
     #originalError: Error;
     #response: Response;
@@ -31,7 +37,19 @@ export class ResponseError extends FrameworkError implements Error, Response {
         return 'ResponseError';
     }
 
+    /**
+     * Wraps a response with a message or error.
+     *
+     * @param response - The response to expose.
+     * @param message - The error message to use.
+     */
     constructor(response?: Response, message?: string);
+    /**
+     * Wraps a response with a message or error.
+     *
+     * @param response - The response to expose.
+     * @param error - The original error.
+     */
     constructor(response?: Response, error?: Error);
     constructor(response: Response = null, messageOrError: string | Error = 'Invalid response') {
         super(isError(messageOrError) ? messageOrError.message : messageOrError);
@@ -93,6 +111,11 @@ export class ResponseError extends FrameworkError implements Error, Response {
         });
     }
 
+    /**
+     * Creates a copy of the wrapped response error.
+     *
+     * @returns A cloned `ResponseError`.
+     */
     clone(): Response {
         const error = isError(this.#originalError) ? this.#originalError : new Error(this.message),
             response = this.#response.clone();
@@ -101,26 +124,56 @@ export class ResponseError extends FrameworkError implements Error, Response {
         return new ResponseError(response, error);
     }
 
+    /**
+     * Reads the wrapped response as an `ArrayBuffer`.
+     *
+     * @returns A promise for the response bytes.
+     */
     arrayBuffer(): Promise<ArrayBuffer> {
         return this.#response.arrayBuffer();
     }
 
+    /**
+     * Reads the wrapped response as a `Blob`.
+     *
+     * @returns A promise for the response blob.
+     */
     blob(): Promise<Blob> {
         return this.#response.blob();
     }
 
+    /**
+     * Reads the wrapped response as `FormData`.
+     *
+     * @returns A promise for the response form data.
+     */
     formData(): Promise<FormData> {
         return this.#response.formData();
     }
 
+    /**
+     * Reads the wrapped response as JSON.
+     *
+     * @returns A promise for the parsed JSON value.
+     */
     json(): Promise<any> {
         return this.#response.json();
     }
 
+    /**
+     * Reads the wrapped response as text.
+     *
+     * @returns A promise for the response text.
+     */
     text(): Promise<string> {
         return this.#response.text();
     }
 
+    /**
+     * Reads the wrapped response as bytes.
+     *
+     * @returns A promise for the response bytes.
+     */
     bytes(): Promise<Uint8Array> {
         return this.#response.bytes();
     }

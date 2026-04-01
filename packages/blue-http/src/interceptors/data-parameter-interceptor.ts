@@ -9,7 +9,13 @@ import QueryString from '../query-string';
 import { HTTPInit, HTTPMethod, InitializationAwareHTTPInterceptor } from '../http';
 import { entriesIterator } from '@blue/core';
 
+/**
+ * Body value accepted by {@link DataParameterInterceptor}.
+ */
 export type DataInit = BodyInit; // | JSONObject;
+/**
+ * Request settings for {@link DataParameterInterceptor}.
+ */
 export type DataParameterInit = HTTPInit & { data?: DataInit };
 
 /**
@@ -45,7 +51,7 @@ const getEntries = pipe(ifElse(isString, QueryString.parse, identity), entriesIt
     isFormData = is(FormData),
     isURLSearchParams = is(URLSearchParams),
     isReadableStream = is(ReadableStream),
-    /** 
+    /**
      * @todo parseData() could be turned into an ifElse() where the identity() results are joined within an anyPass()...
      * ifElse( anyPass( [ isBlob, isBufferSource, ... ] ), identity, JSON.stringify );
      * I don't know if there are performance implications to either approach but I thought this approach laid out the logic more clearly.
@@ -62,6 +68,8 @@ const getEntries = pipe(ifElse(isString, QueryString.parse, identity), entriesIt
     ]) as (value: DataInit) => BodyInit;
 
 /**
+ * Moves `data` into the URL for bodyless methods and into `body` otherwise.
+ *
  * @implements module:http.InitializationAwareHTTPInterceptor
  */
 export class DataParameterInterceptor implements InitializationAwareHTTPInterceptor<DataParameterInit> {

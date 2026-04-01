@@ -15,10 +15,25 @@ interface ModelAwareElement extends HTMLElement {
     model: unknown;
 }
 
+/**
+ * View target contract for DOM-backed render destinations.
+ *
+ * It extends the shared event-bridge target with a concrete container element so the
+ * engine can reuse or replace the rendered subtree.
+ */
 export interface DOMViewTarget extends EventBridgeViewTarget {
+    /**
+     * The host element that receives rendered output.
+     */
     readonly container: HTMLElement;
 }
 
+/**
+ * Detects whether a value implements the DOM-specific view target contract.
+ *
+ * @param value - The value to inspect.
+ * @returns `true` when the value behaves like a DOM view target.
+ */
 export const likeDOMViewTarget = (value: unknown): value is DOMViewTarget => {
     if (!value || typeof value !== 'object') {
         return false;
@@ -35,6 +50,9 @@ export const likeDOMViewTarget = (value: unknown): value is DOMViewTarget => {
     );
 };
 
+/**
+ * View target implementation that renders into a host HTMLElement.
+ */
 export class DOMElementViewTarget implements DOMViewTarget {
     #element: HTMLElement;
     #eventMap: Record<string, string>;
@@ -42,6 +60,13 @@ export class DOMElementViewTarget implements DOMViewTarget {
     #listeners: Map<string, EventListener>;
     destroyed: boolean;
 
+    /**
+     * Creates a DOM-backed view target for the provided element.
+     *
+     * @param element - The root element that will host rendered content.
+     * @param options - Event mapping used to bridge DOM events to the application context.
+     * @throws {TypeError} When `element` is null or undefined.
+     */
     constructor(
         element: HTMLElement | null,
         options: {
@@ -63,6 +88,11 @@ export class DOMElementViewTarget implements DOMViewTarget {
         return this.#element;
     }
 
+    /**
+     * Connects the target to the application event emitter so DOM events can be forwarded.
+     *
+     * @param applicationContext - The application event emitter used for event bridging.
+     */
     setApplicationContext(applicationContext: ApplicationEventEmitter): void {
         if (this.destroyed) {
             return;
@@ -71,6 +101,11 @@ export class DOMElementViewTarget implements DOMViewTarget {
         this.listen();
     }
 
+    /**
+     * Replaces the DOM-to-application event map and refreshes listeners.
+     *
+     * @param eventMap - Mapping from DOM event names to application event names.
+     */
     setEventMap(eventMap: Record<string, string>): void {
         if (this.destroyed) {
             return;
@@ -79,6 +114,11 @@ export class DOMElementViewTarget implements DOMViewTarget {
         this.listen();
     }
 
+    /**
+     * Installs DOM event listeners for the current event map.
+     *
+     * Existing listeners are removed first so repeated calls stay idempotent.
+     */
     listen(): void {
         if (this.destroyed) {
             return;
@@ -100,6 +140,9 @@ export class DOMElementViewTarget implements DOMViewTarget {
         });
     }
 
+    /**
+     * Removes all installed DOM event listeners from the host element.
+     */
     unlisten(): void {
         this.#listeners.forEach((listener, domEventName) => {
             this.#element.removeEventListener(domEventName, listener);
@@ -108,6 +151,12 @@ export class DOMElementViewTarget implements DOMViewTarget {
         this.#listeners.clear();
     }
 
+    /**
+     * Prepares the target for a new render pass by clearing existing content.
+     *
+     * @param route - The active route associated with the render pass.
+     * @throws {IllegalStateError} When the target has already been destroyed.
+     */
     prepare(route: Route): void {
         if (this.destroyed) {
             throw new IllegalStateError('Cannot prepare a destroyed DOMElementViewTarget.');
@@ -116,6 +165,14 @@ export class DOMElementViewTarget implements DOMViewTarget {
         this.#element.innerHTML = '';
     }
 
+    /**
+     * Appends rendered output to the host element and re-enables event bridging.
+     *
+     * @param output - The rendered DOM subtree to attach.
+     * @param model - The model passed through from the view engine.
+     * @param route - The active route associated with the render pass.
+     * @throws {IllegalStateError} When the target has already been destroyed.
+     */
     commit(output: HTMLElement, model: any, route: Route): void {
         if (this.destroyed) {
             throw new IllegalStateError('Cannot commit to a destroyed DOMElementViewTarget.');
@@ -124,6 +181,9 @@ export class DOMElementViewTarget implements DOMViewTarget {
         this.listen();
     }
 
+    /**
+     * Clears rendered content without permanently destroying the target.
+     */
     clear(): void {
         if (this.destroyed) {
             return;
@@ -132,6 +192,9 @@ export class DOMElementViewTarget implements DOMViewTarget {
         this.#element.innerHTML = '';
     }
 
+    /**
+     * Permanently disables the target and releases its event listeners.
+     */
     destroy(): void {
         if (this.destroyed) {
             return;
@@ -144,7 +207,20 @@ export class DOMElementViewTarget implements DOMViewTarget {
     }
 }
 
+/**
+ * View engine that renders BlueJS views as custom elements.
+ */
 export class WebComponentViewEngine implements ViewEngine {
+    /**
+     * Renders a web component view into the target, reusing an existing matching element when possible.
+     *
+     * @param view - The view to render.
+     * @param model - The view model passed to the component.
+     * @param target - The destination for rendered output.
+     * @param route - The active route for the render pass.
+     * @returns A promise that resolves when rendering completes.
+     * @throws {TypeError} When `view` is not a `WebComponentView`.
+     */
     async render(view: View, model: any, target: ViewTarget, route: Route): Promise<void> {
         if (!(view instanceof WebComponentView)) {
             throw new TypeError('WebComponentViewEngine can only render WebComponentView instances.');

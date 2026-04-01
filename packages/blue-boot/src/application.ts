@@ -22,18 +22,31 @@ export class Application {
     #properties: JSONObject;
     #sources: Set<Function>;
 
+    /**
+     * Gets the source classes registered with this application bootstrapper.
+     *
+     * @returns The registered source classes.
+     */
     get sources() {
         return this.#sources;
     }
 
+    /**
+     * Creates an application bootstrapper for the given source classes.
+     *
+     * @param sources - Source classes that will be registered when the application runs.
+     */
     constructor(sources: Function[]) {
         this.#profiles = [];
         this.#sources = new Set<Function>(sources);
     }
 
     /**
-     * Run the Spring application, creating and refreshing a new {@link ApplicationContext|ApplicationContext}.
-     * @param {*} args
+     * Runs the application and refreshes a new application context.
+     *
+     * @param args - Command-line arguments used while preparing the environment.
+     * @returns The refreshed application context.
+     * @throws {IllegalStateError} When application startup fails.
      */
     run(...args: string[]): ConfigurableApplicationContext {
         let context;
@@ -48,26 +61,48 @@ export class Application {
         return context;
     }
 
+    /**
+     * Sets the environment that will be reused instead of creating a new one.
+     *
+     * @param environment - The environment to reuse.
+     */
     setEnvironment(environment: ConfigurableEnvironment): void {
         this.#environment = environment;
     }
 
+    /**
+     * Sets the application name used when the application context is created.
+     *
+     * @param name - The application name.
+     */
     setName(name: string): void {
         this.#name = name;
     }
 
+    /**
+     * Replaces the active profiles that will be applied before the context refreshes.
+     *
+     * @param profiles - The profile names to activate.
+     */
     setProfiles(...profiles: string[]): void {
         this.#profiles = profiles;
     }
 
+    /**
+     * Sets the property sources that will be added during environment preparation.
+     *
+     * @param properties - Property values to expose to the application environment.
+     */
     setProperties(properties: JSONObject): void {
         this.#properties = properties;
     }
 
     /**
+     * Applies environment-level configuration before the application context is created.
+     *
+     * @param environment - The environment being prepared.
+     * @param args - Command-line arguments supplied to the application.
      * @protected
-     * @param {module:context.Environment} environment
-     * @param {Array<external:string>} args
      */
     protected _configureEnvironment(environment: ConfigurableEnvironment, args: string[]): void {
         this._configurePropertySources(environment, args);
@@ -75,9 +110,11 @@ export class Application {
     }
 
     /**
+     * Applies the configured active profiles to the environment.
+     *
+     * @param environment - The environment being prepared.
+     * @param args - Command-line arguments supplied to the application.
      * @protected
-     * @param {module:context.Environment} environment
-     * @param {Array<external:string>} args
      */
     protected _configureProfiles(environment: ConfigurableEnvironment, args: string[]): void {
         if (this.#profiles.length) {
@@ -85,12 +122,25 @@ export class Application {
         }
     }
 
+    /**
+     * Adds configured property sources to the environment.
+     *
+     * @param environment - The environment being prepared.
+     * @param args - Command-line arguments supplied to the application.
+     */
     protected _configurePropertySources(environment: ConfigurableEnvironment, args: string[]): void {
         if (this.#properties) {
             environment.propertySources.push(this.#properties);
         }
     }
 
+    /**
+     * Creates and refreshes the application context.
+     *
+     * @param environment - The prepared environment.
+     * @param args - Command-line arguments supplied to the application.
+     * @returns The refreshed application context.
+     */
     protected _prepareContext(environment: ConfigurableEnvironment, args: string[]): ConfigurableApplicationContext {
         const context = new MetadataConfigApplicationContext(this.#name);
         context.setEnvironment(environment);
@@ -104,12 +154,23 @@ export class Application {
         return context;
     }
 
+    /**
+     * Prepares the environment used for application startup.
+     *
+     * @param args - Command-line arguments supplied to the application.
+     * @returns The prepared environment.
+     */
     protected _prepareEnvironment(args: string[]): ConfigurableEnvironment {
         const env = this._getOrCreateEnvironment();
         this._configureEnvironment(env, args);
         return env;
     }
 
+    /**
+     * Returns the configured environment or creates a standard one when none was supplied.
+     *
+     * @returns The existing or default environment.
+     */
     private _getOrCreateEnvironment(): ConfigurableEnvironment {
         return this.#environment ? this.#environment : new StandardEnvironment();
     }

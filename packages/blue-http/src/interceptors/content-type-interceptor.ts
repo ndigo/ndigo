@@ -6,6 +6,9 @@ import { MediaType } from '@blue/core';
 import { HTTPInit, InitializationAwareHTTPInterceptor } from '../http';
 import { CONTENT_TYPE } from '../http-headers';
 
+/**
+ * Request settings for {@link ContentTypeInterceptor}.
+ */
 export type ContentTypeInit = HTTPInit & { contentType?: string | MediaType };
 
 /**
@@ -14,6 +17,8 @@ export type ContentTypeInit = HTTPInit & { contentType?: string | MediaType };
  */
 
 /**
+ * Adds a `Content-Type` header when request settings provide one.
+ *
  * @implements module:http.InitializationAwareHTTPInterceptor
  */
 export class ContentTypeInterceptor implements InitializationAwareHTTPInterceptor<ContentTypeInit> {

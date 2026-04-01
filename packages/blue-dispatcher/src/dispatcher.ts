@@ -21,11 +21,26 @@ import { AsRouteErrorResolverStrategy } from './strategies/route-error-resolver-
 import { AsViewResolverStrategy } from './strategies/view-resolver-strategy';
 import { AsStrategyInitializer } from './strategies/strategy-initializer';
 
+/**
+ * Interface for dispatching routes.
+ */
 export interface RouteDispatcher {
+    /**
+     * Dispatches the given route for processing.
+     * @param route - The route to dispatch.
+     */
     dispatch(route: Route): Promise<void>;
 }
 
+/**
+ * Interface for rendering a {@link ModelAndView}.
+ */
 export interface RouteRenderer {
+    /**
+     * Renders the given {@link ModelAndView} for the specified route.
+     * @param mv - The {@link ModelAndView} to render.
+     * @param route - The route associated with the {@link ModelAndView}.
+     */
     render(mv: ModelAndView, route: Route): Promise<void>;
 }
 
@@ -33,46 +48,6 @@ export interface RouteRenderer {
  * An interface for creating application dispatchers. Dispatches to registered handlers for processing a route, providing convenient mapping and exception handling facilities.
  *
  * It can be used with just about any workflow, with the installation of the appropriate strategies and adapter classes.
- */
-
-/**
- * Initialize the strategy objects that this dispatcher uses.
- * @param {module:core.ApplicationContext} context
- */
-
-/**
- * Process the route by dispatching to the handler.
- * @param {module:router.Route} route
- * @returns {Promise}
- */
-
-/**
- */
-
-/**
- * @param {module:dispatcher.ModelAndView} mv
- * @param {module:router.Route} route
- * @returns {Promise}
- */
-
-/**
- * Dispatcher for brower-based handlers.
- * * It can use any {@link RouteHandlerMapping|RouteHandlerMapping} implementation - pre-built or provided as part of an application - to control the routing of routes to handlers. Default is {@link NamePathHandlerMapping|NamePathHandlerMapping} and {@link MetadataHandlerMapping|MetadataHandlerMapping}. HandlerMapping objects can be defined as values in the application context, implementing the HandlerMapping interface, overriding the default HandlerMapping if present. HandlerMappings can be given any value name.
- * * It can use any {@link HandlerAdapter|HandlerAdapter}; this allows for using any handler interface. Default adapters are {@link MetadataHandlerAdapter|MetadataHandlerAdapter}, {@link ControllerHandlerAdapter|ControllerHandlerAdapter}, for {@link RouteMappingHandler|RouteMappingHandler} and {@link Controller|Controller} interfaces, respectively. A default {@link MetadataHandlerAdapter|MetadataHandlerAdapter} will be registered as well. RouteHandlerAdapter objects can be added as values in the application context, overriding the default RouteHandlerAdapters. Like HandlerMappings, RouteHandlerAdapters can be given any name.
- * * The dispatcher's error resolution strategy can be specified via a {@link RouteHandlerErrorResolver|HandlerErrorResolver}, for example mapping certain exceptions to error pages. Default is {@link DefaultRouteHandlerErrorResolver|DefaultRouteHandlerErrorResolver}. HandlerErrorResolvers can be overridden through the application context. HandlerErrorResolver can be given any name.
- * * Its view resolution strategy can be specified via a {@link ViewResolver|ViewResolver} implementation, resolving symbolic view names into {@link View|View} objects. Default is {@link InternalResourceViewResolver|InternalResourceViewResolver}. ViewResolver objects can be added as values in the application context, overriding the default ViewResolver. ViewResolvers can be given any name.
- * * Its language resolution strategy is determined by a {@link LanguageResolver|LanguageResolver}. The out-of-the-box implementation works via {@link https://developer.mozilla.org/en-US/docs/Web/API/Navigator|navigator} object. The LanguageResolver name is "languageResolver"; default is {@link NavigatorLanguageResolver|NavigatorLanguageResolver}.
- * * Its theme resolution strategy is determined by a {@link ThemeResolver|ThemeResolver}. Implementations for a fixed theme and cookie resolved theme are included. The ThemeResolver name is "themeResolver"; default is {@link FixedThemeResolver|FixedThemeResolver}.
- * @implements module:router.RouteDispatcher
- * @implements module:router.RouteRenderer
- * @see module:dispatcher.AsRouteHandlerAdapterStrategy
- * @see module:dispatcher.AsRouteHandlerMappingStrategy
- * @see module:dispatcher.AsRouteErrorResolverStrategy
- * @see module:dispatcher.AsLanguageResolverStrategy
- * @see module:dispatcher.AsRouteToViewNameTranslatorStrategy
- * @see module:dispatcher.AsThemeResolverStrategy
- * @see module:dispatcher.AsViewMappingStrategy
- * @see module:dispatcher.AsViewResolverStrategy
  */
 export class BrowserDispatcher
     extends AsViewResolverStrategy(
@@ -88,10 +63,19 @@ export class BrowserDispatcher
     )
     implements RouteDispatcher, RouteRenderer
 {
+    /**
+     * The application context.
+     */
     applicationContext: ApplicationContext;
+    /**
+     * The default view name to use if none is specified.
+     */
     defaultViewName: string = 'index';
     #activeView: View = null;
 
+    /**
+     * Returns the string tag for this dispatcher.
+     */
     get [Symbol.toStringTag](): string {
         return 'BrowserDispatcher';
     }
@@ -100,6 +84,10 @@ export class BrowserDispatcher
         return !!view && typeof (view as any).destroy === 'function';
     }
 
+    /**
+     * Dispatches the given route for processing.
+     * @param route - The route to dispatch.
+     */
     async dispatch(route: Route): Promise<void> {
         let dispatchError: Error = null,
             mappedHandler: RouteHandlerExecutionChain = null,
@@ -129,9 +117,8 @@ export class BrowserDispatcher
 
     /**
      * Render the given `ModelAndView`. This is the last stage of handling a route.
-     * @param {module:dispatcher.ModelAndView} mv
-     * @param {module:router.Route} route
-     * @returns {Promise}
+     * @param mv - The {@link ModelAndView} to render.
+     * @param route - The route associated with the {@link ModelAndView}.
      */
     async render(mv: ModelAndView, route: Route): Promise<void> {
         const language = this.languageResolver ? this.languageResolver.resolveLanguage(route) : '',
@@ -170,6 +157,14 @@ export class BrowserDispatcher
         }
     }
 
+    /**
+     * Processes a handler error by attempting to resolve it with registered error resolvers.
+     * @param route - The current route.
+     * @param handler - The handler that caused the error.
+     * @param error - The error that occurred.
+     * @returns A {@link ModelAndView} if the error was resolved, otherwise throws a TypeError.
+     * @throws {TypeError} If no view name can be determined for the error.
+     */
     protected _processHandlerError(route: Route, handler, error: Error): ModelAndView {
         let mav: ModelAndView = null;
         this.errorResolvers.some(function (resolver: RouteErrorResolver): boolean {
@@ -187,6 +182,12 @@ export class BrowserDispatcher
         throw new TypeError('view name is undefined');
     }
 
+    /**
+     * Resolves a view name into a {@link View} object using registered view resolvers.
+     * @param viewName - The name of the view to resolve.
+     * @param language - The language to use for view resolution.
+     * @returns A Promise that resolves to the {@link View} object, or `null` if not found.
+     */
     protected async _resolveViewName(viewName: string, language: string): Promise<View> {
         let index = 0,
             view: View = null;
@@ -202,6 +203,11 @@ export class BrowserDispatcher
         return view;
     }
 
+    /**
+     * Applies the default view name to the {@link ModelAndView} if no view is already set.
+     * @param route - The current route.
+     * @param mv - The {@link ModelAndView} to apply the default view name to.
+     */
     private _applyDefaultViewName(route: Route, mv: ModelAndView) {
         if (mv && !mv.hasView) {
             const defaultViewName = this.getDefaultViewName(route);
@@ -211,6 +217,13 @@ export class BrowserDispatcher
         }
     }
 
+    /**
+     * Processes the result of the dispatch operation, handling errors and rendering the view.
+     * @param route - The current route.
+     * @param mappedHandler - The mapped route handler execution chain.
+     * @param mv - The {@link ModelAndView} produced by the handler.
+     * @param error - Any error that occurred during dispatch.
+     */
     private async _processDispatchResult(
         route: Route,
         mappedHandler: RouteHandlerExecutionChain,

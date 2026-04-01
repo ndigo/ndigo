@@ -49,4 +49,5 @@ const wrapInBrackets = (value) => `[${value}]`,
         errorMapTo(posixError),
     ]);
 
+/** Parses POSIX character-class syntax into a bracket expression. */
 export default posixClass;

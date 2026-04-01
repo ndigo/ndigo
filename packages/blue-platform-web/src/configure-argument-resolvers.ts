@@ -17,6 +17,7 @@ import { BrowserModelValueMethodArgumentResolver } from './model-argument-resolv
 import { BrowserStateValueMethodArgumentResolver } from './state-argument-resolver';
 import { BrowserSessionValueMethodArgumentResolver } from './session-argument-resolver';
 
+/** Options for configuring browser argument resolvers. */
 export type BrowserArgumentResolverOptions = {
     bind?: ResolverConverterOption;
     cookie?: ResolverConverterOption;
@@ -28,7 +29,11 @@ export type BrowserArgumentResolverOptions = {
 };
 
 /**
- * Registers browser-specific argument resolvers into application context.
+ * Registers browser-specific argument resolvers into the application context.
+ *
+ * @param applicationContext - The application context to configure.
+ * @param options - Resolver and converter overrides.
+ * @returns The resolver instances registered with the context.
  */
 export function configureBrowserArgumentResolvers(
     applicationContext: ApplicationContext,

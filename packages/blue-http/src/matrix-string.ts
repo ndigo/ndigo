@@ -44,7 +44,16 @@ const alwaysEmptyString = always(''),
         return object ? pipe(keys, naturalSort, encodeParams, filterEmpty, joinOnSemicolon)(object) : '';
     };
 
+/**
+ * Parses and serializes matrix parameters.
+ */
 class MatrixString implements Parser, Stringifier {
+    /**
+     * Parses a matrix string into a JSON object.
+     *
+     * @param value - The matrix string to parse.
+     * @returns A plain object representation of the matrix parameters.
+     */
     parse(value: string): JSONObject {
         const trimmed = (value || '').trim();
         if (!trimmed || trimmed === ';') {
@@ -56,9 +65,18 @@ class MatrixString implements Parser, Stringifier {
         }
         return {};
     }
+    /**
+     * Serializes a JSON-like value to a matrix string.
+     *
+     * @param value - The value to serialize.
+     * @returns The encoded matrix string.
+     */
     stringify(value: any): string {
         return toMatrixString(value);
     }
 }
 
+/**
+ * Matrix-string parser and serializer singleton.
+ */
 export default new MatrixString();

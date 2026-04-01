@@ -109,4 +109,5 @@ const dots = '..',
         .chain(() => sequenceOf([sequencePoint, sequenceOperator, sequencePoint, optionalStepSuffix]))
         .map(toArray);
 
+/** Parses brace-style numeric and alphabetic ranges into value arrays. */
 export default sequenceExpression;

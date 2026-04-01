@@ -10,20 +10,35 @@ import { HTTPInit, InitializationAwareHTTPInterceptor, ResponseAwareHTTPIntercep
 import { CONTENT_TYPE } from '../http-headers';
 import ResponseError from '../response-error';
 
+/**
+ * Factory that produces a parser for a specific media type.
+ */
 export type ResponseParser<T = any> = (mediaType: string) => (response: Response) => Promise<T>;
 
+/**
+ * Map of media types to response parsers.
+ */
 export type ResponseParserMap = Map<MediaType, ResponseParser>;
 
+/**
+ * Supported parser collections accepted by {@link ResponseTypeInterceptor}.
+ */
 export type ResponseParsers =
     | ResponseParserMap
     | { [mediaType: string]: ResponseParser }
     | [[string | MediaType, ResponseParser]];
 
+/**
+ * Request settings for {@link ResponseTypeInterceptor}.
+ */
 export type ResponseTypeInit = HTTPInit & {
     responseParsers?: ResponseParsers;
     responseType?: string | MediaType | true;
 };
 
+/**
+ * Normalized request settings used after initialization.
+ */
 export type ResponseTypeSettings = HTTPInit & { responseParsers: ResponseParserMap; responseType: MediaType | true };
 
 /**
@@ -69,6 +84,8 @@ defaultParsers.set(MediaTypes.TEXT_PLAIN, textParser);
 defaultParsers.set(MediaTypes.TEXT_XML, markupParser);
 
 /**
+ * Parses response bodies into typed data and attaches the result as `data`.
+ *
  * @implements module:http.InitializationAwareHTTPInterceptor
  * @implements module:http.ResponseAwareHTTPInterceptor
  */

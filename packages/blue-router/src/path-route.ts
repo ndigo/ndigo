@@ -37,12 +37,23 @@ function nextRouteId(): number {
 
 /**
  */
+/**
+ * Represents a single segment of a `PathRoute`, including its name, matrix parameters, and raw string value.
+ * It implements `RouteSegment` and `Serializable`.
+ * @since 1.0.0
+ */
 export class PathRouteSegment implements RouteSegment, Serializable {
     readonly name: string;
     readonly data: JSONObject;
     readonly dataString?: string;
     readonly raw: string;
 
+    /**
+     * Creates an instance of `PathRouteSegment` from a raw segment string.
+     * The segment string can include matrix parameters (e.g., `segment;key=value`).
+     * @param segment - The raw string representation of the route segment.
+     * @since 1.0.0
+     */
     constructor(segment: string) {
         const index = segment.indexOf(semicolon);
 
@@ -104,6 +115,11 @@ export class PathRouteSegment implements RouteSegment, Serializable {
         }
     }
 
+    /**
+     * Serializes the `PathRouteSegment` instance to a JSON object.
+     * @returns A `JSONValue` representation of the segment.
+     * @since 1.0.0
+     */
     toJSON(): JSONValue {
         const json: JSONObject = createNull();
 
@@ -113,6 +129,11 @@ export class PathRouteSegment implements RouteSegment, Serializable {
         return json;
     }
 
+    /**
+     * Returns the string representation of the `PathRouteSegment`, including its name and matrix parameters.
+     * @returns The string representation of the segment.
+     * @since 1.0.0
+     */
     toString(): string {
         const { data, dataString, name } = this,
             matrixString = data && !dataString ? MatrixString.stringify(data) : dataString;
@@ -121,8 +142,10 @@ export class PathRouteSegment implements RouteSegment, Serializable {
 }
 
 /**
- * @implements module:router.Route
- * @implements module:core.Serializable
+ * Represents a concrete route based on a URL path, parsing segments, matrix parameters, and query strings.
+ * It implements `Route` and `Serializable`.
+ * @template TParams - A type representing the route parameters, defaulting to `Record<string, string>`.
+ * @since 1.0.0
  */
 export class PathRoute implements Route<Record<string, string>>, Serializable {
     [n: number]: RouteSegment;
@@ -135,6 +158,11 @@ export class PathRoute implements Route<Record<string, string>>, Serializable {
     readonly raw: string;
     readonly attributes: Record<string, any>;
 
+    /**
+     * Gets the number of segments in the route.
+     * @returns The number of route segments.
+     * @since 1.0.0
+     */
     get length(): number {
         const keysArray = keys(this) as readonly string[];
         const indices = map(parseInt)(keysArray);
@@ -151,6 +179,12 @@ export class PathRoute implements Route<Record<string, string>>, Serializable {
         */
     }
 
+    /**
+     * Creates an instance of `PathRoute` from a raw route string.
+     * The route string can include path segments, matrix parameters, and a query string.
+     * @param route - The raw string representation of the route (e.g., `/foo;a=b/bar?c=d`).
+     * @since 1.0.0
+     */
     constructor(route: string) {
         defineProperty(this, 'raw', {
             value: route,
@@ -233,6 +267,11 @@ export class PathRoute implements Route<Record<string, string>>, Serializable {
         }
     }
 
+    /**
+     * Serializes the `PathRoute` instance to a JSON object.
+     * @returns A `JSONValue` representation of the route.
+     * @since 1.0.0
+     */
     toJSON(): JSONValue {
         const json = createNull(),
             length = this.length;
@@ -250,6 +289,11 @@ export class PathRoute implements Route<Record<string, string>>, Serializable {
         return json;
     }
 
+    /**
+     * Returns the string representation of the `PathRoute`, including its segments and query string.
+     * @returns The string representation of the route.
+     * @since 1.0.0
+     */
     toString(): string {
         const { data, dataString, length } = this,
             segments: string[] = [],
@@ -266,10 +310,24 @@ export class PathRoute implements Route<Record<string, string>>, Serializable {
         return queryString ? `${output}${questionMark}${queryString}` : output;
     }
 
+    /**
+     * Checks if the current route matches a given pattern.
+     * A pattern can include named parameters (e.g., `/users/:id` or `/products/{productId}`).
+     * @param pattern - The route pattern to match against.
+     * @returns `true` if the route matches the pattern, `false` otherwise.
+     * @since 1.0.0
+     */
     matches(pattern: string): boolean {
         return isNotNil(this.resolveParams(pattern));
     }
 
+    /**
+     * Resolves and extracts parameters from the route based on a given pattern.
+     * If the route matches the pattern, an object containing the resolved parameters is returned.
+     * @param pattern - The route pattern (e.g., `/users/:id` or `/products/{productId}`).
+     * @returns An object of resolved parameters if the route matches, or `null` if there is no match.
+     * @since 1.0.0
+     */
     resolveParams(pattern: string): Record<string, string> | null {
         const patternParts = splitRouteIntoParts(pattern),
             patternSegments = splitPathIntoSegments(patternParts[0]),
@@ -301,6 +359,14 @@ export class PathRoute implements Route<Record<string, string>>, Serializable {
         return params;
     }
 
+    /**
+     * Resolves the parameter name from a given pattern segment.
+     * Supports `:paramName` and `{paramName}` syntaxes.
+     * @param patternSegment - The segment from the route pattern.
+     * @returns The extracted parameter name, or `null` if the segment is not a parameter.
+     * @private
+     * @since 1.0.0
+     */
     private _resolveParamName(patternSegment: string): string | null {
         if (startsWithColon(patternSegment) && patternSegment.length > 1) {
             return patternSegment.slice(1);

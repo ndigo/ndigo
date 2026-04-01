@@ -1,4 +1,6 @@
-/** @author opencode */
+/**
+ * ESLint rule that blocks direct imports from libraries wrapped by BlueJS integration packages.
+ */
 
 import { ESLintUtils } from '@typescript-eslint/utils';
 
@@ -37,6 +39,9 @@ function getIntegrationLayerLibrary(source: string): { library: string; integrat
     return null;
 }
 
+/**
+ * Reports imports that should come from an integration layer package instead of a direct dependency.
+ */
 export const noDirectIntegrationImports = createRule({
     name: 'no-direct-integration-imports',
     meta: {

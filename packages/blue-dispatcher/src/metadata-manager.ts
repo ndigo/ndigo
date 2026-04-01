@@ -27,9 +27,21 @@ const { defineProperty } = Reflect;
  * @param {Record} target - Class constructor, prototype, or instance
  */
 export class MetadataScanner {
+    /**
+     * Cached metadata lookups for the current target.
+     */
     _cache: MultiValueMap<string, string>;
+
+    /**
+     * Target object whose metadata is being scanned.
+     */
     _target: Record<string, any>;
 
+    /**
+     * Create a scanner for a target object.
+     *
+     * @param target - The object, prototype, or constructor to scan.
+     */
     constructor(target: Record<string, any> = {}) {
         this._cache = new MultiValueMap();
 
@@ -48,6 +60,12 @@ export class MetadataScanner {
      * @private
      * @param {string} metadataKey - The metadata key to search for (e.g., 'route:mapping')
      * @returns {Array<external:string>} The property names that have metadata matching the key pattern.
+     */
+    /**
+     * Populate the cache from the target's metadata and return the matching entries.
+     *
+     * @param metadataKey - The metadata key to search for.
+     * @returns The matching property names, or `undefined` when no metadata exists.
      */
     private _primeCache(metadataKey: string): string[] | undefined {
         const target = this._target;
@@ -126,6 +144,12 @@ export class MetadataScanner {
      * @param {string} metadataKey - The metadata key pattern (e.g., 'route:mapping')
      * @returns {Array<external:string>} The property names that have metadata, or undefined if none found.
      */
+    /**
+     * Get the property names that match a metadata key.
+     *
+     * @param metadataKey - The metadata key to query.
+     * @returns The matching property names, or `undefined` when none are found.
+     */
     get(metadataKey: string): string[] | undefined {
         const cache = this._cache;
 
@@ -141,6 +165,9 @@ export class MetadataScanner {
     /**
      * Clear the metadata cache for the target object.
      */
+    /**
+     * Clear all cached metadata lookups for this scanner.
+     */
     clear(): void {
         this._cache.clear();
     }
@@ -151,20 +178,24 @@ export class MetadataScanner {
  * @classdesc Store Metadata Scanners for performant retrieval across an entire application
  */
 class MetadataManager {
+    /**
+     * Weakly cached scanners keyed by target object.
+     */
     _scannerMap: WeakMap<Record<string, any>, MetadataScanner>;
 
+    /**
+     * Create a metadata manager.
+     */
     constructor() {
         this._scannerMap = new WeakMap();
     }
 
     /**
-     * Get the property names of the target object that have the requested metadata.
-     * Look first for a metadataScanner instance for the target object in the scanner map.
-     * If an instance is not found then make one, add that to the scanner map, and return
-     * the properties with the requested metadata.
-     * @param {Record} target
-     * @param {string} metadataKey
-     * @returns {Array<external:string>} The property names on the target that have metadata.
+     * Get the property names of a target object that match the requested metadata key.
+     *
+     * @param target - The object, prototype, or constructor to scan.
+     * @param metadataKey - The metadata key to query.
+     * @returns The matching property names, or `undefined` when none are found.
      */
     get(target: Record<string, any>, metadataKey: string): string[] | undefined {
         const scannerMap = this._scannerMap;

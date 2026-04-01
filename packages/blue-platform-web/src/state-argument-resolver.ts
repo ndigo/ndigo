@@ -23,6 +23,13 @@ export abstract class AbstractStateValueMethodArgumentResolver extends AbstractN
     #converterRegistry: ArgumentValueConverterRegistry;
     #converterResolutionOptions: ConverterResolutionOptions;
 
+    /**
+     * Creates a history-state-backed resolver.
+     *
+     * @param converter - Default converter to apply to resolved values.
+     * @param converterRegistry - Named converter registry used for lookups.
+     * @param converterResolutionOptions - Resolution behavior overrides.
+     */
     constructor(
         converter: ArgumentValueConverter = identityArgumentValueConverter,
         converterRegistry: ArgumentValueConverterRegistry = argumentValueConverters,
@@ -34,6 +41,7 @@ export abstract class AbstractStateValueMethodArgumentResolver extends AbstractN
         this.#converterResolutionOptions = converterResolutionOptions;
     }
 
+    /** Resolves and converts a history-state-backed argument value. */
     resolveArgument(parameter: MethodParameter, route: Route, mapping): any {
         const resolveValue = defaultTo(parameter.defaultValue),
             value = resolveValue(this.resolveName(parameter.name, parameter, route, mapping)),
@@ -53,6 +61,7 @@ export abstract class AbstractStateValueMethodArgumentResolver extends AbstractN
         return convertedValue;
     }
 
+    /** Resolves the raw value from `history.state`. */
     protected resolveName(name: string, parameter: MethodParameter, route: Route, mapping): any {
         void parameter;
         void route;
@@ -61,8 +70,10 @@ export abstract class AbstractStateValueMethodArgumentResolver extends AbstractN
         return this.getStateValue(name);
     }
 
+    /** Retrieves a state value by name. */
     protected abstract getStateValue(name: string): any;
 
+    /** Returns whether this resolver supports history-state parameters. */
     supportsParameter(parameter: MethodParameter): boolean {
         return MethodParameterType.STATE.equals(parameter.type);
     }
@@ -72,6 +83,13 @@ export abstract class AbstractStateValueMethodArgumentResolver extends AbstractN
  * Browser history state argument resolver.
  */
 export class BrowserStateValueMethodArgumentResolver extends AbstractStateValueMethodArgumentResolver {
+    /**
+     * Creates a browser state resolver.
+     *
+     * @param converter - Default converter to apply to resolved values.
+     * @param converterRegistry - Named converter registry used for lookups.
+     * @param converterResolutionOptions - Resolution behavior overrides.
+     */
     constructor(
         converter: ArgumentValueConverter = identityArgumentValueConverter,
         converterRegistry: ArgumentValueConverterRegistry = argumentValueConverters,
@@ -84,6 +102,7 @@ export class BrowserStateValueMethodArgumentResolver extends AbstractStateValueM
         return 'BrowserStateValueMethodArgumentResolver';
     }
 
+    /** Retrieves a value from `history.state` if it exists. */
     protected getStateValue(name: string): any {
         const state = globalThis.history?.state;
 

@@ -5,6 +5,9 @@
  *
  * Any import from a key in this map should instead come from the corresponding value,
  * unless the importing file is inside the integration layer package itself or is a test file.
+ *
+ * @remarks
+ * Keep this map in sync with the integration layer packages enforced by the ESLint rules.
  */
 export const INTEGRATION_LAYER_MAP: Record<string, string> = {
     ramda: '@blue/util',
@@ -17,6 +20,6 @@ export const INTEGRATION_LAYER_MAP: Record<string, string> = {
 };
 
 /**
- * Package names that ARE integration layer packages (allowed to import their encapsulated libraries).
+ * Package names that are allowed to import the libraries they encapsulate.
  */
 export const INTEGRATION_LAYER_PACKAGES: string[] = ['@blue/util', '@blue/parser', '@blue/model'];

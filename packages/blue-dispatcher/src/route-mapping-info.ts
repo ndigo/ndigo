@@ -38,17 +38,23 @@ export class AccessExpression extends AbstractNameValueExpression<boolean> {
 */
 
 /**
- * Parses and matches a single param expression to a route.
- * @extends module:dispatcher.AbstractNameValueExpression<external:string>
- * @param {...external:string} [patterns] 0 or more route patterns; if 0 the condition will match to every route.
+ * Parses and matches a single parameter expression against a route.
  */
 export class ParamExpression extends AbstractNameValueExpression<string> {
+    /**
+     * Parameter names that may satisfy this expression.
+     */
     readonly namesToMatch: Set<string>;
 
     get isCaseSensitiveName(): boolean {
         return true;
     }
 
+    /**
+     * Parse a parameter expression.
+     *
+     * @param expression - The expression to parse.
+     */
     constructor(expression: string) {
         super(expression);
 
@@ -62,6 +68,12 @@ export class ParamExpression extends AbstractNameValueExpression<string> {
         this.namesToMatch.add(this.name);
     }
 
+    /**
+     * Check whether the route contains a matching parameter name.
+     *
+     * @param route - The current route.
+     * @returns `true` when the parameter name matches.
+     */
     matchName(route: Route): boolean {
         for (const name of this.namesToMatch) {
             if ('data' in route && name in route.data) {
@@ -71,10 +83,22 @@ export class ParamExpression extends AbstractNameValueExpression<string> {
         return 'data' in route && this.name in route.data;
     }
 
+    /**
+     * Check whether the route parameter value matches this expression.
+     *
+     * @param route - The current route.
+     * @returns `true` when the parameter value matches.
+     */
     matchValue(route: Route): boolean {
         return this.value === route.data[this.name];
     }
 
+    /**
+     * Return the parameter value as-is.
+     *
+     * @param valueExpression - The raw value expression.
+     * @returns The parsed value.
+     */
     parseValue(valueExpression: string): string {
         return valueExpression;
     }
@@ -85,6 +109,9 @@ export class ParamExpression extends AbstractNameValueExpression<string> {
  * @extends module:dispatcher.AbstractRouteCondition
  */
 export class ParamsRouteCondition extends AbstractRouteCondition<ParamsRouteCondition> {
+    /**
+     * Parameter expressions that must all match.
+     */
     readonly expressions: Set<ParamExpression>;
 
     get content(): ParamExpression[] {
@@ -95,7 +122,17 @@ export class ParamsRouteCondition extends AbstractRouteCondition<ParamsRouteCond
         return ' && ';
     }
 
+    /**
+     * Create a parameter condition from one or more expressions.
+     *
+     * @param params - Parameter expressions to parse.
+     */
     constructor(...params: string[]);
+    /**
+     * Create a parameter condition from a prebuilt expression set.
+     *
+     * @param conditions - The parameter expressions to use.
+     */
     constructor(conditions: Set<ParamExpression>);
     constructor(paramOrConditions: string | Set<ParamExpression>, ...params: string[]) {
         super();
@@ -113,6 +150,12 @@ export class ParamsRouteCondition extends AbstractRouteCondition<ParamsRouteCond
     /**
      * Returns a new instance with the union of the param expressions from _this_ and the value provided.
      */
+    /**
+     * Merge parameter expressions from both conditions.
+     *
+     * @param value - The condition to merge with.
+     * @returns A condition containing the union of expressions.
+     */
     merge(value: ParamsRouteCondition): ParamsRouteCondition {
         const expressions: Set<ParamExpression> = new Set<ParamExpression>(this.expressions);
 
@@ -125,6 +168,12 @@ export class ParamsRouteCondition extends AbstractRouteCondition<ParamsRouteCond
 
     /**
      * Returns `this` instance if the route matches all param expressions or `null` otherwise.
+     */
+    /**
+     * Return this condition when every expression matches the route.
+     *
+     * @param route - The current route.
+     * @returns This condition, or `null`.
      */
     getMatchingCondition(route: Route): ParamsRouteCondition {
         for (const expression of this.expressions) {
@@ -142,6 +191,13 @@ export class ParamsRouteCondition extends AbstractRouteCondition<ParamsRouteCond
      * @param {module:dispatcher.ParamsRouteCondition} value
      * @returns {number}
      */
+    /**
+     * Compare parameter conditions by specificity.
+     *
+     * @param value - The condition to compare.
+     * @param route - Unused, but part of the shared contract.
+     * @returns A comparison result.
+     */
     compareTo(value: ParamsRouteCondition, route?: Route): number {
         const result = value.expressions.size - this.expressions.size;
         if (result !== 0) {
@@ -150,6 +206,12 @@ export class ParamsRouteCondition extends AbstractRouteCondition<ParamsRouteCond
         return this._getValueMatchCount(value.expressions) - this._getValueMatchCount(this.expressions);
     }
 
+    /**
+     * Count the number of concrete, non-negated expressions.
+     *
+     * @param expressions - The expressions to inspect.
+     * @returns The number of concrete value matches.
+     */
     private _getValueMatchCount(expressions: Set<ParamExpression>): number {
         let count = 0;
         for (const expression of expressions) {
@@ -160,6 +222,12 @@ export class ParamsRouteCondition extends AbstractRouteCondition<ParamsRouteCond
         return count;
     }
 
+    /**
+     * Parse parameter expressions into a set.
+     *
+     * @param params - The raw parameter expressions.
+     * @returns The parsed expressions.
+     */
     private _parseExpressions(params: string[]): Set<ParamExpression> {
         const expressions = new Set<ParamExpression>();
         params.forEach((param) => expressions.add(new ParamExpression(param)));
@@ -180,9 +248,24 @@ export class ParamsRouteCondition extends AbstractRouteCondition<ParamsRouteCond
  * @param {Array<external:string>} [fileExtensions] a list of file extensions to consider for path matching
  */
 export class PatternsRouteCondition extends AbstractRouteCondition<PatternsRouteCondition> {
+    /**
+     * Matcher used to compare and merge route patterns.
+     */
     readonly pathMatcher: PathMatcher;
+
+    /**
+     * File extensions that are treated as matchable suffixes.
+     */
     fileExtensions: string[];
+
+    /**
+     * Route patterns to match against.
+     */
     patterns: Set<string>;
+
+    /**
+     * Whether a trailing slash may be treated as equivalent.
+     */
     useTrailingSlashMatch: boolean;
 
     get content(): string[] {
@@ -193,8 +276,27 @@ export class PatternsRouteCondition extends AbstractRouteCondition<PatternsRoute
         return ' || ';
     }
 
+    /**
+     * Create a condition from one or more patterns.
+     *
+     * @param patterns - Route patterns to use.
+     */
     constructor(...patterns: string[]);
+    /**
+     * Create a condition from a prebuilt pattern set.
+     *
+     * @param patterns - The pattern set to use.
+     * @param routeCondition - A template condition to copy matcher settings from.
+     */
     constructor(patterns: Set<string>, routeCondition?: PatternsRouteCondition);
+    /**
+     * Create a condition with explicit matcher settings.
+     *
+     * @param patterns - Route patterns to use.
+     * @param pathMatcher - The matcher to use.
+     * @param useTrailingSlashMatch - Whether to allow trailing slash matches.
+     * @param fileExtensions - File extensions to treat as suffix patterns.
+     */
     constructor(patterns: string[], pathMatcher: PathMatcher, useTrailingSlashMatch: boolean, fileExtensions: string[]);
     constructor(
         patterns: string | string[] | Set<string> = '',
@@ -302,6 +404,12 @@ export class PatternsRouteCondition extends AbstractRouteCondition<PatternsRoute
         });
     }
 
+    /**
+     * Merge route patterns from both conditions.
+     *
+     * @param value - The condition to merge with.
+     * @returns A new condition containing the merged patterns.
+     */
     merge(value: PatternsRouteCondition): PatternsRouteCondition {
         const result = new Set<string>(),
             thisSize = this.patterns.size,
@@ -328,6 +436,12 @@ export class PatternsRouteCondition extends AbstractRouteCondition<PatternsRoute
         return new PatternsRouteCondition(result, this);
     }
 
+    /**
+     * Return a condition containing only the patterns that match the route.
+     *
+     * @param route - The current route.
+     * @returns A matching condition, or `null`.
+     */
     getMatchingCondition(route: Route): PatternsRouteCondition {
         if (this.patterns.size === 0) {
             return this;
@@ -336,6 +450,12 @@ export class PatternsRouteCondition extends AbstractRouteCondition<PatternsRoute
         return matches.length ? new PatternsRouteCondition(new Set<string>(matches), this) : null;
     }
 
+    /**
+     * Return the patterns that match a path.
+     *
+     * @param path - The path to test.
+     * @returns The matching patterns, sorted when necessary.
+     */
     getMatchingPatterns(path: string): string[] {
         const matches: string[] = [];
         this.patterns.forEach((pattern) => {
@@ -351,6 +471,13 @@ export class PatternsRouteCondition extends AbstractRouteCondition<PatternsRoute
         return matches;
     }
 
+    /**
+     * Compare route patterns using the configured path matcher.
+     *
+     * @param value - The condition to compare.
+     * @param route - The route used to obtain a pattern comparator.
+     * @returns A comparison result.
+     */
     compareTo(value: PatternsRouteCondition, route: Route): number {
         const path = route.path,
             patternComparator = this.pathMatcher.getPatternComparator(path),
@@ -373,6 +500,13 @@ export class PatternsRouteCondition extends AbstractRouteCondition<PatternsRoute
         }
     }
 
+    /**
+     * Return the pattern variant that matches the given path.
+     *
+     * @param pattern - The pattern to test.
+     * @param path - The route path.
+     * @returns The matching pattern, or `null`.
+     */
     private _getMatchingPattern(pattern: string, path: string): string {
         // Root pattern "/" matches empty internal path ""
         if (pattern === '/' && path === '') {
@@ -401,11 +535,34 @@ export class PatternsRouteCondition extends AbstractRouteCondition<PatternsRoute
 }
 
 export class RouteMappingInfo implements RouteCondition<RouteMappingInfo> {
+    /**
+     * Optional mapping name.
+     */
     readonly name: string;
+
+    /**
+     * Pattern matching condition.
+     */
     readonly patternsCondition: PatternsRouteCondition;
+
+    /**
+     * Parameter matching condition.
+     */
     readonly paramsCondition: ParamsRouteCondition;
+
+    /**
+     * Custom condition wrapper.
+     */
     readonly customConditionHolder: RouteConditionHolder;
 
+    /**
+     * Create route mapping metadata for a handler method.
+     *
+     * @param name - The mapping name.
+     * @param patterns - Pattern matching condition.
+     * @param params - Parameter matching condition.
+     * @param custom - Optional custom condition.
+     */
     constructor(
         name: string = null,
         patterns: PatternsRouteCondition = new PatternsRouteCondition(),
@@ -441,6 +598,12 @@ export class RouteMappingInfo implements RouteCondition<RouteMappingInfo> {
         });
     }
 
+    /**
+     * Merge this mapping info with another.
+     *
+     * @param value - The mapping info to merge with.
+     * @returns The merged mapping info.
+     */
     merge(value: RouteMappingInfo): RouteMappingInfo {
         const name = this._mergeNames(value),
             params = this.paramsCondition.merge(value.paramsCondition),
@@ -450,6 +613,12 @@ export class RouteMappingInfo implements RouteCondition<RouteMappingInfo> {
         return new RouteMappingInfo(name, patterns, params, custom.condition);
     }
 
+    /**
+     * Return a condition instance that matches the current route.
+     *
+     * @param route - The current route.
+     * @returns A matching mapping info, or `null`.
+     */
     getMatchingCondition(route: Route): RouteMappingInfo {
         const params = this.paramsCondition.getMatchingCondition(route);
         if (!params) {
@@ -469,6 +638,13 @@ export class RouteMappingInfo implements RouteCondition<RouteMappingInfo> {
         return new RouteMappingInfo(this.name, patterns, params, custom.condition);
     }
 
+    /**
+     * Compare mapping info by parameter, pattern, and custom specificity.
+     *
+     * @param value - The mapping info to compare.
+     * @param route - The current route.
+     * @returns A comparison result.
+     */
     compareTo(value: RouteMappingInfo, route: Route): number {
         let result: number;
 
@@ -490,6 +666,12 @@ export class RouteMappingInfo implements RouteCondition<RouteMappingInfo> {
         return 0;
     }
 
+    /**
+     * Merge mapping names while preserving path separators.
+     *
+     * @param value - The mapping info to merge names from.
+     * @returns The merged name.
+     */
     private _mergeNames(value: RouteMappingInfo): string {
         if (this.name && value.name) {
             return `${this.name}${separator}${value.name}`.replace(/\/\//g, '/');
@@ -504,8 +686,18 @@ export class RouteMappingInfo implements RouteCondition<RouteMappingInfo> {
 export class RouteMappingInfoHandlerMethodMappingNamingStrategy
     implements RouteHandlerMethodMappingNamingStrategy<RouteMappingInfo>
 {
+    /**
+     * Separator used when generating fallback mapping names.
+     */
     static readonly separator: string;
 
+    /**
+     * Create a mapping name from the handler method and mapping metadata.
+     *
+     * @param handlerMethod - The handler method being named.
+     * @param mapping - The associated route mapping metadata.
+     * @returns The mapping name.
+     */
     getName(handlerMethod: RouteHandlerMethod, mapping: RouteMappingInfo): string {
         if (mapping.name) {
             return mapping.name;

@@ -14,7 +14,21 @@ import { Route } from '@blue/router';
  * logger is provided, trace context (traceId, spanId) is automatically injected.
  */
 export interface InterceptorLogger {
+    /**
+     * Log an informational message.
+     *
+     * @param message - The log message.
+     * @param attributes - Structured attributes for the event.
+     */
     info(message: string, attributes?: Record<string, unknown>): void;
+
+    /**
+     * Log an error message.
+     *
+     * @param message - The log message.
+     * @param error - The error, if any.
+     * @param attributes - Structured attributes for the event.
+     */
     error(message: string, error?: unknown, attributes?: Record<string, unknown>): void;
 }
 
@@ -26,9 +40,21 @@ export interface InterceptorLogger {
  * is provided, falls back to `console`-based logging for backward compatibility.
  */
 export class LoggingRouteHandlerInterceptor implements RouteHandlerInterceptor {
+    /**
+     * Route start timestamps used to compute duration.
+     */
     #startTimeMap: WeakMap<Route, number>;
+
+    /**
+     * Logger used to emit interceptor events.
+     */
     #logger: InterceptorLogger;
 
+    /**
+     * Create a logging interceptor.
+     *
+     * @param logger - Optional structured logger implementation.
+     */
     constructor(logger?: InterceptorLogger) {
         this.#startTimeMap = new WeakMap();
         this.#logger = logger ?? {
@@ -41,12 +67,26 @@ export class LoggingRouteHandlerInterceptor implements RouteHandlerInterceptor {
         };
     }
 
+    /**
+     * Record the start time and emit a "route started" log entry.
+     *
+     * @param route - The current route.
+     * @param handler - The route handler.
+     * @returns `true` to continue execution.
+     */
     async preHandle(route: Route, handler: any): Promise<boolean> {
         this.#startTimeMap.set(route, Date.now());
         this.#logger.info('[Dispatcher] -> Handling route', { 'route.path': route.path });
         return true;
     }
 
+    /**
+     * Emit a completion log entry after successful handler execution.
+     *
+     * @param route - The current route.
+     * @param handler - The route handler.
+     * @param modelAndView - The model and view returned by the handler.
+     */
     async postHandle(route: Route, handler: any, modelAndView: ModelAndView): Promise<void> {
         const startTime = this.#startTimeMap.get(route);
         const duration = startTime ? Date.now() - startTime : -1;
@@ -58,6 +98,13 @@ export class LoggingRouteHandlerInterceptor implements RouteHandlerInterceptor {
         });
     }
 
+    /**
+     * Emit a failure log entry and clear the recorded start time.
+     *
+     * @param route - The current route.
+     * @param handler - The route handler.
+     * @param error - The error thrown during execution.
+     */
     async completeHandle(route: Route, handler: any, error: Error): Promise<void> {
         if (error) {
             const startTime = this.#startTimeMap.get(route);

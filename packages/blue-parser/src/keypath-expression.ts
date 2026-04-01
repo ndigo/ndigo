@@ -30,4 +30,5 @@ const writeIdentifier = ([start, parts = []]: [string, string[]]) => `${start}${
 
 const keypathExpression = choice([memberExpression, identifier.map((value: string) => [value])]);
 
+/** Parses dotted and bracketed property access into path tokens. */
 export default keypathExpression;

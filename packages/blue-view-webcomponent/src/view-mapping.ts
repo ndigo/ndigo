@@ -36,30 +36,37 @@ const VIEW_MAPPING = 'view:mapping',
         };
 
 /**
- * @param {string} viewName
- * @returns {Function}
- */
-
-/**
+ * Registers a view name in decorator metadata for later lookup.
+ *
+ * @param viewName - The view name to associate with the decorated class.
+ * @returns A class decorator that stores the view name in metadata.
  */
 export const ViewMapping = assign(viewMapping, {
     /**
-     * @param {*} value
-     * @param {*} target
+     * Writes a view mapping to the target's metadata.
+     *
+     * @param value - The view name to store.
+     * @param target - The decorated class or constructor-like target.
      */
     define: defineViewMapping,
     /**
-     * @param {*} target
+     * Removes any stored view mapping from the target's metadata.
+     *
+     * @param target - The decorated class or constructor-like target.
      */
     delete: deleteViewMapping,
     /**
-     * @param {*} target
-     * @returns {string}
+     * Reads the stored view mapping for a target.
+     *
+     * @param target - The decorated class or constructor-like target.
+     * @returns The view name, or `undefined` when none has been recorded.
      */
     get: getViewMapping,
     /**
-     * @param {*} target
-     * @returns {boolean} Whether or not the `target` has a view mapping.
+     * Tests whether a target has a stored view mapping.
+     *
+     * @param target - The decorated class or constructor-like target.
+     * @returns `true` when a view mapping is present.
      */
     has: hasViewMapping,
 });

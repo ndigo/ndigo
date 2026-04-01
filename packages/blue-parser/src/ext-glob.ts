@@ -83,4 +83,5 @@ const dotLiteral = '\\.',
         possibly(endOfInput.map(T)),
     ]).map(mapExtGlob as any);
 
+/** Parses extended glob syntax into a regular-expression source string. */
 export default extGlob;

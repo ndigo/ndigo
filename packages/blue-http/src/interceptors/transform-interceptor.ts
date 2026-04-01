@@ -6,30 +6,10 @@ import { MediaType } from '@blue/core';
 import { RequestAwareHTTPInterceptor, ResponseAwareHTTPInterceptor } from '../http';
 
 /**
- * Interceptor that applies body transformations to requests and responses.
+ * Applies request and response body transforms at the interceptor boundary.
  *
- * Executes AFTER ContentTypeInterceptor (headers are set first).
- * Converts user-provided transforms (functions or objects) into interceptor hooks.
- *
- * @example
- * ```typescript
- * const http = new HTTP({
- *     requestTransforms: [
- *         // Function transform
- *         (body) => sanitizeRequestBody(body),
- *
- *         // Object transform with conditional logic
- *         {
- *             canTransform: (body, ctx) => ctx.url.includes('/api/v2'),
- *             transform: (body) => transformV2Format(body)
- *         }
- *     ],
- *     responseTransforms: [
- *         // Parse dates in response
- *         (body) => parseDates(body)
- *     ]
- * });
- * ```
+ * It runs after header setup so transforms can rely on the declared content
+ * type and other request context.
  */
 export class TransformInterceptor implements RequestAwareHTTPInterceptor, ResponseAwareHTTPInterceptor {
     constructor(
@@ -39,6 +19,9 @@ export class TransformInterceptor implements RequestAwareHTTPInterceptor, Respon
 
     /**
      * Applies request body transformations.
+     *
+     * @param request - The request to transform.
+     * @returns A replacement request when a transform changes the body.
      */
     async preRequest(request: Request): Promise<Request> {
         if (this.requestTransforms.length === 0) {
@@ -72,6 +55,9 @@ export class TransformInterceptor implements RequestAwareHTTPInterceptor, Respon
 
     /**
      * Applies response body transformations.
+     *
+     * @param response - The response to transform.
+     * @returns A replacement response when a transform changes the body.
      */
     async postResponse(response: Response): Promise<Response | void> {
         if (this.responseTransforms.length === 0) {

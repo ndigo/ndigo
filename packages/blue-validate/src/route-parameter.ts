@@ -14,9 +14,22 @@ import { ValidationError, ConstraintViolationError } from './error';
  */
 
 /** A function that converts a raw parameter value. */
+/**
+ * A function that converts a raw parameter value into a desired type.
+ * @template T - The target type after conversion.
+ * @param {any} value - The raw parameter value.
+ * @param {any[]} args - Additional arguments passed to the converter.
+ * @returns {T} The converted value.
+ */
 type ParameterValueConverter<T = unknown> = (value: any, ...args: any[]) => T;
 
 /** Describes how a single route parameter is extracted. */
+/**
+ * Describes how a single route parameter is extracted and optionally converted.
+ * This type is structurally compatible with `@blue/dispatcher`'s parameter extraction protocol.
+ * @template T - The expected type of the parameter after extraction and conversion.
+ * @property {ParameterValueConverter<T> | string | { optional?: boolean; use: ParameterValueConverter<T> | string } | null} [convert] - A converter function or string alias to transform the raw parameter value.
+ */
 type ParameterExtractor<T = unknown> = {
     [key: string]: unknown;
     convert?:

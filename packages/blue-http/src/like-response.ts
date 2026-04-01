@@ -7,6 +7,15 @@ import { is, like } from '@blue/util/types';
 
 const isResponse = is(Response) as (value) => value is Response;
 
+/**
+ * Tests whether a value behaves like a `Response`.
+ *
+ * The check accepts real `Response` instances and compatible response-shaped
+ * objects so interceptors can work across environments.
+ *
+ * @param value - The value to test.
+ * @returns `true` when the value matches the `Response` shape.
+ */
 export const likeResponse = anyPass([
     isResponse,
     like({

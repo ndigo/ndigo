@@ -14,10 +14,22 @@ import { NativeValidationBackendAdapter } from './_native-validation-backend-ada
 type ConstraintConfig = TypeDefinition['constraints'][number];
 const defaultValidationBackend = new NativeValidationBackendAdapter();
 
+/**
+ * Options that can be passed to a validation operation.
+ * @property {ValidationGroup[]} [groups] - An array of validation groups to apply. If not provided, the default group will be used.
+ */
 export type ValidationOptions = Record<string, unknown> & {
     groups?: ValidationGroup[];
 };
 
+/**
+ * The detailed results returned after validating a value against a `Type` definition.
+ * @property {unknown} value - The value that was validated.
+ * @property {boolean} isValid - True if the validation passed, false otherwise.
+ * @property {string} validationName - The name of the `Type` definition used for validation.
+ * @property {ValidationOptions} validationParams - The options used during the validation process.
+ * @property {ConstraintConfig[]} failedConstraints - An array of constraint configurations that failed validation.
+ */
 export type ValidationResults = {
     value: unknown;
     isValid: boolean;
@@ -35,14 +47,21 @@ const { assign } = Object,
     isUndefined = equals(void 0);
 
 /**
- * @param {string} name
- * @param {Object} definition
+ * Represents a reusable validation type, encapsulating a set of constraints and a validation backend.
+ * This class allows for defining complex validation rules that can be applied to various values.
  */
 class Type {
     readonly name: string;
     readonly constraints: ConstraintConfig[];
     readonly backend: ValidationBackendAdapter;
 
+    /**
+     * Creates an instance of `Type`.
+     * @param {string} name - The name of this validation type.
+     * @param {TypeDefinition} definition - The definition of the type, including its constraints.
+     * @param {ValidationBackendAdapter} [backend=defaultValidationBackend] - The validation backend to use for this type.
+     * @throws {TypeError} If `definition.constraints` is not an array, or if any constraint within the definition is invalid or unregistered.
+     */
     constructor(
         name: string,
         definition: TypeDefinition,
@@ -103,8 +122,11 @@ class Type {
     }
 
     /**
-     * @param value
-     * @param params
+     * Checks if a value is valid according to the type's constraints.
+     * This method returns a boolean indicating overall validity.
+     * @param {unknown} value - The value to validate.
+     * @param {ValidationOptions} [params={}] - Optional parameters for the validation process, including active groups.
+     * @returns {boolean} True if the value passes all applicable constraints, false otherwise.
      */
     validator(value: unknown, params: ValidationOptions = {}) {
         return this.#resolveConstraints(params).every(function (constraint) {
@@ -120,8 +142,11 @@ class Type {
     }
 
     /**
-     * @param value
-     * @param params
+     * Validates a value against the type's constraints and returns detailed results.
+     * This method provides a comprehensive object including validity status and a list of failed constraints.
+     * @param {unknown} value - The value to validate.
+     * @param {ValidationOptions} [params={}] - Optional parameters for the validation process, including active groups.
+     * @returns {ValidationResults} An object containing the validation outcome, including `isValid` and `failedConstraints`.
      */
     validate(value: unknown, params: ValidationOptions = {}): ValidationResults {
         isNotArray(value) && isNotString(value) && (value = toString(value) || '');

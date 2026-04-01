@@ -9,26 +9,29 @@ import { is, like } from '@blue/util/types';
 import { likeIterable } from './iterable';
 import { createNull } from './null';
 
+/**
+ * A collection that can look up property values by name.
+ */
 export interface PropertyValues extends Iterable<PropertyValue> {
+    /** All property values in iteration order. */
     readonly propertyValues: PropertyValue[];
+
+    /**
+     * Returns the property value for the given name.
+     *
+     * @param propertyName - Property name to resolve.
+     * @returns The matching property value, or `null` when no match exists.
+     */
     getPropertyValue(propertyName: string): PropertyValue;
 }
-
-/**
- * @extends external:Iterable<module:core.PropertyValue>
- */
-
-/**
- */
-
-/**
- * @param {string} propertyName
- * @returns {module:core.PropertyValue} The property value or `null` if none
- */
 
 const isString = is(String) as (value) => value is string;
 
 /**
+ * Tests whether a value behaves like a `PropertyValues` collection.
+ *
+ * @param value - Value to test.
+ * @returns `true` when the value is iterable and exposes property lookup helpers.
  */
 export const likePropertyValues = both(
     likeIterable,
@@ -36,34 +39,50 @@ export const likePropertyValues = both(
 ) as (value) => value is PropertyValues;
 
 /**
- * An object that holds information and value for an individual property.
- * @implements module:core.Equatable
- * @implements module:core.Serializable
+ * A named value wrapper used for property bags and metadata.
  */
 export class PropertyValue implements Equatable, Serializable {
     #name: string;
     #value;
 
+    /** Whether the property is optional when consumed by higher-level APIs. */
     optional: boolean;
 
+    /**
+     * The stable string tag for this instance.
+     */
     get [Symbol.toStringTag](): string {
         return `PropertyValue:${this.#name}`;
     }
 
+    /** The property name. */
     get name(): string {
         return this.#name;
     }
 
+    /** The stored property value. */
     get value() {
         return this.#value;
     }
 
+    /**
+     * Creates a new property value.
+     *
+     * @param name - Property name.
+     * @param value - Stored value.
+     */
     constructor(name: string, value) {
         this.#name = name;
         this.#value = value;
         this.optional = false;
     }
 
+    /**
+     * Compares this property value to another value.
+     *
+     * @param value - Value to compare.
+     * @returns `true` when both the name and wrapped value match.
+     */
     equals(value): boolean {
         if (value === this) {
             return true;
@@ -74,6 +93,11 @@ export class PropertyValue implements Equatable, Serializable {
         return this.name === value.name && equates(this.value, value.value);
     }
 
+    /**
+     * Serializes the property value to JSON.
+     *
+     * @returns A JSON object with `name` and `value` properties.
+     */
     toJSON(): JSONValue {
         const json = createNull();
         json.name = this.#name;
@@ -81,23 +105,40 @@ export class PropertyValue implements Equatable, Serializable {
         return json;
     }
 
+    /**
+     * Returns the property name.
+     *
+     * @returns The property name.
+     */
     toString(): string {
         return this.#name;
     }
 }
 
+/**
+ * A mutable collection of named property values.
+ */
 export class MutablePropertyValues
     extends RingBuffer<PropertyValue>
     implements ArrayLike<PropertyValue>, Equatable, Iterable<PropertyValue>, Serializable
 {
+    /** All property values in iteration order. */
     get propertyValues(): PropertyValue[] {
         return [...this];
     }
 
+    /**
+     * The stable string tag for this collection.
+     */
     get [Symbol.toStringTag](): string {
         return 'PropertyValues';
     }
 
+    /**
+     * Creates a collection seeded with existing property values.
+     *
+     * @param properties - Optional source collection to copy into this buffer.
+     */
     constructor(properties?: Iterable<PropertyValue>) {
         super(32);
         if (likeIterable(properties)) {
@@ -107,8 +148,21 @@ export class MutablePropertyValues
         }
     }
 
+    /**
+     * Adds a property value to the collection.
+     *
+     * @param name - Property name.
+     * @param value - Property value.
+     */
     addPropertyValue(name: string, value);
+
+    /**
+     * Adds a pre-built property value to the collection.
+     *
+     * @param pv - Property value to add.
+     */
     addPropertyValue(pv: PropertyValue);
+
     addPropertyValue(nameOrPropertyValue: string | PropertyValue, value?) {
         if (isString(nameOrPropertyValue)) {
             this.put(new PropertyValue(nameOrPropertyValue, value));
@@ -117,6 +171,12 @@ export class MutablePropertyValues
         }
     }
 
+    /**
+     * Compares this collection to another property collection.
+     *
+     * @param value - Value to compare.
+     * @returns `true` when both collections contain the same property names and values.
+     */
     equals(value): boolean {
         let result = value === this;
 
@@ -134,11 +194,23 @@ export class MutablePropertyValues
         return result;
     }
 
+    /**
+     * Retrieves only the wrapped value for a named property.
+     *
+     * @param propertyName - Property name to resolve.
+     * @returns The stored value, or `null` when the property is missing.
+     */
     getValue(propertyName: string) {
         const pv = this.getPropertyValue(propertyName);
         return pv?.value ?? null;
     }
 
+    /**
+     * Finds a property value by name.
+     *
+     * @param propertyName - Property name to resolve.
+     * @returns The matching property value, or `null` when no match exists.
+     */
     getPropertyValue(propertyName: string): PropertyValue {
         const length = this.length;
         if (length) {

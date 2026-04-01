@@ -25,6 +25,13 @@ export abstract class AbstractBindMethodArgumentResolver extends AbstractNamedVa
     #converterRegistry: ArgumentValueConverterRegistry;
     #converterResolutionOptions: ConverterResolutionOptions;
 
+    /**
+     * Creates a bind-backed resolver.
+     *
+     * @param converter - Default converter to apply to resolved values.
+     * @param converterRegistry - Named converter registry used for lookups.
+     * @param converterResolutionOptions - Resolution behavior overrides.
+     */
     constructor(
         converter: ArgumentValueConverter = identityArgumentValueConverter,
         converterRegistry: ArgumentValueConverterRegistry = argumentValueConverters,
@@ -36,6 +43,7 @@ export abstract class AbstractBindMethodArgumentResolver extends AbstractNamedVa
         this.#converterResolutionOptions = converterResolutionOptions;
     }
 
+    /** Resolves and converts a bind-backed argument value. */
     resolveArgument(parameter: MethodParameter, route: Route, mapping): any {
         const rawData = this.getSourceData(parameter.name, route);
         const filteredData = this.filterByPrefix(rawData, parameter.prefix);
@@ -69,8 +77,10 @@ export abstract class AbstractBindMethodArgumentResolver extends AbstractNamedVa
         return finalValue;
     }
 
+    /** Retrieves the source data map for the named binding source. */
     protected abstract getSourceData(source: string, route: Route): Record<string, any>;
 
+    /** Removes a prefix from keys before binding nested values. */
     protected filterByPrefix(data: Record<string, any>, prefix: string | null): Record<string, any> {
         if (!prefix) {
             return data;
@@ -88,10 +98,12 @@ export abstract class AbstractBindMethodArgumentResolver extends AbstractNamedVa
         return filtered;
     }
 
+    /** Returns whether this resolver supports bind parameters. */
     supportsParameter(parameter: MethodParameter): boolean {
         return MethodParameterType.BIND.equals(parameter.type);
     }
 
+    /** Resolves the source name from the parameter metadata. */
     protected resolveName(): any {
         return null;
     }
@@ -101,10 +113,18 @@ export abstract class AbstractBindMethodArgumentResolver extends AbstractNamedVa
  * Browser-specific bind resolver.
  */
 export class BrowserBindMethodArgumentResolver extends AbstractBindMethodArgumentResolver {
+    /**
+     * Resolves browser-backed bind data from the current route, state, session, or cookies.
+     *
+     * @param source - Bind source name such as `query`, `state`, `session`, or `cookie`.
+     * @param route - Current route containing route data.
+     * @returns The resolved source data map.
+     */
     get [Symbol.toStringTag](): string {
         return 'BrowserBindMethodArgumentResolver';
     }
 
+    /** Retrieves the browser data source identified by {@link source}. */
     protected getSourceData(source: string, route: Route): Record<string, any> {
         switch (source) {
             case 'query':

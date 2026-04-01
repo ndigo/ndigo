@@ -18,11 +18,21 @@ import {
  */
 @configuration
 export class WebAutoConfiguration {
+    /**
+     * Exposes the shared argument-value converter registry.
+     *
+     * @returns The browser argument-value converter registry.
+     */
     @entry
     argumentValueConverterRegistry() {
         return argumentValueConverters;
     }
 
+    /**
+     * Creates the browser argument resolvers used for request binding.
+     *
+     * @returns The browser argument resolvers.
+     */
     @entry
     argumentResolvers() {
         const registry = argumentValueConverters;

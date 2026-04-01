@@ -21,6 +21,8 @@ pnpm lint            # Check code quality
 
 ⚠️ **Section 4.7 (Decorator Naming)** - All decorators MUST use camelCase
 
+⚠️ **STYLE_GUIDE.md Sections 3.5–3.6 (is\* vs like\*)** - `is*` for type/identity checks (`typeof`, `instanceof`); `like*` for structural/duck-typing checks (property shape). Never use `instanceof` in a `like*` function.
+
 ⚠️ **STYLE_GUIDE.md Section 3.9 (Acronym Casing)** - Use all-uppercase in types (HTTPTransformer), all-lowercase or all-uppercase in identifiers (httpTransformer or myHTTPData)
 
 ⚠️ **STYLE_GUIDE.md Section 3.10 (Transducers)** - Transformer classes use X\* prefix (XCount, XToArray), variables use xf
@@ -202,8 +204,8 @@ pnpm format
 - **Classes/Interfaces:** `PascalCase` (e.g., `Deferred`, `ApplicationContext`).
 - **Methods/Variables:** `camelCase` (e.g., `resolve`, `configureEnvironment`).
 - **Private Fields:** Use `#` syntax (e.g., `#environment`).
-- **Predicates:** Prefix with `is` (e.g., `isString`).
-- **Duck Typing:** Prefix with `like` (e.g., `likeController`).
+- **Predicates:** Prefix with `is` for type/identity checks using `typeof` or `instanceof` (e.g., `isString`, `isContextToken`). Asks: "Is this _an instance of_ X?"
+- **Duck Typing:** Prefix with `like` for structural/shape checks using property presence (e.g., `likeController`, `likeFactory`). Asks: "Does this _behave like_ X?" Never use `instanceof` as the primary check in a `like*` function.
 - **Mixins:**
     - Class Mixins: `PascalCase` with `As` prefix (e.g., `AsEventEmitter(Base)`).
     - Function Mixins: `camelCase` with `as` prefix (e.g., `asEventEmitter(target)`).

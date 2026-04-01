@@ -2586,8 +2586,8 @@ BlueJS is fully compliant with modern JavaScript standards for decorators:
 
 ## Naming Conventions
 
-- **Predicates**: `is*` (e.g., `isString`, `isNumber`) for strict type checks.
-- **Duck Typing**: `like*` (e.g., `likeController`, `likePromise`) for structural compatibility.
+- **Predicates**: `is*` (e.g., `isString`, `isContextToken`) for type/identity checks using `typeof` or `instanceof`. Asks: "Is this _an instance of_ X?"
+- **Duck Typing**: `like*` (e.g., `likeController`, `likeFactory`) for structural/shape checks using property presence. Asks: "Does this _behave like_ X?" Never use `instanceof` as the primary check in a `like*` function.
 - **Mixins**:
     - `As*` (PascalCase) for Class Mixins: `class MyService extends AsEventEmitter(Base)`.
     - `as*` (camelCase) for Function Mixins: `asEventEmitter(target)`.

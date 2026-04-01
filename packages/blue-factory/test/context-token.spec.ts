@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { ContextToken, likeContextToken } from '../src/context-token';
+import { ContextToken, isContextToken } from '../src/context-token';
 
 describe('ContextToken', () => {
     test('it should set description', () => {
@@ -12,11 +12,11 @@ describe('ContextToken', () => {
         expect(token.toString()).toBe('ContextToken(foo)');
     });
 
-    test('it should duck-type using likeContextToken', () => {
+    test('it should type-check using isContextToken', () => {
         const token = new ContextToken<number>('foo');
-        expect(likeContextToken(token)).toBe(true);
-        expect(likeContextToken({ description: 'foo' })).toBe(false);
-        expect(likeContextToken('foo')).toBe(false);
-        expect(likeContextToken(null)).toBe(false);
+        expect(isContextToken(token)).toBe(true);
+        expect(isContextToken({ description: 'foo' })).toBe(false);
+        expect(isContextToken('foo')).toBe(false);
+        expect(isContextToken(null)).toBe(false);
     });
 });

@@ -268,7 +268,6 @@ export * from './collection';
 export * from './comparable';
 export * from './constructable';
 export * from './data-binder';
-export { default as Deferred } from './deferred';
 export * from './enumerable';
 export * from './equatable';
 export * from './error';

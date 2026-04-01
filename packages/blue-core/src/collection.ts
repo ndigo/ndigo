@@ -2,22 +2,13 @@
  * @author Jeff Rose
  */
 
-import { EntriesIterator, IndexedIterator, KeysIterator, ValuesIterator } from './iterable';
+import { IndexedIterator } from './iterable';
 import { Serializable, JSONArray, serialize } from './serializable';
-import { Enumerable } from './enumerable';
-import { Constructable } from './constructable';
 import { likeArray } from '@blue/util/types';
 
 const { defineProperty } = Reflect,
     { max, min } = Math,
     FULL = 1 << 0,
-    move = <T = any>(src: T[], srcIndex: number, dst: T[], dstIndex: number, length: number): void => {
-        let index = 0;
-        for (; index < length; index++) {
-            dst[index + dstIndex] = src[index + srcIndex];
-            src[index + srcIndex] = void 0;
-        }
-    },
     pow2AtLeast = (n: number): number => {
         n = n >>> 0;
         n = n - 1;
@@ -251,116 +242,6 @@ defineProperty(RingBuffer, 'MIN_CAPACITY', {
     enumerable: false,
     writable: false,
 });
-
-/**
- * A RingBuffer that can dynamically resize its capacity.
- * @extends RingBuffer
- */
-export class ResizableRingBuffer<T> extends RingBuffer<T> {
-    /**
-     * The string tag for this class.
-     */
-    get [Symbol.toStringTag](): string {
-        return 'ResizableRingBuffer';
-    }
-
-    /**
-     * Adds one or more elements to the ring buffer, resizing if necessary.
-     * If the buffer is full, the oldest elements will be overwritten.
-     * @param items - The elements to add.
-     * @returns The new length of the ring buffer.
-     */
-    put(...items: T[]): number {
-        const length = this.length,
-            itemsLength = items.length,
-            totalLength = itemsLength + length;
-
-        if (totalLength > this._capacity) {
-            this.resizeTo(totalLength);
-        }
-
-        return super.put.apply(this, items);
-    }
-
-    /**
-     * Resizes the ring buffer to a new capacity. If the new capacity is smaller
-     * than the current number of elements, older elements will be discarded.
-     * @param newCapacity - The desired new capacity.
-     */
-    resizeTo(newCapacity: number): void {
-        const oldCapacity = this._capacity,
-            head = this._head,
-            tail = this._tail;
-
-        this.capacity = newCapacity;
-
-        if (tail < head) {
-            const newHead = this.length;
-            move<T>(this as unknown as T[], tail, this as unknown as T[], 0, newHead);
-            this._tail = 0;
-            this._head = newHead;
-        } else if (tail > head) {
-            const newHead = oldCapacity - tail;
-            move<T>(this as unknown as T[], tail, this as unknown as T[], 0, newHead);
-            move<T>(this as unknown as T[], 0, this as unknown as T[], newHead, head);
-            this._tail = 0;
-            this._head = newHead;
-        } else if (tail === head) {
-            this._tail = 0;
-            this._head = this.isFull ? oldCapacity : 0;
-        }
-
-        this._full = this._full & ~FULL;
-    }
-}
-
-/**
- * A mixin that adds enumerable capabilities to a RingBuffer.
- * @param superclass - The RingBuffer class to extend.
- * @returns A new class that is an Enumerable RingBuffer.
- */
-export const AsEnumerableRingBuffer = <T extends Constructable<RingBuffer>, K extends keyof T, V>(
-    superclass: T
-): Constructable<Enumerable<K, V> & RingBuffer> & T =>
-    class extends superclass implements Enumerable<K, V> {
-        /**
-         * Returns an iterator for the key-value pairs in the ring buffer.
-         * @returns An iterator for [key, value] pairs.
-         */
-        entries(): Iterator<[K, V]> {
-            return new EntriesIterator<V>(this) as Iterator<[K, V]>;
-        }
-
-        /**
-         * Executes a provided function once for each element in the ring buffer.
-         * @param callback - Function to execute for each element.
-         * @param context - Value to use as `this` when executing callback.
-         */
-        forEach(callback: (value: V, key: K, list: Enumerable<K, V>) => void, context?: any): void {
-            const length = this.length;
-            if (length) {
-                for (let index = 0; index < length; index++) {
-                    callback.call(context || this, this[index], index, this);
-                }
-            }
-        }
-
-        /**
-         * Returns an iterator for the keys (indices) in the ring buffer.
-         * @returns An iterator for keys.
-         */
-        keys(): Iterator<K> {
-            return new KeysIterator(this) as Iterator<K>;
-        }
-
-        /**
-         * Returns an iterator for the values in the ring buffer.
-         * @returns An iterator for values.
-         */
-        values(): Iterator<V> {
-            return new ValuesIterator(this);
-        }
-    };
 
 /**
  * Extension of the {@link external:Map|Map} interface that stores multiple values under a single key.

@@ -1,5 +1,5 @@
 import { describe, test, expect, beforeEach, afterEach } from 'vitest';
-import { MultiValueMap, RingBuffer, ResizableRingBuffer } from '../src/collection';
+import { MultiValueMap, RingBuffer } from '../src/collection';
 
 const toString = Object.prototype.toString;
 
@@ -180,99 +180,6 @@ describe('RingBuffer', () => {
         test('it should only allow numeric capacity', () => {
             (rb as any).capacity = 'a';
             expect(rb.capacity).toBe(RingBuffer.MIN_CAPACITY);
-        });
-    });
-});
-
-describe('ResizableRingBuffer', () => {
-    let rb: ResizableRingBuffer<string | number>;
-
-    describe('instances', () => {
-        beforeEach(() => {
-            rb = new ResizableRingBuffer();
-        });
-
-        afterEach(() => {
-            rb = undefined as any;
-        });
-
-        describe('resizeTo', () => {
-            test('it should change the capacity', () => {
-                rb.resizeTo(17);
-                expect(rb).toHaveProperty('capacity', 32);
-                rb.resizeTo(64);
-                expect(rb).toHaveProperty('capacity', 64);
-            });
-
-            test('it should resize when tail is less than head', () => {
-                const chars = 'abcdefghijklmno'.split('');
-                rb.put(...chars);
-                expect(rb).toHaveProperty('capacity', 16);
-
-                rb.get();
-                rb.get();
-                expect(rb).toHaveProperty('0', undefined);
-                expect(rb).toHaveProperty('1', undefined);
-
-                rb.resizeTo(17);
-                expect(rb).toHaveProperty('0', 'c');
-                expect(rb).toHaveProperty('1', 'd');
-                expect(rb).toHaveProperty('13', undefined);
-                expect(rb).toHaveProperty('14', undefined);
-
-                rb.put('q');
-                rb.put('r');
-                expect(rb).toHaveProperty('13', 'q');
-                expect(rb).toHaveProperty('14', 'r');
-
-                expect(rb).toHaveProperty('capacity', 32);
-            });
-
-            test('it should resize when head is than tail', () => {
-                const chars = 'abcdefghijklmnop'.split('');
-                rb.put(...chars);
-                expect(rb).toHaveProperty('capacity', 16);
-
-                rb.get();
-                rb.get();
-                expect(rb).toHaveProperty('0', undefined);
-                expect(rb).toHaveProperty('1', undefined);
-
-                rb.resizeTo(17);
-                expect(rb).toHaveProperty('0', 'c');
-                expect(rb).toHaveProperty('1', 'd');
-                expect(rb).toHaveProperty('14', undefined);
-                expect(rb).toHaveProperty('15', undefined);
-
-                rb.put('q');
-                rb.put('r');
-                expect(rb).toHaveProperty('14', 'q');
-                expect(rb).toHaveProperty('15', 'r');
-
-                expect(rb).toHaveProperty('capacity', 32);
-            });
-
-            test('it should resize automatically', () => {
-                const chars = 'abcdefghijklmno'.split('');
-                rb.put(...chars);
-                expect(rb).toHaveProperty('capacity', 16);
-
-                rb.put('p');
-                rb.put('q');
-                expect(rb).toHaveProperty('15', 'p');
-                expect(rb).toHaveProperty('16', 'q');
-                expect(rb).toHaveProperty('capacity', 32);
-
-                rb.get();
-                expect(rb).toHaveProperty('0', undefined);
-            });
-        });
-
-        test('it should be serializable', () => {
-            rb.put('a', 'b', 'c');
-            expect(rb.toJSON()).toEqual(['a', 'b', 'c']);
-            expect(rb.toString()).toBe('a,b,c');
-            expect(toString.call(rb)).toBe('[object ResizableRingBuffer]');
         });
     });
 });

@@ -91,6 +91,20 @@ declare module 'ramda' {
     function thunkify<T extends (...args: any[]) => any>(fn: T): (...args: Parameters<T>) => () => ReturnType<T>;
 
     /**
+     * Transforms a [Traversable](https://github.com/fantasyland/fantasy-land#traversable)
+     * of [Applicative](https://github.com/fantasyland/fantasy-land#applicative)
+     * into an Applicative of Traversable.
+     *
+     * Dispatches to the `sequence` method of the second argument, if present.
+     */
+    function sequence<A>(of: (a: A) => A[]): (traversable: A[][]) => A[][];
+    function sequence<A>(of: (a: A) => A[], traversable: A[][]): A[][];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    function sequence(of: (...args: any[]) => any): (traversable: any) => any;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    function sequence(of: (...args: any[]) => any, traversable: any): any;
+
+    /**
      * Takes a spec object and a test object; returns true if the test satisfies any of the spec properties.
      */
     function whereAny<T>(spec: Partial<T>): (testObj: T) => boolean;

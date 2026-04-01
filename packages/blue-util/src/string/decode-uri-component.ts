@@ -10,7 +10,6 @@ const token = '%[a-f0-9]{2}',
     singleMatcher = new RegExp(token, 'gi'),
     multiMatcher = new RegExp(`(?:${token})+|${token}|.`, 'gi'),
     plusMatcher = /\+/g,
-    // @ts-expect-error - reduce is typed as any in our ramda.d.ts
     concatAll = unapply(reduce<string[], string[]>(concat, [])),
     joinOnEmptyString = join('') as (value: string[]) => string,
     matchSingleToken = match(singleMatcher) as (value: string) => RegExpMatchArray,

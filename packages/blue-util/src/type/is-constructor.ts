@@ -17,7 +17,6 @@ const construct = partial(Reflect.construct, [String, []]),
  * @category Type
  */
 const isConstructor = (value: any): value is Function =>
-    // @ts-expect-error - both is typed as any in our ramda.d.ts
     both<any>(isFunction, tryCatch(constructAndReturnTrue, F))(value);
 
 export default isConstructor;

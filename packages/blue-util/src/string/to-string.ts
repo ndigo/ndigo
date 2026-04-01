@@ -48,7 +48,6 @@ const emptyString = always(''),
      * toString( new Date('2001-02-03T04:05:06Z' ) );
      * //=> 'new Date( "2001-02-03T04:05:06.000Z" )'
      */
-    // @ts-expect-error - cond is typed as any in our ramda.d.ts
     toString: (value: any) => string = cond<any, string>([
         [isNil, emptyString],
         [isString, identity],

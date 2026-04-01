@@ -48,15 +48,12 @@ const nodeTypeEqualsOne = propSatisfies(equals(1), 'nodeType'),
     hasZero = has('0'),
     hasLastIndex = (value) => has(lastIndex(value), value),
     isNotObject = (value) => typeof value !== 'object',
-    // @ts-expect-error - cond is typed as any in our ramda.d.ts
     likeArray = cond<any, boolean>([
         [isNil, F],
-        // @ts-expect-error - either is typed as any in our ramda.d.ts
         [either<any>(Array.isArray, isString), T],
         [isNotObject, F],
         [nodeTypeEqualsOne, lengthGreaterThanZero],
         [lengthEqualsZero, T],
-        // @ts-expect-error - both is typed as any in our ramda.d.ts
         [lengthGreaterThanZero, both<any>(hasZero, hasLastIndex)],
         [T, F],
     ]) as (value) => value is ArrayLike<any>;

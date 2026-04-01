@@ -9,7 +9,6 @@ import { either, F, ifElse, is } from 'ramda';
 import { isValid } from 'date-fns/fp';
 
 const isDate = is(Date) as unknown as (value) => value is Date,
-    // @ts-expect-error - either is typed as any in our ramda.d.ts
     isPossibleDate = either<any>(isDate, isNumber),
     /**
      * Determines whether a given value is a valid date.

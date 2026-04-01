@@ -22,26 +22,8 @@ import {
     likeInitializationAwareProcessor,
 } from './entry-processor';
 
-export interface Factory {
-    getInstance<T = any>(name: string): T;
-}
-
-export interface HierarchicalFactory extends Factory {
-    readonly parent: Factory;
-    hasOwnValue(name: string): boolean;
-}
-
-export interface ConfigurableFactory extends HierarchicalFactory, Registry {
-    addProcessor(processor: EntryProcessor): void;
-    setParent(parent: Factory): void;
-}
-
-export interface FactoryAware extends Aware {
-    setFactory(factory: Factory): void;
-}
-
 /**
- * This interface is implemented by objects that hold a number of value definitions, each uniquely identified by a {@link external:string|string} name.
+ * This interface is implemented by objects that hold a number of value definitions, each uniquely identified by a {@link string|string} name.
  *
  * The point of this approach is that the `Factory` is a central registry of application components and centralizes configuration.
  * `Factory` implementations should support the standard lifecycle as much as possible. The full set of initialization methods and their standard order is:
@@ -68,53 +50,88 @@ export interface FactoryAware extends Aware {
  * @see {@link ContentSourceAware}
  * @see {@link ApplicationContextAware}
  */
+export interface Factory {
+    /**
+     * Return an instance of the specified value.
+     * @param name The name of the value.
+     * @returns An instance of the value specified by the `name`.
+     */
+    getInstance<T = any>(name: string): T;
+}
 
 /**
- * Return an instance of the specified value.
- * @param {string} name The name of the value.
- * @returns {*} An instance of the value specified by the `name`.
+ * Extends {@link Factory} to provide hierarchical factory capabilities.
  */
+export interface HierarchicalFactory extends Factory {
+    /**
+     * The parent factory in the hierarchy.
+     */
+    readonly parent: Factory;
+    /**
+     * Determines whether this factory contains a value with the given name.
+     * @param name The name of the value.
+     * @returns `true` if this factory contains the value, `false` otherwise.
+     */
+    hasOwnValue(name: string): boolean;
+}
 
 /**
- * @extends module:factory.Factory
+ * Extends {@link HierarchicalFactory} and {@link Registry} to provide configurable factory capabilities.
  */
-
-/**
- * @extends module:factory.HierarchicalFactory
- * @extends module:factory.Registry
- */
+export interface ConfigurableFactory extends HierarchicalFactory, Registry {
+    /**
+     * Adds an entry processor to the factory.
+     * @param processor The entry processor to add.
+     */
+    addProcessor(processor: EntryProcessor): void;
+    /**
+     * Sets the parent factory.
+     * @param parent The parent factory.
+     */
+    setParent(parent: Factory): void;
+}
 
 /**
  * Interface to be implemented by values that wish to be aware of their owning {@link Factory|Factory}.
  */
-
-/**
- * Setter that supplies the owning factory to the instance.
- * @param {module:factory.Factory} factory
- */
+export interface FactoryAware extends Aware {
+    /**
+     * Setter that supplies the owning factory to the instance.
+     * @param factory The factory that created this instance.
+     */
+    setFactory(factory: Factory): void;
+}
 
 const { create, keys } = Object,
     { construct, defineProperty, deleteProperty } = Reflect;
 
+/**
+ * Returns the error message from an unknown error type.
+ * @param e The unknown error.
+ * @returns The error message as a string.
+ */
 const getErrorMessage = (e: unknown): string => {
     return e instanceof Error ? e.message : String(e);
 };
 
 /**
- * @see module:factory.AsFactoryAware
- * @implements module:factory.FactoryAware
- * @returns {module:factory.Constructable<module:factory.FactoryAware>}
+ * A mixin that adds {@link FactoryAware} capabilities to a class.
+ * @template T The type of the constructor.
+ * @param superclass The superclass to extend.
+ * @returns A new class that extends the superclass and implements {@link FactoryAware}.
  */
 export const AsFactoryAware = <T extends Constructable>(superclass: T): Constructable<FactoryAware> & T =>
     class extends AsAware(superclass) implements FactoryAware {
+        /**
+         * The factory that created this instance.
+         */
         readonly factory: Factory;
 
         /**
-         * @param {module:factory.Factory} factory
+         * Sets the factory that created this instance.
+         * @param factory The factory instance.
          */
         setFactory(factory: Factory): void {
-            /**
-             */
             defineProperty(this, 'factory', {
                 get: () => factory,
                 configurable: true,
@@ -124,50 +141,86 @@ export const AsFactoryAware = <T extends Constructable>(superclass: T): Construc
     };
 
 /**
- * @param {*} value The value to be tested
- * @returns {boolean} Whether or not the `value` provided is a {@link Factory|Factory}.
+ * Determines whether or not the `value` provided is a {@link Factory}.
+ * @param value The value to be tested.
+ * @returns Whether or not the `value` provided is a {@link Factory}.
  */
 export const likeFactory = like({ getInstance: Function }) as (value) => value is Factory;
 
 /**
- * @param {*} value The value to be tested
- * @returns {boolean} Whether or not the `value` provided is {@link FactoryAware|FactoryAware}.
+ * Determines whether or not the `value` provided is {@link FactoryAware}.
+ * @param value The value to be tested.
+ * @returns Whether or not the `value` provided is {@link FactoryAware}.
  */
 export const likeFactoryAware = likeAwareAnd(like({ setFactory: Function })) as (value) => value is FactoryAware;
 
 /**
- * @param {*} value The value to be tested
- * @returns {boolean} Whether or not the `value` provided is {@link HierarchicalFactory|HierarchicalFactory}.
+ * Determines whether or not the `value` provided is {@link HierarchicalFactory}.
+ * @param value The value to be tested.
+ * @returns Whether or not the `value` provided is {@link HierarchicalFactory}.
  */
 export const likeHierarchicalFactory = both(likeFactory, like({ parent: true, hasOwnValue: Function }));
 
 /**
- * @param {*} value The value to be tested
- * @returns {boolean} Whether or not the `value` provided is {@link ConfigurableFactory|ConfigurableFactory}.
+ * Determines whether or not the `value` provided is {@link ConfigurableFactory}.
+ * @param value The value to be tested.
+ * @returns Whether or not the `value` provided is {@link ConfigurableFactory}.
  */
 export const likeConfigurableFactory = both(
     likeHierarchicalFactory,
     like({ addProcessor: Function, setParent: Function })
 );
 
+/**
+ * An abstract base class for implementing a {@link ConfigurableFactory} and {@link ScopedFactory}.
+ */
 export abstract class AbstractFactory implements ConfigurableFactory, ScopedFactory {
+    /**
+     * The parent factory in a hierarchical setup.
+     */
     #parent: Factory;
+    /**
+     * The registry for managing different scopes.
+     */
     #scopeRegistry: ScopeRegistry;
 
+    /**
+     * A list of entry processors applied to instances.
+     */
     processors: EntryProcessor[];
 
+    /**
+     * Indicates if there are any construction-aware processors.
+     */
     hasConstructionAwareProcessors: boolean;
+    /**
+     * Indicates if there are any destruction-aware processors.
+     */
     hasDestructionAwareProcessors: boolean;
+    /**
+     * Indicates if there are any initialization-aware processors.
+     */
     hasInitializationAwareProcessors: boolean;
 
+    /**
+     * Returns the string tag for this factory.
+     * @returns Always 'Factory'.
+     */
     get [Symbol.toStringTag](): string {
         return 'Factory';
     }
 
+    /**
+     * Returns the parent factory.
+     * @returns The parent factory.
+     */
     get parent(): Factory {
         return this.#parent;
     }
 
+    /**
+     * Creates a new AbstractFactory instance and initializes its scope registry and default scopes.
+     */
     constructor() {
         this.#scopeRegistry = new ScopeRegistry();
 
@@ -197,6 +250,10 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
         this.registerScope('singleton', new SingletonScope());
     }
 
+    /**
+     * Adds an entry processor to the factory.
+     * @param processor The entry processor to add.
+     */
     addProcessor(processor: EntryProcessor): void {
         const index = this.processors.indexOf(processor);
         if (index !== -1) {
@@ -229,6 +286,11 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
         this.processors.push(processor);
     }
 
+    /**
+     * Destroys a value managed by the factory.
+     * @param nameOrToken The name or ContextToken of the value to destroy.
+     * @template T The type of the value.
+     */
     destroyValue<T = any>(token: ContextToken<T>): void;
     destroyValue(name: string): void;
     destroyValue<T = any>(nameOrToken: string | ContextToken<T>): void {
@@ -255,10 +317,24 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
         }
     }
 
+    /**
+     * Returns an instance of the specified value.
+     * @param name The name of the value.
+     * @param argumentsList Optional arguments to pass to the constructor if the value is a constructor.
+     * @returns An instance of the value.
+     * @template T The type of the instance.
+     */
     getInstance<T = any>(name: string, argumentsList: any[] = []): T {
         return this.hasConstructor(name) ? this._create<T>(name, argumentsList) : create(this[name]);
     }
 
+    /**
+     * Retrieves a value from the factory, creating it if necessary.
+     * @param nameOrToken The name or ContextToken of the value to retrieve.
+     * @param argumentsList Optional arguments to pass to the constructor if the value is a constructor.
+     * @returns The retrieved value.
+     * @template T The type of the value.
+     */
     getValue<T = any>(token: ContextToken<T>): T;
     getValue<T = any>(name: string, argumentsList?: any[]): T;
     getValue<T = any>(nameOrToken: string | ContextToken<T>, argumentsList: any[] = []): T {
@@ -290,30 +366,65 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
         return this[name];
     }
 
+    /**
+     * Destroys a scoped value.
+     * @param scopeName The name of the scope.
+     * @param valueName The name of the value within the scope.
+     */
     destroyScopedValue(scopeName: PossibleScope, valueName: string): void {
         this.#scopeRegistry.destroyScopedValue(scopeName, valueName);
     }
 
+    /**
+     * Retrieves a scope by its name.
+     * @param name The name of the scope.
+     * @returns The Scope instance.
+     */
     getScope(name: PossibleScope): Scope {
         return this.#scopeRegistry.getScope(name);
     }
 
+    /**
+     * Returns an array of all registered scope names.
+     * @returns An array of PossibleScope names.
+     */
     getScopeNames(): PossibleScope[] {
         return this.#scopeRegistry.getScopeNames();
     }
 
+    /**
+     * Checks if the factory has a constructor registered under the given name.
+     * @param name The name of the constructor.
+     * @returns `true` if a constructor is registered, `false` otherwise.
+     */
     hasConstructor(name: string): boolean {
         return `$${name}` in this;
     }
 
+    /**
+     * Checks if the factory has an instance registered under the given name.
+     * @param name The name of the instance.
+     * @returns `true` if an instance is registered, `false` otherwise.
+     */
     hasInstance(name: string): boolean {
         return name in this;
     }
 
+    /**
+     * Checks if the factory has its own value (either an instance or a constructor) registered under the given name.
+     * @param name The name of the value.
+     * @returns `true` if this factory has its own value, `false` otherwise.
+     */
     hasOwnValue(name: string): boolean {
         return has(name, this) || has(`$${name}`, this);
     }
 
+    /**
+     * Checks if the factory has a value (either an instance or a constructor) registered under the given name or token.
+     * @param nameOrToken The name or ContextToken of the value.
+     * @returns `true` if a value is registered, `false` otherwise.
+     * @template T The type of the value.
+     */
     hasValue<T = any>(token: ContextToken<T>): boolean;
     hasValue(name: string): boolean;
     hasValue<T = any>(nameOrToken: string | ContextToken<T>): boolean {
@@ -321,14 +432,29 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
         return this.hasInstance(name) || this.hasConstructor(name);
     }
 
+    /**
+     * Registers a new scope with the factory.
+     * @param name The name of the scope.
+     * @param scope The Scope instance to register.
+     */
     registerScope(name: PossibleScope, scope: Scope): void {
         this.#scopeRegistry.registerScope(name, scope);
     }
 
+    /**
+     * Sets the parent factory for this hierarchical factory.
+     * @param parent The parent factory.
+     */
     setParent(parent: Factory): void {
         this.#parent = parent;
     }
 
+    /**
+     * Sets a value (either a constructor or an instance) in the factory.
+     * @param nameOrToken The name or ContextToken under which to register the value.
+     * @param value The value to register.
+     * @template T The type of the value.
+     */
     setValue<T = any>(token: ContextToken<T>, value: T): void;
     setValue<T = any>(name: string, value: T): void;
     setValue<T = any>(nameOrToken: string | ContextToken<T>, value: T): void {
@@ -379,6 +505,13 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
         }
     }
 
+    /**
+     * Applies construction-aware processors after an instance has been constructed.
+     * @param name The name of the instance.
+     * @param instance The constructed instance.
+     * @returns `true` if properties should be populated, `false` otherwise.
+     * @template T The type of the instance.
+     */
     protected _applyProcessorsAfterConstruction<T = any>(name: string, instance: T): boolean {
         let populateProperties = true;
 
@@ -399,6 +532,13 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
         return populateProperties;
     }
 
+    /**
+     * Applies initialization-aware processors after an instance has been initialized.
+     * @param name The name of the instance.
+     * @param instance The initialized instance.
+     * @returns The processed instance.
+     * @template T The type of the instance.
+     */
     protected _applyProcessorsAfterInitialization<T>(name: string, instance: T): T {
         let result = instance;
 
@@ -420,6 +560,14 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
         return result;
     }
 
+    /**
+     * Applies construction-aware processors before an instance is constructed.
+     * @param name The name of the instance.
+     * @param constructor The constructor function.
+     * @param argumentsList Optional arguments to pass to the constructor.
+     * @returns The instance to use, or `null` to proceed with default construction.
+     * @template T The type of the instance.
+     */
     protected _applyProcessorsBeforeConstruction<T = any>(
         name: string,
         constructor: Function,
@@ -444,6 +592,11 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
         return result;
     }
 
+    /**
+     * Applies destruction-aware processors before an instance is destroyed.
+     * @param name The name of the instance.
+     * @param instance The instance to be destroyed.
+     */
     protected _applyProcessorsBeforeDestruction(name: string, instance: Destroyable): void {
         if (this.hasDestructionAwareProcessors) {
             const length = this.processors.length;
@@ -457,6 +610,13 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
         }
     }
 
+    /**
+     * Applies initialization-aware processors before an instance is initialized.
+     * @param name The name of the instance.
+     * @param instance The instance to be initialized.
+     * @returns The processed instance.
+     * @template T The type of the instance.
+     */
     protected _applyProcessorsBeforeInitialization<T>(name: string, instance: T): T {
         let result = instance;
         if (this.hasInitializationAwareProcessors) {
@@ -477,6 +637,14 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
         return result;
     }
 
+    /**
+     * Configures an instance by populating properties, invoking aware callbacks, and initializing.
+     * @param name The name of the instance.
+     * @param instance The instance to configure.
+     * @returns The configured instance.
+     * @throws {FrameworkError} If configuration fails.
+     * @template T The type of the instance.
+     */
     protected _configure<T = any>(name: string, instance: T): T {
         try {
             this._populate<T>(name, instance);
@@ -491,6 +659,14 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
         return instance;
     }
 
+    /**
+     * Creates a new instance from a registered constructor.
+     * @param name The name of the constructor.
+     * @param argumentsList Optional arguments to pass to the constructor.
+     * @returns The newly created instance.
+     * @throws {FrameworkError} If instance creation fails.
+     * @template T The type of the instance.
+     */
     protected _create<T = any>(name: string, argumentsList: any[] = []): T {
         let constructor: Function = this[`$${name}`],
             instance: T = null;
@@ -508,6 +684,13 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
         return this._configure<T>(name, instance);
     }
 
+    /**
+     * Initializes an instance by applying initialization processors and invoking the `init` method if available.
+     * @param name The name of the instance.
+     * @param instance The instance to initialize.
+     * @returns The initialized instance.
+     * @template T The type of the instance.
+     */
     protected _initialize<T>(name: string, instance: T): T {
         instance = this._applyProcessorsBeforeInitialization(name, instance);
 
@@ -524,6 +707,13 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
         return instance;
     }
 
+    /**
+     * Populates properties of an instance, applying construction-aware processors.
+     * @param name The name of the instance.
+     * @param instance The instance to populate.
+     * @param properties Optional property descriptor map to apply.
+     * @template T The type of the instance.
+     */
     protected _populate<T = any>(name: string, instance: T, properties: PropertyDescriptorMap = {}): void {
         if (instance === null) {
             return;
@@ -560,6 +750,12 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
         }
     }
 
+    /**
+     * Invokes aware callbacks on an instance.
+     * @param name The name of the instance.
+     * @param instance The instance to invoke callbacks on.
+     * @returns The instance after aware callbacks have been invoked.
+     */
     private _invokeAware(name: string, instance: Aware): Aware {
         if (likeNameAware(instance)) {
             instance.setName(name);
@@ -570,6 +766,12 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
         return instance;
     }
 
+    /**
+     * Invokes the `init` method on an initializable instance.
+     * @param name The name of the instance.
+     * @param instance The initializable instance.
+     * @throws {FrameworkError} If initialization fails.
+     */
     private _invokeInit(name: string, instance: Initializable): void {
         try {
             instance.init();
@@ -580,19 +782,8 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
 }
 
 /**
- * @abstract
- * @implements module:factory.ConfigurableFactory
- */
-
-/**
- */
-
-/**
- * @param {module:factory.EntryProcessor} processor
- */
-
-/**
- * @extends module:factory.AbstractFactory
+ * A default implementation of {@link AbstractFactory}.
+ * @extends AbstractFactory
  * @example
  * const factory = new DefaultFactory();
  * factory.setValue( 'foo', 123 );
@@ -607,8 +798,9 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
 export class DefaultFactory extends AbstractFactory {}
 
 /**
- * @extends module:factory.DefaultFactory
- * @implements external:Record
+ * A factory that uses a Proxy to allow direct property access for value manipulation.
+ * @extends DefaultFactory
+ * @implements {Record<string, any>}
  * @example
  * const factory = new ProxiedFactory();
  * factory.foo = 123;
@@ -620,8 +812,15 @@ export class DefaultFactory extends AbstractFactory {}
  * @see {@link DefaultFactory}
  */
 export class ProxiedFactory extends DefaultFactory implements Record<string, any> {
+    /**
+     * Allows arbitrary properties to be added to the factory, which are then managed as values.
+     */
     [key: string]: any;
 
+    /**
+     * Creates a new ProxiedFactory instance.
+     * @returns A Proxy that wraps the factory, allowing direct property access.
+     */
     constructor() {
         super();
         return new Proxy(this, new RegistryProxyHandler<this>());

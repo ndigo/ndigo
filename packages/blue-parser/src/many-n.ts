@@ -15,4 +15,5 @@ const failWith =
         (parser: Parser<T>): Parser<T> =>
             many(parser).chain(ifElse(lengthLessThanN(n), failWith(n), succeedWith));
 
+/** Creates a repetition parser that enforces a minimum item count. */
 export default manyN;

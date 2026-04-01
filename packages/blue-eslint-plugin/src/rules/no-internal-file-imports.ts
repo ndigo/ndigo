@@ -1,4 +1,6 @@
-/** @author opencode */
+/**
+ * ESLint rule that prevents cross-package imports of underscore-prefixed internal files.
+ */
 
 import { ESLintUtils, TSESTree } from '@typescript-eslint/utils';
 
@@ -8,6 +10,9 @@ const createRule = ESLintUtils.RuleCreator(
 
 const CROSS_PACKAGE_INTERNAL_IMPORT_PATTERN = /^@blue\/[^/]+\/_/u;
 
+/**
+ * Reports imports that bypass a package's public API by reaching into internal files.
+ */
 export const noInternalFileImports = createRule({
     name: 'no-internal-file-imports',
     meta: {

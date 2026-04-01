@@ -35,29 +35,9 @@ export interface TransformContext {
 }
 
 /**
- * HTTP body transformer for request/response transformation pipeline.
+ * Contract for request/response body transformers.
  *
- * Inspired by Spring Framework's HttpMessageConverter pattern.
- *
- * @template TInput - Input body type
- * @template TOutput - Output body type (defaults to TInput if not specified)
- *
- * @example
- * ```typescript
- * // JSON sanitizer (same type)
- * const sanitizer: HTTPTransformer<JSONObject> = {
- *     canTransform: (body, context) =>
- *         context.direction === 'response' &&
- *         context.mediaType?.is('application/json'),
- *     transform: (body) => sanitizeJSON(body)
- * };
- *
- * // Parser (type change)
- * const parser: HTTPTransformer<string, JSONObject> = {
- *     canTransform: (body) => typeof body === 'string',
- *     transform: (body) => JSON.parse(body)
- * };
- * ```
+ * Inspired by Spring Framework's `HttpMessageConverter` pattern.
  */
 export interface HTTPTransformer<TInput = any, TOutput = any> {
     /**

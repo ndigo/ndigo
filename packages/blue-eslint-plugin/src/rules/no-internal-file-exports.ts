@@ -1,4 +1,6 @@
-/** @author opencode */
+/**
+ * ESLint rule that prevents public index files from re-exporting internal underscore-prefixed files.
+ */
 
 import { ESLintUtils, TSESTree } from '@typescript-eslint/utils';
 
@@ -14,6 +16,9 @@ function isInternalRelativeSource(source: TSESTree.Literal | null | undefined): 
     return !!source && typeof source.value === 'string' && source.value.startsWith('./_');
 }
 
+/**
+ * Reports public barrel exports that expose internal implementation files.
+ */
 export const noInternalFileExports = createRule({
     name: 'no-internal-file-exports',
     meta: {

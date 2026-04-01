@@ -16,6 +16,12 @@ function getMeter(): Meter {
     return countedMeter;
 }
 
+/**
+ * Retrieves the configuration for a counted method, including its name and attributes.
+ * @param target - The target object or prototype.
+ * @param propertyKey - The name of the method.
+ * @returns An object containing the counter name and optional attributes if the method is counted, otherwise `undefined`.
+ */
 export function getCounted(
     target: any,
     propertyKey: string | symbol
@@ -23,14 +29,35 @@ export function getCounted(
     return getSymbolMetadata(target)[`${COUNTED_KEY}:${String(propertyKey)}`];
 }
 
+/**
+ * Checks if a method has been decorated with `@counted`.
+ * @param target - The target object or prototype.
+ * @param propertyKey - The name of the method.
+ * @returns `true` if the method is counted, otherwise `false`.
+ */
 export function hasCounted(target: any, propertyKey: string | symbol): boolean {
     return getCounted(target, propertyKey) !== undefined;
 }
 
+/**
+ * Options for the `@counted` decorator.
+ */
 export interface CountedOptions {
+    /**
+     * Optional attributes to associate with the counter.
+     */
     attributes?: LogAttributes;
+    /**
+     * An optional feature metric aggregator to increment a feature-specific counter.
+     */
     featureAggregator?: FeatureMetricAggregator;
+    /**
+     * The key within the attributes to use for feature aggregation. Defaults to 'feature'.
+     */
     featureKey?: string;
+    /**
+     * The name of the counter. If not provided, the method's name will be used with a `.count` suffix.
+     */
     name?: string;
 }
 
@@ -71,6 +98,42 @@ function createCountedDecorator(options: CountedOptions = {}) {
     };
 }
 
+/**
+ * A method decorator that increments a counter each time the decorated method is called.
+ *
+ * This decorator integrates with OpenTelemetry metrics to track method invocation counts.
+ * It supports various ways of specifying the counter name and associated attributes.
+ *
+ * @param nameOrTarget - Overload 1: The name of the counter. Overload 2: An object of `CountedOptions`. Overload 3: The target function when used without parentheses.
+ * @param attributesOrContext - Overload 1: Optional attributes for the counter. Overload 3: The decorator context.
+ * @param maybeContext - Overload 3: The decorator context.
+ * @returns A method decorator or the decorated method itself.
+ * @throws {TypeError} If applied to anything other than a method.
+ * @example
+ * ```typescript
+ * class MyService {
+ *   @counted()
+ *   myMethod() {
+ *     // Increments 'myMethod.count'
+ *   }
+ *
+ *   @counted('custom.event.count')
+ *   anotherMethod() {
+ *     // Increments 'custom.event.count'
+ *   }
+ *
+ *   @counted({ name: 'api.calls', attributes: { endpoint: '/users' } })
+ *   apiCall() {
+ *     // Increments 'api.calls' with 'endpoint: /users'
+ *   }
+ *
+ *   @counted('feature.usage', { feature: 'dashboard' })
+ *   dashboardView() {
+ *     // Increments 'feature.usage' with 'feature: dashboard'
+ *   }
+ * }
+ * ```
+ */
 export function counted(
     nameOrTarget?: string | CountedOptions | Function,
     attributesOrContext?: LogAttributes | ClassMethodDecoratorContext,

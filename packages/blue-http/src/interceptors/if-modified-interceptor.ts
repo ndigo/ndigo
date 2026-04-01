@@ -5,6 +5,9 @@
 import { HTTPInit, InitializationAwareHTTPInterceptor, ResponseAwareHTTPInterceptor } from '../http';
 import { ETAG, IF_MODIFIED_SINCE, IF_NONE_MATCH, LAST_MODIFIED } from '../http-headers';
 
+/**
+ * Request settings for {@link IfModifiedInterceptor}.
+ */
 export type IfModifiedInit = HTTPInit & { ifModified?: boolean };
 
 /**
@@ -13,6 +16,8 @@ export type IfModifiedInit = HTTPInit & { ifModified?: boolean };
  */
 
 /**
+ * Adds conditional request headers and caches validators from prior responses.
+ *
  * @implements module:http.InitializationAwareHTTPInterceptor
  * @implements module:http.ResponseAwareHTTPInterceptor
  */

@@ -4,27 +4,36 @@
 
 import { Route } from '@blue/router';
 
+/**
+ * Resolves the active theme for a route.
+ */
 export interface ThemeResolver {
+    /**
+     * Resolve the theme name for a route.
+     *
+     * @param route - The current route.
+     * @returns The resolved theme name.
+     */
     resolveTheme(route: Route): string;
 }
-
-/**
- */
-
-/**
- * @param {module:dispatcher.Route} route
- * @returns {string} The theme name
- */
 
 const { defineProperty } = Reflect;
 
 export abstract class AbstractThemeResolver implements ThemeResolver {
+    /**
+     * Fallback theme name used when a route-specific theme is unavailable.
+     */
     readonly defaultThemeName: string;
 
     get [Symbol.toStringTag](): string {
         return 'ThemeResolver';
     }
 
+    /**
+     * Store the fallback theme name.
+     *
+     * @param defaultThemeName - The theme to use by default.
+     */
     constructor(defaultThemeName: string) {
         defineProperty(this, 'defaultThemeName', {
             value: defaultThemeName,
@@ -34,27 +43,25 @@ export abstract class AbstractThemeResolver implements ThemeResolver {
         });
     }
 
+    /**
+     * Resolve the theme name for a route.
+     *
+     * @param route - The current route.
+     * @returns The resolved theme name.
+     */
     abstract resolveTheme(route: Route): string;
 }
 
 /**
- * @abstract
- * @implements {module:dispatcher.ThemeResolver}
- */
-
-/**
- */
-
-/**
- * @abstract
- * @param {module:dispatcher.Route} route
- * @returns {string} The theme name
- */
-
-/**
- * @extends {module:dispatcher.AbstractThemeResolver}
+ * Resolve a fixed theme regardless of route.
  */
 export class FixedThemeResolver extends AbstractThemeResolver {
+    /**
+     * Return the configured fallback theme.
+     *
+     * @param route - The current route.
+     * @returns The configured theme name.
+     */
     resolveTheme(route: Route): string {
         return this.defaultThemeName;
     }

@@ -2,13 +2,13 @@
 import '@tsmetadata/polyfill';
 
 /**
- * Extract TC39 `Symbol.metadata` from a target.
+ * Reads the TC39 `Symbol.metadata` record for a class or instance.
  *
- * Handles both class constructors (`typeof target === 'function'`)
- * and instances/prototypes (`target.constructor`).
+ * The lookup supports both constructors and values created from them so callers can inspect metadata without
+ * caring which form they received.
  *
- * @param target - Class constructor, prototype, or instance
- * @returns The metadata record, or an empty object if none exists
+ * @param target - Class constructor, prototype, or instance.
+ * @returns The metadata record, or an empty object when no metadata is present.
  */
 export function getSymbolMetadata(target: any): Record<string, any> {
     if (typeof target === 'function' && target[Symbol.metadata]) {

@@ -93,15 +93,28 @@ function setHeader(headers: HeadersInit, name: string, value): void {
 }
 
 /**
+ * Represents a single HTTP header name with helpers for common header collections.
+ *
+ * The instance stores only the header name; read and write methods adapt the
+ * name to `Headers`, header tuples, and plain object maps.
+ *
  * @implements module:core.Serializable
  */
 export class HTTPHeader implements Serializable {
+    /**
+     * The canonical header name used for reads and writes.
+     */
     readonly name: string;
 
     get [Symbol.toStringTag](): string {
         return `HTTPHeader:${this.name}`;
     }
 
+    /**
+     * Creates a header helper for the given name.
+     *
+     * @param name - The header name to target.
+     */
     constructor(name: string) {
         /**
          * @readonly
@@ -114,18 +127,42 @@ export class HTTPHeader implements Serializable {
         });
     }
 
+    /**
+     * Removes this header from a header collection when present.
+     *
+     * @param headers - The header collection to mutate.
+     */
     delete(headers: HeadersInit): void {
         headers && deleteHeader(headers, this.name);
     }
 
+    /**
+     * Reads this header from a header collection.
+     *
+     * @param headers - The header collection to read from.
+     * @returns The header value, or `null` when missing.
+     */
     get(headers: HeadersInit): string {
         return headers ? getHeader(headers, this.name) : null;
     }
 
+    /**
+     * Tests whether this header exists in a header collection.
+     *
+     * @param headers - The header collection to inspect.
+     * @returns `true` when the header exists.
+     */
     has(headers: HeadersInit): boolean {
         return headers ? hasHeader(headers, this.name) : false;
     }
 
+    /**
+     * Writes this header into a mutable header collection.
+     *
+     * @param headers - The header collection to mutate.
+     * @param value - The header value to store.
+     * @throws {TypeError} When `headers` is not provided.
+     */
     set(headers: HeadersInit, value): void {
         if (!headers) {
             throw new TypeError('headers is undefined');

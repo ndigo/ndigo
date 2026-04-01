@@ -14,24 +14,63 @@ import {
     PrototypalPropertyResolver,
 } from './property-resolver';
 
+/**
+ * Resolves properties and manages profile activation for an application environment.
+ */
 export interface Environment extends PropertyResolver {
+    /**
+     * The explicitly active profiles.
+     */
     activeProfiles: string[];
+    /**
+     * The default profiles used when no active profile is configured.
+     */
     defaultProfiles: string[];
 
+    /**
+     * Adds a profile to the active set.
+     *
+     * @param profile - The profile name.
+     */
     addActiveProfile(profile: string): void;
+    /**
+     * Adds a profile to the default set.
+     *
+     * @param profile - The profile name.
+     */
     addDefaultProfile(profile: string): void;
 }
 
+/**
+ * Receives the current environment during initialization.
+ */
 export interface EnvironmentAware extends Aware {
     setEnvironment(environment: Environment): void;
 }
 
+/**
+ * Provides access to the environment associated with a component.
+ */
 export interface EnvironmentSource {
+    /**
+     * The environment associated with the component.
+     */
     readonly environment: Environment;
 }
 
+/**
+ * Environment variant that allows property source replacement and merging.
+ */
 export interface ConfigurableEnvironment extends Environment {
+    /**
+     * The ordered property sources used for resolution.
+     */
     propertySources: JSONObject[];
+    /**
+     * Merges another environment into this one.
+     *
+     * @param environment - The environment to merge.
+     */
     merge(environment: Environment);
 }
 
@@ -72,6 +111,9 @@ export interface ConfigurableEnvironment extends Environment {
 
 const { defineProperty } = Reflect;
 
+/**
+ * Base implementation for environments with profile and property-source support.
+ */
 export abstract class AbstractEnvironment implements ConfigurableEnvironment {
     #propertyResolver: ConfigurablePropertyResolver;
     #activeProfiles: Set<string>;
@@ -160,12 +202,18 @@ export abstract class AbstractEnvironment implements ConfigurableEnvironment {
 /**
  * @see module:context.AsEnvironmentAware
  * @implements module:context.EnvironmentAware
+ * @param superclass - The base class to extend.
  * @returns {module:context.Constructable<module:context.EnvironmentAware>}
  */
 export const AsEnvironmentAware = <T extends Constructable>(superclass: T): Constructable<EnvironmentAware> & T =>
     class extends AsAware(superclass) implements EnvironmentAware {
         readonly environment: Environment;
 
+        /**
+         * Captures the environment on the instance.
+         *
+         * @param environment - The environment to assign.
+         */
         setEnvironment(environment: Environment): void {
             defineProperty(this, 'environment', {
                 value: environment,
@@ -177,8 +225,10 @@ export const AsEnvironmentAware = <T extends Constructable>(superclass: T): Cons
     };
 
 /**
- * @param {*} value The value to be tested
- * @returns {boolean} Whether or not the `value` is {@link Environment|Environment}
+ * Returns whether a value behaves like an environment.
+ *
+ * @param value - The value to test.
+ * @returns `true` when the value looks like an environment.
  */
 export const likeEnvironment = both(
     likePropertyResolver,
@@ -186,8 +236,10 @@ export const likeEnvironment = both(
 ) as (value) => value is Environment;
 
 /**
- * @param {*} value The value to be tested
- * @returns {boolean} Whether or not the `value` is {@link EnvironmentAware|EnvironmentAware}
+ * Returns whether a value can receive an environment.
+ *
+ * @param value - The value to test.
+ * @returns `true` when the value looks like environment aware.
  */
 export const likeEnvironmentAware = likeAwareAnd(like({ setEnvironment: Function })) as (
     value
@@ -196,13 +248,21 @@ export const likeEnvironmentAware = likeAwareAnd(like({ setEnvironment: Function
 const hasEnvironmentProperty = propSatisfies(likeEnvironment, 'environment');
 
 /**
- * @param {*} value The value to be tested
- * @returns {boolean} Whether or not the `value` is {@link EnvironmentSource|EnvironmentSource}
+ * Returns whether a value exposes an environment.
+ *
+ * @param value - The value to test.
+ * @returns `true` when the value looks like an environment source.
  */
 export const likeEnvironmentSource = both(complement(isNil), hasEnvironmentProperty) as (
     value
 ) => value is EnvironmentSource;
 
+/**
+ * Environment implementation intended for tests.
+ */
 export class MockEnvironment extends AbstractEnvironment {}
 
+/**
+ * Default environment implementation used by application contexts.
+ */
 export class StandardEnvironment extends AbstractEnvironment {}

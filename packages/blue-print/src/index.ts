@@ -8,6 +8,9 @@ type impression = boolean | number | string;
 
 type Impression = { [key: string]: impression | impression[] };
 
+/**
+ * A fingerprint is the ordered set of collected browser impressions.
+ */
 export type Fingerprint = Impression[];
 
 type IdleDeadline = {
@@ -36,12 +39,7 @@ const scheduleIdle = (globalThis as unknown as { requestIdleCallback?: RequestId
  */
 
 /**
- * @typedef module:print.Fingerprint
- * @type {Array<module:print.Impression>}
- */
-
-/**
- * A unique device signature
+ * Resolves to a browser fingerprint without blocking initial rendering.
  */
 export const fingerprint = new Promise<Fingerprint>(function (resolve, reject) {
     scheduleIdle(function () {

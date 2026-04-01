@@ -7,21 +7,43 @@ import { ModelAndView } from './model-and-view';
 import { Route } from '@blue/router';
 
 /**
+ * Executes a handler through a chain of route interceptors.
  */
 export default class RouteHandlerExecutionChain {
+    /**
+     * Interceptors to invoke around handler execution.
+     */
     #interceptors: RouteHandlerInterceptor[];
 
+    /**
+     * The resolved handler instance.
+     */
     handler: object;
+
+    /**
+     * Index of the last interceptor that completed pre-handle processing.
+     */
     interceptorIndex: number;
 
     get [Symbol.toStringTag](): string {
         return 'HandlerExecutionChain';
     }
 
+    /**
+     * Return the configured interceptors in execution order.
+     *
+     * @returns The interceptor list, or `null` when none were configured.
+     */
     get interceptors(): RouteHandlerInterceptor[] {
         return this.#interceptors;
     }
 
+    /**
+     * Create a new execution chain for a handler or copy an existing chain.
+     *
+     * @param handler - A handler instance or an existing execution chain.
+     * @param interceptors - Optional interceptors to append to the chain.
+     */
     constructor(handler: object | RouteHandlerExecutionChain, interceptors: RouteHandlerInterceptor[] = null) {
         this.#interceptors = null;
 
@@ -40,6 +62,11 @@ export default class RouteHandlerExecutionChain {
     /**
      * @param {module:router.RouteHandlerInterceptor} interceptor
      */
+    /**
+     * Add a single interceptor to the chain.
+     *
+     * @param interceptor - The interceptor to add.
+     */
     addInterceptor(interceptor: RouteHandlerInterceptor): void {
         if (interceptor) {
             if (!this.#interceptors) {
@@ -51,6 +78,11 @@ export default class RouteHandlerExecutionChain {
 
     /**
      * @param {Array<module:router.RouteHandlerInterceptor>} interceptors
+     */
+    /**
+     * Add multiple interceptors to the chain.
+     *
+     * @param interceptors - The interceptors to add.
      */
     addInterceptors(interceptors: RouteHandlerInterceptor[]): void {
         const length = interceptors?.length;
@@ -65,6 +97,12 @@ export default class RouteHandlerExecutionChain {
      * @param {module:router.Route} route
      * @param {module:dispatcher.ModelAndView} mv
      */
+    /**
+     * Run post-handle callbacks in registration order.
+     *
+     * @param route - The current route.
+     * @param mv - The model and view produced by the handler.
+     */
     async applyPostHandle(route: Route, mv: ModelAndView): Promise<void> {
         const interceptors = this.#interceptors,
             length = interceptors?.length;
@@ -78,6 +116,12 @@ export default class RouteHandlerExecutionChain {
 
     /**
      * @param {module:router.Route} route
+     */
+    /**
+     * Run pre-handle callbacks until one returns `false`.
+     *
+     * @param route - The current route.
+     * @returns `true` when all interceptors allow processing to continue.
      */
     async applyPreHandle(route: Route): Promise<boolean> {
         const interceptors = this.#interceptors,
@@ -97,6 +141,12 @@ export default class RouteHandlerExecutionChain {
     /**
      * @param {module:router.Route} route
      * @param {Error} error
+     */
+    /**
+     * Run completion callbacks in reverse order.
+     *
+     * @param route - The current route.
+     * @param error - The error that terminated execution, if any.
      */
     async triggerCompleteHandle(route: Route, error: Error = null): Promise<void> {
         const interceptors = this.#interceptors;

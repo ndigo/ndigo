@@ -1,12 +1,16 @@
 /**
  * @author Jeff Rose
  */
+/** JSON-compatible value used by matrix-string parsing helpers. */
 export type JSONValue = boolean | null | number | string | JSONObject | JSONArray;
 
+/** JSON object value used by matrix-string parsing helpers. */
 export interface JSONObject extends Record<string, JSONValue> {}
 
+/** JSON array value used by matrix-string parsing helpers. */
 export interface JSONArray extends Array<JSONValue> {}
 
+/** Minimal parser interface used by the matrix-string parser object. */
 export interface Parser<T = any> {
     parse(value: string): T;
 }
@@ -116,4 +120,5 @@ class MatrixString implements Parser<JSONObject> {
     }
 }
 
+/** Parser object that converts matrix strings into plain objects. */
 export default new MatrixString();

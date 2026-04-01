@@ -4,6 +4,9 @@
 
 import type { FeatureMetricRecorder } from '@blue/core';
 
+/**
+ * Records feature mount metrics.
+ */
 export type { FeatureMetricRecorder } from '@blue/core';
 import { ApplicationContext } from './context';
 import { ContextEventGateway, ContextEventGatewayOptions, ContextEventRelay } from './event-gateway';
@@ -15,10 +18,16 @@ import {
     unmountFeatureContext,
 } from './context-hierarchy';
 
+/**
+ * Options used to register a feature for mounting.
+ */
 export interface FeatureRegistrationOptions extends FeatureContextOptions {
     unmountPolicy?: FeatureUnmountPolicy;
 }
 
+/**
+ * Options for the feature context mount manager.
+ */
 export interface FeatureContextMountManagerOptions {
     metricRecorder?: FeatureMetricRecorder;
 }
@@ -46,6 +55,9 @@ const createGateway = (
     return new ContextEventGateway(context, relayTarget, relays, gatewayOptions);
 };
 
+/**
+ * Creates, tracks, and tears down mounted feature contexts.
+ */
 export class FeatureContextMountManager {
     #metricRecorder?: FeatureMetricRecorder;
     #parent: ApplicationContext;

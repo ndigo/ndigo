@@ -9,10 +9,16 @@ import { when } from '@blue/util/logic';
 import { mergeRight, objOf } from '@blue/util/object';
 import { isString } from '@blue/util/types';
 
+/**
+ * Basic value shared by route mapping metadata objects.
+ */
 type RouteMappingValue = {
     value: string;
 };
 
+/**
+ * Internal configuration shape for route mappings.
+ */
 type RouteMappingConfiguration = RouteMappingValue & {
     name?: string;
     params?: string;
@@ -34,9 +40,11 @@ const toRouteMappingConfiguration = when(isString, compose(withDefaults, configu
 ) => RouteMappingConfiguration;
 
 /**
- * Get route mapping from class or method
- * @param target - Class constructor or prototype
- * @param propertyKey - Optional method name
+ * Get route mapping metadata from a class or method.
+ *
+ * @param target - The class constructor or prototype to inspect.
+ * @param propertyKey - The method name, when reading method-level metadata.
+ * @returns The stored route mapping, or `undefined`.
  */
 export const getRouteMapping = (target: any, propertyKey?: string | symbol): RouteMappingConfiguration | undefined => {
     const metadata = getSymbolMetadata(target);
@@ -47,17 +55,23 @@ export const getRouteMapping = (target: any, propertyKey?: string | symbol): Rou
 };
 
 /**
- * Check if route mapping exists
- * @param target - Class constructor or prototype
- * @param propertyKey - Optional method name
+ * Check whether route mapping metadata exists.
+ *
+ * @param target - The class constructor or prototype to inspect.
+ * @param propertyKey - The method name, when checking method-level metadata.
+ * @returns `true` when route mapping metadata is present.
  */
 export const hasRouteMapping = (target: any, propertyKey?: string | symbol): boolean => {
     return getRouteMapping(target, propertyKey) !== undefined;
 };
 
 /**
- * TC39 Stage 3 decorator for route mapping
- * Works as both class and method decorator
+ * Apply route mapping metadata to a class or method.
+ *
+ * Works as both a class and method decorator.
+ *
+ * @param route - The route path or mapping configuration to apply.
+ * @returns A decorator function for the target.
  */
 export function routeMapping(route: string | RouteMappingConfiguration = defaultMapping) {
     const conf = toRouteMappingConfiguration(route);
@@ -89,6 +103,18 @@ export function routeMapping(route: string | RouteMappingConfiguration = default
     };
 }
 
+/**
+ * Create a public route mapping decorator.
+ *
+ * @param route - The route path to map.
+ * @returns A route mapping decorator marked as public.
+ */
 export const publicMapping = (route: string) => routeMapping({ value: route, private: false });
 
+/**
+ * Create a private route mapping decorator.
+ *
+ * @param route - The route path to map.
+ * @returns A route mapping decorator marked as private.
+ */
 export const privateMapping = (route: string) => routeMapping({ value: route, private: true });

@@ -8,29 +8,83 @@ import { ConfigurableEnvironment } from './environment';
 import { ApplicationContext, GenericApplicationContext } from './context';
 import { ContextEventGateway, ContextEventGatewayOptions, ContextEventRelay } from './event-gateway';
 
+/**
+ * Options for creating a shell context.
+ */
 export interface ShellContextOptions {
+    /**
+     * Optional shell context name.
+     */
     name?: string;
+    /**
+     * Initial values to populate the context with.
+     */
     data?: JSONObject;
+    /**
+     * Overrides the shell content source.
+     */
     contentSource?: ContentSource;
+    /**
+     * Overrides the shell environment.
+     */
     environment?: ConfigurableEnvironment;
+    /**
+     * Sets the default theme name.
+     */
     themeName?: string;
+    /**
+     * Overrides the shell theme resolver.
+     */
     themeResolver?: ThemeResolver;
 }
 
+/**
+ * Options for creating a feature context and its optional relay gateway.
+ */
 export interface FeatureContextOptions {
+    /**
+     * Creates the feature context instead of using `parent.newChild`.
+     */
     createContext?: (parent: ApplicationContext) => ApplicationContext;
+    /**
+     * The feature context name.
+     */
     name: string;
+    /**
+     * Initial values for the feature context.
+     */
     data?: JSONObject;
+    /**
+     * Relay gateway validation options.
+     */
     gatewayOptions?: ContextEventGatewayOptions;
+    /**
+     * Optional relay target context.
+     */
     relayTarget?: ApplicationContext;
+    /**
+     * Event relays to attach to the feature context.
+     */
     relays?: ContextEventRelay[];
 }
 
+/**
+ * Result of mounting a feature context.
+ */
 export interface FeatureContextComposition {
+    /**
+     * The mounted feature context.
+     */
     context: ApplicationContext;
+    /**
+     * Optional relay gateway attached to the feature.
+     */
     gateway?: ContextEventGateway;
 }
 
+/**
+ * Controls whether a feature context is closed or preserved during unmount.
+ */
 export type FeatureUnmountPolicy = 'close' | 'preserve';
 
 /**

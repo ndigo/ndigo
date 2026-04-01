@@ -3,7 +3,6 @@
  */
 
 import { comparator } from '@blue/util/function';
-import { isBefore } from '@blue/util/date';
 import { like } from '@blue/util/types';
 
 /**
@@ -186,36 +185,6 @@ class NaturalComparator<T> extends PredicateComparator<T> {
 }
 
 /**
- * A comparator that adapts `Comparable` objects to the `Comparator` interface.
- * @template T - The type of `Comparable` objects being compared.
- * @implements Comparator
- */
-class ComparableComparator<T extends Comparable<T>> implements Comparator<T> {
-    /**
-     * Compares two `Comparable` objects using their `compareTo` method.
-     * @param value1 - The first `Comparable` object.
-     * @param value2 - The second `Comparable` object.
-     * @returns A negative integer, zero, or a positive integer as the first object is less than, equal to, or greater than the second.
-     */
-    compare(value1: T, value2: T): number {
-        return value1.compareTo(value2);
-    }
-}
-
-/**
- * A comparator for `Date` objects.
- * @extends PredicateComparator
- */
-class DateComparator extends PredicateComparator<Date> {
-    /**
-     * Creates an instance of DateComparator.
-     */
-    constructor() {
-        super(isBefore);
-    }
-}
-
-/**
  * A comparator for `number` objects.
  * @extends NaturalComparator
  */
@@ -240,16 +209,6 @@ class StringComparator extends NaturalComparator<string> {
         );
     }
 }
-
-/**
- * A `Comparator` instance for `Comparable` objects.
- */
-export const comparableComparator = new ComparableComparator();
-
-/**
- * A `Comparator` instance for `Date` objects.
- */
-export const dateComparator = new DateComparator();
 
 /**
  * A `Comparator` instance for `number` objects.

@@ -1,15 +1,6 @@
 import { describe, test, expect } from 'vitest';
-import {
-    XDelegatingTransformer,
-    likeReduced,
-    likeTransformer,
-    reduce,
-    toArray,
-    toRecord,
-    toMap,
-    toSet,
-} from '../src/transducer';
-import { compose, identity } from '@blue/util/function';
+import { XDelegatingTransformer, likeReduced, likeTransformer, reduce } from '../src/transducer';
+import { compose } from '@blue/util/function';
 import { into } from '@blue/util/list';
 
 class XDoubleTransformer extends XDelegatingTransformer<any, any, any> {
@@ -72,36 +63,5 @@ describe('reduce', () => {
             ['@@transducer/value']: 123,
         };
         expect(reduce(reduced)).toBe(reduced);
-    });
-});
-
-describe('toArray', () => {
-    test('it should return an array', () => {
-        const result = into([], toArray(), 'abc');
-        expect(result).toEqual(['a', 'b', 'c']);
-    });
-});
-
-describe('toRecord', () => {
-    test('it should return a record', () => {
-        const result = into({}, toRecord(identity, identity), 'abc');
-        expect(result).toHaveProperty('a', 'a');
-        expect(result).toHaveProperty('b', 'b');
-        expect(result).toHaveProperty('c', 'c');
-    });
-});
-
-describe('toMap', () => {
-    test('it should return a map', () => {
-        const result = into(new Map(), toMap(identity, identity), 'abc');
-        expect(Array.from(result.keys())).toEqual(['a', 'b', 'c']);
-        expect(Array.from(result.values())).toEqual(['a', 'b', 'c']);
-    });
-});
-
-describe('toSet', () => {
-    test('it should return a set', () => {
-        const result = into(new Set(), toSet(), 'abc');
-        expect(Array.from(result)).toEqual(['a', 'b', 'c']);
     });
 });

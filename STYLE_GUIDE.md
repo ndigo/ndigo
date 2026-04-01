@@ -443,12 +443,12 @@ const add = (a: number, b: number) => a + b;
 
 ### Predicate Functions [CONVENTION: Code Review]
 
-**Pattern:** `isType` prefix for type/inheritance checks
+**Pattern:** `isType` prefix for type/identity checks
 
-Predicates that check types using `typeof`, `instanceof`, or similar runtime checks.
+Predicates that verify a value's **type or identity** using `typeof`, `instanceof`, or similar runtime checks. The question being asked is: "Is this value _an instance of_ type X?"
 
 ```typescript
-// ✅ Correct: Type checking predicates
+// ✅ Correct: typeof checks
 function isString(value: unknown): value is string {
     return typeof value === 'string';
 }
@@ -464,13 +464,18 @@ function isConstructor(value: unknown): value is Constructor {
 function isValidDate(value: temporal, format: string): boolean {
     return !isNaN(Date.parse(value));
 }
+
+// ✅ Correct: instanceof checks
+const isContextToken = (value: unknown): value is ContextToken<unknown> => value instanceof ContextToken;
 ```
 
 ### Duck Typing Functions [CONVENTION: Code Review]
 
 **Pattern:** `likeType` prefix for structural/interface checks
 
-Functions that check for expected properties/methods without using `typeof` or `instanceof`.
+Functions that check whether a value has the expected **structural shape** (properties and methods) rather than checking identity via `typeof` or `instanceof`. The question being asked is: "Does this value _behave like_ type X?" The `like()` utility from `@blue/util/types` is the standard way to create these checks.
+
+**Note:** `typeof` may appear in `like*` functions as null guards or to verify a property is callable (e.g., `typeof value.then === 'function'`). This is fine — the key distinction is whether the **primary check mechanism** tests for structural shape or type identity.
 
 ```typescript
 // ✅ Correct: Duck typing predicates
@@ -491,9 +496,33 @@ function likeController(value: unknown): value is ControllerLike {
 function likeComparable<T>(value: unknown): value is Comparable<T> {
     return value != null && typeof value === 'object' && 'compareTo' in value;
 }
+
+// ✅ Correct: Using the like() utility from @blue/util/types
+const likeFactory = like({ getInstance: Function }) as (value) => value is Factory;
+const likeEquatable = like({ equals: Function }) as (value) => value is Equatable;
 ```
 
-**Rationale:** Clear distinction between runtime type checks (`is`) and structural compatibility checks (`like`).
+**Anti-Patterns:**
+
+```typescript
+// ❌ Wrong: instanceof is a type/identity check, not duck-typing — use is* prefix
+const likeContextToken = (value: unknown): value is ContextToken<unknown> => value instanceof ContextToken; // Should be isContextToken
+
+// ✅ Correct: Use is* for instanceof checks
+const isContextToken = (value: unknown): value is ContextToken<unknown> => value instanceof ContextToken;
+```
+
+**Decision Table:**
+
+| Check Mechanism                | Prefix  | Example                                         |
+| :----------------------------- | :------ | :---------------------------------------------- |
+| `instanceof`                   | `is*`   | `isContextToken`, `isDate`                      |
+| `typeof` (as primary check)    | `is*`   | `isString`, `isNumber`, `isFunction`            |
+| `like()` utility (shape check) | `like*` | `likeFactory`, `likeEquatable`                  |
+| Property/method presence       | `like*` | `likeIterable`, `likePromise`                   |
+| `allPass`/`anyPass` of `like*` | `like*` | `likeApplicationContext`, `likeHTTPInterceptor` |
+
+**Rationale:** `is*` asks "Is this value _an instance of_ type X?" — it checks identity. `like*` asks "Does this value _behave like_ type X?" — it checks structural compatibility. This mirrors the duck-typing philosophy: "If it walks like a duck and quacks like a duck, it's `like` a duck." An `instanceof` check, by contrast, verifies the value _is_ a duck.
 
 ### Classes and Interfaces [CONVENTION: Code Review]
 

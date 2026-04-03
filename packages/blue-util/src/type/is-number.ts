@@ -3,11 +3,6 @@
  * @see {@link https://ramdajs.com/docs/}
  */
 
-import { allPass, complement, is } from 'ramda';
-
-const isNotNaN = complement(isNaN),
-    _isNumber = is(Number);
-
 /**
  * Determines whether a given value is an actual finite number. The logic differs from `typeof`, which considers `NaN` and `Infinity` to be numbers and instances of `Number` to be objects.
  * @category Type
@@ -31,6 +26,9 @@ const isNotNaN = complement(isNaN),
  * isNumber( Infinity );
  * //=> false
  */
-const isNumber = allPass([_isNumber, isNotNaN, isFinite]) as (value) => value is number;
+const isNumber = (value: any): value is number => {
+    const n = typeof value === 'number' ? value : value instanceof Number ? value.valueOf() : NaN;
+    return Number.isFinite(n);
+};
 
 export default isNumber;

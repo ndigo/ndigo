@@ -4,7 +4,7 @@
  */
 
 // Import Ramda Type functions for re-export
-import { is, isNil, isNotNil, propIs, type } from 'ramda';
+import { propIs, type } from 'ramda';
 
 // Import custom functions for re-export
 import isConstructor from './is-constructor.js';
@@ -16,6 +16,20 @@ import isValidDate from './is-valid-date.js';
 import like from './like.js';
 import likeArray from './like-array.js';
 import likePromise from './like-promise.js';
+
+function is<T>(Ctor: any): (val: any) => val is T;
+function is<T>(Ctor: any, val: any): val is T;
+function is<T>(Ctor: any, val?: any): ((v: any) => v is T) | boolean {
+    if (arguments.length === 1) {
+        return (v: any): v is T => v != null && (v.constructor === Ctor || v instanceof Ctor);
+    }
+
+    return val != null && (val.constructor === Ctor || val instanceof Ctor);
+}
+
+const isNil = (x: any): x is null | undefined => x == null;
+
+const isNotNil = <T>(x: T | null | undefined): x is T => x != null;
 
 /**
  * See if an object (`val`) is an instance of the supplied constructor. This

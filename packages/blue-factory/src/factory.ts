@@ -6,7 +6,6 @@ import { Constructable, FrameworkError, likeEnumerable, isPrimitive, entriesIter
 import { Destroyable, Initializable, likeDestroyable, likeInitializable } from './lifecycle';
 import { always, T } from '@blue/util/function';
 import { cond } from '@blue/util/logic';
-import { both } from '@blue/util/logic';
 import { has } from '@blue/util/object';
 import { equals } from '@blue/util/relation';
 import { isConstructor, isFunction, isNumber, isString, like } from '@blue/util/types';
@@ -154,22 +153,23 @@ export const likeFactory = like({ getInstance: Function }) as (value) => value i
  */
 export const likeFactoryAware = likeAwareAnd(like({ setFactory: Function })) as (value) => value is FactoryAware;
 
+const _likeHierarchicalShape = like({ parent: true, hasOwnValue: Function });
+
 /**
  * Determines whether or not the `value` provided is {@link HierarchicalFactory}.
  * @param value The value to be tested.
  * @returns Whether or not the `value` provided is {@link HierarchicalFactory}.
  */
-export const likeHierarchicalFactory = both(likeFactory, like({ parent: true, hasOwnValue: Function }));
+export const likeHierarchicalFactory = (value) => likeFactory(value) && _likeHierarchicalShape(value);
+
+const _likeConfigurableShape = like({ addProcessor: Function, setParent: Function });
 
 /**
  * Determines whether or not the `value` provided is {@link ConfigurableFactory}.
  * @param value The value to be tested.
  * @returns Whether or not the `value` provided is {@link ConfigurableFactory}.
  */
-export const likeConfigurableFactory = both(
-    likeHierarchicalFactory,
-    like({ addProcessor: Function, setParent: Function })
-);
+export const likeConfigurableFactory = (value) => likeHierarchicalFactory(value) && _likeConfigurableShape(value);
 
 /**
  * An abstract base class for implementing a {@link ConfigurableFactory} and {@link ScopedFactory}.

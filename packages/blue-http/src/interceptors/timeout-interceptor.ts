@@ -4,7 +4,6 @@
 
 import ResponseError from '../response-error';
 import { __ } from '@blue/util/function';
-import { allPass } from '@blue/util/logic';
 import { gt } from '@blue/util/relation';
 import { isNumber } from '@blue/util/types';
 import {
@@ -23,7 +22,8 @@ export type TimeoutInit = HTTPInit & { timeout?: number };
 const { defineProperty } = Reflect,
     { isInteger } = Number,
     greaterThanZero = gt(__, 0),
-    isPositiveNumber = allPass([isNumber, isInteger, greaterThanZero]);
+    isPositiveNumber = (value: unknown): value is number =>
+        isNumber(value) && isInteger(value as number) && greaterThanZero(value);
 
 /**
  * Aborts slow requests and converts aborts into timeout responses.

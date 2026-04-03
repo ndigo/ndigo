@@ -2,7 +2,6 @@
  * @author Jeff Rose
  */
 
-import { both } from '@blue/util/logic';
 import { like } from '@blue/util/types';
 //import { Constructable } from '@blue/core';
 
@@ -108,7 +107,9 @@ export const likeAware = like({ [$aware]: Boolean }) as (value) => value is Awar
  * likeAwareAndYellow( { color: 'yellow' } ); // false
  * likeAwareAndYellow( { '@@aware': true, color: 'yellow' } ); // true
  */
-export const likeAwareAnd = both(likeAware) as (predicate) => (value) => boolean;
+export const likeAwareAnd = ((predicate) => (value) => likeAware(value) && predicate(value)) as (
+    predicate
+) => (value) => boolean;
 
 /**
  * @param {*} value

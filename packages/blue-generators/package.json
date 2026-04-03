@@ -1,0 +1,26 @@
+{
+  "name": "@blue/generators",
+  "version": "0.0.1",
+  "description": "Nx generators for BlueJS package and component scaffolding",
+  "type": "module",
+  "generators": "./generators.json",
+  "files": [
+    "src",
+    "generators.json"
+  ],
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@nx/devkit": "~20.3.2"
+  },
+  "devDependencies": {
+    "nx": "~20.3.2",
+    "typescript": "~5.7.2",
+    "vitest": "~2.1.8"
+  },
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "sideEffects": false
+}

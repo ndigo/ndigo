@@ -3,7 +3,6 @@
  * @see {@link https://ramdajs.com/docs/}
  */
 import {
-    both,
     forEachObjIndexed,
     isString,
     join,
@@ -20,7 +19,7 @@ const { isArray } = Array,
     greaterThanZero = lt(0),
     lengthGreaterThanZero = propSatisfies(greaterThanZero, 'length'),
     firstValueIsArray = propSatisfies(isArray, '0'),
-    isMatrix = both(lengthGreaterThanZero, firstValueIsArray) as (value) => value is any[][],
+    isMatrix = ((value) => lengthGreaterThanZero(value) && firstValueIsArray(value)) as (value) => value is any[][],
     // [1,2,3] -> "1,2,3,"
     joinOnComma = trailingJoin(',') as (value: any[]) => string,
     // [1,2,3] -> "1|2|3|"

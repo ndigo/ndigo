@@ -4,7 +4,7 @@
 
 import { identity, invoker, T } from '@blue/util/function';
 import { map } from '@blue/util/list';
-import { allPass, anyPass, both, complement, cond } from '@blue/util/logic';
+import { anyPass, complement, cond } from '@blue/util/logic';
 import { mergeLeft, prop } from '@blue/util/object';
 import { equals } from '@blue/util/relation';
 import { is } from '@blue/util/types';
@@ -56,7 +56,7 @@ const { isArray } = Array,
  * @param value - Value to test.
  * @returns `true` when the value is an array that survives a JSON round trip unchanged.
  */
-export const isJSONArray = both(isArray, _isJSONValue) as (value) => value is JSONArray;
+export const isJSONArray = ((value) => isArray(value) && _isJSONValue(value)) as (value) => value is JSONArray;
 
 /**
  * Tests whether a value is a JSON object.
@@ -64,7 +64,9 @@ export const isJSONArray = both(isArray, _isJSONValue) as (value) => value is JS
  * @param value - Value to test.
  * @returns `true` when the value is a non-primitive, non-array object that survives a JSON round trip unchanged.
  */
-export const isJSONObject = allPass([isNotPrimitive, isNotArray, _isJSONValue]) as (value) => value is JSONObject;
+export const isJSONObject = ((value) => isNotPrimitive(value) && isNotArray(value) && _isJSONValue(value)) as (
+    value
+) => value is JSONObject;
 
 /**
  * Tests whether a value is directly representable in JSON.

@@ -3,7 +3,6 @@
  */
 
 import { __, constructN, pipe } from '@blue/util/function';
-import { allPass, both } from '@blue/util/logic';
 import { gte, lte } from '@blue/util/relation';
 import { test } from '@blue/util/string';
 

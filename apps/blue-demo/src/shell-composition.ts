@@ -13,12 +13,16 @@ import { DISPATCHER, ROUTER } from './context-tokens';
 
 export const TODO_ROUTE_PREFIX = '/todo';
 export const ACCOUNT_ROUTE_PREFIX = '/account';
+export const NOTES_ROUTE_PREFIX = '/notes';
 
 export const toTodoShellRoute = (featureRoute: string): string =>
     restorePartitionPrefix(featureRoute, TODO_ROUTE_PREFIX);
 
 export const toAccountShellRoute = (featureRoute: string): string =>
     restorePartitionPrefix(featureRoute, ACCOUNT_ROUTE_PREFIX);
+
+export const toNotesShellRoute = (featureRoute: string): string =>
+    restorePartitionPrefix(featureRoute, NOTES_ROUTE_PREFIX);
 
 export const createTodoSiteRouter = (callback: (route: Route) => void): SiteRouter => {
     const router = new SiteRouter();
@@ -193,6 +197,33 @@ export const composeTodoRuntime = (todoContext: ApplicationContext): TodoRuntime
             });
         },
     });
+
+    featureMountManager.registerFeature({
+        name: 'notes',
+        data: {
+            title: 'Notes',
+        },
+        unmountPolicy: 'close',
+    });
+
+    featureRoutingRegistry.registerFeature({
+        name: 'notes',
+        prefix: NOTES_ROUTE_PREFIX,
+        onActivate: () => {
+            featureMountManager.mount('notes');
+        },
+        onDeactivate: () => {
+            featureMountManager.unmount('notes');
+        },
+        onRoute: (route) => {
+            dispatcher.dispatch(route);
+            logger.info('Notes feature route handled', {
+                feature: 'notes',
+                path: route.path,
+            });
+        },
+    });
+
     const siteRouter = featureRoutingRegistry.siteRouter;
 
     const shellRouter = new HashRouter((route) => {

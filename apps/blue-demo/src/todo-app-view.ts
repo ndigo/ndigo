@@ -1,10 +1,11 @@
-import { toAccountShellRoute, toTodoShellRoute } from './shell-composition';
+import { toAccountShellRoute, toNotesShellRoute, toTodoShellRoute } from './shell-composition';
 import './shell-nav-view';
 
 const allRoute = `#${toTodoShellRoute('/')}`;
 const activeRoute = `#${toTodoShellRoute('/active')}`;
 const completedRoute = `#${toTodoShellRoute('/completed')}`;
 const accountRoute = `#${toAccountShellRoute('/')}`;
+const notesRoute = `#${toNotesShellRoute('/')}`;
 
 const templateTodo = document.createElement('template');
 templateTodo.innerHTML = `
@@ -108,6 +109,10 @@ export default class MyTodoApp extends HTMLElement {
                     {
                         href: accountRoute,
                         label: 'Account',
+                    },
+                    {
+                        href: notesRoute,
+                        label: 'Notes',
                     },
                 ],
                 mode: 'list',

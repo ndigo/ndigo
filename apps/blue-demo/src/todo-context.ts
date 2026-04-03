@@ -10,8 +10,10 @@ import { NameViewResolver } from '@blue/view';
 import { DOMElementViewTarget, WebComponentViewEngine } from '@blue/view-webcomponent';
 import AccountController from './account-controller';
 import IndexController from './index-controller';
+import NotesController from './notes-controller';
 import AccountApp from './account-app-view';
 import MyTodoApp from './todo-app-view';
+import NotesService from './notes-service';
 import TodoService from './todo-service';
 
 @configuration
@@ -70,6 +72,24 @@ class ToDoconfiguration {
         return new TodoService([
             { text: 'my initial todo', checked: false },
             { text: 'Learn about Web Components', checked: true },
+        ]);
+    }
+
+    @entry
+    notesController() {
+        return new NotesController();
+    }
+
+    @entry
+    notesService() {
+        return new NotesService([
+            {
+                id: '1',
+                title: 'Welcome to Wicket Views',
+                body: 'This note is rendered using @blue/view-wicket.',
+                pinned: true,
+            },
+            { id: '2', title: 'Component Tree', body: 'Page → Panel → ListView → Label hierarchy.', pinned: false },
         ]);
     }
 }

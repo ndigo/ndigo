@@ -1,0 +1,16 @@
+id: no-direct-datefns-import
+language: TypeScript
+severity: warning
+message: Import from '@blue/util' instead of 'date-fns'. See AGENTS.md §4.7.
+rule:
+  kind: import_statement
+  has:
+    field: source
+    regex: ^['\"]date-fns['\"]$
+files:
+  - packages/**/*.ts
+  - apps/**/*.ts
+ignores:
+  - packages/blue-util/**
+  - '**/*.spec.ts'
+  - '**/*.test.ts'

@@ -53,7 +53,8 @@
   },
   "scripts": {
     "build:lib": "tsc -b tsconfig.build.json",
-    "test": "vitest run"
+    "test": "vitest run",
+    "api-report": "api-extractor run --local --verbose"
   },
   "repository": {
     "type": "git",

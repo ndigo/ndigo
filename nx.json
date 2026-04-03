@@ -6,6 +6,12 @@
       "cache": true,
       "inputs": ["production", "^production"],
       "outputs": ["{projectRoot}/lib"]
+    },
+    "api-report": {
+      "dependsOn": ["build:lib"],
+      "cache": true,
+      "inputs": ["production"],
+      "outputs": ["{projectRoot}/etc"]
     }
   },
   "namedInputs": {

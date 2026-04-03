@@ -3,12 +3,7 @@
  * @see {@link https://ramdajs.com/docs/}
  */
 
-import { append, curry, join } from 'ramda';
-
-type TrailingJoinFunction = {
-    (separator: string, list: any[]): string;
-    (separator: string): (list: any[]) => string;
-};
+import { append, join } from 'ramda';
 
 /**
  * Returns a string made by inserting the separator after each element and concatenating all the elements into a single string.
@@ -23,8 +18,14 @@ type TrailingJoinFunction = {
  * trailingJoin( ",", [ "a", "b", "c" ] );
  * //=> "a,b,c,"
  */
-const trailingJoin: TrailingJoinFunction = curry((separator: string, list: any[]): string =>
-    join(separator, append('', list))
-);
+function trailingJoin(separator: string, list: any[]): string;
+function trailingJoin(separator: string): (list: any[]) => string;
+function trailingJoin(separator: string, list?: any[]): string | ((list: any[]) => string) {
+    const impl = (l: any[]): string => join(separator, append('', l));
+    if (arguments.length >= 2) {
+        return impl(list!);
+    }
+    return impl;
+}
 
 export { trailingJoin };

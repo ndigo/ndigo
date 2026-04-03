@@ -3,13 +3,7 @@
  * @see {@link https://ramdajs.com/docs/}
  */
 
-import { curry } from 'ramda';
 import randInt from '../math/rand-int.js';
-
-type SampleFunction = {
-    <T = any>(n: number, list: ArrayLike<T>): T[];
-    <T = any>(n: number): (list: ArrayLike<T>) => T[];
-};
 
 /**
  * @category List
@@ -25,18 +19,28 @@ type SampleFunction = {
  * //=> [ "b" ]
  */
 const sampleOne = <T = any>(list: ArrayLike<T>): T =>
-        Array.prototype.splice.call(list, randInt(0, list.length - 1), 1)[0],
-    sample: SampleFunction = curry(<T = any>(n: number, list: ArrayLike<T>): T[] => {
-        const length = list.length,
+    Array.prototype.splice.call(list, randInt(0, list.length - 1), 1)[0];
+
+function sample<T = any>(n: number, list: ArrayLike<T>): T[];
+function sample<T = any>(n: number): (list: ArrayLike<T>) => T[];
+function sample<T = any>(n: number, list?: ArrayLike<T>): T[] | ((list: ArrayLike<T>) => T[]) {
+    const impl = (l: ArrayLike<T>): T[] => {
+        const length = l.length,
             result: T[] = [];
 
-        n = Math.max(Math.min(n, length), 1);
+        let count = Math.max(Math.min(n, length), 1);
 
-        while (n--) {
-            result.push(sampleOne<T>(list));
+        while (count--) {
+            result.push(sampleOne<T>(l));
         }
 
         return result;
-    });
+    };
+
+    if (arguments.length >= 2) {
+        return impl(list!);
+    }
+    return impl;
+}
 
 export { sample };

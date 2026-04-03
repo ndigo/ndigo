@@ -10,7 +10,7 @@ import { cond, isEmpty, propSatisfies } from '@blue/util/logic';
 import list from '@blue/util/list';
 
 // @ts-ignore - Module resolution issue with monorepo paths
-export { always, comparator, compose, curryN, identity, of, pipe, T } from '@blue/util/function';
+export { always, comparator, compose, identity, of, pipe, T } from '@blue/util/function';
 export { filter, flatten, head, join, last, length, map, sort } from '@blue/util/list';
 export { both, complement, cond, defaultTo, either, ifElse, isEmpty, isNotEmpty, when } from '@blue/util/logic';
 export { forEachObjIndexed, keys, prop } from '@blue/util/object';

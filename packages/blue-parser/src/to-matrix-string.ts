@@ -6,7 +6,6 @@ import {
     always,
     complement,
     cond,
-    curryN,
     equals,
     filter,
     isNotEmpty,
@@ -37,14 +36,15 @@ const isNull = equals(null),
     joinOnSemicolon = join(';'),
     // ["a",undefined,"b","c",undefined,"#"] -> "a,b,c,%23"
     encodeList = pipe(filterUndefined, encodeValues, joinOnComma),
-    encodeParam = curryN(2, (object, key: string): string =>
-        cond([
-            [isUndefined, () => ''],
-            [isNull, always(encodeValue(key))],
-            [Array.isArray, (list) => joinOnEqual([encodeValue(key), encodeList(list)])],
-            [T, (value: string) => joinOnEqual([encodeValue(key), encodeValue(value)])],
-        ])(object[key])
-    ),
+    encodeParam =
+        (object) =>
+        (key: string): string =>
+            cond([
+                [isUndefined, () => ''],
+                [isNull, always(encodeValue(key))],
+                [Array.isArray, (list) => joinOnEqual([encodeValue(key), encodeList(list)])],
+                [T, (value: string) => joinOnEqual([encodeValue(key), encodeValue(value)])],
+            ])(object[key]),
     naturalComparator = comparator((a: any, b: any): boolean => a < b),
     naturalSort = sort(naturalComparator),
     toMatrixString = (object): string => {

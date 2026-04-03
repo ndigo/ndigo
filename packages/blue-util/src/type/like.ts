@@ -4,14 +4,9 @@
  * @see {@link https://ramdajs.com/docs/}
  */
 
-import { allPass, curry, either, equals, has, is, isNotNil, map, pipe, prepend, propSatisfies, toPairs } from 'ramda';
+import { allPass, either, equals, has, is, isNotNil, map, pipe, prepend, propSatisfies, toPairs } from 'ramda';
 
 export type LikeDescriptor = { [key: string]: Function | true };
-
-type LikeFunction = {
-    (descriptor: LikeDescriptor, value: any): boolean;
-    (descriptor: LikeDescriptor): (value: any) => boolean;
-};
 
 /**
  * Determines whether a given value matches the criteria.
@@ -41,8 +36,15 @@ const isNull = equals(null),
         type === true ? has(key) : propSatisfies(either(is(type as any), isNull), key),
     // @ts-ignore
     toPredicates = pipe(toPairs, map(toPredicate), prepend(isNotNil)),
-    likeDescriptor = pipe(toPredicates, allPass) as (descriptor: LikeDescriptor) => (value) => boolean,
-    like = (descriptor: LikeDescriptor, value): boolean => likeDescriptor(descriptor)(value);
+    likeDescriptor = pipe(toPredicates, allPass) as (descriptor: LikeDescriptor) => (value) => boolean;
 
-const likeCurried: LikeFunction = curry(like);
+function likeCurried(descriptor: LikeDescriptor, value: any): boolean;
+function likeCurried(descriptor: LikeDescriptor): (value: any) => boolean;
+function likeCurried(descriptor: LikeDescriptor, value?: any): boolean | ((value: any) => boolean) {
+    if (arguments.length >= 2) {
+        return likeDescriptor(descriptor)(value);
+    }
+    return likeDescriptor(descriptor);
+}
+
 export default likeCurried;

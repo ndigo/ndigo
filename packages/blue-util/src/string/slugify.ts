@@ -5,15 +5,10 @@
  * @see {@link https://github.com/dodo/node-slug}
  */
 
-import { curry, pipe, toLower } from 'ramda';
+import { pipe, toLower } from 'ramda';
 
 import removeNonWord from './remove-non-word.js';
 import slug from 'slug';
-
-type SlugifyFunction = {
-    (delimiter: string, value: string): string;
-    (delimiter: string): (value: string) => string;
-};
 
 /**
  * Converts a string into a slug.
@@ -22,18 +17,15 @@ type SlugifyFunction = {
  * @param {string} value The value to be slugified.
  * @returns {string} The slugified string.
  * @example
- * const hyphenate = slugify( '-' );
- * hyphenate( 'Lorem Ipsum Dolor' );
+ * slugify( '-', 'Lorem Ipsum Dolor' );
  * //=> "lorem-ipsum-dolor"
  * slugify( '~', 'Lorem Ipsum Dolor' );
  * //=> "lorem~ipsum~dolor"
  */
-const slugify: SlugifyFunction = curry((delimiter: string, value: string): string =>
+const slugify = (delimiter: string, value: string): string =>
     pipe(
         removeNonWord,
         (val: string) => slug(val, { remove: null, replacement: delimiter, lower: false }),
         toLower
-    )(value)
-);
-
+    )(value);
 export default slugify;

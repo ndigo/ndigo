@@ -37,7 +37,7 @@ import {
     phoneOaoRule,
     CurrencyFormat,
 } from './formats';
-import { curry, identity, pipe } from '@blue/util/function';
+import { identity, pipe } from '@blue/util/function';
 import { any, append } from '@blue/util/list';
 import { both, complement, defaultTo, isEmpty, ifElse, when } from '@blue/util/logic';
 import { prop } from '@blue/util/object';
@@ -226,15 +226,17 @@ const { parseFloat, parseInt } = Number,
     specialsCount: Counter = pipe(toString, removeAnyAlphaNumber, lengthOf),
     upperCaseCount: Counter = pipe(toString, removeLowerCase, lengthOf),
     valueCount: Counter = pipe(toString, lengthOf),
-    patternConstraint = curry(({ regex, flags = null }: PatternParams, value: string): boolean => {
-        regex = ifElse(isString, removeSlashes, identity)(regex);
+    patternConstraint =
+        ({ regex, flags = null }: PatternParams) =>
+        (value: string): boolean => {
+            regex = ifElse(isString, removeSlashes, identity)(regex);
 
-        const matcher: RegExp = isString(flags)
-            ? new RegExp(pipe(toString, removeSlashesAndFlags)(regex), flags)
-            : new RegExp(regex);
+            const matcher: RegExp = isString(flags)
+                ? new RegExp(pipe(toString, removeSlashesAndFlags)(regex), flags)
+                : new RegExp(regex);
 
-        return test(matcher, value);
-    }),
+            return test(matcher, value);
+        },
     isAddressLine: constraint = patternConstraint({
         regex: addressLineRule.source,
     }) as unknown as constraint<serializable>,

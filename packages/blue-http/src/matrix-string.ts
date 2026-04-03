@@ -3,7 +3,7 @@
  */
 import { JSONObject, Parser, Stringifier } from '@blue/core';
 import matrixExpression from './parsers/matrix-expression';
-import { always, comparator, curryN, pipe, T } from '@blue/util/function';
+import { always, comparator, pipe, T } from '@blue/util/function';
 import { filter, join, map, sort } from '@blue/util/list';
 import { cond, complement, isNotEmpty } from '@blue/util/logic';
 import { keys } from '@blue/util/object';
@@ -28,14 +28,15 @@ const alwaysEmptyString = always(''),
     joinOnSemicolon = join(';'),
     // ["a",undefined,"b","c",undefined,"#"] -> "a,b,c,%23"
     encodeList = pipe(filterUndefined, encodeValues, joinOnComma),
-    encodeParam = curryN(2, (object: any, key: string): string =>
-        cond([
-            [isUndefined, alwaysEmptyString],
-            [isNull, always(encodeValue(key))],
-            [Array.isArray, (list) => joinOnEqual([encodeValue(key), encodeList(list)])],
-            [T, (value: string) => joinOnEqual([encodeValue(key), encodeValue(value)])],
-        ])(object[key])
-    ),
+    encodeParam =
+        (object: any) =>
+        (key: string): string =>
+            cond([
+                [isUndefined, alwaysEmptyString],
+                [isNull, always(encodeValue(key))],
+                [Array.isArray, (list) => joinOnEqual([encodeValue(key), encodeList(list)])],
+                [T, (value: string) => joinOnEqual([encodeValue(key), encodeValue(value)])],
+            ])(object[key]),
     naturalComparator = comparator<any>((a, b): boolean => a < b),
     naturalSort = sort(naturalComparator),
     toMatrixString = (object): string => {

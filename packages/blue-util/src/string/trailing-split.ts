@@ -3,12 +3,7 @@
  * @see {@link https://ramdajs.com/docs/}
  */
 
-import { curryN, slice, split, trim } from 'ramda';
-
-type TrailingSplitFunction = {
-    (separator: string, text: string): string[];
-    (separator: string): (text: string) => string[];
-};
+import { slice, split, trim } from 'ramda';
 
 /**
  * Splits a string into an array of strings based on the given separator.
@@ -23,19 +18,28 @@ type TrailingSplitFunction = {
  * trailingSplit( ",", "a,b,c," );
  * //=> [ "a", "b", "c" ]
  */
-const trailingSplit: TrailingSplitFunction = curryN(2, (separator: string, text: string): string[] => {
-    text = trim(text);
+function trailingSplit(separator: string, text: string): string[];
+function trailingSplit(separator: string): (text: string) => string[];
+function trailingSplit(separator: string, text?: string): string[] | ((text: string) => string[]) {
+    const impl = (t: string): string[] => {
+        t = trim(t);
 
-    const length = text.length;
+        const length = t.length;
 
-    if (length && text.indexOf(separator) !== -1) {
-        const tail = length - 1,
-            isSeparatorTrailing = text[tail] === separator,
-            isEmptyString = isSeparatorTrailing && text[length - 2] === separator;
-        return split(separator, isSeparatorTrailing && !isEmptyString ? slice(0, tail, text) : text);
+        if (length && t.indexOf(separator) !== -1) {
+            const tail = length - 1,
+                isSeparatorTrailing = t[tail] === separator,
+                isEmptyString = isSeparatorTrailing && t[length - 2] === separator;
+            return split(separator, isSeparatorTrailing && !isEmptyString ? slice(0, tail, t) : t);
+        }
+
+        return [t];
+    };
+
+    if (arguments.length >= 2) {
+        return impl(text!);
     }
-
-    return [text];
-});
+    return impl;
+}
 
 export default trailingSplit;

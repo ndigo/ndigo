@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/schema",
+  "id": "BlueComponent",
+  "title": "Create a BlueJS Component",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Component name in kebab-case (e.g., 'my-service')",
+      "x-prompt": "What is the component name?"
+    },
+    "package": {
+      "type": "string",
+      "description": "Target package name without 'blue-' prefix (e.g., 'core')",
+      "x-prompt": "Which @blue/* package?"
+    },
+    "className": {
+      "type": "string",
+      "description": "Override the PascalCase class name (defaults to PascalCase of name)"
+    }
+  },
+  "required": ["name", "package"]
+}

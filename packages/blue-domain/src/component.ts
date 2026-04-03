@@ -1,7 +1,6 @@
 import { FrameworkError, JSONValue, JSONObject, Null, Serializable, createNull } from '@blue/core';
 import { AsEventEmitter, EventEmitter } from '@blue/context';
 import { AsyncDestroyable, Initializable } from '@blue/factory';
-import { curryN } from '@blue/util/function';
 import { forEachObjIndexed } from '@blue/util/object';
 
 /**
@@ -53,7 +52,7 @@ export interface DomainComponent extends Initializable, EventEmitter, AsyncDestr
 }
 
 const { defineProperty, deleteProperty } = Reflect,
-    initializeData = curryN(1, function (component, value, key) {
+    initializeData = (component) => (value, key) => {
         component.model.set(key, value);
         defineProperty(component, key, {
             get: () => component.model.get(key, { isolate: true }),
@@ -62,7 +61,7 @@ const { defineProperty, deleteProperty } = Reflect,
             enumerable: true,
             writable: false,
         });
-    });
+    };
 
 let uuid = 0;
 

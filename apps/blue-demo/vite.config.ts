@@ -7,6 +7,15 @@ export default defineConfig({
         sourcemap: true,
         target: 'es2022',
     },
+    esbuild: {
+        target: 'es2022',
+        tsconfigRaw: {
+            compilerOptions: {
+                target: 'ES2022',
+                experimentalDecorators: false,
+            },
+        },
+    },
     server: {
         port: 3000,
     },

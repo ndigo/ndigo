@@ -1,9 +1,10 @@
-import { toAccountShellRoute, toTodoShellRoute } from './shell-composition';
+import { toAccountShellRoute, toNotesShellRoute, toTodoShellRoute } from './shell-composition';
 import './shell-nav-view';
 
 const accountOverviewRoute = `#${toAccountShellRoute('/')}`;
 const accountSettingsRoute = `#${toAccountShellRoute('/settings')}`;
 const todoRoute = `#${toTodoShellRoute('/')}`;
+const notesRoute = `#${toNotesShellRoute('/')}`;
 
 const accountTemplate = document.createElement('template');
 accountTemplate.innerHTML = `
@@ -76,6 +77,11 @@ class AccountApp extends HTMLElement {
                     label: 'Settings',
                     linkClass: 'settings-link',
                     selected: this.#section === 'settings',
+                },
+                {
+                    href: notesRoute,
+                    label: 'Notes',
+                    linkClass: 'notes-link',
                 },
                 {
                     href: todoRoute,

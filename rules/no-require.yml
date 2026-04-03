@@ -1,0 +1,13 @@
+id: no-require
+language: TypeScript
+severity: error
+message: Use ESM import instead of require(). BlueJS is ESM-only.
+rule:
+  pattern: require($$$ARGS)
+files:
+  - packages/**/*.ts
+  - apps/**/*.ts
+ignores:
+  - '**/*.spec.ts'
+  - '**/*.test.ts'
+  - '**/*.config.*'

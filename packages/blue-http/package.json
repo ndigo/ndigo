@@ -21,7 +21,8 @@
   "scripts": {
     "build:lib": "tsc -b tsconfig.build.json",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "api-report": "api-extractor run --local --verbose"
   },
   "repository": {
     "type": "git",

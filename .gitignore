@@ -25,6 +25,9 @@ yarn-error.log
 .nx/cache
 .nx/workspace-data
 
+# API Extractor temp files
+**/temp/
+
 # pnpm
 .pnpm-debug.log
 

@@ -13,6 +13,7 @@
   "scripts": {
     "build": "nx run-many -t build:lib",
     "test": "nx run-many -t test",
+    "test:bench": "vitest bench --run",
     "test:e2e": "nx run @blue/demo:test:e2e",
     "lint": "eslint .",
     "format": "prettier --write .",
@@ -21,7 +22,11 @@
     "doc:md": "typedoc",
     "doc:html": "typedoc --options typedoc.html.json",
     "doc:json": "typedoc --json doc-md/api.json",
-    "doc:watch": "typedoc --watch"
+    "doc:watch": "typedoc --watch",
+    "lint:ast-grep": "ast-grep scan",
+    "api-report": "nx run-many -t api-report",
+    "digest": "repomix",
+    "digest:compact": "repomix --compress"
   },
   "repository": {
     "type": "git",
@@ -45,6 +50,9 @@
   },
   "homepage": "https://bitbucketdc-digital.jpmchase.net/projects/BLUEJS/repos/blue/browse",
   "devDependencies": {
+    "@ast-grep/cli": "~0.42.0",
+    "@microsoft/api-extractor": "~7.58.0",
+    "@nx/devkit": "~20.3.2",
     "@tsmetadata/polyfill": "^1.1.3",
     "@types/node": "~22.10.2",
     "@typescript-eslint/eslint-plugin": "~8.18.2",
@@ -64,6 +72,7 @@
     "prettier": "~3.4.2",
     "process": "~0.11.10",
     "ramda": "~0.32.0",
+    "repomix": "~0.2.0",
     "ts-node": "~10.9.2",
     "typedoc": "^0.27.9",
     "typedoc-plugin-markdown": "^4.3.0",

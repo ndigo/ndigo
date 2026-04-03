@@ -12,7 +12,8 @@
   "scripts": {
     "build:lib": "tsc -b tsconfig.build.json",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "api-report": "api-extractor run --local --verbose"
   },
   "repository": {
     "type": "git",
@@ -26,8 +27,7 @@
   ],
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "@blue/context": "~0.0.1",
     "@blue/core": "~0.0.1",

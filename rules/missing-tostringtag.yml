@@ -1,0 +1,17 @@
+id: missing-tostringtag
+language: TypeScript
+severity: hint
+message: Class '$CLASS' should define a Symbol.toStringTag getter.
+rule:
+  all:
+    - pattern: class $CLASS { $$$BODY }
+    - not:
+        has:
+          pattern: get [Symbol.toStringTag]()
+          stopBy: end
+files:
+  - packages/*/src/**/*.ts
+ignores:
+  - packages/*/src/**/_*.ts
+  - '**/*.spec.ts'
+  - '**/*.test.ts'

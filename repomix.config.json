@@ -1,0 +1,12 @@
+{
+  "output": {
+    "filePath": "docs/reference/REPO_DIGEST.md",
+    "style": "markdown"
+  },
+  "include": ["packages/*/src/**/*.ts", "packages/*/package.json", "apps/*/src/**/*.ts"],
+  "ignore": {
+    "useGitignore": true,
+    "useDefaultPatterns": true,
+    "customPatterns": ["**/lib/**", "**/dist/**", "**/node_modules/**", "**/*.spec.ts", "**/*.test.ts"]
+  }
+}

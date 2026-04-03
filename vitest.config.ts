@@ -34,13 +34,25 @@ export default defineConfig({
                 replacement: resolve(__dirname, './packages/blue-logger/src/otel/entry-to-logrecord'),
             },
 
+            {
+                find: /^@nx\/devkit\/testing$/,
+                replacement: resolve(__dirname, './node_modules/nx/src/devkit-testing-exports'),
+            },
+            {
+                find: /^@nx\/devkit$/,
+                replacement: resolve(__dirname, './node_modules/nx/src/devkit-exports'),
+            },
+
             { find: /^@blue\/core$/, replacement: resolve(__dirname, './packages/blue-core/src') },
+            { find: /^@blue\/dom$/, replacement: resolve(__dirname, './packages/blue-dom/src') },
             { find: /^@blue\/util$/, replacement: resolve(__dirname, './packages/blue-util/src') },
             { find: /^@blue\/parser$/, replacement: resolve(__dirname, './packages/blue-parser/src') },
+            { find: /^@blue\/reactive$/, replacement: resolve(__dirname, './packages/blue-reactive/src') },
             { find: /^@blue\/context$/, replacement: resolve(__dirname, './packages/blue-context/src') },
             { find: /^@blue\/factory$/, replacement: resolve(__dirname, './packages/blue-factory/src') },
             { find: /^@blue\/router$/, replacement: resolve(__dirname, './packages/blue-router/src') },
             { find: /^@blue\/view$/, replacement: resolve(__dirname, './packages/blue-view/src') },
+            { find: /^@blue\/view-wicket$/, replacement: resolve(__dirname, './packages/blue-view-wicket/src') },
             { find: /^@blue\/http$/, replacement: resolve(__dirname, './packages/blue-http/src') },
             { find: /^@blue\/model$/, replacement: resolve(__dirname, './packages/blue-model/src') },
             { find: /^@blue\/logger$/, replacement: resolve(__dirname, './packages/blue-logger/src') },

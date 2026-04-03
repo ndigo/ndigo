@@ -2,7 +2,6 @@
  * @author Jeff Rose
  */
 import { like } from '@blue/util/types';
-import { allPass } from '@blue/util/logic';
 import { Registry } from './registry';
 
 export interface Destroyable {
@@ -98,11 +97,13 @@ export const likeLifecycle = like({ isRunning: Boolean, start: Function, stop: F
  */
 export const likePhased = like({ phase: Number }) as (value) => value is Phased;
 
+const _likeAutoStartup = like({ isAutoStartup: Boolean });
+
 /**
  * @param {*} value
  * @returns {boolean} Whether or not the `value` is {@link SmartLifecycle|SmartLifecycle}.
  */
-export const likeSmartLifecycle = allPass([likeLifecycle, likePhased, like({ isAutoStartup: Boolean })]) as (
+export const likeSmartLifecycle = ((value) => likeLifecycle(value) && likePhased(value) && _likeAutoStartup(value)) as (
     value
 ) => value is SmartLifecycle;
 

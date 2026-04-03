@@ -3,7 +3,7 @@
  */
 
 import { FrameworkError, MediaType, MultiValueMap } from '@blue/core';
-import { allPass, propSatisfies } from '@blue/util/logic';
+import { propSatisfies } from '@blue/util/logic';
 import { isFunction, isNotNil } from '@blue/util/types';
 import { View } from './view';
 import { ViewResolver } from './view-resolver';
@@ -52,7 +52,7 @@ const hasFunction = propSatisfies(isFunction),
     hasResolveFileExtensions = hasFunction('resolveFileExtensions');
 
 export const likeMediaTypeFileExtensionResolver = (value: any): value is MediaTypeFileExtensionResolver =>
-    allPass([isNotNil, hasGetAllFileExtenstions, hasResolveFileExtensions])(value);
+    isNotNil(value) && hasGetAllFileExtenstions(value) && hasResolveFileExtensions(value);
 
 /**
  * Resolves file extensions from a map of extension-to-media-type pairs.

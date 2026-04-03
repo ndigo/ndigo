@@ -6,7 +6,6 @@
 
 import { Constructable, JSONValue, Serializable, Null, createNull } from '@blue/core';
 import { __ } from '@blue/util/function';
-import { allPass } from '@blue/util/logic';
 import { gte } from '@blue/util/relation';
 import { is, isFunction, isNil, isNumber, isString, like } from '@blue/util/types';
 import { Aware, Destroyable, likeAwareAnd } from '@blue/factory';
@@ -388,7 +387,9 @@ const isEventHandler = (value: unknown): value is EventHandler => isFunction(val
 
 const isEventType = (value: unknown): value is EventType => isString(value) || isSymbol(value);
 
-const isPositiveNumber = allPass([isNumber, greaterThanOrEqualZero]) as (value: unknown) => value is number;
+const isPositiveNumber = ((value: unknown) => isNumber(value) && greaterThanOrEqualZero(value)) as (
+    value: unknown
+) => value is number;
 
 function handleEmpty(handler: EventHandler, isFn: boolean, emitter: EventEmitter): void {
     const errors: Error[] = [];

@@ -39,7 +39,7 @@ import {
 } from './formats';
 import { identity, pipe } from '@blue/util/function';
 import { any, append } from '@blue/util/list';
-import { both, complement, defaultTo, isEmpty, ifElse, when } from '@blue/util/logic';
+import { complement, defaultTo, isEmpty, ifElse, when } from '@blue/util/logic';
 import { prop } from '@blue/util/object';
 import { equals, gte, lte } from '@blue/util/relation';
 import { replace, split, test, toString } from '@blue/util/string';
@@ -251,7 +251,7 @@ const { parseFloat, parseInt } = Number,
     isBoolean: constraint = patternConstraint({ regex: booleanRule }) as unknown as constraint,
     isCapitals: constraint = (value, params: RangeParams = { min: 1 }) => rangeValidator(upperCaseCount(value), params),
     isCharacters: constraint = (value, params: RangeParams = { min: 1 }) => rangeValidator(alphaCount(value), params),
-    isCity: constraint = both(isSingleSpaced, test(cityRule)),
+    isCity: constraint = (value) => isSingleSpaced(value as string) && test(cityRule)(value as string),
     /**
      * Validates a value with a set of constraints, requiring a minimum to be true
      * @param {string} value value to validate

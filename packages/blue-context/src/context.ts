@@ -12,7 +12,6 @@ import {
     likeContentSourceAware,
     likeContentSource,
 } from '@blue/content';
-import { allPass } from '@blue/util/logic';
 import { like } from '@blue/util/types';
 import {
     AsEventEmitter,
@@ -270,15 +269,14 @@ let uuid = 0;
  * @param value - The value to test.
  * @returns `true` when the value looks like an application context.
  */
-export const likeApplicationContext = allPass([
-    likeContentSource,
-    likeDestroyable,
-    likeEnvironmentSource,
-    likeEventEmitter,
-    likeFactory,
-    likeRegistry,
-    likeResourceLoader,
-]) as (value) => value is ApplicationContext;
+export const likeApplicationContext = ((value) =>
+    likeContentSource(value) &&
+    likeDestroyable(value) &&
+    likeEnvironmentSource(value) &&
+    likeEventEmitter(value) &&
+    likeFactory(value) &&
+    likeRegistry(value) &&
+    likeResourceLoader(value)) as (value) => value is ApplicationContext;
 
 /**
  * Returns whether a value can receive an application context.

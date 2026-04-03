@@ -4,7 +4,6 @@
 import { RingBuffer } from './collection';
 import { JSONValue, Serializable, serialize } from './serializable';
 import { Equatable, equates } from './equatable';
-import { both } from '@blue/util/logic';
 import { is, like } from '@blue/util/types';
 import { likeIterable } from './iterable';
 import { createNull } from './null';
@@ -33,10 +32,11 @@ const isString = is(String) as (value) => value is string;
  * @param value - Value to test.
  * @returns `true` when the value is iterable and exposes property lookup helpers.
  */
-export const likePropertyValues = both(
-    likeIterable,
-    like({ propertyValues: Array, getPropertyValue: Function }) as any
-) as (value) => value is PropertyValues;
+const _likePropertyValuesShape = like({ propertyValues: Array, getPropertyValue: Function });
+
+export const likePropertyValues = ((value) => likeIterable(value) && _likePropertyValuesShape(value)) as (
+    value
+) => value is PropertyValues;
 
 /**
  * A named value wrapper used for property bags and metadata.

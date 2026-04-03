@@ -4,7 +4,7 @@
 
 import '@tsmetadata/polyfill';
 import { Constructable, getSymbolMetadata } from '@blue/core';
-import { both, either, propSatisfies } from '@blue/util/logic';
+import { either, propSatisfies } from '@blue/util/logic';
 import { propIs, isNotNil } from '@blue/util/types';
 
 const { assign, getOwnPropertyDescriptor } = Object;
@@ -92,6 +92,7 @@ export const errorHandler = assign(errorHandlerDecorator, {
 
 const hasConstructor = hasFunction('constructor');
 const constructorIsErrorHandler = propSatisfies(hasErrorHandler, 'constructor');
+const _isConstructorErrorHandler = (value) => hasConstructor(value) && constructorIsErrorHandler(value);
 
 /**
  * Checks if a given target object or its constructor is an error handler.
@@ -101,10 +102,8 @@ const constructorIsErrorHandler = propSatisfies(hasErrorHandler, 'constructor');
  * @param target The object to check.
  * @returns `true` if the target or its constructor is an error handler, `false` otherwise.
  */
-export const likeErrorHandler = both(
-    isNotNil,
-    either(hasErrorHandler, both(hasConstructor, constructorIsErrorHandler))
-);
+export const likeErrorHandler = (target) =>
+    isNotNil(target) && either(hasErrorHandler, _isConstructorErrorHandler)(target);
 
 /**
  * Export errorMapping with utility methods

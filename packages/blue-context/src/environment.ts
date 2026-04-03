@@ -3,7 +3,6 @@
  */
 
 import { Constructable, JSONValue, JSONObject } from '@blue/core';
-import { both, complement } from '@blue/util/logic';
 import { propSatisfies } from '@blue/util/logic';
 import { like, isNil } from '@blue/util/types';
 import { AsAware, Aware, likeAwareAnd } from '@blue/factory';
@@ -230,10 +229,16 @@ export const AsEnvironmentAware = <T extends Constructable>(superclass: T): Cons
  * @param value - The value to test.
  * @returns `true` when the value looks like an environment.
  */
-export const likeEnvironment = both(
-    likePropertyResolver,
-    like({ activeProfiles: Array, defaultProfiles: Array, addActiveProfile: Function, addDefaultProfile: Function })
-) as (value) => value is Environment;
+const _likeEnvironmentShape = like({
+    activeProfiles: Array,
+    defaultProfiles: Array,
+    addActiveProfile: Function,
+    addDefaultProfile: Function,
+});
+
+export const likeEnvironment = ((value) => likePropertyResolver(value) && _likeEnvironmentShape(value)) as (
+    value
+) => value is Environment;
 
 /**
  * Returns whether a value can receive an environment.
@@ -253,7 +258,7 @@ const hasEnvironmentProperty = propSatisfies(likeEnvironment, 'environment');
  * @param value - The value to test.
  * @returns `true` when the value looks like an environment source.
  */
-export const likeEnvironmentSource = both(complement(isNil), hasEnvironmentProperty) as (
+export const likeEnvironmentSource = ((value) => !isNil(value) && hasEnvironmentProperty(value)) as (
     value
 ) => value is EnvironmentSource;
 

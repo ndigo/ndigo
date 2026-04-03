@@ -3,8 +3,6 @@
  * @see {@link https://ramdajs.com/docs/}
  */
 
-import { is } from 'ramda';
-
 /**
  * Determines whether a given object is a string.
  * @category Type
@@ -18,6 +16,6 @@ import { is } from 'ramda';
  * isString( {} );
  * //=> false
  */
-const isString = is(String) as (value) => value is string;
+const isString = (value: any): value is string => typeof value === 'string' || value instanceof String;
 
 export default isString;

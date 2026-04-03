@@ -3,8 +3,6 @@
  * @see {@link https://ramdajs.com/docs/}
  */
 
-import { is } from 'ramda';
-
 /**
  * Determines whether a given object is a function.
  * @category Type
@@ -20,6 +18,6 @@ import { is } from 'ramda';
  * isFunction( {} );
  * //=> false
  */
-const isFunction = is(Function) as (value) => value is Function;
+const isFunction = (value: any): value is Function => typeof value === 'function';
 
 export default isFunction;

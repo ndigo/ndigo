@@ -836,16 +836,16 @@ When reviewing code, check for:
 
 The framework is organized into 8 architectural layers with clear dependency direction and platform-aware boundaries:
 
-| Layer                      | Packages                                                             | Description                                                                 | Spring MVC Analogue                           |
-| :------------------------- | :------------------------------------------------------------------- | :-------------------------------------------------------------------------- | :-------------------------------------------- |
-| **7: Bootstrap**           | `@blue/boot`                                                         | Application bootstrap, startup orchestration, and site/app lifecycle        | `SpringApplication`                           |
-| **6: Application**         | `@blue/service`, `@blue/domain`, `@blue/platform-web`, `@blue/print` | Business services, domain model, platform adapters, browser fingerprinting  | User application + platform adapters          |
-| **5: Request Processing**  | `@blue/dispatcher`, `@blue/view`, `@blue/view-webcomponent`          | Front controller, handler execution, and view resolution/rendering adapters | `DispatcherServlet` + `ViewResolver`          |
-| **4: Web Infrastructure**  | `@blue/http`, `@blue/router`, `@blue/telemetry`                      | HTTP client/interceptors/transforms, routing primitives, observability      | HTTP stack + routing + observability          |
-| **3: Application Context** | `@blue/context`                                                      | Application context, environment, events, configuration metadata            | `ApplicationContext`                          |
-| **2: Infrastructure**      | `@blue/factory`, `@blue/content`, `@blue/validate`, `@blue/orm`      | IoC container internals, i18n/theming, validation, persistence abstractions | `BeanFactory` + `MessageSource` + `Validator` |
-| **1: Foundation**          | `@blue/core`                                                         | Core primitives, collection types, transducers, path matching, errors       | Spring Core                                   |
-| **0: Integration Layer**   | `@blue/util`, `@blue/parser`, `@blue/model`                          | Encapsulated third-party libraries via stable BlueJS wrappers               | Commons / utility integration layer           |
+| Layer                      | Packages                                                                         | Description                                                                    | Spring MVC Analogue                           |
+| :------------------------- | :------------------------------------------------------------------------------- | :----------------------------------------------------------------------------- | :-------------------------------------------- |
+| **7: Bootstrap**           | `@blue/boot`                                                                     | Application bootstrap, startup orchestration, and site/app lifecycle           | `SpringApplication`                           |
+| **6: Application**         | `@blue/service`, `@blue/domain`, `@blue/platform-web`, `@blue/print`             | Business services, domain model, platform adapters, browser fingerprinting     | User application + platform adapters          |
+| **5: Request Processing**  | `@blue/dispatcher`, `@blue/view`, `@blue/view-webcomponent`, `@blue/view-wicket` | Front controller, handler execution, and view resolution/rendering adapters    | `DispatcherServlet` + `ViewResolver`          |
+| **4: Web Infrastructure**  | `@blue/http`, `@blue/router`, `@blue/telemetry`                                  | HTTP client/interceptors/transforms, routing primitives, observability         | HTTP stack + routing + observability          |
+| **3: Application Context** | `@blue/context`                                                                  | Application context, environment, events, configuration metadata               | `ApplicationContext`                          |
+| **2: Infrastructure**      | `@blue/factory`, `@blue/content`, `@blue/validate`, `@blue/orm`                  | IoC container internals, i18n/theming, validation, persistence abstractions    | `BeanFactory` + `MessageSource` + `Validator` |
+| **1: Foundation**          | `@blue/core`, `@blue/reactive`                                                   | Core primitives, collection types, transducers, path matching, reactive models | Spring Core                                   |
+| **0: Integration Layer**   | `@blue/util`, `@blue/parser`, `@blue/model`, `@blue/dom`                         | Encapsulated third-party libraries via stable BlueJS wrappers                  | Commons / utility integration layer           |
 
 The `blue-demo` app sits above these layers as a reference implementation and integration proving ground.
 
@@ -882,6 +882,7 @@ graph TD
         Dispatcher[@blue/dispatcher]
         View[@blue/view]
         ViewWebComponent[@blue/view-webcomponent]
+        ViewWicket[@blue/view-wicket]
     end
 
     subgraph L4["Layer 4: Web Infrastructure"]
@@ -902,12 +903,14 @@ graph TD
 
     subgraph L1["Layer 1: Foundation"]
         Core[@blue/core]
+        Reactive[@blue/reactive]
     end
 
     subgraph L0["Layer 0: Integration Layer"]
         Util[@blue/util]
         Parser[@blue/parser]
         Model[@blue/model]
+        Dom[@blue/dom]
     end
 
     Boot --> Context
@@ -921,6 +924,10 @@ graph TD
     Dispatcher --> Router
     Dispatcher --> View
     ViewWebComponent --> View
+    ViewWicket --> View
+    ViewWicket --> Core
+    ViewWicket --> Reactive
+    ViewWicket --> Dom
     Http --> Core
     Http --> Parser
     Router --> Core
@@ -930,6 +937,7 @@ graph TD
     Content --> Core
     Validate --> Core
     Core --> Util
+    Reactive --> Util
     Parser --> Util
     Model --> Util
 
@@ -941,6 +949,7 @@ graph TD
     style Dispatcher fill:#f5e1ff
     style View fill:#f5e1ff
     style ViewWebComponent fill:#f5e1ff
+    style ViewWicket fill:#f5e1ff
     style Http fill:#e1f5ff
     style Router fill:#e1f5ff
     style Telemetry fill:#e1f5ff
@@ -949,9 +958,11 @@ graph TD
     style Content fill:#ffe1e1
     style Validate fill:#ffe1e1
     style Core fill:#fff9e1
+    style Reactive fill:#fff9e1
     style Util fill:#e1f0ff
     style Parser fill:#e1f0ff
     style Model fill:#e1f0ff
+    style Dom fill:#e1f0ff
 ```
 
 **Key Principle:** Higher layers depend on lower layers, never the reverse. Some cross-layer dependencies inside adjacent architectural tiers are intentional for integration and orchestration.
@@ -969,6 +980,7 @@ graph TD
 | `@blue/util`      | `ramda`, `date-fns`, `date-fns-tz`, `seedrandom`, `slug` | Functional utilities, date handling, randomness, URL slugs |
 | `@blue/parser`    | `arcsecond`                                              | Parser combinators and parsing primitives                  |
 | `@blue/model`     | `objectmodel`                                            | Runtime type validation and model definitions              |
+| `@blue/dom`       | `linkedom`                                               | Isomorphic DOM parsing and element creation                |
 
 ### Usage Rules
 

@@ -1,0 +1,41 @@
+{
+  "name": "@blue/reactive",
+  "version": "0.0.1",
+  "description": "Blue Reactive – Universal reactive value containers",
+  "type": "module",
+  "files": [
+    "doc",
+    "lib"
+  ],
+  "exports": "./lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build:lib": "tsc -b tsconfig.build.json",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "api-report": "api-extractor run --local --verbose"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue.git"
+  },
+  "keywords": [
+    "blue",
+    "bluejs",
+    "blue-js",
+    "blue-reactive",
+    "reactive",
+    "model",
+    "observable"
+  ],
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "dependencies": {},
+  "devDependencies": {
+    "@blue/core": "~0.0.1"
+  },
+  "peerDependencies": {
+    "@blue/core": "~0.0.1"
+  },
+  "sideEffects": false
+}

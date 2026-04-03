@@ -1,0 +1,10 @@
+/** @author Jeff Rose */
+
+/**
+ * TODO: Add class description.
+ */
+export class <%= className %> {
+    get [Symbol.toStringTag](): string {
+        return '<%= className %>';
+    }
+}

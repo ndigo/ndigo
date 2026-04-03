@@ -1,0 +1,27 @@
+{
+    "name": "@blue/<%= name %>",
+    "version": "0.0.1",
+    "description": "<%= description || 'Blue ' + className %>",
+    "type": "module",
+    "files": [
+        "doc",
+        "lib"
+    ],
+    "exports": "./lib/index.js",
+    "types": "lib/index.d.ts",
+    "scripts": {
+        "build:lib": "tsc -b tsconfig.build.json",
+        "test": "vitest run",
+        "test:watch": "vitest"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue.git"
+    },
+    "author": "Jeff Rose <jeff_rose@outlook.com>",
+    "license": "ISC",
+    "dependencies": {},
+    "devDependencies": {},
+    "peerDependencies": {},
+    "sideEffects": false
+}

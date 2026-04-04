@@ -16,7 +16,7 @@ import {
 import { AsNameAware, Initializable } from '@blue/factory';
 import { ApplicationContext, AsApplicationContextAware } from '@blue/context';
 import { Route } from '@blue/router';
-import { complement, when } from '@blue/util/logic';
+import { when } from '@blue/util/logic';
 import { startsWith } from '@blue/util/list';
 import { trim } from '@blue/util/string';
 import { isFunction, isString } from '@blue/util/types';
@@ -100,7 +100,7 @@ const { from, isArray } = Array,
     { defineProperty, getPrototypeOf } = Reflect,
     { keys } = Object,
     { toString } = Object.prototype,
-    doesNotStartWithSlash = complement(startsWith('/')),
+    doesNotStartWithSlash = (value: string) => !startsWith('/')(value),
     kind = /^\[object (.+)\]$/,
     kindOf = (value): string => kind.exec(toString.call(value))[1],
     resolveHandlerWithContext =

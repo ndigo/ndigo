@@ -2,7 +2,7 @@ import { RouteSegment, Route } from './route';
 import { JSONValue, Serializable, JSONObject, createNull } from '@blue/core';
 import { pipe } from '@blue/util/function';
 import { filter, join, map, reduce } from '@blue/util/list';
-import { complement, isNotEmpty } from '@blue/util/logic';
+import { isNotEmpty } from '@blue/util/logic';
 import { keys } from '@blue/util/object';
 import { max } from '@blue/util/relation';
 import { replace, split, trim } from '@blue/util/string';
@@ -13,7 +13,7 @@ const questionMark = '?',
     semicolon = ';',
     slash = '/',
     { defineProperty } = Reflect,
-    isNotNil = complement(isNil),
+    isNotNil = (value: unknown) => !isNil(value),
     isNotNilAndNotEmpty = (value) => isNotNil(value) && isNotEmpty(value),
     joinOnSlash = join(slash),
     leadingSlash = new RegExp(`^${slash}`),

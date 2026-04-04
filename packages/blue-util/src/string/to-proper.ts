@@ -4,8 +4,6 @@
  * @see {@link http://moutjs.com/docs/latest/string.html#properCase}
  */
 
-import { pipe, toLower, toUpper } from 'ramda';
-
 const regex = /^\w|\s\w/g;
 
 /**
@@ -17,6 +15,6 @@ const regex = /^\w|\s\w/g;
  * toProper( 'lorem-ipsum-dolor' );
  * //=> "Lorem Ipsum Dolor"
  */
-const toProper: (value: string) => string = pipe(toLower, (value: string): string => value.replace(regex, toUpper));
+const toProper = (value: string): string => value.toLowerCase().replace(regex, (c: string): string => c.toUpperCase());
 
 export default toProper;

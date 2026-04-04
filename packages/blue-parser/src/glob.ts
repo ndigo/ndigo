@@ -18,7 +18,7 @@ import {
     sequenceOf,
     str,
 } from 'arcsecond';
-import { compose, cond, equals, join, joinOnEmptyString, map, identity, T, prop } from './_util';
+import { compose, join, joinOnEmptyString, map } from './_util';
 import { asterisk, bindRegExp, exclamationPoint, leftBracket, rightBracket } from './_parser';
 
 const dotLiteral = '\\.',
@@ -76,12 +76,10 @@ const dotLiteral = '\\.',
             choice([
                 digitRange,
                 letterRange,
-                anyCharExcept(rightBracket).map(
-                    cond([
-                        [equals('['), escapeValue],
-                        [T, identity],
-                    ])
-                ),
+                anyCharExcept(rightBracket).map((value) => {
+                    const character = String(value);
+                    return character === '[' ? escapeValue(character) : character;
+                }),
             ])
         ).map(joinOnEmptyString),
         rightBracket,
@@ -94,15 +92,7 @@ const dotLiteral = '\\.',
             letters,
             digits,
             str('\\*'),
-            many1(asterisk).map(
-                compose(
-                    cond([
-                        [equals(2), () => globStar],
-                        [T, () => star],
-                    ]),
-                    prop('length')
-                )
-            ),
+            many1(asterisk).map((value) => (value.length === 2 ? globStar : star)),
             questionMark.map(() => notSlash),
             leftBracket.map(escapeValue),
             slash.map(escapeValue),

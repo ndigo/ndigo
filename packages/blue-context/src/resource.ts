@@ -3,7 +3,6 @@
  */
 
 import { AsAware, Aware } from '@blue/factory';
-import { test } from '@blue/util/string';
 import { like } from '@blue/util/types';
 
 import { Constructable, Null } from '@blue/core';
@@ -57,7 +56,7 @@ export interface ResourceLoaderAware extends Aware {
 
 const { defineProperty } = Reflect,
     startsWithProtocol = /^(?:[a-z]+:)?\/\//i,
-    isAbsoluteURL = test(startsWithProtocol);
+    isAbsoluteURL = (value: string) => startsWithProtocol.test(value);
 
 /**
  * @see module:context.AsResourceLoaderAware

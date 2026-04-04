@@ -3,9 +3,7 @@
  * @see {@link https://ramdajs.com/docs/}
  */
 import {
-    always,
     complement,
-    cond,
     equals,
     filter,
     isNotEmpty,
@@ -13,7 +11,6 @@ import {
     keys,
     map,
     pipe,
-    T,
     encodeURIComponent as encodeValue,
     comparator,
     sort,
@@ -38,13 +35,19 @@ const isNull = equals(null),
     encodeList = pipe(filterUndefined, encodeValues, joinOnComma),
     encodeParam =
         (object) =>
-        (key: string): string =>
-            cond([
-                [isUndefined, () => ''],
-                [isNull, always(encodeValue(key))],
-                [Array.isArray, (list) => joinOnEqual([encodeValue(key), encodeList(list)])],
-                [T, (value: string) => joinOnEqual([encodeValue(key), encodeValue(value)])],
-            ])(object[key]),
+        (key: string): string => {
+            const value = object[key];
+            if (isUndefined(value)) {
+                return '';
+            }
+            if (isNull(value)) {
+                return encodeValue(key);
+            }
+            if (Array.isArray(value)) {
+                return joinOnEqual([encodeValue(key), encodeList(value)]);
+            }
+            return joinOnEqual([encodeValue(key), encodeValue(value)]);
+        },
     naturalComparator = comparator((a: any, b: any): boolean => a < b),
     naturalSort = sort(naturalComparator),
     toMatrixString = (object): string => {

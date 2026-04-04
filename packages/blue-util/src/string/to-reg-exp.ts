@@ -3,14 +3,14 @@
  * @see {@link https://ramdajs.com/docs/}
  */
 
-import { pipe, replace, test } from 'ramda';
+import { pipe, replace } from 'ramda';
 
-const regExpFlags = /[gimsuy]+/g,
+const regExpFlags = /[gimsuy]+/,
     leadingSlash = /^\//,
     trailingSlashAndFlags = /\/([gimsuy]*)$/,
     patternWithTrailingSlashAndFlags = /.+\/([gimsuy]*)$/,
     cache = new Map<string, RegExp>(),
-    hasValidFlags = test(regExpFlags),
+    hasValidFlags = (value: string) => regExpFlags.test(value),
     removeLeadingSlash = replace(leadingSlash, ''),
     removeTrailingSlashAndFlags = replace(trailingSlashAndFlags, ''),
     extractFlags = replace(patternWithTrailingSlashAndFlags, '$1'),

@@ -4,7 +4,7 @@
  * @see {@link http://moutjs.com/docs/latest/string.html#replaceAccents}
  */
 
-import { pipe, replace, test, when } from 'ramda';
+import { pipe, replace, when } from 'ramda';
 
 const accented = /[\xC0-\xFF\u0152\u0153\u0160\u0161\u0178\u0192\uA732\uA733]/g,
     combiningCharacters = /[\u0300-\u036f]/g,
@@ -43,8 +43,12 @@ const accented = /[\xC0-\xFF\u0152\u0153\u0160\u0161\u0178\u0192\uA732\uA733]/g,
      * //=> "special chars"
      * @see {@link https://stackoverflow.com/questions/990904/remove-accents-diacritics-in-a-string-in-javascript}
      */
+    hasAccentedChars = (value: string) => {
+        accented.lastIndex = 0;
+        return accented.test(value);
+    },
     replaceDiacritics = when(
-        test(accented),
+        hasAccentedChars,
         pipe(
             decomposeCombinedGraphemes,
             removeCombiningMarks,

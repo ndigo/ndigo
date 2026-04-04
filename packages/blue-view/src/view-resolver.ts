@@ -97,7 +97,7 @@ export abstract class AbstractCachingViewResolver implements ViewResolver {
         return `${name}${language ? '_' + language : ''}`;
     }
 
-    protected abstract _loadView(name: string, language?: any): Promise<View>;
+    protected abstract _loadView(name: string, language?: any): Promise<View | null>;
 }
 
 export abstract class AbstractPathBasedViewResolver extends AbstractCachingViewResolver {

@@ -4,7 +4,7 @@
  * @see {@link https://github.com/micromatch/to-regex-range}
  */
 
-import { test, zip } from 'ramda';
+import { zip } from 'ramda';
 import isNumber from '../type/is-number.js';
 import isNumeric, { Numeric } from '../type/is-numeric.js';
 import { naturalSort } from '../_natural-sort.js';
@@ -78,7 +78,7 @@ const { abs, max, min, pow } = Math,
 
         return result;
     },
-    hasPadding = test(paddedNumber),
+    hasPadding = (value: string) => paddedNumber.test(value),
     padZeros = (value: number, state: RegExpRangeState, init: RegExpRangeInit): string => {
         if (!state.isPadded) {
             return String(value);

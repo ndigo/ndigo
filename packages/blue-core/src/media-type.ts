@@ -5,9 +5,9 @@
 import { Serializable, JSONValue } from './serializable';
 import { Comparator, StringComparable, stringComparator, numberComparator } from './comparable';
 import { Null } from './null';
-import { always, identity, pipe, T } from '@blue/util/function';
+import { always, pipe } from '@blue/util/function';
 import { fromPairs, map, reduce } from '@blue/util/list';
-import { cond, ifElse, isNotEmpty } from '@blue/util/logic';
+import { ifElse, isNotEmpty } from '@blue/util/logic';
 import { toPairs } from '@blue/util/object';
 import { split } from '@blue/util/string';
 import { isNumber, isString } from '@blue/util/types';
@@ -39,7 +39,6 @@ const { freeze, keys } = Object,
     { parseFloat } = Number,
     typeRegistry = new Map<string, MediaType>(),
     alwaysEmptyString = always(''),
-    alwaysOne = always(1.0),
     splitOnEquals = split('=') as (value: `${string}=${string}`) => [string, string],
     WILDCARD: SupportedMediaType = '*',
     QUALITY_FACTOR_PARAM = 'q';
@@ -178,11 +177,14 @@ export default class MediaType extends Null implements Serializable, StringCompa
     }
 
     get qualityFactor(): number {
-        return cond([
-            [isString, parseFloat],
-            [isNumber, identity],
-            [T, alwaysOne],
-        ])(this.parameters[QUALITY_FACTOR_PARAM]) as number;
+        const value = this.parameters[QUALITY_FACTOR_PARAM];
+        if (isString(value)) {
+            return parseFloat(value) as number;
+        }
+        if (isNumber(value)) {
+            return value as number;
+        }
+        return 1;
     }
 
     /**

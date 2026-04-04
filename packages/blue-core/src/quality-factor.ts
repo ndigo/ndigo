@@ -2,8 +2,6 @@
  * @author Jeff Rose
  */
 
-import { always, identity, pipe, T } from '@blue/util/function';
-import { cond, ifElse } from '@blue/util/logic';
 import { isNumber, isString } from '@blue/util/types';
 import { Comparator, numberComparator } from './comparable';
 
@@ -18,14 +16,18 @@ export interface Qualifiable {
     readonly qualityFactor: number;
 }
 
-const { isNaN } = Number,
-    alwaysOne = always(parseFloat('1.0'));
+const { isNaN } = Number;
 
-export const parseQualityFactor = cond([
-    [isString, pipe(parseFloat, ifElse(isNaN, alwaysOne, identity))],
-    [isNumber, identity],
-    [T, alwaysOne],
-]);
+export const parseQualityFactor = (value: unknown): number => {
+    if (isString(value)) {
+        const parsed = parseFloat(value);
+        return isNaN(parsed) ? 1 : parsed;
+    }
+    if (isNumber(value)) {
+        return value;
+    }
+    return 1;
+};
 
 /**
  * @implements module:core.Comparator

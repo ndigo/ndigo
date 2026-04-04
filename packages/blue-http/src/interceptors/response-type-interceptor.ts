@@ -3,8 +3,6 @@
  */
 
 import { entriesIterator, JSONObject, MediaType, MediaTypes } from '@blue/core';
-import { identity, T } from '@blue/util/function';
-import { cond } from '@blue/util/logic';
 import { is, isString } from '@blue/util/types';
 import { HTTPInit, InitializationAwareHTTPInterceptor, ResponseAwareHTTPInterceptor } from '../http';
 import { CONTENT_TYPE } from '../http-headers';
@@ -57,11 +55,15 @@ const { defineProperty } = Reflect,
         domParser.parseFromString(await response.text(), mediaType as DOMParserSupportedType),
     isBoolean = is(Boolean) as (value) => value is boolean,
     isMediaType = is(MediaType) as (value) => value is MediaType,
-    getMediaType = cond([
-        [isString, MediaType.for],
-        [isMediaType, identity],
-        [T, () => null],
-    ]) as (value) => MediaType,
+    getMediaType = (value: unknown): MediaType => {
+        if (isString(value)) {
+            return MediaType.for(value);
+        }
+        if (isMediaType(value)) {
+            return value;
+        }
+        return null;
+    },
     getParser = (mediaType: MediaType, parsers: Map<MediaType, ResponseParser> = defaultParsers) => {
         const type = mediaType;
         return parsers.has(type) ? parsers.get(type)(type.toString()) : null;

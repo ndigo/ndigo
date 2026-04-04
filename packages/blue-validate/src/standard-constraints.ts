@@ -42,7 +42,7 @@ import { any, append } from '@blue/util/list';
 import { defaultTo, isEmpty, ifElse, when } from '@blue/util/logic';
 import { prop } from '@blue/util/object';
 import { equals, gte, lte } from '@blue/util/relation';
-import { replace, split, test, toString } from '@blue/util/string';
+import { replace, split, toString } from '@blue/util/string';
 import { is } from '@blue/util/types';
 import { propSatisfies } from '@blue/util/logic';
 import { serializable } from '@blue/core';
@@ -235,7 +235,7 @@ const { parseFloat, parseInt } = Number,
                 ? new RegExp(pipe(toString, removeSlashesAndFlags)(regex), flags)
                 : new RegExp(regex);
 
-            return test(matcher, value);
+            return matcher.test(value);
         },
     isAddressLine: constraint = patternConstraint({
         regex: addressLineRule.source,
@@ -251,7 +251,7 @@ const { parseFloat, parseInt } = Number,
     isBoolean: constraint = patternConstraint({ regex: booleanRule }) as unknown as constraint,
     isCapitals: constraint = (value, params: RangeParams = { min: 1 }) => rangeValidator(upperCaseCount(value), params),
     isCharacters: constraint = (value, params: RangeParams = { min: 1 }) => rangeValidator(alphaCount(value), params),
-    isCity: constraint = (value) => isSingleSpaced(value as string) && test(cityRule)(value as string),
+    isCity: constraint = (value) => isSingleSpaced(value as string) && cityRule.test(value as string),
     /**
      * Validates a value with a set of constraints, requiring a minimum to be true
      * @param {string} value value to validate
@@ -504,9 +504,9 @@ const { parseFloat, parseInt } = Number,
         return !regex.test(value);
     },
     isNonRepeatingSequence: constraint = ((value: string) =>
-        !test(repeatingSequenceRule)(value)) as unknown as constraint<serializable>,
+        !repeatingSequenceRule.test(value)) as unknown as constraint<serializable>,
     isNotAPhoneEmail: constraint = ((value: string) =>
-        !test(notPhoneEmailRule)(value)) as unknown as constraint<serializable>,
+        !notPhoneEmailRule.test(value)) as unknown as constraint<serializable>,
     isNotBeginWith: constraint = (value: string, params: Params = {}) => {
         value = toString(value);
         return value.length === 0 || value[0] !== params.value;
@@ -547,7 +547,7 @@ const { parseFloat, parseInt } = Number,
             ? new RegExp(pipe(toString, removeSlashesAndFlags)(regexp), flags)
             : new RegExp(regexp);
 
-        return test(matcher, value);
+        return matcher.test(value);
     },
     isPersonalName: constraint = patternConstraint({ regex: nameRule.source }) as unknown as constraint<serializable>,
     isPhoneNorthAmerica: constraint = patternConstraint({

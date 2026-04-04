@@ -14,7 +14,7 @@ import {
     sepBy,
     sequenceOf,
 } from 'arcsecond';
-import { cond, either, equals, join, joinOnEmptyString, map, T, identity } from './_util';
+import { cond, either, equals, join, joinOnEmptyString, map, T } from './_util';
 import { asterisk, atLeastOne, exclamationPoint, plusSign } from './_parser';
 
 const dotLiteral = '\\.',
@@ -62,12 +62,7 @@ const dotLiteral = '\\.',
                 digits,
                 asterisk.map(() => star),
                 questionMark.map(() => notSlash),
-                punctuation.map(
-                    cond([
-                        [equals('.'), escapeValue],
-                        [T, identity],
-                    ])
-                ),
+                punctuation.map((value) => (value === '.' ? escapeValue(value) : value)),
             ])
         ).map(joinOnEmptyString)
     ),

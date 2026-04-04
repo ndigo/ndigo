@@ -4,10 +4,8 @@
 
 import { Constructable, FrameworkError, likeEnumerable, isPrimitive, entriesIterator } from '@blue/core';
 import { Destroyable, Initializable, likeDestroyable, likeInitializable } from './lifecycle';
-import { always, T } from '@blue/util/function';
-import { cond } from '@blue/util/logic';
+import { always } from '@blue/util/function';
 import { has } from '@blue/util/object';
-import { equals } from '@blue/util/relation';
 import { isConstructor, isFunction, isNumber, isString, like } from '@blue/util/types';
 import { Aware, AsAware, likeAwareAnd, likeAware, likeNameAware } from './aware';
 import { ContextToken } from './context-token';
@@ -487,15 +485,19 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
                         break;
                     }
 
-                    const instanceName: string = cond([
+                    let instanceName: string;
+                    if (key === value) {
                         // Simple Collection, e.g. Set, where entry is [ value, value ]
-                        [equals(value), alwaysName],
+                        instanceName = alwaysName();
+                    } else if (isNumber(key)) {
                         // Indexed Collection, e.g. Array, where entry is [ index, value ]
-                        [isNumber, () => `${name}[${String(key)}]`],
+                        instanceName = `${name}[${String(key)}]`;
+                    } else if (isString(key)) {
                         // Keyed Collection, e.g. Map, where entry is [ key, value ]
-                        [isString, () => String(key)],
-                        [T, alwaysName],
-                    ])(key);
+                        instanceName = String(key);
+                    } else {
+                        instanceName = alwaysName();
+                    }
 
                     this._configure(instanceName, value);
                 }

@@ -3,9 +3,9 @@
  */
 import { JSONObject, Parser, Stringifier } from '@blue/core';
 import matrixExpression from './parsers/matrix-expression';
-import { always, comparator, pipe, T } from '@blue/util/function';
+import { always, comparator, pipe } from '@blue/util/function';
 import { filter, join, map, sort } from '@blue/util/list';
-import { cond, isNotEmpty } from '@blue/util/logic';
+import { isNotEmpty } from '@blue/util/logic';
 import { keys } from '@blue/util/object';
 import { equals } from '@blue/util/relation';
 import { encodeURIComponent as encodeValue } from '@blue/util/string';
@@ -30,13 +30,19 @@ const alwaysEmptyString = always(''),
     encodeList = pipe(filterUndefined, encodeValues, joinOnComma),
     encodeParam =
         (object: any) =>
-        (key: string): string =>
-            cond([
-                [isUndefined, alwaysEmptyString],
-                [isNull, always(encodeValue(key))],
-                [Array.isArray, (list) => joinOnEqual([encodeValue(key), encodeList(list)])],
-                [T, (value: string) => joinOnEqual([encodeValue(key), encodeValue(value)])],
-            ])(object[key]),
+        (key: string): string => {
+            const value = object[key];
+            if (isUndefined(value)) {
+                return alwaysEmptyString();
+            }
+            if (isNull(value)) {
+                return encodeValue(key);
+            }
+            if (Array.isArray(value)) {
+                return joinOnEqual([encodeValue(key), encodeList(value)]);
+            }
+            return joinOnEqual([encodeValue(key), encodeValue(value as string)]);
+        },
     naturalComparator = comparator<any>((a, b): boolean => a < b),
     naturalSort = sort(naturalComparator),
     toMatrixString = (object): string => {

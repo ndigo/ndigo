@@ -6,7 +6,7 @@
  */
 // @ts-ignore
 import { between, char, choice, lookAhead, many, recursiveParser, regex, sepBy, sequenceOf, str } from 'arcsecond';
-import { cond, flatten, identity, isNil, last, T, xprodAll, xprod3 } from './_util';
+import { flatten, last, xprodAll, xprod3 } from './_util';
 import { default as _sequenceExpression } from './sequence-expression';
 import { anyString } from './_parser';
 import noop from './no-op';
@@ -25,11 +25,15 @@ const // String constants
     // Utility methods
     { isArray } = Array,
     parsePrefix = (value) => (value?.length - 1 > 0 ? str(value.slice(0, -1)) : noop),
-    toArray = cond([
-        [isArray, identity],
-        [isNil, () => []],
-        [T, (v) => [v]],
-    ]),
+    toArray = (value) => {
+        if (isArray(value)) {
+            return value;
+        }
+        if (value == null) {
+            return [];
+        }
+        return [value];
+    },
     // Parsers
     escapedChar = (c: string) => sequenceOf([char('\\'), char(c)]).map(last),
     validChar = choice([

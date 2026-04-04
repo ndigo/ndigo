@@ -4,7 +4,7 @@
  * @see {@link http://moutjs.com/docs/latest/string.html#camelCase}
  */
 
-import { pipe, replace, toLower, toUpper } from 'ramda';
+import { pipe, replace } from 'ramda';
 
 import removeNonWord from './remove-non-word.js';
 import replaceDiacritics from './replace-diacritics.js';
@@ -36,10 +36,10 @@ const // Underscores and hyphens
         removeNonWord,
         replaceDashesWithSpaces,
         // Convert first character of each word to uppercase
-        (val: string): string => val.replace(lowerCaseLetters, toUpper),
+        (val: string): string => val.replace(lowerCaseLetters, (match: string): string => match.toUpperCase()),
         removeSpaces,
         // Convert first character to lowercase
-        (val: string): string => val.replace(upperCaseLetters, toLower)
+        (val: string): string => val.replace(upperCaseLetters, (match: string): string => match.toLowerCase())
     );
 
 export default toCamel;

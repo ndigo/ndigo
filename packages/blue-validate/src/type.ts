@@ -2,7 +2,6 @@
  * @author Jeff Rose
  */
 
-import { complement } from '@blue/util/logic';
 import { equals } from '@blue/util/relation';
 import { toString } from '@blue/util/string';
 import { is } from '@blue/util/types';
@@ -41,9 +40,9 @@ export type ValidationResults = {
 const { assign } = Object,
     { defineProperty } = Reflect,
     isArray = Array.isArray,
-    isNotArray = complement(isArray),
+    isNotArray = (value: unknown) => !isArray(value),
     isString = is(String),
-    isNotString = complement(isString),
+    isNotString = (value: unknown) => !isString(value),
     isUndefined = equals(void 0);
 
 /**

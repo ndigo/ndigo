@@ -3,7 +3,6 @@
  */
 
 import '@tsmetadata/polyfill';
-import { complement } from '@blue/util/logic';
 import { isFunction, isString } from '@blue/util/types';
 import { Serializable, JSONObject, createNull, Equatable, getSymbolMetadata, IllegalStateError } from '@blue/core';
 import { getFunctionParamNames } from './_decorator-util';
@@ -130,8 +129,7 @@ export class MethodParameter implements Serializable {
         convert: ParameterValueConverterReference | null = null,
         prefix: string | null = null
     ) {
-        const isNotString = complement(isString);
-        if (isNotString(name)) {
+        if (!isString(name)) {
             throw new TypeError(`"name" must be a string but was ${name}`);
         }
         if (convert !== null && !this._isConverterReference(convert)) {

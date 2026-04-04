@@ -3,7 +3,7 @@
  */
 
 import { T, invoker, pipe } from '@blue/util/function';
-import { complement, cond } from '@blue/util/logic';
+import { cond } from '@blue/util/logic';
 import { prop } from '@blue/util/object';
 import { isNil, is } from '@blue/util/types';
 
@@ -125,7 +125,7 @@ export const isEntries = (value: any): value is Entry<any> =>
  * @returns `true` if the value is iterable, `false` otherwise.
  */
 export const likeIterable = (value: any): value is Iterable<any> =>
-    complement(isNil)(value) && value[Symbol.iterator] !== undefined;
+    !isNil(value) && value[Symbol.iterator] !== undefined;
 
 /**
  * An iterator for array-like objects, providing sequential access to elements by index.

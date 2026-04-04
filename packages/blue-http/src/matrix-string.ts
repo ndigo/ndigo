@@ -5,7 +5,7 @@ import { JSONObject, Parser, Stringifier } from '@blue/core';
 import matrixExpression from './parsers/matrix-expression';
 import { always, comparator, pipe, T } from '@blue/util/function';
 import { filter, join, map, sort } from '@blue/util/list';
-import { cond, complement, isNotEmpty } from '@blue/util/logic';
+import { cond, isNotEmpty } from '@blue/util/logic';
 import { keys } from '@blue/util/object';
 import { equals } from '@blue/util/relation';
 import { encodeURIComponent as encodeValue } from '@blue/util/string';
@@ -13,7 +13,7 @@ import { encodeURIComponent as encodeValue } from '@blue/util/string';
 const alwaysEmptyString = always(''),
     isNull = equals(null),
     isUndefined = equals(undefined),
-    isDefined = complement(isUndefined),
+    isDefined = (value: unknown) => !isUndefined(value),
     // ["a","b","c","#"] -> ["a","b","c","%23"]
     encodeValues = map(encodeValue),
     // ["a","",{},"b",[],"c"] -> ["a","b","c"]

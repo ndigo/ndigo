@@ -2,7 +2,6 @@
  * @author Jeff Rose
  */
 
-import { complement } from '@blue/util/logic';
 import { like } from '@blue/util/types';
 import { ModelAndView } from './model-and-view';
 import { Controller } from './controller';
@@ -49,7 +48,7 @@ export interface RouteHandlerAdapter {
 
 const { getPrototypeOf } = Reflect,
     { assign, keys } = Object,
-    isNotArray = complement(Array.isArray);
+    isNotArray = (value: unknown) => !Array.isArray(value);
 
 /**
  * @param {*} value The value to be tested

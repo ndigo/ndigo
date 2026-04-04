@@ -4,7 +4,7 @@
 
 import { identity, invoker, T } from '@blue/util/function';
 import { map } from '@blue/util/list';
-import { anyPass, complement, cond } from '@blue/util/logic';
+import { anyPass, cond } from '@blue/util/logic';
 import { mergeLeft, prop } from '@blue/util/object';
 import { equals } from '@blue/util/relation';
 import { is } from '@blue/util/types';
@@ -45,7 +45,7 @@ const { isArray } = Array,
     hasFunction = propIs(Function),
     hasToJSON = hasFunction('toJSON'),
     hasToString = hasFunction('toString'),
-    isNotArray = complement(isArray),
+    isNotArray = (value: unknown) => !isArray(value),
     toJSON = invoker(0, 'toJSON') as (value) => JSONValue,
     toString = invoker(0, 'toString') as (value) => string,
     _isJSONValue = (value) => equals(parse(stringify(value)), value);

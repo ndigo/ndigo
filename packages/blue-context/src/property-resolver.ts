@@ -4,7 +4,6 @@
 
 import { IllegalStateError, JSONValue, JSONObject, createNull } from '@blue/core';
 import { keypathExpression } from '@blue/parser';
-import { complement } from '@blue/util/logic';
 import { reduce } from '@blue/util/list';
 import { path } from '@blue/util/object';
 import { like, isNil } from '@blue/util/types';
@@ -79,7 +78,7 @@ export interface ConfigurablePropertyResolver extends PropertyResolver {
 
 const { defineProperty, getPrototypeOf, setPrototypeOf } = Reflect,
     pathIsDefined = (keypath: string[], obj: any): boolean => {
-        const predicate = complement(isNil);
+        const predicate = (value: unknown) => !isNil(value);
         return pathSatisfies(predicate, keypath, obj) as boolean;
     },
     linkPrototype = (current, next) => {

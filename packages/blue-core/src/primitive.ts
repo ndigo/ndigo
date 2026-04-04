@@ -2,8 +2,6 @@
  * @author Jeff Rose
  */
 
-import { complement } from '@blue/util/logic';
-
 /**
  * A JavaScript primitive value.
  *
@@ -43,4 +41,4 @@ export const isPrimitive = (value): value is primitive => {
  * @returns `true` when the value is an object.
  * @see {@link primitive}
  */
-export const isNotPrimitive = complement(isPrimitive) as (value) => value is object;
+export const isNotPrimitive = ((value: unknown) => !isPrimitive(value)) as (value: unknown) => value is object;

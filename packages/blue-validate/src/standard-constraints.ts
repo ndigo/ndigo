@@ -39,7 +39,7 @@ import {
 } from './formats';
 import { identity, pipe } from '@blue/util/function';
 import { any, append } from '@blue/util/list';
-import { complement, defaultTo, isEmpty, ifElse, when } from '@blue/util/logic';
+import { defaultTo, isEmpty, ifElse, when } from '@blue/util/logic';
 import { prop } from '@blue/util/object';
 import { equals, gte, lte } from '@blue/util/relation';
 import { replace, split, test, toString } from '@blue/util/string';
@@ -203,11 +203,11 @@ const { parseFloat, parseInt } = Number,
     isOne = equals(1),
     isArray = Array.isArray,
     isUndefined = equals(void 0),
-    isDefined = complement(isUndefined),
+    isDefined = (value: unknown) => !isUndefined(value),
     isString = is(String) as (value) => value is string,
     lengthIsOne: (value: any) => boolean = propSatisfies(isOne, 'length'),
     splitOnDot = split(/\./),
-    isSingleSpaced: (value: string) => boolean = complement(pipe(split(' '), any(isEmpty))),
+    isSingleSpaced: (value: string) => boolean = (value: string): boolean => !pipe(split(' '), any(isEmpty))(value),
     lengthOf: (value: any) => number = prop('length'),
     removeAnyAlphaNumber = replace(anyAlphaNumericRule, ''),
     removeLowerCase = replace(notACapitalRule, ''),
@@ -503,14 +503,16 @@ const { parseFloat, parseInt } = Number,
         const regex = new RegExp(regexString, 'gi');
         return !regex.test(value);
     },
-    isNonRepeatingSequence: constraint = complement(test(repeatingSequenceRule)) as unknown as constraint<serializable>,
-    isNotAPhoneEmail: constraint = complement(test(notPhoneEmailRule)) as unknown as constraint<serializable>,
+    isNonRepeatingSequence: constraint = ((value: string) =>
+        !test(repeatingSequenceRule)(value)) as unknown as constraint<serializable>,
+    isNotAPhoneEmail: constraint = ((value: string) =>
+        !test(notPhoneEmailRule)(value)) as unknown as constraint<serializable>,
     isNotBeginWith: constraint = (value: string, params: Params = {}) => {
         value = toString(value);
         return value.length === 0 || value[0] !== params.value;
     },
     isNotBeginWith1: constraint = (value: string | number) => isNotBeginWith(value, { value: '1' }),
-    isNotBlank: constraint = complement(isBlank),
+    isNotBlank: constraint = (value) => !isBlank(value),
     isNumbers: constraint = (value, params: RangeParams = { min: 1 }) => rangeValidator(numberCount(value), params),
     isNumeric: constraint = patternConstraint({ regex: numericRule.source }) as unknown as constraint<serializable>,
     isPasswordCharacters: constraint = patternConstraint({

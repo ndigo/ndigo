@@ -5,7 +5,7 @@
  * @see {@link https://github.com/dodo/node-slug}
  */
 
-import { pipe, toLower } from 'ramda';
+import { pipe } from 'ramda';
 
 import removeNonWord from './remove-non-word.js';
 import slug from 'slug';
@@ -26,6 +26,6 @@ const slugify = (delimiter: string, value: string): string =>
     pipe(
         removeNonWord,
         (val: string) => slug(val, { remove: null, replacement: delimiter, lower: false }),
-        toLower
+        (val: string): string => val.toLowerCase()
     )(value);
 export default slugify;

@@ -7,7 +7,7 @@ import { Comparator, StringComparable, stringComparator, numberComparator } from
 import { Null } from './null';
 import { always, identity, pipe, T } from '@blue/util/function';
 import { fromPairs, map, reduce } from '@blue/util/list';
-import { complement, cond, ifElse, isEmpty } from '@blue/util/logic';
+import { cond, ifElse, isNotEmpty } from '@blue/util/logic';
 import { toPairs } from '@blue/util/object';
 import { split } from '@blue/util/string';
 import { isNumber, isString } from '@blue/util/types';
@@ -74,7 +74,7 @@ export type MediaTypeParameters = {
  * @returns A string representation of the parameters, or an empty string if no parameters are present.
  */
 const stringifyParameters = ifElse(
-    complement(isEmpty),
+    isNotEmpty,
     pipe(
         toPairs,
         reduce((result, [key, value]: [string, string]) => `${result};${key}=${value}`, '')

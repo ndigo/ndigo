@@ -30,9 +30,10 @@ export class Page<T = unknown> extends WicketContainer<T> {
 
     /**
      * Renders the entire page. Runs the full lifecycle for this
-     * component tree: initialize → configure → render → detach.
+     * component tree: configure → render → detach.
      *
-     * TODO: Introduce PageStore/session persistence support in Phase 5.
+     * Note: `initialize()` must be called separately before `renderPage()`,
+     * typically by the {@link WicketView} that manages the page instance.
      *
      * @param dom - The DOM provider used for element creation and parsing.
      * @param container - The root DOM element to render into.

@@ -1,6 +1,9 @@
 /** @author Jeff Rose */
 import { formatFiles, generateFiles, type Tree } from '@nx/devkit';
-import * as path from 'path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 export interface PackageGeneratorSchema {
     name: string;
@@ -24,7 +27,7 @@ export default async function packageGenerator(tree: Tree, schema: PackageGenera
     const projectRoot = `packages/blue-${name}`;
     const className = toPascalCase(name);
 
-    generateFiles(tree, path.join(__dirname, 'files'), projectRoot, {
+    generateFiles(tree, join(__dirname, 'files'), projectRoot, {
         name,
         className,
         description: description || `Blue ${className}`,

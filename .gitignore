@@ -28,6 +28,9 @@ yarn-error.log
 # API Extractor temp files
 **/temp/
 
+# Tarball artifacts
+*.tgz
+
 # pnpm
 .pnpm-debug.log
 

@@ -31,11 +31,11 @@ class NotesController extends AsApplicationContextAware(Null) {
      */
     @routeMapping('/')
     @traced
-    handleIndex(route: Route) {
+    handleIndex(route: Route): ModelAndView {
         logger.info('Handling route', { 'route.path': route.path });
         const notesService = this.applicationContext.getValue(NOTES_SERVICE);
         const model = {
-            items: notesService.items,
+            items: [...notesService.items],
             todoRoute: '#/todo/',
         };
         return new ModelAndView(new WicketView(NotesPage, new BrowserDOMProvider()), model);

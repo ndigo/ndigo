@@ -20,9 +20,13 @@
       "@blue/platform-web": ["./packages/blue-platform-web/src"],
       "@blue/dispatcher": ["./packages/blue-dispatcher/src"],
       "@blue/boot": ["./packages/blue-boot/src"],
-      "@blue/service": ["./packages/blue-service/src"]
+      "@blue/dom": ["./packages/blue-dom/src"],
+      "@blue/orm": ["./packages/blue-orm/src"],
+      "@blue/reactive": ["./packages/blue-reactive/src"],
+      "@blue/service": ["./packages/blue-service/src"],
+      "@blue/view-wicket": ["./packages/blue-view-wicket/src"]
     }
   },
-  "include": ["packages/*/src/**/*"],
+  "include": ["packages/*/src/**/*", "apps/*/src/**/*"],
   "exclude": ["**/node_modules/**/*", "**/*.spec.ts", "**/*.test.ts"]
 }

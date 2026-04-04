@@ -2,6 +2,7 @@
  * @author Jeff Rose
  */
 import { IllegalStateError } from '@blue/core';
+import type { DOMProvider } from '@blue/dom';
 import type { ReadableModel, Unsubscribe } from '@blue/reactive';
 import { StaticModel } from '@blue/reactive';
 import type { Behavior } from './behavior';
@@ -207,7 +208,7 @@ export abstract class WicketComponent<T = unknown> {
      * @param dom - The DOM provider used for element creation and parsing.
      * @param container - The parent DOM element to render into.
      */
-    renderComponent(dom: unknown, container: unknown): void {
+    renderComponent(dom: DOMProvider, container: Element | DocumentFragment): void {
         if (!this.#visible) {
             return;
         }
@@ -294,7 +295,7 @@ export abstract class WicketComponent<T = unknown> {
      * @param dom - The DOM provider.
      * @param container - The parent DOM element to render into.
      */
-    protected abstract render(dom: unknown, container: unknown): void;
+    protected abstract render(dom: DOMProvider, container: Element | DocumentFragment): void;
 
     // ── Private helpers ──────────────────────────────────────
 

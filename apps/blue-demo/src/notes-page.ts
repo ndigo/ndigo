@@ -55,7 +55,7 @@ export default class NotesPage extends Page<NotesPageModel> {
         this.addChild(new Label('noteCount', new StaticModel(items.length === 1 ? '1 note' : items.length + ' notes')));
 
         const todoLabel = new Label('todoLink', new StaticModel('Back to Todos'));
-        todoLabel.addBehavior(new AttributeModifier('href', new StaticModel(todoRoute)));
+        todoLabel.addBehavior(new AttributeModifier('href', todoRoute));
         this.addChild(todoLabel);
     }
 }

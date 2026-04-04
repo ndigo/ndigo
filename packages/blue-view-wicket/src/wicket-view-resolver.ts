@@ -62,7 +62,7 @@ export class WicketViewResolver extends AbstractCachingViewResolver {
      * @param language - Optional locale hint (unused currently).
      * @returns The resolved view, or `null` if no page is registered.
      */
-    protected async _loadView(name: string, language?: any): Promise<View> {
+    protected async _loadView(name: string, language?: any): Promise<View | null> {
         const pageClass = this.#pages.get(name);
         if (!pageClass) {
             return null;

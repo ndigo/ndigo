@@ -34,6 +34,11 @@ export class ValidationError extends Error {
  * Error thrown when one or more validation constraints are violated.
  */
 export class ConstraintViolationError extends ValidationError {
+    /**
+     * The set of constraint names that were violated.
+     */
+    readonly violations: ReadonlySet<string>;
+
     get [Symbol.toStringTag](): string {
         return 'ConstraintViolationError';
     }

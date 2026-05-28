@@ -212,3 +212,39 @@ describe('context hierarchy helpers', () => {
         root.destroy();
     });
 });
+
+describe('context hierarchy helpers — edge cases', () => {
+    test('traverseSubtree visits a leaf node with no children', () => {
+        const root = new GenericApplicationContext('root');
+        const visited: string[] = [];
+
+        traverseSubtree(root, (node) => visited.push(node.name));
+
+        expect(visited).toEqual(['root']);
+
+        root.destroy();
+    });
+
+    test('findAncestor returns null when no match is found', () => {
+        const root = new GenericApplicationContext('root');
+        const child = root.newChild('child');
+
+        const result = findAncestor(child, (node) => node.name === 'nonexistent');
+
+        expect(result).toBeUndefined();
+
+        root.destroy();
+    });
+
+    test('findDescendants returns empty array when no children match', () => {
+        const root = new GenericApplicationContext('root');
+        root.newChild('alpha');
+        root.newChild('beta');
+
+        const matched = findDescendants(root, (node) => node.name === 'nonexistent');
+
+        expect(matched).toEqual([]);
+
+        root.destroy();
+    });
+});

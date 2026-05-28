@@ -1,6 +1,6 @@
 import './telemetry-setup';
 import { composeTodoRuntime, toTodoShellRoute } from './shell-composition';
-import todoContext from './todo-context';
+import { createTodoContext } from './todo-context';
 import './account-app-view';
 import './feature-metrics-panel-view';
 import './shell-nav-view';
@@ -8,7 +8,7 @@ import './todo-app-view';
 import './todo-input-view';
 import './todo-item-view';
 
-const composition = composeTodoRuntime(todoContext);
+const composition = composeTodoRuntime(createTodoContext());
 const metricsPanel = document.createElement('feature-metrics-panel') as HTMLElement & {
     aggregator?: unknown;
     refresh?: () => void;

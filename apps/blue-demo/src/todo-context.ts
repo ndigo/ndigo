@@ -1,9 +1,8 @@
 import {
-    ApplicationContextAwareProcessor,
     configuration,
-    MetadataConfigApplicationContext,
     entry,
 } from '@blue/context';
+import { ApplicationBuilder } from '@blue/boot';
 import { LoggingRouteHandlerInterceptor, MetadataHandlerMapping } from '@blue/dispatcher';
 import { getLogger } from '@blue/telemetry';
 import { NameViewResolver } from '@blue/view';
@@ -15,6 +14,7 @@ import AccountApp from './account-app-view';
 import MyTodoApp from './todo-app-view';
 import NotesService from './notes-service';
 import TodoService from './todo-service';
+import { StaticContentSource } from '@blue/content';
 
 @configuration
 class ToDoconfiguration {
@@ -94,10 +94,18 @@ class ToDoconfiguration {
     }
 }
 
-const context = new MetadataConfigApplicationContext('todo'),
-    processor = new ApplicationContextAwareProcessor(context);
+export const createTodoContext = () => {
+    const context = new ApplicationBuilder([ToDoconfiguration]).run();
+    
+    // Configure content source for localized strings
+    context.setContentSource(new StaticContentSource({
+        'notes.page.title': { en: 'Notes', fr: 'Notes' },
+        'notes.btn.add': { en: 'Add Note', fr: 'Ajouter une note' },
+        'notes.btn.remove': { en: 'Remove', fr: 'Supprimer' },
+        'notes.empty': { en: 'No notes yet.', fr: 'Aucune note pour le moment.' },
+    }, 'en'));
+    
+    return context;
+};
 
-context.addProcessor(processor);
-context.register(ToDoconfiguration);
 
-export default context;

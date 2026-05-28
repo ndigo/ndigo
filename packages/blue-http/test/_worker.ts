@@ -137,6 +137,26 @@ const handlers = [
     http.get('http://localhost/api/users', async () => HttpResponse.text('users')),
     http.get('http://other.com/request', async () => HttpResponse.text('other-request')),
     http.get('http://localhost:3000/request', async () => HttpResponse.text('request-3000')),
+    // Retry interceptor test handlers
+    http.get('http://localhost/retry/success-after-1', () => {
+        return HttpResponse.text('success');
+    }),
+    http.get('http://localhost/retry/always-fails', () => {
+        return HttpResponse.text('failed', { status: 503 });
+    }),
+    http.get('http://localhost/retry/fail-404', () => {
+        return HttpResponse.text('failed', { status: 404 });
+    }),
+    // AppReset interceptor test handlers
+    http.get('http://localhost/app-reset/normal', () => {
+        return HttpResponse.text('normal');
+    }),
+    http.get('http://localhost/app-reset/205', () => {
+        return HttpResponse.text('reset', { 
+            status: 205,
+            headers: { 'Alt-Location': '/reset' }
+        });
+    }),
 ];
 
 export const server = setupServer(...handlers);

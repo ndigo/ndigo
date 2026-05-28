@@ -966,7 +966,7 @@ export class HTTP {
                 response = await chain.applyPostError(error, request, this);
 
                 if (!likeResponse(response)) {
-                    response = likeResponse(error) ? error : new ResponseError(null, error);
+                    response = likeResponse(error) ? error : error instanceof ResponseError ? error : new ResponseError(null, error);
                 }
             } finally {
                 chain.applyPostComplete(request, response);

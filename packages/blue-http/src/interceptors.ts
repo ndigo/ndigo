@@ -11,3 +11,5 @@ export * from './interceptors/if-modified-interceptor';
 export * from './interceptors/not-ok-interceptor';
 export * from './interceptors/timeout-interceptor';
 export * from './interceptors/transform-interceptor';
+export * from './interceptors/retry-interceptor';
+export * from './interceptors/app-reset-interceptor';

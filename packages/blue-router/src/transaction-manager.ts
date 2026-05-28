@@ -168,7 +168,7 @@ export class DefaultRouteTransactionManager implements RouteTransactionManager {
         (status as DefaultRouteTransactionStatus).complete();
 
         const oldRoute = status.previousRoute;
-        if (status.syncHash && location.hash !== oldRoute) {
+        if (status.syncHash && typeof location !== 'undefined' && location.hash !== oldRoute) {
             location.hash = oldRoute;
         }
     }

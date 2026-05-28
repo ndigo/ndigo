@@ -131,12 +131,20 @@ export default [
             '@blue/no-direct-integration-imports': 1,
             '@blue/no-internal-file-imports': 2,
             '@blue/no-internal-file-exports': 2,
+            '@blue/no-browser-globals-in-isomorphic': 'warn',
         },
     },
     {
         files: ['**/*.spec.ts', '**/*.test.ts', '**/test/**/*.ts', '**/test/**/*.js', '**/test/**/*.mjs'],
         rules: {
             '@typescript-eslint/no-unused-vars': 0,
+        },
+    },
+    // Apps are browser-only entry points; browser globals are expected and intentional
+    {
+        files: ['apps/**/*.ts', 'apps/**/*.js', 'apps/**/*.mjs'],
+        rules: {
+            '@blue/no-browser-globals-in-isomorphic': 'off',
         },
     },
     // Prettier config to disable conflicting rules

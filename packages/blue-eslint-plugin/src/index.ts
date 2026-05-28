@@ -5,6 +5,7 @@
 import { noDirectIntegrationImports } from './rules/no-direct-integration-imports.js';
 import { noInternalFileImports } from './rules/no-internal-file-imports.js';
 import { noInternalFileExports } from './rules/no-internal-file-exports.js';
+import { noBrowserGlobalsInIsomorphic } from './rules/no-browser-globals-in-isomorphic.js';
 
 const plugin = {
     meta: {
@@ -15,6 +16,7 @@ const plugin = {
         'no-direct-integration-imports': noDirectIntegrationImports,
         'no-internal-file-imports': noInternalFileImports,
         'no-internal-file-exports': noInternalFileExports,
+        'no-browser-globals-in-isomorphic': noBrowserGlobalsInIsomorphic,
     },
     configs: {} as Record<string, unknown>,
 };
@@ -33,6 +35,7 @@ plugin.configs.recommended = {
         '@blue/no-direct-integration-imports': 'warn',
         '@blue/no-internal-file-imports': 'error',
         '@blue/no-internal-file-exports': 'error',
+        '@blue/no-browser-globals-in-isomorphic': 'warn',
     },
 };
 

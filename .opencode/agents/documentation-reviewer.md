@@ -2,18 +2,14 @@
 description: Content specialist for reviewing documentation and reference material.
 mode: subagent
 temperature: 0.1
-tools:
-    write: false
-    edit: false
-    patch: false
-    skill: true
 permission:
-    bash:
-        '*': deny
-        'ls *': allow
-        'cat *': allow
-        'grep *': allow
-        'rg *': allow
+  bash:
+    '*': deny
+    ls *: allow
+    cat *: allow
+    grep *: allow
+    rg *: allow
+  skill: allow
 ---
 
 # Documentation Reviewer Subagent

@@ -2,18 +2,14 @@
 description: Logic specialist for reviewing Mermaid and DOT diagrams in docs.
 mode: subagent
 temperature: 0.1
-tools:
-    write: false
-    edit: false
-    patch: false
-    skill: true
 permission:
-    bash:
-        '*': deny
-        'ls *': allow
-        'cat *': allow
-        'grep *': allow
-        'rg *': allow
+  bash:
+    '*': deny
+    ls *: allow
+    cat *: allow
+    grep *: allow
+    rg *: allow
+  skill: allow
 ---
 
 # Diagram Reviewer Subagent

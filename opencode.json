@@ -1,86 +1,99 @@
 {
   "$schema": "https://opencode.ai/config.json",
+  "instructions": [
+    "/home/jeff/Workspace/development-agents/AGENTS.md"
+  ],
   "agent": {
-    "accessibility-reviewer": {
-      "model": "google/gemini-2.5-flash"
-    },
-    "architecture-reviewer": {
-      "model": "github-copilot/claude-sonnet-4.6"
-    },
     "build": {
-      "model": "github-copilot/claude-opus-4.6"
-    },
-    "code-reviewer": {
-      "model": "github-copilot/claude-sonnet-4.6"
-    },
-    "codebase-explorer": {
-      "model": "google/gemini-2.5-flash"
-    },
-    "complexity-reviewer": {
-      "model": "google/gemini-3.1-pro-preview"
-    },
-    "dependency-reviewer": {
-      "model": "google/gemini-2.5-flash"
-    },
-    "diagram-reviewer": {
-      "model": "google/gemini-2.5-flash"
-    },
-    "diagram-writer": {
-      "model": "google/gemini-2.5-flash"
-    },
-    "documentation-reviewer": {
-      "model": "google/gemini-2.5-flash"
-    },
-    "documentation-writer": {
-      "model": "google/gemini-3.1-pro-preview"
-    },
-    "gap-reviewer": {
-      "model": "google/gemini-3.1-pro-preview"
-    },
-    "implementation-scout": {
-      "model": "google/gemini-3.1-pro-preview"
-    },
-    "industry-researcher": {
-      "model": "github-copilot/gpt-5.4-mini"
-    },
-    "integration-test-writer": {
-      "model": "github-copilot/gpt-5.2-codex"
-    },
-    "jsdoc-reviewer": {
-      "model": "google/gemini-2.5-flash"
-    },
-    "jsdoc-writer": {
-      "model": "github-copilot/gpt-5.4-mini"
+      "description": "Implementation orchestrator - delegates to specialized writer subagents",
+      "model": "lmstudio/qwen/qwen3.6-35b-a3b",
+      "disable": false,
+      "color": "#268bd2"
     },
     "plan": {
-      "model": "github-copilot/claude-opus-4.6"
-    },
-    "quality-runner": {
-      "model": "google/gemini-2.5-flash"
+      "description": "Read-only planning and analysis. Creates specs, decomposes tasks, stays read-only.",
+      "model": "lmstudio/qwen/qwen3-coder-30b",
+      "color": "#b58900"
     },
     "review": {
-      "model": "github-copilot/claude-sonnet-4.5"
+      "description": "Comprehensive QA orchestrator - delegates to reviewer subagents and consolidates findings",
+      "model": "lmstudio/qwen/qwen3.6-35b-a3b",
+      "color": "#d33682"
     },
-    "security-reviewer": {
-      "model": "google/gemini-3.1-pro-preview"
-    },
+
     "source-writer": {
-      "model": "github-copilot/gpt-5.3-codex"
-    },
-    "style-reviewer": {
-      "model": "github-copilot/claude-haiku-4.5"
+      "model": "lmstudio/qwen/qwen3-coder-30b"
     },
     "tooling-writer": {
-      "model": "github-copilot/gpt-5.3-codex"
-    },
-    "troubleshooter": {
-      "model": "github-copilot/gpt-5.4-mini"
+      "model": "lmstudio/qwen/qwen3-coder-30b"
     },
     "unit-test-writer": {
-      "model": "github-copilot/gpt-5.2-codex"
+      "model": "lmstudio/qwen/qwen3-coder-30b"
+    },
+    "integration-test-writer": {
+      "model": "lmstudio/qwen/qwen3-coder-30b"
+    },
+    "documentation-writer": {
+      "model": "lmstudio/qwen/qwen3-coder-30b"
+    },
+    "jsdoc-writer": {
+      "model": "lmstudio/google/gemma-4-e4b"
+    },
+    "diagram-writer": {
+      "model": "lmstudio/google/gemma-4-e4b"
+    },
+
+    "code-reviewer": {
+      "model": "lmstudio/google/gemma-4-e4b"
+    },
+    "style-reviewer": {
+      "model": "lmstudio/google/gemma-4-e4b"
+    },
+    "architecture-reviewer": {
+      "model": "lmstudio/qwen/qwen3.6-35b-a3b"
+    },
+    "security-reviewer": {
+      "model": "lmstudio/qwen/qwen3.6-35b-a3b"
+    },
+    "accessibility-reviewer": {
+      "model": "lmstudio/google/gemma-4-e4b"
+    },
+    "complexity-reviewer": {
+      "model": "lmstudio/google/gemma-4-e4b"
+    },
+    "gap-reviewer": {
+      "model": "lmstudio/qwen/qwen3-coder-30b"
+    },
+    "dependency-reviewer": {
+      "model": "lmstudio/google/gemma-4-e4b"
+    },
+    "diagram-reviewer": {
+      "model": "lmstudio/google/gemma-4-e4b"
+    },
+    "documentation-reviewer": {
+      "model": "lmstudio/google/gemma-4-e4b"
+    },
+    "jsdoc-reviewer": {
+      "model": "lmstudio/google/gemma-4-e4b"
+    },
+
+    "codebase-explorer": {
+      "model": "lmstudio/google/gemma-4-e4b"
+    },
+    "implementation-scout": {
+      "model": "lmstudio/qwen/qwen3-coder-30b"
+    },
+    "troubleshooter": {
+      "model": "lmstudio/qwen/qwen3.6-35b-a3b"
+    },
+    "quality-runner": {
+      "model": "lmstudio/google/gemma-4-e4b"
     },
     "workflow-executor": {
-      "model": "google/gemini-2.5-flash"
+      "model": "lmstudio/google/gemma-4-e4b"
+    },
+    "industry-researcher": {
+      "model": "lmstudio/qwen/qwen3.6-35b-a3b"
     }
   }
 }

@@ -2,19 +2,14 @@
 description: Environment-wide dependency and package analysis.
 mode: subagent
 temperature: 0.1
-tools:
-    write: false
-    edit: false
-    patch: false
-    bash: true
-    skill: true
 permission:
-    bash:
-        '*': deny
-        'pnpm list': allow
-        'pnpm audit': allow
-        'cat package.json': allow
-        'cat pnpm-lock.yaml': allow
+  bash:
+    '*': deny
+    pnpm list: allow
+    pnpm audit: allow
+    cat package.json: allow
+    cat pnpm-lock.yaml: allow
+  skill: allow
 ---
 
 # Dependency Reviewer Subagent

@@ -1,3 +1,23 @@
 packages:
   - 'packages/*'
   - 'apps/*'
+
+# Workspace resolution (moved from .npmrc in pnpm 10+)
+linkWorkspacePackages: deep
+preferWorkspacePackages: true
+saveWorkspaceProtocol: rolling
+
+# Approved build scripts (pnpm 10+ requires explicit allowlist)
+onlyBuiltDependencies:
+  - '@ast-grep/cli'
+  - esbuild
+  - msw
+  - nx
+  - protobufjs
+
+allowBuilds:
+  '@ast-grep/cli': true
+  esbuild: true
+  msw: true
+  nx: true
+  protobufjs: true

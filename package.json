@@ -40,9 +40,9 @@
   ],
   "engines": {
     "node": ">=18.0.0",
-    "pnpm": ">=8.0.0"
+    "pnpm": ">=11.0.0"
   },
-  "packageManager": "pnpm@8.15.0",
+  "packageManager": "pnpm@11.4.0",
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
   "bugs": {
@@ -80,13 +80,10 @@
     "util": "~0.12.4",
     "vitest": "~2.1.8"
   },
-  "pnpm": {
-    "overrides": {
-      "braces": ">=2.3.1",
-      "handlebars": ">=4.7.7",
-      "https-proxy-agent": ">=2.2.3"
-    },
-    "patchedDependencies": {}
+  "overrides": {
+    "braces": ">=2.3.1",
+    "handlebars": ">=4.7.7",
+    "https-proxy-agent": ">=2.2.3"
   },
   "msw": {
     "workerDirectory": "test"

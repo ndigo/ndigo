@@ -225,6 +225,20 @@ export default class HashRouter extends AbstractRouter {
     }
 
     /**
+     * Programmatically navigates to the given route path.
+     *
+     * Delegates to {@link setRoute} with `isPublic = true`, updating the browser hash and
+     * triggering the routing pipeline.
+     *
+     * @param path - The target route string to navigate to.
+     * @returns A promise that resolves when the route has been set and processed.
+     * @since 1.0.0
+     */
+    navigate(path: string): Promise<void> {
+        return this.setRoute(path, true);
+    }
+
+    /**
      * Handles the native `hashchange` event, extracting the new route and initiating the routing process.
      * @param event - The `HashChangeEvent` object.
      * @protected

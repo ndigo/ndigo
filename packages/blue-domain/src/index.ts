@@ -8,4 +8,5 @@
 
 export * from './component';
 export * from './component-and-view';
+export * from './decorators';
 export * from './error';

@@ -1,7 +1,8 @@
-import { FrameworkError, JSONValue, JSONObject, Null, Serializable, createNull } from '@blue/core';
-import { AsEventEmitter, EventEmitter } from '@blue/context';
+import { JSONValue, JSONObject, Serializable, createNull } from '@blue/core';
+import { Emitter, EventEmitter } from '@blue/context';
 import { AsyncDestroyable, Initializable } from '@blue/factory';
 import { forEachObjIndexed } from '@blue/util/object';
+import { validated, ClassValidationOptions, ClassValidationResult } from '@blue/validate';
 
 /**
  * Maps action names to handlers that receive domain data payloads.
@@ -46,9 +47,9 @@ export interface DomainComponent extends Initializable, EventEmitter, AsyncDestr
     /**
      * Validates a component property before it is used or persisted.
      *
-     * @param property - Property name to validate.
+     * @param options - Validation options.
      */
-    validate(property: string): void;
+    validate(options?: ClassValidationOptions): ClassValidationResult;
 }
 
 const { defineProperty, deleteProperty } = Reflect,
@@ -65,14 +66,15 @@ const { defineProperty, deleteProperty } = Reflect,
 
 let uuid = 0;
 
-export class GenericDomainComponent extends AsEventEmitter(Null) implements DomainComponent {
+@validated()
+export class GenericDomainComponent extends Emitter implements DomainComponent {
     id: number;
     name: string;
     model: JSONObject;
     actions: DomainActions;
     settings: DomainSettings;
     states: DomainStates;
-    destroyed: boolean;
+    declare validate: (options?: ClassValidationOptions) => ClassValidationResult;
 
     get [Symbol.toStringTag](): string {
         return `DomainComponent:${this.name}`;
@@ -116,23 +118,15 @@ export class GenericDomainComponent extends AsEventEmitter(Null) implements Doma
     }
 
     /**
-     * Validates a component property.
-     *
-     * @param property - Property name to validate.
-     * @throws {FrameworkError} Always, because this class requires a concrete override.
-     */
-    validate(property: string): void {
-        throw new FrameworkError('Method not implemented.');
-    }
-
-    /**
      * Destroys the component and releases any associated resources.
      *
      * @returns A promise that resolves when destruction is complete.
-     * @throws {FrameworkError} Always, because this class requires a concrete override.
      */
     async destroy(): Promise<void> {
-        throw new FrameworkError('Method not implemented.');
+        if (!this.destroyed) {
+            this.emit('destroy');
+            super.destroy();  // Emitter.destroy() → clears all listeners and sets destroyed=true
+        }
     }
 
     /**

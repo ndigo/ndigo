@@ -2,7 +2,7 @@
  * @author Jeff Rose
  */
 
-import { ApplicationContext, ConfigurableEnvironment } from '@blue/context';
+import { ApplicationContext, ConfigurableEnvironment, EventListener } from '@blue/context';
 import { JSONObject } from '@blue/core';
 import { Application } from './application';
 
@@ -159,6 +159,26 @@ export class ApplicationBuilder {
             this.#sources.add(source);
             this.#application.sources.add(source);
         }
+        return this;
+    }
+
+    /**
+     * Registers an event listener on the application, enabling lifecycle hooks.
+     * Returns `this` for chaining with {@link run}.
+     *
+     * @param event - The event name (e.g. `'started'`, `'closed'`).
+     * @param listener - The callback invoked when the event fires.
+     * @returns This builder instance for chaining.
+     *
+     * @example
+     * ```ts
+     * ApplicationBuilder.from(MyConfig)
+     *   .on('started', (ctx) => console.log('Ready', ctx))
+     *   .run();
+     * ```
+     */
+    on(event: string, listener: EventListener): this {
+        this.#application.on(event, listener);
         return this;
     }
 }

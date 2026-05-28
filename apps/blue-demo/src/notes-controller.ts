@@ -34,9 +34,17 @@ class NotesController extends AsApplicationContextAware(Null) {
     handleIndex(route: Route): ModelAndView {
         logger.info('Handling route', { 'route.path': route.path });
         const notesService = this.applicationContext.getValue(NOTES_SERVICE);
+        const lang = 'en'; // default language — could later come from a session/route param
+
         const model = {
             items: [...notesService.items],
             todoRoute: '#/todo/',
+            labels: {
+                title: this.applicationContext.getContent('notes.page.title', lang),
+                add: this.applicationContext.getContent('notes.btn.add', lang),
+                remove: this.applicationContext.getContent('notes.btn.remove', lang),
+                empty: this.applicationContext.getContent('notes.empty', lang),
+            },
         };
         return new ModelAndView(new WicketView(NotesPage, new BrowserDOMProvider()), model);
     }

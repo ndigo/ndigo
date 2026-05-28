@@ -5,6 +5,7 @@
 import {
     ConfigurableApplicationContext,
     ConfigurableEnvironment,
+    Emitter,
     MetadataConfigApplicationContext,
     StandardEnvironment,
 } from '@blue/context';
@@ -13,9 +14,13 @@ import { WebAutoConfiguration } from './web-auto-configuration';
 
 /**
  * Class that can be used to bootstrap and launch an application.
+ *
  * @param {string} name The name of the application
+ * @fires started when the application context is ready
+ * @fires closed when the application is closed
  */
-export class Application {
+export class Application extends Emitter {
+    #context: ConfigurableApplicationContext | null = null;
     #environment: ConfigurableEnvironment;
     #name: string;
     #profiles: string[];
@@ -37,6 +42,7 @@ export class Application {
      * @param sources - Source classes that will be registered when the application runs.
      */
     constructor(sources: Function[]) {
+        super();
         this.#profiles = [];
         this.#sources = new Set<Function>(sources);
     }
@@ -54,6 +60,8 @@ export class Application {
         try {
             const environment = this._prepareEnvironment(args);
             context = this._prepareContext(environment, args);
+            this.#context = context;
+            this.emit('started', context);
         } catch {
             throw new IllegalStateError();
         }
@@ -173,5 +181,14 @@ export class Application {
      */
     private _getOrCreateEnvironment(): ConfigurableEnvironment {
         return this.#environment ? this.#environment : new StandardEnvironment();
+    }
+
+    /**
+     * Closes the application and releases resources.
+     * Emits the `'closed'` event, then destroys the emitter.
+     */
+    close(): void {
+        this.emit('closed');
+        super.destroy();
     }
 }

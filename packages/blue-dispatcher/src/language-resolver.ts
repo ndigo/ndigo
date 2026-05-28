@@ -64,23 +64,12 @@ export class NavigatorLanguageResolver extends AbstractLanguageResolver {
      * @param route - The current route.
      * @returns The browser language or the configured default language.
      */
-    resolveLanguage(route: Route): string {
-        let lang: string;
-
-        if (navigator) {
-            if (navigator.language) {
-                lang = navigator.language;
-            } else if (navigator.languages && navigator.languages.length) {
-                lang = navigator.languages[0];
-            }
-        } else {
-            lang = this.defaultLanguage;
+    resolveLanguage(_route: Route): string {
+        if (typeof navigator !== 'undefined') {
+            return navigator.language ?? navigator.languages?.[0] ?? this.defaultLanguage;
         }
 
-        // * I think this is the Optional Chaining equivalent to the logic above.
-        //lang = navigator?.language || navigator?.languages?.length ? navigator.languages[ 0 ] : this.defaultLanguage;
-
-        return lang;
+        return this.defaultLanguage;
     }
 }
 

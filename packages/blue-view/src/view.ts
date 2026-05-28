@@ -230,7 +230,9 @@ export class RerouteView extends AbstractPathBasedView {
     protected _renderView(viewModel: any, request: any, target?: ViewTarget): void {
         const targetPath: string = this._createTargetPath(viewModel, request);
 
-        // TODO USE ROUTER
-        history.pushState(null, null, targetPath);
+        // TODO(Wave 3): delegate to @blue/router instead of calling history directly
+        if (typeof history !== 'undefined') {
+            history.pushState(null, null, targetPath);
+        }
     }
 }

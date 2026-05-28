@@ -1,3 +1,5 @@
+/* eslint-disable @blue/no-browser-globals-in-isomorphic -- HashRouter is a browser-only implementation; browser globals are intentional and expected here */
+
 import { constructN, pipe } from '@blue/util/function';
 import { slice } from '@blue/util/list';
 import { prop } from '@blue/util/object';

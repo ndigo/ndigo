@@ -22,6 +22,18 @@ export interface Router {
     readonly route: string;
     readonly callback: RouterCallback;
     refresh(): void;
+    /**
+     * Programmatically navigates the router to the given path.
+     *
+     * Implementations that support programmatic navigation (e.g., `SiteRouter`, `HashRouter`)
+     * should provide this method. When absent, callers should fall back to platform-specific
+     * navigation (e.g., `history.pushState`).
+     *
+     * @param path - The target path to navigate to.
+     * @returns `void`, `boolean` (whether a mount matched), or a `Promise<void>` depending on the implementation.
+     * @since 1.0.0
+     */
+    navigate?(path: string): void | boolean | Promise<void>;
 }
 
 /**

@@ -99,7 +99,31 @@ describe('RerouteView', () => {
         expect((view as any)._createTargetPath({ page: '2' }, {})).toBe('/userspage=2');
     });
 
-    test('it should push target path to history', async () => {
+    test('it should delegate to router.navigate when a router is registered', async () => {
+        const navigate = vi.fn();
+        const mockRouter = { route: '/', callback: vi.fn(), refresh: vi.fn(), navigate };
+        const mockContext = { getValue: vi.fn().mockReturnValue(mockRouter) };
+        const view = new RerouteView('/users');
+        view.setApplicationContext(mockContext as any);
+
+        await view.render({ page: '3' }, {});
+
+        expect(navigate).toHaveBeenCalledWith('/userspage=3');
+    });
+
+    test('it should fall back to history.pushState when no router is registered', async () => {
+        const spy = vi.spyOn(history, 'pushState').mockImplementation(() => null);
+        const mockContext = { getValue: vi.fn().mockReturnValue(null) };
+        const view = new RerouteView('/users');
+        view.setApplicationContext(mockContext as any);
+
+        await view.render({ page: '3' }, {});
+
+        expect(spy).toHaveBeenCalledWith(null, null, '/userspage=3');
+        spy.mockRestore();
+    });
+
+    test('it should fall back to history.pushState when no application context is set', async () => {
         const spy = vi.spyOn(history, 'pushState').mockImplementation(() => null);
         const view = new RerouteView('/users');
 

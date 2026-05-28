@@ -5,7 +5,8 @@
 import { AsNameAware } from '@blue/factory';
 import { JSONObject, MediaType, MediaTypes, Serializable, createNull, Null } from '@blue/core';
 import { AsApplicationContextAware } from '@blue/context';
-import { toMatrixString, toQueryString } from '@blue/router';
+import type { ApplicationContext } from '@blue/context';
+import { toMatrixString, toQueryString, ROUTER } from '@blue/router';
 
 import { ViewTarget } from './view-target';
 
@@ -194,6 +195,12 @@ export abstract class AbstractTemplateView extends AbstractPathBasedView {
  */
 export class RerouteView extends AbstractPathBasedView {
     /**
+     * The application context, provided by the mixin via `setApplicationContext`.
+     * Declared here so TypeScript can see it through the mixin inheritance chain.
+     */
+    declare readonly applicationContext?: ApplicationContext;
+
+    /**
      * Indicates if the reroute path is context relative.
      */
     contextRelative: boolean;
@@ -222,6 +229,10 @@ export class RerouteView extends AbstractPathBasedView {
 
     /**
      * Renders the view by rerouting to the target path.
+     *
+     * Delegates navigation to the registered `Router` when available (via the application context).
+     * Falls back to `history.pushState` for environments where no router is registered.
+     *
      * @param viewModel The view model.
      * @param request The current request.
      * @param target The optional view target.
@@ -229,9 +240,11 @@ export class RerouteView extends AbstractPathBasedView {
      */
     protected _renderView(viewModel: any, request: any, target?: ViewTarget): void {
         const targetPath: string = this._createTargetPath(viewModel, request);
+        const router = this.applicationContext?.getValue(ROUTER);
 
-        // TODO(Wave 3): delegate to @blue/router instead of calling history directly
-        if (typeof history !== 'undefined') {
+        if (router?.navigate) {
+            router.navigate(targetPath);
+        } else if (typeof history !== 'undefined') {
             history.pushState(null, null, targetPath);
         }
     }

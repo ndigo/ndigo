@@ -89,7 +89,7 @@ type ConstrainedDecoratorParams = {
  * @property {boolean} isValid - True if all validations passed, false otherwise.
  * @property {Set<string>} failedProperties - A set of property names that failed validation.
  */
-type ClassValidationResult = {
+export type ClassValidationResult = {
     isValid: boolean;
     failedProperties: Set<string>;
 };
@@ -98,7 +98,7 @@ type ClassValidationResult = {
  * Options for the `validate` method on a class decorated with `@validated`.
  * @property {ValidationGroup[]} [groups] - Specific validation groups to run. If not provided, all groups associated with the class or default group will be used.
  */
-type ClassValidationOptions = {
+export type ClassValidationOptions = {
     groups?: ValidationGroup[];
 };
 

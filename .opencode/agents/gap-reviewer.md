@@ -2,18 +2,14 @@
 description: Logic specialist for reviewing functional and technical gaps.
 mode: subagent
 temperature: 0.1
-tools:
-    write: false
-    edit: false
-    patch: false
-    skill: true
 permission:
-    bash:
-        '*': deny
-        'git diff*': allow
-        'git log*': allow
-        'grep *': allow
-        'rg *': allow
+  bash:
+    '*': deny
+    git diff*: allow
+    git log*: allow
+    grep *: allow
+    rg *: allow
+  skill: allow
 ---
 
 # Gap Reviewer Subagent

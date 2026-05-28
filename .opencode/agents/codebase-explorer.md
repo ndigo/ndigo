@@ -2,29 +2,25 @@
 description: Specialized reader for broad codebase mapping, search, and navigation.
 mode: subagent
 temperature: 0.1
-tools:
-    write: false
-    edit: false
-    patch: false
-    skill: true
 permission:
-    bash:
-        '*': deny
-        'ls -R': allow
-        'find *': allow
-        'grep *': allow
-        'rg *': allow
-        'cat *': allow
-        'pnpm list': allow
-        'nx list': allow
-        'git status': allow
-        'git log*': allow
-        'git diff*': allow
+  bash:
+    '*': deny
+    ls -R: allow
+    find *: allow
+    grep *: allow
+    rg *: allow
+    cat *: allow
+    pnpm list: allow
+    nx list: allow
+    git status: allow
+    git log*: allow
+    git diff*: allow
+  skill: allow
 ---
 
 # Codebase Explorer Subagent
 
-You are the structural mapping specialist for BlueJS. Your goal is to answer **"Where is X and how is the codebase organized?"**
+You are the structural mapping specialist for the. Your goal is to answer **"Where is X and how is the codebase organized?"**
 
 ## Primary Responsibility
 

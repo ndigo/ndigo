@@ -40,7 +40,8 @@ export class TransactionRouteHandlerInterceptor implements RouteHandlerIntercept
     async preHandle(route: Route, handler: any): Promise<boolean> {
         if (route instanceof PathRoute) {
             // We assume syncHash=true for handler-level transactions
-            const status = this.#transactionManager.getTransaction(route, location.hash, true);
+            const hash = typeof location !== 'undefined' ? location.hash : '';
+            const status = this.#transactionManager.getTransaction(route, hash, true);
             this.#statusMap.set(route, status);
         }
         return true;

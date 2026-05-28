@@ -23,3 +23,25 @@ export const INTEGRATION_LAYER_MAP: Record<string, string> = {
  * Package names that are allowed to import the libraries they encapsulate.
  */
 export const INTEGRATION_LAYER_PACKAGES: string[] = ['@blue/util', '@blue/parser', '@blue/model'];
+
+/**
+ * Browser global names that should not be accessed unguarded in isomorphic packages.
+ */
+export const BROWSER_GLOBALS: readonly string[] = [
+    'window',
+    'document',
+    'navigator',
+    'location',
+    'history',
+];
+
+/**
+ * Package names that are browser-only and are allowed to use browser globals freely.
+ */
+export const BROWSER_ONLY_PACKAGES: readonly string[] = [
+    '@blue/platform-web',
+    '@blue/dom',
+    '@blue/view-webcomponent',
+    '@blue/boot',
+    '@blue/print',
+];

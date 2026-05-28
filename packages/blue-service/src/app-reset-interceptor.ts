@@ -29,9 +29,13 @@ export class AppResetInterceptor implements ResponseAwareServiceInterceptor<AppR
         settings = Object.assign({}, defaults, settings);
         const header = settings.appResetHeader,
             statusCode = settings.appResetCode;
+        // TODO(Wave 4): move to @blue/http interceptor layer; location is a browser global
+        // eslint-disable-next-line @blue/no-browser-globals-in-isomorphic -- Wave 4: migrate to @blue/http
         response.headers.has(header) &&
             response.status === statusCode &&
+            // eslint-disable-next-line @blue/no-browser-globals-in-isomorphic -- Wave 4: migrate to @blue/http
             location?.hostname !== 'localhost' &&
+            // eslint-disable-next-line @blue/no-browser-globals-in-isomorphic -- Wave 4: migrate to @blue/http
             location.reload();
     }
 }

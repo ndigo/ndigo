@@ -116,7 +116,8 @@ export class URLResource<T = any> implements Resource<T> {
     }
 
     constructor(path: string, value: T) {
-        const url = isAbsoluteURL(path) ? new URL(path) : new URL(path, location.href);
+        const base = typeof location !== 'undefined' ? location.href : 'http://localhost/';
+        const url = isAbsoluteURL(path) ? new URL(path) : new URL(path, base);
 
         // If there is no file extension, assume it's JavaScript
         if (url.pathname.lastIndexOf('.') === -1) {

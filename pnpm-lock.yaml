@@ -190,6 +190,12 @@ importers:
       '@blue/platform-web':
         specifier: ~0.0.1
         version: link:../blue-platform-web
+      '@blue/view':
+        specifier: ~0.0.1
+        version: link:../blue-view
+      '@blue/view-webcomponent':
+        specifier: ~0.0.1
+        version: link:../blue-view-webcomponent
 
   packages/blue-content:
     devDependencies:

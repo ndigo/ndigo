@@ -122,7 +122,17 @@ export interface ApplicationContext
      */
     bubble(type: EventType, ...data: any[]): void;
     /**
-     * Closes this application context, destroying all child contexts and associated resources.
+     * Closes this application context and all of its descendants, then destroys associated resources.
+     *
+     * **Sequence:**
+     * 1. Emits `'context:close'` on the closing context.
+     * 2. Recursively calls `close()` on each direct child (depth-first).
+     * 3. Invokes `onClose()` on the lifecycle processor, if one is configured.
+     * 4. Destroys all registered factory values via `_destroyValues()`.
+     * 5. Removes this context from its parent's children list.
+     * 6. Emits `'context:destroy'` and marks `destroyed = true`.
+     *
+     * Calling `close()` on an already-destroyed context is a safe no-op.
      */
     close(): void;
     /**
@@ -145,7 +155,15 @@ export interface ApplicationContext
      */
     newChild(name?: string, data?: JSONObject): ApplicationContext;
     /**
-     * Refreshes the application context, re-initializing its components and invoking lifecycle processors.
+     * Activates the application context and runs the full initialization lifecycle.
+     *
+     * **Sequence:**
+     * 1. Emits `'context:preparing'` — processors may register additional entries.
+     * 2. Runs all registered {@link LifecycleProcessor} and {@link EntryRegistryProcessor} instances.
+     * 3. Emits `'context:refresh'` — signals that the context is fully active.
+     * 4. Sets `isActive` to `true`.
+     *
+     * Calling `refresh()` on an already-active context is a safe no-op.
      */
     refresh(): void;
     /**

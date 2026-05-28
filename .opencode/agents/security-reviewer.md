@@ -2,19 +2,14 @@
 description: Environment-wide security and vulnerability analysis.
 mode: subagent
 temperature: 0.1
-tools:
-    write: false
-    edit: false
-    patch: false
-    bash: true
-    skill: true
 permission:
-    bash:
-        '*': deny
-        'pnpm audit': allow
-        'pnpm list': allow
-        'grep *': allow
-        'rg *': allow
+  bash:
+    '*': deny
+    pnpm audit: allow
+    pnpm list: allow
+    grep *: allow
+    rg *: allow
+  skill: allow
 ---
 
 # Security Reviewer Subagent

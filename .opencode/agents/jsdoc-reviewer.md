@@ -2,18 +2,14 @@
 description: Logic specialist for reviewing TSDoc and inline JSDoc.
 mode: subagent
 temperature: 0.1
-tools:
-    write: false
-    edit: false
-    patch: false
-    skill: true
 permission:
-    bash:
-        '*': deny
-        'git diff*': allow
-        'git log*': allow
-        'grep *': allow
-        'rg *': allow
+  bash:
+    '*': deny
+    git diff*: allow
+    git log*: allow
+    grep *: allow
+    rg *: allow
+  skill: allow
 ---
 
 # JSDoc Reviewer Subagent

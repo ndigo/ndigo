@@ -2,19 +2,15 @@
 description: High-level design specialist for SOLID, DRY, and architecture patterns.
 mode: subagent
 temperature: 0.1
-tools:
-    write: false
-    edit: false
-    patch: false
-    skill: true
 permission:
-    bash:
-        '*': deny
-        'git diff*': allow
-        'git log*': allow
-        'grep *': allow
-        'rg *': allow
-        'cat *': allow
+  bash:
+    '*': deny
+    git diff*: allow
+    git log*: allow
+    grep *: allow
+    rg *: allow
+    cat *: allow
+  skill: allow
 ---
 
 # Architecture Reviewer Subagent

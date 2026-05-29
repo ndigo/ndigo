@@ -98,6 +98,13 @@ export const prototypeScope = scope('prototype');
  */
 export const hashScope = scope('hash');
 
+/**
+ * Prototype scope implementation — creates a fresh instance on every `getValue()` call.
+ *
+ * @internal AD-6: This is an implementation detail of the scoped factory. Only the
+ * {@link Scope} and {@link ScopedFactory} interfaces are part of the stable public API.
+ * A future scoping split may move concrete scope implementations to a separate module.
+ */
 export class PrototypeScope implements Scope {
     destroyValue(_name: string): void {
         // Intentionally no-op. Prototype values are not cached/tracked.
@@ -108,6 +115,12 @@ export class PrototypeScope implements Scope {
     }
 }
 
+/**
+ * Hash (route) scope implementation — one instance per scope key.
+ * Activate a scope context by calling `setCurrentKey(key)` before `getValue()`.
+ *
+ * @internal AD-6: Implementation detail — see {@link PrototypeScope} for rationale.
+ */
 export class HashScope implements Scope {
     #scopeMap: Map<string, Map<string, any>> = new Map<string, Map<string, any>>();
     #currentKey: string | null = null;
@@ -154,6 +167,12 @@ export class HashScope implements Scope {
     }
 }
 
+/**
+ * Singleton scope implementation — creates at most one instance per named value.
+ * Destruction callbacks can be registered when an instance is created.
+ *
+ * @internal AD-6: Implementation detail — see {@link PrototypeScope} for rationale.
+ */
 export class SingletonScope implements Scope {
     #instances: Map<string, any> = new Map<string, any>();
     #destructionCallbacks: Map<string, () => void> = new Map<string, () => void>();

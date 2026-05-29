@@ -12,6 +12,10 @@ export type EntityState = 'new' | 'managed' | 'removed';
 
 /**
  * Manages a set of changes to entities that will be committed as a single transaction.
+ *
+ * @experimental This interface is complete but not yet wired into any auto-configuration.
+ * Use it manually by constructing an {@link InMemoryUnitOfWork} with an `EntityManager`.
+ * The interface may evolve when a concrete SQL-backed `EntityManager` is introduced.
  */
 export interface UnitOfWork {
     /**
@@ -49,6 +53,10 @@ export interface UnitOfWork {
 /**
  * An in-memory implementation of the `UnitOfWork` interface.
  * It tracks new, dirty, and removed entities and flushes changes via an `EntityManager`.
+ *
+ * @experimental This implementation is complete but not yet wired into any auto-configuration.
+ * It can be used manually but is not yet proven in production workflows. The API may change
+ * when a concrete SQL-backed implementation is introduced.
  */
 export class InMemoryUnitOfWork implements UnitOfWork {
     readonly #entityManager: EntityManager;

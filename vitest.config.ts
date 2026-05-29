@@ -61,6 +61,7 @@ export default defineConfig({
             { find: /^@blue\/validate$/, replacement: resolve(__dirname, './packages/blue-validate/src') },
             { find: /^@blue\/print$/, replacement: resolve(__dirname, './packages/blue-print/src') },
             { find: /^@blue\/platform-web$/, replacement: resolve(__dirname, './packages/blue-platform-web/src') },
+            { find: /^@blue\/platform-node$/, replacement: resolve(__dirname, './packages/blue-platform-node/src') },
             { find: /^@blue\/dispatcher$/, replacement: resolve(__dirname, './packages/blue-dispatcher/src') },
             { find: /^@blue\/boot$/, replacement: resolve(__dirname, './packages/blue-boot/src') },
             { find: /^@blue\/service$/, replacement: resolve(__dirname, './packages/blue-service/src') },

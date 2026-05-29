@@ -80,6 +80,20 @@
           "outputs": ["{projectRoot}/dist"]
         }
       }
+    },
+    "@blue/demo-node": {
+      "root": "apps/blue-demo-node",
+      "projectType": "application",
+      "targets": {
+        "start": {
+          "executor": "nx:run-commands",
+          "options": {
+            "command": "pnpm start",
+            "cwd": "apps/blue-demo-node"
+          },
+          "outputs": []
+        }
+      }
     }
   },
   "affected": {

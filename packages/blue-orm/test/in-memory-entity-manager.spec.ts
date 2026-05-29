@@ -4,7 +4,7 @@ import '@tsmetadata/polyfill';
 
 import { IllegalStateError } from '@blue/core';
 import { InMemoryDataSource } from '../src/data-source';
-import { entity, generated, primaryColumn, column } from '../src/decorators';
+import { entity, generated, primaryColumn, column, prePersist, postLoad, preUpdate, postRemove } from '../src/decorators';
 import { InMemoryEntityManager } from '../src/entity-manager';
 
 @entity()
@@ -48,6 +48,28 @@ class NoPrimaryEntity {
 
 class PlainClass {
     value!: string;
+}
+
+@entity()
+class TrackedNote {
+    @generated()
+    @primaryColumn()
+    id!: number;
+
+    @column()
+    body!: string;
+
+    @prePersist()
+    onPrePersist() {}
+
+    @postLoad()
+    onPostLoad() {}
+
+    @preUpdate()
+    onPreUpdate() {}
+
+    @postRemove()
+    onPostRemove() {}
 }
 
 describe('InMemoryEntityManager', () => {
@@ -169,6 +191,84 @@ describe('InMemoryEntityManager', () => {
             entityManager.clear();
 
             expect(entityManager.find(TestUser, 7)).toBeUndefined();
+        });
+    });
+
+    describe('lifecycle hooks', () => {
+        beforeEach(() => {
+            vi.clearAllMocks();
+        });
+
+        it('calls prePersist on new entity', () => {
+            const spyPrePersist = vi.spyOn(TrackedNote.prototype, 'onPrePersist');
+            const spyPreUpdate = vi.spyOn(TrackedNote.prototype, 'onPreUpdate');
+
+            const note = new TrackedNote();
+            note.body = 'hello';
+            entityManager.persist(note);
+
+            expect(spyPrePersist).toHaveBeenCalledTimes(1);
+            expect(spyPreUpdate).not.toHaveBeenCalled();
+        });
+
+        it('calls preUpdate on existing entity', () => {
+            const spyPrePersist = vi.spyOn(TrackedNote.prototype, 'onPrePersist');
+            const spyPreUpdate = vi.spyOn(TrackedNote.prototype, 'onPreUpdate');
+
+            const note = new TrackedNote();
+            note.body = 'hello';
+            entityManager.persist(note);
+            spyPrePersist.mockClear();
+
+            note.body = 'updated';
+            entityManager.persist(note);
+
+            expect(spyPrePersist).not.toHaveBeenCalled();
+            expect(spyPreUpdate).toHaveBeenCalledTimes(1);
+        });
+
+        it('calls postLoad on find', () => {
+            const spyPostLoad = vi.spyOn(TrackedNote.prototype, 'onPostLoad');
+
+            const note = new TrackedNote();
+            note.body = 'hello';
+            entityManager.persist(note);
+            spyPostLoad.mockClear();
+
+            const found = entityManager.find(TrackedNote, 1);
+
+            expect(spyPostLoad).toHaveBeenCalledTimes(1);
+            expect(found).toBe(note);
+        });
+
+        it('calls postLoad on findAll', () => {
+            const spyPostLoad = vi.spyOn(TrackedNote.prototype, 'onPostLoad');
+
+            const note1 = new TrackedNote();
+            note1.body = 'a';
+            const note2 = new TrackedNote();
+            note2.body = 'b';
+            entityManager.persist(note1);
+            entityManager.persist(note2);
+            spyPostLoad.mockClear();
+
+            const notes = entityManager.findAll(TrackedNote);
+
+            expect(spyPostLoad).toHaveBeenCalledTimes(2);
+            expect(notes).toHaveLength(2);
+        });
+
+        it('calls postRemove on remove', () => {
+            const spyPostRemove = vi.spyOn(TrackedNote.prototype, 'onPostRemove');
+
+            const note = new TrackedNote();
+            note.body = 'hello';
+            entityManager.persist(note);
+            spyPostRemove.mockClear();
+
+            entityManager.remove(note);
+
+            expect(spyPostRemove).toHaveBeenCalledTimes(1);
         });
     });
 });

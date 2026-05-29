@@ -67,6 +67,7 @@ export default defineConfig({
             { find: /^@blue\/service$/, replacement: resolve(__dirname, './packages/blue-service/src') },
             { find: /^@blue\/eslint-plugin$/, replacement: resolve(__dirname, './packages/blue-eslint-plugin/src') },
             { find: /^@blue\/orm$/, replacement: resolve(__dirname, './packages/blue-orm/src') },
+            { find: /^@blue\/auth$/, replacement: resolve(__dirname, './packages/blue-auth/src') },
         ],
     },
 });

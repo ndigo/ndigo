@@ -89,6 +89,12 @@ export class InMemoryEntityManager implements EntityManager {
         }
 
         const store = this.#dataSource.getStore<T>(metadata.entityName);
+        const isNew = !store.has(primaryId);
+        if (isNew) {
+            this.#callLifecycleHooks(entity, 'prePersist');
+        } else {
+            this.#callLifecycleHooks(entity, 'preUpdate');
+        }
         store.set(primaryId, entity);
     }
 
@@ -105,7 +111,11 @@ export class InMemoryEntityManager implements EntityManager {
             return undefined;
         }
 
-        return this.#dataSource.getStore<T>(metadata.entityName).get(id);
+        const entity = this.#dataSource.getStore<T>(metadata.entityName).get(id);
+        if (entity !== undefined) {
+            this.#callLifecycleHooks(entity, 'postLoad');
+        }
+        return entity;
     }
 
     /**
@@ -120,7 +130,11 @@ export class InMemoryEntityManager implements EntityManager {
             return [];
         }
 
-        return Array.from(this.#dataSource.getStore<T>(metadata.entityName).values());
+        const entities = Array.from(this.#dataSource.getStore<T>(metadata.entityName).values());
+        for (const entity of entities) {
+            this.#callLifecycleHooks(entity, 'postLoad');
+        }
+        return entities;
     }
 
     /**
@@ -139,6 +153,7 @@ export class InMemoryEntityManager implements EntityManager {
 
         if (primaryId !== undefined && primaryId !== null) {
             this.#dataSource.getStore<T>(metadata.entityName).delete(primaryId);
+            this.#callLifecycleHooks(entity, 'postRemove');
         }
     }
 
@@ -181,5 +196,17 @@ export class InMemoryEntityManager implements EntityManager {
         const nextId = (this.#identityCounters.get(entityName) ?? 0) + 1;
         this.#identityCounters.set(entityName, nextId);
         record[primaryColumn] = nextId;
+    }
+
+    #callLifecycleHooks<T extends object>(entity: T, event: string): void {
+        const entityClass = entity.constructor as Constructable<T>;
+        const metadata = getEntityMetadata(entityClass);
+        const hooks = metadata.lifecycleHooks.filter(h => h.event === event);
+        const record = entity as Record<string, (...args: unknown[]) => unknown>;
+        for (const hook of hooks) {
+            if (typeof record[hook.methodName] === 'function') {
+                record[hook.methodName]();
+            }
+        }
     }
 }

@@ -10,18 +10,22 @@
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
   "dependencies": {
+    "@blue/auth": "~0.0.1",
     "@blue/context": "~0.0.1",
     "@blue/core": "~0.0.1",
     "@blue/dispatcher": "~0.0.1",
+    "@blue/orm": "~0.0.1",
     "@blue/platform-node": "~0.0.1",
     "@blue/router": "~0.0.1",
     "@blue/util": "~0.0.1",
     "@tsmetadata/polyfill": "*"
   },
   "devDependencies": {
+    "@blue/auth": "~0.0.1",
     "@blue/context": "~0.0.1",
     "@blue/core": "~0.0.1",
     "@blue/dispatcher": "~0.0.1",
+    "@blue/orm": "~0.0.1",
     "@blue/platform-node": "~0.0.1",
     "@blue/router": "~0.0.1",
     "@blue/util": "~0.0.1",

@@ -11,7 +11,8 @@
     "paths": {
       "@blue/platform": ["packages/blue-platform-web/src"],
       "@blue/platform-web": ["packages/blue-platform-web/src"],
-      "@blue/platform-node": ["packages/blue-platform-node/src"]
+      "@blue/platform-node": ["packages/blue-platform-node/src"],
+      "@blue/auth": ["packages/blue-auth/src"]
     }
   }
 }

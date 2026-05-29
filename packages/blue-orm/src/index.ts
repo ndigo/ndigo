@@ -1,14 +1,14 @@
 /** @author opencode */
 
 // Types and interfaces
-export type { ColumnOptions, ColumnDefinition, EntityMetadata } from './metadata';
+export type { ColumnOptions, ColumnDefinition, EntityMetadata, RelationKind, RelationDefinition, LifecycleEvent, LifecycleHookDefinition } from './metadata';
 export type { DataSource } from './data-source';
 export type { EntityManager } from './entity-manager';
 export type { EntityState, UnitOfWork } from './unit-of-work';
 export type { Repository } from './repository';
 
 // Decorators
-export { entity, column, primaryColumn, generated } from './decorators';
+export { entity, column, primaryColumn, generated, oneToMany, manyToOne, manyToMany, oneToOne, prePersist, postLoad, preUpdate, postRemove, transactional } from './decorators';
 
 // Metadata utilities
 export { getEntityMetadata, isEntity } from './metadata';

@@ -1,0 +1,30 @@
+{
+  "name": "@blue/demo-node",
+  "version": "0.0.1",
+  "description": "Blue Demo Node — minimal HTTP server using @blue/platform-node",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "tsx src/index.ts"
+  },
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "dependencies": {
+    "@blue/context": "~0.0.1",
+    "@blue/core": "~0.0.1",
+    "@blue/dispatcher": "~0.0.1",
+    "@blue/platform-node": "~0.0.1",
+    "@blue/router": "~0.0.1",
+    "@blue/util": "~0.0.1",
+    "@tsmetadata/polyfill": "*"
+  },
+  "devDependencies": {
+    "@blue/context": "~0.0.1",
+    "@blue/core": "~0.0.1",
+    "@blue/dispatcher": "~0.0.1",
+    "@blue/platform-node": "~0.0.1",
+    "@blue/router": "~0.0.1",
+    "@blue/util": "~0.0.1",
+    "tsx": "*"
+  }
+}

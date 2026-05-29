@@ -31,3 +31,4 @@ export { AbstractThemeResolver } from './theme-resolver';
 
 export * from './logging-interceptor';
 export * from './transaction-interceptor';
+export * from './route-handler-interceptor';

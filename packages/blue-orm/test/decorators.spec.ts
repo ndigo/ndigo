@@ -2,7 +2,7 @@
 
 import '@tsmetadata/polyfill';
 
-import { column, entity, generated, primaryColumn } from '../src/decorators';
+import { column, entity, generated, primaryColumn, oneToMany, manyToOne, manyToMany, oneToOne, prePersist, postLoad, preUpdate, postRemove, transactional } from '../src/decorators';
 import { getEntityMetadata, isEntity } from '../src/metadata';
 
 @entity()
@@ -206,7 +206,152 @@ describe('decorators', () => {
                 ],
                 primaryColumn: 'sku',
                 generatedColumns: [],
+                relations: [],
+                lifecycleHooks: [],
             });
+        });
+    });
+
+    describe('relations', () => {
+        @entity()
+        class Comment { 
+            @primaryColumn() id!: number; 
+            @column() text!: string; 
+        }
+
+        @entity()
+        class Post {
+            @primaryColumn() id!: number;
+            @oneToMany(() => Comment)  comments!: Comment[];
+            @manyToOne(() => Post)     parent!: Post | null;
+        }
+
+        @entity()
+        class Tag {}
+        
+        @entity()
+        class Article {
+            @primaryColumn() id!: number;
+            @manyToMany(() => Tag)     tags!: Tag[];
+            @oneToOne(() => Post)      featuredPost!: Post | null;
+        }
+
+        it('stores one-to-many relation', () => {
+            const metadata = getEntityMetadata(Post);
+            expect(metadata.relations).toHaveLength(2);
+            
+            const relation = metadata.relations.find(r => r.fieldName === 'comments');
+            expect(relation).toBeDefined();
+            expect(relation!.kind).toBe('one-to-many');
+            expect(relation!.targetEntity()).toBe(Comment);
+        });
+
+        it('stores many-to-one relation', () => {
+            const metadata = getEntityMetadata(Post);
+            expect(metadata.relations).toHaveLength(2);
+            
+            const relation = metadata.relations.find(r => r.fieldName === 'parent');
+            expect(relation).toBeDefined();
+            expect(relation!.kind).toBe('many-to-one');
+            expect(relation!.targetEntity()).toBe(Post);
+        });
+
+        it('stores many-to-many relation', () => {
+            const metadata = getEntityMetadata(Article);
+            expect(metadata.relations).toHaveLength(2);
+            
+            const relation = metadata.relations.find(r => r.fieldName === 'tags');
+            expect(relation).toBeDefined();
+            expect(relation!.kind).toBe('many-to-many');
+            expect(relation!.targetEntity()).toBe(Tag);
+        });
+
+        it('stores one-to-one relation', () => {
+            const metadata = getEntityMetadata(Article);
+            expect(metadata.relations).toHaveLength(2);
+            
+            const relation = metadata.relations.find(r => r.fieldName === 'featuredPost');
+            expect(relation).toBeDefined();
+            expect(relation!.kind).toBe('one-to-one');
+            expect(relation!.targetEntity()).toBe(Post);
+        });
+
+        it('handles multiple relations on one entity', () => {
+            const metadata = getEntityMetadata(Post);
+            expect(metadata.relations).toHaveLength(2);
+        });
+    });
+
+    describe('lifecycle hooks', () => {
+        @entity()
+        class Order {
+            @primaryColumn() id!: number;
+
+            @prePersist()
+            onBeforeSave() {}
+
+            @postLoad()
+            onAfterLoad() {}
+
+            @preUpdate()
+            onBeforeUpdate() {}
+
+            @postRemove()
+            onAfterDelete() {}
+        }
+
+        @entity()
+        class MultiHookEntity {
+            @primaryColumn() id!: number;
+
+            @prePersist()
+            validateData() {}
+
+            @prePersist()
+            stampTimestamp() {}
+        }
+
+        it('stores lifecycle hooks for entity with multiple hooks', () => {
+            const metadata = getEntityMetadata(Order);
+            expect(metadata.lifecycleHooks).toHaveLength(4);
+            
+            const prePersistHook = metadata.lifecycleHooks.find(h => h.event === 'prePersist');
+            expect(prePersistHook).toBeDefined();
+            expect(prePersistHook!.methodName).toBe('onBeforeSave');
+
+            const postLoadHook = metadata.lifecycleHooks.find(h => h.event === 'postLoad');
+            expect(postLoadHook).toBeDefined();
+            expect(postLoadHook!.methodName).toBe('onAfterLoad');
+
+            const preUpdateHook = metadata.lifecycleHooks.find(h => h.event === 'preUpdate');
+            expect(preUpdateHook).toBeDefined();
+            expect(preUpdateHook!.methodName).toBe('onBeforeUpdate');
+
+            const postRemoveHook = metadata.lifecycleHooks.find(h => h.event === 'postRemove');
+            expect(postRemoveHook).toBeDefined();
+            expect(postRemoveHook!.methodName).toBe('onAfterDelete');
+        });
+
+        it('stores multiple hooks of same event type', () => {
+            const metadata = getEntityMetadata(MultiHookEntity);
+            expect(metadata.lifecycleHooks).toHaveLength(2);
+            
+            const prePersistHooks = metadata.lifecycleHooks.filter(h => h.event === 'prePersist');
+            expect(prePersistHooks).toHaveLength(2);
+            expect(prePersistHooks[0].methodName).toBe('validateData');
+            expect(prePersistHooks[1].methodName).toBe('stampTimestamp');
+        });
+    });
+
+    describe('transactional decorator', () => {
+        class OrderService {
+            @transactional()
+            createOrder() {}
+        }
+
+        it('marks method as transactional', () => {
+            const metadata = OrderService[Symbol.metadata];
+            expect(metadata?.['orm:transactional']).toBe(true);
         });
     });
 });

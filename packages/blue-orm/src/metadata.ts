@@ -7,7 +7,26 @@ import {
     entityNameMetadataKey,
     generatedMetadataKey,
     primaryMetadataKey,
+    relationsMetadataKey,
+    lifecycleHooksMetadataKey,
 } from './_constants';
+
+export type ClassType = new (...args: any[]) => any;
+
+export type RelationKind = 'one-to-many' | 'many-to-one' | 'many-to-many' | 'one-to-one';
+
+export interface RelationDefinition {
+    kind: RelationKind;
+    fieldName: string;
+    targetEntity: () => ClassType;
+}
+
+export type LifecycleEvent = 'prePersist' | 'postLoad' | 'preUpdate' | 'postRemove';
+
+export interface LifecycleHookDefinition {
+    event: LifecycleEvent;
+    methodName: string;
+}
 
 /**
  * Options for defining a column in an entity.
@@ -36,6 +55,8 @@ export interface EntityMetadata {
     columns: ColumnDefinition[];
     primaryColumn: string;
     generatedColumns: string[];
+    relations: RelationDefinition[];
+    lifecycleHooks: LifecycleHookDefinition[];
 }
 
 type MetadataRecord = Record<string, unknown>;
@@ -67,5 +88,7 @@ export function getEntityMetadata(target: Constructable): EntityMetadata {
         columns: (metadata[columnsMetadataKey] as ColumnDefinition[]) ?? [],
         primaryColumn: (metadata[primaryMetadataKey] as string) ?? '',
         generatedColumns: (metadata[generatedMetadataKey] as string[]) ?? [],
+        relations: (metadata[relationsMetadataKey] as RelationDefinition[]) ?? [],
+        lifecycleHooks: (metadata[lifecycleHooksMetadataKey] as LifecycleHookDefinition[]) ?? [],
     };
 }

@@ -153,6 +153,9 @@ importers:
 
   apps/blue-demo-node:
     dependencies:
+      '@blue/auth':
+        specifier: ~0.0.1
+        version: link:../../packages/blue-auth
       '@blue/context':
         specifier: ~0.0.1
         version: link:../../packages/blue-context
@@ -162,6 +165,9 @@ importers:
       '@blue/dispatcher':
         specifier: ~0.0.1
         version: link:../../packages/blue-dispatcher
+      '@blue/orm':
+        specifier: ~0.0.1
+        version: link:../../packages/blue-orm
       '@blue/platform-node':
         specifier: ~0.0.1
         version: link:../../packages/blue-platform-node
@@ -203,6 +209,21 @@ importers:
       vite:
         specifier: ~6.0.7
         version: 6.0.15(@types/node@22.10.10)(tsx@4.22.3)(yaml@2.9.0)
+
+  packages/blue-auth:
+    devDependencies:
+      '@blue/core':
+        specifier: ~0.0.1
+        version: link:../blue-core
+      '@blue/dispatcher':
+        specifier: ~0.0.1
+        version: link:../blue-dispatcher
+      '@blue/http':
+        specifier: ~0.0.1
+        version: link:../blue-http
+      '@blue/router':
+        specifier: ~0.0.1
+        version: link:../blue-router
 
   packages/blue-boot:
     devDependencies:

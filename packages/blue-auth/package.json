@@ -1,0 +1,33 @@
+{
+  "name": "@blue/auth",
+  "version": "0.0.1",
+  "description": "Blue Authentication & Authorization",
+  "type": "module",
+  "files": ["doc", "lib"],
+  "exports": "./lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build:lib": "tsc -b tsconfig.build.json",
+    "test": "vitest run",
+    "api-report": "api-extractor run --local --verbose"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue.git"
+  },
+  "keywords": ["blue", "bluejs", "auth", "authentication", "authorization"],
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "@blue/core": "~0.0.1",
+    "@blue/dispatcher": "~0.0.1",
+    "@blue/http": "~0.0.1",
+    "@blue/router": "~0.0.1"
+  },
+  "peerDependencies": {
+    "@blue/core": "~0.0.1",
+    "@blue/dispatcher": "~0.0.1",
+    "@blue/http": "~0.0.1",
+    "@blue/router": "~0.0.1"
+  }
+}

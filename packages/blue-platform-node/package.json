@@ -1,0 +1,46 @@
+{
+  "name": "@blue/platform-node",
+  "version": "0.0.1",
+  "description": "Blue Node.js Platform",
+  "type": "module",
+  "files": [
+    "doc",
+    "lib"
+  ],
+  "exports": "./lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build:lib": "tsc -b tsconfig.build.json",
+    "test": "vitest run",
+    "api-report": "api-extractor run --local --verbose"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue.git"
+  },
+  "keywords": [
+    "blue",
+    "bluejs",
+    "blue-js",
+    "blue-platform",
+    "blue-platform-node",
+    "platform",
+    "node"
+  ],
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "@blue/context": "~0.0.1",
+    "@blue/core": "~0.0.1",
+    "@blue/dispatcher": "~0.0.1",
+    "@blue/router": "~0.0.1",
+    "@blue/util": "~0.0.1"
+  },
+  "peerDependencies": {
+    "@blue/context": "~0.0.1",
+    "@blue/core": "~0.0.1",
+    "@blue/dispatcher": "~0.0.1",
+    "@blue/router": "~0.0.1",
+    "@blue/util": "~0.0.1"
+  }
+}

@@ -56,6 +56,8 @@ export class MethodParameterType implements Equatable, Serializable {
     static SESSION: MethodParameterType;
     static BIND: MethodParameterType;
     static ATTRIBUTE: MethodParameterType;
+    static HEADER: MethodParameterType;
+    static BODY: MethodParameterType;
 
     static fromType(type: string): MethodParameterType | null {
         const types = keys(this);
@@ -109,6 +111,8 @@ MethodParameterType.STATE = new MethodParameterType('state:value');
 MethodParameterType.SESSION = new MethodParameterType('session:value');
 MethodParameterType.BIND = new MethodParameterType('bind:value');
 MethodParameterType.ATTRIBUTE = new MethodParameterType('attribute:value');
+MethodParameterType.HEADER = new MethodParameterType('header:value');
+MethodParameterType.BODY = new MethodParameterType('body:value');
 
 /**
  * Method parameter metadata
@@ -395,6 +399,51 @@ export function attributeValue(
 ): ParameterExtractor {
     return {
         type: MethodParameterType.ATTRIBUTE,
+        name,
+        required: options.required ?? false,
+        defaultValue: options.defaultValue ?? null,
+        convert: options.convert ?? null,
+    };
+}
+
+/**
+ * Factory function: Create a request-header parameter extractor.
+ *
+ * @example
+ * @routeParams({
+ *   contentType: headerValue('content-type'),
+ *   authorization: headerValue('authorization', { required: true })
+ * })
+ */
+export function headerValue(
+    name: string,
+    options: { required?: boolean; defaultValue?: string; convert?: ParameterValueConverterReference } = {}
+): ParameterExtractor {
+    return {
+        type: MethodParameterType.HEADER,
+        name,
+        required: options.required ?? false,
+        defaultValue: options.defaultValue ?? null,
+        convert: options.convert ?? null,
+    };
+}
+
+/**
+ * Factory function: Create a request-body parameter extractor.
+ * Use `name: '*'` to bind the entire parsed body object.
+ *
+ * @example
+ * @routeParams({
+ *   user: bodyValue('user'),
+ *   payload: bodyValue('*')
+ * })
+ */
+export function bodyValue(
+    name: string,
+    options: { required?: boolean; defaultValue?: any; convert?: ParameterValueConverterReference } = {}
+): ParameterExtractor {
+    return {
+        type: MethodParameterType.BODY,
         name,
         required: options.required ?? false,
         defaultValue: options.defaultValue ?? null,

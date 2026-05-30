@@ -12,6 +12,7 @@ import {
     transactionalMetadataKey,
 } from './_constants';
 import { ColumnDefinition, ColumnOptions, RelationDefinition, RelationKind, LifecycleHookDefinition, LifecycleEvent } from './metadata';
+import type { TransactionManager } from './transaction-manager';
 
 type ClassType = new (...args: any[]) => any;
 
@@ -292,26 +293,47 @@ export function postRemove() {
 /**
  * Marks a method as participating in a transaction.
  *
- * This decorator records transactional metadata on the method via `Symbol.metadata`.
- * Transaction boundary enforcement is **not yet active** — a concrete `TransactionManager`
- * implementation (e.g., from `@blue/orm-drizzle` or `@blue/orm-sqlite`) is required
- * to inspect this metadata and wrap method calls in a real database transaction.
+ * When the decorated method is called on a class instance that has a
+ * `transactionManager` property implementing {@link TransactionManager},
+ * the method body is automatically wrapped in `transactionManager.run(fn)`.
  *
- * @experimental
+ * If no `transactionManager` property is found on the instance, the method
+ * is called directly (graceful degradation — useful in unit tests that do
+ * not need real transaction boundaries).
+ *
+ * Transaction metadata is also recorded on `Symbol.metadata` under the
+ * `transactionalMetadataKey` key so that runtime introspection is possible.
  *
  * @example
  * ```typescript
- * @entity()
  * class OrderService {
- *   @transactional()
- *   async placeOrder(order: Order): Promise<void> {
- *     // will be wrapped in a transaction once a TransactionManager is wired
- *   }
+ *     transactionManager: TransactionManager;
+ *
+ *     constructor(txManager: TransactionManager) {
+ *         this.transactionManager = txManager;
+ *     }
+ *
+ *     @transactional()
+ *     async placeOrder(order: Order): Promise<void> {
+ *         // automatically wrapped in transactionManager.run(...)
+ *     }
  * }
  * ```
+ *
+ * @since 1.0.0
  */
 export function transactional() {
-    return function (_value: unknown, context: ClassMethodDecoratorContext): void {
+    return function (target: Function, context: ClassMethodDecoratorContext): Function {
         context.metadata[transactionalMetadataKey] = true;
+
+        return async function (this: any, ...args: any[]): Promise<any> {
+            const txManager: TransactionManager | undefined = this?.transactionManager;
+
+            if (txManager) {
+                return txManager.run(() => target.apply(this, args));
+            }
+
+            return target.apply(this, args);
+        };
     };
 }

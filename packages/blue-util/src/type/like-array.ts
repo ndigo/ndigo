@@ -1,25 +1,7 @@
 /**
  * @author Jeff Rose
- * @see {@link https://ramdajs.com/docs/}
  */
 
-import {
-    __,
-    both,
-    cond,
-    dec,
-    either,
-    equals,
-    F,
-    gt,
-    has,
-    isNil,
-    length,
-    pipe,
-    propSatisfies,
-    T,
-    toString,
-} from 'ramda';
 import isString from './is-string.js';
 
 /**
@@ -41,21 +23,14 @@ import isString from './is-string.js';
  * likeArray( {} );
  * //=> false
  */
-const nodeTypeEqualsOne = propSatisfies(equals(1), 'nodeType'),
-    lengthEqualsZero = propSatisfies(equals(0), 'length'),
-    lengthGreaterThanZero = propSatisfies(gt(__, 0), 'length'),
-    lastIndex = pipe(length, dec, toString),
-    hasZero = has('0'),
-    hasLastIndex = (value) => has(lastIndex(value), value),
-    isNotObject = (value) => typeof value !== 'object',
-    likeArray = cond<any, boolean>([
-        [isNil, F],
-        [either<any>(Array.isArray, isString), T],
-        [isNotObject, F],
-        [nodeTypeEqualsOne, lengthGreaterThanZero],
-        [lengthEqualsZero, T],
-        [lengthGreaterThanZero, both<any>(hasZero, hasLastIndex)],
-        [T, F],
-    ]) as (value) => value is ArrayLike<any>;
+const likeArray = (value: any): value is ArrayLike<any> => {
+    if (value == null) return false;
+    if (Array.isArray(value) || isString(value)) return true;
+    if (typeof value !== 'object') return false;
+    if (value.nodeType === 1) return value.length > 0;
+    if (value.length === 0) return true;
+    if (value.length > 0) return '0' in value && String(value.length - 1) in value;
+    return false;
+};
 
 export default likeArray;

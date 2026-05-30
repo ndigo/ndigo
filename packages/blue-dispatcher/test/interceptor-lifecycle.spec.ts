@@ -10,7 +10,7 @@ import {
     ApplicationContextAwareProcessor,
 } from '@blue/context';
 import { TestErrorResolver, TestViewResolver } from './test-strategies';
-import { MetadataHandlerMapping } from '../src/route-handler-mapping';
+import { LinearMetadataHandlerMapping } from '../src/route-handler-mapping';
 
 describe('Interceptor Lifecycle Guarantees', () => {
     let dispatcher: BrowserDispatcher;
@@ -63,7 +63,7 @@ describe('Interceptor Lifecycle Guarantees', () => {
                 return new TestErrorResolver();
             }
             @entry handlerMappings() {
-                const mapping = new MetadataHandlerMapping();
+                const mapping = new LinearMetadataHandlerMapping();
                 mapping.interceptors.push(i1, i2, i3);
                 return [mapping];
             }
@@ -124,7 +124,7 @@ describe('Interceptor Lifecycle Guarantees', () => {
                 return new TestErrorResolver();
             }
             @entry handlerMappings() {
-                const mapping = new MetadataHandlerMapping();
+                const mapping = new LinearMetadataHandlerMapping();
                 mapping.interceptors.push(interceptor);
                 return [mapping];
             }

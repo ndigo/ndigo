@@ -19,14 +19,14 @@ interface RadixEntry {
     readonly mapping: RouteMappingInfo;
 }
 
-export class RadixRouteHandlerMapping
+export class RadixMetadataHandlerMapping
     extends AbstractHandlerMethodMapping<RouteMappingInfo>
     implements MatchableHandlerMapping
 {
     #radixTree = new RadixTree<RadixEntry>();
 
     get [Symbol.toStringTag](): string {
-        return 'RadixRouteHandlerMapping';
+        return 'RadixMetadataHandlerMapping';
     }
 
     match(route: Route, pattern: string): RouteMatchResult {

@@ -1,9 +1,6 @@
-import {
-    configuration,
-    entry,
-} from '@blue/context';
+import { configuration, entry } from '@blue/context';
 import { ApplicationBuilder } from '@blue/boot';
-import { LoggingRouteHandlerInterceptor, MetadataHandlerMapping } from '@blue/dispatcher';
+import { LoggingRouteHandlerInterceptor, LinearMetadataHandlerMapping } from '@blue/dispatcher';
 import { getLogger } from '@blue/telemetry';
 import { NameViewResolver } from '@blue/view';
 import { DOMElementViewTarget, WebComponentViewEngine } from '@blue/view-webcomponent';
@@ -41,7 +38,7 @@ class ToDoconfiguration {
     @entry
     handlerMapping() {
         // TODO Fix the default handler mappings
-        const mapping = new MetadataHandlerMapping();
+        const mapping = new LinearMetadataHandlerMapping();
         mapping.interceptors.push(new LoggingRouteHandlerInterceptor(getLogger('blue-demo:dispatcher')));
         return mapping;
     }
@@ -96,16 +93,19 @@ class ToDoconfiguration {
 
 export const createTodoContext = () => {
     const context = new ApplicationBuilder([ToDoconfiguration]).run();
-    
+
     // Configure content source for localized strings
-    context.setContentSource(new StaticContentSource({
-        'notes.page.title': { en: 'Notes', fr: 'Notes' },
-        'notes.btn.add': { en: 'Add Note', fr: 'Ajouter une note' },
-        'notes.btn.remove': { en: 'Remove', fr: 'Supprimer' },
-        'notes.empty': { en: 'No notes yet.', fr: 'Aucune note pour le moment.' },
-    }, 'en'));
-    
+    context.setContentSource(
+        new StaticContentSource(
+            {
+                'notes.page.title': { en: 'Notes', fr: 'Notes' },
+                'notes.btn.add': { en: 'Add Note', fr: 'Ajouter une note' },
+                'notes.btn.remove': { en: 'Remove', fr: 'Supprimer' },
+                'notes.empty': { en: 'No notes yet.', fr: 'Aucune note pour le moment.' },
+            },
+            'en'
+        )
+    );
+
     return context;
 };
-
-

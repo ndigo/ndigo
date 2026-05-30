@@ -7,13 +7,14 @@
  * heavy chain for what is essentially a property-shape check.
  *
  * Alternatives tested:
- *   1. **current**  – the existing Ramda-pipe implementation (baseline)
- *   2. **for-of**   – manual loop over Object.entries, early-return on fail
- *   3. **every**    – Object.entries + Array.every (short-circuiting)
- *   4. **keys+has** – Object.keys + hasOwnProperty, inline typeof check
- *   5. **prekeys**  – descriptor keys cached at build time, then loop
- *   6. **direct**   – raw property access, no Ramda, no Array helpers
- *   7. **cached**   – WeakMap-based descriptor cache (11.1x faster for curried usage)
+ *   1. **legacy (Ramda pipe)**         – the old Ramda-based implementation (historical baseline)
+ *   2. **for-of**                       – manual loop over Object.entries, early-return on fail
+ *   3. **every**                        – Object.entries + Array.every (short-circuiting)
+ *   4. **keys+has**                     – Object.keys + hasOwnProperty, inline typeof check
+ *   5. **prekeys**                      – descriptor keys cached at build time, then loop
+ *   6. **direct**                       – raw property access, no Ramda, no Array helpers
+ *   7. **current (WeakMap cached)**     – production implementation; WeakMap descriptor cache
+ *                                         (shipped in Wave 10; 43x faster fresh, 201x faster cached)
  */
 
 import { bench, describe } from 'vitest';
@@ -369,7 +370,7 @@ const curriedValues = [
 /* ------------------------------------------------------------------ */
 
 describe('like – single-property ({ then: Function }) – match', () => {
-    bench('current (Ramda pipe)', () => {
+    bench('legacy (Ramda pipe)', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
             accumulator += likeCurrent(likePromiseDesc, thenable) ? 1 : 0;
@@ -417,7 +418,7 @@ describe('like – single-property ({ then: Function }) – match', () => {
         _sink = accumulator;
     });
 
-    bench('cached', () => {
+    bench('current (WeakMap cached)', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
             accumulator += likeCached(likePromiseDesc, thenable) ? 1 : 0;
@@ -427,7 +428,7 @@ describe('like – single-property ({ then: Function }) – match', () => {
 });
 
 describe('like – single-property ({ then: Function }) – fail', () => {
-    bench('current (Ramda pipe)', () => {
+    bench('legacy (Ramda pipe)', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
             accumulator += likeCurrent(likePromiseDesc, thenableFail) ? 1 : 0;
@@ -475,7 +476,7 @@ describe('like – single-property ({ then: Function }) – fail', () => {
         _sink = accumulator;
     });
 
-    bench('cached', () => {
+    bench('current (WeakMap cached)', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
             accumulator += likeCached(likePromiseDesc, thenableFail) ? 1 : 0;
@@ -485,7 +486,7 @@ describe('like – single-property ({ then: Function }) – fail', () => {
 });
 
 describe('like – single-property ({ then: Function }) – null', () => {
-    bench('current (Ramda pipe)', () => {
+    bench('legacy (Ramda pipe)', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
             accumulator += likeCurrent(likePromiseDesc, null) ? 1 : 0;
@@ -533,7 +534,7 @@ describe('like – single-property ({ then: Function }) – null', () => {
         _sink = accumulator;
     });
 
-    bench('cached', () => {
+    bench('current (WeakMap cached)', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
             accumulator += likeCached(likePromiseDesc, null) ? 1 : 0;
@@ -543,7 +544,7 @@ describe('like – single-property ({ then: Function }) – null', () => {
 });
 
 describe('like – two-property ({ destroy: Function, destroyed: Boolean }) – match', () => {
-    bench('current (Ramda pipe)', () => {
+    bench('legacy (Ramda pipe)', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
             accumulator += likeCurrent(likeDestroyableDesc, destroyable) ? 1 : 0;
@@ -591,7 +592,7 @@ describe('like – two-property ({ destroy: Function, destroyed: Boolean }) – 
         _sink = accumulator;
     });
 
-    bench('cached', () => {
+    bench('current (WeakMap cached)', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
             accumulator += likeCached(likeDestroyableDesc, destroyable) ? 1 : 0;
@@ -601,7 +602,7 @@ describe('like – two-property ({ destroy: Function, destroyed: Boolean }) – 
 });
 
 describe('like – two-property ({ destroy: Function, destroyed: Boolean }) – fail', () => {
-    bench('current (Ramda pipe)', () => {
+    bench('legacy (Ramda pipe)', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
             accumulator += likeCurrent(likeDestroyableDesc, destroyableFail) ? 1 : 0;
@@ -649,7 +650,7 @@ describe('like – two-property ({ destroy: Function, destroyed: Boolean }) – 
         _sink = accumulator;
     });
 
-    bench('cached', () => {
+    bench('current (WeakMap cached)', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
             accumulator += likeCached(likeDestroyableDesc, destroyableFail) ? 1 : 0;
@@ -659,7 +660,7 @@ describe('like – two-property ({ destroy: Function, destroyed: Boolean }) – 
 });
 
 describe('like – three-property ({ isRunning: Boolean, start: Function, stop: Function }) – match', () => {
-    bench('current (Ramda pipe)', () => {
+    bench('legacy (Ramda pipe)', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
             accumulator += likeCurrent(likeLifecycleDesc, lifecycle) ? 1 : 0;
@@ -707,7 +708,7 @@ describe('like – three-property ({ isRunning: Boolean, start: Function, stop: 
         _sink = accumulator;
     });
 
-    bench('cached', () => {
+    bench('current (WeakMap cached)', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
             accumulator += likeCached(likeLifecycleDesc, lifecycle) ? 1 : 0;
@@ -717,7 +718,7 @@ describe('like – three-property ({ isRunning: Boolean, start: Function, stop: 
 });
 
 describe('like – wxy descriptor ({ w: true, x: Number, y: Number }) – match', () => {
-    bench('current (Ramda pipe)', () => {
+    bench('legacy (Ramda pipe)', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
             accumulator += likeCurrent(likeWXY, wxyMatch) ? 1 : 0;
@@ -765,7 +766,7 @@ describe('like – wxy descriptor ({ w: true, x: Number, y: Number }) – match'
         _sink = accumulator;
     });
 
-    bench('cached', () => {
+    bench('current (WeakMap cached)', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
             accumulator += likeCached(likeWXY, wxyMatch) ? 1 : 0;
@@ -775,7 +776,7 @@ describe('like – wxy descriptor ({ w: true, x: Number, y: Number }) – match'
 });
 
 describe('like – wxy descriptor ({ w: true, x: Number, y: Number }) – fail', () => {
-    bench('current (Ramda pipe)', () => {
+    bench('legacy (Ramda pipe)', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
             accumulator += likeCurrent(likeWXY, wxyFail) ? 1 : 0;
@@ -823,7 +824,7 @@ describe('like – wxy descriptor ({ w: true, x: Number, y: Number }) – fail',
         _sink = accumulator;
     });
 
-    bench('cached', () => {
+    bench('current (WeakMap cached)', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
             accumulator += likeCached(likeWXY, wxyFail) ? 1 : 0;
@@ -833,7 +834,7 @@ describe('like – wxy descriptor ({ w: true, x: Number, y: Number }) – fail',
 });
 
 describe('like – theme descriptor ({ name: String, contentSource: Object }) – match', () => {
-    bench('current (Ramda pipe)', () => {
+    bench('legacy (Ramda pipe)', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
             accumulator += likeCurrent(likeThemeDesc, themeMatch) ? 1 : 0;
@@ -881,7 +882,7 @@ describe('like – theme descriptor ({ name: String, contentSource: Object }) �
         _sink = accumulator;
     });
 
-    bench('cached', () => {
+    bench('current (WeakMap cached)', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
             accumulator += likeCached(likeThemeDesc, themeMatch) ? 1 : 0;
@@ -891,7 +892,7 @@ describe('like – theme descriptor ({ name: String, contentSource: Object }) �
 });
 
 describe('like – theme descriptor ({ name: String, contentSource: Object }) – fail', () => {
-    bench('current (Ramda pipe)', () => {
+    bench('legacy (Ramda pipe)', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
             accumulator += likeCurrent(likeThemeDesc, themeFail) ? 1 : 0;
@@ -939,7 +940,7 @@ describe('like – theme descriptor ({ name: String, contentSource: Object }) �
         _sink = accumulator;
     });
 
-    bench('cached', () => {
+    bench('current (WeakMap cached)', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
             accumulator += likeCached(likeThemeDesc, themeFail) ? 1 : 0;
@@ -949,7 +950,7 @@ describe('like – theme descriptor ({ name: String, contentSource: Object }) �
 });
 
 describe('like – curried usage (descriptor applied to 10 diverse values)', () => {
-    bench('current (Ramda pipe)', () => {
+    bench('legacy (Ramda pipe)', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
             for (const v of curriedValues) {
@@ -969,7 +970,7 @@ describe('like – curried usage (descriptor applied to 10 diverse values)', () 
         _sink = accumulator;
     });
 
-    bench('cached (descriptor already cached)', () => {
+    bench('current (WeakMap cached, descriptor already cached)', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
             for (const v of curriedValues) {
@@ -981,7 +982,7 @@ describe('like – curried usage (descriptor applied to 10 diverse values)', () 
 });
 
 describe('like – caching benefit (first call vs subsequent)', () => {
-    bench('current (rebuilds pipeline each time)', () => {
+    bench('legacy (rebuilds Ramda pipeline each time)', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
             const freshLike = like(likeWXY);
@@ -1003,7 +1004,7 @@ describe('like – caching benefit (first call vs subsequent)', () => {
         _sink = accumulator;
     });
 
-    bench('cached (descriptor already cached)', () => {
+    bench('current (WeakMap cached, descriptor already cached)', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
             const cachedLike = likeCached(likeWXY);

@@ -1,9 +1,6 @@
 /**
  * @author Jeff Rose
- * @see {@link https://ramdajs.com/docs/}
  */
-
-import { slice, split, trim } from 'ramda';
 
 /**
  * Splits a string into an array of strings based on the given separator.
@@ -22,7 +19,7 @@ function trailingSplit(separator: string, text: string): string[];
 function trailingSplit(separator: string): (text: string) => string[];
 function trailingSplit(separator: string, text?: string): string[] | ((text: string) => string[]) {
     const impl = (t: string): string[] => {
-        t = trim(t);
+        t = t.trim();
 
         const length = t.length;
 
@@ -30,7 +27,7 @@ function trailingSplit(separator: string, text?: string): string[] | ((text: str
             const tail = length - 1,
                 isSeparatorTrailing = t[tail] === separator,
                 isEmptyString = isSeparatorTrailing && t[length - 2] === separator;
-            return split(separator, isSeparatorTrailing && !isEmptyString ? slice(0, tail, t) : t);
+            return (isSeparatorTrailing && !isEmptyString ? t.slice(0, tail) : t).split(separator);
         }
 
         return [t];

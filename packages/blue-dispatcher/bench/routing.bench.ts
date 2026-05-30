@@ -1,7 +1,7 @@
 /**
  * @author opencode
  *
- * Benchmark suite for `MetadataHandlerMapping` route resolution throughput.
+ * Benchmark suite for `LinearMetadataHandlerMapping` route resolution throughput.
  * Includes external baselines: find-my-way and radix3.
  *
  * Scenarios:
@@ -14,8 +14,8 @@
 
 import { bench, describe } from 'vitest';
 import '@tsmetadata/polyfill';
-import { MetadataHandlerMapping } from '../src/route-handler-mapping';
-import { RadixRouteHandlerMapping } from '../src/radix-route-handler-mapping';
+import { LinearMetadataHandlerMapping } from '../src/route-handler-mapping';
+import { RadixMetadataHandlerMapping } from '../src/radix-route-handler-mapping';
 import {
     MetadataConfigApplicationContext,
     configuration,
@@ -51,7 +51,7 @@ class BenchConfig {
 
     @entry
     handlerMappings() {
-        return [new MetadataHandlerMapping()];
+        return [new LinearMetadataHandlerMapping()];
     }
 }
 
@@ -64,11 +64,11 @@ ctx.addProcessor(new ApplicationContextAwareProcessor(ctx));
 ctx.register(BenchConfig);
 ctx.refresh();
 
-const handlerMapping = new MetadataHandlerMapping();
+const handlerMapping = new LinearMetadataHandlerMapping();
 handlerMapping.setApplicationContext(ctx);
 handlerMapping.init();
 
-const radixHandlerMapping = new RadixRouteHandlerMapping();
+const radixHandlerMapping = new RadixMetadataHandlerMapping();
 radixHandlerMapping.setApplicationContext(ctx);
 radixHandlerMapping.init();
 
@@ -102,7 +102,7 @@ let _sink = 0;
 /*  Benchmarks                                                         */
 /* ------------------------------------------------------------------ */
 
-describe('MetadataHandlerMapping – static route match (/users)', () => {
+describe('LinearMetadataHandlerMapping – static route match (/users)', () => {
     bench('getHandler', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
@@ -111,7 +111,7 @@ describe('MetadataHandlerMapping – static route match (/users)', () => {
         _sink = accumulator;
     });
 
-    bench('RadixRouteHandlerMapping', () => {
+    bench('RadixMetadataHandlerMapping', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
             accumulator += radixHandlerMapping.getHandler(routeUsers) ? 1 : 0;
@@ -136,7 +136,7 @@ describe('MetadataHandlerMapping – static route match (/users)', () => {
     });
 });
 
-describe('MetadataHandlerMapping – parameterised route match (/users/42)', () => {
+describe('LinearMetadataHandlerMapping – parameterised route match (/users/42)', () => {
     bench('getHandler', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
@@ -145,7 +145,7 @@ describe('MetadataHandlerMapping – parameterised route match (/users/42)', () 
         _sink = accumulator;
     });
 
-    bench('RadixRouteHandlerMapping', () => {
+    bench('RadixMetadataHandlerMapping', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
             accumulator += radixHandlerMapping.getHandler(routeUserId) ? 1 : 0;
@@ -170,7 +170,7 @@ describe('MetadataHandlerMapping – parameterised route match (/users/42)', () 
     });
 });
 
-describe('MetadataHandlerMapping – deep nested route match (/api/v1/users/42/profile)', () => {
+describe('LinearMetadataHandlerMapping – deep nested route match (/api/v1/users/42/profile)', () => {
     bench('getHandler', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
@@ -179,7 +179,7 @@ describe('MetadataHandlerMapping – deep nested route match (/api/v1/users/42/p
         _sink = accumulator;
     });
 
-    bench('RadixRouteHandlerMapping', () => {
+    bench('RadixMetadataHandlerMapping', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
             accumulator += radixHandlerMapping.getHandler(routeProfile) ? 1 : 0;
@@ -204,7 +204,7 @@ describe('MetadataHandlerMapping – deep nested route match (/api/v1/users/42/p
     });
 });
 
-describe('MetadataHandlerMapping – route miss (/nonexistent)', () => {
+describe('LinearMetadataHandlerMapping – route miss (/nonexistent)', () => {
     bench('getHandler', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
@@ -213,7 +213,7 @@ describe('MetadataHandlerMapping – route miss (/nonexistent)', () => {
         _sink = accumulator;
     });
 
-    bench('RadixRouteHandlerMapping', () => {
+    bench('RadixMetadataHandlerMapping', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
             accumulator += radixHandlerMapping.getHandler(routeMiss) ? 1 : 0;
@@ -238,7 +238,7 @@ describe('MetadataHandlerMapping – route miss (/nonexistent)', () => {
     });
 });
 
-describe('MetadataHandlerMapping – multi-handler rotation (3 routes × 1000)', () => {
+describe('LinearMetadataHandlerMapping – multi-handler rotation (3 routes × 1000)', () => {
     bench('getHandler', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
@@ -249,7 +249,7 @@ describe('MetadataHandlerMapping – multi-handler rotation (3 routes × 1000)',
         _sink = accumulator;
     });
 
-    bench('RadixRouteHandlerMapping', () => {
+    bench('RadixMetadataHandlerMapping', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
             for (const route of multiRoutes) {

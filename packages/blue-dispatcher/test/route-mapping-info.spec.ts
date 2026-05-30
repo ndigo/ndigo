@@ -1,5 +1,5 @@
 import { describe, test, expect } from 'vitest';
-import { ParamsRouteCondition, PatternsRouteCondition } from '../src/route-mapping-info';
+import { ParamsRouteCondition, PatternsRouteCondition, RouteMappingInfo } from '../src/route-mapping-info';
 import { Route } from '@blue/router';
 
 const createRoute = (path: string, data?: Record<string, string | null>): Route =>
@@ -185,5 +185,19 @@ describe('PatternsRouteCondition', () => {
             merged = cond1.merge(cond2);
 
         expect(merged.patterns.has('/foo')).toBe(true);
+    });
+
+    test('it should return this when all patterns match', () => {
+        const cond = new PatternsRouteCondition('/foo');
+        const match = cond.getMatchingCondition(createRoute('/foo'));
+        expect(match).toBe(cond); // strict reference equality
+    });
+});
+
+describe('RouteMappingInfo', () => {
+    test('it should return this when all sub-conditions are satisfied', () => {
+        const info = new RouteMappingInfo('/foo', new PatternsRouteCondition('/foo'));
+        const match = info.getMatchingCondition(createRoute('/foo'));
+        expect(match).toBe(info); // strict reference equality
     });
 });

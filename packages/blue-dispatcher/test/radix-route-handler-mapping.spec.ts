@@ -5,9 +5,9 @@
 import { describe, test, beforeEach, afterEach, expect } from 'vitest';
 import { GenericApplicationContext } from '@blue/context';
 import { routeMapping } from '../src/route-mapping';
-import { RadixRouteHandlerMapping } from '../src/radix-route-handler-mapping';
+import { RadixMetadataHandlerMapping } from '../src/radix-route-handler-mapping';
 
-describe('RadixRouteHandlerMapping', () => {
+describe('RadixMetadataHandlerMapping', () => {
     let ctx: GenericApplicationContext;
 
     beforeEach(() => {
@@ -29,7 +29,7 @@ describe('RadixRouteHandlerMapping', () => {
 
         ctx.setValue('staticController', new StaticController());
 
-        const mapping = new RadixRouteHandlerMapping();
+        const mapping = new RadixMetadataHandlerMapping();
         mapping.setApplicationContext(ctx);
         mapping.init();
 
@@ -49,7 +49,7 @@ describe('RadixRouteHandlerMapping', () => {
 
         ctx.setValue('usersController', new UsersController());
 
-        const mapping = new RadixRouteHandlerMapping();
+        const mapping = new RadixMetadataHandlerMapping();
         mapping.setApplicationContext(ctx);
         mapping.init();
 
@@ -68,7 +68,7 @@ describe('RadixRouteHandlerMapping', () => {
 
         ctx.setValue('usersController', new UsersController());
 
-        const mapping = new RadixRouteHandlerMapping();
+        const mapping = new RadixMetadataHandlerMapping();
         mapping.setApplicationContext(ctx);
         mapping.init();
 
@@ -87,7 +87,7 @@ describe('RadixRouteHandlerMapping', () => {
 
         ctx.setValue('usersController', new UsersController());
 
-        const mapping = new RadixRouteHandlerMapping();
+        const mapping = new RadixMetadataHandlerMapping();
         mapping.setApplicationContext(ctx);
         mapping.init();
 
@@ -108,7 +108,7 @@ describe('RadixRouteHandlerMapping', () => {
 
         ctx.setValue('usersController', new UsersController());
 
-        const mapping = new RadixRouteHandlerMapping();
+        const mapping = new RadixMetadataHandlerMapping();
         mapping.setApplicationContext(ctx);
         mapping.init();
 
@@ -129,7 +129,7 @@ describe('RadixRouteHandlerMapping', () => {
 
         ctx.setValue('usersController', new UsersController());
 
-        const mapping = new RadixRouteHandlerMapping();
+        const mapping = new RadixMetadataHandlerMapping();
         mapping.setApplicationContext(ctx);
         mapping.init();
 
@@ -148,7 +148,7 @@ describe('RadixRouteHandlerMapping', () => {
 
         ctx.setValue('apiController', new ApiController());
 
-        const mapping = new RadixRouteHandlerMapping();
+        const mapping = new RadixMetadataHandlerMapping();
         mapping.setApplicationContext(ctx);
         mapping.init();
 
@@ -176,7 +176,7 @@ describe('RadixRouteHandlerMapping', () => {
         ctx.setValue('usersController', new UsersController());
         ctx.setValue('postsController', new PostsController());
 
-        const mapping = new RadixRouteHandlerMapping();
+        const mapping = new RadixMetadataHandlerMapping();
         mapping.setApplicationContext(ctx);
         mapping.init();
 

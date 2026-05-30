@@ -3,7 +3,7 @@
  */
 
 import { configuration, entry } from '@blue/context';
-import { MetadataHandlerMapping } from '@blue/dispatcher';
+import { LinearMetadataHandlerMapping } from '@blue/dispatcher';
 import { argumentValueConverters } from './argument-value-converter';
 import { NodeQueryValueMethodArgumentResolver } from './query-argument-resolver';
 import { NodePathValueMethodArgumentResolver } from './path-argument-resolver';
@@ -58,6 +58,6 @@ export class NodeAutoConfiguration {
      */
     @entry
     handlerMapping() {
-        return new MetadataHandlerMapping();
+        return new LinearMetadataHandlerMapping();
     }
 }

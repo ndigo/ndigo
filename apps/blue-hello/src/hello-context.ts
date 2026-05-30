@@ -8,7 +8,7 @@ import {
     MetadataConfigApplicationContext,
     entry,
 } from '@blue/context';
-import { MetadataHandlerMapping } from '@blue/dispatcher';
+import { LinearMetadataHandlerMapping } from '@blue/dispatcher';
 import { NameViewResolver } from '@blue/view';
 import { DOMElementViewTarget, WebComponentViewEngine } from '@blue/view-webcomponent';
 import HelloController from './hello-controller';
@@ -22,7 +22,7 @@ class HelloConfiguration {
 
     @entry
     handlerMapping() {
-        return new MetadataHandlerMapping();
+        return new LinearMetadataHandlerMapping();
     }
 
     @entry

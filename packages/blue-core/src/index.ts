@@ -285,3 +285,4 @@ export * from './serializable';
 export * from './transducer';
 export * from './tree-node';
 export { default as WildcardExp } from './wildcard-exp';
+export * from './radix-tree';

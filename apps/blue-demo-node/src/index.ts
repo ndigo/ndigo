@@ -6,15 +6,8 @@ import 'node:process';
 import { createServer } from 'node:http';
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import { MetadataConfigApplicationContext } from '@blue/context';
-import {
-    MetadataHandlerAdapter,
-    MetadataHandlerMapping,
-} from '@blue/dispatcher';
-import {
-    NodeAutoConfiguration,
-    NodeRequest,
-    NODE_REQUEST_ATTRIBUTE,
-} from '@blue/platform-node';
+import { MetadataHandlerAdapter, LinearMetadataHandlerMapping } from '@blue/dispatcher';
+import { NodeAutoConfiguration, NodeRequest, NODE_REQUEST_ATTRIBUTE } from '@blue/platform-node';
 import { NodeAppConfiguration } from './node-app-configuration';
 
 // ── Bootstrap ──────────────────────────────────────────────────────────────
@@ -23,7 +16,7 @@ context.register(NodeAutoConfiguration);
 context.register(NodeAppConfiguration);
 context.refresh();
 
-const handlerMapping = context.getValue<MetadataHandlerMapping>('handlerMapping');
+const handlerMapping = context.getValue<LinearMetadataHandlerMapping>('handlerMapping');
 // Belt-and-suspenders: re-run init so all controllers registered in NodeAppConfiguration
 // are definitely detected (factory may have already done this during refresh).
 handlerMapping.init();

@@ -212,12 +212,17 @@ class MappingRegistry<T = any> {
      *
      * @param mapping - The mapping key.
      * @param handlerMethod - The handler method to associate.
+     * @param directPaths - Paths that map directly to this entry.
      */
-    register(mapping: T, handlerMethod: RouteHandlerMethod) {
+    register(mapping: T, handlerMethod: RouteHandlerMethod, directPaths: string[] = []): void {
         this.#mappingLookup.set(mapping, handlerMethod);
+        const length = directPaths.length;
+        for (let i = 0; i < length; i++) {
+            this.#pathLookup.add(directPaths[i], mapping);
+        }
         let name: string;
 
-        this.#registry.set(mapping, new MappingEntry(mapping, handlerMethod, name));
+        this.#registry.set(mapping, new MappingEntry(mapping, handlerMethod, name, directPaths));
     }
 
     unregister(mapping: T): void {
@@ -362,6 +367,11 @@ export abstract class AbstractHandlerMapping
      */
     pathMatcher: PathMatcher;
 
+    /**
+     * Pre-bound resolver for handlers with context.
+     */
+    #resolveHandler: (handler: MaybeHandler) => object = (handler) => handler as object;
+
     get [Symbol.toStringTag](): string {
         return 'HandlerMapping';
     }
@@ -403,6 +413,7 @@ export abstract class AbstractHandlerMapping
             enumerable: false,
             writable: false,
         });
+        this.#resolveHandler = resolveHandlerWithContext(applicationContext);
     }
 
     /**
@@ -421,7 +432,7 @@ export abstract class AbstractHandlerMapping
             return null;
         }
 
-        handler = resolveHandlerWithContext(this.applicationContext)(handler);
+        handler = this.#resolveHandler(handler);
 
         return this._getHandlerExecutionChain(handler, route);
     }
@@ -481,6 +492,11 @@ export abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
     readonly mappingRegistry: MappingRegistry<T>;
 
     /**
+     * Cache for kindOf(this) to avoid repeated calls
+     */
+    #kindOfTag: string | undefined;
+
+    /**
      * Create a handler-method mapping with an empty registry.
      */
     constructor() {
@@ -529,9 +545,10 @@ export abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
      * @param mapping - The mapping metadata.
      * @param handler - The handler instance or application-context name.
      * @param method - The handler method name.
+     * @param directPaths - Paths that map directly to this entry.
      */
-    registerMapping(mapping: T, handler: MaybeHandler, method: string): void {
-        this.mappingRegistry.register(mapping, this._createRequestHandlerMethod(handler, method));
+    registerMapping(mapping: T, handler: MaybeHandler, method: string, directPaths?: string[]): void {
+        this.mappingRegistry.register(mapping, this._createRequestHandlerMethod(handler, method), directPaths);
     }
 
     /**
@@ -619,17 +636,16 @@ export abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
         }
 
         if (matches.length) {
-            const comparator = new MatchComparator(this._getMappingComparator(route));
-            matches.sort(comparator.compare);
-            const bestMatch = matches[0];
             if (matches.length > 1) {
-                const nextMatch = matches[1];
-                if (comparator.compare(bestMatch, nextMatch) === 0) {
-                    const m1 = bestMatch.handlerMethod.method,
-                        m2 = nextMatch.handlerMethod.method;
+                const comparator = new MatchComparator(this._getMappingComparator(route));
+                matches.sort(comparator.compare);
+                if (comparator.compare(matches[0], matches[1]) === 0) {
+                    const m1 = matches[0].handlerMethod.method,
+                        m2 = matches[1].handlerMethod.method;
                     throw new IllegalStateError(`Ambiguous handler methods mapped for "${path}": { ${m1}, ${m2} }`);
                 }
             }
+            const bestMatch = matches[0];
             this._handleMatch(bestMatch.mapping, path, route);
             return bestMatch.handlerMethod;
         }
@@ -646,7 +662,7 @@ export abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
      */
     protected _handleMatch(mapping: T, path: string, route: Route): void {
         // TODO Put this in a categorized spot?
-        route[kindOf(this)] = path;
+        route[(this.#kindOfTag ??= kindOf(this))] = path;
     }
 
     /**
@@ -933,7 +949,7 @@ export abstract class AbstractDetectingPathHandlerMapping extends AbstractPathHa
 
 /**
  * Implementation of the {@link RouteHandlerMapping|HandlerMapping} interface that map from paths to handlers with names that start with slash ("/").
- * <p>This is the default implementation used by {@link Dispatcher|the dispatcher} along with {@link MetadataHandlerMapping|MetadataHandlerMapping}.
+ * <p>This is the default implementation used by {@link Dispatcher|the dispatcher} along with {@link LinearMetadataHandlerMapping|LinearMetadataHandlerMapping}.
  * <p>The mapping is from path to handler name. An incoming path "/foo" would map to a handler named "/foo".
  * <p>Supports direct matches and wildcard matches.
  * @extends module:dispatcher.AbstractDetectingPathHandlerMapping
@@ -967,12 +983,12 @@ export class NamePathHandlerMapping extends AbstractDetectingPathHandlerMapping 
 /**
  * Map handler methods using route mapping metadata.
  */
-export class MetadataHandlerMapping
+export class LinearMetadataHandlerMapping
     extends AbstractHandlerMethodMapping<RouteMappingInfo>
     implements MatchableHandlerMapping
 {
     get [Symbol.toStringTag](): string {
-        return 'MetadataHandlerMapping';
+        return 'LinearMetadataHandlerMapping';
     }
 
     /**
@@ -1088,6 +1104,34 @@ export class MetadataHandlerMapping
      */
     protected _isHandler(value: any): boolean {
         return hasRouteMapping(value) || ('constructor' in value && hasRouteMapping(value.constructor));
+    }
+
+    /**
+     * Register a single mapping and handler method.
+     *
+     * @param mapping - The mapping metadata.
+     * @param handler - The handler instance or application-context name.
+     * @param method - The handler method name.
+     */
+    override registerMapping(mapping: RouteMappingInfo, handler: MaybeHandler, method: string): void {
+        const directPaths = this._getDirectPaths(mapping);
+        this.mappingRegistry.register(mapping, this._createRequestHandlerMethod(handler, method), directPaths);
+    }
+
+    /**
+     * Extract static paths from a route mapping.
+     *
+     * @param mapping - The route mapping info.
+     * @returns Array of static paths.
+     */
+    private _getDirectPaths(mapping: RouteMappingInfo): string[] {
+        const paths: string[] = [];
+        for (const pattern of mapping.patternsCondition.patterns) {
+            if (!/[*?{[]/.test(pattern)) {
+                paths.push(pattern);
+            }
+        }
+        return paths;
     }
 }
 

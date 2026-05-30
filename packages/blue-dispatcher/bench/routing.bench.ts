@@ -15,7 +15,13 @@
 import { bench, describe } from 'vitest';
 import '@tsmetadata/polyfill';
 import { MetadataHandlerMapping } from '../src/route-handler-mapping';
-import { MetadataConfigApplicationContext, configuration, entry, ApplicationContextAwareProcessor } from '@blue/context';
+import { RadixRouteHandlerMapping } from '../src/radix-route-handler-mapping';
+import {
+    MetadataConfigApplicationContext,
+    configuration,
+    entry,
+    ApplicationContextAwareProcessor,
+} from '@blue/context';
 import { routeMapping } from '../src/route-mapping';
 import Router from 'find-my-way';
 import { createRouter } from 'radix3';
@@ -29,10 +35,10 @@ class BenchController {
     @routeMapping('/users')
     listUsers() {}
 
-    @routeMapping('/users/:id')
+    @routeMapping('/users/*')
     getUser() {}
 
-    @routeMapping('/api/v1/users/:id/profile')
+    @routeMapping('/api/v1/users/*/profile')
     getUserProfile() {}
 }
 
@@ -56,9 +62,15 @@ class BenchConfig {
 const ctx = new MetadataConfigApplicationContext('bench');
 ctx.addProcessor(new ApplicationContextAwareProcessor(ctx));
 ctx.register(BenchConfig);
+ctx.refresh();
 
 const handlerMapping = new MetadataHandlerMapping();
 handlerMapping.setApplicationContext(ctx);
+handlerMapping.init();
+
+const radixHandlerMapping = new RadixRouteHandlerMapping();
+radixHandlerMapping.setApplicationContext(ctx);
+radixHandlerMapping.init();
 
 /* ------------------------------------------------------------------ */
 /*  External routers setup                                               */
@@ -78,11 +90,11 @@ r3.insert('/api/v1/users/:id/profile', { handler: () => {} });
 /*  Route fixtures (minimal shape that satisfies getHandler)           */
 /* ------------------------------------------------------------------ */
 
-const routeUsers    = { path: '/users'                       } as any;
-const routeUserId   = { path: '/users/42'                    } as any;
-const routeProfile  = { path: '/api/v1/users/42/profile'     } as any;
-const routeMiss     = { path: '/nonexistent'                  } as any;
-const multiRoutes   = [routeUsers, routeUserId, routeProfile] as const;
+const routeUsers = { path: '/users' } as any;
+const routeUserId = { path: '/users/42' } as any;
+const routeProfile = { path: '/api/v1/users/42/profile' } as any;
+const routeMiss = { path: '/nonexistent' } as any;
+const multiRoutes = [routeUsers, routeUserId, routeProfile] as const;
 
 let _sink = 0;
 
@@ -98,7 +110,15 @@ describe('MetadataHandlerMapping – static route match (/users)', () => {
         }
         _sink = accumulator;
     });
-    
+
+    bench('RadixRouteHandlerMapping', () => {
+        let accumulator = 0;
+        for (let i = 0; i < 1000; i++) {
+            accumulator += radixHandlerMapping.getHandler(routeUsers) ? 1 : 0;
+        }
+        _sink = accumulator;
+    });
+
     bench('find-my-way', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
@@ -106,7 +126,7 @@ describe('MetadataHandlerMapping – static route match (/users)', () => {
         }
         _sink = accumulator;
     });
-    
+
     bench('radix3', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
@@ -124,7 +144,15 @@ describe('MetadataHandlerMapping – parameterised route match (/users/42)', () 
         }
         _sink = accumulator;
     });
-    
+
+    bench('RadixRouteHandlerMapping', () => {
+        let accumulator = 0;
+        for (let i = 0; i < 1000; i++) {
+            accumulator += radixHandlerMapping.getHandler(routeUserId) ? 1 : 0;
+        }
+        _sink = accumulator;
+    });
+
     bench('find-my-way', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
@@ -132,7 +160,7 @@ describe('MetadataHandlerMapping – parameterised route match (/users/42)', () 
         }
         _sink = accumulator;
     });
-    
+
     bench('radix3', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
@@ -150,7 +178,15 @@ describe('MetadataHandlerMapping – deep nested route match (/api/v1/users/42/p
         }
         _sink = accumulator;
     });
-    
+
+    bench('RadixRouteHandlerMapping', () => {
+        let accumulator = 0;
+        for (let i = 0; i < 1000; i++) {
+            accumulator += radixHandlerMapping.getHandler(routeProfile) ? 1 : 0;
+        }
+        _sink = accumulator;
+    });
+
     bench('find-my-way', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
@@ -158,7 +194,7 @@ describe('MetadataHandlerMapping – deep nested route match (/api/v1/users/42/p
         }
         _sink = accumulator;
     });
-    
+
     bench('radix3', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
@@ -176,7 +212,15 @@ describe('MetadataHandlerMapping – route miss (/nonexistent)', () => {
         }
         _sink = accumulator;
     });
-    
+
+    bench('RadixRouteHandlerMapping', () => {
+        let accumulator = 0;
+        for (let i = 0; i < 1000; i++) {
+            accumulator += radixHandlerMapping.getHandler(routeMiss) ? 1 : 0;
+        }
+        _sink = accumulator;
+    });
+
     bench('find-my-way', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
@@ -184,7 +228,7 @@ describe('MetadataHandlerMapping – route miss (/nonexistent)', () => {
         }
         _sink = accumulator;
     });
-    
+
     bench('radix3', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
@@ -204,7 +248,17 @@ describe('MetadataHandlerMapping – multi-handler rotation (3 routes × 1000)',
         }
         _sink = accumulator;
     });
-    
+
+    bench('RadixRouteHandlerMapping', () => {
+        let accumulator = 0;
+        for (let i = 0; i < 1000; i++) {
+            for (const route of multiRoutes) {
+                accumulator += radixHandlerMapping.getHandler(route) ? 1 : 0;
+            }
+        }
+        _sink = accumulator;
+    });
+
     bench('find-my-way', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
@@ -214,7 +268,7 @@ describe('MetadataHandlerMapping – multi-handler rotation (3 routes × 1000)',
         }
         _sink = accumulator;
     });
-    
+
     bench('radix3', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {

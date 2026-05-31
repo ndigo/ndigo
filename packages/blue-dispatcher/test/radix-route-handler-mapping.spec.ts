@@ -6,6 +6,7 @@ import { describe, test, beforeEach, afterEach, expect } from 'vitest';
 import { GenericApplicationContext } from '@blue/context';
 import { routeMapping } from '../src/route-mapping';
 import { RadixMetadataHandlerMapping } from '../src/radix-route-handler-mapping';
+import { LinearMetadataHandlerMapping } from '../src/route-handler-mapping';
 
 describe('RadixMetadataHandlerMapping', () => {
     let ctx: GenericApplicationContext;
@@ -76,7 +77,7 @@ describe('RadixMetadataHandlerMapping', () => {
         expect(chain).not.toBeNull();
     });
 
-    test('route params set on route object', () => {
+    test('route queryParams set on route object', () => {
         @routeMapping('/users')
         class UsersController {
             @routeMapping('/:id')
@@ -189,5 +190,238 @@ describe('RadixMetadataHandlerMapping', () => {
         chain = mapping.getHandler({ path: '/posts/2' } as any);
         expect(chain).not.toBeNull();
         expect(chain.handler.method).toBe('getPost');
+    });
+
+    describe('query/matrix param conditions', () => {
+        test('handler selected when queryParams condition matches query string', () => {
+            @routeMapping('/items')
+            class ItemsController {
+                @routeMapping({ value: '/:id', queryParams: 'filter=active' })
+                getItem() {
+                    return 'item';
+                }
+            }
+
+            const ctx = new GenericApplicationContext('test');
+            ctx.setValue('itemsController', new ItemsController());
+
+            const mapping = new RadixMetadataHandlerMapping();
+            mapping.setApplicationContext(ctx);
+            mapping.init();
+
+            const route = { path: '/items/1', data: { filter: 'active' }, length: 0 };
+            const chain = mapping.getHandler(route);
+            expect(chain).not.toBeNull();
+        });
+
+        test('handler rejected when queryParams condition does not match', () => {
+            @routeMapping('/items')
+            class ItemsController {
+                @routeMapping({ value: '/:id', queryParams: 'filter=active' })
+                getItem() {
+                    return 'item';
+                }
+            }
+
+            const ctx = new GenericApplicationContext('test');
+            ctx.setValue('itemsController', new ItemsController());
+
+            const mapping = new RadixMetadataHandlerMapping();
+            mapping.setApplicationContext(ctx);
+            mapping.init();
+
+            const route = { path: '/items/1', data: { filter: 'inactive' }, length: 0 };
+            const chain = mapping.getHandler(route);
+            expect(chain).toBeNull();
+        });
+
+        test('handler selected when matrixParams condition matches segment data', () => {
+            @routeMapping('/products')
+            class ProductsController {
+                @routeMapping({ value: '/:id', matrixParams: 'color=red' })
+                getProduct() {
+                    return 'product';
+                }
+            }
+
+            const ctx = new GenericApplicationContext('test');
+            ctx.setValue('productsController', new ProductsController());
+
+            const mapping = new RadixMetadataHandlerMapping();
+            mapping.setApplicationContext(ctx);
+            mapping.init();
+
+            const route: any = { path: '/products/42', length: 1, data: {}, queryParams: null };
+            route[0] = { data: { color: 'red' } };
+            const chain = mapping.getHandler(route);
+            expect(chain).not.toBeNull();
+        });
+
+        test('handler rejected when matrixParams condition does not match', () => {
+            @routeMapping('/products')
+            class ProductsController {
+                @routeMapping({ value: '/:id', matrixParams: 'color=red' })
+                getProduct() {
+                    return 'product';
+                }
+            }
+
+            const ctx = new GenericApplicationContext('test');
+            ctx.setValue('productsController', new ProductsController());
+
+            const mapping = new RadixMetadataHandlerMapping();
+            mapping.setApplicationContext(ctx);
+            mapping.init();
+
+            const route: any = { path: '/products/42', length: 1, data: {}, queryParams: null };
+            route[0] = { data: { color: 'blue' } };
+            const chain = mapping.getHandler(route);
+            expect(chain).toBeNull();
+        });
+
+        // Test with LinearMetadataHandlerMapping as well
+        // Note: LinearMetadataHandlerMapping uses GlobPathMatcher, which does not understand
+        // :param segments — use /* wildcards instead.
+        test('handler selected when queryParams condition matches query string (Linear)', () => {
+            @routeMapping('/items')
+            class ItemsController {
+                @routeMapping({ value: '/*', queryParams: 'filter=active' })
+                getItem() {
+                    return 'item';
+                }
+            }
+
+            const ctx = new GenericApplicationContext('test');
+            ctx.setValue('itemsController', new ItemsController());
+
+            const mapping = new LinearMetadataHandlerMapping();
+            mapping.setApplicationContext(ctx);
+            mapping.init();
+
+            const route = { path: '/items/1', data: { filter: 'active' }, length: 0 };
+            const chain = mapping.getHandler(route);
+            expect(chain).not.toBeNull();
+        });
+
+        test('handler rejected when queryParams condition does not match (Linear)', () => {
+            @routeMapping('/items')
+            class ItemsController {
+                @routeMapping({ value: '/*', queryParams: 'filter=active' })
+                getItem() {
+                    return 'item';
+                }
+            }
+
+            const ctx = new GenericApplicationContext('test');
+            ctx.setValue('itemsController', new ItemsController());
+
+            const mapping = new LinearMetadataHandlerMapping();
+            mapping.setApplicationContext(ctx);
+            mapping.init();
+
+            const route = { path: '/items/1', data: { filter: 'inactive' }, length: 0 };
+            const chain = mapping.getHandler(route);
+            expect(chain).toBeNull();
+        });
+
+        test('handler selected when matrixParams condition matches segment data (Linear)', () => {
+            @routeMapping('/products')
+            class ProductsController {
+                @routeMapping({ value: '/*', matrixParams: 'color=red' })
+                getProduct() {
+                    return 'product';
+                }
+            }
+
+            const ctx = new GenericApplicationContext('test');
+            ctx.setValue('productsController', new ProductsController());
+
+            const mapping = new LinearMetadataHandlerMapping();
+            mapping.setApplicationContext(ctx);
+            mapping.init();
+
+            const route: any = { path: '/products/42', length: 1, data: {}, queryParams: null };
+            route[0] = { data: { color: 'red' } };
+            const chain = mapping.getHandler(route);
+            expect(chain).not.toBeNull();
+        });
+
+        test('handler rejected when matrixParams condition does not match (Linear)', () => {
+            @routeMapping('/products')
+            class ProductsController {
+                @routeMapping({ value: '/*', matrixParams: 'color=red' })
+                getProduct() {
+                    return 'product';
+                }
+            }
+
+            const ctx = new GenericApplicationContext('test');
+            ctx.setValue('productsController', new ProductsController());
+
+            const mapping = new LinearMetadataHandlerMapping();
+            mapping.setApplicationContext(ctx);
+            mapping.init();
+
+            const route: any = { path: '/products/42', length: 1, data: {}, queryParams: null };
+            route[0] = { data: { color: 'blue' } };
+            const chain = mapping.getHandler(route);
+            expect(chain).toBeNull();
+        });
+
+        test('Radix: more-specific handler (matrixParams) wins when condition matches', () => {
+            @routeMapping('/products')
+            class ProductsController {
+                @routeMapping({ value: '/:id', matrixParams: 'color' })
+                getProductColored() {
+                    return 'colored';
+                }
+
+                @routeMapping('/:id')
+                getProduct() {
+                    return 'plain';
+                }
+            }
+
+            const ctx = new GenericApplicationContext('test');
+            ctx.setValue('productsController', new ProductsController());
+
+            const mapping = new RadixMetadataHandlerMapping();
+            mapping.setApplicationContext(ctx);
+            mapping.init();
+
+            const route: any = { path: '/products/42', length: 1, data: {}, queryParams: null };
+            route[0] = { data: { color: 'red' } };
+            const chain = mapping.getHandler(route);
+            expect(chain).not.toBeNull();
+            expect(chain.handler.method).toBe('getProductColored');
+        });
+
+        test('Radix: fallback handler wins when specific condition does not match', () => {
+            @routeMapping('/products')
+            class ProductsController {
+                @routeMapping({ value: '/:id', matrixParams: 'color' })
+                getProductColored() {
+                    return 'colored';
+                }
+
+                @routeMapping('/:id')
+                getProduct() {
+                    return 'plain';
+                }
+            }
+
+            const ctx = new GenericApplicationContext('test');
+            ctx.setValue('productsController', new ProductsController());
+
+            const mapping = new RadixMetadataHandlerMapping();
+            mapping.setApplicationContext(ctx);
+            mapping.init();
+
+            // No matrix segments — the color condition should fail, fallback wins
+            const route: any = { path: '/products/42', length: 0, data: {}, queryParams: null };
+            const chain = mapping.getHandler(route);
+            expect(chain).not.toBeNull();
+            expect(chain.handler.method).toBe('getProduct');
+        });
     });
 });

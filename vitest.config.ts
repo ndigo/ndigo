@@ -18,6 +18,17 @@ export default defineConfig({
         // Use ordered aliases so package-root aliases don't accidentally
         // capture subpath imports like `@blue/util/types`.
         alias: [
+            // objectmodel deep imports: the package exports map only exposes the root,
+            // so Vitest's Node ESM resolver blocks subpath access. Alias them explicitly.
+            {
+                find: 'objectmodel/src/object-model.js',
+                replacement: resolve(__dirname, './packages/blue-model/node_modules/objectmodel/src/object-model.js'),
+            },
+            {
+                find: 'objectmodel/src/helpers.js',
+                replacement: resolve(__dirname, './packages/blue-model/node_modules/objectmodel/src/helpers.js'),
+            },
+
             { find: /^@blue\/util\/date/, replacement: resolve(__dirname, './packages/blue-util/src/date') },
             { find: /^@blue\/util\/function/, replacement: resolve(__dirname, './packages/blue-util/src/function') },
             { find: /^@blue\/util\/list/, replacement: resolve(__dirname, './packages/blue-util/src/list') },

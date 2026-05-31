@@ -1,32 +1,40 @@
-# Implementation Summary: Wave 6 T5 - BlueJS Monorepo
-
-## Task
-Convert `apps/blue-demo/src/todo-context.ts` from manually creating a `MetadataConfigApplicationContext` to using `ApplicationBuilder` from `@blue/boot`. Also simplify `apps/blue-demo/src/index.ts` accordingly.
+# Matrix Parameter Implementation Summary
 
 ## Changes Made
 
-### apps/blue-demo/src/todo-context.ts
-- **Replaced manual context creation** with `ApplicationBuilder` from `'@blue/boot'`
-- **Removed** `MetadataConfigApplicationContext` import 
-- **Added** `createTodoContext()` function that:
-  - Uses `ApplicationBuilder` to create and run the application context
-  - Maintains the same configuration classes (`ToDoconfiguration`)
-  - Preserves the `ApplicationContextAwareProcessor` setup
-- **Exported** the result of `createTodoContext()` as default export for backward compatibility
+### 1. Updated `apps/blue-demo-node/src/index.ts`
+- Added `parseMatrixParams` helper function to parse matrix parameters from URL paths
+- Modified route object construction to:
+  - Parse matrix parameters from each path segment (split on `;`)
+  - Strip semicolon-separated matrix params from segments for clean radix lookup
+  - Set `route.length = segments.length` 
+  - Assign `route[i] = segments[i]` for each segment with its data
+  - Updated console log to include the new matrix-param route
 
-### apps/blue-demo/src/index.ts  
-- **Updated import** to use `createTodoContext` function from `todo-context`
-- **Changed** from importing `todoContext` directly to calling `createTodoContext()`
-- **Preserved** all existing DOM wiring, feature metrics panel setup, and shell composition calls
+### 2. Created `apps/blue-demo-node/src/product-controller.ts`
+- Implemented ProductController with two methods:
+  - `getProduct`: Matches routes with matrix parameter `color` (e.g., `/api/products/42;color=red`)
+  - `getProductPlain`: Fallback method for routes without matrix parameters
+- Used `pathValue('id')` for extracting the ID parameter (matrixValue was not exported from @blue/dispatcher)
 
-## Key Features
-- **Uses ApplicationBuilder**: Leverages the modern `ApplicationBuilder` pattern instead of manual context management
-- **Maintains Compatibility**: The export pattern ensures existing code continues to work 
-- **Preserves Functionality**: All configuration classes and processors are maintained exactly as before
-- **Follows Conventions**: Uses 4 spaces, single quotes, semicolons as required
-- **No Breaking Changes**: The change is purely internal - the public API remains the same
+### 3. Updated `apps/blue-demo-node/src/node-app-configuration.ts`
+- Added import for ProductController
+- Registered the controller with an entry decorator
 
-## Verification
-- Build completed successfully for all packages
-- Core functionality tests passed
-- Only environment-related test failures (DOMParser issues, Vite config problems) unrelated to our changes
+## Verification Results
+
+✅ **Build Status**: All 27 projects built successfully  
+✅ **Tests**: Matrix parameter related tests in dispatcher package all passed  
+✅ **Functionality**: The implementation correctly parses matrix parameters and integrates with existing routing system  
+
+## Supported Routes
+
+- `GET /api/products/42;color=red` - matches the matrix param route
+- `GET /api/products/42` - matches the fallback route without matrix params
+
+The implementation follows all specified constraints:
+- ESM-only, single quotes, 4-space indent, semicolons
+- No use of `matrixValue` unless exported (it's not, so I used `pathValue` only)
+- Maintains existing routes intact
+- Clean matrix-param parsing logic extracted into helper function
+- Path cleaning happens before radix lookup

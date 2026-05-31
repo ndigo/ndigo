@@ -2,7 +2,7 @@
  * @author Jeff Rose
  */
 
-import { Route } from '@blue/router';
+import { Route, RouteSegment } from '@blue/router';
 import { PathMatcher, GlobPathMatcher, likePathMatcher } from '@blue/core';
 import { RouteHandlerMethod, RouteHandlerMethodMappingNamingStrategy } from './route-handler-method';
 import {
@@ -38,9 +38,12 @@ export class AccessExpression extends AbstractNameValueExpression<boolean> {
 */
 
 /**
- * Parses and matches a single parameter expression against a route.
+ * Parses and matches a single URL query-string parameter expression against a route.
+ *
+ * Query parameters are the `?key=value` pairs carried in `Route.data`.
+ * For path-segment matrix parameters (`/path;key=value`), see {@link MatrixParamExpression}.
  */
-export class ParamExpression extends AbstractNameValueExpression<string> {
+export class QueryParamExpression extends AbstractNameValueExpression<string> {
     /**
      * Parameter names that may satisfy this expression.
      */
@@ -80,7 +83,7 @@ export class ParamExpression extends AbstractNameValueExpression<string> {
                 return true;
             }
         }
-        return 'data' in route && this.name in route.data;
+        return false;
     }
 
     /**
@@ -108,13 +111,13 @@ export class ParamExpression extends AbstractNameValueExpression<string> {
  * A logical conjunction (' && ') route condition that matches a route against a set parameter expressions with syntax defined in {@link RouteMapping|RouteMapping}.
  * @extends module:dispatcher.AbstractRouteCondition
  */
-export class ParamsRouteCondition extends AbstractRouteCondition<ParamsRouteCondition> {
+export class QueryParamCondition extends AbstractRouteCondition<QueryParamCondition> {
     /**
      * Parameter expressions that must all match.
      */
-    readonly expressions: Set<ParamExpression>;
+    readonly expressions: Set<QueryParamExpression>;
 
-    get content(): ParamExpression[] {
+    get content(): QueryParamExpression[] {
         return Array.from(this.expressions);
     }
 
@@ -133,14 +136,14 @@ export class ParamsRouteCondition extends AbstractRouteCondition<ParamsRouteCond
      *
      * @param conditions - The parameter expressions to use.
      */
-    constructor(conditions: Set<ParamExpression>);
-    constructor(paramOrConditions: string | Set<ParamExpression>, ...params: string[]) {
+    constructor(conditions: Set<QueryParamExpression>);
+    constructor(paramOrConditions: string | Set<QueryParamExpression>, ...params: string[]) {
         super();
         defineProperty(this, 'expressions', {
             value:
                 typeof paramOrConditions === 'string'
                     ? this._parseExpressions([paramOrConditions].concat(params))
-                    : new Set<ParamExpression>(paramOrConditions),
+                    : new Set<QueryParamExpression>(paramOrConditions),
             configurable: true,
             enumerable: false,
             writable: false,
@@ -156,14 +159,14 @@ export class ParamsRouteCondition extends AbstractRouteCondition<ParamsRouteCond
      * @param value - The condition to merge with.
      * @returns A condition containing the union of expressions.
      */
-    merge(value: ParamsRouteCondition): ParamsRouteCondition {
-        const expressions: Set<ParamExpression> = new Set<ParamExpression>(this.expressions);
+    merge(value: QueryParamCondition): QueryParamCondition {
+        const expressions: Set<QueryParamExpression> = new Set<QueryParamExpression>(this.expressions);
 
         for (const expression of value.expressions) {
             expressions.add(expression);
         }
 
-        return new ParamsRouteCondition(expressions);
+        return new QueryParamCondition(expressions);
     }
 
     /**
@@ -175,7 +178,7 @@ export class ParamsRouteCondition extends AbstractRouteCondition<ParamsRouteCond
      * @param route - The current route.
      * @returns This condition, or `null`.
      */
-    getMatchingCondition(route: Route): ParamsRouteCondition {
+    getMatchingCondition(route: Route): QueryParamCondition {
         for (const expression of this.expressions) {
             if (!expression.match(route)) {
                 return null;
@@ -185,20 +188,13 @@ export class ParamsRouteCondition extends AbstractRouteCondition<ParamsRouteCond
     }
 
     /**
-     * Compare to another condition based on parameter expressions. A condition is considered to be a more specific match, if it has:
-     * - A greater number of expressions.
-     * - A greater number of non-negated expressions with a concrete value.
-     * @param {module:dispatcher.ParamsRouteCondition} value
-     * @returns {number}
-     */
-    /**
      * Compare parameter conditions by specificity.
      *
      * @param value - The condition to compare.
      * @param route - Unused, but part of the shared contract.
      * @returns A comparison result.
      */
-    compareTo(value: ParamsRouteCondition, route?: Route): number {
+    compareTo(value: QueryParamCondition, route?: Route): number {
         const result = value.expressions.size - this.expressions.size;
         if (result !== 0) {
             return result;
@@ -212,7 +208,7 @@ export class ParamsRouteCondition extends AbstractRouteCondition<ParamsRouteCond
      * @param expressions - The expressions to inspect.
      * @returns The number of concrete value matches.
      */
-    private _getValueMatchCount(expressions: Set<ParamExpression>): number {
+    private _getValueMatchCount(expressions: Set<QueryParamExpression>): number {
         let count = 0;
         for (const expression of expressions) {
             if (expression.value !== void 0 && !expression.isNegated) {
@@ -228,9 +224,184 @@ export class ParamsRouteCondition extends AbstractRouteCondition<ParamsRouteCond
      * @param params - The raw parameter expressions.
      * @returns The parsed expressions.
      */
-    private _parseExpressions(params: string[]): Set<ParamExpression> {
-        const expressions = new Set<ParamExpression>();
-        params.forEach((param) => expressions.add(new ParamExpression(param)));
+    private _parseExpressions(params: string[]): Set<QueryParamExpression> {
+        const expressions = new Set<QueryParamExpression>();
+        params.forEach((param) => expressions.add(new QueryParamExpression(param)));
+        return expressions;
+    }
+}
+
+/**
+ * Parses and matches a single matrix-parameter expression against a route segment.
+ *
+ * Matrix parameters are per-segment key=value pairs carried in `RouteSegment.data`.
+ * This expression walks every segment of the route looking for a matching name/value pair.
+ */
+export class MatrixParamExpression extends AbstractNameValueExpression<string> {
+    get isCaseSensitiveName(): boolean {
+        return true;
+    }
+
+    /**
+     * Check whether any route segment contains a matching matrix-parameter name.
+     *
+     * @param route - The current route.
+     * @returns `true` when at least one segment carries the parameter name.
+     */
+    matchName(route: Route): boolean {
+        const length: number = route.length ?? 0;
+        for (let i = 0; i < length; i++) {
+            const segment: RouteSegment = route[i];
+            if (segment?.data && this.name in segment.data) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Check whether any route segment carries the expected matrix-parameter value.
+     *
+     * @param route - The current route.
+     * @returns `true` when at least one segment matches both name and value.
+     */
+    matchValue(route: Route): boolean {
+        // Intentional: matches if any segment carries the expected value,
+        // consistent with cross-segment name scanning in matchName.
+        const length: number = route.length ?? 0;
+        for (let i = 0; i < length; i++) {
+            const segment: RouteSegment = route[i];
+            if (segment?.data && segment.data[this.name] === this.value) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Return the parameter value as-is.
+     *
+     * @param valueExpression - The raw value expression.
+     * @returns The parsed value.
+     */
+    parseValue(valueExpression: string): string {
+        return valueExpression;
+    }
+}
+
+// TODO: When a third param-condition type is added, extract AbstractParamCondition<E extends AbstractNameValueExpression<string>> (Rule of Three).
+/**
+ * A logical conjunction ('&&') route condition that matches a route against
+ * a set of matrix-parameter expressions.
+ */
+export class MatrixParamCondition extends AbstractRouteCondition<MatrixParamCondition> {
+    /**
+     * Matrix-parameter expressions that must all match.
+     */
+    readonly expressions: Set<MatrixParamExpression>;
+
+    get content(): MatrixParamExpression[] {
+        return Array.from(this.expressions);
+    }
+
+    get infix(): string {
+        return ' && ';
+    }
+
+    /**
+     * Create a matrix-parameter condition from one or more expressions.
+     *
+     * @param params - Matrix-parameter expressions to parse.
+     */
+    constructor(...params: string[]);
+    /**
+     * Create a matrix-parameter condition from a prebuilt expression set.
+     *
+     * @param conditions - The matrix-parameter expressions to use.
+     */
+    constructor(conditions: Set<MatrixParamExpression>);
+    constructor(paramOrConditions: string | Set<MatrixParamExpression>, ...params: string[]) {
+        super();
+        defineProperty(this, 'expressions', {
+            value:
+                typeof paramOrConditions === 'string'
+                    ? this._parseExpressions([paramOrConditions].concat(params))
+                    : new Set<MatrixParamExpression>(paramOrConditions),
+            configurable: true,
+            enumerable: false,
+            writable: false,
+        });
+    }
+
+    /**
+     * Merge matrix-parameter expressions from both conditions.
+     *
+     * @param value - The condition to merge with.
+     * @returns A condition containing the union of expressions.
+     */
+    merge(value: MatrixParamCondition): MatrixParamCondition {
+        const expressions = new Set<MatrixParamExpression>(this.expressions);
+        for (const expression of value.expressions) {
+            expressions.add(expression);
+        }
+        return new MatrixParamCondition(expressions);
+    }
+
+    /**
+     * Return this condition when every expression matches the route.
+     *
+     * @param route - The current route.
+     * @returns This condition, or `null`.
+     */
+    getMatchingCondition(route: Route): MatrixParamCondition {
+        for (const expression of this.expressions) {
+            if (!expression.match(route)) {
+                return null;
+            }
+        }
+        return this;
+    }
+
+    /**
+     * Compare matrix-parameter conditions by specificity.
+     *
+     * @param value - The condition to compare.
+     * @param route - Unused, part of the shared contract.
+     * @returns A comparison result.
+     */
+    compareTo(value: MatrixParamCondition, route?: Route): number {
+        const result = value.expressions.size - this.expressions.size;
+        if (result !== 0) {
+            return result;
+        }
+        return this._getValueMatchCount(value.expressions) - this._getValueMatchCount(this.expressions);
+    }
+
+    /**
+     * Count the number of concrete, non-negated expressions.
+     *
+     * @param expressions - The expressions to inspect.
+     * @returns The number of concrete value matches.
+     */
+    private _getValueMatchCount(expressions: Set<MatrixParamExpression>): number {
+        let count = 0;
+        for (const expression of expressions) {
+            if (expression.value !== void 0 && !expression.isNegated) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    /**
+     * Parse matrix-parameter expressions into a set.
+     *
+     * @param params - The raw matrix-parameter expressions.
+     * @returns The parsed expressions.
+     */
+    private _parseExpressions(params: string[]): Set<MatrixParamExpression> {
+        const expressions = new Set<MatrixParamExpression>();
+        params.forEach((param) => expressions.add(new MatrixParamExpression(param)));
         return expressions;
     }
 }
@@ -546,9 +717,14 @@ export class RouteMappingInfo implements RouteCondition<RouteMappingInfo> {
     readonly patternsCondition: PatternsRouteCondition;
 
     /**
-     * Parameter matching condition.
+     * Query-parameter matching condition.
      */
-    readonly paramsCondition: ParamsRouteCondition;
+    readonly queryCondition: QueryParamCondition;
+
+    /**
+     * Matrix-parameter matching condition.
+     */
+    readonly matrixCondition: MatrixParamCondition;
 
     /**
      * Custom condition wrapper.
@@ -560,13 +736,15 @@ export class RouteMappingInfo implements RouteCondition<RouteMappingInfo> {
      *
      * @param name - The mapping name.
      * @param patterns - Pattern matching condition.
-     * @param params - Parameter matching condition.
+     * @param params - Query-parameter matching condition.
+     * @param matrix - Matrix-parameter matching condition.
      * @param custom - Optional custom condition.
      */
     constructor(
         name: string = null,
         patterns: PatternsRouteCondition = new PatternsRouteCondition(),
-        params: ParamsRouteCondition = new ParamsRouteCondition(),
+        params: QueryParamCondition = new QueryParamCondition(),
+        matrix: MatrixParamCondition = new MatrixParamCondition(),
         custom: RouteCondition = null
     ) {
         defineProperty(this, 'name', {
@@ -583,8 +761,15 @@ export class RouteMappingInfo implements RouteCondition<RouteMappingInfo> {
             writable: false,
         });
 
-        defineProperty(this, 'paramsCondition', {
+        defineProperty(this, 'queryCondition', {
             value: params,
+            configurable: true,
+            enumerable: false,
+            writable: false,
+        });
+
+        defineProperty(this, 'matrixCondition', {
+            value: matrix,
             configurable: true,
             enumerable: false,
             writable: false,
@@ -606,11 +791,12 @@ export class RouteMappingInfo implements RouteCondition<RouteMappingInfo> {
      */
     merge(value: RouteMappingInfo): RouteMappingInfo {
         const name = this._mergeNames(value),
-            params = this.paramsCondition.merge(value.paramsCondition),
+            params = this.queryCondition.merge(value.queryCondition),
+            matrix = this.matrixCondition.merge(value.matrixCondition),
             patterns = this.patternsCondition.merge(value.patternsCondition),
             custom = this.customConditionHolder.merge(value.customConditionHolder);
 
-        return new RouteMappingInfo(name, patterns, params, custom.condition);
+        return new RouteMappingInfo(name, patterns, params, matrix, custom.condition);
     }
 
     /**
@@ -620,13 +806,20 @@ export class RouteMappingInfo implements RouteCondition<RouteMappingInfo> {
      * @returns A matching mapping info, or `null`.
      */
     getMatchingCondition(route: Route): RouteMappingInfo {
-        const params = this.paramsCondition.getMatchingCondition(route);
+        // Check patterns first — most discriminating filter, eliminates non-matching
+        // routes before the cheaper param/matrix checks run.
+        const patterns = this.patternsCondition.getMatchingCondition(route);
+        if (!patterns) {
+            return null;
+        }
+
+        const params = this.queryCondition.getMatchingCondition(route);
         if (!params) {
             return null;
         }
 
-        const patterns = this.patternsCondition.getMatchingCondition(route);
-        if (!patterns) {
+        const matrix = this.matrixCondition.getMatchingCondition(route);
+        if (!matrix) {
             return null;
         }
 
@@ -635,7 +828,7 @@ export class RouteMappingInfo implements RouteCondition<RouteMappingInfo> {
             return null;
         }
 
-        return new RouteMappingInfo(this.name, patterns, params, custom.condition);
+        return new RouteMappingInfo(this.name, patterns, params, matrix, custom.condition);
     }
 
     /**
@@ -648,7 +841,12 @@ export class RouteMappingInfo implements RouteCondition<RouteMappingInfo> {
     compareTo(value: RouteMappingInfo, route: Route): number {
         let result: number;
 
-        result = this.paramsCondition.compareTo(value.paramsCondition, route);
+        result = this.queryCondition.compareTo(value.queryCondition, route);
+        if (result !== 0) {
+            return result;
+        }
+
+        result = this.matrixCondition.compareTo(value.matrixCondition, route);
         if (result !== 0) {
             return result;
         }

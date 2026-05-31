@@ -1,3 +1,5 @@
+// @vitest-environment jsdom
+
 import { describe, expect, test } from 'vitest';
 import { Route } from '@blue/router';
 import { WicketView } from '@blue/view-wicket';
@@ -20,6 +22,7 @@ describe('NotesController', () => {
                 name === 'notesService' || (typeof name !== 'string' && name.description === NOTES_SERVICE.description)
                     ? notesService
                     : null,
+            getContent: (key: string) => key,
         });
         return controller;
     }
@@ -28,7 +31,16 @@ describe('NotesController', () => {
         const controller = createController();
         const mv = controller.handleIndex(route);
 
-        expect(mv.model).toEqual({ items: notesService.items, todoRoute: '#/todo/' });
+        expect(mv.model).toEqual({
+            items: notesService.items,
+            todoRoute: '#/todo/',
+            labels: {
+                title: 'notes.page.title',
+                add: 'notes.btn.add',
+                remove: 'notes.btn.remove',
+                empty: 'notes.empty',
+            },
+        });
         expect((mv.model as any).todoRoute).toBe('#/todo/');
     });
 

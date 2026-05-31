@@ -119,6 +119,7 @@ function checkLike(
 ): boolean {
     // Top-level nil check
     if (value == null) return false;
+    if (typeof value !== 'object' && typeof value !== 'function') return false;
 
     const { keys, types, isTrue } = cached;
 

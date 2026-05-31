@@ -2,7 +2,7 @@
  * @author Jeff Rose
  */
 
-import { RadixTree, RadixMatch, Comparator } from '@blue/core';
+import { RadixTree, RadixMatch, Comparator, MultiValueMap } from '@blue/core';
 import { Route } from '@blue/router';
 import {
     AbstractHandlerMethodMapping,
@@ -11,8 +11,8 @@ import {
     RouteMatchResult,
 } from './route-handler-mapping';
 import { RouteHandlerMethod } from './route-handler-method';
-import { RouteMappingInfo, PatternsRouteCondition } from './route-mapping-info';
-import { hasRouteMapping, getRouteMapping } from './route-mapping';
+import { RouteMappingInfo } from './route-mapping-info';
+import { hasRouteMapping } from './route-mapping';
 
 interface RadixEntry {
     readonly handlerMethod: RouteHandlerMethod;
@@ -24,6 +24,16 @@ export class RadixMetadataHandlerMapping
     implements MatchableHandlerMapping
 {
     #radixTree = new RadixTree<RadixEntry>();
+
+    /**
+     * All registered candidates per pattern.
+     *
+     * The radix tree holds only the first-registered entry per pattern (path
+     * resolution sentinel). This map holds every entry so that `_getHandler`
+     * can filter and disambiguate when multiple handlers share a path pattern
+     * but differ by `params` or `matrixParams` conditions.
+     */
+    #candidatesByPattern = new MultiValueMap<string, RadixEntry>();
 
     get [Symbol.toStringTag](): string {
         return 'RadixMetadataHandlerMapping';
@@ -39,23 +49,6 @@ export class RadixMetadataHandlerMapping
         return new RouteMatchResult(patterns[Symbol.iterator]().next().value as string, route.path);
     }
 
-    protected _getMappingForMethod(method: string, handler: any): RouteMappingInfo {
-        const methodMapping = getRouteMapping(handler, method);
-        let methodInfo: RouteMappingInfo;
-        if (methodMapping) {
-            methodInfo = new RouteMappingInfo(methodMapping.value, new PatternsRouteCondition(methodMapping.value));
-            const handlerMapping = getRouteMapping(handler.constructor);
-            if (handlerMapping) {
-                const handlerInfo = new RouteMappingInfo(
-                    handlerMapping.value,
-                    new PatternsRouteCondition(handlerMapping.value)
-                );
-                methodInfo = handlerInfo.merge(methodInfo);
-            }
-        }
-        return methodInfo;
-    }
-
     protected _getMappingComparator(route: Route): Comparator<RouteMappingInfo> {
         return {
             compare: (info1, info2) => info1.compareTo(info2, route),
@@ -66,14 +59,6 @@ export class RadixMetadataHandlerMapping
         return mapping.getMatchingCondition(route);
     }
 
-    protected _handleNoMatch(mappings, path: string, route: Route): RouteHandlerMethod {
-        return null;
-    }
-
-    protected _isHandler(value: any): boolean {
-        return hasRouteMapping(value) || ('constructor' in value && hasRouteMapping(value.constructor));
-    }
-
     protected override _getHandler(route: Route): RouteHandlerMethod {
         const { path } = route;
         const match: RadixMatch<RadixEntry> | null = this.#radixTree.lookup(path);
@@ -82,15 +67,36 @@ export class RadixMetadataHandlerMapping
             return this._handleNoMatch([], path, route);
         }
 
-        const { mapping, handlerMethod } = match.value;
-
+        // Extract path params before filtering — all candidates share the same pattern
+        // so params are the same regardless of which candidate wins.
         if (match.params) {
             route.params = match.params;
         }
 
-        this._handleMatch(mapping, path, route);
+        // Retrieve all handlers registered at this pattern and filter by conditions.
+        // Note: we do NOT call mapping.getMatchingCondition(route) here because the full
+        // PatternsRouteCondition check uses GlobPathMatcher which does not understand
+        // :param-style patterns — the radix tree already validated the path.
+        const candidates = this.#candidatesByPattern.get(match.pattern) ?? [];
+        const matching = candidates.filter(
+            ({ mapping }) =>
+                mapping.queryCondition.getMatchingCondition(route) !== null &&
+                mapping.matrixCondition.getMatchingCondition(route) !== null
+        );
 
-        // Store pattern with radix-tree precision
+        if (matching.length === 0) {
+            return this._handleNoMatch([], path, route);
+        }
+
+        // When multiple candidates pass, pick the most specific via compareTo.
+        const winner =
+            matching.length === 1
+                ? matching[0]
+                : matching.reduce((best, c) => (c.mapping.compareTo(best.mapping, route) < 0 ? c : best));
+
+        this._handleMatch(winner.mapping, path, route);
+
+        // Store pattern with radix-tree precision.
         Reflect.defineProperty(route, 'pattern', {
             value: match.pattern,
             configurable: true,
@@ -98,7 +104,15 @@ export class RadixMetadataHandlerMapping
             writable: true,
         });
 
-        return handlerMethod;
+        return winner.handlerMethod;
+    }
+
+    protected _handleNoMatch(mappings, path: string, route: Route): RouteHandlerMethod {
+        return null;
+    }
+
+    protected _isHandler(value: any): boolean {
+        return hasRouteMapping(value) || ('constructor' in value && hasRouteMapping(value.constructor));
     }
 
     protected override _handleMatch(mapping: RouteMappingInfo, path: string, route: Route): void {
@@ -108,7 +122,13 @@ export class RadixMetadataHandlerMapping
     override registerMapping(mapping: RouteMappingInfo, handler: MaybeHandler, method: string): void {
         const handlerMethod = this._createRequestHandlerMethod(handler, method);
         for (const pattern of mapping.patternsCondition.patterns) {
-            this.#radixTree.insert(pattern, { handlerMethod, mapping });
+            // Insert into the radix tree only on first registration for this pattern;
+            // the tree is the path-resolution engine and is single-entry-per-pattern.
+            if (!this.#candidatesByPattern.has(pattern)) {
+                this.#radixTree.insert(pattern, { handlerMethod, mapping });
+            }
+            // Always register in the candidates map so _getHandler can disambiguate.
+            this.#candidatesByPattern.add(pattern, { handlerMethod, mapping });
         }
         // Register in mappingRegistry with empty directPaths for getHandlerMethods() API compat
         this.mappingRegistry.register(mapping, handlerMethod, []);

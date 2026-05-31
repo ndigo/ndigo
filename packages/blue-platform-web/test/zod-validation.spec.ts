@@ -143,7 +143,7 @@ describe('Zod Validation Integration', () => {
         expect(capturedError).toBeInstanceOf(ParameterConversionError);
         const conversionError = capturedError as ParameterConversionError;
         expect(conversionError.cause).toBeInstanceOf(ValidationError);
-        expect(conversionError.message).toContain('name: String must contain at least 2 character(s)');
-        expect(conversionError.message).toContain('age: Number must be greater than or equal to 18');
+        expect(conversionError.message).toContain('name: Too small: expected string to have >=2 characters');
+        expect(conversionError.message).toContain('age: Too small: expected number to be >=18');
     });
 });

@@ -21,7 +21,25 @@ type RouteMappingValue = {
  */
 type RouteMappingConfiguration = RouteMappingValue & {
     name?: string;
-    params?: string;
+    /**
+     * Comma-separated query-parameter expressions that must all match for this
+     * mapping to be selected.  Supported syntax per expression:
+     * - `name` — parameter must be present
+     * - `name=value` — parameter must equal the given value
+     * - `!name` — parameter must be absent
+     * - `name!=value` — parameter must not equal the given value
+     *
+     * @example `queryParams: 'filter=active'`
+     * @example `queryParams: 'filter=active, sort'`
+     */
+    queryParams?: string;
+    /**
+     * Comma-separated matrix-parameter expressions that must all match for this
+     * mapping to be selected.  Matrix parameters are per-path-segment key=value
+     * pairs (e.g. `/products/42;color=red`).  Supported syntax is identical to
+     * `params` above.
+     */
+    matrixParams?: string;
     private: boolean;
     path?: string; // Computed path combining class and method routes
 };
@@ -72,6 +90,14 @@ export const hasRouteMapping = (target: any, propertyKey?: string | symbol): boo
  *
  * @param route - The route path or mapping configuration to apply.
  * @returns A decorator function for the target.
+ *
+ * @example
+ * // Query params — selects only when ?filter=active is present
+ * \@routeMapping({ value: '/:id', queryParams: 'filter=active' })
+ *
+ * @example
+ * // Matrix params — selects only when ;color=red is in any path segment
+ * \@routeMapping({ value: '/:id', matrixParams: 'color=red' })
  */
 export function routeMapping(route: string | RouteMappingConfiguration = defaultMapping) {
     const conf = toRouteMappingConfiguration(route);

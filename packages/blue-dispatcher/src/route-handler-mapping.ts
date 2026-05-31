@@ -23,7 +23,7 @@ import { isFunction, isString } from '@blue/util/types';
 import { RouteHandlerInterceptor, MappedHandlerInterceptor } from './route-handler-interceptor';
 import RouteHandlerExecutionChain from './route-handler-execution-chain';
 import { RouteHandlerMethod, RouteHandlerMethodMappingNamingStrategy } from './route-handler-method';
-import { RouteMappingInfo, PatternsRouteCondition } from './route-mapping-info';
+import { RouteMappingInfo, PatternsRouteCondition, QueryParamCondition, MatrixParamCondition } from './route-mapping-info';
 import { hasRouteMapping, getRouteMapping } from './route-mapping';
 import { hasMethodParameter, getMethodParameter } from './route-parameter';
 
@@ -480,7 +480,7 @@ export abstract class AbstractHandlerMapping
 /**
  * Base class for mappings that resolve handler methods from application context values.
  */
-export abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMapping implements Initializable {
+export abstract class AbstractHandlerMethodMapping<T extends RouteMappingInfo> extends AbstractHandlerMapping implements Initializable {
     /**
      * Naming strategy used when exposing handler methods by name.
      */
@@ -688,7 +688,56 @@ export abstract class AbstractHandlerMethodMapping<T> extends AbstractHandlerMap
 
     protected abstract _isHandler(value): boolean;
     protected abstract _getMappingComparator(route: Route): Comparator<T>;
-    protected abstract _getMappingForMethod(method: string, handler): T;
+    /**
+     * Build a {@link RouteMappingInfo} for the given handler method.
+     *
+     * Reads `@routeMapping` metadata from both the method and the containing class,
+     * constructs {@link QueryParamCondition} and {@link MatrixParamCondition} from the
+     * `params` and `matrixParams` fields respectively, and merges class-level and
+     * method-level mappings when both are present.
+     *
+     * @param method - The method name to inspect.
+     * @param handler - The handler instance whose prototype carries the metadata.
+     * @returns The combined {@link RouteMappingInfo}, or `undefined` if no mapping exists.
+     */
+    protected _getMappingForMethod(method: string, handler: any): T {
+        const methodMapping = getRouteMapping(handler, method);
+        let methodInfo: RouteMappingInfo;
+        if (methodMapping) {
+            const methodParams = (methodMapping as any).queryParams
+                ? new QueryParamCondition(...((methodMapping as any).queryParams as string).split(',').map((s) => s.trim()))
+                : new QueryParamCondition();
+            const methodMatrix = (methodMapping as any).matrixParams
+                ? new MatrixParamCondition(...((methodMapping as any).matrixParams as string).split(',').map((s) => s.trim()))
+                : new MatrixParamCondition();
+
+            methodInfo = new RouteMappingInfo(
+                methodMapping.value,
+                new PatternsRouteCondition(methodMapping.value),
+                methodParams,
+                methodMatrix
+            );
+
+            const handlerMapping = getRouteMapping(handler.constructor);
+            if (handlerMapping) {
+                const handlerParams = (handlerMapping as any).queryParams
+                    ? new QueryParamCondition(...((handlerMapping as any).queryParams as string).split(',').map((s) => s.trim()))
+                    : new QueryParamCondition();
+                const handlerMatrix = (handlerMapping as any).matrixParams
+                    ? new MatrixParamCondition(...((handlerMapping as any).matrixParams as string).split(',').map((s) => s.trim()))
+                    : new MatrixParamCondition();
+
+                const handlerInfo = new RouteMappingInfo(
+                    handlerMapping.value,
+                    new PatternsRouteCondition(handlerMapping.value),
+                    handlerParams,
+                    handlerMatrix
+                );
+                methodInfo = handlerInfo.merge(methodInfo);
+            }
+        }
+        return methodInfo as T;
+    }
     protected abstract _getMatchingMapping(mapping: T, route: Route): T;
 }
 
@@ -1006,31 +1055,6 @@ export class LinearMetadataHandlerMapping
         }
         const patterns = matchingInfo.patternsCondition.patterns;
         return new RouteMatchResult(patterns[Symbol.iterator]().next().value as string, route.path);
-    }
-
-    /**
-     * Build mapping metadata for a handler method.
-     *
-     * @param method - The handler method name.
-     * @param handler - The handler instance.
-     * @returns The route mapping metadata, or `undefined`.
-     */
-    protected _getMappingForMethod(method: string, handler: any): RouteMappingInfo {
-        const methodMapping = getRouteMapping(handler, method);
-        let methodInfo: RouteMappingInfo;
-        if (methodMapping) {
-            methodInfo = new RouteMappingInfo(methodMapping.value, new PatternsRouteCondition(methodMapping.value));
-
-            const handlerMapping = getRouteMapping(handler.constructor);
-            if (handlerMapping) {
-                const handlerInfo = new RouteMappingInfo(
-                    handlerMapping.value,
-                    new PatternsRouteCondition(handlerMapping.value)
-                );
-                methodInfo = handlerInfo.merge(methodInfo);
-            }
-        }
-        return methodInfo;
     }
 
     /**

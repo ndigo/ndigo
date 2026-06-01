@@ -131,4 +131,88 @@ describe('RadixTree', () => {
         expect(result).not.toBeNull();
         expect(result?.value).toBe('second');
     });
+
+    describe('_splitPath edge cases', () => {
+        test('path without leading slash is treated same as with slash', () => {
+            tree.insert('/users', 'handler');
+            const result = tree.lookup('users');  // no leading slash
+            expect(result).not.toBeNull();
+            expect(result?.value).toBe('handler');
+        });
+
+        test('trailing slash is ignored (empty segment filtered)', () => {
+            tree.insert('/users', 'handler');
+            const result = tree.lookup('/users/');  // trailing slash
+            // The optimized _splitPath ignores empty trailing segments
+            expect(result).not.toBeNull();
+            expect(result?.value).toBe('handler');
+        });
+
+        test('double slashes are treated as single separator', () => {
+            tree.insert('/api/users', 'handler');
+            const result = tree.lookup('/api//users');
+            // empty segment between double slashes is filtered
+            expect(result).not.toBeNull();
+            expect(result?.value).toBe('handler');
+        });
+    });
+
+    describe('root path', () => {
+        test('insert and lookup root pattern "/"', () => {
+            tree.insert('/', 'root-handler');
+            const result = tree.lookup('/');
+            expect(result).not.toBeNull();
+            expect(result?.value).toBe('root-handler');
+            expect(result?.params).toBeNull();
+            expect(result?.pattern).toBe('/');
+        });
+
+        test('root pattern does not match non-root paths', () => {
+            tree.insert('/', 'root-handler');
+            const result = tree.lookup('/users');
+            expect(result).toBeNull();
+        });
+    });
+
+    describe('delete edge cases', () => {
+        test('delete non-existent pattern returns false', () => {
+            const deleted = tree.delete('/never/inserted');
+            expect(deleted).toBe(false);
+        });
+
+        test('delete root pattern', () => {
+            tree.insert('/', 'root-handler');
+            const deleted = tree.delete('/');
+            expect(deleted).toBe(true);
+            expect(tree.lookup('/')).toBeNull();
+        });
+
+        test('deleting a route does not affect sibling routes', () => {
+            tree.insert('/users', 'users-handler');
+            tree.insert('/posts', 'posts-handler');
+            tree.delete('/users');
+            expect(tree.lookup('/users')).toBeNull();
+            expect(tree.lookup('/posts')).not.toBeNull();
+            expect(tree.lookup('/posts')?.value).toBe('posts-handler');
+        });
+    });
+
+    describe('toJSON', () => {
+        test('returns size 0 for empty tree', () => {
+            const json = tree.toJSON() as any;
+            expect(json.size).toBe(0);
+        });
+
+        test('counts only terminal nodes with values', () => {
+            tree.insert('/users', 'a');
+            tree.insert('/users/:id', 'b');
+            tree.insert('/api/*', 'c');
+            const json = tree.toJSON() as any;
+            expect(json.size).toBe(3);
+        });
+
+        test('toString tag is correct', () => {
+            expect(Object.prototype.toString.call(tree)).toBe('[object RadixTree]');
+        });
+    });
 });

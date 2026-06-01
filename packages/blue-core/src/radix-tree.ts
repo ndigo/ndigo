@@ -102,16 +102,24 @@ export class RadixTree<V> implements Serializable {
     }
 
     /**
-     * Splits a path into segments, removing leading slash and filtering empty strings.
+     * Splits a path into segments using single-pass manual scan, removing leading slash and filtering empty strings.
      *
      * @param path - The path to split.
      * @returns An array of path segments.
      */
     private _splitPath(path: string): string[] {
-        return path
-            .replace(/^\//, '')
-            .split('/')
-            .filter(Boolean);
+        const segments: string[] = [];
+        let start = path.charCodeAt(0) === 47 /* '/' */ ? 1 : 0;
+        const len = path.length;
+        for (let i = start; i <= len; i++) {
+            if (i === len || path.charCodeAt(i) === 47) {
+                if (i > start) {
+                    segments.push(path.slice(start, i));
+                }
+                start = i + 1;
+            }
+        }
+        return segments;
     }
 
     /**
@@ -134,29 +142,28 @@ export class RadixTree<V> implements Serializable {
         for (let i = 0; i < segments.length; i++) {
             const segment = segments[i];
             const kind = this._classifySegment(segment);
-            let child: RadixNode<V> | null;
 
             switch (kind) {
                 case 'static':
-                    child = node.staticChildren.get(segment) || new RadixNode('static', segment);
-                    if (!node.staticChildren.has(segment)) {
+                    if (node.staticChildren.has(segment)) {
+                        node = node.staticChildren.get(segment)!;
+                    } else {
+                        const child = new RadixNode<V>('static', segment);
                         node.staticChildren.set(segment, child);
+                        node = child;
                     }
-                    node = child;
                     break;
                 case 'param':
-                    child = node.paramChild || new RadixNode('param', this._extractParamLabel(segment));
-                    if (!node.paramChild) {
-                        node.paramChild = child;
+                    if (node.paramChild === null) {
+                        node.paramChild = new RadixNode<V>('param', this._extractParamLabel(segment));
                     }
-                    node = child;
+                    node = node.paramChild;
                     break;
                 case 'wildcard':
-                    child = node.wildcardChild || new RadixNode('wildcard', '*');
-                    if (!node.wildcardChild) {
-                        node.wildcardChild = child;
+                    if (node.wildcardChild === null) {
+                        node.wildcardChild = new RadixNode<V>('wildcard', '*');
                     }
-                    node = child;
+                    node = node.wildcardChild;
                     break;
             }
         }
@@ -204,20 +211,37 @@ export class RadixTree<V> implements Serializable {
      * @returns A match object if found, otherwise null.
      */
     lookup(path: string): RadixMatch<V> | null {
-        const segments = this._splitPath(path);
         let node = this.#root;
-        const params: Record<string, string> = {};
+        let params: Record<string, string> | null = null;
+        const len = path.length;
+        let segStart = path.charCodeAt(0) === 47 ? 1 : 0;
 
-        for (let i = 0; i < segments.length; i++) {
-            const segment = segments[i];
+        for (let i = segStart; i <= len; i++) {
+            // Advance until slash or end
+            if (i < len && path.charCodeAt(i) !== 47) {
+                continue;
+            }
 
-            // Priority: static > param > wildcard
-            if (node.staticChildren.has(segment)) {
-                node = node.staticChildren.get(segment)!;
+            // Skip empty segments (leading slash, double slash)
+            if (i === segStart) {
+                segStart = i + 1;
+                continue;
+            }
+
+            const segment = path.slice(segStart, i);
+            segStart = i + 1;
+
+            // Single Map probe: static > param > wildcard
+            const staticMatch = node.staticChildren.get(segment);
+            if (staticMatch !== undefined) {
+                node = staticMatch;
                 continue;
             }
 
             if (node.paramChild !== null) {
+                if (params === null) {
+                    params = {};
+                }
                 params[node.paramChild.label] = segment;
                 node = node.paramChild;
                 continue;
@@ -238,7 +262,7 @@ export class RadixTree<V> implements Serializable {
 
         return {
             value: node.value,
-            params: Object.keys(params).length > 0 ? params : null,
+            params,
             pattern: node.pattern!,
         };
     }

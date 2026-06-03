@@ -13,10 +13,10 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@nx/devkit": "~20.3.2"
+    "@nx/devkit": "~21.0.0"
   },
   "devDependencies": {
-    "nx": "~20.3.2",
+    "nx": "~21.0.0",
     "typescript": "~5.8.0",
     "vitest": "~2.1.8"
   },

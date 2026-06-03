@@ -17,7 +17,7 @@
   },
   "devDependencies": {
     "nx": "~20.3.2",
-    "typescript": "~5.7.2",
+    "typescript": "~5.8.0",
     "vitest": "~2.1.8"
   },
   "author": "Jeff Rose <jeff_rose@outlook.com>",

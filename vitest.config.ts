@@ -18,17 +18,6 @@ export default defineConfig({
         // Use ordered aliases so package-root aliases don't accidentally
         // capture subpath imports like `@blue/util/types`.
         alias: [
-            // objectmodel deep imports: the package exports map only exposes the root,
-            // so Vitest's Node ESM resolver blocks subpath access. Alias them explicitly.
-            {
-                find: 'objectmodel/src/object-model.js',
-                replacement: resolve(__dirname, './packages/blue-model/node_modules/objectmodel/src/object-model.js'),
-            },
-            {
-                find: 'objectmodel/src/helpers.js',
-                replacement: resolve(__dirname, './packages/blue-model/node_modules/objectmodel/src/helpers.js'),
-            },
-
             { find: /^@blue\/util\/date/, replacement: resolve(__dirname, './packages/blue-util/src/date') },
             { find: /^@blue\/util\/function/, replacement: resolve(__dirname, './packages/blue-util/src/function') },
             { find: /^@blue\/util\/list/, replacement: resolve(__dirname, './packages/blue-util/src/list') },
@@ -57,7 +46,6 @@ export default defineConfig({
             { find: /^@blue\/core$/, replacement: resolve(__dirname, './packages/blue-core/src') },
             { find: /^@blue\/dom$/, replacement: resolve(__dirname, './packages/blue-dom/src') },
             { find: /^@blue\/util$/, replacement: resolve(__dirname, './packages/blue-util/src') },
-            { find: /^@blue\/parser$/, replacement: resolve(__dirname, './packages/blue-parser/src') },
             { find: /^@blue\/reactive$/, replacement: resolve(__dirname, './packages/blue-reactive/src') },
             { find: /^@blue\/context$/, replacement: resolve(__dirname, './packages/blue-context/src') },
             { find: /^@blue\/factory$/, replacement: resolve(__dirname, './packages/blue-factory/src') },
@@ -70,7 +58,6 @@ export default defineConfig({
             { find: /^@blue\/content$/, replacement: resolve(__dirname, './packages/blue-content/src') },
             { find: /^@blue\/domain$/, replacement: resolve(__dirname, './packages/blue-domain/src') },
             { find: /^@blue\/validate$/, replacement: resolve(__dirname, './packages/blue-validate/src') },
-            { find: /^@blue\/print$/, replacement: resolve(__dirname, './packages/blue-print/src') },
             { find: /^@blue\/platform-web$/, replacement: resolve(__dirname, './packages/blue-platform-web/src') },
             { find: /^@blue\/platform-node$/, replacement: resolve(__dirname, './packages/blue-platform-node/src') },
             { find: /^@blue\/dispatcher$/, replacement: resolve(__dirname, './packages/blue-dispatcher/src') },

@@ -1,5 +1,6 @@
 {
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
+  "parallel": 3,
   "targetDefaults": {
     "build:lib": {
       "dependsOn": ["^build:lib"],
@@ -27,7 +28,6 @@
   },
   "plugins": [],
   "generators": {},
-  "defaultProject": "@blue/core",
   "projects": {
     "@blue/demo": {
       "root": "apps/blue-demo",
@@ -98,14 +98,5 @@
   },
   "affected": {
     "defaultBase": "master"
-  },
-  "tasksRunnerOptions": {
-    "default": {
-      "runner": "nx/tasks-runners/default",
-      "options": {
-        "cacheableOperations": ["build:lib", "build:all", "test", "lint"],
-        "parallel": 3
-      }
-    }
   }
 }

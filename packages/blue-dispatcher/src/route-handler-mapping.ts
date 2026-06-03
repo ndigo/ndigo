@@ -8,7 +8,7 @@ import {
     Null,
     MultiValueMap,
     PathMatcher,
-    GlobPathMatcher,
+    URLGlobPathMatcher,
     Comparator,
     Serializable,
     IllegalStateError,
@@ -16,8 +16,6 @@ import {
 import { AsNameAware, Initializable } from '@blue/factory';
 import { ApplicationContext, AsApplicationContextAware } from '@blue/context';
 import { Route } from '@blue/router';
-import { when } from '@blue/util/logic';
-import { startsWith } from '@blue/util/list';
 import { trim } from '@blue/util/string';
 import { isFunction, isString } from '@blue/util/types';
 import { RouteHandlerInterceptor, MappedHandlerInterceptor } from './route-handler-interceptor';
@@ -100,13 +98,13 @@ const { from, isArray } = Array,
     { defineProperty, getPrototypeOf } = Reflect,
     { keys } = Object,
     { toString } = Object.prototype,
-    doesNotStartWithSlash = (value: string) => !startsWith('/')(value),
+    doesNotStartWithSlash = (value: string) => !value.startsWith('/'),
     kind = /^\[object (.+)\]$/,
     kindOf = (value): string => kind.exec(toString.call(value))[1],
     resolveHandlerWithContext =
         (context: ApplicationContext) =>
         (handler: MaybeHandler): object =>
-            when(isString, (key: string) => context.getValue(key))(handler);
+            isString(handler) ? context.getValue(handler as string) : (handler as object);
 
 /**
  * Internal registry entry for a mapping and its resolved handler method.
@@ -394,7 +392,7 @@ export abstract class AbstractHandlerMapping
             writable: false,
         });
         defineProperty(this, 'pathMatcher', {
-            value: new GlobPathMatcher(),
+            value: new URLGlobPathMatcher(),
             configurable: true,
             enumerable: false,
             writable: false,
@@ -1283,8 +1281,8 @@ export class SimplePathHandlerMapping extends AbstractPathHandlerMapping {
         mappings &&
             mappings.size &&
             mappings.forEach((handler: MaybeHandler, path: string) => {
-                path = when(doesNotStartWithSlash, (p) => `/${p}`)(path);
-                handler = when(isString, trim)(handler);
+                path = doesNotStartWithSlash(path) ? `/${path}` : path;
+                handler = isString(handler) ? trim(handler as string) : handler;
                 this._registerHandler(path, handler);
             });
     }

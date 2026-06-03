@@ -3,7 +3,6 @@
  */
 
 import { Constructable, JSONValue, JSONObject } from '@blue/core';
-import { propSatisfies } from '@blue/util/logic';
 import { like, isNil } from '@blue/util/types';
 import { AsAware, Aware, likeAwareAnd } from '@blue/factory';
 import {
@@ -250,7 +249,7 @@ export const likeEnvironmentAware = likeAwareAnd(like({ setEnvironment: Function
     value
 ) => value is EnvironmentAware;
 
-const hasEnvironmentProperty = propSatisfies(likeEnvironment, 'environment');
+const hasEnvironmentProperty = (value: any): boolean => likeEnvironment(value?.['environment']);
 
 /**
  * Returns whether a value exposes an environment.

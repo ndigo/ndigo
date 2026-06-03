@@ -1,10 +1,5 @@
 import { RouteSegment, Route } from './route';
 import { JSONValue, Serializable, JSONObject, createNull } from '@blue/core';
-import { pipe } from '@blue/util/function';
-import { filter, join, map, reduce } from '@blue/util/list';
-import { isNotEmpty } from '@blue/util/logic';
-import { keys } from '@blue/util/object';
-import { max } from '@blue/util/relation';
 import { replace, split, trim } from '@blue/util/string';
 import { isNil } from '@blue/util/types';
 import { QueryString, MatrixString } from '@blue/http';
@@ -14,8 +9,8 @@ const questionMark = '?',
     slash = '/',
     { defineProperty } = Reflect,
     isNotNil = (value: unknown) => !isNil(value),
-    isNotNilAndNotEmpty = (value) => isNotNil(value) && isNotEmpty(value),
-    joinOnSlash = join(slash),
+    isNotNilAndNotEmpty = (value: unknown) => isNotNil(value) && value !== '',
+    joinOnSlash = (arr: string[]): string => arr.join(slash),
     leadingSlash = new RegExp(`^${slash}`),
     removeLeadingSlash = replace(leadingSlash, ''),
     splitOnQuestionMark = split(questionMark),
@@ -23,8 +18,8 @@ const questionMark = '?',
     startsWithColon = (value: string): boolean => value.startsWith(':'),
     startsWithBrace = (value: string): boolean => value.startsWith('{'),
     endsWithBrace = (value: string): boolean => value.endsWith('}'),
-    splitPathIntoSegments = pipe(splitOnSlash, filter(isNotNilAndNotEmpty)) as (value: string) => string[],
-    splitRouteIntoParts = pipe(trim, removeLeadingSlash, splitOnQuestionMark);
+    splitPathIntoSegments = (value: string): string[] => splitOnSlash(value).filter(isNotNilAndNotEmpty),
+    splitRouteIntoParts = (value: string): string[] => splitOnQuestionMark(removeLeadingSlash(trim(value)));
 
 let routeId = 0;
 
@@ -164,19 +159,10 @@ export class PathRoute implements Route<Record<string, string>>, Serializable {
      * @since 1.0.0
      */
     get length(): number {
-        const keysArray = keys(this) as readonly string[];
-        const indices = map(parseInt)(keysArray);
-        const maxIndex = reduce(max, -1)(indices) as number;
-        return maxIndex + 1;
-        /*
-        return Object.keys( this ).reduce( function( maxIndex: number, key: string ){
-            index = key === '' ? NaN : Number( key );
-            if( !Number.isNaN( index ) && index > maxIndex ){
-                return index;
-            }
-            return maxIndex;
-        }, -1 ) + 1;
-        */
+        return Object.keys(this).reduce((maxIndex: number, key: string) => {
+            const index = key === '' ? NaN : Number(key);
+            return !Number.isNaN(index) && index > maxIndex ? index : maxIndex;
+        }, -1) + 1;
     }
 
     /**

@@ -2,7 +2,6 @@
  * @author Jeff Rose
  * @see external:date-fns
  * @see external:date-fns-tz
- * @see external:ramda
  * @see external:seedrandom
  * @see external:slug
  */
@@ -21,12 +20,6 @@
 
 /**
  * @global
- * @external ramda
- * @see {@link https://ramdajs.com/docs/}
- */
-
-/**
- * @global
  * @external seedrandom
  * @see {@link https://www.npmjs.com/package/seedrandom}
  */
@@ -38,35 +31,19 @@
  */
 
 // Import category modules
-import * as fn from './function/index.js';
-import * as list from './list/index.js';
-import * as logic from './logic/index.js';
 import * as math from './math/index.js';
-import * as object from './object/index.js';
-import * as relation from './relation/index.js';
 import * as string from './string/index.js';
 import * as types from './type/index.js';
 import * as date from './date/index.js';
 
-// Back-compat: named exports from the package root.
-// Prefer subpath imports (e.g. `@blue/util/list`) but keep a small set here
-// for older compiled artifacts that import from `@blue/util`.
-export { pipe, compose } from './function/index.js';
-export { join, map } from './list/index.js';
-export { allPass } from './logic/index.js';
 export { is, like } from './type/index.js';
 
 // Named category exports
-export { fn, list, logic, math, object, relation, string, types, date };
+export { math, string, types, date };
 
 // Default export with all categories
 export default {
-    fn,
-    list,
-    logic,
     math,
-    object,
-    relation,
     string,
     types,
     date,

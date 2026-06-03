@@ -3,7 +3,6 @@
  */
 
 import { primitive, isPrimitive } from './primitive';
-import { equals } from '@blue/util/relation';
 import { like } from '@blue/util/types';
 
 /**
@@ -32,6 +31,41 @@ export type equatable = Equatable | primitive;
 export const likeEquatable = like({ equals: Function }) as (value) => value is Equatable;
 
 /**
+ * Performs a deep equality check between two values.
+ * @param a - First value to compare
+ * @param b - Second value to compare
+ * @returns `true` if the values are equal, `false` otherwise
+ */
+const _deepEqual = (a: unknown, b: unknown): boolean => {
+    // Handle primitive values and null/undefined
+    if (a === b) return true;
+    if (a === null || b === null) return false;
+    if (typeof a !== 'object' || typeof b !== 'object') return false;
+    
+    // Handle arrays
+    if (Array.isArray(a) !== Array.isArray(b)) return false;
+    if (Array.isArray(a)) {
+        if (a.length !== (b as any[]).length) return false;
+        for (let i = 0; i < a.length; i++) {
+            if (!_deepEqual(a[i], (b as any[])[i])) return false;
+        }
+        return true;
+    }
+    
+    // Handle objects
+    const keysA = Object.keys(a as object);
+    const keysB = Object.keys(b as object);
+    if (keysA.length !== keysB.length) return false;
+    
+    for (const key of keysA) {
+        if (!(key in (b as object))) return false;
+        if (!_deepEqual((a as any)[key], (b as any)[key])) return false;
+    }
+    
+    return true;
+};
+
+/**
  * Compares two values for equality. It handles `Equatable` objects, primitive types, and uses a general equality check for other types.
  * @param value1 - The first value to be tested.
  * @param value2 - The second value to be tested.
@@ -43,6 +77,7 @@ export const equates = (value1: equatable, value2: equatable): boolean => {
     } else if (isPrimitive(value1) && isPrimitive(value2)) {
         return value1 === value2;
     } else {
-        return equals(value1, value2);
+        // This is the fallback case that should behave like Ramda's equals
+        return _deepEqual(value1, value2);
     }
 };

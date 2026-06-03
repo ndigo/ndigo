@@ -1,7 +1,6 @@
 import { JSONValue, JSONObject, Serializable, createNull } from '@blue/core';
 import { Emitter, EventEmitter } from '@blue/context';
 import { AsyncDestroyable, Initializable } from '@blue/factory';
-import { forEachObjIndexed } from '@blue/util/object';
 import { validated, ClassValidationOptions, ClassValidationResult } from '@blue/validate';
 
 /**
@@ -87,7 +86,7 @@ export class GenericDomainComponent extends Emitter implements DomainComponent {
      */
     set data(newData: DomainData) {
         const initData = initializeData(this);
-        forEachObjIndexed(initData as any, newData);
+        Object.entries(newData).forEach(([key, value]) => initData(value, key));
         deleteProperty(this, 'data');
     }
 

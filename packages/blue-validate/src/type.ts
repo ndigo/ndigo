@@ -2,7 +2,6 @@
  * @author Jeff Rose
  */
 
-import { equals } from '@blue/util/relation';
 import { toString } from '@blue/util/string';
 import { is } from '@blue/util/types';
 import { TypeDefinition } from './types';
@@ -43,7 +42,7 @@ const { assign } = Object,
     isNotArray = (value: unknown) => !isArray(value),
     isString = is(String),
     isNotString = (value: unknown) => !isString(value),
-    isUndefined = equals(void 0);
+    isUndefined = (value: unknown): boolean => value === undefined;
 
 /**
  * Represents a reusable validation type, encapsulating a set of constraints and a validation backend.

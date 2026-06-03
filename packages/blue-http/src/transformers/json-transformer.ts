@@ -3,7 +3,6 @@
  */
 
 import { JSONObject } from '@blue/core';
-import { pipe } from '@blue/util/function';
 import { HTTPTransformer, TransformContext } from './http-transformer';
 
 /**
@@ -23,7 +22,12 @@ export class JSONTransformer implements HTTPTransformer<JSONObject, JSONObject> 
         transforms: Array<(value: JSONObject) => JSONObject>,
         condition?: (body: JSONObject, context: TransformContext) => boolean
     ) {
-        this.#pipeline = pipe(...transforms);
+        const _pipe =
+            <T>(...fns: Array<(v: T) => T>) =>
+            (x: T): T =>
+                fns.reduce((v, f) => f(v), x);
+        
+        this.#pipeline = _pipe(...transforms);
         this.#condition = condition;
     }
 

@@ -2769,12 +2769,14 @@ const promise = Promise.resolve(42);
 
 **Methods that convert between formats:**
 
-| Prefix     | Meaning                  | Returns              | Parameters         | Examples                                    |
-| :--------- | :----------------------- | :------------------- | :----------------- | :------------------------------------------ |
-| `to*`      | Converts to format       | String or object     | Often accepts opts | `toString()`, `toJSON()`, `toContentType()` |
-| `format*`  | Formats to string        | String               | May accept format  | `format()`, `formatDate()`                  |
-| `convert*` | Bidirectional conversion | Converted value      | None               | `convert()`, `convertToUTC()`               |
-| `with*`    | Creates copy with change | New instance (immut) | New value          | `withCharset()`, `withParameter()`          |
+| Prefix        | Meaning                  | Returns              | Parameters         | Examples                                                   |
+| :------------ | :----------------------- | :------------------- | :----------------- | :--------------------------------------------------------- |
+| `to*`         | Converts to format       | String or object     | Often accepts opts | `toString()`, `toJSON()`, `toContentType()`                |
+| `format*`     | Formats to string        | String               | May accept format  | `format()`, `formatDate()`                                 |
+| `convert*`    | Bidirectional conversion | Converted value      | None               | `convert()`, `convertToUTC()`                              |
+| `with*`       | Creates copy with change | New instance (immut) | New value          | `withCharset()`, `withParameter()`                         |
+| `parse*`      | Deserializes a string into a structured value; returns `null` or throws on invalid input | Typed value or `null` | String input | `parseKeypath()`, `parseWildcard()`, `JSON.parse()` |
+| `stringify*`  | Serializes a value to its string representation | String | Value to serialize | `JSON.stringify()`, `stringifyParameters()`        |
 
 **Examples:**
 
@@ -2844,6 +2846,27 @@ class PropertyValue {
         return `PropertyValue(${this.name}=${this.value})`;
     }
 }
+
+// From @blue/core — parse* for string deserialization
+// parse* functions return the result directly or null on failure (never a discriminated union)
+function parseWildcard(pattern: string): string {
+    // Always succeeds — any string is a valid wildcard
+    return `^${pattern.replace(/\*/g, '.*?')}$`;
+}
+
+function parseKeypath(input: string): KeypathToken[] | null {
+    // Returns null for invalid input rather than throwing
+    // (callers treat an unparseable keypath as "no match" rather than an error)
+    // ...
+}
+
+// ❌ Wrong: parse* that returns a discriminated union (use T | null instead)
+// function parseKeypath(input: string): { isError: false; result: KeypathToken[] } | { isError: true; error: string }
+// Unnecessarily complex — callers check `if (keypath)` not `if (!result.isError)`
+
+// ✅ parse* functions align with the Converter<string, T> type alias from @blue/core
+import type { Converter } from '@blue/core';
+const parseWildcard: Converter<string, string> = (pattern) => `^${pattern.replace(/\*/g, '.*?')}$`;
 
 // Real JavaScript examples
 const arr = [1, 2, 3];

@@ -5,8 +5,6 @@
  */
 
 import { Constructable, JSONValue, Serializable, Null, createNull } from '@blue/core';
-import { __ } from '@blue/util/function';
-import { gte } from '@blue/util/relation';
 import { is, isFunction, isNil, isNumber, isString, like } from '@blue/util/types';
 import { Aware, Destroyable, likeAwareAnd } from '@blue/factory';
 
@@ -190,7 +188,7 @@ const { defineProperty, deleteProperty, getPrototypeOf } = Reflect,
     { isNaN } = Number,
     { keys } = Object,
     { isArray } = Array,
-    greaterThanOrEqualZero = gte(__, 0),
+    greaterThanOrEqualZero = (value: number): boolean => value >= 0,
     isSymbol = is(Symbol) as (value: unknown) => value is symbol,
     lastIndexOfColon = (value: string): number => value.lastIndexOf(':');
 

@@ -59,13 +59,13 @@ ruleTester.run('no-internal-file-imports', noInternalFileImports, {
             ],
         },
         {
-            code: "export { baz } from '@blue/parser/_internal';",
+            code: "export { baz } from '@blue/model/_internal';",
             filename: '/packages/blue-core/src/container.ts',
             errors: [
                 {
                     messageId: 'internalImport',
                     data: {
-                        source: '@blue/parser/_internal',
+                        source: '@blue/model/_internal',
                     },
                 },
             ],

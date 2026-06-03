@@ -3,7 +3,6 @@
  */
 import { JSONObject, Parser, Stringifier } from '@blue/core';
 import queryExpression from './parsers/query-expression';
-import { isNotEmpty } from '@blue/util/logic';
 import { encodeURIComponent as encode } from '@blue/util/string';
 
 const arrayStringifier = (key: string, value: string, index?: number): string =>
@@ -38,7 +37,7 @@ const arrayStringifier = (key: string, value: string, index?: number): string =>
 
                       return `${encode(key)}=${encode(value)}`;
                   })
-                  .filter(isNotEmpty)
+                  .filter((s) => s.length > 0)
                   .join('&')
             : '';
 

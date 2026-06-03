@@ -2,11 +2,6 @@
  * @author Jeff Rose
  */
 
-import { identity, invoker, T } from '@blue/util/function';
-import { map } from '@blue/util/list';
-import { anyPass, cond } from '@blue/util/logic';
-import { mergeLeft, prop } from '@blue/util/object';
-import { equals } from '@blue/util/relation';
 import { is } from '@blue/util/types';
 import { createNull } from './null';
 import { isNotPrimitive } from './primitive';
@@ -41,14 +36,21 @@ export type serializable = JSONValue | Serializable;
 
 const { isArray } = Array,
     { parse, stringify } = JSON,
-    propIs = (type) => (name) => (obj) => is(type, prop(name, obj)),
+    propIs = (type) => (name) => (obj) => is(type, obj?.[name]),
     hasFunction = propIs(Function),
     hasToJSON = hasFunction('toJSON'),
     hasToString = hasFunction('toString'),
     isNotArray = (value: unknown) => !isArray(value),
-    toJSON = invoker(0, 'toJSON') as (value) => JSONValue,
-    toString = invoker(0, 'toString') as (value) => string,
-    _isJSONValue = (value) => equals(parse(stringify(value)), value);
+    _T = (): boolean => true,
+    _deepEqual = (a: unknown, b: unknown): boolean => {
+        if (a === b) return true;
+        if (a === null || b === null) return false;
+        if (typeof a !== 'object' || typeof b !== 'object') return false;
+        if (Array.isArray(a) !== Array.isArray(b)) return false;
+        const keysA = Object.keys(a as object), keysB = Object.keys(b as object);
+        if (keysA.length !== keysB.length) return false;
+        return keysA.every(k => _deepEqual((a as any)[k], (b as any)[k]));
+    };
 
 /**
  * Tests whether a value is a JSON array.
@@ -56,7 +58,7 @@ const { isArray } = Array,
  * @param value - Value to test.
  * @returns `true` when the value is an array that survives a JSON round trip unchanged.
  */
-export const isJSONArray = ((value) => isArray(value) && _isJSONValue(value)) as (value) => value is JSONArray;
+export const isJSONArray = ((value) => isArray(value) && _deepEqual(parse(stringify(value)), value)) as (value) => value is JSONArray;
 
 /**
  * Tests whether a value is a JSON object.
@@ -64,7 +66,7 @@ export const isJSONArray = ((value) => isArray(value) && _isJSONValue(value)) as
  * @param value - Value to test.
  * @returns `true` when the value is a non-primitive, non-array object that survives a JSON round trip unchanged.
  */
-export const isJSONObject = ((value) => isNotPrimitive(value) && isNotArray(value) && _isJSONValue(value)) as (
+export const isJSONObject = ((value) => isNotPrimitive(value) && isNotArray(value) && _deepEqual(parse(stringify(value)), value)) as (
     value
 ) => value is JSONObject;
 
@@ -81,7 +83,7 @@ export const isJSONValue = (value): value is JSONValue => {
         case 'string':
             return true;
         case 'object':
-            return value === null || _isJSONValue(value);
+            return value === null || _deepEqual(parse(stringify(value)), value);
         default:
             return false;
     }
@@ -93,7 +95,7 @@ export const isJSONValue = (value): value is JSONValue => {
  * @param value - Value to test.
  * @returns `true` when the value is already JSON-compatible or exposes `toJSON()`/`toString()`.
  */
-export const likeSerializable = anyPass([isJSONValue, hasToJSON, hasToString]) as (value) => value is serializable;
+export const likeSerializable = (value) => isJSONValue(value) || hasToJSON(value) || hasToString(value);
 
 /**
  * Converts an arbitrary value into a JSON-safe representation.
@@ -101,13 +103,13 @@ export const likeSerializable = anyPass([isJSONValue, hasToJSON, hasToString]) a
  * @param value - Value to serialize.
  * @returns A JSON-compatible value derived from the best available serialization strategy.
  */
-export const serialize = cond([
-    [hasToJSON, toJSON],
-    [isJSONValue, identity],
-    [hasToString, toString],
-    [isArray, map((value) => serialize(value))],
-    [T, mergeLeft(createNull())],
-]) as (value) => JSONValue;
+export const serialize = (value: any): JSONValue => {
+    if (hasToJSON(value)) return value.toJSON();
+    if (isJSONValue(value)) return value;
+    if (hasToString(value)) return value.toString();
+    if (isArray(value)) return value.map((v) => serialize(v));
+    return { ...value };
+};
 
 /**
  * * Developer Notes

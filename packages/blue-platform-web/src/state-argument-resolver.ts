@@ -4,7 +4,6 @@
 
 import { MethodParameter, MethodParameterType, AbstractNamedValueMethodArgumentResolver } from '@blue/dispatcher';
 import { Route } from '@blue/router';
-import { defaultTo } from '@blue/util/logic';
 import { isNil } from '@blue/util/types';
 import {
     ArgumentValueConverter,
@@ -43,7 +42,7 @@ export abstract class AbstractStateValueMethodArgumentResolver extends AbstractN
 
     /** Resolves and converts a history-state-backed argument value. */
     resolveArgument(parameter: MethodParameter, route: Route, mapping): any {
-        const resolveValue = defaultTo(parameter.defaultValue),
+        const resolveValue = (v: any) => v ?? parameter.defaultValue,
             value = resolveValue(this.resolveName(parameter.name, parameter, route, mapping)),
             converter = parameter.convert ?? this.#converter,
             convertedValue = convertArgumentValue(

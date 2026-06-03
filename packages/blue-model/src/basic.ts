@@ -2,11 +2,6 @@
  * @author Jeff Rose
  */
 import { isPrimitive } from '@blue/core';
-import { __, T } from '@blue/util/function';
-import { filter, length, uniq } from '@blue/util/list';
-import { isEmpty, isNotEmpty } from '@blue/util/logic';
-import { equals, gt, lt } from '@blue/util/relation';
-import { trim } from '@blue/util/string';
 import { isNumber, isString } from '@blue/util/types';
 import { isFuture, isPast } from '@blue/util/date';
 import { BasicModel } from 'objectmodel';
@@ -16,17 +11,22 @@ import { BasicModel } from 'objectmodel';
 export { BasicModel } from 'objectmodel';
 
 const { isFinite, isInteger, isSafeInteger } = Number,
-    isDense = (arr: Array<any>) => equals(length(filter(T, arr)), length(arr)),
-    greaterThanZero = gt(__, 0),
-    lessThanZero = lt(__, 0),
+    isDense = (arr: Array<any>): boolean => {
+        for (let i = 0; i < arr.length; i++) {
+            if (!(i in arr)) return false;
+        }
+        return true;
+    },
+    greaterThanZero = (x: number) => x > 0,
+    lessThanZero = (x: number) => x < 0,
     isFalsy = (x) => !x,
     isTruthy = (x) => !!x,
-    isNotBlank = (value: unknown) => !(isString(value) && isEmpty(value)),
+    isNotBlank = (value: unknown) => !(isString(value) && (value as string).length === 0),
     isNegativeNumber = ((value) => isNumber(value) && lessThanZero(value)) as (value) => value is number,
     isPositiveNumber = ((value) => isNumber(value) && greaterThanZero(value)) as (value) => value is number,
     isNormalized = (str: string) => str.normalize() === str,
-    isTrimmed = (str: string) => trim(str) === str,
-    isUnique = (arr: Array<any>) => equals(uniq(arr), arr);
+    isTrimmed = (str: string) => str.trim() === str,
+    isUnique = (arr: Array<any>) => new Set(arr).size === arr.length;
 
 /**
  * Matches primitive values accepted by ObjectModel.
@@ -115,7 +115,7 @@ export const FutureDate = BasicModel(Date)
  * Matches arrays that contain at least one item.
  */
 export const FullArray = BasicModel(Array)
-    .assert(isNotEmpty as any)
+    .assert(((arr: any[]) => arr.length > 0) as any)
     .as('FullArray');
 /**
  * Matches arrays whose values are unique.

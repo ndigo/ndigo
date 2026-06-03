@@ -8,36 +8,6 @@ describe('Category modules - import patterns', () => {
         expect(util.math.add(2, 3)).toBe(5);
     }, 20000);
 
-    test('logic category - namespace access', async () => {
-        const util = await import('@blue/util');
-        expect(util.logic).toBeDefined();
-        expect(typeof util.logic.and).toBe('function');
-    });
-
-    test('list category - namespace access', async () => {
-        const util = await import('@blue/util');
-        expect(util.list).toBeDefined();
-        expect(typeof util.list.map).toBe('function');
-    });
-
-    test('function category - namespace access', async () => {
-        const util = await import('@blue/util');
-        expect(util.fn).toBeDefined();
-        expect(typeof util.fn.pipe).toBe('function');
-    });
-
-    test('object category - namespace access', async () => {
-        const util = await import('@blue/util');
-        expect(util.object).toBeDefined();
-        expect(typeof util.object.keys).toBe('function');
-    });
-
-    test('relation category - namespace access', async () => {
-        const util = await import('@blue/util');
-        expect(util.relation).toBeDefined();
-        expect(typeof util.relation.equals).toBe('function');
-    });
-
     test('string category - namespace access', async () => {
         const util = await import('@blue/util');
         expect(util.string).toBeDefined();
@@ -52,15 +22,12 @@ describe('Category modules - import patterns', () => {
 
     test('Direct category imports work', async () => {
         const math = await import('@blue/util/math');
-        const logic = await import('@blue/util/logic');
-        const list = await import('@blue/util/list');
+        const string = await import('@blue/util/string');
 
         expect(math.default).toBeDefined();
-        expect(logic.default).toBeDefined();
-        expect(list.default).toBeDefined();
+        expect(string.default).toBeDefined();
 
         expect(math.default.add(10, 20)).toBe(30);
-        expect(typeof logic.default.and).toBe('function');
-        expect(typeof list.default.map).toBe('function');
+        expect(typeof string.default.trim).toBe('function');
     });
 });

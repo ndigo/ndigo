@@ -3,7 +3,10 @@
  */
 
 import randHex from './rand-hex.js';
-import { sample } from '../list/sample.js';
+import randInt from './rand-int.js';
+
+/** Variant nibbles for UUID v4 (RFC 4122 section 4.4). */
+const UUID_VARIANT_NIBBLES = [8, 9, 'a', 'b'] as const;
 
 /**
  * Generates a pseudo-random Globally Unique Identifier (v4).
@@ -16,7 +19,9 @@ import { sample } from '../list/sample.js';
  * guid();
  * //=> "5de3d09b-e79c-4727-932b-48c49228d508"
  */
-const guid = (): string =>
-    `${randHex(8)}-${randHex(4)}-4${randHex(3)}-${sample(1, [8, 9, 'a', 'b']) + randHex(3)}-${randHex(12)}`;
+const guid = (): string => {
+    const variantNibble = UUID_VARIANT_NIBBLES[randInt(0, UUID_VARIANT_NIBBLES.length - 1)];
+    return `${randHex(8)}-${randHex(4)}-4${randHex(3)}-${variantNibble}${randHex(3)}-${randHex(12)}`;
+};
 
 export default guid;

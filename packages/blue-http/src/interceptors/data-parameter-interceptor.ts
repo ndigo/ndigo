@@ -2,8 +2,6 @@
  * @author Jeff Rose
  */
 
-import { identity, pipe, T } from '@blue/util/function';
-import { anyPass, cond, ifElse } from '@blue/util/logic';
 import { is, isString } from '@blue/util/types';
 import QueryString from '../query-string';
 import { HTTPInit, HTTPMethod, InitializationAwareHTTPInterceptor } from '../http';
@@ -19,32 +17,35 @@ export type DataInit = BodyInit; // | JSONObject;
 export type DataParameterInit = HTTPInit & { data?: DataInit };
 
 /**
- * @typedef {module:http.HTTPInit} module:http.DataParameterInit
- * @property {BodyInit} [data]
- */
-
-/**
- * * @todo This interceptor could be more robust, e.g. it could do additional data processing,
+ * @todo This interceptor could be more robust, e.g. it could do additional data processing,
  * * set a consistent Content-Type header, and/or read an existing Content-Type header
  * * to affect processing. -JBR
  */
 
-const getEntries = pipe(ifElse(isString, QueryString.parse, identity), entriesIterator),
+const getEntries = (data: any) => entriesIterator(isString(data) ? QueryString.parse(data) : data),
     getOrHead = /^(GET|HEAD)$/i,
     isBodyless = (method: HTTPMethod): boolean => getOrHead.test(method),
     isArrayBuffer = is(ArrayBuffer),
     isDataView = is(DataView),
-    isTypedArray = anyPass([
-        is(Float32Array),
-        is(Float64Array),
-        is(Int8Array),
-        is(Int16Array),
-        is(Int32Array),
-        is(Uint8Array),
-        is(Uint8ClampedArray),
-        is(Uint16Array),
-        is(Uint32Array),
-    ]),
+    isFloat32Array = is(Float32Array),
+    isFloat64Array = is(Float64Array),
+    isInt8Array = is(Int8Array),
+    isInt16Array = is(Int16Array),
+    isInt32Array = is(Int32Array),
+    isUint8Array = is(Uint8Array),
+    isUint8ClampedArray = is(Uint8ClampedArray),
+    isUint16Array = is(Uint16Array),
+    isUint32Array = is(Uint32Array),
+    isTypedArray = (value: any): boolean =>
+        isFloat32Array(value) ||
+        isFloat64Array(value) ||
+        isInt8Array(value) ||
+        isInt16Array(value) ||
+        isInt32Array(value) ||
+        isUint8Array(value) ||
+        isUint8ClampedArray(value) ||
+        isUint16Array(value) ||
+        isUint32Array(value),
     isArrayBufferView = (value: any): boolean => isTypedArray(value) || isDataView(value),
     isBufferSource = (value: any): boolean => isArrayBuffer(value) || isArrayBufferView(value),
     isBlob = is(Blob),
@@ -57,15 +58,15 @@ const getEntries = pipe(ifElse(isString, QueryString.parse, identity), entriesIt
      * I don't know if there are performance implications to either approach but I thought this approach laid out the logic more clearly.
      * -JBR
      */
-    parseData = cond([
-        [isBlob, identity],
-        [isBufferSource, identity],
-        [isFormData, identity],
-        [isString, identity],
-        [isURLSearchParams, identity],
-        [isReadableStream, identity],
-        [T, JSON.stringify],
-    ]) as (value: DataInit) => BodyInit;
+    parseData = (value: DataInit): BodyInit => {
+        if (isBlob(value)) return value;
+        if (isBufferSource(value)) return value as ArrayBuffer;
+        if (isFormData(value)) return value;
+        if (isString(value)) return value;
+        if (isURLSearchParams(value)) return value;
+        if (isReadableStream(value)) return value;
+        return JSON.stringify(value);
+    };
 
 /**
  * Moves `data` into the URL for bodyless methods and into `body` otherwise.

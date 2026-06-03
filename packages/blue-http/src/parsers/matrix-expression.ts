@@ -1,57 +1,93 @@
 /**
  * @author Jeff Rose
  */
-import list from '@blue/util/list';
-import { replace, decodeURIComponent as decode } from '@blue/util/string';
-import { char, choice, possibly, regex, sepBy, sequenceOf, takeRight } from '@blue/parser';
+import { decodeURIComponent as decode } from '@blue/util/string';
 
-const { fromRepeatedPairs } = list;
+/**
+ * Parses a raw matrix-parameter segment into an array of `[key, value]` pairs.
+ *
+ * Rules:
+ * - Leading `;` is optional and skipped.
+ * - Parameters are separated by `;`.
+ * - `key=value` pairs: value may contain any character except `;`.
+ * - Key-only params produce `[key, null]`.
+ * - `+` is decoded to a space (via {@link decode}).
+ * - Comma-separated values produce an array; empty segments become `null`.
+ * - Empty values (`key=`) produce `null`.
+ */
+function parseMatrix(input: string): Record<string, any> {
+    let pos = 0;
+    const len = input.length;
 
-const matrixKeyRule = /^[^=;]+/,
-    matrixValueRule = /^[^;]*/,
-    replacePlusWithSpace = replace(/\+/g, ' '),
-    // Takes [key, value] or [key] and returns [key, value_or_null]
-    // Also handles comma-separated values for matrix strings
-    mapParameterToPair = (parsed): [string, any] => {
-        let key: string;
-        let value: any;
+    // Skip optional leading ';'
+    if (pos < len && input[pos] === ';') pos++;
 
-        if (Array.isArray(parsed)) {
-            if (parsed.length === 2) {
-                key = parsed[0];
-                value = parsed[1];
-            } else if (parsed.length === 1) {
-                key = parsed[0];
-                value = null;
+    const pairs: [string, any][] = [];
+
+    while (pos < len) {
+        // Parse key: /^[^=;]+/
+        const keyStart = pos;
+        while (pos < len && input[pos] !== '=' && input[pos] !== ';') pos++;
+
+        const rawKey = input.slice(keyStart, pos);
+        if (!rawKey) {
+            // Empty key — skip the stray '=' and its value (if any), then any trailing ';'
+            if (pos < len && input[pos] === '=') {
+                pos++; // skip '='
+                while (pos < len && input[pos] !== ';') pos++; // skip value
             }
-        } else {
-            key = parsed;
-            value = null;
+            if (pos < len && input[pos] === ';') pos++; // skip separator
+            continue;
         }
 
-        if (typeof value === 'string' && value.includes(',')) {
-            value = value.split(',').map((v) => (v === '' ? null : v));
-        } else if (value === '') {
-            value = null;
+        // Replace + with space before decoding (avoids regex-escape issues in the decode fallback path)
+        const key = decode(rawKey.replace(/\+/g, ' '));
+
+        let value: any = null;
+
+        if (pos < len && input[pos] === '=') {
+            pos++; // consume '='
+            // Parse value: /^[^;]*/ — may be empty
+            const valueStart = pos;
+            while (pos < len && input[pos] !== ';') pos++;
+            const decoded = decode(input.slice(valueStart, pos).replace(/\+/g, ' '));
+
+            if (decoded.includes(',')) {
+                value = decoded.split(',').map((v) => (v === '' ? null : v));
+            } else if (decoded === '') {
+                value = null;
+            } else {
+                value = decoded;
+            }
         }
 
-        return [key, value];
+        pairs.push([key, value]);
+
+        // Consume the ';' separator before the next parameter
+        if (pos < len && input[pos] === ';') pos++;
+    }
+
+    function fromRepeatedPairs(pairs: [any, any][]): Record<any, any> {
+        const result: Record<any, any> = {};
+        for (const [key, value] of pairs) {
+            if (!Object.prototype.hasOwnProperty.call(result, key)) {
+                result[key] = value;
+            } else if (Array.isArray(result[key])) {
+                result[key].push(value);
+            } else {
+                result[key] = [result[key], value];
+            }
+        }
+        return result;
+    }
+
+    return fromRepeatedPairs(pairs);
+}
+
+export const matrixExpression = {
+    run(input: string): { isError: false; result: Record<string, any>; index: number; data: string } {
+        return { isError: false, result: parseMatrix(input), index: input.length, data: '' };
     },
-    semicolon = char(';'),
-    equals = char('='),
-    // Match any character that is not a semicolon or an equals sign
-    matrixKey = regex(matrixKeyRule).map(replacePlusWithSpace).map(decode),
-    // Match any character that is not a semicolon (allows empty values)
-    matrixValue = regex(matrixValueRule).map(replacePlusWithSpace).map(decode),
-    // key=value
-    keyValue = sequenceOf([matrixKey, takeRight(equals)(matrixValue)]),
-    // key (treat value as null)
-    keyOnly = matrixKey.map((k) => [k, null]),
-    matrixParameter = choice([keyValue, keyOnly]),
-    matrixParameterList = sepBy(semicolon)(matrixParameter);
-
-export const matrixExpression = sequenceOf([possibly(semicolon), matrixParameterList]).map(([prefix, pairs]) =>
-    fromRepeatedPairs(pairs.map(mapParameterToPair))
-);
+};
 
 export default matrixExpression;

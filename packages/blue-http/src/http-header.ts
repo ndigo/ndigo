@@ -3,13 +3,9 @@
  */
 
 import { isEntries, isJSONObject, JSONValue, Serializable } from '@blue/core';
-import { always, T } from '@blue/util/function';
-import { cond } from '@blue/util/logic';
 import { is, isString } from '@blue/util/types';
 
 const { defineProperty, deleteProperty, get, set } = Reflect,
-    alwaysNull = always(null),
-    noop = always(void 0),
     isHeaders = is(Headers) as (value) => value is Headers,
     isRecord = isJSONObject as (value) => value is Record<string, string>;
 
@@ -61,21 +57,24 @@ function setPair(entries, name: string, value: string): void {
 }
 
 function deleteHeader(headers: HeadersInit, name: string): void {
-    cond([
-        [isHeaders, (h: Headers) => h.delete(name)],
-        [isEntries, (h) => deletePair(h, name)],
-        [isRecord, (h: Record<string, string>) => deleteProperty(h, name)],
-        [T, noop],
-    ])(headers);
+    if (isHeaders(headers)) {
+        (headers as Headers).delete(name);
+    } else if (isEntries(headers)) {
+        deletePair(headers, name);
+    } else if (isRecord(headers)) {
+        deleteProperty(headers as Record<string, string>, name);
+    }
 }
 
 function getHeader(headers: HeadersInit, name: string): string {
-    return cond([
-        [isHeaders, (h: Headers) => h.get(name)],
-        [isEntries, (h) => getPair(h, name)],
-        [isRecord, (h: Record<string, string>) => get(h, name)],
-        [T, alwaysNull],
-    ])(headers);
+    if (isHeaders(headers)) {
+        return (headers as Headers).get(name);
+    } else if (isEntries(headers)) {
+        return getPair(headers, name);
+    } else if (isRecord(headers)) {
+        return get(headers as Record<string, string>, name) as string;
+    }
+    return null;
 }
 
 function hasHeader(headers: HeadersInit, name: string): boolean {
@@ -84,12 +83,13 @@ function hasHeader(headers: HeadersInit, name: string): boolean {
 
 function setHeader(headers: HeadersInit, name: string, value): void {
     const stringValue = String(value);
-    cond([
-        [isHeaders, (h: Headers) => h.set(name, stringValue)],
-        [isEntries, (h) => setPair(h, name, stringValue)],
-        [isRecord, (h: Record<string, string>) => set(h, name, stringValue)],
-        [T, noop],
-    ])(headers);
+    if (isHeaders(headers)) {
+        (headers as Headers).set(name, stringValue);
+    } else if (isEntries(headers)) {
+        setPair(headers, name, stringValue);
+    } else if (isRecord(headers)) {
+        set(headers as Record<string, string>, name, stringValue);
+    }
 }
 
 /**

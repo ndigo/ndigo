@@ -4,8 +4,6 @@
 
 import { Constructable, FrameworkError, likeEnumerable, isPrimitive, entriesIterator } from '@blue/core';
 import { Destroyable, Initializable, likeDestroyable, likeInitializable } from './lifecycle';
-import { always } from '@blue/util/function';
-import { has } from '@blue/util/object';
 import { isConstructor, isFunction, isNumber, isString, like } from '@blue/util/types';
 import { Aware, AsAware, likeAwareAnd, likeAware, likeNameAware } from './aware';
 import { ContextToken } from './context-token';
@@ -414,7 +412,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
      * @returns `true` if this factory has its own value, `false` otherwise.
      */
     hasOwnValue(name: string): boolean {
-        return has(name, this) || has(`$${name}`, this);
+        return Object.prototype.hasOwnProperty.call(this, name) || Object.prototype.hasOwnProperty.call(this, `$${name}`);
     }
 
     /**
@@ -476,7 +474,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
             });
 
             if (likeEnumerable(this[name])) {
-                const alwaysName = always(name),
+                const alwaysName = () => name,
                     entries = entriesIterator(this[name]);
 
                 for (const [key, value] of entries) {

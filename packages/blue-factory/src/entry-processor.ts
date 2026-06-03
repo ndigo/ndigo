@@ -3,7 +3,6 @@
  */
 
 import { Destroyable } from './lifecycle';
-import { anyPass } from '@blue/util/logic';
 import { like } from '@blue/util/types';
 import { Registry } from './registry';
 import { Factory } from './factory';
@@ -156,12 +155,11 @@ export const likeEntryRegistryProcessor = like({ processEntryRegistry: Function 
  * @param value The value to be tested.
  * @returns Whether or not the `value` provided is an {@link EntryProcessor}.
  */
-export const likeEntryProcessor = anyPass([
-    likeConstructionAwareProcessor,
-    likeInitializationAwareProcessor,
-    likeDestructionAwareProcessor,
-    likeEntryRegistryProcessor,
-]) as (value) => value is EntryProcessor;
+export const likeEntryProcessor = (value): value is EntryProcessor =>
+    likeConstructionAwareProcessor(value) ||
+    likeInitializationAwareProcessor(value) ||
+    likeDestructionAwareProcessor(value) ||
+    likeEntryRegistryProcessor(value);
 
 /*
 export class InjectDecoratorEntryProcessor extends AsFactoryAware( Null ) implements ConstructionAwareProcessor {

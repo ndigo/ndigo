@@ -2,7 +2,7 @@
  * @author Jeff Rose
  */
 
-import { Null, PathMatcher, GlobPathMatcher } from '@blue/core';
+import { Null, PathMatcher, URLGlobPathMatcher } from '@blue/core';
 import { AsNameAware } from '@blue/factory';
 import { ApplicationContext, AsApplicationContextAware } from '@blue/context';
 import { Route } from '@blue/router';
@@ -65,7 +65,7 @@ export abstract class AbstractViewMapping extends AsNameAware(AsApplicationConte
             writable: false,
         });
         defineProperty(this, 'pathMatcher', {
-            value: new GlobPathMatcher(),
+            value: new URLGlobPathMatcher(),
             configurable: true,
             enumerable: false,
             writable: false,

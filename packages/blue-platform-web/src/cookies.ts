@@ -3,9 +3,15 @@
  */
 
 import { createNull, JSONObject, JSONValue } from '@blue/core';
-import type { Parser } from '@blue/parser';
 import cookieExpression from './parser/cookie-expression';
 import { decodeURIComponent as decode } from '@blue/util/string';
+
+/** Minimal parser shape: an object with a run method returning a success or failure. */
+type Parser<T> = {
+    run: (
+        input: string
+    ) => { isError: false; result: T; index: number; data: unknown } | { isError: true; error: string; index: number; data: unknown };
+};
 
 /** Parsed cookie structure returned by cookie parsing helpers. */
 export interface Cookie {

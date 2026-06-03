@@ -37,14 +37,8 @@ import {
     phoneOaoRule,
     CurrencyFormat,
 } from './formats';
-import { identity, pipe } from '@blue/util/function';
-import { any, append } from '@blue/util/list';
-import { defaultTo, isEmpty, ifElse, when } from '@blue/util/logic';
-import { prop } from '@blue/util/object';
-import { equals, gte, lte } from '@blue/util/relation';
 import { replace, split, toString } from '@blue/util/string';
 import { is } from '@blue/util/types';
-import { propSatisfies } from '@blue/util/logic';
 import { serializable } from '@blue/core';
 
 type Counter = (value) => number;
@@ -197,42 +191,44 @@ export type ValidationConstraints = {
  */
 
 const { parseFloat, parseInt } = Number,
-    appendEmptyString: (list: string[]) => string[] = append(''),
-    defaultToZero = defaultTo(0),
-    defaultToMaxValue = defaultTo(Number.MAX_VALUE),
-    isOne = equals(1),
+    _pipe =
+        <T>(...fns: Array<(x: T) => T>) =>
+        (x: T): T =>
+            fns.reduce((v: T, f) => f(v), x),
+    appendEmptyString: (list: string[]) => string[] = (arr: string[]) => [...arr, ''],
+    isOne = (x: any) => x === 1,
     isArray = Array.isArray,
-    isUndefined = equals(void 0),
+    isUndefined = (x: any) => x === undefined,
     isDefined = (value: unknown) => !isUndefined(value),
     isString = is(String) as (value) => value is string,
-    lengthIsOne: (value: any) => boolean = propSatisfies(isOne, 'length'),
+    lengthIsOne = (x: any): boolean => x?.length === 1,
     splitOnDot = split(/\./),
-    isSingleSpaced: (value: string) => boolean = (value: string): boolean => !pipe(split(' '), any(isEmpty))(value),
-    lengthOf: (value: any) => number = prop('length'),
-    removeAnyAlphaNumber = replace(anyAlphaNumericRule, ''),
-    removeLowerCase = replace(notACapitalRule, ''),
-    removeNonAlpha = replace(notAnAlphaRule, ''),
-    removeNonNumber = replace(notANumberRule, ''),
-    removeNonPasswordSymbol = replace(notAPasswordSymbolRule, ''),
-    removeLeadingSlash = replace(/^\//, ''),
-    removeTrailingSlash = replace(/\/$/, ''),
-    removeTrailingSlashAndFlags = replace(/\/[^/]*$/, ''),
-    removeSlashes = pipe(removeLeadingSlash, removeTrailingSlash),
-    removeSlashesAndFlags = pipe(removeLeadingSlash, removeTrailingSlashAndFlags),
-    removeWhitespace = replace(whitespaceRule, ''),
-    alphaCount: Counter = pipe(toString, removeNonAlpha, lengthOf),
-    numberCount: Counter = pipe(toString, removeNonNumber, lengthOf),
-    passwordSymbolCount: Counter = pipe(toString, removeNonPasswordSymbol, lengthOf),
-    specialsCount: Counter = pipe(toString, removeAnyAlphaNumber, lengthOf),
-    upperCaseCount: Counter = pipe(toString, removeLowerCase, lengthOf),
-    valueCount: Counter = pipe(toString, lengthOf),
+    isSingleSpaced: (value: string) => boolean = (value: string): boolean => !value.split(' ').some(s => s.length === 0),
+    lengthOf: (value: any) => number = (x: any) => x?.length,
+    removeAnyAlphaNumber: (s: string) => string = replace(anyAlphaNumericRule, ''),
+    removeLowerCase: (s: string) => string = replace(notACapitalRule, ''),
+    removeNonAlpha: (s: string) => string = replace(notAnAlphaRule, ''),
+    removeNonNumber: (s: string) => string = replace(notANumberRule, ''),
+    removeNonPasswordSymbol: (s: string) => string = replace(notAPasswordSymbolRule, ''),
+    removeLeadingSlash: (s: string) => string = replace(/^\//, ''),
+    removeTrailingSlash: (s: string) => string = replace(/\/$/, ''),
+    removeTrailingSlashAndFlags: (s: string) => string = replace(/\/[^/]*$/, ''),
+    removeSlashes: (s: string) => string = _pipe(removeLeadingSlash, removeTrailingSlash),
+    removeSlashesAndFlags: (s: string) => string = _pipe(removeLeadingSlash, removeTrailingSlashAndFlags),
+    removeWhitespace: (s: string) => string = replace(whitespaceRule, ''),
+    alphaCount: Counter = _pipe(toString, removeNonAlpha, lengthOf),
+    numberCount: Counter = _pipe(toString, removeNonNumber, lengthOf),
+    passwordSymbolCount: Counter = _pipe(toString, removeNonPasswordSymbol, lengthOf),
+    specialsCount: Counter = _pipe(toString, removeAnyAlphaNumber, lengthOf),
+    upperCaseCount: Counter = _pipe(toString, removeLowerCase, lengthOf),
+    valueCount: Counter = _pipe(toString, lengthOf),
     patternConstraint =
         ({ regex, flags = null }: PatternParams) =>
         (value: string): boolean => {
-            regex = ifElse(isString, removeSlashes, identity)(regex);
+            regex = isString(regex) ? removeSlashes(regex as string) : regex;
 
             const matcher: RegExp = isString(flags)
-                ? new RegExp(pipe(toString, removeSlashesAndFlags)(regex), flags)
+                ? new RegExp(removeSlashesAndFlags(String(regex)), flags)
                 : new RegExp(regex);
 
             return matcher.test(value);
@@ -247,7 +243,7 @@ const { parseFloat, parseInt } = Number,
     isAlphaNumericPlus: constraint = patternConstraint({
         regex: alphaNumericPlusRule.source,
     }) as unknown as constraint<serializable>,
-    isBlank: constraint = pipe(toString, removeWhitespace, isEmpty) as unknown as constraint<serializable>,
+    isBlank: constraint = _pipe(toString, removeWhitespace, (s: string) => s.length === 0) as unknown as constraint<serializable>,
     isBoolean: constraint = patternConstraint({ regex: booleanRule }) as unknown as constraint,
     isCapitals: constraint = (value, params: RangeParams = { min: 1 }) => rangeValidator(upperCaseCount(value), params),
     isCharacters: constraint = (value, params: RangeParams = { min: 1 }) => rangeValidator(alphaCount(value), params),
@@ -361,7 +357,8 @@ const { parseFloat, parseInt } = Number,
         value = toString(value);
 
         if (value.length > 0 && integer > -1 && fraction > -1) {
-            const parts: string[] = pipe(removeWhitespace, splitOnDot, when(lengthIsOne, appendEmptyString))(value);
+            const rawParts = splitOnDot(removeWhitespace(value));
+            const parts: string[] = rawParts.length === 1 ? [...rawParts, ''] : rawParts;
 
             if (integer > 0) {
                 result = parts[0].length <= integer;
@@ -419,14 +416,14 @@ const { parseFloat, parseInt } = Number,
      * @param {Param} params
      * @returns {boolean} Whether or not the `value` is less than or equal to `params.value`.
      */
-    isMax: constraint<string> = (value, params: Params = {}) => lte(parseFloat(value as any), parseFloat(params.value)),
+    isMax: constraint<string> = (value, params: Params = {}) => parseFloat(value as any) <= parseFloat(params.value),
     /**
      * Validates a number to be greater than
      * @param {string|external:number} value The value to be tested
      * @param {Param} params
      * @returns {boolean} Whether or not the `value` is greater than or equal to `params.value`.
      */
-    isMin: constraint<string> = (value, params: Params = {}) => gte(parseFloat(value as any), parseFloat(params.value)),
+    isMin: constraint<string> = (value, params: Params = {}) => parseFloat(value as any) >= parseFloat(params.value),
     /** Validates currency based on these rules (BLUEJS-741) */
     isMoney: constraint<string> = (value, params: MoneyParams = { format: 'USD' }) =>
         (params.currencyFormat || currencyFormats[params.format || 'USD']).regex.test(toString(value)),
@@ -512,7 +509,10 @@ const { parseFloat, parseInt } = Number,
         return value.length === 0 || value[0] !== params.value;
     },
     isNotBeginWith1: constraint = (value: string | number) => isNotBeginWith(value, { value: '1' }),
-    isNotBlank: constraint = (value) => !isBlank(value),
+    isNotBlank: constraint = (value) => {
+        const strValue = toString(value);
+        return !isBlank(value);
+    },
     isNumbers: constraint = (value, params: RangeParams = { min: 1 }) => rangeValidator(numberCount(value), params),
     isNumeric: constraint = patternConstraint({ regex: numericRule.source }) as unknown as constraint<serializable>,
     isPasswordCharacters: constraint = patternConstraint({
@@ -541,10 +541,10 @@ const { parseFloat, parseInt } = Number,
      * @param {string} flags The flags to be used with the regular expression
      */
     isPatternMatch = (value: string, regexp: Pattern, flags?: string): boolean => {
-        regexp = ifElse(isString, removeSlashes, identity)(regexp);
+        regexp = isString(regexp) ? removeSlashes(regexp as string) : regexp;
 
         const matcher: RegExp = isString(flags)
-            ? new RegExp(pipe(toString, removeSlashesAndFlags)(regexp), flags)
+            ? new RegExp(removeSlashesAndFlags(String(regexp)), flags)
             : new RegExp(regexp);
 
         return matcher.test(value);
@@ -627,8 +627,10 @@ const { parseFloat, parseInt } = Number,
         if (isDefined(params.value)) {
             min = max = Number(params.value);
         } else {
-            min = defaultToZero(Number(params.min));
-            max = defaultToMaxValue(Number(params.max));
+            const rawMin = Number(params.min);
+            const rawMax = Number(params.max);
+            min = Number.isNaN(rawMin) ? 0 : rawMin;
+            max = Number.isNaN(rawMax) ? Number.MAX_VALUE : rawMax;
         }
 
         return valueToCompare >= min && valueToCompare <= max;

@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import type { Ok } from '@blue/parser';
+import type { CookieParseResult } from '../../src/cookies';
 import cookies from '../../src/cookies';
 
 const parseCookies = (input: string): Record<string, string> => {
-    return (cookies.run(input) as Ok<Record<string, string>, string>).result;
+    return (cookies.run(input) as Extract<CookieParseResult, { isError: false }>).result as Record<string, string>;
 };
 
 describe('cookies', function () {

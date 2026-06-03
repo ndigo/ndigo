@@ -1,5 +1,5 @@
 import { Route } from './route';
-import { PathMatcher, AsPathMatcherFilter, Null, PathMatcherFilter, GlobPathMatcher } from '@blue/core';
+import { PathMatcher, AsPathMatcherFilter, Null, PathMatcherFilter, URLGlobPathMatcher } from '@blue/core';
 
 /**
  * A function signature for a router middleware, which can optionally prevent further processing.
@@ -94,7 +94,7 @@ export class MappedRouterInterceptor extends AsPathMatcherFilter(Null) implement
         this.#interceptor = interceptor;
         this.#includePatterns = includePatterns ?? [];
         this.#excludePatterns = excludePatterns ?? [];
-        this.pathMatcher = new GlobPathMatcher();
+        this.pathMatcher = new URLGlobPathMatcher();
         this.setIncludePatterns(this.#includePatterns);
         this.setExcludePatterns(this.#excludePatterns);
     }

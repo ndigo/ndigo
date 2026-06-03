@@ -3,7 +3,7 @@
  */
 
 import { Route, RouteSegment } from '@blue/router';
-import { PathMatcher, GlobPathMatcher, likePathMatcher } from '@blue/core';
+import { PathMatcher, URLGlobPathMatcher, likePathMatcher } from '@blue/core';
 import { RouteHandlerMethod, RouteHandlerMethodMappingNamingStrategy } from './route-handler-method';
 import {
     AbstractNameValueExpression,
@@ -484,7 +484,7 @@ export class PatternsRouteCondition extends AbstractRouteCondition<PatternsRoute
             patterns = [patterns];
             if (typeof pathMatcherOrRouteCondition === 'string') {
                 patterns.push(pathMatcherOrRouteCondition);
-                pathMatcherOrRouteCondition = new GlobPathMatcher();
+                pathMatcherOrRouteCondition = new URLGlobPathMatcher();
             }
             if (typeof useTrailingSlashMatch === 'string') {
                 patterns.push(useTrailingSlashMatch);
@@ -554,7 +554,7 @@ export class PatternsRouteCondition extends AbstractRouteCondition<PatternsRoute
             });
         } else {
             defineProperty(this, 'pathMatcher', {
-                value: new GlobPathMatcher(),
+                value: new URLGlobPathMatcher(),
                 configurable: true,
                 enumerable: false,
                 writable: false,

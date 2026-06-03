@@ -6,8 +6,17 @@ import { like } from '@blue/util/types';
 import { AbstractValueComparator, Comparator } from './comparable';
 import { Constructable } from './constructable';
 import { FrameworkError } from './error';
-import { glob } from '@blue/parser';
+import { parseUrlGlob } from './url-glob';
+import { LRUCache } from './_lru-cache';
 import { PatternMatcher } from './matchable';
+
+const DOT = '.',
+    SLASH = '/',
+    STAR = '*',
+    GLOBSTAR = `${STAR}${STAR}`,
+    DOT_STAR = `${DOT}${STAR}`,
+    SLASH_STAR = `${SLASH}${STAR}`,
+    SLASH_GLOBSTAR = `${SLASH}${GLOBSTAR}`;
 
 /**
  * Defines a contract for matching and merging path patterns.
@@ -69,41 +78,6 @@ export interface PathMatcherFilter {
      */
     setIncludePatterns(includePatterns: string[]): void;
 }
-
-/**
- * Combines two patterns into a new pattern.
- *
- * The approach used for combining the two pattern depends on the underlying implementation.
- * @param {string} pattern1 The first pattern
- * @param {string} pattern2 The second pattern
- * @returns {string} The combination of the two patterns
- */
-
-/**
- * Given a full path, returns a {@link Comparator|Comparator} suitable for sorting patterns in order of explicitness for that path.
- *
- * The approach used depends on the underlying implementation.
- * @param {string} path The full path to use for comparison
- * @returns {module:core.Comparator} A comparator capable of sorting patterns in order of explicitness
- */
-
-/**
- * Match the given `path` against the given `pattern`, according to this PathMatcher's matching strategy.
- * @param {string} pattern The pattern to match against
- * @param {string} path The path to test
- * @returns {boolean} Whether or not the `path` matched.
- */
-
-/**
- */
-
-const DOT = '.',
-    SLASH = '/',
-    STAR = '*',
-    GLOBSTAR = `${STAR}${STAR}`,
-    DOT_STAR = `${DOT}${STAR}`,
-    SLASH_STAR = `${SLASH}${STAR}`,
-    SLASH_GLOBSTAR = `${SLASH}${GLOBSTAR}`;
 
 /**
  * Type guard that checks if a given value is a {@link PathMatcher}.
@@ -252,24 +226,32 @@ export class EqualsPathMatcher implements PathMatcher {
 /**
  * @extends module:core.PathMatcher
  */
-export class GlobPathMatcher implements PathMatcher {
-    getPatternComparator(path: string): Comparator<string> {
+export class URLGlobPathMatcher implements PathMatcher {
+    #cache;
+
+    /**
+     * @param cacheCapacity - Maximum number of compiled patterns to cache. Default: 256.
+     */
+    constructor(cacheCapacity = 256) {
+        this.#cache = new LRUCache(cacheCapacity);
+    }
+
+    getPatternComparator(path) {
         return new GlobPatternComparator(path);
     }
 
-    match(pattern: string, path: string): boolean {
-        const parseResult = glob.run(pattern);
-        if (!parseResult.isError) {
-            // Type narrowing: parseResult is Ok<string, any> here
-            const regex = new RegExp(
-                (parseResult as { isError: false; result: string; index: number; data: any }).result
-            );
-            return regex.test(path);
+    match(pattern, path) {
+        let regex = this.#cache.get(pattern);
+        if (regex === undefined) {
+            const regexSrc = parseUrlGlob(pattern);
+            if (regexSrc === null) return false;
+            regex = new RegExp(regexSrc);
+            this.#cache.set(pattern, regex);
         }
-        return false;
+        return regex.test(path);
     }
 
-    merge(pattern1: string, pattern2: string): string {
+    merge(pattern1, pattern2) {
         if (typeof pattern1 !== 'string') {
             throw new TypeError('"pattern1" must be a string');
         }

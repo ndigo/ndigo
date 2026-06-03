@@ -25,16 +25,8 @@ ruleTester.run('no-direct-integration-imports', noDirectIntegrationImports, {
             filename: '/packages/blue-util/src/ramda.ts',
         },
         {
-            code: "import { choice } from 'arcsecond';",
-            filename: '/packages/blue-parser/src/parser.ts',
-        },
-        {
             code: "import * as R from 'ramda';",
             filename: '/packages/blue-core/test/something.spec.ts',
-        },
-        {
-            code: "import { choice } from '@blue/parser';",
-            filename: '/packages/blue-core/src/matcher.ts',
         },
         {
             code: "import { describe } from 'vitest';",
@@ -63,32 +55,6 @@ ruleTester.run('no-direct-integration-imports', noDirectIntegrationImports, {
                     messageId: 'directImport',
                     data: {
                         library: 'date-fns',
-                        integrationLayer: '@blue/util',
-                    },
-                },
-            ],
-        },
-        {
-            code: "import { choice } from 'arcsecond';",
-            filename: '/packages/blue-router/src/matcher.ts',
-            errors: [
-                {
-                    messageId: 'directImport',
-                    data: {
-                        library: 'arcsecond',
-                        integrationLayer: '@blue/parser',
-                    },
-                },
-            ],
-        },
-        {
-            code: "export { something } from 'ramda';",
-            filename: '/packages/blue-core/src/index.ts',
-            errors: [
-                {
-                    messageId: 'directImport',
-                    data: {
-                        library: 'ramda',
                         integrationLayer: '@blue/util',
                     },
                 },

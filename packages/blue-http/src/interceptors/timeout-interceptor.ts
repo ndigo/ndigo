@@ -3,8 +3,6 @@
  */
 
 import ResponseError from '../response-error';
-import { __ } from '@blue/util/function';
-import { gt } from '@blue/util/relation';
 import { isNumber } from '@blue/util/types';
 import {
     CompletionAwareHTTPInterceptor,
@@ -21,7 +19,7 @@ export type TimeoutInit = HTTPInit & { timeout?: number };
 
 const { defineProperty } = Reflect,
     { isInteger } = Number,
-    greaterThanZero = gt(__, 0),
+    greaterThanZero = (value: number): boolean => value > 0,
     isPositiveNumber = (value: unknown): value is number =>
         isNumber(value) && isInteger(value as number) && greaterThanZero(value);
 

@@ -2,9 +2,6 @@
  * @author Jeff Rose
  */
 
-import { T, invoker, pipe } from '@blue/util/function';
-import { cond } from '@blue/util/logic';
-import { prop } from '@blue/util/object';
 import { isNil, is } from '@blue/util/types';
 
 /**
@@ -99,10 +96,12 @@ export type Entries<Value> =
 
 const { isArray } = Array,
     { entries } = Object,
-    propIs = (type) => (name) => (obj) => is(type, prop(name, obj)),
+    propIs = (type) => (name) => (obj) => is(type, obj?.[name]),
     hasFunction = propIs(Function),
     hasEntries = hasFunction('entries'),
-    invokeEntries = invoker(0, 'entries');
+    _invokeEntries = (obj: any) => obj.entries(),
+    _T = (): boolean => true,
+    _entriesToIterator = (obj: object) => indexedIterator(entries(obj));
 
 /**
  * Type guard to check if a value is an entry (a two-element array).
@@ -188,10 +187,10 @@ export class EntriesIterator<T = any> implements IterableIterator<Entry<T>> {
      * @param target - The object or collection to iterate over its entries.
      */
     constructor(target: object) {
-        this.#iterator = cond([
-            [hasEntries, invokeEntries],
-            [T, pipe(entries, indexedIterator)],
-        ])(target) as Iterator<Entry<T>>;
+        this.#iterator = (hasEntries(target)
+            ? _invokeEntries(target)
+            : _entriesToIterator(target)
+        ) as Iterator<Entry<T>>;
     }
 
     /**

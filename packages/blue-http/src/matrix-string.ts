@@ -3,37 +3,29 @@
  */
 import { JSONObject, Parser, Stringifier } from '@blue/core';
 import matrixExpression from './parsers/matrix-expression';
-import { always, comparator, pipe } from '@blue/util/function';
-import { filter, join, map, sort } from '@blue/util/list';
-import { isNotEmpty } from '@blue/util/logic';
-import { keys } from '@blue/util/object';
-import { equals } from '@blue/util/relation';
 import { encodeURIComponent as encodeValue } from '@blue/util/string';
 
-const alwaysEmptyString = always(''),
-    isNull = equals(null),
-    isUndefined = equals(undefined),
-    isDefined = (value: unknown) => !isUndefined(value),
+const isNull = (value: unknown): boolean => value === null,
+    isUndefined = (value: unknown): boolean => value === undefined,
+    isDefined = (value: unknown): boolean => value !== undefined,
     // ["a","b","c","#"] -> ["a","b","c","%23"]
-    encodeValues = map(encodeValue),
+    encodeValues = (arr: string[]): string[] => arr.map(encodeValue),
     // ["a","",{},"b",[],"c"] -> ["a","b","c"]
-    filterEmpty = filter(isNotEmpty),
-    // ["a",undefined,"b","c",undefined] -> ["a","b","c"]
-    filterUndefined = filter(isDefined),
+    filterEmpty = (arr: unknown[]): unknown[] => arr.filter((v) => v !== '' && v !== null && v !== undefined && !(Array.isArray(v) && v.length === 0)),
     // ["a","b","c"] ->  "a,b,c"
-    joinOnComma = join(','),
+    joinOnComma = (arr: string[]): string => arr.join(','),
     // ["a","b","c"] ->  "a=b=c"
-    joinOnEqual = join('='),
+    joinOnEqual = (arr: string[]): string => arr.join('='),
     // ["a","b","c"] ->  "a;b;c"
-    joinOnSemicolon = join(';'),
+    joinOnSemicolon = (arr: string[]): string => arr.join(';'),
     // ["a",undefined,"b","c",undefined,"#"] -> "a,b,c,%23"
-    encodeList = pipe(filterUndefined, encodeValues, joinOnComma),
+    encodeList = (arr: unknown[]): string => joinOnComma(encodeValues(arr.filter(isDefined) as string[])),
     encodeParam =
         (object: any) =>
         (key: string): string => {
             const value = object[key];
             if (isUndefined(value)) {
-                return alwaysEmptyString();
+                return '';
             }
             if (isNull(value)) {
                 return encodeValue(key);
@@ -43,12 +35,16 @@ const alwaysEmptyString = always(''),
             }
             return joinOnEqual([encodeValue(key), encodeValue(value as string)]);
         },
-    naturalComparator = comparator<any>((a, b): boolean => a < b),
-    naturalSort = sort(naturalComparator),
-    toMatrixString = (object): string => {
-        // @ts-ignore: ¯\\_(ツ)_/¯
-        const encodeParams = map(encodeParam(object));
-        return object ? pipe(keys, naturalSort, encodeParams, filterEmpty, joinOnSemicolon)(object) : '';
+    toMatrixString = (object: any): string => {
+        if (!object) {
+            return '';
+        }
+        const encode = encodeParam(object);
+        const sortedKeys = Object.keys(object).sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
+        return sortedKeys
+            .map(encode)
+            .filter((s) => s.length > 0)
+            .join(';');
     };
 
 /**

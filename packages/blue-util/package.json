@@ -10,12 +10,7 @@
   "exports": {
     ".": "./lib/index.js",
     "./date": "./lib/date/index.js",
-    "./function": "./lib/function/index.js",
-    "./list": "./lib/list/index.js",
-    "./logic": "./lib/logic/index.js",
     "./math": "./lib/math/index.js",
-    "./object": "./lib/object/index.js",
-    "./relation": "./lib/relation/index.js",
     "./string": "./lib/string/index.js",
     "./types": "./lib/type/index.js"
   },
@@ -25,23 +20,8 @@
       "date": [
         "./lib/date/index.d.ts"
       ],
-      "function": [
-        "./lib/function/index.d.ts"
-      ],
-      "list": [
-        "./lib/list/index.d.ts"
-      ],
-      "logic": [
-        "./lib/logic/index.d.ts"
-      ],
       "math": [
         "./lib/math/index.d.ts"
-      ],
-      "object": [
-        "./lib/object/index.d.ts"
-      ],
-      "relation": [
-        "./lib/relation/index.d.ts"
       ],
       "string": [
         "./lib/string/index.d.ts"
@@ -65,8 +45,6 @@
     "bluejs",
     "blue-js",
     "blue-util",
-    "functional",
-    "fp",
     "util",
     "utilities",
     "utility"

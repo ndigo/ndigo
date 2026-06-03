@@ -8,7 +8,6 @@ import { Aware } from '@blue/factory';
 import ResponseError from './response-error';
 import { TransformInterceptor } from './interceptors/transform-interceptor';
 import type { Transform } from './transformers/http-transformer';
-import { anyPass } from '@blue/util/logic';
 import { is, like } from '@blue/util/types';
 import { likeResponse } from './like-response';
 
@@ -335,13 +334,12 @@ export const likeResponseAwareHTTPInterceptor = like({ postResponse: Function })
  * @param value - The value to be tested.
  * @returns `true` when the value matches at least one interceptor role.
  */
-export const likeHTTPInterceptor = anyPass([
-    likeCompletionAwareHTTPInterceptor,
-    likeErrorAwareHTTPInterceptor,
-    likeInitializationAwareHTTPInterceptor,
-    likeRequestAwareHTTPInterceptor,
-    likeResponseAwareHTTPInterceptor,
-]) as (value) => value is ResponseAwareHTTPInterceptor;
+export const likeHTTPInterceptor = (value): value is ResponseAwareHTTPInterceptor =>
+    likeCompletionAwareHTTPInterceptor(value) ||
+    likeErrorAwareHTTPInterceptor(value) ||
+    likeInitializationAwareHTTPInterceptor(value) ||
+    likeRequestAwareHTTPInterceptor(value) ||
+    likeResponseAwareHTTPInterceptor(value);
 
 /**
  * Pattern matcher that uses wildcard expressions and caches compiled patterns.

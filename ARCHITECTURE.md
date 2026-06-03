@@ -2662,6 +2662,10 @@ Files beginning with underscore (`_`) are **internal implementation details**:
 3. `@blue/auth` MVP definition and implementation
 4. ~~`@blue/orm` MVP definition and implementation~~ ✅
 
+### Future Architectural Items
+
+- **`ConversionService`** — A registry-backed type conversion service (modelled on Spring's `ConversionService`) for registering `Converter<S,T>` implementations and resolving them by source/target type at runtime. Primarily useful for HTTP argument binding (e.g. `String → UUID`, `String → Date`, `String → domain type`) and `@ConfigurationProperties`-style binding. Would be registered in `ApplicationContext` and consumed by the dispatcher's argument resolver chain. The `Converter<S, T>`, `Parser<T>`, and `Stringifier<T>` types in `@blue/core` form the intended foundation.
+
 For strategic architecture direction (platform portability, boot lifecycle, boundary decisions, and package maturity), see [2026-03-08_ARCHITECTURE_ROADMAP.md](./docs/reference/2026-03-08_ARCHITECTURE_ROADMAP.md).
 
 ---

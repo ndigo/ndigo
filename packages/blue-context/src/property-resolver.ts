@@ -2,12 +2,9 @@
  * @author Jeff Rose
  */
 
-import { IllegalStateError, JSONValue, JSONObject, createNull } from '@blue/core';
-import { keypathExpression } from '@blue/parser';
-import { reduce } from '@blue/util/list';
-import { path } from '@blue/util/object';
+import { IllegalStateError, JSONValue, JSONObject, createNull, parseKeypath } from '@blue/core';
+import type { KeypathToken } from '@blue/core';
 import { like, isNil } from '@blue/util/types';
-import { pathSatisfies } from '@blue/util/logic';
 
 /**
  * Resolves property values from a configured set of sources.
@@ -77,9 +74,9 @@ export interface ConfigurablePropertyResolver extends PropertyResolver {
  */
 
 const { defineProperty, getPrototypeOf, setPrototypeOf } = Reflect,
-    pathIsDefined = (keypath: string[], obj: any): boolean => {
-        const predicate = (value: unknown) => !isNil(value);
-        return pathSatisfies(predicate, keypath, obj) as boolean;
+    pathIsDefined = (keypath: KeypathToken[], obj: any): boolean => {
+        const value = keypath.reduce((acc: any, k) => acc?.[k], obj);
+        return !isNil(value);
     },
     linkPrototype = (current, next) => {
         setPrototypeOf(next, null);
@@ -88,7 +85,7 @@ const { defineProperty, getPrototypeOf, setPrototypeOf } = Reflect,
     },
     toPrototypeChain = (list: JSONObject[]): JSONObject => {
         const data: JSONObject = createNull();
-        reduce(linkPrototype, data)(list);
+        list.reduce(linkPrototype, data);
         return data;
     };
 
@@ -146,13 +143,10 @@ export class PrototypalPropertyResolver implements ConfigurablePropertyResolver 
      * @returns The resolved property value or the default value.
      */
     getProperty(key: string, defaultValue?: JSONValue): JSONValue {
-        const parseResult = keypathExpression.run(key);
-        if (!parseResult.isError) {
-            // Type narrowing: parseResult is Ok<T, D> here
-            const keypath = (parseResult as { isError: false; result: any; index: number; data: any }).result;
-            return keypath ? (path(keypath, this.properties) ?? defaultValue) : defaultValue;
-        }
-        return defaultValue;
+        const keypath = parseKeypath(key);
+        if (!keypath) return defaultValue;
+        const value = keypath.reduce((acc: any, k) => acc?.[k], this.properties as any);
+        return value ?? defaultValue;
     }
 
     /**
@@ -177,12 +171,7 @@ export class PrototypalPropertyResolver implements ConfigurablePropertyResolver 
      * @returns `true` when the property exists.
      */
     hasProperty(key: string): boolean {
-        const parseResult = keypathExpression.run(key);
-        if (!parseResult.isError) {
-            // Type narrowing: parseResult is Ok<T, D> here
-            const keypath = (parseResult as { isError: false; result: any; index: number; data: any }).result;
-            return keypath ? pathIsDefined(keypath, this.properties) : false;
-        }
-        return false;
+        const keypath = parseKeypath(key);
+        return keypath ? pathIsDefined(keypath, this.properties) : false;
     }
 }

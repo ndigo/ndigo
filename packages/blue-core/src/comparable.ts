@@ -2,7 +2,6 @@
  * @author Jeff Rose
  */
 
-import { comparator } from '@blue/util/function';
 import { like } from '@blue/util/types';
 
 /**
@@ -68,7 +67,9 @@ export interface Comparator<T> {
 }
 
 const { defineProperty } = Reflect,
-    naturalPredicate = <T>(value1: T, value2: T): boolean => value1 < value2;
+    naturalPredicate = <T>(value1: T, value2: T): boolean => value1 < value2,
+    _comparator = <T>(pred: predicate<T>): comparison<T> => (a: T, b: T): number =>
+        pred(a, b) ? -1 : pred(b, a) ? 1 : 0;
 
 export abstract class AbstractValueComparator implements Comparator<string> {
     /**
@@ -126,7 +127,7 @@ export const likeComparator = like({ compare: Function }) as (value) => value is
  * @param value2 - The second value.
  * @returns A negative integer, zero, or a positive integer as the first argument is less than, equal to, or greater than the second.
  */
-export const naturalComparison = comparator(naturalPredicate);
+export const naturalComparison = _comparator(naturalPredicate);
 
 /**
  * Inverts the order of a given comparison function.
@@ -162,7 +163,7 @@ class PredicateComparator<T> implements Comparator<T> {
      */
     constructor(pred: predicate<T>) {
         defineProperty(this, 'compare', {
-            value: comparator<T>(pred),
+            value: _comparator<T>(pred),
             configurable: true,
             enumerable: false,
             writable: false,

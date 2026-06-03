@@ -3,17 +3,14 @@
  */
 
 import { BasicModel } from '@blue/model';
-import { __, constructN, pipe } from '@blue/util/function';
-import { gte, lte } from '@blue/util/relation';
 import { test } from '@blue/util/string';
 
-const newRegExp = constructN(1, RegExp),
-    only = (pattern: string) => `^${pattern}$`,
+const only = (pattern: string) => `^${pattern}$`,
     oneOrMore = (pattern: string) => `[${pattern}]+`,
-    withinRange = (min, max) => (value) => gte(__, min)(value) && lte(__, max)(value),
-    lengthWithinRange = (min, max) => (value) => withinRange(min, max)(value.length),
-    matchesOneOrMore = pipe(oneOrMore, newRegExp, test as any) as any,
-    matchesOnly = pipe(oneOrMore, only, newRegExp, test as any) as any,
+    withinRange = (min: number, max: number) => (value: number) => value >= min && value <= max,
+    lengthWithinRange = (min: number, max: number) => (value: { length: number }) => withinRange(min, max)(value.length),
+    matchesOneOrMore = (pattern: string) => test(new RegExp(`[${pattern}]+`)) as any,
+    matchesOnly = (pattern: string) => test(new RegExp(`^[${pattern}]+$`)) as any,
     ALPHA_PATTERN = 'A-Za-z',
     NUMERIC_PATTERN = '0-9',
     isOneOrMoreAlphaNumericOrUnderscore = matchesOneOrMore(`${ALPHA_PATTERN}${NUMERIC_PATTERN}_`),

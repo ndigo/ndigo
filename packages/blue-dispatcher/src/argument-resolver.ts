@@ -5,7 +5,6 @@
 import { Factory } from '@blue/factory';
 import { Route } from '@blue/router';
 import { MethodParameter, MethodParameterType } from './route-parameter';
-import { defaultTo } from '@blue/util/logic';
 import { isNil, like } from '@blue/util/types';
 
 /**
@@ -77,7 +76,7 @@ export abstract class AbstractNamedValueMethodArgumentResolver implements Handle
      * @returns The resolved argument value, or `null` if not resolvable.
      */
     resolveArgument(parameter: MethodParameter, route: Route, mapping): any {
-        const resolveValue = defaultTo(parameter.defaultValue),
+        const resolveValue = (v: any) => v ?? parameter.defaultValue,
             value = resolveValue(this.resolveName(parameter.name, parameter, route, mapping));
 
         isNil(value) && parameter.required && this.handleMissingValue(parameter.name);

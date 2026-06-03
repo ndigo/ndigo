@@ -9,9 +9,6 @@ import { Environment, AsEnvironmentAware, StandardEnvironment, ConfigurableEnvir
 import { EntryRegistryProcessor, Registry } from '@blue/factory';
 import { AsResourceLoaderAware } from './resource';
 import { Enumerable, Null, JSONObject, likeEnumerable, createNull, JSONValue } from '@blue/core';
-import { pipe } from '@blue/util/function';
-import { uniq } from '@blue/util/list';
-import { split } from '@blue/util/string';
 
 type ProfileMetadata = string[];
 
@@ -21,8 +18,7 @@ const { defineProperty, getOwnPropertyDescriptor } = Reflect,
     CONFIG_PROPERTY = 'config:property',
     CONFIG_PROPERTY_SOURCE = 'config:property:source',
     CONFIG_ENTRY = 'config:entry',
-    splitOnComma = split(','),
-    toUniqueArray = pipe(splitOnComma, uniq),
+    toUniqueArray = (name: string): string[] => [...new Set(name.split(','))],
     // Helper to get metadata from a class constructor
     getMetadata = (target: any): Record<string, any> => {
         if (!target || typeof target !== 'function') {

@@ -5,12 +5,8 @@
 import { Serializable, JSONValue } from './serializable';
 import { Comparator, StringComparable, stringComparator, numberComparator } from './comparable';
 import { Null } from './null';
-import { always, pipe } from '@blue/util/function';
-import { fromPairs, map, reduce } from '@blue/util/list';
-import { ifElse, isNotEmpty } from '@blue/util/logic';
-import { toPairs } from '@blue/util/object';
+import { isString } from '@blue/util/types';
 import { split } from '@blue/util/string';
-import { isNumber, isString } from '@blue/util/types';
 import { Matchable } from './matchable';
 import { IllegalStateError } from './error';
 
@@ -38,7 +34,6 @@ export type SupportedMediaType =
 const { freeze, keys } = Object,
     { parseFloat } = Number,
     typeRegistry = new Map<string, MediaType>(),
-    alwaysEmptyString = always(''),
     splitOnEquals = split('=') as (value: `${string}=${string}`) => [string, string],
     WILDCARD: SupportedMediaType = '*',
     QUALITY_FACTOR_PARAM = 'q';
@@ -72,14 +67,11 @@ export type MediaTypeParameters = {
  * @param value - The `MediaTypeParameters` object to stringify.
  * @returns A string representation of the parameters, or an empty string if no parameters are present.
  */
-const stringifyParameters = ifElse(
-    isNotEmpty,
-    pipe(
-        toPairs,
-        reduce((result, [key, value]: [string, string]) => `${result};${key}=${value}`, '')
-    ),
-    alwaysEmptyString
-) as (value: MediaTypeParameters) => string;
+const stringifyParameters = (value: MediaTypeParameters): string => {
+    const pairs = Object.entries(value);
+    if (!pairs.length) return '';
+    return pairs.reduce((result, [key, val]) => `${result};${key}=${val}`, '');
+};
 
 /**
  * Comparator to sort `MediaType` in order of specificity.
@@ -181,7 +173,7 @@ export default class MediaType extends Null implements Serializable, StringCompa
         if (isString(value)) {
             return parseFloat(value) as number;
         }
-        if (isNumber(value)) {
+        if (typeof value === 'number') {
             return value as number;
         }
         return 1;
@@ -232,7 +224,7 @@ export default class MediaType extends Null implements Serializable, StringCompa
                     // Remove the subtype
                     parts.shift();
 
-                    const parsedParameters: unknown = parts.length ? fromPairs(map(splitOnEquals, parts)) : {};
+                    const parsedParameters: unknown = parts.length ? Object.fromEntries(parts.map(splitOnEquals)) : {};
                     const // @ts-expect-error: Cannot make the types for fromPairs happy -JBR
                         parameters: MediaTypeParameters = parsedParameters,
                         mediaType = new MediaType(type, subtype, parameters);

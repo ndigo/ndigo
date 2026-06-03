@@ -4,8 +4,8 @@
 
 import { FrameworkError, IllegalStateError } from './error';
 import { MutablePropertyValues, PropertyValues } from './property-value';
-import { keypathExpression } from '@blue/parser';
-import { assocPath } from '@blue/util/object';
+import { parseKeypath } from './keypath-expression';
+import { KeypathToken } from './keypath-expression';
 
 const { keys } = Object;
 
@@ -117,13 +117,9 @@ export class DataBinder {
             for (let index = 0; index < length; index++) {
                 const key = propertyKeys[index],
                     property = properties[key],
-                    parseResult = keypathExpression.run(property.name);
-                if (!parseResult.isError) {
-                    // Type narrowing: parseResult is Ok<T, D> here
-                    const keypath = (parseResult as { isError: false; result: any; index: number; data: any }).result;
-                    if (keypath) {
-                        result = assocPath(keypath, property.value, result);
-                    }
+                    keypath = parseKeypath(property.name);
+                if (keypath) {
+                    result = _assocPath(keypath, property.value, result);
                 }
             }
             this.#result = result;
@@ -146,4 +142,30 @@ export class DataBinder {
             }
         }
     }
+}
+
+/**
+ * Creates a new object with the value set at the specified keypath.
+ * @param path - The keypath to set the value at
+ * @param value - The value to set
+ * @param obj - The object to modify
+ * @returns A new object with the value set at the keypath
+ */
+function _assocPath(path: KeypathToken[], value: unknown, obj: unknown): unknown {
+    if (path.length === 0) return value;
+    const head = path[0];
+    const tail = path.slice(1);
+    const updatedChild = _assocPath(
+        tail,
+        value,
+        tail.length > 0 && typeof tail[0] === 'number'
+            ? (Array.isArray((obj as any)?.[head]) ? (obj as any)[head] : [])
+            : ((obj as any)?.[head] ?? {})
+    );
+    if (typeof head === 'number') {
+        const arr = Array.isArray(obj) ? [...(obj as any[])] : [];
+        arr[head] = updatedChild;
+        return arr;
+    }
+    return { ...(obj as object), [head]: updatedChild };
 }

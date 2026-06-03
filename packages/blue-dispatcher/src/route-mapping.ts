@@ -4,9 +4,6 @@
 
 import '@tsmetadata/polyfill';
 import { FrameworkError, getSymbolMetadata } from '@blue/core';
-import { compose } from '@blue/util/function';
-import { when } from '@blue/util/logic';
-import { mergeRight, objOf } from '@blue/util/object';
 import { isString } from '@blue/util/types';
 
 /**
@@ -51,11 +48,10 @@ const defaultMapping: RouteMappingConfiguration = {
     private: false,
 };
 
-const withDefaults = mergeRight(defaultMapping);
-const configurationOf = objOf('value') as (value: string) => RouteMappingValue;
-const toRouteMappingConfiguration = when(isString, compose(withDefaults, configurationOf)) as (
-    value: string | RouteMappingConfiguration
-) => RouteMappingConfiguration;
+const withDefaults = (conf: RouteMappingValue): RouteMappingConfiguration => ({ ...defaultMapping, ...conf });
+const configurationOf = (value: string): RouteMappingValue => ({ value });
+const toRouteMappingConfiguration = (value: string | RouteMappingConfiguration): RouteMappingConfiguration =>
+    isString(value) ? withDefaults(configurationOf(value)) : (value as RouteMappingConfiguration);
 
 /**
  * Get route mapping metadata from a class or method.

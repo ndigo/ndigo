@@ -1,12 +1,20 @@
 import { describe, test, expect } from 'vitest';
-import { EqualsPathMatcher, GlobPathMatcher } from '../src/path-matcher';
+import { EqualsPathMatcher, URLGlobPathMatcher } from '../src/path-matcher';
 
-describe('GlobPathMatcher', () => {
-    const matcher = new GlobPathMatcher();
+describe('URLGlobPathMatcher', () => {
+    const matcher = new URLGlobPathMatcher();
 
     test('it should match', () => {
         expect(matcher.match('/foo/*', '/foo/bar')).toBe(true);
         expect(matcher.match('/foo/**', '/foo/bar')).toBe(true);
+    });
+
+    test('it should return cached result on repeated calls', () => {
+        // First call compiles and caches
+        expect(matcher.match('/api/*', '/api/users')).toBe(true);
+        // Second call uses cache
+        expect(matcher.match('/api/*', '/api/users')).toBe(true);
+        expect(matcher.match('/api/*', '/other/path')).toBe(false);
     });
 
     describe('merge', () => {

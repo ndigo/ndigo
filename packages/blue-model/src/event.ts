@@ -1,14 +1,5 @@
-// Import internal functions from objectmodel source
-// These functions are exported from the source but not typed in the public API
-// We use namespace imports with type assertions to work around missing type exports
-import * as objectModelInternal from 'objectmodel/src/object-model.js';
-import * as helpersInternal from 'objectmodel/src/helpers.js';
+import { ObjectModel } from 'objectmodel';
 
-const initModel: any = (objectModelInternal as any).initModel;
-const initObjectModel: any = (objectModelInternal as any).initObjectModel;
-const getTraps: any = (objectModelInternal as any).getTraps;
-const Model: any = (objectModelInternal as any).Model;
-const extend: any = (helpersInternal as any).extend;
 const $events = '@@emitter/events';
 
 function emitEvent(target: any, type: string, data: any[]): boolean {
@@ -107,40 +98,40 @@ function asMinimalEventEmitter(target: any): void {
 /**
  * Creates a model constructor that emits change events for assigned properties.
  *
+ * Uses the public ObjectModel API and wraps each instance in a Proxy that
+ * intercepts successful property sets and fires `change:<key>` events (which
+ * bubble up through colon-delimited prefixes, e.g. `change`).
+ *
  * @param def - ObjectModel definition used to validate values.
  * @returns A model constructor with minimal `emit`, `on`, and `off` support.
  */
-export function EventModel(def) {
-    return initModel(
-        def,
-        EventModel,
-        Object,
-        function (obj, model, _this) {
-            const value = initObjectModel(obj, model, _this);
-            if (value && (typeof value === 'object' || typeof value === 'function')) {
-                asMinimalEventEmitter(value);
-            }
-            return value;
-        },
-        function (model) {
-            const traps = getTraps(model, def),
-                set = traps.set;
-            traps.set = function (o, key, val) {
-                const prev = o[key],
-                    result = set(o, key, val);
-                if (result === true && key !== $events) {
-                    o.emit(`change:${key}`, prev, val);
+export function EventModel(def: any): any {
+    const BaseModel = (ObjectModel as any)(def);
+
+    function EventModelConstructor(this: any, val?: any) {
+        // Create a validated, proxified ObjectModel instance
+        const instance = new BaseModel(val);
+
+        // Mix event emitter methods into the underlying object
+        asMinimalEventEmitter(instance);
+
+        // Wrap with an outer Proxy that emits on successful sets
+        return new Proxy(instance, {
+            set(target: any, key: string | symbol, value: any): boolean {
+                if (typeof key !== 'string' || key === $events) {
+                    return Reflect.set(target, key, value);
+                }
+                const prev = target[key];
+                const result = Reflect.set(target, key, value);
+                if (result) {
+                    target.emit(`change:${key}`, prev, value);
                 }
                 return result;
-            };
-            return traps;
-        },
-        true
-    );
-}
+            },
+        });
+    }
 
-extend(EventModel, Model, {
-    name: 'EventModel',
-});
+    return EventModelConstructor;
+}
 
 export default EventModel;

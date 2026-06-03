@@ -1,8 +1,5 @@
 /* eslint-disable @blue/no-browser-globals-in-isomorphic -- HashRouter is a browser-only implementation; browser globals are intentional and expected here */
 
-import { constructN, pipe } from '@blue/util/function';
-import { slice } from '@blue/util/list';
-import { prop } from '@blue/util/object';
 import { PathRoute } from './path-route';
 import { AbstractRouter, RouterCallback } from './router';
 import { RingBuffer } from '@blue/core';
@@ -44,10 +41,8 @@ enum RouteSource {
 }
 
 const { defineProperty } = Reflect,
-    constructURL = constructN(1, URL) as (value: string) => URL,
-    getHashProperty = prop('hash') as (value: object) => string,
-    removeFirstCharacter = slice(1, Infinity) as (value: string) => string,
-    extractRouteFromURL = pipe(constructURL, getHashProperty, removeFirstCharacter);
+    removeFirstCharacter = (value: string): string => value.slice(1),
+    extractRouteFromURL = (url: string): string => new URL(url).hash.slice(1);
 
 /**
  * Represents a single route transaction, capturing the route, its access level, and its source.

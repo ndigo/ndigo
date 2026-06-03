@@ -2,7 +2,6 @@
  * @author Jeff Rose
  */
 
-import { pipe } from '@blue/util/function';
 import { HTTPTransformer, TransformContext } from './http-transformer';
 
 /**
@@ -22,7 +21,12 @@ export class CompositionTransformer<TInput = unknown, TOutput = unknown> impleme
         transforms: Array<(value: unknown) => unknown>,
         condition?: (body: TInput, context: TransformContext) => boolean
     ) {
-        this.#pipeline = pipe(...transforms) as (input: TInput) => TOutput;
+        const _pipe =
+            (...fns: Array<(v: unknown) => unknown>) =>
+            (x: unknown): unknown =>
+                fns.reduce((v, f) => f(v), x);
+        
+        this.#pipeline = _pipe(...transforms) as (input: TInput) => TOutput;
         this.#condition = condition;
     }
 

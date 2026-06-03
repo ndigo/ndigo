@@ -15,14 +15,13 @@ export const INTEGRATION_LAYER_MAP: Record<string, string> = {
     'date-fns-tz': '@blue/util',
     seedrandom: '@blue/util',
     slug: '@blue/util',
-    arcsecond: '@blue/parser',
     objectmodel: '@blue/model',
 };
 
 /**
  * Package names that are allowed to import the libraries they encapsulate.
  */
-export const INTEGRATION_LAYER_PACKAGES: string[] = ['@blue/util', '@blue/parser', '@blue/model'];
+export const INTEGRATION_LAYER_PACKAGES: string[] = ['@blue/util', '@blue/model'];
 
 /**
  * Browser global names that should not be accessed unguarded in isomorphic packages.

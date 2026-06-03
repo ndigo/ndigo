@@ -5,7 +5,6 @@
 import { DataBinder, MutablePropertyValues } from '@blue/core';
 import { AbstractNamedValueMethodArgumentResolver, MethodParameter, MethodParameterType } from '@blue/dispatcher';
 import { Route } from '@blue/router';
-import { defaultTo } from '@blue/util/logic';
 import { isNil } from '@blue/util/types';
 import {
     ArgumentValueConverter,
@@ -69,7 +68,7 @@ export abstract class AbstractBindMethodArgumentResolver extends AbstractNamedVa
             this.#converterResolutionOptions
         );
 
-        const resolveValue = defaultTo(parameter.defaultValue);
+        const resolveValue = (v: any) => v ?? parameter.defaultValue;
         const finalValue = resolveValue(convertedValue);
 
         isNil(finalValue) && parameter.required && this.handleMissingValue(parameter.name);

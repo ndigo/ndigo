@@ -3,7 +3,6 @@
  */
 
 import { FrameworkError, MediaType, MultiValueMap } from '@blue/core';
-import { propSatisfies } from '@blue/util/logic';
 import { isFunction, isNotNil } from '@blue/util/types';
 import { View } from './view';
 import { ViewResolver } from './view-resolver';
@@ -47,7 +46,7 @@ export interface ContentNegotiationStrategy {
  * For example, it can resolve `application/json` to `json`.
  */
 
-const hasFunction = propSatisfies(isFunction),
+const hasFunction = (prop: string) => (obj: any): boolean => isFunction(obj?.[prop]),
     hasGetAllFileExtenstions = hasFunction('getAllFileExtenstions'),
     hasResolveFileExtensions = hasFunction('resolveFileExtensions');
 

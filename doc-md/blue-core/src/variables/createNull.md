@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -8,8 +8,10 @@
 
 > `const` **createNull**: `any`
 
-Defined in: packages/blue-core/src/null.ts:15
+Defined in: packages/blue-core/src/null.ts:18
+
+Creates a plain object whose prototype is `null`.
 
 ## Returns
 
-An empty object created from `null`.
+A new object without `Object.prototype` in its prototype chain.

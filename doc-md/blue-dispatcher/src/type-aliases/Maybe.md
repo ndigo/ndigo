@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -8,7 +8,9 @@
 
 > **Maybe**\<`T`\> = `string` \| `T`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:26
+Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:31
+
+A value that may be supplied directly or by name through the application context.
 
 ## Type Parameters
 

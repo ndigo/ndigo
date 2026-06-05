@@ -1,14 +1,16 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
 [BlueJS Framework](../../../modules.md) / [blue-context/src](../README.md) / likeApplicationContext
 
-# Variable: likeApplicationContext()
+# Variable: likeApplicationContext
 
 > `const` **likeApplicationContext**: (`value`) => `value is ApplicationContext`
 
-Defined in: packages/blue-context/src/context.ts:112
+Defined in: packages/blue-context/src/context.ts:290
+
+Returns whether a value behaves like an application context.
 
 ## Parameters
 
@@ -16,10 +18,10 @@ Defined in: packages/blue-context/src/context.ts:112
 
 `any`
 
-The value to be tested
+The value to test.
 
 ## Returns
 
 `value is ApplicationContext`
 
-Whether or not the `value` is [ApplicationContext](../interfaces/ApplicationContext.md)
+`true` when the value looks like an application context.

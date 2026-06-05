@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,9 +6,11 @@
 
 # Function: getRouteMapping()
 
-> **getRouteMapping**(`target`, `propertyKey`): `any`
+> **getRouteMapping**(`target`, `propertyKey?`): `RouteMappingConfiguration`
 
-Defined in: packages/blue-dispatcher/src/route-mapping.ts:44
+Defined in: packages/blue-dispatcher/src/route-mapping.ts:63
+
+Get route mapping metadata from a class or method.
 
 ## Parameters
 
@@ -16,10 +18,16 @@ Defined in: packages/blue-dispatcher/src/route-mapping.ts:44
 
 `any`
 
-### propertyKey
+The class constructor or prototype to inspect.
 
-`string` | `symbol`
+### propertyKey?
+
+`string` \| `symbol`
+
+The method name, when reading method-level metadata.
 
 ## Returns
 
-`any`
+`RouteMappingConfiguration`
+
+The stored route mapping, or `undefined`.

@@ -1,14 +1,16 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
 [BlueJS Framework](../../../modules.md) / [blue-http/src](../README.md) / likeRedirectAwareHTTPInterceptor
 
-# Variable: likeRedirectAwareHTTPInterceptor()
+# Variable: likeRedirectAwareHTTPInterceptor
 
 > `const` **likeRedirectAwareHTTPInterceptor**: (`value`) => `value is RedirectAwareHTTPInterceptor`
 
-Defined in: packages/blue-http/src/interceptors/response-class-interceptor.ts:111
+Defined in: packages/blue-http/src/interceptors/response-class-interceptor.ts:86
+
+Tests whether a value exposes `postRedirectResponse()`.
 
 ## Parameters
 
@@ -16,8 +18,10 @@ Defined in: packages/blue-http/src/interceptors/response-class-interceptor.ts:11
 
 `any`
 
+The value to test.
+
 ## Returns
 
 `value is RedirectAwareHTTPInterceptor`
 
-Whether or not a value is like [RedirectAwareHTTPInterceptor](../interfaces/RedirectAwareHTTPInterceptor.md).
+`true` when the value is redirect-response-aware.

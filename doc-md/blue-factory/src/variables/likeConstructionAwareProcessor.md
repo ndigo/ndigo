@@ -1,14 +1,16 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
 [BlueJS Framework](../../../modules.md) / [blue-factory/src](../README.md) / likeConstructionAwareProcessor
 
-# Variable: likeConstructionAwareProcessor()
+# Variable: likeConstructionAwareProcessor
 
 > `const` **likeConstructionAwareProcessor**: (`value`) => `value is ConstructionAwareProcessor`
 
-Defined in: packages/blue-factory/src/entry-processor.ts:142
+Defined in: packages/blue-factory/src/entry-processor.ts:130
+
+Determines whether or not the `value` provided is a [ConstructionAwareProcessor](../interfaces/ConstructionAwareProcessor.md).
 
 ## Parameters
 
@@ -16,7 +18,7 @@ Defined in: packages/blue-factory/src/entry-processor.ts:142
 
 `any`
 
-The value to be tested
+The value to be tested.
 
 ## Returns
 

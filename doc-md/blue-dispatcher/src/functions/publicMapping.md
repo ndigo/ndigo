@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,9 +6,11 @@
 
 # Function: publicMapping()
 
-> **publicMapping**(`route`): (`target`, `propertyKey?`, `descriptor?`) => `any`
+> **publicMapping**(`route`): (`target`, `context`) => `any`
 
-Defined in: packages/blue-dispatcher/src/route-mapping.ts:74
+Defined in: packages/blue-dispatcher/src/route-mapping.ts:134
+
+Create a public route mapping decorator.
 
 ## Parameters
 
@@ -16,24 +18,10 @@ Defined in: packages/blue-dispatcher/src/route-mapping.ts:74
 
 `string`
 
+The route path to map.
+
 ## Returns
 
-> (`target`, `propertyKey?`, `descriptor?`): `any`
+A route mapping decorator marked as public.
 
-### Parameters
-
-#### target
-
-`Object`
-
-#### propertyKey?
-
-`string` | `symbol`
-
-#### descriptor?
-
-`PropertyDescriptor`
-
-### Returns
-
-`any`
+(`target`, `context`) => `any`

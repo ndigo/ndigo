@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,15 +6,15 @@
 
 # Function: AsResourceLoaderAware()
 
-> **AsResourceLoaderAware**\<`T`\>(`superclass`): [`Constructable`](../../../blue-core/src/type-aliases/Constructable.md)\<[`ResourceLoaderAware`](../interfaces/ResourceLoaderAware.md)\> & `T`
+> **AsResourceLoaderAware**\<`T`\>(`superclass`): `Constructable`\<[`ResourceLoaderAware`](../interfaces/ResourceLoaderAware.md)\> & `T`
 
-Defined in: packages/blue-context/src/resource.ts:57
+Defined in: packages/blue-context/src/resource.ts:67
 
 ## Type Parameters
 
 ### T
 
-`T` *extends* [`Constructable`](../../../blue-core/src/type-aliases/Constructable.md)
+`T` *extends* `Constructable`
 
 ## Parameters
 
@@ -22,7 +22,16 @@ Defined in: packages/blue-context/src/resource.ts:57
 
 `T`
 
+The base class to extend.
+
 ## Returns
 
-[`Constructable`](../../../blue-core/src/type-aliases/Constructable.md)\<[`ResourceLoaderAware`](../interfaces/ResourceLoaderAware.md)\> & `T`
+`Constructable`\<[`ResourceLoaderAware`](../interfaces/ResourceLoaderAware.md)\> & `T`
 
+## See
+
+module:context.AsResourceLoaderAware
+
+## Implements
+
+module:context.ResourceLoaderAware

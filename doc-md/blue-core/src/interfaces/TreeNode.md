@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,11 +6,9 @@
 
 # Interface: TreeNode\<T\>
 
-Defined in: packages/blue-core/src/tree-node.ts:13
+Defined in: packages/blue-core/src/tree-node.ts:24
 
-## Author
-
-Jeff Rose
+A tree node that supports bidirectional navigation and child mutation.
 
 ## Extends
 
@@ -28,7 +26,9 @@ Jeff Rose
 
 > `readonly` **parent**: `T`
 
-Defined in: packages/blue-core/src/tree-node.ts:6
+Defined in: packages/blue-core/src/tree-node.ts:10
+
+The parent node, or `null`/`undefined` for roots.
 
 #### Inherited from
 
@@ -40,7 +40,9 @@ Defined in: packages/blue-core/src/tree-node.ts:6
 
 > `readonly` **children**: `T`[]
 
-Defined in: packages/blue-core/src/tree-node.ts:10
+Defined in: packages/blue-core/src/tree-node.ts:18
+
+The node's direct children.
 
 #### Inherited from
 
@@ -52,7 +54,9 @@ Defined in: packages/blue-core/src/tree-node.ts:10
 
 > `readonly` **root**: `T`
 
-Defined in: packages/blue-core/src/tree-node.ts:14
+Defined in: packages/blue-core/src/tree-node.ts:26
+
+The root node of the tree.
 
 ## Methods
 
@@ -60,7 +64,9 @@ Defined in: packages/blue-core/src/tree-node.ts:14
 
 > **hasChild**(`node`): `boolean`
 
-Defined in: packages/blue-core/src/tree-node.ts:15
+Defined in: packages/blue-core/src/tree-node.ts:34
+
+Tests whether the node has the given direct child.
 
 #### Parameters
 
@@ -68,9 +74,13 @@ Defined in: packages/blue-core/src/tree-node.ts:15
 
 `T`
 
+Candidate child node.
+
 #### Returns
 
 `boolean`
+
+`true` when the node is a direct child.
 
 ***
 
@@ -78,7 +88,9 @@ Defined in: packages/blue-core/src/tree-node.ts:15
 
 > **newChild**(...`args`): `T`
 
-Defined in: packages/blue-core/src/tree-node.ts:16
+Defined in: packages/blue-core/src/tree-node.ts:42
+
+Creates and appends a new child node.
 
 #### Parameters
 
@@ -86,9 +98,13 @@ Defined in: packages/blue-core/src/tree-node.ts:16
 
 ...`any`[]
 
+Arguments used to construct the child.
+
 #### Returns
 
 `T`
+
+The newly created child node.
 
 ***
 
@@ -96,7 +112,9 @@ Defined in: packages/blue-core/src/tree-node.ts:16
 
 > **removeChild**(`node`): `boolean`
 
-Defined in: packages/blue-core/src/tree-node.ts:17
+Defined in: packages/blue-core/src/tree-node.ts:50
+
+Removes a direct child from the node.
 
 #### Parameters
 
@@ -104,6 +122,10 @@ Defined in: packages/blue-core/src/tree-node.ts:17
 
 `T`
 
+Child node to remove.
+
 #### Returns
 
 `boolean`
+
+`true` when the child was removed.

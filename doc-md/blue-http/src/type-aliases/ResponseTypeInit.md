@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -8,14 +8,16 @@
 
 > **ResponseTypeInit** = [`HTTPInit`](HTTPInit.md) & `object`
 
-Defined in: packages/blue-http/src/interceptors/response-type-interceptor.ts:20
+Defined in: packages/blue-http/src/interceptors/response-type-interceptor.ts:32
+
+Request settings for [ResponseTypeInterceptor](../classes/ResponseTypeInterceptor.md).
 
 ## Type Declaration
 
 ### responseParsers?
 
-> `optional` **responseParsers**: [`ResponseParsers`](ResponseParsers.md)
+> `optional` **responseParsers?**: [`ResponseParsers`](ResponseParsers.md)
 
 ### responseType?
 
-> `optional` **responseType**: `string` \| [`MediaType`](../../../blue-core/src/classes/MediaType.md) \| `true`
+> `optional` **responseType?**: `string` \| `MediaType` \| `true`

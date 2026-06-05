@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,9 @@
 
 # Interface: ThemeResolver
 
-Defined in: packages/blue-dispatcher/src/theme-resolver.ts:7
+Defined in: packages/blue-dispatcher/src/theme-resolver.ts:10
+
+Resolves the active theme for a route.
 
 ## Methods
 
@@ -14,14 +16,20 @@ Defined in: packages/blue-dispatcher/src/theme-resolver.ts:7
 
 > **resolveTheme**(`route`): `string`
 
-Defined in: packages/blue-dispatcher/src/theme-resolver.ts:8
+Defined in: packages/blue-dispatcher/src/theme-resolver.ts:17
+
+Resolve the theme name for a route.
 
 #### Parameters
 
 ##### route
 
-[`Route`](../../../blue-router/src/interfaces/Route.md)
+`Route`
+
+The current route.
 
 #### Returns
 
 `string`
+
+The resolved theme name.

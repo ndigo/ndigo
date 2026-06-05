@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -8,4 +8,6 @@
 
 > `const` **PastDate**: `BasicModel`\<`DateConstructor`\>
 
-Defined in: packages/blue-model/src/basic.ts:63
+Defined in: packages/blue-model/src/basic.ts:103
+
+Matches dates in the past.

@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,9 @@
 
 # Interface: LanguageResolver
 
-Defined in: packages/blue-dispatcher/src/language-resolver.ts:6
+Defined in: packages/blue-dispatcher/src/language-resolver.ts:9
+
+Resolves the active language for a route.
 
 ## Methods
 
@@ -14,14 +16,20 @@ Defined in: packages/blue-dispatcher/src/language-resolver.ts:6
 
 > **resolveLanguage**(`route`): `string`
 
-Defined in: packages/blue-dispatcher/src/language-resolver.ts:7
+Defined in: packages/blue-dispatcher/src/language-resolver.ts:16
+
+Resolve the language to use for the current route.
 
 #### Parameters
 
 ##### route
 
-[`Route`](../../../blue-router/src/interfaces/Route.md)
+`Route`
+
+The current route.
 
 #### Returns
 
 `string`
+
+The resolved language tag.

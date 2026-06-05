@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -8,4 +8,6 @@
 
 > **DataInit** = `BodyInit`
 
-Defined in: packages/blue-http/src/interceptors/data-parameter-interceptor.ts:10
+Defined in: packages/blue-http/src/interceptors/data-parameter-interceptor.ts:13
+
+Body value accepted by [DataParameterInterceptor](../classes/DataParameterInterceptor.md).

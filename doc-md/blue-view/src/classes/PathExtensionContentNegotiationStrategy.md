@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,9 @@
 
 # Class: PathExtensionContentNegotiationStrategy
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:94
+Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:194
+
+Content negotiation strategy that is intended to derive media types from the request path extension.
 
 ## Implements
 
@@ -26,9 +28,11 @@ Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:94
 
 ### resolveMediaTypes()
 
-> **resolveMediaTypes**(`request`): [`MediaType`](../../../blue-core/src/classes/MediaType.md)[]
+> **resolveMediaTypes**(`request`): `MediaType`[]
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:95
+Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:202
+
+Resolves the media types requested by the current request.
 
 #### Parameters
 
@@ -36,9 +40,17 @@ Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:95
 
 `any`
 
+The current request.
+
 #### Returns
 
-[`MediaType`](../../../blue-core/src/classes/MediaType.md)[]
+`MediaType`[]
+
+Never returns normally.
+
+#### Throws
+
+Always thrown because the strategy is not implemented yet.
 
 #### Implementation of
 

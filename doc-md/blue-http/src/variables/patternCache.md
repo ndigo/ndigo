@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,8 @@
 
 # Variable: patternCache
 
-> `const` **patternCache**: `Map`\<`string`, [`WildcardExp`](../../../blue-core/src/classes/WildcardExp.md)\>
+> `const` **patternCache**: `Map`\<`string`, `WildcardExp`\>
 
-Defined in: packages/blue-http/src/http.ts:163
+Defined in: packages/blue-http/src/http.ts:278
 
+Clones request settings and locks them before fetch executes.

@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -8,7 +8,9 @@
 
 > **entriesIterator**\<`T`\>(`target`): `IterableIterator`\<[`Entry`](../type-aliases/Entry.md)\<`T`\>\>
 
-Defined in: packages/blue-core/src/iterable.ts:138
+Defined in: packages/blue-core/src/iterable.ts:219
+
+Creates a new `EntriesIterator` for an object or collection.
 
 ## Type Parameters
 
@@ -16,16 +18,18 @@ Defined in: packages/blue-core/src/iterable.ts:138
 
 `T` = `any`
 
+The type of values in the entries.
+
 ## Parameters
 
 ### target
 
 `object`
 
-A non-primitive value
+The object or collection to iterate over its entries.
 
 ## Returns
 
 `IterableIterator`\<[`Entry`](../type-aliases/Entry.md)\<`T`\>\>
 
-An entries iterator
+An `IterableIterator` for the entries of the provided target.

@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **likeMediaTypeFileExtensionResolver**(`value`): `value is MediaTypeFileExtensionResolver`
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:29
+Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:53
 
 ## Parameters
 

@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -8,7 +8,9 @@
 
 > **invertComparison**\<`T`\>(`compare`): [`comparison`](../type-aliases/comparison.md)\<`T`\>
 
-Defined in: packages/blue-core/src/comparable.ts:97
+Defined in: packages/blue-core/src/comparable.ts:139
+
+Inverts the order of a given comparison function.
 
 ## Type Parameters
 
@@ -16,16 +18,18 @@ Defined in: packages/blue-core/src/comparable.ts:97
 
 `T`
 
+The type of values being compared.
+
 ## Parameters
 
 ### compare
 
 [`comparison`](../type-aliases/comparison.md)\<`T`\>
 
-The comparison to invert
+The comparison function to invert.
 
 ## Returns
 
 [`comparison`](../type-aliases/comparison.md)\<`T`\>
 
-The inverted comparison
+A new comparison function with inverted order.

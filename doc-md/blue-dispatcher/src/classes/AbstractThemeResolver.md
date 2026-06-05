@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,12 +6,13 @@
 
 # Abstract Class: AbstractThemeResolver
 
-Defined in: packages/blue-dispatcher/src/theme-resolver.ts:21
+Defined in: packages/blue-dispatcher/src/theme-resolver.ts:22
+
+Resolves the active theme for a route.
 
 ## Extended by
 
 - [`FixedThemeResolver`](FixedThemeResolver.md)
-- [`CookieThemeResolver`](../../../blue-platform-web/src/classes/CookieThemeResolver.md)
 
 ## Implements
 
@@ -23,13 +24,17 @@ Defined in: packages/blue-dispatcher/src/theme-resolver.ts:21
 
 > **new AbstractThemeResolver**(`defaultThemeName`): `AbstractThemeResolver`
 
-Defined in: packages/blue-dispatcher/src/theme-resolver.ts:28
+Defined in: packages/blue-dispatcher/src/theme-resolver.ts:37
+
+Store the fallback theme name.
 
 #### Parameters
 
 ##### defaultThemeName
 
 `string`
+
+The theme to use by default.
 
 #### Returns
 
@@ -41,7 +46,9 @@ Defined in: packages/blue-dispatcher/src/theme-resolver.ts:28
 
 > `readonly` **defaultThemeName**: `string`
 
-Defined in: packages/blue-dispatcher/src/theme-resolver.ts:22
+Defined in: packages/blue-dispatcher/src/theme-resolver.ts:26
+
+Fallback theme name used when a route-specific theme is unavailable.
 
 ## Accessors
 
@@ -51,7 +58,7 @@ Defined in: packages/blue-dispatcher/src/theme-resolver.ts:22
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-dispatcher/src/theme-resolver.ts:24
+Defined in: packages/blue-dispatcher/src/theme-resolver.ts:28
 
 ##### Returns
 
@@ -63,17 +70,23 @@ Defined in: packages/blue-dispatcher/src/theme-resolver.ts:24
 
 > `abstract` **resolveTheme**(`route`): `string`
 
-Defined in: packages/blue-dispatcher/src/theme-resolver.ts:37
+Defined in: packages/blue-dispatcher/src/theme-resolver.ts:52
+
+Resolve the theme name for a route.
 
 #### Parameters
 
 ##### route
 
-[`Route`](../../../blue-router/src/interfaces/Route.md)
+`Route`
+
+The current route.
 
 #### Returns
 
 `string`
+
+The resolved theme name.
 
 #### Implementation of
 

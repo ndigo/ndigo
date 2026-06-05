@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,11 @@
 
 # Class: DefaultRouteToViewNameTranslator
 
-Defined in: packages/blue-dispatcher/src/route-to-view-name-translator.ts:25
+Defined in: packages/blue-dispatcher/src/route-to-view-name-translator.ts:26
+
+## Implements
+
+module:router.RouteToViewNameTranslator
 
 ## Implements
 
@@ -18,7 +22,9 @@ Defined in: packages/blue-dispatcher/src/route-to-view-name-translator.ts:25
 
 > **new DefaultRouteToViewNameTranslator**(): `DefaultRouteToViewNameTranslator`
 
-Defined in: packages/blue-dispatcher/src/route-to-view-name-translator.ts:30
+Defined in: packages/blue-dispatcher/src/route-to-view-name-translator.ts:45
+
+Create a translator with empty prefix and suffix.
 
 #### Returns
 
@@ -30,7 +36,9 @@ Defined in: packages/blue-dispatcher/src/route-to-view-name-translator.ts:30
 
 > **prefix**: `string`
 
-Defined in: packages/blue-dispatcher/src/route-to-view-name-translator.ts:26
+Defined in: packages/blue-dispatcher/src/route-to-view-name-translator.ts:30
+
+Prefix added to every translated view name.
 
 ***
 
@@ -38,7 +46,9 @@ Defined in: packages/blue-dispatcher/src/route-to-view-name-translator.ts:26
 
 > **separator**: `string`
 
-Defined in: packages/blue-dispatcher/src/route-to-view-name-translator.ts:27
+Defined in: packages/blue-dispatcher/src/route-to-view-name-translator.ts:35
+
+Separator used when rewriting the route path.
 
 ***
 
@@ -46,7 +56,9 @@ Defined in: packages/blue-dispatcher/src/route-to-view-name-translator.ts:27
 
 > **suffix**: `string`
 
-Defined in: packages/blue-dispatcher/src/route-to-view-name-translator.ts:28
+Defined in: packages/blue-dispatcher/src/route-to-view-name-translator.ts:40
+
+Suffix added to every translated view name.
 
 ## Methods
 
@@ -54,17 +66,23 @@ Defined in: packages/blue-dispatcher/src/route-to-view-name-translator.ts:28
 
 > **getViewName**(`route`): `string`
 
-Defined in: packages/blue-dispatcher/src/route-to-view-name-translator.ts:54
+Defined in: packages/blue-dispatcher/src/route-to-view-name-translator.ts:72
+
+Translate a route path into a view name.
 
 #### Parameters
 
 ##### route
 
-[`Route`](../../../blue-router/src/interfaces/Route.md)
+`Route`
+
+The current route.
 
 #### Returns
 
 `string`
+
+The translated view name.
 
 #### Implementation of
 

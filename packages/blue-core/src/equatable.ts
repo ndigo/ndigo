@@ -77,7 +77,7 @@ export const equates = (value1: equatable, value2: equatable): boolean => {
     } else if (isPrimitive(value1) && isPrimitive(value2)) {
         return value1 === value2;
     } else {
-        // This is the fallback case that should behave like Ramda's equals
+        // Deep equality fallback for complex objects
         return _deepEqual(value1, value2);
     }
 };

@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,9 @@
 
 # Interface: MediaTypeFileExtensionResolver
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:10
+Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:13
+
+Resolves file extensions for a media type and can enumerate all known extensions.
 
 ## Methods
 
@@ -14,11 +16,15 @@ Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:10
 
 > **getAllFileExtenstions**(): `string`[]
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:11
+Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:19
+
+Returns every known file extension.
 
 #### Returns
 
 `string`[]
+
+The known file extensions.
 
 ***
 
@@ -26,14 +32,20 @@ Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:11
 
 > **resolveFileExtensions**(`mediaType`): `string`[]
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:12
+Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:27
+
+Resolves the file extensions associated with the given media type.
 
 #### Parameters
 
 ##### mediaType
 
-[`MediaType`](../../../blue-core/src/classes/MediaType.md)
+`MediaType`
+
+The media type to resolve.
 
 #### Returns
 
 `string`[]
+
+The matching file extensions.

@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,15 +6,17 @@
 
 # Function: AsEventEmitter()
 
-> **AsEventEmitter**\<`T`\>(`superclass`): [`Constructable`](../../../blue-core/src/type-aliases/Constructable.md)\<[`EventEmitter`](../interfaces/EventEmitter.md)\> & `T`
+> **AsEventEmitter**\<`T`\>(`superclass`): `Constructable`\<[`EventEmitter`](../interfaces/EventEmitter.md)\> & `T`
 
-Defined in: packages/blue-context/src/event-emitter.ts:618
+Defined in: packages/blue-context/src/event-emitter.ts:773
+
+Adds the core event emitter API to a base class.
 
 ## Type Parameters
 
 ### T
 
-`T` *extends* [`Constructable`](../../../blue-core/src/type-aliases/Constructable.md)
+`T` *extends* `Constructable`
 
 ## Parameters
 
@@ -24,15 +26,4 @@ Defined in: packages/blue-context/src/event-emitter.ts:618
 
 ## Returns
 
-[`Constructable`](../../../blue-core/src/type-aliases/Constructable.md)\<[`EventEmitter`](../interfaces/EventEmitter.md)\> & `T`
-
-## Example
-
-```ts
-const
- MyEmitter = AsEventEmitter( {} ),
- greeter = new MyEmitter();
-greeter.on( 'hello', () => console.log( 'Hello!' ) );
-greeter.emtest( 'hello' ); // true
-// Hello!
-```
+`Constructable`\<[`EventEmitter`](../interfaces/EventEmitter.md)\> & `T`

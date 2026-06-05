@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,9 @@
 
 # Interface: NameAware
 
-Defined in: packages/blue-factory/src/aware.ts:19
+Defined in: packages/blue-factory/src/aware.ts:34
+
+Interface to be implemented by values that want to be aware of their value name in a factory.
 
 ## Extends
 
@@ -18,7 +20,9 @@ Defined in: packages/blue-factory/src/aware.ts:19
 
 > `readonly` **\[$aware\]**: `boolean`
 
-Defined in: packages/blue-factory/src/aware.ts:16
+Defined in: packages/blue-factory/src/aware.ts:27
+
+A symbol indicating that the value is aware.
 
 #### Inherited from
 
@@ -30,7 +34,9 @@ Defined in: packages/blue-factory/src/aware.ts:16
 
 > `readonly` **name**: `string`
 
-Defined in: packages/blue-factory/src/aware.ts:20
+Defined in: packages/blue-factory/src/aware.ts:38
+
+The name of the value in the factory.
 
 ## Methods
 
@@ -38,13 +44,19 @@ Defined in: packages/blue-factory/src/aware.ts:20
 
 > **setName**(`name`): `void`
 
-Defined in: packages/blue-factory/src/aware.ts:21
+Defined in: packages/blue-factory/src/aware.ts:45
+
+Set the name of the value in the factory that created it.
+
+Invoked after population of normal value properties but before an `init` callback.
 
 #### Parameters
 
 ##### name
 
 `string`
+
+The name of the value in the factory.
 
 #### Returns
 

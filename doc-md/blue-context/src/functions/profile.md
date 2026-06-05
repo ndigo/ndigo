@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,9 +6,11 @@
 
 # Function: profile()
 
-> **profile**(`name`): (`target`, `propertyKey?`, `descriptor?`) => `any`
+> **profile**(`name`): (`target`, `context`) => `any`
 
-Defined in: packages/blue-context/src/configuration.ts:98
+Defined in: packages/blue-context/src/configuration.ts:109
+
+Marks a class or method as active only for the named profile(s).
 
 ## Parameters
 
@@ -16,24 +18,10 @@ Defined in: packages/blue-context/src/configuration.ts:98
 
 `string`
 
+A comma-delimited list of profile names.
+
 ## Returns
 
-> (`target`, `propertyKey?`, `descriptor?`): `any`
+A decorator that stores profile metadata.
 
-### Parameters
-
-#### target
-
-`any`
-
-#### propertyKey?
-
-`string` | `symbol`
-
-#### descriptor?
-
-`TypedPropertyDescriptor`\<`any`\>
-
-### Returns
-
-`any`
+(`target`, `context`) => `any`

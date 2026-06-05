@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -8,4 +8,10 @@
 
 > **HTTPMethod** = `"CONNECT"` \| `"DELETE"` \| `"GET"` \| `"HEAD"` \| `"OPTIONS"` \| `"PATCH"` \| `"POST"` \| `"PUT"` \| `"TRACE"`
 
-Defined in: packages/blue-http/src/http.ts:11
+Defined in: packages/blue-http/src/http.ts:18
+
+Represents a valid HTTP method.
+
+## See
+
+[https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods)

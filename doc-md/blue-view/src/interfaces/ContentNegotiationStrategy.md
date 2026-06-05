@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,15 +6,19 @@
 
 # Interface: ContentNegotiationStrategy
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:15
+Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:33
+
+Resolves the media types supported for a request.
 
 ## Methods
 
 ### resolveMediaTypes()
 
-> **resolveMediaTypes**(`request`): [`MediaType`](../../../blue-core/src/classes/MediaType.md)[]
+> **resolveMediaTypes**(`request`): `MediaType`[]
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:16
+Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:40
+
+Resolves the media types requested by the current request.
 
 #### Parameters
 
@@ -22,6 +26,10 @@ Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:16
 
 `any`
 
+The current request.
+
 #### Returns
 
-[`MediaType`](../../../blue-core/src/classes/MediaType.md)[]
+`MediaType`[]
+
+The acceptable media types, in priority order.

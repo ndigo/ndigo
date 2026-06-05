@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,29 +6,37 @@
 
 # Class: ComponentAndView
 
-Defined in: packages/blue-domain/src/component-and-view.ts:11
+Defined in: packages/blue-domain/src/component-and-view.ts:13
+
+Couples a domain component with a dispatcher model-and-view instance.
 
 ## Extends
 
-- [`ModelAndView`](../../../blue-dispatcher/src/classes/ModelAndView.md)
+- `ModelAndView`
 
 ## Constructors
 
 ### Constructor
 
-> **new ComponentAndView**(`view`, `model`): `ComponentAndView`
+> **new ComponentAndView**(`view`, `model?`): `ComponentAndView`
 
-Defined in: packages/blue-dispatcher/src/model-and-view.ts:24
+Defined in: packages/blue-dispatcher/lib/model-and-view.d.ts:35
+
+Create a model and view pair.
 
 #### Parameters
 
 ##### view
 
-`string` | [`View`](../../../blue-view/src/interfaces/View.md)
+`string` \| `View`
 
-##### model
+The view name or view instance.
 
-`Model` = `null`
+##### model?
+
+`Model`
+
+Optional model data to expose to the view.
 
 #### Returns
 
@@ -36,7 +44,7 @@ Defined in: packages/blue-dispatcher/src/model-and-view.ts:24
 
 #### Inherited from
 
-[`ModelAndView`](../../../blue-dispatcher/src/classes/ModelAndView.md).[`constructor`](../../../blue-dispatcher/src/classes/ModelAndView.md#constructor)
+`ModelAndView.constructor`
 
 ## Properties
 
@@ -44,11 +52,27 @@ Defined in: packages/blue-dispatcher/src/model-and-view.ts:24
 
 > **model**: `Model`
 
-Defined in: packages/blue-dispatcher/src/model-and-view.ts:12
+Defined in: packages/blue-dispatcher/lib/model-and-view.d.ts:15
+
+Model data supplied to the view.
 
 #### Inherited from
 
-[`ModelAndView`](../../../blue-dispatcher/src/classes/ModelAndView.md).[`model`](../../../blue-dispatcher/src/classes/ModelAndView.md#model)
+`ModelAndView.model`
+
+***
+
+### view
+
+> **view**: `View`
+
+Defined in: packages/blue-dispatcher/lib/model-and-view.d.ts:23
+
+Resolved view instance, when known.
+
+#### Inherited from
+
+`ModelAndView.view`
 
 ***
 
@@ -56,23 +80,13 @@ Defined in: packages/blue-dispatcher/src/model-and-view.ts:12
 
 > **viewName**: `string`
 
-Defined in: packages/blue-dispatcher/src/model-and-view.ts:13
+Defined in: packages/blue-domain/src/component-and-view.ts:14
 
-#### Inherited from
+Resolved view name, when known.
 
-[`ModelAndView`](../../../blue-dispatcher/src/classes/ModelAndView.md).[`viewName`](../../../blue-dispatcher/src/classes/ModelAndView.md#viewname)
+#### Overrides
 
-***
-
-### view
-
-> **view**: [`View`](../../../blue-view/src/interfaces/View.md)
-
-Defined in: packages/blue-dispatcher/src/model-and-view.ts:14
-
-#### Inherited from
-
-[`ModelAndView`](../../../blue-dispatcher/src/classes/ModelAndView.md).[`view`](../../../blue-dispatcher/src/classes/ModelAndView.md#view)
+`ModelAndView.viewName`
 
 ***
 
@@ -80,7 +94,9 @@ Defined in: packages/blue-dispatcher/src/model-and-view.ts:14
 
 > **component**: [`DomainComponent`](../interfaces/DomainComponent.md)
 
-Defined in: packages/blue-domain/src/component-and-view.ts:16
+Defined in: packages/blue-domain/src/component-and-view.ts:23
+
+Domain component associated with the current view model.
 
 ## Accessors
 
@@ -90,7 +106,9 @@ Defined in: packages/blue-domain/src/component-and-view.ts:16
 
 > **get** **hasView**(): `boolean`
 
-Defined in: packages/blue-dispatcher/src/model-and-view.ts:16
+Defined in: packages/blue-dispatcher/lib/model-and-view.d.ts:27
+
+Whether this instance has either a view name or view object.
 
 ##### Returns
 
@@ -98,7 +116,7 @@ Defined in: packages/blue-dispatcher/src/model-and-view.ts:16
 
 #### Inherited from
 
-[`ModelAndView`](../../../blue-dispatcher/src/classes/ModelAndView.md).[`hasView`](../../../blue-dispatcher/src/classes/ModelAndView.md#hasview)
+`ModelAndView.hasView`
 
 ***
 
@@ -108,7 +126,7 @@ Defined in: packages/blue-dispatcher/src/model-and-view.ts:16
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-domain/src/component-and-view.ts:12
+Defined in: packages/blue-domain/src/component-and-view.ts:16
 
 ##### Returns
 
@@ -116,4 +134,4 @@ Defined in: packages/blue-domain/src/component-and-view.ts:12
 
 #### Overrides
 
-[`ModelAndView`](../../../blue-dispatcher/src/classes/ModelAndView.md).[`[toStringTag]`](../../../blue-dispatcher/src/classes/ModelAndView.md#tostringtag)
+`ModelAndView.[toStringTag]`

@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,15 +6,19 @@
 
 # Class: NameViewResolver
 
-Defined in: packages/blue-view/src/view-resolver.ts:168
+Defined in: packages/blue-view/src/view-resolver.ts:223
 
 A simple implementation of [\`ViewResolver\`](../interfaces/ViewResolver.md) that interprets a view name as a value in the current application context.
 
 This resolver can be handy for small applications, keeping all definitions ranging from controllers to views in the same place.
 
+## Implements
+
+module:view.ViewResolver
+
 ## Extends
 
-- [`ApplicationContextAware`](../../../blue-context/src/interfaces/ApplicationContextAware.md) & [`Null`](../../../blue-core/src/classes/Null.md)\<`this`\>
+- `ApplicationContextAware` & `Null`\<`this`\>
 
 ## Implements
 
@@ -40,7 +44,9 @@ This resolver can be handy for small applications, keeping all definitions rangi
 
 > `readonly` **\[$aware\]**: `boolean`
 
-Defined in: packages/blue-factory/src/aware.ts:16
+Defined in: packages/blue-factory/lib/aware.d.ts:21
+
+A symbol indicating that the value is aware.
 
 #### Inherited from
 
@@ -50,9 +56,11 @@ Defined in: packages/blue-factory/src/aware.ts:16
 
 ### applicationContext
 
-> `readonly` **applicationContext**: [`ApplicationContext`](../../../blue-context/src/interfaces/ApplicationContext.md)
+> `readonly` **applicationContext**: `ApplicationContext`
 
-Defined in: packages/blue-view/src/view-resolver.ts:169
+Defined in: packages/blue-view/src/view-resolver.ts:227
+
+The application context used as the view registry.
 
 ## Methods
 
@@ -60,13 +68,19 @@ Defined in: packages/blue-view/src/view-resolver.ts:169
 
 > **setApplicationContext**(`applicationContext`): `void`
 
-Defined in: packages/blue-context/src/context.ts:57
+Defined in: packages/blue-context/lib/context.d.ts:145
+
+Set the ApplicationContext that this object runs in. Normally this call will be used to initialize the object.
+
+Invoked after population of normal value properties but before an `init` callback.
 
 #### Parameters
 
 ##### applicationContext
 
-[`ApplicationContext`](../../../blue-context/src/interfaces/ApplicationContext.md)
+`ApplicationContext`
+
+The ApplicationContext to be used by this object.
 
 #### Returns
 
@@ -82,7 +96,9 @@ Defined in: packages/blue-context/src/context.ts:57
 
 > **resolveViewName**(`name`, `language?`): `Promise`\<[`View`](../interfaces/View.md)\>
 
-Defined in: packages/blue-view/src/view-resolver.ts:171
+Defined in: packages/blue-view/src/view-resolver.ts:236
+
+Resolves a view from the application context by name.
 
 #### Parameters
 
@@ -90,13 +106,19 @@ Defined in: packages/blue-view/src/view-resolver.ts:171
 
 `string`
 
+The view name to resolve.
+
 ##### language?
 
 `any`
 
+Optional locale or language hint.
+
 #### Returns
 
 `Promise`\<[`View`](../interfaces/View.md)\>
+
+A promise that resolves to the matching view, or `null` when none is available.
 
 #### Implementation of
 

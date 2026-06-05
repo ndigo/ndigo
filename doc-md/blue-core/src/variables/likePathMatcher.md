@@ -1,14 +1,17 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
 [BlueJS Framework](../../../modules.md) / [blue-core/src](../README.md) / likePathMatcher
 
-# Variable: likePathMatcher()
+# Variable: likePathMatcher
 
 > `const` **likePathMatcher**: (`value`) => `value is PathMatcher`
 
-Defined in: packages/blue-core/src/path-matcher.ts:64
+Defined in: packages/blue-core/src/path-matcher.ts:88
+
+Type guard that checks if a given value is a [PathMatcher](../interfaces/PathMatcher.md).
+A value is considered a `PathMatcher` if it has `getPatternComparator`, `match`, and `merge` methods.
 
 ## Parameters
 
@@ -16,8 +19,10 @@ Defined in: packages/blue-core/src/path-matcher.ts:64
 
 `any`
 
+The value to check.
+
 ## Returns
 
 `value is PathMatcher`
 
-Whether or not the `value` is a [PathMatcher](../interfaces/PathMatcher.md).
+`true` if the value is a `PathMatcher`, `false` otherwise.

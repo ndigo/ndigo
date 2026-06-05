@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,9 @@
 
 # Class: PrototypalPropertyResolver
 
-Defined in: packages/blue-context/src/property-resolver.ts:76
+Defined in: packages/blue-context/src/property-resolver.ts:108
+
+Property resolver that layers sources through a prototype chain for lookup.
 
 ## Implements
 
@@ -18,13 +20,13 @@ Defined in: packages/blue-context/src/property-resolver.ts:76
 
 > **new PrototypalPropertyResolver**(`propertySources`): `PrototypalPropertyResolver`
 
-Defined in: packages/blue-context/src/property-resolver.ts:96
+Defined in: packages/blue-context/src/property-resolver.ts:134
 
 #### Parameters
 
 ##### propertySources
 
-[`JSONObject`](../../../blue-core/src/interfaces/JSONObject.md)[]
+`JSONObject`[]
 
 #### Returns
 
@@ -34,9 +36,9 @@ Defined in: packages/blue-context/src/property-resolver.ts:96
 
 ### properties
 
-> `readonly` **properties**: [`JSONObject`](../../../blue-core/src/interfaces/JSONObject.md)
+> `readonly` **properties**: `JSONObject`
 
-Defined in: packages/blue-context/src/property-resolver.ts:78
+Defined in: packages/blue-context/src/property-resolver.ts:110
 
 ## Accessors
 
@@ -44,29 +46,37 @@ Defined in: packages/blue-context/src/property-resolver.ts:78
 
 #### Get Signature
 
-> **get** **propertySources**(): [`JSONObject`](../../../blue-core/src/interfaces/JSONObject.md)[]
+> **get** **propertySources**(): `JSONObject`[]
 
-Defined in: packages/blue-context/src/property-resolver.ts:82
+Defined in: packages/blue-context/src/property-resolver.ts:115
+
+The ordered set of configured property sources.
 
 ##### Returns
 
-[`JSONObject`](../../../blue-core/src/interfaces/JSONObject.md)[]
+`JSONObject`[]
 
 #### Set Signature
 
 > **set** **propertySources**(`propertySources`): `void`
 
-Defined in: packages/blue-context/src/property-resolver.ts:86
+Defined in: packages/blue-context/src/property-resolver.ts:124
+
+Replaces the property sources and rebuilds the prototype chain used for lookups.
 
 ##### Parameters
 
 ###### propertySources
 
-[`JSONObject`](../../../blue-core/src/interfaces/JSONObject.md)[]
+`JSONObject`[]
+
+The new property sources.
 
 ##### Returns
 
 `void`
+
+The ordered set of property sources used during resolution.
 
 #### Implementation of
 
@@ -76,9 +86,11 @@ Defined in: packages/blue-context/src/property-resolver.ts:86
 
 ### getProperty()
 
-> **getProperty**(`key`, `defaultValue?`): [`JSONValue`](../../../blue-core/src/type-aliases/JSONValue.md)
+> **getProperty**(`key`, `defaultValue?`): `JSONValue`
 
-Defined in: packages/blue-context/src/property-resolver.ts:108
+Defined in: packages/blue-context/src/property-resolver.ts:145
+
+Resolves a property value from the configured sources.
 
 #### Parameters
 
@@ -86,13 +98,19 @@ Defined in: packages/blue-context/src/property-resolver.ts:108
 
 `string`
 
+The property name to resolve.
+
 ##### defaultValue?
 
-[`JSONValue`](../../../blue-core/src/type-aliases/JSONValue.md)
+`JSONValue`
+
+The value to return when the property is missing.
 
 #### Returns
 
-[`JSONValue`](../../../blue-core/src/type-aliases/JSONValue.md)
+`JSONValue`
+
+The resolved property value or the default value.
 
 #### Implementation of
 
@@ -102,9 +120,11 @@ Defined in: packages/blue-context/src/property-resolver.ts:108
 
 ### getRequiredProperty()
 
-> **getRequiredProperty**(`key`): [`JSONValue`](../../../blue-core/src/type-aliases/JSONValue.md)
+> **getRequiredProperty**(`key`): `JSONValue`
 
-Defined in: packages/blue-context/src/property-resolver.ts:122
+Defined in: packages/blue-context/src/property-resolver.ts:159
+
+Resolves a required property value.
 
 #### Parameters
 
@@ -112,9 +132,17 @@ Defined in: packages/blue-context/src/property-resolver.ts:122
 
 `string`
 
+The property name to resolve.
+
 #### Returns
 
-[`JSONValue`](../../../blue-core/src/type-aliases/JSONValue.md)
+`JSONValue`
+
+The resolved property value.
+
+#### Throws
+
+When the property cannot be resolved.
 
 #### Implementation of
 
@@ -126,7 +154,9 @@ Defined in: packages/blue-context/src/property-resolver.ts:122
 
 > **hasProperty**(`key`): `boolean`
 
-Defined in: packages/blue-context/src/property-resolver.ts:134
+Defined in: packages/blue-context/src/property-resolver.ts:173
+
+Returns whether the property can be resolved.
 
 #### Parameters
 
@@ -134,9 +164,13 @@ Defined in: packages/blue-context/src/property-resolver.ts:134
 
 `string`
 
+The property name to resolve.
+
 #### Returns
 
 `boolean`
+
+`true` when the property exists.
 
 #### Implementation of
 

@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,19 +6,21 @@
 
 # Class: MethodParameter
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:110
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:120
+
+Method parameter metadata
 
 ## Implements
 
-- [`Serializable`](../../../blue-core/src/interfaces/Serializable.md)
+- `Serializable`
 
 ## Constructors
 
 ### Constructor
 
-> **new MethodParameter**(`type`, `name`, `required`, `defaultValue`): `MethodParameter`
+> **new MethodParameter**(`type`, `name`, `required?`, `defaultValue?`, `convert?`, `prefix?`): `MethodParameter`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:116
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:128
 
 #### Parameters
 
@@ -30,11 +32,19 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:116
 
 `string`
 
-##### required
+##### required?
 
 `boolean` = `false`
 
-##### defaultValue
+##### defaultValue?
+
+`string` = `null`
+
+##### convert?
+
+[`ParameterValueConverterReference`](../type-aliases/ParameterValueConverterReference.md) = `null`
+
+##### prefix?
 
 `string` = `null`
 
@@ -48,7 +58,7 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:116
 
 > `readonly` **name**: `string`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:111
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:121
 
 ***
 
@@ -56,7 +66,7 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:111
 
 > `readonly` **type**: [`MethodParameterType`](MethodParameterType.md)
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:112
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:122
 
 ***
 
@@ -64,7 +74,7 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:112
 
 > `readonly` **required**: `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:113
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:123
 
 ***
 
@@ -72,23 +82,39 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:113
 
 > `readonly` **defaultValue**: `string`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:114
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:124
+
+***
+
+### convert
+
+> `readonly` **convert**: [`ParameterValueConverterReference`](../type-aliases/ParameterValueConverterReference.md)
+
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:125
+
+***
+
+### prefix
+
+> `readonly` **prefix**: `string`
+
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:126
 
 ## Methods
 
 ### toJSON()
 
-> **toJSON**(): [`JSONObject`](../../../blue-core/src/interfaces/JSONObject.md)
+> **toJSON**(): `JSONObject`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:146
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:180
 
 #### Returns
 
-[`JSONObject`](../../../blue-core/src/interfaces/JSONObject.md)
+`JSONObject`
 
 #### Implementation of
 
-[`Serializable`](../../../blue-core/src/interfaces/Serializable.md).[`toJSON`](../../../blue-core/src/interfaces/Serializable.md#tojson)
+`Serializable.toJSON`
 
 ***
 
@@ -96,7 +122,7 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:146
 
 > **toString**(): `string`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:155
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:204
 
 #### Returns
 
@@ -104,4 +130,4 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:155
 
 #### Implementation of
 
-[`Serializable`](../../../blue-core/src/interfaces/Serializable.md).[`toString`](../../../blue-core/src/interfaces/Serializable.md#tostring)
+`Serializable.toString`

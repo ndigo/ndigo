@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,13 @@
 
 # Class: MappedResponseClassHTTPInterceptor
 
-Defined in: packages/blue-http/src/interceptors/response-class-interceptor.ts:135
+Defined in: packages/blue-http/src/interceptors/response-class-interceptor.ts:115
+
+Dispatches response hooks based on the response status class.
+
+## Implements
+
+module:http.ResponseAwareHTTPInterceptor
 
 ## Implements
 
@@ -18,13 +24,17 @@ Defined in: packages/blue-http/src/interceptors/response-class-interceptor.ts:13
 
 > **new MappedResponseClassHTTPInterceptor**(`interceptor`): `MappedResponseClassHTTPInterceptor`
 
-Defined in: packages/blue-http/src/interceptors/response-class-interceptor.ts:150
+Defined in: packages/blue-http/src/interceptors/response-class-interceptor.ts:135
+
+Creates a response-class dispatcher.
 
 #### Parameters
 
 ##### interceptor
 
 `any`
+
+The interceptor to wrap.
 
 #### Returns
 
@@ -38,7 +48,9 @@ Defined in: packages/blue-http/src/interceptors/response-class-interceptor.ts:15
 
 > **get** **interceptor**(): [`ResponseClassAwareHTTPInterceptor`](../type-aliases/ResponseClassAwareHTTPInterceptor.md)
 
-Defined in: packages/blue-http/src/interceptors/response-class-interceptor.ts:146
+Defined in: packages/blue-http/src/interceptors/response-class-interceptor.ts:126
+
+The wrapped interceptor that receives class-specific callbacks.
 
 ##### Returns
 
@@ -48,9 +60,11 @@ Defined in: packages/blue-http/src/interceptors/response-class-interceptor.ts:14
 
 ### postResponse()
 
-> **postResponse**(`response`, `settings`): `Promise`\<`void`\>
+> **postResponse**(`response`, `settings`): `Promise`\<`void` \| `Response`\>
 
-Defined in: packages/blue-http/src/interceptors/response-class-interceptor.ts:165
+Defined in: packages/blue-http/src/interceptors/response-class-interceptor.ts:151
+
+Dispatches the response to the appropriate class-specific hook.
 
 #### Parameters
 
@@ -58,17 +72,19 @@ Defined in: packages/blue-http/src/interceptors/response-class-interceptor.ts:16
 
 `Response`
 
+The response to classify.
+
 ##### settings
 
 [`HTTPInit`](../type-aliases/HTTPInit.md)
 
+The request settings used for the call.
+
 #### Returns
 
-`Promise`\<`void`\>
+`Promise`\<`void` \| `Response`\>
 
-#### Async
-
-*
+A promise that settles after the matching hook completes.
 
 #### Implementation of
 

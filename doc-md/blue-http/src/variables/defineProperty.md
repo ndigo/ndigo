@@ -1,14 +1,14 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
 [BlueJS Framework](../../../modules.md) / [blue-http/src](../README.md) / defineProperty
 
-# Variable: defineProperty()
+# Variable: defineProperty
 
 > **defineProperty**: (`target`, `propertyKey`, `attributes`) => `boolean`
 
-Defined in: packages/blue-http/src/http.ts:155
+Defined in: packages/blue-http/src/http.ts:270
 
 Adds a property to an object, or modifies attributes of an existing property.
 

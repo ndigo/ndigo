@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -8,8 +8,10 @@
 
 > **DomainData** = `object`
 
-Defined in: packages/blue-domain/src/component.ts:10
+Defined in: packages/blue-domain/src/component.ts:16
+
+Stores JSON-compatible data exposed by a domain component.
 
 ## Index Signature
 
-\[`property`: `string`\]: [`JSONValue`](../../../blue-core/src/type-aliases/JSONValue.md)
+\[`property`: `string`\]: `JSONValue`

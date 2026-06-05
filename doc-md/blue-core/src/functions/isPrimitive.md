@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -8,7 +8,9 @@
 
 > **isPrimitive**(`value`): `value is primitive`
 
-Defined in: packages/blue-core/src/primitive.ts:20
+Defined in: packages/blue-core/src/primitive.ts:21
+
+Tests whether a value is a primitive.
 
 ## Parameters
 
@@ -16,11 +18,13 @@ Defined in: packages/blue-core/src/primitive.ts:20
 
 `any`
 
+Value to test.
+
 ## Returns
 
 `value is primitive`
 
-Whether or not a value is primitive
+`true` when the value is a primitive.
 
 ## See
 

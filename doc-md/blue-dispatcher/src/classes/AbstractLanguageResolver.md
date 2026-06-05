@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,9 @@
 
 # Abstract Class: AbstractLanguageResolver
 
-Defined in: packages/blue-dispatcher/src/language-resolver.ts:10
+Defined in: packages/blue-dispatcher/src/language-resolver.ts:22
+
+Base class for language resolvers with a configurable fallback language.
 
 ## Extended by
 
@@ -22,13 +24,17 @@ Defined in: packages/blue-dispatcher/src/language-resolver.ts:10
 
 > **new AbstractLanguageResolver**(`defaultLanguage`): `AbstractLanguageResolver`
 
-Defined in: packages/blue-dispatcher/src/language-resolver.ts:13
+Defined in: packages/blue-dispatcher/src/language-resolver.ts:33
+
+Store the fallback language.
 
 #### Parameters
 
 ##### defaultLanguage
 
 `string`
+
+The default language to use.
 
 #### Returns
 
@@ -40,7 +46,9 @@ Defined in: packages/blue-dispatcher/src/language-resolver.ts:13
 
 > `readonly` **defaultLanguage**: `string`
 
-Defined in: packages/blue-dispatcher/src/language-resolver.ts:11
+Defined in: packages/blue-dispatcher/src/language-resolver.ts:26
+
+Fallback language used when no route-specific language is available.
 
 ## Methods
 
@@ -48,17 +56,23 @@ Defined in: packages/blue-dispatcher/src/language-resolver.ts:11
 
 > `abstract` **resolveLanguage**(`route`): `string`
 
-Defined in: packages/blue-dispatcher/src/language-resolver.ts:22
+Defined in: packages/blue-dispatcher/src/language-resolver.ts:48
+
+Resolve the active language for a route.
 
 #### Parameters
 
 ##### route
 
-[`Route`](../../../blue-router/src/interfaces/Route.md)
+`Route`
+
+The current route.
 
 #### Returns
 
 `string`
+
+The resolved language tag.
 
 #### Implementation of
 

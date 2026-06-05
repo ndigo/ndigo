@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,25 +6,33 @@
 
 # Class: HTTPExecutionChain
 
-Defined in: packages/blue-http/src/http.ts:347
+Defined in: packages/blue-http/src/http.ts:549
+
+Executes registered interceptors in lifecycle order for a single request.
 
 ## Constructors
 
 ### Constructor
 
-> **new HTTPExecutionChain**(`http`, `interceptors`): `HTTPExecutionChain`
+> **new HTTPExecutionChain**(`http`, `interceptors?`): `HTTPExecutionChain`
 
-Defined in: packages/blue-http/src/http.ts:374
+Defined in: packages/blue-http/src/http.ts:585
+
+Creates a chain for the given HTTP client and optional interceptor list.
 
 #### Parameters
 
 ##### http
 
-[`HTTP`](HTTP.md) | `HTTPExecutionChain`
+[`HTTP`](HTTP.md) \| `HTTPExecutionChain`
 
-##### interceptors
+The owning HTTP client or an existing execution chain.
+
+##### interceptors?
 
 [`HTTPInterceptor`](../type-aliases/HTTPInterceptor.md)[] = `null`
+
+Interceptors to seed the chain with.
 
 #### Returns
 
@@ -36,7 +44,9 @@ Defined in: packages/blue-http/src/http.ts:374
 
 > **http**: [`HTTP`](HTTP.md)
 
-Defined in: packages/blue-http/src/http.ts:358
+Defined in: packages/blue-http/src/http.ts:561
+
+The HTTP client that owns this execution chain.
 
 ***
 
@@ -44,7 +54,9 @@ Defined in: packages/blue-http/src/http.ts:358
 
 > **interceptorIndex**: `number`
 
-Defined in: packages/blue-http/src/http.ts:362
+Defined in: packages/blue-http/src/http.ts:566
+
+The index of the most recent initialization-aware interceptor.
 
 ## Accessors
 
@@ -54,7 +66,7 @@ Defined in: packages/blue-http/src/http.ts:362
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-http/src/http.ts:364
+Defined in: packages/blue-http/src/http.ts:568
 
 ##### Returns
 
@@ -68,7 +80,9 @@ Defined in: packages/blue-http/src/http.ts:364
 
 > **get** **interceptors**(): [`HTTPInterceptor`](../type-aliases/HTTPInterceptor.md)[]
 
-Defined in: packages/blue-http/src/http.ts:370
+Defined in: packages/blue-http/src/http.ts:575
+
+The interceptors registered with this execution chain.
 
 ##### Returns
 
@@ -80,13 +94,17 @@ Defined in: packages/blue-http/src/http.ts:370
 
 > **addInterceptor**(`interceptor`): `void`
 
-Defined in: packages/blue-http/src/http.ts:398
+Defined in: packages/blue-http/src/http.ts:611
+
+Adds a single interceptor to the chain.
 
 #### Parameters
 
 ##### interceptor
 
 [`HTTPInterceptor`](../type-aliases/HTTPInterceptor.md)
+
+The interceptor to append.
 
 #### Returns
 
@@ -98,13 +116,17 @@ Defined in: packages/blue-http/src/http.ts:398
 
 > **addInterceptors**(`interceptors`): `void`
 
-Defined in: packages/blue-http/src/http.ts:411
+Defined in: packages/blue-http/src/http.ts:626
+
+Adds multiple interceptors to the chain in order.
 
 #### Parameters
 
 ##### interceptors
 
 [`HTTPInterceptor`](../type-aliases/HTTPInterceptor.md)[]
+
+Interceptors to append.
 
 #### Returns
 
@@ -116,7 +138,9 @@ Defined in: packages/blue-http/src/http.ts:411
 
 > **applyPostError**(`error`, `request`, `http`): `Promise`\<`Response`\>
 
-Defined in: packages/blue-http/src/http.ts:422
+Defined in: packages/blue-http/src/http.ts:643
+
+Runs the first error-aware interceptor that can recover from a failure.
 
 #### Parameters
 
@@ -124,17 +148,25 @@ Defined in: packages/blue-http/src/http.ts:422
 
 `Error`
 
+The request failure.
+
 ##### request
 
 `Request`
+
+The request that failed.
 
 ##### http
 
 [`HTTP`](HTTP.md)
 
+The HTTP client executing the request.
+
 #### Returns
 
 `Promise`\<`Response`\>
+
+A replacement response, or `undefined` when no interceptor handles the error.
 
 ***
 
@@ -142,7 +174,9 @@ Defined in: packages/blue-http/src/http.ts:422
 
 > **applyPostComplete**(`request`, `response`): `void`
 
-Defined in: packages/blue-http/src/http.ts:440
+Defined in: packages/blue-http/src/http.ts:665
+
+Runs all completion-aware interceptors after the request settles.
 
 #### Parameters
 
@@ -150,9 +184,13 @@ Defined in: packages/blue-http/src/http.ts:440
 
 `Request`
 
+The request that completed.
+
 ##### response
 
-`Response`
+`Response` \| `ResponseError`
+
+The final response or error wrapper.
 
 #### Returns
 
@@ -162,9 +200,11 @@ Defined in: packages/blue-http/src/http.ts:440
 
 ### applyPostResponse()
 
-> **applyPostResponse**(`response`, `settings`): `Promise`\<`void`\>
+> **applyPostResponse**(`response`, `settings`): `Promise`\<`Response`\>
 
-Defined in: packages/blue-http/src/http.ts:458
+Defined in: packages/blue-http/src/http.ts:688
+
+Runs response-aware interceptors and returns the final response.
 
 #### Parameters
 
@@ -172,13 +212,19 @@ Defined in: packages/blue-http/src/http.ts:458
 
 `Response`
 
+The response returned by fetch.
+
 ##### settings
 
 [`HTTPInit`](../type-aliases/HTTPInit.md)
 
+The request settings used for the call.
+
 #### Returns
 
-`Promise`\<`void`\>
+`Promise`\<`Response`\>
+
+The transformed response, or the original response when no transformer applies.
 
 ***
 
@@ -186,7 +232,9 @@ Defined in: packages/blue-http/src/http.ts:458
 
 > **applyPreInit**(`url`, `settings`): `boolean`
 
-Defined in: packages/blue-http/src/http.ts:476
+Defined in: packages/blue-http/src/http.ts:719
+
+Runs initialization-aware interceptors before the request object is created.
 
 #### Parameters
 
@@ -194,13 +242,19 @@ Defined in: packages/blue-http/src/http.ts:476
 
 `URL`
 
+The resolved request URL.
+
 ##### settings
 
 [`HTTPInit`](../type-aliases/HTTPInit.md)
 
+The request settings being prepared.
+
 #### Returns
 
 `boolean`
+
+`false` when an interceptor cancels the request.
 
 ***
 
@@ -208,7 +262,9 @@ Defined in: packages/blue-http/src/http.ts:476
 
 > **applyPreRequest**(`request`, `http`): `Promise`\<`Request`\>
 
-Defined in: packages/blue-http/src/http.ts:498
+Defined in: packages/blue-http/src/http.ts:746
+
+Runs request-aware interceptors before fetch executes.
 
 #### Parameters
 
@@ -216,13 +272,19 @@ Defined in: packages/blue-http/src/http.ts:498
 
 `Request`
 
+The request to inspect or replace.
+
 ##### http
 
 [`HTTP`](HTTP.md)
 
+The HTTP client executing the request.
+
 #### Returns
 
 `Promise`\<`Request`\>
+
+The transformed request, or the original request when no interceptor applies.
 
 ***
 
@@ -230,9 +292,7 @@ Defined in: packages/blue-http/src/http.ts:498
 
 > `protected` **\_checkInterceptorType**(`interceptor`): `void`
 
-Defined in: packages/blue-http/src/http.ts:524
-
-*
+Defined in: packages/blue-http/src/http.ts:772
 
 #### Parameters
 

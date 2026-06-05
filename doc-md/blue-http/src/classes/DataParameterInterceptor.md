@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,13 @@
 
 # Class: DataParameterInterceptor
 
-Defined in: packages/blue-http/src/interceptors/data-parameter-interceptor.ts:65
+Defined in: packages/blue-http/src/interceptors/data-parameter-interceptor.ts:76
+
+Moves `data` into the URL for bodyless methods and into `body` otherwise.
+
+## Implements
+
+module:http.InitializationAwareHTTPInterceptor
 
 ## Implements
 
@@ -28,7 +34,9 @@ Defined in: packages/blue-http/src/interceptors/data-parameter-interceptor.ts:65
 
 > **preInit**(`url`, `settings`): `boolean`
 
-Defined in: packages/blue-http/src/interceptors/data-parameter-interceptor.ts:72
+Defined in: packages/blue-http/src/interceptors/data-parameter-interceptor.ts:83
+
+module:http.DataParameterInterceptor#preInit
 
 #### Parameters
 

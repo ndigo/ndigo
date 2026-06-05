@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,9 @@
 
 # Interface: Equatable\<T\>
 
-Defined in: packages/blue-core/src/equatable.ts:8
+Defined in: packages/blue-core/src/equatable.ts:12
+
+Represents an object that can be compared for equality with another object of the same type.
 
 ## Type Parameters
 
@@ -14,13 +16,17 @@ Defined in: packages/blue-core/src/equatable.ts:8
 
 `T` = `any`
 
+The type of the object being compared. Defaults to `any`.
+
 ## Methods
 
 ### equals()
 
 > **equals**(`value`): `boolean`
 
-Defined in: packages/blue-core/src/equatable.ts:9
+Defined in: packages/blue-core/src/equatable.ts:18
+
+Determines if this object is equal to the specified value.
 
 #### Parameters
 
@@ -28,6 +34,10 @@ Defined in: packages/blue-core/src/equatable.ts:9
 
 `T`
 
+The value to compare with this object.
+
 #### Returns
 
 `boolean`
+
+`true` if the objects are equal, `false` otherwise.

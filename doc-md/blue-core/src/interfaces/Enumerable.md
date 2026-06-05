@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,9 @@
 
 # Interface: Enumerable\<K, V\>
 
-Defined in: packages/blue-core/src/enumerable.ts:7
+Defined in: packages/blue-core/src/enumerable.ts:12
+
+Represents an object that can be iterated over, providing methods to access its entries, keys, and values.
 
 ## Type Parameters
 
@@ -14,9 +16,13 @@ Defined in: packages/blue-core/src/enumerable.ts:7
 
 `K` *extends* `PropertyKey`
 
+The type of the keys in the enumerable collection.
+
 ### V
 
 `V`
+
+The type of the values in the enumerable collection.
 
 ## Methods
 
@@ -24,11 +30,15 @@ Defined in: packages/blue-core/src/enumerable.ts:7
 
 > **entries**(): `Iterator`\<\[`K`, `V`\]\>
 
-Defined in: packages/blue-core/src/enumerable.ts:8
+Defined in: packages/blue-core/src/enumerable.ts:17
+
+Returns an iterator for the key-value pairs in the collection.
 
 #### Returns
 
 `Iterator`\<\[`K`, `V`\]\>
+
+An iterator that yields `[key, value]` pairs.
 
 ***
 
@@ -36,7 +46,9 @@ Defined in: packages/blue-core/src/enumerable.ts:8
 
 > **forEach**(`callback`, `context?`): `void`
 
-Defined in: packages/blue-core/src/enumerable.ts:9
+Defined in: packages/blue-core/src/enumerable.ts:23
+
+Executes a provided function once for each key-value pair in the collection.
 
 #### Parameters
 
@@ -44,9 +56,13 @@ Defined in: packages/blue-core/src/enumerable.ts:9
 
 (`value`, `key`, `list`) => `void`
 
+Function to execute for each element. It receives `value`, `key`, and the `list` itself as arguments.
+
 ##### context?
 
 `any`
+
+Value to use as `this` when executing the `callback`.
 
 #### Returns
 
@@ -58,11 +74,15 @@ Defined in: packages/blue-core/src/enumerable.ts:9
 
 > **keys**(): `Iterator`\<`K`\>
 
-Defined in: packages/blue-core/src/enumerable.ts:10
+Defined in: packages/blue-core/src/enumerable.ts:28
+
+Returns an iterator for the keys in the collection.
 
 #### Returns
 
 `Iterator`\<`K`\>
+
+An iterator that yields keys.
 
 ***
 
@@ -70,8 +90,12 @@ Defined in: packages/blue-core/src/enumerable.ts:10
 
 > **values**(): `Iterator`\<`V`\>
 
-Defined in: packages/blue-core/src/enumerable.ts:11
+Defined in: packages/blue-core/src/enumerable.ts:33
+
+Returns an iterator for the values in the collection.
 
 #### Returns
 
 `Iterator`\<`V`\>
+
+An iterator that yields values.

@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,13 +6,14 @@
 
 # Class: Null
 
-Defined in: packages/blue-core/src/null.ts:9
+Defined in: packages/blue-core/src/null.ts:10
 
-A "clean", empty container.
+An object with a `null` prototype.
+
+This is useful when you need a dictionary-like object without inherited members.
 
 ## Extended by
 
-- [`AbstractAppender`](../../../blue-logger/src/classes/AbstractAppender.md)
 - [`MediaType`](MediaType.md)
 
 ## Constructors

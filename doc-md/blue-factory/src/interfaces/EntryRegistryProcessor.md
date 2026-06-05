@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,9 @@
 
 # Interface: EntryRegistryProcessor
 
-Defined in: packages/blue-factory/src/entry-processor.ts:25
+Defined in: packages/blue-factory/src/entry-processor.ts:87
+
+Factory hook that allows for modification of an application context's values.
 
 ## Methods
 
@@ -14,13 +16,17 @@ Defined in: packages/blue-factory/src/entry-processor.ts:25
 
 > **processEntryRegistry**(`registry`): `void`
 
-Defined in: packages/blue-factory/src/entry-processor.ts:26
+Defined in: packages/blue-factory/src/entry-processor.ts:92
+
+Process the given registry.
 
 #### Parameters
 
 ##### registry
 
 [`Registry`](Registry.md)
+
+The registry to process.
 
 #### Returns
 

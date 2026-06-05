@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,29 +6,33 @@
 
 # Class: ModelAndView
 
-Defined in: packages/blue-dispatcher/src/model-and-view.ts:11
+Defined in: packages/blue-dispatcher/src/model-and-view.ts:12
 
-## Extended by
-
-- [`ComponentAndView`](../../../blue-domain/src/classes/ComponentAndView.md)
+Holds a view plus its optional model data.
 
 ## Constructors
 
 ### Constructor
 
-> **new ModelAndView**(`view`, `model`): `ModelAndView`
+> **new ModelAndView**(`view`, `model?`): `ModelAndView`
 
-Defined in: packages/blue-dispatcher/src/model-and-view.ts:24
+Defined in: packages/blue-dispatcher/src/model-and-view.ts:45
+
+Create a model and view pair.
 
 #### Parameters
 
 ##### view
 
-`string` | [`View`](../../../blue-view/src/interfaces/View.md)
+`string` \| `View`
 
-##### model
+The view name or view instance.
+
+##### model?
 
 `Model` = `null`
+
+Optional model data to expose to the view.
 
 #### Returns
 
@@ -40,7 +44,9 @@ Defined in: packages/blue-dispatcher/src/model-and-view.ts:24
 
 > **model**: `Model`
 
-Defined in: packages/blue-dispatcher/src/model-and-view.ts:12
+Defined in: packages/blue-dispatcher/src/model-and-view.ts:16
+
+Model data supplied to the view.
 
 ***
 
@@ -48,15 +54,19 @@ Defined in: packages/blue-dispatcher/src/model-and-view.ts:12
 
 > **viewName**: `string`
 
-Defined in: packages/blue-dispatcher/src/model-and-view.ts:13
+Defined in: packages/blue-dispatcher/src/model-and-view.ts:21
+
+Resolved view name, when known.
 
 ***
 
 ### view
 
-> **view**: [`View`](../../../blue-view/src/interfaces/View.md)
+> **view**: `View`
 
-Defined in: packages/blue-dispatcher/src/model-and-view.ts:14
+Defined in: packages/blue-dispatcher/src/model-and-view.ts:26
+
+Resolved view instance, when known.
 
 ## Accessors
 
@@ -66,7 +76,9 @@ Defined in: packages/blue-dispatcher/src/model-and-view.ts:14
 
 > **get** **hasView**(): `boolean`
 
-Defined in: packages/blue-dispatcher/src/model-and-view.ts:16
+Defined in: packages/blue-dispatcher/src/model-and-view.ts:31
+
+Whether this instance has either a view name or view object.
 
 ##### Returns
 
@@ -80,7 +92,7 @@ Defined in: packages/blue-dispatcher/src/model-and-view.ts:16
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-dispatcher/src/model-and-view.ts:20
+Defined in: packages/blue-dispatcher/src/model-and-view.ts:35
 
 ##### Returns
 

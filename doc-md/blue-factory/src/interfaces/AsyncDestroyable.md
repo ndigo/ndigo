@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,15 +6,11 @@
 
 # Interface: AsyncDestroyable
 
-Defined in: packages/blue-factory/src/lifecycle.ts:11
+Defined in: packages/blue-factory/src/lifecycle.ts:12
 
 ## Extends
 
 - [`Destroyable`](Destroyable.md)
-
-## Extended by
-
-- [`DomainComponent`](../../../blue-domain/src/interfaces/DomainComponent.md)
 
 ## Properties
 
@@ -22,7 +18,7 @@ Defined in: packages/blue-factory/src/lifecycle.ts:11
 
 > **destroyed**: `boolean`
 
-Defined in: packages/blue-factory/src/lifecycle.ts:7
+Defined in: packages/blue-factory/src/lifecycle.ts:8
 
 #### Inherited from
 
@@ -34,7 +30,7 @@ Defined in: packages/blue-factory/src/lifecycle.ts:7
 
 > **destroy**(): `Promise`\<`void`\>
 
-Defined in: packages/blue-factory/src/lifecycle.ts:12
+Defined in: packages/blue-factory/src/lifecycle.ts:13
 
 #### Returns
 

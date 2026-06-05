@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,9 +6,11 @@
 
 # Function: direct()
 
-> **direct**\<`T`\>(`node`, `callback`, `inclusive`): `void`
+> **direct**\<`T`\>(`node`, `callback`, `inclusive?`): `void`
 
-Defined in: packages/blue-core/src/tree-node.ts:55
+Defined in: packages/blue-core/src/tree-node.ts:60
+
+Traverses descendants depth-first from the supplied node.
 
 ## Type Parameters
 
@@ -22,13 +24,19 @@ Defined in: packages/blue-core/src/tree-node.ts:55
 
 `T`
 
+Starting node.
+
 ### callback
 
 (`node`) => `any`
 
-### inclusive
+Function invoked for each visited node.
+
+### inclusive?
 
 `boolean` = `false`
+
+When `true`, include the starting node in the traversal.
 
 ## Returns
 

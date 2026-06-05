@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,10 +6,21 @@
 
 # Class: MediaType
 
-Defined in: packages/blue-core/src/media-type.ts:150
+Defined in: packages/blue-core/src/media-type.ts:149
 
+## Param
 
+## Param
 
+## Param
+
+## Implements
+
+module:core.Serializable
+
+## Implements
+
+module:core.StringComparable
 
 ## Extends
 
@@ -25,21 +36,21 @@ Defined in: packages/blue-core/src/media-type.ts:150
 
 ### Constructor
 
-> **new MediaType**(`type`, `subtype`, `parameters`): `MediaType`
+> **new MediaType**(`type?`, `subtype?`, `parameters?`): `MediaType`
 
-Defined in: packages/blue-core/src/media-type.ts:221
+Defined in: packages/blue-core/src/media-type.ts:245
 
 #### Parameters
 
-##### type
+##### type?
 
 `SupportedMediaType` = `WILDCARD`
 
-##### subtype
+##### subtype?
 
 `string` = `WILDCARD`
 
-##### parameters
+##### parameters?
 
 `MediaTypeParameters` = `{}`
 
@@ -57,7 +68,7 @@ Defined in: packages/blue-core/src/media-type.ts:221
 
 > `readonly` **experimental**: `boolean`
 
-Defined in: packages/blue-core/src/media-type.ts:151
+Defined in: packages/blue-core/src/media-type.ts:150
 
 ***
 
@@ -65,7 +76,7 @@ Defined in: packages/blue-core/src/media-type.ts:151
 
 > `readonly` **facets**: `string`[]
 
-Defined in: packages/blue-core/src/media-type.ts:152
+Defined in: packages/blue-core/src/media-type.ts:151
 
 ***
 
@@ -73,7 +84,7 @@ Defined in: packages/blue-core/src/media-type.ts:152
 
 > `readonly` **parameters**: `MediaTypeParameters`
 
-Defined in: packages/blue-core/src/media-type.ts:153
+Defined in: packages/blue-core/src/media-type.ts:152
 
 ***
 
@@ -81,7 +92,7 @@ Defined in: packages/blue-core/src/media-type.ts:153
 
 > `readonly` **personal**: `boolean`
 
-Defined in: packages/blue-core/src/media-type.ts:154
+Defined in: packages/blue-core/src/media-type.ts:153
 
 ***
 
@@ -89,7 +100,7 @@ Defined in: packages/blue-core/src/media-type.ts:154
 
 > `readonly` **suffix**: `string`
 
-Defined in: packages/blue-core/src/media-type.ts:155
+Defined in: packages/blue-core/src/media-type.ts:154
 
 ***
 
@@ -97,7 +108,7 @@ Defined in: packages/blue-core/src/media-type.ts:155
 
 > `readonly` **subtype**: `string`
 
-Defined in: packages/blue-core/src/media-type.ts:156
+Defined in: packages/blue-core/src/media-type.ts:155
 
 ***
 
@@ -105,7 +116,7 @@ Defined in: packages/blue-core/src/media-type.ts:156
 
 > `readonly` **type**: `SupportedMediaType`
 
-Defined in: packages/blue-core/src/media-type.ts:157
+Defined in: packages/blue-core/src/media-type.ts:156
 
 ***
 
@@ -113,7 +124,7 @@ Defined in: packages/blue-core/src/media-type.ts:157
 
 > `readonly` **vendor**: `boolean`
 
-Defined in: packages/blue-core/src/media-type.ts:158
+Defined in: packages/blue-core/src/media-type.ts:157
 
 ***
 
@@ -121,7 +132,7 @@ Defined in: packages/blue-core/src/media-type.ts:158
 
 > `static` **qualityFactorComparator**: `QualityFactorComparator`
 
-Defined in: packages/blue-core/src/media-type.ts:217
+Defined in: packages/blue-core/src/media-type.ts:241
 
 ***
 
@@ -129,7 +140,7 @@ Defined in: packages/blue-core/src/media-type.ts:217
 
 > `static` **specificityComparator**: `SpecificityComparator`\<`MediaType`\>
 
-Defined in: packages/blue-core/src/media-type.ts:219
+Defined in: packages/blue-core/src/media-type.ts:243
 
 ## Accessors
 
@@ -139,7 +150,7 @@ Defined in: packages/blue-core/src/media-type.ts:219
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-core/src/media-type.ts:160
+Defined in: packages/blue-core/src/media-type.ts:159
 
 ##### Returns
 
@@ -153,7 +164,7 @@ Defined in: packages/blue-core/src/media-type.ts:160
 
 > **get** **isWildcardType**(): `boolean`
 
-Defined in: packages/blue-core/src/media-type.ts:164
+Defined in: packages/blue-core/src/media-type.ts:163
 
 ##### Returns
 
@@ -167,7 +178,7 @@ Defined in: packages/blue-core/src/media-type.ts:164
 
 > **get** **isWildcardSubtype**(): `boolean`
 
-Defined in: packages/blue-core/src/media-type.ts:168
+Defined in: packages/blue-core/src/media-type.ts:167
 
 ##### Returns
 
@@ -181,11 +192,41 @@ Defined in: packages/blue-core/src/media-type.ts:168
 
 > **get** **qualityFactor**(): `number`
 
-Defined in: packages/blue-core/src/media-type.ts:172
+Defined in: packages/blue-core/src/media-type.ts:171
 
 ##### Returns
 
 `number`
+
+***
+
+### baseType
+
+#### Get Signature
+
+> **get** **baseType**(): `string`
+
+Defined in: packages/blue-core/src/media-type.ts:198
+
+Returns the base media type without parameters or suffix.
+
+Provides simple string format for matching (e.g., "text/html", "application/json").
+
+##### Example
+
+```typescript
+const mt = MediaType.for('text/html;charset=UTF-8');
+mt.baseType; // "text/html"
+
+const mt2 = MediaType.for('application/atom+xml');
+mt2.baseType; // "application/atom" (excludes suffix)
+```
+
+##### Returns
+
+`string`
+
+Base type as "type/subtype" string
 
 ## Methods
 
@@ -195,7 +236,7 @@ Defined in: packages/blue-core/src/media-type.ts:172
 
 > `static` **for**(`mediaType`): `MediaType`
 
-Defined in: packages/blue-core/src/media-type.ts:180
+Defined in: packages/blue-core/src/media-type.ts:202
 
 ##### Parameters
 
@@ -211,7 +252,7 @@ Defined in: packages/blue-core/src/media-type.ts:180
 
 > `static` **for**(`type`, `subtype`, `parameters?`): `MediaType`
 
-Defined in: packages/blue-core/src/media-type.ts:181
+Defined in: packages/blue-core/src/media-type.ts:203
 
 ##### Parameters
 
@@ -237,7 +278,7 @@ Defined in: packages/blue-core/src/media-type.ts:181
 
 > **compareTo**(`mediaType`): `number`
 
-Defined in: packages/blue-core/src/media-type.ts:256
+Defined in: packages/blue-core/src/media-type.ts:280
 
 #### Parameters
 
@@ -259,7 +300,7 @@ Defined in: packages/blue-core/src/media-type.ts:256
 
 > **compareToIgnoreCase**(`mediaType`): `number`
 
-Defined in: packages/blue-core/src/media-type.ts:311
+Defined in: packages/blue-core/src/media-type.ts:335
 
 #### Parameters
 
@@ -281,7 +322,7 @@ Defined in: packages/blue-core/src/media-type.ts:311
 
 > **equals**(`mediaType`): `boolean`
 
-Defined in: packages/blue-core/src/media-type.ts:362
+Defined in: packages/blue-core/src/media-type.ts:386
 
 #### Parameters
 
@@ -299,10 +340,9 @@ Defined in: packages/blue-core/src/media-type.ts:362
 
 > **createBlob**(`data?`, `endings?`): `Blob`
 
-Defined in: packages/blue-core/src/media-type.ts:372
+Defined in: packages/blue-core/src/media-type.ts:396
 
 Creates a new blob of the media type with the given parameters
-    *
 
 #### Parameters
 
@@ -324,18 +364,17 @@ A new blob of the media type
 
 ### includes()
 
-> **includes**(`value`): `boolean`
+> **includes**(`value?`): `boolean`
 
-Defined in: packages/blue-core/src/media-type.ts:386
+Defined in: packages/blue-core/src/media-type.ts:410
 
 Indicates whether the `MediaType` includes the given `MediaType`.
 
 For example, `text/*` includes `text/plain` and `text/html`, `application/*+xml` includes `application/soap+xml`, etc.
-    *
 
 #### Parameters
 
-##### value
+##### value?
 
 `MediaType` = `null`
 
@@ -351,7 +390,9 @@ If this `MediaType` includes the given `MediaType`.
 
 > **matches**(`mediaType`): `boolean`
 
-Defined in: packages/blue-core/src/media-type.ts:419
+Defined in: packages/blue-core/src/media-type.ts:443
+
+Determines if this object matches the specified value.
 
 #### Parameters
 
@@ -363,6 +404,8 @@ Defined in: packages/blue-core/src/media-type.ts:419
 
 `boolean`
 
+`true` if the object matches the value, `false` otherwise.
+
 #### Implementation of
 
 [`Matchable`](../interfaces/Matchable.md).[`matches`](../interfaces/Matchable.md#matches)
@@ -373,7 +416,7 @@ Defined in: packages/blue-core/src/media-type.ts:419
 
 > **toJSON**(): [`JSONValue`](../type-aliases/JSONValue.md)
 
-Defined in: packages/blue-core/src/media-type.ts:429
+Defined in: packages/blue-core/src/media-type.ts:453
 
 #### Returns
 
@@ -389,7 +432,7 @@ Defined in: packages/blue-core/src/media-type.ts:429
 
 > **toString**(): `string`
 
-Defined in: packages/blue-core/src/media-type.ts:433
+Defined in: packages/blue-core/src/media-type.ts:457
 
 Returns a string representation of an object.
 
@@ -403,11 +446,59 @@ Returns a string representation of an object.
 
 ***
 
+### getDefaultCharset()
+
+> **getDefaultCharset**(): `string`
+
+Defined in: packages/blue-core/src/media-type.ts:472
+
+Returns the default charset for this media type, if known.
+
+Currently returns 'utf-8' for all text/* and application/json media types.
+
+#### Returns
+
+`string`
+
+The default charset or null if unknown
+
+***
+
+### toContentType()
+
+> **toContentType**(`options?`): `string`
+
+Defined in: packages/blue-core/src/media-type.ts:485
+
+Formats the media type for use in an HTTP Content-Type header.
+
+Optionally adds a default charset if none is present and the media type supports it.
+
+#### Parameters
+
+##### options?
+
+Formatting options
+
+###### autoCharset?
+
+`boolean`
+
+Whether to automatically add a default charset
+
+#### Returns
+
+`string`
+
+The formatted Content-Type string
+
+***
+
 ### withCharset()
 
 > **withCharset**(`charset`): `MediaType`
 
-Defined in: packages/blue-core/src/media-type.ts:441
+Defined in: packages/blue-core/src/media-type.ts:497
 
 #### Parameters
 

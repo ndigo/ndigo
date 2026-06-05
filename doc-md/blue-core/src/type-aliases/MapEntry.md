@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -8,10 +8,14 @@
 
 > **MapEntry**\<`Value`\> = \[`MapKey`\<`Value`\>, `MapValue`\<`Value`\>\]
 
-Defined in: packages/blue-core/src/iterable.ts:21
+Defined in: packages/blue-core/src/iterable.ts:53
+
+Represents a single entry for a Map-like value, where the entry is `[key, value]`.
 
 ## Type Parameters
 
 ### Value
 
 `Value`
+
+The Map-like value type.

@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -8,4 +8,6 @@
 
 > **equatable** = [`Equatable`](../interfaces/Equatable.md) \| [`primitive`](primitive.md)
 
-Defined in: packages/blue-core/src/equatable.ts:12
+Defined in: packages/blue-core/src/equatable.ts:24
+
+Represents a value that can be compared for equality, which can be either an `Equatable` object or a primitive type.

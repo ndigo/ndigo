@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,28 +6,44 @@
 
 # Class: MetadataScanner
 
-Defined in: packages/blue-dispatcher/src/metadata-manager.ts:20
+Defined in: packages/blue-dispatcher/src/metadata-manager.ts:29
 
 Create a new MetadataScanner for a given target.
 
 ## Classdesc
 
-Scan an object for metadata defined on the object’s values and cache the resulting property names for subsequent scans.
+Scan a class or prototype for TC39 decorator metadata stored in Symbol.metadata and cache property names.
 
+**TC39 Decorator Migration Note:**
+This class has been updated to work with TC39 Stage 3 decorators. It scans Symbol.metadata
+on class constructors instead of using the legacy Reflect.getMetadata API.
+
+Metadata keys are expected to follow patterns like:
+- `route:mapping` (class-level)
+- `route:mapping:methodName` (method-level)
+- `method:parameter:methodName` (method parameter info)
+
+## Param
+
+Class constructor, prototype, or instance
 
 ## Constructors
 
 ### Constructor
 
-> **new MetadataScanner**(`target`): `MetadataScanner`
+> **new MetadataScanner**(`target?`): `MetadataScanner`
 
-Defined in: packages/blue-dispatcher/src/metadata-manager.ts:24
+Defined in: packages/blue-dispatcher/src/metadata-manager.ts:45
+
+Create a scanner for a target object.
 
 #### Parameters
 
-##### target
+##### target?
 
-`Record`\<`string`, `any`\>
+`Record`\<`string`, `any`\> = `{}`
+
+The object, prototype, or constructor to scan.
 
 #### Returns
 
@@ -37,9 +53,11 @@ Defined in: packages/blue-dispatcher/src/metadata-manager.ts:24
 
 ### \_cache
 
-> **\_cache**: [`MultiValueMap`](../../../blue-core/src/classes/MultiValueMap.md)\<`string`, `string`\>
+> **\_cache**: `MultiValueMap`\<`string`, `string`\>
 
-Defined in: packages/blue-dispatcher/src/metadata-manager.ts:21
+Defined in: packages/blue-dispatcher/src/metadata-manager.ts:33
+
+Cached metadata lookups for the current target.
 
 ***
 
@@ -47,7 +65,9 @@ Defined in: packages/blue-dispatcher/src/metadata-manager.ts:21
 
 > **\_target**: `Record`\<`string`, `any`\>
 
-Defined in: packages/blue-dispatcher/src/metadata-manager.ts:22
+Defined in: packages/blue-dispatcher/src/metadata-manager.ts:38
+
+Target object whose metadata is being scanned.
 
 ## Methods
 
@@ -55,10 +75,9 @@ Defined in: packages/blue-dispatcher/src/metadata-manager.ts:22
 
 > **get**(`metadataKey`): `string`[]
 
-Defined in: packages/blue-dispatcher/src/metadata-manager.ts:65
+Defined in: packages/blue-dispatcher/src/metadata-manager.ts:153
 
-Get the property names of the target object that have the requested metadata.
-    *
+Get the property names that match a metadata key.
 
 #### Parameters
 
@@ -66,11 +85,13 @@ Get the property names of the target object that have the requested metadata.
 
 `string`
 
+The metadata key to query.
+
 #### Returns
 
 `string`[]
 
-The property names on the target that have metadata.
+The matching property names, or `undefined` when none are found.
 
 ***
 
@@ -78,9 +99,9 @@ The property names on the target that have metadata.
 
 > **clear**(): `void`
 
-Defined in: packages/blue-dispatcher/src/metadata-manager.ts:80
+Defined in: packages/blue-dispatcher/src/metadata-manager.ts:171
 
-Clear the metadata cache for the target object.
+Clear all cached metadata lookups for this scanner.
 
 #### Returns
 

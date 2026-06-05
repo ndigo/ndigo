@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,15 +6,15 @@
 
 # Function: AsApplicationContextAware()
 
-> **AsApplicationContextAware**\<`T`\>(`superclass`): [`Constructable`](../../../blue-core/src/type-aliases/Constructable.md)\<[`ApplicationContextAware`](../interfaces/ApplicationContextAware.md)\> & `T`
+> **AsApplicationContextAware**\<`T`\>(`superclass`): `Constructable`\<[`ApplicationContextAware`](../interfaces/ApplicationContextAware.md)\> & `T`
 
-Defined in: packages/blue-context/src/context.ts:296
+Defined in: packages/blue-context/src/context.ts:867
 
 ## Type Parameters
 
 ### T
 
-`T` *extends* [`Constructable`](../../../blue-core/src/type-aliases/Constructable.md)
+`T` *extends* `Constructable`
 
 ## Parameters
 
@@ -22,7 +22,16 @@ Defined in: packages/blue-context/src/context.ts:296
 
 `T`
 
+The base class to extend.
+
 ## Returns
 
-[`Constructable`](../../../blue-core/src/type-aliases/Constructable.md)\<[`ApplicationContextAware`](../interfaces/ApplicationContextAware.md)\> & `T`
+`Constructable`\<[`ApplicationContextAware`](../interfaces/ApplicationContextAware.md)\> & `T`
 
+## See
+
+module:context.AsApplicationContextAware
+
+## Implements
+
+module:context.ApplicationContextAware

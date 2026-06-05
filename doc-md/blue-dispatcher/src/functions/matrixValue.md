@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,24 +6,41 @@
 
 # Function: matrixValue()
 
-> **matrixValue**(`infoOrTarget`, `propertyKey?`, `parameterIndex?`): `any`
+> **matrixValue**(`name`, `options?`): [`ParameterExtractor`](../type-aliases/ParameterExtractor.md)
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:234
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:261
+
+Factory function: Create a matrix parameter extractor
 
 ## Parameters
 
-### infoOrTarget
+### name
 
-`string` | `Object` | [`MethodParameterInfo`](../type-aliases/MethodParameterInfo.md)
+`string`
 
-### propertyKey?
+### options?
 
-`string` | `symbol`
+#### required?
 
-### parameterIndex?
+`boolean`
 
-`number`
+#### defaultValue?
+
+`string`
+
+#### convert?
+
+[`ParameterValueConverterReference`](../type-aliases/ParameterValueConverterReference.md)
 
 ## Returns
 
-`any`
+[`ParameterExtractor`](../type-aliases/ParameterExtractor.md)
+
+## Example
+
+```ts
+@routeParams({
+  color: matrixValue('color'),
+  size: matrixValue('size', { required: true })
+})
+```

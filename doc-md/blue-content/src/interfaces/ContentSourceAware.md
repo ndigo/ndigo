@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,11 +6,13 @@
 
 # Interface: ContentSourceAware
 
-Defined in: packages/blue-content/src/content.ts:13
+Defined in: packages/blue-content/src/content.ts:83
+
+Marks an object that can receive a content source.
 
 ## Extends
 
-- [`Aware`](../../../blue-factory/src/interfaces/Aware.md)
+- `Aware`
 
 ## Properties
 
@@ -18,11 +20,13 @@ Defined in: packages/blue-content/src/content.ts:13
 
 > `readonly` **\[$aware\]**: `boolean`
 
-Defined in: packages/blue-factory/src/aware.ts:16
+Defined in: packages/blue-factory/lib/aware.d.ts:21
+
+A symbol indicating that the value is aware.
 
 #### Inherited from
 
-[`Aware`](../../../blue-factory/src/interfaces/Aware.md).[`[$aware]`](../../../blue-factory/src/interfaces/Aware.md#aware)
+`Aware.[$aware]`
 
 ## Methods
 
@@ -30,13 +34,17 @@ Defined in: packages/blue-factory/src/aware.ts:16
 
 > **setContentSource**(`contentSource`): `void`
 
-Defined in: packages/blue-content/src/content.ts:14
+Defined in: packages/blue-content/src/content.ts:89
+
+Sets the content source used by the receiver.
 
 #### Parameters
 
 ##### contentSource
 
 [`ContentSource`](ContentSource.md)
+
+The content source to attach.
 
 #### Returns
 

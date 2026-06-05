@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,10 +6,9 @@
 
 # Abstract Class: AbstractPathBasedViewResolver
 
-Defined in: packages/blue-view/src/view-resolver.ts:77
+Defined in: packages/blue-view/src/view-resolver.ts:103
 
-Should ViewResolver be typed, i.e. ViewResolver<T extends View>?
--JBR
+Resolves a view name to a concrete [View](../interfaces/View.md) instance.
 
 ## Extends
 
@@ -25,7 +24,9 @@ Should ViewResolver be typed, i.e. ViewResolver<T extends View>?
 
 > **new AbstractPathBasedViewResolver**(): `AbstractPathBasedViewResolver`
 
-Defined in: packages/blue-view/src/view-resolver.ts:84
+Defined in: packages/blue-view/src/view-resolver.ts:128
+
+Creates a path-based resolver with JavaScript media type defaults.
 
 #### Returns
 
@@ -41,7 +42,9 @@ Defined in: packages/blue-view/src/view-resolver.ts:84
 
 > `readonly` **cache**: `object`
 
-Defined in: packages/blue-view/src/view-resolver.ts:34
+Defined in: packages/blue-view/src/view-resolver.ts:47
+
+Cached views keyed by name and language.
 
 #### Index Signature
 
@@ -57,7 +60,9 @@ Defined in: packages/blue-view/src/view-resolver.ts:34
 
 > **isCaching**: `boolean`
 
-Defined in: packages/blue-view/src/view-resolver.ts:35
+Defined in: packages/blue-view/src/view-resolver.ts:51
+
+Indicates whether resolved views should be cached.
 
 #### Inherited from
 
@@ -67,9 +72,11 @@ Defined in: packages/blue-view/src/view-resolver.ts:35
 
 ### mediaType
 
-> **mediaType**: [`MediaType`](../../../blue-core/src/classes/MediaType.md)
+> **mediaType**: `MediaType`
 
-Defined in: packages/blue-view/src/view-resolver.ts:78
+Defined in: packages/blue-view/src/view-resolver.ts:107
+
+Media type assigned to resolved views.
 
 ***
 
@@ -77,7 +84,9 @@ Defined in: packages/blue-view/src/view-resolver.ts:78
 
 > **prefix**: `string`
 
-Defined in: packages/blue-view/src/view-resolver.ts:79
+Defined in: packages/blue-view/src/view-resolver.ts:111
+
+Prefix applied before the resolved view name.
 
 ***
 
@@ -85,15 +94,19 @@ Defined in: packages/blue-view/src/view-resolver.ts:79
 
 > **suffix**: `string`
 
-Defined in: packages/blue-view/src/view-resolver.ts:80
+Defined in: packages/blue-view/src/view-resolver.ts:115
+
+Suffix applied after the resolved view name.
 
 ***
 
 ### viewClass
 
-> **viewClass**: [`Constructable`](../../../blue-core/src/type-aliases/Constructable.md)\<[`View`](../interfaces/View.md)\>
+> **viewClass**: `Constructable`\<[`View`](../interfaces/View.md)\>
 
-Defined in: packages/blue-view/src/view-resolver.ts:81
+Defined in: packages/blue-view/src/view-resolver.ts:119
+
+The concrete view class that will be instantiated.
 
 ***
 
@@ -101,7 +114,9 @@ Defined in: packages/blue-view/src/view-resolver.ts:81
 
 > **viewNames**: (`string` \| `RegExp`)[]
 
-Defined in: packages/blue-view/src/view-resolver.ts:82
+Defined in: packages/blue-view/src/view-resolver.ts:123
+
+The set of names this resolver supports.
 
 ## Methods
 
@@ -109,7 +124,9 @@ Defined in: packages/blue-view/src/view-resolver.ts:82
 
 > **resolveViewName**(`name`, `language?`): `Promise`\<[`View`](../interfaces/View.md)\>
 
-Defined in: packages/blue-view/src/view-resolver.ts:47
+Defined in: packages/blue-view/src/view-resolver.ts:73
+
+Resolves the requested view name, optionally using the cache.
 
 #### Parameters
 
@@ -117,13 +134,19 @@ Defined in: packages/blue-view/src/view-resolver.ts:47
 
 `string`
 
+The view name to resolve.
+
 ##### language?
 
 `any`
 
+Optional locale or language hint used during resolution.
+
 #### Returns
 
 `Promise`\<[`View`](../interfaces/View.md)\>
+
+A promise that resolves to the matching view, or `null` when none is available.
 
 #### Inherited from
 
@@ -135,7 +158,7 @@ Defined in: packages/blue-view/src/view-resolver.ts:47
 
 > `protected` **\_createView**(`name`, `language?`): `Promise`\<[`View`](../interfaces/View.md)\>
 
-Defined in: packages/blue-view/src/view-resolver.ts:66
+Defined in: packages/blue-view/src/view-resolver.ts:92
 
 #### Parameters
 
@@ -161,7 +184,7 @@ Defined in: packages/blue-view/src/view-resolver.ts:66
 
 > `protected` **\_createCacheKey**(`name`, `language?`): `string`
 
-Defined in: packages/blue-view/src/view-resolver.ts:70
+Defined in: packages/blue-view/src/view-resolver.ts:96
 
 #### Parameters
 
@@ -187,7 +210,7 @@ Defined in: packages/blue-view/src/view-resolver.ts:70
 
 > `abstract` `protected` **\_loadView**(`name`, `language?`): `Promise`\<[`View`](../interfaces/View.md)\>
 
-Defined in: packages/blue-view/src/view-resolver.ts:74
+Defined in: packages/blue-view/src/view-resolver.ts:100
 
 #### Parameters
 
@@ -213,7 +236,9 @@ Defined in: packages/blue-view/src/view-resolver.ts:74
 
 > **supports**(`name`, `language?`): `boolean`
 
-Defined in: packages/blue-view/src/view-resolver.ts:92
+Defined in: packages/blue-view/src/view-resolver.ts:143
+
+Returns whether this resolver can handle the given view name.
 
 #### Parameters
 
@@ -221,13 +246,19 @@ Defined in: packages/blue-view/src/view-resolver.ts:92
 
 `string`
 
+The view name to test.
+
 ##### language?
 
 `any`
 
+Optional locale or language hint.
+
 #### Returns
 
 `boolean`
+
+`true` when the name is supported; otherwise `false`.
 
 ***
 
@@ -235,7 +266,7 @@ Defined in: packages/blue-view/src/view-resolver.ts:92
 
 > `protected` **\_buildView**(`name`): [`View`](../interfaces/View.md)
 
-Defined in: packages/blue-view/src/view-resolver.ts:108
+Defined in: packages/blue-view/src/view-resolver.ts:159
 
 #### Parameters
 

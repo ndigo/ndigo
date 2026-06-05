@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,11 +6,13 @@
 
 # Interface: HTTPAware
 
-Defined in: packages/blue-http/src/http.ts:45
+Defined in: packages/blue-http/src/http.ts:149
+
+Describes objects that can receive an [HTTP](../classes/HTTP.md) instance.
 
 ## Extends
 
-- [`Aware`](../../../blue-factory/src/interfaces/Aware.md)
+- `Aware`
 
 ## Properties
 
@@ -18,11 +20,13 @@ Defined in: packages/blue-http/src/http.ts:45
 
 > `readonly` **\[$aware\]**: `boolean`
 
-Defined in: packages/blue-factory/src/aware.ts:16
+Defined in: packages/blue-factory/lib/aware.d.ts:21
+
+A symbol indicating that the value is aware.
 
 #### Inherited from
 
-[`Aware`](../../../blue-factory/src/interfaces/Aware.md).[`[$aware]`](../../../blue-factory/src/interfaces/Aware.md#aware)
+`Aware.[$aware]`
 
 ## Methods
 
@@ -30,13 +34,17 @@ Defined in: packages/blue-factory/src/aware.ts:16
 
 > **setHTTP**(`http`): `void`
 
-Defined in: packages/blue-http/src/http.ts:46
+Defined in: packages/blue-http/src/http.ts:155
+
+Injects the HTTP client used by the receiver.
 
 #### Parameters
 
 ##### http
 
 [`HTTP`](../classes/HTTP.md)
+
+The HTTP client to store.
 
 #### Returns
 

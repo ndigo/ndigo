@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,11 +6,13 @@
 
 # Interface: DomainComponent
 
-Defined in: packages/blue-domain/src/component.ts:22
+Defined in: packages/blue-domain/src/component.ts:37
+
+Represents a serializable, event-driven domain component with lifecycle hooks.
 
 ## Extends
 
-- [`Initializable`](../../../blue-factory/src/interfaces/Initializable.md).[`EventEmitter`](../../../blue-context/src/interfaces/EventEmitter.md).[`AsyncDestroyable`](../../../blue-factory/src/interfaces/AsyncDestroyable.md).[`Serializable`](../../../blue-core/src/interfaces/Serializable.md)
+- `Initializable`.`EventEmitter`.`AsyncDestroyable`.`Serializable`
 
 ## Properties
 
@@ -18,7 +20,7 @@ Defined in: packages/blue-domain/src/component.ts:22
 
 > **id**: `number`
 
-Defined in: packages/blue-domain/src/component.ts:23
+Defined in: packages/blue-domain/src/component.ts:38
 
 ***
 
@@ -26,15 +28,15 @@ Defined in: packages/blue-domain/src/component.ts:23
 
 > **name**: `string`
 
-Defined in: packages/blue-domain/src/component.ts:24
+Defined in: packages/blue-domain/src/component.ts:39
 
 ***
 
 ### model
 
-> **model**: [`JSONObject`](../../../blue-core/src/interfaces/JSONObject.md)
+> **model**: `JSONObject`
 
-Defined in: packages/blue-domain/src/component.ts:25
+Defined in: packages/blue-domain/src/component.ts:40
 
 ***
 
@@ -42,7 +44,7 @@ Defined in: packages/blue-domain/src/component.ts:25
 
 > **actions**: [`DomainActions`](../type-aliases/DomainActions.md)
 
-Defined in: packages/blue-domain/src/component.ts:26
+Defined in: packages/blue-domain/src/component.ts:41
 
 ***
 
@@ -50,7 +52,7 @@ Defined in: packages/blue-domain/src/component.ts:26
 
 > **data**: [`DomainData`](../type-aliases/DomainData.md)
 
-Defined in: packages/blue-domain/src/component.ts:27
+Defined in: packages/blue-domain/src/component.ts:42
 
 ***
 
@@ -58,7 +60,7 @@ Defined in: packages/blue-domain/src/component.ts:27
 
 > **settings**: [`DomainSettings`](../type-aliases/DomainSettings.md)
 
-Defined in: packages/blue-domain/src/component.ts:28
+Defined in: packages/blue-domain/src/component.ts:43
 
 ***
 
@@ -66,7 +68,7 @@ Defined in: packages/blue-domain/src/component.ts:28
 
 > **states**: [`DomainStates`](../type-aliases/DomainStates.md)
 
-Defined in: packages/blue-domain/src/component.ts:29
+Defined in: packages/blue-domain/src/component.ts:44
 
 ***
 
@@ -74,11 +76,11 @@ Defined in: packages/blue-domain/src/component.ts:29
 
 > **destroyed**: `boolean`
 
-Defined in: packages/blue-factory/src/lifecycle.ts:7
+Defined in: packages/blue-factory/lib/lifecycle.d.ts:3
 
 #### Inherited from
 
-[`AsyncDestroyable`](../../../blue-factory/src/interfaces/AsyncDestroyable.md).[`destroyed`](../../../blue-factory/src/interfaces/AsyncDestroyable.md#destroyed)
+`AsyncDestroyable.destroyed`
 
 ## Methods
 
@@ -86,41 +88,53 @@ Defined in: packages/blue-factory/src/lifecycle.ts:7
 
 > **emit**(`type`, ...`data`): `boolean`
 
-Defined in: packages/blue-context/src/event-emitter.ts:20
+Defined in: packages/blue-context/lib/event-emitter.d.ts:40
+
+Emits an event to the listeners registered for the given type.
 
 #### Parameters
 
 ##### type
 
-[`EventType`](../../../blue-context/src/type-aliases/EventType.md)
+`EventType`
+
+The event type.
 
 ##### data
 
 ...`any`[]
 
+Event payload values.
+
 #### Returns
 
 `boolean`
 
+`true` when at least one listener ran.
+
 #### Inherited from
 
-[`EventEmitter`](../../../blue-context/src/interfaces/EventEmitter.md).[`emit`](../../../blue-context/src/interfaces/EventEmitter.md#emit)
+`EventEmitter.emit`
 
 ***
 
 ### eventTypes()
 
-> **eventTypes**(): [`EventType`](../../../blue-context/src/type-aliases/EventType.md)[]
+> **eventTypes**(): `EventType`[]
 
-Defined in: packages/blue-context/src/event-emitter.ts:21
+Defined in: packages/blue-context/lib/event-emitter.d.ts:46
+
+Returns the event types with registered listeners.
 
 #### Returns
 
-[`EventType`](../../../blue-context/src/type-aliases/EventType.md)[]
+`EventType`[]
+
+The registered event types.
 
 #### Inherited from
 
-[`EventEmitter`](../../../blue-context/src/interfaces/EventEmitter.md).[`eventTypes`](../../../blue-context/src/interfaces/EventEmitter.md#eventtypes)
+`EventEmitter.eventTypes`
 
 ***
 
@@ -128,21 +142,27 @@ Defined in: packages/blue-context/src/event-emitter.ts:21
 
 > **listenerCount**(`type`): `number`
 
-Defined in: packages/blue-context/src/event-emitter.ts:22
+Defined in: packages/blue-context/lib/event-emitter.d.ts:53
+
+Returns the number of listeners for a type.
 
 #### Parameters
 
 ##### type
 
-[`EventType`](../../../blue-context/src/type-aliases/EventType.md)
+`EventType`
+
+The event type.
 
 #### Returns
 
 `number`
 
+The listener count.
+
 #### Inherited from
 
-[`EventEmitter`](../../../blue-context/src/interfaces/EventEmitter.md).[`listenerCount`](../../../blue-context/src/interfaces/EventEmitter.md#listenercount)
+`EventEmitter.listenerCount`
 
 ***
 
@@ -150,21 +170,27 @@ Defined in: packages/blue-context/src/event-emitter.ts:22
 
 > **listeners**(`type`): `Function`[]
 
-Defined in: packages/blue-context/src/event-emitter.ts:23
+Defined in: packages/blue-context/lib/event-emitter.d.ts:60
+
+Returns a snapshot of listeners for a type.
 
 #### Parameters
 
 ##### type
 
-[`EventType`](../../../blue-context/src/type-aliases/EventType.md)
+`EventType`
+
+The event type.
 
 #### Returns
 
 `Function`[]
 
+The registered listeners.
+
 #### Inherited from
 
-[`EventEmitter`](../../../blue-context/src/interfaces/EventEmitter.md).[`listeners`](../../../blue-context/src/interfaces/EventEmitter.md#listeners)
+`EventEmitter.listeners`
 
 ***
 
@@ -172,25 +198,33 @@ Defined in: packages/blue-context/src/event-emitter.ts:23
 
 > **on**(`type`, `listener`): `this`
 
-Defined in: packages/blue-context/src/event-emitter.ts:24
+Defined in: packages/blue-context/lib/event-emitter.d.ts:68
+
+Adds a listener for an event type.
 
 #### Parameters
 
 ##### type
 
-[`EventType`](../../../blue-context/src/type-aliases/EventType.md)
+`EventType`
+
+The event type.
 
 ##### listener
 
 `Function`
 
+The listener to register.
+
 #### Returns
 
 `this`
 
+This emitter.
+
 #### Inherited from
 
-[`EventEmitter`](../../../blue-context/src/interfaces/EventEmitter.md).[`on`](../../../blue-context/src/interfaces/EventEmitter.md#on)
+`EventEmitter.on`
 
 ***
 
@@ -198,25 +232,33 @@ Defined in: packages/blue-context/src/event-emitter.ts:24
 
 > **off**(`type`, `listener`): `this`
 
-Defined in: packages/blue-context/src/event-emitter.ts:25
+Defined in: packages/blue-context/lib/event-emitter.d.ts:76
+
+Removes a listener for an event type.
 
 #### Parameters
 
 ##### type
 
-[`EventType`](../../../blue-context/src/type-aliases/EventType.md)
+`EventType`
+
+The event type.
 
 ##### listener
 
 `Function`
 
+The listener to remove.
+
 #### Returns
 
 `this`
 
+This emitter.
+
 #### Inherited from
 
-[`EventEmitter`](../../../blue-context/src/interfaces/EventEmitter.md).[`off`](../../../blue-context/src/interfaces/EventEmitter.md#off)
+`EventEmitter.off`
 
 ***
 
@@ -224,7 +266,7 @@ Defined in: packages/blue-context/src/event-emitter.ts:25
 
 > **toString**(): `string`
 
-Defined in: packages/blue-core/src/serializable.ts:29
+Defined in: packages/blue-core/lib/serializable.d.ts:22
 
 #### Returns
 
@@ -232,41 +274,45 @@ Defined in: packages/blue-core/src/serializable.ts:29
 
 #### Inherited from
 
-[`Serializable`](../../../blue-core/src/interfaces/Serializable.md).[`toString`](../../../blue-core/src/interfaces/Serializable.md#tostring)
+`Serializable.toString`
 
 ***
 
 ### toJSON()?
 
-> `optional` **toJSON**(): [`JSONValue`](../../../blue-core/src/type-aliases/JSONValue.md)
+> `optional` **toJSON**(): `JSONValue`
 
-Defined in: packages/blue-core/src/serializable.ts:30
+Defined in: packages/blue-core/lib/serializable.d.ts:23
 
 #### Returns
 
-[`JSONValue`](../../../blue-core/src/type-aliases/JSONValue.md)
+`JSONValue`
 
 #### Inherited from
 
-[`Serializable`](../../../blue-core/src/interfaces/Serializable.md).[`toJSON`](../../../blue-core/src/interfaces/Serializable.md#tojson)
+`Serializable.toJSON`
 
 ***
 
 ### validate()
 
-> **validate**(`property`): `void`
+> **validate**(`options?`): `ClassValidationResult`
 
-Defined in: packages/blue-domain/src/component.ts:30
+Defined in: packages/blue-domain/src/component.ts:51
+
+Validates a component property before it is used or persisted.
 
 #### Parameters
 
-##### property
+##### options?
 
-`string`
+`ClassValidationOptions`
+
+Validation options.
 
 #### Returns
 
-`void`
+`ClassValidationResult`
 
 ***
 
@@ -274,7 +320,7 @@ Defined in: packages/blue-domain/src/component.ts:30
 
 > **destroy**(): `Promise`\<`void`\>
 
-Defined in: packages/blue-factory/src/lifecycle.ts:12
+Defined in: packages/blue-factory/lib/lifecycle.d.ts:7
 
 #### Returns
 
@@ -282,7 +328,7 @@ Defined in: packages/blue-factory/src/lifecycle.ts:12
 
 #### Inherited from
 
-[`AsyncDestroyable`](../../../blue-factory/src/interfaces/AsyncDestroyable.md).[`destroy`](../../../blue-factory/src/interfaces/AsyncDestroyable.md#destroy)
+`AsyncDestroyable.destroy`
 
 ***
 
@@ -290,7 +336,7 @@ Defined in: packages/blue-factory/src/lifecycle.ts:12
 
 > **init**(...`args`): `void`
 
-Defined in: packages/blue-factory/src/lifecycle.ts:16
+Defined in: packages/blue-factory/lib/lifecycle.d.ts:10
 
 #### Parameters
 
@@ -304,4 +350,4 @@ Defined in: packages/blue-factory/src/lifecycle.ts:16
 
 #### Inherited from
 
-[`Initializable`](../../../blue-factory/src/interfaces/Initializable.md).[`init`](../../../blue-factory/src/interfaces/Initializable.md#init)
+`Initializable.init`

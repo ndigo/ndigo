@@ -1,14 +1,16 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
 [BlueJS Framework](../../../modules.md) / [blue-http/src](../README.md) / likeInitializationAwareHTTPInterceptor
 
-# Variable: likeInitializationAwareHTTPInterceptor()
+# Variable: likeInitializationAwareHTTPInterceptor
 
 > `const` **likeInitializationAwareHTTPInterceptor**: (`value`) => `value is InitializationAwareHTTPInterceptor<HTTPInit>`
 
-Defined in: packages/blue-http/src/http.ts:186
+Defined in: packages/blue-http/src/http.ts:307
+
+Tests whether a value exposes `preInit()`.
 
 ## Parameters
 
@@ -16,10 +18,10 @@ Defined in: packages/blue-http/src/http.ts:186
 
 `any`
 
-The value to be tested
+The value to be tested.
 
 ## Returns
 
 `value is InitializationAwareHTTPInterceptor<HTTPInit>`
 
-Whether or not the value is like a [InitializationAwareHTTPInterceptor](../interfaces/InitializationAwareHTTPInterceptor.md).
+`true` when the value is initialization-aware.

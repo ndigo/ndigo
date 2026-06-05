@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,15 +6,17 @@
 
 # Interface: ServerErrorAwareHTTPInterceptor
 
-Defined in: packages/blue-http/src/interceptors/response-class-interceptor.ts:31
+Defined in: packages/blue-http/src/interceptors/response-class-interceptor.ts:46
+
+Handles server error responses.
 
 ## Methods
 
 ### postServerErrorResponse()
 
-> **postServerErrorResponse**(`response`, `settings`): `Promise`\<`void` \| [`JSONObject`](../../../blue-core/src/interfaces/JSONObject.md)\>
+> **postServerErrorResponse**(`response`, `settings`): `Promise`\<`void` \| `JSONObject`\>
 
-Defined in: packages/blue-http/src/interceptors/response-class-interceptor.ts:32
+Defined in: packages/blue-http/src/interceptors/response-class-interceptor.ts:47
 
 #### Parameters
 
@@ -28,4 +30,4 @@ Defined in: packages/blue-http/src/interceptors/response-class-interceptor.ts:32
 
 #### Returns
 
-`Promise`\<`void` \| [`JSONObject`](../../../blue-core/src/interfaces/JSONObject.md)\>
+`Promise`\<`void` \| `JSONObject`\>

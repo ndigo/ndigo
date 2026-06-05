@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,19 +6,19 @@
 
 # Class: GlobPatternInfo
 
-Defined in: packages/blue-core/src/path-matcher.ts:230
+Defined in: packages/blue-core/src/path-matcher.ts:286
 
 ## Constructors
 
 ### Constructor
 
-> **new GlobPatternInfo**(`pattern`): `GlobPatternInfo`
+> **new GlobPatternInfo**(`pattern?`): `GlobPatternInfo`
 
-Defined in: packages/blue-core/src/path-matcher.ts:254
+Defined in: packages/blue-core/src/path-matcher.ts:310
 
 #### Parameters
 
-##### pattern
+##### pattern?
 
 `string` = `null`
 
@@ -32,7 +32,7 @@ Defined in: packages/blue-core/src/path-matcher.ts:254
 
 > `readonly` **pattern**: `string`
 
-Defined in: packages/blue-core/src/path-matcher.ts:233
+Defined in: packages/blue-core/src/path-matcher.ts:289
 
 ***
 
@@ -40,7 +40,7 @@ Defined in: packages/blue-core/src/path-matcher.ts:233
 
 > **doubleWildcards**: `number`
 
-Defined in: packages/blue-core/src/path-matcher.ts:235
+Defined in: packages/blue-core/src/path-matcher.ts:291
 
 ***
 
@@ -48,7 +48,7 @@ Defined in: packages/blue-core/src/path-matcher.ts:235
 
 > **singleWildcards**: `number`
 
-Defined in: packages/blue-core/src/path-matcher.ts:236
+Defined in: packages/blue-core/src/path-matcher.ts:292
 
 ## Accessors
 
@@ -58,7 +58,7 @@ Defined in: packages/blue-core/src/path-matcher.ts:236
 
 > **get** **isLeastSpecific**(): `boolean`
 
-Defined in: packages/blue-core/src/path-matcher.ts:238
+Defined in: packages/blue-core/src/path-matcher.ts:294
 
 ##### Returns
 
@@ -72,7 +72,7 @@ Defined in: packages/blue-core/src/path-matcher.ts:238
 
 > **get** **isPrefixPattern**(): `boolean`
 
-Defined in: packages/blue-core/src/path-matcher.ts:242
+Defined in: packages/blue-core/src/path-matcher.ts:298
 
 ##### Returns
 
@@ -86,7 +86,7 @@ Defined in: packages/blue-core/src/path-matcher.ts:242
 
 > **get** **length**(): `number`
 
-Defined in: packages/blue-core/src/path-matcher.ts:246
+Defined in: packages/blue-core/src/path-matcher.ts:302
 
 ##### Returns
 
@@ -100,7 +100,7 @@ Defined in: packages/blue-core/src/path-matcher.ts:246
 
 > **get** **totalCount**(): `number`
 
-Defined in: packages/blue-core/src/path-matcher.ts:250
+Defined in: packages/blue-core/src/path-matcher.ts:306
 
 ##### Returns
 
@@ -112,7 +112,7 @@ Defined in: packages/blue-core/src/path-matcher.ts:250
 
 > `protected` **\_initCounters**(): `void`
 
-Defined in: packages/blue-core/src/path-matcher.ts:266
+Defined in: packages/blue-core/src/path-matcher.ts:322
 
 #### Returns
 

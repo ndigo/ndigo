@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,9 @@
 
 # Interface: Environment
 
-Defined in: packages/blue-context/src/environment.ts:15
+Defined in: packages/blue-context/src/environment.ts:18
+
+Resolves properties and manages profile activation for an application environment.
 
 ## Extends
 
@@ -22,7 +24,9 @@ Defined in: packages/blue-context/src/environment.ts:15
 
 > **activeProfiles**: `string`[]
 
-Defined in: packages/blue-context/src/environment.ts:16
+Defined in: packages/blue-context/src/environment.ts:22
+
+The explicitly active profiles.
 
 ***
 
@@ -30,7 +34,9 @@ Defined in: packages/blue-context/src/environment.ts:16
 
 > **defaultProfiles**: `string`[]
 
-Defined in: packages/blue-context/src/environment.ts:17
+Defined in: packages/blue-context/src/environment.ts:26
+
+The default profiles used when no active profile is configured.
 
 ## Methods
 
@@ -38,13 +44,39 @@ Defined in: packages/blue-context/src/environment.ts:17
 
 > **addActiveProfile**(`profile`): `void`
 
-Defined in: packages/blue-context/src/environment.ts:19
+Defined in: packages/blue-context/src/environment.ts:33
+
+Adds a profile to the active set.
 
 #### Parameters
 
 ##### profile
 
 `string`
+
+The profile name.
+
+#### Returns
+
+`void`
+
+***
+
+### addDefaultProfile()
+
+> **addDefaultProfile**(`profile`): `void`
+
+Defined in: packages/blue-context/src/environment.ts:39
+
+Adds a profile to the default set.
+
+#### Parameters
+
+##### profile
+
+`string`
+
+The profile name.
 
 #### Returns
 
@@ -54,9 +86,11 @@ Defined in: packages/blue-context/src/environment.ts:19
 
 ### getProperty()
 
-> **getProperty**(`key`, `defaultValue?`): [`JSONValue`](../../../blue-core/src/type-aliases/JSONValue.md)
+> **getProperty**(`key`, `defaultValue?`): `JSONValue`
 
-Defined in: packages/blue-context/src/property-resolver.ts:10
+Defined in: packages/blue-context/src/property-resolver.ts:20
+
+Resolves a property value, falling back to a default when missing.
 
 #### Parameters
 
@@ -64,13 +98,19 @@ Defined in: packages/blue-context/src/property-resolver.ts:10
 
 `string`
 
+The property name to resolve.
+
 ##### defaultValue?
 
-[`JSONValue`](../../../blue-core/src/type-aliases/JSONValue.md)
+`JSONValue`
+
+The value to return when no property is found.
 
 #### Returns
 
-[`JSONValue`](../../../blue-core/src/type-aliases/JSONValue.md)
+`JSONValue`
+
+The resolved property value or the default value.
 
 #### Inherited from
 
@@ -80,9 +120,11 @@ Defined in: packages/blue-context/src/property-resolver.ts:10
 
 ### getRequiredProperty()
 
-> **getRequiredProperty**(`key`): [`JSONValue`](../../../blue-core/src/type-aliases/JSONValue.md)
+> **getRequiredProperty**(`key`): `JSONValue`
 
-Defined in: packages/blue-context/src/property-resolver.ts:11
+Defined in: packages/blue-context/src/property-resolver.ts:28
+
+Returns the resolved property value or throws when missing.
 
 #### Parameters
 
@@ -90,9 +132,17 @@ Defined in: packages/blue-context/src/property-resolver.ts:11
 
 `string`
 
+The property name to resolve.
+
 #### Returns
 
-[`JSONValue`](../../../blue-core/src/type-aliases/JSONValue.md)
+`JSONValue`
+
+The resolved property value.
+
+#### Throws
+
+When the property cannot be resolved.
 
 #### Inherited from
 
@@ -104,7 +154,9 @@ Defined in: packages/blue-context/src/property-resolver.ts:11
 
 > **hasProperty**(`key`): `boolean`
 
-Defined in: packages/blue-context/src/property-resolver.ts:12
+Defined in: packages/blue-context/src/property-resolver.ts:35
+
+Returns whether a property key can be resolved.
 
 #### Parameters
 
@@ -112,9 +164,13 @@ Defined in: packages/blue-context/src/property-resolver.ts:12
 
 `string`
 
+The property name to resolve.
+
 #### Returns
 
 `boolean`
+
+`true` when the property exists.
 
 #### Inherited from
 

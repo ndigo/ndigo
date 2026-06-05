@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,9 @@
 
 # Interface: ParentNode\<T\>
 
-Defined in: packages/blue-core/src/tree-node.ts:9
+Defined in: packages/blue-core/src/tree-node.ts:16
+
+A node that can enumerate its children.
 
 ## Extended by
 
@@ -24,4 +26,6 @@ Defined in: packages/blue-core/src/tree-node.ts:9
 
 > `readonly` **children**: `T`[]
 
-Defined in: packages/blue-core/src/tree-node.ts:10
+Defined in: packages/blue-core/src/tree-node.ts:18
+
+The node's direct children.

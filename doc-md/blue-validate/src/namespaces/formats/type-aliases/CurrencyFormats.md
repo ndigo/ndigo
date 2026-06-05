@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../../../README.md)
 
 ***
 
@@ -8,7 +8,9 @@
 
 > **CurrencyFormats** = `object`
 
-Defined in: packages/blue-validate/src/formats.ts:14
+Defined in: packages/blue-validate/src/formats.ts:26
+
+A collection of `CurrencyFormat` objects, keyed by currency name (e.g., 'USD').
 
 ## Index Signature
 

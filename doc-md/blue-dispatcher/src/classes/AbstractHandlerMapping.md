@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,11 +6,13 @@
 
 # Abstract Class: AbstractHandlerMapping
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:277
+Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:344
+
+Base class for handler mappings that resolve a route to a handler.
 
 ## Extends
 
-- [`NameAware`](../../../blue-factory/src/interfaces/NameAware.md) & [`ApplicationContextAware`](../../../blue-context/src/interfaces/ApplicationContextAware.md) & [`Null`](../../../blue-core/src/classes/Null.md)\<`this`\>
+- `NameAware` & `ApplicationContextAware` & `Null`\<`this`\>
 
 ## Extended by
 
@@ -27,7 +29,9 @@ Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:277
 
 > **new AbstractHandlerMapping**(): `AbstractHandlerMapping`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:290
+Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:380
+
+Create a handler mapping with default path matching behavior.
 
 #### Returns
 
@@ -41,9 +45,11 @@ Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:290
 
 ### applicationContext
 
-> **applicationContext**: [`ApplicationContext`](../../../blue-context/src/interfaces/ApplicationContext.md)
+> **applicationContext**: `ApplicationContext`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:281
+Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:351
+
+Application context used to resolve named handlers.
 
 ***
 
@@ -51,23 +57,29 @@ Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:281
 
 > **defaultHandler**: `any`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:282
+Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:356
+
+Default handler used when no specific mapping matches.
 
 ***
 
 ### interceptors
 
-> **interceptors**: `RouteHandlerInterceptor`[]
+> **interceptors**: [`RouteHandlerInterceptor`](../interfaces/RouteHandlerInterceptor.md)[]
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:283
+Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:361
+
+Interceptors applied to matched handlers.
 
 ***
 
 ### pathMatcher
 
-> **pathMatcher**: [`PathMatcher`](../../../blue-core/src/interfaces/PathMatcher.md)
+> **pathMatcher**: `PathMatcher`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:284
+Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:366
+
+Path matcher used by path-based mappings.
 
 ***
 
@@ -75,7 +87,9 @@ Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:284
 
 > `readonly` **\[$aware\]**: `boolean`
 
-Defined in: packages/blue-factory/src/aware.ts:16
+Defined in: packages/blue-factory/lib/aware.d.ts:21
+
+A symbol indicating that the value is aware.
 
 #### Inherited from
 
@@ -87,7 +101,9 @@ Defined in: packages/blue-factory/src/aware.ts:16
 
 > `readonly` **name**: `string`
 
-Defined in: packages/blue-factory/src/aware.ts:20
+Defined in: packages/blue-factory/lib/aware.d.ts:31
+
+The name of the value in the factory.
 
 #### Inherited from
 
@@ -101,7 +117,7 @@ Defined in: packages/blue-factory/src/aware.ts:20
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:286
+Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:373
 
 ##### Returns
 
@@ -113,19 +129,23 @@ Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:286
 
 > **setApplicationContext**(`applicationContext`): `void`
 
-Defined in: packages/blue-context/src/context.ts:57
+Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:407
+
+Store the application context for later handler resolution.
 
 #### Parameters
 
 ##### applicationContext
 
-[`ApplicationContext`](../../../blue-context/src/interfaces/ApplicationContext.md)
+`ApplicationContext`
+
+The application context to use.
 
 #### Returns
 
 `void`
 
-#### Inherited from
+#### Overrides
 
 `AsNameAware(AsApplicationContextAware(Null)).setApplicationContext`
 
@@ -135,17 +155,23 @@ Defined in: packages/blue-context/src/context.ts:57
 
 > **getHandler**(`route`): `RouteHandlerExecutionChain`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:312
+Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:423
+
+Resolve a route to a handler execution chain.
 
 #### Parameters
 
 ##### route
 
-[`Route`](../../../blue-router/src/interfaces/Route.md)
+`Route`
+
+The current route.
 
 #### Returns
 
 `RouteHandlerExecutionChain`
+
+The execution chain, or `null` when no handler matches.
 
 #### Implementation of
 
@@ -157,7 +183,9 @@ Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:312
 
 > `protected` **\_getHandlerExecutionChain**(`handler`, `route`): `RouteHandlerExecutionChain`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:327
+Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:445
+
+Build an execution chain for a resolved handler and route.
 
 #### Parameters
 
@@ -165,13 +193,19 @@ Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:327
 
 `any`
 
+The resolved handler or existing execution chain.
+
 ##### route
 
-[`Route`](../../../blue-router/src/interfaces/Route.md)
+`Route`
+
+The current route.
 
 #### Returns
 
 `RouteHandlerExecutionChain`
+
+The execution chain to invoke.
 
 ***
 
@@ -179,17 +213,23 @@ Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:327
 
 > `abstract` `protected` **\_getHandler**(`route`): `RouteHandlerExecutionChain`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:351
+Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:475
+
+Resolve the handler for a route without applying defaults or interceptors.
 
 #### Parameters
 
 ##### route
 
-[`Route`](../../../blue-router/src/interfaces/Route.md)
+`Route`
+
+The current route.
 
 #### Returns
 
 `RouteHandlerExecutionChain`
+
+The handler or execution chain, or `null`.
 
 ***
 
@@ -197,13 +237,19 @@ Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:351
 
 > **setName**(`name`): `void`
 
-Defined in: packages/blue-factory/src/aware.ts:21
+Defined in: packages/blue-factory/lib/aware.d.ts:38
+
+Set the name of the value in the factory that created it.
+
+Invoked after population of normal value properties but before an `init` callback.
 
 #### Parameters
 
 ##### name
 
 `string`
+
+The name of the value in the factory.
 
 #### Returns
 

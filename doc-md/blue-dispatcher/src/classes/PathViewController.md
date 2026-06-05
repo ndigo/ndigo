@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,10 +6,10 @@
 
 # Class: PathViewController
 
-Defined in: packages/blue-dispatcher/src/controller.ts:59
+Defined in: packages/blue-dispatcher/src/controller.ts:48
 
 Simple [Controller](../interfaces/Controller.md) implementation that transforms the path of a route into a view name.
-Can optionaly prepend a prefix and/or append a suffix a build the view name from the path.
+Can optionally prepend a prefix and/or append a suffix to build the view name from the path.
 
 ## Extends
 
@@ -21,7 +21,9 @@ Can optionaly prepend a prefix and/or append a suffix a build the view name from
 
 > **new PathViewController**(): `PathViewController`
 
-Defined in: packages/blue-dispatcher/src/controller.ts:82
+Defined in: packages/blue-dispatcher/src/controller.ts:91
+
+Creates an instance of PathViewController.
 
 #### Returns
 
@@ -37,7 +39,9 @@ Defined in: packages/blue-dispatcher/src/controller.ts:82
 
 > **\_viewNameCache**: `Map`\<`string`, `string`\>
 
-Defined in: packages/blue-dispatcher/src/controller.ts:60
+Defined in: packages/blue-dispatcher/src/controller.ts:52
+
+Cache for resolved view names.
 
 ## Accessors
 
@@ -47,7 +51,9 @@ Defined in: packages/blue-dispatcher/src/controller.ts:60
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-dispatcher/src/controller.ts:21
+Defined in: packages/blue-dispatcher/src/controller.ts:27
+
+Returns the string tag for this controller.
 
 ##### Returns
 
@@ -65,7 +71,9 @@ Defined in: packages/blue-dispatcher/src/controller.ts:21
 
 > **get** **prefix**(): `string`
 
-Defined in: packages/blue-dispatcher/src/controller.ts:64
+Defined in: packages/blue-dispatcher/src/controller.ts:59
+
+Gets the prefix to prepend to the view name.
 
 ##### Returns
 
@@ -75,7 +83,10 @@ Defined in: packages/blue-dispatcher/src/controller.ts:64
 
 > **set** **prefix**(`newPrefix`): `void`
 
-Defined in: packages/blue-dispatcher/src/controller.ts:68
+Defined in: packages/blue-dispatcher/src/controller.ts:67
+
+Sets the prefix to prepend to the view name.
+Clears the view name cache when set.
 
 ##### Parameters
 
@@ -95,7 +106,9 @@ Defined in: packages/blue-dispatcher/src/controller.ts:68
 
 > **get** **suffix**(): `string`
 
-Defined in: packages/blue-dispatcher/src/controller.ts:73
+Defined in: packages/blue-dispatcher/src/controller.ts:75
+
+Gets the suffix to append to the view name.
 
 ##### Returns
 
@@ -105,7 +118,10 @@ Defined in: packages/blue-dispatcher/src/controller.ts:73
 
 > **set** **suffix**(`newSuffix`): `void`
 
-Defined in: packages/blue-dispatcher/src/controller.ts:77
+Defined in: packages/blue-dispatcher/src/controller.ts:83
+
+Sets the suffix to append to the view name.
+Clears the view name cache when set.
 
 ##### Parameters
 
@@ -123,17 +139,23 @@ Defined in: packages/blue-dispatcher/src/controller.ts:77
 
 > **handleRoute**(`route`): [`ModelAndView`](ModelAndView.md)
 
-Defined in: packages/blue-dispatcher/src/controller.ts:25
+Defined in: packages/blue-dispatcher/src/controller.ts:36
+
+Handles the given route by resolving a view name from its path and returning a new [ModelAndView](ModelAndView.md).
 
 #### Parameters
 
 ##### route
 
-[`Route`](../../../blue-router/src/interfaces/Route.md)
+`Route`
+
+The route to handle.
 
 #### Returns
 
 [`ModelAndView`](ModelAndView.md)
+
+A [ModelAndView](ModelAndView.md) for the route.
 
 #### Inherited from
 
@@ -145,19 +167,23 @@ Defined in: packages/blue-dispatcher/src/controller.ts:25
 
 > `protected` **\_getViewNameForRoute**(`route`): `string`
 
-Defined in: packages/blue-dispatcher/src/controller.ts:99
+Defined in: packages/blue-dispatcher/src/controller.ts:104
 
-*
+Resolves the view name for the given route.
 
 #### Parameters
 
 ##### route
 
-[`Route`](../../../blue-router/src/interfaces/Route.md)
+`Route`
+
+The route to resolve the view name for.
 
 #### Returns
 
 `string`
+
+The resolved view name.
 
 #### Overrides
 
@@ -169,9 +195,9 @@ Defined in: packages/blue-dispatcher/src/controller.ts:99
 
 > `protected` **\_getViewNameForPath**(`path`): `string`
 
-Defined in: packages/blue-dispatcher/src/controller.ts:108
+Defined in: packages/blue-dispatcher/src/controller.ts:113
 
-*
+Resolves the view name for the given path.
 
 #### Parameters
 
@@ -179,6 +205,10 @@ Defined in: packages/blue-dispatcher/src/controller.ts:108
 
 `string`
 
+The path to resolve the view name for.
+
 #### Returns
 
 `string`
+
+The resolved view name.

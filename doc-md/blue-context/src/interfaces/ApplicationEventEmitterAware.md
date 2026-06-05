@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,11 +6,13 @@
 
 # Interface: ApplicationEventEmitterAware
 
-Defined in: packages/blue-context/src/event-emitter.ts:28
+Defined in: packages/blue-context/src/event-emitter.ts:152
+
+Receives the application event emitter during initialization.
 
 ## Extends
 
-- [`Aware`](../../../blue-factory/src/interfaces/Aware.md)
+- `Aware`
 
 ## Properties
 
@@ -18,11 +20,13 @@ Defined in: packages/blue-context/src/event-emitter.ts:28
 
 > `readonly` **\[$aware\]**: `boolean`
 
-Defined in: packages/blue-factory/src/aware.ts:16
+Defined in: packages/blue-factory/lib/aware.d.ts:21
+
+A symbol indicating that the value is aware.
 
 #### Inherited from
 
-[`Aware`](../../../blue-factory/src/interfaces/Aware.md).[`[$aware]`](../../../blue-factory/src/interfaces/Aware.md#aware)
+`Aware.[$aware]`
 
 ## Methods
 
@@ -30,13 +34,17 @@ Defined in: packages/blue-factory/src/aware.ts:16
 
 > **setApplicationEventEmitter**(`eventEmitter`): `void`
 
-Defined in: packages/blue-context/src/event-emitter.ts:29
+Defined in: packages/blue-context/src/event-emitter.ts:158
+
+Receives the application event emitter.
 
 #### Parameters
 
 ##### eventEmitter
 
 [`EventEmitter`](EventEmitter.md)
+
+The event emitter to inject.
 
 #### Returns
 

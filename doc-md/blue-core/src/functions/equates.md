@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -8,7 +8,9 @@
 
 > **equates**(`value1`, `value2`): `boolean`
 
-Defined in: packages/blue-core/src/equatable.ts:37
+Defined in: packages/blue-core/src/equatable.ts:74
+
+Compares two values for equality. It handles `Equatable` objects, primitive types, and uses a general equality check for other types.
 
 ## Parameters
 
@@ -16,16 +18,16 @@ Defined in: packages/blue-core/src/equatable.ts:37
 
 [`equatable`](../type-aliases/equatable.md)
 
-The first value to be tested
+The first value to be tested.
 
 ### value2
 
 [`equatable`](../type-aliases/equatable.md)
 
-The second value to be tested
+The second value to be tested.
 
 ## Returns
 
 `boolean`
 
-Whether or not the values are equal.
+`true` if the values are equal, `false` otherwise.

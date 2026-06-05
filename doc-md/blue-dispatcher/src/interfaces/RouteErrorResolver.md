@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,9 @@
 
 # Interface: RouteErrorResolver
 
-Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:13
+Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:16
+
+Resolves exceptions into a route-specific response.
 
 ## Methods
 
@@ -14,22 +16,32 @@ Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:13
 
 > **resolveError**(`route`, `handler`, `error`): [`ModelAndView`](../classes/ModelAndView.md)
 
-Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:14
+Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:25
+
+Resolve a route handler error into a model and view.
 
 #### Parameters
 
 ##### route
 
-[`Route`](../../../blue-router/src/interfaces/Route.md)
+`Route`
+
+The current route.
 
 ##### handler
 
 `any`
 
+The handler that was executing when the error occurred, or `null`.
+
 ##### error
 
 `Error`
 
+The thrown error.
+
 #### Returns
 
 [`ModelAndView`](../classes/ModelAndView.md)
+
+A model and view to render, or `null` when the error should continue through the chain.

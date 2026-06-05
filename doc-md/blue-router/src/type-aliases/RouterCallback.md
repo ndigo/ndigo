@@ -1,21 +1,29 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
 [BlueJS Framework](../../../modules.md) / [blue-router/src](../README.md) / RouterCallback
 
-# Type Alias: RouterCallback()
+# Type Alias: RouterCallback
 
 > **RouterCallback** = (`route`) => `void`
 
-Defined in: packages/blue-router/src/router.ts:3
+Defined in: packages/blue-router/src/router.ts:15
+
+A callback function type that is invoked when a route changes.
 
 ## Parameters
 
 ### route
 
-`string`
+[`Route`](../interfaces/Route.md)
+
+The new `Route` object.
 
 ## Returns
 
 `void`
+
+## Since
+
+1.0.0

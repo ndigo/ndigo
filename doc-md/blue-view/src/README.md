@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../README.md)
+[**BlueJS Framework v0.0.1**](../../README.md)
 
 ***
 
@@ -8,13 +8,14 @@
 
 ## Classes
 
-- [Bridge](classes/Bridge.md)
 - [MappingMediaTypeFileExtensionResolver](classes/MappingMediaTypeFileExtensionResolver.md)
 - [FixedContentNegotiationStrategy](classes/FixedContentNegotiationStrategy.md)
 - [AbstractMappingContentNegotiationStrategy](classes/AbstractMappingContentNegotiationStrategy.md)
 - [PathExtensionContentNegotiationStrategy](classes/PathExtensionContentNegotiationStrategy.md)
 - [ContentNegotiationManager](classes/ContentNegotiationManager.md)
 - [ContentNegotiationViewResolver](classes/ContentNegotiationViewResolver.md)
+- [AbstractViewMapping](classes/AbstractViewMapping.md)
+- [AbstractPathViewMapping](classes/AbstractPathViewMapping.md)
 - [AbstractCachingViewResolver](classes/AbstractCachingViewResolver.md)
 - [AbstractPathBasedViewResolver](classes/AbstractPathBasedViewResolver.md)
 - [ImportViewResolver](classes/ImportViewResolver.md)
@@ -29,7 +30,11 @@
 
 - [MediaTypeFileExtensionResolver](interfaces/MediaTypeFileExtensionResolver.md)
 - [ContentNegotiationStrategy](interfaces/ContentNegotiationStrategy.md)
+- [ViewEngine](interfaces/ViewEngine.md)
+- [ViewMapping](interfaces/ViewMapping.md)
 - [ViewResolver](interfaces/ViewResolver.md)
+- [ViewTarget](interfaces/ViewTarget.md)
+- [EventBridgeViewTarget](interfaces/EventBridgeViewTarget.md)
 - [View](interfaces/View.md)
 
 ## Functions

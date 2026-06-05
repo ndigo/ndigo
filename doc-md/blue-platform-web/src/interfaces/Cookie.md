@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,9 @@
 
 # Interface: Cookie
 
-Defined in: packages/blue-platform-web/src/cookies.ts:8
+Defined in: packages/blue-platform-web/src/cookies.ts:17
+
+Parsed cookie structure returned by cookie parsing helpers.
 
 ## Properties
 
@@ -14,7 +16,7 @@ Defined in: packages/blue-platform-web/src/cookies.ts:8
 
 > **name**: `string`
 
-Defined in: packages/blue-platform-web/src/cookies.ts:9
+Defined in: packages/blue-platform-web/src/cookies.ts:18
 
 ***
 
@@ -22,52 +24,52 @@ Defined in: packages/blue-platform-web/src/cookies.ts:9
 
 > **value**: `string`
 
-Defined in: packages/blue-platform-web/src/cookies.ts:10
+Defined in: packages/blue-platform-web/src/cookies.ts:19
 
 ***
 
 ### domain?
 
-> `optional` **domain**: `string`
+> `optional` **domain?**: `string`
 
-Defined in: packages/blue-platform-web/src/cookies.ts:11
+Defined in: packages/blue-platform-web/src/cookies.ts:20
 
 ***
 
 ### expires?
 
-> `optional` **expires**: `string`
+> `optional` **expires?**: `string`
 
-Defined in: packages/blue-platform-web/src/cookies.ts:12
+Defined in: packages/blue-platform-web/src/cookies.ts:21
 
 ***
 
 ### maxAge?
 
-> `optional` **maxAge**: `string`
+> `optional` **maxAge?**: `string`
 
-Defined in: packages/blue-platform-web/src/cookies.ts:13
+Defined in: packages/blue-platform-web/src/cookies.ts:22
 
 ***
 
 ### path?
 
-> `optional` **path**: `string`
+> `optional` **path?**: `string`
 
-Defined in: packages/blue-platform-web/src/cookies.ts:14
+Defined in: packages/blue-platform-web/src/cookies.ts:23
 
 ***
 
 ### sameSite?
 
-> `optional` **sameSite**: `string`
+> `optional` **sameSite?**: `string`
 
-Defined in: packages/blue-platform-web/src/cookies.ts:15
+Defined in: packages/blue-platform-web/src/cookies.ts:24
 
 ***
 
 ### secure?
 
-> `optional` **secure**: `boolean`
+> `optional` **secure?**: `boolean`
 
-Defined in: packages/blue-platform-web/src/cookies.ts:16
+Defined in: packages/blue-platform-web/src/cookies.ts:25

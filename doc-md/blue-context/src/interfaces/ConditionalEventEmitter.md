@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,9 @@
 
 # Interface: ConditionalEventEmitter
 
-Defined in: packages/blue-context/src/event-emitter.ts:857
+Defined in: packages/blue-context/src/event-emitter.ts:98
+
+Event emitter with conditional and finite listeners.
 
 ## Extends
 
@@ -18,7 +20,9 @@ Defined in: packages/blue-context/src/event-emitter.ts:857
 
 > **emit**(`type`, ...`data`): `boolean`
 
-Defined in: packages/blue-context/src/event-emitter.ts:20
+Defined in: packages/blue-context/src/event-emitter.ts:42
+
+Emits an event to the listeners registered for the given type.
 
 #### Parameters
 
@@ -26,13 +30,19 @@ Defined in: packages/blue-context/src/event-emitter.ts:20
 
 [`EventType`](../type-aliases/EventType.md)
 
+The event type.
+
 ##### data
 
 ...`any`[]
 
+Event payload values.
+
 #### Returns
 
 `boolean`
+
+`true` when at least one listener ran.
 
 #### Inherited from
 
@@ -44,11 +54,15 @@ Defined in: packages/blue-context/src/event-emitter.ts:20
 
 > **eventTypes**(): [`EventType`](../type-aliases/EventType.md)[]
 
-Defined in: packages/blue-context/src/event-emitter.ts:21
+Defined in: packages/blue-context/src/event-emitter.ts:48
+
+Returns the event types with registered listeners.
 
 #### Returns
 
 [`EventType`](../type-aliases/EventType.md)[]
+
+The registered event types.
 
 #### Inherited from
 
@@ -60,7 +74,9 @@ Defined in: packages/blue-context/src/event-emitter.ts:21
 
 > **listenerCount**(`type`): `number`
 
-Defined in: packages/blue-context/src/event-emitter.ts:22
+Defined in: packages/blue-context/src/event-emitter.ts:55
+
+Returns the number of listeners for a type.
 
 #### Parameters
 
@@ -68,9 +84,13 @@ Defined in: packages/blue-context/src/event-emitter.ts:22
 
 [`EventType`](../type-aliases/EventType.md)
 
+The event type.
+
 #### Returns
 
 `number`
+
+The listener count.
 
 #### Inherited from
 
@@ -82,7 +102,9 @@ Defined in: packages/blue-context/src/event-emitter.ts:22
 
 > **listeners**(`type`): `Function`[]
 
-Defined in: packages/blue-context/src/event-emitter.ts:23
+Defined in: packages/blue-context/src/event-emitter.ts:62
+
+Returns a snapshot of listeners for a type.
 
 #### Parameters
 
@@ -90,9 +112,13 @@ Defined in: packages/blue-context/src/event-emitter.ts:23
 
 [`EventType`](../type-aliases/EventType.md)
 
+The event type.
+
 #### Returns
 
 `Function`[]
+
+The registered listeners.
 
 #### Inherited from
 
@@ -104,7 +130,9 @@ Defined in: packages/blue-context/src/event-emitter.ts:23
 
 > **on**(`type`, `listener`): `this`
 
-Defined in: packages/blue-context/src/event-emitter.ts:24
+Defined in: packages/blue-context/src/event-emitter.ts:70
+
+Adds a listener for an event type.
 
 #### Parameters
 
@@ -112,13 +140,19 @@ Defined in: packages/blue-context/src/event-emitter.ts:24
 
 [`EventType`](../type-aliases/EventType.md)
 
+The event type.
+
 ##### listener
 
 `Function`
 
+The listener to register.
+
 #### Returns
 
 `this`
+
+This emitter.
 
 #### Inherited from
 
@@ -130,7 +164,9 @@ Defined in: packages/blue-context/src/event-emitter.ts:24
 
 > **off**(`type`, `listener`): `this`
 
-Defined in: packages/blue-context/src/event-emitter.ts:25
+Defined in: packages/blue-context/src/event-emitter.ts:78
+
+Removes a listener for an event type.
 
 #### Parameters
 
@@ -138,13 +174,19 @@ Defined in: packages/blue-context/src/event-emitter.ts:25
 
 [`EventType`](../type-aliases/EventType.md)
 
+The event type.
+
 ##### listener
 
 `Function`
 
+The listener to remove.
+
 #### Returns
 
 `this`
+
+This emitter.
 
 #### Inherited from
 
@@ -152,51 +194,69 @@ Defined in: packages/blue-context/src/event-emitter.ts:25
 
 ***
 
-### once()
-
-> **once**(`type`, `listener`): `this`
-
-Defined in: packages/blue-context/src/event-emitter.ts:858
-
-#### Parameters
-
-##### type
-
-[`EventType`](../type-aliases/EventType.md)
-
-##### listener
-
-`Function`
-
-#### Returns
-
-`this`
-
-***
-
 ### many()
 
 > **many**(`type`, `times`, `listener`): `this`
 
-Defined in: packages/blue-context/src/event-emitter.ts:859
+Defined in: packages/blue-context/src/event-emitter.ts:107
+
+Registers a listener that fires a fixed number of times.
 
 #### Parameters
 
 ##### type
 
 [`EventType`](../type-aliases/EventType.md)
+
+The event type.
 
 ##### times
 
 `number`
 
+The number of invocations to allow.
+
 ##### listener
 
 `Function`
 
+The listener to register.
+
 #### Returns
 
 `this`
+
+This emitter.
+
+***
+
+### once()
+
+> **once**(`type`, `listener`): `this`
+
+Defined in: packages/blue-context/src/event-emitter.ts:115
+
+Registers a listener that fires once.
+
+#### Parameters
+
+##### type
+
+[`EventType`](../type-aliases/EventType.md)
+
+The event type.
+
+##### listener
+
+`Function`
+
+The listener to register.
+
+#### Returns
+
+`this`
+
+This emitter.
 
 ***
 
@@ -204,7 +264,9 @@ Defined in: packages/blue-context/src/event-emitter.ts:859
 
 > **until**(`type`, `listener`): `this`
 
-Defined in: packages/blue-context/src/event-emitter.ts:860
+Defined in: packages/blue-context/src/event-emitter.ts:123
+
+Registers a listener that removes itself when it returns `true`.
 
 #### Parameters
 
@@ -212,10 +274,16 @@ Defined in: packages/blue-context/src/event-emitter.ts:860
 
 [`EventType`](../type-aliases/EventType.md)
 
+The event type.
+
 ##### listener
 
 `Function`
 
+The listener to register.
+
 #### Returns
 
 `this`
+
+This emitter.

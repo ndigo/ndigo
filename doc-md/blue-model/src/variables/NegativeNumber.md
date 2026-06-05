@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -8,4 +8,6 @@
 
 > `const` **NegativeNumber**: `BasicModel`\<`NumberConstructor`\>
 
-Defined in: packages/blue-model/src/basic.ts:53
+Defined in: packages/blue-model/src/basic.ts:69
+
+Matches numeric values less than zero.

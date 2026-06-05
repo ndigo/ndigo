@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,11 +6,7 @@
 
 # Interface: Initializable
 
-Defined in: packages/blue-factory/src/lifecycle.ts:15
-
-## Extended by
-
-- [`DomainComponent`](../../../blue-domain/src/interfaces/DomainComponent.md)
+Defined in: packages/blue-factory/src/lifecycle.ts:16
 
 ## Methods
 
@@ -18,7 +14,7 @@ Defined in: packages/blue-factory/src/lifecycle.ts:15
 
 > **init**(...`args`): `void`
 
-Defined in: packages/blue-factory/src/lifecycle.ts:16
+Defined in: packages/blue-factory/src/lifecycle.ts:17
 
 #### Parameters
 

@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **AsAware**\<`T`\>(`superclass`): `Constructable`\<[`Aware`](../interfaces/Aware.md)\> & `T`
 
-Defined in: packages/blue-factory/src/aware.ts:50
+Defined in: packages/blue-factory/src/aware.ts:53
 
 ## Type Parameters
 
@@ -26,3 +26,10 @@ Defined in: packages/blue-factory/src/aware.ts:50
 
 `Constructable`\<[`Aware`](../interfaces/Aware.md)\> & `T`
 
+## See
+
+module:factory.AsAware
+
+## Implements
+
+module:factory.Aware

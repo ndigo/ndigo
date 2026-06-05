@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -8,10 +8,14 @@
 
 > **ArrayEntry**\<`Value`\> = \[`number`, `Value`\[`number`\]\]
 
-Defined in: packages/blue-core/src/iterable.ts:19
+Defined in: packages/blue-core/src/iterable.ts:47
+
+Represents a single entry for an array-like value, where the entry is `[index, value]`.
 
 ## Type Parameters
 
 ### Value
 
 `Value` *extends* readonly `unknown`[]
+
+The array-like value type.

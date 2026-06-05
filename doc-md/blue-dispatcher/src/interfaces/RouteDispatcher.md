@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,9 @@
 
 # Interface: RouteDispatcher
 
-Defined in: packages/blue-dispatcher/src/dispatcher.ts:23
+Defined in: packages/blue-dispatcher/src/dispatcher.ts:27
+
+Interface for dispatching routes.
 
 ## Methods
 
@@ -14,13 +16,17 @@ Defined in: packages/blue-dispatcher/src/dispatcher.ts:23
 
 > **dispatch**(`route`): `Promise`\<`void`\>
 
-Defined in: packages/blue-dispatcher/src/dispatcher.ts:24
+Defined in: packages/blue-dispatcher/src/dispatcher.ts:32
+
+Dispatches the given route for processing.
 
 #### Parameters
 
 ##### route
 
-[`Route`](../../../blue-router/src/interfaces/Route.md)
+`Route`
+
+The route to dispatch.
 
 #### Returns
 

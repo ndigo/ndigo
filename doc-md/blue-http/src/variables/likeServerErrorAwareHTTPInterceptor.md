@@ -1,14 +1,16 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
 [BlueJS Framework](../../../modules.md) / [blue-http/src](../README.md) / likeServerErrorAwareHTTPInterceptor
 
-# Variable: likeServerErrorAwareHTTPInterceptor()
+# Variable: likeServerErrorAwareHTTPInterceptor
 
 > `const` **likeServerErrorAwareHTTPInterceptor**: (`value`) => `value is ServerErrorAwareHTTPInterceptor`
 
-Defined in: packages/blue-http/src/interceptors/response-class-interceptor.ts:127
+Defined in: packages/blue-http/src/interceptors/response-class-interceptor.ts:106
+
+Tests whether a value exposes `postServerErrorResponse()`.
 
 ## Parameters
 
@@ -16,8 +18,10 @@ Defined in: packages/blue-http/src/interceptors/response-class-interceptor.ts:12
 
 `any`
 
+The value to test.
+
 ## Returns
 
 `value is ServerErrorAwareHTTPInterceptor`
 
-Whether or not a value is like [ServerErrorAwareHTTPInterceptor](../interfaces/ServerErrorAwareHTTPInterceptor.md).
+`true` when the value is server-error-response-aware.

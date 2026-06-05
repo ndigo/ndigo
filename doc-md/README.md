@@ -1,4 +1,4 @@
-**BlueJS Framework v3.0.0-alpha.0**
+**BlueJS Framework v0.0.1**
 
 ***
 
@@ -20,6 +20,22 @@ A modular JavaScript/TypeScript framework organized as an Nx monorepo with pnpm 
 - **Vitest:** 2.1.8 (testing framework)
 - **Vite:** 6.0.7 (bundler)
 
+## Versioning
+
+All BlueJS packages and applications are currently at version **0.0.1**, indicating active development status. During this phase:
+
+- **Breaking changes may occur without notice** as the framework evolves
+- APIs are subject to change based on development needs
+- No stability guarantees are provided
+
+Once the framework reaches stability, all packages will follow **[Semantic Versioning 2.0.0](https://semver.org/)**:
+
+- **MAJOR** version: Breaking changes and incompatible API changes
+- **MINOR** version: New features added in a backward-compatible manner
+- **PATCH** version: Backward-compatible bug fixes
+
+The transition to `1.0.0` will signal the first stable release with semantic versioning guarantees.
+
 ## Getting Started
 
 ```bash
@@ -39,26 +55,33 @@ pnpm test
 pnpm lint
 ```
 
+## Applications
+
+- [blue-demo](_media/README.md)
+
 ## Packages
 
-- [blue-content](_media/README.md)
-- [blue-context](_media/README-1.md)
-- [blue-core](_media/README-2.md)
-- [blue-demo](_media/README-3.md)
-- [blue-dispatcher](_media/README-4.md)
-- [blue-domain](_media/README-5.md)
-- [blue-factory](_media/README-6.md)
-- [blue-http](_media/README-7.md)
-- [blue-logger](_media/README-8.md)
-- [blue-model](_media/README-9.md)
-- [blue-parser](_media/README-10.md)
-- [blue-platform-web](_media/README-11.md)
-- [blue-print](_media/README-12.md)
+- [blue-boot](_media/README-1.md)
+- [blue-content](_media/README-2.md)
+- [blue-context](_media/README-3.md)
+- [blue-core](_media/README-4.md)
+- [blue-dispatcher](_media/README-5.md)
+- [blue-domain](_media/README-6.md)
+- [blue-eslint-plugin](_media/README-7.md)
+- [blue-factory](_media/README-8.md)
+- [blue-http](_media/README-9.md)
+- [blue-model](_media/README-10.md)
+- [blue-orm](_media/README-11.md)
+- [blue-parser](packages/blue-parser/README.md)
+- [blue-platform-web](_media/README-12.md)
+- [blue-print](packages/blue-print/README.md)
 - [blue-router](_media/README-13.md)
-- [blue-util](_media/README-14.md)
-- [blue-validate](_media/README-15.md)
-- [blue-view](_media/README-16.md)
-- [blue-view-webcomponent](_media/README-17.md)
+- [blue-service](_media/README-14.md)
+- [blue-telemetry](_media/README-15.md)
+- [blue-util](_media/README-16.md)
+- [blue-validate](_media/README-17.md)
+- [blue-view](_media/README-18.md)
+- [blue-view-webcomponent](_media/README-19.md)
 
 # Development
 
@@ -132,6 +155,51 @@ pnpm lint
 - 120 character line width
 - Trailing commas (ES5)
 
+## Documentation Guide
+
+### STYLE_GUIDE vs ARCHITECTURE
+
+The project maintains two complementary documentation files for different purposes:
+
+**STYLE_GUIDE.md - "How to Write Code"**
+
+- **Focus:** Concrete implementation rules, naming, and formatting conventions
+- **Audience:** All developers (including AI agents) writing code daily
+- **Content:**
+    - File naming conventions (kebab-case, underscore prefix, etc.)
+    - Code naming conventions (camelCase, PascalCase, UPPER_SNAKE_CASE)
+    - Prettier formatting rules (indentation, quotes, semicolons, etc.)
+    - Module organization structure
+    - Special patterns (internal files, test helpers, mixins)
+    - Before/after examples of correct usage
+
+**Think:** "How do I name this file/variable/class?" and "How should this code be formatted?"
+
+**ARCHITECTURE.md - "Why the System Works This Way"**
+
+- **Focus:** High-level design decisions, patterns, principles, and rationale
+- **Audience:** Architects and senior developers understanding system design
+- **Content:**
+    - Core philosophy and design principles
+    - Layered architecture organization
+    - Design patterns (Strategy, Factory, Observer, Decorator, etc.)
+    - Dependency management strategy (Library Integration Layer)
+    - Module visibility concepts and API design
+    - Roadmap and development phases
+
+**Think:** "Why is the system designed this way?" and "What are the architectural patterns?"
+
+**The Dividing Line:**
+
+| Concern               | ARCHITECTURE.md                                           | STYLE_GUIDE.md                                     |
+| :-------------------- | :-------------------------------------------------------- | :------------------------------------------------- |
+| Dependency Management | "Use Library Integration Layer pattern"                   | "Import from @blue/util, not from ramda"           |
+| Code Organization     | "Use Strategy Pattern for parsers"                        | "Name parser files: kebab-case.ts in src/"         |
+| Module Visibility     | "Internal modules are implementation details"             | "Prefix internal files with underscore: \_util.ts" |
+| Naming Philosophy     | "Use `is` prefix for type checks, `like` for duck-typing" | "isString checks with typeof, returns boolean"     |
+
+**Maintenance Note:** When updating the dividing line explanation, update it in both `README.md` and `AGENTS.md` to keep them synchronized.
+
 # Terminology
 
 ## Naming Conventions
@@ -144,3 +212,34 @@ pnpm lint
     - Class mixins: `AsEventEmitter( Component )` produces a new class with combined capabilities
     - Function mixins: `asEventEmitter( component )` adds event emitter methods to the instance
 - **Configurable** suffix denotes interfaces/classes with setters for normally readonly properties
+
+## File & Module Conventions
+
+### Underscore-Prefix Pattern
+
+Files prefixed with an underscore (`_*.ts`) are **internal to their package** and should not be considered part of the public API:
+
+**Source files (`packages/*/src/_*.ts`):**
+
+- Internal utilities and helper functions
+- Implementation details not intended for external consumption
+- Re-exports from dependencies organized for internal use
+- Example: `_util.ts`, `_parser.ts`, `_natural-sort.ts`
+
+**Test files (`packages/*/test/_*.ts`):**
+
+- Test helper utilities and fixtures
+- Custom assertion helpers
+- Mock/worker implementations for testing
+- Example: `_expect.ts`, `_worker.ts`
+
+**Guidelines:**
+
+- ❌ Do NOT export underscore-prefixed modules in `index.ts`
+- ❌ Do NOT import underscore modules from other packages
+- ✅ Use only within the same package
+- ✅ Document purpose in file-level JSDoc comments
+
+### Public API Surface
+
+Each package's public API is defined by its `src/index.ts` file. Only modules explicitly exported there are considered public and stable.

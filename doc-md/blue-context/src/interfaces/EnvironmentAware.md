@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,11 +6,13 @@
 
 # Interface: EnvironmentAware
 
-Defined in: packages/blue-context/src/environment.ts:22
+Defined in: packages/blue-context/src/environment.ts:45
+
+Receives the current environment during initialization.
 
 ## Extends
 
-- [`Aware`](../../../blue-factory/src/interfaces/Aware.md)
+- `Aware`
 
 ## Properties
 
@@ -18,11 +20,13 @@ Defined in: packages/blue-context/src/environment.ts:22
 
 > `readonly` **\[$aware\]**: `boolean`
 
-Defined in: packages/blue-factory/src/aware.ts:16
+Defined in: packages/blue-factory/lib/aware.d.ts:21
+
+A symbol indicating that the value is aware.
 
 #### Inherited from
 
-[`Aware`](../../../blue-factory/src/interfaces/Aware.md).[`[$aware]`](../../../blue-factory/src/interfaces/Aware.md#aware)
+`Aware.[$aware]`
 
 ## Methods
 
@@ -30,7 +34,7 @@ Defined in: packages/blue-factory/src/aware.ts:16
 
 > **setEnvironment**(`environment`): `void`
 
-Defined in: packages/blue-context/src/environment.ts:23
+Defined in: packages/blue-context/src/environment.ts:46
 
 #### Parameters
 

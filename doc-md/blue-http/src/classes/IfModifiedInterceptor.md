@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,17 @@
 
 # Class: IfModifiedInterceptor
 
-Defined in: packages/blue-http/src/interceptors/if-modified-interceptor.ts:19
+Defined in: packages/blue-http/src/interceptors/if-modified-interceptor.ts:24
+
+Adds conditional request headers and caches validators from prior responses.
+
+## Implements
+
+module:http.InitializationAwareHTTPInterceptor
+
+## Implements
+
+module:http.ResponseAwareHTTPInterceptor
 
 ## Implements
 
@@ -19,7 +29,7 @@ Defined in: packages/blue-http/src/interceptors/if-modified-interceptor.ts:19
 
 > **new IfModifiedInterceptor**(): `IfModifiedInterceptor`
 
-Defined in: packages/blue-http/src/interceptors/if-modified-interceptor.ts:25
+Defined in: packages/blue-http/src/interceptors/if-modified-interceptor.ts:30
 
 #### Returns
 
@@ -31,7 +41,7 @@ Defined in: packages/blue-http/src/interceptors/if-modified-interceptor.ts:25
 
 > **preInit**(`url`, `settings`): `boolean`
 
-Defined in: packages/blue-http/src/interceptors/if-modified-interceptor.ts:35
+Defined in: packages/blue-http/src/interceptors/if-modified-interceptor.ts:40
 
 #### Parameters
 
@@ -63,7 +73,7 @@ Whether or not the http request should continue execution.
 
 > **postResponse**(`response`, `settings`): `Promise`\<`void`\>
 
-Defined in: packages/blue-http/src/interceptors/if-modified-interceptor.ts:52
+Defined in: packages/blue-http/src/interceptors/if-modified-interceptor.ts:57
 
 #### Parameters
 
@@ -80,8 +90,6 @@ Defined in: packages/blue-http/src/interceptors/if-modified-interceptor.ts:52
 `Promise`\<`void`\>
 
 #### Async
-
-*
 
 #### Implementation of
 

@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -8,10 +8,27 @@
 
 > **HTTPInit** = `RequestInit` & `object`
 
-Defined in: packages/blue-http/src/http.ts:12
+Defined in: packages/blue-http/src/http.ts:25
+
+Base request settings shared by HTTP client methods and interceptor hooks.
+
+This extends `RequestInit` with BlueJS-specific options such as `baseURL`
+and query parameter merging.
 
 ## Type Declaration
 
 ### method?
 
-> `optional` **method**: [`HTTPMethod`](HTTPMethod.md)
+> `optional` **method?**: [`HTTPMethod`](HTTPMethod.md)
+
+### baseURL?
+
+> `optional` **baseURL?**: `string`
+
+### headers?
+
+> `optional` **headers?**: `HeadersInit`
+
+### params?
+
+> `optional` **params?**: `URLSearchParams` \| `string`[][] \| `Record`\<`string`, `string`\> \| `string`

@@ -1,15 +1,39 @@
-# Blue Factory
+# Blue Domain
 
-## Inversion of Control
+Blue Domain contains domain-centric component abstractions for BlueJS applications.
 
-Inversion of control (IoC), a.k.a. dependency injection (DI), is a pattern used for decoupling components and layers in the system. The pattern is implemented through injecting dependencies into a component through constructor arguments, arguments to a factory method, or properties that are set on the object instance after it is constructed or returned from a factory method. These dependencies are usually provided as interfaces for further decoupling and to support testability.
+## Features
 
-## The Factory
+- Domain component base contracts
+- Generic domain component implementation
+- Domain-focused error types
+- Component-and-view integration helpers
+- Interoperability with context/dispatcher/model packages
 
-The `Factory` API provides the underlaying basis for IoC functionality in BlueJS. The `DefaultFactory` implementation provides the main functionality to the `GenericApplicationContext` container.
+## Installation
 
-`Factory` and its related interfaces, e.g. `FactoryAware`, `Initializable`, `Destroyable`, etc., are important integration points for other framework entities. They allow for very efficient interactions between the container and its components.
+```bash
+pnpm add @blue/domain
+```
 
-## References
+## Usage
 
-- https://stackoverflow.com/questions/3058/what-is-inversion-of-control
+```typescript
+import { GenericDomainComponent } from '@blue/domain';
+
+class UserComponent extends GenericDomainComponent {
+    constructor() {
+        super();
+        this.init('user');
+    }
+}
+
+new UserComponent();
+```
+
+## Development
+
+```bash
+pnpm --filter @blue/domain build:lib
+pnpm --filter @blue/domain test
+```

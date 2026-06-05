@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,29 +6,27 @@
 
 # Class: StandardEnvironment
 
-Defined in: packages/blue-context/src/environment.ts:201
+Defined in: packages/blue-context/src/environment.ts:272
+
+Default environment implementation used by application contexts.
 
 ## Extends
 
 - [`AbstractEnvironment`](AbstractEnvironment.md)
 
-## Extended by
-
-- [`BrowserEnvironment`](../../../blue-platform-web/src/classes/BrowserEnvironment.md)
-
 ## Constructors
 
 ### Constructor
 
-> **new StandardEnvironment**(`propertySources`): `StandardEnvironment`
+> **new StandardEnvironment**(`propertySources?`): `StandardEnvironment`
 
-Defined in: packages/blue-context/src/environment.ts:109
+Defined in: packages/blue-context/src/environment.ts:152
 
 #### Parameters
 
-##### propertySources
+##### propertySources?
 
-[`JSONObject`](../../../blue-core/src/interfaces/JSONObject.md)[] = `[]`
+`JSONObject`[] = `[]`
 
 #### Returns
 
@@ -44,29 +42,35 @@ Defined in: packages/blue-context/src/environment.ts:109
 
 #### Get Signature
 
-> **get** **propertySources**(): [`JSONObject`](../../../blue-core/src/interfaces/JSONObject.md)[]
+> **get** **propertySources**(): `JSONObject`[]
 
-Defined in: packages/blue-context/src/environment.ts:77
+Defined in: packages/blue-context/src/environment.ts:120
+
+The ordered property sources used for resolution.
 
 ##### Returns
 
-[`JSONObject`](../../../blue-core/src/interfaces/JSONObject.md)[]
+`JSONObject`[]
 
 #### Set Signature
 
 > **set** **propertySources**(`propertySources`): `void`
 
-Defined in: packages/blue-context/src/environment.ts:81
+Defined in: packages/blue-context/src/environment.ts:124
+
+The ordered property sources used for resolution.
 
 ##### Parameters
 
 ###### propertySources
 
-[`JSONObject`](../../../blue-core/src/interfaces/JSONObject.md)[]
+`JSONObject`[]
 
 ##### Returns
 
 `void`
+
+The ordered property sources used for resolution.
 
 #### Inherited from
 
@@ -80,7 +84,7 @@ Defined in: packages/blue-context/src/environment.ts:81
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-context/src/environment.ts:85
+Defined in: packages/blue-context/src/environment.ts:128
 
 ##### Returns
 
@@ -98,7 +102,9 @@ Defined in: packages/blue-context/src/environment.ts:85
 
 > **get** **activeProfiles**(): `string`[]
 
-Defined in: packages/blue-context/src/environment.ts:89
+Defined in: packages/blue-context/src/environment.ts:132
+
+The explicitly active profiles.
 
 ##### Returns
 
@@ -108,7 +114,9 @@ Defined in: packages/blue-context/src/environment.ts:89
 
 > **set** **activeProfiles**(`profiles`): `void`
 
-Defined in: packages/blue-context/src/environment.ts:93
+Defined in: packages/blue-context/src/environment.ts:136
+
+The explicitly active profiles.
 
 ##### Parameters
 
@@ -119,6 +127,8 @@ Defined in: packages/blue-context/src/environment.ts:93
 ##### Returns
 
 `void`
+
+The explicitly active profiles.
 
 #### Inherited from
 
@@ -132,7 +142,9 @@ Defined in: packages/blue-context/src/environment.ts:93
 
 > **get** **defaultProfiles**(): `string`[]
 
-Defined in: packages/blue-context/src/environment.ts:99
+Defined in: packages/blue-context/src/environment.ts:142
+
+The default profiles used when no active profile is configured.
 
 ##### Returns
 
@@ -142,7 +154,9 @@ Defined in: packages/blue-context/src/environment.ts:99
 
 > **set** **defaultProfiles**(`profiles`): `void`
 
-Defined in: packages/blue-context/src/environment.ts:103
+Defined in: packages/blue-context/src/environment.ts:146
+
+The default profiles used when no active profile is configured.
 
 ##### Parameters
 
@@ -154,6 +168,8 @@ Defined in: packages/blue-context/src/environment.ts:103
 
 `void`
 
+The default profiles used when no active profile is configured.
+
 #### Inherited from
 
 [`AbstractEnvironment`](AbstractEnvironment.md).[`defaultProfiles`](AbstractEnvironment.md#defaultprofiles)
@@ -164,13 +180,17 @@ Defined in: packages/blue-context/src/environment.ts:103
 
 > **addActiveProfile**(`profile`): `void`
 
-Defined in: packages/blue-context/src/environment.ts:115
+Defined in: packages/blue-context/src/environment.ts:158
+
+Adds a profile to the active set.
 
 #### Parameters
 
 ##### profile
 
 `string`
+
+The profile name.
 
 #### Returns
 
@@ -182,11 +202,39 @@ Defined in: packages/blue-context/src/environment.ts:115
 
 ***
 
+### addDefaultProfile()
+
+> **addDefaultProfile**(`profile`): `void`
+
+Defined in: packages/blue-context/src/environment.ts:162
+
+Adds a profile to the default set.
+
+#### Parameters
+
+##### profile
+
+`string`
+
+The profile name.
+
+#### Returns
+
+`void`
+
+#### Inherited from
+
+[`AbstractEnvironment`](AbstractEnvironment.md).[`addDefaultProfile`](AbstractEnvironment.md#adddefaultprofile)
+
+***
+
 ### hasProperty()
 
 > **hasProperty**(`key`): `boolean`
 
-Defined in: packages/blue-context/src/environment.ts:119
+Defined in: packages/blue-context/src/environment.ts:166
+
+Returns whether a property key can be resolved.
 
 #### Parameters
 
@@ -194,9 +242,13 @@ Defined in: packages/blue-context/src/environment.ts:119
 
 `string`
 
+The property name to resolve.
+
 #### Returns
 
 `boolean`
+
+`true` when the property exists.
 
 #### Inherited from
 
@@ -206,9 +258,11 @@ Defined in: packages/blue-context/src/environment.ts:119
 
 ### getProperty()
 
-> **getProperty**(`key`, `defaultValue?`): [`JSONValue`](../../../blue-core/src/type-aliases/JSONValue.md)
+> **getProperty**(`key`, `defaultValue?`): `JSONValue`
 
-Defined in: packages/blue-context/src/environment.ts:123
+Defined in: packages/blue-context/src/environment.ts:170
+
+Resolves a property value, falling back to a default when missing.
 
 #### Parameters
 
@@ -216,13 +270,19 @@ Defined in: packages/blue-context/src/environment.ts:123
 
 `string`
 
+The property name to resolve.
+
 ##### defaultValue?
 
-[`JSONValue`](../../../blue-core/src/type-aliases/JSONValue.md)
+`JSONValue`
+
+The value to return when no property is found.
 
 #### Returns
 
-[`JSONValue`](../../../blue-core/src/type-aliases/JSONValue.md)
+`JSONValue`
+
+The resolved property value or the default value.
 
 #### Inherited from
 
@@ -232,9 +292,11 @@ Defined in: packages/blue-context/src/environment.ts:123
 
 ### getRequiredProperty()
 
-> **getRequiredProperty**(`key`): [`JSONValue`](../../../blue-core/src/type-aliases/JSONValue.md)
+> **getRequiredProperty**(`key`): `JSONValue`
 
-Defined in: packages/blue-context/src/environment.ts:127
+Defined in: packages/blue-context/src/environment.ts:174
+
+Returns the resolved property value or throws when missing.
 
 #### Parameters
 
@@ -242,9 +304,17 @@ Defined in: packages/blue-context/src/environment.ts:127
 
 `string`
 
+The property name to resolve.
+
 #### Returns
 
-[`JSONValue`](../../../blue-core/src/type-aliases/JSONValue.md)
+`JSONValue`
+
+The resolved property value.
+
+#### Throws
+
+When the property cannot be resolved.
 
 #### Inherited from
 
@@ -256,13 +326,17 @@ Defined in: packages/blue-context/src/environment.ts:127
 
 > **merge**(`environment`): `void`
 
-Defined in: packages/blue-context/src/environment.ts:131
+Defined in: packages/blue-context/src/environment.ts:178
+
+Merges another environment into this one.
 
 #### Parameters
 
 ##### environment
 
 [`ConfigurableEnvironment`](../interfaces/ConfigurableEnvironment.md)
+
+The environment to merge.
 
 #### Returns
 
@@ -278,7 +352,7 @@ Defined in: packages/blue-context/src/environment.ts:131
 
 > `protected` **\_isActiveProfile**(`profile`): `boolean`
 
-Defined in: packages/blue-context/src/environment.ts:142
+Defined in: packages/blue-context/src/environment.ts:189
 
 #### Parameters
 

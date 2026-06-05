@@ -1,14 +1,16 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
 [BlueJS Framework](../../../modules.md) / [blue-content/src](../README.md) / likeContentSourceAware
 
-# Variable: likeContentSourceAware()
+# Variable: likeContentSourceAware
 
 > `const` **likeContentSourceAware**: (`value`) => `value is ContentSourceAware`
 
-Defined in: packages/blue-content/src/content.ts:60
+Defined in: packages/blue-content/src/content.ts:131
+
+Tests whether a value looks like content-source-aware state.
 
 ## Parameters
 
@@ -16,10 +18,10 @@ Defined in: packages/blue-content/src/content.ts:60
 
 `any`
 
-The value to be tested
+The value to be tested.
 
 ## Returns
 
 `value is ContentSourceAware`
 
-Whether or not the `value` is [ContentSourceAware](../interfaces/ContentSourceAware.md)
+Whether the value can receive a content source.

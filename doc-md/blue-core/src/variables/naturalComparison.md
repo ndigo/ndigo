@@ -1,14 +1,16 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
 [BlueJS Framework](../../../modules.md) / [blue-core/src](../README.md) / naturalComparison
 
-# Variable: naturalComparison()
+# Variable: naturalComparison
 
-> `const` **naturalComparison**: \<`T`\>(`x`, `y`) => `Ordering`
+> `const` **naturalComparison**: \<`T`\>(`value1`, `value2`) => `number`
 
-Defined in: packages/blue-core/src/comparable.ts:90
+Defined in: packages/blue-core/src/comparable.ts:130
+
+A comparison function that uses natural ordering (less than operator).
 
 ## Type Parameters
 
@@ -16,16 +18,24 @@ Defined in: packages/blue-core/src/comparable.ts:90
 
 `T`
 
+The type of values being compared.
+
 ## Parameters
 
-### x
+### value1
 
 `T`
 
-### y
+The first value.
+
+### value2
 
 `T`
+
+The second value.
 
 ## Returns
 
-`Ordering`
+`number`
+
+A negative integer, zero, or a positive integer as the first argument is less than, equal to, or greater than the second.

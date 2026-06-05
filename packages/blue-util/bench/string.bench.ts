@@ -1,7 +1,6 @@
 /** @author opencode */
 
 import { bench, describe } from 'vitest';
-import * as R from 'ramda';
 
 const trimInputs = ['  alpha  ', 'beta', '\n gamma\t', 'delta'];
 const splitCommaInputs = ['a,b,c', 'single', 'x,y', 'm,n,o,p'];
@@ -15,18 +14,7 @@ const testInputs = ['foo1', 'bar22', 'baz3', 'foo'];
 const caseInputs = ['Alpha', 'BETA', 'MiXeD', 'already-lower'];
 let _stringSink = 0;
 
-describe('R.trim(s) vs s.trim()', () => {
-    bench('ramda', () => {
-        let accumulator = 0;
-
-        for (let i = 0; i < 1000; i += 1) {
-            const value = trimInputs[i % trimInputs.length];
-            accumulator += R.trim(value).length;
-        }
-
-        _stringSink = accumulator;
-    });
-
+describe('s.trim()', () => {
     bench('native', () => {
         let accumulator = 0;
 
@@ -39,20 +27,7 @@ describe('R.trim(s) vs s.trim()', () => {
     });
 });
 
-describe('R.split(sep, s) vs s.split(sep)', () => {
-    bench('ramda', () => {
-        let accumulator = 0;
-
-        for (let i = 0; i < 1000; i += 1) {
-            const commaValue = splitCommaInputs[i % splitCommaInputs.length];
-            const slashValue = splitSlashInputs[i % splitSlashInputs.length];
-            accumulator += R.split(',', commaValue).length;
-            accumulator += R.split('/', slashValue).length;
-        }
-
-        _stringSink = accumulator;
-    });
-
+describe('s.split(sep)', () => {
     bench('native', () => {
         let accumulator = 0;
 
@@ -67,19 +42,7 @@ describe('R.split(sep, s) vs s.split(sep)', () => {
     });
 });
 
-describe('R.join(sep, arr) vs arr.join(sep)', () => {
-    bench('ramda', () => {
-        let accumulator = 0;
-
-        for (let i = 0; i < 1000; i += 1) {
-            const value = joinInputs[i % joinInputs.length];
-            const separator = joinSeparators[i % joinSeparators.length];
-            accumulator += R.join(separator, value).length;
-        }
-
-        _stringSink = accumulator;
-    });
-
+describe('arr.join(sep)', () => {
     bench('native', () => {
         let accumulator = 0;
 
@@ -93,20 +56,7 @@ describe('R.join(sep, arr) vs arr.join(sep)', () => {
     });
 });
 
-describe('R.replace(pattern, replacement, s) vs s.replace(pattern, replacement)', () => {
-    bench('ramda', () => {
-        let accumulator = 0;
-
-        for (let i = 0; i < 1000; i += 1) {
-            const regexValue = replaceRegexInputs[i % replaceRegexInputs.length];
-            const stringValue = replaceStringInputs[i % replaceStringInputs.length];
-            accumulator += R.replace(/world/g, 'planet', regexValue).length;
-            accumulator += R.replace('foo', 'baz', stringValue).length;
-        }
-
-        _stringSink = accumulator;
-    });
-
+describe('s.replace(pattern, replacement)', () => {
     bench('native', () => {
         let accumulator = 0;
 
@@ -121,18 +71,7 @@ describe('R.replace(pattern, replacement, s) vs s.replace(pattern, replacement)'
     });
 });
 
-describe('R.test(regex, s) vs regex.test(s)', () => {
-    bench('ramda', () => {
-        let accumulator = 0;
-
-        for (let i = 0; i < 1000; i += 1) {
-            const value = testInputs[i % testInputs.length];
-            accumulator += R.test(testRegex, value) ? 1 : 0;
-        }
-
-        _stringSink = accumulator;
-    });
-
+describe('regex.test(s)', () => {
     bench('native', () => {
         let accumulator = 0;
 
@@ -145,18 +84,7 @@ describe('R.test(regex, s) vs regex.test(s)', () => {
     });
 });
 
-describe('R.toLower(s) vs s.toLowerCase()', () => {
-    bench('ramda', () => {
-        let accumulator = 0;
-
-        for (let i = 0; i < 1000; i += 1) {
-            const value = caseInputs[i % caseInputs.length];
-            accumulator += R.toLower(value).length;
-        }
-
-        _stringSink = accumulator;
-    });
-
+describe('s.toLowerCase()', () => {
     bench('native', () => {
         let accumulator = 0;
 
@@ -169,18 +97,7 @@ describe('R.toLower(s) vs s.toLowerCase()', () => {
     });
 });
 
-describe('R.toUpper(s) vs s.toUpperCase()', () => {
-    bench('ramda', () => {
-        let accumulator = 0;
-
-        for (let i = 0; i < 1000; i += 1) {
-            const value = caseInputs[i % caseInputs.length];
-            accumulator += R.toUpper(value).length;
-        }
-
-        _stringSink = accumulator;
-    });
-
+describe('s.toUpperCase()', () => {
     bench('native', () => {
         let accumulator = 0;
 

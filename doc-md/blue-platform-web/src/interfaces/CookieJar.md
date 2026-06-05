@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,15 +6,17 @@
 
 # Interface: CookieJar
 
-Defined in: packages/blue-platform-web/src/cookies.ts:19
+Defined in: packages/blue-platform-web/src/cookies.ts:29
+
+Minimal cookie-jar API exposed by the platform-web package.
 
 ## Methods
 
 ### get()
 
-> **get**(`key`): [`JSONValue`](../../../blue-core/src/type-aliases/JSONValue.md)
+> **get**(`key`): `JSONValue`
 
-Defined in: packages/blue-platform-web/src/cookies.ts:20
+Defined in: packages/blue-platform-web/src/cookies.ts:30
 
 #### Parameters
 
@@ -24,15 +26,15 @@ Defined in: packages/blue-platform-web/src/cookies.ts:20
 
 #### Returns
 
-[`JSONValue`](../../../blue-core/src/type-aliases/JSONValue.md)
+`JSONValue`
 
 ***
 
 ### getJSON()
 
-> **getJSON**(`key`): [`JSONValue`](../../../blue-core/src/type-aliases/JSONValue.md)
+> **getJSON**(`key`): `JSONValue`
 
-Defined in: packages/blue-platform-web/src/cookies.ts:21
+Defined in: packages/blue-platform-web/src/cookies.ts:31
 
 #### Parameters
 
@@ -42,15 +44,15 @@ Defined in: packages/blue-platform-web/src/cookies.ts:21
 
 #### Returns
 
-[`JSONValue`](../../../blue-core/src/type-aliases/JSONValue.md)
+`JSONValue`
 
 ***
 
 ### remove()
 
-> **remove**(`key`, `attributes`): `string`
+> **remove**(`key`, `attributes?`): `string`
 
-Defined in: packages/blue-platform-web/src/cookies.ts:22
+Defined in: packages/blue-platform-web/src/cookies.ts:32
 
 #### Parameters
 
@@ -58,9 +60,9 @@ Defined in: packages/blue-platform-web/src/cookies.ts:22
 
 `string`
 
-##### attributes
+##### attributes?
 
-`any`
+[`CookieAttributes`](../type-aliases/CookieAttributes.md)
 
 #### Returns
 
@@ -70,9 +72,9 @@ Defined in: packages/blue-platform-web/src/cookies.ts:22
 
 ### set()
 
-> **set**(`key`, `value`, `attributes`): `string`
+> **set**(`key`, `value`, `attributes?`): `string`
 
-Defined in: packages/blue-platform-web/src/cookies.ts:23
+Defined in: packages/blue-platform-web/src/cookies.ts:33
 
 #### Parameters
 
@@ -84,10 +86,28 @@ Defined in: packages/blue-platform-web/src/cookies.ts:23
 
 `string`
 
-##### attributes
+##### attributes?
 
-`any`
+[`CookieAttributes`](../type-aliases/CookieAttributes.md)
 
 #### Returns
 
 `string`
+
+***
+
+### run()
+
+> **run**(`input`): \{ `isError`: `true`; `error`: `string`; `index`: `number`; `data`: `unknown`; \} \| \{ `isError`: `false`; `result`: `JSONObject`; `index`: `number`; `data`: `unknown`; \}
+
+Defined in: packages/blue-platform-web/src/cookies.ts:34
+
+#### Parameters
+
+##### input
+
+`string`
+
+#### Returns
+
+\{ `isError`: `true`; `error`: `string`; `index`: `number`; `data`: `unknown`; \} \| \{ `isError`: `false`; `result`: `JSONObject`; `index`: `number`; `data`: `unknown`; \}

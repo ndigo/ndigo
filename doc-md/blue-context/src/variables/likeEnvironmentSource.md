@@ -1,14 +1,16 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
 [BlueJS Framework](../../../modules.md) / [blue-context/src](../README.md) / likeEnvironmentSource
 
-# Variable: likeEnvironmentSource()
+# Variable: likeEnvironmentSource
 
 > `const` **likeEnvironmentSource**: (`value`) => `value is EnvironmentSource`
 
-Defined in: packages/blue-context/src/environment.ts:195
+Defined in: packages/blue-context/src/environment.ts:260
+
+Returns whether a value exposes an environment.
 
 ## Parameters
 
@@ -16,10 +18,10 @@ Defined in: packages/blue-context/src/environment.ts:195
 
 `any`
 
-The value to be tested
+The value to test.
 
 ## Returns
 
 `value is EnvironmentSource`
 
-Whether or not the `value` is [EnvironmentSource](../interfaces/EnvironmentSource.md)
+`true` when the value looks like an environment source.

@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,12 +6,18 @@
 
 # Class: ApplicationContextAwareProcessor
 
-Defined in: packages/blue-context/src/context.ts:331
+Defined in: packages/blue-context/src/context.ts:902
 
 Create a new ApplicationContextAwareProcessor for the given context.
- * An [InitializationAwareProcessor](../../../blue-factory/src/interfaces/InitializationAwareProcessor.md) implementation that passes the ApplicationContext to value that implement the EnvironmentAware\|EnvironmentAware, ResourceLoaderAware\|ResourceLoaderAware, ApplicationEventEmitterAware\|ApplicationEventEmitterAware, ContentSourceAware\|ContentSourceAware, and/or [ApplicationContextAware](../interfaces/ApplicationContextAware.md) interfaces.
+An InitializationAwareProcessor\|InitializationAwareProcessor implementation that passes the ApplicationContext to value that implement the EnvironmentAware\|EnvironmentAware, ResourceLoaderAware\|ResourceLoaderAware, ApplicationEventEmitterAware\|ApplicationEventEmitterAware, ContentSourceAware\|ContentSourceAware, and/or [ApplicationContextAware](../interfaces/ApplicationContextAware.md) interfaces.
 
 Implemented interfaces are satisfied in order of their mention above.
+
+## Implements
+
+module:factory.InitializationAwareProcessor
+
+## Param
 
 ## See
 
@@ -23,7 +29,7 @@ Implemented interfaces are satisfied in order of their mention above.
 
 ## Implements
 
-- [`InitializationAwareProcessor`](../../../blue-factory/src/interfaces/InitializationAwareProcessor.md)
+- `InitializationAwareProcessor`
 
 ## Constructors
 
@@ -31,13 +37,17 @@ Implemented interfaces are satisfied in order of their mention above.
 
 > **new ApplicationContextAwareProcessor**(`applicationContext`): `ApplicationContextAwareProcessor`
 
-Defined in: packages/blue-context/src/context.ts:334
+Defined in: packages/blue-context/src/context.ts:910
+
+Creates a processor bound to a specific application context.
 
 #### Parameters
 
 ##### applicationContext
 
 [`ApplicationContext`](../interfaces/ApplicationContext.md)
+
+The context to inject into aware values.
 
 #### Returns
 
@@ -49,7 +59,7 @@ Defined in: packages/blue-context/src/context.ts:334
 
 > `readonly` **applicationContext**: [`ApplicationContext`](../interfaces/ApplicationContext.md)
 
-Defined in: packages/blue-context/src/context.ts:332
+Defined in: packages/blue-context/src/context.ts:903
 
 ## Methods
 
@@ -57,7 +67,9 @@ Defined in: packages/blue-context/src/context.ts:332
 
 > **processAfterInitialization**\<`T`\>(`name`, `value`): `T`
 
-Defined in: packages/blue-context/src/context.ts:346
+Defined in: packages/blue-context/src/context.ts:929
+
+Returns the value unchanged after initialization.
 
 #### Type Parameters
 
@@ -71,17 +83,23 @@ Defined in: packages/blue-context/src/context.ts:346
 
 `string`
 
+The bean name.
+
 ##### value
 
 `T`
+
+The initialized value.
 
 #### Returns
 
 `T`
 
+The same value.
+
 #### Implementation of
 
-[`InitializationAwareProcessor`](../../../blue-factory/src/interfaces/InitializationAwareProcessor.md).[`processAfterInitialization`](../../../blue-factory/src/interfaces/InitializationAwareProcessor.md#processafterinitialization)
+`InitializationAwareProcessor.processAfterInitialization`
 
 ***
 
@@ -89,7 +107,9 @@ Defined in: packages/blue-context/src/context.ts:346
 
 > **processBeforeInitialization**\<`T`\>(`name`, `value`): `T`
 
-Defined in: packages/blue-context/src/context.ts:350
+Defined in: packages/blue-context/src/context.ts:940
+
+Injects the application context into aware values before initialization.
 
 #### Type Parameters
 
@@ -103,14 +123,20 @@ Defined in: packages/blue-context/src/context.ts:350
 
 `string`
 
+The bean name.
+
 ##### value
 
 `T`
+
+The value to initialize.
 
 #### Returns
 
 `T`
 
+The same value.
+
 #### Implementation of
 
-[`InitializationAwareProcessor`](../../../blue-factory/src/interfaces/InitializationAwareProcessor.md).[`processBeforeInitialization`](../../../blue-factory/src/interfaces/InitializationAwareProcessor.md#processbeforeinitialization)
+`InitializationAwareProcessor.processBeforeInitialization`

@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -8,7 +8,9 @@
 
 > **likeIterable**(`value`): `value is Iterable<any, any, any>`
 
-Defined in: packages/blue-core/src/iterable.ts:76
+Defined in: packages/blue-core/src/iterable.ts:126
+
+Type guard to check if a value is iterable (has a `Symbol.iterator` method).
 
 ## Parameters
 
@@ -16,10 +18,10 @@ Defined in: packages/blue-core/src/iterable.ts:76
 
 `any`
 
-The value to be tested
+The value to be tested.
 
 ## Returns
 
 `value is Iterable<any, any, any>`
 
-Whether or not the value is iterable
+`true` if the value is iterable, `false` otherwise.

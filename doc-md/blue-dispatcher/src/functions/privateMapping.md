@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,9 +6,11 @@
 
 # Function: privateMapping()
 
-> **privateMapping**(`route`): (`target`, `propertyKey?`, `descriptor?`) => `any`
+> **privateMapping**(`route`): (`target`, `context`) => `any`
 
-Defined in: packages/blue-dispatcher/src/route-mapping.ts:76
+Defined in: packages/blue-dispatcher/src/route-mapping.ts:142
+
+Create a private route mapping decorator.
 
 ## Parameters
 
@@ -16,24 +18,10 @@ Defined in: packages/blue-dispatcher/src/route-mapping.ts:76
 
 `string`
 
+The route path to map.
+
 ## Returns
 
-> (`target`, `propertyKey?`, `descriptor?`): `any`
+A route mapping decorator marked as private.
 
-### Parameters
-
-#### target
-
-`Object`
-
-#### propertyKey?
-
-`string` | `symbol`
-
-#### descriptor?
-
-`PropertyDescriptor`
-
-### Returns
-
-`any`
+(`target`, `context`) => `any`

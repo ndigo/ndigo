@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -8,4 +8,4 @@
 
 > `const` **$aware**: unique `symbol`
 
-Defined in: packages/blue-factory/src/aware.ts:13
+Defined in: packages/blue-factory/src/aware.ts:16

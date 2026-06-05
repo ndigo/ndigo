@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -8,10 +8,14 @@
 
 > **SetEntry**\<`Value`\> = `Value` *extends* `Set`\<infer ValueType\> ? \[`ValueType`, `ValueType`\] : `never`
 
-Defined in: packages/blue-core/src/iterable.ts:25
+Defined in: packages/blue-core/src/iterable.ts:65
+
+Represents a single entry for a Set-like value, where the entry is `[value, value]`.
 
 ## Type Parameters
 
 ### Value
 
 `Value`
+
+The Set-like value type.

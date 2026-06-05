@@ -1,14 +1,27 @@
-# Blue Utility
+# Blue Service
 
-This repository is the BlueJS utility library
+Blue Service defines service-layer abstractions used by BlueJS applications.
 
-## Description
+## Features
 
-blue-util, a part of BlueJS, contains interfaces and utilties used throughout the framework and its client applcations. It is built on top of [Ramda](https://ramdajs.com/), [date-fns/fp](https://date-fns.org/), [date-fns-tz](https://github.com/marnusw/date-fns-tz), [seedrandom](https://github.com/davidbau/seedrandom), and [slug](https://github.com/Trott/slug). It passes through a curated set of the underlying functionality.
+- Service composition foundations
+- Integration patterns with factory/core/http packages
+- ESM package scaffold for service-level modules
 
-## Documentation
+## Installation
 
-- [BlueJS API documentation](http://blueplatform.gaiacloud.jpmchase.net/bluejs/api/) -
-  detailed function and property information for all the BlueJS entities
-- [BlueJS Developer Guide](http://blueplatform.gaiacloud.jpmchase.net/bluejs/guide/) -
-  a high level guide to key BlueJS concepts and components
+```bash
+pnpm add @blue/service
+```
+
+## Usage
+
+`@blue/service` currently provides framework-level service packaging and is generally consumed as part of higher-level
+BlueJS module wiring.
+
+## Development
+
+```bash
+pnpm --filter @blue/service build:lib
+pnpm --filter @blue/service test
+```

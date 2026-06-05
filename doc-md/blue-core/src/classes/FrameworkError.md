@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,13 @@
 
 # Class: FrameworkError
 
-Defined in: packages/blue-core/src/error.ts:38
+Defined in: packages/blue-core/src/error.ts:69
+
+Represents an error within the framework itself.
+
+## Implements
+
+Serializable
 
 ## Extends
 
@@ -14,10 +20,8 @@ Defined in: packages/blue-core/src/error.ts:38
 
 ## Extended by
 
+- [`BindError`](BindError.md)
 - [`IllegalStateError`](IllegalStateError.md)
-- [`NoHandlerFoundError`](../../../blue-dispatcher/src/classes/NoHandlerFoundError.md)
-- [`NoViewFoundError`](../../../blue-dispatcher/src/classes/NoViewFoundError.md)
-- [`RouteBindingError`](../../../blue-dispatcher/src/classes/RouteBindingError.md)
 
 ## Constructors
 
@@ -25,13 +29,17 @@ Defined in: packages/blue-core/src/error.ts:38
 
 > **new FrameworkError**(`message?`): `FrameworkError`
 
-Defined in: packages/blue-core/src/error.ts:43
+Defined in: packages/blue-core/src/error.ts:81
+
+Creates an instance of FrameworkError.
 
 #### Parameters
 
 ##### message?
 
 `string`
+
+The error message.
 
 #### Returns
 
@@ -49,7 +57,9 @@ Defined in: packages/blue-core/src/error.ts:43
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-core/src/error.ts:39
+Defined in: packages/blue-core/src/error.ts:73
+
+The string tag for this class.
 
 ##### Returns
 
@@ -61,7 +71,7 @@ Defined in: packages/blue-core/src/error.ts:39
 
 > **toString**(): `string`
 
-Defined in: packages/blue-core/src/serializable.ts:29
+Defined in: packages/blue-core/src/serializable.ts:28
 
 #### Returns
 
@@ -77,7 +87,7 @@ Defined in: packages/blue-core/src/serializable.ts:29
 
 > `optional` **toJSON**(): [`JSONValue`](../type-aliases/JSONValue.md)
 
-Defined in: packages/blue-core/src/serializable.ts:30
+Defined in: packages/blue-core/src/serializable.ts:29
 
 #### Returns
 

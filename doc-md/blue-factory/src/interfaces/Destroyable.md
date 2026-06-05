@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,11 +6,10 @@
 
 # Interface: Destroyable
 
-Defined in: packages/blue-factory/src/lifecycle.ts:6
+Defined in: packages/blue-factory/src/lifecycle.ts:7
 
 ## Extended by
 
-- [`ApplicationContext`](../../../blue-context/src/interfaces/ApplicationContext.md)
 - [`AsyncDestroyable`](AsyncDestroyable.md)
 
 ## Properties
@@ -19,7 +18,7 @@ Defined in: packages/blue-factory/src/lifecycle.ts:6
 
 > **destroyed**: `boolean`
 
-Defined in: packages/blue-factory/src/lifecycle.ts:7
+Defined in: packages/blue-factory/src/lifecycle.ts:8
 
 ## Methods
 
@@ -27,7 +26,7 @@ Defined in: packages/blue-factory/src/lifecycle.ts:7
 
 > **destroy**(): `void`
 
-Defined in: packages/blue-factory/src/lifecycle.ts:8
+Defined in: packages/blue-factory/src/lifecycle.ts:9
 
 #### Returns
 

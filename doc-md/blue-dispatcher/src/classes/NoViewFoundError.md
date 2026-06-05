@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,11 +6,14 @@
 
 # Class: NoViewFoundError
 
-Defined in: packages/blue-dispatcher/src/error.ts:35
+Defined in: packages/blue-dispatcher/src/error.ts:43
+
+Error thrown when a view cannot be resolved for a given view name and route.
+This indicates that the specified view template or component could not be located.
 
 ## Extends
 
-- [`FrameworkError`](../../../blue-core/src/classes/FrameworkError.md)
+- `FrameworkError`
 
 ## Constructors
 
@@ -18,7 +21,7 @@ Defined in: packages/blue-dispatcher/src/error.ts:35
 
 > **new NoViewFoundError**(`viewName`, `route`): `NoViewFoundError`
 
-Defined in: packages/blue-dispatcher/src/error.ts:43
+Defined in: packages/blue-dispatcher/src/error.ts:51
 
 #### Parameters
 
@@ -28,7 +31,7 @@ Defined in: packages/blue-dispatcher/src/error.ts:43
 
 ##### route
 
-[`Route`](../../../blue-router/src/interfaces/Route.md)
+`Route`
 
 #### Returns
 
@@ -36,15 +39,15 @@ Defined in: packages/blue-dispatcher/src/error.ts:43
 
 #### Overrides
 
-[`FrameworkError`](../../../blue-core/src/classes/FrameworkError.md).[`constructor`](../../../blue-core/src/classes/FrameworkError.md#constructor)
+`FrameworkError.constructor`
 
 ## Properties
 
 ### route
 
-> `readonly` **route**: [`Route`](../../../blue-router/src/interfaces/Route.md)
+> `readonly` **route**: `Route`
 
-Defined in: packages/blue-dispatcher/src/error.ts:36
+Defined in: packages/blue-dispatcher/src/error.ts:44
 
 ***
 
@@ -52,7 +55,7 @@ Defined in: packages/blue-dispatcher/src/error.ts:36
 
 > `readonly` **viewName**: `string`
 
-Defined in: packages/blue-dispatcher/src/error.ts:37
+Defined in: packages/blue-dispatcher/src/error.ts:45
 
 ## Accessors
 
@@ -62,7 +65,7 @@ Defined in: packages/blue-dispatcher/src/error.ts:37
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-dispatcher/src/error.ts:39
+Defined in: packages/blue-dispatcher/src/error.ts:47
 
 ##### Returns
 
@@ -70,7 +73,7 @@ Defined in: packages/blue-dispatcher/src/error.ts:39
 
 #### Overrides
 
-[`FrameworkError`](../../../blue-core/src/classes/FrameworkError.md).[`[toStringTag]`](../../../blue-core/src/classes/FrameworkError.md#tostringtag)
+`FrameworkError.[toStringTag]`
 
 ## Methods
 
@@ -78,7 +81,7 @@ Defined in: packages/blue-dispatcher/src/error.ts:39
 
 > **toString**(): `string`
 
-Defined in: packages/blue-core/src/serializable.ts:29
+Defined in: packages/blue-core/lib/serializable.d.ts:22
 
 #### Returns
 
@@ -86,20 +89,20 @@ Defined in: packages/blue-core/src/serializable.ts:29
 
 #### Inherited from
 
-[`FrameworkError`](../../../blue-core/src/classes/FrameworkError.md).[`toString`](../../../blue-core/src/classes/FrameworkError.md#tostring)
+`FrameworkError.toString`
 
 ***
 
 ### toJSON()?
 
-> `optional` **toJSON**(): [`JSONValue`](../../../blue-core/src/type-aliases/JSONValue.md)
+> `optional` **toJSON**(): `JSONValue`
 
-Defined in: packages/blue-core/src/serializable.ts:30
+Defined in: packages/blue-core/lib/serializable.d.ts:23
 
 #### Returns
 
-[`JSONValue`](../../../blue-core/src/type-aliases/JSONValue.md)
+`JSONValue`
 
 #### Inherited from
 
-[`FrameworkError`](../../../blue-core/src/classes/FrameworkError.md).[`toJSON`](../../../blue-core/src/classes/FrameworkError.md#tojson)
+`FrameworkError.toJSON`

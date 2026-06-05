@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../../../README.md)
 
 ***
 
@@ -8,10 +8,6 @@
 
 > `const` **currencyFormats**: [`CurrencyFormats`](../type-aliases/CurrencyFormats.md)
 
-Defined in: packages/blue-validate/src/formats.ts:278
+Defined in: packages/blue-validate/src/formats.ts:259
 
-An object for matching currency, specifically USD.
-
-## Constant
-
-module:validate.formats.currencyFormats
+An object containing predefined currency formats, keyed by currency code (e.g., 'USD').

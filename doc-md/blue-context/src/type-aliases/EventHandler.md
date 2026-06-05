@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -8,4 +8,6 @@
 
 > **EventHandler** = [`EventListener`](EventListener.md) \| [`EventListener`](EventListener.md)[]
 
-Defined in: packages/blue-context/src/event-emitter.ts:13
+Defined in: packages/blue-context/src/event-emitter.ts:19
+
+A single listener or a listener list for an event type.

@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,9 @@
 
 # Interface: MatchableHandlerMapping
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:34
+Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:54
+
+A handler mapping that can also report whether a route matches a pattern.
 
 ## Extends
 
@@ -18,17 +20,23 @@ Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:34
 
 > **getHandler**(`route`): `RouteHandlerExecutionChain`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:31
+Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:48
+
+Resolve the handler for a route.
 
 #### Parameters
 
 ##### route
 
-[`Route`](../../../blue-router/src/interfaces/Route.md)
+`Route`
+
+The current route.
 
 #### Returns
 
 `RouteHandlerExecutionChain`
+
+The execution chain for the chosen handler, or `null`.
 
 #### Inherited from
 
@@ -40,18 +48,26 @@ Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:31
 
 > **match**(`route`, `pattern`): [`RouteMatchResult`](../classes/RouteMatchResult.md)
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:35
+Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:62
+
+Check whether the route matches a pattern.
 
 #### Parameters
 
 ##### route
 
-[`Route`](../../../blue-router/src/interfaces/Route.md)
+`Route`
+
+The current route.
 
 ##### pattern
 
 `string`
 
+The pattern to test.
+
 #### Returns
 
 [`RouteMatchResult`](../classes/RouteMatchResult.md)
+
+A match result, or `null`.

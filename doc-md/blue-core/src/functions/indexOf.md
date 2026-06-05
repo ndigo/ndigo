@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -8,7 +8,9 @@
 
 > **indexOf**\<`T`\>(`children`, `child`): `number`
 
-Defined in: packages/blue-core/src/tree-node.ts:71
+Defined in: packages/blue-core/src/tree-node.ts:90
+
+Finds the index of a child within a list of tree nodes.
 
 ## Type Parameters
 
@@ -22,10 +24,16 @@ Defined in: packages/blue-core/src/tree-node.ts:71
 
 [`TreeNode`](../interfaces/TreeNode.md)\<`T`\>[]
 
+Candidate children to search.
+
 ### child
 
 [`TreeNode`](../interfaces/TreeNode.md)\<`T`\>
 
+Child node to locate.
+
 ## Returns
 
 `number`
+
+The index of the child, or `-1` when it is not present.

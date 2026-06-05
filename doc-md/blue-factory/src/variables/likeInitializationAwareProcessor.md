@@ -1,14 +1,16 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
 [BlueJS Framework](../../../modules.md) / [blue-factory/src](../README.md) / likeInitializationAwareProcessor
 
-# Variable: likeInitializationAwareProcessor()
+# Variable: likeInitializationAwareProcessor
 
 > `const` **likeInitializationAwareProcessor**: (`value`) => `value is InitializationAwareProcessor`
 
-Defined in: packages/blue-factory/src/entry-processor.ts:133
+Defined in: packages/blue-factory/src/entry-processor.ts:120
+
+Determines whether or not the `value` provided is an [InitializationAwareProcessor](../interfaces/InitializationAwareProcessor.md).
 
 ## Parameters
 
@@ -16,7 +18,7 @@ Defined in: packages/blue-factory/src/entry-processor.ts:133
 
 `any`
 
-The value to be tested
+The value to be tested.
 
 ## Returns
 

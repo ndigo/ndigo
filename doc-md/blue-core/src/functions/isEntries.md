@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -8,7 +8,9 @@
 
 > **isEntries**(`value`): value is MapEntry\<any\> \| \[unknown, unknown\] \| ArrayEntry\<any\> \| ObjectEntry\<any\>
 
-Defined in: packages/blue-core/src/iterable.ts:69
+Defined in: packages/blue-core/src/iterable.ts:118
+
+Type guard to check if a value is an array of entries.
 
 ## Parameters
 
@@ -16,10 +18,10 @@ Defined in: packages/blue-core/src/iterable.ts:69
 
 `any`
 
-The value to be tested
+The value to be tested.
 
 ## Returns
 
 value is MapEntry\<any\> \| \[unknown, unknown\] \| ArrayEntry\<any\> \| ObjectEntry\<any\>
 
-Whether or not the value is a list of entries
+`true` if the value is an array of entries, `false` otherwise.

@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,11 +6,13 @@
 
 # Interface: ContentSource
 
-Defined in: packages/blue-content/src/content.ts:9
+Defined in: packages/blue-content/src/content.ts:12
+
+Resolves localized content for a given key and language.
 
 ## Extended by
 
-- [`ApplicationContext`](../../../blue-context/src/interfaces/ApplicationContext.md)
+- [`AsyncContentSource`](AsyncContentSource.md)
 
 ## Methods
 
@@ -18,7 +20,9 @@ Defined in: packages/blue-content/src/content.ts:9
 
 > **getContent**(`key`, `language`): `string`
 
-Defined in: packages/blue-content/src/content.ts:10
+Defined in: packages/blue-content/src/content.ts:20
+
+Gets translated content for the requested key and language.
 
 #### Parameters
 
@@ -26,10 +30,16 @@ Defined in: packages/blue-content/src/content.ts:10
 
 `string`
 
+The content key to resolve.
+
 ##### language
 
 `string`
 
+The requested language code.
+
 #### Returns
 
 `string`
+
+The resolved content string.

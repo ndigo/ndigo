@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,11 @@
 
 # Class: ControllerHandlerAdapter
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:92
+Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:101
+
+## Implements
+
+module:dispatcher.HandlerAdapter
 
 ## Implements
 
@@ -30,7 +34,7 @@ Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:92
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:93
+Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:102
 
 ##### Returns
 
@@ -42,21 +46,29 @@ Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:93
 
 > **handle**(`route`, `handler`): `Promise`\<[`ModelAndView`](ModelAndView.md)\>
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:97
+Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:113
+
+Invoke a controller's [Controller.handleRoute](../interfaces/Controller.md#handleroute) method for the current route.
 
 #### Parameters
 
 ##### route
 
-[`Route`](../../../blue-router/src/interfaces/Route.md)
+`Route`
+
+The current route.
 
 ##### handler
 
 `any`
 
+The controller instance.
+
 #### Returns
 
 `Promise`\<[`ModelAndView`](ModelAndView.md)\>
+
+The model and view returned by the controller.
 
 #### Implementation of
 
@@ -68,7 +80,9 @@ Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:97
 
 > **supports**(`handler`): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:101
+Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:123
+
+Controllers are supported when they expose a `handleRoute` method.
 
 #### Parameters
 
@@ -76,9 +90,13 @@ Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:101
 
 `any`
 
+The handler instance to test.
+
 #### Returns
 
 `boolean`
+
+`true` when the handler is controller-like.
 
 #### Implementation of
 

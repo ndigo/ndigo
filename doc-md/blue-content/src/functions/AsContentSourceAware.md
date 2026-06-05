@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,15 +6,17 @@
 
 # Function: AsContentSourceAware()
 
-> **AsContentSourceAware**\<`T`\>(`superclass`): [`Constructable`](../../../blue-core/src/type-aliases/Constructable.md)\<[`ContentSourceAware`](../interfaces/ContentSourceAware.md)\> & `T`
+> **AsContentSourceAware**\<`T`\>(`superclass`): `Constructable`\<[`ContentSourceAware`](../interfaces/ContentSourceAware.md)\> & `T`
 
-Defined in: packages/blue-content/src/content.ts:36
+Defined in: packages/blue-content/src/content.ts:98
+
+Mixes content-source awareness into a base class.
 
 ## Type Parameters
 
 ### T
 
-`T` *extends* [`Constructable`](../../../blue-core/src/type-aliases/Constructable.md)
+`T` *extends* `Constructable`
 
 ## Parameters
 
@@ -22,7 +24,10 @@ Defined in: packages/blue-content/src/content.ts:36
 
 `T`
 
+Base class to extend.
+
 ## Returns
 
-[`Constructable`](../../../blue-core/src/type-aliases/Constructable.md)\<[`ContentSourceAware`](../interfaces/ContentSourceAware.md)\> & `T`
+`Constructable`\<[`ContentSourceAware`](../interfaces/ContentSourceAware.md)\> & `T`
 
+A subclass that can receive a content source.

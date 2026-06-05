@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,11 +6,14 @@
 
 # Class: NoHandlerFoundError
 
-Defined in: packages/blue-dispatcher/src/error.ts:14
+Defined in: packages/blue-dispatcher/src/error.ts:16
+
+Error thrown when no suitable handler is found for a given route.
+This typically indicates a misconfiguration or an unhandled route.
 
 ## Extends
 
-- [`FrameworkError`](../../../blue-core/src/classes/FrameworkError.md)
+- `FrameworkError`
 
 ## Constructors
 
@@ -18,13 +21,13 @@ Defined in: packages/blue-dispatcher/src/error.ts:14
 
 > **new NoHandlerFoundError**(`route`): `NoHandlerFoundError`
 
-Defined in: packages/blue-dispatcher/src/error.ts:21
+Defined in: packages/blue-dispatcher/src/error.ts:23
 
 #### Parameters
 
 ##### route
 
-[`Route`](../../../blue-router/src/interfaces/Route.md)
+`Route`
 
 #### Returns
 
@@ -32,15 +35,15 @@ Defined in: packages/blue-dispatcher/src/error.ts:21
 
 #### Overrides
 
-[`FrameworkError`](../../../blue-core/src/classes/FrameworkError.md).[`constructor`](../../../blue-core/src/classes/FrameworkError.md#constructor)
+`FrameworkError.constructor`
 
 ## Properties
 
 ### route
 
-> **route**: [`Route`](../../../blue-router/src/interfaces/Route.md)
+> **route**: `Route`
 
-Defined in: packages/blue-dispatcher/src/error.ts:15
+Defined in: packages/blue-dispatcher/src/error.ts:17
 
 ## Accessors
 
@@ -50,7 +53,7 @@ Defined in: packages/blue-dispatcher/src/error.ts:15
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-dispatcher/src/error.ts:17
+Defined in: packages/blue-dispatcher/src/error.ts:19
 
 ##### Returns
 
@@ -58,7 +61,7 @@ Defined in: packages/blue-dispatcher/src/error.ts:17
 
 #### Overrides
 
-[`FrameworkError`](../../../blue-core/src/classes/FrameworkError.md).[`[toStringTag]`](../../../blue-core/src/classes/FrameworkError.md#tostringtag)
+`FrameworkError.[toStringTag]`
 
 ## Methods
 
@@ -66,7 +69,7 @@ Defined in: packages/blue-dispatcher/src/error.ts:17
 
 > **toString**(): `string`
 
-Defined in: packages/blue-core/src/serializable.ts:29
+Defined in: packages/blue-core/lib/serializable.d.ts:22
 
 #### Returns
 
@@ -74,20 +77,20 @@ Defined in: packages/blue-core/src/serializable.ts:29
 
 #### Inherited from
 
-[`FrameworkError`](../../../blue-core/src/classes/FrameworkError.md).[`toString`](../../../blue-core/src/classes/FrameworkError.md#tostring)
+`FrameworkError.toString`
 
 ***
 
 ### toJSON()?
 
-> `optional` **toJSON**(): [`JSONValue`](../../../blue-core/src/type-aliases/JSONValue.md)
+> `optional` **toJSON**(): `JSONValue`
 
-Defined in: packages/blue-core/src/serializable.ts:30
+Defined in: packages/blue-core/lib/serializable.d.ts:23
 
 #### Returns
 
-[`JSONValue`](../../../blue-core/src/type-aliases/JSONValue.md)
+`JSONValue`
 
 #### Inherited from
 
-[`FrameworkError`](../../../blue-core/src/classes/FrameworkError.md).[`toJSON`](../../../blue-core/src/classes/FrameworkError.md#tojson)
+`FrameworkError.toJSON`

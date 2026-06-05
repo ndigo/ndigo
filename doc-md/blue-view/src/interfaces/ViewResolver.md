@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,10 +6,9 @@
 
 # Interface: ViewResolver
 
-Defined in: packages/blue-view/src/view-resolver.ts:15
+Defined in: packages/blue-view/src/view-resolver.ts:18
 
-Should ViewResolver be typed, i.e. ViewResolver<T extends View>?
--JBR
+Resolves a view name to a concrete [View](View.md) instance.
 
 ## Methods
 
@@ -17,7 +16,9 @@ Should ViewResolver be typed, i.e. ViewResolver<T extends View>?
 
 > **resolveViewName**(`name`, `language?`): `Promise`\<[`View`](View.md)\>
 
-Defined in: packages/blue-view/src/view-resolver.ts:16
+Defined in: packages/blue-view/src/view-resolver.ts:26
+
+Resolves the requested view name.
 
 #### Parameters
 
@@ -25,10 +26,16 @@ Defined in: packages/blue-view/src/view-resolver.ts:16
 
 `string`
 
+The view name to resolve.
+
 ##### language?
 
 `any`
 
+Optional locale or language hint used during resolution.
+
 #### Returns
 
 `Promise`\<[`View`](View.md)\>
+
+A promise that resolves to the matching view, or `null` when none is available.

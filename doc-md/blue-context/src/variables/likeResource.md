@@ -1,14 +1,16 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
 [BlueJS Framework](../../../modules.md) / [blue-context/src](../README.md) / likeResource
 
-# Variable: likeResource()
+# Variable: likeResource
 
 > `const` **likeResource**: (`value`) => `value is Resource<any>`
 
-Defined in: packages/blue-context/src/resource.ts:75
+Defined in: packages/blue-context/src/resource.ts:87
+
+Returns whether a value behaves like a resource.
 
 ## Parameters
 
@@ -16,10 +18,10 @@ Defined in: packages/blue-context/src/resource.ts:75
 
 `any`
 
-The value to be tested
+The value to test.
 
 ## Returns
 
 `value is Resource<any>`
 
-Whether or not the `value` is [Resource](../interfaces/Resource.md)
+`true` when the value looks like a resource.

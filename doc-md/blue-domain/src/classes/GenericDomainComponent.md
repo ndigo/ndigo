@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,11 +6,13 @@
 
 # Class: GenericDomainComponent
 
-Defined in: packages/blue-domain/src/component.ts:49
+Defined in: packages/blue-domain/src/component.ts:69
+
+Represents a serializable, event-driven domain component with lifecycle hooks.
 
 ## Extends
 
-- [`EventEmitter`](../../../blue-context/src/interfaces/EventEmitter.md)\<`this`\> & [`Null`](../../../blue-core/src/classes/Null.md)\<`this`\>
+- `Emitter`
 
 ## Implements
 
@@ -22,7 +24,9 @@ Defined in: packages/blue-domain/src/component.ts:49
 
 > **new GenericDomainComponent**(): `GenericDomainComponent`
 
-Defined in: packages/blue-domain/src/component.ts:68
+Defined in: packages/blue-domain/src/component.ts:96
+
+Creates a new component instance with a unique identifier.
 
 #### Returns
 
@@ -30,15 +34,55 @@ Defined in: packages/blue-domain/src/component.ts:68
 
 #### Overrides
 
-`AsEventEmitter(Null).constructor`
+`Emitter.constructor`
 
 ## Properties
+
+### every
+
+> `readonly` `static` **every**: `string`
+
+Defined in: packages/blue-context/lib/event-emitter.d.ts:183
+
+#### Inherited from
+
+`Emitter.every`
+
+***
+
+### version
+
+> `readonly` `static` **version**: `string`
+
+Defined in: packages/blue-context/lib/event-emitter.d.ts:184
+
+#### Inherited from
+
+`Emitter.version`
+
+***
+
+### destroyed
+
+> **destroyed**: `boolean`
+
+Defined in: packages/blue-context/lib/event-emitter.d.ts:185
+
+#### Implementation of
+
+[`DomainComponent`](../interfaces/DomainComponent.md).[`destroyed`](../interfaces/DomainComponent.md#destroyed)
+
+#### Inherited from
+
+`Emitter.destroyed`
+
+***
 
 ### id
 
 > **id**: `number`
 
-Defined in: packages/blue-domain/src/component.ts:50
+Defined in: packages/blue-domain/src/component.ts:70
 
 #### Implementation of
 
@@ -50,7 +94,7 @@ Defined in: packages/blue-domain/src/component.ts:50
 
 > **name**: `string`
 
-Defined in: packages/blue-domain/src/component.ts:51
+Defined in: packages/blue-domain/src/component.ts:71
 
 #### Implementation of
 
@@ -60,9 +104,9 @@ Defined in: packages/blue-domain/src/component.ts:51
 
 ### model
 
-> **model**: [`JSONObject`](../../../blue-core/src/interfaces/JSONObject.md)
+> **model**: `JSONObject`
 
-Defined in: packages/blue-domain/src/component.ts:52
+Defined in: packages/blue-domain/src/component.ts:72
 
 #### Implementation of
 
@@ -74,7 +118,7 @@ Defined in: packages/blue-domain/src/component.ts:52
 
 > **actions**: [`DomainActions`](../type-aliases/DomainActions.md)
 
-Defined in: packages/blue-domain/src/component.ts:53
+Defined in: packages/blue-domain/src/component.ts:73
 
 #### Implementation of
 
@@ -86,7 +130,7 @@ Defined in: packages/blue-domain/src/component.ts:53
 
 > **settings**: [`DomainSettings`](../type-aliases/DomainSettings.md)
 
-Defined in: packages/blue-domain/src/component.ts:54
+Defined in: packages/blue-domain/src/component.ts:74
 
 #### Implementation of
 
@@ -98,7 +142,7 @@ Defined in: packages/blue-domain/src/component.ts:54
 
 > **states**: [`DomainStates`](../type-aliases/DomainStates.md)
 
-Defined in: packages/blue-domain/src/component.ts:55
+Defined in: packages/blue-domain/src/component.ts:75
 
 #### Implementation of
 
@@ -106,15 +150,29 @@ Defined in: packages/blue-domain/src/component.ts:55
 
 ***
 
-### destroyed
+### validate
 
-> **destroyed**: `boolean`
+> **validate**: (`options?`) => `ClassValidationResult`
 
-Defined in: packages/blue-domain/src/component.ts:56
+Defined in: packages/blue-domain/src/component.ts:76
+
+Validates a component property before it is used or persisted.
+
+#### Parameters
+
+##### options?
+
+`ClassValidationOptions`
+
+Validation options.
+
+#### Returns
+
+`ClassValidationResult`
 
 #### Implementation of
 
-[`DomainComponent`](../interfaces/DomainComponent.md).[`destroyed`](../interfaces/DomainComponent.md#destroyed)
+[`DomainComponent`](../interfaces/DomainComponent.md).[`validate`](../interfaces/DomainComponent.md#validate)
 
 ## Accessors
 
@@ -124,7 +182,7 @@ Defined in: packages/blue-domain/src/component.ts:56
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-domain/src/component.ts:58
+Defined in: packages/blue-domain/src/component.ts:78
 
 ##### Returns
 
@@ -138,13 +196,17 @@ Defined in: packages/blue-domain/src/component.ts:58
 
 > **set** **data**(`newData`): `void`
 
-Defined in: packages/blue-domain/src/component.ts:62
+Defined in: packages/blue-domain/src/component.ts:87
+
+Assigns initial data by mirroring model values onto the component instance.
 
 ##### Parameters
 
 ###### newData
 
 [`DomainData`](../type-aliases/DomainData.md)
+
+Initial domain data to attach.
 
 ##### Returns
 
@@ -160,21 +222,29 @@ Defined in: packages/blue-domain/src/component.ts:62
 
 > **emit**(`type`, ...`data`): `boolean`
 
-Defined in: packages/blue-context/src/event-emitter.ts:20
+Defined in: packages/blue-context/lib/event-emitter.d.ts:40
+
+Emits an event to the listeners registered for the given type.
 
 #### Parameters
 
 ##### type
 
-[`EventType`](../../../blue-context/src/type-aliases/EventType.md)
+`EventType`
+
+The event type.
 
 ##### data
 
 ...`any`[]
 
+Event payload values.
+
 #### Returns
 
 `boolean`
+
+`true` when at least one listener ran.
 
 #### Implementation of
 
@@ -182,19 +252,23 @@ Defined in: packages/blue-context/src/event-emitter.ts:20
 
 #### Inherited from
 
-`AsEventEmitter(Null).emit`
+`Emitter.emit`
 
 ***
 
 ### eventTypes()
 
-> **eventTypes**(): [`EventType`](../../../blue-context/src/type-aliases/EventType.md)[]
+> **eventTypes**(): `EventType`[]
 
-Defined in: packages/blue-context/src/event-emitter.ts:21
+Defined in: packages/blue-context/lib/event-emitter.d.ts:46
+
+Returns the event types with registered listeners.
 
 #### Returns
 
-[`EventType`](../../../blue-context/src/type-aliases/EventType.md)[]
+`EventType`[]
+
+The registered event types.
 
 #### Implementation of
 
@@ -202,7 +276,7 @@ Defined in: packages/blue-context/src/event-emitter.ts:21
 
 #### Inherited from
 
-`AsEventEmitter(Null).eventTypes`
+`Emitter.eventTypes`
 
 ***
 
@@ -210,17 +284,23 @@ Defined in: packages/blue-context/src/event-emitter.ts:21
 
 > **listenerCount**(`type`): `number`
 
-Defined in: packages/blue-context/src/event-emitter.ts:22
+Defined in: packages/blue-context/lib/event-emitter.d.ts:53
+
+Returns the number of listeners for a type.
 
 #### Parameters
 
 ##### type
 
-[`EventType`](../../../blue-context/src/type-aliases/EventType.md)
+`EventType`
+
+The event type.
 
 #### Returns
 
 `number`
+
+The listener count.
 
 #### Implementation of
 
@@ -228,7 +308,7 @@ Defined in: packages/blue-context/src/event-emitter.ts:22
 
 #### Inherited from
 
-`AsEventEmitter(Null).listenerCount`
+`Emitter.listenerCount`
 
 ***
 
@@ -236,17 +316,23 @@ Defined in: packages/blue-context/src/event-emitter.ts:22
 
 > **listeners**(`type`): `Function`[]
 
-Defined in: packages/blue-context/src/event-emitter.ts:23
+Defined in: packages/blue-context/lib/event-emitter.d.ts:60
+
+Returns a snapshot of listeners for a type.
 
 #### Parameters
 
 ##### type
 
-[`EventType`](../../../blue-context/src/type-aliases/EventType.md)
+`EventType`
+
+The event type.
 
 #### Returns
 
 `Function`[]
+
+The registered listeners.
 
 #### Implementation of
 
@@ -254,7 +340,7 @@ Defined in: packages/blue-context/src/event-emitter.ts:23
 
 #### Inherited from
 
-`AsEventEmitter(Null).listeners`
+`Emitter.listeners`
 
 ***
 
@@ -262,21 +348,29 @@ Defined in: packages/blue-context/src/event-emitter.ts:23
 
 > **on**(`type`, `listener`): `this`
 
-Defined in: packages/blue-context/src/event-emitter.ts:24
+Defined in: packages/blue-context/lib/event-emitter.d.ts:68
+
+Adds a listener for an event type.
 
 #### Parameters
 
 ##### type
 
-[`EventType`](../../../blue-context/src/type-aliases/EventType.md)
+`EventType`
+
+The event type.
 
 ##### listener
 
 `Function`
 
+The listener to register.
+
 #### Returns
 
 `this`
+
+This emitter.
 
 #### Implementation of
 
@@ -284,7 +378,7 @@ Defined in: packages/blue-context/src/event-emitter.ts:24
 
 #### Inherited from
 
-`AsEventEmitter(Null).on`
+`Emitter.on`
 
 ***
 
@@ -292,21 +386,29 @@ Defined in: packages/blue-context/src/event-emitter.ts:24
 
 > **off**(`type`, `listener`): `this`
 
-Defined in: packages/blue-context/src/event-emitter.ts:25
+Defined in: packages/blue-context/lib/event-emitter.d.ts:76
+
+Removes a listener for an event type.
 
 #### Parameters
 
 ##### type
 
-[`EventType`](../../../blue-context/src/type-aliases/EventType.md)
+`EventType`
+
+The event type.
 
 ##### listener
 
 `Function`
 
+The listener to remove.
+
 #### Returns
 
 `this`
+
+This emitter.
 
 #### Implementation of
 
@@ -314,7 +416,35 @@ Defined in: packages/blue-context/src/event-emitter.ts:25
 
 #### Inherited from
 
-`AsEventEmitter(Null).off`
+`Emitter.off`
+
+***
+
+### clear()
+
+> **clear**(`type?`): `this`
+
+Defined in: packages/blue-context/lib/event-emitter.d.ts:198
+
+Removes listeners for one type or for all types.
+
+#### Parameters
+
+##### type?
+
+`EventType`
+
+Optional event type to clear.
+
+#### Returns
+
+`this`
+
+This emitter.
+
+#### Inherited from
+
+`Emitter.clear`
 
 ***
 
@@ -322,13 +452,17 @@ Defined in: packages/blue-context/src/event-emitter.ts:25
 
 > **init**(`name`): `void`
 
-Defined in: packages/blue-domain/src/component.ts:78
+Defined in: packages/blue-domain/src/component.ts:111
+
+Sets the component name after construction.
 
 #### Parameters
 
 ##### name
 
 `string`
+
+Human-readable component name.
 
 #### Returns
 
@@ -340,57 +474,51 @@ Defined in: packages/blue-domain/src/component.ts:78
 
 ***
 
-### validate()
-
-> **validate**(`property`): `void`
-
-Defined in: packages/blue-domain/src/component.ts:86
-
-#### Parameters
-
-##### property
-
-`string`
-
-#### Returns
-
-`void`
-
-#### Implementation of
-
-[`DomainComponent`](../interfaces/DomainComponent.md).[`validate`](../interfaces/DomainComponent.md#validate)
-
-***
-
 ### destroy()
 
 > **destroy**(): `Promise`\<`void`\>
 
-Defined in: packages/blue-domain/src/component.ts:90
+Defined in: packages/blue-domain/src/component.ts:124
+
+Destroys the component and releases any associated resources.
 
 #### Returns
 
 `Promise`\<`void`\>
 
+A promise that resolves when destruction is complete.
+
 #### Implementation of
 
 [`DomainComponent`](../interfaces/DomainComponent.md).[`destroy`](../interfaces/DomainComponent.md#destroy)
+
+#### Overrides
+
+`Emitter.destroy`
 
 ***
 
 ### toJSON()
 
-> **toJSON**(): [`JSONObject`](../../../blue-core/src/interfaces/JSONObject.md)
+> **toJSON**(): `JSONObject`
 
-Defined in: packages/blue-domain/src/component.ts:94
+Defined in: packages/blue-domain/src/component.ts:136
+
+Serializes the component to a JSON-compatible object.
 
 #### Returns
 
-[`JSONObject`](../../../blue-core/src/interfaces/JSONObject.md)
+`JSONObject`
+
+A JSON object containing the component identity.
 
 #### Implementation of
 
 [`DomainComponent`](../interfaces/DomainComponent.md).[`toJSON`](../interfaces/DomainComponent.md#tojson)
+
+#### Overrides
+
+`Emitter.toJSON`
 
 ***
 
@@ -398,14 +526,20 @@ Defined in: packages/blue-domain/src/component.ts:94
 
 > **toString**(): `string`
 
-Defined in: packages/blue-domain/src/component.ts:103
+Defined in: packages/blue-domain/src/component.ts:150
 
-Returns a string representation of an object.
+Returns the component name for string coercion.
 
 #### Returns
 
 `string`
 
+The component name.
+
 #### Implementation of
 
 [`DomainComponent`](../interfaces/DomainComponent.md).[`toString`](../interfaces/DomainComponent.md#tostring)
+
+#### Overrides
+
+`Emitter.toString`

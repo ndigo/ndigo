@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,16 +6,14 @@
 
 # Interface: Aware
 
-Defined in: packages/blue-factory/src/aware.ts:15
+Defined in: packages/blue-factory/src/aware.ts:23
+
+An interface indicating that a value is eligible to be notified by the factory of a particular framework object through a callback-style method. The actual method signature is determined by individual subinterfaces but should typically consist of just one void-returning method that accepts a single argument, e.g. `setName( name )`.
+
+Note that merely implementing `Aware` provides no default functionality. Rather, processing must be done explicitly, for example in an EntryProcessor\|EntryProcessor. Refer to ApplicationContextAwareProcessor\|ApplicationContextAwareProcessor for an example of processing specific `*Aware` interface callbacks
 
 ## Extended by
 
-- [`ApplicationContextAware`](../../../blue-context/src/interfaces/ApplicationContextAware.md)
-- [`EnvironmentAware`](../../../blue-context/src/interfaces/EnvironmentAware.md)
-- [`ApplicationEventEmitterAware`](../../../blue-context/src/interfaces/ApplicationEventEmitterAware.md)
-- [`ResourceLoaderAware`](../../../blue-context/src/interfaces/ResourceLoaderAware.md)
-- [`HTTPAware`](../../../blue-http/src/interfaces/HTTPAware.md)
-- [`ContentSourceAware`](../../../blue-content/src/interfaces/ContentSourceAware.md)
 - [`NameAware`](NameAware.md)
 - [`FactoryAware`](FactoryAware.md)
 
@@ -25,4 +23,6 @@ Defined in: packages/blue-factory/src/aware.ts:15
 
 > `readonly` **\[$aware\]**: `boolean`
 
-Defined in: packages/blue-factory/src/aware.ts:16
+Defined in: packages/blue-factory/src/aware.ts:27
+
+A symbol indicating that the value is aware.

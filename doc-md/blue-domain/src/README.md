@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../README.md)
+[**BlueJS Framework v0.0.1**](../../README.md)
 
 ***
 
@@ -15,6 +15,7 @@
 ## Interfaces
 
 - [DomainComponent](interfaces/DomainComponent.md)
+- [DomainMetadata](interfaces/DomainMetadata.md)
 
 ## Type Aliases
 
@@ -22,3 +23,10 @@
 - [DomainData](type-aliases/DomainData.md)
 - [DomainSettings](type-aliases/DomainSettings.md)
 - [DomainStates](type-aliases/DomainStates.md)
+
+## Functions
+
+- [domainComponent](functions/domainComponent.md)
+- [domainAction](functions/domainAction.md)
+- [domainData](functions/domainData.md)
+- [getDomainMetadata](functions/getDomainMetadata.md)

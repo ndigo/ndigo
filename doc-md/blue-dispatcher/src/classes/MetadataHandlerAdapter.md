@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,9 +6,13 @@
 
 # Class: MetadataHandlerAdapter
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:111
+Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:133
 
 Implementation of [AbstractHandlerMethodAdapter](AbstractHandlerMethodAdapter.md) that supports HandlerMethod\|HandlerMethods decorated with `route:mapping` metadata. This is usually applied using RouteMapping\|@RouteMapping.
+
+## Implements
+
+module:core.Initializable
 
 ## Extends
 
@@ -16,7 +20,7 @@ Implementation of [AbstractHandlerMethodAdapter](AbstractHandlerMethodAdapter.md
 
 ## Implements
 
-- [`Initializable`](../../../blue-factory/src/interfaces/Initializable.md)
+- `Initializable`
 
 ## Constructors
 
@@ -36,9 +40,11 @@ Implementation of [AbstractHandlerMethodAdapter](AbstractHandlerMethodAdapter.md
 
 ### applicationContext
 
-> **applicationContext**: [`ApplicationContext`](../../../blue-context/src/interfaces/ApplicationContext.md)
+> **applicationContext**: `ApplicationContext`
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:64
+Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:66
+
+Application context used to discover handlers and argument resolvers.
 
 #### Inherited from
 
@@ -50,7 +56,9 @@ Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:64
 
 > **argumentResolvers**: [`HandlerMethodArgumentResolver`](../interfaces/HandlerMethodArgumentResolver.md)[]
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:112
+Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:137
+
+Argument resolvers used to convert route values into handler method arguments.
 
 ***
 
@@ -58,7 +66,9 @@ Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:112
 
 > **handlers**: `any`[]
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:113
+Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:142
+
+Cached handler descriptors discovered from application context metadata.
 
 ## Accessors
 
@@ -68,7 +78,7 @@ Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:113
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:115
+Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:144
 
 ##### Returns
 
@@ -86,11 +96,15 @@ Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:115
 
 > **get** **defaultArgumentResolvers**(): [`HandlerMethodArgumentResolver`](../interfaces/HandlerMethodArgumentResolver.md)[]
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:119
+Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:153
+
+Built-in argument resolvers used when no custom resolver collection is present.
 
 ##### Returns
 
 [`HandlerMethodArgumentResolver`](../interfaces/HandlerMethodArgumentResolver.md)[]
+
+The default resolver chain.
 
 ***
 
@@ -100,11 +114,15 @@ Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:119
 
 > **get** **\[$aware\]**(): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:123
+Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:162
+
+A symbol indicating that the value is aware.
 
 ##### Returns
 
 `boolean`
+
+A symbol indicating that the value is aware.
 
 #### Overrides
 
@@ -116,13 +134,19 @@ Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:123
 
 > **setApplicationContext**(`applicationContext`): `void`
 
-Defined in: packages/blue-context/src/context.ts:57
+Defined in: packages/blue-context/lib/context.d.ts:145
+
+Set the ApplicationContext that this object runs in. Normally this call will be used to initialize the object.
+
+Invoked after population of normal value properties but before an `init` callback.
 
 #### Parameters
 
 ##### applicationContext
 
-[`ApplicationContext`](../../../blue-context/src/interfaces/ApplicationContext.md)
+`ApplicationContext`
+
+The ApplicationContext to be used by this object.
 
 #### Returns
 
@@ -138,7 +162,9 @@ Defined in: packages/blue-context/src/context.ts:57
 
 > **supports**(`handler`): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:70
+Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:72
+
+Determine whether this adapter can handle the given handler instance.
 
 #### Parameters
 
@@ -146,9 +172,13 @@ Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:70
 
 `any`
 
+The handler instance to test.
+
 #### Returns
 
 `boolean`
+
+`true` when the handler is supported; otherwise `false`.
 
 #### Inherited from
 
@@ -160,21 +190,29 @@ Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:70
 
 > **handle**(`route`, `handler`): `Promise`\<[`ModelAndView`](ModelAndView.md)\>
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:127
+Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:173
+
+Execute a metadata-mapped handler method.
 
 #### Parameters
 
 ##### route
 
-[`Route`](../../../blue-router/src/interfaces/Route.md)
+`Route`
+
+The current route.
 
 ##### handler
 
 `RouteHandlerMethod`
 
+The resolved route handler method.
+
 #### Returns
 
 `Promise`\<[`ModelAndView`](ModelAndView.md)\>
+
+The model and view produced by the handler.
 
 #### Overrides
 
@@ -186,7 +224,9 @@ Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:127
 
 > **init**(...`args`): `void`
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:135
+Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:184
+
+Discover handler methods and argument resolvers from the application context.
 
 #### Parameters
 
@@ -194,13 +234,15 @@ Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:135
 
 ...`any`[]
 
+Reserved for framework initialization hooks.
+
 #### Returns
 
 `void`
 
 #### Implementation of
 
-[`Initializable`](../../../blue-factory/src/interfaces/Initializable.md).[`init`](../../../blue-factory/src/interfaces/Initializable.md#init)
+`Initializable.init`
 
 ***
 
@@ -208,7 +250,9 @@ Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:135
 
 > **\_supports**(`handler`): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:178
+Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:233
+
+Metadata adapters only support RouteHandlerMethod instances.
 
 #### Parameters
 
@@ -216,9 +260,13 @@ Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:178
 
 `RouteHandlerMethod`
 
+The handler instance to test.
+
 #### Returns
 
 `boolean`
+
+`true` when the handler is a route handler method.
 
 #### Overrides
 

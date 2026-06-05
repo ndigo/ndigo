@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,15 +6,13 @@
 
 # Interface: ConfigurableFactory
 
-Defined in: packages/blue-factory/src/factory.ts:41
+Defined in: packages/blue-factory/src/factory.ts:76
+
+Extends [HierarchicalFactory](HierarchicalFactory.md) and [Registry](Registry.md) to provide configurable factory capabilities.
 
 ## Extends
 
 - [`HierarchicalFactory`](HierarchicalFactory.md).[`Registry`](Registry.md)
-
-## Extended by
-
-- [`ApplicationContext`](../../../blue-context/src/interfaces/ApplicationContext.md)
 
 ## Properties
 
@@ -22,7 +20,9 @@ Defined in: packages/blue-factory/src/factory.ts:41
 
 > `readonly` **parent**: [`Factory`](Factory.md)
 
-Defined in: packages/blue-factory/src/factory.ts:37
+Defined in: packages/blue-factory/src/factory.ts:64
+
+The parent factory in the hierarchy.
 
 #### Inherited from
 
@@ -34,7 +34,9 @@ Defined in: packages/blue-factory/src/factory.ts:37
 
 > **getInstance**\<`T`\>(`name`): `T`
 
-Defined in: packages/blue-factory/src/factory.ts:33
+Defined in: packages/blue-factory/src/factory.ts:54
+
+Return an instance of the specified value.
 
 #### Type Parameters
 
@@ -48,9 +50,13 @@ Defined in: packages/blue-factory/src/factory.ts:33
 
 `string`
 
+The name of the value.
+
 #### Returns
 
 `T`
+
+An instance of the value specified by the `name`.
 
 #### Inherited from
 
@@ -62,7 +68,9 @@ Defined in: packages/blue-factory/src/factory.ts:33
 
 > **hasOwnValue**(`name`): `boolean`
 
-Defined in: packages/blue-factory/src/factory.ts:38
+Defined in: packages/blue-factory/src/factory.ts:70
+
+Determines whether this factory contains a value with the given name.
 
 #### Parameters
 
@@ -70,9 +78,13 @@ Defined in: packages/blue-factory/src/factory.ts:38
 
 `string`
 
+The name of the value.
+
 #### Returns
 
 `boolean`
+
+`true` if this factory contains the value, `false` otherwise.
 
 #### Inherited from
 
@@ -84,13 +96,17 @@ Defined in: packages/blue-factory/src/factory.ts:38
 
 > **addProcessor**(`processor`): `void`
 
-Defined in: packages/blue-factory/src/factory.ts:42
+Defined in: packages/blue-factory/src/factory.ts:81
+
+Adds an entry processor to the factory.
 
 #### Parameters
 
 ##### processor
 
 [`EntryProcessor`](../type-aliases/EntryProcessor.md)
+
+The entry processor to add.
 
 #### Returns
 
@@ -102,13 +118,17 @@ Defined in: packages/blue-factory/src/factory.ts:42
 
 > **setParent**(`parent`): `void`
 
-Defined in: packages/blue-factory/src/factory.ts:43
+Defined in: packages/blue-factory/src/factory.ts:86
+
+Sets the parent factory.
 
 #### Parameters
 
 ##### parent
 
 [`Factory`](Factory.md)
+
+The parent factory.
 
 #### Returns
 
@@ -118,21 +138,49 @@ Defined in: packages/blue-factory/src/factory.ts:43
 
 ### destroyValue()
 
-> **destroyValue**(`name`): `void`
+#### Call Signature
 
-Defined in: packages/blue-factory/src/registry.ts:8
+> **destroyValue**\<`T`\>(`token`): `void`
 
-#### Parameters
+Defined in: packages/blue-factory/src/registry.ts:9
 
-##### name
+##### Type Parameters
 
-`string`
+###### T
 
-#### Returns
+`T` = `any`
+
+##### Parameters
+
+###### token
+
+[`ContextToken`](../classes/ContextToken.md)\<`T`\>
+
+##### Returns
 
 `void`
 
-#### Inherited from
+##### Inherited from
+
+[`Registry`](Registry.md).[`destroyValue`](Registry.md#destroyvalue)
+
+#### Call Signature
+
+> **destroyValue**(`name`): `void`
+
+Defined in: packages/blue-factory/src/registry.ts:10
+
+##### Parameters
+
+###### name
+
+`string`
+
+##### Returns
+
+`void`
+
+##### Inherited from
 
 [`Registry`](Registry.md).[`destroyValue`](Registry.md#destroyvalue)
 
@@ -140,27 +188,55 @@ Defined in: packages/blue-factory/src/registry.ts:8
 
 ### getValue()
 
-> **getValue**\<`T`\>(`name`): `T`
+#### Call Signature
 
-Defined in: packages/blue-factory/src/registry.ts:9
+> **getValue**\<`T`\>(`token`): `T`
 
-#### Type Parameters
+Defined in: packages/blue-factory/src/registry.ts:11
 
-##### T
+##### Type Parameters
+
+###### T
 
 `T` = `any`
 
-#### Parameters
+##### Parameters
 
-##### name
+###### token
 
-`string`
+[`ContextToken`](../classes/ContextToken.md)\<`T`\>
 
-#### Returns
+##### Returns
 
 `T`
 
-#### Inherited from
+##### Inherited from
+
+[`Registry`](Registry.md).[`getValue`](Registry.md#getvalue)
+
+#### Call Signature
+
+> **getValue**\<`T`\>(`name`): `T`
+
+Defined in: packages/blue-factory/src/registry.ts:12
+
+##### Type Parameters
+
+###### T
+
+`T` = `any`
+
+##### Parameters
+
+###### name
+
+`string`
+
+##### Returns
+
+`T`
+
+##### Inherited from
 
 [`Registry`](Registry.md).[`getValue`](Registry.md#getvalue)
 
@@ -168,21 +244,49 @@ Defined in: packages/blue-factory/src/registry.ts:9
 
 ### hasValue()
 
-> **hasValue**(`name`): `boolean`
+#### Call Signature
 
-Defined in: packages/blue-factory/src/registry.ts:10
+> **hasValue**\<`T`\>(`token`): `boolean`
 
-#### Parameters
+Defined in: packages/blue-factory/src/registry.ts:13
 
-##### name
+##### Type Parameters
 
-`string`
+###### T
 
-#### Returns
+`T` = `any`
+
+##### Parameters
+
+###### token
+
+[`ContextToken`](../classes/ContextToken.md)\<`T`\>
+
+##### Returns
 
 `boolean`
 
-#### Inherited from
+##### Inherited from
+
+[`Registry`](Registry.md).[`hasValue`](Registry.md#hasvalue)
+
+#### Call Signature
+
+> **hasValue**(`name`): `boolean`
+
+Defined in: packages/blue-factory/src/registry.ts:14
+
+##### Parameters
+
+###### name
+
+`string`
+
+##### Returns
+
+`boolean`
+
+##### Inherited from
 
 [`Registry`](Registry.md).[`hasValue`](Registry.md#hasvalue)
 
@@ -190,30 +294,62 @@ Defined in: packages/blue-factory/src/registry.ts:10
 
 ### setValue()
 
-> **setValue**\<`T`\>(`name`, `value`): `void`
+#### Call Signature
 
-Defined in: packages/blue-factory/src/registry.ts:11
+> **setValue**\<`T`\>(`token`, `value`): `void`
 
-#### Type Parameters
+Defined in: packages/blue-factory/src/registry.ts:15
 
-##### T
+##### Type Parameters
+
+###### T
 
 `T` = `any`
 
-#### Parameters
+##### Parameters
 
-##### name
+###### token
 
-`string`
+[`ContextToken`](../classes/ContextToken.md)\<`T`\>
 
-##### value
+###### value
 
 `T`
 
-#### Returns
+##### Returns
 
 `void`
 
-#### Inherited from
+##### Inherited from
+
+[`Registry`](Registry.md).[`setValue`](Registry.md#setvalue)
+
+#### Call Signature
+
+> **setValue**\<`T`\>(`name`, `value`): `void`
+
+Defined in: packages/blue-factory/src/registry.ts:16
+
+##### Type Parameters
+
+###### T
+
+`T` = `any`
+
+##### Parameters
+
+###### name
+
+`string`
+
+###### value
+
+`T`
+
+##### Returns
+
+`void`
+
+##### Inherited from
 
 [`Registry`](Registry.md).[`setValue`](Registry.md#setvalue)

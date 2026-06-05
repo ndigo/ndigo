@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,20 +6,22 @@
 
 # Class: EntriesIterator\<T\>
 
-Defined in: packages/blue-core/src/iterable.ts:115
+Defined in: packages/blue-core/src/iterable.ts:182
+
+An iterator for the key-value pairs (entries) of an object or collection.
+It can adapt to objects with an `entries()` method, or fall back to `Object.entries()`.
 
 ## Implements
 
 external:IterableIterator
-
-
-A non-primitive value
 
 ## Type Parameters
 
 ### T
 
 `T` = `any`
+
+The type of values in the entries.
 
 ## Implements
 
@@ -31,13 +33,17 @@ A non-primitive value
 
 > **new EntriesIterator**\<`T`\>(`target`): `EntriesIterator`\<`T`\>
 
-Defined in: packages/blue-core/src/iterable.ts:118
+Defined in: packages/blue-core/src/iterable.ts:189
+
+Creates an instance of EntriesIterator.
 
 #### Parameters
 
 ##### target
 
 `object`
+
+The object or collection to iterate over its entries.
 
 #### Returns
 
@@ -49,11 +55,15 @@ Defined in: packages/blue-core/src/iterable.ts:118
 
 > **\[iterator\]**(): `IterableIterator`\<[`Entry`](../type-aliases/Entry.md)\<`T`\>\>
 
-Defined in: packages/blue-core/src/iterable.ts:125
+Defined in: packages/blue-core/src/iterable.ts:200
+
+Returns the iterator itself, making this class compliant with the iterable protocol.
 
 #### Returns
 
 `IterableIterator`\<[`Entry`](../type-aliases/Entry.md)\<`T`\>\>
+
+The current `EntriesIterator` instance.
 
 #### Implementation of
 
@@ -65,11 +75,15 @@ Defined in: packages/blue-core/src/iterable.ts:125
 
 > **next**(): `IteratorResult`\<[`Entry`](../type-aliases/Entry.md)\<`T`\>\>
 
-Defined in: packages/blue-core/src/iterable.ts:129
+Defined in: packages/blue-core/src/iterable.ts:208
+
+Returns the next entry in the iteration sequence.
 
 #### Returns
 
 `IteratorResult`\<[`Entry`](../type-aliases/Entry.md)\<`T`\>\>
+
+An `IteratorResult` object containing the next entry and a `done` flag.
 
 #### Implementation of
 

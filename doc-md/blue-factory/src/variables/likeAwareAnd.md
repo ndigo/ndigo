@@ -1,14 +1,14 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
 [BlueJS Framework](../../../modules.md) / [blue-factory/src](../README.md) / likeAwareAnd
 
-# Variable: likeAwareAnd()
+# Variable: likeAwareAnd
 
 > `const` **likeAwareAnd**: (`predicate`) => (`value`) => `boolean`
 
-Defined in: packages/blue-factory/src/aware.ts:107
+Defined in: packages/blue-factory/src/aware.ts:110
 
 ## Parameters
 
@@ -20,17 +20,7 @@ Defined in: packages/blue-factory/src/aware.ts:107
 
 A function that will test whether a `value` is both [Aware](../interfaces/Aware.md) and matches the the given `predicate`.
 
-> (`value`): `boolean`
-
-### Parameters
-
-#### value
-
-`any`
-
-### Returns
-
-`boolean`
+(`value`) => `boolean`
 
 ## Example
 

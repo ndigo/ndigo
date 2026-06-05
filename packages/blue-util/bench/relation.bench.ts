@@ -1,7 +1,6 @@
 /** @author opencode */
 
 import { bench, describe } from 'vitest';
-import * as R from 'ramda';
 
 const numberInputs = [10, 1, 0, -1, -10, 42, -42];
 const sortInputs = [
@@ -118,26 +117,11 @@ const primitiveEqualityPairs: Array<[unknown, unknown]> = [
     [undefined, undefined],
 ];
 
-const greaterThanZero = R.gt(R.__, 0);
-const greaterThanOrEqualZero = R.gte(R.__, 0);
-const lessThanZero = R.lt(R.__, 0);
-const ramdaComparator = R.comparator((a: string, b: string) => a < b);
 const nativeComparator = (a: string, b: string): number => (a < b ? -1 : a > b ? 1 : 0);
 
 let _relationSink = 0;
 
-describe('R.gt(R.__, 0)(x) vs x > 0', () => {
-    bench('ramda', () => {
-        let accumulator = 0;
-
-        for (let i = 0; i < 1000; i += 1) {
-            const value = numberInputs[i % numberInputs.length];
-            accumulator += greaterThanZero(value) ? 1 : 0;
-        }
-
-        _relationSink = accumulator;
-    });
-
+describe('x > 0', () => {
     bench('native', () => {
         let accumulator = 0;
 
@@ -150,18 +134,7 @@ describe('R.gt(R.__, 0)(x) vs x > 0', () => {
     });
 });
 
-describe('R.gte(R.__, 0)(x) vs x >= 0', () => {
-    bench('ramda', () => {
-        let accumulator = 0;
-
-        for (let i = 0; i < 1000; i += 1) {
-            const value = numberInputs[i % numberInputs.length];
-            accumulator += greaterThanOrEqualZero(value) ? 1 : 0;
-        }
-
-        _relationSink = accumulator;
-    });
-
+describe('x >= 0', () => {
     bench('native', () => {
         let accumulator = 0;
 
@@ -174,18 +147,7 @@ describe('R.gte(R.__, 0)(x) vs x >= 0', () => {
     });
 });
 
-describe('R.lt(R.__, 0)(x) vs x < 0', () => {
-    bench('ramda', () => {
-        let accumulator = 0;
-
-        for (let i = 0; i < 1000; i += 1) {
-            const value = numberInputs[i % numberInputs.length];
-            accumulator += lessThanZero(value) ? 1 : 0;
-        }
-
-        _relationSink = accumulator;
-    });
-
+describe('x < 0', () => {
     bench('native', () => {
         let accumulator = 0;
 
@@ -198,18 +160,7 @@ describe('R.lt(R.__, 0)(x) vs x < 0', () => {
     });
 });
 
-describe('R.comparator((a, b) => a < b) vs ternary comparator', () => {
-    bench('ramda', () => {
-        let accumulator = 0;
-
-        for (let i = 0; i < 1000; i += 1) {
-            const sorted = [...sortInputs].sort(ramdaComparator);
-            accumulator += sorted[0].length + sorted[sorted.length - 1].length;
-        }
-
-        _relationSink = accumulator;
-    });
-
+describe('ternary comparator vs R.comparator((a, b) => a < b)', () => {
     bench('native', () => {
         let accumulator = 0;
 
@@ -222,19 +173,7 @@ describe('R.comparator((a, b) => a < b) vs ternary comparator', () => {
     });
 });
 
-describe('R.defaultTo(fallback, value) vs value ?? fallback', () => {
-    bench('ramda', () => {
-        let accumulator = 0;
-
-        for (let i = 0; i < 1000; i += 1) {
-            const value = defaultInputs[i % defaultInputs.length];
-            const result = R.defaultTo('fallback', value);
-            accumulator += String(result).length;
-        }
-
-        _relationSink = accumulator;
-    });
-
+describe('value ?? fallback vs R.defaultTo(fallback, value)', () => {
     bench('native', () => {
         let accumulator = 0;
 
@@ -248,18 +187,7 @@ describe('R.defaultTo(fallback, value) vs value ?? fallback', () => {
     });
 });
 
-describe('R.equals(a, b) for primitives vs ===', () => {
-    bench('ramda', () => {
-        let accumulator = 0;
-
-        for (let i = 0; i < 1000; i += 1) {
-            const [left, right] = primitiveEqualityPairs[i % primitiveEqualityPairs.length];
-            accumulator += R.equals(left, right) ? 1 : 0;
-        }
-
-        _relationSink = accumulator;
-    });
-
+describe('=== vs R.equals(a, b) for primitives', () => {
     bench('native', () => {
         let accumulator = 0;
 

@@ -1,20 +1,22 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
 [BlueJS Framework](../../../modules.md) / [blue-context/src](../README.md) / likeApplicationEventEmitterAware
 
-# Variable: likeApplicationEventEmitterAware()
+# Variable: likeApplicationEventEmitterAware
 
 > `const` **likeApplicationEventEmitterAware**: (`value`) => `value is ApplicationEventEmitterAware`
 
-Defined in: packages/blue-context/src/event-emitter.ts:101
+Defined in: packages/blue-context/src/event-emitter.ts:164
+
+Returns whether a value can receive an application event emitter.
 
 ## Parameters
 
 ### value
 
-`any`
+`unknown`
 
 ## Returns
 

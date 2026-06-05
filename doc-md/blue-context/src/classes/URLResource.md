@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,9 @@
 
 # Class: URLResource\<T\>
 
-Defined in: packages/blue-context/src/resource.ts:91
+Defined in: packages/blue-context/src/resource.ts:110
+
+Resource implementation backed by a URL.
 
 ## Type Parameters
 
@@ -24,7 +26,7 @@ Defined in: packages/blue-context/src/resource.ts:91
 
 > **new URLResource**\<`T`\>(`path`, `value`): `URLResource`\<`T`\>
 
-Defined in: packages/blue-context/src/resource.ts:99
+Defined in: packages/blue-context/src/resource.ts:118
 
 #### Parameters
 
@@ -46,7 +48,7 @@ Defined in: packages/blue-context/src/resource.ts:99
 
 > `readonly` **url**: `URL`
 
-Defined in: packages/blue-context/src/resource.ts:92
+Defined in: packages/blue-context/src/resource.ts:111
 
 ***
 
@@ -54,7 +56,7 @@ Defined in: packages/blue-context/src/resource.ts:92
 
 > `readonly` **value**: `T`
 
-Defined in: packages/blue-context/src/resource.ts:93
+Defined in: packages/blue-context/src/resource.ts:112
 
 #### Implementation of
 
@@ -68,7 +70,7 @@ Defined in: packages/blue-context/src/resource.ts:93
 
 > **get** **exists**(): `boolean`
 
-Defined in: packages/blue-context/src/resource.ts:95
+Defined in: packages/blue-context/src/resource.ts:114
 
 ##### Returns
 

@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,9 @@
 
 # Class: FixedThemeResolver
 
-Defined in: packages/blue-dispatcher/src/theme-resolver.ts:57
+Defined in: packages/blue-dispatcher/src/theme-resolver.ts:58
+
+Resolve a fixed theme regardless of route.
 
 ## Extends
 
@@ -18,13 +20,17 @@ Defined in: packages/blue-dispatcher/src/theme-resolver.ts:57
 
 > **new FixedThemeResolver**(`defaultThemeName`): `FixedThemeResolver`
 
-Defined in: packages/blue-dispatcher/src/theme-resolver.ts:28
+Defined in: packages/blue-dispatcher/src/theme-resolver.ts:37
+
+Store the fallback theme name.
 
 #### Parameters
 
 ##### defaultThemeName
 
 `string`
+
+The theme to use by default.
 
 #### Returns
 
@@ -40,7 +46,9 @@ Defined in: packages/blue-dispatcher/src/theme-resolver.ts:28
 
 > `readonly` **defaultThemeName**: `string`
 
-Defined in: packages/blue-dispatcher/src/theme-resolver.ts:22
+Defined in: packages/blue-dispatcher/src/theme-resolver.ts:26
+
+Fallback theme name used when a route-specific theme is unavailable.
 
 #### Inherited from
 
@@ -54,7 +62,7 @@ Defined in: packages/blue-dispatcher/src/theme-resolver.ts:22
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-dispatcher/src/theme-resolver.ts:24
+Defined in: packages/blue-dispatcher/src/theme-resolver.ts:28
 
 ##### Returns
 
@@ -70,17 +78,23 @@ Defined in: packages/blue-dispatcher/src/theme-resolver.ts:24
 
 > **resolveTheme**(`route`): `string`
 
-Defined in: packages/blue-dispatcher/src/theme-resolver.ts:58
+Defined in: packages/blue-dispatcher/src/theme-resolver.ts:65
+
+Return the configured fallback theme.
 
 #### Parameters
 
 ##### route
 
-[`Route`](../../../blue-router/src/interfaces/Route.md)
+`Route`
+
+The current route.
 
 #### Returns
 
 `string`
+
+The configured theme name.
 
 #### Overrides
 

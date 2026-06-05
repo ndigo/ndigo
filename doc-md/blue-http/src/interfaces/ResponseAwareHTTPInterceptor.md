@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,9 @@
 
 # Interface: ResponseAwareHTTPInterceptor\<T\>
 
-Defined in: packages/blue-http/src/http.ts:34
+Defined in: packages/blue-http/src/http.ts:125
+
+Allows a response to be replaced after fetch completes.
 
 ## Type Parameters
 
@@ -18,9 +20,11 @@ Defined in: packages/blue-http/src/http.ts:34
 
 ### postResponse()
 
-> **postResponse**(`response`, `settings`): `Promise`\<`void`\>
+> **postResponse**(`response`, `settings`): `Promise`\<`void` \| `Response`\>
 
-Defined in: packages/blue-http/src/http.ts:35
+Defined in: packages/blue-http/src/http.ts:133
+
+Transforms the response after fetch succeeds and before completion hooks run.
 
 #### Parameters
 
@@ -28,10 +32,16 @@ Defined in: packages/blue-http/src/http.ts:35
 
 `Response`
 
+The response returned by fetch.
+
 ##### settings
 
 `T`
 
+The request settings used for the call.
+
 #### Returns
 
-`Promise`\<`void`\>
+`Promise`\<`void` \| `Response`\>
+
+A replacement response, or `void` to keep the original.

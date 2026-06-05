@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,9 @@
 
 # Interface: CompletionAwareHTTPInterceptor
 
-Defined in: packages/blue-http/src/http.ts:18
+Defined in: packages/blue-http/src/http.ts:69
+
+Runs after a request finishes, whether it succeeded or failed.
 
 ## Methods
 
@@ -14,7 +16,9 @@ Defined in: packages/blue-http/src/http.ts:18
 
 > **postComplete**(`request`, `response`): `void`
 
-Defined in: packages/blue-http/src/http.ts:19
+Defined in: packages/blue-http/src/http.ts:76
+
+Observes the final request/response pair after all other hooks complete.
 
 #### Parameters
 
@@ -22,9 +26,13 @@ Defined in: packages/blue-http/src/http.ts:19
 
 `Request`
 
+The original request.
+
 ##### response
 
-`Response`
+`Response` \| `ResponseError`
+
+The final response or error wrapper.
 
 #### Returns
 

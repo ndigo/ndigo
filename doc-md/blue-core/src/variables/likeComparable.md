@@ -1,14 +1,16 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
 [BlueJS Framework](../../../modules.md) / [blue-core/src](../README.md) / likeComparable
 
-# Variable: likeComparable()
+# Variable: likeComparable
 
 > `const` **likeComparable**: (`value`) => `value is Comparable<any>`
 
-Defined in: packages/blue-core/src/comparable.ts:82
+Defined in: packages/blue-core/src/comparable.ts:114
+
+Type guard to check if a value implements the `Comparable` interface.
 
 ## Parameters
 
@@ -16,6 +18,10 @@ Defined in: packages/blue-core/src/comparable.ts:82
 
 `any`
 
+The value to check.
+
 ## Returns
 
 `value is Comparable<any>`
+
+`true` if the value is `Comparable`, `false` otherwise.

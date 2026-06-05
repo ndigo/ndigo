@@ -1,14 +1,16 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
 [BlueJS Framework](../../../modules.md) / [blue-context/src](../README.md) / likeApplicationContextAware
 
-# Variable: likeApplicationContextAware()
+# Variable: likeApplicationContextAware
 
 > `const` **likeApplicationContextAware**: (`value`) => `value is ApplicationContextAware`
 
-Defined in: packages/blue-context/src/context.ts:126
+Defined in: packages/blue-context/src/context.ts:305
+
+Returns whether a value can receive an application context.
 
 ## Parameters
 
@@ -16,10 +18,10 @@ Defined in: packages/blue-context/src/context.ts:126
 
 `any`
 
-The value to be tested
+The value to test.
 
 ## Returns
 
 `value is ApplicationContextAware`
 
-Whether or not the `value` is [ApplicationContextAware](../interfaces/ApplicationContextAware.md)
+`true` when the value looks like application-context aware.

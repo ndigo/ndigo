@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,11 +6,13 @@
 
 # Class: WildcardMatcher
 
-Defined in: packages/blue-http/src/http.ts:218
+Defined in: packages/blue-http/src/http.ts:347
+
+Pattern matcher that uses wildcard expressions and caches compiled patterns.
 
 ## Implements
 
-- [`PatternMatcher`](../../../blue-core/src/interfaces/PatternMatcher.md)\<`string`, `string`\>
+- `PatternMatcher`\<`string`, `string`\>
 
 ## Constructors
 
@@ -28,7 +30,9 @@ Defined in: packages/blue-http/src/http.ts:218
 
 > **match**(`pattern`, `value`): `boolean`
 
-Defined in: packages/blue-http/src/http.ts:219
+Defined in: packages/blue-http/src/http.ts:355
+
+Tests whether a value matches a wildcard pattern.
 
 #### Parameters
 
@@ -36,14 +40,20 @@ Defined in: packages/blue-http/src/http.ts:219
 
 `string`
 
+The wildcard pattern to compile and cache.
+
 ##### value
 
 `string`
+
+The value to test.
 
 #### Returns
 
 `boolean`
 
+`true` when the pattern matches the value.
+
 #### Implementation of
 
-[`PatternMatcher`](../../../blue-core/src/interfaces/PatternMatcher.md).[`match`](../../../blue-core/src/interfaces/PatternMatcher.md#match)
+`PatternMatcher.match`

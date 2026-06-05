@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../README.md)
+[**BlueJS Framework v0.0.1**](../../README.md)
 
 ***
 
@@ -8,10 +8,15 @@
 
 ## Classes
 
+- [ContextToken](classes/ContextToken.md)
 - [AbstractFactory](classes/AbstractFactory.md)
 - [DefaultFactory](classes/DefaultFactory.md)
 - [ProxiedFactory](classes/ProxiedFactory.md)
+- [DefaultLifecycleProcessor](classes/DefaultLifecycleProcessor.md)
 - [RegistryProxyHandler](classes/RegistryProxyHandler.md)
+- [PrototypeScope](classes/PrototypeScope.md)
+- [HashScope](classes/HashScope.md)
+- [SingletonScope](classes/SingletonScope.md)
 
 ## Interfaces
 
@@ -29,11 +34,22 @@
 - [Destroyable](interfaces/Destroyable.md)
 - [AsyncDestroyable](interfaces/AsyncDestroyable.md)
 - [Initializable](interfaces/Initializable.md)
+- [Closeable](interfaces/Closeable.md)
+- [AsyncCloseable](interfaces/AsyncCloseable.md)
+- [Lifecycle](interfaces/Lifecycle.md)
+- [Phased](interfaces/Phased.md)
+- [SmartLifecycle](interfaces/SmartLifecycle.md)
+- [LifecycleProcessor](interfaces/LifecycleProcessor.md)
 - [Registry](interfaces/Registry.md)
+- [Scope](interfaces/Scope.md)
+- [ScopedFactory](interfaces/ScopedFactory.md)
 
 ## Type Aliases
 
 - [EntryProcessor](type-aliases/EntryProcessor.md)
+- [KnownScope](type-aliases/KnownScope.md)
+- [PossibleScope](type-aliases/PossibleScope.md)
+- [ObjectFactory](type-aliases/ObjectFactory.md)
 
 ## Variables
 
@@ -45,17 +61,29 @@
 - [likeConstructionAwareProcessor](variables/likeConstructionAwareProcessor.md)
 - [likeDestructionAwareProcessor](variables/likeDestructionAwareProcessor.md)
 - [likeEntryRegistryProcessor](variables/likeEntryRegistryProcessor.md)
-- [likeEntryProcessor](variables/likeEntryProcessor.md)
 - [likeFactory](variables/likeFactory.md)
 - [likeFactoryAware](variables/likeFactoryAware.md)
-- [likeHierarchicalFactory](variables/likeHierarchicalFactory.md)
-- [likeConfigurableFactory](variables/likeConfigurableFactory.md)
 - [likeDestroyable](variables/likeDestroyable.md)
 - [likeInitializable](variables/likeInitializable.md)
+- [likeCloseable](variables/likeCloseable.md)
+- [likeLifecycle](variables/likeLifecycle.md)
+- [likePhased](variables/likePhased.md)
+- [likeSmartLifecycle](variables/likeSmartLifecycle.md)
 - [likeRegistry](variables/likeRegistry.md)
+- [singletonScope](variables/singletonScope.md)
+- [prototypeScope](variables/prototypeScope.md)
+- [hashScope](variables/hashScope.md)
 
 ## Functions
 
 - [AsAware](functions/AsAware.md)
 - [AsNameAware](functions/AsNameAware.md)
+- [isContextToken](functions/isContextToken.md)
+- [likeEntryProcessor](functions/likeEntryProcessor.md)
 - [AsFactoryAware](functions/AsFactoryAware.md)
+- [likeHierarchicalFactory](functions/likeHierarchicalFactory.md)
+- [likeConfigurableFactory](functions/likeConfigurableFactory.md)
+- [defineScope](functions/defineScope.md)
+- [getScope](functions/getScope.md)
+- [hasScope](functions/hasScope.md)
+- [scope](functions/scope.md)

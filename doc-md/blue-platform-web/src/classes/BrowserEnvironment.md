@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,25 +6,33 @@
 
 # Class: BrowserEnvironment
 
-Defined in: packages/blue-platform-web/src/brower-environment.ts:3
+Defined in: packages/blue-platform-web/src/browser-environment.ts:12
+
+Browser-specific environment implementation for `@blue/platform-web` applications.
+
+Extends `StandardEnvironment` as a marker type so that dependency injection
+containers and bootstrap utilities can discriminate between browser and
+non-browser environments by class identity (e.g., `instanceof BrowserEnvironment`).
+
+All environment property resolution is inherited from `StandardEnvironment`.
 
 ## Extends
 
-- [`StandardEnvironment`](../../../blue-context/src/classes/StandardEnvironment.md)
+- `StandardEnvironment`
 
 ## Constructors
 
 ### Constructor
 
-> **new BrowserEnvironment**(`propertySources`): `BrowserEnvironment`
+> **new BrowserEnvironment**(`propertySources?`): `BrowserEnvironment`
 
-Defined in: packages/blue-context/src/environment.ts:109
+Defined in: packages/blue-context/lib/environment.d.ts:74
 
 #### Parameters
 
-##### propertySources
+##### propertySources?
 
-[`JSONObject`](../../../blue-core/src/interfaces/JSONObject.md)[] = `[]`
+`JSONObject`[]
 
 #### Returns
 
@@ -32,7 +40,7 @@ Defined in: packages/blue-context/src/environment.ts:109
 
 #### Inherited from
 
-[`StandardEnvironment`](../../../blue-context/src/classes/StandardEnvironment.md).[`constructor`](../../../blue-context/src/classes/StandardEnvironment.md#constructor)
+`StandardEnvironment.constructor`
 
 ## Accessors
 
@@ -40,25 +48,29 @@ Defined in: packages/blue-context/src/environment.ts:109
 
 #### Get Signature
 
-> **get** **propertySources**(): [`JSONObject`](../../../blue-core/src/interfaces/JSONObject.md)[]
+> **get** **propertySources**(): `JSONObject`[]
 
-Defined in: packages/blue-context/src/environment.ts:77
+Defined in: packages/blue-context/lib/environment.d.ts:67
+
+The ordered property sources used for resolution.
 
 ##### Returns
 
-[`JSONObject`](../../../blue-core/src/interfaces/JSONObject.md)[]
+`JSONObject`[]
 
 #### Set Signature
 
 > **set** **propertySources**(`propertySources`): `void`
 
-Defined in: packages/blue-context/src/environment.ts:81
+Defined in: packages/blue-context/lib/environment.d.ts:68
+
+The ordered property sources used for resolution.
 
 ##### Parameters
 
 ###### propertySources
 
-[`JSONObject`](../../../blue-core/src/interfaces/JSONObject.md)[]
+`JSONObject`[]
 
 ##### Returns
 
@@ -66,7 +78,7 @@ Defined in: packages/blue-context/src/environment.ts:81
 
 #### Inherited from
 
-[`StandardEnvironment`](../../../blue-context/src/classes/StandardEnvironment.md).[`propertySources`](../../../blue-context/src/classes/StandardEnvironment.md#propertysources)
+`StandardEnvironment.propertySources`
 
 ***
 
@@ -76,7 +88,7 @@ Defined in: packages/blue-context/src/environment.ts:81
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-context/src/environment.ts:85
+Defined in: packages/blue-context/lib/environment.d.ts:69
 
 ##### Returns
 
@@ -84,7 +96,7 @@ Defined in: packages/blue-context/src/environment.ts:85
 
 #### Inherited from
 
-[`StandardEnvironment`](../../../blue-context/src/classes/StandardEnvironment.md).[`[toStringTag]`](../../../blue-context/src/classes/StandardEnvironment.md#tostringtag)
+`StandardEnvironment.[toStringTag]`
 
 ***
 
@@ -94,7 +106,9 @@ Defined in: packages/blue-context/src/environment.ts:85
 
 > **get** **activeProfiles**(): `string`[]
 
-Defined in: packages/blue-context/src/environment.ts:89
+Defined in: packages/blue-context/lib/environment.d.ts:70
+
+The explicitly active profiles.
 
 ##### Returns
 
@@ -104,7 +118,9 @@ Defined in: packages/blue-context/src/environment.ts:89
 
 > **set** **activeProfiles**(`profiles`): `void`
 
-Defined in: packages/blue-context/src/environment.ts:93
+Defined in: packages/blue-context/lib/environment.d.ts:71
+
+The explicitly active profiles.
 
 ##### Parameters
 
@@ -118,7 +134,7 @@ Defined in: packages/blue-context/src/environment.ts:93
 
 #### Inherited from
 
-[`StandardEnvironment`](../../../blue-context/src/classes/StandardEnvironment.md).[`activeProfiles`](../../../blue-context/src/classes/StandardEnvironment.md#activeprofiles)
+`StandardEnvironment.activeProfiles`
 
 ***
 
@@ -128,7 +144,9 @@ Defined in: packages/blue-context/src/environment.ts:93
 
 > **get** **defaultProfiles**(): `string`[]
 
-Defined in: packages/blue-context/src/environment.ts:99
+Defined in: packages/blue-context/lib/environment.d.ts:72
+
+The default profiles used when no active profile is configured.
 
 ##### Returns
 
@@ -138,7 +156,9 @@ Defined in: packages/blue-context/src/environment.ts:99
 
 > **set** **defaultProfiles**(`profiles`): `void`
 
-Defined in: packages/blue-context/src/environment.ts:103
+Defined in: packages/blue-context/lib/environment.d.ts:73
+
+The default profiles used when no active profile is configured.
 
 ##### Parameters
 
@@ -152,7 +172,7 @@ Defined in: packages/blue-context/src/environment.ts:103
 
 #### Inherited from
 
-[`StandardEnvironment`](../../../blue-context/src/classes/StandardEnvironment.md).[`defaultProfiles`](../../../blue-context/src/classes/StandardEnvironment.md#defaultprofiles)
+`StandardEnvironment.defaultProfiles`
 
 ## Methods
 
@@ -160,7 +180,9 @@ Defined in: packages/blue-context/src/environment.ts:103
 
 > **addActiveProfile**(`profile`): `void`
 
-Defined in: packages/blue-context/src/environment.ts:115
+Defined in: packages/blue-context/lib/environment.d.ts:75
+
+Adds a profile to the active set.
 
 #### Parameters
 
@@ -168,13 +190,41 @@ Defined in: packages/blue-context/src/environment.ts:115
 
 `string`
 
+The profile name.
+
 #### Returns
 
 `void`
 
 #### Inherited from
 
-[`StandardEnvironment`](../../../blue-context/src/classes/StandardEnvironment.md).[`addActiveProfile`](../../../blue-context/src/classes/StandardEnvironment.md#addactiveprofile)
+`StandardEnvironment.addActiveProfile`
+
+***
+
+### addDefaultProfile()
+
+> **addDefaultProfile**(`profile`): `void`
+
+Defined in: packages/blue-context/lib/environment.d.ts:76
+
+Adds a profile to the default set.
+
+#### Parameters
+
+##### profile
+
+`string`
+
+The profile name.
+
+#### Returns
+
+`void`
+
+#### Inherited from
+
+`StandardEnvironment.addDefaultProfile`
 
 ***
 
@@ -182,29 +232,37 @@ Defined in: packages/blue-context/src/environment.ts:115
 
 > **hasProperty**(`key`): `boolean`
 
-Defined in: packages/blue-context/src/environment.ts:119
+Defined in: packages/blue-context/lib/environment.d.ts:77
+
+Returns whether a property key can be resolved.
 
 #### Parameters
 
 ##### key
 
 `string`
+
+The property name to resolve.
 
 #### Returns
 
 `boolean`
 
+`true` when the property exists.
+
 #### Inherited from
 
-[`StandardEnvironment`](../../../blue-context/src/classes/StandardEnvironment.md).[`hasProperty`](../../../blue-context/src/classes/StandardEnvironment.md#hasproperty)
+`StandardEnvironment.hasProperty`
 
 ***
 
 ### getProperty()
 
-> **getProperty**(`key`, `defaultValue?`): [`JSONValue`](../../../blue-core/src/type-aliases/JSONValue.md)
+> **getProperty**(`key`, `defaultValue?`): `JSONValue`
 
-Defined in: packages/blue-context/src/environment.ts:123
+Defined in: packages/blue-context/lib/environment.d.ts:78
+
+Resolves a property value, falling back to a default when missing.
 
 #### Parameters
 
@@ -212,25 +270,33 @@ Defined in: packages/blue-context/src/environment.ts:123
 
 `string`
 
+The property name to resolve.
+
 ##### defaultValue?
 
-[`JSONValue`](../../../blue-core/src/type-aliases/JSONValue.md)
+`JSONValue`
+
+The value to return when no property is found.
 
 #### Returns
 
-[`JSONValue`](../../../blue-core/src/type-aliases/JSONValue.md)
+`JSONValue`
+
+The resolved property value or the default value.
 
 #### Inherited from
 
-[`StandardEnvironment`](../../../blue-context/src/classes/StandardEnvironment.md).[`getProperty`](../../../blue-context/src/classes/StandardEnvironment.md#getproperty)
+`StandardEnvironment.getProperty`
 
 ***
 
 ### getRequiredProperty()
 
-> **getRequiredProperty**(`key`): [`JSONValue`](../../../blue-core/src/type-aliases/JSONValue.md)
+> **getRequiredProperty**(`key`): `JSONValue`
 
-Defined in: packages/blue-context/src/environment.ts:127
+Defined in: packages/blue-context/lib/environment.d.ts:79
+
+Returns the resolved property value or throws when missing.
 
 #### Parameters
 
@@ -238,13 +304,21 @@ Defined in: packages/blue-context/src/environment.ts:127
 
 `string`
 
+The property name to resolve.
+
 #### Returns
 
-[`JSONValue`](../../../blue-core/src/type-aliases/JSONValue.md)
+`JSONValue`
+
+The resolved property value.
+
+#### Throws
+
+When the property cannot be resolved.
 
 #### Inherited from
 
-[`StandardEnvironment`](../../../blue-context/src/classes/StandardEnvironment.md).[`getRequiredProperty`](../../../blue-context/src/classes/StandardEnvironment.md#getrequiredproperty)
+`StandardEnvironment.getRequiredProperty`
 
 ***
 
@@ -252,13 +326,17 @@ Defined in: packages/blue-context/src/environment.ts:127
 
 > **merge**(`environment`): `void`
 
-Defined in: packages/blue-context/src/environment.ts:131
+Defined in: packages/blue-context/lib/environment.d.ts:80
+
+Merges another environment into this one.
 
 #### Parameters
 
 ##### environment
 
-[`ConfigurableEnvironment`](../../../blue-context/src/interfaces/ConfigurableEnvironment.md)
+`ConfigurableEnvironment`
+
+The environment to merge.
 
 #### Returns
 
@@ -266,7 +344,7 @@ Defined in: packages/blue-context/src/environment.ts:131
 
 #### Inherited from
 
-[`StandardEnvironment`](../../../blue-context/src/classes/StandardEnvironment.md).[`merge`](../../../blue-context/src/classes/StandardEnvironment.md#merge)
+`StandardEnvironment.merge`
 
 ***
 
@@ -274,7 +352,7 @@ Defined in: packages/blue-context/src/environment.ts:131
 
 > `protected` **\_isActiveProfile**(`profile`): `boolean`
 
-Defined in: packages/blue-context/src/environment.ts:142
+Defined in: packages/blue-context/lib/environment.d.ts:81
 
 #### Parameters
 
@@ -288,4 +366,4 @@ Defined in: packages/blue-context/src/environment.ts:142
 
 #### Inherited from
 
-[`StandardEnvironment`](../../../blue-context/src/classes/StandardEnvironment.md).[`_isActiveProfile`](../../../blue-context/src/classes/StandardEnvironment.md#_isactiveprofile)
+`StandardEnvironment._isActiveProfile`

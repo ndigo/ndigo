@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,9 @@
 
 # Interface: JSONObject
 
-Defined in: packages/blue-core/src/serializable.ts:24
+Defined in: packages/blue-core/src/serializable.ts:17
+
+A JSON object value.
 
 ## Extends
 
@@ -14,4 +16,4 @@ Defined in: packages/blue-core/src/serializable.ts:24
 
 ## Indexable
 
-\[`key`: `string`\]: [`JSONValue`](../type-aliases/JSONValue.md)
+> \[`key`: `string`\]: [`JSONValue`](../type-aliases/JSONValue.md)

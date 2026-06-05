@@ -1,0 +1,252 @@
+[**BlueJS Framework v0.0.1**](../../../README.md)
+
+***
+
+[BlueJS Framework](../../../modules.md) / [blue-dispatcher/src](../README.md) / MappedHandlerInterceptor
+
+# Class: MappedHandlerInterceptor
+
+Defined in: packages/blue-dispatcher/src/route-handler-interceptor.ts:45
+
+## Implements
+
+module:router.RouteHandlerInterceptor
+
+## Extends
+
+- `PathMatcherFilter` & `Null`\<`this`\>
+
+## Implements
+
+- [`RouteHandlerInterceptor`](../interfaces/RouteHandlerInterceptor.md)
+
+## Constructors
+
+### Constructor
+
+> **new MappedHandlerInterceptor**(`interceptor`, `includePatterns`, `excludePatterns?`): `MappedHandlerInterceptor`
+
+Defined in: packages/blue-dispatcher/src/route-handler-interceptor.ts:54
+
+#### Parameters
+
+##### interceptor
+
+[`RouteHandlerInterceptor`](../interfaces/RouteHandlerInterceptor.md)
+
+##### includePatterns
+
+`string`[]
+
+##### excludePatterns?
+
+`string`[]
+
+#### Returns
+
+`MappedHandlerInterceptor`
+
+#### Overrides
+
+`AsPathMatcherFilter(Null).constructor`
+
+## Properties
+
+### pathMatcher
+
+> **pathMatcher**: `PathMatcher`
+
+Defined in: packages/blue-dispatcher/src/route-handler-interceptor.ts:48
+
+The PathMatcher instance used for matching patterns.
+
+#### Overrides
+
+`AsPathMatcherFilter(Null).pathMatcher`
+
+## Accessors
+
+### interceptor
+
+#### Get Signature
+
+> **get** **interceptor**(): [`RouteHandlerInterceptor`](../interfaces/RouteHandlerInterceptor.md)
+
+Defined in: packages/blue-dispatcher/src/route-handler-interceptor.ts:50
+
+##### Returns
+
+[`RouteHandlerInterceptor`](../interfaces/RouteHandlerInterceptor.md)
+
+## Methods
+
+### matches()
+
+> **matches**(`path`, `matcher?`): `boolean`
+
+Defined in: packages/blue-core/lib/path-matcher.d.ts:53
+
+Checks if a given path matches the configured include/exclude patterns.
+
+#### Parameters
+
+##### path
+
+`string`
+
+The path to check.
+
+##### matcher?
+
+`PathMatcher`
+
+An optional PathMatcher to use for matching. If not provided, `this.pathMatcher` is used.
+
+#### Returns
+
+`boolean`
+
+`true` if the path matches the include patterns and does not match any exclude patterns, `false` otherwise.
+
+#### Inherited from
+
+`AsPathMatcherFilter(Null).matches`
+
+***
+
+### setExcludePatterns()
+
+> **setExcludePatterns**(`excludePatterns`): `void`
+
+Defined in: packages/blue-core/lib/path-matcher.d.ts:58
+
+Sets the patterns to exclude. Paths matching these patterns will be filtered out.
+
+#### Parameters
+
+##### excludePatterns
+
+`string`[]
+
+An array of patterns to exclude.
+
+#### Returns
+
+`void`
+
+#### Inherited from
+
+`AsPathMatcherFilter(Null).setExcludePatterns`
+
+***
+
+### setIncludePatterns()
+
+> **setIncludePatterns**(`includePatterns`): `void`
+
+Defined in: packages/blue-core/lib/path-matcher.d.ts:64
+
+Sets the patterns to include. Paths must match at least one of these patterns to be included.
+If no include patterns are set, all paths are considered included (unless excluded by `excludePatterns`).
+
+#### Parameters
+
+##### includePatterns
+
+`string`[]
+
+An array of patterns to include.
+
+#### Returns
+
+`void`
+
+#### Inherited from
+
+`AsPathMatcherFilter(Null).setIncludePatterns`
+
+***
+
+### completeHandle()
+
+> **completeHandle**(`route`, `handler`, `error?`): `Promise`\<`void`\>
+
+Defined in: packages/blue-dispatcher/src/route-handler-interceptor.ts:61
+
+#### Parameters
+
+##### route
+
+`Route`
+
+##### handler
+
+`any`
+
+##### error?
+
+`Error` = `null`
+
+#### Returns
+
+`Promise`\<`void`\>
+
+#### Implementation of
+
+[`RouteHandlerInterceptor`](../interfaces/RouteHandlerInterceptor.md).[`completeHandle`](../interfaces/RouteHandlerInterceptor.md#completehandle)
+
+***
+
+### postHandle()
+
+> **postHandle**(`route`, `handler`, `modelAndView`): `Promise`\<`void`\>
+
+Defined in: packages/blue-dispatcher/src/route-handler-interceptor.ts:65
+
+#### Parameters
+
+##### route
+
+`Route`
+
+##### handler
+
+`any`
+
+##### modelAndView
+
+[`ModelAndView`](ModelAndView.md)
+
+#### Returns
+
+`Promise`\<`void`\>
+
+#### Implementation of
+
+[`RouteHandlerInterceptor`](../interfaces/RouteHandlerInterceptor.md).[`postHandle`](../interfaces/RouteHandlerInterceptor.md#posthandle)
+
+***
+
+### preHandle()
+
+> **preHandle**(`route`, `handler`): `Promise`\<`boolean`\>
+
+Defined in: packages/blue-dispatcher/src/route-handler-interceptor.ts:69
+
+#### Parameters
+
+##### route
+
+`Route`
+
+##### handler
+
+`any`
+
+#### Returns
+
+`Promise`\<`boolean`\>
+
+#### Implementation of
+
+[`RouteHandlerInterceptor`](../interfaces/RouteHandlerInterceptor.md).[`preHandle`](../interfaces/RouteHandlerInterceptor.md#prehandle)

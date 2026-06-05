@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,11 +6,13 @@
 
 # Class: DefaultResourceLoader
 
-Defined in: packages/blue-context/src/resource.ts:173
+Defined in: packages/blue-context/src/resource.ts:199
+
+Resource loader that resolves modules through dynamic import.
 
 ## Extends
 
-- [`ResourceLoader`](../interfaces/ResourceLoader.md) & [`Null`](../../../blue-core/src/classes/Null.md)\<`this`\>
+- [`ResourceLoader`](../interfaces/ResourceLoader.md) & `Null`\<`this`\>
 
 ## Constructors
 
@@ -32,7 +34,7 @@ Defined in: packages/blue-context/src/resource.ts:173
 
 > **getResource**(`location`): `Promise`\<[`Resource`](../interfaces/Resource.md)\<`any`\>\>
 
-Defined in: packages/blue-context/src/resource.ts:16
+Defined in: packages/blue-context/src/resource.ts:22
 
 #### Parameters
 

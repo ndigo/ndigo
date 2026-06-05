@@ -1,14 +1,16 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
 [BlueJS Framework](../../../modules.md) / [blue-context/src](../README.md) / likeResourceLoader
 
-# Variable: likeResourceLoader()
+# Variable: likeResourceLoader
 
 > `const` **likeResourceLoader**: (`value`) => `value is ResourceLoader`
 
-Defined in: packages/blue-context/src/resource.ts:81
+Defined in: packages/blue-context/src/resource.ts:95
+
+Returns whether a value behaves like a resource loader.
 
 ## Parameters
 
@@ -16,10 +18,10 @@ Defined in: packages/blue-context/src/resource.ts:81
 
 `any`
 
-The value to be tested
+The value to test.
 
 ## Returns
 
 `value is ResourceLoader`
 
-Whether or not the `value` is [ResourceLoader](../interfaces/ResourceLoader.md)
+`true` when the value looks like a resource loader.

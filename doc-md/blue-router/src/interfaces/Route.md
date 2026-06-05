@@ -1,36 +1,51 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
 [BlueJS Framework](../../../modules.md) / [blue-router/src](../README.md) / Route
 
-# Interface: Route
+# Interface: Route\<TParams\>
 
-Defined in: packages/blue-router/src/route.ts:10
+Defined in: packages/blue-router/src/route.ts:20
+
+Represents a complete route, composed of multiple segments, along with its parameters, path, and associated data.
+It extends `ArrayLike<RouteSegment>` to allow iteration over its segments.
+
+## Since
+
+1.0.0
 
 ## Extends
 
-- `ArrayLike`\<[`RouteSegment`](RouteSegment.md)\>.[`Serializable`](../../../blue-core/src/interfaces/Serializable.md)
+- `ArrayLike`\<[`RouteSegment`](RouteSegment.md)\>.`Serializable`
+
+## Type Parameters
+
+### TParams
+
+`TParams` *extends* `Record`\<`string`, `string`\> = `Record`\<`string`, `string`\>
+
+A type representing the route parameters, defaulting to `Record<string, string>`.
 
 ## Indexable
 
-\[`n`: `number`\]: [`RouteSegment`](RouteSegment.md)
+> \[`n`: `number`\]: [`RouteSegment`](RouteSegment.md)
 
 ## Properties
 
 ### data
 
-> **data**: [`JSONObject`](../../../blue-core/src/interfaces/JSONObject.md)
+> **data**: `JSONObject`
 
-Defined in: packages/blue-router/src/route.ts:13
+Defined in: packages/blue-router/src/route.ts:25
 
 ***
 
 ### dataString?
 
-> `optional` **dataString**: `string`
+> `optional` **dataString?**: `string`
 
-Defined in: packages/blue-router/src/route.ts:14
+Defined in: packages/blue-router/src/route.ts:26
 
 ***
 
@@ -38,7 +53,15 @@ Defined in: packages/blue-router/src/route.ts:14
 
 > **id**: `number`
 
-Defined in: packages/blue-router/src/route.ts:15
+Defined in: packages/blue-router/src/route.ts:27
+
+***
+
+### params
+
+> **params**: `TParams`
+
+Defined in: packages/blue-router/src/route.ts:28
 
 ***
 
@@ -46,7 +69,7 @@ Defined in: packages/blue-router/src/route.ts:15
 
 > **path**: `string`
 
-Defined in: packages/blue-router/src/route.ts:16
+Defined in: packages/blue-router/src/route.ts:29
 
 ***
 
@@ -54,7 +77,15 @@ Defined in: packages/blue-router/src/route.ts:16
 
 > **raw**: `string`
 
-Defined in: packages/blue-router/src/route.ts:17
+Defined in: packages/blue-router/src/route.ts:30
+
+***
+
+### attributes
+
+> **attributes**: `Record`\<`string`, `any`\>
+
+Defined in: packages/blue-router/src/route.ts:31
 
 ## Methods
 
@@ -62,7 +93,7 @@ Defined in: packages/blue-router/src/route.ts:17
 
 > **toString**(): `string`
 
-Defined in: packages/blue-core/src/serializable.ts:29
+Defined in: packages/blue-core/lib/serializable.d.ts:22
 
 #### Returns
 
@@ -70,20 +101,20 @@ Defined in: packages/blue-core/src/serializable.ts:29
 
 #### Inherited from
 
-[`Serializable`](../../../blue-core/src/interfaces/Serializable.md).[`toString`](../../../blue-core/src/interfaces/Serializable.md#tostring)
+`Serializable.toString`
 
 ***
 
 ### toJSON()?
 
-> `optional` **toJSON**(): [`JSONValue`](../../../blue-core/src/type-aliases/JSONValue.md)
+> `optional` **toJSON**(): `JSONValue`
 
-Defined in: packages/blue-core/src/serializable.ts:30
+Defined in: packages/blue-core/lib/serializable.d.ts:23
 
 #### Returns
 
-[`JSONValue`](../../../blue-core/src/type-aliases/JSONValue.md)
+`JSONValue`
 
 #### Inherited from
 
-[`Serializable`](../../../blue-core/src/interfaces/Serializable.md).[`toJSON`](../../../blue-core/src/interfaces/Serializable.md#tojson)
+`Serializable.toJSON`

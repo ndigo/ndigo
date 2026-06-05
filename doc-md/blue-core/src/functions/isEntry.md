@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -8,7 +8,9 @@
 
 > **isEntry**(`value`): value is MapEntry\<any\> \| \[unknown, unknown\] \| ArrayEntry\<any\> \| ObjectEntry\<any\>
 
-Defined in: packages/blue-core/src/iterable.ts:63
+Defined in: packages/blue-core/src/iterable.ts:111
+
+Type guard to check if a value is an entry (a two-element array).
 
 ## Parameters
 
@@ -16,10 +18,10 @@ Defined in: packages/blue-core/src/iterable.ts:63
 
 `any`
 
-The value to be tested
+The value to be tested.
 
 ## Returns
 
 value is MapEntry\<any\> \| \[unknown, unknown\] \| ArrayEntry\<any\> \| ObjectEntry\<any\>
 
-Whether or not the value is an entry
+`true` if the value is an entry, `false` otherwise.

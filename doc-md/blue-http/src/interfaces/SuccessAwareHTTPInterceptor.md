@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,15 +6,17 @@
 
 # Interface: SuccessAwareHTTPInterceptor
 
-Defined in: packages/blue-http/src/interceptors/response-class-interceptor.ts:19
+Defined in: packages/blue-http/src/interceptors/response-class-interceptor.ts:25
+
+Handles successful responses.
 
 ## Methods
 
 ### postSuccessfulResponse()
 
-> **postSuccessfulResponse**(`response`, `settings`): `Promise`\<`void` \| [`JSONObject`](../../../blue-core/src/interfaces/JSONObject.md)\>
+> **postSuccessfulResponse**(`response`, `settings`): `Promise`\<`void` \| `JSONObject`\>
 
-Defined in: packages/blue-http/src/interceptors/response-class-interceptor.ts:20
+Defined in: packages/blue-http/src/interceptors/response-class-interceptor.ts:26
 
 #### Parameters
 
@@ -28,4 +30,4 @@ Defined in: packages/blue-http/src/interceptors/response-class-interceptor.ts:20
 
 #### Returns
 
-`Promise`\<`void` \| [`JSONObject`](../../../blue-core/src/interfaces/JSONObject.md)\>
+`Promise`\<`void` \| `JSONObject`\>

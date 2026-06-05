@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Interface: Registry
 
-Defined in: packages/blue-factory/src/registry.ts:7
+Defined in: packages/blue-factory/src/registry.ts:8
 
 ## Extended by
 
@@ -16,17 +16,41 @@ Defined in: packages/blue-factory/src/registry.ts:7
 
 ### destroyValue()
 
+#### Call Signature
+
+> **destroyValue**\<`T`\>(`token`): `void`
+
+Defined in: packages/blue-factory/src/registry.ts:9
+
+##### Type Parameters
+
+###### T
+
+`T` = `any`
+
+##### Parameters
+
+###### token
+
+[`ContextToken`](../classes/ContextToken.md)\<`T`\>
+
+##### Returns
+
+`void`
+
+#### Call Signature
+
 > **destroyValue**(`name`): `void`
 
-Defined in: packages/blue-factory/src/registry.ts:8
+Defined in: packages/blue-factory/src/registry.ts:10
 
-#### Parameters
+##### Parameters
 
-##### name
+###### name
 
 `string`
 
-#### Returns
+##### Returns
 
 `void`
 
@@ -34,23 +58,47 @@ Defined in: packages/blue-factory/src/registry.ts:8
 
 ### getValue()
 
-> **getValue**\<`T`\>(`name`): `T`
+#### Call Signature
 
-Defined in: packages/blue-factory/src/registry.ts:9
+> **getValue**\<`T`\>(`token`): `T`
 
-#### Type Parameters
+Defined in: packages/blue-factory/src/registry.ts:11
 
-##### T
+##### Type Parameters
+
+###### T
 
 `T` = `any`
 
-#### Parameters
+##### Parameters
 
-##### name
+###### token
+
+[`ContextToken`](../classes/ContextToken.md)\<`T`\>
+
+##### Returns
+
+`T`
+
+#### Call Signature
+
+> **getValue**\<`T`\>(`name`): `T`
+
+Defined in: packages/blue-factory/src/registry.ts:12
+
+##### Type Parameters
+
+###### T
+
+`T` = `any`
+
+##### Parameters
+
+###### name
 
 `string`
 
-#### Returns
+##### Returns
 
 `T`
 
@@ -58,17 +106,41 @@ Defined in: packages/blue-factory/src/registry.ts:9
 
 ### hasValue()
 
+#### Call Signature
+
+> **hasValue**\<`T`\>(`token`): `boolean`
+
+Defined in: packages/blue-factory/src/registry.ts:13
+
+##### Type Parameters
+
+###### T
+
+`T` = `any`
+
+##### Parameters
+
+###### token
+
+[`ContextToken`](../classes/ContextToken.md)\<`T`\>
+
+##### Returns
+
+`boolean`
+
+#### Call Signature
+
 > **hasValue**(`name`): `boolean`
 
-Defined in: packages/blue-factory/src/registry.ts:10
+Defined in: packages/blue-factory/src/registry.ts:14
 
-#### Parameters
+##### Parameters
 
-##### name
+###### name
 
 `string`
 
-#### Returns
+##### Returns
 
 `boolean`
 
@@ -76,26 +148,54 @@ Defined in: packages/blue-factory/src/registry.ts:10
 
 ### setValue()
 
-> **setValue**\<`T`\>(`name`, `value`): `void`
+#### Call Signature
 
-Defined in: packages/blue-factory/src/registry.ts:11
+> **setValue**\<`T`\>(`token`, `value`): `void`
 
-#### Type Parameters
+Defined in: packages/blue-factory/src/registry.ts:15
 
-##### T
+##### Type Parameters
+
+###### T
 
 `T` = `any`
 
-#### Parameters
+##### Parameters
 
-##### name
+###### token
 
-`string`
+[`ContextToken`](../classes/ContextToken.md)\<`T`\>
 
-##### value
+###### value
 
 `T`
 
-#### Returns
+##### Returns
+
+`void`
+
+#### Call Signature
+
+> **setValue**\<`T`\>(`name`, `value`): `void`
+
+Defined in: packages/blue-factory/src/registry.ts:16
+
+##### Type Parameters
+
+###### T
+
+`T` = `any`
+
+##### Parameters
+
+###### name
+
+`string`
+
+###### value
+
+`T`
+
+##### Returns
 
 `void`

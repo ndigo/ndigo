@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,11 +6,21 @@
 
 # Interface: ApplicationContext
 
-Defined in: packages/blue-context/src/context.ts:39
+Defined in: packages/blue-context/src/context.ts:66
+
+Central interface to provide configuration for an application.
+An ApplicationContext provides:
+* Factory methods for accessing application components.
+* The ability to load file resources in a generic fashion.
+* The ability to emit events to registered listeners.
+* The ability to resolve content.
+* Inheritance from a parent context unless it is the root context.
+
+In addition to standard Factory\|Factory lifecycle capabilities, `ApplicationContext` implementations detect and invoke [ApplicationContextAware](ApplicationContextAware.md) values as well as ResourceLoaderAware\|ResourceLoaderAware.
 
 ## Extends
 
-- [`ConfigurableFactory`](../../../blue-factory/src/interfaces/ConfigurableFactory.md).[`ContentSource`](../../../blue-content/src/interfaces/ContentSource.md).[`Destroyable`](../../../blue-factory/src/interfaces/Destroyable.md).[`EventEmitter`](EventEmitter.md).[`EnvironmentSource`](EnvironmentSource.md).[`ResourceLoader`](ResourceLoader.md)
+- `ConfigurableFactory`.`ContentSource`.`Destroyable`.[`EventEmitter`](EventEmitter.md).[`EnvironmentSource`](EnvironmentSource.md).[`ResourceLoader`](ResourceLoader.md)
 
 ## Extended by
 
@@ -22,7 +32,19 @@ Defined in: packages/blue-context/src/context.ts:39
 
 > `readonly` **createdTimestamp**: `number`
 
-Defined in: packages/blue-context/src/context.ts:46
+Defined in: packages/blue-context/src/context.ts:76
+
+The timestamp when this context was created.
+
+***
+
+### children
+
+> `readonly` **children**: readonly `ApplicationContext`[]
+
+Defined in: packages/blue-context/src/context.ts:80
+
+A read-only array of child contexts.
 
 ***
 
@@ -30,7 +52,19 @@ Defined in: packages/blue-context/src/context.ts:46
 
 > `readonly` **id**: `number`
 
-Defined in: packages/blue-context/src/context.ts:47
+Defined in: packages/blue-context/src/context.ts:84
+
+The unique identifier for this context.
+
+***
+
+### isActive
+
+> `readonly` **isActive**: `boolean`
+
+Defined in: packages/blue-context/src/context.ts:88
+
+Indicates if the context is currently active.
 
 ***
 
@@ -38,7 +72,9 @@ Defined in: packages/blue-context/src/context.ts:47
 
 > `readonly` **name**: `string`
 
-Defined in: packages/blue-context/src/context.ts:48
+Defined in: packages/blue-context/src/context.ts:92
+
+The name of this context.
 
 ***
 
@@ -46,7 +82,19 @@ Defined in: packages/blue-context/src/context.ts:48
 
 > `readonly` **path**: `string`
 
-Defined in: packages/blue-context/src/context.ts:49
+Defined in: packages/blue-context/src/context.ts:96
+
+The hierarchical path of this context within the application context tree.
+
+***
+
+### themeName
+
+> `readonly` **themeName**: `string`
+
+Defined in: packages/blue-context/src/context.ts:100
+
+The name of the theme associated with this context.
 
 ***
 
@@ -54,19 +102,23 @@ Defined in: packages/blue-context/src/context.ts:49
 
 > **parent**: `ApplicationContext`
 
-Defined in: packages/blue-context/src/context.ts:51
+Defined in: packages/blue-context/src/context.ts:105
+
+The parent context in the hierarchy.
 
 #### Overrides
 
-[`ConfigurableFactory`](../../../blue-factory/src/interfaces/ConfigurableFactory.md).[`parent`](../../../blue-factory/src/interfaces/ConfigurableFactory.md#parent)
+`ConfigurableFactory.parent`
 
 ***
 
 ### destroyedTimestamp?
 
-> `optional` **destroyedTimestamp**: `number`
+> `optional` **destroyedTimestamp?**: `number`
 
-Defined in: packages/blue-context/src/context.ts:53
+Defined in: packages/blue-context/src/context.ts:110
+
+The timestamp when this context was destroyed, if applicable.
 
 ***
 
@@ -74,7 +126,9 @@ Defined in: packages/blue-context/src/context.ts:53
 
 > `readonly` **environment**: [`Environment`](Environment.md)
 
-Defined in: packages/blue-context/src/environment.ts:27
+Defined in: packages/blue-context/src/environment.ts:56
+
+The environment associated with the component.
 
 #### Inherited from
 
@@ -86,11 +140,11 @@ Defined in: packages/blue-context/src/environment.ts:27
 
 > **destroyed**: `boolean`
 
-Defined in: packages/blue-factory/src/lifecycle.ts:7
+Defined in: packages/blue-factory/lib/lifecycle.d.ts:3
 
 #### Inherited from
 
-[`Destroyable`](../../../blue-factory/src/interfaces/Destroyable.md).[`destroyed`](../../../blue-factory/src/interfaces/Destroyable.md#destroyed)
+`Destroyable.destroyed`
 
 ## Methods
 
@@ -98,7 +152,9 @@ Defined in: packages/blue-factory/src/lifecycle.ts:7
 
 > **getContent**(`key`, `language`): `string`
 
-Defined in: packages/blue-content/src/content.ts:10
+Defined in: packages/blue-content/lib/content.d.ts:17
+
+Gets translated content for the requested key and language.
 
 #### Parameters
 
@@ -106,25 +162,33 @@ Defined in: packages/blue-content/src/content.ts:10
 
 `string`
 
+The content key to resolve.
+
 ##### language
 
 `string`
+
+The requested language code.
 
 #### Returns
 
 `string`
 
+The resolved content string.
+
 #### Inherited from
 
-[`ContentSource`](../../../blue-content/src/interfaces/ContentSource.md).[`getContent`](../../../blue-content/src/interfaces/ContentSource.md#getcontent)
+`ContentSource.getContent`
 
 ***
 
-### emit()
+### broadcast()
 
-> **emit**(`type`, ...`data`): `boolean`
+> **broadcast**(`type`, ...`data`): `void`
 
-Defined in: packages/blue-context/src/event-emitter.ts:20
+Defined in: packages/blue-context/src/context.ts:117
+
+Broadcasts an event to all direct and indirect children of this context.
 
 #### Parameters
 
@@ -132,13 +196,223 @@ Defined in: packages/blue-context/src/event-emitter.ts:20
 
 [`EventType`](../type-aliases/EventType.md)
 
+The type of the event.
+
 ##### data
 
 ...`any`[]
 
+The data associated with the event.
+
+#### Returns
+
+`void`
+
+***
+
+### bubble()
+
+> **bubble**(`type`, ...`data`): `void`
+
+Defined in: packages/blue-context/src/context.ts:123
+
+Bubbles an event up the context hierarchy to all parent contexts.
+
+#### Parameters
+
+##### type
+
+[`EventType`](../type-aliases/EventType.md)
+
+The type of the event.
+
+##### data
+
+...`any`[]
+
+The data associated with the event.
+
+#### Returns
+
+`void`
+
+***
+
+### close()
+
+> **close**(): `void`
+
+Defined in: packages/blue-context/src/context.ts:137
+
+Closes this application context and all of its descendants, then destroys associated resources.
+
+**Sequence:**
+1. Emits `'context:close'` on the closing context.
+2. Recursively calls `close()` on each direct child (depth-first).
+3. Invokes `onClose()` on the lifecycle processor, if one is configured.
+4. Destroys all registered factory values via `_destroyValues()`.
+5. Removes this context from its parent's children list.
+6. Emits `'context:destroy'` and marks `destroyed = true`.
+
+Calling `close()` on an already-destroyed context is a safe no-op.
+
+#### Returns
+
+`void`
+
+***
+
+### getTheme()
+
+> **getTheme**(`name?`): `Theme`
+
+Defined in: packages/blue-context/src/context.ts:143
+
+Retrieves a theme by name.
+
+#### Parameters
+
+##### name?
+
+`string`
+
+The optional name of the theme to retrieve. If not provided, the context's default theme is used.
+
+#### Returns
+
+`Theme`
+
+The requested theme.
+
+***
+
+### hasChild()
+
+> **hasChild**(`node`): `boolean`
+
+Defined in: packages/blue-context/src/context.ts:149
+
+Checks if this context has a specific child context.
+
+#### Parameters
+
+##### node
+
+`ApplicationContext`
+
+The application context to check for.
+
 #### Returns
 
 `boolean`
+
+True if the context is a child, false otherwise.
+
+***
+
+### newChild()
+
+> **newChild**(`name?`, `data?`): `ApplicationContext`
+
+Defined in: packages/blue-context/src/context.ts:156
+
+Creates a new child application context.
+
+#### Parameters
+
+##### name?
+
+`string`
+
+The optional name for the new child context.
+
+##### data?
+
+`JSONObject`
+
+Optional initial data for the child context.
+
+#### Returns
+
+`ApplicationContext`
+
+The newly created child application context.
+
+***
+
+### refresh()
+
+> **refresh**(): `void`
+
+Defined in: packages/blue-context/src/context.ts:168
+
+Activates the application context and runs the full initialization lifecycle.
+
+**Sequence:**
+1. Emits `'context:preparing'` — processors may register additional entries.
+2. Runs all registered LifecycleProcessor and EntryRegistryProcessor instances.
+3. Emits `'context:refresh'` — signals that the context is fully active.
+4. Sets `isActive` to `true`.
+
+Calling `refresh()` on an already-active context is a safe no-op.
+
+#### Returns
+
+`void`
+
+***
+
+### removeChild()
+
+> **removeChild**(`node`): `boolean`
+
+Defined in: packages/blue-context/src/context.ts:174
+
+Removes a child context from this context.
+
+#### Parameters
+
+##### node
+
+`ApplicationContext`
+
+The child application context to remove.
+
+#### Returns
+
+`boolean`
+
+True if the child was successfully removed, false otherwise.
+
+***
+
+### emit()
+
+> **emit**(`type`, ...`data`): `boolean`
+
+Defined in: packages/blue-context/src/event-emitter.ts:42
+
+Emits an event to the listeners registered for the given type.
+
+#### Parameters
+
+##### type
+
+[`EventType`](../type-aliases/EventType.md)
+
+The event type.
+
+##### data
+
+...`any`[]
+
+Event payload values.
+
+#### Returns
+
+`boolean`
+
+`true` when at least one listener ran.
 
 #### Inherited from
 
@@ -150,11 +424,15 @@ Defined in: packages/blue-context/src/event-emitter.ts:20
 
 > **eventTypes**(): [`EventType`](../type-aliases/EventType.md)[]
 
-Defined in: packages/blue-context/src/event-emitter.ts:21
+Defined in: packages/blue-context/src/event-emitter.ts:48
+
+Returns the event types with registered listeners.
 
 #### Returns
 
 [`EventType`](../type-aliases/EventType.md)[]
+
+The registered event types.
 
 #### Inherited from
 
@@ -166,7 +444,9 @@ Defined in: packages/blue-context/src/event-emitter.ts:21
 
 > **listenerCount**(`type`): `number`
 
-Defined in: packages/blue-context/src/event-emitter.ts:22
+Defined in: packages/blue-context/src/event-emitter.ts:55
+
+Returns the number of listeners for a type.
 
 #### Parameters
 
@@ -174,9 +454,13 @@ Defined in: packages/blue-context/src/event-emitter.ts:22
 
 [`EventType`](../type-aliases/EventType.md)
 
+The event type.
+
 #### Returns
 
 `number`
+
+The listener count.
 
 #### Inherited from
 
@@ -188,7 +472,9 @@ Defined in: packages/blue-context/src/event-emitter.ts:22
 
 > **listeners**(`type`): `Function`[]
 
-Defined in: packages/blue-context/src/event-emitter.ts:23
+Defined in: packages/blue-context/src/event-emitter.ts:62
+
+Returns a snapshot of listeners for a type.
 
 #### Parameters
 
@@ -196,9 +482,13 @@ Defined in: packages/blue-context/src/event-emitter.ts:23
 
 [`EventType`](../type-aliases/EventType.md)
 
+The event type.
+
 #### Returns
 
 `Function`[]
+
+The registered listeners.
 
 #### Inherited from
 
@@ -210,7 +500,9 @@ Defined in: packages/blue-context/src/event-emitter.ts:23
 
 > **on**(`type`, `listener`): `this`
 
-Defined in: packages/blue-context/src/event-emitter.ts:24
+Defined in: packages/blue-context/src/event-emitter.ts:70
+
+Adds a listener for an event type.
 
 #### Parameters
 
@@ -218,13 +510,19 @@ Defined in: packages/blue-context/src/event-emitter.ts:24
 
 [`EventType`](../type-aliases/EventType.md)
 
+The event type.
+
 ##### listener
 
 `Function`
 
+The listener to register.
+
 #### Returns
 
 `this`
+
+This emitter.
 
 #### Inherited from
 
@@ -236,7 +534,9 @@ Defined in: packages/blue-context/src/event-emitter.ts:24
 
 > **off**(`type`, `listener`): `this`
 
-Defined in: packages/blue-context/src/event-emitter.ts:25
+Defined in: packages/blue-context/src/event-emitter.ts:78
+
+Removes a listener for an event type.
 
 #### Parameters
 
@@ -244,13 +544,19 @@ Defined in: packages/blue-context/src/event-emitter.ts:25
 
 [`EventType`](../type-aliases/EventType.md)
 
+The event type.
+
 ##### listener
 
 `Function`
 
+The listener to remove.
+
 #### Returns
 
 `this`
+
+This emitter.
 
 #### Inherited from
 
@@ -262,7 +568,7 @@ Defined in: packages/blue-context/src/event-emitter.ts:25
 
 > **getResource**(`location`): `Promise`\<[`Resource`](Resource.md)\<`any`\>\>
 
-Defined in: packages/blue-context/src/resource.ts:16
+Defined in: packages/blue-context/src/resource.ts:22
 
 #### Parameters
 
@@ -284,7 +590,9 @@ Defined in: packages/blue-context/src/resource.ts:16
 
 > **getInstance**\<`T`\>(`name`): `T`
 
-Defined in: packages/blue-factory/src/factory.ts:33
+Defined in: packages/blue-factory/lib/factory.d.ts:45
+
+Return an instance of the specified value.
 
 #### Type Parameters
 
@@ -298,13 +606,17 @@ Defined in: packages/blue-factory/src/factory.ts:33
 
 `string`
 
+The name of the value.
+
 #### Returns
 
 `T`
 
+An instance of the value specified by the `name`.
+
 #### Inherited from
 
-[`ConfigurableFactory`](../../../blue-factory/src/interfaces/ConfigurableFactory.md).[`getInstance`](../../../blue-factory/src/interfaces/ConfigurableFactory.md#getinstance)
+`ConfigurableFactory.getInstance`
 
 ***
 
@@ -312,7 +624,9 @@ Defined in: packages/blue-factory/src/factory.ts:33
 
 > **hasOwnValue**(`name`): `boolean`
 
-Defined in: packages/blue-factory/src/factory.ts:38
+Defined in: packages/blue-factory/lib/factory.d.ts:60
+
+Determines whether this factory contains a value with the given name.
 
 #### Parameters
 
@@ -320,13 +634,17 @@ Defined in: packages/blue-factory/src/factory.ts:38
 
 `string`
 
+The name of the value.
+
 #### Returns
 
 `boolean`
 
+`true` if this factory contains the value, `false` otherwise.
+
 #### Inherited from
 
-[`ConfigurableFactory`](../../../blue-factory/src/interfaces/ConfigurableFactory.md).[`hasOwnValue`](../../../blue-factory/src/interfaces/ConfigurableFactory.md#hasownvalue)
+`ConfigurableFactory.hasOwnValue`
 
 ***
 
@@ -334,13 +652,17 @@ Defined in: packages/blue-factory/src/factory.ts:38
 
 > **addProcessor**(`processor`): `void`
 
-Defined in: packages/blue-factory/src/factory.ts:42
+Defined in: packages/blue-factory/lib/factory.d.ts:70
+
+Adds an entry processor to the factory.
 
 #### Parameters
 
 ##### processor
 
-[`EntryProcessor`](../../../blue-factory/src/type-aliases/EntryProcessor.md)
+`EntryProcessor`
+
+The entry processor to add.
 
 #### Returns
 
@@ -348,7 +670,7 @@ Defined in: packages/blue-factory/src/factory.ts:42
 
 #### Inherited from
 
-[`ConfigurableFactory`](../../../blue-factory/src/interfaces/ConfigurableFactory.md).[`addProcessor`](../../../blue-factory/src/interfaces/ConfigurableFactory.md#addprocessor)
+`ConfigurableFactory.addProcessor`
 
 ***
 
@@ -356,13 +678,17 @@ Defined in: packages/blue-factory/src/factory.ts:42
 
 > **setParent**(`parent`): `void`
 
-Defined in: packages/blue-factory/src/factory.ts:43
+Defined in: packages/blue-factory/lib/factory.d.ts:75
+
+Sets the parent factory.
 
 #### Parameters
 
 ##### parent
 
-[`Factory`](../../../blue-factory/src/interfaces/Factory.md)
+`Factory`
+
+The parent factory.
 
 #### Returns
 
@@ -370,7 +696,7 @@ Defined in: packages/blue-factory/src/factory.ts:43
 
 #### Inherited from
 
-[`ConfigurableFactory`](../../../blue-factory/src/interfaces/ConfigurableFactory.md).[`setParent`](../../../blue-factory/src/interfaces/ConfigurableFactory.md#setparent)
+`ConfigurableFactory.setParent`
 
 ***
 
@@ -378,7 +704,7 @@ Defined in: packages/blue-factory/src/factory.ts:43
 
 > **destroy**(): `void`
 
-Defined in: packages/blue-factory/src/lifecycle.ts:8
+Defined in: packages/blue-factory/lib/lifecycle.d.ts:4
 
 #### Returns
 
@@ -386,108 +712,224 @@ Defined in: packages/blue-factory/src/lifecycle.ts:8
 
 #### Inherited from
 
-[`Destroyable`](../../../blue-factory/src/interfaces/Destroyable.md).[`destroy`](../../../blue-factory/src/interfaces/Destroyable.md#destroy)
+`Destroyable.destroy`
 
 ***
 
 ### destroyValue()
 
-> **destroyValue**(`name`): `void`
+#### Call Signature
 
-Defined in: packages/blue-factory/src/registry.ts:8
+> **destroyValue**\<`T`\>(`token`): `void`
 
-#### Parameters
+Defined in: packages/blue-factory/lib/registry.d.ts:6
 
-##### name
+##### Type Parameters
 
-`string`
+###### T
 
-#### Returns
+`T` = `any`
+
+##### Parameters
+
+###### token
+
+[`ContextToken`](../classes/ContextToken.md)\<`T`\>
+
+##### Returns
 
 `void`
 
-#### Inherited from
+##### Inherited from
 
-[`ConfigurableFactory`](../../../blue-factory/src/interfaces/ConfigurableFactory.md).[`destroyValue`](../../../blue-factory/src/interfaces/ConfigurableFactory.md#destroyvalue)
+`ConfigurableFactory.destroyValue`
+
+#### Call Signature
+
+> **destroyValue**(`name`): `void`
+
+Defined in: packages/blue-factory/lib/registry.d.ts:7
+
+##### Parameters
+
+###### name
+
+`string`
+
+##### Returns
+
+`void`
+
+##### Inherited from
+
+`ConfigurableFactory.destroyValue`
 
 ***
 
 ### getValue()
 
-> **getValue**\<`T`\>(`name`): `T`
+#### Call Signature
 
-Defined in: packages/blue-factory/src/registry.ts:9
+> **getValue**\<`T`\>(`token`): `T`
 
-#### Type Parameters
+Defined in: packages/blue-factory/lib/registry.d.ts:8
 
-##### T
+##### Type Parameters
+
+###### T
 
 `T` = `any`
 
-#### Parameters
+##### Parameters
 
-##### name
+###### token
 
-`string`
+[`ContextToken`](../classes/ContextToken.md)\<`T`\>
 
-#### Returns
+##### Returns
 
 `T`
 
-#### Inherited from
+##### Inherited from
 
-[`ConfigurableFactory`](../../../blue-factory/src/interfaces/ConfigurableFactory.md).[`getValue`](../../../blue-factory/src/interfaces/ConfigurableFactory.md#getvalue)
+`ConfigurableFactory.getValue`
+
+#### Call Signature
+
+> **getValue**\<`T`\>(`name`): `T`
+
+Defined in: packages/blue-factory/lib/registry.d.ts:9
+
+##### Type Parameters
+
+###### T
+
+`T` = `any`
+
+##### Parameters
+
+###### name
+
+`string`
+
+##### Returns
+
+`T`
+
+##### Inherited from
+
+`ConfigurableFactory.getValue`
 
 ***
 
 ### hasValue()
 
-> **hasValue**(`name`): `boolean`
+#### Call Signature
 
-Defined in: packages/blue-factory/src/registry.ts:10
+> **hasValue**\<`T`\>(`token`): `boolean`
 
-#### Parameters
+Defined in: packages/blue-factory/lib/registry.d.ts:10
 
-##### name
+##### Type Parameters
 
-`string`
+###### T
 
-#### Returns
+`T` = `any`
+
+##### Parameters
+
+###### token
+
+[`ContextToken`](../classes/ContextToken.md)\<`T`\>
+
+##### Returns
 
 `boolean`
 
-#### Inherited from
+##### Inherited from
 
-[`ConfigurableFactory`](../../../blue-factory/src/interfaces/ConfigurableFactory.md).[`hasValue`](../../../blue-factory/src/interfaces/ConfigurableFactory.md#hasvalue)
+`ConfigurableFactory.hasValue`
+
+#### Call Signature
+
+> **hasValue**(`name`): `boolean`
+
+Defined in: packages/blue-factory/lib/registry.d.ts:11
+
+##### Parameters
+
+###### name
+
+`string`
+
+##### Returns
+
+`boolean`
+
+##### Inherited from
+
+`ConfigurableFactory.hasValue`
 
 ***
 
 ### setValue()
 
-> **setValue**\<`T`\>(`name`, `value`): `void`
+#### Call Signature
 
-Defined in: packages/blue-factory/src/registry.ts:11
+> **setValue**\<`T`\>(`token`, `value`): `void`
 
-#### Type Parameters
+Defined in: packages/blue-factory/lib/registry.d.ts:12
 
-##### T
+##### Type Parameters
+
+###### T
 
 `T` = `any`
 
-#### Parameters
+##### Parameters
 
-##### name
+###### token
 
-`string`
+[`ContextToken`](../classes/ContextToken.md)\<`T`\>
 
-##### value
+###### value
 
 `T`
 
-#### Returns
+##### Returns
 
 `void`
 
-#### Inherited from
+##### Inherited from
 
-[`ConfigurableFactory`](../../../blue-factory/src/interfaces/ConfigurableFactory.md).[`setValue`](../../../blue-factory/src/interfaces/ConfigurableFactory.md#setvalue)
+`ConfigurableFactory.setValue`
+
+#### Call Signature
+
+> **setValue**\<`T`\>(`name`, `value`): `void`
+
+Defined in: packages/blue-factory/lib/registry.d.ts:13
+
+##### Type Parameters
+
+###### T
+
+`T` = `any`
+
+##### Parameters
+
+###### name
+
+`string`
+
+###### value
+
+`T`
+
+##### Returns
+
+`void`
+
+##### Inherited from
+
+`ConfigurableFactory.setValue`

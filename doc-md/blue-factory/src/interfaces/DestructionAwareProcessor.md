@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,9 @@
 
 # Interface: DestructionAwareProcessor
 
-Defined in: packages/blue-factory/src/entry-processor.ts:21
+Defined in: packages/blue-factory/src/entry-processor.ts:75
+
+Factory hook that allows for custom modification of new instances, e.g. checking for marker interfaces or wrapping them with proxies.
 
 ## Methods
 
@@ -14,7 +16,9 @@ Defined in: packages/blue-factory/src/entry-processor.ts:21
 
 > **processBeforeDestruction**\<`T`\>(`name`, `instance`): `void`
 
-Defined in: packages/blue-factory/src/entry-processor.ts:22
+Defined in: packages/blue-factory/src/entry-processor.ts:81
+
+Apply this EntryProcessor to the given instance before its destruction.
 
 #### Type Parameters
 
@@ -28,9 +32,13 @@ Defined in: packages/blue-factory/src/entry-processor.ts:22
 
 `string`
 
+The name of instance
+
 ##### instance
 
 `T`
+
+The instance to be destroyed.
 
 #### Returns
 

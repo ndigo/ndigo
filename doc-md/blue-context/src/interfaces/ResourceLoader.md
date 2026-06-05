@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,9 @@
 
 # Interface: ResourceLoader
 
-Defined in: packages/blue-context/src/resource.ts:15
+Defined in: packages/blue-context/src/resource.ts:21
+
+Loads resources from a location string.
 
 ## Extended by
 
@@ -18,7 +20,7 @@ Defined in: packages/blue-context/src/resource.ts:15
 
 > **getResource**(`location`): `Promise`\<[`Resource`](Resource.md)\<`any`\>\>
 
-Defined in: packages/blue-context/src/resource.ts:16
+Defined in: packages/blue-context/src/resource.ts:22
 
 #### Parameters
 

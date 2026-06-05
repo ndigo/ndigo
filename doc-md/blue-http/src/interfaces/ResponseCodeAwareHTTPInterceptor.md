@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,12 +6,10 @@
 
 # Interface: ResponseCodeAwareHTTPInterceptor
 
-Defined in: packages/blue-http/src/interceptors/response-code-interceptor.ts:11
+Defined in: packages/blue-http/src/interceptors/response-code-interceptor.ts:14
 
-## See
-
-[https://developer.mozilla.org/en-US/docs/Web/HTTP/Status](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status)
+Hooks keyed by exact HTTP status code.
 
 ## Indexable
 
-\[`statusCode`: `number`\]: (`response`, `settings`) => `Promise`\<`void`\>
+> \[`statusCode`: `number`\]: (`response`, `settings`) => `Promise`\<`void`\>

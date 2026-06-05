@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,6 +6,8 @@
 
 # Type Alias: ResponseParsers
 
-> **ResponseParsers** = [`ResponseParserMap`](ResponseParserMap.md) \| \{\[`mediaType`: `string`\]: [`ResponseParser`](ResponseParser.md)\<`any`\>; \} \| \[\[`string` \| [`MediaType`](../../../blue-core/src/classes/MediaType.md), [`ResponseParser`](ResponseParser.md)\]\]
+> **ResponseParsers** = [`ResponseParserMap`](ResponseParserMap.md) \| \{\[`mediaType`: `string`\]: [`ResponseParser`](ResponseParser.md)\<`any`\>; \} \| \[\[`string` \| `MediaType`, [`ResponseParser`](ResponseParser.md)\]\]
 
-Defined in: packages/blue-http/src/interceptors/response-type-interceptor.ts:15
+Defined in: packages/blue-http/src/interceptors/response-type-interceptor.ts:24
+
+Supported parser collections accepted by [ResponseTypeInterceptor](../classes/ResponseTypeInterceptor.md).

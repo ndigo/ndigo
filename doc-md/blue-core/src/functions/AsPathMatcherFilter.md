@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **AsPathMatcherFilter**\<`T`\>(`superclass`): [`Constructable`](../type-aliases/Constructable.md)\<[`PathMatcherFilter`](../interfaces/PathMatcherFilter.md)\> & `T`
 
-Defined in: packages/blue-core/src/path-matcher.ts:290
+Defined in: packages/blue-core/src/path-matcher.ts:346
 
 ## Type Parameters
 

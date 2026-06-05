@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,13 +6,9 @@
 
 # Interface: Serializable
 
-Defined in: packages/blue-core/src/serializable.ts:28
+Defined in: packages/blue-core/src/serializable.ts:27
 
-## Extended by
-
-- [`RouteSegment`](../../../blue-router/src/interfaces/RouteSegment.md)
-- [`Route`](../../../blue-router/src/interfaces/Route.md)
-- [`DomainComponent`](../../../blue-domain/src/interfaces/DomainComponent.md)
+A value that can safely be converted to a string or JSON payload.
 
 ## Methods
 
@@ -20,7 +16,7 @@ Defined in: packages/blue-core/src/serializable.ts:28
 
 > **toString**(): `string`
 
-Defined in: packages/blue-core/src/serializable.ts:29
+Defined in: packages/blue-core/src/serializable.ts:28
 
 #### Returns
 
@@ -32,7 +28,7 @@ Defined in: packages/blue-core/src/serializable.ts:29
 
 > `optional` **toJSON**(): [`JSONValue`](../type-aliases/JSONValue.md)
 
-Defined in: packages/blue-core/src/serializable.ts:30
+Defined in: packages/blue-core/src/serializable.ts:29
 
 #### Returns
 

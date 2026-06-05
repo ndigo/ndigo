@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -8,4 +8,6 @@
 
 > `const` **FullString**: `BasicModel`\<`StringConstructor`\>
 
-Defined in: packages/blue-model/src/basic.ts:58
+Defined in: packages/blue-model/src/basic.ts:83
+
+Matches strings that are not blank.

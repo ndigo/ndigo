@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,29 +6,35 @@
 
 # Class: CookieThemeResolver
 
-Defined in: packages/blue-platform-web/src/cookie-theme-resolver.ts:12
+Defined in: packages/blue-platform-web/src/cookie-theme-resolver.ts:13
 
 ## Extends
 
-- [`AbstractThemeResolver`](../../../blue-dispatcher/src/classes/AbstractThemeResolver.md)
+- `AbstractThemeResolver`
 
 ## Constructors
 
 ### Constructor
 
-> **new CookieThemeResolver**(`cookieName`, `defaultThemeName`): `CookieThemeResolver`
+> **new CookieThemeResolver**(`cookieName?`, `defaultThemeName?`): `CookieThemeResolver`
 
-Defined in: packages/blue-platform-web/src/cookie-theme-resolver.ts:19
+Defined in: packages/blue-platform-web/src/cookie-theme-resolver.ts:27
+
+Creates a cookie-backed theme resolver.
 
 #### Parameters
 
-##### cookieName
+##### cookieName?
 
-`string`
+`string` = `'theme'`
 
-##### defaultThemeName
+Cookie name that stores the theme.
 
-`string`
+##### defaultThemeName?
+
+`string` = `'default'`
+
+Fallback theme when the cookie is absent.
 
 #### Returns
 
@@ -36,7 +42,7 @@ Defined in: packages/blue-platform-web/src/cookie-theme-resolver.ts:19
 
 #### Overrides
 
-[`AbstractThemeResolver`](../../../blue-dispatcher/src/classes/AbstractThemeResolver.md).[`constructor`](../../../blue-dispatcher/src/classes/AbstractThemeResolver.md#constructor)
+`AbstractThemeResolver.constructor`
 
 ## Properties
 
@@ -44,11 +50,13 @@ Defined in: packages/blue-platform-web/src/cookie-theme-resolver.ts:19
 
 > `readonly` **defaultThemeName**: `string`
 
-Defined in: packages/blue-dispatcher/src/theme-resolver.ts:22
+Defined in: packages/blue-dispatcher/lib/theme-resolver.d.ts:21
+
+Fallback theme name used when a route-specific theme is unavailable.
 
 #### Inherited from
 
-[`AbstractThemeResolver`](../../../blue-dispatcher/src/classes/AbstractThemeResolver.md).[`defaultThemeName`](../../../blue-dispatcher/src/classes/AbstractThemeResolver.md#defaultthemename)
+`AbstractThemeResolver.defaultThemeName`
 
 ***
 
@@ -56,7 +64,7 @@ Defined in: packages/blue-dispatcher/src/theme-resolver.ts:22
 
 > `readonly` **cookieName**: `string`
 
-Defined in: packages/blue-platform-web/src/cookie-theme-resolver.ts:13
+Defined in: packages/blue-platform-web/src/cookie-theme-resolver.ts:15
 
 ## Accessors
 
@@ -66,7 +74,7 @@ Defined in: packages/blue-platform-web/src/cookie-theme-resolver.ts:13
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-platform-web/src/cookie-theme-resolver.ts:15
+Defined in: packages/blue-platform-web/src/cookie-theme-resolver.ts:17
 
 ##### Returns
 
@@ -74,7 +82,7 @@ Defined in: packages/blue-platform-web/src/cookie-theme-resolver.ts:15
 
 #### Overrides
 
-[`AbstractThemeResolver`](../../../blue-dispatcher/src/classes/AbstractThemeResolver.md).[`[toStringTag]`](../../../blue-dispatcher/src/classes/AbstractThemeResolver.md#tostringtag)
+`AbstractThemeResolver.[toStringTag]`
 
 ## Methods
 
@@ -82,13 +90,15 @@ Defined in: packages/blue-platform-web/src/cookie-theme-resolver.ts:15
 
 > **resolveTheme**(`route`): `string`
 
-Defined in: packages/blue-platform-web/src/cookie-theme-resolver.ts:31
+Defined in: packages/blue-platform-web/src/cookie-theme-resolver.ts:34
+
+Resolves the current theme from cookies or the fallback value.
 
 #### Parameters
 
 ##### route
 
-[`Route`](../../../blue-router/src/interfaces/Route.md)
+`Route`
 
 #### Returns
 
@@ -96,4 +106,34 @@ Defined in: packages/blue-platform-web/src/cookie-theme-resolver.ts:31
 
 #### Overrides
 
-[`AbstractThemeResolver`](../../../blue-dispatcher/src/classes/AbstractThemeResolver.md).[`resolveTheme`](../../../blue-dispatcher/src/classes/AbstractThemeResolver.md#resolvetheme)
+`AbstractThemeResolver.resolveTheme`
+
+***
+
+### fromApplicationContext()
+
+> `static` **fromApplicationContext**(`applicationContext`, `cookieName?`): `CookieThemeResolver`
+
+Defined in: packages/blue-platform-web/src/cookie-theme-resolver.ts:52
+
+Creates a resolver from application-context defaults.
+
+#### Parameters
+
+##### applicationContext
+
+`ApplicationContext`
+
+Context supplying the fallback theme.
+
+##### cookieName?
+
+`string` = `'theme'`
+
+Cookie name that stores the theme.
+
+#### Returns
+
+`CookieThemeResolver`
+
+A cookie-backed theme resolver.

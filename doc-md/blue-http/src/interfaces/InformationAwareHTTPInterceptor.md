@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,19 +6,17 @@
 
 # Interface: InformationAwareHTTPInterceptor
 
-Defined in: packages/blue-http/src/interceptors/response-class-interceptor.ts:15
+Defined in: packages/blue-http/src/interceptors/response-class-interceptor.ts:18
 
-## See
-
-[https://developer.mozilla.org/en-US/docs/Web/HTTP/Status](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status)
+Handles informational responses.
 
 ## Methods
 
 ### postInformationalResponse()
 
-> **postInformationalResponse**(`response`, `settings`): `Promise`\<`void` \| [`JSONObject`](../../../blue-core/src/interfaces/JSONObject.md)\>
+> **postInformationalResponse**(`response`, `settings`): `Promise`\<`void` \| `JSONObject`\>
 
-Defined in: packages/blue-http/src/interceptors/response-class-interceptor.ts:16
+Defined in: packages/blue-http/src/interceptors/response-class-interceptor.ts:19
 
 #### Parameters
 
@@ -32,4 +30,4 @@ Defined in: packages/blue-http/src/interceptors/response-class-interceptor.ts:16
 
 #### Returns
 
-`Promise`\<`void` \| [`JSONObject`](../../../blue-core/src/interfaces/JSONObject.md)\>
+`Promise`\<`void` \| `JSONObject`\>

@@ -1,14 +1,14 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
 [BlueJS Framework](../../../modules.md) / [blue-http/src](../README.md) / freeze
 
-# Variable: freeze()
+# Variable: freeze
 
 > **freeze**: \{\<`T`\>(`f`): `T`; \<`T`, `U`\>(`o`): `Readonly`\<`T`\>; \<`T`\>(`o`): `Readonly`\<`T`\>; \}
 
-Defined in: packages/blue-http/src/http.ts:154
+Defined in: packages/blue-http/src/http.ts:269
 
 ## Call Signature
 

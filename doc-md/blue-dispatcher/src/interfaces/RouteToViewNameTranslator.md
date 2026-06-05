@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,9 @@
 
 # Interface: RouteToViewNameTranslator
 
-Defined in: packages/blue-dispatcher/src/route-to-view-name-translator.ts:7
+Defined in: packages/blue-dispatcher/src/route-to-view-name-translator.ts:10
+
+Translates a route into a view name.
 
 ## Methods
 
@@ -14,14 +16,20 @@ Defined in: packages/blue-dispatcher/src/route-to-view-name-translator.ts:7
 
 > **getViewName**(`route`): `string`
 
-Defined in: packages/blue-dispatcher/src/route-to-view-name-translator.ts:8
+Defined in: packages/blue-dispatcher/src/route-to-view-name-translator.ts:17
+
+Resolve the view name for a route.
 
 #### Parameters
 
 ##### route
 
-[`Route`](../../../blue-router/src/interfaces/Route.md)
+`Route`
+
+The current route.
 
 #### Returns
 
 `string`
+
+The resolved view name.

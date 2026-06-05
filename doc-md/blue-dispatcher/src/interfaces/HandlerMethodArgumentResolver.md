@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,9 @@
 
 # Interface: HandlerMethodArgumentResolver
 
-Defined in: packages/blue-dispatcher/src/argument-resolver.ts:10
+Defined in: packages/blue-dispatcher/src/argument-resolver.ts:13
+
+Strategy interface for resolving method parameters into argument values in the context of a given route.
 
 ## Methods
 
@@ -14,7 +16,9 @@ Defined in: packages/blue-dispatcher/src/argument-resolver.ts:10
 
 > **supportsParameter**(`parameter`): `boolean`
 
-Defined in: packages/blue-dispatcher/src/argument-resolver.ts:11
+Defined in: packages/blue-dispatcher/src/argument-resolver.ts:19
+
+Whether the given method parameter is supported by this resolver.
 
 #### Parameters
 
@@ -22,9 +26,13 @@ Defined in: packages/blue-dispatcher/src/argument-resolver.ts:11
 
 [`MethodParameter`](../classes/MethodParameter.md)
 
+The method parameter to check.
+
 #### Returns
 
 `boolean`
+
+Whether or not the given method parameter is supported by this resolver.
 
 ***
 
@@ -32,7 +40,9 @@ Defined in: packages/blue-dispatcher/src/argument-resolver.ts:11
 
 > **resolveArgument**(`parameter`, `route`, `mapping`): `any`
 
-Defined in: packages/blue-dispatcher/src/argument-resolver.ts:12
+Defined in: packages/blue-dispatcher/src/argument-resolver.ts:27
+
+Resolves a method parameter into an argument value from a given route.
 
 #### Parameters
 
@@ -40,14 +50,22 @@ Defined in: packages/blue-dispatcher/src/argument-resolver.ts:12
 
 [`MethodParameter`](../classes/MethodParameter.md)
 
+The method parameter to resolve.
+
 ##### route
 
-[`Route`](../../../blue-router/src/interfaces/Route.md)
+`Route`
+
+The current route.
 
 ##### mapping
 
 `any`
 
+The route handler mapping.
+
 #### Returns
 
 `any`
+
+The resolved argument value, or `null` if not resolvable.

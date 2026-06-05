@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -8,4 +8,6 @@
 
 > `const` **NormalizedString**: `BasicModel`\<`StringConstructor`\>
 
-Defined in: packages/blue-model/src/basic.ts:59
+Defined in: packages/blue-model/src/basic.ts:89
+
+Matches strings already in normalized Unicode form.

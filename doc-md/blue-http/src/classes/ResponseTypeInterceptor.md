@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,17 @@
 
 # Class: ResponseTypeInterceptor
 
-Defined in: packages/blue-http/src/interceptors/response-type-interceptor.ts:73
+Defined in: packages/blue-http/src/interceptors/response-type-interceptor.ts:94
+
+Parses response bodies into typed data and attaches the result as `data`.
+
+## Implements
+
+module:http.InitializationAwareHTTPInterceptor
+
+## Implements
+
+module:http.ResponseAwareHTTPInterceptor
 
 ## Implements
 
@@ -29,7 +39,7 @@ Defined in: packages/blue-http/src/interceptors/response-type-interceptor.ts:73
 
 > **preInit**(`url`, `settings`): `boolean`
 
-Defined in: packages/blue-http/src/interceptors/response-type-interceptor.ts:81
+Defined in: packages/blue-http/src/interceptors/response-type-interceptor.ts:102
 
 #### Parameters
 
@@ -59,9 +69,9 @@ Whether or not the http request should continue execution.
 
 ### postResponse()
 
-> **postResponse**(`response`, `settings`): `Promise`\<`void`\>
+> **postResponse**(`response`, `settings`): `Promise`\<`void` \| `Response`\>
 
-Defined in: packages/blue-http/src/interceptors/response-type-interceptor.ts:116
+Defined in: packages/blue-http/src/interceptors/response-type-interceptor.ts:137
 
 #### Parameters
 
@@ -75,11 +85,9 @@ Defined in: packages/blue-http/src/interceptors/response-type-interceptor.ts:116
 
 #### Returns
 
-`Promise`\<`void`\>
+`Promise`\<`void` \| `Response`\>
 
 #### Async
-
-*
 
 #### Implementation of
 

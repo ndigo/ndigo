@@ -3,7 +3,6 @@
  */
 
 import { bench, describe } from 'vitest';
-import * as R from 'ramda';
 import isNumber from '../src/type/is-number.js';
 
 class RouteData {
@@ -77,26 +76,6 @@ describe('cond (7-branch) vs switch dispatch', () => {
         null,
     ];
 
-    const ramdaDispatch = R.cond<any, number>([
-        [R.is(RouteData), () => 1],
-        [R.is(QueryData), () => 2],
-        [R.is(HeaderData), () => 3],
-        [R.is(CookieData), () => 4],
-        [R.is(BodyData), () => 5],
-        [R.is(BufferData), () => 6],
-        [R.is(MetaData), () => 7],
-    ]);
-
-    bench('ramda: cond with is() predicates', () => {
-        let total = 0;
-        for (let i = 0; i < 1000; i++) {
-            for (const x of inputs) {
-                total += ramdaDispatch(x) ?? 0;
-            }
-        }
-        _sink += total;
-    });
-
     bench('native: switch(true) with instanceof', () => {
         let total = 0;
         for (let i = 0; i < 1000; i++) {
@@ -137,18 +116,6 @@ describe('allPass vs logical &&', () => {
     const inputs = [3, 0, -1, NaN, Infinity, 12, '7', null, undefined];
     const isPositiveNumberRamda = R.allPass<any>([isNumber, R.gte(R.__, 0)]);
 
-    bench('ramda: allPass([isNumber, gte(__, 0)])', () => {
-        let count = 0;
-        for (let i = 0; i < 1000; i++) {
-            for (const x of inputs) {
-                if (isPositiveNumberRamda(x)) {
-                    count++;
-                }
-            }
-        }
-        _sink += count;
-    });
-
     bench('native: isNumber(x) && x >= 0', () => {
         let count = 0;
         for (let i = 0; i < 1000; i++) {
@@ -167,18 +134,6 @@ describe('both vs inline && function', () => {
     const lessThanZero = (value: number) => value < 0;
     const bothPredicates = R.both(isNumber, lessThanZero);
 
-    bench('ramda: both(isNumber, lessThanZero)', () => {
-        let count = 0;
-        for (let i = 0; i < 1000; i++) {
-            for (const x of inputs) {
-                if (bothPredicates(x)) {
-                    count++;
-                }
-            }
-        }
-        _sink += count;
-    });
-
     bench('native: x => isNumber(x) && x < 0', () => {
         let count = 0;
         for (let i = 0; i < 1000; i++) {
@@ -195,18 +150,6 @@ describe('both vs inline && function', () => {
 describe('complement vs negation wrapper', () => {
     const inputs = [null, undefined, 0, '', false, {}, [], 'x'];
     const isNotNilRamda = R.complement(R.isNil);
-
-    bench('ramda: complement(isNil)', () => {
-        let count = 0;
-        for (let i = 0; i < 1000; i++) {
-            for (const x of inputs) {
-                if (isNotNilRamda(x)) {
-                    count++;
-                }
-            }
-        }
-        _sink += count;
-    });
 
     bench('native: x => !(x == null)', () => {
         let count = 0;
@@ -227,16 +170,6 @@ describe('ifElse vs ternary', () => {
     const identityLength = (value: unknown) => (value === null || value === undefined ? 0 : 1);
     const ramdaIfElse = R.ifElse(R.is(String), parseQuery, identityLength);
 
-    bench('ramda: ifElse(isString, parse, identity)', () => {
-        let total = 0;
-        for (let i = 0; i < 1000; i++) {
-            for (const x of inputs) {
-                total += ramdaIfElse(x);
-            }
-        }
-        _sink += total;
-    });
-
     bench('native: typeof check + ternary', () => {
         let total = 0;
         for (let i = 0; i < 1000; i++) {
@@ -254,16 +187,6 @@ describe('cond (2-branch) vs if/else', () => {
         [R.isNil, () => 1],
         [Array.isArray, () => 2],
     ]);
-
-    bench('ramda: small cond', () => {
-        let total = 0;
-        for (let i = 0; i < 1000; i++) {
-            for (const x of inputs) {
-                total += ramdaSmallCond(x) ?? 3;
-            }
-        }
-        _sink += total;
-    });
 
     bench('native: if/else chain', () => {
         let total = 0;

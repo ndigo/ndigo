@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,12 +6,14 @@
 
 # Class: MethodParameterType
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:52
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:49
+
+Method parameter type enum
 
 ## Implements
 
-- [`Equatable`](../../../blue-core/src/interfaces/Equatable.md)
-- [`Serializable`](../../../blue-core/src/interfaces/Serializable.md)
+- `Equatable`
+- `Serializable`
 
 ## Constructors
 
@@ -19,7 +21,7 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:52
 
 > **new MethodParameterType**(`type`): `MethodParameterType`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:78
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:83
 
 #### Parameters
 
@@ -37,7 +39,15 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:78
 
 > `static` **COOKIE**: `MethodParameterType`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:53
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:50
+
+***
+
+### MODEL
+
+> `static` **MODEL**: `MethodParameterType`
+
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:51
 
 ***
 
@@ -45,7 +55,15 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:53
 
 > `static` **MATRIX**: `MethodParameterType`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:54
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:52
+
+***
+
+### PATH
+
+> `static` **PATH**: `MethodParameterType`
+
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:53
 
 ***
 
@@ -53,7 +71,55 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:54
 
 > `static` **QUERY**: `MethodParameterType`
 
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:54
+
+***
+
+### STATE
+
+> `static` **STATE**: `MethodParameterType`
+
 Defined in: packages/blue-dispatcher/src/route-parameter.ts:55
+
+***
+
+### SESSION
+
+> `static` **SESSION**: `MethodParameterType`
+
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:56
+
+***
+
+### BIND
+
+> `static` **BIND**: `MethodParameterType`
+
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:57
+
+***
+
+### ATTRIBUTE
+
+> `static` **ATTRIBUTE**: `MethodParameterType`
+
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:58
+
+***
+
+### HEADER
+
+> `static` **HEADER**: `MethodParameterType`
+
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:59
+
+***
+
+### BODY
+
+> `static` **BODY**: `MethodParameterType`
+
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:60
 
 ***
 
@@ -61,7 +127,7 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:55
 
 > `readonly` **type**: `string`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:72
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:77
 
 ## Accessors
 
@@ -71,7 +137,7 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:72
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:74
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:79
 
 ##### Returns
 
@@ -83,7 +149,7 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:74
 
 > `static` **fromType**(`type`): `MethodParameterType`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:57
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:62
 
 #### Parameters
 
@@ -101,7 +167,9 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:57
 
 > **equals**(`value`): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:87
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:92
+
+Determines if this object is equal to the specified value.
 
 #### Parameters
 
@@ -109,13 +177,17 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:87
 
 `any`
 
+The value to compare with this object.
+
 #### Returns
 
 `boolean`
 
+`true` if the objects are equal, `false` otherwise.
+
 #### Implementation of
 
-[`Equatable`](../../../blue-core/src/interfaces/Equatable.md).[`equals`](../../../blue-core/src/interfaces/Equatable.md#equals)
+`Equatable.equals`
 
 ***
 
@@ -123,7 +195,7 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:87
 
 > **toJSON**(): `string`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:91
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:96
 
 #### Returns
 
@@ -131,7 +203,7 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:91
 
 #### Implementation of
 
-[`Serializable`](../../../blue-core/src/interfaces/Serializable.md).[`toJSON`](../../../blue-core/src/interfaces/Serializable.md#tojson)
+`Serializable.toJSON`
 
 ***
 
@@ -139,7 +211,7 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:91
 
 > **toString**(): `string`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:95
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:100
 
 Returns a string representation of an object.
 
@@ -149,4 +221,4 @@ Returns a string representation of an object.
 
 #### Implementation of
 
-[`Serializable`](../../../blue-core/src/interfaces/Serializable.md).[`toString`](../../../blue-core/src/interfaces/Serializable.md#tostring)
+`Serializable.toString`

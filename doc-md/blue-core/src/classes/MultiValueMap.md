@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Class: MultiValueMap\<K, V\>
 
-Defined in: packages/blue-core/src/collection.ts:285
+Defined in: packages/blue-core/src/collection.ts:249
 
 Extension of the external:Map\|Map interface that stores multiple values under a single key.
 
@@ -30,7 +30,7 @@ Extension of the external:Map\|Map interface that stores multiple values under a
 
 > **new MultiValueMap**\<`K`, `V`\>(`entries?`): `MultiValueMap`\<`K`, `V`\>
 
-Defined in: node\_modules/.pnpm/typescript@5.7.3/node\_modules/typescript/lib/lib.es2015.collection.d.ts:50
+Defined in: node\_modules/.pnpm/typescript@5.8.3/node\_modules/typescript/lib/lib.es2015.collection.d.ts:50
 
 #### Parameters
 
@@ -50,7 +50,7 @@ readonly readonly \[`K`, `V`[]\][]
 
 > **new MultiValueMap**\<`K`, `V`\>(`iterable?`): `MultiValueMap`\<`K`, `V`\>
 
-Defined in: node\_modules/.pnpm/typescript@5.7.3/node\_modules/typescript/lib/lib.es2015.collection.d.ts:49
+Defined in: node\_modules/.pnpm/typescript@5.8.3/node\_modules/typescript/lib/lib.es2015.collection.d.ts:49
 
 #### Parameters
 
@@ -74,7 +74,9 @@ Defined in: node\_modules/.pnpm/typescript@5.7.3/node\_modules/typescript/lib/li
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-core/src/collection.ts:286
+Defined in: packages/blue-core/src/collection.ts:253
+
+The string tag for this class.
 
 ##### Returns
 
@@ -90,7 +92,10 @@ Defined in: packages/blue-core/src/collection.ts:286
 
 > **add**(`key`, `value`): `this`
 
-Defined in: packages/blue-core/src/collection.ts:295
+Defined in: packages/blue-core/src/collection.ts:264
+
+Adds a value to the collection associated with the given key.
+If the key does not exist, a new array is created for the value.
 
 #### Parameters
 
@@ -98,12 +103,16 @@ Defined in: packages/blue-core/src/collection.ts:295
 
 `K`
 
+The key to associate the value with.
+
 ##### value
 
 `V`
+
+The value to add.
 
 #### Returns
 
 `this`
 
-this
+This MultiValueMap instance.

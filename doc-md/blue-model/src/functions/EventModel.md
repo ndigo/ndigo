@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -8,7 +8,13 @@
 
 > **EventModel**(`def`): `any`
 
-Defined in: packages/blue-model/src/event.ts:32
+Defined in: packages/blue-model/src/event.ts:108
+
+Creates a model constructor that emits change events for assigned properties.
+
+Uses the public ObjectModel API and wraps each instance in a Proxy that
+intercepts successful property sets and fires `change:<key>` events (which
+bubble up through colon-delimited prefixes, e.g. `change`).
 
 ## Parameters
 
@@ -16,6 +22,10 @@ Defined in: packages/blue-model/src/event.ts:32
 
 `any`
 
+ObjectModel definition used to validate values.
+
 ## Returns
 
 `any`
+
+A model constructor with minimal `emit`, `on`, and `off` support.

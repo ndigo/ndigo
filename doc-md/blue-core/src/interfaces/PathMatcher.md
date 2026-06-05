@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,10 @@
 
 # Interface: PathMatcher
 
-Defined in: packages/blue-core/src/path-matcher.ts:11
+Defined in: packages/blue-core/src/path-matcher.ts:25
+
+Defines a contract for matching and merging path patterns.
+This interface extends `PatternMatcher` for string patterns and paths.
 
 ## Extends
 
@@ -18,7 +21,12 @@ Defined in: packages/blue-core/src/path-matcher.ts:11
 
 > **getPatternComparator**(`path`): [`Comparator`](Comparator.md)\<`string`\>
 
-Defined in: packages/blue-core/src/path-matcher.ts:12
+Defined in: packages/blue-core/src/path-matcher.ts:34
+
+Given a full path, returns a [Comparator](Comparator.md) suitable for sorting patterns
+in order of explicitness for that path.
+
+The approach used depends on the underlying implementation.
 
 #### Parameters
 
@@ -26,9 +34,13 @@ Defined in: packages/blue-core/src/path-matcher.ts:12
 
 `string`
 
+The full path to use for comparison.
+
 #### Returns
 
 [`Comparator`](Comparator.md)\<`string`\>
+
+A comparator capable of sorting patterns in order of explicitness.
 
 ***
 
@@ -36,7 +48,9 @@ Defined in: packages/blue-core/src/path-matcher.ts:12
 
 > **match**(`pattern`, `path`): `boolean`
 
-Defined in: packages/blue-core/src/path-matcher.ts:13
+Defined in: packages/blue-core/src/path-matcher.ts:41
+
+Match the given `path` against the given `pattern`, according to this PathMatcher's matching strategy.
 
 #### Parameters
 
@@ -44,13 +58,19 @@ Defined in: packages/blue-core/src/path-matcher.ts:13
 
 `string`
 
+The pattern to match against.
+
 ##### path
 
 `string`
 
+The path to test.
+
 #### Returns
 
 `boolean`
+
+Whether or not the `path` matched.
 
 #### Overrides
 
@@ -62,7 +82,11 @@ Defined in: packages/blue-core/src/path-matcher.ts:13
 
 > **merge**(`pattern1`, `pattern2`): `string`
 
-Defined in: packages/blue-core/src/path-matcher.ts:14
+Defined in: packages/blue-core/src/path-matcher.ts:50
+
+Combines two patterns into a new pattern.
+
+The approach used for combining the two patterns depends on the underlying implementation.
 
 #### Parameters
 
@@ -70,10 +94,16 @@ Defined in: packages/blue-core/src/path-matcher.ts:14
 
 `string`
 
+The first pattern.
+
 ##### pattern2
 
 `string`
 
+The second pattern.
+
 #### Returns
 
 `string`
+
+The combination of the two patterns.

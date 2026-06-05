@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,11 +6,9 @@
 
 # Interface: ChildNode\<T\>
 
-Defined in: packages/blue-core/src/tree-node.ts:5
+Defined in: packages/blue-core/src/tree-node.ts:8
 
-## Author
-
-Jeff Rose
+A node that can reference its parent.
 
 ## Extended by
 
@@ -28,4 +26,6 @@ Jeff Rose
 
 > `readonly` **parent**: `T`
 
-Defined in: packages/blue-core/src/tree-node.ts:6
+Defined in: packages/blue-core/src/tree-node.ts:10
+
+The parent node, or `null`/`undefined` for roots.

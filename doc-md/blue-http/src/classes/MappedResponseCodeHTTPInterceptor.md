@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,13 @@
 
 # Class: MappedResponseCodeHTTPInterceptor
 
-Defined in: packages/blue-http/src/interceptors/response-code-interceptor.ts:22
+Defined in: packages/blue-http/src/interceptors/response-code-interceptor.ts:27
+
+Dispatches response hooks based on the numeric status code.
+
+## Implements
+
+module:http.ResponseAwareHTTPInterceptor
 
 ## Implements
 
@@ -18,13 +24,17 @@ Defined in: packages/blue-http/src/interceptors/response-code-interceptor.ts:22
 
 > **new MappedResponseCodeHTTPInterceptor**(`interceptor`): `MappedResponseCodeHTTPInterceptor`
 
-Defined in: packages/blue-http/src/interceptors/response-code-interceptor.ts:32
+Defined in: packages/blue-http/src/interceptors/response-code-interceptor.ts:42
+
+Creates a response-code dispatcher.
 
 #### Parameters
 
 ##### interceptor
 
 [`ResponseCodeAwareHTTPInterceptor`](../interfaces/ResponseCodeAwareHTTPInterceptor.md)
+
+The interceptor map to wrap.
 
 #### Returns
 
@@ -38,7 +48,9 @@ Defined in: packages/blue-http/src/interceptors/response-code-interceptor.ts:32
 
 > **get** **interceptor**(): [`ResponseCodeAwareHTTPInterceptor`](../interfaces/ResponseCodeAwareHTTPInterceptor.md)
 
-Defined in: packages/blue-http/src/interceptors/response-code-interceptor.ts:28
+Defined in: packages/blue-http/src/interceptors/response-code-interceptor.ts:33
+
+The wrapped interceptor map.
 
 ##### Returns
 
@@ -48,9 +60,11 @@ Defined in: packages/blue-http/src/interceptors/response-code-interceptor.ts:28
 
 ### postResponse()
 
-> **postResponse**(`response`, `settings`): `Promise`\<`void`\>
+> **postResponse**(`response`, `settings`): `Promise`\<`void` \| `Response`\>
 
-Defined in: packages/blue-http/src/interceptors/response-code-interceptor.ts:42
+Defined in: packages/blue-http/src/interceptors/response-code-interceptor.ts:53
+
+Dispatches the response to a matching status-code hook.
 
 #### Parameters
 
@@ -58,17 +72,19 @@ Defined in: packages/blue-http/src/interceptors/response-code-interceptor.ts:42
 
 `Response`
 
+The response to classify.
+
 ##### settings
 
 [`HTTPInit`](../type-aliases/HTTPInit.md)
 
+The request settings used for the call.
+
 #### Returns
 
-`Promise`\<`void`\>
+`Promise`\<`void` \| `Response`\>
 
-#### Async
-
-*
+A promise that settles after the matching hook completes.
 
 #### Implementation of
 

@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,13 +6,16 @@
 
 # Abstract Class: AbstractRouteCondition\<T\>
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:130
+Defined in: packages/blue-dispatcher/src/route-condition.ts:162
+
+Contract for route matching conditions.
 
 ## Extended by
 
 - [`RouteConditionHolder`](RouteConditionHolder.md)
 - [`CompositeRouteCondition`](CompositeRouteCondition.md)
-- [`ParamsRouteCondition`](ParamsRouteCondition.md)
+- [`QueryParamCondition`](QueryParamCondition.md)
+- [`MatrixParamCondition`](MatrixParamCondition.md)
 - [`PatternsRouteCondition`](PatternsRouteCondition.md)
 
 ## Type Parameters
@@ -23,9 +26,9 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:130
 
 ## Implements
 
-- [`Equatable`](../../../blue-core/src/interfaces/Equatable.md)
+- `Equatable`
 - [`RouteCondition`](../interfaces/RouteCondition.md)\<`T`\>
-- [`Serializable`](../../../blue-core/src/interfaces/Serializable.md)
+- `Serializable`
 
 ## Constructors
 
@@ -43,7 +46,7 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:130
 
 > `abstract` **content**: `any`[]
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:137
+Defined in: packages/blue-dispatcher/src/route-condition.ts:172
 
 ***
 
@@ -51,7 +54,7 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:137
 
 > `abstract` **infix**: `string`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:138
+Defined in: packages/blue-dispatcher/src/route-condition.ts:173
 
 ## Accessors
 
@@ -61,7 +64,9 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:138
 
 > **get** **isEmpty**(): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:133
+Defined in: packages/blue-dispatcher/src/route-condition.ts:168
+
+Whether this condition contains no content.
 
 ##### Returns
 
@@ -73,7 +78,9 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:133
 
 > **equals**(`value`): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:140
+Defined in: packages/blue-dispatcher/src/route-condition.ts:181
+
+Compare this condition to another value.
 
 #### Parameters
 
@@ -81,29 +88,37 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:140
 
 `any`
 
+The value to compare.
+
 #### Returns
 
 `boolean`
 
+`true` when both conditions are equivalent.
+
 #### Implementation of
 
-[`Equatable`](../../../blue-core/src/interfaces/Equatable.md).[`equals`](../../../blue-core/src/interfaces/Equatable.md#equals)
+`Equatable.equals`
 
 ***
 
 ### toJSON()
 
-> **toJSON**(): [`JSONValue`](../../../blue-core/src/type-aliases/JSONValue.md)
+> **toJSON**(): `JSONValue`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:150
+Defined in: packages/blue-dispatcher/src/route-condition.ts:196
+
+Serialize the condition to JSON.
 
 #### Returns
 
-[`JSONValue`](../../../blue-core/src/type-aliases/JSONValue.md)
+`JSONValue`
+
+The string form of the condition.
 
 #### Implementation of
 
-[`Serializable`](../../../blue-core/src/interfaces/Serializable.md).[`toJSON`](../../../blue-core/src/interfaces/Serializable.md#tojson)
+`Serializable.toJSON`
 
 ***
 
@@ -111,17 +126,19 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:150
 
 > **toString**(): `string`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:154
+Defined in: packages/blue-dispatcher/src/route-condition.ts:205
 
-Returns a string representation of an object.
+Convert the condition to its textual form.
 
 #### Returns
 
 `string`
 
+The condition string.
+
 #### Implementation of
 
-[`Serializable`](../../../blue-core/src/interfaces/Serializable.md).[`toString`](../../../blue-core/src/interfaces/Serializable.md#tostring)
+`Serializable.toString`
 
 ***
 
@@ -129,7 +146,9 @@ Returns a string representation of an object.
 
 > `abstract` **merge**(`other`): `T`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:158
+Defined in: packages/blue-dispatcher/src/route-condition.ts:209
+
+Merge this condition with another condition of the same type.
 
 #### Parameters
 
@@ -141,6 +160,8 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:158
 
 `T`
 
+The merged condition.
+
 #### Implementation of
 
 [`RouteCondition`](../interfaces/RouteCondition.md).[`merge`](../interfaces/RouteCondition.md#merge)
@@ -151,17 +172,23 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:158
 
 > `abstract` **getMatchingCondition**(`route`): `T`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:160
+Defined in: packages/blue-dispatcher/src/route-condition.ts:211
+
+Return the condition that matches a route, or `null` when no match exists.
 
 #### Parameters
 
 ##### route
 
-[`Route`](../../../blue-router/src/interfaces/Route.md)
+`Route`
+
+The current route.
 
 #### Returns
 
 `T`
+
+A matching condition instance or `null`.
 
 #### Implementation of
 
@@ -173,7 +200,9 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:160
 
 > `abstract` **compareTo**(`value`, `route?`): `number`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:162
+Defined in: packages/blue-dispatcher/src/route-condition.ts:213
+
+Compare this condition with another condition.
 
 #### Parameters
 
@@ -181,13 +210,19 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:162
 
 `T`
 
+The condition to compare against.
+
 ##### route?
 
-[`Route`](../../../blue-router/src/interfaces/Route.md)
+`Route`
+
+The route used to break ties, if needed.
 
 #### Returns
 
 `number`
+
+A comparison result compatible with `Array.prototype.sort`.
 
 #### Implementation of
 

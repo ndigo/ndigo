@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Class: RouteMappingInfoHandlerMethodMappingNamingStrategy
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:501
+Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:884
 
 ## Implements
 
@@ -28,7 +28,9 @@ Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:501
 
 > `readonly` `static` **separator**: `string`
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:504
+Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:890
+
+Separator used when generating fallback mapping names.
 
 ## Methods
 
@@ -36,7 +38,9 @@ Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:504
 
 > **getName**(`handlerMethod`, `mapping`): `string`
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:506
+Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:899
+
+Create a mapping name from the handler method and mapping metadata.
 
 #### Parameters
 
@@ -44,13 +48,19 @@ Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:506
 
 `RouteHandlerMethod`
 
+The handler method being named.
+
 ##### mapping
 
 [`RouteMappingInfo`](RouteMappingInfo.md)
 
+The associated route mapping metadata.
+
 #### Returns
 
 `string`
+
+The mapping name.
 
 #### Implementation of
 

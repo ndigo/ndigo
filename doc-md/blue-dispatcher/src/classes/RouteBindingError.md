@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,13 +6,13 @@
 
 # Class: RouteBindingError
 
-Defined in: packages/blue-dispatcher/src/error.ts:64
+Defined in: packages/blue-dispatcher/src/error.ts:72
 
-An error that represents a failure to retrieve a required [Route](../../../blue-router/src/interfaces/Route.md) property.
+An error that represents a failure to retrieve a required Route\|Route property.
 
 ## Extends
 
-- [`FrameworkError`](../../../blue-core/src/classes/FrameworkError.md)
+- `FrameworkError`
 
 ## Constructors
 
@@ -20,7 +20,7 @@ An error that represents a failure to retrieve a required [Route](../../../blue-
 
 > **new RouteBindingError**(`message`): `RouteBindingError`
 
-Defined in: packages/blue-dispatcher/src/error.ts:72
+Defined in: packages/blue-dispatcher/src/error.ts:80
 
 #### Parameters
 
@@ -34,19 +34,19 @@ Defined in: packages/blue-dispatcher/src/error.ts:72
 
 #### Overrides
 
-[`FrameworkError`](../../../blue-core/src/classes/FrameworkError.md).[`constructor`](../../../blue-core/src/classes/FrameworkError.md#constructor)
+`FrameworkError.constructor`
 
 ### Constructor
 
 > **new RouteBindingError**(`route`, `name`): `RouteBindingError`
 
-Defined in: packages/blue-dispatcher/src/error.ts:73
+Defined in: packages/blue-dispatcher/src/error.ts:81
 
 #### Parameters
 
 ##### route
 
-[`Route`](../../../blue-router/src/interfaces/Route.md)
+`Route`
 
 ##### name
 
@@ -64,9 +64,9 @@ Defined in: packages/blue-dispatcher/src/error.ts:73
 
 ### route
 
-> **route**: [`Route`](../../../blue-router/src/interfaces/Route.md)
+> **route**: `Route`
 
-Defined in: packages/blue-dispatcher/src/error.ts:65
+Defined in: packages/blue-dispatcher/src/error.ts:73
 
 ***
 
@@ -74,7 +74,7 @@ Defined in: packages/blue-dispatcher/src/error.ts:65
 
 > **name**: `string`
 
-Defined in: packages/blue-dispatcher/src/error.ts:66
+Defined in: packages/blue-dispatcher/src/error.ts:74
 
 #### Overrides
 
@@ -88,7 +88,7 @@ Defined in: packages/blue-dispatcher/src/error.ts:66
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-dispatcher/src/error.ts:68
+Defined in: packages/blue-dispatcher/src/error.ts:76
 
 ##### Returns
 
@@ -96,7 +96,7 @@ Defined in: packages/blue-dispatcher/src/error.ts:68
 
 #### Overrides
 
-[`FrameworkError`](../../../blue-core/src/classes/FrameworkError.md).[`[toStringTag]`](../../../blue-core/src/classes/FrameworkError.md#tostringtag)
+`FrameworkError.[toStringTag]`
 
 ## Methods
 
@@ -104,7 +104,7 @@ Defined in: packages/blue-dispatcher/src/error.ts:68
 
 > **toString**(): `string`
 
-Defined in: packages/blue-core/src/serializable.ts:29
+Defined in: packages/blue-core/lib/serializable.d.ts:22
 
 #### Returns
 
@@ -112,20 +112,20 @@ Defined in: packages/blue-core/src/serializable.ts:29
 
 #### Inherited from
 
-[`FrameworkError`](../../../blue-core/src/classes/FrameworkError.md).[`toString`](../../../blue-core/src/classes/FrameworkError.md#tostring)
+`FrameworkError.toString`
 
 ***
 
 ### toJSON()?
 
-> `optional` **toJSON**(): [`JSONValue`](../../../blue-core/src/type-aliases/JSONValue.md)
+> `optional` **toJSON**(): `JSONValue`
 
-Defined in: packages/blue-core/src/serializable.ts:30
+Defined in: packages/blue-core/lib/serializable.d.ts:23
 
 #### Returns
 
-[`JSONValue`](../../../blue-core/src/type-aliases/JSONValue.md)
+`JSONValue`
 
 #### Inherited from
 
-[`FrameworkError`](../../../blue-core/src/classes/FrameworkError.md).[`toJSON`](../../../blue-core/src/classes/FrameworkError.md#tojson)
+`FrameworkError.toJSON`

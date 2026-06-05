@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -8,13 +8,17 @@
 
 > **AsFactoryAware**\<`T`\>(`superclass`): `Constructable`\<[`FactoryAware`](../interfaces/FactoryAware.md)\> & `T`
 
-Defined in: packages/blue-factory/src/factory.ts:112
+Defined in: packages/blue-factory/src/factory.ts:118
+
+A mixin that adds [FactoryAware](../interfaces/FactoryAware.md) capabilities to a class.
 
 ## Type Parameters
 
 ### T
 
-`T` *extends* `Constructable`\<\{ \}\>
+`T` *extends* `Constructable`
+
+The type of the constructor.
 
 ## Parameters
 
@@ -22,7 +26,10 @@ Defined in: packages/blue-factory/src/factory.ts:112
 
 `T`
 
+The superclass to extend.
+
 ## Returns
 
 `Constructable`\<[`FactoryAware`](../interfaces/FactoryAware.md)\> & `T`
 
+A new class that extends the superclass and implements [FactoryAware](../interfaces/FactoryAware.md).

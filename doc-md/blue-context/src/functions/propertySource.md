@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,16 +6,22 @@
 
 # Function: propertySource()
 
-> **propertySource**(`propertySource`): `ClassDecorator`
+> **propertySource**(`propertySource`): \<`T`\>(`target`, `context`) => `T`
 
-Defined in: packages/blue-context/src/configuration.ts:127
+Defined in: packages/blue-context/src/configuration.ts:159
+
+Adds a property source to a configuration class.
 
 ## Parameters
 
 ### propertySource
 
-[`JSONObject`](../../../blue-core/src/interfaces/JSONObject.md) | [`Enumerable`](../../../blue-core/src/interfaces/Enumerable.md)\<`string`, [`JSONValue`](../../../blue-core/src/type-aliases/JSONValue.md)\>
+`JSONObject` \| `Enumerable`\<`string`, `JSONValue`\>
+
+The source object or enumerable of key/value pairs.
 
 ## Returns
 
-`ClassDecorator`
+A class decorator that prepends the source to metadata.
+
+\<`T`\>(`target`, `context`) => `T`

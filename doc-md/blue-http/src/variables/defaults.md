@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -8,5 +8,6 @@
 
 > `const` **defaults**: [`HTTPInit`](../type-aliases/HTTPInit.md)
 
-Defined in: packages/blue-http/src/http.ts:156
+Defined in: packages/blue-http/src/http.ts:271
 
+Clones request settings and locks them before fetch executes.

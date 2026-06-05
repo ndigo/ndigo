@@ -1,14 +1,16 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
 [BlueJS Framework](../../../modules.md) / [blue-http/src](../README.md) / Fetch
 
-# Type Alias: Fetch()
+# Type Alias: Fetch
 
 > **Fetch** = (`input`, `init?`) => `Promise`\<`Response`\>
 
-Defined in: packages/blue-http/src/http.ts:16
+Defined in: packages/blue-http/src/http.ts:64
+
+Fetch implementation signature used by [HTTP](../classes/HTTP.md).
 
 ## Parameters
 

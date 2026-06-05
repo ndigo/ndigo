@@ -1,26 +1,30 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
 [BlueJS Framework](../../../modules.md) / [blue-core/src](../README.md) / isNotPrimitive
 
-# Variable: isNotPrimitive()
+# Variable: isNotPrimitive
 
 > `const` **isNotPrimitive**: (`value`) => `value is object`
 
-Defined in: packages/blue-core/src/primitive.ts:41
+Defined in: packages/blue-core/src/primitive.ts:44
+
+Tests whether a value is not a primitive.
 
 ## Parameters
 
 ### value
 
-`any`
+`unknown`
+
+Value to test.
 
 ## Returns
 
 `value is object`
 
-Whether or not a value is non-primitive
+`true` when the value is an object.
 
 ## See
 

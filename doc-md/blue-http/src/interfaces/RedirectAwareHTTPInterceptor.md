@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,15 +6,17 @@
 
 # Interface: RedirectAwareHTTPInterceptor
 
-Defined in: packages/blue-http/src/interceptors/response-class-interceptor.ts:23
+Defined in: packages/blue-http/src/interceptors/response-class-interceptor.ts:32
+
+Handles redirect responses.
 
 ## Methods
 
 ### postRedirectResponse()
 
-> **postRedirectResponse**(`response`, `settings`): `Promise`\<`void` \| [`JSONObject`](../../../blue-core/src/interfaces/JSONObject.md)\>
+> **postRedirectResponse**(`response`, `settings`): `Promise`\<`void` \| `JSONObject`\>
 
-Defined in: packages/blue-http/src/interceptors/response-class-interceptor.ts:24
+Defined in: packages/blue-http/src/interceptors/response-class-interceptor.ts:33
 
 #### Parameters
 
@@ -28,4 +30,4 @@ Defined in: packages/blue-http/src/interceptors/response-class-interceptor.ts:24
 
 #### Returns
 
-`Promise`\<`void` \| [`JSONObject`](../../../blue-core/src/interfaces/JSONObject.md)\>
+`Promise`\<`void` \| `JSONObject`\>

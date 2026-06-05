@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,13 @@
 
 # Class: ContentTypeInterceptor
 
-Defined in: packages/blue-http/src/interceptors/content-type-interceptor.ts:19
+Defined in: packages/blue-http/src/interceptors/content-type-interceptor.ts:24
+
+Adds a `Content-Type` header when request settings provide one.
+
+## Implements
+
+module:http.InitializationAwareHTTPInterceptor
 
 ## Implements
 
@@ -28,10 +34,9 @@ Defined in: packages/blue-http/src/interceptors/content-type-interceptor.ts:19
 
 > **preInit**(`url`, `settings`): `boolean`
 
-Defined in: packages/blue-http/src/interceptors/content-type-interceptor.ts:26
+Defined in: packages/blue-http/src/interceptors/content-type-interceptor.ts:31
 
 If the `contentType` setting exists, it inserts the value as an HTTP request header.
-    *
 
 #### Parameters
 

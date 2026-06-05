@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,9 @@
 
 # Class: UnresolvedResource
 
-Defined in: packages/blue-context/src/resource.ts:126
+Defined in: packages/blue-context/src/resource.ts:149
+
+Resource wrapper used when loading fails.
 
 ## Implements
 
@@ -18,7 +20,7 @@ Defined in: packages/blue-context/src/resource.ts:126
 
 > **new UnresolvedResource**(`path`, `value`): `UnresolvedResource`
 
-Defined in: packages/blue-context/src/resource.ts:133
+Defined in: packages/blue-context/src/resource.ts:156
 
 #### Parameters
 
@@ -40,7 +42,7 @@ Defined in: packages/blue-context/src/resource.ts:133
 
 > `readonly` **value**: `Error`
 
-Defined in: packages/blue-context/src/resource.ts:127
+Defined in: packages/blue-context/src/resource.ts:150
 
 #### Implementation of
 
@@ -54,7 +56,7 @@ Defined in: packages/blue-context/src/resource.ts:127
 
 > **get** **exists**(): `boolean`
 
-Defined in: packages/blue-context/src/resource.ts:129
+Defined in: packages/blue-context/src/resource.ts:152
 
 ##### Returns
 

@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,11 +6,13 @@
 
 # Class: NavigatorLanguageResolver
 
-Defined in: packages/blue-dispatcher/src/language-resolver.ts:40
+Defined in: packages/blue-dispatcher/src/language-resolver.ts:56
+
+Resolve language from the browser's `navigator` object.
 
 ## See
 
-[https://developer.mozilla.org/en-US/docs/Web/API/NavigatorLanguage](https://developer.mozilla.org/en-US/docs/Web/API/NavigatorLanguage)
+https://developer.mozilla.org/en-US/docs/Web/API/NavigatorLanguage
 
 ## Extends
 
@@ -22,13 +24,17 @@ Defined in: packages/blue-dispatcher/src/language-resolver.ts:40
 
 > **new NavigatorLanguageResolver**(`defaultLanguage`): `NavigatorLanguageResolver`
 
-Defined in: packages/blue-dispatcher/src/language-resolver.ts:13
+Defined in: packages/blue-dispatcher/src/language-resolver.ts:33
+
+Store the fallback language.
 
 #### Parameters
 
 ##### defaultLanguage
 
 `string`
+
+The default language to use.
 
 #### Returns
 
@@ -44,7 +50,9 @@ Defined in: packages/blue-dispatcher/src/language-resolver.ts:13
 
 > `readonly` **defaultLanguage**: `string`
 
-Defined in: packages/blue-dispatcher/src/language-resolver.ts:11
+Defined in: packages/blue-dispatcher/src/language-resolver.ts:26
+
+Fallback language used when no route-specific language is available.
 
 #### Inherited from
 
@@ -58,7 +66,7 @@ Defined in: packages/blue-dispatcher/src/language-resolver.ts:11
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-dispatcher/src/language-resolver.ts:41
+Defined in: packages/blue-dispatcher/src/language-resolver.ts:57
 
 ##### Returns
 
@@ -68,19 +76,23 @@ Defined in: packages/blue-dispatcher/src/language-resolver.ts:41
 
 ### resolveLanguage()
 
-> **resolveLanguage**(`route`): `string`
+> **resolveLanguage**(`_route`): `string`
 
-Defined in: packages/blue-dispatcher/src/language-resolver.ts:48
+Defined in: packages/blue-dispatcher/src/language-resolver.ts:67
+
+Resolve the browser language, falling back to the configured default when needed.
 
 #### Parameters
 
-##### route
+##### \_route
 
-[`Route`](../../../blue-router/src/interfaces/Route.md)
+`Route`
 
 #### Returns
 
 `string`
+
+The browser language or the configured default language.
 
 #### Overrides
 

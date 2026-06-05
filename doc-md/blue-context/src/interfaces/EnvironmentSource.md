@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,9 @@
 
 # Interface: EnvironmentSource
 
-Defined in: packages/blue-context/src/environment.ts:26
+Defined in: packages/blue-context/src/environment.ts:52
+
+Provides access to the environment associated with a component.
 
 ## Extended by
 
@@ -18,4 +20,6 @@ Defined in: packages/blue-context/src/environment.ts:26
 
 > `readonly` **environment**: [`Environment`](Environment.md)
 
-Defined in: packages/blue-context/src/environment.ts:27
+Defined in: packages/blue-context/src/environment.ts:56
+
+The environment associated with the component.

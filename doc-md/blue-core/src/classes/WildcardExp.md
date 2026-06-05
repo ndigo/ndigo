@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -8,8 +8,7 @@
 
 Defined in: packages/blue-core/src/wildcard-exp.ts:11
 
-
-A wildcard pattern
+A regular expression compiled from a wildcard pattern.
 
 ## Extends
 
@@ -19,15 +18,19 @@ A wildcard pattern
 
 ### Constructor
 
-> **new WildcardExp**(`pattern`): `WildcardExp`
+> **new WildcardExp**(`pattern?`): `WildcardExp`
 
-Defined in: packages/blue-core/src/wildcard-exp.ts:12
+Defined in: packages/blue-core/src/wildcard-exp.ts:17
+
+Compiles a wildcard pattern into a regular expression.
 
 #### Parameters
 
-##### pattern
+##### pattern?
 
 `string` = `'*'`
+
+Wildcard pattern to compile.
 
 #### Returns
 

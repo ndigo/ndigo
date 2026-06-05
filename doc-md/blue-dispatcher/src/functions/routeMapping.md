@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,34 +6,36 @@
 
 # Function: routeMapping()
 
-> **routeMapping**(`route`): (`target`, `propertyKey?`, `descriptor?`) => `any`
+> **routeMapping**(`route?`): (`target`, `context`) => `any`
 
-Defined in: packages/blue-dispatcher/src/route-mapping.ts:58
+Defined in: packages/blue-dispatcher/src/route-mapping.ts:98
+
+Apply route mapping metadata to a class or method.
+
+Works as both a class and method decorator.
 
 ## Parameters
 
-### route
+### route?
 
-`string` | `RouteMappingConfiguration`
+`string` \| `RouteMappingConfiguration`
+
+The route path or mapping configuration to apply.
 
 ## Returns
 
-> (`target`, `propertyKey?`, `descriptor?`): `any`
+A decorator function for the target.
 
-### Parameters
+(`target`, `context`) => `any`
 
-#### target
+## Examples
 
-`Object`
+```ts
+// Query params — selects only when ?filter=active is present
+@routeMapping({ value: '/:id', queryParams: 'filter=active' })
+```
 
-#### propertyKey?
-
-`string` | `symbol`
-
-#### descriptor?
-
-`PropertyDescriptor`
-
-### Returns
-
-`any`
+```ts
+// Matrix params — selects only when ;color=red is in any path segment
+@routeMapping({ value: '/:id', matrixParams: 'color=red' })
+```

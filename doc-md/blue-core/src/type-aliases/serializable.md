@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -8,4 +8,6 @@
 
 > **serializable** = [`JSONValue`](JSONValue.md) \| [`Serializable`](../interfaces/Serializable.md)
 
-Defined in: packages/blue-core/src/serializable.ts:33
+Defined in: packages/blue-core/src/serializable.ts:35
+
+A value that can be serialized to JSON directly or through a `Serializable` contract.

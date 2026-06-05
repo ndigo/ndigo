@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,9 +6,11 @@
 
 # Function: property()
 
-> **property**(`path`): `PropertyDecorator`
+> **property**(`path`): (`value`, `context`) => `void`
 
-Defined in: packages/blue-context/src/configuration.ts:111
+Defined in: packages/blue-context/src/configuration.ts:130
+
+Binds a class field to a property path resolved from the environment.
 
 ## Parameters
 
@@ -16,6 +18,10 @@ Defined in: packages/blue-context/src/configuration.ts:111
 
 `string`
 
+The property path to resolve.
+
 ## Returns
 
-`PropertyDecorator`
+A field decorator that captures the path in metadata.
+
+(`value`, `context`) => `void`

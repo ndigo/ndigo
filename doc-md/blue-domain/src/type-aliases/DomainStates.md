@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -8,8 +8,10 @@
 
 > **DomainStates** = `object`
 
-Defined in: packages/blue-domain/src/component.ts:18
+Defined in: packages/blue-domain/src/component.ts:30
+
+Stores named state values for a domain component.
 
 ## Index Signature
 
-\[`state`: `string`\]: [`JSONValue`](../../../blue-core/src/type-aliases/JSONValue.md)
+\[`state`: `string`\]: `JSONValue`

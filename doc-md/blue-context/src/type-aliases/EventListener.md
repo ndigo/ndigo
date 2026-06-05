@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -8,9 +8,13 @@
 
 > **EventListener** = `void`
 
-Defined in: packages/blue-context/src/event-emitter.ts:11
+Defined in: packages/blue-context/src/event-emitter.ts:14
+
+Listener function shape used by the emitter implementation.
 
 > **EventListener**(...`args`): `void`
+
+Listener function shape used by the emitter implementation.
 
 ## Parameters
 
@@ -26,6 +30,6 @@ Defined in: packages/blue-context/src/event-emitter.ts:11
 
 ### listener?
 
-> `optional` **listener**: `EventListener`
+> `optional` **listener?**: `EventListener`
 
-Defined in: packages/blue-context/src/event-emitter.ts:11
+Defined in: packages/blue-context/src/event-emitter.ts:14

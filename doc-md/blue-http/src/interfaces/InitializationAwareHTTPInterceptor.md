@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,9 @@
 
 # Interface: InitializationAwareHTTPInterceptor\<T\>
 
-Defined in: packages/blue-http/src/http.ts:26
+Defined in: packages/blue-http/src/http.ts:97
+
+Allows a request to be rejected before it is initialized.
 
 ## Type Parameters
 
@@ -20,7 +22,9 @@ Defined in: packages/blue-http/src/http.ts:26
 
 > **preInit**(`url`, `settings`): `boolean`
 
-Defined in: packages/blue-http/src/http.ts:27
+Defined in: packages/blue-http/src/http.ts:105
+
+Decides whether the request should continue after URL and settings resolution.
 
 #### Parameters
 
@@ -28,10 +32,16 @@ Defined in: packages/blue-http/src/http.ts:27
 
 `URL`
 
+The resolved request URL.
+
 ##### settings
 
 `T`
 
+The request settings being prepared.
+
 #### Returns
 
 `boolean`
+
+`false` to stop the request before it is created.

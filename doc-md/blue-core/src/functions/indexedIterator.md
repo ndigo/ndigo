@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -8,7 +8,9 @@
 
 > **indexedIterator**\<`T`\>(`indexed`): `IterableIterator`\<`T`\>
 
-Defined in: packages/blue-core/src/iterable.ts:109
+Defined in: packages/blue-core/src/iterable.ts:174
+
+Creates a new `IndexedIterator` for an array-like collection.
 
 ## Type Parameters
 
@@ -16,16 +18,18 @@ Defined in: packages/blue-core/src/iterable.ts:109
 
 `T` = `any`
 
+The type of elements in the indexed collection.
+
 ## Parameters
 
 ### indexed
 
 `ArrayLike`\<`T`\>
 
-An indexed collection
+The array-like collection to iterate over.
 
 ## Returns
 
 `IterableIterator`\<`T`\>
 
-An indexed iterator
+An `IterableIterator` for the provided collection.

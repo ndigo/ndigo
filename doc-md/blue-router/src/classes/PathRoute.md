@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,16 +6,27 @@
 
 # Class: PathRoute
 
-Defined in: packages/blue-router/src/path-route.ts:137
+Defined in: packages/blue-router/src/path-route.ts:145
+
+Represents a concrete route based on a URL path, parsing segments, matrix parameters, and query strings.
+It implements `Route` and `Serializable`.
+
+## Template
+
+A type representing the route parameters, defaulting to `Record<string, string>`.
+
+## Since
+
+1.0.0
 
 ## Implements
 
-- [`Route`](../interfaces/Route.md)
-- [`Serializable`](../../../blue-core/src/interfaces/Serializable.md)
+- [`Route`](../interfaces/Route.md)\<`Record`\<`string`, `string`\>\>
+- `Serializable`
 
 ## Indexable
 
-\[`n`: `number`\]: [`RouteSegment`](../interfaces/RouteSegment.md)
+> \[`n`: `number`\]: [`RouteSegment`](../interfaces/RouteSegment.md)
 
 ## Constructors
 
@@ -23,7 +34,10 @@ Defined in: packages/blue-router/src/path-route.ts:137
 
 > **new PathRoute**(`route`): `PathRoute`
 
-Defined in: packages/blue-router/src/path-route.ts:162
+Defined in: packages/blue-router/src/path-route.ts:174
+
+Creates an instance of `PathRoute` from a raw route string.
+The route string can include path segments, matrix parameters, and a query string.
 
 #### Parameters
 
@@ -31,17 +45,23 @@ Defined in: packages/blue-router/src/path-route.ts:162
 
 `string`
 
+The raw string representation of the route (e.g., `/foo;a=b/bar?c=d`).
+
 #### Returns
 
 `PathRoute`
+
+#### Since
+
+1.0.0
 
 ## Properties
 
 ### data
 
-> `readonly` **data**: [`JSONObject`](../../../blue-core/src/interfaces/JSONObject.md)
+> `readonly` **data**: `JSONObject`
 
-Defined in: packages/blue-router/src/path-route.ts:140
+Defined in: packages/blue-router/src/path-route.ts:148
 
 #### Implementation of
 
@@ -51,9 +71,9 @@ Defined in: packages/blue-router/src/path-route.ts:140
 
 ### dataString?
 
-> `readonly` `optional` **dataString**: `string`
+> `readonly` `optional` **dataString?**: `string`
 
-Defined in: packages/blue-router/src/path-route.ts:141
+Defined in: packages/blue-router/src/path-route.ts:149
 
 #### Implementation of
 
@@ -65,7 +85,7 @@ Defined in: packages/blue-router/src/path-route.ts:141
 
 > `readonly` **id**: `number`
 
-Defined in: packages/blue-router/src/path-route.ts:142
+Defined in: packages/blue-router/src/path-route.ts:150
 
 #### Implementation of
 
@@ -73,11 +93,23 @@ Defined in: packages/blue-router/src/path-route.ts:142
 
 ***
 
+### params
+
+> **params**: `Record`\<`string`, `string`\>
+
+Defined in: packages/blue-router/src/path-route.ts:151
+
+#### Implementation of
+
+[`Route`](../interfaces/Route.md).[`params`](../interfaces/Route.md#params)
+
+***
+
 ### path
 
 > `readonly` **path**: `string`
 
-Defined in: packages/blue-router/src/path-route.ts:143
+Defined in: packages/blue-router/src/path-route.ts:152
 
 #### Implementation of
 
@@ -89,11 +121,23 @@ Defined in: packages/blue-router/src/path-route.ts:143
 
 > `readonly` **raw**: `string`
 
-Defined in: packages/blue-router/src/path-route.ts:144
+Defined in: packages/blue-router/src/path-route.ts:153
 
 #### Implementation of
 
 [`Route`](../interfaces/Route.md).[`raw`](../interfaces/Route.md#raw)
+
+***
+
+### attributes
+
+> `readonly` **attributes**: `Record`\<`string`, `any`\>
+
+Defined in: packages/blue-router/src/path-route.ts:154
+
+#### Implementation of
+
+[`Route`](../interfaces/Route.md).[`attributes`](../interfaces/Route.md#attributes)
 
 ## Accessors
 
@@ -103,11 +147,19 @@ Defined in: packages/blue-router/src/path-route.ts:144
 
 > **get** **length**(): `number`
 
-Defined in: packages/blue-router/src/path-route.ts:146
+Defined in: packages/blue-router/src/path-route.ts:161
+
+Gets the number of segments in the route.
+
+##### Since
+
+1.0.0
 
 ##### Returns
 
 `number`
+
+The number of route segments.
 
 #### Implementation of
 
@@ -117,17 +169,25 @@ Defined in: packages/blue-router/src/path-route.ts:146
 
 ### toJSON()
 
-> **toJSON**(): [`JSONValue`](../../../blue-core/src/type-aliases/JSONValue.md)
+> **toJSON**(): `JSONValue`
 
-Defined in: packages/blue-router/src/path-route.ts:230
+Defined in: packages/blue-router/src/path-route.ts:261
+
+Serializes the `PathRoute` instance to a JSON object.
 
 #### Returns
 
-[`JSONValue`](../../../blue-core/src/type-aliases/JSONValue.md)
+`JSONValue`
+
+A `JSONValue` representation of the route.
+
+#### Since
+
+1.0.0
 
 #### Implementation of
 
-[`Serializable`](../../../blue-core/src/interfaces/Serializable.md).[`toJSON`](../../../blue-core/src/interfaces/Serializable.md#tojson)
+[`Route`](../interfaces/Route.md).[`toJSON`](../interfaces/Route.md#tojson)
 
 ***
 
@@ -135,12 +195,78 @@ Defined in: packages/blue-router/src/path-route.ts:230
 
 > **toString**(): `string`
 
-Defined in: packages/blue-router/src/path-route.ts:246
+Defined in: packages/blue-router/src/path-route.ts:283
+
+Returns the string representation of the `PathRoute`, including its segments and query string.
 
 #### Returns
 
 `string`
 
+The string representation of the route.
+
+#### Since
+
+1.0.0
+
 #### Implementation of
 
-[`Serializable`](../../../blue-core/src/interfaces/Serializable.md).[`toString`](../../../blue-core/src/interfaces/Serializable.md#tostring)
+[`Route`](../interfaces/Route.md).[`toString`](../interfaces/Route.md#tostring)
+
+***
+
+### matches()
+
+> **matches**(`pattern`): `boolean`
+
+Defined in: packages/blue-router/src/path-route.ts:306
+
+Checks if the current route matches a given pattern.
+A pattern can include named parameters (e.g., `/users/:id` or `/products/{productId}`).
+
+#### Parameters
+
+##### pattern
+
+`string`
+
+The route pattern to match against.
+
+#### Returns
+
+`boolean`
+
+`true` if the route matches the pattern, `false` otherwise.
+
+#### Since
+
+1.0.0
+
+***
+
+### resolveParams()
+
+> **resolveParams**(`pattern`): `Record`\<`string`, `string`\>
+
+Defined in: packages/blue-router/src/path-route.ts:317
+
+Resolves and extracts parameters from the route based on a given pattern.
+If the route matches the pattern, an object containing the resolved parameters is returned.
+
+#### Parameters
+
+##### pattern
+
+`string`
+
+The route pattern (e.g., `/users/:id` or `/products/{productId}`).
+
+#### Returns
+
+`Record`\<`string`, `string`\>
+
+An object of resolved parameters if the route matches, or `null` if there is no match.
+
+#### Since
+
+1.0.0

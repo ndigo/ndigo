@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -8,4 +8,6 @@
 
 > **JSONValue** = `boolean` \| `null` \| `number` \| `string` \| [`JSONObject`](../interfaces/JSONObject.md) \| [`JSONArray`](../interfaces/JSONArray.md)
 
-Defined in: packages/blue-core/src/serializable.ts:22
+Defined in: packages/blue-core/src/serializable.ts:12
+
+A value that can be represented in JSON.

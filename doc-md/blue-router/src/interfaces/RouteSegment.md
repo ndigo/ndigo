@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,11 +6,17 @@
 
 # Interface: RouteSegment
 
-Defined in: packages/blue-router/src/route.ts:3
+Defined in: packages/blue-router/src/route.ts:7
+
+Represents a single segment within a route, including its name, associated data, and raw string value.
+
+## Since
+
+1.0.0
 
 ## Extends
 
-- [`Serializable`](../../../blue-core/src/interfaces/Serializable.md)
+- `Serializable`
 
 ## Properties
 
@@ -18,23 +24,23 @@ Defined in: packages/blue-router/src/route.ts:3
 
 > **name**: `string`
 
-Defined in: packages/blue-router/src/route.ts:4
+Defined in: packages/blue-router/src/route.ts:8
 
 ***
 
 ### data
 
-> **data**: [`JSONObject`](../../../blue-core/src/interfaces/JSONObject.md)
+> **data**: `JSONObject`
 
-Defined in: packages/blue-router/src/route.ts:5
+Defined in: packages/blue-router/src/route.ts:9
 
 ***
 
 ### dataString?
 
-> `optional` **dataString**: `string`
+> `optional` **dataString?**: `string`
 
-Defined in: packages/blue-router/src/route.ts:6
+Defined in: packages/blue-router/src/route.ts:10
 
 ***
 
@@ -42,7 +48,7 @@ Defined in: packages/blue-router/src/route.ts:6
 
 > **raw**: `string`
 
-Defined in: packages/blue-router/src/route.ts:7
+Defined in: packages/blue-router/src/route.ts:11
 
 ## Methods
 
@@ -50,7 +56,7 @@ Defined in: packages/blue-router/src/route.ts:7
 
 > **toString**(): `string`
 
-Defined in: packages/blue-core/src/serializable.ts:29
+Defined in: packages/blue-core/lib/serializable.d.ts:22
 
 #### Returns
 
@@ -58,20 +64,20 @@ Defined in: packages/blue-core/src/serializable.ts:29
 
 #### Inherited from
 
-[`Serializable`](../../../blue-core/src/interfaces/Serializable.md).[`toString`](../../../blue-core/src/interfaces/Serializable.md#tostring)
+`Serializable.toString`
 
 ***
 
 ### toJSON()?
 
-> `optional` **toJSON**(): [`JSONValue`](../../../blue-core/src/type-aliases/JSONValue.md)
+> `optional` **toJSON**(): `JSONValue`
 
-Defined in: packages/blue-core/src/serializable.ts:30
+Defined in: packages/blue-core/lib/serializable.d.ts:23
 
 #### Returns
 
-[`JSONValue`](../../../blue-core/src/type-aliases/JSONValue.md)
+`JSONValue`
 
 #### Inherited from
 
-[`Serializable`](../../../blue-core/src/interfaces/Serializable.md).[`toJSON`](../../../blue-core/src/interfaces/Serializable.md#tojson)
+`Serializable.toJSON`

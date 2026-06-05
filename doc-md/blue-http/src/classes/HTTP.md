@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,35 +6,71 @@
 
 # Class: HTTP
 
-Defined in: packages/blue-http/src/http.ts:549
+Defined in: packages/blue-http/src/http.ts:796
 
-
+HTTP client with interceptor support and convenience verb helpers.
 
 ## Constructors
 
 ### Constructor
 
-> **new HTTP**(`interceptors`, `init`, `fetch`): `HTTP`
+> **new HTTP**(`interceptors?`, `init?`, `fetch?`): `HTTP`
 
-Defined in: packages/blue-http/src/http.ts:564
+Defined in: packages/blue-http/src/http.ts:893
+
+Create a new HTTP client instance.
+
+This constructor is designed for dependency injection scenarios where
+interceptors, settings, and fetch implementation are managed by a
+container (e.g., ApplicationContext with AsHTTPStrategy).
+
+For direct construction, prefer using the static factory method HTTP.create().
 
 #### Parameters
 
-##### interceptors
+##### interceptors?
 
 [`HTTPInterceptor`](../type-aliases/HTTPInterceptor.md)[] = `[]`
 
-##### init
+Array of HTTP interceptors to apply
+
+##### init?
 
 [`HTTPInit`](../type-aliases/HTTPInit.md) = `defaults`
 
-##### fetch
+Initial configuration settings
+
+##### fetch?
 
 `any` = `...`
+
+Fetch implementation (defaults to globalThis.fetch)
 
 #### Returns
 
 `HTTP`
+
+#### Examples
+
+```ts
+// Dependency injection pattern (AsHTTPStrategy)
+getHTTP(fetch: Fetch = globalThis.fetch): HTTP {
+    const { httpInterceptors, httpSettings } = this;
+    return new HTTP(httpInterceptors, httpSettings, fetch);
+}
+```
+
+```ts
+// Direct construction (when DI is not used)
+const http = new HTTP(
+    [new TimeoutInterceptor(5000)],
+    { baseURL: 'https://api.example.com/' }
+);
+```
+
+#### See
+
+[HTTP.create](#create) for a cleaner API when not using DI
 
 ## Properties
 
@@ -42,7 +78,9 @@ Defined in: packages/blue-http/src/http.ts:564
 
 > **settings**: [`HTTPInit`](../type-aliases/HTTPInit.md)
 
-Defined in: packages/blue-http/src/http.ts:552
+Defined in: packages/blue-http/src/http.ts:803
+
+The default request settings used as the base for each request.
 
 ## Accessors
 
@@ -52,7 +90,7 @@ Defined in: packages/blue-http/src/http.ts:552
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-http/src/http.ts:554
+Defined in: packages/blue-http/src/http.ts:805
 
 ##### Returns
 
@@ -66,7 +104,9 @@ Defined in: packages/blue-http/src/http.ts:554
 
 > **get** **interceptors**(): [`HTTPInterceptor`](../type-aliases/HTTPInterceptor.md)[]
 
-Defined in: packages/blue-http/src/http.ts:560
+Defined in: packages/blue-http/src/http.ts:812
+
+The interceptors configured for this client instance.
 
 ##### Returns
 
@@ -74,11 +114,65 @@ Defined in: packages/blue-http/src/http.ts:560
 
 ## Methods
 
+### create()
+
+> `static` **create**(`config?`): `HTTP`
+
+Defined in: packages/blue-http/src/http.ts:852
+
+Create a new HTTP client instance with optional configuration.
+
+This is the recommended way to create HTTP clients for direct use.
+For dependency injection scenarios (e.g., with ApplicationContext),
+use the constructor directly.
+
+#### Parameters
+
+##### config?
+
+[`HTTPConfig`](../interfaces/HTTPConfig.md) = `{}`
+
+Configuration options for the HTTP client
+
+#### Returns
+
+`HTTP`
+
+A configured HTTP client instance
+
+#### Examples
+
+```ts
+// Direct construction (recommended for standalone use)
+const api = HTTP.create({
+    baseURL: 'https://api.example.com/',
+    headers: { 'Authorization': 'Bearer token123' },
+    params: { 'version': 'v2' }
+});
+```
+
+```ts
+// With interceptors
+const api = HTTP.create({
+    baseURL: 'https://api.example.com/',
+    interceptors: [
+        new TimeoutInterceptor(5000),
+        new LoggingInterceptor()
+    ]
+});
+```
+
+#### See
+
+[HTTP.constructor](#constructor) for dependency injection scenarios
+
+***
+
 ### request()
 
 > **request**(`input`, `init?`): `Promise`\<`Response`\>
 
-Defined in: packages/blue-http/src/http.ts:580
+Defined in: packages/blue-http/src/http.ts:909
 
 #### Parameters
 
@@ -96,15 +190,13 @@ Defined in: packages/blue-http/src/http.ts:580
 
 #### Async
 
-*
-
 ***
 
 ### connect()
 
 > **connect**(`input`, `init?`): `Promise`\<`Response`\>
 
-Defined in: packages/blue-http/src/http.ts:631
+Defined in: packages/blue-http/src/http.ts:983
 
 #### Parameters
 
@@ -121,8 +213,6 @@ Defined in: packages/blue-http/src/http.ts:631
 `Promise`\<`Response`\>
 
 #### Async
-
-*
 
 ***
 
@@ -130,7 +220,7 @@ Defined in: packages/blue-http/src/http.ts:631
 
 > **delete**(`input`, `init?`): `Promise`\<`Response`\>
 
-Defined in: packages/blue-http/src/http.ts:643
+Defined in: packages/blue-http/src/http.ts:995
 
 #### Parameters
 
@@ -147,8 +237,6 @@ Defined in: packages/blue-http/src/http.ts:643
 `Promise`\<`Response`\>
 
 #### Async
-
-*
 
 ***
 
@@ -156,7 +244,7 @@ Defined in: packages/blue-http/src/http.ts:643
 
 > **get**(`input`, `init?`): `Promise`\<`Response`\>
 
-Defined in: packages/blue-http/src/http.ts:655
+Defined in: packages/blue-http/src/http.ts:1007
 
 #### Parameters
 
@@ -173,8 +261,6 @@ Defined in: packages/blue-http/src/http.ts:655
 `Promise`\<`Response`\>
 
 #### Async
-
-*
 
 ***
 
@@ -182,7 +268,7 @@ Defined in: packages/blue-http/src/http.ts:655
 
 > **head**(`input`, `init?`): `Promise`\<`Response`\>
 
-Defined in: packages/blue-http/src/http.ts:667
+Defined in: packages/blue-http/src/http.ts:1019
 
 #### Parameters
 
@@ -199,8 +285,6 @@ Defined in: packages/blue-http/src/http.ts:667
 `Promise`\<`Response`\>
 
 #### Async
-
-*
 
 ***
 
@@ -208,7 +292,7 @@ Defined in: packages/blue-http/src/http.ts:667
 
 > **options**(`input`, `init?`): `Promise`\<`Response`\>
 
-Defined in: packages/blue-http/src/http.ts:679
+Defined in: packages/blue-http/src/http.ts:1031
 
 #### Parameters
 
@@ -225,8 +309,6 @@ Defined in: packages/blue-http/src/http.ts:679
 `Promise`\<`Response`\>
 
 #### Async
-
-*
 
 ***
 
@@ -234,7 +316,7 @@ Defined in: packages/blue-http/src/http.ts:679
 
 > **patch**(`input`, `init?`): `Promise`\<`Response`\>
 
-Defined in: packages/blue-http/src/http.ts:691
+Defined in: packages/blue-http/src/http.ts:1043
 
 #### Parameters
 
@@ -251,8 +333,6 @@ Defined in: packages/blue-http/src/http.ts:691
 `Promise`\<`Response`\>
 
 #### Async
-
-*
 
 ***
 
@@ -260,7 +340,7 @@ Defined in: packages/blue-http/src/http.ts:691
 
 > **post**(`input`, `init?`): `Promise`\<`Response`\>
 
-Defined in: packages/blue-http/src/http.ts:703
+Defined in: packages/blue-http/src/http.ts:1055
 
 #### Parameters
 
@@ -277,8 +357,6 @@ Defined in: packages/blue-http/src/http.ts:703
 `Promise`\<`Response`\>
 
 #### Async
-
-*
 
 ***
 
@@ -286,7 +364,7 @@ Defined in: packages/blue-http/src/http.ts:703
 
 > **put**(`input`, `init?`): `Promise`\<`Response`\>
 
-Defined in: packages/blue-http/src/http.ts:715
+Defined in: packages/blue-http/src/http.ts:1067
 
 #### Parameters
 
@@ -303,8 +381,6 @@ Defined in: packages/blue-http/src/http.ts:715
 `Promise`\<`Response`\>
 
 #### Async
-
-*
 
 ***
 
@@ -312,7 +388,7 @@ Defined in: packages/blue-http/src/http.ts:715
 
 > **trace**(`input`, `init?`): `Promise`\<`Response`\>
 
-Defined in: packages/blue-http/src/http.ts:727
+Defined in: packages/blue-http/src/http.ts:1079
 
 #### Parameters
 
@@ -330,23 +406,19 @@ Defined in: packages/blue-http/src/http.ts:727
 
 #### Async
 
-*
-
 ***
 
 ### \_getHTTPExecutionChain()
 
 > `protected` **\_getHTTPExecutionChain**(`http`, `url`): [`HTTPExecutionChain`](HTTPExecutionChain.md)
 
-Defined in: packages/blue-http/src/http.ts:739
-
-*
+Defined in: packages/blue-http/src/http.ts:1091
 
 #### Parameters
 
 ##### http
 
-`HTTP` | [`HTTPExecutionChain`](HTTPExecutionChain.md)
+`HTTP` \| [`HTTPExecutionChain`](HTTPExecutionChain.md)
 
 ##### url
 

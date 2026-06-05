@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,9 +6,11 @@
 
 # Function: hasRouteMapping()
 
-> **hasRouteMapping**(`target`, `propertyKey`): `boolean`
+> **hasRouteMapping**(`target`, `propertyKey?`): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-mapping.ts:52
+Defined in: packages/blue-dispatcher/src/route-mapping.ts:78
+
+Check whether route mapping metadata exists.
 
 ## Parameters
 
@@ -16,12 +18,16 @@ Defined in: packages/blue-dispatcher/src/route-mapping.ts:52
 
 `any`
 
-### propertyKey
+The class constructor or prototype to inspect.
 
-`string` | `symbol`
+### propertyKey?
+
+`string` \| `symbol`
+
+The method name, when checking method-level metadata.
 
 ## Returns
 
 `boolean`
 
-Whether or not the `target` and optional `propertyKey` has a route mapping defined.
+`true` when route mapping metadata is present.

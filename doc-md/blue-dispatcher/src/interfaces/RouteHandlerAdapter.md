@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,11 @@
 
 # Interface: RouteHandlerAdapter
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:20
+Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:28
+
+Adapts a handler instance into route execution.
+
+Implementations decide whether they support a handler type and how to invoke it for the current route.
 
 ## Methods
 
@@ -14,21 +18,31 @@ Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:20
 
 > **handle**(`route`, `handler`): `Promise`\<[`ModelAndView`](../classes/ModelAndView.md)\>
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:21
+Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:38
+
+Handle a route with the given handler.
+
+The handler should already have been accepted by [RouteHandlerAdapter.supports](#supports).
 
 #### Parameters
 
 ##### route
 
-[`Route`](../../../blue-router/src/interfaces/Route.md)
+`Route`
+
+The current route.
 
 ##### handler
 
 `any`
 
+The handler instance selected for the route.
+
 #### Returns
 
 `Promise`\<[`ModelAndView`](../classes/ModelAndView.md)\>
+
+The model and view produced by handler execution.
 
 ***
 
@@ -36,7 +50,9 @@ Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:21
 
 > **supports**(`handler`): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:22
+Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:46
+
+Determine whether this adapter can handle the given handler instance.
 
 #### Parameters
 
@@ -44,6 +60,10 @@ Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:22
 
 `any`
 
+The handler instance to test.
+
 #### Returns
 
 `boolean`
+
+`true` when the handler is supported; otherwise `false`.

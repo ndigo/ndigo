@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,13 @@
 
 # Class: ApplicationError
 
-Defined in: packages/blue-core/src/error.ts:26
+Defined in: packages/blue-core/src/error.ts:45
+
+Represents a general application-level error.
+
+## Implements
+
+Serializable
 
 ## Extends
 
@@ -18,13 +24,17 @@ Defined in: packages/blue-core/src/error.ts:26
 
 > **new ApplicationError**(`message?`): `ApplicationError`
 
-Defined in: packages/blue-core/src/error.ts:31
+Defined in: packages/blue-core/src/error.ts:57
+
+Creates an instance of ApplicationError.
 
 #### Parameters
 
 ##### message?
 
 `string`
+
+The error message.
 
 #### Returns
 
@@ -42,7 +52,9 @@ Defined in: packages/blue-core/src/error.ts:31
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-core/src/error.ts:27
+Defined in: packages/blue-core/src/error.ts:49
+
+The string tag for this class.
 
 ##### Returns
 
@@ -54,7 +66,7 @@ Defined in: packages/blue-core/src/error.ts:27
 
 > **toString**(): `string`
 
-Defined in: packages/blue-core/src/serializable.ts:29
+Defined in: packages/blue-core/src/serializable.ts:28
 
 #### Returns
 
@@ -70,7 +82,7 @@ Defined in: packages/blue-core/src/serializable.ts:29
 
 > `optional` **toJSON**(): [`JSONValue`](../type-aliases/JSONValue.md)
 
-Defined in: packages/blue-core/src/serializable.ts:30
+Defined in: packages/blue-core/src/serializable.ts:29
 
 #### Returns
 

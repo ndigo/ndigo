@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -8,7 +8,9 @@
 
 > **PromiseOf**(`model`): (`p`) => `Promise`\<`any`\>
 
-Defined in: packages/blue-model/src/basic.ts:72
+Defined in: packages/blue-model/src/basic.ts:140
+
+Creates a promise model that validates the resolved value with another model.
 
 ## Parameters
 
@@ -16,16 +18,10 @@ Defined in: packages/blue-model/src/basic.ts:72
 
 `any`
 
+Model used to validate the fulfilled value.
+
 ## Returns
 
-> (`p`): `Promise`\<`any`\>
+A function that wraps a promise and validates its resolution.
 
-### Parameters
-
-#### p
-
-`any`
-
-### Returns
-
-`Promise`\<`any`\>
+(`p`) => `Promise`\<`any`\>

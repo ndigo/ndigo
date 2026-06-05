@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../../../README.md)
 
 ***
 
@@ -8,11 +8,9 @@
 
 > **CurrencyFormat** = `object`
 
-Defined in: packages/blue-validate/src/formats.ts:5
+Defined in: packages/blue-validate/src/formats.ts:14
 
-## Author
-
-Jeff Rose
+Defines the structure for a currency format, including symbols, delimiters, and regex patterns.
 
 ## Properties
 
@@ -20,7 +18,9 @@ Jeff Rose
 
 > **decimal**: `string`
 
-Defined in: packages/blue-validate/src/formats.ts:6
+Defined in: packages/blue-validate/src/formats.ts:15
+
+The character used for the decimal separator (e.g., '.').
 
 ***
 
@@ -28,7 +28,9 @@ Defined in: packages/blue-validate/src/formats.ts:6
 
 > **decimalDigits**: `number`
 
-Defined in: packages/blue-validate/src/formats.ts:7
+Defined in: packages/blue-validate/src/formats.ts:16
+
+The number of digits expected after the decimal point.
 
 ***
 
@@ -36,7 +38,9 @@ Defined in: packages/blue-validate/src/formats.ts:7
 
 > **kDelim**: `string`
 
-Defined in: packages/blue-validate/src/formats.ts:8
+Defined in: packages/blue-validate/src/formats.ts:17
+
+The character used for the thousands delimiter (e.g., ',').
 
 ***
 
@@ -44,7 +48,9 @@ Defined in: packages/blue-validate/src/formats.ts:8
 
 > **symbol**: `string`
 
-Defined in: packages/blue-validate/src/formats.ts:9
+Defined in: packages/blue-validate/src/formats.ts:18
+
+The currency symbol (e.g., '$').
 
 ***
 
@@ -52,7 +58,9 @@ Defined in: packages/blue-validate/src/formats.ts:9
 
 > **symbolBegin**: `boolean`
 
-Defined in: packages/blue-validate/src/formats.ts:10
+Defined in: packages/blue-validate/src/formats.ts:19
+
+True if the symbol appears before the amount, false otherwise.
 
 ***
 
@@ -60,4 +68,6 @@ Defined in: packages/blue-validate/src/formats.ts:10
 
 > **regex**: `RegExp`
 
-Defined in: packages/blue-validate/src/formats.ts:11
+Defined in: packages/blue-validate/src/formats.ts:20
+
+A regular expression to validate the currency format.

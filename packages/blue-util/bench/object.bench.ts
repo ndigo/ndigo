@@ -1,7 +1,6 @@
 /** @author opencode */
 
 import { bench, describe } from 'vitest';
-import * as R from 'ramda';
 
 type UnknownRecord = Record<string, unknown>;
 
@@ -34,7 +33,6 @@ const equalityPairs: Array<[unknown, unknown]> = [
     [{ nested: { x: { y: 'z' } } }, { nested: { x: { y: 'w' } } }],
 ];
 
-const nameProp = R.prop('name');
 const nativeNameProp = (value: UnknownRecord): unknown => value.name;
 const startsWithA = (value: unknown): boolean => typeof value === 'string' && value.startsWith('a');
 
@@ -74,18 +72,101 @@ const isDeepEqual = (left: unknown, right: unknown): boolean => {
     return true;
 };
 
-describe("R.prop('name', obj) vs obj.name", () => {
-    bench('ramda', () => {
+describe("obj.name", () => {
+    bench('native', () => {
         let accumulator = 0;
 
         for (let i = 0; i < 1000; i += 1) {
             const value = propInputs[i % propInputs.length];
-            const result = R.prop('name', value);
+            const result = value.name;
             accumulator += typeof result === 'string' ? result.length : 0;
         }
 
         _objectSink = accumulator;
     });
+});
+
+describe("(obj) => obj.name", () => {
+    bench('native', () => {
+        let accumulator = 0;
+
+        for (let i = 0; i < 1000; i += 1) {
+            const value = propInputs[i % propInputs.length];
+            const result = nativeNameProp(value);
+            accumulator += typeof result === 'string' ? result.length : 0;
+        }
+
+        _objectSink = accumulator;
+    });
+});
+
+describe('Object.keys(obj)', () => {
+    bench('native', () => {
+        let accumulator = 0;
+
+        for (let i = 0; i < 1000; i += 1) {
+            const value = keysInputs[i % keysInputs.length];
+            accumulator += Object.keys(value).length;
+        }
+
+        _objectSink = accumulator;
+    });
+});
+
+describe("obj?.a?.b?.c", () => {
+    bench('native', () => {
+        let accumulator = 0;
+
+        for (let i = 0; i < 1000; i += 1) {
+            const value = pathInputs[i % pathInputs.length] as {
+                a?: { b?: { c?: unknown } };
+            };
+            const result = value?.a?.b?.c;
+            accumulator += typeof result === 'number' ? result : 0;
+        }
+
+        _objectSink = accumulator;
+    });
+});
+
+describe("pred(obj.name)", () => {
+    bench('native', () => {
+        let accumulator = 0;
+
+        for (let i = 0; i < 1000; i += 1) {
+            const value = propSatisfiesInputs[i % propSatisfiesInputs.length];
+            accumulator += startsWithA(value.name) ? 1 : 0;
+        }
+
+        _objectSink = accumulator;
+    });
+});
+
+describe('JSON.stringify(a) === JSON.stringify(b)', () => {
+    bench('native', () => {
+        let accumulator = 0;
+
+        for (let i = 0; i < 1000; i += 1) {
+            const [left, right] = equalityPairs[i % equalityPairs.length];
+            accumulator += JSON.stringify(left) === JSON.stringify(right) ? 1 : 0;
+        }
+
+        _objectSink = accumulator;
+    });
+});
+
+describe('manual deep equal', () => {
+    bench('manual', () => {
+        let accumulator = 0;
+
+        for (let i = 0; i < 1000; i += 1) {
+            const [left, right] = equalityPairs[i % equalityPairs.length];
+            accumulator += isDeepEqual(left, right) ? 1 : 0;
+        }
+
+        _objectSink = accumulator;
+    });
+});
 
     bench('native', () => {
         let accumulator = 0;

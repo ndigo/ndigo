@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,9 @@
 
 # Interface: RequestAwareHTTPInterceptor
 
-Defined in: packages/blue-http/src/http.ts:30
+Defined in: packages/blue-http/src/http.ts:111
+
+Allows a request object to be replaced before fetch executes.
 
 ## Methods
 
@@ -14,7 +16,9 @@ Defined in: packages/blue-http/src/http.ts:30
 
 > **preRequest**(`request`, `http`): `Promise`\<`void` \| `Request`\>
 
-Defined in: packages/blue-http/src/http.ts:31
+Defined in: packages/blue-http/src/http.ts:119
+
+Transforms the request before it is passed to fetch.
 
 #### Parameters
 
@@ -22,10 +26,16 @@ Defined in: packages/blue-http/src/http.ts:31
 
 `Request`
 
+The request to inspect or replace.
+
 ##### http
 
 [`HTTP`](../classes/HTTP.md)
 
+The HTTP client executing the request.
+
 #### Returns
 
 `Promise`\<`void` \| `Request`\>
+
+A replacement request, or `void` to keep the original.

@@ -1,14 +1,14 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
 [BlueJS Framework](../../../modules.md) / [blue-factory/src](../README.md) / likeAware
 
-# Variable: likeAware()
+# Variable: likeAware
 
 > `const` **likeAware**: (`value`) => `value is Aware`
 
-Defined in: packages/blue-factory/src/aware.ts:95
+Defined in: packages/blue-factory/src/aware.ts:98
 
 Determines whether or not the `value` is aware. i.e. implements the [Aware](../interfaces/Aware.md) interface.
 

@@ -1,14 +1,14 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
 [BlueJS Framework](../../../modules.md) / [blue-dispatcher/src](../README.md) / likeController
 
-# Variable: likeController()
+# Variable: likeController
 
 > `const` **likeController**: (`value`) => `value is Controller`
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:58
+Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:57
 
 ## Parameters
 

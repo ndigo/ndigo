@@ -1,14 +1,14 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
 [BlueJS Framework](../../../modules.md) / [blue-factory/src](../README.md) / likeNameAware
 
-# Variable: likeNameAware()
+# Variable: likeNameAware
 
 > `const` **likeNameAware**: (`value`) => `value is NameAware`
 
-Defined in: packages/blue-factory/src/aware.ts:113
+Defined in: packages/blue-factory/src/aware.ts:118
 
 ## Parameters
 

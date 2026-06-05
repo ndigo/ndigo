@@ -2,7 +2,6 @@
  * @author Jeff Rose
  * @author opencode (performance optimization)
  * @copyright &copy; JPMorgan Chase & Co. All rights reserved.
- * @see {@link https://ramdajs.com/docs/}
  */
 
 export type LikeDescriptor = { [key: string]: Function | true };
@@ -18,12 +17,12 @@ export type LikeDescriptor = { [key: string]: Function | true };
  *    to avoid repeated `Object.entries()` calls
  * 2. **Direct array iteration** with inline type checks (no helper functions)
  * 3. **Inline type checking** using `typeof` for Function and `Object.prototype.toString.call()`
- *    for Boolean/Number/String/Object (replicates Ramda's `is()` semantics)
+ *    for Boolean/Number/String/Object
  * 4. **Early return** on first failed check (short-circuit evaluation)
  *
  * **Semantic Compatibility:**
  *
- * Maintains exact compatibility with the original Ramda-based implementation:
+ * Maintains exact compatibility with the original implementation:
  * - Top-level value must not be null/undefined
  * - Property values of `null` always pass
  * - Type checking handles both primitives and boxed values
@@ -31,8 +30,8 @@ export type LikeDescriptor = { [key: string]: Function | true };
  *
  * **Performance:**
  *
- * - **Fresh descriptor**: 43x faster than Ramda (101,620 Hz vs 2,353 Hz)
- * - **Cached descriptor**: 201x faster than Ramda (473,061 Hz vs 2,353 Hz)
+ * - **Fresh descriptor**: 43x faster than (removed Ramda) (101,620 Hz vs 2,353 Hz)
+ * - **Cached descriptor**: 201x faster than (removed Ramda) (473,061 Hz vs 2,353 Hz)
  * - **Typical usage** (module-level const): Benefits from caching on every call
  *
  * **Codebase Usage:**
@@ -136,7 +135,7 @@ function checkLike(
             // Undefined property values fail
             if (prop == null) return false;
 
-            // Inline type checking (replicates Ramda's is() for common types)
+            // Inline type checking using typeof and Object.prototype.toString for common types
             const type = types[i];
             if (type === Function) {
                 if (typeof prop !== 'function') return false;

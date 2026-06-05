@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,35 +6,55 @@
 
 # Abstract Class: AbstractCookieValueMethodArgumentResolver
 
-Defined in: packages/blue-platform-web/src/cookie-argument-resolver.ts:7
+Defined in: packages/blue-platform-web/src/cookie-argument-resolver.ts:21
 
-Resolves a method parameter into an argument value from a given route.
+Abstract base class for resolving cookie-backed method arguments.
 
 ## Extends
 
-- [`AbstractNamedValueMethodArgumentResolver`](../../../blue-dispatcher/src/classes/AbstractNamedValueMethodArgumentResolver.md)
+- `AbstractNamedValueMethodArgumentResolver`
+
+## Extended by
+
+- [`BrowserCookieValueMethodArgumentResolver`](BrowserCookieValueMethodArgumentResolver.md)
 
 ## Constructors
 
 ### Constructor
 
-> **new AbstractCookieValueMethodArgumentResolver**(`factory?`): `AbstractCookieValueMethodArgumentResolver`
+> **new AbstractCookieValueMethodArgumentResolver**(`converter?`, `converterRegistry?`, `converterResolutionOptions?`): `AbstractCookieValueMethodArgumentResolver`
 
-Defined in: packages/blue-dispatcher/src/argument-resolver.ts:33
+Defined in: packages/blue-platform-web/src/cookie-argument-resolver.ts:33
+
+Creates a cookie-backed resolver.
 
 #### Parameters
 
-##### factory?
+##### converter?
 
-[`Factory`](../../../blue-factory/src/interfaces/Factory.md)
+[`ArgumentValueConverter`](../type-aliases/ArgumentValueConverter.md) = `identityArgumentValueConverter`
+
+Default converter to apply to resolved values.
+
+##### converterRegistry?
+
+[`ArgumentValueConverterRegistry`](../type-aliases/ArgumentValueConverterRegistry.md) = `argumentValueConverters`
+
+Named converter registry used for lookups.
+
+##### converterResolutionOptions?
+
+[`ConverterResolutionOptions`](../type-aliases/ConverterResolutionOptions.md) = `{}`
+
+Resolution behavior overrides.
 
 #### Returns
 
 `AbstractCookieValueMethodArgumentResolver`
 
-#### Inherited from
+#### Overrides
 
-[`AbstractNamedValueMethodArgumentResolver`](../../../blue-dispatcher/src/classes/AbstractNamedValueMethodArgumentResolver.md).[`constructor`](../../../blue-dispatcher/src/classes/AbstractNamedValueMethodArgumentResolver.md#constructor)
+`AbstractNamedValueMethodArgumentResolver.constructor`
 
 ## Methods
 
@@ -42,7 +62,9 @@ Defined in: packages/blue-dispatcher/src/argument-resolver.ts:33
 
 > **handleMissingValue**(`name`): `void`
 
-Defined in: packages/blue-dispatcher/src/argument-resolver.ts:37
+Defined in: packages/blue-dispatcher/lib/argument-resolver.d.ts:55
+
+Handles a missing argument value by throwing a TypeError.
 
 #### Parameters
 
@@ -50,31 +72,39 @@ Defined in: packages/blue-dispatcher/src/argument-resolver.ts:37
 
 `string`
 
+The name of the missing argument.
+
 #### Returns
 
 `void`
 
+#### Throws
+
+If the argument is undefined or null.
+
 #### Inherited from
 
-[`AbstractNamedValueMethodArgumentResolver`](../../../blue-dispatcher/src/classes/AbstractNamedValueMethodArgumentResolver.md).[`handleMissingValue`](../../../blue-dispatcher/src/classes/AbstractNamedValueMethodArgumentResolver.md#handlemissingvalue)
+`AbstractNamedValueMethodArgumentResolver.handleMissingValue`
 
 ***
 
 ### resolveArgument()
 
-> `abstract` **resolveArgument**(`parameter`, `route`, `mapping`): `any`
+> **resolveArgument**(`parameter`, `route`, `mapping`): `any`
 
-Defined in: packages/blue-dispatcher/src/argument-resolver.ts:41
+Defined in: packages/blue-platform-web/src/cookie-argument-resolver.ts:45
+
+Resolves and converts a cookie-backed argument value.
 
 #### Parameters
 
 ##### parameter
 
-[`MethodParameter`](../../../blue-dispatcher/src/classes/MethodParameter.md)
+`MethodParameter`
 
 ##### route
 
-[`Route`](../../../blue-router/src/interfaces/Route.md)
+`Route`
 
 ##### mapping
 
@@ -84,28 +114,86 @@ Defined in: packages/blue-dispatcher/src/argument-resolver.ts:41
 
 `any`
 
-#### Inherited from
+#### Overrides
 
-[`AbstractNamedValueMethodArgumentResolver`](../../../blue-dispatcher/src/classes/AbstractNamedValueMethodArgumentResolver.md).[`resolveArgument`](../../../blue-dispatcher/src/classes/AbstractNamedValueMethodArgumentResolver.md#resolveargument)
+`AbstractNamedValueMethodArgumentResolver.resolveArgument`
+
+***
+
+### resolveName()
+
+> `protected` **resolveName**(`name`, `parameter`, `route`, `mapping`): `any`
+
+Defined in: packages/blue-platform-web/src/cookie-argument-resolver.ts:65
+
+Resolves the raw cookie value for the requested name.
+
+#### Parameters
+
+##### name
+
+`string`
+
+##### parameter
+
+`MethodParameter`
+
+##### route
+
+`Route`
+
+##### mapping
+
+`any`
+
+#### Returns
+
+`any`
+
+#### Overrides
+
+`AbstractNamedValueMethodArgumentResolver.resolveName`
+
+***
+
+### getCookieValue()
+
+> `abstract` `protected` **getCookieValue**(`name`): `string`
+
+Defined in: packages/blue-platform-web/src/cookie-argument-resolver.ts:74
+
+Retrieves a cookie value by name.
+
+#### Parameters
+
+##### name
+
+`string`
+
+#### Returns
+
+`string`
 
 ***
 
 ### supportsParameter()
 
-> `abstract` **supportsParameter**(`parameter`): `boolean`
+> **supportsParameter**(`parameter`): `boolean`
 
-Defined in: packages/blue-dispatcher/src/argument-resolver.ts:42
+Defined in: packages/blue-platform-web/src/cookie-argument-resolver.ts:77
+
+Returns whether this resolver supports cookie parameters.
 
 #### Parameters
 
 ##### parameter
 
-[`MethodParameter`](../../../blue-dispatcher/src/classes/MethodParameter.md)
+`MethodParameter`
 
 #### Returns
 
 `boolean`
 
-#### Inherited from
+#### Overrides
 
-[`AbstractNamedValueMethodArgumentResolver`](../../../blue-dispatcher/src/classes/AbstractNamedValueMethodArgumentResolver.md).[`supportsParameter`](../../../blue-dispatcher/src/classes/AbstractNamedValueMethodArgumentResolver.md#supportsparameter)
+`AbstractNamedValueMethodArgumentResolver.supportsParameter`

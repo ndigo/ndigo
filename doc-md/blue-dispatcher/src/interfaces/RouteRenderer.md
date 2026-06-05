@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,9 @@
 
 # Interface: RouteRenderer
 
-Defined in: packages/blue-dispatcher/src/dispatcher.ts:27
+Defined in: packages/blue-dispatcher/src/dispatcher.ts:38
+
+Interface for rendering a [ModelAndView](../classes/ModelAndView.md).
 
 ## Methods
 
@@ -14,7 +16,9 @@ Defined in: packages/blue-dispatcher/src/dispatcher.ts:27
 
 > **render**(`mv`, `route`): `Promise`\<`void`\>
 
-Defined in: packages/blue-dispatcher/src/dispatcher.ts:28
+Defined in: packages/blue-dispatcher/src/dispatcher.ts:44
+
+Renders the given [ModelAndView](../classes/ModelAndView.md) for the specified route.
 
 #### Parameters
 
@@ -22,9 +26,13 @@ Defined in: packages/blue-dispatcher/src/dispatcher.ts:28
 
 [`ModelAndView`](../classes/ModelAndView.md)
 
+The [ModelAndView](../classes/ModelAndView.md) to render.
+
 ##### route
 
-[`Route`](../../../blue-router/src/interfaces/Route.md)
+`Route`
+
+The route associated with the [ModelAndView](../classes/ModelAndView.md).
 
 #### Returns
 

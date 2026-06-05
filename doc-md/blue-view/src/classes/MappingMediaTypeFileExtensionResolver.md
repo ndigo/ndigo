@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,9 @@
 
 # Class: MappingMediaTypeFileExtensionResolver
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:32
+Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:59
+
+Resolves file extensions from a map of extension-to-media-type pairs.
 
 ## Extended by
 
@@ -22,13 +24,17 @@ Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:32
 
 > **new MappingMediaTypeFileExtensionResolver**(`mediaTypes`): `MappingMediaTypeFileExtensionResolver`
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:37
+Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:78
+
+Creates a resolver from extension-to-media-type mappings.
 
 #### Parameters
 
 ##### mediaTypes
 
-`Map`\<`string`, [`MediaType`](../../../blue-core/src/classes/MediaType.md)\>
+`Map`\<`string`, `MediaType`\>
+
+The source map of file extensions to media types.
 
 #### Returns
 
@@ -38,17 +44,21 @@ Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:37
 
 ### mediaTypes
 
-> **mediaTypes**: `Map`\<`string`, [`MediaType`](../../../blue-core/src/classes/MediaType.md)\>
+> **mediaTypes**: `Map`\<`string`, `MediaType`\>
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:33
+Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:63
+
+The registered media types by normalized file extension.
 
 ***
 
 ### fileExtensions
 
-> **fileExtensions**: [`MultiValueMap`](../../../blue-core/src/classes/MultiValueMap.md)\<[`MediaType`](../../../blue-core/src/classes/MediaType.md), `string`\>
+> **fileExtensions**: `MultiValueMap`\<`MediaType`, `string`\>
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:34
+Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:67
+
+The reverse lookup from media type to file extensions.
 
 ***
 
@@ -56,7 +66,9 @@ Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:34
 
 > **allFileExtensions**: `string`[]
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:35
+Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:71
+
+All registered file extensions in insertion order.
 
 ## Methods
 
@@ -64,11 +76,15 @@ Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:35
 
 > **getAllFileExtenstions**(): `string`[]
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:52
+Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:98
+
+Returns all known file extensions.
 
 #### Returns
 
 `string`[]
+
+The known file extensions.
 
 #### Implementation of
 
@@ -78,21 +94,27 @@ Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:52
 
 ### getAllMediaTypes()
 
-> **getAllMediaTypes**(): [`MediaType`](../../../blue-core/src/classes/MediaType.md)[]
+> **getAllMediaTypes**(): `MediaType`[]
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:56
+Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:107
+
+Returns all media types known to this resolver.
 
 #### Returns
 
-[`MediaType`](../../../blue-core/src/classes/MediaType.md)[]
+`MediaType`[]
+
+The known media types.
 
 ***
 
 ### lookupMediaType()
 
-> **lookupMediaType**(`extension`): [`MediaType`](../../../blue-core/src/classes/MediaType.md)
+> **lookupMediaType**(`extension`): `MediaType`
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:60
+Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:117
+
+Looks up the media type for the given file extension.
 
 #### Parameters
 
@@ -100,9 +122,13 @@ Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:60
 
 `string`
 
+The file extension to resolve.
+
 #### Returns
 
-[`MediaType`](../../../blue-core/src/classes/MediaType.md)
+`MediaType`
+
+The matching media type, or `null` when none exists.
 
 ***
 
@@ -110,17 +136,23 @@ Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:60
 
 > **resolveFileExtensions**(`mediaType`): `string`[]
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:64
+Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:127
+
+Returns the file extensions associated with the given media type.
 
 #### Parameters
 
 ##### mediaType
 
-[`MediaType`](../../../blue-core/src/classes/MediaType.md)
+`MediaType`
+
+The media type to resolve.
 
 #### Returns
 
 `string`[]
+
+The matching file extensions.
 
 #### Implementation of
 

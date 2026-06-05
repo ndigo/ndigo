@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -8,7 +8,7 @@
 
 > **AsNameAware**\<`T`\>(`superclass`): `Constructable`\<[`NameAware`](../interfaces/NameAware.md)\> & `T`
 
-Defined in: packages/blue-factory/src/aware.ts:66
+Defined in: packages/blue-factory/src/aware.ts:69
 
 ## Type Parameters
 
@@ -26,3 +26,10 @@ Defined in: packages/blue-factory/src/aware.ts:66
 
 `Constructable`\<[`NameAware`](../interfaces/NameAware.md)\> & `T`
 
+## See
+
+module:factory.AsNameAware
+
+## Implements
+
+module:factory.NameAware

@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -8,4 +8,6 @@
 
 > `const` **stringComparator**: `StringComparator`
 
-Defined in: packages/blue-core/src/comparable.ts:181
+Defined in: packages/blue-core/src/comparable.ts:222
+
+A `Comparator` instance for `string` objects.

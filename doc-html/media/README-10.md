@@ -1,20 +1,36 @@
-# Blue Parser
+# Blue Model
 
-This repository is the BlueJS parser library
+Blue Model exposes object model primitives and typed model/event helpers for BlueJS.
 
-## Description
+## Features
 
-## Documentation
+- Re-exported `objectmodel` integration layer
+- Basic model/event abstractions
+- Runtime schema validation
+- Model-centric contracts for higher-layer packages
 
-- [BlueJS API documentation](https://confluence.uk.jpmorgan.com/confluence2/display/BLUES/BlueJS+API) -
-  detailed function and property information for all the BlueJS entities
-- [BlueJS Developer Guide](https://confluence.uk.jpmorgan.com/confluence2/display/BLUES/BlueJS+Developer+Guide) -
-  a high level guide to key BlueJS concepts and components
+## Installation
 
-## local build commands
+```bash
+pnpm add @blue/model
+```
 
-- `npm run build` - Creates the `index.js` bundled distribution
-- `npm run types` - Creates the `types/blue-util.d.ts` distribution
-- `npm run compile` - Creates the `dist/index.js` unbundled distribution
-- `npm run doc` - Creates the API documentation
-- `npm run test` - Runs the unit tests
+## Usage
+
+```typescript
+import { Model } from '@blue/model';
+
+const User = Model({
+    name: String,
+});
+
+const user = new User({ name: 'alice' });
+user.name;
+```
+
+## Development
+
+```bash
+pnpm --filter @blue/model build:lib
+pnpm --filter @blue/model test
+```

@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,9 @@
 
 # Abstract Class: AbstractFactory
 
-Defined in: packages/blue-factory/src/factory.ts:157
+Defined in: packages/blue-factory/src/factory.ts:173
+
+An abstract base class for implementing a [ConfigurableFactory](../interfaces/ConfigurableFactory.md) and [ScopedFactory](../interfaces/ScopedFactory.md).
 
 ## Extended by
 
@@ -15,6 +17,7 @@ Defined in: packages/blue-factory/src/factory.ts:157
 ## Implements
 
 - [`ConfigurableFactory`](../interfaces/ConfigurableFactory.md)
+- [`ScopedFactory`](../interfaces/ScopedFactory.md)
 
 ## Constructors
 
@@ -22,7 +25,9 @@ Defined in: packages/blue-factory/src/factory.ts:157
 
 > **new AbstractFactory**(): `AbstractFactory`
 
-Defined in: packages/blue-factory/src/factory.ts:174
+Defined in: packages/blue-factory/src/factory.ts:220
+
+Creates a new AbstractFactory instance and initializes its scope registry and default scopes.
 
 #### Returns
 
@@ -34,7 +39,9 @@ Defined in: packages/blue-factory/src/factory.ts:174
 
 > **processors**: [`EntryProcessor`](../type-aliases/EntryProcessor.md)[]
 
-Defined in: packages/blue-factory/src/factory.ts:160
+Defined in: packages/blue-factory/src/factory.ts:186
+
+A list of entry processors applied to instances.
 
 ***
 
@@ -42,7 +49,9 @@ Defined in: packages/blue-factory/src/factory.ts:160
 
 > **hasConstructionAwareProcessors**: `boolean`
 
-Defined in: packages/blue-factory/src/factory.ts:162
+Defined in: packages/blue-factory/src/factory.ts:191
+
+Indicates if there are any construction-aware processors.
 
 ***
 
@@ -50,7 +59,9 @@ Defined in: packages/blue-factory/src/factory.ts:162
 
 > **hasDestructionAwareProcessors**: `boolean`
 
-Defined in: packages/blue-factory/src/factory.ts:163
+Defined in: packages/blue-factory/src/factory.ts:195
+
+Indicates if there are any destruction-aware processors.
 
 ***
 
@@ -58,7 +69,9 @@ Defined in: packages/blue-factory/src/factory.ts:163
 
 > **hasInitializationAwareProcessors**: `boolean`
 
-Defined in: packages/blue-factory/src/factory.ts:164
+Defined in: packages/blue-factory/src/factory.ts:199
+
+Indicates if there are any initialization-aware processors.
 
 ## Accessors
 
@@ -68,11 +81,15 @@ Defined in: packages/blue-factory/src/factory.ts:164
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-factory/src/factory.ts:166
+Defined in: packages/blue-factory/src/factory.ts:205
+
+Returns the string tag for this factory.
 
 ##### Returns
 
 `string`
+
+Always 'Factory'.
 
 ***
 
@@ -82,11 +99,17 @@ Defined in: packages/blue-factory/src/factory.ts:166
 
 > **get** **parent**(): [`Factory`](../interfaces/Factory.md)
 
-Defined in: packages/blue-factory/src/factory.ts:170
+Defined in: packages/blue-factory/src/factory.ts:213
+
+Returns the parent factory.
 
 ##### Returns
 
 [`Factory`](../interfaces/Factory.md)
+
+The parent factory.
+
+The parent factory in the hierarchy.
 
 #### Implementation of
 
@@ -98,13 +121,17 @@ Defined in: packages/blue-factory/src/factory.ts:170
 
 > **addProcessor**(`processor`): `void`
 
-Defined in: packages/blue-factory/src/factory.ts:196
+Defined in: packages/blue-factory/src/factory.ts:253
+
+Adds an entry processor to the factory.
 
 #### Parameters
 
 ##### processor
 
 [`EntryProcessor`](../type-aliases/EntryProcessor.md)
+
+The entry processor to add.
 
 #### Returns
 
@@ -118,21 +145,55 @@ Defined in: packages/blue-factory/src/factory.ts:196
 
 ### destroyValue()
 
-> **destroyValue**(`name`): `void`
+#### Call Signature
 
-Defined in: packages/blue-factory/src/factory.ts:228
+> **destroyValue**\<`T`\>(`token`): `void`
 
-#### Parameters
+Defined in: packages/blue-factory/src/factory.ts:290
 
-##### name
+Destroys a value managed by the factory.
 
-`string`
+##### Type Parameters
 
-#### Returns
+###### T
+
+`T` = `any`
+
+The type of the value.
+
+##### Parameters
+
+###### token
+
+[`ContextToken`](ContextToken.md)\<`T`\>
+
+##### Returns
 
 `void`
 
-#### Implementation of
+##### Implementation of
+
+[`ConfigurableFactory`](../interfaces/ConfigurableFactory.md).[`destroyValue`](../interfaces/ConfigurableFactory.md#destroyvalue)
+
+#### Call Signature
+
+> **destroyValue**(`name`): `void`
+
+Defined in: packages/blue-factory/src/factory.ts:291
+
+Destroys a value managed by the factory.
+
+##### Parameters
+
+###### name
+
+`string`
+
+##### Returns
+
+`void`
+
+##### Implementation of
 
 [`ConfigurableFactory`](../interfaces/ConfigurableFactory.md).[`destroyValue`](../interfaces/ConfigurableFactory.md#destroyvalue)
 
@@ -140,9 +201,11 @@ Defined in: packages/blue-factory/src/factory.ts:228
 
 ### getInstance()
 
-> **getInstance**\<`T`\>(`name`, `argumentsList`): `T`
+> **getInstance**\<`T`\>(`name`, `argumentsList?`): `T`
 
-Defined in: packages/blue-factory/src/factory.ts:239
+Defined in: packages/blue-factory/src/factory.ts:323
+
+Returns an instance of the specified value.
 
 #### Type Parameters
 
@@ -150,19 +213,27 @@ Defined in: packages/blue-factory/src/factory.ts:239
 
 `T` = `any`
 
+The type of the instance.
+
 #### Parameters
 
 ##### name
 
 `string`
 
-##### argumentsList
+The name of the value.
+
+##### argumentsList?
 
 `any`[] = `[]`
+
+Optional arguments to pass to the constructor if the value is a constructor.
 
 #### Returns
 
 `T`
+
+An instance of the value.
 
 #### Implementation of
 
@@ -172,15 +243,117 @@ Defined in: packages/blue-factory/src/factory.ts:239
 
 ### getValue()
 
-> **getValue**\<`T`\>(`name`, `argumentsList`): `T`
+#### Call Signature
 
-Defined in: packages/blue-factory/src/factory.ts:243
+> **getValue**\<`T`\>(`token`): `T`
 
-#### Type Parameters
+Defined in: packages/blue-factory/src/factory.ts:334
 
-##### T
+Retrieves a value from the factory, creating it if necessary.
+
+##### Type Parameters
+
+###### T
 
 `T` = `any`
+
+The type of the value.
+
+##### Parameters
+
+###### token
+
+[`ContextToken`](ContextToken.md)\<`T`\>
+
+##### Returns
+
+`T`
+
+The retrieved value.
+
+##### Implementation of
+
+[`ConfigurableFactory`](../interfaces/ConfigurableFactory.md).[`getValue`](../interfaces/ConfigurableFactory.md#getvalue)
+
+#### Call Signature
+
+> **getValue**\<`T`\>(`name`, `argumentsList?`): `T`
+
+Defined in: packages/blue-factory/src/factory.ts:335
+
+Retrieves a value from the factory, creating it if necessary.
+
+##### Type Parameters
+
+###### T
+
+`T` = `any`
+
+The type of the value.
+
+##### Parameters
+
+###### name
+
+`string`
+
+###### argumentsList?
+
+`any`[]
+
+Optional arguments to pass to the constructor if the value is a constructor.
+
+##### Returns
+
+`T`
+
+The retrieved value.
+
+##### Implementation of
+
+[`ConfigurableFactory`](../interfaces/ConfigurableFactory.md).[`getValue`](../interfaces/ConfigurableFactory.md#getvalue)
+
+***
+
+### destroyScopedValue()
+
+> **destroyScopedValue**(`scopeName`, `valueName`): `void`
+
+Defined in: packages/blue-factory/src/factory.ts:370
+
+Destroys a scoped value.
+
+#### Parameters
+
+##### scopeName
+
+`string`
+
+The name of the scope.
+
+##### valueName
+
+`string`
+
+The name of the value within the scope.
+
+#### Returns
+
+`void`
+
+#### Implementation of
+
+[`ScopedFactory`](../interfaces/ScopedFactory.md).[`destroyScopedValue`](../interfaces/ScopedFactory.md#destroyscopedvalue)
+
+***
+
+### getScope()
+
+> **getScope**(`name`): [`Scope`](../interfaces/Scope.md)
+
+Defined in: packages/blue-factory/src/factory.ts:379
+
+Retrieves a scope by its name.
 
 #### Parameters
 
@@ -188,17 +361,37 @@ Defined in: packages/blue-factory/src/factory.ts:243
 
 `string`
 
-##### argumentsList
-
-`any`[] = `[]`
+The name of the scope.
 
 #### Returns
 
-`T`
+[`Scope`](../interfaces/Scope.md)
+
+The Scope instance.
 
 #### Implementation of
 
-[`ConfigurableFactory`](../interfaces/ConfigurableFactory.md).[`getValue`](../interfaces/ConfigurableFactory.md#getvalue)
+[`ScopedFactory`](../interfaces/ScopedFactory.md).[`getScope`](../interfaces/ScopedFactory.md#getscope)
+
+***
+
+### getScopeNames()
+
+> **getScopeNames**(): `string`[]
+
+Defined in: packages/blue-factory/src/factory.ts:387
+
+Returns an array of all registered scope names.
+
+#### Returns
+
+`string`[]
+
+An array of PossibleScope names.
+
+#### Implementation of
+
+[`ScopedFactory`](../interfaces/ScopedFactory.md).[`getScopeNames`](../interfaces/ScopedFactory.md#getscopenames)
 
 ***
 
@@ -206,7 +399,9 @@ Defined in: packages/blue-factory/src/factory.ts:243
 
 > **hasConstructor**(`name`): `boolean`
 
-Defined in: packages/blue-factory/src/factory.ts:256
+Defined in: packages/blue-factory/src/factory.ts:396
+
+Checks if the factory has a constructor registered under the given name.
 
 #### Parameters
 
@@ -214,9 +409,13 @@ Defined in: packages/blue-factory/src/factory.ts:256
 
 `string`
 
+The name of the constructor.
+
 #### Returns
 
 `boolean`
+
+`true` if a constructor is registered, `false` otherwise.
 
 ***
 
@@ -224,7 +423,9 @@ Defined in: packages/blue-factory/src/factory.ts:256
 
 > **hasInstance**(`name`): `boolean`
 
-Defined in: packages/blue-factory/src/factory.ts:260
+Defined in: packages/blue-factory/src/factory.ts:405
+
+Checks if the factory has an instance registered under the given name.
 
 #### Parameters
 
@@ -232,9 +433,13 @@ Defined in: packages/blue-factory/src/factory.ts:260
 
 `string`
 
+The name of the instance.
+
 #### Returns
 
 `boolean`
+
+`true` if an instance is registered, `false` otherwise.
 
 ***
 
@@ -242,7 +447,9 @@ Defined in: packages/blue-factory/src/factory.ts:260
 
 > **hasOwnValue**(`name`): `boolean`
 
-Defined in: packages/blue-factory/src/factory.ts:264
+Defined in: packages/blue-factory/src/factory.ts:414
+
+Checks if the factory has its own value (either an instance or a constructor) registered under the given name.
 
 #### Parameters
 
@@ -250,9 +457,13 @@ Defined in: packages/blue-factory/src/factory.ts:264
 
 `string`
 
+The name of the value.
+
 #### Returns
 
 `boolean`
+
+`true` if this factory has its own value, `false` otherwise.
 
 #### Implementation of
 
@@ -262,9 +473,71 @@ Defined in: packages/blue-factory/src/factory.ts:264
 
 ### hasValue()
 
+#### Call Signature
+
+> **hasValue**\<`T`\>(`token`): `boolean`
+
+Defined in: packages/blue-factory/src/factory.ts:424
+
+Checks if the factory has a value (either an instance or a constructor) registered under the given name or token.
+
+##### Type Parameters
+
+###### T
+
+`T` = `any`
+
+The type of the value.
+
+##### Parameters
+
+###### token
+
+[`ContextToken`](ContextToken.md)\<`T`\>
+
+##### Returns
+
+`boolean`
+
+`true` if a value is registered, `false` otherwise.
+
+##### Implementation of
+
+[`ConfigurableFactory`](../interfaces/ConfigurableFactory.md).[`hasValue`](../interfaces/ConfigurableFactory.md#hasvalue)
+
+#### Call Signature
+
 > **hasValue**(`name`): `boolean`
 
-Defined in: packages/blue-factory/src/factory.ts:268
+Defined in: packages/blue-factory/src/factory.ts:425
+
+Checks if the factory has a value (either an instance or a constructor) registered under the given name or token.
+
+##### Parameters
+
+###### name
+
+`string`
+
+##### Returns
+
+`boolean`
+
+`true` if a value is registered, `false` otherwise.
+
+##### Implementation of
+
+[`ConfigurableFactory`](../interfaces/ConfigurableFactory.md).[`hasValue`](../interfaces/ConfigurableFactory.md#hasvalue)
+
+***
+
+### registerScope()
+
+> **registerScope**(`name`, `scope`): `void`
+
+Defined in: packages/blue-factory/src/factory.ts:436
+
+Registers a new scope with the factory.
 
 #### Parameters
 
@@ -272,13 +545,21 @@ Defined in: packages/blue-factory/src/factory.ts:268
 
 `string`
 
+The name of the scope.
+
+##### scope
+
+[`Scope`](../interfaces/Scope.md)
+
+The Scope instance to register.
+
 #### Returns
 
-`boolean`
+`void`
 
 #### Implementation of
 
-[`ConfigurableFactory`](../interfaces/ConfigurableFactory.md).[`hasValue`](../interfaces/ConfigurableFactory.md#hasvalue)
+[`ScopedFactory`](../interfaces/ScopedFactory.md).[`registerScope`](../interfaces/ScopedFactory.md#registerscope)
 
 ***
 
@@ -286,13 +567,17 @@ Defined in: packages/blue-factory/src/factory.ts:268
 
 > **setParent**(`parent`): `void`
 
-Defined in: packages/blue-factory/src/factory.ts:272
+Defined in: packages/blue-factory/src/factory.ts:444
+
+Sets the parent factory for this hierarchical factory.
 
 #### Parameters
 
 ##### parent
 
 [`Factory`](../interfaces/Factory.md)
+
+The parent factory.
 
 #### Returns
 
@@ -306,31 +591,75 @@ Defined in: packages/blue-factory/src/factory.ts:272
 
 ### setValue()
 
-> **setValue**\<`T`\>(`name`, `value`): `void`
+#### Call Signature
 
-Defined in: packages/blue-factory/src/factory.ts:276
+> **setValue**\<`T`\>(`token`, `value`): `void`
 
-#### Type Parameters
+Defined in: packages/blue-factory/src/factory.ts:454
 
-##### T
+Sets a value (either a constructor or an instance) in the factory.
+
+##### Type Parameters
+
+###### T
 
 `T` = `any`
 
-#### Parameters
+The type of the value.
 
-##### name
+##### Parameters
 
-`string`
+###### token
 
-##### value
+[`ContextToken`](ContextToken.md)\<`T`\>
+
+###### value
 
 `T`
 
-#### Returns
+The value to register.
+
+##### Returns
 
 `void`
 
-#### Implementation of
+##### Implementation of
+
+[`ConfigurableFactory`](../interfaces/ConfigurableFactory.md).[`setValue`](../interfaces/ConfigurableFactory.md#setvalue)
+
+#### Call Signature
+
+> **setValue**\<`T`\>(`name`, `value`): `void`
+
+Defined in: packages/blue-factory/src/factory.ts:455
+
+Sets a value (either a constructor or an instance) in the factory.
+
+##### Type Parameters
+
+###### T
+
+`T` = `any`
+
+The type of the value.
+
+##### Parameters
+
+###### name
+
+`string`
+
+###### value
+
+`T`
+
+The value to register.
+
+##### Returns
+
+`void`
+
+##### Implementation of
 
 [`ConfigurableFactory`](../interfaces/ConfigurableFactory.md).[`setValue`](../interfaces/ConfigurableFactory.md#setvalue)
 
@@ -340,7 +669,9 @@ Defined in: packages/blue-factory/src/factory.ts:276
 
 > `protected` **\_applyProcessorsAfterConstruction**\<`T`\>(`name`, `instance`): `boolean`
 
-Defined in: packages/blue-factory/src/factory.ts:322
+Defined in: packages/blue-factory/src/factory.ts:515
+
+Applies construction-aware processors after an instance has been constructed.
 
 #### Type Parameters
 
@@ -348,19 +679,27 @@ Defined in: packages/blue-factory/src/factory.ts:322
 
 `T` = `any`
 
+The type of the instance.
+
 #### Parameters
 
 ##### name
 
 `string`
 
+The name of the instance.
+
 ##### instance
 
 `T`
 
+The constructed instance.
+
 #### Returns
 
 `boolean`
+
+`true` if properties should be populated, `false` otherwise.
 
 ***
 
@@ -368,7 +707,9 @@ Defined in: packages/blue-factory/src/factory.ts:322
 
 > `protected` **\_applyProcessorsAfterInitialization**\<`T`\>(`name`, `instance`): `T`
 
-Defined in: packages/blue-factory/src/factory.ts:342
+Defined in: packages/blue-factory/src/factory.ts:542
+
+Applies initialization-aware processors after an instance has been initialized.
 
 #### Type Parameters
 
@@ -376,27 +717,37 @@ Defined in: packages/blue-factory/src/factory.ts:342
 
 `T`
 
+The type of the instance.
+
 #### Parameters
 
 ##### name
 
 `string`
 
+The name of the instance.
+
 ##### instance
 
 `T`
+
+The initialized instance.
 
 #### Returns
 
 `T`
 
+The processed instance.
+
 ***
 
 ### \_applyProcessorsBeforeConstruction()
 
-> `protected` **\_applyProcessorsBeforeConstruction**\<`T`\>(`name`, `constructor`, `argumentsList`): `T`
+> `protected` **\_applyProcessorsBeforeConstruction**\<`T`\>(`name`, `constructor`, `argumentsList?`): `T`
 
-Defined in: packages/blue-factory/src/factory.ts:363
+Defined in: packages/blue-factory/src/factory.ts:571
+
+Applies construction-aware processors before an instance is constructed.
 
 #### Type Parameters
 
@@ -404,23 +755,33 @@ Defined in: packages/blue-factory/src/factory.ts:363
 
 `T` = `any`
 
+The type of the instance.
+
 #### Parameters
 
 ##### name
 
 `string`
 
+The name of the instance.
+
 ##### constructor
 
 `Function`
 
-##### argumentsList
+The constructor function.
+
+##### argumentsList?
 
 `any`[] = `[]`
+
+Optional arguments to pass to the constructor.
 
 #### Returns
 
 `T`
+
+The instance to use, or `null` to proceed with default construction.
 
 ***
 
@@ -428,7 +789,9 @@ Defined in: packages/blue-factory/src/factory.ts:363
 
 > `protected` **\_applyProcessorsBeforeDestruction**(`name`, `instance`): `void`
 
-Defined in: packages/blue-factory/src/factory.ts:387
+Defined in: packages/blue-factory/src/factory.ts:600
+
+Applies destruction-aware processors before an instance is destroyed.
 
 #### Parameters
 
@@ -436,9 +799,13 @@ Defined in: packages/blue-factory/src/factory.ts:387
 
 `string`
 
+The name of the instance.
+
 ##### instance
 
 [`Destroyable`](../interfaces/Destroyable.md)
+
+The instance to be destroyed.
 
 #### Returns
 
@@ -450,7 +817,9 @@ Defined in: packages/blue-factory/src/factory.ts:387
 
 > `protected` **\_applyProcessorsBeforeInitialization**\<`T`\>(`name`, `instance`): `T`
 
-Defined in: packages/blue-factory/src/factory.ts:400
+Defined in: packages/blue-factory/src/factory.ts:620
+
+Applies initialization-aware processors before an instance is initialized.
 
 #### Type Parameters
 
@@ -458,19 +827,27 @@ Defined in: packages/blue-factory/src/factory.ts:400
 
 `T`
 
+The type of the instance.
+
 #### Parameters
 
 ##### name
 
 `string`
 
+The name of the instance.
+
 ##### instance
 
 `T`
 
+The instance to be initialized.
+
 #### Returns
 
 `T`
+
+The processed instance.
 
 ***
 
@@ -478,7 +855,9 @@ Defined in: packages/blue-factory/src/factory.ts:400
 
 > `protected` **\_configure**\<`T`\>(`name`, `instance`): `T`
 
-Defined in: packages/blue-factory/src/factory.ts:420
+Defined in: packages/blue-factory/src/factory.ts:648
+
+Configures an instance by populating properties, invoking aware callbacks, and initializing.
 
 #### Type Parameters
 
@@ -486,27 +865,41 @@ Defined in: packages/blue-factory/src/factory.ts:420
 
 `T` = `any`
 
+The type of the instance.
+
 #### Parameters
 
 ##### name
 
 `string`
+
+The name of the instance.
 
 ##### instance
 
 `T`
 
+The instance to configure.
+
 #### Returns
 
 `T`
+
+The configured instance.
+
+#### Throws
+
+If configuration fails.
 
 ***
 
 ### \_create()
 
-> `protected` **\_create**\<`T`\>(`name`, `argumentsList`): `T`
+> `protected` **\_create**\<`T`\>(`name`, `argumentsList?`): `T`
 
-Defined in: packages/blue-factory/src/factory.ts:435
+Defined in: packages/blue-factory/src/factory.ts:670
+
+Creates a new instance from a registered constructor.
 
 #### Type Parameters
 
@@ -514,19 +907,31 @@ Defined in: packages/blue-factory/src/factory.ts:435
 
 `T` = `any`
 
+The type of the instance.
+
 #### Parameters
 
 ##### name
 
 `string`
 
-##### argumentsList
+The name of the constructor.
+
+##### argumentsList?
 
 `any`[] = `[]`
+
+Optional arguments to pass to the constructor.
 
 #### Returns
 
 `T`
+
+The newly created instance.
+
+#### Throws
+
+If instance creation fails.
 
 ***
 
@@ -534,7 +939,9 @@ Defined in: packages/blue-factory/src/factory.ts:435
 
 > `protected` **\_initialize**\<`T`\>(`name`, `instance`): `T`
 
-Defined in: packages/blue-factory/src/factory.ts:453
+Defined in: packages/blue-factory/src/factory.ts:694
+
+Initializes an instance by applying initialization processors and invoking the `init` method if available.
 
 #### Type Parameters
 
@@ -542,27 +949,37 @@ Defined in: packages/blue-factory/src/factory.ts:453
 
 `T`
 
+The type of the instance.
+
 #### Parameters
 
 ##### name
 
 `string`
 
+The name of the instance.
+
 ##### instance
 
 `T`
+
+The instance to initialize.
 
 #### Returns
 
 `T`
 
+The initialized instance.
+
 ***
 
 ### \_populate()
 
-> `protected` **\_populate**\<`T`\>(`name`, `instance`, `properties`): `void`
+> `protected` **\_populate**\<`T`\>(`name`, `instance`, `properties?`): `void`
 
-Defined in: packages/blue-factory/src/factory.ts:467
+Defined in: packages/blue-factory/src/factory.ts:717
+
+Populates properties of an instance, applying construction-aware processors.
 
 #### Type Parameters
 
@@ -570,19 +987,27 @@ Defined in: packages/blue-factory/src/factory.ts:467
 
 `T` = `any`
 
+The type of the instance.
+
 #### Parameters
 
 ##### name
 
 `string`
 
+The name of the instance.
+
 ##### instance
 
 `T`
 
-##### properties
+The instance to populate.
+
+##### properties?
 
 `PropertyDescriptorMap` = `{}`
+
+Optional property descriptor map to apply.
 
 #### Returns
 

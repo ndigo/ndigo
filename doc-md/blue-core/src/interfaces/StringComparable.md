@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,9 @@
 
 # Interface: StringComparable\<T\>
 
-Defined in: packages/blue-core/src/comparable.ts:15
+Defined in: packages/blue-core/src/comparable.ts:44
+
+Interface for string-based objects that can be compared to another object of the same type, with case-insensitive comparison.
 
 ## Extends
 
@@ -18,13 +20,18 @@ Defined in: packages/blue-core/src/comparable.ts:15
 
 `T`
 
+The type of the string-based object being compared.
+
 ## Methods
 
 ### compareTo()
 
 > **compareTo**(`value`): `number`
 
-Defined in: packages/blue-core/src/comparable.ts:12
+Defined in: packages/blue-core/src/comparable.ts:37
+
+Compares this object with the specified object for order. Returns a negative integer, zero, or a positive integer
+as this object is less than, equal to, or greater than the specified object.
 
 #### Parameters
 
@@ -32,9 +39,13 @@ Defined in: packages/blue-core/src/comparable.ts:12
 
 `T`
 
+The object to be compared.
+
 #### Returns
 
 `number`
+
+A negative integer, zero, or a positive integer as this object is less than, equal to, or greater than the specified object.
 
 #### Inherited from
 
@@ -46,7 +57,10 @@ Defined in: packages/blue-core/src/comparable.ts:12
 
 > **compareToIgnoreCase**(`value`): `number`
 
-Defined in: packages/blue-core/src/comparable.ts:16
+Defined in: packages/blue-core/src/comparable.ts:51
+
+Compares this string-based object with the specified string-based object for order, ignoring case.
+Returns a negative integer, zero, or a positive integer as this object is less than, equal to, or greater than the specified object.
 
 #### Parameters
 
@@ -54,6 +68,10 @@ Defined in: packages/blue-core/src/comparable.ts:16
 
 `T`
 
+The object to be compared.
+
 #### Returns
 
 `number`
+
+A negative integer, zero, or a positive integer as this object is less than, equal to, or greater than the specified object.

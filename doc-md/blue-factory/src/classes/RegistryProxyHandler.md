@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Class: RegistryProxyHandler\<T\>
 
-Defined in: packages/blue-factory/src/registry.ts:35
+Defined in: packages/blue-factory/src/registry.ts:40
 
 A handler implementation that when applied to a [Registry](../interfaces/Registry.md) instance via external:Proxy\|Proxy causes the registry
 to behave like a plain object. This is used to implement ProxiedFactory\|ProxiedFactory.
@@ -45,7 +45,7 @@ external:ProxyHandler
 
 > **deleteProperty**(`target`, `key`): `boolean`
 
-Defined in: packages/blue-factory/src/registry.ts:36
+Defined in: packages/blue-factory/src/registry.ts:41
 
 A trap for the `delete` operator.
 
@@ -77,7 +77,7 @@ A `Boolean` indicating whether or not the property was deleted.
 
 > **get**\<`U`\>(`target`, `key`): `U`
 
-Defined in: packages/blue-factory/src/registry.ts:45
+Defined in: packages/blue-factory/src/registry.ts:50
 
 A trap for getting a property value.
 
@@ -113,7 +113,7 @@ The original object which is being proxied.
 
 > **has**(`target`, `key`): `boolean`
 
-Defined in: packages/blue-factory/src/registry.ts:49
+Defined in: packages/blue-factory/src/registry.ts:54
 
 A trap for the `in` operator.
 
@@ -143,7 +143,7 @@ The original object which is being proxied.
 
 > **set**\<`U`\>(`target`, `key`, `value`): `boolean`
 
-Defined in: packages/blue-factory/src/registry.ts:53
+Defined in: packages/blue-factory/src/registry.ts:58
 
 A trap for setting a property value.
 

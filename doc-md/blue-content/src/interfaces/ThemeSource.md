@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,9 @@
 
 # Interface: ThemeSource
 
-Defined in: packages/blue-content/src/theme.ts:12
+Defined in: packages/blue-content/src/theme.ts:26
+
+Provides the currently selected theme.
 
 ## Properties
 
@@ -14,4 +16,6 @@ Defined in: packages/blue-content/src/theme.ts:12
 
 > **theme**: [`Theme`](Theme.md)
 
-Defined in: packages/blue-content/src/theme.ts:13
+Defined in: packages/blue-content/src/theme.ts:30
+
+The active theme.

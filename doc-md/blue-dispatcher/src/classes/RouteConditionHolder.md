@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Class: RouteConditionHolder
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:186
+Defined in: packages/blue-dispatcher/src/route-condition.ts:237
 
 ## Extends
 
@@ -16,15 +16,19 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:186
 
 ### Constructor
 
-> **new RouteConditionHolder**(`routeCondition`): `RouteConditionHolder`
+> **new RouteConditionHolder**(`routeCondition?`): `RouteConditionHolder`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:197
+Defined in: packages/blue-dispatcher/src/route-condition.ts:256
+
+Create a holder for an optional condition.
 
 #### Parameters
 
-##### routeCondition
+##### routeCondition?
 
 [`RouteCondition`](../interfaces/RouteCondition.md) = `null`
+
+The wrapped condition, if any.
 
 #### Returns
 
@@ -40,7 +44,9 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:197
 
 > `readonly` **condition**: [`RouteCondition`](../interfaces/RouteCondition.md)
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:187
+Defined in: packages/blue-dispatcher/src/route-condition.ts:241
+
+Wrapped condition, when present.
 
 ## Accessors
 
@@ -50,7 +56,9 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:187
 
 > **get** **isEmpty**(): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:133
+Defined in: packages/blue-dispatcher/src/route-condition.ts:168
+
+Whether this condition contains no content.
 
 ##### Returns
 
@@ -68,7 +76,7 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:133
 
 > **get** **content**(): [`RouteCondition`](../interfaces/RouteCondition.md)\<`any`\>[]
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:189
+Defined in: packages/blue-dispatcher/src/route-condition.ts:243
 
 ##### Returns
 
@@ -86,7 +94,7 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:189
 
 > **get** **infix**(): `string`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:193
+Defined in: packages/blue-dispatcher/src/route-condition.ts:247
 
 ##### Returns
 
@@ -102,7 +110,9 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:193
 
 > **equals**(`value`): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:140
+Defined in: packages/blue-dispatcher/src/route-condition.ts:181
+
+Compare this condition to another value.
 
 #### Parameters
 
@@ -110,9 +120,13 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:140
 
 `any`
 
+The value to compare.
+
 #### Returns
 
 `boolean`
+
+`true` when both conditions are equivalent.
 
 #### Inherited from
 
@@ -122,13 +136,17 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:140
 
 ### toJSON()
 
-> **toJSON**(): [`JSONValue`](../../../blue-core/src/type-aliases/JSONValue.md)
+> **toJSON**(): `JSONValue`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:150
+Defined in: packages/blue-dispatcher/src/route-condition.ts:196
+
+Serialize the condition to JSON.
 
 #### Returns
 
-[`JSONValue`](../../../blue-core/src/type-aliases/JSONValue.md)
+`JSONValue`
+
+The string form of the condition.
 
 #### Inherited from
 
@@ -140,13 +158,15 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:150
 
 > **toString**(): `string`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:154
+Defined in: packages/blue-dispatcher/src/route-condition.ts:205
 
-Returns a string representation of an object.
+Convert the condition to its textual form.
 
 #### Returns
 
 `string`
+
+The condition string.
 
 #### Inherited from
 
@@ -158,10 +178,9 @@ Returns a string representation of an object.
 
 > **merge**(`other`): `RouteConditionHolder`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:212
+Defined in: packages/blue-dispatcher/src/route-condition.ts:277
 
-Combine the route conditions held by the two RouteConditionHolder instances after making sure the conditions are of the same type. Or if one holder is empty, the other holder is returned.
-    *
+Merge two holders, preserving empty holders when possible.
 
 #### Parameters
 
@@ -169,9 +188,13 @@ Combine the route conditions held by the two RouteConditionHolder instances afte
 
 `RouteConditionHolder`
 
+The holder to merge with.
+
 #### Returns
 
 `RouteConditionHolder`
+
+A merged holder.
 
 #### Overrides
 
@@ -183,17 +206,23 @@ Combine the route conditions held by the two RouteConditionHolder instances afte
 
 > **getMatchingCondition**(`route`): `RouteConditionHolder`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:225
+Defined in: packages/blue-dispatcher/src/route-condition.ts:296
+
+Return a holder for the wrapped condition when it matches the route.
 
 #### Parameters
 
 ##### route
 
-[`Route`](../../../blue-router/src/interfaces/Route.md)
+`Route`
+
+The current route.
 
 #### Returns
 
 `RouteConditionHolder`
+
+A matching holder, or `null`.
 
 #### Overrides
 
@@ -205,7 +234,9 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:225
 
 > **compareTo**(`value`, `route?`): `number`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:233
+Defined in: packages/blue-dispatcher/src/route-condition.ts:311
+
+Compare two holders by comparing their wrapped conditions.
 
 #### Parameters
 
@@ -213,13 +244,19 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:233
 
 `RouteConditionHolder`
 
+The holder to compare.
+
 ##### route?
 
-[`Route`](../../../blue-router/src/interfaces/Route.md)
+`Route`
+
+The route used to break ties, if needed.
 
 #### Returns
 
 `number`
+
+A comparison result.
 
 #### Overrides
 

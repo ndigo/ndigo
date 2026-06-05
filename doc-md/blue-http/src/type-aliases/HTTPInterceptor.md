@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -8,4 +8,6 @@
 
 > **HTTPInterceptor** = [`CompletionAwareHTTPInterceptor`](../interfaces/CompletionAwareHTTPInterceptor.md) \| [`ErrorAwareHTTPInterceptor`](../interfaces/ErrorAwareHTTPInterceptor.md) \| [`InitializationAwareHTTPInterceptor`](../interfaces/InitializationAwareHTTPInterceptor.md) \| [`RequestAwareHTTPInterceptor`](../interfaces/RequestAwareHTTPInterceptor.md) \| [`ResponseAwareHTTPInterceptor`](../interfaces/ResponseAwareHTTPInterceptor.md)
 
-Defined in: packages/blue-http/src/http.ts:38
+Defined in: packages/blue-http/src/http.ts:139
+
+Supported HTTP interceptors recognized by [HTTP](../classes/HTTP.md).

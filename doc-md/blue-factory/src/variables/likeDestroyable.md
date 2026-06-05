@@ -1,14 +1,14 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
 [BlueJS Framework](../../../modules.md) / [blue-factory/src](../README.md) / likeDestroyable
 
-# Variable: likeDestroyable()
+# Variable: likeDestroyable
 
 > `const` **likeDestroyable**: (`value`) => `value is Destroyable`
 
-Defined in: packages/blue-factory/src/lifecycle.ts:44
+Defined in: packages/blue-factory/src/lifecycle.ts:72
 
 ## Parameters
 

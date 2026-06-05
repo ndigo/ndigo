@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -8,10 +8,14 @@
 
 > **ObjectEntry**\<`Value`\> = \[keyof `Value`, `Value`\[keyof `Value`\]\]
 
-Defined in: packages/blue-core/src/iterable.ts:23
+Defined in: packages/blue-core/src/iterable.ts:59
+
+Represents a single entry for an object-like value, where the entry is `[key, value]`.
 
 ## Type Parameters
 
 ### Value
 
 `Value`
+
+The object-like value type.

@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,15 +6,15 @@
 
 # Function: AsModuleResourceLoader()
 
-> **AsModuleResourceLoader**\<`T`\>(`superclass`): [`Constructable`](../../../blue-core/src/type-aliases/Constructable.md)\<[`ResourceLoader`](../interfaces/ResourceLoader.md)\> & `T`
+> **AsModuleResourceLoader**\<`T`\>(`superclass`): `Constructable`\<[`ResourceLoader`](../interfaces/ResourceLoader.md)\> & `T`
 
-Defined in: packages/blue-context/src/resource.ts:153
+Defined in: packages/blue-context/src/resource.ts:176
 
 ## Type Parameters
 
 ### T
 
-`T` *extends* [`Constructable`](../../../blue-core/src/type-aliases/Constructable.md)
+`T` *extends* `Constructable`
 
 ## Parameters
 
@@ -24,5 +24,12 @@ Defined in: packages/blue-context/src/resource.ts:153
 
 ## Returns
 
-[`Constructable`](../../../blue-core/src/type-aliases/Constructable.md)\<[`ResourceLoader`](../interfaces/ResourceLoader.md)\> & `T`
+`Constructable`\<[`ResourceLoader`](../interfaces/ResourceLoader.md)\> & `T`
 
+## See
+
+module:context.AsModuleResourceLoader
+
+## Implements
+
+module:context.ResourceLoader

@@ -42,5 +42,4 @@ export const BROWSER_ONLY_PACKAGES: readonly string[] = [
     '@blue/dom',
     '@blue/view-webcomponent',
     '@blue/boot',
-    '@blue/print',
 ];

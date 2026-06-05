@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,11 +6,18 @@
 
 # Class: Emitter
 
-Defined in: packages/blue-context/src/event-emitter.ts:971
+Defined in: packages/blue-context/src/event-emitter.ts:897
+
+Standalone event emitter with destroy and serialization support.
 
 ## Extends
 
-- `EmitterBase`
+- [`EventEmitter`](../interfaces/EventEmitter.md)\<`this`\> & `Null`\<`this`\>
+
+## Implements
+
+- `Destroyable`
+- `Serializable`
 
 ## Constructors
 
@@ -18,7 +25,9 @@ Defined in: packages/blue-context/src/event-emitter.ts:971
 
 > **new Emitter**(`mapping?`): `Emitter`
 
-Defined in: packages/blue-context/src/event-emitter.ts:977
+Defined in: packages/blue-context/src/event-emitter.ts:908
+
+Creates an emitter and optionally seeds it with listeners.
 
 #### Parameters
 
@@ -26,21 +35,23 @@ Defined in: packages/blue-context/src/event-emitter.ts:977
 
 [`EventHandlers`](../type-aliases/EventHandlers.md)
 
+Optional initial event mappings.
+
 #### Returns
 
 `Emitter`
 
 #### Overrides
 
-`EmitterBase.constructor`
+`AsEventEmitter(Null).constructor`
 
 ## Properties
 
 ### every
 
-> `readonly` `static` **every**: `string` = `'*'`
+> `readonly` `static` **every**: `string` = `$every`
 
-Defined in: packages/blue-context/src/event-emitter.ts:972
+Defined in: packages/blue-context/src/event-emitter.ts:898
 
 ***
 
@@ -48,15 +59,19 @@ Defined in: packages/blue-context/src/event-emitter.ts:972
 
 > `readonly` `static` **version**: `string` = `'3.0.0'`
 
-Defined in: packages/blue-context/src/event-emitter.ts:973
+Defined in: packages/blue-context/src/event-emitter.ts:899
 
 ***
 
 ### destroyed
 
-> **destroyed**: `boolean` = `false`
+> **destroyed**: `boolean`
 
-Defined in: packages/blue-context/src/event-emitter.ts:975
+Defined in: packages/blue-context/src/event-emitter.ts:901
+
+#### Implementation of
+
+`Destroyable.destroyed`
 
 ## Methods
 
@@ -64,7 +79,9 @@ Defined in: packages/blue-context/src/event-emitter.ts:975
 
 > **emit**(`type`, ...`data`): `boolean`
 
-Defined in: packages/blue-context/src/event-emitter.ts:20
+Defined in: packages/blue-context/src/event-emitter.ts:42
+
+Emits an event to the listeners registered for the given type.
 
 #### Parameters
 
@@ -72,17 +89,23 @@ Defined in: packages/blue-context/src/event-emitter.ts:20
 
 [`EventType`](../type-aliases/EventType.md)
 
+The event type.
+
 ##### data
 
 ...`any`[]
+
+Event payload values.
 
 #### Returns
 
 `boolean`
 
+`true` when at least one listener ran.
+
 #### Inherited from
 
-`EmitterBase.emit`
+`AsEventEmitter(Null).emit`
 
 ***
 
@@ -90,15 +113,19 @@ Defined in: packages/blue-context/src/event-emitter.ts:20
 
 > **eventTypes**(): [`EventType`](../type-aliases/EventType.md)[]
 
-Defined in: packages/blue-context/src/event-emitter.ts:21
+Defined in: packages/blue-context/src/event-emitter.ts:48
+
+Returns the event types with registered listeners.
 
 #### Returns
 
 [`EventType`](../type-aliases/EventType.md)[]
 
+The registered event types.
+
 #### Inherited from
 
-`EmitterBase.eventTypes`
+`AsEventEmitter(Null).eventTypes`
 
 ***
 
@@ -106,7 +133,9 @@ Defined in: packages/blue-context/src/event-emitter.ts:21
 
 > **listenerCount**(`type`): `number`
 
-Defined in: packages/blue-context/src/event-emitter.ts:22
+Defined in: packages/blue-context/src/event-emitter.ts:55
+
+Returns the number of listeners for a type.
 
 #### Parameters
 
@@ -114,13 +143,17 @@ Defined in: packages/blue-context/src/event-emitter.ts:22
 
 [`EventType`](../type-aliases/EventType.md)
 
+The event type.
+
 #### Returns
 
 `number`
 
+The listener count.
+
 #### Inherited from
 
-`EmitterBase.listenerCount`
+`AsEventEmitter(Null).listenerCount`
 
 ***
 
@@ -128,7 +161,9 @@ Defined in: packages/blue-context/src/event-emitter.ts:22
 
 > **listeners**(`type`): `Function`[]
 
-Defined in: packages/blue-context/src/event-emitter.ts:23
+Defined in: packages/blue-context/src/event-emitter.ts:62
+
+Returns a snapshot of listeners for a type.
 
 #### Parameters
 
@@ -136,13 +171,17 @@ Defined in: packages/blue-context/src/event-emitter.ts:23
 
 [`EventType`](../type-aliases/EventType.md)
 
+The event type.
+
 #### Returns
 
 `Function`[]
 
+The registered listeners.
+
 #### Inherited from
 
-`EmitterBase.listeners`
+`AsEventEmitter(Null).listeners`
 
 ***
 
@@ -150,7 +189,9 @@ Defined in: packages/blue-context/src/event-emitter.ts:23
 
 > **on**(`type`, `listener`): `this`
 
-Defined in: packages/blue-context/src/event-emitter.ts:24
+Defined in: packages/blue-context/src/event-emitter.ts:70
+
+Adds a listener for an event type.
 
 #### Parameters
 
@@ -158,17 +199,23 @@ Defined in: packages/blue-context/src/event-emitter.ts:24
 
 [`EventType`](../type-aliases/EventType.md)
 
+The event type.
+
 ##### listener
 
 `Function`
+
+The listener to register.
 
 #### Returns
 
 `this`
 
+This emitter.
+
 #### Inherited from
 
-`EmitterBase.on`
+`AsEventEmitter(Null).on`
 
 ***
 
@@ -176,7 +223,9 @@ Defined in: packages/blue-context/src/event-emitter.ts:24
 
 > **off**(`type`, `listener`): `this`
 
-Defined in: packages/blue-context/src/event-emitter.ts:25
+Defined in: packages/blue-context/src/event-emitter.ts:78
+
+Removes a listener for an event type.
 
 #### Parameters
 
@@ -184,17 +233,23 @@ Defined in: packages/blue-context/src/event-emitter.ts:25
 
 [`EventType`](../type-aliases/EventType.md)
 
+The event type.
+
 ##### listener
 
 `Function`
+
+The listener to remove.
 
 #### Returns
 
 `this`
 
+This emitter.
+
 #### Inherited from
 
-`EmitterBase.off`
+`AsEventEmitter(Null).off`
 
 ***
 
@@ -202,7 +257,9 @@ Defined in: packages/blue-context/src/event-emitter.ts:25
 
 > **clear**(`type?`): `this`
 
-Defined in: packages/blue-context/src/event-emitter.ts:987
+Defined in: packages/blue-context/src/event-emitter.ts:927
+
+Removes listeners for one type or for all types.
 
 #### Parameters
 
@@ -210,21 +267,33 @@ Defined in: packages/blue-context/src/event-emitter.ts:987
 
 [`EventType`](../type-aliases/EventType.md)
 
+Optional event type to clear.
+
 #### Returns
 
 `this`
+
+This emitter.
 
 ***
 
 ### toJSON()
 
-> **toJSON**(): `any`
+> **toJSON**(): `JSONValue`
 
-Defined in: packages/blue-context/src/event-emitter.ts:999
+Defined in: packages/blue-context/src/event-emitter.ts:937
+
+Serializes the listener counts to JSON.
 
 #### Returns
 
-`any`
+`JSONValue`
+
+A JSON representation of the emitter state.
+
+#### Implementation of
+
+`Serializable.toJSON`
 
 ***
 
@@ -232,13 +301,19 @@ Defined in: packages/blue-context/src/event-emitter.ts:999
 
 > **toString**(): `string`
 
-Defined in: packages/blue-context/src/event-emitter.ts:1012
+Defined in: packages/blue-context/src/event-emitter.ts:955
 
-Returns a string representation of an object.
+Returns a compact textual summary of the emitter.
 
 #### Returns
 
 `string`
+
+A string representation.
+
+#### Implementation of
+
+`Serializable.toString`
 
 ***
 
@@ -246,8 +321,14 @@ Returns a string representation of an object.
 
 > **destroy**(): `void`
 
-Defined in: packages/blue-context/src/event-emitter.ts:1016
+Defined in: packages/blue-context/src/event-emitter.ts:962
+
+Destroys the emitter and clears its listeners.
 
 #### Returns
 
 `void`
+
+#### Implementation of
+
+`Destroyable.destroy`

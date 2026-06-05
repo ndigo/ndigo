@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -8,7 +8,9 @@
 
 > **EventHandlers** = `object`
 
-Defined in: packages/blue-context/src/event-emitter.ts:15
+Defined in: packages/blue-context/src/event-emitter.ts:24
+
+Mapping from event type to handler(s).
 
 ## Index Signature
 

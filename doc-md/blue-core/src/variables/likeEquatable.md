@@ -1,14 +1,16 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
 [BlueJS Framework](../../../modules.md) / [blue-core/src](../README.md) / likeEquatable
 
-# Variable: likeEquatable()
+# Variable: likeEquatable
 
 > `const` **likeEquatable**: (`value`) => `value is Equatable<any>`
 
-Defined in: packages/blue-core/src/equatable.ts:30
+Defined in: packages/blue-core/src/equatable.ts:31
+
+Type guard to check if a value implements the `Equatable` interface.
 
 ## Parameters
 
@@ -16,10 +18,10 @@ Defined in: packages/blue-core/src/equatable.ts:30
 
 `any`
 
-The value to be tested
+The value to be tested.
 
 ## Returns
 
 `value is Equatable<any>`
 
-Whether or not the `value` is [Equatable](../interfaces/Equatable.md).
+`true` if the `value` is `Equatable`, `false` otherwise.

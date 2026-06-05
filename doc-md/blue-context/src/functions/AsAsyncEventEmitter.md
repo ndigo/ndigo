@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,15 +6,17 @@
 
 # Function: AsAsyncEventEmitter()
 
-> **AsAsyncEventEmitter**\<`T`\>(`superclass`): [`Constructable`](../../../blue-core/src/type-aliases/Constructable.md)\<[`AsyncEventEmitter`](../interfaces/AsyncEventEmitter.md)\> & `T`
+> **AsAsyncEventEmitter**\<`T`\>(`superclass`): `Constructable`\<[`AsyncEventEmitter`](../interfaces/AsyncEventEmitter.md)\> & `T`
 
-Defined in: packages/blue-context/src/event-emitter.ts:874
+Defined in: packages/blue-context/src/event-emitter.ts:621
+
+Adds async event dispatch behavior to a base class.
 
 ## Type Parameters
 
 ### T
 
-`T` *extends* [`Constructable`](../../../blue-core/src/type-aliases/Constructable.md)\<[`EventEmitter`](../interfaces/EventEmitter.md)\>
+`T` *extends* `Constructable`\<[`EventEmitter`](../interfaces/EventEmitter.md)\>
 
 ## Parameters
 
@@ -24,4 +26,4 @@ Defined in: packages/blue-context/src/event-emitter.ts:874
 
 ## Returns
 
-[`Constructable`](../../../blue-core/src/type-aliases/Constructable.md)\<[`AsyncEventEmitter`](../interfaces/AsyncEventEmitter.md)\> & `T`
+`Constructable`\<[`AsyncEventEmitter`](../interfaces/AsyncEventEmitter.md)\> & `T`

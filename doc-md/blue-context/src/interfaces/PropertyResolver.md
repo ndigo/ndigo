@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,9 @@
 
 # Interface: PropertyResolver
 
-Defined in: packages/blue-context/src/property-resolver.ts:9
+Defined in: packages/blue-context/src/property-resolver.ts:12
+
+Resolves property values from a configured set of sources.
 
 ## Extended by
 
@@ -17,9 +19,11 @@ Defined in: packages/blue-context/src/property-resolver.ts:9
 
 ### getProperty()
 
-> **getProperty**(`key`, `defaultValue?`): [`JSONValue`](../../../blue-core/src/type-aliases/JSONValue.md)
+> **getProperty**(`key`, `defaultValue?`): `JSONValue`
 
-Defined in: packages/blue-context/src/property-resolver.ts:10
+Defined in: packages/blue-context/src/property-resolver.ts:20
+
+Resolves a property value, falling back to a default when missing.
 
 #### Parameters
 
@@ -27,21 +31,29 @@ Defined in: packages/blue-context/src/property-resolver.ts:10
 
 `string`
 
+The property name to resolve.
+
 ##### defaultValue?
 
-[`JSONValue`](../../../blue-core/src/type-aliases/JSONValue.md)
+`JSONValue`
+
+The value to return when no property is found.
 
 #### Returns
 
-[`JSONValue`](../../../blue-core/src/type-aliases/JSONValue.md)
+`JSONValue`
+
+The resolved property value or the default value.
 
 ***
 
 ### getRequiredProperty()
 
-> **getRequiredProperty**(`key`): [`JSONValue`](../../../blue-core/src/type-aliases/JSONValue.md)
+> **getRequiredProperty**(`key`): `JSONValue`
 
-Defined in: packages/blue-context/src/property-resolver.ts:11
+Defined in: packages/blue-context/src/property-resolver.ts:28
+
+Returns the resolved property value or throws when missing.
 
 #### Parameters
 
@@ -49,9 +61,17 @@ Defined in: packages/blue-context/src/property-resolver.ts:11
 
 `string`
 
+The property name to resolve.
+
 #### Returns
 
-[`JSONValue`](../../../blue-core/src/type-aliases/JSONValue.md)
+`JSONValue`
+
+The resolved property value.
+
+#### Throws
+
+When the property cannot be resolved.
 
 ***
 
@@ -59,7 +79,9 @@ Defined in: packages/blue-context/src/property-resolver.ts:11
 
 > **hasProperty**(`key`): `boolean`
 
-Defined in: packages/blue-context/src/property-resolver.ts:12
+Defined in: packages/blue-context/src/property-resolver.ts:35
+
+Returns whether a property key can be resolved.
 
 #### Parameters
 
@@ -67,6 +89,10 @@ Defined in: packages/blue-context/src/property-resolver.ts:12
 
 `string`
 
+The property name to resolve.
+
 #### Returns
 
 `boolean`
+
+`true` when the property exists.

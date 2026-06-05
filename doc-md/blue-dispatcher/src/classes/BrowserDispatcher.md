@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,30 +6,15 @@
 
 # Class: BrowserDispatcher
 
-Defined in: packages/blue-dispatcher/src/dispatcher.ts:76
+Defined in: packages/blue-dispatcher/src/dispatcher.ts:52
 
-Dispatcher for brower-based handlers.
-* It can use any RouteHandlerMapping\|RouteHandlerMapping implementation - pre-built or provided as part of an application - to control the routing of routes to handlers. Default is NamePathHandlerMapping\|NamePathHandlerMapping and MetadataHandlerMapping\|MetadataHandlerMapping. HandlerMapping objects can be defined as values in the application context, implementing the HandlerMapping interface, overriding the default HandlerMapping if present. HandlerMappings can be given any value name.
-* It can use any HandlerAdapter\|HandlerAdapter; this allows for using any handler interface. Default adapters are MetadataHandlerAdapter\|MetadataHandlerAdapter, ControllerHandlerAdapter\|ControllerHandlerAdapter, for RouteMappingHandler\|RouteMappingHandler and Controller\|Controller interfaces, respectively. A default MetadataHandlerAdapter\|MetadataHandlerAdapter will be registered as well. RouteHandlerAdapter objects can be added as values in the application context, overriding the default RouteHandlerAdapters. Like HandlerMappings, RouteHandlerAdapters can be given any name.
-* The dispatcher's error resolution strategy can be specified via a RouteHandlerErrorResolver\|HandlerErrorResolver, for example mapping certain exceptions to error pages. Default is DefaultRouteHandlerErrorResolver\|DefaultRouteHandlerErrorResolver. HandlerErrorResolvers can be overridden through the application context. HandlerErrorResolver can be given any name.
-* Its view resolution strategy can be specified via a ViewResolver\|ViewResolver implementation, resolving symbolic view names into [View](../../../blue-view/src/interfaces/View.md) objects. Default is InternalResourceViewResolver\|InternalResourceViewResolver. ViewResolver objects can be added as values in the application context, overriding the default ViewResolver. ViewResolvers can be given any name.
-* Its language resolution strategy is determined by a LanguageResolver\|LanguageResolver. The out-of-the-box implementation works via [https://developer.mozilla.org/en-US/docs/Web/API/Navigator\|navigator](https://developer.mozilla.org/en-US/docs/Web/API/Navigator|navigator) object. The LanguageResolver name is "languageResolver"; default is NavigatorLanguageResolver\|NavigatorLanguageResolver.
-* Its theme resolution strategy is determined by a ThemeResolver\|ThemeResolver. Implementations for a fixed theme and cookie resolved theme are included. The ThemeResolver name is "themeResolver"; default is FixedThemeResolver\|FixedThemeResolver.
+An interface for creating application dispatchers. Dispatches to registered handlers for processing a route, providing convenient mapping and exception handling facilities.
 
-## See
-
- - module:dispatcher.AsRouteHandlerAdapterStrategy
- - module:dispatcher.AsRouteHandlerMappingStrategy
- - module:dispatcher.AsRouteErrorResolverStrategy
- - module:dispatcher.AsLanguageResolverStrategy
- - module:dispatcher.AsRouteToViewNameTranslatorStrategy
- - module:dispatcher.AsThemeResolverStrategy
- - module:dispatcher.AsViewMappingStrategy
- - module:dispatcher.AsViewResolverStrategy
+It can be used with just about any workflow, with the installation of the appropriate strategies and adapter classes.
 
 ## Extends
 
-- `ViewResolverStrategy` & `RouteErrorResolverStrategy` & `ThemeResolverStrategy` & `RouteToViewNameTranslatorStrategy` & `LanguageResolverStrategy` & `RouteHandlerMappingStrategy` & `RouteHandlerAdapterStrategy` & `StrategyInitializer` & [`Null`](../../../blue-core/src/classes/Null.md)\<`this`\>
+- `ViewResolverStrategy` & `RouteErrorResolverStrategy` & `ThemeResolverStrategy` & `RouteToViewNameTranslatorStrategy` & `LanguageResolverStrategy` & `RouteHandlerMappingStrategy` & `RouteHandlerAdapterStrategy` & `StrategyInitializer` & `Null`\<`this`\>
 
 ## Implements
 
@@ -52,11 +37,23 @@ Dispatcher for brower-based handlers.
 
 ## Properties
 
+### applicationContext
+
+> **applicationContext**: `ApplicationContext`
+
+Defined in: packages/blue-dispatcher/src/dispatcher.ts:69
+
+The application context.
+
+***
+
 ### defaultViewName
 
 > **defaultViewName**: `string` = `'index'`
 
-Defined in: packages/blue-dispatcher/src/dispatcher.ts:90
+Defined in: packages/blue-dispatcher/src/dispatcher.ts:73
+
+The default view name to use if none is specified.
 
 ***
 
@@ -136,7 +133,7 @@ Defined in: packages/blue-dispatcher/src/strategies/strategy-initializer.ts:10
 
 > **themeResolver**: [`ThemeResolver`](../interfaces/ThemeResolver.md)
 
-Defined in: packages/blue-dispatcher/src/strategies/theme-resolver-strategy.ts:11
+Defined in: packages/blue-dispatcher/src/strategies/theme-resolver-strategy.ts:12
 
 #### Inherited from
 
@@ -146,7 +143,7 @@ Defined in: packages/blue-dispatcher/src/strategies/theme-resolver-strategy.ts:1
 
 ### viewResolvers
 
-> **viewResolvers**: [`ViewResolver`](../../../blue-view/src/interfaces/ViewResolver.md)[]
+> **viewResolvers**: `ViewResolver`[]
 
 Defined in: packages/blue-dispatcher/src/strategies/view-resolver-strategy.ts:11
 
@@ -162,7 +159,9 @@ Defined in: packages/blue-dispatcher/src/strategies/view-resolver-strategy.ts:11
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-dispatcher/src/dispatcher.ts:92
+Defined in: packages/blue-dispatcher/src/dispatcher.ts:79
+
+Returns the string tag for this dispatcher.
 
 ##### Returns
 
@@ -174,13 +173,17 @@ Defined in: packages/blue-dispatcher/src/dispatcher.ts:92
 
 > **dispatch**(`route`): `Promise`\<`void`\>
 
-Defined in: packages/blue-dispatcher/src/dispatcher.ts:96
+Defined in: packages/blue-dispatcher/src/dispatcher.ts:91
+
+Dispatches the given route for processing.
 
 #### Parameters
 
 ##### route
 
-[`Route`](../../../blue-router/src/interfaces/Route.md)
+`Route`
+
+The route to dispatch.
 
 #### Returns
 
@@ -196,10 +199,9 @@ Defined in: packages/blue-dispatcher/src/dispatcher.ts:96
 
 > **render**(`mv`, `route`): `Promise`\<`void`\>
 
-Defined in: packages/blue-dispatcher/src/dispatcher.ts:135
+Defined in: packages/blue-dispatcher/src/dispatcher.ts:123
 
 Render the given `ModelAndView`. This is the last stage of handling a route.
-    *
 
 #### Parameters
 
@@ -207,9 +209,13 @@ Render the given `ModelAndView`. This is the last stage of handling a route.
 
 [`ModelAndView`](ModelAndView.md)
 
+The [ModelAndView](ModelAndView.md) to render.
+
 ##### route
 
-[`Route`](../../../blue-router/src/interfaces/Route.md)
+`Route`
+
+The route associated with the [ModelAndView](ModelAndView.md).
 
 #### Returns
 
@@ -225,33 +231,49 @@ Render the given `ModelAndView`. This is the last stage of handling a route.
 
 > `protected` **\_processHandlerError**(`route`, `handler`, `error`): [`ModelAndView`](ModelAndView.md)
 
-Defined in: packages/blue-dispatcher/src/dispatcher.ts:163
+Defined in: packages/blue-dispatcher/src/dispatcher.ts:168
+
+Processes a handler error by attempting to resolve it with registered error resolvers.
 
 #### Parameters
 
 ##### route
 
-[`Route`](../../../blue-router/src/interfaces/Route.md)
+`Route`
+
+The current route.
 
 ##### handler
 
 `any`
 
+The handler that caused the error.
+
 ##### error
 
 `Error`
+
+The error that occurred.
 
 #### Returns
 
 [`ModelAndView`](ModelAndView.md)
 
+A [ModelAndView](ModelAndView.md) if the error was resolved, otherwise throws a TypeError.
+
+#### Throws
+
+If no view name can be determined for the error.
+
 ***
 
 ### \_resolveViewName()
 
-> `protected` **\_resolveViewName**(`viewName`, `language`): `Promise`\<[`View`](../../../blue-view/src/interfaces/View.md)\>
+> `protected` **\_resolveViewName**(`viewName`, `language`): `Promise`\<`View`\>
 
-Defined in: packages/blue-dispatcher/src/dispatcher.ts:182
+Defined in: packages/blue-dispatcher/src/dispatcher.ts:191
+
+Resolves a view name into a View object using registered view resolvers.
 
 #### Parameters
 
@@ -259,13 +281,19 @@ Defined in: packages/blue-dispatcher/src/dispatcher.ts:182
 
 `string`
 
+The name of the view to resolve.
+
 ##### language
 
 `string`
 
+The language to use for view resolution.
+
 #### Returns
 
-`Promise`\<[`View`](../../../blue-view/src/interfaces/View.md)\>
+`Promise`\<`View`\>
+
+A Promise that resolves to the View object, or `null` if not found.
 
 ***
 
@@ -279,7 +307,7 @@ Defined in: packages/blue-dispatcher/src/strategies/language-resolver-strategy.t
 
 ##### context
 
-[`ApplicationContext`](../../../blue-context/src/interfaces/ApplicationContext.md)
+`ApplicationContext`
 
 #### Returns
 
@@ -301,7 +329,7 @@ Defined in: packages/blue-dispatcher/src/strategies/route-error-resolver-strateg
 
 ##### context
 
-[`ApplicationContext`](../../../blue-context/src/interfaces/ApplicationContext.md)
+`ApplicationContext`
 
 #### Returns
 
@@ -323,7 +351,7 @@ Defined in: packages/blue-dispatcher/src/strategies/route-handler-adapter-strate
 
 ##### context
 
-[`ApplicationContext`](../../../blue-context/src/interfaces/ApplicationContext.md)
+`ApplicationContext`
 
 #### Returns
 
@@ -367,7 +395,7 @@ Defined in: packages/blue-dispatcher/src/strategies/route-handler-mapping-strate
 
 ##### context
 
-[`ApplicationContext`](../../../blue-context/src/interfaces/ApplicationContext.md)
+`ApplicationContext`
 
 #### Returns
 
@@ -389,7 +417,7 @@ Defined in: packages/blue-dispatcher/src/strategies/route-handler-mapping-strate
 
 ##### route
 
-[`Route`](../../../blue-router/src/interfaces/Route.md)
+`Route`
 
 #### Returns
 
@@ -411,7 +439,7 @@ Defined in: packages/blue-dispatcher/src/strategies/route-to-view-name-translato
 
 ##### context
 
-[`ApplicationContext`](../../../blue-context/src/interfaces/ApplicationContext.md)
+`ApplicationContext`
 
 #### Returns
 
@@ -433,7 +461,7 @@ Defined in: packages/blue-dispatcher/src/strategies/route-to-view-name-translato
 
 ##### route
 
-[`Route`](../../../blue-router/src/interfaces/Route.md)
+`Route`
 
 #### Returns
 
@@ -483,7 +511,7 @@ Defined in: packages/blue-dispatcher/src/strategies/strategy-initializer.ts:12
 
 ##### context
 
-[`ApplicationContext`](../../../blue-context/src/interfaces/ApplicationContext.md)
+`ApplicationContext`
 
 ##### key
 
@@ -513,7 +541,7 @@ Defined in: packages/blue-dispatcher/src/strategies/strategy-initializer.ts:13
 
 ##### context
 
-[`ApplicationContext`](../../../blue-context/src/interfaces/ApplicationContext.md)
+`ApplicationContext`
 
 #### Returns
 
@@ -541,7 +569,7 @@ Defined in: packages/blue-dispatcher/src/strategies/strategy-initializer.ts:14
 
 ##### context
 
-[`ApplicationContext`](../../../blue-context/src/interfaces/ApplicationContext.md)
+`ApplicationContext`
 
 ##### collectionStrategyKey
 
@@ -585,7 +613,7 @@ Defined in: packages/blue-dispatcher/src/strategies/strategy-initializer.ts:21
 
 ##### context
 
-[`ApplicationContext`](../../../blue-context/src/interfaces/ApplicationContext.md)
+`ApplicationContext`
 
 ##### strategyKey
 
@@ -613,13 +641,13 @@ Defined in: packages/blue-dispatcher/src/strategies/strategy-initializer.ts:21
 
 > **initThemeResolver**(`context`): `void`
 
-Defined in: packages/blue-dispatcher/src/strategies/theme-resolver-strategy.ts:12
+Defined in: packages/blue-dispatcher/src/strategies/theme-resolver-strategy.ts:13
 
 #### Parameters
 
 ##### context
 
-[`ApplicationContext`](../../../blue-context/src/interfaces/ApplicationContext.md)
+`ApplicationContext`
 
 #### Returns
 
@@ -641,7 +669,7 @@ Defined in: packages/blue-dispatcher/src/strategies/view-resolver-strategy.ts:12
 
 ##### context
 
-[`ApplicationContext`](../../../blue-context/src/interfaces/ApplicationContext.md)
+`ApplicationContext`
 
 #### Returns
 

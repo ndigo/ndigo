@@ -1,14 +1,16 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
 [BlueJS Framework](../../../modules.md) / [blue-core/src](../README.md) / likeEnumerable
 
-# Variable: likeEnumerable()
+# Variable: likeEnumerable
 
-> `const` **likeEnumerable**: (`value`) => value is AsyncEnumerable\<any, any\> \| Enumerable\<any, any\>
+> `const` **likeEnumerable**: (`value`) => `value is Enumerable<any, any>`
 
-Defined in: packages/blue-core/src/enumerable.ts:79
+Defined in: packages/blue-core/src/enumerable.ts:41
+
+Type guard to check if a value implements the `Enumerable` interface.
 
 ## Parameters
 
@@ -16,10 +18,10 @@ Defined in: packages/blue-core/src/enumerable.ts:79
 
 `any`
 
-The value to be tested
+The value to be tested.
 
 ## Returns
 
-value is AsyncEnumerable\<any, any\> \| Enumerable\<any, any\>
+`value is Enumerable<any, any>`
 
-Whether or not the `value` is [Enumerable](../interfaces/Enumerable.md) or [AsyncEnumerable](../interfaces/AsyncEnumerable.md).
+`true` if the `value` is `Enumerable`, `false` otherwise.

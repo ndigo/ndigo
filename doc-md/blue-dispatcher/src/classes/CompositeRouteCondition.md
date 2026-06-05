@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,7 @@
 
 # Class: CompositeRouteCondition
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:251
+Defined in: packages/blue-dispatcher/src/route-condition.ts:329
 
 Implements the [RouteCondition](../interfaces/RouteCondition.md) contract by delegating to multiple `RouteCondition` types and using a logical conjunction (' && ') to ensure all conditions match a given route.
 
@@ -22,13 +22,17 @@ When `CompositeRouteCondition` instances are combined or compared they are expec
 
 > **new CompositeRouteCondition**(...`routeConditions`): `CompositeRouteCondition`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:274
+Defined in: packages/blue-dispatcher/src/route-condition.ts:357
+
+Create a composite condition from one or more route conditions.
 
 #### Parameters
 
 ##### routeConditions
 
-[`RouteCondition`](../interfaces/RouteCondition.md)\<`any`\>[] | [`RouteConditionHolder`](RouteConditionHolder.md)[]
+[`RouteCondition`](../interfaces/RouteCondition.md)\<`any`\>[] \| [`RouteConditionHolder`](RouteConditionHolder.md)[]
+
+Conditions to combine.
 
 #### Returns
 
@@ -44,7 +48,7 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:274
 
 > `readonly` **routeConditions**: [`RouteConditionHolder`](RouteConditionHolder.md)[]
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:272
+Defined in: packages/blue-dispatcher/src/route-condition.ts:350
 
 ## Accessors
 
@@ -54,7 +58,7 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:272
 
 > **get** **infix**(): `string`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:252
+Defined in: packages/blue-dispatcher/src/route-condition.ts:330
 
 ##### Returns
 
@@ -72,7 +76,9 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:252
 
 > **get** **isEmpty**(): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:256
+Defined in: packages/blue-dispatcher/src/route-condition.ts:334
+
+Whether this condition contains no content.
 
 ##### Returns
 
@@ -90,7 +96,7 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:256
 
 > **get** **length**(): `number`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:260
+Defined in: packages/blue-dispatcher/src/route-condition.ts:338
 
 ##### Returns
 
@@ -104,7 +110,7 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:260
 
 > **get** **conditions**(): [`RouteCondition`](../interfaces/RouteCondition.md)\<`any`\>[]
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:264
+Defined in: packages/blue-dispatcher/src/route-condition.ts:342
 
 ##### Returns
 
@@ -118,7 +124,7 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:264
 
 > **get** **content**(): [`RouteCondition`](../interfaces/RouteCondition.md)\<`any`\>[]
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:268
+Defined in: packages/blue-dispatcher/src/route-condition.ts:346
 
 ##### Returns
 
@@ -134,7 +140,9 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:268
 
 > **equals**(`value`): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:140
+Defined in: packages/blue-dispatcher/src/route-condition.ts:181
+
+Compare this condition to another value.
 
 #### Parameters
 
@@ -142,9 +150,13 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:140
 
 `any`
 
+The value to compare.
+
 #### Returns
 
 `boolean`
+
+`true` when both conditions are equivalent.
 
 #### Inherited from
 
@@ -154,13 +166,17 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:140
 
 ### toJSON()
 
-> **toJSON**(): [`JSONValue`](../../../blue-core/src/type-aliases/JSONValue.md)
+> **toJSON**(): `JSONValue`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:150
+Defined in: packages/blue-dispatcher/src/route-condition.ts:196
+
+Serialize the condition to JSON.
 
 #### Returns
 
-[`JSONValue`](../../../blue-core/src/type-aliases/JSONValue.md)
+`JSONValue`
+
+The string form of the condition.
 
 #### Inherited from
 
@@ -172,13 +188,15 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:150
 
 > **toString**(): `string`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:154
+Defined in: packages/blue-dispatcher/src/route-condition.ts:205
 
-Returns a string representation of an object.
+Convert the condition to its textual form.
 
 #### Returns
 
 `string`
+
+The condition string.
 
 #### Inherited from
 
@@ -190,10 +208,9 @@ Returns a string representation of an object.
 
 > **merge**(`other`): `CompositeRouteCondition`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:300
+Defined in: packages/blue-dispatcher/src/route-condition.ts:389
 
-If one instance is empty, return the other. If both instances have conditions, combine the individual conditions after ensuring they are of the same type and number.
-    *
+Merge two composite conditions element by element.
 
 #### Parameters
 
@@ -201,9 +218,13 @@ If one instance is empty, return the other. If both instances have conditions, c
 
 `CompositeRouteCondition`
 
+The condition to merge with.
+
 #### Returns
 
 `CompositeRouteCondition`
+
+The merged composite condition.
 
 #### Overrides
 
@@ -215,17 +236,23 @@ If one instance is empty, return the other. If both instances have conditions, c
 
 > **getMatchingCondition**(`route`): `CompositeRouteCondition`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:317
+Defined in: packages/blue-dispatcher/src/route-condition.ts:412
+
+Return the subset of conditions that match the route.
 
 #### Parameters
 
 ##### route
 
-[`Route`](../../../blue-router/src/interfaces/Route.md)
+`Route`
+
+The current route.
 
 #### Returns
 
 `CompositeRouteCondition`
+
+A matching composite condition, or `null`.
 
 #### Overrides
 
@@ -237,7 +264,9 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:317
 
 > **compareTo**(`value`, `route?`): `number`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:332
+Defined in: packages/blue-dispatcher/src/route-condition.ts:434
+
+Compare two composite conditions in route-specific context.
 
 #### Parameters
 
@@ -245,13 +274,19 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:332
 
 `CompositeRouteCondition`
 
+The condition to compare.
+
 ##### route?
 
-[`Route`](../../../blue-router/src/interfaces/Route.md)
+`Route`
+
+The route used to break ties, if needed.
 
 #### Returns
 
 `number`
+
+A comparison result.
 
 #### Overrides
 

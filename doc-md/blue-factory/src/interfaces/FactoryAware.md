@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,9 @@
 
 # Interface: FactoryAware
 
-Defined in: packages/blue-factory/src/factory.ts:46
+Defined in: packages/blue-factory/src/factory.ts:92
+
+Interface to be implemented by values that wish to be aware of their owning [Factory](Factory.md).
 
 ## Extends
 
@@ -18,7 +20,9 @@ Defined in: packages/blue-factory/src/factory.ts:46
 
 > `readonly` **\[$aware\]**: `boolean`
 
-Defined in: packages/blue-factory/src/aware.ts:16
+Defined in: packages/blue-factory/src/aware.ts:27
+
+A symbol indicating that the value is aware.
 
 #### Inherited from
 
@@ -30,13 +34,17 @@ Defined in: packages/blue-factory/src/aware.ts:16
 
 > **setFactory**(`factory`): `void`
 
-Defined in: packages/blue-factory/src/factory.ts:47
+Defined in: packages/blue-factory/src/factory.ts:97
+
+Setter that supplies the owning factory to the instance.
 
 #### Parameters
 
 ##### factory
 
 [`Factory`](Factory.md)
+
+The factory that created this instance.
 
 #### Returns
 

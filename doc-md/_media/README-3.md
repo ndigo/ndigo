@@ -1,5 +1,48 @@
-# BlueJS TodoMVC Example
+# Blue Context
 
-A draft implementation of a ToDoMVC application using BlueJS 3.
+Blue Context provides application context, environment, configuration decorators, and resource/event infrastructure.
 
-Run `python -m SimpleHTTPServer 7800` and access `localhost:7800' in the browser
+## Features
+
+- `ApplicationContext` and `GenericApplicationContext` support
+- TC39 decorators for configuration workflows
+- Environment and property resolution APIs
+- Event emitter support and context-aware mixins
+- Content source integration with parent-context fallback
+- Theme name and resolver support
+- Resource loading abstractions
+
+## Installation
+
+```bash
+pnpm add @blue/context
+```
+
+## Usage
+
+```typescript
+import { GenericApplicationContext } from '@blue/context';
+import { StaticContentSource } from '@blue/content';
+
+const context = new GenericApplicationContext('app');
+context.setValue('name', 'blue');
+context.setContentSource(
+    new StaticContentSource({
+        greeting: {
+            en: 'Hello',
+        },
+    })
+);
+
+context.getValue('name');
+context.getContent('greeting', 'en');
+context.setThemeName('default');
+context.getTheme().name;
+```
+
+## Development
+
+```bash
+pnpm --filter @blue/context build:lib
+pnpm --filter @blue/context test
+```

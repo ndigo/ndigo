@@ -1,14 +1,16 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
 [BlueJS Framework](../../../modules.md) / [blue-core/src](../README.md) / likeConstructable
 
-# Variable: likeConstructable()
+# Variable: likeConstructable
 
 > `const` **likeConstructable**: (`value`) => `value is Constructable<{}>`
 
-Defined in: packages/blue-core/src/constructable.ts:18
+Defined in: packages/blue-core/src/constructable.ts:19
+
+Type guard to check if a value is a `Constructable` (i.e., a class constructor).
 
 ## Parameters
 
@@ -16,12 +18,14 @@ Defined in: packages/blue-core/src/constructable.ts:18
 
 `any`
 
+The value to check.
+
 ## Returns
 
 `value is Constructable<{}>`
 
-Whether or not the `value` is [Constructable](../type-aliases/Constructable.md).
+`true` if the value is `Constructable`, `false` otherwise.
 
 ## Remarks
 
-TODO: This is actually not a great test since prototype is optional - JBR
+This is not a perfect test as `prototype` is optional on some constructables.

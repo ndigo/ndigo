@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,8 +6,9 @@
 
 # Abstract Class: AbstractPathViewController
 
-Defined in: packages/blue-dispatcher/src/controller.ts:20
+Defined in: packages/blue-dispatcher/src/controller.ts:23
 
+Abstract base class for controllers that resolve view names from the route path.
 
 ## Extended by
 
@@ -35,7 +36,9 @@ Defined in: packages/blue-dispatcher/src/controller.ts:20
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-dispatcher/src/controller.ts:21
+Defined in: packages/blue-dispatcher/src/controller.ts:27
+
+Returns the string tag for this controller.
 
 ##### Returns
 
@@ -47,17 +50,23 @@ Defined in: packages/blue-dispatcher/src/controller.ts:21
 
 > **handleRoute**(`route`): [`ModelAndView`](ModelAndView.md)
 
-Defined in: packages/blue-dispatcher/src/controller.ts:25
+Defined in: packages/blue-dispatcher/src/controller.ts:36
+
+Handles the given route by resolving a view name from its path and returning a new [ModelAndView](ModelAndView.md).
 
 #### Parameters
 
 ##### route
 
-[`Route`](../../../blue-router/src/interfaces/Route.md)
+`Route`
+
+The route to handle.
 
 #### Returns
 
 [`ModelAndView`](ModelAndView.md)
+
+A [ModelAndView](ModelAndView.md) for the route.
 
 #### Implementation of
 
@@ -69,13 +78,13 @@ Defined in: packages/blue-dispatcher/src/controller.ts:25
 
 > `abstract` `protected` **\_getViewNameForRoute**(`route`): `string`
 
-Defined in: packages/blue-dispatcher/src/controller.ts:30
+Defined in: packages/blue-dispatcher/src/controller.ts:41
 
 #### Parameters
 
 ##### route
 
-[`Route`](../../../blue-router/src/interfaces/Route.md)
+`Route`
 
 #### Returns
 

@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,9 @@
 
 # Class: IllegalStateError
 
-Defined in: packages/blue-core/src/error.ts:53
+Defined in: packages/blue-core/src/error.ts:92
+
+Represents an error indicating that an operation cannot be completed due to an invalid state or misconfiguration.
 
 ## Extends
 
@@ -16,15 +18,19 @@ Defined in: packages/blue-core/src/error.ts:53
 
 ### Constructor
 
-> **new IllegalStateError**(`message`): `IllegalStateError`
+> **new IllegalStateError**(`message?`): `IllegalStateError`
 
-Defined in: packages/blue-core/src/error.ts:58
+Defined in: packages/blue-core/src/error.ts:104
+
+Creates an instance of IllegalStateError.
 
 #### Parameters
 
-##### message
+##### message?
 
 `string` = `'Unable to complete operation due to misconfiguration'`
+
+The error message. Defaults to 'Unable to complete operation due to misconfiguration'.
 
 #### Returns
 
@@ -42,7 +48,9 @@ Defined in: packages/blue-core/src/error.ts:58
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-core/src/error.ts:54
+Defined in: packages/blue-core/src/error.ts:96
+
+The string tag for this class.
 
 ##### Returns
 
@@ -58,7 +66,7 @@ Defined in: packages/blue-core/src/error.ts:54
 
 > **toString**(): `string`
 
-Defined in: packages/blue-core/src/serializable.ts:29
+Defined in: packages/blue-core/src/serializable.ts:28
 
 #### Returns
 
@@ -74,7 +82,7 @@ Defined in: packages/blue-core/src/serializable.ts:29
 
 > `optional` **toJSON**(): [`JSONValue`](../type-aliases/JSONValue.md)
 
-Defined in: packages/blue-core/src/serializable.ts:30
+Defined in: packages/blue-core/src/serializable.ts:29
 
 #### Returns
 

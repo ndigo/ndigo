@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,13 @@
 
 # Class: NotOKInterceptor
 
-Defined in: packages/blue-http/src/interceptors/not-ok-interceptor.ts:11
+Defined in: packages/blue-http/src/interceptors/not-ok-interceptor.ts:13
+
+Throws a ResponseError when the response status is outside 200-299.
+
+## Implements
+
+module:http.ResponseAwareHTTPInterceptor
 
 ## Implements
 
@@ -26,9 +32,9 @@ Defined in: packages/blue-http/src/interceptors/not-ok-interceptor.ts:11
 
 ### postResponse()
 
-> **postResponse**(`response`, `settings`): `Promise`\<`void`\>
+> **postResponse**(`response`, `settings`): `Promise`\<`void` \| `Response`\>
 
-Defined in: packages/blue-http/src/interceptors/not-ok-interceptor.ts:18
+Defined in: packages/blue-http/src/interceptors/not-ok-interceptor.ts:20
 
 #### Parameters
 
@@ -46,11 +52,9 @@ The HTTP request settings
 
 #### Returns
 
-`Promise`\<`void`\>
+`Promise`\<`void` \| `Response`\>
 
 #### Async
-
-*
 
 #### Implementation of
 

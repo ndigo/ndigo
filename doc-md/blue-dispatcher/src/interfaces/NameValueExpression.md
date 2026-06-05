@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,9 @@
 
 # Interface: NameValueExpression\<T\>
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:5
+Defined in: packages/blue-dispatcher/src/route-condition.ts:8
+
+Describes a parsed name/value expression.
 
 ## Type Parameters
 
@@ -20,7 +22,7 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:5
 
 > **isNegated**: `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:6
+Defined in: packages/blue-dispatcher/src/route-condition.ts:9
 
 ***
 
@@ -28,12 +30,12 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:6
 
 > **name**: `string`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:7
+Defined in: packages/blue-dispatcher/src/route-condition.ts:10
 
 ***
 
 ### value?
 
-> `optional` **value**: `T`
+> `optional` **value?**: `T`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:8
+Defined in: packages/blue-dispatcher/src/route-condition.ts:11

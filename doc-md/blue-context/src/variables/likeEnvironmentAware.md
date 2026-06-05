@@ -1,14 +1,16 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
 [BlueJS Framework](../../../modules.md) / [blue-context/src](../README.md) / likeEnvironmentAware
 
-# Variable: likeEnvironmentAware()
+# Variable: likeEnvironmentAware
 
 > `const` **likeEnvironmentAware**: (`value`) => `value is EnvironmentAware`
 
-Defined in: packages/blue-context/src/environment.ts:185
+Defined in: packages/blue-context/src/environment.ts:248
+
+Returns whether a value can receive an environment.
 
 ## Parameters
 
@@ -16,10 +18,10 @@ Defined in: packages/blue-context/src/environment.ts:185
 
 `any`
 
-The value to be tested
+The value to test.
 
 ## Returns
 
 `value is EnvironmentAware`
 
-Whether or not the `value` is [EnvironmentAware](../interfaces/EnvironmentAware.md)
+`true` when the value looks like environment aware.

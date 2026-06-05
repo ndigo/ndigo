@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,12 +6,9 @@
 
 # Class: NamePathHandlerMapping
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:693
+Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:1007
 
-Implementation of the [HandlerMapping](../interfaces/RouteHandlerMapping.md) interface that map from paths to handlers with names that start with slash ("/").
-<p>This is the default implementation used by Dispatcher\|the dispatcher along with [MetadataHandlerMapping](MetadataHandlerMapping.md).
-<p>The mapping is from path to handler name. An incoming path "/foo" would map to a handler named "/foo".
-<p>Supports direct matches and wildcard matches.
+Map handlers by application-context names that start with `/`.
 
 ## Extends
 
@@ -23,7 +20,9 @@ Implementation of the [HandlerMapping](../interfaces/RouteHandlerMapping.md) int
 
 > **new NamePathHandlerMapping**(): `NamePathHandlerMapping`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:493
+Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:761
+
+Create a path handler mapping with empty path registrations.
 
 #### Returns
 
@@ -37,9 +36,11 @@ Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:493
 
 ### applicationContext
 
-> **applicationContext**: [`ApplicationContext`](../../../blue-context/src/interfaces/ApplicationContext.md)
+> **applicationContext**: `ApplicationContext`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:281
+Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:351
+
+Application context used to resolve named handlers.
 
 #### Inherited from
 
@@ -51,7 +52,9 @@ Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:281
 
 > **defaultHandler**: `any`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:282
+Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:356
+
+Default handler used when no specific mapping matches.
 
 #### Inherited from
 
@@ -61,9 +64,11 @@ Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:282
 
 ### interceptors
 
-> **interceptors**: `RouteHandlerInterceptor`[]
+> **interceptors**: [`RouteHandlerInterceptor`](../interfaces/RouteHandlerInterceptor.md)[]
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:283
+Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:361
+
+Interceptors applied to matched handlers.
 
 #### Inherited from
 
@@ -73,9 +78,11 @@ Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:283
 
 ### pathMatcher
 
-> **pathMatcher**: [`PathMatcher`](../../../blue-core/src/interfaces/PathMatcher.md)
+> **pathMatcher**: `PathMatcher`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:284
+Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:366
+
+Path matcher used by path-based mappings.
 
 #### Inherited from
 
@@ -87,7 +94,9 @@ Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:284
 
 > **rootHandler**: `object`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:488
+Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:749
+
+Handler mapped to the root path.
 
 #### Inherited from
 
@@ -99,7 +108,9 @@ Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:488
 
 > **useTrailingSlashMatch**: `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:489
+Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:754
+
+Whether trailing slash variants should be considered matches.
 
 #### Inherited from
 
@@ -111,7 +122,9 @@ Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:489
 
 > `readonly` **\[$aware\]**: `boolean`
 
-Defined in: packages/blue-factory/src/aware.ts:16
+Defined in: packages/blue-factory/lib/aware.d.ts:21
+
+A symbol indicating that the value is aware.
 
 #### Inherited from
 
@@ -123,7 +136,9 @@ Defined in: packages/blue-factory/src/aware.ts:16
 
 > `readonly` **name**: `string`
 
-Defined in: packages/blue-factory/src/aware.ts:20
+Defined in: packages/blue-factory/lib/aware.d.ts:31
+
+The name of the value in the factory.
 
 #### Inherited from
 
@@ -137,7 +152,7 @@ Defined in: packages/blue-factory/src/aware.ts:20
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:694
+Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:1008
 
 ##### Returns
 
@@ -153,17 +168,23 @@ Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:694
 
 > **getHandler**(`route`): `RouteHandlerExecutionChain`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:312
+Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:423
+
+Resolve a route to a handler execution chain.
 
 #### Parameters
 
 ##### route
 
-[`Route`](../../../blue-router/src/interfaces/Route.md)
+`Route`
+
+The current route.
 
 #### Returns
 
 `RouteHandlerExecutionChain`
+
+The execution chain, or `null` when no handler matches.
 
 #### Inherited from
 
@@ -175,7 +196,9 @@ Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:312
 
 > `protected` **\_getHandlerExecutionChain**(`handler`, `route`): `RouteHandlerExecutionChain`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:327
+Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:445
+
+Build an execution chain for a resolved handler and route.
 
 #### Parameters
 
@@ -183,13 +206,19 @@ Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:327
 
 `any`
 
+The resolved handler or existing execution chain.
+
 ##### route
 
-[`Route`](../../../blue-router/src/interfaces/Route.md)
+`Route`
+
+The current route.
 
 #### Returns
 
 `RouteHandlerExecutionChain`
+
+The execution chain to invoke.
 
 #### Inherited from
 
@@ -201,7 +230,9 @@ Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:327
 
 > **lookUpHandler**(`path`, `route`): `RouteHandlerExecutionChain`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:500
+Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:775
+
+Look up the handler for a path.
 
 #### Parameters
 
@@ -209,13 +240,19 @@ Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:500
 
 `string`
 
+The request path.
+
 ##### route
 
-[`Route`](../../../blue-router/src/interfaces/Route.md)
+`Route`
+
+The current route.
 
 #### Returns
 
 `RouteHandlerExecutionChain`
+
+The resolved execution chain, or `null`.
 
 #### Inherited from
 
@@ -227,21 +264,29 @@ Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:500
 
 > **match**(`route`, `pattern`): [`RouteMatchResult`](RouteMatchResult.md)
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:550
+Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:832
+
+Check whether a route matches a path pattern.
 
 #### Parameters
 
 ##### route
 
-[`Route`](../../../blue-router/src/interfaces/Route.md)
+`Route`
+
+The current route.
 
 ##### pattern
 
 `string`
 
+The pattern to test.
+
 #### Returns
 
 [`RouteMatchResult`](RouteMatchResult.md)
+
+A match result, or `null`.
 
 #### Inherited from
 
@@ -253,17 +298,23 @@ Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:550
 
 > `protected` **\_getHandler**(`route`): `RouteHandlerExecutionChain`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:564
+Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:852
+
+Resolve the most appropriate handler for a route.
 
 #### Parameters
 
 ##### route
 
-[`Route`](../../../blue-router/src/interfaces/Route.md)
+`Route`
+
+The current route.
 
 #### Returns
 
 `RouteHandlerExecutionChain`
+
+The execution chain, or `null`.
 
 #### Inherited from
 
@@ -275,17 +326,23 @@ Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:564
 
 > `protected` **\_registerHandler**(`path`, `handler`): `void`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:583
+Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:877
+
+Register a handler against one or more paths.
 
 #### Parameters
 
 ##### path
 
-`string` | `string`[]
+`string` \| `string`[]
+
+One path or many paths to register.
 
 ##### handler
 
 [`MaybeHandler`](../type-aliases/MaybeHandler.md)
+
+The handler instance or application-context name.
 
 #### Returns
 
@@ -301,13 +358,17 @@ Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:583
 
 > **setApplicationContext**(`context`): `void`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:623
+Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:925
+
+Store the application context and detect handlers immediately.
 
 #### Parameters
 
 ##### context
 
-[`ApplicationContext`](../../../blue-context/src/interfaces/ApplicationContext.md)
+`ApplicationContext`
+
+The application context to use.
 
 #### Returns
 
@@ -323,7 +384,9 @@ Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:623
 
 > `protected` **\_detectHandlers**(): `void`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:628
+Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:933
+
+Scan the application context for handlers and register their paths.
 
 #### Returns
 
@@ -339,7 +402,9 @@ Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:628
 
 > `protected` **\_determinePathsForHandler**(`name`): `string`[]
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:698
+Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:1018
+
+Use slash-prefixed application-context names as route paths.
 
 #### Parameters
 
@@ -347,9 +412,13 @@ Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:698
 
 `string`
 
+The application-context name.
+
 #### Returns
 
 `string`[]
+
+The derived paths.
 
 #### Overrides
 
@@ -361,13 +430,19 @@ Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:698
 
 > **setName**(`name`): `void`
 
-Defined in: packages/blue-factory/src/aware.ts:21
+Defined in: packages/blue-factory/lib/aware.d.ts:38
+
+Set the name of the value in the factory that created it.
+
+Invoked after population of normal value properties but before an `init` callback.
 
 #### Parameters
 
 ##### name
 
 `string`
+
+The name of the value in the factory.
 
 #### Returns
 

@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,9 @@
 
 # Abstract Class: AbstractValueComparator
 
-Defined in: packages/blue-core/src/comparable.ts:56
+Defined in: packages/blue-core/src/comparable.ts:74
+
+Interface for objects that can compare two values of a specific type.
 
 ## Implements
 
@@ -18,13 +20,17 @@ Defined in: packages/blue-core/src/comparable.ts:56
 
 > **new AbstractValueComparator**(`value`): `AbstractValueComparator`
 
-Defined in: packages/blue-core/src/comparable.ts:63
+Defined in: packages/blue-core/src/comparable.ts:91
+
+Creates an instance of AbstractValueComparator.
 
 #### Parameters
 
 ##### value
 
 `string`
+
+The string value to be used for comparison.
 
 #### Returns
 
@@ -36,7 +42,9 @@ Defined in: packages/blue-core/src/comparable.ts:63
 
 > `readonly` **value**: `string`
 
-Defined in: packages/blue-core/src/comparable.ts:57
+Defined in: packages/blue-core/src/comparable.ts:78
+
+The string value being compared.
 
 ## Accessors
 
@@ -46,7 +54,9 @@ Defined in: packages/blue-core/src/comparable.ts:57
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-core/src/comparable.ts:59
+Defined in: packages/blue-core/src/comparable.ts:83
+
+The string tag for this class.
 
 ##### Returns
 
@@ -58,7 +68,9 @@ Defined in: packages/blue-core/src/comparable.ts:59
 
 > `abstract` **compare**(`pattern1`, `pattern2`): `number`
 
-Defined in: packages/blue-core/src/comparable.ts:72
+Defined in: packages/blue-core/src/comparable.ts:106
+
+Compares two string patterns. This method must be implemented by subclasses.
 
 #### Parameters
 
@@ -66,13 +78,19 @@ Defined in: packages/blue-core/src/comparable.ts:72
 
 `string`
 
+The first string pattern.
+
 ##### pattern2
 
 `string`
 
+The second string pattern.
+
 #### Returns
 
 `number`
+
+A negative integer, zero, or a positive integer as the first pattern is less than, equal to, or greater than the second.
 
 #### Implementation of
 

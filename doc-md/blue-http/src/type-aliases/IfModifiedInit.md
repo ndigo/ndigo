@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -8,10 +8,12 @@
 
 > **IfModifiedInit** = [`HTTPInit`](HTTPInit.md) & `object`
 
-Defined in: packages/blue-http/src/interceptors/if-modified-interceptor.ts:8
+Defined in: packages/blue-http/src/interceptors/if-modified-interceptor.ts:11
+
+Request settings for [IfModifiedInterceptor](../classes/IfModifiedInterceptor.md).
 
 ## Type Declaration
 
 ### ifModified?
 
-> `optional` **ifModified**: `boolean`
+> `optional` **ifModified?**: `boolean`

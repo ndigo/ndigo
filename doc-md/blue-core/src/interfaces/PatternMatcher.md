@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,9 @@
 
 # Interface: PatternMatcher\<TPattern, TValue\>
 
-Defined in: packages/blue-core/src/matchable.ts:9
+Defined in: packages/blue-core/src/matchable.ts:23
+
+Represents an object that can match a pattern against a value.
 
 ## Extended by
 
@@ -18,9 +20,13 @@ Defined in: packages/blue-core/src/matchable.ts:9
 
 `TPattern`
 
+The type of the pattern to match.
+
 ### TValue
 
 `TValue`
+
+The type of the value to match against.
 
 ## Methods
 
@@ -28,7 +34,9 @@ Defined in: packages/blue-core/src/matchable.ts:9
 
 > **match**(`pattern`, `value`): `boolean`
 
-Defined in: packages/blue-core/src/matchable.ts:10
+Defined in: packages/blue-core/src/matchable.ts:30
+
+Matches a given pattern against a value.
 
 #### Parameters
 
@@ -36,10 +44,16 @@ Defined in: packages/blue-core/src/matchable.ts:10
 
 `TPattern`
 
+The pattern to match.
+
 ##### value
 
 `TValue`
 
+The value to match against.
+
 #### Returns
 
 `boolean`
+
+`true` if the pattern matches the value, `false` otherwise.

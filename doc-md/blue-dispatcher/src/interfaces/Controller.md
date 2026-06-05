@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,9 @@
 
 # Interface: Controller
 
-Defined in: packages/blue-dispatcher/src/controller.ts:8
+Defined in: packages/blue-dispatcher/src/controller.ts:11
+
+Interface for a controller that handles routes.
 
 ## Methods
 
@@ -14,14 +16,20 @@ Defined in: packages/blue-dispatcher/src/controller.ts:8
 
 > **handleRoute**(`route`): [`ModelAndView`](../classes/ModelAndView.md)
 
-Defined in: packages/blue-dispatcher/src/controller.ts:9
+Defined in: packages/blue-dispatcher/src/controller.ts:17
+
+Handles the given route and returns a [ModelAndView](../classes/ModelAndView.md).
 
 #### Parameters
 
 ##### route
 
-[`Route`](../../../blue-router/src/interfaces/Route.md)
+`Route`
+
+The route to handle.
 
 #### Returns
 
 [`ModelAndView`](../classes/ModelAndView.md)
+
+A [ModelAndView](../classes/ModelAndView.md) for the route.

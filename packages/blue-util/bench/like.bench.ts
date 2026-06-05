@@ -2,23 +2,21 @@
  * @author opencode
  *
  * Benchmark suite for `like` — the duck-typing predicate used throughout
- * the BlueJS codebase.  The current implementation relies on Ramda's pipe,
+ * the BlueJS codebase.  The current implementation relies on native code,
  * toPairs, map, prepend, allPass, propSatisfies, either, is, equals — a
  * heavy chain for what is essentially a property-shape check.
  *
  * Alternatives tested:
- *   1. **legacy (Ramda pipe)**         – the old Ramda-based implementation (historical baseline)
- *   2. **for-of**                       – manual loop over Object.entries, early-return on fail
- *   3. **every**                        – Object.entries + Array.every (short-circuiting)
- *   4. **keys+has**                     – Object.keys + hasOwnProperty, inline typeof check
- *   5. **prekeys**                      – descriptor keys cached at build time, then loop
- *   6. **direct**                       – raw property access, no Ramda, no Array helpers
- *   7. **current (WeakMap cached)**     – production implementation; WeakMap descriptor cache
+ *   1. **for-of**                       – manual loop over Object.entries, early-return on fail
+ *   2. **every**                        – Object.entries + Array.every (short-circuiting)
+ *   3. **keys+has**                     – Object.keys + hasOwnProperty, inline typeof check
+ *   4. **prekeys**                      – descriptor keys cached at build time, then loop
+ *   5. **direct**                       – raw property access, no Ramda, no Array helpers
+ *   6. **current (WeakMap cached)**     – production implementation; WeakMap descriptor cache
  *                                         (shipped in Wave 10; 43x faster fresh, 201x faster cached)
  */
 
 import { bench, describe } from 'vitest';
-import * as R from 'ramda';
 import like, { LikeDescriptor } from '../src/type/like.js';
 
 /* ------------------------------------------------------------------ */
@@ -26,40 +24,6 @@ import like, { LikeDescriptor } from '../src/type/like.js';
 /* ------------------------------------------------------------------ */
 
 let _sink = 0;
-
-// --------------------------------------------------------------------
-//  Current Ramda-pipe implementation (inlined for fair comparison)
-// --------------------------------------------------------------------
-const isNull = R.equals(null);
-const toPredicate = ([key, type]: [string, Function | true]) =>
-    type === true ? R.has(key) : R.propSatisfies(R.either(R.is(type as any), isNull), key);
-const toPredicates = R.pipe(R.toPairs, R.map(toPredicate), R.prepend(R.isNotNil));
-const likeRamda = R.pipe(toPredicates, R.allPass) as (descriptor: LikeDescriptor) => (value: any) => boolean;
-
-function likeCurrent(descriptor: LikeDescriptor, value?: any): boolean | ((v: any) => boolean) {
-    if (arguments.length >= 2) {
-        return likeRamda(descriptor)(value);
-    }
-    return likeRamda(descriptor);
-}
-
-// --------------------------------------------------------------------
-//  Memoized Ramda implementation using R.memoizeWith
-//  Uses JSON.stringify as the cache key (descriptor object identity)
-// --------------------------------------------------------------------
-const likeRamdaMemoized = R.memoizeWith(
-    // Cache key: JSON.stringify the descriptor
-    (descriptor: LikeDescriptor) => JSON.stringify(descriptor),
-    // Function to memoize: the descriptor compiler
-    likeRamda
-);
-
-function likeMemoized(descriptor: LikeDescriptor, value?: any): boolean | ((v: any) => boolean) {
-    if (arguments.length >= 2) {
-        return likeRamdaMemoized(descriptor)(value);
-    }
-    return likeRamdaMemoized(descriptor);
-}
 
 // --------------------------------------------------------------------
 //  Cached prekeys – descriptor cached on first curried call, reused
@@ -154,26 +118,26 @@ function likeCached(descriptor: LikeDescriptor, value?: any): boolean | ((v: any
 
 // --------------------------------------------------------------------
 //  Semantics note:
-//  The current `like` uses Ramda's `is(Type, value)` which correctly
+//  The current `like` uses native type checking which correctly
 //  handles ALL types including primitives:
-//    R.is(Number, 123)       => true   (primitive number)
-//    R.is(Number, new Number(1)) => true (boxed number)
-//    R.is(Function, fn)      => true
-//    R.is(Boolean, true)     => true
-//    R.is(Object, {})        => true
-//    R.is(String, 'abc')     => true   (primitive string)
-//    R.is(String, new String('abc')) => true (boxed string)
+//    is(Number, 123)       => true   (primitive number)
+//    is(Number, new Number(1)) => true (boxed number)
+//    is(Function, fn)      => true
+//    is(Boolean, true)     => true
+//    is(Object, {})        => true
+//    is(String, 'abc')     => true   (primitive string)
+//    is(String, new String('abc')) => true (boxed string)
 //
 //  Additionally, `null` property values ALWAYS pass (via isNull check),
 //  but the top-level value must not be null/undefined (via isNotNil).
 //
-//  We implement a faithful `isLike` that replicates Ramda's `is()` for
+//  We implement a faithful `isLike` that replicates native type checking for
 //  the types actually used in the codebase: Function, Boolean, Number,
 //  String, Object.
 // --------------------------------------------------------------------
 
 /**
- * Replicates Ramda's `is(Type, value)` behavior for the types used
+ * Replicates native type checking behavior for the types used
  * in the BlueJS codebase.  Uses `Object.prototype.toString.call()`
  * for reliable type detection across all cases.
  */
@@ -208,7 +172,7 @@ const likeForOf = (descriptor: LikeDescriptor, value: any): boolean => {
             if (!(key in value)) return false;
         } else {
             const prop = (value as any)[key];
-            // null always passes (matches Ramda isNull behavior)
+            // null always passes
             if (prop === null) continue;
             if (!isLike(type as Function, prop)) return false;
         }
@@ -348,9 +312,7 @@ const cachedWXY = precompute(likeWXY);
 const cachedTheme = precompute(likeThemeDesc);
 
 // Curried variants
-const likeWXYCurried = like(likeWXY);
 const likeWXYCached = likeCached(likeWXY);
-const likeWXYMemoized = likeMemoized(likeWXY);
 
 const curriedValues = [
     { w: true, x: 123, y: 456 },
@@ -370,14 +332,6 @@ const curriedValues = [
 /* ------------------------------------------------------------------ */
 
 describe('like – single-property ({ then: Function }) – match', () => {
-    bench('legacy (Ramda pipe)', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likeCurrent(likePromiseDesc, thenable) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
-
     bench('for-of', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
@@ -428,14 +382,6 @@ describe('like – single-property ({ then: Function }) – match', () => {
 });
 
 describe('like – single-property ({ then: Function }) – fail', () => {
-    bench('legacy (Ramda pipe)', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likeCurrent(likePromiseDesc, thenableFail) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
-
     bench('for-of', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
@@ -486,14 +432,6 @@ describe('like – single-property ({ then: Function }) – fail', () => {
 });
 
 describe('like – single-property ({ then: Function }) – null', () => {
-    bench('legacy (Ramda pipe)', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likeCurrent(likePromiseDesc, null) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
-
     bench('for-of', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
@@ -544,14 +482,6 @@ describe('like – single-property ({ then: Function }) – null', () => {
 });
 
 describe('like – two-property ({ destroy: Function, destroyed: Boolean }) – match', () => {
-    bench('legacy (Ramda pipe)', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likeCurrent(likeDestroyableDesc, destroyable) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
-
     bench('for-of', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
@@ -602,14 +532,6 @@ describe('like – two-property ({ destroy: Function, destroyed: Boolean }) – 
 });
 
 describe('like – two-property ({ destroy: Function, destroyed: Boolean }) – fail', () => {
-    bench('legacy (Ramda pipe)', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likeCurrent(likeDestroyableDesc, destroyableFail) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
-
     bench('for-of', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
@@ -660,14 +582,6 @@ describe('like – two-property ({ destroy: Function, destroyed: Boolean }) – 
 });
 
 describe('like – three-property ({ isRunning: Boolean, start: Function, stop: Function }) – match', () => {
-    bench('legacy (Ramda pipe)', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likeCurrent(likeLifecycleDesc, lifecycle) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
-
     bench('for-of', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
@@ -718,14 +632,6 @@ describe('like – three-property ({ isRunning: Boolean, start: Function, stop: 
 });
 
 describe('like – wxy descriptor ({ w: true, x: Number, y: Number }) – match', () => {
-    bench('legacy (Ramda pipe)', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likeCurrent(likeWXY, wxyMatch) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
-
     bench('for-of', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
@@ -776,14 +682,6 @@ describe('like – wxy descriptor ({ w: true, x: Number, y: Number }) – match'
 });
 
 describe('like – wxy descriptor ({ w: true, x: Number, y: Number }) – fail', () => {
-    bench('legacy (Ramda pipe)', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likeCurrent(likeWXY, wxyFail) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
-
     bench('for-of', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
@@ -834,14 +732,6 @@ describe('like – wxy descriptor ({ w: true, x: Number, y: Number }) – fail',
 });
 
 describe('like – theme descriptor ({ name: String, contentSource: Object }) – match', () => {
-    bench('legacy (Ramda pipe)', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likeCurrent(likeThemeDesc, themeMatch) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
-
     bench('for-of', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
@@ -892,14 +782,6 @@ describe('like – theme descriptor ({ name: String, contentSource: Object }) �
 });
 
 describe('like – theme descriptor ({ name: String, contentSource: Object }) – fail', () => {
-    bench('legacy (Ramda pipe)', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            accumulator += likeCurrent(likeThemeDesc, themeFail) ? 1 : 0;
-        }
-        _sink = accumulator;
-    });
-
     bench('for-of', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
@@ -950,26 +832,6 @@ describe('like – theme descriptor ({ name: String, contentSource: Object }) �
 });
 
 describe('like – curried usage (descriptor applied to 10 diverse values)', () => {
-    bench('legacy (Ramda pipe)', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            for (const v of curriedValues) {
-                accumulator += likeWXYCurried(v) ? 1 : 0;
-            }
-        }
-        _sink = accumulator;
-    });
-
-    bench('memoized (R.memoizeWith + JSON.stringify)', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            for (const v of curriedValues) {
-                accumulator += likeWXYMemoized(v) ? 1 : 0;
-            }
-        }
-        _sink = accumulator;
-    });
-
     bench('current (WeakMap cached, descriptor already cached)', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
@@ -982,28 +844,6 @@ describe('like – curried usage (descriptor applied to 10 diverse values)', () 
 });
 
 describe('like – caching benefit (first call vs subsequent)', () => {
-    bench('legacy (rebuilds Ramda pipeline each time)', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            const freshLike = like(likeWXY);
-            for (const v of curriedValues) {
-                accumulator += freshLike(v) ? 1 : 0;
-            }
-        }
-        _sink = accumulator;
-    });
-
-    bench('memoized (R.memoizeWith, descriptor already seen)', () => {
-        let accumulator = 0;
-        for (let i = 0; i < 1000; i++) {
-            const memoizedLike = likeMemoized(likeWXY);
-            for (const v of curriedValues) {
-                accumulator += memoizedLike(v) ? 1 : 0;
-            }
-        }
-        _sink = accumulator;
-    });
-
     bench('current (WeakMap cached, descriptor already cached)', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {

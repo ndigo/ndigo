@@ -1,14 +1,14 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
 [BlueJS Framework](../../../modules.md) / [blue-context/src](../README.md) / likePropertyResolver
 
-# Variable: likePropertyResolver()
+# Variable: likePropertyResolver
 
 > `const` **likePropertyResolver**: (`value`) => `value is PropertyResolver`
 
-Defined in: packages/blue-context/src/property-resolver.ts:67
+Defined in: packages/blue-context/src/property-resolver.ts:96
 
 ## Parameters
 

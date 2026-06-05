@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,9 @@
 
 # Class: MatrixValueMethodArgumentResolver
 
-Defined in: packages/blue-dispatcher/src/argument-resolver.ts:68
+Defined in: packages/blue-dispatcher/src/argument-resolver.ts:100
+
+Resolves method arguments from matrix variables in the URL path.
 
 ## Extends
 
@@ -18,13 +20,17 @@ Defined in: packages/blue-dispatcher/src/argument-resolver.ts:68
 
 > **new MatrixValueMethodArgumentResolver**(`factory?`): `MatrixValueMethodArgumentResolver`
 
-Defined in: packages/blue-dispatcher/src/argument-resolver.ts:33
+Defined in: packages/blue-dispatcher/src/argument-resolver.ts:58
+
+Creates an instance of AbstractNamedValueMethodArgumentResolver.
 
 #### Parameters
 
 ##### factory?
 
-[`Factory`](../../../blue-factory/src/interfaces/Factory.md)
+`Factory`
+
+A factory for resolving values.
 
 #### Returns
 
@@ -40,7 +46,9 @@ Defined in: packages/blue-dispatcher/src/argument-resolver.ts:33
 
 > **handleMissingValue**(`name`): `void`
 
-Defined in: packages/blue-dispatcher/src/argument-resolver.ts:37
+Defined in: packages/blue-dispatcher/src/argument-resolver.ts:67
+
+Handles a missing argument value by throwing a TypeError.
 
 #### Parameters
 
@@ -48,9 +56,15 @@ Defined in: packages/blue-dispatcher/src/argument-resolver.ts:37
 
 `string`
 
+The name of the missing argument.
+
 #### Returns
 
 `void`
+
+#### Throws
+
+If the argument is undefined or null.
 
 #### Inherited from
 
@@ -62,7 +76,9 @@ Defined in: packages/blue-dispatcher/src/argument-resolver.ts:37
 
 > **resolveArgument**(`parameter`, `route`, `mapping`): `any`
 
-Defined in: packages/blue-dispatcher/src/argument-resolver.ts:69
+Defined in: packages/blue-dispatcher/src/argument-resolver.ts:78
+
+Resolves a method parameter into an argument value from a given route.
 
 #### Parameters
 
@@ -70,9 +86,51 @@ Defined in: packages/blue-dispatcher/src/argument-resolver.ts:69
 
 [`MethodParameter`](MethodParameter.md)
 
+The method parameter to resolve.
+
 ##### route
 
-[`Route`](../../../blue-router/src/interfaces/Route.md)
+`Route`
+
+The current route.
+
+##### mapping
+
+`any`
+
+The route handler mapping.
+
+#### Returns
+
+`any`
+
+The resolved argument value, or `null` if not resolvable.
+
+#### Inherited from
+
+[`AbstractNamedValueMethodArgumentResolver`](AbstractNamedValueMethodArgumentResolver.md).[`resolveArgument`](AbstractNamedValueMethodArgumentResolver.md#resolveargument)
+
+***
+
+### resolveName()
+
+> `protected` **resolveName**(`name`, `parameter`, `route`, `mapping`): `any`
+
+Defined in: packages/blue-dispatcher/src/argument-resolver.ts:101
+
+#### Parameters
+
+##### name
+
+`string`
+
+##### parameter
+
+[`MethodParameter`](MethodParameter.md)
+
+##### route
+
+`Route`
 
 ##### mapping
 
@@ -84,7 +142,7 @@ Defined in: packages/blue-dispatcher/src/argument-resolver.ts:69
 
 #### Overrides
 
-[`AbstractNamedValueMethodArgumentResolver`](AbstractNamedValueMethodArgumentResolver.md).[`resolveArgument`](AbstractNamedValueMethodArgumentResolver.md#resolveargument)
+[`AbstractNamedValueMethodArgumentResolver`](AbstractNamedValueMethodArgumentResolver.md).[`resolveName`](AbstractNamedValueMethodArgumentResolver.md#resolvename)
 
 ***
 
@@ -92,7 +150,9 @@ Defined in: packages/blue-dispatcher/src/argument-resolver.ts:69
 
 > **supportsParameter**(`parameter`): `boolean`
 
-Defined in: packages/blue-dispatcher/src/argument-resolver.ts:94
+Defined in: packages/blue-dispatcher/src/argument-resolver.ts:130
+
+Whether the given method parameter is supported by this resolver.
 
 #### Parameters
 
@@ -100,9 +160,13 @@ Defined in: packages/blue-dispatcher/src/argument-resolver.ts:94
 
 [`MethodParameter`](MethodParameter.md)
 
+The method parameter to check.
+
 #### Returns
 
 `boolean`
+
+Whether or not the given method parameter is supported by this resolver.
 
 #### Overrides
 

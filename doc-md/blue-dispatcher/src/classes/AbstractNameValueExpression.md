@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,11 +6,14 @@
 
 # Abstract Class: AbstractNameValueExpression\<T\>
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:67
+Defined in: packages/blue-dispatcher/src/route-condition.ts:78
+
+Base class for parsed name/value expressions.
 
 ## Extended by
 
-- [`ParamExpression`](ParamExpression.md)
+- [`QueryParamExpression`](QueryParamExpression.md)
+- [`MatrixParamExpression`](MatrixParamExpression.md)
 
 ## Type Parameters
 
@@ -21,7 +24,7 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:67
 ## Implements
 
 - [`NameValueExpression`](../interfaces/NameValueExpression.md)\<`T`\>
-- [`Serializable`](../../../blue-core/src/interfaces/Serializable.md)
+- `Serializable`
 
 ## Constructors
 
@@ -29,13 +32,17 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:67
 
 > **new AbstractNameValueExpression**\<`T`\>(`expression`): `AbstractNameValueExpression`\<`T`\>
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:74
+Defined in: packages/blue-dispatcher/src/route-condition.ts:90
+
+Parse a name/value expression.
 
 #### Parameters
 
 ##### expression
 
 `string`
+
+The expression to parse.
 
 #### Returns
 
@@ -47,7 +54,7 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:74
 
 > `readonly` **isNegated**: `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:68
+Defined in: packages/blue-dispatcher/src/route-condition.ts:79
 
 #### Implementation of
 
@@ -59,7 +66,7 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:68
 
 > `readonly` **name**: `string`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:69
+Defined in: packages/blue-dispatcher/src/route-condition.ts:80
 
 #### Implementation of
 
@@ -69,9 +76,9 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:69
 
 ### value?
 
-> `readonly` `optional` **value**: `T`
+> `readonly` `optional` **value?**: `T`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:70
+Defined in: packages/blue-dispatcher/src/route-condition.ts:81
 
 #### Implementation of
 
@@ -83,7 +90,7 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:70
 
 > `abstract` `readonly` **isCaseSensitiveName**: `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:72
+Defined in: packages/blue-dispatcher/src/route-condition.ts:83
 
 ## Methods
 
@@ -91,33 +98,43 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:72
 
 > **match**(`route`): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:111
+Defined in: packages/blue-dispatcher/src/route-condition.ts:133
+
+Determine whether this expression matches the given route.
 
 #### Parameters
 
 ##### route
 
-[`Route`](../../../blue-router/src/interfaces/Route.md)
+`Route`
+
+The current route.
 
 #### Returns
 
 `boolean`
 
+`true` when the expression matches.
+
 ***
 
 ### toJSON()
 
-> **toJSON**(): [`JSONValue`](../../../blue-core/src/type-aliases/JSONValue.md)
+> **toJSON**(): `JSONValue`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:116
+Defined in: packages/blue-dispatcher/src/route-condition.ts:143
+
+Serialize the expression to JSON.
 
 #### Returns
 
-[`JSONValue`](../../../blue-core/src/type-aliases/JSONValue.md)
+`JSONValue`
+
+The string form of the expression.
 
 #### Implementation of
 
-[`Serializable`](../../../blue-core/src/interfaces/Serializable.md).[`toJSON`](../../../blue-core/src/interfaces/Serializable.md#tojson)
+`Serializable.toJSON`
 
 ***
 
@@ -125,17 +142,19 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:116
 
 > **toString**(): `string`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:120
+Defined in: packages/blue-dispatcher/src/route-condition.ts:152
 
-Returns a string representation of an object.
+Convert the expression to its textual form.
 
 #### Returns
 
 `string`
 
+The expression string.
+
 #### Implementation of
 
-[`Serializable`](../../../blue-core/src/interfaces/Serializable.md).[`toString`](../../../blue-core/src/interfaces/Serializable.md#tostring)
+`Serializable.toString`
 
 ***
 
@@ -143,13 +162,13 @@ Returns a string representation of an object.
 
 > `abstract` **matchName**(`route`): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:125
+Defined in: packages/blue-dispatcher/src/route-condition.ts:157
 
 #### Parameters
 
 ##### route
 
-[`Route`](../../../blue-router/src/interfaces/Route.md)
+`Route`
 
 #### Returns
 
@@ -161,13 +180,13 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:125
 
 > `abstract` **matchValue**(`route`): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:126
+Defined in: packages/blue-dispatcher/src/route-condition.ts:158
 
 #### Parameters
 
 ##### route
 
-[`Route`](../../../blue-router/src/interfaces/Route.md)
+`Route`
 
 #### Returns
 
@@ -179,7 +198,7 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:126
 
 > `abstract` **parseValue**(`valueExpression`): `T`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:127
+Defined in: packages/blue-dispatcher/src/route-condition.ts:159
 
 #### Parameters
 

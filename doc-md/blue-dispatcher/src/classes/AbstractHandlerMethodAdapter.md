@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,11 +6,15 @@
 
 # Abstract Class: AbstractHandlerMethodAdapter
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:60
+Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:59
+
+Adapts a handler instance into route execution.
+
+Implementations decide whether they support a handler type and how to invoke it for the current route.
 
 ## Extends
 
-- [`ApplicationContextAware`](../../../blue-context/src/interfaces/ApplicationContextAware.md) & [`Null`](../../../blue-core/src/classes/Null.md)\<`this`\>
+- `ApplicationContextAware` & `Null`\<`this`\>
 
 ## Extended by
 
@@ -38,9 +42,11 @@ Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:60
 
 ### applicationContext
 
-> **applicationContext**: [`ApplicationContext`](../../../blue-context/src/interfaces/ApplicationContext.md)
+> **applicationContext**: `ApplicationContext`
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:64
+Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:66
+
+Application context used to discover handlers and argument resolvers.
 
 ***
 
@@ -48,7 +54,9 @@ Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:64
 
 > `readonly` **\[$aware\]**: `boolean`
 
-Defined in: packages/blue-factory/src/aware.ts:16
+Defined in: packages/blue-factory/lib/aware.d.ts:21
+
+A symbol indicating that the value is aware.
 
 #### Inherited from
 
@@ -62,7 +70,7 @@ Defined in: packages/blue-factory/src/aware.ts:16
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:66
+Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:68
 
 ##### Returns
 
@@ -74,13 +82,19 @@ Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:66
 
 > **setApplicationContext**(`applicationContext`): `void`
 
-Defined in: packages/blue-context/src/context.ts:57
+Defined in: packages/blue-context/lib/context.d.ts:145
+
+Set the ApplicationContext that this object runs in. Normally this call will be used to initialize the object.
+
+Invoked after population of normal value properties but before an `init` callback.
 
 #### Parameters
 
 ##### applicationContext
 
-[`ApplicationContext`](../../../blue-context/src/interfaces/ApplicationContext.md)
+`ApplicationContext`
+
+The ApplicationContext to be used by this object.
 
 #### Returns
 
@@ -96,7 +110,9 @@ Defined in: packages/blue-context/src/context.ts:57
 
 > **supports**(`handler`): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:70
+Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:72
+
+Determine whether this adapter can handle the given handler instance.
 
 #### Parameters
 
@@ -104,9 +120,13 @@ Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:70
 
 `any`
 
+The handler instance to test.
+
 #### Returns
 
 `boolean`
+
+`true` when the handler is supported; otherwise `false`.
 
 #### Implementation of
 
@@ -118,21 +138,29 @@ Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:70
 
 > `abstract` **handle**(`route`, `handler`): `Promise`\<[`ModelAndView`](ModelAndView.md)\>
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:74
+Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:83
+
+Handle a route with a method-backed handler.
 
 #### Parameters
 
 ##### route
 
-[`Route`](../../../blue-router/src/interfaces/Route.md)
+`Route`
+
+The current route.
 
 ##### handler
 
 `RouteHandlerMethod`
 
+The resolved route handler method.
+
 #### Returns
 
 `Promise`\<[`ModelAndView`](ModelAndView.md)\>
+
+The model and view produced by invoking the handler.
 
 #### Implementation of
 
@@ -144,7 +172,7 @@ Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:74
 
 > `abstract` `protected` **\_supports**(`handler`): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:75
+Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:84
 
 #### Parameters
 

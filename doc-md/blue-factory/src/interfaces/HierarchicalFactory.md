@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,9 @@
 
 # Interface: HierarchicalFactory
 
-Defined in: packages/blue-factory/src/factory.ts:36
+Defined in: packages/blue-factory/src/factory.ts:60
+
+Extends [Factory](Factory.md) to provide hierarchical factory capabilities.
 
 ## Extends
 
@@ -22,7 +24,9 @@ Defined in: packages/blue-factory/src/factory.ts:36
 
 > `readonly` **parent**: [`Factory`](Factory.md)
 
-Defined in: packages/blue-factory/src/factory.ts:37
+Defined in: packages/blue-factory/src/factory.ts:64
+
+The parent factory in the hierarchy.
 
 ## Methods
 
@@ -30,7 +34,9 @@ Defined in: packages/blue-factory/src/factory.ts:37
 
 > **getInstance**\<`T`\>(`name`): `T`
 
-Defined in: packages/blue-factory/src/factory.ts:33
+Defined in: packages/blue-factory/src/factory.ts:54
+
+Return an instance of the specified value.
 
 #### Type Parameters
 
@@ -44,9 +50,13 @@ Defined in: packages/blue-factory/src/factory.ts:33
 
 `string`
 
+The name of the value.
+
 #### Returns
 
 `T`
+
+An instance of the value specified by the `name`.
 
 #### Inherited from
 
@@ -58,7 +68,9 @@ Defined in: packages/blue-factory/src/factory.ts:33
 
 > **hasOwnValue**(`name`): `boolean`
 
-Defined in: packages/blue-factory/src/factory.ts:38
+Defined in: packages/blue-factory/src/factory.ts:70
+
+Determines whether this factory contains a value with the given name.
 
 #### Parameters
 
@@ -66,6 +78,10 @@ Defined in: packages/blue-factory/src/factory.ts:38
 
 `string`
 
+The name of the value.
+
 #### Returns
 
 `boolean`
+
+`true` if this factory contains the value, `false` otherwise.

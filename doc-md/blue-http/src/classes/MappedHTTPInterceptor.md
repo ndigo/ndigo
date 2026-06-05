@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,23 @@
 
 # Class: MappedHTTPInterceptor
 
-Defined in: packages/blue-http/src/http.ts:240
+Defined in: packages/blue-http/src/http.ts:376
+
+## Implements
+
+module:http.CompletionAwareHTTPInterceptor
+
+## Implements
+
+module:http.ErrorAwareHTTPInterceptor
+
+## Implements
+
+module:http.InitializationAwareHTTPInterceptor
+
+## Implements
+
+module:http.RequestAwareHTTPInterceptor
 
 ## Implements
 
@@ -26,7 +42,9 @@ external:ResponseAwareHTTPInterceptor
 
 > **new MappedHTTPInterceptor**(`interceptor`, `includePatterns`, `excludePatterns?`): `MappedHTTPInterceptor`
 
-Defined in: packages/blue-http/src/http.ts:258
+Defined in: packages/blue-http/src/http.ts:407
+
+Creates a URL-scoped interceptor wrapper.
 
 #### Parameters
 
@@ -34,13 +52,19 @@ Defined in: packages/blue-http/src/http.ts:258
 
 [`HTTPInterceptor`](../type-aliases/HTTPInterceptor.md)
 
+The interceptor to delegate to when a pattern matches.
+
 ##### includePatterns
 
 `string`[]
 
+URL patterns that enable the interceptor.
+
 ##### excludePatterns?
 
 `string`[]
+
+URL patterns that disable the interceptor.
 
 #### Returns
 
@@ -52,7 +76,9 @@ Defined in: packages/blue-http/src/http.ts:258
 
 > **urlMatcher**: [`WildcardMatcher`](WildcardMatcher.md)
 
-Defined in: packages/blue-http/src/http.ts:252
+Defined in: packages/blue-http/src/http.ts:391
+
+URL matcher used to evaluate include/exclude patterns.
 
 ## Accessors
 
@@ -62,7 +88,9 @@ Defined in: packages/blue-http/src/http.ts:252
 
 > **get** **interceptor**(): [`HTTPInterceptor`](../type-aliases/HTTPInterceptor.md)
 
-Defined in: packages/blue-http/src/http.ts:254
+Defined in: packages/blue-http/src/http.ts:396
+
+The wrapped interceptor that will run when the URL matches.
 
 ##### Returns
 
@@ -74,7 +102,9 @@ Defined in: packages/blue-http/src/http.ts:254
 
 > **matches**(`url`, `matcher?`): `boolean`
 
-Defined in: packages/blue-http/src/http.ts:265
+Defined in: packages/blue-http/src/http.ts:421
+
+Tests whether the supplied URL is included and not excluded.
 
 #### Parameters
 
@@ -82,13 +112,19 @@ Defined in: packages/blue-http/src/http.ts:265
 
 `string`
 
+The URL to evaluate.
+
 ##### matcher?
 
 [`WildcardMatcher`](WildcardMatcher.md)
 
+Optional matcher to reuse for pattern checks.
+
 #### Returns
 
 `boolean`
+
+`true` when the URL should receive the wrapped interceptor.
 
 ***
 
@@ -96,7 +132,9 @@ Defined in: packages/blue-http/src/http.ts:265
 
 > **postError**(`error`, `request`, `http`): `Promise`\<`Response`\>
 
-Defined in: packages/blue-http/src/http.ts:297
+Defined in: packages/blue-http/src/http.ts:461
+
+Delegates post-error handling to the wrapped interceptor when supported.
 
 #### Parameters
 
@@ -104,17 +142,25 @@ Defined in: packages/blue-http/src/http.ts:297
 
 `Error`
 
+The request failure.
+
 ##### request
 
 `Request`
+
+The request that failed.
 
 ##### http
 
 [`HTTP`](HTTP.md)
 
+The HTTP client executing the request.
+
 #### Returns
 
 `Promise`\<`Response`\>
+
+A replacement response, or `undefined` if the interceptor does not handle errors.
 
 #### Implementation of
 
@@ -126,7 +172,9 @@ Defined in: packages/blue-http/src/http.ts:297
 
 > **postComplete**(`request`, `response`): `void`
 
-Defined in: packages/blue-http/src/http.ts:304
+Defined in: packages/blue-http/src/http.ts:474
+
+Delegates completion handling to the wrapped interceptor when supported.
 
 #### Parameters
 
@@ -134,9 +182,13 @@ Defined in: packages/blue-http/src/http.ts:304
 
 `Request`
 
+The request that completed.
+
 ##### response
 
-`Response`
+`Response` \| `ResponseError`
+
+The final response or error wrapper.
 
 #### Returns
 
@@ -150,9 +202,11 @@ Defined in: packages/blue-http/src/http.ts:304
 
 ### postResponse()
 
-> **postResponse**(`response`, `settings`): `Promise`\<`void`\>
+> **postResponse**(`response`, `settings`): `Promise`\<`void` \| `Response`\>
 
-Defined in: packages/blue-http/src/http.ts:311
+Defined in: packages/blue-http/src/http.ts:488
+
+Delegates response handling to the wrapped interceptor when supported.
 
 #### Parameters
 
@@ -160,13 +214,19 @@ Defined in: packages/blue-http/src/http.ts:311
 
 `Response`
 
+The response returned by fetch.
+
 ##### settings
 
 [`HTTPInit`](../type-aliases/HTTPInit.md)
 
+The request settings used for the call.
+
 #### Returns
 
-`Promise`\<`void`\>
+`Promise`\<`void` \| `Response`\>
+
+A replacement response, or `void` to keep the original.
 
 #### Implementation of
 
@@ -178,7 +238,9 @@ Defined in: packages/blue-http/src/http.ts:311
 
 > **preInit**(`url`, `settings`): `boolean`
 
-Defined in: packages/blue-http/src/http.ts:318
+Defined in: packages/blue-http/src/http.ts:502
+
+Delegates initialization handling to the wrapped interceptor when supported.
 
 #### Parameters
 
@@ -186,13 +248,19 @@ Defined in: packages/blue-http/src/http.ts:318
 
 `URL`
 
+The resolved request URL.
+
 ##### settings
 
 [`HTTPInit`](../type-aliases/HTTPInit.md)
 
+The request settings being prepared.
+
 #### Returns
 
 `boolean`
+
+`false` when the wrapped interceptor rejects the request.
 
 #### Implementation of
 
@@ -204,7 +272,9 @@ Defined in: packages/blue-http/src/http.ts:318
 
 > **preRequest**(`request`, `http`): `Promise`\<`void` \| `Request`\>
 
-Defined in: packages/blue-http/src/http.ts:326
+Defined in: packages/blue-http/src/http.ts:517
+
+Delegates request handling to the wrapped interceptor when supported.
 
 #### Parameters
 
@@ -212,13 +282,19 @@ Defined in: packages/blue-http/src/http.ts:326
 
 `Request`
 
+The request to inspect or replace.
+
 ##### http
 
 [`HTTP`](HTTP.md)
 
+The HTTP client executing the request.
+
 #### Returns
 
 `Promise`\<`void` \| `Request`\>
+
+A replacement request, or the original request when unsupported.
 
 #### Implementation of
 
@@ -228,15 +304,19 @@ Defined in: packages/blue-http/src/http.ts:326
 
 ### setExcludePatterns()
 
-> **setExcludePatterns**(`excludePatterns`): `void`
+> **setExcludePatterns**(`excludePatterns?`): `void`
 
-Defined in: packages/blue-http/src/http.ts:334
+Defined in: packages/blue-http/src/http.ts:530
+
+Replaces the patterns that block the wrapped interceptor.
 
 #### Parameters
 
-##### excludePatterns
+##### excludePatterns?
 
 `string`[] = `[]`
+
+URL patterns that disable the interceptor.
 
 #### Returns
 
@@ -246,15 +326,19 @@ Defined in: packages/blue-http/src/http.ts:334
 
 ### setIncludePatterns()
 
-> **setIncludePatterns**(`includePatterns`): `void`
+> **setIncludePatterns**(`includePatterns?`): `void`
 
-Defined in: packages/blue-http/src/http.ts:338
+Defined in: packages/blue-http/src/http.ts:539
+
+Replaces the patterns that enable the wrapped interceptor.
 
 #### Parameters
 
-##### includePatterns
+##### includePatterns?
 
 `string`[] = `[]`
+
+URL patterns that enable the interceptor.
 
 #### Returns
 

@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,9 @@
 
 # Interface: Resource\<T\>
 
-Defined in: packages/blue-context/src/resource.ts:10
+Defined in: packages/blue-context/src/resource.ts:13
+
+Represents a resolved resource handle and its loaded value.
 
 ## Type Parameters
 
@@ -20,7 +22,7 @@ Defined in: packages/blue-context/src/resource.ts:10
 
 > `readonly` **exists**: `boolean`
 
-Defined in: packages/blue-context/src/resource.ts:11
+Defined in: packages/blue-context/src/resource.ts:14
 
 ***
 
@@ -28,4 +30,4 @@ Defined in: packages/blue-context/src/resource.ts:11
 
 > `readonly` **value**: `T`
 
-Defined in: packages/blue-context/src/resource.ts:12
+Defined in: packages/blue-context/src/resource.ts:15

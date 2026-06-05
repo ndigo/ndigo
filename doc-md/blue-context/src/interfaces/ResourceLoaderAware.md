@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,11 +6,13 @@
 
 # Interface: ResourceLoaderAware
 
-Defined in: packages/blue-context/src/resource.ts:19
+Defined in: packages/blue-context/src/resource.ts:28
+
+Receives a resource loader during initialization.
 
 ## Extends
 
-- [`Aware`](../../../blue-factory/src/interfaces/Aware.md)
+- `Aware`
 
 ## Properties
 
@@ -18,11 +20,13 @@ Defined in: packages/blue-context/src/resource.ts:19
 
 > `readonly` **\[$aware\]**: `boolean`
 
-Defined in: packages/blue-factory/src/aware.ts:16
+Defined in: packages/blue-factory/lib/aware.d.ts:21
+
+A symbol indicating that the value is aware.
 
 #### Inherited from
 
-[`Aware`](../../../blue-factory/src/interfaces/Aware.md).[`[$aware]`](../../../blue-factory/src/interfaces/Aware.md#aware)
+`Aware.[$aware]`
 
 ## Methods
 
@@ -30,7 +34,7 @@ Defined in: packages/blue-factory/src/aware.ts:16
 
 > **setResourceLoader**(`loader`): `void`
 
-Defined in: packages/blue-context/src/resource.ts:20
+Defined in: packages/blue-context/src/resource.ts:29
 
 #### Parameters
 

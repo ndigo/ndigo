@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -8,7 +8,9 @@
 
 > **isJSONValue**(`value`): `value is JSONValue`
 
-Defined in: packages/blue-core/src/serializable.ts:88
+Defined in: packages/blue-core/src/serializable.ts:79
+
+Tests whether a value is directly representable in JSON.
 
 ## Parameters
 
@@ -16,6 +18,10 @@ Defined in: packages/blue-core/src/serializable.ts:88
 
 `any`
 
+Value to test.
+
 ## Returns
 
 `value is JSONValue`
+
+`true` for JSON primitives, arrays, objects, and `null`.

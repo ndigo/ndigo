@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -8,7 +8,9 @@
 
 > **DomainActions** = `object`
 
-Defined in: packages/blue-domain/src/component.ts:6
+Defined in: packages/blue-domain/src/component.ts:9
+
+Maps action names to handlers that receive domain data payloads.
 
 ## Index Signature
 

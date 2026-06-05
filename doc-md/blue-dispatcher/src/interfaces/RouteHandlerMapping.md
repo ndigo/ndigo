@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,9 @@
 
 # Interface: RouteHandlerMapping
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:30
+Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:41
+
+Resolves a route to a handler execution chain.
 
 ## Extended by
 
@@ -18,14 +20,20 @@ Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:30
 
 > **getHandler**(`route`): `RouteHandlerExecutionChain`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:31
+Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:48
+
+Resolve the handler for a route.
 
 #### Parameters
 
 ##### route
 
-[`Route`](../../../blue-router/src/interfaces/Route.md)
+`Route`
+
+The current route.
 
 #### Returns
 
 `RouteHandlerExecutionChain`
+
+The execution chain for the chosen handler, or `null`.

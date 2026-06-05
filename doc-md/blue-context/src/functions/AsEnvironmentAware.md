@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,15 +6,15 @@
 
 # Function: AsEnvironmentAware()
 
-> **AsEnvironmentAware**\<`T`\>(`superclass`): [`Constructable`](../../../blue-core/src/type-aliases/Constructable.md)\<[`EnvironmentAware`](../interfaces/EnvironmentAware.md)\> & `T`
+> **AsEnvironmentAware**\<`T`\>(`superclass`): `Constructable`\<[`EnvironmentAware`](../interfaces/EnvironmentAware.md)\> & `T`
 
-Defined in: packages/blue-context/src/environment.ts:158
+Defined in: packages/blue-context/src/environment.ts:206
 
 ## Type Parameters
 
 ### T
 
-`T` *extends* [`Constructable`](../../../blue-core/src/type-aliases/Constructable.md)
+`T` *extends* `Constructable`
 
 ## Parameters
 
@@ -22,7 +22,16 @@ Defined in: packages/blue-context/src/environment.ts:158
 
 `T`
 
+The base class to extend.
+
 ## Returns
 
-[`Constructable`](../../../blue-core/src/type-aliases/Constructable.md)\<[`EnvironmentAware`](../interfaces/EnvironmentAware.md)\> & `T`
+`Constructable`\<[`EnvironmentAware`](../interfaces/EnvironmentAware.md)\> & `T`
 
+## See
+
+module:context.AsEnvironmentAware
+
+## Implements
+
+module:context.EnvironmentAware

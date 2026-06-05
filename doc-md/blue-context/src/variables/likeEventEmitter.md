@@ -1,25 +1,23 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
 [BlueJS Framework](../../../modules.md) / [blue-context/src](../README.md) / likeEventEmitter
 
-# Variable: likeEventEmitter()
+# Variable: likeEventEmitter
 
 > `const` **likeEventEmitter**: (`value`) => `value is EventEmitter`
 
-Defined in: packages/blue-context/src/event-emitter.ts:109
+Defined in: packages/blue-context/src/event-emitter.ts:173
+
+Returns whether a value behaves like an event emitter.
 
 ## Parameters
 
 ### value
 
-`any`
-
-The value to be tested
+`unknown`
 
 ## Returns
 
 `value is EventEmitter`
-
-Whether or not the `value` is [EventEmitter](../interfaces/EventEmitter.md)

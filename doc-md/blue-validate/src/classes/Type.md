@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,17 +6,20 @@
 
 # Class: Type
 
-Defined in: packages/blue-validate/src/type.ts:49
+Defined in: packages/blue-validate/src/type.ts:51
 
-
+Represents a reusable validation type, encapsulating a set of constraints and a validation backend.
+This class allows for defining complex validation rules that can be applied to various values.
 
 ## Constructors
 
 ### Constructor
 
-> **new Type**(`name`, `definition`): `Type`
+> **new Type**(`name`, `definition`, `backend?`): `Type`
 
-Defined in: packages/blue-validate/src/type.ts:53
+Defined in: packages/blue-validate/src/type.ts:63
+
+Creates an instance of `Type`.
 
 #### Parameters
 
@@ -24,13 +27,27 @@ Defined in: packages/blue-validate/src/type.ts:53
 
 `string`
 
+The name of this validation type.
+
 ##### definition
 
-`TypeDefinition`
+[`TypeDefinition`](../type-aliases/TypeDefinition.md)
+
+The definition of the type, including its constraints.
+
+##### backend?
+
+`ValidationBackendAdapter` = `defaultValidationBackend`
+
+The validation backend to use for this type.
 
 #### Returns
 
 `Type`
+
+#### Throws
+
+If `definition.constraints` is not an array, or if any constraint within the definition is invalid or unregistered.
 
 ## Properties
 
@@ -38,54 +55,94 @@ Defined in: packages/blue-validate/src/type.ts:53
 
 > `readonly` **name**: `string`
 
-Defined in: packages/blue-validate/src/type.ts:50
+Defined in: packages/blue-validate/src/type.ts:52
 
 ***
 
 ### constraints
 
-> `readonly` **constraints**: `any`[]
+> `readonly` **constraints**: `object`[]
 
-Defined in: packages/blue-validate/src/type.ts:51
+Defined in: packages/blue-validate/src/type.ts:53
+
+#### type
+
+> **type**: `string`
+
+#### params?
+
+> `optional` **params?**: `Record`\<`string`, `unknown`\>
+
+#### groups?
+
+> `optional` **groups?**: `symbol`[]
+
+***
+
+### backend
+
+> `readonly` **backend**: `ValidationBackendAdapter`
+
+Defined in: packages/blue-validate/src/type.ts:54
 
 ## Methods
 
 ### validator()
 
-> **validator**(`value`, `params`): `boolean`
+> **validator**(`value`, `params?`): `boolean`
 
-Defined in: packages/blue-validate/src/type.ts:97
+Defined in: packages/blue-validate/src/type.ts:129
+
+Checks if a value is valid according to the type's constraints.
+This method returns a boolean indicating overall validity.
 
 #### Parameters
 
 ##### value
 
-`any`
+`unknown`
 
-##### params
+The value to validate.
 
-`any`
+##### params?
+
+`ValidationOptions` = `{}`
+
+Optional parameters for the validation process, including active groups.
 
 #### Returns
 
 `boolean`
 
+True if the value passes all applicable constraints, false otherwise.
+
 ***
 
 ### validate()
 
-> **validate**(`value`, `params`): `ValidationResults`
+> **validate**(`value`, `params?`): `ValidationResults`
 
-Defined in: packages/blue-validate/src/type.ts:114
+Defined in: packages/blue-validate/src/type.ts:149
+
+Validates a value against the type's constraints and returns detailed results.
+This method provides a comprehensive object including validity status and a list of failed constraints.
 
 #### Parameters
 
 ##### value
 
-`any`
+`unknown`
 
-##### params
+The value to validate.
+
+##### params?
+
+`ValidationOptions` = `{}`
+
+Optional parameters for the validation process, including active groups.
 
 #### Returns
 
 `ValidationResults`
+
+An object containing the validation outcome, including `isValid` and `failedConstraints`.

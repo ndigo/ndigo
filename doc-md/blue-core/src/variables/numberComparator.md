@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -8,4 +8,6 @@
 
 > `const` **numberComparator**: `NumberComparator`
 
-Defined in: packages/blue-core/src/comparable.ts:177
+Defined in: packages/blue-core/src/comparable.ts:217
+
+A `Comparator` instance for `number` objects.

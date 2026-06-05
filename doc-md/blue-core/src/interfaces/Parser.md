@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,11 +6,27 @@
 
 # Interface: Parser\<T\>
 
-Defined in: packages/blue-core/src/parser.ts:5
+Defined in: packages/blue-core/src/parser.ts:52
 
-## Author
+Class-based interface for parsing a string into a structured value of type `T`.
 
-Jeff Rose
+Represents the class-based form of `Converter<string, T>`. Implement this interface
+when the parser needs to be registered, injected, or composed as an object.
+For standalone utility functions, use the `parse*` naming convention and
+type with `Converter<string, T>` directly.
+
+## Example
+
+```typescript
+// Class-based — implements Parser<T>
+class MatrixString implements Parser<MatrixParams>, Stringifier<MatrixParams> {
+    parse(value: string): MatrixParams { ... }
+    stringify(value: MatrixParams): string { ... }
+}
+
+// Standalone function — typed as Converter<string, T>
+const parseWildcard: Converter<string, string> = (pattern) => ...;
+```
 
 ## Type Parameters
 
@@ -18,13 +34,17 @@ Jeff Rose
 
 `T` = `any`
 
+The type of the parsed value.
+
 ## Methods
 
 ### parse()
 
 > **parse**(`value`): `T`
 
-Defined in: packages/blue-core/src/parser.ts:6
+Defined in: packages/blue-core/src/parser.ts:58
+
+Parses a string value into a value of type T.
 
 #### Parameters
 
@@ -32,6 +52,10 @@ Defined in: packages/blue-core/src/parser.ts:6
 
 `string`
 
+The string value to parse.
+
 #### Returns
 
 `T`
+
+The parsed value of type T.

@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -10,7 +10,7 @@ Defined in: packages/blue-domain/src/error.ts:9
 
 ## Extends
 
-- [`Serializable`](../../../blue-core/src/interfaces/Serializable.md) & `Error`
+- `Serializable` & `Error`
 
 ## Constructors
 
@@ -18,13 +18,17 @@ Defined in: packages/blue-domain/src/error.ts:9
 
 > **new DomainError**(`message?`): `DomainError`
 
-Defined in: packages/blue-domain/src/error.ts:14
+Defined in: packages/blue-domain/src/error.ts:24
+
+Creates a domain-specific error that can be serialized safely.
 
 #### Parameters
 
 ##### message?
 
 `string`
+
+Optional error message.
 
 #### Returns
 
@@ -42,11 +46,15 @@ Defined in: packages/blue-domain/src/error.ts:14
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-domain/src/error.ts:10
+Defined in: packages/blue-domain/src/error.ts:15
+
+Returns the error tag used by object inspection.
 
 ##### Returns
 
 `string`
+
+The domain error tag.
 
 ## Methods
 
@@ -54,7 +62,7 @@ Defined in: packages/blue-domain/src/error.ts:10
 
 > **toString**(): `string`
 
-Defined in: packages/blue-core/src/serializable.ts:29
+Defined in: packages/blue-core/lib/serializable.d.ts:22
 
 #### Returns
 
@@ -68,13 +76,13 @@ Defined in: packages/blue-core/src/serializable.ts:29
 
 ### toJSON()?
 
-> `optional` **toJSON**(): [`JSONValue`](../../../blue-core/src/type-aliases/JSONValue.md)
+> `optional` **toJSON**(): `JSONValue`
 
-Defined in: packages/blue-core/src/serializable.ts:30
+Defined in: packages/blue-core/lib/serializable.d.ts:23
 
 #### Returns
 
-[`JSONValue`](../../../blue-core/src/type-aliases/JSONValue.md)
+`JSONValue`
 
 #### Inherited from
 

@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,9 @@
 
 # Interface: Theme
 
-Defined in: packages/blue-content/src/theme.ts:7
+Defined in: packages/blue-content/src/theme.ts:11
+
+Describes a named theme and the content source it exposes.
 
 ## Properties
 
@@ -14,7 +16,9 @@ Defined in: packages/blue-content/src/theme.ts:7
 
 > **name**: `string`
 
-Defined in: packages/blue-content/src/theme.ts:8
+Defined in: packages/blue-content/src/theme.ts:15
+
+Human-readable theme name.
 
 ***
 
@@ -22,4 +26,6 @@ Defined in: packages/blue-content/src/theme.ts:8
 
 > **contentSource**: [`ContentSource`](ContentSource.md)
 
-Defined in: packages/blue-content/src/theme.ts:9
+Defined in: packages/blue-content/src/theme.ts:20
+
+Content source associated with the theme.

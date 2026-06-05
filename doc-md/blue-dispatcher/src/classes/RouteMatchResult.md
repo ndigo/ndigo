@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,9 @@
 
 # Class: RouteMatchResult
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:788
+Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:1163
+
+Result of matching a route pattern to a path.
 
 ## Constructors
 
@@ -14,7 +16,9 @@ Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:788
 
 > **new RouteMatchResult**(`pattern`, `path`): `RouteMatchResult`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:796
+Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:1184
+
+Create a route match result.
 
 #### Parameters
 
@@ -22,9 +26,13 @@ Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:796
 
 `string`
 
+The matched pattern.
+
 ##### path
 
 `string`
+
+The matched path.
 
 #### Returns
 
@@ -36,7 +44,9 @@ Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:796
 
 > `readonly` **pattern**: `string`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:789
+Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:1167
+
+The matched pattern.
 
 ***
 
@@ -44,7 +54,9 @@ Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:789
 
 > `readonly` **path**: `string`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:790
+Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:1172
+
+The matched path.
 
 ## Accessors
 
@@ -54,7 +66,7 @@ Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:790
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:792
+Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:1174
 
 ##### Returns
 
@@ -64,10 +76,14 @@ Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:792
 
 ### toJSON()
 
-> **toJSON**(): [`JSONValue`](../../../blue-core/src/type-aliases/JSONValue.md)
+> **toJSON**(): `JSONValue`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:815
+Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:1208
+
+Serialize the match result to JSON.
 
 #### Returns
 
-[`JSONValue`](../../../blue-core/src/type-aliases/JSONValue.md)
+`JSONValue`
+
+A JSON representation of the match.

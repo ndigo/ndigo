@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,9 @@
 
 # Class: FixedContentNegotiationStrategy
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:69
+Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:135
+
+Returns the same media types for every request.
 
 ## Implements
 
@@ -18,13 +20,17 @@ Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:69
 
 > **new FixedContentNegotiationStrategy**(`mediaTypes`): `FixedContentNegotiationStrategy`
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:72
+Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:146
+
+Creates a fixed strategy from one or more media types.
 
 #### Parameters
 
 ##### mediaTypes
 
-[`MediaType`](../../../blue-core/src/classes/MediaType.md) | [`MediaType`](../../../blue-core/src/classes/MediaType.md)[]
+`MediaType` \| `MediaType`[]
+
+The media type or types to return.
 
 #### Returns
 
@@ -34,17 +40,21 @@ Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:72
 
 ### mediaTypes
 
-> **mediaTypes**: [`MediaType`](../../../blue-core/src/classes/MediaType.md)[]
+> **mediaTypes**: `MediaType`[]
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:70
+Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:139
+
+The media types this strategy always returns.
 
 ## Methods
 
 ### resolveMediaTypes()
 
-> **resolveMediaTypes**(`request`): [`MediaType`](../../../blue-core/src/classes/MediaType.md)[]
+> **resolveMediaTypes**(`request`): `MediaType`[]
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:76
+Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:156
+
+Returns the configured media types.
 
 #### Parameters
 
@@ -52,9 +62,13 @@ Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:76
 
 `any`
 
+The current request.
+
 #### Returns
 
-[`MediaType`](../../../blue-core/src/classes/MediaType.md)[]
+`MediaType`[]
+
+The configured media types.
 
 #### Implementation of
 

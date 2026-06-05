@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -8,17 +8,19 @@
 
 > **hasMethodParameter**(`target`, `propertyKey`): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:107
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:545
+
+Check if method has parameters
 
 ## Parameters
 
 ### target
 
-`Object`
+`any`
 
 ### propertyKey
 
-`string` | `symbol`
+`string` \| `symbol`
 
 ## Returns
 

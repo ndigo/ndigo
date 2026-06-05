@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,11 +6,9 @@
 
 # Interface: Matchable\<TValue\>
 
-Defined in: packages/blue-core/src/matchable.ts:5
+Defined in: packages/blue-core/src/matchable.ts:9
 
-## Author
-
-Jeff Rose
+Represents an object that can determine if it matches a given value.
 
 ## Type Parameters
 
@@ -18,13 +16,17 @@ Jeff Rose
 
 `TValue`
 
+The type of the value to match against.
+
 ## Methods
 
 ### matches()
 
 > **matches**(`value`): `boolean`
 
-Defined in: packages/blue-core/src/matchable.ts:6
+Defined in: packages/blue-core/src/matchable.ts:15
+
+Determines if this object matches the specified value.
 
 #### Parameters
 
@@ -32,6 +34,10 @@ Defined in: packages/blue-core/src/matchable.ts:6
 
 `TValue`
 
+The value to match against.
+
 #### Returns
 
 `boolean`
+
+`true` if the object matches the value, `false` otherwise.

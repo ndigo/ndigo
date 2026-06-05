@@ -1,14 +1,16 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
 [BlueJS Framework](../../../modules.md) / [blue-context/src](../README.md) / likeResourceLoaderAware
 
-# Variable: likeResourceLoaderAware()
+# Variable: likeResourceLoaderAware
 
 > `const` **likeResourceLoaderAware**: (`value`) => `value is ResourceLoaderAware`
 
-Defined in: packages/blue-context/src/resource.ts:87
+Defined in: packages/blue-context/src/resource.ts:103
+
+Returns whether a value can receive a resource loader.
 
 ## Parameters
 
@@ -16,10 +18,10 @@ Defined in: packages/blue-context/src/resource.ts:87
 
 `any`
 
-The value to be tested
+The value to test.
 
 ## Returns
 
 `value is ResourceLoaderAware`
 
-Whether or not the `value` is [ResourceLoaderAware](../interfaces/ResourceLoaderAware.md)
+`true` when the value looks like resource-loader aware.

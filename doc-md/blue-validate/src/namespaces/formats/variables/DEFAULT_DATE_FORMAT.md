@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../../../README.md)
 
 ***
 
@@ -8,10 +8,6 @@
 
 > `const` **DEFAULT\_DATE\_FORMAT**: `"MM/DD/YYYY"` = `'MM/DD/YYYY'`
 
-Defined in: packages/blue-validate/src/formats.ts:110
+Defined in: packages/blue-validate/src/formats.ts:114
 
-A date string
-
-## Constant
-
-module:validate.formats.DEFAULT_DATE_FORMAT='MM/DD/YYYY'
+The default date format string.

@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -8,4 +8,6 @@
 
 > **EventType** = `string` \| `symbol`
 
-Defined in: packages/blue-context/src/event-emitter.ts:17
+Defined in: packages/blue-context/src/event-emitter.ts:29
+
+Event type supported by the emitter.

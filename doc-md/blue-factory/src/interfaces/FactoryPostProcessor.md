@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,9 @@
 
 # Interface: FactoryPostProcessor
 
-Defined in: packages/blue-factory/src/entry-processor.ts:29
+Defined in: packages/blue-factory/src/entry-processor.ts:98
+
+Factory hook that allows for custom modification of new instances, e.g. checking for marker interfaces or wrapping them with proxies.
 
 ## Methods
 
@@ -14,13 +16,17 @@ Defined in: packages/blue-factory/src/entry-processor.ts:29
 
 > **postProcessFactory**(`factory`): `void`
 
-Defined in: packages/blue-factory/src/entry-processor.ts:30
+Defined in: packages/blue-factory/src/entry-processor.ts:103
+
+Post-process the given factory.
 
 #### Parameters
 
 ##### factory
 
 [`Factory`](Factory.md)
+
+The factory to post-process.
 
 #### Returns
 

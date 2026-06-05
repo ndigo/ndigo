@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -8,8 +8,10 @@
 
 > **DomainSettings** = `object`
 
-Defined in: packages/blue-domain/src/component.ts:14
+Defined in: packages/blue-domain/src/component.ts:23
+
+Stores configuration values that affect how a domain component behaves.
 
 ## Index Signature
 
-\[`setting`: `string`\]: [`JSONValue`](../../../blue-core/src/type-aliases/JSONValue.md)
+\[`setting`: `string`\]: `JSONValue`

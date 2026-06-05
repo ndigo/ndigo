@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,7 +6,21 @@
 
 # Class: TimeoutInterceptor
 
-Defined in: packages/blue-http/src/interceptors/timeout-interceptor.ts:27
+Defined in: packages/blue-http/src/interceptors/timeout-interceptor.ts:33
+
+Aborts slow requests and converts aborts into timeout responses.
+
+## Implements
+
+module:http.CompletionAwareHTTPInterceptor
+
+## Implements
+
+module:http.ErrorAwareHTTPInterceptor
+
+## Implements
+
+module:http.InitializationAwareHTTPInterceptor
 
 ## Implements
 
@@ -20,7 +34,7 @@ Defined in: packages/blue-http/src/interceptors/timeout-interceptor.ts:27
 
 > **new TimeoutInterceptor**(`timeout`): `TimeoutInterceptor`
 
-Defined in: packages/blue-http/src/interceptors/timeout-interceptor.ts:37
+Defined in: packages/blue-http/src/interceptors/timeout-interceptor.ts:43
 
 #### Parameters
 
@@ -38,7 +52,7 @@ Defined in: packages/blue-http/src/interceptors/timeout-interceptor.ts:37
 
 > `readonly` **timeout**: `number`
 
-Defined in: packages/blue-http/src/interceptors/timeout-interceptor.ts:35
+Defined in: packages/blue-http/src/interceptors/timeout-interceptor.ts:41
 
 ## Methods
 
@@ -46,7 +60,7 @@ Defined in: packages/blue-http/src/interceptors/timeout-interceptor.ts:35
 
 > **preInit**(`url`, `settings`): `boolean`
 
-Defined in: packages/blue-http/src/interceptors/timeout-interceptor.ts:59
+Defined in: packages/blue-http/src/interceptors/timeout-interceptor.ts:65
 
 #### Parameters
 
@@ -78,7 +92,7 @@ Whether or not the http request should continue execution.
 
 > **postError**(`error`, `request`): `Promise`\<`Response`\>
 
-Defined in: packages/blue-http/src/interceptors/timeout-interceptor.ts:77
+Defined in: packages/blue-http/src/interceptors/timeout-interceptor.ts:83
 
 #### Parameters
 
@@ -100,8 +114,6 @@ The HTTP request
 
 #### Async
 
-*
-
 #### Implementation of
 
 [`ErrorAwareHTTPInterceptor`](../interfaces/ErrorAwareHTTPInterceptor.md).[`postError`](../interfaces/ErrorAwareHTTPInterceptor.md#posterror)
@@ -112,7 +124,7 @@ The HTTP request
 
 > **postComplete**(`request`, `response`): `void`
 
-Defined in: packages/blue-http/src/interceptors/timeout-interceptor.ts:88
+Defined in: packages/blue-http/src/interceptors/timeout-interceptor.ts:94
 
 #### Parameters
 

@@ -1,4 +1,4 @@
-[**BlueJS Framework v3.0.0-alpha.0**](../../../README.md)
+[**BlueJS Framework v0.0.1**](../../../README.md)
 
 ***
 
@@ -6,6 +6,8 @@
 
 # Type Alias: ResponseParserMap
 
-> **ResponseParserMap** = `Map`\<[`MediaType`](../../../blue-core/src/classes/MediaType.md), [`ResponseParser`](ResponseParser.md)\>
+> **ResponseParserMap** = `Map`\<`MediaType`, [`ResponseParser`](ResponseParser.md)\>
 
-Defined in: packages/blue-http/src/interceptors/response-type-interceptor.ts:13
+Defined in: packages/blue-http/src/interceptors/response-type-interceptor.ts:19
+
+Map of media types to response parsers.

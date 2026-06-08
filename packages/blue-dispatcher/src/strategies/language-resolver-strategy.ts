@@ -25,15 +25,11 @@ export const AsLanguageResolverStrategy = <T extends Constructable<StrategyIniti
     class extends superclass implements LanguageResolverStrategy {
         readonly languageResolverKey: string;
 
-        languageResolver: LanguageResolver;
+        languageResolver!: LanguageResolver;
 
         constructor(...args: any[]) {
             super(...args);
-            defineProperty(this, 'languageResolverKey', {
-                get: () => LANGUAGE_RESOLVER,
-                configurable: true,
-                enumerable: true,
-            });
+            this.languageResolverKey = LANGUAGE_RESOLVER;
             this.addStrategy(LANGUAGE_RESOLVER);
         }
 

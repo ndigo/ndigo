@@ -1,3 +1,7 @@
+/**
+ * @author Jeff Rose
+ */
+
 import { Serializable, Equatable, JSONValue } from '@blue/core';
 import { like } from '@blue/util/types';
 import { Route } from '@blue/router';
@@ -29,7 +33,7 @@ export interface RouteCondition<T = any> {
      * @param route - The current route.
      * @returns A matching condition instance or `null`.
      */
-    getMatchingCondition(route: Route): T;
+    getMatchingCondition(route: Route): T | null;
 
     /**
      * Compare this condition with another condition.
@@ -69,15 +73,15 @@ const { defineProperty } = Reflect;
  * @returns {boolean} Whether or not the `value` is a {@link RouteCondition|RouteCondition}.
  */
 export const likeRouteCondition = like({ merge: Function, getMatchingCondition: Function }) as (
-    value
+    value: any
 ) => value is RouteCondition;
 
 /**
  * Base class for parsed name/value expressions.
  */
 export abstract class AbstractNameValueExpression<T> implements NameValueExpression<T>, Serializable {
-    readonly isNegated: boolean;
-    readonly name: string;
+    readonly isNegated!: boolean;
+    readonly name!: string;
     readonly value?: T;
 
     abstract readonly isCaseSensitiveName: boolean;
@@ -178,7 +182,7 @@ export abstract class AbstractRouteCondition<T extends AbstractRouteCondition<T>
      * @param value - The value to compare.
      * @returns `true` when both conditions are equivalent.
      */
-    equals(value): boolean {
+    equals(value: any): boolean {
         if (this === value) {
             return true;
         }
@@ -208,7 +212,7 @@ export abstract class AbstractRouteCondition<T extends AbstractRouteCondition<T>
 
     abstract merge(other: T): T;
 
-    abstract getMatchingCondition(route: Route): T;
+    abstract getMatchingCondition(route: Route): T | null;
 
     abstract compareTo(value: T, route?: Route): number;
 }
@@ -238,7 +242,7 @@ export class RouteConditionHolder extends AbstractRouteCondition<RouteConditionH
     /**
      * Wrapped condition, when present.
      */
-    readonly condition: RouteCondition;
+    readonly condition!: RouteCondition;
 
     get content(): RouteCondition[] {
         return this.condition ? [this.condition] : [];
@@ -253,7 +257,7 @@ export class RouteConditionHolder extends AbstractRouteCondition<RouteConditionH
      *
      * @param routeCondition - The wrapped condition, if any.
      */
-    constructor(routeCondition: RouteCondition = null) {
+    constructor(routeCondition: RouteCondition | null = null) {
         super();
         defineProperty(this, 'condition', {
             value: routeCondition,
@@ -293,11 +297,11 @@ export class RouteConditionHolder extends AbstractRouteCondition<RouteConditionH
      * @param route - The current route.
      * @returns A matching holder, or `null`.
      */
-    getMatchingCondition(route: Route): RouteConditionHolder {
+    getMatchingCondition(route: Route): RouteConditionHolder | null {
         if (!this.condition) {
             return this;
         }
-        const match: RouteCondition = this.condition.getMatchingCondition(route);
+        const match: RouteCondition | null = this.condition.getMatchingCondition(route);
         return match ? new RouteConditionHolder(match) : null;
     }
 
@@ -347,7 +351,7 @@ export class CompositeRouteCondition extends AbstractRouteCondition<CompositeRou
         return !this.isEmpty ? this.conditions : [];
     }
 
-    readonly routeConditions: RouteConditionHolder[];
+    readonly routeConditions!: RouteConditionHolder[];
 
     /**
      * Create a composite condition from one or more route conditions.
@@ -409,19 +413,19 @@ export class CompositeRouteCondition extends AbstractRouteCondition<CompositeRou
      * @param route - The current route.
      * @returns A matching composite condition, or `null`.
      */
-    getMatchingCondition(route: Route): CompositeRouteCondition {
+    getMatchingCondition(route: Route): CompositeRouteCondition | null {
         if (this.isEmpty) {
             return this;
         }
         const length = this.length,
-            matchingConditions: RouteConditionHolder[] = new Array<RouteConditionHolder>(length);
+            matchingConditions: (RouteConditionHolder | null)[] = new Array<RouteConditionHolder | null>(length);
         for (let index = 0; index < length; index++) {
             matchingConditions[index] = this.routeConditions[index].getMatchingCondition(route);
             if (matchingConditions[index] === null) {
                 return null;
             }
         }
-        return new CompositeRouteCondition(...matchingConditions);
+         return new CompositeRouteCondition(...(matchingConditions as RouteConditionHolder[]));
     }
 
     /**

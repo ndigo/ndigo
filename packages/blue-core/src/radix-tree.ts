@@ -295,7 +295,7 @@ export class RadixTree<V> implements Serializable {
 
             switch (kind) {
                 case 'static':
-                    child = node.staticChildren.get(segment);
+                    child = node.staticChildren.get(segment) ?? null;
                     if (!child) {
                         return false;
                     }

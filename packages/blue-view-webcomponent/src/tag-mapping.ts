@@ -32,7 +32,7 @@ const TAG_MAPPING = 'tag:mapping',
         (tagName: string) =>
         <T extends new (...args: any[]) => any>(target: T, context: ClassDecoratorContext): T => {
             context.metadata[TAG_MAPPING] = tagName;
-            customElements.define(tagName, target as unknown as CustomElementConstructor);
+            customElements.define(tagName, target as CustomElementConstructor);
             return target;
         };
 

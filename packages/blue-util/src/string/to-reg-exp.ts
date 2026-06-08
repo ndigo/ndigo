@@ -33,7 +33,7 @@ const toRegExp = (value: string): RegExp => {
     let regex: RegExp;
 
     if (cache.has(value)) {
-        regex = cache.get(value);
+        regex = cache.get(value)!;
     } else {
         const flags = extractFlags(value),
             pattern = removeSlashesAndFlags(value);

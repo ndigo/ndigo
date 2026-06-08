@@ -14,7 +14,7 @@ import { FrameworkError } from '@blue/core';
  */
 export const domainComponent = (name: string) =>
     <T extends new (...args: any[]) => any>(target: T, context: ClassDecoratorContext): T => {
-        context.metadata['domain:component'] = { name };
+        (context.metadata as any)['domain:component'] = { name };
         return target;
     };
 
@@ -103,7 +103,7 @@ export interface DomainMetadata {
 }
 
 export const getDomainMetadata = (target: new (...args: any[]) => any): DomainMetadata => {
-    const metadata = target[Symbol.metadata] ?? {};
+    const metadata = (target as any)[Symbol.metadata] ?? {};
     const componentMeta = metadata['domain:component'] as { name: string } | undefined;
     return {
         name: componentMeta?.name,

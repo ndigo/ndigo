@@ -25,11 +25,11 @@ const { defineProperty } = Reflect,
  * @implements external:Iterable
  * @implements module:core.Serializable
  */
-export class RingBuffer<T = any> implements ArrayLike<T>, Iterable<T>, Serializable {
-    protected _capacity: number;
-    protected _head: number;
-    protected _tail: number;
-    protected _full: number;
+export class RingBuffer<T = any> implements ArrayLike<T | undefined>, Iterable<T>, Serializable {
+    protected _capacity!: number;
+    protected _head!: number;
+    protected _tail!: number;
+    protected _full!: number;
 
     /**
      * The maximum capacity of any RingBuffer instance.
@@ -40,7 +40,7 @@ export class RingBuffer<T = any> implements ArrayLike<T>, Iterable<T>, Serializa
      */
     static readonly MIN_CAPACITY: number;
 
-    [n: number]: T;
+    [n: number]: T | undefined;
 
     /**
      * The string tag for this class.
@@ -145,7 +145,9 @@ export class RingBuffer<T = any> implements ArrayLike<T>, Iterable<T>, Serializa
         if (typeof capacityOrElements === 'number') {
             this.capacity = capacityOrElements;
         } else if (likeArray(capacityOrElements)) {
-            this.put.apply(this, capacityOrElements);
+            // Convert ArrayLike to array for apply
+            const elementsArray = Array.from(capacityOrElements);
+            this.put.apply(this, elementsArray);
         }
     }
 
@@ -161,8 +163,8 @@ export class RingBuffer<T = any> implements ArrayLike<T>, Iterable<T>, Serializa
      * Retrieves and removes the oldest element from the ring buffer.
      * @returns The oldest element, or `undefined` if the buffer is empty.
      */
-    get(): T {
-        let item: T;
+    get(): T | undefined {
+        let item: T | undefined;
 
         if (this.length) {
             const tail = this._tail;

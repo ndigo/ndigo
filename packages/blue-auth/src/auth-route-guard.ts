@@ -2,7 +2,7 @@
  * @author Jeff Rose
  */
 
-import { type RouteHandlerInterceptor, type ModelAndView } from '@blue/dispatcher';
+import { type RouteHandlerInterceptor, type ModelAndView, RouteHandlerMethod } from '@blue/dispatcher';
 import { type Route } from '@blue/router';
 import { AUTH_REQUIRED_KEY, AUTH_ROLES_KEY } from './_constants';
 import { type Session } from './session';
@@ -32,12 +32,13 @@ export class AuthRouteGuard implements RouteHandlerInterceptor {
      * @param handler - The resolved handler (expected to be a `RouteHandlerMethod`).
      * @returns `true` to allow execution; `false` to block it.
      */
-    async preHandle(route: Route, handler: any): Promise<boolean> {
+    async preHandle(route: Route, handler: object | undefined): Promise<boolean> {
+        const methodHandler = handler as RouteHandlerMethod | undefined;
         const metadata: Record<string, unknown> = (
-            (handler?.handler?.constructor?.[Symbol.metadata] ?? {}) as Record<string, unknown>
+            ((methodHandler?.handler?.constructor as any)?.[Symbol.metadata] ?? {}) as Record<string, unknown>
         );
         const methodName: string | null =
-            typeof handler?.method === 'string' ? handler.method : null;
+            typeof methodHandler?.method === 'string' ? methodHandler.method : null;
 
         const classRequiresAuth = Boolean(metadata[AUTH_REQUIRED_KEY]);
         const methodRequiresAuth = methodName
@@ -69,14 +70,14 @@ export class AuthRouteGuard implements RouteHandlerInterceptor {
     /**
      * No-op post-handle hook.
      */
-    async postHandle(_route: Route, _handler: any, _modelAndView: ModelAndView): Promise<void> {
+    async postHandle(_route: Route, _handler: object | undefined, _modelAndView: ModelAndView): Promise<void> {
         // no-op
     }
 
     /**
      * No-op complete-handle hook.
      */
-    async completeHandle(_route: Route, _handler: any, _error: Error | null): Promise<void> {
+    async completeHandle(_route: Route, _handler: object | undefined, _error: Error | null): Promise<void> {
         // no-op
     }
 }

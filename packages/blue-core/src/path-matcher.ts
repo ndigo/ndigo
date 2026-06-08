@@ -86,7 +86,7 @@ export interface PathMatcherFilter {
  * @returns `true` if the value is a `PathMatcher`, `false` otherwise.
  */
 export const likePathMatcher = like({ getPatternComparator: Function, match: Function, merge: Function }) as (
-    value
+    value: any
 ) => value is PathMatcher;
 
 /**
@@ -227,7 +227,7 @@ export class EqualsPathMatcher implements PathMatcher {
  * @extends module:core.PathMatcher
  */
 export class URLGlobPathMatcher implements PathMatcher {
-    #cache;
+    #cache: LRUCache<string, RegExp>;
 
     /**
      * @param cacheCapacity - Maximum number of compiled patterns to cache. Default: 256.
@@ -236,11 +236,11 @@ export class URLGlobPathMatcher implements PathMatcher {
         this.#cache = new LRUCache(cacheCapacity);
     }
 
-    getPatternComparator(path) {
+    getPatternComparator(path: string): Comparator<string> {
         return new GlobPatternComparator(path);
     }
 
-    match(pattern, path) {
+    match(pattern: string, path: string): boolean {
         let regex = this.#cache.get(pattern);
         if (regex === undefined) {
             const regexSrc = parseUrlGlob(pattern);
@@ -248,10 +248,10 @@ export class URLGlobPathMatcher implements PathMatcher {
             regex = new RegExp(regexSrc);
             this.#cache.set(pattern, regex);
         }
-        return regex.test(path);
+        return (regex as RegExp).test(path);
     }
 
-    merge(pattern1, pattern2) {
+    merge(pattern1: string, pattern2: string): string {
         if (typeof pattern1 !== 'string') {
             throw new TypeError('"pattern1" must be a string');
         }
@@ -307,11 +307,12 @@ export class GlobPatternInfo {
         return this.singleWildcards + 2 * this.doubleWildcards;
     }
 
-    constructor(pattern: string = null) {
-        this.pattern = pattern;
+    constructor(pattern: string | null = null) {
+        this.pattern = pattern ?? '';
 
         this.doubleWildcards = 0;
         this.singleWildcards = 0;
+        this.#catchAllPattern = false;
 
         if (this.pattern) {
             this._initCounters();
@@ -345,9 +346,9 @@ export class GlobPatternInfo {
 // ! Not sure I like this name. Should really come up with a better one. -JBR
 export const AsPathMatcherFilter = <T extends Constructable>(superclass: T): Constructable<PathMatcherFilter> & T =>
     class extends superclass implements PathMatcherFilter {
-        #excludePatterns: string[];
-        #includePatterns: string[];
-        pathMatcher: PathMatcher;
+        #excludePatterns: string[] | null = null;
+        #includePatterns: string[] | null = null;
+        pathMatcher!: PathMatcher;
 
         matches(path: string, matcher?: PathMatcher): boolean {
             const pathMatcher = matcher || this.pathMatcher;

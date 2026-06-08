@@ -11,9 +11,9 @@ import { Application } from './application';
  */
 export class ApplicationBuilder {
     #application: Application;
-    #context: ApplicationContext;
-    #environment: ConfigurableEnvironment;
-    #parent: ApplicationBuilder;
+    #context!: ApplicationContext;
+    #environment!: ConfigurableEnvironment;
+    #parent: ApplicationBuilder | null;
     #profiles: Set<string>;
     #properties: JSONObject;
     #running: boolean;
@@ -43,7 +43,7 @@ export class ApplicationBuilder {
      * @param sources - Source classes that should be included in the application.
      * @param parent - Optional parent builder used to share configuration.
      */
-    constructor(sources: Function[], parent: ApplicationBuilder = null) {
+    constructor(sources: Function[], parent: ApplicationBuilder | null = null) {
         this.#application = new Application(sources);
         this.#parent = parent;
         this.#profiles = new Set<string>();

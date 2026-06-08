@@ -35,7 +35,7 @@ export class MetadataScanner {
     /**
      * Target object whose metadata is being scanned.
      */
-    _target: Record<string, any>;
+    _target!: Record<string, any>;
 
     /**
      * Create a scanner for a target object.

@@ -117,45 +117,45 @@ export type EntryProcessor =
  * @param value The value to be tested.
  * @returns Whether or not the `value` provided is an {@link InitializationAwareProcessor}.
  */
-export const likeInitializationAwareProcessor = like({
-    processAfterInitialization: Function,
-    processBeforeInitialization: Function,
-}) as (value) => value is InitializationAwareProcessor;
+export const likeInitializationAwareProcessor = (value: any): value is InitializationAwareProcessor =>
+    like({
+        processAfterInitialization: Function,
+        processBeforeInitialization: Function,
+    })(value);
 
 /**
  * Determines whether or not the `value` provided is a {@link ConstructionAwareProcessor}.
  * @param value The value to be tested.
  * @returns Whether or not the `value` provided is a {@link ConstructionAwareProcessor}.
  */
-export const likeConstructionAwareProcessor = like({
-    processAfterConstruction: Function,
-    processBeforeConstruction: Function,
-    processProperties: Function,
-}) as (value) => value is ConstructionAwareProcessor;
+export const likeConstructionAwareProcessor = (value: any): value is ConstructionAwareProcessor =>
+    like({
+        processAfterConstruction: Function,
+        processBeforeConstruction: Function,
+        processProperties: Function,
+    })(value);
 /**
  * Determines whether or not the `value` provided is a {@link DestructionAwareProcessor}.
  * @param value The value to be tested.
  * @returns Whether or not the `value` provided is a {@link DestructionAwareProcessor}.
  */
-export const likeDestructionAwareProcessor = like({ processBeforeDestruction: Function }) as (
-    value
-) => value is DestructionAwareProcessor;
+export const likeDestructionAwareProcessor = (value: any): value is DestructionAwareProcessor =>
+    like({ processBeforeDestruction: Function })(value);
 
 /**
  * Determines whether or not the `value` provided is an {@link EntryRegistryProcessor}.
  * @param value The value to be tested.
  * @returns Whether or not the `value` provided is an {@link EntryRegistryProcessor}.
  */
-export const likeEntryRegistryProcessor = like({ processEntryRegistry: Function }) as (
-    value
-) => value is EntryRegistryProcessor;
+export const likeEntryRegistryProcessor = (value: any): value is EntryRegistryProcessor =>
+    like({ processEntryRegistry: Function })(value);
 
 /**
  * Determines whether or not the `value` provided is an {@link EntryProcessor}.
  * @param value The value to be tested.
  * @returns Whether or not the `value` provided is an {@link EntryProcessor}.
  */
-export const likeEntryProcessor = (value): value is EntryProcessor =>
+export const likeEntryProcessor = (value: any): value is EntryProcessor =>
     likeConstructionAwareProcessor(value) ||
     likeInitializationAwareProcessor(value) ||
     likeDestructionAwareProcessor(value) ||

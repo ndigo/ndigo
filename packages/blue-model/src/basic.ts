@@ -19,11 +19,11 @@ const { isFinite, isInteger, isSafeInteger } = Number,
     },
     greaterThanZero = (x: number) => x > 0,
     lessThanZero = (x: number) => x < 0,
-    isFalsy = (x) => !x,
-    isTruthy = (x) => !!x,
+    isFalsy = (x: any) => !x,
+    isTruthy = (x: any) => !!x,
     isNotBlank = (value: unknown) => !(isString(value) && (value as string).length === 0),
-    isNegativeNumber = ((value) => isNumber(value) && lessThanZero(value)) as (value) => value is number,
-    isPositiveNumber = ((value) => isNumber(value) && greaterThanZero(value)) as (value) => value is number,
+    isNegativeNumber = ((value: any) => isNumber(value) && lessThanZero(value)) as (value: any) => value is number,
+    isPositiveNumber = ((value: any) => isNumber(value) && greaterThanZero(value)) as (value: any) => value is number,
     isNormalized = (str: string) => str.normalize() === str,
     isTrimmed = (str: string) => str.trim() === str,
     isUnique = (arr: Array<any>) => new Set(arr).size === arr.length;
@@ -34,47 +34,47 @@ const { isFinite, isInteger, isSafeInteger } = Number,
 // eslint-disable-next-line no-undef
 export const Primitive = BasicModel([BigInt, Boolean, Number, String, Symbol, null, undefined])
     .assert(isPrimitive)
-    .as('Primitive');
+    .as('Primitive') as any;
 
 // Booleans-like
 /**
  * Matches values that are falsey at runtime.
  */
-export const Falsy = BasicModel(Primitive).assert(isFalsy).as('Falsy');
+export const Falsy = BasicModel(Primitive).assert(isFalsy).as('Falsy') as any;
 /**
  * Matches values that are truthy at runtime.
  */
-export const Truthy = BasicModel([Primitive, Object]).assert(isTruthy).as('Truthy');
+export const Truthy = BasicModel([Primitive, Object]).assert(isTruthy).as('Truthy') as any;
 
 // Numbers
 /**
  * Matches integer numbers.
  */
-export const Integer = BasicModel(Number).assert(isInteger).as('Integer');
+export const Integer = BasicModel(Number).assert(isInteger).as('Integer') as any;
 /**
  * Matches integers that are safe to represent exactly in JavaScript.
  */
-export const SafeInteger = BasicModel(Number).assert(isSafeInteger).as('SafeInteger');
+export const SafeInteger = BasicModel(Number).assert(isSafeInteger).as('SafeInteger') as any;
 /**
  * Matches finite numeric values.
  */
-export const FiniteNumber = BasicModel(Number).assert(isFinite).as('FiniteNumber');
+export const FiniteNumber = BasicModel(Number).assert(isFinite).as('FiniteNumber') as any;
 /**
  * Matches numeric values greater than zero.
  */
-export const PositiveNumber = BasicModel(Number).assert(isPositiveNumber).as('PositiveNumber');
+export const PositiveNumber = BasicModel(Number).assert(isPositiveNumber).as('PositiveNumber') as any;
 /**
  * Matches numeric values less than zero.
  */
-export const NegativeNumber = BasicModel(Number).assert(isNegativeNumber).as('NegativeNumber');
+export const NegativeNumber = BasicModel(Number).assert(isNegativeNumber).as('NegativeNumber') as any;
 /**
  * Matches positive integers.
  */
-export const PositiveInteger = PositiveNumber.extend().assert(isInteger).as('PositiveInteger');
+export const PositiveInteger = PositiveNumber.extend().assert(isInteger).as('PositiveInteger') as any;
 /**
  * Matches negative integers.
  */
-export const NegativeInteger = NegativeNumber.extend().assert(isInteger).as('NegativeInteger');
+export const NegativeInteger = NegativeNumber.extend().assert(isInteger).as('NegativeInteger') as any;
 
 // Strings
 /**
@@ -82,19 +82,19 @@ export const NegativeInteger = NegativeNumber.extend().assert(isInteger).as('Neg
  */
 export const FullString = BasicModel(String)
     .assert(isNotBlank as any)
-    .as('FullString');
+    .as('FullString') as any;
 /**
  * Matches strings already in normalized Unicode form.
  */
 export const NormalizedString = BasicModel(String)
     .assert(isNormalized as any)
-    .as('NormalizedString');
+    .as('NormalizedString') as any;
 /**
  * Matches strings without leading or trailing whitespace.
  */
 export const TrimmedString = BasicModel(String)
     .assert(isTrimmed as any)
-    .as('TrimmedString');
+    .as('TrimmedString') as any;
 
 // Dates
 /**
@@ -102,13 +102,13 @@ export const TrimmedString = BasicModel(String)
  */
 export const PastDate = BasicModel(Date)
     .assert(isPast as any)
-    .as('PastDate');
+    .as('PastDate') as any;
 /**
  * Matches dates in the future.
  */
 export const FutureDate = BasicModel(Date)
     .assert(isFuture as any)
-    .as('FutureDate');
+    .as('FutureDate') as any;
 
 // Arrays
 /**
@@ -116,19 +116,19 @@ export const FutureDate = BasicModel(Date)
  */
 export const FullArray = BasicModel(Array)
     .assert(((arr: any[]) => arr.length > 0) as any)
-    .as('FullArray');
+    .as('FullArray') as any;
 /**
  * Matches arrays whose values are unique.
  */
 export const UniqueArray = BasicModel(Array)
     .assert(isUnique as any)
-    .as('UniqueArray');
+    .as('UniqueArray') as any;
 /**
  * Matches arrays without sparse holes.
  */
 export const DenseArray = BasicModel(Array)
     .assert(isDense as any)
-    .as('DenseArray');
+    .as('DenseArray') as any;
 
 // Others
 /**
@@ -137,4 +137,4 @@ export const DenseArray = BasicModel(Array)
  * @param model - Model used to validate the fulfilled value.
  * @returns A function that wraps a promise and validates its resolution.
  */
-export const PromiseOf = (model) => (p) => BasicModel(Promise)(p).then((x) => model(x));
+export const PromiseOf = (model: any) => (p: any) => BasicModel(Promise)(p).then((x: any) => model(x));

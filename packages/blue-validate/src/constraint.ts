@@ -59,7 +59,7 @@ export interface Constraint<T = serializable> {
  * @template T - The type of the value that this composite constraint can validate.
  */
 export class CompositeConstraint<T = serializable> implements Constraint<T> {
-    constraints: Constraint<T>[];
+    constraints!: Constraint<T>[];
 
     /**
      * Creates an instance of `CompositeConstraint`.

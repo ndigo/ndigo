@@ -43,8 +43,8 @@ const { freeze, keys } = Object,
  * Keys are parameter names, and values can be strings, numbers, or booleans.
  */
 export type MediaTypeParameters = {
-    [name: string]: string | number | boolean;
-    [QUALITY_FACTOR_PARAM]?: string | number;
+    [name: string]: string | number | boolean | undefined;
+    [QUALITY_FACTOR_PARAM]?: string | number | boolean;
 };
 
 /**
@@ -199,13 +199,13 @@ export default class MediaType extends Null implements Serializable, StringCompa
         return `${this.type}/${this.subtype}`;
     }
 
-    static for(mediaType: string): MediaType;
-    static for(type: SupportedMediaType, subtype: string, parameters?: MediaTypeParameters): MediaType;
+    static for(mediaType: string): MediaType | null;
+    static for(type: SupportedMediaType, subtype: string, parameters?: MediaTypeParameters): MediaType | null;
     static for(
         typeOrExpression: SupportedMediaType | string,
-        subtype: string = null,
+        subtype: string = WILDCARD,
         parameters: MediaTypeParameters = {}
-    ): MediaType {
+    ): MediaType | null {
         const isParsed = isString(subtype),
             mediaTypeExpression = isParsed
                 ? `${typeOrExpression as SupportedMediaType}/${subtype}${stringifyParameters(parameters)}`
@@ -224,18 +224,18 @@ export default class MediaType extends Null implements Serializable, StringCompa
                     // Remove the subtype
                     parts.shift();
 
-                    const parsedParameters: unknown = parts.length ? Object.fromEntries(parts.map(splitOnEquals)) : {};
-                    const // @ts-expect-error: Cannot make the types for fromPairs happy -JBR
-                        parameters: MediaTypeParameters = parsedParameters,
-                        mediaType = new MediaType(type, subtype, parameters);
+                     const parsedParameters: MediaTypeParameters = parts.length
+                        ? (Object.fromEntries(parts.map(splitOnEquals as (value: string) => [string, string])) as MediaTypeParameters)
+                        : {};
+                    const mediaType = new MediaType(type, subtype, parsedParameters);
 
                     typeRegistry.set(mediaTypeExpression, mediaType);
                 }
             }
-            return typeRegistry.get(mediaTypeExpression);
+             return typeRegistry.get(mediaTypeExpression) as MediaType;
         }
 
-        return null;
+          return null;
     }
 
     static qualityFactorComparator = qualityFactorComparator;
@@ -407,7 +407,7 @@ export default class MediaType extends Null implements Serializable, StringCompa
      * @param {module:core.MediaType} value
      * @returns {boolean} If this `MediaType` includes the given `MediaType`.
      */
-    includes(value: MediaType = null): boolean {
+    includes(value?: MediaType): boolean {
         if (!value) {
             return false;
         }

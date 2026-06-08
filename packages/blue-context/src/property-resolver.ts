@@ -78,7 +78,7 @@ const { defineProperty, getPrototypeOf, setPrototypeOf } = Reflect,
         const value = keypath.reduce((acc: any, k) => acc?.[k], obj);
         return !isNil(value);
     },
-    linkPrototype = (current, next) => {
+    linkPrototype = (current: any, next: any) => {
         setPrototypeOf(next, null);
         setPrototypeOf(current, next);
         return getPrototypeOf(current);
@@ -97,7 +97,7 @@ export const likePropertyResolver = like({
     getProperty: Function,
     getRequiredProperty: Function,
     hasProperty: Function,
-}) as (value) => value is PropertyResolver;
+}) as (value: any) => value is PropertyResolver;
 
 /**
  * @implements module:context.PropertyResolver
@@ -106,8 +106,8 @@ export const likePropertyResolver = like({
  * Property resolver that layers sources through a prototype chain for lookup.
  */
 export class PrototypalPropertyResolver implements ConfigurablePropertyResolver {
-    #propertySources: JSONObject[];
-    readonly properties: JSONObject;
+    #propertySources!: JSONObject[];
+    readonly properties!: JSONObject;
 
     /**
      * The ordered set of configured property sources.
@@ -144,9 +144,9 @@ export class PrototypalPropertyResolver implements ConfigurablePropertyResolver 
      */
     getProperty(key: string, defaultValue?: JSONValue): JSONValue {
         const keypath = parseKeypath(key);
-        if (!keypath) return defaultValue;
+        if (!keypath) return defaultValue ?? null;
         const value = keypath.reduce((acc: any, k) => acc?.[k], this.properties as any);
-        return value ?? defaultValue;
+        return value ?? (defaultValue === undefined ? null : defaultValue);
     }
 
     /**

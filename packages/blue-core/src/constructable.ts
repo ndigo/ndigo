@@ -16,4 +16,4 @@ export type Constructable<T = {}> = new (...args: any[]) => T;
  * @returns `true` if the value is `Constructable`, `false` otherwise.
  * @remarks This is not a perfect test as `prototype` is optional on some constructables.
  */
-export const likeConstructable = like({ prototype: Object }) as (value: any) => value is Constructable;
+export const likeConstructable = like({ prototype: Object }) as (value: unknown) => value is Constructable;

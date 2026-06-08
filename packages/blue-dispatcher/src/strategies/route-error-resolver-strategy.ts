@@ -27,20 +27,12 @@ export const AsRouteErrorResolverStrategy = <T extends Constructable<StrategyIni
         readonly errorResolverKey: string;
         readonly errorResolverCollectionKey: string;
 
-        errorResolvers: RouteErrorResolver[];
+        errorResolvers!: RouteErrorResolver[];
 
         constructor(...args: any[]) {
             super(...args);
-            defineProperty(this, 'errorResolverKey', {
-                get: () => ERROR_RESOLVER,
-                configurable: true,
-                enumerable: true,
-            });
-            defineProperty(this, 'errorResolverCollectionKey', {
-                get: () => ERROR_RESOLVERS,
-                configurable: true,
-                enumerable: true,
-            });
+            this.errorResolverKey = ERROR_RESOLVER;
+            this.errorResolverCollectionKey = ERROR_RESOLVERS;
             this.addStrategy(ERROR_RESOLVERS);
         }
 

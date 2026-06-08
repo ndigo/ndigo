@@ -64,7 +64,7 @@ export type ResponseClassAwareHTTPInterceptor =
  * @returns `true` when the value is informational-response-aware.
  */
 export const likeInformationAwareHTTPInterceptor = like({ postInformationalResponse: Function }) as (
-    value
+    value: any
 ) => value is InformationAwareHTTPInterceptor;
 
 /**
@@ -74,7 +74,7 @@ export const likeInformationAwareHTTPInterceptor = like({ postInformationalRespo
  * @returns `true` when the value is success-response-aware.
  */
 export const likeSuccessAwareHTTPInterceptor = like({ postSuccessfulResponse: Function }) as (
-    value
+    value: any
 ) => value is SuccessAwareHTTPInterceptor;
 
 /**
@@ -84,7 +84,7 @@ export const likeSuccessAwareHTTPInterceptor = like({ postSuccessfulResponse: Fu
  * @returns `true` when the value is redirect-response-aware.
  */
 export const likeRedirectAwareHTTPInterceptor = like({ postRedirectResponse: Function }) as (
-    value
+    value: any
 ) => value is RedirectAwareHTTPInterceptor;
 
 /**
@@ -94,7 +94,7 @@ export const likeRedirectAwareHTTPInterceptor = like({ postRedirectResponse: Fun
  * @returns `true` when the value is client-error-response-aware.
  */
 export const likeClientErrorAwareHTTPInterceptor = like({ postClientErrorResponse: Function }) as (
-    value
+    value: any
 ) => value is ClientErrorAwareHTTPInterceptor;
 
 /**
@@ -104,7 +104,7 @@ export const likeClientErrorAwareHTTPInterceptor = like({ postClientErrorRespons
  * @returns `true` when the value is server-error-response-aware.
  */
 export const likeServerErrorAwareHTTPInterceptor = like({ postServerErrorResponse: Function }) as (
-    value
+    value: any
 ) => value is ServerErrorAwareHTTPInterceptor;
 
 /**
@@ -132,7 +132,7 @@ export class MappedResponseClassHTTPInterceptor implements ResponseAwareHTTPInte
      *
      * @param interceptor - The interceptor to wrap.
      */
-    constructor(interceptor) {
+    constructor(interceptor: any) {
         this.#interceptor = interceptor;
         this.#hasInformationAwareInterceptor = likeInformationAwareHTTPInterceptor(interceptor);
         this.#hasSuccessAwareInterceptor = likeSuccessAwareHTTPInterceptor(interceptor);

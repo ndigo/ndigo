@@ -22,16 +22,16 @@ export interface RouteErrorResolver {
      * @param error - The thrown error.
      * @returns A model and view to render, or `null` when the error should continue through the chain.
      */
-    resolveError(route: Route, handler, error: Error): ModelAndView;
+    resolveError(route: Route, handler: object | null, error: Error): ModelAndView | null;
 }
 
 const { defineProperty, getPrototypeOf } = Reflect,
     { keys } = Object,
-    getErrorHandlerMethodForError = function (errorHandler, error): ErrorHandlerMethod {
+    getErrorHandlerMethodForError = function (errorHandler: object, error: Error): ErrorHandlerMethod | null {
         const /**
-             * ! THIS DID NOT WORK UNLESS getPrototypeOf WAS USED!!!!
-             */
-            handlerKeys = keys(getPrototypeOf(errorHandler)),
+              * ! THIS DID NOT WORK UNLESS getPrototypeOf WAS USED!!!!
+              */
+            handlerKeys = keys(getPrototypeOf(errorHandler) as object),
             length = handlerKeys.length;
         if (length) {
             for (let index = 0; index < length; index++) {
@@ -45,14 +45,14 @@ const { defineProperty, getPrototypeOf } = Reflect,
             }
         }
 
-        return null;
+        return null as any;
     };
 
 export abstract class AbstractRouteErrorResolver implements RouteErrorResolver {
     /**
      * Handlers explicitly targeted by this resolver, if any.
      */
-    mappedHandlers: any[];
+    mappedHandlers: any[] | null;
 
     /**
      * Handler classes explicitly targeted by this resolver, if any.
@@ -64,8 +64,8 @@ export abstract class AbstractRouteErrorResolver implements RouteErrorResolver {
     }
 
     constructor() {
-        this.mappedHandlers = null;
-        this.mappedHandlerClasses = [Object];
+        this.mappedHandlers = null as any;
+        this.mappedHandlerClasses = [];
     }
 
     /**
@@ -76,9 +76,9 @@ export abstract class AbstractRouteErrorResolver implements RouteErrorResolver {
      * @param error - The thrown error.
      * @returns A resolved model and view, or `null` when this resolver does not apply.
      */
-    resolveError(route: Route, handler, error: Error): ModelAndView {
+    resolveError(route: Route, handler: object | null, error: Error): ModelAndView | null {
         if (this._shouldApplyTo(route, handler)) {
-            const result: ModelAndView = this._resolveError(route, handler, error);
+            const result: ModelAndView | null = this._resolveError(route, handler, error);
             return result;
         } else {
             return null;
@@ -92,7 +92,7 @@ export abstract class AbstractRouteErrorResolver implements RouteErrorResolver {
      * @param handler - The candidate handler.
      * @returns `true` when the resolver should handle the error.
      */
-    protected _shouldApplyTo(route: Route, handler: object): boolean {
+    protected _shouldApplyTo(route: Route, handler: object | null): boolean {
         const { mappedHandlers, mappedHandlerClasses } = this;
         if (handler) {
             if (mappedHandlers && mappedHandlers.indexOf(handler) !== -1) {
@@ -122,7 +122,7 @@ export abstract class AbstractRouteErrorResolver implements RouteErrorResolver {
      * @param error - The thrown error.
      * @returns A resolved model and view, or `null` to continue resolution.
      */
-    protected abstract _resolveError(route: Route, handler: object, error: Error): ModelAndView;
+    protected abstract _resolveError(route: Route, handler: object | null, error: Error): ModelAndView | null;
 }
 
 export abstract class AbstractHandlerMethodErrorResolver extends AbstractRouteErrorResolver {
@@ -133,7 +133,7 @@ export abstract class AbstractHandlerMethodErrorResolver extends AbstractRouteEr
      * @param handler - The candidate handler.
      * @returns `true` when the wrapped handler method should be considered.
      */
-    protected _shouldApplyTo(route: Route, handler: object): boolean {
+    protected _shouldApplyTo(route: Route, handler: object | null): boolean {
         if (!handler) {
             return super._shouldApplyTo(route, null);
         } else if (handler instanceof RouteHandlerMethod) {
@@ -151,7 +151,7 @@ export abstract class AbstractHandlerMethodErrorResolver extends AbstractRouteEr
      * @param error - The thrown error.
      * @returns A resolved model and view, or `null`.
      */
-    protected _resolveError(route: Route, handler: object, error: Error): ModelAndView {
+    protected _resolveError(route: Route, handler: object | null, error: Error): ModelAndView | null {
         return this._resolveHandlerMethodError(route, handler as RouteHandlerMethod, error);
     }
 
@@ -163,27 +163,36 @@ export abstract class AbstractHandlerMethodErrorResolver extends AbstractRouteEr
      * @param error - The thrown error.
      * @returns A model and view, or `null` when the error is not handled.
      */
-    protected abstract _resolveHandlerMethodError(
+    protected _resolveHandlerMethodError(
         route: Route,
         handlerMethod: RouteHandlerMethod,
         error: Error
-    ): ModelAndView;
+    ): ModelAndView | null {
+        const errorHandlerMethod = this._getErrorHandlerMethod(handlerMethod, error);
+
+        if (!errorHandlerMethod) {
+            return null;
+        }
+
+        try {
+            return errorHandlerMethod.invoke(route, error, handlerMethod);
+        } catch {
+            return null;
+        }
+    }
+
+    /**
+     * Find the first error handler method that matches the thrown error.
+     *
+     * @param handlerMethod - The handler method that failed.
+     * @param error - The thrown error.
+     * @returns A matching error handler method, or `null`.
+     */
+    protected _getErrorHandlerMethod(handlerMethod: RouteHandlerMethod, error: Error): ErrorHandlerMethod | null {
+        // This method is defined in the subclass
+        return null;
+    }
 }
-
-/**
- * @abstract
- * @implements module:router.RouteErrorResolver
- */
-
-/**
- * @abstract
- * @protected
- */
-
-/**
- * @abstract
- * @extends module:dispatcher.AbstractRouteErrorResolver
- */
 
 /**
  * The default implementation of the {@link RouteErrorResolver|RouteErrorResolver} interface, resolving standard BlueJS exceptions.
@@ -200,7 +209,7 @@ export class DefaultRouteErrorResolver extends AbstractRouteErrorResolver {
      * @param error - The thrown error.
      * @returns A default model and view when the error is recognized, otherwise `null`.
      */
-    protected _resolveError(route: Route, handler: object, error: Error): ModelAndView {
+    protected _resolveError(route: Route, handler: object | null, error: Error): ModelAndView | null {
         try {
             switch (error.constructor) {
                 case FrameworkError: {
@@ -235,7 +244,7 @@ export class MetadataErrorResolver extends AbstractHandlerMethodErrorResolver im
     /**
      * Application context used to discover error handlers.
      */
-    applicationContext: ApplicationContext;
+    applicationContext!: ApplicationContext | null;
 
     get [$aware](): boolean {
         return true;
@@ -262,8 +271,8 @@ export class MetadataErrorResolver extends AbstractHandlerMethodErrorResolver im
      * @param error - The thrown error.
      * @returns A matching error handler method, or `null`.
      */
-    protected _getErrorHandlerMethod(handlerMethod: RouteHandlerMethod, error: Error): ErrorHandlerMethod {
-        let errorHandlerMethod: ErrorHandlerMethod = null;
+    protected _getErrorHandlerMethod(handlerMethod: RouteHandlerMethod, error: Error): ErrorHandlerMethod | null {
+        let errorHandlerMethod: ErrorHandlerMethod | null = null;
 
         if (handlerMethod) {
             errorHandlerMethod = getErrorHandlerMethodForError(handlerMethod.handler, error);
@@ -300,7 +309,7 @@ export class MetadataErrorResolver extends AbstractHandlerMethodErrorResolver im
      * @param error - The thrown error.
      * @returns The error handler's model and view, or `null`.
      */
-    protected _resolveHandlerMethodError(route: Route, handlerMethod: RouteHandlerMethod, error: Error): ModelAndView {
+    protected _resolveHandlerMethodError(route: Route, handlerMethod: RouteHandlerMethod, error: Error): ModelAndView | null {
         const errorHandlerMethod = this._getErrorHandlerMethod(handlerMethod, error);
 
         if (!errorHandlerMethod) {
@@ -324,12 +333,12 @@ export class SimpleMappingErrorResolver extends AbstractRouteErrorResolver {
     /**
      * View name used when no specific error mapping matches.
      */
-    defaultErrorView: string;
+    defaultErrorView!: string | null;
 
     /**
      * Error-name-to-view-name mappings.
      */
-    errorMappings: Map<string, string>;
+    errorMappings!: Map<string, string> | null;
 
     get [Symbol.toStringTag](): string {
         return 'SimpleMappingErrorResolver';
@@ -381,9 +390,9 @@ export class SimpleMappingErrorResolver extends AbstractRouteErrorResolver {
      * @param error - The thrown error.
      * @returns The mapped model and view, or `null` when no mapping applies.
      */
-    protected _resolveError(route: Route, handler: object, error: Error): ModelAndView {
+    protected _resolveError(route: Route, handler: object | null, error: Error): ModelAndView | null {
         const { errorMappings } = this,
-            errorView: string = errorMappings.has(error.name) ? errorMappings.get(error.name) : this.defaultErrorView;
+            errorView: string | null = errorMappings?.get(error.name) ?? this.defaultErrorView;
 
         if (errorView) {
             const mv = new ModelAndView(errorView);

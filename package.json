@@ -73,7 +73,7 @@
     "repomix": "~0.2.0",
     "typedoc": "^0.28.0",
     "typedoc-plugin-markdown": "^4.11.0",
-    "typescript": "~5.8.0",
+    "typescript": "~6.0.3",
     "vitest": "~3.0.0"
   },
   "overrides": {

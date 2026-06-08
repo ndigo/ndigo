@@ -81,12 +81,12 @@ export class MappingMediaTypeFileExtensionResolver implements MediaTypeFileExten
         this.allFileExtensions = [];
 
         if (mediaTypes && mediaTypes.size) {
-            mediaTypes.forEach(function (mediaType: MediaType, extension: string) {
+            mediaTypes.forEach((mediaType: MediaType, extension: string) => {
                 const lowerCaseExtension: string = extension.toLowerCase();
                 this.mediaTypes.set(lowerCaseExtension, mediaType);
                 this.fileExtensions.add(mediaType, lowerCaseExtension);
                 this.allFileExtensions.push(lowerCaseExtension);
-            }, this);
+            });
         }
     }
 
@@ -114,8 +114,8 @@ export class MappingMediaTypeFileExtensionResolver implements MediaTypeFileExten
      * @param extension - The file extension to resolve.
      * @returns The matching media type, or `null` when none exists.
      */
-    lookupMediaType(extension: string): MediaType {
-        return this.mediaTypes.get(extension.toLowerCase());
+    lookupMediaType(extension: string): MediaType | null {
+        return this.mediaTypes.get(extension.toLowerCase()) as MediaType | null;
     }
 
     /**
@@ -125,7 +125,7 @@ export class MappingMediaTypeFileExtensionResolver implements MediaTypeFileExten
      * @returns The matching file extensions.
      */
     resolveFileExtensions(mediaType: MediaType): string[] {
-        return this.fileExtensions.get(mediaType);
+        return this.fileExtensions.get(mediaType) ?? [];
     }
 }
 
@@ -183,7 +183,7 @@ export abstract class AbstractMappingContentNegotiationStrategy
      * @param key - The request key to inspect.
      * @returns The matching media types, or `null` when none are found.
      */
-    resolveMediaTypeKey(request: any, key: string): MediaType[] {
+    resolveMediaTypeKey(request: any, key: string): MediaType[] | null {
         return null;
     }
 }
@@ -225,9 +225,9 @@ export class ContentNegotiationManager implements ContentNegotiationStrategy, Me
     constructor(strategies: ContentNegotiationStrategy[] = []) {
         this.resolvers = [];
         this.strategies = strategies;
-        this.strategies.forEach(function (strategy) {
+        this.strategies.forEach((strategy) => {
             likeMediaTypeFileExtensionResolver(strategy) && this.resolvers.push(strategy);
-        }, this);
+        });
     }
 
     /**
@@ -274,11 +274,11 @@ export class ContentNegotiationViewResolver implements ViewResolver {
     /**
      * The fallback views used when negotiation cannot resolve a specific one.
      */
-    defaultViews: View[];
+    defaultViews!: View[];
     /**
      * The delegate resolvers queried after negotiation.
      */
-    viewResolvers: ViewResolver[];
+    viewResolvers!: ViewResolver[];
 
     /**
      * Creates a resolver backed by the given negotiation manager.

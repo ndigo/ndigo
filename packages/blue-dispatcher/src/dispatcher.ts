@@ -66,12 +66,12 @@ export class BrowserDispatcher
     /**
      * The application context.
      */
-    applicationContext: ApplicationContext;
+    applicationContext!: ApplicationContext;
     /**
      * The default view name to use if none is specified.
      */
     defaultViewName: string = 'index';
-    #activeView: View = null;
+    #activeView: View | null = null;
 
     /**
      * Returns the string tag for this dispatcher.
@@ -89,9 +89,9 @@ export class BrowserDispatcher
      * @param route - The route to dispatch.
      */
     async dispatch(route: Route): Promise<void> {
-        let dispatchError: Error = null,
-            mappedHandler: RouteHandlerExecutionChain = null,
-            mv: ModelAndView = null;
+        let dispatchError: Error | null = null,
+            mappedHandler: RouteHandlerExecutionChain | null = null,
+            mv: ModelAndView | null = null;
         try {
             mappedHandler = this.getHandler(route);
             if (!mappedHandler) {
@@ -112,7 +112,7 @@ export class BrowserDispatcher
             dispatchError = error as Error;
         }
 
-        await this._processDispatchResult(route, mappedHandler, mv, dispatchError);
+        await this._processDispatchResult(route, mappedHandler ?? null, mv, dispatchError);
     }
 
     /**
@@ -124,17 +124,17 @@ export class BrowserDispatcher
         const language = this.languageResolver ? this.languageResolver.resolveLanguage(route) : '',
             viewName = mv.viewName;
 
-        let view: View;
+        let view: View | null = null;
 
         if (viewName) {
             view = await this._resolveViewName(viewName, language);
             if (!view) {
-                throw new NoViewFoundError(viewName, route);
+                throw new NoViewFoundError(viewName as string, route);
             }
         } else {
-            view = mv.view;
+            view = mv?.view;
             if (!view) {
-                throw new NoViewFoundError(viewName, route);
+                throw new NoViewFoundError(viewName ?? '', route);
             }
         }
 
@@ -165,18 +165,18 @@ export class BrowserDispatcher
      * @returns A {@link ModelAndView} if the error was resolved, otherwise throws a TypeError.
      * @throws {TypeError} If no view name can be determined for the error.
      */
-    protected _processHandlerError(route: Route, handler, error: Error): ModelAndView {
-        let mav: ModelAndView = null;
-        this.errorResolvers.some(function (resolver: RouteErrorResolver): boolean {
-            mav = resolver.resolveError(route, handler, error);
-            return !!mav;
-        });
-
-        if (mav) {
-            if (!mav.view && !mav.viewName) {
-                mav.viewName = this.defaultViewName;
+    protected _processHandlerError(route: Route, handler: object | null, error: Error): ModelAndView | null {
+        // Handle the case where handler might be null
+        const safeHandler = handler || {};
+        
+        for (const resolver of this.errorResolvers) {
+            const mav = resolver.resolveError(route, safeHandler, error);
+            if (mav) {
+                if (!mav.view && !mav.viewName) {
+                    mav.viewName = this.defaultViewName;
+                }
+                return mav;
             }
-            return mav;
         }
 
         throw new TypeError('view name is undefined');
@@ -188,9 +188,9 @@ export class BrowserDispatcher
      * @param language - The language to use for view resolution.
      * @returns A Promise that resolves to the {@link View} object, or `null` if not found.
      */
-    protected async _resolveViewName(viewName: string, language: string): Promise<View> {
+    protected async _resolveViewName(viewName: string, language: string): Promise<View | null> {
         let index = 0,
-            view: View = null;
+            view: View | null = null;
         const length = this.viewResolvers.length;
 
         for (; index < length; index++) {
@@ -226,16 +226,16 @@ export class BrowserDispatcher
      */
     private async _processDispatchResult(
         route: Route,
-        mappedHandler: RouteHandlerExecutionChain,
-        mv: ModelAndView,
-        error: Error
+        mappedHandler: RouteHandlerExecutionChain | null,
+        mv: ModelAndView | null,
+        error: Error | null
     ): Promise<void> {
         let dispatchError = error;
 
         if (dispatchError) {
             const handler = mappedHandler instanceof RouteHandlerExecutionChain ? mappedHandler.handler : null;
             try {
-                mv = this._processHandlerError(route, handler, dispatchError);
+                mv = this._processHandlerError(route, handler as object | null, dispatchError);
             } catch (err) {
                 dispatchError = err as Error;
             }
@@ -249,7 +249,7 @@ export class BrowserDispatcher
             }
         }
 
-        await mappedHandler?.triggerCompleteHandle(route, dispatchError);
+        await mappedHandler?.triggerCompleteHandle(route, dispatchError ?? undefined);
     }
 }
 

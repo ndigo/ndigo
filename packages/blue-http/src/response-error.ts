@@ -8,7 +8,7 @@ import { is } from '@blue/util/types';
 import { likeResponse } from './like-response';
 
 const { defineProperty } = Reflect,
-    isError = is(Error) as (value) => value is Error;
+    isError = is(Error) as (value: any) => value is Error;
 
 /**
  * Error wrapper that also exposes the `Response` interface.
@@ -20,7 +20,7 @@ export class ResponseError extends FrameworkError implements Error, Response {
     #originalError: Error;
     #response: Response;
 
-    declare body: ReadableStream<Uint8Array>;
+    declare body: ReadableStream<Uint8Array<ArrayBuffer>>;
     declare bodyUsed: boolean;
     declare headers: Headers;
     declare name: string;
@@ -51,15 +51,15 @@ export class ResponseError extends FrameworkError implements Error, Response {
      * @param error - The original error.
      */
     constructor(response?: Response, error?: Error);
-    constructor(response: Response = null, messageOrError: string | Error = 'Invalid response') {
+    constructor(response: Response | null = null, messageOrError: string | Error = 'Invalid response') {
         super(isError(messageOrError) ? messageOrError.message : messageOrError);
         this.stack = isError(messageOrError) ? messageOrError.stack : '';
         this.name = 'ResponseError';
 
-        this.#originalError = isError(messageOrError) ? messageOrError : null;
+        this.#originalError = isError(messageOrError) ? messageOrError : new Error(messageOrError as string);
 
         if (!likeResponse(response)) {
-            response = IM_A_TEAPOT.createResponse(null);
+            response = IM_A_TEAPOT.createResponse('');
         }
 
         this.#response = response;
@@ -174,7 +174,7 @@ export class ResponseError extends FrameworkError implements Error, Response {
      *
      * @returns A promise for the response bytes.
      */
-    bytes(): Promise<Uint8Array> {
+    bytes(): Promise<Uint8Array<ArrayBuffer>> {
         return this.#response.bytes();
     }
 }

@@ -27,40 +27,25 @@ export class DefaultRouteToViewNameTranslator implements RouteToViewNameTranslat
     /**
      * Prefix added to every translated view name.
      */
-    prefix: string;
+    prefix!: string;
 
     /**
      * Separator used when rewriting the route path.
      */
-    separator: string;
+    separator!: string;
 
     /**
      * Suffix added to every translated view name.
      */
-    suffix: string;
+    suffix!: string;
 
     /**
      * Create a translator with empty prefix and suffix.
      */
     constructor() {
-        defineProperty(this, 'prefix', {
-            value: '',
-            configurable: true,
-            enumerable: false,
-            writable: true,
-        });
-        defineProperty(this, 'separator', {
-            value: slash,
-            configurable: true,
-            enumerable: false,
-            writable: true,
-        });
-        defineProperty(this, 'suffix', {
-            value: '',
-            configurable: true,
-            enumerable: false,
-            writable: true,
-        });
+        this.prefix = '';
+        this.separator = slash;
+        this.suffix = '';
     }
 
     /**

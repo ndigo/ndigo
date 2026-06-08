@@ -20,5 +20,5 @@ export class ComponentAndView extends ModelAndView {
     /**
      * Domain component associated with the current view model.
      */
-    component: DomainComponent;
+    component!: DomainComponent;
 }

@@ -23,7 +23,7 @@ export abstract class AbstractLanguageResolver implements LanguageResolver {
     /**
      * Fallback language used when no route-specific language is available.
      */
-    readonly defaultLanguage: string;
+    readonly defaultLanguage!: string;
 
     /**
      * Store the fallback language.

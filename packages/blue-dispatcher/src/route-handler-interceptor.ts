@@ -7,9 +7,9 @@ import { PathMatcher, AsPathMatcherFilter, Null } from '@blue/core';
 import { Route } from '@blue/router';
 
 export interface RouteHandlerInterceptor {
-    completeHandle(route: Route, handler, error: Error): void | Promise<void>;
-    postHandle(route: Route, handler, modelAndView: ModelAndView): void | Promise<void>;
-    preHandle(route: Route, handler): boolean | Promise<boolean>;
+    completeHandle(route: Route, handler: object | undefined, error: Error): void | Promise<void>;
+    postHandle(route: Route, handler: object | undefined, modelAndView: ModelAndView): void | Promise<void>;
+    preHandle(route: Route, handler: object | undefined): boolean | Promise<boolean>;
 }
 
 /**
@@ -45,7 +45,7 @@ export interface RouteHandlerInterceptor {
 export class MappedHandlerInterceptor extends AsPathMatcherFilter(Null) implements RouteHandlerInterceptor {
     #interceptor: RouteHandlerInterceptor;
 
-    pathMatcher: PathMatcher;
+    pathMatcher!: PathMatcher;
 
     get interceptor(): RouteHandlerInterceptor {
         return this.#interceptor;
@@ -54,24 +54,22 @@ export class MappedHandlerInterceptor extends AsPathMatcherFilter(Null) implemen
     constructor(interceptor: RouteHandlerInterceptor, includePatterns: string[], excludePatterns?: string[]) {
         super();
         this.#interceptor = interceptor;
-        this.setExcludePatterns(excludePatterns);
+        this.setExcludePatterns(excludePatterns ?? []);
         this.setIncludePatterns(includePatterns);
     }
 
-    async completeHandle(route: Route, handler, error: Error = null): Promise<void> {
-        await this.#interceptor.completeHandle(route, handler, error);
+    async completeHandle(route: Route, handler: object | undefined, error: Error | null = null): Promise<void> {
+        await this.#interceptor.completeHandle(route, handler, error as Error);
     }
 
-    async postHandle(route: Route, handler, modelAndView: ModelAndView): Promise<void> {
+    async postHandle(route: Route, handler: object | undefined, modelAndView: ModelAndView): Promise<void> {
         await this.#interceptor.postHandle(route, handler, modelAndView);
     }
 
-    async preHandle(route: Route, handler): Promise<boolean> {
+    async preHandle(route: Route, handler: object | undefined): Promise<boolean> {
+        if (this.pathMatcher && !this.pathMatcher.match(route.path, route.path)) {
+            return true;
+        }
         return await this.#interceptor.preHandle(route, handler);
     }
 }
-
-/**
- * * Developers Notes
- * ? Should we rename pre-, post-, and complete- handle? before-, after-, complete-?
- */

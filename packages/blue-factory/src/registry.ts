@@ -24,12 +24,13 @@ export interface Registry {
  * @param {*} value The value to be tested
  * @returns {boolean} Whether or not the `value` provided is a {@link Registry|Registry}.
  */
-export const likeRegistry = like({
-    destroyValue: Function,
-    getValue: Function,
-    hasValue: Function,
-    setValue: Function,
-}) as (value) => value is Registry;
+export const likeRegistry = (value: any): value is Registry =>
+    like({
+        destroyValue: Function,
+        getValue: Function,
+        hasValue: Function,
+        setValue: Function,
+    })(value);
 
 /**
  * A handler implementation that when applied to a {@link Registry|Registry} instance via {@link external:Proxy|Proxy} causes the registry

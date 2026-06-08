@@ -18,7 +18,7 @@ export type primitive = boolean | null | number | string | symbol | bigint | und
  * @returns `true` when the value is a primitive.
  * @see {@link primitive}
  */
-export const isPrimitive = (value): value is primitive => {
+export const isPrimitive = (value: any): value is primitive => {
     switch (typeof value) {
         case 'bigint':
         case 'boolean':

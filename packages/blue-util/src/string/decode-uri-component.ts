@@ -59,7 +59,7 @@ function enhancedDecodeURIComponent(input: string): string {
         '%FE%FF': '\uFFFD\uFFFD',
         '%FF%FE': '\uFFFD\uFFFD',
     };
-    let match: RegExpExecArray = multiMatcher.exec(input);
+    let match: RegExpExecArray | null = multiMatcher.exec(input);
 
     while (match) {
         try {

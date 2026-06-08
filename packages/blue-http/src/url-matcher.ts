@@ -41,11 +41,11 @@ const { defineProperty } = Reflect;
  * @returns `true` when the value exposes URL matching behavior.
  */
 export const likeURLMatcher = like({ getPatternComparator: Function, match: Function }) as (
-    value
+    value: any
 ) => value is URLMatcher;
 
 abstract class AbstractURLComparator implements Comparator<string> {
-    readonly url: string;
+    readonly url!: string;
 
     constructor(url: string) {
         defineProperty(this, 'url', {

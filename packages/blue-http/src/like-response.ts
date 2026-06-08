@@ -4,7 +4,7 @@
 
 import { is, like } from '@blue/util/types';
 
-const isResponse = is(Response) as (value) => value is Response;
+const isResponse = is(Response) as (value: any) => value is Response;
 
 /**
  * Tests whether a value behaves like a `Response`.
@@ -15,7 +15,7 @@ const isResponse = is(Response) as (value) => value is Response;
  * @param value - The value to test.
  * @returns `true` when the value matches the `Response` shape.
  */
-export const likeResponse = (value): value is Response => isResponse(value) || likeResponseShape(value);
+export const likeResponse = (value: any): value is Response => isResponse(value) || likeResponseShape(value);
 
 const likeResponseShape = like({
     body: ReadableStream,

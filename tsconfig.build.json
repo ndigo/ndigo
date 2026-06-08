@@ -1,14 +1,13 @@
 {
   "compilerOptions": {
     "declaration": true,
-    "declarationMap": true,
     "esModuleInterop": true,
     "inlineSourceMap": true,
     "module": "ESNext",
     "moduleResolution": "Bundler",
     "target": "ES2022",
     "skipLibCheck": true,
-    "types": []
+    "types": ["node"]
   },
   "exclude": ["**/*.spec.ts", "**/*.test.ts", "**/test/**", "**/tests/**", "vite.config.ts", "vitest.config.ts"]
 }

@@ -38,10 +38,10 @@ function nextRouteId(): number {
  * @since 1.0.0
  */
 export class PathRouteSegment implements RouteSegment, Serializable {
-    readonly name: string;
-    readonly data: JSONObject;
+    readonly name!: string;
+    readonly data!: JSONObject;
     readonly dataString?: string;
-    readonly raw: string;
+    readonly raw!: string;
 
     /**
      * Creates an instance of `PathRouteSegment` from a raw segment string.
@@ -145,13 +145,13 @@ export class PathRouteSegment implements RouteSegment, Serializable {
 export class PathRoute implements Route<Record<string, string>>, Serializable {
     [n: number]: RouteSegment;
 
-    readonly data: JSONObject;
+    readonly data!: JSONObject;
     readonly dataString?: string;
-    readonly id: number;
-    params: Record<string, string> | null;
-    readonly path: string;
-    readonly raw: string;
-    readonly attributes: Record<string, any>;
+    readonly id!: number;
+    params!: Record<string, string> | null;
+    readonly path!: string;
+    readonly raw!: string;
+    readonly attributes!: Record<string, any>;
 
     /**
      * Gets the number of segments in the route.
@@ -269,7 +269,10 @@ export class PathRoute implements Route<Record<string, string>>, Serializable {
         json.length = length;
 
         for (; index < length; index++) {
-            json[index] = (this[index] as Serializable).toJSON();
+            const segment = this[index] as Serializable | undefined;
+            if (segment) {
+                json[index] = segment.toJSON?.() ?? segment.toString();
+            }
         }
 
         return json;

@@ -32,7 +32,7 @@ export class WicketView implements View {
     /**
      * The media type produced by this view.
      */
-    mediaType: MediaType = MediaTypes.TEXT_HTML.withCharset('UTF-8');
+    mediaType: MediaType = MediaTypes.TEXT_HTML!.withCharset('UTF-8');
 
     /**
      * Whether this view has been destroyed.

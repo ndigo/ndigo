@@ -19,7 +19,7 @@ export class LinkedomDOMProvider implements DOMProvider {
     constructor() {
         // Create an initial empty document as a baseline for element/fragment creation
         const { document } = linkedomParseHTML('<!DOCTYPE html><html><head></head><body></body></html>');
-        this.#document = document as unknown as Document;
+            this.#document = document as Document;
     }
 
     /**
@@ -30,7 +30,7 @@ export class LinkedomDOMProvider implements DOMProvider {
      */
     parseHTML(html: string): Document {
         const { document } = linkedomParseHTML(html);
-        return document as unknown as Document;
+        return document as Document;
     }
 
     /**
@@ -40,7 +40,7 @@ export class LinkedomDOMProvider implements DOMProvider {
      * @returns A new `Element`.
      */
     createElement(tag: string): Element {
-        return this.#document.createElement(tag) as unknown as Element;
+        return this.#document.createElement(tag) as Element;
     }
 
     /**
@@ -49,6 +49,6 @@ export class LinkedomDOMProvider implements DOMProvider {
      * @returns A new `DocumentFragment`.
      */
     createFragment(): DocumentFragment {
-        return this.#document.createDocumentFragment() as unknown as DocumentFragment;
+        return this.#document.createDocumentFragment() as DocumentFragment;
     }
 }

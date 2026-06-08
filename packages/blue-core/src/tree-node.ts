@@ -7,7 +7,7 @@
  */
 export interface ChildNode<T = any> {
     /** The parent node, or `null`/`undefined` for roots. */
-    readonly parent: T;
+    readonly parent: T | null | undefined;
 }
 
 /**
@@ -73,10 +73,10 @@ export function direct<T extends ParentNode>(node: T, callback: (node: T) => any
  * @param inclusive - When `true`, include the starting node in the traversal.
  */
 export function escalate<T extends ChildNode>(node: T, callback: (node: T) => any, inclusive: boolean = false): void {
-    const target: T = inclusive ? node : node.parent;
+    const target = inclusive ? node : node.parent;
 
     if (target) {
-        callback(target) !== false && escalate<T>(target, callback);
+        callback(target as T) !== false && escalate<T>(target as T, callback);
     }
 }
 

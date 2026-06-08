@@ -30,20 +30,12 @@ export const AsRouteHandlerMappingStrategy = <T extends Constructable<StrategyIn
         readonly handlerMappingKey: string;
         readonly handlerMappingCollectionKey: string;
 
-        handlerMappings: RouteHandlerMapping[];
+        handlerMappings!: RouteHandlerMapping[];
 
         constructor(...args: any[]) {
             super(...args);
-            defineProperty(this, 'handlerMappingKey', {
-                get: () => HANDLER_MAPPING,
-                configurable: true,
-                enumerable: true,
-            });
-            defineProperty(this, 'handlerMappingCollectionKey', {
-                get: () => HANDLER_MAPPINGS,
-                configurable: true,
-                enumerable: true,
-            });
+            this.handlerMappingKey = HANDLER_MAPPING;
+            this.handlerMappingCollectionKey = HANDLER_MAPPINGS;
             this.addStrategy(HANDLER_MAPPINGS);
         }
 
@@ -69,6 +61,7 @@ export const AsRouteHandlerMappingStrategy = <T extends Constructable<StrategyIn
                 }
             }
 
-            return null;
+            // Return an empty execution chain when no handler is found
+            return new RouteHandlerExecutionChain({});
         }
     };

@@ -6,9 +6,13 @@ import '@tsmetadata/polyfill';
 import { Constructable, getSymbolMetadata } from '@blue/core';
 import { propIs, isNotNil } from '@blue/util/types';
 
+function _hasFunction(key: string, obj: any): boolean {
+    return propIs(Function, key, obj);
+}
+
 const { assign, getOwnPropertyDescriptor } = Object;
 const { defineProperty } = Reflect;
-const hasFunction = propIs(Function);
+
 
 /**
  * @errorHandler decorator - marks a class as an error handler
@@ -89,9 +93,9 @@ export const errorHandler = assign(errorHandlerDecorator, {
     has: hasErrorHandler,
 });
 
-const hasConstructor = hasFunction('constructor');
+const hasConstructor = _hasFunction('constructor', {});
 const constructorIsErrorHandler = (value: any): boolean => hasErrorHandler(value?.constructor);
-const _isConstructorErrorHandler = (value) => hasConstructor(value) && constructorIsErrorHandler(value);
+const _isConstructorErrorHandler = (value: any): boolean => _hasFunction('constructor', value) && constructorIsErrorHandler(value);
 
 /**
  * Checks if a given target object or its constructor is an error handler.
@@ -101,7 +105,7 @@ const _isConstructorErrorHandler = (value) => hasConstructor(value) && construct
  * @param target The object to check.
  * @returns `true` if the target or its constructor is an error handler, `false` otherwise.
  */
-export const likeErrorHandler = (target) =>
+export const likeErrorHandler = (target: any): boolean =>
     isNotNil(target) && (hasErrorHandler(target) || _isConstructorErrorHandler(target));
 
 /**

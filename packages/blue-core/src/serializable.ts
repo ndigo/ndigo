@@ -36,7 +36,7 @@ export type serializable = JSONValue | Serializable;
 
 const { isArray } = Array,
     { parse, stringify } = JSON,
-    propIs = (type) => (name) => (obj) => is(type, obj?.[name]),
+    propIs = (type: any) => (name: any) => (obj: any) => is(type, obj?.[name]),
     hasFunction = propIs(Function),
     hasToJSON = hasFunction('toJSON'),
     hasToString = hasFunction('toString'),
@@ -58,7 +58,7 @@ const { isArray } = Array,
  * @param value - Value to test.
  * @returns `true` when the value is an array that survives a JSON round trip unchanged.
  */
-export const isJSONArray = ((value) => isArray(value) && _deepEqual(parse(stringify(value)), value)) as (value) => value is JSONArray;
+export const isJSONArray = ((value: any) => isArray(value) && _deepEqual(parse(stringify(value)), value)) as (value: any) => value is JSONArray;
 
 /**
  * Tests whether a value is a JSON object.
@@ -66,8 +66,8 @@ export const isJSONArray = ((value) => isArray(value) && _deepEqual(parse(string
  * @param value - Value to test.
  * @returns `true` when the value is a non-primitive, non-array object that survives a JSON round trip unchanged.
  */
-export const isJSONObject = ((value) => isNotPrimitive(value) && isNotArray(value) && _deepEqual(parse(stringify(value)), value)) as (
-    value
+export const isJSONObject = ((value: any) => isNotPrimitive(value) && isNotArray(value) && _deepEqual(parse(stringify(value)), value)) as (
+    value: any
 ) => value is JSONObject;
 
 /**
@@ -76,7 +76,7 @@ export const isJSONObject = ((value) => isNotPrimitive(value) && isNotArray(valu
  * @param value - Value to test.
  * @returns `true` for JSON primitives, arrays, objects, and `null`.
  */
-export const isJSONValue = (value): value is JSONValue => {
+export const isJSONValue = (value: any): value is JSONValue => {
     switch (typeof value) {
         case 'boolean':
         case 'number':
@@ -95,7 +95,7 @@ export const isJSONValue = (value): value is JSONValue => {
  * @param value - Value to test.
  * @returns `true` when the value is already JSON-compatible or exposes `toJSON()`/`toString()`.
  */
-export const likeSerializable = (value) => isJSONValue(value) || hasToJSON(value) || hasToString(value);
+export const likeSerializable = (value: any) => isJSONValue(value) || hasToJSON(value) || hasToString(value);
 
 /**
  * Converts an arbitrary value into a JSON-safe representation.

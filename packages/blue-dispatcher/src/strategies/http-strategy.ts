@@ -63,26 +63,14 @@ export const AsHTTPStrategy = <T extends Constructable<StrategyInitializer>>(
         readonly httpInterceptorCollectionKey: string;
         readonly httpSettingsKey: string;
 
-        httpInterceptors: HTTPInterceptor[];
-        httpSettings: HTTPInit;
+        httpInterceptors!: HTTPInterceptor[];
+        httpSettings!: HTTPInit;
 
         constructor(...args: any[]) {
             super(...args);
-            defineProperty(this, 'httpInterceptorKey', {
-                get: () => HTTP_INTERCEPTOR,
-                configurable: true,
-                enumerable: true,
-            });
-            defineProperty(this, 'httpInterceptorCollectionKey', {
-                get: () => HTTP_INTERCEPTORS,
-                configurable: true,
-                enumerable: true,
-            });
-            defineProperty(this, 'httpSettingsKey', {
-                get: () => HTTP_SETTINGS,
-                configurable: true,
-                enumerable: true,
-            });
+            this.httpInterceptorKey = HTTP_INTERCEPTOR;
+            this.httpInterceptorCollectionKey = HTTP_INTERCEPTORS;
+            this.httpSettingsKey = HTTP_SETTINGS;
             this.addStrategy(HTTP_INTERCEPTORS);
         }
 

@@ -10,7 +10,7 @@ import { StrategyInitializer } from './strategy-initializer';
 export interface RouteHandlerAdapterStrategy {
     handlerAdapters: RouteHandlerAdapter[];
     initHandlerAdapters(context: ApplicationContext): void;
-    getHandlerAdapter(handler): RouteHandlerAdapter;
+    getHandlerAdapter(handler: any): RouteHandlerAdapter;
 }
 
 /**
@@ -43,20 +43,12 @@ export const AsRouteHandlerAdapterStrategy = <T extends Constructable<StrategyIn
         readonly handlerAdapterKey: string;
         readonly handlerAdapterCollectionKey: string;
 
-        handlerAdapters: RouteHandlerAdapter[];
+        handlerAdapters!: RouteHandlerAdapter[];
 
         constructor(...args: any[]) {
             super(...args);
-            defineProperty(this, 'handlerAdapterKey', {
-                get: () => HANDLER_ADAPTER,
-                configurable: true,
-                enumerable: true,
-            });
-            defineProperty(this, 'handlerAdapterCollectionKey', {
-                get: () => HANDLER_ADAPTERS,
-                configurable: true,
-                enumerable: true,
-            });
+            this.handlerAdapterKey = HANDLER_ADAPTER;
+            this.handlerAdapterCollectionKey = HANDLER_ADAPTERS;
             this.addStrategy(HANDLER_ADAPTERS);
         }
 
@@ -72,10 +64,14 @@ export const AsRouteHandlerAdapterStrategy = <T extends Constructable<StrategyIn
             );
         }
 
-        getHandlerAdapter(handler): RouteHandlerAdapter {
-            const handlerAdapter: RouteHandlerAdapter = this.handlerAdapters.find((handlerAdapter) =>
-                handlerAdapter.supports(handler)
-            );
+        getHandlerAdapter(handler: any): RouteHandlerAdapter {
+            const handlerAdapter: RouteHandlerAdapter | undefined = this.handlerAdapters.find((handlerAdapter) => {
+                // Check if the adapter has a supports method and call it
+                if (typeof (handlerAdapter as any).supports === 'function') {
+                    return (handlerAdapter as any).supports(handler);
+                }
+                return false;
+            });
 
             if (!handlerAdapter) {
                 throw new IllegalStateError('No handler adapter found for handler');

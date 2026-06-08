@@ -50,8 +50,8 @@ export class PathViewController extends AbstractPathViewController {
      * Cache for resolved view names.
      */
     _viewNameCache: Map<string, string>;
-    #prefix: string;
-    #suffix: string;
+    #prefix!: string;
+    #suffix!: string;
 
     /**
      * Gets the prefix to prepend to the view name.

@@ -20,6 +20,6 @@ export class NodeEnvironment extends StandardEnvironment {
      */
     constructor(propertySources: JSONObject[] = []) {
         // process.env is the primary source; additional sources are merged after it
-        super([...propertySources, process.env as unknown as JSONObject]);
+        super([...propertySources, process.env as JSONObject]);
     }
 }

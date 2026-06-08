@@ -32,12 +32,12 @@ export default class ResponseStatus implements Comparable<ResponseStatus>, Equat
     /**
      * The numeric HTTP status code.
      */
-    readonly code: number;
+    readonly code!: number;
 
     /**
      * The reason phrase associated with the status code.
      */
-    readonly text: string;
+    readonly text!: string;
 
     /**
      * Returns a cached status for the given response.
@@ -54,7 +54,7 @@ export default class ResponseStatus implements Comparable<ResponseStatus>, Equat
      * @returns The matching or newly created status, or `null` when no text is provided.
      */
     static for(code: number, text?: string): ResponseStatus;
-    static for(codeOrResponse: number | Response, text?: string): ResponseStatus {
+    static for(codeOrResponse: number | Response, text?: string): ResponseStatus | null {
         let code: number;
 
         if (likeResponse(codeOrResponse)) {
@@ -65,7 +65,7 @@ export default class ResponseStatus implements Comparable<ResponseStatus>, Equat
         }
 
         if (statuses.has(code)) {
-            return statuses.get(code);
+            return statuses.get(code) as ResponseStatus | null;
         } else if (text?.length) {
             const status = new ResponseStatus(code, text);
             statuses.set(code, status);

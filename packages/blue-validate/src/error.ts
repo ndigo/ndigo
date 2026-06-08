@@ -5,7 +5,7 @@ const { defineProperty, setPrototypeOf } = Reflect;
  * @property {Error} cause - The underlying cause of the validation error, if any.
  */
 export class ValidationError extends Error {
-    cause: Error;
+    cause!: Error;
 
     get [Symbol.toStringTag](): string {
         return 'ValidationError';
@@ -16,7 +16,7 @@ export class ValidationError extends Error {
      * @param {string} message - A descriptive message for the validation error.
      * @param {Error} [cause] - The original error that caused this validation failure.
      */
-    constructor(message: string, cause: Error = null) {
+    constructor(message: string, cause: Error | null = null) {
         super(`Validation failed: "${message}"`);
 
         setPrototypeOf(this, new.target.prototype);
@@ -37,7 +37,7 @@ export class ConstraintViolationError extends ValidationError {
     /**
      * The set of constraint names that were violated.
      */
-    readonly violations: ReadonlySet<string>;
+    readonly violations!: ReadonlySet<string>;
 
     get [Symbol.toStringTag](): string {
         return 'ConstraintViolationError';

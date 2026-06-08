@@ -3,6 +3,7 @@
  * @see {@link https://github.com/davidbau/seedrandom}
  */
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-import
 import alea from 'seedrandom/lib/alea.js';
 
 function seed(): string {

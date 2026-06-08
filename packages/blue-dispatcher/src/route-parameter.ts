@@ -65,16 +65,19 @@ export class MethodParameterType implements Equatable, Serializable {
 
         for (let index = 0; index < length; index++) {
             const key = types[index];
-            const parameterType: MethodParameterType = MethodParameterType[key];
-            if (parameterType && parameterType.type === type) {
-                return parameterType;
+            if (key !== 'fromType') { // Skip the static method itself
+                const parameterType = MethodParameterType[key as keyof typeof MethodParameterType];
+                // Ensure we only work with actual MethodParameterType instances, not methods
+                if (parameterType instanceof MethodParameterType && parameterType.type === type) {
+                    return parameterType;
+                }
             }
         }
 
         return null;
     }
 
-    readonly type: string;
+    readonly type!: string;
 
     get [Symbol.toStringTag](): string {
         return `MethodParameterType:${this.type}`;
@@ -118,12 +121,12 @@ MethodParameterType.BODY = new MethodParameterType('body:value');
  * Method parameter metadata
  */
 export class MethodParameter implements Serializable {
-    readonly name: string;
-    readonly type: MethodParameterType;
-    readonly required: boolean;
-    readonly defaultValue: string | null;
-    readonly convert: ParameterValueConverterReference | null;
-    readonly prefix: string | null;
+    readonly name!: string;
+    readonly type!: MethodParameterType;
+    readonly required!: boolean;
+    readonly defaultValue!: string | null;
+    readonly convert!: ParameterValueConverterReference | null;
+    readonly prefix!: string | null;
 
     constructor(
         type: MethodParameterType,
@@ -139,42 +142,12 @@ export class MethodParameter implements Serializable {
         if (convert !== null && !this._isConverterReference(convert)) {
             throw new TypeError(`"convert" must be a converter reference or null but was ${convert}`);
         }
-        defineProperty(this, 'type', {
-            value: type,
-            configurable: true,
-            enumerable: false,
-            writable: false,
-        });
-        defineProperty(this, 'name', {
-            value: name,
-            configurable: true,
-            enumerable: false,
-            writable: false,
-        });
-        defineProperty(this, 'required', {
-            value: required,
-            configurable: true,
-            enumerable: false,
-            writable: false,
-        });
-        defineProperty(this, 'defaultValue', {
-            value: defaultValue,
-            configurable: true,
-            enumerable: false,
-            writable: false,
-        });
-        defineProperty(this, 'convert', {
-            value: convert,
-            configurable: true,
-            enumerable: false,
-            writable: false,
-        });
-        defineProperty(this, 'prefix', {
-            value: prefix,
-            configurable: true,
-            enumerable: false,
-            writable: false,
-        });
+        this.type = type;
+        this.name = name;
+        this.required = required;
+        this.defaultValue = defaultValue;
+        this.convert = convert;
+        this.prefix = prefix;
     }
 
     toJSON(): JSONObject {

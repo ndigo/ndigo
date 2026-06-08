@@ -49,9 +49,9 @@ const { defineProperty } = Reflect,
  * @since 1.0.0
  */
 class RouteTransaction {
-    route: string;
-    access: RouteAccess;
-    source: RouteSource;
+    route!: string;
+    access!: RouteAccess;
+    source!: RouteSource;
 
     /**
      * Creates an instance of `RouteTransaction`.
@@ -98,7 +98,7 @@ export default class HashRouter extends AbstractRouter {
     #lastPublicRoute: string;
     #transactionManager: RouteTransactionManager;
 
-    readonly callback: RouterCallback;
+    readonly callback!: RouterCallback;
 
     /**
      * Gets the current route as a string.
@@ -113,7 +113,7 @@ export default class HashRouter extends AbstractRouter {
      * Indicates whether the router has been destroyed and its event listeners removed.
      * @since 1.0.0
      */
-    destroyed: boolean;
+    destroyed!: boolean;
 
     /**
      * Gets the `RingBuffer` instance that stores the route history.

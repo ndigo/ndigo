@@ -28,7 +28,7 @@ export type equatable = Equatable | primitive;
  * @param value - The value to be tested.
  * @returns `true` if the `value` is `Equatable`, `false` otherwise.
  */
-export const likeEquatable = like({ equals: Function }) as (value) => value is Equatable;
+export const likeEquatable = like({ equals: Function }) as (value: unknown) => value is Equatable;
 
 /**
  * Performs a deep equality check between two values.

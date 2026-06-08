@@ -6,10 +6,10 @@ import { isEntries, isJSONObject, JSONValue, Serializable } from '@blue/core';
 import { is, isString } from '@blue/util/types';
 
 const { defineProperty, deleteProperty, get, set } = Reflect,
-    isHeaders = is(Headers) as (value) => value is Headers,
-    isRecord = isJSONObject as (value) => value is Record<string, string>;
+    isHeaders = is(Headers) as (value: any) => value is Headers,
+    isRecord = isJSONObject as (value: any) => value is Record<string, string>;
 
-function deletePair(entries, name: string): void {
+function deletePair(entries: any, name: string): void {
     const length = entries.length;
 
     if (length) {
@@ -22,7 +22,7 @@ function deletePair(entries, name: string): void {
     }
 }
 
-function getPair(entries, name: string): string {
+function getPair(entries: any, name: string): string | null {
     const length = entries.length;
 
     if (length) {
@@ -36,7 +36,7 @@ function getPair(entries, name: string): string {
     return null;
 }
 
-function setPair(entries, name: string, value: string): void {
+function setPair(entries: any, name: string, value: string): void {
     const length = entries.length;
     let found = false;
 
@@ -66,7 +66,7 @@ function deleteHeader(headers: HeadersInit, name: string): void {
     }
 }
 
-function getHeader(headers: HeadersInit, name: string): string {
+function getHeader(headers: HeadersInit, name: string): string | null {
     if (isHeaders(headers)) {
         return (headers as Headers).get(name);
     } else if (isEntries(headers)) {
@@ -81,7 +81,7 @@ function hasHeader(headers: HeadersInit, name: string): boolean {
     return isString(getHeader(headers, name));
 }
 
-function setHeader(headers: HeadersInit, name: string, value): void {
+function setHeader(headers: HeadersInit, name: string, value: any): void {
     const stringValue = String(value);
     if (isHeaders(headers)) {
         (headers as Headers).set(name, stringValue);
@@ -104,7 +104,7 @@ export class HTTPHeader implements Serializable {
     /**
      * The canonical header name used for reads and writes.
      */
-    readonly name: string;
+    readonly name!: string;
 
     get [Symbol.toStringTag](): string {
         return `HTTPHeader:${this.name}`;
@@ -142,7 +142,7 @@ export class HTTPHeader implements Serializable {
      * @param headers - The header collection to read from.
      * @returns The header value, or `null` when missing.
      */
-    get(headers: HeadersInit): string {
+    get(headers: HeadersInit): string | null {
         return headers ? getHeader(headers, this.name) : null;
     }
 
@@ -163,7 +163,7 @@ export class HTTPHeader implements Serializable {
      * @param value - The header value to store.
      * @throws {TypeError} When `headers` is not provided.
      */
-    set(headers: HeadersInit, value): void {
+    set(headers: HeadersInit, value: any): void {
         if (!headers) {
             throw new TypeError('headers is undefined');
         }

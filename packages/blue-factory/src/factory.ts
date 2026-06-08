@@ -61,7 +61,7 @@ export interface HierarchicalFactory extends Factory {
     /**
      * The parent factory in the hierarchy.
      */
-    readonly parent: Factory;
+    readonly parent: Factory | null;
     /**
      * Determines whether this factory contains a value with the given name.
      * @param name The name of the value.
@@ -83,7 +83,7 @@ export interface ConfigurableFactory extends HierarchicalFactory, Registry {
      * Sets the parent factory.
      * @param parent The parent factory.
      */
-    setParent(parent: Factory): void;
+    setParent(parent: Factory | null): void;
 }
 
 /**
@@ -120,7 +120,7 @@ export const AsFactoryAware = <T extends Constructable>(superclass: T): Construc
         /**
          * The factory that created this instance.
          */
-        readonly factory: Factory;
+        readonly factory!: Factory;
 
         /**
          * Sets the factory that created this instance.
@@ -140,14 +140,15 @@ export const AsFactoryAware = <T extends Constructable>(superclass: T): Construc
  * @param value The value to be tested.
  * @returns Whether or not the `value` provided is a {@link Factory}.
  */
-export const likeFactory = like({ getInstance: Function }) as (value) => value is Factory;
+export const likeFactory = (value: any): value is Factory => like({ getInstance: Function })(value);
 
 /**
  * Determines whether or not the `value` provided is {@link FactoryAware}.
  * @param value The value to be tested.
  * @returns Whether or not the `value` provided is {@link FactoryAware}.
  */
-export const likeFactoryAware = likeAwareAnd(like({ setFactory: Function })) as (value) => value is FactoryAware;
+export const likeFactoryAware = (value: any): value is FactoryAware =>
+    likeAwareAnd(like({ setFactory: Function }))(value);
 
 const _likeHierarchicalShape = like({ parent: true, hasOwnValue: Function });
 
@@ -156,7 +157,7 @@ const _likeHierarchicalShape = like({ parent: true, hasOwnValue: Function });
  * @param value The value to be tested.
  * @returns Whether or not the `value` provided is {@link HierarchicalFactory}.
  */
-export const likeHierarchicalFactory = (value) => likeFactory(value) && _likeHierarchicalShape(value);
+export const likeHierarchicalFactory = (value: any) => likeFactory(value) && _likeHierarchicalShape(value);
 
 const _likeConfigurableShape = like({ addProcessor: Function, setParent: Function });
 
@@ -165,7 +166,7 @@ const _likeConfigurableShape = like({ addProcessor: Function, setParent: Functio
  * @param value The value to be tested.
  * @returns Whether or not the `value` provided is {@link ConfigurableFactory}.
  */
-export const likeConfigurableFactory = (value) => likeHierarchicalFactory(value) && _likeConfigurableShape(value);
+export const likeConfigurableFactory = (value: any) => likeHierarchicalFactory(value) && _likeConfigurableShape(value);
 
 /**
  * An abstract base class for implementing a {@link ConfigurableFactory} and {@link ScopedFactory}.
@@ -174,29 +175,29 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
     /**
      * The parent factory in a hierarchical setup.
      */
-    #parent: Factory;
+    #parent: Factory | null = null;
     /**
      * The registry for managing different scopes.
      */
-    #scopeRegistry: ScopeRegistry;
+    #scopeRegistry!: ScopeRegistry;
 
     /**
      * A list of entry processors applied to instances.
      */
-    processors: EntryProcessor[];
+    processors!: EntryProcessor[];
 
     /**
      * Indicates if there are any construction-aware processors.
      */
-    hasConstructionAwareProcessors: boolean;
+    hasConstructionAwareProcessors!: boolean;
     /**
      * Indicates if there are any destruction-aware processors.
      */
-    hasDestructionAwareProcessors: boolean;
+    hasDestructionAwareProcessors!: boolean;
     /**
      * Indicates if there are any initialization-aware processors.
      */
-    hasInitializationAwareProcessors: boolean;
+    hasInitializationAwareProcessors!: boolean;
 
     /**
      * Returns the string tag for this factory.
@@ -210,7 +211,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
      * Returns the parent factory.
      * @returns The parent factory.
      */
-    get parent(): Factory {
+    get parent(): Factory | null {
         return this.#parent;
     }
 
@@ -245,6 +246,11 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
         this.registerScope('hash', this.getScope('route'));
         this.registerScope('singleton', new SingletonScope());
     }
+
+    /**
+     * Allows arbitrary properties to be added to the factory, which are then managed as values.
+     */
+    [key: string]: any;
 
     /**
      * Adds an entry processor to the factory.
@@ -441,7 +447,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
      * Sets the parent factory for this hierarchical factory.
      * @param parent The parent factory.
      */
-    setParent(parent: Factory): void {
+    setParent(parent: Factory | null): void {
         this.#parent = parent;
     }
 
@@ -573,7 +579,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
         constructor: Function,
         argumentsList: any[] = []
     ): T | null {
-        let result: T = null;
+        let result: T | null = null;
 
         if (this.hasConstructionAwareProcessors) {
             const length = this.processors.length;
@@ -669,7 +675,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
      */
     protected _create<T = any>(name: string, argumentsList: any[] = []): T {
         let constructor: Function = this[`$${name}`],
-            instance: T = null;
+            instance: T | null = null;
 
         try {
             instance = this._applyProcessorsBeforeConstruction<T>(name, constructor, argumentsList);
@@ -681,7 +687,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
             throw new FrameworkError(`Failed to create entry '${name}': ${getErrorMessage(e)}`);
         }
 
-        return this._configure<T>(name, instance);
+        return this._configure<T>(name, instance as T);
     }
 
     /**
@@ -721,7 +727,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
 
         let populateProperties = true,
             processedValue: T = instance,
-            processedProperties: PropertyDescriptorMap,
+            processedProperties: PropertyDescriptorMap | undefined,
             index: number;
         const { hasConstructionAwareProcessors } = this,
             length = this.processors.length;
@@ -745,7 +751,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
 
         if (processedProperties) {
             keys(processedProperties).forEach(function (key) {
-                defineProperty(processedValue as unknown as object, key, processedProperties[key]);
+                defineProperty(processedValue as object, key, processedProperties![key]);
             });
         }
     }
@@ -761,7 +767,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
             instance.setName(name);
         }
         if (likeFactoryAware(instance)) {
-            instance.setFactory(this);
+            (instance as FactoryAware).setFactory(this);
         }
         return instance;
     }

@@ -27,15 +27,11 @@ export const AsRouteToViewNameTranslatorStrategy = <T extends Constructable<Stra
     class extends superclass implements RouteToViewNameTranslatorStrategy {
         readonly routeToViewNameTranslatorKey: string;
 
-        routeToViewNameTranslator: RouteToViewNameTranslator;
+        routeToViewNameTranslator!: RouteToViewNameTranslator;
 
         constructor(...args: any[]) {
             super(...args);
-            defineProperty(this, 'routeToViewNameTranslatorKey', {
-                get: () => ROUTE_TO_VIEW_NAME_TRANSLATOR,
-                configurable: true,
-                enumerable: true,
-            });
+            this.routeToViewNameTranslatorKey = ROUTE_TO_VIEW_NAME_TRANSLATOR;
             this.addStrategy(ROUTE_TO_VIEW_NAME_TRANSLATOR);
         }
 
@@ -56,6 +52,6 @@ export const AsRouteToViewNameTranslatorStrategy = <T extends Constructable<Stra
          * @returns {string} The view name or `null` if no default found.
          */
         getDefaultViewName(route: Route): string {
-            return this.routeToViewNameTranslator ? this.routeToViewNameTranslator.getViewName(route) : null;
+            return this.routeToViewNameTranslator ? this.routeToViewNameTranslator.getViewName(route) : '';
         }
     };

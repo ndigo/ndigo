@@ -49,9 +49,9 @@ const { assign } = Object,
  * This class allows for defining complex validation rules that can be applied to various values.
  */
 class Type {
-    readonly name: string;
-    readonly constraints: ConstraintConfig[];
-    readonly backend: ValidationBackendAdapter;
+    readonly name!: string;
+    readonly constraints!: ConstraintConfig[];
+    readonly backend!: ValidationBackendAdapter;
 
     /**
      * Creates an instance of `Type`.
@@ -92,7 +92,7 @@ class Type {
         });
 
         // Is this a standard type definition which has constraints
-        this.constraints.forEach(function (constraint) {
+        this.constraints.forEach((constraint) => {
             if (isUndefined(constraint.type)) {
                 throw new TypeError(
                     `Property "type" is undefined for constraints within definition of type "${this.name}"`
@@ -104,7 +104,7 @@ class Type {
             }
             // Make sure we always have params defined
             constraint.params = constraint.params || {};
-        }, this);
+        });
     }
 
     #resolveConstraints(params: ValidationOptions): ConstraintConfig[] {
@@ -127,7 +127,7 @@ class Type {
      * @returns {boolean} True if the value passes all applicable constraints, false otherwise.
      */
     validator(value: unknown, params: ValidationOptions = {}) {
-        return this.#resolveConstraints(params).every(function (constraint) {
+        return this.#resolveConstraints(params).every((constraint) => {
             // @note param extension is basic (can not extend two different constraints of the same type, use case is to edgy)
             // @note params extension affect performance
             // @note params will expect to have params specific to the constraint, otherwise it will use the first level params
@@ -136,7 +136,7 @@ class Type {
                 value,
                 assign({}, constraint.params, params[constraint.type] || params)
             );
-        }, this);
+        });
     }
 
     /**
@@ -153,7 +153,7 @@ class Type {
         const constraintsConfig = this.#resolveConstraints(params);
 
         // Not running directly through the validator, because it only returns a boolean and we want a more comprehensive object (the list of failed constraints) while validating
-        const failedConstraints = constraintsConfig.filter(function (config) {
+        const failedConstraints = constraintsConfig.filter((config) => {
             // @note params extension is basic (can not extend two different constraints of the same type, use case is to edgy).
             // @note params extension affect performance
             // @note params will expect to have params specific to the constraint, otherwise it will use the first level params
@@ -162,7 +162,7 @@ class Type {
                 value,
                 assign({}, config.params, params[config.type] || params)
             );
-        }, this);
+        });
 
         return {
             value: value,

@@ -52,11 +52,12 @@ export interface DomainComponent extends Initializable, EventEmitter, AsyncDestr
 }
 
 const { defineProperty, deleteProperty } = Reflect,
-    initializeData = (component) => (value, key) => {
-        component.model.set(key, value);
+    initializeData = (component: GenericDomainComponent) => (value: any, key: string) => {
         defineProperty(component, key, {
-            get: () => component.model.get(key, { isolate: true }),
-            set: function () {},
+            get: () => (component.model as any).get(key, { isolate: true }),
+            set: function () {
+                (component.model as any).set(key, arguments[0]);
+            },
             configurable: true,
             enumerable: true,
             writable: false,
@@ -67,12 +68,12 @@ let uuid = 0;
 
 @validated()
 export class GenericDomainComponent extends Emitter implements DomainComponent {
-    id: number;
-    name: string;
-    model: JSONObject;
-    actions: DomainActions;
-    settings: DomainSettings;
-    states: DomainStates;
+    id!: number;
+    name!: string;
+    model!: JSONObject;
+    actions!: DomainActions;
+    settings!: DomainSettings;
+    states!: DomainStates;
     declare validate: (options?: ClassValidationOptions) => ClassValidationResult;
 
     get [Symbol.toStringTag](): string {
@@ -101,6 +102,20 @@ export class GenericDomainComponent extends Emitter implements DomainComponent {
             configurable: true,
             enumerable: false,
         });
+        this.model = Object.assign(createNull(), {
+            get(key: string, options: { isolate?: boolean } = {}): any {
+                const value = (this as any)[key];
+                return options.isolate && value && typeof value === 'object'
+                    ? JSON.parse(JSON.stringify(value))
+                    : value;
+            },
+            set(key: string, value: any): void {
+                (this as any)[key] = value;
+            }
+        }) as any;
+        this.actions = {};
+        this.settings = {};
+        this.states = {};
     }
 
     /**

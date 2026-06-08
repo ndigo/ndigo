@@ -56,8 +56,8 @@ export class ConstraintValidator implements Validator {
  * It supports different validation backends (native, Zod, hybrid) for flexible validation strategies.
  */
 export default class TypeValidator implements Validator {
-    readonly types: Map<string, Type>;
-    readonly backend: ValidationBackendAdapter;
+    readonly types!: Map<string, Type>;
+    readonly backend!: ValidationBackendAdapter;
 
     /**
      * Creates an instance of `TypeValidator`.
@@ -129,10 +129,12 @@ export default class TypeValidator implements Validator {
             throw new TypeError(`Type "${name}" does not exist`);
         }
 
-        const // Get the type
-            type = this.types.get(name),
-            // Get the results of validation
-            results = type.validate(value, params);
+        const type = this.types.get(name);
+        if (!type) {
+            throw new TypeError(`Type "${name}" does not exist`);
+        }
+        // Get the results of validation
+        const results = type.validate(value, params);
 
         return results;
     }

@@ -264,7 +264,7 @@ import './blue';
 import * as MediaTypes from './media-types';
 
 export { MediaTypes };
-export * from './collection';
+export * from './ring-buffer';
 export * from './comparable';
 export * from './constructable';
 export * from './data-binder';

@@ -39,5 +39,5 @@ export interface Enumerable<K extends PropertyKey, V> {
  * @returns `true` if the `value` is `Enumerable`, `false` otherwise.
  */
 export const likeEnumerable = like({ entries: Function, forEach: Function, keys: Function, values: Function }) as (
-    value
+    value: any
 ) => value is Enumerable<any, any>;

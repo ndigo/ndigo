@@ -25,8 +25,8 @@ const { isArray } = Array;
 
 export const AsStrategyInitializer = <T extends Constructable>(superclass: T): Constructable<StrategyInitializer> & T =>
     class extends superclass implements StrategyInitializer {
-        initialized: boolean;
-        strategies: string[];
+        initialized!: boolean;
+        strategies!: string[];
 
         addStrategy(name: string): void {
             if (this.initialized) {
@@ -58,10 +58,10 @@ export const AsStrategyInitializer = <T extends Constructable>(superclass: T): C
                 for (; index < length; index++) {
                     strategy = this.strategies[index];
                     initializer = `init${toPascal(strategy)}`;
-                    if (typeof this[initializer] !== 'function') {
+                    if (typeof (this as any)[initializer] !== 'function') {
                         throw new TypeError(`Strategy ${strategy} initializer ${initializer} is not implemented`);
                     }
-                    this[initializer](context);
+                    (this as any)[initializer](context);
                 }
             }
         }
@@ -76,18 +76,18 @@ export const AsStrategyInitializer = <T extends Constructable>(superclass: T): C
             if (context.hasValue(collectionStrategyKey)) {
                 const collection = context.getValue<Enumerable<PropertyKey, T>>(collectionStrategyKey);
                 if (isArray(collection)) {
-                    this[name] = collection;
+                    (this as any)[name] = collection;
                 } else {
-                    this[name] = [];
-                    collection.forEach((value) => this[name].push(value));
+                    (this as any)[name] = [];
+                    collection.forEach((value) => (this as any)[name].push(value));
                 }
             } else if (context.hasValue(strategyKey)) {
-                this[name] = [context.getValue<T>(strategyKey)];
+                (this as any)[name] = [context.getValue<T>(strategyKey)];
             }
 
             // Fall back to default strategy
-            if (!this[name]) {
-                this[name] = this.getDefaultStrategy<T[]>(context, collectionStrategyKey, defaultStrategy);
+            if (!(this as any)[name]) {
+                (this as any)[name] = this.getDefaultStrategy<T[]>(context, collectionStrategyKey, defaultStrategy);
             }
         }
 
@@ -98,12 +98,12 @@ export const AsStrategyInitializer = <T extends Constructable>(superclass: T): C
             defaultStrategy: T
         ): void {
             if (context.hasValue(strategyKey)) {
-                this[name] = context.getValue<T>(strategyKey);
+                (this as any)[name] = context.getValue<T>(strategyKey);
             }
 
             // Fall back to default strategy
-            if (!this[name]) {
-                this[name] = this.getDefaultStrategy<T>(context, strategyKey, defaultStrategy);
+            if (!(this as any)[name]) {
+                (this as any)[name] = this.getDefaultStrategy<T>(context, strategyKey, defaultStrategy);
             }
         }
     };

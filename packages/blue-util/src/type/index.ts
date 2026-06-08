@@ -29,6 +29,7 @@ import likePromise from './like-promise.js';
  * propIs( Number, 'x', {} ); //=> false
  */
 function propIs(ctor: any, name: string, obj: any): boolean {
+    if (obj == null) return false;
     return obj[name] instanceof ctor || Object.prototype.toString.call(obj[name]) === `[${ctor.name}]`;
 }
 

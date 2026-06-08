@@ -41,7 +41,7 @@ describe('ServiceExecutionChain', () => {
 
         expect(() => chain.addInterceptor(null as any)).not.toThrow();
         expect(() => chain.addInterceptor(undefined as any)).not.toThrow();
-        expect(chain.interceptors).toBeNull();
+        expect(chain.interceptors).toEqual([]);
     });
 
     test('it should reject invalid interceptors', () => {

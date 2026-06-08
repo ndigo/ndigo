@@ -2,6 +2,7 @@
  * @author Jeff Rose
  */
 /// <reference lib="dom" />
+// TypeScript 6.0 declaration generation fix
 
 import { PatternMatcher, WildcardExp } from '@blue/core';
 import { Aware } from '@blue/factory';
@@ -61,7 +62,7 @@ export interface HTTPConfig extends HTTPInit {
 /**
  * Fetch implementation signature used by {@link HTTP}.
  */
-export type Fetch = (input: RequestInfo, init?: RequestInit) => Promise<Response>;
+export type Fetch = (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>;
 
 /**
  * Runs after a request finishes, whether it succeeded or failed.
@@ -276,7 +277,7 @@ export const { assign, freeze } = Object,
         redirect: 'follow',
     },
     patternCache = new Map<string, WildcardExp>(),
-    isRequest = is(Request) as (value) => value is Request;
+    isRequest = is(Request) as (value: any) => value is Request;
 
 /**
  * Tests whether a value exposes `postComplete()`.
@@ -285,7 +286,7 @@ export const { assign, freeze } = Object,
  * @returns `true` when the value is completion-aware.
  */
 export const likeCompletionAwareHTTPInterceptor = like({ postComplete: Function }) as (
-    value
+    value: any
 ) => value is CompletionAwareHTTPInterceptor;
 
 /**
@@ -295,7 +296,7 @@ export const likeCompletionAwareHTTPInterceptor = like({ postComplete: Function 
  * @returns `true` when the value is error-aware.
  */
 export const likeErrorAwareHTTPInterceptor = like({ postError: Function }) as (
-    value
+    value: any
 ) => value is ErrorAwareHTTPInterceptor;
 
 /**
@@ -305,7 +306,7 @@ export const likeErrorAwareHTTPInterceptor = like({ postError: Function }) as (
  * @returns `true` when the value is initialization-aware.
  */
 export const likeInitializationAwareHTTPInterceptor = like({ preInit: Function }) as (
-    value
+    value: any
 ) => value is InitializationAwareHTTPInterceptor;
 
 /**
@@ -315,7 +316,7 @@ export const likeInitializationAwareHTTPInterceptor = like({ preInit: Function }
  * @returns `true` when the value is request-aware.
  */
 export const likeRequestAwareHTTPInterceptor = like({ preRequest: Function }) as (
-    value
+    value: any
 ) => value is RequestAwareHTTPInterceptor;
 
 /**
@@ -325,7 +326,7 @@ export const likeRequestAwareHTTPInterceptor = like({ preRequest: Function }) as
  * @returns `true` when the value is response-aware.
  */
 export const likeResponseAwareHTTPInterceptor = like({ postResponse: Function }) as (
-    value
+    value: any
 ) => value is ResponseAwareHTTPInterceptor;
 
 /**
@@ -334,7 +335,7 @@ export const likeResponseAwareHTTPInterceptor = like({ postResponse: Function })
  * @param value - The value to be tested.
  * @returns `true` when the value matches at least one interceptor role.
  */
-export const likeHTTPInterceptor = (value): value is ResponseAwareHTTPInterceptor =>
+export const likeHTTPInterceptor = (value: any): value is ResponseAwareHTTPInterceptor =>
     likeCompletionAwareHTTPInterceptor(value) ||
     likeErrorAwareHTTPInterceptor(value) ||
     likeInitializationAwareHTTPInterceptor(value) ||
@@ -356,7 +357,13 @@ export class WildcardMatcher implements PatternMatcher<string, string> {
         let wcex: WildcardExp;
 
         if (patternCache.has(pattern)) {
-            wcex = patternCache.get(pattern);
+            const cached = patternCache.get(pattern);
+            if (cached) {
+                wcex = cached;
+            } else {
+                wcex = new WildcardExp(pattern);
+                patternCache.set(pattern, wcex);
+            }
         } else {
             wcex = new WildcardExp(pattern);
             patternCache.set(pattern, wcex);
@@ -381,8 +388,8 @@ export class MappedHTTPInterceptor
         RequestAwareHTTPInterceptor,
         ResponseAwareHTTPInterceptor
 {
-    #excludePatterns: string[];
-    #includePatterns: string[];
+    #excludePatterns!: string[];
+    #includePatterns!: string[];
     #interceptor: HTTPInterceptor;
 
     /**
@@ -541,7 +548,7 @@ export class MappedHTTPInterceptor
     }
 }
 
-const isMappedHTTPInterceptor = is(MappedHTTPInterceptor) as (value) => value is MappedHTTPInterceptor;
+const isMappedHTTPInterceptor = is(MappedHTTPInterceptor) as (value: any) => value is MappedHTTPInterceptor;
 
 /**
  * Executes registered interceptors in lifecycle order for a single request.
@@ -582,14 +589,14 @@ export class HTTPExecutionChain {
      * @param http - The owning HTTP client or an existing execution chain.
      * @param interceptors - Interceptors to seed the chain with.
      */
-    constructor(http: HTTP | HTTPExecutionChain, interceptors: HTTPInterceptor[] = null) {
+    constructor(http: HTTP | HTTPExecutionChain, interceptors: HTTPInterceptor[] | null = null) {
         this.#hasCompletionAwareInterceptors = false;
         this.#hasErrorAwareInterceptors = false;
         this.#hasInitializationAwareInterceptors = false;
         this.#hasRequestAwareInterceptors = false;
         this.#hasResponseAwareInterceptors = false;
 
-        this.#interceptors = null;
+        this.#interceptors = [] as HTTPInterceptor[];
 
         if (isHTTPExecutionChain(http)) {
             const chain = http;
@@ -788,7 +795,7 @@ export class HTTPExecutionChain {
     }
 }
 
-const isHTTPExecutionChain = is(HTTPExecutionChain) as (value) => value is HTTPExecutionChain;
+const isHTTPExecutionChain = is(HTTPExecutionChain) as (value: any) => value is HTTPExecutionChain;
 
 /**
  * HTTP client with interceptor support and convenience verb helpers.
@@ -858,7 +865,7 @@ export class HTTP {
             resolvedInterceptors.push(new TransformInterceptor(requestTransforms, responseTransforms));
         }
 
-        return new HTTP(resolvedInterceptors, init, fetch);
+        return new HTTP(resolvedInterceptors, init, fetch as any);
     }
 
     /**
@@ -906,7 +913,7 @@ export class HTTP {
      * @param {module:http.HTTPInit} [init={}]
      * @returns {Promise<external:Response>}
      */
-    async request(input: string, init: HTTPInit = null): Promise<Response> {
+    async request(input: string, init: HTTPInit | null = null): Promise<Response> {
         const settings = init === null ? assign({}, this.settings) : assign({}, this.settings, init);
 
         const instanceHeaders = new Headers(this.settings.headers || {});
@@ -933,7 +940,7 @@ export class HTTP {
             url.searchParams.set(key, value);
         });
 
-        let response: Response | ResponseError;
+        let response: Response | ResponseError | undefined;
 
         // No interceptors, so simplify execution
         if (!this.#interceptors.length) {
@@ -943,7 +950,7 @@ export class HTTP {
             try {
                 response = await this.#fetch(request);
             } catch (error) {
-                response = new ResponseError(null, error);
+                response = new ResponseError(undefined, error as Error);
             }
 
             // One or more interceptors, so complex execution
@@ -959,15 +966,17 @@ export class HTTP {
             const request = await chain.applyPreRequest(new Request(url.toString(), settings), this);
             try {
                 response = await this.#fetch(request);
-                response = await chain.applyPostResponse(response, settings);
+                response = await chain.applyPostResponse(response as Response, settings);
             } catch (error) {
-                response = await chain.applyPostError(error, request, this);
+                response = await chain.applyPostError(error as Error, request, this);
 
                 if (!likeResponse(response)) {
-                    response = likeResponse(error) ? error : error instanceof ResponseError ? error : new ResponseError(null, error);
+                    response = likeResponse(error) ? error : error instanceof ResponseError ? error : new ResponseError(undefined, error as Error);
                 }
             } finally {
-                chain.applyPostComplete(request, response);
+                if (response) {
+                    chain.applyPostComplete(request, response as Response);
+                }
             }
         }
 

@@ -48,7 +48,7 @@ export class NodeCookieValueMethodArgumentResolver extends AbstractNamedValueMet
         return 'NodeCookieValueMethodArgumentResolver';
     }
 
-    resolveArgument(parameter: MethodParameter, route: Route, mapping): any {
+    resolveArgument(parameter: MethodParameter, route: Route, mapping: any): any {
         const resolveValue = (v: any) => v ?? parameter.defaultValue,
             value = resolveValue(this.resolveName(parameter.name, parameter, route, mapping)),
             converter = parameter.convert ?? this.#converter,

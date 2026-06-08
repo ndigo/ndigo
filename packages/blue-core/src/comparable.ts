@@ -1,8 +1,4 @@
-/**
- * @author Jeff Rose
- */
-
-import { like } from '@blue/util/types';
+import { like } from '@blue/util';
 
 /**
  * A function that compares two values for order. Returns a negative integer, zero, or a positive integer
@@ -13,6 +9,8 @@ import { like } from '@blue/util/types';
  * @returns A negative integer, zero, or a positive integer as the first argument is less than, equal to, or greater than the second.
  */
 export type comparison<T> = (value1: T, value2: T) => number;
+
+
 
 /**
  * A function that evaluates a condition between two values, returning a boolean.
@@ -66,6 +64,7 @@ export interface Comparator<T> {
     compare: comparison<T>;
 }
 
+
 const { defineProperty } = Reflect,
     naturalPredicate = <T>(value1: T, value2: T): boolean => value1 < value2,
     _comparator = <T>(pred: predicate<T>): comparison<T> => (a: T, b: T): number =>
@@ -75,7 +74,7 @@ export abstract class AbstractValueComparator implements Comparator<string> {
     /**
      * The string value being compared.
      */
-    readonly value: string;
+    readonly value!: string;
 
     /**
      * The string tag for this class.
@@ -111,14 +110,14 @@ export abstract class AbstractValueComparator implements Comparator<string> {
  * @param value - The value to check.
  * @returns `true` if the value is `Comparable`, `false` otherwise.
  */
-export const likeComparable = like({ compareTo: Function }) as (value) => value is Comparable<any>;
+export const likeComparable = like({ compareTo: Function }) as (value: unknown) => value is Comparable<any>;
 
 /**
  * Type guard to check if a value implements the `Comparator` interface.
  * @param value - The value to check.
  * @returns `true` if the value is `Comparator`, `false` otherwise.
  */
-export const likeComparator = like({ compare: Function }) as (value) => value is Comparator<any>;
+export const likeComparator = like({ compare: Function }) as (value: unknown) => value is Comparator<any>;
 
 /**
  * A comparison function that uses natural ordering (less than operator).
@@ -155,7 +154,7 @@ class PredicateComparator<T> implements Comparator<T> {
     /**
      * The comparison function used by this comparator.
      */
-    compare: comparison<T>;
+    compare!: comparison<T>;
 
     /**
      * Creates an instance of PredicateComparator.
@@ -203,11 +202,12 @@ class StringComparator extends NaturalComparator<string> {
      * @returns A negative integer, zero, or a positive integer as the first string is less than, equal to, or greater than the second (case-insensitive).
      */
     compareIgnoreCase(value1: string, value2: string): number {
-        return (
+        const result = (
             typeof value1 === 'string' &&
             typeof value2 === 'string' &&
             this.compare(value1.toLowerCase(), value2.toLowerCase())
         );
+        return typeof result === 'number' ? result : 0;
     }
 }
 

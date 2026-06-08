@@ -140,14 +140,14 @@ describe('RadixMetadataHandlerMapping', () => {
 
     test('wildcard route * resolves handler', () => {
         @routeMapping('/api')
-        class ApiController {
+        class APIController {
             @routeMapping('/*')
             handle() {
                 return 'ok';
             }
         }
 
-        ctx.setValue('apiController', new ApiController());
+        ctx.setValue('apiController', new APIController());
 
         const mapping = new RadixMetadataHandlerMapping();
         mapping.setApplicationContext(ctx);

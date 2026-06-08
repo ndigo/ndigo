@@ -13,12 +13,12 @@ export default class RouteHandlerExecutionChain {
     /**
      * Interceptors to invoke around handler execution.
      */
-    #interceptors: RouteHandlerInterceptor[];
+    #interceptors!: RouteHandlerInterceptor[];
 
     /**
      * The resolved handler instance.
      */
-    handler: object;
+    handler: object | undefined;
 
     /**
      * Index of the last interceptor that completed pre-handle processing.
@@ -44,8 +44,8 @@ export default class RouteHandlerExecutionChain {
      * @param handler - A handler instance or an existing execution chain.
      * @param interceptors - Optional interceptors to append to the chain.
      */
-    constructor(handler: object | RouteHandlerExecutionChain, interceptors: RouteHandlerInterceptor[] = null) {
-        this.#interceptors = null;
+    constructor(handler: object | RouteHandlerExecutionChain, interceptors: RouteHandlerInterceptor[] = []) {
+        this.#interceptors = [];
 
         if (handler instanceof RouteHandlerExecutionChain) {
             const chain = handler;
@@ -148,12 +148,12 @@ export default class RouteHandlerExecutionChain {
      * @param route - The current route.
      * @param error - The error that terminated execution, if any.
      */
-    async triggerCompleteHandle(route: Route, error: Error = null): Promise<void> {
+    async triggerCompleteHandle(route: Route, error: Error | null = null): Promise<void> {
         const interceptors = this.#interceptors;
         let index = this.interceptorIndex;
         if (interceptors && index >= 0) {
             for (; index >= 0; index--) {
-                await interceptors[index].completeHandle(route, this.handler, error);
+                await interceptors[index].completeHandle(route, this.handler, error as Error);
             }
         }
     }

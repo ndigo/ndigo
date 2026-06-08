@@ -27,20 +27,12 @@ export const AsViewResolverStrategy = <T extends Constructable<StrategyInitializ
         readonly viewResolverKey: string;
         readonly viewResolverCollectionKey: string;
 
-        viewResolvers: ViewResolver[];
+        viewResolvers!: ViewResolver[];
 
         constructor(...args: any[]) {
             super(...args);
-            defineProperty(this, 'viewResolverKey', {
-                get: () => VIEW_RESOLVER,
-                configurable: true,
-                enumerable: true,
-            });
-            defineProperty(this, 'viewResolverCollectionKey', {
-                get: () => VIEW_RESOLVERS,
-                configurable: true,
-                enumerable: true,
-            });
+            this.viewResolverKey = VIEW_RESOLVER;
+            this.viewResolverCollectionKey = VIEW_RESOLVERS;
             this.addStrategy(VIEW_RESOLVERS);
         }
 

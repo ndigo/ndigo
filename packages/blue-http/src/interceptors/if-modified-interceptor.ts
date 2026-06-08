@@ -56,8 +56,14 @@ export class IfModifiedInterceptor
      */
     async postResponse({ headers, url }: Response, settings: IfModifiedInit): Promise<void> {
         if (settings.ifModified) {
-            LAST_MODIFIED.has(headers) && this.#lastModified.set(url, LAST_MODIFIED.get(headers));
-            ETAG.has(headers) && this.#eTag.set(url, ETAG.get(headers));
+            const lastModified = LAST_MODIFIED.get(headers);
+            if (lastModified !== null) {
+                this.#lastModified.set(url, lastModified);
+            }
+            const eTag = ETAG.get(headers);
+            if (eTag !== null) {
+                this.#eTag.set(url, eTag);
+            }
         }
     }
 }

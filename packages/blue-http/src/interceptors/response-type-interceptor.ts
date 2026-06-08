@@ -51,11 +51,11 @@ const { defineProperty } = Reflect,
         new Blob([await response.arrayBuffer()], { type: mediaType }),
     jsonParser: ResponseParser<JSONObject> = (mediaType: string) => async (response: Response) => await response.json(),
     textParser: ResponseParser<string> = (mediaType: string) => async (response: Response) => await response.text(),
-    markupParser: ResponseParser<Document> = (mediaType: string) => async (response: Response) =>
-        domParser.parseFromString(await response.text(), mediaType as DOMParserSupportedType),
-    isBoolean = is(Boolean) as (value) => value is boolean,
-    isMediaType = is(MediaType) as (value) => value is MediaType,
-    getMediaType = (value: unknown): MediaType => {
+    markupParser: ResponseParser<Document | null> = (mediaType: string) => async (response: Response) =>
+        domParser?.parseFromString(await response.text(), mediaType as DOMParserSupportedType) ?? null,
+    isBoolean = is(Boolean) as (value: any) => value is boolean,
+    isMediaType = is(MediaType) as (value: any) => value is MediaType,
+    getMediaType = (value: unknown): MediaType | null => {
         if (isString(value)) {
             return MediaType.for(value);
         }
@@ -66,24 +66,24 @@ const { defineProperty } = Reflect,
     },
     getParser = (mediaType: MediaType, parsers: Map<MediaType, ResponseParser> = defaultParsers) => {
         const type = mediaType;
-        return parsers.has(type) ? parsers.get(type)(type.toString()) : null;
+        return parsers.has(type) ? parsers.get(type)!(type.toString()) : null;
     };
 
-defaultParsers.set(MediaTypes.APPLICATION_JSON, jsonParser);
-defaultParsers.set(MediaTypes.APPLICATION_PDF, binaryParser);
-defaultParsers.set(MediaTypes.APPLICATION_XML, markupParser);
-defaultParsers.set(MediaTypes.IMAGE_BMP, binaryParser);
-defaultParsers.set(MediaTypes.IMAGE_GIF, binaryParser);
-defaultParsers.set(MediaTypes.IMAGE_JPEG, binaryParser);
-defaultParsers.set(MediaTypes.IMAGE_PNG, binaryParser);
-defaultParsers.set(MediaTypes.IMAGE_SVG_XML, markupParser);
-defaultParsers.set(MediaTypes.IMAGE_TIFF, binaryParser);
-defaultParsers.set(MediaTypes.IMAGE_X_ICON, binaryParser);
-defaultParsers.set(MediaTypes.IMAGE_WEBP, binaryParser);
-defaultParsers.set(MediaTypes.TEXT_HTML, markupParser);
-defaultParsers.set(MediaTypes.TEXT_JSON, jsonParser);
-defaultParsers.set(MediaTypes.TEXT_PLAIN, textParser);
-defaultParsers.set(MediaTypes.TEXT_XML, markupParser);
+defaultParsers.set(MediaTypes.APPLICATION_JSON!, jsonParser);
+defaultParsers.set(MediaTypes.APPLICATION_PDF!, binaryParser);
+defaultParsers.set(MediaTypes.APPLICATION_XML!, markupParser);
+defaultParsers.set(MediaTypes.IMAGE_BMP!, binaryParser);
+defaultParsers.set(MediaTypes.IMAGE_GIF!, binaryParser);
+defaultParsers.set(MediaTypes.IMAGE_JPEG!, binaryParser);
+defaultParsers.set(MediaTypes.IMAGE_PNG!, binaryParser);
+defaultParsers.set(MediaTypes.IMAGE_SVG_XML!, markupParser);
+defaultParsers.set(MediaTypes.IMAGE_TIFF!, binaryParser);
+defaultParsers.set(MediaTypes.IMAGE_X_ICON!, binaryParser);
+defaultParsers.set(MediaTypes.IMAGE_WEBP!, binaryParser);
+defaultParsers.set(MediaTypes.TEXT_HTML!, markupParser);
+defaultParsers.set(MediaTypes.TEXT_JSON!, jsonParser);
+defaultParsers.set(MediaTypes.TEXT_PLAIN!, textParser);
+defaultParsers.set(MediaTypes.TEXT_XML!, markupParser);
 
 /**
  * Parses response bodies into typed data and attaches the result as `data`.
@@ -113,16 +113,21 @@ export class ResponseTypeInterceptor
             }
         }
 
-        if ('responseParsers' in settings) {
-            const { responseParsers } = settings;
-            parsers = new Map<MediaType, ResponseParser>([...defaultParsers]);
+            if ('responseParsers' in settings) {
+                const { responseParsers } = settings;
+                parsers = new Map<MediaType, ResponseParser>([...defaultParsers]);
 
-            for (const [type, parser] of entriesIterator(responseParsers)) {
-                parsers.set(getMediaType(type), parser);
+                if (responseParsers) {
+                    for (const [type, parser] of entriesIterator(responseParsers)) {
+                        const mediaType = getMediaType(type);
+                        if (mediaType) {
+                            parsers.set(mediaType, parser);
+                        }
+                    }
+                }
+            } else {
+                parsers = defaultParsers;
             }
-        } else {
-            parsers = defaultParsers;
-        }
         settings.responseParsers = parsers;
 
         return true;
@@ -140,30 +145,38 @@ export class ResponseTypeInterceptor
             let mediaType: MediaType, parser;
 
             if (!isBoolean(responseType)) {
-                mediaType = getMediaType(responseType);
-                parser = getParser(mediaType, responseParsers);
+                const mt = getMediaType(responseType as any);
+                if (mt) {
+                    mediaType = mt;
+                    parser = getParser(mediaType, responseParsers);
+                }
             }
 
             if (!parser && 'headers' in response) {
                 const contentType = CONTENT_TYPE.get(response.headers) || '';
-                mediaType = getMediaType(contentType);
-                parser = getParser(mediaType, responseParsers);
+                const mt = getMediaType(contentType);
+                if (mt) {
+                    mediaType = mt;
+                    parser = getParser(mediaType, responseParsers);
+                }
             }
 
             if (!parser) {
-                parser = getParser(MediaTypes.TEXT_PLAIN, responseParsers);
+                parser = getParser(MediaTypes.TEXT_PLAIN!, responseParsers);
             }
 
             try {
-                const data = await parser(response);
-                defineProperty(response, 'data', {
-                    value: data,
-                    configurable: true,
-                    enumerable: true,
-                    writable: false,
-                });
+                if (parser) {
+                    const data = await parser(response);
+                    defineProperty(response, 'data', {
+                        value: data,
+                        configurable: true,
+                        enumerable: true,
+                        writable: false,
+                    });
+                }
             } catch (e) {
-                throw new ResponseError(response, e);
+                throw new ResponseError(response, e as Error);
             }
         }
     }

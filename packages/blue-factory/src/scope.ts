@@ -150,7 +150,9 @@ export class HashScope implements Scope {
         }
 
         const scope = this.#scopeMap.get(this.#currentKey);
-        scope?.delete(name);
+        if (scope) {
+            scope.delete(name);
+        }
     }
 
     getValue<T = any>(name: string, objectFactory: ObjectFactory<T>): T {
@@ -159,6 +161,10 @@ export class HashScope implements Scope {
         }
 
         const scope = this.#scopeMap.get(this.#currentKey);
+        if (!scope) {
+            throw new IllegalStateError('No active hash scope context. Call setCurrentKey() first.');
+        }
+        
         if (!scope.has(name)) {
             scope.set(name, objectFactory());
         }

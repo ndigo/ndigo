@@ -35,36 +35,36 @@ const { defineProperty, getOwnPropertyDescriptor } = Reflect,
         return getMetadata(constructor);
     },
     // Metadata getter functions
-    hasConfigurationMetadata = (target): boolean => getMetadata(target)[CONFIG_CONSTRUCTOR] === true,
-    hasProfileMetadata = (target, propertyKey?: string | symbol): boolean => {
+    hasConfigurationMetadata = (target: any): boolean => getMetadata(target)[CONFIG_CONSTRUCTOR] === true,
+    hasProfileMetadata = (target: any, propertyKey?: string | symbol): boolean => {
         const metadata = getInstanceMetadata(target) || getMetadata(target);
         if (propertyKey) {
             return metadata[`${CONFIG_PROFILE}:${String(propertyKey)}`] !== undefined;
         }
         return metadata[CONFIG_PROFILE] !== undefined;
     },
-    hasPropertyMetadata = (target, propertyKey: string | symbol): boolean => {
+    hasPropertyMetadata = (target: any, propertyKey: string | symbol): boolean => {
         const metadata = getInstanceMetadata(target) || getMetadata(target);
         return metadata[`${CONFIG_PROPERTY}:${String(propertyKey)}`] !== undefined;
     },
-    hasPropertySourceMetadata = (target): boolean => getMetadata(target)[CONFIG_PROPERTY_SOURCE] !== undefined,
-    hasEntryMetadata = (target, propertyKey: string | symbol): boolean => {
+    hasPropertySourceMetadata = (target: any): boolean => getMetadata(target)[CONFIG_PROPERTY_SOURCE] !== undefined,
+    hasEntryMetadata = (target: any, propertyKey: string | symbol): boolean => {
         const metadata = getInstanceMetadata(target) || getMetadata(target);
         return metadata[`${CONFIG_ENTRY}:${String(propertyKey)}`] !== undefined;
     },
-    getProfileMetadata = (target, propertyKey?: string | symbol): ProfileMetadata => {
+    getProfileMetadata = (target: any, propertyKey?: string | symbol): ProfileMetadata => {
         const metadata = getInstanceMetadata(target) || getMetadata(target);
         if (propertyKey) {
             return metadata[`${CONFIG_PROFILE}:${String(propertyKey)}`];
         }
         return metadata[CONFIG_PROFILE];
     },
-    getPropertyMetadata = (target, propertyKey: string | symbol): string => {
+    getPropertyMetadata = (target: any, propertyKey: string | symbol): string => {
         const metadata = getInstanceMetadata(target) || getMetadata(target);
         return metadata[`${CONFIG_PROPERTY}:${String(propertyKey)}`];
     },
-    getPropertySourceMetadata = (target): JSONObject[] => getMetadata(target)[CONFIG_PROPERTY_SOURCE],
-    getEntryMetadata = (target, propertyKey: string | symbol): string => {
+    getPropertySourceMetadata = (target: any): JSONObject[] => getMetadata(target)[CONFIG_PROPERTY_SOURCE],
+    getEntryMetadata = (target: any, propertyKey: string | symbol): string => {
         const metadata = getInstanceMetadata(target) || getMetadata(target);
         return metadata[`${CONFIG_ENTRY}:${String(propertyKey)}`];
     };
@@ -236,8 +236,8 @@ export function entry(nameOrTarget?: string | any, maybeContext?: ClassMethodDec
  * @see {@link MetadataConfigApplicationContext}
  */
 class ConfigurationParser {
-    readonly environment: Environment;
-    readonly registry: Registry;
+    readonly environment!: Environment;
+    readonly registry!: Registry;
 
     constructor(registry: Registry, environment: Environment) {
         defineProperty(this, 'registry', {
@@ -277,7 +277,7 @@ class ConfigurationParser {
     /**
      * Process the given `@configuration` decorator metadata.
      */
-    processConfiguration(configuration) {
+    processConfiguration(configuration: any) {
         for (const key in configuration) {
             if (
                 !hasProfileMetadata(configuration, key) ||
@@ -294,7 +294,7 @@ class ConfigurationParser {
     /**
      * Process the given `@property` decorator metadata.
      */
-    processProperty(configuration) {
+    processProperty(configuration: any) {
         for (const key in configuration) {
             if (hasPropertyMetadata(configuration, key)) {
                 const path = getPropertyMetadata(configuration, key),
@@ -357,7 +357,7 @@ export class ConfigurationProcessor
     /**
      * The environment used for resolving properties.
      */
-    environment: Environment;
+    environment!: Environment;
 
     /**
      * Processes configuration classes registered as entry registries.
@@ -390,7 +390,7 @@ export class MetadataConfigApplicationContext extends GenericApplicationContext 
      *
      * @param configClass - The configuration class to parse.
      */
-    register(configClass): void {
+    register(configClass: any): void {
         this.#configurationParser.parse([configClass]);
     }
 }

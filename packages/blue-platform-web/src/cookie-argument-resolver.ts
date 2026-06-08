@@ -42,7 +42,7 @@ export abstract class AbstractCookieValueMethodArgumentResolver extends Abstract
     }
 
     /** Resolves and converts a cookie-backed argument value. */
-    resolveArgument(parameter: MethodParameter, route: Route, mapping): any {
+    resolveArgument(parameter: MethodParameter, route: Route, mapping: any): any {
         const resolveValue = (v: any) => v ?? parameter.defaultValue,
             value = resolveValue(this.resolveName(parameter.name, parameter, route, mapping)),
             converter = parameter.convert ?? this.#converter,
@@ -62,7 +62,7 @@ export abstract class AbstractCookieValueMethodArgumentResolver extends Abstract
     }
 
     /** Resolves the raw cookie value for the requested name. */
-    protected resolveName(name: string, parameter: MethodParameter, route: Route, mapping): any {
+    protected resolveName(name: string, parameter: MethodParameter, route: Route, mapping: any): any {
         void parameter;
         void route;
         void mapping;

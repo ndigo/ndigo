@@ -51,8 +51,8 @@ function createTracedDecorator(spanName?: string) {
                 try {
                     const result = target.apply(this, args);
 
-                    if (result && typeof (result as PromiseLike<unknown>).then === 'function') {
-                        return (result as Promise<unknown>)
+                    if (result && typeof (result as unknown as PromiseLike<unknown>).then === 'function') {
+                        return (result as unknown as Promise<unknown>)
                             .then((value) => {
                                 span.setStatus({ code: SpanStatusCode.OK });
                                 span.end();

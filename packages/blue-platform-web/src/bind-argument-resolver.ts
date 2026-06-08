@@ -2,7 +2,7 @@
  * @author Jeff Rose
  */
 
-import { DataBinder, MutablePropertyValues } from '@blue/core';
+import { DataBinder, MutablePropertyValues, PropertyValues } from '@blue/core';
 import { AbstractNamedValueMethodArgumentResolver, MethodParameter, MethodParameterType } from '@blue/dispatcher';
 import { Route } from '@blue/router';
 import { isNil } from '@blue/util/types';
@@ -43,7 +43,7 @@ export abstract class AbstractBindMethodArgumentResolver extends AbstractNamedVa
     }
 
     /** Resolves and converts a bind-backed argument value. */
-    resolveArgument(parameter: MethodParameter, route: Route, mapping): any {
+    resolveArgument(parameter: MethodParameter, route: Route, mapping: any): any {
         const rawData = this.getSourceData(parameter.name, route);
         const filteredData = this.filterByPrefix(rawData, parameter.prefix);
 
@@ -54,7 +54,7 @@ export abstract class AbstractBindMethodArgumentResolver extends AbstractNamedVa
             mpv.addPropertyValue(key, value);
         }
 
-        binder.bind(mpv);
+        binder.bind(mpv as PropertyValues);
         const unflattened = binder.result;
 
         const converter = parameter.convert ?? this.#converter;

@@ -69,7 +69,7 @@ export interface ConfigurableEnvironment extends Environment {
      *
      * @param environment - The environment to merge.
      */
-    merge(environment: Environment);
+    merge(environment: ConfigurableEnvironment): void;
 }
 
 /**
@@ -175,7 +175,7 @@ export abstract class AbstractEnvironment implements ConfigurableEnvironment {
         return this.#propertyResolver.getRequiredProperty(key);
     }
 
-    merge(environment: ConfigurableEnvironment) {
+    merge(environment: ConfigurableEnvironment): void {
         if (environment.propertySources.length) {
             const propertySources = this.propertySources.concat(environment.propertySources);
             this.propertySources = propertySources;
@@ -205,7 +205,7 @@ export abstract class AbstractEnvironment implements ConfigurableEnvironment {
  */
 export const AsEnvironmentAware = <T extends Constructable>(superclass: T): Constructable<EnvironmentAware> & T =>
     class extends AsAware(superclass) implements EnvironmentAware {
-        readonly environment: Environment;
+    readonly environment!: Environment;
 
         /**
          * Captures the environment on the instance.
@@ -235,8 +235,8 @@ const _likeEnvironmentShape = like({
     addDefaultProfile: Function,
 });
 
-export const likeEnvironment = ((value) => likePropertyResolver(value) && _likeEnvironmentShape(value)) as (
-    value
+export const likeEnvironment = ((value: any) => likePropertyResolver(value) && _likeEnvironmentShape(value)) as (
+    value: any
 ) => value is Environment;
 
 /**
@@ -246,7 +246,7 @@ export const likeEnvironment = ((value) => likePropertyResolver(value) && _likeE
  * @returns `true` when the value looks like environment aware.
  */
 export const likeEnvironmentAware = likeAwareAnd(like({ setEnvironment: Function })) as (
-    value
+    value: any
 ) => value is EnvironmentAware;
 
 const hasEnvironmentProperty = (value: any): boolean => likeEnvironment(value?.['environment']);
@@ -257,8 +257,8 @@ const hasEnvironmentProperty = (value: any): boolean => likeEnvironment(value?.[
  * @param value - The value to test.
  * @returns `true` when the value looks like an environment source.
  */
-export const likeEnvironmentSource = ((value) => !isNil(value) && hasEnvironmentProperty(value)) as (
-    value
+export const likeEnvironmentSource = ((value: any) => !isNil(value) && hasEnvironmentProperty(value)) as (
+    value: any
 ) => value is EnvironmentSource;
 
 /**

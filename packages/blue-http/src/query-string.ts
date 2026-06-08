@@ -7,7 +7,7 @@ import { encodeURIComponent as encode } from '@blue/util/string';
 
 const arrayStringifier = (key: string, value: string, index?: number): string =>
         value === null ? encode(key) : `${encode(key)}=${encode(value)}`,
-    toQueryString = (object): string =>
+    toQueryString = (object: any): string =>
         object
             ? Object.keys(object)
                   .sort()

@@ -98,7 +98,7 @@ export class StaticThemeResolver implements ThemeResolver {
  * @param value - The value to be tested.
  * @returns Whether the value matches the theme shape.
  */
-export const likeTheme = like({ name: String, contentSource: Object }) as (value) => value is Theme;
+export const likeTheme = like({ name: String, contentSource: Object }) as (value: unknown) => value is Theme;
 
 /**
  * Tests whether a value looks like a theme resolver.
@@ -106,4 +106,4 @@ export const likeTheme = like({ name: String, contentSource: Object }) as (value
  * @param value - The value to be tested.
  * @returns Whether the value matches the theme resolver shape.
  */
-export const likeThemeResolver = like({ getTheme: Function }) as (value) => value is ThemeResolver;
+export const likeThemeResolver = like({ getTheme: Function }) as (value: unknown) => value is ThemeResolver;

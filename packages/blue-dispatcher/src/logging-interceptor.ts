@@ -74,7 +74,7 @@ export class LoggingRouteHandlerInterceptor implements RouteHandlerInterceptor {
      * @param handler - The route handler.
      * @returns `true` to continue execution.
      */
-    async preHandle(route: Route, handler: any): Promise<boolean> {
+    async preHandle(route: Route, handler: object | undefined): Promise<boolean> {
         this.#startTimeMap.set(route, Date.now());
         this.#logger.info('[Dispatcher] -> Handling route', { 'route.path': route.path });
         return true;
@@ -87,7 +87,7 @@ export class LoggingRouteHandlerInterceptor implements RouteHandlerInterceptor {
      * @param handler - The route handler.
      * @param modelAndView - The model and view returned by the handler.
      */
-    async postHandle(route: Route, handler: any, modelAndView: ModelAndView): Promise<void> {
+    async postHandle(route: Route, handler: object | undefined, modelAndView: ModelAndView): Promise<void> {
         const startTime = this.#startTimeMap.get(route);
         const duration = startTime ? Date.now() - startTime : -1;
         const viewName = modelAndView?.viewName || 'unknown';
@@ -105,7 +105,7 @@ export class LoggingRouteHandlerInterceptor implements RouteHandlerInterceptor {
      * @param handler - The route handler.
      * @param error - The error thrown during execution.
      */
-    async completeHandle(route: Route, handler: any, error: Error): Promise<void> {
+    async completeHandle(route: Route, handler: object | undefined, error: Error): Promise<void> {
         if (error) {
             const startTime = this.#startTimeMap.get(route);
             const duration = startTime ? Date.now() - startTime : -1;

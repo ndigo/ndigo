@@ -83,7 +83,7 @@ export class DataParameterInterceptor implements InitializationAwareHTTPIntercep
     preInit(url: URL, settings: DataParameterInit): boolean {
         if ('data' in settings) {
             const { data, method } = settings;
-            if (isBodyless(method)) {
+            if (method && isBodyless(method)) {
                 const entries = getEntries(data);
                 if (entries && typeof entries[Symbol.iterator] === 'function') {
                     for (const [key, value] of entries as Iterable<[string, any]>) {
@@ -91,7 +91,7 @@ export class DataParameterInterceptor implements InitializationAwareHTTPIntercep
                     }
                 }
             } else {
-                settings.body = parseData(data);
+                settings.body = parseData(data ?? '');
             }
         }
         return true;

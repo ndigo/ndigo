@@ -191,8 +191,8 @@ function globToRegExp(globPattern: string): RegExp {
  * Wraps an interceptor so it only applies to matching request paths.
  */
 export class MappedServiceInterceptor {
-    #excludePatterns: string[];
-    #includePatterns: string[];
+    #excludePatterns!: string[];
+    #includePatterns!: string[];
     #interceptor: ServiceInterceptor;
 
     get interceptor(): ServiceInterceptor {
@@ -219,7 +219,7 @@ export class MappedServiceInterceptor {
      * @param matcher - Optional pattern matcher used for comparisons.
      * @returns `true` when the path should use the wrapped interceptor.
      */
-    matches(path: string, matcher: (path: string, pattern: string) => boolean = null): boolean {
+    matches(path: string, matcher?: (path: string, pattern: string) => boolean): boolean {
         const patternMatcher = matcher || ((value, pattern) => globToRegExp(pattern).test(value));
         const includePatterns = this.#includePatterns || [];
         const excludePatterns = this.#excludePatterns || [];
@@ -274,8 +274,8 @@ export class ServiceExecutionChain {
      * @param service - Service or chain to wrap.
      * @param interceptors - Additional interceptors to append.
      */
-    constructor(service: Service | ServiceExecutionChain, interceptors: ServiceInterceptor[] = null) {
-        this.#interceptors = null;
+    constructor(service: Service | ServiceExecutionChain, interceptors: ServiceInterceptor[] | null = null) {
+        this.#interceptors = [];
 
         if (service instanceof ServiceExecutionChain) {
             const chain = service;
@@ -327,18 +327,20 @@ export class ServiceExecutionChain {
 }
 
 class Service implements AsyncDestroyable {
-    #interceptors;
-    #serviceCalls;
+    #interceptors!: ServiceInterceptor[] | null;
+    #serviceCalls: Record<string, any>;
 
-    id: number;
-    name: string;
-    destroyed: boolean;
+    [key: string]: any;
+
+    id!: number;
+    name!: string;
+    destroyed!: boolean;
 
     get [Symbol.toStringTag](): string {
         return `Service:${this.name}`;
     }
 
-    set serviceCalls(newServiceCalls) {}
+    set serviceCalls(newServiceCalls: Record<string, any>) {}
 
     constructor(name: string, init: ServiceInit) {
         this.#serviceCalls = createNull();
@@ -361,9 +363,9 @@ class Service implements AsyncDestroyable {
         throw new FrameworkError('Method not implemented.');
     }
 
-    addServiceCall(name, settings) {
+    addServiceCall(name: string, settings: any) {
         this.#serviceCalls[name] = createNull();
-        this[name] = (data, init) => {
+        this[name] = (data: any, init: any) => {
             /*const
                 settings = Object.assign( {}, defaults, init ),
                 chain = this._getServiceExecutionChain( this, input ),

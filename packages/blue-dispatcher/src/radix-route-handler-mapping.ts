@@ -39,7 +39,7 @@ export class RadixMetadataHandlerMapping
         return 'RadixMetadataHandlerMapping';
     }
 
-    match(route: Route, pattern: string): RouteMatchResult {
+    match(route: Route, pattern: string): RouteMatchResult | null {
         const info: RouteMappingInfo = new RouteMappingInfo(pattern),
             matchingInfo = info.getMatchingCondition(route);
         if (!matchingInfo) {
@@ -55,11 +55,11 @@ export class RadixMetadataHandlerMapping
         };
     }
 
-    protected _getMatchingMapping(mapping: RouteMappingInfo, route: Route): RouteMappingInfo {
+    protected _getMatchingMapping(mapping: RouteMappingInfo, route: Route): RouteMappingInfo | null {
         return mapping.getMatchingCondition(route);
     }
 
-    protected override _getHandler(route: Route): RouteHandlerMethod {
+    protected override _getHandler(route: Route): RouteHandlerMethod | null {
         const { path } = route;
         const match: RadixMatch<RadixEntry> | null = this.#radixTree.lookup(path);
 
@@ -107,7 +107,7 @@ export class RadixMetadataHandlerMapping
         return winner.handlerMethod;
     }
 
-    protected _handleNoMatch(mappings, path: string, route: Route): RouteHandlerMethod {
+    protected _handleNoMatch(mappings: any, path: string, route: Route): RouteHandlerMethod | null {
         return null;
     }
 

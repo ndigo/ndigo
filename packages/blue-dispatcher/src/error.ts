@@ -14,7 +14,7 @@ const { defineProperty } = Reflect;
  * @extends module:core.FrameworkError
  */
 export class NoHandlerFoundError extends FrameworkError {
-    route: Route;
+    route!: Route;
 
     get [Symbol.toStringTag](): string {
         return 'NoHandlerFoundError';
@@ -26,12 +26,7 @@ export class NoHandlerFoundError extends FrameworkError {
          * @param route - The route for which no handler was found.
          */
         super(`No handler found for route "${route.path}"`);
-        defineProperty(this, 'route', {
-            value: route,
-            configurable: false,
-            enumerable: false,
-            writable: false,
-        });
+        this.route = route;
     }
 }
 
@@ -41,8 +36,8 @@ export class NoHandlerFoundError extends FrameworkError {
  * @extends module:core.FrameworkError
  */
 export class NoViewFoundError extends FrameworkError {
-    readonly route: Route;
-    readonly viewName: string;
+    readonly route!: Route;
+    readonly viewName!: string;
 
     get [Symbol.toStringTag](): string {
         return 'NoViewFoundError';
@@ -50,18 +45,8 @@ export class NoViewFoundError extends FrameworkError {
 
     constructor(viewName: string, route: Route) {
         super(`Could not resolve view with name "${viewName}" for route "${route.path}"`);
-        defineProperty(this, 'route', {
-            value: route,
-            configurable: false,
-            enumerable: false,
-            writable: false,
-        });
-        defineProperty(this, 'viewName', {
-            value: viewName,
-            configurable: false,
-            enumerable: false,
-            writable: false,
-        });
+        this.route = route;
+        this.viewName = viewName;
     }
 }
 
@@ -70,8 +55,8 @@ export class NoViewFoundError extends FrameworkError {
  * @extends module:core.FrameworkError
  */
 export class RouteBindingError extends FrameworkError {
-    route: Route;
-    name: string;
+    route!: Route | null;
+    name!: string;
 
     get [Symbol.toStringTag](): string {
         return 'RouteBindingError';
@@ -82,32 +67,12 @@ export class RouteBindingError extends FrameworkError {
     constructor(routeOrMessage: Route | string, name?: string) {
         if (isString(routeOrMessage)) {
             super(routeOrMessage);
-            defineProperty(this, 'route', {
-                value: null,
-                configurable: false,
-                enumerable: false,
-                writable: false,
-            });
-            defineProperty(this, 'name', {
-                value: null,
-                configurable: false,
-                enumerable: false,
-                writable: false,
-            });
+            this.route = null;
+            this.name = '';
         } else {
             super(`Unable to bind "${name}" for route "${routeOrMessage.path}"`);
-            defineProperty(this, 'route', {
-                value: routeOrMessage,
-                configurable: false,
-                enumerable: false,
-                writable: false,
-            });
-            defineProperty(this, 'name', {
-                value: name,
-                configurable: false,
-                enumerable: false,
-                writable: false,
-            });
+            this.route = routeOrMessage;
+            this.name = name ?? '';
         }
     }
 }
@@ -119,9 +84,9 @@ export class RouteBindingError extends FrameworkError {
  * @extends module:core.FrameworkError
  */
 export class ParameterBindingError extends FrameworkError {
-    readonly parameterName: string;
-    readonly methodName: string;
-    readonly controllerName: string;
+    readonly parameterName!: string | null;
+    readonly methodName!: string | null;
+    readonly controllerName!: string | null;
 
     get [Symbol.toStringTag](): string {
         return 'ParameterBindingError';
@@ -177,8 +142,8 @@ export class InvalidParameterMappingError extends ParameterBindingError {
  * @extends module:dispatcher.ParameterBindingError
  */
 export class MissingParameterError extends ParameterBindingError {
-    readonly parameterType: string;
-    readonly required: boolean;
+    readonly parameterType!: string | null;
+    readonly required!: boolean | null;
 
     get [Symbol.toStringTag](): string {
         return 'MissingParameterError';
@@ -221,8 +186,8 @@ export class MissingParameterError extends ParameterBindingError {
  * @extends module:dispatcher.ParameterBindingError
  */
 export class ParameterConversionError extends ParameterBindingError {
-    readonly parameterType: string;
-    readonly cause: Error | null;
+    readonly parameterType!: string | null;
+    readonly cause!: Error | null;
 
     get [Symbol.toStringTag](): string {
         return 'ParameterConversionError';

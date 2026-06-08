@@ -50,90 +50,30 @@ const { defineProperty } = Reflect;
  * @implements module:core.Serializable
  */
 export class RouteHandlerMethod implements HandlerMethod, Serializable {
-    readonly factory: Factory;
-    readonly name: string;
-    readonly handler: object;
-    readonly method: string;
+    readonly factory!: Factory | null;
+    readonly name!: string | null;
+    readonly handler!: object;
+    readonly method!: string;
 
-    parameters: MethodParameter[];
-    argumentResolvers: HandlerMethodArgumentResolver[];
+    parameters!: MethodParameter[];
+    argumentResolvers!: HandlerMethodArgumentResolver[];
 
     constructor(handler: object, method: string, ...args: any[]);
     constructor(factory: Factory, name: string, method: string, ...args: any[]);
     constructor(factoryOrHandler: Factory | object, nameOrMethod: string, ...args: any[]) {
-        /**
-         */
-
-        /**
-         */
-
-        /**
-         */
-
-        /**
-         */
-
-        /**
-         */
-
         if (likeFactory(factoryOrHandler)) {
-            defineProperty(this, 'factory', {
-                value: factoryOrHandler,
-                configurable: true,
-                enumerable: false,
-                writable: false,
-            });
-            defineProperty(this, 'name', {
-                value: nameOrMethod,
-                configurable: true,
-                enumerable: false,
-                writable: false,
-            });
-            defineProperty(this, 'handler', {
-                value: this.factory.getInstance(this.name),
-                configurable: true,
-                enumerable: false,
-                writable: false,
-            });
-            defineProperty(this, 'method', {
-                value: args.shift(),
-                configurable: true,
-                enumerable: false,
-                writable: false,
-            });
+            this.factory = factoryOrHandler;
+            this.name = nameOrMethod;
+            this.handler = this.factory.getInstance(this.name);
+            this.method = args.shift();
         } else {
-            defineProperty(this, 'factory', {
-                value: null,
-                configurable: true,
-                enumerable: false,
-                writable: false,
-            });
-            defineProperty(this, 'name', {
-                value: null,
-                configurable: true,
-                enumerable: false,
-                writable: false,
-            });
-            defineProperty(this, 'handler', {
-                value: factoryOrHandler,
-                configurable: true,
-                enumerable: false,
-                writable: false,
-            });
-            defineProperty(this, 'method', {
-                value: nameOrMethod,
-                configurable: true,
-                enumerable: false,
-                writable: false,
-            });
+            this.factory = null;
+            this.name = null;
+            this.handler = factoryOrHandler;
+            this.method = nameOrMethod;
         }
 
-        defineProperty(this, 'parameters', {
-            value: args.length ? args : [],
-            configurable: true,
-            enumerable: false,
-            writable: true,
-        });
+        this.parameters = args.length ? args : [];
     }
 
     /**
@@ -144,7 +84,6 @@ export class RouteHandlerMethod implements HandlerMethod, Serializable {
         /**
          * * Hardcoding route as a parameter is a bit of a cop-out. It would be better to allow them to pick parameters, etc. as arguments. -JBR
          */
-
         const { argumentResolvers, parameters } = this,
             parametersLength = parameters.length,
             args = new Array(parametersLength),
@@ -158,7 +97,7 @@ export class RouteHandlerMethod implements HandlerMethod, Serializable {
             }
         }
 
-        return this.handler[this.method](...args);
+        return (this.handler as any)[this.method](...args);
     }
 
     /**

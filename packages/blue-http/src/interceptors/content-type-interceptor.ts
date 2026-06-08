@@ -32,7 +32,7 @@ export class ContentTypeInterceptor implements InitializationAwareHTTPIntercepto
         if ('contentType' in settings) {
             const { contentType } = settings,
                 headers = new Headers(settings.headers ?? {});
-            CONTENT_TYPE.set(headers, typeof contentType === 'string' ? contentType : contentType.toString());
+            CONTENT_TYPE.set(headers, typeof contentType === 'string' ? contentType : contentType?.toString() ?? '');
             settings.headers = headers;
         }
         return true;

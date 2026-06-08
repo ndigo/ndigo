@@ -21,7 +21,7 @@ export interface TransformContext {
      * Media type for content-type-based conditional transforms.
      *
      */
-    readonly mediaType?: MediaType;
+    readonly mediaType: MediaType | null | undefined;
 
     /**
      * Transform direction: 'request' or 'response'

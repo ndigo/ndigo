@@ -23,14 +23,14 @@ export interface ViewResolver {
      * @param language - Optional locale or language hint used during resolution.
      * @returns A promise that resolves to the matching view, or `null` when none is available.
      */
-    resolveViewName(name: string, language?: any): Promise<View>;
+    resolveViewName(name: string, language?: any): Promise<View | null>;
 }
 
 /**
  * @implements module:view.View
  */
 class UnresolvedView implements View {
-    readonly mediaType: MediaType = null;
+    readonly mediaType: MediaType | null = null;
 
     render(model: any, request: any): void {
         return;
@@ -44,7 +44,7 @@ export abstract class AbstractCachingViewResolver implements ViewResolver {
     /**
      * Cached views keyed by name and language.
      */
-    readonly cache: { [key: string]: View };
+    readonly cache!: { [key: string]: View };
     /**
      * Indicates whether resolved views should be cached.
      */
@@ -70,13 +70,13 @@ export abstract class AbstractCachingViewResolver implements ViewResolver {
      * @param language - Optional locale or language hint used during resolution.
      * @returns A promise that resolves to the matching view, or `null` when none is available.
      */
-    async resolveViewName(name: string, language?: any): Promise<View> {
-        let view: View;
+    async resolveViewName(name: string, language?: any): Promise<View | null> {
+        let view: View | null;
         if (!this.isCaching) {
             view = await this._createView(name, language);
         } else {
             const key: string = this._createCacheKey(name, language);
-            view = this.cache[key];
+            view = this.cache[key] ?? null;
             if (!view) {
                 view = await this._createView(name, language);
                 if (!view) {
@@ -89,7 +89,7 @@ export abstract class AbstractCachingViewResolver implements ViewResolver {
         return view === unresolvedView ? null : view;
     }
 
-    protected async _createView(name: string, language?: any): Promise<View> {
+    protected async _createView(name: string, language?: any): Promise<View | null> {
         return this._loadView(name, language);
     }
 
@@ -104,7 +104,7 @@ export abstract class AbstractPathBasedViewResolver extends AbstractCachingViewR
     /**
      * Media type assigned to resolved views.
      */
-    mediaType: MediaType;
+    mediaType: MediaType | null;
     /**
      * Prefix applied before the resolved view name.
      */
@@ -116,11 +116,11 @@ export abstract class AbstractPathBasedViewResolver extends AbstractCachingViewR
     /**
      * The concrete view class that will be instantiated.
      */
-    viewClass: Constructable<View>;
+    viewClass!: Constructable<View>;
     /**
      * The set of names this resolver supports.
      */
-    viewNames: (string | RegExp)[];
+    viewNames: (string | RegExp)[] | null;
 
     /**
      * Creates a path-based resolver with JavaScript media type defaults.
@@ -143,8 +143,9 @@ export abstract class AbstractPathBasedViewResolver extends AbstractCachingViewR
     supports(name: string, language?: any): boolean {
         let isSupported: boolean = !!this.viewNames;
 
-        if (isSupported) {
-            isSupported = this.viewNames.some(function (viewName: string | RegExp) {
+        if (isSupported && this.viewNames) {
+            const names = this.viewNames;
+            isSupported = names.some(function (viewName: string | RegExp) {
                 if (viewName instanceof RegExp) {
                     return viewName.test(name);
                 } else if (typeof viewName === 'string') {
@@ -224,7 +225,7 @@ export class NameViewResolver extends AsApplicationContextAware(Null) implements
     /**
      * The application context used as the view registry.
      */
-    readonly applicationContext: ApplicationContext;
+    readonly applicationContext!: ApplicationContext;
 
     /**
      * Resolves a view from the application context by name.
@@ -233,10 +234,10 @@ export class NameViewResolver extends AsApplicationContextAware(Null) implements
      * @param language - Optional locale or language hint.
      * @returns A promise that resolves to the matching view, or `null` when none is available.
      */
-    async resolveViewName(name: string, language?: any): Promise<View> {
+    async resolveViewName(name: string, language?: any): Promise<View | null> {
         const { applicationContext } = this;
 
-        let view: View = null;
+        let view: View | null = null;
 
         // ApplicationContext extends ConfigurableFactory which extends Registry
         // Registry provides hasValue and getValue methods
@@ -244,7 +245,7 @@ export class NameViewResolver extends AsApplicationContextAware(Null) implements
             view = (applicationContext as any).getValue(name);
         }
 
-        return await view;
+        return view;
     }
 }
 
@@ -259,7 +260,7 @@ export class ViewResolverComposite extends AsApplicationContextAware(Null) imple
     /**
      * The ordered resolver chain consulted during lookup.
      */
-    readonly viewResolvers: ViewResolver[];
+    readonly viewResolvers!: ViewResolver[];
 
     /**
      * Creates a composite resolver with the given delegate list.
@@ -302,7 +303,7 @@ export class ViewResolverComposite extends AsApplicationContextAware(Null) imple
      * @param language - Optional locale or language hint.
      * @returns A promise that resolves to the first matching view, or `null` when none resolve.
      */
-    async resolveViewName(name: string, language?: any): Promise<View> {
+    async resolveViewName(name: string, language?: any): Promise<View | null> {
         const { viewResolvers } = this;
         const length = viewResolvers.length;
         if (length) {

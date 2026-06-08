@@ -62,7 +62,7 @@ export class AppResetInterceptor implements ResponseAwareHTTPInterceptor<AppRese
             statusCode = settings.appResetCode;
 
         // Check if the response has the app reset header and matches the status code
-        if (response.headers.has(header) && (response.status === statusCode || response.status === 303)) {
+        if (header && response.headers.has(header) && (response.status === statusCode || response.status === 303)) {
             try {
                 // Parse the URL to check hostname
                 const url = new URL(response.url);

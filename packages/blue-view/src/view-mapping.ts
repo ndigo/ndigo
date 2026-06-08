@@ -32,7 +32,7 @@ export abstract class AbstractViewMapping extends AsNameAware(AsApplicationConte
     /**
      * The application context used to look up mapping dependencies.
      */
-    applicationContext: ApplicationContext;
+    applicationContext!: ApplicationContext;
     /**
      * The fallback target returned when no route-specific target is found.
      */
@@ -40,11 +40,11 @@ export abstract class AbstractViewMapping extends AsNameAware(AsApplicationConte
     /**
      * The interceptors applied while resolving targets.
      */
-    interceptors: any[];
+    interceptors!: any[];
     /**
-     * The matcher used to compare route paths.
+     * The path matcher used to match request paths to targets.
      */
-    pathMatcher: PathMatcher;
+    pathMatcher!: PathMatcher;
 
     get [Symbol.toStringTag](): string {
         return 'ViewMapping';
@@ -101,13 +101,13 @@ export abstract class AbstractPathViewMapping extends AbstractViewMapping {
     /**
      * The target returned for the root path when one is configured.
      */
-    rootTarget;
+    rootTarget: any;
     /**
      * Indicates whether trailing slashes should be treated as equivalent.
      */
     useTrailingSlashMatch: boolean;
 
-    protected readonly _targets: Map<string, any>;
+    protected readonly _targets!: Map<string, any>;
 
     constructor() {
         super();

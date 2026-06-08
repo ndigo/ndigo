@@ -66,7 +66,7 @@ const { defineProperty } = Reflect,
  */
 export const AsResourceLoaderAware = <T extends Constructable>(superclass: T): Constructable<ResourceLoaderAware> & T =>
     class extends AsAware(superclass) implements ResourceLoaderAware {
-        loader: ResourceLoader;
+        loader!: ResourceLoader;
 
         setResourceLoader(loader: ResourceLoader): void {
             defineProperty(this, 'loader', {
@@ -84,7 +84,7 @@ export const AsResourceLoaderAware = <T extends Constructable>(superclass: T): C
  * @param value - The value to test.
  * @returns `true` when the value looks like a resource.
  */
-export const likeResource = like({ exists: Boolean }) as (value) => value is Resource;
+export const likeResource = like({ exists: Boolean }) as (value: unknown) => value is Resource;
 
 /**
  * Returns whether a value behaves like a resource loader.
@@ -92,7 +92,7 @@ export const likeResource = like({ exists: Boolean }) as (value) => value is Res
  * @param value - The value to test.
  * @returns `true` when the value looks like a resource loader.
  */
-export const likeResourceLoader = like({ getResource: Function }) as (value) => value is ResourceLoader;
+export const likeResourceLoader = like({ getResource: Function }) as (value: unknown) => value is ResourceLoader;
 
 /**
  * Returns whether a value can receive a resource loader.
@@ -100,7 +100,7 @@ export const likeResourceLoader = like({ getResource: Function }) as (value) => 
  * @param value - The value to test.
  * @returns `true` when the value looks like resource-loader aware.
  */
-export const likeResourceLoaderAware = like({ setResourceLoader: Function }) as (value) => value is ResourceLoaderAware;
+export const likeResourceLoaderAware = like({ setResourceLoader: Function }) as (value: unknown) => value is ResourceLoaderAware;
 
 /**
  */
@@ -108,8 +108,8 @@ export const likeResourceLoaderAware = like({ setResourceLoader: Function }) as 
  * Resource implementation backed by a URL.
  */
 export class URLResource<T = any> implements Resource<T> {
-    readonly url: URL;
-    readonly value: T;
+    readonly url!: URL;
+    readonly value!: T;
 
     get exists(): boolean {
         return true;
@@ -147,7 +147,7 @@ export class URLResource<T = any> implements Resource<T> {
  * Resource wrapper used when loading fails.
  */
 export class UnresolvedResource implements Resource<Error> {
-    readonly value: Error;
+    readonly value!: Error;
 
     get exists(): boolean {
         return false;
@@ -181,7 +181,7 @@ export const AsModuleResourceLoader = <T extends Constructable>(superclass: T): 
                 const value = await import(/* @vite-ignore */ location);
                 return new URLResource(location, value);
             } catch (error) {
-                throw new UnresolvedResource(location, error);
+                throw new UnresolvedResource(location, error as Error);
             }
         }
     };

@@ -21,7 +21,7 @@ export interface View {
     /**
      * The media type of the view.
      */
-    mediaType: MediaType;
+    mediaType: MediaType | null;
     /**
      * Indicates if the view has been destroyed.
      */
@@ -51,11 +51,11 @@ export abstract class AbstractView extends AsNameAware(AsApplicationContextAware
     /**
      * The media type of the view.
      */
-    mediaType: MediaType;
+    mediaType: MediaType | null;
     /**
      * The name of the view.
      */
-    name: string;
+    name!: string;
 
     /**
      * Returns the string tag for this view.
@@ -104,7 +104,7 @@ export abstract class AbstractView extends AsNameAware(AsApplicationContextAware
     toJSON(): JSONObject {
         const json: JSONObject = createNull();
         json.name = this.name;
-        json.mediaType = this.mediaType.toJSON();
+        json.mediaType = this.mediaType?.toJSON() ?? null;
         return json;
     }
 
@@ -146,13 +146,13 @@ export abstract class AbstractPathBasedView extends AbstractView {
     /**
      * The path associated with the view.
      */
-    path: string;
+    path!: string;
 
     get [Symbol.toStringTag](): string {
         return `PathBasedView:${this.path}`;
     }
 
-    constructor(path: string = null) {
+    constructor(path: string | null = null) {
         super();
         if (path) {
             Reflect.defineProperty(this, 'path', {
@@ -245,7 +245,7 @@ export class RerouteView extends AbstractPathBasedView {
         if (router?.navigate) {
             router.navigate(targetPath);
         } else if (typeof history !== 'undefined') {
-            history.pushState(null, null, targetPath);
+            history.pushState(undefined, '', targetPath);
         }
     }
 }

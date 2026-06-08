@@ -21,10 +21,10 @@ import { WebAutoConfiguration } from './web-auto-configuration';
  */
 export class Application extends Emitter {
     #context: ConfigurableApplicationContext | null = null;
-    #environment: ConfigurableEnvironment;
-    #name: string;
+    #environment: ConfigurableEnvironment | null = null;
+    #name: string | null = null;
     #profiles: string[];
-    #properties: JSONObject;
+    #properties: JSONObject | null = null;
     #sources: Set<Function>;
 
     /**
@@ -150,7 +150,7 @@ export class Application extends Emitter {
      * @returns The refreshed application context.
      */
     protected _prepareContext(environment: ConfigurableEnvironment, args: string[]): ConfigurableApplicationContext {
-        const context = new MetadataConfigApplicationContext(this.#name);
+        const context = new MetadataConfigApplicationContext(this.#name ?? 'blue-application');
         context.setEnvironment(environment);
 
         if (typeof window !== 'undefined') {

@@ -78,7 +78,7 @@ export abstract class FormComponent<T = unknown> extends WicketComponent<T> {
      * The default implementation returns the raw input value cast to `T`.
      */
     convertInput(): T {
-        return this.#rawInput as unknown as T;
+        return this.#rawInput as T;
     }
 
     /**

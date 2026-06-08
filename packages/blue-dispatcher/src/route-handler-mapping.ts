@@ -23,7 +23,7 @@ import RouteHandlerExecutionChain from './route-handler-execution-chain';
 import { RouteHandlerMethod, RouteHandlerMethodMappingNamingStrategy } from './route-handler-method';
 import { RouteMappingInfo, PatternsRouteCondition, QueryParamCondition, MatrixParamCondition } from './route-mapping-info';
 import { hasRouteMapping, getRouteMapping } from './route-mapping';
-import { hasMethodParameter, getMethodParameter } from './route-parameter';
+import { hasMethodParameter, getMethodParameter, MethodParameter } from './route-parameter';
 
 /**
  * A value that may be supplied directly or by name through the application context.
@@ -45,7 +45,7 @@ export interface RouteHandlerMapping {
      * @param route - The current route.
      * @returns The execution chain for the chosen handler, or `null`.
      */
-    getHandler(route: Route): RouteHandlerExecutionChain;
+    getHandler(route: Route): RouteHandlerExecutionChain | null;
 }
 
 /**
@@ -59,7 +59,7 @@ export interface MatchableHandlerMapping extends RouteHandlerMapping {
      * @param pattern - The pattern to test.
      * @returns A match result, or `null`.
      */
-    match(route: Route, pattern: string): RouteMatchResult;
+    match(route: Route, pattern: string): RouteMatchResult | null;
 }
 
 /**
@@ -100,10 +100,10 @@ const { from, isArray } = Array,
     { toString } = Object.prototype,
     doesNotStartWithSlash = (value: string) => !value.startsWith('/'),
     kind = /^\[object (.+)\]$/,
-    kindOf = (value): string => kind.exec(toString.call(value))[1],
+    kindOf = (value: any): string | undefined => kind.exec(toString.call(value))?.[1],
     resolveHandlerWithContext =
         (context: ApplicationContext) =>
-        (handler: MaybeHandler): object =>
+        (handler: MaybeHandler): object | undefined =>
             isString(handler) ? context.getValue(handler as string) : (handler as object);
 
 /**
@@ -128,38 +128,10 @@ class MappingEntry<T = any> {
      * @param directPaths - Paths that map directly to this entry.
      */
     constructor(mapping: T, handlerMethod: RouteHandlerMethod, mappingName: string, directPaths: string[] = []) {
-        /**
-         */
-        defineProperty(this, 'mapping', {
-            value: mapping,
-            configurable: true,
-            enumerable: false,
-            writable: false,
-        });
-        /**
-         */
-        defineProperty(this, 'handlerMethod', {
-            value: handlerMethod,
-            configurable: true,
-            enumerable: false,
-            writable: false,
-        });
-        /**
-         */
-        defineProperty(this, 'mappingName', {
-            value: mappingName,
-            configurable: true,
-            enumerable: false,
-            writable: false,
-        });
-        /**
-         */
-        defineProperty(this, 'directPaths', {
-            value: directPaths,
-            configurable: true,
-            enumerable: false,
-            writable: false,
-        });
+        this.mapping = mapping;
+        this.handlerMethod = handlerMethod;
+        this.mappingName = mappingName;
+        this.directPaths = directPaths;
     }
 }
 
@@ -192,7 +164,7 @@ class MappingRegistry<T = any> {
      * @returns The matching mappings.
      */
     getMappingsByPath(path: string): T[] {
-        return this.#pathLookup.get(path);
+        return this.#pathLookup.get(path) ?? [];
     }
 
     /**
@@ -202,7 +174,7 @@ class MappingRegistry<T = any> {
      * @returns The matching handler methods.
      */
     getHandlerMethodsByMappingName(name: string): RouteHandlerMethod[] {
-        return this.#nameLookup.get(name);
+        return this.#nameLookup.get(name) ?? [];
     }
 
     /**
@@ -218,7 +190,7 @@ class MappingRegistry<T = any> {
         for (let i = 0; i < length; i++) {
             this.#pathLookup.add(directPaths[i], mapping);
         }
-        let name: string;
+        let name: string = '';
 
         this.#registry.set(mapping, new MappingEntry(mapping, handlerMethod, name, directPaths));
     }
@@ -227,23 +199,26 @@ class MappingRegistry<T = any> {
         if (!this.#registry.has(mapping)) {
             return;
         } else {
-            const entry = this.#registry.get(mapping),
-                { directPaths } = entry,
-                length = directPaths.length;
+        const entry = this.#registry.get(mapping);
+        if (!entry) {
+            return;
+        }
+        const { directPaths } = entry,
+            length = directPaths.length;
 
-            this.#registry.delete(mapping);
-            this.#mappingLookup.delete(entry.mapping);
+        this.#registry.delete(mapping);
+        this.#mappingLookup.delete(entry.mapping);
 
-            for (let index = 0; index < length; index++) {
-                const path = directPaths[index];
-                if (this.#pathLookup.has(path)) {
-                    const list = this.#pathLookup.get(path),
-                        index = list.indexOf(entry.mapping);
-                    index !== -1 && list.splice(index, 1);
-                }
+        for (let index = 0; index < length; index++) {
+            const path = directPaths[index];
+            if (this.#pathLookup.has(path)) {
+                const list = this.#pathLookup.get(path) ?? [];
+                const listIndex = list.indexOf(entry.mapping);
+                listIndex !== -1 && list.splice(listIndex, 1);
             }
+        }
 
-            this._removeMappingName(entry);
+        this._removeMappingName(entry);
         }
     }
 
@@ -274,8 +249,8 @@ class MappingRegistry<T = any> {
  * @implements module:core.Serializable
  */
 class Match<T> implements Serializable {
-    readonly mapping: T;
-    readonly handlerMethod: RouteHandlerMethod;
+    readonly mapping!: T;
+    readonly handlerMethod!: RouteHandlerMethod;
 
     get [Symbol.toStringTag](): string {
         return 'Match';
@@ -305,7 +280,7 @@ class Match<T> implements Serializable {
      * @returns {string}
      */
     toString(): string {
-        return this.mapping.toString();
+        return String(this.mapping);
     }
 }
 
@@ -313,7 +288,7 @@ class Match<T> implements Serializable {
  * @implements module:core.Comparator<module:dispatcher~Match>
  */
 class MatchComparator<T> implements Comparator<Match<T>> {
-    readonly comparator: Comparator<T>;
+    readonly comparator!: Comparator<T>;
 
     get [Symbol.toStringTag](): string {
         return 'MatchComparator';
@@ -348,27 +323,27 @@ export abstract class AbstractHandlerMapping
     /**
      * Application context used to resolve named handlers.
      */
-    applicationContext: ApplicationContext;
+    applicationContext!: ApplicationContext;
 
     /**
      * Default handler used when no specific mapping matches.
      */
-    defaultHandler;
+    defaultHandler: object | null = null;
 
     /**
      * Interceptors applied to matched handlers.
      */
-    interceptors: RouteHandlerInterceptor[];
+    interceptors!: RouteHandlerInterceptor[];
 
     /**
      * Path matcher used by path-based mappings.
      */
-    pathMatcher: PathMatcher;
+    pathMatcher!: PathMatcher;
 
     /**
      * Pre-bound resolver for handlers with context.
      */
-    #resolveHandler: (handler: MaybeHandler) => object = (handler) => handler as object;
+    #resolveHandler: (handler: MaybeHandler) => object | undefined = (handler) => handler as object;
 
     get [Symbol.toStringTag](): string {
         return 'HandlerMapping';
@@ -379,24 +354,9 @@ export abstract class AbstractHandlerMapping
      */
     constructor() {
         super();
-        defineProperty(this, 'defaultHandler', {
-            value: null,
-            configurable: true,
-            enumerable: false,
-            writable: true,
-        });
-        defineProperty(this, 'interceptors', {
-            value: [],
-            configurable: true,
-            enumerable: false,
-            writable: false,
-        });
-        defineProperty(this, 'pathMatcher', {
-            value: new URLGlobPathMatcher(),
-            configurable: true,
-            enumerable: false,
-            writable: false,
-        });
+        this.defaultHandler = null;
+        this.interceptors = [];
+        this.pathMatcher = new URLGlobPathMatcher();
     }
 
     /**
@@ -420,7 +380,7 @@ export abstract class AbstractHandlerMapping
      * @param route - The current route.
      * @returns The execution chain, or `null` when no handler matches.
      */
-    getHandler(route: Route): RouteHandlerExecutionChain {
+    getHandler(route: Route): RouteHandlerExecutionChain | null {
         let handler: any | string | RouteHandlerExecutionChain = this._getHandler(route);
 
         if (!handler) {
@@ -431,6 +391,9 @@ export abstract class AbstractHandlerMapping
         }
 
         handler = this.#resolveHandler(handler);
+        if (!handler) {
+            return null;
+        }
 
         return this._getHandlerExecutionChain(handler, route);
     }
@@ -472,7 +435,7 @@ export abstract class AbstractHandlerMapping
      * @param route - The current route.
      * @returns The handler or execution chain, or `null`.
      */
-    protected abstract _getHandler(route: Route): RouteHandlerExecutionChain;
+    protected abstract _getHandler(route: Route): any | null;
 }
 
 /**
@@ -482,12 +445,12 @@ export abstract class AbstractHandlerMethodMapping<T extends RouteMappingInfo> e
     /**
      * Naming strategy used when exposing handler methods by name.
      */
-    namingStrategy: RouteHandlerMethodMappingNamingStrategy<T>;
+    namingStrategy!: RouteHandlerMethodMappingNamingStrategy<T>;
 
     /**
      * Registry of route mappings and their handler methods.
      */
-    readonly mappingRegistry: MappingRegistry<T>;
+    readonly mappingRegistry!: MappingRegistry<T>;
 
     /**
      * Cache for kindOf(this) to avoid repeated calls
@@ -499,12 +462,7 @@ export abstract class AbstractHandlerMethodMapping<T extends RouteMappingInfo> e
      */
     constructor() {
         super();
-        defineProperty(this, 'mappingRegistry', {
-            value: new MappingRegistry<T>(),
-            configurable: true,
-            enumerable: false,
-            writable: false,
-        });
+        this.mappingRegistry = new MappingRegistry<T>();
     }
 
     /**
@@ -534,7 +492,7 @@ export abstract class AbstractHandlerMethodMapping<T extends RouteMappingInfo> e
      * @returns The matching handler methods.
      */
     getHandlerMethodsForMappingName(name: string): RouteHandlerMethod[] {
-        return this.mappingRegistry.getHandlerMethodsByMappingName(name);
+        return this.mappingRegistry.getHandlerMethodsByMappingName(name) ?? [];
     }
 
     /**
@@ -566,12 +524,15 @@ export abstract class AbstractHandlerMethodMapping<T extends RouteMappingInfo> e
      * @returns The resolved handler method.
      */
     protected _createRequestHandlerMethod(handler: MaybeHandler, method: string): RouteHandlerMethod {
-        handler = resolveHandlerWithContext(this.applicationContext)(handler);
+        const resolvedHandler = resolveHandlerWithContext(this.applicationContext)(handler);
+        if (!resolvedHandler) {
+            throw new IllegalStateError(`Could not resolve handler: ${handler}`);
+        }
 
-        const handlerMethod = new RouteHandlerMethod(handler, method);
+        const handlerMethod = new RouteHandlerMethod(resolvedHandler, method);
 
-        if (hasMethodParameter(handler, method)) {
-            handlerMethod.parameters = getMethodParameter(handler, method);
+        if (hasMethodParameter(resolvedHandler, method)) {
+            handlerMethod.parameters = getMethodParameter(resolvedHandler, method) as MethodParameter[];
         }
 
         return handlerMethod;
@@ -588,17 +549,21 @@ export abstract class AbstractHandlerMethodMapping<T extends RouteMappingInfo> e
      * @param handler - The handler instance or application-context name.
      */
     protected _detectHandlerMethods(handler: MaybeHandler) {
-        handler = resolveHandlerWithContext(this.applicationContext)(handler);
+        const resolvedHandler = resolveHandlerWithContext(this.applicationContext)(handler);
 
-        if (handler) {
-            const handlerPrototype = getPrototypeOf(handler);
-
-            keys(handlerPrototype).forEach((key) => {
-                if (isFunction(handlerPrototype[key]) && hasRouteMapping(handler, key)) {
-                    const info = this._getMappingForMethod(key, handlerPrototype);
-                    this._registerHandlerMethod(handler, key, info);
-                }
-            });
+        if (resolvedHandler) {
+            const handlerPrototype = getPrototypeOf(resolvedHandler);
+            
+            if (handlerPrototype !== null) {
+                keys(handlerPrototype).forEach((key) => {
+                    if (isFunction((handlerPrototype as any)[key]) && hasRouteMapping(resolvedHandler, key)) {
+                        const info = this._getMappingForMethod(key, handlerPrototype);
+                        if (info !== undefined) {
+                            this._registerHandlerMethod(resolvedHandler, key, info);
+                        }
+                    }
+                });
+            }
         }
     }
 
@@ -608,7 +573,7 @@ export abstract class AbstractHandlerMethodMapping<T extends RouteMappingInfo> e
      * @param route - The current route.
      * @returns The resolved handler method, or `null`.
      */
-    protected _getHandler(route: Route): any {
+    protected _getHandler(route: Route): RouteHandlerMethod | null {
         const { path } = route;
         return this._lookupHandlerMethod(path, route);
     }
@@ -620,7 +585,7 @@ export abstract class AbstractHandlerMethodMapping<T extends RouteMappingInfo> e
      * @param route - The current route.
      * @returns The best matching handler method, or `null`.
      */
-    protected _lookupHandlerMethod(path: string, route: Route): RouteHandlerMethod {
+    protected _lookupHandlerMethod(path: string, route: Route): RouteHandlerMethod | null {
         const { mappingRegistry } = this,
             matches: Match<T>[] = [],
             directPathMatches = mappingRegistry.getMappingsByPath(path);
@@ -660,7 +625,10 @@ export abstract class AbstractHandlerMethodMapping<T extends RouteMappingInfo> e
      */
     protected _handleMatch(mapping: T, path: string, route: Route): void {
         // TODO Put this in a categorized spot?
-        route[(this.#kindOfTag ??= kindOf(this))] = path;
+        const kindOfTag = this.#kindOfTag ??= kindOf(this);
+        if (kindOfTag) {
+            (route as any)[kindOfTag] = path;
+        }
     }
 
     /**
@@ -677,14 +645,17 @@ export abstract class AbstractHandlerMethodMapping<T extends RouteMappingInfo> e
     private _addMatchingMappings(mappings: T[], matches: Match<T>[], route: Route): void {
         const length = mappings.length;
         for (let index = 0; index < length; index++) {
-            const match: T = this._getMatchingMapping(mappings[index], route);
+            const match: T | null = this._getMatchingMapping(mappings[index], route);
             if (match) {
-                matches.push(new Match<T>(match, this.mappingRegistry.mappings.get(mappings[index])));
+                const handlerMethod = this.mappingRegistry.mappings.get(mappings[index]);
+                if (handlerMethod) {
+                    matches.push(new Match<T>(match, handlerMethod));
+                }
             }
         }
     }
 
-    protected abstract _isHandler(value): boolean;
+    protected abstract _isHandler(value: any): boolean;
     protected abstract _getMappingComparator(route: Route): Comparator<T>;
     /**
      * Build a {@link RouteMappingInfo} for the given handler method.
@@ -698,9 +669,9 @@ export abstract class AbstractHandlerMethodMapping<T extends RouteMappingInfo> e
      * @param handler - The handler instance whose prototype carries the metadata.
      * @returns The combined {@link RouteMappingInfo}, or `undefined` if no mapping exists.
      */
-    protected _getMappingForMethod(method: string, handler: any): T {
+    protected _getMappingForMethod(method: string, handler: any): T | undefined {
         const methodMapping = getRouteMapping(handler, method);
-        let methodInfo: RouteMappingInfo;
+        let methodInfo: RouteMappingInfo | undefined;
         if (methodMapping) {
             const methodParams = (methodMapping as any).queryParams
                 ? new QueryParamCondition(...((methodMapping as any).queryParams as string).split(',').map((s) => s.trim()))
@@ -736,7 +707,7 @@ export abstract class AbstractHandlerMethodMapping<T extends RouteMappingInfo> e
         }
         return methodInfo as T;
     }
-    protected abstract _getMatchingMapping(mapping: T, route: Route): T;
+    protected abstract _getMatchingMapping(mapping: T, route: Route): T | null;
 }
 
 /**
@@ -746,12 +717,12 @@ export abstract class AbstractPathHandlerMapping extends AbstractHandlerMapping 
     /**
      * Handler mapped to the root path.
      */
-    rootHandler: object;
+    rootHandler: object | null = null;
 
     /**
      * Whether trailing slash variants should be considered matches.
      */
-    useTrailingSlashMatch: boolean;
+    useTrailingSlashMatch: boolean = false;
 
     readonly #handlers: Map<string, MaybeHandler>;
 
@@ -772,16 +743,19 @@ export abstract class AbstractPathHandlerMapping extends AbstractHandlerMapping 
      * @param route - The current route.
      * @returns The resolved execution chain, or `null`.
      */
-    lookUpHandler(path: string, route: Route): RouteHandlerExecutionChain {
+    lookUpHandler(path: string, route: Route): RouteHandlerExecutionChain | null {
         const { applicationContext, pathMatcher, useTrailingSlashMatch } = this,
             _handlers = this.#handlers;
         let handler: MaybeHandler;
         if (_handlers.has(path)) {
-            handler = _handlers.get(path);
+            handler = _handlers.get(path)!;
 
-            handler = resolveHandlerWithContext(applicationContext)(handler);
+            const resolvedHandler = resolveHandlerWithContext(applicationContext)(handler);
+            if (!resolvedHandler) {
+                throw new IllegalStateError(`Could not resolve handler: ${handler} for path "${path}"`);
+            }
 
-            return new RouteHandlerExecutionChain(handler);
+            return new RouteHandlerExecutionChain(resolvedHandler);
         }
 
         const matchingPatterns: string[] = [];
@@ -795,7 +769,7 @@ export abstract class AbstractPathHandlerMapping extends AbstractHandlerMapping 
             }
         }
 
-        let bestMatch: string = null;
+        let bestMatch: string | null = null;
         //const patternComparator: Comparator<string> = this.pathMatcher.getPatternComparator( path );
         if (matchingPatterns.length) {
             // TODO provide sorting function
@@ -804,19 +778,22 @@ export abstract class AbstractPathHandlerMapping extends AbstractHandlerMapping 
         }
 
         if (bestMatch) {
-            handler = _handlers.get(bestMatch);
+            handler = _handlers.get(bestMatch)!;
             if (!handler) {
                 if (bestMatch.endsWith('/')) {
-                    handler = _handlers.get(bestMatch.substring(0, bestMatch.length - 1));
+                    handler = _handlers.get(bestMatch.substring(0, bestMatch.length - 1))!;
                 }
                 if (!handler) {
                     throw new IllegalStateError(`Could not find handler for pattern "${bestMatch}"`);
                 }
             }
 
-            handler = resolveHandlerWithContext(this.applicationContext)(handler);
+            const resolvedHandler = resolveHandlerWithContext(this.applicationContext)(handler);
+            if (!resolvedHandler) {
+                throw new IllegalStateError(`Could not resolve handler: ${handler} for path "${path}"`);
+            }
 
-            return new RouteHandlerExecutionChain(handler);
+            return new RouteHandlerExecutionChain(resolvedHandler);
         }
 
         return null;
@@ -829,7 +806,7 @@ export abstract class AbstractPathHandlerMapping extends AbstractHandlerMapping 
      * @param pattern - The pattern to test.
      * @returns A match result, or `null`.
      */
-    match(route: Route, pattern: string): RouteMatchResult {
+    match(route: Route, pattern: string): RouteMatchResult | null {
         const { pathMatcher, useTrailingSlashMatch } = this,
             path = route.path;
         if (pathMatcher.match(pattern, path)) {
@@ -849,11 +826,11 @@ export abstract class AbstractPathHandlerMapping extends AbstractHandlerMapping 
      * @param route - The current route.
      * @returns The execution chain, or `null`.
      */
-    protected _getHandler(route: Route): RouteHandlerExecutionChain {
+    protected _getHandler(route: Route): RouteHandlerExecutionChain | null {
         let path = route.path,
             handler = this.lookUpHandler(path, route);
         if (!handler) {
-            let rawHandler: MaybeHandler | RouteHandlerExecutionChain = null;
+            let rawHandler: MaybeHandler | RouteHandlerExecutionChain | null = null;
             if ('/' === path) {
                 rawHandler = this.rootHandler;
             }
@@ -861,8 +838,10 @@ export abstract class AbstractPathHandlerMapping extends AbstractHandlerMapping 
                 rawHandler = this.defaultHandler;
             }
             if (rawHandler) {
-                rawHandler = resolveHandlerWithContext(this.applicationContext)(rawHandler);
-                handler = new RouteHandlerExecutionChain(rawHandler);
+                const resolvedHandler = resolveHandlerWithContext(this.applicationContext)(rawHandler);
+                if (resolvedHandler) {
+                    handler = new RouteHandlerExecutionChain(resolvedHandler);
+                }
             }
         }
         return handler;
@@ -886,9 +865,12 @@ export abstract class AbstractPathHandlerMapping extends AbstractHandlerMapping 
             if (typeof handler === 'undefined') {
                 throw new TypeError('Handler must be defined');
             }
-            let resolvedHandler = resolveHandlerWithContext(this.applicationContext)(handler);
+            const resolvedHandler = resolveHandlerWithContext(this.applicationContext)(handler);
+            if (!resolvedHandler) {
+                throw new IllegalStateError(`Could not resolve handler: ${handler} for path "${p}"`);
+            }
 
-            const mappedHandler: MaybeHandler = this.#handlers.get(p);
+            const mappedHandler: MaybeHandler | undefined = this.#handlers.get(p);
 
             if (mappedHandler) {
                 if (mappedHandler !== resolvedHandler) {
@@ -1045,7 +1027,7 @@ export class LinearMetadataHandlerMapping
      * @param pattern - The pattern to test.
      * @returns A match result, or `null`.
      */
-    match(route: Route, pattern: string): RouteMatchResult {
+    match(route: Route, pattern: string): RouteMatchResult | null {
         const info: RouteMappingInfo = new RouteMappingInfo(pattern),
             matchingInfo = info.getMatchingCondition(route);
         if (!matchingInfo) {
@@ -1074,7 +1056,7 @@ export class LinearMetadataHandlerMapping
      * @param route - The current route.
      * @returns A matching mapping, or `null`.
      */
-    protected _getMatchingMapping(mapping: RouteMappingInfo, route: Route): RouteMappingInfo {
+    protected _getMatchingMapping(mapping: RouteMappingInfo, route: Route): RouteMappingInfo | null {
         return mapping.getMatchingCondition(route);
     }
 
@@ -1114,7 +1096,7 @@ export class LinearMetadataHandlerMapping
      * @param route - The current route.
      * @returns Always `null`.
      */
-    protected _handleNoMatch(mappings, path: string, route: Route): RouteHandlerMethod {
+    protected _handleNoMatch(mappings: RouteMappingInfo[], path: string, route: Route): RouteHandlerMethod | null {
         return null;
     }
 
@@ -1125,6 +1107,9 @@ export class LinearMetadataHandlerMapping
      * @returns `true` when route mapping metadata is present.
      */
     protected _isHandler(value: any): boolean {
+        if (!value) {
+            return false;
+        }
         return hasRouteMapping(value) || ('constructor' in value && hasRouteMapping(value.constructor));
     }
 
@@ -1182,22 +1167,8 @@ export class RouteMatchResult {
      * @param path - The matched path.
      */
     constructor(pattern: string, path: string) {
-        /**
-         */
-        defineProperty(this, 'pattern', {
-            value: pattern,
-            configurable: true,
-            enumerable: true,
-            writable: false,
-        });
-        /**
-         */
-        defineProperty(this, 'path', {
-            value: path,
-            configurable: true,
-            enumerable: true,
-            writable: false,
-        });
+        this.pattern = pattern;
+        this.path = path;
     }
 
     /**
@@ -1226,7 +1197,7 @@ export class SimplePathHandlerMapping extends AbstractPathHandlerMapping {
     /**
      * Explicit path-to-handler mappings.
      */
-    mappings: Map<string, MaybeHandler>;
+    mappings!: Map<string, MaybeHandler>;
 
     get [Symbol.toStringTag](): string {
         return 'SimplePathHandlerMapping';
@@ -1237,8 +1208,6 @@ export class SimplePathHandlerMapping extends AbstractPathHandlerMapping {
      */
     constructor() {
         super();
-        /**
-         */
         this.mappings = new Map<string, MaybeHandler>();
     }
 

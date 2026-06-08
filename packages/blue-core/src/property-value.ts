@@ -1,7 +1,7 @@
 /**
  * @author Jeff Rose
  */
-import { RingBuffer } from './collection';
+import { RingBuffer } from './ring-buffer';
 import { JSONValue, Serializable, serialize } from './serializable';
 import { Equatable, equates } from './equatable';
 import { is, like } from '@blue/util/types';
@@ -24,7 +24,7 @@ export interface PropertyValues extends Iterable<PropertyValue> {
     getPropertyValue(propertyName: string): PropertyValue;
 }
 
-const isString = is(String) as (value) => value is string;
+const isString = is(String) as (value: any) => value is string;
 
 /**
  * Tests whether a value behaves like a `PropertyValues` collection.
@@ -34,8 +34,8 @@ const isString = is(String) as (value) => value is string;
  */
 const _likePropertyValuesShape = like({ propertyValues: Array, getPropertyValue: Function });
 
-export const likePropertyValues = ((value) => likeIterable(value) && _likePropertyValuesShape(value)) as (
-    value
+export const likePropertyValues = ((value: any) => likeIterable(value) && _likePropertyValuesShape(value)) as (
+    value: any
 ) => value is PropertyValues;
 
 /**
@@ -43,7 +43,7 @@ export const likePropertyValues = ((value) => likeIterable(value) && _likeProper
  */
 export class PropertyValue implements Equatable, Serializable {
     #name: string;
-    #value;
+    #value: any;
 
     /** Whether the property is optional when consumed by higher-level APIs. */
     optional: boolean;
@@ -71,7 +71,7 @@ export class PropertyValue implements Equatable, Serializable {
      * @param name - Property name.
      * @param value - Stored value.
      */
-    constructor(name: string, value) {
+    constructor(name: string, value: any) {
         this.#name = name;
         this.#value = value;
         this.optional = false;
@@ -83,7 +83,7 @@ export class PropertyValue implements Equatable, Serializable {
      * @param value - Value to compare.
      * @returns `true` when both the name and wrapped value match.
      */
-    equals(value): boolean {
+    equals(value: any): boolean {
         if (value === this) {
             return true;
         }
@@ -120,7 +120,7 @@ export class PropertyValue implements Equatable, Serializable {
  */
 export class MutablePropertyValues
     extends RingBuffer<PropertyValue>
-    implements ArrayLike<PropertyValue>, Equatable, Iterable<PropertyValue>, Serializable
+    implements ArrayLike<PropertyValue | undefined>, Equatable, Iterable<PropertyValue>, Serializable
 {
     /** All property values in iteration order. */
     get propertyValues(): PropertyValue[] {
@@ -154,16 +154,16 @@ export class MutablePropertyValues
      * @param name - Property name.
      * @param value - Property value.
      */
-    addPropertyValue(name: string, value);
+    addPropertyValue(name: string, value: any): void;
 
     /**
      * Adds a pre-built property value to the collection.
      *
      * @param pv - Property value to add.
      */
-    addPropertyValue(pv: PropertyValue);
+    addPropertyValue(pv: PropertyValue): void;
 
-    addPropertyValue(nameOrPropertyValue: string | PropertyValue, value?) {
+    addPropertyValue(nameOrPropertyValue: string | PropertyValue, value?: any): void {
         if (isString(nameOrPropertyValue)) {
             this.put(new PropertyValue(nameOrPropertyValue, value));
         } else {
@@ -177,13 +177,17 @@ export class MutablePropertyValues
      * @param value - Value to compare.
      * @returns `true` when both collections contain the same property names and values.
      */
-    equals(value): boolean {
+    equals(value: any): boolean {
         let result = value === this;
 
         if (!result && likePropertyValues(value) && this.length === value.propertyValues.length) {
             const length = this.length;
             for (let index = 0; index < length; index++) {
                 const pv = this[index];
+                if (!pv) {
+                    result = false;
+                    break;
+                }
                 result = equates(value.getPropertyValue(pv.name)?.value, pv.value);
                 if (!result) {
                     break;
@@ -211,12 +215,12 @@ export class MutablePropertyValues
      * @param propertyName - Property name to resolve.
      * @returns The matching property value, or `null` when no match exists.
      */
-    getPropertyValue(propertyName: string): PropertyValue {
+    getPropertyValue(propertyName: string): PropertyValue | null {
         const length = this.length;
         if (length) {
             for (let index = 0; index < length; index++) {
                 const pv = this[index];
-                if (pv.name === propertyName) {
+                if (pv && pv.name === propertyName) {
                     return pv;
                 }
             }

@@ -102,7 +102,7 @@ export interface ApplicationContext
     /**
      * The parent context in the hierarchy.
      */
-    parent: ApplicationContext;
+    parent: ApplicationContext | null;
 
     /**
      * The timestamp when this context was destroyed, if applicable.
@@ -287,14 +287,14 @@ let uuid = 0;
  * @param value - The value to test.
  * @returns `true` when the value looks like an application context.
  */
-export const likeApplicationContext = ((value) =>
+export const likeApplicationContext = ((value: any) =>
     likeContentSource(value) &&
     likeDestroyable(value) &&
     likeEnvironmentSource(value) &&
     likeEventEmitter(value) &&
     likeFactory(value) &&
     likeRegistry(value) &&
-    likeResourceLoader(value)) as (value) => value is ApplicationContext;
+    likeResourceLoader(value)) as (value: any) => value is ApplicationContext;
 
 /**
  * Returns whether a value can receive an application context.
@@ -303,7 +303,7 @@ export const likeApplicationContext = ((value) =>
  * @returns `true` when the value looks like application-context aware.
  */
 export const likeApplicationContextAware = likeAwareAnd(like({ setApplicationContext: Function })) as (
-    value
+    value: any
 ) => value is ApplicationContextAware;
 
 /**
@@ -323,17 +323,17 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
     #children: GenericApplicationContext[];
     #contentSource: ContentSource;
     #customThemeResolver: boolean;
-    #environment: Environment;
-    #id: number;
+    #environment: Environment | null;
+    #id!: number;
     #isActive: boolean;
-    #lifecycleProcessor: LifecycleProcessor;
+    #lifecycleProcessor: LifecycleProcessor | null;
     #name: string;
-    #parent: ApplicationContext;
+    #parent: ApplicationContext | null;
     #themeName: string;
-    #themeResolver: ThemeResolver;
+    #themeResolver: ThemeResolver | null;
 
-    createdTimestamp: number;
-    destroyed: boolean;
+    createdTimestamp!: number;
+    destroyed!: boolean;
     destroyedTimestamp?: number;
 
     /**
@@ -384,7 +384,7 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
     /**
      * The current parent context.
      */
-    get parent(): ApplicationContext {
+    get parent(): ApplicationContext | null {
         return this.#parent;
     }
 
@@ -393,7 +393,7 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
      */
     get path(): string {
         const path: string[] = [];
-        let ctx = this as unknown as ApplicationContext;
+        let ctx: ApplicationContext = this;
 
         this.name && path.unshift(this.name);
 
@@ -427,10 +427,10 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
         this.#environment = null;
         this.#isActive = false;
         this.#lifecycleProcessor = null;
-        this.#name = name ?? null;
+        this.#name = name ?? '';
         this.#parent = null;
         this.#themeName = 'default';
-        this.#themeResolver = null;
+            this.#themeResolver = null;
 
         this.setId(++uuid);
 
@@ -650,7 +650,7 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
         this.#contentSource = contentSource;
 
         if (!this.#customThemeResolver) {
-            this.#themeResolver = null;
+        this.#themeResolver = null;
         }
     }
 
@@ -868,7 +868,7 @@ export const AsApplicationContextAware = <T extends Constructable>(
     superclass: T
 ): Constructable<ApplicationContextAware> & T =>
     class extends AsAware(superclass) implements ApplicationContextAware {
-        readonly applicationContext: ApplicationContext;
+    readonly applicationContext?: ApplicationContext;
 
         /**
          * @param {module:context.ApplicationContext} applicationContext The application context to be set.
@@ -900,7 +900,7 @@ export const AsApplicationContextAware = <T extends Constructable>(
  * @see {@link ApplicationContextAware}
  */
 export class ApplicationContextAwareProcessor implements InitializationAwareProcessor {
-    readonly applicationContext: ApplicationContext;
+    readonly applicationContext!: ApplicationContext;
 
     /**
      * Creates a processor bound to a specific application context.

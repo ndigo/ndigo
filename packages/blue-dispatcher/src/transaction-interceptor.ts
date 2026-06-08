@@ -37,7 +37,7 @@ export class TransactionRouteHandlerInterceptor implements RouteHandlerIntercept
      * @param handler - The route handler.
      * @returns `true` to continue execution.
      */
-    async preHandle(route: Route, handler: any): Promise<boolean> {
+    async preHandle(route: Route, handler: object | undefined): Promise<boolean> {
         if (route instanceof PathRoute) {
             // We assume syncHash=true for handler-level transactions
             const hash = typeof location !== 'undefined' ? location.hash : '';
@@ -54,7 +54,7 @@ export class TransactionRouteHandlerInterceptor implements RouteHandlerIntercept
      * @param handler - The route handler.
      * @param modelAndView - The model and view returned by the handler.
      */
-    async postHandle(route: Route, handler: any, modelAndView: ModelAndView): Promise<void> {
+    async postHandle(route: Route, handler: object | undefined, modelAndView: ModelAndView): Promise<void> {
         const status = this.#statusMap.get(route);
         if (status) {
             this.#transactionManager.commit(status);
@@ -68,7 +68,7 @@ export class TransactionRouteHandlerInterceptor implements RouteHandlerIntercept
      * @param handler - The route handler.
      * @param error - The error thrown during execution.
      */
-    async completeHandle(route: Route, handler: any, error: Error): Promise<void> {
+    async completeHandle(route: Route, handler: object | undefined, error: Error): Promise<void> {
         const status = this.#statusMap.get(route);
         if (status) {
             if (error) {

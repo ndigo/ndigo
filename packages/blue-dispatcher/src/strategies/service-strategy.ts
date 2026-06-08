@@ -7,8 +7,8 @@ import { Constructable } from '@blue/core';
 import { StrategyInitializer } from './strategy-initializer';
 
 export interface ServiceStrategy {
-    serviceCalls;
-    serviceInterceptors;
+    serviceCalls: any;
+    serviceInterceptors: any;
     initServiceStrategy(context: ApplicationContext): void;
 }
 
@@ -17,7 +17,7 @@ const { defineProperty } = Reflect,
     SERVICE_CALLS = `${SERVICE_CALL}s`,
     SERVICE_INTERCEPTOR = 'serviceInterceptor',
     SERVICE_INTERCEPTORS = `${SERVICE_INTERCEPTOR}s`,
-    defaultServiceInterceptors = [];
+    defaultServiceInterceptors: any[] = [];
 
 export const AsServiceStrategy = <T extends Constructable<StrategyInitializer>>(
     superclass: T
@@ -28,31 +28,15 @@ export const AsServiceStrategy = <T extends Constructable<StrategyInitializer>>(
         readonly serviceInterceptorKey: string;
         readonly serviceInterceptorCollectionKey: string;
 
-        serviceCalls: any;
-        serviceInterceptors;
+        serviceCalls!: any;
+        serviceInterceptors!: any;
 
         constructor(...args: any[]) {
             super(...args);
-            defineProperty(this, 'serviceCallKey', {
-                get: () => SERVICE_CALL,
-                configurable: true,
-                enumerable: true,
-            });
-            defineProperty(this, 'serviceCallCollectionKey', {
-                get: () => SERVICE_CALLS,
-                configurable: true,
-                enumerable: true,
-            });
-            defineProperty(this, 'serviceInterceptorKey', {
-                get: () => SERVICE_INTERCEPTOR,
-                configurable: true,
-                enumerable: true,
-            });
-            defineProperty(this, 'serviceInterceptorCollectionKey', {
-                get: () => SERVICE_INTERCEPTORS,
-                configurable: true,
-                enumerable: true,
-            });
+            this.serviceCallKey = SERVICE_CALL;
+            this.serviceCallCollectionKey = SERVICE_CALLS;
+            this.serviceInterceptorKey = SERVICE_INTERCEPTOR;
+            this.serviceInterceptorCollectionKey = SERVICE_INTERCEPTORS;
             this.addStrategy(SERVICE_INTERCEPTORS);
         }
 

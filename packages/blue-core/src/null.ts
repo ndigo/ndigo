@@ -8,6 +8,7 @@
  * This is useful when you need a dictionary-like object without inherited members.
  */
 export class Null {}
+
 Reflect.setPrototypeOf(Null.prototype, null);
 
 /**
@@ -15,4 +16,4 @@ Reflect.setPrototypeOf(Null.prototype, null);
  *
  * @returns A new object without `Object.prototype` in its prototype chain.
  */
-export const createNull = Object.create.bind(Object, null);
+export const createNull = () => Object.create(null); // Force rebuild

@@ -6,7 +6,6 @@
     "esModuleInterop": true,
     "declaration": true,
     "skipLibCheck": true,
-    "baseUrl": ".",
     "outDir": "./lib",
     "rootDir": "./src"
   },

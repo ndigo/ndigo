@@ -47,15 +47,11 @@ export const AsThemeResolverStrategy = <T extends Constructable<StrategyInitiali
     class extends superclass implements ThemeResolverStrategy {
         readonly themeResolverKey: string;
 
-        themeResolver: ThemeResolver;
+        themeResolver!: ThemeResolver;
 
         constructor(...args: any[]) {
             super(...args);
-            defineProperty(this, 'themeResolverKey', {
-                get: () => THEME_RESOLVER,
-                configurable: true,
-                enumerable: true,
-            });
+            this.themeResolverKey = THEME_RESOLVER;
             this.addStrategy(THEME_RESOLVER);
         }
 

@@ -23,7 +23,7 @@ export abstract class AbstractThemeResolver implements ThemeResolver {
     /**
      * Fallback theme name used when a route-specific theme is unavailable.
      */
-    readonly defaultThemeName: string;
+    readonly defaultThemeName!: string;
 
     get [Symbol.toStringTag](): string {
         return 'ThemeResolver';
@@ -35,12 +35,7 @@ export abstract class AbstractThemeResolver implements ThemeResolver {
      * @param defaultThemeName - The theme to use by default.
      */
     constructor(defaultThemeName: string) {
-        defineProperty(this, 'defaultThemeName', {
-            value: defaultThemeName,
-            configurable: true,
-            enumerable: false,
-            writable: false,
-        });
+        this.defaultThemeName = defaultThemeName;
     }
 
     /**

@@ -36,9 +36,9 @@ export class TimeoutInterceptor
         ErrorAwareHTTPInterceptor,
         CompletionAwareHTTPInterceptor
 {
-    #timeoutId: number;
+    #timeoutId: number | null = null;
 
-    readonly timeout: number;
+    readonly timeout!: number;
 
     constructor(timeout: number) {
         if (!isPositiveNumber(timeout)) {
@@ -84,7 +84,7 @@ export class TimeoutInterceptor
         if (error.name === 'AbortError') {
             this._clearTimeout();
         }
-        return new ResponseError(REQUEST_TIMEOUT.createResponse(null), error);
+        return new ResponseError(REQUEST_TIMEOUT.createResponse(undefined as any), error);
     }
 
     /**
@@ -98,7 +98,9 @@ export class TimeoutInterceptor
     }
 
     private _clearTimeout() {
-        clearTimeout(this.#timeoutId);
-        this.#timeoutId = null;
+        if (this.#timeoutId !== null) {
+            clearTimeout(this.#timeoutId);
+            this.#timeoutId = null;
+        }
     }
 }

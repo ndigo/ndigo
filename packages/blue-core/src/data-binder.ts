@@ -20,9 +20,8 @@ export class BindError extends FrameworkError {}
  */
 export class DataBinder {
     #name: string;
-    #target;
-    #result;
-
+    #target: any;
+    #result: any;
     #requiredFields: Set<string>;
 
     /**
@@ -78,9 +77,10 @@ export class DataBinder {
      * @param target - The object to bind data to.
      * @param name - The name of the data binder (defaults to 'target').
      */
-    constructor(target, name = 'target') {
+    constructor(target: any, name = 'target') {
         this.#target = target;
         this.#name = name;
+        this.#requiredFields = new Set<string>();
     }
 
     /**
@@ -116,10 +116,12 @@ export class DataBinder {
             const propertyKeys = keys(properties);
             for (let index = 0; index < length; index++) {
                 const key = propertyKeys[index],
-                    property = properties[key],
-                    keypath = parseKeypath(property.name);
-                if (keypath) {
-                    result = _assocPath(keypath, property.value, result);
+                    property = properties[key as any];
+                if (property) {
+                    const keypath = parseKeypath(property.name);
+                    if (keypath) {
+                        result = _assocPath(keypath, property.value, result);
+                    }
                 }
             }
             this.#result = result;

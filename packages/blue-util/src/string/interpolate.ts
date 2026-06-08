@@ -13,7 +13,7 @@ const stache = /\{\{([^\}]+)\}\}/g, //mustache-like
         replacements: string | any[] | { [key: string]: any },
         syntax: RegExp = stache
     ): string => {
-        const replacer = (match, value) => defaultToEmptyString(path(splitOnDot(value), replacements)) as string;
+        const replacer = (match: string, value: string) => defaultToEmptyString(path(splitOnDot(value), replacements)) as string;
         return pipe(defaultToEmptyString, (val: string): string => val.replace(syntax, replacer))(template);
     };
 

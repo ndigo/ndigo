@@ -19,6 +19,7 @@ import {
     AttributeValueMethodArgumentResolver,
     likeArgumentResolver,
 } from './argument-resolver';
+import { IllegalStateError } from '@blue/core';
 
 /**
  * Adapts a handler instance into route execution.
@@ -35,15 +36,15 @@ export interface RouteHandlerAdapter {
      * @param handler - The handler instance selected for the route.
      * @returns The model and view produced by handler execution.
      */
-    handle(route: Route, handler): Promise<ModelAndView>;
+    handle(route: Route, handler: object | undefined): Promise<ModelAndView>;
 
     /**
-     * Determine whether this adapter can handle the given handler instance.
+     * Tests whether this adapter supports the given handler.
      *
      * @param handler - The handler instance to test.
-     * @returns `true` when the handler is supported; otherwise `false`.
+     * @returns `true` when the handler is supported.
      */
-    supports(handler): boolean;
+    supports(handler: object | undefined): boolean;
 }
 
 const { getPrototypeOf } = Reflect,
@@ -54,7 +55,7 @@ const { getPrototypeOf } = Reflect,
  * @param {*} value The value to be tested
  * @returns {boolean} Whether or not the `value` is a {@link Controller|Controller}
  */
-export const likeController = like({ handleRoute: Function }) as (value) => value is Controller;
+export const likeController = like({ handleRoute: Function }) as (value: unknown) => value is Controller;
 
 export abstract class AbstractHandlerMethodAdapter
     extends AsApplicationContextAware(Null)
@@ -63,13 +64,13 @@ export abstract class AbstractHandlerMethodAdapter
     /**
      * Application context used to discover handlers and argument resolvers.
      */
-    applicationContext: ApplicationContext;
+    applicationContext!: ApplicationContext | null;
 
     get [Symbol.toStringTag](): string {
         return 'HandlerMethodAdapter';
     }
 
-    supports(handler): boolean {
+    supports(handler: object | undefined): boolean {
         return handler instanceof RouteHandlerMethod && this._supports(handler);
     }
 
@@ -110,7 +111,7 @@ export class ControllerHandlerAdapter implements RouteHandlerAdapter {
      * @param handler - The controller instance.
      * @returns The model and view returned by the controller.
      */
-    async handle(route: Route, handler): Promise<ModelAndView> {
+    async handle(route: Route, handler: object | undefined): Promise<ModelAndView> {
         return await (handler as Controller).handleRoute(route);
     }
 
@@ -120,7 +121,7 @@ export class ControllerHandlerAdapter implements RouteHandlerAdapter {
      * @param handler - The handler instance to test.
      * @returns `true` when the handler is controller-like.
      */
-    supports(handler): boolean {
+    supports(handler: object | undefined): boolean {
         return likeController(handler);
     }
 }
@@ -134,12 +135,12 @@ export class MetadataHandlerAdapter extends AbstractHandlerMethodAdapter impleme
     /**
      * Argument resolvers used to convert route values into handler method arguments.
      */
-    argumentResolvers: HandlerMethodArgumentResolver[];
+    argumentResolvers!: HandlerMethodArgumentResolver[];
 
     /**
      * Cached handler descriptors discovered from application context metadata.
      */
-    handlers: any[];
+    handlers!: any[];
 
     get [Symbol.toStringTag](): string {
         return 'MetadataHandlerAdapter';
@@ -170,7 +171,10 @@ export class MetadataHandlerAdapter extends AbstractHandlerMethodAdapter impleme
      * @param handler - The resolved route handler method.
      * @returns The model and view produced by the handler.
      */
-    async handle(route: Route, handler: RouteHandlerMethod): Promise<ModelAndView> {
+    async handle(route: Route, handler: RouteHandlerMethod | undefined): Promise<ModelAndView> {
+        if (!handler) {
+            throw new IllegalStateError('Handler is undefined');
+        }
         handler.argumentResolvers = this.argumentResolvers;
 
         return await handler.invoke<ModelAndView>(route);
@@ -183,32 +187,44 @@ export class MetadataHandlerAdapter extends AbstractHandlerMethodAdapter impleme
      */
     init(...args: any[]): void {
         const { applicationContext } = this,
-            contextKeys = keys(applicationContext),
+            contextKeys = keys(applicationContext!),
             contextKeysLength = contextKeys.length,
             handlers = [];
 
         if (contextKeysLength) {
             for (let contextKeyIndex = 0; contextKeyIndex < contextKeysLength; contextKeyIndex++) {
                 const contextKey = contextKeys[contextKeyIndex],
-                    contextValue = applicationContext.getValue<object>(contextKey);
+                    contextValue = applicationContext!.getValue<object>(contextKey);
 
                 if (isNotPrimitive(contextValue)) {
-                    const valuePrototype = getPrototypeOf(contextValue),
-                        valueConstructor = valuePrototype.constructor;
+                    const valuePrototype = getPrototypeOf(contextValue);
+                    
+                    // Handle case where valuePrototype could be null
+                    if (valuePrototype !== null) {
+                        const valueConstructor = valuePrototype.constructor;
 
-                    if (hasRouteMapping(valueConstructor)) {
-                        const constructorMapping = getRouteMapping(valueConstructor),
-                            valueKeys = keys(valuePrototype),
-                            valueKeysLength = valueKeys.length;
+                        if (hasRouteMapping(valueConstructor)) {
+                            const constructorMapping = getRouteMapping(valueConstructor);
+                            
+                            // Check that constructorMapping is defined before using it
+                            if (constructorMapping !== undefined) {
+                                const valueKeys = keys(valuePrototype),
+                                    valueKeysLength = valueKeys.length;
 
-                        if (valueKeysLength) {
-                            for (let valueKeyIndex = 0; valueKeyIndex < valueKeysLength; valueKeyIndex++) {
-                                const valueKey = valueKeys[valueKeyIndex];
-                                if (hasRouteMapping(valuePrototype, valueKey)) {
-                                    const methodMapping = getRouteMapping(valuePrototype, valueKey),
-                                        mapping = assign({}, constructorMapping, methodMapping);
-                                    mapping.path = `${constructorMapping.value}${methodMapping.value}`;
-                                    handlers.push(mapping);
+                                if (valueKeysLength) {
+                                    for (let valueKeyIndex = 0; valueKeyIndex < valueKeysLength; valueKeyIndex++) {
+                                        const valueKey = valueKeys[valueKeyIndex];
+                                        if (hasRouteMapping(valuePrototype, valueKey)) {
+                                            const methodMapping = getRouteMapping(valuePrototype, valueKey);
+                                            
+                                            // Check that methodMapping is defined before using it
+                                            if (methodMapping !== undefined) {
+                                                const mapping = assign({}, constructorMapping, methodMapping);
+                                                mapping.path = `${constructorMapping.value}${methodMapping.value}`;
+                                                handlers.push(mapping);
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }

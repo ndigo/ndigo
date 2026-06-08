@@ -41,7 +41,7 @@ export abstract class AbstractModelValueMethodArgumentResolver extends AbstractN
     }
 
     /** Resolves and converts a model-backed argument value. */
-    resolveArgument(parameter: MethodParameter, route: Route, mapping): any {
+    resolveArgument(parameter: MethodParameter, route: Route, mapping: any): any {
         const resolveValue = (v: any) => v ?? parameter.defaultValue,
             value = resolveValue(this.resolveName(parameter.name, parameter, route, mapping)),
             converter = parameter.convert ?? this.#converter,
@@ -61,7 +61,7 @@ export abstract class AbstractModelValueMethodArgumentResolver extends AbstractN
     }
 
     /** Resolves the raw value from route-scoped model data. */
-    protected resolveName(name: string, parameter: MethodParameter, route: Route, mapping): any {
+    protected resolveName(name: string, parameter: MethodParameter, route: Route, mapping: any): any {
         void parameter;
         void mapping;
 

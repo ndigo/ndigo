@@ -13,17 +13,17 @@ export class ModelAndView {
     /**
      * Model data supplied to the view.
      */
-    model: Model;
+    model!: Model | null;
 
     /**
      * Resolved view name, when known.
      */
-    viewName: string;
+    viewName!: string | null;
 
     /**
      * Resolved view instance, when known.
      */
-    view: View;
+    view: View | null;
 
     /**
      * Whether this instance has either a view name or view object.
@@ -42,7 +42,7 @@ export class ModelAndView {
      * @param view - The view name or view instance.
      * @param model - Optional model data to expose to the view.
      */
-    constructor(view: View | string, model: Model = null) {
+    constructor(view: View | string, model: Model | null = null) {
         if (typeof view === 'string') {
             this.viewName = view;
             this.view = null;

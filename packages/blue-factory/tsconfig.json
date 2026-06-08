@@ -1,7 +1,6 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "baseUrl": ".",
     "useDefineForClassFields": true,
     "paths": {
       "@blue/*": ["../blue-*/src"]

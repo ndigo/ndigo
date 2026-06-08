@@ -47,7 +47,7 @@ export class QueryParamExpression extends AbstractNameValueExpression<string> {
     /**
      * Parameter names that may satisfy this expression.
      */
-    readonly namesToMatch: Set<string>;
+    readonly namesToMatch!: Set<string>;
 
     get isCaseSensitiveName(): boolean {
         return true;
@@ -115,7 +115,7 @@ export class QueryParamCondition extends AbstractRouteCondition<QueryParamCondit
     /**
      * Parameter expressions that must all match.
      */
-    readonly expressions: Set<QueryParamExpression>;
+    readonly expressions!: Set<QueryParamExpression>;
 
     get content(): QueryParamExpression[] {
         return Array.from(this.expressions);
@@ -178,7 +178,7 @@ export class QueryParamCondition extends AbstractRouteCondition<QueryParamCondit
      * @param route - The current route.
      * @returns This condition, or `null`.
      */
-    getMatchingCondition(route: Route): QueryParamCondition {
+    getMatchingCondition(route: Route): QueryParamCondition | null {
         for (const expression of this.expressions) {
             if (!expression.match(route)) {
                 return null;
@@ -298,7 +298,7 @@ export class MatrixParamCondition extends AbstractRouteCondition<MatrixParamCond
     /**
      * Matrix-parameter expressions that must all match.
      */
-    readonly expressions: Set<MatrixParamExpression>;
+    readonly expressions!: Set<MatrixParamExpression>;
 
     get content(): MatrixParamExpression[] {
         return Array.from(this.expressions);
@@ -353,7 +353,7 @@ export class MatrixParamCondition extends AbstractRouteCondition<MatrixParamCond
      * @param route - The current route.
      * @returns This condition, or `null`.
      */
-    getMatchingCondition(route: Route): MatrixParamCondition {
+    getMatchingCondition(route: Route): MatrixParamCondition | null {
         for (const expression of this.expressions) {
             if (!expression.match(route)) {
                 return null;
@@ -422,22 +422,22 @@ export class PatternsRouteCondition extends AbstractRouteCondition<PatternsRoute
     /**
      * Matcher used to compare and merge route patterns.
      */
-    readonly pathMatcher: PathMatcher;
+    readonly pathMatcher!: PathMatcher;
 
     /**
      * File extensions that are treated as matchable suffixes.
      */
-    fileExtensions: string[];
+    fileExtensions!: string[];
 
     /**
      * Route patterns to match against.
      */
-    patterns: Set<string>;
+    patterns!: Set<string>;
 
     /**
      * Whether a trailing slash may be treated as equivalent.
      */
-    useTrailingSlashMatch: boolean;
+    useTrailingSlashMatch!: boolean;
 
     get content(): string[] {
         return Array.from(this.patterns);
@@ -613,7 +613,7 @@ export class PatternsRouteCondition extends AbstractRouteCondition<PatternsRoute
      * @param route - The current route.
      * @returns A matching condition, or `null`.
      */
-    getMatchingCondition(route: Route): PatternsRouteCondition {
+    getMatchingCondition(route: Route): PatternsRouteCondition | null {
         if (this.patterns.size === 0) {
             return this;
         }
@@ -656,18 +656,24 @@ export class PatternsRouteCondition extends AbstractRouteCondition<PatternsRoute
             iterator2 = value.patterns.values();
 
         for (let item1, item2; !(item1 = iterator1.next()).done && !(item2 = iterator2.next()).done; ) {
-            const result = patternComparator.compare(item1, item2);
+            const result = patternComparator.compare(item1.value, item2.value);
             if (result !== 0) {
                 return result;
             }
         }
 
-        if (!iterator1.next().done) {
+        // Check if there are remaining items in the first iterator
+        const next1 = iterator1.next();
+        if (!next1.done) {
             return -1;
-        } else if (!iterator2.next().done) {
-            return 1;
         } else {
-            return 0;
+            // Check if there are remaining items in the second iterator
+            const next2 = iterator2.next();
+            if (!next2.done) {
+                return 1;
+            } else {
+                return 0;
+            }
         }
     }
 
@@ -678,7 +684,7 @@ export class PatternsRouteCondition extends AbstractRouteCondition<PatternsRoute
      * @param path - The route path.
      * @returns The matching pattern, or `null`.
      */
-    private _getMatchingPattern(pattern: string, path: string): string {
+    private _getMatchingPattern(pattern: string, path: string): string | null {
         // Root pattern "/" matches empty internal path ""
         if (pattern === '/' && path === '') {
             return pattern;
@@ -709,27 +715,27 @@ export class RouteMappingInfo implements RouteCondition<RouteMappingInfo> {
     /**
      * Optional mapping name.
      */
-    readonly name: string;
+    readonly name!: string;
 
     /**
      * Pattern matching condition.
      */
-    readonly patternsCondition: PatternsRouteCondition;
+    readonly patternsCondition!: PatternsRouteCondition;
 
     /**
      * Query-parameter matching condition.
      */
-    readonly queryCondition: QueryParamCondition;
+    readonly queryCondition!: QueryParamCondition;
 
     /**
      * Matrix-parameter matching condition.
      */
-    readonly matrixCondition: MatrixParamCondition;
+    readonly matrixCondition!: MatrixParamCondition;
 
     /**
      * Custom condition wrapper.
      */
-    readonly customConditionHolder: RouteConditionHolder;
+    readonly customConditionHolder!: RouteConditionHolder;
 
     /**
      * Create route mapping metadata for a handler method.
@@ -741,46 +747,17 @@ export class RouteMappingInfo implements RouteCondition<RouteMappingInfo> {
      * @param custom - Optional custom condition.
      */
     constructor(
-        name: string = null,
+        name: string | null = null,
         patterns: PatternsRouteCondition = new PatternsRouteCondition(),
         params: QueryParamCondition = new QueryParamCondition(),
         matrix: MatrixParamCondition = new MatrixParamCondition(),
-        custom: RouteCondition = null
+        custom: RouteCondition<any> | null = null
     ) {
-        defineProperty(this, 'name', {
-            value: name,
-            configurable: true,
-            enumerable: false,
-            writable: false,
-        });
-
-        defineProperty(this, 'patternsCondition', {
-            value: patterns,
-            configurable: true,
-            enumerable: false,
-            writable: false,
-        });
-
-        defineProperty(this, 'queryCondition', {
-            value: params,
-            configurable: true,
-            enumerable: false,
-            writable: false,
-        });
-
-        defineProperty(this, 'matrixCondition', {
-            value: matrix,
-            configurable: true,
-            enumerable: false,
-            writable: false,
-        });
-
-        defineProperty(this, 'customConditionHolder', {
-            value: new RouteConditionHolder(custom),
-            configurable: true,
-            enumerable: false,
-            writable: false,
-        });
+        this.name = name || '';
+        this.patternsCondition = patterns;
+        this.queryCondition = params;
+        this.matrixCondition = matrix;
+        this.customConditionHolder = new RouteConditionHolder(custom);
     }
 
     /**
@@ -805,7 +782,7 @@ export class RouteMappingInfo implements RouteCondition<RouteMappingInfo> {
      * @param route - The current route.
      * @returns A matching mapping info, or `null`.
      */
-    getMatchingCondition(route: Route): RouteMappingInfo {
+    getMatchingCondition(route: Route): RouteMappingInfo | null {
         // Check patterns first — most discriminating filter, eliminates non-matching
         // routes before the cheaper param/matrix checks run.
         const patterns = this.patternsCondition.getMatchingCondition(route);

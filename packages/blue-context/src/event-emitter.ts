@@ -67,7 +67,7 @@ export interface EventEmitter {
      * @param listener - The listener to register.
      * @returns This emitter.
      */
-    on(type: EventType, listener: Function): this;
+    on(type: EventType | EventHandlers, listener?: Function): this;
     /**
      * Removes a listener for an event type.
      *
@@ -193,9 +193,9 @@ const { defineProperty, deleteProperty, getPrototypeOf } = Reflect,
     lastIndexOfColon = (value: string): number => value.lastIndexOf(':');
 
 function addConditionalEventListener(emitter: EventEmitter, type: EventType, listener: EventListener): void {
-    const conditionalListener: EventListener = function (): void {
-        const done = listener.apply(emitter, arguments as any);
-        if (done === true) {
+    const conditionalListener: EventListener = function (this: EventEmitter): void {
+        const done = listener.apply(this, arguments as any);
+        if (done !== undefined && done !== null) {
             // When a conditional listener removes itself (once/many/until), tests expect
             // ':off' meta events to include only the event type (no listener argument).
             removeEventListener(emitter, type, conditionalListener, false);
@@ -218,7 +218,7 @@ function addEventHandler(emitter: EventEmitter, type: EventType, handler: EventH
 
 function addEventHandlers(emitter: EventEmitter, mappings: EventHandlers, prefixed: boolean = false): void {
     for (const key in mappings) {
-        let type: EventType;
+        let type: EventType | undefined;
 
         if (!prefixed) {
             type = key;
@@ -230,7 +230,7 @@ function addEventHandlers(emitter: EventEmitter, mappings: EventHandlers, prefix
             }
         }
 
-        if (type) {
+        if (type != null) {
             const handler = mappings[type as string];
             isEventHandler(handler) && addEventHandler(emitter, type, handler);
         }
@@ -241,7 +241,7 @@ function defineEventsProperty(target: any, value: any): void {
     const hasEvents: boolean = hasOwnProperty.call(target, $events),
         targetPrototype = getPrototypeOf(target);
 
-    if (!hasEvents || (targetPrototype && target[$events] === targetPrototype[$events])) {
+    if (!hasEvents || (targetPrototype && (target as any)[$events] === (targetPrototype as any)[$events])) {
         defineProperty(target, $events, {
             value,
             configurable: true,
@@ -285,7 +285,7 @@ function addEventListener(emitter: EventEmitter, type: EventType, listener: Even
 }
 
 function addFiniteEventListener(emitter: EventEmitter, type: EventType, times: number, listener: EventListener): void {
-    const finiteListener: EventListener = function (): boolean {
+    const finiteListener: EventListener = function (this: EventEmitter): boolean {
         listener.apply(this, arguments as any);
         return --times === 0;
     };
@@ -552,9 +552,11 @@ function removeAllEventListeners(emitter: EventEmitter, type?: EventType): void 
             removeAllEventListeners(emitter, ':off');
             (emitter as any)[$events] = createNull();
         } else {
-            const handler: EventHandler = (emitter as any)[$events][type];
-            removeEventHandler(emitter, type, handler);
-            deleteProperty((emitter as any)[$events], type);
+            if (type != null) {
+                const handler: EventHandler = (emitter as any)[$events][type];
+                removeEventHandler(emitter, type, handler);
+                deleteProperty((emitter as any)[$events], type);
+            }
         }
     }
 }
@@ -630,7 +632,7 @@ export const AsAsyncEventEmitter = <T extends Constructable<EventEmitter>>(
          * @returns A promise that resolves after dispatch.
          */
         async tick(type: string | symbol, ...data: any[]): Promise<void> {
-            return tickAllEvents(this as unknown as EventEmitter, type, data);
+            return tickAllEvents(this, type, data);
         }
     };
 
@@ -664,7 +666,7 @@ export const AsConditionalEventEmitter = <T extends Constructable<EventEmitter>>
                 throw new TypeError('listener must be a function');
             }
 
-            addFiniteEventListener(this as unknown as EventEmitter, type, times, listener as EventListener);
+            addFiniteEventListener(this, type, times, listener as EventListener);
             return this;
         }
 
@@ -685,7 +687,7 @@ export const AsConditionalEventEmitter = <T extends Constructable<EventEmitter>>
                 throw new TypeError('listener must be a function');
             }
 
-            addFiniteEventListener(this as unknown as EventEmitter, type, 1, listener as EventListener);
+            addFiniteEventListener(this, type, 1, listener as EventListener);
             return this;
         }
 
@@ -706,7 +708,7 @@ export const AsConditionalEventEmitter = <T extends Constructable<EventEmitter>>
                 throw new TypeError('listener must be a function');
             }
 
-            addConditionalEventListener(this as unknown as EventEmitter, type, listener as EventListener);
+            addConditionalEventListener(this, type, listener as EventListener);
             return this;
         }
     };
@@ -741,7 +743,7 @@ export const AsPositionalEventEmitter = <T extends Constructable<EventEmitter>>(
                 throw new TypeError('listener must be a function');
             }
 
-            addEventListener(this as unknown as EventEmitter, type, listener as EventListener, index);
+            addEventListener(this, type, listener as EventListener, index);
             return this;
         }
 
@@ -762,7 +764,7 @@ export const AsPositionalEventEmitter = <T extends Constructable<EventEmitter>>(
                 throw new TypeError('listener must be a function');
             }
 
-            addEventListener(this as unknown as EventEmitter, type, listener as EventListener, 0);
+            addEventListener(this, type, listener as EventListener, 0);
             return this;
         }
     };
@@ -787,7 +789,7 @@ export const AsEventEmitter = <T extends Constructable>(superclass: T): Construc
          * @returns `true` when at least one listener ran.
          */
         emit(type: string | symbol, ...data: any[]): boolean {
-            return emitAllEvents(this as unknown as EventEmitter, type, data);
+            return emitAllEvents(this, type, data);
         }
 
         /**
@@ -796,7 +798,7 @@ export const AsEventEmitter = <T extends Constructable>(superclass: T): Construc
          * @returns The registered event types.
          */
         eventTypes(): (string | symbol)[] {
-            return getEventTypes(this as unknown as EventEmitter);
+            return getEventTypes(this);
         }
 
         /**
@@ -850,18 +852,18 @@ export const AsEventEmitter = <T extends Constructable>(superclass: T): Construc
          * @param listener - The listener to register.
          * @returns This emitter.
          */
-        on(type: string | symbol = $every, listener: Function): this {
+        on(type: EventType | EventHandlers = $every, listener?: Function): this {
             if (typeof listener === 'undefined') {
                 if (typeof type === 'function') {
                     listener = type;
                     type = $every;
                 } else if (typeof type === 'object') {
-                    addEventHandlers(this as unknown as EventEmitter, type as unknown as EventHandlers, false);
+                    addEventHandlers(this, type as EventHandlers, false);
                     return this;
                 }
             }
 
-            addEventListener(this as unknown as EventEmitter, type, listener as EventListener, NaN);
+            addEventListener(this, type as EventType, listener as EventListener, NaN);
             return this;
         }
 
@@ -886,7 +888,7 @@ export const AsEventEmitter = <T extends Constructable>(superclass: T): Construc
                 return this;
             }
 
-            removeEventListener(this as unknown as EventEmitter, type, listener as EventListener);
+            removeEventListener(this, type, listener as EventListener);
             return this;
         }
     };
@@ -898,7 +900,7 @@ export class Emitter extends AsEventEmitter(Null) implements Destroyable, Serial
     static readonly every: string = $every;
     static readonly version: string = '3.0.0';
 
-    destroyed: boolean;
+    destroyed: boolean = false;
 
     /**
      * Creates an emitter and optionally seeds it with listeners.
@@ -915,7 +917,7 @@ export class Emitter extends AsEventEmitter(Null) implements Destroyable, Serial
             writable: false,
         });
 
-        typeof mapping !== 'undefined' && addEventHandlers(this as unknown as EventEmitter, mapping, false);
+            typeof mapping !== 'undefined' && addEventHandlers(this, mapping, false);
     }
 
     /**
@@ -925,7 +927,7 @@ export class Emitter extends AsEventEmitter(Null) implements Destroyable, Serial
      * @returns This emitter.
      */
     clear(type?: EventType): this {
-        removeAllEventListeners(this as unknown as EventEmitter, type);
+            removeAllEventListeners(this, type);
         return this;
     }
 
@@ -938,13 +940,14 @@ export class Emitter extends AsEventEmitter(Null) implements Destroyable, Serial
         const json: { listenerCount?: { [type: string]: number } } = createNull();
         const types = keys((this as any)[$events] || createNull());
 
-        json.listenerCount = createNull();
+        const listenerCount: { [type: string]: number } = createNull();
         for (let index = 0; index < types.length; index += 1) {
             const type = types[index];
-            json.listenerCount[type] = this.listenerCount(type);
+            listenerCount[type] = this.listenerCount(type);
         }
+        json.listenerCount = listenerCount;
 
-        return json as unknown as JSONValue;
+        return json as JSONValue;
     }
 
     /**
@@ -953,7 +956,7 @@ export class Emitter extends AsEventEmitter(Null) implements Destroyable, Serial
      * @returns A string representation.
      */
     toString(): string {
-        return `${this[Symbol.toStringTag]} ${JSON.stringify(this.toJSON())}`.trim();
+        return `${(this as any)[Symbol.toStringTag]} ${JSON.stringify(this.toJSON())}`.trim();
     }
 
     /**
@@ -967,7 +970,7 @@ export class Emitter extends AsEventEmitter(Null) implements Destroyable, Serial
                 enumerable: false,
                 writable: false,
             });
-            emitEvent(this as unknown as EventEmitter, ':destroy', [], false);
+            emitEvent(this, ':destroy', [], false);
             this.clear();
             this.toJSON = () => 'destroyed';
         }
@@ -1013,8 +1016,8 @@ export const asEventEmitter = <TTarget extends object>(target: TTarget): TTarget
     });
 
     const forward = (key: keyof EventEmitter) =>
-        function (this: EventEmitterTarget, ...args: any[]) {
-            return (this[$events] as any)[key](...args);
+        function (this: EventEmitter, ...args: any[]) {
+            return ((this as any)[$events] as any)[key](...args);
         };
 
     (['emit', 'eventTypes', 'listenerCount', 'listeners', 'off', 'on'] as (keyof EventEmitter)[]).forEach((key) => {

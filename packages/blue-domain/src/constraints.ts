@@ -4,11 +4,11 @@
 
 import { test } from '@blue/util/string';
 
-export type constraint = (value, params) => boolean;
+export type constraint = (value: any, params: any) => boolean;
 
-const characterClass = (value) => `[${value}]`,
-    oneOrMore = (value) => `${characterClass(value)}+`,
-    only = (value) => `^${oneOrMore(value)}$`,
+const characterClass = (value: string) => `[${value}]`,
+    oneOrMore = (value: string) => `${characterClass(value)}+`,
+    only = (value: string) => `^${oneOrMore(value)}$`,
     LOWERCASE_ALPHA_PATTERN = 'a-z',
     ALPHA_PATTERN = `A-Z${LOWERCASE_ALPHA_PATTERN}`,
     NUMERIC_PATTERN = '0-9',

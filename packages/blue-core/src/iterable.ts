@@ -96,7 +96,7 @@ export type Entries<Value> =
 
 const { isArray } = Array,
     { entries } = Object,
-    propIs = (type) => (name) => (obj) => is(type, obj?.[name]),
+    propIs = (type: any) => (name: any) => (obj: any) => is(type, obj?.[name]),
     hasFunction = propIs(Function),
     hasEntries = hasFunction('entries'),
     _invokeEntries = (obj: any) => obj.entries(),
@@ -132,7 +132,7 @@ export const likeIterable = (value: any): value is Iterable<any> =>
  * @implements {IterableIterator}
  */
 export class IndexedIterator<T = any> implements IterableIterator<T> {
-    #indexed: ArrayLike<T>;
+    #indexed: ArrayLike<T | undefined>;
     #index: number;
 
     /**
@@ -147,7 +147,7 @@ export class IndexedIterator<T = any> implements IterableIterator<T> {
      * Creates an instance of IndexedIterator.
      * @param indexed - The array-like collection to iterate over.
      */
-    constructor(indexed: ArrayLike<T>) {
+    constructor(indexed: ArrayLike<T | undefined>) {
         this.#indexed = indexed;
         this.#index = 0;
     }
@@ -157,11 +157,13 @@ export class IndexedIterator<T = any> implements IterableIterator<T> {
      * @returns An `IteratorResult` object containing the next value and a `done` flag.
      */
     next(): IteratorResult<T> {
-        if (this.#index < this.#indexed.length) {
-            return { done: false, value: this.#indexed[this.#index++] };
-        } else {
-            return { done: true } as IteratorResult<T>;
+        while (this.#index < this.#indexed.length) {
+            const value = this.#indexed[this.#index++];
+            if (value !== undefined) {
+                return { done: false, value };
+            }
         }
+        return { done: true } as IteratorResult<T>;
     }
 }
 
@@ -171,7 +173,7 @@ export class IndexedIterator<T = any> implements IterableIterator<T> {
  * @param indexed - The array-like collection to iterate over.
  * @returns An `IterableIterator` for the provided collection.
  */
-export const indexedIterator = <T = any>(indexed: ArrayLike<T>): IterableIterator<T> => new IndexedIterator<T>(indexed);
+export const indexedIterator = <T = any>(indexed: ArrayLike<T | undefined>): IterableIterator<T> => new IndexedIterator<T>(indexed);
 
 /**
  * An iterator for the key-value pairs (entries) of an object or collection.

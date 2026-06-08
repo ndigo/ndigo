@@ -21,7 +21,7 @@ export default class RouterExecutionChain {
         return this.#interceptors;
     }
 
-    constructor(chain: RouterExecutionChain | RouterInterceptor[] = null) {
+    constructor(chain: RouterExecutionChain | RouterInterceptor[] | null = null) {
         this.#interceptors = [];
 
         if (chain instanceof RouterExecutionChain) {

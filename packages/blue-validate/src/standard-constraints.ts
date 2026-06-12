@@ -37,7 +37,7 @@ import {
     phoneOaoRule,
     CurrencyFormat,
 } from './formats';
-import { replace, split, toString } from '@blue/util/string';
+import { toString } from '@blue/util/string';
 import { is } from '@blue/util/types';
 import { serializable } from '@blue/core';
 
@@ -206,26 +206,37 @@ const { parseFloat, parseInt } = Number,
     isDefined = (value: unknown) => !isUndefined(value),
     isString = (x: any): x is string => x instanceof String || typeof x === 'string',
     lengthIsOne = (x: any): boolean => x?.length === 1,
-    splitOnDot = split(/\./),
+    _replace = (pattern: RegExp | string, replacement: string) => (s: string) => s.replace(pattern, replacement),
+    _split = (sep: RegExp | string) => (s: string) => s.split(sep),
+    splitOnDot = _split(/\./),
     isSingleSpaced: (value: string) => boolean = (value: string): boolean => !value.split(' ').some(s => s.length === 0),
     lengthOf: (value: any) => number = (x: any) => x?.length,
-    removeAnyAlphaNumber: (s: string) => string = replace(anyAlphaNumericRule, ''),
-    removeLowerCase: (s: string) => string = replace(notACapitalRule, ''),
-    removeNonAlpha: (s: string) => string = replace(notAnAlphaRule, ''),
-    removeNonNumber: (s: string) => string = replace(notANumberRule, ''),
-    removeNonPasswordSymbol: (s: string) => string = replace(notAPasswordSymbolRule, ''),
-    removeLeadingSlash: (s: string) => string = replace(/^\//, ''),
-    removeTrailingSlash: (s: string) => string = replace(/\/$/, ''),
-    removeTrailingSlashAndFlags: (s: string) => string = replace(/\/[^/]*$/, ''),
+    removeAnyAlphaNumber: (s: string) => string = _replace(anyAlphaNumericRule, ''),
+    removeLowerCase: (s: string) => string = _replace(notACapitalRule, ''),
+    removeNonAlpha: (s: string) => string = _replace(notAnAlphaRule, ''),
+    removeNonNumber: (s: string) => string = _replace(notANumberRule, ''),
+    removeNonPasswordSymbol: (s: string) => string = _replace(notAPasswordSymbolRule, ''),
+    removeLeadingSlash: (s: string) => string = _replace(/^\//, ''),
+    removeTrailingSlash: (s: string) => string = _replace(/\/$/, ''),
+    removeTrailingSlashAndFlags: (s: string) => string = _replace(/\/[^/]*$/, ''),
     removeSlashes: (s: string) => string = _pipe(removeLeadingSlash, removeTrailingSlash),
     removeSlashesAndFlags: (s: string) => string = _pipe(removeLeadingSlash, removeTrailingSlashAndFlags),
-    removeWhitespace: (s: string) => string = replace(whitespaceRule, ''),
+    removeWhitespace: (s: string) => string = _replace(whitespaceRule, ''),
     alphaCount: Counter = (value: string) => lengthOf(removeNonAlpha(toString(value))),
     numberCount: Counter = (value: string) => lengthOf(removeNonNumber(toString(value))),
     passwordSymbolCount: Counter = (value: string) => lengthOf(removeNonPasswordSymbol(toString(value))),
     specialsCount: Counter = (value: string) => lengthOf(removeAnyAlphaNumber(toString(value))),
     upperCaseCount: Counter = (value: string) => lengthOf(removeLowerCase(toString(value))),
     valueCount: Counter = (value: string) => lengthOf(toString(value)),
+    /**
+     * Creates a constraint that validates a value against a regex pattern.
+     * @param {PatternParams} params - Pattern parameters including regex and optional flags
+     * @returns {constraint} A constraint function
+     * @security WARNING: The `regex` parameter should not contain untrusted user input.
+     *   Patterns with nested quantifiers (e.g., /(a+)+/) can cause ReDoS (Regex Denial of Service).
+     *   Only use with developer-controlled patterns.
+     * @internal
+     */
     patternConstraint =
         ({ regex, flags }: PatternParams) =>
         (value: serializable, params?: Params): boolean => {

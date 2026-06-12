@@ -6,7 +6,6 @@ import { Serializable, JSONValue } from './serializable';
 import { Comparator, StringComparable, stringComparator, numberComparator } from './comparable';
 import { Null } from './null';
 import { isString } from '@blue/util/types';
-import { split } from '@blue/util/string';
 import { Matchable } from './matchable';
 import { IllegalStateError } from './error';
 
@@ -34,7 +33,7 @@ export type SupportedMediaType =
 const { freeze, keys } = Object,
     { parseFloat } = Number,
     typeRegistry = new Map<string, MediaType>(),
-    splitOnEquals = split('=') as (value: `${string}=${string}`) => [string, string],
+    splitOnEquals = (value: `${string}=${string}`) => value.split('=') as [string, string],
     WILDCARD: SupportedMediaType = '*',
     QUALITY_FACTOR_PARAM = 'q';
 

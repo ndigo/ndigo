@@ -73,6 +73,7 @@
     "nx": "~21.0.0",
     "prettier": "~3.4.2",
     "repomix": "~0.2.0",
+    "safe-regex": "^2.1.1",
     "typedoc": "^0.28.0",
     "typedoc-plugin-markdown": "^4.11.0",
     "typescript": "~6.0.3",

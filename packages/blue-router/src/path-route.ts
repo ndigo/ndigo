@@ -1,6 +1,5 @@
 import { RouteSegment, Route } from './route';
 import { JSONValue, Serializable, JSONObject, createNull } from '@blue/core';
-import { replace, split, trim } from '@blue/util/string';
 import { isNil } from '@blue/util/types';
 import { QueryString, MatrixString } from '@blue/http';
 
@@ -12,14 +11,14 @@ const questionMark = '?',
     isNotNilAndNotEmpty = (value: unknown) => isNotNil(value) && value !== '',
     joinOnSlash = (arr: string[]): string => arr.join(slash),
     leadingSlash = new RegExp(`^${slash}`),
-    removeLeadingSlash = replace(leadingSlash, ''),
-    splitOnQuestionMark = split(questionMark),
-    splitOnSlash = split(slash),
+    removeLeadingSlash = (s: string) => s.replace(leadingSlash, ''),
+    splitOnQuestionMark = (s: string) => s.split(questionMark),
+    splitOnSlash = (s: string) => s.split(slash),
     startsWithColon = (value: string): boolean => value.startsWith(':'),
     startsWithBrace = (value: string): boolean => value.startsWith('{'),
     endsWithBrace = (value: string): boolean => value.endsWith('}'),
     splitPathIntoSegments = (value: string): string[] => splitOnSlash(value).filter(isNotNilAndNotEmpty),
-    splitRouteIntoParts = (value: string): string[] => splitOnQuestionMark(removeLeadingSlash(trim(value)));
+    splitRouteIntoParts = (value: string): string[] => splitOnQuestionMark(removeLeadingSlash(value.trim()));
 
 let routeId = 0;
 

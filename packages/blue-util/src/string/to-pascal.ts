@@ -1,10 +1,7 @@
 /**
  * @author Jeff Rose
- * @see {@link https://ramdajs.com/docs/}
  * @see {@link http://moutjs.com/docs/latest/string.html#pascalCase}
  */
-
-import { pipe } from 'ramda';
 
 import toCamel from './to-camel.js';
 
@@ -20,8 +17,9 @@ const // Lower case letters at the beginning of a string
      * //=> "LoremIpsumDolor"
      * @see {@link http://wiki.c2.com/?PascalCase}
      */
-    toPascal: (value: string) => string = pipe(toCamel, (value: string): string =>
-        value.replace(lowerCaseLetters, (match: string): string => match.toUpperCase())
-    );
+    toPascal: (value: string) => string = (val: string): string => {
+        val = toCamel(val);
+        return val.replace(lowerCaseLetters, (match: string): string => match.toUpperCase());
+    };
 
 export default toPascal;

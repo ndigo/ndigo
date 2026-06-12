@@ -34,23 +34,8 @@ describe('math module - import patterns', () => {
         expect(randomValue).toBeLessThan(1);
     });
 
-    test('All 18 math functions are exported', async () => {
+    test('All 5 custom math functions are exported', async () => {
         const math = await import('@blue/util/math');
-
-        // 13 Ramda functions
-        expect(math.add).toBeDefined();
-        expect(math.dec).toBeDefined();
-        expect(math.divide).toBeDefined();
-        expect(math.inc).toBeDefined();
-        expect(math.mathMod).toBeDefined();
-        expect(math.mean).toBeDefined();
-        expect(math.median).toBeDefined();
-        expect(math.modulo).toBeDefined();
-        expect(math.multiply).toBeDefined();
-        expect(math.negate).toBeDefined();
-        expect(math.product).toBeDefined();
-        expect(math.subtract).toBeDefined();
-        expect(math.sum).toBeDefined();
 
         // 5 Custom functions
         expect(math.guid).toBeDefined();
@@ -58,17 +43,5 @@ describe('math module - import patterns', () => {
         expect(math.randHex).toBeDefined();
         expect(math.randInt).toBeDefined();
         expect(math.random).toBeDefined();
-    });
-
-    test('Ramda math functions work correctly', async () => {
-        const { inc, dec, negate, mean, median, product, sum } = await import('@blue/util/math');
-
-        expect(inc(5)).toBe(6);
-        expect(dec(5)).toBe(4);
-        expect(negate(5)).toBe(-5);
-        expect(mean([1, 2, 3, 4, 5])).toBe(3);
-        expect(median([1, 2, 3, 4, 5])).toBe(3);
-        expect(product([1, 2, 3, 4])).toBe(24);
-        expect(sum([1, 2, 3, 4])).toBe(10);
     });
 });

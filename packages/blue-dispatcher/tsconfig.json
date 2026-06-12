@@ -1,11 +1,10 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "skipLibCheck": true,
+    "rootDir": "./src",
     "paths": {
-      "@blue/*": ["../../packages/*/src"]
+      "@blue/*": ["../blue-*/src"]
     }
   },
-  "include": ["src/**/*", "test/**/*"],
-  "exclude": ["node_modules/**/*", "lib/**/*"]
+  "include": ["src/**/*", "test/**/*"]
 }

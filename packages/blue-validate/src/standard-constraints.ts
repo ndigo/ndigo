@@ -229,7 +229,7 @@ const { parseFloat, parseInt } = Number,
     patternConstraint =
         ({ regex, flags }: PatternParams) =>
         (value: serializable, params?: Params): boolean => {
-            if (typeof value !== 'string') {
+            if (typeof value !== 'string' && typeof value !== 'number') {
                 return false;
             }
             if (regex === undefined) {
@@ -242,7 +242,7 @@ const { parseFloat, parseInt } = Number,
                 ? new RegExp(removeSlashesAndFlags(String(normalizedRegex)), flags)
                 : new RegExp(normalizedRegex);
     
-            return matcher.test(value);
+            return matcher.test(String(value));
         },
     isAddressLine: constraint = patternConstraint({
         regex: addressLineRule.source,

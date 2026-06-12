@@ -68,7 +68,7 @@ export abstract class AbstractView extends AsNameAware(AsApplicationContextAware
     constructor() {
         super();
         this.destroyed = false;
-        this.mediaType = MediaTypes.TEXT_HTML.withCharset('UTF-8');
+        this.mediaType = MediaTypes.TEXT_HTML!.withCharset('UTF-8');
     }
 
     /**

@@ -6,6 +6,6 @@
     "rootDir": "src",
     "skipLibCheck": true
   },
-  "exclude": ["node_modules", "test", "vite.config.ts", "vitest.config.ts", "**/*.spec.ts", "**/*.test.ts"],
+  "exclude": ["node_modules/**/*", "**/*.spec.ts", "**/*.test.ts", "vite.config.ts", "vitest.config.ts", "test/**/*"],
   "include": ["src/**/*"]
 }

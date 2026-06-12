@@ -1,10 +1,7 @@
 /**
  * @author Jeff Rose
- * @see {@link https://ramdajs.com/docs/}
  * @see {@link http://moutjs.com/docs/latest/string.html#removeNonWord}
  */
-
-import { replace } from 'ramda';
 
 /**
  * Remove non-word characters.
@@ -15,6 +12,6 @@ import { replace } from 'ramda';
  * removeNonWord( "lorem ~!@#$%^&*()_+`-={}[]|\\:\";'/?><., ipsum" );
  * //=> "lorem _- ipsum"
  */
-const removeNonWord: (value: string) => string = replace(/[^\x20\x2D0-9A-Z\x5Fa-z\xC0-\xD6\xD8-\xF6\xF8-\xFF]/g, '');
+const removeNonWord: (value: string) => string = (val: string) => val.replace(/[^\x20\x2D0-9A-Z\x5Fa-z\xC0-\xD6\xD8-\xF6\xF8-\xFF]/g, '');
 
 export default removeNonWord;

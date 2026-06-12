@@ -5,7 +5,6 @@
  */
 
 import isNumber from './is-number.js';
-import { isValid } from 'date-fns/fp';
 
 /**
  * Determines whether a given value is a valid date.
@@ -33,8 +32,8 @@ import { isValid } from 'date-fns/fp';
  * @see {@link http://es5.github.io/#x15.9.1.1}
  */
 const isValidDate = (value: any): value is Date => {
-    if (value instanceof Date) return isValid(value);
-    if (isNumber(value)) return isValid(value);
+    if (value instanceof Date) return !isNaN(value.getTime());
+    if (isNumber(value)) return !isNaN(new Date(value).getTime());
     return false;
 };
 

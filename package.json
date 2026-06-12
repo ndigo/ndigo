@@ -24,6 +24,8 @@
     "doc:json": "typedoc --json doc-md/api.json",
     "doc:watch": "typedoc --watch",
     "lint:ast-grep": "ast-grep scan",
+    "label-graph": "node label_injector.js",
+    "label-labels": "node label_writer.js",
     "api-report": "nx run-many -t api-report",
     "digest": "repomix",
     "digest:compact": "repomix --compress"

@@ -1,11 +1,8 @@
 /**
  * @author Jeff Rose
- * @see {@link https://ramdajs.com/docs/}
  * @see {@link http://moutjs.com/docs/latest/string.html#slugify}
  * @see {@link https://github.com/dodo/node-slug}
  */
-
-import { pipe } from 'ramda';
 
 import removeNonWord from './remove-non-word.js';
 import slug from 'slug';
@@ -22,10 +19,9 @@ import slug from 'slug';
  * slugify( '~', 'Lorem Ipsum Dolor' );
  * //=> "lorem~ipsum~dolor"
  */
-const slugify = (delimiter: string, value: string): string =>
-    pipe(
-        removeNonWord,
-        (val: string) => slug(val, { remove: null, replacement: delimiter, lower: false }),
-        (val: string): string => val.toLowerCase()
-    )(value);
+const slugify = (delimiter: string, value: string): string => {
+    const cleanValue = removeNonWord(value);
+    const result = slug(cleanValue, { remove: null, replacement: delimiter, lower: false });
+    return result.toLowerCase();
+};
 export default slugify;

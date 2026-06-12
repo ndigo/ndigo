@@ -8,6 +8,7 @@
     "moduleResolution": "Bundler",
     "target": "ES2022",
     "skipLibCheck": true,
+    "outDir": ".tscache",
     "paths": {
       "@blue/platform": ["packages/blue-platform-web/src"],
       "@blue/platform-web": ["packages/blue-platform-web/src"],

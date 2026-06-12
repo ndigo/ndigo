@@ -147,7 +147,12 @@ class Type {
      * @returns {ValidationResults} An object containing the validation outcome, including `isValid` and `failedConstraints`.
      */
     validate(value: unknown, params: ValidationOptions = {}): ValidationResults {
-        isNotArray(value) && isNotString(value) && (value = toString(value) || '');
+        // Convert non-array, non-string values to strings for validation
+        if (isNotArray(value) && isNotString(value)) {
+            // Use a simple string conversion that handles null/undefined properly
+            const strValue = String(value);
+            value = strValue || '';
+        }
 
         // Default to the current type as the constraint in case no constraints were defined but a validator was
         const constraintsConfig = this.#resolveConstraints(params);

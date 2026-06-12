@@ -3,22 +3,6 @@
  * @module math
  */
 
-// Import Ramda Math functions for re-export
-import * as R from 'ramda';
-const add = R.add;
-const dec = R.dec;
-const divide = R.divide;
-const inc = R.inc;
-const mathMod = R.mathMod;
-const mean = R.mean;
-const median = R.median;
-const modulo = R.modulo;
-const multiply = R.multiply;
-const negate = R.negate;
-const product = R.product;
-const subtract = R.subtract;
-const sum = R.sum;
-
 // Import custom functions for re-export
 import guid from './guid.js';
 import rand from './rand.js';
@@ -40,7 +24,7 @@ import random from './random.js';
  * add( 7 )( 10 );
  * //=> 17
  */
-export { add };
+export const add = (a: number, b: number): number => a + b;
 
 /**
  * Decrements its argument.
@@ -52,7 +36,7 @@ export { add };
  * @example
  * dec( 42 ); //=> 41
  */
-export { dec };
+export const dec = (n: number): number => n - 1;
 
 /**
  * Divides two numbers. Equivalent to `a / b`.
@@ -72,7 +56,7 @@ export { dec };
  * const reciprocal = divide( 1 );
  * reciprocal( 4 );   //=> 0.25
  */
-export { divide };
+export const divide = (a: number, b: number): number => a / b;
 
 /**
  * Increments its argument.
@@ -84,7 +68,7 @@ export { divide };
  * @example
  * inc( 42 ); //=> 43
  */
-export { inc };
+export const inc = (n: number): number => n + 1;
 
 /**
  * `mathMod` behaves like the modulo operator should mathematically, unlike the
@@ -115,7 +99,10 @@ export { inc };
  * seventeenMod( 4 );  //=> 1
  * seventeenMod( 10 ); //=> 7
  */
-export { mathMod };
+export const mathMod = (m: number, p: number): number => {
+    if (!Number.isInteger(m) || !Number.isInteger(p) || p <= 0) return NaN;
+    return ((m % p) + p) % p;
+};
 
 /**
  * Returns the mean of the given list of numbers.
@@ -128,7 +115,7 @@ export { mathMod };
  * mean( [ 2, 7, 9 ] ); //=> 6
  * mean( [] ); //=> NaN
  */
-export { mean };
+export const mean = (list: number[]): number => list.length ? list.reduce((a, b) => a + b, 0) / list.length : NaN;
 
 /**
  * Returns the median of the given list of numbers.
@@ -142,7 +129,12 @@ export { mean };
  * median( [ 7, 2, 10, 9 ] ); //=> 8
  * median( [] ); //=> NaN
  */
-export { median };
+export const median = (list: number[]): number => {
+    if (!list.length) return NaN;
+    const sorted = [...list].sort((a, b) => a - b);
+    const mid = Math.floor(sorted.length / 2);
+    return sorted.length % 2 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
+};
 
 /**
  * Divides the first parameter by the second and returns the remainder. Note
@@ -170,7 +162,7 @@ export { median };
  * isOdd( 21 );
  * //=> 1
  */
-export { modulo };
+export const modulo = (a: number, b: number): number => a % b;
 
 /**
  * Multiplies two numbers. Equivalent to `a * b` but curried.
@@ -190,7 +182,7 @@ export { modulo };
  * multiply( 2, 5 );
  * //=> 10
  */
-export { multiply };
+export const multiply = (a: number, b: number): number => a * b;
 
 /**
  * Negates its argument.
@@ -202,7 +194,7 @@ export { multiply };
  * negate( 42 );
  * //=> -42
  */
-export { negate };
+export const negate = (n: number): number => -n;
 
 /**
  * Multiplies together all the elements of a list.
@@ -215,7 +207,7 @@ export { negate };
  * product( [ 2, 4, 6, 8, 100, 1 ] );
  * //=> 38400
  */
-export { product };
+export const product = (list: number[]): number => list.reduce((a, b) => a * b, 1);
 
 /**
  * Subtracts its second argument from its first argument.
@@ -240,7 +232,7 @@ export { product };
  * complementaryAngle( 72 );
  * //=> 18
  */
-export { subtract };
+export const subtract = (a: number, b: number): number => a - b;
 
 /**
  * Adds together all the elements of a list.
@@ -253,7 +245,7 @@ export { subtract };
  * sum( [ 2, 4, 6, 8, 100, 1 ] );
  * //=> 121
  */
-export { sum };
+export const sum = (list: number[]): number => list.reduce((a, b) => a + b, 0);
 
 // Export custom functions
 export { guid, rand, randHex, randInt, random };

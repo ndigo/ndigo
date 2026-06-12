@@ -1,31 +1,30 @@
 /**
  * @author Jeff Rose
- * @see {@link https://ramdajs.com/docs/}
  * @see {@link https://github.com/samverschueren/decode-uri-component}
  */
-
-import { concat, join, match, reduce, replace, unapply } from 'ramda';
 
 const token = '%[a-f0-9]{2}',
     singleMatcher = new RegExp(token, 'gi'),
     multiMatcher = new RegExp(`(?:${token})+|${token}|.`, 'gi'),
-    plusMatcher = /\+/g,
-    concatAll = unapply(reduce<string[], string[]>(concat, [])),
-    joinOnEmptyString = join('') as (value: string[]) => string,
-    matchSingleToken = match(singleMatcher) as (value: string) => RegExpMatchArray,
-    replacePlusWithSpace = replace(plusMatcher, ' ');
+    plusMatcher = /\+/g;
 
 function decode(input: string): string {
     try {
         return decodeURIComponent(input);
     } catch (error) {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        let tokens = matchSingleToken(input),
-            index = 1;
+        let tokens = input.match(singleMatcher);
+        if (!tokens) {
+            return input;
+        }
+        let index = 1;
 
         for (; index < tokens.length; index++) {
-            input = joinOnEmptyString(decodeURIComponentList(tokens, index));
-            tokens = matchSingleToken(input);
+            input = decodeURIComponentList(tokens, index).join('');
+            tokens = input.match(singleMatcher);
+            if (!tokens) {
+                break;
+            }
         }
 
         return input;
@@ -35,7 +34,7 @@ function decode(input: string): string {
 function decodeURIComponentList(components: string[], index: number = 1): string[] {
     try {
         // Try to decode the entire string first
-        return [decodeURIComponent(joinOnEmptyString(components))];
+        return [decodeURIComponent(components.join(''))];
     } catch (error) {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         // Do nothing
@@ -49,7 +48,7 @@ function decodeURIComponentList(components: string[], index: number = 1): string
     const left = components.slice(0, index),
         right = components.slice(index);
 
-    return concatAll([], decodeURIComponentList(left), decodeURIComponentList(right));
+    return [...decodeURIComponentList(left), ...decodeURIComponentList(right)];
     //return Array.prototype.concat.call( [], decodeURIComponentList( left ), decodeURIComponentList( right ) );
 }
 
@@ -106,7 +105,7 @@ function enhancedDecodeURIComponent(input: string): string {
 export default function (value: string): string {
     try {
         // Try the built in decoder first
-        return decodeURIComponent(replacePlusWithSpace(value));
+        return decodeURIComponent(value.replace(plusMatcher, ' '));
     } catch (error) {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         // Fallback to a more advanced decoder

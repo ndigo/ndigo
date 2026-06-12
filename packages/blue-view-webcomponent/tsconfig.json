@@ -1,6 +1,10 @@
 {
-  "extends": "../../tsconfig.json",
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "useDefineForClassFields": true
-  }
+    "rootDir": "./src",
+    "paths": {
+      "@blue/*": ["../blue-*/src"]
+    }
+  },
+  "include": ["src/**/*", "test/**/*"]
 }

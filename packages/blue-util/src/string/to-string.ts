@@ -1,7 +1,6 @@
 /**
  * @author Jeff Rose
  */
-import { toString as _toString } from 'ramda';
 import isString from '../type/is-string.js';
 
 /**
@@ -49,7 +48,11 @@ import isString from '../type/is-string.js';
 function toString(value: any): string {
     if (value == null) return '';
     if (isString(value)) return value;
-    return _toString(value);
+    if (typeof value === 'object' && typeof (value as any).toString === 'function') {
+        const custom = (value as any).toString();
+        if (typeof custom === 'string') return custom;
+    }
+    return String(value);
 }
 
 export default toString;

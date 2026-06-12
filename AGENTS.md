@@ -17,7 +17,7 @@ pnpm lint            # Check code quality
 
 ⚠️ **Section 5 (Research Workflow)** - ALWAYS perform two-step reconnaissance before writing code: (1) scan target package for patterns/utilities, (2) scan @blue/util, @blue/parser, etc. for reusable code
 
-⚠️ **Section 4.4 (Library Integration Layer)** - Most common error: importing ramda/date-fns directly instead of through @blue/util
+⚠️ **Section 4.4 (Library Integration Layer)** - Most common error: importing seedrandom/slug directly instead of through @blue/util
 
 ⚠️ **Section 4.7 (Decorator Naming)** - All decorators MUST use camelCase
 
@@ -259,9 +259,9 @@ This will prevent `TypeError` exceptions at runtime. The build process may not a
 
 | Package        | Encapsulates                                             | Import From    |
 | :------------- | :------------------------------------------------------- | :------------- |
-| `@blue/util`   | `ramda`, `date-fns`, `date-fns-tz`, `seedrandom`, `slug` | `@blue/util`   |
-| `@blue/parser` | `arcsecond`                                              | `@blue/parser` |
-| `@blue/model`  | `objectmodel`                                            | `@blue/model`  |
+| `@blue/util`           | `seedrandom`, `slug`                                     | `@blue/util`   |
+| `@blue/parser`         | `arcsecond`                                              | `@blue/parser` |
+| `@blue/model`          | `objectmodel`                                            | `@blue/model`  |
 
 **Import Rules by Package Type:**
 
@@ -283,30 +283,22 @@ This will prevent `TypeError` exceptions at runtime. The build process may not a
 
 ```typescript
 // ✅ CORRECT: Import from integration layer
-import * as R from '@blue/util';
-import { parseDate, formatDate } from '@blue/util';
+import { slugify } from '@blue/util';
 import { choice, sequenceOf } from '@blue/parser';
 
 // ❌ INCORRECT: Direct import bypasses integration layer
-import * as R from 'ramda'; // Wrong! Use @blue/util
 import { format } from 'date-fns'; // Wrong! Use @blue/util
 import { choice } from 'arcsecond'; // Wrong! Use @blue/parser
-
-// ✅ CORRECT: Test files may import for mocking
-// In test/my-service.spec.ts
-import { vi } from 'vitest';
-import * as R from 'ramda'; // OK in tests for mocking
-vi.mock('ramda');
 ```
 
 **Common Violations to Avoid:**
 
 ```typescript
 // ❌ In @blue/core/src/container.ts
-import * as R from 'ramda'; // WRONG: Not in integration layer
+import { format } from 'date-fns'; // WRONG: Not in integration layer
 
 // ✅ Correct version:
-import * as R from '@blue/util';
+import { format } from '@blue/util';
 
 // ❌ In @blue/router/src/matcher.ts
 import { choice, sequenceOf } from 'arcsecond'; // WRONG
@@ -321,7 +313,7 @@ These rules are **automatically enforced** by `@blue/eslint-plugin`, which provi
 
 | Rule                                  | Severity | Description                                                                                                                                                          |
 | :------------------------------------ | :------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `@blue/no-direct-integration-imports` | warn     | Forbids importing encapsulated libraries (ramda, date-fns, arcsecond, etc.) outside their integration layer packages. Allows in integration packages and test files. |
+| `@blue/no-direct-integration-imports` | warn     | Forbids importing encapsulated libraries (seedrandom, slug, arcsecond, etc.) outside their integration layer packages. Allows in integration packages and test files. |
 | `@blue/no-internal-file-imports`      | error    | Forbids `@blue/<pkg>/_*` cross-package imports of internal files.                                                                                                    |
 | `@blue/no-internal-file-exports`      | error    | Forbids `export * from './_*'` barrel re-exports in `*/src/index.ts`. Named re-exports (`export { foo } from './_*'`) are allowed (deliberate/controlled).           |
 
@@ -439,7 +431,7 @@ When organizing helper functions and utilities, follow the extraction hierarchy:
 2.  **Research:** Before writing code, perform two-step reconnaissance to avoid duplication and maintain consistency:
     - **Step 1 - Scan target package:** Search for related functionality, established patterns, internal utilities (`_util.ts`, `_parsers.ts`), naming conventions, and design patterns currently in use.
     - **Step 2 - Scan related packages:** Check common utilities and specialized tools:
-        - `@blue/util` - Common utilities (ramda, date-fns, string utils) - **Check first!**
+        - `@blue/util` - Common utilities (string utils, seedrandom, slug) - **Check first!**
         - `@blue/parser` - String parsing (arcsecond wrappers) - Use for parsing URLs, queries, expressions
         - `@blue/model` - Object validation (objectmodel) - Use for data validation
         - `@blue/core` - Core primitives, containers, patterns - Use for application context, DI, base types

@@ -15,9 +15,9 @@ const rootDir = join(__dirname, '..');
 const docsData = JSON.parse(readFileSync(join(__dirname, 'docs-by-category.json'), 'utf-8'));
 
 /**
- * Extract function names from ramda imports
- */
-function extractRamdaFunctions(lines, endIndex) {
+  * Extract function names from imports
+  */
+function extractFunctionImports(lines, endIndex) {
     const functions = [];
     let inImport = false;
     let importText = '';
@@ -30,13 +30,13 @@ function extractRamdaFunctions(lines, endIndex) {
         if (inImport) {
             importText += line + ' ';
         }
-        if (line.includes("} from 'ramda'")) {
+        if (line.includes('// Import custom functions for re-export')) {
             break;
         }
     }
 
     // Extract function names from the collected import text
-    const match = importText.match(/import\s*{\s*([^}]+)\s*}\s*from\s*'ramda'/);
+    const match = importText.match(/import\s*{\s*([^}]+)\s*}\s*from\s*'/);
     if (match) {
         const funcList = match[1];
         // Split by comma and clean up
@@ -79,15 +79,15 @@ function updateCategoryFile(categoryName, filePath, docMap) {
     let content = readFileSync(fullPath, 'utf-8');
     let lines = content.split('\n');
 
-    // Find where ramda imports end
-    const ramdaImportEndIndex = lines.findIndex((line) => line.includes("} from 'ramda';"));
-    if (ramdaImportEndIndex === -1) {
-        console.log(`⚠️  No ramda imports found in ${filePath}`);
+    // Find where imports end (marked by comment)
+    const importBoundaryIndex = lines.findIndex((line) => line.includes('// Import custom functions for re-export'));
+    if (importBoundaryIndex === -1) {
+        console.log(`⚠️  No import boundary marker found in ${filePath}`);
         return { documented: 0, notFound: 0 };
     }
 
-    // Extract ramda function names from imports
-    const ramdaFunctions = extractRamdaFunctions(lines, ramdaImportEndIndex);
+    // Extract function names from imports
+    const functionImports = extractFunctionImports(lines, importBoundaryIndex);
 
     // Find where export statements start for Ramda functions
     let firstExportIndex = -1;
@@ -138,7 +138,7 @@ function updateCategoryFile(categoryName, filePath, docMap) {
     let documented = 0;
     let notFound = 0;
 
-    ramdaFunctions.forEach((funcName) => {
+    functionImports.forEach((funcName) => {
         const doc = docMap.get(funcName);
         if (doc) {
             newExports.push(doc);

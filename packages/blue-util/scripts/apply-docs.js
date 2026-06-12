@@ -59,22 +59,22 @@ Object.entries(categoryFileMap).forEach(([category, filePath]) => {
         docMap.set(item.name, cleanedDoc.trim());
     });
 
-    // Find the import section end (where ramda imports end)
+    // Find the import section end (marked by comment)
     let importsEndIndex = -1;
     for (let i = 0; i < lines.length; i++) {
-        if (lines[i].includes("} from 'ramda';")) {
+        if (lines[i].includes('// Import custom functions for re-export')) {
             importsEndIndex = i;
             break;
         }
     }
 
     if (importsEndIndex === -1) {
-        console.log(`⚠️  Could not find ramda imports end in ${filePath}`);
+        console.log(`⚠️  Could not find import boundary marker in ${filePath}`);
         return;
     }
 
-    // Extract function names from the ramda imports
-    const ramdaImports = [];
+    // Extract function names from the imports (everything before the marker)
+    const functionImports = [];
     let inImport = false;
     for (let i = 0; i <= importsEndIndex; i++) {
         const line = lines[i].trim();
@@ -85,16 +85,15 @@ Object.entries(categoryFileMap).forEach(([category, filePath]) => {
             inImport &&
             line !== '' &&
             !line.startsWith('import') &&
-            !line.startsWith('//') &&
-            !line.includes('ramda')
+            !line.startsWith('//')
         ) {
             // Extract function name
             const match = line.match(/^(\w+),?/);
             if (match) {
-                ramdaImports.push(match[1]);
+                functionImports.push(match[1]);
             }
         }
-        if (line.includes("} from 'ramda'")) {
+        if (line.includes('} from')) {
             inImport = false;
         }
     }
@@ -103,7 +102,7 @@ Object.entries(categoryFileMap).forEach(([category, filePath]) => {
     let customImportsStart = -1;
     let customImportsEnd = -1;
     for (let i = importsEndIndex + 1; i < lines.length; i++) {
-        if (lines[i].includes('import') && !lines[i].includes('ramda')) {
+        if (lines[i].includes('import') && !lines[i].includes('from')) {
             if (customImportsStart === -1) {
                 customImportsStart = i;
             }
@@ -157,7 +156,7 @@ Object.entries(categoryFileMap).forEach(([category, filePath]) => {
         }
     }
 
-    // Preserve everything up to where custom imports end (or ramda imports end if no custom imports)
+    // Preserve everything up to where custom imports end (or import marker if no custom imports)
     const endOfImports = customImportsEnd !== -1 ? customImportsEnd : importsEndIndex;
     const preservedPrefix = lines.slice(0, endOfImports + 1);
 
@@ -171,7 +170,7 @@ Object.entries(categoryFileMap).forEach(([category, filePath]) => {
     let documented = 0;
     let notFound = 0;
 
-    ramdaImports.forEach((funcName) => {
+    functionImports.forEach((funcName) => {
         const doc = docMap.get(funcName);
         if (doc) {
             newExports.push(doc);

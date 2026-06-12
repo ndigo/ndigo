@@ -977,7 +977,7 @@ graph TD
 
 | Integration Layer | Encapsulated Libraries                                   | Purpose                                                    |
 | :---------------- | :------------------------------------------------------- | :--------------------------------------------------------- |
-| `@blue/util`      | `ramda`, `date-fns`, `date-fns-tz`, `seedrandom`, `slug` | Functional utilities, date handling, randomness, URL slugs |
+| `@blue/util`      | `seedrandom`, `slug`                                     | Randomness, URL slugs                                      |
 | `@blue/parser`    | `arcsecond`                                              | Parser combinators and parsing primitives                  |
 | `@blue/model`     | `objectmodel`                                            | Runtime type validation and model definitions              |
 | `@blue/dom`       | `linkedom`                                               | Isomorphic DOM parsing and element creation                |
@@ -995,15 +995,13 @@ graph TD
 
 ```typescript
 // In @blue/core or any non-integration package
-import * as R from '@blue/util'; // ✅ Import from integration layer
-import { parseDate } from '@blue/util'; // ✅ Import from integration layer
+import { slugify } from '@blue/util'; // ✅ Import from integration layer
 ```
 
 **❌ Incorrect:**
 
 ```typescript
 // In @blue/core or any non-integration package
-import * as R from 'ramda'; // ❌ Direct import bypasses integration layer
 import { format } from 'date-fns'; // ❌ Direct import bypasses integration layer
 ```
 
@@ -1012,8 +1010,8 @@ import { format } from 'date-fns'; // ❌ Direct import bypasses integration lay
 ```typescript
 // In @blue/core/test/my-service.spec.ts
 import { vi } from 'vitest';
-import * as R from 'ramda'; // ✅ OK in test files for mocking
-vi.mock('ramda'); // ✅ OK to mock external dependencies
+// Mock external dependencies if needed for testing
+vi.mock('@blue/util');
 ```
 
 ### Rationale

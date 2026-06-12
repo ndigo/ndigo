@@ -15,15 +15,15 @@ const rootDir = join(__dirname, '..');
 const docsData = JSON.parse(readFileSync(join(__dirname, 'docs-by-category.json'), 'utf-8'));
 
 /**
- * Extract function names from ramda imports (handles both single-line and multi-line)
- */
-function extractRamdaFunctions(lines, endIndex) {
+  * Extract function names from imports (handles both single-line and multi-line)
+  */
+function extractFunctionImports(lines, endIndex) {
     let importText = '';
     for (let i = 0; i <= endIndex; i++) {
         importText += lines[i] + ' ';
     }
 
-    const match = importText.match(/import\s*{\s*([^}]+)\s*}\s*from\s*'ramda'/);
+    const match = importText.match(/import\s*{\s*([^}]+)\s*}\s*from\s*'/);
     if (!match) return [];
 
     return match[1]
@@ -59,20 +59,20 @@ function updateCategoryFile(categoryName, filePath) {
     const content = readFileSync(fullPath, 'utf-8');
     const lines = content.split('\n');
 
-    // Find where ramda imports end
-    const ramdaImportEndIndex = lines.findIndex((line) => line.includes("} from 'ramda';"));
-    if (ramdaImportEndIndex === -1) {
-        console.log(`⚠️  No ramda imports in ${filePath}`);
+    // Find where imports end (marked by comment)
+    const importBoundaryIndex = lines.findIndex((line) => line.includes('// Import custom functions for re-export'));
+    if (importBoundaryIndex === -1) {
+        console.log(`⚠️  No import boundary marker in ${filePath}`);
         return { documented: 0, notFound: 0 };
     }
 
-    // Extract ramda function names
-    const ramdaFunctions = extractRamdaFunctions(lines, ramdaImportEndIndex);
+    // Extract function names from imports
+    const functionImports = extractFunctionImports(lines, importBoundaryIndex);
     const docMap = createDocMap(categoryName);
 
     // Find where custom imports end (if any)
-    let customImportsEnd = ramdaImportEndIndex;
-    for (let i = ramdaImportEndIndex + 1; i < lines.length; i++) {
+    let customImportsEnd = importBoundaryIndex;
+    for (let i = importBoundaryIndex + 1; i < lines.length; i++) {
         if (lines[i].includes('import') && lines[i].includes('.js')) {
             customImportsEnd = i;
         } else if (lines[i].trim() && !lines[i].startsWith('//') && !lines[i].trim().startsWith('import')) {
@@ -115,11 +115,11 @@ function updateCategoryFile(categoryName, filePath) {
     newLines.push(...lines.slice(0, customImportsEnd + 1));
     newLines.push('');
 
-    // 2. Add documented Ramda function exports
+    // 2. Add documented function exports
     let documented = 0;
     let notFound = 0;
 
-    ramdaFunctions.forEach((funcName) => {
+    functionImports.forEach((funcName) => {
         const doc = docMap.get(funcName);
         if (doc) {
             newLines.push(doc);

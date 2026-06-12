@@ -10,9 +10,6 @@
  * Keep this map in sync with the integration layer packages enforced by the ESLint rules.
  */
 export const INTEGRATION_LAYER_MAP: Record<string, string> = {
-    ramda: '@blue/util',
-    'date-fns': '@blue/util',
-    'date-fns-tz': '@blue/util',
     seedrandom: '@blue/util',
     slug: '@blue/util',
     objectmodel: '@blue/model',

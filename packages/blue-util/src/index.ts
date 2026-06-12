@@ -1,21 +1,7 @@
 /**
  * @author Jeff Rose
- * @see external:date-fns
- * @see external:date-fns-tz
  * @see external:seedrandom
  * @see external:slug
- */
-
-/**
- * @global
- * @external date-fns
- * @see {@link https://date-fns.org/}
- */
-
-/**
- * @global
- * @external date-fns-tz
- * @see {@link https://github.com/marnusw/date-fns-tz}
  */
 
 /**

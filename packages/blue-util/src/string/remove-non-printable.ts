@@ -1,10 +1,7 @@
 /**
  * @author Jeff Rose
- * @see {@link https://ramdajs.com/docs/}
  * @see {@link http://moutjs.com/docs/latest/string.html#removeNonASCII}
  */
-
-import { replace } from 'ramda';
 
 // Matches non-printable ASCII chars -
 // http://en.wikipedia.org/wiki/ASCII#ASCII_printable_characters
@@ -19,6 +16,6 @@ const nonPrintable = /[^\x20-\x7E]/g;
  * //=> "lorem-ipsum"
  * @category String
  */
-const removeNonPrintable: (value: string) => string = replace(nonPrintable, '');
+const removeNonPrintable: (value: string) => string = (val: string) => val.replace(nonPrintable, '');
 
 export default removeNonPrintable;

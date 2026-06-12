@@ -1,10 +1,7 @@
 /**
  * @author Jeff Rose
- * @see {@link https://ramdajs.com/docs/}
  * @see {@link http://moutjs.com/docs/latest/string.html#camelCase}
  */
-
-import { pipe, replace } from 'ramda';
 
 import removeNonWord from './remove-non-word.js';
 import replaceDiacritics from './replace-diacritics.js';
@@ -18,9 +15,9 @@ const // Underscores and hyphens
     // Upper case letters at the beginning of a string
     upperCaseLetters = /^[A-Z]/g,
     // Remove spaces
-    removeSpaces = replace(spaces, ''),
+    removeSpaces = (val: string) => val.replace(spaces, ''),
     // Convert hyphens and underscores to spaces
-    replaceDashesWithSpaces = replace(dashes, ' '),
+    replaceDashesWithSpaces = (val: string) => val.replace(dashes, ' '),
     /**
      * Returns the camel case version of a string.
      * @param {string} value
@@ -31,15 +28,16 @@ const // Underscores and hyphens
      * //=> "loremIpsumDolor"
      * @see {@link http://wiki.c2.com/?CamelCase}
      */
-    toCamel: (value: string) => string = pipe(
-        replaceDiacritics,
-        removeNonWord,
-        replaceDashesWithSpaces,
+    toCamel: (value: string) => string = (val: string): string => {
+        val = replaceDiacritics(val);
+        val = removeNonWord(val);
+        val = replaceDashesWithSpaces(val);
         // Convert first character of each word to uppercase
-        (val: string): string => val.replace(lowerCaseLetters, (match: string): string => match.toUpperCase()),
-        removeSpaces,
+        val = val.replace(lowerCaseLetters, (match: string): string => match.toUpperCase());
+        val = removeSpaces(val);
         // Convert first character to lowercase
-        (val: string): string => val.replace(upperCaseLetters, (match: string): string => match.toLowerCase())
-    );
+        val = val.replace(upperCaseLetters, (match: string): string => match.toLowerCase());
+        return val;
+    };
 
 export default toCamel;

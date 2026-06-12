@@ -52,16 +52,12 @@
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
   "dependencies": {
-    "date-fns": "~4.1.0",
-    "date-fns-tz": "~3.2.0",
-    "ramda": "~0.32.0",
     "seedrandom": "~3.0.5",
     "slug": "~11.0.1"
   },
   "devDependencies": {
     "@types/seedrandom": "~3.0.8",
-    "@types/slug": "~5.0.9",
-    "types-ramda": "0.31.0"
+    "@types/slug": "~5.0.9"
   },
   "sideEffects": false
 }

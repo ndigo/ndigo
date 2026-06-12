@@ -3,9 +3,6 @@
  * @module string
  */
 
-// Import Ramda String functions for re-export
-import { match, replace, split, test, toLower, toUpper, trim } from 'ramda';
-
 // Import custom functions for re-export
 import decodeHtml from './decode-html.js';
 import decodeURIComponent from './decode-uri-component.js';
@@ -40,7 +37,10 @@ import trailingSplit from './trailing-split.js';
  * match( /a/, 'b' ); //=> []
  * match( /a/, null ); //=> TypeError: null does not have a method named "match"
  */
-export { match };
+export function match(rx: RegExp, str: string): string[] {
+    const result = str.match(rx);
+    return result ?? [];
+}
 
 /**
  * Replace a substring or regex match in a string with a replacement.
@@ -65,7 +65,25 @@ export { match };
  * replace( /foo/g, 'bar', 'foo foo foo' );
  * //=> 'bar bar bar'
  */
-export { replace };
+export function replace(
+    pattern: RegExp | string,
+    replacement: string | ((substring: string, ...args: any[]) => string),
+): (str: string) => string;
+export function replace(
+    pattern: RegExp | string,
+    replacement: string | ((substring: string, ...args: any[]) => string),
+    str: string,
+): string;
+export function replace(
+    pattern: RegExp | string,
+    replacement: string | ((substring: string, ...args: any[]) => string),
+    str?: string,
+): string | ((str: string) => string) {
+    if (str === undefined) {
+        return (s: string) => (s as any).replace(pattern, replacement);
+    }
+    return (str as any).replace(pattern, replacement);
+}
 
 /**
  * Splits a string into an array of strings based on the given
@@ -84,7 +102,14 @@ export { replace };
  * split( '.', 'a.b.c.xyz.d ' );
  * //=> [ 'a', 'b', 'c', 'xyz', 'd' ]
  */
-export { split };
+export function split(sep: RegExp | string): (str: string) => string[];
+export function split(sep: RegExp | string, str: string): string[];
+export function split(sep: RegExp | string, str?: string): string[] | ((str: string) => string[]) {
+    if (str === undefined) {
+        return (s: string) => s.split(sep);
+    }
+    return str.split(sep);
+}
 
 /**
  * Determines whether a given string matches a given regular expression.
@@ -100,7 +125,14 @@ export { split };
  * test( /^y/, 'xyz' );
  * //=> false
  */
-export { test };
+export function test(rx: RegExp): (str: string) => boolean;
+export function test(rx: RegExp, str: string): boolean;
+export function test(rx: RegExp, str?: string): boolean | ((str: string) => boolean) {
+    if (str === undefined) {
+        return (s: string) => rx.test(s);
+    }
+    return rx.test(str);
+}
 
 /**
  * The lower case version of a string.
@@ -113,7 +145,9 @@ export { test };
  * toLower( 'XYZ' );
  * //=> 'xyz'
  */
-export { toLower };
+export function toLower(str: string): string {
+    return str.toLowerCase();
+}
 
 /**
  * The upper case version of a string.
@@ -125,13 +159,15 @@ export { toLower };
  * @example
  * toUpper( 'abc' ); //=> 'ABC'
  */
-export { toUpper };
+export function toUpper(str: string): string {
+    return str.toUpperCase();
+}
 
 /**
  * Removes (strips) whitespace from both ends of the string.
  *
  * @category String
- * @sig String -> String
+ * * @sig String -> String
  * @param {string} str The string to trim.
  * @returns {string} Trimmed version of `str`.
  * @example
@@ -139,7 +175,9 @@ export { toUpper };
  * trim( '   xyz  ' ); //=> 'xyz'
  * map( trim, split( ',', 'x, y, z' ) ); //=> [ 'x', 'y', 'z' ]
  */
-export { trim };
+export function trim(str: string): string {
+    return str.trim();
+}
 
 // Export custom functions
 export {

@@ -276,6 +276,7 @@ export * from './iterable';
 export * from './matchable';
 export * from './metadata';
 export { default as MediaType, parseMediaType } from './media-type';
+export * from './multi-value-map';
 export * from './null';
 export * from './path-matcher';
 export * from './parser';

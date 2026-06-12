@@ -1,9 +1,6 @@
 /**
  * @author Jeff Rose
- * @see {@link https://ramdajs.com/docs/}
  */
-
-import { pipe, replace } from 'ramda';
 
 const regExpFlags = /[gimsuy]+/,
     leadingSlash = /^\//,
@@ -11,10 +8,13 @@ const regExpFlags = /[gimsuy]+/,
     patternWithTrailingSlashAndFlags = /.+\/([gimsuy]*)$/,
     cache = new Map<string, RegExp>(),
     hasValidFlags = (value: string) => regExpFlags.test(value),
-    removeLeadingSlash = replace(leadingSlash, ''),
-    removeTrailingSlashAndFlags = replace(trailingSlashAndFlags, ''),
-    extractFlags = replace(patternWithTrailingSlashAndFlags, '$1'),
-    removeSlashesAndFlags = pipe(removeLeadingSlash, removeTrailingSlashAndFlags);
+    removeLeadingSlash = (val: string) => val.replace(leadingSlash, ''),
+    removeTrailingSlashAndFlags = (val: string) => val.replace(trailingSlashAndFlags, ''),
+    extractFlags = (val: string) => val.replace(patternWithTrailingSlashAndFlags, '$1'),
+    removeSlashesAndFlags = (val: string) => {
+        val = removeLeadingSlash(val);
+        return removeTrailingSlashAndFlags(val);
+    };
 
 /**
  * Returns a regular expression for the given `pattern`.

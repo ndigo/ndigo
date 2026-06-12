@@ -3,14 +3,13 @@
  */
 
 import { BasicModel } from '@blue/model';
-import { test } from '@blue/util/string';
 
 const only = (pattern: string) => `^${pattern}$`,
     oneOrMore = (pattern: string) => `[${pattern}]+`,
     withinRange = (min: number, max: number) => (value: number) => value >= min && value <= max,
     lengthWithinRange = (min: number, max: number) => (value: { length: number }) => withinRange(min, max)(value.length),
-    matchesOneOrMore = (pattern: string) => test(new RegExp(`[${pattern}]+`)) as any,
-    matchesOnly = (pattern: string) => test(new RegExp(`^[${pattern}]+$`)) as any,
+    matchesOneOrMore = (pattern: string) => new RegExp(`[${pattern}]+`).test as any,
+    matchesOnly = (pattern: string) => new RegExp(`^[${pattern}]+$`).test as any,
     ALPHA_PATTERN = 'A-Za-z',
     NUMERIC_PATTERN = '0-9',
     isOneOrMoreAlphaNumericOrUnderscore = matchesOneOrMore(`${ALPHA_PATTERN}${NUMERIC_PATTERN}_`),

@@ -16,7 +16,6 @@ import {
 import { AsNameAware, Initializable } from '@blue/factory';
 import { ApplicationContext, AsApplicationContextAware } from '@blue/context';
 import { Route } from '@blue/router';
-import { trim } from '@blue/util/string';
 import { isFunction, isString } from '@blue/util/types';
 import { RouteHandlerInterceptor, MappedHandlerInterceptor } from './route-handler-interceptor';
 import RouteHandlerExecutionChain from './route-handler-execution-chain';
@@ -1251,7 +1250,7 @@ export class SimplePathHandlerMapping extends AbstractPathHandlerMapping {
             mappings.size &&
             mappings.forEach((handler: MaybeHandler, path: string) => {
                 path = doesNotStartWithSlash(path) ? `/${path}` : path;
-                handler = isString(handler) ? trim(handler as string) : handler;
+                handler = isString(handler) ? (handler as string).trim() : handler;
                 this._registerHandler(path, handler);
             });
     }

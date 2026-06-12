@@ -2,7 +2,7 @@
  * @author Jeff Rose
  */
 
-import { test } from '@blue/util/string';
+
 
 export type constraint = (value: any, params: any) => boolean;
 

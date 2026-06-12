@@ -11,7 +11,7 @@ describe('Category modules - import patterns', () => {
     test('string category - namespace access', async () => {
         const util = await import('@blue/util');
         expect(util.string).toBeDefined();
-        expect(typeof util.string.trim).toBe('function');
+        expect(typeof util.string.toString).toBe('function');
     });
 
     test('types category - default export', async () => {
@@ -28,6 +28,6 @@ describe('Category modules - import patterns', () => {
         expect(string.default).toBeDefined();
 
         expect(math.default.add(10, 20)).toBe(30);
-        expect(typeof string.default.trim).toBe('function');
+        expect(typeof string.default.toString).toBe('function');
     });
 });

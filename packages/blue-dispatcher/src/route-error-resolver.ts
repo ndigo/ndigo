@@ -2,7 +2,7 @@
  * @author Jeff Rose
  */
 
-import { Constructable, FrameworkError, ApplicationError } from '@blue/core';
+import { Constructable } from '@blue/core';
 import { ModelAndView } from './model-and-view';
 import { Route } from '@blue/router';
 import { ApplicationContextAware, ApplicationContext } from '@blue/context';
@@ -198,36 +198,93 @@ export abstract class AbstractHandlerMethodErrorResolver extends AbstractRouteEr
  * The default implementation of the {@link RouteErrorResolver|RouteErrorResolver} interface, resolving standard BlueJS exceptions.
  *
  * This error resolver is enabled by default in the {@link WebDispatcher|WebDispatcher}.
+ *
+ * Error classes are mapped to view names via `errorMappings`.  Out of the box it
+ * maps {@link FrameworkError} to `'error/framework'` and {@link ApplicationError}
+ * to `'error/application'`.  Additional mappings can be added through
+ * {@link setErrorMapping}.
+ *
  * @extends module:dispatcher.AbstractRouteErrorResolver
  */
 export class DefaultRouteErrorResolver extends AbstractRouteErrorResolver {
     /**
-     * Resolve built-in framework errors to the default error view.
+     * View name used when no specific error mapping matches.
+     */
+    defaultErrorView!: string;
+
+    /**
+     * Error-name-to-view-name mappings.
+     */
+    errorMappings!: Map<string, string>;
+
+    get [Symbol.toStringTag](): string {
+        return 'DefaultRouteErrorResolver';
+    }
+
+    /**
+     * Create a resolver with sensible defaults for framework and application errors.
+     *
+     * @param defaultErrorView - The fallback view name (defaults to `'error/default'`).
+     */
+    constructor(defaultErrorView: string = 'error/default') {
+        super();
+
+        defineProperty(this, 'defaultErrorView', {
+            value: defaultErrorView,
+            configurable: true,
+            enumerable: false,
+            writable: true,
+        });
+
+        defineProperty(this, 'errorMappings', {
+            value: new Map<string, string>(),
+            configurable: true,
+            enumerable: false,
+            writable: false,
+        });
+
+        // Pre-configure standard framework error mappings.
+        this.errorMappings.set('FrameworkError', 'error/framework');
+        this.errorMappings.set('ApplicationError', 'error/application');
+    }
+
+    /**
+     * Register an additional error-class-name-to-view-name mapping.
+     *
+     * @param errorName - The error class name (e.g. `'IllegalStateError'`).
+     * @param viewName - The view name to render for this error.
+     */
+    setErrorMapping(errorName: string, viewName: string): void {
+        this.errorMappings.set(errorName, viewName);
+    }
+
+    /**
+     * Resolve built-in framework errors to configured error views.
+     *
+     * Looks up the error's constructor name in {@link errorMappings}.
+     * Falls back to {@link defaultErrorView} when no mapping is found.
      *
      * @param route - The current route.
      * @param handler - The handler that was executing when the error occurred.
      * @param error - The thrown error.
-     * @returns A default model and view when the error is recognized, otherwise `null`.
+     * @returns A model and view for the error, or `null` on failure.
      */
     protected _resolveError(route: Route, handler: object | null, error: Error): ModelAndView | null {
         try {
-            switch (error.constructor) {
-                case FrameworkError: {
-                    // TODO provide real implementation
-                    return new ModelAndView('default');
-                }
-                case ApplicationError: {
-                    // TODO provide real implementation
-                    return new ModelAndView('default');
-                }
-                default: {
-                    // TODO provide real implementation
-                    return new ModelAndView('default');
-                }
-            }
+            const errorName = error.constructor.name;
+            const errorView = this.errorMappings.get(errorName) ?? this.defaultErrorView;
+
+            return new ModelAndView(errorView);
         } catch (e) {
-            // TODO Use real logger
-            console.warn('Failure while trying to resolve error', e);
+            // NOTE: @blue/telemetry instruments @blue/dispatcher, so importing
+            // telemetry here would create a circular dependency. A future
+            // refactoring should expose a lightweight Logger interface from
+            // @blue/core that both packages can depend on (see Initiative 1).
+            console.warn('[DefaultRouteErrorResolver] Failure while resolving error:', {
+                error: error?.constructor?.name ?? 'Unknown',
+                message: error?.message,
+                resolutionError: (e as Error)?.message,
+            });
         }
 
         return null;

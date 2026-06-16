@@ -2,7 +2,7 @@
  * @author Jeff Rose
  */
 
-import { MethodParameter, MethodParameterType, AbstractNamedValueMethodArgumentResolver } from '@blue/dispatcher';
+import { MethodParameter, MethodParameterType, AbstractPlatformArgumentResolver } from '@blue/dispatcher';
 import { Route } from '@blue/router';
 import { isNil } from '@blue/util/types';
 import {
@@ -15,89 +15,18 @@ import {
 import { convertArgumentValue } from './_resolver-util';
 
 /**
- * Abstract base class for resolving model-backed method arguments.
- */
-export abstract class AbstractModelValueMethodArgumentResolver extends AbstractNamedValueMethodArgumentResolver {
-    #converter: ArgumentValueConverter;
-    #converterRegistry: ArgumentValueConverterRegistry;
-    #converterResolutionOptions: ConverterResolutionOptions;
-
-    /**
-     * Creates a model-backed resolver.
-     *
-     * @param converter - Default converter to apply to resolved values.
-     * @param converterRegistry - Named converter registry used for lookups.
-     * @param converterResolutionOptions - Resolution behavior overrides.
-     */
-    constructor(
-        converter: ArgumentValueConverter = identityArgumentValueConverter,
-        converterRegistry: ArgumentValueConverterRegistry = argumentValueConverters,
-        converterResolutionOptions: ConverterResolutionOptions = {}
-    ) {
-        super();
-        this.#converter = converter;
-        this.#converterRegistry = converterRegistry;
-        this.#converterResolutionOptions = converterResolutionOptions;
-    }
-
-    /** Resolves and converts a model-backed argument value. */
-    resolveArgument(parameter: MethodParameter, route: Route, mapping: any): any {
-        const resolveValue = (v: any) => v ?? parameter.defaultValue,
-            value = resolveValue(this.resolveName(parameter.name, parameter, route, mapping)),
-            converter = parameter.convert ?? this.#converter,
-            convertedValue = convertArgumentValue(
-                converter,
-                value,
-                parameter,
-                route,
-                mapping,
-                this.#converterRegistry,
-                this.#converterResolutionOptions
-            );
-
-        isNil(convertedValue) && parameter.required && this.handleMissingValue(parameter.name);
-
-        return convertedValue;
-    }
-
-    /** Resolves the raw value from route-scoped model data. */
-    protected resolveName(name: string, parameter: MethodParameter, route: Route, mapping: any): any {
-        void parameter;
-        void mapping;
-
-        return this.resolveModelValue(name, route);
-    }
-
-    /** Retrieves a raw model value by name. */
-    protected abstract resolveModelValue(name: string, route: Route): any;
-
-    /** Returns whether this resolver supports model parameters. */
-    supportsParameter(parameter: MethodParameter): boolean {
-        return MethodParameterType.MODEL.equals(parameter.type);
-    }
-}
-
-/**
  * Browser model argument resolver.
  *
- * Resolves values from route data by:
- * 1) direct key lookup (`profile`)
- * 2) dotted key-path lookup (`profile.name`)
+ * Resolves values from route data by direct key lookup and dotted
+ * key-path traversal (`profile.name`).
  */
-export class BrowserModelValueMethodArgumentResolver extends AbstractModelValueMethodArgumentResolver {
-    /**
-     * Creates a browser model resolver.
-     *
-     * @param converter - Default converter to apply to resolved values.
-     * @param converterRegistry - Named converter registry used for lookups.
-     * @param converterResolutionOptions - Resolution behavior overrides.
-     */
+export class BrowserModelValueMethodArgumentResolver extends AbstractPlatformArgumentResolver {
     constructor(
         converter: ArgumentValueConverter = identityArgumentValueConverter,
         converterRegistry: ArgumentValueConverterRegistry = argumentValueConverters,
         converterResolutionOptions: ConverterResolutionOptions = {}
     ) {
-        super(converter, converterRegistry, converterResolutionOptions);
+        super(converter, converterRegistry, converterResolutionOptions, convertArgumentValue);
     }
 
     get [Symbol.toStringTag](): string {
@@ -105,22 +34,23 @@ export class BrowserModelValueMethodArgumentResolver extends AbstractModelValueM
     }
 
     /** Resolves model data from the current route. */
-    protected resolveModelValue(name: string, route: Route): any {
+    protected resolveName(name: string, _parameter: MethodParameter, route: Route, _mapping: any): any {
         const data = route?.data;
-
         if (!data) {
             return undefined;
         }
-
         if (Object.prototype.hasOwnProperty.call(data, name)) {
             return data[name];
         }
-
         if (!name.includes('.')) {
             return undefined;
         }
-
         return this._getPathValue(data, name);
+    }
+
+    /** Returns whether this resolver supports model parameters. */
+    supportsParameter(parameter: MethodParameter): boolean {
+        return MethodParameterType.MODEL.equals(parameter.type);
     }
 
     /** Resolves a dotted path against a nested object graph. */
@@ -131,11 +61,9 @@ export class BrowserModelValueMethodArgumentResolver extends AbstractModelValueM
 
         for (let index = 0; index < length; index++) {
             const token = tokens[index];
-
             if (isNil(value) || !Object.prototype.hasOwnProperty.call(value, token)) {
                 return undefined;
             }
-
             value = value[token];
         }
 

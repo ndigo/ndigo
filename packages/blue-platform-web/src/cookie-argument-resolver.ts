@@ -2,10 +2,8 @@
  * @author Jeff Rose
  */
 
-import { AbstractNamedValueMethodArgumentResolver, MethodParameter, MethodParameterType } from '@blue/dispatcher';
+import { MethodParameter, MethodParameterType, AbstractPlatformArgumentResolver } from '@blue/dispatcher';
 import { Route } from '@blue/router';
-import { isNil } from '@blue/util/types';
-import Cookies from './cookies';
 import {
     ArgumentValueConverter,
     ArgumentValueConverterRegistry,
@@ -14,88 +12,18 @@ import {
     identityArgumentValueConverter,
 } from './argument-value-converter';
 import { convertArgumentValue } from './_resolver-util';
-
-/**
- * Abstract base class for resolving cookie-backed method arguments.
- */
-export abstract class AbstractCookieValueMethodArgumentResolver extends AbstractNamedValueMethodArgumentResolver {
-    #converter: ArgumentValueConverter;
-    #converterRegistry: ArgumentValueConverterRegistry;
-    #converterResolutionOptions: ConverterResolutionOptions;
-
-    /**
-     * Creates a cookie-backed resolver.
-     *
-     * @param converter - Default converter to apply to resolved values.
-     * @param converterRegistry - Named converter registry used for lookups.
-     * @param converterResolutionOptions - Resolution behavior overrides.
-     */
-    constructor(
-        converter: ArgumentValueConverter = identityArgumentValueConverter,
-        converterRegistry: ArgumentValueConverterRegistry = argumentValueConverters,
-        converterResolutionOptions: ConverterResolutionOptions = {}
-    ) {
-        super();
-        this.#converter = converter;
-        this.#converterRegistry = converterRegistry;
-        this.#converterResolutionOptions = converterResolutionOptions;
-    }
-
-    /** Resolves and converts a cookie-backed argument value. */
-    resolveArgument(parameter: MethodParameter, route: Route, mapping: any): any {
-        const resolveValue = (v: any) => v ?? parameter.defaultValue,
-            value = resolveValue(this.resolveName(parameter.name, parameter, route, mapping)),
-            converter = parameter.convert ?? this.#converter,
-            convertedValue = convertArgumentValue(
-                converter,
-                value,
-                parameter,
-                route,
-                mapping,
-                this.#converterRegistry,
-                this.#converterResolutionOptions
-            );
-
-        isNil(convertedValue) && parameter.required && this.handleMissingValue(parameter.name);
-
-        return convertedValue;
-    }
-
-    /** Resolves the raw cookie value for the requested name. */
-    protected resolveName(name: string, parameter: MethodParameter, route: Route, mapping: any): any {
-        void parameter;
-        void route;
-        void mapping;
-
-        return this.getCookieValue(name);
-    }
-
-    /** Retrieves a cookie value by name. */
-    protected abstract getCookieValue(name: string): string | undefined;
-
-    /** Returns whether this resolver supports cookie parameters. */
-    supportsParameter(parameter: MethodParameter): boolean {
-        return MethodParameterType.COOKIE.equals(parameter.type);
-    }
-}
+import Cookies from './cookies';
 
 /**
  * Browser cookie argument resolver using `document.cookie` parsing.
  */
-export class BrowserCookieValueMethodArgumentResolver extends AbstractCookieValueMethodArgumentResolver {
-    /**
-     * Creates a browser cookie resolver.
-     *
-     * @param converter - Default converter to apply to resolved values.
-     * @param converterRegistry - Named converter registry used for lookups.
-     * @param converterResolutionOptions - Resolution behavior overrides.
-     */
+export class BrowserCookieValueMethodArgumentResolver extends AbstractPlatformArgumentResolver {
     constructor(
         converter: ArgumentValueConverter = identityArgumentValueConverter,
         converterRegistry: ArgumentValueConverterRegistry = argumentValueConverters,
         converterResolutionOptions: ConverterResolutionOptions = {}
     ) {
-        super(converter, converterRegistry, converterResolutionOptions);
+        super(converter, converterRegistry, converterResolutionOptions, convertArgumentValue);
     }
 
     get [Symbol.toStringTag](): string {
@@ -103,9 +31,13 @@ export class BrowserCookieValueMethodArgumentResolver extends AbstractCookieValu
     }
 
     /** Retrieves a raw cookie string from `document.cookie`. */
-    protected getCookieValue(name: string): string | undefined {
+    protected resolveName(name: string, _parameter: MethodParameter, _route: Route, _mapping: any): any {
         const value = Cookies.get(name);
-
         return typeof value === 'string' ? value : undefined;
+    }
+
+    /** Returns whether this resolver supports cookie parameters. */
+    supportsParameter(parameter: MethodParameter): boolean {
+        return MethodParameterType.COOKIE.equals(parameter.type);
     }
 }

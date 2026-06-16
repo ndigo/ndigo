@@ -2,7 +2,7 @@
  * @author Jeff Rose
  */
 
-import type { Converter } from './parser';
+import type { Converter } from './parser.js';
 
 /** A token in a parsed keypath — either a string property name or a numeric array index. */
 export type KeypathToken = string | number;

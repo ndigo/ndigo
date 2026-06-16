@@ -1,58 +1,31 @@
-const templateTodoItem = document.createElement('template');
-templateTodoItem.innerHTML = `
-    <li class="item">
-        <div class="view">
-            <input class="toggle" type="checkbox">
-            <label></label>
-            <button class="destroy"></button>
-        </div>
-    </li>
-`;
+/**
+ * @author Jeff Rose
+ */
 
-export default class TodoItem extends HTMLElement {
-    #checked: boolean;
+import { AbstractWebComponent } from '@blue/view-webcomponent';
+
+export default class TodoItem extends AbstractWebComponent {
+    #checked: boolean = false;
     #index: number = 0;
-    #text: string;
+    #text: string = '';
 
-    $checkbox: HTMLInputElement | null = null;
-    $item: HTMLElement | null = null;
-    $removeButton: HTMLButtonElement | null = null;
-    $text: HTMLElement | null = null;
+    private $item!: HTMLElement;
+    private $checkbox!: HTMLInputElement;
+    private $text!: HTMLElement;
 
     constructor() {
         super();
-        // Do not use shadow DOM to avoid problems when testing with selenium
-        // this._root = this.attachShadow({ 'mode': 'open' });
-        this.#checked = false;
-        this.#text = '';
     }
-
-    connectedCallback() {
-        this.appendChild(templateTodoItem.content.cloneNode(true));
-        this.$item = this.querySelector('.item');
-        this.$removeButton = this.querySelector('.destroy');
-        this.$text = this.querySelector('label');
-        this.$checkbox = this.querySelector('input');
-        this.$removeButton!.addEventListener('click', (e: Event) => {
-            e.preventDefault();
-            this.dispatchEvent(new CustomEvent('onRemove', { detail: this.index, bubbles: true }));
-        });
-        this.$checkbox!.addEventListener('click', (e: Event) => {
-            e.preventDefault();
-            this.dispatchEvent(new CustomEvent('onToggle', { detail: this.index, bubbles: true }));
-        });
-        this._render();
-    }
-
-    disconnectedCallback() {}
 
     static get observedAttributes() {
         return ['text'];
     }
+
     attributeChangedCallback(name: string, oldValue: string | null, newValue: string) {
-        void name;
-        void oldValue;
-        this.#text = newValue;
+        if (name === 'text') {
+            this.#text = newValue;
+            this.requestUpdate();
+        }
     }
 
     set index(value: number) {
@@ -65,21 +38,53 @@ export default class TodoItem extends HTMLElement {
 
     set checked(value: boolean) {
         this.#checked = Boolean(value);
+        this.requestUpdate();
     }
 
     get checked(): boolean {
         return this.hasAttribute('checked');
     }
 
-    _render() {
-        if (!this.$item) return;
-        this.$text!.textContent = this.#text;
+    handleConnect(): void {
+        this.$item = this.create('li', { className: 'item' });
+        
+        const view = this.create('div', { className: 'view' });
+        const checkbox = this.create('input', { className: 'toggle', type: 'checkbox' });
+        const label = this.create('label', { textContent: this.#text });
+        const destroy = this.create('button', { className: 'destroy' });
+
+        view.append(checkbox, label, destroy);
+        this.$item.appendChild(view);
+        this.appendChild(this.$item);
+
+        this.$checkbox = checkbox;
+        this.$text = label;
+
+        this.bindEvents({
+            'click .destroy': 'handleRemove',
+            'click .toggle': 'handleToggle'
+        });
+
+        this.render();
+    }
+
+    private handleRemove(): void {
+        this.emit('onRemove', this.#index);
+    }
+
+    private handleToggle(): void {
+        this.emit('onToggle', this.#index);
+    }
+
+    render(): void {
+        this.$text.textContent = this.#text;
+        
         if (this.#checked) {
             this.$item.classList.add('completed');
-            this.$checkbox!.setAttribute('checked', '');
+            this.$checkbox.setAttribute('checked', '');
         } else {
             this.$item.classList.remove('completed');
-            this.$checkbox!.removeAttribute('checked');
+            this.$checkbox.removeAttribute('checked');
         }
     }
 }

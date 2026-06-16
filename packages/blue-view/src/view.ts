@@ -8,7 +8,7 @@ import { AsApplicationContextAware } from '@blue/context';
 import type { ApplicationContext } from '@blue/context';
 import { toMatrixString, toQueryString, ROUTER } from '@blue/router';
 
-import { ViewTarget } from './view-target';
+import { ViewTarget } from './view-target.js';
 
 /**
  * View for a web interaction. Implementations are responsible for rendering content, and exposing the model. A single view exposes multiple model attributes.

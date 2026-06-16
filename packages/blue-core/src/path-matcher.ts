@@ -3,12 +3,12 @@
  */
 
 import { like } from '@blue/util/types';
-import { AbstractValueComparator, Comparator } from './comparable';
-import { Constructable } from './constructable';
-import { FrameworkError } from './error';
-import { parseUrlGlob } from './url-glob';
-import { LRUCache } from './_lru-cache';
-import { PatternMatcher } from './matchable';
+import { AbstractValueComparator, Comparator } from './comparable.js';
+import { Constructable } from './constructable.js';
+import { FrameworkError } from './error.js';
+import { parseUrlGlob } from './url-glob.js';
+import { LRUCache } from './_lru-cache.js';
+import { PatternMatcher } from './matchable.js';
 
 const DOT = '.',
     SLASH = '/',

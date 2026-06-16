@@ -2,7 +2,7 @@
  * @author Jeff Rose
  */
 
-import { View, AbstractPathBasedView } from './view';
+import { View, AbstractPathBasedView } from './view.js';
 import { createNull, MediaType, MediaTypes, Null, Constructable } from '@blue/core';
 import { Initializable, likeInitializable } from '@blue/factory';
 import { ApplicationContext, AsApplicationContextAware, likeApplicationContextAware } from '@blue/context';

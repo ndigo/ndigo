@@ -3,8 +3,8 @@
  */
 
 import { is } from '@blue/util/types';
-import { createNull } from './null';
-import { isNotPrimitive } from './primitive';
+import { createNull } from './null.js';
+import { isNotPrimitive } from './primitive.js';
 
 /**
  * A value that can be represented in JSON.

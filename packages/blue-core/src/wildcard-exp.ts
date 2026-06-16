@@ -2,8 +2,8 @@
  * @author Jeff Rose
  */
 
-import { parseWildcard } from './wildcard-expression';
-import { FrameworkError } from './error';
+import { parseWildcard } from './wildcard-expression.js';
+import { FrameworkError } from './error.js';
 
 /**
  * A regular expression compiled from a wildcard pattern.

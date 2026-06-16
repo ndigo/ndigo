@@ -94,6 +94,19 @@
           "outputs": []
         }
       }
+    },
+    "@blue/todomvc": {
+      "root": "../todomvc/examples/bluejs",
+      "projectType": "application",
+      "targets": {
+        "build:lib": {
+          "executor": "nx:run-commands",
+          "options": {
+            "command": "vite build",
+            "cwd": "../todomvc/examples/bluejs"
+          }
+        }
+      }
     }
   },
   "affected": {

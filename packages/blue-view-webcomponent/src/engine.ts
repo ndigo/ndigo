@@ -5,11 +5,9 @@
 import { EventBridgeViewTarget, ViewEngine, View, ViewTarget } from '@blue/view';
 import { Route } from '@blue/router';
 import { IllegalStateError } from '@blue/core';
+import { EventEmitter } from '@blue/context';
 import { WebComponentView } from './view';
-
-interface ApplicationEventEmitter {
-    emit(type: string | symbol, ...data: unknown[]): boolean;
-}
+import { DOMEventBinder } from './_dom-event-binder';
 
 interface ModelAwareElement extends HTMLElement {
     model: unknown;
@@ -56,13 +54,13 @@ export const likeDOMViewTarget = (value: unknown): value is DOMViewTarget => {
 export class DOMElementViewTarget implements DOMViewTarget {
     #element: HTMLElement;
     #eventMap: Record<string, string>;
-    #applicationContext: ApplicationEventEmitter | null;
-    #listeners: Map<string, EventListener>;
+    #applicationContext: EventEmitter | null;
+    #binder: DOMEventBinder;
     destroyed: boolean;
 
     /**
      * Creates a DOM-backed view target for the provided element.
-     *
+     * 
      * @param element - The root element that will host rendered content.
      * @param options - Event mapping used to bridge DOM events to the application context.
      * @throws {TypeError} When `element` is null or undefined.
@@ -80,9 +78,10 @@ export class DOMElementViewTarget implements DOMViewTarget {
         this.#element = element;
         this.#eventMap = options.eventMap ?? {};
         this.#applicationContext = null;
-        this.#listeners = new Map();
+        this.#binder = new DOMEventBinder(element);
         this.destroyed = false;
     }
+
 
     get container(): HTMLElement {
         return this.#element;
@@ -90,16 +89,17 @@ export class DOMElementViewTarget implements DOMViewTarget {
 
     /**
      * Connects the target to the application event emitter so DOM events can be forwarded.
-     *
+     * 
      * @param applicationContext - The application event emitter used for event bridging.
      */
-    setApplicationContext(applicationContext: ApplicationEventEmitter): void {
+    setApplicationContext(applicationContext: EventEmitter): void {
         if (this.destroyed) {
             return;
         }
         this.#applicationContext = applicationContext;
         this.listen();
     }
+
 
     /**
      * Replaces the DOM-to-application event map and refreshes listeners.
@@ -116,7 +116,7 @@ export class DOMElementViewTarget implements DOMViewTarget {
 
     /**
      * Installs DOM event listeners for the current event map.
-     *
+     * 
      * Existing listeners are removed first so repeated calls stay idempotent.
      */
     listen(): void {
@@ -130,13 +130,10 @@ export class DOMElementViewTarget implements DOMViewTarget {
         }
 
         Object.entries(this.#eventMap).forEach(([domEventName, contextEventName]) => {
-            const listener = (event: Event) => {
+            this.#binder.bind(domEventName, (event: Event) => {
                 const { detail } = event as CustomEvent;
                 this.#applicationContext!.emit(contextEventName, detail);
-            };
-
-            this.#element.addEventListener(domEventName, listener);
-            this.#listeners.set(domEventName, listener);
+            });
         });
     }
 
@@ -144,12 +141,9 @@ export class DOMElementViewTarget implements DOMViewTarget {
      * Removes all installed DOM event listeners from the host element.
      */
     unlisten(): void {
-        this.#listeners.forEach((listener, domEventName) => {
-            this.#element.removeEventListener(domEventName, listener);
-        });
-
-        this.#listeners.clear();
+        this.#binder.unbindAll();
     }
+
 
     /**
      * Prepares the target for a new render pass by clearing existing content.

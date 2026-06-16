@@ -2,9 +2,9 @@
  * @author Jeff Rose
  */
 
-import type { Disposable, ModelOptions, Unsubscribe, WritableModel } from './model';
-import { SubscriptionManager, defaultEquals } from './_util';
-import { isBatching, scheduleBatchFlush } from './batch';
+import type { Disposable, ModelOptions, Unsubscribe, WritableModel } from './model.js';
+import { SubscriptionManager, defaultEquals } from './_util.js';
+import { isBatching, scheduleBatchFlush } from './batch.js';
 
 /**
  * A writable reactive value container. Subscribers are notified whenever

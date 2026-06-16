@@ -2,9 +2,9 @@
  * @author Jeff Rose
  */
 
-export * from './view';
-export * from './view-engine';
-export * from './view-mapping';
-export * from './view-resolver';
-export * from './view-target';
-export * from './content-negotiation-view-resolver';
+export * from './view.js';
+export * from './view-engine.js';
+export * from './view-mapping.js';
+export * from './view-resolver.js';
+export * from './view-target.js';
+export * from './content-negotiation-view-resolver.js';

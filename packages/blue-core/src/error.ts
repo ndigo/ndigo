@@ -2,9 +2,9 @@
  * @author Jeff Rose
  */
 
-import { Serializable, JSONObject } from './serializable';
-import { createNull } from './null';
-import { Constructable } from './constructable';
+import { Serializable, JSONObject } from './serializable.js';
+import { createNull } from './null.js';
+import { Constructable } from './constructable.js';
 
 const { setPrototypeOf } = Reflect;
 

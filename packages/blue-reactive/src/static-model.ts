@@ -2,7 +2,7 @@
  * @author Jeff Rose
  */
 
-import type { ReadableModel, Unsubscribe } from './model';
+import type { ReadableModel, Unsubscribe } from './model.js';
 
 /**
  * A read-only model wrapping a fixed value that never changes.

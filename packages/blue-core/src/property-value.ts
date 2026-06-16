@@ -1,12 +1,12 @@
 /**
  * @author Jeff Rose
  */
-import { RingBuffer } from './ring-buffer';
-import { JSONValue, Serializable, serialize } from './serializable';
-import { Equatable, equates } from './equatable';
+import { RingBuffer } from './ring-buffer.js';
+import { JSONValue, Serializable, serialize } from './serializable.js';
+import { Equatable, equates } from './equatable.js';
 import { is, like } from '@blue/util/types';
-import { likeIterable } from './iterable';
-import { createNull } from './null';
+import { likeIterable } from './iterable.js';
+import { createNull } from './null.js';
 
 /**
  * A collection that can look up property values by name.

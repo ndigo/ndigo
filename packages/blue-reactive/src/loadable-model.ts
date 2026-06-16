@@ -3,8 +3,8 @@
  */
 
 import { IllegalStateError } from '@blue/core';
-import type { Disposable, ReadableModel, Unsubscribe } from './model';
-import { SubscriptionManager } from './_util';
+import type { Disposable, ReadableModel, Unsubscribe } from './model.js';
+import { SubscriptionManager } from './_util.js';
 
 /**
  * Status of a loadable model.

@@ -2,7 +2,7 @@
  * @author Jeff Rose
  */
 
-import { JSONObject, Constructable, direct, escalate } from '@blue/core';
+import { JSONObject, Constructable, direct, escalate, Null } from '@blue/core';
 import {
     ContentSource,
     StaticContentSource,
@@ -199,45 +199,31 @@ export interface ApplicationContextAware extends Aware {
  */
 export interface ConfigurableApplicationContext extends ApplicationContext {
     /**
-     * Replaces the content source used for theme and content lookups.
-     *
-     * @param contentSource - The new content source.
+     * Replaces the content source used by this context.
      */
     setContentSource(contentSource: ContentSource): void;
     /**
      * Replaces the environment used by this context.
-     *
-     * @param environment - The new environment.
      */
     setEnvironment(environment: ConfigurableEnvironment): void;
     /**
      * Updates the context identifier.
-     *
-     * @param id - The new identifier.
      */
     setId(id: number): void;
     /**
      * Updates the context name.
-     *
-     * @param name - The new name.
      */
     setName(name: string): void;
     /**
-     * Reassigns the parent context.
-     *
-     * @param parent - The new parent context.
+     * Reassigns the parent context and keeps the child list in sync.
      */
     setParent(parent: ApplicationContext): void;
     /**
      * Updates the default theme name.
-     *
-     * @param themeName - The new theme name.
      */
     setThemeName(themeName: string): void;
     /**
      * Overrides the theme resolver used by this context.
-     *
-     * @param themeResolver - The new theme resolver.
      */
     setThemeResolver(themeResolver: ThemeResolver): void;
 }
@@ -268,6 +254,7 @@ export interface ConfigurableApplicationContext extends ApplicationContext {
  * This interface can also be implemented if an object needs access to file resources, i.e. wants to call {@link ResourceLoader#getResource|getResource}, wants to emit an application event, or requires access to the {@link ContentSource|ContentSource}. However, it is preferable to implement the more specific {@link ResourceLoaderAware|ResourceLoaderAware}, {@link ApplicationEventEmitterAware|ApplicationEventEmitterAware} or {@link ContentSourceAware|ContentSourceAware} interface in such a specific scenario.
  *
  * {@link AsApplicationContextAware|AsApplicationContextAware} is a convenience mixin for application objects, implementing this interface.
+ * @extends module:factory.Aware
  */
 
 /**
@@ -300,7 +287,7 @@ export const likeApplicationContext = ((value: any) =>
  * Returns whether a value can receive an application context.
  *
  * @param value - The value to test.
- * @returns `true` when the value looks like application-context aware.
+ * @returns `true` when the value looks like an application context aware.
  */
 export const likeApplicationContextAware = likeAwareAnd(like({ setApplicationContext: Function })) as (
     value: any
@@ -311,6 +298,7 @@ export const likeApplicationContextAware = likeAwareAnd(like({ setApplicationCon
  * @extends module:factory.DefaultFactory
  * @see module:context.AsEventEmitter
  * @see module:context.AsModuleResourceLoader
+ * @see module:context.AsApplicationContextAware
  */
 // GenericApplicationContext extends AsEventEmitter(AsModuleResourceLoader(DefaultFactory))
 // which provides EventEmitter and ResourceLoader functionality via mixins.
@@ -579,8 +567,8 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
     /**
      * Returns whether the given context is a direct child.
      *
-     * @param node - The context to test.
-     * @returns `true` when the context is a direct child.
+     * @param node - The application context to check for.
+     * @returns `true` when the context is a child, false otherwise.
      */
     hasChild(node: ApplicationContext): boolean {
         return this.#children.includes(node as GenericApplicationContext);
@@ -589,9 +577,9 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
     /**
      * Creates and attaches a child context.
      *
-     * @param name - Optional child name.
+     * @param name - The optional context name.
      * @param data - Optional initial child data.
-     * @returns The created child context.
+     * @returns The created child application context.
      */
     newChild(name?: string, data?: JSONObject): ApplicationContext {
         const child = new GenericApplicationContext(name, data);
@@ -627,8 +615,8 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
     /**
      * Removes a child from the direct child list.
      *
-     * @param node - The child context to remove.
-     * @returns `true` when the child was removed.
+     * @param node - The child application context to remove.
+     * @returns `true` when the child was successfully removed, false otherwise.
      */
     removeChild(node: ApplicationContext): boolean {
         const index = this.#children.indexOf(node as GenericApplicationContext);
@@ -643,8 +631,6 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
 
     /**
      * Replaces the content source used by this context.
-     *
-     * @param contentSource - The new content source.
      */
     setContentSource(contentSource: ContentSource): void {
         this.#contentSource = contentSource;
@@ -656,8 +642,6 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
 
     /**
      * Replaces the environment used by this context.
-     *
-     * @param environment - The new environment.
      */
     setEnvironment(environment: ConfigurableEnvironment): void {
         this.#environment = environment;
@@ -665,8 +649,6 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
 
     /**
      * Updates the identifier assigned to this context.
-     *
-     * @param id - The new identifier.
      */
     setId(id: number): void {
         this.#id = id;
@@ -674,8 +656,6 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
 
     /**
      * Updates the context name.
-     *
-     * @param name - The new name.
      */
     setName(name: string): void {
         this.#name = name;
@@ -683,8 +663,6 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
 
     /**
      * Reassigns the parent context and keeps the child list in sync.
-     *
-     * @param parent - The new parent context.
      */
     setParent(parent: ApplicationContext): void {
         if (this.#parent instanceof GenericApplicationContext) {
@@ -707,8 +685,6 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
 
     /**
      * Updates the default theme name.
-     *
-     * @param themeName - The new theme name.
      */
     setThemeName(themeName: string): void {
         this.#themeName = themeName;
@@ -716,8 +692,6 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
 
     /**
      * Overrides the theme resolver used by this context.
-     *
-     * @param themeResolver - The new theme resolver.
      */
     setThemeResolver(themeResolver: ThemeResolver): void {
         this.#customThemeResolver = true;
@@ -813,8 +787,7 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
 /**
  * @implements external:Record
  * @extends module:context.GenericApplicationContext
- */
-/**
+ *
  * Application context proxy that exposes values as dynamic object properties.
  */
 export class ProxiedGenericApplicationContext extends GenericApplicationContext implements Record<string, any> {
@@ -824,7 +797,7 @@ export class ProxiedGenericApplicationContext extends GenericApplicationContext 
      * Creates a proxied context that forwards property access to values.
      *
      * @param name - The context name.
-     * @param data - Optional initial values.
+     * @param data - Optional initial values to register.
      */
     constructor(name: string, data?: JSONObject) {
         super(name, data);
@@ -871,7 +844,10 @@ export const AsApplicationContextAware = <T extends Constructable>(
     readonly applicationContext?: ApplicationContext;
 
         /**
-         * @param {module:context.ApplicationContext} applicationContext The application context to be set.
+         * Set the ApplicationContext that this object runs in. Normally this call will be used to initialize the object.
+         *
+         * Invoked after population of normal value properties but before an `init` callback.
+         * @param {module:context.ApplicationContext} context The ApplicationContext to be used by this object.
          */
         setApplicationContext(applicationContext: ApplicationContext): void {
             /**
@@ -887,17 +863,29 @@ export const AsApplicationContextAware = <T extends Constructable>(
     };
 
 /**
+ * Base class for any object managed by the ApplicationContext.
+ * Provides a standard way to access the application context.
+ */
+export class ApplicationComponent extends AsApplicationContextAware(Null) {}
+
+/**
+ * Base class for business logic components.
+ * Encapsulates domain rules and state orchestration.
+ */
+export class BusinessComponent extends ApplicationComponent {}
+
+/**
+ * Base class for view components.
+ * Encapsulates presentation logic and DOM interaction.
+ */
+export class ViewComponent extends ApplicationComponent {}
+
+/**
  * Create a new ApplicationContextAwareProcessor for the given context.
  * An {@link InitializationAwareProcessor|InitializationAwareProcessor} implementation that passes the ApplicationContext to value that implement the {@link EnvironmentAware|EnvironmentAware}, {@link ResourceLoaderAware|ResourceLoaderAware}, {@link ApplicationEventEmitterAware|ApplicationEventEmitterAware}, {@link ContentSourceAware|ContentSourceAware}, and/or {@link ApplicationContextAware|ApplicationContextAware} interfaces.
  *
- * Implemented interfaces are satisfied in order of their mention above.
  * @implements module:factory.InitializationAwareProcessor
  * @param {module:context.ApplicationContext} applicationContext
- * @see {@link EnvironmentAware}
- * @see {@link ResourceLoaderAware}
- * @see {@link ApplicationEventEmitterAware}
- * @see {@link ContentSourceAware}
- * @see {@link ApplicationContextAware}
  */
 export class ApplicationContextAwareProcessor implements InitializationAwareProcessor {
     readonly applicationContext!: ApplicationContext;
@@ -921,10 +909,6 @@ export class ApplicationContextAwareProcessor implements InitializationAwareProc
 
     /**
      * Returns the value unchanged after initialization.
-     *
-     * @param name - The bean name.
-     * @param value - The initialized value.
-     * @returns The same value.
      */
     processAfterInitialization<T = any>(name: string, value: T): T {
         return value;
@@ -934,8 +918,7 @@ export class ApplicationContextAwareProcessor implements InitializationAwareProc
      * Injects the application context into aware values before initialization.
      *
      * @param name - The bean name.
-     * @param value - The value to initialize.
-     * @returns The same value.
+     * @param value - The initialized value.
      */
     processBeforeInitialization<T = any>(name: string, value: T): T {
         if (likeAware(value)) {
@@ -946,7 +929,6 @@ export class ApplicationContextAwareProcessor implements InitializationAwareProc
             likeContentSourceAware(value) && (value as any).setContentSource(applicationContext);
             likeApplicationContextAware(value) && value.setApplicationContext(applicationContext);
         }
-
         return value;
     }
 }

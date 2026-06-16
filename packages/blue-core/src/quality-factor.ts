@@ -3,7 +3,7 @@
  */
 
 import { isNumber, isString } from '@blue/util/types';
-import { Comparator, numberComparator } from './comparable';
+import { Comparator, numberComparator } from './comparable.js';
 
 /**
  * * This is currently not in use. It's an initial draft of making more robust support for quality factors,

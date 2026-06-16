@@ -2,8 +2,8 @@
  * @author Jeff Rose
  */
 
-import { createNull } from './null';
-import { JSONValue, Serializable } from './serializable';
+import { createNull } from './null.js';
+import { JSONValue, Serializable } from './serializable.js';
 
 type NodeKind = 'static' | 'param' | 'wildcard';
 

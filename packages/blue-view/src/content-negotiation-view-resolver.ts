@@ -4,8 +4,8 @@
 
 import { FrameworkError, MediaType, MultiValueMap } from '@blue/core';
 import { isFunction, isNotNil } from '@blue/util/types';
-import { View } from './view';
-import { ViewResolver } from './view-resolver';
+import { View } from './view.js';
+import { ViewResolver } from './view-resolver.js';
 
 /**
  * Resolves file extensions for a media type and can enumerate all known extensions.

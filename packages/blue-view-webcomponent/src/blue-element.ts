@@ -4,7 +4,7 @@
 
 import { Constructable } from '@blue/core';
 
-interface BlueElement {
+export interface BlueElement {
     name: string;
 }
 

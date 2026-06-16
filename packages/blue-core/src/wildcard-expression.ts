@@ -2,7 +2,7 @@
  * @author Jeff Rose
  */
 
-import type { Converter } from './parser';
+import type { Converter } from './parser.js';
 
 /**
  * Parses a wildcard pattern into a bounded regular-expression source string.

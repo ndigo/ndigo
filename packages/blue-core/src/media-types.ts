@@ -2,7 +2,7 @@
  * @author Jeff Rose
  */
 
-import MediaType from './media-type';
+import MediaType from './media-type.js';
 
 /**
  * @namespace module:core.MediaTypes

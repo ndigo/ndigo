@@ -3,8 +3,8 @@
  */
 
 import { Route } from '@blue/router';
-import { View } from './view';
-import { ViewTarget } from './view-target';
+import { View } from './view.js';
+import { ViewTarget } from './view-target.js';
 
 /**
  * Translates a view and model into a rendered output for a target.

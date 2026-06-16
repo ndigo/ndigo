@@ -30,6 +30,7 @@
   "devDependencies": {
     "@blue/context": "~0.0.1",
     "@blue/core": "~0.0.1",
+    "@blue/factory": "~0.0.1",
     "@blue/router": "~0.0.1",
     "@blue/util": "~0.0.1",
     "@blue/view": "~0.0.1"
@@ -37,6 +38,7 @@
   "peerDependencies": {
     "@blue/context": "~0.0.1",
     "@blue/core": "~0.0.1",
+    "@blue/factory": "~0.0.1",
     "@blue/router": "~0.0.1",
     "@blue/util": "~0.0.1",
     "@blue/view": "~0.0.1"

@@ -2,8 +2,8 @@
  * @author Jeff Rose
  */
 
-import type { Disposable, ModelOptions, ReadableModel, Unsubscribe } from './model';
-import { SubscriptionManager, defaultEquals, UNINITIALIZED } from './_util';
+import type { Disposable, ModelOptions, ReadableModel, Unsubscribe } from './model.js';
+import { SubscriptionManager, defaultEquals, UNINITIALIZED } from './_util.js';
 
 /**
  * A read-only model whose value is computed from one or more source models.

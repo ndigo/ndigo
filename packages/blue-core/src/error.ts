@@ -52,11 +52,12 @@ export class ApplicationError extends AsSerializableError(Error) {
 
     /**
      * Creates an instance of ApplicationError.
+     * Uses `new.target.name` so subclasses inherit the correct name automatically.
      * @param message - The error message.
      */
     constructor(message?: string) {
         super(message);
-        this.name = 'ApplicationError';
+        this.name = new.target.name;
         setPrototypeOf(this, new.target.prototype);
     }
 }
@@ -76,11 +77,12 @@ export class FrameworkError extends AsSerializableError(Error) {
 
     /**
      * Creates an instance of FrameworkError.
+     * Uses `new.target.name` so subclasses inherit the correct name automatically.
      * @param message - The error message.
      */
     constructor(message?: string) {
         super(message);
-        this.name = 'FrameworkError';
+        this.name = new.target.name;
         setPrototypeOf(this, new.target.prototype);
     }
 }

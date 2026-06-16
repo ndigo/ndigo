@@ -23,6 +23,7 @@ import { RouteHandlerMethod, RouteHandlerMethodMappingNamingStrategy } from './r
 import { RouteMappingInfo, PatternsRouteCondition, QueryParamCondition, MatrixParamCondition } from './route-mapping-info';
 import { hasRouteMapping, getRouteMapping } from './route-mapping';
 import { hasMethodParameter, getMethodParameter, MethodParameter } from './route-parameter';
+import { pathPatternComparator } from './path-pattern-comparator';
 
 /**
  * A value that may be supplied directly or by name through the application context.
@@ -769,10 +770,8 @@ export abstract class AbstractPathHandlerMapping extends AbstractHandlerMapping 
         }
 
         let bestMatch: string | null = null;
-        //const patternComparator: Comparator<string> = this.pathMatcher.getPatternComparator( path );
         if (matchingPatterns.length) {
-            // TODO provide sorting function
-            matchingPatterns.sort();
+            matchingPatterns.sort(pathPatternComparator.compare);
             bestMatch = matchingPatterns[0];
         }
 

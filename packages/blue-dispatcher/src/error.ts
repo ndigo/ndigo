@@ -94,7 +94,6 @@ export class ParameterBindingError extends FrameworkError {
 
     constructor(message: string, parameterName?: string, methodName?: string, controllerName?: string) {
         super(message);
-        this.name = 'ParameterBindingError';
 
         defineProperty(this, 'parameterName', {
             value: parameterName ?? null,
@@ -130,7 +129,6 @@ export class InvalidParameterMappingError extends ParameterBindingError {
 
     constructor(message: string, parameterName?: string, methodName?: string, controllerName?: string) {
         super(message, parameterName, methodName, controllerName);
-        this.name = 'InvalidParameterMappingError';
     }
 }
 
@@ -162,7 +160,6 @@ export class MissingParameterError extends ParameterBindingError {
             methodName,
             controllerName
         );
-        this.name = 'MissingParameterError';
 
         defineProperty(this, 'parameterType', {
             value: parameterType,
@@ -208,8 +205,6 @@ export class ParameterConversionError extends ParameterBindingError {
             methodName,
             controllerName
         );
-
-        this.name = 'ParameterConversionError';
 
         defineProperty(this, 'parameterType', {
             value: parameterType,

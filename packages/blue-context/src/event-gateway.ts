@@ -218,7 +218,6 @@ export class InvalidRelayError extends FrameworkError {
      */
     constructor(message: string) {
         super(message);
-        this.name = 'InvalidRelayError';
     }
 }
 

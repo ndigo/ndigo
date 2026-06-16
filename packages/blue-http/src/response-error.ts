@@ -54,7 +54,6 @@ export class ResponseError extends FrameworkError implements Error, Response {
     constructor(response: Response | null = null, messageOrError: string | Error = 'Invalid response') {
         super(isError(messageOrError) ? messageOrError.message : messageOrError);
         this.stack = isError(messageOrError) ? messageOrError.stack : '';
-        this.name = 'ResponseError';
 
         this.#originalError = isError(messageOrError) ? messageOrError : new Error(messageOrError as string);
 

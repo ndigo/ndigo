@@ -2,7 +2,7 @@
  * @author Jeff Rose
  */
 
-import type { EqualsFn, Unsubscribe } from './model';
+import type { EqualsFn, Unsubscribe } from './model.js';
 
 /**
  * Default equality function using `Object.is`.

@@ -3,6 +3,7 @@
  * @author Jeff Rose
  */
 
+export * from './abstract-web-component';
 export * from './blue-element';
 export * from './engine';
 export * from './tag-mapping';

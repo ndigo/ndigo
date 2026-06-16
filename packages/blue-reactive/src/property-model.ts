@@ -2,8 +2,8 @@
  * @author Jeff Rose
  */
 
-import type { Disposable, ModelOptions, ReadableModel, Unsubscribe, WritableModel } from './model';
-import { SubscriptionManager, defaultEquals, getByPath, setByPath } from './_util';
+import type { Disposable, ModelOptions, ReadableModel, Unsubscribe, WritableModel } from './model.js';
+import { SubscriptionManager, defaultEquals, getByPath, setByPath } from './_util.js';
 
 /**
  * A model that binds to a property path of a source model.

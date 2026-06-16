@@ -2,8 +2,8 @@
  * @author Jeff Rose
  */
 
-import type { Disposable, ModelOptions, ReadableModel, Unsubscribe } from './model';
-import { PropertyModel } from './property-model';
+import type { Disposable, ModelOptions, ReadableModel, Unsubscribe } from './model.js';
+import { PropertyModel } from './property-model.js';
 
 /**
  * A model that wraps a source and provides child models automatically

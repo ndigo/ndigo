@@ -2,12 +2,12 @@
  * @author Jeff Rose
  */
 
-import { Serializable, JSONValue } from './serializable';
-import { Comparator, StringComparable, stringComparator, numberComparator } from './comparable';
-import { Null } from './null';
+import { Serializable, JSONValue } from './serializable.js';
+import { Comparator, StringComparable, stringComparator, numberComparator } from './comparable.js';
+import { Null } from './null.js';
 import { isString } from '@blue/util/types';
-import { Matchable } from './matchable';
-import { IllegalStateError } from './error';
+import { Matchable } from './matchable.js';
+import { IllegalStateError } from './error.js';
 
 /**
  * Represents a quality factor parameter for media types, typically used in HTTP Accept headers.

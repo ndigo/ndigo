@@ -1,33 +1,40 @@
-const templateTodoInput = document.createElement('template');
-templateTodoInput.innerHTML = `
-    <form id="new-todo-form">
-        <input type="text" class="new-todo" placeholder="What needs to be done?" autofocus>
-    </form>
-`;
+/**
+ * @author Jeff Rose
+ */
 
-export default class TodoInput extends HTMLElement {
-    $form: HTMLFormElement | null = null;
-    $input: HTMLInputElement | null = null;
+import { AbstractWebComponent } from '@blue/view-webcomponent';
 
-    constructor() {
-        super();
-        // Do not use shadow DOM to avoid problems when testing with selenium
-        // this._root = this.attachShadow({ 'mode': 'open' });
-    }
+export default class TodoInput extends AbstractWebComponent {
+    private $form!: HTMLFormElement;
+    private $input!: HTMLInputElement;
 
-    connectedCallback() {
-        this.appendChild(templateTodoInput.content.cloneNode(true));
-        this.$form = this.querySelector('form');
-        this.$input = this.querySelector('input');
-        this.$form!.addEventListener('submit', (e: Event) => {
-            e.preventDefault();
-            if (!this.$input!.value) return;
-            this.dispatchEvent(new CustomEvent('onSubmit', { detail: this.$input!.value, bubbles: true }));
-            this.$input!.value = '';
+    handleConnect(): void {
+        this.$form = this.create('form', { id: 'new-todo-form' });
+        this.$input = this.create('input', { 
+            type: 'text', 
+            className: 'new-todo', 
+            placeholder: 'What needs to be done?',
+            autofocus: true 
+        }) as HTMLInputElement;
+
+        this.$form.appendChild(this.$input);
+        this.appendChild(this.$form);
+
+        this.bindEvents({
+            'submit #new-todo-form': 'handleSubmit'
         });
     }
 
-    disconnectedCallback() {}
+    private handleSubmit(e: Event): void {
+        e.preventDefault();
+        if (!this.$input.value) return;
+        this.emit('onSubmit', this.$input.value);
+        this.$input.value = '';
+    }
+
+    render(): void {
+        // No dynamic rendering needed for the input shell
+    }
 }
 
 window.customElements.define('todo-input', TodoInput);

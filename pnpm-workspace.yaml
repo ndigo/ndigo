@@ -1,6 +1,13 @@
 packages:
   - 'packages/*'
   - 'apps/*'
+  - '../todomvc/examples/bluejs'
+  - '../todomvc/examples/svelte'
+  - '../todomvc/examples/vue'
+  - '../todomvc/examples/react'
+  - '../todomvc/examples/javascript-es6'
+
+
 
 # Workspace resolution (moved from .npmrc in pnpm 10+)
 linkWorkspacePackages: deep
@@ -17,6 +24,7 @@ onlyBuiltDependencies:
 
 allowBuilds:
   '@ast-grep/cli': true
+  cypress: set this to true or false
   esbuild: true
   msw: true
   nx: true

@@ -12,7 +12,17 @@
   "types": "lib/index.d.ts",
   "scripts": {
     "build": "nx run-many -t build:lib",
+    "build:all": "pnpm --filter @blue/todomvc build && pnpm --filter todomvc-svelte build && pnpm --filter todomvc-vue build && pnpm --filter todomvc-react build && pnpm --filter todomvc-javascript-es6-webpack build",
+    "test:benchmark": "pnpm --filter @blue/todomvc run preview & sleep 5 && pnpm exec node --experimental-specifier-resolution=node --import ./node_modules/.pnpm/tsx@4.22.3/node_modules/tsx/dist/esm/index.mjs ../todomvc/examples/bluejs/benchmark-runner.ts",
+    "test:benchmark:react": "pnpm exec node --experimental-specifier-resolution=node --import ./node_modules/.pnpm/tsx@4.22.3/node_modules/tsx/dist/esm/index.mjs benchmark-react.ts",
+    "test:benchmark:svelte": "pnpm exec node --experimental-specifier-resolution=node --import ./node_modules/.pnpm/tsx@4.22.3/node_modules/tsx/dist/esm/index.mjs benchmark-svelte.ts",
+    "test:benchmark:vue": "pnpm exec node --experimental-specifier-resolution=node --import ./node_modules/.pnpm/tsx@4.22.3/node_modules/tsx/dist/esm/index.mjs benchmark-vue.ts",
+    "test:benchmark:vanilla": "pnpm exec node --experimental-specifier-resolution=node --import ./node_modules/.pnpm/tsx@4.22.3/node_modules/tsx/dist/esm/index.mjs benchmark-vanilla.ts",
+    "build:bluejs": "pnpm --filter ../todomcv/examples/bluejs run build",
+    "build:todomvc": "nx run @blue/todomvc:build:lib",
     "test": "nx run-many -t test",
+
+
     "test:bench": "vitest bench --run --reporter verbose",
     "test:e2e": "nx run @blue/demo:test:e2e",
     "lint": "eslint .",

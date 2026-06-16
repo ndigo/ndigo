@@ -12,6 +12,7 @@ import {
     RouteConditionHolder,
     likeRouteCondition,
 } from './route-condition';
+import { AccessControlCondition } from './access-control-condition';
 
 const { defineProperty } = Reflect,
     { isArray } = Array,
@@ -738,6 +739,11 @@ export class RouteMappingInfo implements RouteCondition<RouteMappingInfo> {
     readonly customConditionHolder!: RouteConditionHolder;
 
     /**
+     * Optional access-control condition (public vs. private routes).
+     */
+    readonly accessCondition!: AccessControlCondition | null;
+
+    /**
      * Create route mapping metadata for a handler method.
      *
      * @param name - The mapping name.
@@ -745,19 +751,22 @@ export class RouteMappingInfo implements RouteCondition<RouteMappingInfo> {
      * @param params - Query-parameter matching condition.
      * @param matrix - Matrix-parameter matching condition.
      * @param custom - Optional custom condition.
+     * @param access - Optional access level (`'public'` or `'private'`).
      */
     constructor(
         name: string | null = null,
         patterns: PatternsRouteCondition = new PatternsRouteCondition(),
         params: QueryParamCondition = new QueryParamCondition(),
         matrix: MatrixParamCondition = new MatrixParamCondition(),
-        custom: RouteCondition<any> | null = null
+        custom: RouteCondition<any> | null = null,
+        access: AccessControlCondition | null = null
     ) {
         this.name = name || '';
         this.patternsCondition = patterns;
         this.queryCondition = params;
         this.matrixCondition = matrix;
         this.customConditionHolder = new RouteConditionHolder(custom);
+        this.accessCondition = access;
     }
 
     /**
@@ -773,7 +782,13 @@ export class RouteMappingInfo implements RouteCondition<RouteMappingInfo> {
             patterns = this.patternsCondition.merge(value.patternsCondition),
             custom = this.customConditionHolder.merge(value.customConditionHolder);
 
-        return new RouteMappingInfo(name, patterns, params, matrix, custom.condition);
+        // Merge access conditions: the most restrictive level wins (private > public).
+        const mergedAccess =
+            this.accessCondition && value.accessCondition
+                ? this.accessCondition.merge(value.accessCondition)
+                : this.accessCondition ?? value.accessCondition;
+
+        return new RouteMappingInfo(name, patterns, params, matrix, custom.condition, mergedAccess);
     }
 
     /**
@@ -803,6 +818,18 @@ export class RouteMappingInfo implements RouteCondition<RouteMappingInfo> {
         const custom = this.customConditionHolder.getMatchingCondition(route);
         if (!custom) {
             return null;
+        }
+
+        // Check access control — private routes require an authenticated principal.
+        if (this.accessCondition) {
+            const accessMatch = this.accessCondition.getMatchingCondition(route);
+            if (!accessMatch) {
+                return null;
+            }
+            return new RouteMappingInfo(
+                this.name, patterns, params, matrix, custom.condition,
+                accessMatch
+            );
         }
 
         return new RouteMappingInfo(this.name, patterns, params, matrix, custom.condition);
@@ -836,6 +863,14 @@ export class RouteMappingInfo implements RouteCondition<RouteMappingInfo> {
         result = this.customConditionHolder.compareTo(value.customConditionHolder, route);
         if (result !== 0) {
             return result;
+        }
+
+        // Access-specific comparison: private routes are more specific than public.
+        if (this.accessCondition && value.accessCondition) {
+            result = this.accessCondition.compareTo(value.accessCondition, route);
+            if (result !== 0) {
+                return result;
+            }
         }
 
         return 0;
@@ -888,9 +923,3 @@ defineProperty(RouteMappingInfoHandlerMethodMappingNamingStrategy, 'separator', 
     enumerable: false,
     writable: false,
 });
-
-/**
- * * Developer Notes
- * TODO Create a condition for public vs. private routes if that's still going to be a thing in BlueJS3
- * ? Should we grab cookies and put them on the Route so developers don't need to touch document? If so a condition needs to be made.
- */

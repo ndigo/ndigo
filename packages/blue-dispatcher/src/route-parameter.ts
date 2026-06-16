@@ -477,12 +477,18 @@ export function routeParams(paramMap: RouteParameterMap) {
         // Extract parameter names from the method
         const paramNames = getFunctionParamNames(target);
 
+        // Pre-compute name→index map for O(1) lookup instead of O(P) indexOf per parameter.
+        const nameToIndex = new Map<string, number>();
+        for (let i = 0; i < paramNames.length; i++) {
+            nameToIndex.set(paramNames[i], i);
+        }
+
         // Convert paramMap to array indexed by parameter position
         const parameters: MethodParameter[] = [];
 
         for (const [paramName, extractor] of Object.entries(paramMap)) {
-            const index = paramNames.indexOf(paramName);
-            if (index === -1) {
+            const index = nameToIndex.get(paramName);
+            if (index === undefined) {
                 throw new IllegalStateError(
                     `Parameter "${paramName}" not found in method signature. ` +
                         `Available parameters: ${paramNames.join(', ')}`

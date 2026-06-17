@@ -60,9 +60,6 @@ const { defineProperty } = Reflect,
 
 /**
  * @see module:context.AsResourceLoaderAware
- * @implements module:context.ResourceLoaderAware
- * @param superclass - The base class to extend.
- * @returns {module:context.Constructable<module:context.ResourceLoaderAware>}
  */
 export const AsResourceLoaderAware = <T extends Constructable>(superclass: T): Constructable<ResourceLoaderAware> & T =>
     class extends AsAware(superclass) implements ResourceLoaderAware {
@@ -141,9 +138,6 @@ export class URLResource<T = any> implements Resource<T> {
 }
 
 /**
- * @implements module:context.Resource
- */
-/**
  * Resource wrapper used when loading fails.
  */
 export class UnresolvedResource implements Resource<Error> {
@@ -169,10 +163,6 @@ export class UnresolvedResource implements Resource<Error> {
     }
 }
 
-/**
- * @see module:context.AsModuleResourceLoader
- * @implements module:context.ResourceLoader
- */
 export const AsModuleResourceLoader = <T extends Constructable>(superclass: T): Constructable<ResourceLoader> & T => {
     // TypeScript 5.7 requires explicit type assertion for mixin pattern
     const LoaderClass = class extends (superclass as new (...args: any[]) => any) implements ResourceLoader {

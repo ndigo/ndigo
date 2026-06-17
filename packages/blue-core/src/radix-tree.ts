@@ -84,8 +84,6 @@ class RadixNode<V> {
 
 /**
  * A radix tree implementation for URL routing.
- *
- * @implements module:core.Serializable
  */
 export class RadixTree<V> implements Serializable {
     #root: RadixNode<V>;

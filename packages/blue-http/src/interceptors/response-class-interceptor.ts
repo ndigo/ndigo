@@ -109,8 +109,6 @@ export const likeServerErrorAwareHTTPInterceptor = like({ postServerErrorRespons
 
 /**
  * Dispatches response hooks based on the response status class.
- *
- * @implements module:http.ResponseAwareHTTPInterceptor
  */
 export class MappedResponseClassHTTPInterceptor implements ResponseAwareHTTPInterceptor {
     #interceptor: ResponseClassAwareHTTPInterceptor;

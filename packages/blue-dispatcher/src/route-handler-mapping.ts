@@ -62,38 +62,6 @@ export interface MatchableHandlerMapping extends RouteHandlerMapping {
     match(route: Route, pattern: string): RouteMatchResult | null;
 }
 
-/**
- * @typedef {string:external | T} module:dispatcher.Maybe<T>
- */
-
-/**
- * @typedef {module:dispatcher.Maybe<*>} module:dispatcher.MaybeHandler
- */
-
-/**
- * Interface to be implemented by objects that define a mapping between routes and handler objects.
- * A handler will always be wrapped in a {@link HandlerExecutionChain|HandlerExecutionChain} instance.
- */
-
-/**
- * Return a handler for this route. The choice may be made on any factor the implementing class chooses.
- * Returns `null` if no match was found.
- * @param {module:dispatcher.Request} route The current route
- * @returns {module:dispatcher.HandlerExecutionChain} A HandlerExecutionChain instance containing handler object or `null` if no mapping
- */
-
-/**
- * Additional interface that a {@link RouteHandlerMapping|HandlerMapping} can implement to expose a route matching API aligned with its internal route matching configuration and implementation.
- * @extends module:router.RouteHandlerMapping
- */
-
-/**
- * Determine whether the given route matches the route criteria.
- * @param {module:dispatcher.Request} route The current route
- * @param {string} pattern
- * @returns {module:dispatcher.HandlerExecutionChain}
- */
-
 const { from, isArray } = Array,
     { defineProperty, getPrototypeOf } = Reflect,
     { keys } = Object,
@@ -245,9 +213,6 @@ class MappingRegistry<T = any> {
     }
 }
 
-/**
- * @implements module:core.Serializable
- */
 class Match<T> implements Serializable {
     readonly mapping!: T;
     readonly handlerMethod!: RouteHandlerMethod;
@@ -1004,10 +969,7 @@ export class NamePathHandlerMapping extends AbstractDetectingPathHandlerMapping 
 
 /**
  * Creates {@link RequestMappingInfo|RequestMappingInfo} instances from class-level `route:handler` metadata and method-level `route:mapping` metadata. Metadata is usually applied using {@link RequestMapping|@RequestHandler} and {@link RequestMapping|@RequestMapping} decorators.
- * @extends module:dispatcher.AbstractHandlerMethodMapping<module:dispatcher.RequestMappingInfo>
- * @implements module:dispatcher.MatchableHandlerMapping
- */
-/**
+ *
  * Map handler methods using route mapping metadata.
  */
 export class LinearMetadataHandlerMapping

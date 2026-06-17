@@ -29,9 +29,6 @@ export const parseQualityFactor = (value: unknown): number => {
     return 1;
 };
 
-/**
- * @implements module:core.Comparator
- */
 class QualityFactorComparator implements Comparator<Qualifiable> {
     compare(q1: Qualifiable, q2: Qualifiable): number {
         const quality1 = parseQualityFactor(q1.qualityFactor) as number,

@@ -97,8 +97,6 @@ function setHeader(headers: HeadersInit, name: string, value: any): void {
  *
  * The instance stores only the header name; read and write methods adapt the
  * name to `Headers`, header tuples, and plain object maps.
- *
- * @implements module:core.Serializable
  */
 export class HTTPHeader implements Serializable {
     /**

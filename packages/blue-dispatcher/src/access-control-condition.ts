@@ -5,6 +5,16 @@
 import { Route } from '@blue/router';
 import { AbstractRouteCondition, RouteCondition } from './route-condition';
 
+/**
+ * Structural check for a route that carries an authenticated principal.
+ *
+ * The `principal` property is added dynamically by authentication interceptors
+ * and is not part of the base `Route` interface.
+ */
+interface HasPrincipal {
+    principal: unknown;
+}
+
 const { defineProperty } = Reflect;
 
 /**
@@ -87,7 +97,7 @@ export class AccessControlCondition
         }
 
         // Private route — require an authenticated principal.
-        if (this.access === 'private' && (route as any).principal) {
+        if (this.access === 'private' && (route as unknown as HasPrincipal).principal) {
             return this;
         }
 

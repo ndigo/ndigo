@@ -70,20 +70,6 @@
 
 /**
  * @global
- * @external IterableIterator
- * @extends external:Iterable
- * @extends external:Iterator
- * @property {symbol} Symbol.iterator
- * @see {@link external:Iterable|Iterable}
- * @see {@link external:Iterator|Iterator}
- */
-
-/**
- * @returns {IteratorResult}
- */
-
-/**
- * @global
  * @external Iterator
  * @see {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols#The_iterator_protocol}
  */

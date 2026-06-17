@@ -479,25 +479,23 @@ export class PatternsRouteCondition extends AbstractRouteCondition<PatternsRoute
     ) {
         super();
 
-        // TODO Clean up this logic
-
         if (typeof patterns === 'string') {
-            patterns = [patterns];
-            if (typeof pathMatcherOrRouteCondition === 'string') {
-                patterns.push(pathMatcherOrRouteCondition);
-                pathMatcherOrRouteCondition = new URLGlobPathMatcher();
+            const collectedPatterns = [patterns];
+            const remainingArgs: any[] = [pathMatcherOrRouteCondition, useTrailingSlashMatch, fileExtensions, ...morePatterns];
+            const options: any[] = [];
+
+            for (const arg of remainingArgs) {
+                if (typeof arg === 'string') {
+                    collectedPatterns.push(arg);
+                } else if (arg !== undefined) {
+                    options.push(arg);
+                }
             }
-            if (typeof useTrailingSlashMatch === 'string') {
-                patterns.push(useTrailingSlashMatch);
-                useTrailingSlashMatch = true;
-            }
-            if (typeof fileExtensions === 'string') {
-                patterns.push(fileExtensions);
-                fileExtensions = [];
-            }
-            if (isArray(morePatterns) && morePatterns.length) {
-                patterns = patterns.concat(morePatterns);
-            }
+
+            patterns = collectedPatterns;
+            pathMatcherOrRouteCondition = options[0] ?? new URLGlobPathMatcher();
+            useTrailingSlashMatch = options[1] ?? true;
+            fileExtensions = options[2] ?? [];
         }
 
         if (isArray(patterns)) {
@@ -637,8 +635,8 @@ export class PatternsRouteCondition extends AbstractRouteCondition<PatternsRoute
             }
         }, this);
         if (matches.length > 1) {
-            // TODO Use pattern comparator
-            matches.sort();
+            const comparator = this.pathMatcher.getPatternComparator(path);
+            matches.sort(comparator.compare);
         }
         return matches;
     }

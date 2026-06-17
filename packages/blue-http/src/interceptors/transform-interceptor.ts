@@ -48,7 +48,7 @@ export class TransformInterceptor implements RequestAwareHTTPInterceptor, Respon
         return new Request(request.url, {
             method: request.method,
             headers: request.headers,
-            body: JSON.stringify(body), // TODO: Smart serialization based on content-type
+            body: this.serializeBody(body, request.headers.get('content-type') || ''),
             // ... copy other request properties
         });
     }

@@ -45,10 +45,6 @@ export interface RouteHandlerMethodMappingNamingStrategy<T = any> {
 
 const { defineProperty } = Reflect;
 
-/**
- * @implements module:dispatcher.HandlerMethod
- * @implements module:core.Serializable
- */
 export class RouteHandlerMethod implements HandlerMethod, Serializable {
     readonly factory!: Factory | null;
     readonly name!: string | null;

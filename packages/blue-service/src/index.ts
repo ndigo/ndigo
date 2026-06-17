@@ -2,7 +2,6 @@
  * @author Jeff Rose
  */
 
-export * from './app-reset-interceptor';
 export {
     MappedServiceInterceptor,
     ServiceExecutionChain,

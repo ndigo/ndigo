@@ -20,9 +20,6 @@ export interface RouteToViewNameTranslator {
 const { defineProperty } = Reflect,
     slash = '/';
 
-/**
- * @implements module:router.RouteToViewNameTranslator
- */
 export class DefaultRouteToViewNameTranslator implements RouteToViewNameTranslator {
     /**
      * Prefix added to every translated view name.

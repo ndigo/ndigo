@@ -87,9 +87,6 @@ defaultParsers.set(MediaTypes.TEXT_XML!, markupParser);
 
 /**
  * Parses response bodies into typed data and attaches the result as `data`.
- *
- * @implements module:http.InitializationAwareHTTPInterceptor
- * @implements module:http.ResponseAwareHTTPInterceptor
  */
 export class ResponseTypeInterceptor
     implements InitializationAwareHTTPInterceptor<ResponseTypeInit>, ResponseAwareHTTPInterceptor<ResponseTypeSettings>

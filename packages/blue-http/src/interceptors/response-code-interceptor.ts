@@ -21,8 +21,6 @@ export interface ResponseCodeAwareHTTPInterceptor {
 
 /**
  * Dispatches response hooks based on the numeric status code.
- *
- * @implements module:http.ResponseAwareHTTPInterceptor
  */
 export class MappedResponseCodeHTTPInterceptor implements ResponseAwareHTTPInterceptor {
     #interceptor: ResponseCodeAwareHTTPInterceptor;

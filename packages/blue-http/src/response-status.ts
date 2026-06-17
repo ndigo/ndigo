@@ -23,9 +23,6 @@ const { assign } = Object,
  * Instances are cached by code so repeated lookups return the same object when
  * possible.
  *
- * @implements module:core.Comparable
- * @implements module:core.Equatable
- * @implements module:core.Serializable
  * @see {@link https://tools.ietf.org/html/rfc2616#section-10}
  */
 export default class ResponseStatus implements Comparable<ResponseStatus>, Equatable, Serializable {

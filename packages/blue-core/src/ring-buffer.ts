@@ -20,11 +20,6 @@ const { defineProperty } = Reflect,
         return n + 1;
     };
 
-/**
- * @implements external:ArrayLike
- * @implements external:Iterable
- * @implements module:core.Serializable
- */
 export class RingBuffer<T = any> implements ArrayLike<T | undefined>, Iterable<T>, Serializable {
     protected _capacity!: number;
     protected _head!: number;

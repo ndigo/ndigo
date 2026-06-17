@@ -293,9 +293,6 @@ export class DefaultRouteErrorResolver extends AbstractRouteErrorResolver {
 
 /**
  * An {@link AbstractRouteErrorResolver|AbstractRouteErrorResolver} that resolves exceptions through 'error:mapping' metadata.
- * @extends module:dispatcher.AbstractRouteErrorResolver
- * @implements module:context.ApplicationContextAware
- * @implements module:context.Initializable
  */
 export class MetadataErrorResolver extends AbstractHandlerMethodErrorResolver implements ApplicationContextAware {
     /**

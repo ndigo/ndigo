@@ -26,9 +26,6 @@ export interface ViewResolver {
     resolveViewName(name: string, language?: any): Promise<View | null>;
 }
 
-/**
- * @implements module:view.View
- */
 class UnresolvedView implements View {
     readonly mediaType: MediaType | null = null;
 
@@ -251,10 +248,6 @@ export class NameViewResolver extends AsApplicationContextAware(Null) implements
 
 /**
  * A {@link ViewResolver|`ViewResolver`} that delegates to others.
- * @implements module:core.Initializable
- * @implements module:core.ViewResolver
- * @see module:context.AsApplicationContextAware
- * @extends module:core.Null
  */
 export class ViewResolverComposite extends AsApplicationContextAware(Null) implements Initializable, ViewResolver {
     /**

@@ -25,10 +25,6 @@ const { defineProperty } = Reflect,
 
 /**
  * Aborts slow requests and converts aborts into timeout responses.
- *
- * @implements module:http.CompletionAwareHTTPInterceptor
- * @implements module:http.ErrorAwareHTTPInterceptor
- * @implements module:http.InitializationAwareHTTPInterceptor
  */
 export class TimeoutInterceptor
     implements

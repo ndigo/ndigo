@@ -193,15 +193,10 @@ export abstract class AbstractEnvironment implements ConfigurableEnvironment {
 
 /**
  * Base class for {@link Environment|Environment} implementations.
- * @abstract
- * @implements module:context.Environment
  */
 
 /**
  * @see module:context.AsEnvironmentAware
- * @implements module:context.EnvironmentAware
- * @param superclass - The base class to extend.
- * @returns {module:context.Constructable<module:context.EnvironmentAware>}
  */
 export const AsEnvironmentAware = <T extends Constructable>(superclass: T): Constructable<EnvironmentAware> & T =>
     class extends AsAware(superclass) implements EnvironmentAware {

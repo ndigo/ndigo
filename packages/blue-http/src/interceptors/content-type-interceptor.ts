@@ -12,14 +12,7 @@ import { CONTENT_TYPE } from '../http-headers';
 export type ContentTypeInit = HTTPInit & { contentType?: string | MediaType };
 
 /**
- * @typedef {module:http.HTTPInit} module:http.ContentTypeInit
- * @property {string | module:core.MediaType} [contentType] The `Content-Type` to append to request headers
- */
-
-/**
  * Adds a `Content-Type` header when request settings provide one.
- *
- * @implements module:http.InitializationAwareHTTPInterceptor
  */
 export class ContentTypeInterceptor implements InitializationAwareHTTPInterceptor<ContentTypeInit> {
     /**

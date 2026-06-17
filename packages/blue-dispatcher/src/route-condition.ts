@@ -45,32 +45,13 @@ export interface RouteCondition<T = any> {
     compareTo(value: T, route?: Route): number;
 }
 
-/**
- * Merge this condition with another such as conditions from a type-level and method-level `RequestMapping` decorator.
- * @param {*} value
- * @returns {*}
- */
-
-/**
- * Check if the condition matches the route returning a potentially new instance created for the current route.
- *
- * For example a condition with multiple path patterns may return a new instance only with those patterns that match the route.
- * @param {module:dispatcher.Request} route
- * @returns {*} A condition instance in case of a match or `null` otherwise.
- */
-
-/**
- * Compare this condition to another condition, optionally in the context of a specific route. This method assumes both instances have been obtained via `getMatchingCondition`.
- * @param {*} value
- * @param {module:dispatcher.Request} [route]
- * @returns {number}
- */
-
 const { defineProperty } = Reflect;
 
 /**
- * @param {*} value
- * @returns {boolean} Whether or not the `value` is a {@link RouteCondition|RouteCondition}.
+ * Tests whether a value behaves like a {@link RouteCondition|RouteCondition}.
+ *
+ * @param value - The value to test.
+ * @returns `true` when the value is a RouteCondition.
  */
 export const likeRouteCondition = like({ merge: Function, getMatchingCondition: Function }) as (
     value: any
@@ -219,25 +200,18 @@ export abstract class AbstractRouteCondition<T extends AbstractRouteCondition<T>
 
 /**
  * Supports "name=value" style expressions.
- * @abstract
- * @implements module:dispatcher.NameValueExpression
+ *
  * @see {@link ParamExpression}
  */
 
 /**
  * A base class for {@link RouteCondition|RouteCondition} types.
- * @abstract
- * @implements module:router.RouteCondition
  */
 
 /**
  * The discrete items a route condition is composed of, e.g. URL patterns, param expressions, etc.
- * @abstract
  */
 
-/**
- * @extends module:dispatcher.AbstractRouteCondition<module:router.RouteConditionHolder>
- */
 export class RouteConditionHolder extends AbstractRouteCondition<RouteConditionHolder> {
     /**
      * Wrapped condition, when present.

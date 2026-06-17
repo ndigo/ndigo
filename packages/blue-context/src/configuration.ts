@@ -344,11 +344,6 @@ class ConfigurationParser {
 /**
  * A {@link EntryRegistryProcessor|EntryRegistryProcessor} used for processing of {@link @configuration|@configuration} classes.
  * This processor should be prioritized as it is important that any {@link @entry|@entry} methods declared in the `@configuration` classes have their values registered before any other {@link EntryProcessor|EntryProcessor} executes.
- * @see module:context.AsEnvironmentAware
- * @see module:context.AsResourceLoaderAware
- * @implements module:factory.EntryRegistryProcessor
- * @implements module:context.EnvironmentAware
- * @implements module:context.ResourceLoaderAware
  */
 export class ConfigurationProcessor
     extends AsResourceLoaderAware(AsEnvironmentAware(Null))

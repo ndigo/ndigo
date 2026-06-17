@@ -5,9 +5,6 @@
 import { RouterInterceptor } from './router-interceptor';
 import { Route } from './route';
 
-/**
- * @implements module:core.Serializable
- */
 export default class RouterExecutionChain {
     #interceptors: RouterInterceptor[];
 

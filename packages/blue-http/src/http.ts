@@ -373,13 +373,6 @@ export class WildcardMatcher implements PatternMatcher<string, string> {
     }
 }
 
-/**
- * @implements module:http.CompletionAwareHTTPInterceptor
- * @implements module:http.ErrorAwareHTTPInterceptor
- * @implements module:http.InitializationAwareHTTPInterceptor
- * @implements module:http.RequestAwareHTTPInterceptor
- * @implements external:ResponseAwareHTTPInterceptor
- */
 export class MappedHTTPInterceptor
     implements
         CompletionAwareHTTPInterceptor,

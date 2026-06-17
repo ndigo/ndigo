@@ -70,8 +70,6 @@ const getEntries = (data: any) => entriesIterator(isString(data) ? QueryString.p
 
 /**
  * Moves `data` into the URL for bodyless methods and into `body` otherwise.
- *
- * @implements module:http.InitializationAwareHTTPInterceptor
  */
 export class DataParameterInterceptor implements InitializationAwareHTTPInterceptor<DataParameterInit> {
     /**

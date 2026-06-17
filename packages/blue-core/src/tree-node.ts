@@ -15,7 +15,7 @@ export interface ChildNode<T = any> {
  */
 export interface ParentNode<T = any> {
     /** The node's direct children. */
-    readonly children: T[];
+    readonly children: readonly T[];
 }
 
 /**
@@ -58,7 +58,7 @@ export interface TreeNode<T = any> extends ChildNode<T>, ParentNode<T> {
  * @param inclusive - When `true`, include the starting node in the traversal.
  */
 export function direct<T extends ParentNode>(node: T, callback: (node: T) => any, inclusive: boolean = false): void {
-    const targets: T[] = inclusive ? [node] : node.children;
+    const targets: readonly T[] = inclusive ? [node] : node.children;
 
     if (targets?.length) {
         targets.forEach((target: T) => callback(target) !== false && direct<T>(target, callback));
@@ -76,7 +76,7 @@ export function escalate<T extends ChildNode>(node: T, callback: (node: T) => an
     const target = inclusive ? node : node.parent;
 
     if (target) {
-        callback(target as T) !== false && escalate<T>(target as T, callback);
+        callback(target) !== false && escalate<T>(target, callback);
     }
 }
 

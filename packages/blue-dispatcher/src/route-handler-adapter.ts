@@ -86,18 +86,7 @@ export abstract class AbstractHandlerMethodAdapter
 }
 
 /**
- * @abstract
- * @implements module:dispatcher.HandlerAdapter
- */
-
-/**
  * This implementation expects the handler to be a {@link HandlerMethod|HandlerMethod}.
- * @param handler The handler instance to check
- * @returns Whether or not this adapter can adapt the given handler
- */
-
-/**
- * @implements module:dispatcher.HandlerAdapter
  */
 export class ControllerHandlerAdapter implements RouteHandlerAdapter {
     get [Symbol.toStringTag](): string {

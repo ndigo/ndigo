@@ -49,20 +49,11 @@ export interface LifecycleProcessor extends Lifecycle {
  */
 
 /**
- */
-
-/**
  * @extends module:factory.Destroyable
  */
 
 /**
  * @returns {Promise}
- */
-
-/**
- */
-
-/**
  */
 
 /**
@@ -106,9 +97,6 @@ const _likeAutoStartup = like({ isAutoStartup: Boolean });
 export const likeSmartLifecycle = (value: any): value is SmartLifecycle =>
     likeLifecycle(value) && likePhased(value) && _likeAutoStartup(value);
 
-/**
- * @implements module:factory.LifecycleProcessor
- */
 export class DefaultLifecycleProcessor implements LifecycleProcessor {
     isRunning: boolean;
 

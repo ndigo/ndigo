@@ -59,14 +59,6 @@ abstract class AbstractURLComparator implements Comparator<string> {
     abstract compare(pattern1: string, pattern2: string): number;
 }
 
-/**
- * @abstract
- * @implements module:core.Comparator<external:string>
- */
-
-/**
- * @extends module:http.AbstractURLComparator
- */
 class EqualsURLComparator extends AbstractURLComparator {
     compare(pattern1: string, pattern2: string): number {
         const { url } = this,

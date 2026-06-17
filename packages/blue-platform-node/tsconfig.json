@@ -6,5 +6,5 @@
       "@blue/*": ["../blue-*/src"]
     }
   },
-  "include": ["src/**/*", "test/**/*"]
+  "include": ["src/**/*"]
 }

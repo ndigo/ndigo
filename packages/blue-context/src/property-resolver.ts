@@ -100,9 +100,6 @@ export const likePropertyResolver = like({
 }) as (value: any) => value is PropertyResolver;
 
 /**
- * @implements module:context.PropertyResolver
- */
-/**
  * Property resolver that layers sources through a prototype chain for lookup.
  */
 export class PrototypalPropertyResolver implements ConfigurablePropertyResolver {

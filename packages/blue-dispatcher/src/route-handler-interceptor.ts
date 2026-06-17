@@ -38,10 +38,6 @@ export interface RouteHandlerInterceptor {
  * Intercept the execution of a handler. Called after HandlerMapping determined
  * an appropriate handler object, but before RouteHandlerAdapter invokes the handler.
  */
-
-/**
- * @implements module:router.RouteHandlerInterceptor
- */
 export class MappedHandlerInterceptor extends AsPathMatcherFilter(Null) implements RouteHandlerInterceptor {
     #interceptor: RouteHandlerInterceptor;
 

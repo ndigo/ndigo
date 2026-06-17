@@ -293,13 +293,6 @@ export const likeApplicationContextAware = likeAwareAnd(like({ setApplicationCon
     value: any
 ) => value is ApplicationContextAware;
 
-/**
- * @implements module:context.ConfigurableApplicationContext
- * @extends module:factory.DefaultFactory
- * @see module:context.AsEventEmitter
- * @see module:context.AsModuleResourceLoader
- * @see module:context.AsApplicationContextAware
- */
 // GenericApplicationContext extends AsEventEmitter(AsModuleResourceLoader(DefaultFactory))
 // which provides EventEmitter and ResourceLoader functionality via mixins.
 // TypeScript 5.7 has stricter checking for mixin implementations, so we don't explicitly
@@ -418,7 +411,7 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
         this.#name = name ?? '';
         this.#parent = null;
         this.#themeName = 'default';
-            this.#themeResolver = null;
+        this.#themeResolver = null;
 
         this.setId(++uuid);
 
@@ -462,11 +455,9 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
      * @param data - Event payload values.
      */
     broadcast(type: EventType, ...data: any[]): void {
-        direct<any>(
-            this as any,
-            (targetContext: ApplicationContext) => {
-                targetContext.emit(type, ...data);
-            },
+        direct<ApplicationContext>(
+            this as unknown as ApplicationContext,
+            (targetContext) => targetContext.emit(type, ...data),
             true
         );
     }
@@ -834,8 +825,6 @@ export class ProxiedGenericApplicationContext extends GenericApplicationContext 
 
 /**
  * @see module:context.AsApplicationContextAware
- * @implements module:context.ApplicationContextAware
- * @param superclass - The base class to extend.
  */
 export const AsApplicationContextAware = <T extends Constructable>(
     superclass: T
@@ -883,9 +872,6 @@ export class ViewComponent extends ApplicationComponent {}
 /**
  * Create a new ApplicationContextAwareProcessor for the given context.
  * An {@link InitializationAwareProcessor|InitializationAwareProcessor} implementation that passes the ApplicationContext to value that implement the {@link EnvironmentAware|EnvironmentAware}, {@link ResourceLoaderAware|ResourceLoaderAware}, {@link ApplicationEventEmitterAware|ApplicationEventEmitterAware}, {@link ContentSourceAware|ContentSourceAware}, and/or {@link ApplicationContextAware|ApplicationContextAware} interfaces.
- *
- * @implements module:factory.InitializationAwareProcessor
- * @param {module:context.ApplicationContext} applicationContext
  */
 export class ApplicationContextAwareProcessor implements InitializationAwareProcessor {
     readonly applicationContext!: ApplicationContext;

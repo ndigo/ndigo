@@ -43,11 +43,6 @@ export interface NameAware extends Aware {
     setName(name: string): void;
 }
 
-/**
- * @see module:factory.AsAware
- * @implements module:factory.Aware
- * @returns {module:factory.Constructable<module:factory.Aware>}
- */
 export const AsAware = <T extends Constructable>(superclass: T): Constructable<Aware> & T =>
     class extends superclass implements Aware {
         get [$aware](): boolean {

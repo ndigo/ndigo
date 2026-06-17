@@ -47,20 +47,6 @@ export type MediaTypeParameters = {
 };
 
 /**
- * "*" or "application" or "audio" or "font" or "image" or "message" or "model" or "multipart" or "text" or "video"
- * @typedef {string} module:core.SupportedMediaType
- */
-
-/**
- * @typedef {Object} module:core.MediaTypeParameters
- */
-
-/**
- * @typedef {string} module:core.QualityFactor
- * @see {@link https://developer.mozilla.org/en-US/docs/Glossary/Quality_values}
- */
-
-/**
  * Converts a `MediaTypeParameters` object into a formatted string suitable for a media type header.
  * Parameters are joined with semicolons, e.g., ";charset=utf-8;level=1".
  * @param value - The `MediaTypeParameters` object to stringify.
@@ -74,7 +60,6 @@ const stringifyParameters = (value: MediaTypeParameters): string => {
 
 /**
  * Comparator to sort `MediaType` in order of specificity.
- * @implements module:core.Comparator
  */
 class SpecificityComparator<T extends MediaType> implements Comparator<T> {
     compare(mediaType1: T, mediaType2: T): number {
@@ -114,13 +99,8 @@ class SpecificityComparator<T extends MediaType> implements Comparator<T> {
     }
 }
 
-/**
- */
 const specificityComparator = new SpecificityComparator();
 
-/**
- * @implements module:core.Comparator
- */
 class QualityFactorComparator implements Comparator<MediaType> {
     compare(mediaType1: MediaType, mediaType2: MediaType): number {
         const quality1 = mediaType1.qualityFactor,
@@ -137,14 +117,6 @@ class QualityFactorComparator implements Comparator<MediaType> {
  */
 const qualityFactorComparator = new QualityFactorComparator();
 
-/**
- * @param {module:core.SupportedMediaType} type='*'
- * @param {string} subtype='*'
- * @param {module:core.MediaTypeParameters} parameters={}
- * @extends module:core.Null
- * @implements module:core.Serializable
- * @implements module:core.StringComparable
- */
 export default class MediaType extends Null implements Serializable, StringComparable<MediaType>, Matchable<MediaType> {
     readonly experimental: boolean;
     readonly facets: string[];

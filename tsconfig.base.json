@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
     "declaration": true,
     "declarationMap": true,
     "esModuleInterop": true,
@@ -9,12 +8,6 @@
     "moduleResolution": "Bundler",
     "target": "ES2022",
     "skipLibCheck": true,
-    "outDir": ".tscache",
-    "paths": {
-      "@blue/platform": ["packages/blue-platform-web/src"],
-      "@blue/platform-web": ["packages/blue-platform-web/src"],
-      "@blue/platform-node": ["packages/blue-platform-node/src"],
-      "@blue/auth": ["packages/blue-auth/src"]
-    }
+    "outDir": ".tscache"
   }
 }

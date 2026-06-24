@@ -3403,6 +3403,58 @@ static fromOrdinal(ordinal: number): EnumType { /* ... */ }
 
 **Rationale:** Follows established convention from STYLE_GUIDE.md Section 3.14 (Method Naming).
 
+#### Factory Function Naming
+
+Standalone factory functions (not static class methods) follow these naming conventions:
+
+**Creation Functions (no global state):**
+
+```typescript
+// ✅ Correct: create* for pure creation (no global configuration)
+export const createShellContext = (options: ShellContextOptions) => { /* ... */ }
+export const createFeatureContext = (parent: ApplicationContext, options: FeatureContextOptions) => { /* ... */ }
+export const createStringSplitConverter = (separator: string | RegExp) => { /* ... */ }
+export const createOptionalConverter = (converter: ArgumentValueConverter) => { /* ... */ }
+export const createNull = () => Object.create(null);
+export const createTypeValidator = (type: string) => { /* ... */ }
+export const createValidationBackend = (name: ValidationBackendName) => { /* ... */ }
+
+// ❌ Wrong: get* for pure creation (use create*)
+export const getShellContext = (options: ShellContextOptions) => { /* ... */ }  // Use createShellContext
+export const getStringSplitConverter = (separator: string) => { /* ... */ }    // Use createStringSplitConverter
+```
+
+**Configuration-Dependent Functions (with global state):**
+
+```typescript
+// ✅ Correct: get* when global state affects the result
+class LoggerFactory {
+    private static type: LoggerType = 'console';
+    private static threshold: SeverityNumber = SeverityNumber.DEBUG;
+    private static contextAware: boolean = true;
+
+    public static getLogger(name: string): Logger {
+        // Creates a logger with global configuration applied
+    }
+}
+
+// ❌ Wrong: create* when global state is involved (use get*)
+class LoggerFactory {
+    public static createLogger(name: string): Logger { /* ... */ }  // Use getLogger
+}
+```
+
+**Decision Rule:**
+
+| Pattern | When to use | Example |
+|---|---|---|
+| `create*()` | No global state, per-instance creation | `createShellContext()`, `createRouter()` |
+| `get*()` | Global state affects the returned instance | `LoggerFactory.getLogger()` |
+
+**Rationale:** `create*()` signals "a new instance is created." `get*()` signals "an instance is returned based on current configuration." This distinction helps callers understand whether the factory has side effects or depends on shared state.
+
+**Maintenance Note:** When updating this section, also update `AGENTS.md` Critical section (Section 3.14) to ensure agents follow the pattern.
+
 #### Interface Implementation
 
 Type-safe enums typically implement one or more standard interfaces:

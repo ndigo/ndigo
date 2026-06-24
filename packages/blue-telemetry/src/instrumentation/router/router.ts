@@ -1,5 +1,5 @@
 import { SpanKind } from '@opentelemetry/api';
-import { HashRouter } from '@blue/router';
+import { HashRouter } from '@blue/platform-web';
 import { BaseBlueInstrumentation } from '../base';
 
 /**

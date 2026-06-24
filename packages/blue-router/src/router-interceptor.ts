@@ -15,8 +15,9 @@ export type RouterMiddleware = (route: Route) => boolean | void | Promise<boolea
  * @since 1.0.0
  */
 export interface RouterInterceptor {
-    postRoute?(route: Route): void | Promise<void>;
-    preRoute?(route: Route): boolean | Promise<boolean>;
+    preHandle?(route: Route): boolean | Promise<boolean>;
+    postHandle?(route: Route): void | Promise<void>;
+    afterCompletion?(route: Route): void | Promise<void>;
 }
 
 /**
@@ -149,25 +150,36 @@ export class MappedRouterInterceptor extends AsPathMatcherFilter(Null) implement
     }
 
     /**
-     * Executes the `postRoute` method of the wrapped interceptor, if it exists.
+     * Executes the `postHandle` method of the wrapped interceptor, if it exists.
      * This method is called after a route has been handled.
      * @param route - The `Route` object that was processed.
-     * @returns A promise that resolves when the `postRoute` operation is complete.
+     * @returns A promise that resolves when the `postHandle` operation is complete.
      * @since 1.0.0
      */
-    async postRoute(route: Route): Promise<void> {
-        await this.#interceptor.postRoute?.(route);
+    async postHandle(route: Route): Promise<void> {
+        await this.#interceptor.postHandle?.(route);
     }
 
     /**
-     * Executes the `preRoute` method of the wrapped interceptor, if it exists.
+     * Executes the `afterCompletion` method of the wrapped interceptor, if it exists.
+     * This method is called after the entire request processing is complete.
+     * @param route - The `Route` object that was processed.
+     * @returns A promise that resolves when the `afterCompletion` operation is complete.
+     * @since 1.0.0
+     */
+    async afterCompletion(route: Route): Promise<void> {
+        await this.#interceptor.afterCompletion?.(route);
+    }
+
+    /**
+     * Executes the `preHandle` method of the wrapped interceptor, if it exists.
      * This method is called before a route is handled and can prevent further processing.
      * @param route - The `Route` object to be processed.
      * @returns A promise that resolves to `true` to continue processing, or `false` to stop.
      * @since 1.0.0
      */
-    async preRoute(route: Route): Promise<boolean> {
-        return (await this.#interceptor.preRoute?.(route)) !== false;
+    async preHandle(route: Route): Promise<boolean> {
+        return (await this.#interceptor.preHandle?.(route)) !== false;
     }
 
     /**

@@ -116,7 +116,7 @@ export abstract class AbstractRouter implements Router, RouterInterceptorRegistr
     protected _toRouterInterceptor(interceptor: RouterInterceptor | RouterMiddleware): RouterInterceptor {
         if (typeof interceptor === 'function') {
             return {
-                preRoute(route) {
+                preHandle(route) {
                     const result = interceptor(route);
                     return result === false ? false : true;
                 },

@@ -6,6 +6,18 @@ import '../src/todo-app-view';
 import '../src/todo-input-view';
 import '../src/todo-item-view';
 
+/**
+ * Mocks requestAnimationFrame to call the callback synchronously.
+ * This is needed because AbstractWebComponent.requestUpdate() uses
+ * requestAnimationFrame, which doesn't fire in jsdom.
+ */
+vi.spyOn(global, 'requestAnimationFrame').mockImplementation(
+    (cb: FrameRequestCallback) => {
+        cb(0);
+        return 0;
+    }
+);
+
 describe('todo-app view filtering', () => {
     let element: any;
 
@@ -24,8 +36,7 @@ describe('todo-app view filtering', () => {
             filter: 'all',
         };
 
-        await Promise.resolve();
-
+        // requestAnimationFrame mock calls render synchronously
         const items = element.querySelectorAll('todo-item');
         expect(items.length).toBe(2);
 
@@ -47,14 +58,15 @@ describe('todo-app view filtering', () => {
             filter: 'all',
         };
 
-        await Promise.resolve();
+        // Initial render
+        expect(element.querySelectorAll('todo-item').length).toBe(3);
 
+        // Switch to active filter
         element.model = { filter: 'active' };
-        await Promise.resolve();
         expect(element.querySelectorAll('todo-item').length).toBe(2);
 
+        // Switch to completed filter
         element.model = { filter: 'completed' };
-        await Promise.resolve();
         expect(element.querySelectorAll('todo-item').length).toBe(1);
     });
 
@@ -72,13 +84,17 @@ describe('todo-app view filtering', () => {
             filter: 'all',
         };
 
+        // Wait for render via RAF
         await Promise.resolve();
 
         const input = element.querySelector('todo-input');
         const item = element.querySelector('todo-item');
-        input.dispatchEvent(new CustomEvent('onSubmit', { detail: 'new item', bubbles: true }));
-        item.dispatchEvent(new CustomEvent('onRemove', { detail: 0, bubbles: true }));
-        item.dispatchEvent(new CustomEvent('onToggle', { detail: 0, bubbles: true }));
+        expect(input).not.toBeNull();
+        expect(item).not.toBeNull();
+
+        input!.dispatchEvent(new CustomEvent('onSubmit', { detail: 'new item', bubbles: true }));
+        item!.dispatchEvent(new CustomEvent('onRemove', { detail: 0, bubbles: true }));
+        item!.dispatchEvent(new CustomEvent('onToggle', { detail: 0, bubbles: true }));
 
         expect(submitSpy).toHaveBeenCalledTimes(1);
         expect(removeSpy).toHaveBeenCalledTimes(1);

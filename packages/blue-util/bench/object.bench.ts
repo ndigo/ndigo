@@ -1,6 +1,7 @@
 /** @author opencode */
 
 import { bench, describe } from 'vitest';
+import * as R from 'ramda';
 
 type UnknownRecord = Record<string, unknown>;
 
@@ -166,7 +167,6 @@ describe('manual deep equal', () => {
 
         _objectSink = accumulator;
     });
-});
 
     bench('native', () => {
         let accumulator = 0;

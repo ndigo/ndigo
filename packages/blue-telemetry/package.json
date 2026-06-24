@@ -61,12 +61,14 @@
     "@blue/core": "~0.0.1",
     "@blue/context": "~0.0.1",
     "@blue/router": "~0.0.1",
-    "@blue/dispatcher": "~0.0.1"
+    "@blue/dispatcher": "~0.0.1",
+    "@blue/platform-web": "~0.0.1"
   },
   "peerDependencies": {
     "@blue/core": "~0.0.1",
     "@blue/context": "~0.0.1",
     "@blue/router": "~0.0.1",
-    "@blue/dispatcher": "~0.0.1"
+    "@blue/dispatcher": "~0.0.1",
+    "@blue/platform-web": "~0.0.1"
   }
 }

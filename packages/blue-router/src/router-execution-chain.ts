@@ -54,27 +54,34 @@ export default class RouterExecutionChain {
     /**
      * @param {module:router.Route} route
      */
-    async applyPostRoute(route: Route): Promise<void> {
-        const interceptors = this.#interceptors,
-            length = interceptors.length;
-        if (length) {
-            let index = 0;
-            for (; index < length; index++) {
-                await interceptors[index].postRoute?.(route);
-            }
+    async applyPostHandle(route: Route): Promise<void> {
+        const interceptors = this.#interceptors;
+        for (let index = this.interceptorIndex; index >= 0; index--) {
+            await interceptors[index].postHandle?.(route);
         }
     }
 
     /**
      * @param {module:router.Route} route
      */
-    async applyPreRoute(route: Route): Promise<boolean> {
+    async applyAfterCompletion(route: Route): Promise<void> {
+        const interceptors = this.#interceptors;
+        for (let index = this.interceptorIndex; index >= 0; index--) {
+            await interceptors[index].afterCompletion?.(route);
+        }
+    }
+
+    /**
+     * @param {module:router.Route} route
+     */
+    async applyPreHandle(route: Route): Promise<boolean> {
         const interceptors = this.#interceptors,
             length = interceptors.length;
         if (length) {
             let index = 0;
             for (; index < length; index++) {
-                if ((await interceptors[index].preRoute?.(route)) === false) {
+                if ((await interceptors[index].preHandle?.(route)) === false) {
+                    this.interceptorIndex = index - 1;
                     return false;
                 }
                 this.interceptorIndex = index;

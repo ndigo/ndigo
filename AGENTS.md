@@ -33,7 +33,7 @@ pnpm lint            # Check code quality
 
 ⚠️ **STYLE_GUIDE.md Section 3.13 (Properties vs Methods)** - Properties for cheap/intrinsic data (O(1), no side effects), get-methods for external lookups (may fail/return null), to-methods for transformations
 
-⚠️ **STYLE_GUIDE.md Section 3.14 (Method Naming)** - Use conventional prefixes: get* (retrieve), is* (type check), has* (presence), set* (mutate), from*/to* (convert), with\* (immutable copy)
+⚠️ **STYLE_GUIDE.md Section 3.14 (Method Naming)** - Use conventional prefixes: get* (retrieve), is* (type check), has* (presence), set* (mutate), from*/to* (convert), with\* (immutable copy). Factory functions: create* (no global state) vs get* (global state affects result).
 
 ⚠️ **STYLE_GUIDE.md Section 3.15 (Type-Safe Enums)** - Use class-based pattern for enums with methods/inheritance, built-in enums for simple constants
 
@@ -55,6 +55,9 @@ rg "^(export )?abstract class [A-Z]" --type ts | rg -v "^(export )?abstract clas
 # Verify no UPPER_SNAKE_CASE RegExp constants (objects, not primitives per @blue/core/primitive.ts)
 rg "^export const [A-Z_]+.*= /" packages/*/src --type ts  # Should return nothing
 rg "^const [A-Z_]+.*= /" packages/*/src --type ts        # Should return nothing
+
+# Verify factory function naming (create* vs get*)
+rg "export function get[A-Z]" packages/blue-*/src --type ts | rg -v "LoggerFactory.getLogger"  # Should return nothing
 ```
 
 ---

@@ -10,7 +10,8 @@
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
   "dependencies": {
-    "@blue/auth": "~0.0.1",
+    "@blue/auth-core": "~0.0.1",
+    "@blue/auth-server": "~0.0.1",
     "@blue/context": "~0.0.1",
     "@blue/core": "~0.0.1",
     "@blue/dispatcher": "~0.0.1",
@@ -21,7 +22,8 @@
     "@tsmetadata/polyfill": "*"
   },
   "devDependencies": {
-    "@blue/auth": "~0.0.1",
+    "@blue/auth-core": "~0.0.1",
+    "@blue/auth-server": "~0.0.1",
     "@blue/context": "~0.0.1",
     "@blue/core": "~0.0.1",
     "@blue/dispatcher": "~0.0.1",

@@ -723,3 +723,10 @@ export const X_ROBOTS_TAG = new HTTPHeader('X-Robots-Tag');
  * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.X_UA_COMPATIBLE
  */
 export const X_UA_COMPATIBLE = new HTTPHeader('X-UA-Compatible');
+
+/**
+ * BlueJS Custom Headers
+ */
+export const X_CSRF_TOKEN = new HTTPHeader('X-CSRF-Token');
+export const X_CHANNEL_ID = new HTTPHeader('X-Channel-ID');
+export const X_REQUEST_ID = new HTTPHeader('X-Request-ID');

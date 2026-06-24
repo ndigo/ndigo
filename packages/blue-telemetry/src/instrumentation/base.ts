@@ -1,4 +1,4 @@
-import { SpanKind, trace } from '@opentelemetry/api';
+import { SpanKind, trace, metrics } from '@opentelemetry/api';
 import { InstrumentationBase } from '@opentelemetry/instrumentation';
 
 /**
@@ -11,6 +11,16 @@ export interface SpanConfig {
     kind: SpanKind;
     /** Optional callback that produces span attributes from the patched instance and arguments. */
     attributes?: (instance: any, args: any[]) => Record<string, any>;
+}
+
+/**
+ * Configuration for counter instrumentation.
+ */
+export interface CountConfig {
+    /** The name of the counter. */
+    name: string;
+    /** Optional attributes to associate with the counter. */
+    attributes?: Record<string, any>;
 }
 
 /**
@@ -44,6 +54,21 @@ export abstract class BaseBlueInstrumentation extends InstrumentationBase {
 
     /** Hook for subclasses to wire up `_unwrap` calls. */
     abstract disable(): void;
+
+    /**
+     * Returns a synchronous patch function that increments a counter.
+     */
+    protected _patchCount(config: CountConfig) {
+        return (original: (...args: any[]) => any) => {
+            const meter = metrics.getMeter('@blue/telemetry');
+            const counter = meter.createCounter(config.name);
+
+            return function (this: any, ...args: any[]) {
+                counter.add(1, config.attributes);
+                return original.apply(this, args);
+            };
+        };
+    }
 
     /**
      * Returns a synchronous patch function that wraps the original method

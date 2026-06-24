@@ -12,6 +12,7 @@ export {
     likeResponseAwareServiceInterceptor,
     likeServiceInterceptor,
 } from './service';
+
 export type {
     ServiceInit,
     ServiceInterceptor,
@@ -21,3 +22,7 @@ export type {
     RequestAwareServiceInterceptor,
     ResponseAwareServiceInterceptor,
 } from './service';
+
+export * from './service-registry';
+export * from './telemetry-hooks';
+export * from './request-id-correlation';

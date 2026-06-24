@@ -1,4 +1,8 @@
-import { AuthenticationManager, Principal } from '@blue/auth';
+/**
+ * @author Jeff Rose
+ */
+
+import { AuthRegistry, JWTAdapter, Principal } from '@blue/auth-server';
 
 // Demo credentials
 const DEMO_USERS = [
@@ -6,38 +10,62 @@ const DEMO_USERS = [
     { username: 'alice', password: 'demo', roles: ['user'] },
 ];
 
-// Token → Principal map (in-memory "session store")
+// In-memory token → Principal store
 const tokenStore = new Map<string, Principal>();
 
-// Strategy: accepts { username: string, password: string }
-interface PasswordCredentials { username: string; password: string; }
+/**
+ * Initializes the authentication system with demo configuration.
+ */
+export function initAuth(): void {
+    // Register a JWT adapter for token validation (simplified for demo)
+    const jwtAdapter = new JWTAdapter({
+        issuer: 'blue-demo',
+        audience: 'blue-demo-api',
+        secret: 'demo-secret-key',
+        algorithm: 'HS256',
+    });
+    AuthRegistry.register(jwtAdapter);
+}
 
-export const authManager = new AuthenticationManager();
-authManager.register({
-    supports(c: unknown): c is PasswordCredentials {
-        return typeof c === 'object' && c !== null && 'username' in c && 'password' in c;
-    },
-    async authenticate(c: PasswordCredentials): Promise<Principal | null> {
-        const user = DEMO_USERS.find(u => u.username === c.username && u.password === c.password);
-        if (!user) return null;
-        return {
-            id: user.username,
-            name: user.username,
-            roles: user.roles,
-            hasRole(role: string) { return this.roles.includes(role); },
-            hasAnyRole(...roles: string[]) { return roles.some(r => this.roles.includes(r)); },
-        };
-    }
-});
+/**
+ * Authenticates a user with username/password and returns a demo token.
+ *
+ * @param username - The username.
+ * @param password - The password.
+ * @returns The demo token, or null if authentication fails.
+ */
+export async function authenticate(username: string, password: string): Promise<string | null> {
+    const user = DEMO_USERS.find(u => u.username === username && u.password === password);
+    if (!user) return null;
 
-/** Store a principal under a token and return the token. */
-export function storeToken(principal: Principal): string {
+    const principal: Principal = {
+        id: user.username,
+        name: user.username,
+        roles: user.roles,
+        hasRole(role: string) { return this.roles.includes(role); },
+        hasAnyRole(...roles: string[]) { return roles.some(r => this.roles.includes(r)); },
+    };
+
     const token = `demo-token-${principal.id}-${Date.now()}`;
     tokenStore.set(token, principal);
     return token;
 }
 
-/** Look up a principal by token. Returns null if not found. */
-export function lookupToken(token: string): Principal | null {
+/**
+ * Looks up a principal by token.
+ *
+ * @param token - The token to look up.
+ * @returns The principal, or null if not found.
+ */
+export function lookupPrincipal(token: string): Principal | null {
     return tokenStore.get(token) ?? null;
+}
+
+/**
+ * Invalidates a token (logs out the user).
+ *
+ * @param token - The token to invalidate.
+ */
+export function invalidateToken(token: string): void {
+    tokenStore.delete(token);
 }

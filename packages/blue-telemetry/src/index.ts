@@ -11,3 +11,4 @@ export * from './instrumentation/base';
 export * from './instrumentation/context/context';
 export * from './instrumentation/dispatcher/dispatcher';
 export * from './instrumentation/router/router';
+export * from './instrumentation/counted';

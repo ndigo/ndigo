@@ -13,3 +13,7 @@ export * from './interceptors/timeout-interceptor';
 export * from './interceptors/transform-interceptor';
 export * from './interceptors/retry-interceptor';
 export * from './interceptors/app-reset-interceptor';
+export * from './interceptors/header-interceptor';
+export * from './interceptors/error-normalization-interceptor';
+export * from './interceptors/cache-interceptor';
+export * from './interceptors/status-interceptor';

@@ -77,6 +77,10 @@ export default class TodoItem extends AbstractWebComponent {
     }
 
     render(): void {
+        // Guard: render may be called before handleConnect (e.g., from
+        // attributeChangedCallback or property setters before appendChild).
+        if (!this.$text) return;
+
         this.$text.textContent = this.#text;
         
         if (this.#checked) {

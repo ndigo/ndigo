@@ -1,20 +1,10 @@
 import '@tsmetadata/polyfill';
 import { getSymbolMetadata } from '@blue/core';
-import { Counter, Meter, metrics } from '@opentelemetry/api';
 import { LogAttributes } from '../logger/logger';
 import { FeatureMetricAggregator } from './feature-metric-aggregator';
+import { CountedRegistry } from './_registry';
 
 const COUNTED_KEY = 'telemetry:counted';
-
-let countedMeter: Meter | undefined;
-
-function getMeter(): Meter {
-    if (!countedMeter) {
-        countedMeter = metrics.getMeter('@blue/telemetry');
-    }
-
-    return countedMeter;
-}
 
 /**
  * Retrieves the configuration for a counted method, including its name and attributes.
@@ -25,7 +15,7 @@ function getMeter(): Meter {
 export function getCounted(
     target: any,
     propertyKey: string | symbol
-): { name: string; attributes?: LogAttributes } | undefined {
+): { name: string; attributes?: LogAttributes; featureAggregator?: FeatureMetricAggregator; featureKey?: string } | undefined {
     return getSymbolMetadata(target)[`${COUNTED_KEY}:${String(propertyKey)}`];
 }
 
@@ -75,26 +65,17 @@ function createCountedDecorator(options: CountedOptions = {}) {
         context.metadata[`${COUNTED_KEY}:${String(context.name)}`] = {
             name: counterName,
             attributes: options.attributes,
+            featureAggregator: options.featureAggregator,
+            featureKey: options.featureKey,
         };
 
-        let counter: Counter | undefined;
-
-        return function (this: This, ...args: Args): Return {
-            if (!counter) {
-                counter = getMeter().createCounter(counterName);
+        (context.addInitializer as any)((cls: any) => {
+            if (cls) {
+                CountedRegistry.register(cls.prototype || cls);
             }
+        });
 
-            counter.add(1, options.attributes);
-
-            const featureKey = options.featureKey ?? 'feature';
-            const feature = options.attributes?.[featureKey];
-
-            if (options.featureAggregator && typeof feature === 'string') {
-                options.featureAggregator.incrementCounter(feature, counterName);
-            }
-
-            return target.apply(this, args);
-        };
+        return target;
     };
 }
 

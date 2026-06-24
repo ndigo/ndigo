@@ -12,6 +12,8 @@
 export const INTEGRATION_LAYER_MAP: Record<string, string> = {
     seedrandom: '@blue/util',
     slug: '@blue/util',
+    ramda: '@blue/util',
+    'date-fns': '@blue/util',
     objectmodel: '@blue/model',
 };
 
@@ -29,6 +31,15 @@ export const BROWSER_GLOBALS: readonly string[] = [
     'navigator',
     'location',
     'history',
+    'localStorage',
+    'sessionStorage',
+    'indexedDB',
+    'btoa',
+    'atob',
+    'requestAnimationFrame',
+    'cancelAnimationFrame',
+    'performance',
+    'screen',
 ];
 
 /**

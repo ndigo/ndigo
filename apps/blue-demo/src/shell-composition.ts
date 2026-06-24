@@ -7,13 +7,18 @@ import {
 } from '@blue/context';
 import { IllegalStateError } from '@blue/core';
 import { BrowserDispatcher } from '@blue/dispatcher';
-import { FeatureRoutingRegistry, HashRouter, Route, SiteRouter, restorePartitionPrefix } from '@blue/router';
+import { FeatureRoutingRegistry, Route, SiteRouter, restorePartitionPrefix } from '@blue/router';
+import { HashRouter } from '@blue/platform-web';
 import { FeatureMetricAggregator, getLogger } from '@blue/telemetry';
 import { DISPATCHER, ROUTER } from './context-tokens';
+import { authClient, initAuth } from './auth-store';
+import { AuthRouterInterceptor } from './auth-router-interceptor';
+import { ClientAuthGuard } from '@blue/auth-client';
 
 export const TODO_ROUTE_PREFIX = '/todo';
 export const ACCOUNT_ROUTE_PREFIX = '/account';
 export const NOTES_ROUTE_PREFIX = '/notes';
+export const AUTH_ROUTE_PREFIX = '/auth';
 
 export const toTodoShellRoute = (featureRoute: string): string =>
     restorePartitionPrefix(featureRoute, TODO_ROUTE_PREFIX);
@@ -23,6 +28,9 @@ export const toAccountShellRoute = (featureRoute: string): string =>
 
 export const toNotesShellRoute = (featureRoute: string): string =>
     restorePartitionPrefix(featureRoute, NOTES_ROUTE_PREFIX);
+
+export const toAuthShellRoute = (featureRoute: string): string =>
+    restorePartitionPrefix(featureRoute, AUTH_ROUTE_PREFIX);
 
 export const createTodoSiteRouter = (callback: (route: Route) => void): SiteRouter => {
     const router = new SiteRouter();
@@ -103,6 +111,8 @@ const logRegisteredRelay = (result: { from: string | symbol; to: string | symbol
 };
 
 export const composeTodoRuntime = (todoContext: ApplicationContext): TodoRuntimeComposition => {
+    // ── Initialize auth system ───────────────────────────────────────────────
+    initAuth();
     const shellContext = createShellContext({
         name: 'site-shell',
     });
@@ -228,6 +238,116 @@ export const composeTodoRuntime = (todoContext: ApplicationContext): TodoRuntime
 
     const shellRouter = new HashRouter((route) => {
         featureRoutingRegistry.navigate(route.toString());
+    });
+
+    // ── Register auth interceptor on the shell router ─────────────────────────
+    const authGuard = new ClientAuthGuard(authClient, '/auth/login', '/auth/forbidden');
+    const authInterceptor = new AuthRouterInterceptor(authGuard);
+    shellRouter.addInterceptor(authInterceptor);
+
+    // ── Register auth-related features ────────────────────────────────────────
+    featureMountManager.registerFeature({
+        name: 'login',
+        data: {
+            title: 'Login',
+        },
+        unmountPolicy: 'close',
+    });
+
+    featureRoutingRegistry.registerFeature({
+        name: 'login',
+        prefix: '/auth/login',
+        onActivate: () => {
+            featureMountManager.mount('login');
+        },
+        onDeactivate: () => {
+            featureMountManager.unmount('login');
+        },
+        onRoute: (route) => {
+            dispatcher.dispatch(route);
+            logger.info('Login route handled', {
+                feature: 'login',
+                path: route.path,
+            });
+        },
+    });
+
+    featureMountManager.registerFeature({
+        name: 'profile',
+        data: {
+            title: 'Profile',
+        },
+        unmountPolicy: 'close',
+    });
+
+    featureRoutingRegistry.registerFeature({
+        name: 'profile',
+        prefix: '/auth/profile',
+        onActivate: () => {
+            featureMountManager.mount('profile');
+        },
+        onDeactivate: () => {
+            featureMountManager.unmount('profile');
+        },
+        onRoute: (route) => {
+            dispatcher.dispatch(route);
+            logger.info('Profile route handled', {
+                feature: 'profile',
+                path: route.path,
+            });
+        },
+    });
+
+    featureMountManager.registerFeature({
+        name: 'admin',
+        data: {
+            title: 'Admin Panel',
+        },
+        unmountPolicy: 'close',
+    });
+
+    featureRoutingRegistry.registerFeature({
+        name: 'admin',
+        prefix: '/auth/admin',
+        onActivate: () => {
+            featureMountManager.mount('admin');
+        },
+        onDeactivate: () => {
+            featureMountManager.unmount('admin');
+        },
+        onRoute: (route) => {
+            dispatcher.dispatch(route);
+            logger.info('Admin route handled', {
+                feature: 'admin',
+                path: route.path,
+            });
+        },
+    });
+
+    featureMountManager.registerFeature({
+        name: 'forbidden',
+        data: {
+            title: 'Forbidden',
+        },
+        unmountPolicy: 'close',
+    });
+
+    featureRoutingRegistry.registerFeature({
+        name: 'forbidden',
+        prefix: '/auth/forbidden',
+        onActivate: () => {
+            featureMountManager.mount('forbidden');
+        },
+        onDeactivate: () => {
+            featureMountManager.unmount('forbidden');
+        },
+        onRoute: (route) => {
+            dispatcher.dispatch(route);
+            logger.info('Forbidden route handled', {
+                feature: 'forbidden',
+                path: route.path,
+            });
+        },
     });
 
     shellContext.setValue(ROUTER, shellRouter);

@@ -1,3 +1,4 @@
+// @vitest-environment jsdom
 import { describe, expect, test } from 'vitest';
 import { Route } from '@blue/router';
 import { TODO_SERVICE } from '../src/context-tokens';

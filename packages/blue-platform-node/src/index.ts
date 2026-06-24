@@ -14,3 +14,4 @@ export * from './session-argument-resolver';
 export * from './file-system-resource-loader';
 export * from './configure-argument-resolvers';
 export * from './node-auto-configuration';
+export * from './file-system-router';

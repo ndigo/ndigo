@@ -12,6 +12,10 @@ import MyTodoApp from './todo-app-view';
 import NotesService from './notes-service';
 import TodoService from './todo-service';
 import { StaticContentSource } from '@blue/content';
+import { LoginView } from './login-view';
+import { ProfileView } from './profile-view';
+import { AdminView } from './admin-view';
+import { ForbiddenView } from './forbidden-view';
 
 @configuration
 class ToDoconfiguration {
@@ -88,6 +92,27 @@ class ToDoconfiguration {
             },
             { id: '2', title: 'Component Tree', body: 'Page → Panel → ListView → Label hierarchy.', pinned: false },
         ]);
+    }
+
+    // ── Auth views ────────────────────────────────────────────────────────────
+    @entry
+    loginView() {
+        return new LoginView();
+    }
+
+    @entry
+    profileView() {
+        return new ProfileView();
+    }
+
+    @entry
+    adminView() {
+        return new AdminView();
+    }
+
+    @entry
+    forbiddenView() {
+        return new ForbiddenView();
     }
 }
 

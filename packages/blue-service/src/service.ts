@@ -4,6 +4,7 @@
 import { FrameworkError, IllegalStateError, createNull } from '@blue/core';
 import { AsyncDestroyable } from '@blue/factory';
 import {
+    HTTP,
     HTTPInit,
     ContentTypeInit,
     DataParameterInit,
@@ -12,6 +13,9 @@ import {
     TimeoutInit,
 } from '@blue/http';
 import { like } from '@blue/util';
+import { ServiceRegistry, MapServiceRegistry } from './service-registry';
+import { TelemetryHooks, EventEmitterTelemetryHooks } from './telemetry-hooks';
+import { RequestIdCorrelation, CryptoRequestIdCorrelation } from './request-id-correlation';
 
 /**
  * Initializes a service call with HTTP, content, caching, and timeout options.
@@ -326,11 +330,15 @@ export class ServiceExecutionChain {
     }
 }
 
-class Service implements AsyncDestroyable {
-    #interceptors!: ServiceInterceptor[] | null;
-    #serviceCalls: Record<string, any>;
-
-    [key: string]: any;
+/**
+ * A service that provides a high-level API for interacting with remote endpoints.
+ */
+export class Service implements AsyncDestroyable {
+    #interceptors: ServiceInterceptor[] = [];
+    #registry: ServiceRegistry;
+    #telemetry: TelemetryHooks;
+    #correlation: RequestIdCorrelation;
+    #http: HTTP;
 
     id!: number;
     name!: string;
@@ -340,11 +348,13 @@ class Service implements AsyncDestroyable {
         return `Service:${this.name}`;
     }
 
-    set serviceCalls(newServiceCalls: Record<string, any>) {}
-
-    constructor(name: string, init: ServiceInit) {
-        this.#serviceCalls = createNull();
-
+    constructor(
+        name: string, 
+        http: HTTP, 
+        registry: ServiceRegistry, 
+        telemetry: TelemetryHooks, 
+        correlation: RequestIdCorrelation
+    ) {
         defineProperty(this, 'name', {
             value: name,
             configurable: true,
@@ -357,24 +367,67 @@ class Service implements AsyncDestroyable {
             enumerable: false,
             writable: false,
         });
+
+        this.#http = http;
+        this.#registry = registry;
+        this.#telemetry = telemetry;
+        this.#correlation = correlation;
     }
 
-    destroy(): Promise<void> {
-        throw new FrameworkError('Method not implemented.');
+    /**
+     * Adds a service interceptor to the chain.
+     *
+     * @param interceptor - Interceptor to add.
+     */
+    addInterceptor(interceptor: ServiceInterceptor): void {
+        if (interceptor) {
+            this.#interceptors.push(interceptor);
+        }
     }
 
-    addServiceCall(name: string, settings: any) {
-        this.#serviceCalls[name] = createNull();
-        this[name] = (data: any, init: any) => {
-            /*const
-                settings = Object.assign( {}, defaults, init ),
-                chain = this._getServiceExecutionChain( this, input ),
-                url = new URL( input );
-*/
-        };
+    /**
+     * Executes a service call.
+     *
+     * @param token - The service token to resolve.
+     * @param data - Request payload.
+     * @param init - Service initialization settings.
+     * @returns A promise that resolves to the service response.
+     */
+    async call(token: string, data: any, init: ServiceInit = {}): Promise<Response> {
+        const endpoint = this.#registry.getEndpoint(token);
+        if (!endpoint) {
+            throw new IllegalStateError(`Service token '${token}' not registered.`);
+        }
+
+        const url = new URL(endpoint);
+        const correlationId = this.#correlation.getCorrelationId();
+        
+        const settings = Object.assign({}, init, {
+            headers: {
+                ...init.headers,
+                'X-Correlation-ID': correlationId,
+            },
+        });
+
+        const chain = this._getServiceExecutionChain(this, url.pathname);
+        
+        this.#telemetry.onRequest(new Request(url.toString(), settings));
+
+        try {
+            const response = await this.#http.request(url.toString(), settings);
+            this.#telemetry.onResponse(response);
+            return response;
+        } catch (error) {
+            this.#telemetry.onError(error as Error);
+            throw error;
+        }
     }
 
-    protected _getServiceExecutionChain(service: Service | ServiceExecutionChain, url: string): ServiceExecutionChain {
+    async destroy(): Promise<void> {
+        this.destroyed = true;
+    }
+
+    protected _getServiceExecutionChain(service: Service | ServiceExecutionChain, path: string): ServiceExecutionChain {
         const chain = service instanceof ServiceExecutionChain ? service : new ServiceExecutionChain(service),
             interceptors = this.#interceptors,
             length = interceptors?.length;
@@ -383,7 +436,7 @@ class Service implements AsyncDestroyable {
             for (let index = 0; index < length; index++) {
                 const interceptor = interceptors[index];
                 if (interceptor instanceof MappedServiceInterceptor) {
-                    if (interceptor.matches(url)) {
+                    if (interceptor.matches(path)) {
                         chain.addInterceptor(interceptor.interceptor);
                     }
                 } else {

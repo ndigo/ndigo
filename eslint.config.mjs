@@ -36,6 +36,7 @@ export default [
             '**/tmp/**',
             '**/profile/**',
             '**/.tmp/**',
+            '**/.tscache/**',
             '**/*.min.js',
             '**/*.legacy.js',
             '**/coverage/**',

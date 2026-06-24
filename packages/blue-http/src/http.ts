@@ -115,9 +115,9 @@ export interface RequestAwareHTTPInterceptor {
      *
      * @param request - The request to inspect or replace.
      * @param http - The HTTP client executing the request.
-     * @returns A replacement request, or `void` to keep the original.
+     * @returns A replacement request, a cached response, or `void` to keep the original.
      */
-    preRequest(request: Request, http: HTTP): Promise<Request | void>;
+    preRequest(request: Request, http: HTTP): Promise<Request | Response | void>;
 }
 
 /**
@@ -172,7 +172,7 @@ export interface HTTPAware extends Aware {
  * @example
  * class LogInterceptor implements CompletionAwareHTTPInterceptor {
  *  postComplete( request, response ){
- *      console.log( `Completed request ${ request.url }` );
+ *      console.log( \`Completed request \${ request.url }\` );
  *  }
  * }
  *
@@ -188,7 +188,7 @@ export interface HTTPAware extends Aware {
  */
 
 /**
- * Interface that allows for the execution of custom behavior after an HTTP request fails. If `postError` returns a `Response`, it will be the return value of the request.
+ * Interface that allows for the execution of custom behavior after an HTTP request fails. If \`postError\` returns a \`Response\`, it will be the return value of the request.
  * @example
  * class RetryInterceptor implements ErrorAwareHTTPInterceptor {
  *  postError( error, request, http ){
@@ -241,10 +241,10 @@ export interface HTTPAware extends Aware {
 /**
  * Interfaces that allow for customized HTTP execution chains. Any number of inteceptors can be registered to inject behavior at various points in the HTTP request lifecycle.
  * The full set of lifecycle methods and their standard order is:
- * 1. `preInit`
- * 2. `preRequest`
- * 3. `postResponse` or `postError`
- * 5. `postComplete`
+ * 1. \`preInit\`
+ * 2. \`preRequest\`
+ * 3. \`postResponse\` or \`postError\`
+ * 5. \`postComplete\`
  * @typedef {module:http.CompletionAwareHTTPInterceptor|module:http.ErrorAwareHTTPInterceptor|module:http.InitializationAwareHTTPInterceptor|module:http.RequestAwareHTTPInterceptor|external:ResponseAwareHTTPInterceptor} module:http.HTTPInterceptor
  * @see {@link CompletionAwareHTTPInterceptor}
  * @see {@link ErrorAwareHTTPInterceptor}
@@ -262,7 +262,7 @@ export interface HTTPAware extends Aware {
  */
 
 /**
- * Shared `Object` helpers used to clone and freeze request settings.
+ * Shared \`Object\` helpers used to clone and freeze request settings.
  */
 /**
  * Clones request settings and locks them before fetch executes.
@@ -280,50 +280,50 @@ export const { assign, freeze } = Object,
     isRequest = is(Request) as (value: any) => value is Request;
 
 /**
- * Tests whether a value exposes `postComplete()`.
+ * Tests whether a value exposes \`postComplete()\`.
  *
  * @param value - The value to be tested.
- * @returns `true` when the value is completion-aware.
+ * @returns \`true\` when the value is completion-aware.
  */
 export const likeCompletionAwareHTTPInterceptor = like({ postComplete: Function }) as (
     value: any
 ) => value is CompletionAwareHTTPInterceptor;
 
 /**
- * Tests whether a value exposes `postError()`.
+ * Tests whether a value exposes \`postError()\`.
  *
  * @param value - The value to be tested.
- * @returns `true` when the value is error-aware.
+ * @returns \`true\` when the value is error-aware.
  */
 export const likeErrorAwareHTTPInterceptor = like({ postError: Function }) as (
     value: any
 ) => value is ErrorAwareHTTPInterceptor;
 
 /**
- * Tests whether a value exposes `preInit()`.
+ * Tests whether a value exposes \`preInit()\`.
  *
  * @param value - The value to be tested.
- * @returns `true` when the value is initialization-aware.
+ * @returns \`true\` when the value is initialization-aware.
  */
 export const likeInitializationAwareHTTPInterceptor = like({ preInit: Function }) as (
     value: any
 ) => value is InitializationAwareHTTPInterceptor;
 
 /**
- * Tests whether a value exposes `preRequest()`.
+ * Tests whether a value exposes \`preRequest()\`.
  *
  * @param value - The value to be tested.
- * @returns `true` when the value is request-aware.
+ * @returns \`true\` when the value is request-aware.
  */
 export const likeRequestAwareHTTPInterceptor = like({ preRequest: Function }) as (
     value: any
 ) => value is RequestAwareHTTPInterceptor;
 
 /**
- * Tests whether a value exposes `postResponse()`.
+ * Tests whether a value exposes \`postResponse()\`.
  *
  * @param value - The value to be tested.
- * @returns `true` when the value is response-aware.
+ * @returns \`true\` when the value is response-aware.
  */
 export const likeResponseAwareHTTPInterceptor = like({ postResponse: Function }) as (
     value: any
@@ -333,7 +333,7 @@ export const likeResponseAwareHTTPInterceptor = like({ postResponse: Function })
  * Tests whether a value behaves like any supported HTTP interceptor.
  *
  * @param value - The value to be tested.
- * @returns `true` when the value matches at least one interceptor role.
+ * @returns \`true\` when the value matches at least one interceptor role.
  */
 export const likeHTTPInterceptor = (value: any): value is ResponseAwareHTTPInterceptor =>
     likeCompletionAwareHTTPInterceptor(value) ||
@@ -351,7 +351,7 @@ export class WildcardMatcher implements PatternMatcher<string, string> {
      *
      * @param pattern - The wildcard pattern to compile and cache.
      * @param value - The value to test.
-     * @returns `true` when the pattern matches the value.
+     * @returns \`true\` when the pattern matches the value.
      */
     match(pattern: string, value: string): boolean {
         let wcex: WildcardExp;
@@ -416,7 +416,7 @@ export class MappedHTTPInterceptor
      *
      * @param url - The URL to evaluate.
      * @param matcher - Optional matcher to reuse for pattern checks.
-     * @returns `true` when the URL should receive the wrapped interceptor.
+     * @returns \`true\` when the URL should receive the wrapped interceptor.
      */
     matches(url: string, matcher?: WildcardMatcher): boolean {
         const urlMatcher = matcher || this.urlMatcher;
@@ -456,7 +456,7 @@ export class MappedHTTPInterceptor
      * @param error - The request failure.
      * @param request - The request that failed.
      * @param http - The HTTP client executing the request.
-     * @returns A replacement response, or `undefined` if the interceptor does not handle errors.
+     * @returns A replacement response, or \`undefined\` if the interceptor does not handle errors.
      */
     async postError(error: Error, request: Request, http: HTTP): Promise<Response | undefined> {
         const interceptor = this.#interceptor;
@@ -483,7 +483,7 @@ export class MappedHTTPInterceptor
      *
      * @param response - The response returned by fetch.
      * @param settings - The request settings used for the call.
-     * @returns A replacement response, or `void` to keep the original.
+     * @returns A replacement response, or \`void\` to keep the original.
      */
     async postResponse(response: Response, settings: HTTPInit): Promise<Response | void> {
         const interceptor = this.#interceptor;
@@ -497,7 +497,7 @@ export class MappedHTTPInterceptor
      *
      * @param url - The resolved request URL.
      * @param settings - The request settings being prepared.
-     * @returns `false` when the wrapped interceptor rejects the request.
+     * @returns \`false\` when the wrapped interceptor rejects the request.
      */
     preInit(url: URL, settings: HTTPInit): boolean {
         const interceptor = this.#interceptor;
@@ -514,7 +514,7 @@ export class MappedHTTPInterceptor
      * @param http - The HTTP client executing the request.
      * @returns A replacement request, or the original request when unsupported.
      */
-    async preRequest(request: Request, http: HTTP): Promise<Request | void> {
+    async preRequest(request: Request, http: HTTP): Promise<Request | Response | void> {
         const interceptor = this.#interceptor;
         if (likeRequestAwareHTTPInterceptor(interceptor)) {
             return interceptor.preRequest(request, http);
@@ -638,7 +638,7 @@ export class HTTPExecutionChain {
      * @param error - The request failure.
      * @param request - The request that failed.
      * @param http - The HTTP client executing the request.
-     * @returns A replacement response, or `undefined` when no interceptor handles the error.
+     * @returns A replacement response, or \`undefined\` when no interceptor handles the error.
      */
     async applyPostError(error: Error, request: Request, http: HTTP): Promise<Response | undefined> {
         if (this.#hasErrorAwareInterceptors) {
@@ -714,7 +714,7 @@ export class HTTPExecutionChain {
      *
      * @param url - The resolved request URL.
      * @param settings - The request settings being prepared.
-     * @returns `false` when an interceptor cancels the request.
+     * @returns \`false\` when an interceptor cancels the request.
      */
     applyPreInit(url: URL, settings: HTTPInit): boolean {
         if (this.#hasInitializationAwareInterceptors) {
@@ -741,21 +741,26 @@ export class HTTPExecutionChain {
      *
      * @param request - The request to inspect or replace.
      * @param http - The HTTP client executing the request.
-     * @returns The transformed request, or the original request when no interceptor applies.
+     * @returns The transformed request, or the original request when unsupported.
      */
-    async applyPreRequest(request: Request, http: HTTP): Promise<Request> {
+    async applyPreRequest(request: Request, http: HTTP): Promise<Request | Response> {
         if (this.#hasRequestAwareInterceptors) {
             const interceptors = this.#interceptors,
                 length = interceptors.length;
-            let index = 0;
             if (length) {
-                let currentRequest = request;
-                for (; index < length; index++) {
+                let currentRequest: Request | Response = request;
+                for (let index = 0; index < length; index++) {
                     const interceptor = interceptors[index];
                     if (likeRequestAwareHTTPInterceptor(interceptor)) {
-                        const newRequest = await interceptor.preRequest(currentRequest, http);
-                        if (isRequest(newRequest)) {
-                            currentRequest = newRequest;
+                        const result = await interceptor.preRequest(
+                            currentRequest instanceof Request ? currentRequest : new Request(currentRequest as any), 
+                            http
+                        );
+                        if (isRequest(result) || likeResponse(result)) {
+                            currentRequest = result;
+                        }
+                        if (likeResponse(currentRequest)) {
+                            return currentRequest;
                         }
                     }
                 }
@@ -945,8 +950,6 @@ export class HTTP {
             } catch (error) {
                 response = new ResponseError(undefined, error as Error);
             }
-
-            // One or more interceptors, so complex execution
         } else {
             const chain = this._getHTTPExecutionChain(this, url.href);
 
@@ -956,19 +959,24 @@ export class HTTP {
 
             freeze(settings);
 
-            const request = await chain.applyPreRequest(new Request(url.toString(), settings), this);
-            try {
-                response = await this.#fetch(request);
-                response = await chain.applyPostResponse(response as Response, settings);
-            } catch (error) {
-                response = await chain.applyPostError(error as Error, request, this);
+            const preRequestResult = await chain.applyPreRequest(new Request(url.toString(), settings), this);
+            if (likeResponse(preRequestResult)) {
+                response = preRequestResult;
+            } else {
+                const request = preRequestResult as Request;
+                try {
+                    response = await this.#fetch(request);
+                    response = await chain.applyPostResponse(response as Response, settings);
+                } catch (error) {
+                    response = await chain.applyPostError(error as Error, request, this);
 
-                if (!likeResponse(response)) {
-                    response = likeResponse(error) ? error : error instanceof ResponseError ? error : new ResponseError(undefined, error as Error);
-                }
-            } finally {
-                if (response) {
-                    chain.applyPostComplete(request, response as Response);
+                    if (!likeResponse(response)) {
+                        response = likeResponse(error) ? error : error instanceof ResponseError ? error : new ResponseError(undefined, error as Error);
+                    }
+                } finally {
+                    if (response) {
+                        chain.applyPostComplete(request, response as Response);
+                    }
                 }
             }
         }

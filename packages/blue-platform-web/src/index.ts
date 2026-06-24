@@ -14,3 +14,6 @@ export * from './cookies';
 export * from './model-argument-resolver';
 export * from './state-argument-resolver';
 export * from './session-argument-resolver';
+export * from './hash-router';
+export * from './route-transaction-manager';
+export * from './offline-interceptor';

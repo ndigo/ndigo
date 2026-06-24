@@ -3,7 +3,6 @@
  * @see {@link https://github.com/davidbau/seedrandom}
  */
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-import
 import alea from 'seedrandom/lib/alea.js';
 
 function seed(): string {
@@ -22,7 +21,10 @@ function seed(): string {
         }
 
         // Convert to base64 for compact representation
-        return btoa(String.fromCharCode(...values));
+        if (typeof btoa !== 'undefined') {
+            return btoa(String.fromCharCode(...values));
+        }
+        return Array.from(values, v => v.toString(16).padStart(2, '0')).join('');
     } catch (e) {
         console.warn('Failed to generate cryptographic seed, using timestamp as fallback:', e);
         return `${Date.now()}-${Math.random()}`;

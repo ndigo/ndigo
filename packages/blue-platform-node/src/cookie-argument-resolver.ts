@@ -18,12 +18,8 @@ import { getNodeRequest } from './node-request';
  * Node.js cookie argument resolver.
  */
 export class NodeCookieValueMethodArgumentResolver extends AbstractPlatformArgumentResolver {
-    constructor(
-        converter: ArgumentValueConverter = identityArgumentValueConverter,
-        converterRegistry: ArgumentValueConverterRegistry = argumentValueConverters,
-        converterResolutionOptions: ConverterResolutionOptions = {}
-    ) {
-        super(converter, converterRegistry, converterResolutionOptions, convertArgumentValue);
+    constructor() {
+        super(convertArgumentValue);
     }
 
     get [Symbol.toStringTag](): string {

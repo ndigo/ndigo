@@ -1,122 +1,90 @@
-import { describe, test, expect, beforeEach, vi } from 'vitest';
-import { MethodParameter, MethodParameterType, ParameterConversionError } from '@blue/dispatcher';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { MethodParameter, MethodParameterType } from '@blue/dispatcher';
 import { BrowserCookieValueMethodArgumentResolver } from '../src/cookie-argument-resolver';
-import Cookies from '../src/cookies';
-import { argumentValueConverters } from '../src/argument-value-converter';
 
 describe('BrowserCookieValueMethodArgumentResolver', () => {
     let resolver: BrowserCookieValueMethodArgumentResolver;
+    const originalCookie = document.cookie;
 
     beforeEach(() => {
         resolver = new BrowserCookieValueMethodArgumentResolver();
         vi.restoreAllMocks();
     });
 
+    afterEach(() => {
+        vi.unstubAllGlobals();
+        if (originalCookie !== undefined) {
+            (document as any).cookie = originalCookie;
+        }
+    });
+
     test('supports cookie parameters', () => {
-        const parameter = new MethodParameter(MethodParameterType.COOKIE, 'theme');
+        const parameter = new MethodParameter(MethodParameterType.COOKIE, 'sessionId');
 
         expect(resolver.supportsParameter(parameter)).toBe(true);
     });
 
     test('does not support non-cookie parameters', () => {
-        const parameter = new MethodParameter(MethodParameterType.QUERY, 'theme');
+        const parameter = new MethodParameter(MethodParameterType.QUERY, 'sessionId');
 
         expect(resolver.supportsParameter(parameter)).toBe(false);
     });
 
     test('resolves cookie values by name', () => {
-        vi.spyOn(Cookies, 'get').mockReturnValue('night');
+        vi.stubGlobal('document', { cookie: 'sessionId=abc-123' });
 
-        const parameter = new MethodParameter(MethodParameterType.COOKIE, 'theme');
-        const value = resolver.resolveArgument(parameter, { data: {}, params: null } as any, {} as any);
+        const parameter = new MethodParameter(MethodParameterType.COOKIE, 'sessionId');
+        const value = resolver.resolveArgument(parameter, { data: {} } as any, {} as any);
 
-        expect(value).toBe('night');
+        expect(value).toBe('abc-123');
     });
 
     test('uses default value when cookie is absent', () => {
-        vi.spyOn(Cookies, 'get').mockReturnValue(undefined);
+        vi.stubGlobal('document', { cookie: '' });
 
-        const parameter = new MethodParameter(MethodParameterType.COOKIE, 'theme', false, 'default');
-        const value = resolver.resolveArgument(parameter, { data: {}, params: null } as any, {} as any);
+        const parameter = new MethodParameter(MethodParameterType.COOKIE, 'sessionId', false, 'fallback-id');
+        const value = resolver.resolveArgument(parameter, { data: {} } as any, {} as any);
 
-        expect(value).toBe('default');
+        expect(value).toBe('fallback-id');
     });
 
     test('throws when required cookie is absent', () => {
-        vi.spyOn(Cookies, 'get').mockReturnValue(undefined);
+        vi.stubGlobal('document', { cookie: '' });
 
-        const parameter = new MethodParameter(MethodParameterType.COOKIE, 'theme', true);
+        const parameter = new MethodParameter(MethodParameterType.COOKIE, 'sessionId', true);
 
-        expect(() => resolver.resolveArgument(parameter, { data: {}, params: null } as any, {} as any)).toThrow(
-            '"theme" cannot be undefined or null'
+        expect(() => resolver.resolveArgument(parameter, { data: {} } as any, {} as any)).toThrow(
+            '"sessionId" cannot be undefined or null'
         );
     });
 
-    test('applies converter when provided', () => {
-        vi.spyOn(Cookies, 'get').mockReturnValue('42');
+    test('applies type-based conversion when convertType is provided', () => {
+        vi.stubGlobal('document', { cookie: 'count=42' });
 
-        const converter = (value) => Number(value);
-        const convertingResolver = new BrowserCookieValueMethodArgumentResolver(converter);
-        const parameter = new MethodParameter(MethodParameterType.COOKIE, 'theme');
-
-        const value = convertingResolver.resolveArgument(parameter, { data: {}, params: null } as any, {} as any);
-
-        expect(value).toBe(42);
-    });
-
-    test('prefers parameter converter over resolver converter', () => {
-        vi.spyOn(Cookies, 'get').mockReturnValue('42');
-
-        const resolver = new BrowserCookieValueMethodArgumentResolver(argumentValueConverters.boolean);
         const parameter = new MethodParameter(
             MethodParameterType.COOKIE,
-            'theme',
+            'count',
             false,
             null,
-            argumentValueConverters.number
+            { source: String, target: Number }
         );
-        const value = resolver.resolveArgument(parameter, { data: {}, params: null } as any, {} as any);
+        const value = resolver.resolveArgument(parameter, { data: {} } as any, {} as any);
 
         expect(value).toBe(42);
     });
 
-    test('supports parameter named converter with resolver registry', () => {
-        vi.spyOn(Cookies, 'get').mockReturnValue('55');
+    test('applies boolean conversion when convertType is provided', () => {
+        vi.stubGlobal('document', { cookie: 'active=true' });
 
-        const resolver = new BrowserCookieValueMethodArgumentResolver(undefined, {
-            toInt: argumentValueConverters.number,
-        });
-
-        const parameter = new MethodParameter(MethodParameterType.COOKIE, 'theme', false, null, 'toInt');
-        const value = resolver.resolveArgument(parameter, { data: {}, params: null } as any, {} as any);
-
-        expect(value).toBe(55);
-    });
-
-    test('supports optional named converter descriptor for nullish values', () => {
-        vi.spyOn(Cookies, 'get').mockReturnValue(undefined);
-
-        const resolver = new BrowserCookieValueMethodArgumentResolver(undefined, {
-            toInt: argumentValueConverters.number,
-        });
-
-        const parameter = new MethodParameter(MethodParameterType.COOKIE, 'theme', false, null, {
-            optional: true,
-            use: 'toInt',
-        });
-        const value = resolver.resolveArgument(parameter, { data: {}, params: null } as any, {} as any);
-
-        expect(value).toBeNull();
-    });
-
-    test('strict named lookup wraps missing converter references as ParameterConversionError', () => {
-        vi.spyOn(Cookies, 'get').mockReturnValue('55');
-
-        const resolver = new BrowserCookieValueMethodArgumentResolver(undefined, {}, { strictNamedLookup: true });
-        const parameter = new MethodParameter(MethodParameterType.COOKIE, 'theme', false, null, 'missingConverter');
-
-        expect(() => resolver.resolveArgument(parameter, { data: {}, params: null } as any, {} as any)).toThrow(
-            ParameterConversionError
+        const parameter = new MethodParameter(
+            MethodParameterType.COOKIE,
+            'active',
+            false,
+            null,
+            { source: String, target: Boolean }
         );
+        const value = resolver.resolveArgument(parameter, { data: {} } as any, {} as any);
+
+        expect(value).toBe(true);
     });
 });

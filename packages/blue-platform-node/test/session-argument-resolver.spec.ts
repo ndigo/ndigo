@@ -64,22 +64,34 @@ describe('NodeSessionValueMethodArgumentResolver', () => {
                 .toThrow(/"userId" cannot be undefined or null/);
         });
 
-        test('should apply converter when provided', () => {
+        test('should apply type-based conversion when convertType is provided', () => {
             const route = makeRoute({
                 session: { age: '25' }
             });
             
-            const param = new MethodParameter(MethodParameterType.SESSION, 'age', false, undefined, 'number');
+            const param = new MethodParameter(
+                MethodParameterType.SESSION,
+                'age',
+                false,
+                undefined,
+                { source: String, target: Number }
+            );
             expect(resolver.resolveArgument(param, route, {})).toBe(25);
         });
 
-        test('should prefer parameter-level converter over resolver-level converter', () => {
+        test('should handle boolean conversion when convertType is provided', () => {
             const route = makeRoute({
-                session: { age: '25' }
+                session: { active: 'true' }
             });
             
-            const param = new MethodParameter(MethodParameterType.SESSION, 'age', false, undefined, 'number');
-            expect(resolver.resolveArgument(param, route, {})).toBe(25);
+            const param = new MethodParameter(
+                MethodParameterType.SESSION,
+                'active',
+                false,
+                undefined,
+                { source: String, target: Boolean }
+            );
+            expect(resolver.resolveArgument(param, route, {})).toBe(true);
         });
 
         test('should handle missing route.session gracefully', () => {

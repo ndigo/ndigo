@@ -56,8 +56,15 @@ export default class RouterExecutionChain {
      */
     async applyPostHandle(route: Route): Promise<void> {
         const interceptors = this.#interceptors;
-        for (let index = this.interceptorIndex; index >= 0; index--) {
-            await interceptors[index].postHandle?.(route);
+        const length = interceptors.length;
+        if (length) {
+            // If interceptorIndex wasn't set by applyPreHandle, process all interceptors
+            if (this.interceptorIndex < 0) {
+                this.interceptorIndex = length - 1;
+            }
+            for (let index = this.interceptorIndex; index >= 0; index--) {
+                await interceptors[index].postHandle?.(route);
+            }
         }
     }
 
@@ -66,8 +73,15 @@ export default class RouterExecutionChain {
      */
     async applyAfterCompletion(route: Route): Promise<void> {
         const interceptors = this.#interceptors;
-        for (let index = this.interceptorIndex; index >= 0; index--) {
-            await interceptors[index].afterCompletion?.(route);
+        const length = interceptors.length;
+        if (length) {
+            // If interceptorIndex wasn't set by applyPreHandle, process all interceptors
+            if (this.interceptorIndex < 0) {
+                this.interceptorIndex = length - 1;
+            }
+            for (let index = this.interceptorIndex; index >= 0; index--) {
+                await interceptors[index].afterCompletion?.(route);
+            }
         }
     }
 

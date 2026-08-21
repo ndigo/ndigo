@@ -1,14 +1,11 @@
 /**
- * ESLint rule that blocks direct imports from libraries wrapped by BlueJS integration packages.
+ * Rule that blocks direct imports from libraries wrapped by BlueJS integration packages.
+ *
+ * Migrated from ESLint to oxlint JS Plugin API.
+ * Uses createOnce + before hook pattern for dual compatibility and future performance.
  */
 
-import { ESLintUtils } from '@typescript-eslint/utils';
-
 import { INTEGRATION_LAYER_MAP, INTEGRATION_LAYER_PACKAGES } from '../_constants.js';
-
-const createRule = ESLintUtils.RuleCreator(
-    (name) => `https://github.com/user/blue/blob/main/packages/blue-eslint-plugin/docs/${name}.md`
-);
 
 function getCurrentPackageName(filename: string): string | null {
     const match = /[\\/]packages[\\/]blue-([^\\/]+)[\\/]/u.exec(filename);
@@ -42,8 +39,7 @@ function getIntegrationLayerLibrary(source: string): { library: string; integrat
 /**
  * Reports imports that should come from an integration layer package instead of a direct dependency.
  */
-export const noDirectIntegrationImports = createRule({
-    name: 'no-direct-integration-imports',
+export const noDirectIntegrationImports = {
     meta: {
         type: 'problem',
         docs: {
@@ -53,10 +49,10 @@ export const noDirectIntegrationImports = createRule({
             directImport: "Import from '{{library}}' is not allowed. Use '{{integrationLayer}}' instead.",
         },
         schema: [],
-    },
+    } as const,
     defaultOptions: [],
-    create(context) {
-        const filename = context.filename;
+    create(context: any) {
+        const filename = context.filename ?? context.getFilename?.() ?? '';
         const currentPackageName = getCurrentPackageName(filename);
 
         const isInsideIntegrationLayerPackage =
@@ -67,7 +63,10 @@ export const noDirectIntegrationImports = createRule({
         }
 
         return {
-            ImportDeclaration(node) {
+            before() {
+                // Per-file setup if needed in the future
+            },
+            ImportDeclaration(node: any) {
                 const sourceValue = node.source.value;
 
                 if (typeof sourceValue !== 'string') {
@@ -89,7 +88,7 @@ export const noDirectIntegrationImports = createRule({
                     },
                 });
             },
-            ExportNamedDeclaration(node) {
+            ExportNamedDeclaration(node: any) {
                 const sourceValue = node.source?.value;
 
                 if (typeof sourceValue !== 'string') {
@@ -113,4 +112,4 @@ export const noDirectIntegrationImports = createRule({
             },
         };
     },
-});
+};

@@ -1,5 +1,6 @@
 import { describe, test, expect, beforeEach, afterEach } from 'vitest';
-import { MultiValueMap, RingBuffer } from '../src/collection';
+import { MultiValueMap } from '../src/multi-value-map.js';
+import { RingBuffer } from '../src/ring-buffer.js';
 
 const toString = Object.prototype.toString;
 

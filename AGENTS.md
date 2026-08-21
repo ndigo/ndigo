@@ -185,7 +185,7 @@ pnpm vitest run packages/blue-core/test/deferred.spec.ts
 ### Code Quality
 
 ```bash
-# Linting (ESLint)
+# Linting (oxlint)
 pnpm lint
 
 # Formatting (Prettier)
@@ -312,7 +312,7 @@ import { choice, sequenceOf } from '@blue/parser';
 
 **Enforcement:**
 
-These rules are **automatically enforced** by `@blue/eslint-plugin`, which provides three ESLint rules:
+These rules are **automatically enforced** by `@blue/eslint-plugin`, which provides three oxlint rules:
 
 | Rule                                  | Severity | Description                                                                                                                                                          |
 | :------------------------------------ | :------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -320,7 +320,7 @@ These rules are **automatically enforced** by `@blue/eslint-plugin`, which provi
 | `@blue/no-internal-file-imports`      | error    | Forbids `@blue/<pkg>/_*` cross-package imports of internal files.                                                                                                    |
 | `@blue/no-internal-file-exports`      | error    | Forbids `export * from './_*'` barrel re-exports in `*/src/index.ts`. Named re-exports (`export { foo } from './_*'`) are allowed (deliberate/controlled).           |
 
-Run `pnpm lint` to check for violations. These rules are integrated into the root `eslint.config.mjs`.
+Run `pnpm lint` to check for violations. These rules are integrated into the root `.oxlintrc.json`.
 
 When reviewing or writing code:
 

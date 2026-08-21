@@ -1035,7 +1035,7 @@ When adding a new external dependency:
 ### Enforcement
 
 - **Manual Review**: Check imports during code review
-- **ESLint Plugin** (planned): Custom rule to detect direct imports of encapsulated libraries
+- **oxlint Plugin** (implemented): Custom rule to detect direct imports of encapsulated libraries (`@blue/eslint-plugin` loaded via oxlint JS Plugins)
 - **CI Dependency Checker** (planned): Script to scan codebase and fail on violations
 
 ### Type-Only Imports

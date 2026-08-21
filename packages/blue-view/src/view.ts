@@ -188,6 +188,21 @@ export abstract class AbstractTemplateView extends AbstractPathBasedView {
      * @abstract
      */
     protected abstract _renderTemplate(templateModel: any, request: any): void;
+
+    /**
+     * Renders the view with the given view model.
+
+     * @param viewModel The view model to render.
+     * @param request The current request.
+     * @param target The optional view target (required for rendering).
+     * @protected
+     */
+    protected async _renderView(viewModel: any, request: any, target?: ViewTarget): Promise<void> {
+        if (!target) throw new IllegalStateError('View requires a ViewTarget to render.');
+
+        const templateModel = this._projectViewModel(viewModel, request);
+        await this._renderTemplate(templateModel, request, target);
+    }
 }
 
 /**
@@ -247,5 +262,68 @@ export class RerouteView extends AbstractPathBasedView {
         } else if (typeof history !== 'undefined') {
             history.pushState(undefined, '', targetPath);
         }
+    }
+}
+
+/**
+ * Renders a simple string template into HTML by replacing {{variable}} placeholders.
+ *
+ * @param path The URL path for this view.
+ */
+export class StringTemplateView extends AbstractPathBasedView {
+    /**
+     * The template string to render.
+     * 
+     * Supports simple Jinja-like syntax: {{variable}}, {{array[key]}}, etc.
+     */
+    template!: string;
+
+    /**
+     * Creates a new StringTemplateView.
+     * @param path The URL path for this view.
+     */
+    constructor(path: string | null = null) {
+        super(path);
+    }
+
+    /**
+     * Renders the template with the given template model and request.
+     *
+     * @param templateModel The rendered template model.
+     * @param request The current request.
+     * @param target The view target (required for rendering).
+     */
+    protected async _renderTemplate(templateModel: any, request: any, target?: ViewTarget): void {
+        if (!target) throw new IllegalStateError('View requires a ViewTarget.');
+
+        const html = this.renderTemplate(this.template, templateModel);
+        target.commit(html, templateModel, request);
+    }
+
+    /**
+     * Renders the template string by replacing {{variable}} placeholders.
+     * 
+     * Supports:
+     *   - {{var}} for simple variables
+     *   - {{array[key]}} for object/array access
+     */
+    private renderTemplate(template: string, model: any): string {
+        return template.replace(/\{\{([^}]+)\}\}/g, (match, key) => {
+            let value = model;
+
+            // Support nested property access: {{a.b.c}}
+            const parts = key.split('.');
+            for (const part of parts) {
+                if (typeof value === 'object' && value !== null && typeof part !== 'number') {
+                    value = value[part];
+                } else if (value instanceof Array && !isNaN(part)) {
+                    value = value[part];
+                } else {
+                    break;
+                }
+            }
+
+            return String(value ?? '');
+        });
     }
 }

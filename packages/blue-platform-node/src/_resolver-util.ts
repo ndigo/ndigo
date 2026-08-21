@@ -2,13 +2,11 @@
  * @author Jeff Rose
  */
 
-import { MethodParameter, ParameterConversionError, ParameterValueConverterReference } from '@blue/dispatcher';
+import { MethodParameter, ParameterConversionError } from '@blue/dispatcher';
 import { Route } from '@blue/router';
 import {
     ArgumentValueConversionContext,
     ArgumentValueConverter,
-    ArgumentValueConverterRegistry,
-    ConverterResolutionOptions,
     resolveConverter,
 } from './argument-value-converter';
 
@@ -18,17 +16,16 @@ function getParameterTypeName(parameter: MethodParameter): string {
 
 /** Converts a resolved argument value and wraps conversion failures. */
 export function convertArgumentValue(
-    converterReference: ParameterValueConverterReference,
+    convertType: { source: any; target: any } | undefined,
     value: any,
     parameter: MethodParameter,
     route: Route,
-    mapping: any,
-    registry?: ArgumentValueConverterRegistry,
-    options?: ConverterResolutionOptions
+    mapping: any
 ): any {
     const context: ArgumentValueConversionContext = { name: parameter.name, parameter, route, mapping };
     try {
-        const converter: ArgumentValueConverter = resolveConverter(converterReference, registry, options);
+        // Use ConversionService to look up converter based on convertType
+        const converter: ArgumentValueConverter = resolveConverter(convertType);
         return converter(value, context);
     } catch (error) {
         throw new ParameterConversionError(parameter.name, getParameterTypeName(parameter), error as Error);

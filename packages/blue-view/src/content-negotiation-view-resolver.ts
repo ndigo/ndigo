@@ -166,14 +166,25 @@ export abstract class AbstractMappingContentNegotiationStrategy
     implements ContentNegotiationStrategy
 {
     /**
-     * Resolves media types for a request.
-     *
+     * Resolves the media types for a request.
+
      * @param request - The current request.
-     * @returns Never returns normally.
-     * @throws {FrameworkError} Always thrown because subclasses must implement the method.
+     * @returns Media types from this resolver, optionally filtered by request params.
      */
     resolveMediaTypes(request: any): MediaType[] {
-        throw new FrameworkError('Method not implemented.');
+        const all = this.getAllMediaTypes();
+        if (!request?.mediaTypeHint) return all;
+
+        // Filter by media type hint from the request (e.g., Accept header)
+        const hint = request.mediaTypeHint as string | undefined;
+        if (hint) {
+            const parts = hint.split(';').map(s => s.trim().toLowerCase());
+            for (const mediaType of all) {
+                // Simple content-type matching: application/json matches "application/json"
+                if (mediaType?.type === hint || mediaType?.medium === hint) return [mediaType];
+            }
+        }
+        return all;
     }
 
     /**
@@ -193,14 +204,31 @@ export abstract class AbstractMappingContentNegotiationStrategy
  */
 export class PathExtensionContentNegotiationStrategy implements ContentNegotiationStrategy {
     /**
-     * Resolves the media types requested by the current request.
-     *
+     * Resolves media types by inspecting the request path extension.
+
      * @param request - The current request.
-     * @returns Never returns normally.
-     * @throws {FrameworkError} Always thrown because the strategy is not implemented yet.
+     * @returns Media types matching the file extension extracted from the path.
      */
     resolveMediaTypes(request: any): MediaType[] {
-        throw new FrameworkError('Method not implemented.');
+        // Try to extract a path or URI from the request
+        const uri = request?.uri || ((request as any)?.path ?? '');
+
+        if (!uri) return [];
+
+        // Extract the file extension (last part after last dot, ignoring query string)
+        const pathname = uri.split('?')[0]; // strip query string
+        const ext = pathname.match(/(\.[^/]+)$/);
+        if (!ext) return [];
+
+        const lowerExt = ext[1].toLowerCase();
+        const mediaType = this.mediaTypes.get(lowerExt);
+        if (mediaType) return [mediaType];
+
+        // Fallback: match against known media types from all extensions
+        for (const [k, m] of this.mediaTypes.entries()) {
+            if (lowerExt === k) return [m];
+        }
+        return [];
     }
 }
 
@@ -233,33 +261,50 @@ export class ContentNegotiationManager implements ContentNegotiationStrategy, Me
     /**
      * Returns every file extension known to the registered resolvers.
      *
-     * @returns Never returns normally.
-     * @throws {FrameworkError} Always thrown because the method is not implemented.
+     * @returns The union of all extensions from every resolver, deduplicated by insertion order.
      */
     getAllFileExtenstions(): string[] {
-        throw new FrameworkError('Method not implemented.');
+        const seen = new Set<string>();
+        const result: string[] = [];
+        for (const resolver of this.resolvers) {
+            if (!resolver instanceof MappingMediaTypeFileExtensionResolver) continue;
+            for (const ext of resolver.getAllFileExtenstions()) {
+                if (!seen.has(ext)) {
+                    seen.add(ext);
+                    result.push(ext);
+                }
+            }
+        }
+        return result;
     }
 
     /**
      * Resolves file extensions for the given media type.
      *
      * @param mediaType - The media type to resolve.
-     * @returns Never returns normally.
-     * @throws {FrameworkError} Always thrown because the method is not implemented.
+     * @returns Extensions from the first resolver that supports this media type, or empty array.
      */
     resolveFileExtensions(mediaType: MediaType): string[] {
-        throw new FrameworkError('Method not implemented.');
+        for (const resolver of this.resolvers) {
+            if (!resolver instanceof MappingMediaTypeFileExtensionResolver) continue;
+            const exts = resolver.resolveFileExtensions(mediaType);
+            if (exts.length > 0) return exts;
+        }
+        return [];
     }
 
     /**
      * Resolves the media types requested by the current request.
      *
      * @param request - The current request.
-     * @returns Never returns normally.
-     * @throws {FrameworkError} Always thrown because the method is not implemented.
+     * @returns Media types in priority order from the first strategy that matches.
      */
     resolveMediaTypes(request: any): MediaType[] {
-        throw new FrameworkError('Method not implemented.');
+        for (const strategy of this.strategies) {
+            const result = strategy.resolveMediaTypes(request);
+            if (result && result.length > 0) return result;
+        }
+        throw new FrameworkError('No content negotiation strategy could resolve media types');
     }
 }
 

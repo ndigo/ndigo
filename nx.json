@@ -21,7 +21,6 @@
       "default",
       "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)",
       "!{projectRoot}/tsconfig.spec.json",
-      "!{projectRoot}/.eslintrc.json",
       "!{projectRoot}/test/**/*"
     ],
     "sharedGlobals": ["{workspaceRoot}/tsconfig.base.json"]

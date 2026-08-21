@@ -1,20 +1,16 @@
 /**
- * ESLint rule that prevents cross-package imports of underscore-prefixed internal files.
+ * Rule that prevents cross-package imports of underscore-prefixed internal files.
+ *
+ * Migrated from ESLint to oxlint JS Plugin API.
+ * Uses createOnce + before hook pattern for dual compatibility and future performance.
  */
-
-import { ESLintUtils, TSESTree } from '@typescript-eslint/utils';
-
-const createRule = ESLintUtils.RuleCreator(
-    (name) => `https://github.com/user/blue/blob/main/packages/blue-eslint-plugin/docs/${name}.md`
-);
 
 const CROSS_PACKAGE_INTERNAL_IMPORT_PATTERN = /^@blue\/[^/]+\/_/u;
 
 /**
  * Reports imports that bypass a package's public API by reaching into internal files.
  */
-export const noInternalFileImports = createRule({
-    name: 'no-internal-file-imports',
+export const noInternalFileImports = {
     meta: {
         type: 'problem',
         docs: {
@@ -25,10 +21,10 @@ export const noInternalFileImports = createRule({
                 "Importing internal file '{{source}}' across package boundaries is not allowed. Use the public API instead.",
         },
         schema: [],
-    },
+    } as const,
     defaultOptions: [],
-    create(context) {
-        function checkSource(sourceNode: TSESTree.Literal | null | undefined): void {
+    createOnce(context: any) {
+        function checkSource(sourceNode: any): void {
             if (!sourceNode || typeof sourceNode.value !== 'string') {
                 return;
             }
@@ -47,12 +43,15 @@ export const noInternalFileImports = createRule({
         }
 
         return {
-            ImportDeclaration(node) {
+            before() {
+                // Per-file setup if needed in the future
+            },
+            ImportDeclaration(node: any) {
                 checkSource(node.source);
             },
-            ExportNamedDeclaration(node) {
+            ExportNamedDeclaration(node: any) {
                 checkSource(node.source);
             },
         };
     },
-});
+};

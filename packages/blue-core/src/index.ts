@@ -266,6 +266,7 @@ export * from './multi-value-map.js';
 export * from './null.js';
 export * from './path-matcher.js';
 export * from './parser.js';
+export * from './converter.js';
 export * from './primitive.js';
 export * from './property-value.js';
 export * from './serializable.js';

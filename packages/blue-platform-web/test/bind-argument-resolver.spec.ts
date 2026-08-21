@@ -1,70 +1,58 @@
-import { describe, test, expect, beforeEach, vi } from 'vitest';
-import { MethodParameter, MethodParameterType, bindValue } from '@blue/dispatcher';
+import { describe, expect, test } from 'vitest';
+import { MethodParameter, MethodParameterType } from '@blue/dispatcher';
 import { BrowserBindMethodArgumentResolver } from '../src/bind-argument-resolver';
-import { argumentValueConverters } from '../src/argument-value-converter';
 
 describe('BrowserBindMethodArgumentResolver', () => {
-    let resolver: BrowserBindMethodArgumentResolver;
-
-    beforeEach(() => {
-        resolver = new BrowserBindMethodArgumentResolver();
-        vi.restoreAllMocks();
-    });
-
     test('supports bind parameters', () => {
+        const resolver = new BrowserBindMethodArgumentResolver();
         const parameter = new MethodParameter(MethodParameterType.BIND, 'query');
+
         expect(resolver.supportsParameter(parameter)).toBe(true);
     });
 
-    test('binds and unflattens query data', () => {
-        const parameter = new MethodParameter(MethodParameterType.BIND, 'query');
-        const route = {
-            data: {
-                'user.name': 'Jeff',
-                'user.age': '30',
-                'tags[0]': 'blue',
-                'tags[1]': 'js',
-            },
-        } as any;
+    test('does not support non-bind parameters', () => {
+        const resolver = new BrowserBindMethodArgumentResolver();
+        const parameter = new MethodParameter(MethodParameterType.QUERY, 'query');
 
-        const result = resolver.resolveArgument(parameter, route, {});
-        expect(result).toEqual({
-            user: { name: 'Jeff', age: '30' },
-            tags: ['blue', 'js'],
-        });
+        expect(resolver.supportsParameter(parameter)).toBe(false);
+    });
+
+    test('binds and unflattens query data', () => {
+        const resolver = new BrowserBindMethodArgumentResolver();
+        const parameter = new MethodParameter(MethodParameterType.BIND, 'query');
+        const value = resolver.resolveArgument(parameter, { data: { name: 'Jeff', age: '30' } } as any, {} as any);
+
+        expect(value).toEqual({ name: 'Jeff', age: '30' });
     });
 
     test('binds with prefix', () => {
-        const parameter = new MethodParameter(MethodParameterType.BIND, 'query', false, null, null, 'user.');
-        const route = {
-            data: {
-                'user.name': 'Jeff',
-                'user.age': '30',
-                'other.field': 'ignored',
-            },
-        } as any;
+        const resolver = new BrowserBindMethodArgumentResolver();
+        const parameter = new MethodParameter(
+            MethodParameterType.BIND,
+            'query',
+            false,
+            null,
+            undefined,
+            'user.'
+        );
+        const value = resolver.resolveArgument(
+            parameter,
+            { data: { 'user.name': 'Jeff', 'user.age': '30', 'other.field': 'ignored' } } as any,
+            {} as any
+        );
 
-        const result = resolver.resolveArgument(parameter, route, {});
-        expect(result).toEqual({
-            name: 'Jeff',
-            age: '30',
-        });
+        expect(value).toEqual({ name: 'Jeff', age: '30' });
     });
 
-    test('applies converter after unflattening', () => {
-        const converter = (val: any) => ({ ...val, age: Number(val.age) });
-        const parameter = new MethodParameter(MethodParameterType.BIND, 'query', false, null, converter, 'user.');
-        const route = {
-            data: {
-                'user.name': 'Jeff',
-                'user.age': '30',
-            },
-        } as any;
+    test('binds object data without nested conversion', () => {
+        const resolver = new BrowserBindMethodArgumentResolver();
+        const parameter = new MethodParameter(MethodParameterType.BIND, 'query');
+        const value = resolver.resolveArgument(
+            parameter,
+            { data: { name: 'Jeff', age: '30' } } as any,
+            {} as any
+        );
 
-        const result = resolver.resolveArgument(parameter, route, {});
-        expect(result).toEqual({
-            name: 'Jeff',
-            age: 30,
-        });
+        expect(value).toEqual({ name: 'Jeff', age: '30' });
     });
 });

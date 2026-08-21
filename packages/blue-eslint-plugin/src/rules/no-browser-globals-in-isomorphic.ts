@@ -1,15 +1,11 @@
 /**
- * ESLint rule that blocks unguarded access to browser globals in isomorphic packages.
+ * Rule that blocks unguarded access to browser globals in isomorphic packages.
+ *
+ * Migrated from ESLint to oxlint JS Plugin API.
+ * Uses createOnce + before hook pattern for dual compatibility and future performance.
  */
 
-import type { TSESTree } from '@typescript-eslint/utils';
-import { ESLintUtils } from '@typescript-eslint/utils';
-
 import { BROWSER_GLOBALS, BROWSER_ONLY_PACKAGES } from '../_constants.js';
-
-const createRule = ESLintUtils.RuleCreator(
-    (name) => `https://github.com/user/blue/blob/main/packages/blue-eslint-plugin/docs/${name}.md`
-);
 
 function getCurrentPackageName(filename: string): string | null {
     const match = /[\\/]packages[\\/]blue-([^\\/]+)[\\/]/u.exec(filename);
@@ -29,30 +25,30 @@ function isTestFile(filename: string): boolean {
 /**
  * Returns true if `node` is the argument of a `typeof` unary expression.
  */
-function isTypeofSubject(node: TSESTree.Identifier): boolean {
-    return node.parent?.type === 'UnaryExpression' && (node.parent as TSESTree.UnaryExpression).operator === 'typeof';
+function isTypeofSubject(node: any): boolean {
+    return node.parent?.type === 'UnaryExpression' && (node.parent as any).operator === 'typeof';
 }
 
 /**
  * Returns true if `node` is in a declaration/binding position rather than a value reference.
  * This avoids false positives when a parameter or variable is named the same as a browser global.
  */
-function isBindingSite(node: TSESTree.Identifier): boolean {
+function isBindingSite(node: any): boolean {
     const parent = node.parent;
     if (!parent) return false;
     switch (parent.type) {
         case 'VariableDeclarator':
-            return (parent as TSESTree.VariableDeclarator).id === node;
+            return (parent as any).id === node;
         case 'FunctionDeclaration':
         case 'FunctionExpression':
         case 'ArrowFunctionExpression': {
-            const fn = parent as TSESTree.FunctionDeclaration | TSESTree.FunctionExpression | TSESTree.ArrowFunctionExpression;
-            return fn.id === node || fn.params.includes(node as TSESTree.Parameter);
+            const fn = parent as any;
+            return fn.id === node || fn.params.includes(node as any);
         }
         case 'Property':
-            return (parent as TSESTree.Property).key === node && !(parent as TSESTree.Property).computed;
+            return (parent as any).key === node && !(parent as any).computed;
         case 'MemberExpression':
-            return (parent as TSESTree.MemberExpression).property === node && !(parent as TSESTree.MemberExpression).computed;
+            return (parent as any).property === node && !(parent as any).computed;
         case 'ImportDefaultSpecifier':
         case 'ImportNamespaceSpecifier':
         case 'ImportSpecifier':
@@ -89,27 +85,27 @@ function isShadowedByLocalBinding(scope: any, name: string): boolean {
 /**
  * Returns true if `testNode` contains a `typeof <name> !== 'undefined'` (or `=== 'undefined'`) check.
  */
-function containsTypeofGuard(testNode: TSESTree.Node, name: string): boolean {
+function containsTypeofGuard(testNode: any, name: string): boolean {
     if (testNode.type === 'BinaryExpression') {
-        const bin = testNode as TSESTree.BinaryExpression;
+        const bin = testNode;
         if (bin.operator === '!==' || bin.operator === '!=' || bin.operator === '===' || bin.operator === '==') {
             const left = bin.left;
             const right = bin.right;
             const isTypeofLeft =
                 left.type === 'UnaryExpression' &&
-                (left as TSESTree.UnaryExpression).operator === 'typeof' &&
-                (left as TSESTree.UnaryExpression).argument.type === 'Identifier' &&
-                ((left as TSESTree.UnaryExpression).argument as TSESTree.Identifier).name === name;
+                (left as any).operator === 'typeof' &&
+                (left as any).argument.type === 'Identifier' &&
+                ((left as any).argument as any).name === name;
             const isTypeofRight =
                 right.type === 'UnaryExpression' &&
-                (right as TSESTree.UnaryExpression).operator === 'typeof' &&
-                (right as TSESTree.UnaryExpression).argument.type === 'Identifier' &&
-                ((right as TSESTree.UnaryExpression).argument as TSESTree.Identifier).name === name;
+                (right as any).operator === 'typeof' &&
+                (right as any).argument.type === 'Identifier' &&
+                ((right as any).argument as any).name === name;
             if (isTypeofLeft || isTypeofRight) return true;
         }
     }
     if (testNode.type === 'LogicalExpression') {
-        const log = testNode as TSESTree.LogicalExpression;
+        const log = testNode;
         return containsTypeofGuard(log.left, name) || containsTypeofGuard(log.right, name);
     }
     return false;
@@ -121,15 +117,15 @@ function containsTypeofGuard(testNode: TSESTree.Node, name: string): boolean {
  * - An ancestor ConditionalExpression whose test contains the same
  * - An ancestor LogicalExpression (&&) whose left side contains the same, and `node` is on the right
  */
-function isInsideTypeofGuard(node: TSESTree.Identifier): boolean {
+function isInsideTypeofGuard(node: any): boolean {
     const name = node.name;
-    let current: TSESTree.Node = node as TSESTree.Node;
+    let current: any = node;
 
     while (current.parent) {
-        const parent = current.parent as TSESTree.Node;
+        const parent = current.parent;
 
         if (parent.type === 'IfStatement') {
-            const ifStmt = parent as TSESTree.IfStatement;
+            const ifStmt = parent;
             // We are in the consequent or alternate, not the test itself
             if (current !== ifStmt.test && containsTypeofGuard(ifStmt.test, name)) {
                 return true;
@@ -137,7 +133,7 @@ function isInsideTypeofGuard(node: TSESTree.Identifier): boolean {
         }
 
         if (parent.type === 'ConditionalExpression') {
-            const cond = parent as TSESTree.ConditionalExpression;
+            const cond = parent;
             // We are in consequent or alternate, not the test
             if (current !== cond.test && containsTypeofGuard(cond.test, name)) {
                 return true;
@@ -145,7 +141,7 @@ function isInsideTypeofGuard(node: TSESTree.Identifier): boolean {
         }
 
         if (parent.type === 'LogicalExpression') {
-            const log = parent as TSESTree.LogicalExpression;
+            const log = parent;
             // We are on the right side of &&, and the left contains a typeof guard
             if (log.operator === '&&' && current === log.right && containsTypeofGuard(log.left, name)) {
                 return true;
@@ -158,8 +154,10 @@ function isInsideTypeofGuard(node: TSESTree.Identifier): boolean {
     return false;
 }
 
-export const noBrowserGlobalsInIsomorphic = createRule({
-    name: 'no-browser-globals-in-isomorphic',
+/**
+ * Reports unguarded access to browser globals in isomorphic packages.
+ */
+export const noBrowserGlobalsInIsomorphic = {
     meta: {
         type: 'problem',
         docs: {
@@ -170,10 +168,10 @@ export const noBrowserGlobalsInIsomorphic = createRule({
                 "'{{name}}' is a browser global. Guard with `typeof {{name}} !== 'undefined'` or move to @blue/platform-web.",
         },
         schema: [],
-    },
+    } as const,
     defaultOptions: [],
-    create(context) {
-        const filename = context.filename;
+    create(context: any) {
+        const filename = context.filename ?? context.getFilename?.() ?? '';
         const currentPackageName = getCurrentPackageName(filename);
 
         // Allow in browser-only packages and test files
@@ -182,7 +180,10 @@ export const noBrowserGlobalsInIsomorphic = createRule({
         }
 
         return {
-            Identifier(node) {
+            before() {
+                // Per-file setup if needed in the future
+            },
+            Identifier(node: any) {
                 if (!BROWSER_GLOBALS.includes(node.name)) {
                     return;
                 }
@@ -215,4 +216,4 @@ export const noBrowserGlobalsInIsomorphic = createRule({
             },
         };
     },
-});
+};

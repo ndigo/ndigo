@@ -6,7 +6,7 @@
   "agent": {
     "build": {
       "description": "Implementation orchestrator - delegates to specialized writer subagents",
-      "model": "lmstudio/qwen/qwen3.6-35b-a3b",
+      "model": "lmstudio/qwen/qwen3.8-27b",
       "disable": false,
       "color": "#268bd2"
     },
@@ -17,10 +17,9 @@
     },
     "review": {
       "description": "Comprehensive QA orchestrator - delegates to reviewer subagents and consolidates findings",
-      "model": "lmstudio/qwen/qwen3.6-35b-a3b",
+      "model": "lmstudio/qwen/qwen3.8-27b",
       "color": "#d33682"
     },
-
     "source-writer": {
       "model": "lmstudio/qwen/qwen3-coder-30b"
     },
@@ -42,7 +41,6 @@
     "diagram-writer": {
       "model": "lmstudio/google/gemma-4-e4b"
     },
-
     "code-reviewer": {
       "model": "lmstudio/google/gemma-4-e4b"
     },
@@ -50,10 +48,10 @@
       "model": "lmstudio/google/gemma-4-e4b"
     },
     "architecture-reviewer": {
-      "model": "lmstudio/qwen/qwen3.6-35b-a3b"
+      "model": "lmstudio/qwen/qwen3.8-27b"
     },
     "security-reviewer": {
-      "model": "lmstudio/qwen/qwen3.6-35b-a3b"
+      "model": "lmstudio/qwen/qwen3.8-27b"
     },
     "accessibility-reviewer": {
       "model": "lmstudio/google/gemma-4-e4b"
@@ -76,7 +74,6 @@
     "jsdoc-reviewer": {
       "model": "lmstudio/google/gemma-4-e4b"
     },
-
     "codebase-explorer": {
       "model": "lmstudio/google/gemma-4-e4b"
     },
@@ -84,7 +81,7 @@
       "model": "lmstudio/qwen/qwen3-coder-30b"
     },
     "troubleshooter": {
-      "model": "lmstudio/qwen/qwen3.6-35b-a3b"
+      "model": "lmstudio/qwen/qwen3.8-27b"
     },
     "quality-runner": {
       "model": "lmstudio/google/gemma-4-e4b"
@@ -93,7 +90,7 @@
       "model": "lmstudio/google/gemma-4-e4b"
     },
     "industry-researcher": {
-      "model": "lmstudio/qwen/qwen3.6-35b-a3b"
+      "model": "lmstudio/qwen/qwen3.8-27b"
     }
   }
 }

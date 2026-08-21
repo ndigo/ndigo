@@ -6,13 +6,6 @@ import { DataBinder, MutablePropertyValues, PropertyValues } from '@blue/core';
 import { MethodParameter, MethodParameterType, AbstractPlatformArgumentResolver } from '@blue/dispatcher';
 import { Route } from '@blue/router';
 import { isNil } from '@blue/util/types';
-import {
-    ArgumentValueConverter,
-    ArgumentValueConverterRegistry,
-    ConverterResolutionOptions,
-    argumentValueConverters,
-    identityArgumentValueConverter,
-} from './argument-value-converter';
 import { convertArgumentValue } from './_resolver-util';
 import Cookies from './cookies';
 
@@ -27,19 +20,8 @@ import Cookies from './cookies';
  * name-resolution pipeline used by other resolvers.
  */
 export class BrowserBindMethodArgumentResolver extends AbstractPlatformArgumentResolver {
-    #converter: ArgumentValueConverter;
-    #converterRegistry: ArgumentValueConverterRegistry;
-    #converterResolutionOptions: ConverterResolutionOptions;
-
-    constructor(
-        converter: ArgumentValueConverter = identityArgumentValueConverter,
-        converterRegistry: ArgumentValueConverterRegistry = argumentValueConverters,
-        converterResolutionOptions: ConverterResolutionOptions = {}
-    ) {
-        super(converter, converterRegistry, converterResolutionOptions, convertArgumentValue);
-        this.#converter = converter;
-        this.#converterRegistry = converterRegistry;
-        this.#converterResolutionOptions = converterResolutionOptions;
+    constructor() {
+        super(convertArgumentValue);
     }
 
     get [Symbol.toStringTag](): string {
@@ -60,15 +42,12 @@ export class BrowserBindMethodArgumentResolver extends AbstractPlatformArgumentR
         binder.bind(mpv as PropertyValues);
         const unflattened = binder.result;
 
-        const converter = parameter.convert ?? this.#converter;
         const convertedValue = convertArgumentValue(
-            converter,
+            parameter.convertType,
             unflattened,
             parameter,
             route,
-            mapping,
-            this.#converterRegistry,
-            this.#converterResolutionOptions
+            mapping
         );
 
         const finalValue = convertedValue ?? parameter.defaultValue;

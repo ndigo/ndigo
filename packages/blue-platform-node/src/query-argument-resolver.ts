@@ -17,12 +17,8 @@ import { convertArgumentValue } from './_resolver-util';
  * Node.js query parameter argument resolver.
  */
 export class NodeQueryValueMethodArgumentResolver extends AbstractPlatformArgumentResolver {
-    constructor(
-        converter: ArgumentValueConverter = identityArgumentValueConverter,
-        converterRegistry: ArgumentValueConverterRegistry = argumentValueConverters,
-        converterResolutionOptions: ConverterResolutionOptions = {}
-    ) {
-        super(converter, converterRegistry, converterResolutionOptions, convertArgumentValue);
+    constructor() {
+        super(convertArgumentValue);
     }
 
     get [Symbol.toStringTag](): string {

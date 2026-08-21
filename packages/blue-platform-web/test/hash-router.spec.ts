@@ -60,34 +60,34 @@ describe('HashRouter', () => {
         const onComplete = (_route: Route) => {};
         router = new HashRouter(onComplete);
 
-        const preRoute = vi.fn(() => true);
-        const postRoute = vi.fn();
+        const preHandle = vi.fn(() => true);
+        const postHandle = vi.fn();
         const interceptor: RouterInterceptor = {
-            preRoute,
-            postRoute,
+            preHandle,
+            postHandle,
         };
 
         router.use(interceptor);
         await router.setRoute('/foo');
 
-        expect(preRoute).toHaveBeenCalledTimes(1);
-        expect(postRoute).toHaveBeenCalledTimes(1);
+        expect(preHandle).toHaveBeenCalledTimes(1);
+        expect(postHandle).toHaveBeenCalledTimes(1);
     });
 
     test('it should execute mapped middleware only for matching routes', async () => {
         const onComplete = (_route: Route) => {};
         router = new HashRouter(onComplete);
 
-        const preRoute = vi.fn(() => true);
+        const preHandle = vi.fn(() => true);
         const interceptor: RouterInterceptor = {
-            preRoute,
+            preHandle,
         };
 
         router.use('/users/*', interceptor);
         await router.setRoute('/users/42');
         await router.setRoute('/admin');
 
-        expect(preRoute).toHaveBeenCalledTimes(1);
+        expect(preHandle).toHaveBeenCalledTimes(1);
     });
 
     test('it should bind named route params during mapped middleware', async () => {
@@ -96,7 +96,7 @@ describe('HashRouter', () => {
 
         let capturedParams: Record<string, string> | null = null;
         const interceptor: RouterInterceptor = {
-            preRoute(route) {
+            preHandle(route) {
                 capturedParams = route.params as Record<string, string>;
                 return true;
             },
@@ -138,13 +138,13 @@ describe('HashRouter', () => {
         expect(route.path).toBe('users/42');
     });
 
-    test('it should rollback when preRoute returns false', async () => {
+    test('it should rollback when preHandle returns false', async () => {
         const onComplete = vi.fn((_route: Route) => null);
         router = new HashRouter(onComplete);
         await router.setRoute('/original');
 
         const interceptor: RouterInterceptor = {
-            preRoute: () => false,
+            preHandle: () => false,
         };
 
         router.use(interceptor);
@@ -175,7 +175,7 @@ describe('HashRouter', () => {
 
         await router.setRoute('/private-1', false);
 
-        router.use({ preRoute: () => false });
+        router.use({ preHandle: () => false });
         await router.setRoute('/private-2', false);
 
         expect(router.route).toBe('/private-1');

@@ -1,7 +1,6 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { MethodParameter, MethodParameterType } from '@blue/dispatcher';
 import { BrowserSessionValueMethodArgumentResolver } from '../src/session-argument-resolver';
-import { argumentValueConverters } from '../src/argument-value-converter';
 
 describe('BrowserSessionValueMethodArgumentResolver', () => {
     let resolver: BrowserSessionValueMethodArgumentResolver;
@@ -65,34 +64,37 @@ describe('BrowserSessionValueMethodArgumentResolver', () => {
         );
     });
 
-    test('applies converter when provided', () => {
+    test('applies type-based conversion when convertType is provided', () => {
         vi.stubGlobal('sessionStorage', {
             getItem: vi.fn(() => 'true'),
         });
 
-        const converter = (value) => value === 'true';
-        const convertingResolver = new BrowserSessionValueMethodArgumentResolver(converter);
-        const parameter = new MethodParameter(MethodParameterType.SESSION, 'sessionId');
-        const value = convertingResolver.resolveArgument(parameter, { data: {}, params: null } as any, {} as any);
-
-        expect(value).toBe(true);
-    });
-
-    test('prefers parameter converter over resolver converter', () => {
-        vi.stubGlobal('sessionStorage', {
-            getItem: vi.fn(() => '1'),
-        });
-
-        const resolver = new BrowserSessionValueMethodArgumentResolver(argumentValueConverters.boolean);
         const parameter = new MethodParameter(
             MethodParameterType.SESSION,
             'sessionId',
             false,
             null,
-            argumentValueConverters.number
+            { source: String, target: Boolean }
         );
         const value = resolver.resolveArgument(parameter, { data: {}, params: null } as any, {} as any);
 
-        expect(value).toBe(1);
+        expect(value).toBe(true);
+    });
+
+    test('applies number conversion when convertType is provided', () => {
+        vi.stubGlobal('sessionStorage', {
+            getItem: vi.fn(() => '42'),
+        });
+
+        const parameter = new MethodParameter(
+            MethodParameterType.SESSION,
+            'count',
+            false,
+            null,
+            { source: String, target: Number }
+        );
+        const value = resolver.resolveArgument(parameter, { data: {}, params: null } as any, {} as any);
+
+        expect(value).toBe(42);
     });
 });

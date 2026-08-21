@@ -12,28 +12,28 @@ describe('RouterExecutionChain', () => {
     });
 
     test('it should add interceptors from array constructor', () => {
-        const first: RouterInterceptor = { preRoute: () => true };
-        const second: RouterInterceptor = { preRoute: () => true };
+        const first: RouterInterceptor = { preHandle: () => true };
+        const second: RouterInterceptor = { preHandle: () => true };
         const chain = new RouterExecutionChain([first, second]);
 
         expect(chain.interceptors.length).toBe(2);
     });
 
     test('it should copy interceptors from another chain', () => {
-        const first: RouterInterceptor = { preRoute: () => true };
+        const first: RouterInterceptor = { preHandle: () => true };
         const source = new RouterExecutionChain([first]);
         const target = new RouterExecutionChain(source);
 
         expect(target.interceptors.length).toBe(1);
     });
 
-    test('it should stop pre-route execution when interceptor rejects', async () => {
+    test('it should stop pre-handle execution when interceptor rejects', async () => {
         const first = vi.fn(() => true);
         const second = vi.fn(() => false);
         const third = vi.fn(() => true);
-        const chain = new RouterExecutionChain([{ preRoute: first }, { preRoute: second }, { preRoute: third }]);
+        const chain = new RouterExecutionChain([{ preHandle: first }, { preHandle: second }, { preHandle: third }]);
 
-        const result = await chain.applyPreRoute(new PathRoute('/foo'));
+        const result = await chain.applyPreHandle(new PathRoute('/foo'));
 
         expect(result).toBe(false);
         expect(first).toHaveBeenCalledTimes(1);
@@ -41,12 +41,12 @@ describe('RouterExecutionChain', () => {
         expect(third).not.toHaveBeenCalled();
     });
 
-    test('it should apply post-route callbacks for all interceptors', async () => {
+    test('it should apply post-handle callbacks for all interceptors', async () => {
         const first = vi.fn();
         const second = vi.fn();
-        const chain = new RouterExecutionChain([{ postRoute: first }, { postRoute: second }]);
+        const chain = new RouterExecutionChain([{ postHandle: first }, { postHandle: second }]);
 
-        await chain.applyPostRoute(new PathRoute('/foo'));
+        await chain.applyPostHandle(new PathRoute('/foo'));
 
         expect(first).toHaveBeenCalledTimes(1);
         expect(second).toHaveBeenCalledTimes(1);

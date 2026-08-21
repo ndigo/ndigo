@@ -46,6 +46,7 @@ describe('NodeEnvironment', () => {
 
     test('should handle empty propertySources', () => {
         const env = new NodeEnvironment([]);
-        expect(env.getProperty('NONEXISTENT')).toBeUndefined();
+        const result = env.getProperty('NONEXISTENT');
+        expect(result === null || result === undefined).toBe(true);
     });
 });

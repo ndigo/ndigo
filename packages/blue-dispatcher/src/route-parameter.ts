@@ -3,7 +3,7 @@
  */
 
 import '@tsmetadata/polyfill';
-import { isFunction, isString } from '@blue/util/types';
+import { isString } from '@blue/util/types';
 import { Serializable, JSONObject, createNull, Equatable, getSymbolMetadata, IllegalStateError } from '@blue/core';
 import { getFunctionParamNames } from './_decorator-util';
 
@@ -18,9 +18,18 @@ export type ParameterExtractor = {
     name: string;
     required: boolean;
     defaultValue: string | null;
-    convert: ParameterValueConverterReference | null;
+    /** Type-based conversion: { source: SourceConstructor, target: TargetConstructor } */
+    convertType?: { source: any; target: any };
     prefix?: string | null;
 };
+
+/** Options for creating a parameter extractor with type-based conversion support. */
+export interface ParameterExtractorOptions {
+    required?: boolean;
+    defaultValue?: string;
+    /** Type-based converter: specifies source and target types for ConversionService lookup. */
+    convertType?: { source: any; target: any };
+}
 
 export interface ParameterValueConversionContext {
     name: string;
@@ -30,13 +39,6 @@ export interface ParameterValueConversionContext {
 }
 
 export type ParameterValueConverter = (value: any, context: ParameterValueConversionContext) => any;
-export type ParameterValueConverterReference =
-    | ParameterValueConverter
-    | string
-    | {
-          optional?: boolean;
-          use: ParameterValueConverter | string;
-      };
 
 /**
  * Parameter map for @routeParams decorator
@@ -125,7 +127,7 @@ export class MethodParameter implements Serializable {
     readonly type!: MethodParameterType;
     readonly required!: boolean;
     readonly defaultValue!: string | null;
-    readonly convert!: ParameterValueConverterReference | null;
+    readonly convertType!: { source: any; target: any } | undefined;
     readonly prefix!: string | null;
 
     constructor(
@@ -133,20 +135,17 @@ export class MethodParameter implements Serializable {
         name: string,
         required: boolean = false,
         defaultValue: string | null = null,
-        convert: ParameterValueConverterReference | null = null,
+        convertType?: { source: any; target: any },
         prefix: string | null = null
     ) {
         if (!isString(name)) {
             throw new TypeError(`"name" must be a string but was ${name}`);
         }
-        if (convert !== null && !this._isConverterReference(convert)) {
-            throw new TypeError(`"convert" must be a converter reference or null but was ${convert}`);
-        }
         this.type = type;
         this.name = name;
         this.required = required;
         this.defaultValue = defaultValue;
-        this.convert = convert;
+        this.convertType = convertType ?? undefined;
         this.prefix = prefix;
     }
 
@@ -156,22 +155,9 @@ export class MethodParameter implements Serializable {
         json.type = this.type;
         json.required = this.required;
         json.defaultValue = this.defaultValue;
-        json.hasConverter = this.convert !== null;
+        json.hasConvertType = this.convertType !== undefined;
         json.prefix = this.prefix;
         return json;
-    }
-
-    private _isConverterReference(value: any): value is ParameterValueConverterReference {
-        if (isFunction(value) || isString(value)) {
-            return true;
-        }
-
-        if (value && typeof value === 'object') {
-            const use = value.use;
-            return isFunction(use) || isString(use);
-        }
-
-        return false;
     }
 
     toString(): string {
@@ -190,14 +176,14 @@ export class MethodParameter implements Serializable {
  */
 export function queryValue(
     name: string,
-    options: { required?: boolean; defaultValue?: string; convert?: ParameterValueConverterReference } = {}
+    options: ParameterExtractorOptions = {}
 ): ParameterExtractor {
     return {
         type: MethodParameterType.QUERY,
         name,
         required: options.required ?? false,
         defaultValue: options.defaultValue ?? null,
-        convert: options.convert ?? null,
+        convertType: options.convertType ?? undefined,
     };
 }
 
@@ -211,14 +197,14 @@ export function queryValue(
  */
 export function pathValue(
     name: string,
-    options: { required?: boolean; defaultValue?: string; convert?: ParameterValueConverterReference } = {}
+    options: ParameterExtractorOptions = {}
 ): ParameterExtractor {
     return {
         type: MethodParameterType.PATH,
         name,
         required: options.required ?? false,
         defaultValue: options.defaultValue ?? null,
-        convert: options.convert ?? null,
+        convertType: options.convertType ?? undefined,
     };
 }
 
@@ -233,14 +219,14 @@ export function pathValue(
  */
 export function matrixValue(
     name: string,
-    options: { required?: boolean; defaultValue?: string; convert?: ParameterValueConverterReference } = {}
+    options: ParameterExtractorOptions = {}
 ): ParameterExtractor {
     return {
         type: MethodParameterType.MATRIX,
         name,
         required: options.required ?? false,
         defaultValue: options.defaultValue ?? null,
-        convert: options.convert ?? null,
+        convertType: options.convertType ?? undefined,
     };
 }
 
@@ -255,14 +241,14 @@ export function matrixValue(
  */
 export function cookieValue(
     name: string,
-    options: { required?: boolean; defaultValue?: string; convert?: ParameterValueConverterReference } = {}
+    options: ParameterExtractorOptions = {}
 ): ParameterExtractor {
     return {
         type: MethodParameterType.COOKIE,
         name,
         required: options.required ?? false,
         defaultValue: options.defaultValue ?? null,
-        convert: options.convert ?? null,
+        convertType: options.convertType ?? undefined,
     };
 }
 
@@ -277,14 +263,14 @@ export function cookieValue(
  */
 export function sessionValue(
     name: string,
-    options: { required?: boolean; defaultValue?: string; convert?: ParameterValueConverterReference } = {}
+    options: ParameterExtractorOptions = {}
 ): ParameterExtractor {
     return {
         type: MethodParameterType.SESSION,
         name,
         required: options.required ?? false,
         defaultValue: options.defaultValue ?? null,
-        convert: options.convert ?? null,
+        convertType: options.convertType ?? undefined,
     };
 }
 
@@ -298,14 +284,14 @@ export function sessionValue(
  */
 export function modelValue(
     name: string,
-    options: { required?: boolean; defaultValue?: string; convert?: ParameterValueConverterReference } = {}
+    options: ParameterExtractorOptions = {}
 ): ParameterExtractor {
     return {
         type: MethodParameterType.MODEL,
         name,
         required: options.required ?? false,
         defaultValue: options.defaultValue ?? null,
-        convert: options.convert ?? null,
+        convertType: options.convertType ?? undefined,
     };
 }
 
@@ -319,14 +305,14 @@ export function modelValue(
  */
 export function stateValue(
     name: string,
-    options: { required?: boolean; defaultValue?: string; convert?: ParameterValueConverterReference } = {}
+    options: ParameterExtractorOptions = {}
 ): ParameterExtractor {
     return {
         type: MethodParameterType.STATE,
         name,
         required: options.required ?? false,
         defaultValue: options.defaultValue ?? null,
-        convert: options.convert ?? null,
+        convertType: options.convertType ?? undefined,
     };
 }
 
@@ -344,7 +330,7 @@ export function bindValue(
     options: {
         required?: boolean;
         defaultValue?: any;
-        convert?: ParameterValueConverterReference;
+        convertType?: { source: any; target: any };
         prefix?: string;
     } = {}
 ): ParameterExtractor {
@@ -353,7 +339,7 @@ export function bindValue(
         name: source,
         required: options.required ?? false,
         defaultValue: options.defaultValue ?? null,
-        convert: options.convert ?? null,
+        convertType: options.convertType ?? undefined,
         prefix: options.prefix ?? null,
     };
 }
@@ -368,14 +354,14 @@ export function bindValue(
  */
 export function attributeValue(
     name: string,
-    options: { required?: boolean; defaultValue?: any; convert?: ParameterValueConverterReference } = {}
+    options: ParameterExtractorOptions = {}
 ): ParameterExtractor {
     return {
         type: MethodParameterType.ATTRIBUTE,
         name,
         required: options.required ?? false,
         defaultValue: options.defaultValue ?? null,
-        convert: options.convert ?? null,
+        convertType: options.convertType ?? undefined,
     };
 }
 
@@ -390,14 +376,14 @@ export function attributeValue(
  */
 export function headerValue(
     name: string,
-    options: { required?: boolean; defaultValue?: string; convert?: ParameterValueConverterReference } = {}
+    options: ParameterExtractorOptions = {}
 ): ParameterExtractor {
     return {
         type: MethodParameterType.HEADER,
         name,
         required: options.required ?? false,
         defaultValue: options.defaultValue ?? null,
-        convert: options.convert ?? null,
+        convertType: options.convertType ?? undefined,
     };
 }
 
@@ -413,14 +399,14 @@ export function headerValue(
  */
 export function bodyValue(
     name: string,
-    options: { required?: boolean; defaultValue?: any; convert?: ParameterValueConverterReference } = {}
+    options: ParameterExtractorOptions = {}
 ): ParameterExtractor {
     return {
         type: MethodParameterType.BODY,
         name,
         required: options.required ?? false,
         defaultValue: options.defaultValue ?? null,
-        convert: options.convert ?? null,
+        convertType: options.convertType ?? undefined,
     };
 }
 
@@ -429,7 +415,7 @@ export function bodyValue(
  * @example asNumber(queryValue('age'))
  */
 export function asNumber(extractor: ParameterExtractor): ParameterExtractor {
-    return { ...extractor, convert: 'number' };
+    return { ...extractor, convertType: { source: String, target: Number } };
 }
 
 /**
@@ -437,7 +423,7 @@ export function asNumber(extractor: ParameterExtractor): ParameterExtractor {
  * @example asBoolean(stateValue('isActive'))
  */
 export function asBoolean(extractor: ParameterExtractor): ParameterExtractor {
-    return { ...extractor, convert: 'boolean' };
+    return { ...extractor, convertType: { source: String, target: Boolean } };
 }
 
 /**
@@ -445,15 +431,39 @@ export function asBoolean(extractor: ParameterExtractor): ParameterExtractor {
  * @example asDate(cookieValue('lastLogin'))
  */
 export function asDate(extractor: ParameterExtractor): ParameterExtractor {
-    return { ...extractor, convert: 'date' };
+    return { ...extractor, convertType: { source: String, target: Date } };
 }
 
 /**
  * Wraps a parameter extractor to enforce JSON conversion.
  * @example asJson<UserProfile>(modelValue('profile'))
  */
-export function asJson(extractor: ParameterExtractor): ParameterExtractor {
-    return { ...extractor, convert: 'json' };
+export function asJson<T = any>(extractor: ParameterExtractor): ParameterExtractor {
+    return { ...extractor, convertType: { source: String, target: Object } };
+}
+
+/**
+ * Wraps a parameter extractor to enforce UUID conversion.
+ * @example asUUID(pathValue('userId'))
+ */
+export function asUUID(extractor: ParameterExtractor): ParameterExtractor {
+    return { ...extractor, convertType: { source: String, target: String } };
+}
+
+/**
+ * Wraps a parameter extractor to enforce array conversion.
+ * @example asArray(queryValue('tags'))
+ */
+export function asArray(extractor: ParameterExtractor): ParameterExtractor {
+    return { ...extractor, convertType: { source: String, target: Array } };
+}
+
+/**
+ * Wraps a parameter extractor to enforce type-based conversion via ConversionService.
+ * @example withConversion(queryValue('id'), { source: String, target: UUID })
+ */
+export function withConversion(extractor: ParameterExtractor, convertType: { source: any; target: any }): ParameterExtractor {
+    return { ...extractor, convertType };
 }
 
 /**
@@ -500,7 +510,7 @@ export function routeParams(paramMap: RouteParameterMap) {
                 extractor.name,
                 extractor.required,
                 extractor.defaultValue,
-                extractor.convert,
+                extractor.convertType,
                 extractor.prefix
             );
         }

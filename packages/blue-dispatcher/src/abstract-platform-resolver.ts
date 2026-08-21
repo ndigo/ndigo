@@ -5,17 +5,16 @@
 import { isNil } from '@blue/util/types';
 import { Route } from '@blue/router';
 import { AbstractNamedValueMethodArgumentResolver } from './argument-resolver';
-import { MethodParameter, ParameterValueConverterReference } from './route-parameter';
+import { MethodParameter } from './route-parameter';
 
 /**
  * Function signature for platform-specific argument value conversion.
  *
- * Each platform provides its own implementation (backed by its converter
- * registry) so that the shared `resolveArgument` pipeline can remain
- * platform-agnostic.
+ * Each platform provides its own implementation (backed by ConversionService)
+ * so that the shared `resolveArgument` pipeline can remain platform-agnostic.
  */
 export type ConvertArgumentValueFn = (
-    converterReference: ParameterValueConverterReference,
+    convertType: { source: any; target: any } | undefined,
     value: any,
     parameter: MethodParameter,
     route: Route,
@@ -36,42 +35,27 @@ export type ConvertArgumentValueFn = (
  * - `supportsParameter()` — which `MethodParameterType` to match
  */
 export abstract class AbstractPlatformArgumentResolver extends AbstractNamedValueMethodArgumentResolver {
-    #converter: ParameterValueConverterReference;
-    #registry: any;
-    #options: any;
     #convertFn: ConvertArgumentValueFn;
 
     /**
      * Creates a platform argument resolver.
      *
-     * @param converter - Default converter to apply to resolved values.
-     * @param registry - Platform-specific converter registry.
-     * @param options - Converter resolution options.
      * @param convertFn - Platform-specific `convertArgumentValue` function.
      */
-    constructor(
-        converter: ParameterValueConverterReference,
-        registry: any,
-        options: any,
-        convertFn: ConvertArgumentValueFn
-    ) {
+    constructor(convertFn: ConvertArgumentValueFn) {
         super();
-        this.#converter = converter;
-        this.#registry = registry;
-        this.#options = options;
         this.#convertFn = convertFn;
     }
 
     /**
      * Resolves and converts a method argument value.
      *
-     * Pipeline: resolveName → defaultValue fallback → convert → nil check.
+     * Pipeline: resolveName → defaultValue fallback → convertType lookup → conversion → nil check.
      */
     resolveArgument(parameter: MethodParameter, route: Route, mapping: any): any {
         const resolveValue = (v: any) => v ?? parameter.defaultValue,
             value = resolveValue(this.resolveName(parameter.name, parameter, route, mapping)),
-            converter = parameter.convert ?? this.#converter,
-            convertedValue = this.#convertFn(converter, value, parameter, route, mapping, this.#registry, this.#options);
+            convertedValue = this.#convertFn(parameter.convertType, value, parameter, route, mapping);
 
         isNil(convertedValue) && parameter.required && this.handleMissingValue(parameter.name);
 

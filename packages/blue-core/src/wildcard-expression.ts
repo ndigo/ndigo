@@ -2,7 +2,7 @@
  * @author Jeff Rose
  */
 
-import type { Converter } from './parser.js';
+import type { Converter } from './converter.js';
 
 /**
  * Parses a wildcard pattern into a bounded regular-expression source string.
@@ -17,5 +17,11 @@ import type { Converter } from './parser.js';
  * parseWildcard('foo*bar') // '^foo.*?bar$'
  * parseWildcard('*')       // '^.*?$'
  */
-export const parseWildcard: Converter<string, string> = (pattern: string): string =>
-    `^${pattern.replace(/\*/g, '.*?')}$`;
+export class WildcardConverter implements Converter<string, string> {
+    convert(pattern: string): string {
+        return `^${pattern.replace(/\*/g, '.*?')}$`;
+    }
+}
+
+/** Singleton instance for backward compatibility. */
+export const parseWildcard = new WildcardConverter().convert.bind(new WildcardConverter());

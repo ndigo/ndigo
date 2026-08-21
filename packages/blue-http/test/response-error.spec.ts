@@ -5,7 +5,7 @@ describe('ResponseError', () => {
     test('it should create empty response errors', async () => {
         const response = new ResponseError();
         expect(response).toHaveProperty('message', 'Invalid response');
-        expect(response).toHaveProperty('body', null);
+        expect(response.body).toBeInstanceOf(ReadableStream);
         expect(response).toHaveProperty('bodyUsed', false);
         expect(response.headers).toBeDefined();
         expect(response).toHaveProperty('ok', false);

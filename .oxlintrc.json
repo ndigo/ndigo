@@ -1,0 +1,102 @@
+{
+    "ignorePatterns": [
+        "archive",
+        "doc-html",
+        "coverage",
+        "lib",
+        "dist",
+        "node_modules",
+        "index.js",
+        "**/lib/**",
+        "**/dist/**",
+        "**/tmp/**",
+        "**/profile/**",
+        "**/.tmp/**",
+        "**/*.min.js",
+        "**/*.legacy.js",
+        "**/coverage/**",
+        "**/node_modules/**",
+        "**/test/**/*.js",
+        "apps/blue-demo/index.js",
+        "test/mockServiceWorker.js",
+        "packages/blue-domain/src/constraints.ts",
+        "*.config.js",
+        "*.config.mjs",
+        "*.config.ts"
+    ],
+    "jsPlugins": ["./packages/blue-eslint-plugin/lib/index.js"],
+    "rules": {
+        "no-unused-vars": "off",
+        "no-undef": "off",
+        "@typescript-eslint/adjacent-overload-signatures": "error",
+        "@typescript-eslint/explicit-function-return-type": "off",
+        "@typescript-eslint/explicit-member-accessibility": "off",
+        "@typescript-eslint/no-array-constructor": "error",
+        "@typescript-eslint/no-empty-interface": "off",
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/no-inferrable-types": "off",
+        "@typescript-eslint/no-namespace": ["error", { "allowDeclarations": false, "allowDefinitionFiles": false }],
+        "@typescript-eslint/no-non-null-assertion": "off",
+        "@typescript-eslint/triple-slash-reference": "off",
+        "@typescript-eslint/no-unused-vars": [
+            "warn",
+            {
+                "vars": "local",
+                "args": "none",
+                "caughtErrors": "none",
+                "varsIgnorePattern": "^_",
+                "ignoreRestSiblings": true
+            }
+        ],
+        "@typescript-eslint/no-use-before-define": ["error", { "classes": false, "functions": false, "typedefs": false, "variables": false }],
+        "@typescript-eslint/no-require-imports": "off",
+        "@typescript-eslint/prefer-namespace-keyword": "error",
+        "@blue/no-direct-integration-imports": "warn",
+        "@blue/no-internal-file-imports": "error",
+        "@blue/no-internal-file-exports": "error",
+        "@blue/no-browser-globals-in-isomorphic": "warn"
+    },
+    "env": {
+        "browser": true,
+        "node": true,
+        "es2024": true
+    },
+    "globals": {
+        "window": "readonly",
+        "document": "readonly",
+        "navigator": "readonly",
+        "console": "readonly",
+        "process": "readonly",
+        "__dirname": "readonly",
+        "__filename": "readonly",
+        "Buffer": "readonly",
+        "global": "readonly",
+        "module": "readonly",
+        "require": "readonly",
+        "exports": "readonly",
+        "globalThis": "readonly",
+        "describe": "readonly",
+        "it": "readonly",
+        "before": "readonly",
+        "after": "readonly",
+        "beforeEach": "readonly",
+        "afterEach": "readonly",
+        "expect": "readonly",
+        "test": "readonly",
+        "vi": "readonly"
+    },
+    "overrides": [
+        {
+            "files": ["**/*.spec.ts", "**/*.test.ts", "**/test/**/*.ts", "**/test/**/*.js", "**/test/**/*.mjs"],
+            "rules": {
+                "@typescript-eslint/no-unused-vars": "off"
+            }
+        },
+        {
+            "files": ["apps/**/*.ts", "apps/**/*.js", "apps/**/*.mjs"],
+            "rules": {
+                "@blue/no-browser-globals-in-isomorphic": "off"
+            }
+        }
+    ]
+}

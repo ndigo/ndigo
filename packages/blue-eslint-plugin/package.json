@@ -20,17 +20,15 @@
     "api-report": "api-extractor run --local --verbose"
   },
   "dependencies": {
-    "@typescript-eslint/utils": "~8.18.2"
+    "@oxlint/plugins": "^1.78.0"
   },
   "devDependencies": {
-    "@typescript-eslint/rule-tester": "~8.18.2",
-    "@typescript-eslint/parser": "~8.18.2",
-    "eslint": "~9.17.0",
+    "oxlint": "^1.78.0",
     "typescript": "~5.8.0",
     "vitest": "~3.0.0"
   },
   "peerDependencies": {
-    "eslint": ">=9.0.0"
+    "oxlint": ">=1.0.0"
   },
   "keywords": [
     "blue",

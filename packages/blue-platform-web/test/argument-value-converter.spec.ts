@@ -9,6 +9,7 @@ import {
     toJSONStringValue,
     toNumberValue,
 } from '../src/argument-value-converter';
+import { conversionService } from '@blue/core';
 
 describe('argument-value-converter', () => {
     test('toNumberValue converts to number', () => {
@@ -53,24 +54,53 @@ describe('argument-value-converter', () => {
         expect(argumentValueConverters.identity('x', {} as any)).toBe('x');
     });
 
-    test('resolveConverter supports optional named descriptor', () => {
-        const converter = resolveConverter({ optional: true, use: 'number' });
-
-        expect(converter(null, {} as any)).toBeNull();
-        expect(converter('12', {} as any)).toBe(12);
+    test('resolveConverter returns identity converter when no convertType', () => {
+        const converter = resolveConverter(undefined);
+        expect(converter('anything', {} as any)).toBe('anything');
     });
 
-    test('resolveConverter prefers provided registry for named converters', () => {
-        const converter = resolveConverter('toInt', {
-            toInt: argumentValueConverters.number,
-        });
+    test('resolveConverter uses ConversionService for type-based conversion', () => {
+        const converter = resolveConverter({ source: String, target: Number });
 
-        expect(converter('34', {} as any)).toBe(34);
+        expect(converter('42', {} as any)).toBe(42);
     });
 
-    test('resolveConverter throws in strict mode for unknown names', () => {
-        expect(() => resolveConverter('missing', {}, { strictNamedLookup: true })).toThrow(
-            'Unknown converter reference: missing'
-        );
+    test('resolveConverter supports UUID conversion via ConversionService', () => {
+        const converter = resolveConverter({ source: String, target: String });
+
+        // UUID converter normalizes to lowercase
+        expect(converter('A1B2C3D4-E5F6-7890-ABCD-EF1234567890', {} as any)).toBe('a1b2c3d4-e5f6-7890-abcd-ef1234567890');
+    });
+
+    test('resolveConverter supports boolean conversion via ConversionService', () => {
+        const converter = resolveConverter({ source: String, target: Boolean });
+
+        expect(converter('true', {} as any)).toBe(true);
+        expect(converter('false', {} as any)).toBe(false);
+    });
+
+    test('resolveConverter supports date conversion via ConversionService', () => {
+        const converter = resolveConverter({ source: String, target: Date });
+
+        const result = converter('2024-01-15T10:30:00.000Z', {} as any);
+        expect(result).toBeInstanceOf(Date);
+    });
+
+    test('resolveConverter supports JSON conversion via ConversionService', () => {
+        const converter = resolveConverter({ source: String, target: Object });
+
+        expect(converter('{"key":"value"}', {} as any)).toEqual({ key: 'value' });
+    });
+
+    test('resolveConverter supports array conversion via ConversionService', () => {
+        const converter = resolveConverter({ source: String, target: Array });
+
+        expect(converter('one,two,three', {} as any)).toEqual(['one', 'two', 'three']);
+    });
+
+    test('resolveConverter throws on invalid conversion', () => {
+        const converter = resolveConverter({ source: String, target: Boolean });
+
+        expect(() => converter('invalid', {} as any)).toThrow(TypeError);
     });
 });

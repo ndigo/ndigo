@@ -2,8 +2,13 @@
  * @author Jeff Rose
  */
 
-import { ParameterValueConversionContext, ParameterValueConverterReference } from '@blue/dispatcher';
+import { ParameterValueConversionContext } from '@blue/dispatcher';
 import { Route } from '@blue/router';
+import { conversionService } from '@blue/core';
+
+// ---------------------------------------------------------------------------
+// Conversion context and types
+// ---------------------------------------------------------------------------
 
 export type ArgumentValueConversionContext = ParameterValueConversionContext & { route: Route; };
 export type ArgumentValueConverter = (value: any, context: ArgumentValueConversionContext) => any;
@@ -13,6 +18,10 @@ export type ResolverConverterOption =
     | ArgumentValueConverter
     | keyof typeof argumentValueConverters
     | { optional?: boolean; use: ArgumentValueConverter | keyof typeof argumentValueConverters; };
+
+// ---------------------------------------------------------------------------
+// Built-in converters (backward compatible)
+// ---------------------------------------------------------------------------
 
 export const identityArgumentValueConverter: ArgumentValueConverter = (value) => value;
 
@@ -28,9 +37,11 @@ export function toBooleanValue(value: any): boolean {
 }
 export function toDateValue(value: any): Date { return new Date(value); }
 export function toJSONStringValue(value: any): any { return JSON.parse(value); }
+
 export function createStringSplitConverter(separator: string | RegExp = ','): ArgumentValueConverter {
     return (value) => `${value}`.split(separator);
 }
+
 export function createOptionalConverter(converter: ArgumentValueConverter): ArgumentValueConverter {
     return (value, context) => {
         if (value === null || value === undefined) { return value; }
@@ -46,18 +57,47 @@ export const argumentValueConverters: Record<string, ArgumentValueConverter> = {
     json: (value) => toJSONStringValue(value),
 };
 
-export function resolveConverter(
-    option: ParameterValueConverterReference | ResolverConverterOption | undefined,
-    registry: ArgumentValueConverterRegistry = argumentValueConverters,
-    options: ConverterResolutionOptions = {}
-): ArgumentValueConverter {
-    if (!option) { return identityArgumentValueConverter; }
-    if (typeof option === 'function') { return option; }
-    if (typeof option === 'string') {
-        const converter = registry[option] ?? argumentValueConverters[option];
-        if (!converter && options.strictNamedLookup) { throw new TypeError(`Unknown converter reference: ${option}`); }
-        return converter ?? identityArgumentValueConverter;
+// ---------------------------------------------------------------------------
+// Type-based converter resolution via ConversionService
+// ---------------------------------------------------------------------------
+
+/**
+ * Resolves a type-based converter from the ConversionService.
+ * If no converter is found, returns undefined.
+ */
+function resolveTypeConverter(sourceType: any, targetType: any): ArgumentValueConverter | undefined {
+    if (!conversionService.canConvert(sourceType, targetType)) {
+        return undefined;
     }
-    const baseConverter = resolveConverter(option.use, registry, options);
-    return option.optional ? createOptionalConverter(baseConverter) : baseConverter;
+
+    // Get the underlying Converter<S,T> from ConversionService
+    const converter = conversionService.registry.getConverter(sourceType, targetType);
+
+    return (value: any, _context: ArgumentValueConversionContext) => {
+        try {
+            return converter.convert(value);
+        } catch (error) {
+            throw new TypeError(`Conversion failed: ${error instanceof Error ? error.message : String(error)}`);
+        }
+    };
+}
+
+// ---------------------------------------------------------------------------
+// Main resolver function
+// ---------------------------------------------------------------------------
+
+export function resolveConverter(
+    convertType?: { source: any; target: any }
+): ArgumentValueConverter {
+    // Use type-based conversion via ConversionService
+    if (convertType && convertType.source && convertType.target) {
+        const typeConverter = resolveTypeConverter(convertType.source, convertType.target);
+
+        if (typeConverter) {
+            return typeConverter;
+        }
+    }
+
+    // Default to identity converter when no conversion is needed
+    return identityArgumentValueConverter;
 }

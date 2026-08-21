@@ -3,10 +3,10 @@ import { HashRouter } from '../src/hash-router';
 import { RouterInterceptor } from '@blue/router';
 
 describe('Asynchronous Router Interceptors', () => {
-    it('should support async preRoute interceptors', async () => {
+    it('should support async preHandle interceptors', async () => {
         let interceptorCalled = false;
         const asyncInterceptor: RouterInterceptor = {
-            preRoute: async () => {
+            preHandle: async () => {
                 await new Promise((resolve) => setTimeout(resolve, 10));
                 interceptorCalled = true;
                 return true;
@@ -24,9 +24,9 @@ describe('Asynchronous Router Interceptors', () => {
         expect(result).toBe(true);
     });
 
-    it('should short-circuit if async preRoute returns false', async () => {
+    it('should short-circuit if async preHandle returns false', async () => {
         const asyncInterceptor: RouterInterceptor = {
-            preRoute: async () => {
+            preHandle: async () => {
                 await new Promise((resolve) => setTimeout(resolve, 10));
                 return false;
             },
@@ -43,12 +43,12 @@ describe('Asynchronous Router Interceptors', () => {
         expect(callbackCalled).toBe(false);
     });
 
-    it('should support async postRoute interceptors', async () => {
-        let postRouteCalled = false;
+    it('should support async postHandle interceptors', async () => {
+        let postHandleCalled = false;
         const asyncInterceptor: RouterInterceptor = {
-            postRoute: async () => {
+            postHandle: async () => {
                 await new Promise((resolve) => setTimeout(resolve, 10));
-                postRouteCalled = true;
+                postHandleCalled = true;
             },
         };
 
@@ -56,6 +56,6 @@ describe('Asynchronous Router Interceptors', () => {
         router.addInterceptor(asyncInterceptor);
 
         await (router as any)._setRoute('/full');
-        expect(postRouteCalled).toBe(true);
+        expect(postHandleCalled).toBe(true);
     });
 });

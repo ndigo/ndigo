@@ -38,16 +38,13 @@ export class NodeAutoConfiguration {
      */
     @entry
     argumentResolvers() {
-        const registry = argumentValueConverters;
-        const options = { strictNamedLookup: true };
-
         return [
-            new NodeQueryValueMethodArgumentResolver(undefined, registry, options),
-            new NodePathValueMethodArgumentResolver(undefined, registry, options),
-            new NodeHeaderValueMethodArgumentResolver(undefined, registry, options),
-            new NodeBodyValueMethodArgumentResolver(undefined, registry, options),
-            new NodeCookieValueMethodArgumentResolver(undefined, registry, options),
-            new NodeSessionValueMethodArgumentResolver(undefined, registry, options),
+            new NodeQueryValueMethodArgumentResolver(),
+            new NodePathValueMethodArgumentResolver(),
+            new NodeHeaderValueMethodArgumentResolver(),
+            new NodeBodyValueMethodArgumentResolver(),
+            new NodeCookieValueMethodArgumentResolver(),
+            new NodeSessionValueMethodArgumentResolver(),
         ];
     }
 

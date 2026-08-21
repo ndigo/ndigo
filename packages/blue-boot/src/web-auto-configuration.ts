@@ -38,15 +38,12 @@ export class WebAutoConfiguration {
      */
     @entry
     argumentResolvers() {
-        const registry = argumentValueConverters;
-        const options = { strictNamedLookup: true };
-
         return [
-            new BrowserBindMethodArgumentResolver(undefined, registry, options),
-            new BrowserCookieValueMethodArgumentResolver(undefined, registry, options),
-            new BrowserModelValueMethodArgumentResolver(undefined, registry, options),
-            new BrowserStateValueMethodArgumentResolver(undefined, registry, options),
-            new BrowserSessionValueMethodArgumentResolver(undefined, registry, options),
+            new BrowserBindMethodArgumentResolver(),
+            new BrowserCookieValueMethodArgumentResolver(),
+            new BrowserModelValueMethodArgumentResolver(),
+            new BrowserStateValueMethodArgumentResolver(),
+            new BrowserSessionValueMethodArgumentResolver(),
         ];
     }
 

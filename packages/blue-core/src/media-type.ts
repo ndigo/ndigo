@@ -177,7 +177,7 @@ export default class MediaType extends Null implements Serializable, StringCompa
         subtype: string = WILDCARD,
         parameters: MediaTypeParameters = {}
     ): MediaType | null {
-        const isParsed = isString(subtype),
+        const isParsed = isString(subtype) && subtype !== WILDCARD,
             mediaTypeExpression = isParsed
                 ? `${typeOrExpression as SupportedMediaType}/${subtype}${stringifyParameters(parameters)}`
                 : typeOrExpression;
@@ -188,19 +188,27 @@ export default class MediaType extends Null implements Serializable, StringCompa
                     const mediaType = new MediaType(typeOrExpression as SupportedMediaType, subtype, parameters);
                     typeRegistry.set(mediaTypeExpression, mediaType);
                 } else {
-                    const [type, fullSubtype] = mediaTypeExpression.split('/') as [SupportedMediaType, string],
-                        parts: string[] = fullSubtype.split(';'),
-                        subtype = parts[0];
+                    const slashIndex = mediaTypeExpression.indexOf('/');
+                    if (slashIndex === -1) {
+                        // No slash found - treat as type only with wildcard subtype
+                        const mediaType = new MediaType(typeOrExpression as SupportedMediaType, WILDCARD, parameters);
+                        typeRegistry.set(mediaTypeExpression, mediaType);
+                    } else {
+                        const type = mediaTypeExpression.substring(0, slashIndex) as SupportedMediaType,
+                            fullSubtype = mediaTypeExpression.substring(slashIndex + 1),
+                            parts: string[] = fullSubtype.split(';'),
+                            sub = parts[0] || WILDCARD;
 
-                    // Remove the subtype
-                    parts.shift();
+                        // Remove the subtype
+                        parts.shift();
 
-                     const parsedParameters: MediaTypeParameters = parts.length
-                        ? (Object.fromEntries(parts.map(splitOnEquals as (value: string) => [string, string])) as MediaTypeParameters)
-                        : {};
-                    const mediaType = new MediaType(type, subtype, parsedParameters);
+                        const parsedParameters: MediaTypeParameters = parts.length
+                            ? (Object.fromEntries(parts.map(splitOnEquals as (value: string) => [string, string])) as MediaTypeParameters)
+                            : {};
+                        const mediaType = new MediaType(type, sub, parsedParameters);
 
-                    typeRegistry.set(mediaTypeExpression, mediaType);
+                        typeRegistry.set(mediaTypeExpression, mediaType);
+                    }
                 }
             }
              return typeRegistry.get(mediaTypeExpression) as MediaType;

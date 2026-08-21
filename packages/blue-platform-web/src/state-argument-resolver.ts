@@ -18,12 +18,8 @@ import { convertArgumentValue } from './_resolver-util';
  * Browser history state argument resolver.
  */
 export class BrowserStateValueMethodArgumentResolver extends AbstractPlatformArgumentResolver {
-    constructor(
-        converter: ArgumentValueConverter = identityArgumentValueConverter,
-        converterRegistry: ArgumentValueConverterRegistry = argumentValueConverters,
-        converterResolutionOptions: ConverterResolutionOptions = {}
-    ) {
-        super(converter, converterRegistry, converterResolutionOptions, convertArgumentValue);
+    constructor() {
+        super(convertArgumentValue);
     }
 
     get [Symbol.toStringTag](): string {

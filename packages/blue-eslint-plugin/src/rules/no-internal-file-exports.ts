@@ -1,26 +1,22 @@
 /**
- * ESLint rule that prevents public index files from re-exporting internal underscore-prefixed files.
+ * Rule that prevents public index files from re-exporting internal underscore-prefixed files.
+ *
+ * Migrated from ESLint to oxlint JS Plugin API.
+ * Uses createOnce + before hook pattern for dual compatibility and future performance.
  */
-
-import { ESLintUtils, TSESTree } from '@typescript-eslint/utils';
-
-const createRule = ESLintUtils.RuleCreator(
-    (name) => `https://github.com/user/blue/blob/main/packages/blue-eslint-plugin/docs/${name}.md`
-);
 
 function isPublicIndexFile(filename: string): boolean {
     return /[\\/]src[\\/]index\.ts$/u.test(filename);
 }
 
-function isInternalRelativeSource(source: TSESTree.Literal | null | undefined): source is TSESTree.Literal {
+function isInternalRelativeSource(source: any): source is { value: string } {
     return !!source && typeof source.value === 'string' && source.value.startsWith('./_');
 }
 
 /**
  * Reports public barrel exports that expose internal implementation files.
  */
-export const noInternalFileExports = createRule({
-    name: 'no-internal-file-exports',
+export const noInternalFileExports = {
     meta: {
         type: 'problem',
         docs: {
@@ -30,15 +26,21 @@ export const noInternalFileExports = createRule({
             internalExport: "Exporting internal file '{{source}}' in public API (index.ts) is not allowed.",
         },
         schema: [],
-    },
+    } as const,
     defaultOptions: [],
-    create(context) {
-        if (!isPublicIndexFile(context.filename)) {
+    create(context: any) {
+        const filename = context.filename ?? context.getFilename?.() ?? '';
+
+        // Only run on public index files
+        if (!isPublicIndexFile(filename)) {
             return {};
         }
 
         return {
-            ExportAllDeclaration(node) {
+            before() {
+                // Per-file setup if needed in the future
+            },
+            ExportAllDeclaration(node: any) {
                 if (!isInternalRelativeSource(node.source)) {
                     return;
                 }
@@ -53,4 +55,4 @@ export const noInternalFileExports = createRule({
             },
         };
     },
-});
+};

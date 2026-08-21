@@ -82,22 +82,34 @@ describe('NodeHeaderValueMethodArgumentResolver', () => {
                 .toThrow(/"content-type" cannot be undefined or null/);
         });
 
-        test('should apply converter when provided', () => {
+        test('should apply type-based conversion when convertType is provided', () => {
             const route = makeRoute({
                 headers: { 'content-length': '1024' }
             });
             
-            const param = new MethodParameter(MethodParameterType.HEADER, 'content-length', false, undefined, 'number');
+            const param = new MethodParameter(
+                MethodParameterType.HEADER,
+                'content-length',
+                false,
+                undefined,
+                { source: String, target: Number }
+            );
             expect(resolver.resolveArgument(param, route, {})).toBe(1024);
         });
 
-        test('should prefer parameter-level converter over resolver-level converter', () => {
+        test('should handle boolean conversion when convertType is provided', () => {
             const route = makeRoute({
-                headers: { 'content-length': '1024' }
+                headers: { 'x-active': 'true' }
             });
             
-            const param = new MethodParameter(MethodParameterType.HEADER, 'content-length', false, undefined, 'number');
-            expect(resolver.resolveArgument(param, route, {})).toBe(1024);
+            const param = new MethodParameter(
+                MethodParameterType.HEADER,
+                'x-active',
+                false,
+                undefined,
+                { source: String, target: Boolean }
+            );
+            expect(resolver.resolveArgument(param, route, {})).toBe(true);
         });
 
         test('should handle missing route.headers gracefully', () => {

@@ -1,12 +1,10 @@
 /** @author opencode */
 
-import parser from '@typescript-eslint/parser';
-import { RuleTester } from '@typescript-eslint/rule-tester';
+import { RuleTester } from 'oxlint/plugins-dev';
 import { noDirectIntegrationImports } from '../../src/rules/no-direct-integration-imports';
 
 const ruleTester = new RuleTester({
     languageOptions: {
-        parser,
         parserOptions: {
             sourceType: 'module',
             ecmaVersion: 'latest',

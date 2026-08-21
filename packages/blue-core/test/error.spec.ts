@@ -135,7 +135,7 @@ describe('IllegalStateError', () => {
         const json = error.toJSON();
 
         expect(json).toMatchObject({
-            name: 'FrameworkError',
+            name: 'IllegalStateError',
             message: 'custom',
         });
         expect(json).toHaveProperty('stack');

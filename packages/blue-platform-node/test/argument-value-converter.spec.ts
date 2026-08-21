@@ -178,34 +178,35 @@ describe('argument-value-converter', () => {
     });
 
     describe('resolveConverter', () => {
-        test('should resolve built-in converters by name', () => {
-            expect(resolveConverter('identity')).toBe(identityArgumentValueConverter);
-            // Built-in converters resolve to functions that produce correct output
-            expect(resolveConverter('number')('42')).toBe(42);
-            expect(resolveConverter('boolean')('true')).toBe(true);
-            expect(resolveConverter('date')('2023-01-01')).toBeInstanceOf(Date);
-            expect(resolveConverter('json')('{"a":1}')).toEqual({ a: 1 });
-        });
-
-        test('should return identity converter for unknown string without strictNamedLookup', () => {
-            const result = resolveConverter('unknown');
+        test('should return identity converter when no convertType provided', () => {
+            const result = resolveConverter();
             expect(result('hello')).toBe('hello');
         });
 
-        test('should throw TypeError for unknown converter with strictNamedLookup', () => {
-            expect(() => resolveConverter('unknown', undefined, { strictNamedLookup: true })).toThrow(TypeError);
-            expect(() => resolveConverter('unknown', undefined, { strictNamedLookup: true })).toThrow('Unknown converter reference: unknown');
+        test('should resolve type-based converters via ConversionService', () => {
+            // Number conversion
+            const numberConverter = resolveConverter({ source: String, target: Number });
+            expect(numberConverter('42')).toBe(42);
+
+            // Boolean conversion
+            const booleanConverter = resolveConverter({ source: String, target: Boolean });
+            expect(booleanConverter('true')).toBe(true);
+            expect(booleanConverter('false')).toBe(false);
+
+            // Date conversion
+            const dateConverter = resolveConverter({ source: String, target: Date });
+            expect(dateConverter('2023-01-01')).toBeInstanceOf(Date);
+
+            // JSON conversion
+            const jsonConverter = resolveConverter({ source: String, target: Object });
+            expect(jsonConverter('{"a":1}')).toEqual({ a: 1 });
         });
 
-        test('should accept custom converters when provided', () => {
-            const customConverter = (value: any) => `converted-${value}`;
-            const result = resolveConverter('custom', { custom: customConverter });
-            expect(result).toBe(customConverter);
-        });
-
-        test('should throw TypeError for unknown converter with custom registry', () => {
-            expect(() => resolveConverter('unknown', { custom: (v: any) => v }, { strictNamedLookup: true })).toThrow(TypeError);
-            expect(() => resolveConverter('unknown', { custom: (v: any) => v }, { strictNamedLookup: true })).toThrow('Unknown converter reference: unknown');
+        test('should handle null/undefined values with optional converters', () => {
+            const optionalConverter = createOptionalConverter((value: any) => Number(value));
+            expect(optionalConverter(null)).toBeNull();
+            expect(optionalConverter(undefined)).toBeUndefined();
+            expect(optionalConverter('10')).toBe(10);
         });
     });
 });

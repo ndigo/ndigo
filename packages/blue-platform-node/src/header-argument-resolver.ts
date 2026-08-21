@@ -18,12 +18,8 @@ import { getNodeRequest } from './node-request';
  * Node.js request header argument resolver.
  */
 export class NodeHeaderValueMethodArgumentResolver extends AbstractPlatformArgumentResolver {
-    constructor(
-        converter: ArgumentValueConverter = identityArgumentValueConverter,
-        converterRegistry: ArgumentValueConverterRegistry = argumentValueConverters,
-        converterResolutionOptions: ConverterResolutionOptions = {}
-    ) {
-        super(converter, converterRegistry, converterResolutionOptions, convertArgumentValue);
+    constructor() {
+        super(convertArgumentValue);
     }
 
     get [Symbol.toStringTag](): string {

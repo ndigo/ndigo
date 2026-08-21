@@ -1,6 +1,6 @@
 /** @author opencode */
 
-import { RuleTester } from '@typescript-eslint/rule-tester';
+import { RuleTester } from 'oxlint/plugins-dev';
 import { afterAll, describe, it } from 'vitest';
 
 RuleTester.afterAll = afterAll;

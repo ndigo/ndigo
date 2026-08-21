@@ -45,17 +45,28 @@ describe('NodePathValueMethodArgumentResolver', () => {
             expect(() => resolver.resolveArgument(param, route, {})).toThrow(/"id" cannot be undefined or null/);
         });
 
-        test('should apply converter when provided', () => {
+        test('should apply type-based conversion when convertType is provided', () => {
             const route = makeRoute({ age: '25' });
-            const param = new MethodParameter(MethodParameterType.PATH, 'age', false, undefined, 'number');
+            const param = new MethodParameter(
+                MethodParameterType.PATH,
+                'age',
+                false,
+                undefined,
+                { source: String, target: Number }
+            );
             expect(resolver.resolveArgument(param, route, {})).toBe(25);
         });
 
-        test('should prefer parameter-level converter over resolver-level converter', () => {
-            const route = makeRoute({ age: '25' });
-            const booleanResolver = new NodePathValueMethodArgumentResolver((v) => Boolean(v));
-            const param = new MethodParameter(MethodParameterType.PATH, 'age', false, undefined, 'number');
-            expect(booleanResolver.resolveArgument(param, route, {})).toBe(25);
+        test('should handle boolean conversion when convertType is provided', () => {
+            const route = makeRoute({ active: 'true' });
+            const param = new MethodParameter(
+                MethodParameterType.PATH,
+                'active',
+                false,
+                undefined,
+                { source: String, target: Boolean }
+            );
+            expect(resolver.resolveArgument(param, route, {})).toBe(true);
         });
 
         test('should handle null route.params gracefully', () => {

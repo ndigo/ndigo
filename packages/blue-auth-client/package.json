@@ -11,10 +11,12 @@
     "@blue/auth-core": "workspace:*"
   },
   "peerDependencies": {
+    "@blue/http": "workspace:*",
     "@blue/router": "workspace:*"
   },
   "devDependencies": {
     "@blue/auth-core": "workspace:*",
+    "@blue/http": "workspace:*",
     "@blue/router": "workspace:*",
     "typescript": "^5.7.2"
   },

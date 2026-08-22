@@ -22,7 +22,7 @@
 | Context            | `@blue/context`           | 🟡 85%   | 95%    | 🟢 95%  |
 | Request Processing | `@blue/dispatcher`        | 🟡 65%   | 90%    | 🟢 90%  |
 | Web Infra          | `@blue/router`            | 🟡 50%   | 80%    | 🟡 80%  |
-| Infrastructure     | `@blue/content`           | 🟡 45%   | 85%    | 🟡 45%  |
+| Infrastructure     | `@blue/content`           | 🟡 45%   | 85%    | 🟢 85%  |
 | Application        | `@blue/platform-web`      | 🟡 45%   | 90%    | 🟢 85%  |
 | Request Processing | `@blue/view`              | 🟡 40%   | 85%    | 🟢 85%  |
 | Bootstrap          | `@blue/boot`              | 🟡 40%   | 85%    | 🟢 85%  |
@@ -162,11 +162,11 @@
 **Open:**
 - [x] Document refresh/close semantics with sequence diagrams — `docs/reference/2026-08-22_CONTEXT_LIFECYCLE.md`
 
-**`@blue/content` (~45% → 85%) — OPEN**
+**`@blue/content` (~45% → 85%) — COMPLETE** ✅
 
-- [ ] Dynamic content sources (async loading, TTL-based caching)
-- [ ] Theme composition (multiple theme sources merged in priority order)
-- [ ] Content negotiation hooks for dispatcher integration
+- [x] Dynamic content sources (async loading, TTL-based caching) — `TtlContentSource` with 7 tests
+- [x] Theme composition (multiple theme sources merged in priority order) — `CompositeThemeResolver`, `PriorityContentSource` with 5 tests
+- [x] Content negotiation hooks for dispatcher integration — `NegotiatingContentSource` with Accept-Language parsing, 8 tests
 
 **`@blue/validate` — COMPLETE** ✅
 
@@ -241,7 +241,7 @@
 
 | Priority | Wave | Area | Effort Estimate |
 |----------|------|------|----------------|
-| **P1** | 7 | `@blue/content` — dynamic content sources, theme composition, negotiation hooks | 3-4 days |
+| **P1** | 7 | `@blue/content` — dynamic content sources, theme composition, negotiation hooks | ✅ Done |
 | **P1** | 7 | `@blue/validate` — group symmetry, error messages | ✅ Done |
 | **P2** | 4.5 | Client infra — IndexedDB, LocalStorage, SW registration, BrowserRouter, CORS, offline retry | 2-3 weeks |
 | **P2** | 8 | `@blue/platform-node` test coverage + integration verification | 1-2 days |

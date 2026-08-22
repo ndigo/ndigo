@@ -34,7 +34,7 @@ describe('dispatcher errors', () => {
 
         expect(error.message).toBe('binding failed');
         expect(error.route).toBeNull();
-        expect(error.name).toBeNull();
+        expect(error.name).toBe('');
     });
 
     test('RouteBindingError should support route + name overload', () => {

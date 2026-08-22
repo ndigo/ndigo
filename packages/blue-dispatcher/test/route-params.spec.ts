@@ -40,26 +40,26 @@ describe('@routeParams - TC39 Parameter Injection Pattern', () => {
             expect(extractor.name).toBe('limit');
             expect(extractor.required).toBe(true);
             expect(extractor.defaultValue).toBe('10');
-            expect(extractor.convert).toBeNull();
+            expect(extractor.convertType).toBeUndefined();
         });
 
         it('queryValue should accept converter option', () => {
             const converter = (value) => Number(value);
-            const extractor = queryValue('limit', { convert: converter });
+            const extractor = queryValue('limit', { convertType: converter });
 
-            expect(extractor.convert).toBe(converter);
+            expect(extractor.convertType).toBe(converter);
         });
 
         it('queryValue should accept named converter option', () => {
-            const extractor = queryValue('limit', { convert: 'number' });
+            const extractor = queryValue('limit', { convertType: 'number' });
 
-            expect(extractor.convert).toBe('number');
+            expect(extractor.convertType).toBe('number');
         });
 
         it('queryValue should accept optional converter descriptor', () => {
-            const extractor = queryValue('limit', { convert: { optional: true, use: 'number' } });
+            const extractor = queryValue('limit', { convertType: { optional: true, use: 'number' } });
 
-            expect(extractor.convert).toEqual({ optional: true, use: 'number' });
+            expect(extractor.convertType).toEqual({ optional: true, use: 'number' });
         });
 
         it('matrixValue should create matrix parameter extractor', () => {
@@ -117,7 +117,7 @@ describe('@routeParams - TC39 Parameter Injection Pattern', () => {
         describe('Typed Converter Wrappers', () => {
             it('asNumber should wrap extractor with number converter', () => {
                 const extractor = asNumber(queryValue('age', { required: true, defaultValue: '18' }));
-                expect(extractor.convert).toBe('number');
+                expect(extractor.convertType).toEqual({ source: String, target: Number });
                 expect(extractor.name).toBe('age');
                 expect(extractor.required).toBe(true);
                 expect(extractor.defaultValue).toBe('18');
@@ -125,26 +125,26 @@ describe('@routeParams - TC39 Parameter Injection Pattern', () => {
 
             it('asBoolean should wrap extractor with boolean converter', () => {
                 const extractor = asBoolean(stateValue('active'));
-                expect(extractor.convert).toBe('boolean');
+                expect(extractor.convertType).toEqual({ source: String, target: Boolean });
                 expect(extractor.name).toBe('active');
             });
 
             it('asDate should wrap extractor with date converter', () => {
                 const extractor = asDate(cookieValue('lastLogin'));
-                expect(extractor.convert).toBe('date');
+                expect(extractor.convertType).toEqual({ source: String, target: Date });
                 expect(extractor.name).toBe('lastLogin');
             });
 
             it('asJson should wrap extractor with json converter', () => {
                 const extractor = asJson(modelValue('profile'));
-                expect(extractor.convert).toBe('json');
+                expect(extractor.convertType).toEqual({ source: String, target: Object });
                 expect(extractor.name).toBe('profile');
             });
 
             it('wrappers should override existing converter', () => {
-                const inner = queryValue('age', { convert: (v) => v });
+                const inner = queryValue('age', { convertType: (v) => v });
                 const wrapped = asNumber(inner);
-                expect(wrapped.convert).toBe('number');
+                expect(wrapped.convertType).toEqual({ source: String, target: Number });
             });
         });
     });
@@ -243,30 +243,30 @@ describe('@routeParams - TC39 Parameter Injection Pattern', () => {
             expect(params![0].defaultValue).toBe('10');
         });
 
-        it('should preserve converter options', () => {
-            const converter = (value) => Number(value);
+it('should preserve converter options', () => {
+            const converter = (v: any) => Number(v);
 
             class TestController {
                 @routeParams({
-                    limit: queryValue('limit', { convert: converter }),
+                    limit: queryValue('limit', { convertType: converter }),
                 })
                 handleQuery(limit: string) {}
             }
 
             const params = getMethodParameter(TestController.prototype, 'handleQuery');
-            expect(params![0].convert).toBe(converter);
+            expect(params![0].convertType).toBe(converter);
         });
 
         it('should preserve named converter options', () => {
             class TestController {
                 @routeParams({
-                    limit: queryValue('limit', { convert: 'number' }),
+                    limit: queryValue('limit', { convertType: 'number' }),
                 })
                 handleQuery(limit: string) {}
             }
 
             const params = getMethodParameter(TestController.prototype, 'handleQuery');
-            expect(params![0].convert).toBe('number');
+            expect(params![0].convertType).toBe('number');
         });
 
         it('should throw error if parameter name not found', () => {

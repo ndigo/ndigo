@@ -194,8 +194,8 @@ const { defineProperty, deleteProperty, getPrototypeOf } = Reflect,
 
 function addConditionalEventListener(emitter: EventEmitter, type: EventType, listener: EventListener): void {
     const conditionalListener: EventListener = function (this: EventEmitter): void {
-        const done = listener.apply(this, arguments as any);
-        if (done !== undefined && done !== null) {
+        const done: any = listener.apply(this, arguments as any);
+        if (done) {
             // When a conditional listener removes itself (once/many/until), tests expect
             // ':off' meta events to include only the event type (no listener argument).
             removeEventListener(emitter, type, conditionalListener, false);

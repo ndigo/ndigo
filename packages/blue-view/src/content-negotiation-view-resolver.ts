@@ -173,16 +173,15 @@ export abstract class AbstractMappingContentNegotiationStrategy
      */
     resolveMediaTypes(request: any): MediaType[] {
         const all = this.getAllMediaTypes();
-        if (!request?.mediaTypeHint) return all;
+        const hint = request?.mediaTypeHint as string | undefined;
+        if (!hint) return all;
 
-        // Filter by media type hint from the request (e.g., Accept header)
-        const hint = request.mediaTypeHint as string | undefined;
-        if (hint) {
-            const parts = hint.split(';').map(s => s.trim().toLowerCase());
-            for (const mediaType of all) {
-                // Simple content-type matching: application/json matches "application/json"
-                if (mediaType?.type === hint || mediaType?.medium === hint) return [mediaType];
-            }
+        // Filter by media type hint from the request (e.g., Accept header).
+        // Compare the primary media type (parameters stripped, lower-cased)
+        // against either the top-level type or the full base type.
+        const primary = hint.split(';')[0].trim().toLowerCase();
+        for (const mediaType of all) {
+            if (mediaType.type === primary || mediaType.baseType === primary) return [mediaType];
         }
         return all;
     }
@@ -202,33 +201,27 @@ export abstract class AbstractMappingContentNegotiationStrategy
 /**
  * Content negotiation strategy that is intended to derive media types from the request path extension.
  */
-export class PathExtensionContentNegotiationStrategy implements ContentNegotiationStrategy {
+export class PathExtensionContentNegotiationStrategy extends MappingMediaTypeFileExtensionResolver
+    implements ContentNegotiationStrategy
+{
     /**
      * Resolves media types by inspecting the request path extension.
-
+     *
      * @param request - The current request.
      * @returns Media types matching the file extension extracted from the path.
      */
     resolveMediaTypes(request: any): MediaType[] {
         // Try to extract a path or URI from the request
-        const uri = request?.uri || ((request as any)?.path ?? '');
-
+        const uri = (request?.uri || request?.path) || '';
         if (!uri) return [];
 
-        // Extract the file extension (last part after last dot, ignoring query string)
+        // Extract the file extension (last segment after the last dot, ignoring query string)
         const pathname = uri.split('?')[0]; // strip query string
-        const ext = pathname.match(/(\.[^/]+)$/);
+        const ext = pathname.match(/\.([^/]+)$/);
         if (!ext) return [];
 
-        const lowerExt = ext[1].toLowerCase();
-        const mediaType = this.mediaTypes.get(lowerExt);
-        if (mediaType) return [mediaType];
-
-        // Fallback: match against known media types from all extensions
-        for (const [k, m] of this.mediaTypes.entries()) {
-            if (lowerExt === k) return [m];
-        }
-        return [];
+        const mediaType = this.lookupMediaType(ext[1].toLowerCase());
+        return mediaType ? [mediaType] : [];
     }
 }
 
@@ -267,7 +260,7 @@ export class ContentNegotiationManager implements ContentNegotiationStrategy, Me
         const seen = new Set<string>();
         const result: string[] = [];
         for (const resolver of this.resolvers) {
-            if (!resolver instanceof MappingMediaTypeFileExtensionResolver) continue;
+            if (!(resolver instanceof MappingMediaTypeFileExtensionResolver)) continue;
             for (const ext of resolver.getAllFileExtenstions()) {
                 if (!seen.has(ext)) {
                     seen.add(ext);
@@ -286,7 +279,7 @@ export class ContentNegotiationManager implements ContentNegotiationStrategy, Me
      */
     resolveFileExtensions(mediaType: MediaType): string[] {
         for (const resolver of this.resolvers) {
-            if (!resolver instanceof MappingMediaTypeFileExtensionResolver) continue;
+            if (!(resolver instanceof MappingMediaTypeFileExtensionResolver)) continue;
             const exts = resolver.resolveFileExtensions(mediaType);
             if (exts.length > 0) return exts;
         }

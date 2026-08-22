@@ -111,7 +111,7 @@ export abstract class AbstractRouteErrorResolver implements RouteErrorResolver {
             }
         }
 
-        return !mappedHandlers && !mappedHandlerClasses;
+        return !mappedHandlers && (!mappedHandlerClasses || mappedHandlerClasses.length === 0);
     }
 
     /**

@@ -3,7 +3,7 @@
  */
 
 import { AsNameAware } from '@blue/factory';
-import { JSONObject, MediaType, MediaTypes, Serializable, createNull, Null } from '@blue/core';
+import { IllegalStateError, JSONObject, MediaType, MediaTypes, Serializable, createNull, Null } from '@blue/core';
 import { AsApplicationContextAware } from '@blue/context';
 import type { ApplicationContext } from '@blue/context';
 import { toMatrixString, toQueryString, ROUTER } from '@blue/router';
@@ -181,17 +181,29 @@ export abstract class AbstractPathBasedView extends AbstractView {
  */
 export abstract class AbstractTemplateView extends AbstractPathBasedView {
     /**
+     * Creates the template model from the view model.
+     * @param viewModel The view model.
+     * @param request The current request.
+     * @returns The template model.
+     * @protected
+     */
+    protected _projectViewModel(viewModel: any, request: any): any {
+        return viewModel;
+    }
+
+    /**
      * Renders the template with the given template model and request.
      * @param templateModel The template data model.
      * @param request The current request.
+     * @param target The optional view target.
      * @protected
      * @abstract
      */
-    protected abstract _renderTemplate(templateModel: any, request: any): void;
+    protected abstract _renderTemplate(templateModel: any, request: any, target?: ViewTarget): void | Promise<void>;
 
     /**
      * Renders the view with the given view model.
-
+     *
      * @param viewModel The view model to render.
      * @param request The current request.
      * @param target The optional view target (required for rendering).
@@ -270,7 +282,7 @@ export class RerouteView extends AbstractPathBasedView {
  *
  * @param path The URL path for this view.
  */
-export class StringTemplateView extends AbstractPathBasedView {
+export class StringTemplateView extends AbstractTemplateView {
     /**
      * The template string to render.
      * 
@@ -293,7 +305,7 @@ export class StringTemplateView extends AbstractPathBasedView {
      * @param request The current request.
      * @param target The view target (required for rendering).
      */
-    protected async _renderTemplate(templateModel: any, request: any, target?: ViewTarget): void {
+    protected async _renderTemplate(templateModel: any, request: any, target?: ViewTarget): Promise<void> {
         if (!target) throw new IllegalStateError('View requires a ViewTarget.');
 
         const html = this.renderTemplate(this.template, templateModel);

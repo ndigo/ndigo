@@ -21,8 +21,6 @@
     "build:bluejs": "pnpm --filter ../todomcv/examples/bluejs run build",
     "build:todomvc": "nx run @blue/todomvc:build:lib",
     "test": "nx run-many -t test",
-
-
     "test:bench": "vitest bench --run --reporter verbose",
     "test:e2e": "nx run @blue/demo:test:e2e",
     "lint": "oxlint .",

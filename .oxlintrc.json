@@ -51,36 +51,43 @@
         "@typescript-eslint/no-use-before-define": ["error", { "classes": false, "functions": false, "typedefs": false, "variables": false }],
         "@typescript-eslint/no-require-imports": "off",
         "@typescript-eslint/prefer-namespace-keyword": "error",
+
         "@blue/no-direct-integration-imports": "warn",
         "@blue/no-internal-file-imports": "error",
         "@blue/no-internal-file-exports": "error",
-        "@blue/no-browser-globals-in-isomorphic": "warn"
+        "@blue/no-browser-globals-in-isomorphic": "warn",
+
+        "no-shadow": "warn",
+        "no-useless-escape": "warn",
+        "no-unsafe-optional-chaining": "warn",
+        "no-sparse-arrays": "warn",
+        "no-unneeded-ternary": "warn",
+        "no-extra-boolean-cast": "warn",
+        "no-unused-private-class-members": "warn",
+        "no-this-alias": "warn",
+        "no-instanceof-builtins": "warn",
+        "prefer-set-size": "warn",
+        "require-module-specifiers": "warn",
+        "preserve-caught-error": "warn",
+        "no-await-in-loop": "warn",
+        "no-new-array": "off",
+        "no-thenable": "off",
+        "no-instanceof-builtins": "off"
     },
     "env": {
         "browser": true,
         "node": true,
-        "es2024": true
+        "es2022": true
     },
     "globals": {
-        "window": "readonly",
-        "document": "readonly",
-        "navigator": "readonly",
-        "console": "readonly",
         "process": "readonly",
-        "__dirname": "readonly",
-        "__filename": "readonly",
         "Buffer": "readonly",
-        "global": "readonly",
-        "module": "readonly",
-        "require": "readonly",
-        "exports": "readonly",
-        "globalThis": "readonly",
+        "afterAll": "readonly",
+        "afterEach": "readonly",
+        "beforeAll": "readonly",
+        "beforeEach": "readonly",
         "describe": "readonly",
         "it": "readonly",
-        "before": "readonly",
-        "after": "readonly",
-        "beforeEach": "readonly",
-        "afterEach": "readonly",
         "expect": "readonly",
         "test": "readonly",
         "vi": "readonly"
@@ -89,7 +96,10 @@
         {
             "files": ["**/*.spec.ts", "**/*.test.ts", "**/test/**/*.ts", "**/test/**/*.js", "**/test/**/*.mjs"],
             "rules": {
-                "@typescript-eslint/no-unused-vars": "off"
+                "@typescript-eslint/no-unused-vars": "off",
+                "no-shadow": "off",
+                "no-useless-escape": "off",
+                "no-instanceof-builtins": "off"
             }
         },
         {

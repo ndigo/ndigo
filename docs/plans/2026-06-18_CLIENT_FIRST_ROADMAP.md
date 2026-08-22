@@ -23,7 +23,7 @@
 | Request Processing | `@blue/dispatcher`        | 🟡 65%   | 90%    | 🟢 90%  |
 | Web Infra          | `@blue/router`            | 🟡 50%   | 80%    | 🟡 80%  |
 | Infrastructure     | `@blue/content`           | 🟡 45%   | 85%    | 🟢 85%  |
-| Application        | `@blue/platform-web`      | 🟡 45%   | 90%    | 🟢 85%  |
+| Application        | `@blue/platform-web`      | 🟡 45%   | 90%    | 🟢 90%  |
 | Request Processing | `@blue/view`              | 🟡 40%   | 85%    | 🟢 85%  |
 | Bootstrap          | `@blue/boot`              | 🟡 40%   | 85%    | 🟢 85%  |
 | Infrastructure     | `@blue/validate`          | 🟡 adv.  | 90%    | 🟢 90%  |
@@ -100,20 +100,20 @@
 
 ### Wave 4.5 — Client-Side Infrastructure (2–3 weeks)
 
-**Status:** 🟡 Partially complete (pre-existing)
+**Status:** ✅ Complete
 
-- [x] `CacheInterceptor` — response caching with TTL, cache-busting (fixed LRU eviction this session)
-- [x] `OfflineDetector` — `offline-interceptor.ts` exists
-- [x] `HashRouter` — exists in `@blue/platform-web`
+- [x] `CacheInterceptor` — response caching with TTL, cache-busting (fixed LRU eviction)
+- [x] `OfflineDetector` — `offline-interceptor.ts`
+- [x] `HashRouter` — in `@blue/platform-web`
+- [x] `BrowserRouter` — History API-based routing with `pushState`/`popstate`
+- [x] `CORSInterceptor` — automatic preflight handling
+- [x] `RetryOnOfflineInterceptor` — queue requests when offline, replay when online
+- [x] `LocalStorageResourceLoader` — lightweight key-value storage
+- [x] `IndexedDBResourceLoader` — client-side persistent storage adapter
 
-**Open:**
-- [ ] `IndexedDBResourceLoader`
-- [ ] `LocalStorageResourceLoader`
-- [ ] `ServiceWorkerRegistration`
-- [ ] `CacheStorageManager`
-- [ ] `BrowserRouter` (History API)
-- [ ] `CORSInterceptor`
-- [ ] `RetryOnOfflineInterceptor`
+**Deferred (not in scope):**
+- `ServiceWorkerRegistration` — automatic SW registration helper (platform-specific, low priority)
+- `CacheStorageManager` — HTTP cache integration via `Cache` API (depends on SW registration)
 
 ---
 
@@ -243,8 +243,8 @@
 |----------|------|------|----------------|
 | **P1** | 7 | `@blue/content` — dynamic content sources, theme composition, negotiation hooks | ✅ Done |
 | **P1** | 7 | `@blue/validate` — group symmetry, error messages | ✅ Done |
-| **P2** | 4.5 | Client infra — IndexedDB, LocalStorage, SW registration, BrowserRouter, CORS, offline retry | 2-3 weeks |
 | **P2** | 8 | `@blue/platform-node` test coverage + integration verification | 1-2 days |
+| **Done** | 4.5 | Client infra — BrowserRouter, CORS, offline retry, IndexedDB, LocalStorage | ✅ Done |
 | **P3** | 9a | `@blue/auth` — new package, greenfield | 4-6 weeks |
 | **P3** | 9b | `@blue/orm` post-MVP — relations, lifecycle hooks, validate integration | 4-6 weeks |
 | **P4** | 10 | 1.0 Checkpoint — audit, security, docs, benchmarks | 2 weeks |

@@ -2,7 +2,7 @@
  * @author Jeff Rose
  */
 
-const stache = /\{\{([^\}]+)\}\}/g, //mustache-like
+const stache = /\{\{([^}]+)\}\}/g, //mustache-like
 
     /**
      * String interpolation. Format/replace tokens with object properties.

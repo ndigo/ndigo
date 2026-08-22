@@ -249,7 +249,7 @@ const { parseFloat, parseInt } = Number,
             
             const normalizedRegex = isString(regex) ? removeSlashes(regex as string) : regex;
     
-            const matcher: RegExp = isString(flags)
+            const matcher: RegExp = isString(flags) && flags.length > 0
                 ? new RegExp(removeSlashesAndFlags(String(normalizedRegex)), flags)
                 : new RegExp(normalizedRegex);
     
@@ -570,7 +570,7 @@ const { parseFloat, parseInt } = Number,
     isPatternMatch = (value: string, regexp: Pattern, flags?: string): boolean => {
         regexp = isString(regexp) ? removeSlashes(regexp as string) : regexp;
 
-        const matcher: RegExp = isString(flags)
+        const matcher: RegExp = isString(flags) && flags.length > 0
             ? new RegExp(removeSlashesAndFlags(String(regexp)), flags)
             : new RegExp(regexp);
 

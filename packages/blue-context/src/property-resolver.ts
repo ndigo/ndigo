@@ -17,7 +17,7 @@ export interface PropertyResolver {
      * @param defaultValue - The value to return when no property is found.
      * @returns The resolved property value or the default value.
      */
-    getProperty(key: string, defaultValue?: JSONValue): JSONValue;
+    getProperty(key: string, defaultValue?: JSONValue): JSONValue | undefined;
     /**
      * Returns the resolved property value or throws when missing.
      *
@@ -139,11 +139,11 @@ export class PrototypalPropertyResolver implements ConfigurablePropertyResolver 
      * @param defaultValue - The value to return when the property is missing.
      * @returns The resolved property value or the default value.
      */
-    getProperty(key: string, defaultValue?: JSONValue): JSONValue {
+    getProperty(key: string, defaultValue?: JSONValue): JSONValue | undefined {
         const keypath = parseKeypath(key);
-        if (!keypath) return defaultValue ?? null;
+        if (!keypath) return defaultValue ?? undefined;
         const value = keypath.reduce((acc: any, k) => acc?.[k], this.properties as any);
-        return value ?? (defaultValue === undefined ? null : defaultValue);
+        return value ?? (defaultValue === undefined ? undefined : defaultValue);
     }
 
     /**

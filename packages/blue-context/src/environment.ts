@@ -167,7 +167,7 @@ export abstract class AbstractEnvironment implements ConfigurableEnvironment {
         return this.#propertyResolver.hasProperty(key);
     }
 
-    getProperty(key: string, defaultValue?: JSONValue): JSONValue {
+    getProperty(key: string, defaultValue?: JSONValue): JSONValue | undefined {
         return this.#propertyResolver.getProperty(key, defaultValue);
     }
 

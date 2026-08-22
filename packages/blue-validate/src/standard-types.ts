@@ -225,7 +225,7 @@ const standardTypes = {
             {
                 type: 'NonConsecutiveAlphaNumerics',
                 params: {
-                    maxSeqential: 3,
+                    maxSequential: 3,
                 },
             },
             {

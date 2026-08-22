@@ -105,14 +105,14 @@ export class CacheInterceptor implements RequestAwareHTTPInterceptor, ResponseAw
 
         const cacheKey = this.#generateCacheKey(request);
         const ttl = this.#config.defaultTtl ?? 300000;
-        
+
         this.#cache.set(cacheKey, {
             response: response.clone(),
             expiry: Date.now() + ttl,
             lastAccessed: Date.now(),
         });
 
-        this.#enforceCacheSize();
+        this.#enforceCacheSize(cacheKey);
 
         return response;
     }
@@ -132,14 +132,15 @@ export class CacheInterceptor implements RequestAwareHTTPInterceptor, ResponseAw
         return `${request.method}:${request.url}`;
     }
 
-    #enforceCacheSize(): void {
+    #enforceCacheSize(newKey?: string): void {
         const maxSize = this.#config.maxCacheSize ?? 100;
         if (this.#cache.size > maxSize) {
             let oldestKey: string | null = null;
             let oldestTime = Infinity;
 
             for (const [key, entry] of this.#cache.entries()) {
-                if (entry.lastAccessed < oldestTime) {
+                if (key === newKey) continue;
+                if (entry.lastAccessed <= oldestTime) {
                     oldestTime = entry.lastAccessed;
                     oldestKey = key;
                 }

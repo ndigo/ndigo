@@ -77,6 +77,65 @@ export class ApplicationBuilder {
     }
 
     /**
+     * Creates a builder from a JSON configuration URL.
+     *
+     * Fetches the JSON config from the given URL and uses the top-level
+     * `sources`, `profiles`, and `properties` keys to bootstrap the application.
+     *
+     * The `sources` array is expected to contain module specifiers that can be
+     * dynamically imported as configuration classes.
+     *
+     * @param url - URL pointing to a JSON configuration file.
+     * @returns A promise resolving to the configured builder.
+     *
+     * @example
+     * ```ts
+     * // config.json:
+     * // {
+     * //   "sources": ["@blue/AppConfig"],
+     * //   "profiles": ["production"],
+     * //   "properties": { "server.port": 8080 }
+     * // }
+     *
+     * const app = await ApplicationBuilder.fromConfig('/config.json');
+     * app.run();
+     * ```
+     */
+    static async fromConfig(url: string | URL): Promise<ApplicationBuilder> {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`Failed to load config from ${url}: ${response.status}`);
+        }
+        const config = await response.json() as Record<string, unknown>;
+
+        const sources: Function[] = [];
+        const rawSources = config.sources;
+        if (Array.isArray(rawSources)) {
+            for (const specifier of rawSources) {
+                const mod = await import(/* @vite-ignore */ specifier as string);
+                const exported = (mod as Record<string, unknown>).default ?? mod;
+                if (typeof exported === 'function') {
+                    sources.push(exported as Function);
+                }
+            }
+        }
+
+        const builder = new ApplicationBuilder(sources);
+
+        const rawProfiles = config.profiles;
+        if (Array.isArray(rawProfiles)) {
+            builder.profiles(...rawProfiles.map(String));
+        }
+
+        const rawProperties = config.properties;
+        if (rawProperties && typeof rawProperties === 'object') {
+            builder.properties(rawProperties as JSONObject);
+        }
+
+        return builder;
+    }
+
+    /**
      * Sets the environment used when the application prepares its context.
      *
      * @param environment - The environment to use for the application.

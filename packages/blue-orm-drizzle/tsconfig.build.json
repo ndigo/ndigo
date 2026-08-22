@@ -3,11 +3,11 @@
   "compilerOptions": {
     "composite": true,
     "outDir": "lib",
-    "paths": {
-      "@blue/*": ["../blue-*/index"]
-    },
     "rootDir": "src",
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "paths": {
+      "@blue/*": ["../blue-*/lib"]
+    }
   },
   "exclude": ["node_modules/**/*", "**/*.spec.ts", "**/*.test.ts", "vite.config.ts", "vitest.config.ts", "test/**/*"],
   "include": ["src/**/*"]

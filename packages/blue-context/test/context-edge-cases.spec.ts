@@ -21,7 +21,7 @@ describe('GenericApplicationContext — remaining branch coverage', () => {
         root.destroy();
     });
 
-    test('bubble from grandchild emits on self, intermediate parent, and root', () => {
+test('bubble from grandchild emits on self, intermediate parent, and root', () => {
         const root = new GenericApplicationContext('root');
         const child = root.newChild('child') as GenericApplicationContext;
         const grandchild = child.newChild('grandchild') as GenericApplicationContext;
@@ -36,8 +36,7 @@ describe('GenericApplicationContext — remaining branch coverage', () => {
 
         grandchild.bubble('up:event');
 
-        // escalate emits on the origin (inclusive) then climbs parent chain:
-        // grandchild → child → root
+        // escalate emits on the origin (inclusive) then climbs the parent chain
         expect(grandchildListener).toHaveBeenCalledTimes(1);
         expect(childListener).toHaveBeenCalledTimes(1);
         expect(rootListener).toHaveBeenCalledTimes(1);

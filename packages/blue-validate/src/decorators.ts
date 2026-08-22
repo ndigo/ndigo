@@ -7,6 +7,7 @@ import { FrameworkError } from '@blue/core';
 import constraints, { hasConstraint } from './constraints';
 import { ConstraintViolationError } from './error';
 import { defaultValidationGroup, ValidationGroup } from './group';
+import { createValidationBackend, ValidationBackendName } from './backend';
 
 /**
  * Defines the validation mode for a constraint.
@@ -115,9 +116,58 @@ const includesAnyGroup = (
     return constraintGroups.some((group) => activeGroups.includes(group));
 };
 
-const createViolationError = (propertyName: string | symbol, constraintName: string, message?: string) => {
-    const defaultMessage = `Constraint "${constraintName}" failed for field "${String(propertyName)}"`;
-    return new ConstraintViolationError(message || defaultMessage, new Set([constraintName]));
+/**
+ * Formats a validation error message.
+ *
+ * Override this function to customize or localize error messages.
+ * The default format returns English messages.
+ *
+ * @param constraintName - The name of the constraint that failed.
+ * @param propertyName - The field name that failed validation.
+ * @param value - The value that was rejected.
+ * @param message - An optional custom message from the decorator config.
+ * @returns The formatted error message string.
+ */
+export let formatErrorMessage = (
+    constraintName: string,
+    propertyName: string,
+    value: unknown,
+    message?: string,
+): string => {
+    if (message) return message;
+    const displayValue = typeof value === 'string' ? `"${value}"` : String(value);
+    return `Constraint "${constraintName}" failed for field "${String(propertyName)}". Rejected value: ${displayValue}`;
+};
+
+/**
+ * Replaces the default error message formatter.
+ *
+ * Use this to provide i18n translations or custom formatting:
+ *
+ * ```ts
+ * import { setErrorMessageFormatter } from '@blue/validate';
+ *
+ * setErrorMessageFormatter((constraint, field, value, msg) => {
+ *   return msg ?? `Field "${field}" with value "${value}" failed "${constraint}"`;
+ * });
+ * ```
+ *
+ * @param formatter - The new formatter function.
+ */
+export const setErrorMessageFormatter = (
+    formatter: typeof formatErrorMessage,
+): void => {
+    formatErrorMessage = formatter;
+};
+
+const createViolationError = (
+    propertyName: string | symbol,
+    constraintName: string,
+    value: unknown,
+    message?: string,
+): ConstraintViolationError => {
+    const defaultMessage = formatErrorMessage(constraintName, String(propertyName), value, message);
+    return new ConstraintViolationError(defaultMessage, new Set([constraintName]));
 };
 
 const validateConstraintValue = (
@@ -138,7 +188,7 @@ const validateConstraintValue = (
         return;
     }
 
-    const error = createViolationError(propertyName, constraintName, message);
+    const error = createViolationError(propertyName, constraintName, newValue, message);
 
     if (mode === 'non-blocking') {
         console.warn(error.message);
@@ -245,7 +295,20 @@ const createConstraintDecorator =
         const incoming = params as T & DecoratorConfig<T>;
         const isMapped = typeof mapConfig === 'function';
 
-        const config = isMapped ? mapConfig(incoming as T) : (incoming as DecoratorConfig<T>);
+        let config = isMapped ? mapConfig(incoming as T) : (incoming as DecoratorConfig<T>);
+
+        // Preserve groups, message, and mode from the incoming params — mapConfig
+        // typically only extracts constraint-specific params (e.g., value, min, max)
+        // and drops the shared decorator config.
+        if (isMapped && incoming.groups !== undefined) {
+            config = { ...config, groups: incoming.groups };
+        }
+        if (isMapped && incoming.message !== undefined) {
+            config = { ...config, message: incoming.message };
+        }
+        if (isMapped && incoming.mode !== undefined) {
+            config = { ...config, mode: incoming.mode };
+        }
 
         defineFieldValidation(propertyName, constraintName, config, context);
     };
@@ -488,34 +551,41 @@ export const integer = createConstraintDecorator('Integer');
 export const numeric = createConstraintDecorator('Numeric');
 
 /**
+ * Options for the `@validated` class decorator.
+ */
+export type ValidatedConfig = {
+    groups?: ValidationGroup[];
+    /** Backend adapter to use for constraint validation. Defaults to 'native'. */
+    backend?: ValidationBackendName;
+};
+
+/**
  * TC39 Stage 3 class decorator that enables validation for a class's fields.
  * When applied, it adds a `validate` method to the class prototype, allowing programmatic validation.
- * @param {object} [config] - Configuration for the class validation.
- * @param {ValidationGroup[]} [config.groups] - Default validation groups to apply when `validate` is called without explicit groups.
- * @returns {ClassDecorator} A class decorator function.
- * @example
- * @validated()
- * class User {
- *   @notBlank()
- *   firstName: string;
  *
+ * Supports both native and zod validation backends. Groups are evaluated at the decorator level
+ * regardless of backend, ensuring symmetric behavior.
+ *
+ * @param {ValidatedConfig} [config] - Configuration for the class validation.
+ * @param {ValidationGroup[]} [config.groups] - Default validation groups to apply when `validate` is called without explicit groups.
+ * @param {ValidationBackendName} [config.backend='native'] - Backend adapter for constraint validation ('native', 'zod', or 'hybrid').
+ * @returns {ClassDecorator} A class decorator function.
+ *
+ * @example
+ * @validated({ backend: 'zod' })
+ * class User {
  *   @email()
  *   email: string;
- *
- *   validateUser() {
- *     const result = this.validate();
- *     if (!result.isValid) {
- *       console.error('Validation failed for:', result.failedProperties);
- *     }
- *   }
  * }
  */
 export const validated =
-    (config: { groups?: ValidationGroup[] } = {}) =>
+    (config: ValidatedConfig = {}) =>
     <T extends new (...args: any[]) => any>(target: T, context: ClassDecoratorContext): T => {
         context.metadata['validate:class'] = {
             groups: config.groups || [],
         };
+
+        const backend = config.backend ? createValidationBackend(config.backend) : null;
 
         Object.defineProperty(target.prototype, 'validate', {
             value: function (options: ClassValidationOptions = {}): ClassValidationResult {
@@ -537,6 +607,10 @@ export const validated =
                     const hasBlockingFailure = fieldConfigList.some((fieldConfig) => {
                         if (fieldConfig.mode === 'non-blocking') {
                             return false;
+                        }
+
+                        if (backend && backend.hasConstraint(fieldConfig.constraint)) {
+                            return !backend.validateConstraint(fieldConfig.constraint, value, fieldConfig.params);
                         }
 
                         return !constraints[fieldConfig.constraint].validate(value, fieldConfig.params);

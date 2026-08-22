@@ -73,4 +73,13 @@ describe('Application', () => {
         const resolvers = context.getValue<HandlerMethodArgumentResolver[]>('argumentResolvers');
         expect(resolvers.length).toBeGreaterThan(0);
     });
+
+    test('it should skip web auto-configuration when window is not defined', () => {
+        vi.stubGlobal('window', undefined);
+
+        const app = new Application([]);
+        const context = app.run();
+
+        expect(context.hasValue('argumentResolvers')).toBe(false);
+    });
 });

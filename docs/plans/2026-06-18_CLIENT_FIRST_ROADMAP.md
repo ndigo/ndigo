@@ -33,7 +33,7 @@
 | Application        | `@blue/domain`            | 🔴 15%   | 75%    | 🟢 75%  |
 | Persistence        | `@blue/orm`               | 🟡 MVP   | 70%    | 🟡 MVP  |
 | Application        | `@blue/auth`              | ⬜ 0%    | MVP    | ⬜ 0%   |
-| Platform           | `@blue/platform-node`     | ⬜ 0%    | MVP    | 🟡 MVP  |
+| Platform           | `@blue/platform-node`     | ⬜ 0%    | MVP    | 🟢 MVP  |
 | Demo               | `blue-demo`               | 🟡 core  | Full   | 🟡 core |
 
 ---
@@ -177,19 +177,16 @@
 
 ### Wave 8 — Platform Expansion: `@blue/platform-node` (3–4 weeks)
 
-**Status:** 🟡 MVP complete (pre-existing)
+**Status:** ✅ Complete
 
 - [x] Package exists at `packages/blue-platform-node/`
 - [x] `NodeEnvironment` — implements `Environment` interface
-- [x] `NodeArgumentResolvers`: body, header, query, path, cookie, session
+- [x] `NodeArgumentResolvers`: body, header, query, path, cookie, session — 6 resolvers
 - [x] `FileSystemResourceLoader`
 - [x] `NodeAutoConfiguration` with `@ConditionalOnNode` metadata
-- [x] `FileSystemRouter` stub
+- [x] `FileSystemRouter` with navigate/refresh
 - [x] Build and lint config matching existing platform package patterns
-
-**Open:**
-- [ ] Full unit + integration test coverage
-- [ ] `NodeAutoConfiguration` — verify all 6 resolvers functional
+- [x] 105 tests across 13 test files — all source files covered
 
 ---
 
@@ -243,8 +240,8 @@
 |----------|------|------|----------------|
 | **P1** | 7 | `@blue/content` — dynamic content sources, theme composition, negotiation hooks | ✅ Done |
 | **P1** | 7 | `@blue/validate` — group symmetry, error messages | ✅ Done |
-| **P2** | 8 | `@blue/platform-node` test coverage + integration verification | 1-2 days |
 | **Done** | 4.5 | Client infra — BrowserRouter, CORS, offline retry, IndexedDB, LocalStorage | ✅ Done |
+| **Done** | 8 | `@blue/platform-node` — test coverage + integration | ✅ Done |
 | **P3** | 9a | `@blue/auth` — new package, greenfield | 4-6 weeks |
 | **P3** | 9b | `@blue/orm` post-MVP — relations, lifecycle hooks, validate integration | 4-6 weeks |
 | **P4** | 10 | 1.0 Checkpoint — audit, security, docs, benchmarks | 2 weeks |

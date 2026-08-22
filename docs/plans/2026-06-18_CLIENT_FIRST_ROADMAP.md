@@ -160,7 +160,7 @@
 - [x] Cover remaining branch paths in tests — 158 total
 
 **Open:**
-- [ ] Document refresh/close semantics with sequence diagrams
+- [x] Document refresh/close semantics with sequence diagrams — `docs/reference/2026-08-22_CONTEXT_LIFECYCLE.md`
 
 **`@blue/content` (~45% → 85%) — OPEN**
 
@@ -248,7 +248,7 @@
 | **P3** | 9a | `@blue/auth` — new package, greenfield | 4-6 weeks |
 | **P3** | 9b | `@blue/orm` post-MVP — relations, lifecycle hooks, validate integration | 4-6 weeks |
 | **P4** | 10 | 1.0 Checkpoint — audit, security, docs, benchmarks | 2 weeks |
-| **Ongoing** | 7 | Context docs (sequence diagrams for refresh/close) | 0.5 day |
+| **Done** | 7 | Context docs (sequence diagrams for refresh/close) | ✅ Done |
 | **Ongoing** | 3 | Remaining integration tests (view negotiation, redirect, transaction lifecycle) | 1 day |
 
 **Legend:** ✅ Complete | 🟢 ≥80% | 🟡 45-80% | 🔴 <45% | ⬜ Not started

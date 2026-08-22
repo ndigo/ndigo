@@ -14,11 +14,13 @@ import {
 import { LinearMetadataHandlerMapping } from '@blue/dispatcher';
 import { NameViewResolver } from '@blue/view';
 import { WebComponentViewEngine } from '@blue/view-webcomponent';
+import { ConditionalOnBrowser } from './conditional';
 
 /**
  * Auto-configuration for browser-based applications.
  * Provisions argument resolvers and converter registries.
  */
+@ConditionalOnBrowser
 @configuration
 export class WebAutoConfiguration {
     /**

@@ -11,6 +11,7 @@ import {
 } from '@blue/context';
 import { IllegalStateError, JSONObject } from '@blue/core';
 import { WebAutoConfiguration } from './web-auto-configuration';
+import { isActiveForCurrentPlatform } from './conditional';
 
 /**
  * Class that can be used to bootstrap and launch an application.
@@ -153,11 +154,15 @@ export class Application extends Emitter {
         const context = new MetadataConfigApplicationContext(this.#name ?? 'blue-application');
         context.setEnvironment(environment);
 
-        if (typeof window !== 'undefined') {
+        if (isActiveForCurrentPlatform(WebAutoConfiguration)) {
             context.register(WebAutoConfiguration);
         }
 
-        this.#sources.forEach((source) => context.register(source));
+        this.#sources.forEach((source) => {
+            if (isActiveForCurrentPlatform(source)) {
+                context.register(source);
+            }
+        });
         context.refresh();
         return context;
     }

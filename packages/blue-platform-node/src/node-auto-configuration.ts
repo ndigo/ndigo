@@ -12,6 +12,12 @@ import { NodeBodyValueMethodArgumentResolver } from './body-argument-resolver';
 import { NodeCookieValueMethodArgumentResolver } from './cookie-argument-resolver';
 import { NodeSessionValueMethodArgumentResolver } from './session-argument-resolver';
 
+/** Matches @ConditionalOnNode from @blue/boot — marks this config as Node-only. */
+function nodeOnly(target: any, context: ClassDecoratorContext): any {
+    context.metadata['boot:conditionalOn'] = 'node';
+    return target;
+}
+
 /**
  * Auto-configuration for Node.js-based applications.
  * Provisions Node.js argument resolvers and converter registries.
@@ -19,6 +25,7 @@ import { NodeSessionValueMethodArgumentResolver } from './session-argument-resol
  * Register this configuration class with your {@link ApplicationContext} alongside
  * {@link NodeEnvironment} to enable full server-side argument resolution.
  */
+@nodeOnly
 @configuration
 export class NodeAutoConfiguration {
     /**

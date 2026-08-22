@@ -31,7 +31,7 @@
 | Application        | `@blue/service`           | 🟡 30%   | 80%    | 🟢 80%  |
 | Request Processing | `@blue/view-webcomponent` | 🟡 25%   | 80%    | 🟢 80%  |
 | Application        | `@blue/domain`            | 🔴 15%   | 75%    | 🟢 75%  |
-| Persistence        | `@blue/orm`               | 🟡 MVP   | 70%    | 🟡 MVP  |
+| Persistence        | `@blue/orm`               | 🟡 MVP   | 70%    | 🟢 70%  |
 | Application        | `@blue/auth`              | ⬜ 0%    | MVP    | ⬜ 0%   |
 | Platform           | `@blue/platform-node`     | ⬜ 0%    | MVP    | 🟢 MVP  |
 | Demo               | `blue-demo`               | 🟡 core  | Full   | 🟡 core |
@@ -203,11 +203,11 @@
 - [ ] Integration: `@blue/dispatcher` route guard support
 
 #### 9b. `@blue/orm` post-MVP
-- [ ] Relation decorators: `@oneToMany`, `@manyToOne`, `@manyToMany`, `@oneToOne`
-- [ ] Entity lifecycle hooks: `@prePersist`, `@postLoad`, `@preUpdate`, `@postRemove`
-- [ ] `@transactional` method decorator
-- [ ] `@blue/validate` integration on entity persist
-- [ ] `@blue/orm-drizzle` adapter (ESM-first SQL backing store)
+- [x] Relation decorators: `@oneToMany`, `@manyToOne`, `@manyToMany`, `@oneToOne`
+- [x] Entity lifecycle hooks: `@prePersist`, `@postLoad`, `@preUpdate`, `@postRemove`
+- [x] `@transactional` method decorator
+- [x] `@blue/validate` integration on entity persist — `EntityManager.persist()` calls `entity.validate()` when present
+- [ ] `@blue/orm-drizzle` adapter (ESM-first SQL backing store) — placeholder exists
 
 ---
 

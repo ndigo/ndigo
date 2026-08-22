@@ -272,3 +272,66 @@ describe('InMemoryEntityManager', () => {
         });
     });
 });
+
+describe('validate-on-persist integration', () => {
+    @entity()
+    class ValidatedUser {
+        @generated()
+        @primaryColumn()
+        id: number | undefined;
+
+        @column()
+        name: string;
+
+        @column()
+        age: number;
+
+        constructor(name: string, age: number) {
+            this.name = name;
+            this.age = age;
+        }
+
+        validate(): { isValid: boolean; failedProperties: Set<string> } {
+            const failures = new Set<string>();
+            if (!this.name || this.name.trim().length < 2) {
+                failures.add('name');
+            }
+            if (this.age < 18) {
+                failures.add('age');
+            }
+            return { isValid: failures.size === 0, failedProperties: failures };
+        }
+    }
+
+    let entityValidator: InMemoryEntityManager;
+
+    beforeEach(() => {
+        const ds = new InMemoryDataSource();
+        entityValidator = new InMemoryEntityManager(ds);
+    });
+
+    test('persists valid entity', () => {
+        const user = new ValidatedUser('Alice', 30);
+        expect(() => entityValidator.persist(user)).not.toThrow();
+    });
+
+    test('throws when entity validation fails', () => {
+        const user = new ValidatedUser('', 15);
+        expect(() => entityValidator.persist(user)).toThrow('Entity validation failed');
+    });
+
+    test('does not validate entities without validate method', () => {
+        @entity()
+        class SimpleUser {
+            @generated()
+            @primaryColumn()
+            id: number | undefined;
+
+            @column()
+            name: string = 'default';
+        }
+
+        const user = new SimpleUser();
+        expect(() => entityValidator.persist(user)).not.toThrow();
+    });
+});

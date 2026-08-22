@@ -89,7 +89,7 @@ function init(converter: CookieConverter = {}): CookieJar {
 
         try {
             const result = JSON.stringify(value);
-            if (/^[\{\[]/.test(result)) {
+            if (/^[{\[]/.test(result)) {
                 value = result;
             }
         } catch (e) {
@@ -105,7 +105,7 @@ function init(converter: CookieConverter = {}): CookieJar {
 
         key = encodeURIComponent(String(key))
             .replace(/%(23|24|26|2B|5E|60|7C)/g, decodeURIComponent)
-            .replace(/[\(\)]/g, (character: string) => encodeURIComponent(character));
+            .replace(/[()]/g, (character: string) => encodeURIComponent(character));
 
         let stringifiedAttributes = '';
         for (const attributeName in finalAttributes) {

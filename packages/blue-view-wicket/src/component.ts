@@ -10,22 +10,24 @@ import type { Behavior } from './behavior';
 /**
  * Lifecycle phases for a Wicket component.
  */
-export enum ComponentPhase {
+export const ComponentPhase = {
     /** Component has been constructed but not yet initialized. */
-    Created = 'CREATED',
+    Created: 'CREATED',
     /** Component has been initialized (onInitialize called). */
-    Initialized = 'INITIALIZED',
+    Initialized: 'INITIALIZED',
     /** Component has been configured (onConfigure called). */
-    Configured = 'CONFIGURED',
+    Configured: 'CONFIGURED',
     /** Component is currently rendering. */
-    Rendering = 'RENDERING',
+    Rendering: 'RENDERING',
     /** Component has completed rendering. */
-    Rendered = 'RENDERED',
-    /** Component has been detached for cleanup. */
-    Detached = 'DETACHED',
-    /** Component has been permanently removed. */
-    Removed = 'REMOVED',
-}
+    Rendered: 'RENDERED',
+    /** Component has been detached. */
+    Detached: 'DETACHED',
+    /** Component has been removed from the tree. */
+    Removed: 'REMOVED',
+} as const;
+
+export type ComponentPhase = (typeof ComponentPhase)[keyof typeof ComponentPhase];
 
 /**
  * Abstract base class for all Wicket-style components.

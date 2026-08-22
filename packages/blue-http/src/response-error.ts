@@ -19,6 +19,8 @@ const { defineProperty } = Reflect,
 export class ResponseError extends FrameworkError implements Error, Response {
     #originalError: Error;
     #response: Response;
+    /** Cached buffer for multiple body reads (body can only be read once). */
+    #bodyBuffer: ArrayBuffer | null = null;
 
     declare body: ReadableStream<Uint8Array<ArrayBuffer>>;
     declare bodyUsed: boolean;
@@ -129,7 +131,11 @@ export class ResponseError extends FrameworkError implements Error, Response {
      * @returns A promise for the response bytes.
      */
     arrayBuffer(): Promise<ArrayBuffer> {
-        return this.#response.arrayBuffer();
+        if (this.#bodyBuffer !== null) return Promise.resolve(this.#bodyBuffer);
+        return this.#response.arrayBuffer().then((buf) => {
+            this.#bodyBuffer = buf;
+            return buf;
+        });
     }
 
     /**
@@ -138,7 +144,13 @@ export class ResponseError extends FrameworkError implements Error, Response {
      * @returns A promise for the response blob.
      */
     blob(): Promise<Blob> {
-        return this.#response.blob();
+        if (this.#bodyBuffer !== null) return Promise.resolve(new Blob([this.#bodyBuffer]));
+        return this.#response.blob().then((blob) => {
+            return blob.arrayBuffer().then((buf) => {
+                this.#bodyBuffer = buf;
+                return blob;
+            });
+        });
     }
 
     /**
@@ -156,6 +168,9 @@ export class ResponseError extends FrameworkError implements Error, Response {
      * @returns A promise for the parsed JSON value.
      */
     json(): Promise<any> {
+        if (this.#bodyBuffer !== null) {
+            return Promise.resolve(JSON.parse(new TextDecoder().decode(this.#bodyBuffer)));
+        }
         return this.#response.json();
     }
 
@@ -165,7 +180,11 @@ export class ResponseError extends FrameworkError implements Error, Response {
      * @returns A promise for the response text.
      */
     text(): Promise<string> {
-        return this.#response.text();
+        if (this.#bodyBuffer !== null) return Promise.resolve(new TextDecoder().decode(this.#bodyBuffer));
+        return this.#response.text().then((text) => {
+            this.#bodyBuffer = new TextEncoder().encode(text).buffer;
+            return text;
+        });
     }
 
     /**
@@ -174,7 +193,11 @@ export class ResponseError extends FrameworkError implements Error, Response {
      * @returns A promise for the response bytes.
      */
     bytes(): Promise<Uint8Array<ArrayBuffer>> {
-        return this.#response.bytes();
+        if (this.#bodyBuffer !== null) return Promise.resolve(new Uint8Array(this.#bodyBuffer));
+        return this.#response.bytes().then((bytes) => {
+            this.#bodyBuffer = bytes.buffer;
+            return bytes;
+        });
     }
 }
 

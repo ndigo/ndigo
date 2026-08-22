@@ -107,42 +107,35 @@ describe('CacheInterceptor', () => {
     });
 
     test('should enforce max cache size with LRU eviction', async () => {
-        vi.useFakeTimers();
-        try {
-            const interceptor = new CacheInterceptor({ maxCacheSize: 2 });
-            const httpClient = new HTTP([interceptor]);
-            
-            let callCount = 0;
-            server.use(
-                http.get('*/first', () => { callCount++; return HttpResponse.json({ id: 'first' }); }),
-                http.get('*/second', () => { callCount++; return HttpResponse.json({ id: 'second' }); }),
-                http.get('*/third', () => { callCount++; return HttpResponse.json({ id: 'third' }); }),
-            );
+        const interceptor = new CacheInterceptor({ maxCacheSize: 2 });
+        const httpClient = new HTTP([interceptor]);
+        
+        let callCount = 0;
+        server.use(
+            http.get('*/first', () => { callCount++; return HttpResponse.json({ id: 'first' }); }),
+            http.get('*/second', () => { callCount++; return HttpResponse.json({ id: 'second' }); }),
+            http.get('*/third', () => { callCount++; return HttpResponse.json({ id: 'third' }); }),
+        );
 
-            await httpClient.get('http://localhost/first'); // callCount = 1. Cache: {first}
-            vi.advanceTimersByTime(10);
-            await httpClient.get('http://localhost/second'); // callCount = 2. Cache: {first, second}
-            vi.advanceTimersByTime(10);
-            await httpClient.get('http://localhost/third'); // callCount = 3. Cache: {second, third} (first evicted)
-            
-            expect(callCount).toBe(3);
-            
-            // Request second - should be cached
-            await httpClient.get('http://localhost/second');
-            expect(callCount).toBe(3); // Cache: {third, second}
-            vi.advanceTimersByTime(10);
-            
-            // Request first again - should hit network
-            await httpClient.get('http://localhost/first');
-            expect(callCount).toBe(4); // Cache: {second, first} (third evicted)
-            vi.advanceTimersByTime(10);
-            
-            // Request second again - should still be cached
-            await httpClient.get('http://localhost/second');
-            expect(callCount).toBe(4);
-        } finally {
-            vi.useRealTimers();
-        }
+        await httpClient.get('http://localhost/first'); // callCount = 1. Cache: {first}
+        await new Promise(r => setTimeout(r, 10));
+        await httpClient.get('http://localhost/second'); // callCount = 2. Cache: {first, second}
+        await new Promise(r => setTimeout(r, 10));
+        await httpClient.get('http://localhost/third'); // callCount = 3. Cache: {second, third} (first evicted)
+        
+        expect(callCount).toBe(3);
+        
+        // Request second - should be cached
+        await httpClient.get('http://localhost/second');
+        expect(callCount).toBe(3); // Cache: {third, second}
+        
+        // Request first again - should hit network
+        await httpClient.get('http://localhost/first');
+        expect(callCount).toBe(4); // Cache: {second, first} (third evicted)
+        
+        // Request second again - should still be cached
+        await httpClient.get('http://localhost/second');
+        expect(callCount).toBe(4);
     });
 
     test('should not cache non-200 responses', async () => {

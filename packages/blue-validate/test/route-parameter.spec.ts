@@ -2,11 +2,10 @@ import { describe, it, expect, vi } from 'vitest';
 import { z } from 'zod';
 import { validatedBy } from '../src/route-parameter';
 import { ValidationError, ConstraintViolationError } from '../src/error';
-import { MethodParameterType } from '@blue/dispatcher';
 
 describe('validatedBy', () => {
     const mockExtractor = {
-        type: MethodParameterType.QUERY,
+        type: 'query:value',
         name: 'test',
         required: false,
         defaultValue: null,

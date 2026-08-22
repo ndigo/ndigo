@@ -5,7 +5,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ViewTarget } from '@blue/view';
 import type { MediaType } from '@blue/core';
-import { AbstractTemplateView, StringTemplateView } from '@blue/view';
+import { AbstractTemplateView, StringTemplateView, RerouteView } from '@blue/view';
 
 class MockTarget implements ViewTarget {
     commit: ReturnType<typeof vi.fn>;
@@ -126,7 +126,111 @@ describe('StringTemplateView', () => {
     it('renders template without target throws error', async () => {
         const view = new StringTemplateView('/test');
         view.template = '<!DOCTYPE html>\n<html><body>Test Template View</body></html>';
-        // Capturing the rejection – calling _renderTemplate without target should throw
         await expect(view._renderTemplate({} as any, {} as any)).rejects.toThrow();
+    });
+});
+
+describe('StringTemplateView — integration (view.render pipeline)', () => {
+    let target: MockTarget;
+
+    beforeEach(() => {
+        target = new MockTarget();
+    });
+
+    it('renders end-to-end through view.render() with variable substitution', async () => {
+        const view = new StringTemplateView('/test');
+        view.name = 'testView';
+        view.template = '<html><body>{{name}}</body></html>';
+
+        await view.render({ name: 'World' }, {}, target);
+
+        expect(target.commit).toHaveBeenCalledWith(
+            '<html><body>World</body></html>',
+            { name: 'World' },
+            {}
+        );
+    });
+
+    it('renders end-to-end through view.render() with nested property access', async () => {
+        const view = new StringTemplateView('/test');
+        view.name = 'testView';
+        view.template = '<html><body>{{user.name}} is {{user.age}}</body></html>';
+
+        await view.render({ user: { name: 'Alice', age: 30 } }, {}, target);
+
+        expect(target.commit).toHaveBeenCalledWith(
+            '<html><body>Alice is 30</body></html>',
+            { user: { name: 'Alice', age: 30 } },
+            {}
+        );
+    });
+
+    it('renders end-to-end with custom _createViewModel projection', async () => {
+        class ProjectingView extends StringTemplateView {
+            protected _createViewModel(model: any, request: any): any {
+                return { displayName: model.name?.toUpperCase(), timestamp: Date.now() };
+            }
+        }
+
+        const view = new ProjectingView('/test');
+        view.name = 'projectionView';
+        view.template = '<html><body>{{displayName}}</body></html>';
+
+        await view.render({ name: 'Alice' }, {}, target);
+
+        // _createViewModel projects away raw model, only displayName available
+        expect(target.commit).toHaveBeenCalledWith(
+            '<html><body>ALICE</body></html>',
+            expect.objectContaining({ displayName: 'ALICE' }),
+            {}
+        );
+    });
+
+    it('renders end-to-end with custom _projectViewModel hook', async () => {
+        class TemplateProjectingView extends StringTemplateView {
+            protected _projectViewModel(viewModel: any, request: any): any {
+                return { title: viewModel.pageTitle ?? 'Default', items: viewModel.items ?? [] };
+            }
+        }
+
+        const view = new TemplateProjectingView('/test');
+        view.name = 'templateProjection';
+        view.template = '<html><body><h1>{{title}}</h1><span>{{items.length}}</span></body></html>';
+
+        await view.render({ pageTitle: 'Hello', items: [1, 2, 3] }, {}, target);
+
+        expect(target.commit).toHaveBeenCalledWith(
+            '<html><body><h1>Hello</h1><span>3</span></body></html>',
+            expect.objectContaining({ title: 'Hello' }),
+            {}
+        );
+    });
+
+    it('returns early when view is destroyed', async () => {
+        const view = new StringTemplateView('/test');
+        view.name = 'testView';
+        view.template = '<html><body>{{name}}</body></html>';
+        view.destroy();
+
+        await view.render({ name: 'World' }, {}, target);
+
+        expect(target.commit).not.toHaveBeenCalled();
+    });
+});
+
+describe('RerouteView', () => {
+    it('creates a reroute view with a path', () => {
+        const view = new RerouteView('/redirect');
+        expect(view.path).toBe('/redirect');
+    });
+
+    it('creates context-relative reroute view', () => {
+        const view = new RerouteView('/relative', true);
+        expect(view.contextRelative).toBe(true);
+    });
+
+    it('creates non-context-relative reroute view by default', () => {
+        const view = new RerouteView('/absolute');
+        expect(view.contextRelative).toBe(false);
     });
 });

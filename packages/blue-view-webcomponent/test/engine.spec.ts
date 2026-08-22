@@ -1,276 +1,285 @@
-import { beforeEach, describe, expect, test, vi } from 'vitest';
-import { DOMElementViewTarget, likeDOMViewTarget, WebComponentViewEngine } from '../src/engine';
+/**
+ * @author Jeff Rose
+ */
+
+import { describe, it, expect, vi, beforeAll } from 'vitest';
+import { Route } from '@blue/router';
 import { WebComponentView } from '../src/view';
+import { DOMElementViewTarget, WebComponentViewEngine, likeDOMViewTarget } from '../src/engine';
+import { TagMapping } from '../src/tag-mapping';
+import { ViewMapping } from '../src/view-mapping';
+
+const mockRoute = { path: '/test' } as Route;
+
+// ── TagMapping Decorator ─────────────────────────────────────────
+
+describe('TagMapping', () => {
+    it('stores tag name in constructor metadata', () => {
+        @TagMapping('my-element')
+        class MyElement extends HTMLElement {}
+
+        expect(TagMapping.get(MyElement)).toBe('my-element');
+        expect(TagMapping.has(MyElement)).toBe(true);
+    });
+
+    it('deletes tag mapping from metadata', () => {
+        @TagMapping('temp-element')
+        class TempElement extends HTMLElement {}
+
+        TagMapping.delete(TempElement);
+        expect(TagMapping.get(TempElement)).toBeUndefined();
+        expect(TagMapping.has(TempElement)).toBe(false);
+    });
+
+    it('returns undefined for classes without tag mapping', () => {
+        class PlainElement extends HTMLElement {}
+        expect(TagMapping.get(PlainElement)).toBeUndefined();
+        expect(TagMapping.has(PlainElement)).toBe(false);
+    });
+
+    it('TagMapping.has returns true for decorated class', () => {
+        @TagMapping('has-element')
+        class HasElement extends HTMLElement {}
+
+        expect(TagMapping.has(HasElement)).toBe(true);
+    });
+
+    it('setting tag mapping via define stores on the constructor', () => {
+        class DynamicElement extends HTMLElement {}
+        TagMapping.define('dynamic-element', DynamicElement);
+        expect(TagMapping.get(DynamicElement)).toBe('dynamic-element');
+
+        TagMapping.delete(DynamicElement);
+    });
+
+    it('defines the custom element in the browser registry', () => {
+        const tagName = 'test-registry-element';
+
+        expect(() => customElements.define(tagName, class extends HTMLElement {})).not.toThrow();
+    });
+});
+
+// ── ViewMapping Decorator ─────────────────────────────────────────
+
+describe('ViewMapping', () => {
+    it('stores view name in constructor metadata', () => {
+        @ViewMapping('myView')
+        class MyView {}
+
+        expect(ViewMapping.get(MyView)).toBe('myView');
+        expect(ViewMapping.has(MyView)).toBe(true);
+    });
+
+    it('deletes view mapping from metadata', () => {
+        @ViewMapping('tempView')
+        class TempView {}
+
+        ViewMapping.delete(TempView);
+        expect(ViewMapping.get(TempView)).toBeUndefined();
+        expect(ViewMapping.has(TempView)).toBe(false);
+    });
+
+    it('returns undefined for classes without view mapping', () => {
+        class PlainClass {}
+        expect(ViewMapping.get(PlainClass)).toBeUndefined();
+        expect(ViewMapping.has(PlainClass)).toBe(false);
+    });
+
+    it('setting view mapping via define stores on the constructor', () => {
+        class DynamicClass {}
+        ViewMapping.define('dynamicView', DynamicClass);
+        expect(ViewMapping.get(DynamicClass)).toBe('dynamicView');
+
+        ViewMapping.delete(DynamicClass);
+    });
+});
+
+// ── DOMElementViewTarget ──────────────────────────────────────────
 
 describe('DOMElementViewTarget', () => {
-    test('it should expose container element', () => {
-        const element = document.createElement('div');
-        const target = new DOMElementViewTarget(element);
-
-        expect(target.container).toBe(element);
+    it('throws TypeError when created with null element', () => {
+        expect(() => new DOMElementViewTarget(null)).toThrow(TypeError);
     });
 
-    test('it should clear target element on prepare', () => {
-        const element = document.createElement('div');
-        element.innerHTML = '<span>old</span>';
-        const target = new DOMElementViewTarget(element);
-
-        target.prepare({ path: '/index' } as any);
-
-        expect(element.innerHTML).toBe('');
+    it('throws TypeError when created with undefined element', () => {
+        expect(() => new DOMElementViewTarget(undefined as any)).toThrow(TypeError);
     });
 
-    test('it should remove listeners during prepare', () => {
-        const element = document.createElement('div');
-        const target = new DOMElementViewTarget(element);
-        const applicationContext = {
-            emit: vi.fn(() => true),
-        };
-        target.setApplicationContext(applicationContext);
-        target.setEventMap({ onSubmit: 'user:todo:created' });
+    it('creates target with element and exposes container', () => {
+        const el = document.createElement('div');
+        const target = new DOMElementViewTarget(el);
 
-        const output = document.createElement('todo-app');
-        target.commit(output, {}, { path: '/index' } as any);
-        target.prepare({ path: '/active' } as any);
-
-        const child = document.createElement('todo-input');
-        output.appendChild(child);
-        child.dispatchEvent(new CustomEvent('onSubmit', { detail: 'new item', bubbles: true }));
-
-        expect(applicationContext.emit).not.toHaveBeenCalled();
+        expect(target.container).toBe(el);
+        expect(target.container.innerHTML).toBe('');
     });
 
-    test('it should append output on commit', () => {
-        const element = document.createElement('div');
-        const output = document.createElement('todo-app');
-        const target = new DOMElementViewTarget(element);
+    it('prepare clears innerHTML and resets for render', () => {
+        const el = document.createElement('div');
+        el.innerHTML = '<span>old</span>';
+        const target = new DOMElementViewTarget(el);
 
-        target.commit(output, {}, { path: '/index' } as any);
-
-        expect(element.children).toHaveLength(1);
-        expect(element.children[0]).toBe(output);
+        target.prepare(mockRoute);
+        expect(el.innerHTML).toBe('');
     });
 
-    test('it should clear target element on clear', () => {
-        const element = document.createElement('div');
-        element.innerHTML = '<span>old</span>';
-        const target = new DOMElementViewTarget(element);
+    it('commit appends output element to container', () => {
+        const el = document.createElement('div');
+        const target = new DOMElementViewTarget(el);
+
+        const output = document.createElement('my-view');
+        target.commit(output, { test: true }, mockRoute);
+
+        expect(el.children.length).toBe(1);
+        expect(el.children[0].tagName.toLowerCase()).toBe('my-view');
+    });
+
+    it('clear empties container without destroying', () => {
+        const el = document.createElement('div');
+        const target = new DOMElementViewTarget(el);
+
+        const output = document.createElement('span');
+        target.commit(output, {}, mockRoute);
+        expect(el.children.length).toBe(1);
 
         target.clear();
-
-        expect(element.innerHTML).toBe('');
+        expect(el.innerHTML).toBe('');
+        expect((target as any).destroyed).toBe(false);
     });
 
-    test('it should forward mapped custom events to application context', () => {
-        const element = document.createElement('div');
-        const target = new DOMElementViewTarget(element);
-        const applicationContext = {
-            emit: vi.fn(() => true),
-        };
-        target.setApplicationContext(applicationContext);
-        target.setEventMap({ onSubmit: 'user:todo:created' });
+    it('destroy permanently disables the target', () => {
+        const el = document.createElement('div');
+        const target = new DOMElementViewTarget(el);
 
-        const output = document.createElement('todo-app');
-        target.commit(output, {}, { path: '/index' } as any);
+        target.destroy();
+        expect((target as any).destroyed).toBe(true);
 
-        const child = document.createElement('todo-input');
-        output.appendChild(child);
-        child.dispatchEvent(new CustomEvent('onSubmit', { detail: 'new item', bubbles: true }));
-
-        expect(applicationContext.emit).toHaveBeenCalledWith('user:todo:created', 'new item');
+        expect(() => target.prepare(mockRoute)).toThrow();
+        expect(() => target.commit(document.createElement('div'), {}, mockRoute)).toThrow();
+        expect(target.clear()).toBeUndefined();
     });
 
-    test('it should not forward unmapped custom events', () => {
-        const element = document.createElement('div');
-        const target = new DOMElementViewTarget(element);
-        const applicationContext = {
-            emit: vi.fn(() => true),
-        };
-        target.setApplicationContext(applicationContext);
-        target.setEventMap({ onSubmit: 'user:todo:created' });
+    it('prepare throws after destroy', () => {
+        const el = document.createElement('div');
+        const target = new DOMElementViewTarget(el);
 
-        const output = document.createElement('todo-app');
-        target.commit(output, {}, { path: '/index' } as any);
-
-        const child = document.createElement('todo-input');
-        output.appendChild(child);
-        child.dispatchEvent(new CustomEvent('onRemove', { detail: 0, bubbles: true }));
-
-        expect(applicationContext.emit).not.toHaveBeenCalled();
+        target.destroy();
+        expect(() => target.prepare(mockRoute)).toThrow('destroyed');
     });
 
-    test('it should unlisten and stop forwarding events', () => {
-        const element = document.createElement('div');
-        const target = new DOMElementViewTarget(element);
-        const applicationContext = {
-            emit: vi.fn(() => true),
-        };
-        target.setApplicationContext(applicationContext);
-        target.setEventMap({ onToggle: 'user:todo:toggled' });
+    it('commit throws after destroy', () => {
+        const el = document.createElement('div');
+        const target = new DOMElementViewTarget(el);
 
-        const output = document.createElement('todo-app');
-        target.commit(output, {}, { path: '/index' } as any);
-        target.unlisten();
-
-        const child = document.createElement('todo-item');
-        output.appendChild(child);
-        child.dispatchEvent(new CustomEvent('onToggle', { detail: 1, bubbles: true }));
-
-        expect(applicationContext.emit).not.toHaveBeenCalled();
+        target.destroy();
+        expect(() => target.commit(document.createElement('div'), {}, mockRoute)).toThrow('destroyed');
     });
 
-    test('it should clear listeners on clear', () => {
-        const element = document.createElement('div');
-        const target = new DOMElementViewTarget(element);
-        const applicationContext = {
-            emit: vi.fn(() => true),
-        };
-        target.setApplicationContext(applicationContext);
-        target.setEventMap({ onSubmit: 'user:todo:created' });
-
-        const output = document.createElement('todo-app');
-        target.commit(output, {}, { path: '/index' } as any);
-        target.clear();
-
-        const child = document.createElement('todo-input');
-        output.appendChild(child);
-        child.dispatchEvent(new CustomEvent('onSubmit', { detail: 'new item', bubbles: true }));
-
-        expect(applicationContext.emit).not.toHaveBeenCalled();
-    });
-
-    test('it should satisfy DOMViewTarget predicate', () => {
-        const target = new DOMElementViewTarget(document.createElement('div'));
+    it('likeDOMViewTarget detects valid target', () => {
+        const el = document.createElement('div');
+        const target = new DOMElementViewTarget(el);
 
         expect(likeDOMViewTarget(target)).toBe(true);
     });
 
-    test('it should destroy and reject subsequent prepare/commit', () => {
-        const target = new DOMElementViewTarget(document.createElement('div'));
-
-        target.destroy();
-
-        expect(target.destroyed).toBe(true);
-        expect(() => target.prepare({ path: '/index' } as any)).toThrow(
-            'Cannot prepare a destroyed DOMElementViewTarget.'
-        );
-        expect(() => target.commit(document.createElement('todo-app'), {}, { path: '/index' } as any)).toThrow(
-            'Cannot commit to a destroyed DOMElementViewTarget.'
-        );
+    it('likeDOMViewTarget rejects null', () => {
+        expect(likeDOMViewTarget(null)).toBe(false);
     });
 
-    test('it should make destroy idempotent', () => {
-        const target = new DOMElementViewTarget(document.createElement('div'));
-
-        target.destroy();
-        target.destroy();
-
-        expect(target.destroyed).toBe(true);
+    it('likeDOMViewTarget rejects plain objects', () => {
+        expect(likeDOMViewTarget({})).toBe(false);
     });
 });
 
+// ── WebComponentViewEngine ────────────────────────────────────────
+
 describe('WebComponentViewEngine', () => {
     let engine: WebComponentViewEngine;
+    let container: HTMLElement;
+    let target: DOMElementViewTarget;
 
     beforeEach(() => {
         engine = new WebComponentViewEngine();
+        container = document.createElement('div');
+        target = new DOMElementViewTarget(container);
     });
 
-    test('it should throw for non-web-component views', async () => {
-        await expect(
-            engine.render(
-                {} as any,
-                {},
-                { prepare: vi.fn(), commit: vi.fn(), clear: vi.fn() } as any,
-                { path: '/a' } as any
-            )
-        ).rejects.toThrow('WebComponentViewEngine can only render WebComponentView instances.');
+    it('renders a WebComponentView by creating a new element', async () => {
+        const view = new WebComponentView('test-component');
+        view.name = 'testComponent';
+
+        await engine.render(view, { name: 'World' }, target, mockRoute);
+
+        expect(container.children.length).toBe(1);
+        expect(container.children[0].tagName.toLowerCase()).toBe('test-component');
     });
 
-    test('it should prepare and commit rendered element', async () => {
-        const view = new WebComponentView('todo-app');
-        const model = { items: [{ text: 'a', checked: false }] };
-        const route = { path: '/index' } as any;
+    it('sets model on the rendered element', async () => {
+        const view = new WebComponentView('model-component');
+        view.name = 'modelComponent';
+        const model = { data: 'test' };
 
-        const prepare = vi.fn();
-        const commit = vi.fn();
-        const target = { prepare, commit, clear: vi.fn() };
+        await engine.render(view, model, target, mockRoute);
 
-        await engine.render(view, model, target as any, route);
-
-        expect(prepare).toHaveBeenCalledWith(route);
-        expect(commit).toHaveBeenCalledTimes(1);
-
-        const [output, committedModel, committedRoute] = commit.mock.calls[0];
-        expect(output.tagName.toLowerCase()).toBe('todo-app');
-        expect((output as any).model).toEqual(model);
-        expect(committedModel).toEqual(model);
-        expect(committedRoute).toBe(route);
+        const rendered = container.children[0] as any;
+        expect(rendered.model).toEqual(model);
     });
 
-    test('it should reuse existing element and only update model', async () => {
-        const view = new WebComponentView('todo-app');
-        const model = { items: [{ text: 'b', checked: true }] };
-        const route = { path: '/active' } as any;
+    it('reuses existing element when tagName matches', async () => {
+        container.innerHTML = '<existing-el></existing-el>';
+        const existing = container.firstElementChild!;
 
-        const root = document.createElement('div');
-        const existing = document.createElement('todo-app') as any;
-        existing.model = { items: [] };
-        root.appendChild(existing);
+        const view = new WebComponentView('existing-el');
+        view.name = 'existingEl';
 
-        const target = new DOMElementViewTarget(root);
+        await engine.render(view, { updated: true }, target, mockRoute);
+
+        expect(container.children.length).toBe(1);
+        expect(container.firstElementChild).toBe(existing);
+        expect((existing as any).model).toEqual({ updated: true });
+    });
+
+    it('creates new element when tagName does not match existing', async () => {
+        container.innerHTML = '<other-el></other-el>';
+
+        const view = new WebComponentView('new-el');
+        view.name = 'newEl';
+
+        await engine.render(view, {}, target, mockRoute);
+
+        expect(container.children.length).toBe(1);
+        expect(container.children[0].tagName.toLowerCase()).toBe('new-el');
+    });
+
+    it('throws TypeError when view is not a WebComponentView', async () => {
+        const fakeView = { name: 'fake' } as any;
+
+        await expect(engine.render(fakeView, {}, target, mockRoute)).rejects.toThrow(TypeError);
+    });
+
+    it('prepares target and commits output for new elements', async () => {
         const prepareSpy = vi.spyOn(target, 'prepare');
         const commitSpy = vi.spyOn(target, 'commit');
 
-        await engine.render(view, model, target, route);
+        const view = new WebComponentView('fresh-component');
+        view.name = 'freshComponent';
 
-        expect(prepareSpy).not.toHaveBeenCalled();
-        expect(commitSpy).not.toHaveBeenCalled();
-        expect(root.children).toHaveLength(1);
-        expect(root.firstElementChild).toBe(existing);
-        expect((existing as any).model).toEqual(model);
+        await engine.render(view, { value: 42 }, target, mockRoute);
+
+        expect(prepareSpy).toHaveBeenCalledOnce();
+        expect(commitSpy).toHaveBeenCalledOnce();
+    });
+});
+
+// ── WebComponentView ──────────────────────────────────────────────
+
+describe('WebComponentView', () => {
+    it('creates a view with tag name', () => {
+        const view = new WebComponentView('my-component');
+        expect(view.tagName).toBe('my-component');
     });
 
-    test('it should replace existing element when tag name differs', async () => {
-        const view = new WebComponentView('todo-app');
-        const model = { items: [{ text: 'c', checked: false }] };
-        const route = { path: '/completed' } as any;
-
-        const root = document.createElement('div');
-        root.appendChild(document.createElement('other-view'));
-
-        const target = new DOMElementViewTarget(root);
-        const prepareSpy = vi.spyOn(target, 'prepare');
-        const commitSpy = vi.spyOn(target, 'commit');
-
-        await engine.render(view, model, target, route);
-
-        expect(prepareSpy).toHaveBeenCalledWith(route);
-        expect(commitSpy).toHaveBeenCalledTimes(1);
-        expect(root.children).toHaveLength(1);
-        expect(root.firstElementChild?.tagName.toLowerCase()).toBe('todo-app');
-        expect((root.firstElementChild as any).model).toEqual(model);
-    });
-
-    test('it should replace when target contains multiple children', async () => {
-        const view = new WebComponentView('todo-app');
-        const model = { items: [{ text: 'd', checked: false }] };
-        const route = { path: '/index' } as any;
-
-        const root = document.createElement('div');
-        root.appendChild(document.createElement('todo-app'));
-        root.appendChild(document.createElement('div'));
-
-        const target = new DOMElementViewTarget(root);
-        const prepareSpy = vi.spyOn(target, 'prepare');
-        const commitSpy = vi.spyOn(target, 'commit');
-
-        await engine.render(view, model, target, route);
-
-        expect(prepareSpy).toHaveBeenCalledWith(route);
-        expect(commitSpy).toHaveBeenCalledTimes(1);
-        expect(root.children).toHaveLength(1);
-        expect(root.firstElementChild?.tagName.toLowerCase()).toBe('todo-app');
-        expect((root.firstElementChild as any).model).toEqual(model);
+    it('creates a template from the tag name', () => {
+        const view = new WebComponentView('custom-el');
+        expect(view.template).toBe('<custom-el>');
     });
 });

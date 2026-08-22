@@ -2,6 +2,7 @@ import { describe, test, beforeEach, afterEach, expect, vi } from 'vitest';
 import { DISPATCHER } from '../src/context-tokens';
 import { BrowserDispatcher } from '../src/dispatcher';
 import dispatcherContext from './assets/dispatcher-context';
+import errorContext from './assets/route-error-resolver-context';
 import { completeHandleSpy, destroyViewSpy, handleRouteSpy, renderSpy, resolveLanguageSpy } from './test-strategies';
 import { MetadataConfigApplicationContext } from '@blue/context';
 import { Route } from '@blue/router';
@@ -76,5 +77,29 @@ describe('BrowserDispatcher', () => {
             expect(destroyViewSpy).toHaveBeenCalledTimes(1);
             expect(destroyViewSpy).toHaveBeenCalledWith('test');
         });
+    });
+});
+
+describe('Error View Dispatch', () => {
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
+
+    it('resolves errors through metadata error resolvers', async () => {
+        const dispatcher = new BrowserDispatcher();
+        dispatcher.initStrategies(errorContext);
+
+        await dispatcher.dispatch({ path: '/bad/bad' } as any);
+
+        expect(renderSpy).toHaveBeenCalled();
+    });
+
+    it('returns error ModelAndView with viewName from error handler', async () => {
+        const dispatcher = new BrowserDispatcher();
+        dispatcher.initStrategies(errorContext);
+
+        await dispatcher.dispatch({ path: '/bad/bad' } as any);
+
+        expect(renderSpy).toHaveBeenCalledWith(undefined, expect.objectContaining({ path: '/bad/bad' }), undefined);
     });
 });

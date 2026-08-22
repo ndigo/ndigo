@@ -81,9 +81,9 @@
 - [x] `@blue/platform-web`: 5 argument resolvers wired in `configure-argument-resolvers.ts`, 117 tests
 
 **Remaining:**
-- View negotiation flow (media type → resolver → view → render) — partially tested
-- `RerouteView` redirect handling end-to-end test
-- `TransactionManager` commit/rollback integration test
+- [x] View negotiation flow (media type → resolver → view → render) — tested with ContentNegotiationViewResolver pipeline
+- [x] `RerouteView` redirect handling end-to-end test — delegating to `router.navigate()` and `history.pushState` fallback
+- [x] `TransactionManager` commit/rollback lifecycle — full lifecycle integration tests
 
 ---
 
@@ -250,6 +250,6 @@
 | **Done** | 9b | `@blue/orm` post-MVP — relations, lifecycle hooks, validate integration, drizzle adapter | ✅ Done |
 | **P4** | 10 | 1.0 Checkpoint — audit, security, docs, benchmarks | 2 weeks |
 | **Done** | 7 | Context docs (sequence diagrams for refresh/close) | ✅ Done |
-| **Ongoing** | 3 | Remaining integration tests (view negotiation, redirect, transaction lifecycle) | 1 day |
+| **Done** | Wave 3 remaining integration tests (view negotiation, redirect, transaction lifecycle) | ✅ Done |
 
 **Legend:** ✅ Complete | 🟢 ≥80% | 🟡 45-80% | 🔴 <45% | ⬜ Not started

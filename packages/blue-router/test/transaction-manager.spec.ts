@@ -73,3 +73,43 @@ describe('DefaultRouteTransactionManager', () => {
         expect(status.isRollbackOnly).toBe(true);
     });
 });
+
+describe('Transaction lifecycle integration', () => {
+    test('full lifecycle: create → commit → completed', () => {
+        const manager = new DefaultRouteTransactionManager();
+        const status = manager.getTransaction(new PathRoute('/commit-test'), '/', true);
+
+        expect(status.isCompleted).toBe(false);
+        expect(status.isNewTransaction).toBe(true);
+
+        manager.commit(status);
+        expect(status.isCompleted).toBe(true);
+    });
+
+    test('full lifecycle: create → rollback → hash restored', () => {
+        const originalHash = location.hash;
+        const manager = new DefaultRouteTransactionManager();
+        const status = manager.getTransaction(new PathRoute('/rollback-test'), '/previous', true);
+
+        manager.rollback(status);
+
+        expect(status.isCompleted).toBe(true);
+        expect(location.hash).toBe('#/previous');
+
+        location.hash = originalHash;
+    });
+
+    test('full lifecycle: create → setRollbackOnly → commit → rollback', () => {
+        const originalHash = location.hash;
+        const manager = new DefaultRouteTransactionManager();
+        const status = manager.getTransaction(new PathRoute('/rollback-target'), '/original-path', true) as RouteTransactionStatus;
+
+        status.setRollbackOnly();
+        manager.commit(status);
+
+        expect(status.isCompleted).toBe(true);
+        expect(location.hash).toBe('#/original-path');
+
+        location.hash = originalHash;
+    });
+});

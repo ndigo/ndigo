@@ -32,7 +32,7 @@
 | Request Processing | `@blue/view-webcomponent` | 🟡 25%   | 80%    | 🟢 80%  |
 | Application        | `@blue/domain`            | 🔴 15%   | 75%    | 🟢 75%  |
 | Persistence        | `@blue/orm`               | 🟡 MVP   | 70%    | 🟢 70%  |
-| Application        | `@blue/auth`              | ⬜ 0%    | MVP    | ⬜ 0%   |
+| Application        | `@blue/auth`              | ⬜ 0%    | MVP    | 🟢 MVP  |
 | Platform           | `@blue/platform-node`     | ⬜ 0%    | MVP    | 🟢 MVP  |
 | Demo               | `blue-demo`               | 🟡 core  | Full   | 🟡 core |
 
@@ -195,12 +195,16 @@
 **Status:** ⬜ Not started
 
 #### 9a. `@blue/auth` (new package)
-- [ ] Spec doc
-- [ ] `AuthenticationStrategy` interface + provider registry
-- [ ] `Principal` and `Session` abstractions
-- [ ] `@authenticated` and `@authorized(role)` decorators
-- [ ] Integration: `@blue/http` auth-header interceptor
-- [ ] Integration: `@blue/dispatcher` route guard support
+- [x] Spec doc: `docs/plans/2026-05-28_AUTH_DESIGN.md`
+- [x] `AuthenticationStrategy` interface + provider registry — `AuthAdapter` + `AuthRegistry`
+- [x] `Principal` and `Session` abstractions — `Principal`, `AnonymousPrincipal`, `Session`, `DefaultSession`
+- [x] `@authenticated` and `@authorized(role)` decorators
+- [x] Integration: `@blue/http` auth-header interceptor — `AuthHeaderInterceptor`
+- [x] Integration: `@blue/dispatcher` route guard support — `AuthRouteGuard`
+- [x] `AuthClient` — client-side auth manager
+- [x] `ClientAuthGuard` — client-side route guard
+- [x] `OIDCAdapter` — OIDC/OAuth reference implementation
+- [x] `JWTAdapter` — JWT validation for `@blue/auth-server`
 
 #### 9b. `@blue/orm` post-MVP
 - [x] Relation decorators: `@oneToMany`, `@manyToOne`, `@manyToMany`, `@oneToOne`
@@ -242,7 +246,7 @@
 | **P1** | 7 | `@blue/validate` — group symmetry, error messages | ✅ Done |
 | **Done** | 4.5 | Client infra — BrowserRouter, CORS, offline retry, IndexedDB, LocalStorage | ✅ Done |
 | **Done** | 8 | `@blue/platform-node` — test coverage + integration | ✅ Done |
-| **P3** | 9a | `@blue/auth` — new package, greenfield | 4-6 weeks |
+| **Done** | 9a | `@blue/auth` — all spec items: decorators, adapters, interceptors, guards | ✅ Done |
 | **Done** | 9b | `@blue/orm` post-MVP — relations, lifecycle hooks, validate integration, drizzle adapter | ✅ Done |
 | **P4** | 10 | 1.0 Checkpoint — audit, security, docs, benchmarks | 2 weeks |
 | **Done** | 7 | Context docs (sequence diagrams for refresh/close) | ✅ Done |

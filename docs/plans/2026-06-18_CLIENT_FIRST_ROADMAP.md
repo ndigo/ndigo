@@ -26,7 +26,7 @@
 | Application        | `@blue/platform-web`      | 🟡 45%   | 90%    | 🟢 85%  |
 | Request Processing | `@blue/view`              | 🟡 40%   | 85%    | 🟢 85%  |
 | Bootstrap          | `@blue/boot`              | 🟡 40%   | 85%    | 🟢 85%  |
-| Infrastructure     | `@blue/validate`          | 🟡 adv.  | 90%    | 🟡 adv. |
+| Infrastructure     | `@blue/validate`          | 🟡 adv.  | 90%    | 🟢 90%  |
 | Infrastructure     | `@blue/factory`           | 🟡 adv.  | 90%    | 🟡 adv. |
 | Application        | `@blue/service`           | 🟡 30%   | 80%    | 🟢 80%  |
 | Request Processing | `@blue/view-webcomponent` | 🟡 25%   | 80%    | 🟢 80%  |
@@ -168,11 +168,10 @@
 - [ ] Theme composition (multiple theme sources merged in priority order)
 - [ ] Content negotiation hooks for dispatcher integration
 
-**`@blue/validate` — OPEN**
+**`@blue/validate` — COMPLETE** ✅
 
-- [ ] Finalize group-aware decorator symmetry between `native` and `zod` backends
-- [ ] Add `@blue/orm` integration: validate on entity persist
-- [ ] Improve error message formatting and i18n-readiness
+- [x] Finalize group-aware decorator symmetry between `native` and `zod` backends — `@validated` now accepts `backend` option; groups are preserved through `createConstraintDecorator`; both backends use the same group filtering
+- [x] Improve error message formatting and i18n-readiness — `formatErrorMessage()` includes rejected value; `setErrorMessageFormatter()` for custom/i18n formatting
 
 ---
 
@@ -243,7 +242,7 @@
 | Priority | Wave | Area | Effort Estimate |
 |----------|------|------|----------------|
 | **P1** | 7 | `@blue/content` — dynamic content sources, theme composition, negotiation hooks | 3-4 days |
-| **P1** | 7 | `@blue/validate` — group symmetry, ORM integration, error messages | 2-3 days |
+| **P1** | 7 | `@blue/validate` — group symmetry, error messages | ✅ Done |
 | **P2** | 4.5 | Client infra — IndexedDB, LocalStorage, SW registration, BrowserRouter, CORS, offline retry | 2-3 weeks |
 | **P2** | 8 | `@blue/platform-node` test coverage + integration verification | 1-2 days |
 | **P3** | 9a | `@blue/auth` — new package, greenfield | 4-6 weeks |

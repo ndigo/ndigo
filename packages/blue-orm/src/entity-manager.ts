@@ -1,6 +1,6 @@
 /** @author opencode */
 
-import { Constructable, IllegalStateError } from '@blue/core';
+import { Constructable, IllegalStateError, FrameworkError } from '@blue/core';
 import { DataSource } from './data-source';
 import { getEntityMetadata, isEntity } from './metadata';
 
@@ -62,9 +62,13 @@ export class InMemoryEntityManager implements EntityManager {
     /**
      * Persists a new entity or updates an existing one in the in-memory store.
      * Automatically assigns generated primary IDs if applicable.
+     * Runs any `@prePersist` / `@preUpdate` lifecycle hooks and calls `validate()`
+     * on the entity if the method exists (e.g. via `@validated` from `@blue/validate`).
+     *
      * @param entity - The entity to persist.
      * @throws {IllegalStateError} If the entity class is not decorated with `@entity`,
      * is missing a `@primaryColumn`, or the primary column value is `undefined` or `null`.
+     * @throws {Error} If the entity has a `validate()` method and validation fails.
      */
     persist<T extends object>(entity: T): void {
         const entityClass = entity.constructor as Constructable<T>;
@@ -95,6 +99,10 @@ export class InMemoryEntityManager implements EntityManager {
         } else {
             this.#callLifecycleHooks(entity, 'preUpdate');
         }
+
+        // Validate if the entity has a validate() method (e.g. via @validated decorator)
+        this.#validateEntity(entity);
+
         store.set(primaryId, entity);
     }
 
@@ -206,6 +214,26 @@ export class InMemoryEntityManager implements EntityManager {
         for (const hook of hooks) {
             if (typeof record[hook.methodName] === 'function') {
                 record[hook.methodName]();
+            }
+        }
+    }
+
+    /**
+     * Calls `validate()` on the entity when the method exists (e.g. via `@validated` from `@blue/validate`).
+     * Throws a `FrameworkError` when validation fails.
+     *
+     * @param entity - The entity to validate.
+     * @throws {FrameworkError} When validation fails.
+     */
+    #validateEntity<T extends object>(entity: T): void {
+        const record = entity as Record<string, (...args: unknown[]) => unknown>;
+        if (typeof record.validate === 'function') {
+            const result = record.validate() as { isValid: boolean; failedProperties?: Set<string> };
+            if (!result.isValid) {
+                const fields = result.failedProperties ? [...result.failedProperties].join(', ') : 'unknown';
+                throw new FrameworkError(
+                    `Entity validation failed for fields: ${fields}`
+                );
             }
         }
     }

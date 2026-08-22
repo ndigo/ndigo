@@ -1,0 +1,257 @@
+# Application Context Lifecycle
+
+**Date:** 2026-08-22  
+**Scope:** `@blue/context` — `GenericApplicationContext`, `ContextEventGateway`, `EventEmitter`  
+**Status:** Reference
+
+---
+
+## 1. Overview
+
+The `GenericApplicationContext` follows a two-phase lifecycle:
+
+1. **Refresh** — activates the context, initializes factories, runs processors
+2. **Close** — deactivates, destroys values, cascades to children, clears listeners
+
+A context can be refreshed once and closed once. Repeated calls are safe no-ops. Once closed, a context is permanently destroyed.
+
+---
+
+## 2. Refresh Sequence
+
+```mermaid
+sequenceDiagram
+    participant Caller
+    participant Context as GenericApplicationContext
+    participant Factory as Factory (internal)
+    participant Processor as LifecycleProcessor
+    participant Listeners as Event Listeners
+
+    Caller->>Context: refresh()
+    
+    Note over Context: Guard: if isActive, return (no-op)
+
+    Context->>Listeners: emit('context:preparing', this)
+    
+    Context->>Factory: _prepareFactory()
+    Context->>Factory: _postProcessFactory()
+    Context->>Factory: _invokeRegistryProcessors()
+    Context->>Factory: _finishFactoryInitialization()
+    Context->>Factory: _onRefresh()
+    
+    Note over Context: Create DefaultLifecycleProcessor if needed
+    
+    Context->>Processor: onRefresh(this)
+    
+    Context->>Context: isActive = true
+    
+    Context->>Listeners: emit('context:refresh', this)
+    
+    Note over Context: Context is now fully active
+```
+
+**Key invariants:**
+
+- Calling `refresh()` on an already-active context is a safe no-op (`isActive` guard)
+- `context:preparing` fires before any factory initialization
+- `context:refresh` fires after all initialization is complete and `isActive` is set
+- Lifecycle events are emitted synchronously — listeners run during the `emit()` call
+
+---
+
+## 3. Close Sequence
+
+```mermaid
+sequenceDiagram
+    participant Caller
+    participant Context as GenericApplicationContext
+    participant Child as ChildContext
+    participant Parent as ParentContext
+    participant Processor as LifecycleProcessor
+    participant Listeners as Event Listeners
+
+    Caller->>Context: close()
+    
+    Note over Context: Guard: if destroyed, return (no-op)
+
+    Context->>Listeners: emit('context:close', this)
+    
+    loop For each child
+        Context->>Child: close() [recursive]
+        Child->>Child: emit('context:close')
+        Child->>Child: (same cascade...)
+    end
+    
+    Context->>Processor: onClose(this) [if configured]
+    Context->>Context: _destroyValues()
+    
+    alt Has parent
+        Context->>Parent: removeChild(this)
+    end
+    
+    Context->>Context: destroyed = true
+    Context->>Context: destroyedTimestamp = Date.now()
+    Context->>Context: isActive = false
+    
+    Context->>Listeners: emit('context:destroy', this)
+    
+    loop For each event type
+        Context->>Context: off(type, listener) [clear all]
+    end
+```
+
+**Key invariants:**
+
+- Calling `close()` on an already-destroyed context is a safe no-op (`destroyed` guard)
+- `context:close` fires on the closing context before children are closed
+- Children are closed recursively, depth-first, before the parent's own cleanup
+- `context:destroy` fires after all cleanup is complete and `destroyed` is set
+- After `close()`, the context cannot be reused — `refresh()` will check `isActive` but `_prepareContext` creates a new `MetadataConfigApplicationContext` per run
+
+---
+
+## 4. Destroy vs Close
+
+`destroy()` is a convenience alias for `close()`:
+
+```
+destroy() → close()
+```
+
+Both are safe to call multiple times — the `destroyed` guard prevents re-entrance.
+
+---
+
+## 5. Child Context Lifecycle
+
+### 5.1 Creation
+
+```
+parent.newChild('childName') → GenericApplicationContext
+```
+
+- The child is added to `parent.children`
+- The child's `parent` property points to the parent
+- The child starts in inactive state (`isActive = false`)
+
+### 5.2 Close Propagation
+
+When a parent closes:
+
+1. `context:close` fires on the parent
+2. Each child is closed recursively (depth-first)
+3. Each child removes itself from its parent's children list
+4. After all children are closed, the parent runs its own cleanup
+
+### 5.3 Re-parenting
+
+```
+child.setParent(newParent)
+```
+
+- `setParent` removes the child from the old parent's children list and adds it to the new parent
+- Re-parenting does not change the child's active state
+- `path` and `root` recompute on access
+
+---
+
+## 6. Event Propagation
+
+### 6.1 Bubble (Upward)
+
+```
+child.bubble(type, ...data)
+```
+
+- Emits on the origin context (inclusive), then climbs the parent chain
+- Uses `escalate()` from `@blue/core`:
+  - First call: `escalate(origin, callback, true)` — emits on origin
+  - Subsequent calls: `escalate(parent, callback)` — emits on each ancestor
+- Stops at the root (context with no parent)
+- Does **not** skip intermediate parents — every ancestor receives the event
+
+**Example:** `grandchild.bubble('up:event')` fires on `grandchild`, then `child`, then `root`.
+
+### 6.2 Broadcast (Downward)
+
+```
+parent.broadcast(type, ...data)
+```
+
+- Emits on the origin context, then recursively on all descendants
+- Visits children depth-first
+- Does **not** skip intermediate levels — every descendant receives the event
+
+### 6.3 Event Gateway (Cross-Context)
+
+```
+ContextEventGateway(source, target, relays)
+```
+
+- Relays selected events from one context to another
+- Supports namespace-based validation (`NamespaceRelayValidationStrategy`)
+- Used for `createFeatureContext()` to allow event flow between shell and feature contexts
+- Can be destroyed independently to stop relaying
+
+---
+
+## 7. Lifecycle Event Summary
+
+| Event | Fires | Purpose |
+|---|---|---|
+| `context:preparing` | Start of `refresh()` | Factory initialization about to begin |
+| `context:refresh` | End of `refresh()` | Context is fully active |
+| `context:close` | Start of `close()` | Teardown starting |
+| `context:destroy` | End of `close()` | Context is fully destroyed |
+
+---
+
+## 8. State Transitions
+
+```
+                    ┌─────────────┐
+                    │  Created    │
+                    │ (inactive)  │
+                    └──────┬──────┘
+                           │ refresh()
+                           ▼
+                    ┌─────────────┐
+             ┌─────▶│   Active    │◀──────────────┐
+             │      │ (isActive)  │                │
+             │      └──────┬──────┘                │
+             │             │ close()               │ refresh() [no-op]
+             │             ▼                       │
+             │      ┌─────────────┐                │
+             │      │  Destroyed  │────────────────┘
+             │      │ (destroyed) │
+             │      └─────────────┘
+             │             │ close() [no-op]
+             │             ▼
+             │      ┌─────────────┐
+             └──────│  Destroyed  │
+                    │  (still)    │
+                    └─────────────┘
+```
+
+---
+
+## 9. Test Coverage
+
+The lifecycle is covered by the following tests in `context.spec.ts` and `context-edge-cases.spec.ts`:
+
+| Test | File | Description |
+|---|---|---|
+| `it should refresh and initialize constructor entries` | context.spec.ts | `refresh()` initializes constructor entries |
+| `it should refresh only once when already active` | context.spec.ts | Repeated `refresh()` is a no-op |
+| `it should run registry processors during refresh` | context.spec.ts | `EntryRegistryProcessor` runs during refresh |
+| `it should emit lifecycle events during refresh and close` | context.spec.ts | Correct event ordering: `preparing → refresh → close → destroy` |
+| `it should close and cascade destruction to child contexts` | context.spec.ts | Close propagates to children |
+| `it should close only once when already destroyed` | context.spec.ts | Repeated `close()` is a no-op |
+| `close propagates to grandchildren (depth > 1)` | context-edge-cases.spec.ts | Close cascades through multiple levels |
+| `close removes the context from its parent children list` | context-edge-cases.spec.ts | Parent-child bookkeeping |
+| `close on a never-refreshed context completes` | context-edge-cases.spec.ts | Close works without prior refresh |
+| `repeated close on already-closed child is no-op` | context-edge-cases.spec.ts | Idempotent close |
+| `removeChild returns false when child is not in children list` | context-edge-cases.spec.ts | Edge case for missing child |
+| `bubble on root context emits only on self` | context-edge-cases.spec.ts | No parent to climb |
+| `broadcast on leaf context with no children emits only on self` | context-edge-cases.spec.ts | No children to descend |
+| `bubble from grandchild emits on self, intermediate parent, and root` | context-edge-cases.spec.ts | Full upward propagation chain |

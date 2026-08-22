@@ -33,5 +33,9 @@
   },
   "peerDependencies": {
     "@blue/orm": "~0.0.1"
+  },
+  "dependencies": {
+    "@libsql/client": "0.17.4",
+    "drizzle-orm": "0.45.2"
   }
 }

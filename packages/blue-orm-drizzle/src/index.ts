@@ -1,15 +1,7 @@
-/** @author opencode */
-
 /**
- * @blue/orm-drizzle — Drizzle ORM adapter for @blue/orm.
- *
- * Install drizzle-orm and better-sqlite3 before implementing:
- * ```
- * pnpm add drizzle-orm better-sqlite3 --filter @blue/orm-drizzle
- * ```
- *
- * @packageDocumentation
+ * @author opencode
  */
 
-// Placeholder — implementation pending drizzle-orm installation
-export {};
+export { DrizzleDataSource } from './drizzle-data-source';
+export type { DrizzleDataSourceOptions } from './drizzle-data-source';
+export { DrizzleEntityManager } from './drizzle-entity-manager';

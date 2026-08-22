@@ -33,7 +33,7 @@ export interface EntityManager {
      */
     remove<T extends object>(entity: T): void;
     /**
-     * Flushes any pending changes to the data source. No operation for `InMemoryEntityManager`.
+     * Flushes any pending changes to the data source.
      */
     flush(): void;
     /**

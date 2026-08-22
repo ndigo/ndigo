@@ -207,7 +207,7 @@
 - [x] Entity lifecycle hooks: `@prePersist`, `@postLoad`, `@preUpdate`, `@postRemove`
 - [x] `@transactional` method decorator
 - [x] `@blue/validate` integration on entity persist — `EntityManager.persist()` calls `entity.validate()` when present
-- [ ] `@blue/orm-drizzle` adapter (ESM-first SQL backing store) — placeholder exists
+- [x] `@blue/orm-drizzle` adapter (ESM-first SQL backing store) — `DrizzleDataSource`, `DrizzleEntityManager`, 5 CRUD tests
 
 ---
 
@@ -243,7 +243,7 @@
 | **Done** | 4.5 | Client infra — BrowserRouter, CORS, offline retry, IndexedDB, LocalStorage | ✅ Done |
 | **Done** | 8 | `@blue/platform-node` — test coverage + integration | ✅ Done |
 | **P3** | 9a | `@blue/auth` — new package, greenfield | 4-6 weeks |
-| **P3** | 9b | `@blue/orm` post-MVP — relations, lifecycle hooks, validate integration | 4-6 weeks |
+| **Done** | 9b | `@blue/orm` post-MVP — relations, lifecycle hooks, validate integration, drizzle adapter | ✅ Done |
 | **P4** | 10 | 1.0 Checkpoint — audit, security, docs, benchmarks | 2 weeks |
 | **Done** | 7 | Context docs (sequence diagrams for refresh/close) | ✅ Done |
 | **Ongoing** | 3 | Remaining integration tests (view negotiation, redirect, transaction lifecycle) | 1 day |

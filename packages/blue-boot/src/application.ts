@@ -139,7 +139,9 @@ export class Application extends Emitter {
      */
     protected _configurePropertySources(environment: ConfigurableEnvironment, args: string[]): void {
         if (this.#properties) {
-            environment.propertySources.push(this.#properties);
+            const sources = environment.propertySources;
+            sources.push(this.#properties);
+            environment.propertySources = sources; // trigger resolver rebuild
         }
     }
 

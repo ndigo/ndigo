@@ -1,4 +1,4 @@
-import { describe, test, expect } from 'vitest';
+import { describe, test, expect, vi } from 'vitest';
 import { ApplicationBuilder } from '../src/application-builder';
 import { StandardEnvironment, configuration, entry } from '@blue/context';
 
@@ -105,5 +105,62 @@ describe('ApplicationBuilder', () => {
         const firstParentContext = parent.run();
         expect(firstParentContext.getValue('parentValue')).toBe('parent');
         expect(firstParentContext.getValue('builderName')).toBeUndefined();
+    });
+});
+
+describe('ApplicationBuilder.fromConfig', () => {
+    beforeEach(() => {
+        vi.stubGlobal('fetch', vi.fn());
+    });
+
+    afterEach(() => {
+        vi.unstubAllGlobals();
+    });
+
+    test('fetches config from URL and sets properties', async () => {
+        vi.mocked(fetch).mockResolvedValueOnce({
+            ok: true,
+            json: () => Promise.resolve({ properties: { server: { port: 8080 } } }),
+        } as Response);
+
+        const builder = await ApplicationBuilder.fromConfig('/config.json');
+
+        expect(fetch).toHaveBeenCalledWith('/config.json');
+        const context = builder.run();
+        expect(context.environment.getProperty('server')).toEqual({ port: 8080 });
+    });
+
+    test('throws on non-ok response', async () => {
+        vi.mocked(fetch).mockResolvedValueOnce({
+            ok: false,
+            status: 404,
+        } as Response);
+
+        await expect(ApplicationBuilder.fromConfig('/missing.json')).rejects.toThrow('404');
+    });
+
+    test('sets profiles from config', async () => {
+        vi.mocked(fetch).mockResolvedValueOnce({
+            ok: true,
+            json: () => Promise.resolve({ profiles: ['production', 'us-east'] }),
+        } as Response);
+
+        const builder = await ApplicationBuilder.fromConfig('/config.json');
+        const context = builder.run();
+
+        expect(context.environment.activeProfiles).toContain('production');
+        expect(context.environment.activeProfiles).toContain('us-east');
+    });
+
+    test('handles config with no optional fields', async () => {
+        vi.mocked(fetch).mockResolvedValueOnce({
+            ok: true,
+            json: () => Promise.resolve({}),
+        } as Response);
+
+        const builder = await ApplicationBuilder.fromConfig('/config.json');
+        expect(builder).toBeInstanceOf(ApplicationBuilder);
+        // Should run without error
+        expect(() => builder.run()).not.toThrow();
     });
 });

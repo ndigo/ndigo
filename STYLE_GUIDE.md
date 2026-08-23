@@ -4811,6 +4811,97 @@ When making style decisions, document the rationale in git commit messages and c
 
 ---
 
-**Last Updated:** February 1, 2025
+## 9. Self-Documenting Code
+
+Code is read more often than it is written. Self-documenting code minimizes the gap between what the code says and what the author intended.
+
+### Principle: Names carry meaning, comments carry rationale
+
+| Category | What to document | What NOT to document |
+|----------|-----------------|---------------------|
+| Names | Domain concepts, roles (`*Handler`, `*Strategy`) | Trivial getters (`// Returns the X`) |
+| Comments | *Why* a choice was made, edge cases, tradeoffs | *What* the code does (the code says that) |
+| Assertions | *Why* the compiler is wrong (one-liner with assertion) | *That* it's wrong (the `as any` already says that) |
+| Dead code | `@deprecated` with migration path, or delete | Commented-out blocks ("I'll need this later") |
+
+### Property/Method naming tells readers cost and semantics
+
+As established in Section 3.13:
+
+| Shape | Convention | Signals to the reader |
+|-------|-----------|----------------------|
+| `get something()` | Property | O(1), no side effects, intrinsic data |
+| `getSomething()` | get-method | May be expensive, may fail, may return `null` |
+| `toSomething()` | to-method | Returns a new representation, source unchanged |
+
+### Comment structure: say *why* not *what*
+
+```typescript
+// ❌ WHAT — the code already says this
+// Increment the OTel counter
+counter.add(1, config.attributes);
+
+// ✅ WHY — explains a non-obvious design decision
+// The retry creates a new Request object, so the WeakMap key
+// from the previous attempt is lost. The x-retry-attempt header
+// carries the counter without per-instance mutable state.
+const RETRY_ATTEMPT_HEADER = 'x-retry-attempt';
+```
+
+### Type assertions must explain why the compiler is wrong
+
+Every `as any`, `as unknown as T`, or `// @ts-ignore` must carry a one-line reason:
+
+```typescript
+// ❌ Bare assertion — reader must reverse-engineer why
+const metadata = (handler as any).constructor?.[Symbol.metadata];
+
+// ✅ With rationale — reader immediately knows the gap
+// constructor[Symbol.metadata] is a runtime-only TC39 decorator property
+// not declared on the `Function` type in TS 5.7.
+const metadata = (handler?.constructor as any)?.[Symbol.metadata];
+```
+
+When a module has many similar assertions (e.g., a library whose types end at `any`), a single module-level comment suffices:
+
+```typescript
+// NOTE: objectmodel's `.as()` chain returns `ModelConstructor<any>`.
+// Every primitive export casts the final value because the library types
+// provide no constraint-level generics. A typed wrapper would require
+// wrapping every assertion — this is accepted for an integration layer.
+```
+
+### `// NOTE:` comments are technical debt
+
+A `// NOTE:` comment usually means "this is not right but I'm shipping it anyway." It obscures the fact that the code is knowingly incomplete. Prefer:
+
+| Instead of `// NOTE:` | Use |
+|-----------------------|-----|
+| "This is simplified" | `@remarks This is a reference implementation. For production use…` |
+| "Not implemented" | `@deprecated Use {@link ProductionJWTAdapter} instead.` |
+| "In production, do X" | Remove the comment and do X, or mark with `@deprecated` |
+| "This should be X" | Do X, or open a ticket |
+
+### File size is documentation
+
+A file containing one public type documents the relationship between name and content. A file containing seven classes documents nothing — the reader must reverse-engineer the grouping. Follow the one-public-type-per-file convention:
+
+- ✅ `abstract-path-handler-mapping.ts` contains `AbstractPathHandlerMapping`
+- ❌ `route-handler-mapping.ts` (1218 lines) contained 7 public classes, 3 internal helpers, and 2 interfaces
+
+**Guideline:** Keep files under 300 lines. Files over 300 lines should have a clear single-responsibility justification. Split by public type, not by author convenience.
+
+### Dead code must carry its tombstone
+
+| State | Treatment |
+|-------|-----------|
+| Intentionally unused | Delete it. Source control remembers it. |
+| Kept for future activation | `@deprecated` with a `@remarks` explaining when it will be needed, or move to an `_archive/` directory |
+| Commented-out | Delete it. |
+| Optional path you chose not to take | Document the decision in `docs/decisions/` or a commit message |
+
+---
+
+**Last Updated:** August 22, 2026
 
 _This guide is a living document. When code style evolves, update this guide to reflect current practices._

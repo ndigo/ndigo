@@ -21,23 +21,14 @@ export class AuthClient {
         expiresAt: null,
     };
 
-    /**
-     * Returns the current authentication state.
-     */
     get state(): AuthenticationState {
         return this.#state;
     }
 
-    /**
-     * Returns the current principal, or null if unauthenticated.
-     */
     get principal(): Principal | null {
         return this.#state.principal;
     }
 
-    /**
-     * Returns whether the user is currently authenticated.
-     */
     get isAuthenticated(): boolean {
         return this.#state.isAuthenticated;
     }

@@ -20,10 +20,16 @@ export interface AuthRouteMetadata {
  * @returns The authentication metadata for the route.
  */
 export function extractAuthMetadata(handler: object | undefined): AuthRouteMetadata {
+        // constructor[Symbol.metadata] is a runtime TC39 decorator property
+    // that TS 5.7's Function type doesn't declare. The property exists on
+    // every decorated class's constructor at runtime.
     const metadata: Record<string, unknown> = (
-        ((handler as any)?.constructor?.[Symbol.metadata] ?? {}) as Record<string, unknown>
+        ((handler?.constructor as any)?.[Symbol.metadata] ?? {}) as Record<string, unknown>
     );
-    const methodName: string | null = typeof (handler as any)?.method === 'string' ? (handler as any).method : null;
+    const methodName: string | null =
+        typeof (handler as unknown as Record<string, unknown>)?.method === 'string'
+            ? (handler as unknown as Record<string, unknown>).method as string
+            : null;
 
     const classRequiresAuth = Boolean(metadata[AUTH_REQUIRED_KEY]);
     const methodRequiresAuth = methodName

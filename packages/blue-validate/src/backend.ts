@@ -2,30 +2,18 @@
  * @author Jeff Rose
  */
 
-import { ValidationBackendAdapter } from './_validation-backend-adapter';
-import { HybridValidationBackendAdapter } from './_hybrid-validation-backend-adapter';
 import { NativeValidationBackendAdapter } from './_native-validation-backend-adapter';
-import { ZodValidationBackendAdapter } from './_zod-validation-backend-adapter';
+import type { ValidationBackendAdapter } from './_validation-backend-adapter';
 
 /**
- * Represents the available validation backend names.
- * - `native`: Uses the built-in BlueJS validation logic.
- * - `zod`: Integrates with the Zod validation library.
- * - `hybrid`: Combines native BlueJS validation with Zod for enhanced capabilities.
+ * The supported validation backend. Currently only
+ * `native` (built-in BlueJS validation) is available.
  */
-export type ValidationBackendName = 'native' | 'zod' | 'hybrid';
+export type ValidationBackendName = 'native';
 
 /**
  * Creates a backend adapter for validation execution.
  */
-export const createValidationBackend = (name: ValidationBackendName = 'native'): ValidationBackendAdapter => {
-    if (name === 'zod') {
-        return new ZodValidationBackendAdapter();
-    }
-
-    if (name === 'hybrid') {
-        return new HybridValidationBackendAdapter();
-    }
-
+export const createValidationBackend = (_name?: ValidationBackendName): ValidationBackendAdapter => {
     return new NativeValidationBackendAdapter();
 };

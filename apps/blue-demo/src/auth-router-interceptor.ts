@@ -2,55 +2,63 @@
  * @author Jeff Rose
  */
 
-import { RouterInterceptor, RouterMiddleware } from '@blue/router';
+import { RouterInterceptor, type RouterMiddleware } from '@blue/router';
 import { Route } from '@blue/router';
-import { ClientAuthGuard, extractAuthMetadata } from '@blue/auth-client';
+import { ClientAuthGuard } from '@blue/auth-client';
 import { authClient } from './auth-store';
+
+/**
+ * Route-to-authentication-requirements map for the demo application.
+ *
+ * Each entry maps a route path (as seen in the router) to its auth requirements.
+ * Routes not listed here are publicly accessible.
+ */
+const ROUTE_AUTH: Record<string, { requiresAuth: boolean; requiredRoles?: string[] }> = {
+    '/auth/profile': { requiresAuth: true },
+    '/auth/admin': { requiresAuth: true, requiredRoles: ['admin'] },
+};
 
 /**
  * Adapts the `ClientAuthGuard` to work as a `RouterInterceptor`.
  *
  * This adapter intercepts route changes and checks authentication/authorization
- * metadata on the handler. If access is denied, it redirects to the configured
- * login or forbidden page.
+ * requirements before allowing navigation. If access is denied, it redirects
+ * to the configured login or forbidden page.
  *
  * @since 0.0.1
  */
 export class AuthRouterInterceptor implements RouterInterceptor {
     #guard: ClientAuthGuard;
 
-    constructor(authClient: ClientAuthGuard) {
-        this.#guard = authClient;
+    constructor(guard: ClientAuthGuard) {
+        this.#guard = guard;
     }
 
     /**
      * Intercepts route navigation before it proceeds.
-     * Checks auth metadata and redirects if necessary.
+     * Checks auth requirements configured in {@link ROUTE_AUTH}.
      */
     async preHandle(route: Route): Promise<boolean> {
-        // Extract auth metadata from the current route
-        const metadata = extractAuthMetadata(undefined);
+        const routeAuth = ROUTE_AUTH[route.path];
 
-        // If no auth required, allow the route
-        if (!metadata.requiresAuth && metadata.requiredRoles.length === 0) {
+        // No auth requirements -> route is public
+        if (!routeAuth) {
             return true;
         }
 
-        // Check if the user is authenticated
-        if (!authClient.isAuthenticated) {
-            // Redirect to login
-            window.location.hash = '#/login';
+        // Requires authentication but user is not authenticated
+        if (routeAuth.requiresAuth && !authClient.isAuthenticated) {
+            window.location.hash = '#/auth/login';
             return false;
         }
 
-        // Check role requirements
-        if (metadata.requiredRoles.length > 0 && authClient.principal) {
-            const hasRequiredRoles = metadata.requiredRoles.every((role) =>
-                authClient.principal!.hasRole(role)
+        // Requires specific roles — check the principal has all required roles
+        if (routeAuth.requiredRoles && routeAuth.requiredRoles.length > 0) {
+            const hasRoles = routeAuth.requiredRoles.every(
+                (role) => authClient.principal?.hasRole(role) ?? false,
             );
-            if (!hasRequiredRoles) {
-                // Redirect to forbidden
-                window.location.hash = '#/forbidden';
+            if (!hasRoles) {
+                window.location.hash = '#/auth/forbidden';
                 return false;
             }
         }
@@ -78,7 +86,7 @@ export class AuthRouterInterceptor implements RouterInterceptor {
  */
 export function authMiddleware(
     requireAuth: boolean,
-    loginRedirect: string = '#/login'
+    loginRedirect: string = '#/login',
 ): RouterMiddleware {
     return (route: Route): boolean => {
         if (!requireAuth) {

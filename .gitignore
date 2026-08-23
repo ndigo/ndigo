@@ -12,16 +12,27 @@ yarn-error.log
 
 # TypeScript build output
 **/src/**/*.js
+**/src/**/*.js.map
 **/src/**/*.d.ts.map
+**/src/**/*.d.ts
+# Hand-authored type declarations (not generated) — must not be ignored
+!packages/blue-util/src/_types/*.d.ts
+!packages/blue-util/src/_safe-regex.d.ts
 # TypeScript development cache
 **/.tscache/
-# Note: .d.ts files are allowed in src/ for intentional type definition files
-# (e.g., ramda-extensions.d.ts). Be mindful when committing .d.ts files.
+# Note: .d.ts files in src/ are generated build artifacts (mirrors of .ts sources).
+# If an intentional hand-authored .d.ts is needed, stage it with `git add -f`.
 **/test/**/*.js
 **/test/**/*.d.ts.map
 **/test/**/*.d.ts
 **/lib/
 *.tsbuildinfo
+
+# Build artifacts in package roots
+vite.config.js
+vite.config.d.ts
+vite.config.js.map
+vite.config.d.ts.map
 
 # Nx cache
 .nx/cache

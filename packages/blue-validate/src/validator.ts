@@ -24,33 +24,6 @@ export interface Validator {
     validate(value: serializable, name: string, params?: ValidationOptions): ValidationResults;
 }
 
-/*
-export class ConstraintValidator implements Validator {
-    readonly constraints: Map<string, Constraint>;
-
-    constructor( constraints: ValidationConstraints ){
-        defineProperty( this, 'constraints', {
-            value: new Map<string, Constraint>(),
-            configurable: true,
-            enumerable: false,
-            writable: false
-        } );
-        this.register( constraints );
-    }
-
-    register( constraints ){
-        for( const name in constraints ){
-            this.constraints.set( name, constraints[ name ] );
-        }
-    }
-
-    validate( value: serializable, name: string, params: Params ): ValidationResults {
-        this.constraints.
-    }
-
-}
-*/
-
 /**
  * A concrete implementation of the `Validator` interface that manages and validates against predefined types.
  * It supports different validation backends (native, Zod, hybrid) for flexible validation strategies.

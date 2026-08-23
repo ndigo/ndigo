@@ -12,19 +12,8 @@ import { type AuthResult } from './state';
  * principal, authentication token, and session lifecycle methods.
  */
 export interface Session {
-    /**
-     * The authenticated principal, or `null` when unauthenticated.
-     */
     readonly principal: Principal | null;
-
-    /**
-     * The current session or access token, or `null` when unauthenticated.
-     */
     readonly token: string | null;
-
-    /**
-     * Whether the user is currently authenticated.
-     */
     readonly isAuthenticated: boolean;
 
     /**

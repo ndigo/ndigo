@@ -48,11 +48,14 @@ export class OIDCAdapter implements AuthAdapter {
     /**
      * Returns the authorization URL to redirect the user to.
      *
+     * @remarks This implementation constructs the URL from the issuer base and configured
+     * parameters. A production adapter should fetch the OIDC discovery document and
+     * build the authorization URL from the published `authorization_endpoint`.
+     *
      * @param state - Optional state parameter for CSRF protection.
      * @returns The authorization URL.
      */
     getAuthorizationUrl(state?: string): string {
-        // NOTE: In production, fetch the discovery document and construct the URL properly.
         const authorizationUrl = `${this.#config.issuer}/authorize`;
         const params = new URLSearchParams({
             response_type: 'code',
@@ -67,12 +70,14 @@ export class OIDCAdapter implements AuthAdapter {
     /**
      * Exchanges an authorization code for tokens.
      *
+     * @remarks This is a simplified implementation that does not validate the ID token's
+     * cryptographic signature. A production adapter should use a dedicated OIDC library
+     * such as `oidc-client-ts` or `@auth0/auth0-spa-js` for proper token validation.
+     *
      * @param code - The authorization code received from the callback.
      * @returns The {@link AuthResult} containing the principal and tokens.
      */
     async exchangeCodeForTokens(code: string): Promise<AuthResult> {
-        // NOTE: This is a simplified implementation.
-        // In production, use a proper OIDC library to handle the token exchange.
         const tokenUrl = `${this.#config.issuer}/token`;
 
         const response = await fetch(tokenUrl, {
@@ -117,8 +122,17 @@ export class OIDCAdapter implements AuthAdapter {
         };
     }
 
+    /**
+     * Validates an OIDC ID token and extracts the principal.
+     *
+     * @remarks The token payload is decoded from base64 without cryptographic signature
+     * verification. A production adapter should validate the JWT signature using the
+     * provider's JWKS endpoint.
+     *
+     * @param token - The ID token to validate.
+     * @returns The authenticated {@link Principal}, or `null` if validation fails.
+     */
     async validate(token: string): Promise<Principal | null> {
-        // NOTE: In production, validate the JWT signature and claims properly.
         try {
             const idTokenParts = token.split('.');
             if (idTokenParts.length !== 3) {
@@ -162,12 +176,20 @@ export class OIDCAdapter implements AuthAdapter {
         throw new Error('OIDCAdapter.authenticate() not implemented - use getAuthorizationUrl() and exchangeCodeForTokens()');
     }
 
-    async refresh(token: string): Promise<AuthResult> {
-        // NOTE: In production, use the refresh token to obtain a new access token.
+    /**
+     * Refreshes the access token.
+     *
+     * @remarks This is a stub. A production adapter should use the OIDC refresh token
+     * grant to obtain a new access token from the identity provider.
+     *
+     * @param token - The access token to refresh.
+     * @returns A promise that rejects with an error (not implemented).
+     */
+    async refresh(_token: string): Promise<AuthResult> {
         throw new Error('OIDCAdapter.refresh() not implemented - use a proper refresh flow');
     }
 
     async logout(_token: string): Promise<void> {
-        // NOTE: In production, redirect to the identity provider's logout endpoint.
+        // OIDC logout requires redirecting the user to the provider's end_session_endpoint.
     }
 }

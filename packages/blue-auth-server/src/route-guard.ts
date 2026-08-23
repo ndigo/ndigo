@@ -33,6 +33,9 @@ export class AuthRouteGuard implements RouteHandlerInterceptor {
      */
     async preHandle(route: Route, handler: object | undefined): Promise<boolean> {
         const methodHandler = handler as RouteHandlerMethod | undefined;
+                // constructor[Symbol.metadata] is a runtime TC39 decorator property
+        // that TS 5.7's Function type doesn't declare. The property exists on
+        // every decorated class's constructor at runtime.
         const metadata: Record<string, unknown> = (
             ((methodHandler?.handler?.constructor as any)?.[Symbol.metadata] ?? {}) as Record<string, unknown>
         );

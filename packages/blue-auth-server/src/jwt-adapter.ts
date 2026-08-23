@@ -35,10 +35,19 @@ export class JWTAdapter implements AuthAdapter {
         this.#config = config;
     }
 
+    /**
+     * Validates a JWT token and returns the associated principal.
+     *
+     * @remarks This is a simplified implementation that decodes the JWT payload and
+     * validates claims (issuer, audience, expiration) but does NOT verify the
+     * cryptographic signature. For production use, integrate `jose` or `jsonwebtoken`
+     * and verify the signature against the configured secret or public key.
+     *
+     * @param token - The JWT to validate.
+     * @returns The authenticated {@link Principal}, or `null` if validation fails.
+     */
     async validate(token: string): Promise<Principal | null> {
         try {
-            // NOTE: This is a simplified implementation.
-            // In production, use a proper JWT library like jose or jsonwebtoken.
             const parts = token.split('.');
             if (parts.length !== 3) {
                 return null;
@@ -75,18 +84,19 @@ export class JWTAdapter implements AuthAdapter {
     }
 
     async authenticate(_credentials: any): Promise<AuthResult> {
-        // NOTE: This is a simplified implementation.
-        // In production, validate credentials against a database or identity provider.
+        // Credential validation is outside the scope of a JWT adapter.
+        // Use an identity provider or database-backed auth flow.
         throw new Error('JWTAdapter.authenticate() not implemented - use a proper auth flow');
     }
 
     async refresh(_token: string): Promise<AuthResult> {
-        // NOTE: This is a simplified implementation.
+        // JWT refresh requires a refresh token or re-authentication.
+        // A production adapter should implement a proper refresh flow.
         throw new Error('JWTAdapter.refresh() not implemented - use a proper token refresh flow');
     }
 
     async logout(_token: string): Promise<void> {
-        // NOTE: JWTs are stateless, so logout typically involves
-        // adding the token to a blacklist or waiting for expiration.
+        // JWTs are stateless; logout typically requires maintaining a server-side
+        // token blacklist or relying on short expiration times.
     }
 }

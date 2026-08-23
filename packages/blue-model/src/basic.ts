@@ -1,5 +1,11 @@
 /**
  * @author Jeff Rose
+ *
+ * NOTE: objectmodel's `.as()` chain returns `ModelConstructor<any>`.
+ * Every primitive export casts the final value with `as any` because the
+ * library types provide no constraint-level generics. A typed wrapper
+ * would require wrapping every assertion — this is accepted for an
+ * integration layer package.
  */
 import { isPrimitive } from '@blue/core';
 import { isNumber, isString } from '@blue/util/types';

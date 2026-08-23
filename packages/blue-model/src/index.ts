@@ -5,9 +5,6 @@
  * @see {@link http://objectmodel.js.org/}
  */
 
-// @ts-ignore - This import is not needed for production builds
-import 'objectmodel/src/devtool-formatter';
-
 /**
  * @external objectmodel
  * @see {@link http://objectmodel.js.org/}

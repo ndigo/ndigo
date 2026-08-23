@@ -555,7 +555,10 @@ export const numeric = createConstraintDecorator('Numeric');
  */
 export type ValidatedConfig = {
     groups?: ValidationGroup[];
-    /** Backend adapter to use for constraint validation. Defaults to 'native'. */
+    /**
+     * Backend adapter to use for constraint validation. Defaults to 'native'.
+     * Currently only the native BlueJS backend is available.
+     */
     backend?: ValidationBackendName;
 };
 
@@ -563,12 +566,12 @@ export type ValidatedConfig = {
  * TC39 Stage 3 class decorator that enables validation for a class's fields.
  * When applied, it adds a `validate` method to the class prototype, allowing programmatic validation.
  *
- * Supports both native and zod validation backends. Groups are evaluated at the decorator level
+ * Groups are evaluated at the decorator level
  * regardless of backend, ensuring symmetric behavior.
  *
  * @param {ValidatedConfig} [config] - Configuration for the class validation.
  * @param {ValidationGroup[]} [config.groups] - Default validation groups to apply when `validate` is called without explicit groups.
- * @param {ValidationBackendName} [config.backend='native'] - Backend adapter for constraint validation ('native', 'zod', or 'hybrid').
+ * @param {ValidationBackendName} [config.backend='native'] - Backend adapter for constraint validation. Only 'native' is currently available.
  * @returns {ClassDecorator} A class decorator function.
  *
  * @example

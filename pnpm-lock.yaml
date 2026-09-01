@@ -414,17 +414,13 @@ importers:
         version: 6.0.15(@types/node@22.10.10)(lightningcss@1.32.0)(terser@5.48.0)(tsx@4.22.3)(yaml@2.9.0)
 
   packages/blue-auth-client:
-    dependencies:
+    devDependencies:
       '@blue/auth-core':
         specifier: workspace:*
         version: link:../blue-auth-core
-    devDependencies:
       '@blue/http':
         specifier: workspace:*
         version: link:../blue-http
-      '@blue/router':
-        specifier: workspace:*
-        version: link:../blue-router
       typescript:
         specifier: ^5.7.2
         version: 5.9.3
@@ -443,11 +439,10 @@ importers:
         version: 5.9.3
 
   packages/blue-auth-server:
-    dependencies:
+    devDependencies:
       '@blue/auth-core':
         specifier: workspace:*
         version: link:../blue-auth-core
-    devDependencies:
       '@blue/dispatcher':
         specifier: workspace:*
         version: link:../blue-dispatcher
@@ -569,9 +564,6 @@ importers:
       '@blue/model':
         specifier: ~0.0.1
         version: link:../blue-model
-      '@blue/util':
-        specifier: ~0.0.1
-        version: link:../blue-util
       '@blue/validate':
         specifier: ~0.0.1
         version: link:../blue-validate
@@ -660,6 +652,9 @@ importers:
         specifier: 0.45.2
         version: 0.45.2(@libsql/client@0.17.4)(@opentelemetry/api@1.9.1)
     devDependencies:
+      '@blue/core':
+        specifier: ~0.0.1
+        version: link:../blue-core
       '@blue/orm':
         specifier: ~0.0.1
         version: link:../blue-orm
@@ -678,9 +673,6 @@ importers:
       '@blue/router':
         specifier: ~0.0.1
         version: link:../blue-router
-      '@blue/util':
-        specifier: ~0.0.1
-        version: link:../blue-util
 
   packages/blue-platform-web:
     devDependencies:
@@ -702,9 +694,6 @@ importers:
       '@blue/util':
         specifier: ~0.0.1
         version: link:../blue-util
-      '@blue/validate':
-        specifier: ~0.0.1
-        version: link:../blue-validate
       zod:
         specifier: ^4.3.6
         version: 4.4.3
@@ -732,6 +721,9 @@ importers:
 
   packages/blue-service:
     devDependencies:
+      '@blue/context':
+        specifier: ~0.0.1
+        version: link:../blue-context
       '@blue/core':
         specifier: ~0.0.1
         version: link:../blue-core
@@ -864,9 +856,6 @@ importers:
       '@blue/router':
         specifier: ~0.0.1
         version: link:../blue-router
-      '@blue/util':
-        specifier: ~0.0.1
-        version: link:../blue-util
       '@blue/view':
         specifier: ~0.0.1
         version: link:../blue-view
@@ -879,18 +868,12 @@ importers:
       '@blue/dom':
         specifier: ~0.0.1
         version: link:../blue-dom
-      '@blue/factory':
-        specifier: ~0.0.1
-        version: link:../blue-factory
       '@blue/reactive':
         specifier: ~0.0.1
         version: link:../blue-reactive
       '@blue/router':
         specifier: ~0.0.1
         version: link:../blue-router
-      '@blue/validate':
-        specifier: ~0.0.1
-        version: link:../blue-validate
       '@blue/view':
         specifier: ~0.0.1
         version: link:../blue-view

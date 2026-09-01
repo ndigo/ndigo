@@ -15,13 +15,12 @@ export const INTEGRATION_LAYER_MAP: Record<string, string> = {
     ramda: '@blue/util',
     'date-fns': '@blue/util',
     objectmodel: '@blue/model',
-    arcsecond: '@blue/parser',
 };
 
 /**
  * Package names that are allowed to import the libraries they encapsulate.
  */
-export const INTEGRATION_LAYER_PACKAGES: string[] = ['@blue/util', '@blue/model', '@blue/parser'];
+export const INTEGRATION_LAYER_PACKAGES: string[] = ['@blue/util', '@blue/model'];
 
 /**
  * Browser global names that should not be accessed unguarded in isomorphic packages.

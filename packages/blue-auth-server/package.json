@@ -7,10 +7,8 @@
   "types": "./lib/index.d.ts",
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "MIT",
-  "dependencies": {
-    "@blue/auth-core": "workspace:*"
-  },
   "peerDependencies": {
+    "@blue/auth-core": "workspace:*",
     "@blue/dispatcher": "workspace:*",
     "@blue/router": "workspace:*"
   },

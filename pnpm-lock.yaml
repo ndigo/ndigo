@@ -92,9 +92,6 @@ importers:
       '@blue/core':
         specifier: workspace:*
         version: link:../../../blue/packages/blue-core
-      '@blue/reactive':
-        specifier: workspace:*
-        version: link:../../../blue/packages/blue-reactive
       '@blue/util':
         specifier: workspace:*
         version: link:../../../blue/packages/blue-util
@@ -310,9 +307,6 @@ importers:
       '@blue/platform-web':
         specifier: ~0.0.1
         version: link:../../packages/blue-platform-web
-      '@blue/reactive':
-        specifier: ~0.0.1
-        version: link:../../packages/blue-reactive
       '@blue/router':
         specifier: ~0.0.1
         version: link:../../packages/blue-router
@@ -328,9 +322,6 @@ importers:
       '@blue/view-webcomponent':
         specifier: ~0.0.1
         version: link:../../packages/blue-view-webcomponent
-      '@blue/view-wicket':
-        specifier: ~0.0.1
-        version: link:../../packages/blue-view-wicket
       todomvc-app-css:
         specifier: ~2.4.2
         version: 2.4.3
@@ -698,12 +689,6 @@ importers:
         specifier: ^4.3.6
         version: 4.4.3
 
-  packages/blue-reactive:
-    devDependencies:
-      '@blue/core':
-        specifier: ~0.0.1
-        version: link:../blue-core
-
   packages/blue-router:
     devDependencies:
       '@blue/core':
@@ -736,6 +721,16 @@ importers:
       '@blue/util':
         specifier: ~0.0.1
         version: link:../blue-util
+
+  packages/blue-signals:
+    dependencies:
+      '@preact/signals-core':
+        specifier: ^1.8.0
+        version: 1.14.4
+    devDependencies:
+      '@blue/core':
+        specifier: ~0.0.1
+        version: link:../blue-core
 
   packages/blue-telemetry:
     dependencies:
@@ -853,24 +848,6 @@ importers:
       '@blue/factory':
         specifier: ~0.0.1
         version: link:../blue-factory
-      '@blue/router':
-        specifier: ~0.0.1
-        version: link:../blue-router
-      '@blue/view':
-        specifier: ~0.0.1
-        version: link:../blue-view
-
-  packages/blue-view-wicket:
-    devDependencies:
-      '@blue/core':
-        specifier: ~0.0.1
-        version: link:../blue-core
-      '@blue/dom':
-        specifier: ~0.0.1
-        version: link:../blue-dom
-      '@blue/reactive':
-        specifier: ~0.0.1
-        version: link:../blue-reactive
       '@blue/router':
         specifier: ~0.0.1
         version: link:../blue-router
@@ -2744,6 +2721,9 @@ packages:
 
   '@polka/url@1.0.0-next.29':
     resolution: {integrity: sha512-wwQAWhWSuHaag8c4q/KN/vCoeOJYshAIvMQwD4GpSb3OiZklFfvAgmj0VCBBImRpuF/aFgIRzllXlVX93Jevww==}
+
+  '@preact/signals-core@1.14.4':
+    resolution: {integrity: sha512-HNB6HYeYKhQbJ1aKl+YRjrS4+QWHLKX6qKoUsfS/m0vqzsVaEBiZiaKbG/e+NKk2ch5ALQr/ihWaMHxiCuuWHA==}
 
   '@protobufjs/aspromise@1.1.2':
     resolution: {integrity: sha512-j+gKExEuLmKwvz3OgROXtrJ2UG2x8Ch2YZUxahh+s1F2HZ+wAceUNLkvy6zKCPVRkU++ZWQrdxsUeQXmcg4uoQ==}
@@ -9561,6 +9541,8 @@ snapshots:
       playwright: 1.60.0
 
   '@polka/url@1.0.0-next.29': {}
+
+  '@preact/signals-core@1.14.4': {}
 
   '@protobufjs/aspromise@1.1.2': {}
 

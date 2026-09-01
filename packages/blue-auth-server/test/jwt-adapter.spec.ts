@@ -1,13 +1,15 @@
+// Helper to create a minimal JWT token string with a real HMAC signature
 import { describe, test, expect, beforeEach } from 'vitest';
 import { JWTAdapter } from '../src/jwt-adapter';
 import { Principal } from '@blue/auth-core';
+import { createHmac } from 'node:crypto';
 
-// Helper to create a minimal JWT token string
-function createJWT(payload: Record<string, any>, _secret = 'secret'): string {
+function createJWT(payload: Record<string, any>, secret = 'test-secret'): string {
     const header = Buffer.from(JSON.stringify({ alg: 'HS256', typ: 'JWT' })).toString('base64url');
     const body = Buffer.from(JSON.stringify(payload)).toString('base64url');
-    // Signature is not verified in the simplified adapter
-    const signature = Buffer.from('fakesignature').toString('base64url');
+    const signature = createHmac('sha256', secret)
+        .update(`${header}.${body}`)
+        .digest('base64url');
     return `${header}.${body}.${signature}`;
 }
 

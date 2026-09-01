@@ -26,9 +26,8 @@
     "packages/blue-orm/src/index.ts",
     "packages/blue-orm-drizzle/src/index.ts",
     "packages/blue-platform-node/src/index.ts",
-    "packages/blue-reactive/src/index.ts",
-    "packages/blue-telemetry/src/index.ts",
-    "packages/blue-view-wicket/src/index.ts"
+    "packages/blue-signals/src/index.ts",
+    "packages/blue-telemetry/src/index.ts"
   ],
   "exclude": ["**/node_modules/**", "**/test/**", "archive/**"],
   "out": "doc-html",

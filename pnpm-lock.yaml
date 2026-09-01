@@ -310,6 +310,9 @@ importers:
       '@blue/router':
         specifier: ~0.0.1
         version: link:../../packages/blue-router
+      '@blue/signals':
+        specifier: ~0.0.1
+        version: link:../../packages/blue-signals
       '@blue/telemetry':
         specifier: ~0.0.1
         version: link:../../packages/blue-telemetry

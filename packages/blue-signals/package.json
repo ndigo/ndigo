@@ -1,0 +1,49 @@
+{
+  "name": "@blue/signals",
+  "version": "0.0.1",
+  "description": "Blue Signals – Reactive state management with signals, computed values, and effects",
+  "type": "module",
+  "files": [
+    "lib"
+  ],
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "import": "./lib/index.js"
+    },
+    "./decorators": {
+      "types": "./lib/decorators/index.d.ts",
+      "import": "./lib/decorators/index.js"
+    }
+  },
+  "scripts": {
+    "build:lib": "tsc -b tsconfig.build.json",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue.git"
+  },
+  "keywords": [
+    "blue",
+    "bluejs",
+    "blue-js",
+    "blue-signals",
+    "signals",
+    "reactive",
+    "state"
+  ],
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "dependencies": {
+    "@preact/signals-core": "^1.8.0"
+  },
+  "peerDependencies": {
+    "@blue/core": "~0.0.1"
+  },
+  "devDependencies": {
+    "@blue/core": "~0.0.1"
+  },
+  "sideEffects": false
+}

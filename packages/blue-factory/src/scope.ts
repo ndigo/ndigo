@@ -23,13 +23,11 @@ export interface ScopedFactory {
 
 const SCOPE_KEY = 'scope:mapping';
 
-/**
- * Helper function to get constructor from class or instance
- * @param {*} target - Class constructor or instance
- * @returns {Function} Constructor function
- */
-const getConstructor = (target: any): any => {
-    return typeof target === 'function' ? target : target?.constructor;
+const getConstructor = (target: Function | object): (Function & { [Symbol.metadata]?: Record<string, unknown> }) | undefined => {
+    if (typeof target === 'function') {
+        return target as Function & { [Symbol.metadata]?: Record<string, unknown> };
+    }
+    return (target as object)?.constructor as (Function & { [Symbol.metadata]?: Record<string, unknown> }) | undefined;
 };
 
 /**
@@ -41,12 +39,13 @@ export const defineScope = (value: PossibleScope, target: any): void => {
     const ctor = getConstructor(target);
     if (!ctor) return;
 
-    // Ensure metadata object exists
-    if (!ctor[Symbol.metadata]) {
-        ctor[Symbol.metadata] = {};
+    // Trust: ctor has Symbol.metadata from @tsmetadata/polyfill at runtime.
+    // The TS Function type doesn't declare it — this cast is needed.
+    const ctorWithMeta = ctor as Function & { [Symbol.metadata]: Record<string, unknown> };
+    if (!ctorWithMeta[Symbol.metadata]) {
+        ctorWithMeta[Symbol.metadata] = {};
     }
-
-    ctor[Symbol.metadata][SCOPE_KEY] = value;
+    ctorWithMeta[Symbol.metadata][SCOPE_KEY] = value;
 };
 
 /**
@@ -56,7 +55,7 @@ export const defineScope = (value: PossibleScope, target: any): void => {
  */
 export const getScope = (target: any): PossibleScope | undefined => {
     const ctor = getConstructor(target);
-    return ctor?.[Symbol.metadata]?.[SCOPE_KEY];
+    return ctor?.[Symbol.metadata]?.[SCOPE_KEY] as PossibleScope | undefined;
 };
 
 /**

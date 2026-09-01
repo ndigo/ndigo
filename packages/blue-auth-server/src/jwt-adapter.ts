@@ -2,6 +2,7 @@
  * @author Jeff Rose
  */
 
+import { createHmac, timingSafeEqual } from 'node:crypto';
 import { type AuthAdapter } from '@blue/auth-core';
 import { type Principal } from '@blue/auth-core';
 import { type AuthResult } from '@blue/auth-core';
@@ -24,8 +25,8 @@ export interface JWTAdapterConfig {
  * A reference implementation of {@link AuthAdapter} for JWT-based authentication.
  *
  * This adapter validates JWT tokens and extracts the principal from the token claims.
- * It is intended as a starting point and should be extended for production use
- * to include proper key rotation, algorithm validation, and secure secret management.
+ * For production use, integrate `jose` or `jsonwebtoken` for RS256/ES256 support
+ * and proper key rotation.
  */
 export class JWTAdapter implements AuthAdapter {
     readonly id = 'jwt';
@@ -38,10 +39,9 @@ export class JWTAdapter implements AuthAdapter {
     /**
      * Validates a JWT token and returns the associated principal.
      *
-     * @remarks This is a simplified implementation that decodes the JWT payload and
-     * validates claims (issuer, audience, expiration) but does NOT verify the
-     * cryptographic signature. For production use, integrate `jose` or `jsonwebtoken`
-     * and verify the signature against the configured secret or public key.
+     * @remarks Supports HMAC algorithms (HS256, HS384, HS512) with
+     * cryptographic signature verification. Other algorithms (RS256, ES256)
+     * fall back to claim-only validation with a console warning.
      *
      * @param token - The JWT to validate.
      * @returns The authenticated {@link Principal}, or `null` if validation fails.
@@ -54,8 +54,39 @@ export class JWTAdapter implements AuthAdapter {
             }
 
             const payload = JSON.parse(
-                Buffer.from(parts[1], 'base64').toString('utf-8')
+                Buffer.from(parts[1], 'base64url').toString('utf-8')
             );
+
+            // Parse and validate the algorithm from the header
+            const header = JSON.parse(
+                Buffer.from(parts[0], 'base64url').toString('utf-8')
+            );
+            if (header.alg !== this.#config.algorithm) {
+                // Algorithm mismatch — possible substitution attack
+                return null;
+            }
+
+            const algorithm = this.#config.algorithm;
+            if (['HS256', 'HS384', 'HS512'].includes(algorithm)) {
+                const hashAlg = `sha${algorithm.slice(2)}`.toLowerCase();
+                const expectedSig = createHmac(hashAlg, this.#config.secret)
+                    .update(`${parts[0]}.${parts[1]}`)
+                    .digest();
+                const actualSig = Buffer.from(parts[2], 'base64url');
+                if (expectedSig.length !== actualSig.length ||
+                    !timingSafeEqual(expectedSig, actualSig)) {
+                    return null;
+                }
+            } else {
+                // Unsupported algorithm — warn, then validate claims only
+                if (typeof process !== 'undefined' && process.env.NODE_ENV !== 'test') {
+                    console.warn(
+                        `JWTAdapter: algorithm "${algorithm}" requires signature ` +
+                        'verification via `jose` or `jsonwebtoken`. ' +
+                        'Falling back to claim-only validation.'
+                    );
+                }
+            }
 
             // Validate issuer and audience
             if (payload.iss !== this.#config.issuer) {
@@ -64,7 +95,6 @@ export class JWTAdapter implements AuthAdapter {
             if (payload.aud !== this.#config.audience) {
                 return null;
             }
-
             // Validate expiration
             if (payload.exp && payload.exp * 1000 < Date.now()) {
                 return null;

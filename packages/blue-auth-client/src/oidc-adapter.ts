@@ -22,6 +22,18 @@ export interface OIDCAdapterConfig {
     scopes?: string[];
     /** The audience claim to validate (for API access). */
     audience?: string;
+    /**
+     * Optional token validation callback.
+     *
+     * If provided, called with the raw ID token and its parsed payload to
+     * verify the cryptographic signature (e.g., by fetching the provider's
+     * JWKS endpoint). For production use, pass a validator that uses a
+     * library like `jose` or `oidc-client-ts`.
+     *
+     * If omitted, the adapter decodes and validates claims without
+     * signature verification — acceptable for development only.
+     */
+    tokenValidator?: (token: string, payload: Record<string, unknown>) => Promise<boolean>;
 }
 
 /**
@@ -33,8 +45,10 @@ export interface OIDCAdapterConfig {
  * - Validating ID tokens and extracting the principal
  * - Refreshing access tokens
  *
- * Note: This is a reference implementation. For production use, consider using
- * a dedicated OIDC library like `oidc-client-ts` or `@auth0/auth0-spa-js`.
+ * @remarks Token signature validation is delegated to the optional
+ * `tokenValidator` callback in {@link OIDCAdapterConfig}. Without it,
+ * the adapter verifies claims only — signature verification requires
+ * a production validator (e.g., JWKS fetch via `jose`).
  */
 export class OIDCAdapter implements AuthAdapter {
     readonly id = 'oidc';
@@ -70,9 +84,8 @@ export class OIDCAdapter implements AuthAdapter {
     /**
      * Exchanges an authorization code for tokens.
      *
-     * @remarks This is a simplified implementation that does not validate the ID token's
-     * cryptographic signature. A production adapter should use a dedicated OIDC library
-     * such as `oidc-client-ts` or `@auth0/auth0-spa-js` for proper token validation.
+     * @remarks If a `tokenValidator` is configured, the ID token's signature
+     * is verified before extracting the principal.
      *
      * @param code - The authorization code received from the callback.
      * @returns The {@link AuthResult} containing the principal and tokens.
@@ -106,6 +119,14 @@ export class OIDCAdapter implements AuthAdapter {
             Buffer.from(idTokenParts[1], 'base64').toString('utf-8')
         );
 
+        // Verify the ID token signature when a validator is configured
+        if (this.#config.tokenValidator) {
+            const valid = await this.#config.tokenValidator(tokens.id_token, payload);
+            if (!valid) {
+                throw new Error('ID token signature validation failed');
+            }
+        }
+
         const principal: Principal = {
             id: payload.sub || 'unknown',
             name: payload.name || payload.preferred_username || 'Unknown',
@@ -125,9 +146,8 @@ export class OIDCAdapter implements AuthAdapter {
     /**
      * Validates an OIDC ID token and extracts the principal.
      *
-     * @remarks The token payload is decoded from base64 without cryptographic signature
-     * verification. A production adapter should validate the JWT signature using the
-     * provider's JWKS endpoint.
+     * @remarks If a `tokenValidator` is configured, the token's signature
+     * is verified before extracting the principal.
      *
      * @param token - The ID token to validate.
      * @returns The authenticated {@link Principal}, or `null` if validation fails.
@@ -142,6 +162,14 @@ export class OIDCAdapter implements AuthAdapter {
             const payload = JSON.parse(
                 Buffer.from(idTokenParts[1], 'base64').toString('utf-8')
             );
+
+            // Verify the ID token signature when a validator is configured
+            if (this.#config.tokenValidator) {
+                const valid = await this.#config.tokenValidator(token, payload);
+                if (!valid) {
+                    return null;
+                }
+            }
 
             // Validate issuer
             if (payload.iss !== this.#config.issuer) {

@@ -11,6 +11,7 @@ import './login-view';
 import './profile-view';
 import './admin-view';
 import './forbidden-view';
+import './signals-counter-view';
 
 const composition = composeTodoRuntime(createTodoContext());
 const metricsPanel = document.createElement('feature-metrics-panel') as HTMLElement & {

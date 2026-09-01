@@ -29,9 +29,11 @@
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
   "devDependencies": {
+    "@blue/core": "~0.0.1",
     "@blue/orm": "~0.0.1"
   },
   "peerDependencies": {
+    "@blue/core": "~0.0.1",
     "@blue/orm": "~0.0.1"
   },
   "dependencies": {

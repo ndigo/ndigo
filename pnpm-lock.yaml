@@ -92,6 +92,9 @@ importers:
       '@blue/core':
         specifier: workspace:*
         version: link:../../../blue/packages/blue-core
+      '@blue/signals':
+        specifier: workspace:*
+        version: link:../../../blue/packages/blue-signals
       '@blue/util':
         specifier: workspace:*
         version: link:../../../blue/packages/blue-util
@@ -461,6 +464,9 @@ importers:
       '@blue/platform-web':
         specifier: ~0.0.1
         version: link:../blue-platform-web
+      '@blue/router':
+        specifier: ~0.0.1
+        version: link:../blue-router
       '@blue/view':
         specifier: ~0.0.1
         version: link:../blue-view

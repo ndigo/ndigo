@@ -9,11 +9,6 @@
       "factory": "./src/generators/component/generator",
       "schema": "./src/generators/component/schema.json",
       "description": "Generate a source file + test file pair with BlueJS conventions"
-    },
-    "wicket-component": {
-      "factory": "./src/generators/wicket-component/generator",
-      "schema": "./src/generators/wicket-component/schema.json",
-      "description": "Generate a Wicket component with template and test"
     }
   }
 }

@@ -1,5 +1,5 @@
 import './telemetry-setup';
-import { composeTodoRuntime, toTodoShellRoute } from './shell-composition';
+import { composeTodoRuntime } from './shell-composition';
 import { createTodoContext } from './todo-context';
 import './account-app-view';
 import './feature-metrics-panel-view';
@@ -14,6 +14,7 @@ import './forbidden-view';
 import './signals-counter-view';
 
 const composition = composeTodoRuntime(createTodoContext());
+const { routes } = composition;
 const metricsPanel = document.createElement('feature-metrics-panel') as HTMLElement & {
     aggregator?: unknown;
     refresh?: () => void;
@@ -66,4 +67,4 @@ composition.shellRouter.addInterceptor({
     },
 });
 
-location.hash = toTodoShellRoute('/index');
+location.hash = routes.todoAll.href();

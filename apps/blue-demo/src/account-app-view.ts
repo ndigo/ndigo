@@ -1,9 +1,5 @@
-import { toAccountShellRoute, toTodoShellRoute } from './shell-composition';
+import { routes } from './shell-composition';
 import './shell-nav-view';
-
-const accountOverviewRoute = `#${toAccountShellRoute('/')}`;
-const accountSettingsRoute = `#${toAccountShellRoute('/settings')}`;
-const todoRoute = `#${toTodoShellRoute('/')}`;
 
 const accountTemplate = document.createElement('template');
 accountTemplate.innerHTML = `
@@ -67,19 +63,19 @@ class AccountApp extends HTMLElement {
             containerClass: 'account-nav',
             items: [
                 {
-                    href: accountOverviewRoute,
+                    href: routes.accountOverview?.href?.() ?? '#/account',
                     label: 'Overview',
                     linkClass: 'overview-link',
                     selected: this.#section === 'overview',
                 },
                 {
-                    href: accountSettingsRoute,
+                    href: routes.accountSettings?.href?.() ?? '#/account/settings',
                     label: 'Settings',
                     linkClass: 'settings-link',
                     selected: this.#section === 'settings',
                 },
                 {
-                    href: todoRoute,
+                    href: routes.todoAll?.href?.() ?? '#/todo',
                     label: 'Back to Todos',
                     linkClass: 'todo-link',
                 },

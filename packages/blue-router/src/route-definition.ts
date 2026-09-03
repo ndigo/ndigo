@@ -19,9 +19,7 @@ export type RouteParams<T extends string> =
 // ── RouteDefinition ─────────────────────────────────────────────────────────
 
 export class RouteDefinition<TPattern extends string = string> {
-    /** The raw route pattern, e.g. "/users/{id}" */
     readonly pattern: TPattern;
-
     readonly #context: Registry;
 
     constructor(pattern: TPattern, context: Registry) {
@@ -29,23 +27,14 @@ export class RouteDefinition<TPattern extends string = string> {
         this.#context = context;
     }
 
-    /**
-     * Generate a URL string from path parameters.
-     */
     url(params: RouteParams<TPattern>): string {
         return this.#interpolate(params);
     }
 
-    /**
-     * Generate a full hash-anchored href for browser navigation.
-     */
-    href(params: RouteParams<TPattern>): string {
-        return `#${this.#interpolate(params)}`;
+    href(params?: RouteParams<TPattern>): string {
+        return `#${this.#interpolate(params ?? ({} as RouteParams<TPattern>))}`;
     }
 
-    /**
-     * Navigate the router to this route.
-     */
     navigate(params: RouteParams<TPattern>): void {
         const router = this.#context.getValue<Router | undefined>(ROUTER) as Router | undefined;
         if (!router) {
@@ -59,21 +48,14 @@ export class RouteDefinition<TPattern extends string = string> {
         }
     }
 
-    /**
-     * Parse a raw URL path and extract typed parameters.
-     * Returns null if the path does not match this route's pattern.
-     */
     parse(path: string): Route<RouteParams<TPattern>> | null {
         const route = new PathRoute(path);
         const routePath = route.path;
-
-        // Count segments in the pattern (after removing leading slash)
         const patternSegments = this.pattern.replace(/^\//, '').split('/').filter(Boolean);
         const pathSegments = routePath.replace(/^\//, '').split('/').filter(Boolean);
 
         if (patternSegments.length !== pathSegments.length) return null;
 
-        // Check that static segments match exactly
         for (let i = 0; i < patternSegments.length; i++) {
             const ps = patternSegments[i];
             if (ps.startsWith('{') && ps.endsWith('}')) continue;
@@ -83,16 +65,10 @@ export class RouteDefinition<TPattern extends string = string> {
         return route as Route<RouteParams<TPattern>>;
     }
 
-    /**
-     * Check whether a URL path matches this route's pattern.
-     */
     matches(path: string): boolean {
         return this.parse(path) !== null;
     }
 
-    /**
-     * Replace path parameters in the pattern with actual values.
-     */
     #interpolate(params: RouteParams<TPattern>): string {
         let url: string = this.pattern;
         for (const [key, value] of Object.entries(params ?? {})) {

@@ -7,7 +7,7 @@ import {
 } from '@blue/context';
 import { IllegalStateError } from '@blue/core';
 import { BrowserDispatcher } from '@blue/dispatcher';
-import { FeatureRoutingRegistry, Route, SiteRouter, restorePartitionPrefix } from '@blue/router';
+import { FeatureRoutingRegistry, Route, SiteRouter, restorePartitionPrefix, RouteDefinition, RouteRegistry } from '@blue/router';
 import { HashRouter } from '@blue/platform-web';
 import { FeatureMetricAggregator, getLogger } from '@blue/telemetry';
 import { DISPATCHER, ROUTER } from './context-tokens';
@@ -28,6 +28,12 @@ export const toAccountShellRoute = (featureRoute: string): string =>
 export const toAuthShellRoute = (featureRoute: string): string =>
     restorePartitionPrefix(featureRoute, AUTH_ROUTE_PREFIX);
 
+/**
+ * Module-level route definitions populated during composeTodoRuntime.
+ * Used by views to generate type-safe hrefs.
+ */
+export const routes: Record<string, RouteDefinition> = {};
+
 export const createTodoSiteRouter = (callback: (route: Route) => void): SiteRouter => {
     const router = new SiteRouter();
     router.mount(TODO_ROUTE_PREFIX, callback);
@@ -42,6 +48,7 @@ export interface TodoRuntimeComposition {
     shellRouter: HashRouter;
     shellContext: ApplicationContext;
     siteRouter: SiteRouter;
+    routes: Record<string, RouteDefinition>;
 }
 
 const logger = getLogger('blue-demo:shell-composition');
@@ -326,6 +333,19 @@ export const composeTodoRuntime = (todoContext: ApplicationContext): TodoRuntime
     todoContext.setValue(ROUTER, shellRouter);
     todoContext.setValue(DISPATCHER, dispatcher);
 
+    // Populate module-level routes for views
+    const registry = todoContext.getValue('routeRegistry') as RouteRegistry | undefined;
+    if (registry) {
+        routes.todoAll = new RouteDefinition('/todo', todoContext);
+        routes.todoActive = new RouteDefinition('/todo/active', todoContext);
+        routes.todoCompleted = new RouteDefinition('/todo/completed', todoContext);
+        routes.accountOverview = new RouteDefinition('/account', todoContext);
+        routes.accountSettings = new RouteDefinition('/account/settings', todoContext);
+        routes.authLogin = new RouteDefinition('/auth/login', todoContext);
+        routes.authProfile = new RouteDefinition('/auth/profile', todoContext);
+        routes.authAdmin = new RouteDefinition('/auth/admin', todoContext);
+    }
+
     return {
         dispatcher,
         featureMetrics: featureMetricAggregator,
@@ -334,5 +354,6 @@ export const composeTodoRuntime = (todoContext: ApplicationContext): TodoRuntime
         shellRouter,
         shellContext,
         siteRouter,
+        routes,
     };
 };

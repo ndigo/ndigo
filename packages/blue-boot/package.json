@@ -35,6 +35,7 @@
     "@blue/core": "~0.0.1",
     "@blue/dispatcher": "~0.0.1",
     "@blue/platform-web": "~0.0.1",
+    "@blue/router": "~0.0.1",
     "@blue/view": "~0.0.1",
     "@blue/view-webcomponent": "~0.0.1"
   },
@@ -43,6 +44,7 @@
     "@blue/core": "~0.0.1",
     "@blue/dispatcher": "~0.0.1",
     "@blue/platform-web": "~0.0.1",
+    "@blue/router": "~0.0.1",
     "@blue/view": "~0.0.1",
     "@blue/view-webcomponent": "~0.0.1"
   }

@@ -10,6 +10,7 @@ import {
     StandardEnvironment,
 } from '@blue/context';
 import { IllegalStateError, JSONObject } from '@blue/core';
+import { RouteRegistry } from '@blue/router';
 import { WebAutoConfiguration } from './web-auto-configuration';
 import { isActiveForCurrentPlatform } from './conditional';
 
@@ -166,6 +167,11 @@ export class Application extends Emitter {
             }
         });
         context.refresh();
+
+        // Build the RouteRegistry from @routeMapping decorator metadata
+        const routes = new RouteRegistry();
+        routes.scanSources(this.sources, context);
+        context.setValue("routeRegistry", routes);
         return context;
     }
 

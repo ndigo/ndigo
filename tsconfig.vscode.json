@@ -19,9 +19,7 @@
       "@blue/boot": ["./packages/blue-boot/src"],
       "@blue/dom": ["./packages/blue-dom/src"],
       "@blue/orm": ["./packages/blue-orm/src"],
-      "@blue/reactive": ["./packages/blue-reactive/src"],
-      "@blue/service": ["./packages/blue-service/src"],
-      "@blue/view-wicket": ["./packages/blue-view-wicket/src"]
+      "@blue/service": ["./packages/blue-service/src"]
     }
   },
   "include": ["packages/*/src/**/*", "apps/*/src/**/*"],

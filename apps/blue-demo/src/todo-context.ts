@@ -6,10 +6,8 @@ import { NameViewResolver } from '@blue/view';
 import { DOMElementViewTarget, WebComponentViewEngine } from '@blue/view-webcomponent';
 import AccountController from './account-controller';
 import IndexController from './index-controller';
-import NotesController from './notes-controller';
 import AccountApp from './account-app-view';
 import MyTodoApp from './todo-app-view';
-import NotesService from './notes-service';
 import TodoService from './todo-service';
 import { StaticContentSource } from '@blue/content';
 import { LoginView } from './login-view';
@@ -76,24 +74,6 @@ class ToDoconfiguration {
         ]);
     }
 
-    @entry
-    notesController() {
-        return new NotesController();
-    }
-
-    @entry
-    notesService() {
-        return new NotesService([
-            {
-                id: '1',
-                title: 'Welcome to Wicket Views',
-                body: 'This note is rendered using @blue/view-wicket.',
-                pinned: true,
-            },
-            { id: '2', title: 'Component Tree', body: 'Page → Panel → ListView → Label hierarchy.', pinned: false },
-        ]);
-    }
-
     // ── Auth views ────────────────────────────────────────────────────────────
     @entry
     loginView() {
@@ -118,19 +98,5 @@ class ToDoconfiguration {
 
 export const createTodoContext = () => {
     const context = new ApplicationBuilder([ToDoconfiguration]).run();
-
-    // Configure content source for localized strings
-    context.setContentSource(
-        new StaticContentSource(
-            {
-                'notes.page.title': { en: 'Notes', fr: 'Notes' },
-                'notes.btn.add': { en: 'Add Note', fr: 'Ajouter une note' },
-                'notes.btn.remove': { en: 'Remove', fr: 'Supprimer' },
-                'notes.empty': { en: 'No notes yet.', fr: 'Aucune note pour le moment.' },
-            },
-            'en'
-        )
-    );
-
     return context;
 };

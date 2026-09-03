@@ -3,14 +3,13 @@
  */
 
 import { AbstractWebComponent } from '@blue/view-webcomponent';
-import { toAccountShellRoute, toNotesShellRoute, toTodoShellRoute } from './shell-composition';
+import { toAccountShellRoute, toTodoShellRoute } from './shell-composition';
 import './shell-nav-view';
 
 const allRoute = `#${toTodoShellRoute('/')}`;
 const activeRoute = `#${toTodoShellRoute('/active')}`;
 const completedRoute = `#${toTodoShellRoute('/completed')}`;
 const accountRoute = `#${toAccountShellRoute('/')}`;
-const notesRoute = `#${toNotesShellRoute('/')}`;
 
 interface TodoItem {
     text: string;
@@ -97,7 +96,8 @@ export default class MyTodoApp extends AbstractWebComponent {
                     { href: activeRoute, label: 'Active', selected: this.#filter === 'active' },
                     { href: completedRoute, label: 'Completed', selected: this.#filter === 'completed' },
                     { href: accountRoute, label: 'Account' },
-                    { href: notesRoute, label: 'Notes' },
+                    
+
                 ],
                 mode: 'list',
             };

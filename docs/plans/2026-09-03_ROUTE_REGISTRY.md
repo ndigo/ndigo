@@ -1,7 +1,7 @@
 # RouteRegistry — Type-Safe Routes from Decorator Metadata
 
 **Date:** 2026-09-03  
-**Package:** `@blue/router` (new `RouteRegistry` + `RouteDef` classes)  
+**Package:** `@blue/router` (new `RouteRegistry` + `RouteDefinition` classes)  
 **Status:** Design  
 **Depends on:** Existing `@routeMapping` decorator, `LinearMetadataHandlerMapping`, `PathRoute`, `ApplicationContext`
 
@@ -41,7 +41,7 @@ ApplicationBuilder.run() → ApplicationContext
        ↓
 RouteRegistry scans beans' constructor metadata
        ↓
-RouteRegistry builds nested RouteDef tree
+RouteRegistry builds nested RouteDefinition tree
        ↓
 RouteRegistry registers itself as a bean
        ↓
@@ -50,12 +50,12 @@ User injects RouteRegistry → routes.users.byId.url({id: '123'})
 
 ---
 
-## 3. The Leaf Type — `RouteDef`
+## 3. The Leaf Type — `RouteDefinition`
 
-Each leaf in the route tree is an instance of `RouteDef<T>` — a single object that can act as a URL generator, redirect factory, navigator, and route matcher.
+Each leaf in the route tree is an instance of `RouteDefinition<T>` — a single object that can act as a URL generator, redirect factory, navigator, and route matcher.
 
 ```ts
-class RouteDef<TPattern extends string = string> {
+class RouteDefinition<TPattern extends string = string> {
     /** The raw route pattern, e.g. "/users/{id}" */
     readonly pattern: TPattern;
 
@@ -153,16 +153,16 @@ type IsEmptyObject<T> = keyof T extends never ? true : false;
 
 ### Relationship to Existing Classes
 
-| Concern | Existing | RouteDef |
+| Concern | Existing | RouteDefinition |
 |---|---|---|
 | URL pattern storage | `Symbol.metadata` via `@routeMapping` | Same — reads from the same source |
 | URL parsing | `PathRoute` constructor | `.parse()` delegates to `PathRoute` |
 | URL generation | String concatenation | `.url()` interpolates the pattern |
 | Redirect | `new ModelAndView(new RerouteView(path))` | `.redirect()` wraps `RerouteView` |
 | Navigation | `router.navigate(path)` | `.navigate()` calls injected router |
-| Registration | `@routeMapping` → `LinearMetadataHandlerMapping` | Unchanged — `RouteDef` is read-only |
+| Registration | `@routeMapping` → `LinearMetadataHandlerMapping` | Unchanged — `RouteDefinition` is read-only |
 
-**`RouteDef` is purely a consumer-facing convenience.** It delegates to `PathRoute`, `RerouteView`, and the `Router` under the hood. None of those classes change.
+**`RouteDefinition` is purely a consumer-facing convenience.** It delegates to `PathRoute`, `RerouteView`, and the `Router` under the hood. None of those classes change.
 
 ---
 
@@ -240,7 +240,7 @@ handle() {}
 
 ```ts
 class RouteRegistry {
-    readonly #defs: Map<string, RouteDef>;
+    readonly #defs: Map<string, RouteDefinition>;
     readonly #tree: Record<string, unknown>;
 
     constructor(context: ApplicationContext) {
@@ -271,7 +271,7 @@ class RouteRegistry {
             // Derive key from the method's path segment
             const key = this.#deriveKey(methodMeta.name ?? methodPath);
 
-            const def = new RouteDef(mergedPath, context);
+            const def = new RouteDefinition(mergedPath, context);
             this.#defs.set(key, def);
         }
     }
@@ -295,16 +295,16 @@ class RouteRegistry {
         // Convert flat key → path into a nested object
         // keys: ['users', 'users.byId', 'account.index', 'index']
         // structure:
-        //   users: { byId: RouteDef, index: RouteDef }
-        //   account: { index: RouteDef }
-        //   index: RouteDef
+        //   users: { byId: RouteDefinition, index: RouteDefinition }
+        //   account: { index: RouteDefinition }
+        //   index RouteDefinition
     }
 
     /**
      * Access a route definition by dotted path.
      * Used internally for property resolution.
      */
-    get<T extends string>(path: string): RouteDef<T> | undefined {
+    get<T extends string>(path: string): RouteDefinition<T> | undefined {
         return this.#defs.get(path);
     }
 }
@@ -353,12 +353,12 @@ render() {
 
 ---
 
-## 5. RouteDef Implementation Details
+## 5. RouteDefinition Implementation Details
 
 ### URL Generation (`.url()`)
 
 ```ts
-class RouteDef<TPattern extends string> {
+class RouteDefinition<TPattern extends string> {
     url(params: RouteParams<TPattern>): string {
         let url = this.pattern;
         for (const [key, value] of Object.entries(params ?? {})) {
@@ -461,7 +461,7 @@ routes
 
 | File | Description |
 |---|---|
-| `packages/blue-router/src/route-def.ts` | `RouteDef<T>` class with `.url()`, `.href()`, `.redirect()`, `.navigate()`, `.parse()` |
+| `packages/blue-router/src/route-definition.ts` | `RouteDefinition<T>` class with `.url()`, `.href()`, `.redirect()`, `.navigate()`, `.parse()` |
 | `packages/blue-router/src/route-registry.ts` | `RouteRegistry` class — scans bean metadata, builds route tree |
 | `packages/blue-router/src/route-registry-configuration.ts` | Auto-configuration `@configuration` that creates and registers the `RouteRegistry` |
 
@@ -469,7 +469,7 @@ routes
 
 | File | Change |
 |---|---|
-| `packages/blue-router/src/index.ts` | Export `RouteDef`, `RouteRegistry` |
+| `packages/blue-router/src/index.ts` | Export `RouteDefinition`, `RouteRegistry` |
 | `packages/blue-dispatcher/src/route-mapping.ts` | Accept optional `name` in `RouteMappingConfiguration` for key override |
 | 
 

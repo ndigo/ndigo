@@ -16,6 +16,7 @@
 - [blue-eslint-plugin/src](blue-eslint-plugin/src/README.md)
 - [blue-factory/src](blue-factory/src/README.md)
 - [blue-http/src](blue-http/src/README.md)
+- [blue-management/src](blue-management/src/README.md)
 - [blue-model/src](blue-model/src/README.md)
 - [blue-orm/src](blue-orm/src/README.md)
 - [blue-orm-drizzle/src](blue-orm-drizzle/src/README.md)

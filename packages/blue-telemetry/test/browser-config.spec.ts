@@ -1,4 +1,4 @@
-/** @author opencode */
+/** @author Jeff Rose */
 
 import { trace, metrics, diag, DiagConsoleLogger, DiagLogLevel } from '@opentelemetry/api';
 import { logs, SeverityNumber } from '@opentelemetry/api-logs';

@@ -1,4 +1,4 @@
-/** @author opencode */
+/** @author Jeff Rose */
 
 import { RuleTester } from 'oxlint/plugins-dev';
 import { noDirectIntegrationImports } from '../../src/rules/no-direct-integration-imports';

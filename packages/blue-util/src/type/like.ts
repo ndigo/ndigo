@@ -1,6 +1,6 @@
 /**
  * @author Jeff Rose
- * @author opencode (performance optimization)
+ * @author Jeff Rose (performance optimization)
  * @copyright &copy; JPMorgan Chase & Co. All rights reserved.
  */
 

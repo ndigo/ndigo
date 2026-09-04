@@ -1,5 +1,5 @@
 /**
- * @author opencode
+ * @author Jeff Rose
  */
 
 export { DrizzleDataSource } from './drizzle-data-source';

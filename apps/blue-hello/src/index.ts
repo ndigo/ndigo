@@ -1,5 +1,5 @@
 /**
- * @author opencode
+ * @author Jeff Rose
  */
 
 import helloContext from './hello-context';

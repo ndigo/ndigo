@@ -1,4 +1,4 @@
-/** @author opencode */
+/** @author Jeff Rose */
 
 import { EntityManager } from './entity-manager';
 

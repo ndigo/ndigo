@@ -1,5 +1,5 @@
 /**
- * MockMvc — in-process, socket-free integration-test client for Blue applications.
+ * MockMVC — in-process, socket-free integration-test client for Blue applications.
  *
  * Dispatches a mock HTTP request through the application's real pipeline
  * (handler mappings → interceptors → argument resolvers → view/JSON → response)
@@ -69,20 +69,20 @@ function toResult(prepared: PreparedRoute, response: MemoryResponse): MockResult
  * Fluent builder for a single mock HTTP request.
  *
  * ```ts
- * const res = await mockMvc.get('/todos').query({ filter: 'active' }).exec();
+ * const res = await mockMVC.get('/todos').query({ filter: 'active' }).exec();
  * expect(res.json()).toEqual([...]);
  * ```
  */
-export class MockMvcRequestBuilder {
-    #mockMvc: MockMvc;
+export class MockMVCRequestBuilder {
+    #mockMVC: MockMVC;
     #request: MockRequest;
 
     /**
-     * @param mockMvc - The owning MockMvc.
+     * @param mockMVC - The owning MockMVC.
      * @param request - The base request spec.
      */
-    constructor(mockMvc: MockMvc, request: MockRequest) {
-        this.#mockMvc = mockMvc;
+    constructor(mockMVC: MockMVC, request: MockRequest) {
+        this.#mockMVC = mockMVC;
         this.#request = request;
     }
 
@@ -141,7 +141,7 @@ export class MockMvcRequestBuilder {
      * @returns The mock result (status, headers, parsed body).
      */
     async exec(): Promise<MockResult> {
-        return this.#mockMvc.request(this.#request);
+        return this.#mockMVC.request(this.#request);
     }
 }
 
@@ -154,11 +154,11 @@ export class MockMvcRequestBuilder {
  * @example
  * ```ts
  * const boot = await bootApp([MyConfiguration]);
- * const mockMvc = new MockMvc(boot.dispatcher);
- * const res = await mockMvc.get('/todos').exec();
+ * const mockMVC = new MockMVC(boot.dispatcher);
+ * const res = await mockMVC.get('/todos').exec();
  * ```
  */
-export class MockMvc {
+export class MockMVC {
     #dispatcher: NodeDispatcher;
 
     /**
@@ -213,36 +213,36 @@ export class MockMvc {
     }
 
     /** GET request builder. @param path - The path, e.g. `/todos`. */
-    get(path: string): MockMvcRequestBuilder {
+    get(path: string): MockMVCRequestBuilder {
         return this.#method('GET', path);
     }
 
     /** POST request builder. */
-    post(path: string): MockMvcRequestBuilder {
+    post(path: string): MockMVCRequestBuilder {
         return this.#method('POST', path);
     }
 
     /** PUT request builder. */
-    put(path: string): MockMvcRequestBuilder {
+    put(path: string): MockMVCRequestBuilder {
         return this.#method('PUT', path);
     }
 
     /** DELETE request builder. */
-    delete(path: string): MockMvcRequestBuilder {
+    delete(path: string): MockMVCRequestBuilder {
         return this.#method('DELETE', path);
     }
 
     /** PATCH request builder. */
-    patch(path: string): MockMvcRequestBuilder {
+    patch(path: string): MockMVCRequestBuilder {
         return this.#method('PATCH', path);
     }
 
     /** QUERY (RFC 9889) request builder. */
-    query(path: string): MockMvcRequestBuilder {
+    query(path: string): MockMVCRequestBuilder {
         return this.#method('QUERY', path);
     }
 
-    #method(method: string, path: string): MockMvcRequestBuilder {
-        return new MockMvcRequestBuilder(this, { method, path });
+    #method(method: string, path: string): MockMVCRequestBuilder {
+        return new MockMVCRequestBuilder(this, { method, path });
     }
 }

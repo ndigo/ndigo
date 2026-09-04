@@ -4,11 +4,12 @@
 
 import { Factory, likeFactory } from '@blue/factory';
 import { Route } from '@blue/router';
-import { Serializable } from '@blue/core';
+import { Serializable, getSymbolMetadata } from '@blue/core';
 import { type } from '@blue/util/types';
 import { HandlerMethodArgumentResolver } from './argument-resolver';
 import { MethodParameter } from './route-parameter';
 import { getRouteMapping } from './route-mapping';
+import { getFunctionParamNames } from './_decorator-util';
 
 export interface Invocable {
     invoke<T = any>(...args: any): T;
@@ -90,6 +91,20 @@ export class RouteHandlerMethod implements HandlerMethod, Serializable {
                     resolver = argumentResolvers.find((resolver) => resolver.supportsParameter(parameter));
 
                 args[index] = resolver ? resolver.resolveArgument(parameter, route, mapping) : void 0;
+            }
+        } else {
+            // No @routeParams metadata — check for an implicit route-named
+            // parameter (e.g. `handleIndex(route: Route)`). Mirrors Spring's
+            // implicit resolved-arg injection; without this the route is
+            // `undefined`. The @traced wrapper destroys the signature, so use
+            // the original function preserved in metadata when present.
+            const original =
+                getSymbolMetadata(this.handler)[`telemetry:traced:${String(this.method)}:original`] ??
+                (this.handler as Record<string, unknown>)[this.method];
+            const paramNames = getFunctionParamNames(original as Function);
+            const routeParamIndex = paramNames.findIndex((name) => name === 'route' || name === 'request' || name === 'req');
+            if (routeParamIndex !== -1) {
+                args[routeParamIndex] = route;
             }
         }
 

@@ -70,7 +70,7 @@ response attrs) then calls `dispatch(route)`.
 `@blue/test` reuses **both** pieces without a socket:
 
 ```
-MockMvc request  →  build Route (same as adapter)  →  dispatcher.dispatch(route)
+MockMVC request  →  build Route (same as adapter)  →  dispatcher.dispatch(route)
                                                         →  HTTPResponseViewTarget
                                                         →  in-memory ResponseSink
                                                         →  assert on { status, headers, body }
@@ -86,19 +86,19 @@ tests fast and deterministic (no ports, no process, no teardown).
 
 ```ts
 // Composable API (the canonical, Vitest-friendly form):
-import { bootApp, MockMvc } from '@blue/test';
+import { bootApp, MockMVC } from '@blue/test';
 
 describe('Todo API', () => {
-    let mockMvc: MockMvc;
+    let mockMVC: MockMVC;
 
     beforeAll(() => {
         const app = bootApp([TodoConfiguration]);  // boots the real context + dispatcher
-        mockMvc = new MockMvc(app);
+        mockMvc = new MockMVC(app);
     });
     afterAll(() => { /* app.close() */ });
 
     test('GET /todos lists items') {
-        const res = await mockMvc.get('/todos').exec();
+        const res = await mockMVC.get('/todos').exec();
         expect(res.json()).toEqual([...]);
     }
 });
@@ -117,12 +117,12 @@ describe('Todo API', () => {
 The heavy context boots **once**, not per test — the "test context caching" the
 assessment calls for.
 
-### 3.3 The `MockMvc`-style client
+### 3.3 The `MockMVC`-style client
 
 ```ts
 // In-process request against the booted dispatcher.
-const res = await mockMvc.get('/todos').query({ filter: 'active' }).exec();
-//   = await mockMvc.send({ method: 'GET', path: '/todos?filter=active' })
+const res = await mockMVC.get('/todos').query({ filter: 'active' }).exec();
+//   = await mockMVC.send({ method: 'GET', path: '/todos?filter=active' })
 
 res.status;            // 200
 res.headers;           // { 'Content-Type': 'application/json' }
@@ -131,7 +131,7 @@ await res.text();      // '<html>…</html>'          — view (SSR) response
 await res.redirect();  // '/login'                  — ResponseEntity redirect
 
 // Fluent assertions (thin, not a new assertion lib — reuse `expect`):
-await mockMvc.get('/todos').expect(200).json().toHaveLen(2);
+await mockMVC.get('/todos').expect(200).json().toHaveLen(2);
 ```
 
 **Request surface** mirrors `NodeHTTPServerAdapter`:
@@ -161,9 +161,9 @@ await mockMvc.get('/todos').expect(200).json().toHaveLen(2);
 ```
 packages/blue-test/
   src/
-    index.ts              # exports bootApp, MockMvc, ResponseSink, memoryServer
+    index.ts              # exports bootApp, MockMVC, ResponseSink, memoryServer
     blue-test.ts          # bootApp(): context-boot + dispatcher wiring
-    mock-mvc.ts           # MockMvc: request builder → dispatch(route)
+    mock-mvc.ts           # MockMVC: request builder → dispatch(route)
     request-builder.ts    # method/path/query/body/headers → Route (reuses NodeHTTPServerAdapter shape)
     response-sink.ts      # in-memory ServerResponse capture (writeHead/end)
     memory-response.ts    # MutableResponse { status, headers, body }
@@ -187,9 +187,9 @@ packages/blue-test/
 
 | Question | Recommendation |
 |---|---|
-| `@blueTest` fixture as decorator vs. explicit `bootApp()` helper? | **Explicit `bootApp()` + `MockMvc`** — the composable core matches Vitest's `beforeAll`/`afterAll`; no decorator ceremony. Decorator sugar may return if useful. |
-| Should `MockMvc.exec()` build a real `ServerResponse` or the sink? | **In-memory sink** (fast, deterministic). Real socket only via `live: true`. |
-| Where do fixtures live — `@blue/test` or a per-app `test/helpers`? | In `@blue/test`; apps just `import { bootApp, MockMvc } from '@blue/test'`. |
+| `@blueTest` fixture as decorator vs. explicit `bootApp()` helper? | **Explicit `bootApp()` + `MockMVC`** — the composable core matches Vitest's `beforeAll`/`afterAll`; no decorator ceremony. Decorator sugar may return if useful. |
+| Should `MockMVC.exec()` build a real `ServerResponse` or the sink? | **In-memory sink** (fast, deterministic). Real socket only via `live: true`. |
+| Where do fixtures live — `@blue/test` or a per-app `test/helpers`? | In `@blue/test`; apps just `import { bootApp, MockMVC } from '@blue/test'`. |
 | Does `@blue/test` boot the server or just the dispatcher? | **Dispatcher only** — booting the listener adds nothing for in-process testing. |
 | Vitest env | `// @vitest-environment node` (global config is jsdom). |
 | `@blue/test` use `@blue/boot`? | **No** — `@blue/boot`'s index re-exports browser `web-auto-configuration` → `@blue/view-webcomponent` (DOM). `bootApp` uses `MetadataConfigApplicationContext` directly, keeping `@blue/test` node-pure. |
@@ -201,7 +201,7 @@ packages/blue-test/
 | Gate | Verification |
 |---|---|
 | `bootApp` boots a real `MetadataConfigApplicationContext` + `NodeAutoConfiguration` once per suite | Two tests share the same cached context (blue-test.spec.ts) |
-| `mockMvc.get('/todos')` hits a `@getMapping` controller via the real dispatcher | Controller invoked; status 200 (blue-test.spec.ts) |
+| `mockMVC.get('/todos')` hits a `@getMapping` controller via the real dispatcher | Controller invoked; status 200 (blue-test.spec.ts) |
 | JSON API response returns `res.json()` | Plain-object handler → parsed JSON body |
 | SSR view response returns `res.text()` | `StringTemplateView` → HTML string body |
 | `ResponseEntity.notFound()` → 404 | Status code + headers honored |
@@ -215,7 +215,7 @@ packages/blue-test/
 
 - **Test context caching** across suites (via Vitest pools/global state) — the
   assessment's "cache the ApplicationContext" item.
-- **`@blue/test` for browser apps** — a `BrowserMockMvc` that drives
+- **`@blue/test` for browser apps** — a `BrowserMockMVC` that drives
   `BrowserDispatcher` with a DOM-less view target (mirrors the Node story).
 - **`@blue/test`-driven e2e breadcrumbs** — assert the API contract headlessly,
   then use Playwright only for render assertions.

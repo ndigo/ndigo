@@ -45,6 +45,10 @@ function createTracedDecorator(spanName?: string) {
 
         const methodSpanName = spanName ?? String(context.name);
         context.metadata[`${TRACED_KEY}:${String(context.name)}`] = methodSpanName;
+        // Preserve the original (pre-wrap) function so framework code can
+        // inspect its signature — the returned wrapper is `(...args)` and
+        // destroys the declared parameter names.
+        context.metadata[`${TRACED_KEY}:${String(context.name)}:original`] = target;
 
         return function (this: This, ...args: Args): Return {
             return getTracer().startActiveSpan(methodSpanName, (span) => {

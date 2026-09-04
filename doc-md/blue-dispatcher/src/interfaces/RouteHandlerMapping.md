@@ -6,7 +6,7 @@
 
 # Interface: RouteHandlerMapping
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:41
+Defined in: packages/blue-dispatcher/src/abstract-handler-mapping.ts:26
 
 Resolves a route to a handler execution chain.
 
@@ -18,9 +18,9 @@ Resolves a route to a handler execution chain.
 
 ### getHandler()
 
-> **getHandler**(`route`): `RouteHandlerExecutionChain`
+> **getHandler**(`route`): `RouteHandlerExecutionChain` \| `null`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:48
+Defined in: packages/blue-dispatcher/src/abstract-handler-mapping.ts:33
 
 Resolve the handler for a route.
 
@@ -34,6 +34,6 @@ The current route.
 
 #### Returns
 
-`RouteHandlerExecutionChain`
+`RouteHandlerExecutionChain` \| `null`
 
 The execution chain for the chosen handler, or `null`.

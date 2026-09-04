@@ -8,7 +8,7 @@
 
 > **queryValue**(`name`, `options?`): [`ParameterExtractor`](../type-aliases/ParameterExtractor.md)
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:218
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:177
 
 Factory function: Create a query parameter extractor
 
@@ -20,17 +20,7 @@ Factory function: Create a query parameter extractor
 
 ### options?
 
-#### required?
-
-`boolean`
-
-#### defaultValue?
-
-`string`
-
-#### convert?
-
-[`ParameterValueConverterReference`](../type-aliases/ParameterValueConverterReference.md)
+[`ParameterExtractorOptions`](../interfaces/ParameterExtractorOptions.md) = `{}`
 
 ## Returns
 

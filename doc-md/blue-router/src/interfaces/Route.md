@@ -6,7 +6,7 @@
 
 # Interface: Route\<TParams\>
 
-Defined in: packages/blue-router/src/route.ts:20
+Defined in: packages/blue-router/src/route.ts:21
 
 Represents a complete route, composed of multiple segments, along with its parameters, path, and associated data.
 It extends `ArrayLike<RouteSegment>` to allow iteration over its segments.
@@ -37,7 +37,7 @@ A type representing the route parameters, defaulting to `Record<string, string>`
 
 > **data**: `JSONObject`
 
-Defined in: packages/blue-router/src/route.ts:25
+Defined in: packages/blue-router/src/route.ts:26
 
 ***
 
@@ -45,7 +45,7 @@ Defined in: packages/blue-router/src/route.ts:25
 
 > `optional` **dataString?**: `string`
 
-Defined in: packages/blue-router/src/route.ts:26
+Defined in: packages/blue-router/src/route.ts:27
 
 ***
 
@@ -53,15 +53,23 @@ Defined in: packages/blue-router/src/route.ts:26
 
 > **id**: `number`
 
-Defined in: packages/blue-router/src/route.ts:27
+Defined in: packages/blue-router/src/route.ts:28
+
+***
+
+### method?
+
+> `optional` **method?**: `HTTPMethod`
+
+Defined in: packages/blue-router/src/route.ts:29
 
 ***
 
 ### params
 
-> **params**: `TParams`
+> **params**: `TParams` \| `null`
 
-Defined in: packages/blue-router/src/route.ts:28
+Defined in: packages/blue-router/src/route.ts:30
 
 ***
 
@@ -69,7 +77,7 @@ Defined in: packages/blue-router/src/route.ts:28
 
 > **path**: `string`
 
-Defined in: packages/blue-router/src/route.ts:29
+Defined in: packages/blue-router/src/route.ts:31
 
 ***
 
@@ -77,15 +85,15 @@ Defined in: packages/blue-router/src/route.ts:29
 
 > **raw**: `string`
 
-Defined in: packages/blue-router/src/route.ts:30
+Defined in: packages/blue-router/src/route.ts:32
 
 ***
 
 ### attributes
 
-> **attributes**: `Record`\<`string`, `any`\>
+> **attributes**: `Record`\<`string`, `unknown`\>
 
-Defined in: packages/blue-router/src/route.ts:31
+Defined in: packages/blue-router/src/route.ts:33
 
 ## Methods
 

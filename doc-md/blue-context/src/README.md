@@ -12,6 +12,9 @@
 - [MetadataConfigApplicationContext](classes/MetadataConfigApplicationContext.md)
 - [GenericApplicationContext](classes/GenericApplicationContext.md)
 - [ProxiedGenericApplicationContext](classes/ProxiedGenericApplicationContext.md)
+- [ApplicationComponent](classes/ApplicationComponent.md)
+- [BusinessComponent](classes/BusinessComponent.md)
+- [ViewComponent](classes/ViewComponent.md)
 - [ApplicationContextAwareProcessor](classes/ApplicationContextAwareProcessor.md)
 - [AbstractEnvironment](classes/AbstractEnvironment.md)
 - [MockEnvironment](classes/MockEnvironment.md)
@@ -26,6 +29,7 @@
 - [URLResource](classes/URLResource.md)
 - [UnresolvedResource](classes/UnresolvedResource.md)
 - [DefaultResourceLoader](classes/DefaultResourceLoader.md)
+- [DefaultSharedDependencyRegistry](classes/DefaultSharedDependencyRegistry.md)
 - [ContextToken](classes/ContextToken.md)
 
 ## Interfaces
@@ -51,6 +55,7 @@
 - [GatewayDiagnosticHandler](interfaces/GatewayDiagnosticHandler.md)
 - [ContextEventGatewayOptions](interfaces/ContextEventGatewayOptions.md)
 - [NamespaceRelayValidationOptions](interfaces/NamespaceRelayValidationOptions.md)
+- [LazyFeatureModule](interfaces/LazyFeatureModule.md)
 - [FeatureRegistrationOptions](interfaces/FeatureRegistrationOptions.md)
 - [FeatureContextMountManagerOptions](interfaces/FeatureContextMountManagerOptions.md)
 - [PropertyResolver](interfaces/PropertyResolver.md)
@@ -58,6 +63,9 @@
 - [Resource](interfaces/Resource.md)
 - [ResourceLoader](interfaces/ResourceLoader.md)
 - [ResourceLoaderAware](interfaces/ResourceLoaderAware.md)
+- [SharedDependencyEntry](interfaces/SharedDependencyEntry.md)
+- [DependencyValidationResult](interfaces/DependencyValidationResult.md)
+- [SharedDependencyRegistry](interfaces/SharedDependencyRegistry.md)
 - [FeatureMetricRecorder](interfaces/FeatureMetricRecorder.md)
 
 ## Type Aliases
@@ -78,6 +86,7 @@
 - [likeEnvironmentSource](variables/likeEnvironmentSource.md)
 - [likeApplicationEventEmitterAware](variables/likeApplicationEventEmitterAware.md)
 - [likeEventEmitter](variables/likeEventEmitter.md)
+- [SHARED\_DEPENDENCY\_REGISTRY\_TOKEN](variables/SHARED_DEPENDENCY_REGISTRY_TOKEN.md)
 - [likePropertyResolver](variables/likePropertyResolver.md)
 - [likeResource](variables/likeResource.md)
 - [likeResourceLoader](variables/likeResourceLoader.md)

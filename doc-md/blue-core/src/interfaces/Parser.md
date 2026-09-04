@@ -6,14 +6,14 @@
 
 # Interface: Parser\<T\>
 
-Defined in: packages/blue-core/src/parser.ts:52
+Defined in: packages/blue-core/src/parser.ts:27
 
 Class-based interface for parsing a string into a structured value of type `T`.
 
-Represents the class-based form of `Converter<string, T>`. Implement this interface
-when the parser needs to be registered, injected, or composed as an object.
-For standalone utility functions, use the `parse*` naming convention and
-type with `Converter<string, T>` directly.
+Represents the class-based form of `Converter<string, T>` from `@blue/core/converter`.
+Implement this interface when the parser needs to be registered, injected, or composed as an object.
+For standalone utility functions, use the `parse*` naming convention and type with
+`Converter<string, T>` directly (imported from `'@blue/core'`).
 
 ## Example
 
@@ -24,7 +24,7 @@ class MatrixString implements Parser<MatrixParams>, Stringifier<MatrixParams> {
     stringify(value: MatrixParams): string { ... }
 }
 
-// Standalone function — typed as Converter<string, T>
+// Standalone function — typed as Converter<string, T> (from @blue/core)
 const parseWildcard: Converter<string, string> = (pattern) => ...;
 ```
 
@@ -42,7 +42,7 @@ The type of the parsed value.
 
 > **parse**(`value`): `T`
 
-Defined in: packages/blue-core/src/parser.ts:58
+Defined in: packages/blue-core/src/parser.ts:33
 
 Parses a string value into a value of type T.
 

@@ -8,7 +8,7 @@
 
 > `const` **removeNonWord**: (`value`) => `string`
 
-Defined in: packages/blue-util/src/string/remove-non-word.ts:18
+Defined in: packages/blue-util/src/string/remove-non-word.ts:15
 
 Remove non-word characters.
 

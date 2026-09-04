@@ -6,7 +6,7 @@
 
 # Variable: OK
 
-> `const` **OK**: `ResponseStatus`
+> `const` **OK**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
 Defined in: packages/blue-http/src/response-statuses.ts:46
 

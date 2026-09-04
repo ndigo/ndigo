@@ -6,17 +6,9 @@
 
 # Class: IfModifiedInterceptor
 
-Defined in: packages/blue-http/src/interceptors/if-modified-interceptor.ts:24
+Defined in: packages/blue-http/src/interceptors/if-modified-interceptor.ts:16
 
 Adds conditional request headers and caches validators from prior responses.
-
-## Implements
-
-module:http.InitializationAwareHTTPInterceptor
-
-## Implements
-
-module:http.ResponseAwareHTTPInterceptor
 
 ## Implements
 
@@ -29,7 +21,7 @@ module:http.ResponseAwareHTTPInterceptor
 
 > **new IfModifiedInterceptor**(): `IfModifiedInterceptor`
 
-Defined in: packages/blue-http/src/interceptors/if-modified-interceptor.ts:30
+Defined in: packages/blue-http/src/interceptors/if-modified-interceptor.ts:22
 
 #### Returns
 
@@ -41,7 +33,7 @@ Defined in: packages/blue-http/src/interceptors/if-modified-interceptor.ts:30
 
 > **preInit**(`url`, `settings`): `boolean`
 
-Defined in: packages/blue-http/src/interceptors/if-modified-interceptor.ts:40
+Defined in: packages/blue-http/src/interceptors/if-modified-interceptor.ts:32
 
 #### Parameters
 
@@ -73,7 +65,7 @@ Whether or not the http request should continue execution.
 
 > **postResponse**(`response`, `settings`): `Promise`\<`void`\>
 
-Defined in: packages/blue-http/src/interceptors/if-modified-interceptor.ts:57
+Defined in: packages/blue-http/src/interceptors/if-modified-interceptor.ts:49
 
 #### Parameters
 

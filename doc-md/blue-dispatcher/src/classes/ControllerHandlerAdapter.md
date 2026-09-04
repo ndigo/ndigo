@@ -6,11 +6,9 @@
 
 # Class: ControllerHandlerAdapter
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:101
+Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:91
 
-## Implements
-
-module:dispatcher.HandlerAdapter
+This implementation expects the handler to be a HandlerMethod\|HandlerMethod.
 
 ## Implements
 
@@ -34,7 +32,7 @@ module:dispatcher.HandlerAdapter
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:102
+Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:92
 
 ##### Returns
 
@@ -46,7 +44,7 @@ Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:102
 
 > **handle**(`route`, `handler`): `Promise`\<[`ModelAndView`](ModelAndView.md)\>
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:113
+Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:103
 
 Invoke a controller's [Controller.handleRoute](../interfaces/Controller.md#handleroute) method for the current route.
 
@@ -60,7 +58,7 @@ The current route.
 
 ##### handler
 
-`any`
+`object` \| `undefined`
 
 The controller instance.
 
@@ -80,7 +78,7 @@ The model and view returned by the controller.
 
 > **supports**(`handler`): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:123
+Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:113
 
 Controllers are supported when they expose a `handleRoute` method.
 
@@ -88,7 +86,7 @@ Controllers are supported when they expose a `handleRoute` method.
 
 ##### handler
 
-`any`
+`object` \| `undefined`
 
 The handler instance to test.
 

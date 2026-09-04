@@ -6,47 +6,24 @@
 
 # Class: BrowserModelValueMethodArgumentResolver
 
-Defined in: packages/blue-platform-web/src/model-argument-resolver.ts:87
+Defined in: packages/blue-platform-web/src/model-argument-resolver.ts:23
 
 Browser model argument resolver.
 
-Resolves values from route data by:
-1) direct key lookup (`profile`)
-2) dotted key-path lookup (`profile.name`)
+Resolves values from route data by direct key lookup and dotted
+key-path traversal (`profile.name`).
 
 ## Extends
 
-- [`AbstractModelValueMethodArgumentResolver`](AbstractModelValueMethodArgumentResolver.md)
+- `AbstractPlatformArgumentResolver`
 
 ## Constructors
 
 ### Constructor
 
-> **new BrowserModelValueMethodArgumentResolver**(`converter?`, `converterRegistry?`, `converterResolutionOptions?`): `BrowserModelValueMethodArgumentResolver`
+> **new BrowserModelValueMethodArgumentResolver**(): `BrowserModelValueMethodArgumentResolver`
 
-Defined in: packages/blue-platform-web/src/model-argument-resolver.ts:95
-
-Creates a browser model resolver.
-
-#### Parameters
-
-##### converter?
-
-[`ArgumentValueConverter`](../type-aliases/ArgumentValueConverter.md) = `identityArgumentValueConverter`
-
-Default converter to apply to resolved values.
-
-##### converterRegistry?
-
-[`ArgumentValueConverterRegistry`](../type-aliases/ArgumentValueConverterRegistry.md) = `argumentValueConverters`
-
-Named converter registry used for lookups.
-
-##### converterResolutionOptions?
-
-[`ConverterResolutionOptions`](../type-aliases/ConverterResolutionOptions.md) = `{}`
-
-Resolution behavior overrides.
+Defined in: packages/blue-platform-web/src/model-argument-resolver.ts:24
 
 #### Returns
 
@@ -54,7 +31,7 @@ Resolution behavior overrides.
 
 #### Overrides
 
-[`AbstractModelValueMethodArgumentResolver`](AbstractModelValueMethodArgumentResolver.md).[`constructor`](AbstractModelValueMethodArgumentResolver.md#constructor)
+`AbstractPlatformArgumentResolver.constructor`
 
 ## Accessors
 
@@ -64,13 +41,47 @@ Resolution behavior overrides.
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-platform-web/src/model-argument-resolver.ts:103
+Defined in: packages/blue-platform-web/src/model-argument-resolver.ts:28
 
 ##### Returns
 
 `string`
 
 ## Methods
+
+### resolveArgument()
+
+> **resolveArgument**(`parameter`, `route`, `mapping`): `any`
+
+Defined in: packages/blue-dispatcher/lib/abstract-platform-resolver.d.ts:41
+
+Resolves and converts a method argument value.
+
+Pipeline: resolveName → defaultValue fallback → convertType lookup → conversion → nil check.
+
+#### Parameters
+
+##### parameter
+
+`MethodParameter`
+
+##### route
+
+`Route`
+
+##### mapping
+
+`any`
+
+#### Returns
+
+`any`
+
+#### Inherited from
+
+`AbstractPlatformArgumentResolver.resolveArgument`
+
+***
 
 ### handleMissingValue()
 
@@ -98,49 +109,17 @@ If the argument is undefined or null.
 
 #### Inherited from
 
-[`AbstractModelValueMethodArgumentResolver`](AbstractModelValueMethodArgumentResolver.md).[`handleMissingValue`](AbstractModelValueMethodArgumentResolver.md#handlemissingvalue)
-
-***
-
-### resolveArgument()
-
-> **resolveArgument**(`parameter`, `route`, `mapping`): `any`
-
-Defined in: packages/blue-platform-web/src/model-argument-resolver.ts:44
-
-Resolves and converts a model-backed argument value.
-
-#### Parameters
-
-##### parameter
-
-`MethodParameter`
-
-##### route
-
-`Route`
-
-##### mapping
-
-`any`
-
-#### Returns
-
-`any`
-
-#### Inherited from
-
-[`AbstractModelValueMethodArgumentResolver`](AbstractModelValueMethodArgumentResolver.md).[`resolveArgument`](AbstractModelValueMethodArgumentResolver.md#resolveargument)
+`AbstractPlatformArgumentResolver.handleMissingValue`
 
 ***
 
 ### resolveName()
 
-> `protected` **resolveName**(`name`, `parameter`, `route`, `mapping`): `any`
+> `protected` **resolveName**(`name`, `_parameter`, `route`, `_mapping`): `any`
 
-Defined in: packages/blue-platform-web/src/model-argument-resolver.ts:64
+Defined in: packages/blue-platform-web/src/model-argument-resolver.ts:33
 
-Resolves the raw value from route-scoped model data.
+Resolves model data from the current route.
 
 #### Parameters
 
@@ -148,7 +127,7 @@ Resolves the raw value from route-scoped model data.
 
 `string`
 
-##### parameter
+##### \_parameter
 
 `MethodParameter`
 
@@ -156,7 +135,7 @@ Resolves the raw value from route-scoped model data.
 
 `Route`
 
-##### mapping
+##### \_mapping
 
 `any`
 
@@ -164,9 +143,9 @@ Resolves the raw value from route-scoped model data.
 
 `any`
 
-#### Inherited from
+#### Overrides
 
-[`AbstractModelValueMethodArgumentResolver`](AbstractModelValueMethodArgumentResolver.md).[`resolveName`](AbstractModelValueMethodArgumentResolver.md#resolvename)
+`AbstractPlatformArgumentResolver.resolveName`
 
 ***
 
@@ -174,7 +153,7 @@ Resolves the raw value from route-scoped model data.
 
 > **supportsParameter**(`parameter`): `boolean`
 
-Defined in: packages/blue-platform-web/src/model-argument-resolver.ts:75
+Defined in: packages/blue-platform-web/src/model-argument-resolver.ts:48
 
 Returns whether this resolver supports model parameters.
 
@@ -188,34 +167,6 @@ Returns whether this resolver supports model parameters.
 
 `boolean`
 
-#### Inherited from
-
-[`AbstractModelValueMethodArgumentResolver`](AbstractModelValueMethodArgumentResolver.md).[`supportsParameter`](AbstractModelValueMethodArgumentResolver.md#supportsparameter)
-
-***
-
-### resolveModelValue()
-
-> `protected` **resolveModelValue**(`name`, `route`): `any`
-
-Defined in: packages/blue-platform-web/src/model-argument-resolver.ts:108
-
-Resolves model data from the current route.
-
-#### Parameters
-
-##### name
-
-`string`
-
-##### route
-
-`Route`
-
-#### Returns
-
-`any`
-
 #### Overrides
 
-[`AbstractModelValueMethodArgumentResolver`](AbstractModelValueMethodArgumentResolver.md).[`resolveModelValue`](AbstractModelValueMethodArgumentResolver.md#resolvemodelvalue)
+`AbstractPlatformArgumentResolver.supportsParameter`

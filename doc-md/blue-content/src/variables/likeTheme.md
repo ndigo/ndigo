@@ -16,7 +16,7 @@ Tests whether a value looks like a theme.
 
 ### value
 
-`any`
+`unknown`
 
 The value to be tested.
 

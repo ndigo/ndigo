@@ -6,7 +6,7 @@
 
 # Variable: SEE\_OTHER
 
-> `const` **SEE\_OTHER**: `ResponseStatus`
+> `const` **SEE\_OTHER**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
 Defined in: packages/blue-http/src/response-statuses.ts:115
 

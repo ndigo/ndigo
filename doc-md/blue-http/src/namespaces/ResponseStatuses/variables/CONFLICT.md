@@ -6,7 +6,7 @@
 
 # Variable: CONFLICT
 
-> `const` **CONFLICT**: `ResponseStatus`
+> `const` **CONFLICT**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
 Defined in: packages/blue-http/src/response-statuses.ts:194
 

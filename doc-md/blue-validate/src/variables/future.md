@@ -8,7 +8,7 @@
 
 > `const` **future**: (`params`) => (`value`, `context`) => `void`
 
-Defined in: packages/blue-validate/src/decorators.ts:379
+Defined in: packages/blue-validate/src/decorators.ts:442
 
 TC39 Stage 3 decorator that validates a date property to be in the future.
 

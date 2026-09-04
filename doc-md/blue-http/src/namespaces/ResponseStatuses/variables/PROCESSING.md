@@ -6,7 +6,7 @@
 
 # Variable: PROCESSING
 
-> `const` **PROCESSING**: `ResponseStatus`
+> `const` **PROCESSING**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
 Defined in: packages/blue-http/src/response-statuses.ts:28
 

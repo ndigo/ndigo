@@ -61,7 +61,7 @@ The decorated class or constructor-like target.
 
 ### get
 
-> **get**: (`target`) => `string` = `getTagMapping`
+> **get**: (`target`) => `string` \| `undefined` = `getTagMapping`
 
 Reads the stored tag mapping for a target.
 
@@ -75,7 +75,7 @@ The decorated class or constructor-like target.
 
 #### Returns
 
-`string`
+`string` \| `undefined`
 
 The tag name, or `undefined` when none has been recorded.
 

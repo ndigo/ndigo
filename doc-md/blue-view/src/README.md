@@ -25,6 +25,7 @@
 - [AbstractPathBasedView](classes/AbstractPathBasedView.md)
 - [AbstractTemplateView](classes/AbstractTemplateView.md)
 - [RerouteView](classes/RerouteView.md)
+- [StringTemplateView](classes/StringTemplateView.md)
 
 ## Interfaces
 

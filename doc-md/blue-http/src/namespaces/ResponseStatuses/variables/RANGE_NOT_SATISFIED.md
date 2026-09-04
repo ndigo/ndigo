@@ -6,7 +6,7 @@
 
 # Variable: RANGE\_NOT\_SATISFIED
 
-> `const` **RANGE\_NOT\_SATISFIED**: `ResponseStatus`
+> `const` **RANGE\_NOT\_SATISFIED**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
 Defined in: packages/blue-http/src/response-statuses.ts:229
 

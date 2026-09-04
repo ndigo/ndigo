@@ -6,7 +6,7 @@
 
 # Class: NameViewResolver
 
-Defined in: packages/blue-view/src/view-resolver.ts:223
+Defined in: packages/blue-view/src/view-resolver.ts:221
 
 A simple implementation of [\`ViewResolver\`](../interfaces/ViewResolver.md) that interprets a view name as a value in the current application context.
 
@@ -58,7 +58,7 @@ A symbol indicating that the value is aware.
 
 > `readonly` **applicationContext**: `ApplicationContext`
 
-Defined in: packages/blue-view/src/view-resolver.ts:227
+Defined in: packages/blue-view/src/view-resolver.ts:225
 
 The application context used as the view registry.
 
@@ -94,9 +94,9 @@ The ApplicationContext to be used by this object.
 
 ### resolveViewName()
 
-> **resolveViewName**(`name`, `language?`): `Promise`\<[`View`](../interfaces/View.md)\>
+> **resolveViewName**(`name`, `language?`): `Promise`\<[`View`](../interfaces/View.md) \| `null`\>
 
-Defined in: packages/blue-view/src/view-resolver.ts:236
+Defined in: packages/blue-view/src/view-resolver.ts:234
 
 Resolves a view from the application context by name.
 
@@ -116,7 +116,7 @@ Optional locale or language hint.
 
 #### Returns
 
-`Promise`\<[`View`](../interfaces/View.md)\>
+`Promise`\<[`View`](../interfaces/View.md) \| `null`\>
 
 A promise that resolves to the matching view, or `null` when none is available.
 

@@ -6,7 +6,7 @@
 
 # Interface: HTTPConfig
 
-Defined in: packages/blue-http/src/http.ts:38
+Defined in: packages/blue-http/src/http.ts:39
 
 Configuration options for creating an HTTP client instance via [HTTP.create](../classes/HTTP.md#create).
 
@@ -23,7 +23,7 @@ relevant when constructing a client through the convenience API.
 
 > `optional` **baseURL?**: `string`
 
-Defined in: packages/blue-http/src/http.ts:27
+Defined in: packages/blue-http/src/http.ts:28
 
 #### Inherited from
 
@@ -35,7 +35,7 @@ Defined in: packages/blue-http/src/http.ts:27
 
 > `optional` **params?**: `string` \| `Record`\<`string`, `string`\> \| `URLSearchParams` \| `string`[][]
 
-Defined in: packages/blue-http/src/http.ts:29
+Defined in: packages/blue-http/src/http.ts:30
 
 #### Inherited from
 
@@ -47,7 +47,7 @@ Defined in: packages/blue-http/src/http.ts:29
 
 > `optional` **interceptors?**: [`HTTPInterceptor`](../type-aliases/HTTPInterceptor.md)[]
 
-Defined in: packages/blue-http/src/http.ts:42
+Defined in: packages/blue-http/src/http.ts:43
 
 Optional HTTP interceptors to apply to all requests.
 
@@ -57,7 +57,7 @@ Optional HTTP interceptors to apply to all requests.
 
 > `optional` **requestTransforms?**: [`Transform`](../type-aliases/Transform.md)[]
 
-Defined in: packages/blue-http/src/http.ts:47
+Defined in: packages/blue-http/src/http.ts:48
 
 Optional request body transforms applied in interceptor pipeline.
 
@@ -67,7 +67,7 @@ Optional request body transforms applied in interceptor pipeline.
 
 > `optional` **responseTransforms?**: [`Transform`](../type-aliases/Transform.md)[]
 
-Defined in: packages/blue-http/src/http.ts:52
+Defined in: packages/blue-http/src/http.ts:53
 
 Optional response body transforms applied in interceptor pipeline.
 
@@ -77,7 +77,7 @@ Optional response body transforms applied in interceptor pipeline.
 
 > `optional` **fetch?**: [`Fetch`](../type-aliases/Fetch.md)
 
-Defined in: packages/blue-http/src/http.ts:58
+Defined in: packages/blue-http/src/http.ts:59
 
 Optional custom fetch implementation.
 Defaults to globalThis.fetch if not provided.

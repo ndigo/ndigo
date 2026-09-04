@@ -6,21 +6,9 @@
 
 # Class: ViewResolverComposite
 
-Defined in: packages/blue-view/src/view-resolver.ts:258
+Defined in: packages/blue-view/src/view-resolver.ts:252
 
 A [\`ViewResolver\`](../interfaces/ViewResolver.md) that delegates to others.
-
-## Implements
-
-module:core.Initializable
-
-## Implements
-
-module:core.ViewResolver
-
-## See
-
-module:context.AsApplicationContextAware
 
 ## Extends
 
@@ -37,7 +25,7 @@ module:context.AsApplicationContextAware
 
 > **new ViewResolverComposite**(`viewResolvers?`): `ViewResolverComposite`
 
-Defined in: packages/blue-view/src/view-resolver.ts:269
+Defined in: packages/blue-view/src/view-resolver.ts:263
 
 Creates a composite resolver with the given delegate list.
 
@@ -77,7 +65,7 @@ A symbol indicating that the value is aware.
 
 > `readonly` **viewResolvers**: [`ViewResolver`](../interfaces/ViewResolver.md)[]
 
-Defined in: packages/blue-view/src/view-resolver.ts:262
+Defined in: packages/blue-view/src/view-resolver.ts:256
 
 The ordered resolver chain consulted during lookup.
 
@@ -87,7 +75,7 @@ The ordered resolver chain consulted during lookup.
 
 > **init**(...`args`): `void`
 
-Defined in: packages/blue-view/src/view-resolver.ts:285
+Defined in: packages/blue-view/src/view-resolver.ts:279
 
 Initializes any delegates that expose the Initializable contract.
 
@@ -111,9 +99,9 @@ Initialization arguments forwarded to delegates.
 
 ### resolveViewName()
 
-> **resolveViewName**(`name`, `language?`): `Promise`\<[`View`](../interfaces/View.md)\>
+> **resolveViewName**(`name`, `language?`): `Promise`\<[`View`](../interfaces/View.md) \| `null`\>
 
-Defined in: packages/blue-view/src/view-resolver.ts:305
+Defined in: packages/blue-view/src/view-resolver.ts:299
 
 Resolves the requested view by querying delegates in order.
 
@@ -133,7 +121,7 @@ Optional locale or language hint.
 
 #### Returns
 
-`Promise`\<[`View`](../interfaces/View.md)\>
+`Promise`\<[`View`](../interfaces/View.md) \| `null`\>
 
 A promise that resolves to the first matching view, or `null` when none resolve.
 
@@ -147,7 +135,7 @@ A promise that resolves to the first matching view, or `null` when none resolve.
 
 > **setApplicationContext**(`applicationContext`): `void`
 
-Defined in: packages/blue-view/src/view-resolver.ts:325
+Defined in: packages/blue-view/src/view-resolver.ts:319
 
 Propagates the application context to context-aware delegates.
 

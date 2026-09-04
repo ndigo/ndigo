@@ -6,7 +6,7 @@
 
 # Class: SimpleMappingErrorResolver
 
-Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:323
+Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:386
 
 [RouteErrorResolver](../interfaces/RouteErrorResolver.md) implementation that allows for mapping exception class names to view names, either for a set of given handlers or for all handlers in the Dispatcher\|Dispatcher.
 
@@ -24,7 +24,7 @@ Dispatcher
 
 > **new SimpleMappingErrorResolver**(`defaultErrorView?`): `SimpleMappingErrorResolver`
 
-Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:343
+Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:406
 
 Create a resolver backed by simple error-name mappings.
 
@@ -48,7 +48,7 @@ The fallback view name to use when no mapping matches.
 
 ### mappedHandlers
 
-> **mappedHandlers**: `any`[]
+> **mappedHandlers**: `any`[] \| `null`
 
 Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:55
 
@@ -76,9 +76,9 @@ Handler classes explicitly targeted by this resolver, if any.
 
 ### defaultErrorView
 
-> **defaultErrorView**: `string`
+> **defaultErrorView**: `string` \| `null`
 
-Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:327
+Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:390
 
 View name used when no specific error mapping matches.
 
@@ -86,9 +86,9 @@ View name used when no specific error mapping matches.
 
 ### errorMappings
 
-> **errorMappings**: `Map`\<`string`, `string`\>
+> **errorMappings**: `Map`\<`string`, `string`\> \| `null`
 
-Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:332
+Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:395
 
 Error-name-to-view-name mappings.
 
@@ -100,7 +100,7 @@ Error-name-to-view-name mappings.
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:334
+Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:397
 
 ##### Returns
 
@@ -114,7 +114,7 @@ Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:334
 
 ### resolveError()
 
-> **resolveError**(`route`, `handler`, `error`): [`ModelAndView`](ModelAndView.md)
+> **resolveError**(`route`, `handler`, `error`): [`ModelAndView`](ModelAndView.md) \| `null`
 
 Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:79
 
@@ -130,7 +130,7 @@ The current route.
 
 ##### handler
 
-`any`
+`object` \| `null`
 
 The handler that was executing when the error occurred.
 
@@ -142,7 +142,7 @@ The thrown error.
 
 #### Returns
 
-[`ModelAndView`](ModelAndView.md)
+[`ModelAndView`](ModelAndView.md) \| `null`
 
 A resolved model and view, or `null` when this resolver does not apply.
 
@@ -170,7 +170,7 @@ The current route.
 
 ##### handler
 
-`object`
+`object` \| `null`
 
 The candidate handler.
 
@@ -188,9 +188,9 @@ The candidate handler.
 
 ### \_resolveError()
 
-> `protected` **\_resolveError**(`route`, `handler`, `error`): [`ModelAndView`](ModelAndView.md)
+> `protected` **\_resolveError**(`route`, `handler`, `error`): [`ModelAndView`](ModelAndView.md) \| `null`
 
-Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:384
+Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:447
 
 Resolve an error by matching its name against configured view mappings.
 
@@ -204,7 +204,7 @@ The current route.
 
 ##### handler
 
-`object`
+`object` \| `null`
 
 The handler that was executing when the error occurred.
 
@@ -216,7 +216,7 @@ The thrown error.
 
 #### Returns
 
-[`ModelAndView`](ModelAndView.md)
+[`ModelAndView`](ModelAndView.md) \| `null`
 
 The mapped model and view, or `null` when no mapping applies.
 

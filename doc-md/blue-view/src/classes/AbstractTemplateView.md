@@ -14,6 +14,10 @@ Abstract base class for template-based views.
 
 - [`AbstractPathBasedView`](AbstractPathBasedView.md)
 
+## Extended by
+
+- [`StringTemplateView`](StringTemplateView.md)
+
 ## Constructors
 
 ### Constructor
@@ -26,7 +30,7 @@ Defined in: packages/blue-view/src/view.ts:155
 
 ##### path?
 
-`string` = `null`
+`string` \| `null`
 
 #### Returns
 
@@ -68,7 +72,7 @@ Indicates if the view has been destroyed.
 
 ### mediaType
 
-> **mediaType**: `MediaType`
+> **mediaType**: `MediaType` \| `null`
 
 Defined in: packages/blue-view/src/view.ts:54
 
@@ -162,11 +166,9 @@ The ApplicationContext to be used by this object.
 
 > **setName**(`name`): `void`
 
-Defined in: packages/blue-factory/lib/aware.d.ts:38
+Defined in: packages/blue-factory/lib/aware.d.ts:36
 
-Set the name of the value in the factory that created it.
-
-Invoked after population of normal value properties but before an `init` callback.
+Sets the name of the value in the factory.
 
 #### Parameters
 
@@ -174,7 +176,7 @@ Invoked after population of normal value properties but before an `init` callbac
 
 `string`
 
-The name of the value in the factory.
+The name to set.
 
 #### Returns
 
@@ -296,44 +298,6 @@ The created view model.
 
 ***
 
-### \_renderView()
-
-> `abstract` `protected` **\_renderView**(`viewModel`, `request`, `target?`): `void` \| `Promise`\<`void`\>
-
-Defined in: packages/blue-view/src/view.ts:138
-
-Renders the view with the given view model, request, and optional target.
-
-#### Parameters
-
-##### viewModel
-
-`any`
-
-The view model.
-
-##### request
-
-`any`
-
-The current request.
-
-##### target?
-
-[`ViewTarget`](../interfaces/ViewTarget.md)
-
-The optional view target.
-
-#### Returns
-
-`void` \| `Promise`\<`void`\>
-
-#### Inherited from
-
-[`AbstractPathBasedView`](AbstractPathBasedView.md).[`_renderView`](AbstractPathBasedView.md#_renderview)
-
-***
-
 ### toJSON()
 
 > **toJSON**(): `JSONObject`
@@ -354,11 +318,41 @@ A JSON object representing the path-based view.
 
 ***
 
-### \_renderTemplate()
+### \_projectViewModel()
 
-> `abstract` `protected` **\_renderTemplate**(`templateModel`, `request`): `void`
+> `protected` **\_projectViewModel**(`viewModel`, `request`): `any`
 
 Defined in: packages/blue-view/src/view.ts:190
+
+Creates the template model from the view model.
+
+#### Parameters
+
+##### viewModel
+
+`any`
+
+The view model.
+
+##### request
+
+`any`
+
+The current request.
+
+#### Returns
+
+`any`
+
+The template model.
+
+***
+
+### \_renderTemplate()
+
+> `abstract` `protected` **\_renderTemplate**(`templateModel`, `request`, `target?`): `void` \| `Promise`\<`void`\>
+
+Defined in: packages/blue-view/src/view.ts:202
 
 Renders the template with the given template model and request.
 
@@ -376,6 +370,50 @@ The template data model.
 
 The current request.
 
+##### target?
+
+[`ViewTarget`](../interfaces/ViewTarget.md)
+
+The optional view target.
+
 #### Returns
 
-`void`
+`void` \| `Promise`\<`void`\>
+
+***
+
+### \_renderView()
+
+> `protected` **\_renderView**(`viewModel`, `request`, `target?`): `Promise`\<`void`\>
+
+Defined in: packages/blue-view/src/view.ts:212
+
+Renders the view with the given view model.
+
+#### Parameters
+
+##### viewModel
+
+`any`
+
+The view model to render.
+
+##### request
+
+`any`
+
+The current request.
+
+##### target?
+
+[`ViewTarget`](../interfaces/ViewTarget.md)
+
+The optional view target (required for rendering).
+
+#### Returns
+
+`Promise`\<`void`\>
+
+#### Overrides
+
+[`AbstractPathBasedView`](AbstractPathBasedView.md).[`_renderView`](AbstractPathBasedView.md#_renderview)

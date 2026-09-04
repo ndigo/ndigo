@@ -6,29 +6,18 @@
 
 # Variable: parseKeypath
 
-> `const` **parseKeypath**: [`Converter`](../type-aliases/Converter.md)\<`string`, [`KeypathToken`](../type-aliases/KeypathToken.md)[] \| `null`\>
+> `const` **parseKeypath**: (`input`) => [`KeypathToken`](../type-aliases/KeypathToken.md)[] \| `null`
 
-Defined in: packages/blue-core/src/keypath-expression.ts:34
+Defined in: packages/blue-core/src/keypath-expression.ts:88
 
-Parses a dotted and bracketed property-access expression into an ordered array of path tokens.
+Singleton instance for backward compatibility.
 
-Returns `null` for invalid input — callers treat an unparseable keypath as "no match"
-rather than an error condition.
+## Parameters
 
-## Param
+### input
 
-A keypath string such as `user.address.street` or `items[0].name`.
+`string`
 
 ## Returns
 
-An array of [KeypathToken](../type-aliases/KeypathToken.md) values, or `null` if the input is not a valid keypath.
-
-## Example
-
-```ts
-parseKeypath('user.name')        // ['user', 'name']
-parseKeypath('items[0].title')   // ['items', 0, 'title']
-parseKeypath('a["key"]')         // ['a', 'key']
-parseKeypath('')                 // null
-parseKeypath('123invalid')       // null
-```
+[`KeypathToken`](../type-aliases/KeypathToken.md)[] \| `null`

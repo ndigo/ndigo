@@ -6,7 +6,7 @@
 
 # Class: ParameterBindingError
 
-Defined in: packages/blue-dispatcher/src/error.ts:121
+Defined in: packages/blue-dispatcher/src/error.ts:86
 
 Base error for method parameter binding issues.
 Analogous to Spring's ServletRequestBindingException.
@@ -27,7 +27,7 @@ Analogous to Spring's ServletRequestBindingException.
 
 > **new ParameterBindingError**(`message`, `parameterName?`, `methodName?`, `controllerName?`): `ParameterBindingError`
 
-Defined in: packages/blue-dispatcher/src/error.ts:130
+Defined in: packages/blue-dispatcher/src/error.ts:95
 
 #### Parameters
 
@@ -59,25 +59,25 @@ Defined in: packages/blue-dispatcher/src/error.ts:130
 
 ### parameterName
 
-> `readonly` **parameterName**: `string`
+> `readonly` **parameterName**: `string` \| `null`
 
-Defined in: packages/blue-dispatcher/src/error.ts:122
+Defined in: packages/blue-dispatcher/src/error.ts:87
 
 ***
 
 ### methodName
 
-> `readonly` **methodName**: `string`
+> `readonly` **methodName**: `string` \| `null`
 
-Defined in: packages/blue-dispatcher/src/error.ts:123
+Defined in: packages/blue-dispatcher/src/error.ts:88
 
 ***
 
 ### controllerName
 
-> `readonly` **controllerName**: `string`
+> `readonly` **controllerName**: `string` \| `null`
 
-Defined in: packages/blue-dispatcher/src/error.ts:124
+Defined in: packages/blue-dispatcher/src/error.ts:89
 
 ## Accessors
 
@@ -87,7 +87,7 @@ Defined in: packages/blue-dispatcher/src/error.ts:124
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-dispatcher/src/error.ts:126
+Defined in: packages/blue-dispatcher/src/error.ts:91
 
 ##### Returns
 

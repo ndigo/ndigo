@@ -6,7 +6,7 @@
 
 # Class: HTTP
 
-Defined in: packages/blue-http/src/http.ts:796
+Defined in: packages/blue-http/src/http.ts:801
 
 HTTP client with interceptor support and convenience verb helpers.
 
@@ -16,7 +16,7 @@ HTTP client with interceptor support and convenience verb helpers.
 
 > **new HTTP**(`interceptors?`, `init?`, `fetch?`): `HTTP`
 
-Defined in: packages/blue-http/src/http.ts:893
+Defined in: packages/blue-http/src/http.ts:898
 
 Create a new HTTP client instance.
 
@@ -42,7 +42,7 @@ Initial configuration settings
 
 ##### fetch?
 
-`any` = `...`
+\{(`input`, `init?`): `Promise`\<`Response`\>; (`input`, `init?`): `Promise`\<`Response`\>; \}
 
 Fetch implementation (defaults to globalThis.fetch)
 
@@ -78,7 +78,7 @@ const http = new HTTP(
 
 > **settings**: [`HTTPInit`](../type-aliases/HTTPInit.md)
 
-Defined in: packages/blue-http/src/http.ts:803
+Defined in: packages/blue-http/src/http.ts:808
 
 The default request settings used as the base for each request.
 
@@ -90,7 +90,7 @@ The default request settings used as the base for each request.
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-http/src/http.ts:805
+Defined in: packages/blue-http/src/http.ts:810
 
 ##### Returns
 
@@ -104,7 +104,7 @@ Defined in: packages/blue-http/src/http.ts:805
 
 > **get** **interceptors**(): [`HTTPInterceptor`](../type-aliases/HTTPInterceptor.md)[]
 
-Defined in: packages/blue-http/src/http.ts:812
+Defined in: packages/blue-http/src/http.ts:817
 
 The interceptors configured for this client instance.
 
@@ -118,7 +118,7 @@ The interceptors configured for this client instance.
 
 > `static` **create**(`config?`): `HTTP`
 
-Defined in: packages/blue-http/src/http.ts:852
+Defined in: packages/blue-http/src/http.ts:857
 
 Create a new HTTP client instance with optional configuration.
 
@@ -172,7 +172,7 @@ const api = HTTP.create({
 
 > **request**(`input`, `init?`): `Promise`\<`Response`\>
 
-Defined in: packages/blue-http/src/http.ts:909
+Defined in: packages/blue-http/src/http.ts:914
 
 #### Parameters
 
@@ -182,7 +182,7 @@ Defined in: packages/blue-http/src/http.ts:909
 
 ##### init?
 
-[`HTTPInit`](../type-aliases/HTTPInit.md) = `null`
+[`HTTPInit`](../type-aliases/HTTPInit.md) \| `null`
 
 #### Returns
 
@@ -196,7 +196,7 @@ Defined in: packages/blue-http/src/http.ts:909
 
 > **connect**(`input`, `init?`): `Promise`\<`Response`\>
 
-Defined in: packages/blue-http/src/http.ts:983
+Defined in: packages/blue-http/src/http.ts:993
 
 #### Parameters
 
@@ -220,7 +220,7 @@ Defined in: packages/blue-http/src/http.ts:983
 
 > **delete**(`input`, `init?`): `Promise`\<`Response`\>
 
-Defined in: packages/blue-http/src/http.ts:995
+Defined in: packages/blue-http/src/http.ts:1005
 
 #### Parameters
 
@@ -244,7 +244,7 @@ Defined in: packages/blue-http/src/http.ts:995
 
 > **get**(`input`, `init?`): `Promise`\<`Response`\>
 
-Defined in: packages/blue-http/src/http.ts:1007
+Defined in: packages/blue-http/src/http.ts:1017
 
 #### Parameters
 
@@ -268,7 +268,7 @@ Defined in: packages/blue-http/src/http.ts:1007
 
 > **head**(`input`, `init?`): `Promise`\<`Response`\>
 
-Defined in: packages/blue-http/src/http.ts:1019
+Defined in: packages/blue-http/src/http.ts:1029
 
 #### Parameters
 
@@ -292,7 +292,7 @@ Defined in: packages/blue-http/src/http.ts:1019
 
 > **options**(`input`, `init?`): `Promise`\<`Response`\>
 
-Defined in: packages/blue-http/src/http.ts:1031
+Defined in: packages/blue-http/src/http.ts:1041
 
 #### Parameters
 
@@ -316,7 +316,7 @@ Defined in: packages/blue-http/src/http.ts:1031
 
 > **patch**(`input`, `init?`): `Promise`\<`Response`\>
 
-Defined in: packages/blue-http/src/http.ts:1043
+Defined in: packages/blue-http/src/http.ts:1053
 
 #### Parameters
 
@@ -340,7 +340,7 @@ Defined in: packages/blue-http/src/http.ts:1043
 
 > **post**(`input`, `init?`): `Promise`\<`Response`\>
 
-Defined in: packages/blue-http/src/http.ts:1055
+Defined in: packages/blue-http/src/http.ts:1065
 
 #### Parameters
 
@@ -364,7 +364,7 @@ Defined in: packages/blue-http/src/http.ts:1055
 
 > **put**(`input`, `init?`): `Promise`\<`Response`\>
 
-Defined in: packages/blue-http/src/http.ts:1067
+Defined in: packages/blue-http/src/http.ts:1077
 
 #### Parameters
 
@@ -388,7 +388,7 @@ Defined in: packages/blue-http/src/http.ts:1067
 
 > **trace**(`input`, `init?`): `Promise`\<`Response`\>
 
-Defined in: packages/blue-http/src/http.ts:1079
+Defined in: packages/blue-http/src/http.ts:1089
 
 #### Parameters
 
@@ -412,7 +412,7 @@ Defined in: packages/blue-http/src/http.ts:1079
 
 > `protected` **\_getHTTPExecutionChain**(`http`, `url`): [`HTTPExecutionChain`](HTTPExecutionChain.md)
 
-Defined in: packages/blue-http/src/http.ts:1091
+Defined in: packages/blue-http/src/http.ts:1101
 
 #### Parameters
 

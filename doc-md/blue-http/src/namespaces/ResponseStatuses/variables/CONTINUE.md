@@ -6,7 +6,7 @@
 
 # Variable: CONTINUE
 
-> `const` **CONTINUE**: `ResponseStatus`
+> `const` **CONTINUE**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
 Defined in: packages/blue-http/src/response-statuses.ts:18
 

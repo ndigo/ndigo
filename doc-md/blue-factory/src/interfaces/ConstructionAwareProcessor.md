@@ -58,7 +58,7 @@ The instance without properties having been set yet.
 
 ### processBeforeConstruction()
 
-> **processBeforeConstruction**\<`T`\>(`name`, `constructor`, `argumentsList?`): `T`
+> **processBeforeConstruction**\<`T`\>(`name`, `constructor`, `argumentsList?`): `T` \| `null`
 
 Defined in: packages/blue-factory/src/entry-processor.ts:59
 
@@ -94,7 +94,7 @@ The list of arguments supplied to the `constructor`.
 
 #### Returns
 
-`T`
+`T` \| `null`
 
 The instance to expose instead of a default instance, or `null` to proceed with default construction.
 

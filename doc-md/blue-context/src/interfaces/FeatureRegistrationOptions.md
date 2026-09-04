@@ -6,7 +6,7 @@
 
 # Interface: FeatureRegistrationOptions
 
-Defined in: packages/blue-context/src/feature-context-mount-manager.ts:24
+Defined in: packages/blue-context/src/feature-context-mount-manager.ts:42
 
 Options used to register a feature for mounting.
 
@@ -114,4 +114,53 @@ Event relays to attach to the feature context.
 
 > `optional` **unmountPolicy?**: [`FeatureUnmountPolicy`](../type-aliases/FeatureUnmountPolicy.md)
 
-Defined in: packages/blue-context/src/feature-context-mount-manager.ts:25
+Defined in: packages/blue-context/src/feature-context-mount-manager.ts:43
+
+***
+
+### dependencies?
+
+> `optional` **dependencies?**: `object`
+
+Defined in: packages/blue-context/src/feature-context-mount-manager.ts:48
+
+Declare dependencies this feature requires from the shell.
+Validated at mount time against the SharedDependencyRegistry.
+
+#### requires?
+
+> `optional` **requires?**: `Record`\<`string`, `string`\>
+
+Required dependencies — mount fails if missing or version-mismatched.
+
+#### optional?
+
+> `optional` **optional?**: `Record`\<`string`, `string`\>
+
+Optional dependencies — mount warns if missing.
+
+***
+
+### loader?
+
+> `optional` **loader?**: () => `Promise`\<[`LazyFeatureModule`](LazyFeatureModule.md)\>
+
+Defined in: packages/blue-context/src/feature-context-mount-manager.ts:68
+
+Async loader for dynamically code-split feature modules.
+Resolves to a module exporting `createContext(parent)`.
+Use with mountLazy — mount must be awaited.
+
+#### Returns
+
+`Promise`\<[`LazyFeatureModule`](LazyFeatureModule.md)\>
+
+#### Example
+
+```ts
+manager.registerFeature({
+  name: 'checkout',
+  loader: () => import('./checkout/checkout-module'),
+});
+await manager.mountLazy('checkout');
+```

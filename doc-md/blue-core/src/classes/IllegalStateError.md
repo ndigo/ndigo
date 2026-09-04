@@ -6,7 +6,7 @@
 
 # Class: IllegalStateError
 
-Defined in: packages/blue-core/src/error.ts:92
+Defined in: packages/blue-core/src/error.ts:94
 
 Represents an error indicating that an operation cannot be completed due to an invalid state or misconfiguration.
 
@@ -20,7 +20,7 @@ Represents an error indicating that an operation cannot be completed due to an i
 
 > **new IllegalStateError**(`message?`): `IllegalStateError`
 
-Defined in: packages/blue-core/src/error.ts:104
+Defined in: packages/blue-core/src/error.ts:106
 
 Creates an instance of IllegalStateError.
 
@@ -48,7 +48,7 @@ The error message. Defaults to 'Unable to complete operation due to misconfigura
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-core/src/error.ts:96
+Defined in: packages/blue-core/src/error.ts:98
 
 The string tag for this class.
 

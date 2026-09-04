@@ -6,7 +6,7 @@
 
 # Interface: ParameterValueConversionContext
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:25
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:34
 
 ## Properties
 
@@ -14,7 +14,7 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:25
 
 > **name**: `string`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:26
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:35
 
 ***
 
@@ -22,7 +22,7 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:26
 
 > **parameter**: [`MethodParameter`](../classes/MethodParameter.md)
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:27
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:36
 
 ***
 
@@ -30,7 +30,7 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:27
 
 > **route**: `any`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:28
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:37
 
 ***
 
@@ -38,4 +38,4 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:28
 
 > **mapping**: `any`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:29
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:38

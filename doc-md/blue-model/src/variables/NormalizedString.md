@@ -6,8 +6,8 @@
 
 # Variable: NormalizedString
 
-> `const` **NormalizedString**: `BasicModel`\<`StringConstructor`\>
+> `const` **NormalizedString**: `any`
 
-Defined in: packages/blue-model/src/basic.ts:89
+Defined in: packages/blue-model/src/basic.ts:95
 
 Matches strings already in normalized Unicode form.

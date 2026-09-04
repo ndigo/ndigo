@@ -6,17 +6,17 @@
 
 # Function: createValidationBackend()
 
-> **createValidationBackend**(`name?`): `ValidationBackendAdapter`
+> **createValidationBackend**(`_name?`): `ValidationBackendAdapter`
 
-Defined in: packages/blue-validate/src/backend.ts:21
+Defined in: packages/blue-validate/src/backend.ts:17
 
 Creates a backend adapter for validation execution.
 
 ## Parameters
 
-### name?
+### \_name?
 
-[`ValidationBackendName`](../type-aliases/ValidationBackendName.md) = `'native'`
+`"native"`
 
 ## Returns
 

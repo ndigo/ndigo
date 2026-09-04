@@ -6,7 +6,7 @@
 
 # Class: Application
 
-Defined in: packages/blue-boot/src/application.ts:22
+Defined in: packages/blue-boot/src/application.ts:24
 
 Class that can be used to bootstrap and launch an application.
 
@@ -32,7 +32,7 @@ closed when the application is closed
 
 > **new Application**(`sources`): `Application`
 
-Defined in: packages/blue-boot/src/application.ts:44
+Defined in: packages/blue-boot/src/application.ts:46
 
 Creates an application bootstrapper for the given source classes.
 
@@ -58,7 +58,7 @@ Source classes that will be registered when the application runs.
 
 > `readonly` `static` **every**: `string`
 
-Defined in: packages/blue-context/lib/event-emitter.d.ts:183
+Defined in: packages/blue-context/lib/event-emitter.d.ts:179
 
 #### Inherited from
 
@@ -70,7 +70,7 @@ Defined in: packages/blue-context/lib/event-emitter.d.ts:183
 
 > `readonly` `static` **version**: `string`
 
-Defined in: packages/blue-context/lib/event-emitter.d.ts:184
+Defined in: packages/blue-context/lib/event-emitter.d.ts:180
 
 #### Inherited from
 
@@ -82,7 +82,7 @@ Defined in: packages/blue-context/lib/event-emitter.d.ts:184
 
 > **destroyed**: `boolean`
 
-Defined in: packages/blue-context/lib/event-emitter.d.ts:185
+Defined in: packages/blue-context/lib/event-emitter.d.ts:181
 
 #### Inherited from
 
@@ -96,7 +96,7 @@ Defined in: packages/blue-context/lib/event-emitter.d.ts:185
 
 > **get** **sources**(): `Set`\<`Function`\>
 
-Defined in: packages/blue-boot/src/application.ts:35
+Defined in: packages/blue-boot/src/application.ts:37
 
 Gets the source classes registered with this application bootstrapper.
 
@@ -112,7 +112,7 @@ The registered source classes.
 
 > **run**(...`args`): `ConfigurableApplicationContext`
 
-Defined in: packages/blue-boot/src/application.ts:57
+Defined in: packages/blue-boot/src/application.ts:59
 
 Runs the application and refreshes a new application context.
 
@@ -140,7 +140,7 @@ When application startup fails.
 
 > **setEnvironment**(`environment`): `void`
 
-Defined in: packages/blue-boot/src/application.ts:77
+Defined in: packages/blue-boot/src/application.ts:79
 
 Sets the environment that will be reused instead of creating a new one.
 
@@ -162,7 +162,7 @@ The environment to reuse.
 
 > **setName**(`name`): `void`
 
-Defined in: packages/blue-boot/src/application.ts:86
+Defined in: packages/blue-boot/src/application.ts:88
 
 Sets the application name used when the application context is created.
 
@@ -184,7 +184,7 @@ The application name.
 
 > **setProfiles**(...`profiles`): `void`
 
-Defined in: packages/blue-boot/src/application.ts:95
+Defined in: packages/blue-boot/src/application.ts:97
 
 Replaces the active profiles that will be applied before the context refreshes.
 
@@ -206,7 +206,7 @@ The profile names to activate.
 
 > **setProperties**(`properties`): `void`
 
-Defined in: packages/blue-boot/src/application.ts:104
+Defined in: packages/blue-boot/src/application.ts:106
 
 Sets the property sources that will be added during environment preparation.
 
@@ -228,7 +228,7 @@ Property values to expose to the application environment.
 
 > `protected` **\_configureEnvironment**(`environment`, `args`): `void`
 
-Defined in: packages/blue-boot/src/application.ts:115
+Defined in: packages/blue-boot/src/application.ts:117
 
 Applies environment-level configuration before the application context is created.
 
@@ -256,7 +256,7 @@ Command-line arguments supplied to the application.
 
 > `protected` **\_configureProfiles**(`environment`, `args`): `void`
 
-Defined in: packages/blue-boot/src/application.ts:127
+Defined in: packages/blue-boot/src/application.ts:129
 
 Applies the configured active profiles to the environment.
 
@@ -284,7 +284,7 @@ Command-line arguments supplied to the application.
 
 > `protected` **\_configurePropertySources**(`environment`, `args`): `void`
 
-Defined in: packages/blue-boot/src/application.ts:139
+Defined in: packages/blue-boot/src/application.ts:141
 
 Adds configured property sources to the environment.
 
@@ -312,7 +312,7 @@ Command-line arguments supplied to the application.
 
 > `protected` **\_prepareContext**(`environment`, `args`): `ConfigurableApplicationContext`
 
-Defined in: packages/blue-boot/src/application.ts:152
+Defined in: packages/blue-boot/src/application.ts:156
 
 Creates and refreshes the application context.
 
@@ -342,7 +342,7 @@ The refreshed application context.
 
 > `protected` **\_prepareEnvironment**(`args`): `ConfigurableEnvironment`
 
-Defined in: packages/blue-boot/src/application.ts:171
+Defined in: packages/blue-boot/src/application.ts:184
 
 Prepares the environment used for application startup.
 
@@ -366,7 +366,7 @@ The prepared environment.
 
 > **close**(): `void`
 
-Defined in: packages/blue-boot/src/application.ts:190
+Defined in: packages/blue-boot/src/application.ts:203
 
 Closes the application and releases resources.
 Emits the `'closed'` event, then destroys the emitter.
@@ -489,7 +489,7 @@ The registered listeners.
 
 ### on()
 
-> **on**(`type`, `listener`): `this`
+> **on**(`type`, `listener?`): `this`
 
 Defined in: packages/blue-context/lib/event-emitter.d.ts:68
 
@@ -499,11 +499,11 @@ Adds a listener for an event type.
 
 ##### type
 
-`EventType`
+`EventType` \| `EventHandlers`
 
 The event type.
 
-##### listener
+##### listener?
 
 `Function`
 
@@ -559,7 +559,7 @@ This emitter.
 
 > **clear**(`type?`): `this`
 
-Defined in: packages/blue-context/lib/event-emitter.d.ts:198
+Defined in: packages/blue-context/lib/event-emitter.d.ts:194
 
 Removes listeners for one type or for all types.
 
@@ -587,7 +587,7 @@ This emitter.
 
 > **toJSON**(): `JSONValue`
 
-Defined in: packages/blue-context/lib/event-emitter.d.ts:204
+Defined in: packages/blue-context/lib/event-emitter.d.ts:200
 
 Serializes the listener counts to JSON.
 
@@ -607,7 +607,7 @@ A JSON representation of the emitter state.
 
 > **toString**(): `string`
 
-Defined in: packages/blue-context/lib/event-emitter.d.ts:210
+Defined in: packages/blue-context/lib/event-emitter.d.ts:206
 
 Returns a compact textual summary of the emitter.
 
@@ -627,7 +627,7 @@ A string representation.
 
 > **destroy**(): `void`
 
-Defined in: packages/blue-context/lib/event-emitter.d.ts:214
+Defined in: packages/blue-context/lib/event-emitter.d.ts:210
 
 Destroys the emitter and clears its listeners.
 

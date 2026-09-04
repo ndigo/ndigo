@@ -6,7 +6,7 @@
 
 # Class: FixedThemeResolver
 
-Defined in: packages/blue-dispatcher/src/theme-resolver.ts:58
+Defined in: packages/blue-dispatcher/src/theme-resolver.ts:53
 
 Resolve a fixed theme regardless of route.
 
@@ -78,7 +78,7 @@ Defined in: packages/blue-dispatcher/src/theme-resolver.ts:28
 
 > **resolveTheme**(`route`): `string`
 
-Defined in: packages/blue-dispatcher/src/theme-resolver.ts:65
+Defined in: packages/blue-dispatcher/src/theme-resolver.ts:60
 
 Return the configured fallback theme.
 

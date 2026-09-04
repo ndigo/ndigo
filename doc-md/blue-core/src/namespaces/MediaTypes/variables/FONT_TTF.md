@@ -6,6 +6,6 @@
 
 # Variable: FONT\_TTF
 
-> `const` **FONT\_TTF**: [`MediaType`](../../../classes/MediaType.md)
+> `const` **FONT\_TTF**: [`MediaType`](../../../classes/MediaType.md) \| `null`
 
 Defined in: packages/blue-core/src/media-types.ts:46

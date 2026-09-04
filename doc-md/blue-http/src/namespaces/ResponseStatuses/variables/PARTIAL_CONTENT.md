@@ -6,7 +6,7 @@
 
 # Variable: PARTIAL\_CONTENT
 
-> `const` **PARTIAL\_CONTENT**: `ResponseStatus`
+> `const` **PARTIAL\_CONTENT**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
 Defined in: packages/blue-http/src/response-statuses.ts:76
 

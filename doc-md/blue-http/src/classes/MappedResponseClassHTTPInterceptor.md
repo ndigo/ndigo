@@ -6,13 +6,9 @@
 
 # Class: MappedResponseClassHTTPInterceptor
 
-Defined in: packages/blue-http/src/interceptors/response-class-interceptor.ts:115
+Defined in: packages/blue-http/src/interceptors/response-class-interceptor.ts:113
 
 Dispatches response hooks based on the response status class.
-
-## Implements
-
-module:http.ResponseAwareHTTPInterceptor
 
 ## Implements
 
@@ -24,7 +20,7 @@ module:http.ResponseAwareHTTPInterceptor
 
 > **new MappedResponseClassHTTPInterceptor**(`interceptor`): `MappedResponseClassHTTPInterceptor`
 
-Defined in: packages/blue-http/src/interceptors/response-class-interceptor.ts:135
+Defined in: packages/blue-http/src/interceptors/response-class-interceptor.ts:133
 
 Creates a response-class dispatcher.
 
@@ -48,7 +44,7 @@ The interceptor to wrap.
 
 > **get** **interceptor**(): [`ResponseClassAwareHTTPInterceptor`](../type-aliases/ResponseClassAwareHTTPInterceptor.md)
 
-Defined in: packages/blue-http/src/interceptors/response-class-interceptor.ts:126
+Defined in: packages/blue-http/src/interceptors/response-class-interceptor.ts:124
 
 The wrapped interceptor that receives class-specific callbacks.
 
@@ -62,7 +58,7 @@ The wrapped interceptor that receives class-specific callbacks.
 
 > **postResponse**(`response`, `settings`): `Promise`\<`void` \| `Response`\>
 
-Defined in: packages/blue-http/src/interceptors/response-class-interceptor.ts:151
+Defined in: packages/blue-http/src/interceptors/response-class-interceptor.ts:149
 
 Dispatches the response to the appropriate class-specific hook.
 

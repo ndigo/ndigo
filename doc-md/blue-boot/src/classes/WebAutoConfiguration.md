@@ -6,7 +6,7 @@
 
 # Class: WebAutoConfiguration
 
-Defined in: packages/blue-boot/src/web-auto-configuration.ts:23
+Defined in: packages/blue-boot/src/web-auto-configuration.ts:25
 
 Auto-configuration for browser-based applications.
 Provisions argument resolvers and converter registries.
@@ -25,15 +25,15 @@ Provisions argument resolvers and converter registries.
 
 ### argumentValueConverterRegistry()
 
-> **argumentValueConverterRegistry**(): `Record`\<`string`, [`ArgumentValueConverter`](../../../blue-platform-web/src/type-aliases/ArgumentValueConverter.md)\>
+> **argumentValueConverterRegistry**(): `Record`\<`string`, `ArgumentValueConverter`\>
 
-Defined in: packages/blue-boot/src/web-auto-configuration.ts:30
+Defined in: packages/blue-boot/src/web-auto-configuration.ts:32
 
 Exposes the shared argument-value converter registry.
 
 #### Returns
 
-`Record`\<`string`, [`ArgumentValueConverter`](../../../blue-platform-web/src/type-aliases/ArgumentValueConverter.md)\>
+`Record`\<`string`, `ArgumentValueConverter`\>
 
 The browser argument-value converter registry.
 
@@ -41,15 +41,15 @@ The browser argument-value converter registry.
 
 ### argumentResolvers()
 
-> **argumentResolvers**(): ([`BrowserBindMethodArgumentResolver`](../../../blue-platform-web/src/classes/BrowserBindMethodArgumentResolver.md) \| [`BrowserCookieValueMethodArgumentResolver`](../../../blue-platform-web/src/classes/BrowserCookieValueMethodArgumentResolver.md) \| [`BrowserModelValueMethodArgumentResolver`](../../../blue-platform-web/src/classes/BrowserModelValueMethodArgumentResolver.md) \| [`BrowserStateValueMethodArgumentResolver`](../../../blue-platform-web/src/classes/BrowserStateValueMethodArgumentResolver.md) \| [`BrowserSessionValueMethodArgumentResolver`](../../../blue-platform-web/src/classes/BrowserSessionValueMethodArgumentResolver.md))[]
+> **argumentResolvers**(): (`BrowserBindMethodArgumentResolver` \| `BrowserCookieValueMethodArgumentResolver` \| `BrowserModelValueMethodArgumentResolver` \| `BrowserStateValueMethodArgumentResolver` \| `BrowserSessionValueMethodArgumentResolver`)[]
 
-Defined in: packages/blue-boot/src/web-auto-configuration.ts:40
+Defined in: packages/blue-boot/src/web-auto-configuration.ts:42
 
 Creates the browser argument resolvers used for request binding.
 
 #### Returns
 
-([`BrowserBindMethodArgumentResolver`](../../../blue-platform-web/src/classes/BrowserBindMethodArgumentResolver.md) \| [`BrowserCookieValueMethodArgumentResolver`](../../../blue-platform-web/src/classes/BrowserCookieValueMethodArgumentResolver.md) \| [`BrowserModelValueMethodArgumentResolver`](../../../blue-platform-web/src/classes/BrowserModelValueMethodArgumentResolver.md) \| [`BrowserStateValueMethodArgumentResolver`](../../../blue-platform-web/src/classes/BrowserStateValueMethodArgumentResolver.md) \| [`BrowserSessionValueMethodArgumentResolver`](../../../blue-platform-web/src/classes/BrowserSessionValueMethodArgumentResolver.md))[]
+(`BrowserBindMethodArgumentResolver` \| `BrowserCookieValueMethodArgumentResolver` \| `BrowserModelValueMethodArgumentResolver` \| `BrowserStateValueMethodArgumentResolver` \| `BrowserSessionValueMethodArgumentResolver`)[]
 
 The browser argument resolvers.
 
@@ -59,7 +59,7 @@ The browser argument resolvers.
 
 > **handlerMapping**(): `LinearMetadataHandlerMapping`
 
-Defined in: packages/blue-boot/src/web-auto-configuration.ts:60
+Defined in: packages/blue-boot/src/web-auto-configuration.ts:59
 
 Provides the default handler mapping for browser-based request dispatch.
 Can be overridden by registering a custom
@@ -80,7 +80,7 @@ with a handlerMapping entry.
 
 > **viewResolver**(): `NameViewResolver`
 
-Defined in: packages/blue-boot/src/web-auto-configuration.ts:71
+Defined in: packages/blue-boot/src/web-auto-configuration.ts:70
 
 Provides the default view resolver that matches views by name.
 Can be overridden by registering a custom
@@ -101,7 +101,7 @@ with a viewResolver entry.
 
 > **webComponentViewEngine**(): `WebComponentViewEngine`
 
-Defined in: packages/blue-boot/src/web-auto-configuration.ts:82
+Defined in: packages/blue-boot/src/web-auto-configuration.ts:81
 
 Provides the default Web Component view engine.
 Can be overridden by registering a custom

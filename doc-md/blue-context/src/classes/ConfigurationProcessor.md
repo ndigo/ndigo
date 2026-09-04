@@ -6,27 +6,10 @@
 
 # Class: ConfigurationProcessor
 
-Defined in: packages/blue-context/src/configuration.ts:353
+Defined in: packages/blue-context/src/configuration.ts:348
 
 A EntryRegistryProcessor\|EntryRegistryProcessor used for processing of @configuration\|@configuration classes.
 This processor should be prioritized as it is important that any @entry\|@entry methods declared in the `@configuration` classes have their values registered before any other EntryProcessor\|EntryProcessor executes.
-
-## See
-
- - module:context.AsEnvironmentAware
- - module:context.AsResourceLoaderAware
-
-## Implements
-
-module:factory.EntryRegistryProcessor
-
-## Implements
-
-module:context.EnvironmentAware
-
-## Implements
-
-module:context.ResourceLoaderAware
 
 ## Extends
 
@@ -56,7 +39,7 @@ module:context.ResourceLoaderAware
 
 > **environment**: [`Environment`](../interfaces/Environment.md)
 
-Defined in: packages/blue-context/src/configuration.ts:360
+Defined in: packages/blue-context/src/configuration.ts:355
 
 The environment used for resolving properties.
 
@@ -80,7 +63,7 @@ A symbol indicating that the value is aware.
 
 > **processEntryRegistry**(`registry`): `void`
 
-Defined in: packages/blue-context/src/configuration.ts:367
+Defined in: packages/blue-context/src/configuration.ts:362
 
 Processes configuration classes registered as entry registries.
 

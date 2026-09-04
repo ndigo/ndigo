@@ -8,7 +8,7 @@
 
 > **AsApplicationContextAware**\<`T`\>(`superclass`): `Constructable`\<[`ApplicationContextAware`](../interfaces/ApplicationContextAware.md)\> & `T`
 
-Defined in: packages/blue-context/src/context.ts:867
+Defined in: packages/blue-context/src/context.ts:833
 
 ## Type Parameters
 
@@ -22,8 +22,6 @@ Defined in: packages/blue-context/src/context.ts:867
 
 `T`
 
-The base class to extend.
-
 ## Returns
 
 `Constructable`\<[`ApplicationContextAware`](../interfaces/ApplicationContextAware.md)\> & `T`
@@ -31,7 +29,3 @@ The base class to extend.
 ## See
 
 module:context.AsApplicationContextAware
-
-## Implements
-
-module:context.ApplicationContextAware

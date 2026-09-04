@@ -132,3 +132,6 @@
 - [X\_REQUESTED\_WITH](variables/X_REQUESTED_WITH.md)
 - [X\_ROBOTS\_TAG](variables/X_ROBOTS_TAG.md)
 - [X\_UA\_COMPATIBLE](variables/X_UA_COMPATIBLE.md)
+- [X\_CSRF\_TOKEN](variables/X_CSRF_TOKEN.md)
+- [X\_CHANNEL\_ID](variables/X_CHANNEL_ID.md)
+- [X\_REQUEST\_ID](variables/X_REQUEST_ID.md)

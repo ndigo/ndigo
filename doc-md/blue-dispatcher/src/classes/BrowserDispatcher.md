@@ -97,7 +97,7 @@ Defined in: packages/blue-dispatcher/src/strategies/route-handler-adapter-strate
 
 > **handlerMappings**: [`RouteHandlerMapping`](../interfaces/RouteHandlerMapping.md)[]
 
-Defined in: packages/blue-dispatcher/src/strategies/route-handler-mapping-strategy.ts:13
+Defined in: packages/blue-dispatcher/src/strategies/route-handler-mapping-strategy.ts:14
 
 #### Inherited from
 
@@ -229,7 +229,7 @@ The route associated with the [ModelAndView](ModelAndView.md).
 
 ### \_processHandlerError()
 
-> `protected` **\_processHandlerError**(`route`, `handler`, `error`): [`ModelAndView`](ModelAndView.md)
+> `protected` **\_processHandlerError**(`route`, `handler`, `error`): [`ModelAndView`](ModelAndView.md) \| `null`
 
 Defined in: packages/blue-dispatcher/src/dispatcher.ts:168
 
@@ -245,7 +245,7 @@ The current route.
 
 ##### handler
 
-`any`
+`object` \| `null`
 
 The handler that caused the error.
 
@@ -257,7 +257,7 @@ The error that occurred.
 
 #### Returns
 
-[`ModelAndView`](ModelAndView.md)
+[`ModelAndView`](ModelAndView.md) \| `null`
 
 A [ModelAndView](ModelAndView.md) if the error was resolved, otherwise throws a TypeError.
 
@@ -269,7 +269,7 @@ If no view name can be determined for the error.
 
 ### \_resolveViewName()
 
-> `protected` **\_resolveViewName**(`viewName`, `language`): `Promise`\<`View`\>
+> `protected` **\_resolveViewName**(`viewName`, `language`): `Promise`\<`View` \| `null`\>
 
 Defined in: packages/blue-dispatcher/src/dispatcher.ts:191
 
@@ -291,7 +291,7 @@ The language to use for view resolution.
 
 #### Returns
 
-`Promise`\<`View`\>
+`Promise`\<`View` \| `null`\>
 
 A Promise that resolves to the View object, or `null` if not found.
 
@@ -389,7 +389,7 @@ Defined in: packages/blue-dispatcher/src/strategies/route-handler-adapter-strate
 
 > **initHandlerMappings**(`context`): `void`
 
-Defined in: packages/blue-dispatcher/src/strategies/route-handler-mapping-strategy.ts:14
+Defined in: packages/blue-dispatcher/src/strategies/route-handler-mapping-strategy.ts:15
 
 #### Parameters
 
@@ -411,7 +411,7 @@ Defined in: packages/blue-dispatcher/src/strategies/route-handler-mapping-strate
 
 > **getHandler**(`route`): `RouteHandlerExecutionChain`
 
-Defined in: packages/blue-dispatcher/src/strategies/route-handler-mapping-strategy.ts:15
+Defined in: packages/blue-dispatcher/src/strategies/route-handler-mapping-strategy.ts:16
 
 #### Parameters
 

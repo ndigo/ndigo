@@ -8,7 +8,7 @@
 
 > `const` **random**: () => `number`
 
-Defined in: packages/blue-util/src/math/random.ts:41
+Defined in: packages/blue-util/src/math/random.ts:44
 
 Generates a pseudo-random number.
 

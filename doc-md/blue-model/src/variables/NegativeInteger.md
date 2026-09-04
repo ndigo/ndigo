@@ -6,8 +6,8 @@
 
 # Variable: NegativeInteger
 
-> `const` **NegativeInteger**: `BasicModel`\<`NumberConstructor`\>
+> `const` **NegativeInteger**: `any`
 
-Defined in: packages/blue-model/src/basic.ts:77
+Defined in: packages/blue-model/src/basic.ts:83
 
 Matches negative integers.

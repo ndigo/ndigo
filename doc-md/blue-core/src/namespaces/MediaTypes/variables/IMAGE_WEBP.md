@@ -6,6 +6,6 @@
 
 # Variable: IMAGE\_WEBP
 
-> `const` **IMAGE\_WEBP**: [`MediaType`](../../../classes/MediaType.md)
+> `const` **IMAGE\_WEBP**: [`MediaType`](../../../classes/MediaType.md) \| `null`
 
 Defined in: packages/blue-core/src/media-types.ts:70

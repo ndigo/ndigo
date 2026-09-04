@@ -6,7 +6,7 @@
 
 # Class: FrameworkError
 
-Defined in: packages/blue-core/src/error.ts:69
+Defined in: packages/blue-core/src/error.ts:70
 
 Represents an error within the framework itself.
 
@@ -29,9 +29,10 @@ Serializable
 
 > **new FrameworkError**(`message?`): `FrameworkError`
 
-Defined in: packages/blue-core/src/error.ts:81
+Defined in: packages/blue-core/src/error.ts:83
 
 Creates an instance of FrameworkError.
+Uses `new.target.name` so subclasses inherit the correct name automatically.
 
 #### Parameters
 
@@ -57,7 +58,7 @@ The error message.
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-core/src/error.ts:73
+Defined in: packages/blue-core/src/error.ts:74
 
 The string tag for this class.
 

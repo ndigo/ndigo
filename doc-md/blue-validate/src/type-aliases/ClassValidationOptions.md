@@ -8,7 +8,7 @@
 
 > **ClassValidationOptions** = `object`
 
-Defined in: packages/blue-validate/src/decorators.ts:101
+Defined in: packages/blue-validate/src/decorators.ts:102
 
 Options for the `validate` method on a class decorated with `@validated`.
 
@@ -18,6 +18,6 @@ Options for the `validate` method on a class decorated with `@validated`.
 
 > `optional` **groups?**: [`ValidationGroup`](ValidationGroup.md)[]
 
-Defined in: packages/blue-validate/src/decorators.ts:102
+Defined in: packages/blue-validate/src/decorators.ts:103
 
 Specific validation groups to run. If not provided, all groups associated with the class or default group will be used.

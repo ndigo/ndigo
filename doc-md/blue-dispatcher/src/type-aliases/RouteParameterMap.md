@@ -8,7 +8,7 @@
 
 > **RouteParameterMap** = `Record`\<`string`, [`ParameterExtractor`](ParameterExtractor.md)\>
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:44
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:46
 
 Parameter map for
 

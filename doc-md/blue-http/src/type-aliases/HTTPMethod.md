@@ -6,9 +6,9 @@
 
 # Type Alias: HTTPMethod
 
-> **HTTPMethod** = `"CONNECT"` \| `"DELETE"` \| `"GET"` \| `"HEAD"` \| `"OPTIONS"` \| `"PATCH"` \| `"POST"` \| `"PUT"` \| `"TRACE"`
+> **HTTPMethod** = `"CONNECT"` \| `"DELETE"` \| `"GET"` \| `"HEAD"` \| `"OPTIONS"` \| `"PATCH"` \| `"POST"` \| `"PUT"` \| `"QUERY"` \| `"TRACE"`
 
-Defined in: packages/blue-http/src/http.ts:18
+Defined in: packages/blue-http/src/http.ts:19
 
 Represents a valid HTTP method.
 

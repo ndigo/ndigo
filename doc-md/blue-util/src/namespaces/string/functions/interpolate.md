@@ -8,7 +8,7 @@
 
 > **interpolate**(`template`, `replacements`, `syntax?`): `string`
 
-Defined in: packages/blue-util/src/string/interpolate.ts:11
+Defined in: packages/blue-util/src/string/interpolate.ts:23
 
 ## Parameters
 
@@ -27,3 +27,7 @@ Defined in: packages/blue-util/src/string/interpolate.ts:11
 ## Returns
 
 `string`
+
+## Author
+
+Jeff Rose

@@ -8,6 +8,6 @@
 
 > `const` **defaults**: [`HTTPInit`](../type-aliases/HTTPInit.md)
 
-Defined in: packages/blue-http/src/http.ts:271
+Defined in: packages/blue-http/src/http.ts:272
 
 Clones request settings and locks them before fetch executes.

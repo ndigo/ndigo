@@ -30,7 +30,7 @@ The value stored at the matched node.
 
 ### params
 
-> `readonly` **params**: `Record`\<`string`, `string`\>
+> `readonly` **params**: `Record`\<`string`, `string`\> \| `null`
 
 Defined in: packages/blue-core/src/radix-tree.ts:17
 

@@ -6,7 +6,7 @@
 
 # Function: configureBrowserTheme()
 
-> **configureBrowserTheme**(`applicationContext`, `options?`): [`CookieThemeResolver`](../../../blue-platform-web/src/classes/CookieThemeResolver.md)
+> **configureBrowserTheme**(`applicationContext`, `options?`): `CookieThemeResolver`
 
 Defined in: packages/blue-boot/src/browser-theme.ts:31
 
@@ -29,6 +29,6 @@ Optional browser theme bootstrap settings.
 
 ## Returns
 
-[`CookieThemeResolver`](../../../blue-platform-web/src/classes/CookieThemeResolver.md)
+`CookieThemeResolver`
 
 The configured cookie theme resolver.

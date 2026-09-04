@@ -6,7 +6,7 @@
 
 # Abstract Class: AbstractCachingViewResolver
 
-Defined in: packages/blue-view/src/view-resolver.ts:43
+Defined in: packages/blue-view/src/view-resolver.ts:40
 
 Resolves a view name to a concrete [View](../interfaces/View.md) instance.
 
@@ -24,7 +24,7 @@ Resolves a view name to a concrete [View](../interfaces/View.md) instance.
 
 > **new AbstractCachingViewResolver**(): `AbstractCachingViewResolver`
 
-Defined in: packages/blue-view/src/view-resolver.ts:56
+Defined in: packages/blue-view/src/view-resolver.ts:53
 
 Creates a resolver with an empty cache.
 
@@ -38,7 +38,7 @@ Creates a resolver with an empty cache.
 
 > `readonly` **cache**: `object`
 
-Defined in: packages/blue-view/src/view-resolver.ts:47
+Defined in: packages/blue-view/src/view-resolver.ts:44
 
 Cached views keyed by name and language.
 
@@ -52,7 +52,7 @@ Cached views keyed by name and language.
 
 > **isCaching**: `boolean`
 
-Defined in: packages/blue-view/src/view-resolver.ts:51
+Defined in: packages/blue-view/src/view-resolver.ts:48
 
 Indicates whether resolved views should be cached.
 
@@ -60,9 +60,9 @@ Indicates whether resolved views should be cached.
 
 ### resolveViewName()
 
-> **resolveViewName**(`name`, `language?`): `Promise`\<[`View`](../interfaces/View.md)\>
+> **resolveViewName**(`name`, `language?`): `Promise`\<[`View`](../interfaces/View.md) \| `null`\>
 
-Defined in: packages/blue-view/src/view-resolver.ts:73
+Defined in: packages/blue-view/src/view-resolver.ts:70
 
 Resolves the requested view name, optionally using the cache.
 
@@ -82,7 +82,7 @@ Optional locale or language hint used during resolution.
 
 #### Returns
 
-`Promise`\<[`View`](../interfaces/View.md)\>
+`Promise`\<[`View`](../interfaces/View.md) \| `null`\>
 
 A promise that resolves to the matching view, or `null` when none is available.
 
@@ -94,9 +94,9 @@ A promise that resolves to the matching view, or `null` when none is available.
 
 ### \_createView()
 
-> `protected` **\_createView**(`name`, `language?`): `Promise`\<[`View`](../interfaces/View.md)\>
+> `protected` **\_createView**(`name`, `language?`): `Promise`\<[`View`](../interfaces/View.md) \| `null`\>
 
-Defined in: packages/blue-view/src/view-resolver.ts:92
+Defined in: packages/blue-view/src/view-resolver.ts:89
 
 #### Parameters
 
@@ -110,7 +110,7 @@ Defined in: packages/blue-view/src/view-resolver.ts:92
 
 #### Returns
 
-`Promise`\<[`View`](../interfaces/View.md)\>
+`Promise`\<[`View`](../interfaces/View.md) \| `null`\>
 
 ***
 
@@ -118,7 +118,7 @@ Defined in: packages/blue-view/src/view-resolver.ts:92
 
 > `protected` **\_createCacheKey**(`name`, `language?`): `string`
 
-Defined in: packages/blue-view/src/view-resolver.ts:96
+Defined in: packages/blue-view/src/view-resolver.ts:93
 
 #### Parameters
 
@@ -138,9 +138,9 @@ Defined in: packages/blue-view/src/view-resolver.ts:96
 
 ### \_loadView()
 
-> `abstract` `protected` **\_loadView**(`name`, `language?`): `Promise`\<[`View`](../interfaces/View.md)\>
+> `abstract` `protected` **\_loadView**(`name`, `language?`): `Promise`\<[`View`](../interfaces/View.md) \| `null`\>
 
-Defined in: packages/blue-view/src/view-resolver.ts:100
+Defined in: packages/blue-view/src/view-resolver.ts:97
 
 #### Parameters
 
@@ -154,4 +154,4 @@ Defined in: packages/blue-view/src/view-resolver.ts:100
 
 #### Returns
 
-`Promise`\<[`View`](../interfaces/View.md)\>
+`Promise`\<[`View`](../interfaces/View.md) \| `null`\>

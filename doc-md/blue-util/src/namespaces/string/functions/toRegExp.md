@@ -18,17 +18,18 @@ Returns a regular expression for the given `pattern`.
 
 `string`
 
+The pattern string (with optional /pattern/flags format)
+
 ## Returns
 
 `RegExp`
 
-## Example
+## Throws
 
-```ts
-toRegExp( 'foo' );
-//=> /foo/
-toRegExp( '/foo/' );
-//=> /foo/
-toRegExp( '/foo/i' );
-//=> /foo/i
-```
+If the pattern is malformed
+
+## Security
+
+WARNING: This function accepts arbitrary regex patterns. 
+  Do not use with untrusted user input without validation.
+  Patterns with nested quantifiers (e.g., /(a+)+/) can cause ReDoS.

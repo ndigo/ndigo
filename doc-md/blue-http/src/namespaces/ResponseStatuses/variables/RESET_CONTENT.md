@@ -6,7 +6,7 @@
 
 # Variable: RESET\_CONTENT
 
-> `const` **RESET\_CONTENT**: `ResponseStatus`
+> `const` **RESET\_CONTENT**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
 Defined in: packages/blue-http/src/response-statuses.ts:71
 

@@ -6,7 +6,7 @@
 
 # Variable: MISDIRECTED
 
-> `const` **MISDIRECTED**: `ResponseStatus`
+> `const` **MISDIRECTED**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
 Defined in: packages/blue-http/src/response-statuses.ts:244
 

@@ -6,7 +6,7 @@
 
 # Interface: RouteSegment
 
-Defined in: packages/blue-router/src/route.ts:7
+Defined in: packages/blue-router/src/route.ts:8
 
 Represents a single segment within a route, including its name, associated data, and raw string value.
 
@@ -24,7 +24,7 @@ Represents a single segment within a route, including its name, associated data,
 
 > **name**: `string`
 
-Defined in: packages/blue-router/src/route.ts:8
+Defined in: packages/blue-router/src/route.ts:9
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: packages/blue-router/src/route.ts:8
 
 > **data**: `JSONObject`
 
-Defined in: packages/blue-router/src/route.ts:9
+Defined in: packages/blue-router/src/route.ts:10
 
 ***
 
@@ -40,7 +40,7 @@ Defined in: packages/blue-router/src/route.ts:9
 
 > `optional` **dataString?**: `string`
 
-Defined in: packages/blue-router/src/route.ts:10
+Defined in: packages/blue-router/src/route.ts:11
 
 ***
 
@@ -48,7 +48,7 @@ Defined in: packages/blue-router/src/route.ts:10
 
 > **raw**: `string`
 
-Defined in: packages/blue-router/src/route.ts:11
+Defined in: packages/blue-router/src/route.ts:12
 
 ## Methods
 

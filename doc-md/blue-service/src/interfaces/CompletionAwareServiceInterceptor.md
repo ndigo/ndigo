@@ -6,7 +6,7 @@
 
 # Interface: CompletionAwareServiceInterceptor
 
-Defined in: packages/blue-service/src/service.ts:29
+Defined in: packages/blue-service/src/service.ts:33
 
 Handles completion callbacks after a service request succeeds.
 
@@ -16,7 +16,7 @@ Handles completion callbacks after a service request succeeds.
 
 > **postRequest**(`request`): `void`
 
-Defined in: packages/blue-service/src/service.ts:35
+Defined in: packages/blue-service/src/service.ts:39
 
 Runs after the request has completed successfully.
 

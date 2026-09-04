@@ -30,7 +30,7 @@ Source classes that should be included in the application.
 
 ##### parent?
 
-`ApplicationBuilder` = `null`
+`ApplicationBuilder` \| `null`
 
 Optional parent builder used to share configuration.
 
@@ -116,11 +116,55 @@ A child application builder.
 
 ***
 
+### fromConfig()
+
+> `static` **fromConfig**(`url`): `Promise`\<`ApplicationBuilder`\>
+
+Defined in: packages/blue-boot/src/application-builder.ts:104
+
+Creates a builder from a JSON configuration URL.
+
+Fetches the JSON config from the given URL and uses the top-level
+`sources`, `profiles`, and `properties` keys to bootstrap the application.
+
+The `sources` array is expected to contain module specifiers that can be
+dynamically imported as configuration classes.
+
+#### Parameters
+
+##### url
+
+`string` \| `URL`
+
+URL pointing to a JSON configuration file.
+
+#### Returns
+
+`Promise`\<`ApplicationBuilder`\>
+
+A promise resolving to the configured builder.
+
+#### Example
+
+```ts
+// config.json:
+// {
+//   "sources": ["@blue/AppConfig"],
+//   "profiles": ["production"],
+//   "properties": { "server.port": 8080 }
+// }
+
+const app = await ApplicationBuilder.fromConfig('/config.json');
+app.run();
+```
+
+***
+
 ### environment()
 
 > **environment**(`environment`): `ApplicationBuilder`
 
-Defined in: packages/blue-boot/src/application-builder.ts:85
+Defined in: packages/blue-boot/src/application-builder.ts:144
 
 Sets the environment used when the application prepares its context.
 
@@ -144,7 +188,7 @@ This builder for chaining.
 
 > **parent**(...`sources`): `ApplicationBuilder`
 
-Defined in: packages/blue-boot/src/application-builder.ts:97
+Defined in: packages/blue-boot/src/application-builder.ts:156
 
 Returns the parent builder, creating one if necessary.
 
@@ -168,7 +212,7 @@ The parent builder.
 
 > **profiles**(...`profiles`): `ApplicationBuilder`
 
-Defined in: packages/blue-boot/src/application-builder.ts:111
+Defined in: packages/blue-boot/src/application-builder.ts:170
 
 Adds active profiles to the application configuration.
 
@@ -192,7 +236,7 @@ This builder for chaining.
 
 > **properties**(`properties`): `ApplicationBuilder`
 
-Defined in: packages/blue-boot/src/application-builder.ts:126
+Defined in: packages/blue-boot/src/application-builder.ts:185
 
 Merges properties into the application configuration.
 
@@ -216,7 +260,7 @@ This builder for chaining.
 
 > **run**(...`args`): `ApplicationContext`
 
-Defined in: packages/blue-boot/src/application-builder.ts:139
+Defined in: packages/blue-boot/src/application-builder.ts:198
 
 Runs the configured application once and caches the resulting context.
 
@@ -240,7 +284,7 @@ The application context.
 
 > **sources**(`sources`): `ApplicationBuilder`
 
-Defined in: packages/blue-boot/src/application-builder.ts:155
+Defined in: packages/blue-boot/src/application-builder.ts:214
 
 Adds source classes to the application configuration.
 
@@ -264,7 +308,7 @@ This builder for chaining.
 
 > **on**(`event`, `listener`): `this`
 
-Defined in: packages/blue-boot/src/application-builder.ts:180
+Defined in: packages/blue-boot/src/application-builder.ts:239
 
 Registers an event listener on the application, enabling lifecycle hooks.
 Returns `this` for chaining with [run](#run).

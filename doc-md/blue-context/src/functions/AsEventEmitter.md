@@ -8,7 +8,7 @@
 
 > **AsEventEmitter**\<`T`\>(`superclass`): `Constructable`\<[`EventEmitter`](../interfaces/EventEmitter.md)\> & `T`
 
-Defined in: packages/blue-context/src/event-emitter.ts:773
+Defined in: packages/blue-context/src/event-emitter.ts:360
 
 Adds the core event emitter API to a base class.
 

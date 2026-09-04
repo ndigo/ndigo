@@ -8,7 +8,7 @@
 
 > `const` **toCamel**: (`value`) => `string`
 
-Defined in: packages/blue-util/src/string/to-camel.ts:34
+Defined in: packages/blue-util/src/string/to-camel.ts:31
 
 ## Parameters
 

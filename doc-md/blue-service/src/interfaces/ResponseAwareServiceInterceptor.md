@@ -6,7 +6,7 @@
 
 # Interface: ResponseAwareServiceInterceptor\<T\>
 
-Defined in: packages/blue-service/src/service.ts:81
+Defined in: packages/blue-service/src/service.ts:85
 
 Handles response processing after a service request succeeds.
 
@@ -22,7 +22,7 @@ Handles response processing after a service request succeeds.
 
 > **postSuccess**(`response`, `settings`): `Promise`\<`void`\>
 
-Defined in: packages/blue-service/src/service.ts:89
+Defined in: packages/blue-service/src/service.ts:93
 
 Runs after the request succeeds.
 

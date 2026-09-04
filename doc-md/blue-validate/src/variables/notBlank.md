@@ -8,7 +8,7 @@
 
 > `const` **notBlank**: (`params`) => (`value`, `context`) => `void`
 
-Defined in: packages/blue-validate/src/decorators.ts:455
+Defined in: packages/blue-validate/src/decorators.ts:518
 
 TC39 Stage 3 decorator that validates a string property to not be null, undefined, or an empty string (after trimming).
 

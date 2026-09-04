@@ -6,7 +6,7 @@
 
 # Variable: HTTP\_VERSION\_NOT\_SUPPORTED
 
-> `const` **HTTP\_VERSION\_NOT\_SUPPORTED**: `ResponseStatus`
+> `const` **HTTP\_VERSION\_NOT\_SUPPORTED**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
 Defined in: packages/blue-http/src/response-statuses.ts:323
 

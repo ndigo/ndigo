@@ -6,7 +6,7 @@
 
 # Variable: TOO\_EARLY
 
-> `const` **TOO\_EARLY**: `ResponseStatus`
+> `const` **TOO\_EARLY**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
 Defined in: packages/blue-http/src/response-statuses.ts:264
 

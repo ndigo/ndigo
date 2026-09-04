@@ -6,7 +6,7 @@
 
 # Variable: REQUEST\_TIMEOUT
 
-> `const` **REQUEST\_TIMEOUT**: `ResponseStatus`
+> `const` **REQUEST\_TIMEOUT**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
 Defined in: packages/blue-http/src/response-statuses.ts:189
 

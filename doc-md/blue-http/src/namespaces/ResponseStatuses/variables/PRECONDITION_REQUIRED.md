@@ -6,7 +6,7 @@
 
 # Variable: PRECONDITION\_REQUIRED
 
-> `const` **PRECONDITION\_REQUIRED**: `ResponseStatus`
+> `const` **PRECONDITION\_REQUIRED**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
 Defined in: packages/blue-http/src/response-statuses.ts:274
 

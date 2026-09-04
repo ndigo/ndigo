@@ -1,108 +1,40 @@
-# Blue Dispatcher
+# BlueJS Dispatcher
 
-Blue Dispatcher implements BlueJS request/route dispatch orchestration and handler adaptation.
+The BlueJS Dispatcher is a core component that handles routing, handler execution, and error resolution for web applications built with the BlueJS framework.
 
 ## Features
 
-- `BrowserDispatcher` route dispatch lifecycle
-- Route mapping decorators and metadata scanning
-- Argument resolver pipeline for route handler methods
-- Error mapping and resolver chain support
-- Model-and-view processing integration with `@blue/view`
+- Route mapping and handling
+- Handler adapter support for different controller types
+- Error resolution with customizable resolvers
+- Interceptor support for pre/post processing
+- View resolution and rendering
 
-## Installation
+## Package Structure
+
+```
+src/
+├── dispatcher.ts                 # Main dispatcher implementation
+├── error.ts                      # Custom error types
+├── route-condition.ts            # Route condition handling
+├── route-error-resolver.ts       # Error resolution logic
+├── route-handler-adapter.ts      # Handler adapter implementations
+├── route-handler-execution-chain.ts  # Execution chain management
+├── route-handler-interceptor.ts  # Interceptor support
+├── route-handler-method.ts       # Handler method abstraction
+├── route-mapping-info.ts         # Route mapping information
+├── route-parameter.ts            # Parameter handling
+└── strategies/                   # Strategy implementations
+```
+
+## Building
 
 ```bash
-pnpm add @blue/dispatcher
+pnpm build
 ```
 
-## Usage
-
-```typescript
-import { routeMapping, routeParams, queryValue, asNumber } from '@blue/dispatcher';
-
-class ExampleController {
-    @routeMapping('/health')
-    health() {
-        return 'ok';
-    }
-
-    @routeMapping('/users')
-    @routeParams({
-        page: asNumber(queryValue('page')),
-    })
-    list(page: number) {
-        return page;
-    }
-}
-```
-
-`convert` supports:
-
-- converter functions
-- named converter references (resolved by resolver registry)
-- optional descriptors: `{ optional: true, use: 'number' }`
-
-### Typed Converter Wrappers
-
-For better readability and type safety, you can use typed converter wrappers:
-
-- `asNumber(extractor)`
-- `asBoolean(extractor)`
-- `asDate(extractor)`
-- `asJson<T>(extractor)`
-
-### Data Binding
-
-`bindValue(source, options?)` allows binding an entire data source (query, state, etc.) to a nested object using dot-notation and bracket-notation keys.
-
-```typescript
-import { routeParams, bindValue } from '@blue/dispatcher';
-
-@routeParams({
-    user: bindValue('query', { prefix: 'user.' })
-})
-handle(user: User) {}
-```
-
-If query parameters are `?user.name=Jeff&user.age=30`, the `user` argument will be `{ name: 'Jeff', age: '30' }`.
-
-```typescript
-@routeParams({
-    age: asNumber(queryValue('age')),
-    isActive: asBoolean(stateValue('active')),
-    profile: asJson<UserProfile>(modelValue('profile'))
-})
-handle(age: number, isActive: boolean, profile: UserProfile) {}
-```
-
-## Standard Interceptors
-
-`@blue/dispatcher` provides out-of-the-box interceptors for common middleware patterns:
-
-### `LoggingRouteHandlerInterceptor`
-
-Logs the execution time and outcome of a route handler. Useful for performance monitoring and debugging.
-
-```typescript
-import { LoggingRouteHandlerInterceptor } from '@blue/dispatcher';
-
-const loggingInterceptor = new LoggingRouteHandlerInterceptor();
-```
-
-### `TransactionRouteHandlerInterceptor`
-
-Wraps route handler execution in a transaction. If the handler throws an error, the transaction is rolled back (reverting the browser hash). If the handler succeeds, the transaction is committed.
-
-```typescript
-import { TransactionRouteHandlerInterceptor } from '@blue/dispatcher';
-import { DefaultRouteTransactionManager } from '@blue/router';
-
-const transactionManager = new DefaultRouteTransactionManager();
-const transactionInterceptor = new TransactionRouteHandlerInterceptor(transactionManager);
-```
+## Testing
 
 ```bash
-pnpm --filter @blue/dispatcher build:lib
-pnpm --filter @blue/dispatcher test
+pnpm test
 ```

@@ -6,7 +6,7 @@
 
 # Variable: LENGTH\_REQUIRED
 
-> `const` **LENGTH\_REQUIRED**: `ResponseStatus`
+> `const` **LENGTH\_REQUIRED**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
 Defined in: packages/blue-http/src/response-statuses.ts:204
 

@@ -6,6 +6,6 @@
 
 # Variable: TEXT\_CSS
 
-> `const` **TEXT\_CSS**: [`MediaType`](../../../classes/MediaType.md)
+> `const` **TEXT\_CSS**: [`MediaType`](../../../classes/MediaType.md) \| `null`
 
 Defined in: packages/blue-core/src/media-types.ts:79

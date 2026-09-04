@@ -30,7 +30,7 @@ The owning HTTP client or an existing execution chain.
 
 ##### interceptors?
 
-[`HTTPInterceptor`](../type-aliases/HTTPInterceptor.md)[] = `null`
+[`HTTPInterceptor`](../type-aliases/HTTPInterceptor.md)[] \| `null`
 
 Interceptors to seed the chain with.
 
@@ -136,7 +136,7 @@ Interceptors to append.
 
 ### applyPostError()
 
-> **applyPostError**(`error`, `request`, `http`): `Promise`\<`Response`\>
+> **applyPostError**(`error`, `request`, `http`): `Promise`\<`Response` \| `undefined`\>
 
 Defined in: packages/blue-http/src/http.ts:643
 
@@ -164,7 +164,7 @@ The HTTP client executing the request.
 
 #### Returns
 
-`Promise`\<`Response`\>
+`Promise`\<`Response` \| `undefined`\>
 
 A replacement response, or `undefined` when no interceptor handles the error.
 
@@ -260,7 +260,7 @@ The request settings being prepared.
 
 ### applyPreRequest()
 
-> **applyPreRequest**(`request`, `http`): `Promise`\<`Request`\>
+> **applyPreRequest**(`request`, `http`): `Promise`\<`Response` \| `Request`\>
 
 Defined in: packages/blue-http/src/http.ts:746
 
@@ -282,9 +282,9 @@ The HTTP client executing the request.
 
 #### Returns
 
-`Promise`\<`Request`\>
+`Promise`\<`Response` \| `Request`\>
 
-The transformed request, or the original request when no interceptor applies.
+The transformed request, or the original request when unsupported.
 
 ***
 
@@ -292,7 +292,7 @@ The transformed request, or the original request when no interceptor applies.
 
 > `protected` **\_checkInterceptorType**(`interceptor`): `void`
 
-Defined in: packages/blue-http/src/http.ts:772
+Defined in: packages/blue-http/src/http.ts:777
 
 #### Parameters
 

@@ -6,7 +6,7 @@
 
 # Function: AsBlueElement()
 
-> **AsBlueElement**\<`T`\>(`superclass`): `Constructable`\<`BlueElement`\> & `T`
+> **AsBlueElement**\<`T`\>(`superclass`): `Constructable`\<[`BlueElement`](../interfaces/BlueElement.md)\> & `T`
 
 Defined in: packages/blue-view-webcomponent/src/blue-element.ts:22
 
@@ -31,6 +31,6 @@ The base HTMLElement subclass to extend.
 
 ## Returns
 
-`Constructable`\<`BlueElement`\> & `T`
+`Constructable`\<[`BlueElement`](../interfaces/BlueElement.md)\> & `T`
 
 A subclass that exposes a reflected `name` property.

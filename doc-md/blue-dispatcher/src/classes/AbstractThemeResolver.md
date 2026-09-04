@@ -70,7 +70,7 @@ Defined in: packages/blue-dispatcher/src/theme-resolver.ts:28
 
 > `abstract` **resolveTheme**(`route`): `string`
 
-Defined in: packages/blue-dispatcher/src/theme-resolver.ts:52
+Defined in: packages/blue-dispatcher/src/theme-resolver.ts:47
 
 Resolve the theme name for a route.
 

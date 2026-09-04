@@ -8,7 +8,7 @@
 
 > `const` **likeRequestAwareHTTPInterceptor**: (`value`) => `value is RequestAwareHTTPInterceptor`
 
-Defined in: packages/blue-http/src/http.ts:317
+Defined in: packages/blue-http/src/http.ts:318
 
 Tests whether a value exposes `preRequest()`.
 

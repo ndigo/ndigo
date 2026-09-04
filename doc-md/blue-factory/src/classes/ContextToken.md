@@ -25,9 +25,9 @@ The type of the value associated with this token.
 
 ### Constructor
 
-> **new ContextToken**\<`_T`\>(`description`): `ContextToken`\<`_T`\>
+> **new ContextToken**\<`_T`\>(`description`, `options?`): `ContextToken`\<`_T`\>
 
-Defined in: packages/blue-factory/src/context-token.ts:28
+Defined in: packages/blue-factory/src/context-token.ts:36
 
 Creates a new ContextToken.
 
@@ -38,6 +38,14 @@ Creates a new ContextToken.
 `string`
 
 A descriptive string for the token.
+
+##### options?
+
+Optional configuration including `requiredVersion`.
+
+###### requiredVersion?
+
+`string`
 
 #### Returns
 
@@ -53,13 +61,25 @@ Defined in: packages/blue-factory/src/context-token.ts:22
 
 A descriptive string for the token, used as the backing key at runtime.
 
+***
+
+### requiredVersion?
+
+> `readonly` `optional` **requiredVersion?**: `string`
+
+Defined in: packages/blue-factory/src/context-token.ts:29
+
+Optional semver range for the registered value, e.g. `'^1.0.0'`.
+When set, the factory checks the resolved bean's version against this range
+and warns on mismatch.
+
 ## Methods
 
 ### toString()
 
 > **toString**(): `string`
 
-Defined in: packages/blue-factory/src/context-token.ts:36
+Defined in: packages/blue-factory/src/context-token.ts:45
 
 Returns a string representation of the ContextToken.
 

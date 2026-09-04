@@ -6,9 +6,9 @@
 
 # Function: getRouteMapping()
 
-> **getRouteMapping**(`target`, `propertyKey?`): `RouteMappingConfiguration`
+> **getRouteMapping**(`target`, `propertyKey?`): [`RouteMappingConfiguration`](../type-aliases/RouteMappingConfiguration.md) \| `undefined`
 
-Defined in: packages/blue-dispatcher/src/route-mapping.ts:63
+Defined in: packages/blue-dispatcher/src/route-mapping.ts:71
 
 Get route mapping metadata from a class or method.
 
@@ -28,6 +28,6 @@ The method name, when reading method-level metadata.
 
 ## Returns
 
-`RouteMappingConfiguration`
+[`RouteMappingConfiguration`](../type-aliases/RouteMappingConfiguration.md) \| `undefined`
 
 The stored route mapping, or `undefined`.

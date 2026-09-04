@@ -6,43 +6,21 @@
 
 # Class: BrowserCookieValueMethodArgumentResolver
 
-Defined in: packages/blue-platform-web/src/cookie-argument-resolver.ts:85
+Defined in: packages/blue-platform-web/src/cookie-argument-resolver.ts:20
 
 Browser cookie argument resolver using `document.cookie` parsing.
 
 ## Extends
 
-- [`AbstractCookieValueMethodArgumentResolver`](AbstractCookieValueMethodArgumentResolver.md)
+- `AbstractPlatformArgumentResolver`
 
 ## Constructors
 
 ### Constructor
 
-> **new BrowserCookieValueMethodArgumentResolver**(`converter?`, `converterRegistry?`, `converterResolutionOptions?`): `BrowserCookieValueMethodArgumentResolver`
+> **new BrowserCookieValueMethodArgumentResolver**(): `BrowserCookieValueMethodArgumentResolver`
 
-Defined in: packages/blue-platform-web/src/cookie-argument-resolver.ts:93
-
-Creates a browser cookie resolver.
-
-#### Parameters
-
-##### converter?
-
-[`ArgumentValueConverter`](../type-aliases/ArgumentValueConverter.md) = `identityArgumentValueConverter`
-
-Default converter to apply to resolved values.
-
-##### converterRegistry?
-
-[`ArgumentValueConverterRegistry`](../type-aliases/ArgumentValueConverterRegistry.md) = `argumentValueConverters`
-
-Named converter registry used for lookups.
-
-##### converterResolutionOptions?
-
-[`ConverterResolutionOptions`](../type-aliases/ConverterResolutionOptions.md) = `{}`
-
-Resolution behavior overrides.
+Defined in: packages/blue-platform-web/src/cookie-argument-resolver.ts:21
 
 #### Returns
 
@@ -50,7 +28,7 @@ Resolution behavior overrides.
 
 #### Overrides
 
-[`AbstractCookieValueMethodArgumentResolver`](AbstractCookieValueMethodArgumentResolver.md).[`constructor`](AbstractCookieValueMethodArgumentResolver.md#constructor)
+`AbstractPlatformArgumentResolver.constructor`
 
 ## Accessors
 
@@ -60,13 +38,47 @@ Resolution behavior overrides.
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-platform-web/src/cookie-argument-resolver.ts:101
+Defined in: packages/blue-platform-web/src/cookie-argument-resolver.ts:25
 
 ##### Returns
 
 `string`
 
 ## Methods
+
+### resolveArgument()
+
+> **resolveArgument**(`parameter`, `route`, `mapping`): `any`
+
+Defined in: packages/blue-dispatcher/lib/abstract-platform-resolver.d.ts:41
+
+Resolves and converts a method argument value.
+
+Pipeline: resolveName → defaultValue fallback → convertType lookup → conversion → nil check.
+
+#### Parameters
+
+##### parameter
+
+`MethodParameter`
+
+##### route
+
+`Route`
+
+##### mapping
+
+`any`
+
+#### Returns
+
+`any`
+
+#### Inherited from
+
+`AbstractPlatformArgumentResolver.resolveArgument`
+
+***
 
 ### handleMissingValue()
 
@@ -94,49 +106,17 @@ If the argument is undefined or null.
 
 #### Inherited from
 
-[`AbstractCookieValueMethodArgumentResolver`](AbstractCookieValueMethodArgumentResolver.md).[`handleMissingValue`](AbstractCookieValueMethodArgumentResolver.md#handlemissingvalue)
-
-***
-
-### resolveArgument()
-
-> **resolveArgument**(`parameter`, `route`, `mapping`): `any`
-
-Defined in: packages/blue-platform-web/src/cookie-argument-resolver.ts:45
-
-Resolves and converts a cookie-backed argument value.
-
-#### Parameters
-
-##### parameter
-
-`MethodParameter`
-
-##### route
-
-`Route`
-
-##### mapping
-
-`any`
-
-#### Returns
-
-`any`
-
-#### Inherited from
-
-[`AbstractCookieValueMethodArgumentResolver`](AbstractCookieValueMethodArgumentResolver.md).[`resolveArgument`](AbstractCookieValueMethodArgumentResolver.md#resolveargument)
+`AbstractPlatformArgumentResolver.handleMissingValue`
 
 ***
 
 ### resolveName()
 
-> `protected` **resolveName**(`name`, `parameter`, `route`, `mapping`): `any`
+> `protected` **resolveName**(`name`, `_parameter`, `_route`, `_mapping`): `any`
 
-Defined in: packages/blue-platform-web/src/cookie-argument-resolver.ts:65
+Defined in: packages/blue-platform-web/src/cookie-argument-resolver.ts:30
 
-Resolves the raw cookie value for the requested name.
+Retrieves a raw cookie string from `document.cookie`.
 
 #### Parameters
 
@@ -144,15 +124,15 @@ Resolves the raw cookie value for the requested name.
 
 `string`
 
-##### parameter
+##### \_parameter
 
 `MethodParameter`
 
-##### route
+##### \_route
 
 `Route`
 
-##### mapping
+##### \_mapping
 
 `any`
 
@@ -160,9 +140,9 @@ Resolves the raw cookie value for the requested name.
 
 `any`
 
-#### Inherited from
+#### Overrides
 
-[`AbstractCookieValueMethodArgumentResolver`](AbstractCookieValueMethodArgumentResolver.md).[`resolveName`](AbstractCookieValueMethodArgumentResolver.md#resolvename)
+`AbstractPlatformArgumentResolver.resolveName`
 
 ***
 
@@ -170,7 +150,7 @@ Resolves the raw cookie value for the requested name.
 
 > **supportsParameter**(`parameter`): `boolean`
 
-Defined in: packages/blue-platform-web/src/cookie-argument-resolver.ts:77
+Defined in: packages/blue-platform-web/src/cookie-argument-resolver.ts:36
 
 Returns whether this resolver supports cookie parameters.
 
@@ -184,30 +164,6 @@ Returns whether this resolver supports cookie parameters.
 
 `boolean`
 
-#### Inherited from
-
-[`AbstractCookieValueMethodArgumentResolver`](AbstractCookieValueMethodArgumentResolver.md).[`supportsParameter`](AbstractCookieValueMethodArgumentResolver.md#supportsparameter)
-
-***
-
-### getCookieValue()
-
-> `protected` **getCookieValue**(`name`): `string`
-
-Defined in: packages/blue-platform-web/src/cookie-argument-resolver.ts:106
-
-Retrieves a raw cookie string from `document.cookie`.
-
-#### Parameters
-
-##### name
-
-`string`
-
-#### Returns
-
-`string`
-
 #### Overrides
 
-[`AbstractCookieValueMethodArgumentResolver`](AbstractCookieValueMethodArgumentResolver.md).[`getCookieValue`](AbstractCookieValueMethodArgumentResolver.md#getcookievalue)
+`AbstractPlatformArgumentResolver.supportsParameter`

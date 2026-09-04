@@ -6,7 +6,7 @@
 
 # Variable: NOT\_EXTENDED
 
-> `const` **NOT\_EXTENDED**: `ResponseStatus`
+> `const` **NOT\_EXTENDED**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
 Defined in: packages/blue-http/src/response-statuses.ts:343
 

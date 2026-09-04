@@ -6,8 +6,8 @@
 
 # Variable: Primitive
 
-> `const` **Primitive**: `BasicModel`\<(`SymbolConstructor` \| `BigIntConstructor` \| `BooleanConstructor` \| `NumberConstructor` \| `StringConstructor`)[]\>
+> `const` **Primitive**: `any`
 
-Defined in: packages/blue-model/src/basic.ts:35
+Defined in: packages/blue-model/src/basic.ts:41
 
 Matches primitive values accepted by ObjectModel.

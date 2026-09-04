@@ -6,19 +6,9 @@
 
 # Class: RingBuffer\<T\>
 
-Defined in: packages/blue-core/src/collection.ts:28
+Defined in: packages/blue-core/src/ring-buffer.ts:23
 
-## Implements
-
-external:ArrayLike
-
-## Implements
-
-external:Iterable
-
-## Implements
-
-module:core.Serializable
+A value that can safely be converted to a string or JSON payload.
 
 ## Extended by
 
@@ -32,13 +22,13 @@ module:core.Serializable
 
 ## Implements
 
-- `ArrayLike`\<`T`\>
+- `ArrayLike`\<`T` \| `undefined`\>
 - `Iterable`\<`T`\>
 - [`Serializable`](../interfaces/Serializable.md)
 
 ## Indexable
 
-> \[`n`: `number`\]: `T`
+> \[`n`: `number`\]: `T` \| `undefined`
 
 ## Constructors
 
@@ -46,7 +36,7 @@ module:core.Serializable
 
 > **new RingBuffer**\<`T`\>(`elements`): `RingBuffer`\<`T`\>
 
-Defined in: packages/blue-core/src/collection.ts:106
+Defined in: packages/blue-core/src/ring-buffer.ts:101
 
 Creates a new RingBuffer instance.
 
@@ -66,7 +56,7 @@ An array-like object to initialize the buffer with.
 
 > **new RingBuffer**\<`T`\>(`capacity`): `RingBuffer`\<`T`\>
 
-Defined in: packages/blue-core/src/collection.ts:111
+Defined in: packages/blue-core/src/ring-buffer.ts:106
 
 Creates a new RingBuffer instance with a specified capacity.
 
@@ -88,7 +78,7 @@ The initial capacity of the buffer.
 
 > `protected` **\_capacity**: `number`
 
-Defined in: packages/blue-core/src/collection.ts:29
+Defined in: packages/blue-core/src/ring-buffer.ts:24
 
 ***
 
@@ -96,7 +86,7 @@ Defined in: packages/blue-core/src/collection.ts:29
 
 > `protected` **\_head**: `number`
 
-Defined in: packages/blue-core/src/collection.ts:30
+Defined in: packages/blue-core/src/ring-buffer.ts:25
 
 ***
 
@@ -104,7 +94,7 @@ Defined in: packages/blue-core/src/collection.ts:30
 
 > `protected` **\_tail**: `number`
 
-Defined in: packages/blue-core/src/collection.ts:31
+Defined in: packages/blue-core/src/ring-buffer.ts:26
 
 ***
 
@@ -112,7 +102,7 @@ Defined in: packages/blue-core/src/collection.ts:31
 
 > `protected` **\_full**: `number`
 
-Defined in: packages/blue-core/src/collection.ts:32
+Defined in: packages/blue-core/src/ring-buffer.ts:27
 
 ***
 
@@ -120,7 +110,7 @@ Defined in: packages/blue-core/src/collection.ts:32
 
 > `readonly` `static` **MAX\_CAPACITY**: `number`
 
-Defined in: packages/blue-core/src/collection.ts:37
+Defined in: packages/blue-core/src/ring-buffer.ts:32
 
 The maximum capacity of any RingBuffer instance.
 
@@ -130,7 +120,7 @@ The maximum capacity of any RingBuffer instance.
 
 > `readonly` `static` **MIN\_CAPACITY**: `number`
 
-Defined in: packages/blue-core/src/collection.ts:41
+Defined in: packages/blue-core/src/ring-buffer.ts:36
 
 The minimum capacity of any RingBuffer instance.
 
@@ -142,7 +132,7 @@ The minimum capacity of any RingBuffer instance.
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-core/src/collection.ts:48
+Defined in: packages/blue-core/src/ring-buffer.ts:43
 
 The string tag for this class.
 
@@ -158,7 +148,7 @@ The string tag for this class.
 
 > **get** **capacity**(): `number`
 
-Defined in: packages/blue-core/src/collection.ts:55
+Defined in: packages/blue-core/src/ring-buffer.ts:50
 
 The current capacity of the ring buffer.
 
@@ -170,7 +160,7 @@ The current capacity of the ring buffer.
 
 > **set** **capacity**(`newCapacity`): `void`
 
-Defined in: packages/blue-core/src/collection.ts:64
+Defined in: packages/blue-core/src/ring-buffer.ts:59
 
 Sets the capacity of the ring buffer. The new capacity will be a power of 2
 between `MIN_CAPACITY` and `MAX_CAPACITY`.
@@ -195,7 +185,7 @@ The desired new capacity.
 
 > **get** **isEmpty**(): `boolean`
 
-Defined in: packages/blue-core/src/collection.ts:75
+Defined in: packages/blue-core/src/ring-buffer.ts:70
 
 Indicates if the ring buffer is empty.
 
@@ -211,7 +201,7 @@ Indicates if the ring buffer is empty.
 
 > **get** **isFull**(): `boolean`
 
-Defined in: packages/blue-core/src/collection.ts:82
+Defined in: packages/blue-core/src/ring-buffer.ts:77
 
 Indicates if the ring buffer is full.
 
@@ -227,7 +217,7 @@ Indicates if the ring buffer is full.
 
 > **get** **length**(): `number`
 
-Defined in: packages/blue-core/src/collection.ts:89
+Defined in: packages/blue-core/src/ring-buffer.ts:84
 
 The number of elements currently in the ring buffer.
 
@@ -245,7 +235,7 @@ The number of elements currently in the ring buffer.
 
 > **\[iterator\]**(): `Iterator`\<`T`, `any`, `undefined`\>
 
-Defined in: packages/blue-core/src/collection.ts:156
+Defined in: packages/blue-core/src/ring-buffer.ts:153
 
 Returns an iterator for the elements in the ring buffer.
 
@@ -263,17 +253,49 @@ An iterator for the elements.
 
 ### get()
 
-> **get**(): `T`
+> **get**(): `T` \| `undefined`
 
-Defined in: packages/blue-core/src/collection.ts:164
+Defined in: packages/blue-core/src/ring-buffer.ts:161
 
 Retrieves and removes the oldest element from the ring buffer.
 
 #### Returns
 
-`T`
+`T` \| `undefined`
 
 The oldest element, or `undefined` if the buffer is empty.
+
+***
+
+### peek()
+
+> **peek**(): `T` \| `undefined`
+
+Defined in: packages/blue-core/src/ring-buffer.ts:179
+
+Returns the oldest element (tail position) without removing it.
+
+#### Returns
+
+`T` \| `undefined`
+
+The oldest element, or `undefined` if the buffer is empty.
+
+***
+
+### peekHead()
+
+> **peekHead**(): `T` \| `undefined`
+
+Defined in: packages/blue-core/src/ring-buffer.ts:188
+
+Returns the newest element (most recently added, head-1 position) without removing it.
+
+#### Returns
+
+`T` \| `undefined`
+
+The newest element, or `undefined` if the buffer is empty.
 
 ***
 
@@ -281,7 +303,7 @@ The oldest element, or `undefined` if the buffer is empty.
 
 > **put**(...`items`): `number`
 
-Defined in: packages/blue-core/src/collection.ts:184
+Defined in: packages/blue-core/src/ring-buffer.ts:199
 
 Adds one or more elements to the ring buffer. If the buffer is full,
 the oldest elements will be overwritten.
@@ -306,7 +328,7 @@ The new length of the ring buffer.
 
 > **toJSON**(): [`JSONArray`](../interfaces/JSONArray.md)
 
-Defined in: packages/blue-core/src/collection.ts:213
+Defined in: packages/blue-core/src/ring-buffer.ts:228
 
 Returns a JSON array representation of the ring buffer's contents.
 
@@ -326,7 +348,7 @@ A JSON array.
 
 > **toString**(): `string`
 
-Defined in: packages/blue-core/src/collection.ts:227
+Defined in: packages/blue-core/src/ring-buffer.ts:242
 
 Returns a string representation of the ring buffer's contents.
 

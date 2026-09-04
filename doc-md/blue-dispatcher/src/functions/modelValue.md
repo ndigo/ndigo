@@ -8,7 +8,7 @@
 
 > **modelValue**(`name`, `options?`): [`ParameterExtractor`](../type-aliases/ParameterExtractor.md)
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:326
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:285
 
 Factory function: Create a model parameter extractor
 
@@ -20,17 +20,7 @@ Factory function: Create a model parameter extractor
 
 ### options?
 
-#### required?
-
-`boolean`
-
-#### defaultValue?
-
-`string`
-
-#### convert?
-
-[`ParameterValueConverterReference`](../type-aliases/ParameterValueConverterReference.md)
+[`ParameterExtractorOptions`](../interfaces/ParameterExtractorOptions.md) = `{}`
 
 ## Returns
 

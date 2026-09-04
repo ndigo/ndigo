@@ -30,6 +30,7 @@
 - [CompositeValidationResults](type-aliases/CompositeValidationResults.md)
 - [ClassValidationResult](type-aliases/ClassValidationResult.md)
 - [ClassValidationOptions](type-aliases/ClassValidationOptions.md)
+- [ValidatedConfig](type-aliases/ValidatedConfig.md)
 - [ValidationGroup](type-aliases/ValidationGroup.md)
 - [TypeDefinition](type-aliases/TypeDefinition.md)
 
@@ -61,6 +62,8 @@
 - [hasConstraint](functions/hasConstraint.md)
 - [getConstraint](functions/getConstraint.md)
 - [availableConstraints](functions/availableConstraints.md)
+- [formatErrorMessage](functions/formatErrorMessage.md)
+- [setErrorMessageFormatter](functions/setErrorMessageFormatter.md)
 - [constrained](functions/constrained.md)
 - [validated](functions/validated.md)
 - [formatValidationError](functions/formatValidationError.md)

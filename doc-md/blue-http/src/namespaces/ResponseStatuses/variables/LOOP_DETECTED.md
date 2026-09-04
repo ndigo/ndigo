@@ -6,7 +6,7 @@
 
 # Variable: LOOP\_DETECTED
 
-> `const` **LOOP\_DETECTED**: `ResponseStatus`
+> `const` **LOOP\_DETECTED**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
 Defined in: packages/blue-http/src/response-statuses.ts:338
 

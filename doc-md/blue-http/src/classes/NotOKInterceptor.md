@@ -6,13 +6,9 @@
 
 # Class: NotOKInterceptor
 
-Defined in: packages/blue-http/src/interceptors/not-ok-interceptor.ts:13
+Defined in: packages/blue-http/src/interceptors/not-ok-interceptor.ts:11
 
 Throws a ResponseError when the response status is outside 200-299.
-
-## Implements
-
-module:http.ResponseAwareHTTPInterceptor
 
 ## Implements
 
@@ -34,7 +30,7 @@ module:http.ResponseAwareHTTPInterceptor
 
 > **postResponse**(`response`, `settings`): `Promise`\<`void` \| `Response`\>
 
-Defined in: packages/blue-http/src/interceptors/not-ok-interceptor.ts:20
+Defined in: packages/blue-http/src/interceptors/not-ok-interceptor.ts:18
 
 #### Parameters
 

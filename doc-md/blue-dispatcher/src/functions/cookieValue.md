@@ -8,7 +8,7 @@
 
 > **cookieValue**(`name`, `options?`): [`ParameterExtractor`](../type-aliases/ParameterExtractor.md)
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:283
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:242
 
 Factory function: Create a cookie parameter extractor
 
@@ -20,17 +20,7 @@ Factory function: Create a cookie parameter extractor
 
 ### options?
 
-#### required?
-
-`boolean`
-
-#### defaultValue?
-
-`string`
-
-#### convert?
-
-[`ParameterValueConverterReference`](../type-aliases/ParameterValueConverterReference.md)
+[`ParameterExtractorOptions`](../interfaces/ParameterExtractorOptions.md) = `{}`
 
 ## Returns
 

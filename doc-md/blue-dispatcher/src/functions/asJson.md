@@ -6,11 +6,17 @@
 
 # Function: asJson()
 
-> **asJson**(`extractor`): [`ParameterExtractor`](../type-aliases/ParameterExtractor.md)
+> **asJson**\<`T`\>(`extractor`): [`ParameterExtractor`](../type-aliases/ParameterExtractor.md)
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:482
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:441
 
 Wraps a parameter extractor to enforce JSON conversion.
+
+## Type Parameters
+
+### T
+
+`T` = `any`
 
 ## Parameters
 

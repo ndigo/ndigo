@@ -8,7 +8,7 @@
 
 > `const` **likeEnvironment**: (`value`) => `value is Environment`
 
-Defined in: packages/blue-context/src/environment.ts:238
+Defined in: packages/blue-context/src/environment.ts:233
 
 ## Parameters
 

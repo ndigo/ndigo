@@ -5,3 +5,14 @@
 [BlueJS Framework](../../../../modules.md) / [blue-util/src](../../README.md) / date
 
 # date
+
+## Author
+
+Jeff Rose
+
+## Functions
+
+### Date
+
+- [isFuture](functions/isFuture.md)
+- [isPast](functions/isPast.md)

@@ -8,7 +8,7 @@
 
 > **HTTPInit** = `RequestInit` & `object`
 
-Defined in: packages/blue-http/src/http.ts:25
+Defined in: packages/blue-http/src/http.ts:26
 
 Base request settings shared by HTTP client methods and interceptor hooks.
 

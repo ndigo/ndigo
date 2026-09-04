@@ -6,7 +6,7 @@
 
 # Function: findAncestor()
 
-> **findAncestor**(`context`, `predicate`): [`ApplicationContext`](../interfaces/ApplicationContext.md)
+> **findAncestor**(`context`, `predicate`): [`ApplicationContext`](../interfaces/ApplicationContext.md) \| `undefined`
 
 Defined in: packages/blue-context/src/context-hierarchy.ts:191
 
@@ -28,6 +28,6 @@ Matching predicate.
 
 ## Returns
 
-[`ApplicationContext`](../interfaces/ApplicationContext.md)
+[`ApplicationContext`](../interfaces/ApplicationContext.md) \| `undefined`
 
 The first matching ancestor, if found.

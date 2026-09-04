@@ -53,7 +53,7 @@ Configuration options for the registry.
 
 #### Get Signature
 
-> **get** **activeFeatureName**(): `string`
+> **get** **activeFeatureName**(): `string` \| `undefined`
 
 Defined in: packages/blue-router/src/feature-routing-registry.ts:57
 
@@ -65,7 +65,7 @@ Gets the name of the currently active feature.
 
 ##### Returns
 
-`string`
+`string` \| `undefined`
 
 The name of the active feature, or `undefined` if no feature is active.
 

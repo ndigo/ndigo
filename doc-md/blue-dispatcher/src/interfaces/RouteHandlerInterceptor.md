@@ -24,7 +24,7 @@ Defined in: packages/blue-dispatcher/src/route-handler-interceptor.ts:10
 
 ##### handler
 
-`any`
+`object` \| `undefined`
 
 ##### error
 
@@ -50,7 +50,7 @@ Defined in: packages/blue-dispatcher/src/route-handler-interceptor.ts:11
 
 ##### handler
 
-`any`
+`object` \| `undefined`
 
 ##### modelAndView
 
@@ -76,7 +76,7 @@ Defined in: packages/blue-dispatcher/src/route-handler-interceptor.ts:12
 
 ##### handler
 
-`any`
+`object` \| `undefined`
 
 #### Returns
 

@@ -6,7 +6,7 @@
 
 # Interface: ApplicationContext
 
-Defined in: packages/blue-context/src/context.ts:66
+Defined in: packages/blue-context/src/context.ts:67
 
 Central interface to provide configuration for an application.
 An ApplicationContext provides:
@@ -32,7 +32,7 @@ In addition to standard Factory\|Factory lifecycle capabilities, `ApplicationCon
 
 > `readonly` **createdTimestamp**: `number`
 
-Defined in: packages/blue-context/src/context.ts:76
+Defined in: packages/blue-context/src/context.ts:77
 
 The timestamp when this context was created.
 
@@ -42,7 +42,7 @@ The timestamp when this context was created.
 
 > `readonly` **children**: readonly `ApplicationContext`[]
 
-Defined in: packages/blue-context/src/context.ts:80
+Defined in: packages/blue-context/src/context.ts:81
 
 A read-only array of child contexts.
 
@@ -52,7 +52,7 @@ A read-only array of child contexts.
 
 > `readonly` **id**: `number`
 
-Defined in: packages/blue-context/src/context.ts:84
+Defined in: packages/blue-context/src/context.ts:85
 
 The unique identifier for this context.
 
@@ -62,7 +62,7 @@ The unique identifier for this context.
 
 > `readonly` **isActive**: `boolean`
 
-Defined in: packages/blue-context/src/context.ts:88
+Defined in: packages/blue-context/src/context.ts:89
 
 Indicates if the context is currently active.
 
@@ -72,7 +72,7 @@ Indicates if the context is currently active.
 
 > `readonly` **name**: `string`
 
-Defined in: packages/blue-context/src/context.ts:92
+Defined in: packages/blue-context/src/context.ts:93
 
 The name of this context.
 
@@ -82,7 +82,7 @@ The name of this context.
 
 > `readonly` **path**: `string`
 
-Defined in: packages/blue-context/src/context.ts:96
+Defined in: packages/blue-context/src/context.ts:97
 
 The hierarchical path of this context within the application context tree.
 
@@ -92,7 +92,7 @@ The hierarchical path of this context within the application context tree.
 
 > `readonly` **themeName**: `string`
 
-Defined in: packages/blue-context/src/context.ts:100
+Defined in: packages/blue-context/src/context.ts:101
 
 The name of the theme associated with this context.
 
@@ -100,9 +100,9 @@ The name of the theme associated with this context.
 
 ### parent
 
-> **parent**: `ApplicationContext`
+> **parent**: `ApplicationContext` \| `null`
 
-Defined in: packages/blue-context/src/context.ts:105
+Defined in: packages/blue-context/src/context.ts:106
 
 The parent context in the hierarchy.
 
@@ -116,7 +116,7 @@ The parent context in the hierarchy.
 
 > `optional` **destroyedTimestamp?**: `number`
 
-Defined in: packages/blue-context/src/context.ts:110
+Defined in: packages/blue-context/src/context.ts:111
 
 The timestamp when this context was destroyed, if applicable.
 
@@ -186,7 +186,7 @@ The resolved content string.
 
 > **broadcast**(`type`, ...`data`): `void`
 
-Defined in: packages/blue-context/src/context.ts:117
+Defined in: packages/blue-context/src/context.ts:118
 
 Broadcasts an event to all direct and indirect children of this context.
 
@@ -214,7 +214,7 @@ The data associated with the event.
 
 > **bubble**(`type`, ...`data`): `void`
 
-Defined in: packages/blue-context/src/context.ts:123
+Defined in: packages/blue-context/src/context.ts:124
 
 Bubbles an event up the context hierarchy to all parent contexts.
 
@@ -242,7 +242,7 @@ The data associated with the event.
 
 > **close**(): `void`
 
-Defined in: packages/blue-context/src/context.ts:137
+Defined in: packages/blue-context/src/context.ts:138
 
 Closes this application context and all of its descendants, then destroys associated resources.
 
@@ -266,7 +266,7 @@ Calling `close()` on an already-destroyed context is a safe no-op.
 
 > **getTheme**(`name?`): `Theme`
 
-Defined in: packages/blue-context/src/context.ts:143
+Defined in: packages/blue-context/src/context.ts:144
 
 Retrieves a theme by name.
 
@@ -290,7 +290,7 @@ The requested theme.
 
 > **hasChild**(`node`): `boolean`
 
-Defined in: packages/blue-context/src/context.ts:149
+Defined in: packages/blue-context/src/context.ts:150
 
 Checks if this context has a specific child context.
 
@@ -314,7 +314,7 @@ True if the context is a child, false otherwise.
 
 > **newChild**(`name?`, `data?`): `ApplicationContext`
 
-Defined in: packages/blue-context/src/context.ts:156
+Defined in: packages/blue-context/src/context.ts:157
 
 Creates a new child application context.
 
@@ -344,7 +344,7 @@ The newly created child application context.
 
 > **refresh**(): `void`
 
-Defined in: packages/blue-context/src/context.ts:168
+Defined in: packages/blue-context/src/context.ts:169
 
 Activates the application context and runs the full initialization lifecycle.
 
@@ -366,7 +366,7 @@ Calling `refresh()` on an already-active context is a safe no-op.
 
 > **removeChild**(`node`): `boolean`
 
-Defined in: packages/blue-context/src/context.ts:174
+Defined in: packages/blue-context/src/context.ts:175
 
 Removes a child context from this context.
 
@@ -390,7 +390,7 @@ True if the child was successfully removed, false otherwise.
 
 > **emit**(`type`, ...`data`): `boolean`
 
-Defined in: packages/blue-context/src/event-emitter.ts:42
+Defined in: packages/blue-context/src/event-emitter.ts:68
 
 Emits an event to the listeners registered for the given type.
 
@@ -424,7 +424,7 @@ Event payload values.
 
 > **eventTypes**(): [`EventType`](../type-aliases/EventType.md)[]
 
-Defined in: packages/blue-context/src/event-emitter.ts:48
+Defined in: packages/blue-context/src/event-emitter.ts:74
 
 Returns the event types with registered listeners.
 
@@ -444,7 +444,7 @@ The registered event types.
 
 > **listenerCount**(`type`): `number`
 
-Defined in: packages/blue-context/src/event-emitter.ts:55
+Defined in: packages/blue-context/src/event-emitter.ts:81
 
 Returns the number of listeners for a type.
 
@@ -472,7 +472,7 @@ The listener count.
 
 > **listeners**(`type`): `Function`[]
 
-Defined in: packages/blue-context/src/event-emitter.ts:62
+Defined in: packages/blue-context/src/event-emitter.ts:88
 
 Returns a snapshot of listeners for a type.
 
@@ -498,9 +498,9 @@ The registered listeners.
 
 ### on()
 
-> **on**(`type`, `listener`): `this`
+> **on**(`type`, `listener?`): `this`
 
-Defined in: packages/blue-context/src/event-emitter.ts:70
+Defined in: packages/blue-context/src/event-emitter.ts:96
 
 Adds a listener for an event type.
 
@@ -508,11 +508,11 @@ Adds a listener for an event type.
 
 ##### type
 
-[`EventType`](../type-aliases/EventType.md)
+[`EventType`](../type-aliases/EventType.md) \| [`EventHandlers`](../type-aliases/EventHandlers.md)
 
 The event type.
 
-##### listener
+##### listener?
 
 `Function`
 
@@ -534,7 +534,7 @@ This emitter.
 
 > **off**(`type`, `listener`): `this`
 
-Defined in: packages/blue-context/src/event-emitter.ts:78
+Defined in: packages/blue-context/src/event-emitter.ts:104
 
 Removes a listener for an event type.
 
@@ -686,7 +686,7 @@ Sets the parent factory.
 
 ##### parent
 
-`Factory`
+`Factory` \| `null`
 
 The parent factory.
 

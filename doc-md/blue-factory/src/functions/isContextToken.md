@@ -8,7 +8,7 @@
 
 > **isContextToken**(`value`): `value is ContextToken<unknown>`
 
-Defined in: packages/blue-factory/src/context-token.ts:46
+Defined in: packages/blue-factory/src/context-token.ts:55
 
 Determines whether or not the `value` is a [ContextToken](../classes/ContextToken.md).
 

@@ -20,7 +20,7 @@ Defined in: packages/blue-core/src/path-matcher.ts:310
 
 ##### pattern?
 
-`string` = `null`
+`string` \| `null`
 
 #### Returns
 
@@ -112,7 +112,7 @@ Defined in: packages/blue-core/src/path-matcher.ts:306
 
 > `protected` **\_initCounters**(): `void`
 
-Defined in: packages/blue-core/src/path-matcher.ts:322
+Defined in: packages/blue-core/src/path-matcher.ts:323
 
 #### Returns
 

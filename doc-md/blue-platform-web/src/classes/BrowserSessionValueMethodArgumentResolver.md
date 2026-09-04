@@ -6,43 +6,21 @@
 
 # Class: BrowserSessionValueMethodArgumentResolver
 
-Defined in: packages/blue-platform-web/src/session-argument-resolver.ts:84
+Defined in: packages/blue-platform-web/src/session-argument-resolver.ts:19
 
 Browser session argument resolver using `sessionStorage`.
 
 ## Extends
 
-- [`AbstractSessionValueMethodArgumentResolver`](AbstractSessionValueMethodArgumentResolver.md)
+- `AbstractPlatformArgumentResolver`
 
 ## Constructors
 
 ### Constructor
 
-> **new BrowserSessionValueMethodArgumentResolver**(`converter?`, `converterRegistry?`, `converterResolutionOptions?`): `BrowserSessionValueMethodArgumentResolver`
+> **new BrowserSessionValueMethodArgumentResolver**(): `BrowserSessionValueMethodArgumentResolver`
 
-Defined in: packages/blue-platform-web/src/session-argument-resolver.ts:92
-
-Creates a browser session resolver.
-
-#### Parameters
-
-##### converter?
-
-[`ArgumentValueConverter`](../type-aliases/ArgumentValueConverter.md) = `identityArgumentValueConverter`
-
-Default converter to apply to resolved values.
-
-##### converterRegistry?
-
-[`ArgumentValueConverterRegistry`](../type-aliases/ArgumentValueConverterRegistry.md) = `argumentValueConverters`
-
-Named converter registry used for lookups.
-
-##### converterResolutionOptions?
-
-[`ConverterResolutionOptions`](../type-aliases/ConverterResolutionOptions.md) = `{}`
-
-Resolution behavior overrides.
+Defined in: packages/blue-platform-web/src/session-argument-resolver.ts:20
 
 #### Returns
 
@@ -50,7 +28,7 @@ Resolution behavior overrides.
 
 #### Overrides
 
-[`AbstractSessionValueMethodArgumentResolver`](AbstractSessionValueMethodArgumentResolver.md).[`constructor`](AbstractSessionValueMethodArgumentResolver.md#constructor)
+`AbstractPlatformArgumentResolver.constructor`
 
 ## Accessors
 
@@ -60,13 +38,47 @@ Resolution behavior overrides.
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-platform-web/src/session-argument-resolver.ts:100
+Defined in: packages/blue-platform-web/src/session-argument-resolver.ts:24
 
 ##### Returns
 
 `string`
 
 ## Methods
+
+### resolveArgument()
+
+> **resolveArgument**(`parameter`, `route`, `mapping`): `any`
+
+Defined in: packages/blue-dispatcher/lib/abstract-platform-resolver.d.ts:41
+
+Resolves and converts a method argument value.
+
+Pipeline: resolveName → defaultValue fallback → convertType lookup → conversion → nil check.
+
+#### Parameters
+
+##### parameter
+
+`MethodParameter`
+
+##### route
+
+`Route`
+
+##### mapping
+
+`any`
+
+#### Returns
+
+`any`
+
+#### Inherited from
+
+`AbstractPlatformArgumentResolver.resolveArgument`
+
+***
 
 ### handleMissingValue()
 
@@ -94,49 +106,17 @@ If the argument is undefined or null.
 
 #### Inherited from
 
-[`AbstractSessionValueMethodArgumentResolver`](AbstractSessionValueMethodArgumentResolver.md).[`handleMissingValue`](AbstractSessionValueMethodArgumentResolver.md#handlemissingvalue)
-
-***
-
-### resolveArgument()
-
-> **resolveArgument**(`parameter`, `route`, `mapping`): `any`
-
-Defined in: packages/blue-platform-web/src/session-argument-resolver.ts:44
-
-Resolves and converts a session-backed argument value.
-
-#### Parameters
-
-##### parameter
-
-`MethodParameter`
-
-##### route
-
-`Route`
-
-##### mapping
-
-`any`
-
-#### Returns
-
-`any`
-
-#### Inherited from
-
-[`AbstractSessionValueMethodArgumentResolver`](AbstractSessionValueMethodArgumentResolver.md).[`resolveArgument`](AbstractSessionValueMethodArgumentResolver.md#resolveargument)
+`AbstractPlatformArgumentResolver.handleMissingValue`
 
 ***
 
 ### resolveName()
 
-> `protected` **resolveName**(`name`, `parameter`, `route`, `mapping`): `any`
+> `protected` **resolveName**(`name`, `_parameter`, `_route`, `_mapping`): `any`
 
-Defined in: packages/blue-platform-web/src/session-argument-resolver.ts:64
+Defined in: packages/blue-platform-web/src/session-argument-resolver.ts:29
 
-Resolves the raw value from `sessionStorage`.
+Retrieves a value from `sessionStorage` if available.
 
 #### Parameters
 
@@ -144,15 +124,15 @@ Resolves the raw value from `sessionStorage`.
 
 `string`
 
-##### parameter
+##### \_parameter
 
 `MethodParameter`
 
-##### route
+##### \_route
 
 `Route`
 
-##### mapping
+##### \_mapping
 
 `any`
 
@@ -160,9 +140,9 @@ Resolves the raw value from `sessionStorage`.
 
 `any`
 
-#### Inherited from
+#### Overrides
 
-[`AbstractSessionValueMethodArgumentResolver`](AbstractSessionValueMethodArgumentResolver.md).[`resolveName`](AbstractSessionValueMethodArgumentResolver.md#resolvename)
+`AbstractPlatformArgumentResolver.resolveName`
 
 ***
 
@@ -170,7 +150,7 @@ Resolves the raw value from `sessionStorage`.
 
 > **supportsParameter**(`parameter`): `boolean`
 
-Defined in: packages/blue-platform-web/src/session-argument-resolver.ts:76
+Defined in: packages/blue-platform-web/src/session-argument-resolver.ts:35
 
 Returns whether this resolver supports session parameters.
 
@@ -184,30 +164,6 @@ Returns whether this resolver supports session parameters.
 
 `boolean`
 
-#### Inherited from
-
-[`AbstractSessionValueMethodArgumentResolver`](AbstractSessionValueMethodArgumentResolver.md).[`supportsParameter`](AbstractSessionValueMethodArgumentResolver.md#supportsparameter)
-
-***
-
-### getSessionValue()
-
-> `protected` **getSessionValue**(`name`): `string`
-
-Defined in: packages/blue-platform-web/src/session-argument-resolver.ts:105
-
-Retrieves a value from `sessionStorage` if available.
-
-#### Parameters
-
-##### name
-
-`string`
-
-#### Returns
-
-`string`
-
 #### Overrides
 
-[`AbstractSessionValueMethodArgumentResolver`](AbstractSessionValueMethodArgumentResolver.md).[`getSessionValue`](AbstractSessionValueMethodArgumentResolver.md#getsessionvalue)
+`AbstractPlatformArgumentResolver.supportsParameter`

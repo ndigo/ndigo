@@ -6,7 +6,7 @@
 
 # Class: MissingParameterError
 
-Defined in: packages/blue-dispatcher/src/error.ts:179
+Defined in: packages/blue-dispatcher/src/error.ts:142
 
 Thrown when a required parameter is missing from the request.
 This is a RUNTIME error (request processing time).
@@ -22,7 +22,7 @@ Analogous to Spring's MissingServletRequestParameterException.
 
 > **new MissingParameterError**(`parameterName`, `parameterType`, `methodName?`, `controllerName?`, `required?`): `MissingParameterError`
 
-Defined in: packages/blue-dispatcher/src/error.ts:187
+Defined in: packages/blue-dispatcher/src/error.ts:150
 
 #### Parameters
 
@@ -58,9 +58,9 @@ Defined in: packages/blue-dispatcher/src/error.ts:187
 
 ### parameterName
 
-> `readonly` **parameterName**: `string`
+> `readonly` **parameterName**: `string` \| `null`
 
-Defined in: packages/blue-dispatcher/src/error.ts:122
+Defined in: packages/blue-dispatcher/src/error.ts:87
 
 #### Inherited from
 
@@ -70,9 +70,9 @@ Defined in: packages/blue-dispatcher/src/error.ts:122
 
 ### methodName
 
-> `readonly` **methodName**: `string`
+> `readonly` **methodName**: `string` \| `null`
 
-Defined in: packages/blue-dispatcher/src/error.ts:123
+Defined in: packages/blue-dispatcher/src/error.ts:88
 
 #### Inherited from
 
@@ -82,9 +82,9 @@ Defined in: packages/blue-dispatcher/src/error.ts:123
 
 ### controllerName
 
-> `readonly` **controllerName**: `string`
+> `readonly` **controllerName**: `string` \| `null`
 
-Defined in: packages/blue-dispatcher/src/error.ts:124
+Defined in: packages/blue-dispatcher/src/error.ts:89
 
 #### Inherited from
 
@@ -94,17 +94,17 @@ Defined in: packages/blue-dispatcher/src/error.ts:124
 
 ### parameterType
 
-> `readonly` **parameterType**: `string`
+> `readonly` **parameterType**: `string` \| `null`
 
-Defined in: packages/blue-dispatcher/src/error.ts:180
+Defined in: packages/blue-dispatcher/src/error.ts:143
 
 ***
 
 ### required
 
-> `readonly` **required**: `boolean`
+> `readonly` **required**: `boolean` \| `null`
 
-Defined in: packages/blue-dispatcher/src/error.ts:181
+Defined in: packages/blue-dispatcher/src/error.ts:144
 
 ## Accessors
 
@@ -114,7 +114,7 @@ Defined in: packages/blue-dispatcher/src/error.ts:181
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-dispatcher/src/error.ts:183
+Defined in: packages/blue-dispatcher/src/error.ts:146
 
 ##### Returns
 

@@ -6,7 +6,7 @@
 
 # Interface: CompletionAwareHTTPInterceptor
 
-Defined in: packages/blue-http/src/http.ts:69
+Defined in: packages/blue-http/src/http.ts:70
 
 Runs after a request finishes, whether it succeeded or failed.
 
@@ -16,7 +16,7 @@ Runs after a request finishes, whether it succeeded or failed.
 
 > **postComplete**(`request`, `response`): `void`
 
-Defined in: packages/blue-http/src/http.ts:76
+Defined in: packages/blue-http/src/http.ts:77
 
 Observes the final request/response pair after all other hooks complete.
 

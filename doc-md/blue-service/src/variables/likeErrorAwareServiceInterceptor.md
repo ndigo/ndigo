@@ -8,7 +8,7 @@
 
 > `const` **likeErrorAwareServiceInterceptor**: (`value`) => `value is ErrorAwareServiceInterceptor`
 
-Defined in: packages/blue-service/src/service.ts:118
+Defined in: packages/blue-service/src/service.ts:122
 
 Tests whether a value provides failure-aware interceptor behavior.
 

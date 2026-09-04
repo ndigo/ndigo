@@ -18,7 +18,7 @@ They are likely to be instantiated by a ViewResolver\|\`ViewResolver\` .
 
 ### mediaType
 
-> **mediaType**: `MediaType`
+> **mediaType**: `MediaType` \| `null`
 
 Defined in: packages/blue-view/src/view.ts:24
 

@@ -14,19 +14,6 @@ Jeff Rose
 
 ### Math
 
-- [add](variables/add.md)
-- [dec](variables/dec.md)
-- [divide](variables/divide.md)
-- [inc](variables/inc.md)
-- [mathMod](variables/mathMod.md)
-- [mean](variables/mean.md)
-- [median](variables/median.md)
-- [modulo](variables/modulo.md)
-- [multiply](variables/multiply.md)
-- [negate](variables/negate.md)
-- [product](variables/product.md)
-- [subtract](variables/subtract.md)
-- [sum](variables/sum.md)
 - [random](variables/random.md)
 
 ## Functions
@@ -34,6 +21,19 @@ Jeff Rose
 ### Math
 
 - [guid](functions/guid.md)
+- [add](functions/add.md)
+- [dec](functions/dec.md)
+- [divide](functions/divide.md)
+- [inc](functions/inc.md)
+- [mathMod](functions/mathMod.md)
+- [mean](functions/mean.md)
+- [median](functions/median.md)
+- [modulo](functions/modulo.md)
+- [multiply](functions/multiply.md)
+- [negate](functions/negate.md)
+- [product](functions/product.md)
+- [subtract](functions/subtract.md)
+- [sum](functions/sum.md)
 - [randHex](functions/randHex.md)
 - [randInt](functions/randInt.md)
 - [rand](functions/rand.md)

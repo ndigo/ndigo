@@ -6,17 +6,9 @@
 
 # Class: MetadataErrorResolver
 
-Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:234
+Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:297
 
 An [AbstractRouteErrorResolver](AbstractRouteErrorResolver.md) that resolves exceptions through 'error:mapping' metadata.
-
-## Implements
-
-module:context.ApplicationContextAware
-
-## Implements
-
-module:context.Initializable
 
 ## Extends
 
@@ -46,7 +38,7 @@ Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:66
 
 ### mappedHandlers
 
-> **mappedHandlers**: `any`[]
+> **mappedHandlers**: `any`[] \| `null`
 
 Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:55
 
@@ -74,9 +66,9 @@ Handler classes explicitly targeted by this resolver, if any.
 
 ### applicationContext
 
-> **applicationContext**: `ApplicationContext`
+> **applicationContext**: `ApplicationContext` \| `null`
 
-Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:238
+Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:301
 
 Application context used to discover error handlers.
 
@@ -106,7 +98,7 @@ Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:62
 
 > **get** **\[$aware\]**(): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:240
+Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:303
 
 ##### Returns
 
@@ -120,7 +112,7 @@ Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:240
 
 ### resolveError()
 
-> **resolveError**(`route`, `handler`, `error`): [`ModelAndView`](ModelAndView.md)
+> **resolveError**(`route`, `handler`, `error`): [`ModelAndView`](ModelAndView.md) \| `null`
 
 Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:79
 
@@ -136,7 +128,7 @@ The current route.
 
 ##### handler
 
-`any`
+`object` \| `null`
 
 The handler that was executing when the error occurred.
 
@@ -148,7 +140,7 @@ The thrown error.
 
 #### Returns
 
-[`ModelAndView`](ModelAndView.md)
+[`ModelAndView`](ModelAndView.md) \| `null`
 
 A resolved model and view, or `null` when this resolver does not apply.
 
@@ -176,7 +168,7 @@ The current route.
 
 ##### handler
 
-`object`
+`object` \| `null`
 
 The candidate handler.
 
@@ -194,7 +186,7 @@ The candidate handler.
 
 ### \_resolveError()
 
-> `protected` **\_resolveError**(`route`, `handler`, `error`): [`ModelAndView`](ModelAndView.md)
+> `protected` **\_resolveError**(`route`, `handler`, `error`): [`ModelAndView`](ModelAndView.md) \| `null`
 
 Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:154
 
@@ -210,7 +202,7 @@ The current route.
 
 ##### handler
 
-`object`
+`object` \| `null`
 
 The wrapped handler method's target.
 
@@ -222,7 +214,7 @@ The thrown error.
 
 #### Returns
 
-[`ModelAndView`](ModelAndView.md)
+[`ModelAndView`](ModelAndView.md) \| `null`
 
 A resolved model and view, or `null`.
 
@@ -236,7 +228,7 @@ A resolved model and view, or `null`.
 
 > **setApplicationContext**(`applicationContext`): `void`
 
-Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:249
+Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:312
 
 Store the application context for later error-handler lookup.
 
@@ -260,9 +252,9 @@ The application context to use.
 
 ### \_getErrorHandlerMethod()
 
-> `protected` **\_getErrorHandlerMethod**(`handlerMethod`, `error`): `ErrorHandlerMethod`
+> `protected` **\_getErrorHandlerMethod**(`handlerMethod`, `error`): [`ErrorHandlerMethod`](ErrorHandlerMethod.md) \| `null`
 
-Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:265
+Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:328
 
 Find the first error handler method that matches the thrown error.
 
@@ -270,7 +262,7 @@ Find the first error handler method that matches the thrown error.
 
 ##### handlerMethod
 
-`RouteHandlerMethod`
+[`RouteHandlerMethod`](RouteHandlerMethod.md)
 
 The handler method that failed.
 
@@ -282,17 +274,21 @@ The thrown error.
 
 #### Returns
 
-`ErrorHandlerMethod`
+[`ErrorHandlerMethod`](ErrorHandlerMethod.md) \| `null`
 
 A matching error handler method, or `null`.
+
+#### Overrides
+
+[`AbstractHandlerMethodErrorResolver`](AbstractHandlerMethodErrorResolver.md).[`_getErrorHandlerMethod`](AbstractHandlerMethodErrorResolver.md#_geterrorhandlermethod)
 
 ***
 
 ### \_resolveHandlerMethodError()
 
-> `protected` **\_resolveHandlerMethodError**(`route`, `handlerMethod`, `error`): [`ModelAndView`](ModelAndView.md)
+> `protected` **\_resolveHandlerMethodError**(`route`, `handlerMethod`, `error`): [`ModelAndView`](ModelAndView.md) \| `null`
 
-Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:303
+Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:366
 
 Resolve an error by invoking a matching error handler method.
 
@@ -306,7 +302,7 @@ The current route.
 
 ##### handlerMethod
 
-`RouteHandlerMethod`
+[`RouteHandlerMethod`](RouteHandlerMethod.md)
 
 The failed handler method.
 
@@ -318,7 +314,7 @@ The thrown error.
 
 #### Returns
 
-[`ModelAndView`](ModelAndView.md)
+[`ModelAndView`](ModelAndView.md) \| `null`
 
 The error handler's model and view, or `null`.
 

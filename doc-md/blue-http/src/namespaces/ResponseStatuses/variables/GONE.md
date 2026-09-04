@@ -6,7 +6,7 @@
 
 # Variable: GONE
 
-> `const` **GONE**: `ResponseStatus`
+> `const` **GONE**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
 Defined in: packages/blue-http/src/response-statuses.ts:199
 

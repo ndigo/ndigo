@@ -8,7 +8,7 @@
 
 > **hasMethodParameter**(`target`, `propertyKey`): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:545
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:534
 
 Check if method has parameters
 

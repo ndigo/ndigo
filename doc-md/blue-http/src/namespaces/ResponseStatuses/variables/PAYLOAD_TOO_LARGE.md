@@ -6,7 +6,7 @@
 
 # Variable: PAYLOAD\_TOO\_LARGE
 
-> `const` **PAYLOAD\_TOO\_LARGE**: `ResponseStatus`
+> `const` **PAYLOAD\_TOO\_LARGE**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
 Defined in: packages/blue-http/src/response-statuses.ts:214
 

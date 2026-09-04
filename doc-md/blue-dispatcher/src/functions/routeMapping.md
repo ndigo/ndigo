@@ -8,7 +8,7 @@
 
 > **routeMapping**(`route?`): (`target`, `context`) => `any`
 
-Defined in: packages/blue-dispatcher/src/route-mapping.ts:98
+Defined in: packages/blue-dispatcher/src/route-mapping.ts:106
 
 Apply route mapping metadata to a class or method.
 
@@ -18,7 +18,7 @@ Works as both a class and method decorator.
 
 ### route?
 
-`string` \| `RouteMappingConfiguration`
+`string` \| [`RouteMappingConfiguration`](../type-aliases/RouteMappingConfiguration.md)
 
 The route path or mapping configuration to apply.
 

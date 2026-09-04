@@ -6,7 +6,7 @@
 
 # Variable: IM\_USED
 
-> `const` **IM\_USED**: `ResponseStatus`
+> `const` **IM\_USED**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
 Defined in: packages/blue-http/src/response-statuses.ts:91
 

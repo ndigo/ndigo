@@ -8,12 +8,14 @@
 
 ## Classes
 
+- [AbstractWebComponent](classes/AbstractWebComponent.md)
 - [DOMElementViewTarget](classes/DOMElementViewTarget.md)
 - [WebComponentViewEngine](classes/WebComponentViewEngine.md)
 - [WebComponentView](classes/WebComponentView.md)
 
 ## Interfaces
 
+- [BlueElement](interfaces/BlueElement.md)
 - [DOMViewTarget](interfaces/DOMViewTarget.md)
 
 ## Variables

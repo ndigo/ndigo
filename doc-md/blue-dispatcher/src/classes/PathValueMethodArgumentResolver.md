@@ -28,7 +28,7 @@ Creates an instance of AbstractNamedValueMethodArgumentResolver.
 
 ##### factory?
 
-`Factory`
+`Factory` \| `null`
 
 A factory for resolving values.
 

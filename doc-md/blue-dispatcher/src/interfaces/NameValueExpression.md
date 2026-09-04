@@ -6,7 +6,7 @@
 
 # Interface: NameValueExpression\<T\>
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:8
+Defined in: packages/blue-dispatcher/src/route-condition.ts:12
 
 Describes a parsed name/value expression.
 
@@ -22,7 +22,7 @@ Describes a parsed name/value expression.
 
 > **isNegated**: `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:9
+Defined in: packages/blue-dispatcher/src/route-condition.ts:13
 
 ***
 
@@ -30,7 +30,7 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:9
 
 > **name**: `string`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:10
+Defined in: packages/blue-dispatcher/src/route-condition.ts:14
 
 ***
 
@@ -38,4 +38,4 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:10
 
 > `optional` **value?**: `T`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:11
+Defined in: packages/blue-dispatcher/src/route-condition.ts:15

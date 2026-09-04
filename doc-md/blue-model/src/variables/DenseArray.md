@@ -6,8 +6,8 @@
 
 # Variable: DenseArray
 
-> `const` **DenseArray**: `BasicModel`\<`ArrayConstructor`\>
+> `const` **DenseArray**: `any`
 
-Defined in: packages/blue-model/src/basic.ts:129
+Defined in: packages/blue-model/src/basic.ts:135
 
 Matches arrays without sparse holes.

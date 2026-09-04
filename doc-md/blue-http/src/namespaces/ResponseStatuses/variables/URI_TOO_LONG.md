@@ -6,7 +6,7 @@
 
 # Variable: URI\_TOO\_LONG
 
-> `const` **URI\_TOO\_LONG**: `ResponseStatus`
+> `const` **URI\_TOO\_LONG**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
 Defined in: packages/blue-http/src/response-statuses.ts:219
 

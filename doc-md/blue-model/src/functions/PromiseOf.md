@@ -8,7 +8,7 @@
 
 > **PromiseOf**(`model`): (`p`) => `Promise`\<`any`\>
 
-Defined in: packages/blue-model/src/basic.ts:140
+Defined in: packages/blue-model/src/basic.ts:146
 
 Creates a promise model that validates the resolved value with another model.
 

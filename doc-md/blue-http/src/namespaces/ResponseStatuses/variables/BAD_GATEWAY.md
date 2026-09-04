@@ -6,7 +6,7 @@
 
 # Variable: BAD\_GATEWAY
 
-> `const` **BAD\_GATEWAY**: `ResponseStatus`
+> `const` **BAD\_GATEWAY**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
 Defined in: packages/blue-http/src/response-statuses.ts:308
 

@@ -6,7 +6,7 @@
 
 # Interface: MatchableHandlerMapping
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:54
+Defined in: packages/blue-dispatcher/src/abstract-handler-mapping.ts:39
 
 A handler mapping that can also report whether a route matches a pattern.
 
@@ -18,9 +18,9 @@ A handler mapping that can also report whether a route matches a pattern.
 
 ### getHandler()
 
-> **getHandler**(`route`): `RouteHandlerExecutionChain`
+> **getHandler**(`route`): `RouteHandlerExecutionChain` \| `null`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:48
+Defined in: packages/blue-dispatcher/src/abstract-handler-mapping.ts:33
 
 Resolve the handler for a route.
 
@@ -34,7 +34,7 @@ The current route.
 
 #### Returns
 
-`RouteHandlerExecutionChain`
+`RouteHandlerExecutionChain` \| `null`
 
 The execution chain for the chosen handler, or `null`.
 
@@ -46,9 +46,9 @@ The execution chain for the chosen handler, or `null`.
 
 ### match()
 
-> **match**(`route`, `pattern`): [`RouteMatchResult`](../classes/RouteMatchResult.md)
+> **match**(`route`, `pattern`): [`RouteMatchResult`](../classes/RouteMatchResult.md) \| `null`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:62
+Defined in: packages/blue-dispatcher/src/abstract-handler-mapping.ts:47
 
 Check whether the route matches a pattern.
 
@@ -68,6 +68,6 @@ The pattern to test.
 
 #### Returns
 
-[`RouteMatchResult`](../classes/RouteMatchResult.md)
+[`RouteMatchResult`](../classes/RouteMatchResult.md) \| `null`
 
 A match result, or `null`.

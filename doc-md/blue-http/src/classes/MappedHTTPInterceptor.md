@@ -8,25 +8,7 @@
 
 Defined in: packages/blue-http/src/http.ts:376
 
-## Implements
-
-module:http.CompletionAwareHTTPInterceptor
-
-## Implements
-
-module:http.ErrorAwareHTTPInterceptor
-
-## Implements
-
-module:http.InitializationAwareHTTPInterceptor
-
-## Implements
-
-module:http.RequestAwareHTTPInterceptor
-
-## Implements
-
-external:ResponseAwareHTTPInterceptor
+Runs after a request finishes, whether it succeeded or failed.
 
 ## Implements
 
@@ -130,7 +112,7 @@ Optional matcher to reuse for pattern checks.
 
 ### postError()
 
-> **postError**(`error`, `request`, `http`): `Promise`\<`Response`\>
+> **postError**(`error`, `request`, `http`): `Promise`\<`Response` \| `undefined`\>
 
 Defined in: packages/blue-http/src/http.ts:461
 
@@ -158,7 +140,7 @@ The HTTP client executing the request.
 
 #### Returns
 
-`Promise`\<`Response`\>
+`Promise`\<`Response` \| `undefined`\>
 
 A replacement response, or `undefined` if the interceptor does not handle errors.
 
@@ -270,7 +252,7 @@ The request settings being prepared.
 
 ### preRequest()
 
-> **preRequest**(`request`, `http`): `Promise`\<`void` \| `Request`\>
+> **preRequest**(`request`, `http`): `Promise`\<`void` \| `Response` \| `Request`\>
 
 Defined in: packages/blue-http/src/http.ts:517
 
@@ -292,7 +274,7 @@ The HTTP client executing the request.
 
 #### Returns
 
-`Promise`\<`void` \| `Request`\>
+`Promise`\<`void` \| `Response` \| `Request`\>
 
 A replacement request, or the original request when unsupported.
 

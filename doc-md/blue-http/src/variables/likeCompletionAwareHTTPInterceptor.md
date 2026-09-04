@@ -8,7 +8,7 @@
 
 > `const` **likeCompletionAwareHTTPInterceptor**: (`value`) => `value is CompletionAwareHTTPInterceptor`
 
-Defined in: packages/blue-http/src/http.ts:287
+Defined in: packages/blue-http/src/http.ts:288
 
 Tests whether a value exposes `postComplete()`.
 

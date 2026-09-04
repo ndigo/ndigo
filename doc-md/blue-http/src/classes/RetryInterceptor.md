@@ -47,7 +47,7 @@ Retry configuration.  All fields are optional and
 
 ### postError()
 
-> **postError**(`error`, `request`, `http`): `Promise`\<`Response`\>
+> **postError**(`error`, `request`, `http`): `Promise`\<`Response` \| `undefined`\>
 
 Defined in: packages/blue-http/src/interceptors/retry-interceptor.ts:81
 
@@ -80,7 +80,7 @@ The owning HTTP client used to issue the retry.
 
 #### Returns
 
-`Promise`\<`Response`\>
+`Promise`\<`Response` \| `undefined`\>
 
 A promise that resolves to the retried response, or `undefined`.
 

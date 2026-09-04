@@ -24,7 +24,7 @@ A tree node that supports bidirectional navigation and child mutation.
 
 ### parent
 
-> `readonly` **parent**: `T`
+> `readonly` **parent**: `T` \| `null` \| `undefined`
 
 Defined in: packages/blue-core/src/tree-node.ts:10
 
@@ -38,7 +38,7 @@ The parent node, or `null`/`undefined` for roots.
 
 ### children
 
-> `readonly` **children**: `T`[]
+> `readonly` **children**: readonly `T`[]
 
 Defined in: packages/blue-core/src/tree-node.ts:18
 

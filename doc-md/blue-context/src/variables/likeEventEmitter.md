@@ -8,9 +8,7 @@
 
 > `const` **likeEventEmitter**: (`value`) => `value is EventEmitter`
 
-Defined in: packages/blue-context/src/event-emitter.ts:173
-
-Returns whether a value behaves like an event emitter.
+Defined in: packages/blue-context/src/event-emitter.ts:196
 
 ## Parameters
 

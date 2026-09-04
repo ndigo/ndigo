@@ -6,6 +6,6 @@
 
 # Variable: APPLICATION\_SVG\_XML
 
-> `const` **APPLICATION\_SVG\_XML**: [`MediaType`](../../../classes/MediaType.md)
+> `const` **APPLICATION\_SVG\_XML**: [`MediaType`](../../../classes/MediaType.md) \| `null`
 
 Defined in: packages/blue-core/src/media-types.ts:31

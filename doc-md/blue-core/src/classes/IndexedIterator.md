@@ -38,7 +38,7 @@ Creates an instance of IndexedIterator.
 
 ##### indexed
 
-`ArrayLike`\<`T`\>
+`ArrayLike`\<`T` \| `undefined`\>
 
 The array-like collection to iterate over.
 

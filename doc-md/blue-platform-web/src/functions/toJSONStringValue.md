@@ -8,7 +8,7 @@
 
 > **toJSONStringValue**(`value`): `any`
 
-Defined in: packages/blue-platform-web/src/argument-value-converter.ts:73
+Defined in: packages/blue-platform-web/src/argument-value-converter.ts:82
 
 Parses a JSON string into a JavaScript value.
 

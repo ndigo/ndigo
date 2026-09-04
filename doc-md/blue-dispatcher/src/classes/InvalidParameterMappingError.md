@@ -6,7 +6,7 @@
 
 # Class: InvalidParameterMappingError
 
-Defined in: packages/blue-dispatcher/src/error.ts:161
+Defined in: packages/blue-dispatcher/src/error.ts:125
 
 Thrown when parameter mapping configuration is invalid.
 This is a CONFIGURATION error (application startup time).
@@ -21,7 +21,7 @@ This is a CONFIGURATION error (application startup time).
 
 > **new InvalidParameterMappingError**(`message`, `parameterName?`, `methodName?`, `controllerName?`): `InvalidParameterMappingError`
 
-Defined in: packages/blue-dispatcher/src/error.ts:166
+Defined in: packages/blue-dispatcher/src/error.ts:130
 
 #### Parameters
 
@@ -53,9 +53,9 @@ Defined in: packages/blue-dispatcher/src/error.ts:166
 
 ### parameterName
 
-> `readonly` **parameterName**: `string`
+> `readonly` **parameterName**: `string` \| `null`
 
-Defined in: packages/blue-dispatcher/src/error.ts:122
+Defined in: packages/blue-dispatcher/src/error.ts:87
 
 #### Inherited from
 
@@ -65,9 +65,9 @@ Defined in: packages/blue-dispatcher/src/error.ts:122
 
 ### methodName
 
-> `readonly` **methodName**: `string`
+> `readonly` **methodName**: `string` \| `null`
 
-Defined in: packages/blue-dispatcher/src/error.ts:123
+Defined in: packages/blue-dispatcher/src/error.ts:88
 
 #### Inherited from
 
@@ -77,9 +77,9 @@ Defined in: packages/blue-dispatcher/src/error.ts:123
 
 ### controllerName
 
-> `readonly` **controllerName**: `string`
+> `readonly` **controllerName**: `string` \| `null`
 
-Defined in: packages/blue-dispatcher/src/error.ts:124
+Defined in: packages/blue-dispatcher/src/error.ts:89
 
 #### Inherited from
 
@@ -93,7 +93,7 @@ Defined in: packages/blue-dispatcher/src/error.ts:124
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-dispatcher/src/error.ts:162
+Defined in: packages/blue-dispatcher/src/error.ts:126
 
 ##### Returns
 

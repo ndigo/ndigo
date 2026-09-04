@@ -8,7 +8,7 @@
 
 > **ArgumentValueConversionContext** = `ParameterValueConversionContext` & `object`
 
-Defined in: packages/blue-platform-web/src/argument-value-converter.ts:14
+Defined in: packages/blue-platform-web/src/argument-value-converter.ts:19
 
 Conversion context passed to argument-value converters.
 

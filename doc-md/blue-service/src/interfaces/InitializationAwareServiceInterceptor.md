@@ -6,7 +6,7 @@
 
 # Interface: InitializationAwareServiceInterceptor\<T\>
 
-Defined in: packages/blue-service/src/service.ts:54
+Defined in: packages/blue-service/src/service.ts:58
 
 Handles pre-initialization checks before a service request is created.
 
@@ -22,7 +22,7 @@ Handles pre-initialization checks before a service request is created.
 
 > **preInit**(`url`, `settings`): `boolean`
 
-Defined in: packages/blue-service/src/service.ts:62
+Defined in: packages/blue-service/src/service.ts:66
 
 Decides whether the interceptor should participate in the request.
 

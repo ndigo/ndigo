@@ -6,7 +6,7 @@
 
 # Variable: NON\_AUTHORITATIVE\_INFORMATION
 
-> `const` **NON\_AUTHORITATIVE\_INFORMATION**: `ResponseStatus`
+> `const` **NON\_AUTHORITATIVE\_INFORMATION**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
 Defined in: packages/blue-http/src/response-statuses.ts:61
 

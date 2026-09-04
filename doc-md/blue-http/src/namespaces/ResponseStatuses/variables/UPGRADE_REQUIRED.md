@@ -6,7 +6,7 @@
 
 # Variable: UPGRADE\_REQUIRED
 
-> `const` **UPGRADE\_REQUIRED**: `ResponseStatus`
+> `const` **UPGRADE\_REQUIRED**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
 Defined in: packages/blue-http/src/response-statuses.ts:269
 

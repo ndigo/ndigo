@@ -8,7 +8,7 @@
 
 > `const` **likeResource**: (`value`) => `value is Resource<any>`
 
-Defined in: packages/blue-context/src/resource.ts:87
+Defined in: packages/blue-context/src/resource.ts:84
 
 Returns whether a value behaves like a resource.
 
@@ -16,7 +16,7 @@ Returns whether a value behaves like a resource.
 
 ### value
 
-`any`
+`unknown`
 
 The value to test.
 

@@ -6,7 +6,7 @@
 
 # Class: ContentNegotiationManager
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:210
+Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:231
 
 Aggregates content-negotiation strategies and file-extension resolvers.
 
@@ -21,7 +21,7 @@ Aggregates content-negotiation strategies and file-extension resolvers.
 
 > **new ContentNegotiationManager**(`strategies?`): `ContentNegotiationManager`
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:225
+Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:246
 
 Creates a manager with the supplied strategies.
 
@@ -43,7 +43,7 @@ The strategies to manage.
 
 > **strategies**: [`ContentNegotiationStrategy`](../interfaces/ContentNegotiationStrategy.md)[]
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:214
+Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:235
 
 The strategies consulted to resolve media types.
 
@@ -53,7 +53,7 @@ The strategies consulted to resolve media types.
 
 > **resolvers**: [`MediaTypeFileExtensionResolver`](../interfaces/MediaTypeFileExtensionResolver.md)[]
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:218
+Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:239
 
 The strategies capable of resolving file extensions.
 
@@ -63,7 +63,7 @@ The strategies capable of resolving file extensions.
 
 > **getAllFileExtenstions**(): `string`[]
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:239
+Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:259
 
 Returns every file extension known to the registered resolvers.
 
@@ -71,11 +71,7 @@ Returns every file extension known to the registered resolvers.
 
 `string`[]
 
-Never returns normally.
-
-#### Throws
-
-Always thrown because the method is not implemented.
+The union of all extensions from every resolver, deduplicated by insertion order.
 
 #### Implementation of
 
@@ -87,7 +83,7 @@ Always thrown because the method is not implemented.
 
 > **resolveFileExtensions**(`mediaType`): `string`[]
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:250
+Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:280
 
 Resolves file extensions for the given media type.
 
@@ -103,11 +99,7 @@ The media type to resolve.
 
 `string`[]
 
-Never returns normally.
-
-#### Throws
-
-Always thrown because the method is not implemented.
+Extensions from the first resolver that supports this media type, or empty array.
 
 #### Implementation of
 
@@ -119,7 +111,7 @@ Always thrown because the method is not implemented.
 
 > **resolveMediaTypes**(`request`): `MediaType`[]
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:261
+Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:295
 
 Resolves the media types requested by the current request.
 
@@ -135,11 +127,7 @@ The current request.
 
 `MediaType`[]
 
-Never returns normally.
-
-#### Throws
-
-Always thrown because the method is not implemented.
+Media types in priority order from the first strategy that matches.
 
 #### Implementation of
 

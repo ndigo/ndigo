@@ -6,9 +6,9 @@
 
 # Function: getScope()
 
-> **getScope**(`target`): `string`
+> **getScope**(`target`): `string` \| `undefined`
 
-Defined in: packages/blue-factory/src/scope.ts:57
+Defined in: packages/blue-factory/src/scope.ts:56
 
 Retrieves scope metadata from a class or instance
 
@@ -22,6 +22,6 @@ Class constructor or instance
 
 ## Returns
 
-`string`
+`string` \| `undefined`
 
 Scope name or undefined

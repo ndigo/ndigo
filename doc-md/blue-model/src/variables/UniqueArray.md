@@ -6,8 +6,8 @@
 
 # Variable: UniqueArray
 
-> `const` **UniqueArray**: `BasicModel`\<`ArrayConstructor`\>
+> `const` **UniqueArray**: `any`
 
-Defined in: packages/blue-model/src/basic.ts:123
+Defined in: packages/blue-model/src/basic.ts:129
 
 Matches arrays whose values are unique.

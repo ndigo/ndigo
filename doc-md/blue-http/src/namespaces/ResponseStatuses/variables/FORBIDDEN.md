@@ -6,7 +6,7 @@
 
 # Variable: FORBIDDEN
 
-> `const` **FORBIDDEN**: `ResponseStatus`
+> `const` **FORBIDDEN**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
 Defined in: packages/blue-http/src/response-statuses.ts:164
 

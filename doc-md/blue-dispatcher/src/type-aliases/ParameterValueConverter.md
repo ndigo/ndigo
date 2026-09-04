@@ -8,7 +8,7 @@
 
 > **ParameterValueConverter** = (`value`, `context`) => `any`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:32
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:41
 
 ## Parameters
 

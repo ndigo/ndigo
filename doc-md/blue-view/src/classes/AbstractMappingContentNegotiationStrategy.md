@@ -130,7 +130,7 @@ The known media types.
 
 ### lookupMediaType()
 
-> **lookupMediaType**(`extension`): `MediaType`
+> **lookupMediaType**(`extension`): `MediaType` \| `null`
 
 Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:117
 
@@ -146,7 +146,7 @@ The file extension to resolve.
 
 #### Returns
 
-`MediaType`
+`MediaType` \| `null`
 
 The matching media type, or `null` when none exists.
 
@@ -188,9 +188,9 @@ The matching file extensions.
 
 > **resolveMediaTypes**(`request`): `MediaType`[]
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:175
+Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:174
 
-Resolves media types for a request.
+Resolves the media types for a request.
 
 #### Parameters
 
@@ -204,11 +204,7 @@ The current request.
 
 `MediaType`[]
 
-Never returns normally.
-
-#### Throws
-
-Always thrown because subclasses must implement the method.
+Media types from this resolver, optionally filtered by request params.
 
 #### Implementation of
 
@@ -218,9 +214,9 @@ Always thrown because subclasses must implement the method.
 
 ### resolveMediaTypeKey()
 
-> **resolveMediaTypeKey**(`request`, `key`): `MediaType`[]
+> **resolveMediaTypeKey**(`request`, `key`): `MediaType`[] \| `null`
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:186
+Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:196
 
 Resolves media types for a specific key within the request.
 
@@ -240,6 +236,6 @@ The request key to inspect.
 
 #### Returns
 
-`MediaType`[]
+`MediaType`[] \| `null`
 
 The matching media types, or `null` when none are found.

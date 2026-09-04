@@ -6,7 +6,7 @@
 
 # Class: MatrixParamExpression
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:240
+Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:242
 
 Parses and matches a single matrix-parameter expression against a route segment.
 
@@ -23,7 +23,7 @@ This expression walks every segment of the route looking for a matching name/val
 
 > **new MatrixParamExpression**(`expression`): `MatrixParamExpression`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:90
+Defined in: packages/blue-dispatcher/src/route-condition.ts:75
 
 Parse a name/value expression.
 
@@ -49,7 +49,7 @@ The expression to parse.
 
 > `readonly` **isNegated**: `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:79
+Defined in: packages/blue-dispatcher/src/route-condition.ts:64
 
 #### Inherited from
 
@@ -61,7 +61,7 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:79
 
 > `readonly` **name**: `string`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:80
+Defined in: packages/blue-dispatcher/src/route-condition.ts:65
 
 #### Inherited from
 
@@ -73,7 +73,7 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:80
 
 > `readonly` `optional` **value?**: `string`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:81
+Defined in: packages/blue-dispatcher/src/route-condition.ts:66
 
 #### Inherited from
 
@@ -87,7 +87,7 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:81
 
 > **get** **isCaseSensitiveName**(): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:241
+Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:243
 
 ##### Returns
 
@@ -103,7 +103,7 @@ Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:241
 
 > **match**(`route`): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:133
+Defined in: packages/blue-dispatcher/src/route-condition.ts:118
 
 Determine whether this expression matches the given route.
 
@@ -131,7 +131,7 @@ The current route.
 
 > **toJSON**(): `JSONValue`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:143
+Defined in: packages/blue-dispatcher/src/route-condition.ts:128
 
 Serialize the expression to JSON.
 
@@ -151,7 +151,7 @@ The string form of the expression.
 
 > **toString**(): `string`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:152
+Defined in: packages/blue-dispatcher/src/route-condition.ts:137
 
 Convert the expression to its textual form.
 
@@ -171,7 +171,7 @@ The expression string.
 
 > **matchName**(`route`): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:251
+Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:253
 
 Check whether any route segment contains a matching matrix-parameter name.
 
@@ -199,7 +199,7 @@ The current route.
 
 > **matchValue**(`route`): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:268
+Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:270
 
 Check whether any route segment carries the expected matrix-parameter value.
 
@@ -227,7 +227,7 @@ The current route.
 
 > **parseValue**(`valueExpression`): `string`
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:287
+Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:289
 
 Return the parameter value as-is.
 

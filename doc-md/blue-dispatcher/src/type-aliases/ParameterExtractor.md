@@ -46,11 +46,21 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:20
 
 ***
 
-### convert
+### convertType?
 
-> **convert**: [`ParameterValueConverterReference`](ParameterValueConverterReference.md) \| `null`
+> `optional` **convertType?**: `object`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:21
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:22
+
+Type-based conversion: { source: SourceConstructor, target: TargetConstructor }
+
+#### source
+
+> **source**: `any`
+
+#### target
+
+> **target**: `any`
 
 ***
 
@@ -58,4 +68,4 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:21
 
 > `optional` **prefix?**: `string` \| `null`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:22
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:23

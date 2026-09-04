@@ -6,7 +6,7 @@
 
 # Variable: SERVICE\_UNAVAILABLE
 
-> `const` **SERVICE\_UNAVAILABLE**: `ResponseStatus`
+> `const` **SERVICE\_UNAVAILABLE**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
 Defined in: packages/blue-http/src/response-statuses.ts:313
 

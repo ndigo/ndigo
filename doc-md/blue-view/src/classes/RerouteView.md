@@ -6,7 +6,7 @@
 
 # Class: RerouteView
 
-Defined in: packages/blue-view/src/view.ts:196
+Defined in: packages/blue-view/src/view.ts:223
 
 View that reroutes to an absolute, context relative, or current request relative route.
 
@@ -20,7 +20,7 @@ View that reroutes to an absolute, context relative, or current request relative
 
 > **new RerouteView**(`path`, `contextRelative?`): `RerouteView`
 
-Defined in: packages/blue-view/src/view.ts:213
+Defined in: packages/blue-view/src/view.ts:240
 
 Creates a new RerouteView.
 
@@ -78,7 +78,7 @@ Indicates if the view has been destroyed.
 
 ### mediaType
 
-> **mediaType**: `MediaType`
+> **mediaType**: `MediaType` \| `null`
 
 Defined in: packages/blue-view/src/view.ts:54
 
@@ -122,7 +122,7 @@ The path associated with the view.
 
 > `readonly` `optional` **applicationContext?**: `ApplicationContext`
 
-Defined in: packages/blue-view/src/view.ts:201
+Defined in: packages/blue-view/src/view.ts:228
 
 The application context, provided by the mixin via `setApplicationContext`.
 Declared here so TypeScript can see it through the mixin inheritance chain.
@@ -133,7 +133,7 @@ Declared here so TypeScript can see it through the mixin inheritance chain.
 
 > **contextRelative**: `boolean`
 
-Defined in: packages/blue-view/src/view.ts:206
+Defined in: packages/blue-view/src/view.ts:233
 
 Indicates if the reroute path is context relative.
 
@@ -193,11 +193,9 @@ The ApplicationContext to be used by this object.
 
 > **setName**(`name`): `void`
 
-Defined in: packages/blue-factory/lib/aware.d.ts:38
+Defined in: packages/blue-factory/lib/aware.d.ts:36
 
-Set the name of the value in the factory that created it.
-
-Invoked after population of normal value properties but before an `init` callback.
+Sets the name of the value in the factory.
 
 #### Parameters
 
@@ -205,7 +203,7 @@ Invoked after population of normal value properties but before an `init` callbac
 
 `string`
 
-The name of the value in the factory.
+The name to set.
 
 #### Returns
 
@@ -351,7 +349,7 @@ A JSON object representing the path-based view.
 
 > `protected` **\_createTargetPath**(`model`, `request`): `string`
 
-Defined in: packages/blue-view/src/view.ts:225
+Defined in: packages/blue-view/src/view.ts:252
 
 Creates the target path for rerouting.
 
@@ -381,7 +379,7 @@ The created target path.
 
 > `protected` **\_renderView**(`viewModel`, `request`, `target?`): `void`
 
-Defined in: packages/blue-view/src/view.ts:241
+Defined in: packages/blue-view/src/view.ts:268
 
 Renders the view by rerouting to the target path.
 

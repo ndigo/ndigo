@@ -8,7 +8,7 @@
 
 > `const` **likeResponseAwareServiceInterceptor**: (`value`) => `value is ResponseAwareServiceInterceptor<ServiceInit>`
 
-Defined in: packages/blue-service/src/service.ts:148
+Defined in: packages/blue-service/src/service.ts:152
 
 Tests whether a value provides response-aware interceptor behavior.
 

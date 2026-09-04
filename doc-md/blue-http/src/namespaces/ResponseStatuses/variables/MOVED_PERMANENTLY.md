@@ -6,7 +6,7 @@
 
 # Variable: MOVED\_PERMANENTLY
 
-> `const` **MOVED\_PERMANENTLY**: `ResponseStatus`
+> `const` **MOVED\_PERMANENTLY**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
 Defined in: packages/blue-http/src/response-statuses.ts:105
 

@@ -8,7 +8,7 @@
 
 > **hasScope**(`target`): `boolean`
 
-Defined in: packages/blue-factory/src/scope.ts:67
+Defined in: packages/blue-factory/src/scope.ts:66
 
 Checks if target has scope metadata
 

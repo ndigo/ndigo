@@ -6,7 +6,7 @@
 
 # Variable: PRECONDITION\_FAILED
 
-> `const` **PRECONDITION\_FAILED**: `ResponseStatus`
+> `const` **PRECONDITION\_FAILED**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
 Defined in: packages/blue-http/src/response-statuses.ts:209
 

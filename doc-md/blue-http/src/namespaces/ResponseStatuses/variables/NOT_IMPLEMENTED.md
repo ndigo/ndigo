@@ -6,7 +6,7 @@
 
 # Variable: NOT\_IMPLEMENTED
 
-> `const` **NOT\_IMPLEMENTED**: `ResponseStatus`
+> `const` **NOT\_IMPLEMENTED**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
 Defined in: packages/blue-http/src/response-statuses.ts:303
 

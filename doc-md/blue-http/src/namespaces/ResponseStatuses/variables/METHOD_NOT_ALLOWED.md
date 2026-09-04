@@ -6,7 +6,7 @@
 
 # Variable: METHOD\_NOT\_ALLOWED
 
-> `const` **METHOD\_NOT\_ALLOWED**: `ResponseStatus`
+> `const` **METHOD\_NOT\_ALLOWED**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
 Defined in: packages/blue-http/src/response-statuses.ts:174
 

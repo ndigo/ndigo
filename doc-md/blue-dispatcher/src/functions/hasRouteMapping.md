@@ -8,7 +8,7 @@
 
 > **hasRouteMapping**(`target`, `propertyKey?`): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-mapping.ts:78
+Defined in: packages/blue-dispatcher/src/route-mapping.ts:86
 
 Check whether route mapping metadata exists.
 

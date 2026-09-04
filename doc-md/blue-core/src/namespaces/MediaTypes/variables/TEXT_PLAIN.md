@@ -6,6 +6,6 @@
 
 # Variable: TEXT\_PLAIN
 
-> `const` **TEXT\_PLAIN**: [`MediaType`](../../../classes/MediaType.md)
+> `const` **TEXT\_PLAIN**: [`MediaType`](../../../classes/MediaType.md) \| `null`
 
 Defined in: packages/blue-core/src/media-types.ts:94

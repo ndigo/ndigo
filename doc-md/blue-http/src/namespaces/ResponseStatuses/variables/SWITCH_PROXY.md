@@ -6,7 +6,7 @@
 
 # Variable: SWITCH\_PROXY
 
-> `const` **SWITCH\_PROXY**: `ResponseStatus`
+> `const` **SWITCH\_PROXY**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
 Defined in: packages/blue-http/src/response-statuses.ts:130
 

@@ -6,8 +6,8 @@
 
 # Variable: FutureDate
 
-> `const` **FutureDate**: `BasicModel`\<`DateConstructor`\>
+> `const` **FutureDate**: `any`
 
-Defined in: packages/blue-model/src/basic.ts:109
+Defined in: packages/blue-model/src/basic.ts:115
 
 Matches dates in the future.

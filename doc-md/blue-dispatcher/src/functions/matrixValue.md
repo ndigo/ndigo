@@ -8,7 +8,7 @@
 
 > **matrixValue**(`name`, `options?`): [`ParameterExtractor`](../type-aliases/ParameterExtractor.md)
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:261
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:220
 
 Factory function: Create a matrix parameter extractor
 
@@ -20,17 +20,7 @@ Factory function: Create a matrix parameter extractor
 
 ### options?
 
-#### required?
-
-`boolean`
-
-#### defaultValue?
-
-`string`
-
-#### convert?
-
-[`ParameterValueConverterReference`](../type-aliases/ParameterValueConverterReference.md)
+[`ParameterExtractorOptions`](../interfaces/ParameterExtractorOptions.md) = `{}`
 
 ## Returns
 

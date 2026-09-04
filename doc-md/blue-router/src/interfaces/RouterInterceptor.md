@@ -17,11 +17,29 @@ Interceptors can perform actions before (`preRoute`) or after (`postRoute`) a ro
 
 ## Methods
 
-### postRoute()?
+### preHandle()?
 
-> `optional` **postRoute**(`route`): `void` \| `Promise`\<`void`\>
+> `optional` **preHandle**(`route`): `boolean` \| `Promise`\<`boolean`\>
 
 Defined in: packages/blue-router/src/router-interceptor.ts:18
+
+#### Parameters
+
+##### route
+
+[`Route`](Route.md)
+
+#### Returns
+
+`boolean` \| `Promise`\<`boolean`\>
+
+***
+
+### postHandle()?
+
+> `optional` **postHandle**(`route`): `void` \| `Promise`\<`void`\>
+
+Defined in: packages/blue-router/src/router-interceptor.ts:19
 
 #### Parameters
 
@@ -35,11 +53,11 @@ Defined in: packages/blue-router/src/router-interceptor.ts:18
 
 ***
 
-### preRoute()?
+### afterCompletion()?
 
-> `optional` **preRoute**(`route`): `boolean` \| `Promise`\<`boolean`\>
+> `optional` **afterCompletion**(`route`): `void` \| `Promise`\<`void`\>
 
-Defined in: packages/blue-router/src/router-interceptor.ts:19
+Defined in: packages/blue-router/src/router-interceptor.ts:20
 
 #### Parameters
 
@@ -49,4 +67,4 @@ Defined in: packages/blue-router/src/router-interceptor.ts:19
 
 #### Returns
 
-`boolean` \| `Promise`\<`boolean`\>
+`void` \| `Promise`\<`void`\>

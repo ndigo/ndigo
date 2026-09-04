@@ -8,7 +8,7 @@
 
 > **asEventEmitter**\<`TTarget`\>(`target`): `TTarget` & [`EventEmitter`](../interfaces/EventEmitter.md)
 
-Defined in: packages/blue-context/src/event-emitter.ts:996
+Defined in: packages/blue-context/src/event-emitter.ts:584
 
 Mixes event emitter behavior into an existing object.
 

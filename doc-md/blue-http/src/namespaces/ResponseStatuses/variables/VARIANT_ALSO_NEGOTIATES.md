@@ -6,7 +6,7 @@
 
 # Variable: VARIANT\_ALSO\_NEGOTIATES
 
-> `const` **VARIANT\_ALSO\_NEGOTIATES**: `ResponseStatus`
+> `const` **VARIANT\_ALSO\_NEGOTIATES**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
 Defined in: packages/blue-http/src/response-statuses.ts:328
 

@@ -6,7 +6,7 @@
 
 # Class: FeatureContextMountManager
 
-Defined in: packages/blue-context/src/feature-context-mount-manager.ts:61
+Defined in: packages/blue-context/src/feature-context-mount-manager.ts:108
 
 Creates, tracks, and tears down mounted feature contexts.
 
@@ -16,7 +16,7 @@ Creates, tracks, and tears down mounted feature contexts.
 
 > **new FeatureContextMountManager**(`parent`, `options?`): `FeatureContextMountManager`
 
-Defined in: packages/blue-context/src/feature-context-mount-manager.ts:66
+Defined in: packages/blue-context/src/feature-context-mount-manager.ts:113
 
 #### Parameters
 
@@ -38,7 +38,7 @@ Defined in: packages/blue-context/src/feature-context-mount-manager.ts:66
 
 > **registerFeature**(`options`): `this`
 
-Defined in: packages/blue-context/src/feature-context-mount-manager.ts:72
+Defined in: packages/blue-context/src/feature-context-mount-manager.ts:119
 
 #### Parameters
 
@@ -56,7 +56,7 @@ Defined in: packages/blue-context/src/feature-context-mount-manager.ts:72
 
 > **mount**(`name`): [`FeatureContextComposition`](../interfaces/FeatureContextComposition.md)
 
-Defined in: packages/blue-context/src/feature-context-mount-manager.ts:85
+Defined in: packages/blue-context/src/feature-context-mount-manager.ts:132
 
 #### Parameters
 
@@ -70,11 +70,52 @@ Defined in: packages/blue-context/src/feature-context-mount-manager.ts:85
 
 ***
 
-### remount()
+### mountLazy()
 
-> **remount**(`name`, `policy?`): [`FeatureContextComposition`](../interfaces/FeatureContextComposition.md)
+> **mountLazy**(`name`): `Promise`\<[`FeatureContextComposition`](../interfaces/FeatureContextComposition.md)\>
 
-Defined in: packages/blue-context/src/feature-context-mount-manager.ts:118
+Defined in: packages/blue-context/src/feature-context-mount-manager.ts:184
+
+Mount a feature whose context is loaded dynamically via its registered `loader`.
+
+For features registered with a static `createContext`, use [mount](#mount) instead.
+
+If the feature has already been loaded and mounted, returns the existing composition.
+If a load is already in progress, awaits that same promise (deduplication).
+Failed loads are retried on the next call — the error state is cleared.
+
+#### Parameters
+
+##### name
+
+`string`
+
+The registered feature name.
+
+#### Returns
+
+`Promise`\<[`FeatureContextComposition`](../interfaces/FeatureContextComposition.md)\>
+
+A promise resolving to the feature context composition.
+
+#### Throws
+
+If the feature has no `loader` registered.
+
+#### Throws
+
+If the loader rejects or `createContext` throws.
+
+***
+
+### remountLazy()
+
+> **remountLazy**(`name`, `policy?`): `Promise`\<[`FeatureContextComposition`](../interfaces/FeatureContextComposition.md)\>
+
+Defined in: packages/blue-context/src/feature-context-mount-manager.ts:229
+
+Unmount and re-mount a feature, re-executing its loader.
+Useful for retrying after a failed load.
 
 #### Parameters
 
@@ -88,7 +129,7 @@ Defined in: packages/blue-context/src/feature-context-mount-manager.ts:118
 
 #### Returns
 
-[`FeatureContextComposition`](../interfaces/FeatureContextComposition.md)
+`Promise`\<[`FeatureContextComposition`](../interfaces/FeatureContextComposition.md)\>
 
 ***
 
@@ -96,7 +137,7 @@ Defined in: packages/blue-context/src/feature-context-mount-manager.ts:118
 
 > **unmount**(`name`, `policy?`): `boolean`
 
-Defined in: packages/blue-context/src/feature-context-mount-manager.ts:123
+Defined in: packages/blue-context/src/feature-context-mount-manager.ts:234
 
 #### Parameters
 
@@ -118,7 +159,7 @@ Defined in: packages/blue-context/src/feature-context-mount-manager.ts:123
 
 > **hasRegistration**(`name`): `boolean`
 
-Defined in: packages/blue-context/src/feature-context-mount-manager.ts:143
+Defined in: packages/blue-context/src/feature-context-mount-manager.ts:254
 
 #### Parameters
 
@@ -136,7 +177,7 @@ Defined in: packages/blue-context/src/feature-context-mount-manager.ts:143
 
 > **isMounted**(`name`): `boolean`
 
-Defined in: packages/blue-context/src/feature-context-mount-manager.ts:147
+Defined in: packages/blue-context/src/feature-context-mount-manager.ts:258
 
 #### Parameters
 
@@ -152,9 +193,9 @@ Defined in: packages/blue-context/src/feature-context-mount-manager.ts:147
 
 ### getMountedFeature()
 
-> **getMountedFeature**(`name`): [`FeatureContextComposition`](../interfaces/FeatureContextComposition.md)
+> **getMountedFeature**(`name`): [`FeatureContextComposition`](../interfaces/FeatureContextComposition.md) \| `undefined`
 
-Defined in: packages/blue-context/src/feature-context-mount-manager.ts:168
+Defined in: packages/blue-context/src/feature-context-mount-manager.ts:279
 
 #### Parameters
 
@@ -164,7 +205,7 @@ Defined in: packages/blue-context/src/feature-context-mount-manager.ts:168
 
 #### Returns
 
-[`FeatureContextComposition`](../interfaces/FeatureContextComposition.md)
+[`FeatureContextComposition`](../interfaces/FeatureContextComposition.md) \| `undefined`
 
 ***
 
@@ -172,7 +213,7 @@ Defined in: packages/blue-context/src/feature-context-mount-manager.ts:168
 
 > **destroy**(): `void`
 
-Defined in: packages/blue-context/src/feature-context-mount-manager.ts:172
+Defined in: packages/blue-context/src/feature-context-mount-manager.ts:283
 
 #### Returns
 

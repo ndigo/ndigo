@@ -6,8 +6,8 @@
 
 # Variable: NegativeNumber
 
-> `const` **NegativeNumber**: `BasicModel`\<`NumberConstructor`\>
+> `const` **NegativeNumber**: `any`
 
-Defined in: packages/blue-model/src/basic.ts:69
+Defined in: packages/blue-model/src/basic.ts:75
 
 Matches numeric values less than zero.

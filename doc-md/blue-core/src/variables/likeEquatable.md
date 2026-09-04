@@ -16,7 +16,7 @@ Type guard to check if a value implements the `Equatable` interface.
 
 ### value
 
-`any`
+`unknown`
 
 The value to be tested.
 

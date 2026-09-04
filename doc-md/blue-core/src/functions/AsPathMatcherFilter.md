@@ -8,7 +8,7 @@
 
 > **AsPathMatcherFilter**\<`T`\>(`superclass`): [`Constructable`](../type-aliases/Constructable.md)\<[`PathMatcherFilter`](../interfaces/PathMatcherFilter.md)\> & `T`
 
-Defined in: packages/blue-core/src/path-matcher.ts:346
+Defined in: packages/blue-core/src/path-matcher.ts:347
 
 ## Type Parameters
 

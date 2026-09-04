@@ -8,7 +8,7 @@
 
 > `const` **errorHandler**: (`target`, `context`) => `any` & `object`
 
-Defined in: packages/blue-dispatcher/src/error-mapping.ts:87
+Defined in: packages/blue-dispatcher/src/error-mapping.ts:91
 
 `errorHandler` is a decorator and a utility object for managing error handler classes.
 When used as a decorator (`@errorHandler`), it marks a class as an error handler.

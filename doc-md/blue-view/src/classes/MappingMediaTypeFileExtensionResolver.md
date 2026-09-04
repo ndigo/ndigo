@@ -13,6 +13,7 @@ Resolves file extensions from a map of extension-to-media-type pairs.
 ## Extended by
 
 - [`AbstractMappingContentNegotiationStrategy`](AbstractMappingContentNegotiationStrategy.md)
+- [`PathExtensionContentNegotiationStrategy`](PathExtensionContentNegotiationStrategy.md)
 
 ## Implements
 
@@ -110,7 +111,7 @@ The known media types.
 
 ### lookupMediaType()
 
-> **lookupMediaType**(`extension`): `MediaType`
+> **lookupMediaType**(`extension`): `MediaType` \| `null`
 
 Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:117
 
@@ -126,7 +127,7 @@ The file extension to resolve.
 
 #### Returns
 
-`MediaType`
+`MediaType` \| `null`
 
 The matching media type, or `null` when none exists.
 

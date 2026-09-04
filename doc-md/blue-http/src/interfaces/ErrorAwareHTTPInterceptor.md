@@ -6,7 +6,7 @@
 
 # Interface: ErrorAwareHTTPInterceptor
 
-Defined in: packages/blue-http/src/http.ts:82
+Defined in: packages/blue-http/src/http.ts:83
 
 Handles failures that occur while executing a request.
 
@@ -14,9 +14,9 @@ Handles failures that occur while executing a request.
 
 ### postError()
 
-> **postError**(`error`, `request`, `http`): `Promise`\<`Response`\>
+> **postError**(`error`, `request`, `http`): `Promise`\<`Response` \| `undefined`\>
 
-Defined in: packages/blue-http/src/http.ts:91
+Defined in: packages/blue-http/src/http.ts:92
 
 Recovers from a transport or interceptor error.
 
@@ -42,6 +42,6 @@ The HTTP client executing the request.
 
 #### Returns
 
-`Promise`\<`Response`\>
+`Promise`\<`Response` \| `undefined`\>
 
 A replacement response, or `undefined` to keep the failure.

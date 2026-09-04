@@ -24,6 +24,7 @@ A Factory must be supplied to the class constructor.
 - [`QueryValueMethodArgumentResolver`](QueryValueMethodArgumentResolver.md)
 - [`PathValueMethodArgumentResolver`](PathValueMethodArgumentResolver.md)
 - [`AttributeValueMethodArgumentResolver`](AttributeValueMethodArgumentResolver.md)
+- [`AbstractPlatformArgumentResolver`](AbstractPlatformArgumentResolver.md)
 
 ## Implements
 
@@ -43,7 +44,7 @@ Creates an instance of AbstractNamedValueMethodArgumentResolver.
 
 ##### factory?
 
-`Factory`
+`Factory` \| `null`
 
 A factory for resolving values.
 

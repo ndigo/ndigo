@@ -8,7 +8,7 @@
 
 > `const` **likeResponseAwareHTTPInterceptor**: (`value`) => `value is ResponseAwareHTTPInterceptor<HTTPInit>`
 
-Defined in: packages/blue-http/src/http.ts:327
+Defined in: packages/blue-http/src/http.ts:328
 
 Tests whether a value exposes `postResponse()`.
 

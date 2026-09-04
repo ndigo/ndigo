@@ -6,7 +6,7 @@
 
 # Class: EntriesIterator\<T\>
 
-Defined in: packages/blue-core/src/iterable.ts:182
+Defined in: packages/blue-core/src/iterable.ts:184
 
 An iterator for the key-value pairs (entries) of an object or collection.
 It can adapt to objects with an `entries()` method, or fall back to `Object.entries()`.
@@ -33,7 +33,7 @@ The type of values in the entries.
 
 > **new EntriesIterator**\<`T`\>(`target`): `EntriesIterator`\<`T`\>
 
-Defined in: packages/blue-core/src/iterable.ts:189
+Defined in: packages/blue-core/src/iterable.ts:191
 
 Creates an instance of EntriesIterator.
 
@@ -55,7 +55,7 @@ The object or collection to iterate over its entries.
 
 > **\[iterator\]**(): `IterableIterator`\<[`Entry`](../type-aliases/Entry.md)\<`T`\>\>
 
-Defined in: packages/blue-core/src/iterable.ts:200
+Defined in: packages/blue-core/src/iterable.ts:202
 
 Returns the iterator itself, making this class compliant with the iterable protocol.
 
@@ -75,7 +75,7 @@ The current `EntriesIterator` instance.
 
 > **next**(): `IteratorResult`\<[`Entry`](../type-aliases/Entry.md)\<`T`\>\>
 
-Defined in: packages/blue-core/src/iterable.ts:208
+Defined in: packages/blue-core/src/iterable.ts:210
 
 Returns the next entry in the iteration sequence.
 

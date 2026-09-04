@@ -6,7 +6,9 @@
 
 # Class: RouteConditionHolder
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:237
+Defined in: packages/blue-dispatcher/src/route-condition.ts:215
+
+The discrete items a route condition is composed of, e.g. URL patterns, param expressions, etc.
 
 ## Extends
 
@@ -18,7 +20,7 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:237
 
 > **new RouteConditionHolder**(`routeCondition?`): `RouteConditionHolder`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:256
+Defined in: packages/blue-dispatcher/src/route-condition.ts:234
 
 Create a holder for an optional condition.
 
@@ -26,7 +28,7 @@ Create a holder for an optional condition.
 
 ##### routeCondition?
 
-[`RouteCondition`](../interfaces/RouteCondition.md) = `null`
+[`RouteCondition`](../interfaces/RouteCondition.md)\<`any`\> \| `null`
 
 The wrapped condition, if any.
 
@@ -44,7 +46,7 @@ The wrapped condition, if any.
 
 > `readonly` **condition**: [`RouteCondition`](../interfaces/RouteCondition.md)
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:241
+Defined in: packages/blue-dispatcher/src/route-condition.ts:219
 
 Wrapped condition, when present.
 
@@ -56,7 +58,7 @@ Wrapped condition, when present.
 
 > **get** **isEmpty**(): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:168
+Defined in: packages/blue-dispatcher/src/route-condition.ts:153
 
 Whether this condition contains no content.
 
@@ -76,7 +78,7 @@ Whether this condition contains no content.
 
 > **get** **content**(): [`RouteCondition`](../interfaces/RouteCondition.md)\<`any`\>[]
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:243
+Defined in: packages/blue-dispatcher/src/route-condition.ts:221
 
 ##### Returns
 
@@ -94,7 +96,7 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:243
 
 > **get** **infix**(): `string`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:247
+Defined in: packages/blue-dispatcher/src/route-condition.ts:225
 
 ##### Returns
 
@@ -110,7 +112,7 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:247
 
 > **equals**(`value`): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:181
+Defined in: packages/blue-dispatcher/src/route-condition.ts:166
 
 Compare this condition to another value.
 
@@ -138,7 +140,7 @@ The value to compare.
 
 > **toJSON**(): `JSONValue`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:196
+Defined in: packages/blue-dispatcher/src/route-condition.ts:181
 
 Serialize the condition to JSON.
 
@@ -158,7 +160,7 @@ The string form of the condition.
 
 > **toString**(): `string`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:205
+Defined in: packages/blue-dispatcher/src/route-condition.ts:190
 
 Convert the condition to its textual form.
 
@@ -178,7 +180,7 @@ The condition string.
 
 > **merge**(`other`): `RouteConditionHolder`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:277
+Defined in: packages/blue-dispatcher/src/route-condition.ts:255
 
 Merge two holders, preserving empty holders when possible.
 
@@ -204,9 +206,9 @@ A merged holder.
 
 ### getMatchingCondition()
 
-> **getMatchingCondition**(`route`): `RouteConditionHolder`
+> **getMatchingCondition**(`route`): `RouteConditionHolder` \| `null`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:296
+Defined in: packages/blue-dispatcher/src/route-condition.ts:274
 
 Return a holder for the wrapped condition when it matches the route.
 
@@ -220,7 +222,7 @@ The current route.
 
 #### Returns
 
-`RouteConditionHolder`
+`RouteConditionHolder` \| `null`
 
 A matching holder, or `null`.
 
@@ -234,7 +236,7 @@ A matching holder, or `null`.
 
 > **compareTo**(`value`, `route?`): `number`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:311
+Defined in: packages/blue-dispatcher/src/route-condition.ts:289
 
 Compare two holders by comparing their wrapped conditions.
 
@@ -248,7 +250,7 @@ The holder to compare.
 
 ##### route?
 
-`Route`
+`Route`\<`Record`\<`string`, `string`\>\>
 
 The route used to break ties, if needed.
 

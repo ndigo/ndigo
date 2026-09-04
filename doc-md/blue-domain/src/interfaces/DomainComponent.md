@@ -196,7 +196,7 @@ The registered listeners.
 
 ### on()
 
-> **on**(`type`, `listener`): `this`
+> **on**(`type`, `listener?`): `this`
 
 Defined in: packages/blue-context/lib/event-emitter.d.ts:68
 
@@ -206,11 +206,11 @@ Adds a listener for an event type.
 
 ##### type
 
-`EventType`
+`EventType` \| `EventHandlers`
 
 The event type.
 
-##### listener
+##### listener?
 
 `Function`
 

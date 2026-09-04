@@ -6,11 +6,11 @@
 
 # Function: configureStrictBrowserArgumentResolvers()
 
-> **configureStrictBrowserArgumentResolvers**(`applicationContext`, `options?`): `HandlerMethodArgumentResolver`[]
+> **configureStrictBrowserArgumentResolvers**(`applicationContext`, `_options?`): `HandlerMethodArgumentResolver`[]
 
-Defined in: packages/blue-platform-web/src/configure-strict-argument-resolvers.ts:26
+Defined in: packages/blue-platform-web/src/configure-strict-argument-resolvers.ts:16
 
-Registers browser argument resolvers with strict named converter lookup enabled.
+Registers browser argument resolvers.
 
 ## Parameters
 
@@ -20,11 +20,11 @@ Registers browser argument resolvers with strict named converter lookup enabled.
 
 The application context to configure.
 
-### options?
+### \_options?
 
-[`StrictBrowserArgumentResolverOptions`](../type-aliases/StrictBrowserArgumentResolverOptions.md) = `{}`
+`any`
 
-Resolver overrides and optional registry registration.
+Reserved for future use.
 
 ## Returns
 

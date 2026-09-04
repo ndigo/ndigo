@@ -6,7 +6,7 @@
 
 # Class: MetadataHandlerAdapter
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:133
+Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:123
 
 Implementation of [AbstractHandlerMethodAdapter](AbstractHandlerMethodAdapter.md) that supports HandlerMethod\|HandlerMethods decorated with `route:mapping` metadata. This is usually applied using RouteMapping\|@RouteMapping.
 
@@ -40,9 +40,9 @@ module:core.Initializable
 
 ### applicationContext
 
-> **applicationContext**: `ApplicationContext`
+> **applicationContext**: `ApplicationContext` \| `null`
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:66
+Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:67
 
 Application context used to discover handlers and argument resolvers.
 
@@ -56,7 +56,7 @@ Application context used to discover handlers and argument resolvers.
 
 > **argumentResolvers**: [`HandlerMethodArgumentResolver`](../interfaces/HandlerMethodArgumentResolver.md)[]
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:137
+Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:127
 
 Argument resolvers used to convert route values into handler method arguments.
 
@@ -66,7 +66,7 @@ Argument resolvers used to convert route values into handler method arguments.
 
 > **handlers**: `any`[]
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:142
+Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:132
 
 Cached handler descriptors discovered from application context metadata.
 
@@ -78,7 +78,7 @@ Cached handler descriptors discovered from application context metadata.
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:144
+Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:134
 
 ##### Returns
 
@@ -96,7 +96,7 @@ Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:144
 
 > **get** **defaultArgumentResolvers**(): [`HandlerMethodArgumentResolver`](../interfaces/HandlerMethodArgumentResolver.md)[]
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:153
+Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:143
 
 Built-in argument resolvers used when no custom resolver collection is present.
 
@@ -114,7 +114,7 @@ The default resolver chain.
 
 > **get** **\[$aware\]**(): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:162
+Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:152
 
 A symbol indicating that the value is aware.
 
@@ -162,15 +162,15 @@ The ApplicationContext to be used by this object.
 
 > **supports**(`handler`): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:72
+Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:73
 
-Determine whether this adapter can handle the given handler instance.
+Tests whether this adapter supports the given handler.
 
 #### Parameters
 
 ##### handler
 
-`any`
+`object` \| `undefined`
 
 The handler instance to test.
 
@@ -178,7 +178,7 @@ The handler instance to test.
 
 `boolean`
 
-`true` when the handler is supported; otherwise `false`.
+`true` when the handler is supported.
 
 #### Inherited from
 
@@ -190,7 +190,7 @@ The handler instance to test.
 
 > **handle**(`route`, `handler`): `Promise`\<[`ModelAndView`](ModelAndView.md)\>
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:173
+Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:163
 
 Execute a metadata-mapped handler method.
 
@@ -204,7 +204,7 @@ The current route.
 
 ##### handler
 
-`RouteHandlerMethod`
+[`RouteHandlerMethod`](RouteHandlerMethod.md) \| `undefined`
 
 The resolved route handler method.
 
@@ -224,7 +224,7 @@ The model and view produced by the handler.
 
 > **init**(...`args`): `void`
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:184
+Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:177
 
 Discover handler methods and argument resolvers from the application context.
 
@@ -250,15 +250,15 @@ Reserved for framework initialization hooks.
 
 > **\_supports**(`handler`): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:233
+Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:238
 
-Metadata adapters only support RouteHandlerMethod instances.
+Metadata adapters only support [RouteHandlerMethod](RouteHandlerMethod.md) instances.
 
 #### Parameters
 
 ##### handler
 
-`RouteHandlerMethod`
+[`RouteHandlerMethod`](RouteHandlerMethod.md)
 
 The handler instance to test.
 

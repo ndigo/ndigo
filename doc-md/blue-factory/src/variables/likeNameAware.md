@@ -8,13 +8,13 @@
 
 > `const` **likeNameAware**: (`value`) => `value is NameAware`
 
-Defined in: packages/blue-factory/src/aware.ts:118
+Defined in: packages/blue-factory/src/aware.ts:113
 
 ## Parameters
 
 ### value
 
-`any`
+`unknown`
 
 ## Returns
 

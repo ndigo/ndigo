@@ -8,7 +8,7 @@
 
 > `const` **length**: (`params`) => (`value`, `context`) => `void`
 
-Defined in: packages/blue-validate/src/decorators.ts:349
+Defined in: packages/blue-validate/src/decorators.ts:412
 
 TC39 Stage 3 decorator that validates the length of a string or array property.
 

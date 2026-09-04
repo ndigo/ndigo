@@ -6,7 +6,7 @@
 
 # Variable: INTERNAL\_SERVER\_ERROR
 
-> `const` **INTERNAL\_SERVER\_ERROR**: `ResponseStatus`
+> `const` **INTERNAL\_SERVER\_ERROR**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
 Defined in: packages/blue-http/src/response-statuses.ts:298
 

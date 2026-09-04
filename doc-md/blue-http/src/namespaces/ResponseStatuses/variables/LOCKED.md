@@ -6,7 +6,7 @@
 
 # Variable: LOCKED
 
-> `const` **LOCKED**: `ResponseStatus`
+> `const` **LOCKED**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
 Defined in: packages/blue-http/src/response-statuses.ts:254
 

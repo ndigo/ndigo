@@ -6,7 +6,7 @@
 
 # Variable: UNPROCESSABLE\_ENTITY
 
-> `const` **UNPROCESSABLE\_ENTITY**: `ResponseStatus`
+> `const` **UNPROCESSABLE\_ENTITY**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
 Defined in: packages/blue-http/src/response-statuses.ts:249
 

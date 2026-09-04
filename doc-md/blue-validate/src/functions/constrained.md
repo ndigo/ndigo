@@ -8,7 +8,7 @@
 
 > **constrained**(`config`): (`value`, `context`) => `void`
 
-Defined in: packages/blue-validate/src/decorators.ts:264
+Defined in: packages/blue-validate/src/decorators.ts:327
 
 TC39 Stage 3 decorator that applies a named validation constraint to a class field.
 This decorator allows for dynamic application of any registered constraint.

@@ -8,6 +8,6 @@
 
 > `const` **patternCache**: `Map`\<`string`, `WildcardExp`\>
 
-Defined in: packages/blue-http/src/http.ts:278
+Defined in: packages/blue-http/src/http.ts:279
 
 Clones request settings and locks them before fetch executes.

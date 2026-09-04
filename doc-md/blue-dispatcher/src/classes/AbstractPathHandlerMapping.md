@@ -6,7 +6,7 @@
 
 # Abstract Class: AbstractPathHandlerMapping
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:745
+Defined in: packages/blue-dispatcher/src/abstract-path-handler-mapping.ts:17
 
 Base class for path-based handler mappings.
 
@@ -29,7 +29,7 @@ Base class for path-based handler mappings.
 
 > **new AbstractPathHandlerMapping**(): `AbstractPathHandlerMapping`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:761
+Defined in: packages/blue-dispatcher/src/abstract-path-handler-mapping.ts:33
 
 Create a path handler mapping with empty path registrations.
 
@@ -47,7 +47,7 @@ Create a path handler mapping with empty path registrations.
 
 > **applicationContext**: `ApplicationContext`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:351
+Defined in: packages/blue-dispatcher/src/abstract-handler-mapping.ts:60
 
 Application context used to resolve named handlers.
 
@@ -59,9 +59,9 @@ Application context used to resolve named handlers.
 
 ### defaultHandler
 
-> **defaultHandler**: `any`
+> **defaultHandler**: `object` \| `null` = `null`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:356
+Defined in: packages/blue-dispatcher/src/abstract-handler-mapping.ts:65
 
 Default handler used when no specific mapping matches.
 
@@ -75,7 +75,7 @@ Default handler used when no specific mapping matches.
 
 > **interceptors**: [`RouteHandlerInterceptor`](../interfaces/RouteHandlerInterceptor.md)[]
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:361
+Defined in: packages/blue-dispatcher/src/abstract-handler-mapping.ts:70
 
 Interceptors applied to matched handlers.
 
@@ -89,7 +89,7 @@ Interceptors applied to matched handlers.
 
 > **pathMatcher**: `PathMatcher`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:366
+Defined in: packages/blue-dispatcher/src/abstract-handler-mapping.ts:75
 
 Path matcher used by path-based mappings.
 
@@ -101,9 +101,9 @@ Path matcher used by path-based mappings.
 
 ### rootHandler
 
-> **rootHandler**: `object`
+> **rootHandler**: `object` \| `null` = `null`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:749
+Defined in: packages/blue-dispatcher/src/abstract-path-handler-mapping.ts:21
 
 Handler mapped to the root path.
 
@@ -111,9 +111,9 @@ Handler mapped to the root path.
 
 ### useTrailingSlashMatch
 
-> **useTrailingSlashMatch**: `boolean`
+> **useTrailingSlashMatch**: `boolean` = `false`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:754
+Defined in: packages/blue-dispatcher/src/abstract-path-handler-mapping.ts:26
 
 Whether trailing slash variants should be considered matches.
 
@@ -153,7 +153,7 @@ The name of the value in the factory.
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:373
+Defined in: packages/blue-dispatcher/src/abstract-handler-mapping.ts:82
 
 ##### Returns
 
@@ -169,7 +169,7 @@ Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:373
 
 > **setApplicationContext**(`applicationContext`): `void`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:407
+Defined in: packages/blue-dispatcher/src/abstract-handler-mapping.ts:101
 
 Store the application context for later handler resolution.
 
@@ -193,9 +193,9 @@ The application context to use.
 
 ### getHandler()
 
-> **getHandler**(`route`): `RouteHandlerExecutionChain`
+> **getHandler**(`route`): `RouteHandlerExecutionChain` \| `null`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:423
+Defined in: packages/blue-dispatcher/src/abstract-handler-mapping.ts:117
 
 Resolve a route to a handler execution chain.
 
@@ -209,7 +209,7 @@ The current route.
 
 #### Returns
 
-`RouteHandlerExecutionChain`
+`RouteHandlerExecutionChain` \| `null`
 
 The execution chain, or `null` when no handler matches.
 
@@ -227,7 +227,7 @@ The execution chain, or `null` when no handler matches.
 
 > `protected` **\_getHandlerExecutionChain**(`handler`, `route`): `RouteHandlerExecutionChain`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:445
+Defined in: packages/blue-dispatcher/src/abstract-handler-mapping.ts:142
 
 Build an execution chain for a resolved handler and route.
 
@@ -259,9 +259,9 @@ The execution chain to invoke.
 
 ### lookUpHandler()
 
-> **lookUpHandler**(`path`, `route`): `RouteHandlerExecutionChain`
+> **lookUpHandler**(`path`, `route`): `RouteHandlerExecutionChain` \| `null`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:775
+Defined in: packages/blue-dispatcher/src/abstract-path-handler-mapping.ts:47
 
 Look up the handler for a path.
 
@@ -281,7 +281,7 @@ The current route.
 
 #### Returns
 
-`RouteHandlerExecutionChain`
+`RouteHandlerExecutionChain` \| `null`
 
 The resolved execution chain, or `null`.
 
@@ -289,9 +289,9 @@ The resolved execution chain, or `null`.
 
 ### match()
 
-> **match**(`route`, `pattern`): [`RouteMatchResult`](RouteMatchResult.md)
+> **match**(`route`, `pattern`): [`RouteMatchResult`](RouteMatchResult.md) \| `null`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:832
+Defined in: packages/blue-dispatcher/src/abstract-path-handler-mapping.ts:108
 
 Check whether a route matches a path pattern.
 
@@ -311,7 +311,7 @@ The pattern to test.
 
 #### Returns
 
-[`RouteMatchResult`](RouteMatchResult.md)
+[`RouteMatchResult`](RouteMatchResult.md) \| `null`
 
 A match result, or `null`.
 
@@ -323,9 +323,9 @@ A match result, or `null`.
 
 ### \_getHandler()
 
-> `protected` **\_getHandler**(`route`): `RouteHandlerExecutionChain`
+> `protected` **\_getHandler**(`route`): `RouteHandlerExecutionChain` \| `null`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:852
+Defined in: packages/blue-dispatcher/src/abstract-path-handler-mapping.ts:128
 
 Resolve the most appropriate handler for a route.
 
@@ -339,7 +339,7 @@ The current route.
 
 #### Returns
 
-`RouteHandlerExecutionChain`
+`RouteHandlerExecutionChain` \| `null`
 
 The execution chain, or `null`.
 
@@ -353,7 +353,7 @@ The execution chain, or `null`.
 
 > `protected` **\_registerHandler**(`path`, `handler`): `void`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:877
+Defined in: packages/blue-dispatcher/src/abstract-path-handler-mapping.ts:155
 
 Register a handler against one or more paths.
 
@@ -381,11 +381,9 @@ The handler instance or application-context name.
 
 > **setName**(`name`): `void`
 
-Defined in: packages/blue-factory/lib/aware.d.ts:38
+Defined in: packages/blue-factory/lib/aware.d.ts:36
 
-Set the name of the value in the factory that created it.
-
-Invoked after population of normal value properties but before an `init` callback.
+Sets the name of the value in the factory.
 
 #### Parameters
 
@@ -393,7 +391,7 @@ Invoked after population of normal value properties but before an `init` callbac
 
 `string`
 
-The name of the value in the factory.
+The name to set.
 
 #### Returns
 

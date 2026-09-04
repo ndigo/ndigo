@@ -8,7 +8,7 @@
 
 > **AsConditionalEventEmitter**\<`T`\>(`superclass`): `Constructable`\<[`ConditionalEventEmitter`](../interfaces/ConditionalEventEmitter.md)\> & `T`
 
-Defined in: packages/blue-context/src/event-emitter.ts:640
+Defined in: packages/blue-context/src/event-emitter.ts:227
 
 Adds conditional and finite-listener helpers to a base class.
 

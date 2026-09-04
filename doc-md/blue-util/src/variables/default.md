@@ -8,7 +8,7 @@
 
 > **default**: `object`
 
-Defined in: packages/blue-util/src/index.ts:45
+Defined in: packages/blue-util/src/index.ts:31
 
 ## Type Declaration
 
@@ -28,11 +28,8 @@ Defined in: packages/blue-util/src/index.ts:45
 
 > **date**: [`date`](../namespaces/date/README.md)
 
-#### Author
+Returns whether the given date is in the future.
 
-Jeff Rose
+#### Param
 
-#### See
-
- - [https://ramdajs.com/docs/](https://ramdajs.com/docs/)
- - [https://date-fns.org/](https://date-fns.org/)
+#### Returns

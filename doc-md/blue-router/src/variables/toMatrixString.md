@@ -6,6 +6,22 @@
 
 # Variable: toMatrixString
 
-> `const` **toMatrixString**: `any`
+> `const` **toMatrixString**: (`value`) => `string`
 
-Defined in: packages/blue-router/src/index.ts:23
+Defined in: packages/blue-router/src/index.ts:24
+
+Serializes a JSON-like value to a matrix string.
+
+## Parameters
+
+### value
+
+`any`
+
+The value to serialize.
+
+## Returns
+
+`string`
+
+The encoded matrix string.

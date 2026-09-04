@@ -8,7 +8,7 @@
 
 > `const` **naturalComparison**: \<`T`\>(`value1`, `value2`) => `number`
 
-Defined in: packages/blue-core/src/comparable.ts:130
+Defined in: packages/blue-core/src/comparable.ts:129
 
 A comparison function that uses natural ordering (less than operator).
 

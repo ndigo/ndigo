@@ -6,13 +6,9 @@
 
 # Class: DataParameterInterceptor
 
-Defined in: packages/blue-http/src/interceptors/data-parameter-interceptor.ts:76
+Defined in: packages/blue-http/src/interceptors/data-parameter-interceptor.ts:74
 
 Moves `data` into the URL for bodyless methods and into `body` otherwise.
-
-## Implements
-
-module:http.InitializationAwareHTTPInterceptor
 
 ## Implements
 
@@ -34,7 +30,7 @@ module:http.InitializationAwareHTTPInterceptor
 
 > **preInit**(`url`, `settings`): `boolean`
 
-Defined in: packages/blue-http/src/interceptors/data-parameter-interceptor.ts:83
+Defined in: packages/blue-http/src/interceptors/data-parameter-interceptor.ts:81
 
 module:http.DataParameterInterceptor#preInit
 

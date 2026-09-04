@@ -8,7 +8,7 @@
 
 > **AsModuleResourceLoader**\<`T`\>(`superclass`): `Constructable`\<[`ResourceLoader`](../interfaces/ResourceLoader.md)\> & `T`
 
-Defined in: packages/blue-context/src/resource.ts:176
+Defined in: packages/blue-context/src/resource.ts:166
 
 ## Type Parameters
 
@@ -25,11 +25,3 @@ Defined in: packages/blue-context/src/resource.ts:176
 ## Returns
 
 `Constructable`\<[`ResourceLoader`](../interfaces/ResourceLoader.md)\> & `T`
-
-## See
-
-module:context.AsModuleResourceLoader
-
-## Implements
-
-module:context.ResourceLoader

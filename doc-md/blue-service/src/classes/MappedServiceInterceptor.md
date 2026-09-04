@@ -6,7 +6,7 @@
 
 # Class: MappedServiceInterceptor
 
-Defined in: packages/blue-service/src/service.ts:193
+Defined in: packages/blue-service/src/service.ts:197
 
 Wraps an interceptor so it only applies to matching request paths.
 
@@ -16,7 +16,7 @@ Wraps an interceptor so it only applies to matching request paths.
 
 > **new MappedServiceInterceptor**(`interceptor`, `includePatterns`, `excludePatterns?`): `MappedServiceInterceptor`
 
-Defined in: packages/blue-service/src/service.ts:209
+Defined in: packages/blue-service/src/service.ts:213
 
 Creates a path-mapped interceptor.
 
@@ -52,7 +52,7 @@ Glob patterns that opt the interceptor out.
 
 > **get** **interceptor**(): [`ServiceInterceptor`](../type-aliases/ServiceInterceptor.md)
 
-Defined in: packages/blue-service/src/service.ts:198
+Defined in: packages/blue-service/src/service.ts:202
 
 ##### Returns
 
@@ -64,7 +64,7 @@ Defined in: packages/blue-service/src/service.ts:198
 
 > **matches**(`path`, `matcher?`): `boolean`
 
-Defined in: packages/blue-service/src/service.ts:222
+Defined in: packages/blue-service/src/service.ts:226
 
 Checks whether a path matches the configured include and exclude patterns.
 
@@ -94,7 +94,7 @@ Optional pattern matcher used for comparisons.
 
 > **setExcludePatterns**(`excludePatterns?`): `void`
 
-Defined in: packages/blue-service/src/service.ts:240
+Defined in: packages/blue-service/src/service.ts:244
 
 Replaces the exclude pattern list.
 
@@ -116,7 +116,7 @@ Glob patterns to skip.
 
 > **setIncludePatterns**(`includePatterns?`): `void`
 
-Defined in: packages/blue-service/src/service.ts:249
+Defined in: packages/blue-service/src/service.ts:253
 
 Replaces the include pattern list.
 

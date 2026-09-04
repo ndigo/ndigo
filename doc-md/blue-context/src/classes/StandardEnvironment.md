@@ -6,7 +6,7 @@
 
 # Class: StandardEnvironment
 
-Defined in: packages/blue-context/src/environment.ts:272
+Defined in: packages/blue-context/src/environment.ts:267
 
 Default environment implementation used by application contexts.
 
@@ -258,7 +258,7 @@ The property name to resolve.
 
 ### getProperty()
 
-> **getProperty**(`key`, `defaultValue?`): `JSONValue`
+> **getProperty**(`key`, `defaultValue?`): `JSONValue` \| `undefined`
 
 Defined in: packages/blue-context/src/environment.ts:170
 
@@ -280,7 +280,7 @@ The value to return when no property is found.
 
 #### Returns
 
-`JSONValue`
+`JSONValue` \| `undefined`
 
 The resolved property value or the default value.
 

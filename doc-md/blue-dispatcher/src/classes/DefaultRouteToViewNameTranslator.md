@@ -6,11 +6,9 @@
 
 # Class: DefaultRouteToViewNameTranslator
 
-Defined in: packages/blue-dispatcher/src/route-to-view-name-translator.ts:26
+Defined in: packages/blue-dispatcher/src/route-to-view-name-translator.ts:23
 
-## Implements
-
-module:router.RouteToViewNameTranslator
+Translates a route into a view name.
 
 ## Implements
 
@@ -22,7 +20,7 @@ module:router.RouteToViewNameTranslator
 
 > **new DefaultRouteToViewNameTranslator**(): `DefaultRouteToViewNameTranslator`
 
-Defined in: packages/blue-dispatcher/src/route-to-view-name-translator.ts:45
+Defined in: packages/blue-dispatcher/src/route-to-view-name-translator.ts:42
 
 Create a translator with empty prefix and suffix.
 
@@ -36,7 +34,7 @@ Create a translator with empty prefix and suffix.
 
 > **prefix**: `string`
 
-Defined in: packages/blue-dispatcher/src/route-to-view-name-translator.ts:30
+Defined in: packages/blue-dispatcher/src/route-to-view-name-translator.ts:27
 
 Prefix added to every translated view name.
 
@@ -46,7 +44,7 @@ Prefix added to every translated view name.
 
 > **separator**: `string`
 
-Defined in: packages/blue-dispatcher/src/route-to-view-name-translator.ts:35
+Defined in: packages/blue-dispatcher/src/route-to-view-name-translator.ts:32
 
 Separator used when rewriting the route path.
 
@@ -56,7 +54,7 @@ Separator used when rewriting the route path.
 
 > **suffix**: `string`
 
-Defined in: packages/blue-dispatcher/src/route-to-view-name-translator.ts:40
+Defined in: packages/blue-dispatcher/src/route-to-view-name-translator.ts:37
 
 Suffix added to every translated view name.
 
@@ -66,7 +64,7 @@ Suffix added to every translated view name.
 
 > **getViewName**(`route`): `string`
 
-Defined in: packages/blue-dispatcher/src/route-to-view-name-translator.ts:72
+Defined in: packages/blue-dispatcher/src/route-to-view-name-translator.ts:54
 
 Translate a route path into a view name.
 

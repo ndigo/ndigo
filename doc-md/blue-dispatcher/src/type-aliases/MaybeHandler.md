@@ -8,6 +8,6 @@
 
 > **MaybeHandler** = [`Maybe`](Maybe.md)\<`object`\>
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:36
+Defined in: packages/blue-dispatcher/src/\_shared.ts:12
 
 A handler value that may be supplied directly or by name.

@@ -6,13 +6,9 @@
 
 # Class: RadixTree\<V\>
 
-Defined in: packages/blue-core/src/radix-tree.ts:90
+Defined in: packages/blue-core/src/radix-tree.ts:88
 
 A radix tree implementation for URL routing.
-
-## Implements
-
-module:core.Serializable
 
 ## Type Parameters
 
@@ -30,7 +26,7 @@ module:core.Serializable
 
 > **new RadixTree**\<`V`\>(): `RadixTree`\<`V`\>
 
-Defined in: packages/blue-core/src/radix-tree.ts:100
+Defined in: packages/blue-core/src/radix-tree.ts:98
 
 #### Returns
 
@@ -44,7 +40,7 @@ Defined in: packages/blue-core/src/radix-tree.ts:100
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-core/src/radix-tree.ts:96
+Defined in: packages/blue-core/src/radix-tree.ts:94
 
 The string tag for this class.
 
@@ -58,7 +54,7 @@ The string tag for this class.
 
 > **insert**(`pattern`, `value`): `void`
 
-Defined in: packages/blue-core/src/radix-tree.ts:131
+Defined in: packages/blue-core/src/radix-tree.ts:129
 
 Inserts a pattern and its associated value into the radix tree.
 
@@ -84,9 +80,9 @@ The value associated with the pattern.
 
 ### lookup()
 
-> **lookup**(`path`): [`RadixMatch`](../interfaces/RadixMatch.md)\<`V`\>
+> **lookup**(`path`): [`RadixMatch`](../interfaces/RadixMatch.md)\<`V`\> \| `null`
 
-Defined in: packages/blue-core/src/radix-tree.ts:213
+Defined in: packages/blue-core/src/radix-tree.ts:211
 
 Looks up a path in the radix tree and returns the matching value with parameters.
 
@@ -100,7 +96,7 @@ The path to look up.
 
 #### Returns
 
-[`RadixMatch`](../interfaces/RadixMatch.md)\<`V`\>
+[`RadixMatch`](../interfaces/RadixMatch.md)\<`V`\> \| `null`
 
 A match object if found, otherwise null.
 
@@ -110,7 +106,7 @@ A match object if found, otherwise null.
 
 > **delete**(`pattern`): `boolean`
 
-Defined in: packages/blue-core/src/radix-tree.ts:276
+Defined in: packages/blue-core/src/radix-tree.ts:274
 
 Deletes a pattern from the radix tree.
 
@@ -134,7 +130,7 @@ True if the pattern was found and deleted, false otherwise.
 
 > **toJSON**(): [`JSONValue`](../type-aliases/JSONValue.md)
 
-Defined in: packages/blue-core/src/radix-tree.ts:337
+Defined in: packages/blue-core/src/radix-tree.ts:335
 
 Serializes the radix tree to a JSON object.
 

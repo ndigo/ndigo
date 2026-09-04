@@ -6,8 +6,8 @@
 
 # Variable: FiniteNumber
 
-> `const` **FiniteNumber**: `BasicModel`\<`NumberConstructor`\>
+> `const` **FiniteNumber**: `any`
 
-Defined in: packages/blue-model/src/basic.ts:61
+Defined in: packages/blue-model/src/basic.ts:67
 
 Matches finite numeric values.

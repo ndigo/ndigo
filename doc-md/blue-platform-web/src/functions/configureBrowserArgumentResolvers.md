@@ -6,9 +6,9 @@
 
 # Function: configureBrowserArgumentResolvers()
 
-> **configureBrowserArgumentResolvers**(`applicationContext`, `options?`): `HandlerMethodArgumentResolver`[]
+> **configureBrowserArgumentResolvers**(`applicationContext`, `_options?`): `HandlerMethodArgumentResolver`[]
 
-Defined in: packages/blue-platform-web/src/configure-argument-resolvers.ts:38
+Defined in: packages/blue-platform-web/src/configure-argument-resolvers.ts:16
 
 Registers browser-specific argument resolvers into the application context.
 
@@ -18,16 +18,10 @@ Registers browser-specific argument resolvers into the application context.
 
 `ApplicationContext`
 
-The application context to configure.
+### \_options?
 
-### options?
-
-[`BrowserArgumentResolverOptions`](../type-aliases/BrowserArgumentResolverOptions.md) = `{}`
-
-Resolver and converter overrides.
+`any`
 
 ## Returns
 
 `HandlerMethodArgumentResolver`[]
-
-The resolver instances registered with the context.

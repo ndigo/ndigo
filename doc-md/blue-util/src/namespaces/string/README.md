@@ -19,7 +19,6 @@ Jeff Rose
 
 ### Other
 
-- [replaceDiacritics](variables/replaceDiacritics.md)
 - [toCamel](variables/toCamel.md)
 - [toPascal](variables/toPascal.md)
 
@@ -41,3 +40,4 @@ Jeff Rose
 - [encodeHtml](functions/encodeHtml.md)
 - [encodeURIComponent](functions/encodeURIComponent.md)
 - [interpolate](functions/interpolate.md)
+- [replaceDiacritics](functions/replaceDiacritics.md)

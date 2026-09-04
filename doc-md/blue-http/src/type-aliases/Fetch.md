@@ -8,7 +8,7 @@
 
 > **Fetch** = (`input`, `init?`) => `Promise`\<`Response`\>
 
-Defined in: packages/blue-http/src/http.ts:64
+Defined in: packages/blue-http/src/http.ts:65
 
 Fetch implementation signature used by [HTTP](../classes/HTTP.md).
 
@@ -16,7 +16,7 @@ Fetch implementation signature used by [HTTP](../classes/HTTP.md).
 
 ### input
 
-`RequestInfo`
+`RequestInfo` \| `URL`
 
 ### init?
 

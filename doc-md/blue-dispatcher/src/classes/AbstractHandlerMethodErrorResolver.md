@@ -38,7 +38,7 @@ Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:66
 
 ### mappedHandlers
 
-> **mappedHandlers**: `any`[]
+> **mappedHandlers**: `any`[] \| `null`
 
 Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:55
 
@@ -84,7 +84,7 @@ Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:62
 
 ### resolveError()
 
-> **resolveError**(`route`, `handler`, `error`): [`ModelAndView`](ModelAndView.md)
+> **resolveError**(`route`, `handler`, `error`): [`ModelAndView`](ModelAndView.md) \| `null`
 
 Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:79
 
@@ -100,7 +100,7 @@ The current route.
 
 ##### handler
 
-`any`
+`object` \| `null`
 
 The handler that was executing when the error occurred.
 
@@ -112,7 +112,7 @@ The thrown error.
 
 #### Returns
 
-[`ModelAndView`](ModelAndView.md)
+[`ModelAndView`](ModelAndView.md) \| `null`
 
 A resolved model and view, or `null` when this resolver does not apply.
 
@@ -140,7 +140,7 @@ The current route.
 
 ##### handler
 
-`object`
+`object` \| `null`
 
 The candidate handler.
 
@@ -158,7 +158,7 @@ The candidate handler.
 
 ### \_resolveError()
 
-> `protected` **\_resolveError**(`route`, `handler`, `error`): [`ModelAndView`](ModelAndView.md)
+> `protected` **\_resolveError**(`route`, `handler`, `error`): [`ModelAndView`](ModelAndView.md) \| `null`
 
 Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:154
 
@@ -174,7 +174,7 @@ The current route.
 
 ##### handler
 
-`object`
+`object` \| `null`
 
 The wrapped handler method's target.
 
@@ -186,7 +186,7 @@ The thrown error.
 
 #### Returns
 
-[`ModelAndView`](ModelAndView.md)
+[`ModelAndView`](ModelAndView.md) \| `null`
 
 A resolved model and view, or `null`.
 
@@ -198,7 +198,7 @@ A resolved model and view, or `null`.
 
 ### \_resolveHandlerMethodError()
 
-> `abstract` `protected` **\_resolveHandlerMethodError**(`route`, `handlerMethod`, `error`): [`ModelAndView`](ModelAndView.md)
+> `protected` **\_resolveHandlerMethodError**(`route`, `handlerMethod`, `error`): [`ModelAndView`](ModelAndView.md) \| `null`
 
 Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:166
 
@@ -214,7 +214,7 @@ The current route.
 
 ##### handlerMethod
 
-`RouteHandlerMethod`
+[`RouteHandlerMethod`](RouteHandlerMethod.md)
 
 The handler method that failed.
 
@@ -226,6 +226,36 @@ The thrown error.
 
 #### Returns
 
-[`ModelAndView`](ModelAndView.md)
+[`ModelAndView`](ModelAndView.md) \| `null`
 
 A model and view, or `null` when the error is not handled.
+
+***
+
+### \_getErrorHandlerMethod()
+
+> `protected` **\_getErrorHandlerMethod**(`handlerMethod`, `error`): [`ErrorHandlerMethod`](ErrorHandlerMethod.md) \| `null`
+
+Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:191
+
+Find the first error handler method that matches the thrown error.
+
+#### Parameters
+
+##### handlerMethod
+
+[`RouteHandlerMethod`](RouteHandlerMethod.md)
+
+The handler method that failed.
+
+##### error
+
+`Error`
+
+The thrown error.
+
+#### Returns
+
+[`ErrorHandlerMethod`](ErrorHandlerMethod.md) \| `null`
+
+A matching error handler method, or `null`.

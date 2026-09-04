@@ -8,7 +8,7 @@
 
 > `const` **likeInitializationAwareHTTPInterceptor**: (`value`) => `value is InitializationAwareHTTPInterceptor<HTTPInit>`
 
-Defined in: packages/blue-http/src/http.ts:307
+Defined in: packages/blue-http/src/http.ts:308
 
 Tests whether a value exposes `preInit()`.
 

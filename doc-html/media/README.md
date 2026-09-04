@@ -5,18 +5,18 @@ A draft implementation of a ToDoMVC application using BlueJS 3.
 ## Development
 
 ```bash
-pnpm --filter @blue/demo dev
+pnpm --filter @blue/todo dev
 ```
 
 ## Unit Tests
 
 ```bash
-pnpm --filter @blue/demo test
+pnpm --filter @blue/todo test
 ```
 
 ## Browser E2E Tests (Playwright)
 
 ```bash
-pnpm --filter @blue/demo build
-pnpm --filter @blue/demo test:e2e
+pnpm --filter @blue/todo build
+pnpm --filter @blue/todo test:e2e
 ```

@@ -1,11 +1,12 @@
 {
   "name": "@blue/api",
   "version": "0.0.1",
-  "description": "Blue API \u2014 Node server showcase using @blue/platform-node",
+  "description": "Blue API — Node server showcase using @blue/platform-node",
   "type": "module",
   "private": true,
   "scripts": {
-    "start": "tsx src/index.ts"
+    "start": "tsx src/index.ts",
+    "test": "vitest run"
   },
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
@@ -15,12 +16,12 @@
     "@blue/context": "~0.0.1",
     "@blue/core": "~0.0.1",
     "@blue/dispatcher": "~0.0.1",
+    "@blue/http": "~0.0.1",
     "@blue/orm": "~0.0.1",
     "@blue/platform-node": "~0.0.1",
     "@blue/router": "~0.0.1",
     "@blue/util": "~0.0.1",
-    "@tsmetadata/polyfill": "*",
-    "@blue/http": "~0.0.1"
+    "@tsmetadata/polyfill": "*"
   },
   "devDependencies": {
     "@blue/auth-core": "~0.0.1",
@@ -28,11 +29,12 @@
     "@blue/context": "~0.0.1",
     "@blue/core": "~0.0.1",
     "@blue/dispatcher": "~0.0.1",
+    "@blue/http": "~0.0.1",
     "@blue/orm": "~0.0.1",
     "@blue/platform-node": "~0.0.1",
     "@blue/router": "~0.0.1",
+    "@blue/test": "workspace:~",
     "@blue/util": "~0.0.1",
-    "tsx": "*",
-    "@blue/http": "~0.0.1"
+    "tsx": "*"
   }
 }

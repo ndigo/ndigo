@@ -84,12 +84,16 @@ export function bootApp(sources: Function[]): BlueTestApp {
 /**
  * Heuristic: a class is a `@configuration` (constructor-registered) rather than
  * a plain controller when its `@configuration` decorator set the constructor
- * marker in `Symbol.metadata` (`config:constructor`).
+ * marker in the class's `Symbol.metadata` (`config:constructor`).
  */
 function isConfiguration(source: Function): boolean {
-    if (!isFunction(source) || !source.prototype) {
+    if (!isFunction(source)) {
         return false;
     }
-    const meta = source.prototype[Symbol.metadata] as Record<string | symbol, unknown> | undefined;
+    // The class's TC39 Symbol.metadata record, keyed by string/symbol. Not on
+    // Function's static type, so read through a record.
+    const meta = (source as { [Symbol.metadata]?: Record<string | symbol, unknown> })[
+        Symbol.metadata
+    ];
     return meta?.['config:constructor'] === true;
 }

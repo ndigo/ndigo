@@ -1,5 +1,5 @@
 /**
- * @author opencode
+ * @author Jeff Rose
  *
  * Benchmark suite for argument resolution throughput.
  *

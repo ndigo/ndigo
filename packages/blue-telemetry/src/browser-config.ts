@@ -1,5 +1,5 @@
 /**
- * @author opencode
+ * @author Jeff Rose
  */
 
 import { metrics, DiagConsoleLogger, DiagLogLevel, diag } from '@opentelemetry/api';

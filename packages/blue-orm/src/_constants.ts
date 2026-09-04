@@ -1,4 +1,4 @@
-/** @author opencode */
+/** @author Jeff Rose */
 
 export const entityMetadataKey = 'orm:entity';
 export const entityNameMetadataKey = 'orm:entity:name';

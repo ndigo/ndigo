@@ -13,7 +13,6 @@ export * from './route-partition';
 export * from './site-router';
 export * from './path-route';
 export * from './router-interceptor';
-export * from './transaction-manager';
 export * from './route-definition';
 export * from './route-registry';
 // Re-export from @blue/http for backward compatibility

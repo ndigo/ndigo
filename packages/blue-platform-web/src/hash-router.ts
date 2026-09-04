@@ -5,8 +5,6 @@ import { AbstractRouter, RouterCallback } from '@blue/router';
 import { RingBuffer } from '@blue/core';
 import { RouterExecutionChain } from '@blue/router';
 import { MappedRouterInterceptor, RouterInterceptor } from '@blue/router';
-import { DefaultRouteTransactionManager } from '@blue/platform-web';
-import { RouteTransactionManager } from '@blue/router';
 
 //type RouteSource = 'private' | 'public' | 'external';
 //type RouteResult = 'aborted' | 'completed';
@@ -97,7 +95,6 @@ export class HashRouter extends AbstractRouter {
     #history: RouteHistory;
     #route: PathRoute;
     #lastPublicRoute: string;
-    #transactionManager: RouteTransactionManager;
 
     readonly callback!: RouterCallback;
 
@@ -126,15 +123,6 @@ export class HashRouter extends AbstractRouter {
     }
 
     /**
-     * Gets the `RouteTransactionManager` instance used by the router.
-     * @returns The transaction manager.
-     * @since 1.0.0
-     */
-    get transactionManager(): RouteTransactionManager {
-        return this.#transactionManager;
-    }
-
-    /**
      * Creates an instance of `HashRouter`.
      * @param callback - The `RouterCallback` to be invoked when the route changes.
      * @since 1.0.0
@@ -151,7 +139,6 @@ export class HashRouter extends AbstractRouter {
 
         this.#handler = (event: HashChangeEvent) => this._onHashChange(event);
         this.#history = new RingBuffer<RouteTransaction>(256);
-        this.#transactionManager = new DefaultRouteTransactionManager();
 
         const currentRoute = removeFirstCharacter(location.hash) || '/',
             routeTx = new RouteTransaction(currentRoute, RouteAccess.PUBLIC, RouteSource.EXTERNAL);
@@ -264,13 +251,11 @@ export class HashRouter extends AbstractRouter {
     protected async _setRoute(newRoute: string, syncHash = true): Promise<boolean> {
         const route = new PathRoute(newRoute),
             oldRoute = syncHash ? this.route : this.#lastPublicRoute,
-            status = this.#transactionManager.getTransaction(route, oldRoute, syncHash),
             chain = new RouterExecutionChain(this._resolveInterceptors(route));
 
         try {
             if ((await chain.applyPreHandle(route)) === false) {
-                status.setRollbackOnly();
-                this.#transactionManager.rollback(status);
+                this._restoreHash(oldRoute, syncHash);
                 return false;
             }
 
@@ -278,14 +263,22 @@ export class HashRouter extends AbstractRouter {
 
             await chain.applyPostHandle(route);
 
-            this.#transactionManager.commit(status);
-
             return true;
         } catch {
-            this.#transactionManager.rollback(status);
+            this._restoreHash(oldRoute, syncHash);
             return false;
         } finally {
             await chain.applyAfterCompletion(route);
+        }
+    }
+
+    /**
+     * Restores the browser hash to the given route when a navigation is rejected or fails.
+     * Only acts when syncHash is enabled and the hash has actually changed.
+     */
+    private _restoreHash(oldRoute: string, syncHash: boolean): void {
+        if (syncHash && typeof location !== 'undefined' && location.hash !== oldRoute) {
+            location.hash = oldRoute;
         }
     }
 

@@ -27,6 +27,9 @@ export { ModelAndView } from './model-and-view';
 export * from './route-condition';
 export * from './access-control-condition';
 export * from './route-mapping';
+export * from './request-mapping';
+export * from './http-method-mapping';
+export * from './http-method-condition';
 export * from './route-mapping-info';
 export * from './route-parameter';
 export * from './path-pattern-comparator';
@@ -35,5 +38,4 @@ export * from './theme-resolver';
 export { AbstractThemeResolver } from './theme-resolver';
 
 export * from './logging-interceptor';
-export * from './transaction-interceptor';
 export * from './route-handler-interceptor';

@@ -16,7 +16,6 @@ export * from './state-argument-resolver';
 export * from './session-argument-resolver';
 export * from './hash-router';
 export * from './browser-router';
-export * from './route-transaction-manager';
 export * from './offline-interceptor';
 export * from './cors-interceptor';
 export * from './retry-on-offline-interceptor';

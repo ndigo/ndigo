@@ -209,7 +209,9 @@ export class BrowserDispatcher
      * @param mv - The {@link ModelAndView} to apply the default view name to.
      */
     private _applyDefaultViewName(route: Route, mv: ModelAndView) {
-        if (mv && !mv.hasView) {
+        // Only real ModelAndView returns get a default view name — a plain object
+        // return is a JSON API response and must not be mutated with view metadata.
+        if (mv instanceof ModelAndView && !mv.hasView) {
             const defaultViewName = this.getDefaultViewName(route);
             if (defaultViewName) {
                 mv.viewName = defaultViewName;

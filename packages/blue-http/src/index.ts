@@ -62,13 +62,14 @@
 
 import * as HTTPHeaders from './http-headers';
 import * as ResponseStatuses from './response-statuses';
+import ResponseStatus from './response-status';
 
 export * from './http';
 export * from './http-header';
 export * from './interceptors';
-export * from './response-status';
+export { ResponseStatus };
+export { ResponseStatuses };
 export * from './transformers';
 export { HTTPHeaders };
-export { ResponseStatuses };
 export { default as QueryString } from './query-string';
 export { default as MatrixString } from './matrix-string';

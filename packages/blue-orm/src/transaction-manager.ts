@@ -1,12 +1,12 @@
-/** @author opencode */
+/** @author Jeff Rose */
+
+import { InMemoryDataSource } from './data-source';
 
 /**
  * Manages transaction boundaries for a data source.
  *
  * Concrete implementations (e.g., `DrizzleTransactionManager`) wrap
  * the underlying database's begin/commit/rollback primitives.
- * `InMemoryTransactionManager` provides a no-op implementation suitable
- * for in-memory stores and testing.
  *
  * Inject a `TransactionManager` into a service class to enable the
  * {@link transactional} decorator to enforce transaction boundaries:
@@ -46,18 +46,25 @@ export interface TransactionManager {
 }
 
 /**
- * An in-memory implementation of {@link TransactionManager}.
+ * An in-memory implementation of {@link TransactionManager} with snapshot
+ * rollback.
  *
- * This implementation does **not** provide rollback semantics
- * (there is no durable state to roll back). It exists to:
- * - Allow code decorated with {@link transactional} to run in tests
- *   without a real database.
- * - Serve as a reference for the `TransactionManager` contract.
+ * On `run()`, the backing {@link InMemoryDataSource}'s stores are snapshotted;
+ * if `fn` throws, the stores are restored to that snapshot (rollback).
+ * Otherwise the transaction commits (writes stay).
  *
  * @since 1.0.0
  */
 export class InMemoryTransactionManager implements TransactionManager {
     #active = false;
+    #dataSource: InMemoryDataSource;
+
+    /**
+     * @param dataSource - The in-memory data source to snapshot/roll back.
+     */
+    constructor(dataSource: InMemoryDataSource) {
+        this.#dataSource = dataSource;
+    }
 
     /** @inheritdoc */
     isActive(): boolean {
@@ -67,8 +74,15 @@ export class InMemoryTransactionManager implements TransactionManager {
     /** @inheritdoc */
     async run<T>(fn: () => T | Promise<T>): Promise<T> {
         this.#active = true;
+        const snapshot = this.#dataSource.snapshot();
         try {
-            return await fn();
+            const result = await fn();
+            // Commit: keep the writes (the snapshot is simply discarded).
+            return result;
+        } catch (error) {
+            // Rollback: rewind the data source to the pre-transaction state.
+            this.#dataSource.restore(snapshot);
+            throw error;
         } finally {
             this.#active = false;
         }

@@ -1,4 +1,4 @@
-/** @author opencode */
+/** @author Jeff Rose */
 
 import '@tsmetadata/polyfill';
 
@@ -117,5 +117,50 @@ describe('InMemoryRepository', () => {
             expect(repository.deleteById(user.id as number)).toBe(true);
             expect(repository.findById(user.id as number)).toBeUndefined();
         });
+    });
+});
+
+describe('derived queries', () => {
+    class UserRepository extends InMemoryRepository<TestUser, number> {
+        findByName(name: string): TestUser[] {
+            return this.derive('findByName', [name]);
+        }
+
+        findByNameAndId(name: string, id: number): TestUser[] {
+            return this.derive('findByNameAndId', [name, id]);
+        }
+    }
+
+    let entityManager: InMemoryEntityManager;
+    let repository: UserRepository;
+
+    beforeEach(() => {
+        const dataSource = new InMemoryDataSource();
+        entityManager = new InMemoryEntityManager(dataSource);
+        repository = new UserRepository(TestUser, entityManager);
+        repository.save(new TestUser('Ada'));
+        repository.save(new TestUser('Grace'));
+    });
+
+    it('findByName returns matching entities', () => {
+        const matches = repository.findByName('Ada');
+        expect(matches).toHaveLength(1);
+        expect(matches[0]?.name).toBe('Ada');
+    });
+
+    it('findByName is case-insensitive on the property, exact on the value', () => {
+        expect(repository.findByName('grace')).toHaveLength(0);
+        expect(repository.findByName('Grace')).toHaveLength(1);
+    });
+
+    it('findByNameAndId requires both conditions', () => {
+        const ada = entityManager.findAll(TestUser).find((u) => u.name === 'Ada');
+        expect(repository.findByNameAndId('Ada', ada!.id as number)).toHaveLength(1);
+        expect(repository.findByNameAndId('Ada', 999)).toHaveLength(0);
+    });
+
+    it('unsupported derived method names throw', () => {
+        expect(() => repository.derive('findByNameLike', ['Ada'])).toThrow(TypeError);
+        expect(() => repository.derive('deleteByName', ['Ada'])).toThrow(TypeError);
     });
 });

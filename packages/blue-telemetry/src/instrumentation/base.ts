@@ -11,6 +11,22 @@ export interface SpanConfig {
     kind: SpanKind;
     /** Optional callback that produces span attributes from the patched instance and arguments. */
     attributes?: (instance: any, args: any[]) => Record<string, any>;
+    /**
+     * Optional callback invoked just before the span ends, with the method's
+     * result (or thrown error) and the patched instance + args — for outcome
+     * attributes like handler name or status.
+     *
+     * @param span - The span about to end.
+     * @param outcome - Either `{ ok: true, value }` or `{ ok: false, error }`.
+     * @param instance - The patched instance.
+     * @param args - The original method arguments.
+     */
+    onEnd?: (
+        span: import('@opentelemetry/api').Span,
+        outcome: { ok: boolean; value?: unknown; error?: unknown },
+        instance: any,
+        args: any[]
+    ) => void;
 }
 
 /**
@@ -114,12 +130,14 @@ export abstract class BaseBlueInstrumentation extends InstrumentationBase {
                         return original
                             .apply(this, args)
                             .then((result: any) => {
+                                config.onEnd?.(span, { ok: true, value: result }, this, args);
                                 span.end();
                                 return result;
                             })
                             .catch((error: Error) => {
                                 span.recordException(error);
                                 span.setStatus({ code: 2 /* ERROR */ });
+                                config.onEnd?.(span, { ok: false, error }, this, args);
                                 span.end();
                                 throw error;
                             });

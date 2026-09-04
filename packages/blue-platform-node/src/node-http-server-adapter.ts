@@ -43,7 +43,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
     async listen(port: number, host: string): Promise<void> {
         return new Promise((resolve) => {
             this.#server = createServer((req: IncomingMessage, res: ServerResponse) => {
-                this.#handle(req, res);
+                void this.handleRequest(req, res);
             });
             this.#server.listen(port, host, resolve);
         });
@@ -56,7 +56,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
         });
     }
 
-    async #handle(req: IncomingMessage, res: ServerResponse): Promise<void> {
+    async handleRequest(req: IncomingMessage, res: ServerResponse): Promise<void> {
         const urlObj = new URL(req.url ?? '/', `http://${req.headers['host'] ?? 'localhost'}`);
         const body = await this.#readBody(req);
 

@@ -1,4 +1,4 @@
-/** @author opencode */
+/** @author Jeff Rose */
 
 // Types and interfaces
 export type { ColumnOptions, ColumnDefinition, EntityMetadata, RelationKind, RelationDefinition, LifecycleEvent, LifecycleHookDefinition } from './metadata';
@@ -19,4 +19,6 @@ export { InMemoryDataSource } from './data-source';
 export { InMemoryEntityManager } from './entity-manager';
 export { InMemoryUnitOfWork } from './unit-of-work';
 export { InMemoryTransactionManager } from './transaction-manager';
-export { AbstractRepository, InMemoryRepository } from './repository';
+export { AbstractRepository, InMemoryRepository, InMemoryDerivedQueryRepository } from './repository';
+export { parseDerivedQuery } from './derived-query-repository';
+export type { DerivedQueryResult } from './derived-query-repository';

@@ -2,7 +2,7 @@
  * @author Jeff Rose
  */
 
-import { Constructable, FrameworkError, likeEnumerable, isPrimitive, entriesIterator } from '@blue/core';
+import { Constructable, FrameworkError, likeEnumerable, isPrimitive, entriesIterator, isShared, getSharedOptions, satisfiesVersion } from '@blue/core';
 import { Destroyable, Initializable, likeDestroyable, likeInitializable } from './lifecycle';
 import { isConstructor, isFunction, isNumber, isString, like } from '@blue/util/types';
 import { Aware, AsAware, likeAwareAnd, likeAware, likeNameAware } from './aware';
@@ -365,7 +365,41 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
             return value;
         }
 
+        // Resolve from parent chain if not found locally
+        if (this.#parent) {
+            const value = (this.#parent as unknown as AbstractFactory).getValue<T>(name, argumentsList);
+            this._checkVersion(nameOrToken, value);
+            return value;
+        }
+
         return this[name];
+    }
+
+    /**
+     * Checks the resolved value's version against the token's requiredVersion and warns on mismatch.
+     */
+    _checkVersion<T>(nameOrToken: string | ContextToken<T>, value: T): void {
+        if (typeof nameOrToken === 'string') {
+            return; // no version info without a token
+        }
+
+        const requiredVersion = nameOrToken.requiredVersion;
+        if (!requiredVersion) {
+            return;
+        }
+
+        const actualVersion = typeof value === 'function' ? getSharedOptions(value as Function)?.version : undefined;
+        if (!actualVersion) {
+            return;
+        }
+
+        // Warn if the actual version doesn't satisfy the token's required range.
+        if (!satisfiesVersion(actualVersion, requiredVersion)) {
+            console.warn(
+                `[blue] Dependency '${nameOrToken.description}' version ${actualVersion} does not satisfy ` +
+                `required range '${requiredVersion}'`
+            );
+        }
     }
 
     /**
@@ -431,7 +465,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
     hasValue(name: string): boolean;
     hasValue<T = any>(nameOrToken: string | ContextToken<T>): boolean {
         const name = typeof nameOrToken === 'string' ? nameOrToken : nameOrToken.description;
-        return this.hasInstance(name) || this.hasConstructor(name);
+        return this.hasInstance(name) || this.hasConstructor(name) || (this.#parent ? (this.#parent as unknown as AbstractFactory).hasValue(name) : false);
     }
 
     /**
@@ -461,6 +495,11 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
     setValue<T = any>(name: string, value: T): void;
     setValue<T = any>(nameOrToken: string | ContextToken<T>, value: T): void {
         const name = typeof nameOrToken === 'string' ? nameOrToken : nameOrToken.description;
+
+        // Skip @shared beans in child factories — resolved from parent chain
+        if (isConstructor(value) && isShared(value as Function) && this.#parent) {
+            return;
+        }
 
         // Constructor
         if (isConstructor(value)) {

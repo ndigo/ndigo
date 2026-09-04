@@ -22,11 +22,20 @@ export class ContextToken<_T> {
     readonly description: string;
 
     /**
+     * Optional semver range for the registered value, e.g. `'^1.0.0'`.
+     * When set, the factory checks the resolved bean's version against this range
+     * and warns on mismatch.
+     */
+    readonly requiredVersion?: string;
+
+    /**
      * Creates a new ContextToken.
      * @param description A descriptive string for the token.
+     * @param options - Optional configuration including `requiredVersion`.
      */
-    constructor(description: string) {
+    constructor(description: string, options?: { requiredVersion?: string }) {
         this.description = description;
+        this.requiredVersion = options?.requiredVersion;
     }
 
     /**

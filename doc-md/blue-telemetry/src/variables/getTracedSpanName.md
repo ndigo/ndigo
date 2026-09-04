@@ -8,7 +8,7 @@
 
 > `const` **getTracedSpanName**: (`target`, `propertyKey`) => `string` \| `undefined` = `getTraced`
 
-Defined in: packages/blue-telemetry/src/trace/decorators.ts:126
+Defined in: packages/blue-telemetry/src/trace/decorators.ts:130
 
 Retrieves the span name associated with a traced method.
 

@@ -36,6 +36,6 @@ A booted app exposing the context and configured dispatcher.
 
 ```ts
 const app = bootApp([HelloConfiguration]);
-const mockMvc = new MockMvc(app);
-const res = await mockMvc.get('/').exec();
+const mockMVC = new MockMVC(app);
+const res = await mockMVC.get('/').exec();
 ```

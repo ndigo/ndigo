@@ -8,7 +8,7 @@
 
 Defined in: packages/blue-test/src/blue-test.ts:22
 
-A booted application ready for MockMvc dispatch.
+A booted application ready for MockMVC dispatch.
 
 ## Properties
 

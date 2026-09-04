@@ -11,9 +11,9 @@ env:
   CI: true
 
 jobs:
-  quality-and-e2e:
+  quality:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 20
 
     steps:
       - name: Checkout
@@ -31,14 +31,40 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build
+      - name: Build libraries
         run: pnpm build
 
-      - name: Test
+      - name: Unit + integration tests
         run: pnpm test
 
       - name: Lint
-        run: pnpm lint -- --ignore-pattern "apps/blue-todo/dist/**" --ignore-pattern "apps/blue-todo/index.js"
+        run: pnpm lint
+
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: [quality]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build the todo app
+        # vite preview (started by Playwright) serves dist/, which is
+        # gitignored — the app must be built before the E2E run.
+        run: pnpm --filter @blue/todo build
 
       - name: Install Playwright browsers
         run: pnpm --filter @blue/todo exec playwright install --with-deps chromium

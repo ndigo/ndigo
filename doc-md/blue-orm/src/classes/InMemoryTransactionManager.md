@@ -6,15 +6,14 @@
 
 # Class: InMemoryTransactionManager
 
-Defined in: packages/blue-orm/src/transaction-manager.ts:59
+Defined in: packages/blue-orm/src/transaction-manager.ts:58
 
-An in-memory implementation of [TransactionManager](../interfaces/TransactionManager.md).
+An in-memory implementation of [TransactionManager](../interfaces/TransactionManager.md) with snapshot
+rollback.
 
-This implementation does **not** provide rollback semantics
-(there is no durable state to roll back). It exists to:
-- Allow code decorated with [transactional](../functions/transactional.md) to run in tests
-  without a real database.
-- Serve as a reference for the `TransactionManager` contract.
+On `run()`, the backing [InMemoryDataSource](InMemoryDataSource.md)'s stores are snapshotted;
+if `fn` throws, the stores are restored to that snapshot (rollback).
+Otherwise the transaction commits (writes stay).
 
 ## Since
 
@@ -28,7 +27,17 @@ This implementation does **not** provide rollback semantics
 
 ### Constructor
 
-> **new InMemoryTransactionManager**(): `InMemoryTransactionManager`
+> **new InMemoryTransactionManager**(`dataSource`): `InMemoryTransactionManager`
+
+Defined in: packages/blue-orm/src/transaction-manager.ts:65
+
+#### Parameters
+
+##### dataSource
+
+[`InMemoryDataSource`](InMemoryDataSource.md)
+
+The in-memory data source to snapshot/roll back.
 
 #### Returns
 
@@ -40,7 +49,7 @@ This implementation does **not** provide rollback semantics
 
 > **isActive**(): `boolean`
 
-Defined in: packages/blue-orm/src/transaction-manager.ts:63
+Defined in: packages/blue-orm/src/transaction-manager.ts:70
 
 Returns `true` if a transaction is currently active.
 
@@ -58,7 +67,7 @@ Returns `true` if a transaction is currently active.
 
 > **run**\<`T`\>(`fn`): `Promise`\<`T`\>
 
-Defined in: packages/blue-orm/src/transaction-manager.ts:68
+Defined in: packages/blue-orm/src/transaction-manager.ts:75
 
 Executes `fn` within a transaction.
 If `fn` throws or rejects, the transaction is rolled back.

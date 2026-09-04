@@ -39,7 +39,7 @@ Defined in: packages/blue-telemetry/src/instrumentation/dispatcher/dispatcher.ts
 
 > `protected` **init**(): `any`[]
 
-Defined in: packages/blue-telemetry/src/instrumentation/base.ts:48
+Defined in: packages/blue-telemetry/src/instrumentation/base.ts:64
 
 #### Returns
 
@@ -57,7 +57,7 @@ Defined in: packages/blue-telemetry/src/instrumentation/base.ts:48
 
 > `protected` **\_patchCount**(`config`): (`original`) => (`this`, ...`args`) => `any`
 
-Defined in: packages/blue-telemetry/src/instrumentation/base.ts:61
+Defined in: packages/blue-telemetry/src/instrumentation/base.ts:77
 
 Returns a synchronous patch function that increments a counter.
 
@@ -81,7 +81,7 @@ Returns a synchronous patch function that increments a counter.
 
 > `protected` **\_patchSync**(`config`): (`original`) => (`this`, ...`args`) => `any`
 
-Defined in: packages/blue-telemetry/src/instrumentation/base.ts:77
+Defined in: packages/blue-telemetry/src/instrumentation/base.ts:93
 
 Returns a synchronous patch function that wraps the original method
 in a span with the given configuration.
@@ -106,7 +106,7 @@ in a span with the given configuration.
 
 > `protected` **\_patchAsync**(`config`): (`original`) => (`this`, ...`args`) => `Promise`\<`any`\>
 
-Defined in: packages/blue-telemetry/src/instrumentation/base.ts:103
+Defined in: packages/blue-telemetry/src/instrumentation/base.ts:119
 
 Returns an asynchronous patch function that wraps the original method
 in an active span with the given configuration.
@@ -149,7 +149,7 @@ Hook for subclasses to wire up `_wrap` calls.
 
 > **disable**(): `void`
 
-Defined in: packages/blue-telemetry/src/instrumentation/dispatcher/dispatcher.ts:31
+Defined in: packages/blue-telemetry/src/instrumentation/dispatcher/dispatcher.ts:45
 
 Hook for subclasses to wire up `_unwrap` calls.
 

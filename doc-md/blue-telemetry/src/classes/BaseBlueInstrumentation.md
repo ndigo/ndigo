@@ -6,7 +6,7 @@
 
 # Abstract Class: BaseBlueInstrumentation
 
-Defined in: packages/blue-telemetry/src/instrumentation/base.ts:37
+Defined in: packages/blue-telemetry/src/instrumentation/base.ts:53
 
 Base class for BlueJS OpenTelemetry instrumentations.
 
@@ -35,7 +35,7 @@ Subclasses only declare:
 
 > **new BaseBlueInstrumentation**(`component`): `BaseBlueInstrumentation`
 
-Defined in: packages/blue-telemetry/src/instrumentation/base.ts:43
+Defined in: packages/blue-telemetry/src/instrumentation/base.ts:59
 
 Creates the instrumentation, deriving the package name from the component.
 
@@ -61,7 +61,7 @@ Short component name (e.g. `'context'`, `'dispatcher'`).
 
 > `protected` **init**(): `any`[]
 
-Defined in: packages/blue-telemetry/src/instrumentation/base.ts:48
+Defined in: packages/blue-telemetry/src/instrumentation/base.ts:64
 
 #### Returns
 
@@ -79,7 +79,7 @@ Defined in: packages/blue-telemetry/src/instrumentation/base.ts:48
 
 > `abstract` **enable**(): `void`
 
-Defined in: packages/blue-telemetry/src/instrumentation/base.ts:53
+Defined in: packages/blue-telemetry/src/instrumentation/base.ts:69
 
 Hook for subclasses to wire up `_wrap` calls.
 
@@ -97,7 +97,7 @@ Hook for subclasses to wire up `_wrap` calls.
 
 > `abstract` **disable**(): `void`
 
-Defined in: packages/blue-telemetry/src/instrumentation/base.ts:56
+Defined in: packages/blue-telemetry/src/instrumentation/base.ts:72
 
 Hook for subclasses to wire up `_unwrap` calls.
 
@@ -115,7 +115,7 @@ Hook for subclasses to wire up `_unwrap` calls.
 
 > `protected` **\_patchCount**(`config`): (`original`) => (`this`, ...`args`) => `any`
 
-Defined in: packages/blue-telemetry/src/instrumentation/base.ts:61
+Defined in: packages/blue-telemetry/src/instrumentation/base.ts:77
 
 Returns a synchronous patch function that increments a counter.
 
@@ -135,7 +135,7 @@ Returns a synchronous patch function that increments a counter.
 
 > `protected` **\_patchSync**(`config`): (`original`) => (`this`, ...`args`) => `any`
 
-Defined in: packages/blue-telemetry/src/instrumentation/base.ts:77
+Defined in: packages/blue-telemetry/src/instrumentation/base.ts:93
 
 Returns a synchronous patch function that wraps the original method
 in a span with the given configuration.
@@ -156,7 +156,7 @@ in a span with the given configuration.
 
 > `protected` **\_patchAsync**(`config`): (`original`) => (`this`, ...`args`) => `Promise`\<`any`\>
 
-Defined in: packages/blue-telemetry/src/instrumentation/base.ts:103
+Defined in: packages/blue-telemetry/src/instrumentation/base.ts:119
 
 Returns an asynchronous patch function that wraps the original method
 in an active span with the given configuration.

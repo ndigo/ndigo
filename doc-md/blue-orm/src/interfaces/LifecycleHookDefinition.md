@@ -10,7 +10,7 @@ Defined in: packages/blue-orm/src/metadata.ts:26
 
 ## Author
 
-opencode
+Jeff Rose
 
 ## Properties
 

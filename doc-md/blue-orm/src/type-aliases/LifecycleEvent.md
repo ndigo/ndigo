@@ -12,4 +12,4 @@ Defined in: packages/blue-orm/src/metadata.ts:24
 
 ## Author
 
-opencode
+Jeff Rose

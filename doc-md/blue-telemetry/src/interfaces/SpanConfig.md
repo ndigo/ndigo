@@ -53,3 +53,55 @@ Optional callback that produces span attributes from the patched instance and ar
 #### Returns
 
 `Record`\<`string`, `any`\>
+
+***
+
+### onEnd?
+
+> `optional` **onEnd?**: (`span`, `outcome`, `instance`, `args`) => `void`
+
+Defined in: packages/blue-telemetry/src/instrumentation/base.ts:24
+
+Optional callback invoked just before the span ends, with the method's
+result (or thrown error) and the patched instance + args — for outcome
+attributes like handler name or status.
+
+#### Parameters
+
+##### span
+
+`Span`
+
+The span about to end.
+
+##### outcome
+
+Either `{ ok: true, value }` or `{ ok: false, error }`.
+
+###### ok
+
+`boolean`
+
+###### value?
+
+`unknown`
+
+###### error?
+
+`unknown`
+
+##### instance
+
+`any`
+
+The patched instance.
+
+##### args
+
+`any`[]
+
+The original method arguments.
+
+#### Returns
+
+`void`

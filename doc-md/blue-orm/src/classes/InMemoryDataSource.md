@@ -186,3 +186,51 @@ Clears all entity stores.
 #### Implementation of
 
 [`DataSource`](../interfaces/DataSource.md).[`clear`](../interfaces/DataSource.md#clear)
+
+***
+
+### snapshot()
+
+> **snapshot**(): `object`
+
+Defined in: packages/blue-orm/src/data-source.ts:114
+
+Captures a deep snapshot of all entity stores (for transaction rollback).
+
+Entity instances are shallow-cloned into new Maps so restore can rewind
+to this exact point.
+
+#### Returns
+
+`object`
+
+An opaque snapshot handle to pass to [restore](#restore).
+
+##### stores
+
+> **stores**: `Map`\<`string`, `Map`\<`unknown`, `unknown`\>\>
+
+***
+
+### restore()
+
+> **restore**(`snapshot`): `void`
+
+Defined in: packages/blue-orm/src/data-source.ts:128
+
+Restores entity stores to a previously captured snapshot, discarding any
+writes made after it. Used for transaction rollback.
+
+#### Parameters
+
+##### snapshot
+
+The snapshot from [snapshot](#restore).
+
+###### stores
+
+`Map`\<`string`, `Map`\<`unknown`, `unknown`\>\>
+
+#### Returns
+
+`void`

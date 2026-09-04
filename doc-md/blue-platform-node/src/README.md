@@ -10,6 +10,7 @@
 
 - [NodeBodyValueMethodArgumentResolver](classes/NodeBodyValueMethodArgumentResolver.md)
 - [NodeCookieValueMethodArgumentResolver](classes/NodeCookieValueMethodArgumentResolver.md)
+- [CsrfInterceptor](classes/CsrfInterceptor.md)
 - [FileSystemResourceLoader](classes/FileSystemResourceLoader.md)
 - [FileSystemRouter](classes/FileSystemRouter.md)
 - [NodeHeaderValueMethodArgumentResolver](classes/NodeHeaderValueMethodArgumentResolver.md)
@@ -28,6 +29,7 @@
 
 ## Interfaces
 
+- [CsrfInterceptorOptions](interfaces/CsrfInterceptorOptions.md)
 - [HTTPServerAdapter](interfaces/HTTPServerAdapter.md)
 - [HTTPServerOptions](interfaces/HTTPServerOptions.md)
 - [NodeRequest](interfaces/NodeRequest.md)
@@ -44,6 +46,7 @@
 
 - [identityArgumentValueConverter](variables/identityArgumentValueConverter.md)
 - [argumentValueConverters](variables/argumentValueConverters.md)
+- [CSRF\_COOKIE](variables/CSRF_COOKIE.md)
 - [NODE\_REQUEST\_ATTRIBUTE](variables/NODE_REQUEST_ATTRIBUTE.md)
 - [NODE\_RESPONSE\_ATTRIBUTE](variables/NODE_RESPONSE_ATTRIBUTE.md)
 

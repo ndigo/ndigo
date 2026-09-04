@@ -12,8 +12,6 @@ Manages transaction boundaries for a data source.
 
 Concrete implementations (e.g., `DrizzleTransactionManager`) wrap
 the underlying database's begin/commit/rollback primitives.
-`InMemoryTransactionManager` provides a no-op implementation suitable
-for in-memory stores and testing.
 
 Inject a `TransactionManager` into a service class to enable the
 [transactional](../functions/transactional.md) decorator to enforce transaction boundaries:

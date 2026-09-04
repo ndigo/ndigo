@@ -92,5 +92,15 @@
     "industry-researcher": {
       "model": "lmstudio/qwen/qwen3.8-27b"
     }
+  },
+  "mcp": {
+    "graft": {
+      "type": "local",
+      "command": [
+        "graft",
+        "mcp"
+      ],
+      "enabled": true
+    }
   }
 }

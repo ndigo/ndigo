@@ -50,6 +50,12 @@ vite.config.d.ts.map
 # Vitest
 .vitest
 
+# App build output (Vite bundles). Committed source only — dist/ and the
+# root index.js bundle are generated per build.
+apps/*/dist/
+apps/*/index.js
+apps/*/index.js.map
+
 # Documentation
 doc/
 docs/
@@ -63,5 +69,7 @@ playwright-report/
 test-results/
 
 # Generated/agent files
-graphify-out/
 .opencode/
+
+# graft's local graph cache — regenerable, not committed (run `graft build`).
+/graft/

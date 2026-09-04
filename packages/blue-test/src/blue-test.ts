@@ -97,3 +97,74 @@ function isConfiguration(source: Function): boolean {
     ];
     return meta?.['config:constructor'] === true;
 }
+
+// Per-module cache: multiple suites in the same worker that boot the same
+// sources share one app. Vitest isolates module state per file by default, so
+// this is safe *within* a file (and across files only when isolate: false).
+const cachedApps = new Map<string, { app: BlueTestApp; refs: number; rawClose: () => void }>();
+
+function sourcesKey(sources: Function[]): string {
+    return sources.map((s) => s.name).join(',');
+}
+
+/**
+ * Boots (or reuses a cached) application for the given sources.
+ *
+ * Within a vitest worker, calling `cachedBootApp` twice with the same sources
+ * returns the SAME app — the context is booted once, not per suite. Each call
+ * increments a reference; release one with {@link releaseCachedApp} (or by
+ * closing the app). The app is closed when the last reference is released.
+ *
+ * NOTE: Vitest isolates modules per file by default, so the cache is scoped to
+ * one worker/file. To share one context across multiple spec files, disable
+ * per-file isolation (e.g. `isolate: false` in the pool config) — a deliberate
+ * safety trade-off: shared mutable context means suites can interfere.
+ *
+ * @param sources - Application configuration and/or controller classes.
+ * @returns A booted app.
+ *
+ * @example
+ * ```ts
+ * const app = cachedBootApp([TodoConfiguration]); // boots once
+ * const app2 = cachedBootApp([TodoConfiguration]); // reuses app
+ * expect(app2).toBe(app); // same context
+ * ```
+ */
+export function cachedBootApp(sources: Function[]): BlueTestApp {
+    const key = sourcesKey(sources);
+    const existing = cachedApps.get(key);
+    if (existing) {
+        existing.refs += 1;
+        return existing.app;
+    }
+
+    const app = bootApp(sources);
+    const rawClose = app.close.bind(app);
+    cachedApps.set(key, { app, refs: 1, rawClose });
+
+    // Closing the app releases one cache reference (and closes on last).
+    app.close = () => {
+        releaseCachedApp(sources);
+    };
+
+    return app;
+}
+
+/**
+ * Releases one cached-app reference for the given sources, closing the app
+ * when the last reference is released.
+ *
+ * @param sources - The sources the app was booted with.
+ */
+export function releaseCachedApp(sources: Function[]): void {
+    const key = sourcesKey(sources);
+    const entry = cachedApps.get(key);
+    if (!entry) {
+        return;
+    }
+    entry.refs -= 1;
+    if (entry.refs <= 0) {
+        entry.rawClose();
+        cachedApps.delete(key);
+    }
+}

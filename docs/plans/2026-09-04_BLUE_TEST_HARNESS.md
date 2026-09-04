@@ -213,10 +213,11 @@ packages/blue-test/
 
 ## 7. Follow-ups (post-MVP)
 
-- **Test context caching** across suites (via Vitest pools/global state) — the
-  assessment's "cache the ApplicationContext" item.
-- **`@blue/test` for browser apps** — a `BrowserMockMVC` that drives
-  `BrowserDispatcher` with a DOM-less view target (mirrors the Node story).
+- ~~**Test context caching**~~ ✅ `cachedBootApp`/`releaseCachedApp` — per-worker
+  dedupe across suites booting the same sources; cross-file sharing requires
+  `isolate: false` (documented safety trade-off).
+- ~~**`@blue/test` for browser apps**~~ ✅ `BrowserMockMVC` + `bootBrowserApp` +
+  `MemoryViewTarget` (drives `BrowserDispatcher`, captures rendered output).
 - **`@blue/test`-driven e2e breadcrumbs** — assert the API contract headlessly,
   then use Playwright only for render assertions.
 - Revisit **automatic Node auto-registration** in `@blue/boot` when packages are

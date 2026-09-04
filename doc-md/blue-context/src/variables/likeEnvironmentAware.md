@@ -8,7 +8,7 @@
 
 > `const` **likeEnvironmentAware**: (`value`) => `value is EnvironmentAware`
 
-Defined in: packages/blue-context/src/environment.ts:248
+Defined in: packages/blue-context/src/environment.ts:243
 
 Returns whether a value can receive an environment.
 

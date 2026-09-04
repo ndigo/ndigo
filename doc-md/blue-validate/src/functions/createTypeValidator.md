@@ -8,7 +8,7 @@
 
 > **createTypeValidator**(`types`, `backend?`): `TypeValidator`
 
-Defined in: packages/blue-validate/src/validator.ts:147
+Defined in: packages/blue-validate/src/validator.ts:122
 
 Factory function to create a new `TypeValidator` instance.
 
@@ -22,7 +22,7 @@ An object mapping type names to their definitions.
 
 ### backend?
 
-[`ValidationBackendName`](../type-aliases/ValidationBackendName.md) = `'native'`
+`"native"` = `'native'`
 
 The name of the validation backend to use.
 

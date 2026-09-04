@@ -6,26 +6,22 @@
 
 # Variable: parseWildcard
 
-> `const` **parseWildcard**: [`Converter`](../type-aliases/Converter.md)\<`string`, `string`\>
+> `const` **parseWildcard**: (`pattern`) => `string`
 
-Defined in: packages/blue-core/src/wildcard-expression.ts:20
+Defined in: packages/blue-core/src/wildcard-expression.ts:27
 
-Parses a wildcard pattern into a bounded regular-expression source string.
+Singleton instance for backward compatibility.
 
-Any string is a valid wildcard pattern — `*` matches any sequence of characters.
-This function always succeeds.
+Converts a value of type `S` to type `T`.
 
-## Param
+## Parameters
 
-Wildcard pattern where `*` matches any sequence of characters.
+### pattern
+
+`string`
 
 ## Returns
 
-A regular-expression source string anchored with `^` and `$`.
+`string`
 
-## Example
-
-```ts
-parseWildcard('foo*bar') // '^foo.*?bar$'
-parseWildcard('*')       // '^.*?$'
-```
+The converted target value.

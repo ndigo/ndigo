@@ -6,7 +6,7 @@
 
 # Class: PatternsRouteCondition
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:421
+Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:423
 
 ## Param
 
@@ -32,7 +32,7 @@ a list of file extensions to consider for path matching
 
 > **new PatternsRouteCondition**(...`patterns`): `PatternsRouteCondition`
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:455
+Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:457
 
 Create a condition from one or more patterns.
 
@@ -56,7 +56,7 @@ Route patterns to use.
 
 > **new PatternsRouteCondition**(`patterns`, `routeCondition?`): `PatternsRouteCondition`
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:462
+Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:464
 
 Create a condition from a prebuilt pattern set.
 
@@ -86,7 +86,7 @@ A template condition to copy matcher settings from.
 
 > **new PatternsRouteCondition**(`patterns`, `pathMatcher`, `useTrailingSlashMatch`, `fileExtensions`): `PatternsRouteCondition`
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:471
+Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:473
 
 Create a condition with explicit matcher settings.
 
@@ -130,7 +130,7 @@ File extensions to treat as suffix patterns.
 
 > `readonly` **pathMatcher**: `PathMatcher`
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:425
+Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:427
 
 Matcher used to compare and merge route patterns.
 
@@ -140,7 +140,7 @@ Matcher used to compare and merge route patterns.
 
 > **fileExtensions**: `string`[]
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:430
+Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:432
 
 File extensions that are treated as matchable suffixes.
 
@@ -150,7 +150,7 @@ File extensions that are treated as matchable suffixes.
 
 > **patterns**: `Set`\<`string`\>
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:435
+Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:437
 
 Route patterns to match against.
 
@@ -160,7 +160,7 @@ Route patterns to match against.
 
 > **useTrailingSlashMatch**: `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:440
+Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:442
 
 Whether a trailing slash may be treated as equivalent.
 
@@ -172,7 +172,7 @@ Whether a trailing slash may be treated as equivalent.
 
 > **get** **isEmpty**(): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:168
+Defined in: packages/blue-dispatcher/src/route-condition.ts:153
 
 Whether this condition contains no content.
 
@@ -192,7 +192,7 @@ Whether this condition contains no content.
 
 > **get** **content**(): `string`[]
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:442
+Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:444
 
 ##### Returns
 
@@ -210,7 +210,7 @@ Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:442
 
 > **get** **infix**(): `string`
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:446
+Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:448
 
 ##### Returns
 
@@ -226,7 +226,7 @@ Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:446
 
 > **equals**(`value`): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:181
+Defined in: packages/blue-dispatcher/src/route-condition.ts:166
 
 Compare this condition to another value.
 
@@ -254,7 +254,7 @@ The value to compare.
 
 > **toJSON**(): `JSONValue`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:196
+Defined in: packages/blue-dispatcher/src/route-condition.ts:181
 
 Serialize the condition to JSON.
 
@@ -274,7 +274,7 @@ The string form of the condition.
 
 > **toString**(): `string`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:205
+Defined in: packages/blue-dispatcher/src/route-condition.ts:190
 
 Convert the condition to its textual form.
 
@@ -320,7 +320,7 @@ A new condition containing the merged patterns.
 
 ### getMatchingCondition()
 
-> **getMatchingCondition**(`route`): `PatternsRouteCondition`
+> **getMatchingCondition**(`route`): `PatternsRouteCondition` \| `null`
 
 Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:616
 
@@ -336,7 +336,7 @@ The current route.
 
 #### Returns
 
-`PatternsRouteCondition`
+`PatternsRouteCondition` \| `null`
 
 A matching condition, or `null`.
 

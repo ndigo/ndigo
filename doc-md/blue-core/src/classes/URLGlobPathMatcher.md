@@ -36,7 +36,7 @@ Maximum number of compiled patterns to cache. Default: 256.
 
 ### getPatternComparator()
 
-> **getPatternComparator**(`path`): `GlobPatternComparator`
+> **getPatternComparator**(`path`): [`Comparator`](../interfaces/Comparator.md)\<`string`\>
 
 Defined in: packages/blue-core/src/path-matcher.ts:239
 
@@ -49,13 +49,13 @@ The approach used depends on the underlying implementation.
 
 ##### path
 
-`any`
+`string`
 
 The full path to use for comparison.
 
 #### Returns
 
-`GlobPatternComparator`
+[`Comparator`](../interfaces/Comparator.md)\<`string`\>
 
 A comparator capable of sorting patterns in order of explicitness.
 
@@ -67,7 +67,7 @@ A comparator capable of sorting patterns in order of explicitness.
 
 ### match()
 
-> **match**(`pattern`, `path`): `any`
+> **match**(`pattern`, `path`): `boolean`
 
 Defined in: packages/blue-core/src/path-matcher.ts:243
 
@@ -77,19 +77,19 @@ Match the given `path` against the given `pattern`, according to this PathMatche
 
 ##### pattern
 
-`any`
+`string`
 
 The pattern to match against.
 
 ##### path
 
-`any`
+`string`
 
 The path to test.
 
 #### Returns
 
-`any`
+`boolean`
 
 Whether or not the `path` matched.
 
@@ -113,13 +113,13 @@ The approach used for combining the two patterns depends on the underlying imple
 
 ##### pattern1
 
-`any`
+`string`
 
 The first pattern.
 
 ##### pattern2
 
-`any`
+`string`
 
 The second pattern.
 

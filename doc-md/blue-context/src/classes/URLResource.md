@@ -6,7 +6,7 @@
 
 # Class: URLResource\<T\>
 
-Defined in: packages/blue-context/src/resource.ts:110
+Defined in: packages/blue-context/src/resource.ts:107
 
 Resource implementation backed by a URL.
 
@@ -26,7 +26,7 @@ Resource implementation backed by a URL.
 
 > **new URLResource**\<`T`\>(`path`, `value`): `URLResource`\<`T`\>
 
-Defined in: packages/blue-context/src/resource.ts:118
+Defined in: packages/blue-context/src/resource.ts:115
 
 #### Parameters
 
@@ -48,7 +48,7 @@ Defined in: packages/blue-context/src/resource.ts:118
 
 > `readonly` **url**: `URL`
 
-Defined in: packages/blue-context/src/resource.ts:111
+Defined in: packages/blue-context/src/resource.ts:108
 
 ***
 
@@ -56,7 +56,7 @@ Defined in: packages/blue-context/src/resource.ts:111
 
 > `readonly` **value**: `T`
 
-Defined in: packages/blue-context/src/resource.ts:112
+Defined in: packages/blue-context/src/resource.ts:109
 
 #### Implementation of
 
@@ -70,7 +70,7 @@ Defined in: packages/blue-context/src/resource.ts:112
 
 > **get** **exists**(): `boolean`
 
-Defined in: packages/blue-context/src/resource.ts:114
+Defined in: packages/blue-context/src/resource.ts:111
 
 ##### Returns
 

@@ -8,7 +8,7 @@
 
 > **decodeURIComponent**(`value`): `string`
 
-Defined in: packages/blue-util/src/string/decode-uri-component.ts:106
+Defined in: packages/blue-util/src/string/decode-uri-component.ts:105
 
 Enhanced decodeURIComponent
 - Decodes + to a space.

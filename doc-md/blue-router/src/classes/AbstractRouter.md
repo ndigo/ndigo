@@ -18,7 +18,6 @@ It includes mechanisms for managing route interceptors.
 ## Extended by
 
 - [`SiteRouter`](SiteRouter.md)
-- [`HashRouter`](HashRouter.md)
 
 ## Implements
 

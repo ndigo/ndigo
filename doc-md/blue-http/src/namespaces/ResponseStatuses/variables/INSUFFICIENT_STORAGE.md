@@ -6,7 +6,7 @@
 
 # Variable: INSUFFICIENT\_STORAGE
 
-> `const` **INSUFFICIENT\_STORAGE**: `ResponseStatus`
+> `const` **INSUFFICIENT\_STORAGE**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
 Defined in: packages/blue-http/src/response-statuses.ts:333
 

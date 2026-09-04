@@ -16,7 +16,7 @@ Binds data from property values to a target object, supporting keypath expressio
 
 > **new DataBinder**(`target`, `name?`): `DataBinder`
 
-Defined in: packages/blue-core/src/data-binder.ts:81
+Defined in: packages/blue-core/src/data-binder.ts:80
 
 Creates an instance of DataBinder.
 
@@ -46,7 +46,7 @@ The name of the data binder (defaults to 'target').
 
 > **get** **requiredFields**(): `string`[]
 
-Defined in: packages/blue-core/src/data-binder.ts:32
+Defined in: packages/blue-core/src/data-binder.ts:31
 
 Gets the list of required fields for data binding.
 
@@ -60,7 +60,7 @@ An array of required field names.
 
 > **set** **requiredFields**(`fields`): `void`
 
-Defined in: packages/blue-core/src/data-binder.ts:43
+Defined in: packages/blue-core/src/data-binder.ts:42
 
 Sets the list of required fields for data binding.
 
@@ -84,7 +84,7 @@ An array of field names that must be present.
 
 > **get** **name**(): `string`
 
-Defined in: packages/blue-core/src/data-binder.ts:58
+Defined in: packages/blue-core/src/data-binder.ts:57
 
 The name of the data binder.
 
@@ -100,7 +100,7 @@ The name of the data binder.
 
 > **get** **result**(): `any`
 
-Defined in: packages/blue-core/src/data-binder.ts:65
+Defined in: packages/blue-core/src/data-binder.ts:64
 
 The result of the data binding operation.
 
@@ -116,7 +116,7 @@ The result of the data binding operation.
 
 > **get** **target**(): `any`
 
-Defined in: packages/blue-core/src/data-binder.ts:72
+Defined in: packages/blue-core/src/data-binder.ts:71
 
 The target object to which data is being bound.
 
@@ -196,7 +196,7 @@ The mutable property values to apply.
 
 > `protected` **\_checkRequiredFields**(`properties`): `void`
 
-Defined in: packages/blue-core/src/data-binder.ts:135
+Defined in: packages/blue-core/src/data-binder.ts:137
 
 Checks if all required fields are present in the provided property values.
 

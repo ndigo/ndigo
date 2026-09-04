@@ -9,14 +9,14 @@
 ## Classes
 
 - [FeatureRoutingRegistry](classes/FeatureRoutingRegistry.md)
-- [HashRouter](classes/HashRouter.md)
 - [PathRouteSegment](classes/PathRouteSegment.md)
 - [PathRoute](classes/PathRoute.md)
+- [RouteDefinition](classes/RouteDefinition.md)
+- [RouteRegistry](classes/RouteRegistry.md)
+- [RouterExecutionChain](classes/RouterExecutionChain.md)
 - [MappedRouterInterceptor](classes/MappedRouterInterceptor.md)
 - [AbstractRouter](classes/AbstractRouter.md)
 - [SiteRouter](classes/SiteRouter.md)
-- [DefaultRouteTransactionStatus](classes/DefaultRouteTransactionStatus.md)
-- [DefaultRouteTransactionManager](classes/DefaultRouteTransactionManager.md)
 
 ## Interfaces
 
@@ -28,14 +28,11 @@
 - [RouterInterceptorRegistry](interfaces/RouterInterceptorRegistry.md)
 - [Router](interfaces/Router.md)
 - [FeatureRouteMount](interfaces/FeatureRouteMount.md)
-- [SavepointManager](interfaces/SavepointManager.md)
-- [RouteTransactionExecution](interfaces/RouteTransactionExecution.md)
-- [RouteTransactionStatus](interfaces/RouteTransactionStatus.md)
-- [RouteTransactionManager](interfaces/RouteTransactionManager.md)
 
 ## Type Aliases
 
 - [FeatureActivationPolicy](type-aliases/FeatureActivationPolicy.md)
+- [RouteParams](type-aliases/RouteParams.md)
 - [RouterMiddleware](type-aliases/RouterMiddleware.md)
 - [RouterCallback](type-aliases/RouterCallback.md)
 - [FeatureRouteCallback](type-aliases/FeatureRouteCallback.md)
@@ -56,6 +53,7 @@
 - [matchesPartitionPath](functions/matchesPartitionPath.md)
 - [stripPartitionPrefix](functions/stripPartitionPrefix.md)
 - [restorePartitionPrefix](functions/restorePartitionPrefix.md)
+- [deriveKey](functions/deriveKey.md)
 
 ## References
 

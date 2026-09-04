@@ -6,7 +6,7 @@
 
 # Class: ServiceExecutionChain
 
-Defined in: packages/blue-service/src/service.ts:257
+Defined in: packages/blue-service/src/service.ts:261
 
 Builds and advances the interceptor chain for a service call.
 
@@ -16,7 +16,7 @@ Builds and advances the interceptor chain for a service call.
 
 > **new ServiceExecutionChain**(`service`, `interceptors?`): `ServiceExecutionChain`
 
-Defined in: packages/blue-service/src/service.ts:277
+Defined in: packages/blue-service/src/service.ts:281
 
 Creates a chain from a service or an existing chain.
 
@@ -30,7 +30,7 @@ Service or chain to wrap.
 
 ##### interceptors?
 
-[`ServiceInterceptor`](../type-aliases/ServiceInterceptor.md)[] = `null`
+[`ServiceInterceptor`](../type-aliases/ServiceInterceptor.md)[] \| `null`
 
 Additional interceptors to append.
 
@@ -44,7 +44,7 @@ Additional interceptors to append.
 
 > **service**: `Service`
 
-Defined in: packages/blue-service/src/service.ts:260
+Defined in: packages/blue-service/src/service.ts:264
 
 ***
 
@@ -52,7 +52,7 @@ Defined in: packages/blue-service/src/service.ts:260
 
 > **interceptorIndex**: `number`
 
-Defined in: packages/blue-service/src/service.ts:261
+Defined in: packages/blue-service/src/service.ts:265
 
 ## Accessors
 
@@ -62,7 +62,7 @@ Defined in: packages/blue-service/src/service.ts:261
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-service/src/service.ts:263
+Defined in: packages/blue-service/src/service.ts:267
 
 ##### Returns
 
@@ -76,7 +76,7 @@ Defined in: packages/blue-service/src/service.ts:263
 
 > **get** **interceptors**(): [`ServiceInterceptor`](../type-aliases/ServiceInterceptor.md)[]
 
-Defined in: packages/blue-service/src/service.ts:267
+Defined in: packages/blue-service/src/service.ts:271
 
 ##### Returns
 
@@ -88,7 +88,7 @@ Defined in: packages/blue-service/src/service.ts:267
 
 > **addInterceptor**(`interceptor`): `void`
 
-Defined in: packages/blue-service/src/service.ts:299
+Defined in: packages/blue-service/src/service.ts:303
 
 Adds a single interceptor to the chain.
 
@@ -114,7 +114,7 @@ When the value does not look like a service interceptor.
 
 > **addInterceptors**(`interceptors`): `void`
 
-Defined in: packages/blue-service/src/service.ts:319
+Defined in: packages/blue-service/src/service.ts:323
 
 Adds multiple interceptors to the chain in order.
 

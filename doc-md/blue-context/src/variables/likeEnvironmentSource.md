@@ -8,7 +8,7 @@
 
 > `const` **likeEnvironmentSource**: (`value`) => `value is EnvironmentSource`
 
-Defined in: packages/blue-context/src/environment.ts:260
+Defined in: packages/blue-context/src/environment.ts:255
 
 Returns whether a value exposes an environment.
 

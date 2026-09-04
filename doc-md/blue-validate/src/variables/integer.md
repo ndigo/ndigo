@@ -8,7 +8,7 @@
 
 > `const` **integer**: (`params`) => (`value`, `context`) => `void`
 
-Defined in: packages/blue-validate/src/decorators.ts:477
+Defined in: packages/blue-validate/src/decorators.ts:540
 
 TC39 Stage 3 decorator that validates a numeric property to be an integer.
 

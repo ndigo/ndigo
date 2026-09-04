@@ -6,7 +6,7 @@
 
 # Class: DOMElementViewTarget
 
-Defined in: packages/blue-view-webcomponent/src/engine.ts:56
+Defined in: packages/blue-view-webcomponent/src/engine.ts:54
 
 View target implementation that renders into a host HTMLElement.
 
@@ -20,7 +20,7 @@ View target implementation that renders into a host HTMLElement.
 
 > **new DOMElementViewTarget**(`element`, `options?`): `DOMElementViewTarget`
 
-Defined in: packages/blue-view-webcomponent/src/engine.ts:70
+Defined in: packages/blue-view-webcomponent/src/engine.ts:68
 
 Creates a DOM-backed view target for the provided element.
 
@@ -28,7 +28,7 @@ Creates a DOM-backed view target for the provided element.
 
 ##### element
 
-`HTMLElement`
+`HTMLElement` \| `null`
 
 The root element that will host rendered content.
 
@@ -54,7 +54,7 @@ When `element` is null or undefined.
 
 > **destroyed**: `boolean`
 
-Defined in: packages/blue-view-webcomponent/src/engine.ts:61
+Defined in: packages/blue-view-webcomponent/src/engine.ts:59
 
 ## Accessors
 
@@ -64,7 +64,7 @@ Defined in: packages/blue-view-webcomponent/src/engine.ts:61
 
 > **get** **container**(): `HTMLElement`
 
-Defined in: packages/blue-view-webcomponent/src/engine.ts:87
+Defined in: packages/blue-view-webcomponent/src/engine.ts:86
 
 The host element that receives rendered output.
 
@@ -84,7 +84,7 @@ The host element that receives rendered output.
 
 > **setApplicationContext**(`applicationContext`): `void`
 
-Defined in: packages/blue-view-webcomponent/src/engine.ts:96
+Defined in: packages/blue-view-webcomponent/src/engine.ts:95
 
 Connects the target to the application event emitter so DOM events can be forwarded.
 
@@ -92,7 +92,7 @@ Connects the target to the application event emitter so DOM events can be forwar
 
 ##### applicationContext
 
-`ApplicationEventEmitter`
+`EventEmitter`
 
 The application event emitter used for event bridging.
 
@@ -148,7 +148,7 @@ Existing listeners are removed first so repeated calls stay idempotent.
 
 > **unlisten**(): `void`
 
-Defined in: packages/blue-view-webcomponent/src/engine.ts:146
+Defined in: packages/blue-view-webcomponent/src/engine.ts:143
 
 Removes all installed DOM event listeners from the host element.
 
@@ -162,7 +162,7 @@ Removes all installed DOM event listeners from the host element.
 
 > **prepare**(`route`): `void`
 
-Defined in: packages/blue-view-webcomponent/src/engine.ts:160
+Defined in: packages/blue-view-webcomponent/src/engine.ts:154
 
 Prepares the target for a new render pass by clearing existing content.
 
@@ -192,7 +192,7 @@ When the target has already been destroyed.
 
 > **commit**(`output`, `model`, `route`): `void`
 
-Defined in: packages/blue-view-webcomponent/src/engine.ts:176
+Defined in: packages/blue-view-webcomponent/src/engine.ts:170
 
 Appends rendered output to the host element and re-enables event bridging.
 
@@ -234,7 +234,7 @@ When the target has already been destroyed.
 
 > **clear**(): `void`
 
-Defined in: packages/blue-view-webcomponent/src/engine.ts:187
+Defined in: packages/blue-view-webcomponent/src/engine.ts:181
 
 Clears rendered content without permanently destroying the target.
 
@@ -252,7 +252,7 @@ Clears rendered content without permanently destroying the target.
 
 > **destroy**(): `void`
 
-Defined in: packages/blue-view-webcomponent/src/engine.ts:198
+Defined in: packages/blue-view-webcomponent/src/engine.ts:192
 
 Permanently disables the target and releases its event listeners.
 

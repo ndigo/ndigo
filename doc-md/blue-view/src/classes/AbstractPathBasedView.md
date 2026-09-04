@@ -31,7 +31,7 @@ Defined in: packages/blue-view/src/view.ts:155
 
 ##### path?
 
-`string` = `null`
+`string` \| `null`
 
 #### Returns
 
@@ -73,7 +73,7 @@ Indicates if the view has been destroyed.
 
 ### mediaType
 
-> **mediaType**: `MediaType`
+> **mediaType**: `MediaType` \| `null`
 
 Defined in: packages/blue-view/src/view.ts:54
 
@@ -163,11 +163,9 @@ The ApplicationContext to be used by this object.
 
 > **setName**(`name`): `void`
 
-Defined in: packages/blue-factory/lib/aware.d.ts:38
+Defined in: packages/blue-factory/lib/aware.d.ts:36
 
-Set the name of the value in the factory that created it.
-
-Invoked after population of normal value properties but before an `init` callback.
+Sets the name of the value in the factory.
 
 #### Parameters
 
@@ -175,7 +173,7 @@ Invoked after population of normal value properties but before an `init` callbac
 
 `string`
 
-The name of the value in the factory.
+The name to set.
 
 #### Returns
 

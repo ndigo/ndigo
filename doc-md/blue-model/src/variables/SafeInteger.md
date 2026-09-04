@@ -6,8 +6,8 @@
 
 # Variable: SafeInteger
 
-> `const` **SafeInteger**: `BasicModel`\<`NumberConstructor`\>
+> `const` **SafeInteger**: `any`
 
-Defined in: packages/blue-model/src/basic.ts:57
+Defined in: packages/blue-model/src/basic.ts:63
 
 Matches integers that are safe to represent exactly in JavaScript.

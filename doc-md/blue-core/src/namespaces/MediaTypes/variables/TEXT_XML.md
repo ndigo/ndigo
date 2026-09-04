@@ -6,6 +6,6 @@
 
 # Variable: TEXT\_XML
 
-> `const` **TEXT\_XML**: [`MediaType`](../../../classes/MediaType.md)
+> `const` **TEXT\_XML**: [`MediaType`](../../../classes/MediaType.md) \| `null`
 
 Defined in: packages/blue-core/src/media-types.ts:91

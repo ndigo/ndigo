@@ -14,7 +14,7 @@ Resolves exceptions into a route-specific response.
 
 ### resolveError()
 
-> **resolveError**(`route`, `handler`, `error`): [`ModelAndView`](../classes/ModelAndView.md)
+> **resolveError**(`route`, `handler`, `error`): [`ModelAndView`](../classes/ModelAndView.md) \| `null`
 
 Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:25
 
@@ -30,7 +30,7 @@ The current route.
 
 ##### handler
 
-`any`
+`object` \| `null`
 
 The handler that was executing when the error occurred, or `null`.
 
@@ -42,6 +42,6 @@ The thrown error.
 
 #### Returns
 
-[`ModelAndView`](../classes/ModelAndView.md)
+[`ModelAndView`](../classes/ModelAndView.md) \| `null`
 
 A model and view to render, or `null` when the error should continue through the chain.

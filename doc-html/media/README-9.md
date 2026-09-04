@@ -201,7 +201,6 @@ You can also use specialized transformers from the subpath export:
 import {
     JSONTransformer,
     CompositionTransformer,
-    TransducerTransformer,
     FormDataTransformer,
     URLSearchParamsTransformer,
 } from '@blue/http/transformers';

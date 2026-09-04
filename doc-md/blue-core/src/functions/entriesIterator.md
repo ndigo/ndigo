@@ -8,7 +8,7 @@
 
 > **entriesIterator**\<`T`\>(`target`): `IterableIterator`\<[`Entry`](../type-aliases/Entry.md)\<`T`\>\>
 
-Defined in: packages/blue-core/src/iterable.ts:219
+Defined in: packages/blue-core/src/iterable.ts:221
 
 Creates a new `EntriesIterator` for an object or collection.
 

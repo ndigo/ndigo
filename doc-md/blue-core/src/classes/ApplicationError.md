@@ -24,9 +24,10 @@ Serializable
 
 > **new ApplicationError**(`message?`): `ApplicationError`
 
-Defined in: packages/blue-core/src/error.ts:57
+Defined in: packages/blue-core/src/error.ts:58
 
 Creates an instance of ApplicationError.
+Uses `new.target.name` so subclasses inherit the correct name automatically.
 
 #### Parameters
 

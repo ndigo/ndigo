@@ -24,7 +24,7 @@ A node that can reference its parent.
 
 ### parent
 
-> `readonly` **parent**: `T`
+> `readonly` **parent**: `T` \| `null` \| `undefined`
 
 Defined in: packages/blue-core/src/tree-node.ts:10
 

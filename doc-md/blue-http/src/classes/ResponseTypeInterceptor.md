@@ -6,17 +6,9 @@
 
 # Class: ResponseTypeInterceptor
 
-Defined in: packages/blue-http/src/interceptors/response-type-interceptor.ts:94
+Defined in: packages/blue-http/src/interceptors/response-type-interceptor.ts:91
 
 Parses response bodies into typed data and attaches the result as `data`.
-
-## Implements
-
-module:http.InitializationAwareHTTPInterceptor
-
-## Implements
-
-module:http.ResponseAwareHTTPInterceptor
 
 ## Implements
 
@@ -39,7 +31,7 @@ module:http.ResponseAwareHTTPInterceptor
 
 > **preInit**(`url`, `settings`): `boolean`
 
-Defined in: packages/blue-http/src/interceptors/response-type-interceptor.ts:102
+Defined in: packages/blue-http/src/interceptors/response-type-interceptor.ts:99
 
 #### Parameters
 
@@ -71,7 +63,7 @@ Whether or not the http request should continue execution.
 
 > **postResponse**(`response`, `settings`): `Promise`\<`void` \| `Response`\>
 
-Defined in: packages/blue-http/src/interceptors/response-type-interceptor.ts:137
+Defined in: packages/blue-http/src/interceptors/response-type-interceptor.ts:139
 
 #### Parameters
 

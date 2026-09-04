@@ -6,7 +6,7 @@
 
 # Variable: SWITCHING\_PROTOCOL
 
-> `const` **SWITCHING\_PROTOCOL**: `ResponseStatus`
+> `const` **SWITCHING\_PROTOCOL**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
 Defined in: packages/blue-http/src/response-statuses.ts:23
 

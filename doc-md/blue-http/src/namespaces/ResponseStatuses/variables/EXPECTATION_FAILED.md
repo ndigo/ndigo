@@ -6,7 +6,7 @@
 
 # Variable: EXPECTATION\_FAILED
 
-> `const` **EXPECTATION\_FAILED**: `ResponseStatus`
+> `const` **EXPECTATION\_FAILED**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
 Defined in: packages/blue-http/src/response-statuses.ts:234
 

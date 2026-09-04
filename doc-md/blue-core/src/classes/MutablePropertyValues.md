@@ -16,14 +16,14 @@ A mutable collection of named property values.
 
 ## Implements
 
-- `ArrayLike`\<[`PropertyValue`](PropertyValue.md)\>
+- `ArrayLike`\<[`PropertyValue`](PropertyValue.md) \| `undefined`\>
 - [`Equatable`](../interfaces/Equatable.md)
 - `Iterable`\<[`PropertyValue`](PropertyValue.md)\>
 - [`Serializable`](../interfaces/Serializable.md)
 
 ## Indexable
 
-> \[`n`: `number`\]: [`PropertyValue`](PropertyValue.md)
+> \[`n`: `number`\]: [`PropertyValue`](PropertyValue.md) \| `undefined`
 
 ## Constructors
 
@@ -39,7 +39,7 @@ Creates a collection seeded with existing property values.
 
 ##### properties?
 
-`Iterable`\<[`PropertyValue`](PropertyValue.md)\>
+`Iterable`\<[`PropertyValue`](PropertyValue.md), `any`, `any`\>
 
 Optional source collection to copy into this buffer.
 
@@ -57,7 +57,7 @@ Optional source collection to copy into this buffer.
 
 > `protected` **\_capacity**: `number`
 
-Defined in: packages/blue-core/src/collection.ts:29
+Defined in: packages/blue-core/src/ring-buffer.ts:24
 
 #### Inherited from
 
@@ -69,7 +69,7 @@ Defined in: packages/blue-core/src/collection.ts:29
 
 > `protected` **\_head**: `number`
 
-Defined in: packages/blue-core/src/collection.ts:30
+Defined in: packages/blue-core/src/ring-buffer.ts:25
 
 #### Inherited from
 
@@ -81,7 +81,7 @@ Defined in: packages/blue-core/src/collection.ts:30
 
 > `protected` **\_tail**: `number`
 
-Defined in: packages/blue-core/src/collection.ts:31
+Defined in: packages/blue-core/src/ring-buffer.ts:26
 
 #### Inherited from
 
@@ -93,7 +93,7 @@ Defined in: packages/blue-core/src/collection.ts:31
 
 > `protected` **\_full**: `number`
 
-Defined in: packages/blue-core/src/collection.ts:32
+Defined in: packages/blue-core/src/ring-buffer.ts:27
 
 #### Inherited from
 
@@ -105,7 +105,7 @@ Defined in: packages/blue-core/src/collection.ts:32
 
 > `readonly` `static` **MAX\_CAPACITY**: `number`
 
-Defined in: packages/blue-core/src/collection.ts:37
+Defined in: packages/blue-core/src/ring-buffer.ts:32
 
 The maximum capacity of any RingBuffer instance.
 
@@ -119,7 +119,7 @@ The maximum capacity of any RingBuffer instance.
 
 > `readonly` `static` **MIN\_CAPACITY**: `number`
 
-Defined in: packages/blue-core/src/collection.ts:41
+Defined in: packages/blue-core/src/ring-buffer.ts:36
 
 The minimum capacity of any RingBuffer instance.
 
@@ -128,111 +128,6 @@ The minimum capacity of any RingBuffer instance.
 [`RingBuffer`](RingBuffer.md).[`MIN_CAPACITY`](RingBuffer.md#min_capacity)
 
 ## Accessors
-
-### capacity
-
-#### Get Signature
-
-> **get** **capacity**(): `number`
-
-Defined in: packages/blue-core/src/collection.ts:55
-
-The current capacity of the ring buffer.
-
-##### Returns
-
-`number`
-
-#### Set Signature
-
-> **set** **capacity**(`newCapacity`): `void`
-
-Defined in: packages/blue-core/src/collection.ts:64
-
-Sets the capacity of the ring buffer. The new capacity will be a power of 2
-between `MIN_CAPACITY` and `MAX_CAPACITY`.
-
-##### Parameters
-
-###### newCapacity
-
-`number`
-
-The desired new capacity.
-
-##### Returns
-
-`void`
-
-#### Inherited from
-
-[`RingBuffer`](RingBuffer.md).[`capacity`](RingBuffer.md#capacity)
-
-***
-
-### isEmpty
-
-#### Get Signature
-
-> **get** **isEmpty**(): `boolean`
-
-Defined in: packages/blue-core/src/collection.ts:75
-
-Indicates if the ring buffer is empty.
-
-##### Returns
-
-`boolean`
-
-#### Inherited from
-
-[`RingBuffer`](RingBuffer.md).[`isEmpty`](RingBuffer.md#isempty)
-
-***
-
-### isFull
-
-#### Get Signature
-
-> **get** **isFull**(): `boolean`
-
-Defined in: packages/blue-core/src/collection.ts:82
-
-Indicates if the ring buffer is full.
-
-##### Returns
-
-`boolean`
-
-#### Inherited from
-
-[`RingBuffer`](RingBuffer.md).[`isFull`](RingBuffer.md#isfull)
-
-***
-
-### length
-
-#### Get Signature
-
-> **get** **length**(): `number`
-
-Defined in: packages/blue-core/src/collection.ts:89
-
-The number of elements currently in the ring buffer.
-
-##### Returns
-
-`number`
-
-#### Implementation of
-
-`ArrayLike.length`
-
-#### Inherited from
-
-[`RingBuffer`](RingBuffer.md).[`length`](RingBuffer.md#length)
-
-***
 
 ### propertyValues
 
@@ -268,134 +163,118 @@ The stable string tag for this collection.
 
 [`RingBuffer`](RingBuffer.md).[`[toStringTag]`](RingBuffer.md#tostringtag)
 
-## Methods
-
-### \[iterator\]()
-
-> **\[iterator\]**(): `Iterator`\<[`PropertyValue`](PropertyValue.md), `any`, `undefined`\>
-
-Defined in: packages/blue-core/src/collection.ts:156
-
-Returns an iterator for the elements in the ring buffer.
-
-#### Returns
-
-`Iterator`\<[`PropertyValue`](PropertyValue.md), `any`, `undefined`\>
-
-An iterator for the elements.
-
-#### Implementation of
-
-`Iterable.[iterator]`
-
-#### Inherited from
-
-[`RingBuffer`](RingBuffer.md).[`[iterator]`](RingBuffer.md#iterator)
-
 ***
 
-### get()
+### capacity
 
-> **get**(): [`PropertyValue`](PropertyValue.md)
+#### Get Signature
 
-Defined in: packages/blue-core/src/collection.ts:164
+> **get** **capacity**(): `number`
 
-Retrieves and removes the oldest element from the ring buffer.
+Defined in: packages/blue-core/src/ring-buffer.ts:50
 
-#### Returns
+The current capacity of the ring buffer.
 
-[`PropertyValue`](PropertyValue.md)
-
-The oldest element, or `undefined` if the buffer is empty.
-
-#### Inherited from
-
-[`RingBuffer`](RingBuffer.md).[`get`](RingBuffer.md#get)
-
-***
-
-### put()
-
-> **put**(...`items`): `number`
-
-Defined in: packages/blue-core/src/collection.ts:184
-
-Adds one or more elements to the ring buffer. If the buffer is full,
-the oldest elements will be overwritten.
-
-#### Parameters
-
-##### items
-
-...[`PropertyValue`](PropertyValue.md)[]
-
-The elements to add.
-
-#### Returns
+##### Returns
 
 `number`
 
-The new length of the ring buffer.
+#### Set Signature
+
+> **set** **capacity**(`newCapacity`): `void`
+
+Defined in: packages/blue-core/src/ring-buffer.ts:59
+
+Sets the capacity of the ring buffer. The new capacity will be a power of 2
+between `MIN_CAPACITY` and `MAX_CAPACITY`.
+
+##### Parameters
+
+###### newCapacity
+
+`number`
+
+The desired new capacity.
+
+##### Returns
+
+`void`
 
 #### Inherited from
 
-[`RingBuffer`](RingBuffer.md).[`put`](RingBuffer.md#put)
+[`RingBuffer`](RingBuffer.md).[`capacity`](RingBuffer.md#capacity)
 
 ***
 
-### toJSON()
+### isEmpty
 
-> **toJSON**(): [`JSONArray`](../interfaces/JSONArray.md)
+#### Get Signature
 
-Defined in: packages/blue-core/src/collection.ts:213
+> **get** **isEmpty**(): `boolean`
 
-Returns a JSON array representation of the ring buffer's contents.
+Defined in: packages/blue-core/src/ring-buffer.ts:70
 
-#### Returns
+Indicates if the ring buffer is empty.
 
-[`JSONArray`](../interfaces/JSONArray.md)
+##### Returns
 
-A JSON array.
+`boolean`
+
+#### Inherited from
+
+[`RingBuffer`](RingBuffer.md).[`isEmpty`](RingBuffer.md#isempty)
+
+***
+
+### isFull
+
+#### Get Signature
+
+> **get** **isFull**(): `boolean`
+
+Defined in: packages/blue-core/src/ring-buffer.ts:77
+
+Indicates if the ring buffer is full.
+
+##### Returns
+
+`boolean`
+
+#### Inherited from
+
+[`RingBuffer`](RingBuffer.md).[`isFull`](RingBuffer.md#isfull)
+
+***
+
+### length
+
+#### Get Signature
+
+> **get** **length**(): `number`
+
+Defined in: packages/blue-core/src/ring-buffer.ts:84
+
+The number of elements currently in the ring buffer.
+
+##### Returns
+
+`number`
 
 #### Implementation of
 
-[`Serializable`](../interfaces/Serializable.md).[`toJSON`](../interfaces/Serializable.md#tojson)
+`ArrayLike.length`
 
 #### Inherited from
 
-[`RingBuffer`](RingBuffer.md).[`toJSON`](RingBuffer.md#tojson)
+[`RingBuffer`](RingBuffer.md).[`length`](RingBuffer.md#length)
 
-***
-
-### toString()
-
-> **toString**(): `string`
-
-Defined in: packages/blue-core/src/collection.ts:227
-
-Returns a string representation of the ring buffer's contents.
-
-#### Returns
-
-`string`
-
-A comma-separated string of the elements.
-
-#### Implementation of
-
-[`Serializable`](../interfaces/Serializable.md).[`toString`](../interfaces/Serializable.md#tostring)
-
-#### Inherited from
-
-[`RingBuffer`](RingBuffer.md).[`toString`](RingBuffer.md#tostring)
-
-***
+## Methods
 
 ### addPropertyValue()
 
 #### Call Signature
 
-> **addPropertyValue**(`name`, `value`): `any`
+> **addPropertyValue**(`name`, `value`): `void`
 
 Defined in: packages/blue-core/src/property-value.ts:157
 
@@ -417,11 +296,11 @@ Property value.
 
 ##### Returns
 
-`any`
+`void`
 
 #### Call Signature
 
-> **addPropertyValue**(`pv`): `any`
+> **addPropertyValue**(`pv`): `void`
 
 Defined in: packages/blue-core/src/property-value.ts:164
 
@@ -437,7 +316,7 @@ Property value to add.
 
 ##### Returns
 
-`any`
+`void`
 
 ***
 
@@ -473,7 +352,7 @@ Value to compare.
 
 > **getValue**(`propertyName`): `any`
 
-Defined in: packages/blue-core/src/property-value.ts:203
+Defined in: packages/blue-core/src/property-value.ts:207
 
 Retrieves only the wrapped value for a named property.
 
@@ -495,9 +374,9 @@ The stored value, or `null` when the property is missing.
 
 ### getPropertyValue()
 
-> **getPropertyValue**(`propertyName`): [`PropertyValue`](PropertyValue.md)
+> **getPropertyValue**(`propertyName`): [`PropertyValue`](PropertyValue.md) \| `null`
 
-Defined in: packages/blue-core/src/property-value.ts:214
+Defined in: packages/blue-core/src/property-value.ts:218
 
 Finds a property value by name.
 
@@ -511,6 +390,167 @@ Property name to resolve.
 
 #### Returns
 
-[`PropertyValue`](PropertyValue.md)
+[`PropertyValue`](PropertyValue.md) \| `null`
 
 The matching property value, or `null` when no match exists.
+
+***
+
+### \[iterator\]()
+
+> **\[iterator\]**(): `Iterator`\<[`PropertyValue`](PropertyValue.md), `any`, `undefined`\>
+
+Defined in: packages/blue-core/src/ring-buffer.ts:153
+
+Returns an iterator for the elements in the ring buffer.
+
+#### Returns
+
+`Iterator`\<[`PropertyValue`](PropertyValue.md), `any`, `undefined`\>
+
+An iterator for the elements.
+
+#### Implementation of
+
+`Iterable.[iterator]`
+
+#### Inherited from
+
+[`RingBuffer`](RingBuffer.md).[`[iterator]`](RingBuffer.md#iterator)
+
+***
+
+### get()
+
+> **get**(): [`PropertyValue`](PropertyValue.md) \| `undefined`
+
+Defined in: packages/blue-core/src/ring-buffer.ts:161
+
+Retrieves and removes the oldest element from the ring buffer.
+
+#### Returns
+
+[`PropertyValue`](PropertyValue.md) \| `undefined`
+
+The oldest element, or `undefined` if the buffer is empty.
+
+#### Inherited from
+
+[`RingBuffer`](RingBuffer.md).[`get`](RingBuffer.md#get)
+
+***
+
+### peek()
+
+> **peek**(): [`PropertyValue`](PropertyValue.md) \| `undefined`
+
+Defined in: packages/blue-core/src/ring-buffer.ts:179
+
+Returns the oldest element (tail position) without removing it.
+
+#### Returns
+
+[`PropertyValue`](PropertyValue.md) \| `undefined`
+
+The oldest element, or `undefined` if the buffer is empty.
+
+#### Inherited from
+
+[`RingBuffer`](RingBuffer.md).[`peek`](RingBuffer.md#peek)
+
+***
+
+### peekHead()
+
+> **peekHead**(): [`PropertyValue`](PropertyValue.md) \| `undefined`
+
+Defined in: packages/blue-core/src/ring-buffer.ts:188
+
+Returns the newest element (most recently added, head-1 position) without removing it.
+
+#### Returns
+
+[`PropertyValue`](PropertyValue.md) \| `undefined`
+
+The newest element, or `undefined` if the buffer is empty.
+
+#### Inherited from
+
+[`RingBuffer`](RingBuffer.md).[`peekHead`](RingBuffer.md#peekhead)
+
+***
+
+### put()
+
+> **put**(...`items`): `number`
+
+Defined in: packages/blue-core/src/ring-buffer.ts:199
+
+Adds one or more elements to the ring buffer. If the buffer is full,
+the oldest elements will be overwritten.
+
+#### Parameters
+
+##### items
+
+...[`PropertyValue`](PropertyValue.md)[]
+
+The elements to add.
+
+#### Returns
+
+`number`
+
+The new length of the ring buffer.
+
+#### Inherited from
+
+[`RingBuffer`](RingBuffer.md).[`put`](RingBuffer.md#put)
+
+***
+
+### toJSON()
+
+> **toJSON**(): [`JSONArray`](../interfaces/JSONArray.md)
+
+Defined in: packages/blue-core/src/ring-buffer.ts:228
+
+Returns a JSON array representation of the ring buffer's contents.
+
+#### Returns
+
+[`JSONArray`](../interfaces/JSONArray.md)
+
+A JSON array.
+
+#### Implementation of
+
+[`Serializable`](../interfaces/Serializable.md).[`toJSON`](../interfaces/Serializable.md#tojson)
+
+#### Inherited from
+
+[`RingBuffer`](RingBuffer.md).[`toJSON`](RingBuffer.md#tojson)
+
+***
+
+### toString()
+
+> **toString**(): `string`
+
+Defined in: packages/blue-core/src/ring-buffer.ts:242
+
+Returns a string representation of the ring buffer's contents.
+
+#### Returns
+
+`string`
+
+A comma-separated string of the elements.
+
+#### Implementation of
+
+[`Serializable`](../interfaces/Serializable.md).[`toString`](../interfaces/Serializable.md#tostring)
+
+#### Inherited from
+
+[`RingBuffer`](RingBuffer.md).[`toString`](RingBuffer.md#tostring)

@@ -8,7 +8,7 @@
 
 > `const` **likeApplicationContextAware**: (`value`) => `value is ApplicationContextAware`
 
-Defined in: packages/blue-context/src/context.ts:305
+Defined in: packages/blue-context/src/context.ts:293
 
 Returns whether a value can receive an application context.
 
@@ -24,4 +24,4 @@ The value to test.
 
 `value is ApplicationContextAware`
 
-`true` when the value looks like application-context aware.
+`true` when the value looks like an application context aware.

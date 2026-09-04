@@ -6,7 +6,7 @@
 
 # Class: QueryParamCondition
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:114
+Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:116
 
 A logical conjunction (' && ') route condition that matches a route against a set parameter expressions with syntax defined in RouteMapping\|RouteMapping.
 
@@ -20,7 +20,7 @@ A logical conjunction (' && ') route condition that matches a route against a se
 
 > **new QueryParamCondition**(...`params`): `QueryParamCondition`
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:133
+Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:135
 
 Create a parameter condition from one or more expressions.
 
@@ -44,7 +44,7 @@ Parameter expressions to parse.
 
 > **new QueryParamCondition**(`conditions`): `QueryParamCondition`
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:139
+Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:141
 
 Create a parameter condition from a prebuilt expression set.
 
@@ -70,7 +70,7 @@ The parameter expressions to use.
 
 > `readonly` **expressions**: `Set`\<[`QueryParamExpression`](QueryParamExpression.md)\>
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:118
+Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:120
 
 Parameter expressions that must all match.
 
@@ -82,7 +82,7 @@ Parameter expressions that must all match.
 
 > **get** **isEmpty**(): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:168
+Defined in: packages/blue-dispatcher/src/route-condition.ts:153
 
 Whether this condition contains no content.
 
@@ -102,7 +102,7 @@ Whether this condition contains no content.
 
 > **get** **content**(): [`QueryParamExpression`](QueryParamExpression.md)[]
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:120
+Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:122
 
 ##### Returns
 
@@ -120,7 +120,7 @@ Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:120
 
 > **get** **infix**(): `string`
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:124
+Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:126
 
 ##### Returns
 
@@ -136,7 +136,7 @@ Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:124
 
 > **equals**(`value`): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:181
+Defined in: packages/blue-dispatcher/src/route-condition.ts:166
 
 Compare this condition to another value.
 
@@ -164,7 +164,7 @@ The value to compare.
 
 > **toJSON**(): `JSONValue`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:196
+Defined in: packages/blue-dispatcher/src/route-condition.ts:181
 
 Serialize the condition to JSON.
 
@@ -184,7 +184,7 @@ The string form of the condition.
 
 > **toString**(): `string`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:205
+Defined in: packages/blue-dispatcher/src/route-condition.ts:190
 
 Convert the condition to its textual form.
 
@@ -204,7 +204,7 @@ The condition string.
 
 > **merge**(`value`): `QueryParamCondition`
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:162
+Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:164
 
 Merge parameter expressions from both conditions.
 
@@ -230,9 +230,9 @@ A condition containing the union of expressions.
 
 ### getMatchingCondition()
 
-> **getMatchingCondition**(`route`): `QueryParamCondition`
+> **getMatchingCondition**(`route`): `QueryParamCondition` \| `null`
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:181
+Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:183
 
 Return this condition when every expression matches the route.
 
@@ -246,7 +246,7 @@ The current route.
 
 #### Returns
 
-`QueryParamCondition`
+`QueryParamCondition` \| `null`
 
 This condition, or `null`.
 
@@ -260,7 +260,7 @@ This condition, or `null`.
 
 > **compareTo**(`value`, `route?`): `number`
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:197
+Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:199
 
 Compare parameter conditions by specificity.
 
@@ -274,7 +274,7 @@ The condition to compare.
 
 ##### route?
 
-`Route`
+`Route`\<`Record`\<`string`, `string`\>\>
 
 Unused, but part of the shared contract.
 

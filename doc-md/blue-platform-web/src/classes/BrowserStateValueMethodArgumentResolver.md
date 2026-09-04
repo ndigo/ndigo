@@ -6,43 +6,21 @@
 
 # Class: BrowserStateValueMethodArgumentResolver
 
-Defined in: packages/blue-platform-web/src/state-argument-resolver.ts:84
+Defined in: packages/blue-platform-web/src/state-argument-resolver.ts:20
 
 Browser history state argument resolver.
 
 ## Extends
 
-- [`AbstractStateValueMethodArgumentResolver`](AbstractStateValueMethodArgumentResolver.md)
+- `AbstractPlatformArgumentResolver`
 
 ## Constructors
 
 ### Constructor
 
-> **new BrowserStateValueMethodArgumentResolver**(`converter?`, `converterRegistry?`, `converterResolutionOptions?`): `BrowserStateValueMethodArgumentResolver`
+> **new BrowserStateValueMethodArgumentResolver**(): `BrowserStateValueMethodArgumentResolver`
 
-Defined in: packages/blue-platform-web/src/state-argument-resolver.ts:92
-
-Creates a browser state resolver.
-
-#### Parameters
-
-##### converter?
-
-[`ArgumentValueConverter`](../type-aliases/ArgumentValueConverter.md) = `identityArgumentValueConverter`
-
-Default converter to apply to resolved values.
-
-##### converterRegistry?
-
-[`ArgumentValueConverterRegistry`](../type-aliases/ArgumentValueConverterRegistry.md) = `argumentValueConverters`
-
-Named converter registry used for lookups.
-
-##### converterResolutionOptions?
-
-[`ConverterResolutionOptions`](../type-aliases/ConverterResolutionOptions.md) = `{}`
-
-Resolution behavior overrides.
+Defined in: packages/blue-platform-web/src/state-argument-resolver.ts:21
 
 #### Returns
 
@@ -50,7 +28,7 @@ Resolution behavior overrides.
 
 #### Overrides
 
-[`AbstractStateValueMethodArgumentResolver`](AbstractStateValueMethodArgumentResolver.md).[`constructor`](AbstractStateValueMethodArgumentResolver.md#constructor)
+`AbstractPlatformArgumentResolver.constructor`
 
 ## Accessors
 
@@ -60,13 +38,47 @@ Resolution behavior overrides.
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-platform-web/src/state-argument-resolver.ts:100
+Defined in: packages/blue-platform-web/src/state-argument-resolver.ts:25
 
 ##### Returns
 
 `string`
 
 ## Methods
+
+### resolveArgument()
+
+> **resolveArgument**(`parameter`, `route`, `mapping`): `any`
+
+Defined in: packages/blue-dispatcher/lib/abstract-platform-resolver.d.ts:41
+
+Resolves and converts a method argument value.
+
+Pipeline: resolveName → defaultValue fallback → convertType lookup → conversion → nil check.
+
+#### Parameters
+
+##### parameter
+
+`MethodParameter`
+
+##### route
+
+`Route`
+
+##### mapping
+
+`any`
+
+#### Returns
+
+`any`
+
+#### Inherited from
+
+`AbstractPlatformArgumentResolver.resolveArgument`
+
+***
 
 ### handleMissingValue()
 
@@ -94,49 +106,17 @@ If the argument is undefined or null.
 
 #### Inherited from
 
-[`AbstractStateValueMethodArgumentResolver`](AbstractStateValueMethodArgumentResolver.md).[`handleMissingValue`](AbstractStateValueMethodArgumentResolver.md#handlemissingvalue)
-
-***
-
-### resolveArgument()
-
-> **resolveArgument**(`parameter`, `route`, `mapping`): `any`
-
-Defined in: packages/blue-platform-web/src/state-argument-resolver.ts:44
-
-Resolves and converts a history-state-backed argument value.
-
-#### Parameters
-
-##### parameter
-
-`MethodParameter`
-
-##### route
-
-`Route`
-
-##### mapping
-
-`any`
-
-#### Returns
-
-`any`
-
-#### Inherited from
-
-[`AbstractStateValueMethodArgumentResolver`](AbstractStateValueMethodArgumentResolver.md).[`resolveArgument`](AbstractStateValueMethodArgumentResolver.md#resolveargument)
+`AbstractPlatformArgumentResolver.handleMissingValue`
 
 ***
 
 ### resolveName()
 
-> `protected` **resolveName**(`name`, `parameter`, `route`, `mapping`): `any`
+> `protected` **resolveName**(`name`, `_parameter`, `_route`, `_mapping`): `any`
 
-Defined in: packages/blue-platform-web/src/state-argument-resolver.ts:64
+Defined in: packages/blue-platform-web/src/state-argument-resolver.ts:30
 
-Resolves the raw value from `history.state`.
+Retrieves a value from `history.state` if it exists.
 
 #### Parameters
 
@@ -144,15 +124,15 @@ Resolves the raw value from `history.state`.
 
 `string`
 
-##### parameter
+##### \_parameter
 
 `MethodParameter`
 
-##### route
+##### \_route
 
 `Route`
 
-##### mapping
+##### \_mapping
 
 `any`
 
@@ -160,9 +140,9 @@ Resolves the raw value from `history.state`.
 
 `any`
 
-#### Inherited from
+#### Overrides
 
-[`AbstractStateValueMethodArgumentResolver`](AbstractStateValueMethodArgumentResolver.md).[`resolveName`](AbstractStateValueMethodArgumentResolver.md#resolvename)
+`AbstractPlatformArgumentResolver.resolveName`
 
 ***
 
@@ -170,7 +150,7 @@ Resolves the raw value from `history.state`.
 
 > **supportsParameter**(`parameter`): `boolean`
 
-Defined in: packages/blue-platform-web/src/state-argument-resolver.ts:76
+Defined in: packages/blue-platform-web/src/state-argument-resolver.ts:36
 
 Returns whether this resolver supports history-state parameters.
 
@@ -184,30 +164,6 @@ Returns whether this resolver supports history-state parameters.
 
 `boolean`
 
-#### Inherited from
-
-[`AbstractStateValueMethodArgumentResolver`](AbstractStateValueMethodArgumentResolver.md).[`supportsParameter`](AbstractStateValueMethodArgumentResolver.md#supportsparameter)
-
-***
-
-### getStateValue()
-
-> `protected` **getStateValue**(`name`): `any`
-
-Defined in: packages/blue-platform-web/src/state-argument-resolver.ts:105
-
-Retrieves a value from `history.state` if it exists.
-
-#### Parameters
-
-##### name
-
-`string`
-
-#### Returns
-
-`any`
-
 #### Overrides
 
-[`AbstractStateValueMethodArgumentResolver`](AbstractStateValueMethodArgumentResolver.md).[`getStateValue`](AbstractStateValueMethodArgumentResolver.md#getstatevalue)
+`AbstractPlatformArgumentResolver.supportsParameter`

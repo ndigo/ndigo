@@ -6,11 +6,9 @@
 
 # Type Alias: ValidationBackendName
 
-> **ValidationBackendName** = `"native"` \| `"zod"` \| `"hybrid"`
+> **ValidationBackendName** = `"native"`
 
-Defined in: packages/blue-validate/src/backend.ts:16
+Defined in: packages/blue-validate/src/backend.ts:12
 
-Represents the available validation backend names.
-- `native`: Uses the built-in BlueJS validation logic.
-- `zod`: Integrates with the Zod validation library.
-- `hybrid`: Combines native BlueJS validation with Zod for enhanced capabilities.
+The supported validation backend. Currently only
+`native` (built-in BlueJS validation) is available.

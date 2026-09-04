@@ -6,6 +6,6 @@
 
 # Variable: TEXT\_CSV
 
-> `const` **TEXT\_CSV**: [`MediaType`](../../../classes/MediaType.md)
+> `const` **TEXT\_CSV**: [`MediaType`](../../../classes/MediaType.md) \| `null`
 
 Defined in: packages/blue-core/src/media-types.ts:82

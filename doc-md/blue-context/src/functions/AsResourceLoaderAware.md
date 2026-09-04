@@ -8,7 +8,7 @@
 
 > **AsResourceLoaderAware**\<`T`\>(`superclass`): `Constructable`\<[`ResourceLoaderAware`](../interfaces/ResourceLoaderAware.md)\> & `T`
 
-Defined in: packages/blue-context/src/resource.ts:67
+Defined in: packages/blue-context/src/resource.ts:64
 
 ## Type Parameters
 
@@ -22,8 +22,6 @@ Defined in: packages/blue-context/src/resource.ts:67
 
 `T`
 
-The base class to extend.
-
 ## Returns
 
 `Constructable`\<[`ResourceLoaderAware`](../interfaces/ResourceLoaderAware.md)\> & `T`
@@ -31,7 +29,3 @@ The base class to extend.
 ## See
 
 module:context.AsResourceLoaderAware
-
-## Implements
-
-module:context.ResourceLoaderAware

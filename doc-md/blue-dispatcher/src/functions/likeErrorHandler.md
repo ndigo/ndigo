@@ -8,7 +8,7 @@
 
 > **likeErrorHandler**(`target`): `boolean`
 
-Defined in: packages/blue-dispatcher/src/error-mapping.ts:104
+Defined in: packages/blue-dispatcher/src/error-mapping.ts:108
 
 Checks if a given target object or its constructor is an error handler.
 An object is considered an error handler if it has the `@errorHandler` metadata

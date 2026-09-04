@@ -208,13 +208,13 @@ A `RouterInterceptor` instance.
 
 ### callback()
 
-> `readonly` **callback**(): `any`
+> `readonly` **callback**(): `undefined`
 
 Defined in: packages/blue-router/src/site-router.ts:32
 
 #### Returns
 
-`any`
+`undefined`
 
 #### Overrides
 

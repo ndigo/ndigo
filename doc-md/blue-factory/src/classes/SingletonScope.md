@@ -6,7 +6,7 @@
 
 # Class: SingletonScope
 
-Defined in: packages/blue-factory/src/scope.ts:176
+Defined in: packages/blue-factory/src/scope.ts:181
 
 **`Internal`**
 
@@ -35,7 +35,7 @@ Destruction callbacks can be registered when an instance is created.
 
 > **destroyValue**(`name`): `void`
 
-Defined in: packages/blue-factory/src/scope.ts:180
+Defined in: packages/blue-factory/src/scope.ts:185
 
 #### Parameters
 
@@ -57,7 +57,7 @@ Defined in: packages/blue-factory/src/scope.ts:180
 
 > **getValue**\<`T`\>(`name`, `objectFactory`): `T`
 
-Defined in: packages/blue-factory/src/scope.ts:191
+Defined in: packages/blue-factory/src/scope.ts:196
 
 #### Type Parameters
 
@@ -89,7 +89,7 @@ Defined in: packages/blue-factory/src/scope.ts:191
 
 > **registerDestructionCallback**(`name`, `callback`): `void`
 
-Defined in: packages/blue-factory/src/scope.ts:199
+Defined in: packages/blue-factory/src/scope.ts:204
 
 #### Parameters
 

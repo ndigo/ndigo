@@ -6,8 +6,8 @@
 
 # Variable: Falsy
 
-> `const` **Falsy**: `BasicModel`\<`BasicModel`\<(`SymbolConstructor` \| `BigIntConstructor` \| `BooleanConstructor` \| `NumberConstructor` \| `StringConstructor`)[]\>\>
+> `const` **Falsy**: `any`
 
-Defined in: packages/blue-model/src/basic.ts:43
+Defined in: packages/blue-model/src/basic.ts:49
 
 Matches values that are falsey at runtime.

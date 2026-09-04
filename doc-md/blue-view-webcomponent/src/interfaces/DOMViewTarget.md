@@ -6,7 +6,7 @@
 
 # Interface: DOMViewTarget
 
-Defined in: packages/blue-view-webcomponent/src/engine.ts:24
+Defined in: packages/blue-view-webcomponent/src/engine.ts:22
 
 View target contract for DOM-backed render destinations.
 
@@ -23,7 +23,7 @@ engine can reuse or replace the rendered subtree.
 
 > `readonly` **container**: `HTMLElement`
 
-Defined in: packages/blue-view-webcomponent/src/engine.ts:28
+Defined in: packages/blue-view-webcomponent/src/engine.ts:26
 
 The host element that receives rendered output.
 

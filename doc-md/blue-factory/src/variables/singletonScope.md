@@ -8,7 +8,7 @@
 
 > `const` **singletonScope**: \<`T`\>(`target`, `context`) => `T`
 
-Defined in: packages/blue-factory/src/scope.ts:89
+Defined in: packages/blue-factory/src/scope.ts:88
 
 Decorator for singleton scope (convenience factory)
 

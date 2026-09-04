@@ -8,7 +8,7 @@
 
 > **predicate**\<`T`\> = (`value1`, `value2`) => `boolean`
 
-Defined in: packages/blue-core/src/comparable.ts:24
+Defined in: packages/blue-core/src/comparable.ts:22
 
 A function that evaluates a condition between two values, returning a boolean.
 

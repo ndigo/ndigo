@@ -8,7 +8,7 @@
 
 > **AsPositionalEventEmitter**\<`T`\>(`superclass`): `Constructable`\<[`PositionalEventEmitter`](../interfaces/PositionalEventEmitter.md)\> & `T`
 
-Defined in: packages/blue-context/src/event-emitter.ts:717
+Defined in: packages/blue-context/src/event-emitter.ts:304
 
 Adds positional listener insertion helpers to a base class.
 

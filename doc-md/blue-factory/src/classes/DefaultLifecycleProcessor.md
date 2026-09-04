@@ -6,11 +6,7 @@
 
 # Class: DefaultLifecycleProcessor
 
-Defined in: packages/blue-factory/src/lifecycle.ts:113
-
-## Implements
-
-module:factory.LifecycleProcessor
+Defined in: packages/blue-factory/src/lifecycle.ts:100
 
 ## Implements
 
@@ -22,7 +18,7 @@ module:factory.LifecycleProcessor
 
 > **new DefaultLifecycleProcessor**(): `DefaultLifecycleProcessor`
 
-Defined in: packages/blue-factory/src/lifecycle.ts:116
+Defined in: packages/blue-factory/src/lifecycle.ts:103
 
 #### Returns
 
@@ -34,7 +30,7 @@ Defined in: packages/blue-factory/src/lifecycle.ts:116
 
 > **isRunning**: `boolean`
 
-Defined in: packages/blue-factory/src/lifecycle.ts:114
+Defined in: packages/blue-factory/src/lifecycle.ts:101
 
 #### Implementation of
 
@@ -46,7 +42,7 @@ Defined in: packages/blue-factory/src/lifecycle.ts:114
 
 > **onClose**(`registry`): `void`
 
-Defined in: packages/blue-factory/src/lifecycle.ts:120
+Defined in: packages/blue-factory/src/lifecycle.ts:107
 
 #### Parameters
 
@@ -68,7 +64,7 @@ Defined in: packages/blue-factory/src/lifecycle.ts:120
 
 > **onRefresh**(`registry`): `void`
 
-Defined in: packages/blue-factory/src/lifecycle.ts:134
+Defined in: packages/blue-factory/src/lifecycle.ts:121
 
 #### Parameters
 
@@ -90,7 +86,7 @@ Defined in: packages/blue-factory/src/lifecycle.ts:134
 
 > **start**(): `void`
 
-Defined in: packages/blue-factory/src/lifecycle.ts:149
+Defined in: packages/blue-factory/src/lifecycle.ts:136
 
 #### Returns
 
@@ -106,7 +102,7 @@ Defined in: packages/blue-factory/src/lifecycle.ts:149
 
 > **stop**(): `void`
 
-Defined in: packages/blue-factory/src/lifecycle.ts:153
+Defined in: packages/blue-factory/src/lifecycle.ts:140
 
 #### Returns
 

@@ -8,7 +8,7 @@
 
 > `const` **url**: (`params`) => (`value`, `context`) => `void`
 
-Defined in: packages/blue-validate/src/decorators.ts:466
+Defined in: packages/blue-validate/src/decorators.ts:529
 
 TC39 Stage 3 decorator that validates a string property to be a valid URL.
 

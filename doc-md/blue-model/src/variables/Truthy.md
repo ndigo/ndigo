@@ -6,8 +6,8 @@
 
 # Variable: Truthy
 
-> `const` **Truthy**: `BasicModel`\<(`ObjectConstructor` \| `BasicModel`\<(`SymbolConstructor` \| `BigIntConstructor` \| `BooleanConstructor` \| `NumberConstructor` \| `StringConstructor`)[]\>)[]\>
+> `const` **Truthy**: `any`
 
-Defined in: packages/blue-model/src/basic.ts:47
+Defined in: packages/blue-model/src/basic.ts:53
 
 Matches values that are truthy at runtime.

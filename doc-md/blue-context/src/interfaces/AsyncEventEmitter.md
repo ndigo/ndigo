@@ -6,7 +6,7 @@
 
 # Interface: AsyncEventEmitter
 
-Defined in: packages/blue-context/src/event-emitter.ts:84
+Defined in: packages/blue-context/src/event-emitter.ts:110
 
 Event emitter with microtask-based dispatch.
 
@@ -20,7 +20,7 @@ Event emitter with microtask-based dispatch.
 
 > **emit**(`type`, ...`data`): `boolean`
 
-Defined in: packages/blue-context/src/event-emitter.ts:42
+Defined in: packages/blue-context/src/event-emitter.ts:68
 
 Emits an event to the listeners registered for the given type.
 
@@ -54,7 +54,7 @@ Event payload values.
 
 > **eventTypes**(): [`EventType`](../type-aliases/EventType.md)[]
 
-Defined in: packages/blue-context/src/event-emitter.ts:48
+Defined in: packages/blue-context/src/event-emitter.ts:74
 
 Returns the event types with registered listeners.
 
@@ -74,7 +74,7 @@ The registered event types.
 
 > **listenerCount**(`type`): `number`
 
-Defined in: packages/blue-context/src/event-emitter.ts:55
+Defined in: packages/blue-context/src/event-emitter.ts:81
 
 Returns the number of listeners for a type.
 
@@ -102,7 +102,7 @@ The listener count.
 
 > **listeners**(`type`): `Function`[]
 
-Defined in: packages/blue-context/src/event-emitter.ts:62
+Defined in: packages/blue-context/src/event-emitter.ts:88
 
 Returns a snapshot of listeners for a type.
 
@@ -128,9 +128,9 @@ The registered listeners.
 
 ### on()
 
-> **on**(`type`, `listener`): `this`
+> **on**(`type`, `listener?`): `this`
 
-Defined in: packages/blue-context/src/event-emitter.ts:70
+Defined in: packages/blue-context/src/event-emitter.ts:96
 
 Adds a listener for an event type.
 
@@ -138,11 +138,11 @@ Adds a listener for an event type.
 
 ##### type
 
-[`EventType`](../type-aliases/EventType.md)
+[`EventType`](../type-aliases/EventType.md) \| [`EventHandlers`](../type-aliases/EventHandlers.md)
 
 The event type.
 
-##### listener
+##### listener?
 
 `Function`
 
@@ -164,7 +164,7 @@ This emitter.
 
 > **off**(`type`, `listener`): `this`
 
-Defined in: packages/blue-context/src/event-emitter.ts:78
+Defined in: packages/blue-context/src/event-emitter.ts:104
 
 Removes a listener for an event type.
 
@@ -198,7 +198,7 @@ This emitter.
 
 > **tick**(`type`, ...`data`): `Promise`\<`void`\>
 
-Defined in: packages/blue-context/src/event-emitter.ts:92
+Defined in: packages/blue-context/src/event-emitter.ts:118
 
 Dispatches an event in a microtask.
 

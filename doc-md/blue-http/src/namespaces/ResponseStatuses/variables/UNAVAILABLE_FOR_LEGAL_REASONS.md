@@ -6,7 +6,7 @@
 
 # Variable: UNAVAILABLE\_FOR\_LEGAL\_REASONS
 
-> `const` **UNAVAILABLE\_FOR\_LEGAL\_REASONS**: `ResponseStatus`
+> `const` **UNAVAILABLE\_FOR\_LEGAL\_REASONS**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
 Defined in: packages/blue-http/src/response-statuses.ts:289
 

@@ -8,7 +8,7 @@
 
 > **likeHTTPInterceptor**(`value`): `value is ResponseAwareHTTPInterceptor<HTTPInit>`
 
-Defined in: packages/blue-http/src/http.ts:337
+Defined in: packages/blue-http/src/http.ts:338
 
 Tests whether a value behaves like any supported HTTP interceptor.
 

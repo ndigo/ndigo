@@ -22,7 +22,7 @@ Entry name or the decorated method target.
 
 ### maybeContext?
 
-`ClassMethodDecoratorContext`
+`ClassMethodDecoratorContext`\<`unknown`, (`this`, ...`args`) => `any`\>
 
 Decorator context for legacy usage.
 

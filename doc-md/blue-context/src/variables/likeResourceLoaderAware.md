@@ -8,7 +8,7 @@
 
 > `const` **likeResourceLoaderAware**: (`value`) => `value is ResourceLoaderAware`
 
-Defined in: packages/blue-context/src/resource.ts:103
+Defined in: packages/blue-context/src/resource.ts:100
 
 Returns whether a value can receive a resource loader.
 
@@ -16,7 +16,7 @@ Returns whether a value can receive a resource loader.
 
 ### value
 
-`any`
+`unknown`
 
 The value to test.
 

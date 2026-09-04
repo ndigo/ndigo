@@ -8,7 +8,7 @@
 
 > **asNumber**(`extractor`): [`ParameterExtractor`](../type-aliases/ParameterExtractor.md)
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:458
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:417
 
 Wraps a parameter extractor to enforce number conversion.
 

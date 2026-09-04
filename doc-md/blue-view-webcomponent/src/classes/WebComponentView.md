@@ -72,7 +72,7 @@ Indicates if the view has been destroyed.
 
 ### mediaType
 
-> **mediaType**: `MediaType`
+> **mediaType**: `MediaType` \| `null`
 
 Defined in: packages/blue-view/lib/view.d.ts:48
 
@@ -192,11 +192,9 @@ The ApplicationContext to be used by this object.
 
 > **setName**(`name`): `void`
 
-Defined in: packages/blue-factory/lib/aware.d.ts:38
+Defined in: packages/blue-factory/lib/aware.d.ts:36
 
-Set the name of the value in the factory that created it.
-
-Invoked after population of normal value properties but before an `init` callback.
+Sets the name of the value in the factory.
 
 #### Parameters
 
@@ -204,7 +202,7 @@ Invoked after population of normal value properties but before an `init` callbac
 
 `string`
 
-The name of the value in the factory.
+The name to set.
 
 #### Returns
 
@@ -346,6 +344,40 @@ A JSON object representing the path-based view.
 
 ***
 
+### \_projectViewModel()
+
+> `protected` **\_projectViewModel**(`viewModel`, `request`): `any`
+
+Defined in: packages/blue-view/lib/view.d.ts:127
+
+Creates the template model from the view model.
+
+#### Parameters
+
+##### viewModel
+
+`any`
+
+The view model.
+
+##### request
+
+`any`
+
+The current request.
+
+#### Returns
+
+`any`
+
+The template model.
+
+#### Inherited from
+
+`AbstractTemplateView._projectViewModel`
+
+***
+
 ### \_renderTemplate()
 
 > `abstract` `protected` **\_renderTemplate**(`templateModel`, `request`): `void`
@@ -380,11 +412,11 @@ The current request.
 
 ### \_renderView()
 
-> `abstract` `protected` **\_renderView**(`viewModel`, `request`, `target?`): `Promise`\<`void`\>
+> `protected` **\_renderView**(`viewModel`, `request`, `target?`): `Promise`\<`void`\>
 
 Defined in: packages/blue-view-webcomponent/src/view.ts:49
 
-Renders the view with the given view model, request, and optional target.
+Renders the view with the given view model.
 
 #### Parameters
 
@@ -392,7 +424,7 @@ Renders the view with the given view model, request, and optional target.
 
 `any`
 
-The view model.
+The view model to render.
 
 ##### request
 
@@ -404,7 +436,7 @@ The current request.
 
 `ViewTarget`
 
-The optional view target.
+The optional view target (required for rendering).
 
 #### Returns
 

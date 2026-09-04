@@ -8,7 +8,7 @@
 
 > **likeHierarchicalFactory**(`value`): `boolean`
 
-Defined in: packages/blue-factory/src/factory.ts:159
+Defined in: packages/blue-factory/src/factory.ts:160
 
 Determines whether or not the `value` provided is [HierarchicalFactory](../interfaces/HierarchicalFactory.md).
 

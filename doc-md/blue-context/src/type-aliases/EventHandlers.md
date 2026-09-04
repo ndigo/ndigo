@@ -8,7 +8,7 @@
 
 > **EventHandlers** = `object`
 
-Defined in: packages/blue-context/src/event-emitter.ts:24
+Defined in: packages/blue-context/src/event-emitter.ts:50
 
 Mapping from event type to handler(s).
 

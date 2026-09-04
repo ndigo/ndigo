@@ -6,8 +6,8 @@
 
 # Variable: FullString
 
-> `const` **FullString**: `BasicModel`\<`StringConstructor`\>
+> `const` **FullString**: `any`
 
-Defined in: packages/blue-model/src/basic.ts:83
+Defined in: packages/blue-model/src/basic.ts:89
 
 Matches strings that are not blank.

@@ -6,16 +6,12 @@
 
 # Class: HTTPHeader
 
-Defined in: packages/blue-http/src/http-header.ts:103
+Defined in: packages/blue-http/src/http-header.ts:101
 
 Represents a single HTTP header name with helpers for common header collections.
 
 The instance stores only the header name; read and write methods adapt the
 name to `Headers`, header tuples, and plain object maps.
-
-## Implements
-
-module:core.Serializable
 
 ## Implements
 
@@ -27,7 +23,7 @@ module:core.Serializable
 
 > **new HTTPHeader**(`name`): `HTTPHeader`
 
-Defined in: packages/blue-http/src/http-header.ts:118
+Defined in: packages/blue-http/src/http-header.ts:116
 
 Creates a header helper for the given name.
 
@@ -49,7 +45,7 @@ The header name to target.
 
 > `readonly` **name**: `string`
 
-Defined in: packages/blue-http/src/http-header.ts:107
+Defined in: packages/blue-http/src/http-header.ts:105
 
 The canonical header name used for reads and writes.
 
@@ -61,7 +57,7 @@ The canonical header name used for reads and writes.
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-http/src/http-header.ts:109
+Defined in: packages/blue-http/src/http-header.ts:107
 
 ##### Returns
 
@@ -73,7 +69,7 @@ Defined in: packages/blue-http/src/http-header.ts:109
 
 > **delete**(`headers`): `void`
 
-Defined in: packages/blue-http/src/http-header.ts:135
+Defined in: packages/blue-http/src/http-header.ts:133
 
 Removes this header from a header collection when present.
 
@@ -93,9 +89,9 @@ The header collection to mutate.
 
 ### get()
 
-> **get**(`headers`): `string`
+> **get**(`headers`): `string` \| `null`
 
-Defined in: packages/blue-http/src/http-header.ts:145
+Defined in: packages/blue-http/src/http-header.ts:143
 
 Reads this header from a header collection.
 
@@ -109,7 +105,7 @@ The header collection to read from.
 
 #### Returns
 
-`string`
+`string` \| `null`
 
 The header value, or `null` when missing.
 
@@ -119,7 +115,7 @@ The header value, or `null` when missing.
 
 > **has**(`headers`): `boolean`
 
-Defined in: packages/blue-http/src/http-header.ts:155
+Defined in: packages/blue-http/src/http-header.ts:153
 
 Tests whether this header exists in a header collection.
 
@@ -143,7 +139,7 @@ The header collection to inspect.
 
 > **set**(`headers`, `value`): `void`
 
-Defined in: packages/blue-http/src/http-header.ts:166
+Defined in: packages/blue-http/src/http-header.ts:164
 
 Writes this header into a mutable header collection.
 
@@ -175,7 +171,7 @@ When `headers` is not provided.
 
 > **toJSON**(): `JSONValue`
 
-Defined in: packages/blue-http/src/http-header.ts:176
+Defined in: packages/blue-http/src/http-header.ts:174
 
 #### Returns
 
@@ -193,7 +189,7 @@ A JSON representation of the HTTP header
 
 > **toString**(): `string`
 
-Defined in: packages/blue-http/src/http-header.ts:183
+Defined in: packages/blue-http/src/http-header.ts:181
 
 #### Returns
 

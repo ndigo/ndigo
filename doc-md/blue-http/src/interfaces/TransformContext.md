@@ -32,9 +32,9 @@ Request/response headers for header-based conditional logic.
 
 ***
 
-### mediaType?
+### mediaType
 
-> `readonly` `optional` **mediaType?**: `MediaType`
+> `readonly` **mediaType**: `MediaType` \| `null` \| `undefined`
 
 Defined in: packages/blue-http/src/transformers/http-transformer.ts:24
 

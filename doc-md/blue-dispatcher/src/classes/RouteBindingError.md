@@ -6,7 +6,7 @@
 
 # Class: RouteBindingError
 
-Defined in: packages/blue-dispatcher/src/error.ts:72
+Defined in: packages/blue-dispatcher/src/error.ts:57
 
 An error that represents a failure to retrieve a required Route\|Route property.
 
@@ -20,7 +20,7 @@ An error that represents a failure to retrieve a required Route\|Route property.
 
 > **new RouteBindingError**(`message`): `RouteBindingError`
 
-Defined in: packages/blue-dispatcher/src/error.ts:80
+Defined in: packages/blue-dispatcher/src/error.ts:65
 
 #### Parameters
 
@@ -40,7 +40,7 @@ Defined in: packages/blue-dispatcher/src/error.ts:80
 
 > **new RouteBindingError**(`route`, `name`): `RouteBindingError`
 
-Defined in: packages/blue-dispatcher/src/error.ts:81
+Defined in: packages/blue-dispatcher/src/error.ts:66
 
 #### Parameters
 
@@ -64,9 +64,9 @@ Defined in: packages/blue-dispatcher/src/error.ts:81
 
 ### route
 
-> **route**: `Route`
+> **route**: `Route`\<`Record`\<`string`, `string`\>\> \| `null`
 
-Defined in: packages/blue-dispatcher/src/error.ts:73
+Defined in: packages/blue-dispatcher/src/error.ts:58
 
 ***
 
@@ -74,7 +74,7 @@ Defined in: packages/blue-dispatcher/src/error.ts:73
 
 > **name**: `string`
 
-Defined in: packages/blue-dispatcher/src/error.ts:74
+Defined in: packages/blue-dispatcher/src/error.ts:59
 
 #### Overrides
 
@@ -88,7 +88,7 @@ Defined in: packages/blue-dispatcher/src/error.ts:74
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-dispatcher/src/error.ts:76
+Defined in: packages/blue-dispatcher/src/error.ts:61
 
 ##### Returns
 

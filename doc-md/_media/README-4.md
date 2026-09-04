@@ -8,7 +8,7 @@ Blue Core is the foundational package for shared primitives, contracts, and util
 - Async primitive: `Deferred`
 - Media type parsing and constants (`MediaType`, `MediaTypes`)
 - Error base types and utility abstractions
-- Collection/transducer and matcher utilities
+- Collection and matcher utilities
 
 ## Installation
 

@@ -6,7 +6,7 @@
 
 # Variable: TOO\_MANY\_REQUESTS
 
-> `const` **TOO\_MANY\_REQUESTS**: `ResponseStatus`
+> `const` **TOO\_MANY\_REQUESTS**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
 Defined in: packages/blue-http/src/response-statuses.ts:279
 

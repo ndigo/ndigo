@@ -6,7 +6,7 @@
 
 # Function: parseUrlGlob()
 
-> **parseUrlGlob**(`pattern`): `string`
+> **parseUrlGlob**(`pattern`): `string` \| `null`
 
 Defined in: packages/blue-core/src/url-glob.ts:34
 
@@ -25,6 +25,6 @@ The URL glob pattern to parse (e.g. `/api/*`, `**`, `[:alnum:]*`).
 
 ## Returns
 
-`string`
+`string` \| `null`
 
 An anchored regex source string, or `null` if the pattern is invalid.

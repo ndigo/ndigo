@@ -6,7 +6,7 @@
 
 # Class: PrototypalPropertyResolver
 
-Defined in: packages/blue-context/src/property-resolver.ts:108
+Defined in: packages/blue-context/src/property-resolver.ts:105
 
 Property resolver that layers sources through a prototype chain for lookup.
 
@@ -20,7 +20,7 @@ Property resolver that layers sources through a prototype chain for lookup.
 
 > **new PrototypalPropertyResolver**(`propertySources`): `PrototypalPropertyResolver`
 
-Defined in: packages/blue-context/src/property-resolver.ts:134
+Defined in: packages/blue-context/src/property-resolver.ts:131
 
 #### Parameters
 
@@ -38,7 +38,7 @@ Defined in: packages/blue-context/src/property-resolver.ts:134
 
 > `readonly` **properties**: `JSONObject`
 
-Defined in: packages/blue-context/src/property-resolver.ts:110
+Defined in: packages/blue-context/src/property-resolver.ts:107
 
 ## Accessors
 
@@ -48,7 +48,7 @@ Defined in: packages/blue-context/src/property-resolver.ts:110
 
 > **get** **propertySources**(): `JSONObject`[]
 
-Defined in: packages/blue-context/src/property-resolver.ts:115
+Defined in: packages/blue-context/src/property-resolver.ts:112
 
 The ordered set of configured property sources.
 
@@ -60,7 +60,7 @@ The ordered set of configured property sources.
 
 > **set** **propertySources**(`propertySources`): `void`
 
-Defined in: packages/blue-context/src/property-resolver.ts:124
+Defined in: packages/blue-context/src/property-resolver.ts:121
 
 Replaces the property sources and rebuilds the prototype chain used for lookups.
 
@@ -86,9 +86,9 @@ The ordered set of property sources used during resolution.
 
 ### getProperty()
 
-> **getProperty**(`key`, `defaultValue?`): `JSONValue`
+> **getProperty**(`key`, `defaultValue?`): `JSONValue` \| `undefined`
 
-Defined in: packages/blue-context/src/property-resolver.ts:145
+Defined in: packages/blue-context/src/property-resolver.ts:142
 
 Resolves a property value from the configured sources.
 
@@ -108,7 +108,7 @@ The value to return when the property is missing.
 
 #### Returns
 
-`JSONValue`
+`JSONValue` \| `undefined`
 
 The resolved property value or the default value.
 
@@ -122,7 +122,7 @@ The resolved property value or the default value.
 
 > **getRequiredProperty**(`key`): `JSONValue`
 
-Defined in: packages/blue-context/src/property-resolver.ts:159
+Defined in: packages/blue-context/src/property-resolver.ts:156
 
 Resolves a required property value.
 
@@ -154,7 +154,7 @@ When the property cannot be resolved.
 
 > **hasProperty**(`key`): `boolean`
 
-Defined in: packages/blue-context/src/property-resolver.ts:173
+Defined in: packages/blue-context/src/property-resolver.ts:170
 
 Returns whether the property can be resolved.
 

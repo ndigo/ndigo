@@ -6,7 +6,7 @@
 
 # Class: DefaultResourceLoader
 
-Defined in: packages/blue-context/src/resource.ts:199
+Defined in: packages/blue-context/src/resource.ts:189
 
 Resource loader that resolves modules through dynamic import.
 

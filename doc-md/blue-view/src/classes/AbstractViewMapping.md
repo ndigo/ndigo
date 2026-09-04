@@ -107,7 +107,7 @@ The interceptors applied while resolving targets.
 
 Defined in: packages/blue-view/src/view-mapping.ts:47
 
-The matcher used to compare route paths.
+The path matcher used to match request paths to targets.
 
 ## Accessors
 
@@ -157,11 +157,9 @@ The ApplicationContext to be used by this object.
 
 > **setName**(`name`): `void`
 
-Defined in: packages/blue-factory/lib/aware.d.ts:38
+Defined in: packages/blue-factory/lib/aware.d.ts:36
 
-Set the name of the value in the factory that created it.
-
-Invoked after population of normal value properties but before an `init` callback.
+Sets the name of the value in the factory.
 
 #### Parameters
 
@@ -169,7 +167,7 @@ Invoked after population of normal value properties but before an `init` callbac
 
 `string`
 
-The name of the value in the factory.
+The name to set.
 
 #### Returns
 

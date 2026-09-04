@@ -6,7 +6,7 @@
 
 # Variable: REQUEST\_HEADER\_FIELDS\_TOO\_LARGE
 
-> `const` **REQUEST\_HEADER\_FIELDS\_TOO\_LARGE**: `ResponseStatus`
+> `const` **REQUEST\_HEADER\_FIELDS\_TOO\_LARGE**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
 Defined in: packages/blue-http/src/response-statuses.ts:284
 

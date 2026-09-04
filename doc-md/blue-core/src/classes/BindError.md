@@ -20,9 +20,10 @@ Represents an error that occurs during data binding operations.
 
 > **new BindError**(`message?`): `BindError`
 
-Defined in: packages/blue-core/src/error.ts:81
+Defined in: packages/blue-core/src/error.ts:83
 
 Creates an instance of FrameworkError.
+Uses `new.target.name` so subclasses inherit the correct name automatically.
 
 #### Parameters
 
@@ -48,7 +49,7 @@ The error message.
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-core/src/error.ts:73
+Defined in: packages/blue-core/src/error.ts:74
 
 The string tag for this class.
 

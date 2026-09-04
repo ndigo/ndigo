@@ -8,7 +8,7 @@
 
 > **likeServiceInterceptor**(`value`): `value is ServiceInterceptor`
 
-Defined in: packages/blue-service/src/service.ts:158
+Defined in: packages/blue-service/src/service.ts:162
 
 Tests whether a value behaves like any supported service interceptor.
 

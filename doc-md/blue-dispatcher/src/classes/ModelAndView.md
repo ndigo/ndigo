@@ -30,7 +30,7 @@ The view name or view instance.
 
 ##### model?
 
-`Model` = `null`
+`Model`\<`any`\> \| `null`
 
 Optional model data to expose to the view.
 
@@ -42,7 +42,7 @@ Optional model data to expose to the view.
 
 ### model
 
-> **model**: `Model`
+> **model**: `Model`\<`any`\> \| `null`
 
 Defined in: packages/blue-dispatcher/src/model-and-view.ts:16
 
@@ -52,7 +52,7 @@ Model data supplied to the view.
 
 ### viewName
 
-> **viewName**: `string`
+> **viewName**: `string` \| `null`
 
 Defined in: packages/blue-dispatcher/src/model-and-view.ts:21
 
@@ -62,7 +62,7 @@ Resolved view name, when known.
 
 ### view
 
-> **view**: `View`
+> **view**: `View` \| `null`
 
 Defined in: packages/blue-dispatcher/src/model-and-view.ts:26
 

@@ -8,7 +8,7 @@
 
 > **bindValue**(`source`, `options?`): [`ParameterExtractor`](../type-aliases/ParameterExtractor.md)
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:369
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:328
 
 Factory function: Create a binding parameter extractor.
 Binds an entire source (e.g. query, state) to an object, optionally filtering by prefix.
@@ -29,9 +29,17 @@ Binds an entire source (e.g. query, state) to an object, optionally filtering by
 
 `any`
 
-#### convert?
+#### convertType?
 
-[`ParameterValueConverterReference`](../type-aliases/ParameterValueConverterReference.md)
+\{ `source`: `any`; `target`: `any`; \}
+
+#### convertType.source
+
+`any`
+
+#### convertType.target
+
+`any`
 
 #### prefix?
 

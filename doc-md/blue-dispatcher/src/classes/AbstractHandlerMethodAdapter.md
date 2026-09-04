@@ -6,7 +6,7 @@
 
 # Abstract Class: AbstractHandlerMethodAdapter
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:59
+Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:60
 
 Adapts a handler instance into route execution.
 
@@ -42,9 +42,9 @@ Implementations decide whether they support a handler type and how to invoke it 
 
 ### applicationContext
 
-> **applicationContext**: `ApplicationContext`
+> **applicationContext**: `ApplicationContext` \| `null`
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:66
+Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:67
 
 Application context used to discover handlers and argument resolvers.
 
@@ -70,7 +70,7 @@ A symbol indicating that the value is aware.
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:68
+Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:69
 
 ##### Returns
 
@@ -110,15 +110,15 @@ The ApplicationContext to be used by this object.
 
 > **supports**(`handler`): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:72
+Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:73
 
-Determine whether this adapter can handle the given handler instance.
+Tests whether this adapter supports the given handler.
 
 #### Parameters
 
 ##### handler
 
-`any`
+`object` \| `undefined`
 
 The handler instance to test.
 
@@ -126,7 +126,7 @@ The handler instance to test.
 
 `boolean`
 
-`true` when the handler is supported; otherwise `false`.
+`true` when the handler is supported.
 
 #### Implementation of
 
@@ -138,7 +138,7 @@ The handler instance to test.
 
 > `abstract` **handle**(`route`, `handler`): `Promise`\<[`ModelAndView`](ModelAndView.md)\>
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:83
+Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:84
 
 Handle a route with a method-backed handler.
 
@@ -152,7 +152,7 @@ The current route.
 
 ##### handler
 
-`RouteHandlerMethod`
+[`RouteHandlerMethod`](RouteHandlerMethod.md)
 
 The resolved route handler method.
 
@@ -172,13 +172,13 @@ The model and view produced by invoking the handler.
 
 > `abstract` `protected` **\_supports**(`handler`): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:84
+Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:85
 
 #### Parameters
 
 ##### handler
 
-`RouteHandlerMethod`
+[`RouteHandlerMethod`](RouteHandlerMethod.md)
 
 #### Returns
 

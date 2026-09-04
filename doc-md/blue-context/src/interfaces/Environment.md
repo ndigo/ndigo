@@ -86,7 +86,7 @@ The profile name.
 
 ### getProperty()
 
-> **getProperty**(`key`, `defaultValue?`): `JSONValue`
+> **getProperty**(`key`, `defaultValue?`): `JSONValue` \| `undefined`
 
 Defined in: packages/blue-context/src/property-resolver.ts:20
 
@@ -108,7 +108,7 @@ The value to return when no property is found.
 
 #### Returns
 
-`JSONValue`
+`JSONValue` \| `undefined`
 
 The resolved property value or the default value.
 

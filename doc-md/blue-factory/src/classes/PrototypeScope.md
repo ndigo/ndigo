@@ -6,7 +6,7 @@
 
 # Class: PrototypeScope
 
-Defined in: packages/blue-factory/src/scope.ts:108
+Defined in: packages/blue-factory/src/scope.ts:107
 
 **`Internal`**
 
@@ -36,7 +36,7 @@ A future scoping split may move concrete scope implementations to a separate mod
 
 > **destroyValue**(`_name`): `void`
 
-Defined in: packages/blue-factory/src/scope.ts:109
+Defined in: packages/blue-factory/src/scope.ts:108
 
 #### Parameters
 
@@ -58,7 +58,7 @@ Defined in: packages/blue-factory/src/scope.ts:109
 
 > **getValue**\<`T`\>(`_name`, `objectFactory`): `T`
 
-Defined in: packages/blue-factory/src/scope.ts:113
+Defined in: packages/blue-factory/src/scope.ts:112
 
 #### Type Parameters
 

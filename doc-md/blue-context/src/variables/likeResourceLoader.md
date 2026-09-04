@@ -8,7 +8,7 @@
 
 > `const` **likeResourceLoader**: (`value`) => `value is ResourceLoader`
 
-Defined in: packages/blue-context/src/resource.ts:95
+Defined in: packages/blue-context/src/resource.ts:92
 
 Returns whether a value behaves like a resource loader.
 
@@ -16,7 +16,7 @@ Returns whether a value behaves like a resource loader.
 
 ### value
 
-`any`
+`unknown`
 
 The value to test.
 

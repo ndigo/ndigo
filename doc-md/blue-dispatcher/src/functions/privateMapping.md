@@ -8,7 +8,7 @@
 
 > **privateMapping**(`route`): (`target`, `context`) => `any`
 
-Defined in: packages/blue-dispatcher/src/route-mapping.ts:142
+Defined in: packages/blue-dispatcher/src/route-mapping.ts:150
 
 Create a private route mapping decorator.
 

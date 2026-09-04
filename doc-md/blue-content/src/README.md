@@ -12,6 +12,8 @@
 - [CompositeContentSource](classes/CompositeContentSource.md)
 - [CompositeThemeResolver](classes/CompositeThemeResolver.md)
 - [StaticContentSource](classes/StaticContentSource.md)
+- [NegotiatingContentSource](classes/NegotiatingContentSource.md)
+- [PriorityContentSource](classes/PriorityContentSource.md)
 - [StaticThemeResolver](classes/StaticThemeResolver.md)
 
 ## Interfaces
@@ -38,3 +40,4 @@
 ## Functions
 
 - [AsContentSourceAware](functions/AsContentSourceAware.md)
+- [parseAcceptLanguage](functions/parseAcceptLanguage.md)

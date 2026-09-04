@@ -6,6 +6,6 @@
 
 # Variable: APPLICATION\_XHTML
 
-> `const` **APPLICATION\_XHTML**: [`MediaType`](../../../classes/MediaType.md)
+> `const` **APPLICATION\_XHTML**: [`MediaType`](../../../classes/MediaType.md) \| `null`
 
 Defined in: packages/blue-core/src/media-types.ts:34

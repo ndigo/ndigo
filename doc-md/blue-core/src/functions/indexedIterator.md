@@ -8,7 +8,7 @@
 
 > **indexedIterator**\<`T`\>(`indexed`): `IterableIterator`\<`T`\>
 
-Defined in: packages/blue-core/src/iterable.ts:174
+Defined in: packages/blue-core/src/iterable.ts:176
 
 Creates a new `IndexedIterator` for an array-like collection.
 
@@ -24,7 +24,7 @@ The type of elements in the indexed collection.
 
 ### indexed
 
-`ArrayLike`\<`T`\>
+`ArrayLike`\<`T` \| `undefined`\>
 
 The array-like collection to iterate over.
 

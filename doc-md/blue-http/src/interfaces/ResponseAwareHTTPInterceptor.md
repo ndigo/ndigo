@@ -6,7 +6,7 @@
 
 # Interface: ResponseAwareHTTPInterceptor\<T\>
 
-Defined in: packages/blue-http/src/http.ts:125
+Defined in: packages/blue-http/src/http.ts:126
 
 Allows a response to be replaced after fetch completes.
 
@@ -22,7 +22,7 @@ Allows a response to be replaced after fetch completes.
 
 > **postResponse**(`response`, `settings`): `Promise`\<`void` \| `Response`\>
 
-Defined in: packages/blue-http/src/http.ts:133
+Defined in: packages/blue-http/src/http.ts:134
 
 Transforms the response after fetch succeeds and before completion hooks run.
 

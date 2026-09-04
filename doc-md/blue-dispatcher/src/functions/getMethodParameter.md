@@ -6,9 +6,9 @@
 
 # Function: getMethodParameter()
 
-> **getMethodParameter**(`target`, `propertyKey`): [`MethodParameter`](../classes/MethodParameter.md)[]
+> **getMethodParameter**(`target`, `propertyKey`): [`MethodParameter`](../classes/MethodParameter.md)[] \| `undefined`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:537
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:526
 
 Get method parameters
 
@@ -24,4 +24,4 @@ Get method parameters
 
 ## Returns
 
-[`MethodParameter`](../classes/MethodParameter.md)[]
+[`MethodParameter`](../classes/MethodParameter.md)[] \| `undefined`

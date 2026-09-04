@@ -8,7 +8,7 @@
 
 > `const` **likeErrorAwareHTTPInterceptor**: (`value`) => `value is ErrorAwareHTTPInterceptor`
 
-Defined in: packages/blue-http/src/http.ts:297
+Defined in: packages/blue-http/src/http.ts:298
 
 Tests whether a value exposes `postError()`.
 

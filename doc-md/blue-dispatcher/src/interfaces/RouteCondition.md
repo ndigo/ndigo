@@ -6,7 +6,7 @@
 
 # Interface: RouteCondition\<T\>
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:17
+Defined in: packages/blue-dispatcher/src/route-condition.ts:21
 
 Contract for route matching conditions.
 
@@ -22,7 +22,7 @@ Contract for route matching conditions.
 
 > **merge**(`value`): `T`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:24
+Defined in: packages/blue-dispatcher/src/route-condition.ts:28
 
 Merge this condition with another condition of the same type.
 
@@ -44,9 +44,9 @@ The merged condition.
 
 ### getMatchingCondition()
 
-> **getMatchingCondition**(`route`): `T`
+> **getMatchingCondition**(`route`): `T` \| `null`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:32
+Defined in: packages/blue-dispatcher/src/route-condition.ts:36
 
 Return the condition that matches a route, or `null` when no match exists.
 
@@ -60,7 +60,7 @@ The current route.
 
 #### Returns
 
-`T`
+`T` \| `null`
 
 A matching condition instance or `null`.
 
@@ -70,7 +70,7 @@ A matching condition instance or `null`.
 
 > **compareTo**(`value`, `route?`): `number`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:41
+Defined in: packages/blue-dispatcher/src/route-condition.ts:45
 
 Compare this condition with another condition.
 
@@ -84,7 +84,7 @@ The condition to compare against.
 
 ##### route?
 
-`Route`
+`Route`\<`Record`\<`string`, `string`\>\>
 
 The route used to break ties, if needed.
 

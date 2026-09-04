@@ -6,6 +6,22 @@
 
 # Variable: fromMatrixString
 
-> `const` **fromMatrixString**: `any`
+> `const` **fromMatrixString**: (`value`) => `JSONObject`
 
-Defined in: packages/blue-router/src/index.ts:22
+Defined in: packages/blue-router/src/index.ts:23
+
+Parses a matrix string into a JSON object.
+
+## Parameters
+
+### value
+
+`string`
+
+The matrix string to parse.
+
+## Returns
+
+`JSONObject`
+
+A plain object representation of the matrix parameters.

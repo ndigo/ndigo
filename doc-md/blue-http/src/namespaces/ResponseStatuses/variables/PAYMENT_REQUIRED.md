@@ -6,7 +6,7 @@
 
 # Variable: PAYMENT\_REQUIRED
 
-> `const` **PAYMENT\_REQUIRED**: `ResponseStatus`
+> `const` **PAYMENT\_REQUIRED**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
 Defined in: packages/blue-http/src/response-statuses.ts:159
 

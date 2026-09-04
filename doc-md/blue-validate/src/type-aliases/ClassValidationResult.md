@@ -8,7 +8,7 @@
 
 > **ClassValidationResult** = `object`
 
-Defined in: packages/blue-validate/src/decorators.ts:92
+Defined in: packages/blue-validate/src/decorators.ts:93
 
 The result object returned by the `validate` method on a class decorated with `@validated`.
 
@@ -18,7 +18,7 @@ The result object returned by the `validate` method on a class decorated with `@
 
 > **isValid**: `boolean`
 
-Defined in: packages/blue-validate/src/decorators.ts:93
+Defined in: packages/blue-validate/src/decorators.ts:94
 
 True if all validations passed, false otherwise.
 
@@ -28,6 +28,6 @@ True if all validations passed, false otherwise.
 
 > **failedProperties**: `Set`\<`string`\>
 
-Defined in: packages/blue-validate/src/decorators.ts:94
+Defined in: packages/blue-validate/src/decorators.ts:95
 
 A set of property names that failed validation.

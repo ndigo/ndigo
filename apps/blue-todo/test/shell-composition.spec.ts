@@ -1,7 +1,8 @@
 // @vitest-environment jsdom
-
+import '@tsmetadata/polyfill';
 import { describe, expect, test, vi } from 'vitest';
 import { GenericApplicationContext } from '@blue/context';
+import { createTodoContext } from '../src/todo-context';
 import {
     ACCOUNT_ROUTE_PREFIX,
     composeTodoRuntime,
@@ -10,6 +11,36 @@ import {
     createTodoSiteRouter,
     TODO_ROUTE_PREFIX,
 } from '../src/shell-composition';
+
+// AbstractWebComponent renders via requestAnimationFrame, which never fires in
+// jsdom — fire it synchronously so dispatches render immediately.
+vi.spyOn(global, 'requestAnimationFrame').mockImplementation((cb: FrameRequestCallback) => {
+    cb(0);
+    return 0;
+});
+
+/**
+ * Boot the REAL composed todo runtime: real createTodoContext() (ApplicationBuilder
+ * + controllers + DOMElementViewTarget on #app) composed via composeTodoRuntime().
+ * Mount/route tests therefore exercise real dispatch, not empty contexts.
+ */
+function composeRealRuntime() {
+    const appEl = document.createElement('div');
+    appEl.id = 'app';
+    document.body.appendChild(appEl);
+
+    const composition = composeTodoRuntime(createTodoContext());
+
+    return {
+        composition,
+        dispose() {
+            composition.featureMountManager.destroy();
+            composition.shellRouter.destroy();
+            composition.shellContext.destroy();
+            appEl.remove();
+        },
+    };
+}
 
 describe('todo shell composition', () => {
     test('it should map feature routes to shell routes with todo prefix', () => {
@@ -57,33 +88,27 @@ describe('todo shell composition', () => {
         shell.destroy();
     });
 
-    test('it should compose runtime with relay gateway diagnostics enabled', () => {
-        const todoContext = new GenericApplicationContext('todo');
-
-        const composition = composeTodoRuntime(todoContext);
+    test('it should compose the real runtime with a working relay gateway', () => {
+        const { composition, dispose } = composeRealRuntime();
 
         const mountedFeature = composition.featureMountManager.getMountedFeature('todo');
 
         expect(mountedFeature?.gateway).toBeDefined();
-        expect(mountedFeature?.gateway?.hasBlockedRelays()).toBe(false);
-        expect((mountedFeature?.gateway as any)?.activeRelayCount ?? mountedFeature?.gateway?.relays.length).toBe(1);
-        expect(
-            (mountedFeature?.gateway as any)?.blockedRelayCount ?? mountedFeature?.gateway?.blockedRelays.length
-        ).toBe(0);
+        expect(mountedFeature?.gateway?.activeRelayCount).toBe(1);
+        expect(mountedFeature?.gateway?.blockedRelayCount).toBe(0);
         expect(composition.featureRoutingRegistry).toBeDefined();
         expect(composition.featureMetrics.getFeatureMetrics('todo')?.counters.get('todo.mountCount')).toBeGreaterThan(
             0
         );
-        expect(composition.shellContext).toBe(todoContext.parent);
+        // The real todo feature context is a child of the shell context.
+        const todoContext = composition.featureMountManager.getMountedFeature('todo')?.context;
+        expect(todoContext?.parent).toBe(composition.shellContext);
 
-        composition.featureMountManager.destroy();
-        composition.shellRouter.destroy();
-        composition.shellContext.destroy();
+        dispose();
     });
 
     test('it should unmount todo feature when route is outside mounted partition', async () => {
-        const todoContext = new GenericApplicationContext('todo');
-        const composition = composeTodoRuntime(todoContext);
+        const { composition, dispose } = composeRealRuntime();
 
         await composition.shellRouter.setRoute('/account');
 
@@ -96,25 +121,23 @@ describe('todo shell composition', () => {
             composition.featureMetrics.getFeatureMetrics('account')?.counters.get('account.activateCount')
         ).toBeGreaterThan(0);
 
-        composition.featureMountManager.destroy();
-        composition.shellRouter.destroy();
-        composition.shellContext.destroy();
+        dispose();
     });
 
     test('it should unmount account feature when routing back to todo partition', async () => {
-        const todoContext = new GenericApplicationContext('todo');
-        const composition = composeTodoRuntime(todoContext);
+        const { composition, dispose } = composeRealRuntime();
 
         await composition.shellRouter.setRoute('/account');
         expect(composition.featureMountManager.isMounted('account')).toBe(true);
+        // The todo feature is unmounted (its view target no longer active) —
+        // the account partition is a marker feature without a view.
 
         await composition.shellRouter.setRoute('/todo/active');
 
         expect(composition.featureMountManager.isMounted('todo')).toBe(true);
         expect(composition.featureMountManager.isMounted('account')).toBe(false);
+        expect(document.querySelector('#app todo-app')).not.toBeNull();
 
-        composition.featureMountManager.destroy();
-        composition.shellRouter.destroy();
-        composition.shellContext.destroy();
+        dispose();
     });
 });

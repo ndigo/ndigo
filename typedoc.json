@@ -27,7 +27,8 @@
     "packages/blue-orm-drizzle/src/index.ts",
     "packages/blue-platform-node/src/index.ts",
     "packages/blue-signals/src/index.ts",
-    "packages/blue-telemetry/src/index.ts"
+    "packages/blue-telemetry/src/index.ts",
+    "packages/blue-test/src/index.ts"
   ],
   "exclude": ["**/node_modules/**", "**/test/**", "archive/**"],
   "out": "doc-md",

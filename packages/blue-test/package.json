@@ -1,0 +1,47 @@
+{
+  "name": "@blue/test",
+  "version": "0.0.1",
+  "description": "Blue integration test harness — MockMvc-style in-process request dispatch",
+  "type": "module",
+  "files": [
+    "doc",
+    "lib"
+  ],
+  "exports": "./lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build:lib": "tsc -b tsconfig.build.json",
+    "test": "vitest run"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue.git"
+  },
+  "keywords": [
+    "blue",
+    "bluejs",
+    "blue-js",
+    "test",
+    "mockmvc",
+    "integration-testing"
+  ],
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "dependencies": {
+    "@blue/context": "~0.0.1",
+    "@blue/core": "~0.0.1",
+    "@blue/dispatcher": "~0.0.1",
+    "@blue/platform-node": "~0.0.1",
+    "@blue/router": "~0.0.1",
+    "@blue/util": "~0.0.1"
+  },
+  "peerDependencies": {
+    "@blue/context": "~0.0.1",
+    "@blue/core": "~0.0.1",
+    "@blue/dispatcher": "~0.0.1",
+    "@blue/platform-node": "~0.0.1",
+    "@blue/router": "~0.0.1",
+    "@blue/util": "~0.0.1"
+  },
+  "sideEffects": false
+}

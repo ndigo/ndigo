@@ -51,8 +51,18 @@ export class NodeDispatcher extends BrowserDispatcher {
             return;
         }
 
-        // JSON API — a plain object return with no view: serialize it directly
-        if (!(mv instanceof ModelAndView) && mv && typeof mv === 'object') {
+        // JSON API — a plain return with no view (object OR scalar): serialize
+        // it directly. Only a real ModelAndView carries view/viewName semantics.
+        if (!(mv instanceof ModelAndView) && mv !== undefined && mv !== null) {
+            // Scalars (string/number/boolean) would be misread by the view
+            // target's `typeof === 'string' → HTML` heuristic; emit them as JSON.
+            if (typeof mv === 'string' || typeof mv === 'number' || typeof mv === 'boolean') {
+                if (res && !res.headersSent) {
+                    res.writeHead(200, { 'Content-Type': 'application/json' });
+                    res.end(JSON.stringify(mv));
+                }
+                return;
+            }
             await viewTarget.commit(mv, null, route);
             return;
         }

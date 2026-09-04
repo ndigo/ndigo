@@ -5,8 +5,6 @@ import { AbstractRouter, RouterCallback } from '@blue/router';
 import { RingBuffer } from '@blue/core';
 import { RouterExecutionChain } from '@blue/router';
 import { MappedRouterInterceptor, RouterInterceptor } from '@blue/router';
-import { DefaultRouteTransactionManager } from './route-transaction-manager';
-import { RouteTransactionManager } from '@blue/router';
 
 /**
  * A type alias for the native `PopStateEvent` handler function.
@@ -64,7 +62,6 @@ export class BrowserRouter extends AbstractRouter {
     #history: RingBuffer<RouteTransaction>;
     #route: PathRoute;
     #lastPublicRoute: string;
-    #transactionManager: RouteTransactionManager;
 
     readonly callback!: RouterCallback;
 
@@ -76,10 +73,6 @@ export class BrowserRouter extends AbstractRouter {
 
     get history(): RingBuffer<RouteTransaction> {
         return this.#history;
-    }
-
-    get transactionManager(): RouteTransactionManager {
-        return this.#transactionManager;
     }
 
     /**
@@ -100,7 +93,6 @@ export class BrowserRouter extends AbstractRouter {
 
         this.#handler = (event: PopStateEvent) => this._onPopState(event);
         this.#history = new RingBuffer<RouteTransaction>(256);
-        this.#transactionManager = new DefaultRouteTransactionManager();
 
         const currentRoute = window.location.pathname + window.location.search || '/',
             routeTx = new RouteTransaction(currentRoute, RouteAccess.PUBLIC, RouteSource.EXTERNAL);
@@ -202,18 +194,15 @@ export class BrowserRouter extends AbstractRouter {
     protected async _setRoute(newRoute: string, syncHash = true): Promise<boolean> {
         const route = new PathRoute(newRoute),
             oldRoute = syncHash ? this.route : this.#lastPublicRoute,
-            status = this.#transactionManager.getTransaction(route, oldRoute, syncHash),
             chain = new RouterExecutionChain(this._resolveInterceptors(route));
 
         this.#route = route;
 
         if (await chain.applyPreHandle(route)) {
-            this.#transactionManager.commit(status);
             return true;
         }
 
         this.#route = new PathRoute(oldRoute);
-        this.#transactionManager.rollback(status);
         return false;
     }
 

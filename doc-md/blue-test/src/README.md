@@ -6,23 +6,28 @@
 
 # blue-test/src
 
-Blue integration test harness — MockMvc-style in-process dispatch.
+Blue integration test harness — MockMVC-style in-process dispatch.
 
 ## Classes
 
-- [MockMvcRequestBuilder](classes/MockMvcRequestBuilder.md)
-- [MockMvc](classes/MockMvc.md)
+- [BrowserMockMVC](classes/BrowserMockMVC.md)
+- [MemoryViewTarget](classes/MemoryViewTarget.md)
+- [MockMVCRequestBuilder](classes/MockMVCRequestBuilder.md)
+- [MockMVC](classes/MockMVC.md)
 
 ## Interfaces
 
 - [BlueTestApp](interfaces/BlueTestApp.md)
+- [BrowserTestApp](interfaces/BrowserTestApp.md)
 - [MemoryResponse](interfaces/MemoryResponse.md)
 - [ResponseSink](interfaces/ResponseSink.md)
+- [CapturedRender](interfaces/CapturedRender.md)
 - [MockRequest](interfaces/MockRequest.md)
 - [PreparedRoute](interfaces/PreparedRoute.md)
 
 ## Functions
 
 - [bootApp](functions/bootApp.md)
+- [bootBrowserApp](functions/bootBrowserApp.md)
 - [createMemoryResponse](functions/createMemoryResponse.md)
 - [buildRoute](functions/buildRoute.md)

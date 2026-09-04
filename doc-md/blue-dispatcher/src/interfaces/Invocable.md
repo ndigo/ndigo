@@ -6,7 +6,7 @@
 
 # Interface: Invocable
 
-Defined in: packages/blue-dispatcher/src/route-handler-method.ts:13
+Defined in: packages/blue-dispatcher/src/route-handler-method.ts:14
 
 ## Extended by
 
@@ -18,7 +18,7 @@ Defined in: packages/blue-dispatcher/src/route-handler-method.ts:13
 
 > **invoke**\<`T`\>(...`args`): `T`
 
-Defined in: packages/blue-dispatcher/src/route-handler-method.ts:14
+Defined in: packages/blue-dispatcher/src/route-handler-method.ts:15
 
 #### Type Parameters
 

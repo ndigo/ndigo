@@ -6,7 +6,7 @@
 
 # Class: RouteHandlerMethod
 
-Defined in: packages/blue-dispatcher/src/route-handler-method.ts:48
+Defined in: packages/blue-dispatcher/src/route-handler-method.ts:49
 
 ## Extended by
 
@@ -23,7 +23,7 @@ Defined in: packages/blue-dispatcher/src/route-handler-method.ts:48
 
 > **new RouteHandlerMethod**(`handler`, `method`, ...`args`): `RouteHandlerMethod`
 
-Defined in: packages/blue-dispatcher/src/route-handler-method.ts:57
+Defined in: packages/blue-dispatcher/src/route-handler-method.ts:58
 
 #### Parameters
 
@@ -47,7 +47,7 @@ Defined in: packages/blue-dispatcher/src/route-handler-method.ts:57
 
 > **new RouteHandlerMethod**(`factory`, `name`, `method`, ...`args`): `RouteHandlerMethod`
 
-Defined in: packages/blue-dispatcher/src/route-handler-method.ts:58
+Defined in: packages/blue-dispatcher/src/route-handler-method.ts:59
 
 #### Parameters
 
@@ -77,7 +77,7 @@ Defined in: packages/blue-dispatcher/src/route-handler-method.ts:58
 
 > `readonly` **factory**: `Factory` \| `null`
 
-Defined in: packages/blue-dispatcher/src/route-handler-method.ts:49
+Defined in: packages/blue-dispatcher/src/route-handler-method.ts:50
 
 ***
 
@@ -85,7 +85,7 @@ Defined in: packages/blue-dispatcher/src/route-handler-method.ts:49
 
 > `readonly` **name**: `string` \| `null`
 
-Defined in: packages/blue-dispatcher/src/route-handler-method.ts:50
+Defined in: packages/blue-dispatcher/src/route-handler-method.ts:51
 
 ***
 
@@ -93,7 +93,7 @@ Defined in: packages/blue-dispatcher/src/route-handler-method.ts:50
 
 > `readonly` **handler**: `object`
 
-Defined in: packages/blue-dispatcher/src/route-handler-method.ts:51
+Defined in: packages/blue-dispatcher/src/route-handler-method.ts:52
 
 ***
 
@@ -101,7 +101,7 @@ Defined in: packages/blue-dispatcher/src/route-handler-method.ts:51
 
 > `readonly` **method**: `string`
 
-Defined in: packages/blue-dispatcher/src/route-handler-method.ts:52
+Defined in: packages/blue-dispatcher/src/route-handler-method.ts:53
 
 ***
 
@@ -109,7 +109,7 @@ Defined in: packages/blue-dispatcher/src/route-handler-method.ts:52
 
 > **parameters**: [`MethodParameter`](MethodParameter.md)[]
 
-Defined in: packages/blue-dispatcher/src/route-handler-method.ts:54
+Defined in: packages/blue-dispatcher/src/route-handler-method.ts:55
 
 ***
 
@@ -117,7 +117,7 @@ Defined in: packages/blue-dispatcher/src/route-handler-method.ts:54
 
 > **argumentResolvers**: [`HandlerMethodArgumentResolver`](../interfaces/HandlerMethodArgumentResolver.md)[]
 
-Defined in: packages/blue-dispatcher/src/route-handler-method.ts:55
+Defined in: packages/blue-dispatcher/src/route-handler-method.ts:56
 
 ## Methods
 
@@ -125,7 +125,7 @@ Defined in: packages/blue-dispatcher/src/route-handler-method.ts:55
 
 > **invoke**\<`ModelAndView`\>(`route`, ...`foo`): `ModelAndView`
 
-Defined in: packages/blue-dispatcher/src/route-handler-method.ts:79
+Defined in: packages/blue-dispatcher/src/route-handler-method.ts:80
 
 #### Type Parameters
 
@@ -157,7 +157,7 @@ Defined in: packages/blue-dispatcher/src/route-handler-method.ts:79
 
 > **toString**(): `string`
 
-Defined in: packages/blue-dispatcher/src/route-handler-method.ts:102
+Defined in: packages/blue-dispatcher/src/route-handler-method.ts:117
 
 #### Returns
 

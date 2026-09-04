@@ -1,0 +1,38 @@
+{
+  "name": "@blue/api",
+  "version": "0.0.1",
+  "description": "Blue API \u2014 Node server showcase using @blue/platform-node",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "tsx src/index.ts"
+  },
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "dependencies": {
+    "@blue/auth-core": "~0.0.1",
+    "@blue/auth-server": "~0.0.1",
+    "@blue/context": "~0.0.1",
+    "@blue/core": "~0.0.1",
+    "@blue/dispatcher": "~0.0.1",
+    "@blue/orm": "~0.0.1",
+    "@blue/platform-node": "~0.0.1",
+    "@blue/router": "~0.0.1",
+    "@blue/util": "~0.0.1",
+    "@tsmetadata/polyfill": "*",
+    "@blue/http": "~0.0.1"
+  },
+  "devDependencies": {
+    "@blue/auth-core": "~0.0.1",
+    "@blue/auth-server": "~0.0.1",
+    "@blue/context": "~0.0.1",
+    "@blue/core": "~0.0.1",
+    "@blue/dispatcher": "~0.0.1",
+    "@blue/orm": "~0.0.1",
+    "@blue/platform-node": "~0.0.1",
+    "@blue/router": "~0.0.1",
+    "@blue/util": "~0.0.1",
+    "tsx": "*",
+    "@blue/http": "~0.0.1"
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "name": "@blue/todo",
+  "version": "0.0.1",
+  "description": "Blue Demo Web",
+  "type": "module",
+  "private": true,
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest run test",
+    "test:e2e": "playwright test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue.git"
+  },
+  "keywords": [
+    "todo",
+    "todomvc",
+    "blue",
+    "bluejs"
+  ],
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "dependencies": {
+    "@blue/auth-client": "~0.0.1",
+    "@blue/context": "~0.0.1",
+    "@blue/core": "~0.0.1",
+    "@blue/dispatcher": "~0.0.1",
+    "@blue/dom": "~0.0.1",
+    "@blue/platform-web": "~0.0.1",
+    "@blue/router": "~0.0.1",
+    "@blue/signals": "~0.0.1",
+    "@blue/telemetry": "~0.0.1",
+    "@blue/util": "~0.0.1",
+    "@blue/view": "~0.0.1",
+    "@blue/view-webcomponent": "~0.0.1",
+    "todomvc-app-css": "~2.4.2",
+    "todomvc-common": "~1.0.5",
+    "@blue/boot": "~0.0.1",
+    "@blue/content": "~0.0.1"
+  },
+  "devDependencies": {
+    "@blue/context": "~0.0.1",
+    "@blue/core": "~0.0.1",
+    "@blue/dispatcher": "~0.0.1",
+    "@blue/dom": "~0.0.1",
+    "@blue/platform-web": "~0.0.1",
+    "@blue/telemetry": "~0.0.1",
+    "@blue/util": "~0.0.1",
+    "@playwright/test": "^1.53.1",
+    "vite": "~6.0.7",
+    "vite-plugin-dts": "~4.3.0",
+    "@vitejs/plugin-basic-ssl": "^1.2.0",
+    "@blue/boot": "~0.0.1",
+    "@blue/content": "~0.0.1"
+  }
+}

@@ -5,7 +5,7 @@
 import helloContext from './hello-context';
 import './hello-app-view';
 import { BrowserDispatcher } from '@blue/dispatcher';
-import { HashRouter } from '@blue/router';
+import { HashRouter } from '@blue/platform-web';
 import type { Route } from '@blue/router';
 
 const dispatcher = new BrowserDispatcher();

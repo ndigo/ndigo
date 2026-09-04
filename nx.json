@@ -28,15 +28,15 @@
   "plugins": [],
   "generators": {},
   "projects": {
-    "@blue/demo": {
-      "root": "apps/blue-demo",
+    "@blue/todo": {
+      "root": "apps/blue-todo",
       "projectType": "application",
       "targets": {
         "dev": {
           "executor": "nx:run-commands",
           "options": {
             "command": "pnpm dev",
-            "cwd": "apps/blue-demo"
+            "cwd": "apps/blue-todo"
           },
           "outputs": []
         },
@@ -44,7 +44,7 @@
           "executor": "nx:run-commands",
           "options": {
             "command": "pnpm build",
-            "cwd": "apps/blue-demo"
+            "cwd": "apps/blue-todo"
           },
           "outputs": ["{projectRoot}/dist"]
         },
@@ -52,7 +52,7 @@
           "executor": "nx:run-commands",
           "options": {
             "command": "pnpm test:e2e",
-            "cwd": "apps/blue-demo"
+            "cwd": "apps/blue-todo"
           },
           "outputs": []
         }
@@ -80,15 +80,15 @@
         }
       }
     },
-    "@blue/demo-node": {
-      "root": "apps/blue-demo-node",
+    "@blue/api": {
+      "root": "apps/blue-api",
       "projectType": "application",
       "targets": {
         "start": {
           "executor": "nx:run-commands",
           "options": {
             "command": "pnpm start",
-            "cwd": "apps/blue-demo-node"
+            "cwd": "apps/blue-api"
           },
           "outputs": []
         }

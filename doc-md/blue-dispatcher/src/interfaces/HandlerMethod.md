@@ -6,7 +6,7 @@
 
 # Interface: HandlerMethod
 
-Defined in: packages/blue-dispatcher/src/route-handler-method.ts:17
+Defined in: packages/blue-dispatcher/src/route-handler-method.ts:18
 
 ## Extends
 
@@ -18,7 +18,7 @@ Defined in: packages/blue-dispatcher/src/route-handler-method.ts:17
 
 > **invoke**\<`ModelAndView`\>(`route`, ...`args`): `ModelAndView`
 
-Defined in: packages/blue-dispatcher/src/route-handler-method.ts:18
+Defined in: packages/blue-dispatcher/src/route-handler-method.ts:19
 
 #### Type Parameters
 

@@ -8,7 +8,7 @@
 
 > `const` **Traced**: (`nameOrTarget?`, `maybeContext?`) => `any` = `traced`
 
-Defined in: packages/blue-telemetry/src/trace/decorators.ts:129
+Defined in: packages/blue-telemetry/src/trace/decorators.ts:133
 
 A method decorator that creates and manages an OpenTelemetry span for the decorated method's execution.
 

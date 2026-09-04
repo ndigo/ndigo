@@ -6,7 +6,7 @@
 
 # Interface: SharedDependencyRegistry
 
-Defined in: packages/blue-context/src/shared-dependency-registry.ts:37
+Defined in: packages/blue-context/src/shared-dependency-registry.ts:35
 
 Registry that holds shared dependency declarations and validates feature manifests.
 
@@ -16,7 +16,7 @@ Registry that holds shared dependency declarations and validates feature manifes
 
 > **declare**(`manifest`): `void`
 
-Defined in: packages/blue-context/src/shared-dependency-registry.ts:43
+Defined in: packages/blue-context/src/shared-dependency-registry.ts:41
 
 Declare shared dependencies from shell configuration.
 
@@ -38,7 +38,7 @@ A map of token description (string) to dependency entry.
 
 > **validate**(`required`, `optional`): [`DependencyValidationResult`](DependencyValidationResult.md)
 
-Defined in: packages/blue-context/src/shared-dependency-registry.ts:52
+Defined in: packages/blue-context/src/shared-dependency-registry.ts:50
 
 Validate a feature's dependency requirements against this registry.
 
@@ -68,7 +68,7 @@ Validation result with any missing or mismatched dependencies.
 
 > **getDependency**(`name`): [`SharedDependencyEntry`](SharedDependencyEntry.md) \| `undefined`
 
-Defined in: packages/blue-context/src/shared-dependency-registry.ts:60
+Defined in: packages/blue-context/src/shared-dependency-registry.ts:58
 
 Get a dependency entry by name.
 

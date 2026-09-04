@@ -266,9 +266,14 @@ The execution chain to invoke.
 
 > **init**(): `void`
 
-Defined in: packages/blue-dispatcher/src/abstract-handler-method-mapping.ts:51
+Defined in: packages/blue-dispatcher/src/abstract-handler-method-mapping.ts:56
 
 Detect and register handler methods from the application context.
+
+No-op when the application context has not been injected yet (the DI
+container auto-initializes initializable beans during refresh, which can
+run before `setApplicationContext`). Callers that need handlers registered
+must set the context first, then re-run `init`.
 
 #### Returns
 
@@ -284,7 +289,7 @@ Detect and register handler methods from the application context.
 
 > **getHandlerMethods**(): `Map`\<[`RouteMappingInfo`](RouteMappingInfo.md), [`RouteHandlerMethod`](RouteHandlerMethod.md)\>
 
-Defined in: packages/blue-dispatcher/src/abstract-handler-method-mapping.ts:64
+Defined in: packages/blue-dispatcher/src/abstract-handler-method-mapping.ts:72
 
 Return all registered handler methods.
 
@@ -304,7 +309,7 @@ The mapping-to-handler-method registry.
 
 > **getHandlerMethodsForMappingName**(`name`): [`RouteHandlerMethod`](RouteHandlerMethod.md)[]
 
-Defined in: packages/blue-dispatcher/src/abstract-handler-method-mapping.ts:74
+Defined in: packages/blue-dispatcher/src/abstract-handler-method-mapping.ts:82
 
 Return handler methods registered under a mapping name.
 
@@ -332,7 +337,7 @@ The matching handler methods.
 
 > **unregisterMapping**(`mapping`): `void`
 
-Defined in: packages/blue-dispatcher/src/abstract-handler-method-mapping.ts:95
+Defined in: packages/blue-dispatcher/src/abstract-handler-method-mapping.ts:103
 
 Remove a mapping from the registry.
 
@@ -358,7 +363,7 @@ The mapping metadata to remove.
 
 > `protected` **\_createRequestHandlerMethod**(`handler`, `method`): [`RouteHandlerMethod`](RouteHandlerMethod.md)
 
-Defined in: packages/blue-dispatcher/src/abstract-handler-method-mapping.ts:106
+Defined in: packages/blue-dispatcher/src/abstract-handler-method-mapping.ts:114
 
 Create a handler method reference from a handler object and method name.
 
@@ -392,7 +397,7 @@ The resolved handler method.
 
 > `protected` **\_detectHandlerMethods**(`handler`): `void`
 
-Defined in: packages/blue-dispatcher/src/abstract-handler-method-mapping.ts:126
+Defined in: packages/blue-dispatcher/src/abstract-handler-method-mapping.ts:134
 
 Scan a handler for mapped methods and register them.
 
@@ -418,7 +423,7 @@ The handler instance or application-context name.
 
 > `protected` **\_getHandler**(`route`): [`RouteHandlerMethod`](RouteHandlerMethod.md) \| `null`
 
-Defined in: packages/blue-dispatcher/src/abstract-handler-method-mapping.ts:151
+Defined in: packages/blue-dispatcher/src/abstract-handler-method-mapping.ts:159
 
 Resolve a route by looking up the best handler method.
 
@@ -446,7 +451,7 @@ The resolved handler method, or `null`.
 
 > `protected` **\_lookupHandlerMethod**(`path`, `route`): [`RouteHandlerMethod`](RouteHandlerMethod.md) \| `null`
 
-Defined in: packages/blue-dispatcher/src/abstract-handler-method-mapping.ts:163
+Defined in: packages/blue-dispatcher/src/abstract-handler-method-mapping.ts:171
 
 Find the best handler method for a path.
 
@@ -480,7 +485,7 @@ The best matching handler method, or `null`.
 
 > `protected` **\_registerHandlerMethod**(`handler`, `method`, `mapping`): `void`
 
-Defined in: packages/blue-dispatcher/src/abstract-handler-method-mapping.ts:215
+Defined in: packages/blue-dispatcher/src/abstract-handler-method-mapping.ts:223
 
 Register a handler method for the given mapping.
 
@@ -518,7 +523,7 @@ The mapping metadata.
 
 > `protected` **\_getMappingForMethod**(`method`, `handler`): [`RouteMappingInfo`](RouteMappingInfo.md) \| `undefined`
 
-Defined in: packages/blue-dispatcher/src/abstract-handler-method-mapping.ts:246
+Defined in: packages/blue-dispatcher/src/abstract-handler-method-mapping.ts:254
 
 Build a [RouteMappingInfo](RouteMappingInfo.md) for the given handler method.
 

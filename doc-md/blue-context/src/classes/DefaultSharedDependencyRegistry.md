@@ -6,7 +6,7 @@
 
 # Class: DefaultSharedDependencyRegistry
 
-Defined in: packages/blue-context/src/shared-dependency-registry.ts:70
+Defined in: packages/blue-context/src/shared-dependency-registry.ts:68
 
 Default implementation of `SharedDependencyRegistry`.
 
@@ -24,7 +24,7 @@ runtime bean presence.
 
 > **new DefaultSharedDependencyRegistry**(): `DefaultSharedDependencyRegistry`
 
-Defined in: packages/blue-context/src/shared-dependency-registry.ts:73
+Defined in: packages/blue-context/src/shared-dependency-registry.ts:71
 
 #### Returns
 
@@ -36,7 +36,7 @@ Defined in: packages/blue-context/src/shared-dependency-registry.ts:73
 
 > **declare**(`manifest`): `void`
 
-Defined in: packages/blue-context/src/shared-dependency-registry.ts:77
+Defined in: packages/blue-context/src/shared-dependency-registry.ts:75
 
 Declare shared dependencies from shell configuration.
 
@@ -62,7 +62,7 @@ A map of token description (string) to dependency entry.
 
 > **getDependency**(`name`): [`SharedDependencyEntry`](../interfaces/SharedDependencyEntry.md) \| `undefined`
 
-Defined in: packages/blue-context/src/shared-dependency-registry.ts:83
+Defined in: packages/blue-context/src/shared-dependency-registry.ts:81
 
 Get a dependency entry by name.
 
@@ -90,7 +90,7 @@ The dependency entry, or `undefined` if not declared.
 
 > **validate**(`required`, `optional`): [`DependencyValidationResult`](../interfaces/DependencyValidationResult.md)
 
-Defined in: packages/blue-context/src/shared-dependency-registry.ts:87
+Defined in: packages/blue-context/src/shared-dependency-registry.ts:85
 
 Validate a feature's dependency requirements against this registry.
 

@@ -6,7 +6,7 @@
 
 # Interface: SharedOptions
 
-Defined in: packages/blue-core/src/shared.ts:15
+Defined in: packages/blue-core/src/shared.ts:16
 
 Options for the `@shared` class decorator.
 
@@ -16,7 +16,7 @@ Options for the `@shared` class decorator.
 
 > `optional` **singleton?**: `boolean`
 
-Defined in: packages/blue-core/src/shared.ts:17
+Defined in: packages/blue-core/src/shared.ts:18
 
 Whether this bean must be a singleton across the context hierarchy. Default `true`.
 
@@ -26,6 +26,6 @@ Whether this bean must be a singleton across the context hierarchy. Default `tru
 
 > `optional` **version?**: `string`
 
-Defined in: packages/blue-core/src/shared.ts:19
+Defined in: packages/blue-core/src/shared.ts:20
 
 Semver range for this bean, e.g. `'^1.0.0'`. Used to detect version skew.

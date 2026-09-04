@@ -17,7 +17,7 @@
         "**/coverage/**",
         "**/node_modules/**",
         "**/test/**/*.js",
-        "apps/blue-demo/index.js",
+        "apps/blue-todo/index.js",
         "test/mockServiceWorker.js",
         "packages/blue-domain/src/constraints.ts",
         "*.config.js",

@@ -778,381 +778,7 @@ Examples from the codebase (not an exhaustive list):
 
 **Note:** This rule applies to ALL code contexts—classes, interfaces, types, variables, functions, parameters, and constants.
 
-### 3.10. Transducers [CONVENTION: Code Review]
-
-**Pattern:** `X*` for transformer classes, `x*` for factories (when applicable)
-
-Transducers enable composable, efficient data transformations using a three-arity protocol (`init`, `step`, `result`). BlueJS follows the naming conventions established in Clojure and Ramda.js.
-
-**Transformer Classes:**
-
-Transformer classes implement the transducer protocol and use the `X*` prefix (capital X).
-
-```typescript
-// ✅ Correct: Transformer classes use X* prefix
-class XCount<T = any> implements Transformer<number, T> {
-    ['@@transducer/init']?(): number {
-        return 0;
-    }
-
-    ['@@transducer/result']?(result: number): number {
-        return result;
-    }
-
-    ['@@transducer/step'](result: number): MaybeReduced<number> {
-        return result + 1;
-    }
-}
-
-class XToArray<T = any> implements Transformer<T[], T> {
-    ['@@transducer/step'](result: T[], input: T): MaybeReduced<T[]> {
-        result.push(input);
-        return result;
-    }
-}
-
-// Custom transducer extending base
-class XDoubleTransformer extends DelegatingTransformer {
-    ['@@transducer/step'](result: any, input: any): any {
-        return this.xf['@@transducer/step'](result, input * 2);
-    }
-}
-
-// ❌ Wrong: Missing X prefix
-class CountTransformer {} // Should be XCount
-class ToArrayTransformer {} // Should be XToArray
-class DoubleTransformer {} // Should be XDoubleTransformer
-```
-
-**Factory Functions: Two Valid Patterns**
-
-BlueJS recognizes two valid factory patterns based on whether the factory requires parameters:
-
-**Pattern 1: Three-Tier (Zero-Argument Factories)**
-
-Use for transformers that require no configuration. The intermediate factory layer improves API clarity.
-
-```typescript
-// ✅ Correct: Three-tier pattern for zero-argument factories
-class XCount<T = any> {
-    /* ... */
-}
-export const xCount = <T = any>(): Transformer<number, T> => new XCount<T>();
-export const count = () => xCount;
-
-// Usage
-const result = into([], count(), [1, 2, 3, 4]); // 4
-
-class XToArray<T = any> {
-    /* ... */
-}
-export const xToArray = <T = any>(): Transformer<T[], T> => new XToArray<T>();
-export const toArray = () => xToArray;
-
-// Usage
-const result = into([], toArray(), 'abc'); // ['a', 'b', 'c']
-```
-
-**Pattern 2: Two-Tier (Parameterized Factories)**
-
-Use for transformers that require configuration parameters. Skip the intermediate layer to avoid redundant wrapper functions.
-
-```typescript
-// ✅ Correct: Two-tier pattern for parameterized factories
-class XToMap<T, K, V> {
-    constructor(
-        private readonly _getKey: (item: T) => K,
-        private readonly _getValue: (item: T) => V
-    ) {}
-    /* ... */
-}
-
-export const toMap =
-    <T, K, V>(getKey: (item: T) => K, getValue: (item: T) => V) =>
-    (): Transformer<Map<K, V>, T> =>
-        new XToMap<T, K, V>(getKey, getValue);
-
-// Usage
-const items = [
-    { id: 1, name: 'Alice' },
-    { id: 2, name: 'Bob' },
-];
-const result = into(
-    new Map(),
-    toMap(
-        (item) => item.id,
-        (item) => item.name
-    ),
-    items
-); // Map { 1 => 'Alice', 2 => 'Bob' }
-
-// ❌ Wrong: Redundant intermediate layer for parameterized factory
-const xToMap =
-    <T, K, V>(getKey, getValue) =>
-    (): Transformer =>
-        new XToMap(getKey, getValue);
-const toMap = <T, K, V>(getKey, getValue) => xToMap(getKey, getValue); // Unnecessary!
-```
-
-**Selection Criteria:**
-
-| Factory Type        | Use Pattern | Rationale                                        |
-| :------------------ | :---------- | :----------------------------------------------- |
-| Zero-argument       | Three-tier  | Clearer API, follows Ramda/Clojure convention    |
-| Requires parameters | Two-tier    | Avoids redundant wrapper, simpler implementation |
-
-**Real Examples from `@blue/core`:**
-
-- **Three-tier:** `XCount → xCount() → count()`, `XToArray → xToArray() → toArray()`
-- **Two-tier:** `XToMap → toMap(getKey, getValue)`, `XToRecord → toRecord(getKey, getValue)`, `XToSet → toSet(initialSet?)`
-
-**Variable Naming:**
-
-Use `xf` (preferred) or `xform` for transducer variables.
-
-```typescript
-// ✅ Correct: Use xf for transducer variables
-const xf = compose(map(double), filter(isEven));
-const result = into([], xf, [1, 2, 3, 4]);
-
-class DelegatingTransformer<TResult, TComplete, TInput> {
-    readonly xf: CompletingTransformer<TResult, TComplete, TInput>;
-
-    constructor(xf: CompletingTransformer<TResult, TComplete, TInput>) {
-        this.xf = xf;
-    }
-
-    ['@@transducer/step'](result: TResult, input: TInput): MaybeReduced<TResult> {
-        return this.xf['@@transducer/step'](result, input);
-    }
-}
-
-// ✅ Acceptable: Use xform for clarity in complex contexts
-const xform = pipe(
-    filter(isValid),
-    map(normalize),
-    dedupe()
-);
-
-// ❌ Wrong: Non-standard variable names
-const transformer = compose(...);  // Use xf
-const transducer = map(double);    // Use xf
-const t = filter(isEven);          // Too cryptic, use xf
-```
-
-**Protocol Method Names:**
-
-Use `@@transducer/*` symbol-based protocol methods to ensure interoperability with the JavaScript transducer ecosystem.
-
-```typescript
-// ✅ Correct: Use protocol method names
-class XCustomTransformer implements Transformer<TResult, TInput> {
-    ['@@transducer/init']?(): TResult {
-        // Initialize accumulator
-    }
-
-    ['@@transducer/result']?(result: TResult): TResult {
-        // Finalize result (optional completion step)
-    }
-
-    ['@@transducer/step'](result: TResult, input: TInput): MaybeReduced<TResult> {
-        // Transform and accumulate
-    }
-}
-
-// ✅ Correct: Use protocol symbols for reduced values
-const reduced = {
-    ['@@transducer/reduced']: true,
-    ['@@transducer/value']: finalValue,
-};
-
-// ❌ Wrong: Non-standard method names
-class BadTransformer {
-    init() {} // Should be ['@@transducer/init']
-    step(result, input) {} // Should be ['@@transducer/step']
-    result(value) {} // Should be ['@@transducer/result']
-}
-```
-
-**Protocol Methods:**
-
-| Method                 | Purpose                                   | Required |
-| :--------------------- | :---------------------------------------- | :------- |
-| `@@transducer/init`    | Initialize the accumulator                | Optional |
-| `@@transducer/step`    | Process each input and update accumulator | Required |
-| `@@transducer/result`  | Finalize/complete the result              | Optional |
-| `@@transducer/reduced` | Mark value as reduced (early termination) | Protocol |
-| `@@transducer/value`   | Extract value from reduced result         | Protocol |
-
-**Descriptive Term Composition:**
-
-When composing transducer class names with descriptive terms:
-
-**Add Domain Context When:**
-
-- The transducer is specific to a domain package (`@blue/http`, `@blue/router`)
-- The transformation involves domain-specific concepts (query strings, routes, headers)
-
-**Omit Domain Context When:**
-
-- The transducer is generic and reusable across packages (`@blue/core`)
-- The transformation is a common operation (count, toArray, filter)
-
-**Naming Pattern:** `X[Domain][Action][Target]`
-
-```typescript
-// ✅ Generic utilities (no domain context)
-class XCount {} // Simple count operation
-class XToArray {} // Generic array conversion
-class XFilter {} // Generic filtering
-
-// ✅ Domain-specific (add context)
-class XToQueryString {} // HTTP query string conversion (in @blue/http)
-class XParseJSON {} // JSON parsing (HTTP context)
-class XToRoutePath {} // Router path conversion (in @blue/router)
-class XMatchRoute {} // Router matching operation
-
-// ✅ Protocol-specific (protocol prefix)
-class XHTTPToJSON {} // HTTP-to-JSON conversion
-class XWSMessage {} // WebSocket message handling
-
-// ❌ Wrong: Over-specified
-class XHTTPQueryStringToJSON {} // Too verbose, context clear from package
-
-// ❌ Wrong: Under-specified in domain package
-class XToString {} // Too generic in @blue/http (should be XToQueryString)
-```
-
-**Rationale:** Import paths provide package context (`@blue/http/XToQueryString`), so names only need enough specificity to be clear within their package.
-
-**Helper Functions:**
-
-Transducer helper functions use descriptive names without prefixes.
-
-```typescript
-// ✅ Correct: Descriptive helper function names
-function reduce<T>(value: T): Reduced<T> {
-    return likeReduced(value)
-        ? value
-        : {
-              ['@@transducer/reduced']: true,
-              ['@@transducer/value']: value,
-          };
-}
-
-const likeReduced = like({ '@@transducer/reduced': true }) as (value) => value is Reduced<any>;
-const likeTransformer = like({ '@@transducer/step': Function }) as (value) => value is Transformer;
-
-// ❌ Wrong: Unnecessary prefixes
-function xReduce(value) {} // Just reduce()
-function transducerLikeReduced(value) {} // Just likeReduced()
-```
-
-**Complete Example:**
-
-```typescript
-// From packages/blue-core/src/transducer.ts
-
-// Base class for delegation pattern
-export class DelegatingTransformer<TResult, TComplete, TInput>
-    implements CompletingTransformer<TResult, TComplete, TInput>
-{
-    readonly xf: CompletingTransformer<TResult, TComplete, TInput>;
-
-    constructor(xf: CompletingTransformer<TResult, TComplete, TInput>) {
-        this.xf = xf;
-    }
-
-    ['@@transducer/step'](result: TResult, input: TInput): MaybeReduced<TResult> {
-        return this.xf['@@transducer/step'](result, input);
-    }
-}
-
-// ✅ Three-tier pattern (zero-argument)
-export class XCount<T = any> implements Transformer<number, T> {
-    ['@@transducer/init']?(): number {
-        return 0;
-    }
-    ['@@transducer/result']?(result: number): number {
-        return result;
-    }
-    ['@@transducer/step'](result: number): MaybeReduced<number> {
-        return result + 1;
-    }
-}
-
-export const xCount = <T = any>(): Transformer<number, T> => new XCount<T>();
-export const count = () => xCount;
-
-// ✅ Two-tier pattern (parameterized)
-export class XToMap<T, K, V> implements Transformer<Map<K, V>, T> {
-    constructor(
-        private readonly _getKey: (item: T) => K,
-        private readonly _getValue: (item: T) => V
-    ) {}
-
-    ['@@transducer/init']?(): Map<K, V> {
-        return new Map<K, V>();
-    }
-    ['@@transducer/result']?(result: Map<K, V>): Map<K, V> {
-        return result;
-    }
-    ['@@transducer/step'](result: Map<K, V>, input: T): MaybeReduced<Map<K, V>> {
-        result.set(this._getKey(input), this._getValue(input));
-        return result;
-    }
-}
-
-export const toMap =
-    <T, K, V>(getKey: (item: T) => K, getValue: (item: T) => V) =>
-    (): Transformer<Map<K, V>, T> =>
-        new XToMap<T, K, V>(getKey, getValue);
-
-// Usage in application code
-import { into } from '@blue/util/list';
-import { compose } from '@blue/util/function';
-import { count, toArray, toMap } from '@blue/core';
-
-// Zero-argument transducers
-const total = into([], count(), [1, 2, 3, 4]); // 4
-const items = into([], toArray(), 'abc'); // ['a', 'b', 'c']
-
-// Parameterized transducers
-const users = [
-    { id: 1, name: 'Alice' },
-    { id: 2, name: 'Bob' },
-];
-const userMap = into(
-    new Map(),
-    toMap(
-        (u) => u.id,
-        (u) => u.name
-    ),
-    users
-); // Map { 1 => 'Alice', 2 => 'Bob' }
-
-// Composition
-class XDouble extends DelegatingTransformer {
-    ['@@transducer/step'](result: any, input: any): any {
-        return this.xf['@@transducer/step'](result, input * 2);
-    }
-}
-
-class XEven extends DelegatingTransformer {
-    ['@@transducer/step'](result: any, input: any): any {
-        return input % 2 === 0 ? this.xf['@@transducer/step'](result, input) : result;
-    }
-}
-
-const xDouble = (xf: any) => new XDouble(xf);
-const xEven = (xf: any) => new XEven(xf);
-
-const result = into([], compose(xEven, xDouble), [1, 2, 3, 4]); // [4, 8]
-```
-
-**See also:** [ARCHITECTURE.md Section 6](./ARCHITECTURE.md#transducers) for detailed design philosophy, composition patterns, and interoperability guidance.
-
-### 3.11. Interfaces and Abstract Classes [CONVENTION: Code Review]
+### 3.10. Interfaces and Abstract Classes [CONVENTION: Code Review]
 
 **Pattern:** Description-first for classes, Abstract prefix for abstract classes
 
@@ -1373,7 +999,7 @@ class TemplateViewResolver implements ViewResolver, ResourceLoader {
 3. **Consistent with Spring Framework** - Follows established enterprise patterns (e.g., `AbstractHandlerMapping`, `AbstractPathMatchingResourcePatternResolver`)
 4. **Autocomplete-friendly** - Modern IDEs make long names effortless; clarity trumps brevity
 
-### 3.12. Role-Based Suffixes [CONVENTION: Code Review]
+### 3.11. Role-Based Suffixes [CONVENTION: Code Review]
 
 **Pattern:** Use semantic suffixes to convey component responsibility
 
@@ -1394,7 +1020,7 @@ BlueJS uses role-based suffixes inspired by Spring Framework to indicate the res
 | Suffix         | Meaning                                                       | Examples                                        |
 | :------------- | :------------------------------------------------------------ | :---------------------------------------------- |
 | `*Adapter`     | Adapts one interface to another; translates between protocols | `RouteHandlerAdapter`, `MetadataHandlerAdapter` |
-| `*Transformer` | Transforms data structure (NOT transducers; see Section 3.10) | `DataTransformer`, `PayloadTransformer`         |
+| `*Transformer` | Transforms data structure | `DataTransformer`, `PayloadTransformer`         |
 | `*Converter`   | Converts between types or formats; typically bidirectional    | `MessageConverter`, `TypeConverter`             |
 
 **Resolution & Discovery:**
@@ -1636,7 +1262,7 @@ class UserResolver {
 2. Choose the suffix that best matches that responsibility
 3. If no standard suffix fits, consider if the class has too many responsibilities (SRP violation)
 
-### 3.13. Properties vs Methods [CONVENTION: Code Review]
+### 3.12. Properties vs Methods [CONVENTION: Code Review]
 
 **Pattern:** Choose based on computation cost, side effects, and semantic meaning
 
@@ -2228,7 +1854,7 @@ Ask yourself:
 
 If still unsure, **prefer a method** - it's safer and more flexible for future changes.
 
-### 3.14. Method Naming Conventions [CONVENTION: Code Review]
+### 3.13. Method Naming Conventions [CONVENTION: Code Review]
 
 **Pattern:** Use conventional prefixes to signal method behavior and return expectations
 
@@ -2516,15 +2142,6 @@ function likeController(value: unknown): value is ControllerLike {
     return (
         value != null && typeof value === 'object' && 'handle' in value && typeof (value as any).handle === 'function'
     );
-}
-
-// From @blue/core/transducer.ts
-function likeReduced(value): value is Reduced<any> {
-    return value != null && value['@@transducer/reduced'] === true;
-}
-
-function likeTransformer(value): value is Transformer {
-    return value != null && typeof value['@@transducer/step'] === 'function';
 }
 
 // From @blue/factory
@@ -3145,7 +2762,7 @@ If still unsure, **check similar methods in the codebase** for established patte
 
 ---
 
-### 3.15. Type-Safe Enums [CONVENTION: Code Review]
+### 3.14. Type-Safe Enums [CONVENTION: Code Review]
 
 **Pattern:** `PascalCase` for class names, `UPPER_SNAKE_CASE` for enum constants
 
@@ -3401,7 +3018,7 @@ static fromSeverity(severity: SeverityNumber): Level { /* ... */ }
 static fromOrdinal(ordinal: number): EnumType { /* ... */ }
 ```
 
-**Rationale:** Follows established convention from STYLE_GUIDE.md Section 3.14 (Method Naming).
+**Rationale:** Follows established convention from STYLE_GUIDE.md Section 3.13 (Method Naming).
 
 #### Factory Function Naming
 
@@ -3453,7 +3070,7 @@ class LoggerFactory {
 
 **Rationale:** `create*()` signals "a new instance is created." `get*()` signals "an instance is returned based on current configuration." This distinction helps callers understand whether the factory has side effects or depends on shared state.
 
-**Maintenance Note:** When updating this section, also update `AGENTS.md` Critical section (Section 3.14) to ensure agents follow the pattern.
+**Maintenance Note:** When updating this section, also update `AGENTS.md` Critical section (Section 3.13) to ensure agents follow the pattern.
 
 #### Interface Implementation
 
@@ -4826,7 +4443,7 @@ Code is read more often than it is written. Self-documenting code minimizes the 
 
 ### Property/Method naming tells readers cost and semantics
 
-As established in Section 3.13:
+As established in Section 3.12:
 
 | Shape | Convention | Signals to the reader |
 |-------|-----------|----------------------|

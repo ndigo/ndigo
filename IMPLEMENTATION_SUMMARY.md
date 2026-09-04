@@ -2,7 +2,7 @@
 
 ## Changes Made
 
-### 1. Updated `apps/blue-demo-node/src/index.ts`
+### 1. Updated `apps/blue-api/src/index.ts`
 - Added `parseMatrixParams` helper function to parse matrix parameters from URL paths
 - Modified route object construction to:
   - Parse matrix parameters from each path segment (split on `;`)
@@ -11,13 +11,13 @@
   - Assign `route[i] = segments[i]` for each segment with its data
   - Updated console log to include the new matrix-param route
 
-### 2. Created `apps/blue-demo-node/src/product-controller.ts`
+### 2. Created `apps/blue-api/src/product-controller.ts`
 - Implemented ProductController with two methods:
   - `getProduct`: Matches routes with matrix parameter `color` (e.g., `/api/products/42;color=red`)
   - `getProductPlain`: Fallback method for routes without matrix parameters
 - Used `pathValue('id')` for extracting the ID parameter (matrixValue was not exported from @blue/dispatcher)
 
-### 3. Updated `apps/blue-demo-node/src/node-app-configuration.ts`
+### 3. Updated `apps/blue-api/src/node-app-configuration.ts`
 - Added import for ProductController
 - Registered the controller with an entry decorator
 

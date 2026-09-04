@@ -15,7 +15,7 @@ pnpm lint            # Check code quality
 
 **Critical - Read Before Coding:**
 
-⚠️ **Section 5 (Research Workflow)** - ALWAYS perform two-step reconnaissance before writing code: (1) scan target package for patterns/utilities, (2) scan @blue/util, @blue/parser, etc. for reusable code
+⚠️ **Section 5 (Research Workflow)** - ALWAYS perform two-step reconnaissance before writing code. This repo is graft-indexed: run `graft ask`/`graft callers` (see the Graft section at the end) to understand code or trace callers before grepping/reading; use raw grep only for unindexed files or exhaustive checks.
 
 ⚠️ **Section 4.4 (Library Integration Layer)** - Most common error: importing seedrandom/slug directly instead of through @blue/util
 
@@ -25,17 +25,17 @@ pnpm lint            # Check code quality
 
 ⚠️ **STYLE_GUIDE.md Section 3.9 (Acronym Casing)** - Use all-uppercase in types (HTTPTransformer), all-lowercase or all-uppercase in identifiers (httpTransformer or myHTTPData)
 
-⚠️ **STYLE_GUIDE.md Section 3.10 (Transducers)** - Transformer classes use X\* prefix (XCount, XToArray), variables use xf
+⚠️ **STYLE_GUIDE.md Section 3.10 (Interfaces/Abstract Classes)** - Use description-first pattern (UserDataTransformer implements DataTransformer), Abstract prefix for abstract classes
 
-⚠️ **STYLE_GUIDE.md Section 3.11 (Interfaces/Abstract Classes)** - Use description-first pattern (UserDataTransformer implements DataTransformer), Abstract prefix for abstract classes
+⚠️ **STYLE_GUIDE.md Section 3.11 (Role-Based Suffixes)** - Use semantic suffixes: *Handler (processes), *Resolver (locates), *Strategy (algorithm), *Factory (creates)
 
-⚠️ **STYLE_GUIDE.md Section 3.12 (Role-Based Suffixes)** - Use semantic suffixes: *Handler (processes), *Resolver (locates), *Strategy (algorithm), *Factory (creates)
+⚠️ **STYLE_GUIDE.md Section 3.12 (Properties vs Methods)** - Properties for cheap/intrinsic data (O(1), no side effects), get-methods for external lookups (may fail/return null), to-methods for transformations
 
-⚠️ **STYLE_GUIDE.md Section 3.13 (Properties vs Methods)** - Properties for cheap/intrinsic data (O(1), no side effects), get-methods for external lookups (may fail/return null), to-methods for transformations
+⚠️ **STYLE_GUIDE.md Section 3.13 (Method Naming)** - Use conventional prefixes: get* (retrieve), is* (type check), has* (presence), set* (mutate), from*/to* (convert), with\* (immutable copy). Factory functions: create* (no global state) vs get* (global state affects result).
 
-⚠️ **STYLE_GUIDE.md Section 3.14 (Method Naming)** - Use conventional prefixes: get* (retrieve), is* (type check), has* (presence), set* (mutate), from*/to* (convert), with\* (immutable copy). Factory functions: create* (no global state) vs get* (global state affects result).
+⚠️ **STYLE_GUIDE.md Section 3.14 (Type-Safe Enums)** - Use class-based pattern for enums with methods/inheritance, built-in enums for simple constants
 
-⚠️ **STYLE_GUIDE.md Section 3.15 (Type-Safe Enums)** - Use class-based pattern for enums with methods/inheritance, built-in enums for simple constants
+⚠️ **STYLE_GUIDE.md Section 9 (Self-Documenting Code)** - Names carry meaning, comments carry rationale. Document *why*, not *what*. Bare `as any`/`as unknown as T`/`// @ts-ignore` need a one-line reason; `// NOTE:` is technical debt; one public type per file, files under 300 lines.
 
 **Pre-Commit Validation:**
 
@@ -45,9 +45,6 @@ pnpm lint            # Check code quality
 
 # Verify no mixed-case acronyms
 rg "(class|interface|type) \w*(Http|Json|Xml|Url|Api|Html|Dto|Uuid|Uri)\w*" --type ts  # Should return nothing
-
-# Verify transducer naming (no non-X transformer classes in transducer.ts)
-rg "^export class [A-Z][a-z]+Transformer" packages/blue-core/src/transducer.ts  # Should return nothing
 
 # Verify Abstract prefix usage
 rg "^(export )?abstract class [A-Z]" --type ts | rg -v "^(export )?abstract class Abstract"  # Should return nothing
@@ -213,9 +210,6 @@ pnpm format
     - Class Mixins: `PascalCase` with `As` prefix (e.g., `AsEventEmitter(Base)`).
     - Function Mixins: `camelCase` with `as` prefix (e.g., `asEventEmitter(target)`).
 - **Acronyms:** All-uppercase in types (e.g., `HTTPTransformer`, `JSONParser`), all-lowercase or all-uppercase in identifiers (e.g., `httpTransformer`, `myHTTPData`).
-- **Transducers:**
-    - Transformer classes: `X*` prefix (e.g., `XCount`, `XToArray`, `XToMap`).
-    - Variables: `xf` or `xform` (e.g., `const xf = compose(...)`).
 - **Interfaces/Abstract Classes:**
     - Interfaces: `[Domain][Role]` (e.g., `HTTPTransformer`, `DataTransformer`).
     - Concrete classes: `[Description][Role]` (e.g., `UserDataTransformer`).
@@ -431,17 +425,20 @@ When organizing helper functions and utilities, follow the extraction hierarchy:
 ### Modifying Code
 
 1.  **Read:** Analyze existing code and `package.json` first.
-2.  **Research:** Before writing code, perform two-step reconnaissance to avoid duplication and maintain consistency:
-    - **Step 1 - Scan target package:** Search for related functionality, established patterns, internal utilities (`_util.ts`, `_parsers.ts`), naming conventions, and design patterns currently in use.
-    - **Step 2 - Scan related packages:** Check common utilities and specialized tools:
-        - `@blue/util` - Common utilities (string utils, seedrandom, slug) - **Check first!**
-        - `@blue/parser` - String parsing (arcsecond wrappers) - Use for parsing URLs, queries, expressions
-        - `@blue/model` - Object validation (objectmodel) - Use for data validation
-        - `@blue/core` - Core primitives, containers, patterns - Use for application context, DI, base types
+2.  **Research:** Before writing code, understand the relevant code and avoid duplication. This repo is graft-indexed — prefer the graph:
+    - **Understand first (graft):** Run `graft ask "<question>" --source` for ranked context with inlined spans, `graft callers <symbol>` for who-calls-what, `graft skeleton <file>` to skim an API. Only open a source file at the exact span the graph cites. See the Graft section at the end of this file.
+    - **Fallback (unindexed/exhaustive):** When the graph lacks a detail or you need *every* occurrence, grep the target:
+        - **Step 1 - Scan target package:** Search for related functionality, established patterns, internal utilities (`_util.ts`, `_parsers.ts`), naming conventions, and design patterns currently in use.
+        - **Step 2 - Scan related packages:** Check common utilities and specialized tools:
+            - `@blue/util` - Common utilities (string utils, seedrandom, slug) - **Check first!**
+            - `@blue/parser` - String parsing (arcsecond wrappers) - Use for parsing URLs, queries, expressions
+            - `@blue/model` - Object validation (objectmodel) - Use for data validation
+            - `@blue/core` - Core primitives, containers, patterns - Use for application context, DI, base types
+    - **After big changes:** refresh the graph with `graft build`.
 3.  **Plan:** Check `docs/migrations/` or `ARCHITECTURE.md` for recent architectural shifts.
 4.  **Design Decisions:** Consider API design patterns:
-    - **Property vs Method:** Use properties for cheap/intrinsic data (O(1), no side effects), get-methods for external lookups (may fail/return null), to-methods for transformations (STYLE_GUIDE.md Section 3.13)
-    - **Method Naming:** Use conventional prefixes: get\* (retrieve), is\* (type check), has\* (presence), set\* (mutate), from\*/to\* (convert), with\* (immutable copy) (STYLE_GUIDE.md Section 3.14)
+    - **Property vs Method:** Use properties for cheap/intrinsic data (O(1), no side effects), get-methods for external lookups (may fail/return null), to-methods for transformations (STYLE_GUIDE.md Section 3.12)
+    - **Method Naming:** Use conventional prefixes: get\* (retrieve), is\* (type check), has\* (presence), set\* (mutate), from\*/to\* (convert), with\* (immutable copy) (STYLE_GUIDE.md Section 3.13)
 5.  **Implement:** Adhere to the ESM-only mandate and follow patterns discovered in research phase.
 6.  **Check Dependencies:** Verify imports follow the Library Integration Layer pattern (no direct imports from encapsulated libraries).
 7.  **Verify:** Always run `pnpm build` and `pnpm test` (or specific package build/test) before finishing.
@@ -508,3 +505,45 @@ Where:
 - Include comparison tables
 
 **Each directory has a README.md** that indexes all documents in that category.
+
+<!-- graft:start -->
+## Graft — repo context graph
+
+This repo is indexed in `graft/`: small linked markdown nodes that explain each
+system and carry exact file:line spans, kept in sync with the code through git.
+
+For ANY task here — understanding how something works, finding where code lives,
+or scoping a change — get context from the graph before grepping or opening
+source files. Re-ask freely (it's cheap) and reuse literal identifiers you
+already have (symbol, error string, file name) as the query. New to this repo?
+Run `graft map` first — a token-budgeted orientation (dir clusters, hubs,
+hotspots), no LLM, no key.
+
+- Run `graft ask "<your question>" --source` → ranked nodes with the relevant
+  code spans inlined (each hit's ≤8-line crux by default; `--full` for whole
+  definitions when the crux isn't enough). Match the tool to the task shape:
+  for understanding or editing, the top node IS the answer — cite its
+  `covers:` file:line spans and edit straight from `--source`. For
+  exhaustive tasks ("every occurrence / every caller of this pattern"), ranked
+  results are top-N, not complete — run `graft grep "<literal>"` instead
+  (exhaustive over indexed files, grouped by enclosing symbol), falling back
+  to raw `grep -rn` only for unindexed files.
+- `graft skeleton <file>` → every definition's signature + span, ~10× cheaper
+  than reading the file; use it to skim an API surface.
+- `graft callers <symbol>` gives precomputed, exact edges — who calls this.
+  Add `--direction out` for what it calls, or `--depth N` to walk
+  transitively for the full blast radius. For structural questions, skip
+  ranking and use this directly.
+- Or browse: `graft/INDEX.md` lists every node; follow the links.
+- Monorepos and folders of multiple repos rank fairly across sub-projects —
+  hits carry `[scope/]` labels naming which one they're from. Narrow with
+  `graft ask "<task>" --in <scope>/` once you know where you're working.
+
+If a returned span is truncated ("+N more lines"), open the file at that exact
+range before finalizing. Only open source files when a node genuinely lacks a
+needed detail, and then at the exact file:line the node points to — never
+re-read whole files.
+
+After big code changes, refresh the graph with `graft build` (deterministic,
+no API key, $0).
+<!-- graft:end -->

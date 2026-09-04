@@ -13,6 +13,7 @@ export * from './environment';
 export * from './event-emitter';
 export * from './event-gateway';
 export * from './feature-context-mount-manager';
+export * from './shared-dependency-registry';
 export * from './property-resolver';
 export * from './resource';
 export { ContextToken, isContextToken } from '@blue/factory';

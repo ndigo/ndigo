@@ -30,6 +30,7 @@ import {
     likeFactory,
     likeRegistry,
     DefaultFactory,
+    Factory,
     InitializationAwareProcessor,
     likeAwareAnd,
     Aware,
@@ -665,6 +666,9 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
         if (parent instanceof GenericApplicationContext && !parent.hasChild(this)) {
             parent.#children.push(this);
         }
+
+        // Wire the factory parent chain so getValue/hasValue walk up through context hierarchy
+        super.setParent(parent as Factory);
 
         defineProperty(this, 'root', {
             value: this._resolveRoot(),

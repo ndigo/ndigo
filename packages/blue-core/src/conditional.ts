@@ -1,5 +1,10 @@
 /**
- * TC39 Stage 3 decorators for platform-conditional auto-configuration.
+ * Platform-conditional metadata helpers.
+ *
+ * Marker classes (`@conditionalOnBrowser`, `@conditionalOnNode`) and the
+ * platform check they feed. Lives in `@blue/core` so platform packages
+ * (`@blue/platform-node`, `@blue/platform-web`) can use it without depending
+ * on the bootstrap package.
  *
  * @module
  * @since 1.0.0
@@ -20,15 +25,6 @@ const CONDITIONAL_ON = 'boot:conditionalOn';
  *
  * @param platform - The required platform (`'browser'` or `'node'`).
  * @returns A class decorator.
- *
- * @example
- * ```ts
- * @ConditionalOnBrowser
- * class WebAutoConfiguration { … }
- *
- * @ConditionalOnNode
- * class NodeAutoConfiguration { … }
- * ```
  */
 function conditionalOnDecorator(
     platform: ConditionalPlatform,
@@ -44,12 +40,12 @@ function conditionalOnDecorator(
  *
  * @example
  * ```ts
- * @ConditionalOnBrowser
+ * @conditionalOnBrowser
  * @configuration
  * class WebAutoConfiguration { … }
  * ```
  */
-export function ConditionalOnBrowser(target: any, context: ClassDecoratorContext): any {
+export function conditionalOnBrowser(target: any, context: ClassDecoratorContext): any {
     return conditionalOnDecorator('browser', target, context);
 }
 
@@ -58,12 +54,12 @@ export function ConditionalOnBrowser(target: any, context: ClassDecoratorContext
  *
  * @example
  * ```ts
- * @ConditionalOnNode
+ * @conditionalOnNode
  * @configuration
  * class NodeAutoConfiguration { … }
  * ```
  */
-export function ConditionalOnNode(target: any, context: ClassDecoratorContext): any {
+export function conditionalOnNode(target: any, context: ClassDecoratorContext): any {
     return conditionalOnDecorator('node', target, context);
 }
 

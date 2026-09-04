@@ -12,7 +12,7 @@ import {
 import { IllegalStateError, JSONObject } from '@blue/core';
 import { RouteRegistry } from '@blue/router';
 import { WebAutoConfiguration } from './web-auto-configuration';
-import { isActiveForCurrentPlatform } from './conditional';
+import { isActiveForCurrentPlatform } from '@blue/core';
 
 /**
  * Class that can be used to bootstrap and launch an application.

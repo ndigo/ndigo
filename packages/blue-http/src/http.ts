@@ -16,7 +16,7 @@ import { likeResponse } from './like-response';
  * Represents a valid HTTP method.
  * @see {@link https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods}
  */
-export type HTTPMethod = 'CONNECT' | 'DELETE' | 'GET' | 'HEAD' | 'OPTIONS' | 'PATCH' | 'POST' | 'PUT' | 'TRACE';
+export type HTTPMethod = 'CONNECT' | 'DELETE' | 'GET' | 'HEAD' | 'OPTIONS' | 'PATCH' | 'POST' | 'PUT' | 'QUERY' | 'TRACE';
 /**
  * Base request settings shared by HTTP client methods and interceptor hooks.
  *

@@ -149,7 +149,7 @@ Hook for subclasses to wire up `_wrap` calls.
 
 > **disable**(): `void`
 
-Defined in: packages/blue-telemetry/src/instrumentation/dispatcher/dispatcher.ts:45
+Defined in: packages/blue-telemetry/src/instrumentation/dispatcher/dispatcher.ts:53
 
 Hook for subclasses to wire up `_unwrap` calls.
 

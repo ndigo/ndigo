@@ -1,5 +1,5 @@
 /**
- * Builds a Blue `Route` and `NodeRequest` from a MockMvc request spec.
+ * Builds a Blue `Route` and `NodeRequest` from a MockMVC request spec.
  *
  * Mirrors `NodeHTTPServerAdapter`'s request→route conversion (path segments,
  * matrix params, query params) so an in-process dispatch behaves identically

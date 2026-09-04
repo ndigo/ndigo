@@ -4,7 +4,7 @@
 
 import '@tsmetadata/polyfill';
 import { FrameworkError } from '@blue/core';
-import { GenericApplicationContext } from './context';
+import { GenericApplicationContext, ApplicationContextAwareProcessor } from './context';
 import { Environment, AsEnvironmentAware, StandardEnvironment, ConfigurableEnvironment } from './environment';
 import { EntryRegistryProcessor, Registry } from '@blue/factory';
 import { AsResourceLoaderAware } from './resource';
@@ -378,6 +378,13 @@ export class MetadataConfigApplicationContext extends GenericApplicationContext 
     constructor(name: string) {
         super(name);
         this.#configurationParser = new ConfigurationParser(this, this.environment);
+        // Register the ApplicationContextAwareProcessor before any @entry
+        // configs are parsed, so entry-created aware beans receive context
+        // injection when they are eagerly configured in register().
+        // (refresh()/_prepareFactory() also guard against duplicates.)
+        if (!this.processors.some((p) => p instanceof ApplicationContextAwareProcessor)) {
+            this.addProcessor(new ApplicationContextAwareProcessor(this));
+        }
     }
 
     /**

@@ -1,52 +1,66 @@
 // @vitest-environment jsdom
-import { describe, expect, test } from 'vitest';
-import { Route } from '@blue/router';
-import { TODO_SERVICE } from '../src/context-tokens';
+import '@tsmetadata/polyfill';
+import { describe, test, beforeAll, afterAll, expect } from 'vitest';
+import { configuration, entry } from '@blue/context';
+import { bootBrowserApp, BrowserMockMVC } from '@blue/test';
 import IndexController from '../src/index-controller';
+import TodoService from '../src/todo-service';
 
-describe('IndexController', () => {
-    const route = { path: '/index' } as Route;
-    const todoService = {
-        items: [
-            { text: 'a', checked: false },
-            { text: 'b', checked: true },
-        ],
-    };
+const starterTodos = [
+    { text: 'a', checked: false },
+    { text: 'b', checked: true },
+];
 
-    function createController(): IndexController {
-        const controller = new IndexController();
-        (controller as any).setApplicationContext({
-            getValue: (name: string | { description: string }) =>
-                name === 'todoService' || (typeof name !== 'string' && name.description === TODO_SERVICE.description)
-                    ? todoService
-                    : null,
-        });
-        return controller;
+/**
+ * Test-local configuration: registers the REAL IndexController and real
+ * TodoService through the framework DI, so the handler mapping discovers them
+ * and the TODO_SERVICE token resolves — no stubbed context.
+ */
+@configuration
+class IndexTestConfiguration {
+    @entry
+    indexController() {
+        return new IndexController();
     }
 
-    test('handleIndex returns full model with all filter', () => {
-        const controller = createController();
-        const mv = controller.handleIndex(route);
+    @entry
+    todoService() {
+        return new TodoService(starterTodos);
+    }
+}
 
-        expect((mv.model as any).filter).toBe('all');
-        expect((mv.model as any).items).toEqual(todoService.items);
+describe('IndexController through BrowserMockMVC', () => {
+    let browser: BrowserMockMVC;
+    let close: () => void;
+
+    beforeAll(async () => {
+        const app = await bootBrowserApp([IndexTestConfiguration]);
+        browser = new BrowserMockMVC(app);
+        close = app.close;
     });
 
-    test('handleAll returns filter-only model', () => {
-        const controller = createController();
-        const mv = controller.handleAll(route);
-
-        expect((mv.model as any).filter).toBe('all');
-        expect((mv.model as any).items).toBeUndefined();
+    afterAll(() => {
+        close();
     });
 
-    test('handleActive and handleCompleted return respective filters', () => {
-        const controller = createController();
+    test('/index returns the full model with all filter', async () => {
+        const { model } = await browser.dispatch('/index');
+        expect(model).toMatchObject({ filter: 'all' });
+        expect(model).toMatchObject({ items: starterTodos });
+    });
 
-        const active = controller.handleActive(route);
-        const completed = controller.handleCompleted(route);
+    test('/ returns filter-only model', async () => {
+        const { model } = await browser.dispatch('/');
+        expect(model).toMatchObject({ filter: 'all' });
+        expect((model as { items?: unknown }).items).toBeUndefined();
+    });
 
-        expect((active.model as any).filter).toBe('active');
-        expect((completed.model as any).filter).toBe('completed');
+    test('/active and /completed return respective filters', async () => {
+        const active = await browser.dispatch('/active');
+        const completed = await browser.dispatch('/completed');
+
+        expect(active.model).toMatchObject({ filter: 'active' });
+        expect(completed.model).toMatchObject({ filter: 'completed' });
+        expect((active.model as { items?: unknown }).items).toBeUndefined();
     });
 });

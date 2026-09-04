@@ -340,7 +340,7 @@ Always 'Factory'.
 
 > **register**(`configClass`): `void`
 
-Defined in: packages/blue-context/src/configuration.ts:388
+Defined in: packages/blue-context/src/configuration.ts:395
 
 Registers a configuration class for metadata-driven initialization.
 

@@ -8,7 +8,7 @@
 
 > **isShared**(`target`): `boolean`
 
-Defined in: packages/blue-core/src/shared.ts:62
+Defined in: packages/blue-core/src/shared.ts:63
 
 Checks whether a class or instance is marked with `@shared`.
 

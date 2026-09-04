@@ -1,19 +1,19 @@
 import { describe, test, expect, vi, afterEach } from 'vitest';
 import {
-    ConditionalOnBrowser,
-    ConditionalOnNode,
+    conditionalOnBrowser,
+    conditionalOnNode,
     getConditionalPlatform,
     isActiveForCurrentPlatform,
-} from '../src/conditional';
+} from '@blue/core';
 import { Application } from '../src/application';
 
-describe('ConditionalOnBrowser', () => {
+describe('conditionalOnBrowser', () => {
     afterEach(() => {
         vi.unstubAllGlobals();
     });
 
     test('stores browser platform in metadata', () => {
-        @ConditionalOnBrowser
+        @conditionalOnBrowser
         class TestConfig {}
 
         expect(getConditionalPlatform(TestConfig)).toBe('browser');
@@ -24,7 +24,7 @@ describe('ConditionalOnBrowser', () => {
         const win = typeof window !== 'undefined' ? window : vi.stubGlobal('window', {});
         expect(typeof window).toBe('object');
 
-        @ConditionalOnBrowser
+        @conditionalOnBrowser
         class TestConfig {}
 
         expect(isActiveForCurrentPlatform(TestConfig)).toBe(true);
@@ -33,20 +33,20 @@ describe('ConditionalOnBrowser', () => {
     test('isActiveForCurrentPlatform returns false when window is undefined', () => {
         vi.stubGlobal('window', undefined);
 
-        @ConditionalOnBrowser
+        @conditionalOnBrowser
         class TestConfig {}
 
         expect(isActiveForCurrentPlatform(TestConfig)).toBe(false);
     });
 });
 
-describe('ConditionalOnNode', () => {
+describe('conditionalOnNode', () => {
     afterEach(() => {
         vi.unstubAllGlobals();
     });
 
     test('stores node platform in metadata', () => {
-        @ConditionalOnNode
+        @conditionalOnNode
         class TestConfig {}
 
         expect(getConditionalPlatform(TestConfig)).toBe('node');
@@ -55,14 +55,14 @@ describe('ConditionalOnNode', () => {
     test('isActiveForCurrentPlatform returns true when window is not defined', () => {
         vi.stubGlobal('window', undefined);
 
-        @ConditionalOnNode
+        @conditionalOnNode
         class TestConfig {}
 
         expect(isActiveForCurrentPlatform(TestConfig)).toBe(true);
     });
 
     test('isActiveForCurrentPlatform returns false when window is defined', () => {
-        @ConditionalOnNode
+        @conditionalOnNode
         class TestConfig {}
 
         expect(isActiveForCurrentPlatform(TestConfig)).toBe(false);

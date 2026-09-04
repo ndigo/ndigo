@@ -28,6 +28,8 @@ Blue integration test harness — MockMVC-style in-process dispatch.
 ## Functions
 
 - [bootApp](functions/bootApp.md)
+- [cachedBootApp](functions/cachedBootApp.md)
+- [releaseCachedApp](functions/releaseCachedApp.md)
 - [bootBrowserApp](functions/bootBrowserApp.md)
 - [createMemoryResponse](functions/createMemoryResponse.md)
 - [buildRoute](functions/buildRoute.md)

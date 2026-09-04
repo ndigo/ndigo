@@ -4,6 +4,7 @@
 
 import '@tsmetadata/polyfill';
 import { FrameworkError, getSymbolMetadata } from '@blue/core';
+import type { HTTPMethod } from '@blue/http';
 import { isString } from '@blue/util/types';
 
 /**
@@ -14,10 +15,17 @@ type RouteMappingValue = {
 };
 
 /**
- * Internal configuration shape for route mappings.
+ * Configuration shape for route mappings.
+ *
+ * `method` is optional — when absent the mapping matches any HTTP method.
+ * It is normally set via `@requestMapping` / `@getMapping` (see
+ * `request-mapping.ts` / `http-method-mapping.ts`), not `@routeMapping`
+ * directly, but the shared metadata record carries it.
  */
-type RouteMappingConfiguration = RouteMappingValue & {
+export type RouteMappingConfiguration = RouteMappingValue & {
     name?: string;
+    /** HTTP method this mapping handles; absent = any method. */
+    method?: HTTPMethod;
     /**
      * Comma-separated query-parameter expressions that must all match for this
      * mapping to be selected.  Supported syntax per expression:

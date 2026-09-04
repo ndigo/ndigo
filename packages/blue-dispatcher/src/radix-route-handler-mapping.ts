@@ -81,7 +81,8 @@ export class RadixMetadataHandlerMapping
         const matching = candidates.filter(
             ({ mapping }) =>
                 mapping.queryCondition.getMatchingCondition(route) !== null &&
-                mapping.matrixCondition.getMatchingCondition(route) !== null
+                mapping.matrixCondition.getMatchingCondition(route) !== null &&
+                mapping.methodCondition.getMatchingCondition(route) !== null
         );
 
         if (matching.length === 0) {

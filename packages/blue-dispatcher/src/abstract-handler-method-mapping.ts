@@ -5,6 +5,7 @@ import { Route } from '@blue/router';
 import { isFunction } from '@blue/util/types';
 import { RouteHandlerMethod, RouteHandlerMethodMappingNamingStrategy } from './route-handler-method';
 import { RouteMappingInfo, PatternsRouteCondition, QueryParamCondition, MatrixParamCondition } from './route-mapping-info';
+import { HTTPMethodCondition } from './http-method-condition';
 import { hasRouteMapping, getRouteMapping } from './route-mapping';
 import { hasMethodParameter, getMethodParameter, MethodParameter } from './route-parameter';
 import { AbstractHandlerMapping } from './abstract-handler-mapping';
@@ -252,12 +253,16 @@ export abstract class AbstractHandlerMethodMapping<T extends RouteMappingInfo> e
             const methodMatrix = (methodMapping as any).matrixParams
                 ? new MatrixParamCondition(...((methodMapping as any).matrixParams as string).split(',').map((s) => s.trim()))
                 : new MatrixParamCondition();
+            const methodMethod = new HTTPMethodCondition((methodMapping as any).method);
 
             methodInfo = new RouteMappingInfo(
                 methodMapping.value,
                 new PatternsRouteCondition(methodMapping.value),
                 methodParams,
-                methodMatrix
+                methodMatrix,
+                null,
+                null,
+                methodMethod
             );
 
             const handlerMapping = getRouteMapping(handler.constructor);
@@ -273,7 +278,10 @@ export abstract class AbstractHandlerMethodMapping<T extends RouteMappingInfo> e
                     handlerMapping.value,
                     new PatternsRouteCondition(handlerMapping.value),
                     handlerParams,
-                    handlerMatrix
+                    handlerMatrix,
+                    null,
+                    null,
+                    new HTTPMethodCondition((handlerMapping as any).method)
                 );
                 methodInfo = handlerInfo.merge(methodInfo);
             }

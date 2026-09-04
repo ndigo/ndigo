@@ -8,7 +8,7 @@
 
 > **parseMediaType**(`value`): [`MediaType`](../classes/MediaType.md)
 
-Defined in: packages/blue-core/src/media-type.ts:511
+Defined in: packages/blue-core/src/media-type.ts:490
 
 Parses a media type string into a MediaType instance.
 

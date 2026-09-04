@@ -6,11 +6,11 @@
 
 # Class: RouteMappingInfoHandlerMethodMappingNamingStrategy
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:884
+Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:914
 
 ## Implements
 
-- `RouteHandlerMethodMappingNamingStrategy`\<[`RouteMappingInfo`](RouteMappingInfo.md)\>
+- [`RouteHandlerMethodMappingNamingStrategy`](../interfaces/RouteHandlerMethodMappingNamingStrategy.md)\<[`RouteMappingInfo`](RouteMappingInfo.md)\>
 
 ## Constructors
 
@@ -28,7 +28,7 @@ Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:884
 
 > `readonly` `static` **separator**: `string`
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:890
+Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:920
 
 Separator used when generating fallback mapping names.
 
@@ -38,7 +38,7 @@ Separator used when generating fallback mapping names.
 
 > **getName**(`handlerMethod`, `mapping`): `string`
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:899
+Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:929
 
 Create a mapping name from the handler method and mapping metadata.
 
@@ -46,7 +46,7 @@ Create a mapping name from the handler method and mapping metadata.
 
 ##### handlerMethod
 
-`RouteHandlerMethod`
+[`RouteHandlerMethod`](RouteHandlerMethod.md)
 
 The handler method being named.
 
@@ -64,4 +64,4 @@ The mapping name.
 
 #### Implementation of
 
-`RouteHandlerMethodMappingNamingStrategy.getName`
+[`RouteHandlerMethodMappingNamingStrategy`](../interfaces/RouteHandlerMethodMappingNamingStrategy.md).[`getName`](../interfaces/RouteHandlerMethodMappingNamingStrategy.md#getname)

@@ -6,51 +6,36 @@
 
 # Class: BrowserBindMethodArgumentResolver
 
-Defined in: packages/blue-platform-web/src/bind-argument-resolver.ts:114
+Defined in: packages/blue-platform-web/src/bind-argument-resolver.ts:22
 
 Browser-specific bind resolver.
 
+Resolves values from browser data sources (query, state, session, cookie)
+and binds them to objects using DataBinder.
+
+Overrides `resolveArgument()` because the bind pipeline (source data →
+filter by prefix → bind to object → convert) differs from the standard
+name-resolution pipeline used by other resolvers.
+
 ## Extends
 
-- [`AbstractBindMethodArgumentResolver`](AbstractBindMethodArgumentResolver.md)
+- `AbstractPlatformArgumentResolver`
 
 ## Constructors
 
 ### Constructor
 
-> **new BrowserBindMethodArgumentResolver**(`converter?`, `converterRegistry?`, `converterResolutionOptions?`): `BrowserBindMethodArgumentResolver`
+> **new BrowserBindMethodArgumentResolver**(): `BrowserBindMethodArgumentResolver`
 
-Defined in: packages/blue-platform-web/src/bind-argument-resolver.ts:34
-
-Creates a bind-backed resolver.
-
-#### Parameters
-
-##### converter?
-
-[`ArgumentValueConverter`](../type-aliases/ArgumentValueConverter.md) = `identityArgumentValueConverter`
-
-Default converter to apply to resolved values.
-
-##### converterRegistry?
-
-[`ArgumentValueConverterRegistry`](../type-aliases/ArgumentValueConverterRegistry.md) = `argumentValueConverters`
-
-Named converter registry used for lookups.
-
-##### converterResolutionOptions?
-
-[`ConverterResolutionOptions`](../type-aliases/ConverterResolutionOptions.md) = `{}`
-
-Resolution behavior overrides.
+Defined in: packages/blue-platform-web/src/bind-argument-resolver.ts:23
 
 #### Returns
 
 `BrowserBindMethodArgumentResolver`
 
-#### Inherited from
+#### Overrides
 
-[`AbstractBindMethodArgumentResolver`](AbstractBindMethodArgumentResolver.md).[`constructor`](AbstractBindMethodArgumentResolver.md#constructor)
+`AbstractPlatformArgumentResolver.constructor`
 
 ## Accessors
 
@@ -60,15 +45,11 @@ Resolution behavior overrides.
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-platform-web/src/bind-argument-resolver.ts:122
-
-Resolves browser-backed bind data from the current route, state, session, or cookies.
+Defined in: packages/blue-platform-web/src/bind-argument-resolver.ts:27
 
 ##### Returns
 
 `string`
-
-The resolved source data map.
 
 ## Methods
 
@@ -98,7 +79,7 @@ If the argument is undefined or null.
 
 #### Inherited from
 
-[`AbstractBindMethodArgumentResolver`](AbstractBindMethodArgumentResolver.md).[`handleMissingValue`](AbstractBindMethodArgumentResolver.md#handlemissingvalue)
+`AbstractPlatformArgumentResolver.handleMissingValue`
 
 ***
 
@@ -106,9 +87,11 @@ If the argument is undefined or null.
 
 > **resolveArgument**(`parameter`, `route`, `mapping`): `any`
 
-Defined in: packages/blue-platform-web/src/bind-argument-resolver.ts:46
+Defined in: packages/blue-platform-web/src/bind-argument-resolver.ts:31
 
-Resolves and converts a bind-backed argument value.
+Resolves and converts a method argument value.
+
+Pipeline: resolveName → defaultValue fallback → convertType lookup → conversion → nil check.
 
 #### Parameters
 
@@ -128,37 +111,9 @@ Resolves and converts a bind-backed argument value.
 
 `any`
 
-#### Inherited from
+#### Overrides
 
-[`AbstractBindMethodArgumentResolver`](AbstractBindMethodArgumentResolver.md).[`resolveArgument`](AbstractBindMethodArgumentResolver.md#resolveargument)
-
-***
-
-### filterByPrefix()
-
-> `protected` **filterByPrefix**(`data`, `prefix`): `Record`\<`string`, `any`\>
-
-Defined in: packages/blue-platform-web/src/bind-argument-resolver.ts:83
-
-Removes a prefix from keys before binding nested values.
-
-#### Parameters
-
-##### data
-
-`Record`\<`string`, `any`\>
-
-##### prefix
-
-`string`
-
-#### Returns
-
-`Record`\<`string`, `any`\>
-
-#### Inherited from
-
-[`AbstractBindMethodArgumentResolver`](AbstractBindMethodArgumentResolver.md).[`filterByPrefix`](AbstractBindMethodArgumentResolver.md#filterbyprefix)
+`AbstractPlatformArgumentResolver.resolveArgument`
 
 ***
 
@@ -166,9 +121,9 @@ Removes a prefix from keys before binding nested values.
 
 > **supportsParameter**(`parameter`): `boolean`
 
-Defined in: packages/blue-platform-web/src/bind-argument-resolver.ts:101
+Defined in: packages/blue-platform-web/src/bind-argument-resolver.ts:104
 
-Returns whether this resolver supports bind parameters.
+Whether the given method parameter is supported by this resolver.
 
 #### Parameters
 
@@ -176,13 +131,17 @@ Returns whether this resolver supports bind parameters.
 
 `MethodParameter`
 
+The method parameter to check.
+
 #### Returns
 
 `boolean`
 
-#### Inherited from
+Whether or not the given method parameter is supported by this resolver.
 
-[`AbstractBindMethodArgumentResolver`](AbstractBindMethodArgumentResolver.md).[`supportsParameter`](AbstractBindMethodArgumentResolver.md#supportsparameter)
+#### Overrides
+
+`AbstractPlatformArgumentResolver.supportsParameter`
 
 ***
 
@@ -190,42 +149,12 @@ Returns whether this resolver supports bind parameters.
 
 > `protected` **resolveName**(): `any`
 
-Defined in: packages/blue-platform-web/src/bind-argument-resolver.ts:106
-
-Resolves the source name from the parameter metadata.
+Defined in: packages/blue-platform-web/src/bind-argument-resolver.ts:108
 
 #### Returns
 
 `any`
 
-#### Inherited from
-
-[`AbstractBindMethodArgumentResolver`](AbstractBindMethodArgumentResolver.md).[`resolveName`](AbstractBindMethodArgumentResolver.md#resolvename)
-
-***
-
-### getSourceData()
-
-> `protected` **getSourceData**(`source`, `route`): `Record`\<`string`, `any`\>
-
-Defined in: packages/blue-platform-web/src/bind-argument-resolver.ts:127
-
-Retrieves the browser data source identified by [source](#getsourcedata).
-
-#### Parameters
-
-##### source
-
-`string`
-
-##### route
-
-`Route`
-
-#### Returns
-
-`Record`\<`string`, `any`\>
-
 #### Overrides
 
-[`AbstractBindMethodArgumentResolver`](AbstractBindMethodArgumentResolver.md).[`getSourceData`](AbstractBindMethodArgumentResolver.md#getsourcedata)
+`AbstractPlatformArgumentResolver.resolveName`

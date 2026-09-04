@@ -8,7 +8,7 @@
 
 > **routeParams**(`paramMap`): (`target`, `context`) => `void`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:502
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:485
 
 ## Parameters
 

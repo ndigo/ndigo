@@ -6,6 +6,22 @@
 
 # Variable: toQueryString
 
-> `const` **toQueryString**: `any`
+> `const` **toQueryString**: (`value`) => `string`
 
-Defined in: packages/blue-router/src/index.ts:21
+Defined in: packages/blue-router/src/index.ts:22
+
+Serializes a JSON-like value to a query string.
+
+## Parameters
+
+### value
+
+`any`
+
+The value to serialize.
+
+## Returns
+
+`string`
+
+The encoded query string.

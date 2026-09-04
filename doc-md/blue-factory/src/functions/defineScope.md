@@ -8,7 +8,7 @@
 
 > **defineScope**(`value`, `target`): `void`
 
-Defined in: packages/blue-factory/src/scope.ts:40
+Defined in: packages/blue-factory/src/scope.ts:38
 
 Defines scope metadata on a class
 

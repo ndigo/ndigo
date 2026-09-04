@@ -8,7 +8,7 @@
 
 > **headerValue**(`name`, `options?`): [`ParameterExtractor`](../type-aliases/ParameterExtractor.md)
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:418
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:377
 
 Factory function: Create a request-header parameter extractor.
 
@@ -20,17 +20,7 @@ Factory function: Create a request-header parameter extractor.
 
 ### options?
 
-#### required?
-
-`boolean`
-
-#### defaultValue?
-
-`string`
-
-#### convert?
-
-[`ParameterValueConverterReference`](../type-aliases/ParameterValueConverterReference.md)
+[`ParameterExtractorOptions`](../interfaces/ParameterExtractorOptions.md) = `{}`
 
 ## Returns
 

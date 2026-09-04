@@ -24,7 +24,7 @@ A node that can enumerate its children.
 
 ### children
 
-> `readonly` **children**: `T`[]
+> `readonly` **children**: readonly `T`[]
 
 Defined in: packages/blue-core/src/tree-node.ts:18
 

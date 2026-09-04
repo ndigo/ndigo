@@ -6,7 +6,7 @@
 
 # Variable: FAILED\_DEPENDENCY
 
-> `const` **FAILED\_DEPENDENCY**: `ResponseStatus`
+> `const` **FAILED\_DEPENDENCY**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
 Defined in: packages/blue-http/src/response-statuses.ts:259
 

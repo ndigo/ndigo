@@ -8,7 +8,7 @@
 
 > `const` **toPascal**: (`value`) => `string`
 
-Defined in: packages/blue-util/src/string/to-pascal.ts:23
+Defined in: packages/blue-util/src/string/to-pascal.ts:20
 
 ## Parameters
 

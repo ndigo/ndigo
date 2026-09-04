@@ -6,7 +6,7 @@
 
 # Variable: PERMANENT\_REDIRECT
 
-> `const` **PERMANENT\_REDIRECT**: `ResponseStatus`
+> `const` **PERMANENT\_REDIRECT**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
 Defined in: packages/blue-http/src/response-statuses.ts:140
 

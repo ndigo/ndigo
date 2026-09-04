@@ -6,7 +6,7 @@
 
 # Variable: NETWORK\_AUTHENTICATION\_REQUIRED
 
-> `const` **NETWORK\_AUTHENTICATION\_REQUIRED**: `ResponseStatus`
+> `const` **NETWORK\_AUTHENTICATION\_REQUIRED**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
 Defined in: packages/blue-http/src/response-statuses.ts:348
 

@@ -22,7 +22,7 @@ Extends [Factory](Factory.md) to provide hierarchical factory capabilities.
 
 ### parent
 
-> `readonly` **parent**: [`Factory`](Factory.md)
+> `readonly` **parent**: [`Factory`](Factory.md) \| `null`
 
 Defined in: packages/blue-factory/src/factory.ts:64
 

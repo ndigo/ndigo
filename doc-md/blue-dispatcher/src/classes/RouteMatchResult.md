@@ -6,7 +6,7 @@
 
 # Class: RouteMatchResult
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:1163
+Defined in: packages/blue-dispatcher/src/route-match-result.ts:6
 
 Result of matching a route pattern to a path.
 
@@ -16,7 +16,7 @@ Result of matching a route pattern to a path.
 
 > **new RouteMatchResult**(`pattern`, `path`): `RouteMatchResult`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:1184
+Defined in: packages/blue-dispatcher/src/route-match-result.ts:27
 
 Create a route match result.
 
@@ -44,7 +44,7 @@ The matched path.
 
 > `readonly` **pattern**: `string`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:1167
+Defined in: packages/blue-dispatcher/src/route-match-result.ts:10
 
 The matched pattern.
 
@@ -54,7 +54,7 @@ The matched pattern.
 
 > `readonly` **path**: `string`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:1172
+Defined in: packages/blue-dispatcher/src/route-match-result.ts:15
 
 The matched path.
 
@@ -66,7 +66,7 @@ The matched path.
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:1174
+Defined in: packages/blue-dispatcher/src/route-match-result.ts:17
 
 ##### Returns
 
@@ -78,7 +78,7 @@ Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:1174
 
 > **toJSON**(): `JSONValue`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:1208
+Defined in: packages/blue-dispatcher/src/route-match-result.ts:37
 
 Serialize the match result to JSON.
 

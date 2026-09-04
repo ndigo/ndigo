@@ -8,7 +8,7 @@
 
 > `const` **removeNonPrintable**: (`value`) => `string`
 
-Defined in: packages/blue-util/src/string/remove-non-printable.ts:22
+Defined in: packages/blue-util/src/string/remove-non-printable.ts:19
 
 Remove non-printable characters
 

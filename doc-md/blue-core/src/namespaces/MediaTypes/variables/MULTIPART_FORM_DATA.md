@@ -6,6 +6,6 @@
 
 # Variable: MULTIPART\_FORM\_DATA
 
-> `const` **MULTIPART\_FORM\_DATA**: [`MediaType`](../../../classes/MediaType.md)
+> `const` **MULTIPART\_FORM\_DATA**: [`MediaType`](../../../classes/MediaType.md) \| `null`
 
 Defined in: packages/blue-core/src/media-types.ts:76

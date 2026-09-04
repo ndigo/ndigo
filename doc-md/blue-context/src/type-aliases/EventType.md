@@ -8,6 +8,6 @@
 
 > **EventType** = `string` \| `symbol`
 
-Defined in: packages/blue-context/src/event-emitter.ts:29
+Defined in: packages/blue-context/src/event-emitter.ts:55
 
 Event type supported by the emitter.

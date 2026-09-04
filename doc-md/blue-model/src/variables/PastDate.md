@@ -6,8 +6,8 @@
 
 # Variable: PastDate
 
-> `const` **PastDate**: `BasicModel`\<`DateConstructor`\>
+> `const` **PastDate**: `any`
 
-Defined in: packages/blue-model/src/basic.ts:103
+Defined in: packages/blue-model/src/basic.ts:109
 
 Matches dates in the past.

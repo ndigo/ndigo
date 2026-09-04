@@ -6,7 +6,7 @@
 
 # Abstract Class: AbstractRouteCondition\<T\>
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:162
+Defined in: packages/blue-dispatcher/src/route-condition.ts:147
 
 Contract for route matching conditions.
 
@@ -14,6 +14,8 @@ Contract for route matching conditions.
 
 - [`RouteConditionHolder`](RouteConditionHolder.md)
 - [`CompositeRouteCondition`](CompositeRouteCondition.md)
+- [`AccessControlCondition`](AccessControlCondition.md)
+- [`HTTPMethodCondition`](HTTPMethodCondition.md)
 - [`QueryParamCondition`](QueryParamCondition.md)
 - [`MatrixParamCondition`](MatrixParamCondition.md)
 - [`PatternsRouteCondition`](PatternsRouteCondition.md)
@@ -46,7 +48,7 @@ Contract for route matching conditions.
 
 > `abstract` **content**: `any`[]
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:172
+Defined in: packages/blue-dispatcher/src/route-condition.ts:157
 
 ***
 
@@ -54,7 +56,7 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:172
 
 > `abstract` **infix**: `string`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:173
+Defined in: packages/blue-dispatcher/src/route-condition.ts:158
 
 ## Accessors
 
@@ -64,7 +66,7 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:173
 
 > **get** **isEmpty**(): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:168
+Defined in: packages/blue-dispatcher/src/route-condition.ts:153
 
 Whether this condition contains no content.
 
@@ -78,7 +80,7 @@ Whether this condition contains no content.
 
 > **equals**(`value`): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:181
+Defined in: packages/blue-dispatcher/src/route-condition.ts:166
 
 Compare this condition to another value.
 
@@ -106,7 +108,7 @@ The value to compare.
 
 > **toJSON**(): `JSONValue`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:196
+Defined in: packages/blue-dispatcher/src/route-condition.ts:181
 
 Serialize the condition to JSON.
 
@@ -126,7 +128,7 @@ The string form of the condition.
 
 > **toString**(): `string`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:205
+Defined in: packages/blue-dispatcher/src/route-condition.ts:190
 
 Convert the condition to its textual form.
 
@@ -146,7 +148,7 @@ The condition string.
 
 > `abstract` **merge**(`other`): `T`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:209
+Defined in: packages/blue-dispatcher/src/route-condition.ts:194
 
 Merge this condition with another condition of the same type.
 
@@ -170,9 +172,9 @@ The merged condition.
 
 ### getMatchingCondition()
 
-> `abstract` **getMatchingCondition**(`route`): `T`
+> `abstract` **getMatchingCondition**(`route`): `T` \| `null`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:211
+Defined in: packages/blue-dispatcher/src/route-condition.ts:196
 
 Return the condition that matches a route, or `null` when no match exists.
 
@@ -186,7 +188,7 @@ The current route.
 
 #### Returns
 
-`T`
+`T` \| `null`
 
 A matching condition instance or `null`.
 
@@ -200,7 +202,7 @@ A matching condition instance or `null`.
 
 > `abstract` **compareTo**(`value`, `route?`): `number`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:213
+Defined in: packages/blue-dispatcher/src/route-condition.ts:198
 
 Compare this condition with another condition.
 
@@ -214,7 +216,7 @@ The condition to compare against.
 
 ##### route?
 
-`Route`
+`Route`\<`Record`\<`string`, `string`\>\>
 
 The route used to break ties, if needed.
 

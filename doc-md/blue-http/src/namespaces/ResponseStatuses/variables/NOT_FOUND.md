@@ -6,7 +6,7 @@
 
 # Variable: NOT\_FOUND
 
-> `const` **NOT\_FOUND**: `ResponseStatus`
+> `const` **NOT\_FOUND**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
 Defined in: packages/blue-http/src/response-statuses.ts:169
 

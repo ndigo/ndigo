@@ -6,11 +6,10 @@
 
 # Class: MappedHandlerInterceptor
 
-Defined in: packages/blue-dispatcher/src/route-handler-interceptor.ts:45
+Defined in: packages/blue-dispatcher/src/route-handler-interceptor.ts:41
 
-## Implements
-
-module:router.RouteHandlerInterceptor
+Intercept the execution of a handler. Called after HandlerMapping determined
+an appropriate handler object, but before RouteHandlerAdapter invokes the handler.
 
 ## Extends
 
@@ -26,7 +25,7 @@ module:router.RouteHandlerInterceptor
 
 > **new MappedHandlerInterceptor**(`interceptor`, `includePatterns`, `excludePatterns?`): `MappedHandlerInterceptor`
 
-Defined in: packages/blue-dispatcher/src/route-handler-interceptor.ts:54
+Defined in: packages/blue-dispatcher/src/route-handler-interceptor.ts:50
 
 #### Parameters
 
@@ -56,7 +55,7 @@ Defined in: packages/blue-dispatcher/src/route-handler-interceptor.ts:54
 
 > **pathMatcher**: `PathMatcher`
 
-Defined in: packages/blue-dispatcher/src/route-handler-interceptor.ts:48
+Defined in: packages/blue-dispatcher/src/route-handler-interceptor.ts:44
 
 The PathMatcher instance used for matching patterns.
 
@@ -72,7 +71,7 @@ The PathMatcher instance used for matching patterns.
 
 > **get** **interceptor**(): [`RouteHandlerInterceptor`](../interfaces/RouteHandlerInterceptor.md)
 
-Defined in: packages/blue-dispatcher/src/route-handler-interceptor.ts:50
+Defined in: packages/blue-dispatcher/src/route-handler-interceptor.ts:46
 
 ##### Returns
 
@@ -171,7 +170,7 @@ An array of patterns to include.
 
 > **completeHandle**(`route`, `handler`, `error?`): `Promise`\<`void`\>
 
-Defined in: packages/blue-dispatcher/src/route-handler-interceptor.ts:61
+Defined in: packages/blue-dispatcher/src/route-handler-interceptor.ts:57
 
 #### Parameters
 
@@ -181,11 +180,11 @@ Defined in: packages/blue-dispatcher/src/route-handler-interceptor.ts:61
 
 ##### handler
 
-`any`
+`object` \| `undefined`
 
 ##### error?
 
-`Error` = `null`
+`Error` \| `null`
 
 #### Returns
 
@@ -201,7 +200,7 @@ Defined in: packages/blue-dispatcher/src/route-handler-interceptor.ts:61
 
 > **postHandle**(`route`, `handler`, `modelAndView`): `Promise`\<`void`\>
 
-Defined in: packages/blue-dispatcher/src/route-handler-interceptor.ts:65
+Defined in: packages/blue-dispatcher/src/route-handler-interceptor.ts:61
 
 #### Parameters
 
@@ -211,7 +210,7 @@ Defined in: packages/blue-dispatcher/src/route-handler-interceptor.ts:65
 
 ##### handler
 
-`any`
+`object` \| `undefined`
 
 ##### modelAndView
 
@@ -231,7 +230,7 @@ Defined in: packages/blue-dispatcher/src/route-handler-interceptor.ts:65
 
 > **preHandle**(`route`, `handler`): `Promise`\<`boolean`\>
 
-Defined in: packages/blue-dispatcher/src/route-handler-interceptor.ts:69
+Defined in: packages/blue-dispatcher/src/route-handler-interceptor.ts:65
 
 #### Parameters
 
@@ -241,7 +240,7 @@ Defined in: packages/blue-dispatcher/src/route-handler-interceptor.ts:69
 
 ##### handler
 
-`any`
+`object` \| `undefined`
 
 #### Returns
 

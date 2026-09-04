@@ -6,6 +6,6 @@
 
 # Variable: APPLICATION\_OCTET\_STREAM
 
-> `const` **APPLICATION\_OCTET\_STREAM**: [`MediaType`](../../../classes/MediaType.md)
+> `const` **APPLICATION\_OCTET\_STREAM**: [`MediaType`](../../../classes/MediaType.md) \| `null`
 
 Defined in: packages/blue-core/src/media-types.ts:16

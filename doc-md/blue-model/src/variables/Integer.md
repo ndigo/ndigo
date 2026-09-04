@@ -6,8 +6,8 @@
 
 # Variable: Integer
 
-> `const` **Integer**: `BasicModel`\<`NumberConstructor`\>
+> `const` **Integer**: `any`
 
-Defined in: packages/blue-model/src/basic.ts:53
+Defined in: packages/blue-model/src/basic.ts:59
 
 Matches integer numbers.

@@ -6,6 +6,6 @@
 
 # Variable: IMAGE\_JPEG
 
-> `const` **IMAGE\_JPEG**: [`MediaType`](../../../classes/MediaType.md)
+> `const` **IMAGE\_JPEG**: [`MediaType`](../../../classes/MediaType.md) \| `null`
 
 Defined in: packages/blue-core/src/media-types.ts:58

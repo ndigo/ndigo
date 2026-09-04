@@ -6,8 +6,8 @@
 
 # Variable: PositiveInteger
 
-> `const` **PositiveInteger**: `BasicModel`\<`NumberConstructor`\>
+> `const` **PositiveInteger**: `any`
 
-Defined in: packages/blue-model/src/basic.ts:73
+Defined in: packages/blue-model/src/basic.ts:79
 
 Matches positive integers.

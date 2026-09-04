@@ -6,7 +6,7 @@
 
 # Class: MappedRouterInterceptor
 
-Defined in: packages/blue-router/src/router-interceptor.ts:50
+Defined in: packages/blue-router/src/router-interceptor.ts:51
 
 A `RouterInterceptor` that applies a wrapped interceptor only when the route matches specified include and exclude patterns.
 It extends `AsPathMatcherFilter` to leverage path matching capabilities.
@@ -30,7 +30,7 @@ It extends `AsPathMatcherFilter` to leverage path matching capabilities.
 
 > **new MappedRouterInterceptor**(`interceptor`, `includePatterns`, `excludePatterns?`): `MappedRouterInterceptor`
 
-Defined in: packages/blue-router/src/router-interceptor.ts:92
+Defined in: packages/blue-router/src/router-interceptor.ts:93
 
 Creates an instance of `MappedRouterInterceptor`.
 
@@ -72,7 +72,7 @@ An optional array of patterns that define when the interceptor should be inactiv
 
 > **pathMatcher**: `PathMatcher`
 
-Defined in: packages/blue-router/src/router-interceptor.ts:55
+Defined in: packages/blue-router/src/router-interceptor.ts:56
 
 The PathMatcher instance used for matching patterns.
 
@@ -92,7 +92,7 @@ The PathMatcher instance used for matching patterns.
 
 > **get** **interceptor**(): [`RouterInterceptor`](../interfaces/RouterInterceptor.md)
 
-Defined in: packages/blue-router/src/router-interceptor.ts:62
+Defined in: packages/blue-router/src/router-interceptor.ts:63
 
 Gets the underlying `RouterInterceptor` that this mapped interceptor wraps.
 
@@ -114,7 +114,7 @@ The wrapped `RouterInterceptor` instance.
 
 > **get** **excludePatterns**(): `string`[]
 
-Defined in: packages/blue-router/src/router-interceptor.ts:71
+Defined in: packages/blue-router/src/router-interceptor.ts:72
 
 Gets the array of patterns that, if matched, will prevent the interceptor from being applied.
 
@@ -136,7 +136,7 @@ An array of exclusion patterns.
 
 > **get** **includePatterns**(): `string`[]
 
-Defined in: packages/blue-router/src/router-interceptor.ts:81
+Defined in: packages/blue-router/src/router-interceptor.ts:82
 
 Gets the array of patterns that, if matched, will allow the interceptor to be applied.
 If no include patterns are specified, the interceptor applies to all routes (unless excluded).
@@ -256,7 +256,7 @@ An array of patterns to include.
 
 > **matchesRoute**(`route`): `boolean`
 
-Defined in: packages/blue-router/src/router-interceptor.ts:109
+Defined in: packages/blue-router/src/router-interceptor.ts:110
 
 Determines if the given route matches the configured include and exclude patterns.
 Exclusion patterns take precedence over inclusion patterns.
@@ -283,9 +283,9 @@ The `Route` object to check.
 
 ### resolveRouteParams()
 
-> **resolveRouteParams**(`route`): `Record`\<`string`, `string`\>
+> **resolveRouteParams**(`route`): `Record`\<`string`, `string`\> \| `null`
 
-Defined in: packages/blue-router/src/router-interceptor.ts:138
+Defined in: packages/blue-router/src/router-interceptor.ts:139
 
 Resolves route parameters from the given route based on the include patterns.
 This method attempts to extract parameters if the route matches a named pattern.
@@ -300,7 +300,7 @@ The `Route` object from which to resolve parameters.
 
 #### Returns
 
-`Record`\<`string`, `string`\>
+`Record`\<`string`, `string`\> \| `null`
 
 An object containing resolved parameters, or `null` if no parameters are resolved or no matching named pattern is found.
 
@@ -310,13 +310,13 @@ An object containing resolved parameters, or `null` if no parameters are resolve
 
 ***
 
-### postRoute()
+### postHandle()
 
-> **postRoute**(`route`): `Promise`\<`void`\>
+> **postHandle**(`route`): `Promise`\<`void`\>
 
-Defined in: packages/blue-router/src/router-interceptor.ts:158
+Defined in: packages/blue-router/src/router-interceptor.ts:163
 
-Executes the `postRoute` method of the wrapped interceptor, if it exists.
+Executes the `postHandle` method of the wrapped interceptor, if it exists.
 This method is called after a route has been handled.
 
 #### Parameters
@@ -331,7 +331,7 @@ The `Route` object that was processed.
 
 `Promise`\<`void`\>
 
-A promise that resolves when the `postRoute` operation is complete.
+A promise that resolves when the `postHandle` operation is complete.
 
 #### Since
 
@@ -339,17 +339,50 @@ A promise that resolves when the `postRoute` operation is complete.
 
 #### Implementation of
 
-[`RouterInterceptor`](../interfaces/RouterInterceptor.md).[`postRoute`](../interfaces/RouterInterceptor.md#postroute)
+[`RouterInterceptor`](../interfaces/RouterInterceptor.md).[`postHandle`](../interfaces/RouterInterceptor.md#posthandle)
 
 ***
 
-### preRoute()
+### afterCompletion()
 
-> **preRoute**(`route`): `Promise`\<`boolean`\>
+> **afterCompletion**(`route`): `Promise`\<`void`\>
 
-Defined in: packages/blue-router/src/router-interceptor.ts:169
+Defined in: packages/blue-router/src/router-interceptor.ts:174
 
-Executes the `preRoute` method of the wrapped interceptor, if it exists.
+Executes the `afterCompletion` method of the wrapped interceptor, if it exists.
+This method is called after the entire request processing is complete.
+
+#### Parameters
+
+##### route
+
+[`Route`](../interfaces/Route.md)
+
+The `Route` object that was processed.
+
+#### Returns
+
+`Promise`\<`void`\>
+
+A promise that resolves when the `afterCompletion` operation is complete.
+
+#### Since
+
+1.0.0
+
+#### Implementation of
+
+[`RouterInterceptor`](../interfaces/RouterInterceptor.md).[`afterCompletion`](../interfaces/RouterInterceptor.md#aftercompletion)
+
+***
+
+### preHandle()
+
+> **preHandle**(`route`): `Promise`\<`boolean`\>
+
+Defined in: packages/blue-router/src/router-interceptor.ts:185
+
+Executes the `preHandle` method of the wrapped interceptor, if it exists.
 This method is called before a route is handled and can prevent further processing.
 
 #### Parameters
@@ -372,4 +405,4 @@ A promise that resolves to `true` to continue processing, or `false` to stop.
 
 #### Implementation of
 
-[`RouterInterceptor`](../interfaces/RouterInterceptor.md).[`preRoute`](../interfaces/RouterInterceptor.md#preroute)
+[`RouterInterceptor`](../interfaces/RouterInterceptor.md).[`preHandle`](../interfaces/RouterInterceptor.md#prehandle)

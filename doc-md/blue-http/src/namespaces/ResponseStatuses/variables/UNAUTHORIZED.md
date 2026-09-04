@@ -6,7 +6,7 @@
 
 # Variable: UNAUTHORIZED
 
-> `const` **UNAUTHORIZED**: `ResponseStatus`
+> `const` **UNAUTHORIZED**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
 Defined in: packages/blue-http/src/response-statuses.ts:154
 

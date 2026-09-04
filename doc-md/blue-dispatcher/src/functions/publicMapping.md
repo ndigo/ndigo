@@ -8,7 +8,7 @@
 
 > **publicMapping**(`route`): (`target`, `context`) => `any`
 
-Defined in: packages/blue-dispatcher/src/route-mapping.ts:134
+Defined in: packages/blue-dispatcher/src/route-mapping.ts:142
 
 Create a public route mapping decorator.
 

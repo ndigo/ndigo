@@ -8,7 +8,7 @@
 
 > `const` **errorMapping**: (`errorClass`) => (`target`, `context`) => `void` & `object`
 
-Defined in: packages/blue-dispatcher/src/error-mapping.ts:110
+Defined in: packages/blue-dispatcher/src/error-mapping.ts:114
 
 Export errorMapping with utility methods
 

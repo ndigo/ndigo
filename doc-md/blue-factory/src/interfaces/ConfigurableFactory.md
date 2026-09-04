@@ -18,7 +18,7 @@ Extends [HierarchicalFactory](HierarchicalFactory.md) and [Registry](Registry.md
 
 ### parent
 
-> `readonly` **parent**: [`Factory`](Factory.md)
+> `readonly` **parent**: [`Factory`](Factory.md) \| `null`
 
 Defined in: packages/blue-factory/src/factory.ts:64
 
@@ -126,7 +126,7 @@ Sets the parent factory.
 
 ##### parent
 
-[`Factory`](Factory.md)
+[`Factory`](Factory.md) \| `null`
 
 The parent factory.
 

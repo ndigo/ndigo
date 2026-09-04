@@ -8,7 +8,7 @@
 
 > **bodyValue**(`name`, `options?`): [`ParameterExtractor`](../type-aliases/ParameterExtractor.md)
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:441
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:400
 
 Factory function: Create a request-body parameter extractor.
 Use `name: '*'` to bind the entire parsed body object.
@@ -21,17 +21,7 @@ Use `name: '*'` to bind the entire parsed body object.
 
 ### options?
 
-#### required?
-
-`boolean`
-
-#### defaultValue?
-
-`any`
-
-#### convert?
-
-[`ParameterValueConverterReference`](../type-aliases/ParameterValueConverterReference.md)
+[`ParameterExtractorOptions`](../interfaces/ParameterExtractorOptions.md) = `{}`
 
 ## Returns
 

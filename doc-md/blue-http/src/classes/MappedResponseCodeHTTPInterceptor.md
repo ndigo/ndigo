@@ -6,13 +6,9 @@
 
 # Class: MappedResponseCodeHTTPInterceptor
 
-Defined in: packages/blue-http/src/interceptors/response-code-interceptor.ts:27
+Defined in: packages/blue-http/src/interceptors/response-code-interceptor.ts:25
 
 Dispatches response hooks based on the numeric status code.
-
-## Implements
-
-module:http.ResponseAwareHTTPInterceptor
 
 ## Implements
 
@@ -24,7 +20,7 @@ module:http.ResponseAwareHTTPInterceptor
 
 > **new MappedResponseCodeHTTPInterceptor**(`interceptor`): `MappedResponseCodeHTTPInterceptor`
 
-Defined in: packages/blue-http/src/interceptors/response-code-interceptor.ts:42
+Defined in: packages/blue-http/src/interceptors/response-code-interceptor.ts:40
 
 Creates a response-code dispatcher.
 
@@ -48,7 +44,7 @@ The interceptor map to wrap.
 
 > **get** **interceptor**(): [`ResponseCodeAwareHTTPInterceptor`](../interfaces/ResponseCodeAwareHTTPInterceptor.md)
 
-Defined in: packages/blue-http/src/interceptors/response-code-interceptor.ts:33
+Defined in: packages/blue-http/src/interceptors/response-code-interceptor.ts:31
 
 The wrapped interceptor map.
 
@@ -62,7 +58,7 @@ The wrapped interceptor map.
 
 > **postResponse**(`response`, `settings`): `Promise`\<`void` \| `Response`\>
 
-Defined in: packages/blue-http/src/interceptors/response-code-interceptor.ts:53
+Defined in: packages/blue-http/src/interceptors/response-code-interceptor.ts:51
 
 Dispatches the response to a matching status-code hook.
 

@@ -6,7 +6,7 @@
 
 # Class: UnresolvedResource
 
-Defined in: packages/blue-context/src/resource.ts:149
+Defined in: packages/blue-context/src/resource.ts:143
 
 Resource wrapper used when loading fails.
 
@@ -20,7 +20,7 @@ Resource wrapper used when loading fails.
 
 > **new UnresolvedResource**(`path`, `value`): `UnresolvedResource`
 
-Defined in: packages/blue-context/src/resource.ts:156
+Defined in: packages/blue-context/src/resource.ts:150
 
 #### Parameters
 
@@ -42,7 +42,7 @@ Defined in: packages/blue-context/src/resource.ts:156
 
 > `readonly` **value**: `Error`
 
-Defined in: packages/blue-context/src/resource.ts:150
+Defined in: packages/blue-context/src/resource.ts:144
 
 #### Implementation of
 
@@ -56,7 +56,7 @@ Defined in: packages/blue-context/src/resource.ts:150
 
 > **get** **exists**(): `boolean`
 
-Defined in: packages/blue-context/src/resource.ts:152
+Defined in: packages/blue-context/src/resource.ts:146
 
 ##### Returns
 

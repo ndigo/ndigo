@@ -38,7 +38,7 @@ A descriptive message for the validation error.
 
 ##### cause?
 
-`Error` = `null`
+`Error` \| `null`
 
 The original error that caused this validation failure.
 

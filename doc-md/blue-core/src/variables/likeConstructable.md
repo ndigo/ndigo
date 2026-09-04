@@ -16,7 +16,7 @@ Type guard to check if a value is a `Constructable` (i.e., a class constructor).
 
 ### value
 
-`any`
+`unknown`
 
 The value to check.
 

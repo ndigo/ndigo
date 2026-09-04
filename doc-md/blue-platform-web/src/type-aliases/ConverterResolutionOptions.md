@@ -8,7 +8,7 @@
 
 > **ConverterResolutionOptions** = `object`
 
-Defined in: packages/blue-platform-web/src/argument-value-converter.ts:25
+Defined in: packages/blue-platform-web/src/argument-value-converter.ts:30
 
 Options that control how named converters are resolved.
 
@@ -18,4 +18,4 @@ Options that control how named converters are resolved.
 
 > `optional` **strictNamedLookup?**: `boolean`
 
-Defined in: packages/blue-platform-web/src/argument-value-converter.ts:26
+Defined in: packages/blue-platform-web/src/argument-value-converter.ts:31

@@ -44,11 +44,9 @@ The name of the value in the factory.
 
 > **setName**(`name`): `void`
 
-Defined in: packages/blue-factory/src/aware.ts:45
+Defined in: packages/blue-factory/src/aware.ts:43
 
-Set the name of the value in the factory that created it.
-
-Invoked after population of normal value properties but before an `init` callback.
+Sets the name of the value in the factory.
 
 #### Parameters
 
@@ -56,7 +54,7 @@ Invoked after population of normal value properties but before an `init` callbac
 
 `string`
 
-The name of the value in the factory.
+The name to set.
 
 #### Returns
 

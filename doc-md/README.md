@@ -57,7 +57,7 @@ pnpm lint
 
 ## Applications
 
-- [blue-demo](_media/README.md)
+- [blue-todo](_media/README.md)
 
 ## Packages
 
@@ -193,7 +193,7 @@ The project maintains two complementary documentation files for different purpos
 
 | Concern               | ARCHITECTURE.md                                           | STYLE_GUIDE.md                                     |
 | :-------------------- | :-------------------------------------------------------- | :------------------------------------------------- |
-| Dependency Management | "Use Library Integration Layer pattern"                   | "Import from @blue/util, not from ramda"           |
+| Dependency Management | "Use Library Integration Layer pattern"                   | "Import from @blue/util, not from seedrandom"           |
 | Code Organization     | "Use Strategy Pattern for parsers"                        | "Name parser files: kebab-case.ts in src/"         |
 | Module Visibility     | "Internal modules are implementation details"             | "Prefix internal files with underscore: \_util.ts" |
 | Naming Philosophy     | "Use `is` prefix for type checks, `like` for duck-typing" | "isString checks with typeof, returns boolean"     |

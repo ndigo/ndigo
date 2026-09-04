@@ -8,21 +8,25 @@
 
 ## Classes
 
-- [AppResetInterceptor](classes/AppResetInterceptor.md)
+- [CryptoRequestIdCorrelation](classes/CryptoRequestIdCorrelation.md)
+- [MapServiceRegistry](classes/MapServiceRegistry.md)
 - [MappedServiceInterceptor](classes/MappedServiceInterceptor.md)
 - [ServiceExecutionChain](classes/ServiceExecutionChain.md)
+- [EventEmitterTelemetryHooks](classes/EventEmitterTelemetryHooks.md)
 
 ## Interfaces
 
+- [RequestIdCorrelation](interfaces/RequestIdCorrelation.md)
+- [ServiceRegistry](interfaces/ServiceRegistry.md)
 - [CompletionAwareServiceInterceptor](interfaces/CompletionAwareServiceInterceptor.md)
 - [ErrorAwareServiceInterceptor](interfaces/ErrorAwareServiceInterceptor.md)
 - [InitializationAwareServiceInterceptor](interfaces/InitializationAwareServiceInterceptor.md)
 - [RequestAwareServiceInterceptor](interfaces/RequestAwareServiceInterceptor.md)
 - [ResponseAwareServiceInterceptor](interfaces/ResponseAwareServiceInterceptor.md)
+- [TelemetryHooks](interfaces/TelemetryHooks.md)
 
 ## Type Aliases
 
-- [AppResetInit](type-aliases/AppResetInit.md)
 - [ServiceInit](type-aliases/ServiceInit.md)
 - [ServiceInterceptor](type-aliases/ServiceInterceptor.md)
 

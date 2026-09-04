@@ -14,7 +14,7 @@ Resolves a view name to a concrete [View](View.md) instance.
 
 ### resolveViewName()
 
-> **resolveViewName**(`name`, `language?`): `Promise`\<[`View`](View.md)\>
+> **resolveViewName**(`name`, `language?`): `Promise`\<[`View`](View.md) \| `null`\>
 
 Defined in: packages/blue-view/src/view-resolver.ts:26
 
@@ -36,6 +36,6 @@ Optional locale or language hint used during resolution.
 
 #### Returns
 
-`Promise`\<[`View`](View.md)\>
+`Promise`\<[`View`](View.md) \| `null`\>
 
 A promise that resolves to the matching view, or `null` when none is available.

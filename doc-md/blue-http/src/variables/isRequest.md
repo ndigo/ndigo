@@ -8,7 +8,7 @@
 
 > `const` **isRequest**: (`value`) => `value is Request`
 
-Defined in: packages/blue-http/src/http.ts:279
+Defined in: packages/blue-http/src/http.ts:280
 
 Clones request settings and locks them before fetch executes.
 

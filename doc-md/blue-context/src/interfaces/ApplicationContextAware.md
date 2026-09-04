@@ -6,7 +6,7 @@
 
 # Interface: ApplicationContextAware
 
-Defined in: packages/blue-context/src/context.ts:187
+Defined in: packages/blue-context/src/context.ts:188
 
 Interface to be implemented by any object that wishes to be notified of the [ApplicationContext](ApplicationContext.md) that it runs in.
 
@@ -40,7 +40,7 @@ A symbol indicating that the value is aware.
 
 > **setApplicationContext**(`applicationContext`): `void`
 
-Defined in: packages/blue-context/src/context.ts:194
+Defined in: packages/blue-context/src/context.ts:195
 
 Set the ApplicationContext that this object runs in. Normally this call will be used to initialize the object.
 

@@ -8,13 +8,13 @@
 
 > `const` **likeController**: (`value`) => `value is Controller`
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:57
+Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:58
 
 ## Parameters
 
 ### value
 
-`any`
+`unknown`
 
 The value to be tested
 

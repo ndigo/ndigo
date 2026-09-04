@@ -6,7 +6,7 @@
 
 # Class: ContentNegotiationViewResolver
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:269
+Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:307
 
 Resolves views using content negotiation results.
 
@@ -20,7 +20,7 @@ Resolves views using content negotiation results.
 
 > **new ContentNegotiationViewResolver**(`manager`): `ContentNegotiationViewResolver`
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:288
+Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:326
 
 Creates a resolver backed by the given negotiation manager.
 
@@ -42,7 +42,7 @@ The negotiation manager to consult.
 
 > **contentNegotiationManager**: [`ContentNegotiationManager`](ContentNegotiationManager.md)
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:273
+Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:311
 
 The manager used to derive acceptable media types.
 
@@ -52,7 +52,7 @@ The manager used to derive acceptable media types.
 
 > **defaultViews**: [`View`](../interfaces/View.md)[]
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:277
+Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:315
 
 The fallback views used when negotiation cannot resolve a specific one.
 
@@ -62,7 +62,7 @@ The fallback views used when negotiation cannot resolve a specific one.
 
 > **viewResolvers**: [`ViewResolver`](../interfaces/ViewResolver.md)[]
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:281
+Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:319
 
 The delegate resolvers queried after negotiation.
 
@@ -72,7 +72,7 @@ The delegate resolvers queried after negotiation.
 
 > **getMediaTypes**(`request`): `MediaType`[]
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:298
+Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:336
 
 Returns the media types supported by the current request.
 
@@ -96,7 +96,7 @@ The negotiated media types.
 
 > **resolveViewName**(`name`, `language?`): `Promise`\<[`View`](../interfaces/View.md)\>
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:310
+Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:348
 
 Resolves a view name using negotiated media types.
 

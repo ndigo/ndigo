@@ -8,7 +8,7 @@
 
 > **likeConfigurableFactory**(`value`): `boolean`
 
-Defined in: packages/blue-factory/src/factory.ts:168
+Defined in: packages/blue-factory/src/factory.ts:169
 
 Determines whether or not the `value` provided is [ConfigurableFactory](../interfaces/ConfigurableFactory.md).
 

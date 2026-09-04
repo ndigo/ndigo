@@ -6,7 +6,7 @@
 
 # Variable: EARLY\_HINTS
 
-> `const` **EARLY\_HINTS**: `ResponseStatus`
+> `const` **EARLY\_HINTS**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
 Defined in: packages/blue-http/src/response-statuses.ts:33
 

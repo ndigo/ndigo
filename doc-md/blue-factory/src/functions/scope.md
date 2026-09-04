@@ -8,7 +8,7 @@
 
 > **scope**(`scopeName`): \<`T`\>(`target`, `context`) => `T`
 
-Defined in: packages/blue-factory/src/scope.ts:77
+Defined in: packages/blue-factory/src/scope.ts:76
 
 TC39 decorator for defining scope on a class
 

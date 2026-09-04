@@ -6,7 +6,7 @@
 
 # Variable: NOT\_ACCEPTABLE
 
-> `const` **NOT\_ACCEPTABLE**: `ResponseStatus`
+> `const` **NOT\_ACCEPTABLE**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
 Defined in: packages/blue-http/src/response-statuses.ts:179
 

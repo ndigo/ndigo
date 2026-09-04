@@ -6,7 +6,9 @@
 
 # Class: LinearMetadataHandlerMapping
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:1033
+Defined in: packages/blue-dispatcher/src/linear-metadata-handler-mapping.ts:18
+
+Creates RequestMappingInfo\|RequestMappingInfo instances from class-level `route:handler` metadata and method-level `route:mapping` metadata. Metadata is usually applied using RequestMapping\|@RequestHandler and RequestMapping\|@RequestMapping decorators.
 
 Map handler methods using route mapping metadata.
 
@@ -24,7 +26,7 @@ Map handler methods using route mapping metadata.
 
 > **new LinearMetadataHandlerMapping**(): `LinearMetadataHandlerMapping`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:500
+Defined in: packages/blue-dispatcher/src/abstract-handler-method-mapping.ts:43
 
 Create a handler-method mapping with an empty registry.
 
@@ -42,7 +44,7 @@ Create a handler-method mapping with an empty registry.
 
 > **applicationContext**: `ApplicationContext`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:351
+Defined in: packages/blue-dispatcher/src/abstract-handler-mapping.ts:60
 
 Application context used to resolve named handlers.
 
@@ -54,9 +56,9 @@ Application context used to resolve named handlers.
 
 ### defaultHandler
 
-> **defaultHandler**: `any`
+> **defaultHandler**: `object` \| `null` = `null`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:356
+Defined in: packages/blue-dispatcher/src/abstract-handler-mapping.ts:65
 
 Default handler used when no specific mapping matches.
 
@@ -70,7 +72,7 @@ Default handler used when no specific mapping matches.
 
 > **interceptors**: [`RouteHandlerInterceptor`](../interfaces/RouteHandlerInterceptor.md)[]
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:361
+Defined in: packages/blue-dispatcher/src/abstract-handler-mapping.ts:70
 
 Interceptors applied to matched handlers.
 
@@ -84,7 +86,7 @@ Interceptors applied to matched handlers.
 
 > **pathMatcher**: `PathMatcher`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:366
+Defined in: packages/blue-dispatcher/src/abstract-handler-mapping.ts:75
 
 Path matcher used by path-based mappings.
 
@@ -96,9 +98,9 @@ Path matcher used by path-based mappings.
 
 ### namingStrategy
 
-> **namingStrategy**: `RouteHandlerMethodMappingNamingStrategy`\<[`RouteMappingInfo`](RouteMappingInfo.md)\>
+> **namingStrategy**: [`RouteHandlerMethodMappingNamingStrategy`](../interfaces/RouteHandlerMethodMappingNamingStrategy.md)\<[`RouteMappingInfo`](RouteMappingInfo.md)\>
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:485
+Defined in: packages/blue-dispatcher/src/abstract-handler-method-mapping.ts:28
 
 Naming strategy used when exposing handler methods by name.
 
@@ -112,7 +114,7 @@ Naming strategy used when exposing handler methods by name.
 
 > `readonly` **mappingRegistry**: `MappingRegistry`\<[`RouteMappingInfo`](RouteMappingInfo.md)\>
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:490
+Defined in: packages/blue-dispatcher/src/abstract-handler-method-mapping.ts:33
 
 Registry of route mappings and their handler methods.
 
@@ -156,7 +158,7 @@ The name of the value in the factory.
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:1037
+Defined in: packages/blue-dispatcher/src/linear-metadata-handler-mapping.ts:22
 
 ##### Returns
 
@@ -172,7 +174,7 @@ Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:1037
 
 > **setApplicationContext**(`applicationContext`): `void`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:407
+Defined in: packages/blue-dispatcher/src/abstract-handler-mapping.ts:101
 
 Store the application context for later handler resolution.
 
@@ -196,9 +198,9 @@ The application context to use.
 
 ### getHandler()
 
-> **getHandler**(`route`): `RouteHandlerExecutionChain`
+> **getHandler**(`route`): `RouteHandlerExecutionChain` \| `null`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:423
+Defined in: packages/blue-dispatcher/src/abstract-handler-mapping.ts:117
 
 Resolve a route to a handler execution chain.
 
@@ -212,7 +214,7 @@ The current route.
 
 #### Returns
 
-`RouteHandlerExecutionChain`
+`RouteHandlerExecutionChain` \| `null`
 
 The execution chain, or `null` when no handler matches.
 
@@ -230,7 +232,7 @@ The execution chain, or `null` when no handler matches.
 
 > `protected` **\_getHandlerExecutionChain**(`handler`, `route`): `RouteHandlerExecutionChain`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:445
+Defined in: packages/blue-dispatcher/src/abstract-handler-mapping.ts:142
 
 Build an execution chain for a resolved handler and route.
 
@@ -264,7 +266,7 @@ The execution chain to invoke.
 
 > **init**(): `void`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:513
+Defined in: packages/blue-dispatcher/src/abstract-handler-method-mapping.ts:51
 
 Detect and register handler methods from the application context.
 
@@ -280,15 +282,15 @@ Detect and register handler methods from the application context.
 
 ### getHandlerMethods()
 
-> **getHandlerMethods**(): `Map`\<[`RouteMappingInfo`](RouteMappingInfo.md), `RouteHandlerMethod`\>
+> **getHandlerMethods**(): `Map`\<[`RouteMappingInfo`](RouteMappingInfo.md), [`RouteHandlerMethod`](RouteHandlerMethod.md)\>
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:526
+Defined in: packages/blue-dispatcher/src/abstract-handler-method-mapping.ts:64
 
 Return all registered handler methods.
 
 #### Returns
 
-`Map`\<[`RouteMappingInfo`](RouteMappingInfo.md), `RouteHandlerMethod`\>
+`Map`\<[`RouteMappingInfo`](RouteMappingInfo.md), [`RouteHandlerMethod`](RouteHandlerMethod.md)\>
 
 The mapping-to-handler-method registry.
 
@@ -300,9 +302,9 @@ The mapping-to-handler-method registry.
 
 ### getHandlerMethodsForMappingName()
 
-> **getHandlerMethodsForMappingName**(`name`): `RouteHandlerMethod`[]
+> **getHandlerMethodsForMappingName**(`name`): [`RouteHandlerMethod`](RouteHandlerMethod.md)[]
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:536
+Defined in: packages/blue-dispatcher/src/abstract-handler-method-mapping.ts:74
 
 Return handler methods registered under a mapping name.
 
@@ -316,7 +318,7 @@ The mapping name.
 
 #### Returns
 
-`RouteHandlerMethod`[]
+[`RouteHandlerMethod`](RouteHandlerMethod.md)[]
 
 The matching handler methods.
 
@@ -330,7 +332,7 @@ The matching handler methods.
 
 > **unregisterMapping**(`mapping`): `void`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:557
+Defined in: packages/blue-dispatcher/src/abstract-handler-method-mapping.ts:95
 
 Remove a mapping from the registry.
 
@@ -354,9 +356,9 @@ The mapping metadata to remove.
 
 ### \_createRequestHandlerMethod()
 
-> `protected` **\_createRequestHandlerMethod**(`handler`, `method`): `RouteHandlerMethod`
+> `protected` **\_createRequestHandlerMethod**(`handler`, `method`): [`RouteHandlerMethod`](RouteHandlerMethod.md)
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:568
+Defined in: packages/blue-dispatcher/src/abstract-handler-method-mapping.ts:106
 
 Create a handler method reference from a handler object and method name.
 
@@ -376,7 +378,7 @@ The handler method name.
 
 #### Returns
 
-`RouteHandlerMethod`
+[`RouteHandlerMethod`](RouteHandlerMethod.md)
 
 The resolved handler method.
 
@@ -390,7 +392,7 @@ The resolved handler method.
 
 > `protected` **\_detectHandlerMethods**(`handler`): `void`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:590
+Defined in: packages/blue-dispatcher/src/abstract-handler-method-mapping.ts:126
 
 Scan a handler for mapped methods and register them.
 
@@ -414,9 +416,9 @@ The handler instance or application-context name.
 
 ### \_getHandler()
 
-> `protected` **\_getHandler**(`route`): `any`
+> `protected` **\_getHandler**(`route`): [`RouteHandlerMethod`](RouteHandlerMethod.md) \| `null`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:611
+Defined in: packages/blue-dispatcher/src/abstract-handler-method-mapping.ts:151
 
 Resolve a route by looking up the best handler method.
 
@@ -430,7 +432,7 @@ The current route.
 
 #### Returns
 
-`any`
+[`RouteHandlerMethod`](RouteHandlerMethod.md) \| `null`
 
 The resolved handler method, or `null`.
 
@@ -442,9 +444,9 @@ The resolved handler method, or `null`.
 
 ### \_lookupHandlerMethod()
 
-> `protected` **\_lookupHandlerMethod**(`path`, `route`): `RouteHandlerMethod`
+> `protected` **\_lookupHandlerMethod**(`path`, `route`): [`RouteHandlerMethod`](RouteHandlerMethod.md) \| `null`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:623
+Defined in: packages/blue-dispatcher/src/abstract-handler-method-mapping.ts:163
 
 Find the best handler method for a path.
 
@@ -464,7 +466,7 @@ The current route.
 
 #### Returns
 
-`RouteHandlerMethod`
+[`RouteHandlerMethod`](RouteHandlerMethod.md) \| `null`
 
 The best matching handler method, or `null`.
 
@@ -478,7 +480,7 @@ The best matching handler method, or `null`.
 
 > `protected` **\_registerHandlerMethod**(`handler`, `method`, `mapping`): `void`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:673
+Defined in: packages/blue-dispatcher/src/abstract-handler-method-mapping.ts:215
 
 Register a handler method for the given mapping.
 
@@ -514,9 +516,9 @@ The mapping metadata.
 
 ### \_getMappingForMethod()
 
-> `protected` **\_getMappingForMethod**(`method`, `handler`): [`RouteMappingInfo`](RouteMappingInfo.md)
+> `protected` **\_getMappingForMethod**(`method`, `handler`): [`RouteMappingInfo`](RouteMappingInfo.md) \| `undefined`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:701
+Defined in: packages/blue-dispatcher/src/abstract-handler-method-mapping.ts:246
 
 Build a [RouteMappingInfo](RouteMappingInfo.md) for the given handler method.
 
@@ -541,7 +543,7 @@ The handler instance whose prototype carries the metadata.
 
 #### Returns
 
-[`RouteMappingInfo`](RouteMappingInfo.md)
+[`RouteMappingInfo`](RouteMappingInfo.md) \| `undefined`
 
 The combined [RouteMappingInfo](RouteMappingInfo.md), or `undefined` if no mapping exists.
 
@@ -553,9 +555,9 @@ The combined [RouteMappingInfo](RouteMappingInfo.md), or `undefined` if no mappi
 
 ### match()
 
-> **match**(`route`, `pattern`): [`RouteMatchResult`](RouteMatchResult.md)
+> **match**(`route`, `pattern`): [`RouteMatchResult`](RouteMatchResult.md) \| `null`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:1048
+Defined in: packages/blue-dispatcher/src/linear-metadata-handler-mapping.ts:33
 
 Check whether the route matches a mapping pattern.
 
@@ -575,7 +577,7 @@ The pattern to test.
 
 #### Returns
 
-[`RouteMatchResult`](RouteMatchResult.md)
+[`RouteMatchResult`](RouteMatchResult.md) \| `null`
 
 A match result, or `null`.
 
@@ -589,7 +591,7 @@ A match result, or `null`.
 
 > `protected` **\_getMappingComparator**(`route`): `Comparator`\<[`RouteMappingInfo`](RouteMappingInfo.md)\>
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:1064
+Defined in: packages/blue-dispatcher/src/linear-metadata-handler-mapping.ts:49
 
 Create a comparator for route mapping metadata.
 
@@ -615,9 +617,9 @@ A comparator for route mapping info.
 
 ### \_getMatchingMapping()
 
-> `protected` **\_getMatchingMapping**(`mapping`, `route`): [`RouteMappingInfo`](RouteMappingInfo.md)
+> `protected` **\_getMatchingMapping**(`mapping`, `route`): [`RouteMappingInfo`](RouteMappingInfo.md) \| `null`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:1077
+Defined in: packages/blue-dispatcher/src/linear-metadata-handler-mapping.ts:62
 
 Return the mapping when it matches the current route.
 
@@ -637,7 +639,7 @@ The current route.
 
 #### Returns
 
-[`RouteMappingInfo`](RouteMappingInfo.md)
+[`RouteMappingInfo`](RouteMappingInfo.md) \| `null`
 
 A matching mapping, or `null`.
 
@@ -651,7 +653,7 @@ A matching mapping, or `null`.
 
 > `protected` **\_handleMatch**(`mapping`, `path`, `route`): `void`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:1088
+Defined in: packages/blue-dispatcher/src/linear-metadata-handler-mapping.ts:73
 
 Record the best route pattern and attach it to the route.
 
@@ -687,9 +689,9 @@ The current route.
 
 ### \_handleNoMatch()
 
-> `protected` **\_handleNoMatch**(`mappings`, `path`, `route`): `RouteHandlerMethod`
+> `protected` **\_handleNoMatch**(`mappings`, `path`, `route`): [`RouteHandlerMethod`](RouteHandlerMethod.md) \| `null`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:1117
+Defined in: packages/blue-dispatcher/src/linear-metadata-handler-mapping.ts:102
 
 Handle the no-match case for metadata mappings.
 
@@ -697,7 +699,7 @@ Handle the no-match case for metadata mappings.
 
 ##### mappings
 
-`any`
+[`RouteMappingInfo`](RouteMappingInfo.md)[]
 
 Candidate mappings.
 
@@ -715,7 +717,7 @@ The current route.
 
 #### Returns
 
-`RouteHandlerMethod`
+[`RouteHandlerMethod`](RouteHandlerMethod.md) \| `null`
 
 Always `null`.
 
@@ -725,7 +727,7 @@ Always `null`.
 
 > `protected` **\_isHandler**(`value`): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:1127
+Defined in: packages/blue-dispatcher/src/linear-metadata-handler-mapping.ts:112
 
 Determine whether a value can be treated as a mapped handler.
 
@@ -753,7 +755,7 @@ The candidate value.
 
 > **registerMapping**(`mapping`, `handler`, `method`): `void`
 
-Defined in: packages/blue-dispatcher/src/route-handler-mapping.ts:1138
+Defined in: packages/blue-dispatcher/src/linear-metadata-handler-mapping.ts:126
 
 Register a single mapping and handler method.
 
@@ -791,11 +793,9 @@ The handler method name.
 
 > **setName**(`name`): `void`
 
-Defined in: packages/blue-factory/lib/aware.d.ts:38
+Defined in: packages/blue-factory/lib/aware.d.ts:36
 
-Set the name of the value in the factory that created it.
-
-Invoked after population of normal value properties but before an `init` callback.
+Sets the name of the value in the factory.
 
 #### Parameters
 
@@ -803,7 +803,7 @@ Invoked after population of normal value properties but before an `init` callbac
 
 `string`
 
-The name of the value in the factory.
+The name to set.
 
 #### Returns
 

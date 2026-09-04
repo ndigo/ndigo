@@ -6,7 +6,7 @@
 
 # Variable: FOUND
 
-> `const` **FOUND**: `ResponseStatus`
+> `const` **FOUND**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
 Defined in: packages/blue-http/src/response-statuses.ts:110
 

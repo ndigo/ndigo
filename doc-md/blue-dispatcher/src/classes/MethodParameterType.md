@@ -6,7 +6,7 @@
 
 # Class: MethodParameterType
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:49
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:51
 
 Method parameter type enum
 
@@ -21,7 +21,7 @@ Method parameter type enum
 
 > **new MethodParameterType**(`type`): `MethodParameterType`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:83
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:88
 
 #### Parameters
 
@@ -39,7 +39,7 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:83
 
 > `static` **COOKIE**: `MethodParameterType`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:50
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:52
 
 ***
 
@@ -47,7 +47,7 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:50
 
 > `static` **MODEL**: `MethodParameterType`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:51
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:53
 
 ***
 
@@ -55,7 +55,7 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:51
 
 > `static` **MATRIX**: `MethodParameterType`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:52
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:54
 
 ***
 
@@ -63,7 +63,7 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:52
 
 > `static` **PATH**: `MethodParameterType`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:53
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:55
 
 ***
 
@@ -71,7 +71,7 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:53
 
 > `static` **QUERY**: `MethodParameterType`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:54
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:56
 
 ***
 
@@ -79,7 +79,7 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:54
 
 > `static` **STATE**: `MethodParameterType`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:55
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:57
 
 ***
 
@@ -87,7 +87,7 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:55
 
 > `static` **SESSION**: `MethodParameterType`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:56
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:58
 
 ***
 
@@ -95,7 +95,7 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:56
 
 > `static` **BIND**: `MethodParameterType`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:57
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:59
 
 ***
 
@@ -103,7 +103,7 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:57
 
 > `static` **ATTRIBUTE**: `MethodParameterType`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:58
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:60
 
 ***
 
@@ -111,7 +111,7 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:58
 
 > `static` **HEADER**: `MethodParameterType`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:59
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:61
 
 ***
 
@@ -119,7 +119,7 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:59
 
 > `static` **BODY**: `MethodParameterType`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:60
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:62
 
 ***
 
@@ -127,7 +127,7 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:60
 
 > `readonly` **type**: `string`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:77
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:82
 
 ## Accessors
 
@@ -137,7 +137,7 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:77
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:79
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:84
 
 ##### Returns
 
@@ -147,9 +147,9 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:79
 
 ### fromType()
 
-> `static` **fromType**(`type`): `MethodParameterType`
+> `static` **fromType**(`type`): `MethodParameterType` \| `null`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:62
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:64
 
 #### Parameters
 
@@ -159,7 +159,7 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:62
 
 #### Returns
 
-`MethodParameterType`
+`MethodParameterType` \| `null`
 
 ***
 
@@ -167,7 +167,7 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:62
 
 > **equals**(`value`): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:92
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:97
 
 Determines if this object is equal to the specified value.
 
@@ -195,7 +195,7 @@ The value to compare with this object.
 
 > **toJSON**(): `string`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:96
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:101
 
 #### Returns
 
@@ -211,7 +211,7 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:96
 
 > **toString**(): `string`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:100
+Defined in: packages/blue-dispatcher/src/route-parameter.ts:105
 
 Returns a string representation of an object.
 

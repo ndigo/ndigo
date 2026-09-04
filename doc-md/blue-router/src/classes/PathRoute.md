@@ -34,7 +34,7 @@ A type representing the route parameters, defaulting to `Record<string, string>`
 
 > **new PathRoute**(`route`): `PathRoute`
 
-Defined in: packages/blue-router/src/path-route.ts:174
+Defined in: packages/blue-router/src/path-route.ts:175
 
 Creates an instance of `PathRoute` from a raw route string.
 The route string can include path segments, matrix parameters, and a query string.
@@ -93,11 +93,23 @@ Defined in: packages/blue-router/src/path-route.ts:150
 
 ***
 
-### params
+### method?
 
-> **params**: `Record`\<`string`, `string`\>
+> `optional` **method?**: `HTTPMethod`
 
 Defined in: packages/blue-router/src/path-route.ts:151
+
+#### Implementation of
+
+[`Route`](../interfaces/Route.md).[`method`](../interfaces/Route.md#method)
+
+***
+
+### params
+
+> **params**: `Record`\<`string`, `string`\> \| `null`
+
+Defined in: packages/blue-router/src/path-route.ts:152
 
 #### Implementation of
 
@@ -109,7 +121,7 @@ Defined in: packages/blue-router/src/path-route.ts:151
 
 > `readonly` **path**: `string`
 
-Defined in: packages/blue-router/src/path-route.ts:152
+Defined in: packages/blue-router/src/path-route.ts:153
 
 #### Implementation of
 
@@ -121,7 +133,7 @@ Defined in: packages/blue-router/src/path-route.ts:152
 
 > `readonly` **raw**: `string`
 
-Defined in: packages/blue-router/src/path-route.ts:153
+Defined in: packages/blue-router/src/path-route.ts:154
 
 #### Implementation of
 
@@ -133,7 +145,7 @@ Defined in: packages/blue-router/src/path-route.ts:153
 
 > `readonly` **attributes**: `Record`\<`string`, `any`\>
 
-Defined in: packages/blue-router/src/path-route.ts:154
+Defined in: packages/blue-router/src/path-route.ts:155
 
 #### Implementation of
 
@@ -147,7 +159,7 @@ Defined in: packages/blue-router/src/path-route.ts:154
 
 > **get** **length**(): `number`
 
-Defined in: packages/blue-router/src/path-route.ts:161
+Defined in: packages/blue-router/src/path-route.ts:162
 
 Gets the number of segments in the route.
 
@@ -171,7 +183,7 @@ The number of route segments.
 
 > **toJSON**(): `JSONValue`
 
-Defined in: packages/blue-router/src/path-route.ts:261
+Defined in: packages/blue-router/src/path-route.ts:262
 
 Serializes the `PathRoute` instance to a JSON object.
 
@@ -195,7 +207,7 @@ A `JSONValue` representation of the route.
 
 > **toString**(): `string`
 
-Defined in: packages/blue-router/src/path-route.ts:283
+Defined in: packages/blue-router/src/path-route.ts:287
 
 Returns the string representation of the `PathRoute`, including its segments and query string.
 
@@ -219,7 +231,7 @@ The string representation of the route.
 
 > **matches**(`pattern`): `boolean`
 
-Defined in: packages/blue-router/src/path-route.ts:306
+Defined in: packages/blue-router/src/path-route.ts:310
 
 Checks if the current route matches a given pattern.
 A pattern can include named parameters (e.g., `/users/:id` or `/products/{productId}`).
@@ -246,9 +258,9 @@ The route pattern to match against.
 
 ### resolveParams()
 
-> **resolveParams**(`pattern`): `Record`\<`string`, `string`\>
+> **resolveParams**(`pattern`): `Record`\<`string`, `string`\> \| `null`
 
-Defined in: packages/blue-router/src/path-route.ts:317
+Defined in: packages/blue-router/src/path-route.ts:321
 
 Resolves and extracts parameters from the route based on a given pattern.
 If the route matches the pattern, an object containing the resolved parameters is returned.
@@ -263,7 +275,7 @@ The route pattern (e.g., `/users/:id` or `/products/{productId}`).
 
 #### Returns
 
-`Record`\<`string`, `string`\>
+`Record`\<`string`, `string`\> \| `null`
 
 An object of resolved parameters if the route matches, or `null` if there is no match.
 

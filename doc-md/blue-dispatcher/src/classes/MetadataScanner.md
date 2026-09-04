@@ -73,7 +73,7 @@ Target object whose metadata is being scanned.
 
 ### get()
 
-> **get**(`metadataKey`): `string`[]
+> **get**(`metadataKey`): `string`[] \| `undefined`
 
 Defined in: packages/blue-dispatcher/src/metadata-manager.ts:153
 
@@ -89,7 +89,7 @@ The metadata key to query.
 
 #### Returns
 
-`string`[]
+`string`[] \| `undefined`
 
 The matching property names, or `undefined` when none are found.
 

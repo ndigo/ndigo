@@ -6,7 +6,7 @@
 
 # Class: ParameterConversionError
 
-Defined in: packages/blue-dispatcher/src/error.ts:223
+Defined in: packages/blue-dispatcher/src/error.ts:185
 
 Thrown when a parameter converter fails at runtime.
 This is a RUNTIME error (request processing time).
@@ -21,7 +21,7 @@ This is a RUNTIME error (request processing time).
 
 > **new ParameterConversionError**(`parameterName`, `parameterType`, `cause?`, `methodName?`, `controllerName?`): `ParameterConversionError`
 
-Defined in: packages/blue-dispatcher/src/error.ts:231
+Defined in: packages/blue-dispatcher/src/error.ts:193
 
 #### Parameters
 
@@ -57,9 +57,9 @@ Defined in: packages/blue-dispatcher/src/error.ts:231
 
 ### parameterName
 
-> `readonly` **parameterName**: `string`
+> `readonly` **parameterName**: `string` \| `null`
 
-Defined in: packages/blue-dispatcher/src/error.ts:122
+Defined in: packages/blue-dispatcher/src/error.ts:87
 
 #### Inherited from
 
@@ -69,9 +69,9 @@ Defined in: packages/blue-dispatcher/src/error.ts:122
 
 ### methodName
 
-> `readonly` **methodName**: `string`
+> `readonly` **methodName**: `string` \| `null`
 
-Defined in: packages/blue-dispatcher/src/error.ts:123
+Defined in: packages/blue-dispatcher/src/error.ts:88
 
 #### Inherited from
 
@@ -81,9 +81,9 @@ Defined in: packages/blue-dispatcher/src/error.ts:123
 
 ### controllerName
 
-> `readonly` **controllerName**: `string`
+> `readonly` **controllerName**: `string` \| `null`
 
-Defined in: packages/blue-dispatcher/src/error.ts:124
+Defined in: packages/blue-dispatcher/src/error.ts:89
 
 #### Inherited from
 
@@ -93,17 +93,17 @@ Defined in: packages/blue-dispatcher/src/error.ts:124
 
 ### parameterType
 
-> `readonly` **parameterType**: `string`
+> `readonly` **parameterType**: `string` \| `null`
 
-Defined in: packages/blue-dispatcher/src/error.ts:224
+Defined in: packages/blue-dispatcher/src/error.ts:186
 
 ***
 
 ### cause
 
-> `readonly` **cause**: `Error`
+> `readonly` **cause**: `Error` \| `null`
 
-Defined in: packages/blue-dispatcher/src/error.ts:225
+Defined in: packages/blue-dispatcher/src/error.ts:187
 
 #### Overrides
 
@@ -117,7 +117,7 @@ Defined in: packages/blue-dispatcher/src/error.ts:225
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-dispatcher/src/error.ts:227
+Defined in: packages/blue-dispatcher/src/error.ts:189
 
 ##### Returns
 

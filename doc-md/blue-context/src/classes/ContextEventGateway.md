@@ -6,7 +6,7 @@
 
 # Class: ContextEventGateway
 
-Defined in: packages/blue-context/src/event-gateway.ts:228
+Defined in: packages/blue-context/src/event-gateway.ts:227
 
 Relays selected events from one application context to another.
 
@@ -16,7 +16,7 @@ Relays selected events from one application context to another.
 
 > **new ContextEventGateway**(`source`, `target`, `relays?`, `options?`): `ContextEventGateway`
 
-Defined in: packages/blue-context/src/event-gateway.ts:278
+Defined in: packages/blue-context/src/event-gateway.ts:277
 
 Creates a gateway that relays selected events between contexts.
 
@@ -56,7 +56,7 @@ Gateway validation and diagnostic options.
 
 > **destroyed**: `boolean`
 
-Defined in: packages/blue-context/src/event-gateway.ts:237
+Defined in: packages/blue-context/src/event-gateway.ts:236
 
 ***
 
@@ -64,7 +64,7 @@ Defined in: packages/blue-context/src/event-gateway.ts:237
 
 > `readonly` **relays**: [`ContextEventRelay`](../interfaces/ContextEventRelay.md)[]
 
-Defined in: packages/blue-context/src/event-gateway.ts:238
+Defined in: packages/blue-context/src/event-gateway.ts:237
 
 ***
 
@@ -72,7 +72,7 @@ Defined in: packages/blue-context/src/event-gateway.ts:238
 
 > `readonly` **source**: [`ApplicationContext`](../interfaces/ApplicationContext.md)
 
-Defined in: packages/blue-context/src/event-gateway.ts:239
+Defined in: packages/blue-context/src/event-gateway.ts:238
 
 ***
 
@@ -80,7 +80,7 @@ Defined in: packages/blue-context/src/event-gateway.ts:239
 
 > `readonly` **target**: [`ApplicationContext`](../interfaces/ApplicationContext.md)
 
-Defined in: packages/blue-context/src/event-gateway.ts:240
+Defined in: packages/blue-context/src/event-gateway.ts:239
 
 ## Accessors
 
@@ -90,7 +90,7 @@ Defined in: packages/blue-context/src/event-gateway.ts:240
 
 > **get** **blockedRelays**(): readonly [`RelayValidationResult`](../interfaces/RelayValidationResult.md)[]
 
-Defined in: packages/blue-context/src/event-gateway.ts:245
+Defined in: packages/blue-context/src/event-gateway.ts:244
 
 The relays rejected by validation.
 
@@ -106,7 +106,7 @@ readonly [`RelayValidationResult`](../interfaces/RelayValidationResult.md)[]
 
 > **get** **activeRelayCount**(): `number`
 
-Defined in: packages/blue-context/src/event-gateway.ts:252
+Defined in: packages/blue-context/src/event-gateway.ts:251
 
 The number of accepted relays.
 
@@ -122,7 +122,7 @@ The number of accepted relays.
 
 > **get** **blockedRelayCount**(): `number`
 
-Defined in: packages/blue-context/src/event-gateway.ts:259
+Defined in: packages/blue-context/src/event-gateway.ts:258
 
 The number of rejected relays.
 
@@ -138,7 +138,7 @@ The number of rejected relays.
 
 > **get** **relayedEventCount**(): `number`
 
-Defined in: packages/blue-context/src/event-gateway.ts:266
+Defined in: packages/blue-context/src/event-gateway.ts:265
 
 The number of events forwarded by this gateway.
 
@@ -152,7 +152,7 @@ The number of events forwarded by this gateway.
 
 > **addRelay**(`from`, `to?`): `this`
 
-Defined in: packages/blue-context/src/event-gateway.ts:310
+Defined in: packages/blue-context/src/event-gateway.ts:309
 
 Registers a relay mapping.
 
@@ -182,7 +182,7 @@ This gateway.
 
 > **hasBlockedRelays**(): `boolean`
 
-Defined in: packages/blue-context/src/event-gateway.ts:342
+Defined in: packages/blue-context/src/event-gateway.ts:341
 
 Returns whether any relays have been rejected.
 
@@ -198,7 +198,7 @@ Returns whether any relays have been rejected.
 
 > **connect**(): `this`
 
-Defined in: packages/blue-context/src/event-gateway.ts:351
+Defined in: packages/blue-context/src/event-gateway.ts:350
 
 Connects all registered relays to the source context.
 
@@ -214,7 +214,7 @@ This gateway.
 
 > **destroy**(): `void`
 
-Defined in: packages/blue-context/src/event-gateway.ts:369
+Defined in: packages/blue-context/src/event-gateway.ts:368
 
 Disconnects all relay listeners and marks the gateway destroyed.
 

@@ -58,7 +58,7 @@ The decorated class or constructor-like target.
 
 ### get
 
-> **get**: (`target`) => `string` = `getViewMapping`
+> **get**: (`target`) => `string` \| `undefined` = `getViewMapping`
 
 Reads the stored view mapping for a target.
 
@@ -72,7 +72,7 @@ The decorated class or constructor-like target.
 
 #### Returns
 
-`string`
+`string` \| `undefined`
 
 The view name, or `undefined` when none has been recorded.
 

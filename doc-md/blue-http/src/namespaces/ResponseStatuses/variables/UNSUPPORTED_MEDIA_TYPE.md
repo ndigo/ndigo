@@ -6,7 +6,7 @@
 
 # Variable: UNSUPPORTED\_MEDIA\_TYPE
 
-> `const` **UNSUPPORTED\_MEDIA\_TYPE**: `ResponseStatus`
+> `const` **UNSUPPORTED\_MEDIA\_TYPE**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
 Defined in: packages/blue-http/src/response-statuses.ts:224
 

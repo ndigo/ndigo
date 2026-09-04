@@ -6,7 +6,7 @@
 
 # Variable: MULTIPLE\_CHOICE
 
-> `const` **MULTIPLE\_CHOICE**: `ResponseStatus`
+> `const` **MULTIPLE\_CHOICE**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
 Defined in: packages/blue-http/src/response-statuses.ts:100
 

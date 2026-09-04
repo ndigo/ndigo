@@ -6,6 +6,6 @@
 
 # Variable: IMAGE\_GIF
 
-> `const` **IMAGE\_GIF**: [`MediaType`](../../../classes/MediaType.md)
+> `const` **IMAGE\_GIF**: [`MediaType`](../../../classes/MediaType.md) \| `null`
 
 Defined in: packages/blue-core/src/media-types.ts:55

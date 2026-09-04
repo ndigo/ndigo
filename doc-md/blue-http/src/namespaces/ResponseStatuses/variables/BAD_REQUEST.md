@@ -6,7 +6,7 @@
 
 # Variable: BAD\_REQUEST
 
-> `const` **BAD\_REQUEST**: `ResponseStatus`
+> `const` **BAD\_REQUEST**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
 Defined in: packages/blue-http/src/response-statuses.ts:149
 

@@ -8,7 +8,7 @@
 
 > **AsAware**\<`T`\>(`superclass`): `Constructable`\<[`Aware`](../interfaces/Aware.md)\> & `T`
 
-Defined in: packages/blue-factory/src/aware.ts:53
+Defined in: packages/blue-factory/src/aware.ts:46
 
 ## Type Parameters
 
@@ -25,11 +25,3 @@ Defined in: packages/blue-factory/src/aware.ts:53
 ## Returns
 
 `Constructable`\<[`Aware`](../interfaces/Aware.md)\> & `T`
-
-## See
-
-module:factory.AsAware
-
-## Implements
-
-module:factory.Aware

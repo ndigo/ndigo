@@ -8,7 +8,7 @@
 
 > **ArgumentValueConverter** = (`value`, `context`) => `any`
 
-Defined in: packages/blue-platform-web/src/argument-value-converter.ts:19
+Defined in: packages/blue-platform-web/src/argument-value-converter.ts:24
 
 Converts a raw argument value into the target parameter type.
 

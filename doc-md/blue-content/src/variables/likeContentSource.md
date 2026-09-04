@@ -16,7 +16,7 @@ Tests whether a value looks like a content source.
 
 ### value
 
-`any`
+`unknown`
 
 The value to be tested.
 

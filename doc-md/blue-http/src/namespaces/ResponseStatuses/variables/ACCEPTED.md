@@ -6,7 +6,7 @@
 
 # Variable: ACCEPTED
 
-> `const` **ACCEPTED**: `ResponseStatus`
+> `const` **ACCEPTED**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
 Defined in: packages/blue-http/src/response-statuses.ts:56
 

@@ -6,8 +6,8 @@
 
 # Variable: FullArray
 
-> `const` **FullArray**: `BasicModel`\<`ArrayConstructor`\>
+> `const` **FullArray**: `any`
 
-Defined in: packages/blue-model/src/basic.ts:117
+Defined in: packages/blue-model/src/basic.ts:123
 
 Matches arrays that contain at least one item.

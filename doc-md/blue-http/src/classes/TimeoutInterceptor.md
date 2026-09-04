@@ -6,21 +6,9 @@
 
 # Class: TimeoutInterceptor
 
-Defined in: packages/blue-http/src/interceptors/timeout-interceptor.ts:33
+Defined in: packages/blue-http/src/interceptors/timeout-interceptor.ts:29
 
 Aborts slow requests and converts aborts into timeout responses.
-
-## Implements
-
-module:http.CompletionAwareHTTPInterceptor
-
-## Implements
-
-module:http.ErrorAwareHTTPInterceptor
-
-## Implements
-
-module:http.InitializationAwareHTTPInterceptor
 
 ## Implements
 
@@ -34,7 +22,7 @@ module:http.InitializationAwareHTTPInterceptor
 
 > **new TimeoutInterceptor**(`timeout`): `TimeoutInterceptor`
 
-Defined in: packages/blue-http/src/interceptors/timeout-interceptor.ts:43
+Defined in: packages/blue-http/src/interceptors/timeout-interceptor.ts:39
 
 #### Parameters
 
@@ -52,7 +40,7 @@ Defined in: packages/blue-http/src/interceptors/timeout-interceptor.ts:43
 
 > `readonly` **timeout**: `number`
 
-Defined in: packages/blue-http/src/interceptors/timeout-interceptor.ts:41
+Defined in: packages/blue-http/src/interceptors/timeout-interceptor.ts:37
 
 ## Methods
 
@@ -60,7 +48,7 @@ Defined in: packages/blue-http/src/interceptors/timeout-interceptor.ts:41
 
 > **preInit**(`url`, `settings`): `boolean`
 
-Defined in: packages/blue-http/src/interceptors/timeout-interceptor.ts:65
+Defined in: packages/blue-http/src/interceptors/timeout-interceptor.ts:61
 
 #### Parameters
 
@@ -90,9 +78,9 @@ Whether or not the http request should continue execution.
 
 ### postError()
 
-> **postError**(`error`, `request`): `Promise`\<`Response`\>
+> **postError**(`error`, `request`): `Promise`\<`Response` \| `undefined`\>
 
-Defined in: packages/blue-http/src/interceptors/timeout-interceptor.ts:83
+Defined in: packages/blue-http/src/interceptors/timeout-interceptor.ts:79
 
 #### Parameters
 
@@ -110,7 +98,7 @@ The HTTP request
 
 #### Returns
 
-`Promise`\<`Response`\>
+`Promise`\<`Response` \| `undefined`\>
 
 #### Async
 
@@ -124,7 +112,7 @@ The HTTP request
 
 > **postComplete**(`request`, `response`): `void`
 
-Defined in: packages/blue-http/src/interceptors/timeout-interceptor.ts:94
+Defined in: packages/blue-http/src/interceptors/timeout-interceptor.ts:90
 
 #### Parameters
 

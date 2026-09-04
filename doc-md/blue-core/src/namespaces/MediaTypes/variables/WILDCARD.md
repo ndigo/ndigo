@@ -6,6 +6,6 @@
 
 # Variable: WILDCARD
 
-> `const` **WILDCARD**: [`MediaType`](../../../classes/MediaType.md)
+> `const` **WILDCARD**: [`MediaType`](../../../classes/MediaType.md) \| `null`
 
 Defined in: packages/blue-core/src/media-types.ts:97

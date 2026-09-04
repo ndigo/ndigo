@@ -8,7 +8,7 @@
 
 > **assign**: \{\<`T`, `U`\>(`target`, `source`): `T` & `U`; \<`T`, `U`, `V`\>(`target`, `source1`, `source2`): `T` & `U` & `V`; \<`T`, `U`, `V`, `W`\>(`target`, `source1`, `source2`, `source3`): `T` & `U` & `V` & `W`; (`target`, ...`sources`): `any`; \}
 
-Defined in: packages/blue-http/src/http.ts:269
+Defined in: packages/blue-http/src/http.ts:270
 
 ## Call Signature
 

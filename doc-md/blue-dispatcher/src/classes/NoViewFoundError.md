@@ -6,7 +6,7 @@
 
 # Class: NoViewFoundError
 
-Defined in: packages/blue-dispatcher/src/error.ts:43
+Defined in: packages/blue-dispatcher/src/error.ts:38
 
 Error thrown when a view cannot be resolved for a given view name and route.
 This indicates that the specified view template or component could not be located.
@@ -21,7 +21,7 @@ This indicates that the specified view template or component could not be locate
 
 > **new NoViewFoundError**(`viewName`, `route`): `NoViewFoundError`
 
-Defined in: packages/blue-dispatcher/src/error.ts:51
+Defined in: packages/blue-dispatcher/src/error.ts:46
 
 #### Parameters
 
@@ -47,7 +47,7 @@ Defined in: packages/blue-dispatcher/src/error.ts:51
 
 > `readonly` **route**: `Route`
 
-Defined in: packages/blue-dispatcher/src/error.ts:44
+Defined in: packages/blue-dispatcher/src/error.ts:39
 
 ***
 
@@ -55,7 +55,7 @@ Defined in: packages/blue-dispatcher/src/error.ts:44
 
 > `readonly` **viewName**: `string`
 
-Defined in: packages/blue-dispatcher/src/error.ts:45
+Defined in: packages/blue-dispatcher/src/error.ts:40
 
 ## Accessors
 
@@ -65,7 +65,7 @@ Defined in: packages/blue-dispatcher/src/error.ts:45
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-dispatcher/src/error.ts:47
+Defined in: packages/blue-dispatcher/src/error.ts:42
 
 ##### Returns
 

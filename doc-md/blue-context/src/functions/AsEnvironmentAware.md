@@ -8,7 +8,7 @@
 
 > **AsEnvironmentAware**\<`T`\>(`superclass`): `Constructable`\<[`EnvironmentAware`](../interfaces/EnvironmentAware.md)\> & `T`
 
-Defined in: packages/blue-context/src/environment.ts:206
+Defined in: packages/blue-context/src/environment.ts:201
 
 ## Type Parameters
 
@@ -22,8 +22,6 @@ Defined in: packages/blue-context/src/environment.ts:206
 
 `T`
 
-The base class to extend.
-
 ## Returns
 
 `Constructable`\<[`EnvironmentAware`](../interfaces/EnvironmentAware.md)\> & `T`
@@ -31,7 +29,3 @@ The base class to extend.
 ## See
 
 module:context.AsEnvironmentAware
-
-## Implements
-
-module:context.EnvironmentAware

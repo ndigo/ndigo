@@ -6,7 +6,7 @@
 
 # Variable: ALREADY\_REPORTED
 
-> `const` **ALREADY\_REPORTED**: `ResponseStatus`
+> `const` **ALREADY\_REPORTED**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
 Defined in: packages/blue-http/src/response-statuses.ts:86
 

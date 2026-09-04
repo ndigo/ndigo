@@ -8,6 +8,6 @@
 
 > **ResolverConverterOption** = [`ArgumentValueConverter`](ArgumentValueConverter.md) \| keyof *typeof* [`argumentValueConverters`](../variables/argumentValueConverters.md) \| \{ `optional?`: `boolean`; `use`: [`ArgumentValueConverter`](ArgumentValueConverter.md) \| keyof *typeof* [`argumentValueConverters`](../variables/argumentValueConverters.md); \}
 
-Defined in: packages/blue-platform-web/src/argument-value-converter.ts:30
+Defined in: packages/blue-platform-web/src/argument-value-converter.ts:35
 
 A direct converter, a named converter reference, or an optional wrapper.

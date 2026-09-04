@@ -6,7 +6,7 @@
 
 # Variable: PROXY\_AUTHENTICATION\_REQUIRED
 
-> `const` **PROXY\_AUTHENTICATION\_REQUIRED**: `ResponseStatus`
+> `const` **PROXY\_AUTHENTICATION\_REQUIRED**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
 Defined in: packages/blue-http/src/response-statuses.ts:184
 

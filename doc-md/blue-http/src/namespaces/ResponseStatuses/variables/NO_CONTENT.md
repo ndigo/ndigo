@@ -6,7 +6,7 @@
 
 # Variable: NO\_CONTENT
 
-> `const` **NO\_CONTENT**: `ResponseStatus`
+> `const` **NO\_CONTENT**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
 Defined in: packages/blue-http/src/response-statuses.ts:66
 

@@ -6,6 +6,6 @@
 
 # Variable: APPLICATION\_PDF
 
-> `const` **APPLICATION\_PDF**: [`MediaType`](../../../classes/MediaType.md)
+> `const` **APPLICATION\_PDF**: [`MediaType`](../../../classes/MediaType.md) \| `null`
 
 Defined in: packages/blue-core/src/media-types.ts:25

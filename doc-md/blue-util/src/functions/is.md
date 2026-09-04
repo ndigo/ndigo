@@ -10,7 +10,7 @@
 
 > **is**\<`T`\>(`Ctor`): (`val`) => `val is T`
 
-Defined in: packages/blue-util/src/type/index.ts:60
+Defined in: packages/blue-util/src/type/index.ts:61
 
 ### Type Parameters
 
@@ -32,7 +32,7 @@ Defined in: packages/blue-util/src/type/index.ts:60
 
 > **is**\<`T`\>(`Ctor`, `val`): `val is T`
 
-Defined in: packages/blue-util/src/type/index.ts:61
+Defined in: packages/blue-util/src/type/index.ts:62
 
 ### Type Parameters
 

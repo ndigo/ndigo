@@ -6,7 +6,7 @@
 
 # Variable: CREATED
 
-> `const` **CREATED**: `ResponseStatus`
+> `const` **CREATED**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
 Defined in: packages/blue-http/src/response-statuses.ts:51
 

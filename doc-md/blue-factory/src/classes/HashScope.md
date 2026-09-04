@@ -6,7 +6,7 @@
 
 # Class: HashScope
 
-Defined in: packages/blue-factory/src/scope.ts:124
+Defined in: packages/blue-factory/src/scope.ts:123
 
 **`Internal`**
 
@@ -35,7 +35,7 @@ Activate a scope context by calling `setCurrentKey(key)` before `getValue()`.
 
 > **endScope**(`key`): `void`
 
-Defined in: packages/blue-factory/src/scope.ts:128
+Defined in: packages/blue-factory/src/scope.ts:127
 
 #### Parameters
 
@@ -51,13 +51,13 @@ Defined in: packages/blue-factory/src/scope.ts:128
 
 ### getCurrentKey()
 
-> **getCurrentKey**(): `string`
+> **getCurrentKey**(): `string` \| `null`
 
-Defined in: packages/blue-factory/src/scope.ts:135
+Defined in: packages/blue-factory/src/scope.ts:134
 
 #### Returns
 
-`string`
+`string` \| `null`
 
 ***
 
@@ -65,7 +65,7 @@ Defined in: packages/blue-factory/src/scope.ts:135
 
 > **setCurrentKey**(`key`): `void`
 
-Defined in: packages/blue-factory/src/scope.ts:139
+Defined in: packages/blue-factory/src/scope.ts:138
 
 #### Parameters
 
@@ -83,7 +83,7 @@ Defined in: packages/blue-factory/src/scope.ts:139
 
 > **destroyValue**(`name`): `void`
 
-Defined in: packages/blue-factory/src/scope.ts:147
+Defined in: packages/blue-factory/src/scope.ts:146
 
 #### Parameters
 
@@ -105,7 +105,7 @@ Defined in: packages/blue-factory/src/scope.ts:147
 
 > **getValue**\<`T`\>(`name`, `objectFactory`): `T`
 
-Defined in: packages/blue-factory/src/scope.ts:156
+Defined in: packages/blue-factory/src/scope.ts:157
 
 #### Type Parameters
 

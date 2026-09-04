@@ -6,7 +6,7 @@
 
 # Class: MatrixParamCondition
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:297
+Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:299
 
 A logical conjunction ('&&') route condition that matches a route against
 a set of matrix-parameter expressions.
@@ -21,7 +21,7 @@ a set of matrix-parameter expressions.
 
 > **new MatrixParamCondition**(...`params`): `MatrixParamCondition`
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:316
+Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:318
 
 Create a matrix-parameter condition from one or more expressions.
 
@@ -45,7 +45,7 @@ Matrix-parameter expressions to parse.
 
 > **new MatrixParamCondition**(`conditions`): `MatrixParamCondition`
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:322
+Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:324
 
 Create a matrix-parameter condition from a prebuilt expression set.
 
@@ -71,7 +71,7 @@ The matrix-parameter expressions to use.
 
 > `readonly` **expressions**: `Set`\<[`MatrixParamExpression`](MatrixParamExpression.md)\>
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:301
+Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:303
 
 Matrix-parameter expressions that must all match.
 
@@ -83,7 +83,7 @@ Matrix-parameter expressions that must all match.
 
 > **get** **isEmpty**(): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:168
+Defined in: packages/blue-dispatcher/src/route-condition.ts:153
 
 Whether this condition contains no content.
 
@@ -103,7 +103,7 @@ Whether this condition contains no content.
 
 > **get** **content**(): [`MatrixParamExpression`](MatrixParamExpression.md)[]
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:303
+Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:305
 
 ##### Returns
 
@@ -121,7 +121,7 @@ Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:303
 
 > **get** **infix**(): `string`
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:307
+Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:309
 
 ##### Returns
 
@@ -137,7 +137,7 @@ Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:307
 
 > **equals**(`value`): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:181
+Defined in: packages/blue-dispatcher/src/route-condition.ts:166
 
 Compare this condition to another value.
 
@@ -165,7 +165,7 @@ The value to compare.
 
 > **toJSON**(): `JSONValue`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:196
+Defined in: packages/blue-dispatcher/src/route-condition.ts:181
 
 Serialize the condition to JSON.
 
@@ -185,7 +185,7 @@ The string form of the condition.
 
 > **toString**(): `string`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:205
+Defined in: packages/blue-dispatcher/src/route-condition.ts:190
 
 Convert the condition to its textual form.
 
@@ -205,7 +205,7 @@ The condition string.
 
 > **merge**(`value`): `MatrixParamCondition`
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:342
+Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:344
 
 Merge matrix-parameter expressions from both conditions.
 
@@ -231,9 +231,9 @@ A condition containing the union of expressions.
 
 ### getMatchingCondition()
 
-> **getMatchingCondition**(`route`): `MatrixParamCondition`
+> **getMatchingCondition**(`route`): `MatrixParamCondition` \| `null`
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:356
+Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:358
 
 Return this condition when every expression matches the route.
 
@@ -247,7 +247,7 @@ The current route.
 
 #### Returns
 
-`MatrixParamCondition`
+`MatrixParamCondition` \| `null`
 
 This condition, or `null`.
 
@@ -261,7 +261,7 @@ This condition, or `null`.
 
 > **compareTo**(`value`, `route?`): `number`
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:372
+Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:374
 
 Compare matrix-parameter conditions by specificity.
 
@@ -275,7 +275,7 @@ The condition to compare.
 
 ##### route?
 
-`Route`
+`Route`\<`Record`\<`string`, `string`\>\>
 
 Unused, part of the shared contract.
 

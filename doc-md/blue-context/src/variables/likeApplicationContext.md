@@ -8,7 +8,7 @@
 
 > `const` **likeApplicationContext**: (`value`) => `value is ApplicationContext`
 
-Defined in: packages/blue-context/src/context.ts:290
+Defined in: packages/blue-context/src/context.ts:278
 
 Returns whether a value behaves like an application context.
 

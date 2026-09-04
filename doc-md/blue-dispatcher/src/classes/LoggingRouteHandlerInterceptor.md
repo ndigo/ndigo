@@ -60,7 +60,7 @@ The current route.
 
 ##### handler
 
-`any`
+`object` \| `undefined`
 
 The route handler.
 
@@ -94,7 +94,7 @@ The current route.
 
 ##### handler
 
-`any`
+`object` \| `undefined`
 
 The route handler.
 
@@ -132,7 +132,7 @@ The current route.
 
 ##### handler
 
-`any`
+`object` \| `undefined`
 
 The route handler.
 

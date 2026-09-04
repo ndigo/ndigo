@@ -6,7 +6,7 @@
 
 # Class: RouteMappingInfo
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:708
+Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:714
 
 Contract for route matching conditions.
 
@@ -18,9 +18,9 @@ Contract for route matching conditions.
 
 ### Constructor
 
-> **new RouteMappingInfo**(`name?`, `patterns?`, `params?`, `matrix?`, `custom?`): `RouteMappingInfo`
+> **new RouteMappingInfo**(`name?`, `patterns?`, `params?`, `matrix?`, `custom?`, `access?`, `method?`): `RouteMappingInfo`
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:743
+Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:760
 
 Create route mapping metadata for a handler method.
 
@@ -28,7 +28,7 @@ Create route mapping metadata for a handler method.
 
 ##### name?
 
-`string` = `null`
+`string` \| `null`
 
 The mapping name.
 
@@ -52,9 +52,19 @@ Matrix-parameter matching condition.
 
 ##### custom?
 
-[`RouteCondition`](../interfaces/RouteCondition.md) = `null`
+[`RouteCondition`](../interfaces/RouteCondition.md)\<`any`\> \| `null`
 
 Optional custom condition.
+
+##### access?
+
+[`AccessControlCondition`](AccessControlCondition.md) \| `null`
+
+Optional access level (`'public'` or `'private'`).
+
+##### method?
+
+[`HTTPMethodCondition`](HTTPMethodCondition.md) = `...`
 
 #### Returns
 
@@ -66,7 +76,7 @@ Optional custom condition.
 
 > `readonly` **name**: `string`
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:712
+Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:718
 
 Optional mapping name.
 
@@ -76,7 +86,7 @@ Optional mapping name.
 
 > `readonly` **patternsCondition**: [`PatternsRouteCondition`](PatternsRouteCondition.md)
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:717
+Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:723
 
 Pattern matching condition.
 
@@ -86,7 +96,7 @@ Pattern matching condition.
 
 > `readonly` **queryCondition**: [`QueryParamCondition`](QueryParamCondition.md)
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:722
+Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:728
 
 Query-parameter matching condition.
 
@@ -96,9 +106,19 @@ Query-parameter matching condition.
 
 > `readonly` **matrixCondition**: [`MatrixParamCondition`](MatrixParamCondition.md)
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:727
+Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:733
 
 Matrix-parameter matching condition.
+
+***
+
+### methodCondition
+
+> `readonly` **methodCondition**: [`HTTPMethodCondition`](HTTPMethodCondition.md)
+
+Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:738
+
+HTTP method matching condition (any method when empty).
 
 ***
 
@@ -106,9 +126,19 @@ Matrix-parameter matching condition.
 
 > `readonly` **customConditionHolder**: [`RouteConditionHolder`](RouteConditionHolder.md)
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:732
+Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:743
 
 Custom condition wrapper.
+
+***
+
+### accessCondition
+
+> `readonly` **accessCondition**: [`AccessControlCondition`](AccessControlCondition.md) \| `null`
+
+Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:748
+
+Optional access-control condition (public vs. private routes).
 
 ## Methods
 
@@ -116,7 +146,7 @@ Custom condition wrapper.
 
 > **merge**(`value`): `RouteMappingInfo`
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:792
+Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:784
 
 Merge this mapping info with another.
 
@@ -142,9 +172,9 @@ The merged mapping info.
 
 ### getMatchingCondition()
 
-> **getMatchingCondition**(`route`): `RouteMappingInfo`
+> **getMatchingCondition**(`route`): `RouteMappingInfo` \| `null`
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:808
+Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:807
 
 Return a condition instance that matches the current route.
 
@@ -158,7 +188,7 @@ The current route.
 
 #### Returns
 
-`RouteMappingInfo`
+`RouteMappingInfo` \| `null`
 
 A matching mapping info, or `null`.
 
@@ -172,7 +202,7 @@ A matching mapping info, or `null`.
 
 > **compareTo**(`value`, `route`): `number`
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:841
+Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:857
 
 Compare mapping info by parameter, pattern, and custom specificity.
 

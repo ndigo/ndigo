@@ -8,7 +8,7 @@
 
 > **isValidDate**(`value`): `value is Date`
 
-Defined in: packages/blue-util/src/type/is-valid-date.ts:35
+Defined in: packages/blue-util/src/type/is-valid-date.ts:34
 
 Determines whether a given value is a valid date.
 

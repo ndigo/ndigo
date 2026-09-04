@@ -6,7 +6,7 @@
 
 # Variable: IM\_A\_TEAPOT
 
-> `const` **IM\_A\_TEAPOT**: `ResponseStatus`
+> `const` **IM\_A\_TEAPOT**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
 Defined in: packages/blue-http/src/response-statuses.ts:239
 

@@ -1,6 +1,7 @@
 // @vitest-environment node
 import { describe, test, beforeAll, afterAll, expect } from 'vitest';
-import { getMapping, postMapping, routeParams, queryValue, bodyValue } from '@blue/dispatcher';
+import { getMapping, postMapping, ModelAndView, routeParams, queryValue, bodyValue } from '@blue/dispatcher';
+import { IslandView } from '@blue/view';
 import { bootApp, MockMVC } from '../src/index';
 
 /**
@@ -70,5 +71,33 @@ describe('MockMVC', () => {
     test('empty body yields undefined from .json()', async () => {
         const res = await mockMVC.get('/missing').exec();
         expect(res.response.status).toBe(404);
+    });
+});
+
+describe('IslandView through MockMVC dispatch (SSR islands)', () => {
+
+    @getMapping('/islands')
+    class IslandsController {
+        @getMapping('/todo')
+        todo() {
+            return new ModelAndView(new IslandView('todo-app'), {
+                items: [{ text: 'a', checked: false }],
+                filter: 'all',
+            });
+        }
+    }
+
+    test('server dispatches island markup with the serialized model', async () => {
+        const app = bootApp([IslandsController]);
+        try {
+            const mockMVC = new MockMVC(app);
+            const res = await mockMVC.get('/islands/todo').exec();
+            expect(res.response.status).toBe(200);
+            const html = res.text();
+            expect(html).toContain('<todo-app data-blue-island data-blue-model=');
+            expect(html).toContain('&quot;filter&quot;:&quot;all&quot;');
+        } finally {
+            app.close();
+        }
     });
 });

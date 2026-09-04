@@ -1,7 +1,9 @@
+// @vitest-environment node
 // Helper to create a minimal JWT token string with a real HMAC signature
 import { describe, test, expect, beforeEach } from 'vitest';
 import { JWTAdapter } from '../src/jwt-adapter';
 import { Principal } from '@blue/auth-core';
+import { generateKeyPair, exportSPKI, SignJWT } from 'jose';
 import { createHmac } from 'node:crypto';
 
 function createJWT(payload: Record<string, any>, secret = 'test-secret'): string {
@@ -187,5 +189,85 @@ describe('JWTAdapter', () => {
         test('returns jwt', () => {
             expect(adapter.id).toBe('jwt');
         });
+    });
+});
+
+describe('JWTAdapter asymmetric algorithms (jose)', () => {
+    test('RS256 verifies a token signed with the matching private key', async () => {
+        const { publicKey, privateKey } = await generateKeyPair('RS256', { extractable: true });
+        const spki = await exportSPKI(publicKey);
+
+        const adapter = new JWTAdapter({
+            issuer: 'https://auth.example.com',
+            audience: 'my-app',
+            publicKey: spki,
+            algorithm: 'RS256',
+        });
+
+        const token = await new SignJWT({ sub: '43', name: 'RSA User', roles: ['user'] })
+            .setProtectedHeader({ alg: 'RS256' })
+            .setIssuer('https://auth.example.com')
+            .setAudience('my-app')
+            .setExpirationTime('1h')
+            .sign(privateKey);
+
+        const principal = await adapter.validate(token);
+        expect(principal?.id).toBe('43');
+        expect(principal?.name).toBe('RSA User');
+        expect(principal?.hasRole('user')).toBe(true);
+    });
+
+    test('RS256 rejects a token signed with a different private key', async () => {
+        const { publicKey } = await generateKeyPair('RS256', { extractable: true });
+        const spki = await exportSPKI(publicKey);
+        const { privateKey: otherPrivate } = await generateKeyPair('RS256', { extractable: true });
+
+        const adapter = new JWTAdapter({
+            issuer: 'https://auth.example.com',
+            audience: 'my-app',
+            publicKey: spki,
+            algorithm: 'RS256',
+        });
+
+        const token = await new SignJWT({ sub: '43', name: 'RSA User' })
+            .setProtectedHeader({ alg: 'RS256' })
+            .setIssuer('https://auth.example.com')
+            .setAudience('my-app')
+            .setExpirationTime('1h')
+            .sign(otherPrivate);
+
+        expect(await adapter.validate(token)).toBeNull();
+    });
+
+    test('ES256 verifies a token via the PEM public key', async () => {
+        const { publicKey, privateKey } = await generateKeyPair('ES256', { extractable: true });
+        const spki = await exportSPKI(publicKey);
+
+        const adapter = new JWTAdapter({
+            issuer: 'https://auth.example.com',
+            audience: 'my-app',
+            publicKey: spki,
+            algorithm: 'ES256',
+        });
+
+        const token = await new SignJWT({ sub: '7', name: 'EC User' })
+            .setProtectedHeader({ alg: 'ES256' })
+            .setIssuer('https://auth.example.com')
+            .setAudience('my-app')
+            .setExpirationTime('1h')
+            .sign(privateKey);
+
+        const principal = await adapter.validate(token);
+        expect(principal?.id).toBe('7');
+        expect(principal?.name).toBe('EC User');
+    });
+
+    test('missing public key rejects with a clear error (no claim-only fallback)', async () => {
+        const adapter = new JWTAdapter({
+            issuer: 'https://auth.example.com',
+            audience: 'my-app',
+            algorithm: 'RS256',
+        });
+        expect(await adapter.validate('a.b.c')).toBeNull();
     });
 });

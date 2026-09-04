@@ -47,9 +47,17 @@ export abstract class AbstractHandlerMethodMapping<T extends RouteMappingInfo> e
 
     /**
      * Detect and register handler methods from the application context.
+     *
+     * No-op when the application context has not been injected yet (the DI
+     * container auto-initializes initializable beans during refresh, which can
+     * run before `setApplicationContext`). Callers that need handlers registered
+     * must set the context first, then re-run `init`.
      */
     init(): void {
         const { applicationContext } = this;
+        if (!applicationContext) {
+            return;
+        }
         keys(applicationContext).forEach((name) => {
             const value = applicationContext.getValue(name);
             this._isHandler(value) && this._detectHandlerMethods(value);

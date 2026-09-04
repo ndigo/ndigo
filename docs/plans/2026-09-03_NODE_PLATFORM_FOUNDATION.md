@@ -249,7 +249,7 @@ if (isActiveForCurrentPlatform(WebAutoConfiguration)) {
 
 ### 6.2 Fix
 
-Add `NodeAutoConfiguration` registration alongside `WebAutoConfiguration`:
+Original intent — register `NodeAutoConfiguration` alongside `WebAutoConfiguration`:
 
 ```ts
 if (isActiveForCurrentPlatform(WebAutoConfiguration)) {
@@ -260,7 +260,17 @@ if (isActiveForCurrentPlatform(NodeAutoConfiguration)) {
 }
 ```
 
-The `@conditionalOnNode` / `@conditionalOnBrowser` decorators (camelCase, matching the codebase convention — renamed from the Spring-style `@ConditionalOnNode` / `@ConditionalOnBrowser`) already ensure the right auto-configuration runs on the right platform. The `ApplicationBuilder` just needs to register both.
+**Decision (2026-09-04):** `@blue/boot` does **not** statically depend on `@blue/platform-node`. `@blue/boot` is consumed by browser applications (`app-browser`/`blue-todo` import `ApplicationBuilder`), and `@blue/platform-node`'s index re-exports `node-http-server-adapter`, which does a real `import { createServer } from 'node:http'`. Routing `NodeAutoConfiguration` through boot would drag `node:http` into every browser build.
+
+Instead, Node applications register `NodeAutoConfiguration` explicitly as an `ApplicationBuilder` source (see `apps/blue-hello-node` and `apps/blue-api`):
+
+```ts
+const app = new ApplicationBuilder([NodeAutoConfiguration, MyConfiguration]);
+```
+
+`_prepareContext` already loops `this.#sources` and conditionally registers each via `isActiveForCurrentPlatform`.
+
+**Future:** when the packages are reorganized into `web` / `node` / `isomorphic` groupings (see roadmap TODO), reintroduce automatic node auto-registration from a node-only bootstrap entry point, keeping `@blue/boot` isomorphic and free of a `node:http` import.
 
 ### 6.3 `NodeAutoConfiguration` should also register:
 

@@ -1,7 +1,7 @@
 // @vitest-environment node
 import { describe, test, beforeAll, afterAll, expect } from 'vitest';
 import { getMapping } from '@blue/dispatcher';
-import { bootApp, MockMvc } from '../src/index';
+import { bootApp, MockMVC } from '../src/index';
 
 /**
  * Canonical usage: a real app context is booted once per suite (beforeAll) and
@@ -22,13 +22,13 @@ class MathController {
     }
 }
 
-describe('bootApp + MockMvc (canonical app test)', () => {
-    let mockMvc: MockMvc;
+describe('bootApp + MockMVC (canonical app test)', () => {
+    let mockMVC: MockMVC;
     let close: () => void;
 
     beforeAll(() => {
         const app = bootApp([MathController]);
-        mockMvc = new MockMvc(app);
+        mockMVC = new MockMVC(app);
         close = app.close;
     });
 
@@ -37,13 +37,13 @@ describe('bootApp + MockMvc (canonical app test)', () => {
     });
 
     test('GET /math/double dispatches through the real handler mapping', async () => {
-        const res = await mockMvc.get('/math/double').exec();
+        const res = await mockMVC.get('/math/double').exec();
         expect(res.response.status).toBe(200);
         expect(res.json()).toEqual({ doubled: 4 });
     });
 
     test('a second route on the same shared context is served', async () => {
-        const res = await mockMvc.get('/math/hello').exec();
+        const res = await mockMVC.get('/math/hello').exec();
         expect(res.response.headers['Content-Type']).toContain('application/json');
         expect(res.json()).toEqual({ message: 'hello' });
     });

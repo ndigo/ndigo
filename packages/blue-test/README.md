@@ -1,6 +1,6 @@
 # @blue/test
 
-Blue integration test harness — **MockMvc**-style, socket-free request dispatch
+Blue integration test harness — **MockMVC**-style, socket-free request dispatch
 for testing Blue applications end-to-end (dispatcher → interceptors → argument
 resolvers → handler → JSON/view response) without binding a port.
 
@@ -20,34 +20,34 @@ in-process and asserts on the HTTP response.
 ```ts
 // @vitest-environment node
 import { describe, test, beforeAll, afterAll, expect } from 'vitest';
-import { bootApp, MockMvc } from '@blue/test';
+import { bootApp, MockMVC } from '@blue/test';
 import { TodoController } from '../src/todo-controller';
 
 describe('Todo API', () => {
-    let mockMvc: MockMvc;
+    let mockMVC: MockMVC;
     let close: () => void;
 
     beforeAll(() => {
         const app = bootApp([TodoController]); // boots context + dispatcher
-        mockMvc = new MockMvc(app);
+        mockMVC = new MockMVC(app);
         close = app.close;
     });
 
     afterAll(() => close());
 
     test('GET /todos lists items', async () => {
-        const res = await mockMvc.get('/todos').exec();
+        const res = await mockMVC.get('/todos').exec();
         expect(res.response.status).toBe(200);
         expect(res.json()).toEqual([{ text: 'buy milk', checked: false }]);
     });
 
     test('POST /todos binds the JSON body', async () => {
-        const res = await mockMvc.post('/todos').body({ text: 'write docs' }).exec();
+        const res = await mockMVC.post('/todos').body({ text: 'write docs' }).exec();
         expect(res.json()).toEqual({ text: 'write docs', checked: false });
     });
 
     test('unknown route yields 404', async () => {
-        const res = await mockMvc.get('/nope').exec();
+        const res = await mockMVC.get('/nope').exec();
         expect(res.response.status).toBe(404);
     });
 });
@@ -61,7 +61,7 @@ or plain `@getMapping` controller classes (stored by class name).
 - **`bootApp(sources: Function[]): BlueTestApp`** — boots a real
   `MetadataConfigApplicationContext` with `NodeAutoConfiguration`, wires the
   handler mapping + dispatcher. Returns `{ context, dispatcher, close }`.
-- **`MockMvc(dispatcher | app)`** — socket-free request client. Methods
+- **`MockMVC(dispatcher | app)`** — socket-free request client. Methods
   `get/post/put/delete/patch/query`, then fluent `.query()/.body()/.headers()/
   .cookies()/.session()`, then `.exec()` → `MockResult`.
 - **`MockResult`** — `{ response, route, json(), text() }`. `response` is a
@@ -72,7 +72,7 @@ or plain `@getMapping` controller classes (stored by class name).
 
 `NodeDispatcher.render()` reads the response from
 `route.attributes[NODE_RESPONSE_ATTRIBUTE]` and writes through
-`HTTPResponseViewTarget`. MockMvc builds the same `Route` + `NodeRequest` a real
+`HTTPResponseViewTarget`. MockMVC builds the same `Route` + `NodeRequest` a real
 HTTP request would, swaps the real `ServerResponse` for an in-memory
 `ResponseSink`, and dispatches — so behavior matches a real HTTP hit with **no
 socket, no process, no port**.
@@ -81,15 +81,15 @@ socket, no process, no port**.
 
 - No browser (use Playwright for E2E).
 - No real listener by default (`live: true` is a future mode).
-- No assertion library — MockMvc returns shaped values for Vitest's `expect`.
+- No assertion library — MockMVC returns shaped values for Vitest's `expect`.
 
 ## Package layout
 
 ```
 src/
-  index.ts              # exports bootApp, MockMvc, buildRoute, createMemoryResponse
+  index.ts              # exports bootApp, MockMVC, buildRoute, createMemoryResponse
   blue-test.ts          # bootApp(): context boot + dispatcher wiring
-  mock-mvc.ts           # MockMvc + MockMvcRequestBuilder
+  mock-mvc.ts           # MockMVC + MockMVCRequestBuilder
   request-builder.ts    # MockRequest → Route/NodeRequest (matches NodeHTTPServerAdapter)
   memory-response.ts    # in-memory ResponseSink + MemoryResponse capture
 ```

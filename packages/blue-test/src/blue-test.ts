@@ -17,7 +17,7 @@ import { LinearMetadataHandlerMapping } from '@blue/dispatcher';
 import { NodeDispatcher, NodeAutoConfiguration } from '@blue/platform-node';
 
 /**
- * A booted application ready for MockMvc dispatch.
+ * A booted application ready for MockMVC dispatch.
  */
 export interface BlueTestApp {
     /** The application context (real DI graph + auto-configs). */
@@ -43,8 +43,8 @@ export interface BlueTestApp {
  * @example
  * ```ts
  * const app = bootApp([HelloConfiguration]);
- * const mockMvc = new MockMvc(app);
- * const res = await mockMvc.get('/').exec();
+ * const mockMVC = new MockMVC(app);
+ * const res = await mockMVC.get('/').exec();
  * ```
  */
 export function bootApp(sources: Function[]): BlueTestApp {

@@ -2,7 +2,7 @@
  * @author Jeff Rose
  */
 
-import { createHmac, timingSafeEqual } from 'node:crypto';
+import { jwtVerify, importSPKI, exportJWK, createLocalJWKSet, createRemoteJWKSet, JWTPayload, JWTVerifyGetKey } from 'jose';
 import { type AuthAdapter } from '@blue/auth-core';
 import { type Principal } from '@blue/auth-core';
 import { type AuthResult } from '@blue/auth-core';
@@ -15,8 +15,19 @@ export interface JWTAdapterConfig {
     issuer: string;
     /** The audience (aud) claim to validate. */
     audience: string;
-    /** The secret or public key used to verify the JWT signature. */
-    secret: string;
+    /** HMAC shared secret (HS256/HS384/HS512). Required when `algorithm` is an HS* alg. */
+    secret?: string;
+    /**
+     * PEM-encoded public key (RS256/ES256/etc.). Required when `algorithm` is
+     * an asymmetric alg and no `jwksUrl` is provided.
+     */
+    publicKey?: string;
+    /**
+     * JWKS endpoint URL (e.g. an OIDC provider's `jwks_uri`). When set, keys are
+     * fetched + cached from this endpoint and rotated automatically, taking
+     * precedence over `publicKey`.
+     */
+    jwksUrl?: string;
     /** The algorithm used for signing (e.g., 'HS256', 'RS256'). */
     algorithm: string;
 }
@@ -24,93 +35,102 @@ export interface JWTAdapterConfig {
 /**
  * A reference implementation of {@link AuthAdapter} for JWT-based authentication.
  *
- * This adapter validates JWT tokens and extracts the principal from the token claims.
- * For production use, integrate `jose` or `jsonwebtoken` for RS256/ES256 support
- * and proper key rotation.
+ * Uses `jose` for cryptographic signature verification:
+ * - HMAC algorithms (HS256/HS384/HS512) via the shared `secret`
+ * - Asymmetric algorithms (RS256/ES256/…) via a PEM `publicKey` or a JWKS
+ *   endpoint (`jwksUrl`, auto-rotating + cached)
+ *
+ * Issuer, audience, and expiration are validated on every token.
  */
 export class JWTAdapter implements AuthAdapter {
     readonly id = 'jwt';
     #config: JWTAdapterConfig;
+    #localJwks: JWTVerifyGetKey | null = null;
+    #remoteJwks: JWTVerifyGetKey | null = null;
 
     constructor(config: JWTAdapterConfig) {
         this.#config = config;
+        if (config.jwksUrl) {
+            this.#remoteJwks = createRemoteJWKSet(new URL(config.jwksUrl));
+        }
+    }
+
+    /**
+     * Lazily builds a local JWKS from the PEM public key.
+     *
+     * The PEM → CryptoKey → JWK → local JWKSet chain is the supported
+     * verified-flow; passing a bare KeyObject to `jwtVerify` is rejected by
+     * jose's `check_key_type` on Node 22.
+     */
+    async #getLocalJwks(): Promise<JWTVerifyGetKey> {
+        if (this.#localJwks) {
+            return this.#localJwks;
+        }
+        const { publicKey } = this.#config;
+        if (!publicKey) {
+            throw new Error('JWTAdapter: `publicKey` or `jwksUrl` is required for this algorithm');
+        }
+        const cryptoKey = await importSPKI(publicKey, this.#config.algorithm);
+        const jwk = await exportJWK(cryptoKey);
+        this.#localJwks = createLocalJWKSet({ keys: [jwk] });
+        return this.#localJwks;
     }
 
     /**
      * Validates a JWT token and returns the associated principal.
      *
-     * @remarks Supports HMAC algorithms (HS256, HS384, HS512) with
-     * cryptographic signature verification. Other algorithms (RS256, ES256)
-     * fall back to claim-only validation with a console warning.
+     * @remarks Verifies the signature cryptographically via `jose` for both
+     * HMAC and asymmetric algorithms (RS256/ES256…), and enforces issuer,
+     * audience, and expiration claims. Trailing whitespace and other spec
+     * allowances are handled by `jose`.
      *
      * @param token - The JWT to validate.
      * @returns The authenticated {@link Principal}, or `null` if validation fails.
      */
     async validate(token: string): Promise<Principal | null> {
         try {
-            const parts = token.split('.');
-            if (parts.length !== 3) {
-                return null;
-            }
+            const key = await this.#resolveKey();
+            // jose's jwtVerify has separate overloads for a concrete key vs a
+            // JWKS getKey function — pick the overload by runtime kind.
+            const { payload } =
+                typeof key === 'function'
+                    ? await jwtVerify(token, key, this.#verifyOptions())
+                    : await jwtVerify(token, key, this.#verifyOptions());
 
-            const payload = JSON.parse(
-                Buffer.from(parts[1], 'base64url').toString('utf-8')
-            );
-
-            // Parse and validate the algorithm from the header
-            const header = JSON.parse(
-                Buffer.from(parts[0], 'base64url').toString('utf-8')
-            );
-            if (header.alg !== this.#config.algorithm) {
-                // Algorithm mismatch — possible substitution attack
-                return null;
-            }
-
-            const algorithm = this.#config.algorithm;
-            if (['HS256', 'HS384', 'HS512'].includes(algorithm)) {
-                const hashAlg = `sha${algorithm.slice(2)}`.toLowerCase();
-                const expectedSig = createHmac(hashAlg, this.#config.secret)
-                    .update(`${parts[0]}.${parts[1]}`)
-                    .digest();
-                const actualSig = Buffer.from(parts[2], 'base64url');
-                if (expectedSig.length !== actualSig.length ||
-                    !timingSafeEqual(expectedSig, actualSig)) {
-                    return null;
-                }
-            } else {
-                // Unsupported algorithm — warn, then validate claims only
-                if (typeof process !== 'undefined' && process.env.NODE_ENV !== 'test') {
-                    console.warn(
-                        `JWTAdapter: algorithm "${algorithm}" requires signature ` +
-                        'verification via `jose` or `jsonwebtoken`. ' +
-                        'Falling back to claim-only validation.'
-                    );
-                }
-            }
-
-            // Validate issuer and audience
-            if (payload.iss !== this.#config.issuer) {
-                return null;
-            }
-            if (payload.aud !== this.#config.audience) {
-                return null;
-            }
-            // Validate expiration
-            if (payload.exp && payload.exp * 1000 < Date.now()) {
-                return null;
-            }
-
-            return {
-                id: payload.sub || 'unknown',
-                name: payload.name || payload.email || 'Unknown',
-                roles: payload.roles || [],
-                hasRole: (role: string) => (payload.roles || []).includes(role),
-                hasAnyRole: (...roles: string[]) =>
-                    roles.some((r) => (payload.roles || []).includes(r)),
-            };
+            return principalFromPayload(payload);
         } catch {
             return null;
         }
+    }
+
+    /**
+     * The issuer/audience/algorithms options enforced on every token.
+     */
+    #verifyOptions(): {
+        issuer: string;
+        audience: string;
+        algorithms: string[];
+    } {
+        return {
+            issuer: this.#config.issuer,
+            audience: this.#config.audience,
+            algorithms: [this.#config.algorithm],
+        };
+    }
+
+    /**
+     * Resolves the verification key: remote JWKS, then local JWKS (PEM), then
+     * the HMAC secret.
+     */
+    async #resolveKey(): Promise<Uint8Array | JWTVerifyGetKey> {
+        if (this.#remoteJwks) {
+            return this.#remoteJwks;
+        }
+        const algorithm = this.#config.algorithm;
+        if (algorithm.startsWith('HS')) {
+            return new TextEncoder().encode(this.#config.secret ?? '');
+        }
+        return this.#getLocalJwks();
     }
 
     async authenticate(_credentials: any): Promise<AuthResult> {
@@ -120,13 +140,29 @@ export class JWTAdapter implements AuthAdapter {
     }
 
     async refresh(_token: string): Promise<AuthResult> {
-        // JWT refresh requires a refresh token or re-authentication.
-        // A production adapter should implement a proper refresh flow.
         throw new Error('JWTAdapter.refresh() not implemented - use a proper token refresh flow');
     }
 
     async logout(_token: string): Promise<void> {
-        // JWTs are stateless; logout typically requires maintaining a server-side
-        // token blacklist or relying on short expiration times.
+        // Stateless JWT — logout is client-side token discard.
     }
+}
+
+/**
+ * Maps verified JWT claims to a {@link Principal}.
+ *
+ * @param payload - The verified JWT payload.
+ * @returns The principal.
+ */
+function principalFromPayload(payload: JWTPayload): Principal {
+    const roles = Array.isArray(payload.roles)
+        ? (payload.roles as unknown[])
+        : [];
+    return {
+        id: String(payload.sub ?? 'unknown'),
+        name: String(payload.name ?? payload.email ?? 'Unknown'),
+        roles: roles.map((r) => String(r)),
+        hasRole: (role: string) => roles.includes(role),
+        hasAnyRole: (...asked: string[]) => asked.some((r) => roles.includes(r)),
+    };
 }

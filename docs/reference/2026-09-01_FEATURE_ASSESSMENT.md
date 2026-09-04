@@ -62,7 +62,7 @@ No integration test support. Every package tests in isolation via Vitest. No equ
 |---|---|---|
 | **Micro frontend shell** | Already half-built (`FeatureContextMountManager`, context hierarchy, route partitions). Unique advantage — Spring has nothing equivalent. | Finish lazy loading, add shared dep management, typed contracts. |
 | **Type-safe routing** | Modern JS expectation (tRPC, TanStack Router). Blue's routes are stringly-typed (`"users/{id}"`). | Template literal types + zod at route binding. |
-| **Partial hydration** | Ship zero JS to browser when possible. Blue's Web Component engine (`@blue/view-webcomponent`) is a natural island boundary. | Islands architecture via `@blue/view-webcomponent` + server render. |
+| ~~**Partial hydration**~~ ✅ | Ship zero JS to browser when possible. Blue's Web Component engine (`@blue/view-webcomponent`) is a natural island boundary. | `IslandView` (server, `@blue/view`) emits `<tag data-blue-island data-blue-model>`; `hydrateIslands()` (client, `@blue/view-webcomponent`) hydrates only marked components. |
 | **Management endpoints** | Ops teams expect `/health`, `/metrics` out of the box. | Actuator-like package (`@blue/actuator` or `@blue/management`). |
 | **Dev tooling** | Component inspector, source maps for decorators, performance profiler. | Browser extension + Vite plugin. |
 

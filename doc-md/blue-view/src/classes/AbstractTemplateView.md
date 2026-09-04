@@ -17,6 +17,7 @@ Abstract base class for template-based views.
 ## Extended by
 
 - [`StringTemplateView`](StringTemplateView.md)
+- [`IslandView`](IslandView.md)
 
 ## Constructors
 

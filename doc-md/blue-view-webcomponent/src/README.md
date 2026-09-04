@@ -27,3 +27,4 @@
 
 - [AsBlueElement](functions/AsBlueElement.md)
 - [likeDOMViewTarget](functions/likeDOMViewTarget.md)
+- [hydrateIslands](functions/hydrateIslands.md)

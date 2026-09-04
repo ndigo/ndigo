@@ -14,6 +14,7 @@
 - [PathExtensionContentNegotiationStrategy](classes/PathExtensionContentNegotiationStrategy.md)
 - [ContentNegotiationManager](classes/ContentNegotiationManager.md)
 - [ContentNegotiationViewResolver](classes/ContentNegotiationViewResolver.md)
+- [IslandView](classes/IslandView.md)
 - [AbstractViewMapping](classes/AbstractViewMapping.md)
 - [AbstractPathViewMapping](classes/AbstractPathViewMapping.md)
 - [AbstractCachingViewResolver](classes/AbstractCachingViewResolver.md)
@@ -41,3 +42,5 @@
 ## Functions
 
 - [likeMediaTypeFileExtensionResolver](functions/likeMediaTypeFileExtensionResolver.md)
+- [serializeModel](functions/serializeModel.md)
+- [parseModel](functions/parseModel.md)

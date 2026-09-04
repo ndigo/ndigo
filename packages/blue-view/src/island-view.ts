@@ -1,0 +1,93 @@
+/**
+ * @author Jeff Rose
+ */
+
+import { FrameworkError } from '@blue/core';
+import { AbstractTemplateView } from './view';
+import { ViewTarget } from './view-target';
+
+/**
+ * Serializes a view model into a JSON string safe to embed in an HTML attribute.
+ *
+ * @param model - The model to serialize.
+ * @returns The JSON string with HTML entities escaped.
+ */
+export function serializeModel(model: unknown): string {
+    const json = JSON.stringify(model ?? null);
+    return json
+        .replace(/&/g, '&amp;')
+        .replace(/"/g, '&quot;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+}
+
+/**
+ * Parses a serialized island model back into a JS value.
+ *
+ * @param raw - The `data-blue-model` attribute value.
+ * @returns The parsed model, or `null` when absent/invalid.
+ */
+export function parseModel(raw: string | undefined): unknown {
+    if (!raw) return null;
+    try {
+        return JSON.parse(
+            raw.replace(/&quot;/g, '"').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&')
+        );
+    } catch {
+        return null;
+    }
+}
+
+/**
+ * A server-rendered HTML view for partial hydration ("islands").
+ *
+ * Renders an inert custom-element marker carrying the serialized view model:
+ *
+ * ```html
+ * <my-element data-blue-island data-blue-model="&quot;{...}&quot;"></my-element>
+ * ```
+ *
+ * It is fully server-safe (no `customElements`, no DOM, no component-module
+ * import): it serializes only the model into markup. On the client,
+ * `hydrateIslands()` (from `@blue/view-webcomponent`) finds the marker,
+ * constructs the element, sets `.model`, and lets `connectedCallback` run.
+ *
+ * @example
+ * ```ts
+ * return new ModelAndView(new IslandView('todo-app'), { items: [...], filter: 'all' });
+ * ```
+ *
+ * @since 1.0.0
+ */
+export class IslandView extends AbstractTemplateView {
+    /**
+     * The custom element tag name hydrated on the client.
+     */
+    readonly tagName: string;
+
+    /**
+     * Creates an island view for the given custom element tag.
+     *
+     * @param name - The custom element tag name.
+     */
+    constructor(name: string) {
+        super();
+        this.tagName = name;
+    }
+
+    /**
+     * Renders the island markup: the element tag with the serialized model.
+     *
+     * @param templateModel - The view model to serialize.
+     * @param request - The current request (unused).
+     * @param target - The view target to commit the HTML string to.
+     */
+    protected async _renderTemplate(templateModel: any, request: any, target?: ViewTarget): Promise<void> {
+        if (!target) {
+            throw new FrameworkError('IslandView requires a ViewTarget to render.');
+        }
+
+        const html = `<${this.tagName} data-blue-island data-blue-model="${serializeModel(templateModel)}"></${this.tagName}>`;
+        await target.commit(html, templateModel, request);
+    }
+}

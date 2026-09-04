@@ -24,6 +24,20 @@ export class DispatcherInstrumentation extends BaseBlueInstrumentation {
                 attributes: (_instance: any, args: any[]) => ({
                     'route.path': (args[0] as Route).path,
                 }),
+                onEnd(span, outcome, _instance, args) {
+                    const route = args[0] as Route;
+                    if (route.method) {
+                        span.setAttribute('http.method', route.method);
+                    }
+                    span.setAttribute('http.route', route.path);
+                    if (outcome.ok) {
+                        // `dispatch` resolves with void; the rendered status is
+                        // recorded by HTTPResponseViewTargetInstrumentation.
+                        span.setStatus({ code: 0 /* OK */ });
+                    } else {
+                        span.setAttribute('error.type', 'dispatch');
+                    }
+                },
             })
         );
     }

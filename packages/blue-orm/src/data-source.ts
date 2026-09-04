@@ -1,4 +1,4 @@
-/** @author opencode */
+/** @author Jeff Rose */
 
 import { IllegalStateError } from '@blue/core';
 import { Destroyable, Initializable } from '@blue/factory';
@@ -101,5 +101,34 @@ export class InMemoryDataSource implements DataSource {
      */
     clear(): void {
         this.#stores.clear();
+    }
+
+    /**
+     * Captures a deep snapshot of all entity stores (for transaction rollback).
+     *
+     * Entity instances are shallow-cloned into new Maps so restore can rewind
+     * to this exact point.
+     *
+     * @returns An opaque snapshot handle to pass to {@link restore}.
+     */
+    snapshot(): { stores: Map<string, Map<unknown, unknown>> } {
+        const stores = new Map<string, Map<unknown, unknown>>();
+        for (const [name, store] of this.#stores) {
+            stores.set(name, new Map(store));
+        }
+        return { stores };
+    }
+
+    /**
+     * Restores entity stores to a previously captured snapshot, discarding any
+     * writes made after it. Used for transaction rollback.
+     *
+     * @param snapshot - The snapshot from {@link snapshot}.
+     */
+    restore(snapshot: { stores: Map<string, Map<unknown, unknown>> }): void {
+        this.#stores = new Map<string, Map<unknown, any>>();
+        for (const [name, store] of snapshot.stores) {
+            this.#stores.set(name, new Map(store));
+        }
     }
 }

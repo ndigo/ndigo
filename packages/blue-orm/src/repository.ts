@@ -1,7 +1,9 @@
-/** @author opencode */
+/** @author Jeff Rose */
 
 import { Constructable } from '@blue/core';
 import { EntityManager } from './entity-manager';
+import { getEntityMetadata } from './metadata';
+import { parseDerivedQuery } from './derived-query-repository';
 
 /**
  * Defines the basic contract for a repository, providing common data access operations for entities.
@@ -66,6 +68,13 @@ export abstract class AbstractRepository<T extends object, ID> implements Reposi
     }
 
     /**
+     * The entity class this repository manages.
+     */
+    protected getEntityClass(): Constructable<T> {
+        return this.#entityClass;
+    }
+
+    /**
      * Saves a given entity by persisting it through the `EntityManager`.
      * @param entity - The entity to save.
      * @returns The saved entity.
@@ -127,12 +136,54 @@ export abstract class AbstractRepository<T extends object, ID> implements Reposi
 }
 
 /**
- * An in-memory implementation of a repository, extending `AbstractRepository`.
- * It uses an `InMemoryEntityManager` for data operations.
+ * Base repository with in-memory Spring Data-style derived-query support.
+ *
+ * Concrete repositories declare derived methods and delegate to {@link derive}:
+ *
+ * ```ts
+ * class AccountRepository extends InMemoryDerivedQueryRepository<Account, string> {
+ *     findByEmail(email: string): Account[] {
+ *         return this.derive('findByEmail', [email]);
+ *     }
+ * }
+ * ```
+ *
  * @template T - The type of the entity.
  * @template ID - The type of the entity's primary identifier.
  */
-export class InMemoryRepository<T extends object, ID> extends AbstractRepository<T, ID> {
+export class InMemoryDerivedQueryRepository<T extends object, ID> extends AbstractRepository<T, ID> {
+    /**
+     * Evaluates a derived-query method name against `this.findAll()`.
+     *
+     * @param methodName - The method name that was called.
+     * @param args - The method arguments (query values).
+     * @returns Matching entities.
+     * @throws {TypeError} When the method name is not a supported derived query.
+     */
+    derive(methodName: string, args: unknown[]): T[] {
+        const columns = getEntityMetadata(this.getEntityClass()).columns;
+        const filters = parseDerivedQuery(methodName, columns);
+        if (!filters) {
+            throw new TypeError(`Unsupported derived query method: ${methodName}`);
+        }
+
+        return this.findAll().filter((entity) =>
+            filters.every(({ property, valueIndex }) => {
+                const actual = (entity as Record<string, unknown>)[property];
+                return actual === args[valueIndex];
+            })
+        );
+    }
+}
+
+/**
+ * An in-memory implementation of a repository, extending `AbstractRepository`.
+ * It uses an `InMemoryEntityManager` for data operations, and supports derived
+ * queries via {@link InMemoryDerivedQueryRepository.derive}.
+ * @template T - The type of the entity.
+ * @template ID - The type of the entity's primary identifier.
+ */
+export class InMemoryRepository<T extends object, ID> extends InMemoryDerivedQueryRepository<T, ID> {
     /**
      * Creates an instance of `InMemoryRepository`.
      * @param entityClass - The constructor of the entity class this repository manages.

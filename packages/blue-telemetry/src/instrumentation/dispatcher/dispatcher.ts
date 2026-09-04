@@ -15,6 +15,14 @@ export class DispatcherInstrumentation extends BaseBlueInstrumentation {
     }
 
     enable(): void {
+        const target = (dispatcher as any).BrowserDispatcher.prototype;
+        // The decorator-mixin prototype chain does not derive from
+        // Object.prototype (its `propertyIsEnumerable` is absent), which
+        // breaks shimmer's wrap() (it calls obj.propertyIsEnumerable).
+        // Restore the Object.prototype method so instrumentation can wrap.
+        if (typeof target.propertyIsEnumerable !== 'function') {
+            target.propertyIsEnumerable = Object.prototype.propertyIsEnumerable;
+        }
         this._wrap(
             (dispatcher as any).BrowserDispatcher.prototype,
             'dispatch',

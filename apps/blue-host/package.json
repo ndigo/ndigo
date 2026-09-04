@@ -1,0 +1,38 @@
+{
+  "name": "@blue/host",
+  "version": "0.0.1",
+  "description": "Blue Micro Frontend Host \u2014 shell with lazy-loaded feature chunks",
+  "type": "module",
+  "private": true,
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "dependencies": {
+    "@blue/context": "~0.0.1",
+    "@blue/core": "~0.0.1",
+    "@blue/dispatcher": "~0.0.1",
+    "@blue/platform-web": "~0.0.1",
+    "@blue/router": "~0.0.1",
+    "@blue/util": "~0.0.1",
+    "@blue/view": "~0.0.1",
+    "@blue/view-webcomponent": "~0.0.1"
+  },
+  "devDependencies": {
+    "@blue/context": "~0.0.1",
+    "@blue/core": "~0.0.1",
+    "@blue/dispatcher": "~0.0.1",
+    "@blue/platform-web": "~0.0.1",
+    "@blue/router": "~0.0.1",
+    "@blue/util": "~0.0.1",
+    "@blue/view": "~0.0.1",
+    "@blue/view-webcomponent": "~0.0.1",
+    "vite": "~6.0.7"
+  }
+}

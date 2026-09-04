@@ -22,7 +22,7 @@
     "build:todomvc": "nx run @blue/todomvc:build:lib",
     "test": "nx run-many -t test",
     "test:bench": "vitest bench --run --reporter verbose",
-    "test:e2e": "nx run @blue/demo:test:e2e",
+    "test:e2e": "nx run @blue/todo:test:e2e",
     "lint": "oxlint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",

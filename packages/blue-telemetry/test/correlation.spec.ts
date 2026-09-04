@@ -1,7 +1,10 @@
 // @vitest-environment node
 import { describe, test, expect, beforeAll, afterAll } from 'vitest';
 import { BasicTracerProvider, InMemorySpanExporter, SimpleSpanProcessor } from '@opentelemetry/sdk-trace-base';
+import { AsyncHooksContextManager } from '@opentelemetry/context-async-hooks';
+import { context as otelContext } from '@opentelemetry/api';
 import { HTTPServerInstrumentation } from '../src/instrumentation/http-server/http-server';
+import { DispatcherInstrumentation } from '../src/instrumentation/dispatcher/dispatcher';
 import { getMapping, LinearMetadataHandlerMapping } from '@blue/dispatcher';
 import { MetadataConfigApplicationContext } from '@blue/context';
 import { NodeAutoConfiguration, NodeDispatcher, HTTPServer } from '@blue/platform-node';
@@ -29,6 +32,10 @@ describe('telemetry request→dispatch correlation (real HTTP)', () => {
 
     beforeAll(async () => {
         exporter = new InMemorySpanExporter();
+        const contextManager = new AsyncHooksContextManager();
+        contextManager.enable();
+        otelContext.setGlobalContextManager(contextManager);
+
         const provider = new BasicTracerProvider();
         provider.addSpanProcessor(new SimpleSpanProcessor(exporter));
         provider.register();
@@ -36,10 +43,12 @@ describe('telemetry request→dispatch correlation (real HTTP)', () => {
         const serverInstr = new HTTPServerInstrumentation();
         serverInstr.setTracerProvider(provider);
         serverInstr.enable();
-        // NOTE: DispatcherInstrumentation._wrap on BrowserDispatcher.prototype
-        // fails (shimmer needs obj.propertyIsEnumerable, absent on the mixin
-        // Proxy prototype) — a pre-existing wrap bug tracked separately. The
-        // request span below is the correlation root this test proves.
+
+        const dispatcherInstr = new DispatcherInstrumentation();
+        dispatcherInstr.setTracerProvider(provider);
+        // Regression: wrapping the BrowserDispatcher mixin prototype used to
+        // throw (shimmer's obj.propertyIsEnumerable absent). Must enable cleanly.
+        dispatcherInstr.enable();
 
         // Boot a real HTTP server through the node pipeline (the request span
         // fires on NodeHTTPServerAdapter.handleRequest, which MockMVC bypasses).
@@ -66,16 +75,28 @@ describe('telemetry request→dispatch correlation (real HTTP)', () => {
         await server?.close();
     });
 
-    test('a real request produces an http-server request span with HTTP attrs', async () => {
+    test('a real request produces request+dispatch spans with HTTP/OTel attrs', async () => {
         const res = await fetch(`${base}/`);
         expect(res.status).toBe(200);
 
         const spans = exporter.getFinishedSpans();
         const requestSpans = spans.filter((s) => s.name === 'HTTPServer.handleRequest');
+        const dispatchSpans = spans.filter((s) => s.name === 'Dispatcher.dispatch');
 
+        // Request-root span (regression: previously the dispatch instrumentation
+        // could not even wrap the mixin prototype; both must now emit).
         expect(requestSpans.length).toBeGreaterThan(0);
         const requestSpan = requestSpans[requestSpans.length - 1]!;
         expect(requestSpan.attributes['http.request.method']).toBe('GET');
         expect(requestSpan.attributes['http.route']).toBe('/');
+
+        // Dispatch span emitted with route/method attrs and nested under the
+        // request span (trace correlation).
+        expect(dispatchSpans.length).toBeGreaterThan(0);
+        const dispatchSpan = dispatchSpans[dispatchSpans.length - 1]!;
+        expect(dispatchSpan.spanContext().traceId).toBe(requestSpan.spanContext().traceId);
+        expect(dispatchSpan.parentSpanId).toBe(requestSpan.spanContext().spanId);
+        expect(dispatchSpan.attributes['http.route']).toBe('/');
+        expect(dispatchSpan.attributes['http.method']).toBe('GET');
     });
 });

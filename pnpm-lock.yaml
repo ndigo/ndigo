@@ -892,6 +892,9 @@ importers:
       '@blue/router':
         specifier: ~0.0.1
         version: link:../blue-router
+      '@opentelemetry/context-async-hooks':
+        specifier: ~1.25.1
+        version: 1.25.1(@opentelemetry/api@1.9.1)
 
   packages/blue-test:
     dependencies:

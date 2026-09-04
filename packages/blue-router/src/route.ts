@@ -1,4 +1,5 @@
 import { JSONObject, Serializable } from '@blue/core';
+import type { HTTPMethod } from '@blue/http';
 
 /**
  * Represents a single segment within a route, including its name, associated data, and raw string value.
@@ -25,6 +26,7 @@ export interface Route<TParams extends Record<string, string> = Record<string, s
     data: JSONObject;
     dataString?: string;
     id: number;
+    method?: HTTPMethod;
     params: TParams | null;
     path: string;
     raw: string;

@@ -1,6 +1,7 @@
 import { RouteSegment, Route } from './route';
 import { JSONValue, Serializable, JSONObject, createNull } from '@blue/core';
 import { isNil } from '@blue/util/types';
+import type { HTTPMethod } from '@blue/http';
 import { QueryString, MatrixString } from '@blue/http';
 
 const questionMark = '?',
@@ -147,6 +148,7 @@ export class PathRoute implements Route<Record<string, string>>, Serializable {
     readonly data!: JSONObject;
     readonly dataString?: string;
     readonly id!: number;
+    method?: HTTPMethod;
     params!: Record<string, string> | null;
     readonly path!: string;
     readonly raw!: string;

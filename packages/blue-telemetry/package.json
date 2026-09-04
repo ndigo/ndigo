@@ -16,8 +16,8 @@
       "default": "./lib/browser-config.js"
     },
     "./node": {
-      "types": "./lib/node-config.d.ts",
-      "default": "./lib/node-config.js"
+      "types": "./lib/node.d.ts",
+      "default": "./lib/node.js"
     }
   },
   "types": "lib/index.d.ts",
@@ -62,13 +62,15 @@
     "@blue/context": "~0.0.1",
     "@blue/router": "~0.0.1",
     "@blue/dispatcher": "~0.0.1",
-    "@blue/platform-web": "~0.0.1"
+    "@blue/platform-web": "~0.0.1",
+    "@blue/platform-node": "~0.0.1"
   },
   "peerDependencies": {
     "@blue/core": "~0.0.1",
     "@blue/context": "~0.0.1",
     "@blue/router": "~0.0.1",
     "@blue/dispatcher": "~0.0.1",
-    "@blue/platform-web": "~0.0.1"
+    "@blue/platform-web": "~0.0.1",
+    "@blue/platform-node": "~0.0.1"
   }
 }

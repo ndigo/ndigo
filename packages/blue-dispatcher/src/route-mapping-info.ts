@@ -13,6 +13,7 @@ import {
     likeRouteCondition,
 } from './route-condition';
 import { AccessControlCondition } from './access-control-condition';
+import { HTTPMethodCondition } from './http-method-condition';
 
 const { defineProperty } = Reflect,
     { isArray } = Array,
@@ -732,6 +733,11 @@ export class RouteMappingInfo implements RouteCondition<RouteMappingInfo> {
     readonly matrixCondition!: MatrixParamCondition;
 
     /**
+     * HTTP method matching condition (any method when empty).
+     */
+    readonly methodCondition!: HTTPMethodCondition;
+
+    /**
      * Custom condition wrapper.
      */
     readonly customConditionHolder!: RouteConditionHolder;
@@ -757,12 +763,14 @@ export class RouteMappingInfo implements RouteCondition<RouteMappingInfo> {
         params: QueryParamCondition = new QueryParamCondition(),
         matrix: MatrixParamCondition = new MatrixParamCondition(),
         custom: RouteCondition<any> | null = null,
-        access: AccessControlCondition | null = null
+        access: AccessControlCondition | null = null,
+        method: HTTPMethodCondition = new HTTPMethodCondition()
     ) {
         this.name = name || '';
         this.patternsCondition = patterns;
         this.queryCondition = params;
         this.matrixCondition = matrix;
+        this.methodCondition = method;
         this.customConditionHolder = new RouteConditionHolder(custom);
         this.accessCondition = access;
     }
@@ -778,7 +786,8 @@ export class RouteMappingInfo implements RouteCondition<RouteMappingInfo> {
             params = this.queryCondition.merge(value.queryCondition),
             matrix = this.matrixCondition.merge(value.matrixCondition),
             patterns = this.patternsCondition.merge(value.patternsCondition),
-            custom = this.customConditionHolder.merge(value.customConditionHolder);
+            custom = this.customConditionHolder.merge(value.customConditionHolder),
+            method = this.methodCondition.merge(value.methodCondition);
 
         // Merge access conditions: the most restrictive level wins (private > public).
         const mergedAccess =
@@ -786,7 +795,7 @@ export class RouteMappingInfo implements RouteCondition<RouteMappingInfo> {
                 ? this.accessCondition.merge(value.accessCondition)
                 : this.accessCondition ?? value.accessCondition;
 
-        return new RouteMappingInfo(name, patterns, params, matrix, custom.condition, mergedAccess);
+        return new RouteMappingInfo(name, patterns, params, matrix, custom.condition, mergedAccess, method);
     }
 
     /**
@@ -797,7 +806,7 @@ export class RouteMappingInfo implements RouteCondition<RouteMappingInfo> {
      */
     getMatchingCondition(route: Route): RouteMappingInfo | null {
         // Check patterns first — most discriminating filter, eliminates non-matching
-        // routes before the cheaper param/matrix checks run.
+        // routes before the cheaper param/matrix/method checks run.
         const patterns = this.patternsCondition.getMatchingCondition(route);
         if (!patterns) {
             return null;
@@ -810,6 +819,11 @@ export class RouteMappingInfo implements RouteCondition<RouteMappingInfo> {
 
         const matrix = this.matrixCondition.getMatchingCondition(route);
         if (!matrix) {
+            return null;
+        }
+
+        const method = this.methodCondition.getMatchingCondition(route);
+        if (!method) {
             return null;
         }
 
@@ -826,11 +840,11 @@ export class RouteMappingInfo implements RouteCondition<RouteMappingInfo> {
             }
             return new RouteMappingInfo(
                 this.name, patterns, params, matrix, custom.condition,
-                accessMatch
+                accessMatch, method
             );
         }
 
-        return new RouteMappingInfo(this.name, patterns, params, matrix, custom.condition);
+        return new RouteMappingInfo(this.name, patterns, params, matrix, custom.condition, null, method);
     }
 
     /**
@@ -849,6 +863,12 @@ export class RouteMappingInfo implements RouteCondition<RouteMappingInfo> {
         }
 
         result = this.matrixCondition.compareTo(value.matrixCondition, route);
+        if (result !== 0) {
+            return result;
+        }
+
+        // A method-specific mapping wins over an any-method mapping on the same path.
+        result = this.methodCondition.compareTo(value.methodCondition, route);
         if (result !== 0) {
             return result;
         }

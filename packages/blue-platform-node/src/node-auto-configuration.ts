@@ -3,7 +3,9 @@
  */
 
 import { configuration, entry } from '@blue/context';
-import { LinearMetadataHandlerMapping } from '@blue/dispatcher';
+import { conditionalOnNode } from '@blue/core';
+import { RadixMetadataHandlerMapping } from '@blue/dispatcher';
+import { NodeDispatcher } from './node-dispatcher';
 import { argumentValueConverters } from './argument-value-converter';
 import { NodeQueryValueMethodArgumentResolver } from './query-argument-resolver';
 import { NodePathValueMethodArgumentResolver } from './path-argument-resolver';
@@ -12,20 +14,14 @@ import { NodeBodyValueMethodArgumentResolver } from './body-argument-resolver';
 import { NodeCookieValueMethodArgumentResolver } from './cookie-argument-resolver';
 import { NodeSessionValueMethodArgumentResolver } from './session-argument-resolver';
 
-/** Matches @ConditionalOnNode from @blue/boot — marks this config as Node-only. */
-function nodeOnly(target: any, context: ClassDecoratorContext): any {
-    context.metadata['boot:conditionalOn'] = 'node';
-    return target;
-}
-
 /**
  * Auto-configuration for Node.js-based applications.
- * Provisions Node.js argument resolvers and converter registries.
+ * Provisions Node.js argument resolvers, a dispatcher, and an HTTP server.
  *
  * Register this configuration class with your {@link ApplicationContext} alongside
- * {@link NodeEnvironment} to enable full server-side argument resolution.
+ * {@link NodeEnvironment} to enable full server-side request handling.
  */
-@nodeOnly
+@conditionalOnNode
 @configuration
 export class NodeAutoConfiguration {
     /**
@@ -62,6 +58,16 @@ export class NodeAutoConfiguration {
      */
     @entry
     handlerMapping() {
-        return new LinearMetadataHandlerMapping();
+        return new RadixMetadataHandlerMapping();
+    }
+
+    /**
+     * Creates the Node dispatcher used for server-side request dispatch and rendering.
+     *
+     * @returns The Node dispatcher.
+     */
+    @entry
+    dispatcher() {
+        return new NodeDispatcher();
     }
 }

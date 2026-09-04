@@ -9,6 +9,8 @@ import { Route } from '@blue/router';
  * Middleware must place a {@link NodeRequest} at this key before dispatching.
  */
 export const NODE_REQUEST_ATTRIBUTE = '__node:request';
+/** Well-known route attribute key under which the Node.js ServerResponse is stored. */
+export const NODE_RESPONSE_ATTRIBUTE = '__node:response';
 
 /**
  * Minimal Node.js request abstraction stored in `route.attributes[NODE_REQUEST_ATTRIBUTE]`.

@@ -53,7 +53,7 @@ pnpm lint
 
 ## Applications
 
-- [blue-demo](apps/blue-demo/README.md)
+- [blue-todo](apps/blue-todo/README.md)
 
 ## Packages
 

@@ -49,7 +49,8 @@ export class RegistryProxyHandler<T extends Registry> implements ProxyHandler<T>
     }
 
     get<U = any>(target: T, key: PropertyKey): U {
-        return target.getValue<U>(key as string);
+        const value = target.getValue<U>(key as string);
+        return typeof value === 'function' ? (value as Function).bind(target) as U : value;
     }
 
     has(target: T, key: PropertyKey): boolean {

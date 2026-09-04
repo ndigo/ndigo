@@ -61,6 +61,9 @@ or plain `@getMapping` controller classes (stored by class name).
 - **`bootApp(sources: Function[]): BlueTestApp`** — boots a real
   `MetadataConfigApplicationContext` with `NodeAutoConfiguration`, wires the
   handler mapping + dispatcher. Returns `{ context, dispatcher, close }`.
+- **`cachedBootApp(sources)` / `releaseCachedApp(sources)`** — same-sources
+  dedupe within a worker: multiple suites booting the same sources share one
+  context (ref-counted; released via `releaseCachedApp` or `app.close()`).
 - **`MockMVC(dispatcher | app)`** — socket-free request client. Methods
   `get/post/put/delete/patch/query`, then fluent `.query()/.body()/.headers()/
   .cookies()/.session()`, then `.exec()` → `MockResult`.
@@ -79,9 +82,18 @@ socket, no process, no port**.
 
 ## Not included
 
-- No browser (use Playwright for E2E).
+- No browser for `MockMVC` (use Playwright for E2E; `BrowserMockMVC` for jsdom).
 - No real listener by default (`live: true` is a future mode).
 - No assertion library — MockMVC returns shaped values for Vitest's `expect`.
+
+## Test-strategy notes (blue-todo)
+
+- Controller/pipeline tests run through the harness (`browser-controller`,
+  `index-controller`, `composed-runtime`, `shell-composition`) — no stubbed
+  `ApplicationContext`.
+- `todo-service.spec.ts` intentionally mocks the context with `vi.fn` spies:
+  it asserts `TodoService`'s collaboration contract (event subscribe/unsubscribe,
+  refresh-on-change) at the unit level, which a harness-dispatch test cannot observe.
 
 ## Package layout
 

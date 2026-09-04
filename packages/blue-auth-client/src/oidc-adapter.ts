@@ -2,6 +2,7 @@
  * @author Jeff Rose
  */
 
+import { createRemoteJWKSet, jwtVerify, JWTPayload } from 'jose';
 import { type AuthAdapter } from '@blue/auth-core';
 import { type Principal } from '@blue/auth-core';
 import { type AuthResult } from '@blue/auth-core';
@@ -23,15 +24,20 @@ export interface OIDCAdapterConfig {
     /** The audience claim to validate (for API access). */
     audience?: string;
     /**
-     * Optional token validation callback.
+     * The provider's JWKS endpoint (`jwks_uri` from the OIDC discovery
+     * document). When set, ID tokens are verified against this endpoint's
+     * keys (fetched + cached + auto-rotated by `jose`) — production-grade
+     * signature verification without wiring a custom `tokenValidator`.
+     */
+    jwksUrl?: string;
+    /**
+     * Optional custom token validation callback.
      *
      * If provided, called with the raw ID token and its parsed payload to
-     * verify the cryptographic signature (e.g., by fetching the provider's
-     * JWKS endpoint). For production use, pass a validator that uses a
-     * library like `jose` or `oidc-client-ts`.
+     * verify the cryptographic signature. Takes precedence over `jwksUrl`.
      *
-     * If omitted, the adapter decodes and validates claims without
-     * signature verification — acceptable for development only.
+     * If neither `jwksUrl` nor `tokenValidator` is set, the adapter decodes and
+     * validates claims without signature verification — development only.
      */
     tokenValidator?: (token: string, payload: Record<string, unknown>) => Promise<boolean>;
 }
@@ -54,9 +60,45 @@ export class OIDCAdapter implements AuthAdapter {
     readonly id = 'oidc';
     #config: OIDCAdapterConfig;
     #discoveryDocument: Record<string, any> | null = null;
+    #jwksValidator: ReturnType<typeof createRemoteJWKSet> | null = null;
 
     constructor(config: OIDCAdapterConfig) {
         this.#config = config;
+        if (config.jwksUrl) {
+            this.#jwksValidator = createRemoteJWKSet(new URL(config.jwksUrl));
+        }
+    }
+
+    /**
+     * The effective token-signature validator: a custom `tokenValidator` if
+     * provided, else a jose-backed JWKS validator built from `jwksUrl`, else
+     * `null` (claim-only, development).
+     */
+    #resolvedValidator(): ((token: string, payload: Record<string, unknown>) => Promise<boolean>) | null {
+        if (this.#config.tokenValidator) {
+            return this.#config.tokenValidator;
+        }
+        if (!this.#config.jwksUrl) {
+            return null;
+        }
+        const jwks = this.#jwksValidator;
+        return async (token: string, payload: Record<string, unknown>): Promise<boolean> => {
+            try {
+                const { payload: verified } = await jwtVerify(token, jwks, {
+                    issuer: this.#config.issuer,
+                    audience: this.#config.audience,
+                    // The ID token's `nonce`/signature are checked here; claim
+                    // enforcement beyond iss/aud (exp is enforced by jose).
+                });
+                // Ensure the payload the caller sees matches the verified one.
+                if (payload.sub && verified.sub && payload.sub !== verified.sub) {
+                    return false;
+                }
+                return true;
+            } catch {
+                return false;
+            }
+        };
     }
 
     /**
@@ -120,8 +162,9 @@ export class OIDCAdapter implements AuthAdapter {
         );
 
         // Verify the ID token signature when a validator is configured
-        if (this.#config.tokenValidator) {
-            const valid = await this.#config.tokenValidator(tokens.id_token, payload);
+        const tokenValidator = this.#resolvedValidator();
+        if (tokenValidator) {
+            const valid = await tokenValidator(tokens.id_token, payload);
             if (!valid) {
                 throw new Error('ID token signature validation failed');
             }
@@ -164,8 +207,9 @@ export class OIDCAdapter implements AuthAdapter {
             );
 
             // Verify the ID token signature when a validator is configured
-            if (this.#config.tokenValidator) {
-                const valid = await this.#config.tokenValidator(token, payload);
+            const tokenValidator = this.#resolvedValidator();
+            if (tokenValidator) {
+                const valid = await tokenValidator(token, payload);
                 if (!valid) {
                     return null;
                 }

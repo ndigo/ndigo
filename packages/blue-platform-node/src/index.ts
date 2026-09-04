@@ -22,3 +22,4 @@ export * from './node-view-target';
 export * from './response-entity';
 export * from './response-entity-view';
 export * from './static-file-view';
+export * from './csrf-interceptor';

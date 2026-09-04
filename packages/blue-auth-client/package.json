@@ -20,5 +20,8 @@
     "build:lib": "tsc -b tsconfig.build.json",
     "test": "vitest run",
     "test:watch": "vitest"
+  },
+  "dependencies": {
+    "jose": "^5.10.0"
   }
 }

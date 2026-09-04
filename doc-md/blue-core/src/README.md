@@ -130,6 +130,7 @@
 - [shared](functions/shared.md)
 - [getSharedOptions](functions/getSharedOptions.md)
 - [isShared](functions/isShared.md)
+- [satisfiesVersion](functions/satisfiesVersion.md)
 - [direct](functions/direct.md)
 - [escalate](functions/escalate.md)
 - [indexOf](functions/indexOf.md)

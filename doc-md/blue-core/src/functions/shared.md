@@ -8,7 +8,7 @@
 
 > **shared**(`options?`): (`target`, `context`) => `Function`
 
-Defined in: packages/blue-core/src/shared.ts:34
+Defined in: packages/blue-core/src/shared.ts:35
 
 Class decorator that marks a bean as a shell-managed shared dependency.
 

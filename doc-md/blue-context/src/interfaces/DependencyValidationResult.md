@@ -6,7 +6,7 @@
 
 # Interface: DependencyValidationResult
 
-Defined in: packages/blue-context/src/shared-dependency-registry.ts:27
+Defined in: packages/blue-context/src/shared-dependency-registry.ts:25
 
 Result of validating a feature's dependency manifest against the registry.
 
@@ -16,7 +16,7 @@ Result of validating a feature's dependency manifest against the registry.
 
 > **valid**: `boolean`
 
-Defined in: packages/blue-context/src/shared-dependency-registry.ts:28
+Defined in: packages/blue-context/src/shared-dependency-registry.ts:26
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: packages/blue-context/src/shared-dependency-registry.ts:28
 
 > **missing**: `string`[]
 
-Defined in: packages/blue-context/src/shared-dependency-registry.ts:29
+Defined in: packages/blue-context/src/shared-dependency-registry.ts:27
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: packages/blue-context/src/shared-dependency-registry.ts:29
 
 > **versionMismatches**: `object`[]
 
-Defined in: packages/blue-context/src/shared-dependency-registry.ts:30
+Defined in: packages/blue-context/src/shared-dependency-registry.ts:28
 
 #### name
 
@@ -52,4 +52,4 @@ Defined in: packages/blue-context/src/shared-dependency-registry.ts:30
 
 > **warnings**: `string`[]
 
-Defined in: packages/blue-context/src/shared-dependency-registry.ts:31
+Defined in: packages/blue-context/src/shared-dependency-registry.ts:29

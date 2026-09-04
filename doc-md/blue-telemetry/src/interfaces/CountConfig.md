@@ -6,7 +6,7 @@
 
 # Interface: CountConfig
 
-Defined in: packages/blue-telemetry/src/instrumentation/base.ts:19
+Defined in: packages/blue-telemetry/src/instrumentation/base.ts:35
 
 Configuration for counter instrumentation.
 
@@ -16,7 +16,7 @@ Configuration for counter instrumentation.
 
 > **name**: `string`
 
-Defined in: packages/blue-telemetry/src/instrumentation/base.ts:21
+Defined in: packages/blue-telemetry/src/instrumentation/base.ts:37
 
 The name of the counter.
 
@@ -26,6 +26,6 @@ The name of the counter.
 
 > `optional` **attributes?**: `Record`\<`string`, `any`\>
 
-Defined in: packages/blue-telemetry/src/instrumentation/base.ts:23
+Defined in: packages/blue-telemetry/src/instrumentation/base.ts:39
 
 Optional attributes to associate with the counter.

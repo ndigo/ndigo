@@ -11,6 +11,7 @@
 - [InMemoryDataSource](classes/InMemoryDataSource.md)
 - [InMemoryEntityManager](classes/InMemoryEntityManager.md)
 - [AbstractRepository](classes/AbstractRepository.md)
+- [InMemoryDerivedQueryRepository](classes/InMemoryDerivedQueryRepository.md)
 - [InMemoryRepository](classes/InMemoryRepository.md)
 - [InMemoryTransactionManager](classes/InMemoryTransactionManager.md)
 - [InMemoryUnitOfWork](classes/InMemoryUnitOfWork.md)
@@ -30,6 +31,7 @@
 
 ## Type Aliases
 
+- [DerivedQueryResult](type-aliases/DerivedQueryResult.md)
 - [RelationKind](type-aliases/RelationKind.md)
 - [LifecycleEvent](type-aliases/LifecycleEvent.md)
 - [EntityState](type-aliases/EntityState.md)
@@ -49,5 +51,6 @@
 - [preUpdate](functions/preUpdate.md)
 - [postRemove](functions/postRemove.md)
 - [transactional](functions/transactional.md)
+- [parseDerivedQuery](functions/parseDerivedQuery.md)
 - [isEntity](functions/isEntity.md)
 - [getEntityMetadata](functions/getEntityMetadata.md)

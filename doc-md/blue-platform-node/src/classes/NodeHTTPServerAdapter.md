@@ -108,3 +108,25 @@ Stop the server gracefully.
 #### Implementation of
 
 [`HTTPServerAdapter`](../interfaces/HTTPServerAdapter.md).[`close`](../interfaces/HTTPServerAdapter.md#close)
+
+***
+
+### handleRequest()
+
+> **handleRequest**(`req`, `res`): `Promise`\<`void`\>
+
+Defined in: packages/blue-platform-node/src/node-http-server-adapter.ts:59
+
+#### Parameters
+
+##### req
+
+`IncomingMessage`
+
+##### res
+
+`ServerResponse`
+
+#### Returns
+
+`Promise`\<`void`\>

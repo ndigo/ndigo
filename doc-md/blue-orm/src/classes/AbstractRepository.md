@@ -6,14 +6,14 @@
 
 # Abstract Class: AbstractRepository\<T, ID\>
 
-Defined in: packages/blue-orm/src/repository.ts:54
+Defined in: packages/blue-orm/src/repository.ts:56
 
 An abstract base class for implementing the `Repository` interface.
 Provides common functionality for interacting with an `EntityManager`.
 
 ## Extended by
 
-- [`InMemoryRepository`](InMemoryRepository.md)
+- [`InMemoryDerivedQueryRepository`](InMemoryDerivedQueryRepository.md)
 
 ## Type Parameters
 
@@ -39,7 +39,7 @@ The type of the entity's primary identifier.
 
 > **new AbstractRepository**\<`T`, `ID`\>(`entityClass`, `entityManager`): `AbstractRepository`\<`T`, `ID`\>
 
-Defined in: packages/blue-orm/src/repository.ts:63
+Defined in: packages/blue-orm/src/repository.ts:65
 
 Creates an instance of `AbstractRepository`.
 
@@ -63,11 +63,25 @@ The `EntityManager` to use for data operations.
 
 ## Methods
 
+### getEntityClass()
+
+> `protected` **getEntityClass**(): `Constructable`\<`T`\>
+
+Defined in: packages/blue-orm/src/repository.ts:73
+
+The entity class this repository manages.
+
+#### Returns
+
+`Constructable`\<`T`\>
+
+***
+
 ### save()
 
 > **save**(`entity`): `T`
 
-Defined in: packages/blue-orm/src/repository.ts:73
+Defined in: packages/blue-orm/src/repository.ts:82
 
 Saves a given entity by persisting it through the `EntityManager`.
 
@@ -95,7 +109,7 @@ The saved entity.
 
 > **findById**(`id`): `T` \| `undefined`
 
-Defined in: packages/blue-orm/src/repository.ts:83
+Defined in: packages/blue-orm/src/repository.ts:92
 
 Retrieves an entity by its ID using the `EntityManager`.
 
@@ -123,7 +137,7 @@ The entity with the given ID or `undefined` if not found.
 
 > **findAll**(): `T`[]
 
-Defined in: packages/blue-orm/src/repository.ts:91
+Defined in: packages/blue-orm/src/repository.ts:100
 
 Retrieves all entities of the managed type using the `EntityManager`.
 
@@ -143,7 +157,7 @@ An array containing all entities.
 
 > **deleteById**(`id`): `boolean`
 
-Defined in: packages/blue-orm/src/repository.ts:100
+Defined in: packages/blue-orm/src/repository.ts:109
 
 Deletes an entity by its ID. It first finds the entity and then removes it via the `EntityManager`.
 
@@ -171,7 +185,7 @@ The ID of the entity to delete.
 
 > **count**(): `number`
 
-Defined in: packages/blue-orm/src/repository.ts:115
+Defined in: packages/blue-orm/src/repository.ts:124
 
 Returns the number of entities available by fetching all and counting them.
 
@@ -191,7 +205,7 @@ The total number of entities.
 
 > **existsById**(`id`): `boolean`
 
-Defined in: packages/blue-orm/src/repository.ts:124
+Defined in: packages/blue-orm/src/repository.ts:133
 
 Checks if an entity with the given ID exists by attempting to find it.
 

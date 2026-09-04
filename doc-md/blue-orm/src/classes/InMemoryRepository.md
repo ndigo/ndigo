@@ -6,14 +6,15 @@
 
 # Class: InMemoryRepository\<T, ID\>
 
-Defined in: packages/blue-orm/src/repository.ts:135
+Defined in: packages/blue-orm/src/repository.ts:186
 
 An in-memory implementation of a repository, extending `AbstractRepository`.
-It uses an `InMemoryEntityManager` for data operations.
+It uses an `InMemoryEntityManager` for data operations, and supports derived
+queries via [InMemoryDerivedQueryRepository.derive](InMemoryDerivedQueryRepository.md#derive).
 
 ## Extends
 
-- [`AbstractRepository`](AbstractRepository.md)\<`T`, `ID`\>
+- [`InMemoryDerivedQueryRepository`](InMemoryDerivedQueryRepository.md)\<`T`, `ID`\>
 
 ## Type Parameters
 
@@ -35,7 +36,7 @@ The type of the entity's primary identifier.
 
 > **new InMemoryRepository**\<`T`, `ID`\>(`entityClass`, `entityManager`): `InMemoryRepository`\<`T`, `ID`\>
 
-Defined in: packages/blue-orm/src/repository.ts:141
+Defined in: packages/blue-orm/src/repository.ts:192
 
 Creates an instance of `InMemoryRepository`.
 
@@ -59,15 +60,33 @@ The `EntityManager` to use for data operations.
 
 #### Overrides
 
-[`AbstractRepository`](AbstractRepository.md).[`constructor`](AbstractRepository.md#constructor)
+[`InMemoryDerivedQueryRepository`](InMemoryDerivedQueryRepository.md).[`constructor`](InMemoryDerivedQueryRepository.md#constructor)
 
 ## Methods
+
+### getEntityClass()
+
+> `protected` **getEntityClass**(): `Constructable`\<`T`\>
+
+Defined in: packages/blue-orm/src/repository.ts:73
+
+The entity class this repository manages.
+
+#### Returns
+
+`Constructable`\<`T`\>
+
+#### Inherited from
+
+[`InMemoryDerivedQueryRepository`](InMemoryDerivedQueryRepository.md).[`getEntityClass`](InMemoryDerivedQueryRepository.md#getentityclass)
+
+***
 
 ### save()
 
 > **save**(`entity`): `T`
 
-Defined in: packages/blue-orm/src/repository.ts:73
+Defined in: packages/blue-orm/src/repository.ts:82
 
 Saves a given entity by persisting it through the `EntityManager`.
 
@@ -87,7 +106,7 @@ The saved entity.
 
 #### Inherited from
 
-[`AbstractRepository`](AbstractRepository.md).[`save`](AbstractRepository.md#save)
+[`InMemoryDerivedQueryRepository`](InMemoryDerivedQueryRepository.md).[`save`](InMemoryDerivedQueryRepository.md#save)
 
 ***
 
@@ -95,7 +114,7 @@ The saved entity.
 
 > **findById**(`id`): `T` \| `undefined`
 
-Defined in: packages/blue-orm/src/repository.ts:83
+Defined in: packages/blue-orm/src/repository.ts:92
 
 Retrieves an entity by its ID using the `EntityManager`.
 
@@ -115,7 +134,7 @@ The entity with the given ID or `undefined` if not found.
 
 #### Inherited from
 
-[`AbstractRepository`](AbstractRepository.md).[`findById`](AbstractRepository.md#findbyid)
+[`InMemoryDerivedQueryRepository`](InMemoryDerivedQueryRepository.md).[`findById`](InMemoryDerivedQueryRepository.md#findbyid)
 
 ***
 
@@ -123,7 +142,7 @@ The entity with the given ID or `undefined` if not found.
 
 > **findAll**(): `T`[]
 
-Defined in: packages/blue-orm/src/repository.ts:91
+Defined in: packages/blue-orm/src/repository.ts:100
 
 Retrieves all entities of the managed type using the `EntityManager`.
 
@@ -135,7 +154,7 @@ An array containing all entities.
 
 #### Inherited from
 
-[`AbstractRepository`](AbstractRepository.md).[`findAll`](AbstractRepository.md#findall)
+[`InMemoryDerivedQueryRepository`](InMemoryDerivedQueryRepository.md).[`findAll`](InMemoryDerivedQueryRepository.md#findall)
 
 ***
 
@@ -143,7 +162,7 @@ An array containing all entities.
 
 > **deleteById**(`id`): `boolean`
 
-Defined in: packages/blue-orm/src/repository.ts:100
+Defined in: packages/blue-orm/src/repository.ts:109
 
 Deletes an entity by its ID. It first finds the entity and then removes it via the `EntityManager`.
 
@@ -163,7 +182,7 @@ The ID of the entity to delete.
 
 #### Inherited from
 
-[`AbstractRepository`](AbstractRepository.md).[`deleteById`](AbstractRepository.md#deletebyid)
+[`InMemoryDerivedQueryRepository`](InMemoryDerivedQueryRepository.md).[`deleteById`](InMemoryDerivedQueryRepository.md#deletebyid)
 
 ***
 
@@ -171,7 +190,7 @@ The ID of the entity to delete.
 
 > **count**(): `number`
 
-Defined in: packages/blue-orm/src/repository.ts:115
+Defined in: packages/blue-orm/src/repository.ts:124
 
 Returns the number of entities available by fetching all and counting them.
 
@@ -183,7 +202,7 @@ The total number of entities.
 
 #### Inherited from
 
-[`AbstractRepository`](AbstractRepository.md).[`count`](AbstractRepository.md#count)
+[`InMemoryDerivedQueryRepository`](InMemoryDerivedQueryRepository.md).[`count`](InMemoryDerivedQueryRepository.md#count)
 
 ***
 
@@ -191,7 +210,7 @@ The total number of entities.
 
 > **existsById**(`id`): `boolean`
 
-Defined in: packages/blue-orm/src/repository.ts:124
+Defined in: packages/blue-orm/src/repository.ts:133
 
 Checks if an entity with the given ID exists by attempting to find it.
 
@@ -211,4 +230,42 @@ The ID of the entity to check.
 
 #### Inherited from
 
-[`AbstractRepository`](AbstractRepository.md).[`existsById`](AbstractRepository.md#existsbyid)
+[`InMemoryDerivedQueryRepository`](InMemoryDerivedQueryRepository.md).[`existsById`](InMemoryDerivedQueryRepository.md#existsbyid)
+
+***
+
+### derive()
+
+> **derive**(`methodName`, `args`): `T`[]
+
+Defined in: packages/blue-orm/src/repository.ts:163
+
+Evaluates a derived-query method name against `this.findAll()`.
+
+#### Parameters
+
+##### methodName
+
+`string`
+
+The method name that was called.
+
+##### args
+
+`unknown`[]
+
+The method arguments (query values).
+
+#### Returns
+
+`T`[]
+
+Matching entities.
+
+#### Throws
+
+When the method name is not a supported derived query.
+
+#### Inherited from
+
+[`InMemoryDerivedQueryRepository`](InMemoryDerivedQueryRepository.md).[`derive`](InMemoryDerivedQueryRepository.md#derive)

@@ -1,5 +1,5 @@
 /**
- * @author opencode
+ * @author Jeff Rose
  *
  * Benchmark suite for ApplicationContext bean lookup throughput.
  *

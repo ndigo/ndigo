@@ -1,5 +1,5 @@
 /**
- * @author opencode
+ * @author Jeff Rose
  *
  * Benchmark suite for `like` — the duck-typing predicate used throughout
  * the BlueJS codebase.  The current implementation relies on native code,

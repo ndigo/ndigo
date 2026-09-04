@@ -1,5 +1,5 @@
 /**
- * @author opencode
+ * @author Jeff Rose
  */
 
 import { Constructable, FrameworkError } from '@blue/core';

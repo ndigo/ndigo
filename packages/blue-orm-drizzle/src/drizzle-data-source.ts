@@ -1,5 +1,5 @@
 /**
- * @author opencode
+ * @author Jeff Rose
  */
 
 import { createClient, Client } from '@libsql/client';

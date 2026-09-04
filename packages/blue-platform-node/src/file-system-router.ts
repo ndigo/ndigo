@@ -1,5 +1,5 @@
 /**
- * @author opencode
+ * @author Jeff Rose
  */
 
 import { AbstractRouter, RouterCallback } from '@blue/router';

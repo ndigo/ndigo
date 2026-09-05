@@ -5,7 +5,20 @@
  * Uses createOnce + before hook pattern for dual compatibility and future performance.
  */
 
+import type { Context, ESTree, Scope } from '@oxlint/plugins';
+
 import { BROWSER_GLOBALS, BROWSER_ONLY_PACKAGES } from '../_constants.js';
+
+/**
+ * Identifier node types the `Identifier` visitor dispatches, all carrying `name`.
+ */
+type IdentifierLike =
+    | ESTree.IdentifierName
+    | ESTree.IdentifierReference
+    | ESTree.BindingIdentifier
+    | ESTree.LabelIdentifier
+    | ESTree.TSIndexSignatureName
+    | ESTree.TSThisParameter;
 
 function getCurrentPackageName(filename: string): string | null {
     const match = /[\\/]packages[\\/]blue-([^\\/]+)[\\/]/u.exec(filename);
@@ -25,30 +38,29 @@ function isTestFile(filename: string): boolean {
 /**
  * Returns true if `node` is the argument of a `typeof` unary expression.
  */
-function isTypeofSubject(node: any): boolean {
-    return node.parent?.type === 'UnaryExpression' && (node.parent as any).operator === 'typeof';
+function isTypeofSubject(node: IdentifierLike): boolean {
+    const parent = node.parent;
+    return parent.type === 'UnaryExpression' && parent.operator === 'typeof';
 }
 
 /**
  * Returns true if `node` is in a declaration/binding position rather than a value reference.
  * This avoids false positives when a parameter or variable is named the same as a browser global.
  */
-function isBindingSite(node: any): boolean {
+function isBindingSite(node: IdentifierLike): boolean {
     const parent = node.parent;
     if (!parent) return false;
     switch (parent.type) {
         case 'VariableDeclarator':
-            return (parent as any).id === node;
+            return parent.id === node;
         case 'FunctionDeclaration':
         case 'FunctionExpression':
-        case 'ArrowFunctionExpression': {
-            const fn = parent as any;
-            return fn.id === node || fn.params.includes(node as any);
-        }
+        case 'ArrowFunctionExpression':
+            return parent.id === node || parent.params.some((param) => param === node);
         case 'Property':
-            return (parent as any).key === node && !(parent as any).computed;
+            return parent.key === node && !parent.computed;
         case 'MemberExpression':
-            return (parent as any).property === node && !(parent as any).computed;
+            return parent.property === node && !parent.computed;
         case 'ImportDefaultSpecifier':
         case 'ImportNamespaceSpecifier':
         case 'ImportSpecifier':
@@ -71,13 +83,13 @@ function isBindingSite(node: any): boolean {
  * (excluding the global scope), meaning the identifier refers to a local binding
  * rather than the browser global.
  */
-function isShadowedByLocalBinding(scope: any, name: string): boolean {
-    let current = scope;
+function isShadowedByLocalBinding(scope: Scope, name: string): boolean {
+    let current: Scope | null = scope;
     while (current !== null && current.type !== 'global') {
-        if (current.variables?.some((v: any) => v.name === name)) {
+        if (current.variables.some((variable) => variable.name === name)) {
             return true;
         }
-        current = current.upper ?? null;
+        current = current.upper;
     }
     return false;
 }
@@ -85,28 +97,31 @@ function isShadowedByLocalBinding(scope: any, name: string): boolean {
 /**
  * Returns true if `testNode` contains a `typeof <name> !== 'undefined'` (or `=== 'undefined'`) check.
  */
-function containsTypeofGuard(testNode: any, name: string): boolean {
+function containsTypeofGuard(testNode: ESTree.Expression, name: string): boolean {
     if (testNode.type === 'BinaryExpression') {
-        const bin = testNode;
-        if (bin.operator === '!==' || bin.operator === '!=' || bin.operator === '===' || bin.operator === '==') {
-            const left = bin.left;
-            const right = bin.right;
+        if (
+            testNode.operator === '!==' ||
+            testNode.operator === '!=' ||
+            testNode.operator === '===' ||
+            testNode.operator === '=='
+        ) {
+            const left = testNode.left;
+            const right = testNode.right;
             const isTypeofLeft =
                 left.type === 'UnaryExpression' &&
-                (left as any).operator === 'typeof' &&
-                (left as any).argument.type === 'Identifier' &&
-                ((left as any).argument as any).name === name;
+                left.operator === 'typeof' &&
+                left.argument.type === 'Identifier' &&
+                left.argument.name === name;
             const isTypeofRight =
                 right.type === 'UnaryExpression' &&
-                (right as any).operator === 'typeof' &&
-                (right as any).argument.type === 'Identifier' &&
-                ((right as any).argument as any).name === name;
-            if (isTypeofLeft || isTypeofRight) return true;
+                right.operator === 'typeof' &&
+                right.argument.type === 'Identifier' &&
+                right.argument.name === name;
+            return isTypeofLeft || isTypeofRight;
         }
     }
     if (testNode.type === 'LogicalExpression') {
-        const log = testNode;
-        return containsTypeofGuard(log.left, name) || containsTypeofGuard(log.right, name);
+        return containsTypeofGuard(testNode.left, name) || containsTypeofGuard(testNode.right, name);
     }
     return false;
 }
@@ -117,33 +132,30 @@ function containsTypeofGuard(testNode: any, name: string): boolean {
  * - An ancestor ConditionalExpression whose test contains the same
  * - An ancestor LogicalExpression (&&) whose left side contains the same, and `node` is on the right
  */
-function isInsideTypeofGuard(node: any): boolean {
+function isInsideTypeofGuard(node: IdentifierLike): boolean {
     const name = node.name;
-    let current: any = node;
+    let current = node.parent;
 
     while (current.parent) {
         const parent = current.parent;
 
         if (parent.type === 'IfStatement') {
-            const ifStmt = parent;
             // We are in the consequent or alternate, not the test itself
-            if (current !== ifStmt.test && containsTypeofGuard(ifStmt.test, name)) {
+            if (current !== parent.test && containsTypeofGuard(parent.test, name)) {
                 return true;
             }
         }
 
         if (parent.type === 'ConditionalExpression') {
-            const cond = parent;
             // We are in consequent or alternate, not the test
-            if (current !== cond.test && containsTypeofGuard(cond.test, name)) {
+            if (current !== parent.test && containsTypeofGuard(parent.test, name)) {
                 return true;
             }
         }
 
         if (parent.type === 'LogicalExpression') {
-            const log = parent;
             // We are on the right side of &&, and the left contains a typeof guard
-            if (log.operator === '&&' && current === log.right && containsTypeofGuard(log.left, name)) {
+            if (parent.operator === '&&' && current === parent.right && containsTypeofGuard(parent.left, name)) {
                 return true;
             }
         }
@@ -170,7 +182,7 @@ export const noBrowserGlobalsInIsomorphic = {
         schema: [],
     } as const,
     defaultOptions: [],
-    create(context: any) {
+    create(context: Context) {
         const filename = context.filename ?? context.getFilename?.() ?? '';
         const currentPackageName = getCurrentPackageName(filename);
 
@@ -183,7 +195,7 @@ export const noBrowserGlobalsInIsomorphic = {
             before() {
                 // Per-file setup if needed in the future
             },
-            Identifier(node: any) {
+            Identifier(node: IdentifierLike) {
                 if (!BROWSER_GLOBALS.includes(node.name)) {
                     return;
                 }

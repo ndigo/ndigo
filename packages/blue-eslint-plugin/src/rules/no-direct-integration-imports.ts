@@ -5,6 +5,8 @@
  * Uses createOnce + before hook pattern for dual compatibility and future performance.
  */
 
+import type { Context, ESTree } from '@oxlint/plugins';
+
 import { INTEGRATION_LAYER_MAP, INTEGRATION_LAYER_PACKAGES } from '../_constants.js';
 
 function getCurrentPackageName(filename: string): string | null {
@@ -51,7 +53,7 @@ export const noDirectIntegrationImports = {
         schema: [],
     } as const,
     defaultOptions: [],
-    create(context: any) {
+    create(context: Context) {
         const filename = context.filename ?? context.getFilename?.() ?? '';
         const currentPackageName = getCurrentPackageName(filename);
 
@@ -66,14 +68,8 @@ export const noDirectIntegrationImports = {
             before() {
                 // Per-file setup if needed in the future
             },
-            ImportDeclaration(node: any) {
-                const sourceValue = node.source.value;
-
-                if (typeof sourceValue !== 'string') {
-                    return;
-                }
-
-                const match = getIntegrationLayerLibrary(sourceValue);
+            ImportDeclaration(node: ESTree.ImportDeclaration) {
+                const match = getIntegrationLayerLibrary(node.source.value);
 
                 if (!match) {
                     return;
@@ -88,21 +84,21 @@ export const noDirectIntegrationImports = {
                     },
                 });
             },
-            ExportNamedDeclaration(node: any) {
-                const sourceValue = node.source?.value;
+            ExportNamedDeclaration(node: ESTree.ExportNamedDeclaration) {
+                const source = node.source;
 
-                if (typeof sourceValue !== 'string') {
+                if (source === null) {
                     return;
                 }
 
-                const match = getIntegrationLayerLibrary(sourceValue);
+                const match = getIntegrationLayerLibrary(source.value);
 
                 if (!match) {
                     return;
                 }
 
                 context.report({
-                    node: node.source,
+                    node: source,
                     messageId: 'directImport',
                     data: {
                         library: match.library,

@@ -5,12 +5,10 @@
  * Uses createOnce + before hook pattern for dual compatibility and future performance.
  */
 
+import type { Context, ESTree } from '@oxlint/plugins';
+
 function isPublicIndexFile(filename: string): boolean {
     return /[\\/]src[\\/]index\.ts$/u.test(filename);
-}
-
-function isInternalRelativeSource(source: any): source is { value: string } {
-    return !!source && typeof source.value === 'string' && source.value.startsWith('./_');
 }
 
 /**
@@ -28,7 +26,7 @@ export const noInternalFileExports = {
         schema: [],
     } as const,
     defaultOptions: [],
-    create(context: any) {
+    create(context: Context) {
         const filename = context.filename ?? context.getFilename?.() ?? '';
 
         // Only run on public index files
@@ -40,8 +38,9 @@ export const noInternalFileExports = {
             before() {
                 // Per-file setup if needed in the future
             },
-            ExportAllDeclaration(node: any) {
-                if (!isInternalRelativeSource(node.source)) {
+            ExportAllDeclaration(node: ESTree.ExportAllDeclaration) {
+                // Only flag exports of internal underscore-prefixed relative files (e.g. './_foo').
+                if (!node.source.value.startsWith('./_')) {
                     return;
                 }
 

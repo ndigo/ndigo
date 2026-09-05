@@ -96,7 +96,6 @@ export class MatrixValueMethodArgumentResolver extends AbstractNamedValueMethodA
             if (!segment) {
                 break;
             }
-            // @ts-ignore: ¯\_(ツ)_/¯
             if (segment.name === segmentName) {
                 value = segment.data[name];
                 if (!isNil(value)) {

@@ -7,7 +7,7 @@
 
 import type { Context, ESTree } from '@oxlint/plugins';
 
-const CROSS_PACKAGE_INTERNAL_IMPORT_PATTERN = /^@blue\/[^/]+\/_/u;
+const crossPackageInternalImportPattern = /^@blue\/[^/]+\/_/u;
 
 /**
  * Reports imports that bypass a package's public API by reaching into internal files.
@@ -27,7 +27,7 @@ export const noInternalFileImports = {
     defaultOptions: [],
     createOnce(context: Context) {
         function checkSource(sourceNode: ESTree.StringLiteral): void {
-            if (!CROSS_PACKAGE_INTERNAL_IMPORT_PATTERN.test(sourceNode.value)) {
+            if (!crossPackageInternalImportPattern.test(sourceNode.value)) {
                 return;
             }
 

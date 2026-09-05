@@ -6,6 +6,7 @@
     "paths": {
       "@blue/*": ["../blue-*/index"]
     },
+    "strict": true,
     "rootDir": "src",
     "skipLibCheck": true
   },

@@ -6,7 +6,7 @@ import { OTLPLogExporter } from '@opentelemetry/exporter-logs-otlp-http';
 import { PeriodicExportingMetricReader } from '@opentelemetry/sdk-metrics';
 import { BatchLogRecordProcessor } from '@opentelemetry/sdk-logs';
 import { Instrumentation } from '@opentelemetry/instrumentation';
-import { SeverityFilterLogRecordProcessor } from './logger/severity-filter-log-record-processor';
+import { SeverityFilterLogRecordProcessor } from './severity-filter-log-record-processor';
 
 export interface TelemetryConfig {
     traceExporter?: {

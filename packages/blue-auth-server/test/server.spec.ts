@@ -63,13 +63,13 @@ describe('AuthServer', () => {
     });
 
     describe('validateAny', () => {
-        test('returns null when no adapters registered', async () => {
+        test('returns null for an empty adapter list', async () => {
             const server = new AuthServer();
-            const result = await server.validateAny('token');
+            const result = await server.validateAny('token', []);
             expect(result).toBeNull();
         });
 
-        test('returns principal from first successful adapter', async () => {
+        test('returns principal from first successful listed adapter', async () => {
             const adapter1 = createMockAdapter('jwt', null);
             const adapter2 = createMockAdapter('oidc', {
                 id: '99',
@@ -82,7 +82,7 @@ describe('AuthServer', () => {
             AuthRegistry.register(adapter2);
 
             const server = new AuthServer();
-            const result = await server.validateAny('token');
+            const result = await server.validateAny('token', ['jwt', 'oidc']);
 
             expect(result).toEqual({
                 id: '99',
@@ -93,7 +93,33 @@ describe('AuthServer', () => {
             });
         });
 
-        test('skips adapters that throw errors', async () => {
+        test('does not try adapters outside the explicit list', async () => {
+            const unlisted = createMockAdapter('unlisted', {
+                id: '1',
+                name: 'U',
+                roles: [],
+                hasRole: () => true,
+                hasAnyRole: () => true,
+            });
+            const listed = createMockAdapter('listed', null);
+            AuthRegistry.register(unlisted);
+            AuthRegistry.register(listed);
+
+            const server = new AuthServer();
+            // The unlisted adapter would succeed — it must not be consulted.
+            const result = await server.validateAny('token', ['listed']);
+
+            expect(result).toBeNull();
+        });
+
+        test('throws for an adapter ID that is not registered', async () => {
+            const server = new AuthServer();
+            await expect(server.validateAny('token', ['never-registered'])).rejects.toThrow(
+                "Authentication adapter 'never-registered' not found"
+            );
+        });
+
+        test('skips listed adapters that throw errors', async () => {
             const failingAdapter: AuthAdapter = {
                 id: 'failing',
                 validate: async () => {
@@ -114,7 +140,7 @@ describe('AuthServer', () => {
             AuthRegistry.register(successAdapter);
 
             const server = new AuthServer();
-            const result = await server.validateAny('token');
+            const result = await server.validateAny('token', ['failing', 'ok']);
 
             expect(result).toEqual({
                 id: '1',
@@ -125,14 +151,14 @@ describe('AuthServer', () => {
             });
         });
 
-        test('returns null when all adapters fail', async () => {
+        test('returns null when all listed adapters fail', async () => {
             const adapter1 = createMockAdapter('jwt', null);
             const adapter2 = createMockAdapter('oidc', null);
             AuthRegistry.register(adapter1);
             AuthRegistry.register(adapter2);
 
             const server = new AuthServer();
-            const result = await server.validateAny('token');
+            const result = await server.validateAny('token', ['jwt', 'oidc']);
 
             expect(result).toBeNull();
         });

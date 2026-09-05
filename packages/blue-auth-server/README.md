@@ -47,8 +47,10 @@ import { AuthServer } from '@blue/auth-server';
 
 const authServer = new AuthServer();
 
-// Try all registered adapters until one succeeds
-const principal = await authServer.validateAny('token');
+// Try an explicit list of adapters (in fallback order) until one succeeds.
+// Unknown adapter IDs throw — a token can never be accepted by a scheme
+// that was not deliberately selected.
+const principal = await authServer.validateAny('token', ['oidc', 'jwt']);
 
 if (principal) {
     console.log(`Authenticated via: ${principal.id}`);

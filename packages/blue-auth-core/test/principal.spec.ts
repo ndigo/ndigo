@@ -1,9 +1,5 @@
 import { describe, test, expect } from 'vitest';
-import {
-    Principal,
-    AnonymousPrincipal,
-    isPrincipal,
-} from '../src/principal';
+import { Principal, AnonymousPrincipal, isPrincipal } from '../src/principal';
 
 describe('AnonymousPrincipal', () => {
     test('has correct default id', () => {
@@ -65,21 +61,15 @@ describe('isPrincipal', () => {
     });
 
     test('returns false for object missing id', () => {
-        expect(
-            isPrincipal({ name: 'Test', roles: [] }),
-        ).toBe(false);
+        expect(isPrincipal({ name: 'Test', roles: [] })).toBe(false);
     });
 
     test('returns false for object missing name', () => {
-        expect(
-            isPrincipal({ id: '1', roles: [] }),
-        ).toBe(false);
+        expect(isPrincipal({ id: '1', roles: [] })).toBe(false);
     });
 
     test('returns false for object missing roles', () => {
-        expect(
-            isPrincipal({ id: '1', name: 'Test' }),
-        ).toBe(false);
+        expect(isPrincipal({ id: '1', name: 'Test' })).toBe(false);
     });
 
     test('returns false for empty object', () => {

@@ -226,13 +226,7 @@ const isITINRange: constraint = (value) => {
         n = n * 10 + Number(text[4]);
     } // fourth and fifth positions values are 70-88, 90-92, 94-99, partial validation true when not enough characters
 
-    return (
-        length < 4 ||
-        (length === 4 && n >= 7) ||
-        (n >= 70 && n <= 88) ||
-        (n >= 90 && n <= 92) ||
-        n >= 94
-    );
+    return length < 4 || (length === 4 && n >= 7) || (n >= 70 && n <= 88) || (n >= 90 && n <= 92) || n >= 94;
 };
 
 /**
@@ -265,8 +259,7 @@ const isNumbers: constraint = (value: serializable, params?: Params) =>
  * @param {Object} params.min Lowest amount in the range
  * @param {Object} params.max Highest amount in the range
  */
-const isRange: constraint = (value: serializable, params: Params = {}) =>
-    rangeValidator(value, params as RangeParams);
+const isRange: constraint = (value: serializable, params: Params = {}) => rangeValidator(value, params as RangeParams);
 
 const isReal: constraint = patternConstraint({ regex: realRule.source });
 

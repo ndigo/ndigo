@@ -8,11 +8,12 @@ import { FrameworkError } from '@blue/core';
 
 /**
  * Class decorator that registers a name in Symbol.metadata so the factory/registry can auto-discover domain components.
- * 
+ *
  * @param name - The name to register for this domain component
  * @returns A class decorator function
  */
-export const domainComponent = (name: string) =>
+export const domainComponent =
+    (name: string) =>
     <T extends new (...args: any[]) => any>(target: T, context: ClassDecoratorContext): T => {
         (context.metadata as any)['domain:component'] = { name };
         return target;
@@ -21,12 +22,12 @@ export const domainComponent = (name: string) =>
 /**
  * Method decorator that wraps the method with try/catch error logging and stores the method name in Symbol.metadata
  * so the component knows which methods are actions.
- * 
+ *
  * @returns A method decorator function
  */
 export const domainAction = <T extends (...args: any[]) => any>(
     target: T,
-    context: ClassMethodDecoratorContext,
+    context: ClassMethodDecoratorContext
 ): T | void => {
     if (context.kind !== 'method') {
         throw new FrameworkError('@domainAction can only be applied to methods');
@@ -51,12 +52,12 @@ export const domainAction = <T extends (...args: any[]) => any>(
  * On `addInitializer`, initializes `this.model` if not already set (to a `createNull()` object),
  * stores the initial value to `this.model.set(fieldName, value)`, then redefines the property
  * with a getter/setter that proxies through `this.model.get(fieldName)` / `this.model.set(fieldName, value)`.
- * 
+ *
  * @returns A field decorator function
  */
 export const domainData = (
     value: undefined,
-    context: ClassFieldDecoratorContext,
+    context: ClassFieldDecoratorContext
 ): ((initialValue: any) => any) | void => {
     if (context.kind !== 'field') {
         throw new FrameworkError('@domainData can only be applied to class fields');
@@ -89,7 +90,7 @@ export const domainData = (
 
 /**
  * Reads domain-specific metadata from a class decorated with domain decorators.
- * 
+ *
  * @param target - The constructor function of the domain component class
  * @returns Domain metadata including name, actions, and data fields
  */

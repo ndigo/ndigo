@@ -29,8 +29,8 @@ const { defineProperty, getPrototypeOf } = Reflect,
     { keys } = Object,
     getErrorHandlerMethodForError = function (errorHandler: object, error: Error): ErrorHandlerMethod | null {
         const /**
-              * ! THIS DID NOT WORK UNLESS getPrototypeOf WAS USED!!!!
-              */
+             * ! THIS DID NOT WORK UNLESS getPrototypeOf WAS USED!!!!
+             */
             handlerKeys = keys(getPrototypeOf(errorHandler) as object),
             length = handlerKeys.length;
         if (length) {
@@ -363,7 +363,11 @@ export class MetadataErrorResolver extends AbstractHandlerMethodErrorResolver im
      * @param error - The thrown error.
      * @returns The error handler's model and view, or `null`.
      */
-    protected _resolveHandlerMethodError(route: Route, handlerMethod: RouteHandlerMethod, error: Error): ModelAndView | null {
+    protected _resolveHandlerMethodError(
+        route: Route,
+        handlerMethod: RouteHandlerMethod,
+        error: Error
+    ): ModelAndView | null {
         const errorHandlerMethod = this._getErrorHandlerMethod(handlerMethod, error);
 
         if (!errorHandlerMethod) {

@@ -81,12 +81,7 @@ Object.entries(categoryFileMap).forEach(([category, filePath]) => {
         if (line.startsWith('import {')) {
             inImport = true;
         }
-        if (
-            inImport &&
-            line !== '' &&
-            !line.startsWith('import') &&
-            !line.startsWith('//')
-        ) {
+        if (inImport && line !== '' && !line.startsWith('import') && !line.startsWith('//')) {
             // Extract function name
             const match = line.match(/^(\w+),?/);
             if (match) {

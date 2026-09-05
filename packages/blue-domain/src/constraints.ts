@@ -2,8 +2,6 @@
  * @author Jeff Rose
  */
 
-
-
 export type constraint = (value: any, params: any) => boolean;
 
 const characterClass = (value: string) => `[${value}]`,

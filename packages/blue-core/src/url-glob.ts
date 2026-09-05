@@ -7,10 +7,10 @@ const DOT_LITERAL = '\\.',
     SLASH_LITERAL = '\\/',
     NOT_SLASH = '[^/]',
     ONE_CHARACTER = '(?=.)',
-    STAR = `${NOT_SLASH}*?`,              // [^/]*?
+    STAR = `${NOT_SLASH}*?`, // [^/]*?
     START_ANCHOR = `(?:^|${SLASH_LITERAL})`,
     GLOB_STAR = `(?:(?:(?!${START_ANCHOR}${DOT_LITERAL}).)*?)`;
-    // = (?:(?:(?!(?:^|\/)\\.).)*?)
+// = (?:(?:(?!(?:^|\/)\\.).)*?)
 
 const URL_POSIX_CLASSES = {
     alnum: 'a-zA-Z0-9',
@@ -19,7 +19,7 @@ const URL_POSIX_CLASSES = {
     lower: 'a-z',
     upper: 'A-Z',
     xdigit: 'A-Fa-f0-9',
-    word: 'A-Za-z0-9_'
+    word: 'A-Za-z0-9_',
 };
 
 /**
@@ -48,7 +48,7 @@ export function parseUrlGlob(pattern: string): string | null {
         { pattern: '*/*', result: `${STAR}${SLASH_LITERAL}${ONE_CHARACTER}${STAR}` },
         { pattern: '*.*', result: `${STAR}${DOT_LITERAL}${ONE_CHARACTER}${STAR}` },
         { pattern: '.*', result: `${DOT_LITERAL}${ONE_CHARACTER}${STAR}` },
-        { pattern: '*', result: `${ONE_CHARACTER}${STAR}` }
+        { pattern: '*', result: `${ONE_CHARACTER}${STAR}` },
     ];
 
     for (const { pattern: commonPattern, result } of commonPatterns) {
@@ -60,17 +60,17 @@ export function parseUrlGlob(pattern: string): string | null {
     // Parse the pattern character by character
     const ctx = {
         pattern,
-        pos: 0
+        pos: 0,
     };
 
     try {
         let result = parseGlobFull(ctx);
-        
+
         // If the pattern starts with globStar, prepend ONE_CHARACTER to ensure at least one character exists
         if (result.startsWith('(?:(?')) {
             result = ONE_CHARACTER + result;
         }
-        
+
         return `^(?:${result})$`;
     } catch (e) {
         return null;
@@ -84,7 +84,7 @@ interface ParseContext {
 
 function parseGlobFull(ctx: ParseContext): string {
     let result = '';
-    
+
     while (ctx.pos < ctx.pattern.length) {
         const token = parseToken(ctx);
         if (token === null) {
@@ -94,7 +94,7 @@ function parseGlobFull(ctx: ParseContext): string {
             result += token;
         }
     }
-    
+
     return result;
 }
 
@@ -150,10 +150,7 @@ function tryParsePosixClass(ctx: ParseContext): string | null {
 
     // Read the class name until ':]'
     let className = '';
-    while (
-        ctx.pos < ctx.pattern.length &&
-        !(ctx.pattern[ctx.pos] === ':' && ctx.pattern[ctx.pos + 1] === ']')
-    ) {
+    while (ctx.pos < ctx.pattern.length && !(ctx.pattern[ctx.pos] === ':' && ctx.pattern[ctx.pos + 1] === ']')) {
         className += ctx.pattern[ctx.pos++];
     }
 
@@ -176,14 +173,14 @@ function tryParsePosixClass(ctx: ParseContext): string | null {
 
 function parseStar(ctx: ParseContext): string {
     const startPos = ctx.pos;
-    
+
     // Consume all consecutive stars
     while (ctx.pos < ctx.pattern.length && ctx.pattern[ctx.pos] === '*') {
         ctx.pos++;
     }
-    
+
     const starCount = ctx.pos - startPos;
-    
+
     if (starCount === 1) {
         return STAR; // Single star: [^/]*?
     } else if (starCount === 2) {
@@ -196,11 +193,11 @@ function parseStar(ctx: ParseContext): string {
 
 function parseCharSet(ctx: ParseContext): string {
     const startPos = ctx.pos;
-    
+
     ctx.pos++; // consume '['
-    
+
     let result = '[';
-    
+
     // Check for negation patterns
     if (ctx.pos < ctx.pattern.length && ctx.pattern[ctx.pos] === '!') {
         result += '^';
@@ -210,11 +207,11 @@ function parseCharSet(ctx: ParseContext): string {
         result += '\\^';
         ctx.pos++;
     }
-    
+
     // Parse character set contents
     while (ctx.pos < ctx.pattern.length) {
         const char = ctx.pattern[ctx.pos];
-        
+
         if (char === ']') {
             ctx.pos++; // consume ']'
             break;
@@ -222,14 +219,16 @@ function parseCharSet(ctx: ParseContext): string {
             // Handle escaped '['
             result += '\\[';
             ctx.pos += 2; // consume both '[' characters
-        } else if (char === '-' && 
-                   ctx.pos > startPos + 1 && 
-                   ctx.pos + 1 < ctx.pattern.length && 
-                   ctx.pattern[ctx.pos + 1] !== ']') {
+        } else if (
+            char === '-' &&
+            ctx.pos > startPos + 1 &&
+            ctx.pos + 1 < ctx.pattern.length &&
+            ctx.pattern[ctx.pos + 1] !== ']'
+        ) {
             // Handle character ranges like a-z
             const prevChar = ctx.pattern[ctx.pos - 1];
             const nextChar = ctx.pattern[ctx.pos + 1];
-            
+
             if (prevChar !== ']' && nextChar !== ']') {
                 result += char;
                 ctx.pos++;
@@ -243,14 +242,14 @@ function parseCharSet(ctx: ParseContext): string {
             ctx.pos++;
         }
     }
-    
+
     result += ']';
-    
+
     // Add optional slash suffix if at end of input
     if (ctx.pos >= ctx.pattern.length) {
         result += `${SLASH_LITERAL}?`;
     }
-    
+
     return result;
 }
 
@@ -278,17 +277,17 @@ function splitByTopLevelPipe(content: string): string[] {
 function parseExtGlob(ctx: ParseContext): string {
     const operator = ctx.pattern[ctx.pos];
     ctx.pos++; // consume operator
-    
+
     if (ctx.pos < ctx.pattern.length && ctx.pattern[ctx.pos] === '(') {
         ctx.pos++; // consume '('
-        
+
         // Parse the pattern inside parentheses
         let patternContent = '';
         let parenCount = 1;
-        
+
         while (ctx.pos < ctx.pattern.length && parenCount > 0) {
             const char = ctx.pattern[ctx.pos];
-            
+
             if (char === '(') {
                 parenCount++;
             } else if (char === ')') {
@@ -297,26 +296,24 @@ function parseExtGlob(ctx: ParseContext): string {
                     break;
                 }
             }
-            
+
             patternContent += char;
             ctx.pos++;
         }
-        
+
         if (parenCount > 0) {
             // Unclosed parenthesis, treat as literal
             return `\\${operator}\\(`;
         }
-        
+
         // Consume the closing ')'
         ctx.pos++;
-        
+
         // Split by top-level '|' (not inside nested parens), parse each alternative,
         // then join with '|' to produce regex alternation
         const alternatives = splitByTopLevelPipe(patternContent);
-        const innerPattern = alternatives
-            .map((alt) => parseGlobFull({ pattern: alt, pos: 0 }))
-            .join('|');
-        
+        const innerPattern = alternatives.map((alt) => parseGlobFull({ pattern: alt, pos: 0 })).join('|');
+
         // Handle different extGlob operators
         switch (operator) {
             case '@':

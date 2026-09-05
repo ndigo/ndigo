@@ -24,7 +24,7 @@ const regExpFlags = /[gimsuy]+/,
  * @param {string} value - The pattern string (with optional /pattern/flags format)
  * @returns {RegExp}
  * @throws {Error} If the pattern is malformed
- * @security WARNING: This function accepts arbitrary regex patterns. 
+ * @security WARNING: This function accepts arbitrary regex patterns.
  *   Do not use with untrusted user input without validation.
  *   Patterns with nested quantifiers (e.g., /(a+)+/) can cause ReDoS.
  * @category String
@@ -37,7 +37,7 @@ const toRegExp = (value: string): RegExp => {
     } else {
         const flags = extractFlags(value),
             pattern = removeSlashesAndFlags(value);
-        
+
         // Security check for ReDoS vulnerabilities (SEC-002)
         const isSafe = safeRegex(pattern);
         if (!isSafe) {
@@ -46,9 +46,9 @@ const toRegExp = (value: string): RegExp => {
                 console.warn(`[toRegExp] Potentially unsafe regex pattern detected: ${pattern}`);
             }
         }
-        
+
         regex = hasValidFlags(flags) ? new RegExp(pattern, flags) : new RegExp(pattern);
-        
+
         // LRU cache with size cap (SEC-008)
         if (cache.size >= MAX_CACHE_SIZE) {
             // Remove first entry (FIFO eviction)

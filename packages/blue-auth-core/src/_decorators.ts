@@ -13,10 +13,7 @@ export const AUTH_ROLES_KEY = 'auth:roles';
  * This is a passive metadata decorator. The actual enforcement is handled
  * by the `AuthRouteGuard` (server-side) or `ClientAuthGuard` (client-side).
  */
-export function authenticated(
-    target: unknown,
-    context: ClassDecoratorContext | ClassMethodDecoratorContext,
-): void {
+export function authenticated(target: unknown, context: ClassDecoratorContext | ClassMethodDecoratorContext): void {
     if (context.kind === 'class') {
         context.metadata[AUTH_REQUIRED_KEY] = true;
     } else {
@@ -35,14 +32,8 @@ export function authenticated(
  * @param role - The role name that the principal must possess.
  */
 export function authorized(role: string) {
-    return function (
-        target: unknown,
-        context: ClassDecoratorContext | ClassMethodDecoratorContext,
-    ): void {
-        const key =
-            context.kind === 'class'
-                ? AUTH_ROLES_KEY
-                : `${AUTH_ROLES_KEY}:${String(context.name)}`;
+    return function (target: unknown, context: ClassDecoratorContext | ClassMethodDecoratorContext): void {
+        const key = context.kind === 'class' ? AUTH_ROLES_KEY : `${AUTH_ROLES_KEY}:${String(context.name)}`;
         const existing = (context.metadata[key] as string[] | undefined) ?? [];
         context.metadata[key] = [...existing, role];
     };

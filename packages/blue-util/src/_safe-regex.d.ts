@@ -1,4 +1,4 @@
 declare module 'safe-regex' {
-  function safeRegex(pattern: string): boolean;
-  export = safeRegex;
+    function safeRegex(pattern: string): boolean;
+    export = safeRegex;
 }

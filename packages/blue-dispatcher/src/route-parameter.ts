@@ -67,7 +67,8 @@ export class MethodParameterType implements Equatable, Serializable {
 
         for (let index = 0; index < length; index++) {
             const key = types[index];
-            if (key !== 'fromType') { // Skip the static method itself
+            if (key !== 'fromType') {
+                // Skip the static method itself
                 const parameterType = MethodParameterType[key as keyof typeof MethodParameterType];
                 // Ensure we only work with actual MethodParameterType instances, not methods
                 if (parameterType instanceof MethodParameterType && parameterType.type === type) {
@@ -174,10 +175,7 @@ export class MethodParameter implements Serializable {
  *   limit: queryValue('limit', { required: true, defaultValue: '10' })
  * })
  */
-export function queryValue(
-    name: string,
-    options: ParameterExtractorOptions = {}
-): ParameterExtractor {
+export function queryValue(name: string, options: ParameterExtractorOptions = {}): ParameterExtractor {
     return {
         type: MethodParameterType.QUERY,
         name,
@@ -195,10 +193,7 @@ export function queryValue(
  *   userId: pathValue('userId')
  * })
  */
-export function pathValue(
-    name: string,
-    options: ParameterExtractorOptions = {}
-): ParameterExtractor {
+export function pathValue(name: string, options: ParameterExtractorOptions = {}): ParameterExtractor {
     return {
         type: MethodParameterType.PATH,
         name,
@@ -217,10 +212,7 @@ export function pathValue(
  *   size: matrixValue('size', { required: true })
  * })
  */
-export function matrixValue(
-    name: string,
-    options: ParameterExtractorOptions = {}
-): ParameterExtractor {
+export function matrixValue(name: string, options: ParameterExtractorOptions = {}): ParameterExtractor {
     return {
         type: MethodParameterType.MATRIX,
         name,
@@ -239,10 +231,7 @@ export function matrixValue(
  *   token: cookieValue('AUTH_TOKEN', { required: true })
  * })
  */
-export function cookieValue(
-    name: string,
-    options: ParameterExtractorOptions = {}
-): ParameterExtractor {
+export function cookieValue(name: string, options: ParameterExtractorOptions = {}): ParameterExtractor {
     return {
         type: MethodParameterType.COOKIE,
         name,
@@ -261,10 +250,7 @@ export function cookieValue(
  *   token: sessionValue('AUTH_TOKEN', { required: true })
  * })
  */
-export function sessionValue(
-    name: string,
-    options: ParameterExtractorOptions = {}
-): ParameterExtractor {
+export function sessionValue(name: string, options: ParameterExtractorOptions = {}): ParameterExtractor {
     return {
         type: MethodParameterType.SESSION,
         name,
@@ -282,10 +268,7 @@ export function sessionValue(
  *   profile: modelValue('profile'),
  * })
  */
-export function modelValue(
-    name: string,
-    options: ParameterExtractorOptions = {}
-): ParameterExtractor {
+export function modelValue(name: string, options: ParameterExtractorOptions = {}): ParameterExtractor {
     return {
         type: MethodParameterType.MODEL,
         name,
@@ -303,10 +286,7 @@ export function modelValue(
  *   token: stateValue('token'),
  * })
  */
-export function stateValue(
-    name: string,
-    options: ParameterExtractorOptions = {}
-): ParameterExtractor {
+export function stateValue(name: string, options: ParameterExtractorOptions = {}): ParameterExtractor {
     return {
         type: MethodParameterType.STATE,
         name,
@@ -352,10 +332,7 @@ export function bindValue(
  *   user: attributeValue('user')
  * })
  */
-export function attributeValue(
-    name: string,
-    options: ParameterExtractorOptions = {}
-): ParameterExtractor {
+export function attributeValue(name: string, options: ParameterExtractorOptions = {}): ParameterExtractor {
     return {
         type: MethodParameterType.ATTRIBUTE,
         name,
@@ -374,10 +351,7 @@ export function attributeValue(
  *   authorization: headerValue('authorization', { required: true })
  * })
  */
-export function headerValue(
-    name: string,
-    options: ParameterExtractorOptions = {}
-): ParameterExtractor {
+export function headerValue(name: string, options: ParameterExtractorOptions = {}): ParameterExtractor {
     return {
         type: MethodParameterType.HEADER,
         name,
@@ -397,10 +371,7 @@ export function headerValue(
  *   payload: bodyValue('*')
  * })
  */
-export function bodyValue(
-    name: string,
-    options: ParameterExtractorOptions = {}
-): ParameterExtractor {
+export function bodyValue(name: string, options: ParameterExtractorOptions = {}): ParameterExtractor {
     return {
         type: MethodParameterType.BODY,
         name,
@@ -462,7 +433,10 @@ export function asArray(extractor: ParameterExtractor): ParameterExtractor {
  * Wraps a parameter extractor to enforce type-based conversion via ConversionService.
  * @example withConversion(queryValue('id'), { source: String, target: UUID })
  */
-export function withConversion(extractor: ParameterExtractor, convertType: { source: any; target: any }): ParameterExtractor {
+export function withConversion(
+    extractor: ParameterExtractor,
+    convertType: { source: any; target: any }
+): ParameterExtractor {
     return { ...extractor, convertType };
 }
 

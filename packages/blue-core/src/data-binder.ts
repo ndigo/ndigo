@@ -161,7 +161,9 @@ function _assocPath(path: KeypathToken[], value: unknown, obj: unknown): unknown
         tail,
         value,
         tail.length > 0 && typeof tail[0] === 'number'
-            ? (Array.isArray((obj as any)?.[head]) ? (obj as any)[head] : [])
+            ? Array.isArray((obj as any)?.[head])
+                ? (obj as any)[head]
+                : []
             : ((obj as any)?.[head] ?? {})
     );
     if (typeof head === 'number') {

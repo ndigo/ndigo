@@ -20,10 +20,7 @@ const createRoute = (path: string, data?: Record<string, string | null>): Route 
         raw: path,
     }) as unknown as Route;
 
-const createRouteWithSegments = (
-    path: string,
-    segments: Array<{ data: Record<string, string> }>
-): Route => {
+const createRouteWithSegments = (path: string, segments: Array<{ data: Record<string, string> }>): Route => {
     const route: any = {
         attributes: {},
         data: {},
@@ -33,7 +30,9 @@ const createRouteWithSegments = (
         path,
         raw: path,
     };
-    segments.forEach((seg, i) => { route[i] = seg; });
+    segments.forEach((seg, i) => {
+        route[i] = seg;
+    });
     return route as unknown as Route;
 };
 
@@ -230,13 +229,13 @@ describe('RouteMappingInfo', () => {
             null,
             new PatternsRouteCondition('/a'),
             new QueryParamCondition(),
-            new MatrixParamCondition('color'),
+            new MatrixParamCondition('color')
         );
         const info2 = new RouteMappingInfo(
             null,
             new PatternsRouteCondition('/b'),
             new QueryParamCondition(),
-            new MatrixParamCondition('size'),
+            new MatrixParamCondition('size')
         );
         const merged = info1.merge(info2);
         expect(merged.matrixCondition.expressions.size).toBe(2);
@@ -247,7 +246,7 @@ describe('RouteMappingInfo', () => {
             null,
             new PatternsRouteCondition('/foo'),
             new QueryParamCondition(),
-            new MatrixParamCondition('color'),
+            new MatrixParamCondition('color')
         );
         // No segments — matrix condition cannot match
         const route = createRouteWithSegments('/foo', []);
@@ -318,10 +317,7 @@ describe('MatrixParamExpression', () => {
     });
 
     test('matchName works across multiple segments', () => {
-        const route = createRouteWithSegments('/foo', [
-            { data: { size: 'L' } },
-            { data: { color: 'red' } }
-        ]);
+        const route = createRouteWithSegments('/foo', [{ data: { size: 'L' } }, { data: { color: 'red' } }]);
         const expression = new MatrixParamExpression('color');
         expect(expression.matchName(route)).toBe(true);
     });
@@ -338,7 +334,7 @@ describe('MatrixParamCondition', () => {
         const route = createRouteWithSegments('/foo', [{ data: { color: '' } }]);
         const condition = new MatrixParamCondition('color');
         expect(condition.getMatchingCondition(route)).not.toBeNull();
-        
+
         const condition2 = new MatrixParamCondition('size');
         expect(condition2.getMatchingCondition(route)).toBeNull();
     });
@@ -353,7 +349,7 @@ describe('MatrixParamCondition', () => {
         const route = createRouteWithSegments('/foo', [{ data: { color: 'red', size: 'L' } }]);
         const condition = new MatrixParamCondition('color=red');
         expect(condition.getMatchingCondition(route)).not.toBeNull();
-        
+
         const condition2 = new MatrixParamCondition('color=blue');
         expect(condition2.getMatchingCondition(route)).toBeNull();
     });
@@ -376,7 +372,7 @@ describe('MatrixParamCondition', () => {
         const cond1 = new MatrixParamCondition('color');
         const cond2 = new MatrixParamCondition('color');
         expect(cond1.equals(cond2)).toBe(true);
-        
+
         const cond3 = new MatrixParamCondition('size');
         expect(cond1.equals(cond3)).toBe(false);
     });

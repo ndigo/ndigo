@@ -4,7 +4,7 @@
 
 /**
  * Utility for managing DOM event listeners on a specific element.
- * 
+ *
  * Ensures that listeners are tracked and can be removed in bulk,
  * preventing memory leaks and duplicate listeners.
  */
@@ -14,7 +14,7 @@ export class DOMEventBinder {
 
     /**
      * Creates a binder for the specified element.
-     * 
+     *
      * @param element - The element to bind events to.
      */
     constructor(element: HTMLElement) {
@@ -23,7 +23,7 @@ export class DOMEventBinder {
 
     /**
      * Binds a listener to a DOM event.
-     * 
+     *
      * @param eventName - The name of the DOM event (e.g., 'click').
      * @param handler - The listener function.
      */
@@ -34,7 +34,7 @@ export class DOMEventBinder {
 
     /**
      * Removes a specific listener from a DOM event.
-     * 
+     *
      * @param eventName - The name of the DOM event.
      */
     unbind(eventName: string): void {

@@ -3,13 +3,7 @@
  */
 
 import { describe, it, expect } from 'vitest';
-import {
-    signal,
-    computed,
-    effect,
-    reactive,
-    getSignal,
-} from '../src/decorators/index';
+import { signal, computed, effect, reactive, getSignal } from '../src/decorators/index';
 
 describe('@signal with @reactive', () => {
     it('wraps a field with a reactive signal', () => {
@@ -70,7 +64,7 @@ describe('@signal with @reactive', () => {
 
         new Watcher();
         // Effect fires once during setup with initial value
-        expect(values.filter(v => v === 0).length).toBeGreaterThanOrEqual(1);
+        expect(values.filter((v) => v === 0).length).toBeGreaterThanOrEqual(1);
     });
 });
 
@@ -190,7 +184,7 @@ describe('@effect with @reactive', () => {
 
         const w = new Watcher() as any;
         w.count = 1;
-        expect(values.some(v => v === 1)).toBe(true);
+        expect(values.some((v) => v === 1)).toBe(true);
     });
 });
 
@@ -217,10 +211,10 @@ describe('@reactive lifecycle', () => {
         w.count = 2;
         expect(w.count).toBe(2);
         // 2 should NOT appear in values (effect was disposed)
-        expect(values.filter(v => v === 2)).toHaveLength(0);
+        expect(values.filter((v) => v === 2)).toHaveLength(0);
         // 0 and 1 should appear
-        expect(values.some(v => v === 0)).toBe(true);
-        expect(values.some(v => v === 1)).toBe(true);
+        expect(values.some((v) => v === 0)).toBe(true);
+        expect(values.some((v) => v === 1)).toBe(true);
     });
 
     it('chains into existing destroy method', () => {

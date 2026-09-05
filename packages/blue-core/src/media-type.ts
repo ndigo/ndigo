@@ -203,7 +203,9 @@ export default class MediaType extends Null implements Serializable, StringCompa
                         parts.shift();
 
                         const parsedParameters: MediaTypeParameters = parts.length
-                            ? (Object.fromEntries(parts.map(splitOnEquals as (value: string) => [string, string])) as MediaTypeParameters)
+                            ? (Object.fromEntries(
+                                  parts.map(splitOnEquals as (value: string) => [string, string])
+                              ) as MediaTypeParameters)
                             : {};
                         const mediaType = new MediaType(type, sub, parsedParameters);
 
@@ -211,10 +213,10 @@ export default class MediaType extends Null implements Serializable, StringCompa
                     }
                 }
             }
-             return typeRegistry.get(mediaTypeExpression) as MediaType;
+            return typeRegistry.get(mediaTypeExpression) as MediaType;
         }
 
-          return null;
+        return null;
     }
 
     static qualityFactorComparator = qualityFactorComparator;

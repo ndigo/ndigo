@@ -21,7 +21,10 @@ export interface RouteHandlerMappingStrategy {
 const { defineProperty } = Reflect,
     HANDLER_MAPPING = 'handlerMapping',
     HANDLER_MAPPINGS = `${HANDLER_MAPPING}s`,
-    defaultRouteHandlerMappings: RouteHandlerMapping[] = [new NamePathHandlerMapping(), new RadixMetadataHandlerMapping()];
+    defaultRouteHandlerMappings: RouteHandlerMapping[] = [
+        new NamePathHandlerMapping(),
+        new RadixMetadataHandlerMapping(),
+    ];
 
 /**
  */

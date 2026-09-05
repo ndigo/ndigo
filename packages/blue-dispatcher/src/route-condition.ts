@@ -399,7 +399,7 @@ export class CompositeRouteCondition extends AbstractRouteCondition<CompositeRou
                 return null;
             }
         }
-         return new CompositeRouteCondition(...(matchingConditions as RouteConditionHolder[]));
+        return new CompositeRouteCondition(...(matchingConditions as RouteConditionHolder[]));
     }
 
     /**

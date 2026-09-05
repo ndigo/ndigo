@@ -33,7 +33,7 @@ export function getSignal<T>(instance: object, field: string): Signal<T> | undef
  */
 export function signal<T extends object, V>(
     _target: undefined,
-    context: ClassFieldDecoratorContext<T, V>,
+    context: ClassFieldDecoratorContext<T, V>
 ): (this: T, initialValue: V) => V {
     const fieldName = context.name as string;
 
@@ -53,10 +53,7 @@ export function signal<T extends object, V>(
 /**
  * Getter decorator that wraps the getter with a memoized computed signal.
  */
-export function computed<T>(
-    target: () => T,
-    context: ClassGetterDecoratorContext<object, T>,
-): () => T {
+export function computed<T>(target: () => T, context: ClassGetterDecoratorContext<object, T>): () => T {
     const fieldName = context.name;
 
     return function (this: object): T {
@@ -82,10 +79,7 @@ export function computed<T>(
  *
  * Requires the `@reactive` class decorator to be applied to the class.
  */
-export function effect(
-    target: (...args: unknown[]) => void,
-    context: ClassMethodDecoratorContext<object>,
-): void {
+export function effect(target: (...args: unknown[]) => void, context: ClassMethodDecoratorContext<object>): void {
     const fieldName = context.name;
 
     // Store the method reference for @reactive to process
@@ -117,10 +111,7 @@ export function effect(
  * }
  * ```
  */
-export function reactive<T extends new (...args: any[]) => object>(
-    target: T,
-    _context: ClassDecoratorContext<T>,
-): T {
+export function reactive<T extends new (...args: any[]) => object>(target: T, _context: ClassDecoratorContext<T>): T {
     return class extends target {
         constructor(...args: any[]) {
             super(...args);
@@ -141,8 +132,12 @@ export function reactive<T extends new (...args: any[]) => object>(
                     map.set(fieldName, sig);
 
                     Object.defineProperty(instance, fieldName, {
-                        get(): unknown { return sig.value; },
-                        set(v: unknown): void { sig.value = v; },
+                        get(): unknown {
+                            return sig.value;
+                        },
+                        set(v: unknown): void {
+                            sig.value = v;
+                        },
                         enumerable: true,
                         configurable: true,
                     });
@@ -174,7 +169,11 @@ export function reactive<T extends new (...args: any[]) => object>(
                 const disposers = effectDisposers.get(instance);
                 if (disposers) {
                     for (const d of disposers) {
-                        try { d(); } catch { /* ignore */ }
+                        try {
+                            d();
+                        } catch {
+                            /* ignore */
+                        }
                     }
                     effectDisposers.delete(instance);
                 }

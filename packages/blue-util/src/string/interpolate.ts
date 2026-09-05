@@ -3,7 +3,6 @@
  */
 
 const stache = /\{\{([^}]+)\}\}/g, //mustache-like
-
     /**
      * String interpolation. Format/replace tokens with object properties.
      * @param {string} template

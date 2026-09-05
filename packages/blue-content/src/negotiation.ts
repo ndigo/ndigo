@@ -69,9 +69,7 @@ export class NegotiatingContentSource implements ContentSource {
      * @returns The translated content, or the key when no translation is found.
      */
     getContent(key: string, language: string): string {
-        let lang = language.includes(',')
-            ? parseAcceptLanguage(language) ?? this.#defaultLanguage
-            : language;
+        let lang = language.includes(',') ? (parseAcceptLanguage(language) ?? this.#defaultLanguage) : language;
 
         // Strip region subtag (e.g. fr-CH → fr) for content lookup
         const baseLang = lang.split('-')[0];

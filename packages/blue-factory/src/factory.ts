@@ -2,7 +2,16 @@
  * @author Jeff Rose
  */
 
-import { Constructable, FrameworkError, likeEnumerable, isPrimitive, entriesIterator, isShared, getSharedOptions, satisfiesVersion } from '@blue/core';
+import {
+    Constructable,
+    FrameworkError,
+    likeEnumerable,
+    isPrimitive,
+    entriesIterator,
+    isShared,
+    getSharedOptions,
+    satisfiesVersion,
+} from '@blue/core';
 import { Destroyable, Initializable, likeDestroyable, likeInitializable } from './lifecycle';
 import { isConstructor, isFunction, isNumber, isString, like } from '@blue/util/types';
 import { Aware, AsAware, likeAwareAnd, likeAware, likeNameAware } from './aware';
@@ -166,7 +175,8 @@ const _likeConfigurableShape = like({ addProcessor: Function, setParent: Functio
  * @param value The value to be tested.
  * @returns Whether or not the `value` provided is {@link ConfigurableFactory}.
  */
-export const likeConfigurableFactory = (value: unknown) => likeHierarchicalFactory(value) && _likeConfigurableShape(value);
+export const likeConfigurableFactory = (value: unknown) =>
+    likeHierarchicalFactory(value) && _likeConfigurableShape(value);
 
 /**
  * An abstract base class for implementing a {@link ConfigurableFactory} and {@link ScopedFactory}.
@@ -397,7 +407,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
         if (!satisfiesVersion(actualVersion, requiredVersion)) {
             console.warn(
                 `[blue] Dependency '${nameOrToken.description}' version ${actualVersion} does not satisfy ` +
-                `required range '${requiredVersion}'`
+                    `required range '${requiredVersion}'`
             );
         }
     }
@@ -452,7 +462,9 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
      * @returns `true` if this factory has its own value, `false` otherwise.
      */
     hasOwnValue(name: string): boolean {
-        return Object.prototype.hasOwnProperty.call(this, name) || Object.prototype.hasOwnProperty.call(this, `$${name}`);
+        return (
+            Object.prototype.hasOwnProperty.call(this, name) || Object.prototype.hasOwnProperty.call(this, `$${name}`)
+        );
     }
 
     /**
@@ -465,7 +477,11 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
     hasValue(name: string): boolean;
     hasValue<T = any>(nameOrToken: string | ContextToken<T>): boolean {
         const name = typeof nameOrToken === 'string' ? nameOrToken : nameOrToken.description;
-        return this.hasInstance(name) || this.hasConstructor(name) || (this.#parent ? (this.#parent as unknown as AbstractFactory).hasValue(name) : false);
+        return (
+            this.hasInstance(name) ||
+            this.hasConstructor(name) ||
+            (this.#parent ? (this.#parent as unknown as AbstractFactory).hasValue(name) : false)
+        );
     }
 
     /**

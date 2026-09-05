@@ -220,7 +220,10 @@ export class BooleanConverter implements Converter<string, boolean> {
  */
 export class ArrayConverter implements Converter<string, string[]> {
     convert(value: string, separator: string | RegExp = ','): string[] {
-        return `${value}`.split(separator).map((item) => item.trim()).filter(Boolean);
+        return `${value}`
+            .split(separator)
+            .map((item) => item.trim())
+            .filter(Boolean);
     }
 }
 
@@ -321,9 +324,7 @@ export function createConversionService(options: ConversionServiceOptions = {}):
             const converter = registry.getConverter(String, targetType);
 
             if (!converter) {
-                throw new TypeError(
-                    `No converter registered for String → ${targetType?.name ?? 'unknown'}`
-                );
+                throw new TypeError(`No converter registered for String → ${targetType?.name ?? 'unknown'}`);
             }
 
             return converter.convert(source);

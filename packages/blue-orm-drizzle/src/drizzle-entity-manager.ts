@@ -89,9 +89,7 @@ export class DrizzleEntityManager {
         const meta = getEntityMetadata(entityClass);
         const result = await this.#client.execute(`SELECT * FROM "${meta.entityName}"`);
 
-        return (result.rows as Record<string, unknown>[]).map((row) =>
-            this.#mapRowToEntity(entityClass, row),
-        );
+        return (result.rows as Record<string, unknown>[]).map((row) => this.#mapRowToEntity(entityClass, row));
     }
 
     async remove<T extends object>(entity: T): Promise<void> {
@@ -109,10 +107,7 @@ export class DrizzleEntityManager {
         await this.#client.execute(sql, [pkValue] as any[]);
     }
 
-    #mapRowToEntity<T extends object>(
-        entityClass: Constructable<T>,
-        row: Record<string, unknown>,
-    ): T {
+    #mapRowToEntity<T extends object>(entityClass: Constructable<T>, row: Record<string, unknown>): T {
         const meta = getEntityMetadata(entityClass);
         const entity = new entityClass() as Record<string, unknown>;
 

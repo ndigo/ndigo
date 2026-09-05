@@ -111,7 +111,7 @@ export class GenericDomainComponent extends Emitter implements DomainComponent {
             },
             set(key: string, value: any): void {
                 (this as any)[key] = value;
-            }
+            },
         }) as any;
         this.actions = {};
         this.settings = {};
@@ -139,7 +139,7 @@ export class GenericDomainComponent extends Emitter implements DomainComponent {
     async destroy(): Promise<void> {
         if (!this.destroyed) {
             this.emit('destroy');
-            super.destroy();  // Emitter.destroy() → clears all listeners and sets destroyed=true
+            super.destroy(); // Emitter.destroy() → clears all listeners and sets destroyed=true
         }
     }
 

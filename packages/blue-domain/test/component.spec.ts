@@ -89,7 +89,9 @@ describe('GenericDomainComponent', () => {
         const component = new GenericDomainComponent();
         component.init('to-destroy-2');
         let fired = false;
-        component.on('destroy', () => { fired = true; });
+        component.on('destroy', () => {
+            fired = true;
+        });
         await component.destroy();
         expect(fired).toBe(true);
     });

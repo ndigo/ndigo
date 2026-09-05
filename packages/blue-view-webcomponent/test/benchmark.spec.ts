@@ -16,24 +16,27 @@ describe('TodoMVC Benchmark', () => {
         `;
 
         const harness = new BenchmarkHarness();
-        
+
         // Mock window.parent to capture the result
         const parentMock = {
             postMessage: (message: any) => {
                 if (message.type === 'suite-complete') {
                     window.dispatchEvent(new CustomEvent('benchmark-done', { detail: message.result }));
                 }
-            }
+            },
         };
         (window as any).parent = parentMock;
 
         // Trigger the benchmark
-        window.postMessage({ 
-            id: "todomvc-bluejs-1.0.0",
-            key: "benchmark-connector", 
-            type: "benchmark-suite",
-            name: "Speedometer 3"
-        }, '*');
+        window.postMessage(
+            {
+                id: 'todomvc-bluejs-1.0.0',
+                key: 'benchmark-connector',
+                type: 'benchmark-suite',
+                name: 'Speedometer 3',
+            },
+            '*'
+        );
 
         // Wait for the result
         const result = await new Promise((resolve) => {

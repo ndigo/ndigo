@@ -29,10 +29,7 @@ describe('CompositeContentSource', () => {
 
 describe('CompositeThemeResolver', () => {
     test('returns theme from first resolver that has it', () => {
-        const primary = new StaticThemeResolver(
-            [{ name: 'dark', contentSource: new StaticContentSource() }],
-            'dark'
-        );
+        const primary = new StaticThemeResolver([{ name: 'dark', contentSource: new StaticContentSource() }], 'dark');
         const fallback = new StaticThemeResolver(
             [
                 { name: 'light', contentSource: new StaticContentSource() },
@@ -46,14 +43,8 @@ describe('CompositeThemeResolver', () => {
     });
 
     test('falls back to next resolver when first throws', () => {
-        const empty = new StaticThemeResolver(
-            [{ name: 'light', contentSource: new StaticContentSource() }],
-            'light'
-        );
-        const withDark = new StaticThemeResolver(
-            [{ name: 'dark', contentSource: new StaticContentSource() }],
-            'dark'
-        );
+        const empty = new StaticThemeResolver([{ name: 'light', contentSource: new StaticContentSource() }], 'light');
+        const withDark = new StaticThemeResolver([{ name: 'dark', contentSource: new StaticContentSource() }], 'dark');
         const composite = new CompositeThemeResolver([empty, withDark]);
 
         expect(composite.getTheme('dark').name).toBe('dark');

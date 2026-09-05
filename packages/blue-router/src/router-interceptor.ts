@@ -138,12 +138,18 @@ export class MappedRouterInterceptor extends AsPathMatcherFilter(Null) implement
      */
     resolveRouteParams(route: Route): Record<string, string> | null {
         for (const pattern of this.#includePatterns) {
-                // Route.resolveParams and Route.matches are duck-type methods that
+            // Route.resolveParams and Route.matches are duck-type methods that
             // concrete route implementations MAY provide. The Route interface
             // doesn't declare them — they're checked at runtime with a type
             // guard rather than baked into every route contract.
-            if (this._isNamedRoutePattern(pattern) && typeof (route as Route & { resolveParams?: (pattern: string) => Record<string, string> | null }).resolveParams === 'function') {
-                const params = (route as Route & { resolveParams: (pattern: string) => Record<string, string> | null }).resolveParams(pattern);
+            if (
+                this._isNamedRoutePattern(pattern) &&
+                typeof (route as Route & { resolveParams?: (pattern: string) => Record<string, string> | null })
+                    .resolveParams === 'function'
+            ) {
+                const params = (
+                    route as Route & { resolveParams: (pattern: string) => Record<string, string> | null }
+                ).resolveParams(pattern);
                 if (params) {
                     return params;
                 }
@@ -207,7 +213,10 @@ export class MappedRouterInterceptor extends AsPathMatcherFilter(Null) implement
      * @since 1.0.0
      */
     private _matchesPattern(route: Route, routePath: string, pattern: string): boolean {
-            if (this._isNamedRoutePattern(pattern) && typeof (route as Route & { matches?: (pattern: string) => boolean }).matches === 'function') {
+        if (
+            this._isNamedRoutePattern(pattern) &&
+            typeof (route as Route & { matches?: (pattern: string) => boolean }).matches === 'function'
+        ) {
             return (route as Route & { matches: (pattern: string) => boolean }).matches(pattern);
         }
 

@@ -160,10 +160,12 @@ export class PathRoute implements Route<Record<string, string>>, Serializable {
      * @since 1.0.0
      */
     get length(): number {
-        return Object.keys(this).reduce((maxIndex: number, key: string) => {
-            const index = key === '' ? NaN : Number(key);
-            return !Number.isNaN(index) && index > maxIndex ? index : maxIndex;
-        }, -1) + 1;
+        return (
+            Object.keys(this).reduce((maxIndex: number, key: string) => {
+                const index = key === '' ? NaN : Number(key);
+                return !Number.isNaN(index) && index > maxIndex ? index : maxIndex;
+            }, -1) + 1
+        );
     }
 
     /**

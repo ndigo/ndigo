@@ -4,7 +4,12 @@ import { ApplicationContext } from '@blue/context';
 import { Route } from '@blue/router';
 import { isFunction } from '@blue/util/types';
 import { RouteHandlerMethod, RouteHandlerMethodMappingNamingStrategy } from './route-handler-method';
-import { RouteMappingInfo, PatternsRouteCondition, QueryParamCondition, MatrixParamCondition } from './route-mapping-info';
+import {
+    RouteMappingInfo,
+    PatternsRouteCondition,
+    QueryParamCondition,
+    MatrixParamCondition,
+} from './route-mapping-info';
 import { HTTPMethodCondition } from './http-method-condition';
 import { hasRouteMapping, getRouteMapping } from './route-mapping';
 import { hasMethodParameter, getMethodParameter, MethodParameter } from './route-parameter';
@@ -21,7 +26,10 @@ const { from } = Array,
 /**
  * Base class for mappings that resolve handler methods from application context values.
  */
-export abstract class AbstractHandlerMethodMapping<T extends RouteMappingInfo> extends AbstractHandlerMapping implements Initializable {
+export abstract class AbstractHandlerMethodMapping<T extends RouteMappingInfo>
+    extends AbstractHandlerMapping
+    implements Initializable
+{
     /**
      * Naming strategy used when exposing handler methods by name.
      */
@@ -136,7 +144,7 @@ export abstract class AbstractHandlerMethodMapping<T extends RouteMappingInfo> e
 
         if (resolvedHandler) {
             const handlerPrototype = getPrototypeOf(resolvedHandler);
-            
+
             if (handlerPrototype !== null) {
                 keys(handlerPrototype).forEach((key) => {
                     if (isFunction((handlerPrototype as any)[key]) && hasRouteMapping(resolvedHandler, key)) {
@@ -207,7 +215,7 @@ export abstract class AbstractHandlerMethodMapping<T extends RouteMappingInfo> e
      * @param route - The current route.
      */
     protected _handleMatch(mapping: T, path: string, route: Route): void {
-        const kindOfTag = this.#kindOfTag ??= kindOf(this);
+        const kindOfTag = (this.#kindOfTag ??= kindOf(this));
         if (kindOfTag) {
             (route as any)[kindOfTag] = path;
         }
@@ -256,10 +264,14 @@ export abstract class AbstractHandlerMethodMapping<T extends RouteMappingInfo> e
         let methodInfo: RouteMappingInfo | undefined;
         if (methodMapping) {
             const methodParams = (methodMapping as any).queryParams
-                ? new QueryParamCondition(...((methodMapping as any).queryParams as string).split(',').map((s) => s.trim()))
+                ? new QueryParamCondition(
+                      ...((methodMapping as any).queryParams as string).split(',').map((s) => s.trim())
+                  )
                 : new QueryParamCondition();
             const methodMatrix = (methodMapping as any).matrixParams
-                ? new MatrixParamCondition(...((methodMapping as any).matrixParams as string).split(',').map((s) => s.trim()))
+                ? new MatrixParamCondition(
+                      ...((methodMapping as any).matrixParams as string).split(',').map((s) => s.trim())
+                  )
                 : new MatrixParamCondition();
             const methodMethod = new HTTPMethodCondition((methodMapping as any).method);
 
@@ -276,10 +288,14 @@ export abstract class AbstractHandlerMethodMapping<T extends RouteMappingInfo> e
             const handlerMapping = getRouteMapping(handler.constructor);
             if (handlerMapping) {
                 const handlerParams = (handlerMapping as any).queryParams
-                    ? new QueryParamCondition(...((handlerMapping as any).queryParams as string).split(',').map((s) => s.trim()))
+                    ? new QueryParamCondition(
+                          ...((handlerMapping as any).queryParams as string).split(',').map((s) => s.trim())
+                      )
                     : new QueryParamCondition();
                 const handlerMatrix = (handlerMapping as any).matrixParams
-                    ? new MatrixParamCondition(...((handlerMapping as any).matrixParams as string).split(',').map((s) => s.trim()))
+                    ? new MatrixParamCondition(
+                          ...((handlerMapping as any).matrixParams as string).split(',').map((s) => s.trim())
+                      )
                     : new MatrixParamCondition();
 
                 const handlerInfo = new RouteMappingInfo(

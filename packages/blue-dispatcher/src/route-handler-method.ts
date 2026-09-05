@@ -102,7 +102,9 @@ export class RouteHandlerMethod implements HandlerMethod, Serializable {
                 getSymbolMetadata(this.handler)[`telemetry:traced:${String(this.method)}:original`] ??
                 (this.handler as Record<string, unknown>)[this.method];
             const paramNames = getFunctionParamNames(original as Function);
-            const routeParamIndex = paramNames.findIndex((name) => name === 'route' || name === 'request' || name === 'req');
+            const routeParamIndex = paramNames.findIndex(
+                (name) => name === 'route' || name === 'request' || name === 'req'
+            );
             if (routeParamIndex !== -1) {
                 args[routeParamIndex] = route;
             }

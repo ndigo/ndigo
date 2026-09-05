@@ -41,7 +41,9 @@ describe('signal', () => {
     it('subscribe fires immediately with initial value', () => {
         const s = signal(42);
         let value: number | undefined;
-        s.subscribe((v) => { value = v; });
+        s.subscribe((v) => {
+            value = v;
+        });
         expect(value).toBe(42);
     });
 
@@ -125,7 +127,9 @@ describe('computed', () => {
         expect(c.value).toBe(0);
         s.value = 3;
         expect(c.value).toBe(6);
-        expect(() => { (c as any).value = 42; }).toThrow();
+        expect(() => {
+            (c as any).value = 42;
+        }).toThrow();
     });
 
     it('chains computed from computed', () => {

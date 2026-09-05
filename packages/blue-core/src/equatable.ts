@@ -41,7 +41,7 @@ const _deepEqual = (a: unknown, b: unknown): boolean => {
     if (a === b) return true;
     if (a === null || b === null) return false;
     if (typeof a !== 'object' || typeof b !== 'object') return false;
-    
+
     // Handle arrays
     if (Array.isArray(a) !== Array.isArray(b)) return false;
     if (Array.isArray(a)) {
@@ -51,17 +51,17 @@ const _deepEqual = (a: unknown, b: unknown): boolean => {
         }
         return true;
     }
-    
+
     // Handle objects
     const keysA = Object.keys(a as object);
     const keysB = Object.keys(b as object);
     if (keysA.length !== keysB.length) return false;
-    
+
     for (const key of keysA) {
         if (!(key in (b as object))) return false;
         if (!_deepEqual((a as any)[key], (b as any)[key])) return false;
     }
-    
+
     return true;
 };
 

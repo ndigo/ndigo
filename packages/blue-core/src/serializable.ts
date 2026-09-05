@@ -47,9 +47,10 @@ const { isArray } = Array,
         if (a === null || b === null) return false;
         if (typeof a !== 'object' || typeof b !== 'object') return false;
         if (Array.isArray(a) !== Array.isArray(b)) return false;
-        const keysA = Object.keys(a as object), keysB = Object.keys(b as object);
+        const keysA = Object.keys(a as object),
+            keysB = Object.keys(b as object);
         if (keysA.length !== keysB.length) return false;
-        return keysA.every(k => _deepEqual((a as any)[k], (b as any)[k]));
+        return keysA.every((k) => _deepEqual((a as any)[k], (b as any)[k]));
     };
 
 /**
@@ -58,7 +59,9 @@ const { isArray } = Array,
  * @param value - Value to test.
  * @returns `true` when the value is an array that survives a JSON round trip unchanged.
  */
-export const isJSONArray = ((value: any) => isArray(value) && _deepEqual(parse(stringify(value)), value)) as (value: any) => value is JSONArray;
+export const isJSONArray = ((value: any) => isArray(value) && _deepEqual(parse(stringify(value)), value)) as (
+    value: any
+) => value is JSONArray;
 
 /**
  * Tests whether a value is a JSON object.
@@ -66,7 +69,8 @@ export const isJSONArray = ((value: any) => isArray(value) && _deepEqual(parse(s
  * @param value - Value to test.
  * @returns `true` when the value is a non-primitive, non-array object that survives a JSON round trip unchanged.
  */
-export const isJSONObject = ((value: any) => isNotPrimitive(value) && isNotArray(value) && _deepEqual(parse(stringify(value)), value)) as (
+export const isJSONObject = ((value: any) =>
+    isNotPrimitive(value) && isNotArray(value) && _deepEqual(parse(stringify(value)), value)) as (
     value: any
 ) => value is JSONObject;
 

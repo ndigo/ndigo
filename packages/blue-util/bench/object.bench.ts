@@ -73,7 +73,7 @@ const isDeepEqual = (left: unknown, right: unknown): boolean => {
     return true;
 };
 
-describe("obj.name", () => {
+describe('obj.name', () => {
     bench('native', () => {
         let accumulator = 0;
 
@@ -87,7 +87,7 @@ describe("obj.name", () => {
     });
 });
 
-describe("(obj) => obj.name", () => {
+describe('(obj) => obj.name', () => {
     bench('native', () => {
         let accumulator = 0;
 
@@ -114,7 +114,7 @@ describe('Object.keys(obj)', () => {
     });
 });
 
-describe("obj?.a?.b?.c", () => {
+describe('obj?.a?.b?.c', () => {
     bench('native', () => {
         let accumulator = 0;
 
@@ -130,7 +130,7 @@ describe("obj?.a?.b?.c", () => {
     });
 });
 
-describe("pred(obj.name)", () => {
+describe('pred(obj.name)', () => {
     bench('native', () => {
         let accumulator = 0;
 

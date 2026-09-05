@@ -209,7 +209,7 @@ export class InMemoryEntityManager implements EntityManager {
     #callLifecycleHooks<T extends object>(entity: T, event: string): void {
         const entityClass = entity.constructor as Constructable<T>;
         const metadata = getEntityMetadata(entityClass);
-        const hooks = metadata.lifecycleHooks.filter(h => h.event === event);
+        const hooks = metadata.lifecycleHooks.filter((h) => h.event === event);
         const record = entity as Record<string, (...args: unknown[]) => unknown>;
         for (const hook of hooks) {
             if (typeof record[hook.methodName] === 'function') {
@@ -231,9 +231,7 @@ export class InMemoryEntityManager implements EntityManager {
             const result = record.validate() as { isValid: boolean; failedProperties?: Set<string> };
             if (!result.isValid) {
                 const fields = result.failedProperties ? [...result.failedProperties].join(', ') : 'unknown';
-                throw new FrameworkError(
-                    `Entity validation failed for fields: ${fields}`
-                );
+                throw new FrameworkError(`Entity validation failed for fields: ${fields}`);
             }
         }
     }

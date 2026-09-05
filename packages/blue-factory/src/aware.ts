@@ -102,9 +102,8 @@ export const likeAware = (value: unknown): value is Aware => {
  * likeAwareAndYellow( { color: 'yellow' } ); // false
  * likeAwareAndYellow( { '@@aware': true, color: 'yellow' } ); // true
  */
-export const likeAwareAnd = ((predicate: (value: unknown) => boolean) => (value: unknown) => likeAware(value) && predicate(value)) as (
-    predicate: (value: unknown) => boolean
-) => (value: unknown) => boolean;
+export const likeAwareAnd = ((predicate: (value: unknown) => boolean) => (value: unknown) =>
+    likeAware(value) && predicate(value)) as (predicate: (value: unknown) => boolean) => (value: unknown) => boolean;
 
 /**
  * @param {*} value

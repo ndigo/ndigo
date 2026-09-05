@@ -178,7 +178,7 @@ export class AbstractDispatcher
     protected _processHandlerError(route: Route, handler: object | null, error: Error): ModelAndView | null {
         // Handle the case where handler might be null
         const safeHandler = handler || {};
-        
+
         for (const resolver of this.errorResolvers) {
             const mav = resolver.resolveError(route, safeHandler, error);
             if (mav) {

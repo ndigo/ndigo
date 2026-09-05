@@ -27,7 +27,7 @@ describe('MapServiceRegistry', () => {
     test('should return a copy of the endpoints map', () => {
         registry.register('users', 'https://api.example.com/users');
         const endpoints = registry.getAllEndpoints();
-        
+
         // Modifying the returned map should not affect the registry
         endpoints.set('users', 'https://modified.example.com/users');
         expect(registry.getEndpoint('users')).toBe('https://api.example.com/users');
@@ -110,7 +110,7 @@ describe('CryptoRequestIdCorrelation', () => {
     test('should not generate a new ID if one is already set', () => {
         const customId = 'custom-id-123';
         correlation.setCorrelationId(customId);
-        
+
         // Calling getCorrelationId multiple times should return the same ID
         expect(correlation.getCorrelationId()).toBe(customId);
         expect(correlation.getCorrelationId()).toBe(customId);

@@ -1,5 +1,9 @@
 import { describe, test, beforeEach, afterEach, expect, vi } from 'vitest';
-import { NamePathHandlerMapping, SimplePathHandlerMapping, LinearMetadataHandlerMapping } from '../src/route-handler-mapping';
+import {
+    NamePathHandlerMapping,
+    SimplePathHandlerMapping,
+    LinearMetadataHandlerMapping,
+} from '../src/route-handler-mapping';
 import { GenericApplicationContext } from '@blue/context';
 import { TestController } from './test-strategies';
 import { routeMapping } from '../src/route-mapping';

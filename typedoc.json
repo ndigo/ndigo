@@ -19,10 +19,8 @@
     "packages/blue-view-webcomponent/src/index.ts",
     "packages/blue-platform-web/src/index.ts",
     "packages/blue-factory/src/index.ts",
-    "packages/blue-auth/src/index.ts",
     "packages/blue-dom/src/index.ts",
     "packages/blue-eslint-plugin/src/index.ts",
-    "packages/blue-generators/src/index.ts",
     "packages/blue-orm/src/index.ts",
     "packages/blue-orm-drizzle/src/index.ts",
     "packages/blue-platform-node/src/index.ts",
@@ -33,17 +31,36 @@
     "packages/blue-test/src/index.ts",
     "packages/blue-management/src/index.ts"
   ],
-  "exclude": ["**/node_modules/**", "**/test/**", "archive/**"],
+  "exclude": [
+    "**/node_modules/**",
+    "**/test/**",
+    "archive/**"
+  ],
   "out": "doc-md",
-  "plugin": ["typedoc-plugin-markdown"],
+  "plugin": [
+    "typedoc-plugin-markdown",
+    "./scripts/typedoc-tags-plugin.mjs"
+  ],
   "readme": "README.md",
   "categorizeByGroup": true,
-  "categoryOrder": ["Function", "List", "Object", "String", "Type", "Logic", "Math", "Relation", "*"],
+  "categoryOrder": [
+    "Function",
+    "List",
+    "Object",
+    "String",
+    "Type",
+    "Logic",
+    "Math",
+    "Relation",
+    "*"
+  ],
   "excludePrivate": true,
   "excludeProtected": false,
   "excludeInternal": false,
   "includeVersion": true,
-  "sort": ["source-order"],
+  "sort": [
+    "source-order"
+  ],
   "gitRevision": "main",
   "skipErrorChecking": true,
   "treatWarningsAsErrors": false,
@@ -51,5 +68,64 @@
   "compilerOptions": {
     "skipLibCheck": true,
     "noEmit": true
-  }
+  },
+  "externalSymbolLinkMappings": {
+    "@blue/platform-node": {
+      "NodeDispatcher": "#",
+      "HTTPServer": "#",
+      "ResourceLoader": "#",
+      "UnresolvedResource": "#"
+    },
+    "@blue/platform-web": {
+      "BrowserDispatcher": "#"
+    },
+    "@blue/router": {
+      "Route": "#"
+    },
+    "@blue/view": {
+      "View": "#"
+    },
+    "@blue/dispatcher": {
+      "RouteHandlerInterceptor": "#",
+      "Dispatcher": "#",
+      "ModelAndView": "#",
+      "ViewNameTranslator": "#"
+    },
+    "@blue/context": {
+      "ResourceLoaderAware": "#",
+      "ApplicationEventEmitterAware": "#",
+      "ContentSourceAware": "#",
+      "ContentSource": "#",
+      "EntryRegistryProcessor": "#",
+      "LifecycleProcessor": "#"
+    },
+    "@blue/telemetry": {
+      "FeatureMetricAggregator": "#",
+      "LoggerFactory": "#"
+    },
+    "@blue/http": {
+      "ResponseError": "#"
+    },
+    "@blue/core": {
+      "Factory": "#",
+      "EntryProcessor": "#",
+      "reduce": "#",
+      "Map": "#",
+      "string": "#"
+    },
+    "@blue/factory": {
+      "ContextToken": "#",
+      "Factory": "#",
+      "InitializationAwareProcessor": "#",
+      "Initializable": "#",
+      "EntryRegistryProcessor": "#"
+    },
+    "@blue/content": {
+      "ContentSource": "#"
+    },
+    "typescript": {
+      "external": "#"
+    }
+  },
+  "gitRemote": "bluejs/blue"
 }

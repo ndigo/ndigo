@@ -966,9 +966,10 @@ graph TD
 |---|---|---|
 | `@blue/signals` (`signal`/`computed`/`effect`) | **Local, synchronous, derived state** within one component or service — a value that other code reads and reacts to immediately. | Using signals to broadcast asynchronous cross-component notifications (a "signal as an event bus"). |
 | `@blue/context` `EventEmitter` (`Emitter`, `AsEventEmitter`) | **Cross-component, asynchronous application events** — decoupled publish/subscribe with `:`-hierarchy dispatch (`ApplicationEvent` style). | Using an emitter to model derived/inline state that components read synchronously. |
-| `@blue/model` `asMinimalEventEmitter` | **Internal implementation detail** of the objectmodel integration. | Importing it as a public event bus — it is not exported for application use. |
 
 **Rule of thumb:** derived value you read → signal; thing that happened that others should react to → event.
+
+> **Removed (2026-09-05):** `@blue/model`'s `EventModel`/`asMinimalEventEmitter` — the legacy pre-signals "observable model" emitter — has been deleted. Reactive models are now `@blue/signals`' `@reactive`/`@signal` decorators, with validation layered on via `@blue/validate` (or `objectmodel`'s `BasicModel`).
 
 ### Validation
 

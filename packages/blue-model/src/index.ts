@@ -18,8 +18,3 @@ export * from 'objectmodel';
  * Re-exports BlueJS primitive and derived model helpers.
  */
 export * from './basic';
-
-/**
- * Re-exports BlueJS event-aware model helpers.
- */
-export * from './event';

@@ -1,5 +1,4 @@
 /**
- * @author Jeff Rose
  *
  * Barrel file — re-exports all public types from the split handler-mapping modules.
  * Module-level constants used by multiple split files live here.

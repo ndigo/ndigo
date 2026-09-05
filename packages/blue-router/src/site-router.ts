@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { PathRoute } from './path-route';
 import { Route } from './route';
 import { AbstractRouter } from './router';

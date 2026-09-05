@@ -1,5 +1,3 @@
-/** @author Jeff Rose */
-
 import { describe, test, expect } from 'vitest';
 import { InMemoryDataSource } from '../src/data-source';
 import { InMemoryEntityManager } from '../src/entity-manager';

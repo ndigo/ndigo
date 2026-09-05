@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 export * from './argument-value-converter';
 export * from './node-environment';
 export * from './node-request';

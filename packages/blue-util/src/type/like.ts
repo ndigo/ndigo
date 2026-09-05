@@ -1,7 +1,4 @@
 /**
- * @author Jeff Rose
- * @author Jeff Rose (performance optimization)
- * `copyright` &copy; JPMorgan Chase & Co. All rights reserved.
  */
 
 export type LikeDescriptor = { [key: string]: Function | true };

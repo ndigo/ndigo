@@ -1,8 +1,4 @@
 /**
- * @author Jeff Rose
- */
-
-/**
  * Interface for request-ID correlation across service calls.
  */
 export interface RequestIdCorrelation {

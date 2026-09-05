@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 export * from './principal';
 export * from './state';
 export * from './session';

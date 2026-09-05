@@ -1,5 +1,4 @@
 /**
- * @author Jeff Rose
  * @module string
  */
 

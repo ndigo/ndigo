@@ -1,15 +1,24 @@
-/**
- * @author Jeff Rose
- */
-
-import { FrameworkError, likeEnumerable, isPrimitive, entriesIterator, isShared, getSharedOptions, satisfiesVersion } from '@blue/core';
+import {
+    FrameworkError,
+    likeEnumerable,
+    isPrimitive,
+    entriesIterator,
+    isShared,
+    getSharedOptions,
+    satisfiesVersion,
+} from '@blue/core';
 import { Destroyable, Initializable, likeDestroyable, likeInitializable } from './lifecycle';
 import { isConstructor, isFunction, isNumber, isString } from '@blue/util/types';
 import { Aware, likeAware, likeNameAware } from './aware';
 import { ContextToken } from './context-token';
 import { getScope, HashScope, PossibleScope, PrototypeScope, Scope, ScopedFactory, SingletonScope } from './scope';
 import ScopeRegistry from './_scope-registry';
-import { EntryProcessor, likeConstructionAwareProcessor, likeDestructionAwareProcessor, likeInitializationAwareProcessor } from './entry-processor';
+import {
+    EntryProcessor,
+    likeConstructionAwareProcessor,
+    likeDestructionAwareProcessor,
+    likeInitializationAwareProcessor,
+} from './entry-processor';
 import { Factory, ConfigurableFactory, FactoryAware, likeFactoryAware, getErrorMessage } from './factory-contract';
 import { create, keys, construct, defineProperty, deleteProperty } from './factory-shared';
 

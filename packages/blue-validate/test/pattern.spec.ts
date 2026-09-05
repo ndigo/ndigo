@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { pattern } from '../src/decorators';
 import { ConstraintViolationError } from '../src/error';

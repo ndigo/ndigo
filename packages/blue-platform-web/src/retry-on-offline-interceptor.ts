@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { HTTP, RequestAwareHTTPInterceptor, ResponseAwareHTTPInterceptor } from '@blue/http';
 
 /**

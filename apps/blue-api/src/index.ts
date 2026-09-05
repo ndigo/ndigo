@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import 'node:process';
 import { MetadataConfigApplicationContext } from '@blue/context';
 import { RadixMetadataHandlerMapping } from '@blue/dispatcher';

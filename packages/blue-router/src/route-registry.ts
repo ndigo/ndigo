@@ -1,5 +1,4 @@
 /**
- * @author Jeff Rose
  *
  * Scans `routeMapping` decorator metadata from registered beans and builds
  * a nested tree of type-safe {@link RouteDefinition} instances.

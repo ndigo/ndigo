@@ -1,5 +1,4 @@
 /**
- * @author Jeff Rose
  * @see {@link https://ramdajs.com/docs/}
  * @see {@link http://moutjs.com/docs/latest/string.html#properCase}
  */

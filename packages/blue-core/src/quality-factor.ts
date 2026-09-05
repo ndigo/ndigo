@@ -1,13 +1,9 @@
-/**
- * @author Jeff Rose
- */
-
 import { isNumber, isString } from '@blue/util/types';
 import { Comparator, numberComparator } from './comparable.js';
 
 /**
  * * This is currently not in use. It's an initial draft of making more robust support for quality factors,
- * * which are often used in media types and http headers. -JBR
+ * * which are often used in media types and http headers.
  */
 
 export type QualityFactorParameter = `;q=${0.1 | 0.2 | 0.3 | 0.4 | 0.5 | 0.6 | 0.7 | 0.8 | 0.9 | '1.0'}`;

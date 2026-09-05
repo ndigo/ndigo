@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { ApplicationContext } from '@blue/context';
 import { HandlerMethodArgumentResolver } from '@blue/dispatcher';
 import { configureBrowserArgumentResolvers } from './configure-argument-resolvers';

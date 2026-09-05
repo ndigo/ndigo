@@ -1,5 +1,3 @@
-/** @author Jeff Rose */
-
 /**
  * Maps encapsulated third-party library names to their BlueJS integration layer package.
  *

@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { isNil } from '@blue/util/types';
 import { Route } from '@blue/router';
 import { AbstractNamedValueMethodArgumentResolver } from './argument-resolver';

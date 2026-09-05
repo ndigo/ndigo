@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { describe, it, expect } from 'vitest';
 import { RouteRegistry, deriveKey, getRouteMapping, getRouteMappingMethodKeys } from '../src/route-registry';
 import { RouteDefinition } from '../src/route-definition';

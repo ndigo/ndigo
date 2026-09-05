@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { RadixTree, RadixMatch, Comparator, MultiValueMap } from '@blue/core';
 import { Route } from '@blue/router';
 import {

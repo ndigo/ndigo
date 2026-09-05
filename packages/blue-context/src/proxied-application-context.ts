@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { JSONObject } from '@blue/core';
 import { GenericApplicationContext } from './generic-application-context';
 
@@ -53,4 +49,3 @@ export class ProxiedGenericApplicationContext extends GenericApplicationContext 
         });
     }
 }
-

@@ -1,5 +1,4 @@
 /**
- * @author Jeff Rose
  * @see content
  * @see core
  * @see factory

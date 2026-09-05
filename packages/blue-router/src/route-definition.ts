@@ -1,5 +1,4 @@
 /**
- * @author Jeff Rose
  *
  * A type-safe route definition that can generate URLs, navigate, parse, and match routes.
  */

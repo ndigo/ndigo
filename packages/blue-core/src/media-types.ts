@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import MediaType from './media-type.js';
 
 /**

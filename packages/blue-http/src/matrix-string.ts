@@ -1,6 +1,3 @@
-/**
- * @author Jeff Rose
- */
 import { JSONObject, Parser, Stringifier } from '@blue/core';
 import matrixExpression from './parsers/matrix-expression';
 import { encodeURIComponent as encodeValue } from '@blue/util/string';

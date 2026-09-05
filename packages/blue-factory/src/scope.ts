@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import '@tsmetadata/polyfill';
 import { IllegalStateError } from '@blue/core';
 

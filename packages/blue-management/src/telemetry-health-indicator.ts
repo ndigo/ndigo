@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { FeatureMetricAggregator } from '@blue/telemetry';
 import { HealthIndicator, HealthResult, HealthState } from './health';
 

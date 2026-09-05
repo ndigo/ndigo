@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { getMapping } from '@blue/dispatcher';
 import { ApplicationContext, AsApplicationContextAware } from '@blue/context';
 import { Null } from '@blue/core';

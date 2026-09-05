@@ -1,8 +1,4 @@
 /**
- * @author Jeff Rose
- */
-
-/**
  * Defines the structure for a currency format, including symbols, delimiters, and regex patterns.
  * @property {string} decimal - The character used for the decimal separator (e.g., '.').
  * @property {number} decimalDigits - The number of digits expected after the decimal point.

@@ -1,6 +1,3 @@
-/**
- * @author Jeff Rose
- */
 import { like } from '@blue/util/types';
 import { Registry } from './registry';
 

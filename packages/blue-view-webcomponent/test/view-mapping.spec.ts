@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import '@tsmetadata/polyfill';
 import { describe, expect, it } from 'vitest';
 import { ViewMapping } from '../src/view-mapping.js';

@@ -1,6 +1,3 @@
-/**
- * @author Jeff Rose
- */
 import { Route } from '@blue/router';
 
 /**

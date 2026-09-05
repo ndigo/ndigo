@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { AsAware, Aware } from '@blue/factory';
 import { like } from '@blue/util/types';
 

@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { getMapping } from '@blue/dispatcher';
 import { FeatureMetricAggregator } from '@blue/telemetry';
 import { ApplicationContext, AsApplicationContextAware } from '@blue/context';

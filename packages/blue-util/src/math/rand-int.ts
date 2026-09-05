@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import rand from './rand.js';
 
 /**

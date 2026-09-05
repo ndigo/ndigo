@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import '@tsmetadata/polyfill';
 
 export const AUTH_REQUIRED_KEY = 'auth:required';

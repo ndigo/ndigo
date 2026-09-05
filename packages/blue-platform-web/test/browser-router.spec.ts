@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { describe, test, expect, vi, afterEach, beforeAll } from 'vitest';
 import { BrowserRouter } from '../src/browser-router';
 

@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import randHex from './rand-hex.js';
 import randInt from './rand-int.js';
 

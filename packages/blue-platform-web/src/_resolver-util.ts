@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { MethodParameter, ParameterConversionError } from '@blue/dispatcher';
 import { Route } from '@blue/router';
 import { ArgumentValueConversionContext, ArgumentValueConverter, resolveConverter } from './argument-value-converter';

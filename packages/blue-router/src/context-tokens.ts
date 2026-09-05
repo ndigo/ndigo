@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { ContextToken } from '@blue/factory';
 import type { Router } from './router';
 

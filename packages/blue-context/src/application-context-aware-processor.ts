@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { likeContentSourceAware } from '@blue/content';
 import { likeApplicationEventEmitterAware } from './event-emitter';
 import { InitializationAwareProcessor, likeAware } from '@blue/factory';

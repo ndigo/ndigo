@@ -1,12 +1,16 @@
-/**
- * @author Jeff Rose
- */
-
 import { JSONObject } from '@blue/core';
 import { ContentSource, Theme, ThemeResolver, likeContentSource } from '@blue/content';
 import { like } from '@blue/util/types';
 import { EventEmitter, likeEventEmitter, EventType } from './event-emitter';
-import { ConfigurableFactory, Destroyable, likeDestroyable, likeFactory, likeRegistry, likeAwareAnd, Aware } from '@blue/factory';
+import {
+    ConfigurableFactory,
+    Destroyable,
+    likeDestroyable,
+    likeFactory,
+    likeRegistry,
+    likeAwareAnd,
+    Aware,
+} from '@blue/factory';
 import { EnvironmentSource, likeEnvironmentSource, ConfigurableEnvironment } from './environment';
 import { ResourceLoader, likeResourceLoader } from './resource';
 

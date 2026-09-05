@@ -1,6 +1,3 @@
-/**
- * @author Jeff Rose
- */
 import Type, { ValidationResults } from './type';
 import { ValidationOptions } from './type';
 import { serializable } from '@blue/core';

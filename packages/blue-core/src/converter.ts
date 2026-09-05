@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { Parser, Stringifier } from './parser';
 
 // ---------------------------------------------------------------------------

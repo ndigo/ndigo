@@ -1,5 +1,3 @@
-/** @author Jeff Rose */
-
 import { Constructable, IllegalStateError, FrameworkError } from '@blue/core';
 import { DataSource } from './data-source';
 import { getEntityMetadata, isEntity } from './metadata';

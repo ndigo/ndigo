@@ -1,5 +1,4 @@
 /**
- * @author Jeff Rose
  *
  * Benchmark suite for `LinearMetadataHandlerMapping` route resolution throughput.
  * Includes external baselines: find-my-way and radix3.

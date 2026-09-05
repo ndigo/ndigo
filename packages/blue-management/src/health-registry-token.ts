@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { ContextToken } from '@blue/context';
 import { HealthRegistry } from './health';
 

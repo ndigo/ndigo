@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { createNull } from './null.js';
 
 const blue = createNull();

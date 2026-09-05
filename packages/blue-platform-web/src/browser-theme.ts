@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { ConfigurableApplicationContext } from '@blue/context';
 import { CookieThemeResolver, configureCookieThemeResolver } from './cookie-theme-resolver';
 

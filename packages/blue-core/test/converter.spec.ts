@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { describe, test, expect, beforeEach } from 'vitest';
 import {
     ConverterRegistry,

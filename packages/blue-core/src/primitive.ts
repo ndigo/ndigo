@@ -1,8 +1,4 @@
 /**
- * @author Jeff Rose
- */
-
-/**
  * A JavaScript primitive value.
  *
  * Primitives are the values that are not objects and do not carry methods or state.

@@ -1,5 +1,3 @@
-/** @author Jeff Rose */
-
 import { Constructable } from '@blue/core';
 import { EntityManager } from './entity-manager';
 import { getEntityMetadata } from './metadata';

@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { ApplicationContext } from '@blue/context';
 import { Constructable } from '@blue/core';
 import {

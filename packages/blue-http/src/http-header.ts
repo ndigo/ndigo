@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { isEntries, isJSONObject, JSONValue, Serializable } from '@blue/core';
 import { is, isString } from '@blue/util/types';
 

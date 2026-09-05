@@ -67,6 +67,25 @@ jobs:
         # kept as an explicit loud lane for failure isolation.
         run: pnpm -r exec tsc -b tsconfig.build.json
 
+      - name: Install graft
+        # The repo graph tool is a global npm package on dev machines; make it
+        # available to the lanes below.
+        run: npm install -g @nanonets/graft
+
+      - name: Repo graph build (graft)
+        # Tier-1 graph: tree-sitter wiring + symbol spans across the whole
+        # tree — deterministic, no API key ($0). A hard gate: graft's parsers
+        # fail loudly on constructs tsc does not cover (legacy .js scripts,
+        # mixed-version decorators, unused-file syntax).
+        run: graft build
+
+      - name: Repo graph in sync (graft check)
+        # Immediately after a clean build the fingerprint must report the
+        # graph in sync; a mismatch means the wiring or fingerprint mechanism
+        # regressed. (The deep meaning tier is an environment-with-key
+        # nicety — run `graft build --deep` locally after large changes.)
+        run: graft check
+
   e2e:
     runs-on: ubuntu-latest
     timeout-minutes: 20

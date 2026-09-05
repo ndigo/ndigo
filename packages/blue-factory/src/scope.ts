@@ -23,11 +23,11 @@ export interface ScopedFactory {
 
 const SCOPE_KEY = 'scope:mapping';
 
-const getConstructor = (target: Function | object): (Function & { [Symbol.metadata]?: Record<string, unknown> }) | undefined => {
+const getConstructor = (target: unknown): (Function & { [Symbol.metadata]?: Record<string, unknown> }) | undefined => {
     if (typeof target === 'function') {
         return target as Function & { [Symbol.metadata]?: Record<string, unknown> };
     }
-    return (target as object)?.constructor as (Function & { [Symbol.metadata]?: Record<string, unknown> }) | undefined;
+    return (target as object | undefined)?.constructor as (Function & { [Symbol.metadata]?: Record<string, unknown> }) | undefined;
 };
 
 /**
@@ -35,7 +35,7 @@ const getConstructor = (target: Function | object): (Function & { [Symbol.metada
  * @param {*} value - Scope name
  * @param {*} target - Class constructor
  */
-export const defineScope = (value: PossibleScope, target: any): void => {
+export const defineScope = (value: PossibleScope, target: unknown): void => {
     const ctor = getConstructor(target);
     if (!ctor) return;
 
@@ -53,7 +53,7 @@ export const defineScope = (value: PossibleScope, target: any): void => {
  * @param {*} target - Class constructor or instance
  * @returns {*} Scope name or undefined
  */
-export const getScope = (target: any): PossibleScope | undefined => {
+export const getScope = (target: unknown): PossibleScope | undefined => {
     const ctor = getConstructor(target);
     return ctor?.[Symbol.metadata]?.[SCOPE_KEY] as PossibleScope | undefined;
 };
@@ -63,7 +63,7 @@ export const getScope = (target: any): PossibleScope | undefined => {
  * @param {*} target - Class constructor or instance
  * @returns {boolean} Whether or not the target has a scope mapping defined
  */
-export const hasScope = (target: any): boolean => {
+export const hasScope = (target: unknown): boolean => {
     const ctor = getConstructor(target);
     return ctor?.[Symbol.metadata]?.[SCOPE_KEY] !== undefined;
 };

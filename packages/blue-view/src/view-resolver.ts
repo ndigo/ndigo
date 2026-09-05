@@ -23,7 +23,7 @@ export interface ViewResolver {
      * @param language - Optional locale or language hint used during resolution.
      * @returns A promise that resolves to the matching view, or `null` when none is available.
      */
-    resolveViewName(name: string, language?: any): Promise<View | null>;
+    resolveViewName(name: string, language?: unknown): Promise<View | null>;
 }
 
 class UnresolvedView implements View {
@@ -67,7 +67,7 @@ export abstract class AbstractCachingViewResolver implements ViewResolver {
      * @param language - Optional locale or language hint used during resolution.
      * @returns A promise that resolves to the matching view, or `null` when none is available.
      */
-    async resolveViewName(name: string, language?: any): Promise<View | null> {
+    async resolveViewName(name: string, language?: unknown): Promise<View | null> {
         let view: View | null;
         if (!this.isCaching) {
             view = await this._createView(name, language);
@@ -86,15 +86,15 @@ export abstract class AbstractCachingViewResolver implements ViewResolver {
         return view === unresolvedView ? null : view;
     }
 
-    protected async _createView(name: string, language?: any): Promise<View | null> {
+    protected async _createView(name: string, language?: unknown): Promise<View | null> {
         return this._loadView(name, language);
     }
 
-    protected _createCacheKey(name: string, language?: any): string {
-        return `${name}${language ? '_' + language : ''}`;
+    protected _createCacheKey(name: string, language?: unknown): string {
+        return `${name}${language ? '_' + String(language) : ''}`;
     }
 
-    protected abstract _loadView(name: string, language?: any): Promise<View | null>;
+    protected abstract _loadView(name: string, language?: unknown): Promise<View | null>;
 }
 
 export abstract class AbstractPathBasedViewResolver extends AbstractCachingViewResolver {
@@ -137,7 +137,7 @@ export abstract class AbstractPathBasedViewResolver extends AbstractCachingViewR
      * @param language - Optional locale or language hint.
      * @returns `true` when the name is supported; otherwise `false`.
      */
-    supports(name: string, language?: any): boolean {
+    supports(name: string, language?: unknown): boolean {
         let isSupported: boolean = !!this.viewNames;
 
         if (isSupported && this.viewNames) {
@@ -205,7 +205,7 @@ export class ImportViewResolver extends AbstractPathBasedViewResolver {
      * @param language - Optional locale or language hint.
      * @returns A promise that resolves to the imported view instance.
      */
-    protected async _loadView(name: string, language?: any): Promise<View> {
+    protected async _loadView(name: string, language?: unknown): Promise<View> {
         const path: string = `${this.prefix}${name}${this.suffix}`,
             ViewClass: Constructable<View> = await import(/* @vite-ignore */ path).then((module) => module.default);
         return new ViewClass();
@@ -231,7 +231,7 @@ export class NameViewResolver extends AsApplicationContextAware(Null) implements
      * @param language - Optional locale or language hint.
      * @returns A promise that resolves to the matching view, or `null` when none is available.
      */
-    async resolveViewName(name: string, language?: any): Promise<View | null> {
+    async resolveViewName(name: string, language?: unknown): Promise<View | null> {
         const { applicationContext } = this;
 
         let view: View | null = null;
@@ -296,7 +296,7 @@ export class ViewResolverComposite extends AsApplicationContextAware(Null) imple
      * @param language - Optional locale or language hint.
      * @returns A promise that resolves to the first matching view, or `null` when none resolve.
      */
-    async resolveViewName(name: string, language?: any): Promise<View | null> {
+    async resolveViewName(name: string, language?: unknown): Promise<View | null> {
         const { viewResolvers } = this;
         const length = viewResolvers.length;
         if (length) {

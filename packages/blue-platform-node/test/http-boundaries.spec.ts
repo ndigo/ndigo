@@ -148,4 +148,14 @@ describe('HTTPServer lifecycle', () => {
         expect(server.started).toBe(false);
         await server.close();
     });
+
+    test('rejects out-of-range and non-integer ports at construction', () => {
+        const context = new MetadataConfigApplicationContext('ports');
+        context.register(NodeAutoConfiguration);
+        context.refresh();
+        const dispatcher = context.getValue<NodeDispatcher>('dispatcher');
+        expect(() => new HTTPServer(dispatcher, { port: -1 })).toThrow(RangeError);
+        expect(() => new HTTPServer(dispatcher, { port: 65_536 })).toThrow(RangeError);
+        expect(() => new HTTPServer(dispatcher, { port: 1.5 })).toThrow(RangeError);
+    });
 });

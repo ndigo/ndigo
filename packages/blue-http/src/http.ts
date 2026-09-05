@@ -286,7 +286,7 @@ export const { assign, freeze } = Object,
  * @returns \`true\` when the value is completion-aware.
  */
 export const likeCompletionAwareHTTPInterceptor = like({ postComplete: Function }) as (
-    value: any
+    value: unknown
 ) => value is CompletionAwareHTTPInterceptor;
 
 /**
@@ -296,7 +296,7 @@ export const likeCompletionAwareHTTPInterceptor = like({ postComplete: Function 
  * @returns \`true\` when the value is error-aware.
  */
 export const likeErrorAwareHTTPInterceptor = like({ postError: Function }) as (
-    value: any
+    value: unknown
 ) => value is ErrorAwareHTTPInterceptor;
 
 /**
@@ -306,7 +306,7 @@ export const likeErrorAwareHTTPInterceptor = like({ postError: Function }) as (
  * @returns \`true\` when the value is initialization-aware.
  */
 export const likeInitializationAwareHTTPInterceptor = like({ preInit: Function }) as (
-    value: any
+    value: unknown
 ) => value is InitializationAwareHTTPInterceptor;
 
 /**
@@ -316,7 +316,7 @@ export const likeInitializationAwareHTTPInterceptor = like({ preInit: Function }
  * @returns \`true\` when the value is request-aware.
  */
 export const likeRequestAwareHTTPInterceptor = like({ preRequest: Function }) as (
-    value: any
+    value: unknown
 ) => value is RequestAwareHTTPInterceptor;
 
 /**
@@ -326,7 +326,7 @@ export const likeRequestAwareHTTPInterceptor = like({ preRequest: Function }) as
  * @returns \`true\` when the value is response-aware.
  */
 export const likeResponseAwareHTTPInterceptor = like({ postResponse: Function }) as (
-    value: any
+    value: unknown
 ) => value is ResponseAwareHTTPInterceptor;
 
 /**
@@ -335,7 +335,7 @@ export const likeResponseAwareHTTPInterceptor = like({ postResponse: Function })
  * @param value - The value to be tested.
  * @returns \`true\` when the value matches at least one interceptor role.
  */
-export const likeHTTPInterceptor = (value: any): value is ResponseAwareHTTPInterceptor =>
+export const likeHTTPInterceptor = (value: unknown): value is ResponseAwareHTTPInterceptor =>
     likeCompletionAwareHTTPInterceptor(value) ||
     likeErrorAwareHTTPInterceptor(value) ||
     likeInitializationAwareHTTPInterceptor(value) ||

@@ -24,7 +24,7 @@ export interface Registry {
  * @param {*} value The value to be tested
  * @returns {boolean} Whether or not the `value` provided is a {@link Registry|Registry}.
  */
-export const likeRegistry = (value: any): value is Registry =>
+export const likeRegistry = (value: unknown): value is Registry =>
     like({
         destroyValue: Function,
         getValue: Function,

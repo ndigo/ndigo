@@ -56,7 +56,7 @@ export interface ConstructionAwareProcessor {
      * @param argumentsList The list of arguments supplied to the `constructor`.
      * @returns The instance to expose instead of a default instance, or `null` to proceed with default construction.
      */
-    processBeforeConstruction<T = any>(name: string, constructor: Function, argumentsList?: any[]): T | null;
+    processBeforeConstruction<T = any>(name: string, constructor: Function, argumentsList?: unknown[]): T | null;
     /**
      * Process the given property values before the factory applies them to the given instance.
      *
@@ -117,7 +117,7 @@ export type EntryProcessor =
  * @param value The value to be tested.
  * @returns Whether or not the `value` provided is an {@link InitializationAwareProcessor}.
  */
-export const likeInitializationAwareProcessor = (value: any): value is InitializationAwareProcessor =>
+export const likeInitializationAwareProcessor = (value: unknown): value is InitializationAwareProcessor =>
     like({
         processAfterInitialization: Function,
         processBeforeInitialization: Function,
@@ -128,7 +128,7 @@ export const likeInitializationAwareProcessor = (value: any): value is Initializ
  * @param value The value to be tested.
  * @returns Whether or not the `value` provided is a {@link ConstructionAwareProcessor}.
  */
-export const likeConstructionAwareProcessor = (value: any): value is ConstructionAwareProcessor =>
+export const likeConstructionAwareProcessor = (value: unknown): value is ConstructionAwareProcessor =>
     like({
         processAfterConstruction: Function,
         processBeforeConstruction: Function,
@@ -139,7 +139,7 @@ export const likeConstructionAwareProcessor = (value: any): value is Constructio
  * @param value The value to be tested.
  * @returns Whether or not the `value` provided is a {@link DestructionAwareProcessor}.
  */
-export const likeDestructionAwareProcessor = (value: any): value is DestructionAwareProcessor =>
+export const likeDestructionAwareProcessor = (value: unknown): value is DestructionAwareProcessor =>
     like({ processBeforeDestruction: Function })(value);
 
 /**
@@ -147,7 +147,7 @@ export const likeDestructionAwareProcessor = (value: any): value is DestructionA
  * @param value The value to be tested.
  * @returns Whether or not the `value` provided is an {@link EntryRegistryProcessor}.
  */
-export const likeEntryRegistryProcessor = (value: any): value is EntryRegistryProcessor =>
+export const likeEntryRegistryProcessor = (value: unknown): value is EntryRegistryProcessor =>
     like({ processEntryRegistry: Function })(value);
 
 /**
@@ -155,7 +155,7 @@ export const likeEntryRegistryProcessor = (value: any): value is EntryRegistryPr
  * @param value The value to be tested.
  * @returns Whether or not the `value` provided is an {@link EntryProcessor}.
  */
-export const likeEntryProcessor = (value: any): value is EntryProcessor =>
+export const likeEntryProcessor = (value: unknown): value is EntryProcessor =>
     likeConstructionAwareProcessor(value) ||
     likeInitializationAwareProcessor(value) ||
     likeDestructionAwareProcessor(value) ||

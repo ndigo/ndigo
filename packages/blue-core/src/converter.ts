@@ -128,7 +128,7 @@ export class ConverterRegistry {
 // ---------------------------------------------------------------------------
 
 /** UUID v4 format: xxxxxxxx-xxxx-Vxxx-Yxxx-xxxxxxxxxxxx where V is version (0-f), Y is variant (8/b) */
-const UUID_PATTERN = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$/;
+const uuidPattern = /^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$/;
 
 /**
  * Converts string values to lowercase UUID strings (validation + normalization).
@@ -137,7 +137,7 @@ export class UUIDConverter implements Converter<string, string> {
     convert(value: string): string {
         const normalized = value.trim().toLowerCase();
 
-        if (!UUID_PATTERN.test(normalized)) {
+        if (!uuidPattern.test(normalized)) {
             throw new TypeError(`Invalid UUID format: ${value}`);
         }
 

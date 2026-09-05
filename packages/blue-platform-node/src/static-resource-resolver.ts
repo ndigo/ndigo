@@ -19,7 +19,7 @@
  */
 
 import { realpath, stat, readFile } from 'node:fs/promises';
-import { join, sep, resolve, isAbsolute } from 'node:path';
+import { sep, resolve, isAbsolute } from 'node:path';
 
 /** Outcome kinds for a static-resource lookup. */
 export type StaticResourceKind = 'forbidden' | 'not-found' | 'internal-error' | 'ok';

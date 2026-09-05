@@ -1,13 +1,18 @@
 {
   "name": "@blue/test",
   "version": "0.0.1",
-  "description": "Blue integration test harness — MockMVC-style in-process request dispatch",
+  "description": "Blue integration test harness \u2014 MockMVC-style in-process request dispatch",
   "type": "module",
   "files": [
     "doc",
     "lib"
   ],
-  "exports": "./lib/index.js",
+  "exports": {
+    ".": {
+      "default": "./lib/index.js",
+      "types": "./lib/index.d.ts"
+    }
+  },
   "types": "lib/index.d.ts",
   "scripts": {
     "build:lib": "tsc -b tsconfig.build.json",
@@ -33,7 +38,7 @@
     "@blue/core": "~0.0.1",
     "@blue/dispatcher": "~0.0.1",
     "@blue/platform-node": "~0.0.1",
-    "@blue/platform-web": "workspace:~",
+    "@blue/platform-web": "~0.0.1",
     "@blue/router": "~0.0.1",
     "@blue/util": "~0.0.1",
     "@blue/view": "~0.0.1"

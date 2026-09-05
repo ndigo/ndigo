@@ -1,7 +1,7 @@
 {
   "name": "@blue/telemetry-node",
   "version": "0.0.1",
-  "description": "Node.js telemetry for BlueJS — NodeSDK configuration and Node platform instrumentations",
+  "description": "Node.js telemetry for BlueJS \u2014 NodeSDK configuration and Node platform instrumentations",
   "type": "module",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
@@ -32,7 +32,7 @@
   "license": "ISC",
   "sideEffects": false,
   "dependencies": {
-    "@blue/telemetry": "workspace:~",
+    "@blue/telemetry": "~0.0.1",
     "@opentelemetry/api": "~1.9.0",
     "@opentelemetry/api-logs": "~0.222.0",
     "@opentelemetry/exporter-logs-otlp-http": "~0.222.0",

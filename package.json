@@ -36,7 +36,8 @@
     "label-labels": "node label_writer.js",
     "api-report": "nx run-many -t api-report",
     "digest": "repomix",
-    "digest:compact": "repomix --compress"
+    "digest:compact": "repomix --compress",
+    "manifest:check": "node scripts/check-manifests.mjs"
   },
   "repository": {
     "type": "git",

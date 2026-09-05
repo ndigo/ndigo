@@ -3,7 +3,7 @@
  */
 
 import { EventEmitter } from '@blue/context';
-import { HTTP, ResponseAwareHTTPInterceptor } from '@blue/http';
+import { ResponseAwareHTTPInterceptor } from '@blue/http';
 
 /**
  * Configuration options for the OfflineInterceptor.

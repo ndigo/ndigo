@@ -1,12 +1,17 @@
 {
   "name": "@blue/orm-drizzle",
   "version": "0.0.1",
-  "description": "Blue ORM Drizzle – Drizzle ORM adapter for @blue/orm",
+  "description": "Blue ORM Drizzle \u2013 Drizzle ORM adapter for @blue/orm",
   "type": "module",
   "files": [
     "lib"
   ],
-  "exports": "./lib/index.js",
+  "exports": {
+    ".": {
+      "default": "./lib/index.js",
+      "types": "./lib/index.d.ts"
+    }
+  },
   "types": "lib/index.d.ts",
   "scripts": {
     "build:lib": "tsc -b tsconfig.build.json",
@@ -39,5 +44,6 @@
   "dependencies": {
     "@libsql/client": "0.17.4",
     "drizzle-orm": "0.45.2"
-  }
+  },
+  "sideEffects": false
 }

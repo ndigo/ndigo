@@ -7,7 +7,12 @@
     "doc",
     "lib"
   ],
-  "exports": "./lib/index.js",
+  "exports": {
+    ".": {
+      "default": "./lib/index.js",
+      "types": "./lib/index.d.ts"
+    }
+  },
   "types": "lib/index.d.ts",
   "scripts": {
     "build:lib": "tsc -b tsconfig.build.json",
@@ -40,5 +45,6 @@
     "@blue/factory": "~0.0.1",
     "@blue/router": "~0.0.1",
     "@blue/view": "~0.0.1"
-  }
+  },
+  "sideEffects": false
 }

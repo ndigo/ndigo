@@ -6,10 +6,10 @@ are reported, triaged, and fixed.
 
 ## Supported versions
 
-| Version | Supported |
-| ------- | --------- |
-| `main` (development) | ✅ active remediation |
-| Released tags | ✅ security fixes for the latest minor |
+| Version              | Supported                              |
+| -------------------- | -------------------------------------- |
+| `main` (development) | ✅ active remediation                  |
+| Released tags        | ✅ security fixes for the latest minor |
 
 ## Reporting a vulnerability
 
@@ -17,9 +17,9 @@ are reported, triaged, and fixed.
 
 - Email the maintainer directly: `jeff_rose@outlook.com`
 - Include:
-  - the affected package(s) and version(s)
-  - a minimal reproduction (code or request trace)
-  - impact assessment (remote? auth bypass? data exposure? DoS?)
+    - the affected package(s) and version(s)
+    - a minimal reproduction (code or request trace)
+    - impact assessment (remote? auth bypass? data exposure? DoS?)
 
 You will receive an acknowledgment within 72 hours and a fix timeline within
 7 days. We ask that you coordinate disclosure until a patched version ships.
@@ -52,8 +52,8 @@ You will receive an acknowledgment within 72 hours and a fix timeline within
 - Every PR runs `pnpm audit --prod`; the production dependency set must have
   zero known advisories.
 - A fix is due:
-  - **High/critical**: within 14 days of the advisory's publication.
-  - **Moderate/low**: with the next dependency-update cycle (≤ 60 days).
+    - **High/critical**: within 14 days of the advisory's publication.
+    - **Moderate/low**: with the next dependency-update cycle (≤ 60 days).
 - Unavoidable exceptions (e.g. an advisory with no patched release) must be
   documented here with a reachability analysis and an expiry date. There are
   currently **no** open exceptions.

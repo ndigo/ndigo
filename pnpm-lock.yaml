@@ -911,9 +911,6 @@ importers:
       '@blue/router':
         specifier: ~0.0.1
         version: link:../blue-router
-      '@blue/telemetry-node':
-        specifier: ~0.0.1
-        version: link:../blue-telemetry-node
 
   packages/blue-telemetry-node:
     dependencies:

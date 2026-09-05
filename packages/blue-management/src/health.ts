@@ -89,22 +89,20 @@ export class HealthRegistry {
         // aggregate afterwards — identical status rules, but one round-trip
         // instead of N sequential probes.
         const results = await Promise.all(
-            [...this.#indicators].map(
-                async ([name, indicator]): Promise<{ name: string; result: HealthResult }> => {
-                    try {
-                        const result = await indicator.check();
-                        return { name, result };
-                    } catch (error) {
-                        return {
-                            name,
-                            result: {
-                                status: 'DOWN',
-                                details: { error: error instanceof Error ? error.message : String(error) },
-                            },
-                        };
-                    }
+            [...this.#indicators].map(async ([name, indicator]): Promise<{ name: string; result: HealthResult }> => {
+                try {
+                    const result = await indicator.check();
+                    return { name, result };
+                } catch (error) {
+                    return {
+                        name,
+                        result: {
+                            status: 'DOWN',
+                            details: { error: error instanceof Error ? error.message : String(error) },
+                        },
+                    };
                 }
-            )
+            })
         );
 
         for (const { name, result } of results) {

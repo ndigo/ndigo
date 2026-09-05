@@ -85,6 +85,28 @@ pnpm exec prettier --write <changed files>
   rebuild the lib (`pnpm --filter @blue/<name> build:lib`) before running
   `pnpm doc`.
 
+## Keeping the repo graph (`graft/`) fresh
+
+The repo is indexed by `graft/` (a local, gitignored context graph). When the
+graph goes stale you lose symbol/call-site accuracy — queries answer from the
+last build.
+
+- **During editing**: the graft MCP server auto-refreshes the tier-1 wiring
+  graph before every query, so small edits stay visible without any action.
+- **After large changes** (a PR-sized batch, a re-architecture, deleting or
+  moving many files): refresh the deep tier once at a natural boundary
+  (task/PR completion — not mid-edit):
+
+    ```bash
+    pnpm graft:build     # = graft build --deep --allow-partial
+    ```
+
+    `--allow-partial` tolerates environments where the deep summarizer can't
+    run (e.g. no model available); the structural graph is still fully rebuilt.
+
+- CI runs `graft build` (tier-1, deterministic, $0) + `graft check` on every
+  PR; `graft check` failing means a fingerprint/wiring regression.
+
 ## Releases
 
 Release process is per-package via npm. Before publishing:

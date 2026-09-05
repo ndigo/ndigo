@@ -18,7 +18,7 @@ import { NodeAutoConfiguration, NodeDispatcher, HTTPServer } from '@blue/platfor
  */
 
 @getMapping('/')
-class ApiController {
+class APIController {
     @getMapping('/')
     index() {
         return { ok: true };
@@ -53,7 +53,7 @@ describe('telemetry request→dispatch correlation (real HTTP)', () => {
         // fires on NodeHTTPServerAdapter.handleRequest, which MockMVC bypasses).
         const context = new MetadataConfigApplicationContext('corr');
         context.register(NodeAutoConfiguration);
-        context.setValue(ApiController.name, new ApiController());
+        context.setValue(APIController.name, new APIController());
         context.refresh();
 
         const mapping = context.getValue<LinearMetadataHandlerMapping>('handlerMapping');

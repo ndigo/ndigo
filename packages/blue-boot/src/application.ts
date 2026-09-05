@@ -63,8 +63,11 @@ export class Application extends Emitter {
             context = this._prepareContext(environment, args);
             this.#context = context;
             this.emit('started', context);
-        } catch {
-            throw new IllegalStateError();
+        } catch (error: unknown) {
+            throw new IllegalStateError(
+                'Application startup failed',
+                error instanceof Error ? { cause: error } : { cause: new Error(String(error)) },
+            );
         }
 
         return context;

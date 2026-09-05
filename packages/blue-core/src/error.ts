@@ -79,9 +79,11 @@ export class FrameworkError extends AsSerializableError(Error) {
      * Creates an instance of FrameworkError.
      * Uses `new.target.name` so subclasses inherit the correct name automatically.
      * @param message - The error message.
+     * @param options - Standard `Error` options; `{ cause }` preserves the
+     *   original failure (e.g. across `Application.run()` startup failures).
      */
-    constructor(message?: string) {
-        super(message);
+    constructor(message?: string, options?: ErrorOptions) {
+        super(message, options);
         this.name = new.target.name;
         setPrototypeOf(this, new.target.prototype);
     }
@@ -102,9 +104,13 @@ export class IllegalStateError extends FrameworkError {
     /**
      * Creates an instance of IllegalStateError.
      * @param message - The error message. Defaults to 'Unable to complete operation due to misconfiguration'.
+     * @param options - Standard `Error` options; pass `{ cause }` to preserve
+     *   the original failure across the framework boundary
+     *   (e.g. `Application.run()` startup failures).
      */
-    constructor(message: string = 'Unable to complete operation due to misconfiguration') {
-        super(message);
+    constructor(message: string = 'Unable to complete operation due to misconfiguration', options?: ErrorOptions) {
+        super(message, options);
+        this.name = 'IllegalStateError';
     }
 }
 

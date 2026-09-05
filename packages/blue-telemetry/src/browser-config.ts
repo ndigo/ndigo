@@ -2,10 +2,10 @@
  * @author Jeff Rose
  */
 
-import { metrics, DiagConsoleLogger, DiagLogLevel, diag } from '@opentelemetry/api';
+import { metrics, trace, DiagConsoleLogger, DiagLogLevel, diag } from '@opentelemetry/api';
 import { logs, SeverityNumber } from '@opentelemetry/api-logs';
 import { BasicTracerProvider, SimpleSpanProcessor, ConsoleSpanExporter } from '@opentelemetry/sdk-trace-base';
-import { Resource } from '@opentelemetry/resources';
+import { resourceFromAttributes } from '@opentelemetry/resources';
 import { MeterProvider, PeriodicExportingMetricReader, ConsoleMetricExporter } from '@opentelemetry/sdk-metrics';
 import { LoggerProvider, SimpleLogRecordProcessor, ConsoleLogRecordExporter } from '@opentelemetry/sdk-logs';
 import { LoggerFactory } from './logger/logger-factory';
@@ -22,31 +22,39 @@ export function configureBrowserTelemetry(config: BrowserTelemetryConfig): void 
         diag.setLogger(new DiagConsoleLogger(), DiagLogLevel.DEBUG);
     }
 
-    const resource = new Resource({
+    const resource = resourceFromAttributes({
         'service.name': config.serviceName,
     });
 
-    const tracerProvider = new BasicTracerProvider({ resource });
-    if (config.useConsoleExporters !== false) {
-        tracerProvider.addSpanProcessor(new SimpleSpanProcessor(new ConsoleSpanExporter()));
-    }
-    tracerProvider.register();
+    // OpenTelemetry SDK 2.x: processors/readers are constructor options and
+    // global registration uses the API registry (providers no longer self-register).
+    const tracerProvider = new BasicTracerProvider({
+        resource,
+        spanProcessors: config.useConsoleExporters === false ? [] : [new SimpleSpanProcessor(new ConsoleSpanExporter())],
+    });
+    trace.setGlobalTracerProvider(tracerProvider);
 
-    const meterProvider = new MeterProvider({ resource });
-    if (config.useConsoleExporters !== false) {
-        meterProvider.addMetricReader(
-            new PeriodicExportingMetricReader({
-                exporter: new ConsoleMetricExporter(),
-                exportIntervalMillis: 10000,
-            })
-        );
-    }
+    const meterProvider = new MeterProvider({
+        resource,
+        readers:
+            config.useConsoleExporters === false
+                ? []
+                : [
+                      new PeriodicExportingMetricReader({
+                          exporter: new ConsoleMetricExporter(),
+                          exportIntervalMillis: 10000,
+                      }),
+                  ],
+    });
     metrics.setGlobalMeterProvider(meterProvider);
 
-    const loggerProvider = new LoggerProvider({ resource });
-    if (config.useConsoleExporters !== false) {
-        loggerProvider.addLogRecordProcessor(new SimpleLogRecordProcessor(new ConsoleLogRecordExporter()));
-    }
+    const loggerProvider = new LoggerProvider({
+        resource,
+        processors:
+            config.useConsoleExporters === false
+                ? []
+                : [new SimpleLogRecordProcessor({ exporter: new ConsoleLogRecordExporter() })],
+    });
     logs.setGlobalLoggerProvider(loggerProvider);
 
     LoggerFactory.setType('open-telemetry');

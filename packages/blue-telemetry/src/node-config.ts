@@ -30,7 +30,7 @@ export function configureTelemetry(config: TelemetryConfig) {
                   url: config.logExporter.url,
               });
 
-    const logRecordProcessor = logExporter ? new BatchLogRecordProcessor(logExporter) : undefined;
+    const logRecordProcessor = logExporter ? new BatchLogRecordProcessor({ exporter: logExporter }) : undefined;
 
     const filteredLogRecordProcessor =
         logRecordProcessor === undefined || config.minimumSeverity === undefined
@@ -46,7 +46,7 @@ export function configureTelemetry(config: TelemetryConfig) {
                 url: config.metricExporter?.url,
             }),
         }),
-        ...(filteredLogRecordProcessor ? { logRecordProcessor: filteredLogRecordProcessor } : {}),
+        ...(filteredLogRecordProcessor ? { logRecordProcessors: [filteredLogRecordProcessor] } : {}),
         instrumentations: config.instrumentations ?? [],
     });
 

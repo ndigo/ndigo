@@ -47,11 +47,14 @@ The package follows a **contract-first** approach:
 import { AuthRegistry } from '@blue/auth-core';
 import { OIDCAdapter } from '@blue/auth-client';
 
+// Fail-closed: signature verification is mandatory (jwksUrl, discovery, or
+// an explicit tokenValidator). There is no claim-only mode.
 const adapter = new OIDCAdapter({
     issuer: 'https://accounts.google.com',
     clientId: 'your-client-id',
+    redirectUri: 'https://yourapp.com/callback',
+    discovery: true,
 });
-
 AuthRegistry.register(adapter);
 ```
 

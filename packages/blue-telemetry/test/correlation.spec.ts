@@ -2,7 +2,7 @@
 import { describe, test, expect, beforeAll, afterAll } from 'vitest';
 import { BasicTracerProvider, InMemorySpanExporter, SimpleSpanProcessor } from '@opentelemetry/sdk-trace-base';
 import { AsyncHooksContextManager } from '@opentelemetry/context-async-hooks';
-import { context as otelContext } from '@opentelemetry/api';
+import { context as otelContext, trace } from "@opentelemetry/api";
 import { HTTPServerInstrumentation } from '../src/instrumentation/http-server/http-server';
 import { DispatcherInstrumentation } from '../src/instrumentation/dispatcher/dispatcher';
 import { getMapping, LinearMetadataHandlerMapping } from '@blue/dispatcher';
@@ -36,9 +36,8 @@ describe('telemetry request→dispatch correlation (real HTTP)', () => {
         contextManager.enable();
         otelContext.setGlobalContextManager(contextManager);
 
-        const provider = new BasicTracerProvider();
-        provider.addSpanProcessor(new SimpleSpanProcessor(exporter));
-        provider.register();
+        const provider = new BasicTracerProvider({ spanProcessors: [new SimpleSpanProcessor(exporter)] });
+        trace.setGlobalTracerProvider(provider);
 
         const serverInstr = new HTTPServerInstrumentation();
         serverInstr.setTracerProvider(provider);
@@ -95,7 +94,7 @@ describe('telemetry request→dispatch correlation (real HTTP)', () => {
         expect(dispatchSpans.length).toBeGreaterThan(0);
         const dispatchSpan = dispatchSpans[dispatchSpans.length - 1]!;
         expect(dispatchSpan.spanContext().traceId).toBe(requestSpan.spanContext().traceId);
-        expect(dispatchSpan.parentSpanId).toBe(requestSpan.spanContext().spanId);
+        expect(dispatchSpan.parentSpanContext?.spanId).toBe(requestSpan.spanContext().spanId);
         expect(dispatchSpan.attributes['http.route']).toBe('/');
         expect(dispatchSpan.attributes['http.method']).toBe('GET');
     });

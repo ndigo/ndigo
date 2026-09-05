@@ -1,217 +1,160 @@
-import { describe, test, expect, beforeEach } from 'vitest';
-import { OIDCAdapter } from '../src/oidc-adapter';
-import { Principal } from '@blue/auth-core';
+// @vitest-environment node
+import { describe, test, expect } from 'vitest';
+import { OIDCAdapter, OIDCError } from '../src/oidc-adapter';
 
-// Helper to create a minimal JWT-like token string
-function createOIDCToken(payload: Record<string, any>): string {
-    const header = Buffer.from(JSON.stringify({ alg: 'HS256', typ: 'JWT' })).toString('base64url');
-    const body = Buffer.from(JSON.stringify(payload)).toString('base64url');
-    const signature = Buffer.from('fakesignature').toString('base64url');
-    return `${header}.${body}.${signature}`;
+/**
+ * Unit behavior of the fail-closed OIDC adapter. Full authorization-code
+ * flow tests (discovery + token endpoint + signed tokens) live in
+ * oidc-flow.spec.ts.
+ */
+
+const baseConfig = {
+    issuer: 'https://auth.example.com',
+    clientId: 'my-client',
+    redirectUri: 'https://myapp.com/callback',
+    scopes: ['openid', 'profile', 'email'],
+    jwksUrl: 'https://auth.example.com/jwks',
+};
+
+function forgeToken(payload: Record<string, unknown>): string {
+    return [
+        Buffer.from(JSON.stringify({ alg: 'RS256', typ: 'JWT' })).toString('base64url'),
+        Buffer.from(JSON.stringify(payload)).toString('base64url'),
+        'signature',
+    ].join('.');
 }
 
-describe('OIDCAdapter', () => {
-    const config = {
-        issuer: 'https://auth.example.com',
-        clientId: 'my-client',
-        redirectUri: 'https://myapp.com/callback',
-        scopes: ['openid', 'profile', 'email'],
-    };
+const futureExp = () => Math.floor(Date.now() / 1000) + 3600;
 
-    let adapter: OIDCAdapter;
-
-    beforeEach(() => {
-        adapter = new OIDCAdapter(config);
+describe('OIDCAdapter construction', () => {
+    test('throws without a verification source — no claim-only mode', () => {
+        expect(() => new OIDCAdapter({ ...baseConfig, jwksUrl: undefined })).toThrowError(OIDCError);
+        try {
+            new OIDCAdapter({ ...baseConfig, jwksUrl: undefined });
+        } catch (error) {
+            expect((error as OIDCError).code).toBe('configuration');
+        }
     });
 
-    describe('id', () => {
-        test('returns oidc', () => {
-            expect(adapter.id).toBe('oidc');
-        });
+    test('accepts explicit tokenValidator as the verification source', () => {
+        expect(
+            () =>
+                new OIDCAdapter({
+                    ...baseConfig,
+                    jwksUrl: undefined,
+                    tokenValidator: async () => true,
+                }),
+        ).not.toThrow();
+    });
+});
+
+describe('OIDCAdapter.validate', () => {
+    test('rejects a structurally malformed token', async () => {
+        const adapter = new OIDCAdapter(baseConfig);
+        expect(await adapter.validate('not-a-jwt')).toBeNull();
+        expect(await adapter.validate('a.b')).toBeNull();
     });
 
-    describe('getAuthorizationUrl', () => {
-        test('returns well-formed authorization URL with query params', () => {
-            const url = adapter.getAuthorizationUrl();
-            expect(url).toMatch(/^https:\/\/auth\.example\.com\/authorize\?/);
-        });
-
-        test('includes required query parameters', () => {
-            const url = adapter.getAuthorizationUrl();
-            const parsed = new URL(url);
-            expect(parsed.searchParams.get('response_type')).toBe('code');
-            expect(parsed.searchParams.get('client_id')).toBe('my-client');
-            expect(parsed.searchParams.get('redirect_uri')).toBe('https://myapp.com/callback');
-            expect(parsed.searchParams.get('scope')).toBe('openid profile email');
-        });
-
-        test('includes custom scopes', () => {
-            const customAdapter = new OIDCAdapter({
-                ...config,
-                scopes: ['openid', 'profile'],
-            });
-            const url = customAdapter.getAuthorizationUrl();
-            const parsed = new URL(url);
-            expect(parsed.searchParams.get('scope')).toBe('openid profile');
-        });
-
-        test('includes state parameter when provided', () => {
-            const url = adapter.getAuthorizationUrl('csrf-token-123');
-            const parsed = new URL(url);
-            expect(parsed.searchParams.get('state')).toBe('csrf-token-123');
-        });
-
-        test('includes empty state when not provided', () => {
-            const url = adapter.getAuthorizationUrl();
-            const parsed = new URL(url);
-            expect(parsed.searchParams.get('state')).toBe('');
-        });
+    test('rejects a token with a wrong issuer (forged, pre-signature claim check)', async () => {
+        const adapter = new OIDCAdapter({ ...baseConfig, tokenValidator: async () => true });
+        expect(await adapter.validate(forgeToken({ iss: 'https://evil.example.com', aud: 'my-client', sub: '1', exp: futureExp() }))).toBeNull();
     });
 
-    describe('validate', () => {
-        test('returns null for malformed token', async () => {
-            expect(await adapter.validate('not-a-jwt')).toBeNull();
-            expect(await adapter.validate('only.two')).toBeNull();
+    test('rejects a token with a wrong audience', async () => {
+        const adapter = new OIDCAdapter({ ...baseConfig, tokenValidator: async () => true });
+        expect(await adapter.validate(forgeToken({ iss: baseConfig.issuer, aud: 'other-client', sub: '1', exp: futureExp() }))).toBeNull();
+    });
+
+    test('rejects an expired token', async () => {
+        const adapter = new OIDCAdapter({ ...baseConfig, tokenValidator: async () => true });
+        expect(await adapter.validate(forgeToken({ iss: baseConfig.issuer, aud: 'my-client', sub: '1', exp: futureExp() - 7200 }))).toBeNull();
+    });
+
+    test('rejects when the explicit validator rejects the signature', async () => {
+        const adapter = new OIDCAdapter({ ...baseConfig, jwksUrl: undefined, tokenValidator: async () => false });
+        expect(await adapter.validate(forgeToken({ iss: baseConfig.issuer, aud: 'my-client', sub: '1', exp: futureExp() }))).toBeNull();
+    });
+
+    test('accepts a valid token with matching claims and validator approval', async () => {
+        const adapter = new OIDCAdapter({ ...baseConfig, jwksUrl: undefined, tokenValidator: async () => true });
+        const principal = await adapter.validate(
+            forgeToken({ iss: baseConfig.issuer, aud: 'my-client', sub: '42', name: 'Jane', roles: ['admin'], exp: futureExp() }),
+        );
+        expect(principal?.id).toBe('42');
+        expect(principal?.name).toBe('Jane');
+        expect(principal?.hasRole('admin')).toBe(true);
+        expect(principal?.hasRole('nobody')).toBe(false);
+    });
+});
+
+describe('OIDCAdapter exchangeCodeForTokens state handling', () => {
+    test('rejects an unknown state without contacting the token endpoint', async () => {
+        const adapter = new OIDCAdapter(baseConfig);
+        let fetchCalled = false;
+        globalThis.fetch = (async () => {
+            fetchCalled = true;
+            throw new Error('token endpoint must not be reached');
+        }) as typeof fetch;
+
+        await expect(adapter.exchangeCodeForTokens('code', 'forged-state')).rejects.toMatchObject({
+            code: 'invalid_state',
         });
+        expect(fetchCalled).toBe(false);
+    });
 
-        test('returns null for invalid base64 payload', async () => {
-            const token = 'header.!!!invalid!!!.signature';
-            expect(await adapter.validate(token)).toBeNull();
+    test('state is single-use: replaying the same state fails', async () => {
+        // Loopback discard-port issuer: the token-endpoint fetch fails fast
+        // with a wrapped network error once the state is accepted.
+        const adapter = new OIDCAdapter({
+            issuer: 'http://127.0.0.1:9',
+            clientId: 'my-client',
+            redirectUri: 'https://myapp.com/callback',
+            tokenValidator: async () => true,
         });
-
-        test('returns null when issuer does not match', async () => {
-            const token = createOIDCToken({
-                sub: '1',
-                name: 'Test',
-                iss: 'https://evil.com',
-            });
-            expect(await adapter.validate(token)).toBeNull();
+        const request = await adapter.createAuthorizationRequest();
+        await expect(adapter.exchangeCodeForTokens('code', request.state)).rejects.toMatchObject({
+            code: 'network', // reaches the (unreachable) token endpoint — state was accepted once
         });
-
-        test('returns null for expired token', async () => {
-            const pastTime = Math.floor(Date.now() / 1000) - 3600;
-            const token = createOIDCToken({
-                sub: '1',
-                name: 'Test',
-                iss: 'https://auth.example.com',
-                exp: pastTime,
-            });
-            expect(await adapter.validate(token)).toBeNull();
-        });
-
-        test('returns null when audience does not match', async () => {
-            const adapterWithAudience = new OIDCAdapter({
-                ...config,
-                audience: 'my-app',
-            });
-
-            const token = createOIDCToken({
-                sub: '1',
-                name: 'Test',
-                iss: 'https://auth.example.com',
-                aud: 'wrong-app',
-            });
-            expect(await adapterWithAudience.validate(token)).toBeNull();
-        });
-
-        test('returns principal for valid token', async () => {
-            const futureTime = Math.floor(Date.now() / 1000) + 3600;
-            const token = createOIDCToken({
-                sub: '42',
-                name: 'Alice',
-                iss: 'https://auth.example.com',
-                roles: ['admin', 'user'],
-                exp: futureTime,
-            });
-
-            const result = await adapter.validate(token) as Principal;
-
-            expect(result).not.toBeNull();
-            expect(result!.id).toBe('42');
-            expect(result!.name).toBe('Alice');
-            expect(result!.roles).toEqual(['admin', 'user']);
-            expect(result!.hasRole('admin')).toBe(true);
-        });
-
-        test('extracts preferred_username when name is missing', async () => {
-            const futureTime = Math.floor(Date.now() / 1000) + 3600;
-            const token = createOIDCToken({
-                sub: '42',
-                preferred_username: 'alice',
-                iss: 'https://auth.example.com',
-                exp: futureTime,
-            });
-
-            const result = await adapter.validate(token) as Principal;
-            expect(result!.name).toBe('alice');
-        });
-
-        test('uses unknown as id when sub is missing', async () => {
-            const futureTime = Math.floor(Date.now() / 1000) + 3600;
-            const token = createOIDCToken({
-                name: 'Test',
-                iss: 'https://auth.example.com',
-                exp: futureTime,
-            });
-
-            const result = await adapter.validate(token) as Principal;
-            expect(result!.id).toBe('unknown');
-        });
-
-        test('uses Unknown as name when name and preferred_username are missing', async () => {
-            const futureTime = Math.floor(Date.now() / 1000) + 3600;
-            const token = createOIDCToken({
-                sub: '1',
-                iss: 'https://auth.example.com',
-                exp: futureTime,
-            });
-
-            const result = await adapter.validate(token) as Principal;
-            expect(result!.name).toBe('Unknown');
+        await expect(adapter.exchangeCodeForTokens('code', request.state)).rejects.toMatchObject({
+            code: 'invalid_state', // replay is rejected outright
         });
     });
 
-    describe('exchangeCodeForTokens', () => {
-        test('throws error when fetch fails', async () => {
-            global.fetch = async () => ({
-                ok: false,
-                statusText: 'Bad Request',
-                json: async () => ({}),
-            }) as any;
-
-            await expect(adapter.exchangeCodeForTokens('auth-code')).rejects.toThrow(
-                'Token exchange failed: Bad Request',
-            );
+    test('stale (expired) state is rejected', async () => {
+        const adapter = new OIDCAdapter({
+            issuer: 'http://127.0.0.1:9',
+            clientId: 'my-client',
+            redirectUri: 'https://myapp.com/callback',
+            tokenValidator: async () => true,
+            authorizationTtlMs: -1,
         });
-
-        test('throws error when token exchange fails with network error', async () => {
-            global.fetch = async () => {
-                throw new Error('Network error');
-            };
-
-            await expect(adapter.exchangeCodeForTokens('auth-code')).rejects.toThrow('Network error');
+        const request = await adapter.createAuthorizationRequest();
+        await expect(adapter.exchangeCodeForTokens('code', request.state)).rejects.toMatchObject({
+            code: 'invalid_state',
         });
     });
+});
 
-    describe('authenticate', () => {
-        test('throws error as not implemented', async () => {
-            await expect(adapter.authenticate({})).rejects.toThrow(
-                'OIDCAdapter.authenticate() not implemented - use getAuthorizationUrl() and exchangeCodeForTokens()',
-            );
-        });
+describe('OIDCAdapter.createAuthorizationRequest', () => {
+    test('embeds state, nonce, and S256 PKCE parameters in the URL', async () => {
+        const adapter = new OIDCAdapter(baseConfig);
+        const request = await adapter.createAuthorizationRequest();
+        const url = new URL(request.url);
+        expect(url.origin + url.pathname).toBe('https://auth.example.com/authorize');
+        expect(url.searchParams.get('response_type')).toBe('code');
+        expect(url.searchParams.get('client_id')).toBe('my-client');
+        expect(url.searchParams.get('state')).toBe(request.state);
+        expect(url.searchParams.get('nonce')).toBe(request.nonce);
+        expect(url.searchParams.get('code_challenge_method')).toBe('S256');
+        expect(url.searchParams.get('code_challenge')).toMatch(/^[A-Za-z0-9_-]{43}$/);
     });
 
-    describe('refresh', () => {
-        test('throws error as not implemented', async () => {
-            await expect(adapter.refresh('token')).rejects.toThrow(
-                'OIDCAdapter.refresh() not implemented - use a proper refresh flow',
-            );
-        });
-    });
-
-    describe('logout', () => {
-        test('completes without error', async () => {
-            await expect(adapter.logout('token')).resolves.toBeUndefined();
-        });
+    test('code_verifier hashes to the embedded code_challenge (S256)', async () => {
+        const adapter = new OIDCAdapter(baseConfig);
+        const request = await adapter.createAuthorizationRequest();
+        const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(request.codeVerifier));
+        const challenge = Buffer.from(digest).toString('base64url');
+        const url = new URL(request.url);
+        expect(url.searchParams.get('code_challenge')).toBe(challenge);
     });
 });

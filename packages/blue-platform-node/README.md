@@ -44,6 +44,38 @@ context.registerConfiguration(NodeAutoConfiguration);
 context.setValue('environment', new NodeEnvironment());
 ```
 
+### Request Limits and Error Semantics
+
+`NodeHTTPServerAdapter` bounds every request: body size, header size, total
+request time, header timeout, keep-alive, and shutdown drain. Defaults are
+conservative (1 MiB bodies, 30s request window, 10s header timeout).
+
+```typescript
+import { NodeHTTPServerAdapter } from '@blue/platform-node';
+
+const adapter = new NodeHTTPServerAdapter(dispatcher, {
+    limits: {
+        maxBodyBytes: 2_097_152, // 2 MiB
+        requestTimeoutMs: 15_000,
+        shutdownTimeoutMs: 5_000,
+    },
+});
+```
+
+Error responses are deterministic and leak no internals:
+
+| Status | Condition                                    | Body                   |
+| ------ | -------------------------------------------- | ---------------------- |
+| `400`  | Malformed URL, malformed JSON, aborted body  | `{"error":"…"}` code   |
+| `408`  | Request/body timeout                         | `{"error":"request_timeout"}` |
+| `413`  | Body exceeds `maxBodyBytes`                  | `{"error":"body_too_large"}` |
+| `431`  | Cookie header exceeds `maxHeaderBytes`       | `{"error":"headers_too_large"}` |
+| `500`  | Dispatch failure (details logged server-side)| `{"error":"Internal Server Error"}` |
+
+JSON bodies are parsed strictly against their `Content-Type` — malformed JSON
+is a `400`, never silently reshaped. `listen()` rejects on bind errors, and
+`close()` drains in-flight requests up to `shutdownTimeoutMs`.
+
 ### Controller Example
 ```typescript
 import { 

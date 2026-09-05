@@ -37,5 +37,5 @@ export * from './route-to-view-name-translator';
 export * from './theme-resolver';
 export { AbstractThemeResolver } from './theme-resolver';
 
-export * from './logging-interceptor';
 export * from './route-handler-interceptor';
+export * from './route-handler-denial';

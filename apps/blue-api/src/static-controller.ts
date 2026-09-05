@@ -2,15 +2,17 @@
  * Static file serving controller.
  *
  * Serves a file from the `./public` directory under `/static/{file}`.
+ * Path safety (canonical containment, symlink resolution, MIME allowlist,
+ * `nosniff`) is delegated to the shared `StaticResourceResolver` — the same
+ * implementation `StaticFileView` uses.
  */
 import '@tsmetadata/polyfill';
-import { readFile } from 'node:fs/promises';
-import { join, normalize } from 'node:path';
 import { getMapping, pathValue, routeParams } from '@blue/dispatcher';
 import { ResponseStatuses } from '@blue/http';
-import { ResponseEntity } from '@blue/platform-node';
+import { ResponseEntity, StaticResourceResolver, statusForKind } from '@blue/platform-node';
 
-const BASE = process.env['STATIC_DIR'] ?? join(process.cwd(), 'public');
+const BASE = process.env['STATIC_DIR'] ?? `${process.cwd()}/public`;
+const resolver = new StaticResourceResolver(BASE);
 
 @getMapping('/static')
 export class StaticController {
@@ -20,31 +22,21 @@ export class StaticController {
     @getMapping('/{file}')
     @routeParams({ file: pathValue('file') })
     async serve(file?: string) {
-        const relative = file ?? '';
-        const resolved = normalize(join(BASE, relative));
-
-        // Path traversal guard — reject paths escaping the public directory.
-        if (!resolved.startsWith(BASE)) {
-            return ResponseEntity.notFound();
+        const result = await resolver.resolve(file ?? '');
+        if (result.kind !== 'ok') {
+            const status = statusForKind(result.kind);
         }
-
-        try {
-            const content = await readFile(resolved, 'utf-8');
-            return new ResponseEntity(content, ResponseStatuses.OK, {
-                'Content-Type': contentType(resolved),
-            });
-        } catch {
-            return ResponseEntity.notFound();
+        return new ResponseEntity(result.data, ResponseStatuses.OK, {
+            'Content-Type': result.contentType ?? 'application/octet-stream',
+            'X-Content-Type-Options': 'nosniff',
+        });
+    });
+});
+                status === 403 ? ResponseStatuses.FORBIDDEN : ResponseStatuses.INTERNAL_SERVER_ERROR,
         }
+        return new ResponseEntity(result.data, ResponseStatuses.OK, {
+            'Content-Type': result.contentType ?? 'application/octet-stream',
+            'X-Content-Type-Options': 'nosniff',
+        });
     }
-}
-
-/** Map a file extension to a content type. */
-function contentType(path: string): string {
-    if (path.endsWith('.css')) return 'text/css; charset=utf-8';
-    if (path.endsWith('.js')) return 'text/javascript; charset=utf-8';
-    if (path.endsWith('.json')) return 'application/json';
-    if (path.endsWith('.png')) return 'image/png';
-    if (path.endsWith('.svg')) return 'image/svg+xml';
-    return 'text/html; charset=utf-8';
 }

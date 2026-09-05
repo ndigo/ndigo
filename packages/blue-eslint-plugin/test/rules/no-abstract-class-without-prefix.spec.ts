@@ -19,7 +19,7 @@ ruleTester.run('no-abstract-class-without-prefix', noAbstractClassWithoutPrefix,
             filename: '/packages/blue-factory/src/factory.ts',
         },
         {
-            code: 'export abstract class AbstractBlueInstrumentation { enable(): void {} }',
+            code: 'export abstract class AbstractBaseInstrumentation { enable(): void {} }',
             filename: '/packages/blue-telemetry/src/instrumentation/base.ts',
         },
         // Concrete classes are unaffected

@@ -12,6 +12,9 @@ import { noDirectIntegrationImports } from './rules/no-direct-integration-import
 import { noInternalFileImports } from './rules/no-internal-file-imports.js';
 import { noInternalFileExports } from './rules/no-internal-file-exports.js';
 import { noBrowserGlobalsInIsomorphic } from './rules/no-browser-globals-in-isomorphic.js';
+import { noUppercaseRegexpConstants } from './rules/no-uppercase-regexp-constants.js';
+import { noAbstractClassWithoutPrefix } from './rules/no-abstract-class-without-prefix.js';
+import { noMixedCaseAcronyms } from './rules/no-mixed-case-acronyms.js';
 
 const plugin = eslintCompatPlugin({
     meta: {
@@ -22,6 +25,9 @@ const plugin = eslintCompatPlugin({
         'no-internal-file-imports': noInternalFileImports,
         'no-internal-file-exports': noInternalFileExports,
         'no-browser-globals-in-isomorphic': noBrowserGlobalsInIsomorphic,
+        'no-uppercase-regexp-constants': noUppercaseRegexpConstants,
+        'no-abstract-class-without-prefix': noAbstractClassWithoutPrefix,
+        'no-mixed-case-acronyms': noMixedCaseAcronyms,
     },
 });
 
@@ -41,6 +47,9 @@ const plugin = eslintCompatPlugin({
             '@blue/no-internal-file-imports': 'error',
             '@blue/no-internal-file-exports': 'error',
             '@blue/no-browser-globals-in-isomorphic': 'warn',
+            '@blue/no-uppercase-regexp-constants': 'error',
+            '@blue/no-abstract-class-without-prefix': 'error',
+            '@blue/no-mixed-case-acronyms': 'error',
         },
     },
 };

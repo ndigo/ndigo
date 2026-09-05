@@ -59,6 +59,9 @@
     "@blue/no-internal-file-imports": "error",
     "@blue/no-internal-file-exports": "error",
     "@blue/no-browser-globals-in-isomorphic": "warn",
+    "@blue/no-uppercase-regexp-constants": "error",
+    "@blue/no-abstract-class-without-prefix": "error",
+    "@blue/no-mixed-case-acronyms": "error",
 
     "no-shadow": "warn",
     "no-useless-escape": "warn",

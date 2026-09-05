@@ -16,7 +16,7 @@ import { CORSInterceptor } from '../src/cors-interceptor';
  */
 
 @getMapping('/api')
-class ApiController {
+class APIController {
     @getMapping('/quote')
     quote() {
         return { price: 42 };
@@ -33,7 +33,7 @@ async function boot(options: ConstructorParameters<typeof CORSInterceptor>[0]): 
 }> {
     const context = new MetadataConfigApplicationContext('cors');
     context.register(NodeAutoConfiguration);
-    context.setValue(ApiController.name, new ApiController());
+    context.setValue(APIController.name, new APIController());
     context.refresh();
     const handlerMapping = context.getValue<LinearMetadataHandlerMapping>('handlerMapping');
     handlerMapping.setApplicationContext(context);

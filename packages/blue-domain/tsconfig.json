@@ -3,7 +3,8 @@
   "compilerOptions": {
     "paths": {
       "@blue/*": ["../blue-*/src"]
-    }
+    },
+    "strict": true
   },
   "include": ["src/**/*"]
 }

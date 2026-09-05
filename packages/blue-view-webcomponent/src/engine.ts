@@ -60,7 +60,7 @@ export class DOMElementViewTarget implements DOMViewTarget {
 
     /**
      * Creates a DOM-backed view target for the provided element.
-     * 
+     *
      * @param element - The root element that will host rendered content.
      * @param options - Event mapping used to bridge DOM events to the application context.
      * @throws {TypeError} When `element` is null or undefined.
@@ -82,14 +82,13 @@ export class DOMElementViewTarget implements DOMViewTarget {
         this.destroyed = false;
     }
 
-
     get container(): HTMLElement {
         return this.#element;
     }
 
     /**
      * Connects the target to the application event emitter so DOM events can be forwarded.
-     * 
+     *
      * @param applicationContext - The application event emitter used for event bridging.
      */
     setApplicationContext(applicationContext: EventEmitter): void {
@@ -99,7 +98,6 @@ export class DOMElementViewTarget implements DOMViewTarget {
         this.#applicationContext = applicationContext;
         this.listen();
     }
-
 
     /**
      * Replaces the DOM-to-application event map and refreshes listeners.
@@ -116,7 +114,7 @@ export class DOMElementViewTarget implements DOMViewTarget {
 
     /**
      * Installs DOM event listeners for the current event map.
-     * 
+     *
      * Existing listeners are removed first so repeated calls stay idempotent.
      */
     listen(): void {
@@ -143,7 +141,6 @@ export class DOMElementViewTarget implements DOMViewTarget {
     unlisten(): void {
         this.#binder.unbindAll();
     }
-
 
     /**
      * Prepares the target for a new render pass by clearing existing content.

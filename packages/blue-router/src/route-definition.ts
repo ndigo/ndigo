@@ -11,10 +11,9 @@ import type { Router } from './router';
 
 // ── Type helpers ────────────────────────────────────────────────────────────
 
-export type RouteParams<T extends string> =
-    T extends `${string}{${infer P}}${infer Rest}`
-        ? Record<P, string> & RouteParams<Rest>
-        : {};
+export type RouteParams<T extends string> = T extends `${string}{${infer P}}${infer Rest}`
+    ? Record<P, string> & RouteParams<Rest>
+    : {};
 
 // ── RouteDefinition ─────────────────────────────────────────────────────────
 

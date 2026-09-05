@@ -482,7 +482,12 @@ export class PatternsRouteCondition extends AbstractRouteCondition<PatternsRoute
 
         if (typeof patterns === 'string') {
             const collectedPatterns = [patterns];
-            const remainingArgs: any[] = [pathMatcherOrRouteCondition, useTrailingSlashMatch, fileExtensions, ...morePatterns];
+            const remainingArgs: any[] = [
+                pathMatcherOrRouteCondition,
+                useTrailingSlashMatch,
+                fileExtensions,
+                ...morePatterns,
+            ];
             const options: any[] = [];
 
             for (const arg of remainingArgs) {
@@ -793,7 +798,7 @@ export class RouteMappingInfo implements RouteCondition<RouteMappingInfo> {
         const mergedAccess =
             this.accessCondition && value.accessCondition
                 ? this.accessCondition.merge(value.accessCondition)
-                : this.accessCondition ?? value.accessCondition;
+                : (this.accessCondition ?? value.accessCondition);
 
         return new RouteMappingInfo(name, patterns, params, matrix, custom.condition, mergedAccess, method);
     }
@@ -838,10 +843,7 @@ export class RouteMappingInfo implements RouteCondition<RouteMappingInfo> {
             if (!accessMatch) {
                 return null;
             }
-            return new RouteMappingInfo(
-                this.name, patterns, params, matrix, custom.condition,
-                accessMatch, method
-            );
+            return new RouteMappingInfo(this.name, patterns, params, matrix, custom.condition, accessMatch, method);
         }
 
         return new RouteMappingInfo(this.name, patterns, params, matrix, custom.condition, null, method);

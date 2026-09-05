@@ -66,7 +66,9 @@ function getRouteMapping(target: unknown, propertyKey?: string | symbol): RouteM
 function getRouteMappingMethodKeys(target: unknown): string[] {
     const metadata = (target as { [Symbol.metadata]?: Record<string, unknown> } | undefined)?.[Symbol.metadata] ?? {};
     const prefix = 'route:mapping:';
-    return Object.keys(metadata).filter(k => k.startsWith(prefix)).map(k => k.slice(prefix.length));
+    return Object.keys(metadata)
+        .filter((k) => k.startsWith(prefix))
+        .map((k) => k.slice(prefix.length));
 }
 
 /**
@@ -156,4 +158,3 @@ export class RouteRegistry {
         return this.#defs.entries();
     }
 }
-

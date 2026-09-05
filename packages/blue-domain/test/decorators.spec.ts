@@ -32,7 +32,9 @@ describe('@domainAction', () => {
     test('it should register the method name in domain:actions metadata', () => {
         class MyComponent extends GenericDomainComponent {
             @domainAction
-            submit() { return 'ok'; }
+            submit() {
+                return 'ok';
+            }
         }
         const meta = getDomainMetadata(MyComponent);
         expect(meta.actions).toContain('submit');
@@ -53,7 +55,9 @@ describe('@domainAction', () => {
     test('it should call through to the original method', () => {
         class MyComponent extends GenericDomainComponent {
             @domainAction
-            greet(name: string) { return `hello ${name}`; }
+            greet(name: string) {
+                return `hello ${name}`;
+            }
         }
         const c = new MyComponent();
         c.init('greeter');
@@ -63,7 +67,9 @@ describe('@domainAction', () => {
     test('it should rethrow errors from the action method', () => {
         class MyComponent extends GenericDomainComponent {
             @domainAction
-            boom() { throw new Error('kaboom'); }
+            boom() {
+                throw new Error('kaboom');
+            }
         }
         const c = new MyComponent();
         c.init('boomer');
@@ -74,11 +80,15 @@ describe('@domainAction', () => {
         const spy = vi.spyOn(console, 'error').mockImplementation(() => {});
         class MyComponent extends GenericDomainComponent {
             @domainAction
-            explode() { throw new Error('bang'); }
+            explode() {
+                throw new Error('bang');
+            }
         }
         const c = new MyComponent();
         c.init('exploder');
-        try { c.explode(); } catch {}
+        try {
+            c.explode();
+        } catch {}
         expect(spy).toHaveBeenCalled();
         spy.mockRestore();
     });
@@ -91,7 +101,9 @@ describe('@domainData', () => {
         const store = Object.create(null) as Record<string, unknown>;
         return {
             get: (key: string) => store[key],
-            set: (key: string, value: unknown) => { store[key] = value; },
+            set: (key: string, value: unknown) => {
+                store[key] = value;
+            },
         };
     };
 

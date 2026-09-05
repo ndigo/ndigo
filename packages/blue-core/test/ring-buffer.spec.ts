@@ -38,8 +38,12 @@ describe('RingBuffer', () => {
     });
 
     describe('instances', () => {
-        beforeEach(() => { rb = new RingBuffer(); });
-        afterEach(() => { rb = undefined as any; });
+        beforeEach(() => {
+            rb = new RingBuffer();
+        });
+        afterEach(() => {
+            rb = undefined as any;
+        });
 
         describe('put', () => {
             test('it should doing nothing if no items are provided', () => {
@@ -230,7 +234,7 @@ describe('RingBuffer', () => {
                 rb.put('a', 'b');
                 const initialPeekHead = rb.peekHead();
                 expect(initialPeekHead).toBe('b');
-                
+
                 rb.put('c');
                 const newPeekHead = rb.peekHead();
                 expect(newPeekHead).toBe('c');

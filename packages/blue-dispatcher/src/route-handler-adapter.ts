@@ -187,14 +187,14 @@ export class MetadataHandlerAdapter extends AbstractHandlerMethodAdapter impleme
 
                 if (isNotPrimitive(contextValue)) {
                     const valuePrototype = getPrototypeOf(contextValue);
-                    
+
                     // Handle case where valuePrototype could be null
                     if (valuePrototype !== null) {
                         const valueConstructor = valuePrototype.constructor;
 
                         if (hasRouteMapping(valueConstructor)) {
                             const constructorMapping = getRouteMapping(valueConstructor);
-                            
+
                             // Check that constructorMapping is defined before using it
                             if (constructorMapping !== undefined) {
                                 const valueKeys = keys(valuePrototype),
@@ -205,7 +205,7 @@ export class MetadataHandlerAdapter extends AbstractHandlerMethodAdapter impleme
                                         const valueKey = valueKeys[valueKeyIndex];
                                         if (hasRouteMapping(valuePrototype, valueKey)) {
                                             const methodMapping = getRouteMapping(valuePrototype, valueKey);
-                                            
+
                                             // Check that methodMapping is defined before using it
                                             if (methodMapping !== undefined) {
                                                 const mapping = assign({}, constructorMapping, methodMapping);

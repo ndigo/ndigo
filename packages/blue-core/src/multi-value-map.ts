@@ -35,23 +35,23 @@ export class MultiValueMap<K, V> extends Map<K, V[]> {
      */
     remove(key: K, value: V): boolean {
         const values = this.get(key);
-        
+
         if (values === undefined) {
             return false;
         }
-        
+
         const index = values.indexOf(value);
-        
+
         if (index === -1) {
             return false;
         }
-        
+
         values.splice(index, 1);
-        
+
         if (values.length === 0) {
             this.delete(key);
         }
-        
+
         return true;
     }
 }

@@ -11,7 +11,14 @@ import {
     lifecycleHooksMetadataKey,
     transactionalMetadataKey,
 } from './_constants';
-import { ColumnDefinition, ColumnOptions, RelationDefinition, RelationKind, LifecycleHookDefinition, LifecycleEvent } from './metadata';
+import {
+    ColumnDefinition,
+    ColumnOptions,
+    RelationDefinition,
+    RelationKind,
+    LifecycleHookDefinition,
+    LifecycleEvent,
+} from './metadata';
 import type { TransactionManager } from './transaction-manager';
 
 type ClassType = new (...args: any[]) => any;

@@ -85,4 +85,6 @@ export class KeypathConverter implements Converter<string, KeypathToken[] | null
 }
 
 /** Singleton instance for backward compatibility. */
-export const parseKeypath: (input: string) => KeypathToken[] | null = new KeypathConverter().convert.bind(new KeypathConverter());
+export const parseKeypath: (input: string) => KeypathToken[] | null = new KeypathConverter().convert.bind(
+    new KeypathConverter()
+);

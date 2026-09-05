@@ -18,17 +18,17 @@ describe('parseUrlGlob', () => {
         ['[', '[[]', true],
 
         // --- URL-specific: no notDot / hidden-file restriction ---
-        ['.well-known/jwks', '*/*', true],           // would FAIL in fsGlob (notDot)
-        ['.well-known/jwks', '*/jwks', true],         // would FAIL in fsGlob
-        ['.hidden', '*', true],                       // would FAIL in fsGlob
+        ['.well-known/jwks', '*/*', true], // would FAIL in fsGlob (notDot)
+        ['.well-known/jwks', '*/jwks', true], // would FAIL in fsGlob
+        ['.hidden', '*', true], // would FAIL in fsGlob
         ['/api/.well-known/foo', '/api/*/foo', true], // would FAIL in fsGlob
 
         // --- Path-param passthrough: {id} treated as literal, no brace expansion ---
-        ['/{id}/', '/{id}/', true],                  // literal match
+        ['/{id}/', '/{id}/', true], // literal match
         ['/users/{id}/posts', '/users/{id}/posts', true],
 
         // --- POSIX class support ---
-        ['/api/v2/users', '/api/[:digit:]/users', false],  // 'v2' not all digits
+        ['/api/v2/users', '/api/[:digit:]/users', false], // 'v2' not all digits
         ['/api/2/users', '/api/[:digit:]*/users', true],
 
         // --- extGlob support ---

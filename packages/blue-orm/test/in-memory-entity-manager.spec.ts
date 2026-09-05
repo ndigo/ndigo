@@ -4,7 +4,16 @@ import '@tsmetadata/polyfill';
 
 import { IllegalStateError } from '@blue/core';
 import { InMemoryDataSource } from '../src/data-source';
-import { entity, generated, primaryColumn, column, prePersist, postLoad, preUpdate, postRemove } from '../src/decorators';
+import {
+    entity,
+    generated,
+    primaryColumn,
+    column,
+    prePersist,
+    postLoad,
+    preUpdate,
+    postRemove,
+} from '../src/decorators';
 import { InMemoryEntityManager } from '../src/entity-manager';
 
 @entity()

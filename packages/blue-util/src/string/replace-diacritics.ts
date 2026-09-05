@@ -48,14 +48,20 @@ const accented = /[\xC0-\xFF\u0152\u0153\u0160\u0161\u0178\u0192\uA732\uA733]/g,
         if (!hasAccentedChars(text)) return text;
         return decomposeCombinedGraphemes(text)
             .replace(combiningCharacters, '')
-            .replace(upperAA, 'AA').replace(lowerAA, 'aa')
-            .replace(upperAE, 'AE').replace(lowerAE, 'ae')
+            .replace(upperAA, 'AA')
+            .replace(lowerAA, 'aa')
+            .replace(upperAE, 'AE')
+            .replace(lowerAE, 'ae')
             .replace(upperB, 'B')
-            .replace(upperD, 'D').replace(lowerD, 'd')
+            .replace(upperD, 'D')
+            .replace(lowerD, 'd')
             .replace(lowerF, 'f')
-            .replace(upperO, 'O').replace(lowerO, 'o')
-            .replace(upperOE, 'OE').replace(lowerOE, 'oe')
-            .replace(upperP, 'P').replace(lowerP, 'p');
+            .replace(upperO, 'O')
+            .replace(lowerO, 'o')
+            .replace(upperOE, 'OE')
+            .replace(lowerOE, 'oe')
+            .replace(upperP, 'P')
+            .replace(lowerP, 'p');
     };
 
 export default replaceDiacritics;

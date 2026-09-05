@@ -76,5 +76,4 @@ export class MappedHandlerInterceptor extends AsPathMatcherFilter(Null) implemen
         }
         return await this.#interceptor.preHandle(route, handler);
     }
-
 }

@@ -115,7 +115,7 @@ export const mathMod = (m: number, p: number): number => {
  * mean( [ 2, 7, 9 ] ); //=> 6
  * mean( [] ); //=> NaN
  */
-export const mean = (list: number[]): number => list.length ? list.reduce((a, b) => a + b, 0) / list.length : NaN;
+export const mean = (list: number[]): number => (list.length ? list.reduce((a, b) => a + b, 0) / list.length : NaN);
 
 /**
  * Returns the median of the given list of numbers.

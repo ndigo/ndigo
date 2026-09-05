@@ -173,7 +173,8 @@ export class IndexedIterator<T = any> implements IterableIterator<T> {
  * @param indexed - The array-like collection to iterate over.
  * @returns An `IterableIterator` for the provided collection.
  */
-export const indexedIterator = <T = any>(indexed: ArrayLike<T | undefined>): IterableIterator<T> => new IndexedIterator<T>(indexed);
+export const indexedIterator = <T = any>(indexed: ArrayLike<T | undefined>): IterableIterator<T> =>
+    new IndexedIterator<T>(indexed);
 
 /**
  * An iterator for the key-value pairs (entries) of an object or collection.
@@ -189,10 +190,9 @@ export class EntriesIterator<T = any> implements IterableIterator<Entry<T>> {
      * @param target - The object or collection to iterate over its entries.
      */
     constructor(target: object) {
-        this.#iterator = (hasEntries(target)
-            ? _invokeEntries(target)
-            : _entriesToIterator(target)
-        ) as Iterator<Entry<T>>;
+        this.#iterator = (hasEntries(target) ? _invokeEntries(target) : _entriesToIterator(target)) as Iterator<
+            Entry<T>
+        >;
     }
 
     /**

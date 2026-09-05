@@ -15,8 +15,8 @@ const rootDir = join(__dirname, '..');
 const docsData = JSON.parse(readFileSync(join(__dirname, 'docs-by-category.json'), 'utf-8'));
 
 /**
-  * Extract function names from imports
-  */
+ * Extract function names from imports
+ */
 function extractFunctionImports(lines, endIndex) {
     const functions = [];
     let inImport = false;

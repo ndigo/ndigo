@@ -56,12 +56,7 @@ export interface ConditionContext {
  * @param context - The decorator context.
  * @returns The target class unchanged.
  */
-function conditionalDecorator(
-    key: string,
-    value: unknown,
-    target: any,
-    context: ClassDecoratorContext,
-): any {
+function conditionalDecorator(key: string, value: unknown, target: any, context: ClassDecoratorContext): any {
     context.metadata[key] = value;
     return target;
 }
@@ -147,10 +142,7 @@ export function conditionalOnMissingEntry(entryName: string) {
  * @returns The required platform, or `undefined` when no condition is set.
  */
 export function getConditionalPlatform(target: any): ConditionalPlatform | undefined {
-    const meta: Record<string, any> =
-        target?.[Symbol.metadata] ||
-        target?.constructor?.[Symbol.metadata] ||
-        {};
+    const meta: Record<string, any> = target?.[Symbol.metadata] || target?.constructor?.[Symbol.metadata] || {};
     return meta[CONDITIONAL_ON];
 }
 
@@ -195,10 +187,7 @@ export function isActive(target: any, ctx?: ConditionContext): boolean {
         return false;
     }
 
-    const meta: Record<string, any> =
-        target?.[Symbol.metadata] ||
-        target?.constructor?.[Symbol.metadata] ||
-        {};
+    const meta: Record<string, any> = target?.[Symbol.metadata] || target?.constructor?.[Symbol.metadata] || {};
 
     const property = meta[CONDITIONAL_PROPERTY] as ConditionalOnPropertyOptions | undefined;
     if (property) {

@@ -30,14 +30,17 @@ let _sink = 0;
 //  This is the "smart" approach: precompute once per descriptor,
 //  then all subsequent calls use the cached arrays. No API change.
 // --------------------------------------------------------------------
-const descriptorCache = new WeakMap<LikeDescriptor, {
-    keys: string[];
-    types: (Function | true)[];
-    isTrue: boolean[];
-}>();
+const descriptorCache = new WeakMap<
+    LikeDescriptor,
+    {
+        keys: string[];
+        types: (Function | true)[];
+        isTrue: boolean[];
+    }
+>();
 
 const precomputeDescriptor = (
-    descriptor: LikeDescriptor,
+    descriptor: LikeDescriptor
 ): { keys: string[]; types: (Function | true)[]; isTrue: boolean[] } => {
     const entries = Object.entries(descriptor);
     const keys = new Array(entries.length);
@@ -114,7 +117,7 @@ function likeCached(descriptor: LikeDescriptor, value?: any): boolean | ((v: any
         }
         return true;
     };
-};
+}
 
 // --------------------------------------------------------------------
 //  Semantics note:
@@ -216,9 +219,7 @@ const likeKeys = (descriptor: LikeDescriptor, value: any): boolean => {
 // --------------------------------------------------------------------
 //  Alternative 5 – Pre-computed keys (cached at module load time)
 // --------------------------------------------------------------------
-const precompute = (
-    descriptor: LikeDescriptor,
-): { keys: string[]; types: (Function | true)[]; isTrue: boolean[] } => {
+const precompute = (descriptor: LikeDescriptor): { keys: string[]; types: (Function | true)[]; isTrue: boolean[] } => {
     const entries = Object.entries(descriptor);
     const keys = new Array(entries.length);
     const types = new Array(entries.length);
@@ -233,7 +234,7 @@ const precompute = (
 
 const likePreKeys = (
     cached: { keys: string[]; types: (Function | true)[]; isTrue: boolean[] },
-    value: any,
+    value: any
 ): boolean => {
     if (value == null) return false;
     const { keys, types, isTrue } = cached;

@@ -111,8 +111,7 @@ const isAlphaNumericPlus: constraint = patternConstraint({
     regex: alphaNumericPlusRule.source,
 });
 
-const isBlank: constraint = (value: serializable): boolean =>
-    removeWhitespace(toString(value)).length === 0;
+const isBlank: constraint = (value: serializable): boolean => removeWhitespace(toString(value)).length === 0;
 
 const isBoolean: constraint = patternConstraint({ regex: booleanRule });
 
@@ -128,26 +127,18 @@ const isCharacters: constraint = (value: serializable, params?: Params) =>
         ...(params as import('./_numeric-constraints').RangeParams),
     });
 
-const isCity: constraint = (value) =>
-    isSingleSpaced(value as string) && cityRule.test(value as string);
+const isCity: constraint = (value) => isSingleSpaced(value as string) && cityRule.test(value as string);
 
 const isEmail: constraint = patternConstraint({ regex: emailRule });
 
 const isEnum: constraint = (value, params: Params = {}): boolean => {
-    const enumeration = isString(params.value)
-        ? params.value.split(' ')
-        : !isArray(params.value)
-          ? []
-          : params.value;
+    const enumeration = isString(params.value) ? params.value.split(' ') : !isArray(params.value) ? [] : params.value;
 
     return enumeration.indexOf(value) !== -1;
 };
 
 const isLength: constraint = (value, params: Params = {}) =>
-    rangeValidator(
-        valueCount(toString(value)),
-        params as import('./_numeric-constraints').RangeParams
-    );
+    rangeValidator(valueCount(toString(value)), params as import('./_numeric-constraints').RangeParams);
 
 const isMustBeginWith: constraint = (value, params: Params = {}) => {
     const strValue = toString(value);
@@ -157,8 +148,7 @@ const isMustBeginWith: constraint = (value, params: Params = {}) => {
 const isNonConsecutiveAlphaNumerics: constraint = (value, params?: Params) => {
     const valuesArray = toString(value).split(''),
         count = toString(value).length,
-        maxSequential =
-            (params as NonConsecutiveAlphaNumericsParams | undefined)?.maxSequential ?? 2;
+        maxSequential = (params as NonConsecutiveAlphaNumericsParams | undefined)?.maxSequential ?? 2;
     let currentConsecutive = 1;
 
     if (count < maxSequential) {
@@ -175,8 +165,7 @@ const isNonConsecutiveAlphaNumerics: constraint = (value, params?: Params) => {
         // lower alpha: 97-122
         if (
             currentCharCode === nextCharCode - 1 &&
-            ((currentCharCode >= 48 && currentCharCode < 57) ||
-                (currentCharCode >= 97 && currentCharCode < 122))
+            ((currentCharCode >= 48 && currentCharCode < 57) || (currentCharCode >= 97 && currentCharCode < 122))
         ) {
             currentConsecutive++;
             if (currentConsecutive === maxSequential) {
@@ -214,8 +203,7 @@ const isNonConsecutiveAlphaNumerics: constraint = (value, params?: Params) => {
 
 const isNonRepeatingAlphaNumerics: constraint = (value, params?: Params) => {
     let regexString = '([a-z\\d])';
-    const maxRepeating =
-        (params as NonRepeatingAlphaNumericsParams | undefined)?.maxRepeating ?? 2;
+    const maxRepeating = (params as NonRepeatingAlphaNumericsParams | undefined)?.maxRepeating ?? 2;
     for (let i = 0; i < maxRepeating; ++i) {
         regexString += '\\1';
     }
@@ -238,8 +226,7 @@ const isNotBeginWith: constraint = (value: serializable, params: Params = {}) =>
     return strValue.length === 0 || strValue[0] !== params.value;
 };
 
-const isNotBeginWith1: constraint = (value: serializable) =>
-    isNotBeginWith(value, { value: '1' });
+const isNotBeginWith1: constraint = (value: serializable) => isNotBeginWith(value, { value: '1' });
 
 const isNotBlank: constraint = (value) => {
     return !isBlank(value);

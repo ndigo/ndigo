@@ -1,7 +1,5 @@
 import { metrics } from '@opentelemetry/api';
-import { BaseBlueInstrumentation } from './base';
-import { CountedRegistry } from '@blue/telemetry';
-import { getCounted } from '@blue/telemetry';
+import { AbstractBlueInstrumentation, CountedRegistry, getCounted } from '@blue/telemetry';
 import { getSymbolMetadata } from '@blue/core';
 
 /**
@@ -10,7 +8,7 @@ import { getSymbolMetadata } from '@blue/core';
  * This instrumentation discovers decorated methods via the `CountedRegistry` and
  * applies the counting logic using the instrumentation's patching mechanism.
  */
-export class CountedInstrumentation extends BaseBlueInstrumentation {
+export class CountedInstrumentation extends AbstractBlueInstrumentation {
     constructor() {
         super('metrics-counted');
     }

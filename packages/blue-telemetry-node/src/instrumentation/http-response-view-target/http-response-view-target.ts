@@ -11,7 +11,7 @@
 
 import { SpanKind } from '@opentelemetry/api';
 import { HTTPResponseViewTarget } from '@blue/platform-node';
-import { BaseBlueInstrumentation } from '../base';
+import { AbstractBlueInstrumentation } from '@blue/telemetry';
 
 /**
  * Instrumentation for `HTTPResponseViewTarget.commit`.
@@ -23,7 +23,7 @@ import { BaseBlueInstrumentation } from '../base';
  * });
  * ```
  */
-export class HTTPResponseViewTargetInstrumentation extends BaseBlueInstrumentation {
+export class HTTPResponseViewTargetInstrumentation extends AbstractBlueInstrumentation {
     constructor() {
         super('http-response-view-target');
     }

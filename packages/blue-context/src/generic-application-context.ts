@@ -5,7 +5,13 @@
 import { JSONObject, direct, escalate } from '@blue/core';
 import { ContentSource, StaticContentSource, Theme, ThemeResolver, StaticThemeResolver } from '@blue/content';
 import { AsEventEmitter, EventType } from './event-emitter';
-import { DefaultLifecycleProcessor, LifecycleProcessor, likeEntryRegistryProcessor, DefaultFactory, Factory } from '@blue/factory';
+import {
+    DefaultLifecycleProcessor,
+    LifecycleProcessor,
+    likeEntryRegistryProcessor,
+    DefaultFactory,
+    Factory,
+} from '@blue/factory';
 import { Environment, StandardEnvironment, ConfigurableEnvironment } from './environment';
 import { AsModuleResourceLoader } from './resource';
 import { ApplicationContext } from './context-interfaces';
@@ -161,8 +167,7 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
 
         if (data) {
             for (const key in data) {
-                // setValue comes from DefaultFactory mixin
-                (this as any).setValue(key, data[key]);
+                this.setValue(key, data[key]);
             }
         }
     }
@@ -499,4 +504,3 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
         return root;
     }
 }
-

@@ -86,7 +86,7 @@ export class AbstractDispatcher
     }
 
     private _isDestroyableView(view: View): view is View & { destroy(): void | Promise<void> } {
-        return !!view && typeof (view as any).destroy === 'function';
+        return !!view && typeof view.destroy === 'function';
     }
 
     /**

@@ -45,7 +45,7 @@ const { defineProperty, getPrototypeOf } = Reflect,
             }
         }
 
-        return null as any;
+        return null;
     };
 
 export abstract class AbstractRouteErrorResolver implements RouteErrorResolver {
@@ -64,7 +64,7 @@ export abstract class AbstractRouteErrorResolver implements RouteErrorResolver {
     }
 
     constructor() {
-        this.mappedHandlers = null as any;
+        this.mappedHandlers = null;
         this.mappedHandlerClasses = [];
     }
 

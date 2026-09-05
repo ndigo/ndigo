@@ -24,7 +24,7 @@ const { defineProperty, getOwnPropertyDescriptor } = Reflect,
         if (!target || typeof target !== 'function') {
             return {};
         }
-        return (target as any)[Symbol.metadata] || {};
+        return target[Symbol.metadata] || {};
     },
     // Helper to get metadata from an instance
     getInstanceMetadata = (instance: any): Record<string, any> => {

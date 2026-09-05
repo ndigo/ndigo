@@ -70,6 +70,7 @@ export * from './interceptors';
 export { ResponseStatus };
 export { ResponseStatuses };
 export * from './transformers';
+export * from './http-headers';
 export { HTTPHeaders };
 export { default as QueryString } from './query-string';
 export { default as MatrixString } from './matrix-string';

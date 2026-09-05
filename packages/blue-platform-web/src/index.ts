@@ -20,7 +20,7 @@ export * from './browser-dispatcher';
 export * from './web-auto-configuration';
 export * from './browser-theme';
 export * from './offline-interceptor';
-export * from './cors-interceptor';
+export * from './fetch-credentials';
 export * from './retry-on-offline-interceptor';
 export * from './local-storage-resource-loader';
 export * from './indexeddb-resource-loader';

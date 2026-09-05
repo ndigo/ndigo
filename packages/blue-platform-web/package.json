@@ -7,7 +7,24 @@
     "doc",
     "lib"
   ],
-  "exports": "./lib/index.js",
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    },
+    "./browser-dispatcher": {
+      "types": "./lib/browser-dispatcher.d.ts",
+      "default": "./lib/browser-dispatcher.js"
+    },
+    "./web-auto-configuration": {
+      "types": "./lib/web-auto-configuration.d.ts",
+      "default": "./lib/web-auto-configuration.js"
+    },
+    "./browser-theme": {
+      "types": "./lib/browser-theme.d.ts",
+      "default": "./lib/browser-theme.js"
+    }
+  },
   "types": "lib/index.d.ts",
   "scripts": {
     "build:lib": "tsc -b tsconfig.build.json",
@@ -45,5 +62,9 @@
     "@blue/http": "~0.0.1",
     "@blue/router": "~0.0.1",
     "@blue/util": "~0.0.1"
+  },
+  "dependencies": {
+    "@blue/view": "workspace:~",
+    "@blue/view-webcomponent": "workspace:~"
   }
 }

@@ -3,7 +3,7 @@
  */
 
 import { ConfigurableApplicationContext } from '@blue/context';
-import { CookieThemeResolver, configureCookieThemeResolver } from '@blue/platform-web';
+import { CookieThemeResolver, configureCookieThemeResolver } from './cookie-theme-resolver';
 
 /**
  * Options used to bootstrap browser theme support.

@@ -19,7 +19,7 @@ export class LinkedomDOMProvider implements DOMProvider {
     constructor() {
         // Create an initial empty document as a baseline for element/fragment creation
         const { document } = linkedomParseHTML('<!DOCTYPE html><html><head></head><body></body></html>');
-            this.#document = document as Document;
+        this.#document = document as Document;
     }
 
     /**

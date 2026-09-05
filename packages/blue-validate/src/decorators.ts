@@ -132,7 +132,7 @@ export let formatErrorMessage = (
     constraintName: string,
     propertyName: string,
     value: unknown,
-    message?: string,
+    message?: string
 ): string => {
     if (message) return message;
     const displayValue = typeof value === 'string' ? `"${value}"` : String(value);
@@ -154,9 +154,7 @@ export let formatErrorMessage = (
  *
  * @param formatter - The new formatter function.
  */
-export const setErrorMessageFormatter = (
-    formatter: typeof formatErrorMessage,
-): void => {
+export const setErrorMessageFormatter = (formatter: typeof formatErrorMessage): void => {
     formatErrorMessage = formatter;
 };
 
@@ -164,7 +162,7 @@ const createViolationError = (
     propertyName: string | symbol,
     constraintName: string,
     value: unknown,
-    message?: string,
+    message?: string
 ): ConstraintViolationError => {
     const defaultMessage = formatErrorMessage(constraintName, String(propertyName), value, message);
     return new ConstraintViolationError(defaultMessage, new Set([constraintName]));

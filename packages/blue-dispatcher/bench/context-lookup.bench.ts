@@ -49,9 +49,12 @@ warmFactory.getValue('myService');
 function _makeColdFactory() {
     const f = new DefaultFactory();
     // Register a trivial constructor so the constructor branch is taken
-    f.setValue('lazyService', class {
-        value = 'lazy';
-    });
+    f.setValue(
+        'lazyService',
+        class {
+            value = 'lazy';
+        }
+    );
     return f;
 }
 

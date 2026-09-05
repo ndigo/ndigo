@@ -27,7 +27,9 @@ const getConstructor = (target: unknown): (Function & { [Symbol.metadata]?: Reco
     if (typeof target === 'function') {
         return target as Function & { [Symbol.metadata]?: Record<string, unknown> };
     }
-    return (target as object | undefined)?.constructor as (Function & { [Symbol.metadata]?: Record<string, unknown> }) | undefined;
+    return (target as object | undefined)?.constructor as
+        | (Function & { [Symbol.metadata]?: Record<string, unknown> })
+        | undefined;
 };
 
 /**
@@ -163,7 +165,7 @@ export class HashScope implements Scope {
         if (!scope) {
             throw new IllegalStateError('No active hash scope context. Call setCurrentKey() first.');
         }
-        
+
         if (!scope.has(name)) {
             scope.set(name, objectFactory());
         }

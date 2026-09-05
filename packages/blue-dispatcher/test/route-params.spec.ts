@@ -243,7 +243,7 @@ describe('@routeParams - TC39 Parameter Injection Pattern', () => {
             expect(params![0].defaultValue).toBe('10');
         });
 
-it('should preserve converter options', () => {
+        it('should preserve converter options', () => {
             const converter = (v: any) => Number(v);
 
             class TestController {

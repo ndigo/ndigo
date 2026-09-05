@@ -42,8 +42,7 @@ describe('hydrateIslands', () => {
     });
 
     test('leaves undefined elements as inert markup', () => {
-        document.body.innerHTML =
-            '<unknown-island data-blue-island data-blue-model="{}"></unknown-island>';
+        document.body.innerHTML = '<unknown-island data-blue-island data-blue-model="{}"></unknown-island>';
 
         const n = hydrateIslands(document);
         expect(n).toBe(0);

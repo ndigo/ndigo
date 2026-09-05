@@ -47,43 +47,59 @@ tree.insert('/health', 'health');
 tree.insert('/api/v1/metrics', 'metrics');
 
 // Build scale fixture function
-function buildScaleFixture(n: number): { tree: RadixTree<string>, regexps: [RegExp, string][] } {
+function buildScaleFixture(n: number): { tree: RadixTree<string>; regexps: [RegExp, string][] } {
     const resources = [
-        'tags', 'categories', 'orders', 'products', 'reviews', 'notifications',
-        'messages', 'events', 'teams', 'projects', 'tasks', 'files', 'reports',
-        'invoices', 'payments', 'subscriptions', 'members', 'roles', 'permissions',
-        'settings'
+        'tags',
+        'categories',
+        'orders',
+        'products',
+        'reviews',
+        'notifications',
+        'messages',
+        'events',
+        'teams',
+        'projects',
+        'tasks',
+        'files',
+        'reports',
+        'invoices',
+        'payments',
+        'subscriptions',
+        'members',
+        'roles',
+        'permissions',
+        'settings',
     ];
-    
+
     const tree = new RadixTree<string>();
     const regexps: [RegExp, string][] = [];
-    
+
     // Generate filler routes first
     let routeCount = 0;
     for (let i = 0; i < n - 3 && routeCount < n - 3; i++) {
         const resource = resources[i % resources.length];
-        
+
         // Add static list route
         if (routeCount < n - 3) {
             tree.insert(`/${resource}`, `${resource}List`);
             regexps.push([new RegExp(`^\\/${resource}$`), `${resource}List`]);
             routeCount++;
         }
-        
+
         // Add single param route
         if (routeCount < n - 3) {
             tree.insert(`/${resource}/:id`, `${resource}Get`);
             regexps.push([new RegExp(`^\\/${resource}\\/(?<id>[^/]+)$`), `${resource}Get`]);
             routeCount++;
         }
-        
+
         // Add nested static route
         if (routeCount < n - 3) {
             tree.insert(`/${resource}/:id/items`, `${resource}Items`);
             regexps.push([new RegExp(`^\\/${resource}\\/(?<id>[^/]+)\\/items$`), `${resource}Items`]);
             routeCount++;
         }
-        
+
         // Add nested two-param route
         if (routeCount < n - 3) {
             tree.insert(`/${resource}/:id/items/:itemId`, `${resource}Item`);
@@ -91,17 +107,17 @@ function buildScaleFixture(n: number): { tree: RadixTree<string>, regexps: [RegE
             routeCount++;
         }
     }
-    
+
     // Add anchor routes last (so they're at the end of regexp array)
     tree.insert('/users/:id', 'getUser');
     regexps.push([/^\/users\/(?<id>[^/]+)$/, 'getUser']);
-    
+
     tree.insert('/posts/:id/comments/:commentId', 'getPostComment');
     regexps.push([/^\/posts\/(?<id>[^/]+)\/comments\/(?<commentId>[^/]+)$/, 'getPostComment']);
-    
+
     tree.insert('/articles', 'listArticles');
     regexps.push([/^\/articles$/, 'listArticles']);
-    
+
     return { tree, regexps };
 }
 
@@ -259,26 +275,18 @@ describe('RadixTree lookup performance', () => {
     });
 
     // ─── Scale benchmarks ───────────────────────────────────────────────
-    
+
     describe('scale – 20 routes', () => {
         bench('RadixTree.lookup', () => {
             let _sink: any;
-            const paths = [
-                '/articles',
-                '/users/42',
-                '/posts/99/comments/7',
-            ];
+            const paths = ['/articles', '/users/42', '/posts/99/comments/7'];
             for (let i = 0; i < 1000; i++) {
                 _sink = fix20.tree.lookup(paths[i % 3]);
             }
         });
         bench('RegExp array scan', () => {
             let _sink: any;
-            const paths = [
-                '/articles',
-                '/users/42',
-                '/posts/99/comments/7',
-            ];
+            const paths = ['/articles', '/users/42', '/posts/99/comments/7'];
             for (let i = 0; i < 1000; i++) {
                 for (const [re, handler] of fix20.regexps) {
                     const m = re.exec(paths[i % 3]);
@@ -294,22 +302,14 @@ describe('RadixTree lookup performance', () => {
     describe('scale – 50 routes', () => {
         bench('RadixTree.lookup', () => {
             let _sink: any;
-            const paths = [
-                '/articles',
-                '/users/42',
-                '/posts/99/comments/7',
-            ];
+            const paths = ['/articles', '/users/42', '/posts/99/comments/7'];
             for (let i = 0; i < 1000; i++) {
                 _sink = fix50.tree.lookup(paths[i % 3]);
             }
         });
         bench('RegExp array scan', () => {
             let _sink: any;
-            const paths = [
-                '/articles',
-                '/users/42',
-                '/posts/99/comments/7',
-            ];
+            const paths = ['/articles', '/users/42', '/posts/99/comments/7'];
             for (let i = 0; i < 1000; i++) {
                 for (const [re, handler] of fix50.regexps) {
                     const m = re.exec(paths[i % 3]);
@@ -325,22 +325,14 @@ describe('RadixTree lookup performance', () => {
     describe('scale – 100 routes', () => {
         bench('RadixTree.lookup', () => {
             let _sink: any;
-            const paths = [
-                '/articles',
-                '/users/42',
-                '/posts/99/comments/7',
-            ];
+            const paths = ['/articles', '/users/42', '/posts/99/comments/7'];
             for (let i = 0; i < 1000; i++) {
                 _sink = fix100.tree.lookup(paths[i % 3]);
             }
         });
         bench('RegExp array scan', () => {
             let _sink: any;
-            const paths = [
-                '/articles',
-                '/users/42',
-                '/posts/99/comments/7',
-            ];
+            const paths = ['/articles', '/users/42', '/posts/99/comments/7'];
             for (let i = 0; i < 1000; i++) {
                 for (const [re, handler] of fix100.regexps) {
                     const m = re.exec(paths[i % 3]);

@@ -16,13 +16,6 @@
  *
  * @see https://github.com/preactjs/signals
  */
-export {
-    signal,
-    computed,
-    effect,
-    batch,
-    untracked,
-    Signal,
-} from '@preact/signals-core';
+export { signal, computed, effect, batch, untracked, Signal } from '@preact/signals-core';
 
 export type { SignalOptions } from '@preact/signals-core';

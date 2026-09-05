@@ -20,15 +20,11 @@ describe('UUIDConverter', () => {
     const converter = new UUIDConverter();
 
     test('validates and normalizes valid UUIDs to lowercase', () => {
-        expect(converter.convert('550e8400-e29b-41d4-a716-446655440000')).toBe(
-            '550e8400-e29b-41d4-a716-446655440000'
-        );
+        expect(converter.convert('550e8400-e29b-41d4-a716-446655440000')).toBe('550e8400-e29b-41d4-a716-446655440000');
     });
 
     test('validates UUID v4 format (version 4)', () => {
-        expect(converter.convert('550e8400-e29b-41d4-a716-446655440000')).toBe(
-            '550e8400-e29b-41d4-a716-446655440000'
-        );
+        expect(converter.convert('550e8400-e29b-41d4-a716-446655440000')).toBe('550e8400-e29b-41d4-a716-446655440000');
     });
 
     test('throws on invalid UUID format', () => {
@@ -50,9 +46,7 @@ describe('UUIDConverter', () => {
     });
 
     test('normalizes uppercase UUID to lowercase', () => {
-        expect(converter.convert('A1B2C3D4-E5F6-7890-ABCD-EF1234567890')).toBe(
-            'a1b2c3d4-e5f6-7890-abcd-ef1234567890'
-        );
+        expect(converter.convert('A1B2C3D4-E5F6-7890-ABCD-EF1234567890')).toBe('a1b2c3d4-e5f6-7890-abcd-ef1234567890');
     });
 });
 
@@ -99,9 +93,9 @@ describe('DateConverter', () => {
 
     test('parses various date formats', () => {
         const formats = [
-            '2024-01-15',           // ISO date
+            '2024-01-15', // ISO date
             '2024-01-15T10:30:00Z', // ISO datetime UTC
-            'Jan 15, 2024',         // Human-readable
+            'Jan 15, 2024', // Human-readable
         ];
 
         for (const format of formats) {
@@ -357,7 +351,9 @@ describe('ConversionService', () => {
 
     test('allows custom initial converters via options', () => {
         const customService = createConversionService({
-            converters: [{ converter: { convert: (v: string) => v.toUpperCase() }, sourceType: String, targetType: String }],
+            converters: [
+                { converter: { convert: (v: string) => v.toUpperCase() }, sourceType: String, targetType: String },
+            ],
         });
 
         // Custom converter should be available alongside built-ins

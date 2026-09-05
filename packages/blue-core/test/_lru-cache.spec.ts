@@ -53,8 +53,8 @@ describe('LRUCache', () => {
         // set('c') should evict the LRU entry, which is still 'a' (has() didn't promote it)
         cache.set('c', 3);
         expect(cache.get('a')).toBeUndefined(); // evicted — was LRU; has() did not promote
-        expect(cache.get('b')).toBe(2);         // still present — was MRU
-        expect(cache.get('c')).toBe(3);         // just inserted
+        expect(cache.get('b')).toBe(2); // still present — was MRU
+        expect(cache.get('c')).toBe(3); // just inserted
     });
 
     it('delete() removes an entry', () => {

@@ -112,10 +112,7 @@ function computeDescriptor(descriptor: LikeDescriptor): {
  * - Type checking uses `typeof` for Function, `Object.prototype.toString.call()` for others
  * - Property presence checked with `in` operator
  */
-function checkLike(
-    cached: { keys: string[]; types: (Function | true)[]; isTrue: boolean[] },
-    value: any,
-): boolean {
+function checkLike(cached: { keys: string[]; types: (Function | true)[]; isTrue: boolean[] }, value: any): boolean {
     // Top-level nil check
     if (value == null) return false;
     if (typeof value !== 'object' && typeof value !== 'function') return false;

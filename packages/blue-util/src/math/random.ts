@@ -24,7 +24,7 @@ function seed(): string {
         if (typeof btoa !== 'undefined') {
             return btoa(String.fromCharCode(...values));
         }
-        return Array.from(values, v => v.toString(16).padStart(2, '0')).join('');
+        return Array.from(values, (v) => v.toString(16).padStart(2, '0')).join('');
     } catch (e) {
         console.warn('Failed to generate cryptographic seed, using timestamp as fallback:', e);
         return `${Date.now()}-${Math.random()}`;

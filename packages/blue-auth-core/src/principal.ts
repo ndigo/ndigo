@@ -48,11 +48,5 @@ export class AnonymousPrincipal implements Principal {
  * Duck-type guard — returns `true` when `value` looks like a {@link Principal}.
  */
 export function isPrincipal(value: unknown): value is Principal {
-    return (
-        typeof value === 'object' &&
-        value !== null &&
-        'id' in value &&
-        'name' in value &&
-        'roles' in value
-    );
+    return typeof value === 'object' && value !== null && 'id' in value && 'name' in value && 'roles' in value;
 }

@@ -47,7 +47,7 @@ export const DENIAL_STATUS = {
  */
 export function denialOf(
     statusCode: number,
-    options: { body?: Record<string, unknown>; redirect?: string } = {},
+    options: { body?: Record<string, unknown>; redirect?: string } = {}
 ): InterceptorDenial {
     return { statusCode, body: options.body, redirect: options.redirect };
 }

@@ -10,8 +10,6 @@ import { like } from '@blue/util';
  */
 export type comparison<T> = (value1: T, value2: T) => number;
 
-
-
 /**
  * A function that evaluates a condition between two values, returning a boolean.
  * @template T - The type of values being evaluated.
@@ -64,11 +62,12 @@ export interface Comparator<T> {
     compare: comparison<T>;
 }
 
-
 const { defineProperty } = Reflect,
     naturalPredicate = <T>(value1: T, value2: T): boolean => value1 < value2,
-    _comparator = <T>(pred: predicate<T>): comparison<T> => (a: T, b: T): number =>
-        pred(a, b) ? -1 : pred(b, a) ? 1 : 0;
+    _comparator =
+        <T>(pred: predicate<T>): comparison<T> =>
+        (a: T, b: T): number =>
+            pred(a, b) ? -1 : pred(b, a) ? 1 : 0;
 
 export abstract class AbstractValueComparator implements Comparator<string> {
     /**
@@ -202,11 +201,10 @@ class StringComparator extends NaturalComparator<string> {
      * @returns A negative integer, zero, or a positive integer as the first string is less than, equal to, or greater than the second (case-insensitive).
      */
     compareIgnoreCase(value1: string, value2: string): number {
-        const result = (
+        const result =
             typeof value1 === 'string' &&
             typeof value2 === 'string' &&
-            this.compare(value1.toLowerCase(), value2.toLowerCase())
-        );
+            this.compare(value1.toLowerCase(), value2.toLowerCase());
         return typeof result === 'number' ? result : 0;
     }
 }

@@ -20,8 +20,8 @@ describe('PriorityContentSource', () => {
         });
 
         const merged = new PriorityContentSource([override, base]);
-        expect(merged.getContent('title', 'en')).toBe('My App');   // from base
-        expect(merged.getContent('tagline', 'en')).toBe('Hello!');  // from override
+        expect(merged.getContent('title', 'en')).toBe('My App'); // from base
+        expect(merged.getContent('tagline', 'en')).toBe('Hello!'); // from override
     });
 
     test('higher-priority source can partially override', () => {

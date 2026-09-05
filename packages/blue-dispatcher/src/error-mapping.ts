@@ -13,7 +13,6 @@ function _hasFunction(key: string, obj: any): boolean {
 const { assign, getOwnPropertyDescriptor } = Object;
 const { defineProperty } = Reflect;
 
-
 /**
  * @errorHandler decorator - marks a class as an error handler
  */
@@ -95,7 +94,8 @@ export const errorHandler = assign(errorHandlerDecorator, {
 
 const hasConstructor = _hasFunction('constructor', {});
 const constructorIsErrorHandler = (value: any): boolean => hasErrorHandler(value?.constructor);
-const _isConstructorErrorHandler = (value: any): boolean => _hasFunction('constructor', value) && constructorIsErrorHandler(value);
+const _isConstructorErrorHandler = (value: any): boolean =>
+    _hasFunction('constructor', value) && constructorIsErrorHandler(value);
 
 /**
  * Checks if a given target object or its constructor is an error handler.

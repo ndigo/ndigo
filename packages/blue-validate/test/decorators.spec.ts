@@ -1,5 +1,15 @@
 import { describe, test, expect, vi } from 'vitest';
-import { constrained, email, length, min, notBlank, pattern, validated, formatErrorMessage, setErrorMessageFormatter } from '../src/decorators';
+import {
+    constrained,
+    email,
+    length,
+    min,
+    notBlank,
+    pattern,
+    validated,
+    formatErrorMessage,
+    setErrorMessageFormatter,
+} from '../src/decorators';
 import { validationGroup } from '../src/group';
 
 describe('validation decorators', () => {

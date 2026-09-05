@@ -9,11 +9,14 @@ import { DOMEventBinder } from './_dom-event-binder';
 
 /**
  * Base class for BlueJS custom elements.
- * 
+ *
  * Provides a DOM-backed implementation of the EventEmitter interface,
  * batched rendering, and lifecycle hooks.
  */
-export abstract class AbstractWebComponent extends AsBlueElement(HTMLElement) implements EventEmitter, ApplicationContextAware {
+export abstract class AbstractWebComponent
+    extends AsBlueElement(HTMLElement)
+    implements EventEmitter, ApplicationContextAware
+{
     readonly [$aware] = true;
     #wrappedListeners: Map<string, Map<Function, EventListener>> = new Map();
     #eventDelegation: Map<string, Map<string, string>> = new Map();
@@ -29,7 +32,7 @@ export abstract class AbstractWebComponent extends AsBlueElement(HTMLElement) im
 
     /**
      * Set the ApplicationContext that this object runs in.
-     * 
+     *
      * @param applicationContext - The ApplicationContext to be used by this object.
      */
     setApplicationContext(applicationContext: ApplicationContext): void {
@@ -50,15 +53,15 @@ export abstract class AbstractWebComponent extends AsBlueElement(HTMLElement) im
      * Sets up the root event listeners for delegation.
      */
     #setupDelegation(): void {
-        // We don't know the events yet, so we'll add listeners dynamically 
+        // We don't know the events yet, so we'll add listeners dynamically
         // in on() if they aren't already present.
     }
 
     /**
      * Binds DOM events to class methods using event delegation.
-     * 
+     *
      * This is a convenience wrapper around the `on` method.
-     * 
+     *
      * @param mapping - A mapping of selectors or 'event selector' to method names.
      * Example: { '.btn': 'handleBtn', 'change .input': 'handleInput' }
      */
@@ -74,7 +77,7 @@ export abstract class AbstractWebComponent extends AsBlueElement(HTMLElement) im
     #dispatchDelegatedEvent(event: Event): void {
         const eventType = event.type;
         const typeMap = this.#eventDelegation.get(eventType);
-        
+
         if (!typeMap) return;
 
         for (const [selector, methodName] of typeMap.entries()) {
@@ -92,9 +95,9 @@ export abstract class AbstractWebComponent extends AsBlueElement(HTMLElement) im
 
     /**
      * Emits an event to the listeners registered for the given type.
-     * 
+     *
      * This implementation uses native DOM CustomEvents to ensure bubbling.
-     * 
+     *
      * @param type - The event type.
      * @param data - Event payload values.
      * @returns `true` when the event was dispatched.
@@ -110,10 +113,10 @@ export abstract class AbstractWebComponent extends AsBlueElement(HTMLElement) im
 
     /**
      * Adds a listener for an event type.
-     * 
+     *
      * Supports both standard event types and delegated selectors.
      * If the type contains a space (e.g., 'click .btn'), it is treated as a delegated event.
-     * 
+     *
      * @param type - The event type or a mapping of event types to handlers.
      * @param listener - The listener to register.
      * @returns This component.
@@ -124,7 +127,7 @@ export abstract class AbstractWebComponent extends AsBlueElement(HTMLElement) im
             for (const eventType in handlers) {
                 const handler = handlers[eventType];
                 if (Array.isArray(handler)) {
-                    handler.forEach(h => this.on(eventType, h));
+                    handler.forEach((h) => this.on(eventType, h));
                 } else {
                     this.on(eventType, handler);
                 }
@@ -148,12 +151,12 @@ export abstract class AbstractWebComponent extends AsBlueElement(HTMLElement) im
             if (!typeMap) {
                 typeMap = new Map();
                 this.#eventDelegation.set(eventType, typeMap);
-                
+
                 this.#binder.bind(eventType, (event: Event) => {
                     this.#dispatchDelegatedEvent(event);
                 });
             }
-            
+
             typeMap.set(selector, methodName);
             return this;
         }
@@ -180,7 +183,7 @@ export abstract class AbstractWebComponent extends AsBlueElement(HTMLElement) im
 
     /**
      * Removes a listener for an event type.
-     * 
+     *
      * @param type - The event type.
      * @param listener - The listener to remove.
      * @returns This component.
@@ -205,12 +208,12 @@ export abstract class AbstractWebComponent extends AsBlueElement(HTMLElement) im
             const wrapped = typeMap.get(listener as Function)!;
             this.removeEventListener(typeStr, wrapped);
             typeMap.delete(listener as Function);
-            
+
             if (typeMap.size === 0) {
                 this.#wrappedListeners.delete(typeStr);
             }
         }
-        
+
         return this;
     }
 
@@ -239,7 +242,7 @@ export abstract class AbstractWebComponent extends AsBlueElement(HTMLElement) im
 
     /**
      * Shorthand for querySelector.
-     * 
+     *
      * @param selector - The CSS selector to search for.
      * @returns The first matching element, or null if none found.
      */
@@ -249,14 +252,14 @@ export abstract class AbstractWebComponent extends AsBlueElement(HTMLElement) im
 
     /**
      * Creates a DOM element with the specified properties.
-     * 
+     *
      * @param tag - The HTML tag name.
      * @param props - A record of properties to apply to the element.
      * @returns The created HTMLElement.
      */
     create(tag: string, props: Record<string, any> = {}): HTMLElement {
         const element = document.createElement(tag);
-        
+
         for (const [key, value] of Object.entries(props)) {
             if (key === 'className') {
                 element.className = value;
@@ -268,7 +271,7 @@ export abstract class AbstractWebComponent extends AsBlueElement(HTMLElement) im
                 element.setAttribute(key, value);
             }
         }
-        
+
         return element;
     }
 
@@ -313,7 +316,7 @@ export abstract class AbstractWebComponent extends AsBlueElement(HTMLElement) im
 
     /**
      * Renders the component's UI.
-     * 
+     *
      * This method must be implemented by subclasses to define the DOM structure.
      */
     abstract render(): void;

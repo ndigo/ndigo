@@ -62,8 +62,8 @@ export class DrizzleDataSource {
                 const parts: string[] = [`"${col.columnName}"`];
                 const isPk = col.fieldName === meta.primaryColumn;
 
-                const sqlType = isPk ? 'INTEGER' : ((col.type ?? 'TEXT').toUpperCase());
-                const sqlNormalized = (sqlType === 'TEXT' || sqlType === 'STRING') ? 'TEXT' : 'INTEGER';
+                const sqlType = isPk ? 'INTEGER' : (col.type ?? 'TEXT').toUpperCase();
+                const sqlNormalized = sqlType === 'TEXT' || sqlType === 'STRING' ? 'TEXT' : 'INTEGER';
 
                 parts.push(sqlNormalized);
 

@@ -59,11 +59,11 @@ describe('RadixTree', () => {
     test('static beats param (priority)', () => {
         tree.insert('/users/:id', 'param-handler');
         tree.insert('/users/list', 'static-handler');
-        
+
         let result = tree.lookup('/users/list');
         expect(result).not.toBeNull();
         expect(result?.value).toBe('static-handler');
-        
+
         result = tree.lookup('/users/42');
         expect(result).not.toBeNull();
         expect(result?.value).toBe('param-handler');
@@ -73,7 +73,7 @@ describe('RadixTree', () => {
     test('param beats wildcard (priority)', () => {
         tree.insert('/files/*', 'wildcard-handler');
         tree.insert('/files/:name', 'param-handler');
-        
+
         const result = tree.lookup('/files/report.pdf');
         expect(result).not.toBeNull();
         expect(result?.value).toBe('param-handler');
@@ -93,20 +93,20 @@ describe('RadixTree', () => {
         tree.insert('/users', 'a');
         tree.insert('/users/:id', 'b');
         tree.insert('/api/*', 'c');
-        
+
         let result = tree.lookup('/users');
         expect(result).not.toBeNull();
         expect(result?.value).toBe('a');
-        
+
         result = tree.lookup('/users/5');
         expect(result).not.toBeNull();
         expect(result?.value).toBe('b');
         expect(result?.params).toEqual({ id: '5' });
-        
+
         result = tree.lookup('/api/v2');
         expect(result).not.toBeNull();
         expect(result?.value).toBe('c');
-        
+
         result = tree.lookup('/other');
         expect(result).toBeNull();
     });
@@ -115,10 +115,10 @@ describe('RadixTree', () => {
         tree.insert('/users', 'handler');
         let result = tree.lookup('/users');
         expect(result).not.toBeNull();
-        
+
         const deleted = tree.delete('/users');
         expect(deleted).toBe(true);
-        
+
         result = tree.lookup('/users');
         expect(result).toBeNull();
     });
@@ -126,7 +126,7 @@ describe('RadixTree', () => {
     test('second insert on same pattern replaces value', () => {
         tree.insert('/users', 'first');
         tree.insert('/users', 'second');
-        
+
         const result = tree.lookup('/users');
         expect(result).not.toBeNull();
         expect(result?.value).toBe('second');
@@ -135,14 +135,14 @@ describe('RadixTree', () => {
     describe('_splitPath edge cases', () => {
         test('path without leading slash is treated same as with slash', () => {
             tree.insert('/users', 'handler');
-            const result = tree.lookup('users');  // no leading slash
+            const result = tree.lookup('users'); // no leading slash
             expect(result).not.toBeNull();
             expect(result?.value).toBe('handler');
         });
 
         test('trailing slash is ignored (empty segment filtered)', () => {
             tree.insert('/users', 'handler');
-            const result = tree.lookup('/users/');  // trailing slash
+            const result = tree.lookup('/users/'); // trailing slash
             // The optimized _splitPath ignores empty trailing segments
             expect(result).not.toBeNull();
             expect(result?.value).toBe('handler');

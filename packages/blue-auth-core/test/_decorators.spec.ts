@@ -7,10 +7,7 @@ describe('@authenticated decorator', () => {
 
         class DummyClass {}
 
-        authenticated(
-            DummyClass,
-            { kind: 'class', name: '', metadata: metadata as any, type: 'class' } as any,
-        );
+        authenticated(DummyClass, { kind: 'class', name: '', metadata: metadata as any, type: 'class' } as any);
 
         expect(metadata[AUTH_REQUIRED_KEY]).toBe(true);
     });
@@ -20,15 +17,12 @@ describe('@authenticated decorator', () => {
 
         function dummyMethod() {}
 
-        authenticated(
-            dummyMethod,
-            {
-                kind: 'method',
-                name: 'handle',
-                metadata: metadata as any,
-                type: 'method',
-            } as any,
-        );
+        authenticated(dummyMethod, {
+            kind: 'method',
+            name: 'handle',
+            metadata: metadata as any,
+            type: 'method',
+        } as any);
 
         expect(metadata[`${AUTH_REQUIRED_KEY}:handle`]).toBe(true);
     });
@@ -38,15 +32,12 @@ describe('@authenticated decorator', () => {
 
         function dummyMethod() {}
 
-        authenticated(
-            dummyMethod,
-            {
-                kind: 'field',
-                name: 'prop',
-                metadata: metadata as any,
-                type: 'field',
-            } as any,
-        );
+        authenticated(dummyMethod, {
+            kind: 'field',
+            name: 'prop',
+            metadata: metadata as any,
+            type: 'field',
+        } as any);
 
         expect(metadata[AUTH_REQUIRED_KEY]).toBeUndefined();
     });
@@ -59,10 +50,7 @@ describe('@authorized decorator', () => {
         class DummyClass {}
 
         const decorator = authorized('admin');
-        decorator(
-            DummyClass,
-            { kind: 'class', name: '', metadata: metadata as any, type: 'class' } as any,
-        );
+        decorator(DummyClass, { kind: 'class', name: '', metadata: metadata as any, type: 'class' } as any);
 
         expect(metadata[AUTH_ROLES_KEY]).toEqual(['admin']);
     });
@@ -73,15 +61,12 @@ describe('@authorized decorator', () => {
         function dummyMethod() {}
 
         const decorator = authorized('admin');
-        decorator(
-            dummyMethod,
-            {
-                kind: 'method',
-                name: 'handle',
-                metadata: metadata as any,
-                type: 'method',
-            } as any,
-        );
+        decorator(dummyMethod, {
+            kind: 'method',
+            name: 'handle',
+            metadata: metadata as any,
+            type: 'method',
+        } as any);
 
         expect(metadata[`${AUTH_ROLES_KEY}:handle`]).toEqual(['admin']);
     });
@@ -121,22 +106,28 @@ describe('@authorized decorator', () => {
         function methodB() {}
 
         // Class-level roles
-        authorized('admin')(
-            class {},
-            { kind: 'class', name: '', metadata: classMetadata as any, type: 'class' } as any,
-        );
+        authorized('admin')(class {}, {
+            kind: 'class',
+            name: '',
+            metadata: classMetadata as any,
+            type: 'class',
+        } as any);
 
         // Method A roles
-        authorized('roleA')(
-            methodA,
-            { kind: 'method', name: 'methodA', metadata: methodAMetadata as any, type: 'method' } as any,
-        );
+        authorized('roleA')(methodA, {
+            kind: 'method',
+            name: 'methodA',
+            metadata: methodAMetadata as any,
+            type: 'method',
+        } as any);
 
         // Method B roles
-        authorized('roleB')(
-            methodB,
-            { kind: 'method', name: 'methodB', metadata: methodBMetadata as any, type: 'method' } as any,
-        );
+        authorized('roleB')(methodB, {
+            kind: 'method',
+            name: 'methodB',
+            metadata: methodBMetadata as any,
+            type: 'method',
+        } as any);
 
         expect(classMetadata[AUTH_ROLES_KEY]).toEqual(['admin']);
         expect(methodAMetadata[`${AUTH_ROLES_KEY}:methodA`]).toEqual(['roleA']);

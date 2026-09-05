@@ -5,11 +5,7 @@
 import { DEFAULT_DATE_FORMAT } from './formats';
 import { serializable } from '@blue/core';
 import { is } from '@blue/util/types';
-import {
-    isDefined,
-    type constraint,
-    type RangeParams,
-} from './_numeric-constraints';
+import { isDefined, type constraint, type RangeParams } from './_numeric-constraints';
 
 export type Params<T = any> = {
     value?: T;
@@ -72,10 +68,7 @@ const startOfDay = (date: Date): Date => {
     return copy;
 };
 
-const isDate18YearsOld: constraint = (
-    value,
-    params: DateParams = { format: DEFAULT_DATE_FORMAT }
-) => {
+const isDate18YearsOld: constraint = (value, params: DateParams = { format: DEFAULT_DATE_FORMAT }) => {
     const format = params.format || DEFAULT_DATE_FORMAT;
     const date = normalizeToDate(value as any, format);
     if (!date) {

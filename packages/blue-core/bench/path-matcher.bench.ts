@@ -13,21 +13,9 @@ import { bench, describe } from 'vitest';
 import { URLGlobPathMatcher } from '../src/path-matcher';
 import { parseUrlGlob } from '../src/url-glob';
 
-const patterns = [
-    '/api/v1/users',
-    '/api/*/users',
-    '/api/**',
-    '/api/v[12]/users',
-    '*/man*/bash.*',
-];
+const patterns = ['/api/v1/users', '/api/*/users', '/api/**', '/api/v[12]/users', '*/man*/bash.*'];
 
-const paths = [
-    '/api/v1/users',
-    '/api/v2/users',
-    '/api/v1/users/42',
-    '/api/v1/posts',
-    'man/man1/bash.1',
-];
+const paths = ['/api/v1/users', '/api/v2/users', '/api/v1/users/42', '/api/v1/posts', 'man/man1/bash.1'];
 
 // Two full passes = equal work: 50 match calls total per iteration.
 const ROUNDS = 2;

@@ -349,10 +349,10 @@ export class Service implements AsyncDestroyable {
     }
 
     constructor(
-        name: string, 
-        http: HTTP, 
-        registry: ServiceRegistry, 
-        telemetry: TelemetryHooks, 
+        name: string,
+        http: HTTP,
+        registry: ServiceRegistry,
+        telemetry: TelemetryHooks,
         correlation: RequestIdCorrelation
     ) {
         defineProperty(this, 'name', {
@@ -401,7 +401,7 @@ export class Service implements AsyncDestroyable {
 
         const url = new URL(endpoint);
         const correlationId = this.#correlation.getCorrelationId();
-        
+
         const settings = Object.assign({}, init, {
             headers: {
                 ...init.headers,
@@ -410,7 +410,7 @@ export class Service implements AsyncDestroyable {
         });
 
         const chain = this._getServiceExecutionChain(this, url.pathname);
-        
+
         this.#telemetry.onRequest(new Request(url.toString(), settings));
 
         try {

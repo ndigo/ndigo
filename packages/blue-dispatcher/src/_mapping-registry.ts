@@ -94,26 +94,26 @@ class MappingRegistry<T = any> {
         if (!this.#registry.has(mapping)) {
             return;
         } else {
-        const entry = this.#registry.get(mapping);
-        if (!entry) {
-            return;
-        }
-        const { directPaths } = entry,
-            length = directPaths.length;
-
-        this.#registry.delete(mapping);
-        this.#mappingLookup.delete(entry.mapping);
-
-        for (let index = 0; index < length; index++) {
-            const path = directPaths[index];
-            if (this.#pathLookup.has(path)) {
-                const list = this.#pathLookup.get(path) ?? [];
-                const listIndex = list.indexOf(entry.mapping);
-                listIndex !== -1 && list.splice(listIndex, 1);
+            const entry = this.#registry.get(mapping);
+            if (!entry) {
+                return;
             }
-        }
+            const { directPaths } = entry,
+                length = directPaths.length;
 
-        this._removeMappingName(entry);
+            this.#registry.delete(mapping);
+            this.#mappingLookup.delete(entry.mapping);
+
+            for (let index = 0; index < length; index++) {
+                const path = directPaths[index];
+                if (this.#pathLookup.has(path)) {
+                    const list = this.#pathLookup.get(path) ?? [];
+                    const listIndex = list.indexOf(entry.mapping);
+                    listIndex !== -1 && list.splice(listIndex, 1);
+                }
+            }
+
+            this._removeMappingName(entry);
         }
     }
 

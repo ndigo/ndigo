@@ -150,9 +150,9 @@ export class HashScope implements Scope {
             throw new IllegalStateError('No active hash scope context. Call setCurrentKey() first.');
         }
 
-        const scope = this.#scopeMap.get(this.#currentKey);
-        if (scope) {
-            scope.delete(name);
+        const bucket = this.#scopeMap.get(this.#currentKey);
+        if (bucket) {
+            bucket.delete(name);
         }
     }
 
@@ -161,16 +161,16 @@ export class HashScope implements Scope {
             throw new IllegalStateError('No active hash scope context. Call setCurrentKey() first.');
         }
 
-        const scope = this.#scopeMap.get(this.#currentKey);
-        if (!scope) {
+        const bucket = this.#scopeMap.get(this.#currentKey);
+        if (!bucket) {
             throw new IllegalStateError('No active hash scope context. Call setCurrentKey() first.');
         }
 
-        if (!scope.has(name)) {
-            scope.set(name, objectFactory());
+        if (!bucket.has(name)) {
+            bucket.set(name, objectFactory());
         }
 
-        return scope.get(name) as T;
+        return bucket.get(name) as T;
     }
 }
 

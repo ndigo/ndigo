@@ -1,7 +1,7 @@
 /**
  * @author Jeff Rose
  */
-import { FrameworkError, IllegalStateError, createNull } from '@blue/core';
+import { IllegalStateError } from '@blue/core';
 import { AsyncDestroyable } from '@blue/factory';
 import {
     HTTP,
@@ -13,9 +13,9 @@ import {
     TimeoutInit,
 } from '@blue/http';
 import { like } from '@blue/util';
-import { ServiceRegistry, MapServiceRegistry } from './service-registry';
-import { TelemetryHooks, EventEmitterTelemetryHooks } from './telemetry-hooks';
-import { RequestIdCorrelation, CryptoRequestIdCorrelation } from './request-id-correlation';
+import { ServiceRegistry } from './service-registry';
+import { TelemetryHooks } from './telemetry-hooks';
+import { RequestIdCorrelation } from './request-id-correlation';
 
 /**
  * Initializes a service call with HTTP, content, caching, and timeout options.
@@ -284,11 +284,17 @@ export class ServiceExecutionChain {
         if (service instanceof ServiceExecutionChain) {
             const chain = service;
             this.service = chain.service;
-            chain.interceptors && this.addInterceptors(chain.interceptors);
-            interceptors && this.addInterceptors(interceptors);
+            if (chain.interceptors) {
+                this.addInterceptors(chain.interceptors);
+            }
+            if (interceptors) {
+                this.addInterceptors(interceptors);
+            }
         } else {
             this.service = service;
-            interceptors && this.addInterceptors(interceptors);
+            if (interceptors) {
+                this.addInterceptors(interceptors);
+            }
         }
 
         this.interceptorIndex = -1;
@@ -408,8 +414,6 @@ export class Service implements AsyncDestroyable {
                 'X-Correlation-ID': correlationId,
             },
         });
-
-        const chain = this._getServiceExecutionChain(this, url.pathname);
 
         this.#telemetry.onRequest(new Request(url.toString(), settings));
 

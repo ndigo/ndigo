@@ -40,7 +40,7 @@ const override = { b: 99, d: 4 };
 
 describe('object merge', () => {
     bench('object spread', () => {
-        ({ ...base, ...override });
+        void ({ ...base, ...override });
     });
 
     bench('Object.assign', () => {

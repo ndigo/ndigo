@@ -604,10 +604,14 @@ export class HTTPExecutionChain {
         if (isHTTPExecutionChain(http)) {
             const chain = http;
             this.http = chain.http;
-            chain.interceptors?.length && this.addInterceptors(chain.interceptors);
+            if (chain.interceptors?.length) {
+                this.addInterceptors(chain.interceptors);
+            }
         } else {
             this.http = http;
-            interceptors?.length && this.addInterceptors(interceptors);
+            if (interceptors?.length) {
+                this.addInterceptors(interceptors);
+            }
         }
 
         this.interceptorIndex = -1;
@@ -659,6 +663,8 @@ export class HTTPExecutionChain {
                 for (; index < length; index++) {
                     const interceptor = interceptors[index];
                     if (likeErrorAwareHTTPInterceptor(interceptor)) {
+                        // First error-aware interceptor wins; later interceptors must not run.
+                        // oxlint-disable-next-line no-await-in-loop
                         return await interceptor.postError(error, request, http);
                     }
                 }
@@ -705,6 +711,8 @@ export class HTTPExecutionChain {
                 for (; index < length; index++) {
                     const interceptor = interceptors[index];
                     if (likeResponseAwareHTTPInterceptor(interceptor)) {
+                        // Each response transform consumes the previous result; pipeline is sequential.
+                        // oxlint-disable-next-line no-await-in-loop
                         const transformed = await interceptor.postResponse(currentResponse, settings);
                         if (likeResponse(transformed)) {
                             currentResponse = transformed;
@@ -762,6 +770,8 @@ export class HTTPExecutionChain {
                 for (let index = 0; index < length; index++) {
                     const interceptor = interceptors[index];
                     if (likeRequestAwareHTTPInterceptor(interceptor)) {
+                        // Pre-request interceptors run in order and can short-circuit the chain.
+                        // oxlint-disable-next-line no-await-in-loop
                         const result = await interceptor.preRequest(
                             currentRequest instanceof Request ? currentRequest : new Request(currentRequest as any),
                             http

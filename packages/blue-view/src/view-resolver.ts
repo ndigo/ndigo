@@ -302,6 +302,7 @@ export class ViewResolverComposite extends AsApplicationContextAware(Null) imple
         if (length) {
             for (let index = 0; index < length; index++) {
                 const viewResolver = viewResolvers[index],
+                    // oxlint-disable-next-line no-await-in-loop -- delegates resolve in priority order with first-match-wins; parallelizing would run every delegate and change which view is returned.
                     view = await viewResolver.resolveViewName(name, language);
                 if (view) {
                     return view;

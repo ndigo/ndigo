@@ -85,6 +85,7 @@ export class DrizzleDataSource {
 
             if (columns.length > 0) {
                 const createSql = `CREATE TABLE IF NOT EXISTS "${tableName}" (\n  ${columns.join(',\n  ')}\n)`;
+                // oxlint-disable-next-line no-await-in-loop -- DDL runs sequentially on one connection; parallel table creation can race on shared catalog locks.
                 await this.#client.execute(createSql);
             }
         }

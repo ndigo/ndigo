@@ -3,7 +3,6 @@
  */
 
 import { parseWildcard } from './wildcard-expression.js';
-import { FrameworkError } from './error.js';
 
 /**
  * A regular expression compiled from a wildcard pattern.

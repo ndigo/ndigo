@@ -66,15 +66,10 @@ async function migrateFile(filePath) {
 }
 
 async function main() {
-    let migratedCount = 0;
-    for (const pkg of packages) {
-        const files = await glob(path.join(pkg, 'src/**/*.ts'));
-        for (const file of files) {
-            if (await migrateFile(file)) {
-                migratedCount++;
-            }
-        }
-    }
+    const fileLists = await Promise.all(packages.map((pkg) => glob(path.join(pkg, 'src/**/*.ts'))));
+    const files = fileLists.flat();
+    const migrated = await Promise.all(files.map((file) => migrateFile(file)));
+    const migratedCount = migrated.filter(Boolean).length;
     console.log(`\nMigration complete. Updated ${migratedCount} additional files.`);
 }
 

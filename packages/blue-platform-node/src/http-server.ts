@@ -49,7 +49,6 @@ export interface HTTPServerOptions {
  */
 export class HTTPServer {
     #adapter: HTTPServerAdapter;
-    #dispatcher: NodeDispatcher;
     #port: number;
     #host: string;
     #started: boolean;
@@ -82,7 +81,6 @@ export class HTTPServer {
      * @param options - Server configuration.
      */
     constructor(dispatcher: NodeDispatcher, options: HTTPServerOptions = {}) {
-        this.#dispatcher = dispatcher;
         const rawPort = options.port ?? Number(process.env['PORT'] ?? '3000');
         if (!Number.isInteger(rawPort) || rawPort < 0 || rawPort > 65_535) {
             throw new RangeError(`HTTPServer: invalid port ${String(rawPort)} — must be an integer in [0, 65535]`);

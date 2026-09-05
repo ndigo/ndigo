@@ -109,7 +109,9 @@ class MappingRegistry<T = any> {
                 if (this.#pathLookup.has(path)) {
                     const list = this.#pathLookup.get(path) ?? [];
                     const listIndex = list.indexOf(entry.mapping);
-                    listIndex !== -1 && list.splice(listIndex, 1);
+                    if (listIndex !== -1) {
+                        list.splice(listIndex, 1);
+                    }
                 }
             }
 

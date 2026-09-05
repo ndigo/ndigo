@@ -3,7 +3,6 @@
  */
 
 import { type Principal } from './principal';
-import { type AuthResult } from './state';
 
 /**
  * Represents an authenticated user session.

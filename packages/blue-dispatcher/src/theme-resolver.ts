@@ -17,8 +17,6 @@ export interface ThemeResolver {
     resolveTheme(route: Route): string;
 }
 
-const { defineProperty } = Reflect;
-
 export abstract class AbstractThemeResolver implements ThemeResolver {
     /**
      * Fallback theme name used when a route-specific theme is unavailable.

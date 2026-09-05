@@ -149,7 +149,7 @@ describe('effect', () => {
         const s = signal(0);
         let called = false;
         const dispose = effect(() => {
-            s.value; // subscribe
+            void s.value; // subscribe
             called = true;
         });
 

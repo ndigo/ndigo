@@ -3,7 +3,6 @@
  */
 
 import { is } from '@blue/util/types';
-import { createNull } from './null.js';
 import { isNotPrimitive } from './primitive.js';
 
 /**

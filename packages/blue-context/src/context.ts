@@ -375,8 +375,10 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
      */
     get path(): string {
         const path: string[] = [];
+        // eslint-disable-next-line no-this-alias -- cursor walks the parent chain; not a scope-escape alias
         let ctx: ApplicationContext = this;
 
+        // eslint-disable-next-line no-unused-expressions -- guarded dispatch: include name only when present
         this.name && path.unshift(this.name);
 
         while (ctx.parent) {
@@ -483,6 +485,7 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
 
         this.emit('context:close', this);
 
+        // eslint-disable-next-line unicorn/no-useless-spread -- snapshot is required: child.close() splices this.#children via removeChild during iteration
         for (const child of [...this.#children]) {
             child.close();
         }
@@ -723,6 +726,7 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
         }
 
         for (const key of constructorKeys) {
+            // eslint-disable-next-line no-unused-expressions -- guarded dispatch: destroy only truthy keys
             key && this.destroyValue(key);
         }
     }
@@ -769,6 +773,7 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
     }
 
     private _resolveRoot(): ApplicationContext {
+        // eslint-disable-next-line no-this-alias -- cursor walks the parent chain; not a scope-escape alias
         let root: ApplicationContext = this;
 
         while (root.parent) {
@@ -797,6 +802,7 @@ export class ProxiedGenericApplicationContext extends GenericApplicationContext 
     constructor(name: string, data?: JSONObject) {
         super(name, data);
 
+        // eslint-disable-next-line no-this-alias -- proxy handler traps receive the handler as `this`, so the context must be captured
         const target = this;
 
         return new Proxy(this, {
@@ -913,10 +919,15 @@ export class ApplicationContextAwareProcessor implements InitializationAwareProc
     processBeforeInitialization<T = any>(name: string, value: T): T {
         if (likeAware(value)) {
             const { applicationContext } = this;
+            // eslint-disable-next-line no-unused-expressions -- guarded dispatch: inject only into values implementing the contract
             likeEnvironmentAware(value) && value.setEnvironment(applicationContext.environment);
+            // eslint-disable-next-line no-unused-expressions -- guarded dispatch: inject only into values implementing the contract
             likeResourceLoaderAware(value) && value.setResourceLoader(applicationContext);
+            // eslint-disable-next-line no-unused-expressions -- guarded dispatch: inject only into values implementing the contract
             likeApplicationEventEmitterAware(value) && value.setApplicationEventEmitter(applicationContext);
+            // eslint-disable-next-line no-unused-expressions -- guarded dispatch: inject only into values implementing the contract
             likeContentSourceAware(value) && (value as any).setContentSource(applicationContext);
+            // eslint-disable-next-line no-unused-expressions -- guarded dispatch: inject only into values implementing the contract
             likeApplicationContextAware(value) && value.setApplicationContext(applicationContext);
         }
         return value;

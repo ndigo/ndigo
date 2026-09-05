@@ -9,7 +9,7 @@
 import '@tsmetadata/polyfill';
 import { getMapping, pathValue, routeParams } from '@blue/dispatcher';
 import { ResponseStatuses } from '@blue/http';
-import { ResponseEntity, StaticResourceResolver, statusForKind } from '@blue/platform-node';
+import { ResponseEntity, StaticResourceResolver } from '@blue/platform-node';
 
 const BASE = process.env['STATIC_DIR'] ?? `${process.cwd()}/public`;
 const resolver = new StaticResourceResolver(BASE);

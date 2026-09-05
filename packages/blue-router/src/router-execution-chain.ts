@@ -22,8 +22,10 @@ export default class RouterExecutionChain {
         this.#interceptors = [];
 
         if (chain instanceof RouterExecutionChain) {
+            // eslint-disable-next-line no-unused-expressions -- guarded dispatch: copy interceptors only when present
             chain && this.addInterceptors(chain.interceptors);
         } else {
+            // eslint-disable-next-line no-unused-expressions -- guarded dispatch: copy interceptors only when present
             chain && this.addInterceptors(chain);
         }
 
@@ -63,6 +65,7 @@ export default class RouterExecutionChain {
                 this.interceptorIndex = length - 1;
             }
             for (let index = this.interceptorIndex; index >= 0; index--) {
+                // eslint-disable-next-line no-await-in-loop -- ordering-sensitive: postHandle must unwind in reverse registration order
                 await interceptors[index].postHandle?.(route);
             }
         }
@@ -80,6 +83,7 @@ export default class RouterExecutionChain {
                 this.interceptorIndex = length - 1;
             }
             for (let index = this.interceptorIndex; index >= 0; index--) {
+                // eslint-disable-next-line no-await-in-loop -- ordering-sensitive: afterCompletion must unwind in reverse registration order
                 await interceptors[index].afterCompletion?.(route);
             }
         }
@@ -94,6 +98,7 @@ export default class RouterExecutionChain {
         if (length) {
             let index = 0;
             for (; index < length; index++) {
+                // eslint-disable-next-line no-await-in-loop -- sequential dispatch: preHandle short-circuits on false and tracks interceptorIndex
                 if ((await interceptors[index].preHandle?.(route)) === false) {
                     this.interceptorIndex = index - 1;
                     return false;

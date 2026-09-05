@@ -65,7 +65,9 @@ export class PathViewController extends AbstractPathViewController {
      * Clears the view name cache when set.
      */
     set prefix(newPrefix: string) {
-        this._viewNameCache.size && this._viewNameCache.clear();
+        if (this._viewNameCache.size) {
+            this._viewNameCache.clear();
+        }
         this.#prefix = newPrefix;
     }
 
@@ -81,7 +83,9 @@ export class PathViewController extends AbstractPathViewController {
      * Clears the view name cache when set.
      */
     set suffix(newSuffix: string) {
-        this._viewNameCache.size && this._viewNameCache.clear();
+        if (this._viewNameCache.size) {
+            this._viewNameCache.clear();
+        }
         this.#suffix = newSuffix;
     }
 

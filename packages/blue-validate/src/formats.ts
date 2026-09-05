@@ -127,7 +127,7 @@ export const integerRule = /^-?[0-9]*$/;
 /**
  * A regular expression matching names.
  */
-export const nameRule = /^[a-zA-Z\. '-]*$/;
+export const nameRule = /^[a-zA-Z. '-]*$/;
 
 /**
  * A regular expression matching lowercase letters.
@@ -142,7 +142,7 @@ export const notANumberRule = /[^0-9]/g;
 /**
  * A regular expression matching non-password symbols.
  */
-export const notAPasswordSymbolRule = /[^!#$%+\/=@~]/g;
+export const notAPasswordSymbolRule = /[^!#$%+/=@~]/g;
 
 /**
  * A regular expression matching non-phone number email addresses.

@@ -131,7 +131,9 @@ export class HTTPHeader implements Serializable {
      * @param headers - The header collection to mutate.
      */
     delete(headers: HeadersInit): void {
-        headers && deleteHeader(headers, this.name);
+        if (headers) {
+            deleteHeader(headers, this.name);
+        }
     }
 
     /**

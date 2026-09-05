@@ -7,14 +7,18 @@ import { createNull } from './null.js';
 const blue = createNull();
 
 // Safely assign to the global scope across Node.js, browser, and benchmark environments.
-const _global =
-    typeof globalThis !== 'undefined'
-        ? globalThis
-        : typeof global !== 'undefined'
-          ? global
-          : typeof window !== 'undefined'
-            ? window
-            : undefined;
+const _global = (() => {
+    if (typeof globalThis !== 'undefined') {
+        return globalThis;
+    }
+    if (typeof global !== 'undefined') {
+        return global;
+    }
+    if (typeof window !== 'undefined') {
+        return window;
+    }
+    return undefined;
+})();
 
 if (_global) {
     Reflect.defineProperty(_global, 'blue', {

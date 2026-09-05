@@ -11,7 +11,7 @@
  */
 import { type Registry } from '@blue/factory';
 import { URLGlobPathMatcher } from '@blue/core';
-import { RouteDefinition, type RouteParams } from './route-definition';
+import { RouteDefinition } from './route-definition';
 
 /** Shared path matcher for merging class and method paths. */
 const pathMatcher = new URLGlobPathMatcher();
@@ -79,11 +79,9 @@ function getRouteMappingMethodKeys(target: unknown): string[] {
  * for URL generation, navigation, and route matching.
  */
 export class RouteRegistry {
-    readonly #tree: Record<string, unknown>;
     readonly #defs: Map<string, RouteDefinition>;
 
     constructor() {
-        this.#tree = {};
         this.#defs = new Map();
     }
 

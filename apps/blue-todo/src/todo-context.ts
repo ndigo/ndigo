@@ -10,7 +10,6 @@ import IndexController from './index-controller';
 import AccountApp from './account-app-view';
 import MyTodoApp from './todo-app-view';
 import TodoService from './todo-service';
-import { StaticContentSource } from '@blue/content';
 
 @configuration
 class ToDoconfiguration {

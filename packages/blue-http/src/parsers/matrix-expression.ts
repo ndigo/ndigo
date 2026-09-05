@@ -67,9 +67,9 @@ function parseMatrix(input: string): Record<string, any> {
         if (pos < len && input[pos] === ';') pos++;
     }
 
-    function fromRepeatedPairs(pairs: [any, any][]): Record<any, any> {
+    function fromRepeatedPairs(pairList: [any, any][]): Record<any, any> {
         const result: Record<any, any> = {};
-        for (const [key, value] of pairs) {
+        for (const [key, value] of pairList) {
             if (!Object.prototype.hasOwnProperty.call(result, key)) {
                 result[key] = value;
             } else if (Array.isArray(result[key])) {

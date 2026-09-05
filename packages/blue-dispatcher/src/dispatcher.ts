@@ -11,7 +11,6 @@ import { NoHandlerFoundError, NoViewFoundError } from './error';
 import { RouteHandlerAdapter } from './route-handler-adapter';
 import RouteHandlerExecutionChain from './route-handler-execution-chain';
 import { ModelAndView } from './model-and-view';
-import { RouteErrorResolver } from './route-error-resolver';
 import { AsRouteHandlerAdapterStrategy } from './strategies/route-handler-adapter-strategy';
 import { AsRouteHandlerMappingStrategy } from './strategies/route-handler-mapping-strategy';
 import { AsLanguageResolverStrategy } from './strategies/language-resolver-strategy';
@@ -204,6 +203,7 @@ export class AbstractDispatcher
         const length = this.viewResolvers.length;
 
         for (; index < length; index++) {
+            // oxlint-disable-next-line no-await-in-loop -- resolvers run in priority order with first-match-wins; parallelizing would execute every resolver and change which view wins.
             view = await this.viewResolvers[index].resolveViewName(viewName, language);
             if (view) {
                 return view;

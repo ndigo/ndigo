@@ -80,8 +80,6 @@ export function computed<T>(target: () => T, context: ClassGetterDecoratorContex
  * Requires the `@reactive` class decorator to be applied to the class.
  */
 export function effect(target: (...args: unknown[]) => void, context: ClassMethodDecoratorContext<object>): void {
-    const fieldName = context.name;
-
     // Store the method reference for @reactive to process
     context.addInitializer(function (this: object): void {
         let effects = pendingEffects.get(this);

@@ -7,7 +7,7 @@ import removeNonWord from './remove-non-word.js';
 import replaceDiacritics from './replace-diacritics.js';
 
 const // Underscores and hyphens
-    dashes = /[\-_]/g,
+    dashes = /[-_]/g,
     // Lower case letters preceded by a space
     lowerCaseLetters = /\s[a-z]/g,
     // Spaces

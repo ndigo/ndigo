@@ -1,7 +1,6 @@
 import { IllegalStateError } from '@blue/core';
 import { ApplicationContext } from '@blue/context';
 import { Route } from '@blue/router';
-import { isString } from '@blue/util/types';
 import RouteHandlerExecutionChain from './route-handler-execution-chain';
 import { AbstractHandlerMapping, MatchableHandlerMapping } from './abstract-handler-mapping';
 import { RouteMatchResult } from './route-match-result';
@@ -215,7 +214,9 @@ export abstract class AbstractDetectingPathHandlerMapping extends AbstractPathHa
         const names = Object.keys(this.applicationContext);
         names.forEach((name) => {
             const paths = this._determinePathsForHandler(name);
-            paths.length && this._registerHandler(paths, name);
+            if (paths.length) {
+                this._registerHandler(paths, name);
+            }
         });
     }
 

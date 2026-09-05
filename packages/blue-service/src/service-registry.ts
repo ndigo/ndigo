@@ -2,8 +2,6 @@
  * @author Jeff Rose
  */
 
-import { createNull } from '@blue/core';
-
 /**
  * Interface for a service registry that maps service tokens to endpoints.
  */

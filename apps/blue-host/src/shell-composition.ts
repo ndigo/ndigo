@@ -6,7 +6,6 @@
  */
 
 import {
-    ApplicationContext,
     FeatureContextMountManager,
     createShellContext,
     DefaultSharedDependencyRegistry,

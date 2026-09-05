@@ -169,7 +169,7 @@ describe('uniq', () => {
         bench('native: [...new Set(arr)]', () => {
             let total = 0;
             for (let i = 0; i < 1000; i++) {
-                total += [...new Set(tinyWithDuplicates)].length;
+                total += new Set(tinyWithDuplicates).size;
             }
             consume(total);
         });
@@ -181,7 +181,7 @@ describe('uniq', () => {
         bench('native: [...new Set(arr)]', () => {
             let total = 0;
             for (let i = 0; i < 1000; i++) {
-                total += [...new Set(mediumWithDuplicates)].length;
+                total += new Set(mediumWithDuplicates).size;
             }
             consume(total);
         });

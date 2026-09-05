@@ -4,7 +4,7 @@
 
 import { ApplicationContext } from '@blue/context';
 import { Constructable } from '@blue/core';
-import { LinearMetadataHandlerMapping, NamePathHandlerMapping, RouteHandlerMapping } from '../route-handler-mapping';
+import { NamePathHandlerMapping, RouteHandlerMapping } from '../route-handler-mapping';
 import { RadixMetadataHandlerMapping } from '../radix-route-handler-mapping';
 import RouteHandlerExecutionChain from '../route-handler-execution-chain';
 import { MappedHandlerInterceptor, RouteHandlerInterceptor } from '../route-handler-interceptor';
@@ -18,8 +18,7 @@ export interface RouteHandlerMappingStrategy {
     getHandler(route: Route): RouteHandlerExecutionChain;
 }
 
-const { defineProperty } = Reflect,
-    HANDLER_MAPPING = 'handlerMapping',
+const HANDLER_MAPPING = 'handlerMapping',
     HANDLER_MAPPINGS = `${HANDLER_MAPPING}s`,
     defaultRouteHandlerMappings: RouteHandlerMapping[] = [
         new NamePathHandlerMapping(),

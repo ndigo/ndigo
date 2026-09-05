@@ -57,7 +57,9 @@ export abstract class AbstractPlatformArgumentResolver extends AbstractNamedValu
             value = resolveValue(this.resolveName(parameter.name, parameter, route, mapping)),
             convertedValue = this.#convertFn(parameter.convertType, value, parameter, route, mapping);
 
-        isNil(convertedValue) && parameter.required && this.handleMissingValue(parameter.name);
+        if (isNil(convertedValue) && parameter.required) {
+            this.handleMissingValue(parameter.name);
+        }
 
         return convertedValue;
     }

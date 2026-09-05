@@ -28,11 +28,11 @@ const ROUTE_AUTH: Record<string, { requiresAuth: boolean; requiredRoles?: string
  * @since 0.0.1
  */
 export class AuthRouterInterceptor implements RouterInterceptor {
-    #guard: ClientAuthGuard;
-
-    constructor(guard: ClientAuthGuard) {
-        this.#guard = guard;
-    }
+    /**
+     * @param _guard - Accepted for API compatibility; auth state is read
+     * from the shared {@link authClient} that the guard also wraps.
+     */
+    constructor(_guard: ClientAuthGuard) {}
 
     /**
      * Intercepts route navigation before it proceeds.

@@ -10,15 +10,10 @@ const isNull = (value: unknown): boolean => value === null,
     isDefined = (value: unknown): boolean => value !== undefined,
     // ["a","b","c","#"] -> ["a","b","c","%23"]
     encodeValues = (arr: string[]): string[] => arr.map(encodeValue),
-    // ["a","",{},"b",[],"c"] -> ["a","b","c"]
-    filterEmpty = (arr: unknown[]): unknown[] =>
-        arr.filter((v) => v !== '' && v !== null && v !== undefined && !(Array.isArray(v) && v.length === 0)),
     // ["a","b","c"] ->  "a,b,c"
     joinOnComma = (arr: string[]): string => arr.join(','),
     // ["a","b","c"] ->  "a=b=c"
     joinOnEqual = (arr: string[]): string => arr.join('='),
-    // ["a","b","c"] ->  "a;b;c"
-    joinOnSemicolon = (arr: string[]): string => arr.join(';'),
     // ["a",undefined,"b","c",undefined,"#"] -> "a,b,c,%23"
     encodeList = (arr: unknown[]): string => joinOnComma(encodeValues(arr.filter(isDefined) as string[])),
     encodeParam =

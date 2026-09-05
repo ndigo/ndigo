@@ -85,21 +85,34 @@ export class HealthRegistry {
         const components: Record<string, HealthResult> = {};
         let overall: HealthState = 'UP';
 
-        for (const [name, indicator] of this.#indicators) {
-            try {
-                const result = await indicator.check();
-                components[name] = result;
-                if (result.status === 'DOWN') {
-                    overall = 'DOWN';
-                } else if (result.status === 'UNKNOWN' && overall === 'UP') {
-                    overall = 'UNKNOWN';
+        // Each indicator probe is independent, so run them concurrently and
+        // aggregate afterwards — identical status rules, but one round-trip
+        // instead of N sequential probes.
+        const results = await Promise.all(
+            [...this.#indicators].map(
+                async ([name, indicator]): Promise<{ name: string; result: HealthResult }> => {
+                    try {
+                        const result = await indicator.check();
+                        return { name, result };
+                    } catch (error) {
+                        return {
+                            name,
+                            result: {
+                                status: 'DOWN',
+                                details: { error: error instanceof Error ? error.message : String(error) },
+                            },
+                        };
+                    }
                 }
-            } catch (error) {
-                components[name] = {
-                    status: 'DOWN',
-                    details: { error: error instanceof Error ? error.message : String(error) },
-                };
+            )
+        );
+
+        for (const { name, result } of results) {
+            components[name] = result;
+            if (result.status === 'DOWN') {
                 overall = 'DOWN';
+            } else if (result.status === 'UNKNOWN' && overall === 'UP') {
+                overall = 'UNKNOWN';
             }
         }
 

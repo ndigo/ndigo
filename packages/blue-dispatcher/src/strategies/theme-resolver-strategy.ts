@@ -16,8 +16,7 @@ export interface ThemeResolverStrategy {
 /**
  */
 
-const { defineProperty } = Reflect,
-    THEME_RESOLVER = 'themeResolver';
+const THEME_RESOLVER = 'themeResolver';
 
 class ContextThemeResolver extends AbstractThemeResolver {
     readonly #context: ApplicationContext;

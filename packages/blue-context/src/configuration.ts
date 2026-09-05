@@ -153,17 +153,17 @@ export function property(path: string) {
 /**
  * Adds a property source to a configuration class.
  *
- * @param propertySource - The source object or enumerable of key/value pairs.
+ * @param source - The source object or enumerable of key/value pairs.
  * @returns A class decorator that prepends the source to metadata.
  */
-export function propertySource(propertySource: JSONObject | Enumerable<string, JSONValue>) {
+export function propertySource(source: JSONObject | Enumerable<string, JSONValue>) {
     return function <T extends new (...args: any[]) => any>(target: T, context: ClassDecoratorContext): T {
         let ps: JSONObject;
-        if (likeEnumerable(propertySource)) {
+        if (likeEnumerable(source)) {
             ps = createNull();
-            propertySource.forEach((value, key) => (ps[key] = value));
+            source.forEach((value, key) => (ps[key] = value));
         } else {
-            ps = propertySource;
+            ps = source;
         }
 
         // Get existing sources or create new array
@@ -263,8 +263,8 @@ class ConfigurationParser {
                 if (!hasProfileMetadata(configClass) || this._isActiveProfile(getProfileMetadata(configClass))) {
                     const config = new configClass();
                     if (hasPropertySourceMetadata(configClass)) {
-                        const propertySource = getPropertySourceMetadata(configClass);
-                        this.processPropertySource(propertySource);
+                        const sources = getPropertySourceMetadata(configClass);
+                        this.processPropertySource(sources);
                         this.processProperty(config);
                     }
 
@@ -277,15 +277,15 @@ class ConfigurationParser {
     /**
      * Process the given `@configuration` decorator metadata.
      */
-    processConfiguration(configuration: any) {
-        for (const key in configuration) {
+    processConfiguration(config: any) {
+        for (const key in config) {
             if (
-                !hasProfileMetadata(configuration, key) ||
-                this._isActiveProfile(getProfileMetadata(configuration, key))
+                !hasProfileMetadata(config, key) ||
+                this._isActiveProfile(getProfileMetadata(config, key))
             ) {
-                if (hasEntryMetadata(configuration, key)) {
-                    const name: string = getEntryMetadata(configuration, key);
-                    this.processEntry(name, configuration[key].bind(configuration));
+                if (hasEntryMetadata(config, key)) {
+                    const name: string = getEntryMetadata(config, key);
+                    this.processEntry(name, config[key].bind(config));
                 }
             }
         }
@@ -294,12 +294,12 @@ class ConfigurationParser {
     /**
      * Process the given `@property` decorator metadata.
      */
-    processProperty(configuration: any) {
-        for (const key in configuration) {
-            if (hasPropertyMetadata(configuration, key)) {
-                const path = getPropertyMetadata(configuration, key),
+    processProperty(config: any) {
+        for (const key in config) {
+            if (hasPropertyMetadata(config, key)) {
+                const path = getPropertyMetadata(config, key),
                     value = this.environment.getProperty(path);
-                defineProperty(configuration, key, {
+                defineProperty(config, key, {
                     value: value,
                     configurable: true,
                     enumerable: false,
@@ -312,8 +312,8 @@ class ConfigurationParser {
     /**
      * Process the given `@propertySource` decorator metadata.
      */
-    processPropertySource(propertySource: JSONObject[]) {
-        (this.environment as ConfigurableEnvironment).propertySources = propertySource;
+    processPropertySource(sources: JSONObject[]) {
+        (this.environment as ConfigurableEnvironment).propertySources = sources;
     }
 
     /**

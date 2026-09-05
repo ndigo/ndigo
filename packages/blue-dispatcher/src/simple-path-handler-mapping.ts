@@ -59,12 +59,12 @@ export class SimplePathHandlerMapping extends AbstractPathHandlerMapping {
      * @param mappings - The path-to-handler map to register.
      */
     registerHandlers(mappings: Map<string, MaybeHandler>): void {
-        mappings &&
-            mappings.size &&
+        if (mappings && mappings.size) {
             mappings.forEach((handler: MaybeHandler, path: string) => {
                 path = doesNotStartWithSlash(path) ? `/${path}` : path;
                 handler = isString(handler) ? (handler as string).trim() : handler;
                 this._registerHandler(path, handler);
             });
+        }
     }
 }

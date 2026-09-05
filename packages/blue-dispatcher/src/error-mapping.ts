@@ -92,7 +92,6 @@ export const errorHandler = assign(errorHandlerDecorator, {
     has: hasErrorHandler,
 });
 
-const hasConstructor = _hasFunction('constructor', {});
 const constructorIsErrorHandler = (value: any): boolean => hasErrorHandler(value?.constructor);
 const _isConstructorErrorHandler = (value: any): boolean =>
     _hasFunction('constructor', value) && constructorIsErrorHandler(value);

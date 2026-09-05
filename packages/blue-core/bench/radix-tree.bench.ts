@@ -71,7 +71,7 @@ function buildScaleFixture(n: number): { tree: RadixTree<string>; regexps: [RegE
         'settings',
     ];
 
-    const tree = new RadixTree<string>();
+    const scaleTree = new RadixTree<string>();
     const regexps: [RegExp, string][] = [];
 
     // Generate filler routes first
@@ -81,44 +81,44 @@ function buildScaleFixture(n: number): { tree: RadixTree<string>; regexps: [RegE
 
         // Add static list route
         if (routeCount < n - 3) {
-            tree.insert(`/${resource}`, `${resource}List`);
+            scaleTree.insert(`/${resource}`, `${resource}List`);
             regexps.push([new RegExp(`^\\/${resource}$`), `${resource}List`]);
             routeCount++;
         }
 
         // Add single param route
         if (routeCount < n - 3) {
-            tree.insert(`/${resource}/:id`, `${resource}Get`);
+            scaleTree.insert(`/${resource}/:id`, `${resource}Get`);
             regexps.push([new RegExp(`^\\/${resource}\\/(?<id>[^/]+)$`), `${resource}Get`]);
             routeCount++;
         }
 
         // Add nested static route
         if (routeCount < n - 3) {
-            tree.insert(`/${resource}/:id/items`, `${resource}Items`);
+            scaleTree.insert(`/${resource}/:id/items`, `${resource}Items`);
             regexps.push([new RegExp(`^\\/${resource}\\/(?<id>[^/]+)\\/items$`), `${resource}Items`]);
             routeCount++;
         }
 
         // Add nested two-param route
         if (routeCount < n - 3) {
-            tree.insert(`/${resource}/:id/items/:itemId`, `${resource}Item`);
+            scaleTree.insert(`/${resource}/:id/items/:itemId`, `${resource}Item`);
             regexps.push([new RegExp(`^\\/${resource}\\/(?<id>[^/]+)\\/items\\/(?<itemId>[^/]+)$`), `${resource}Item`]);
             routeCount++;
         }
     }
 
     // Add anchor routes last (so they're at the end of regexp array)
-    tree.insert('/users/:id', 'getUser');
+    scaleTree.insert('/users/:id', 'getUser');
     regexps.push([/^\/users\/(?<id>[^/]+)$/, 'getUser']);
 
-    tree.insert('/posts/:id/comments/:commentId', 'getPostComment');
+    scaleTree.insert('/posts/:id/comments/:commentId', 'getPostComment');
     regexps.push([/^\/posts\/(?<id>[^/]+)\/comments\/(?<commentId>[^/]+)$/, 'getPostComment']);
 
-    tree.insert('/articles', 'listArticles');
+    scaleTree.insert('/articles', 'listArticles');
     regexps.push([/^\/articles$/, 'listArticles']);
 
-    return { tree, regexps };
+    return { tree: scaleTree, regexps };
 }
 
 // Scale fixtures

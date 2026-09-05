@@ -37,12 +37,14 @@ export const AsStrategyInitializer = <T extends Constructable>(superclass: T): C
                 this.strategies = [];
             }
 
-            name && this.strategies.push(name);
+            if (name) {
+                this.strategies.push(name);
+            }
         }
 
-        getDefaultStrategy<T = any>(context: ApplicationContext, key: string, strategy: T): T {
-            context.setValue<T>(key, strategy);
-            return context.getValue<T>(key);
+        getDefaultStrategy<U = any>(context: ApplicationContext, key: string, strategy: U): U {
+            context.setValue<U>(key, strategy);
+            return context.getValue<U>(key);
         }
 
         initStrategies(context: ApplicationContext): void {
@@ -66,15 +68,15 @@ export const AsStrategyInitializer = <T extends Constructable>(superclass: T): C
             }
         }
 
-        initCollectionStrategy<T = any>(
+        initCollectionStrategy<U = any>(
             context: ApplicationContext,
             collectionStrategyKey: string,
             strategyKey: string,
             name: string,
-            defaultStrategy: T[]
+            defaultStrategy: U[]
         ): void {
             if (context.hasValue(collectionStrategyKey)) {
-                const collection = context.getValue<Enumerable<PropertyKey, T>>(collectionStrategyKey);
+                const collection = context.getValue<Enumerable<PropertyKey, U>>(collectionStrategyKey);
                 if (isArray(collection)) {
                     (this as any)[name] = collection;
                 } else {
@@ -82,28 +84,28 @@ export const AsStrategyInitializer = <T extends Constructable>(superclass: T): C
                     collection.forEach((value) => (this as any)[name].push(value));
                 }
             } else if (context.hasValue(strategyKey)) {
-                (this as any)[name] = [context.getValue<T>(strategyKey)];
+                (this as any)[name] = [context.getValue<U>(strategyKey)];
             }
 
             // Fall back to default strategy
             if (!(this as any)[name]) {
-                (this as any)[name] = this.getDefaultStrategy<T[]>(context, collectionStrategyKey, defaultStrategy);
+                (this as any)[name] = this.getDefaultStrategy<U[]>(context, collectionStrategyKey, defaultStrategy);
             }
         }
 
-        initStrategy<T = any>(
+        initStrategy<U = any>(
             context: ApplicationContext,
             strategyKey: string,
             name: string,
-            defaultStrategy: T
+            defaultStrategy: U
         ): void {
             if (context.hasValue(strategyKey)) {
-                (this as any)[name] = context.getValue<T>(strategyKey);
+                (this as any)[name] = context.getValue<U>(strategyKey);
             }
 
             // Fall back to default strategy
             if (!(this as any)[name]) {
-                (this as any)[name] = this.getDefaultStrategy<T>(context, strategyKey, defaultStrategy);
+                (this as any)[name] = this.getDefaultStrategy<U>(context, strategyKey, defaultStrategy);
             }
         }
     };

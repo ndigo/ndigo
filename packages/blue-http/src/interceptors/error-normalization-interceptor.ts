@@ -66,12 +66,12 @@ export class ErrorNormalizationInterceptor implements ResponseAwareHTTPIntercept
         // Normalize network errors (e.g., TypeError: Failed to fetch)
         if (!(error instanceof ResponseError)) {
             const normalizedError = new ResponseError(undefined, this.#config.defaultErrorType ?? 'NETWORK_ERROR');
-            
+
             // We can't return a Response here because it's a network error,
             // but we can throw the normalized error.
             throw normalizedError;
         }
-        
+
         return undefined;
     }
 }

@@ -66,7 +66,7 @@ export class Application extends Emitter {
         } catch (error: unknown) {
             throw new IllegalStateError(
                 'Application startup failed',
-                error instanceof Error ? { cause: error } : { cause: new Error(String(error)) },
+                error instanceof Error ? { cause: error } : { cause: new Error(String(error)) }
             );
         }
 
@@ -178,7 +178,7 @@ export class Application extends Emitter {
         // Build the RouteRegistry from @routeMapping decorator metadata
         const routes = new RouteRegistry();
         routes.scanSources(this.sources, context);
-        context.setValue("routeRegistry", routes);
+        context.setValue('routeRegistry', routes);
         return context;
     }
 

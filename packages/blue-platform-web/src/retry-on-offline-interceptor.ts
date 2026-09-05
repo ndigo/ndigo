@@ -39,7 +39,13 @@ export interface RetryOnOfflineConfig {
  */
 export class RetryOnOfflineInterceptor implements RequestAwareHTTPInterceptor, ResponseAwareHTTPInterceptor {
     readonly #config: RetryOnOfflineConfig;
-    #queue: Array<{ request: Request; http: HTTP; resolve: (r: Response) => void; reject: (e: Error) => void; retries: number }>;
+    #queue: Array<{
+        request: Request;
+        http: HTTP;
+        resolve: (r: Response) => void;
+        reject: (e: Error) => void;
+        retries: number;
+    }>;
     #timer: ReturnType<typeof setInterval> | null;
 
     constructor(config: RetryOnOfflineConfig = {}) {
@@ -142,7 +148,9 @@ export class RetryOnOfflineInterceptor implements RequestAwareHTTPInterceptor, R
                 if (entry.retries < maxRetries) {
                     this.#queue.push({ ...entry, retries: entry.retries + 1 });
                     if (this.#config.enableLogging) {
-                        console.warn(`[RetryOnOffline] Retry ${entry.retries + 1}/${maxRetries} for ${entry.request.url}`);
+                        console.warn(
+                            `[RetryOnOffline] Retry ${entry.retries + 1}/${maxRetries} for ${entry.request.url}`
+                        );
                     }
                 } else {
                     entry.reject(error as Error);

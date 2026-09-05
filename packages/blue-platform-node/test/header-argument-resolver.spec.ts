@@ -27,7 +27,7 @@ describe('NodeHeaderValueMethodArgumentResolver', () => {
         test('should return false for non-HEADER parameter types', () => {
             const param = new MethodParameter(MethodParameterType.QUERY, 'test');
             expect(resolver.supportsParameter(param)).toBe(false);
-            
+
             const param2 = new MethodParameter(MethodParameterType.PATH, 'test');
             expect(resolver.supportsParameter(param2)).toBe(false);
         });
@@ -36,85 +36,79 @@ describe('NodeHeaderValueMethodArgumentResolver', () => {
     describe('resolveArgument', () => {
         test('should resolve named value from route.headers (case-insensitive)', () => {
             const route = makeRoute({
-                headers: { 'content-type': 'application/json' }
+                headers: { 'content-type': 'application/json' },
             });
-            
+
             const param = new MethodParameter(MethodParameterType.HEADER, 'content-type');
             expect(resolver.resolveArgument(param, route, {})).toBe('application/json');
         });
 
         test('should resolve named value from route.headers with different case', () => {
             const route = makeRoute({
-                headers: { 'content-type': 'application/json' }
+                headers: { 'content-type': 'application/json' },
             });
-            
+
             const param = new MethodParameter(MethodParameterType.HEADER, 'content-type');
             expect(resolver.resolveArgument(param, route, {})).toBe('application/json');
         });
 
         test('should handle multi-value headers by joining with comma', () => {
             const route = makeRoute({
-                headers: { 'accept': ['text/html', 'application/json'] }
+                headers: { accept: ['text/html', 'application/json'] },
             });
-            
+
             const param = new MethodParameter(MethodParameterType.HEADER, 'accept');
             expect(resolver.resolveArgument(param, route, {})).toBe('text/html, application/json');
         });
 
         test('should return default value when source value is absent', () => {
             const route = makeRoute({
-                headers: {}
+                headers: {},
             });
-            
+
             const param = new MethodParameter(MethodParameterType.HEADER, 'content-type', false, 'default');
             expect(resolver.resolveArgument(param, route, {})).toBe('default');
         });
 
         test('should throw when required parameter is absent', () => {
             const route = makeRoute({
-                headers: {}
+                headers: {},
             });
-            
+
             const param = new MethodParameter(MethodParameterType.HEADER, 'content-type', true);
-            expect(() => resolver.resolveArgument(param, route, {}))
-                .toThrow(TypeError);
-            expect(() => resolver.resolveArgument(param, route, {}))
-                .toThrow(/"content-type" cannot be undefined or null/);
+            expect(() => resolver.resolveArgument(param, route, {})).toThrow(TypeError);
+            expect(() => resolver.resolveArgument(param, route, {})).toThrow(
+                /"content-type" cannot be undefined or null/
+            );
         });
 
         test('should apply type-based conversion when convertType is provided', () => {
             const route = makeRoute({
-                headers: { 'content-length': '1024' }
+                headers: { 'content-length': '1024' },
             });
-            
-            const param = new MethodParameter(
-                MethodParameterType.HEADER,
-                'content-length',
-                false,
-                undefined,
-                { source: String, target: Number }
-            );
+
+            const param = new MethodParameter(MethodParameterType.HEADER, 'content-length', false, undefined, {
+                source: String,
+                target: Number,
+            });
             expect(resolver.resolveArgument(param, route, {})).toBe(1024);
         });
 
         test('should handle boolean conversion when convertType is provided', () => {
             const route = makeRoute({
-                headers: { 'x-active': 'true' }
+                headers: { 'x-active': 'true' },
             });
-            
-            const param = new MethodParameter(
-                MethodParameterType.HEADER,
-                'x-active',
-                false,
-                undefined,
-                { source: String, target: Boolean }
-            );
+
+            const param = new MethodParameter(MethodParameterType.HEADER, 'x-active', false, undefined, {
+                source: String,
+                target: Boolean,
+            });
             expect(resolver.resolveArgument(param, route, {})).toBe(true);
         });
 
         test('should handle missing route.headers gracefully', () => {
             const route = makeRoute({});
-            
+
             const param = new MethodParameter(MethodParameterType.HEADER, 'content-type', false, 'default');
             expect(resolver.resolveArgument(param, route, {})).toBe('default');
         });

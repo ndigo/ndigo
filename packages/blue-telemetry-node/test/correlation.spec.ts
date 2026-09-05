@@ -2,7 +2,7 @@
 import { describe, test, expect, beforeAll, afterAll } from 'vitest';
 import { BasicTracerProvider, InMemorySpanExporter, SimpleSpanProcessor } from '@opentelemetry/sdk-trace-base';
 import { AsyncHooksContextManager } from '@opentelemetry/context-async-hooks';
-import { context as otelContext, trace } from "@opentelemetry/api";
+import { context as otelContext, trace } from '@opentelemetry/api';
 import { HTTPServerInstrumentation } from '../src/instrumentation/http-server/http-server';
 import { DispatcherInstrumentation } from '../src/instrumentation/dispatcher/dispatcher';
 import { getMapping, LinearMetadataHandlerMapping } from '@blue/dispatcher';

@@ -96,8 +96,8 @@ export class CORSInterceptor implements RouteHandlerInterceptor {
 
         if (allowCredentials && allowedOrigins.includes('*')) {
             throw new TypeError(
-                'CORSInterceptor: allowCredentials cannot be combined with a wildcard allowedOrigins (\'*\'). ' +
-                    'List explicit origins when credentials are enabled.',
+                "CORSInterceptor: allowCredentials cannot be combined with a wildcard allowedOrigins ('*'). " +
+                    'List explicit origins when credentials are enabled.'
             );
         }
 
@@ -170,10 +170,7 @@ export class CORSInterceptor implements RouteHandlerInterceptor {
     #attachAllowHeaders(res: ServerResponse, origin: string): void {
         // Echo the actual origin (never `*` with credentials); always Vary on
         // Origin so shared caches do not serve a cross-origin response.
-        res.setHeader(
-            ACCESS_CONTROL_ALLOW_ORIGIN.name,
-            this.#allowAnyOrigin && !this.#allowCredentials ? '*' : origin,
-        );
+        res.setHeader(ACCESS_CONTROL_ALLOW_ORIGIN.name, this.#allowAnyOrigin && !this.#allowCredentials ? '*' : origin);
         res.setHeader(VARY.name, 'Origin');
         if (this.#allowCredentials) {
             res.setHeader(ACCESS_CONTROL_ALLOW_CREDENTIALS.name, 'true');

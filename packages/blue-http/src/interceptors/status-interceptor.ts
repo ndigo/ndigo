@@ -50,7 +50,7 @@ export class StatusInterceptor implements ResponseAwareHTTPInterceptor {
     async postResponse(response: Response, settings: any): Promise<Response | void> {
         const status = response.status;
         const normalizedStatus = this.#config.statusMappings?.[status] ?? this.#config.defaultStatus ?? 'UNKNOWN';
-        
+
         // We can't modify the Response object directly, so we create a new one
         // with the same properties but adding a custom header for the normalized status.
         const newHeaders = new Headers(response.headers);

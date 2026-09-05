@@ -1,5 +1,5 @@
-import { describe, it } from 'vitest'
+import { describe, it } from 'vitest';
 
 describe.skip('placeholder', () => {
-  it('has no tests yet', () => {})
-})
+    it('has no tests yet', () => {});
+});

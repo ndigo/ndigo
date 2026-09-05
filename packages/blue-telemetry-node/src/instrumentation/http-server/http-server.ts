@@ -90,7 +90,5 @@ export class HTTPServerInstrumentation extends BaseBlueInstrumentation {
 }
 
 function resultStatus(outcome: { ok: boolean }): { code: SpanStatusCode } {
-    return outcome.ok
-        ? { code: SpanStatusCode.OK }
-        : { code: SpanStatusCode.ERROR };
+    return outcome.ok ? { code: SpanStatusCode.OK } : { code: SpanStatusCode.ERROR };
 }

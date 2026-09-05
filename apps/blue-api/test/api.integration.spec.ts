@@ -55,10 +55,7 @@ describe('blue-api through @blue/test', () => {
     });
 
     test('POST /auth/login returns 400 on bad credentials', async () => {
-        const res = await mockMVC
-            .post('/auth/login')
-            .body({ username: 'bob', password: 'wrong' })
-            .exec();
+        const res = await mockMVC.post('/auth/login').body({ username: 'bob', password: 'wrong' }).exec();
         expect(res.response.status).toBe(400);
         expect(res.json()).toEqual({ error: 'Invalid credentials' });
     });

@@ -18,6 +18,7 @@ This directory contains migration guides documenting breaking changes and upgrad
 Migration files follow the format: `YYYY-MM-DD_DESCRIPTION.md`
 
 Where:
+
 - `YYYY-MM-DD` - Date the migration was completed (ISO 8601 format)
 - `_` - Underscore separator (consistent with UPPER_SNAKE_CASE constants)
 - `DESCRIPTION` - Brief description in ALL_CAPS with underscores for multi-word phrases

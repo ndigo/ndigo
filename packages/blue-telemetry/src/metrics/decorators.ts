@@ -15,7 +15,9 @@ const COUNTED_KEY = 'telemetry:counted';
 export function getCounted(
     target: any,
     propertyKey: string | symbol
-): { name: string; attributes?: LogAttributes; featureAggregator?: FeatureMetricAggregator; featureKey?: string } | undefined {
+):
+    | { name: string; attributes?: LogAttributes; featureAggregator?: FeatureMetricAggregator; featureKey?: string }
+    | undefined {
     return getSymbolMetadata(target)[`${COUNTED_KEY}:${String(propertyKey)}`];
 }
 

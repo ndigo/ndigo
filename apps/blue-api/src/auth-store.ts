@@ -36,15 +36,19 @@ export function initAuth(): void {
  * @returns The demo token, or null if authentication fails.
  */
 export async function authenticate(username: string, password: string): Promise<string | null> {
-    const user = DEMO_USERS.find(u => u.username === username && u.password === password);
+    const user = DEMO_USERS.find((u) => u.username === username && u.password === password);
     if (!user) return null;
 
     const principal: Principal = {
         id: user.username,
         name: user.username,
         roles: user.roles,
-        hasRole(role: string) { return this.roles.includes(role); },
-        hasAnyRole(...roles: string[]) { return roles.some(r => this.roles.includes(r)); },
+        hasRole(role: string) {
+            return this.roles.includes(role);
+        },
+        hasAnyRole(...roles: string[]) {
+            return roles.some((r) => this.roles.includes(r));
+        },
     };
 
     const token = `demo-token-${principal.id}-${Date.now()}`;

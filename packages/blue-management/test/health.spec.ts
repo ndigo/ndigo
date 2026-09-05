@@ -6,7 +6,10 @@ import { FeatureMetricAggregator } from '@blue/telemetry';
 
 describe('HealthRegistry', () => {
     const up: HealthIndicator = { name: 'up', check: (): HealthResult => ({ status: 'UP' }) };
-    const down: HealthIndicator = { name: 'down', check: (): HealthResult => ({ status: 'DOWN', details: { why: 'x' } }) };
+    const down: HealthIndicator = {
+        name: 'down',
+        check: (): HealthResult => ({ status: 'DOWN', details: { why: 'x' } }),
+    };
 
     test('aggregates UP when all indicators are UP', async () => {
         const registry = new HealthRegistry().register(up);

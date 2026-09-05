@@ -27,7 +27,7 @@ describe('NodeCookieValueMethodArgumentResolver', () => {
         test('should return false for non-COOKIE parameter types', () => {
             const param = new MethodParameter(MethodParameterType.QUERY, 'test');
             expect(resolver.supportsParameter(param)).toBe(false);
-            
+
             const param2 = new MethodParameter(MethodParameterType.PATH, 'test');
             expect(resolver.supportsParameter(param2)).toBe(false);
         });
@@ -36,67 +36,59 @@ describe('NodeCookieValueMethodArgumentResolver', () => {
     describe('resolveArgument', () => {
         test('should resolve named value from route.cookies', () => {
             const route = makeRoute({
-                cookies: { session: 'abc123' }
+                cookies: { session: 'abc123' },
             });
-            
+
             const param = new MethodParameter(MethodParameterType.COOKIE, 'session');
             expect(resolver.resolveArgument(param, route, {})).toBe('abc123');
         });
 
         test('should return default value when source value is absent', () => {
             const route = makeRoute({
-                cookies: {}
+                cookies: {},
             });
-            
+
             const param = new MethodParameter(MethodParameterType.COOKIE, 'session', false, 'default');
             expect(resolver.resolveArgument(param, route, {})).toBe('default');
         });
 
         test('should throw when required parameter is absent', () => {
             const route = makeRoute({
-                cookies: {}
+                cookies: {},
             });
-            
+
             const param = new MethodParameter(MethodParameterType.COOKIE, 'session', true);
-            expect(() => resolver.resolveArgument(param, route, {}))
-                .toThrow(TypeError);
-            expect(() => resolver.resolveArgument(param, route, {}))
-                .toThrow(/"session" cannot be undefined or null/);
+            expect(() => resolver.resolveArgument(param, route, {})).toThrow(TypeError);
+            expect(() => resolver.resolveArgument(param, route, {})).toThrow(/"session" cannot be undefined or null/);
         });
 
         test('should apply type-based conversion when convertType is provided', () => {
             const route = makeRoute({
-                cookies: { age: '25' }
+                cookies: { age: '25' },
             });
-            
-            const param = new MethodParameter(
-                MethodParameterType.COOKIE,
-                'age',
-                false,
-                undefined,
-                { source: String, target: Number }
-            );
+
+            const param = new MethodParameter(MethodParameterType.COOKIE, 'age', false, undefined, {
+                source: String,
+                target: Number,
+            });
             expect(resolver.resolveArgument(param, route, {})).toBe(25);
         });
 
         test('should handle boolean conversion when convertType is provided', () => {
             const route = makeRoute({
-                cookies: { active: 'true' }
+                cookies: { active: 'true' },
             });
-            
-            const param = new MethodParameter(
-                MethodParameterType.COOKIE,
-                'active',
-                false,
-                undefined,
-                { source: String, target: Boolean }
-            );
+
+            const param = new MethodParameter(MethodParameterType.COOKIE, 'active', false, undefined, {
+                source: String,
+                target: Boolean,
+            });
             expect(resolver.resolveArgument(param, route, {})).toBe(true);
         });
 
         test('should handle missing route.cookies gracefully', () => {
             const route = makeRoute({});
-            
+
             const param = new MethodParameter(MethodParameterType.COOKIE, 'session', false, 'default');
             expect(resolver.resolveArgument(param, route, {})).toBe('default');
         });

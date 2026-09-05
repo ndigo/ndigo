@@ -26,11 +26,11 @@ This audit scanned the codebase for direct imports of encapsulated libraries tha
 
 These packages are **authorized** to import directly from encapsulated libraries:
 
-| Integration Layer | Encapsulated Libraries | Files with Direct Imports |
-| :--- | :--- | :--- |
-| `@blue/util` | `ramda`, `date-fns`, `date-fns-tz`, `seedrandom`, `slug` | 42 files (✅ Expected) |
-| `@blue/parser` | `arcsecond` | 13 files (✅ Expected) |
-| `@blue/model` | `objectmodel` | 1 file (✅ Expected) |
+| Integration Layer | Encapsulated Libraries                                   | Files with Direct Imports |
+| :---------------- | :------------------------------------------------------- | :------------------------ |
+| `@blue/util`      | `ramda`, `date-fns`, `date-fns-tz`, `seedrandom`, `slug` | 42 files (✅ Expected)    |
+| `@blue/parser`    | `arcsecond`                                              | 13 files (✅ Expected)    |
+| `@blue/model`     | `objectmodel`                                            | 1 file (✅ Expected)      |
 
 ## Violations Detected
 
@@ -63,6 +63,7 @@ import { addIndex, complement, cond, equals, ifElse, isEmpty, filter, pipe, join
 ### 3. @blue/platform-web - Direct arcsecond Imports
 
 **Files:**
+
 - `packages/blue-platform-web/src/cookies.ts:6`
 - `packages/blue-platform-web/src/parser/cookie-expression.ts:12`
 
@@ -93,10 +94,12 @@ import { format } from 'date-fns';
 
 **Severity:** High  
 **Issues:**
+
 1. Direct import of `date-fns` (should use `@blue/util`)
 2. **Missing dependency declaration** - `date-fns` is not listed in `packages/blue-logger/package.json` dependencies
 
 **Recommendation:**
+
 1. Change import to: `import { format } from '@blue/util';`
 2. Add `@blue/util` to `devDependencies` and `peerDependencies` in `@blue/logger/package.json`
 3. Remove any accidental `date-fns` dependency if present
@@ -117,65 +120,66 @@ import { range } from 'ramda';
 
 ### Libraries Scanned
 
-| Library | Total Imports | Integration Layer | Violations | Test Files |
-| :--- | :---: | :---: | :---: | :---: |
-| `ramda` | 87 | 84 (@blue/util) | 2 | 1 |
-| `date-fns` | 2 | 1 (@blue/util) | 1 | 0 |
-| `arcsecond` | 16 | 14 (@blue/parser) | 2 | 0 |
-| `objectmodel` | 2 | 2 (@blue/model) | 0 | 0 |
-| `seedrandom` | 0 | 0 (@blue/util) | 0 | 0 |
-| `slug` | 1 | 1 (@blue/util) | 0 | 0 |
-| **TOTAL** | **108** | **102** | **5** | **1** |
+| Library       | Total Imports | Integration Layer | Violations | Test Files |
+| :------------ | :-----------: | :---------------: | :--------: | :--------: |
+| `ramda`       |      87       |  84 (@blue/util)  |     2      |     1      |
+| `date-fns`    |       2       |  1 (@blue/util)   |     1      |     0      |
+| `arcsecond`   |      16       | 14 (@blue/parser) |     2      |     0      |
+| `objectmodel` |       2       |  2 (@blue/model)  |     0      |     0      |
+| `seedrandom`  |       0       |  0 (@blue/util)   |     0      |     0      |
+| `slug`        |       1       |  1 (@blue/util)   |     0      |     0      |
+| **TOTAL**     |    **108**    |      **102**      |   **5**    |   **1**    |
 
 ### Package Compliance
 
-| Package | Status | Violations | Notes |
-| :--- | :---: | :---: | :--- |
-| @blue/util | ✅ | 0 | Integration layer |
-| @blue/parser | ✅ | 0 | Integration layer |
-| @blue/model | ✅ | 0 | Integration layer |
-| @blue/router | ❌ | 1 | Direct ramda import |
-| @blue/http | ❌ | 1 | Direct ramda import |
-| @blue/platform-web | ❌ | 2 | Direct arcsecond imports |
-| @blue/logger | ⚠️ | 1 | Direct date-fns + missing dependency |
-| @blue/boot | ✅ | 0 | - |
-| @blue/content | ✅ | 0 | - |
-| @blue/context | ✅ | 0 | - |
-| @blue/core | ✅ | 0 | - |
-| @blue/demo | ✅ | 0 | - |
-| @blue/dispatcher | ✅ | 0 | - |
-| @blue/domain | ✅ | 0 | - |
-| @blue/factory | ✅ | 0 | - |
-| @blue/print | ✅ | 0 | - |
-| @blue/service | ✅ | 0 | - |
-| @blue/validate | ✅ | 0 | - |
-| @blue/view | ✅ | 0 | - |
-| @blue/view-webcomponent | ✅ | 0 | - |
+| Package                 | Status | Violations | Notes                                |
+| :---------------------- | :----: | :--------: | :----------------------------------- |
+| @blue/util              |   ✅   |     0      | Integration layer                    |
+| @blue/parser            |   ✅   |     0      | Integration layer                    |
+| @blue/model             |   ✅   |     0      | Integration layer                    |
+| @blue/router            |   ❌   |     1      | Direct ramda import                  |
+| @blue/http              |   ❌   |     1      | Direct ramda import                  |
+| @blue/platform-web      |   ❌   |     2      | Direct arcsecond imports             |
+| @blue/logger            |   ⚠️   |     1      | Direct date-fns + missing dependency |
+| @blue/boot              |   ✅   |     0      | -                                    |
+| @blue/content           |   ✅   |     0      | -                                    |
+| @blue/context           |   ✅   |     0      | -                                    |
+| @blue/core              |   ✅   |     0      | -                                    |
+| @blue/demo              |   ✅   |     0      | -                                    |
+| @blue/dispatcher        |   ✅   |     0      | -                                    |
+| @blue/domain            |   ✅   |     0      | -                                    |
+| @blue/factory           |   ✅   |     0      | -                                    |
+| @blue/print             |   ✅   |     0      | -                                    |
+| @blue/service           |   ✅   |     0      | -                                    |
+| @blue/validate          |   ✅   |     0      | -                                    |
+| @blue/view              |   ✅   |     0      | -                                    |
+| @blue/view-webcomponent |   ✅   |     0      | -                                    |
 
 ## Recommendations
 
 ### Priority 1: Fix @blue/logger (High Severity)
 
 1. Update `packages/blue-logger/src/layouts/pattern-layout.ts`:
-   ```typescript
-   // Before
-   import { format } from 'date-fns';
-   
-   // After
-   import { format } from '@blue/util';
-   ```
+
+    ```typescript
+    // Before
+    import { format } from 'date-fns';
+
+    // After
+    import { format } from '@blue/util';
+    ```
 
 2. Update `packages/blue-logger/package.json`:
-   ```json
-   {
-     "devDependencies": {
-       "@blue/util": "workspace:*"
-     },
-     "peerDependencies": {
-       "@blue/util": "^3.0.0-alpha.0"
-     }
-   }
-   ```
+    ```json
+    {
+        "devDependencies": {
+            "@blue/util": "workspace:*"
+        },
+        "peerDependencies": {
+            "@blue/util": "^3.0.0-alpha.0"
+        }
+    }
+    ```
 
 ### Priority 2: Fix @blue/router and @blue/http
 
@@ -188,7 +192,21 @@ Both packages have identical violations in `query-string.ts` / `to-query-string.
 import { addIndex, complement, cond, equals, ifElse, isEmpty, filter, pipe, join, keys, map, sort, T } from 'ramda';
 
 // After
-import { addIndex, complement, cond, equals, ifElse, isEmpty, filter, pipe, join, keys, map, sort, T } from '@blue/util';
+import {
+    addIndex,
+    complement,
+    cond,
+    equals,
+    ifElse,
+    isEmpty,
+    filter,
+    pipe,
+    join,
+    keys,
+    map,
+    sort,
+    T,
+} from '@blue/util';
 ```
 
 **@blue/http - query-string.ts:12**
@@ -198,7 +216,21 @@ import { addIndex, complement, cond, equals, ifElse, isEmpty, filter, pipe, join
 import { addIndex, complement, cond, equals, ifElse, isEmpty, filter, pipe, join, keys, map, sort, T } from 'ramda';
 
 // After
-import { addIndex, complement, cond, equals, ifElse, isEmpty, filter, pipe, join, keys, map, sort, T } from '@blue/util';
+import {
+    addIndex,
+    complement,
+    cond,
+    equals,
+    ifElse,
+    isEmpty,
+    filter,
+    pipe,
+    join,
+    keys,
+    map,
+    sort,
+    T,
+} from '@blue/util';
 ```
 
 ### Priority 3: Fix @blue/platform-web
@@ -252,46 +284,46 @@ Create custom ESLint rule in `@blue/eslint-plugin`:
 ```javascript
 // packages/blue-eslint-plugin/rules/no-direct-integration-imports.js
 module.exports = {
-  meta: {
-    type: 'problem',
-    messages: {
-      directImport: 'Direct import of "{{library}}" is not allowed. Use "{{integrationLayer}}" instead.'
-    }
-  },
-  create(context) {
-    const violations = {
-      'ramda': '@blue/util',
-      'date-fns': '@blue/util',
-      'date-fns-tz': '@blue/util',
-      'seedrandom': '@blue/util',
-      'slug': '@blue/util',
-      'arcsecond': '@blue/parser',
-      'objectmodel': '@blue/model'
-    };
-    
-    return {
-      ImportDeclaration(node) {
-        const source = node.source.value;
-        if (violations[source]) {
-          // Skip if current file is in the integration layer package
-          const filename = context.getFilename();
-          const integrationLayer = violations[source];
-          const packageName = integrationLayer.replace('@blue/', 'blue-');
-          
-          if (!filename.includes(`packages/${packageName}/`)) {
-            context.report({
-              node,
-              messageId: 'directImport',
-              data: {
-                library: source,
-                integrationLayer: integrationLayer
-              }
-            });
-          }
-        }
-      }
-    };
-  }
+    meta: {
+        type: 'problem',
+        messages: {
+            directImport: 'Direct import of "{{library}}" is not allowed. Use "{{integrationLayer}}" instead.',
+        },
+    },
+    create(context) {
+        const violations = {
+            ramda: '@blue/util',
+            'date-fns': '@blue/util',
+            'date-fns-tz': '@blue/util',
+            seedrandom: '@blue/util',
+            slug: '@blue/util',
+            arcsecond: '@blue/parser',
+            objectmodel: '@blue/model',
+        };
+
+        return {
+            ImportDeclaration(node) {
+                const source = node.source.value;
+                if (violations[source]) {
+                    // Skip if current file is in the integration layer package
+                    const filename = context.getFilename();
+                    const integrationLayer = violations[source];
+                    const packageName = integrationLayer.replace('@blue/', 'blue-');
+
+                    if (!filename.includes(`packages/${packageName}/`)) {
+                        context.report({
+                            node,
+                            messageId: 'directImport',
+                            data: {
+                                library: source,
+                                integrationLayer: integrationLayer,
+                            },
+                        });
+                    }
+                }
+            },
+        };
+    },
 };
 ```
 

@@ -46,7 +46,10 @@ export interface ContentNegotiationStrategy {
  * For example, it can resolve `application/json` to `json`.
  */
 
-const hasFunction = (prop: string) => (obj: any): boolean => isFunction(obj?.[prop]),
+const hasFunction =
+        (prop: string) =>
+        (obj: any): boolean =>
+            isFunction(obj?.[prop]),
     hasGetAllFileExtenstions = hasFunction('getAllFileExtenstions'),
     hasResolveFileExtensions = hasFunction('resolveFileExtensions');
 
@@ -201,7 +204,8 @@ export abstract class AbstractMappingContentNegotiationStrategy
 /**
  * Content negotiation strategy that is intended to derive media types from the request path extension.
  */
-export class PathExtensionContentNegotiationStrategy extends MappingMediaTypeFileExtensionResolver
+export class PathExtensionContentNegotiationStrategy
+    extends MappingMediaTypeFileExtensionResolver
     implements ContentNegotiationStrategy
 {
     /**
@@ -212,7 +216,7 @@ export class PathExtensionContentNegotiationStrategy extends MappingMediaTypeFil
      */
     resolveMediaTypes(request: any): MediaType[] {
         // Try to extract a path or URI from the request
-        const uri = (request?.uri || request?.path) || '';
+        const uri = request?.uri || request?.path || '';
         if (!uri) return [];
 
         // Extract the file extension (last segment after the last dot, ignoring query string)

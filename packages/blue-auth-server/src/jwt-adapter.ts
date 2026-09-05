@@ -2,7 +2,15 @@
  * @author Jeff Rose
  */
 
-import { jwtVerify, importSPKI, exportJWK, createLocalJWKSet, createRemoteJWKSet, JWTPayload, JWTVerifyGetKey } from 'jose';
+import {
+    jwtVerify,
+    importSPKI,
+    exportJWK,
+    createLocalJWKSet,
+    createRemoteJWKSet,
+    JWTPayload,
+    JWTVerifyGetKey,
+} from 'jose';
 import { type AuthAdapter } from '@blue/auth-core';
 import { type Principal } from '@blue/auth-core';
 import { type AuthResult } from '@blue/auth-core';
@@ -155,9 +163,7 @@ export class JWTAdapter implements AuthAdapter {
  * @returns The principal.
  */
 function principalFromPayload(payload: JWTPayload): Principal {
-    const roles = Array.isArray(payload.roles)
-        ? (payload.roles as unknown[])
-        : [];
+    const roles = Array.isArray(payload.roles) ? (payload.roles as unknown[]) : [];
     return {
         id: String(payload.sub ?? 'unknown'),
         name: String(payload.name ?? payload.email ?? 'Unknown'),

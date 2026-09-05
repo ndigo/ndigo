@@ -7,6 +7,7 @@
 Ramda and date-fns have been removed from `@blue/util`. All functions have been replaced with native JavaScript equivalents. The `ramda.d.ts` and `ramda-extensions.d.ts` type bridge files were deleted.
 
 **Remaining dependencies in `@blue/util`:**
+
 - `seedrandom` — Random number generation
 - `slug` — URL slug generation
 

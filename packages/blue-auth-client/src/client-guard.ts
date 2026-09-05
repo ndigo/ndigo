@@ -20,25 +20,22 @@ export interface AuthRouteMetadata {
  * @returns The authentication metadata for the route.
  */
 export function extractAuthMetadata(handler: object | undefined): AuthRouteMetadata {
-        // constructor[Symbol.metadata] is a runtime TC39 decorator property
+    // constructor[Symbol.metadata] is a runtime TC39 decorator property
     // that TS 5.7's Function type doesn't declare. The property exists on
     // every decorated class's constructor at runtime.
-    const metadata: Record<string, unknown> = (
-        ((handler?.constructor as any)?.[Symbol.metadata] ?? {}) as Record<string, unknown>
-    );
+    const metadata: Record<string, unknown> = ((handler?.constructor as any)?.[Symbol.metadata] ?? {}) as Record<
+        string,
+        unknown
+    >;
     const methodName: string | null =
         typeof (handler as unknown as Record<string, unknown>)?.method === 'string'
-            ? (handler as unknown as Record<string, unknown>).method as string
+            ? ((handler as unknown as Record<string, unknown>).method as string)
             : null;
 
     const classRequiresAuth = Boolean(metadata[AUTH_REQUIRED_KEY]);
-    const methodRequiresAuth = methodName
-        ? Boolean(metadata[`${AUTH_REQUIRED_KEY}:${methodName}`])
-        : false;
+    const methodRequiresAuth = methodName ? Boolean(metadata[`${AUTH_REQUIRED_KEY}:${methodName}`]) : false;
     const classRoles = (metadata[AUTH_ROLES_KEY] as string[] | undefined) ?? [];
-    const methodRoles = methodName
-        ? ((metadata[`${AUTH_ROLES_KEY}:${methodName}`] as string[] | undefined) ?? [])
-        : [];
+    const methodRoles = methodName ? ((metadata[`${AUTH_ROLES_KEY}:${methodName}`] as string[] | undefined) ?? []) : [];
 
     return {
         requiresAuth: classRequiresAuth || methodRequiresAuth,
@@ -87,9 +84,7 @@ export class ClientAuthGuard {
         }
 
         if (metadata.requiredRoles.length > 0 && this.#authClient.principal) {
-            const hasRequiredRoles = metadata.requiredRoles.every((role) =>
-                this.#authClient.principal!.hasRole(role)
-            );
+            const hasRequiredRoles = metadata.requiredRoles.every((role) => this.#authClient.principal!.hasRole(role));
             if (!hasRequiredRoles) {
                 return this.#forbiddenRedirect;
             }

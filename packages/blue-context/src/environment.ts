@@ -200,7 +200,7 @@ export abstract class AbstractEnvironment implements ConfigurableEnvironment {
  */
 export const AsEnvironmentAware = <T extends Constructable>(superclass: T): Constructable<EnvironmentAware> & T =>
     class extends AsAware(superclass) implements EnvironmentAware {
-    readonly environment!: Environment;
+        readonly environment!: Environment;
 
         /**
          * Captures the environment on the instance.

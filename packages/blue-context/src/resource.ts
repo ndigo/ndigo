@@ -97,7 +97,9 @@ export const likeResourceLoader = like({ getResource: Function }) as (value: unk
  * @param value - The value to test.
  * @returns `true` when the value looks like resource-loader aware.
  */
-export const likeResourceLoaderAware = like({ setResourceLoader: Function }) as (value: unknown) => value is ResourceLoaderAware;
+export const likeResourceLoaderAware = like({ setResourceLoader: Function }) as (
+    value: unknown
+) => value is ResourceLoaderAware;
 
 /**
  */

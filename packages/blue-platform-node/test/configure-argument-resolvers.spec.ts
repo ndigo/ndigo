@@ -23,7 +23,7 @@ describe('configureNodeArgumentResolvers', () => {
 
     test('should return resolvers in correct order', () => {
         const resolvers = configureNodeArgumentResolvers(context);
-        
+
         expect(resolvers[0]).toBeInstanceOf(NodeQueryValueMethodArgumentResolver);
         expect(resolvers[1]).toBeInstanceOf(NodePathValueMethodArgumentResolver);
         expect(resolvers[2]).toBeInstanceOf(NodeHeaderValueMethodArgumentResolver);
@@ -34,7 +34,7 @@ describe('configureNodeArgumentResolvers', () => {
 
     test('should register resolvers on context as argumentResolvers', () => {
         const resolvers = configureNodeArgumentResolvers(context);
-        
+
         // Check that the resolvers are stored in the context
         // Note: This is a simplified check since we don't have access to the actual registration mechanism
         expect(resolvers).toHaveLength(6);
@@ -42,29 +42,29 @@ describe('configureNodeArgumentResolvers', () => {
 
     test('should use context registry if available', () => {
         // Set up a custom converter registry in the context
-        const customRegistry = { 
-            customConverter: (value: any) => `converted-${value}` 
+        const customRegistry = {
+            customConverter: (value: any) => `converted-${value}`,
         };
         // Note: This is a simplified test since we don't have direct access to setService
-        
+
         const resolvers = configureNodeArgumentResolvers(context);
         expect(resolvers).toHaveLength(6);
     });
 
     test('should allow option-level registry to override context registry', () => {
         // Set up an option-level registry that overrides it
-        const optionRegistry = { 
-            optionConverter: (value: any) => `option-${value}` 
+        const optionRegistry = {
+            optionConverter: (value: any) => `option-${value}`,
         };
-        
+
         const resolvers = configureNodeArgumentResolvers(context, { converterRegistry: optionRegistry });
         expect(resolvers).toHaveLength(6);
     });
 
     test('should handle strictNamedConverterLookup correctly', () => {
         // This test mainly ensures the function doesn't crash with this option
-        const resolvers = configureNodeArgumentResolvers(context, { 
-            strictNamedConverterLookup: true 
+        const resolvers = configureNodeArgumentResolvers(context, {
+            strictNamedConverterLookup: true,
         });
         expect(resolvers).toHaveLength(6);
     });

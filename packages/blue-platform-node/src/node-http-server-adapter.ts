@@ -122,7 +122,6 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
         }
     }
 
-
     async handleRequest(req: IncomingMessage, res: ServerResponse): Promise<void> {
         try {
             const urlObj = this.#buildUrl(req);
@@ -199,7 +198,6 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
         res.end(JSON.stringify(payload));
     }
 
-
     /**
      * Finalizes an interceptor denial: explicit status/body, or the default
      * `403` for bare `false` denials. Browser redirects use the `redirect`
@@ -234,7 +232,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
             this.#writeJson(res, 400, { error: 'malformed_url' });
             return;
         }
-        const message = error instanceof Error ? error.stack ?? error.message : String(error);
+        const message = error instanceof Error ? (error.stack ?? error.message) : String(error);
         console.error('[NodeHTTPServerAdapter] dispatch failure:', message);
         this.#writeJson(res, 500, { error: 'Internal Server Error' });
     }
@@ -305,7 +303,9 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
                         // the socket so the client can read the response.
                         settled = true;
                         clearTimeout(timer);
-                        reject(new RequestLimitError(413, 'body_too_large', 'Request body exceeds the configured limit'));
+                        reject(
+                            new RequestLimitError(413, 'body_too_large', 'Request body exceeds the configured limit')
+                        );
                         return;
                     }
                     if (!settled) {

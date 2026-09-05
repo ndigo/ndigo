@@ -91,13 +91,10 @@ describe('Conversion Pipeline Integration', () => {
 
     describe('End-to-end conversion through resolveConverter', () => {
         test('converts UUID string via ConversionService', () => {
-            const parameter = new MethodParameter(
-                MethodParameterType.PATH,
-                'id',
-                false,
-                null,
-                { source: String, target: String }
-            );
+            const parameter = new MethodParameter(MethodParameterType.PATH, 'id', false, null, {
+                source: String,
+                target: String,
+            });
 
             const converter = resolveConverter(parameter.convertType);
             const context: ArgumentValueConversionContext = {
@@ -112,13 +109,10 @@ describe('Conversion Pipeline Integration', () => {
         });
 
         test('converts number string via ConversionService', () => {
-            const parameter = new MethodParameter(
-                MethodParameterType.QUERY,
-                'count',
-                false,
-                null,
-                { source: String, target: Number }
-            );
+            const parameter = new MethodParameter(MethodParameterType.QUERY, 'count', false, null, {
+                source: String,
+                target: Number,
+            });
 
             const converter = resolveConverter(parameter.convertType);
             const context: ArgumentValueConversionContext = {
@@ -133,13 +127,10 @@ describe('Conversion Pipeline Integration', () => {
         });
 
         test('converts boolean string via ConversionService', () => {
-            const parameter = new MethodParameter(
-                MethodParameterType.QUERY,
-                'active',
-                false,
-                null,
-                { source: String, target: Boolean }
-            );
+            const parameter = new MethodParameter(MethodParameterType.QUERY, 'active', false, null, {
+                source: String,
+                target: Boolean,
+            });
 
             const converter = resolveConverter(parameter.convertType);
             const context: ArgumentValueConversionContext = {
@@ -157,13 +148,10 @@ describe('Conversion Pipeline Integration', () => {
         });
 
         test('converts date string via ConversionService', () => {
-            const parameter = new MethodParameter(
-                MethodParameterType.QUERY,
-                'createdAt',
-                false,
-                null,
-                { source: String, target: Date }
-            );
+            const parameter = new MethodParameter(MethodParameterType.QUERY, 'createdAt', false, null, {
+                source: String,
+                target: Date,
+            });
 
             const converter = resolveConverter(parameter.convertType);
             const context: ArgumentValueConversionContext = {
@@ -178,13 +166,10 @@ describe('Conversion Pipeline Integration', () => {
         });
 
         test('converts JSON string via ConversionService', () => {
-            const parameter = new MethodParameter(
-                MethodParameterType.QUERY,
-                'data',
-                false,
-                null,
-                { source: String, target: Object }
-            );
+            const parameter = new MethodParameter(MethodParameterType.QUERY, 'data', false, null, {
+                source: String,
+                target: Object,
+            });
 
             const converter = resolveConverter(parameter.convertType);
             const context: ArgumentValueConversionContext = {
@@ -199,13 +184,10 @@ describe('Conversion Pipeline Integration', () => {
         });
 
         test('converts array string via ConversionService', () => {
-            const parameter = new MethodParameter(
-                MethodParameterType.QUERY,
-                'tags',
-                false,
-                null,
-                { source: String, target: Array }
-            );
+            const parameter = new MethodParameter(MethodParameterType.QUERY, 'tags', false, null, {
+                source: String,
+                target: Array,
+            });
 
             const converter = resolveConverter(parameter.convertType);
             const context: ArgumentValueConversionContext = {
@@ -223,19 +205,12 @@ describe('Conversion Pipeline Integration', () => {
     describe('Custom converters via ConversionService', () => {
         test('can register and use custom converter', () => {
             // Register a hex converter on top of built-ins
-            conversionService.registry.register(
-                { convert: (v: string) => parseInt(v, 16) },
-                String,
-                Number
-            );
+            conversionService.registry.register({ convert: (v: string) => parseInt(v, 16) }, String, Number);
 
-            const parameter = new MethodParameter(
-                MethodParameterType.QUERY,
-                'hex',
-                false,
-                null,
-                { source: String, target: Number }
-            );
+            const parameter = new MethodParameter(MethodParameterType.QUERY, 'hex', false, null, {
+                source: String,
+                target: Number,
+            });
 
             const converter = resolveConverter(parameter.convertType);
             const context: ArgumentValueConversionContext = {
@@ -252,13 +227,10 @@ describe('Conversion Pipeline Integration', () => {
 
     describe('Error handling', () => {
         test('throws on invalid UUID format', () => {
-            const parameter = new MethodParameter(
-                MethodParameterType.PATH,
-                'id',
-                false,
-                null,
-                { source: String, target: String }
-            );
+            const parameter = new MethodParameter(MethodParameterType.PATH, 'id', false, null, {
+                source: String,
+                target: String,
+            });
 
             const converter = resolveConverter(parameter.convertType);
             const context: ArgumentValueConversionContext = {
@@ -272,13 +244,10 @@ describe('Conversion Pipeline Integration', () => {
         });
 
         test('throws on invalid boolean string', () => {
-            const parameter = new MethodParameter(
-                MethodParameterType.QUERY,
-                'flag',
-                false,
-                null,
-                { source: String, target: Boolean }
-            );
+            const parameter = new MethodParameter(MethodParameterType.QUERY, 'flag', false, null, {
+                source: String,
+                target: Boolean,
+            });
 
             const converter = resolveConverter(parameter.convertType);
             const context: ArgumentValueConversionContext = {
@@ -292,13 +261,10 @@ describe('Conversion Pipeline Integration', () => {
         });
 
         test('throws on invalid JSON', () => {
-            const parameter = new MethodParameter(
-                MethodParameterType.QUERY,
-                'json',
-                false,
-                null,
-                { source: String, target: Object }
-            );
+            const parameter = new MethodParameter(MethodParameterType.QUERY, 'json', false, null, {
+                source: String,
+                target: Object,
+            });
 
             const converter = resolveConverter(parameter.convertType);
             const context: ArgumentValueConversionContext = {

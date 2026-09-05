@@ -44,10 +44,7 @@ export class HTTPResponseViewTarget implements ViewTarget {
             this.#response.writeHead(model.status.code, headers);
             if (model.body === undefined || model.body === null) {
                 this.#response.end();
-            } else if (
-                typeof model.body === 'string' &&
-                !headers['Content-Type']?.includes('application/json')
-            ) {
+            } else if (typeof model.body === 'string' && !headers['Content-Type']?.includes('application/json')) {
                 this.#response.end(model.body);
             } else {
                 this.#response.end(JSON.stringify(model.body));

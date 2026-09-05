@@ -11,6 +11,7 @@ pnpm add @blue/platform-node
 ## Features
 
 ### Argument Resolvers
+
 The package provides 6 argument resolvers for binding request data to controller method parameters:
 
 - `NodeQueryValueMethodArgumentResolver`: Binds query parameters from the URL
@@ -21,10 +22,13 @@ The package provides 6 argument resolvers for binding request data to controller
 - `NodeSessionValueMethodArgumentResolver`: Binds session data
 
 ### NodeEnvironment
+
 A Node.js environment implementation that includes `process.env` as the first property source, extending `StandardEnvironment`.
 
 ### NodeAutoConfiguration
+
 Auto-configuration for Node.js-based applications that provisions:
+
 - Argument-value converter registry
 - All 6 argument resolvers
 - Default handler mapping for metadata-driven dispatch
@@ -32,6 +36,7 @@ Auto-configuration for Node.js-based applications that provisions:
 ## Usage
 
 ### With @blue/boot
+
 Register `NodeAutoConfiguration` alongside `NodeEnvironment` with your `ApplicationContext` to enable full server-side argument resolution:
 
 ```typescript
@@ -64,64 +69,48 @@ const adapter = new NodeHTTPServerAdapter(dispatcher, {
 
 Error responses are deterministic and leak no internals:
 
-| Status | Condition                                    | Body                   |
-| ------ | -------------------------------------------- | ---------------------- |
-| `400`  | Malformed URL, malformed JSON, aborted body  | `{"error":"…"}` code   |
-| `408`  | Request/body timeout                         | `{"error":"request_timeout"}` |
-| `413`  | Body exceeds `maxBodyBytes`                  | `{"error":"body_too_large"}` |
-| `431`  | Cookie header exceeds `maxHeaderBytes`       | `{"error":"headers_too_large"}` |
-| `500`  | Dispatch failure (details logged server-side)| `{"error":"Internal Server Error"}` |
+| Status | Condition                                     | Body                                |
+| ------ | --------------------------------------------- | ----------------------------------- |
+| `400`  | Malformed URL, malformed JSON, aborted body   | `{"error":"…"}` code                |
+| `408`  | Request/body timeout                          | `{"error":"request_timeout"}`       |
+| `413`  | Body exceeds `maxBodyBytes`                   | `{"error":"body_too_large"}`        |
+| `431`  | Cookie header exceeds `maxHeaderBytes`        | `{"error":"headers_too_large"}`     |
+| `500`  | Dispatch failure (details logged server-side) | `{"error":"Internal Server Error"}` |
 
 JSON bodies are parsed strictly against their `Content-Type` — malformed JSON
 is a `400`, never silently reshaped. `listen()` rejects on bind errors, and
 `close()` drains in-flight requests up to `shutdownTimeoutMs`.
 
 ### Controller Example
+
 ```typescript
-import { 
-  controller, 
-  get, 
-  post,
-  query,
-  path,
-  header,
-  body,
-  cookie,
-  session
-} from '@blue/dispatcher';
+import { controller, get, post, query, path, header, body, cookie, session } from '@blue/dispatcher';
 
 @controller('/users')
 class UserController {
-  @get('/:id')
-  getUser(
-    @path('id') id: string,
-    @query('include') include: string,
-    @header('authorization') authHeader: string
-  ) {
-    return { id, include, authHeader };
-  }
+    @get('/:id')
+    getUser(@path('id') id: string, @query('include') include: string, @header('authorization') authHeader: string) {
+        return { id, include, authHeader };
+    }
 
-  @post('/')
-  createUser(
-    @body('name') name: string,
-    @cookie('sessionId') sessionId: string,
-    @session('userId') userId: string
-  ) {
-    return { name, sessionId, userId };
-  }
+    @post('/')
+    createUser(@body('name') name: string, @cookie('sessionId') sessionId: string, @session('userId') userId: string) {
+        return { name, sessionId, userId };
+    }
 }
 ```
 
 ### Custom Configuration
+
 Use `configureNodeArgumentResolvers()` to register resolvers with custom options:
 
 ```typescript
 import { configureNodeArgumentResolvers } from '@blue/platform-node';
 
 configureNodeArgumentResolvers(context, {
-  query: 'string',
-  body: 'json',
-  converterRegistry: myCustomConverterRegistry,
-  strictNamedConverterLookup: true
+    query: 'string',
+    body: 'json',
+    converterRegistry: myCustomConverterRegistry,
+    strictNamedConverterLookup: true,
 });
 ```

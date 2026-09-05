@@ -2,7 +2,7 @@
 
 **Date:** 2026-08-22
 **Scope:** All 27 packages in the BlueJS Nx monorepo (`packages/blue-*`)
-**Method:** Direct read review (auth packages, core, context, dispatcher, router, http, dom, platform-*, view-*, validate, service, telemetry, reactive, model, etc.) + parallel scout subagents for remaining packages (3 scouts failed on stream timeout — covered inline).
+**Method:** Direct read review (auth packages, core, context, dispatcher, router, http, dom, platform-_, view-_, validate, service, telemetry, reactive, model, etc.) + parallel scout subagents for remaining packages (3 scouts failed on stream timeout — covered inline).
 
 ## Executive Summary
 
@@ -31,22 +31,22 @@ The highest-priority issue is a **dead-code SECURITY bypass in the demo app** (C
 #### H1: Committed `.js` / `.d.ts` / `.js.map` / `.d.ts.map` build artifacts in `src/`
 
 - **Files:**
-  - `packages/blue-core/src/*.js` and `*.d.ts` (40+ files)
-  - `packages/blue-orm/src/*.js` and `*.d.ts` (9 + 9 = 18 files)
-  - `packages/blue-factory/src/*.js` and `*.d.ts` (9 + 9 = 18 files)
-  - `packages/blue-util/src/**/*.d.ts` (15+ files across subdirectories)
-  - `packages/blue-dispatcher/src/strategies/*.d.ts` (3 files)
-  - `packages/blue-boot/vite.config.{js,d.ts}*` (4 files)
+    - `packages/blue-core/src/*.js` and `*.d.ts` (40+ files)
+    - `packages/blue-orm/src/*.js` and `*.d.ts` (9 + 9 = 18 files)
+    - `packages/blue-factory/src/*.js` and `*.d.ts` (9 + 9 = 18 files)
+    - `packages/blue-util/src/**/*.d.ts` (15+ files across subdirectories)
+    - `packages/blue-dispatcher/src/strategies/*.d.ts` (3 files)
+    - `packages/blue-boot/vite.config.{js,d.ts}*` (4 files)
 - **Axis:** Architecture, Readability
 - **Issue:** These are stale build outputs committed to version control. They cause:
-  - Import resolution ambiguity (TS may prefer `.d.ts` over `.ts` depending on config).
-  - Bloat in diff/pr reviews (generated code changes mask actual changes).
-  - Confusion for new contributors seeing duplicate symbols.
+    - Import resolution ambiguity (TS may prefer `.d.ts` over `.ts` depending on config).
+    - Bloat in diff/pr reviews (generated code changes mask actual changes).
+    - Confusion for new contributors seeing duplicate symbols.
 - **Root cause:** Likely an older build pipeline that output into `src/` instead of `lib/`. The `.d.ts` files are consistent with `tsc --declaration --declarationDir src` output.
-- **Action:** 
-  1. Add `src/**/*.js`, `src/**/*.d.ts` (except `src/**/*.ts`), `src/**/*.js.map`, `src/**/*.d.ts.map` to `.gitignore`.
-  2. Remove all committed artifacts: `find packages -path '*/src/*.d.ts' -delete -o -path '*/src/*.js' -delete -o -path '*/src/*.map' -delete` (but keep `packages/blue-orm-drizzle/src/` — it has no `.d.ts`/`.js` artifacts).
-  3. Verify build still works (`pnpm build`).
+- **Action:**
+    1. Add `src/**/*.js`, `src/**/*.d.ts` (except `src/**/*.ts`), `src/**/*.js.map`, `src/**/*.d.ts.map` to `.gitignore`.
+    2. Remove all committed artifacts: `find packages -path '*/src/*.d.ts' -delete -o -path '*/src/*.js' -delete -o -path '*/src/*.map' -delete` (but keep `packages/blue-orm-drizzle/src/` — it has no `.d.ts`/`.js` artifacts).
+    3. Verify build still works (`pnpm build`).
 
 #### H2: `@blue/validate` `validator.ts` contains commented-out dead code
 
@@ -79,22 +79,22 @@ The highest-priority issue is a **dead-code SECURITY bypass in the demo app** (C
 - **Axis:** Complexity, Architecture
 - **Issue:** Contains 7 public classes (`AbstractHandlerMapping`, `AbstractHandlerMethodMapping`, `AbstractPathHandlerMapping`, `AbstractDetectingPathHandlerMapping`, `NamePathHandlerMapping`, `LinearMetadataHandlerMapping`, `SimplePathHandlerMapping`, `RouteMatchResult`), 3 internal helper classes (`MappingEntry`, `MappingRegistry`, `Match`, `MatchComparator`), and multiple JSDoc comment blocks that duplicate the same interface descriptions. >4x the 300-line recommended maximum from AGENTS.md.
 - **Action:** Split into separate files per class:
-  - `_mapping-registry.ts` — `MappingEntry`, `MappingRegistry`
-  - `match.ts` — `Match`, `MatchComparator`, `RouteMatchResult`
-  - `abstract-handler-mapping.ts` — `AbstractHandlerMapping`
-  - `abstract-handler-method-mapping.ts` — `AbstractHandlerMethodMapping`
-  - `abstract-path-handler-mapping.ts` — `AbstractPathHandlerMapping`, `AbstractDetectingPathHandlerMapping`
-  - `name-path-handler-mapping.ts` — `NamePathHandlerMapping`
-  - `simple-path-handler-mapping.ts` — `SimplePathHandlerMapping`
-  - `linear-metadata-handler-mapping.ts` — `LinearMetadataHandlerMapping`
-  - `route-mapping-info.ts` already exists for the mapping info class — keep `PatternsRouteCondition` etc. there.
+    - `_mapping-registry.ts` — `MappingEntry`, `MappingRegistry`
+    - `match.ts` — `Match`, `MatchComparator`, `RouteMatchResult`
+    - `abstract-handler-mapping.ts` — `AbstractHandlerMapping`
+    - `abstract-handler-method-mapping.ts` — `AbstractHandlerMethodMapping`
+    - `abstract-path-handler-mapping.ts` — `AbstractPathHandlerMapping`, `AbstractDetectingPathHandlerMapping`
+    - `name-path-handler-mapping.ts` — `NamePathHandlerMapping`
+    - `simple-path-handler-mapping.ts` — `SimplePathHandlerMapping`
+    - `linear-metadata-handler-mapping.ts` — `LinearMetadataHandlerMapping`
+    - `route-mapping-info.ts` already exists for the mapping info class — keep `PatternsRouteCondition` etc. there.
 
 #### M2: `@blue/context` `event-emitter.ts` — 801 lines, functional complexity
 
 - **File:** `packages/blue-context/src/event-emitter.ts`
 - **Axis:** Complexity, Readability
-- **Issue:** Implements a sophisticated event emitter using mixin patterns (`AsEventEmitter`, `AsAsyncEventEmitter`, `AsConditionalEventEmitter`, `AsPositionalEventEmitter`), 15+ standalone helper functions (`addEventListener`, `emitEvent`, `executeHandler`, etc.), and stores event data on the target object via `@@emitter/events` symbol property. The functional decomposition (8 handle* functions for 0–3+ args) is thorough but makes the file hard to navigate. 801 lines is well above the 300-line guideline.
-- **Action:** Extract internal helper functions to `_event-emitter-helpers.ts`. Keep the public interfaces and mixin classes in the main file. Alternatively, consider consolidating the 8 handle* dispatch functions into a variadic pattern.
+- **Issue:** Implements a sophisticated event emitter using mixin patterns (`AsEventEmitter`, `AsAsyncEventEmitter`, `AsConditionalEventEmitter`, `AsPositionalEventEmitter`), 15+ standalone helper functions (`addEventListener`, `emitEvent`, `executeHandler`, etc.), and stores event data on the target object via `@@emitter/events` symbol property. The functional decomposition (8 handle\* functions for 0–3+ args) is thorough but makes the file hard to navigate. 801 lines is well above the 300-line guideline.
+- **Action:** Extract internal helper functions to `_event-emitter-helpers.ts`. Keep the public interfaces and mixin classes in the main file. Alternatively, consider consolidating the 8 handle\* dispatch functions into a variadic pattern.
 
 #### M3: `@blue/validate` `standard-constraints.ts` — ~576 lines, large constraint registry
 
@@ -106,10 +106,10 @@ The highest-priority issue is a **dead-code SECURITY bypass in the demo app** (C
 #### M4: `@blue/validate` — only native backend actually used; zod/hybrid backends are dead code
 
 - **Files:**
-  - `packages/blue-validate/src/backend.ts:8` — defaults to `'native'`
-  - `packages/blue-validate/src/_hybrid-validation-backend-adapter.ts` — 1 file
-  - `packages/blue-validate/src/_zod-validation-backend-adapter.ts` — ~200 lines
-  - `packages/blue-validate/src/_native-validation-backend-adapter.ts` — ~20 lines
+    - `packages/blue-validate/src/backend.ts:8` — defaults to `'native'`
+    - `packages/blue-validate/src/_hybrid-validation-backend-adapter.ts` — 1 file
+    - `packages/blue-validate/src/_zod-validation-backend-adapter.ts` — ~200 lines
+    - `packages/blue-validate/src/_native-validation-backend-adapter.ts` — ~20 lines
 - **Axis:** Features, Complexity
 - **Issue:** Three validation backends exist but only `_native` is ever used by the default configuration. The zod adapter imports `zod` (a direct dependency) and wraps its schema validation — but no code path switches to it. Carry weight without benefit.
 - **Action:** Either (a) document and support the zod backend with a working example in tests, or (b) remove `_zod-validation-backend-adapter.ts` and `_hybrid-validation-backend-adapter.ts`, retaining only the native path. Remove `zod` from `dependencies` in `package.json` if it's only used by the dead backend.
@@ -148,11 +148,11 @@ The highest-priority issue is a **dead-code SECURITY bypass in the demo app** (C
 - **Axis:** Architecture
 - **Issue:** `((methodHandler?.handler?.constructor as any)?.[Symbol.metadata] ?? {})` uses `as any` to access `constructor[Symbol.metadata]`. Since `constructor` is typed as `Function`, accessing `[Symbol.metadata]` would require a type assertion — the function type `Function` doesn't declare `Symbol.metadata`. But `methodHandler?.handler` is typed `object`, so `.constructor` is `Function`, which has no `Symbol.metadata` member. The `any` access pattern is necessary without widening the type, and the TC39 decorator metadata is well-known to be on the class's constructor. This is a type-narrowing issue with TS 5.7, not a runtime concern.
 - **Action:** Consider adding a helper that safely extracts `Symbol.metadata` from a constructor, e.g.:
-  ```ts
-  function getDecoratorMetadata(ctor: Function): Record<string, unknown> {
-    return (ctor as Record<typeof Symbol.metadata, Record<string, unknown>>)[Symbol.metadata] ?? {};
-  }
-  ```
+    ```ts
+    function getDecoratorMetadata(ctor: Function): Record<string, unknown> {
+        return (ctor as Record<typeof Symbol.metadata, Record<string, unknown>>)[Symbol.metadata] ?? {};
+    }
+    ```
 
 #### M10: `@blue/auth-client` `OIDCAdapter.exchangeCodeForTokens()` lacks signature validation
 
@@ -171,7 +171,7 @@ The highest-priority issue is a **dead-code SECURITY bypass in the demo app** (C
 - **Axis:** Readability
 - **Issue:** `setPrincipal(principal, token)` accepts both values; `clear()` zeroes both. Symmetric. No actual issue here — false positive on review.
 
-*(Finding retracted — no change needed.)*
+_(Finding retracted — no change needed.)_
 
 #### L2: `@blue/boot` vite config artifacts in package root (not src/)
 
@@ -205,38 +205,38 @@ The highest-priority issue is a **dead-code SECURITY bypass in the demo app** (C
 
 ## Package-by-Package Summary
 
-| Package | Verdict | Key Issues |
-|---------|---------|------------|
-| `@blue/auth-core` | Healthy; 1 MED (registry private field) | M9 (static vs #) |
-| `@blue/auth-server` | Use with caution; 2 MED/HIGH | H3 (no JWT signature), M7 (as any metadata) |
-| `@blue/auth-client` | Use with caution; 2 MED | M10 (OIDC no signature), C1 via demo usage |
-| `@blue/boot` | Healthy; 1 LOW | L2 (vite artifacts) |
-| `@blue/content` | Healthy; no issues found | — |
-| `@blue/context` | Healthy; 1 MED complexity | M2 (801-line event-emitter.ts) |
-| `@blue/core` | Healthy; 1 HIGH bloat | H1 (committed .d.ts/.js artifacts) |
-| `@blue/dispatcher` | Healthy; 1 MED complexity | M1 (1218-line route-handler-mapping), H1 (strategies .d.ts) |
-| `@blue/dom` | Healthy; no issues found | DOMProvider clean (no innerHTML/XSS surface) |
-| `@blue/domain` | Healthy; no review-needed surface | Minimal package |
-| `@blue/eslint-plugin` | Healthy; 1 HIGH gap | H4 (arcsecond missing from integration map) |
-| `@blue/factory` | Healthy; 1 HIGH + 1 LOW | H1 (committed .d.ts/.js), L3 (any in getConstructor) |
-| `@blue/generators` | Healthy; empty scaffolding | No runtime code — generators templates only |
-| `@blue/http` | Healthy; 1 MED (size) | 885-line http.ts — borderline, cohesive |
-| `@blue/model` | Moderate; 1 MED | Pervasive `as any`, fragile side-effect import, no basic.ts tests, .DS_Store |
-| `@blue/orm` | Healthy; 1 HIGH | H1 (committed .d.ts/.js artifacts) |
-| `@blue/orm-drizzle` | Healthy; no issues found | Parameterized queries, clean Drizzle integration |
-| `@blue/parser` | Not reviewed in detail | — |
-| `@blue/platform-node` | Healthy; no issues found | Node request/env clean |
-| `@blue/platform-web` | Healthy; no issues found | cookies, CORS, IndexedDB handled safely |
-| `@blue/reactive` | Healthy; no issues found | Clean reactive model implementation |
-| `@blue/router` | Healthy; 1 MED | M6 (Route.attributes: Record<string, any>) |
-| `@blue/service` | Healthy; 1 MED (size) | 322-line service.ts — below threshold, cohesive |
-| `@blue/telemetry` | Healthy; no issues found | — |
-| `@blue/util` | Healthy; 1 HIGH | H1 (committed .d.ts artifacts) |
-| `@blue/validate` | Moderate; 1 HIGH + 3 MED | H2 (commented-out dead code), M3 (large constraints), M4 (dead backends), L4 (naming overlap) |
-| `@blue/view` | Healthy (recently fixed) | Content-negotiation bugs fixed in Wave 3 |
-| `@blue/view-webcomponent` | Healthy; no issues found | AbstractWebComponent uses event delegation, no innerHTML/XSS |
-| `@blue/view-wicket` | Healthy; no issues found | Wicket-style component hierarchy |
-| `demo-app` | CRITICAL auth bypass | C1 |
+| Package                   | Verdict                                 | Key Issues                                                                                    |
+| ------------------------- | --------------------------------------- | --------------------------------------------------------------------------------------------- |
+| `@blue/auth-core`         | Healthy; 1 MED (registry private field) | M9 (static vs #)                                                                              |
+| `@blue/auth-server`       | Use with caution; 2 MED/HIGH            | H3 (no JWT signature), M7 (as any metadata)                                                   |
+| `@blue/auth-client`       | Use with caution; 2 MED                 | M10 (OIDC no signature), C1 via demo usage                                                    |
+| `@blue/boot`              | Healthy; 1 LOW                          | L2 (vite artifacts)                                                                           |
+| `@blue/content`           | Healthy; no issues found                | —                                                                                             |
+| `@blue/context`           | Healthy; 1 MED complexity               | M2 (801-line event-emitter.ts)                                                                |
+| `@blue/core`              | Healthy; 1 HIGH bloat                   | H1 (committed .d.ts/.js artifacts)                                                            |
+| `@blue/dispatcher`        | Healthy; 1 MED complexity               | M1 (1218-line route-handler-mapping), H1 (strategies .d.ts)                                   |
+| `@blue/dom`               | Healthy; no issues found                | DOMProvider clean (no innerHTML/XSS surface)                                                  |
+| `@blue/domain`            | Healthy; no review-needed surface       | Minimal package                                                                               |
+| `@blue/eslint-plugin`     | Healthy; 1 HIGH gap                     | H4 (arcsecond missing from integration map)                                                   |
+| `@blue/factory`           | Healthy; 1 HIGH + 1 LOW                 | H1 (committed .d.ts/.js), L3 (any in getConstructor)                                          |
+| `@blue/generators`        | Healthy; empty scaffolding              | No runtime code — generators templates only                                                   |
+| `@blue/http`              | Healthy; 1 MED (size)                   | 885-line http.ts — borderline, cohesive                                                       |
+| `@blue/model`             | Moderate; 1 MED                         | Pervasive `as any`, fragile side-effect import, no basic.ts tests, .DS_Store                  |
+| `@blue/orm`               | Healthy; 1 HIGH                         | H1 (committed .d.ts/.js artifacts)                                                            |
+| `@blue/orm-drizzle`       | Healthy; no issues found                | Parameterized queries, clean Drizzle integration                                              |
+| `@blue/parser`            | Not reviewed in detail                  | —                                                                                             |
+| `@blue/platform-node`     | Healthy; no issues found                | Node request/env clean                                                                        |
+| `@blue/platform-web`      | Healthy; no issues found                | cookies, CORS, IndexedDB handled safely                                                       |
+| `@blue/reactive`          | Healthy; no issues found                | Clean reactive model implementation                                                           |
+| `@blue/router`            | Healthy; 1 MED                          | M6 (Route.attributes: Record<string, any>)                                                    |
+| `@blue/service`           | Healthy; 1 MED (size)                   | 322-line service.ts — below threshold, cohesive                                               |
+| `@blue/telemetry`         | Healthy; no issues found                | —                                                                                             |
+| `@blue/util`              | Healthy; 1 HIGH                         | H1 (committed .d.ts artifacts)                                                                |
+| `@blue/validate`          | Moderate; 1 HIGH + 3 MED                | H2 (commented-out dead code), M3 (large constraints), M4 (dead backends), L4 (naming overlap) |
+| `@blue/view`              | Healthy (recently fixed)                | Content-negotiation bugs fixed in Wave 3                                                      |
+| `@blue/view-webcomponent` | Healthy; no issues found                | AbstractWebComponent uses event delegation, no innerHTML/XSS                                  |
+| `@blue/view-wicket`       | Healthy; no issues found                | Wicket-style component hierarchy                                                              |
+| `demo-app`                | CRITICAL auth bypass                    | C1                                                                                            |
 
 ---
 
@@ -247,19 +247,20 @@ The highest-priority issue is a **dead-code SECURITY bypass in the demo app** (C
 1. **Fix demo auth interceptor** (C1) — wire `ClientAuthGuard.preNavigate(route.handler)` into the interceptor chain instead of using `extractAuthMetadata(undefined)`. Current code is security-dead.
 
 2. **Gitignore + remove committed build artifacts** (H1, L2):
-   ```bash
-   # Add to .gitignore
-   echo 'src/**/*.d.ts
-   src/**/*.js
-   src/**/*.js.map
-   src/**/*.d.ts.map
-   vite.config.*' >> .gitignore
-   # Clean committed files
-   find packages -path '*/src/*.d.ts' ! -path '*/src/*.ts' -delete
-   find packages -path '*/src/*.js' -delete
-   find packages -path '*/src/*.map' -delete
-   rm packages/blue-boot/vite.config.*
-   ```
+
+    ```bash
+    # Add to .gitignore
+    echo 'src/**/*.d.ts
+    src/**/*.js
+    src/**/*.js.map
+    src/**/*.d.ts.map
+    vite.config.*' >> .gitignore
+    # Clean committed files
+    find packages -path '*/src/*.d.ts' ! -path '*/src/*.ts' -delete
+    find packages -path '*/src/*.js' -delete
+    find packages -path '*/src/*.map' -delete
+    rm packages/blue-boot/vite.config.*
+    ```
 
 3. **Add JWT signature verification** (H3) — integrate `jose` for proper JWT validation in `JWTAdapter`. Add a clear `@deprecated` marker if the simplified implementation stays, pointing to a production implementation.
 
@@ -268,15 +269,16 @@ The highest-priority issue is a **dead-code SECURITY bypass in the demo app** (C
 ### Short-term (next 2 sprints)
 
 5. **Remove dead code** (H2, M4):
-   - Delete commented-out `ConstraintValidator` block from `validator.ts`.
-   - Remove `_zod-validation-backend-adapter.ts` and `_hybrid-validation-backend-adapter.ts` (or add working activation path).
-   - Remove `zod` from `@blue/validate` dependencies if backends removed.
+
+    - Delete commented-out `ConstraintValidator` block from `validator.ts`.
+    - Remove `_zod-validation-backend-adapter.ts` and `_hybrid-validation-backend-adapter.ts` (or add working activation path).
+    - Remove `zod` from `@blue/validate` dependencies if backends removed.
 
 6. **Split `route-handler-mapping.ts`** (M1) — follow per-file breakdown above.
 
 7. **Clarify validate naming** (M4, L4):
-   - Rename `constraints.ts` barrel to follow singular/plural convention.
-   - Rename `formats.ts` ↔ `format.ts` — pick one naming scheme.
+    - Rename `constraints.ts` barrel to follow singular/plural convention.
+    - Rename `formats.ts` ↔ `format.ts` — pick one naming scheme.
 
 ### Medium-term
 

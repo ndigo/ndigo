@@ -8,7 +8,7 @@ import {
     createStringSplitConverter,
     createOptionalConverter,
     argumentValueConverters,
-    resolveConverter
+    resolveConverter,
 } from '../src/argument-value-converter';
 
 describe('argument-value-converter', () => {

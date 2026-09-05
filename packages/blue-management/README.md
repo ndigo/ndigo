@@ -3,8 +3,8 @@
 Actuator-style management endpoints for Blue Node applications: **`/health`**
 (liveness/readiness) and **`/metrics`** (live telemetry counters).
 
-Complements `@blue/telemetry`: telemetry *produces* metric data
-(`FeatureMetricAggregator`, `@counted`); management *serves* it as HTTP.
+Complements `@blue/telemetry`: telemetry _produces_ metric data
+(`FeatureMetricAggregator`, `@counted`); management _serves_ it as HTTP.
 
 ## Usage
 

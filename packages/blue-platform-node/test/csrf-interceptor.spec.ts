@@ -55,11 +55,7 @@ describe('CsrfInterceptor', () => {
     test('allows a mutating request with a matching header token', () => {
         const token = 'abc123def456';
         const interceptor = new CsrfInterceptor();
-        const route = makeRoute(
-            'POST',
-            { cookies: { 'blue-csrf': token } },
-            { 'x-csrf-token': token }
-        );
+        const route = makeRoute('POST', { cookies: { 'blue-csrf': token } }, { 'x-csrf-token': token });
 
         expect(interceptor.preHandle(route)).toBe(true);
     });
@@ -112,11 +108,7 @@ describe('CsrfInterceptor', () => {
 
     test('safe methods pass through even with a bad header', () => {
         const interceptor = new CsrfInterceptor();
-        const route = makeRoute(
-            'GET',
-            { cookies: {} },
-            { 'x-csrf-token': 'whatever' }
-        );
+        const route = makeRoute('GET', { cookies: {} }, { 'x-csrf-token': 'whatever' });
 
         expect(interceptor.preHandle(route)).toBe(true);
     });

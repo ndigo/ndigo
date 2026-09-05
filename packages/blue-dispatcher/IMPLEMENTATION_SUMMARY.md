@@ -3,19 +3,23 @@
 ## Changes Made
 
 ### File: `packages/blue-dispatcher/src/route-mapping.ts`
+
 - Added `matrixParams?: string;` field to `RouteMappingConfiguration` type
 
 ### File: `packages/blue-dispatcher/src/route-handler-mapping.ts`
+
 1. Updated imports to include `QueryParamCondition` and `MatrixParamCondition`
 2. Added `_getMappingForMethod` method implementation to `AbstractHandlerMethodMapping` class
 3. Removed duplicate `_getMappingForMethod` from `LinearMetadataHandlerMapping` class
 
 ### File: `packages/blue-dispatcher/src/radix-route-handler-mapping.ts`
+
 - Updated `_getHandler` method to enforce query/matrix param conditions after radix lookup
 
 ## Verification
 
 The implementation satisfies all requirements from the task description:
+
 1. ✅ `RouteMappingConfiguration` includes `matrixParams?: string`
 2. ✅ `AbstractHandlerMethodMapping` has `_getMappingForMethod` with `QueryParamCondition`/`MatrixParamCondition` support
 3. ✅ `LinearMetadataHandlerMapping` no longer has its own duplicate `_getMappingForMethod`

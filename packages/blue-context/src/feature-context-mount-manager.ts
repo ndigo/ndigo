@@ -201,9 +201,7 @@ export class FeatureContextMountManager {
 
         const loader = registration.options.loader;
         if (!loader) {
-            throw new TypeError(
-                `Feature '${name}' has no 'loader'. Use mount() for static features.`
-            );
+            throw new TypeError(`Feature '${name}' has no 'loader'. Use mount() for static features.`);
         }
 
         this.#recordCounter(name, 'mountAttemptCount');
@@ -357,10 +355,7 @@ export class FeatureContextMountManager {
             return;
         }
 
-        const result: DependencyValidationResult = registry.validate(
-            deps.requires ?? {},
-            deps.optional ?? {}
-        );
+        const result: DependencyValidationResult = registry.validate(deps.requires ?? {}, deps.optional ?? {});
 
         result.warnings.forEach((w) => console.warn(`[${featureName}] ${w}`));
 
@@ -379,9 +374,7 @@ export class FeatureContextMountManager {
                 );
             }
 
-            throw new TypeError(
-                `Feature '${featureName}' has unmet dependencies: ${messages.join('; ')}`
-            );
+            throw new TypeError(`Feature '${featureName}' has unmet dependencies: ${messages.join('; ')}`);
         }
     }
 

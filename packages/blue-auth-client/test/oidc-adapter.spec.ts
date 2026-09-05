@@ -43,7 +43,7 @@ describe('OIDCAdapter construction', () => {
                     ...baseConfig,
                     jwksUrl: undefined,
                     tokenValidator: async () => true,
-                }),
+                })
         ).not.toThrow();
     });
 });
@@ -57,28 +57,49 @@ describe('OIDCAdapter.validate', () => {
 
     test('rejects a token with a wrong issuer (forged, pre-signature claim check)', async () => {
         const adapter = new OIDCAdapter({ ...baseConfig, tokenValidator: async () => true });
-        expect(await adapter.validate(forgeToken({ iss: 'https://evil.example.com', aud: 'my-client', sub: '1', exp: futureExp() }))).toBeNull();
+        expect(
+            await adapter.validate(
+                forgeToken({ iss: 'https://evil.example.com', aud: 'my-client', sub: '1', exp: futureExp() })
+            )
+        ).toBeNull();
     });
 
     test('rejects a token with a wrong audience', async () => {
         const adapter = new OIDCAdapter({ ...baseConfig, tokenValidator: async () => true });
-        expect(await adapter.validate(forgeToken({ iss: baseConfig.issuer, aud: 'other-client', sub: '1', exp: futureExp() }))).toBeNull();
+        expect(
+            await adapter.validate(
+                forgeToken({ iss: baseConfig.issuer, aud: 'other-client', sub: '1', exp: futureExp() })
+            )
+        ).toBeNull();
     });
 
     test('rejects an expired token', async () => {
         const adapter = new OIDCAdapter({ ...baseConfig, tokenValidator: async () => true });
-        expect(await adapter.validate(forgeToken({ iss: baseConfig.issuer, aud: 'my-client', sub: '1', exp: futureExp() - 7200 }))).toBeNull();
+        expect(
+            await adapter.validate(
+                forgeToken({ iss: baseConfig.issuer, aud: 'my-client', sub: '1', exp: futureExp() - 7200 })
+            )
+        ).toBeNull();
     });
 
     test('rejects when the explicit validator rejects the signature', async () => {
         const adapter = new OIDCAdapter({ ...baseConfig, jwksUrl: undefined, tokenValidator: async () => false });
-        expect(await adapter.validate(forgeToken({ iss: baseConfig.issuer, aud: 'my-client', sub: '1', exp: futureExp() }))).toBeNull();
+        expect(
+            await adapter.validate(forgeToken({ iss: baseConfig.issuer, aud: 'my-client', sub: '1', exp: futureExp() }))
+        ).toBeNull();
     });
 
     test('accepts a valid token with matching claims and validator approval', async () => {
         const adapter = new OIDCAdapter({ ...baseConfig, jwksUrl: undefined, tokenValidator: async () => true });
         const principal = await adapter.validate(
-            forgeToken({ iss: baseConfig.issuer, aud: 'my-client', sub: '42', name: 'Jane', roles: ['admin'], exp: futureExp() }),
+            forgeToken({
+                iss: baseConfig.issuer,
+                aud: 'my-client',
+                sub: '42',
+                name: 'Jane',
+                roles: ['admin'],
+                exp: futureExp(),
+            })
         );
         expect(principal?.id).toBe('42');
         expect(principal?.name).toBe('Jane');

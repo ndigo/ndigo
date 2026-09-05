@@ -120,7 +120,7 @@ export class CacheInterceptor implements RequestAwareHTTPInterceptor, ResponseAw
     #shouldBypassCache(request: Request): boolean {
         const bustingHeaders = this.#config.cacheBustingHeaders ?? ['Cache-Control: no-cache'];
         for (const header of bustingHeaders) {
-            const [name, value] = header.split(':').map(s => s.trim());
+            const [name, value] = header.split(':').map((s) => s.trim());
             if (request.headers.get(name) === value) {
                 return true;
             }

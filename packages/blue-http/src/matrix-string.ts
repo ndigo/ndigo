@@ -11,7 +11,8 @@ const isNull = (value: unknown): boolean => value === null,
     // ["a","b","c","#"] -> ["a","b","c","%23"]
     encodeValues = (arr: string[]): string[] => arr.map(encodeValue),
     // ["a","",{},"b",[],"c"] -> ["a","b","c"]
-    filterEmpty = (arr: unknown[]): unknown[] => arr.filter((v) => v !== '' && v !== null && v !== undefined && !(Array.isArray(v) && v.length === 0)),
+    filterEmpty = (arr: unknown[]): unknown[] =>
+        arr.filter((v) => v !== '' && v !== null && v !== undefined && !(Array.isArray(v) && v.length === 0)),
     // ["a","b","c"] ->  "a,b,c"
     joinOnComma = (arr: string[]): string => arr.join(','),
     // ["a","b","c"] ->  "a=b=c"

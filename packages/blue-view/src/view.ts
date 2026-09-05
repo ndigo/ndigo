@@ -285,7 +285,7 @@ export class RerouteView extends AbstractPathBasedView {
 export class StringTemplateView extends AbstractTemplateView {
     /**
      * The template string to render.
-     * 
+     *
      * Supports simple Jinja-like syntax: {{variable}}, {{array[key]}}, etc.
      */
     template!: string;
@@ -314,7 +314,7 @@ export class StringTemplateView extends AbstractTemplateView {
 
     /**
      * Renders the template string by replacing {{variable}} placeholders.
-     * 
+     *
      * Supports:
      *   - {{var}} for simple variables
      *   - {{array[key]}} for object/array access

@@ -30,7 +30,8 @@ export function configureBrowserTelemetry(config: BrowserTelemetryConfig): void 
     // global registration uses the API registry (providers no longer self-register).
     const tracerProvider = new BasicTracerProvider({
         resource,
-        spanProcessors: config.useConsoleExporters === false ? [] : [new SimpleSpanProcessor(new ConsoleSpanExporter())],
+        spanProcessors:
+            config.useConsoleExporters === false ? [] : [new SimpleSpanProcessor(new ConsoleSpanExporter())],
     });
     trace.setGlobalTracerProvider(tracerProvider);
 

@@ -14,11 +14,7 @@ import { ViewTarget } from './view-target';
  */
 export function serializeModel(model: unknown): string {
     const json = JSON.stringify(model ?? null);
-    return json
-        .replace(/&/g, '&amp;')
-        .replace(/"/g, '&quot;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;');
+    return json.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
 /**
@@ -31,7 +27,11 @@ export function parseModel(raw: string | undefined): unknown {
     if (!raw) return null;
     try {
         return JSON.parse(
-            raw.replace(/&quot;/g, '"').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&')
+            raw
+                .replace(/&quot;/g, '"')
+                .replace(/&lt;/g, '<')
+                .replace(/&gt;/g, '>')
+                .replace(/&amp;/g, '&')
         );
     } catch {
         return null;

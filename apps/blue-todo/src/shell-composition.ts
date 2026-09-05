@@ -7,7 +7,14 @@ import {
 } from '@blue/context';
 import { IllegalStateError } from '@blue/core';
 import { BrowserDispatcher } from '@blue/platform-web';
-import { FeatureRoutingRegistry, Route, SiteRouter, restorePartitionPrefix, RouteDefinition, RouteRegistry } from '@blue/router';
+import {
+    FeatureRoutingRegistry,
+    Route,
+    SiteRouter,
+    restorePartitionPrefix,
+    RouteDefinition,
+    RouteRegistry,
+} from '@blue/router';
 import { HashRouter } from '@blue/platform-web';
 import { FeatureMetricAggregator, getLogger } from '@blue/telemetry';
 import { DISPATCHER, ROUTER } from './context-tokens';
@@ -211,7 +218,6 @@ export const composeTodoRuntime = (todoContext: ApplicationContext): TodoRuntime
         },
     });
 
-    
     const siteRouter = featureRoutingRegistry.siteRouter;
 
     const shellRouter = new HashRouter((route) => {

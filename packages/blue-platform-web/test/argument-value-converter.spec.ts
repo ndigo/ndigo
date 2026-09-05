@@ -69,7 +69,9 @@ describe('argument-value-converter', () => {
         const converter = resolveConverter({ source: String, target: String });
 
         // UUID converter normalizes to lowercase
-        expect(converter('A1B2C3D4-E5F6-7890-ABCD-EF1234567890', {} as any)).toBe('a1b2c3d4-e5f6-7890-abcd-ef1234567890');
+        expect(converter('A1B2C3D4-E5F6-7890-ABCD-EF1234567890', {} as any)).toBe(
+            'a1b2c3d4-e5f6-7890-abcd-ef1234567890'
+        );
     });
 
     test('resolveConverter supports boolean conversion via ConversionService', () => {

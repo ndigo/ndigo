@@ -43,13 +43,10 @@ describe('BrowserModelValueMethodArgumentResolver', () => {
 
     test('applies type-based conversion when convertType is provided', () => {
         const resolver = new BrowserModelValueMethodArgumentResolver();
-        const parameter = new MethodParameter(
-            MethodParameterType.MODEL,
-            'count',
-            false,
-            null,
-            { source: String, target: Number }
-        );
+        const parameter = new MethodParameter(MethodParameterType.MODEL, 'count', false, null, {
+            source: String,
+            target: Number,
+        });
         const value = resolver.resolveArgument(parameter, { data: { count: '42' } } as any, {} as any);
 
         expect(value).toBe(42);
@@ -57,13 +54,10 @@ describe('BrowserModelValueMethodArgumentResolver', () => {
 
     test('applies boolean conversion when convertType is provided', () => {
         const resolver = new BrowserModelValueMethodArgumentResolver();
-        const parameter = new MethodParameter(
-            MethodParameterType.MODEL,
-            'active',
-            false,
-            null,
-            { source: String, target: Boolean }
-        );
+        const parameter = new MethodParameter(MethodParameterType.MODEL, 'active', false, null, {
+            source: String,
+            target: Boolean,
+        });
         const value = resolver.resolveArgument(parameter, { data: { active: 'true' } } as any, {} as any);
 
         expect(value).toBe(true);

@@ -110,21 +110,21 @@ export class ResponseTypeInterceptor
             }
         }
 
-            if ('responseParsers' in settings) {
-                const { responseParsers } = settings;
-                parsers = new Map<MediaType, ResponseParser>([...defaultParsers]);
+        if ('responseParsers' in settings) {
+            const { responseParsers } = settings;
+            parsers = new Map<MediaType, ResponseParser>([...defaultParsers]);
 
-                if (responseParsers) {
-                    for (const [type, parser] of entriesIterator(responseParsers)) {
-                        const mediaType = getMediaType(type);
-                        if (mediaType) {
-                            parsers.set(mediaType, parser);
-                        }
+            if (responseParsers) {
+                for (const [type, parser] of entriesIterator(responseParsers)) {
+                    const mediaType = getMediaType(type);
+                    if (mediaType) {
+                        parsers.set(mediaType, parser);
                     }
                 }
-            } else {
-                parsers = defaultParsers;
             }
+        } else {
+            parsers = defaultParsers;
+        }
         settings.responseParsers = parsers;
 
         return true;

@@ -52,7 +52,7 @@ export class AuthRouteGuard implements RouteHandlerInterceptor {
         authServer: AuthServer,
         tokenExtractor: (route: Route) => string | null,
         adapterId: string,
-        denialOptions: AuthGuardDenialOptions = {},
+        denialOptions: AuthGuardDenialOptions = {}
     ) {
         this.#authServer = authServer;
         this.#adapterId = adapterId;
@@ -74,17 +74,13 @@ export class AuthRouteGuard implements RouteHandlerInterceptor {
         const methodHandler = handler as RouteHandlerMethod | undefined;
         // constructor[Symbol.metadata] is a runtime TC39 decorator property
         // that TS 5.7's Function type doesn't declare. The property exists on
-        const metadata: Record<string, unknown> = (
-            ((methodHandler?.handler?.constructor as unknown as { [key: symbol]: unknown } | undefined)?.[Symbol.metadata] ??
-                {}) as Record<string, unknown>
-        );
-        const methodName: string | null =
-            typeof methodHandler?.method === 'string' ? methodHandler.method : null;
+        const metadata: Record<string, unknown> = ((
+            methodHandler?.handler?.constructor as unknown as { [key: symbol]: unknown } | undefined
+        )?.[Symbol.metadata] ?? {}) as Record<string, unknown>;
+        const methodName: string | null = typeof methodHandler?.method === 'string' ? methodHandler.method : null;
 
         const classRequiresAuth = Boolean(metadata[AUTH_REQUIRED_KEY]);
-        const methodRequiresAuth = methodName
-            ? Boolean(metadata[`${AUTH_REQUIRED_KEY}:${methodName}`])
-            : false;
+        const methodRequiresAuth = methodName ? Boolean(metadata[`${AUTH_REQUIRED_KEY}:${methodName}`]) : false;
         const classRoles = (metadata[AUTH_ROLES_KEY] as string[] | undefined) ?? [];
         const methodRoles = methodName
             ? ((metadata[`${AUTH_ROLES_KEY}:${methodName}`] as string[] | undefined) ?? [])

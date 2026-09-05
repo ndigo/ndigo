@@ -42,13 +42,7 @@ export class BrowserBindMethodArgumentResolver extends AbstractPlatformArgumentR
         binder.bind(mpv as PropertyValues);
         const unflattened = binder.result;
 
-        const convertedValue = convertArgumentValue(
-            parameter.convertType,
-            unflattened,
-            parameter,
-            route,
-            mapping
-        );
+        const convertedValue = convertArgumentValue(parameter.convertType, unflattened, parameter, route, mapping);
 
         const finalValue = convertedValue ?? parameter.defaultValue;
 

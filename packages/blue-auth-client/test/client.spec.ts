@@ -2,7 +2,12 @@ import { describe, test, expect, beforeEach } from 'vitest';
 import { AuthClient } from '../src/client';
 import { AuthRegistry, AuthAdapter, Principal } from '@blue/auth-core';
 
-function createMockAdapter(id: string, authResult: any = null, validateResult: any = null, refreshResult: any = null): AuthAdapter {
+function createMockAdapter(
+    id: string,
+    authResult: any = null,
+    validateResult: any = null,
+    refreshResult: any = null
+): AuthAdapter {
     return {
         id,
         validate: async () => validateResult,
@@ -59,7 +64,7 @@ describe('AuthClient', () => {
     describe('authenticate', () => {
         test('throws error when adapter not found', async () => {
             await expect(client.authenticate('nonexistent', {})).rejects.toThrow(
-                "Authentication adapter 'nonexistent' not found",
+                "Authentication adapter 'nonexistent' not found"
             );
         });
 
@@ -129,7 +134,7 @@ describe('AuthClient', () => {
             // Now clear the adapter and try validate with a different (nonexistent) adapter
             AuthRegistry.clear();
             await expect(client.validate('nonexistent')).rejects.toThrow(
-                "Authentication adapter 'nonexistent' not found",
+                "Authentication adapter 'nonexistent' not found"
             );
         });
 
@@ -191,21 +196,26 @@ describe('AuthClient', () => {
 
             AuthRegistry.clear();
             await expect(client.refresh('nonexistent')).rejects.toThrow(
-                "Authentication adapter 'nonexistent' not found",
+                "Authentication adapter 'nonexistent' not found"
             );
         });
 
         test('updates state with refreshed result', async () => {
             const newPrincipal = createMockPrincipal('1', 'Refreshed');
-            const mockAdapter = createMockAdapter('jwt', {
-                principal: createMockPrincipal('1', 'Initial'),
-                token: 'initial-token',
-                expiresAt: Date.now() + 3600000,
-            }, null, {
-                principal: newPrincipal,
-                token: 'new-token',
-                expiresAt: Date.now() + 7200000,
-            });
+            const mockAdapter = createMockAdapter(
+                'jwt',
+                {
+                    principal: createMockPrincipal('1', 'Initial'),
+                    token: 'initial-token',
+                    expiresAt: Date.now() + 3600000,
+                },
+                null,
+                {
+                    principal: newPrincipal,
+                    token: 'new-token',
+                    expiresAt: Date.now() + 7200000,
+                }
+            );
             AuthRegistry.register(mockAdapter);
 
             // Use authenticate to set the initial token
@@ -275,7 +285,9 @@ describe('AuthClient', () => {
                 validate: async () => null,
                 authenticate: async () => ({ principal: null, token: null, expiresAt: null }),
                 refresh: async () => ({ principal: null, token: null, expiresAt: null }),
-                logout: async () => { logoutCalled = true; },
+                logout: async () => {
+                    logoutCalled = true;
+                },
             };
             AuthRegistry.register(mockAdapter);
 

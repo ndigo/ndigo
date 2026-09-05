@@ -39,7 +39,7 @@ const result = await auth.authenticate('oidc', {
 });
 
 console.log(auth.isAuthenticated); // true
-console.log(auth.principal?.name);  // "John Doe"
+console.log(auth.principal?.name); // "John Doe"
 ```
 
 ### Checking Authentication State

@@ -25,7 +25,7 @@ export class CompositionTransformer<TInput = unknown, TOutput = unknown> impleme
             (...fns: Array<(v: unknown) => unknown>) =>
             (x: unknown): unknown =>
                 fns.reduce((v, f) => f(v), x);
-        
+
         this.#pipeline = _pipe(...transforms) as (input: TInput) => TOutput;
         this.#condition = condition;
     }

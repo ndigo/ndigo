@@ -67,7 +67,7 @@ interface HTTPServerAdapter {
 interface HTTPServerOptions {
     port: number;
     host?: string;
-    adapter?: HTTPServerAdapter;  // defaults to NodeHTTPServerAdapter
+    adapter?: HTTPServerAdapter; // defaults to NodeHTTPServerAdapter
 }
 ```
 
@@ -96,11 +96,11 @@ class NodeServerConfiguration {
 
 ### 3.3 Lifecycle
 
-| Event | Action |
-|---|---|
-| `context.refresh()` | `HTTPServer` bean created, not yet listening |
-| `context started` event | `server.listen()` — auto-starts |
-| `context close` / `destroy` | `server.close()` — graceful shutdown |
+| Event                       | Action                                       |
+| --------------------------- | -------------------------------------------- |
+| `context.refresh()`         | `HTTPServer` bean created, not yet listening |
+| `context started` event     | `server.listen()` — auto-starts              |
+| `context close` / `destroy` | `server.close()` — graceful shutdown         |
 
 ---
 
@@ -197,7 +197,7 @@ deleteUser(route: Route) { … }
 import type { HTTPMethod } from '@blue/http';
 
 export interface RequestMappingConfiguration extends RouteMappingConfiguration {
-    method?: HTTPMethod;  // undefined = any method
+    method?: HTTPMethod; // undefined = any method
 }
 
 export function requestMapping(route: string | RequestMappingConfiguration) {
@@ -206,10 +206,7 @@ export function requestMapping(route: string | RequestMappingConfiguration) {
 
 // http-method-mapping.ts
 export function getMapping(route: string | Omit<RequestMappingConfiguration, 'method'>) {
-    return requestMapping(
-        isString(route) ? { value: route, method: 'GET' }
-                        : { ...route, method: 'GET' }
-    );
+    return requestMapping(isString(route) ? { value: route, method: 'GET' } : { ...route, method: 'GET' });
 }
 // postMapping, putMapping, deleteMapping, patchMapping, queryMapping identical
 ```
@@ -220,16 +217,16 @@ The handler mappings (`LinearMetadataHandlerMapping` / `RadixMetadataHandlerMapp
 
 All decorators are camelCase to match JS/TS conventions:
 
-| Decorator | Convention | Role |
-|---|---|---|
-| `@routeMapping` | Stays | Base — path + conditions, method-agnostic |
-| `@requestMapping` | Own decorator | Extends base with HTTP method semantics |
-| `@getMapping` | camelCase | Wrap `@requestMapping`, method fixed |
-| `@postMapping` | camelCase | Same |
-| `@putMapping` | camelCase | Same |
-| `@deleteMapping` | camelCase | Same |
-| `@patchMapping` | camelCase | Same |
-| `@queryMapping` | camelCase | Same — RFC 9889 QUERY (safe method with body) |
+| Decorator         | Convention    | Role                                          |
+| ----------------- | ------------- | --------------------------------------------- |
+| `@routeMapping`   | Stays         | Base — path + conditions, method-agnostic     |
+| `@requestMapping` | Own decorator | Extends base with HTTP method semantics       |
+| `@getMapping`     | camelCase     | Wrap `@requestMapping`, method fixed          |
+| `@postMapping`    | camelCase     | Same                                          |
+| `@putMapping`     | camelCase     | Same                                          |
+| `@deleteMapping`  | camelCase     | Same                                          |
+| `@patchMapping`   | camelCase     | Same                                          |
+| `@queryMapping`   | camelCase     | Same — RFC 9889 QUERY (safe method with body) |
 
 ---
 
@@ -329,11 +326,11 @@ The `NodeDispatcher.render()` or a `ResponseEntityView` checks for `ResponseEnti
 
 The Node foundation overlaps with `@blue/http` — reuse its HTTP vocabulary instead of inventing parallel types:
 
-| `@blue/http` | Used for | Replaces in spec |
-|---|---|---|
-| `HTTPMethod` union (incl. new `'QUERY'` per RFC 9889) | `@requestMapping.method`, `Route.method`, `HTTPMethodCondition` | The proposed `RequestMethod` enum |
-| `HTTPHeaders` (typed header constants) | Response/request header names in `HTTPResponseViewTarget`, `ResponseEntity`, server CORS | Raw string literals |
-| `ResponseStatus` / `ResponseStatuses` | `ResponseEntity.status` | Raw `number` status codes |
+| `@blue/http`                                          | Used for                                                                                 | Replaces in spec                  |
+| ----------------------------------------------------- | ---------------------------------------------------------------------------------------- | --------------------------------- |
+| `HTTPMethod` union (incl. new `'QUERY'` per RFC 9889) | `@requestMapping.method`, `Route.method`, `HTTPMethodCondition`                          | The proposed `RequestMethod` enum |
+| `HTTPHeaders` (typed header constants)                | Response/request header names in `HTTPResponseViewTarget`, `ResponseEntity`, server CORS | Raw string literals               |
+| `ResponseStatus` / `ResponseStatuses`                 | `ResponseEntity.status`                                                                  | Raw `number` status codes         |
 
 **Dependency direction:** `@blue/dispatcher` uses a **type-only** `import type { HTTPMethod }` — erased at emit, no runtime coupling to the DOM-global `fetch` code in `@blue/http`. `@blue/platform-node` consumes the constants at runtime (Node-only package, not subject to the isomorphic no-browser-globals rule; Node 18+ ships the fetch globals `@blue/http` references).
 
@@ -349,19 +346,19 @@ The Node foundation overlaps with `@blue/http` — reuse its HTTP vocabulary ins
 
 ### Existing instrumentation — impact
 
-| Instrumentation | Wraps | Impact |
-|---|---|---|
+| Instrumentation             | Wraps                                  | Impact                                                                                                                                                                                                                                                                                                    |
+| --------------------------- | -------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `DispatcherInstrumentation` | `BrowserDispatcher.prototype.dispatch` | **None** — because `NodeDispatcher extends BrowserDispatcher`, `dispatch` is inherited and the existing wrap covers both platforms automatically. Upgrade its attributes to the OTel server conventions once `Route.method` exists: `http.method`, `http.route`, `http.target`. Span kind stays `SERVER`. |
-| `RouterInstrumentation` | `HashRouter._setRoute` | None |
-| `ContextInstrumentation` | `GenericApplicationContext.destroy` | None |
-| `CountedInstrumentation` | `@counted` metadata | None — new classes opt in via `@counted` where useful |
+| `RouterInstrumentation`     | `HashRouter._setRoute`                 | None                                                                                                                                                                                                                                                                                                      |
+| `ContextInstrumentation`    | `GenericApplicationContext.destroy`    | None                                                                                                                                                                                                                                                                                                      |
+| `CountedInstrumentation`    | `@counted` metadata                    | None — new classes opt in via `@counted` where useful                                                                                                                                                                                                                                                     |
 
 ### New instrumentations
 
-| Instrumentation | Wraps | Span / attributes |
-|---|---|---|
-| `HTTPServerInstrumentation` | `HTTPServer.listen` / `HTTPServer.close` | kind `SERVER`; `server.address`, `server.port` (OTel `http.*` semconv at pinned `~1.25.1`) |
-| `HTTPResponseViewTargetInstrumentation` | `HTTPResponseViewTarget.commit` | kind `SERVER`; `http.status_code` (from `ResponseStatus`), `content-type`. This is the only place the final status code is visible — the dispatch span can't see it |
+| Instrumentation                         | Wraps                                    | Span / attributes                                                                                                                                                   |
+| --------------------------------------- | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `HTTPServerInstrumentation`             | `HTTPServer.listen` / `HTTPServer.close` | kind `SERVER`; `server.address`, `server.port` (OTel `http.*` semconv at pinned `~1.25.1`)                                                                          |
+| `HTTPResponseViewTargetInstrumentation` | `HTTPResponseViewTarget.commit`          | kind `SERVER`; `http.status_code` (from `ResponseStatus`), `content-type`. This is the only place the final status code is visible — the dispatch span can't see it |
 
 ### Packaging
 
@@ -375,45 +372,45 @@ The Node foundation overlaps with `@blue/http` — reuse its HTTP vocabulary ins
 
 ### New Files
 
-| File | Description |
-|---|---|
-| `packages/blue-dispatcher/src/request-mapping.ts` | `@requestMapping` decorator + `RequestMappingConfiguration` |
-| `packages/blue-dispatcher/src/http-method-mapping.ts` | `@getMapping`, `@postMapping`, `@putMapping`, `@deleteMapping`, `@patchMapping`, `@queryMapping` |
-| `packages/blue-dispatcher/src/http-method-condition.ts` | `HTTPMethodCondition` — filters mappings by `route.method` (`HTTPMethod` type-only import from `@blue/http`) |
-| `packages/blue-platform-node/src/http-server.ts` | `HTTPServer`, `HTTPServerOptions`, `HTTPServerAdapter` interface |
-| `packages/blue-platform-node/src/node-http-server-adapter.ts` | `NodeHTTPServerAdapter` wrapping `node:http` |
-| `packages/blue-platform-node/src/node-dispatcher.ts` | `NodeDispatcher extends BrowserDispatcher`, overrides `render()` for HTTP response |
-| `packages/blue-platform-node/src/node-view-target.ts` | `HTTPResponseViewTarget` |
-| `packages/blue-platform-node/src/static-file-view.ts` | `StaticFileView` |
-| `packages/blue-platform-node/src/response-entity.ts` | `ResponseEntity` |
-| `packages/blue-platform-node/src/response-entity-view.ts` | View that handles `ResponseEntity` |
-| `packages/blue-router/src/route.ts` | `Route` interface gains `method?: HTTPMethod` (type-only import from `@blue/http` — precedent already set by the runtime `QueryString`/`MatrixString` imports in `@blue/router`) |
-| `packages/blue-telemetry/src/instrumentation/http-server/http-server.ts` | `HTTPServerInstrumentation` — spans `HTTPServer.listen`/`close` |
-| `packages/blue-telemetry/src/instrumentation/http-response-view-target/http-response-view-target.ts` | `HTTPResponseViewTargetInstrumentation` — spans `HTTPResponseViewTarget.commit`, records `http.status_code` |
+| File                                                                                                 | Description                                                                                                                                                                      |
+| ---------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `packages/blue-dispatcher/src/request-mapping.ts`                                                    | `@requestMapping` decorator + `RequestMappingConfiguration`                                                                                                                      |
+| `packages/blue-dispatcher/src/http-method-mapping.ts`                                                | `@getMapping`, `@postMapping`, `@putMapping`, `@deleteMapping`, `@patchMapping`, `@queryMapping`                                                                                 |
+| `packages/blue-dispatcher/src/http-method-condition.ts`                                              | `HTTPMethodCondition` — filters mappings by `route.method` (`HTTPMethod` type-only import from `@blue/http`)                                                                     |
+| `packages/blue-platform-node/src/http-server.ts`                                                     | `HTTPServer`, `HTTPServerOptions`, `HTTPServerAdapter` interface                                                                                                                 |
+| `packages/blue-platform-node/src/node-http-server-adapter.ts`                                        | `NodeHTTPServerAdapter` wrapping `node:http`                                                                                                                                     |
+| `packages/blue-platform-node/src/node-dispatcher.ts`                                                 | `NodeDispatcher extends BrowserDispatcher`, overrides `render()` for HTTP response                                                                                               |
+| `packages/blue-platform-node/src/node-view-target.ts`                                                | `HTTPResponseViewTarget`                                                                                                                                                         |
+| `packages/blue-platform-node/src/static-file-view.ts`                                                | `StaticFileView`                                                                                                                                                                 |
+| `packages/blue-platform-node/src/response-entity.ts`                                                 | `ResponseEntity`                                                                                                                                                                 |
+| `packages/blue-platform-node/src/response-entity-view.ts`                                            | View that handles `ResponseEntity`                                                                                                                                               |
+| `packages/blue-router/src/route.ts`                                                                  | `Route` interface gains `method?: HTTPMethod` (type-only import from `@blue/http` — precedent already set by the runtime `QueryString`/`MatrixString` imports in `@blue/router`) |
+| `packages/blue-telemetry/src/instrumentation/http-server/http-server.ts`                             | `HTTPServerInstrumentation` — spans `HTTPServer.listen`/`close`                                                                                                                  |
+| `packages/blue-telemetry/src/instrumentation/http-response-view-target/http-response-view-target.ts` | `HTTPResponseViewTargetInstrumentation` — spans `HTTPResponseViewTarget.commit`, records `http.status_code`                                                                      |
 
 ### Modified Files
 
-| File | Change |
-|---|---|
-| `packages/blue-dispatcher/src/index.ts` | Export `@requestMapping`, `@getMapping`, `@postMapping`, etc., `HTTPMethodCondition` |
-| `packages/blue-dispatcher/src/route-mapping.ts` | `RouteMappingConfiguration` gains optional `method?: HTTPMethod`; shared metadata writer used by `@requestMapping` |
-| `packages/blue-boot/src/conditional.ts` | Rename `ConditionalOnBrowser` → `conditionalOnBrowser`, `ConditionalOnNode` → `conditionalOnNode` (camelCase) |
-| `packages/blue-boot/src/web-auto-configuration.ts` | Update to `@conditionalOnBrowser` |
-| `packages/blue-boot/test/conditional.spec.ts` | Update to camelCase names |
-| `packages/blue-dispatcher/src/radix-route-handler-mapping.ts` | Filter by HTTP method when present |
-| `packages/blue-platform-node/src/node-auto-configuration.ts` | Register `NodeDispatcher`, `HTTPServer`, view target |
-| `packages/blue-platform-node/src/index.ts` | Export new symbols |
-| `packages/blue-boot/src/application.ts` | Register `NodeAutoConfiguration` alongside `WebAutoConfiguration` |
-| `packages/blue-platform-web/src/cors-interceptor.ts` | Type `DEFAULT_METHODS` against `HTTPMethod` (currently hardcoded string literals); defaults unchanged |
+| File                                                          | Change                                                                                                             |
+| ------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `packages/blue-dispatcher/src/index.ts`                       | Export `@requestMapping`, `@getMapping`, `@postMapping`, etc., `HTTPMethodCondition`                               |
+| `packages/blue-dispatcher/src/route-mapping.ts`               | `RouteMappingConfiguration` gains optional `method?: HTTPMethod`; shared metadata writer used by `@requestMapping` |
+| `packages/blue-boot/src/conditional.ts`                       | Rename `ConditionalOnBrowser` → `conditionalOnBrowser`, `ConditionalOnNode` → `conditionalOnNode` (camelCase)      |
+| `packages/blue-boot/src/web-auto-configuration.ts`            | Update to `@conditionalOnBrowser`                                                                                  |
+| `packages/blue-boot/test/conditional.spec.ts`                 | Update to camelCase names                                                                                          |
+| `packages/blue-dispatcher/src/radix-route-handler-mapping.ts` | Filter by HTTP method when present                                                                                 |
+| `packages/blue-platform-node/src/node-auto-configuration.ts`  | Register `NodeDispatcher`, `HTTPServer`, view target                                                               |
+| `packages/blue-platform-node/src/index.ts`                    | Export new symbols                                                                                                 |
+| `packages/blue-boot/src/application.ts`                       | Register `NodeAutoConfiguration` alongside `WebAutoConfiguration`                                                  |
+| `packages/blue-platform-web/src/cors-interceptor.ts`          | Type `DEFAULT_METHODS` against `HTTPMethod` (currently hardcoded string literals); defaults unchanged              |
 
 ### Package Dependencies
 
-| Package | Adds | Reason |
-|---|---|---|
-| `@blue/dispatcher` | `@blue/http` (type-only) — devDep for build, peerDep for consumers | `HTTPMethod` in `RequestMappingConfiguration` / `HTTPMethodCondition` |
-| `@blue/router` | `@blue/http` (type-only) | `Route.method?: HTTPMethod` |
-| `@blue/platform-node` | `@blue/http` (runtime) | `ResponseStatus`, `ResponseStatuses`, `HTTPHeaders` constants |
-| `@blue/telemetry` | `@blue/platform-node` (devDep + peerDep) | `HTTPServerInstrumentation`, `HTTPResponseViewTargetInstrumentation` |
+| Package               | Adds                                                               | Reason                                                                |
+| --------------------- | ------------------------------------------------------------------ | --------------------------------------------------------------------- |
+| `@blue/dispatcher`    | `@blue/http` (type-only) — devDep for build, peerDep for consumers | `HTTPMethod` in `RequestMappingConfiguration` / `HTTPMethodCondition` |
+| `@blue/router`        | `@blue/http` (type-only)                                           | `Route.method?: HTTPMethod`                                           |
+| `@blue/platform-node` | `@blue/http` (runtime)                                             | `ResponseStatus`, `ResponseStatuses`, `HTTPHeaders` constants         |
+| `@blue/telemetry`     | `@blue/platform-node` (devDep + peerDep)                           | `HTTPServerInstrumentation`, `HTTPResponseViewTargetInstrumentation`  |
 
 ### Unchanged
 
@@ -423,28 +420,28 @@ The Node foundation overlaps with `@blue/http` — reuse its HTTP vocabulary ins
 
 ## 9. Open Questions
 
-| Question | Options | Recommendation |
-|---|---|---|
-| Depend on Hono or wrap `node:http` directly? | (a) Raw `node:http`, (b) Hono, (c) Express | **Raw `node:http`** for the adapter — zero deps. Users can wrap Hono/Express themselves if they want routing sugar |
-| Where should `@getMapping`/`@postMapping` live? | (a) `@blue/dispatcher`, (b) `@blue/platform-node`, (c) `@blue/router` | **`@blue/dispatcher`** — they work on both platforms; the method is just metadata |
-| Where should `BrowserDispatcher` ultimately live? | (a) Move to `@blue/platform-web` now, (b) Keep in `@blue/dispatcher`, defer move | **(b)** — defer (TODO in §2.1). `NodeDispatcher extends BrowserDispatcher` works today; the move needs an `AbstractDispatcher` extraction and package re-arrangement |
-| `@requestMapping` alias vs own decorator? | (a) Pure alias of `@routeMapping`, (b) Own decorator extending the shared metadata config with `method` | **(b)** — it carries HTTP request semantics (`method` now, `headers`/`consumes`/`produces` later) that a client route never has. Shares the metadata key so the mapping stack and hybrid controllers stay unified |
-| Should `@blue/boot` auto-start the HTTP server? | (a) Auto-start on context refresh, (b) Manual `.start()` call | **(a) Auto-start** — Spring Boot does this. The `HTTPServer` bean listens after context refresh |
-| Port configuration? | (a) Hardcoded in `@entry`, (b) `@ConfigurationProperties`, (c) `process.env.PORT` | **(b) + (c)** — `@ConfigurationProperties` for explicit config, fallback to `PORT` env var |
+| Question                                          | Options                                                                                                 | Recommendation                                                                                                                                                                                                    |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Depend on Hono or wrap `node:http` directly?      | (a) Raw `node:http`, (b) Hono, (c) Express                                                              | **Raw `node:http`** for the adapter — zero deps. Users can wrap Hono/Express themselves if they want routing sugar                                                                                                |
+| Where should `@getMapping`/`@postMapping` live?   | (a) `@blue/dispatcher`, (b) `@blue/platform-node`, (c) `@blue/router`                                   | **`@blue/dispatcher`** — they work on both platforms; the method is just metadata                                                                                                                                 |
+| Where should `BrowserDispatcher` ultimately live? | (a) Move to `@blue/platform-web` now, (b) Keep in `@blue/dispatcher`, defer move                        | **(b)** — defer (TODO in §2.1). `NodeDispatcher extends BrowserDispatcher` works today; the move needs an `AbstractDispatcher` extraction and package re-arrangement                                              |
+| `@requestMapping` alias vs own decorator?         | (a) Pure alias of `@routeMapping`, (b) Own decorator extending the shared metadata config with `method` | **(b)** — it carries HTTP request semantics (`method` now, `headers`/`consumes`/`produces` later) that a client route never has. Shares the metadata key so the mapping stack and hybrid controllers stay unified |
+| Should `@blue/boot` auto-start the HTTP server?   | (a) Auto-start on context refresh, (b) Manual `.start()` call                                           | **(a) Auto-start** — Spring Boot does this. The `HTTPServer` bean listens after context refresh                                                                                                                   |
+| Port configuration?                               | (a) Hardcoded in `@entry`, (b) `@ConfigurationProperties`, (c) `process.env.PORT`                       | **(b) + (c)** — `@ConfigurationProperties` for explicit config, fallback to `PORT` env var                                                                                                                        |
 
 ---
 
 ## 10. Acceptance Criteria
 
-| Gate | Verification |
-|---|---|
-| `NodeDispatcher` inherits the full dispatch pipeline | All existing `BrowserDispatcher` tests pass unchanged; `NodeDispatcher` overrides only `render()` |
-| `NodeDispatcher.dispatch()` processes a route end-to-end | Integration test: start server, send HTTP request, receive response |
-| `@getMapping('/test')` matches only GET requests | `@postMapping('/test')` handler does not fire on GET; `@queryMapping('/q')` fires only on QUERY |
-| `@routeMapping` without method matches any method | Existing handlers unchanged |
-| `HTTPResponseViewTarget` writes rendered view to response | `StringTemplateView` → response body contains rendered HTML |
-| `ResponseEntity` sets status code and headers | Handler returns `ResponseEntity.notFound()` → 404 response |
-| `StaticFileView` serves a file from disk | Request to `/style.css` returns file content |
-| `@blue/boot` auto-starts server on Node | `ApplicationBuilder.run()` → server listening on port |
-| All existing tests pass | `pnpm build && pnpm test` |
-| `blue-demo-node` uses `NodeDispatcher` + `HTTPServer` instead of raw `node:http` | Demo compiles, starts, responds to requests |
+| Gate                                                                             | Verification                                                                                      |
+| -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| `NodeDispatcher` inherits the full dispatch pipeline                             | All existing `BrowserDispatcher` tests pass unchanged; `NodeDispatcher` overrides only `render()` |
+| `NodeDispatcher.dispatch()` processes a route end-to-end                         | Integration test: start server, send HTTP request, receive response                               |
+| `@getMapping('/test')` matches only GET requests                                 | `@postMapping('/test')` handler does not fire on GET; `@queryMapping('/q')` fires only on QUERY   |
+| `@routeMapping` without method matches any method                                | Existing handlers unchanged                                                                       |
+| `HTTPResponseViewTarget` writes rendered view to response                        | `StringTemplateView` → response body contains rendered HTML                                       |
+| `ResponseEntity` sets status code and headers                                    | Handler returns `ResponseEntity.notFound()` → 404 response                                        |
+| `StaticFileView` serves a file from disk                                         | Request to `/style.css` returns file content                                                      |
+| `@blue/boot` auto-starts server on Node                                          | `ApplicationBuilder.run()` → server listening on port                                             |
+| All existing tests pass                                                          | `pnpm build && pnpm test`                                                                         |
+| `blue-demo-node` uses `NodeDispatcher` + `HTTPServer` instead of raw `node:http` | Demo compiles, starts, responds to requests                                                       |

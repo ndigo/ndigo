@@ -22,24 +22,26 @@ This document outlines the plan for resolving significant code duplication in UR
 
 ### Affected Files and Line Counts
 
-| Package | File | Lines | Functionality |
-|---------|------|-------|---------------|
-| `@blue/http` | `src/query-string.ts` | 147 | Query string parsing/stringification |
-| `@blue/router` | `src/to-query-string.ts` | 142 | Query string stringification (duplicate) |
-| `@blue/router` | `src/from-query-string.ts` | 125 | Query string parsing (duplicate) |
-| `@blue/parser` | `src/matrix-string.ts` | 119 | Matrix string parsing |
-| `@blue/router` | `src/from-matrix-string.ts` | 57 | Matrix string parsing (duplicate) |
-| `@blue/router` | `src/to-matrix-string.ts` | 56 | Matrix string stringification (duplicate) |
-| **Total** | **6 files** | **646** | **~300-400 lines of duplication** |
+| Package        | File                        | Lines   | Functionality                             |
+| -------------- | --------------------------- | ------- | ----------------------------------------- |
+| `@blue/http`   | `src/query-string.ts`       | 147     | Query string parsing/stringification      |
+| `@blue/router` | `src/to-query-string.ts`    | 142     | Query string stringification (duplicate)  |
+| `@blue/router` | `src/from-query-string.ts`  | 125     | Query string parsing (duplicate)          |
+| `@blue/parser` | `src/matrix-string.ts`      | 119     | Matrix string parsing                     |
+| `@blue/router` | `src/from-matrix-string.ts` | 57      | Matrix string parsing (duplicate)         |
+| `@blue/router` | `src/to-matrix-string.ts`   | 56      | Matrix string stringification (duplicate) |
+| **Total**      | **6 files**                 | **646** | **~300-400 lines of duplication**         |
 
 ### Duplication Details
 
 **Query String Duplication:**
+
 - `packages/blue-http/src/query-string.ts` (147 lines)
 - `packages/blue-router/src/to-query-string.ts` (142 lines)
 - **Estimated duplication:** ~126 lines, 389 tokens (~95% duplicate)
 
 **Matrix String Duplication:**
+
 - `packages/blue-parser/src/matrix-string.ts` (119 lines)
 - `packages/blue-router/src/from-matrix-string.ts` (57 lines)
 - `packages/blue-router/src/to-matrix-string.ts` (56 lines)
@@ -54,11 +56,11 @@ The router package (`@blue/router`) does not currently depend on the parser (`@b
 ```json
 // packages/blue-router/package.json
 {
-  "dependencies": {
-    "@blue/core": "workspace:*",
-    "@blue/util": "workspace:*"
-    // Missing: @blue/parser, @blue/http
-  }
+    "dependencies": {
+        "@blue/core": "workspace:*",
+        "@blue/util": "workspace:*"
+        // Missing: @blue/parser, @blue/http
+    }
 }
 ```
 
@@ -67,27 +69,31 @@ The router package (`@blue/router`) does not currently depend on the parser (`@b
 ### Option A: Router Depends on Parser/HTTP (Recommended for Manual Review)
 
 **Approach:**
+
 1. Add `@blue/parser` to `@blue/router` dependencies
 2. Add `@blue/http` to `@blue/router` dependencies
 3. Delete duplicated files in router:
-   - `src/to-query-string.ts` → use `@blue/http`
-   - `src/from-query-string.ts` → use `@blue/http`
-   - `src/from-matrix-string.ts` → use `@blue/parser`
-   - `src/to-matrix-string.ts` → use `@blue/parser`
+    - `src/to-query-string.ts` → use `@blue/http`
+    - `src/from-query-string.ts` → use `@blue/http`
+    - `src/from-matrix-string.ts` → use `@blue/parser`
+    - `src/to-matrix-string.ts` → use `@blue/parser`
 4. Update imports in `src/path-route.ts` and tests
 
 **Pros:**
+
 - ✅ Simplest solution
 - ✅ Leverages existing, tested code
 - ✅ No new packages to maintain
 - ✅ Clear dependency structure
 
 **Cons:**
+
 - ⚠️ Increases router package dependencies
 - ⚠️ May pull in unneeded functionality
 - ⚠️ Creates tighter coupling between packages
 
 **Impact:**
+
 - **Files deleted:** 4 files (267 lines)
 - **Dependencies added:** 2 packages
 - **Test updates:** ~5 test files
@@ -98,23 +104,27 @@ The router package (`@blue/router`) does not currently depend on the parser (`@b
 ### Option B: New `@blue/url` Package
 
 **Approach:**
+
 1. Create new package `@blue/url`
 2. Extract URL parsing utilities from parser, http, router
 3. All three packages depend on `@blue/url`
 4. Update imports across all affected packages
 
 **Pros:**
+
 - ✅ Clean separation of concerns
 - ✅ Single source of truth for URL utilities
 - ✅ Reduces coupling between http/parser/router
 
 **Cons:**
+
 - ⚠️ New package to maintain
 - ⚠️ More extensive refactoring required
 - ⚠️ May be overkill for this specific problem
 - ⚠️ Additional build/test infrastructure
 
 **Impact:**
+
 - **New package:** `@blue/url` (~400 lines)
 - **Files refactored:** 6+ files across 3 packages
 - **Test migration:** ~8 test files to move/update
@@ -125,22 +135,26 @@ The router package (`@blue/router`) does not currently depend on the parser (`@b
 ### Option C: Promote to `@blue/util`
 
 **Approach:**
+
 1. Move query string utilities to `@blue/util/src/url/query-string.ts`
 2. Move matrix string utilities to `@blue/util/src/url/matrix-string.ts`
 3. Update imports in http, parser, router packages
 4. Delete duplicates
 
 **Pros:**
+
 - ✅ No new package needed
 - ✅ `@blue/util` already widely used
 - ✅ URL utilities are general-purpose
 
 **Cons:**
+
 - ⚠️ `@blue/util` may become bloated
 - ⚠️ URL utilities may not fit util's purpose (integration layer)
 - ⚠️ Creates circular dependency risk (util → parser → util)
 
 **Impact:**
+
 - **Files added to util:** 2-3 files (~400 lines)
 - **Files deleted:** 6 files from other packages
 - **Risk:** Medium (circular dependency concerns)
@@ -150,21 +164,25 @@ The router package (`@blue/router`) does not currently depend on the parser (`@b
 ### Option D: Designate Parser as Canonical Source
 
 **Approach:**
+
 1. Move all URL parsing to `@blue/parser`
 2. HTTP and router import from parser
 3. Parser becomes the authority for URL utilities
 
 **Pros:**
+
 - ✅ Parser already has URL parsing logic
 - ✅ Semantic fit (parsing is parser's domain)
 - ✅ No new package needed
 
 **Cons:**
+
 - ⚠️ HTTP depending on parser feels architecturally odd
 - ⚠️ Mixes parsing with HTTP concerns
 - ⚠️ Less flexible than dedicated package
 
 **Impact:**
+
 - **Files moved to parser:** 2 files from HTTP (~150 lines)
 - **Dependencies added:** parser → http, router
 - **Risk:** Medium (architectural coupling)
@@ -178,32 +196,35 @@ The router package (`@blue/router`) does not currently depend on the parser (`@b
 Before choosing a resolution option, answer these questions:
 
 1. **Dependency Philosophy:**
-   - Is it acceptable for `@blue/router` to depend on `@blue/http`?
-   - Is it acceptable for `@blue/router` to depend on `@blue/parser`?
+
+    - Is it acceptable for `@blue/router` to depend on `@blue/http`?
+    - Is it acceptable for `@blue/router` to depend on `@blue/parser`?
 
 2. **Code Ownership:**
-   - Where do query string utilities conceptually belong?
-   - Where do matrix string utilities conceptually belong?
+
+    - Where do query string utilities conceptually belong?
+    - Where do matrix string utilities conceptually belong?
 
 3. **Future Growth:**
-   - Will URL utilities expand significantly (warrant dedicated package)?
-   - Are there other URL-related utilities to add?
+
+    - Will URL utilities expand significantly (warrant dedicated package)?
+    - Are there other URL-related utilities to add?
 
 4. **Package Boundaries:**
-   - Should parser focus purely on parsing primitives (arcsecond wrappers)?
-   - Should HTTP focus purely on HTTP protocol concerns?
-   - Should router focus purely on routing logic?
+    - Should parser focus purely on parsing primitives (arcsecond wrappers)?
+    - Should HTTP focus purely on HTTP protocol concerns?
+    - Should router focus purely on routing logic?
 
 ### Comparison Matrix
 
-| Criteria | Option A | Option B | Option C | Option D |
-|----------|----------|----------|----------|----------|
-| **Simplicity** | ⭐⭐⭐⭐⭐ | ⭐⭐ | ⭐⭐⭐ | ⭐⭐⭐⭐ |
-| **Maintainability** | ⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐⭐⭐ |
-| **Architectural Clarity** | ⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐ | ⭐⭐⭐ |
-| **Implementation Effort** | ⭐⭐⭐⭐⭐ | ⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ |
-| **Risk** | ⭐⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐ | ⭐⭐⭐ |
-| **Future Scalability** | ⭐⭐⭐ | ⭐⭐⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐⭐⭐ |
+| Criteria                  | Option A   | Option B   | Option C | Option D |
+| ------------------------- | ---------- | ---------- | -------- | -------- |
+| **Simplicity**            | ⭐⭐⭐⭐⭐ | ⭐⭐       | ⭐⭐⭐   | ⭐⭐⭐⭐ |
+| **Maintainability**       | ⭐⭐⭐     | ⭐⭐⭐⭐⭐ | ⭐⭐⭐   | ⭐⭐⭐⭐ |
+| **Architectural Clarity** | ⭐⭐⭐     | ⭐⭐⭐⭐⭐ | ⭐⭐     | ⭐⭐⭐   |
+| **Implementation Effort** | ⭐⭐⭐⭐⭐ | ⭐⭐       | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ |
+| **Risk**                  | ⭐⭐⭐⭐   | ⭐⭐⭐     | ⭐⭐     | ⭐⭐⭐   |
+| **Future Scalability**    | ⭐⭐⭐     | ⭐⭐⭐⭐⭐ | ⭐⭐⭐   | ⭐⭐⭐⭐ |
 
 ---
 
@@ -236,6 +257,7 @@ diff packages/blue-parser/src/matrix-string.ts \
 **1.2: Dependency Analysis**
 
 Check for any subtle differences that justify duplication:
+
 - Different parameter types
 - Different error handling
 - Different edge case behavior
@@ -266,21 +288,21 @@ cd packages/blue-router
 
 ```json
 {
-  "dependencies": {
-    "@blue/core": "workspace:*",
-    "@blue/http": "workspace:*",    // ADD
-    "@blue/parser": "workspace:*",  // ADD
-    "@blue/util": "workspace:*"
-  },
-  "devDependencies": {
-    // ... existing
-    "@blue/http": "workspace:*",    // ADD to dev as well
-    "@blue/parser": "workspace:*"   // ADD to dev as well
-  },
-  "peerDependencies": {
-    "@blue/http": "workspace:*",    // ADD
-    "@blue/parser": "workspace:*"   // ADD
-  }
+    "dependencies": {
+        "@blue/core": "workspace:*",
+        "@blue/http": "workspace:*", // ADD
+        "@blue/parser": "workspace:*", // ADD
+        "@blue/util": "workspace:*"
+    },
+    "devDependencies": {
+        // ... existing
+        "@blue/http": "workspace:*", // ADD to dev as well
+        "@blue/parser": "workspace:*" // ADD to dev as well
+    },
+    "peerDependencies": {
+        "@blue/http": "workspace:*", // ADD
+        "@blue/parser": "workspace:*" // ADD
+    }
 }
 ```
 
@@ -299,6 +321,7 @@ pnpm install
 **File:** `packages/blue-router/src/path-route.ts`
 
 **Before:**
+
 ```typescript
 import fromMatrixString from './from-matrix-string';
 import toMatrixString from './to-matrix-string';
@@ -307,6 +330,7 @@ import fromQueryString from './from-query-string';
 ```
 
 **After:**
+
 ```typescript
 import { fromMatrixString, toMatrixString } from '@blue/parser';
 import { QueryString } from '@blue/http';
@@ -323,6 +347,7 @@ import { fromQueryString, toQueryString } from '@blue/http';
 **File:** `packages/blue-router/src/index.ts`
 
 **Before:**
+
 ```typescript
 export { default as fromMatrixString } from './from-matrix-string';
 export { default as fromQueryString } from './from-query-string';
@@ -331,20 +356,18 @@ export { default as toQueryString } from './to-query-string';
 ```
 
 **After:**
+
 ```typescript
 // Re-export from canonical sources for backward compatibility
 export { fromMatrixString, toMatrixString } from '@blue/parser';
 export { fromQueryString, toQueryString } from '@blue/http';
 
 // OR if maintaining backward compat is critical:
-export {
-  fromMatrixString,
-  toMatrixString
-} from '@blue/parser';
+export { fromMatrixString, toMatrixString } from '@blue/parser';
 
 export {
-  QueryString as fromQueryString,  // Adapt as needed
-  QueryString as toQueryString
+    QueryString as fromQueryString, // Adapt as needed
+    QueryString as toQueryString,
 } from '@blue/http';
 ```
 
@@ -365,6 +388,7 @@ packages/blue-router/test/from-matrix-string.spec.ts
 ```
 
 **Options:**
+
 - **A:** Keep tests, update imports to point to http/parser
 - **B:** Delete tests (rely on http/parser tests)
 - **C:** Keep tests as integration tests
@@ -376,11 +400,13 @@ packages/blue-router/test/from-matrix-string.spec.ts
 **Example:** `packages/blue-router/test/to-query-string.spec.ts`
 
 **Before:**
+
 ```typescript
 import toQueryString from '../src/to-query-string';
 ```
 
 **After:**
+
 ```typescript
 import { toQueryString } from '@blue/http';
 // OR
@@ -465,12 +491,14 @@ Document the dependency changes and rationale.
 ## [Unreleased]
 
 ### Changed
+
 - **BREAKING INTERNAL:** Router now depends on @blue/parser and @blue/http
-- Removed duplicated URL parsing code (from-query-string, to-query-string, 
+- Removed duplicated URL parsing code (from-query-string, to-query-string,
   from-matrix-string, to-matrix-string)
 - Router now re-exports URL utilities from canonical sources
 
 ### Migration
+
 - No public API changes
 - Internal refactoring only
 - All exports remain compatible
@@ -487,6 +515,7 @@ Mark as "Implemented" and document any deviations from plan.
 ### If Option B Chosen: New @blue/url Package
 
 **Steps:**
+
 1. Create `packages/blue-url/` directory
 2. Initialize package with standard structure
 3. Extract common code from http/parser/router
@@ -502,6 +531,7 @@ Mark as "Implemented" and document any deviations from plan.
 ### If Option C Chosen: Promote to @blue/util
 
 **Steps:**
+
 1. Create `packages/blue-util/src/url/` directory
 2. Move query-string utilities
 3. Move matrix-string utilities
@@ -517,6 +547,7 @@ Mark as "Implemented" and document any deviations from plan.
 ### If Option D Chosen: Parser as Canonical
 
 **Steps:**
+
 1. Move http query-string code to parser
 2. Update http to import from parser
 3. Delete router duplicates
@@ -591,6 +622,7 @@ Before implementing, complete this checklist:
 ## Timeline Estimate
 
 ### Option A: Router Depends on Parser/HTTP
+
 - **Phase 1:** 1-2 hours (analysis)
 - **Phase 2:** 30 minutes (dependencies)
 - **Phase 3:** 1 hour (imports)
@@ -601,6 +633,7 @@ Before implementing, complete this checklist:
 - **Total:** 5-7 hours
 
 ### Other Options
+
 - **Option B:** 4-6 hours (new package)
 - **Option C:** 3-4 hours (promote to util)
 - **Option D:** 2-3 hours (parser canonical)

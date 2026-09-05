@@ -7,11 +7,11 @@ Blue Telemetry provides tracing, metrics, and logging integrations for BlueJS us
 The telemetry surface is split by platform so the isomorphic core carries zero
 installation weight:
 
-| Package | Contents |
-| --- | --- |
-| `@blue/telemetry` | Isomorphic API core: `getLogger`, `FeatureMetricAggregator`, `@traced`/`@counted` decorators, severity mapping, platform-free instrumentation bases. Installs only `@opentelemetry/api`, `api-logs`, `instrumentation`. |
-| `@blue/telemetry-node` | Node setup: `configureTelemetry()` (NodeSDK), `HTTPServerInstrumentation`, `HTTPResponseViewTargetInstrumentation`, `SeverityFilterLogRecordProcessor`. |
-| `@blue/telemetry-web` | Browser setup: `configureBrowserTelemetry()`, `RouterInstrumentation`, `DispatcherInstrumentation`. |
+| Package                | Contents                                                                                                                                                                                                                |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@blue/telemetry`      | Isomorphic API core: `getLogger`, `FeatureMetricAggregator`, `@traced`/`@counted` decorators, severity mapping, platform-free instrumentation bases. Installs only `@opentelemetry/api`, `api-logs`, `instrumentation`. |
+| `@blue/telemetry-node` | Node setup: `configureTelemetry()` (NodeSDK), `HTTPServerInstrumentation`, `HTTPResponseViewTargetInstrumentation`, `SeverityFilterLogRecordProcessor`.                                                                 |
+| `@blue/telemetry-web`  | Browser setup: `configureBrowserTelemetry()`, `RouterInstrumentation`, `DispatcherInstrumentation`.                                                                                                                     |
 
 ## Features
 

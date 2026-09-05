@@ -10,7 +10,9 @@ import { decodeURIComponent as decode } from '@blue/util/string';
 type Parser<T> = {
     run: (
         input: string
-    ) => { isError: false; result: T; index: number; data: unknown } | { isError: true; error: string; index: number; data: unknown };
+    ) =>
+        | { isError: false; result: T; index: number; data: unknown }
+        | { isError: true; error: string; index: number; data: unknown };
 };
 
 /** Parsed cookie structure returned by cookie parsing helpers. */

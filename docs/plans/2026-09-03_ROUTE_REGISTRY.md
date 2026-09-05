@@ -54,7 +54,7 @@ User injects RouteRegistry → routes.users.byId.url({id: '123'})
 
 Each leaf in the route tree is an instance of `RouteDefinition<T>` — a single object that can act as a URL generator, redirect factory, navigator, and route matcher.
 
-```ts
+````ts
 class RouteDefinition<TPattern extends string = string> {
     /** The raw route pattern, e.g. "/users/{id}" */
     readonly pattern: TPattern;
@@ -127,7 +127,7 @@ class RouteDefinition<TPattern extends string = string> {
      */
     matches(path: string): boolean;
 }
-```
+````
 
 ### Type-Level Helpers
 
@@ -140,10 +140,9 @@ class RouteDefinition<TPattern extends string = string> {
  * RouteParams<'/'>                     → {}
  * RouteParams<'/index'>                → {}
  */
-type RouteParams<T extends string> =
-    T extends `${string}{${infer P}}${infer Rest}`
-        ? Record<P, string> & RouteParams<Rest>
-        : {};
+type RouteParams<T extends string> = T extends `${string}{${infer P}}${infer Rest}`
+    ? Record<P, string> & RouteParams<Rest>
+    : {};
 
 /**
  * Check whether a type is an empty object.
@@ -153,14 +152,14 @@ type IsEmptyObject<T> = keyof T extends never ? true : false;
 
 ### Relationship to Existing Classes
 
-| Concern | Existing | RouteDefinition |
-|---|---|---|
-| URL pattern storage | `Symbol.metadata` via `@routeMapping` | Same — reads from the same source |
-| URL parsing | `PathRoute` constructor | `.parse()` delegates to `PathRoute` |
-| URL generation | String concatenation | `.url()` interpolates the pattern |
-| Redirect | `new ModelAndView(new RerouteView(path))` | `.redirect()` wraps `RerouteView` |
-| Navigation | `router.navigate(path)` | `.navigate()` calls injected router |
-| Registration | `@routeMapping` → `LinearMetadataHandlerMapping` | Unchanged — `RouteDefinition` is read-only |
+| Concern             | Existing                                         | RouteDefinition                            |
+| ------------------- | ------------------------------------------------ | ------------------------------------------ |
+| URL pattern storage | `Symbol.metadata` via `@routeMapping`            | Same — reads from the same source          |
+| URL parsing         | `PathRoute` constructor                          | `.parse()` delegates to `PathRoute`        |
+| URL generation      | String concatenation                             | `.url()` interpolates the pattern          |
+| Redirect            | `new ModelAndView(new RerouteView(path))`        | `.redirect()` wraps `RerouteView`          |
+| Navigation          | `router.navigate(path)`                          | `.navigate()` calls injected router        |
+| Registration        | `@routeMapping` → `LinearMetadataHandlerMapping` | Unchanged — `RouteDefinition` is read-only |
 
 **`RouteDefinition` is purely a consumer-facing convenience.** It delegates to `PathRoute`, `RerouteView`, and the `Router` under the hood. None of those classes change.
 
@@ -172,14 +171,14 @@ type IsEmptyObject<T> = keyof T extends never ? true : false;
 
 The registry derives keys from route patterns by convention:
 
-| Pattern | Key | Rationale |
-|---|---|---|
-| `'/'` | `'index'` | Root — there can be only one |
-| `'/users'` | `'users'` | Match the segment |
-| `'/users/{id}'` | `'byId'` | CamelCase of the param hint |
-| `'/users/create'` | `'create'` | Match the segment |
-| `'/settings'` | `'settings'` | Match the segment |
-| `'/login'` | `'login'` | Match the segment |
+| Pattern           | Key          | Rationale                    |
+| ----------------- | ------------ | ---------------------------- |
+| `'/'`             | `'index'`    | Root — there can be only one |
+| `'/users'`        | `'users'`    | Match the segment            |
+| `'/users/{id}'`   | `'byId'`     | CamelCase of the param hint  |
+| `'/users/create'` | `'create'`   | Match the segment            |
+| `'/settings'`     | `'settings'` | Match the segment            |
+| `'/login'`        | `'login'`    | Match the segment            |
 
 **Class + Method Composition:**
 
@@ -318,7 +317,7 @@ class UsersController {
     // Inject via the application context
     constructor(private routes: RouteRegistry) {}
 
-    @routes.users.create  // ← wait, this can't work at module scope
+    @routes.users.create // ← wait, this can't work at module scope
     async handle(route: Route) {
         const user = await this.service.create(route.params);
         return this.routes.users.byId.redirect({ id: user.id });
@@ -459,19 +458,20 @@ routes
 
 ### New Code
 
-| File | Description |
-|---|---|
-| `packages/blue-router/src/route-definition.ts` | `RouteDefinition<T>` class with `.url()`, `.href()`, `.redirect()`, `.navigate()`, `.parse()` |
-| `packages/blue-router/src/route-registry.ts` | `RouteRegistry` class — scans bean metadata, builds route tree |
-| `packages/blue-router/src/route-registry-configuration.ts` | Auto-configuration `@configuration` that creates and registers the `RouteRegistry` |
+| File                                                       | Description                                                                                   |
+| ---------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| `packages/blue-router/src/route-definition.ts`             | `RouteDefinition<T>` class with `.url()`, `.href()`, `.redirect()`, `.navigate()`, `.parse()` |
+| `packages/blue-router/src/route-registry.ts`               | `RouteRegistry` class — scans bean metadata, builds route tree                                |
+| `packages/blue-router/src/route-registry-configuration.ts` | Auto-configuration `@configuration` that creates and registers the `RouteRegistry`            |
 
 ### Modified Code
 
-| File | Change |
-|---|---|
-| `packages/blue-router/src/index.ts` | Export `RouteDefinition`, `RouteRegistry` |
+| File                                            | Change                                                                 |
+| ----------------------------------------------- | ---------------------------------------------------------------------- |
+| `packages/blue-router/src/index.ts`             | Export `RouteDefinition`, `RouteRegistry`                              |
 | `packages/blue-dispatcher/src/route-mapping.ts` | Accept optional `name` in `RouteMappingConfiguration` for key override |
-| 
+
+|
 
 ### Unchanged
 
@@ -481,24 +481,24 @@ routes
 
 ## 8. Accepance Criteria
 
-| Gate | Venification |
-|---|---|
-| `RoteDef.url()` interpolates path ars | `nex` `RoteDef<"/users/{id}">`.url({id: "123"})` → `"/users/123"` |
-| `RoteDef.url()` with no pars | `nex` `RoteDef<"/">`.url()` → `"/"` |
-| `RoteDef.href()` adds hash refix | `.href()` → `"#/..."` |
-| `RoteDef.redirect()` returns `ModelAndView` with `RerouteView` | Type check + runtime check |
-| `RoteDef.parse()` parses a path back | `.parse('/users/123').params.id` → `"123"` |
-| `RoeRegistry` scans `@routeMapping` metadata | Unit test with mock beans|
-| `RouteRegistry` drives keys by convention | `'/'` → `'index'`, `'/users'` → `'users'`, `'/{id}'` → `'byId'`|
-| `Routeegistry` supports `name` override| `@routeMapping({ value:'/x', name:'customKey' })`|
+| Gate                                                           | Venification                                                    |
+| -------------------------------------------------------------- | --------------------------------------------------------------- |
+| `RoteDef.url()` interpolates path ars                          | `nex` `RoteDef<"/users/{id}">`.url({id: "123"})`→`"/users/123"` |
+| `RoteDef.url()` with no pars                                   | `nex` `RoteDef<"/">`.url()`→`"/"`                               |
+| `RoteDef.href()` adds hash refix                               | `.href()` → `"#/..."`                                           |
+| `RoteDef.redirect()` returns `ModelAndView` with `RerouteView` | Type check + runtime check                                      |
+| `RoteDef.parse()` parses a path back                           | `.parse('/users/123').params.id` → `"123"`                      |
+| `RoeRegistry` scans `@routeMapping` metadata                   | Unit test with mock beans                                       |
+| `RouteRegistry` drives keys by convention                      | `'/'` → `'index'`, `'/users'` → `'users'`, `'/{id}'` → `'byId'` |
+| `Routeegistry` supports `name` override                        | `@routeMapping({ value:'/x', name:'customKey' })`               |
 
 ---
 
 ## 9. Open Questions
 
-| Question | Cnsideration | Recommendation |
-|---|---|---|
-| **Should `{#x#}ijec` patter be supported for programmatic use?**| `@InjectRouts` on a consumer| Keep simple — inject the `RouteRegistry` from the context|
-| **Wht about non-hash routers (`BrowserRouter`)?**|`href()` currently hardcodes `#` prefix| Mak`href()` aware of the router type, or add a separate `path()` that returns the raw URL |
-| **Should feature routes be scoped?**| Feature spin-off contexts have their own RouteRegistry| Yes — the `FeaureRoutingRegistry` passes its prefix to the `RouteRegistry`|
-| **ow are multi-segment method paths handled?**| `@routeMapping('/api/v2/users')` without a class|N ot supported — single-segment-per-decorator. Class+method composition is the intended pattern.|
+| Question                                                         | Cnsideration                                           | Recommendation                                                                                   |
+| ---------------------------------------------------------------- | ------------------------------------------------------ | ------------------------------------------------------------------------------------------------ |
+| **Should `{#x#}ijec` patter be supported for programmatic use?** | `@InjectRouts` on a consumer                           | Keep simple — inject the `RouteRegistry` from the context                                        |
+| **Wht about non-hash routers (`BrowserRouter`)?**                | `href()` currently hardcodes `#` prefix                | Mak`href()` aware of the router type, or add a separate `path()` that returns the raw URL        |
+| **Should feature routes be scoped?**                             | Feature spin-off contexts have their own RouteRegistry | Yes — the `FeaureRoutingRegistry` passes its prefix to the `RouteRegistry`                       |
+| **ow are multi-segment method paths handled?**                   | `@routeMapping('/api/v2/users')` without a class       | N ot supported — single-segment-per-decorator. Class+method composition is the intended pattern. |

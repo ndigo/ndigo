@@ -47,25 +47,19 @@ describe('NodeQueryValueMethodArgumentResolver', () => {
 
         test('should apply type-based conversion when convertType is provided', () => {
             const route = makeRoute({ age: '25' });
-            const param = new MethodParameter(
-                MethodParameterType.QUERY,
-                'age',
-                false,
-                undefined,
-                { source: String, target: Number }
-            );
+            const param = new MethodParameter(MethodParameterType.QUERY, 'age', false, undefined, {
+                source: String,
+                target: Number,
+            });
             expect(resolver.resolveArgument(param, route, {})).toBe(25);
         });
 
         test('should handle boolean conversion when convertType is provided', () => {
             const route = makeRoute({ active: 'true' });
-            const param = new MethodParameter(
-                MethodParameterType.QUERY,
-                'active',
-                false,
-                undefined,
-                { source: String, target: Boolean }
-            );
+            const param = new MethodParameter(MethodParameterType.QUERY, 'active', false, undefined, {
+                source: String,
+                target: Boolean,
+            });
             expect(resolver.resolveArgument(param, route, {})).toBe(true);
         });
 

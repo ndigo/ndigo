@@ -9,12 +9,12 @@ AD-6 proposed splitting `@blue/factory` into a scoped and non-scoped part. The c
 
 ## Analysis
 
-| Concern | Current state |
-|---|---|
-| Packages importing `@blue/factory` | 11 packages across layers L0–L6 |
-| Packages that import scope-specific types | 0 (scopes are used internally by `AbstractFactory`) |
-| Packages that import lifecycle/Aware types | All 11 (these are the primary interface) |
-| Size of scope code | ~200 lines of 834 in `scope.ts` + `_scope-registry.ts` |
+| Concern                                    | Current state                                          |
+| ------------------------------------------ | ------------------------------------------------------ |
+| Packages importing `@blue/factory`         | 11 packages across layers L0–L6                        |
+| Packages that import scope-specific types  | 0 (scopes are used internally by `AbstractFactory`)    |
+| Packages that import lifecycle/Aware types | All 11 (these are the primary interface)               |
+| Size of scope code                         | ~200 lines of 834 in `scope.ts` + `_scope-registry.ts` |
 
 Scope types are internal to the factory implementation — no external consumer imports `Scope` or `ScopedFactory` directly. The scope registry is initialized once in the `AbstractFactory` constructor and used transparently.
 
@@ -31,11 +31,13 @@ Scope types are internal to the factory implementation — no external consumer 
 ## Documentation
 
 The integration point is:
+
 - `packages/blue-factory/src/_scope-registry.ts` — scope registry
 - `packages/blue-factory/src/scope.ts` — scope interfaces and implementations
 - `packages/blue-factory/src/factory.ts` — `AbstractFactory` wires them in `constructor()` at line 222
 
 If a non-scoped consumer emerges post-1.0, the extraction path is:
+
 1. New package `@blue/factory-core` with `AbstractFactory` minus scope registration
 2. `@blue/factory` re-exports from `@blue/factory-core` and adds scope support
 3. Consumers that only need lifecycle/Aware types can depend on either
@@ -43,6 +45,7 @@ If a non-scoped consumer emerges post-1.0, the extraction path is:
 ## Revisit Trigger
 
 Revisit if:
+
 - A consumer needs factory lifecycle without scoping
 - The factory scope code grows beyond 500 lines
 - A packaging concern (e.g., tree-shaking) makes the split valuable

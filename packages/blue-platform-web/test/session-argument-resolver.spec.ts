@@ -69,13 +69,10 @@ describe('BrowserSessionValueMethodArgumentResolver', () => {
             getItem: vi.fn(() => 'true'),
         });
 
-        const parameter = new MethodParameter(
-            MethodParameterType.SESSION,
-            'sessionId',
-            false,
-            null,
-            { source: String, target: Boolean }
-        );
+        const parameter = new MethodParameter(MethodParameterType.SESSION, 'sessionId', false, null, {
+            source: String,
+            target: Boolean,
+        });
         const value = resolver.resolveArgument(parameter, { data: {}, params: null } as any, {} as any);
 
         expect(value).toBe(true);
@@ -86,13 +83,10 @@ describe('BrowserSessionValueMethodArgumentResolver', () => {
             getItem: vi.fn(() => '42'),
         });
 
-        const parameter = new MethodParameter(
-            MethodParameterType.SESSION,
-            'count',
-            false,
-            null,
-            { source: String, target: Number }
-        );
+        const parameter = new MethodParameter(MethodParameterType.SESSION, 'count', false, null, {
+            source: String,
+            target: Number,
+        });
         const value = resolver.resolveArgument(parameter, { data: {}, params: null } as any, {} as any);
 
         expect(value).toBe(42);

@@ -51,6 +51,7 @@
 - [x] Verify `pnpm build && pnpm test && pnpm lint` clean
 
 **Not applicable / deferred:**
+
 - pnpm 11 upgrade completed before roadmap was written; no `ERR_PNPM_IGNORED_BUILDS` present
 - `blue-view/test/*.js` — no such files exist
 - Migration doc naming — low priority cosmetic
@@ -81,6 +82,7 @@
 - [x] `@blue/platform-web`: 5 argument resolvers wired in `configure-argument-resolvers.ts`, 117 tests
 
 **Remaining:**
+
 - [x] View negotiation flow (media type → resolver → view → render) — tested with ContentNegotiationViewResolver pipeline
 - [x] `RerouteView` redirect handling end-to-end test — delegating to `router.navigate()` and `history.pushState` fallback
 - [x] `TransactionManager` commit/rollback lifecycle — full lifecycle integration tests
@@ -112,6 +114,7 @@
 - [x] `IndexedDBResourceLoader` — client-side persistent storage adapter
 
 **Deferred (not in scope):**
+
 - `ServiceWorkerRegistration` — automatic SW registration helper (platform-specific, low priority)
 - `CacheStorageManager` — HTTP cache integration via `Cache` API (depends on SW registration)
 
@@ -145,6 +148,7 @@
 - [x] 46 tests, build clean
 
 **Deferred (per roadmap):**
+
 - Router integration (`HashRouter`/`BrowserRouter`/`FileSystemRouter` moved to Wave 4.5)
 - SPI-like discovery — deferred until framework stable
 
@@ -160,6 +164,7 @@
 - [x] Cover remaining branch paths in tests — 158 total
 
 **Open:**
+
 - [x] Document refresh/close semantics with sequence diagrams — `docs/reference/2026-08-22_CONTEXT_LIFECYCLE.md`
 
 **`@blue/content` (~45% → 85%) — COMPLETE** ✅
@@ -195,6 +200,7 @@
 **Status:** ⬜ Not started
 
 #### 9a. `@blue/auth` (new package)
+
 - [x] Spec doc: `docs/plans/2026-05-28_AUTH_DESIGN.md`
 - [x] `AuthenticationStrategy` interface + provider registry — `AuthAdapter` + `AuthRegistry`
 - [x] `Principal` and `Session` abstractions — `Principal`, `AnonymousPrincipal`, `Session`, `DefaultSession`
@@ -207,6 +213,7 @@
 - [x] `JWTAdapter` — JWT validation for `@blue/auth-server`
 
 #### 9b. `@blue/orm` post-MVP
+
 - [x] Relation decorators: `@oneToMany`, `@manyToOne`, `@manyToMany`, `@oneToOne`
 - [x] Entity lifecycle hooks: `@prePersist`, `@postLoad`, `@preUpdate`, `@postRemove`
 - [x] `@transactional` method decorator
@@ -239,16 +246,16 @@
 
 ## Remaining Work Summary
 
-| Priority | Wave | Area | Effort Estimate |
-|----------|------|------|----------------|
-| **P1** | 7 | `@blue/content` — dynamic content sources, theme composition, negotiation hooks | ✅ Done |
-| **P1** | 7 | `@blue/validate` — group symmetry, error messages | ✅ Done |
-| **Done** | 4.5 | Client infra — BrowserRouter, CORS, offline retry, IndexedDB, LocalStorage | ✅ Done |
-| **Done** | 8 | `@blue/platform-node` — test coverage + integration | ✅ Done |
-| **Done** | 9a | `@blue/auth` — all spec items: decorators, adapters, interceptors, guards | ✅ Done |
-| **Done** | 9b | `@blue/orm` post-MVP — relations, lifecycle hooks, validate integration, drizzle adapter | ✅ Done |
-| **Done** | 10 | 1.0 Checkpoint — AD-6, audit, docs, migration guide, benchmarks | ✅ Done |
-| **Done** | 7 | Context docs (sequence diagrams for refresh/close) | ✅ Done |
-| **Done** | Wave 3 remaining integration tests (view negotiation, redirect, transaction lifecycle) | ✅ Done |
+| Priority | Wave                                                                                   | Area                                                                                     | Effort Estimate |
+| -------- | -------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | --------------- |
+| **P1**   | 7                                                                                      | `@blue/content` — dynamic content sources, theme composition, negotiation hooks          | ✅ Done         |
+| **P1**   | 7                                                                                      | `@blue/validate` — group symmetry, error messages                                        | ✅ Done         |
+| **Done** | 4.5                                                                                    | Client infra — BrowserRouter, CORS, offline retry, IndexedDB, LocalStorage               | ✅ Done         |
+| **Done** | 8                                                                                      | `@blue/platform-node` — test coverage + integration                                      | ✅ Done         |
+| **Done** | 9a                                                                                     | `@blue/auth` — all spec items: decorators, adapters, interceptors, guards                | ✅ Done         |
+| **Done** | 9b                                                                                     | `@blue/orm` post-MVP — relations, lifecycle hooks, validate integration, drizzle adapter | ✅ Done         |
+| **Done** | 10                                                                                     | 1.0 Checkpoint — AD-6, audit, docs, migration guide, benchmarks                          | ✅ Done         |
+| **Done** | 7                                                                                      | Context docs (sequence diagrams for refresh/close)                                       | ✅ Done         |
+| **Done** | Wave 3 remaining integration tests (view negotiation, redirect, transaction lifecycle) | ✅ Done                                                                                  |
 
 **Legend:** ✅ Complete | 🟢 ≥80% | 🟡 45-80% | 🔴 <45% | ⬜ Not started

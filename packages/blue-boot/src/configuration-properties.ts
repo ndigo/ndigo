@@ -109,7 +109,7 @@ const { defineProperty } = Reflect;
 
 export function resolveConfigurationProperties<T>(
     ctor: new () => T,
-    context: ApplicationContext,
+    context: ApplicationContext
 ): ConfigurationPropertiesResult<T> {
     const meta = getMetadata(ctor);
     const prefix = meta[CONFIG_PROPS_PREFIX] as string | undefined;

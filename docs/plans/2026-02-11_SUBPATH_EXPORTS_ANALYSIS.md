@@ -28,10 +28,10 @@ The analysis will focus on identifying cohesive, optional feature sets currently
 
 ### Goals of this Plan
 
--   Identify all packages that have distinct, cohesive sub-feature sets.
--   Evaluate which of these feature sets are good candidates for a subpath export.
--   Produce a clear, actionable list of recommended changes.
--   Document the rationale for each recommendation.
+- Identify all packages that have distinct, cohesive sub-feature sets.
+- Evaluate which of these feature sets are good candidates for a subpath export.
+- Produce a clear, actionable list of recommended changes.
+- Document the rationale for each recommendation.
 
 ---
 
@@ -46,9 +46,9 @@ The analysis will focus on identifying cohesive, optional feature sets currently
 1.  **List All Packages:** Generate a complete list of packages in the `packages/` directory.
 2.  **Analyze `src` Directory Structure:** For each package, inspect its `src/` directory for subdirectories containing multiple files. These often represent a distinct feature set.
 3.  **Apply Evaluation Criteria:** A subdirectory is a strong candidate if it meets these criteria:
-    *   **Cohesive:** Contains a group of highly related modules (e.g., a set of specific layouts, parsers, or validators).
-    *   **Optional:** The modules are not part of the package's primary, essential API. A consumer should be able to use the main package entry point without ever needing the subpath.
-    *   **Clarity:** A subpath export would make the intended use of the modules clearer (e.g., `@blue/logger/layouts`).
+    - **Cohesive:** Contains a group of highly related modules (e.g., a set of specific layouts, parsers, or validators).
+    - **Optional:** The modules are not part of the package's primary, essential API. A consumer should be able to use the main package entry point without ever needing the subpath.
+    - **Clarity:** A subpath export would make the intended use of the modules clearer (e.g., `@blue/logger/layouts`).
 
 ### Phase 2: Detailed Evaluation & Recommendation
 
@@ -59,10 +59,10 @@ The analysis will focus on identifying cohesive, optional feature sets currently
 1.  **Review Module Exports:** For each candidate subdirectory, review the modules it contains and how they are currently exported from the main `index.ts`.
 2.  **Assess Consumer Impact:** Consider how consumers would benefit from the new subpath. Would it simplify their imports or reduce cognitive load?
 3.  **Document Recommendations:** For each recommended subpath export, document the following:
-    *   **Package:** e.g., `@blue/logger`
-    *   **Proposed Subpath:** e.g., `@blue/logger/layouts`
-    *   **Directory:** e.g., `packages/blue-logger/src/layouts/`
-    *   **Rationale:** A brief explanation of why this change aligns with the project's architectural goals (e.g., "Separates optional logging layouts from the core logger configuration, improving clarity.").
+    - **Package:** e.g., `@blue/logger`
+    - **Proposed Subpath:** e.g., `@blue/logger/layouts`
+    - **Directory:** e.g., `packages/blue-logger/src/layouts/`
+    - **Rationale:** A brief explanation of why this change aligns with the project's architectural goals (e.g., "Separates optional logging layouts from the core logger configuration, improving clarity.").
 
 ### Phase 3: Implementation Blueprint (For Future Work)
 
@@ -71,7 +71,7 @@ The analysis will focus on identifying cohesive, optional feature sets currently
 **Blueprint Steps:**
 
 1.  Create an `index.ts` file within the target subdirectory (e.g., `src/layouts/index.ts`) that exports all public modules from that directory.
-2.  Update the package's main `index.ts` to *remove* the direct exports of the modules that are now in the subpath. (This is a breaking change and must be documented).
+2.  Update the package's main `index.ts` to _remove_ the direct exports of the modules that are now in the subpath. (This is a breaking change and must be documented).
 3.  Modify the `package.json` to add the new entry to the `"exports"` map.
 4.  Update all internal project imports to use the new, cleaner subpath.
 5.  Document the new subpath in the package's `README.md`.

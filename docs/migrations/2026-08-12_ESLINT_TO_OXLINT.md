@@ -19,6 +19,7 @@ This document describes the migration from ESLint to oxlint in the BlueJS monore
 ### Dependencies
 
 **Removed from root `devDependencies`:**
+
 - `eslint` (~9.17.0)
 - `eslint-config-prettier` (~9.1.0)
 - `eslint-plugin-prettier` (~5.2.1)
@@ -26,6 +27,7 @@ This document describes the migration from ESLint to oxlint in the BlueJS monore
 - `@typescript-eslint/eslint-plugin` (~8.18.2)
 
 **Added to root `devDependencies`:**
+
 - `oxlint` (^1.78.0)
 - `@oxlint/plugins` (^0.2.0)
 
@@ -45,6 +47,7 @@ The custom ESLint plugin was migrated to use oxlint's JS Plugin API:
 - Test files updated to use `oxlint/plugins-dev` RuleTester instead of `@typescript-eslint/rule-tester`
 
 **All 4 custom rules migrated:**
+
 1. `no-direct-integration-imports` — Blocks direct imports from encapsulated libraries
 2. `no-internal-file-imports` — Blocks cross-package imports of underscore files
 3. `no-internal-file-exports` — Blocks re-exporting internal files in public API
@@ -53,6 +56,7 @@ The custom ESLint plugin was migrated to use oxlint's JS Plugin API:
 ### Documentation
 
 **Updated:**
+
 - `AGENTS.md` — Linting section, pre-commit validation, ESLint references
 - `ARCHITECTURE.md` — Dependency Management Strategy enforcement section
 
@@ -82,6 +86,7 @@ oxlint has 845+ built-in rules covering ESLint core, typescript-eslint, unicorn,
 ### JS Plugins (Alpha)
 
 The oxlint JS Plugin API is currently in alpha. This means:
+
 - The API may change in future versions
 - BlueJS custom rules are migrated but may need updates
 - The `eslintCompatPlugin` wrapper provides dual compatibility with ESLint

@@ -52,7 +52,11 @@ export function addEventHandler(emitter: EventEmitter, type: EventType, handler:
     }
 }
 
-export function addEventHandlers(emitter: EventEmitter, mappings: Record<string, EventHandler>, prefixed: boolean = false): void {
+export function addEventHandlers(
+    emitter: EventEmitter,
+    mappings: Record<string, EventHandler>,
+    prefixed: boolean = false
+): void {
     for (const key in mappings) {
         let type: EventType | undefined;
 
@@ -120,7 +124,12 @@ export function addEventListener(emitter: EventEmitter, type: EventType, listene
     (emitter as any)[$events] = _events;
 }
 
-export function addFiniteEventListener(emitter: EventEmitter, type: EventType, times: number, listener: EventListener): void {
+export function addFiniteEventListener(
+    emitter: EventEmitter,
+    type: EventType,
+    times: number,
+    listener: EventListener
+): void {
     const finiteListener: EventListener = function (this: EventEmitter): boolean {
         listener.apply(this, arguments as any);
         return --times === 0;

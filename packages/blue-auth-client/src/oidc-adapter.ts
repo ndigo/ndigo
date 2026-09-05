@@ -176,7 +176,10 @@ function isLoopbackHost(hostname: string): boolean {
  */
 function assertTrustedUrl(url: URL, label: string): void {
     if (url.protocol !== 'https:' && !isLoopbackHost(url.hostname)) {
-        throw new OIDCError('configuration', `${label} must use HTTPS (loopback exempt): ${url.protocol} is not allowed`);
+        throw new OIDCError(
+            'configuration',
+            `${label} must use HTTPS (loopback exempt): ${url.protocol} is not allowed`
+        );
     }
 }
 
@@ -242,7 +245,7 @@ export class OIDCAdapter implements AuthAdapter {
             throw new OIDCError(
                 'configuration',
                 'OIDCAdapter requires a trusted verification source: provide jwksUrl, discovery: true, or tokenValidator. ' +
-                    'Accepting tokens without signature verification is not supported.',
+                    'Accepting tokens without signature verification is not supported.'
             );
         }
         this.#discoveryUrl = `${config.issuer.replace(/\/$/, '')}/.well-known/openid-configuration`;
@@ -324,7 +327,10 @@ export class OIDCAdapter implements AuthAdapter {
         const maxBytes = this.#config.maxResponseBytes ?? DEFAULT_MAX_RESPONSE_BYTES;
         const timeoutMs = this.#config.fetchTimeoutMs ?? DEFAULT_FETCH_TIMEOUT_MS;
         const controller = new AbortController();
-        const timer = setTimeout(() => controller.abort(new OIDCError('network', `${label} fetch timed out`)), timeoutMs);
+        const timer = setTimeout(
+            () => controller.abort(new OIDCError('network', `${label} fetch timed out`)),
+            timeoutMs
+        );
         try {
             const response = await fetch(url, { signal: controller.signal, redirect: 'error' });
             if (!response.ok) {
@@ -522,10 +528,18 @@ export class OIDCAdapter implements AuthAdapter {
         if (typeof response.id_token !== 'string' || response.id_token.length === 0) {
             throw new OIDCError('malformed_response', 'Token response is missing id_token');
         }
-        if (response.access_token !== undefined && response.access_token !== null && typeof response.access_token !== 'string') {
+        if (
+            response.access_token !== undefined &&
+            response.access_token !== null &&
+            typeof response.access_token !== 'string'
+        ) {
             throw new OIDCError('malformed_response', 'Token response access_token is not a string');
         }
-        if (response.expires_in !== undefined && response.expires_in !== null && (typeof response.expires_in !== 'number' || !Number.isFinite(response.expires_in))) {
+        if (
+            response.expires_in !== undefined &&
+            response.expires_in !== null &&
+            (typeof response.expires_in !== 'number' || !Number.isFinite(response.expires_in))
+        ) {
             throw new OIDCError('malformed_response', 'Token response expires_in is not a number');
         }
         return {
@@ -559,7 +573,9 @@ export class OIDCAdapter implements AuthAdapter {
 
     async authenticate(_credentials: unknown): Promise<AuthResult> {
         // OIDC uses the authorization code flow, not direct credential authentication.
-        throw new Error('OIDCAdapter does not support direct credential authentication — use createAuthorizationRequest() and exchangeCodeForTokens()');
+        throw new Error(
+            'OIDCAdapter does not support direct credential authentication — use createAuthorizationRequest() and exchangeCodeForTokens()'
+        );
     }
 
     /**
@@ -573,12 +589,15 @@ export class OIDCAdapter implements AuthAdapter {
         if (!doc.endSessionEndpoint) return null;
         const url = new URL(doc.endSessionEndpoint);
         if (idTokenHint !== undefined) url.searchParams.set('id_token_hint', idTokenHint);
-        if (postLogoutRedirectUri !== undefined) url.searchParams.set('post_logout_redirect_uri', postLogoutRedirectUri);
+        if (postLogoutRedirectUri !== undefined)
+            url.searchParams.set('post_logout_redirect_uri', postLogoutRedirectUri);
         return url.toString();
     }
 
     async refresh(_token: string): Promise<AuthResult> {
-        throw new Error('OIDCAdapter.refresh() is not implemented - use the refresh token grant via exchangeCodeForTokens-style handling');
+        throw new Error(
+            'OIDCAdapter.refresh() is not implemented - use the refresh token grant via exchangeCodeForTokens-style handling'
+        );
     }
 
     async logout(_token: string): Promise<void> {

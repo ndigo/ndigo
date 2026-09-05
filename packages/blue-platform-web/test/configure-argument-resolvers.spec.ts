@@ -57,21 +57,18 @@ describe('configureBrowserArgumentResolvers', () => {
         configureBrowserArgumentResolvers(context);
 
         const resolvers = context.getValue<any[]>('argumentResolvers');
-        const stateResolver = resolvers.find((r) => r.supportsParameter(
-            new MethodParameter(MethodParameterType.STATE, 'count')
-        ));
+        const stateResolver = resolvers.find((r) =>
+            r.supportsParameter(new MethodParameter(MethodParameterType.STATE, 'count'))
+        );
 
         // Mock history.state to return an object with count property
         const originalState = globalThis.history?.state;
         vi.stubGlobal('history', { state: { count: '123' } });
 
-        const parameter = new MethodParameter(
-            MethodParameterType.STATE,
-            'count',
-            false,
-            null,
-            { source: String, target: Number }
-        );
+        const parameter = new MethodParameter(MethodParameterType.STATE, 'count', false, null, {
+            source: String,
+            target: Number,
+        });
         const value = stateResolver.resolveArgument(parameter, {} as any, {} as any);
 
         expect(value).toBe(123);

@@ -628,7 +628,7 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
         this.#contentSource = contentSource;
 
         if (!this.#customThemeResolver) {
-        this.#themeResolver = null;
+            this.#themeResolver = null;
         }
     }
 
@@ -834,7 +834,7 @@ export const AsApplicationContextAware = <T extends Constructable>(
     superclass: T
 ): Constructable<ApplicationContextAware> & T =>
     class extends AsAware(superclass) implements ApplicationContextAware {
-    readonly applicationContext?: ApplicationContext;
+        readonly applicationContext?: ApplicationContext;
 
         /**
          * Set the ApplicationContext that this object runs in. Normally this call will be used to initialize the object.

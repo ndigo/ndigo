@@ -61,7 +61,9 @@ export function resolveHTTPRequestLimits(limits?: HTTPRequestLimits): ResolvedHT
         const value = limits[key];
         if (value === undefined) continue;
         if (typeof value !== 'number' || !Number.isFinite(value) || value <= 0) {
-            throw new RangeError(`HTTPRequestLimits.${key} must be a positive finite number, received ${String(value)}`);
+            throw new RangeError(
+                `HTTPRequestLimits.${key} must be a positive finite number, received ${String(value)}`
+            );
         }
         (resolved as unknown as Record<string, number>)[key] = value;
     }

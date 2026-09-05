@@ -18,13 +18,10 @@ describe('configureStrictBrowserArgumentResolvers', () => {
         const resolvers = configureStrictBrowserArgumentResolvers(context);
 
         const stateResolver = resolvers.find((r) => r instanceof BrowserStateValueMethodArgumentResolver);
-        const parameter = new MethodParameter(
-            MethodParameterType.STATE,
-            'count',
-            false,
-            null,
-            { source: String, target: Number }
-        );
+        const parameter = new MethodParameter(MethodParameterType.STATE, 'count', false, null, {
+            source: String,
+            target: Number,
+        });
 
         // Mock history.state to return an object with count property
         const originalState = globalThis.history?.state;

@@ -73,7 +73,9 @@ describe('AuthRouteGuard', () => {
             const mockAdapter = createMockAdapter('jwt', createMockPrincipal());
             AuthRegistry.register(mockAdapter);
 
-            function handlerFn() { return {}; }
+            function handlerFn() {
+                return {};
+            }
             setHandlerMetadata(handlerFn, { [AUTH_REQUIRED_KEY]: true });
 
             const route = createMockRoute('valid-token');
@@ -91,7 +93,9 @@ describe('AuthRouteGuard', () => {
             const mockAdapter = createMockAdapter('jwt', createMockPrincipal());
             AuthRegistry.register(mockAdapter);
 
-            function handlerFn() { return {}; }
+            function handlerFn() {
+                return {};
+            }
             setHandlerMetadata(handlerFn, { [AUTH_REQUIRED_KEY]: true });
 
             const route = createMockRoute(null);
@@ -109,7 +113,9 @@ describe('AuthRouteGuard', () => {
             const mockAdapter = createMockAdapter('jwt', null);
             AuthRegistry.register(mockAdapter);
 
-            function handlerFn() { return {}; }
+            function handlerFn() {
+                return {};
+            }
             setHandlerMetadata(handlerFn, { [AUTH_REQUIRED_KEY]: true });
 
             const route = createMockRoute('invalid-token');
@@ -129,7 +135,9 @@ describe('AuthRouteGuard', () => {
             const mockAdapter = createMockAdapter('jwt', createMockPrincipal());
             AuthRegistry.register(mockAdapter);
 
-            function handlerFn() { return {}; }
+            function handlerFn() {
+                return {};
+            }
             setHandlerMetadata(handlerFn, {
                 [`${AUTH_REQUIRED_KEY}:handle`]: true,
             });
@@ -149,7 +157,9 @@ describe('AuthRouteGuard', () => {
             const mockAdapter = createMockAdapter('jwt', createMockPrincipal());
             AuthRegistry.register(mockAdapter);
 
-            function handlerFn() { return {}; }
+            function handlerFn() {
+                return {};
+            }
             // No metadata set at all
             setHandlerMetadata(handlerFn, {});
 
@@ -170,7 +180,9 @@ describe('AuthRouteGuard', () => {
             const mockAdapter = createMockAdapter('jwt', createMockPrincipal('1', 'Admin', ['admin', 'user']));
             AuthRegistry.register(mockAdapter);
 
-            function handlerFn() { return {}; }
+            function handlerFn() {
+                return {};
+            }
             setHandlerMetadata(handlerFn, {
                 [`${AUTH_ROLES_KEY}:adminAction`]: ['admin'],
             });
@@ -190,7 +202,9 @@ describe('AuthRouteGuard', () => {
             const mockAdapter = createMockAdapter('jwt', createMockPrincipal('1', 'User', ['user']));
             AuthRegistry.register(mockAdapter);
 
-            function handlerFn() { return {}; }
+            function handlerFn() {
+                return {};
+            }
             setHandlerMetadata(handlerFn, {
                 [`${AUTH_ROLES_KEY}:adminAction`]: ['admin'],
             });
@@ -210,7 +224,9 @@ describe('AuthRouteGuard', () => {
             const mockAdapter = createMockAdapter('jwt', createMockPrincipal('1', 'Admin', ['admin', 'editor']));
             AuthRegistry.register(mockAdapter);
 
-            function handlerFn() { return {}; }
+            function handlerFn() {
+                return {};
+            }
             setHandlerMetadata(handlerFn, {
                 [AUTH_ROLES_KEY]: ['admin'],
                 [`${AUTH_ROLES_KEY}:editContent`]: ['editor'],
@@ -231,7 +247,9 @@ describe('AuthRouteGuard', () => {
             const mockAdapter = createMockAdapter('jwt', createMockPrincipal('1', 'User', ['user']));
             AuthRegistry.register(mockAdapter);
 
-            function handlerFn() { return {}; }
+            function handlerFn() {
+                return {};
+            }
             setHandlerMetadata(handlerFn, {
                 [AUTH_ROLES_KEY]: ['admin'],
             });
@@ -250,7 +268,9 @@ describe('AuthRouteGuard', () => {
 
     describe('preHandle - no adapters registered', () => {
         test('returns false when auth required but no adapters are registered', async () => {
-            function handlerFn() { return {}; }
+            function handlerFn() {
+                return {};
+            }
             setHandlerMetadata(handlerFn, { [AUTH_REQUIRED_KEY]: true });
 
             const route = createMockRoute('token');
@@ -259,7 +279,6 @@ describe('AuthRouteGuard', () => {
                 method: 'get',
                 path: '/test',
             };
-
 
             // validate() with an explicit adapter returns 401 when the
             // adapter is not registered — fail-closed, never tried-any.

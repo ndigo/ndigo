@@ -6,7 +6,7 @@ import { getSymbolMetadata } from '@blue/core';
 
 /**
  * An OpenTelemetry instrumentation that automatically wraps methods decorated with `@counted`.
- * 
+ *
  * This instrumentation discovers decorated methods via the `CountedRegistry` and
  * applies the counting logic using the instrumentation's patching mechanism.
  */
@@ -20,18 +20,14 @@ export class CountedInstrumentation extends BaseBlueInstrumentation {
 
         for (const prototype of prototypes) {
             const metadata = getSymbolMetadata(prototype);
-            
+
             for (const key of Object.keys(metadata)) {
                 if (key.startsWith('telemetry:counted:')) {
                     const methodName = key.replace('telemetry:counted:', '');
                     const config = getCounted(prototype, methodName);
 
                     if (config) {
-                        this._wrap(
-                            prototype,
-                            methodName,
-                            this._createCountPatch(config)
-                        );
+                        this._wrap(prototype, methodName, this._createCountPatch(config));
                     }
                 }
             }
@@ -43,7 +39,7 @@ export class CountedInstrumentation extends BaseBlueInstrumentation {
 
         for (const prototype of prototypes) {
             const metadata = getSymbolMetadata(prototype);
-            
+
             for (const key of Object.keys(metadata)) {
                 if (key.startsWith('telemetry:counted:')) {
                     const methodName = key.replace('telemetry:counted:', '');

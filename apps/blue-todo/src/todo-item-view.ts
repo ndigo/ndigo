@@ -47,7 +47,7 @@ export default class TodoItem extends AbstractWebComponent {
 
     handleConnect(): void {
         this.$item = this.create('li', { className: 'item' });
-        
+
         const view = this.create('div', { className: 'view' });
         const checkbox = this.create('input', { className: 'toggle', type: 'checkbox' });
         const label = this.create('label', { textContent: this.#text });
@@ -62,7 +62,7 @@ export default class TodoItem extends AbstractWebComponent {
 
         this.bindEvents({
             'click .destroy': 'handleRemove',
-            'click .toggle': 'handleToggle'
+            'click .toggle': 'handleToggle',
         });
 
         this.render();
@@ -82,7 +82,7 @@ export default class TodoItem extends AbstractWebComponent {
         if (!this.$text) return;
 
         this.$text.textContent = this.#text;
-        
+
         if (this.#checked) {
             this.$item.classList.add('completed');
             this.$checkbox.setAttribute('checked', '');

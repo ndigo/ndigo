@@ -9,9 +9,7 @@ import { createHmac } from 'node:crypto';
 function createJWT(payload: Record<string, any>, secret = 'test-secret'): string {
     const header = Buffer.from(JSON.stringify({ alg: 'HS256', typ: 'JWT' })).toString('base64url');
     const body = Buffer.from(JSON.stringify(payload)).toString('base64url');
-    const signature = createHmac('sha256', secret)
-        .update(`${header}.${body}`)
-        .digest('base64url');
+    const signature = createHmac('sha256', secret).update(`${header}.${body}`).digest('base64url');
     return `${header}.${body}.${signature}`;
 }
 
@@ -84,7 +82,7 @@ describe('JWTAdapter', () => {
                 exp: futureTime,
             });
 
-            const result = await adapter.validate(token) as Principal;
+            const result = (await adapter.validate(token)) as Principal;
 
             expect(result).not.toBeNull();
             expect(result.id).toBe('42');
@@ -105,7 +103,7 @@ describe('JWTAdapter', () => {
                 exp: futureTime,
             });
 
-            const result = await adapter.validate(token) as Principal;
+            const result = (await adapter.validate(token)) as Principal;
             expect(result!.name).toBe('alice@example.com');
         });
 
@@ -118,7 +116,7 @@ describe('JWTAdapter', () => {
                 exp: futureTime,
             });
 
-            const result = await adapter.validate(token) as Principal;
+            const result = (await adapter.validate(token)) as Principal;
             expect(result!.id).toBe('unknown');
         });
 
@@ -131,7 +129,7 @@ describe('JWTAdapter', () => {
                 exp: futureTime,
             });
 
-            const result = await adapter.validate(token) as Principal;
+            const result = (await adapter.validate(token)) as Principal;
             expect(result!.name).toBe('Unknown');
         });
 
@@ -145,7 +143,7 @@ describe('JWTAdapter', () => {
                 exp: futureTime,
             });
 
-            const result = await adapter.validate(token) as Principal;
+            const result = (await adapter.validate(token)) as Principal;
             expect(result!.roles).toEqual([]);
         });
 
@@ -157,7 +155,7 @@ describe('JWTAdapter', () => {
                 aud: 'my-app',
             });
 
-            const result = await adapter.validate(token) as Principal;
+            const result = (await adapter.validate(token)) as Principal;
             expect(result).not.toBeNull();
             expect(result!.id).toBe('1');
         });
@@ -166,7 +164,7 @@ describe('JWTAdapter', () => {
     describe('authenticate', () => {
         test('throws error as not implemented', async () => {
             await expect(adapter.authenticate({})).rejects.toThrow(
-                'JWTAdapter.authenticate() not implemented - use a proper auth flow',
+                'JWTAdapter.authenticate() not implemented - use a proper auth flow'
             );
         });
     });
@@ -174,7 +172,7 @@ describe('JWTAdapter', () => {
     describe('refresh', () => {
         test('throws error as not implemented', async () => {
             await expect(adapter.refresh('token')).rejects.toThrow(
-                'JWTAdapter.refresh() not implemented - use a proper token refresh flow',
+                'JWTAdapter.refresh() not implemented - use a proper token refresh flow'
             );
         });
     });

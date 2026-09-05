@@ -61,13 +61,10 @@ describe('BrowserStateValueMethodArgumentResolver', () => {
     test('applies type-based conversion when convertType is provided', () => {
         vi.stubGlobal('history', { state: { count: '42' } });
 
-        const parameter = new MethodParameter(
-            MethodParameterType.STATE,
-            'count',
-            false,
-            null,
-            { source: String, target: Number }
-        );
+        const parameter = new MethodParameter(MethodParameterType.STATE, 'count', false, null, {
+            source: String,
+            target: Number,
+        });
         const value = resolver.resolveArgument(parameter, { data: {} } as any, {} as any);
 
         expect(value).toBe(42);
@@ -76,13 +73,10 @@ describe('BrowserStateValueMethodArgumentResolver', () => {
     test('applies boolean conversion when convertType is provided', () => {
         vi.stubGlobal('history', { state: { active: 'true' } });
 
-        const parameter = new MethodParameter(
-            MethodParameterType.STATE,
-            'active',
-            false,
-            null,
-            { source: String, target: Boolean }
-        );
+        const parameter = new MethodParameter(MethodParameterType.STATE, 'active', false, null, {
+            source: String,
+            target: Boolean,
+        });
         const value = resolver.resolveArgument(parameter, { data: {} } as any, {} as any);
 
         expect(value).toBe(true);

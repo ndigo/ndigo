@@ -16,11 +16,11 @@ import { entity, primaryColumn, column } from '@blue/orm';
 
 @entity('users')
 class User {
-  @primaryColumn()
-  id: number;
+    @primaryColumn()
+    id: number;
 
-  @column()
-  name: string;
+    @column()
+    name: string;
 }
 
 const ds = new DrizzleDataSource({ url: 'file:./app.db' });

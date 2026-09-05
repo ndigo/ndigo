@@ -7,13 +7,10 @@ describe('resolver conversion errors', () => {
         vi.stubGlobal('document', { cookie: 'count=42' });
 
         const resolver = new BrowserCookieValueMethodArgumentResolver();
-        const parameter = new MethodParameter(
-            MethodParameterType.COOKIE,
-            'count',
-            false,
-            null,
-            { source: String, target: Number }
-        );
+        const parameter = new MethodParameter(MethodParameterType.COOKIE, 'count', false, null, {
+            source: String,
+            target: Number,
+        });
 
         const value = resolver.resolveArgument(parameter, { data: {}, params: null } as any, {} as any);
         expect(value).toBe(42);

@@ -60,7 +60,7 @@ beforeAll(async () => {
                     token_endpoint: `${issuer()}/token`,
                     jwks_uri: `${issuer()}/jwks`,
                     end_session_endpoint: `${issuer()}/logout`,
-                }),
+                })
             );
         } else if (path === '/jwks') {
             res.writeHead(200, { 'Content-Type': 'application/json' });
@@ -80,7 +80,9 @@ beforeAll(async () => {
                 .setExpirationTime('1h')
                 .sign(privateKey);
             res.writeHead(200, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ access_token: 'at-123', id_token: idToken, token_type: 'Bearer', expires_in: 3600 }));
+            res.end(
+                JSON.stringify({ access_token: 'at-123', id_token: idToken, token_type: 'Bearer', expires_in: 3600 })
+            );
         } else {
             res.writeHead(404).end();
         }
@@ -200,7 +202,7 @@ describe('OIDCAdapter full authorization-code flow', () => {
                     authorization_endpoint: 'https://x/a',
                     token_endpoint: 'https://x/t',
                     jwks_uri: 'https://x/j',
-                }),
+                })
             );
         });
         const mismatchPort = await listen(mismatch);

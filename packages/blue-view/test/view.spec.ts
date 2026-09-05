@@ -5,7 +5,14 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ViewTarget } from '@blue/view';
 import type { MediaType } from '@blue/core';
-import { AbstractTemplateView, StringTemplateView, RerouteView, ContentNegotiationViewResolver, ContentNegotiationManager, FixedContentNegotiationStrategy } from '@blue/view';
+import {
+    AbstractTemplateView,
+    StringTemplateView,
+    RerouteView,
+    ContentNegotiationViewResolver,
+    ContentNegotiationManager,
+    FixedContentNegotiationStrategy,
+} from '@blue/view';
 import { MediaTypes } from '@blue/core';
 
 class MockTarget implements ViewTarget {
@@ -145,11 +152,7 @@ describe('StringTemplateView — integration (view.render pipeline)', () => {
 
         await view.render({ name: 'World' }, {}, target);
 
-        expect(target.commit).toHaveBeenCalledWith(
-            '<html><body>World</body></html>',
-            { name: 'World' },
-            {}
-        );
+        expect(target.commit).toHaveBeenCalledWith('<html><body>World</body></html>', { name: 'World' }, {});
     });
 
     it('renders end-to-end through view.render() with nested property access', async () => {
@@ -277,9 +280,7 @@ describe('View Negotiation Pipeline', () => {
     });
 
     it('wires the negotiation manager to the resolver', () => {
-        const manager = new ContentNegotiationManager([
-            new FixedContentNegotiationStrategy([MediaTypes.TEXT_HTML]),
-        ]);
+        const manager = new ContentNegotiationManager([new FixedContentNegotiationStrategy([MediaTypes.TEXT_HTML])]);
         const resolver = new ContentNegotiationViewResolver(manager);
         expect(resolver.contentNegotiationManager).toBe(manager);
     });

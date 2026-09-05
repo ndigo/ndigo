@@ -10,18 +10,18 @@ export default class TodoInput extends AbstractWebComponent {
 
     handleConnect(): void {
         this.$form = this.create('form', { id: 'new-todo-form' }) as HTMLFormElement;
-        this.$input = this.create('input', { 
-            type: 'text', 
-            className: 'new-todo', 
+        this.$input = this.create('input', {
+            type: 'text',
+            className: 'new-todo',
             placeholder: 'What needs to be done?',
-            autofocus: true 
+            autofocus: true,
         }) as HTMLInputElement;
 
         this.$form.appendChild(this.$input);
         this.appendChild(this.$form);
 
         this.bindEvents({
-            'submit #new-todo-form': 'handleSubmit'
+            'submit #new-todo-form': 'handleSubmit',
         });
     }
 

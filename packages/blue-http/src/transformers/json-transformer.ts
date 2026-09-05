@@ -26,7 +26,7 @@ export class JSONTransformer implements HTTPTransformer<JSONObject, JSONObject> 
             <T>(...fns: Array<(v: T) => T>) =>
             (x: T): T =>
                 fns.reduce((v, f) => f(v), x);
-        
+
         this.#pipeline = _pipe(...transforms);
         this.#condition = condition;
     }

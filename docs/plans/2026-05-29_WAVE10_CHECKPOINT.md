@@ -12,32 +12,32 @@ No new features. Wave 10 is exclusively about quality, clarity, and public API s
 
 Waves 1–9 are complete and committed. The full package matrix is now:
 
-| Package                  | Completed In | Status       |
-| :----------------------- | :----------- | :----------- |
-| `@blue/util`             | pre-Wave 1   | ✅ Stable     |
-| `@blue/parser`           | pre-Wave 1   | ✅ Stable     |
-| `@blue/model`            | pre-Wave 1   | ✅ Stable     |
-| `@blue/core`             | pre-Wave 1   | ✅ Stable     |
-| `@blue/http`             | pre-Wave 1   | ✅ Stable     |
-| `@blue/telemetry`        | pre-Wave 1   | ✅ Stable     |
-| `@blue/print`            | pre-Wave 1   | ✅ Stable     |
-| `@blue/eslint-plugin`    | Wave 2       | ✅ Stable     |
-| `@blue/context`          | Wave 7       | ✅ Stable     |
-| `@blue/validate`         | Wave 5/7     | ✅ Stable     |
-| `@blue/content`          | Wave 7       | ✅ Stable     |
-| `@blue/factory`          | Wave 5       | ✅ Stable     |
-| `@blue/domain`           | Wave 5       | 🟡 Advancing  |
-| `@blue/dispatcher`       | Wave 3/8     | 🟡 Advancing  |
-| `@blue/router`           | Wave 3       | 🟡 Advancing  |
-| `@blue/view`             | Wave 3       | 🟡 Advancing  |
-| `@blue/view-webcomponent`| Wave 3       | 🟡 Advancing  |
-| `@blue/boot`             | Wave 6       | 🟡 Advancing  |
-| `@blue/service`          | Wave 4       | 🟡 Advancing  |
-| `@blue/platform-web`     | Wave 3       | 🟡 Advancing  |
-| `@blue/platform-node`    | Wave 8       | ✅ MVP        |
-| `@blue/orm`              | Wave 9       | 🟡 Advancing  |
-| `@blue/auth`             | Wave 9       | ✅ MVP        |
-| `blue-demo-node`         | Wave 8/9     | ✅ Functional  |
+| Package                   | Completed In | Status        |
+| :------------------------ | :----------- | :------------ |
+| `@blue/util`              | pre-Wave 1   | ✅ Stable     |
+| `@blue/parser`            | pre-Wave 1   | ✅ Stable     |
+| `@blue/model`             | pre-Wave 1   | ✅ Stable     |
+| `@blue/core`              | pre-Wave 1   | ✅ Stable     |
+| `@blue/http`              | pre-Wave 1   | ✅ Stable     |
+| `@blue/telemetry`         | pre-Wave 1   | ✅ Stable     |
+| `@blue/print`             | pre-Wave 1   | ✅ Stable     |
+| `@blue/eslint-plugin`     | Wave 2       | ✅ Stable     |
+| `@blue/context`           | Wave 7       | ✅ Stable     |
+| `@blue/validate`          | Wave 5/7     | ✅ Stable     |
+| `@blue/content`           | Wave 7       | ✅ Stable     |
+| `@blue/factory`           | Wave 5       | ✅ Stable     |
+| `@blue/domain`            | Wave 5       | 🟡 Advancing  |
+| `@blue/dispatcher`        | Wave 3/8     | 🟡 Advancing  |
+| `@blue/router`            | Wave 3       | 🟡 Advancing  |
+| `@blue/view`              | Wave 3       | 🟡 Advancing  |
+| `@blue/view-webcomponent` | Wave 3       | 🟡 Advancing  |
+| `@blue/boot`              | Wave 6       | 🟡 Advancing  |
+| `@blue/service`           | Wave 4       | 🟡 Advancing  |
+| `@blue/platform-web`      | Wave 3       | 🟡 Advancing  |
+| `@blue/platform-node`     | Wave 8       | ✅ MVP        |
+| `@blue/orm`               | Wave 9       | 🟡 Advancing  |
+| `@blue/auth`              | Wave 9       | ✅ MVP        |
+| `blue-demo-node`          | Wave 8/9     | ✅ Functional |
 
 ---
 
@@ -60,13 +60,16 @@ Waves 1–9 are complete and committed. The full package matrix is now:
 Mark clearly unstable / forward-looking APIs so consumers know what to trust.
 
 **`@experimental` to add:**
+
 - `@transactional()` decorator in `@blue/orm` — stores metadata but no `TransactionManager` enforces it yet; will be functional when `@blue/orm-drizzle` or `@blue/orm-sqlite` lands
 - `UnitOfWork` / `InMemoryUnitOfWork` in `@blue/orm` — fully implemented but not wired into any auto-configuration; opt-in only for now
 
 **Already marked `@experimental`:**
+
 - `SiteBuilder` in `@blue/boot` — multi-app composition deferred to post-1.0 (AD-3)
 
 **`@internal` to add:**
+
 - Concrete scope implementations in `@blue/factory`: `SingletonScope`, `HashScope`, `PrototypeScope` — expose only the `Scope` and `ScopedFactory` interfaces in the stable API
 
 ---
@@ -76,6 +79,7 @@ Mark clearly unstable / forward-looking APIs so consumers know what to trust.
 Add missing TSDoc to all public API functions in packages that lack it.
 
 **Priority targets:**
+
 - `@blue/orm/src/decorators.ts` — relation decorators and lifecycle decorators lack TSDoc
 - `@blue/auth/src/_decorators.ts` — already has TSDoc ✅
 - `@blue/platform-node/src/` — auto-configuration and resolvers already have TSDoc ✅
@@ -87,6 +91,7 @@ Add missing TSDoc to all public API functions in packages that lack it.
 New Wave 8/9 packages need README files:
 
 **Missing READMEs:**
+
 - `@blue/auth` — new in Wave 9; no README
 - `@blue/platform-node` — new in Wave 8; no README
 
@@ -103,6 +108,7 @@ Write `docs/migrations/2026-05-29_V1_MIGRATION.md` covering all breaking changes
 Extend the Vitest bench suite beyond `@blue/util` to cover hot paths in the dispatcher and router.
 
 **New bench files:**
+
 - `packages/blue-dispatcher/bench/routing.bench.ts` — `MetadataHandlerMapping.getHandler()` route resolution throughput
 - `packages/blue-router/bench/matching.bench.ts` — `RouteMatcher.match()` throughput for static vs. parameterised paths
 
@@ -111,6 +117,7 @@ Extend the Vitest bench suite beyond `@blue/util` to cover hot paths in the disp
 ## Demo Gate
 
 `blue-demo-node` already demonstrates:
+
 - ✅ `POST /auth/login` — `AuthenticationManager` with username/password strategy, returns Bearer token
 - ✅ `GET /notes` — Bearer-token-protected, returns all notes from `InMemoryEntityManager`
 - ✅ `POST /notes` — Bearer-token-protected, creates a `Note` with `@prePersist` lifecycle hook

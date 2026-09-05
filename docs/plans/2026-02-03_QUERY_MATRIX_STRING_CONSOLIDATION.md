@@ -13,6 +13,7 @@ This plan consolidates query string and matrix string parsing/stringification fu
 ## Decision Rationale
 
 After manual review, the code in `@blue/http` is newer and better structured than the older code in `@blue/router`. The `@blue/http` package:
+
 - Uses a cleaner `Parser`/`Stringifier` class pattern
 - Has a proper parser expression using `@blue/parser` primitives
 - Follows better separation of concerns
@@ -23,11 +24,13 @@ After manual review, the code in `@blue/http` is newer and better structured tha
 ### Query String Implementation
 
 **@blue/http (CANONICAL - KEEP):**
+
 - `src/query-string.ts` (148 lines) - QueryString class with parse/stringify methods
 - `src/parsers/query-expression.ts` (35 lines) - Parser combinator for query strings
 - `test/query-string.spec.ts` (218 lines) - Comprehensive tests
 
 **@blue/router (DUPLICATE - DELETE):**
+
 - `src/to-query-string.ts` (143 lines) - Standalone stringify function
 - `src/from-query-string.ts` (126 lines) - Standalone parse function
 - `test/to-query-string.spec.ts` (68 lines) - Basic tests
@@ -36,12 +39,14 @@ After manual review, the code in `@blue/http` is newer and better structured tha
 ### Matrix String Implementation
 
 **@blue/router (OLDER - REPLACE):**
+
 - `src/to-matrix-string.ts` (57 lines) - Standalone stringify function
 - `src/from-matrix-string.ts` (58 lines) - Standalone parse function
 - `test/to-matrix-string.spec.ts` (66 lines) - Comprehensive tests
 - `test/from-matrix-string.spec.ts` (66 lines) - Comprehensive tests
 
 **@blue/http (NONE - CREATE):**
+
 - Need to create matrix-string.ts following query-string.ts pattern
 - Need to create parsers/matrix-expression.ts following query-expression.ts pattern
 - Need to migrate tests from router
@@ -49,6 +54,7 @@ After manual review, the code in `@blue/http` is newer and better structured tha
 ### Dependencies
 
 **Router Usage:**
+
 - `src/path-route.ts` lines 10-13: Imports all four functions
 - `src/path-route.ts` lines 79, 85, 118: Uses matrix string functions
 - `src/path-route.ts` lines 193, 199, 239: Uses query string functions
@@ -65,17 +71,20 @@ After manual review, the code in `@blue/http` is newer and better structured tha
 **Location:** `packages/blue-http/src/parsers/matrix-expression.ts`
 
 **Pattern:** Follow `query-expression.ts` structure
+
 - Replace `&` delimiter with `;`
 - Replace `?#&` prefix with `;`
 - Handle comma-separated array values (e.g., `foo=bar,baz`)
 - Use same parser combinators from `@blue/parser`
 
 **Key Differences from Query Expression:**
+
 - Delimiter: `;` instead of `&`
 - Prefix: `;` instead of `?#&`
 - Array format: `foo=1,2,3` instead of `foo=1&foo=2&foo=3`
 
 **Code Structure:**
+
 ```typescript
 /**
  * @author Jeff Rose
@@ -102,6 +111,7 @@ const { fromRepeatedPairs } = list;
 **Pattern:** Follow `query-string.ts` class structure exactly
 
 **Code Structure:**
+
 ```typescript
 /**
  * @author Jeff Rose
@@ -138,6 +148,7 @@ export default new MatrixString();
 ```
 
 **Source Code:**
+
 - Stringify logic from `router/src/to-matrix-string.ts` (lines 41-45)
 - Parse logic via new matrix-expression parser
 - Class wrapper following query-string pattern
@@ -149,6 +160,7 @@ export default new MatrixString();
 **File:** `packages/blue-http/src/index.ts`
 
 **Add:**
+
 ```typescript
 export { default as QueryString } from './query-string';
 export { default as MatrixString } from './matrix-string';
@@ -165,16 +177,17 @@ export { default as MatrixString } from './matrix-string';
 **Current State:** 218 lines with many skipped tests
 
 **Actions:**
+
 1. Review tests from `router/test/from-query-string.spec.ts` (175 lines)
 2. Review tests from `router/test/to-query-string.spec.ts` (68 lines)
 3. Merge any unique test cases not already in http tests
 4. Un-skip relevant tests that now pass
 5. Ensure coverage of edge cases:
-   - Multiple values for same key
-   - Null/undefined handling
-   - Array value handling
-   - Encoding/decoding
-   - Prefix handling (?#&)
+    - Multiple values for same key
+    - Null/undefined handling
+    - Array value handling
+    - Encoding/decoding
+    - Prefix handling (?#&)
 
 **Expected Test Count:** ~250-300 lines (comprehensive suite)
 
@@ -183,27 +196,31 @@ export { default as MatrixString } from './matrix-string';
 **File:** `packages/blue-http/test/matrix-string.spec.ts`
 
 **Source Tests:**
+
 - `router/test/from-matrix-string.spec.ts` (66 lines)
 - `router/test/to-matrix-string.spec.ts` (66 lines)
 
 **Actions:**
+
 1. Copy all tests from both router matrix string test files
 2. Update imports to use `MatrixString` class:
-   ```typescript
-   import MatrixString from '../src/matrix-string';
-   
-   // Instead of:
-   // import fromMatrixString from '../src/from-matrix-string';
-   // import toMatrixString from '../src/to-matrix-string';
-   ```
+
+    ```typescript
+    import MatrixString from '../src/matrix-string';
+
+    // Instead of:
+    // import fromMatrixString from '../src/from-matrix-string';
+    // import toMatrixString from '../src/to-matrix-string';
+    ```
+
 3. Update test calls:
-   ```typescript
-   MatrixString.parse(';foo=bar')  // instead of fromMatrixString(...)
-   MatrixString.stringify({foo:'bar'})  // instead of toMatrixString(...)
-   ```
+    ```typescript
+    MatrixString.parse(';foo=bar'); // instead of fromMatrixString(...)
+    MatrixString.stringify({ foo: 'bar' }); // instead of toMatrixString(...)
+    ```
 4. Organize into two describe blocks:
-   - `describe('parse', () => { ... })`
-   - `describe('stringify', () => { ... })`
+    - `describe('parse', () => { ... })`
+    - `describe('stringify', () => { ... })`
 
 **Expected Test Count:** ~140-150 lines
 
@@ -216,6 +233,7 @@ cd packages/blue-http && pnpm test
 ```
 
 **Success Criteria:**
+
 - All query-string tests pass
 - All matrix-string tests pass
 - Coverage >80% for both files
@@ -229,36 +247,39 @@ cd packages/blue-http && pnpm test
 **File:** `packages/blue-router/package.json`
 
 **Before:**
+
 ```json
 {
-  "devDependencies": {
-    "@blue/core": "~3.0.0-alpha",
-    "@blue/util": "~3.0.0-alpha"
-  },
-  "peerDependencies": {
-    "@blue/core": "~3.0.0-alpha",
-    "@blue/util": "~3.0.0-alpha"
-  }
+    "devDependencies": {
+        "@blue/core": "~3.0.0-alpha",
+        "@blue/util": "~3.0.0-alpha"
+    },
+    "peerDependencies": {
+        "@blue/core": "~3.0.0-alpha",
+        "@blue/util": "~3.0.0-alpha"
+    }
 }
 ```
 
 **After:**
+
 ```json
 {
-  "devDependencies": {
-    "@blue/core": "~3.0.0-alpha",
-    "@blue/http": "~3.0.0-alpha",
-    "@blue/util": "~3.0.0-alpha"
-  },
-  "peerDependencies": {
-    "@blue/core": "~3.0.0-alpha",
-    "@blue/http": "~3.0.0-alpha",
-    "@blue/util": "~3.0.0-alpha"
-  }
+    "devDependencies": {
+        "@blue/core": "~3.0.0-alpha",
+        "@blue/http": "~3.0.0-alpha",
+        "@blue/util": "~3.0.0-alpha"
+    },
+    "peerDependencies": {
+        "@blue/core": "~3.0.0-alpha",
+        "@blue/http": "~3.0.0-alpha",
+        "@blue/util": "~3.0.0-alpha"
+    }
 }
 ```
 
 **Then run:**
+
 ```bash
 pnpm install
 ```
@@ -268,6 +289,7 @@ pnpm install
 **File:** `packages/blue-router/src/path-route.ts`
 
 **Before (lines 10-13):**
+
 ```typescript
 import fromMatrixString from './from-matrix-string';
 import toMatrixString from './to-matrix-string';
@@ -276,6 +298,7 @@ import fromQueryString from './from-query-string';
 ```
 
 **After:**
+
 ```typescript
 import QueryString from '@blue/http/query-string';
 import MatrixString from '@blue/http/matrix-string';
@@ -284,6 +307,7 @@ import MatrixString from '@blue/http/matrix-string';
 **Update usage (6 locations):**
 
 **Line 79 (parse matrix):**
+
 ```typescript
 // Before:
 value: fromMatrixString(dataString),
@@ -292,6 +316,7 @@ value: MatrixString.parse(dataString),
 ```
 
 **Line 85 (stringify matrix):**
+
 ```typescript
 // Before:
 value: toMatrixString(this.data),
@@ -300,6 +325,7 @@ value: MatrixString.stringify(this.data),
 ```
 
 **Line 118 (stringify matrix):**
+
 ```typescript
 // Before:
 matrixString = data && !dataString ? toMatrixString(data) : dataString;
@@ -308,6 +334,7 @@ matrixString = data && !dataString ? MatrixString.stringify(data) : dataString;
 ```
 
 **Line 193 (parse query):**
+
 ```typescript
 // Before:
 value: fromQueryString(queryString),
@@ -316,6 +343,7 @@ value: QueryString.parse(queryString),
 ```
 
 **Line 199 (stringify query):**
+
 ```typescript
 // Before:
 value: toQueryString(this.data),
@@ -324,6 +352,7 @@ value: QueryString.stringify(this.data),
 ```
 
 **Line 239 (stringify query):**
+
 ```typescript
 // Before:
 queryString = data && !dataString ? toQueryString(data) : dataString;
@@ -336,6 +365,7 @@ queryString = data && !dataString ? QueryString.stringify(data) : dataString;
 **File:** `packages/blue-router/src/index.ts`
 
 **Before (lines 11-14):**
+
 ```typescript
 export { default as fromMatrixString } from './from-matrix-string';
 export { default as fromQueryString } from './from-query-string';
@@ -344,6 +374,7 @@ export { default as toQueryString } from './to-query-string';
 ```
 
 **After (backward compatibility re-exports):**
+
 ```typescript
 // Re-export from @blue/http for backward compatibility
 import QueryString from '@blue/http/query-string';
@@ -377,6 +408,7 @@ rm src/to-query-string.ts
 ```
 
 **Files to delete (4 files, 384 lines total):**
+
 - `src/from-matrix-string.ts` (58 lines)
 - `src/to-matrix-string.ts` (57 lines)
 - `src/from-query-string.ts` (126 lines)
@@ -395,6 +427,7 @@ rm test/to-query-string.spec.ts
 ```
 
 **Files to delete (4 files, 375 lines total):**
+
 - `test/from-matrix-string.spec.ts` (66 lines)
 - `test/to-matrix-string.spec.ts` (66 lines)
 - `test/from-query-string.spec.ts` (175 lines)
@@ -428,6 +461,7 @@ cd packages/blue-http && pnpm build:lib
 **Expected:** Successful build with no errors
 
 **Verify output:**
+
 ```bash
 ls -la packages/blue-http/lib/
 # Should contain:
@@ -447,6 +481,7 @@ cd packages/blue-http && pnpm test
 ```
 
 **Expected:** All tests pass
+
 - QueryString.parse tests: ~120-150 tests
 - QueryString.stringify tests: ~50-60 tests
 - MatrixString.parse tests: ~30-40 tests
@@ -464,6 +499,7 @@ cd packages/blue-router && pnpm build:lib
 **Expected:** Successful build with no errors
 
 **Common Issues:**
+
 - Import path errors (check path to @blue/http exports)
 - Type errors (ensure class methods are properly bound)
 
@@ -477,6 +513,7 @@ cd packages/blue-router && pnpm test
 ```
 
 **Expected:** All tests pass
+
 - PathRoute tests should still pass
 - No test files for deleted functions (already removed)
 
@@ -532,24 +569,28 @@ pnpm test
 ### Unit Tests
 
 **@blue/http:**
+
 - **QueryString.parse()**: Test all query string parsing scenarios
 - **QueryString.stringify()**: Test all stringification scenarios
 - **MatrixString.parse()**: Test all matrix string parsing scenarios
 - **MatrixString.stringify()**: Test all stringification scenarios
 
 **@blue/router:**
+
 - **PathRoute**: Verify matrix/query string integration still works
 - Existing route tests should pass without modification
 
 ### Integration Tests
 
 **Manual Verification:**
+
 1. Create a PathRoute with query parameters
 2. Verify query string parsing/stringification
 3. Create a PathRoute with matrix parameters
 4. Verify matrix string parsing/stringification
 
 **Example Test:**
+
 ```typescript
 const route = new PathRoute('/users/:id');
 route.queryString = 'foo=bar&baz=qux';
@@ -572,6 +613,7 @@ expect(route.matrix).toEqual({ sort: 'asc', limit: '10' });
 ### 1. Parsing Edge Cases
 
 **Query Strings:**
+
 - Empty values: `foo=` → `{ foo: null }`
 - Missing values: `foo` → `{ foo: null }`
 - Multiple values: `foo=1&foo=2` → `{ foo: ['1', '2'] }`
@@ -580,6 +622,7 @@ expect(route.matrix).toEqual({ sort: 'asc', limit: '10' });
 - Prefixes: `?foo=bar`, `#foo=bar`, `&foo=bar`
 
 **Matrix Strings:**
+
 - Empty values: `foo=` → `{ foo: null }`
 - Missing values: `foo` → `{ foo: null }`
 - Array values: `foo=1,2,3` → `{ foo: ['1', '2', '3'] }`
@@ -590,6 +633,7 @@ expect(route.matrix).toEqual({ sort: 'asc', limit: '10' });
 ### 2. Stringify Edge Cases
 
 **Both:**
+
 - Undefined values: `{ foo: undefined }` → `''` (skip)
 - Null values: `{ foo: null }` → `'foo'` (key only)
 - Empty arrays: `{ foo: [] }` → `''` (skip) or `'foo='` (depends)
@@ -597,9 +641,11 @@ expect(route.matrix).toEqual({ sort: 'asc', limit: '10' });
 - Key ordering: Always alphabetical
 
 **Query Strings:**
+
 - Array format: `{ foo: ['a', 'b'] }` → `'foo=a&foo=b'`
 
 **Matrix Strings:**
+
 - Array format: `{ foo: ['a', 'b'] }` → `'foo=a,b'`
 - Delimiter: `;` instead of `&`
 
@@ -607,6 +653,7 @@ expect(route.matrix).toEqual({ sort: 'asc', limit: '10' });
 
 **Router Re-exports:**
 The router will re-export functions with the same names for backward compatibility:
+
 ```typescript
 // Old way (still works):
 import { fromQueryString } from '@blue/router';
@@ -672,22 +719,22 @@ QueryString.parse('?foo=bar');
 
 ## Timeline Estimate
 
-| Phase | Task | Time |
-|-------|------|------|
-| 1 | Create matrix-expression.ts | 45-60 min |
-| 1 | Create matrix-string.ts | 45-60 min |
-| 1 | Update http index exports | 5 min |
-| 2 | Enhance query-string tests | 30-45 min |
-| 2 | Create matrix-string tests | 30-45 min |
-| 2 | Run and verify http tests | 15 min |
-| 3 | Update router dependencies | 10 min |
-| 3 | Update path-route.ts | 20-30 min |
-| 3 | Update router index.ts | 15-20 min |
-| 4 | Delete router duplicates | 15 min |
-| 4 | Verify no remaining refs | 10 min |
-| 5 | Build and test everything | 30-45 min |
-| 5 | Final verification | 15-30 min |
-| **Total** | | **5-7 hours** |
+| Phase     | Task                        | Time          |
+| --------- | --------------------------- | ------------- |
+| 1         | Create matrix-expression.ts | 45-60 min     |
+| 1         | Create matrix-string.ts     | 45-60 min     |
+| 1         | Update http index exports   | 5 min         |
+| 2         | Enhance query-string tests  | 30-45 min     |
+| 2         | Create matrix-string tests  | 30-45 min     |
+| 2         | Run and verify http tests   | 15 min        |
+| 3         | Update router dependencies  | 10 min        |
+| 3         | Update path-route.ts        | 20-30 min     |
+| 3         | Update router index.ts      | 15-20 min     |
+| 4         | Delete router duplicates    | 15 min        |
+| 4         | Verify no remaining refs    | 10 min        |
+| 5         | Build and test everything   | 30-45 min     |
+| 5         | Final verification          | 15-30 min     |
+| **Total** |                             | **5-7 hours** |
 
 ---
 
@@ -696,43 +743,47 @@ QueryString.parse('?foo=bar');
 ### Documentation Updates
 
 1. **Update ARCHITECTURE.md:**
-   - Document that URL parsing utilities live in @blue/http
-   - Explain router's dependency on http for URL utilities
+
+    - Document that URL parsing utilities live in @blue/http
+    - Explain router's dependency on http for URL utilities
 
 2. **Update Router README (if exists):**
-   - Note that query/matrix string functions are re-exported from @blue/http
-   - Recommend using @blue/http directly for new code
+
+    - Note that query/matrix string functions are re-exported from @blue/http
+    - Recommend using @blue/http directly for new code
 
 3. **Update HTTP README (if exists):**
-   - Document QueryString and MatrixString classes
-   - Provide usage examples
-   - Explain Parser/Stringifier pattern
+    - Document QueryString and MatrixString classes
+    - Provide usage examples
+    - Explain Parser/Stringifier pattern
 
 ### Archive Plan
 
 1. **Update `2025-02-03_URL_PARSING_DUPLICATION.md`:**
-   - Mark as "Implemented"
-   - Reference this implementation plan
-   - Document chosen option (Option A)
+
+    - Mark as "Implemented"
+    - Reference this implementation plan
+    - Document chosen option (Option A)
 
 2. **Create Git Commit:**
-   ```bash
-   git add .
-   git commit -m "refactor(http,router): consolidate query/matrix string utilities
 
-   - Create MatrixString class in @blue/http following QueryString pattern
-   - Create matrix-expression parser using @blue/parser combinators
-   - Migrate all matrix string tests from router to http
-   - Enhance http query-string tests with router test cases
-   - Update router to import from @blue/http
-   - Delete duplicate query/matrix string code from router (759 lines)
-   - Maintain backward compatibility via router re-exports
+    ```bash
+    git add .
+    git commit -m "refactor(http,router): consolidate query/matrix string utilities
 
-   BREAKING CHANGE: None - backward compatibility maintained
-   
-   Ref: docs/plans/2025-02-03_QUERY_MATRIX_STRING_CONSOLIDATION.md
-   Closes: 2025-02-03_URL_PARSING_DUPLICATION.md"
-   ```
+    - Create MatrixString class in @blue/http following QueryString pattern
+    - Create matrix-expression parser using @blue/parser combinators
+    - Migrate all matrix string tests from router to http
+    - Enhance http query-string tests with router test cases
+    - Update router to import from @blue/http
+    - Delete duplicate query/matrix string code from router (759 lines)
+    - Maintain backward compatibility via router re-exports
+
+    BREAKING CHANGE: None - backward compatibility maintained
+
+    Ref: docs/plans/2025-02-03_QUERY_MATRIX_STRING_CONSOLIDATION.md
+    Closes: 2025-02-03_URL_PARSING_DUPLICATION.md"
+    ```
 
 ---
 
@@ -752,6 +803,7 @@ QueryString.parse('?foo=bar');
 **Question:** Should @blue/http export both the class and convenience functions?
 
 **Options:**
+
 - **A (Recommended):** Export only classes, consumers use `QueryString.parse()`
 - **B:** Export both class and functions: `QueryString`, `parseQueryString`, `stringifyQueryString`
 - **C:** Export only functions (deprecated pattern)
@@ -765,6 +817,7 @@ QueryString.parse('?foo=bar');
 **Example:** `foo=,bar,` → ?
 
 **Options:**
+
 - **A:** `{ foo: ['', 'bar', ''] }` (preserve empty strings)
 - **B:** `{ foo: ['bar'] }` (filter empty strings)
 - **C:** `{ foo: [null, 'bar', null] }` (convert to null)
@@ -780,6 +833,7 @@ QueryString.parse('?foo=bar');
 **Current State:** Many tests skipped for bracket/index array formats
 
 **Options:**
+
 - **A:** Keep skipped tests as documentation of future features
 - **B:** Delete skipped tests (YAGNI)
 - **C:** Move skipped tests to separate file (future-features.spec.ts.skip)
@@ -803,33 +857,37 @@ This consolidation project has been successfully completed. All query string and
 
 ### Phase Completion Timeline
 
-| Phase | Description | Status | Completion Date |
-|-------|-------------|--------|-----------------|
-| 1 | Create Matrix String in @blue/http | ✅ Complete | Feb 3, 2025 |
-| 2 | Migrate Tests to @blue/http | ✅ Complete | Feb 3, 2025 |
-| 3 | Update @blue/router to Use @blue/http | ✅ Complete | Feb 3, 2025 |
-| 4 | Delete Router Duplicates | ✅ Complete | Feb 3, 2025 |
-| 5 | Build and Test Everything | ✅ Complete | Feb 3, 2025 |
-| 6 | Specification Research & Compliance | ✅ Complete | Feb 6, 2025 |
+| Phase | Description                           | Status      | Completion Date |
+| ----- | ------------------------------------- | ----------- | --------------- |
+| 1     | Create Matrix String in @blue/http    | ✅ Complete | Feb 3, 2025     |
+| 2     | Migrate Tests to @blue/http           | ✅ Complete | Feb 3, 2025     |
+| 3     | Update @blue/router to Use @blue/http | ✅ Complete | Feb 3, 2025     |
+| 4     | Delete Router Duplicates              | ✅ Complete | Feb 3, 2025     |
+| 5     | Build and Test Everything             | ✅ Complete | Feb 3, 2025     |
+| 6     | Specification Research & Compliance   | ✅ Complete | Feb 6, 2025     |
 
 ### Achievement Metrics
 
 **Code Consolidation:**
+
 - 759 lines of duplicate code removed from @blue/router
 - 350+ lines of canonical implementation in @blue/http
 - Net reduction: ~400 lines with improved maintainability
 
 **Test Coverage:**
+
 - 167 new specification compliance tests added
 - Total @blue/http tests: 261 passing
 - Specification compliance rate: >95%
 
 **Documentation:**
+
 - 850+ line specification reference document created
 - All intentional deviations documented with rationale
 - Compliance matrices for RFC 3986, WHATWG, Matrix URIs
 
 **Architecture:**
+
 - Clear single source of truth established (@blue/http)
 - Proper dependency structure (router → http)
 - Backward compatibility maintained via re-exports
@@ -837,36 +895,42 @@ This consolidation project has been successfully completed. All query string and
 ### Key Deliverables
 
 1. **Implementation Files:**
-   - `packages/blue-http/src/matrix-string.ts`
-   - `packages/blue-http/src/parsers/matrix-expression.ts`
-   - Enhanced `packages/blue-http/src/query-string.ts`
+
+    - `packages/blue-http/src/matrix-string.ts`
+    - `packages/blue-http/src/parsers/matrix-expression.ts`
+    - Enhanced `packages/blue-http/src/query-string.ts`
 
 2. **Test Suites:**
-   - `packages/blue-http/test/query-string-spec-compliance.spec.ts` (61 tests)
-   - `packages/blue-http/test/matrix-string-spec-compliance.spec.ts` (62 tests)
-   - `packages/blue-http/test/url-search-params-compat.spec.ts` (44 tests)
+
+    - `packages/blue-http/test/query-string-spec-compliance.spec.ts` (61 tests)
+    - `packages/blue-http/test/matrix-string-spec-compliance.spec.ts` (62 tests)
+    - `packages/blue-http/test/url-search-params-compat.spec.ts` (44 tests)
 
 3. **Documentation:**
-   - `docs/reference/2025-02-06_URL_PARSING_SPECIFICATIONS.md`
-   - `docs/plans/2025-02-03_SESSION_CHECKPOINT.md`
+
+    - `docs/reference/2025-02-06_URL_PARSING_SPECIFICATIONS.md`
+    - `docs/plans/2025-02-03_SESSION_CHECKPOINT.md`
 
 4. **Backward Compatibility:**
-   - `packages/blue-router/src/index.ts` - Re-exports for existing consumers
+    - `packages/blue-router/src/index.ts` - Re-exports for existing consumers
 
 ### Specification Compliance
 
 **RFC 3986 - URI Generic Syntax:**
+
 - ✅ Section 2.2: Reserved characters properly handled
 - ✅ Section 2.3: Unreserved characters supported
 - ✅ Section 3.3: Matrix parameters (path component)
 - ✅ Section 3.4: Query component with delimiters
 
 **WHATWG URL Standard:**
+
 - ⚠️ URLSearchParams compatible (documented differences)
 - ✅ application/x-www-form-urlencoded encoding
 - ✅ Space encoding (`+` vs `%20`) both supported
 
 **Matrix URIs (Tim Berners-Lee):**
+
 - ✅ Semicolon delimiter for parameters
 - ✅ Comma-separated array values
 - ✅ Parameter order insignificance
@@ -874,38 +938,42 @@ This consolidation project has been successfully completed. All query string and
 ### Known Limitations (Documented)
 
 1. **Regex Pattern Restrictions:**
-   - Hyphen, dot, underscore, tilde must be percent-encoded
-   - Non-critical: Encoding mechanism works correctly
-   - Future enhancement option available
+
+    - Hyphen, dot, underscore, tilde must be percent-encoded
+    - Non-critical: Encoding mechanism works correctly
+    - Future enhancement option available
 
 2. **Consecutive Delimiter Handling:**
-   - Input like `a=1&&b=2` returns empty object
-   - Current workaround: Normalize input
-   - Low priority for future improvement
+
+    - Input like `a=1&&b=2` returns empty object
+    - Current workaround: Normalize input
+    - Low priority for future improvement
 
 3. **Null in Array Stringification:**
-   - `{arr: ['a', null]}` becomes `arr=a,null`
-   - Predictable behavior, documented
-   - Optional enhancement for true round-trip
+    - `{arr: ['a', null]}` becomes `arr=a,null`
+    - Predictable behavior, documented
+    - Optional enhancement for true round-trip
 
 ### Optional Future Enhancements
 
 These enhancements are **not required** for the project completion but are documented for future consideration:
 
 1. **Enhanced Regex Patterns (2-3 hours):**
-   - Add support for `-`, `.`, `_`, `~` in patterns
-   - Benefits: More intuitive parsing of common URLs
-   - Trade-off: Breaking change requiring careful testing
+
+    - Add support for `-`, `.`, `_`, `~` in patterns
+    - Benefits: More intuitive parsing of common URLs
+    - Trade-off: Breaking change requiring careful testing
 
 2. **Consecutive Delimiter Fix (1-2 hours):**
-   - Skip empty segments instead of failing
-   - Benefits: More robust parsing
-   - Trade-off: Behavior change
+
+    - Skip empty segments instead of failing
+    - Benefits: More robust parsing
+    - Trade-off: Behavior change
 
 3. **Null Array Element Handling (30 minutes):**
-   - Output empty elements instead of "null" string
-   - Benefits: True round-trip preservation
-   - Trade-off: Subtle behavior change
+    - Output empty elements instead of "null" string
+    - Benefits: True round-trip preservation
+    - Trade-off: Subtle behavior change
 
 ### References
 
@@ -921,7 +989,7 @@ These enhancements are **not required** for the project completion but are docum
 
 Below is the original implementation plan that was successfully executed:
 
-------
+---
 
 ## Phase 6: Specification Research and Test Coverage Enhancement
 
@@ -941,24 +1009,27 @@ After the query string and matrix string code consolidation is complete, conduct
 **Primary Sources to Research:**
 
 1. **WHATWG URL Standard**
-   - URL: https://url.spec.whatwg.org/
-   - Specifically: URLSearchParams interface
-   - Focus: Query string parsing and serialization rules
+
+    - URL: https://url.spec.whatwg.org/
+    - Specifically: URLSearchParams interface
+    - Focus: Query string parsing and serialization rules
 
 2. **RFC 3986 - Uniform Resource Identifier (URI): Generic Syntax**
-   - URL: https://tools.ietf.org/html/rfc3986
-   - Section 3.4: Query component
-   - Focus: Percent-encoding, reserved characters, delimiters
+
+    - URL: https://tools.ietf.org/html/rfc3986
+    - Section 3.4: Query component
+    - Focus: Percent-encoding, reserved characters, delimiters
 
 3. **W3C URL Specification (Historical)**
-   - URL: https://www.w3.org/TR/2012/WD-url-20120524/
-   - Section: collect-url-parameters algorithm
-   - Note: Referenced in current code comments
+
+    - URL: https://www.w3.org/TR/2012/WD-url-20120524/
+    - Section: collect-url-parameters algorithm
+    - Note: Referenced in current code comments
 
 4. **application/x-www-form-urlencoded Encoding**
-   - URL: https://www.w3.org/TR/html52/sec-forms.html#urlencoded-form-data
-   - Focus: Form data encoding rules
-   - Key: Space encoding (+), newline handling, special characters
+    - URL: https://www.w3.org/TR/html52/sec-forms.html#urlencoded-form-data
+    - Focus: Form data encoding rules
+    - Key: Space encoding (+), newline handling, special characters
 
 **Research Questions for Query Strings:**
 
@@ -968,10 +1039,10 @@ After the query string and matrix string code consolidation is complete, conduct
 - [ ] How are empty values represented? (`key=` vs `key` vs `key=null`)
 - [ ] Which characters must be percent-encoded?
 - [ ] How are arrays represented? (No standard - check common conventions)
-  - Repeated keys: `foo=1&foo=2`
-  - Brackets: `foo[]=1&foo[]=2`
-  - Indexed: `foo[0]=1&foo[1]=2`
-  - Comma-separated: `foo=1,2` (uncommon for query strings)
+    - Repeated keys: `foo=1&foo=2`
+    - Brackets: `foo[]=1&foo[]=2`
+    - Indexed: `foo[0]=1&foo[1]=2`
+    - Comma-separated: `foo=1,2` (uncommon for query strings)
 - [ ] How is null vs undefined vs empty string distinguished?
 - [ ] Should keys be sorted in output? (Not required by spec, but common practice)
 - [ ] What about nested objects/arrays? (Not standardized)
@@ -981,19 +1052,21 @@ After the query string and matrix string code consolidation is complete, conduct
 **Primary Sources to Research:**
 
 1. **RFC 3986 - Section 3.3: Path Component**
-   - URL: https://tools.ietf.org/html/rfc3986#section-3.3
-   - Matrix parameters defined within path segments
-   - Syntax: `/path;param1=value1;param2=value2/segment2`
+
+    - URL: https://tools.ietf.org/html/rfc3986#section-3.3
+    - Matrix parameters defined within path segments
+    - Syntax: `/path;param1=value1;param2=value2/segment2`
 
 2. **Tim Berners-Lee's Original Definition**
-   - URL: https://www.w3.org/DesignIssues/MatrixURIs.html
-   - Original proposal and rationale
-   - Usage patterns and semantics
+
+    - URL: https://www.w3.org/DesignIssues/MatrixURIs.html
+    - Original proposal and rationale
+    - Usage patterns and semantics
 
 3. **JAX-RS (Java API for RESTful Web Services)**
-   - Common implementation reference
-   - Matrix parameter handling patterns
-   - URL: https://jakarta.ee/specifications/restful-ws/
+    - Common implementation reference
+    - Matrix parameter handling patterns
+    - URL: https://jakarta.ee/specifications/restful-ws/
 
 **Research Questions for Matrix Strings:**
 
@@ -1011,14 +1084,14 @@ After the query string and matrix string code consolidation is complete, conduct
 
 **Document Key Differences:**
 
-| Aspect | Query String | Matrix String |
-|--------|--------------|---------------|
-| Location | After `?` in URL | Within path segments after `;` |
-| Delimiter | `&` | `;` |
-| Array Format | `key=v1&key=v2` | `key=v1,v2` |
-| Scope | Global to URL | Per path segment |
-| Spec Status | Well-defined | Less standardized |
-| Common Use | Search params, filters | Path-specific params |
+| Aspect       | Query String           | Matrix String                  |
+| ------------ | ---------------------- | ------------------------------ |
+| Location     | After `?` in URL       | Within path segments after `;` |
+| Delimiter    | `&`                    | `;`                            |
+| Array Format | `key=v1&key=v2`        | `key=v1,v2`                    |
+| Scope        | Global to URL          | Per path segment               |
+| Spec Status  | Well-defined           | Less standardized              |
+| Common Use   | Search params, filters | Path-specific params           |
 
 ---
 
@@ -1029,36 +1102,42 @@ After the query string and matrix string code consolidation is complete, conduct
 **Create Gap Analysis Document:**
 
 **Template:**
+
 ```markdown
 # URL String Parsing - Specification Compliance Analysis
 
 ## Query String Compliance
 
 ### Specification Requirements
+
 - [x] Requirement 1: Description
-  - Status: ✅ Implemented / ⚠️ Partial / ❌ Missing
-  - Location: `file.ts:line`
-  - Tests: `test-file.spec.ts:line`
-  
+    - Status: ✅ Implemented / ⚠️ Partial / ❌ Missing
+    - Location: `file.ts:line`
+    - Tests: `test-file.spec.ts:line`
+
 ### Identified Gaps
+
 1. Gap description
-   - Specification reference
-   - Current behavior
-   - Expected behavior
-   - Priority: High/Medium/Low
+    - Specification reference
+    - Current behavior
+    - Expected behavior
+    - Priority: High/Medium/Low
 
 ## Matrix String Compliance
 
 ### Specification Requirements
+
 [Same format as above]
 
 ### Identified Gaps
+
 [Same format as above]
 ```
 
 **Analysis Areas:**
 
 **Parsing:**
+
 - [ ] Character encoding/decoding
 - [ ] Delimiter handling
 - [ ] Prefix handling
@@ -1070,6 +1149,7 @@ After the query string and matrix string code consolidation is complete, conduct
 - [ ] Invalid input handling
 
 **Stringification:**
+
 - [ ] Character encoding
 - [ ] Delimiter usage
 - [ ] Key sorting
@@ -1093,11 +1173,11 @@ describe('QueryString - RFC 3986 Compliance', () => {
     describe('Character Encoding (RFC 3986 Section 2)', () => {
         // Tests for percent-encoding rules
     });
-    
+
     describe('Query Component (RFC 3986 Section 3.4)', () => {
         // Tests for query string structure
     });
-    
+
     describe('application/x-www-form-urlencoded', () => {
         // Tests for form encoding rules
     });
@@ -1119,11 +1199,11 @@ describe('MatrixString - RFC 3986 Compliance', () => {
     describe('Path Component Parameters (Section 3.3)', () => {
         // Tests for matrix parameter syntax
     });
-    
+
     describe('List Value Handling', () => {
         // Tests for comma-separated lists
     });
-    
+
     describe('Multiple Values Same Key', () => {
         // Tests for repeated parameters
     });
@@ -1135,142 +1215,147 @@ describe('MatrixString - RFC 3986 Compliance', () => {
 **Query String Tests:**
 
 1. **Percent-Encoding (RFC 3986)**
-   ```typescript
-   test('should encode unreserved characters as-is', () => {
-       // A-Z a-z 0-9 - _ . ~
-   });
-   
-   test('should percent-encode reserved characters', () => {
-       // : / ? # [ ] @ ! $ & ' ( ) * + , ; =
-   });
-   
-   test('should encode space as + or %20', () => {
-       // Both should be supported for parsing
-       // Choose one for stringification (typically +)
-   });
-   ```
+
+    ```typescript
+    test('should encode unreserved characters as-is', () => {
+        // A-Z a-z 0-9 - _ . ~
+    });
+
+    test('should percent-encode reserved characters', () => {
+        // : / ? # [ ] @ ! $ & ' ( ) * + , ; =
+    });
+
+    test('should encode space as + or %20', () => {
+        // Both should be supported for parsing
+        // Choose one for stringification (typically +)
+    });
+    ```
 
 2. **Delimiter Handling**
-   ```typescript
-   test('should support & as delimiter', () => {
-       expect(QueryString.parse('a=1&b=2')).toEqual({a:'1', b:'2'});
-   });
-   
-   test('should support ; as delimiter (legacy)', () => {
-       // RFC 3986 allows ; as sub-delimiter
-       expect(QueryString.parse('a=1;b=2')).toEqual({a:'1', b:'2'});
-   });
-   ```
+
+    ```typescript
+    test('should support & as delimiter', () => {
+        expect(QueryString.parse('a=1&b=2')).toEqual({ a: '1', b: '2' });
+    });
+
+    test('should support ; as delimiter (legacy)', () => {
+        // RFC 3986 allows ; as sub-delimiter
+        expect(QueryString.parse('a=1;b=2')).toEqual({ a: '1', b: '2' });
+    });
+    ```
 
 3. **Empty Value Handling**
-   ```typescript
-   test('should handle key with no = as null', () => {
-       expect(QueryString.parse('key')).toEqual({key: null});
-   });
-   
-   test('should handle key= as empty string', () => {
-       expect(QueryString.parse('key=')).toEqual({key: ''});
-   });
-   
-   test('should handle key=value', () => {
-       expect(QueryString.parse('key=value')).toEqual({key: 'value'});
-   });
-   ```
+
+    ```typescript
+    test('should handle key with no = as null', () => {
+        expect(QueryString.parse('key')).toEqual({ key: null });
+    });
+
+    test('should handle key= as empty string', () => {
+        expect(QueryString.parse('key=')).toEqual({ key: '' });
+    });
+
+    test('should handle key=value', () => {
+        expect(QueryString.parse('key=value')).toEqual({ key: 'value' });
+    });
+    ```
 
 4. **Multiple Value Handling**
-   ```typescript
-   test('should accumulate multiple values for same key', () => {
-       expect(QueryString.parse('k=1&k=2&k=3'))
-           .toEqual({k: ['1','2','3']});
-   });
-   
-   test('should preserve order of multiple values', () => {
-       expect(QueryString.parse('k=a&k=b&k=c'))
-           .toEqual({k: ['a','b','c']});
-   });
-   ```
+
+    ```typescript
+    test('should accumulate multiple values for same key', () => {
+        expect(QueryString.parse('k=1&k=2&k=3')).toEqual({ k: ['1', '2', '3'] });
+    });
+
+    test('should preserve order of multiple values', () => {
+        expect(QueryString.parse('k=a&k=b&k=c')).toEqual({ k: ['a', 'b', 'c'] });
+    });
+    ```
 
 5. **Array Format Support (Extensions)**
-   ```typescript
-   test('should parse bracket notation foo[]=bar', () => {
-       // If supported
-   });
-   
-   test('should parse indexed notation foo[0]=bar', () => {
-       // If supported
-   });
-   
-   test('should stringify arrays as repeated keys', () => {
-       expect(QueryString.stringify({k: ['a','b']}))
-           .toBe('k=a&k=b');
-   });
-   ```
+
+    ```typescript
+    test('should parse bracket notation foo[]=bar', () => {
+        // If supported
+    });
+
+    test('should parse indexed notation foo[0]=bar', () => {
+        // If supported
+    });
+
+    test('should stringify arrays as repeated keys', () => {
+        expect(QueryString.stringify({ k: ['a', 'b'] })).toBe('k=a&k=b');
+    });
+    ```
 
 6. **Edge Cases**
-   ```typescript
-   test('should handle embedded = in value', () => {
-       expect(QueryString.parse('url=http://example.com?id=123'))
-           .toEqual({url: 'http://example.com?id=123'});
-   });
-   
-   test('should handle consecutive delimiters', () => {
-       expect(QueryString.parse('a=1&&b=2')).toEqual({a:'1', b:'2'});
-   });
-   
-   test('should handle trailing delimiter', () => {
-       expect(QueryString.parse('a=1&')).toEqual({a:'1'});
-   });
-   
-   test('should handle leading delimiter', () => {
-       expect(QueryString.parse('&a=1')).toEqual({a:'1'});
-   });
-   ```
+
+    ```typescript
+    test('should handle embedded = in value', () => {
+        expect(QueryString.parse('url=http://example.com?id=123')).toEqual({ url: 'http://example.com?id=123' });
+    });
+
+    test('should handle consecutive delimiters', () => {
+        expect(QueryString.parse('a=1&&b=2')).toEqual({ a: '1', b: '2' });
+    });
+
+    test('should handle trailing delimiter', () => {
+        expect(QueryString.parse('a=1&')).toEqual({ a: '1' });
+    });
+
+    test('should handle leading delimiter', () => {
+        expect(QueryString.parse('&a=1')).toEqual({ a: '1' });
+    });
+    ```
 
 **Matrix String Tests:**
 
 1. **RFC 3986 Syntax**
-   ```typescript
-   test('should parse semicolon-delimited parameters', () => {
-       expect(MatrixString.parse('a=1;b=2')).toEqual({a:'1', b:'2'});
-   });
-   
-   test('should parse comma-separated list values', () => {
-       expect(MatrixString.parse('colors=red,green,blue'))
-           .toEqual({colors: ['red','green','blue']});
-   });
-   ```
+
+    ```typescript
+    test('should parse semicolon-delimited parameters', () => {
+        expect(MatrixString.parse('a=1;b=2')).toEqual({ a: '1', b: '2' });
+    });
+
+    test('should parse comma-separated list values', () => {
+        expect(MatrixString.parse('colors=red,green,blue')).toEqual({ colors: ['red', 'green', 'blue'] });
+    });
+    ```
 
 2. **Multiple Values Same Key**
-   ```typescript
-   test('should handle repeated parameter names', () => {
-       // Spec-compliant behavior: last wins? accumulate? need research
-       expect(MatrixString.parse('k=1;k=2')).toEqual(/* ? */);
-   });
-   ```
+
+    ```typescript
+    test('should handle repeated parameter names', () => {
+        // Spec-compliant behavior: last wins? accumulate? need research
+        expect(MatrixString.parse('k=1;k=2')).toEqual(/* ? */);
+    });
+    ```
 
 3. **Empty Values**
-   ```typescript
-   test('should handle parameter with no value', () => {
-       expect(MatrixString.parse('param')).toEqual({param: null});
-   });
-   
-   test('should handle empty list elements', () => {
-       expect(MatrixString.parse('list=a,,b'))
-           .toEqual({list: ['a','','b']});
-   });
-   ```
+
+    ```typescript
+    test('should handle parameter with no value', () => {
+        expect(MatrixString.parse('param')).toEqual({ param: null });
+    });
+
+    test('should handle empty list elements', () => {
+        expect(MatrixString.parse('list=a,,b')).toEqual({ list: ['a', '', 'b'] });
+    });
+    ```
 
 4. **Edge Cases**
-   ```typescript
-   test('should handle embedded = in list values', () => {
-       expect(MatrixString.parse('urls=http://a.com,http://b.com'))
-           .toEqual({urls: ['http://a.com','http://b.com']});
-   });
-   
-   test('should handle leading semicolon', () => {
-       expect(MatrixString.parse(';a=1')).toEqual({a:'1'});
-   });
-   ```
+
+    ```typescript
+    test('should handle embedded = in list values', () => {
+        expect(MatrixString.parse('urls=http://a.com,http://b.com')).toEqual({
+            urls: ['http://a.com', 'http://b.com'],
+        });
+    });
+
+    test('should handle leading semicolon', () => {
+        expect(MatrixString.parse(';a=1')).toEqual({ a: '1' });
+    });
+    ```
 
 ---
 
@@ -1286,18 +1371,18 @@ describe('QueryString vs URLSearchParams Compatibility', () => {
         const input = 'foo=bar&baz=qux';
         const native = new URLSearchParams(input);
         const ours = QueryString.parse(input);
-        
+
         // Compare results
         for (const [key, value] of native.entries()) {
             expect(ours[key]).toBe(value);
         }
     });
-    
+
     test('should match URLSearchParams stringification', () => {
-        const obj = {foo: 'bar', baz: 'qux'};
+        const obj = { foo: 'bar', baz: 'qux' };
         const native = new URLSearchParams(obj).toString();
         const ours = QueryString.stringify(obj);
-        
+
         // Note: Key ordering may differ, sort for comparison
         expect(ours.split('&').sort()).toEqual(native.split('&').sort());
     });
@@ -1310,14 +1395,15 @@ describe('QueryString vs URLSearchParams Compatibility', () => {
 ## Known Differences from URLSearchParams
 
 1. **Key Sorting:**
-   - URLSearchParams: Preserves insertion order
-   - BlueJS: Sorts keys alphabetically
-   - Rationale: Consistent output for testing/caching
+
+    - URLSearchParams: Preserves insertion order
+    - BlueJS: Sorts keys alphabetically
+    - Rationale: Consistent output for testing/caching
 
 2. **Array Handling:**
-   - URLSearchParams: Always returns single value via .get()
-   - BlueJS: Returns array for multiple values
-   - Rationale: More intuitive developer experience
+    - URLSearchParams: Always returns single value via .get()
+    - BlueJS: Returns array for multiple values
+    - Rationale: More intuitive developer experience
 ```
 
 ---
@@ -1336,40 +1422,48 @@ describe('QueryString vs URLSearchParams Compatibility', () => {
 ## Query Strings
 
 ### Applicable Standards
+
 - RFC 3986 - URI Generic Syntax
 - WHATWG URL Standard
 - W3C HTML5 Form Encoding
 
 ### Key Rules
+
 [Extracted from research]
 
 ### Implementation Notes
+
 [How BlueJS implements these rules]
 
 ### Test Coverage
+
 [Link to test files covering each rule]
 
 ## Matrix Strings
 
 ### Applicable Standards
+
 - RFC 3986 Section 3.3
 - Tim Berners-Lee MatrixURIs
 
 ### Key Rules
+
 [Extracted from research]
 
 ### Implementation Notes
+
 [How BlueJS implements these rules]
 
 ### Test Coverage
+
 [Link to test files covering each rule]
 
 ## Compliance Matrix
 
-| Specification | Section | Requirement | Status | Tests |
-|---------------|---------|-------------|--------|-------|
-| RFC 3986 | 3.4 | Query syntax | ✅ | link |
-| ... | ... | ... | ... | ... |
+| Specification | Section | Requirement  | Status | Tests |
+| ------------- | ------- | ------------ | ------ | ----- |
+| RFC 3986      | 3.4     | Query syntax | ✅     | link  |
+| ...           | ...     | ...          | ...    | ...   |
 ```
 
 #### Update Package Documentation
@@ -1377,6 +1471,7 @@ describe('QueryString vs URLSearchParams Compatibility', () => {
 **File:** `packages/blue-http/README.md` (if exists)
 
 Add sections:
+
 - **Specification Compliance:** Link to reference doc
 - **Known Limitations:** Any spec features not supported
 - **Extension Features:** Non-standard features we support
@@ -1386,18 +1481,21 @@ Add sections:
 ## Deliverables Checklist
 
 ### Research Phase
+
 - [ ] Query string specification summary document
-- [ ] Matrix string specification summary document  
+- [ ] Matrix string specification summary document
 - [ ] Comparison table (query vs matrix)
 - [ ] Gap analysis document
 
 ### Testing Phase
+
 - [ ] Specification compliance test suite for query strings
 - [ ] Specification compliance test suite for matrix strings
 - [ ] URLSearchParams compatibility tests
 - [ ] Edge case coverage analysis
 
 ### Documentation Phase
+
 - [ ] Specification reference document
 - [ ] Compliance matrix
 - [ ] Implementation notes
@@ -1408,17 +1506,20 @@ Add sections:
 ## Success Criteria
 
 ### Specification Research
+
 - ✅ All relevant RFCs and standards reviewed
 - ✅ Key requirements documented
 - ✅ Gaps identified and prioritized
 
 ### Test Coverage
+
 - ✅ Test suite covers all specification requirements
 - ✅ Tests include positive and negative cases
 - ✅ Edge cases from specifications included
 - ✅ Coverage >95% for parsing/stringification code
 
 ### Compliance
+
 - ✅ Implementation matches specifications (or differences documented)
 - ✅ URLSearchParams compatibility verified (where applicable)
 - ✅ Known limitations documented
@@ -1429,16 +1530,19 @@ Add sections:
 ## Risk Assessment
 
 ### Low Risk
+
 - ✅ Adding tests (non-breaking)
 - ✅ Documentation improvements
 - ✅ Research activities
 
 ### Medium Risk
+
 - ⚠️ Discovering spec violations requiring code changes
 - ⚠️ Finding URLSearchParams incompatibilities
 - ⚠️ Uncovering edge cases not currently handled
 
 ### Mitigation
+
 1. **Prioritize gaps:** Fix spec violations first, extensions later
 2. **Maintain backward compatibility:** Add feature flags for breaking changes
 3. **Comprehensive testing:** Catch issues before production
@@ -1450,13 +1554,13 @@ Add sections:
 
 **Total Estimated Time: 3-4 hours**
 
-| Task | Time |
-|------|------|
+| Task                   | Time      |
+| ---------------------- | --------- |
 | Specification research | 1-2 hours |
-| Gap analysis | 30-45 min |
-| Test writing | 1-2 hours |
-| Compatibility testing | 30-45 min |
-| Documentation | 30 min |
+| Gap analysis           | 30-45 min |
+| Test writing           | 1-2 hours |
+| Compatibility testing  | 30-45 min |
+| Documentation          | 30 min    |
 
 ---
 

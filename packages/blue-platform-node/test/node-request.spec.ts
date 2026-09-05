@@ -14,9 +14,9 @@ describe('node-request', () => {
                 headers: {},
                 body: {},
                 cookies: {},
-                session: {}
+                session: {},
             };
-            
+
             expect(request.headers).toBeDefined();
             expect(request.body).toBeDefined();
             expect(request.cookies).toBeDefined();
@@ -31,10 +31,10 @@ describe('node-request', () => {
         });
 
         test('should return undefined when route has no node request attribute', () => {
-            const route = { 
-                data: {}, 
-                params: {}, 
-                attributes: { someOtherAttribute: 'value' } 
+            const route = {
+                data: {},
+                params: {},
+                attributes: { someOtherAttribute: 'value' },
             };
             expect(getNodeRequest(route)).toBeUndefined();
         });
@@ -44,13 +44,13 @@ describe('node-request', () => {
                 headers: { 'content-type': 'application/json' },
                 body: { name: 'test' },
                 cookies: { session: 'abc123' },
-                session: { userId: 123 }
+                session: { userId: 123 },
             };
 
             const route = {
                 data: {},
                 params: {},
-                attributes: { [NODE_REQUEST_ATTRIBUTE]: mockRequest }
+                attributes: { [NODE_REQUEST_ATTRIBUTE]: mockRequest },
             };
 
             expect(getNodeRequest(route)).toBe(mockRequest);
@@ -61,7 +61,7 @@ describe('node-request', () => {
             const route = {
                 data: {},
                 params: {},
-                attributes: { [NODE_REQUEST_ATTRIBUTE]: 'not-a-request' }
+                attributes: { [NODE_REQUEST_ATTRIBUTE]: 'not-a-request' },
             };
 
             // getNodeRequest only does a type assertion, so it will return the value as-is

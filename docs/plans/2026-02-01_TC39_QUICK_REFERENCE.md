@@ -16,10 +16,7 @@ import '@tsmetadata/polyfill';
 ## Class Decorator
 
 ```typescript
-export function configuration<T extends new (...args: any[]) => any>(
-    target: T,
-    context: ClassDecoratorContext
-): T {
+export function configuration<T extends new (...args: any[]) => any>(target: T, context: ClassDecoratorContext): T {
     context.metadata['config:constructor'] = true;
     return target;
 }
@@ -57,13 +54,10 @@ export function entry(name?: string) {
     return function (target: any, context: ClassMethodDecoratorContext) {
         const entryName = name || String(context.name);
         context.metadata[`config:entry:${String(context.name)}`] = entryName;
-        
+
         // Make method enumerable for for...in loops
         context.addInitializer(function (this: any) {
-            const descriptor = Reflect.getOwnPropertyDescriptor(
-                Object.getPrototypeOf(this), 
-                context.name
-            );
+            const descriptor = Reflect.getOwnPropertyDescriptor(Object.getPrototypeOf(this), context.name);
             if (descriptor && !descriptor.enumerable) {
                 Reflect.defineProperty(Object.getPrototypeOf(this), context.name, {
                     ...descriptor,
@@ -71,7 +65,7 @@ export function entry(name?: string) {
                 });
             }
         });
-        
+
         return target;
     };
 }
@@ -80,7 +74,7 @@ export function entry(name?: string) {
 class MyClass {
     @entry()
     foo() {}
-    
+
     @entry('customName')
     bar() {}
 }
@@ -115,7 +109,7 @@ export function property(path: string) {
 // Usage
 class MyClass {
     @property('foo.bar')
-    myProp: any;  // ⚠️ Type annotation required!
+    myProp: any; // ⚠️ Type annotation required!
 }
 ```
 
@@ -133,10 +127,10 @@ export function Pattern(params: { regex: string; flags?: string }) {
             // 1. Capture initial value
             const currentValue = this[propertyName];
             this[storageSymbol] = currentValue;
-            
+
             // 2. Delete field property
             delete this[propertyName];
-            
+
             // 3. Redefine as accessor
             Object.defineProperty(this, propertyName, {
                 get(this: any) {
@@ -170,18 +164,15 @@ class MyClass {
 
 ```typescript
 export function profile(name: string) {
-    return function (
-        target: any, 
-        context: ClassDecoratorContext | ClassMethodDecoratorContext
-    ) {
+    return function (target: any, context: ClassDecoratorContext | ClassMethodDecoratorContext) {
         const profiles = name.split(',');
-        
+
         if (context.kind === 'class') {
             context.metadata['config:profile'] = profiles;
         } else if (context.kind === 'method') {
             context.metadata[`config:profile:${String(context.name)}`] = profiles;
         }
-        
+
         return target;
     };
 }
@@ -233,8 +224,7 @@ const getInstanceMetadata = (instance: any): Record<string, any> => {
 };
 
 // Check if metadata exists
-const hasConfigurationMetadata = (target): boolean => 
-    getMetadata(target)['config:constructor'] === true;
+const hasConfigurationMetadata = (target): boolean => getMetadata(target)['config:constructor'] === true;
 
 // Get specific metadata
 const getEntryMetadata = (target, propertyKey: string | symbol): string => {
@@ -319,10 +309,7 @@ for (const key in instance) {
 
 // GOOD - Make methods enumerable in decorator if needed
 context.addInitializer(function (this: any) {
-    const descriptor = Reflect.getOwnPropertyDescriptor(
-        Object.getPrototypeOf(this), 
-        context.name
-    );
+    const descriptor = Reflect.getOwnPropertyDescriptor(Object.getPrototypeOf(this), context.name);
     Reflect.defineProperty(Object.getPrototypeOf(this), context.name, {
         ...descriptor,
         enumerable: true,
@@ -338,15 +325,15 @@ context.addInitializer(function (this: any) {
 
 ```json
 {
-  "extends": "../../tsconfig.build.json",
-  "compilerOptions": {
-    "experimentalDecorators": false,
-    "emitDecoratorMetadata": false,
-    "outDir": "./lib",
-    "rootDir": "./src"
-  },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "lib", "test"]
+    "extends": "../../tsconfig.build.json",
+    "compilerOptions": {
+        "experimentalDecorators": false,
+        "emitDecoratorMetadata": false,
+        "outDir": "./lib",
+        "rootDir": "./src"
+    },
+    "include": ["src/**/*"],
+    "exclude": ["node_modules", "lib", "test"]
 }
 ```
 
@@ -354,15 +341,15 @@ context.addInitializer(function (this: any) {
 
 ```json
 {
-  "extends": "../../tsconfig.base.json",
-  "compilerOptions": {
-    "experimentalDecorators": false,
-    "emitDecoratorMetadata": false,
-    "paths": {
-      "@/*": ["./src/*"]
-    }
-  },
-  "include": ["src/**/*", "test/**/*"]
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "experimentalDecorators": false,
+        "emitDecoratorMetadata": false,
+        "paths": {
+            "@/*": ["./src/*"]
+        }
+    },
+    "include": ["src/**/*", "test/**/*"]
 }
 ```
 

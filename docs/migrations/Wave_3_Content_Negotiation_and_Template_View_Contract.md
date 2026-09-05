@@ -16,11 +16,11 @@ The `ContentNegotiationManager` aggregates multiple content negotiation strategi
 
 ### 2. Content Negotiation Strategies (`packages/blue-view/src/content-negotiation-view-resolver.ts`)
 
-| Strategy | Purpose |
-|----------|---------|
-| `FixedContentNegotiationStrategy` | Returns a fixed set of media types regardless of request |
+| Strategy                                    | Purpose                                                                                                |
+| ------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `FixedContentNegotiationStrategy`           | Returns a fixed set of media types regardless of request                                               |
 | `AbstractMappingContentNegotiationStrategy` | Resolves all registered file extensions, optionally filtering by `mediaTypeHint` (e.g., Accept header) |
-| `PathExtensionContentNegotiationStrategy` | Derives media type from the file extension in the request URI path |
+| `PathExtensionContentNegotiationStrategy`   | Derives media type from the file extension in the request URI path                                     |
 
 ### 3. Template View Contract (`packages/blue-view/src/view.ts`)
 
@@ -31,16 +31,17 @@ Fixed the incomplete template-view contract that prevented proper delegation:
 
 ### 4. Tests Created
 
-| File | Coverage |
-|------|----------|
-| `packages/blue-view/test/content-negotiation.spec.ts` | ContentNegotiationManager, strategies, PathExtension resolution |
-| `packages/blue-view/test/view.spec.ts` | AbstractTemplateView delegation, StringTemplateView rendering with nested properties, array access, edge cases (undefined/null/missing values) |
+| File                                                  | Coverage                                                                                                                                       |
+| ----------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `packages/blue-view/test/content-negotiation.spec.ts` | ContentNegotiationManager, strategies, PathExtension resolution                                                                                |
+| `packages/blue-view/test/view.spec.ts`                | AbstractTemplateView delegation, StringTemplateView rendering with nested properties, array access, edge cases (undefined/null/missing values) |
 
 ## Gap Findings (To Be Addressed Later)
 
 ### 1. Security — XSS in StringTemplateView
 
 The template renderer uses `String(value ?? '')`, which could execute user-controlled templates if they contain JavaScript. This is a **low-risk** concern since:
+
 - The syntax only supports `{{variable}}` with no nested expressions (no loops, conditionals)
 - It's a server-side rendering pattern that should be sanitized at the target layer
 - Consider adding `DOMPurify` or similar sanitization in production
@@ -50,6 +51,7 @@ The template renderer uses `String(value ?? '')`, which could execute user-contr
 `ContentNegotiationManager.resolveMediaTypes()` iterates strategies linearly (O(n)). For most use cases this is fine, but if performance becomes critical, consider a map-based index by media type hint.
 
 ### 3. PathExtensionStrategy Edge Cases
+
 - Handles case-insensitive extensions correctly
 - Falls back to all registered types when `mediaTypeHint` doesn't match any (in AbstractMapping strategy)
 - Path extension extraction handles query strings properly

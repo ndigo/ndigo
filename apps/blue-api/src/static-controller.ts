@@ -27,7 +27,7 @@ export class StaticController {
             if (result.kind === 'not-found') return ResponseEntity.notFound();
             return new ResponseEntity(
                 { error: result.kind === 'forbidden' ? 'Forbidden' : 'Internal Server Error' },
-                result.kind === 'forbidden' ? ResponseStatuses.FORBIDDEN : ResponseStatuses.INTERNAL_SERVER_ERROR,
+                result.kind === 'forbidden' ? ResponseStatuses.FORBIDDEN : ResponseStatuses.INTERNAL_SERVER_ERROR
             );
         }
         return new ResponseEntity(result.data, ResponseStatuses.OK, {

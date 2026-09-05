@@ -20,7 +20,10 @@ beforeAll(async () => {
     await mkdir(join(root, 'assets'));
     await writeFile(join(root, 'assets', 'index.html'), '<h1>hello</h1>');
     await writeFile(join(root, 'assets', 'style.css'), 'body { color: red; }');
-    await writeFile(join(root, 'pixel.png'), Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0xff, 0xfe]));
+    await writeFile(
+        join(root, 'pixel.png'),
+        Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0xff, 0xfe])
+    );
     await writeFile(join(secretDir, 'secret.txt'), 'TOP SECRET');
     // An escaping symlink inside the served tree.
     await symlink(join(secretDir, 'secret.txt'), join(root, 'assets', 'escape.lnk'));
@@ -115,4 +118,3 @@ describe('StaticResourceResolver binary safety', () => {
         expect(result.kind).toBe('not-found');
     });
 });
-

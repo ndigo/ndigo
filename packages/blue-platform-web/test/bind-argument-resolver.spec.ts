@@ -27,14 +27,7 @@ describe('BrowserBindMethodArgumentResolver', () => {
 
     test('binds with prefix', () => {
         const resolver = new BrowserBindMethodArgumentResolver();
-        const parameter = new MethodParameter(
-            MethodParameterType.BIND,
-            'query',
-            false,
-            null,
-            undefined,
-            'user.'
-        );
+        const parameter = new MethodParameter(MethodParameterType.BIND, 'query', false, null, undefined, 'user.');
         const value = resolver.resolveArgument(
             parameter,
             { data: { 'user.name': 'Jeff', 'user.age': '30', 'other.field': 'ignored' } } as any,
@@ -47,11 +40,7 @@ describe('BrowserBindMethodArgumentResolver', () => {
     test('binds object data without nested conversion', () => {
         const resolver = new BrowserBindMethodArgumentResolver();
         const parameter = new MethodParameter(MethodParameterType.BIND, 'query');
-        const value = resolver.resolveArgument(
-            parameter,
-            { data: { name: 'Jeff', age: '30' } } as any,
-            {} as any
-        );
+        const value = resolver.resolveArgument(parameter, { data: { name: 'Jeff', age: '30' } } as any, {} as any);
 
         expect(value).toEqual({ name: 'Jeff', age: '30' });
     });

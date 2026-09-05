@@ -32,6 +32,7 @@ This plan implements a **HTTP request/response body transformation pipeline** fo
 The `TransformInterceptor` design required replacing response bodies, but `ResponseAwareHTTPInterceptor` originally only supported `Promise<void>`.
 
 **Resolved Implementation:**
+
 - `ResponseAwareHTTPInterceptor` now supports `Promise<Response | void>`
 - `HTTPExecutionChain.applyPostResponse()` now returns the current `Response`
 - Returned `Response` values are chained across interceptors
@@ -63,31 +64,34 @@ This removed the architectural blocker for response transformation while remaini
 
 ### Critical Decisions Made
 
-| Decision | Chosen Approach | Rationale |
-|----------|----------------|-----------|
-| **Interface Name** | `HTTPTransformer<TInput, TOutput>` | Avoids conflict with `@blue/core` transducer `Transformer` |
-| **Generic Names** | `TInput`, `TOutput` | Matches `@blue/core` conventions (not `TIn`/`TOut`) |
-| **canTransform Signature** | `canTransform(body: TInput, context: TransformContext): boolean` | Type-safe, body is TInput not any |
-| **Context Parameter** | Required in both methods | Enables powerful conditional transforms |
-| **Composition Pattern** | `pipe()` from `@blue/util/function` | Left-to-right, familiar to JS developers |
-| **Keep TransducerTransformer** | Yes | Unique performance benefits (early termination, single-pass) |
-| **Default Transforms** | None | Explicit is better than implicit |
-| **Naming** | `CompositionTransformer` not `RamdaTransformer` | Names functionality, not library |
+| Decision                       | Chosen Approach                                                  | Rationale                                                    |
+| ------------------------------ | ---------------------------------------------------------------- | ------------------------------------------------------------ |
+| **Interface Name**             | `HTTPTransformer<TInput, TOutput>`                               | Avoids conflict with `@blue/core` transducer `Transformer`   |
+| **Generic Names**              | `TInput`, `TOutput`                                              | Matches `@blue/core` conventions (not `TIn`/`TOut`)          |
+| **canTransform Signature**     | `canTransform(body: TInput, context: TransformContext): boolean` | Type-safe, body is TInput not any                            |
+| **Context Parameter**          | Required in both methods                                         | Enables powerful conditional transforms                      |
+| **Composition Pattern**        | `pipe()` from `@blue/util/function`                              | Left-to-right, familiar to JS developers                     |
+| **Keep TransducerTransformer** | Yes                                                              | Unique performance benefits (early termination, single-pass) |
+| **Default Transforms**         | None                                                             | Explicit is better than implicit                             |
+| **Naming**                     | `CompositionTransformer` not `RamdaTransformer`                  | Names functionality, not library                             |
 
 ### Why These Choices?
 
 **canTransform(body: TInput, context: TransformContext):**
+
 - Body is typed as `TInput` for type safety
 - Context enables: multi-tenant logic, header-based auth, URL routing, request vs response asymmetry
 - Example: `if (context.url.includes('/api/v2') && context.mediaType?.is('application/json'))`
 
 **Keep TransducerTransformer:**
+
 - Early termination with `take()`, `takeWhile()`
 - Single-pass iteration (no intermediate arrays)
 - Memory-efficient for large collections
 - Can't be replicated with function composition
 
 **Use pipe() not compose():**
+
 - Left-to-right more intuitive: `pipe(f, g, h)` means f → g → h
 - Matches `@blue/util` conventions
 - JavaScript developers expect left-to-right (unlike Haskell/mathematical composition)
@@ -129,7 +133,7 @@ packages/blue-http/
 
 **File:** `packages/blue-http/src/transformers/http-transformer.ts`
 
-```typescript
+````typescript
 /**
  * @author Jeff Rose
  */
@@ -151,7 +155,7 @@ export interface TransformContext {
 
     /**
      * Media type for content-type-based conditional transforms.
-     * 
+     *
      * Note: Pending architectural decision - may change to `contentType?: string`
      * See: docs/plans/2026-02-07_MEDIATYPE_LOCATION_ANALYSIS.md
      */
@@ -170,22 +174,22 @@ export interface TransformContext {
 
 /**
  * HTTP body transformer for request/response transformation pipeline.
- * 
+ *
  * Inspired by Spring Framework's HttpMessageConverter pattern.
- * 
+ *
  * @template TInput - Input body type
  * @template TOutput - Output body type (defaults to TInput if not specified)
- * 
+ *
  * @example
  * ```typescript
  * // JSON sanitizer (same type)
  * const sanitizer: HTTPTransformer<JSONObject> = {
- *     canTransform: (body, context) => 
- *         context.direction === 'response' && 
+ *     canTransform: (body, context) =>
+ *         context.direction === 'response' &&
  *         context.mediaType?.is('application/json'),
  *     transform: (body) => sanitizeJSON(body)
  * };
- * 
+ *
  * // Parser (type change)
  * const parser: HTTPTransformer<string, JSONObject> = {
  *     canTransform: (body) => typeof body === 'string',
@@ -196,7 +200,7 @@ export interface TransformContext {
 export interface HTTPTransformer<TInput = any, TOutput = any> {
     /**
      * Determines if this transformer can handle the given body and context.
-     * 
+     *
      * @param body - Request/response body to potentially transform
      * @param context - Context information for conditional logic
      * @returns true if this transformer should be applied
@@ -205,7 +209,7 @@ export interface HTTPTransformer<TInput = any, TOutput = any> {
 
     /**
      * Transforms the request/response body.
-     * 
+     *
      * @param body - Request/response body to transform
      * @param context - Context information for transformation logic
      * @returns Transformed body (sync or async)
@@ -216,12 +220,13 @@ export interface HTTPTransformer<TInput = any, TOutput = any> {
 /**
  * User-provided transform function or transformer object.
  */
-export type Transform<TInput = any, TOutput = any> = 
+export type Transform<TInput = any, TOutput = any> =
     | HTTPTransformer<TInput, TOutput>
     | ((body: TInput, context: TransformContext) => TOutput | Promise<TOutput>);
-```
+````
 
 **Checklist:**
+
 - [ ] Create `http-transformer.ts`
 - [ ] Define `TransformContext` interface
 - [ ] Define `HTTPTransformer<TInput, TOutput>` interface
@@ -237,7 +242,7 @@ export type Transform<TInput = any, TOutput = any> =
 
 **File:** `packages/blue-http/src/interceptors/transform-interceptor.ts`
 
-```typescript
+````typescript
 /**
  * @author Jeff Rose
  */
@@ -247,17 +252,17 @@ import { MediaType } from '@blue/core';
 
 /**
  * Interceptor that applies body transformations to requests and responses.
- * 
+ *
  * Executes AFTER ContentTypeInterceptor (headers are set first).
  * Converts user-provided transforms (functions or objects) into interceptor hooks.
- * 
+ *
  * @example
  * ```typescript
  * const http = new HTTP({
  *     requestTransforms: [
  *         // Function transform
  *         (body) => sanitizeRequestBody(body),
- *         
+ *
  *         // Object transform with conditional logic
  *         {
  *             canTransform: (body, ctx) => ctx.url.includes('/api/v2'),
@@ -347,7 +352,7 @@ export class TransformInterceptor implements HTTPInterceptor {
      */
     private async extractBody(source: Request | Response): Promise<any> {
         const contentType = source.headers.get('content-type') || '';
-        
+
         if (contentType.includes('application/json')) {
             return await source.json();
         }
@@ -361,7 +366,7 @@ export class TransformInterceptor implements HTTPInterceptor {
         if (contentType.includes('multipart/form-data')) {
             return await source.formData();
         }
-        
+
         // Unknown/unsupported content type
         return null;
     }
@@ -369,13 +374,10 @@ export class TransformInterceptor implements HTTPInterceptor {
     /**
      * Creates TransformContext from Request or Response.
      */
-    private createContext(
-        source: Request | Response,
-        direction: 'request' | 'response'
-    ): TransformContext {
+    private createContext(source: Request | Response, direction: 'request' | 'response'): TransformContext {
         const url = source instanceof Request ? source.url : ''; // Response doesn't have URL
         const contentType = source.headers.get('content-type') || '';
-        
+
         return {
             url,
             headers: source.headers,
@@ -388,11 +390,7 @@ export class TransformInterceptor implements HTTPInterceptor {
     /**
      * Determines if transform should be applied.
      */
-    private shouldApplyTransform(
-        transform: Transform,
-        body: any,
-        context: TransformContext
-    ): boolean {
+    private shouldApplyTransform(transform: Transform, body: any, context: TransformContext): boolean {
         // Function transform - always apply
         if (typeof transform === 'function') {
             return true;
@@ -405,20 +403,17 @@ export class TransformInterceptor implements HTTPInterceptor {
     /**
      * Applies transform to body.
      */
-    private async applyTransform(
-        transform: Transform,
-        body: any,
-        context: TransformContext
-    ): Promise<any> {
+    private async applyTransform(transform: Transform, body: any, context: TransformContext): Promise<any> {
         if (typeof transform === 'function') {
             return await transform(body, context);
         }
         return await transform.transform(body, context);
     }
 }
-```
+````
 
 **Checklist:**
+
 - [ ] Create `transform-interceptor.ts`
 - [ ] Implement `preRequest` hook (request transforms)
 - [ ] Implement `postResponse` hook (response transforms)
@@ -446,17 +441,17 @@ export class TransformInterceptor implements HTTPInterceptor {
 // Add to HTTPConfig interface
 export interface HTTPConfig {
     // ... existing properties
-    
+
     /**
      * Request body transformations applied before sending.
-     * 
+     *
      * Transformations are applied in order after ContentTypeInterceptor.
      */
     requestTransforms?: Transform[];
-    
+
     /**
      * Response body transformations applied after receiving.
-     * 
+     *
      * Transformations are applied in order after ResponseTypeInterceptor.
      */
     responseTransforms?: Transform[];
@@ -465,7 +460,7 @@ export interface HTTPConfig {
 // In HTTP constructor, add TransformInterceptor to chain
 constructor(config?: HTTPConfig) {
     // ... existing initialization
-    
+
     // Add transform interceptor if transforms provided
     if (config?.requestTransforms || config?.responseTransforms) {
         this.#interceptors.push(
@@ -479,6 +474,7 @@ constructor(config?: HTTPConfig) {
 ```
 
 **Checklist:**
+
 - [ ] Add `requestTransforms?: Transform[]` to `HTTPConfig`
 - [ ] Add `responseTransforms?: Transform[]` to `HTTPConfig`
 - [ ] Add `TransformInterceptor` to interceptor chain in constructor
@@ -495,7 +491,7 @@ constructor(config?: HTTPConfig) {
 
 **File:** `packages/blue-http/src/transformers/json-transformer.ts`
 
-```typescript
+````typescript
 /**
  * @author Jeff Rose
  */
@@ -505,9 +501,9 @@ import { JSONObject } from '@blue/core';
 
 /**
  * JSON transformer that applies a pipeline of functions to JSON objects.
- * 
+ *
  * Uses left-to-right composition (pipe) for intuitive transform ordering.
- * 
+ *
  * @example
  * ```typescript
  * const transformer = new JSONTransformer([
@@ -515,7 +511,7 @@ import { JSONObject } from '@blue/core';
  *     (obj) => trimStringProperties(obj),
  *     (obj) => validateSchema(obj)
  * ]);
- * 
+ *
  * // With conditional logic
  * const transformer = new JSONTransformer(
  *     [(obj) => transformV2(obj)],
@@ -552,9 +548,10 @@ export class JSONTransformer implements HTTPTransformer<JSONObject, JSONObject> 
         return this.pipeline(body);
     }
 }
-```
+````
 
 **Checklist:**
+
 - [ ] Create `json-transformer.ts`
 - [ ] Implement constructor with function array and optional condition
 - [ ] Use `pipe()` from `@blue/util/function` for composition
@@ -571,7 +568,7 @@ export class JSONTransformer implements HTTPTransformer<JSONObject, JSONObject> 
 
 **File:** `packages/blue-http/src/transformers/composition-transformer.ts`
 
-```typescript
+````typescript
 /**
  * @author Jeff Rose
  */
@@ -580,10 +577,10 @@ import { pipe } from '@blue/util/function';
 
 /**
  * Generic transformer using function composition.
- * 
+ *
  * Uses Ramda's pipe() for left-to-right composition.
  * Works with any input/output types.
- * 
+ *
  * @example
  * ```typescript
  * // String transformations
@@ -592,7 +589,7 @@ import { pipe } from '@blue/util/function';
  *     (s) => s.toLowerCase(),
  *     (s) => s.replace(/\s+/g, '-')
  * ]);
- * 
+ *
  * // Type-changing transformations
  * const parser = new CompositionTransformer<string, number>([
  *     (s) => s.trim(),
@@ -600,8 +597,7 @@ import { pipe } from '@blue/util/function';
  * ]);
  * ```
  */
-export class CompositionTransformer<TInput = any, TOutput = any> 
-    implements HTTPTransformer<TInput, TOutput> {
+export class CompositionTransformer<TInput = any, TOutput = any> implements HTTPTransformer<TInput, TOutput> {
     private readonly pipeline: (input: TInput) => TOutput;
 
     constructor(
@@ -623,9 +619,10 @@ export class CompositionTransformer<TInput = any, TOutput = any>
         return this.pipeline(body);
     }
 }
-```
+````
 
 **Checklist:**
+
 - [ ] Create `composition-transformer.ts`
 - [ ] Support generic `TInput` and `TOutput` types
 - [ ] Use `pipe()` from `@blue/util/function`
@@ -641,7 +638,7 @@ export class CompositionTransformer<TInput = any, TOutput = any>
 
 **File:** `packages/blue-http/src/transformers/transducer-transformer.ts`
 
-```typescript
+````typescript
 /**
  * @author Jeff Rose
  */
@@ -650,19 +647,19 @@ import { transduce } from '@blue/util/list';
 
 /**
  * Transformer using transducers for memory-efficient transformations.
- * 
+ *
  * Ideal for:
  * - Large collections (arrays, form data entries)
  * - Early termination scenarios (take, takeWhile)
  * - Single-pass transformations
  * - Memory-constrained environments
- * 
+ *
  * Uses @blue/util's transduce() (Ramda-based).
- * 
+ *
  * @example
  * ```typescript
  * import * as R from '@blue/util';
- * 
+ *
  * // Transform array with early termination
  * const transformer = new TransducerTransformer<number[], number[]>(
  *     R.compose(
@@ -671,7 +668,7 @@ import { transduce } from '@blue/util/list';
  *         R.take(5) // Early termination - stops after 5 results
  *     )
  * );
- * 
+ *
  * // Single-pass transformation (no intermediate arrays)
  * const transformer = new TransducerTransformer<string[], string[]>(
  *     R.compose(
@@ -683,9 +680,7 @@ import { transduce } from '@blue/util/list';
  * );
  * ```
  */
-export class TransducerTransformer<TInput = any, TOutput = any> 
-    implements HTTPTransformer<TInput, TOutput> {
-    
+export class TransducerTransformer<TInput = any, TOutput = any> implements HTTPTransformer<TInput, TOutput> {
     constructor(
         private readonly transducer: any, // Transducer function from Ramda
         private readonly condition?: (body: TInput, context: TransformContext) => boolean
@@ -712,13 +707,14 @@ export class TransducerTransformer<TInput = any, TOutput = any>
             [],
             body as any
         );
-        
+
         return result as TOutput;
     }
 }
-```
+````
 
 **Checklist:**
+
 - [ ] Create `transducer-transformer.ts`
 - [ ] Use `transduce()` from `@blue/util/list`
 - [ ] Support generic `TInput` and `TOutput`
@@ -735,7 +731,7 @@ export class TransducerTransformer<TInput = any, TOutput = any>
 
 **File:** `packages/blue-http/src/transformers/form-data-transformer.ts`
 
-```typescript
+````typescript
 /**
  * @author Jeff Rose
  */
@@ -743,22 +739,22 @@ import { HTTPTransformer, TransformContext } from './http-transformer';
 
 /**
  * Transformer for FormData entries.
- * 
+ *
  * Applies transformation function to each FormData entry.
  * Useful for sanitizing file uploads, validating form fields, etc.
- * 
+ *
  * @example
  * ```typescript
  * // Sanitize form field names
  * const transformer = new FormDataTransformer(
  *     (key, value) => [key.toLowerCase(), value]
  * );
- * 
+ *
  * // Filter out empty fields
  * const transformer = new FormDataTransformer(
  *     (key, value) => value ? [key, value] : null
  * );
- * 
+ *
  * // Add prefix to keys
  * const transformer = new FormDataTransformer(
  *     (key, value) => [`user_${key}`, value]
@@ -768,7 +764,7 @@ import { HTTPTransformer, TransformContext } from './http-transformer';
 export class FormDataTransformer implements HTTPTransformer<FormData, FormData> {
     constructor(
         private readonly entryTransform: (
-            key: string, 
+            key: string,
             value: FormDataEntryValue
         ) => [string, FormDataEntryValue] | null,
         private readonly condition?: (body: FormData, context: TransformContext) => boolean
@@ -791,7 +787,7 @@ export class FormDataTransformer implements HTTPTransformer<FormData, FormData> 
 
         for (const [key, value] of body.entries()) {
             const result = this.entryTransform(key, value);
-            
+
             if (result !== null) {
                 const [newKey, newValue] = result;
                 transformed.append(newKey, newValue);
@@ -801,9 +797,10 @@ export class FormDataTransformer implements HTTPTransformer<FormData, FormData> 
         return transformed;
     }
 }
-```
+````
 
 **Checklist:**
+
 - [ ] Create `form-data-transformer.ts`
 - [ ] Support entry transformation function `(key, value) => [key, value] | null`
 - [ ] Handle null returns (filter entries)
@@ -820,7 +817,7 @@ export class FormDataTransformer implements HTTPTransformer<FormData, FormData> 
 
 **File:** `packages/blue-http/src/transformers/url-search-params-transformer.ts`
 
-```typescript
+````typescript
 /**
  * @author Jeff Rose
  */
@@ -828,22 +825,22 @@ import { HTTPTransformer, TransformContext } from './http-transformer';
 
 /**
  * Transformer for URLSearchParams entries.
- * 
+ *
  * Applies transformation function to each query parameter.
  * Useful for sanitizing query params, adding default values, etc.
- * 
+ *
  * @example
  * ```typescript
  * // Lowercase all parameter names
  * const transformer = new URLSearchParamsTransformer(
  *     (key, value) => [key.toLowerCase(), value]
  * );
- * 
+ *
  * // Remove sensitive parameters
  * const transformer = new URLSearchParamsTransformer(
  *     (key, value) => key === 'password' ? null : [key, value]
  * );
- * 
+ *
  * // Add authentication token
  * const transformer = new URLSearchParamsTransformer(
  *     (key, value) => [key, value],
@@ -855,14 +852,9 @@ import { HTTPTransformer, TransformContext } from './http-transformer';
  * );
  * ```
  */
-export class URLSearchParamsTransformer 
-    implements HTTPTransformer<URLSearchParams, URLSearchParams> {
-    
+export class URLSearchParamsTransformer implements HTTPTransformer<URLSearchParams, URLSearchParams> {
     constructor(
-        private readonly entryTransform: (
-            key: string, 
-            value: string
-        ) => [string, string] | null,
+        private readonly entryTransform: (key: string, value: string) => [string, string] | null,
         private readonly postProcess?: (params: URLSearchParams) => URLSearchParams,
         private readonly condition?: (body: URLSearchParams, context: TransformContext) => boolean
     ) {}
@@ -884,7 +876,7 @@ export class URLSearchParamsTransformer
 
         for (const [key, value] of body.entries()) {
             const result = this.entryTransform(key, value);
-            
+
             if (result !== null) {
                 const [newKey, newValue] = result;
                 transformed.append(newKey, newValue);
@@ -899,9 +891,10 @@ export class URLSearchParamsTransformer
         return transformed;
     }
 }
-```
+````
 
 **Checklist:**
+
 - [ ] Create `url-search-params-transformer.ts`
 - [ ] Support entry transformation `(key, value) => [key, value] | null`
 - [ ] Support optional post-processing function
@@ -921,9 +914,9 @@ export class URLSearchParamsTransformer
 ```typescript
 /**
  * HTTP Body Transformers
- * 
+ *
  * Provides composable transformations for HTTP request/response bodies.
- * 
+ *
  * @module @blue/http/transformers
  */
 export { HTTPTransformer, TransformContext, Transform } from './http-transformer';
@@ -935,6 +928,7 @@ export { URLSearchParamsTransformer } from './url-search-params-transformer';
 ```
 
 **Checklist:**
+
 - [ ] Create `index.ts` in `transformers/`
 - [ ] Export all transformers
 - [ ] Export core types (`HTTPTransformer`, `TransformContext`, `Transform`)
@@ -954,21 +948,22 @@ export { URLSearchParamsTransformer } from './url-search-params-transformer';
 
 ```json
 {
-  "name": "@blue/http",
-  "exports": {
-    ".": {
-      "types": "./lib/index.d.ts",
-      "import": "./lib/index.js"
-    },
-    "./transformers": {
-      "types": "./lib/transformers/index.d.ts",
-      "import": "./lib/transformers/index.js"
+    "name": "@blue/http",
+    "exports": {
+        ".": {
+            "types": "./lib/index.d.ts",
+            "import": "./lib/index.js"
+        },
+        "./transformers": {
+            "types": "./lib/transformers/index.d.ts",
+            "import": "./lib/transformers/index.js"
+        }
     }
-  }
 }
 ```
 
 **Checklist:**
+
 - [ ] Add `./transformers` subpath export
 - [ ] Verify types path points to `lib/transformers/index.d.ts`
 - [ ] Verify import path points to `lib/transformers/index.js`
@@ -1033,8 +1028,7 @@ describe('HTTPTransformer Interface', () => {
 
         it('should enable conditional logic based on headers', () => {
             const transformer: HTTPTransformer = {
-                canTransform: (body, context) => 
-                    context.headers.get('x-api-version') === '2',
+                canTransform: (body, context) => context.headers.get('x-api-version') === '2',
                 transform: (body) => body,
             };
 
@@ -1093,7 +1087,7 @@ describe('HTTPTransformer Interface', () => {
             const transformer: HTTPTransformer<string, string> = {
                 canTransform: () => true,
                 transform: async (body) => {
-                    await new Promise(resolve => setTimeout(resolve, 10));
+                    await new Promise((resolve) => setTimeout(resolve, 10));
                     return body.toUpperCase();
                 },
             };
@@ -1127,6 +1121,7 @@ describe('HTTPTransformer Interface', () => {
 ```
 
 **Checklist:**
+
 - [ ] Create interface test file
 - [ ] Test `canTransform` with various conditions (URL, headers, direction, mediaType)
 - [ ] Test synchronous `transform`
@@ -1143,6 +1138,7 @@ describe('HTTPTransformer Interface', () => {
 Each specialized transformer needs comprehensive tests:
 
 **Files:**
+
 - `test/transformers/json-transformer.spec.ts`
 - `test/transformers/composition-transformer.spec.ts`
 - `test/transformers/transducer-transformer.spec.ts`
@@ -1150,6 +1146,7 @@ Each specialized transformer needs comprehensive tests:
 - `test/transformers/url-search-params-transformer.spec.ts`
 
 **Test Coverage for Each:**
+
 - [ ] Constructor with various configurations
 - [ ] `canTransform` logic (type checks, conditions)
 - [ ] `transform` with valid inputs
@@ -1176,9 +1173,7 @@ import { JSONTransformer } from '../src/transformers/json-transformer';
 describe('Transform Pipeline Integration', () => {
     it('should apply request transforms', async () => {
         const http = new HTTP({
-            requestTransforms: [
-                (body) => ({ ...body, timestamp: Date.now() })
-            ]
+            requestTransforms: [(body) => ({ ...body, timestamp: Date.now() })],
         });
 
         // Test request transformation
@@ -1187,11 +1182,7 @@ describe('Transform Pipeline Integration', () => {
 
     it('should apply response transforms', async () => {
         const http = new HTTP({
-            responseTransforms: [
-                new JSONTransformer([
-                    (obj) => ({ ...obj, parsed: true })
-                ])
-            ]
+            responseTransforms: [new JSONTransformer([(obj) => ({ ...obj, parsed: true })])],
         });
 
         // Test response transformation
@@ -1209,6 +1200,7 @@ describe('Transform Pipeline Integration', () => {
 ```
 
 **Checklist:**
+
 - [ ] Create integration test file
 - [ ] Test request transforms
 - [ ] Test response transforms
@@ -1227,7 +1219,7 @@ describe('Transform Pipeline Integration', () => {
 
 **Add section:**
 
-```markdown
+````markdown
 ## Body Transformations
 
 @blue/http supports composable request/response body transformations inspired by Spring Framework's HttpMessageConverter pattern.
@@ -1248,17 +1240,14 @@ const http = new HTTP({
     ],
 });
 ```
+````
 
 ### Specialized Transformers
 
 Import from `@blue/http/transformers`:
 
 ```typescript
-import { 
-    JSONTransformer, 
-    CompositionTransformer,
-    TransducerTransformer 
-} from '@blue/http/transformers';
+import { JSONTransformer, CompositionTransformer, TransducerTransformer } from '@blue/http/transformers';
 ```
 
 #### JSONTransformer
@@ -1296,7 +1285,7 @@ const transformer = new TransducerTransformer<number[], number[]>(
     R.compose(
         R.map((n: number) => n * 2),
         R.filter((n: number) => n > 10),
-        R.take(5), // Early termination
+        R.take(5) // Early termination
     )
 );
 ```
@@ -1309,9 +1298,8 @@ Use object transformers with `canTransform` for conditional logic:
 const http = new HTTP({
     responseTransforms: [
         {
-            canTransform: (body, context) => 
-                context.url.includes('/api/v2') &&
-                context.mediaType?.is('application/json'),
+            canTransform: (body, context) =>
+                context.url.includes('/api/v2') && context.mediaType?.is('application/json'),
             transform: (body) => transformV2Format(body),
         },
     ],
@@ -1324,20 +1312,22 @@ All transforms receive a `TransformContext`:
 
 ```typescript
 interface TransformContext {
-    url: string;               // Request URL
-    headers: Headers;          // Request/response headers
-    mediaType?: MediaType;     // Content-Type parsed
+    url: string; // Request URL
+    headers: Headers; // Request/response headers
+    mediaType?: MediaType; // Content-Type parsed
     direction: 'request' | 'response';
     metadata?: Record<string, unknown>;
 }
 ```
 
 Use context for:
+
 - URL-based routing
 - Header-based authentication
 - Multi-tenant logic
 - Request vs response asymmetry
-```
+
+````
 
 **Checklist:**
 - [ ] Add "Body Transformations" section to README
@@ -1455,7 +1445,7 @@ const http = new HTTP({
             ),
             // Trim all string properties
             (obj) => Object.fromEntries(
-                Object.entries(obj).map(([k, v]) => 
+                Object.entries(obj).map(([k, v]) =>
                     [k, typeof v === 'string' ? v.trim() : v]
                 )
             ),
@@ -1465,7 +1455,7 @@ const http = new HTTP({
 
 const response = await http.get('https://api.example.com/users/1');
 // Response body automatically sanitized
-```
+````
 
 ### Example 2: Multi-Tenant Authentication
 
@@ -1520,7 +1510,7 @@ const http = new HTTP({
             R.compose(
                 R.map((item: any) => ({ ...item, processed: true })),
                 R.filter((item: any) => item.active),
-                R.take(100), // Early termination - stop after 100 items
+                R.take(100) // Early termination - stop after 100 items
             )
         ),
     ],

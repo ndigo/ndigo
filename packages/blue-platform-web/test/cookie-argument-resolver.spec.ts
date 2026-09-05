@@ -61,13 +61,10 @@ describe('BrowserCookieValueMethodArgumentResolver', () => {
     test('applies type-based conversion when convertType is provided', () => {
         vi.stubGlobal('document', { cookie: 'count=42' });
 
-        const parameter = new MethodParameter(
-            MethodParameterType.COOKIE,
-            'count',
-            false,
-            null,
-            { source: String, target: Number }
-        );
+        const parameter = new MethodParameter(MethodParameterType.COOKIE, 'count', false, null, {
+            source: String,
+            target: Number,
+        });
         const value = resolver.resolveArgument(parameter, { data: {} } as any, {} as any);
 
         expect(value).toBe(42);
@@ -76,13 +73,10 @@ describe('BrowserCookieValueMethodArgumentResolver', () => {
     test('applies boolean conversion when convertType is provided', () => {
         vi.stubGlobal('document', { cookie: 'active=true' });
 
-        const parameter = new MethodParameter(
-            MethodParameterType.COOKIE,
-            'active',
-            false,
-            null,
-            { source: String, target: Boolean }
-        );
+        const parameter = new MethodParameter(MethodParameterType.COOKIE, 'active', false, null, {
+            source: String,
+            target: Boolean,
+        });
         const value = resolver.resolveArgument(parameter, { data: {} } as any, {} as any);
 
         expect(value).toBe(true);

@@ -39,14 +39,14 @@ export default class MyTodoApp extends AbstractWebComponent {
 
     handleConnect(): void {
         this.setupStructure();
-        
+
         this.$input = this.select('todo-input') as HTMLElement;
         this.$listContainer = this.select('.todo-list') as HTMLElement;
         this.$shellNav = this.select('shell-nav') as HTMLElement;
 
         this.bindEvents({
             'change #toggle-all': 'handleToggleAll',
-            'click .clear-completed': 'handleClearCompleted'
+            'click .clear-completed': 'handleClearCompleted',
         });
 
         this.render();
@@ -63,24 +63,24 @@ export default class MyTodoApp extends AbstractWebComponent {
 
     private setupStructure(): void {
         const section = this.create('section', { className: 'todoapp' });
-        
+
         const header = this.create('header', { className: 'header' });
         header.appendChild(this.create('h1', { textContent: 'todos' }));
         header.appendChild(this.create('todo-input'));
-        
+
         const main = this.create('section', { className: 'main' });
         const toggleAll = this.create('input', { id: 'toggle-all', className: 'toggle-all', type: 'checkbox' });
         const toggleLabel = this.create('label', { textContent: 'Mark all as complete' });
         toggleLabel.setAttribute('for', 'toggle-all');
         const list = this.create('ul', { className: 'todo-list' });
         main.append(toggleAll, toggleLabel, list);
-        
+
         const footer = this.create('footer', { className: 'footer' });
         const count = this.create('span', { className: 'todo-count' });
         const nav = this.create('shell-nav');
         const clearBtn = this.create('button', { className: 'clear-completed', textContent: 'Clear completed' });
         footer.append(count, nav, clearBtn);
-        
+
         section.append(header, main, footer);
         this.appendChild(section);
     }
@@ -96,8 +96,6 @@ export default class MyTodoApp extends AbstractWebComponent {
                     { href: activeRoute, label: 'Active', selected: this.#filter === 'active' },
                     { href: completedRoute, label: 'Completed', selected: this.#filter === 'completed' },
                     { href: accountRoute, label: 'Account' },
-                    
-
                 ],
                 mode: 'list',
             };

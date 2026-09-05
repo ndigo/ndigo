@@ -13,7 +13,7 @@
 Successfully migrated all 5 decorators from legacy TypeScript experimental decorators to TC39 Stage 3 standard:
 
 1. **@configuration** - Class decorator (marks configuration classes)
-2. **@profile** - Class/Method decorator (profile-based activation) 
+2. **@profile** - Class/Method decorator (profile-based activation)
 3. **@property** - Field decorator (property injection)
 4. **@propertySource** - Class decorator (property sources)
 5. **@entry** - Method decorator (registry entries)
@@ -39,10 +39,7 @@ Successfully migrated all 5 decorators from legacy TypeScript experimental decor
 
 ```typescript
 context.addInitializer(function (this: any) {
-    const descriptor = getOwnPropertyDescriptor(
-        Object.getPrototypeOf(this), 
-        context.name
-    );
+    const descriptor = getOwnPropertyDescriptor(Object.getPrototypeOf(this), context.name);
     if (descriptor && !descriptor.enumerable) {
         defineProperty(Object.getPrototypeOf(this), context.name, {
             ...descriptor,
@@ -76,6 +73,7 @@ export function property(path: string) {
 ### 3. Migrated Metadata System
 
 **Before (reflect-metadata):**
+
 ```typescript
 import 'reflect-metadata';
 Reflect.defineMetadata('config:entry', 'foo', target, propertyKey);
@@ -83,6 +81,7 @@ const value = Reflect.getMetadata('config:entry', target, propertyKey);
 ```
 
 **After (TC39 Symbol.metadata):**
+
 ```typescript
 import '@tsmetadata/polyfill';
 context.metadata['config:entry:foo'] = 'foo';
@@ -90,6 +89,7 @@ const value = MyClass[Symbol.metadata]['config:entry:foo'];
 ```
 
 Created helper functions to bridge class constructors and instances:
+
 - `getMetadata(target)` - Get metadata from class constructor
 - `getInstanceMetadata(instance)` - Get metadata from instance
 
@@ -98,10 +98,7 @@ Created helper functions to bridge class constructors and instances:
 Resolved naming conflict in `_util.ts` where both `@blue/util/function` and `@blue/util/list` export `addIndex` and `addIndexRight`:
 
 ```typescript
-import {
-    addIndex as functionAddIndex,
-    addIndexRight as functionAddIndexRight,
-} from '@blue/util/function';
+import { addIndex as functionAddIndex, addIndexRight as functionAddIndexRight } from '@blue/util/function';
 
 export * from '@blue/util/function';
 export * from '@blue/util/list';
@@ -115,14 +112,17 @@ export { functionAddIndex as addIndex, functionAddIndexRight as addIndexRight };
 ## Files Modified
 
 ### Source Code
+
 - `packages/blue-context/src/configuration.ts` (332 lines) - Complete rewrite
 - `packages/blue-context/src/_util.ts` - Fixed export conflicts
 
 ### Tests
+
 - `packages/blue-context/test/decorators-behavior.spec.ts` (385 lines) - Updated to TC39 API
 - `packages/blue-context/test/testContext.ts` - Fixed field type annotations
 
 ### Configuration
+
 - `packages/blue-context/tsconfig.json` - TC39 enabled
 - `packages/blue-context/tsconfig.build.json` - TC39 enabled
 
@@ -136,7 +136,7 @@ Without type annotations, TypeScript may interpret fields differently in TC39 mo
 
 ```typescript
 // ❌ Bad - TypeScript may misinterpret
-@property('foo') 
+@property('foo')
 fooValue;
 
 // ✅ Good - Explicit field type
@@ -160,7 +160,7 @@ TC39 stores all metadata in a flat object. Use namespaced keys for method-level 
 // Class-level
 context.metadata['config:profile'] = ['dev'];
 
-// Method-level  
+// Method-level
 context.metadata['config:profile:myMethod'] = ['dev'];
 ```
 
@@ -169,17 +169,16 @@ context.metadata['config:profile:myMethod'] = ['dev'];
 ## Migration Patterns Reference
 
 ### Class Decorator
+
 ```typescript
-export function myDecorator<T extends new (...args: any[]) => any>(
-    target: T,
-    context: ClassDecoratorContext
-): T {
+export function myDecorator<T extends new (...args: any[]) => any>(target: T, context: ClassDecoratorContext): T {
     context.metadata['my:key'] = 'value';
     return target;
 }
 ```
 
 ### Method Decorator
+
 ```typescript
 export function myDecorator(param: string) {
     return function (target: any, context: ClassMethodDecoratorContext) {
@@ -190,11 +189,12 @@ export function myDecorator(param: string) {
 ```
 
 ### Field Decorator
+
 ```typescript
 export function myDecorator(param: string) {
     return function (value: undefined, context: ClassFieldDecoratorContext) {
         context.metadata[`my:key:${String(context.name)}`] = param;
-        
+
         context.addInitializer(function (this: any) {
             // Run after field initialization
             // Can modify the field property here
@@ -208,13 +208,15 @@ export function myDecorator(param: string) {
 ## Current State
 
 ### ✅ Completed Packages (2/3)
+
 - **@blue/validate** - 1 decorator (@Pattern)
 - **@blue/context** - 5 decorators (@configuration, @profile, @property, @propertySource, @entry)
 
 ### ⏳ Next Package
+
 - **@blue/dispatcher** - 6 decorators
-  - 3 simple decorators (@routeMapping, @errorMapping, @errorHandler)
-  - 3 parameter decorators requiring redesign (@queryValue, @matrixValue, @cookieValue)
+    - 3 simple decorators (@routeMapping, @errorMapping, @errorHandler)
+    - 3 parameter decorators requiring redesign (@queryValue, @matrixValue, @cookieValue)
 
 ---
 
@@ -223,23 +225,26 @@ export function myDecorator(param: string) {
 ### Immediate (Next Session)
 
 1. **Write behavioral tests for @blue/dispatcher**
-   - Document current behavior of all 6 decorators
-   - Create comprehensive test suite (following @blue/context pattern)
+
+    - Document current behavior of all 6 decorators
+    - Create comprehensive test suite (following @blue/context pattern)
 
 2. **Migrate simple decorators**
-   - `@routeMapping` (class/method decorator)
-   - `@errorMapping` (method decorator)
-   - `@errorHandler` (class decorator)
+
+    - `@routeMapping` (class/method decorator)
+    - `@errorMapping` (method decorator)
+    - `@errorHandler` (class decorator)
 
 3. **Design parameter decorator alternative**
-   - Research TC39-compatible patterns
-   - Implement `@routeParams()` or similar solution
-   - Update dispatcher runtime to work with new pattern
+
+    - Research TC39-compatible patterns
+    - Implement `@routeParams()` or similar solution
+    - Update dispatcher runtime to work with new pattern
 
 4. **Test thoroughly**
-   - Ensure all route dispatching works
-   - Validate error handling
-   - Test parameter extraction
+    - Ensure all route dispatching works
+    - Validate error handling
+    - Test parameter extraction
 
 ### Completion Criteria
 
@@ -253,6 +258,7 @@ export function myDecorator(param: string) {
 ## Documentation Updates
 
 Updated `docs/plans/2025-02-01_DECORATOR_MIGRATION.md` with:
+
 - Complete Phase 2 details
 - All decorator migration code examples
 - Technical insights and learnings
@@ -264,14 +270,16 @@ Updated `docs/plans/2025-02-01_DECORATOR_MIGRATION.md` with:
 ## Time Estimates
 
 **Completed this session:**
+
 - ✅ Phase 2: @blue/context migration (2 hours actual)
 
 **Remaining work:**
+
 - Phase 3: @blue/dispatcher migration (4-6 hours estimated)
-  - Writing tests: 1-2 hours
-  - Migrating simple decorators: 1-2 hours
-  - Parameter decorator redesign: 2-3 hours
-  - Testing and validation: 1 hour
+    - Writing tests: 1-2 hours
+    - Migrating simple decorators: 1-2 hours
+    - Parameter decorator redesign: 2-3 hours
+    - Testing and validation: 1 hour
 
 **Total project:** ~6-8 hours remaining
 

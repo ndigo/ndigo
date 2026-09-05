@@ -12,19 +12,19 @@ Removed `ramda` and `date-fns`/`date-fns-tz` from `@blue/util`, replacing all fu
 
 ### Dependencies Removed from `@blue/util/package.json`
 
-| Package | Previous Version | Status |
-|---------|-----------------|--------|
-| `ramda` | ~0.32.0 | ✅ Removed |
-| `date-fns` | ~4.1.0 | ✅ Removed |
-| `date-fns-tz` | ~3.2.0 | ✅ Removed |
-| `types-ramda` | 0.31.0 | ✅ Removed |
+| Package       | Previous Version | Status     |
+| ------------- | ---------------- | ---------- |
+| `ramda`       | ~0.32.0          | ✅ Removed |
+| `date-fns`    | ~4.1.0           | ✅ Removed |
+| `date-fns-tz` | ~3.2.0           | ✅ Removed |
+| `types-ramda` | 0.31.0           | ✅ Removed |
 
 ### Dependencies Retained in `@blue/util/package.json`
 
-| Package | Purpose |
-|---------|---------|
+| Package      | Purpose                  |
+| ------------ | ------------------------ |
 | `seedrandom` | Random number generation |
-| `slug` | URL slug generation |
+| `slug`       | URL slug generation      |
 
 ### Functions Removed (No Consumers)
 
@@ -38,48 +38,48 @@ These functions had zero external consumers and were deleted entirely:
 
 #### String Functions
 
-| Ramda Function | Native Replacement | Curried? |
-|---------------|-------------------|----------|
-| `replace(pattern, replacement, str)` | `str.replace(pattern, replacement)` | ✅ Yes (via arrow) |
-| `split(sep, str)` | `str.split(sep)` | ✅ Yes (via arrow) |
-| `test(rx, str)` | `rx.test(str)` | ❌ No (direct call) |
-| `trim(str)` | `str.trim()` | ❌ No (direct call) |
+| Ramda Function                       | Native Replacement                  | Curried?            |
+| ------------------------------------ | ----------------------------------- | ------------------- |
+| `replace(pattern, replacement, str)` | `str.replace(pattern, replacement)` | ✅ Yes (via arrow)  |
+| `split(sep, str)`                    | `str.split(sep)`                    | ✅ Yes (via arrow)  |
+| `test(rx, str)`                      | `rx.test(str)`                      | ❌ No (direct call) |
+| `trim(str)`                          | `str.trim()`                        | ❌ No (direct call) |
 
 #### Date Functions
 
-| date-fns Function | Native Replacement |
-|------------------|-------------------|
-| `isFuture(date)` | `date.getTime() > Date.now()` |
-| `isPast(date)` | `date.getTime() < Date.now()` |
+| date-fns Function | Native Replacement            |
+| ----------------- | ----------------------------- |
+| `isFuture(date)`  | `date.getTime() > Date.now()` |
+| `isPast(date)`    | `date.getTime() < Date.now()` |
 
 ### Files Modified
 
-| File | Change |
-|------|--------|
-| `packages/blue-util/src/string/index.ts` | Removed 7 functions, fixed style issues |
-| `packages/blue-util/src/date/index.ts` | Replaced date-fns with native Date |
-| `packages/blue-util/src/math/index.ts` | Removed 13 dead Ramda math functions |
-| `packages/blue-util/package.json` | Removed ramda, date-fns, date-fns-tz, types-ramda |
-| `packages/blue-util/src/ramda.d.ts` | Deleted |
-| `packages/blue-util/src/ramda-extensions.d.ts` | Deleted |
-| `packages/blue-util/scripts/*.js` | Updated doc generation scripts |
-| `packages/blue-validate/src/standard-constraints.ts` | Added `_replace`/`_split` local helpers |
-| `packages/blue-core/src/media-type.ts` | Inlined `splitOnEquals` |
-| `packages/blue-domain/src/constraints.ts` | Replaced `test` with native |
-| `packages/blue-domain/src/types.ts` | Replaced `test` with native |
-| `packages/blue-dispatcher/src/route-handler-mapping.ts` | Replaced `trim` with native |
-| `tsconfig.base.json` | Added `outDir: ".tscache"` |
-| `packages/*/tsconfig.json` | Added `rootDir: "./src"`, created 14 new files |
+| File                                                    | Change                                            |
+| ------------------------------------------------------- | ------------------------------------------------- |
+| `packages/blue-util/src/string/index.ts`                | Removed 7 functions, fixed style issues           |
+| `packages/blue-util/src/date/index.ts`                  | Replaced date-fns with native Date                |
+| `packages/blue-util/src/math/index.ts`                  | Removed 13 dead Ramda math functions              |
+| `packages/blue-util/package.json`                       | Removed ramda, date-fns, date-fns-tz, types-ramda |
+| `packages/blue-util/src/ramda.d.ts`                     | Deleted                                           |
+| `packages/blue-util/src/ramda-extensions.d.ts`          | Deleted                                           |
+| `packages/blue-util/scripts/*.js`                       | Updated doc generation scripts                    |
+| `packages/blue-validate/src/standard-constraints.ts`    | Added `_replace`/`_split` local helpers           |
+| `packages/blue-core/src/media-type.ts`                  | Inlined `splitOnEquals`                           |
+| `packages/blue-domain/src/constraints.ts`               | Replaced `test` with native                       |
+| `packages/blue-domain/src/types.ts`                     | Replaced `test` with native                       |
+| `packages/blue-dispatcher/src/route-handler-mapping.ts` | Replaced `trim` with native                       |
+| `tsconfig.base.json`                                    | Added `outDir: ".tscache"`                        |
+| `packages/*/tsconfig.json`                              | Added `rootDir: "./src"`, created 14 new files    |
 
 ### Documentation Updated
 
-| File | Change |
-|------|--------|
-| `AGENTS.md` | Updated integration layer table, removed ramda examples |
-| `ARCHITECTURE.md` | Updated integration layer table and examples |
-| `README.md` | Updated dividing line table |
-| `KNOWN_ISSUES.md` | Replaced ramda resolution section with migration note |
-| `packages/blue-eslint-plugin/src/_constants.ts` | Removed ramda/date-fns from INTEGRATION_LAYER_MAP |
+| File                                            | Change                                                  |
+| ----------------------------------------------- | ------------------------------------------------------- |
+| `AGENTS.md`                                     | Updated integration layer table, removed ramda examples |
+| `ARCHITECTURE.md`                               | Updated integration layer table and examples            |
+| `README.md`                                     | Updated dividing line table                             |
+| `KNOWN_ISSUES.md`                               | Replaced ramda resolution section with migration note   |
+| `packages/blue-eslint-plugin/src/_constants.ts` | Removed ramda/date-fns from INTEGRATION_LAYER_MAP       |
 
 ## Testing
 
@@ -104,12 +104,14 @@ These had no external consumers, so no migration needed.
 ### `replace` (curried)
 
 **Before:**
+
 ```typescript
 import { replace } from '@blue/util/string';
 const removeSlashes = replace(/^\//, '');
 ```
 
 **After:**
+
 ```typescript
 const removeSlashes = (s: string) => s.replace(/^\//, '');
 ```
@@ -117,12 +119,14 @@ const removeSlashes = (s: string) => s.replace(/^\//, '');
 ### `split` (curried)
 
 **Before:**
+
 ```typescript
 import { split } from '@blue/util/string';
 const splitOnEquals = split('=');
 ```
 
 **After:**
+
 ```typescript
 const splitOnEquals = (s: string) => s.split('=');
 ```
@@ -130,12 +134,14 @@ const splitOnEquals = (s: string) => s.split('=');
 ### `test` (direct)
 
 **Before:**
+
 ```typescript
 import { test } from '@blue/util/string';
 const result = test(rx, str);
 ```
 
 **After:**
+
 ```typescript
 const result = rx.test(str);
 ```
@@ -143,12 +149,14 @@ const result = rx.test(str);
 ### `trim` (direct)
 
 **Before:**
+
 ```typescript
 import { trim } from '@blue/util/string';
 const result = trim(value);
 ```
 
 **After:**
+
 ```typescript
 const result = value.trim();
 ```
@@ -156,11 +164,13 @@ const result = value.trim();
 ### `isFuture`/`isPast`
 
 **Before:**
+
 ```typescript
 import { isFuture, isPast } from '@blue/util/date';
 ```
 
 **After:**
+
 ```typescript
 const isFuture = (date: Date): boolean => date.getTime() > Date.now();
 const isPast = (date: Date): boolean => date.getTime() < Date.now();

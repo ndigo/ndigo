@@ -8,9 +8,19 @@ import { StaticController } from './static-controller';
 
 @configuration
 export class NodeAppConfiguration {
-    @entry greetingController() { return new GreetingController(); }
-    @entry authController() { return new AuthController(); }
-    @entry noteController() { return new NoteController(); }
-    @entry productController() { return new ProductController(); }
-    @entry staticController() { return new StaticController(); }
+    @entry greetingController() {
+        return new GreetingController();
+    }
+    @entry authController() {
+        return new AuthController();
+    }
+    @entry noteController() {
+        return new NoteController();
+    }
+    @entry productController() {
+        return new ProductController();
+    }
+    @entry staticController() {
+        return new StaticController();
+    }
 }

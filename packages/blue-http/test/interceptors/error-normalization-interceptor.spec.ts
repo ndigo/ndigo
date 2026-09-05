@@ -34,8 +34,8 @@ describe('ErrorNormalizationInterceptor', () => {
     });
 
     test('should normalize network errors with custom default error type', async () => {
-        const interceptor = new ErrorNormalizationInterceptor({ 
-            defaultErrorType: 'CUSTOM_ERROR' 
+        const interceptor = new ErrorNormalizationInterceptor({
+            defaultErrorType: 'CUSTOM_ERROR',
         });
         try {
             await interceptor.postError(new Error('fail'), new Request('http://localhost/test'), new HTTP());
@@ -49,8 +49,8 @@ describe('ErrorNormalizationInterceptor', () => {
     test('should return undefined for existing ResponseErrors', async () => {
         const interceptor = new ErrorNormalizationInterceptor();
         const result = await interceptor.postError(
-            new ResponseError(undefined, 'EXISTING_ERROR'), 
-            new Request('http://localhost/test'), 
+            new ResponseError(undefined, 'EXISTING_ERROR'),
+            new Request('http://localhost/test'),
             new HTTP()
         );
         expect(result).toBeUndefined();

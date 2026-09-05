@@ -54,9 +54,7 @@ export class AuthRouterInterceptor implements RouterInterceptor {
 
         // Requires specific roles — check the principal has all required roles
         if (routeAuth.requiredRoles && routeAuth.requiredRoles.length > 0) {
-            const hasRoles = routeAuth.requiredRoles.every(
-                (role) => authClient.principal?.hasRole(role) ?? false,
-            );
+            const hasRoles = routeAuth.requiredRoles.every((role) => authClient.principal?.hasRole(role) ?? false);
             if (!hasRoles) {
                 window.location.hash = '#/auth/forbidden';
                 return false;
@@ -84,10 +82,7 @@ export class AuthRouterInterceptor implements RouterInterceptor {
  * @param requireAuth - Whether authentication is required for this route.
  * @param loginRedirect - The hash route to redirect to if unauthenticated.
  */
-export function authMiddleware(
-    requireAuth: boolean,
-    loginRedirect: string = '#/login',
-): RouterMiddleware {
+export function authMiddleware(requireAuth: boolean, loginRedirect: string = '#/login'): RouterMiddleware {
     return (route: Route): boolean => {
         if (!requireAuth) {
             return true;

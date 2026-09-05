@@ -11,12 +11,10 @@ import '../src/todo-item-view';
  * This is needed because AbstractWebComponent.requestUpdate() uses
  * requestAnimationFrame, which doesn't fire in jsdom.
  */
-vi.spyOn(global, 'requestAnimationFrame').mockImplementation(
-    (cb: FrameRequestCallback) => {
-        cb(0);
-        return 0;
-    }
-);
+vi.spyOn(global, 'requestAnimationFrame').mockImplementation((cb: FrameRequestCallback) => {
+    cb(0);
+    return 0;
+});
 
 describe('todo-app view filtering', () => {
     let element: any;

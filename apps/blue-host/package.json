@@ -1,7 +1,7 @@
 {
   "name": "@blue/host",
   "version": "0.0.1",
-  "description": "Blue Micro Frontend Host \u2014 shell with lazy-loaded feature chunks",
+  "description": "Blue Micro Frontend Host — shell with lazy-loaded feature chunks",
   "type": "module",
   "private": true,
   "files": [

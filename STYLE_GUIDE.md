@@ -1020,7 +1020,7 @@ BlueJS uses role-based suffixes inspired by Spring Framework to indicate the res
 | Suffix         | Meaning                                                       | Examples                                        |
 | :------------- | :------------------------------------------------------------ | :---------------------------------------------- |
 | `*Adapter`     | Adapts one interface to another; translates between protocols | `RouteHandlerAdapter`, `MetadataHandlerAdapter` |
-| `*Transformer` | Transforms data structure | `DataTransformer`, `PayloadTransformer`         |
+| `*Transformer` | Transforms data structure                                     | `DataTransformer`, `PayloadTransformer`         |
 | `*Converter`   | Converts between types or formats; typically bidirectional    | `MessageConverter`, `TypeConverter`             |
 
 **Resolution & Discovery:**
@@ -2386,14 +2386,14 @@ const promise = Promise.resolve(42);
 
 **Methods that convert between formats:**
 
-| Prefix        | Meaning                  | Returns              | Parameters         | Examples                                                   |
-| :------------ | :----------------------- | :------------------- | :----------------- | :--------------------------------------------------------- |
-| `to*`         | Converts to format       | String or object     | Often accepts opts | `toString()`, `toJSON()`, `toContentType()`                |
-| `format*`     | Formats to string        | String               | May accept format  | `format()`, `formatDate()`                                 |
-| `convert*`    | Bidirectional conversion | Converted value      | None               | `convert()`, `convertToUTC()`                              |
-| `with*`       | Creates copy with change | New instance (immut) | New value          | `withCharset()`, `withParameter()`                         |
-| `parse*`      | Deserializes a string into a structured value; returns `null` or throws on invalid input | Typed value or `null` | String input | `parseKeypath()`, `parseWildcard()`, `JSON.parse()` |
-| `stringify*`  | Serializes a value to its string representation | String | Value to serialize | `JSON.stringify()`, `stringifyParameters()`        |
+| Prefix       | Meaning                                                                                  | Returns               | Parameters         | Examples                                            |
+| :----------- | :--------------------------------------------------------------------------------------- | :-------------------- | :----------------- | :-------------------------------------------------- |
+| `to*`        | Converts to format                                                                       | String or object      | Often accepts opts | `toString()`, `toJSON()`, `toContentType()`         |
+| `format*`    | Formats to string                                                                        | String                | May accept format  | `format()`, `formatDate()`                          |
+| `convert*`   | Bidirectional conversion                                                                 | Converted value       | None               | `convert()`, `convertToUTC()`                       |
+| `with*`      | Creates copy with change                                                                 | New instance (immut)  | New value          | `withCharset()`, `withParameter()`                  |
+| `parse*`     | Deserializes a string into a structured value; returns `null` or throws on invalid input | Typed value or `null` | String input       | `parseKeypath()`, `parseWildcard()`, `JSON.parse()` |
+| `stringify*` | Serializes a value to its string representation                                          | String                | Value to serialize | `JSON.stringify()`, `stringifyParameters()`         |
 
 **Examples:**
 
@@ -3028,17 +3028,33 @@ Standalone factory functions (not static class methods) follow these naming conv
 
 ```typescript
 // ✅ Correct: create* for pure creation (no global configuration)
-export const createShellContext = (options: ShellContextOptions) => { /* ... */ }
-export const createFeatureContext = (parent: ApplicationContext, options: FeatureContextOptions) => { /* ... */ }
-export const createStringSplitConverter = (separator: string | RegExp) => { /* ... */ }
-export const createOptionalConverter = (converter: ArgumentValueConverter) => { /* ... */ }
+export const createShellContext = (options: ShellContextOptions) => {
+    /* ... */
+};
+export const createFeatureContext = (parent: ApplicationContext, options: FeatureContextOptions) => {
+    /* ... */
+};
+export const createStringSplitConverter = (separator: string | RegExp) => {
+    /* ... */
+};
+export const createOptionalConverter = (converter: ArgumentValueConverter) => {
+    /* ... */
+};
 export const createNull = () => Object.create(null);
-export const createTypeValidator = (type: string) => { /* ... */ }
-export const createValidationBackend = (name: ValidationBackendName) => { /* ... */ }
+export const createTypeValidator = (type: string) => {
+    /* ... */
+};
+export const createValidationBackend = (name: ValidationBackendName) => {
+    /* ... */
+};
 
 // ❌ Wrong: get* for pure creation (use create*)
-export const getShellContext = (options: ShellContextOptions) => { /* ... */ }  // Use createShellContext
-export const getStringSplitConverter = (separator: string) => { /* ... */ }    // Use createStringSplitConverter
+export const getShellContext = (options: ShellContextOptions) => {
+    /* ... */
+}; // Use createShellContext
+export const getStringSplitConverter = (separator: string) => {
+    /* ... */
+}; // Use createStringSplitConverter
 ```
 
 **Configuration-Dependent Functions (with global state):**
@@ -3057,16 +3073,18 @@ class LoggerFactory {
 
 // ❌ Wrong: create* when global state is involved (use get*)
 class LoggerFactory {
-    public static createLogger(name: string): Logger { /* ... */ }  // Use getLogger
+    public static createLogger(name: string): Logger {
+        /* ... */
+    } // Use getLogger
 }
 ```
 
 **Decision Rule:**
 
-| Pattern | When to use | Example |
-|---|---|---|
-| `create*()` | No global state, per-instance creation | `createShellContext()`, `createRouter()` |
-| `get*()` | Global state affects the returned instance | `LoggerFactory.getLogger()` |
+| Pattern     | When to use                                | Example                                  |
+| ----------- | ------------------------------------------ | ---------------------------------------- |
+| `create*()` | No global state, per-instance creation     | `createShellContext()`, `createRouter()` |
+| `get*()`    | Global state affects the returned instance | `LoggerFactory.getLogger()`              |
 
 **Rationale:** `create*()` signals "a new instance is created." `get*()` signals "an instance is returned based on current configuration." This distinction helps callers understand whether the factory has side effects or depends on shared state.
 
@@ -4434,24 +4452,24 @@ Code is read more often than it is written. Self-documenting code minimizes the 
 
 ### Principle: Names carry meaning, comments carry rationale
 
-| Category | What to document | What NOT to document |
-|----------|-----------------|---------------------|
-| Names | Domain concepts, roles (`*Handler`, `*Strategy`) | Trivial getters (`// Returns the X`) |
-| Comments | *Why* a choice was made, edge cases, tradeoffs | *What* the code does (the code says that) |
-| Assertions | *Why* the compiler is wrong (one-liner with assertion) | *That* it's wrong (the `as any` already says that) |
-| Dead code | `@deprecated` with migration path, or delete | Commented-out blocks ("I'll need this later") |
+| Category   | What to document                                       | What NOT to document                               |
+| ---------- | ------------------------------------------------------ | -------------------------------------------------- |
+| Names      | Domain concepts, roles (`*Handler`, `*Strategy`)       | Trivial getters (`// Returns the X`)               |
+| Comments   | _Why_ a choice was made, edge cases, tradeoffs         | _What_ the code does (the code says that)          |
+| Assertions | _Why_ the compiler is wrong (one-liner with assertion) | _That_ it's wrong (the `as any` already says that) |
+| Dead code  | `@deprecated` with migration path, or delete           | Commented-out blocks ("I'll need this later")      |
 
 ### Property/Method naming tells readers cost and semantics
 
 As established in Section 3.12:
 
-| Shape | Convention | Signals to the reader |
-|-------|-----------|----------------------|
-| `get something()` | Property | O(1), no side effects, intrinsic data |
-| `getSomething()` | get-method | May be expensive, may fail, may return `null` |
-| `toSomething()` | to-method | Returns a new representation, source unchanged |
+| Shape             | Convention | Signals to the reader                          |
+| ----------------- | ---------- | ---------------------------------------------- |
+| `get something()` | Property   | O(1), no side effects, intrinsic data          |
+| `getSomething()`  | get-method | May be expensive, may fail, may return `null`  |
+| `toSomething()`   | to-method  | Returns a new representation, source unchanged |
 
-### Comment structure: say *why* not *what*
+### Comment structure: say _why_ not _what_
 
 ```typescript
 // ❌ WHAT — the code already says this
@@ -4492,12 +4510,12 @@ When a module has many similar assertions (e.g., a library whose types end at `a
 
 A `// NOTE:` comment usually means "this is not right but I'm shipping it anyway." It obscures the fact that the code is knowingly incomplete. Prefer:
 
-| Instead of `// NOTE:` | Use |
-|-----------------------|-----|
-| "This is simplified" | `@remarks This is a reference implementation. For production use…` |
-| "Not implemented" | `@deprecated Use {@link ProductionJWTAdapter} instead.` |
-| "In production, do X" | Remove the comment and do X, or mark with `@deprecated` |
-| "This should be X" | Do X, or open a ticket |
+| Instead of `// NOTE:` | Use                                                                |
+| --------------------- | ------------------------------------------------------------------ |
+| "This is simplified"  | `@remarks This is a reference implementation. For production use…` |
+| "Not implemented"     | `@deprecated Use {@link ProductionJWTAdapter} instead.`            |
+| "In production, do X" | Remove the comment and do X, or mark with `@deprecated`            |
+| "This should be X"    | Do X, or open a ticket                                             |
 
 ### File size is documentation
 
@@ -4510,12 +4528,12 @@ A file containing one public type documents the relationship between name and co
 
 ### Dead code must carry its tombstone
 
-| State | Treatment |
-|-------|-----------|
-| Intentionally unused | Delete it. Source control remembers it. |
-| Kept for future activation | `@deprecated` with a `@remarks` explaining when it will be needed, or move to an `_archive/` directory |
-| Commented-out | Delete it. |
-| Optional path you chose not to take | Document the decision in `docs/decisions/` or a commit message |
+| State                               | Treatment                                                                                              |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| Intentionally unused                | Delete it. Source control remembers it.                                                                |
+| Kept for future activation          | `@deprecated` with a `@remarks` explaining when it will be needed, or move to an `_archive/` directory |
+| Commented-out                       | Delete it.                                                                                             |
+| Optional path you chose not to take | Document the decision in `docs/decisions/` or a commit message                                         |
 
 ---
 

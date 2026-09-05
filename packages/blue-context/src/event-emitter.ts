@@ -204,10 +204,9 @@ export const likeEventEmitter = like({
 
 /**
  * Adds async event dispatch behavior to a base class.
- */export const AsAsyncEventEmitter = <T extends Constructable<EventEmitter>>(
+ */ export const AsAsyncEventEmitter = <T extends Constructable<EventEmitter>>(
     superclass: T
 ): Constructable<AsyncEventEmitter> & T =>
-    
     class extends superclass implements AsyncEventEmitter {
         /**
          * Dispatches an event on the next microtask.
@@ -502,7 +501,7 @@ export class Emitter extends AsEventEmitter(Null) implements Destroyable, Serial
             writable: false,
         });
 
-            typeof mapping !== 'undefined' && addEventHandlers(this, mapping, false);
+        typeof mapping !== 'undefined' && addEventHandlers(this, mapping, false);
     }
 
     /**
@@ -512,7 +511,7 @@ export class Emitter extends AsEventEmitter(Null) implements Destroyable, Serial
      * @returns This emitter.
      */
     clear(type?: EventType): this {
-            removeAllEventListeners(this, type);
+        removeAllEventListeners(this, type);
         return this;
     }
 

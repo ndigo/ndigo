@@ -75,7 +75,6 @@ describe('MockMVC', () => {
 });
 
 describe('IslandView through MockMVC dispatch (SSR islands)', () => {
-
     @getMapping('/islands')
     class IslandsController {
         @getMapping('/todo')

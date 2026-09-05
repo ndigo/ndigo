@@ -3,14 +3,7 @@
  * Handles greeting and echo routes under /api.
  */
 import '@tsmetadata/polyfill';
-import {
-    getMapping,
-    postMapping,
-    routeParams,
-    queryValue,
-    bodyValue,
-    pathValue,
-} from '@blue/dispatcher';
+import { getMapping, postMapping, routeParams, queryValue, bodyValue, pathValue } from '@blue/dispatcher';
 
 @getMapping('/api')
 export class GreetingController {

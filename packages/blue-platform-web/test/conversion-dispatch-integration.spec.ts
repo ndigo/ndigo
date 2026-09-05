@@ -105,13 +105,10 @@ describe('conversion + error flow integration', () => {
         if (resolvers && resolvers.length > 0) {
             // Test type-based conversion directly
             const stateResolver = resolvers.find((r) => r instanceof BrowserStateValueMethodArgumentResolver);
-            const parameter = new MethodParameter(
-                MethodParameterType.STATE,
-                'txCount',
-                false,
-                null,
-                { source: String, target: Number }
-            );
+            const parameter = new MethodParameter(MethodParameterType.STATE, 'txCount', false, null, {
+                source: String,
+                target: Number,
+            });
 
             // Mock history.state
             const originalState = globalThis.history?.state;

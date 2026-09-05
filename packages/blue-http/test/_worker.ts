@@ -152,9 +152,9 @@ const handlers = [
         return HttpResponse.text('normal');
     }),
     http.get('http://localhost/app-reset/205', () => {
-        return HttpResponse.text('reset', { 
+        return HttpResponse.text('reset', {
             status: 205,
-            headers: { 'Alt-Location': '/reset' }
+            headers: { 'Alt-Location': '/reset' },
         });
     }),
 ];

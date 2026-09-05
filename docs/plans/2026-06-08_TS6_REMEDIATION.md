@@ -3,6 +3,7 @@
 This document outlines the steps to resolve critical regressions, type safety risks, and maintainability issues introduced during the TypeScript 6.0 migration.
 
 ## 🎯 Objectives
+
 1. **Restore Broken Logic**: Fix the behavioral regressions in `@blue/domain` and `@blue/dispatcher`.
 2. **Eliminate "Type Lies"**: Replace dangerous `as unknown as T` casts and unverified `!` assertions with defensive runtime checks.
 3. **Stabilize Public API**: Update all consumers of widened return types (`| null` / `| undefined`) to prevent runtime crashes.
@@ -13,6 +14,7 @@ This document outlines the steps to resolve critical regressions, type safety ri
 ## 🛠️ Implementation Strategy: The Remediation Waves
 
 ### Wave 1: Critical Regressions (Immediate Priority)
+
 - [x] **Task 1.1: Restore `@blue/domain` Property Delegation**
     - Target: `packages/blue-domain/src/component.ts`
     - Action: Revert the `initializeData` mixin from returning `undefined` to delegating `get` calls to `component.model.get(key, { isolate: true })`.
@@ -21,6 +23,7 @@ This document outlines the steps to resolve critical regressions, type safety ri
     - Action: Re-add the `supports(handler: object): boolean` method to the `RouteHandlerAdapter` interface. Ensure concrete implementations (`MetadataHandlerAdapter`, `ControllerHandlerAdapter`) correctly implement it.
 
 ### Wave 2: Type Safety Hardening
+
 - [x] **Task 2.1: Upgrade `like*` Predicates to `unknown`**
     - Target: All `like*` functions across the monorepo.
     - Action: Change signatures from `(value: any) => value is T` to `(value: unknown) => value is T`.
@@ -32,6 +35,7 @@ This document outlines the steps to resolve critical regressions, type safety ri
     - Action: Verify guaranteed assignment paths. Replace `!` with optional chaining or explicit null checks if not guaranteed.
 
 ### Wave 3: API Stability & Consumer Updates
+
 - [x] **Task 3.1: Call-Site Audit for Widened Returns**
     - Target: Consumers of 15+ methods (e.g., `RingBuffer.get()`, `ViewResolver.resolveViewName()`).
     - Action: Implement explicit null/undefined checks at each call site.
@@ -40,6 +44,7 @@ This document outlines the steps to resolve critical regressions, type safety ri
     - Action: Document return type changes as breaking changes.
 
 ### Wave 4: Maintainability & Style
+
 - [x] **Task 4.1: Refactor `@blue/validate` Constraints**
     - Target: `packages/blue-validate/src/standard-constraints.ts`
     - Action: Create a `createConstraint` helper to reduce boilerplate.
@@ -50,6 +55,7 @@ This document outlines the steps to resolve critical regressions, type safety ri
 ---
 
 ## 📋 Verification Plan
+
 1. **Compilation Gate**: `pnpm build` must remain clean.
 2. **Test Gate**: `pnpm test` must pass.
 3. **Architecture Gate**: Final `architecture-reviewer` pass.

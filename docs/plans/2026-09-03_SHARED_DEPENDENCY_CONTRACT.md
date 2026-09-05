@@ -44,11 +44,11 @@ class TelemetryService {
 
 **Edge cases:**
 
-| Scenario | Behavior |
-|---|---|
-| Feature registers `@shared` bean that parent doesn't have | Warning, but registration proceeds (no parent to resolve from → feature needs its own) |
+| Scenario                                                    | Behavior                                                                                             |
+| ----------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| Feature registers `@shared` bean that parent doesn't have   | Warning, but registration proceeds (no parent to resolve from → feature needs its own)               |
 | Feature registers non-`@shared` bean with same key as shell | Feature's copy shadows shell — **this is the current behavior**, preserved for intentional overrides |
-| Two features declare the same `@shared` dependency | Neither creates a copy; both resolve from shell |
+| Two features declare the same `@shared` dependency          | Neither creates a copy; both resolve from shell                                                      |
 
 **Implementation sketch:**
 
@@ -57,8 +57,8 @@ class TelemetryService {
 import { SHARED_METADATA } from './shared-metadata';
 
 interface SharedOptions {
-    singleton?: boolean;  // default true
-    version?: string;      // semver range like "^1.0.0"
+    singleton?: boolean; // default true
+    version?: string; // semver range like "^1.0.0"
 }
 
 const SHARED_KEY = Symbol('blue:shared');
@@ -181,7 +181,10 @@ interface SharedDependencyEntry {
 
 interface SharedDependencyRegistry {
     declare(manifest: { services: Record<string, SharedDependencyEntry> }): void;
-    validate(featureDeps: { requires: Record<string, string>; optional: Record<string, string> }): DependencyValidationResult;
+    validate(featureDeps: {
+        requires: Record<string, string>;
+        optional: Record<string, string>;
+    }): DependencyValidationResult;
     getDependency(token: ContextToken): SharedDependencyEntry | undefined;
 }
 ```
@@ -191,13 +194,13 @@ interface SharedDependencyRegistry {
 ```ts
 interface DependencyValidationResult {
     valid: boolean;
-    missing: string[];      // required deps not found in ancestor chain
+    missing: string[]; // required deps not found in ancestor chain
     versionMismatches: Array<{
         name: string;
         required: string;
         found: string;
     }>;
-    warnings: string[];     // optional deps not found
+    warnings: string[]; // optional deps not found
 }
 ```
 
@@ -217,7 +220,7 @@ interface FeatureRegistrationOptions extends FeatureContextOptions {
 interface FeatureRegistrationOptions extends FeatureContextOptions {
     unmountPolicy?: FeatureUnmountPolicy;
     dependencies?: {
-        requires?: Record<string, string>;  // token description → semver
+        requires?: Record<string, string>; // token description → semver
         optional?: Record<string, string>;
     };
 }
@@ -289,29 +292,29 @@ When a feature uses a custom `createContext` factory (instead of `parent.newChil
 
 ### New Files
 
-| File | Description |
-|---|---|
-| `packages/blue-core/src/shared.ts` | `@shared()` decorator, `isShared()`, `getSharedOptions()` |
-| `packages/blue-context/src/shared-dependency-registry.ts` | `SharedDependencyRegistry` interface and default implementation |
-| `packages/blue-context/src/dependency-validation-result.ts` | Validation result type |
-| `packages/blue-context/src/dependency-validation-error.ts` | Error class for failed validation |
+| File                                                        | Description                                                     |
+| ----------------------------------------------------------- | --------------------------------------------------------------- |
+| `packages/blue-core/src/shared.ts`                          | `@shared()` decorator, `isShared()`, `getSharedOptions()`       |
+| `packages/blue-context/src/shared-dependency-registry.ts`   | `SharedDependencyRegistry` interface and default implementation |
+| `packages/blue-context/src/dependency-validation-result.ts` | Validation result type                                          |
+| `packages/blue-context/src/dependency-validation-error.ts`  | Error class for failed validation                               |
 
 ### Modified Files
 
-| File | Change |
-|---|---|
-| `packages/blue-factory/src/context-token.ts` | Add optional `requiredVersion` to constructor |
-| `packages/blue-factory/src/factory.ts` | `getValue()` checks `requiredVersion` against resolved bean |
-| `packages/blue-context/src/feature-context-mount-manager.ts` | `mount()` validates deps before proceeding |
-| `packages/blue-context/src/context-hierarchy.ts` | `FeatureContextOptions` gains `dependencies` field |
-| `packages/blue-context/src/index.ts` | Export new symbols |
+| File                                                         | Change                                                      |
+| ------------------------------------------------------------ | ----------------------------------------------------------- |
+| `packages/blue-factory/src/context-token.ts`                 | Add optional `requiredVersion` to constructor               |
+| `packages/blue-factory/src/factory.ts`                       | `getValue()` checks `requiredVersion` against resolved bean |
+| `packages/blue-context/src/feature-context-mount-manager.ts` | `mount()` validates deps before proceeding                  |
+| `packages/blue-context/src/context-hierarchy.ts`             | `FeatureContextOptions` gains `dependencies` field          |
+| `packages/blue-context/src/index.ts`                         | Export new symbols                                          |
 
 ### Unchanged
 
 | `@blue/context` ApplicationContext / GenericApplicationContext | `@blue/router` SiteRouter / FeatureRoutingRegistry |
-|---|---|
-| Event gateway | Router interceptors |
-| `@blue/boot` ApplicationBuilder | Existing tests |
+| -------------------------------------------------------------- | -------------------------------------------------- |
+| Event gateway                                                  | Router interceptors                                |
+| `@blue/boot` ApplicationBuilder                                | Existing tests                                     |
 
 ---
 
@@ -319,12 +322,12 @@ When a feature uses a custom `createContext` factory (instead of `parent.newChil
 
 The version check requires semver parsing. Options:
 
-| Approach | Pros | Cons |
-|---|---|---|
-| **(a) Depend on `semver`** | Full semver range support, standard | Adds ~7 KB to bundle |
-| **(b) Depend on `semver-compare`** | Lighter (~1 KB) | No range matching — exact or prefix only |
-| **(c) Build simple range matcher** | Zero deps | Reimplement semver poorly |
-| **(d) `require('semver')` with dynamic import** | Only loaded when check fires | Async complication |
+| Approach                                        | Pros                                | Cons                                     |
+| ----------------------------------------------- | ----------------------------------- | ---------------------------------------- |
+| **(a) Depend on `semver`**                      | Full semver range support, standard | Adds ~7 KB to bundle                     |
+| **(b) Depend on `semver-compare`**              | Lighter (~1 KB)                     | No range matching — exact or prefix only |
+| **(c) Build simple range matcher**              | Zero deps                           | Reimplement semver poorly                |
+| **(d) `require('semver')` with dynamic import** | Only loaded when check fires        | Async complication                       |
 
 **Recommendation:** (a) — `semver` is the standard, already a transitive dep in most projects. Bundle impact is negligible for a framework package. Can be imported synchronously in factory code.
 
@@ -332,26 +335,26 @@ The version check requires semver parsing. Options:
 
 ## 7. Open Questions
 
-| Question | Options | Recommendation |
-|---|---|---|
-| Should `@shared` validation be **opt-in** or **opt-out**? | (a) Always enforced, (b) Enabled by config flag | **Opt-in via manifest** — not all features will declare deps immediately |
-| Version check: **hard error** or **soft warning**? | (a) Throw, (b) Warn + continue | **Warning** — same as Module Federation. Breaking a feature because of a minor version mismatch is too aggressive for 1.0 |
-| Who owns the `SharedDependencyRegistry`? | (a) Shell context, (b) `@blue/boot` | **Shell context** — it's a shell-level concern |
-| Should version be extracted from `package.json` or explicit annotation? | (a) Auto-read `package.json`, (b) `@shared({ version })` | **Explicit annotation** — `package.json` is unreliable in bundled output |
-| Rollout: add to existing `FeatureContextMountManager` or new package? | (a) In-place, (b) New `@blue/mfe` | **In-place** — the feature mount manager is the right home. A separate package adds import overhead for no gain |
+| Question                                                                | Options                                                  | Recommendation                                                                                                            |
+| ----------------------------------------------------------------------- | -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| Should `@shared` validation be **opt-in** or **opt-out**?               | (a) Always enforced, (b) Enabled by config flag          | **Opt-in via manifest** — not all features will declare deps immediately                                                  |
+| Version check: **hard error** or **soft warning**?                      | (a) Throw, (b) Warn + continue                           | **Warning** — same as Module Federation. Breaking a feature because of a minor version mismatch is too aggressive for 1.0 |
+| Who owns the `SharedDependencyRegistry`?                                | (a) Shell context, (b) `@blue/boot`                      | **Shell context** — it's a shell-level concern                                                                            |
+| Should version be extracted from `package.json` or explicit annotation? | (a) Auto-read `package.json`, (b) `@shared({ version })` | **Explicit annotation** — `package.json` is unreliable in bundled output                                                  |
+| Rollout: add to existing `FeatureContextMountManager` or new package?   | (a) In-place, (b) New `@blue/mfe`                        | **In-place** — the feature mount manager is the right home. A separate package adds import overhead for no gain           |
 
 ---
 
 ## 8. Acceptance Criteria
 
-| Gate | Verification |
-|---|---|
-| `@shared()` decorator marks a class as shared | `isShared(MyService)` returns `true` |
-| Factory skips registration of `@shared` bean on child context | Bean not duplicated in child; `getValue()` resolves from parent |
-| `ContextToken` with `requiredVersion` warns on mismatch | Token with `^1.0.0` + bean at `2.0.0` triggers console.warn |
-| `FeatureRegistrationOptions.dependencies` accepted | Type check passes |
-| `mount()` validates deps against `SharedDependencyRegistry` | Missing required dep throws; missing optional dep warns |
-| `SharedDependencyRegistry` accepts shell manifest | `registry.declare({...})` + `registry.validate({...})` returns valid |
-| Existing features without `dependencies` field work unchanged | `mount()` skips validation when deps omitted |
-| `pnpm build && pnpm test` passes | All 29 targets green |
-| Existing `blue-demo` Todo feature compiles without change | No regression |
+| Gate                                                          | Verification                                                         |
+| ------------------------------------------------------------- | -------------------------------------------------------------------- |
+| `@shared()` decorator marks a class as shared                 | `isShared(MyService)` returns `true`                                 |
+| Factory skips registration of `@shared` bean on child context | Bean not duplicated in child; `getValue()` resolves from parent      |
+| `ContextToken` with `requiredVersion` warns on mismatch       | Token with `^1.0.0` + bean at `2.0.0` triggers console.warn          |
+| `FeatureRegistrationOptions.dependencies` accepted            | Type check passes                                                    |
+| `mount()` validates deps against `SharedDependencyRegistry`   | Missing required dep throws; missing optional dep warns              |
+| `SharedDependencyRegistry` accepts shell manifest             | `registry.declare({...})` + `registry.validate({...})` returns valid |
+| Existing features without `dependencies` field work unchanged | `mount()` skips validation when deps omitted                         |
+| `pnpm build && pnpm test` passes                              | All 29 targets green                                                 |
+| Existing `blue-demo` Todo feature compiles without change     | No regression                                                        |

@@ -9,6 +9,7 @@
 ## Research Scope
 
 Comprehensive comparison of **@blue/http** against:
+
 - **Spring Framework RestClient** (Java enterprise standard, inspiration source)
 - **Axios** (JavaScript ecosystem leader)
 - **Fetch API** (Web standard, foundation layer)
@@ -23,12 +24,12 @@ Comprehensive comparison of **@blue/http** against:
 ### @blue/http Strengths ✅
 
 1. **5-Hook Interceptor System** - Most granular lifecycle control
-   - `preInit`, `preRequest`, `postResponse`, `postError`, `postComplete`
-   
+    - `preInit`, `preRequest`, `postResponse`, `postError`, `postComplete`
 2. **URL Pattern Matching** - `MappedHTTPInterceptor` for conditional interceptors
 
 3. **8 Built-in Interceptors** - Ready-to-use functionality
-   - ContentType, DataParameter, IfModified, NotOk, ResponseClass, ResponseCode, ResponseType, Timeout
+
+    - ContentType, DataParameter, IfModified, NotOk, ResponseClass, ResponseCode, ResponseType, Timeout
 
 4. **RFC-Compliant Parsers** - Query/Matrix string parser combinators
 
@@ -69,21 +70,25 @@ Comprehensive comparison of **@blue/http** against:
 ### Phase 1: Foundation (Weeks 1-2)
 
 1. ✅ **Base URL Configuration (Implemented)**
-   ```typescript
-   const api = new HTTP([], { baseURL: 'https://api.example.com/' });
-   api.get('users'); // Resolves to https://api.example.com/users
-   ```
-   - **Complexity:** Low
-   - **Impact:** Critical for ergonomic URL handling
+
+    ```typescript
+    const api = new HTTP([], { baseURL: 'https://api.example.com/' });
+    api.get('users'); // Resolves to https://api.example.com/users
+    ```
+
+    - **Complexity:** Low
+    - **Impact:** Critical for ergonomic URL handling
 
 2. **Instance System with Config Defaults**
+
 ```typescript
 const api = HTTP.create({
     baseURL: 'https://api.example.com',
-    headers: { 'Authorization': 'Bearer token' },
-    timeout: 5000
+    headers: { Authorization: 'Bearer token' },
+    timeout: 5000,
 });
 ```
+
 - **Complexity:** Medium
 - **Impact:** Foundation for all other features
 - **Alignment:** Axios mental model, Spring builder pattern
@@ -93,33 +98,39 @@ const api = HTTP.create({
 ### Phase 2: Request/Response Enhancement (Weeks 3-4)
 
 3. **Query Params Config**
+
 ```typescript
 api.get('/search', {
-    params: { q: 'typescript', page: 1 }
+    params: { q: 'typescript', page: 1 },
 });
 // → GET /search?q=typescript&page=1
 ```
+
 - **Complexity:** Low (leverage existing parsers)
 - **Impact:** Major DX improvement
 - **Alignment:** Axios API
 
 4. **Transform Pipeline**
+
 ```typescript
 const api = HTTP.create({
     transformRequest: [(data) => ({ ...data, timestamp: Date.now() })],
-    transformResponse: [(data) => parseCustomFormat(data)]
+    transformResponse: [(data) => parseCustomFormat(data)],
 });
 ```
+
 - **Complexity:** Medium
 - **Impact:** Composable data transformations
 - **Alignment:** Axios pattern
 
 5. **HTTP Basic Auth Helper**
+
 ```typescript
 api.get('/protected', {
-    auth: { username: 'user', password: 'pass' }
+    auth: { username: 'user', password: 'pass' },
 });
 ```
+
 - **Complexity:** Low
 - **Impact:** Convenience for common use case
 - **Alignment:** Axios + Spring patterns
@@ -129,24 +140,28 @@ api.get('/protected', {
 ### Phase 3: Browser Features (Weeks 5-6)
 
 6. **XSRF Protection** 🔵 Browser-only
+
 ```typescript
 const api = HTTP.create({
     xsrfCookieName: 'XSRF-TOKEN',
-    xsrfHeaderName: 'X-XSRF-TOKEN'
+    xsrfHeaderName: 'X-XSRF-TOKEN',
 });
 ```
+
 - **Complexity:** Low
 - **Impact:** Critical security feature
 - **Implementation:** Built-in interceptor
 
 7. **Progress Tracking** 🔵 Browser-only
+
 ```typescript
 api.post('/upload', formData, {
     onUploadProgress: (event) => {
-        console.log(`${event.loaded / event.total * 100}%`);
-    }
+        console.log(`${(event.loaded / event.total) * 100}%`);
+    },
 });
 ```
+
 - **Complexity:** High (requires XHR wrapper)
 - **Impact:** Essential for file uploads
 - **Trade-off:** XHR for uploads, ReadableStream for downloads
@@ -169,13 +184,16 @@ api.post('/upload', formData, {
 ## Platform Compatibility
 
 ### Universal Features ✅
+
 - Instance system, query params, transforms, auth helper, validate status, interceptor management, form shortcuts, error categorization, range helper
 
 ### Browser-Only Features 🔵
+
 - XSRF protection
 - Upload/download progress tracking
 
 ### Node-Only Features 🟣
+
 - Proxy configuration
 - Custom HTTP agents
 - Socket path support
@@ -187,6 +205,7 @@ api.post('/upload', formData, {
 - Max content/body length
 
 **Detection Strategy:**
+
 ```typescript
 const isBrowser = typeof window !== 'undefined';
 const isNode = typeof process !== 'undefined';
@@ -199,6 +218,7 @@ const isNode = typeof process !== 'undefined';
 ### Backward Compatibility
 
 **Approach:** Additive changes (recommended)
+
 - Keep existing API intact
 - Add new features as optional config
 - Gradual migration path
@@ -210,7 +230,7 @@ http.get('https://api.example.com/users');
 
 // New API (opt-in)
 const api = HTTP.create({
-    baseURL: 'https://api.example.com'
+    baseURL: 'https://api.example.com',
 });
 api.get('/users');
 ```
@@ -219,39 +239,41 @@ api.get('/users');
 
 Migration guide for developers coming from Axios:
 
-| Axios | @blue/http (Proposed) |
-|-------|----------------------|
-| `axios.create(config)` | `HTTP.create(config)` |
-| `axios.get(url, { params })` | `api.get(url, { params })` |
-| `auth: { username, password }` | `auth: { username, password }` |
-| `transformRequest: [...]` | `transformRequest: [...]` |
+| Axios                             | @blue/http (Proposed)             |
+| --------------------------------- | --------------------------------- |
+| `axios.create(config)`            | `HTTP.create(config)`             |
+| `axios.get(url, { params })`      | `api.get(url, { params })`        |
+| `auth: { username, password }`    | `auth: { username, password }`    |
+| `transformRequest: [...]`         | `transformRequest: [...]`         |
 | `validateStatus: (status) => ...` | `validateStatus: (status) => ...` |
-| `onUploadProgress` | `onUploadProgress` |
-| `interceptors.request.use()` | `interceptors.request.use()` |
+| `onUploadProgress`                | `onUploadProgress`                |
+| `interceptors.request.use()`      | `interceptors.request.use()`      |
 
 ---
 
 ## Performance Targets
 
-| Metric | Target | Critical Path |
-|--------|--------|---------------|
-| Request Overhead | < 1ms | Config merge + interceptors |
-| Transform Pipeline | < 0.5ms per fn | Array iteration |
-| Memory per Instance | < 1KB | Shared default configs |
-| Bundle Size (core) | < 5KB gzipped | Tree-shaking |
-| Bundle Size (full) | < 10KB gzipped | Optional features |
+| Metric              | Target         | Critical Path               |
+| ------------------- | -------------- | --------------------------- |
+| Request Overhead    | < 1ms          | Config merge + interceptors |
+| Transform Pipeline  | < 0.5ms per fn | Array iteration             |
+| Memory per Instance | < 1KB          | Shared default configs      |
+| Bundle Size (core)  | < 5KB gzipped  | Tree-shaking                |
+| Bundle Size (full)  | < 10KB gzipped | Optional features           |
 
 ---
 
 ## Testing Requirements
 
 ### Coverage Areas
+
 1. **Unit Tests** - Each feature in isolation
 2. **Integration Tests** - Full request/response flow
 3. **Platform Tests** - Browser + Node.js environments
 4. **Compatibility Tests** - Axios API parity
 
 ### Test Environments
+
 - Browser: jsdom or real browser (Playwright)
 - Node.js: Native Node environment
 - Feature detection mocks
@@ -261,33 +283,37 @@ Migration guide for developers coming from Axios:
 ## Documentation Deliverables
 
 1. **Migration Guide**
-   - Axios → @blue/http
-   - Old @blue/http API → New API
-   - Spring concepts → @blue/http equivalents
+
+    - Axios → @blue/http
+    - Old @blue/http API → New API
+    - Spring concepts → @blue/http equivalents
 
 2. **Feature Documentation**
-   - Instance system examples
-   - Config options reference
-   - Transform pipeline patterns
-   - XSRF protection setup
-   - Progress tracking examples
+
+    - Instance system examples
+    - Config options reference
+    - Transform pipeline patterns
+    - XSRF protection setup
+    - Progress tracking examples
 
 3. **API Reference**
-   - TypeScript interfaces
-   - Method signatures
-   - Error types
+
+    - TypeScript interfaces
+    - Method signatures
+    - Error types
 
 4. **Examples**
-   - Common use cases
-   - Authentication patterns
-   - File upload with progress
-   - Error handling strategies
+    - Common use cases
+    - Authentication patterns
+    - File upload with progress
+    - Error handling strategies
 
 ---
 
 ## Success Metrics
 
 ### Developer Experience
+
 - ✅ DRY configuration (instance system)
 - ✅ Intuitive query params (no manual URL construction)
 - ✅ Composable transformations (clean data pipeline)
@@ -295,6 +321,7 @@ Migration guide for developers coming from Axios:
 - ✅ File upload UX (progress tracking)
 
 ### Technical Goals
+
 - ✅ 100% backward compatible (additive changes)
 - ✅ Platform-agnostic core (browser + Node.js)
 - ✅ < 10KB bundle size with all features
@@ -302,6 +329,7 @@ Migration guide for developers coming from Axios:
 - ✅ 95%+ test coverage for new features
 
 ### Ecosystem Alignment
+
 - ✅ Axios migration path (familiar API)
 - ✅ Spring patterns adapted for JavaScript
 - ✅ Fetch API foundation preserved
@@ -314,6 +342,7 @@ Migration guide for developers coming from Axios:
 ### 1. Instance System API
 
 **Options:**
+
 - A) `HTTP.create(config)` - Axios style (recommended)
 - B) `new HTTP(config)` - Constructor style
 - C) Both supported
@@ -323,6 +352,7 @@ Migration guide for developers coming from Axios:
 ### 2. Progress Tracking Implementation
 
 **Options:**
+
 - A) XHR wrapper for uploads + ReadableStream for downloads (recommended)
 - B) ReadableStream for both (loses upload progress in some browsers)
 - C) External library integration
@@ -332,6 +362,7 @@ Migration guide for developers coming from Axios:
 ### 3. Transform Pipeline Integration
 
 **Options:**
+
 - A) Replace some existing interceptors (breaking change)
 - B) Coexist with interceptors (recommended)
 - C) Transform as special interceptor type

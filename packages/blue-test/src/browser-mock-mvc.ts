@@ -112,9 +112,7 @@ function isConfiguration(source: Function): boolean {
     if (!isFunction(source)) {
         return false;
     }
-    const meta = (source as { [Symbol.metadata]?: Record<string | symbol, unknown> })[
-        Symbol.metadata
-    ];
+    const meta = (source as { [Symbol.metadata]?: Record<string | symbol, unknown> })[Symbol.metadata];
     return meta?.['config:constructor'] === true;
 }
 

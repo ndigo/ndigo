@@ -82,10 +82,7 @@ export class DefaultSharedDependencyRegistry implements SharedDependencyRegistry
         return this.#services.get(name);
     }
 
-    validate(
-        required: Record<string, string>,
-        optional: Record<string, string>
-    ): DependencyValidationResult {
+    validate(required: Record<string, string>, optional: Record<string, string>): DependencyValidationResult {
         const missing: string[] = [];
         const versionMismatches: Array<{ name: string; required: string; found: string }> = [];
         const warnings: string[] = [];
@@ -112,9 +109,7 @@ export class DefaultSharedDependencyRegistry implements SharedDependencyRegistry
             }
 
             if (!satisfiesVersion(entry.version, range)) {
-                warnings.push(
-                    `Optional dependency '${name}' version ${entry.version} does not satisfy '${range}'`
-                );
+                warnings.push(`Optional dependency '${name}' version ${entry.version} does not satisfy '${range}'`);
             }
         }
 

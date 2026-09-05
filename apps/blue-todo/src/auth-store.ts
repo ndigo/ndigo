@@ -60,16 +60,23 @@ export function initAuth(): void {
 }
 
 // ── Login (demo: in-memory credential check) ─────────────────────────────────
-export async function login(username: string, password: string): Promise<{ token: string; principal: Principal } | null> {
-    const user = DEMO_USERS.find(u => u.username === username && u.password === password);
+export async function login(
+    username: string,
+    password: string
+): Promise<{ token: string; principal: Principal } | null> {
+    const user = DEMO_USERS.find((u) => u.username === username && u.password === password);
     if (!user) return null;
 
     const principal: Principal = {
         id: user.username,
         name: user.username,
         roles: user.roles,
-        hasRole(role: string) { return this.roles.includes(role); },
-        hasAnyRole(...roles: string[]) { return roles.some(r => this.roles.includes(r)); },
+        hasRole(role: string) {
+            return this.roles.includes(role);
+        },
+        hasAnyRole(...roles: string[]) {
+            return roles.some((r) => this.roles.includes(r));
+        },
     };
 
     const token = generateToken(principal);

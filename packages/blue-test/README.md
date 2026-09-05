@@ -66,7 +66,7 @@ or plain `@getMapping` controller classes (stored by class name).
   context (ref-counted; released via `releaseCachedApp` or `app.close()`).
 - **`MockMVC(dispatcher | app)`** — socket-free request client. Methods
   `get/post/put/delete/patch/query`, then fluent `.query()/.body()/.headers()/
-  .cookies()/.session()`, then `.exec()` → `MockResult`.
+.cookies()/.session()`, then `.exec()` → `MockResult`.
 - **`MockResult`** — `{ response, route, json(), text() }`. `response` is a
   `MemoryResponse` `{ status, headers, body, completed }`.
 - **`bootApp` returns `BlueTestApp`** with `.close()` teardown.

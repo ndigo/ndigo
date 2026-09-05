@@ -92,9 +92,7 @@ function isConfiguration(source: Function): boolean {
     }
     // The class's TC39 Symbol.metadata record, keyed by string/symbol. Not on
     // Function's static type, so read through a record.
-    const meta = (source as { [Symbol.metadata]?: Record<string | symbol, unknown> })[
-        Symbol.metadata
-    ];
+    const meta = (source as { [Symbol.metadata]?: Record<string | symbol, unknown> })[Symbol.metadata];
     return meta?.['config:constructor'] === true;
 }
 

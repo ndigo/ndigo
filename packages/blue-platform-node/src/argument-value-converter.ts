@@ -10,14 +10,14 @@ import { conversionService } from '@blue/core';
 // Conversion context and types
 // ---------------------------------------------------------------------------
 
-export type ArgumentValueConversionContext = ParameterValueConversionContext & { route: Route; };
+export type ArgumentValueConversionContext = ParameterValueConversionContext & { route: Route };
 export type ArgumentValueConverter = (value: any, context: ArgumentValueConversionContext) => any;
 export type ArgumentValueConverterRegistry = Record<string, ArgumentValueConverter>;
-export type ConverterResolutionOptions = { strictNamedLookup?: boolean; };
+export type ConverterResolutionOptions = { strictNamedLookup?: boolean };
 export type ResolverConverterOption =
     | ArgumentValueConverter
     | keyof typeof argumentValueConverters
-    | { optional?: boolean; use: ArgumentValueConverter | keyof typeof argumentValueConverters; };
+    | { optional?: boolean; use: ArgumentValueConverter | keyof typeof argumentValueConverters };
 
 // ---------------------------------------------------------------------------
 // Built-in converters (backward compatible)
@@ -27,16 +27,28 @@ export const identityArgumentValueConverter: ArgumentValueConverter = (value) =>
 
 const toLowerString = (value: any): string => `${value}`.toLowerCase();
 
-export function toNumberValue(value: any): number { return Number(value); }
+export function toNumberValue(value: any): number {
+    return Number(value);
+}
 export function toBooleanValue(value: any): boolean {
-    if (typeof value === 'boolean') { return value; }
+    if (typeof value === 'boolean') {
+        return value;
+    }
     const normalized = toLowerString(value);
-    if (normalized === 'true' || normalized === '1' || normalized === 'yes' || normalized === 'on') { return true; }
-    if (normalized === 'false' || normalized === '0' || normalized === 'no' || normalized === 'off') { return false; }
+    if (normalized === 'true' || normalized === '1' || normalized === 'yes' || normalized === 'on') {
+        return true;
+    }
+    if (normalized === 'false' || normalized === '0' || normalized === 'no' || normalized === 'off') {
+        return false;
+    }
     return Boolean(value);
 }
-export function toDateValue(value: any): Date { return new Date(value); }
-export function toJSONStringValue(value: any): any { return JSON.parse(value); }
+export function toDateValue(value: any): Date {
+    return new Date(value);
+}
+export function toJSONStringValue(value: any): any {
+    return JSON.parse(value);
+}
 
 export function createStringSplitConverter(separator: string | RegExp = ','): ArgumentValueConverter {
     return (value) => `${value}`.split(separator);
@@ -44,7 +56,9 @@ export function createStringSplitConverter(separator: string | RegExp = ','): Ar
 
 export function createOptionalConverter(converter: ArgumentValueConverter): ArgumentValueConverter {
     return (value, context) => {
-        if (value === null || value === undefined) { return value; }
+        if (value === null || value === undefined) {
+            return value;
+        }
         return converter(value, context);
     };
 }
@@ -86,9 +100,7 @@ function resolveTypeConverter(sourceType: any, targetType: any): ArgumentValueCo
 // Main resolver function
 // ---------------------------------------------------------------------------
 
-export function resolveConverter(
-    convertType?: { source: any; target: any }
-): ArgumentValueConverter {
+export function resolveConverter(convertType?: { source: any; target: any }): ArgumentValueConverter {
     // Use type-based conversion via ConversionService
     if (convertType && convertType.source && convertType.target) {
         const typeConverter = resolveTypeConverter(convertType.source, convertType.target);

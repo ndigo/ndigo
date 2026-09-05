@@ -28,25 +28,25 @@ sequenceDiagram
     participant Listeners as Event Listeners
 
     Caller->>Context: refresh()
-    
+
     Note over Context: Guard: if isActive, return (no-op)
 
     Context->>Listeners: emit('context:preparing', this)
-    
+
     Context->>Factory: _prepareFactory()
     Context->>Factory: _postProcessFactory()
     Context->>Factory: _invokeRegistryProcessors()
     Context->>Factory: _finishFactoryInitialization()
     Context->>Factory: _onRefresh()
-    
+
     Note over Context: Create DefaultLifecycleProcessor if needed
-    
+
     Context->>Processor: onRefresh(this)
-    
+
     Context->>Context: isActive = true
-    
+
     Context->>Listeners: emit('context:refresh', this)
-    
+
     Note over Context: Context is now fully active
 ```
 
@@ -71,30 +71,30 @@ sequenceDiagram
     participant Listeners as Event Listeners
 
     Caller->>Context: close()
-    
+
     Note over Context: Guard: if destroyed, return (no-op)
 
     Context->>Listeners: emit('context:close', this)
-    
+
     loop For each child
         Context->>Child: close() [recursive]
         Child->>Child: emit('context:close')
         Child->>Child: (same cascade...)
     end
-    
+
     Context->>Processor: onClose(this) [if configured]
     Context->>Context: _destroyValues()
-    
+
     alt Has parent
         Context->>Parent: removeChild(this)
     end
-    
+
     Context->>Context: destroyed = true
     Context->>Context: destroyedTimestamp = Date.now()
     Context->>Context: isActive = false
-    
+
     Context->>Listeners: emit('context:destroy', this)
-    
+
     loop For each event type
         Context->>Context: off(type, listener) [clear all]
     end
@@ -165,8 +165,8 @@ child.bubble(type, ...data)
 
 - Emits on the origin context (inclusive), then climbs the parent chain
 - Uses `escalate()` from `@blue/core`:
-  - First call: `escalate(origin, callback, true)` — emits on origin
-  - Subsequent calls: `escalate(parent, callback)` — emits on each ancestor
+    - First call: `escalate(origin, callback, true)` — emits on origin
+    - Subsequent calls: `escalate(parent, callback)` — emits on each ancestor
 - Stops at the root (context with no parent)
 - Does **not** skip intermediate parents — every ancestor receives the event
 
@@ -197,12 +197,12 @@ ContextEventGateway(source, target, relays)
 
 ## 7. Lifecycle Event Summary
 
-| Event | Fires | Purpose |
-|---|---|---|
+| Event               | Fires                | Purpose                               |
+| ------------------- | -------------------- | ------------------------------------- |
 | `context:preparing` | Start of `refresh()` | Factory initialization about to begin |
-| `context:refresh` | End of `refresh()` | Context is fully active |
-| `context:close` | Start of `close()` | Teardown starting |
-| `context:destroy` | End of `close()` | Context is fully destroyed |
+| `context:refresh`   | End of `refresh()`   | Context is fully active               |
+| `context:close`     | Start of `close()`   | Teardown starting                     |
+| `context:destroy`   | End of `close()`     | Context is fully destroyed            |
 
 ---
 
@@ -239,19 +239,19 @@ ContextEventGateway(source, target, relays)
 
 The lifecycle is covered by the following tests in `context.spec.ts` and `context-edge-cases.spec.ts`:
 
-| Test | File | Description |
-|---|---|---|
-| `it should refresh and initialize constructor entries` | context.spec.ts | `refresh()` initializes constructor entries |
-| `it should refresh only once when already active` | context.spec.ts | Repeated `refresh()` is a no-op |
-| `it should run registry processors during refresh` | context.spec.ts | `EntryRegistryProcessor` runs during refresh |
-| `it should emit lifecycle events during refresh and close` | context.spec.ts | Correct event ordering: `preparing → refresh → close → destroy` |
-| `it should close and cascade destruction to child contexts` | context.spec.ts | Close propagates to children |
-| `it should close only once when already destroyed` | context.spec.ts | Repeated `close()` is a no-op |
-| `close propagates to grandchildren (depth > 1)` | context-edge-cases.spec.ts | Close cascades through multiple levels |
-| `close removes the context from its parent children list` | context-edge-cases.spec.ts | Parent-child bookkeeping |
-| `close on a never-refreshed context completes` | context-edge-cases.spec.ts | Close works without prior refresh |
-| `repeated close on already-closed child is no-op` | context-edge-cases.spec.ts | Idempotent close |
-| `removeChild returns false when child is not in children list` | context-edge-cases.spec.ts | Edge case for missing child |
-| `bubble on root context emits only on self` | context-edge-cases.spec.ts | No parent to climb |
-| `broadcast on leaf context with no children emits only on self` | context-edge-cases.spec.ts | No children to descend |
-| `bubble from grandchild emits on self, intermediate parent, and root` | context-edge-cases.spec.ts | Full upward propagation chain |
+| Test                                                                  | File                       | Description                                                     |
+| --------------------------------------------------------------------- | -------------------------- | --------------------------------------------------------------- |
+| `it should refresh and initialize constructor entries`                | context.spec.ts            | `refresh()` initializes constructor entries                     |
+| `it should refresh only once when already active`                     | context.spec.ts            | Repeated `refresh()` is a no-op                                 |
+| `it should run registry processors during refresh`                    | context.spec.ts            | `EntryRegistryProcessor` runs during refresh                    |
+| `it should emit lifecycle events during refresh and close`            | context.spec.ts            | Correct event ordering: `preparing → refresh → close → destroy` |
+| `it should close and cascade destruction to child contexts`           | context.spec.ts            | Close propagates to children                                    |
+| `it should close only once when already destroyed`                    | context.spec.ts            | Repeated `close()` is a no-op                                   |
+| `close propagates to grandchildren (depth > 1)`                       | context-edge-cases.spec.ts | Close cascades through multiple levels                          |
+| `close removes the context from its parent children list`             | context-edge-cases.spec.ts | Parent-child bookkeeping                                        |
+| `close on a never-refreshed context completes`                        | context-edge-cases.spec.ts | Close works without prior refresh                               |
+| `repeated close on already-closed child is no-op`                     | context-edge-cases.spec.ts | Idempotent close                                                |
+| `removeChild returns false when child is not in children list`        | context-edge-cases.spec.ts | Edge case for missing child                                     |
+| `bubble on root context emits only on self`                           | context-edge-cases.spec.ts | No parent to climb                                              |
+| `broadcast on leaf context with no children emits only on self`       | context-edge-cases.spec.ts | No children to descend                                          |
+| `bubble from grandchild emits on self, intermediate parent, and root` | context-edge-cases.spec.ts | Full upward propagation chain                                   |

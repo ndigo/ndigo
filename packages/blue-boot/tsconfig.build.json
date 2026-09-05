@@ -7,15 +7,6 @@
     "skipLibCheck": true,
     "strict": true
   },
-  "exclude": [
-    "node_modules/**/*",
-    "**/*.spec.ts",
-    "**/*.test.ts",
-    "vite.config.ts",
-    "vitest.config.ts",
-    "test/**/*"
-  ],
-  "include": [
-    "src/**/*"
-  ]
+  "exclude": ["node_modules/**/*", "**/*.spec.ts", "**/*.test.ts", "vite.config.ts", "vitest.config.ts", "test/**/*"],
+  "include": ["src/**/*"]
 }

@@ -106,7 +106,7 @@ export class ApplicationBuilder {
         if (!response.ok) {
             throw new Error(`Failed to load config from ${url}: ${response.status}`);
         }
-        const config = await response.json() as Record<string, unknown>;
+        const config = (await response.json()) as Record<string, unknown>;
 
         const sources: Function[] = [];
         const rawSources = config.sources;

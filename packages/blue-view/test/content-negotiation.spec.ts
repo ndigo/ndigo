@@ -4,7 +4,13 @@
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { MediaType, MediaTypes } from '@blue/core';
-import { ContentNegotiationManager, PathExtensionContentNegotiationStrategy, AbstractMappingContentNegotiationStrategy, FixedContentNegotiationStrategy, StringTemplateView } from '@blue/view';
+import {
+    ContentNegotiationManager,
+    PathExtensionContentNegotiationStrategy,
+    AbstractMappingContentNegotiationStrategy,
+    FixedContentNegotiationStrategy,
+    StringTemplateView,
+} from '@blue/view';
 
 describe('ContentNegotiationManager', () => {
     let manager: ContentNegotiationManager;
@@ -46,9 +52,7 @@ describe('ContentNegotiationManager', () => {
 
 describe('PathExtensionContentNegotiationStrategy', () => {
     it('resolves media type from path extension', () => {
-        const mediaTypes = new Map<string, MediaType>([
-            ['json', MediaTypes.APPLICATION_JSON],
-        ]);
+        const mediaTypes = new Map<string, MediaType>([['json', MediaTypes.APPLICATION_JSON]]);
         const strategy = new PathExtensionContentNegotiationStrategy(mediaTypes);
 
         const result = strategy.resolveMediaTypes({ uri: '/api/data.json?query=1' });
@@ -72,9 +76,7 @@ describe('PathExtensionContentNegotiationStrategy', () => {
     });
 
     it('handles case-insensitive extensions', () => {
-        const mediaTypes = new Map<string, MediaType>([
-            ['JSON', MediaTypes.APPLICATION_JSON],
-        ]);
+        const mediaTypes = new Map<string, MediaType>([['JSON', MediaTypes.APPLICATION_JSON]]);
         const strategy = new PathExtensionContentNegotiationStrategy(mediaTypes);
 
         const result = strategy.resolveMediaTypes({ uri: '/data.json' });
@@ -119,9 +121,7 @@ describe('AbstractMappingContentNegotiationStrategy', () => {
             // Concrete subclass for testing the abstract class
         }
 
-        const mediaTypes = new Map<string, MediaType>([
-            ['json', MediaTypes.APPLICATION_JSON],
-        ]);
+        const mediaTypes = new Map<string, MediaType>([['json', MediaTypes.APPLICATION_JSON]]);
         const strategy = new TestMappingStrategy(mediaTypes);
 
         const result = strategy.resolveMediaTypes({ mediaTypeHint: 'application/xml' });
@@ -161,11 +161,7 @@ describe('StringTemplateView', () => {
         view.template = TEMPLATE;
         await view._renderTemplate({ name: 'World' }, {}, target);
 
-        expect(target.commit).toHaveBeenCalledWith(
-            TEMPLATE,
-            { name: 'World' },
-            {}
-        );
+        expect(target.commit).toHaveBeenCalledWith(TEMPLATE, { name: 'World' }, {});
     });
 
     it('renders template with nested property access', async () => {
@@ -181,11 +177,7 @@ describe('StringTemplateView', () => {
         view.template = TEMPLATE;
         await view._renderTemplate({ user: { name: 'Alice' } }, {}, target);
 
-        expect(target.commit).toHaveBeenCalledWith(
-            TEMPLATE,
-            { user: { name: 'Alice' } },
-            {}
-        );
+        expect(target.commit).toHaveBeenCalledWith(TEMPLATE, { user: { name: 'Alice' } }, {});
     });
 
     it('renders template with array access', async () => {
@@ -201,11 +193,7 @@ describe('StringTemplateView', () => {
         view.template = TEMPLATE;
         await view._renderTemplate({ items: ['a', 'b', 'c'] }, {}, target);
 
-        expect(target.commit).toHaveBeenCalledWith(
-            TEMPLATE,
-            { items: ['a', 'b', 'c'] },
-            {}
-        );
+        expect(target.commit).toHaveBeenCalledWith(TEMPLATE, { items: ['a', 'b', 'c'] }, {});
     });
 
     it('renders template without target throws error', async () => {

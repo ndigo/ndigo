@@ -1,6 +1,6 @@
 /**
  * @author Jeff Rose
- * 
+ *
  * Behavioral tests for @blue/context decorators
  * These tests document the current behavior before migrating to TC39 decorators
  */
@@ -230,7 +230,10 @@ describe('@propertySource Decorator', () => {
     });
 
     it('accepts Enumerable objects', () => {
-        const map = new Map([['key1', 'value1'], ['key2', 'value2']]);
+        const map = new Map([
+            ['key1', 'value1'],
+            ['key2', 'value2'],
+        ]);
 
         @configuration
         @propertySource(map as any)

@@ -53,10 +53,7 @@ describe('FeatureContextMountManager lazy loading', () => {
 
         manager.registerFeature({ name: 'deduped', loader });
 
-        const [a, b] = await Promise.all([
-            manager.mountLazy('deduped'),
-            manager.mountLazy('deduped'),
-        ]);
+        const [a, b] = await Promise.all([manager.mountLazy('deduped'), manager.mountLazy('deduped')]);
 
         expect(loader).toHaveBeenCalledTimes(1);
         expect(a.context).toBe(b.context);
@@ -122,9 +119,7 @@ describe('FeatureContextMountManager lazy loading', () => {
         manager.registerFeature({
             name: 'messaging',
             loader,
-            relays: [
-                { from: 'feature:event', to: 'shell:event' },
-            ],
+            relays: [{ from: 'feature:event', to: 'shell:event' }],
         });
 
         const composition = await manager.mountLazy('messaging');
@@ -137,9 +132,7 @@ describe('FeatureContextMountManager lazy loading', () => {
         const { SharedDependencyRegistry, DefaultSharedDependencyRegistry } = await import(
             '../src/shared-dependency-registry'
         );
-        const { SHARED_DEPENDENCY_REGISTRY_TOKEN } = await import(
-            '../src/feature-context-mount-manager'
-        );
+        const { SHARED_DEPENDENCY_REGISTRY_TOKEN } = await import('../src/feature-context-mount-manager');
 
         const parent = new GenericApplicationContext('shell');
         const registry = new DefaultSharedDependencyRegistry();

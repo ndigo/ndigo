@@ -16,7 +16,17 @@ import { likeResponse } from './like-response';
  * Represents a valid HTTP method.
  * @see {@link https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods}
  */
-export type HTTPMethod = 'CONNECT' | 'DELETE' | 'GET' | 'HEAD' | 'OPTIONS' | 'PATCH' | 'POST' | 'PUT' | 'QUERY' | 'TRACE';
+export type HTTPMethod =
+    | 'CONNECT'
+    | 'DELETE'
+    | 'GET'
+    | 'HEAD'
+    | 'OPTIONS'
+    | 'PATCH'
+    | 'POST'
+    | 'PUT'
+    | 'QUERY'
+    | 'TRACE';
 /**
  * Base request settings shared by HTTP client methods and interceptor hooks.
  *
@@ -753,7 +763,7 @@ export class HTTPExecutionChain {
                     const interceptor = interceptors[index];
                     if (likeRequestAwareHTTPInterceptor(interceptor)) {
                         const result = await interceptor.preRequest(
-                            currentRequest instanceof Request ? currentRequest : new Request(currentRequest as any), 
+                            currentRequest instanceof Request ? currentRequest : new Request(currentRequest as any),
                             http
                         );
                         if (isRequest(result) || likeResponse(result)) {
@@ -971,7 +981,11 @@ export class HTTP {
                     response = await chain.applyPostError(error as Error, request, this);
 
                     if (!likeResponse(response)) {
-                        response = likeResponse(error) ? error : error instanceof ResponseError ? error : new ResponseError(undefined, error as Error);
+                        response = likeResponse(error)
+                            ? error
+                            : error instanceof ResponseError
+                              ? error
+                              : new ResponseError(undefined, error as Error);
                     }
                 } finally {
                     if (response) {

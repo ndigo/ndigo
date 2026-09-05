@@ -21,7 +21,7 @@ describe('GenericApplicationContext — remaining branch coverage', () => {
         root.destroy();
     });
 
-test('bubble from grandchild emits on self, intermediate parent, and root', () => {
+    test('bubble from grandchild emits on self, intermediate parent, and root', () => {
         const root = new GenericApplicationContext('root');
         const child = root.newChild('child') as GenericApplicationContext;
         const grandchild = child.newChild('grandchild') as GenericApplicationContext;

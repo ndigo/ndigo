@@ -55,7 +55,9 @@ class SignalsCounterView extends AbstractWebComponent {
         const shadow = this.shadowRoot!;
         shadow.getElementById('increment')!.addEventListener('click', () => this.count++);
         shadow.getElementById('decrement')!.addEventListener('click', () => this.count--);
-        shadow.getElementById('reset')!.addEventListener('click', () => { this.count = 0; });
+        shadow.getElementById('reset')!.addEventListener('click', () => {
+            this.count = 0;
+        });
     }
 }
 

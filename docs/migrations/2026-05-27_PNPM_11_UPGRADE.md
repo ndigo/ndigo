@@ -82,11 +82,11 @@ native compilation. Without this list, pnpm 11 raises `ERR_PNPM_IGNORED_BUILDS` 
 
 ```yaml
 onlyBuiltDependencies:
-  - '@ast-grep/cli'
-  - esbuild
-  - msw
-  - nx
-  - protobufjs
+    - '@ast-grep/cli'
+    - esbuild
+    - msw
+    - nx
+    - protobufjs
 ```
 
 ---
@@ -95,12 +95,12 @@ onlyBuiltDependencies:
 
 ### Configuration Format
 
-| Setting | pnpm 8 location | pnpm 11 location |
-| :------ | :-------------- | :--------------- |
-| `overrides` | `package.json` under `"pnpm"` key | Root level of `package.json` |
-| `link-workspace-packages` | `.npmrc` (kebab-case) | `pnpm-workspace.yaml` (camelCase) |
-| `prefer-workspace-packages` | `.npmrc` (kebab-case) | `pnpm-workspace.yaml` (camelCase) |
-| `save-workspace-protocol` | `.npmrc` (kebab-case) | `pnpm-workspace.yaml` (camelCase) |
+| Setting                     | pnpm 8 location                   | pnpm 11 location                  |
+| :-------------------------- | :-------------------------------- | :-------------------------------- |
+| `overrides`                 | `package.json` under `"pnpm"` key | Root level of `package.json`      |
+| `link-workspace-packages`   | `.npmrc` (kebab-case)             | `pnpm-workspace.yaml` (camelCase) |
+| `prefer-workspace-packages` | `.npmrc` (kebab-case)             | `pnpm-workspace.yaml` (camelCase) |
+| `save-workspace-protocol`   | `.npmrc` (kebab-case)             | `pnpm-workspace.yaml` (camelCase) |
 
 ### Build Script Approval
 
@@ -136,37 +136,37 @@ pnpm install
 
 1. **Update pnpm globally:**
 
-   ```bash
-   npm install -g pnpm@latest
-   ```
+    ```bash
+    npm install -g pnpm@latest
+    ```
 
 2. **Approve build scripts (one-time interactive):**
 
-   ```bash
-   pnpm approve-builds
-   # Select all packages that require build scripts, then confirm
-   ```
+    ```bash
+    pnpm approve-builds
+    # Select all packages that require build scripts, then confirm
+    ```
 
 3. **Regenerate lockfile:**
 
-   ```bash
-   rm pnpm-lock.yaml
-   pnpm install
-   ```
+    ```bash
+    rm pnpm-lock.yaml
+    pnpm install
+    ```
 
 4. **Verify:**
 
-   ```bash
-   pnpm build
-   pnpm test
-   ```
+    ```bash
+    pnpm build
+    pnpm test
+    ```
 
 5. **Commit:**
 
-   ```bash
-   git add pnpm-lock.yaml package.json pnpm-workspace.yaml .npmrc
-   git commit -m "chore: upgrade to pnpm 11.4.0"
-   ```
+    ```bash
+    git add pnpm-lock.yaml package.json pnpm-workspace.yaml .npmrc
+    git commit -m "chore: upgrade to pnpm 11.4.0"
+    ```
 
 ### For CI/CD
 

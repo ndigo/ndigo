@@ -100,7 +100,8 @@ export class CsrfInterceptor implements RouteHandlerInterceptor {
             return true;
         }
 
-        const submitted = request?.headers?.[this.#headerName.toLowerCase()] ??
+        const submitted =
+            request?.headers?.[this.#headerName.toLowerCase()] ??
             (typeof request?.body === 'object' && request.body !== null
                 ? (request.body[this.#fieldName] as string | undefined)
                 : undefined);

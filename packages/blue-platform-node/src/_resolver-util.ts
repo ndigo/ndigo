@@ -4,11 +4,7 @@
 
 import { MethodParameter, ParameterConversionError } from '@blue/dispatcher';
 import { Route } from '@blue/router';
-import {
-    ArgumentValueConversionContext,
-    ArgumentValueConverter,
-    resolveConverter,
-} from './argument-value-converter';
+import { ArgumentValueConversionContext, ArgumentValueConverter, resolveConverter } from './argument-value-converter';
 
 function getParameterTypeName(parameter: MethodParameter): string {
     return parameter.type?.toString?.() || 'unknown';

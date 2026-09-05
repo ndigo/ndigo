@@ -37,7 +37,12 @@ export async function composeHostRuntime() {
     shellContext.setValue(SHARED_DEPENDENCY_REGISTRY_TOKEN, sharedRegistry);
 
     // A shell-wide shared cart singleton features may resolve.
-    const cart = { items: [] as string[], add(item: string): void { this.items.push(item); } };
+    const cart = {
+        items: [] as string[],
+        add(item: string): void {
+            this.items.push(item);
+        },
+    };
     shellContext.setValue('cart', cart);
 
     // ── Feature mount manager ──────────────────────────────────────────────
@@ -66,9 +71,11 @@ export async function composeHostRuntime() {
         activationPolicy: 'exclusive',
     });
 
-    const mountOnActivate = (name: string): (() => void) => () => {
-        void mountManager.mountLazy(name);
-    };
+    const mountOnActivate =
+        (name: string): (() => void) =>
+        () => {
+            void mountManager.mountLazy(name);
+        };
 
     featureRouter.registerFeature({
         name: 'catalog',

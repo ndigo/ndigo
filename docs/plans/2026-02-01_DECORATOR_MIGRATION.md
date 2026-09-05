@@ -10,6 +10,7 @@
 Migration of BlueJS decorators from legacy TypeScript experimental decorators to TC39 Stage 3 standard decorators. This migration is necessary for future TypeScript compatibility and enables use of modern decorator features.
 
 **Final Status:**
+
 - ✅ **Phase 1 Complete:** @blue/validate package fully migrated (1 decorator)
 - ✅ **Phase 2 Complete:** @blue/context package fully migrated (5 decorators)
 - ✅ **Phase 3 Complete:** @blue/dispatcher package fully migrated (6 decorators)
@@ -51,13 +52,13 @@ Migration of BlueJS decorators from legacy TypeScript experimental decorators to
 
 **Total decorators migrated: 16 across 5 packages**
 
-| Package | Decorators | Types | Status |
-|---------|-----------|-------|--------|
-| @blue/validate | `@pattern` | Field | ✅ COMPLETE |
-| @blue/context | `@configuration`, `@profile`, `@property`, `@propertySource`, `@entry` | Class, Method, Field | ✅ COMPLETE |
-| @blue/dispatcher | `@routeMapping`, `@errorMapping`, `@errorHandler`, `@routeParams` pattern | Class, Method, Parameter | ✅ COMPLETE |
-| @blue/factory | `@scope`, `@singletonScope`, `@prototypeScope`, `@hashScope` | Class | ✅ COMPLETE |
-| @blue/view-webcomponent | `@viewMapping`, `@tagMapping` | Class | ✅ COMPLETE |
+| Package                 | Decorators                                                                | Types                    | Status      |
+| ----------------------- | ------------------------------------------------------------------------- | ------------------------ | ----------- |
+| @blue/validate          | `@pattern`                                                                | Field                    | ✅ COMPLETE |
+| @blue/context           | `@configuration`, `@profile`, `@property`, `@propertySource`, `@entry`    | Class, Method, Field     | ✅ COMPLETE |
+| @blue/dispatcher        | `@routeMapping`, `@errorMapping`, `@errorHandler`, `@routeParams` pattern | Class, Method, Parameter | ✅ COMPLETE |
+| @blue/factory           | `@scope`, `@singletonScope`, `@prototypeScope`, `@hashScope`              | Class                    | ✅ COMPLETE |
+| @blue/view-webcomponent | `@viewMapping`, `@tagMapping`                                             | Class                    | ✅ COMPLETE |
 
 ---
 
@@ -75,27 +76,29 @@ Migration of BlueJS decorators from legacy TypeScript experimental decorators to
 Each migrated package gets two tsconfig files:
 
 **`tsconfig.build.json`** (for building source):
+
 ```json
 {
-  "extends": "../../tsconfig.build.json",
-  "compilerOptions": {
-    "experimentalDecorators": false,
-    "emitDecoratorMetadata": false,
-    // ... other options
-  }
+    "extends": "../../tsconfig.build.json",
+    "compilerOptions": {
+        "experimentalDecorators": false,
+        "emitDecoratorMetadata": false
+        // ... other options
+    }
 }
 ```
 
 **`tsconfig.json`** (for tests):
+
 ```json
 {
-  "extends": "../../tsconfig.base.json",
-  "compilerOptions": {
-    "experimentalDecorators": false,
-    "emitDecoratorMetadata": false,
-    // ... paths for test imports
-  },
-  "include": ["src/**/*", "test/**/*"]
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "experimentalDecorators": false,
+        "emitDecoratorMetadata": false
+        // ... paths for test imports
+    },
+    "include": ["src/**/*", "test/**/*"]
 }
 ```
 
@@ -109,14 +112,17 @@ This allows packages to migrate independently while others continue using legacy
 
 **Timeline:** 2025-02-01  
 **Files Modified:**
+
 - `packages/blue-validate/src/decorators.ts` - Complete rewrite
 - `packages/blue-validate/tsconfig.build.json` - TC39 enabled
 - `packages/blue-validate/tsconfig.json` - Created for tests
 
 **Files Created:**
+
 - `packages/blue-validate/test/pattern.spec.ts` - 16 comprehensive tests
 
 **Files Deleted:**
+
 - `test/pattern-decorator-behavior.spec.ts` (old broken tests)
 - `test/pattern-behavior-contract.spec.ts` (old broken tests)
 - `test/pattern-constraint-debug.spec.ts` (debug file)
@@ -127,16 +133,17 @@ This allows packages to migrate independently while others continue using legacy
 #### Implementation Details
 
 **Old Implementation (Legacy - BROKEN):**
+
 ```typescript
-export const Pattern = function(params) {
-    return function(target: Object, propertyKey: PropertyKey): void {
+export const Pattern = function (params) {
+    return function (target: Object, propertyKey: PropertyKey): void {
         let currentValue = target[propertyKey];
         const getter = () => currentValue;
         const setter = (newValue) => {
             // Validation logic
             currentValue = newValue;
         };
-        
+
         // This was broken: TypeScript field initialization overwrites this
         Reflect.defineProperty(target, propertyKey, {
             get: getter,
@@ -151,6 +158,7 @@ export const Pattern = function(params) {
 **Issue:** TypeScript generates code that creates instance properties during construction, which shadow the prototype's getter/setter. The decorator never actually worked.
 
 **New Implementation (TC39 - WORKING):**
+
 ```typescript
 export function Pattern(params: PatternDecoratorParams) {
     return function (value: undefined, context: ClassFieldDecoratorContext) {
@@ -164,10 +172,10 @@ export function Pattern(params: PatternDecoratorParams) {
         context.addInitializer(function (this: any) {
             const storageSymbol = Symbol(`__pattern_${String(propertyName)}`);
             const currentValue = this[propertyName];
-            
+
             this[storageSymbol] = currentValue;
             delete this[propertyName]; // Remove the field property
-            
+
             // Define getter/setter on the instance
             Object.defineProperty(this, propertyName, {
                 get(this: any) {
@@ -184,11 +192,11 @@ export function Pattern(params: PatternDecoratorParams) {
                             flags: params.flags,
                         } as any);
                     }
-                    
+
                     if (!isValid) {
                         console.error('YOU BAD DATA FILE');
                     }
-                    
+
                     this[storageSymbol] = newValue;
                 },
                 configurable: true,
@@ -200,6 +208,7 @@ export function Pattern(params: PatternDecoratorParams) {
 ```
 
 **Key Differences:**
+
 1. Uses `context.addInitializer()` - runs after field is initialized
 2. Captures initial value, deletes field, then redefines as accessor
 3. Uses Symbol-based storage per instance (prevents shared state)
@@ -231,22 +240,25 @@ All @blue/validate tests: 107 passed | 97 skipped (204)
 #### Files Modified
 
 1. **`packages/blue-context/src/configuration.ts`** - Complete decorator rewrite (332 lines)
-   - Replaced `reflect-metadata` import with `@tsmetadata/polyfill`
-   - Migrated 5 decorators to TC39
-   - Updated metadata helper functions to use `Symbol.metadata`
-   - Removed legacy `Reflect.defineMetadata()` / `Reflect.getMetadata()` calls
+
+    - Replaced `reflect-metadata` import with `@tsmetadata/polyfill`
+    - Migrated 5 decorators to TC39
+    - Updated metadata helper functions to use `Symbol.metadata`
+    - Removed legacy `Reflect.defineMetadata()` / `Reflect.getMetadata()` calls
 
 2. **`packages/blue-context/src/_util.ts`** - Fixed export conflicts
-   - Resolved `addIndex` / `addIndexRight` naming conflict between `@blue/util/function` and `@blue/util/list`
+
+    - Resolved `addIndex` / `addIndexRight` naming conflict between `@blue/util/function` and `@blue/util/list`
 
 3. **`packages/blue-context/test/decorators-behavior.spec.ts`** - Updated to TC39 metadata API (385 lines)
-   - Converted 24 tests from `Reflect.getMetadata()` to `Symbol.metadata` access
-   - Updated property tests to check instance properties (not prototype)
-   - Fixed `@entry` decorator calls to use `@entry()` with parentheses
+
+    - Converted 24 tests from `Reflect.getMetadata()` to `Symbol.metadata` access
+    - Updated property tests to check instance properties (not prototype)
+    - Fixed `@entry` decorator calls to use `@entry()` with parentheses
 
 4. **`packages/blue-context/test/testContext.ts`** - Fixed for TC39 compatibility
-   - Added type annotations to `@property` decorated fields (`fooValue: any`, `fuuValue: any`)
-   - Updated manual metadata setting from `Reflect.defineMetadata()` to `Symbol.metadata`
+    - Added type annotations to `@property` decorated fields (`fooValue: any`, `fuuValue: any`)
+    - Updated manual metadata setting from `Reflect.defineMetadata()` to `Symbol.metadata`
 
 #### Decorators Migrated
 
@@ -262,10 +274,7 @@ export const configuration: ClassDecorator = <TFunction extends Function>(target
 };
 
 // After (TC39)
-export function configuration<T extends new (...args: any[]) => any>(
-    target: T,
-    context: ClassDecoratorContext
-): T {
+export function configuration<T extends new (...args: any[]) => any>(target: T, context: ClassDecoratorContext): T {
     context.metadata['config:constructor'] = true;
     return target;
 }
@@ -275,8 +284,8 @@ export function configuration<T extends new (...args: any[]) => any>(
 
 ```typescript
 // Before (Legacy)
-export const profile = (name: string) => 
-    (target, propertyKey?: string | symbol, descriptor?: TypedPropertyDescriptor<any>) => {
+export const profile =
+    (name: string) => (target, propertyKey?: string | symbol, descriptor?: TypedPropertyDescriptor<any>) => {
         defineProfileMetadata(toUniqueArray(name), target, propertyKey);
         if (propertyKey && !descriptor) {
             descriptor = getOwnPropertyDescriptor(target, propertyKey);
@@ -288,13 +297,13 @@ export const profile = (name: string) =>
 export function profile(name: string) {
     return function (target: any, context: ClassDecoratorContext | ClassMethodDecoratorContext) {
         const profiles = toUniqueArray(name);
-        
+
         if (context.kind === 'class') {
             context.metadata['config:profile'] = profiles;
         } else if (context.kind === 'method') {
             context.metadata[`config:profile:${String(context.name)}`] = profiles;
         }
-        
+
         return target;
     };
 }
@@ -304,7 +313,8 @@ export function profile(name: string) {
 
 ```typescript
 // Before (Legacy)
-export const property = (path: string): PropertyDecorator =>
+export const property =
+    (path: string): PropertyDecorator =>
     (target: Object, propertyKey: string | symbol): void => {
         definePropertyMetadata(path, target, propertyKey);
         defineProperty(target, propertyKey, {
@@ -342,7 +352,8 @@ export function property(path: string) {
 
 ```typescript
 // Before (Legacy)
-export const propertySource = (propertySource: JSONObject | Enumerable<string, JSONValue>): ClassDecorator =>
+export const propertySource =
+    (propertySource: JSONObject | Enumerable<string, JSONValue>): ClassDecorator =>
     <TFunction extends Function>(target: TFunction) => {
         let ps: JSONObject;
         if (likeEnumerable(propertySource)) {
@@ -403,7 +414,7 @@ export const entry = (
             }
             return descriptor;
         };
-    // Called as a Decorator
+        // Called as a Decorator
     } else {
         defineEntryMetadata(propertyKey, targetOrKey, propertyKey);
         if (!descriptor) {
@@ -426,10 +437,11 @@ export function entry(nameOrTarget?: string): any {
                 throw new Error('@entry can only be applied to methods');
             }
             context.metadata[`${CONFIG_ENTRY}:${String(context.name)}`] = customName;
-            
+
             // Make the method enumerable so it can be found by for...in loops
             context.addInitializer(function (this: any) {
-                const descriptor = getOwnPropertyDescriptor(this, context.name) ||
+                const descriptor =
+                    getOwnPropertyDescriptor(this, context.name) ||
                     getOwnPropertyDescriptor(Object.getPrototypeOf(this), context.name);
                 if (descriptor && !descriptor.enumerable) {
                     defineProperty(Object.getPrototypeOf(this), context.name, {
@@ -438,7 +450,7 @@ export function entry(nameOrTarget?: string): any {
                     });
                 }
             });
-            
+
             return target;
         };
     }
@@ -449,10 +461,11 @@ export function entry(nameOrTarget?: string): any {
             throw new Error('@entry can only be applied to methods');
         }
         context.metadata[`${CONFIG_ENTRY}:${String(context.name)}`] = String(context.name);
-        
+
         // Make the method enumerable so it can be found by for...in loops
         context.addInitializer(function (this: any) {
-            const descriptor = getOwnPropertyDescriptor(this, context.name) ||
+            const descriptor =
+                getOwnPropertyDescriptor(this, context.name) ||
                 getOwnPropertyDescriptor(Object.getPrototypeOf(this), context.name);
             if (descriptor && !descriptor.enumerable) {
                 defineProperty(Object.getPrototypeOf(this), context.name, {
@@ -461,7 +474,7 @@ export function entry(nameOrTarget?: string): any {
                 });
             }
         });
-        
+
         return target;
     };
 }
@@ -509,10 +522,13 @@ const getInstanceMetadata = (instance: any): Record<string, any> => {
 The most subtle issue encountered: TC39 method decorators don't automatically make methods enumerable. Since `ConfigurationParser.processConfiguration()` uses `for...in` loops to iterate over methods, the `@entry` decorator needed to explicitly make methods enumerable.
 
 **Problem:**
+
 ```typescript
 class MyClass {
     @entry()
-    myMethod() { return 'value'; }
+    myMethod() {
+        return 'value';
+    }
 }
 
 const instance = new MyClass();
@@ -522,12 +538,10 @@ for (const key in instance) {
 ```
 
 **Solution:**
+
 ```typescript
 context.addInitializer(function (this: any) {
-    const descriptor = getOwnPropertyDescriptor(
-        Object.getPrototypeOf(this), 
-        context.name
-    );
+    const descriptor = getOwnPropertyDescriptor(Object.getPrototypeOf(this), context.name);
     if (descriptor && !descriptor.enumerable) {
         defineProperty(Object.getPrototypeOf(this), context.name, {
             ...descriptor,
@@ -542,6 +556,7 @@ context.addInitializer(function (this: any) {
 Field decorators must use `context.addInitializer()` to run logic after the field is initialized by TypeScript. Direct property definition in the decorator function doesn't work because TypeScript overwrites it during class construction.
 
 **Pattern:**
+
 ```typescript
 export function property(path: string) {
     return function (value: undefined, context: ClassFieldDecoratorContext) {
@@ -587,39 +602,40 @@ context.metadata['config:profile:myMethod'] = ['dev'];
 ```
 
 **Behavioral Test Coverage:**
+
 ```
 ✓ @configuration Decorator (3 tests)
   ✓ marks a class as a configuration class
   ✓ returns the original class
   ✓ can be used without parentheses
-  
+
 ✓ @profile Decorator (5 tests)
   ✓ stores profile metadata on a class
   ✓ stores profile metadata on a method
   ✓ splits comma-separated profiles into array
   ✓ removes duplicate profiles
   ✓ only activates entries when profile matches
-  
+
 ✓ @property Decorator (5 tests)
   ✓ stores property path metadata
   ✓ defines the property as non-writable
   ✓ makes property configurable and enumerable
   ✓ resolves property values from property sources
   ✓ supports array indexing in property paths
-  
+
 ✓ @propertySource Decorator (4 tests)
   ✓ stores property source metadata as an array
   ✓ supports multiple property sources
   ✓ accepts Enumerable objects
   ✓ handles non-object inputs gracefully
-  
+
 ✓ @entry Decorator (5 tests)
   ✓ stores entry metadata with method name when used without argument
   ✓ stores entry metadata with custom name when used with argument
   ✓ makes method enumerable
   ✓ registers entry values in the context
   ✓ does not register methods without @entry decorator
-  
+
 ✓ Decorator Integration (2 tests)
   ✓ works with all decorators combined
   ✓ respects profile restrictions
@@ -628,21 +644,24 @@ context.metadata['config:profile:myMethod'] = ['dev'];
 #### Migration Lessons Learned
 
 1. **Always Add Type Annotations to Decorated Fields**
-   - Without type annotations, TypeScript may interpret untyped fields differently in TC39 mode
-   - Example: `@property('foo') fooValue: any;` (not just `fooValue;`)
+
+    - Without type annotations, TypeScript may interpret untyped fields differently in TC39 mode
+    - Example: `@property('foo') fooValue: any;` (not just `fooValue;`)
 
 2. **Method Decorators Must Manage Enumerability**
-   - If code uses `for...in` to iterate over methods, decorators must explicitly set `enumerable: true`
-   - Use `context.addInitializer()` to modify the method descriptor after decoration
+
+    - If code uses `for...in` to iterate over methods, decorators must explicitly set `enumerable: true`
+    - Use `context.addInitializer()` to modify the method descriptor after decoration
 
 3. **Test Files Need Recompilation**
-   - Remove compiled `.js` test files (`test/*.js`) when changing decorators
-   - Vitest caches compiled tests; clean cache if seeing stale decorator behavior
+
+    - Remove compiled `.js` test files (`test/*.js`) when changing decorators
+    - Vitest caches compiled tests; clean cache if seeing stale decorator behavior
 
 4. **Export Conflicts in Utility Files**
-   - Watch for naming conflicts when re-exporting from multiple modules
-   - TypeScript will error if the same name is exported from multiple sources
-   - Explicit imports and re-exports resolve ambiguity
+    - Watch for naming conflicts when re-exporting from multiple modules
+    - TypeScript will error if the same name is exported from multiple sources
+    - Explicit imports and re-exports resolve ambiguity
 
 ---
 
@@ -651,12 +670,14 @@ context.metadata['config:profile:myMethod'] = ['dev'];
 ### Critical Discovery: Field Decorators in Legacy TypeScript Are Broken
 
 **Problem:** Legacy TypeScript property decorators cannot intercept field assignments because:
+
 1. Decorator defines getter/setter on **prototype**
 2. TypeScript generates code that creates **instance property** during construction
 3. Instance property shadows prototype's getter/setter
 4. Decorator's setter is never called
 
 **Example of broken code:**
+
 ```typescript
 class Example {
     @MyDecorator()
@@ -665,10 +686,11 @@ class Example {
 
 // At runtime:
 const obj = new Example();
-obj.myField = "value"; // Sets instance property, doesn't call decorator's setter!
+obj.myField = 'value'; // Sets instance property, doesn't call decorator's setter!
 ```
 
 **Solution (TC39):** Use `context.addInitializer()` to run code **after** field initialization, then:
+
 1. Capture the initial field value
 2. Delete the field property
 3. Redefine as accessor with getter/setter
@@ -677,18 +699,19 @@ This is the **only working pattern** for field decorators with validation/transf
 
 ### TypeScript Compilation Model Differences
 
-| Aspect | Legacy Decorators | TC39 Decorators |
-|--------|------------------|-----------------|
-| Field decoration | Modifies prototype (broken) | Returns initializer function (works) |
-| Metadata storage | `reflect-metadata` package | `Symbol.metadata` / `@tsmetadata/polyfill` |
-| Method decoration | Receives descriptor, returns descriptor | Receives function, returns function or descriptor |
-| Class decoration | Receives constructor, returns constructor | Receives class, context; returns class |
-| Parameter decoration | Receives target, propertyKey, index | **Not supported** (must use alternatives) |
-| Execution order | Outer → Inner | Inner → Outer |
+| Aspect               | Legacy Decorators                         | TC39 Decorators                                   |
+| -------------------- | ----------------------------------------- | ------------------------------------------------- |
+| Field decoration     | Modifies prototype (broken)               | Returns initializer function (works)              |
+| Metadata storage     | `reflect-metadata` package                | `Symbol.metadata` / `@tsmetadata/polyfill`        |
+| Method decoration    | Receives descriptor, returns descriptor   | Receives function, returns function or descriptor |
+| Class decoration     | Receives constructor, returns constructor | Receives class, context; returns class            |
+| Parameter decoration | Receives target, propertyKey, index       | **Not supported** (must use alternatives)         |
+| Execution order      | Outer → Inner                             | Inner → Outer                                     |
 
 ### Metadata Migration Strategy
 
 **Legacy approach (reflect-metadata):**
+
 ```typescript
 import 'reflect-metadata';
 
@@ -703,11 +726,12 @@ const value = Reflect.getMetadata('my:key', MyClass);
 ```
 
 **TC39 approach (@tsmetadata/polyfill):**
+
 ```typescript
 import '@tsmetadata/polyfill';
 
 function MyDecorator() {
-    return function(target, context: ClassDecoratorContext) {
+    return function (target, context: ClassDecoratorContext) {
         // Store in context during decoration
         context.metadata['my:key'] = 'value';
         return target;
@@ -722,6 +746,7 @@ const value = MyClass[Symbol.metadata]['my:key'];
 ```
 
 **Challenge for @blue/context:** The package extensively uses `Reflect.defineMetadata` and `Reflect.getMetadata`. We need to:
+
 1. Update all decorators to use `context.metadata`
 2. Update all reader functions (`getProfileMetadata`, etc.) to read from `Symbol.metadata`
 3. Maintain backward compatibility with existing code
@@ -741,11 +766,13 @@ const value = MyClass[Symbol.metadata]['my:key'];
 #### Overview
 
 **Files to migrate:**
+
 - `packages/blue-dispatcher/src/route-mapping.ts` (80 lines) - 1 decorator
 - `packages/blue-dispatcher/src/error-mapping.ts` (106 lines) - 2 decorators
 - `packages/blue-dispatcher/src/route-parameter.ts` (285 lines) - 3 parameter decorators (**COMPLEX**)
 
 **Infrastructure already in place:**
+
 - ✅ `packages/blue-dispatcher/src/_decorator-util.ts` - Parameter name extraction helper
 - ✅ `packages/blue-dispatcher/src/error.ts` - 3 new error classes for decorator validation
 - ✅ `packages/blue-dispatcher/test/decorator-util.spec.ts` - 11 tests (all passing)
@@ -753,19 +780,18 @@ const value = MyClass[Symbol.metadata]['my:key'];
 **Decorators to migrate (6):**
 
 1. **`@routeMapping(route)`** - Class/Method decorator (MEDIUM)
-   - Maps routes to controller methods
-   - Used for: Class-level and method-level route configuration
-   - Pattern: Dual-purpose decorator (class OR method context)
-   
+    - Maps routes to controller methods
+    - Used for: Class-level and method-level route configuration
+    - Pattern: Dual-purpose decorator (class OR method context)
 2. **`@errorHandler`** - Class decorator (EASY)
-   - Marks a class as an error handler
-   - Used for: Identifying error handler classes for dispatcher
-   - Pattern: Simple class marker decorator
-   
+    - Marks a class as an error handler
+    - Used for: Identifying error handler classes for dispatcher
+    - Pattern: Simple class marker decorator
 3. **`@errorMapping(ErrorClass)`** - Method decorator (MEDIUM)
-   - Maps error classes to error handler methods
-   - Used for: Error class → handler method resolution
-   - Pattern: Method decorator with enumerability
+
+    - Maps error classes to error handler methods
+    - Used for: Error class → handler method resolution
+    - Pattern: Method decorator with enumerability
 
 4. **`@queryValue(name)`** - Parameter decorator → **REDESIGN REQUIRED**
 5. **`@matrixValue(name)`** - Parameter decorator → **REDESIGN REQUIRED**
@@ -778,6 +804,7 @@ const value = MyClass[Symbol.metadata]['my:key'];
 **Problem:** TC39 decorators **do not support parameter decorators**. We must refactor to a method decorator pattern.
 
 **Current API (Legacy):**
+
 ```typescript
 @routeMapping('/hello/there')
 handleThere(@queryValue('name') n1: string, @matrixValue('name') n2: string) {
@@ -788,6 +815,7 @@ handleThere(@queryValue('name') n1: string, @matrixValue('name') n2: string) {
 ```
 
 **New API (TC39):**
+
 ```typescript
 @routeMapping('/hello/there')
 @routeParams({
@@ -802,6 +830,7 @@ handleThere(n1: string, n2: string) {
 ```
 
 **Key Changes:**
+
 - ✅ `queryValue()`, `matrixValue()`, `cookieValue()` become **factory functions** (not decorators)
 - ✅ New `@routeParams()` method decorator accepts parameter map
 - ✅ Uses `extractParameterNames()` from `_decorator-util.ts` to map parameters by name
@@ -816,26 +845,28 @@ handleThere(n1: string, n2: string) {
 **File:** `packages/blue-dispatcher/tsconfig.build.json`
 
 **Changes needed:**
+
 ```json
 {
-  "extends": "../../tsconfig.build.json",
-  "compilerOptions": {
-    "baseUrl": ".",
-    "composite": true,
-    "outDir": "lib",
-    "experimentalDecorators": false,  // ADD: Disable legacy decorators
-    "emitDecoratorMetadata": false,   // ADD: Disable metadata emit
-    "rootDir": "src",
-    "skipLibCheck": true
-  },
-  "exclude": ["node_modules/**/*", "**/*.spec.ts", "**/*.test.ts", "vite.config.ts", "vitest.config.ts", "test/**/*"],
-  "include": ["src/**/*"]
+    "extends": "../../tsconfig.build.json",
+    "compilerOptions": {
+        "baseUrl": ".",
+        "composite": true,
+        "outDir": "lib",
+        "experimentalDecorators": false, // ADD: Disable legacy decorators
+        "emitDecoratorMetadata": false, // ADD: Disable metadata emit
+        "rootDir": "src",
+        "skipLibCheck": true
+    },
+    "exclude": ["node_modules/**/*", "**/*.spec.ts", "**/*.test.ts", "vite.config.ts", "vitest.config.ts", "test/**/*"],
+    "include": ["src/**/*"]
 }
 ```
 
 **Why:** Enables TC39 decorator mode (same pattern as @blue/context and @blue/validate)
 
 **Verification:**
+
 ```bash
 cd /home/jeff/workspace/blue
 pnpm --filter @blue/dispatcher build:lib
@@ -859,75 +890,71 @@ import { errorHandler, errorMapping } from '../src/error-mapping';
 import { queryValue, matrixValue, cookieValue, getMethodParameter } from '../src/route-parameter';
 
 describe('Decorator Behavior Documentation (Legacy → TC39)', () => {
-    
     describe('@routeMapping', () => {
         describe('as class decorator', () => {
             test('should define route mapping metadata on class', () => {
                 @routeMapping('/api')
                 class TestController {}
-                
+
                 expect(hasRouteMapping(TestController)).toBe(true);
                 expect(getRouteMapping(TestController)).toEqual({
                     value: '/api',
-                    private: false
+                    private: false,
                 });
             });
-            
+
             test('should accept string route', () => {
                 @routeMapping('/users')
                 class UserController {}
-                
+
                 const mapping = getRouteMapping(UserController);
                 expect(mapping.value).toBe('/users');
             });
-            
+
             test('should accept configuration object with options', () => {
                 @routeMapping({ value: '/admin', private: true, name: 'admin' })
                 class AdminController {}
-                
+
                 const mapping = getRouteMapping(AdminController);
                 expect(mapping.value).toBe('/admin');
                 expect(mapping.private).toBe(true);
                 expect(mapping.name).toBe('admin');
             });
         });
-        
+
         describe('as method decorator', () => {
             test('should define route mapping metadata on method', () => {
                 class TestController {
                     @routeMapping('/list')
                     listItems() {}
                 }
-                
+
                 const instance = new TestController();
                 expect(hasRouteMapping(instance, 'listItems')).toBe(true);
                 expect(getRouteMapping(instance, 'listItems')).toEqual({
                     value: '/list',
-                    private: false
+                    private: false,
                 });
             });
-            
+
             test('should make method enumerable', () => {
                 class TestController {
                     @routeMapping('/test')
                     testMethod() {}
                 }
-                
+
                 const instance = new TestController();
-                const descriptor = Reflect.getOwnPropertyDescriptor(
-                    Object.getPrototypeOf(instance),
-                    'testMethod'
-                );
+                const descriptor = Reflect.getOwnPropertyDescriptor(Object.getPrototypeOf(instance), 'testMethod');
                 expect(descriptor.enumerable).toBe(true);
             });
-            
+
             test('should combine class and method routes', () => {
                 @routeMapping('/api')
                 class TestController {
                     @routeMapping('/users')
                     getUsers() {}
                 }
-                
+
                 const instance = new TestController();
                 expect(getRouteMapping(TestController).value).toBe('/api');
                 expect(getRouteMapping(instance, 'getUsers').value).toBe('/users');
@@ -935,79 +962,76 @@ describe('Decorator Behavior Documentation (Legacy → TC39)', () => {
             });
         });
     });
-    
+
     describe('@errorHandler', () => {
         test('should mark class as error handler', () => {
             @errorHandler
             class GlobalErrorHandler {}
-            
+
             expect(errorHandler.has(GlobalErrorHandler)).toBe(true);
         });
-        
+
         test('should work with likeErrorHandler predicate', () => {
             @errorHandler
             class ErrorController {}
-            
+
             const instance = new ErrorController();
             expect(likeErrorHandler(instance)).toBe(true);
         });
     });
-    
+
     describe('@errorMapping', () => {
         test('should define error mapping metadata', () => {
             class TestErrorHandler {
                 @errorMapping(TypeError)
                 handleTypeError(error: TypeError) {}
             }
-            
+
             const instance = new TestErrorHandler();
             expect(errorMapping.has(instance, 'handleTypeError')).toBe(true);
         });
-        
+
         test('should accept single error class', () => {
             class TestErrorHandler {
                 @errorMapping(RangeError)
                 handleRangeError(error: RangeError) {}
             }
-            
+
             const instance = new TestErrorHandler();
             const mapping = errorMapping.get(instance, 'handleRangeError');
             expect(mapping).toEqual([RangeError]);
         });
-        
+
         test('should accept array of error classes', () => {
             class TestErrorHandler {
                 @errorMapping([TypeError, ReferenceError])
                 handleErrors(error: Error) {}
             }
-            
+
             const instance = new TestErrorHandler();
             const mapping = errorMapping.get(instance, 'handleErrors');
             expect(mapping).toEqual([TypeError, ReferenceError]);
         });
-        
+
         test('should make method enumerable', () => {
             class TestErrorHandler {
                 @errorMapping(Error)
                 handleError(error: Error) {}
             }
-            
+
             const instance = new TestErrorHandler();
-            const descriptor = Reflect.getOwnPropertyDescriptor(
-                Object.getPrototypeOf(instance),
-                'handleError'
-            );
+            const descriptor = Reflect.getOwnPropertyDescriptor(Object.getPrototypeOf(instance), 'handleError');
             expect(descriptor.enumerable).toBe(true);
         });
     });
-    
+
     describe('parameter decorators (legacy baseline)', () => {
         describe('@queryValue', () => {
             test('should store parameter metadata at correct index', () => {
                 class TestController {
                     handleRequest(@queryValue('id') id: string, @queryValue('page') page: string) {}
                 }
-                
+
                 const instance = new TestController();
                 const params = getMethodParameter(instance, 'handleRequest');
                 expect(params).toHaveLength(2);
@@ -1015,24 +1039,22 @@ describe('Decorator Behavior Documentation (Legacy → TC39)', () => {
                 expect(params[0].type.type).toBe('query:value');
                 expect(params[1].name).toBe('page');
             });
-            
+
             test('should accept string parameter name', () => {
                 class TestController {
                     handleRequest(@queryValue('search') query: string) {}
                 }
-                
+
                 const instance = new TestController();
                 const params = getMethodParameter(instance, 'handleRequest');
                 expect(params[0].name).toBe('search');
             });
-            
+
             test('should accept MethodParameterInfo object', () => {
                 class TestController {
-                    handleRequest(
-                        @queryValue({ name: 'id', required: true, defaultValue: '0' }) id: string
-                    ) {}
+                    handleRequest(@queryValue({ name: 'id', required: true, defaultValue: '0' }) id: string) {}
                 }
-                
+
                 const instance = new TestController();
                 const params = getMethodParameter(instance, 'handleRequest');
                 expect(params[0].name).toBe('id');
@@ -1040,26 +1062,26 @@ describe('Decorator Behavior Documentation (Legacy → TC39)', () => {
                 expect(params[0].defaultValue).toBe('0');
             });
         });
-        
+
         describe('@matrixValue', () => {
             test('should store parameter metadata with MATRIX type', () => {
                 class TestController {
                     handleRequest(@matrixValue('version') version: string) {}
                 }
-                
+
                 const instance = new TestController();
                 const params = getMethodParameter(instance, 'handleRequest');
                 expect(params[0].type.type).toBe('matrix:value');
                 expect(params[0].name).toBe('version');
             });
         });
-        
+
         describe('@cookieValue', () => {
             test('should store parameter metadata with COOKIE type', () => {
                 class TestController {
                     handleRequest(@cookieValue('sessionId') sessionId: string) {}
                 }
-                
+
                 const instance = new TestController();
                 const params = getMethodParameter(instance, 'handleRequest');
                 expect(params[0].type.type).toBe('cookie:value');
@@ -1071,6 +1093,7 @@ describe('Decorator Behavior Documentation (Legacy → TC39)', () => {
 ```
 
 **Deliverable:** Run tests with legacy decorators - all should pass
+
 ```bash
 pnpm vitest run packages/blue-dispatcher/test/decorators-behavior.spec.ts
 ```
@@ -1084,6 +1107,7 @@ pnpm vitest run packages/blue-dispatcher/test/decorators-behavior.spec.ts
 **File:** `packages/blue-dispatcher/src/route-mapping.ts`
 
 **Before (Legacy):**
+
 ```typescript
 import 'reflect-metadata';
 import { compose } from '@blue/util/function';
@@ -1144,6 +1168,7 @@ export const privateMapping = (route: string) => routeMapping({ value: route, pr
 ```
 
 **After (TC39):**
+
 ```typescript
 /**
  * @author Jeff Rose
@@ -1193,28 +1218,25 @@ type RouteContext = ClassDecoratorContext | ClassMethodDecoratorContext;
 
 /**
  * @routeMapping decorator - Maps routes to controller classes and methods
- * 
+ *
  * Can be used as:
  * - Class decorator: @routeMapping('/api')
  * - Method decorator: @routeMapping('/users')
- * 
+ *
  * @param route - Route path string or configuration object
  */
 export function routeMapping(route: string | RouteMappingConfiguration = defaultMapping) {
     const conf = toRouteMappingConfiguration(route);
-    
+
     return function (target: any, context: RouteContext): any {
         // Method decorator
         if (context.kind === 'method') {
             // Store metadata with method-specific key
             context.metadata[`route:mapping:${String(context.name)}`] = conf;
-            
+
             // Make method enumerable for for...in loops (required by dispatcher)
             context.addInitializer(function (this: any) {
-                const descriptor = Reflect.getOwnPropertyDescriptor(
-                    Object.getPrototypeOf(this),
-                    context.name
-                );
+                const descriptor = Reflect.getOwnPropertyDescriptor(Object.getPrototypeOf(this), context.name);
                 if (descriptor && !descriptor.enumerable) {
                     Reflect.defineProperty(Object.getPrototypeOf(this), context.name, {
                         ...descriptor,
@@ -1222,7 +1244,7 @@ export function routeMapping(route: string | RouteMappingConfiguration = default
                     });
                 }
             });
-            
+
             console.log('@RouteMapping (method)', conf, context.name);
         }
         // Class decorator
@@ -1230,20 +1252,20 @@ export function routeMapping(route: string | RouteMappingConfiguration = default
             context.metadata['route:mapping'] = conf;
             console.log('@RouteMapping (class)', conf, context.name);
         }
-        
+
         return target;
     };
 }
 
 /**
  * Get route mapping configuration from target
- * 
+ *
  * @param target - Class constructor or instance
  * @param propertyKey - Optional method name (for method-level mappings)
  */
 export const getRouteMapping = (target: any, propertyKey?: string | symbol): RouteMappingConfiguration | undefined => {
     const metadata = typeof target === 'function' ? getMetadata(target) : getInstanceMetadata(target);
-    
+
     if (propertyKey) {
         return metadata[`route:mapping:${String(propertyKey)}`];
     }
@@ -1252,13 +1274,13 @@ export const getRouteMapping = (target: any, propertyKey?: string | symbol): Rou
 
 /**
  * Check if target has route mapping defined
- * 
+ *
  * @param target - Class constructor or instance
  * @param propertyKey - Optional method name (for method-level mappings)
  */
 export const hasRouteMapping = (target: any, propertyKey?: string | symbol): boolean => {
     const metadata = typeof target === 'function' ? getMetadata(target) : getInstanceMetadata(target);
-    
+
     if (propertyKey) {
         return metadata[`route:mapping:${String(propertyKey)}`] !== undefined;
     }
@@ -1268,7 +1290,11 @@ export const hasRouteMapping = (target: any, propertyKey?: string | symbol): boo
 /**
  * Legacy helper for defining route mapping (maintained for compatibility)
  */
-export const defineRouteMapping = (value: RouteMappingConfiguration, target: any, propertyKey?: string | symbol): void => {
+export const defineRouteMapping = (
+    value: RouteMappingConfiguration,
+    target: any,
+    propertyKey?: string | symbol
+): void => {
     const metadata = getMetadata(target);
     if (propertyKey) {
         metadata[`route:mapping:${String(propertyKey)}`] = value;
@@ -1289,6 +1315,7 @@ export const privateMapping = (route: string) => routeMapping({ value: route, pr
 ```
 
 **Key Changes:**
+
 1. ✅ Replace `import 'reflect-metadata'` with `import '@tsmetadata/polyfill'`
 2. ✅ Dual context support: `ClassDecoratorContext | ClassMethodDecoratorContext`
 3. ✅ Metadata stored in `context.metadata[...]`
@@ -1303,6 +1330,7 @@ export const privateMapping = (route: string) => routeMapping({ value: route, pr
 **File:** `packages/blue-dispatcher/src/error-mapping.ts`
 
 **Before (Legacy):**
+
 ```typescript
 import 'reflect-metadata';
 import { Constructable } from '@blue/core';
@@ -1316,11 +1344,12 @@ const ERROR_HANDLER = 'error:handler',
     hasFunction = propIs(Function),
     defineErrorHandler = (target): void => defineMetadata(ERROR_HANDLER, true, target),
     defineErrorMapping = (value, target, propertyKey: string | symbol): void =>
-        defineMetadata(ERROR_MAPPING, value, target, propertyKey),
-    // ... rest of implementation
+        defineMetadata(ERROR_MAPPING, value, target, propertyKey);
+// ... rest of implementation
 ```
 
 **After (TC39):**
+
 ```typescript
 /**
  * @author Jeff Rose
@@ -1396,20 +1425,18 @@ function eh(target: any, context: ClassDecoratorContext): any {
 
 /**
  * @errorMapping method decorator - Maps error classes to handler methods
- * 
+ *
  * @param errorClass - Single error class or array of error classes to handle
  */
-const em = (errorClass: Constructable<Error> | Constructable<Error>[] = Error) =>
+const em =
+    (errorClass: Constructable<Error> | Constructable<Error>[] = Error) =>
     (target: any, context: ClassMethodDecoratorContext): any => {
         const errorClasses = Array.isArray(errorClass) ? errorClass : [errorClass];
         context.metadata[`error:mapping:${String(context.name)}`] = errorClasses;
-        
+
         // Make method enumerable for for...in loops (required by dispatcher)
         context.addInitializer(function (this: any) {
-            const descriptor = Reflect.getOwnPropertyDescriptor(
-                Object.getPrototypeOf(this),
-                context.name
-            );
+            const descriptor = Reflect.getOwnPropertyDescriptor(Object.getPrototypeOf(this), context.name);
             if (descriptor && !descriptor.enumerable) {
                 Reflect.defineProperty(Object.getPrototypeOf(this), context.name, {
                     ...descriptor,
@@ -1417,7 +1444,7 @@ const em = (errorClass: Constructable<Error> | Constructable<Error>[] = Error) =
                 });
             }
         });
-        
+
         return target;
     };
 
@@ -1454,6 +1481,7 @@ export const errorMapping = assign(em, {
 ```
 
 **Key Changes:**
+
 1. ✅ Replace `Reflect.defineMetadata()` with `context.metadata[...]`
 2. ✅ Class decorator: Store `error:handler` flag
 3. ✅ Method decorator: Store error class array + make enumerable
@@ -1463,6 +1491,7 @@ export const errorMapping = assign(em, {
 ---
 
 **Verification after Step 3:**
+
 ```bash
 # Update behavioral tests to use TC39 API for simple decorators
 pnpm vitest run packages/blue-dispatcher/test/decorators-behavior.spec.ts
@@ -1480,6 +1509,7 @@ pnpm vitest run packages/blue-dispatcher/test/decorators-behavior.spec.ts
 **File:** `packages/blue-dispatcher/src/route-parameter.ts`
 
 **Strategy:**
+
 1. Keep `MethodParameter` and `MethodParameterType` classes (unchanged)
 2. Convert parameter decorators to **factory functions**
 3. Create new `@routeParams()` method decorator
@@ -1487,7 +1517,7 @@ pnpm vitest run packages/blue-dispatcher/test/decorators-behavior.spec.ts
 
 **After (TC39) - Complete rewrite:**
 
-```typescript
+````typescript
 /**
  * @author Jeff Rose
  */
@@ -1643,7 +1673,7 @@ export type ParameterExtractor = {
 
 /**
  * queryValue - Factory function for query parameter extraction
- * 
+ *
  * @param mapping - Query parameter name to extract
  * @param required - Whether parameter is required
  * @param defaultValue - Default value if not present
@@ -1663,7 +1693,7 @@ export function queryValue(
 
 /**
  * matrixValue - Factory function for matrix parameter extraction
- * 
+ *
  * @param mapping - Matrix parameter name to extract
  * @param required - Whether parameter is required
  * @param defaultValue - Default value if not present
@@ -1683,7 +1713,7 @@ export function matrixValue(
 
 /**
  * cookieValue - Factory function for cookie value extraction
- * 
+ *
  * @param mapping - Cookie name to extract
  * @param required - Whether parameter is required
  * @param defaultValue - Default value if not present
@@ -1703,12 +1733,12 @@ export function cookieValue(
 
 /**
  * @routeParams - Method decorator for parameter mapping (TC39)
- * 
+ *
  * Maps method parameters to extractors (query, matrix, cookie values).
  * Replaces legacy parameter decorators.
- * 
+ *
  * @param parameterMap - Map of parameter name → extractor
- * 
+ *
  * @example
  * ```typescript
  * @routeParams({
@@ -1723,18 +1753,18 @@ export function routeParams(parameterMap: Record<string, ParameterExtractor>) {
     return function (target: any, context: ClassMethodDecoratorContext) {
         // Extract parameter names from function signature
         const paramNames = extractParameterNames(target);
-        
+
         // Build MethodParameter array indexed by position
         const parameters: MethodParameter[] = paramNames.map((paramName, index) => {
             const extractor = parameterMap[paramName];
-            
+
             if (!extractor) {
                 throw new InvalidParameterMappingError(
                     `No mapping defined for parameter "${paramName}" at index ${index} in method "${String(context.name)}". ` +
-                    `Available mappings: ${Object.keys(parameterMap).join(', ')}`
+                        `Available mappings: ${Object.keys(parameterMap).join(', ')}`
                 );
             }
-            
+
             return new MethodParameter(
                 extractor.type,
                 extractor.name,
@@ -1742,19 +1772,19 @@ export function routeParams(parameterMap: Record<string, ParameterExtractor>) {
                 extractor.defaultValue ?? null
             );
         });
-        
+
         // Store in metadata
         context.metadata[`method:parameter:${String(context.name)}`] = parameters;
-        
+
         console.log('@routeParams', context.name, parameters);
-        
+
         return target;
     };
 }
 
 /**
  * Get method parameter metadata
- * 
+ *
  * @param target - Class constructor or instance
  * @param propertyKey - Method name
  */
@@ -1765,7 +1795,7 @@ export const getMethodParameter = (target: any, propertyKey: string | symbol): M
 
 /**
  * Check if method has parameter metadata
- * 
+ *
  * @param target - Class constructor or instance
  * @param propertyKey - Method name
  */
@@ -1803,9 +1833,10 @@ export const defineQueryValue = (
 ): void => {
     console.warn('defineQueryValue is deprecated - use @routeParams() instead');
 };
-```
+````
 
 **Key Changes:**
+
 1. ✅ `queryValue()`, `matrixValue()`, `cookieValue()` are now **factory functions**, not decorators
 2. ✅ Return `ParameterExtractor` objects (type + config)
 3. ✅ New `@routeParams()` decorator accepts parameter map
@@ -1820,6 +1851,7 @@ export const defineQueryValue = (
 **File:** `packages/blue-dispatcher/test/assets/argument-resolver-context.ts`
 
 **Before:**
+
 ```typescript
 import { routeMapping } from '../../src/route-mapping';
 import { ModelAndView } from '../../src/model-and-view';
@@ -1838,6 +1870,7 @@ class HelloController {
 ```
 
 **After:**
+
 ```typescript
 import { routeMapping } from '../../src/route-mapping';
 import { ModelAndView } from '../../src/model-and-view';
@@ -1849,7 +1882,7 @@ class HelloController {
     @routeMapping('/there')
     @routeParams({
         n1: queryValue('name'),
-        n2: matrixValue('name')
+        n2: matrixValue('name'),
     })
     handleThere(n1: string, n2: string) {
         expect(n1).toBe('John');
@@ -1860,6 +1893,7 @@ class HelloController {
 ```
 
 **Check other test assets:**
+
 ```bash
 cd /home/jeff/workspace/blue/packages/blue-dispatcher
 grep -r "@queryValue\|@matrixValue\|@cookieValue" test/
@@ -1881,27 +1915,27 @@ describe('@routeParams (TC39)', () => {
         class TestController {
             @routeParams({
                 id: queryValue('id'),
-                page: queryValue('page')
+                page: queryValue('page'),
             })
             handleRequest(id: string, page: string) {}
         }
-        
+
         const instance = new TestController();
         const params = getMethodParameter(instance, 'handleRequest');
         expect(params).toHaveLength(2);
         expect(params[0].name).toBe('id');
         expect(params[1].name).toBe('page');
     });
-    
+
     test('should map parameters to extractors by name', () => {
         class TestController {
             @routeParams({
                 query: queryValue('search'),
-                version: matrixValue('v')
+                version: matrixValue('v'),
             })
             handleSearch(query: string, version: string) {}
         }
-        
+
         const instance = new TestController();
         const params = getMethodParameter(instance, 'handleSearch');
         expect(params[0].type.type).toBe('query:value');
@@ -1909,41 +1943,41 @@ describe('@routeParams (TC39)', () => {
         expect(params[1].type.type).toBe('matrix:value');
         expect(params[1].name).toBe('v');
     });
-    
+
     test('should store MethodParameter array in metadata', () => {
         class TestController {
             @routeParams({
-                sessionId: cookieValue('JSESSIONID')
+                sessionId: cookieValue('JSESSIONID'),
             })
             handleWithCookie(sessionId: string) {}
         }
-        
+
         const instance = new TestController();
         const params = getMethodParameter(instance, 'handleWithCookie');
         expect(params[0]).toBeInstanceOf(MethodParameter);
         expect(params[0].type).toBe(MethodParameterType.COOKIE);
     });
-    
+
     test('should throw InvalidParameterMappingError if parameter not mapped', () => {
         expect(() => {
             class TestController {
                 @routeParams({
-                    id: queryValue('id')
+                    id: queryValue('id'),
                     // Missing mapping for 'page' parameter!
                 })
                 handleRequest(id: string, page: string) {}
             }
         }).toThrow(InvalidParameterMappingError);
     });
-    
+
     test('should support required and defaultValue options', () => {
         class TestController {
             @routeParams({
-                id: queryValue('id', true, '0')
+                id: queryValue('id', true, '0'),
             })
             handleWithDefaults(id: string) {}
         }
-        
+
         const instance = new TestController();
         const params = getMethodParameter(instance, 'handleWithDefaults');
         expect(params[0].required).toBe(true);
@@ -1957,17 +1991,20 @@ describe('@routeParams (TC39)', () => {
 ##### **Step 5: Verify Runtime Integration** (30 min)
 
 **5.1 Run All Dispatcher Tests:**
+
 ```bash
 cd /home/jeff/workspace/blue
 pnpm vitest run packages/blue-dispatcher/test/
 ```
 
 **Expected:** All tests should pass, including:
+
 - Behavioral tests (new TC39 tests)
 - Integration tests (argument-resolver.spec.ts, dispatcher.spec.ts)
 - Unit tests (route-mapping-info.spec.ts, etc.)
 
 **5.2 Run Specific Integration Tests:**
+
 ```bash
 pnpm vitest run packages/blue-dispatcher/test/argument-resolver.spec.ts
 pnpm vitest run packages/blue-dispatcher/test/dispatcher.spec.ts
@@ -1975,6 +2012,7 @@ pnpm vitest run packages/blue-dispatcher/test/controller.spec.ts
 ```
 
 **5.3 Build Package:**
+
 ```bash
 pnpm --filter @blue/dispatcher build:lib
 ```
@@ -1984,14 +2022,17 @@ pnpm --filter @blue/dispatcher build:lib
 **Potential Issues & Fixes:**
 
 **Issue 1:** Route handler discovery fails (methods not found)
+
 - **Cause:** Methods not enumerable
 - **Fix:** Verify `context.addInitializer()` sets `enumerable: true` in `@routeMapping`
 
 **Issue 2:** Parameter injection fails
+
 - **Cause:** Metadata key mismatch
 - **Fix:** Verify dispatcher reads from `method:parameter:${methodName}` key
 
 **Issue 3:** Error mapping not working
+
 - **Cause:** Error handler methods not enumerable
 - **Fix:** Verify `@errorMapping` sets `enumerable: true`
 
@@ -2005,7 +2046,7 @@ Mark Phase 3 as complete and change status from "⏳ Pending" to "✅ Complete".
 
 Add Phase 3 completion summary at line 722:
 
-```markdown
+````markdown
 ### ✅ Phase 3: @blue/dispatcher Migration - COMPLETE
 
 **Status:** Complete (implemented on 2025-02-XX)
@@ -2016,13 +2057,15 @@ Add Phase 3 completion summary at line 722:
 Successfully migrated all 6 decorators in @blue/dispatcher from legacy TypeScript to TC39 Stage 3 standard. Redesigned parameter decorators from parameter decorator pattern to method decorator with parameter map.
 
 **Decorators Migrated:**
+
 1. ✅ `@routeMapping` - Class/Method decorator for route configuration
 2. ✅ `@errorHandler` - Class decorator marking error handlers
 3. ✅ `@errorMapping` - Method decorator for error class mapping
 4. ✅ `@routeParams` - Method decorator (NEW - replaces parameter decorators)
-   - Factory functions: `queryValue()`, `matrixValue()`, `cookieValue()`
+    - Factory functions: `queryValue()`, `matrixValue()`, `cookieValue()`
 
 **Key Achievements:**
+
 - ✅ All 6 decorators migrated to TC39
 - ✅ 60+ tests passing (behavioral + integration)
 - ✅ Clean build with no TypeScript errors
@@ -2033,11 +2076,14 @@ Successfully migrated all 6 decorators in @blue/dispatcher from legacy TypeScrip
 Parameter decorators replaced with method decorator + factory functions:
 
 **Before (Legacy):**
+
 ```typescript
 handleRequest(@queryValue('id') id: string, @matrixValue('v') version: string) { }
 ```
+````
 
 **After (TC39):**
+
 ```typescript
 @routeParams({
     id: queryValue('id'),
@@ -2047,12 +2093,14 @@ handleRequest(id: string, version: string) { }
 ```
 
 **Technical Insights:**
+
 - Parameter extraction via `extractParameterNames()` enables name-based mapping
 - `InvalidParameterMappingError` thrown if parameter not mapped (fail-fast)
 - Factory functions remain for extractor configuration
 - Metadata key structure: `method:parameter:${methodName}`
 
 **Files Modified:**
+
 - `src/route-mapping.ts` - Complete TC39 rewrite (120 lines)
 - `src/error-mapping.ts` - Complete TC39 rewrite (90 lines)
 - `src/route-parameter.ts` - Major redesign (200 lines)
@@ -2061,6 +2109,7 @@ handleRequest(id: string, version: string) { }
 - `tsconfig.build.json` - Enabled TC39 mode
 
 **Test Results:**
+
 - Behavioral tests: XX/XX passing
 - Integration tests: XX/XX passing
 - Build: Clean (0 errors)
@@ -2068,7 +2117,8 @@ handleRequest(id: string, version: string) { }
 ---
 
 [Keep original Phase 3 implementation details below for reference]
-```
+
+````
 
 **6.2 Update TC39 Quick Reference**
 
@@ -2100,7 +2150,7 @@ export function routeParams(parameterMap: Record<string, ParameterExtractor>) {
     return function (target: any, context: ClassMethodDecoratorContext) {
         // Extract parameter names from function signature
         const paramNames = extractParameterNames(target);
-        
+
         // Map parameters by name
         const parameters: MethodParameter[] = paramNames.map((paramName, index) => {
             const extractor = parameterMap[paramName];
@@ -2116,21 +2166,22 @@ export function routeParams(parameterMap: Record<string, ParameterExtractor>) {
                 extractor.defaultValue ?? null
             );
         });
-        
+
         // Store in metadata
         context.metadata[`method:parameter:${String(context.name)}`] = parameters;
         return target;
     };
 }
-```
+````
 
 **Usage:**
+
 ```typescript
 class MyController {
     @routeParams({
         id: queryValue('id'),
         version: matrixValue('version'),
-        sessionId: cookieValue('JSESSIONID')
+        sessionId: cookieValue('JSESSIONID'),
     })
     handleRequest(id: string, version: string, sessionId: string) {
         // Parameters injected by dispatcher
@@ -2139,12 +2190,14 @@ class MyController {
 ```
 
 **Key Insights:**
+
 - Factory functions are NOT decorators - they return configuration objects
 - Method decorator reads parameter names via reflection
 - Name-based mapping (order-independent)
 - Fail-fast validation (unmapped parameters throw error)
 - Works with existing dispatcher injection logic
-```
+
+````
 
 **6.3 Optional: Create Migration Guide**
 
@@ -2160,11 +2213,12 @@ Document the breaking change and provide migration examples for users.
 ```bash
 cd /home/jeff/workspace/blue
 pnpm test
-```
+````
 
 **Expected:** All tests passing across all packages
 
 **7.2 Build All Packages:**
+
 ```bash
 pnpm build
 ```
@@ -2172,6 +2226,7 @@ pnpm build
 **Expected:** Clean build with no errors
 
 **7.3 Verify No Regressions:**
+
 ```bash
 # Check @blue/validate
 pnpm vitest run packages/blue-validate/test/
@@ -2211,20 +2266,24 @@ pnpm vitest run packages/blue-dispatcher/test/
 #### Files Modified Summary
 
 **Configuration:**
+
 - `packages/blue-dispatcher/tsconfig.build.json` - Enable TC39 mode
 
 **Source Code (Complete Rewrites):**
+
 - `packages/blue-dispatcher/src/route-mapping.ts` (~120 lines)
 - `packages/blue-dispatcher/src/error-mapping.ts` (~90 lines)
 - `packages/blue-dispatcher/src/route-parameter.ts` (~200 lines, major redesign)
 
 **Tests:**
+
 - `packages/blue-dispatcher/test/decorators-behavior.spec.ts` (NEW, ~150 lines)
 - `packages/blue-dispatcher/test/assets/argument-resolver-context.ts` (UPDATE)
 - `packages/blue-dispatcher/test/assets/dispatcher-context.ts` (CHECK + UPDATE if needed)
 - `packages/blue-dispatcher/test/assets/route-error-resolver-context.ts` (CHECK + UPDATE if needed)
 
 **Documentation:**
+
 - `docs/plans/2025-02-01_DECORATOR_MIGRATION.md` (this file - update Phase 3 status)
 - `docs/plans/2025-02-01_TC39_QUICK_REFERENCE.md` (add parameter mapping pattern)
 - `docs/migrations/2025-02-XX_PARAMETER_DECORATORS.md` (NEW, optional)
@@ -2237,12 +2296,12 @@ pnpm vitest run packages/blue-dispatcher/test/
 
 **Migration Required:**
 
-| Legacy (TypeScript) | TC39 (Stage 3) |
-|:---|:---|
-| `@queryValue('id')` parameter decorator | `queryValue('id')` factory function |
-| `@matrixValue('v')` parameter decorator | `matrixValue('v')` factory function |
-| `@cookieValue('sid')` parameter decorator | `cookieValue('sid')` factory function |
-| N/A | `@routeParams({...})` method decorator (NEW) |
+| Legacy (TypeScript)                       | TC39 (Stage 3)                               |
+| :---------------------------------------- | :------------------------------------------- |
+| `@queryValue('id')` parameter decorator   | `queryValue('id')` factory function          |
+| `@matrixValue('v')` parameter decorator   | `matrixValue('v')` factory function          |
+| `@cookieValue('sid')` parameter decorator | `cookieValue('sid')` factory function        |
+| N/A                                       | `@routeParams({...})` method decorator (NEW) |
 
 **Example Migration:**
 
@@ -2260,7 +2319,7 @@ class UserController {
     @routeMapping('/users/{id}')
     @routeParams({
         format: queryValue('format'),
-        version: matrixValue('version')
+        version: matrixValue('version'),
     })
     getUser(format: string, version: string) {
         // ...
@@ -2288,6 +2347,7 @@ function migrateParameterDecorators(sourceCode: string): string {
 #### Common Pitfalls
 
 **Pitfall 1: Forgetting to Add @routeParams Decorator**
+
 ```typescript
 // ❌ WRONG - factory functions alone don't work
 handleRequest(id: string, version: string) {
@@ -2305,6 +2365,7 @@ handleRequest(id: string, version: string) {
 ```
 
 **Pitfall 2: Mismatched Parameter Names**
+
 ```typescript
 // ❌ WRONG - parameter map key doesn't match function parameter
 @routeParams({
@@ -2324,6 +2385,7 @@ handleRequest(id: string) {
 ```
 
 **Pitfall 3: Missing Parameter Mapping**
+
 ```typescript
 // ❌ WRONG - not all parameters mapped
 @routeParams({
@@ -2345,15 +2407,13 @@ handleRequest(id: string, page: string) {
 ```
 
 **Pitfall 4: Methods Not Enumerable**
+
 ```typescript
 // Issue: for...in loops in dispatcher won't find methods
 
 // Solution already implemented in @routeMapping and @errorMapping:
 context.addInitializer(function (this: any) {
-    const descriptor = Reflect.getOwnPropertyDescriptor(
-        Object.getPrototypeOf(this),
-        context.name
-    );
+    const descriptor = Reflect.getOwnPropertyDescriptor(Object.getPrototypeOf(this), context.name);
     if (descriptor && !descriptor.enumerable) {
         Reflect.defineProperty(Object.getPrototypeOf(this), context.name, {
             ...descriptor,
@@ -2368,6 +2428,7 @@ context.addInitializer(function (this: any) {
 #### Lessons Learned (Add After Implementation)
 
 **To be filled in after completing Phase 3:**
+
 - Time estimation accuracy
 - Unexpected challenges encountered
 - Solutions that worked particularly well
@@ -2383,42 +2444,43 @@ context.addInitializer(function (this: any) {
 
 **Decorators Migrated:** 16 total across 5 packages
 
-| Package | Decorators | Test Files | New Tests | Total Tests | Status |
-|---------|-----------|------------|-----------|-------------|--------|
-| @blue/validate | 1 (`@pattern`) | 1 | 12 | 107 active | ✅ Complete |
-| @blue/context | 5 | 1 | 24 | 60 active | ✅ Complete |
-| @blue/dispatcher | 6 | 3 | 39 | 88 active | ✅ Complete |
-| @blue/factory | 4 | 1 | 24 | 35 active | ✅ Complete |
-| @blue/view-webcomponent | 2 | 2 | 23 | 23 active | ✅ Complete |
-| **TOTALS** | **16** | **8** | **122** | **~313** | **✅ Complete** |
+| Package                 | Decorators     | Test Files | New Tests | Total Tests | Status          |
+| ----------------------- | -------------- | ---------- | --------- | ----------- | --------------- |
+| @blue/validate          | 1 (`@pattern`) | 1          | 12        | 107 active  | ✅ Complete     |
+| @blue/context           | 5              | 1          | 24        | 60 active   | ✅ Complete     |
+| @blue/dispatcher        | 6              | 3          | 39        | 88 active   | ✅ Complete     |
+| @blue/factory           | 4              | 1          | 24        | 35 active   | ✅ Complete     |
+| @blue/view-webcomponent | 2              | 2          | 23        | 23 active   | ✅ Complete     |
+| **TOTALS**              | **16**         | **8**      | **122**   | **~313**    | **✅ Complete** |
 
 ### Time Investment
 
 **Total Effort:** ~15-18 hours across 2 sessions
 
-| Phase | Package | Decorators | Time Spent |
-|-------|---------|-----------|------------|
-| Phase 1 | @blue/validate | 1 | ~2 hours |
-| Phase 2 | @blue/context | 5 | ~4 hours |
-| Phase 3 | @blue/dispatcher | 6 | ~6 hours |
-| Phase 4 | @blue/factory | 4 | ~1.5 hours |
-| Phase 5 | @blue/view-webcomponent | 2 | ~1.5 hours |
-| **Infrastructure** | MetadataManager, configs, cleanup | - | ~2 hours |
-| **TOTAL** | **5 packages** | **16 decorators** | **~17 hours** |
+| Phase              | Package                           | Decorators        | Time Spent    |
+| ------------------ | --------------------------------- | ----------------- | ------------- |
+| Phase 1            | @blue/validate                    | 1                 | ~2 hours      |
+| Phase 2            | @blue/context                     | 5                 | ~4 hours      |
+| Phase 3            | @blue/dispatcher                  | 6                 | ~6 hours      |
+| Phase 4            | @blue/factory                     | 4                 | ~1.5 hours    |
+| Phase 5            | @blue/view-webcomponent           | 2                 | ~1.5 hours    |
+| **Infrastructure** | MetadataManager, configs, cleanup | -                 | ~2 hours      |
+| **TOTAL**          | **5 packages**                    | **16 decorators** | **~17 hours** |
 
 ### Code Changes
 
 **Files Modified:** ~45 files total
 
-| Category | Files |
-|----------|-------|
-| Decorator implementations | 10 |
-| Test files (new + modified) | 15 |
-| TypeScript configurations | 12 |
-| Package.json files | 7 |
-| Documentation | 1 (STYLE_GUIDE.md) |
+| Category                    | Files              |
+| --------------------------- | ------------------ |
+| Decorator implementations   | 10                 |
+| Test files (new + modified) | 15                 |
+| TypeScript configurations   | 12                 |
+| Package.json files          | 7                  |
+| Documentation               | 1 (STYLE_GUIDE.md) |
 
 **Lines of Code:**
+
 - Decorator implementations: ~800 lines modified
 - Test code: ~2,500 lines added
 - Total impact: ~3,300 lines
@@ -2436,15 +2498,17 @@ context.addInitializer(function (this: any) {
 7. refactor(validate): standardize @Pattern to @pattern (camelCase)
 8. chore: remove legacy decorator config from root tsconfig files
 9. chore: remove reflect-metadata dependency
-10. docs: update STYLE_GUIDE.md with decorator naming section
-11-13. *(Context and Dispatcher phases from previous session)*
+10. docs: update STYLE*GUIDE.md with decorator naming section
+    11-13. *(Context and Dispatcher phases from previous session)\_
 
 ### Dependencies
 
 **Removed:**
+
 - `reflect-metadata` (~0.2.2) - Removed from 1 package + root devDependencies
 
 **Added:**
+
 - `@tsmetadata/polyfill` (~0.7.0) - Added to root devDependencies
 
 **Net change:** -1 dependency, modernized implementation
@@ -2456,6 +2520,7 @@ context.addInitializer(function (this: any) {
 ### Pattern 1: Simple Class Decorator
 
 **Legacy:**
+
 ```typescript
 export const MyDecorator: ClassDecorator = (target) => {
     Reflect.defineMetadata('my:key', true, target);
@@ -2464,9 +2529,10 @@ export const MyDecorator: ClassDecorator = (target) => {
 ```
 
 **TC39:**
+
 ```typescript
 export function MyDecorator() {
-    return function(target: any, context: ClassDecoratorContext) {
+    return function (target: any, context: ClassDecoratorContext) {
         context.metadata['my:key'] = true;
         return target;
     };
@@ -2476,6 +2542,7 @@ export function MyDecorator() {
 ### Pattern 2: Method Decorator
 
 **Legacy:**
+
 ```typescript
 export const MyDecorator = (param: string) => {
     return (target: Object, propertyKey: string | symbol, descriptor: TypedPropertyDescriptor<any>) => {
@@ -2486,9 +2553,10 @@ export const MyDecorator = (param: string) => {
 ```
 
 **TC39:**
+
 ```typescript
 export function MyDecorator(param: string) {
-    return function(target: any, context: ClassMethodDecoratorContext) {
+    return function (target: any, context: ClassMethodDecoratorContext) {
         context.metadata[`my:key:${String(context.name)}`] = param;
         return target;
     };
@@ -2498,28 +2566,34 @@ export function MyDecorator(param: string) {
 ### Pattern 3: Field Decorator with Validation
 
 **Legacy (BROKEN):**
+
 ```typescript
 export const Validate = (validator: Function) => {
     return (target: Object, propertyKey: string | symbol): void => {
         // This doesn't work - instance property shadows prototype
         Object.defineProperty(target, propertyKey, {
-            set(value) { /* validation */ }
+            set(value) {
+                /* validation */
+            },
         });
     };
 };
 ```
 
 **TC39 (WORKING):**
+
 ```typescript
 export function Validate(validator: Function) {
-    return function(value: undefined, context: ClassFieldDecoratorContext) {
-        return function(this: any, initialValue: any) {
+    return function (value: undefined, context: ClassFieldDecoratorContext) {
+        return function (this: any, initialValue: any) {
             const storageSymbol = Symbol(`__${String(context.name)}`);
             this[storageSymbol] = initialValue;
             delete this[context.name];
-            
+
             Object.defineProperty(this, context.name, {
-                get() { return this[storageSymbol]; },
+                get() {
+                    return this[storageSymbol];
+                },
                 set(newValue) {
                     if (!validator(newValue)) {
                         throw new Error('Validation failed');
@@ -2529,7 +2603,7 @@ export function Validate(validator: Function) {
                 configurable: true,
                 enumerable: true,
             });
-            
+
             return initialValue;
         };
     };
@@ -2539,12 +2613,14 @@ export function Validate(validator: Function) {
 ### Pattern 4: Reading Metadata
 
 **Legacy:**
+
 ```typescript
 const value = Reflect.getMetadata('my:key', MyClass);
 const methodValue = Reflect.getMetadata('my:key', MyClass.prototype, 'methodName');
 ```
 
 **TC39:**
+
 ```typescript
 const value = MyClass[Symbol.metadata]?.['my:key'];
 const methodValue = MyClass[Symbol.metadata]?.[`my:key:methodName`];
@@ -2559,18 +2635,28 @@ const methodValue = MyClass[Symbol.metadata]?.[`my:key:methodName`];
 ### 1. Behavioral Testing Before Migration
 
 For each package:
+
 1. Create `test/decorators-behavior.spec.ts`
 2. Test all decorator behaviors comprehensively
 3. Ensure 100% pass rate with legacy decorators
 4. These become regression tests for TC39 migration
 
 **Example test structure:**
+
 ```typescript
 describe('@MyDecorator', () => {
-    it('stores metadata correctly', () => { /* ... */ });
-    it('returns expected value', () => { /* ... */ });
-    it('handles edge cases', () => { /* ... */ });
-    it('works in inheritance', () => { /* ... */ });
+    it('stores metadata correctly', () => {
+        /* ... */
+    });
+    it('returns expected value', () => {
+        /* ... */
+    });
+    it('handles edge cases', () => {
+        /* ... */
+    });
+    it('works in inheritance', () => {
+        /* ... */
+    });
 });
 ```
 
@@ -2585,6 +2671,7 @@ describe('@MyDecorator', () => {
 ### 3. Integration Testing
 
 After each package migration:
+
 1. Run all tests across the entire monorepo
 2. Ensure other packages (still using legacy decorators) are unaffected
 3. Check for any cross-package metadata compatibility issues
@@ -2631,18 +2718,20 @@ All planned decorator migrations have been successfully completed. The following
 ### Optional Future Work
 
 1. **Documentation updates**
-   - ✅ STYLE_GUIDE.md updated with decorator naming section
-   - ⏳ Update package README files with TC39 examples (optional enhancement)
-   - ⏳ Update demo app if needed (currently has pre-existing issues)
+
+    - ✅ STYLE_GUIDE.md updated with decorator naming section
+    - ⏳ Update package README files with TC39 examples (optional enhancement)
+    - ⏳ Update demo app if needed (currently has pre-existing issues)
 
 2. **Performance validation** (optional)
-   - Benchmark decorator performance (TC39 vs legacy)
-   - Profile metadata access patterns
-   - Document any performance implications
+
+    - Benchmark decorator performance (TC39 vs legacy)
+    - Profile metadata access patterns
+    - Document any performance implications
 
 3. **Remaining packages** (no decorators found)
-   - @blue/router, @blue/http, @blue/logger, etc. have no decorators to migrate
-   - Pre-existing build errors in some packages are unrelated to decorator migration
+    - @blue/router, @blue/http, @blue/logger, etc. have no decorators to migrate
+    - Pre-existing build errors in some packages are unrelated to decorator migration
 
 ### Success Criteria Met ✅
 
@@ -2664,6 +2753,7 @@ All planned decorator migrations have been successfully completed. The following
 ### A. File Locations
 
 **Modified Files:**
+
 ```
 packages/blue-validate/
   ├── src/decorators.ts                     [MODIFIED - TC39 rewrite]
@@ -2686,6 +2776,7 @@ packages/blue-dispatcher/
 ```
 
 **Deleted Files:**
+
 ```
 packages/blue-validate/test/
   ├── pattern-decorator-behavior.spec.ts    [DELETED - legacy tests]
@@ -2699,24 +2790,29 @@ packages/blue-validate/test/
 ### B. Dependencies
 
 **Current:**
+
 - `reflect-metadata` (legacy, still in use)
 - `@tsmetadata/polyfill` v1.3.3 (installed, ready to use)
 
 **After full migration:**
+
 - Remove `reflect-metadata`
 - Keep `@tsmetadata/polyfill`
 
 ### C. References
 
 **TC39 Decorator Proposal:**
+
 - Stage 3 proposal: https://github.com/tc39/proposal-decorators
 - TypeScript 5.0 announcement: https://devblogs.microsoft.com/typescript/announcing-typescript-5-0/#decorators
 
 **TypeScript Documentation:**
+
 - Decorators: https://www.typescriptlang.org/docs/handbook/decorators.html
 - Metadata: https://www.typescriptlang.org/docs/handbook/decorators.html#metadata
 
 **Related Issues:**
+
 - Field decorator initialization: https://github.com/microsoft/TypeScript/issues/49441
 - Metadata polyfill: https://github.com/rbuckton/reflect-metadata
 
@@ -2727,12 +2823,13 @@ packages/blue-validate/test/
 ✅ **Migration Complete!** All 16 decorators across 5 packages have been successfully migrated from legacy TypeScript experimental decorators to TC39 Stage 3 standard decorators.
 
 **Success Metrics:**
+
 - ✅ Five packages fully migrated with all tests passing
-  - @blue/validate (1 decorator, 107 active tests)
-  - @blue/context (5 decorators, 60 active tests)
-  - @blue/dispatcher (6 decorators, 88 active tests)
-  - @blue/factory (4 decorators, 35 active tests)
-  - @blue/view-webcomponent (2 decorators, 23 active tests)
+    - @blue/validate (1 decorator, 107 active tests)
+    - @blue/context (5 decorators, 60 active tests)
+    - @blue/dispatcher (6 decorators, 88 active tests)
+    - @blue/factory (4 decorators, 35 active tests)
+    - @blue/view-webcomponent (2 decorators, 23 active tests)
 - ✅ Total: 16 decorators migrated, ~165 tests passing
 - ✅ Naming standardization: All decorators now use camelCase
 - ✅ Proven pattern for field decorators (addInitializer + instance storage)
@@ -2745,6 +2842,7 @@ packages/blue-validate/test/
 - ✅ Global configuration cleanup (legacy settings removed)
 
 **Key Achievements:**
+
 1. **Complete Feature Parity**: All decorator functionality preserved
 2. **Breaking Change Managed**: Parameter decorators → method decorator pattern
 3. **Clean Build**: All migrated packages compile without errors
@@ -2754,12 +2852,14 @@ packages/blue-validate/test/
 7. **Future-Proof**: Ready for TypeScript 6.0+ and ECMAScript evolution
 
 **Breaking Changes:**
+
 - Parameter decorators replaced with `@routeParams` method decorator + factory functions
 - Migration path documented with before/after examples
 - Old API: `@queryValue('id')` as parameter decorator
 - New API: `@routeParams({ id: queryValue('id') })` as method decorator
 
 **Technical Insights Gained:**
+
 1. TC39 field decorators require `context.addInitializer()` to work correctly
 2. Method enumerability must be explicitly set for `for...in` discovery
 3. Symbol-based per-instance storage prevents shared state issues
@@ -2771,25 +2871,29 @@ packages/blue-validate/test/
 Completed cleanup tasks after TC39 migration:
 
 1. ✅ **Removed `reflect-metadata` from migrated packages**
-   - Removed from `@blue/context/package.json` (devDependencies and peerDependencies)
-   - Removed from `@blue/dispatcher/package.json` (devDependencies and peerDependencies)
-   - @blue/validate never had the dependency (uses only @tsmetadata/polyfill)
+
+    - Removed from `@blue/context/package.json` (devDependencies and peerDependencies)
+    - Removed from `@blue/dispatcher/package.json` (devDependencies and peerDependencies)
+    - @blue/validate never had the dependency (uses only @tsmetadata/polyfill)
 
 2. ✅ **Verified no `reflect-metadata` imports in migrated packages**
-   - Searched all source files in @blue/validate, @blue/context, @blue/dispatcher
-   - Zero imports found (all use @tsmetadata/polyfill instead)
+
+    - Searched all source files in @blue/validate, @blue/context, @blue/dispatcher
+    - Zero imports found (all use @tsmetadata/polyfill instead)
 
 3. ✅ **Test & Build Verification**
-   - @blue/validate: All 107 tests passing, build successful
-   - @blue/context: All 59 tests passing, build successful
-   - @blue/dispatcher: All 66 decorator tests passing, build successful
+
+    - @blue/validate: All 107 tests passing, build successful
+    - @blue/context: All 59 tests passing, build successful
+    - @blue/dispatcher: All 66 decorator tests passing, build successful
 
 4. 📝 **Unmigrated Packages Still Using `reflect-metadata`:**
-   - `@blue/factory` - Uses legacy decorators (`@scope`, `@singletonScope`, etc.)
-   - `@blue/view-webcomponent` - Uses legacy decorators (`@viewMapping`, `@tagMapping`)
-   - Root package.json - Keeps dependency for unmigrated packages
+    - `@blue/factory` - Uses legacy decorators (`@scope`, `@singletonScope`, etc.)
+    - `@blue/view-webcomponent` - Uses legacy decorators (`@viewMapping`, `@tagMapping`)
+    - Root package.json - Keeps dependency for unmigrated packages
 
 **Next Steps (Optional):**
+
 - Remove `experimentalDecorators: true` from root tsconfig (if desired)
 - Migrate remaining packages (@blue/factory, @blue/view-webcomponent)
 - Create user migration guide for external consumers

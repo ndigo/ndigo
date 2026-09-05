@@ -13,7 +13,7 @@ interface TodoItem {
 
 export default class TodoService extends AsApplicationContextAware(Null) {
     readonly applicationContext!: ApplicationContext;
-    #items: import("@blue/signals").Signal<TodoItem[]>;
+    #items: import('@blue/signals').Signal<TodoItem[]>;
     #onCreated?: (text: string) => void;
     #onRemoved?: (index: number) => void;
     #onToggled?: (index: number) => void;

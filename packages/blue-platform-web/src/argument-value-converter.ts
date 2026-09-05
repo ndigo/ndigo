@@ -138,9 +138,7 @@ function resolveTypeConverter(sourceType: any, targetType: any): ArgumentValueCo
 // ---------------------------------------------------------------------------
 
 /** Resolves a converter based on convertType using ConversionService. */
-export function resolveConverter(
-    convertType?: { source: any; target: any }
-): ArgumentValueConverter {
+export function resolveConverter(convertType?: { source: any; target: any }): ArgumentValueConverter {
     // Use type-based conversion via ConversionService
     if (convertType && convertType.source && convertType.target) {
         const typeConverter = resolveTypeConverter(convertType.source, convertType.target);

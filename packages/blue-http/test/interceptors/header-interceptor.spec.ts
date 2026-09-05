@@ -43,14 +43,14 @@ describe('HeaderInterceptor', () => {
 
         const interceptor = new HeaderInterceptor();
         const originalRequest = new Request('http://localhost/test-headers');
-        
+
         // Mock HTTP client
         const mockHTTP: HTTP = {
-            fetch: vi.fn().mockResolvedValue(new Response())
+            fetch: vi.fn().mockResolvedValue(new Response()),
         };
 
         const result = await interceptor.preRequest(originalRequest, mockHTTP);
-        
+
         expect(result.headers.get('X-CSRF-Token')).toBeNull();
         expect(result.headers.get('X-Channel-ID')).toBeNull();
         expect(result.headers.get('X-Request-ID')).toBeNull();
@@ -72,17 +72,17 @@ describe('HeaderInterceptor', () => {
             })
         );
 
-        const interceptor = new HeaderInterceptor({ 
-            csrfToken: 'test-csrf-token' 
+        const interceptor = new HeaderInterceptor({
+            csrfToken: 'test-csrf-token',
         });
-        
+
         const originalRequest = new Request('http://localhost/test-headers');
         const mockHTTP: HTTP = {
-            fetch: vi.fn().mockResolvedValue(new Response())
+            fetch: vi.fn().mockResolvedValue(new Response()),
         };
 
         const result = await interceptor.preRequest(originalRequest, mockHTTP);
-        
+
         expect(result.headers.get('X-CSRF-Token')).toBe('test-csrf-token');
         expect(result.headers.get('X-Channel-ID')).toBeNull();
         expect(result.headers.get('X-Request-ID')).toBeNull();
@@ -102,17 +102,17 @@ describe('HeaderInterceptor', () => {
             })
         );
 
-        const interceptor = new HeaderInterceptor({ 
-            channelId: 'test-channel-id' 
+        const interceptor = new HeaderInterceptor({
+            channelId: 'test-channel-id',
         });
-        
+
         const originalRequest = new Request('http://localhost/test-headers');
         const mockHTTP: HTTP = {
-            fetch: vi.fn().mockResolvedValue(new Response())
+            fetch: vi.fn().mockResolvedValue(new Response()),
         };
 
         const result = await interceptor.preRequest(originalRequest, mockHTTP);
-        
+
         expect(result.headers.get('X-CSRF-Token')).toBeNull();
         expect(result.headers.get('X-Channel-ID')).toBe('test-channel-id');
         expect(result.headers.get('X-Request-ID')).toBeNull();
@@ -132,17 +132,17 @@ describe('HeaderInterceptor', () => {
             })
         );
 
-        const interceptor = new HeaderInterceptor({ 
-            generateRequestId: true
+        const interceptor = new HeaderInterceptor({
+            generateRequestId: true,
         });
-        
+
         const originalRequest = new Request('http://localhost/test-headers');
         const mockHTTP: HTTP = {
-            fetch: vi.fn().mockResolvedValue(new Response())
+            fetch: vi.fn().mockResolvedValue(new Response()),
         };
 
         const result = await interceptor.preRequest(originalRequest, mockHTTP);
-        
+
         expect(result.headers.get('X-CSRF-Token')).toBeNull();
         expect(result.headers.get('X-Channel-ID')).toBeNull();
         expect(result.headers.get('X-Request-ID')).toBe('12345678-1234-1234-1234-123456789012');
@@ -162,19 +162,19 @@ describe('HeaderInterceptor', () => {
             })
         );
 
-        const interceptor = new HeaderInterceptor({ 
+        const interceptor = new HeaderInterceptor({
             csrfToken: 'test-csrf-token',
             channelId: 'test-channel-id',
-            generateRequestId: true
+            generateRequestId: true,
         });
-        
+
         const originalRequest = new Request('http://localhost/test-headers');
         const mockHTTP: HTTP = {
-            fetch: vi.fn().mockResolvedValue(new Response())
+            fetch: vi.fn().mockResolvedValue(new Response()),
         };
 
         const result = await interceptor.preRequest(originalRequest, mockHTTP);
-        
+
         expect(result.headers.get('X-CSRF-Token')).toBe('test-csrf-token');
         expect(result.headers.get('X-Channel-ID')).toBe('test-channel-id');
         expect(result.headers.get('X-Request-ID')).toBe('12345678-1234-1234-1234-123456789012');
@@ -196,25 +196,25 @@ describe('HeaderInterceptor', () => {
             })
         );
 
-        const interceptor = new HeaderInterceptor({ 
+        const interceptor = new HeaderInterceptor({
             csrfToken: 'test-csrf-token',
-            channelId: 'test-channel-id'
+            channelId: 'test-channel-id',
         });
 
         const originalHeaders = new Headers();
         originalHeaders.set('Authorization', 'Bearer token');
-        
+
         const originalRequest = new Request('http://localhost/test-headers', {
-            headers: originalHeaders
+            headers: originalHeaders,
         });
-        
+
         const mockHTTP: HTTP = {
-            fetch: vi.fn().mockResolvedValue(new Response())
+            fetch: vi.fn().mockResolvedValue(new Response()),
         };
 
         // Store the reference to check immutability later
         const originalHeaderMap = new Map(originalRequest.headers);
-        
+
         await interceptor.preRequest(originalRequest, mockHTTP);
 
         // Verify that the original request headers are unchanged (except for our expected additions)

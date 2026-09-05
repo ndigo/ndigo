@@ -5,13 +5,13 @@ from simple to complex. Each app demonstrates a distinct slice of the framework.
 
 ## Progression
 
-| # | App | Demonstrates |
-|---|---|---|
-| 1 | `blue-hello` | Browser — context + route + template/Web Component render |
-| 2 | `blue-hello-node` | Node — `HTTPServer` + `NodeDispatcher` + `@getMapping`, JSON responses |
-| 3 | `blue-todo` | Browser — TodoMVC + micro frontend shell (feature mount, relay gateway, routing registry) |
-| 4 | `blue-api` | Node — controllers with `@requestMapping`/`@getMapping`/`@postMapping`, `ResponseEntity`, interceptors, ORM, auth, static files, matrix params |
-| 5 | `blue-host` | Browser — micro frontend host: shell + 3 lazy-loaded feature chunks (`mountLazy` + dynamic `import()`), shared-dependency validation |
+| #   | App               | Demonstrates                                                                                                                                   |
+| --- | ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | `blue-hello`      | Browser — context + route + template/Web Component render                                                                                      |
+| 2   | `blue-hello-node` | Node — `HTTPServer` + `NodeDispatcher` + `@getMapping`, JSON responses                                                                         |
+| 3   | `blue-todo`       | Browser — TodoMVC + micro frontend shell (feature mount, relay gateway, routing registry)                                                      |
+| 4   | `blue-api`        | Node — controllers with `@requestMapping`/`@getMapping`/`@postMapping`, `ResponseEntity`, interceptors, ORM, auth, static files, matrix params |
+| 5   | `blue-host`       | Browser — micro frontend host: shell + 3 lazy-loaded feature chunks (`mountLazy` + dynamic `import()`), shared-dependency validation           |
 
 ## Applications
 

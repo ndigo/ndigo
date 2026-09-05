@@ -8,55 +8,55 @@
 
 ## Legend
 
-| Symbol | Meaning |
-|--------|---------|
-| ✅ | Fully Supported |
-| 🟡 | Partially Supported / Via Workaround |
-| ❌ | Not Supported |
-| 🔵 | Platform-Specific (Browser-only) |
-| 🟣 | Platform-Specific (Node-only) |
+| Symbol | Meaning                              |
+| ------ | ------------------------------------ |
+| ✅     | Fully Supported                      |
+| 🟡     | Partially Supported / Via Workaround |
+| ❌     | Not Supported                        |
+| 🔵     | Platform-Specific (Browser-only)     |
+| 🟣     | Platform-Specific (Node-only)        |
 
 ---
 
 ## Core Features Comparison
 
-| Feature | @blue/http | Spring | Axios | Fetch | Node http | Node https | Priority |
-|---------|-----------|--------|-------|-------|-----------|------------|----------|
-| **Instance System** | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | 🔴 HIGH |
-| **Config Defaults** | 🟡 | ✅ | ✅ | ❌ | ✅ | ✅ | 🔴 HIGH |
-| **Base URL** | ✅ | ✅ | ✅ | ❌ | ✅ | ✅ | 🔴 HIGH |
-| **Query Params Config** | 🟡 | ✅ | ✅ | 🟡 | ❌ | ❌ | 🔴 HIGH |
-| **Transform Pipeline** | 🟡 | ✅ | ✅ | ❌ | ❌ | ❌ | 🔴 HIGH |
-| **Basic Auth Helper** | 🟡 | ✅ | ✅ | 🟡 | ✅ | ✅ | 🔴 HIGH |
-| **XSRF Protection** 🔵 | ❌ | 🟡 | ✅ | ❌ | ❌ | ❌ | 🔴 HIGH |
-| **Upload Progress** 🔵 | ❌ | ❌ | ✅ | 🟡 | ❌ | ❌ | 🔴 HIGH |
-| **Download Progress** 🔵 | ❌ | ❌ | ✅ | 🟡 | ❌ | ❌ | 🔴 HIGH |
-| **Validate Status** | 🟡 | ✅ | ✅ | ❌ | ✅ | ✅ | 🟠 MEDIUM |
-| **Interceptor Management** | ❌ | 🟡 | ✅ | ❌ | ❌ | ❌ | 🟠 MEDIUM |
-| **Form Shortcuts** | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | 🟠 MEDIUM |
-| **Proxy Support** 🟣 | ❌ | ✅ | ✅ | ❌ | ✅ | ✅ | 🟠 MEDIUM |
-| **Error Categorization** | 🟡 | ✅ | ✅ | ❌ | ❌ | ❌ | 🟠 MEDIUM |
-| **Range Request Helper** | 🟡 | ✅ | 🟡 | 🟡 | ❌ | ❌ | 🟠 MEDIUM |
-| **Connection Pooling** | ❌ | ✅ | ✅ | ❌ | ✅ | ✅ | 🟠 MEDIUM |
-| **Client Certificates** | ❌ | ✅ | ✅ | ❌ | ❌ | ✅ | 🟠 MEDIUM |
-| **Custom DNS** | ❌ | ✅ | ❌ | ❌ | ✅ | ✅ | 🟢 LOW |
-| **TLS Session Resumption** | ❌ | ✅ | ❌ | ❌ | ❌ | ✅ | 🟢 LOW |
-| **Socket Timeout** | ✅ | ✅ | ✅ | 🟡 | ✅ | ✅ | 🟢 LOW |
-| **Streaming (Node.js Streams)** | ❌ | ✅ | 🟡 | ❌ | ✅ | ✅ | 🟢 LOW |
+| Feature                         | @blue/http | Spring | Axios | Fetch | Node http | Node https | Priority  |
+| ------------------------------- | ---------- | ------ | ----- | ----- | --------- | ---------- | --------- |
+| **Instance System**             | ❌         | ✅     | ✅    | ❌    | ❌        | ❌         | 🔴 HIGH   |
+| **Config Defaults**             | 🟡         | ✅     | ✅    | ❌    | ✅        | ✅         | 🔴 HIGH   |
+| **Base URL**                    | ✅         | ✅     | ✅    | ❌    | ✅        | ✅         | 🔴 HIGH   |
+| **Query Params Config**         | 🟡         | ✅     | ✅    | 🟡    | ❌        | ❌         | 🔴 HIGH   |
+| **Transform Pipeline**          | 🟡         | ✅     | ✅    | ❌    | ❌        | ❌         | 🔴 HIGH   |
+| **Basic Auth Helper**           | 🟡         | ✅     | ✅    | 🟡    | ✅        | ✅         | 🔴 HIGH   |
+| **XSRF Protection** 🔵          | ❌         | 🟡     | ✅    | ❌    | ❌        | ❌         | 🔴 HIGH   |
+| **Upload Progress** 🔵          | ❌         | ❌     | ✅    | 🟡    | ❌        | ❌         | 🔴 HIGH   |
+| **Download Progress** 🔵        | ❌         | ❌     | ✅    | 🟡    | ❌        | ❌         | 🔴 HIGH   |
+| **Validate Status**             | 🟡         | ✅     | ✅    | ❌    | ✅        | ✅         | 🟠 MEDIUM |
+| **Interceptor Management**      | ❌         | 🟡     | ✅    | ❌    | ❌        | ❌         | 🟠 MEDIUM |
+| **Form Shortcuts**              | ❌         | ✅     | ✅    | ❌    | ❌        | ❌         | 🟠 MEDIUM |
+| **Proxy Support** 🟣            | ❌         | ✅     | ✅    | ❌    | ✅        | ✅         | 🟠 MEDIUM |
+| **Error Categorization**        | 🟡         | ✅     | ✅    | ❌    | ❌        | ❌         | 🟠 MEDIUM |
+| **Range Request Helper**        | 🟡         | ✅     | 🟡    | 🟡    | ❌        | ❌         | 🟠 MEDIUM |
+| **Connection Pooling**          | ❌         | ✅     | ✅    | ❌    | ✅        | ✅         | 🟠 MEDIUM |
+| **Client Certificates**         | ❌         | ✅     | ✅    | ❌    | ❌        | ✅         | 🟠 MEDIUM |
+| **Custom DNS**                  | ❌         | ✅     | ❌    | ❌    | ✅        | ✅         | 🟢 LOW    |
+| **TLS Session Resumption**      | ❌         | ✅     | ❌    | ❌    | ❌        | ✅         | 🟢 LOW    |
+| **Socket Timeout**              | ✅         | ✅     | ✅    | 🟡    | ✅        | ✅         | 🟢 LOW    |
+| **Streaming (Node.js Streams)** | ❌         | ✅     | 🟡    | ❌    | ✅        | ✅         | 🟢 LOW    |
 
 ---
 
 ## @blue/http Unique Strengths
 
-| Feature | Status | Notes |
-|---------|--------|-------|
-| **5-Hook Interceptor System** | ✅ | preInit, preRequest, postResponse, postError, postComplete |
-| **URL Pattern Matching** | ✅ | MappedHTTPInterceptor for conditional interceptors |
-| **8 Built-in Interceptors** | ✅ | ContentType, DataParameter, IfModified, NotOk, ResponseClass, ResponseCode, ResponseType, Timeout |
-| **Query/Matrix Parsers** | ✅ | RFC-compliant parser combinators |
-| **62 Status Constants** | ✅ | Comprehensive status code abstractions (100-511) |
-| **124 Header Constants** | ✅ | Type-safe header name constants |
-| **ResponseStatus Class** | ✅ | isInformational(), isSuccess(), isRedirection(), isClientError(), isServerError() |
+| Feature                       | Status | Notes                                                                                             |
+| ----------------------------- | ------ | ------------------------------------------------------------------------------------------------- |
+| **5-Hook Interceptor System** | ✅     | preInit, preRequest, postResponse, postError, postComplete                                        |
+| **URL Pattern Matching**      | ✅     | MappedHTTPInterceptor for conditional interceptors                                                |
+| **8 Built-in Interceptors**   | ✅     | ContentType, DataParameter, IfModified, NotOk, ResponseClass, ResponseCode, ResponseType, Timeout |
+| **Query/Matrix Parsers**      | ✅     | RFC-compliant parser combinators                                                                  |
+| **62 Status Constants**       | ✅     | Comprehensive status code abstractions (100-511)                                                  |
+| **124 Header Constants**      | ✅     | Type-safe header name constants                                                                   |
+| **ResponseStatus Class**      | ✅     | isInformational(), isSuccess(), isRedirection(), isClientError(), isServerError()                 |
 
 ---
 
@@ -97,26 +97,28 @@
 
 ### Should I Use @blue/http Today?
 
-| Use Case | Recommendation | Reason |
-|----------|---------------|--------|
-| Simple GET/POST requests | ✅ Yes | Works great, built on Fetch |
-| Need config reuse across requests | ❌ Wait | Missing instance system |
-| File uploads with progress | ❌ Wait | Missing progress tracking |
-| CSRF-protected web app | ❌ Wait | Missing XSRF protection |
-| Need query param convenience | 🟡 Maybe | Manual URL construction works |
-| Complex request transformations | 🟡 Maybe | Interceptors can do it, but less ergonomic |
-| Node.js server-side app | 🟡 Maybe | Missing proxy support |
-| Advanced interceptor needs | ✅ Yes | Best-in-class interceptor system |
-| RFC-compliant URL parsing | ✅ Yes | Excellent parser infrastructure |
+| Use Case                          | Recommendation | Reason                                     |
+| --------------------------------- | -------------- | ------------------------------------------ |
+| Simple GET/POST requests          | ✅ Yes         | Works great, built on Fetch                |
+| Need config reuse across requests | ❌ Wait        | Missing instance system                    |
+| File uploads with progress        | ❌ Wait        | Missing progress tracking                  |
+| CSRF-protected web app            | ❌ Wait        | Missing XSRF protection                    |
+| Need query param convenience      | 🟡 Maybe       | Manual URL construction works              |
+| Complex request transformations   | 🟡 Maybe       | Interceptors can do it, but less ergonomic |
+| Node.js server-side app           | 🟡 Maybe       | Missing proxy support                      |
+| Advanced interceptor needs        | ✅ Yes         | Best-in-class interceptor system           |
+| RFC-compliant URL parsing         | ✅ Yes         | Excellent parser infrastructure            |
 
 ### Should I Wait for Improvements?
 
 **Wait if you need:**
+
 - Instance system with config defaults
 - XSRF protection
 - Upload/download progress tracking
 
 **Use now if you need:**
+
 - Sophisticated interceptor system
 - URL pattern matching
 - Query/matrix string parsing
@@ -128,36 +130,36 @@
 
 ### From Axios
 
-| Axios Pattern | @blue/http Current | @blue/http Future |
-|---------------|-------------------|-------------------|
-| `axios.create({ baseURL })` | ❌ | `HTTP.create({ baseURL })` |
-| `params: { key: 'value' }` | Manual URL | `params: { key: 'value' }` |
-| `transformRequest: []` | Via interceptors | `transformRequest: []` |
-| `auth: { username, password }` | Manual header | `auth: { username, password }` |
-| `onUploadProgress` | ❌ | `onUploadProgress` |
-| `xsrfCookieName` | ❌ | `xsrfCookieName` |
+| Axios Pattern                  | @blue/http Current | @blue/http Future              |
+| ------------------------------ | ------------------ | ------------------------------ |
+| `axios.create({ baseURL })`    | ❌                 | `HTTP.create({ baseURL })`     |
+| `params: { key: 'value' }`     | Manual URL         | `params: { key: 'value' }`     |
+| `transformRequest: []`         | Via interceptors   | `transformRequest: []`         |
+| `auth: { username, password }` | Manual header      | `auth: { username, password }` |
+| `onUploadProgress`             | ❌                 | `onUploadProgress`             |
+| `xsrfCookieName`               | ❌                 | `xsrfCookieName`               |
 
 ### From Fetch API
 
-| Fetch Pattern | @blue/http | Improvement |
-|---------------|-----------|-------------|
-| `fetch(url, options)` | `http.get(url, settings)` | Interceptors + helpers |
-| Manual headers | Same | 124 header constants |
-| Manual status check | `ResponseStatus` helpers | isSuccess(), isClientError(), etc |
-| Manual error on 4xx/5xx | `NotOkInterceptor` | Automatic error throwing |
-| Manual timeout | `TimeoutInterceptor` | Built-in timeout support |
+| Fetch Pattern           | @blue/http                | Improvement                       |
+| ----------------------- | ------------------------- | --------------------------------- |
+| `fetch(url, options)`   | `http.get(url, settings)` | Interceptors + helpers            |
+| Manual headers          | Same                      | 124 header constants              |
+| Manual status check     | `ResponseStatus` helpers  | isSuccess(), isClientError(), etc |
+| Manual error on 4xx/5xx | `NotOkInterceptor`        | Automatic error throwing          |
+| Manual timeout          | `TimeoutInterceptor`      | Built-in timeout support          |
 
 ---
 
 ## Ecosystem Comparison
 
-| Library | Paradigm | Strengths | Best For |
-|---------|----------|-----------|----------|
-| **@blue/http** | Fetch + Interceptors | Advanced interceptors, URL parsers, status/header constants | Complex request/response pipelines, Spring developers |
-| **Spring RestClient** | Builder + Message Converters | Enterprise patterns, type safety, rich abstractions | Java/Spring ecosystem |
-| **Axios** | Promise + Config | Simple API, progress tracking, XSRF protection | General web apps, file uploads |
-| **Fetch API** | Promise + Options | Web standard, no dependencies, streaming | Native browser/Node.js, minimal overhead |
-| **Node.js http/https** | Callback/Stream + Low-level | Fine-grained control over sockets, TLS, proxies, streaming | Node.js backend services, custom networking |
+| Library                | Paradigm                     | Strengths                                                   | Best For                                              |
+| ---------------------- | ---------------------------- | ----------------------------------------------------------- | ----------------------------------------------------- |
+| **@blue/http**         | Fetch + Interceptors         | Advanced interceptors, URL parsers, status/header constants | Complex request/response pipelines, Spring developers |
+| **Spring RestClient**  | Builder + Message Converters | Enterprise patterns, type safety, rich abstractions         | Java/Spring ecosystem                                 |
+| **Axios**              | Promise + Config             | Simple API, progress tracking, XSRF protection              | General web apps, file uploads                        |
+| **Fetch API**          | Promise + Options            | Web standard, no dependencies, streaming                    | Native browser/Node.js, minimal overhead              |
+| **Node.js http/https** | Callback/Stream + Low-level  | Fine-grained control over sockets, TLS, proxies, streaming  | Node.js backend services, custom networking           |
 
 ---
 

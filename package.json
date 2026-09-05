@@ -37,7 +37,8 @@
     "api-report": "nx run-many -t api-report",
     "digest": "repomix",
     "digest:compact": "repomix --compress",
-    "manifest:check": "node scripts/check-manifests.mjs"
+    "manifest:check": "node scripts/check-manifests.mjs",
+    "graft:build": "graft build --deep --allow-partial"
   },
   "repository": {
     "type": "git",

@@ -7,7 +7,12 @@
     "doc",
     "lib"
   ],
-  "exports": "./lib/index.js",
+  "exports": {
+    ".": {
+      "default": "./lib/index.js",
+      "types": "./lib/index.d.ts"
+    }
+  },
   "types": "lib/index.d.ts",
   "scripts": {
     "build:lib": "tsc -b tsconfig.build.json",
@@ -37,5 +42,6 @@
   },
   "dependencies": {
     "zod": "^4.3.6"
-  }
+  },
+  "sideEffects": false
 }

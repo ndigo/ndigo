@@ -1,7 +1,7 @@
 {
   "name": "@blue/signals",
   "version": "0.0.1",
-  "description": "Blue Signals – Reactive state management with signals, computed values, and effects",
+  "description": "Blue Signals \u2013 Reactive state management with signals, computed values, and effects",
   "type": "module",
   "files": [
     "lib"

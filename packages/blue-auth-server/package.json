@@ -1,21 +1,21 @@
 {
   "name": "@blue/auth-server",
   "version": "0.0.1",
-  "description": "Server-side authentication for BlueJS — AuthServer, AuthRouteGuard, and JWT adapter",
+  "description": "Server-side authentication for BlueJS \u2014 AuthServer, AuthRouteGuard, and JWT adapter",
   "type": "module",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
   "author": "Jeff Rose <jeff_rose@outlook.com>",
-  "license": "MIT",
+  "license": "ISC",
   "peerDependencies": {
-    "@blue/auth-core": "workspace:*",
-    "@blue/dispatcher": "workspace:*",
-    "@blue/router": "workspace:*"
+    "@blue/auth-core": "~0.0.1",
+    "@blue/dispatcher": "~0.0.1",
+    "@blue/router": "~0.0.1"
   },
   "devDependencies": {
-    "@blue/auth-core": "workspace:*",
-    "@blue/dispatcher": "workspace:*",
-    "@blue/router": "workspace:*",
+    "@blue/auth-core": "~0.0.1",
+    "@blue/dispatcher": "~0.0.1",
+    "@blue/router": "~0.0.1",
     "typescript": "^5.7.2"
   },
   "scripts": {
@@ -25,5 +25,12 @@
   },
   "dependencies": {
     "jose": "^5.10.0"
-  }
+  },
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    }
+  },
+  "sideEffects": false
 }

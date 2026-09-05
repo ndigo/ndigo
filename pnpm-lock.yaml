@@ -506,10 +506,10 @@ importers:
         version: 5.10.0
     devDependencies:
       '@blue/auth-core':
-        specifier: workspace:*
+        specifier: ~0.0.1
         version: link:../blue-auth-core
       '@blue/http':
-        specifier: workspace:*
+        specifier: ~0.0.1
         version: link:../blue-http
       typescript:
         specifier: ^5.7.2
@@ -522,7 +522,7 @@ importers:
         version: 1.1.3
     devDependencies:
       '@blue/core':
-        specifier: workspace:*
+        specifier: ~0.0.1
         version: link:../blue-core
       typescript:
         specifier: ^5.7.2
@@ -535,13 +535,13 @@ importers:
         version: 5.10.0
     devDependencies:
       '@blue/auth-core':
-        specifier: workspace:*
+        specifier: ~0.0.1
         version: link:../blue-auth-core
       '@blue/dispatcher':
-        specifier: workspace:*
+        specifier: ~0.0.1
         version: link:../blue-dispatcher
       '@blue/router':
-        specifier: workspace:*
+        specifier: ~0.0.1
         version: link:../blue-router
       typescript:
         specifier: ^5.7.2
@@ -559,7 +559,7 @@ importers:
         specifier: ~0.0.1
         version: link:../blue-dispatcher
       '@blue/platform-node':
-        specifier: workspace:~
+        specifier: ~0.0.1
         version: link:../blue-platform-node
       '@blue/platform-web':
         specifier: ~0.0.1
@@ -816,10 +816,10 @@ importers:
   packages/blue-platform-web:
     dependencies:
       '@blue/view':
-        specifier: workspace:~
+        specifier: ~0.0.1
         version: link:../blue-view
       '@blue/view-webcomponent':
-        specifier: workspace:~
+        specifier: ~0.0.1
         version: link:../blue-view-webcomponent
     devDependencies:
       '@blue/context':
@@ -912,13 +912,13 @@ importers:
         specifier: ~0.0.1
         version: link:../blue-router
       '@blue/telemetry-node':
-        specifier: workspace:~
+        specifier: ~0.0.1
         version: link:../blue-telemetry-node
 
   packages/blue-telemetry-node:
     dependencies:
       '@blue/telemetry':
-        specifier: workspace:~
+        specifier: ~0.0.1
         version: link:../blue-telemetry
       '@opentelemetry/api':
         specifier: ~1.9.0
@@ -979,7 +979,7 @@ importers:
   packages/blue-telemetry-web:
     dependencies:
       '@blue/telemetry':
-        specifier: workspace:~
+        specifier: ~0.0.1
         version: link:../blue-telemetry
       '@opentelemetry/api':
         specifier: ~1.9.0
@@ -1037,7 +1037,7 @@ importers:
         specifier: ~0.0.1
         version: link:../blue-platform-node
       '@blue/platform-web':
-        specifier: workspace:~
+        specifier: ~0.0.1
         version: link:../blue-platform-web
       '@blue/router':
         specifier: ~0.0.1

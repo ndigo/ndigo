@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { Constructable } from '@blue/core';
 import { ModelAndView } from './model-and-view';
 import { Route } from '@blue/router';

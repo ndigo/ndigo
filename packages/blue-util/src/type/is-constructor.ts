@@ -1,5 +1,4 @@
 /**
- * @author Jeff Rose
  * @see {@link https://ramdajs.com/docs/}
  * @see {@link https://stackoverflow.com/questions/40922531/how-to-check-if-a-javascript-function-is-a-constructor}
  */

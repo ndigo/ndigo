@@ -1,5 +1,4 @@
 /**
- * @author Jeff Rose
  * @see {@link https://github.com/janl/mustache.js/blob/master/mustache.js#L73}
  */
 

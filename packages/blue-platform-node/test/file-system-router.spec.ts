@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { describe, test, expect, vi } from 'vitest';
 import { FileSystemRouter } from '../src/file-system-router';
 

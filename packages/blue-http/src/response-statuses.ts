@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import ResponseStatus from './response-status';
 
 /**

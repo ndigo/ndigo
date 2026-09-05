@@ -1,5 +1,3 @@
-/** @author Jeff Rose */
-
 import { RuleTester } from 'oxlint/plugins-dev';
 import { noInternalFileExports } from '../../src/rules/no-internal-file-exports';
 

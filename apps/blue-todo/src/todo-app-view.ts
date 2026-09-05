@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { AbstractWebComponent } from '@blue/view-webcomponent';
 import { toAccountShellRoute, toTodoShellRoute } from './shell-composition';
 import './shell-nav-view';

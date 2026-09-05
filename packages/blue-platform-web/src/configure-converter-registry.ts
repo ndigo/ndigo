@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { ApplicationContext } from '@blue/context';
 import { ArgumentValueConverterRegistry } from './argument-value-converter';
 

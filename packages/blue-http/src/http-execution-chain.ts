@@ -1,6 +1,3 @@
-/**
- * @author Jeff Rose
- */
 /// <reference lib="dom" />
 // TypeScript 6.0 declaration generation fix
 import type { HTTP } from './http-client';
@@ -278,4 +275,3 @@ export class HTTPExecutionChain {
  * @internal
  */
 export const isHTTPExecutionChain = is(HTTPExecutionChain) as (value: any) => value is HTTPExecutionChain;
-

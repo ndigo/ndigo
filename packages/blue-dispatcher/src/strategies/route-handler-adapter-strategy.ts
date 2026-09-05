@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { ApplicationContext } from '@blue/context';
 import { Constructable, IllegalStateError } from '@blue/core';
 import { ControllerHandlerAdapter, MetadataHandlerAdapter, RouteHandlerAdapter } from '../route-handler-adapter';

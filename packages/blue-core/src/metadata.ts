@@ -1,4 +1,3 @@
-/** @author Jeff Rose */
 import '@tsmetadata/polyfill';
 
 /**

@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { AbstractThemeResolver } from '@blue/dispatcher';
 import { ApplicationContext } from '@blue/context';
 import { Route } from '@blue/router';

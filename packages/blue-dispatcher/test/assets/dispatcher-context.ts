@@ -32,7 +32,7 @@ class HelloController {
 }
 
 /**
- * ? Is this a pattern we could use to run legacy controllers? -JBR
+ * ? Is this a pattern we could use to run legacy controllers?
 const
     AsLegacyController = ( controllerContext ) => {
         this.index = function(){

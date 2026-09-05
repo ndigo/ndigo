@@ -1,5 +1,4 @@
 /**
- * @author Jeff Rose
  *
  * Blue Signals decorator API.
  */

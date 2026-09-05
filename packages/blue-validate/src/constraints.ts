@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import standardConstraints, { Constraint, ValidationConstraints } from './standard-constraints';
 
 const constraints: ValidationConstraints = {

@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { bench, describe } from 'vitest';
 
 let _sink = 0;

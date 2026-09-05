@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { describe, it, expect, vi, beforeAll } from 'vitest';
 import { Route } from '@blue/router';
 import { WebComponentView } from '../src/view';

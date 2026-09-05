@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import type { Converter } from './converter.js';
 
 /**

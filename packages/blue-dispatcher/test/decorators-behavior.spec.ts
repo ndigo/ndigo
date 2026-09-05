@@ -1,5 +1,4 @@
 /**
- * @author Jeff Rose
  * Behavioral tests for @blue/dispatcher decorators
  * These tests document current behavior with TC39 decorators
  */

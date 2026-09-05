@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { describe, test, expect, beforeAll, afterEach, afterAll } from 'vitest';
 import { server } from '../_worker';
 import { HTTP } from '../../src/http';

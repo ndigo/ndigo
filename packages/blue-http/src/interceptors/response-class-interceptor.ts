@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { JSONObject } from '@blue/core';
 import { like } from '@blue/util/types';
 import { HTTPInit, ResponseAwareHTTPInterceptor } from '../http';

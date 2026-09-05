@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { defineConfig } from 'vite';
 
 export default defineConfig({

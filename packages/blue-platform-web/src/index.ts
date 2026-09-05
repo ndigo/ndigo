@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 export * from './browser-environment';
 export * from './argument-value-converter';
 export * from './bind-argument-resolver';

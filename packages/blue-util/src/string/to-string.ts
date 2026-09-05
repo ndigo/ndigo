@@ -1,6 +1,3 @@
-/**
- * @author Jeff Rose
- */
 import isString from '../type/is-string.js';
 
 /**

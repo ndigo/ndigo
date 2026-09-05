@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import helloContext from './hello-context';
 import './hello-app-view';
 import { BrowserDispatcher } from '@blue/platform-web';

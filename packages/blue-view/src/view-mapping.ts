@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { Null, PathMatcher, URLGlobPathMatcher } from '@blue/core';
 import { AsNameAware } from '@blue/factory';
 import { ApplicationContext, AsApplicationContextAware } from '@blue/context';

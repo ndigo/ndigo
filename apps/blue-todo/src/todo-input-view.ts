@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { AbstractWebComponent } from '@blue/view-webcomponent';
 
 export default class TodoInput extends AbstractWebComponent {

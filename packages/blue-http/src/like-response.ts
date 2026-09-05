@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { is, like } from '@blue/util/types';
 
 const isResponse = is(Response) as (value: any) => value is Response;

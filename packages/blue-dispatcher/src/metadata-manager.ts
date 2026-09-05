@@ -1,6 +1,4 @@
 /**
- * @author David Ensinger
- * `copyright` &copy; JPMorgan Chase & Co. All rights reserved.
  */
 
 import { MultiValueMap, getSymbolMetadata } from '@blue/core';

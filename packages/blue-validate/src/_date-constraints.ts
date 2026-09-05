@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { DEFAULT_DATE_FORMAT } from './formats';
 import { serializable } from '@blue/core';
 import { is } from '@blue/util/types';

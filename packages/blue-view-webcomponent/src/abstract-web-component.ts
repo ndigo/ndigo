@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { EventEmitter, EventType, EventHandlers, ApplicationContext, ApplicationContextAware } from '@blue/context';
 import { $aware } from '@blue/factory';
 import { AsBlueElement } from './blue-element';

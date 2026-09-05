@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { View } from './view.js';
 import { createNull, MediaType, MediaTypes, Null, Constructable } from '@blue/core';
 import { Initializable, likeInitializable } from '@blue/factory';
@@ -9,7 +5,7 @@ import { ApplicationContext, AsApplicationContextAware, likeApplicationContextAw
 
 /**
  * Should ViewResolver be typed, i.e. ViewResolver<T extends View>?
- * -JBR
+ *
  */
 
 /**

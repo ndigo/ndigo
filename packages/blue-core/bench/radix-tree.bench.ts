@@ -1,5 +1,4 @@
 /**
- * @author Jeff Rose
  *
  * Benchmark suite for RadixTree lookup.
  * Compares against flat Map<string,string> and RegExp array baselines.

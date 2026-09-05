@@ -1,5 +1,4 @@
 /**
- * @author Jeff Rose
  * @see {@link https://github.com/kevva/strict-uri-encode}
  * @see {@link https://tools.ietf.org/html/rfc3986}
  */

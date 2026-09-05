@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { FrameworkError } from '@blue/core';
 import { AbstractTemplateView } from './view';
 import { ViewTarget } from './view-target';

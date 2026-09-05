@@ -1,5 +1,4 @@
 /**
- * @author Jeff Rose
  * @internal
  *
  * Internal helper functions for the event emitter.

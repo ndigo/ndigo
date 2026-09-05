@@ -1,5 +1,4 @@
 /**
- * @author Jeff Rose
  * Behavioral tests for @blue/dispatcher decorators (TC39)
  * Tests class and method decorators only (parameter decorators not supported in TC39)
  */

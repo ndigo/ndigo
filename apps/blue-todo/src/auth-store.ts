@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { AuthClient, AuthRegistry, OIDCAdapter, Principal } from '@blue/auth-client';
 
 // ── Demo credentials (in-memory, for demo only) ──────────────────────────────

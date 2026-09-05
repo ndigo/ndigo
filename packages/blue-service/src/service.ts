@@ -1,6 +1,3 @@
-/**
- * @author Jeff Rose
- */
 import { IllegalStateError } from '@blue/core';
 import { AsyncDestroyable } from '@blue/factory';
 import {

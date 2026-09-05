@@ -1,5 +1,4 @@
 /**
- * @author Jeff Rose
  *
  * Behavioral tests for @blue/context decorators
  * These tests document the current behavior before migrating to TC39 decorators

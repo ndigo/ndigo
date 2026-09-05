@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { is } from '@blue/util/types';
 import { TypeDefinition } from './types';
 import { ValidationGroup, defaultValidationGroup } from './group';

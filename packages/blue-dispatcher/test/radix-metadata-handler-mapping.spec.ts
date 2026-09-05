@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { describe, test, beforeEach, afterEach, expect } from 'vitest';
 import { GenericApplicationContext } from '@blue/context';
 import { routeMapping } from '../src/route-mapping';

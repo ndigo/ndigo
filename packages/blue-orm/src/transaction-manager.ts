@@ -1,5 +1,3 @@
-/** @author Jeff Rose */
-
 import { InMemoryDataSource } from './data-source';
 
 /**

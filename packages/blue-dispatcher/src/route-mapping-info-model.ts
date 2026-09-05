@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { Route } from '@blue/router';
 import { RouteCondition, RouteConditionHolder } from './route-condition';
 import { AccessControlCondition } from './access-control-condition';
@@ -208,4 +204,3 @@ export class RouteMappingInfo implements RouteCondition<RouteMappingInfo> {
         }
     }
 }
-

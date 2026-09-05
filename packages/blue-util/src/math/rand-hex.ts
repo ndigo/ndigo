@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import randInt from './rand-int.js';
 
 /**

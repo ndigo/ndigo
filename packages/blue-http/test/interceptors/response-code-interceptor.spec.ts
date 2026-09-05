@@ -27,7 +27,7 @@ describe('ResponseCodeHTTPInterceptor', () => {
 
     afterAll(() => server.close());
 
-    //! This does not work and I do not know why. -JBR
+    //! This does not work and I do not know why.
     test.skip('it should handle informational responses', async () => {
         await http!.request('http://localhost/responseClass/100');
         const interceptorObj = (http!.interceptors[0] as any).interceptor;

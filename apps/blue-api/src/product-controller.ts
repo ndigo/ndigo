@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import '@tsmetadata/polyfill';
 import { getMapping, routeParams, pathValue } from '@blue/dispatcher';
 

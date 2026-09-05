@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { configuration, entry } from '@blue/context';
 import { conditionalOnNode } from '@blue/core';
 import { RadixMetadataHandlerMapping } from '@blue/dispatcher';

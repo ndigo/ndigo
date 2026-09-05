@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import ResponseError from '../response-error';
 import { isNumber } from '@blue/util/types';
 import {
@@ -65,7 +61,7 @@ export class TimeoutInterceptor
         settings.signal = controller.signal;
         settings.timeout = isPositiveNumber(settings.timeout) ? settings.timeout : this.timeout;
 
-        // @ts-ignore: TypeScript is confusing Web setTimeout with Node setTimeout -JBR
+        // @ts-ignore: TypeScript is confusing Web setTimeout with Node setTimeout
         this.#timeoutId = setTimeout(fetchTimeout, settings.timeout);
         return true;
     }

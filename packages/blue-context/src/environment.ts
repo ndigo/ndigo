@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { Constructable, JSONValue, JSONObject } from '@blue/core';
 import { like, isNil } from '@blue/util/types';
 import { AsAware, Aware, likeAwareAnd } from '@blue/factory';

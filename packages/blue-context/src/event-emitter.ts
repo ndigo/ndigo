@@ -1,5 +1,4 @@
 /**
- * @author Jeff Rose
  * @see {@link https://nodejs.org/api/events.html#events_class_eventemitter}
  * @see {@link https://github.com/jeffrose/emitter}
  */

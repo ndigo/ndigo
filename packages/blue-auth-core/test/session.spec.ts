@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { describe, test, expect } from 'vitest';
 import { DefaultSession, AnonymousPrincipal } from '../src/index';
 

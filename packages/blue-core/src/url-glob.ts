@@ -1,5 +1,4 @@
 /**
- * @author Jeff Rose
  * @see {@link https://en.wikipedia.org/wiki/Glob_(programming)#Syntax}
  */
 

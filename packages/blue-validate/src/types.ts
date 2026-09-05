@@ -1,6 +1,3 @@
-/**
- * @author Jeff Rose
- */
 import standardTypes from './standard-types';
 import { ValidationGroup } from './group';
 

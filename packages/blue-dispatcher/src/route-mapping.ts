@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import '@tsmetadata/polyfill';
 import { FrameworkError, getSymbolMetadata } from '@blue/core';
 import type { HTTPMethod } from '@blue/http';

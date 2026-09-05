@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { Route, RouteSegment } from '@blue/router';
 import { AbstractNameValueExpression, AbstractRouteCondition } from './route-condition';
 const { defineProperty } = Reflect;

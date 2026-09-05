@@ -1,8 +1,4 @@
 /**
- * @author Jeff Rose
- */
-
-/**
  * A node that can reference its parent.
  */
 export interface ChildNode<T = any> {

@@ -1,5 +1,4 @@
 /**
- * @author Jeff Rose
  *
  * NOTE: objectmodel's `.as()` chain returns `ModelConstructor<any>`.
  * Every primitive export casts the final value with `as any` because the

@@ -1,5 +1,4 @@
 /**
- * @author Jeff Rose
  * @see core
  * @see context
  * @see dispatcher

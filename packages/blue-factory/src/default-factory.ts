@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { RegistryProxyHandler } from './registry';
 import { AbstractFactory } from './abstract-factory';
 

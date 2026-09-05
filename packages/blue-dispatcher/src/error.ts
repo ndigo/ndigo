@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { FrameworkError } from '@blue/core';
 import { Route } from '@blue/router';
 import { isString } from '@blue/util/types';

@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { ContentSource } from './content';
 
 /**

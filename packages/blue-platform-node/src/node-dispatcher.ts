@@ -12,7 +12,7 @@
 import { AbstractDispatcher } from '@blue/dispatcher';
 import { ModelAndView } from '@blue/dispatcher';
 import { Route } from '@blue/router';
-import { ApplicationContext, likeApplicationContextAware } from '@blue/context';
+import { likeApplicationContextAware } from '@blue/context';
 import { View } from '@blue/view';
 import type { ServerResponse } from 'node:http';
 import { NODE_RESPONSE_ATTRIBUTE } from './node-request';

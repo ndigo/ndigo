@@ -39,7 +39,7 @@ export class HTTPResponseViewTarget implements ViewTarget {
         if (isResponseEntity(model)) {
             const headers: Record<string, string> = {
                 'Content-Type': 'application/json',
-                ...(model.headers ?? {}),
+                ...model.headers,
             };
             this.#response.writeHead(model.status.code, headers);
             if (model.body === undefined || model.body === null) {

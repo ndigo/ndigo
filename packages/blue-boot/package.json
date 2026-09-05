@@ -7,7 +7,12 @@
     "doc",
     "lib"
   ],
-  "exports": "./lib/index.js",
+  "exports": {
+    ".": {
+      "default": "./lib/index.js",
+      "types": "./lib/index.d.ts"
+    }
+  },
   "types": "lib/index.d.ts",
   "scripts": {
     "build:lib": "tsc -b tsconfig.build.json",
@@ -34,7 +39,7 @@
     "@blue/context": "~0.0.1",
     "@blue/core": "~0.0.1",
     "@blue/dispatcher": "~0.0.1",
-    "@blue/platform-node": "workspace:~",
+    "@blue/platform-node": "~0.0.1",
     "@blue/platform-web": "~0.0.1",
     "@blue/router": "~0.0.1",
     "@blue/view": "~0.0.1",
@@ -48,5 +53,6 @@
     "@blue/router": "~0.0.1",
     "@blue/view": "~0.0.1",
     "@blue/view-webcomponent": "~0.0.1"
-  }
+  },
+  "sideEffects": false
 }

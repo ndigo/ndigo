@@ -22,9 +22,6 @@ import {
     ACCESS_CONTROL_ALLOW_ORIGIN,
     ACCESS_CONTROL_EXPOSE_HEADERS,
     ACCESS_CONTROL_MAX_AGE,
-    ACCESS_CONTROL_REQUEST_HEADERS,
-    ACCESS_CONTROL_REQUEST_METHOD,
-    ORIGIN,
     VARY,
 } from '@blue/http';
 import { type InterceptorDenial, type RouteHandlerInterceptor, type ModelAndView, denialOf } from '@blue/dispatcher';

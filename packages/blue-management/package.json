@@ -1,13 +1,18 @@
 {
   "name": "@blue/management",
   "version": "0.0.1",
-  "description": "Blue management endpoints — /health and /metrics (actuator-style)",
+  "description": "Blue management endpoints \u2014 /health and /metrics (actuator-style)",
   "type": "module",
   "files": [
     "doc",
     "lib"
   ],
-  "exports": "./lib/index.js",
+  "exports": {
+    ".": {
+      "default": "./lib/index.js",
+      "types": "./lib/index.d.ts"
+    }
+  },
   "types": "lib/index.d.ts",
   "scripts": {
     "build:lib": "tsc -b tsconfig.build.json",

@@ -43,5 +43,6 @@
     "type": "git",
     "url": "https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue.git",
     "directory": "packages/blue-eslint-plugin"
-  }
+  },
+  "sideEffects": false
 }

@@ -30,7 +30,7 @@ export class ResponseEntityView {
 
         const headers: Record<string, string> = {
             'Content-Type': 'application/json',
-            ...(entity.headers ?? {}),
+            ...entity.headers,
         };
 
         if (entity.body === undefined || entity.body === null) {

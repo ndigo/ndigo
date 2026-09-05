@@ -91,7 +91,9 @@ function resolveTypeConverter(sourceType: any, targetType: any): ArgumentValueCo
         try {
             return converter.convert(value);
         } catch (error) {
-            throw new TypeError(`Conversion failed: ${error instanceof Error ? error.message : String(error)}`);
+            throw new TypeError(`Conversion failed: ${error instanceof Error ? error.message : String(error)}`, {
+                cause: error,
+            });
         }
     };
 }

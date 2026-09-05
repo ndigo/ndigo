@@ -64,7 +64,8 @@
     "@blue/util": "~0.0.1"
   },
   "dependencies": {
-    "@blue/view": "workspace:~",
-    "@blue/view-webcomponent": "workspace:~"
-  }
+    "@blue/view": "~0.0.1",
+    "@blue/view-webcomponent": "~0.0.1"
+  },
+  "sideEffects": false
 }

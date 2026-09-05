@@ -6,7 +6,7 @@
 
 # Class: MissingParameterError
 
-Defined in: packages/blue-dispatcher/src/error.ts:142
+Defined in: [packages/blue-dispatcher/src/error.ts:142](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/error.ts#lines-142)
 
 Thrown when a required parameter is missing from the request.
 This is a RUNTIME error (request processing time).
@@ -22,7 +22,7 @@ Analogous to Spring's MissingServletRequestParameterException.
 
 > **new MissingParameterError**(`parameterName`, `parameterType`, `methodName?`, `controllerName?`, `required?`): `MissingParameterError`
 
-Defined in: packages/blue-dispatcher/src/error.ts:150
+Defined in: [packages/blue-dispatcher/src/error.ts:150](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/error.ts#lines-150)
 
 #### Parameters
 
@@ -60,7 +60,7 @@ Defined in: packages/blue-dispatcher/src/error.ts:150
 
 > `readonly` **parameterName**: `string` \| `null`
 
-Defined in: packages/blue-dispatcher/src/error.ts:87
+Defined in: [packages/blue-dispatcher/src/error.ts:87](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/error.ts#lines-87)
 
 #### Inherited from
 
@@ -72,7 +72,7 @@ Defined in: packages/blue-dispatcher/src/error.ts:87
 
 > `readonly` **methodName**: `string` \| `null`
 
-Defined in: packages/blue-dispatcher/src/error.ts:88
+Defined in: [packages/blue-dispatcher/src/error.ts:88](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/error.ts#lines-88)
 
 #### Inherited from
 
@@ -84,7 +84,7 @@ Defined in: packages/blue-dispatcher/src/error.ts:88
 
 > `readonly` **controllerName**: `string` \| `null`
 
-Defined in: packages/blue-dispatcher/src/error.ts:89
+Defined in: [packages/blue-dispatcher/src/error.ts:89](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/error.ts#lines-89)
 
 #### Inherited from
 
@@ -96,7 +96,7 @@ Defined in: packages/blue-dispatcher/src/error.ts:89
 
 > `readonly` **parameterType**: `string` \| `null`
 
-Defined in: packages/blue-dispatcher/src/error.ts:143
+Defined in: [packages/blue-dispatcher/src/error.ts:143](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/error.ts#lines-143)
 
 ***
 
@@ -104,7 +104,7 @@ Defined in: packages/blue-dispatcher/src/error.ts:143
 
 > `readonly` **required**: `boolean` \| `null`
 
-Defined in: packages/blue-dispatcher/src/error.ts:144
+Defined in: [packages/blue-dispatcher/src/error.ts:144](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/error.ts#lines-144)
 
 ## Accessors
 
@@ -114,7 +114,7 @@ Defined in: packages/blue-dispatcher/src/error.ts:144
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-dispatcher/src/error.ts:146
+Defined in: [packages/blue-dispatcher/src/error.ts:146](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/error.ts#lines-146)
 
 ##### Returns
 

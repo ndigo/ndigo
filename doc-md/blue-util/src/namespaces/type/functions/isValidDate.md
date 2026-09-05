@@ -8,7 +8,7 @@
 
 > **isValidDate**(`value`): `value is Date`
 
-Defined in: packages/blue-util/src/type/is-valid-date.ts:34
+Defined in: [packages/blue-util/src/type/is-valid-date.ts:34](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-util/src/type/is-valid-date.ts#lines-34)
 
 Determines whether a given value is a valid date.
 
@@ -18,16 +18,13 @@ Determines whether a given value is a valid date.
 
 `any`
 
+The date to validate
+
 ## Returns
 
 `value is Date`
 
 the date is valid
-
-## Description
-
-Returns false if argument is and invalid date and true otherwise.
-Invalid Date is a Date, whose time value is NaN.
 
 ## Throws
 

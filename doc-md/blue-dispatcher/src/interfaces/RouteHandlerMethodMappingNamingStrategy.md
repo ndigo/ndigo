@@ -6,7 +6,7 @@
 
 # Interface: RouteHandlerMethodMappingNamingStrategy\<T\>
 
-Defined in: packages/blue-dispatcher/src/route-handler-method.ts:22
+Defined in: [packages/blue-dispatcher/src/route-handler-method.ts:22](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-handler-method.ts#lines-22)
 
 ## Type Parameters
 
@@ -20,7 +20,7 @@ Defined in: packages/blue-dispatcher/src/route-handler-method.ts:22
 
 > **getName**(`handlerMethod`, `mapping`): `string`
 
-Defined in: packages/blue-dispatcher/src/route-handler-method.ts:23
+Defined in: [packages/blue-dispatcher/src/route-handler-method.ts:23](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-handler-method.ts#lines-23)
 
 #### Parameters
 

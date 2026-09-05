@@ -37,7 +37,7 @@ export class SiteBuilder {
     /**
      * Registers a child application builder as part of the site composition.
      *
-     * @param builder - The child application builder to include.
+     * @param _builder - The child application builder to include.
      * @returns This builder for chaining.
      * @experimental
      */
@@ -48,7 +48,7 @@ export class SiteBuilder {
     /**
      * Launches all registered child contexts and mounts the site.
      *
-     * @param args - Command-line arguments forwarded to each child.
+     * @param _args - Command-line arguments forwarded to each child.
      * @experimental
      */
     run(..._args: string[]): void {

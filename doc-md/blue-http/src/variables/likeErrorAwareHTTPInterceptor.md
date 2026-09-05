@@ -8,7 +8,7 @@
 
 > `const` **likeErrorAwareHTTPInterceptor**: (`value`) => `value is ErrorAwareHTTPInterceptor`
 
-Defined in: packages/blue-http/src/http.ts:298
+Defined in: [packages/blue-http/src/http.ts:308](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-308)
 
 Tests whether a value exposes `postError()`.
 
@@ -16,7 +16,7 @@ Tests whether a value exposes `postError()`.
 
 ### value
 
-`any`
+`unknown`
 
 The value to be tested.
 

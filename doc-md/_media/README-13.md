@@ -1,68 +1,180 @@
-# Blue Router
+# Blue Platform Web
 
-Blue Router provides routing primitives and hash-router implementations for BlueJS.
+Blue Platform Web provides browser-specific platform integrations for BlueJS.
 
 ## Features
 
-- `HashRouter` implementation
-- Route/path abstractions (`Route`, `PathRoute`)
-- Route pattern params (`:id`, `{id}`)
-- Query-string and matrix-string helpers
-- Interceptor registry for route execution
-- Middleware shorthand (`router.use('/path/:id', (route) => { ... })`)
+- Browser environment helpers
+- Cookie utilities and cookie-based argument resolution
+- Cookie theme resolver support
+- Router/dispatcher web-platform glue components
 
 ## Installation
 
 ```bash
-pnpm add @blue/router
+pnpm add @blue/platform-web
 ```
 
 ## Usage
 
+> **Note**: If you are using `@blue/boot` to launch your application in the browser, these resolvers and converters are registered automatically. Manual configuration is only required for custom setups.
+
 ```typescript
-import { HashRouter, PathRoute } from '@blue/router';
+import {
+    argumentValueConverters,
+    configureArgumentValueConverterRegistry,
+    configureStrictBrowserArgumentResolvers,
+    Cookies,
+    configureBrowserArgumentResolvers,
+    configureCookieThemeResolver,
+} from '@blue/platform-web';
+import { GenericApplicationContext } from '@blue/context';
 
-const route = new PathRoute('/users/42/orders/abc');
-const params = route.resolveParams('/users/:userId/orders/{orderId}');
-// params.userId === '42'
-// params.orderId === 'abc'
+Cookies.set('theme', 'dark');
+Cookies.get('theme');
 
-const router = new HashRouter((nextRoute) => {
-    console.log('navigated to', nextRoute.path);
+const context = new GenericApplicationContext('app');
+context.setThemeName('default');
+
+// Register browser-specific method argument resolvers.
+// - BrowserCookieValueMethodArgumentResolver
+// - BrowserModelValueMethodArgumentResolver
+// - BrowserStateValueMethodArgumentResolver
+// - BrowserSessionValueMethodArgumentResolver
+configureBrowserArgumentResolvers(context);
+
+// Use built-in converter presets per resolver type.
+configureBrowserArgumentResolvers(context, {
+    state: 'number',
+    session: { optional: true, use: argumentValueConverters.boolean },
 });
 
-// Global middleware
-router.use((activeRoute) => {
-    console.log('pre-route', activeRoute.path);
-    return true;
+// Optional: provide an app-level converter registry.
+configureArgumentValueConverterRegistry(context, {
+    toInt: argumentValueConverters.number,
 });
 
-// Pattern middleware with automatic param binding
-router.use('/teams/:teamId', (activeRoute) => {
-    console.log(activeRoute.params.teamId);
-    return true;
+configureBrowserArgumentResolvers(context, {
+    state: 'toInt',
+    strictNamedConverterLookup: true,
 });
 
-// Private navigation (internal state transition, no hash/history mutation)
-router.setRoute('/teams/42/panel', false);
+// Convenience helper: strict mode enabled by default.
+configureStrictBrowserArgumentResolvers(context, {
+    registerConverterRegistry: {
+        toInt: argumentValueConverters.number,
+    },
+    state: 'toInt',
+});
+
+// Register cookie-backed theme resolver strategy.
+configureCookieThemeResolver(context, 'theme');
 ```
 
-## Middleware and Params
+### End-to-End Conversion Pattern
 
-`HashRouter#use` accepts both object interceptors and function middleware.
+```typescript
+import { GenericApplicationContext } from '@blue/context';
+import {
+    cookieValue,
+    errorHandler,
+    errorMapping,
+    ParameterConversionError,
+    routeMapping,
+    routeParams,
+    stateValue,
+} from '@blue/dispatcher';
+import {
+    argumentValueConverters,
+    configureArgumentValueConverterRegistry,
+    configureBrowserArgumentResolvers,
+} from '@blue/platform-web';
 
-- `router.use(interceptor)` — global middleware
-- `router.use('/users/:id', interceptor)` — mapped middleware for one pattern
-- `router.use(['/a/*', '/b/*'], interceptor, ['/b/internal/*'])` — mapped middleware with exclusions
+const context = new GenericApplicationContext('app');
 
-For mapped patterns, `route.params` is automatically populated when the pattern uses named params:
+configureArgumentValueConverterRegistry(context, {
+    toInt: argumentValueConverters.number,
+});
 
-- Colon syntax: `:name`
-- Brace syntax: `{name}`
+configureBrowserArgumentResolvers(context, {
+    state: 'toInt',
+    strictNamedConverterLookup: true,
+});
+
+@routeMapping('/account')
+class AccountController {
+    @routeMapping('/summary')
+    @routeParams({
+        amount: cookieValue('amount', { convert: 'toInt' }),
+        txCount: stateValue('txCount', { convert: { optional: true, use: 'toInt' } }),
+    })
+    summary(amount: number, txCount: number | null) {
+        return { amount, txCount };
+    }
+}
+
+@errorHandler
+class GlobalErrorHandler {
+    @errorMapping(ParameterConversionError)
+    onConversionError(route, error: ParameterConversionError) {
+        return { viewName: 'conversion-error', message: error.message };
+    }
+}
+```
+
+### Route Parameter Extractors
+
+`@blue/dispatcher` route parameter extractors can now resolve browser-backed cookie and session values:
+
+- `cookieValue(name, options?)`
+- `modelValue(name, options?)`
+- `stateValue(name, options?)`
+- `sessionValue(name, options?)`
+
+These are resolved at dispatch-time when compatible argument resolvers are registered in the application context.
+
+### Optional Value Conversion
+
+Browser argument resolvers accept an optional value converter callback:
+
+```typescript
+import { BrowserStateValueMethodArgumentResolver } from '@blue/platform-web';
+
+const resolver = new BrowserStateValueMethodArgumentResolver((value) => Number(value));
+```
+
+Use conversion callbacks for lightweight coercion (e.g. `string` → `number`/`boolean`) while keeping parsing responsibilities in dedicated parser utilities.
+
+If a converter throws, resolvers wrap the failure in `ParameterConversionError`.
+This allows error resolvers to map conversion failures to dedicated views consistently.
+
+Built-in converter presets are exported as `argumentValueConverters`:
+
+- `identity`
+- `number`
+- `boolean`
+- `date`
+- `json`
+
+You can also supply named converter references in `routeParams` extractor options:
+
+```typescript
+import { modelValue, routeMapping, routeParams } from '@blue/dispatcher';
+
+class AccountController {
+    @routeMapping('/summary')
+    @routeParams({
+        profileId: modelValue('profile.id', { convert: 'number' }),
+    })
+    summary(profileId: number) {
+        return profileId;
+    }
+}
+```
 
 ## Development
 
 ```bash
-pnpm --filter @blue/router build:lib
-pnpm --filter @blue/router test
+pnpm --filter @blue/platform-web build:lib
+pnpm --filter @blue/platform-web test
 ```

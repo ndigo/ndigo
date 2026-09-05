@@ -8,7 +8,7 @@
 
 > **restorePartitionPrefix**(`path`, `prefix`): `string`
 
-Defined in: packages/blue-router/src/route-partition.ts:72
+Defined in: [packages/blue-router/src/route-partition.ts:72](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/route-partition.ts#lines-72)
 
 Restore a shell partition prefix for a feature-local route path.
 

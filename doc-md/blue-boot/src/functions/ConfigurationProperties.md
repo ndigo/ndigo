@@ -8,7 +8,7 @@
 
 > **ConfigurationProperties**(`prefix?`): \<`T`\>(`target`, `context`) => `T`
 
-Defined in: packages/blue-boot/src/configuration-properties.ts:56
+Defined in: [packages/blue-boot/src/configuration-properties.ts:56](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-boot/src/configuration-properties.ts#lines-56)
 
 Marks a class as a configuration properties holder and optionally sets a property key prefix.
 

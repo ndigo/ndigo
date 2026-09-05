@@ -6,7 +6,7 @@
 
 # Abstract Class: AbstractNameValueExpression\<T\>
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:63
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:63](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-63)
 
 Base class for parsed name/value expressions.
 
@@ -32,7 +32,7 @@ Base class for parsed name/value expressions.
 
 > **new AbstractNameValueExpression**\<`T`\>(`expression`): `AbstractNameValueExpression`\<`T`\>
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:75
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:75](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-75)
 
 Parse a name/value expression.
 
@@ -54,7 +54,7 @@ The expression to parse.
 
 > `readonly` **isNegated**: `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:64
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:64](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-64)
 
 #### Implementation of
 
@@ -66,7 +66,7 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:64
 
 > `readonly` **name**: `string`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:65
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:65](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-65)
 
 #### Implementation of
 
@@ -78,7 +78,7 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:65
 
 > `readonly` `optional` **value?**: `T`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:66
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:66](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-66)
 
 #### Implementation of
 
@@ -90,7 +90,7 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:66
 
 > `abstract` `readonly` **isCaseSensitiveName**: `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:68
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:68](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-68)
 
 ## Methods
 
@@ -98,7 +98,7 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:68
 
 > **match**(`route`): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:118
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:118](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-118)
 
 Determine whether this expression matches the given route.
 
@@ -106,7 +106,7 @@ Determine whether this expression matches the given route.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The current route.
 
@@ -122,7 +122,7 @@ The current route.
 
 > **toJSON**(): `JSONValue`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:128
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:128](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-128)
 
 Serialize the expression to JSON.
 
@@ -142,7 +142,7 @@ The string form of the expression.
 
 > **toString**(): `string`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:137
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:137](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-137)
 
 Convert the expression to its textual form.
 
@@ -162,13 +162,13 @@ The expression string.
 
 > `abstract` **matchName**(`route`): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:142
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:142](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-142)
 
 #### Parameters
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 #### Returns
 
@@ -180,13 +180,13 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:142
 
 > `abstract` **matchValue**(`route`): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:143
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:143](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-143)
 
 #### Parameters
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 #### Returns
 
@@ -198,7 +198,7 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:143
 
 > `abstract` **parseValue**(`valueExpression`): `T`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:144
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:144](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-144)
 
 #### Parameters
 

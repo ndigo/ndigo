@@ -8,7 +8,7 @@
 
 > **configureBrowserTheme**(`applicationContext`, `options?`): [`CookieThemeResolver`](../classes/CookieThemeResolver.md)
 
-Defined in: packages/blue-platform-web/src/browser-theme.ts:31
+Defined in: [packages/blue-platform-web/src/browser-theme.ts:31](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/browser-theme.ts#lines-31)
 
 Configures browser theme support for an application context by wiring
 cookie-backed theme resolution into the dispatcher strategy key.

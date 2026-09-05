@@ -8,6 +8,6 @@
 
 > `const` **DenseArray**: `any`
 
-Defined in: packages/blue-model/src/basic.ts:135
+Defined in: [packages/blue-model/src/basic.ts:135](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-model/src/basic.ts#lines-135)
 
 Matches arrays without sparse holes.

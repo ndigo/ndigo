@@ -6,13 +6,10 @@
 
 # Class: MetadataScanner
 
-Defined in: packages/blue-dispatcher/src/metadata-manager.ts:29
+Defined in: [packages/blue-dispatcher/src/metadata-manager.ts:29](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/metadata-manager.ts#lines-29)
 
 Create a new MetadataScanner for a given target.
-
-## Classdesc
-
-Scan a class or prototype for TC39 decorator metadata stored in Symbol.metadata and cache property names.
+Invoked via the `classdesc` decorator.
 
 **TC39 Decorator Migration Note:**
 This class has been updated to work with TC39 Stage 3 decorators. It scans Symbol.metadata
@@ -33,7 +30,7 @@ Class constructor, prototype, or instance
 
 > **new MetadataScanner**(`target?`): `MetadataScanner`
 
-Defined in: packages/blue-dispatcher/src/metadata-manager.ts:45
+Defined in: [packages/blue-dispatcher/src/metadata-manager.ts:45](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/metadata-manager.ts#lines-45)
 
 Create a scanner for a target object.
 
@@ -55,7 +52,7 @@ The object, prototype, or constructor to scan.
 
 > **\_cache**: `MultiValueMap`\<`string`, `string`\>
 
-Defined in: packages/blue-dispatcher/src/metadata-manager.ts:33
+Defined in: [packages/blue-dispatcher/src/metadata-manager.ts:33](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/metadata-manager.ts#lines-33)
 
 Cached metadata lookups for the current target.
 
@@ -65,7 +62,7 @@ Cached metadata lookups for the current target.
 
 > **\_target**: `Record`\<`string`, `any`\>
 
-Defined in: packages/blue-dispatcher/src/metadata-manager.ts:38
+Defined in: [packages/blue-dispatcher/src/metadata-manager.ts:38](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/metadata-manager.ts#lines-38)
 
 Target object whose metadata is being scanned.
 
@@ -75,7 +72,7 @@ Target object whose metadata is being scanned.
 
 > **get**(`metadataKey`): `string`[] \| `undefined`
 
-Defined in: packages/blue-dispatcher/src/metadata-manager.ts:153
+Defined in: [packages/blue-dispatcher/src/metadata-manager.ts:153](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/metadata-manager.ts#lines-153)
 
 Get the property names that match a metadata key.
 
@@ -99,7 +96,7 @@ The matching property names, or `undefined` when none are found.
 
 > **clear**(): `void`
 
-Defined in: packages/blue-dispatcher/src/metadata-manager.ts:171
+Defined in: [packages/blue-dispatcher/src/metadata-manager.ts:171](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/metadata-manager.ts#lines-171)
 
 Clear all cached metadata lookups for this scanner.
 

@@ -8,7 +8,7 @@
 
 > **median**(`list`): `number`
 
-Defined in: packages/blue-util/src/math/index.ts:132
+Defined in: [packages/blue-util/src/math/index.ts:132](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-util/src/math/index.ts#lines-132)
 
 Returns the median of the given list of numbers.
 

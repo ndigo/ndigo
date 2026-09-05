@@ -35,7 +35,7 @@ const defaults: AppResetInit = {
  * - The response status matches appResetCode (default 205) or 303
  * - The hostname is not 'localhost'
  *
- * @implements {module:http.ResponseAwareHTTPInterceptor}
+
  */
 export class AppResetInterceptor implements ResponseAwareHTTPInterceptor<AppResetInit> {
     #reloadCallback: () => void;

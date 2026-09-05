@@ -8,7 +8,7 @@
 
 > **DataParameterInit** = [`HTTPInit`](HTTPInit.md) & `object`
 
-Defined in: packages/blue-http/src/interceptors/data-parameter-interceptor.ts:17
+Defined in: [packages/blue-http/src/interceptors/data-parameter-interceptor.ts:17](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/data-parameter-interceptor.ts#lines-17)
 
 Request settings for [DataParameterInterceptor](../classes/DataParameterInterceptor.md).
 

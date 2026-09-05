@@ -8,7 +8,7 @@
 
 > `const` **likeRequestAwareServiceInterceptor**: (`value`) => `value is RequestAwareServiceInterceptor`
 
-Defined in: packages/blue-service/src/service.ts:142
+Defined in: [packages/blue-service/src/service.ts:142](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-service/src/service.ts#lines-142)
 
 Tests whether a value provides request-aware interceptor behavior.
 

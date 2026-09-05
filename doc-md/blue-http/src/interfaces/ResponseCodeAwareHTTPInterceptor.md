@@ -6,7 +6,7 @@
 
 # Interface: ResponseCodeAwareHTTPInterceptor
 
-Defined in: packages/blue-http/src/interceptors/response-code-interceptor.ts:14
+Defined in: [packages/blue-http/src/interceptors/response-code-interceptor.ts:14](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/response-code-interceptor.ts#lines-14)
 
 Hooks keyed by exact HTTP status code.
 

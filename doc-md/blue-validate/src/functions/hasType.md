@@ -8,7 +8,7 @@
 
 > **hasType**(`name`): `boolean`
 
-Defined in: packages/blue-validate/src/types.ts:51
+Defined in: [packages/blue-validate/src/types.ts:51](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/types.ts#lines-51)
 
 Checks whether a type has been registered.
 

@@ -8,7 +8,7 @@
 
 > **AsBlueElement**\<`T`\>(`superclass`): `Constructable`\<[`BlueElement`](../interfaces/BlueElement.md)\> & `T`
 
-Defined in: packages/blue-view-webcomponent/src/blue-element.ts:22
+Defined in: [packages/blue-view-webcomponent/src/blue-element.ts:22](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view-webcomponent/src/blue-element.ts#lines-22)
 
 Adds a `name` property that reflects the element's `name` attribute.
 

@@ -8,7 +8,7 @@
 
 > **isNumber**(`value`): `value is number`
 
-Defined in: packages/blue-util/src/type/is-number.ts:29
+Defined in: [packages/blue-util/src/type/is-number.ts:29](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-util/src/type/is-number.ts#lines-29)
 
 Determines whether a given value is an actual finite number. The logic differs from `typeof`, which considers `NaN` and `Infinity` to be numbers and instances of `Number` to be objects.
 

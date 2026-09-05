@@ -6,10 +6,10 @@
 
 # Class: ConfigurationProcessor
 
-Defined in: packages/blue-context/src/configuration.ts:348
+Defined in: [packages/blue-context/src/configuration.ts:348](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/configuration.ts#lines-348)
 
-A EntryRegistryProcessor\|EntryRegistryProcessor used for processing of @configuration\|@configuration classes.
-This processor should be prioritized as it is important that any @entry\|@entry methods declared in the `@configuration` classes have their values registered before any other EntryProcessor\|EntryProcessor executes.
+A [EntryRegistryProcessor](#) used for processing of `configuration` classes.
+This processor should be prioritized as it is important that any `entry` methods declared in the the `configuration` decorator classes have their values registered before any other `EntryProcessor` executes.
 
 ## Extends
 
@@ -17,7 +17,7 @@ This processor should be prioritized as it is important that any @entry\|@entry 
 
 ## Implements
 
-- `EntryRegistryProcessor`
+- [`EntryRegistryProcessor`](#)
 
 ## Constructors
 
@@ -39,7 +39,7 @@ This processor should be prioritized as it is important that any @entry\|@entry 
 
 > **environment**: [`Environment`](../interfaces/Environment.md)
 
-Defined in: packages/blue-context/src/configuration.ts:355
+Defined in: [packages/blue-context/src/configuration.ts:355](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/configuration.ts#lines-355)
 
 The environment used for resolving properties.
 
@@ -63,7 +63,7 @@ A symbol indicating that the value is aware.
 
 > **processEntryRegistry**(`registry`): `void`
 
-Defined in: packages/blue-context/src/configuration.ts:362
+Defined in: [packages/blue-context/src/configuration.ts:362](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/configuration.ts#lines-362)
 
 Processes configuration classes registered as entry registries.
 
@@ -89,7 +89,7 @@ The registry to process.
 
 > **setEnvironment**(`environment`): `void`
 
-Defined in: packages/blue-context/src/environment.ts:46
+Defined in: [packages/blue-context/src/environment.ts:46](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/environment.ts#lines-46)
 
 #### Parameters
 
@@ -111,7 +111,7 @@ Defined in: packages/blue-context/src/environment.ts:46
 
 > **setResourceLoader**(`loader`): `void`
 
-Defined in: packages/blue-context/src/resource.ts:29
+Defined in: [packages/blue-context/src/resource.ts:29](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/resource.ts#lines-29)
 
 #### Parameters
 

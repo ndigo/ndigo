@@ -8,4 +8,4 @@
 
 > `const` **types**: `Record`\<`string`, [`TypeDefinition`](../type-aliases/TypeDefinition.md)\>
 
-Defined in: packages/blue-validate/src/types.ts:22
+Defined in: [packages/blue-validate/src/types.ts:22](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/types.ts#lines-22)

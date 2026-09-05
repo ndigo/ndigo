@@ -6,7 +6,7 @@
 
 # Class: HealthController
 
-Defined in: packages/blue-management/src/health-controller.ts:25
+Defined in: [packages/blue-management/src/health-controller.ts:25](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-management/src/health-controller.ts#lines-25)
 
 Serves application health under `/health`.
 
@@ -57,7 +57,7 @@ A symbol indicating that the value is aware.
 
 > `readonly` **applicationContext**: `ApplicationContext`
 
-Defined in: packages/blue-management/src/health-controller.ts:26
+Defined in: [packages/blue-management/src/health-controller.ts:26](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-management/src/health-controller.ts#lines-26)
 
 ## Methods
 
@@ -93,7 +93,7 @@ The ApplicationContext to be used by this object.
 
 > **health**(): `Promise`\<[`HealthStatus`](../interfaces/HealthStatus.md) \| \{ `status`: `string`; `components`: \{ \}; `timestamp`: `string`; \}\>
 
-Defined in: packages/blue-management/src/health-controller.ts:35
+Defined in: [packages/blue-management/src/health-controller.ts:35](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-management/src/health-controller.ts#lines-35)
 
 Returns the aggregate health status.
 

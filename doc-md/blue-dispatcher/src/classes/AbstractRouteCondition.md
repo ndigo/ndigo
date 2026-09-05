@@ -6,7 +6,7 @@
 
 # Abstract Class: AbstractRouteCondition\<T\>
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:147
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:147](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-147)
 
 Contract for route matching conditions.
 
@@ -48,7 +48,7 @@ Contract for route matching conditions.
 
 > `abstract` **content**: `any`[]
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:157
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:157](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-157)
 
 ***
 
@@ -56,7 +56,7 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:157
 
 > `abstract` **infix**: `string`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:158
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:158](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-158)
 
 ## Accessors
 
@@ -66,7 +66,7 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:158
 
 > **get** **isEmpty**(): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:153
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:153](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-153)
 
 Whether this condition contains no content.
 
@@ -80,7 +80,7 @@ Whether this condition contains no content.
 
 > **equals**(`value`): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:166
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:166](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-166)
 
 Compare this condition to another value.
 
@@ -108,7 +108,7 @@ The value to compare.
 
 > **toJSON**(): `JSONValue`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:181
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:181](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-181)
 
 Serialize the condition to JSON.
 
@@ -128,7 +128,7 @@ The string form of the condition.
 
 > **toString**(): `string`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:190
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:190](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-190)
 
 Convert the condition to its textual form.
 
@@ -148,7 +148,7 @@ The condition string.
 
 > `abstract` **merge**(`other`): `T`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:194
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:194](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-194)
 
 Merge this condition with another condition of the same type.
 
@@ -174,7 +174,7 @@ The merged condition.
 
 > `abstract` **getMatchingCondition**(`route`): `T` \| `null`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:196
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:196](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-196)
 
 Return the condition that matches a route, or `null` when no match exists.
 
@@ -182,7 +182,7 @@ Return the condition that matches a route, or `null` when no match exists.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The current route.
 
@@ -202,7 +202,7 @@ A matching condition instance or `null`.
 
 > `abstract` **compareTo**(`value`, `route?`): `number`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:198
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:198](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-198)
 
 Compare this condition with another condition.
 
@@ -216,7 +216,7 @@ The condition to compare against.
 
 ##### route?
 
-`Route`\<`Record`\<`string`, `string`\>\>
+[`Route`](#)\<`Record`\<`string`, `string`\>\>
 
 The route used to break ties, if needed.
 

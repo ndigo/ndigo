@@ -6,7 +6,7 @@
 
 # Class: ConverterRegistry
 
-Defined in: packages/blue-core/src/converter.ts:67
+Defined in: [packages/blue-core/src/converter.ts:67](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/converter.ts#lines-67)
 
 A registry that maps source/target type pairs to converter instances.
 
@@ -30,7 +30,7 @@ conversions dynamically without hard-coded switch statements.
 
 > **register**(`converter`, `sourceType`, `targetType`): `void`
 
-Defined in: packages/blue-core/src/converter.ts:76
+Defined in: [packages/blue-core/src/converter.ts:76](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/converter.ts#lines-76)
 
 Registers a converter for the given source/target type pair.
 
@@ -64,7 +64,7 @@ Runtime identity of the target type (e.g., `UUID`, `Number`).
 
 > **getConverter**(`sourceType`, `targetType`): `any`
 
-Defined in: packages/blue-core/src/converter.ts:88
+Defined in: [packages/blue-core/src/converter.ts:88](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/converter.ts#lines-88)
 
 Retrieves the converter for a given source/target type pair.
 
@@ -94,7 +94,7 @@ The converter instance, or `undefined` if none is registered.
 
 > **hasConverter**(`sourceType`, `targetType`): `boolean`
 
-Defined in: packages/blue-core/src/converter.ts:98
+Defined in: [packages/blue-core/src/converter.ts:98](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/converter.ts#lines-98)
 
 Checks whether a converter exists for the given source/target type pair.
 
@@ -124,7 +124,7 @@ Runtime identity of the target type.
 
 > **unregister**(`sourceType`, `targetType`): `void`
 
-Defined in: packages/blue-core/src/converter.ts:107
+Defined in: [packages/blue-core/src/converter.ts:107](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/converter.ts#lines-107)
 
 Removes the converter for the given source/target type pair.
 
@@ -152,7 +152,7 @@ Runtime identity of the target type.
 
 > **getAll**(): `object`[]
 
-Defined in: packages/blue-core/src/converter.ts:114
+Defined in: [packages/blue-core/src/converter.ts:114](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/converter.ts#lines-114)
 
 Returns all registered converters as an array of entries.
 
@@ -166,7 +166,7 @@ Returns all registered converters as an array of entries.
 
 > **clear**(): `void`
 
-Defined in: packages/blue-core/src/converter.ts:121
+Defined in: [packages/blue-core/src/converter.ts:121](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/converter.ts#lines-121)
 
 Clears all registered converters.
 

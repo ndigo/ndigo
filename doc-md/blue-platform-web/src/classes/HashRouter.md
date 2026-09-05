@@ -6,7 +6,7 @@
 
 # Class: HashRouter
 
-Defined in: packages/blue-platform-web/src/hash-router.ts:93
+Defined in: [packages/blue-platform-web/src/hash-router.ts:93](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/hash-router.ts#lines-93)
 
 A hash-based router implementation for browser environments that extends `AbstractRouter`.
 It manages routing based on the URL hash fragment, supports route interceptors, and maintains a route history.
@@ -27,7 +27,7 @@ so `likeDestroyable` checks can still identify it by duck typing.
 
 > **new HashRouter**(`callback`): `HashRouter`
 
-Defined in: packages/blue-platform-web/src/hash-router.ts:130
+Defined in: [packages/blue-platform-web/src/hash-router.ts:130](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/hash-router.ts#lines-130)
 
 Creates an instance of `HashRouter`.
 
@@ -57,7 +57,7 @@ The `RouterCallback` to be invoked when the route changes.
 
 > `readonly` **callback**: `RouterCallback`
 
-Defined in: packages/blue-platform-web/src/hash-router.ts:99
+Defined in: [packages/blue-platform-web/src/hash-router.ts:99](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/hash-router.ts#lines-99)
 
 #### Overrides
 
@@ -69,7 +69,7 @@ Defined in: packages/blue-platform-web/src/hash-router.ts:99
 
 > **destroyed**: `boolean`
 
-Defined in: packages/blue-platform-web/src/hash-router.ts:114
+Defined in: [packages/blue-platform-web/src/hash-router.ts:114](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/hash-router.ts#lines-114)
 
 Indicates whether the router has been destroyed and its event listeners removed.
 
@@ -85,7 +85,7 @@ Indicates whether the router has been destroyed and its event listeners removed.
 
 > **get** **route**(): `string`
 
-Defined in: packages/blue-platform-web/src/hash-router.ts:106
+Defined in: [packages/blue-platform-web/src/hash-router.ts:106](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/hash-router.ts#lines-106)
 
 Gets the current route as a string.
 
@@ -111,7 +111,7 @@ The string representation of the current route, or an empty string if no route i
 
 > **get** **history**(): `RouteHistory`
 
-Defined in: packages/blue-platform-web/src/hash-router.ts:121
+Defined in: [packages/blue-platform-web/src/hash-router.ts:121](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/hash-router.ts#lines-121)
 
 Gets the `RingBuffer` instance that stores the route history.
 
@@ -157,7 +157,7 @@ An array of `RouterInterceptor`.
 
 > **destroy**(): `void`
 
-Defined in: packages/blue-platform-web/src/hash-router.ts:165
+Defined in: [packages/blue-platform-web/src/hash-router.ts:165](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/hash-router.ts#lines-165)
 
 Destroys the router by removing its `hashchange` event listener.
 Once destroyed, the router will no longer respond to URL hash changes.
@@ -176,7 +176,7 @@ Once destroyed, the router will no longer respond to URL hash changes.
 
 > **setRoute**(`newRoute`, `isPublic?`): `Promise`\<`void`\>
 
-Defined in: packages/blue-platform-web/src/hash-router.ts:186
+Defined in: [packages/blue-platform-web/src/hash-router.ts:186](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/hash-router.ts#lines-186)
 
 Programmatically sets a new route for the router.
 This method will trigger route interceptors and update the browser's hash if `isPublic` is `true`.
@@ -211,7 +211,7 @@ A promise that resolves when the route has been successfully set and processed.
 
 > **refresh**(): `void`
 
-Defined in: packages/blue-platform-web/src/hash-router.ts:204
+Defined in: [packages/blue-platform-web/src/hash-router.ts:204](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/hash-router.ts#lines-204)
 
 Refreshes the current route by re-invoking the router's callback with the current route.
 This can be useful to re-apply routing logic or update UI components without a full navigation.
@@ -234,7 +234,7 @@ This can be useful to re-apply routing logic or update UI components without a f
 
 > **navigate**(`path`): `Promise`\<`void`\>
 
-Defined in: packages/blue-platform-web/src/hash-router.ts:220
+Defined in: [packages/blue-platform-web/src/hash-router.ts:220](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/hash-router.ts#lines-220)
 
 Programmatically navigates to the given route path.
 
@@ -265,7 +265,7 @@ A promise that resolves when the route has been set and processed.
 
 > `protected` **\_onHashChange**(`event`): `void`
 
-Defined in: packages/blue-platform-web/src/hash-router.ts:230
+Defined in: [packages/blue-platform-web/src/hash-router.ts:230](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/hash-router.ts#lines-230)
 
 Handles the native `hashchange` event, extracting the new route and initiating the routing process.
 
@@ -291,7 +291,7 @@ The `HashChangeEvent` object.
 
 > `protected` **\_setRoute**(`newRoute`, `syncHash?`): `Promise`\<`boolean`\>
 
-Defined in: packages/blue-platform-web/src/hash-router.ts:251
+Defined in: [packages/blue-platform-web/src/hash-router.ts:251](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/hash-router.ts#lines-251)
 
 Internal method to set a new route, apply interceptors, and manage the route transaction.
 

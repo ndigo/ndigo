@@ -8,7 +8,7 @@
 
 > **unregisterType**(`name`): `void`
 
-Defined in: packages/blue-validate/src/types.ts:44
+Defined in: [packages/blue-validate/src/types.ts:44](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/types.ts#lines-44)
 
 Unregisters a custom type by name.
 

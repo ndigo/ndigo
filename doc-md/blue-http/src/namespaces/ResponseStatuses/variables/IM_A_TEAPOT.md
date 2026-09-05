@@ -8,6 +8,6 @@
 
 > `const` **IM\_A\_TEAPOT**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
-Defined in: packages/blue-http/src/response-statuses.ts:239
+Defined in: [packages/blue-http/src/response-statuses.ts:239](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/response-statuses.ts#lines-239)
 
 The server refuses the attempt to brew coffee with a teapot.

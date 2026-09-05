@@ -6,7 +6,7 @@
 
 # Class: HealthRegistry
 
-Defined in: packages/blue-management/src/health.ts:48
+Defined in: [packages/blue-management/src/health.ts:48](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-management/src/health.ts#lines-48)
 
 Collects [HealthIndicator](../interfaces/HealthIndicator.md) results into a single aggregate status.
 
@@ -31,7 +31,7 @@ The aggregate is `UP` when every indicator is `UP`; `DOWN` when any is
 
 > **get** **names**(): readonly `string`[]
 
-Defined in: packages/blue-management/src/health.ts:75
+Defined in: [packages/blue-management/src/health.ts:75](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-management/src/health.ts#lines-75)
 
 The names of all registered indicators.
 
@@ -45,7 +45,7 @@ readonly `string`[]
 
 > **register**(`indicator`): `this`
 
-Defined in: packages/blue-management/src/health.ts:57
+Defined in: [packages/blue-management/src/health.ts:57](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-management/src/health.ts#lines-57)
 
 Registers (or replaces) an indicator by name.
 
@@ -69,7 +69,7 @@ This registry.
 
 > **unregister**(`name`): `boolean`
 
-Defined in: packages/blue-management/src/health.ts:68
+Defined in: [packages/blue-management/src/health.ts:68](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-management/src/health.ts#lines-68)
 
 Removes an indicator by name.
 
@@ -93,7 +93,7 @@ The indicator name.
 
 > **checkAll**(): `Promise`\<[`HealthStatus`](../interfaces/HealthStatus.md)\>
 
-Defined in: packages/blue-management/src/health.ts:84
+Defined in: [packages/blue-management/src/health.ts:84](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-management/src/health.ts#lines-84)
 
 Runs every indicator and aggregates the results.
 

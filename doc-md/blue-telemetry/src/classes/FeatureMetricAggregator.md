@@ -6,7 +6,7 @@
 
 # Class: FeatureMetricAggregator
 
-Defined in: packages/blue-telemetry/src/metrics/feature-metric-aggregator.ts:46
+Defined in: [packages/blue-telemetry/src/metrics/feature-metric-aggregator.ts:46](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/metrics/feature-metric-aggregator.ts#lines-46)
 
 Aggregates and manages various metrics (counters, gauges, durations) for different features.
 
@@ -19,7 +19,7 @@ organizing them by feature. It also offers a way to retrieve summarized metrics 
 
 > **new FeatureMetricAggregator**(`options?`): `FeatureMetricAggregator`
 
-Defined in: packages/blue-telemetry/src/metrics/feature-metric-aggregator.ts:55
+Defined in: [packages/blue-telemetry/src/metrics/feature-metric-aggregator.ts:55](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/metrics/feature-metric-aggregator.ts#lines-55)
 
 Creates an instance of `FeatureMetricAggregator`.
 
@@ -43,7 +43,7 @@ Configuration options for the aggregator.
 
 > **get** **featureNames**(): readonly `string`[]
 
-Defined in: packages/blue-telemetry/src/metrics/feature-metric-aggregator.ts:64
+Defined in: [packages/blue-telemetry/src/metrics/feature-metric-aggregator.ts:64](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/metrics/feature-metric-aggregator.ts#lines-64)
 
 Returns a read-only array of all feature names currently being tracked by the aggregator.
 
@@ -57,7 +57,7 @@ readonly `string`[]
 
 > **clear**(): `void`
 
-Defined in: packages/blue-telemetry/src/metrics/feature-metric-aggregator.ts:71
+Defined in: [packages/blue-telemetry/src/metrics/feature-metric-aggregator.ts:71](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/metrics/feature-metric-aggregator.ts#lines-71)
 
 Clears all aggregated metrics for all features.
 
@@ -71,7 +71,7 @@ Clears all aggregated metrics for all features.
 
 > **clearFeature**(`feature`): `boolean`
 
-Defined in: packages/blue-telemetry/src/metrics/feature-metric-aggregator.ts:80
+Defined in: [packages/blue-telemetry/src/metrics/feature-metric-aggregator.ts:80](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/metrics/feature-metric-aggregator.ts#lines-80)
 
 Clears all aggregated metrics for a specific feature.
 
@@ -95,7 +95,7 @@ The name of the feature to clear.
 
 > **getFeatureMetrics**(`feature`): [`FeatureMetrics`](../interfaces/FeatureMetrics.md) \| `undefined`
 
-Defined in: packages/blue-telemetry/src/metrics/feature-metric-aggregator.ts:90
+Defined in: [packages/blue-telemetry/src/metrics/feature-metric-aggregator.ts:90](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/metrics/feature-metric-aggregator.ts#lines-90)
 
 Retrieves a read-only snapshot of all metrics for a given feature.
 Durations are summarized into `DurationSummary` objects.
@@ -120,7 +120,7 @@ A `FeatureMetrics` object if the feature exists, otherwise `undefined`.
 
 > **incrementCounter**(`feature`, `name`, `value?`): `number`
 
-Defined in: packages/blue-telemetry/src/metrics/feature-metric-aggregator.ts:114
+Defined in: [packages/blue-telemetry/src/metrics/feature-metric-aggregator.ts:114](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/metrics/feature-metric-aggregator.ts#lines-114)
 
 Increments a counter for a specific feature. If the counter or feature does not exist, they will be created.
 
@@ -160,7 +160,7 @@ If the value is not a finite number or if the feature limit is reached.
 
 > **setGauge**(`feature`, `name`, `value`): `void`
 
-Defined in: packages/blue-telemetry/src/metrics/feature-metric-aggregator.ts:134
+Defined in: [packages/blue-telemetry/src/metrics/feature-metric-aggregator.ts:134](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/metrics/feature-metric-aggregator.ts#lines-134)
 
 Sets the value of a gauge for a specific feature. If the gauge or feature does not exist, they will be created.
 
@@ -198,7 +198,7 @@ If the value is not a finite number or if the feature limit is reached.
 
 > **recordDuration**(`feature`, `name`, `durationMs`): `void`
 
-Defined in: packages/blue-telemetry/src/metrics/feature-metric-aggregator.ts:151
+Defined in: [packages/blue-telemetry/src/metrics/feature-metric-aggregator.ts:151](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/metrics/feature-metric-aggregator.ts#lines-151)
 
 Records a duration in milliseconds for a specific feature.
 The aggregator maintains a history of samples up to `maxDurationSamples`.

@@ -8,7 +8,7 @@
 
 > **DerivedQueryResult**\<`T`\> = `T`[]
 
-Defined in: packages/blue-orm/src/derived-query-repository.ts:20
+Defined in: [packages/blue-orm/src/derived-query-repository.ts:20](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/derived-query-repository.ts#lines-20)
 
 Spring Data-style derived-query method-name parsing for in-memory
 repositories.

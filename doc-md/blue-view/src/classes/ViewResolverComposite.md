@@ -6,7 +6,7 @@
 
 # Class: ViewResolverComposite
 
-Defined in: packages/blue-view/src/view-resolver.ts:252
+Defined in: [packages/blue-view/src/view-resolver.ts:252](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view-resolver.ts#lines-252)
 
 A [\`ViewResolver\`](../interfaces/ViewResolver.md) that delegates to others.
 
@@ -16,7 +16,7 @@ A [\`ViewResolver\`](../interfaces/ViewResolver.md) that delegates to others.
 
 ## Implements
 
-- `Initializable`
+- [`Initializable`](#)
 - [`ViewResolver`](../interfaces/ViewResolver.md)
 
 ## Constructors
@@ -25,7 +25,7 @@ A [\`ViewResolver\`](../interfaces/ViewResolver.md) that delegates to others.
 
 > **new ViewResolverComposite**(`viewResolvers?`): `ViewResolverComposite`
 
-Defined in: packages/blue-view/src/view-resolver.ts:263
+Defined in: [packages/blue-view/src/view-resolver.ts:263](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view-resolver.ts#lines-263)
 
 Creates a composite resolver with the given delegate list.
 
@@ -65,7 +65,7 @@ A symbol indicating that the value is aware.
 
 > `readonly` **viewResolvers**: [`ViewResolver`](../interfaces/ViewResolver.md)[]
 
-Defined in: packages/blue-view/src/view-resolver.ts:256
+Defined in: [packages/blue-view/src/view-resolver.ts:256](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view-resolver.ts#lines-256)
 
 The ordered resolver chain consulted during lookup.
 
@@ -75,9 +75,9 @@ The ordered resolver chain consulted during lookup.
 
 > **init**(...`args`): `void`
 
-Defined in: packages/blue-view/src/view-resolver.ts:279
+Defined in: [packages/blue-view/src/view-resolver.ts:279](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view-resolver.ts#lines-279)
 
-Initializes any delegates that expose the Initializable contract.
+Initializes any delegates that expose the [Initializable](#) contract.
 
 #### Parameters
 
@@ -101,7 +101,7 @@ Initialization arguments forwarded to delegates.
 
 > **resolveViewName**(`name`, `language?`): `Promise`\<[`View`](../interfaces/View.md) \| `null`\>
 
-Defined in: packages/blue-view/src/view-resolver.ts:299
+Defined in: [packages/blue-view/src/view-resolver.ts:299](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view-resolver.ts#lines-299)
 
 Resolves the requested view by querying delegates in order.
 
@@ -115,7 +115,7 @@ The view name to resolve.
 
 ##### language?
 
-`any`
+`unknown`
 
 Optional locale or language hint.
 
@@ -135,7 +135,7 @@ A promise that resolves to the first matching view, or `null` when none resolve.
 
 > **setApplicationContext**(`applicationContext`): `void`
 
-Defined in: packages/blue-view/src/view-resolver.ts:319
+Defined in: [packages/blue-view/src/view-resolver.ts:320](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view-resolver.ts#lines-320)
 
 Propagates the application context to context-aware delegates.
 

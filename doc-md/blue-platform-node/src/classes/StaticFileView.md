@@ -6,12 +6,9 @@
 
 # Class: StaticFileView
 
-Defined in: packages/blue-platform-node/src/static-file-view.ts:21
+Defined in: [packages/blue-platform-node/src/static-file-view.ts:21](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/static-file-view.ts#lines-21)
 
 Serve a static file from a base directory for a matching request path.
-
-Guards against path traversal by normalizing the resolved path and rejecting
-anything that escapes the base directory.
 
 ## Constructors
 
@@ -19,7 +16,7 @@ anything that escapes the base directory.
 
 > **new StaticFileView**(`basePath`): `StaticFileView`
 
-Defined in: packages/blue-platform-node/src/static-file-view.ts:27
+Defined in: [packages/blue-platform-node/src/static-file-view.ts:27](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/static-file-view.ts#lines-27)
 
 #### Parameters
 
@@ -39,7 +36,7 @@ The directory to serve files from.
 
 > **render**(`_model`, `route`, `target`): `Promise`\<`void`\>
 
-Defined in: packages/blue-platform-node/src/static-file-view.ts:38
+Defined in: [packages/blue-platform-node/src/static-file-view.ts:38](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/static-file-view.ts#lines-38)
 
 Render a file to the response.
 
@@ -53,7 +50,7 @@ Unused.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The current route; `route.path` selects the file.
 

@@ -8,6 +8,6 @@
 
 > `const` **INSUFFICIENT\_STORAGE**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
-Defined in: packages/blue-http/src/response-statuses.ts:333
+Defined in: [packages/blue-http/src/response-statuses.ts:333](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/response-statuses.ts#lines-333)
 
 The method could not be performed on the resource because the server is unable to store the representation needed to successfully complete the request.

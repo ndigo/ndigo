@@ -8,6 +8,6 @@
 
 > `const` **CONFLICT**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
-Defined in: packages/blue-http/src/response-statuses.ts:194
+Defined in: [packages/blue-http/src/response-statuses.ts:194](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/response-statuses.ts#lines-194)
 
 This response is sent when a request conflicts with the current state of the server.

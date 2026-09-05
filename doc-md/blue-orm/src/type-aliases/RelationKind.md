@@ -8,7 +8,7 @@
 
 > **RelationKind** = `"one-to-many"` \| `"many-to-one"` \| `"many-to-many"` \| `"one-to-one"`
 
-Defined in: packages/blue-orm/src/metadata.ts:16
+Defined in: [packages/blue-orm/src/metadata.ts:16](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/metadata.ts#lines-16)
 
 ## Author
 

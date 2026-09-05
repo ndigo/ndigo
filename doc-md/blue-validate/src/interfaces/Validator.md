@@ -6,7 +6,7 @@
 
 # Interface: Validator
 
-Defined in: packages/blue-validate/src/validator.ts:16
+Defined in: [packages/blue-validate/src/validator.ts:16](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/validator.ts#lines-16)
 
 Defines the interface for a validator, capable of validating a serializable value against a named type.
 
@@ -16,7 +16,7 @@ Defines the interface for a validator, capable of validating a serializable valu
 
 > **validate**(`value`, `name`, `params?`): `ValidationResults`
 
-Defined in: packages/blue-validate/src/validator.ts:24
+Defined in: [packages/blue-validate/src/validator.ts:24](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/validator.ts#lines-24)
 
 Validates a given value against a specified type.
 

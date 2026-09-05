@@ -8,7 +8,7 @@
 
 > **parseUrlGlob**(`pattern`): `string` \| `null`
 
-Defined in: packages/blue-core/src/url-glob.ts:34
+Defined in: [packages/blue-core/src/url-glob.ts:34](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/url-glob.ts#lines-34)
 
 Parses a URL/route glob pattern into an anchored regular-expression source string.
 

@@ -6,7 +6,7 @@
 
 # Class: HTTP
 
-Defined in: packages/blue-http/src/http.ts:801
+Defined in: [packages/blue-http/src/http.ts:821](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-821)
 
 HTTP client with interceptor support and convenience verb helpers.
 
@@ -16,7 +16,7 @@ HTTP client with interceptor support and convenience verb helpers.
 
 > **new HTTP**(`interceptors?`, `init?`, `fetch?`): `HTTP`
 
-Defined in: packages/blue-http/src/http.ts:898
+Defined in: [packages/blue-http/src/http.ts:917](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-917)
 
 Create a new HTTP client instance.
 
@@ -78,7 +78,7 @@ const http = new HTTP(
 
 > **settings**: [`HTTPInit`](../type-aliases/HTTPInit.md)
 
-Defined in: packages/blue-http/src/http.ts:808
+Defined in: [packages/blue-http/src/http.ts:828](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-828)
 
 The default request settings used as the base for each request.
 
@@ -90,7 +90,7 @@ The default request settings used as the base for each request.
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-http/src/http.ts:810
+Defined in: [packages/blue-http/src/http.ts:830](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-830)
 
 ##### Returns
 
@@ -104,7 +104,7 @@ Defined in: packages/blue-http/src/http.ts:810
 
 > **get** **interceptors**(): [`HTTPInterceptor`](../type-aliases/HTTPInterceptor.md)[]
 
-Defined in: packages/blue-http/src/http.ts:817
+Defined in: [packages/blue-http/src/http.ts:837](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-837)
 
 The interceptors configured for this client instance.
 
@@ -118,7 +118,7 @@ The interceptors configured for this client instance.
 
 > `static` **create**(`config?`): `HTTP`
 
-Defined in: packages/blue-http/src/http.ts:857
+Defined in: [packages/blue-http/src/http.ts:876](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-876)
 
 Create a new HTTP client instance with optional configuration.
 
@@ -172,7 +172,7 @@ const api = HTTP.create({
 
 > **request**(`input`, `init?`): `Promise`\<`Response`\>
 
-Defined in: packages/blue-http/src/http.ts:914
+Defined in: [packages/blue-http/src/http.ts:933](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-933)
 
 #### Parameters
 
@@ -188,15 +188,13 @@ Defined in: packages/blue-http/src/http.ts:914
 
 `Promise`\<`Response`\>
 
-#### Async
-
 ***
 
 ### connect()
 
 > **connect**(`input`, `init?`): `Promise`\<`Response`\>
 
-Defined in: packages/blue-http/src/http.ts:993
+Defined in: [packages/blue-http/src/http.ts:1016](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-1016)
 
 #### Parameters
 
@@ -211,8 +209,6 @@ Defined in: packages/blue-http/src/http.ts:993
 #### Returns
 
 `Promise`\<`Response`\>
-
-#### Async
 
 ***
 
@@ -220,7 +216,7 @@ Defined in: packages/blue-http/src/http.ts:993
 
 > **delete**(`input`, `init?`): `Promise`\<`Response`\>
 
-Defined in: packages/blue-http/src/http.ts:1005
+Defined in: [packages/blue-http/src/http.ts:1028](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-1028)
 
 #### Parameters
 
@@ -235,8 +231,6 @@ Defined in: packages/blue-http/src/http.ts:1005
 #### Returns
 
 `Promise`\<`Response`\>
-
-#### Async
 
 ***
 
@@ -244,7 +238,7 @@ Defined in: packages/blue-http/src/http.ts:1005
 
 > **get**(`input`, `init?`): `Promise`\<`Response`\>
 
-Defined in: packages/blue-http/src/http.ts:1017
+Defined in: [packages/blue-http/src/http.ts:1040](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-1040)
 
 #### Parameters
 
@@ -259,8 +253,6 @@ Defined in: packages/blue-http/src/http.ts:1017
 #### Returns
 
 `Promise`\<`Response`\>
-
-#### Async
 
 ***
 
@@ -268,7 +260,7 @@ Defined in: packages/blue-http/src/http.ts:1017
 
 > **head**(`input`, `init?`): `Promise`\<`Response`\>
 
-Defined in: packages/blue-http/src/http.ts:1029
+Defined in: [packages/blue-http/src/http.ts:1052](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-1052)
 
 #### Parameters
 
@@ -283,8 +275,6 @@ Defined in: packages/blue-http/src/http.ts:1029
 #### Returns
 
 `Promise`\<`Response`\>
-
-#### Async
 
 ***
 
@@ -292,7 +282,7 @@ Defined in: packages/blue-http/src/http.ts:1029
 
 > **options**(`input`, `init?`): `Promise`\<`Response`\>
 
-Defined in: packages/blue-http/src/http.ts:1041
+Defined in: [packages/blue-http/src/http.ts:1064](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-1064)
 
 #### Parameters
 
@@ -307,8 +297,6 @@ Defined in: packages/blue-http/src/http.ts:1041
 #### Returns
 
 `Promise`\<`Response`\>
-
-#### Async
 
 ***
 
@@ -316,7 +304,7 @@ Defined in: packages/blue-http/src/http.ts:1041
 
 > **patch**(`input`, `init?`): `Promise`\<`Response`\>
 
-Defined in: packages/blue-http/src/http.ts:1053
+Defined in: [packages/blue-http/src/http.ts:1076](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-1076)
 
 #### Parameters
 
@@ -331,8 +319,6 @@ Defined in: packages/blue-http/src/http.ts:1053
 #### Returns
 
 `Promise`\<`Response`\>
-
-#### Async
 
 ***
 
@@ -340,7 +326,7 @@ Defined in: packages/blue-http/src/http.ts:1053
 
 > **post**(`input`, `init?`): `Promise`\<`Response`\>
 
-Defined in: packages/blue-http/src/http.ts:1065
+Defined in: [packages/blue-http/src/http.ts:1088](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-1088)
 
 #### Parameters
 
@@ -355,8 +341,6 @@ Defined in: packages/blue-http/src/http.ts:1065
 #### Returns
 
 `Promise`\<`Response`\>
-
-#### Async
 
 ***
 
@@ -364,7 +348,7 @@ Defined in: packages/blue-http/src/http.ts:1065
 
 > **put**(`input`, `init?`): `Promise`\<`Response`\>
 
-Defined in: packages/blue-http/src/http.ts:1077
+Defined in: [packages/blue-http/src/http.ts:1100](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-1100)
 
 #### Parameters
 
@@ -379,8 +363,6 @@ Defined in: packages/blue-http/src/http.ts:1077
 #### Returns
 
 `Promise`\<`Response`\>
-
-#### Async
 
 ***
 
@@ -388,7 +370,7 @@ Defined in: packages/blue-http/src/http.ts:1077
 
 > **trace**(`input`, `init?`): `Promise`\<`Response`\>
 
-Defined in: packages/blue-http/src/http.ts:1089
+Defined in: [packages/blue-http/src/http.ts:1112](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-1112)
 
 #### Parameters
 
@@ -404,15 +386,13 @@ Defined in: packages/blue-http/src/http.ts:1089
 
 `Promise`\<`Response`\>
 
-#### Async
-
 ***
 
 ### \_getHTTPExecutionChain()
 
 > `protected` **\_getHTTPExecutionChain**(`http`, `url`): [`HTTPExecutionChain`](HTTPExecutionChain.md)
 
-Defined in: packages/blue-http/src/http.ts:1101
+Defined in: [packages/blue-http/src/http.ts:1124](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-1124)
 
 #### Parameters
 

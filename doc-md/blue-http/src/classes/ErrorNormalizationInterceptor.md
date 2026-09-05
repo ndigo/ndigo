@@ -6,16 +6,12 @@
 
 # Class: ErrorNormalizationInterceptor
 
-Defined in: packages/blue-http/src/interceptors/error-normalization-interceptor.ts:28
+Defined in: [packages/blue-http/src/interceptors/error-normalization-interceptor.ts:28](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/error-normalization-interceptor.ts#lines-28)
 
 HTTP interceptor that standardizes error responses into a consistent shape.
 
 This interceptor ensures that both network-level failures and HTTP error
 responses are normalized into a consistent format for the application.
-
-## Implements
-
-## Implements
 
 ## Implements
 
@@ -28,7 +24,7 @@ responses are normalized into a consistent format for the application.
 
 > **new ErrorNormalizationInterceptor**(`config?`): `ErrorNormalizationInterceptor`
 
-Defined in: packages/blue-http/src/interceptors/error-normalization-interceptor.ts:36
+Defined in: [packages/blue-http/src/interceptors/error-normalization-interceptor.ts:36](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/error-normalization-interceptor.ts#lines-36)
 
 Creates a new error normalization interceptor.
 
@@ -50,7 +46,7 @@ Error normalization configuration.
 
 > **postResponse**(`response`, `settings`): `Promise`\<`void` \| `Response`\>
 
-Defined in: packages/blue-http/src/interceptors/error-normalization-interceptor.ts:47
+Defined in: [packages/blue-http/src/interceptors/error-normalization-interceptor.ts:47](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/error-normalization-interceptor.ts#lines-47)
 
 Normalizes HTTP error responses (status codes outside 200-299).
 
@@ -84,7 +80,7 @@ A normalized response or void.
 
 > **postError**(`error`, `request`, `http`): `Promise`\<`Response` \| `undefined`\>
 
-Defined in: packages/blue-http/src/interceptors/error-normalization-interceptor.ts:65
+Defined in: [packages/blue-http/src/interceptors/error-normalization-interceptor.ts:65](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/error-normalization-interceptor.ts#lines-65)
 
 Normalizes transport or network errors.
 

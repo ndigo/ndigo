@@ -6,7 +6,7 @@
 
 # Interface: Converter\<S, T\>
 
-Defined in: packages/blue-core/src/converter.ts:36
+Defined in: [packages/blue-core/src/converter.ts:36](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/converter.ts#lines-36)
 
 A general-purpose type conversion from source `S` to target `T`.
 
@@ -50,7 +50,7 @@ The target type.
 
 > **convert**(`source`): `T`
 
-Defined in: packages/blue-core/src/converter.ts:42
+Defined in: [packages/blue-core/src/converter.ts:42](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/converter.ts#lines-42)
 
 Converts a value of type `S` to type `T`.
 

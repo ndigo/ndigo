@@ -8,6 +8,6 @@
 
 > `const` **notACapitalRule**: `RegExp`
 
-Defined in: packages/blue-validate/src/formats.ts:135
+Defined in: [packages/blue-validate/src/formats.ts:135](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/formats.ts#lines-135)
 
 A regular expression matching lowercase letters.

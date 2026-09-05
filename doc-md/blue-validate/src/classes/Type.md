@@ -6,7 +6,7 @@
 
 # Class: Type
 
-Defined in: packages/blue-validate/src/type.ts:51
+Defined in: [packages/blue-validate/src/type.ts:50](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/type.ts#lines-50)
 
 Represents a reusable validation type, encapsulating a set of constraints and a validation backend.
 This class allows for defining complex validation rules that can be applied to various values.
@@ -17,7 +17,7 @@ This class allows for defining complex validation rules that can be applied to v
 
 > **new Type**(`name`, `definition`, `backend?`): `Type`
 
-Defined in: packages/blue-validate/src/type.ts:63
+Defined in: [packages/blue-validate/src/type.ts:62](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/type.ts#lines-62)
 
 Creates an instance of `Type`.
 
@@ -55,7 +55,7 @@ If `definition.constraints` is not an array, or if any constraint within the def
 
 > `readonly` **name**: `string`
 
-Defined in: packages/blue-validate/src/type.ts:52
+Defined in: [packages/blue-validate/src/type.ts:51](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/type.ts#lines-51)
 
 ***
 
@@ -63,7 +63,7 @@ Defined in: packages/blue-validate/src/type.ts:52
 
 > `readonly` **constraints**: `object`[]
 
-Defined in: packages/blue-validate/src/type.ts:53
+Defined in: [packages/blue-validate/src/type.ts:52](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/type.ts#lines-52)
 
 #### type
 
@@ -83,7 +83,7 @@ Defined in: packages/blue-validate/src/type.ts:53
 
 > `readonly` **backend**: `ValidationBackendAdapter`
 
-Defined in: packages/blue-validate/src/type.ts:54
+Defined in: [packages/blue-validate/src/type.ts:53](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/type.ts#lines-53)
 
 ## Methods
 
@@ -91,7 +91,7 @@ Defined in: packages/blue-validate/src/type.ts:54
 
 > **validator**(`value`, `params?`): `boolean`
 
-Defined in: packages/blue-validate/src/type.ts:129
+Defined in: [packages/blue-validate/src/type.ts:128](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/type.ts#lines-128)
 
 Checks if a value is valid according to the type's constraints.
 This method returns a boolean indicating overall validity.
@@ -122,7 +122,7 @@ True if the value passes all applicable constraints, false otherwise.
 
 > **validate**(`value`, `params?`): `ValidationResults`
 
-Defined in: packages/blue-validate/src/type.ts:149
+Defined in: [packages/blue-validate/src/type.ts:148](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/type.ts#lines-148)
 
 Validates a value against the type's constraints and returns detailed results.
 This method provides a comprehensive object including validity status and a list of failed constraints.

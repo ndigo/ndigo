@@ -8,7 +8,7 @@
 
 > **AsContentSourceAware**\<`T`\>(`superclass`): `Constructable`\<[`ContentSourceAware`](../interfaces/ContentSourceAware.md)\> & `T`
 
-Defined in: packages/blue-content/src/content.ts:98
+Defined in: [packages/blue-content/src/content.ts:98](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-content/src/content.ts#lines-98)
 
 Mixes content-source awareness into a base class.
 

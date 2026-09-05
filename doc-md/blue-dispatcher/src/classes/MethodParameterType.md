@@ -6,7 +6,7 @@
 
 # Class: MethodParameterType
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:51
+Defined in: [packages/blue-dispatcher/src/route-parameter.ts:51](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-parameter.ts#lines-51)
 
 Method parameter type enum
 
@@ -21,7 +21,7 @@ Method parameter type enum
 
 > **new MethodParameterType**(`type`): `MethodParameterType`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:88
+Defined in: [packages/blue-dispatcher/src/route-parameter.ts:89](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-parameter.ts#lines-89)
 
 #### Parameters
 
@@ -39,7 +39,7 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:88
 
 > `static` **COOKIE**: `MethodParameterType`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:52
+Defined in: [packages/blue-dispatcher/src/route-parameter.ts:52](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-parameter.ts#lines-52)
 
 ***
 
@@ -47,7 +47,7 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:52
 
 > `static` **MODEL**: `MethodParameterType`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:53
+Defined in: [packages/blue-dispatcher/src/route-parameter.ts:53](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-parameter.ts#lines-53)
 
 ***
 
@@ -55,7 +55,7 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:53
 
 > `static` **MATRIX**: `MethodParameterType`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:54
+Defined in: [packages/blue-dispatcher/src/route-parameter.ts:54](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-parameter.ts#lines-54)
 
 ***
 
@@ -63,7 +63,7 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:54
 
 > `static` **PATH**: `MethodParameterType`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:55
+Defined in: [packages/blue-dispatcher/src/route-parameter.ts:55](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-parameter.ts#lines-55)
 
 ***
 
@@ -71,7 +71,7 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:55
 
 > `static` **QUERY**: `MethodParameterType`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:56
+Defined in: [packages/blue-dispatcher/src/route-parameter.ts:56](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-parameter.ts#lines-56)
 
 ***
 
@@ -79,7 +79,7 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:56
 
 > `static` **STATE**: `MethodParameterType`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:57
+Defined in: [packages/blue-dispatcher/src/route-parameter.ts:57](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-parameter.ts#lines-57)
 
 ***
 
@@ -87,7 +87,7 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:57
 
 > `static` **SESSION**: `MethodParameterType`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:58
+Defined in: [packages/blue-dispatcher/src/route-parameter.ts:58](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-parameter.ts#lines-58)
 
 ***
 
@@ -95,7 +95,7 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:58
 
 > `static` **BIND**: `MethodParameterType`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:59
+Defined in: [packages/blue-dispatcher/src/route-parameter.ts:59](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-parameter.ts#lines-59)
 
 ***
 
@@ -103,7 +103,7 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:59
 
 > `static` **ATTRIBUTE**: `MethodParameterType`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:60
+Defined in: [packages/blue-dispatcher/src/route-parameter.ts:60](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-parameter.ts#lines-60)
 
 ***
 
@@ -111,7 +111,7 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:60
 
 > `static` **HEADER**: `MethodParameterType`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:61
+Defined in: [packages/blue-dispatcher/src/route-parameter.ts:61](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-parameter.ts#lines-61)
 
 ***
 
@@ -119,7 +119,7 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:61
 
 > `static` **BODY**: `MethodParameterType`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:62
+Defined in: [packages/blue-dispatcher/src/route-parameter.ts:62](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-parameter.ts#lines-62)
 
 ***
 
@@ -127,7 +127,7 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:62
 
 > `readonly` **type**: `string`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:82
+Defined in: [packages/blue-dispatcher/src/route-parameter.ts:83](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-parameter.ts#lines-83)
 
 ## Accessors
 
@@ -137,7 +137,7 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:82
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:84
+Defined in: [packages/blue-dispatcher/src/route-parameter.ts:85](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-parameter.ts#lines-85)
 
 ##### Returns
 
@@ -149,7 +149,7 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:84
 
 > `static` **fromType**(`type`): `MethodParameterType` \| `null`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:64
+Defined in: [packages/blue-dispatcher/src/route-parameter.ts:64](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-parameter.ts#lines-64)
 
 #### Parameters
 
@@ -167,7 +167,7 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:64
 
 > **equals**(`value`): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:97
+Defined in: [packages/blue-dispatcher/src/route-parameter.ts:98](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-parameter.ts#lines-98)
 
 Determines if this object is equal to the specified value.
 
@@ -195,7 +195,7 @@ The value to compare with this object.
 
 > **toJSON**(): `string`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:101
+Defined in: [packages/blue-dispatcher/src/route-parameter.ts:102](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-parameter.ts#lines-102)
 
 #### Returns
 
@@ -211,7 +211,7 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:101
 
 > **toString**(): `string`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:105
+Defined in: [packages/blue-dispatcher/src/route-parameter.ts:106](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-parameter.ts#lines-106)
 
 Returns a string representation of an object.
 

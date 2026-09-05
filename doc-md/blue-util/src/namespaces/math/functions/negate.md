@@ -8,7 +8,7 @@
 
 > **negate**(`n`): `number`
 
-Defined in: packages/blue-util/src/math/index.ts:197
+Defined in: [packages/blue-util/src/math/index.ts:197](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-util/src/math/index.ts#lines-197)
 
 Negates its argument.
 

@@ -8,6 +8,6 @@
 
 > `const` **argumentValueConverters**: `Record`\<`string`, [`ArgumentValueConverter`](../type-aliases/ArgumentValueConverter.md)\>
 
-Defined in: packages/blue-platform-web/src/argument-value-converter.ts:103
+Defined in: [packages/blue-platform-web/src/argument-value-converter.ts:103](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/argument-value-converter.ts#lines-103)
 
 Built-in converters available by name.

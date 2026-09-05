@@ -6,7 +6,7 @@
 
 # Class: ParameterConversionError
 
-Defined in: packages/blue-dispatcher/src/error.ts:185
+Defined in: [packages/blue-dispatcher/src/error.ts:185](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/error.ts#lines-185)
 
 Thrown when a parameter converter fails at runtime.
 This is a RUNTIME error (request processing time).
@@ -21,7 +21,7 @@ This is a RUNTIME error (request processing time).
 
 > **new ParameterConversionError**(`parameterName`, `parameterType`, `cause?`, `methodName?`, `controllerName?`): `ParameterConversionError`
 
-Defined in: packages/blue-dispatcher/src/error.ts:193
+Defined in: [packages/blue-dispatcher/src/error.ts:193](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/error.ts#lines-193)
 
 #### Parameters
 
@@ -59,7 +59,7 @@ Defined in: packages/blue-dispatcher/src/error.ts:193
 
 > `readonly` **parameterName**: `string` \| `null`
 
-Defined in: packages/blue-dispatcher/src/error.ts:87
+Defined in: [packages/blue-dispatcher/src/error.ts:87](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/error.ts#lines-87)
 
 #### Inherited from
 
@@ -71,7 +71,7 @@ Defined in: packages/blue-dispatcher/src/error.ts:87
 
 > `readonly` **methodName**: `string` \| `null`
 
-Defined in: packages/blue-dispatcher/src/error.ts:88
+Defined in: [packages/blue-dispatcher/src/error.ts:88](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/error.ts#lines-88)
 
 #### Inherited from
 
@@ -83,7 +83,7 @@ Defined in: packages/blue-dispatcher/src/error.ts:88
 
 > `readonly` **controllerName**: `string` \| `null`
 
-Defined in: packages/blue-dispatcher/src/error.ts:89
+Defined in: [packages/blue-dispatcher/src/error.ts:89](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/error.ts#lines-89)
 
 #### Inherited from
 
@@ -95,7 +95,7 @@ Defined in: packages/blue-dispatcher/src/error.ts:89
 
 > `readonly` **parameterType**: `string` \| `null`
 
-Defined in: packages/blue-dispatcher/src/error.ts:186
+Defined in: [packages/blue-dispatcher/src/error.ts:186](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/error.ts#lines-186)
 
 ***
 
@@ -103,7 +103,7 @@ Defined in: packages/blue-dispatcher/src/error.ts:186
 
 > `readonly` **cause**: `Error` \| `null`
 
-Defined in: packages/blue-dispatcher/src/error.ts:187
+Defined in: [packages/blue-dispatcher/src/error.ts:187](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/error.ts#lines-187)
 
 #### Overrides
 
@@ -117,7 +117,7 @@ Defined in: packages/blue-dispatcher/src/error.ts:187
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-dispatcher/src/error.ts:189
+Defined in: [packages/blue-dispatcher/src/error.ts:189](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/error.ts#lines-189)
 
 ##### Returns
 

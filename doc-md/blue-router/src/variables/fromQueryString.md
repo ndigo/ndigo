@@ -8,7 +8,7 @@
 
 > `const` **fromQueryString**: (`value`) => `JSONObject`
 
-Defined in: packages/blue-router/src/index.ts:21
+Defined in: [packages/blue-router/src/index.ts:21](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/index.ts#lines-21)
 
 Parses a query string into a JSON object.
 

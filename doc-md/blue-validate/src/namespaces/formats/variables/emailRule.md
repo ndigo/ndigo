@@ -8,6 +8,6 @@
 
 > `const` **emailRule**: `RegExp`
 
-Defined in: packages/blue-validate/src/formats.ts:119
+Defined in: [packages/blue-validate/src/formats.ts:119](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/formats.ts#lines-119)
 
 A regular expression matching email addresses.

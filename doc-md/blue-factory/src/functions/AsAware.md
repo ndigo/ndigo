@@ -8,7 +8,7 @@
 
 > **AsAware**\<`T`\>(`superclass`): `Constructable`\<[`Aware`](../interfaces/Aware.md)\> & `T`
 
-Defined in: packages/blue-factory/src/aware.ts:46
+Defined in: [packages/blue-factory/src/aware.ts:46](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/aware.ts#lines-46)
 
 ## Type Parameters
 

@@ -6,7 +6,7 @@
 
 # Class: URLSearchParamsTransformer
 
-Defined in: packages/blue-http/src/transformers/url-search-params-transformer.ts:15
+Defined in: [packages/blue-http/src/transformers/url-search-params-transformer.ts:15](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/transformers/url-search-params-transformer.ts#lines-15)
 
 Transforms `URLSearchParams` entries one by one.
 
@@ -20,7 +20,7 @@ Transforms `URLSearchParams` entries one by one.
 
 > **new URLSearchParamsTransformer**(`entryTransform`, `postProcess?`, `condition?`): `URLSearchParamsTransformer`
 
-Defined in: packages/blue-http/src/transformers/url-search-params-transformer.ts:27
+Defined in: [packages/blue-http/src/transformers/url-search-params-transformer.ts:27](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/transformers/url-search-params-transformer.ts#lines-27)
 
 Creates a URLSearchParams transformer.
 
@@ -54,7 +54,7 @@ Optional predicate that controls whether the transform runs.
 
 > **canTransform**(`body`, `context`): `boolean`
 
-Defined in: packages/blue-http/src/transformers/url-search-params-transformer.ts:44
+Defined in: [packages/blue-http/src/transformers/url-search-params-transformer.ts:44](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/transformers/url-search-params-transformer.ts#lines-44)
 
 Tests whether the input is a `URLSearchParams` value that should be transformed.
 
@@ -88,7 +88,7 @@ The current transform context.
 
 > **transform**(`body`, `context`): `URLSearchParams`
 
-Defined in: packages/blue-http/src/transformers/url-search-params-transformer.ts:59
+Defined in: [packages/blue-http/src/transformers/url-search-params-transformer.ts:59](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/transformers/url-search-params-transformer.ts#lines-59)
 
 Applies the entry transform to each URL parameter.
 

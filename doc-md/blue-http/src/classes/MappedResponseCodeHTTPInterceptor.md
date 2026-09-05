@@ -6,7 +6,7 @@
 
 # Class: MappedResponseCodeHTTPInterceptor
 
-Defined in: packages/blue-http/src/interceptors/response-code-interceptor.ts:25
+Defined in: [packages/blue-http/src/interceptors/response-code-interceptor.ts:25](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/response-code-interceptor.ts#lines-25)
 
 Dispatches response hooks based on the numeric status code.
 
@@ -20,7 +20,7 @@ Dispatches response hooks based on the numeric status code.
 
 > **new MappedResponseCodeHTTPInterceptor**(`interceptor`): `MappedResponseCodeHTTPInterceptor`
 
-Defined in: packages/blue-http/src/interceptors/response-code-interceptor.ts:40
+Defined in: [packages/blue-http/src/interceptors/response-code-interceptor.ts:40](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/response-code-interceptor.ts#lines-40)
 
 Creates a response-code dispatcher.
 
@@ -44,7 +44,7 @@ The interceptor map to wrap.
 
 > **get** **interceptor**(): [`ResponseCodeAwareHTTPInterceptor`](../interfaces/ResponseCodeAwareHTTPInterceptor.md)
 
-Defined in: packages/blue-http/src/interceptors/response-code-interceptor.ts:31
+Defined in: [packages/blue-http/src/interceptors/response-code-interceptor.ts:31](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/response-code-interceptor.ts#lines-31)
 
 The wrapped interceptor map.
 
@@ -58,7 +58,7 @@ The wrapped interceptor map.
 
 > **postResponse**(`response`, `settings`): `Promise`\<`void` \| `Response`\>
 
-Defined in: packages/blue-http/src/interceptors/response-code-interceptor.ts:51
+Defined in: [packages/blue-http/src/interceptors/response-code-interceptor.ts:51](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/response-code-interceptor.ts#lines-51)
 
 Dispatches the response to a matching status-code hook.
 

@@ -8,7 +8,7 @@
 
 > `const` **likeContentSource**: (`value`) => `value is ContentSource`
 
-Defined in: packages/blue-content/src/content.ts:123
+Defined in: [packages/blue-content/src/content.ts:123](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-content/src/content.ts#lines-123)
 
 Tests whether a value looks like a content source.
 

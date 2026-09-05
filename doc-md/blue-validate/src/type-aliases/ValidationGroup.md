@@ -8,7 +8,7 @@
 
 > **ValidationGroup** = `symbol`
 
-Defined in: packages/blue-validate/src/group.ts:9
+Defined in: [packages/blue-validate/src/group.ts:9](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/group.ts#lines-9)
 
 Represents a unique validation group, identified by a Symbol.
 Validation groups allow applying constraints conditionally based on the context of validation.

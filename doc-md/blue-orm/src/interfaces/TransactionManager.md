@@ -6,7 +6,7 @@
 
 # Interface: TransactionManager
 
-Defined in: packages/blue-orm/src/transaction-manager.ts:32
+Defined in: [packages/blue-orm/src/transaction-manager.ts:32](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/transaction-manager.ts#lines-32)
 
 Manages transaction boundaries for a data source.
 
@@ -43,7 +43,7 @@ class OrderService {
 
 > **run**\<`T`\>(`fn`): `Promise`\<`T`\>
 
-Defined in: packages/blue-orm/src/transaction-manager.ts:40
+Defined in: [packages/blue-orm/src/transaction-manager.ts:40](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/transaction-manager.ts#lines-40)
 
 Executes `fn` within a transaction.
 If `fn` throws or rejects, the transaction is rolled back.
@@ -75,7 +75,7 @@ A promise that resolves to the return value of `fn`.
 
 > **isActive**(): `boolean`
 
-Defined in: packages/blue-orm/src/transaction-manager.ts:45
+Defined in: [packages/blue-orm/src/transaction-manager.ts:45](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/transaction-manager.ts#lines-45)
 
 Returns `true` if a transaction is currently active.
 

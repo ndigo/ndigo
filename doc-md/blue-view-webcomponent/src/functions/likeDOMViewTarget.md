@@ -8,7 +8,7 @@
 
 > **likeDOMViewTarget**(`value`): `value is DOMViewTarget`
 
-Defined in: packages/blue-view-webcomponent/src/engine.ts:35
+Defined in: [packages/blue-view-webcomponent/src/engine.ts:35](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view-webcomponent/src/engine.ts#lines-35)
 
 Detects whether a value implements the DOM-specific view target contract.
 

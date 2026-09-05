@@ -6,9 +6,9 @@
 
 # Interface: CountedOptions
 
-Defined in: packages/blue-telemetry/src/metrics/decorators.ts:35
+Defined in: [packages/blue-telemetry/src/metrics/decorators.ts:37](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/metrics/decorators.ts#lines-37)
 
-Options for the `@counted` decorator.
+Options for the `counted` decorator.
 
 ## Properties
 
@@ -16,7 +16,7 @@ Options for the `@counted` decorator.
 
 > `optional` **attributes?**: `Attributes`
 
-Defined in: packages/blue-telemetry/src/metrics/decorators.ts:39
+Defined in: [packages/blue-telemetry/src/metrics/decorators.ts:41](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/metrics/decorators.ts#lines-41)
 
 Optional attributes to associate with the counter.
 
@@ -26,7 +26,7 @@ Optional attributes to associate with the counter.
 
 > `optional` **featureAggregator?**: [`FeatureMetricAggregator`](../classes/FeatureMetricAggregator.md)
 
-Defined in: packages/blue-telemetry/src/metrics/decorators.ts:43
+Defined in: [packages/blue-telemetry/src/metrics/decorators.ts:45](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/metrics/decorators.ts#lines-45)
 
 An optional feature metric aggregator to increment a feature-specific counter.
 
@@ -36,7 +36,7 @@ An optional feature metric aggregator to increment a feature-specific counter.
 
 > `optional` **featureKey?**: `string`
 
-Defined in: packages/blue-telemetry/src/metrics/decorators.ts:47
+Defined in: [packages/blue-telemetry/src/metrics/decorators.ts:49](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/metrics/decorators.ts#lines-49)
 
 The key within the attributes to use for feature aggregation. Defaults to 'feature'.
 
@@ -46,6 +46,6 @@ The key within the attributes to use for feature aggregation. Defaults to 'featu
 
 > `optional` **name?**: `string`
 
-Defined in: packages/blue-telemetry/src/metrics/decorators.ts:51
+Defined in: [packages/blue-telemetry/src/metrics/decorators.ts:53](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/metrics/decorators.ts#lines-53)
 
 The name of the counter. If not provided, the method's name will be used with a `.count` suffix.

@@ -6,7 +6,7 @@
 
 # Class: PathViewController
 
-Defined in: packages/blue-dispatcher/src/controller.ts:48
+Defined in: [packages/blue-dispatcher/src/controller.ts:48](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/controller.ts#lines-48)
 
 Simple [Controller](../interfaces/Controller.md) implementation that transforms the path of a route into a view name.
 Can optionally prepend a prefix and/or append a suffix to build the view name from the path.
@@ -21,7 +21,7 @@ Can optionally prepend a prefix and/or append a suffix to build the view name fr
 
 > **new PathViewController**(): `PathViewController`
 
-Defined in: packages/blue-dispatcher/src/controller.ts:91
+Defined in: [packages/blue-dispatcher/src/controller.ts:95](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/controller.ts#lines-95)
 
 Creates an instance of PathViewController.
 
@@ -39,7 +39,7 @@ Creates an instance of PathViewController.
 
 > **\_viewNameCache**: `Map`\<`string`, `string`\>
 
-Defined in: packages/blue-dispatcher/src/controller.ts:52
+Defined in: [packages/blue-dispatcher/src/controller.ts:52](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/controller.ts#lines-52)
 
 Cache for resolved view names.
 
@@ -51,7 +51,7 @@ Cache for resolved view names.
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-dispatcher/src/controller.ts:27
+Defined in: [packages/blue-dispatcher/src/controller.ts:27](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/controller.ts#lines-27)
 
 Returns the string tag for this controller.
 
@@ -71,7 +71,7 @@ Returns the string tag for this controller.
 
 > **get** **prefix**(): `string`
 
-Defined in: packages/blue-dispatcher/src/controller.ts:59
+Defined in: [packages/blue-dispatcher/src/controller.ts:59](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/controller.ts#lines-59)
 
 Gets the prefix to prepend to the view name.
 
@@ -83,7 +83,7 @@ Gets the prefix to prepend to the view name.
 
 > **set** **prefix**(`newPrefix`): `void`
 
-Defined in: packages/blue-dispatcher/src/controller.ts:67
+Defined in: [packages/blue-dispatcher/src/controller.ts:67](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/controller.ts#lines-67)
 
 Sets the prefix to prepend to the view name.
 Clears the view name cache when set.
@@ -106,7 +106,7 @@ Clears the view name cache when set.
 
 > **get** **suffix**(): `string`
 
-Defined in: packages/blue-dispatcher/src/controller.ts:75
+Defined in: [packages/blue-dispatcher/src/controller.ts:77](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/controller.ts#lines-77)
 
 Gets the suffix to append to the view name.
 
@@ -118,7 +118,7 @@ Gets the suffix to append to the view name.
 
 > **set** **suffix**(`newSuffix`): `void`
 
-Defined in: packages/blue-dispatcher/src/controller.ts:83
+Defined in: [packages/blue-dispatcher/src/controller.ts:85](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/controller.ts#lines-85)
 
 Sets the suffix to append to the view name.
 Clears the view name cache when set.
@@ -139,7 +139,7 @@ Clears the view name cache when set.
 
 > **handleRoute**(`route`): [`ModelAndView`](ModelAndView.md)
 
-Defined in: packages/blue-dispatcher/src/controller.ts:36
+Defined in: [packages/blue-dispatcher/src/controller.ts:36](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/controller.ts#lines-36)
 
 Handles the given route by resolving a view name from its path and returning a new [ModelAndView](ModelAndView.md).
 
@@ -147,7 +147,7 @@ Handles the given route by resolving a view name from its path and returning a n
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The route to handle.
 
@@ -167,7 +167,7 @@ A [ModelAndView](ModelAndView.md) for the route.
 
 > `protected` **\_getViewNameForRoute**(`route`): `string`
 
-Defined in: packages/blue-dispatcher/src/controller.ts:104
+Defined in: [packages/blue-dispatcher/src/controller.ts:108](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/controller.ts#lines-108)
 
 Resolves the view name for the given route.
 
@@ -175,7 +175,7 @@ Resolves the view name for the given route.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The route to resolve the view name for.
 
@@ -195,7 +195,7 @@ The resolved view name.
 
 > `protected` **\_getViewNameForPath**(`path`): `string`
 
-Defined in: packages/blue-dispatcher/src/controller.ts:113
+Defined in: [packages/blue-dispatcher/src/controller.ts:117](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/controller.ts#lines-117)
 
 Resolves the view name for the given path.
 

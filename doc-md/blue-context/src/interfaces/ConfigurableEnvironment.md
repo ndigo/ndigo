@@ -6,7 +6,7 @@
 
 # Interface: ConfigurableEnvironment
 
-Defined in: packages/blue-context/src/environment.ts:62
+Defined in: [packages/blue-context/src/environment.ts:62](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/environment.ts#lines-62)
 
 Environment variant that allows property source replacement and merging.
 
@@ -20,7 +20,7 @@ Environment variant that allows property source replacement and merging.
 
 > **activeProfiles**: `string`[]
 
-Defined in: packages/blue-context/src/environment.ts:22
+Defined in: [packages/blue-context/src/environment.ts:22](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/environment.ts#lines-22)
 
 The explicitly active profiles.
 
@@ -34,7 +34,7 @@ The explicitly active profiles.
 
 > **defaultProfiles**: `string`[]
 
-Defined in: packages/blue-context/src/environment.ts:26
+Defined in: [packages/blue-context/src/environment.ts:26](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/environment.ts#lines-26)
 
 The default profiles used when no active profile is configured.
 
@@ -48,7 +48,7 @@ The default profiles used when no active profile is configured.
 
 > **propertySources**: `JSONObject`[]
 
-Defined in: packages/blue-context/src/environment.ts:66
+Defined in: [packages/blue-context/src/environment.ts:66](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/environment.ts#lines-66)
 
 The ordered property sources used for resolution.
 
@@ -58,7 +58,7 @@ The ordered property sources used for resolution.
 
 > **addActiveProfile**(`profile`): `void`
 
-Defined in: packages/blue-context/src/environment.ts:33
+Defined in: [packages/blue-context/src/environment.ts:33](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/environment.ts#lines-33)
 
 Adds a profile to the active set.
 
@@ -84,7 +84,7 @@ The profile name.
 
 > **addDefaultProfile**(`profile`): `void`
 
-Defined in: packages/blue-context/src/environment.ts:39
+Defined in: [packages/blue-context/src/environment.ts:39](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/environment.ts#lines-39)
 
 Adds a profile to the default set.
 
@@ -110,7 +110,7 @@ The profile name.
 
 > **merge**(`environment`): `void`
 
-Defined in: packages/blue-context/src/environment.ts:72
+Defined in: [packages/blue-context/src/environment.ts:72](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/environment.ts#lines-72)
 
 Merges another environment into this one.
 
@@ -132,7 +132,7 @@ The environment to merge.
 
 > **getProperty**(`key`, `defaultValue?`): `JSONValue` \| `undefined`
 
-Defined in: packages/blue-context/src/property-resolver.ts:20
+Defined in: [packages/blue-context/src/property-resolver.ts:20](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/property-resolver.ts#lines-20)
 
 Resolves a property value, falling back to a default when missing.
 
@@ -166,7 +166,7 @@ The resolved property value or the default value.
 
 > **getRequiredProperty**(`key`): `JSONValue`
 
-Defined in: packages/blue-context/src/property-resolver.ts:28
+Defined in: [packages/blue-context/src/property-resolver.ts:28](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/property-resolver.ts#lines-28)
 
 Returns the resolved property value or throws when missing.
 
@@ -198,7 +198,7 @@ When the property cannot be resolved.
 
 > **hasProperty**(`key`): `boolean`
 
-Defined in: packages/blue-context/src/property-resolver.ts:35
+Defined in: [packages/blue-context/src/property-resolver.ts:35](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/property-resolver.ts#lines-35)
 
 Returns whether a property key can be resolved.
 

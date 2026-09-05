@@ -8,7 +8,7 @@
 
 > **isConstructor**(`value`): `value is Function`
 
-Defined in: packages/blue-util/src/type/is-constructor.ts:15
+Defined in: [packages/blue-util/src/type/is-constructor.ts:15](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-util/src/type/is-constructor.ts#lines-15)
 
 Determines whether a given value is a constructor, i.e. creates instances using `new`.
 

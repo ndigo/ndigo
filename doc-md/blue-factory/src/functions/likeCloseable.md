@@ -8,13 +8,13 @@
 
 > **likeCloseable**(`value`): `value is Closeable`
 
-Defined in: packages/blue-factory/src/lifecycle.ts:76
+Defined in: [packages/blue-factory/src/lifecycle.ts:76](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/lifecycle.ts#lines-76)
 
 ## Parameters
 
 ### value
 
-`any`
+`unknown`
 
 ## Returns
 

@@ -71,7 +71,7 @@ export class TimeoutInterceptor
     }
 
     /**
-     * @async
+
      * @param {Error} error The error that was thrown
      * @param {Request} request The HTTP request
      * @returns {exteral:Promise<external:Response | external:undefined>}

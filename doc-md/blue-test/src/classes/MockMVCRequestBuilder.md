@@ -6,7 +6,7 @@
 
 # Class: MockMVCRequestBuilder
 
-Defined in: packages/blue-test/src/mock-mvc.ts:76
+Defined in: [packages/blue-test/src/mock-mvc.ts:76](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-test/src/mock-mvc.ts#lines-76)
 
 Fluent builder for a single mock HTTP request.
 
@@ -21,7 +21,7 @@ expect(res.json()).toEqual([...]);
 
 > **new MockMVCRequestBuilder**(`mockMVC`, `request`): `MockMVCRequestBuilder`
 
-Defined in: packages/blue-test/src/mock-mvc.ts:84
+Defined in: [packages/blue-test/src/mock-mvc.ts:84](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-test/src/mock-mvc.ts#lines-84)
 
 #### Parameters
 
@@ -47,7 +47,7 @@ The base request spec.
 
 > **query**(`query`): `this`
 
-Defined in: packages/blue-test/src/mock-mvc.ts:94
+Defined in: [packages/blue-test/src/mock-mvc.ts:94](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-test/src/mock-mvc.ts#lines-94)
 
 Add query parameters.
 
@@ -71,7 +71,7 @@ This builder.
 
 > **body**(`body`): `this`
 
-Defined in: packages/blue-test/src/mock-mvc.ts:104
+Defined in: [packages/blue-test/src/mock-mvc.ts:104](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-test/src/mock-mvc.ts#lines-104)
 
 Set the request body.
 
@@ -95,7 +95,7 @@ This builder.
 
 > **headers**(`headers`): `this`
 
-Defined in: packages/blue-test/src/mock-mvc.ts:114
+Defined in: [packages/blue-test/src/mock-mvc.ts:114](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-test/src/mock-mvc.ts#lines-114)
 
 Set request headers.
 
@@ -119,7 +119,7 @@ This builder.
 
 > **cookies**(`cookies`): `this`
 
-Defined in: packages/blue-test/src/mock-mvc.ts:124
+Defined in: [packages/blue-test/src/mock-mvc.ts:124](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-test/src/mock-mvc.ts#lines-124)
 
 Set cookies.
 
@@ -143,7 +143,7 @@ This builder.
 
 > **session**(`session`): `this`
 
-Defined in: packages/blue-test/src/mock-mvc.ts:134
+Defined in: [packages/blue-test/src/mock-mvc.ts:134](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-test/src/mock-mvc.ts#lines-134)
 
 Set session data.
 
@@ -167,7 +167,7 @@ This builder.
 
 > **exec**(): `Promise`\<`MockResult`\>
 
-Defined in: packages/blue-test/src/mock-mvc.ts:143
+Defined in: [packages/blue-test/src/mock-mvc.ts:143](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-test/src/mock-mvc.ts#lines-143)
 
 Dispatch the request through the pipeline.
 

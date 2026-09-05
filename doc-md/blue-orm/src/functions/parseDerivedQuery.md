@@ -8,7 +8,7 @@
 
 > **parseDerivedQuery**(`methodName`, `columns`): `object`[] \| `null`
 
-Defined in: packages/blue-orm/src/derived-query-repository.ts:33
+Defined in: [packages/blue-orm/src/derived-query-repository.ts:33](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/derived-query-repository.ts#lines-33)
 
 Parses a derived method name into a list of property filters.
 

@@ -8,7 +8,7 @@
 
 > **randInt**(`min?`, `max?`): `number`
 
-Defined in: packages/blue-util/src/math/rand-int.ts:19
+Defined in: [packages/blue-util/src/math/rand-int.ts:19](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-util/src/math/rand-int.ts#lines-19)
 
 Generates a pseudo-random integer between `min` and `max`.
 

@@ -6,7 +6,7 @@
 
 # Class: ViewComponent
 
-Defined in: packages/blue-context/src/context.ts:874
+Defined in: [packages/blue-context/src/context.ts:880](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-880)
 
 Base class for view components.
 Encapsulates presentation logic and DOM interaction.
@@ -49,7 +49,7 @@ A symbol indicating that the value is aware.
 
 > **setApplicationContext**(`applicationContext`): `void`
 
-Defined in: packages/blue-context/src/context.ts:195
+Defined in: [packages/blue-context/src/context.ts:195](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-195)
 
 Set the ApplicationContext that this object runs in. Normally this call will be used to initialize the object.
 

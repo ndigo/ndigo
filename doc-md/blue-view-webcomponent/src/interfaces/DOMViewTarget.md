@@ -6,7 +6,7 @@
 
 # Interface: DOMViewTarget
 
-Defined in: packages/blue-view-webcomponent/src/engine.ts:22
+Defined in: [packages/blue-view-webcomponent/src/engine.ts:22](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view-webcomponent/src/engine.ts#lines-22)
 
 View target contract for DOM-backed render destinations.
 
@@ -23,7 +23,7 @@ engine can reuse or replace the rendered subtree.
 
 > `readonly` **container**: `HTMLElement`
 
-Defined in: packages/blue-view-webcomponent/src/engine.ts:26
+Defined in: [packages/blue-view-webcomponent/src/engine.ts:26](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view-webcomponent/src/engine.ts#lines-26)
 
 The host element that receives rendered output.
 
@@ -41,7 +41,7 @@ Prepares the target for rendering (e.g., clearing previous content).
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The route being rendered.
 
@@ -82,7 +82,7 @@ The model used to produce the output.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The route being rendered.
 

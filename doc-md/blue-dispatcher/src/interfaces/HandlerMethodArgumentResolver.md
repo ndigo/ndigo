@@ -6,7 +6,7 @@
 
 # Interface: HandlerMethodArgumentResolver
 
-Defined in: packages/blue-dispatcher/src/argument-resolver.ts:13
+Defined in: [packages/blue-dispatcher/src/argument-resolver.ts:12](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/argument-resolver.ts#lines-12)
 
 Strategy interface for resolving method parameters into argument values in the context of a given route.
 
@@ -16,7 +16,7 @@ Strategy interface for resolving method parameters into argument values in the c
 
 > **supportsParameter**(`parameter`): `boolean`
 
-Defined in: packages/blue-dispatcher/src/argument-resolver.ts:19
+Defined in: [packages/blue-dispatcher/src/argument-resolver.ts:18](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/argument-resolver.ts#lines-18)
 
 Whether the given method parameter is supported by this resolver.
 
@@ -40,7 +40,7 @@ Whether or not the given method parameter is supported by this resolver.
 
 > **resolveArgument**(`parameter`, `route`, `mapping`): `any`
 
-Defined in: packages/blue-dispatcher/src/argument-resolver.ts:27
+Defined in: [packages/blue-dispatcher/src/argument-resolver.ts:26](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/argument-resolver.ts#lines-26)
 
 Resolves a method parameter into an argument value from a given route.
 
@@ -54,7 +54,7 @@ The method parameter to resolve.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The current route.
 

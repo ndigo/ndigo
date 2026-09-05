@@ -6,7 +6,7 @@
 
 # Class: FixedContentNegotiationStrategy
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:135
+Defined in: [packages/blue-view/src/content-negotiation-view-resolver.ts:138](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/content-negotiation-view-resolver.ts#lines-138)
 
 Returns the same media types for every request.
 
@@ -20,7 +20,7 @@ Returns the same media types for every request.
 
 > **new FixedContentNegotiationStrategy**(`mediaTypes`): `FixedContentNegotiationStrategy`
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:146
+Defined in: [packages/blue-view/src/content-negotiation-view-resolver.ts:149](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/content-negotiation-view-resolver.ts#lines-149)
 
 Creates a fixed strategy from one or more media types.
 
@@ -42,7 +42,7 @@ The media type or types to return.
 
 > **mediaTypes**: `MediaType`[]
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:139
+Defined in: [packages/blue-view/src/content-negotiation-view-resolver.ts:142](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/content-negotiation-view-resolver.ts#lines-142)
 
 The media types this strategy always returns.
 
@@ -52,7 +52,7 @@ The media types this strategy always returns.
 
 > **resolveMediaTypes**(`request`): `MediaType`[]
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:156
+Defined in: [packages/blue-view/src/content-negotiation-view-resolver.ts:159](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/content-negotiation-view-resolver.ts#lines-159)
 
 Returns the configured media types.
 

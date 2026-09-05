@@ -8,7 +8,7 @@
 
 > **createStringSplitConverter**(`separator?`): [`ArgumentValueConverter`](../type-aliases/ArgumentValueConverter.md)
 
-Defined in: packages/blue-platform-node/src/argument-value-converter.ts:41
+Defined in: [packages/blue-platform-node/src/argument-value-converter.ts:53](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/argument-value-converter.ts#lines-53)
 
 ## Parameters
 

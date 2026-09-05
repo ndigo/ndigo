@@ -8,13 +8,13 @@
 
 > **likeLifecycle**(`value`): `value is Lifecycle`
 
-Defined in: packages/blue-factory/src/lifecycle.ts:82
+Defined in: [packages/blue-factory/src/lifecycle.ts:82](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/lifecycle.ts#lines-82)
 
 ## Parameters
 
 ### value
 
-`any`
+`unknown`
 
 ## Returns
 

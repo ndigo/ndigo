@@ -8,7 +8,7 @@
 
 > `const` **likeArgumentResolver**: (`value`) => `value is HandlerMethodArgumentResolver`
 
-Defined in: packages/blue-dispatcher/src/argument-resolver.ts:35
+Defined in: [packages/blue-dispatcher/src/argument-resolver.ts:34](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/argument-resolver.ts#lines-34)
 
 Type guard for [HandlerMethodArgumentResolver](../interfaces/HandlerMethodArgumentResolver.md).
 

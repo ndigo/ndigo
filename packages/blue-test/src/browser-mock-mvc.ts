@@ -104,8 +104,8 @@ export async function bootBrowserApp(sources: Function[]): Promise<BrowserTestAp
 }
 
 /**
- * Heuristic: a class is a `@configuration` (constructor-registered) rather than
- * a plain controller when its `@configuration` decorator set the constructor
+ * Heuristic: a class is a `configuration` (constructor-registered) rather than
+ * a plain controller when its `configuration` decorator set the constructor
  * marker in the class's `Symbol.metadata` (`config:constructor`).
  */
 function isConfiguration(source: Function): boolean {

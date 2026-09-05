@@ -8,6 +8,6 @@
 
 > `const` **alphaNumericRule**: `RegExp`
 
-Defined in: packages/blue-validate/src/formats.ts:84
+Defined in: [packages/blue-validate/src/formats.ts:84](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/formats.ts#lines-84)
 
 A regular expression matching only letters and numbers.

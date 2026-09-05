@@ -6,7 +6,7 @@
 
 # Class: EqualsPathMatcher
 
-Defined in: packages/blue-core/src/path-matcher.ts:170
+Defined in: [packages/blue-core/src/path-matcher.ts:170](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/path-matcher.ts#lines-170)
 
 ## Implements
 
@@ -28,7 +28,7 @@ Defined in: packages/blue-core/src/path-matcher.ts:170
 
 > **merge**(`pattern1`, `pattern2`): `string`
 
-Defined in: packages/blue-core/src/path-matcher.ts:171
+Defined in: [packages/blue-core/src/path-matcher.ts:171](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/path-matcher.ts#lines-171)
 
 Combines two patterns into a new pattern.
 
@@ -64,7 +64,7 @@ The combination of the two patterns.
 
 > **getPatternComparator**(`path`): [`Comparator`](../interfaces/Comparator.md)\<`string`\>
 
-Defined in: packages/blue-core/src/path-matcher.ts:217
+Defined in: [packages/blue-core/src/path-matcher.ts:217](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/path-matcher.ts#lines-217)
 
 Given a full path, returns a [Comparator](../interfaces/Comparator.md) suitable for sorting patterns
 in order of explicitness for that path.
@@ -95,7 +95,7 @@ A comparator capable of sorting patterns in order of explicitness.
 
 > **match**(`pattern`, `path`): `boolean`
 
-Defined in: packages/blue-core/src/path-matcher.ts:221
+Defined in: [packages/blue-core/src/path-matcher.ts:221](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/path-matcher.ts#lines-221)
 
 Match the given `path` against the given `pattern`, according to this PathMatcher's matching strategy.
 

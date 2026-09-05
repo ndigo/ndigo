@@ -22,7 +22,7 @@ export interface OfflineInterceptorConfig {
  * This interceptor monitors the browser's online/offline state and can
  * be used to trigger retry logic or notify the application.
  *
- * @implements {module:http.ResponseAwareHTTPInterceptor}
+
  */
 export class OfflineInterceptor implements ResponseAwareHTTPInterceptor {
     #config: OfflineInterceptorConfig;

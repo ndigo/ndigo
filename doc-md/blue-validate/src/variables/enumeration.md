@@ -8,7 +8,7 @@
 
 > `const` **enumeration**: (`params`) => (`value`, `context`) => `void`
 
-Defined in: packages/blue-validate/src/decorators.ts:493
+Defined in: [packages/blue-validate/src/decorators.ts:491](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/decorators.ts#lines-491)
 
 TC39 Stage 3 decorator that validates a property's value against a predefined list of allowed values.
 

@@ -6,7 +6,7 @@
 
 # Class: Null
 
-Defined in: packages/blue-core/src/null.ts:10
+Defined in: [packages/blue-core/src/null.ts:10](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/null.ts#lines-10)
 
 An object with a `null` prototype.
 

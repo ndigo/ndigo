@@ -6,7 +6,7 @@
 
 # Class: BrowserCookieValueMethodArgumentResolver
 
-Defined in: packages/blue-platform-web/src/cookie-argument-resolver.ts:20
+Defined in: [packages/blue-platform-web/src/cookie-argument-resolver.ts:13](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/cookie-argument-resolver.ts#lines-13)
 
 Browser cookie argument resolver using `document.cookie` parsing.
 
@@ -20,7 +20,7 @@ Browser cookie argument resolver using `document.cookie` parsing.
 
 > **new BrowserCookieValueMethodArgumentResolver**(): `BrowserCookieValueMethodArgumentResolver`
 
-Defined in: packages/blue-platform-web/src/cookie-argument-resolver.ts:21
+Defined in: [packages/blue-platform-web/src/cookie-argument-resolver.ts:14](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/cookie-argument-resolver.ts#lines-14)
 
 #### Returns
 
@@ -38,7 +38,7 @@ Defined in: packages/blue-platform-web/src/cookie-argument-resolver.ts:21
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-platform-web/src/cookie-argument-resolver.ts:25
+Defined in: [packages/blue-platform-web/src/cookie-argument-resolver.ts:18](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/cookie-argument-resolver.ts#lines-18)
 
 ##### Returns
 
@@ -64,7 +64,7 @@ Pipeline: resolveName → defaultValue fallback → convertType lookup → conve
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 ##### mapping
 
@@ -84,7 +84,7 @@ Pipeline: resolveName → defaultValue fallback → convertType lookup → conve
 
 > **handleMissingValue**(`name`): `void`
 
-Defined in: packages/blue-dispatcher/lib/argument-resolver.d.ts:55
+Defined in: packages/blue-dispatcher/lib/argument-resolver.d.ts:46
 
 Handles a missing argument value by throwing a TypeError.
 
@@ -114,7 +114,7 @@ If the argument is undefined or null.
 
 > `protected` **resolveName**(`name`, `_parameter`, `_route`, `_mapping`): `any`
 
-Defined in: packages/blue-platform-web/src/cookie-argument-resolver.ts:30
+Defined in: [packages/blue-platform-web/src/cookie-argument-resolver.ts:23](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/cookie-argument-resolver.ts#lines-23)
 
 Retrieves a raw cookie string from `document.cookie`.
 
@@ -130,7 +130,7 @@ Retrieves a raw cookie string from `document.cookie`.
 
 ##### \_route
 
-`Route`
+[`Route`](#)
 
 ##### \_mapping
 
@@ -150,7 +150,7 @@ Retrieves a raw cookie string from `document.cookie`.
 
 > **supportsParameter**(`parameter`): `boolean`
 
-Defined in: packages/blue-platform-web/src/cookie-argument-resolver.ts:36
+Defined in: [packages/blue-platform-web/src/cookie-argument-resolver.ts:29](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/cookie-argument-resolver.ts#lines-29)
 
 Returns whether this resolver supports cookie parameters.
 

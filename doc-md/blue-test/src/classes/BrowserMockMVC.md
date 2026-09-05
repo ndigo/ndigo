@@ -6,7 +6,7 @@
 
 # Class: BrowserMockMVC
 
-Defined in: packages/blue-test/src/browser-mock-mvc.ts:125
+Defined in: [packages/blue-test/src/browser-mock-mvc.ts:123](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-test/src/browser-mock-mvc.ts#lines-123)
 
 Socket-free mock MVC client for browser applications. Dispatches routes
 through the real `BrowserDispatcher` and captures the rendered view.
@@ -17,7 +17,7 @@ through the real `BrowserDispatcher` and captures the rendered view.
 
 > **new BrowserMockMVC**(`app`): `BrowserMockMVC`
 
-Defined in: packages/blue-test/src/browser-mock-mvc.ts:131
+Defined in: [packages/blue-test/src/browser-mock-mvc.ts:129](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-test/src/browser-mock-mvc.ts#lines-129)
 
 #### Parameters
 
@@ -39,7 +39,7 @@ A booted browser app.
 
 > **get** **lastRender**(): [`CapturedRender`](../interfaces/CapturedRender.md) \| `null`
 
-Defined in: packages/blue-test/src/browser-mock-mvc.ts:163
+Defined in: [packages/blue-test/src/browser-mock-mvc.ts:161](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-test/src/browser-mock-mvc.ts#lines-161)
 
 The captured render from the last dispatch.
 
@@ -53,7 +53,7 @@ The captured render from the last dispatch.
 
 > **dispatch**(`path`): `Promise`\<[`CapturedRender`](../interfaces/CapturedRender.md)\>
 
-Defined in: packages/blue-test/src/browser-mock-mvc.ts:141
+Defined in: [packages/blue-test/src/browser-mock-mvc.ts:139](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-test/src/browser-mock-mvc.ts#lines-139)
 
 Dispatches a route through the browser pipeline.
 

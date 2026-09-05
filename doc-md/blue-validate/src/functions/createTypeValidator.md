@@ -8,7 +8,7 @@
 
 > **createTypeValidator**(`types`, `backend?`): `TypeValidator`
 
-Defined in: packages/blue-validate/src/validator.ts:122
+Defined in: [packages/blue-validate/src/validator.ts:122](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/validator.ts#lines-122)
 
 Factory function to create a new `TypeValidator` instance.
 

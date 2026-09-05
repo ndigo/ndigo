@@ -8,7 +8,7 @@
 
 > **guid**(): `string`
 
-Defined in: packages/blue-util/src/math/guid.ts:22
+Defined in: [packages/blue-util/src/math/guid.ts:22](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-util/src/math/guid.ts#lines-22)
 
 Generates a pseudo-random Globally Unique Identifier (v4).
 Since the total number of GUIDs is 2^122 the chance of generating the same value twice is negligible.

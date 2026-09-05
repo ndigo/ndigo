@@ -30,7 +30,7 @@ export interface HeaderInterceptorConfig {
  * This interceptor implements the RequestAwareHTTPInterceptor interface and
  * adds CSRF tokens, channel IDs, and request IDs to the request headers.
  *
- * @implements {module:http.RequestAwareHTTPInterceptor}
+
  */
 export class HeaderInterceptor implements RequestAwareHTTPInterceptor {
     #config: HeaderInterceptorConfig;

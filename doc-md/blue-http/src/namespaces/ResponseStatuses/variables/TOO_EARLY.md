@@ -8,6 +8,6 @@
 
 > `const` **TOO\_EARLY**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
-Defined in: packages/blue-http/src/response-statuses.ts:264
+Defined in: [packages/blue-http/src/response-statuses.ts:264](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/response-statuses.ts#lines-264)
 
 Indicates that the server is unwilling to risk processing a request that might be replayed.

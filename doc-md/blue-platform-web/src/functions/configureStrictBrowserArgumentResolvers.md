@@ -8,7 +8,7 @@
 
 > **configureStrictBrowserArgumentResolvers**(`applicationContext`, `_options?`): `HandlerMethodArgumentResolver`[]
 
-Defined in: packages/blue-platform-web/src/configure-strict-argument-resolvers.ts:16
+Defined in: [packages/blue-platform-web/src/configure-strict-argument-resolvers.ts:16](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/configure-strict-argument-resolvers.ts#lines-16)
 
 Registers browser argument resolvers.
 

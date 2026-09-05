@@ -6,7 +6,7 @@
 
 # Class: MethodParameter
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:125
+Defined in: [packages/blue-dispatcher/src/route-parameter.ts:126](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-parameter.ts#lines-126)
 
 Method parameter metadata
 
@@ -20,7 +20,7 @@ Method parameter metadata
 
 > **new MethodParameter**(`type`, `name`, `required?`, `defaultValue?`, `convertType?`, `prefix?`): `MethodParameter`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:133
+Defined in: [packages/blue-dispatcher/src/route-parameter.ts:134](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-parameter.ts#lines-134)
 
 #### Parameters
 
@@ -64,7 +64,7 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:133
 
 > `readonly` **name**: `string`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:126
+Defined in: [packages/blue-dispatcher/src/route-parameter.ts:127](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-parameter.ts#lines-127)
 
 ***
 
@@ -72,7 +72,7 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:126
 
 > `readonly` **type**: [`MethodParameterType`](MethodParameterType.md)
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:127
+Defined in: [packages/blue-dispatcher/src/route-parameter.ts:128](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-parameter.ts#lines-128)
 
 ***
 
@@ -80,7 +80,7 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:127
 
 > `readonly` **required**: `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:128
+Defined in: [packages/blue-dispatcher/src/route-parameter.ts:129](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-parameter.ts#lines-129)
 
 ***
 
@@ -88,7 +88,7 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:128
 
 > `readonly` **defaultValue**: `string` \| `null`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:129
+Defined in: [packages/blue-dispatcher/src/route-parameter.ts:130](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-parameter.ts#lines-130)
 
 ***
 
@@ -96,7 +96,7 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:129
 
 > `readonly` **convertType**: \{ `source`: `any`; `target`: `any`; \} \| `undefined`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:130
+Defined in: [packages/blue-dispatcher/src/route-parameter.ts:131](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-parameter.ts#lines-131)
 
 ***
 
@@ -104,7 +104,7 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:130
 
 > `readonly` **prefix**: `string` \| `null`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:131
+Defined in: [packages/blue-dispatcher/src/route-parameter.ts:132](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-parameter.ts#lines-132)
 
 ## Methods
 
@@ -112,7 +112,7 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:131
 
 > **toJSON**(): `JSONObject`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:152
+Defined in: [packages/blue-dispatcher/src/route-parameter.ts:153](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-parameter.ts#lines-153)
 
 #### Returns
 
@@ -128,7 +128,7 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:152
 
 > **toString**(): `string`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:163
+Defined in: [packages/blue-dispatcher/src/route-parameter.ts:164](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-parameter.ts#lines-164)
 
 #### Returns
 

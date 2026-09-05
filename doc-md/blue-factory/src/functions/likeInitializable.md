@@ -8,13 +8,13 @@
 
 > **likeInitializable**(`value`): `value is Initializable`
 
-Defined in: packages/blue-factory/src/lifecycle.ts:70
+Defined in: [packages/blue-factory/src/lifecycle.ts:70](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/lifecycle.ts#lines-70)
 
 ## Parameters
 
 ### value
 
-`any`
+`unknown`
 
 ## Returns
 

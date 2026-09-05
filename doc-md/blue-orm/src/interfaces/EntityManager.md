@@ -6,7 +6,7 @@
 
 # Interface: EntityManager
 
-Defined in: packages/blue-orm/src/entity-manager.ts:10
+Defined in: [packages/blue-orm/src/entity-manager.ts:10](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/entity-manager.ts#lines-10)
 
 Manages the lifecycle of entities, including persistence, retrieval, and removal.
 
@@ -16,7 +16,7 @@ Manages the lifecycle of entities, including persistence, retrieval, and removal
 
 > **persist**\<`T`\>(`entity`): `void`
 
-Defined in: packages/blue-orm/src/entity-manager.ts:16
+Defined in: [packages/blue-orm/src/entity-manager.ts:16](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/entity-manager.ts#lines-16)
 
 Persists a new entity or updates an existing one.
 
@@ -48,7 +48,7 @@ If the entity class is not decorated with `@entity` or is missing a `@primaryCol
 
 > **find**\<`T`\>(`entityClass`, `id`): `T` \| `undefined`
 
-Defined in: packages/blue-orm/src/entity-manager.ts:23
+Defined in: [packages/blue-orm/src/entity-manager.ts:23](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/entity-manager.ts#lines-23)
 
 Finds an entity by its class and primary ID.
 
@@ -84,7 +84,7 @@ The found entity or `undefined` if not found.
 
 > **findAll**\<`T`\>(`entityClass`): `T`[]
 
-Defined in: packages/blue-orm/src/entity-manager.ts:29
+Defined in: [packages/blue-orm/src/entity-manager.ts:29](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/entity-manager.ts#lines-29)
 
 Finds all entities of a given class.
 
@@ -114,7 +114,7 @@ An array of all found entities.
 
 > **remove**\<`T`\>(`entity`): `void`
 
-Defined in: packages/blue-orm/src/entity-manager.ts:34
+Defined in: [packages/blue-orm/src/entity-manager.ts:34](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/entity-manager.ts#lines-34)
 
 Removes an entity from persistence.
 
@@ -142,7 +142,7 @@ The entity to remove.
 
 > **flush**(): `void`
 
-Defined in: packages/blue-orm/src/entity-manager.ts:38
+Defined in: [packages/blue-orm/src/entity-manager.ts:38](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/entity-manager.ts#lines-38)
 
 Flushes any pending changes to the data source.
 
@@ -156,7 +156,7 @@ Flushes any pending changes to the data source.
 
 > **clear**(): `void`
 
-Defined in: packages/blue-orm/src/entity-manager.ts:42
+Defined in: [packages/blue-orm/src/entity-manager.ts:42](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/entity-manager.ts#lines-42)
 
 Clears all managed entities and resets identity counters.
 

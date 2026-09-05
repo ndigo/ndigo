@@ -6,7 +6,7 @@
 
 # Interface: RouteHandlerAdapter
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:29
+Defined in: [packages/blue-dispatcher/src/route-handler-adapter.ts:29](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-handler-adapter.ts#lines-29)
 
 Adapts a handler instance into route execution.
 
@@ -18,7 +18,7 @@ Implementations decide whether they support a handler type and how to invoke it 
 
 > **handle**(`route`, `handler`): `Promise`\<[`ModelAndView`](../classes/ModelAndView.md)\>
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:39
+Defined in: [packages/blue-dispatcher/src/route-handler-adapter.ts:39](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-handler-adapter.ts#lines-39)
 
 Handle a route with the given handler.
 
@@ -28,7 +28,7 @@ The handler should already have been accepted by [RouteHandlerAdapter.supports](
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The current route.
 
@@ -50,7 +50,7 @@ The model and view produced by handler execution.
 
 > **supports**(`handler`): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:47
+Defined in: [packages/blue-dispatcher/src/route-handler-adapter.ts:47](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-handler-adapter.ts#lines-47)
 
 Tests whether this adapter supports the given handler.
 

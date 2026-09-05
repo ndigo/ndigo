@@ -8,7 +8,7 @@
 
 > **setErrorMessageFormatter**(`formatter`): `void`
 
-Defined in: packages/blue-validate/src/decorators.ts:157
+Defined in: [packages/blue-validate/src/decorators.ts:157](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/decorators.ts#lines-157)
 
 Replaces the default error message formatter.
 

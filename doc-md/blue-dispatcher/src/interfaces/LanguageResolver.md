@@ -6,7 +6,7 @@
 
 # Interface: LanguageResolver
 
-Defined in: packages/blue-dispatcher/src/language-resolver.ts:9
+Defined in: [packages/blue-dispatcher/src/language-resolver.ts:9](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/language-resolver.ts#lines-9)
 
 Resolves the active language for a route.
 
@@ -16,7 +16,7 @@ Resolves the active language for a route.
 
 > **resolveLanguage**(`route`): `string`
 
-Defined in: packages/blue-dispatcher/src/language-resolver.ts:16
+Defined in: [packages/blue-dispatcher/src/language-resolver.ts:16](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/language-resolver.ts#lines-16)
 
 Resolve the language to use for the current route.
 
@@ -24,7 +24,7 @@ Resolve the language to use for the current route.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The current route.
 

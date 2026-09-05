@@ -8,7 +8,7 @@
 
 > **unregisterConstraint**(`name`): `void`
 
-Defined in: packages/blue-validate/src/constraints.ts:29
+Defined in: [packages/blue-validate/src/constraints.ts:29](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/constraints.ts#lines-29)
 
 Unregisters a custom constraint by name.
 

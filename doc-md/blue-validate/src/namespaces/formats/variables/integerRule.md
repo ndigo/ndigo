@@ -8,6 +8,6 @@
 
 > `const` **integerRule**: `RegExp`
 
-Defined in: packages/blue-validate/src/formats.ts:125
+Defined in: [packages/blue-validate/src/formats.ts:125](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/formats.ts#lines-125)
 
 A regular expression matching integers.

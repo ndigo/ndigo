@@ -6,7 +6,7 @@
 
 # Interface: GatewayDiagnosticHandler
 
-Defined in: packages/blue-context/src/event-gateway.ts:57
+Defined in: [packages/blue-context/src/event-gateway.ts:57](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-gateway.ts#lines-57)
 
 Receives relay registration and blocking diagnostics.
 
@@ -16,7 +16,7 @@ Receives relay registration and blocking diagnostics.
 
 > `optional` **onRelayBlocked**(`result`): `void`
 
-Defined in: packages/blue-context/src/event-gateway.ts:63
+Defined in: [packages/blue-context/src/event-gateway.ts:63](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-gateway.ts#lines-63)
 
 Called when a relay is rejected.
 
@@ -38,7 +38,7 @@ The blocked relay result.
 
 > `optional` **onRelayRegistered**(`relay`): `void`
 
-Defined in: packages/blue-context/src/event-gateway.ts:69
+Defined in: [packages/blue-context/src/event-gateway.ts:69](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-gateway.ts#lines-69)
 
 Called when a relay is accepted.
 

@@ -6,7 +6,7 @@
 
 # Class: LoggerFactory
 
-Defined in: packages/blue-telemetry/src/logger/logger-factory.ts:45
+Defined in: [packages/blue-telemetry/src/logger/logger-factory.ts:45](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/logger/logger-factory.ts#lines-45)
 
 A static factory class for creating `Logger` instances.
 
@@ -29,7 +29,7 @@ and whether loggers should be context-aware (e.g., integrating with OpenTelemetr
 
 > `static` **setType**(`type`): `void`
 
-Defined in: packages/blue-telemetry/src/logger/logger-factory.ts:54
+Defined in: [packages/blue-telemetry/src/logger/logger-factory.ts:54](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/logger/logger-factory.ts#lines-54)
 
 Sets the global logger type for all subsequent loggers created by this factory.
 
@@ -51,7 +51,7 @@ The desired `LoggerType`.
 
 > `static` **setThreshold**(`threshold`): `void`
 
-Defined in: packages/blue-telemetry/src/logger/logger-factory.ts:62
+Defined in: [packages/blue-telemetry/src/logger/logger-factory.ts:62](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/logger/logger-factory.ts#lines-62)
 
 Sets the global minimum severity threshold for all subsequent loggers created by this factory.
 
@@ -73,7 +73,7 @@ The new minimum `SeverityNumber`.
 
 > `static` **setContextAware**(`enabled`): `void`
 
-Defined in: packages/blue-telemetry/src/logger/logger-factory.ts:72
+Defined in: [packages/blue-telemetry/src/logger/logger-factory.ts:72](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/logger/logger-factory.ts#lines-72)
 
 Enables or disables context-aware logging for all subsequent loggers.
 When enabled, loggers will automatically include context information (e.g., trace IDs)
@@ -97,7 +97,7 @@ if an active OpenTelemetry context is available.
 
 > `static` **reset**(): `void`
 
-Defined in: packages/blue-telemetry/src/logger/logger-factory.ts:82
+Defined in: [packages/blue-telemetry/src/logger/logger-factory.ts:82](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/logger/logger-factory.ts#lines-82)
 
 Resets the `LoggerFactory` to its default configuration:
 - Type: `'console'`
@@ -114,7 +114,7 @@ Resets the `LoggerFactory` to its default configuration:
 
 > `static` **getLogger**(`name`): [`Logger`](../interfaces/Logger.md)
 
-Defined in: packages/blue-telemetry/src/logger/logger-factory.ts:94
+Defined in: [packages/blue-telemetry/src/logger/logger-factory.ts:94](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/logger/logger-factory.ts#lines-94)
 
 Creates and returns a `Logger` instance with the specified name,
 configured according to the current global settings of the factory.

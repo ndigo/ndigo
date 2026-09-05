@@ -6,7 +6,7 @@
 
 # Interface: Repository\<T, ID\>
 
-Defined in: packages/blue-orm/src/repository.ts:13
+Defined in: [packages/blue-orm/src/repository.ts:13](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/repository.ts#lines-13)
 
 Defines the basic contract for a repository, providing common data access operations for entities.
 
@@ -30,7 +30,7 @@ The type of the entity's primary identifier.
 
 > **save**(`entity`): `T`
 
-Defined in: packages/blue-orm/src/repository.ts:19
+Defined in: [packages/blue-orm/src/repository.ts:19](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/repository.ts#lines-19)
 
 Saves a given entity. If the entity already exists, it will be updated; otherwise, it will be created.
 
@@ -54,7 +54,7 @@ The saved entity.
 
 > **findById**(`id`): `T` \| `undefined`
 
-Defined in: packages/blue-orm/src/repository.ts:25
+Defined in: [packages/blue-orm/src/repository.ts:25](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/repository.ts#lines-25)
 
 Retrieves an entity by its ID.
 
@@ -78,7 +78,7 @@ The entity with the given ID or `undefined` if not found.
 
 > **findAll**(): `T`[]
 
-Defined in: packages/blue-orm/src/repository.ts:30
+Defined in: [packages/blue-orm/src/repository.ts:30](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/repository.ts#lines-30)
 
 Retrieves all entities.
 
@@ -94,7 +94,7 @@ An array containing all entities.
 
 > **deleteById**(`id`): `boolean`
 
-Defined in: packages/blue-orm/src/repository.ts:36
+Defined in: [packages/blue-orm/src/repository.ts:36](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/repository.ts#lines-36)
 
 Deletes an entity by its ID.
 
@@ -118,7 +118,7 @@ The ID of the entity to delete.
 
 > **count**(): `number`
 
-Defined in: packages/blue-orm/src/repository.ts:41
+Defined in: [packages/blue-orm/src/repository.ts:41](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/repository.ts#lines-41)
 
 Returns the number of entities available.
 
@@ -134,7 +134,7 @@ The total number of entities.
 
 > **existsById**(`id`): `boolean`
 
-Defined in: packages/blue-orm/src/repository.ts:47
+Defined in: [packages/blue-orm/src/repository.ts:47](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/repository.ts#lines-47)
 
 Checks if an entity with the given ID exists.
 

@@ -6,7 +6,7 @@
 
 # Interface: MediaTypeFileExtensionResolver
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:13
+Defined in: [packages/blue-view/src/content-negotiation-view-resolver.ts:13](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/content-negotiation-view-resolver.ts#lines-13)
 
 Resolves file extensions for a media type and can enumerate all known extensions.
 
@@ -16,7 +16,7 @@ Resolves file extensions for a media type and can enumerate all known extensions
 
 > **getAllFileExtenstions**(): `string`[]
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:19
+Defined in: [packages/blue-view/src/content-negotiation-view-resolver.ts:19](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/content-negotiation-view-resolver.ts#lines-19)
 
 Returns every known file extension.
 
@@ -32,7 +32,7 @@ The known file extensions.
 
 > **resolveFileExtensions**(`mediaType`): `string`[]
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:27
+Defined in: [packages/blue-view/src/content-negotiation-view-resolver.ts:27](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/content-negotiation-view-resolver.ts#lines-27)
 
 Resolves the file extensions associated with the given media type.
 

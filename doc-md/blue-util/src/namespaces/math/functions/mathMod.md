@@ -8,7 +8,7 @@
 
 > **mathMod**(`m`, `p`): `number`
 
-Defined in: packages/blue-util/src/math/index.ts:102
+Defined in: [packages/blue-util/src/math/index.ts:102](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-util/src/math/index.ts#lines-102)
 
 `mathMod` behaves like the modulo operator should mathematically, unlike the
 `%` operator (and by extension, [`R.modulo`](#modulo)). So while

@@ -8,7 +8,7 @@
 
 > **postLoad**(): (`_value`, `context`) => `void`
 
-Defined in: packages/blue-orm/src/decorators.ts:248
+Defined in: [packages/blue-orm/src/decorators.ts:255](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/decorators.ts#lines-255)
 
 Marks a method to be invoked by the `EntityManager` **after** an entity is loaded
 from the data source.

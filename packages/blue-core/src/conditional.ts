@@ -67,7 +67,7 @@ function conditionalDecorator(key: string, value: unknown, target: any, context:
  * @example
  * ```ts
  * @conditionalOnBrowser
- * @configuration
+ * @class
  * class WebAutoConfiguration { … }
  * ```
  */
@@ -81,7 +81,7 @@ export function conditionalOnBrowser(target: any, context: ClassDecoratorContext
  * @example
  * ```ts
  * @conditionalOnNode
- * @configuration
+ * @class
  * class NodeAutoConfiguration { … }
  * ```
  */
@@ -108,7 +108,7 @@ export interface ConditionalOnPropertyOptions {
  * @example
  * ```ts
  * @conditionalOnProperty({ name: 'app.management.enabled' })
- * @configuration
+ * @class
  * class ManagementConfiguration { … }
  * ```
  */
@@ -125,7 +125,7 @@ export function conditionalOnProperty(options: ConditionalOnPropertyOptions) {
  * @example
  * ```ts
  * @conditionalOnMissingEntry('metricsController')
- * @configuration
+ * @class
  * class ManagementAutoConfiguration { … }
  * ```
  */

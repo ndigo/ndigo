@@ -8,4 +8,4 @@
 
 > `const` **SHARED\_KEY**: `"blue:shared"` = `'blue:shared'`
 
-Defined in: packages/blue-core/src/shared.ts:11
+Defined in: [packages/blue-core/src/shared.ts:11](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/shared.ts#lines-11)

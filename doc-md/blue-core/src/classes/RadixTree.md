@@ -6,7 +6,7 @@
 
 # Class: RadixTree\<V\>
 
-Defined in: packages/blue-core/src/radix-tree.ts:88
+Defined in: [packages/blue-core/src/radix-tree.ts:88](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/radix-tree.ts#lines-88)
 
 A radix tree implementation for URL routing.
 
@@ -26,7 +26,7 @@ A radix tree implementation for URL routing.
 
 > **new RadixTree**\<`V`\>(): `RadixTree`\<`V`\>
 
-Defined in: packages/blue-core/src/radix-tree.ts:98
+Defined in: [packages/blue-core/src/radix-tree.ts:98](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/radix-tree.ts#lines-98)
 
 #### Returns
 
@@ -40,7 +40,7 @@ Defined in: packages/blue-core/src/radix-tree.ts:98
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-core/src/radix-tree.ts:94
+Defined in: [packages/blue-core/src/radix-tree.ts:94](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/radix-tree.ts#lines-94)
 
 The string tag for this class.
 
@@ -54,7 +54,7 @@ The string tag for this class.
 
 > **insert**(`pattern`, `value`): `void`
 
-Defined in: packages/blue-core/src/radix-tree.ts:129
+Defined in: [packages/blue-core/src/radix-tree.ts:129](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/radix-tree.ts#lines-129)
 
 Inserts a pattern and its associated value into the radix tree.
 
@@ -82,7 +82,7 @@ The value associated with the pattern.
 
 > **lookup**(`path`): [`RadixMatch`](../interfaces/RadixMatch.md)\<`V`\> \| `null`
 
-Defined in: packages/blue-core/src/radix-tree.ts:211
+Defined in: [packages/blue-core/src/radix-tree.ts:211](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/radix-tree.ts#lines-211)
 
 Looks up a path in the radix tree and returns the matching value with parameters.
 
@@ -106,7 +106,7 @@ A match object if found, otherwise null.
 
 > **delete**(`pattern`): `boolean`
 
-Defined in: packages/blue-core/src/radix-tree.ts:274
+Defined in: [packages/blue-core/src/radix-tree.ts:274](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/radix-tree.ts#lines-274)
 
 Deletes a pattern from the radix tree.
 
@@ -130,7 +130,7 @@ True if the pattern was found and deleted, false otherwise.
 
 > **toJSON**(): [`JSONValue`](../type-aliases/JSONValue.md)
 
-Defined in: packages/blue-core/src/radix-tree.ts:335
+Defined in: [packages/blue-core/src/radix-tree.ts:335](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/radix-tree.ts#lines-335)
 
 Serializes the radix tree to a JSON object.
 

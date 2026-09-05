@@ -18,7 +18,7 @@ import { NodeSessionValueMethodArgumentResolver } from './session-argument-resol
  * Auto-configuration for Node.js-based applications.
  * Provisions Node.js argument resolvers, a dispatcher, and an HTTP server.
  *
- * Register this configuration class with your {@link ApplicationContext} alongside
+ * Register this configuration class with your `ApplicationContext` alongside
  * {@link NodeEnvironment} to enable full server-side request handling.
  */
 @conditionalOnNode

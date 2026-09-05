@@ -21,18 +21,18 @@ class FileResource<T = string> implements Resource<T> {
 }
 
 /**
- * {@link ResourceLoader} implementation that reads files from the local filesystem using
+ * `ResourceLoader` implementation that reads files from the local filesystem using
  * `node:fs/promises`. The `location` parameter is treated as a file path.
  *
- * Returns an {@link UnresolvedResource} (with `exists === false`) if the file cannot be read.
+ * Returns an `UnresolvedResource` (with `exists === false`) if the file cannot be read.
  */
 export class FileSystemResourceLoader implements ResourceLoader {
     /**
      * Loads a file resource from the given path.
      *
      * @param location - Absolute or relative file path.
-     * @returns A resolved {@link Resource} containing the file contents as a string,
-     *          or an {@link UnresolvedResource} if the read fails.
+* @returns A resolved `Resource` containing the file contents as a string,
+ *          or an `UnresolvedResource` if the read fails.
      */
     async getResource(location: string): Promise<Resource> {
         try {

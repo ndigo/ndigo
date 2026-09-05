@@ -8,7 +8,7 @@
 
 > `const` **likeContentSourceAware**: (`value`) => `value is ContentSourceAware`
 
-Defined in: packages/blue-content/src/content.ts:131
+Defined in: [packages/blue-content/src/content.ts:131](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-content/src/content.ts#lines-131)
 
 Tests whether a value looks like content-source-aware state.
 

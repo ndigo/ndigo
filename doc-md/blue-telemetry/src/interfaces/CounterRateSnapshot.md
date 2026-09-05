@@ -6,7 +6,7 @@
 
 # Interface: CounterRateSnapshot
 
-Defined in: packages/blue-telemetry/src/metrics/counter-rate-resolver.ts:7
+Defined in: [packages/blue-telemetry/src/metrics/counter-rate-resolver.ts:7](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/metrics/counter-rate-resolver.ts#lines-7)
 
 Represents a snapshot of a counter's rate per second for a specific feature.
 
@@ -16,7 +16,7 @@ Represents a snapshot of a counter's rate per second for a specific feature.
 
 > `readonly` **counterKey**: `string`
 
-Defined in: packages/blue-telemetry/src/metrics/counter-rate-resolver.ts:8
+Defined in: [packages/blue-telemetry/src/metrics/counter-rate-resolver.ts:8](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/metrics/counter-rate-resolver.ts#lines-8)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: packages/blue-telemetry/src/metrics/counter-rate-resolver.ts:8
 
 > `readonly` **feature**: `string`
 
-Defined in: packages/blue-telemetry/src/metrics/counter-rate-resolver.ts:9
+Defined in: [packages/blue-telemetry/src/metrics/counter-rate-resolver.ts:9](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/metrics/counter-rate-resolver.ts#lines-9)
 
 ***
 
@@ -32,4 +32,4 @@ Defined in: packages/blue-telemetry/src/metrics/counter-rate-resolver.ts:9
 
 > `readonly` **ratePerSecond**: `number`
 
-Defined in: packages/blue-telemetry/src/metrics/counter-rate-resolver.ts:10
+Defined in: [packages/blue-telemetry/src/metrics/counter-rate-resolver.ts:10](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/metrics/counter-rate-resolver.ts#lines-10)

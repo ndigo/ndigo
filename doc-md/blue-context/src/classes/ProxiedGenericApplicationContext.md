@@ -6,11 +6,7 @@
 
 # Class: ProxiedGenericApplicationContext
 
-Defined in: packages/blue-context/src/context.ts:788
-
-## Implements
-
-external:Record
+Defined in: [packages/blue-context/src/context.ts:793](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-793)
 
 ## Extends
 
@@ -30,7 +26,7 @@ external:Record
 
 > **new ProxiedGenericApplicationContext**(`name`, `data?`): `ProxiedGenericApplicationContext`
 
-Defined in: packages/blue-context/src/context.ts:797
+Defined in: [packages/blue-context/src/context.ts:802](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-802)
 
 Creates a proxied context that forwards property access to values.
 
@@ -62,7 +58,7 @@ Optional initial values to register.
 
 > **createdTimestamp**: `number`
 
-Defined in: packages/blue-context/src/context.ts:317
+Defined in: [packages/blue-context/src/context.ts:317](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-317)
 
 #### Inherited from
 
@@ -74,7 +70,7 @@ Defined in: packages/blue-context/src/context.ts:317
 
 > **destroyed**: `boolean`
 
-Defined in: packages/blue-context/src/context.ts:318
+Defined in: [packages/blue-context/src/context.ts:318](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-318)
 
 #### Inherited from
 
@@ -86,7 +82,7 @@ Defined in: packages/blue-context/src/context.ts:318
 
 > `optional` **destroyedTimestamp?**: `number`
 
-Defined in: packages/blue-context/src/context.ts:319
+Defined in: [packages/blue-context/src/context.ts:319](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-319)
 
 #### Inherited from
 
@@ -156,7 +152,7 @@ Indicates if there are any initialization-aware processors.
 
 > **get** **environment**(): [`Environment`](../interfaces/Environment.md)
 
-Defined in: packages/blue-context/src/context.ts:324
+Defined in: [packages/blue-context/src/context.ts:324](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-324)
 
 The lazily created environment for this context.
 
@@ -174,15 +170,15 @@ The lazily created environment for this context.
 
 #### Get Signature
 
-> **get** **contentSource**(): `ContentSource`
+> **get** **contentSource**(): [`ContentSource`](#)
 
-Defined in: packages/blue-context/src/context.ts:334
+Defined in: [packages/blue-context/src/context.ts:334](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-334)
 
 The content source used to resolve theme content.
 
 ##### Returns
 
-`ContentSource`
+[`ContentSource`](#)
 
 #### Inherited from
 
@@ -196,7 +192,7 @@ The content source used to resolve theme content.
 
 > **get** **children**(): readonly [`ApplicationContext`](../interfaces/ApplicationContext.md)[]
 
-Defined in: packages/blue-context/src/context.ts:341
+Defined in: [packages/blue-context/src/context.ts:341](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-341)
 
 The direct child contexts.
 
@@ -216,7 +212,7 @@ readonly [`ApplicationContext`](../interfaces/ApplicationContext.md)[]
 
 > **get** **id**(): `number`
 
-Defined in: packages/blue-context/src/context.ts:348
+Defined in: [packages/blue-context/src/context.ts:348](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-348)
 
 The stable identifier assigned at construction.
 
@@ -236,7 +232,7 @@ The stable identifier assigned at construction.
 
 > **get** **isActive**(): `boolean`
 
-Defined in: packages/blue-context/src/context.ts:355
+Defined in: [packages/blue-context/src/context.ts:355](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-355)
 
 Indicates whether the context has been refreshed and not yet closed.
 
@@ -256,7 +252,7 @@ Indicates whether the context has been refreshed and not yet closed.
 
 > **get** **name**(): `string`
 
-Defined in: packages/blue-context/src/context.ts:362
+Defined in: [packages/blue-context/src/context.ts:362](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-362)
 
 The configured context name.
 
@@ -276,7 +272,7 @@ The configured context name.
 
 > **get** **parent**(): [`ApplicationContext`](../interfaces/ApplicationContext.md) \| `null`
 
-Defined in: packages/blue-context/src/context.ts:369
+Defined in: [packages/blue-context/src/context.ts:369](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-369)
 
 The current parent context.
 
@@ -296,7 +292,7 @@ The current parent context.
 
 > **get** **path**(): `string`
 
-Defined in: packages/blue-context/src/context.ts:376
+Defined in: [packages/blue-context/src/context.ts:376](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-376)
 
 The slash-delimited hierarchy path from the root to this context.
 
@@ -316,7 +312,7 @@ The slash-delimited hierarchy path from the root to this context.
 
 > **get** **themeName**(): `string`
 
-Defined in: packages/blue-context/src/context.ts:393
+Defined in: [packages/blue-context/src/context.ts:395](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-395)
 
 The default theme name associated with this context.
 
@@ -356,7 +352,7 @@ Always 'Factory'.
 
 > **broadcast**(`type`, ...`data`): `void`
 
-Defined in: packages/blue-context/src/context.ts:458
+Defined in: [packages/blue-context/src/context.ts:460](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-460)
 
 Broadcasts an event to all descendants.
 
@@ -388,7 +384,7 @@ Event payload values.
 
 > **bubble**(`type`, ...`data`): `void`
 
-Defined in: packages/blue-context/src/context.ts:472
+Defined in: [packages/blue-context/src/context.ts:474](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-474)
 
 Emits an event to parent contexts.
 
@@ -420,7 +416,7 @@ Event payload values.
 
 > **close**(): `void`
 
-Defined in: packages/blue-context/src/context.ts:479
+Defined in: [packages/blue-context/src/context.ts:481](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-481)
 
 Closes the context and all descendants.
 
@@ -438,7 +434,7 @@ Closes the context and all descendants.
 
 > **destroy**(): `void`
 
-Defined in: packages/blue-context/src/context.ts:524
+Defined in: [packages/blue-context/src/context.ts:527](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-527)
 
 Releases this context's resources.
 
@@ -456,7 +452,7 @@ Releases this context's resources.
 
 > **getContent**(`key`, `language`): `string`
 
-Defined in: packages/blue-context/src/context.ts:535
+Defined in: [packages/blue-context/src/context.ts:538](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-538)
 
 Resolves content locally and then delegates to the parent if needed.
 
@@ -490,7 +486,7 @@ The resolved content.
 
 > **getTheme**(`name?`): `Theme`
 
-Defined in: packages/blue-context/src/context.ts:551
+Defined in: [packages/blue-context/src/context.ts:554](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-554)
 
 Resolves a theme by name or the default theme.
 
@@ -518,7 +514,7 @@ The resolved theme.
 
 > **hasChild**(`node`): `boolean`
 
-Defined in: packages/blue-context/src/context.ts:565
+Defined in: [packages/blue-context/src/context.ts:568](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-568)
 
 Returns whether the given context is a direct child.
 
@@ -546,7 +542,7 @@ The application context to check for.
 
 > **newChild**(`name?`, `data?`): [`ApplicationContext`](../interfaces/ApplicationContext.md)
 
-Defined in: packages/blue-context/src/context.ts:576
+Defined in: [packages/blue-context/src/context.ts:579](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-579)
 
 Creates and attaches a child context.
 
@@ -580,7 +576,7 @@ The created child application context.
 
 > **refresh**(): `void`
 
-Defined in: packages/blue-context/src/context.ts:585
+Defined in: [packages/blue-context/src/context.ts:588](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-588)
 
 Initializes the context lifecycle if it is not already active.
 
@@ -598,7 +594,7 @@ Initializes the context lifecycle if it is not already active.
 
 > **removeChild**(`node`): `boolean`
 
-Defined in: packages/blue-context/src/context.ts:613
+Defined in: [packages/blue-context/src/context.ts:616](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-616)
 
 Removes a child from the direct child list.
 
@@ -626,7 +622,7 @@ The child application context to remove.
 
 > **setContentSource**(`contentSource`): `void`
 
-Defined in: packages/blue-context/src/context.ts:627
+Defined in: [packages/blue-context/src/context.ts:630](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-630)
 
 Replaces the content source used by this context.
 
@@ -634,7 +630,7 @@ Replaces the content source used by this context.
 
 ##### contentSource
 
-`ContentSource`
+[`ContentSource`](#)
 
 #### Returns
 
@@ -650,7 +646,7 @@ Replaces the content source used by this context.
 
 > **setEnvironment**(`environment`): `void`
 
-Defined in: packages/blue-context/src/context.ts:638
+Defined in: [packages/blue-context/src/context.ts:641](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-641)
 
 Replaces the environment used by this context.
 
@@ -674,7 +670,7 @@ Replaces the environment used by this context.
 
 > **setId**(`id`): `void`
 
-Defined in: packages/blue-context/src/context.ts:645
+Defined in: [packages/blue-context/src/context.ts:648](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-648)
 
 Updates the identifier assigned to this context.
 
@@ -698,7 +694,7 @@ Updates the identifier assigned to this context.
 
 > **setName**(`name`): `void`
 
-Defined in: packages/blue-context/src/context.ts:652
+Defined in: [packages/blue-context/src/context.ts:655](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-655)
 
 Updates the context name.
 
@@ -722,7 +718,7 @@ Updates the context name.
 
 > **setParent**(`parent`): `void`
 
-Defined in: packages/blue-context/src/context.ts:659
+Defined in: [packages/blue-context/src/context.ts:662](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-662)
 
 Reassigns the parent context and keeps the child list in sync.
 
@@ -746,7 +742,7 @@ Reassigns the parent context and keeps the child list in sync.
 
 > **setThemeName**(`themeName`): `void`
 
-Defined in: packages/blue-context/src/context.ts:684
+Defined in: [packages/blue-context/src/context.ts:687](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-687)
 
 Updates the default theme name.
 
@@ -770,7 +766,7 @@ Updates the default theme name.
 
 > **setThemeResolver**(`themeResolver`): `void`
 
-Defined in: packages/blue-context/src/context.ts:691
+Defined in: [packages/blue-context/src/context.ts:694](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-694)
 
 Overrides the theme resolver used by this context.
 
@@ -794,7 +790,7 @@ Overrides the theme resolver used by this context.
 
 > `protected` **\_createEnvironment**(): [`Environment`](../interfaces/Environment.md)
 
-Defined in: packages/blue-context/src/context.ts:696
+Defined in: [packages/blue-context/src/context.ts:699](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-699)
 
 #### Returns
 
@@ -810,7 +806,7 @@ Defined in: packages/blue-context/src/context.ts:696
 
 > `protected` **\_createThemeResolver**(): `ThemeResolver`
 
-Defined in: packages/blue-context/src/context.ts:700
+Defined in: [packages/blue-context/src/context.ts:703](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-703)
 
 #### Returns
 
@@ -826,7 +822,7 @@ Defined in: packages/blue-context/src/context.ts:700
 
 > `protected` **\_destroyValues**(): `void`
 
-Defined in: packages/blue-context/src/context.ts:712
+Defined in: [packages/blue-context/src/context.ts:715](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-715)
 
 #### Returns
 
@@ -842,7 +838,7 @@ Defined in: packages/blue-context/src/context.ts:712
 
 > `protected` **\_finishFactoryInitialization**(): `void`
 
-Defined in: packages/blue-context/src/context.ts:730
+Defined in: [packages/blue-context/src/context.ts:734](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-734)
 
 #### Returns
 
@@ -858,7 +854,7 @@ Defined in: packages/blue-context/src/context.ts:730
 
 > `protected` **\_onRefresh**(): `void`
 
-Defined in: packages/blue-context/src/context.ts:744
+Defined in: [packages/blue-context/src/context.ts:748](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-748)
 
 #### Returns
 
@@ -874,7 +870,7 @@ Defined in: packages/blue-context/src/context.ts:744
 
 > `protected` **\_postProcessFactory**(): `void`
 
-Defined in: packages/blue-context/src/context.ts:746
+Defined in: [packages/blue-context/src/context.ts:750](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-750)
 
 #### Returns
 
@@ -890,7 +886,7 @@ Defined in: packages/blue-context/src/context.ts:746
 
 > `protected` **\_prepareFactory**(): `void`
 
-Defined in: packages/blue-context/src/context.ts:748
+Defined in: [packages/blue-context/src/context.ts:752](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-752)
 
 #### Returns
 
@@ -906,7 +902,7 @@ Defined in: packages/blue-context/src/context.ts:748
 
 > `protected` **\_invokeRegistryProcessors**(): `void`
 
-Defined in: packages/blue-context/src/context.ts:758
+Defined in: [packages/blue-context/src/context.ts:762](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-762)
 
 #### Returns
 
@@ -922,7 +918,7 @@ Defined in: packages/blue-context/src/context.ts:758
 
 > **emit**(`type`, ...`data`): `boolean`
 
-Defined in: packages/blue-context/src/event-emitter.ts:68
+Defined in: [packages/blue-context/src/event-emitter.ts:59](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-emitter.ts#lines-59)
 
 Emits an event to the listeners registered for the given type.
 
@@ -956,7 +952,7 @@ Event payload values.
 
 > **eventTypes**(): [`EventType`](../type-aliases/EventType.md)[]
 
-Defined in: packages/blue-context/src/event-emitter.ts:74
+Defined in: [packages/blue-context/src/event-emitter.ts:65](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-emitter.ts#lines-65)
 
 Returns the event types with registered listeners.
 
@@ -976,7 +972,7 @@ The registered event types.
 
 > **listenerCount**(`type`): `number`
 
-Defined in: packages/blue-context/src/event-emitter.ts:81
+Defined in: [packages/blue-context/src/event-emitter.ts:72](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-emitter.ts#lines-72)
 
 Returns the number of listeners for a type.
 
@@ -1004,7 +1000,7 @@ The listener count.
 
 > **listeners**(`type`): `Function`[]
 
-Defined in: packages/blue-context/src/event-emitter.ts:88
+Defined in: [packages/blue-context/src/event-emitter.ts:79](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-emitter.ts#lines-79)
 
 Returns a snapshot of listeners for a type.
 
@@ -1032,7 +1028,7 @@ The registered listeners.
 
 > **on**(`type`, `listener?`): `this`
 
-Defined in: packages/blue-context/src/event-emitter.ts:96
+Defined in: [packages/blue-context/src/event-emitter.ts:87](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-emitter.ts#lines-87)
 
 Adds a listener for an event type.
 
@@ -1066,7 +1062,7 @@ This emitter.
 
 > **off**(`type`, `listener`): `this`
 
-Defined in: packages/blue-context/src/event-emitter.ts:104
+Defined in: [packages/blue-context/src/event-emitter.ts:95](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-emitter.ts#lines-95)
 
 Removes a listener for an event type.
 
@@ -1100,7 +1096,7 @@ This emitter.
 
 > **getResource**(`location`): `Promise`\<[`Resource`](../interfaces/Resource.md)\<`any`\>\>
 
-Defined in: packages/blue-context/src/resource.ts:22
+Defined in: [packages/blue-context/src/resource.ts:22](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/resource.ts#lines-22)
 
 #### Parameters
 
@@ -1168,6 +1164,8 @@ The type of the value.
 
 [`ContextToken`](ContextToken.md)\<`T`\>
 
+(the scope-entry key) The name or ContextToken of the value to destroy.
+
 ##### Returns
 
 `void`
@@ -1228,7 +1226,7 @@ The name of the value.
 
 `any`[]
 
-Optional arguments to pass to the constructor if the value is a constructor.
+(constructor arguments) Optional arguments to pass to the constructor if the value is a constructor.
 
 #### Returns
 
@@ -1248,7 +1246,7 @@ An instance of the value.
 
 > **getValue**\<`T`\>(`token`): `T`
 
-Defined in: packages/blue-factory/lib/factory.d.ts:184
+Defined in: packages/blue-factory/lib/factory.d.ts:183
 
 Retrieves a value from the factory, creating it if necessary.
 
@@ -1266,6 +1264,8 @@ The type of the value.
 
 [`ContextToken`](ContextToken.md)\<`T`\>
 
+(the scope-entry key) The name or ContextToken of the value to retrieve.
+
 ##### Returns
 
 `T`
@@ -1280,7 +1280,7 @@ The retrieved value.
 
 > **getValue**\<`T`\>(`name`, `argumentsList?`): `T`
 
-Defined in: packages/blue-factory/lib/factory.d.ts:185
+Defined in: packages/blue-factory/lib/factory.d.ts:184
 
 Retrieves a value from the factory, creating it if necessary.
 
@@ -1302,8 +1302,6 @@ The type of the value.
 
 `any`[]
 
-Optional arguments to pass to the constructor if the value is a constructor.
-
 ##### Returns
 
 `T`
@@ -1320,7 +1318,7 @@ The retrieved value.
 
 > **\_checkVersion**\<`T`\>(`nameOrToken`, `value`): `void`
 
-Defined in: packages/blue-factory/lib/factory.d.ts:189
+Defined in: packages/blue-factory/lib/factory.d.ts:188
 
 Checks the resolved value's version against the token's requiredVersion and warns on mismatch.
 
@@ -1354,7 +1352,7 @@ Checks the resolved value's version against the token's requiredVersion and warn
 
 > **destroyScopedValue**(`scopeName`, `valueName`): `void`
 
-Defined in: packages/blue-factory/lib/factory.d.ts:195
+Defined in: packages/blue-factory/lib/factory.d.ts:194
 
 Destroys a scoped value.
 
@@ -1386,7 +1384,7 @@ The name of the value within the scope.
 
 > **getScope**(`name`): `Scope`
 
-Defined in: packages/blue-factory/lib/factory.d.ts:201
+Defined in: packages/blue-factory/lib/factory.d.ts:200
 
 Retrieves a scope by its name.
 
@@ -1414,7 +1412,7 @@ The Scope instance.
 
 > **getScopeNames**(): `string`[]
 
-Defined in: packages/blue-factory/lib/factory.d.ts:206
+Defined in: packages/blue-factory/lib/factory.d.ts:205
 
 Returns an array of all registered scope names.
 
@@ -1434,7 +1432,7 @@ An array of PossibleScope names.
 
 > **hasConstructor**(`name`): `boolean`
 
-Defined in: packages/blue-factory/lib/factory.d.ts:212
+Defined in: packages/blue-factory/lib/factory.d.ts:211
 
 Checks if the factory has a constructor registered under the given name.
 
@@ -1462,7 +1460,7 @@ The name of the constructor.
 
 > **hasInstance**(`name`): `boolean`
 
-Defined in: packages/blue-factory/lib/factory.d.ts:218
+Defined in: packages/blue-factory/lib/factory.d.ts:217
 
 Checks if the factory has an instance registered under the given name.
 
@@ -1490,7 +1488,7 @@ The name of the instance.
 
 > **hasOwnValue**(`name`): `boolean`
 
-Defined in: packages/blue-factory/lib/factory.d.ts:224
+Defined in: packages/blue-factory/lib/factory.d.ts:223
 
 Checks if the factory has its own value (either an instance or a constructor) registered under the given name.
 
@@ -1520,7 +1518,7 @@ The name of the value.
 
 > **hasValue**\<`T`\>(`token`): `boolean`
 
-Defined in: packages/blue-factory/lib/factory.d.ts:231
+Defined in: packages/blue-factory/lib/factory.d.ts:230
 
 Checks if the factory has a value (either an instance or a constructor) registered under the given name or token.
 
@@ -1538,6 +1536,8 @@ The type of the value.
 
 [`ContextToken`](ContextToken.md)\<`T`\>
 
+(the scope-entry key) The name or ContextToken of the value.
+
 ##### Returns
 
 `boolean`
@@ -1552,7 +1552,7 @@ The type of the value.
 
 > **hasValue**(`name`): `boolean`
 
-Defined in: packages/blue-factory/lib/factory.d.ts:232
+Defined in: packages/blue-factory/lib/factory.d.ts:231
 
 Checks if the factory has a value (either an instance or a constructor) registered under the given name or token.
 
@@ -1578,7 +1578,7 @@ Checks if the factory has a value (either an instance or a constructor) register
 
 > **registerScope**(`name`, `scope`): `void`
 
-Defined in: packages/blue-factory/lib/factory.d.ts:238
+Defined in: packages/blue-factory/lib/factory.d.ts:237
 
 Registers a new scope with the factory.
 
@@ -1612,7 +1612,7 @@ The Scope instance to register.
 
 > **setValue**\<`T`\>(`token`, `value`): `void`
 
-Defined in: packages/blue-factory/lib/factory.d.ts:250
+Defined in: packages/blue-factory/lib/factory.d.ts:249
 
 Sets a value (either a constructor or an instance) in the factory.
 
@@ -1629,6 +1629,8 @@ The type of the value.
 ###### token
 
 [`ContextToken`](ContextToken.md)\<`T`\>
+
+(the scope-entry key) The name or ContextToken under which to register the value.
 
 ###### value
 
@@ -1648,7 +1650,7 @@ The value to register.
 
 > **setValue**\<`T`\>(`name`, `value`): `void`
 
-Defined in: packages/blue-factory/lib/factory.d.ts:251
+Defined in: packages/blue-factory/lib/factory.d.ts:250
 
 Sets a value (either a constructor or an instance) in the factory.
 
@@ -1686,7 +1688,7 @@ The value to register.
 
 > `protected` **\_applyProcessorsAfterConstruction**\<`T`\>(`name`, `instance`): `boolean`
 
-Defined in: packages/blue-factory/lib/factory.d.ts:259
+Defined in: packages/blue-factory/lib/factory.d.ts:258
 
 Applies construction-aware processors after an instance has been constructed.
 
@@ -1728,7 +1730,7 @@ The constructed instance.
 
 > `protected` **\_applyProcessorsAfterInitialization**\<`T`\>(`name`, `instance`): `T`
 
-Defined in: packages/blue-factory/lib/factory.d.ts:267
+Defined in: packages/blue-factory/lib/factory.d.ts:266
 
 Applies initialization-aware processors after an instance has been initialized.
 
@@ -1770,7 +1772,7 @@ The processed instance.
 
 > `protected` **\_applyProcessorsBeforeConstruction**\<`T`\>(`name`, `constructor`, `argumentsList?`): `T` \| `null`
 
-Defined in: packages/blue-factory/lib/factory.d.ts:276
+Defined in: packages/blue-factory/lib/factory.d.ts:275
 
 Applies construction-aware processors before an instance is constructed.
 
@@ -1800,7 +1802,7 @@ The constructor function.
 
 `any`[]
 
-Optional arguments to pass to the constructor.
+(constructor arguments) Optional arguments to pass to the constructor.
 
 #### Returns
 
@@ -1818,7 +1820,7 @@ The instance to use, or `null` to proceed with default construction.
 
 > `protected` **\_applyProcessorsBeforeDestruction**(`name`, `instance`): `void`
 
-Defined in: packages/blue-factory/lib/factory.d.ts:282
+Defined in: packages/blue-factory/lib/factory.d.ts:281
 
 Applies destruction-aware processors before an instance is destroyed.
 
@@ -1850,7 +1852,7 @@ The instance to be destroyed.
 
 > `protected` **\_applyProcessorsBeforeInitialization**\<`T`\>(`name`, `instance`): `T`
 
-Defined in: packages/blue-factory/lib/factory.d.ts:290
+Defined in: packages/blue-factory/lib/factory.d.ts:289
 
 Applies initialization-aware processors before an instance is initialized.
 
@@ -1892,7 +1894,7 @@ The processed instance.
 
 > `protected` **\_configure**\<`T`\>(`name`, `instance`): `T`
 
-Defined in: packages/blue-factory/lib/factory.d.ts:299
+Defined in: packages/blue-factory/lib/factory.d.ts:298
 
 Configures an instance by populating properties, invoking aware callbacks, and initializing.
 
@@ -1938,7 +1940,7 @@ If configuration fails.
 
 > `protected` **\_create**\<`T`\>(`name`, `argumentsList?`): `T`
 
-Defined in: packages/blue-factory/lib/factory.d.ts:308
+Defined in: packages/blue-factory/lib/factory.d.ts:307
 
 Creates a new instance from a registered constructor.
 
@@ -1962,7 +1964,7 @@ The name of the constructor.
 
 `any`[]
 
-Optional arguments to pass to the constructor.
+(constructor arguments) Optional arguments to pass to the constructor.
 
 #### Returns
 
@@ -1984,7 +1986,7 @@ If instance creation fails.
 
 > `protected` **\_initialize**\<`T`\>(`name`, `instance`): `T`
 
-Defined in: packages/blue-factory/lib/factory.d.ts:316
+Defined in: packages/blue-factory/lib/factory.d.ts:315
 
 Initializes an instance by applying initialization processors and invoking the `init` method if available.
 
@@ -2026,7 +2028,7 @@ The initialized instance.
 
 > `protected` **\_populate**\<`T`\>(`name`, `instance`, `properties?`): `void`
 
-Defined in: packages/blue-factory/lib/factory.d.ts:324
+Defined in: packages/blue-factory/lib/factory.d.ts:323
 
 Populates properties of an instance, applying construction-aware processors.
 

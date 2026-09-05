@@ -8,7 +8,7 @@
 
 > `const` **Traced**: (`nameOrTarget?`, `maybeContext?`) => `any` = `traced`
 
-Defined in: packages/blue-telemetry/src/trace/decorators.ts:133
+Defined in: [packages/blue-telemetry/src/trace/decorators.ts:133](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/trace/decorators.ts#lines-133)
 
 A method decorator that creates and manages an OpenTelemetry span for the decorated method's execution.
 
@@ -44,17 +44,17 @@ If applied to anything other than a method.
 
 ```typescript
 class MyService {
-  @traced()
+  `traced`()
   myMethod() {
     // ...
   }
 
-  @traced('custom-span-name')
+  `traced`('custom-span-name')
   anotherMethod() {
     // ...
   }
 
-  @traced('async-operation')
+  `traced`('async-operation')
   async asyncMethod() {
     await someAsyncOperation();
   }
@@ -63,8 +63,4 @@ class MyService {
 
 ## Deprecated
 
-Use
-
-## Traced
-
-instead.
+Use `traced` instead.

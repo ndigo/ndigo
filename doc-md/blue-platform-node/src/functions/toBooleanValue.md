@@ -8,7 +8,7 @@
 
 > **toBooleanValue**(`value`): `boolean`
 
-Defined in: packages/blue-platform-node/src/argument-value-converter.ts:31
+Defined in: [packages/blue-platform-node/src/argument-value-converter.ts:33](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/argument-value-converter.ts#lines-33)
 
 ## Parameters
 

@@ -6,7 +6,7 @@
 
 # Interface: AsyncDestroyable
 
-Defined in: packages/blue-factory/src/lifecycle.ts:12
+Defined in: [packages/blue-factory/src/lifecycle.ts:12](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/lifecycle.ts#lines-12)
 
 ## Extends
 
@@ -18,7 +18,7 @@ Defined in: packages/blue-factory/src/lifecycle.ts:12
 
 > **destroyed**: `boolean`
 
-Defined in: packages/blue-factory/src/lifecycle.ts:8
+Defined in: [packages/blue-factory/src/lifecycle.ts:8](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/lifecycle.ts#lines-8)
 
 #### Inherited from
 
@@ -30,7 +30,7 @@ Defined in: packages/blue-factory/src/lifecycle.ts:8
 
 > **destroy**(): `Promise`\<`void`\>
 
-Defined in: packages/blue-factory/src/lifecycle.ts:13
+Defined in: [packages/blue-factory/src/lifecycle.ts:13](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/lifecycle.ts#lines-13)
 
 #### Returns
 

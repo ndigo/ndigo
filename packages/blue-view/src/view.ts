@@ -15,7 +15,7 @@ import { ViewTarget } from './view-target.js';
  *
  * View implementations may differ widely. This interface is designed to avoid restricting the range of possible implementations.
  *
- * They are likely to be instantiated by a {@link ViewResolver|`ViewResolver`} .
+ * They are likely to be instantiated by a `ViewResolver` .
  */
 export interface View {
     /**

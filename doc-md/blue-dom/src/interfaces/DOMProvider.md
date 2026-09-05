@@ -6,7 +6,7 @@
 
 # Interface: DOMProvider
 
-Defined in: packages/blue-dom/src/dom-provider.ts:10
+Defined in: [packages/blue-dom/src/dom-provider.ts:10](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dom/src/dom-provider.ts#lines-10)
 
 Provides an isomorphic abstraction over DOM parsing and element creation.
 Implementations back this interface with either native browser APIs or
@@ -18,7 +18,7 @@ a server-side DOM library such as linkedom.
 
 > **parseHTML**(`html`): `Document`
 
-Defined in: packages/blue-dom/src/dom-provider.ts:17
+Defined in: [packages/blue-dom/src/dom-provider.ts:17](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dom/src/dom-provider.ts#lines-17)
 
 Parses an HTML string into a `Document`.
 
@@ -42,7 +42,7 @@ A `Document` representing the parsed HTML.
 
 > **createElement**(`tag`): `Element`
 
-Defined in: packages/blue-dom/src/dom-provider.ts:25
+Defined in: [packages/blue-dom/src/dom-provider.ts:25](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dom/src/dom-provider.ts#lines-25)
 
 Creates a new element with the given tag name.
 
@@ -66,7 +66,7 @@ A new `Element` instance.
 
 > **createFragment**(): `DocumentFragment`
 
-Defined in: packages/blue-dom/src/dom-provider.ts:32
+Defined in: [packages/blue-dom/src/dom-provider.ts:32](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dom/src/dom-provider.ts#lines-32)
 
 Creates a new empty `DocumentFragment`.
 

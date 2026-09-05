@@ -6,7 +6,7 @@
 
 # Class: NoViewFoundError
 
-Defined in: packages/blue-dispatcher/src/error.ts:38
+Defined in: [packages/blue-dispatcher/src/error.ts:38](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/error.ts#lines-38)
 
 Error thrown when a view cannot be resolved for a given view name and route.
 This indicates that the specified view template or component could not be located.
@@ -21,7 +21,7 @@ This indicates that the specified view template or component could not be locate
 
 > **new NoViewFoundError**(`viewName`, `route`): `NoViewFoundError`
 
-Defined in: packages/blue-dispatcher/src/error.ts:46
+Defined in: [packages/blue-dispatcher/src/error.ts:46](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/error.ts#lines-46)
 
 #### Parameters
 
@@ -31,7 +31,7 @@ Defined in: packages/blue-dispatcher/src/error.ts:46
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 #### Returns
 
@@ -45,9 +45,9 @@ Defined in: packages/blue-dispatcher/src/error.ts:46
 
 ### route
 
-> `readonly` **route**: `Route`
+> `readonly` **route**: [`Route`](#)
 
-Defined in: packages/blue-dispatcher/src/error.ts:39
+Defined in: [packages/blue-dispatcher/src/error.ts:39](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/error.ts#lines-39)
 
 ***
 
@@ -55,7 +55,7 @@ Defined in: packages/blue-dispatcher/src/error.ts:39
 
 > `readonly` **viewName**: `string`
 
-Defined in: packages/blue-dispatcher/src/error.ts:40
+Defined in: [packages/blue-dispatcher/src/error.ts:40](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/error.ts#lines-40)
 
 ## Accessors
 
@@ -65,7 +65,7 @@ Defined in: packages/blue-dispatcher/src/error.ts:40
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-dispatcher/src/error.ts:42
+Defined in: [packages/blue-dispatcher/src/error.ts:42](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/error.ts#lines-42)
 
 ##### Returns
 

@@ -6,7 +6,7 @@
 
 # Class: SingletonScope
 
-Defined in: packages/blue-factory/src/scope.ts:181
+Defined in: [packages/blue-factory/src/scope.ts:183](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/scope.ts#lines-183)
 
 **`Internal`**
 
@@ -35,7 +35,7 @@ Destruction callbacks can be registered when an instance is created.
 
 > **destroyValue**(`name`): `void`
 
-Defined in: packages/blue-factory/src/scope.ts:185
+Defined in: [packages/blue-factory/src/scope.ts:187](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/scope.ts#lines-187)
 
 #### Parameters
 
@@ -57,7 +57,7 @@ Defined in: packages/blue-factory/src/scope.ts:185
 
 > **getValue**\<`T`\>(`name`, `objectFactory`): `T`
 
-Defined in: packages/blue-factory/src/scope.ts:196
+Defined in: [packages/blue-factory/src/scope.ts:198](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/scope.ts#lines-198)
 
 #### Type Parameters
 
@@ -89,7 +89,7 @@ Defined in: packages/blue-factory/src/scope.ts:196
 
 > **registerDestructionCallback**(`name`, `callback`): `void`
 
-Defined in: packages/blue-factory/src/scope.ts:204
+Defined in: [packages/blue-factory/src/scope.ts:206](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/scope.ts#lines-206)
 
 #### Parameters
 

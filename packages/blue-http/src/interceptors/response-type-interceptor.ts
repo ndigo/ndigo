@@ -131,7 +131,7 @@ export class ResponseTypeInterceptor
     }
 
     /**
-     * @async
+
      * @param {Response} response
      * @param {module:http.ResponseTypeSettings} settings
      * @returns {Promise<external:void>}

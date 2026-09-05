@@ -6,7 +6,7 @@
 
 # Class: ConstraintViolationError
 
-Defined in: packages/blue-validate/src/error.ts:36
+Defined in: [packages/blue-validate/src/error.ts:36](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/error.ts#lines-36)
 
 Error thrown when one or more validation constraints are violated.
 
@@ -20,7 +20,7 @@ Error thrown when one or more validation constraints are violated.
 
 > **new ConstraintViolationError**(`message`, `violations`): `ConstraintViolationError`
 
-Defined in: packages/blue-validate/src/error.ts:51
+Defined in: [packages/blue-validate/src/error.ts:51](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/error.ts#lines-51)
 
 Creates an instance of ConstraintViolationError.
 
@@ -52,7 +52,7 @@ A set of constraint names that were violated.
 
 > **cause**: `Error`
 
-Defined in: packages/blue-validate/src/error.ts:8
+Defined in: [packages/blue-validate/src/error.ts:8](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/error.ts#lines-8)
 
 The underlying cause of the validation error, if any.
 
@@ -66,7 +66,7 @@ The underlying cause of the validation error, if any.
 
 > `readonly` **violations**: `ReadonlySet`\<`string`\>
 
-Defined in: packages/blue-validate/src/error.ts:40
+Defined in: [packages/blue-validate/src/error.ts:40](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/error.ts#lines-40)
 
 The set of constraint names that were violated.
 
@@ -78,7 +78,7 @@ The set of constraint names that were violated.
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-validate/src/error.ts:42
+Defined in: [packages/blue-validate/src/error.ts:42](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/error.ts#lines-42)
 
 ##### Returns
 

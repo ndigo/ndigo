@@ -6,7 +6,7 @@
 
 # Class: NumberConverter
 
-Defined in: packages/blue-core/src/converter.ts:185
+Defined in: [packages/blue-core/src/converter.ts:185](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/converter.ts#lines-185)
 
 Converts strings to numbers via `parseFloat`.
 
@@ -32,7 +32,7 @@ Returns `NaN` for non-numeric input — callers should check with `Number.isFini
 
 > **convert**(`value`): `number`
 
-Defined in: packages/blue-core/src/converter.ts:186
+Defined in: [packages/blue-core/src/converter.ts:186](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/converter.ts#lines-186)
 
 Converts a value of type `S` to type `T`.
 

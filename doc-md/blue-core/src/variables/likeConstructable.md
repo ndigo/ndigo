@@ -8,7 +8,7 @@
 
 > `const` **likeConstructable**: (`value`) => `value is Constructable<{}>`
 
-Defined in: packages/blue-core/src/constructable.ts:19
+Defined in: [packages/blue-core/src/constructable.ts:19](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/constructable.ts#lines-19)
 
 Type guard to check if a value is a `Constructable` (i.e., a class constructor).
 

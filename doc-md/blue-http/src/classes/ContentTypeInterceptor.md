@@ -6,7 +6,7 @@
 
 # Class: ContentTypeInterceptor
 
-Defined in: packages/blue-http/src/interceptors/content-type-interceptor.ts:17
+Defined in: [packages/blue-http/src/interceptors/content-type-interceptor.ts:17](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/content-type-interceptor.ts#lines-17)
 
 Adds a `Content-Type` header when request settings provide one.
 
@@ -30,7 +30,7 @@ Adds a `Content-Type` header when request settings provide one.
 
 > **preInit**(`url`, `settings`): `boolean`
 
-Defined in: packages/blue-http/src/interceptors/content-type-interceptor.ts:24
+Defined in: [packages/blue-http/src/interceptors/content-type-interceptor.ts:24](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/content-type-interceptor.ts#lines-24)
 
 If the `contentType` setting exists, it inserts the value as an HTTP request header.
 

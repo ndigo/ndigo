@@ -6,9 +6,9 @@
 
 # Class: RouteBindingError
 
-Defined in: packages/blue-dispatcher/src/error.ts:57
+Defined in: [packages/blue-dispatcher/src/error.ts:57](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/error.ts#lines-57)
 
-An error that represents a failure to retrieve a required Route\|Route property.
+An error that represents a failure to retrieve a required [Route](#) property.
 
 ## Extends
 
@@ -20,7 +20,7 @@ An error that represents a failure to retrieve a required Route\|Route property.
 
 > **new RouteBindingError**(`message`): `RouteBindingError`
 
-Defined in: packages/blue-dispatcher/src/error.ts:65
+Defined in: [packages/blue-dispatcher/src/error.ts:65](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/error.ts#lines-65)
 
 #### Parameters
 
@@ -40,13 +40,13 @@ Defined in: packages/blue-dispatcher/src/error.ts:65
 
 > **new RouteBindingError**(`route`, `name`): `RouteBindingError`
 
-Defined in: packages/blue-dispatcher/src/error.ts:66
+Defined in: [packages/blue-dispatcher/src/error.ts:66](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/error.ts#lines-66)
 
 #### Parameters
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 ##### name
 
@@ -64,9 +64,9 @@ Defined in: packages/blue-dispatcher/src/error.ts:66
 
 ### route
 
-> **route**: `Route`\<`Record`\<`string`, `string`\>\> \| `null`
+> **route**: [`Route`](#)\<`Record`\<`string`, `string`\>\> \| `null`
 
-Defined in: packages/blue-dispatcher/src/error.ts:58
+Defined in: [packages/blue-dispatcher/src/error.ts:58](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/error.ts#lines-58)
 
 ***
 
@@ -74,7 +74,7 @@ Defined in: packages/blue-dispatcher/src/error.ts:58
 
 > **name**: `string`
 
-Defined in: packages/blue-dispatcher/src/error.ts:59
+Defined in: [packages/blue-dispatcher/src/error.ts:59](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/error.ts#lines-59)
 
 #### Overrides
 
@@ -88,7 +88,7 @@ Defined in: packages/blue-dispatcher/src/error.ts:59
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-dispatcher/src/error.ts:61
+Defined in: [packages/blue-dispatcher/src/error.ts:61](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/error.ts#lines-61)
 
 ##### Returns
 

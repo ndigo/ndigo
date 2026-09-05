@@ -8,7 +8,7 @@
 
 > **likeAware**(`value`): `value is Aware`
 
-Defined in: packages/blue-factory/src/aware.ts:91
+Defined in: [packages/blue-factory/src/aware.ts:91](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/aware.ts#lines-91)
 
 Determines whether or not the `value` provided is [Aware](../interfaces/Aware.md).
 

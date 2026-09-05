@@ -8,7 +8,7 @@
 
 > **manyToOne**(`targetEntity`): (`_value`, `context`) => `void`
 
-Defined in: packages/blue-orm/src/decorators.ts:158
+Defined in: [packages/blue-orm/src/decorators.ts:165](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/decorators.ts#lines-165)
 
 Marks a class field as the "many" side of a many-to-one relation.
 

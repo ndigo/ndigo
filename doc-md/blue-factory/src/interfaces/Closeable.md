@@ -6,7 +6,7 @@
 
 # Interface: Closeable
 
-Defined in: packages/blue-factory/src/lifecycle.ts:20
+Defined in: [packages/blue-factory/src/lifecycle.ts:20](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/lifecycle.ts#lines-20)
 
 ## Extended by
 
@@ -18,7 +18,7 @@ Defined in: packages/blue-factory/src/lifecycle.ts:20
 
 > **close**(): `void`
 
-Defined in: packages/blue-factory/src/lifecycle.ts:21
+Defined in: [packages/blue-factory/src/lifecycle.ts:21](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/lifecycle.ts#lines-21)
 
 #### Returns
 

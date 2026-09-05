@@ -8,7 +8,7 @@
 
 > **getRouteMapping**(`target`, `propertyKey?`): [`RouteMappingConfiguration`](../type-aliases/RouteMappingConfiguration.md) \| `undefined`
 
-Defined in: packages/blue-dispatcher/src/route-mapping.ts:71
+Defined in: [packages/blue-dispatcher/src/route-mapping.ts:71](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-mapping.ts#lines-71)
 
 Get route mapping metadata from a class or method.
 

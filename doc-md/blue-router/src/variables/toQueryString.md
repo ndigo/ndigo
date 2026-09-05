@@ -8,7 +8,7 @@
 
 > `const` **toQueryString**: (`value`) => `string`
 
-Defined in: packages/blue-router/src/index.ts:22
+Defined in: [packages/blue-router/src/index.ts:22](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/index.ts#lines-22)
 
 Serializes a JSON-like value to a query string.
 

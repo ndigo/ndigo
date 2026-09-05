@@ -8,6 +8,6 @@
 
 > `const` **nameRule**: `RegExp`
 
-Defined in: packages/blue-validate/src/formats.ts:130
+Defined in: [packages/blue-validate/src/formats.ts:130](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/formats.ts#lines-130)
 
 A regular expression matching names.

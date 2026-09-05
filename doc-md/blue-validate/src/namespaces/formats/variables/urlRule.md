@@ -8,6 +8,6 @@
 
 > `const` **urlRule**: `RegExp`
 
-Defined in: packages/blue-validate/src/formats.ts:238
+Defined in: [packages/blue-validate/src/formats.ts:238](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/formats.ts#lines-238)
 
 A regular expression matching a URL.

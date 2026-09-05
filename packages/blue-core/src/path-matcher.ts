@@ -56,13 +56,13 @@ export interface PathMatcher extends PatternMatcher<string, string> {
  */
 export interface PathMatcherFilter {
     /**
-     * The {@link PathMatcher} instance used for matching patterns.
+     * The `PathMatcher` instance used for matching patterns.
      */
     pathMatcher: PathMatcher;
     /**
      * Checks if a given path matches the configured include/exclude patterns.
      * @param path - The path to check.
-     * @param matcher - An optional {@link PathMatcher} to use for matching. If not provided, `this.pathMatcher` is used.
+     * @param matcher - An optional `PathMatcher` to use for matching. If not provided, `this.pathMatcher` is used.
      * @returns `true` if the path matches the include patterns and does not match any exclude patterns, `false` otherwise.
      */
     matches(path: string, matcher?: PathMatcher): boolean;

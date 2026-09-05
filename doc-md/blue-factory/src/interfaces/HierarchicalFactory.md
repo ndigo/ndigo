@@ -6,7 +6,7 @@
 
 # Interface: HierarchicalFactory
 
-Defined in: packages/blue-factory/src/factory.ts:60
+Defined in: [packages/blue-factory/src/factory.ts:69](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/factory.ts#lines-69)
 
 Extends [Factory](Factory.md) to provide hierarchical factory capabilities.
 
@@ -24,7 +24,7 @@ Extends [Factory](Factory.md) to provide hierarchical factory capabilities.
 
 > `readonly` **parent**: [`Factory`](Factory.md) \| `null`
 
-Defined in: packages/blue-factory/src/factory.ts:64
+Defined in: [packages/blue-factory/src/factory.ts:73](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/factory.ts#lines-73)
 
 The parent factory in the hierarchy.
 
@@ -34,7 +34,7 @@ The parent factory in the hierarchy.
 
 > **getInstance**\<`T`\>(`name`): `T`
 
-Defined in: packages/blue-factory/src/factory.ts:54
+Defined in: [packages/blue-factory/src/factory.ts:63](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/factory.ts#lines-63)
 
 Return an instance of the specified value.
 
@@ -68,7 +68,7 @@ An instance of the value specified by the `name`.
 
 > **hasOwnValue**(`name`): `boolean`
 
-Defined in: packages/blue-factory/src/factory.ts:70
+Defined in: [packages/blue-factory/src/factory.ts:79](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/factory.ts#lines-79)
 
 Determines whether this factory contains a value with the given name.
 

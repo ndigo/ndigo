@@ -6,7 +6,7 @@
 
 # Class: CompositeThemeResolver
 
-Defined in: packages/blue-content/src/composite.ts:54
+Defined in: [packages/blue-content/src/composite.ts:54](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-content/src/composite.ts#lines-54)
 
 Chains multiple theme resolvers in priority order.
 
@@ -23,7 +23,7 @@ result. Throws when all resolvers fail to resolve the theme.
 
 > **new CompositeThemeResolver**(`resolvers`): `CompositeThemeResolver`
 
-Defined in: packages/blue-content/src/composite.ts:62
+Defined in: [packages/blue-content/src/composite.ts:62](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-content/src/composite.ts#lines-62)
 
 Creates a composite theme resolver.
 
@@ -45,7 +45,7 @@ Resolvers ordered by priority, highest first.
 
 > **getTheme**(`name?`): [`Theme`](../interfaces/Theme.md)
 
-Defined in: packages/blue-content/src/composite.ts:76
+Defined in: [packages/blue-content/src/composite.ts:76](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-content/src/composite.ts#lines-76)
 
 Resolves the first successfully found theme across all resolvers.
 

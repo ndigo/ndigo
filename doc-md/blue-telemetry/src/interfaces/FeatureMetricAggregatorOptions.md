@@ -6,7 +6,7 @@
 
 # Interface: FeatureMetricAggregatorOptions
 
-Defined in: packages/blue-telemetry/src/metrics/feature-metric-aggregator.ts:35
+Defined in: [packages/blue-telemetry/src/metrics/feature-metric-aggregator.ts:35](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/metrics/feature-metric-aggregator.ts#lines-35)
 
 Options for configuring the `FeatureMetricAggregator`.
 
@@ -16,7 +16,7 @@ Options for configuring the `FeatureMetricAggregator`.
 
 > `readonly` `optional` **maxDurationSamples?**: `number`
 
-Defined in: packages/blue-telemetry/src/metrics/feature-metric-aggregator.ts:36
+Defined in: [packages/blue-telemetry/src/metrics/feature-metric-aggregator.ts:36](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/metrics/feature-metric-aggregator.ts#lines-36)
 
 ***
 
@@ -24,4 +24,4 @@ Defined in: packages/blue-telemetry/src/metrics/feature-metric-aggregator.ts:36
 
 > `readonly` `optional` **maxFeatures?**: `number`
 
-Defined in: packages/blue-telemetry/src/metrics/feature-metric-aggregator.ts:37
+Defined in: [packages/blue-telemetry/src/metrics/feature-metric-aggregator.ts:37](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/metrics/feature-metric-aggregator.ts#lines-37)

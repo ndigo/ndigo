@@ -14,7 +14,7 @@
 - [BrowserRouter](classes/BrowserRouter.md)
 - [BrowserCookieValueMethodArgumentResolver](classes/BrowserCookieValueMethodArgumentResolver.md)
 - [CookieThemeResolver](classes/CookieThemeResolver.md)
-- [CORSInterceptor](classes/CORSInterceptor.md)
+- [FetchCredentialsInterceptor](classes/FetchCredentialsInterceptor.md)
 - [HashRouter](classes/HashRouter.md)
 - [IndexedDBResourceLoader](classes/IndexedDBResourceLoader.md)
 - [LocalStorageResourceLoader](classes/LocalStorageResourceLoader.md)
@@ -29,7 +29,7 @@
 
 - [Cookie](interfaces/Cookie.md)
 - [CookieJar](interfaces/CookieJar.md)
-- [CORSInterceptorConfig](interfaces/CORSInterceptorConfig.md)
+- [FetchCredentialsInterceptorConfig](interfaces/FetchCredentialsInterceptorConfig.md)
 - [IndexedDBConfig](interfaces/IndexedDBConfig.md)
 - [OfflineInterceptorConfig](interfaces/OfflineInterceptorConfig.md)
 - [RetryOnOfflineConfig](interfaces/RetryOnOfflineConfig.md)

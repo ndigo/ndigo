@@ -8,7 +8,7 @@
 
 > **configureNodeArgumentResolvers**(`applicationContext`, `_options?`): `HandlerMethodArgumentResolver`[]
 
-Defined in: packages/blue-platform-node/src/configure-argument-resolvers.ts:17
+Defined in: [packages/blue-platform-node/src/configure-argument-resolvers.ts:17](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/configure-argument-resolvers.ts#lines-17)
 
 Registers Node.js-specific argument resolvers into the application context.
 

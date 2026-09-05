@@ -134,7 +134,7 @@ export type ValidationConstraints = {
  * Creates a constraint that validates a value against a regex pattern.
  * @param {PatternParams} params - Pattern parameters including regex and optional flags
  * @returns {constraint} A constraint function
- * @security WARNING: The `regex` parameter should not contain untrusted user input.
+ * `security` WARNING: The `regex` parameter should not contain untrusted user input.
  *   Patterns with nested quantifiers (e.g., /(a+)+/) can cause ReDoS (Regex Denial of Service).
  *   Only use with developer-controlled patterns.
  * @internal

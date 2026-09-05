@@ -6,7 +6,7 @@
 
 # Class: ErrorHandlerMethod
 
-Defined in: packages/blue-dispatcher/src/route-handler-method.ts:125
+Defined in: [packages/blue-dispatcher/src/route-handler-method.ts:125](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-handler-method.ts#lines-125)
 
 ## Extends
 
@@ -18,7 +18,7 @@ Defined in: packages/blue-dispatcher/src/route-handler-method.ts:125
 
 > **new ErrorHandlerMethod**(`handler`, `method`, ...`args`): `ErrorHandlerMethod`
 
-Defined in: packages/blue-dispatcher/src/route-handler-method.ts:58
+Defined in: [packages/blue-dispatcher/src/route-handler-method.ts:56](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-handler-method.ts#lines-56)
 
 #### Parameters
 
@@ -46,13 +46,13 @@ Defined in: packages/blue-dispatcher/src/route-handler-method.ts:58
 
 > **new ErrorHandlerMethod**(`factory`, `name`, `method`, ...`args`): `ErrorHandlerMethod`
 
-Defined in: packages/blue-dispatcher/src/route-handler-method.ts:59
+Defined in: [packages/blue-dispatcher/src/route-handler-method.ts:57](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-handler-method.ts#lines-57)
 
 #### Parameters
 
 ##### factory
 
-`Factory`
+[`Factory`](#)
 
 ##### name
 
@@ -78,9 +78,9 @@ Defined in: packages/blue-dispatcher/src/route-handler-method.ts:59
 
 ### factory
 
-> `readonly` **factory**: `Factory` \| `null`
+> `readonly` **factory**: [`Factory`](#) \| `null`
 
-Defined in: packages/blue-dispatcher/src/route-handler-method.ts:50
+Defined in: [packages/blue-dispatcher/src/route-handler-method.ts:48](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-handler-method.ts#lines-48)
 
 #### Inherited from
 
@@ -92,7 +92,7 @@ Defined in: packages/blue-dispatcher/src/route-handler-method.ts:50
 
 > `readonly` **name**: `string` \| `null`
 
-Defined in: packages/blue-dispatcher/src/route-handler-method.ts:51
+Defined in: [packages/blue-dispatcher/src/route-handler-method.ts:49](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-handler-method.ts#lines-49)
 
 #### Inherited from
 
@@ -104,7 +104,7 @@ Defined in: packages/blue-dispatcher/src/route-handler-method.ts:51
 
 > `readonly` **handler**: `object`
 
-Defined in: packages/blue-dispatcher/src/route-handler-method.ts:52
+Defined in: [packages/blue-dispatcher/src/route-handler-method.ts:50](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-handler-method.ts#lines-50)
 
 #### Inherited from
 
@@ -116,7 +116,7 @@ Defined in: packages/blue-dispatcher/src/route-handler-method.ts:52
 
 > `readonly` **method**: `string`
 
-Defined in: packages/blue-dispatcher/src/route-handler-method.ts:53
+Defined in: [packages/blue-dispatcher/src/route-handler-method.ts:51](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-handler-method.ts#lines-51)
 
 #### Inherited from
 
@@ -128,7 +128,7 @@ Defined in: packages/blue-dispatcher/src/route-handler-method.ts:53
 
 > **parameters**: [`MethodParameter`](MethodParameter.md)[]
 
-Defined in: packages/blue-dispatcher/src/route-handler-method.ts:55
+Defined in: [packages/blue-dispatcher/src/route-handler-method.ts:53](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-handler-method.ts#lines-53)
 
 #### Inherited from
 
@@ -140,7 +140,7 @@ Defined in: packages/blue-dispatcher/src/route-handler-method.ts:55
 
 > **argumentResolvers**: [`HandlerMethodArgumentResolver`](../interfaces/HandlerMethodArgumentResolver.md)[]
 
-Defined in: packages/blue-dispatcher/src/route-handler-method.ts:56
+Defined in: [packages/blue-dispatcher/src/route-handler-method.ts:54](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-handler-method.ts#lines-54)
 
 #### Inherited from
 
@@ -152,7 +152,7 @@ Defined in: packages/blue-dispatcher/src/route-handler-method.ts:56
 
 > **toString**(): `string`
 
-Defined in: packages/blue-dispatcher/src/route-handler-method.ts:117
+Defined in: [packages/blue-dispatcher/src/route-handler-method.ts:117](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-handler-method.ts#lines-117)
 
 #### Returns
 
@@ -168,7 +168,7 @@ Defined in: packages/blue-dispatcher/src/route-handler-method.ts:117
 
 > **invoke**\<`ModelAndView`\>(`route`, `error`, `handlerMethod`): `ModelAndView`
 
-Defined in: packages/blue-dispatcher/src/route-handler-method.ts:126
+Defined in: [packages/blue-dispatcher/src/route-handler-method.ts:126](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-handler-method.ts#lines-126)
 
 #### Type Parameters
 
@@ -180,7 +180,7 @@ Defined in: packages/blue-dispatcher/src/route-handler-method.ts:126
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 ##### error
 

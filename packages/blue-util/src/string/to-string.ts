@@ -25,7 +25,7 @@ import isString from '../type/is-string.js';
  *     toString( new Point( 1, 2 ) ); //=> 'new Point(1, 2)'
  *
  * @category String
- * @param {*} val
+ * @param {*} value
  * @returns {string}
  * @example
  * toString( null );

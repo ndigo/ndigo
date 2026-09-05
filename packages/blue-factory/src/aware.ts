@@ -18,7 +18,7 @@ export const $aware: unique symbol = Symbol.for('@@aware');
 /**
  * An interface indicating that a value is eligible to be notified by the factory of a particular framework object through a callback-style method. The actual method signature is determined by individual subinterfaces but should typically consist of just one void-returning method that accepts a single argument, e.g. `setName( name )`.
  *
- * Note that merely implementing `Aware` provides no default functionality. Rather, processing must be done explicitly, for example in an {@link EntryProcessor|EntryProcessor}. Refer to {@link ApplicationContextAwareProcessor|ApplicationContextAwareProcessor} for an example of processing specific `*Aware` interface callbacks
+ * Note that merely implementing `Aware` provides no default functionality. Rather, processing must be done explicitly, for example in an `EntryProcessor`. Refer to `ApplicationContextAwareProcessor` for an example of processing specific `*Aware` interface callbacks
  */
 export interface Aware {
     /**
@@ -56,7 +56,7 @@ export const AsAware = <T extends Constructable>(superclass: T): Constructable<A
 
 /**
  * @see module:factory.AsNameAware
- * @implements module:factory.NameAware
+
  * @returns {module:factory.Constructable<module:factory.NameAware>}
  */
 export const AsNameAware = <T extends Constructable>(superclass: T): Constructable<NameAware> & T =>

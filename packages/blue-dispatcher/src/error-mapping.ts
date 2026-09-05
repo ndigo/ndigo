@@ -14,7 +14,7 @@ const { assign, getOwnPropertyDescriptor } = Object;
 const { defineProperty } = Reflect;
 
 /**
- * @errorHandler decorator - marks a class as an error handler
+ * Invoked via the `errorHandler` decorator.
  */
 function errorHandlerDecorator(target: any, context: ClassDecoratorContext): any {
     context.metadata['error:handler'] = true;
@@ -37,7 +37,7 @@ const hasErrorHandler = (target: any): boolean => {
 };
 
 /**
- * @errorMapping decorator - maps error classes to handler methods
+ * Invoked via the `errorMapping` decorator.
  */
 function errorMappingDecorator(errorClass: Constructable<Error> | Constructable<Error>[] = Error) {
     return function (target: any, context: ClassMethodDecoratorContext): void {
@@ -74,13 +74,12 @@ const hasErrorMapping = (target: any, propertyKey: string | symbol): boolean => 
 
 /**
  * `errorHandler` is a decorator and a utility object for managing error handler classes.
- * When used as a decorator (`@errorHandler`), it marks a class as an error handler.
+ * When used as a decorator (the `errorHandler` decorator), it marks a class as an error handler.
  * It also provides `get` and `has` methods to query the error handler status of a class.
  *
  * @example
  * ```typescript
- * @errorHandler
- * class MyErrorHandler {
+ * Invoked via the `errorHandler` decorator.
  *   // ...
  * }
  *
@@ -98,8 +97,8 @@ const _isConstructorErrorHandler = (value: any): boolean =>
 
 /**
  * Checks if a given target object or its constructor is an error handler.
- * An object is considered an error handler if it has the `@errorHandler` metadata
- * or if its constructor has the `@errorHandler` metadata.
+ * An object is considered an error handler if it has the the `errorHandler` decorator metadata
+ * or if its constructor has the the `errorHandler` decorator metadata.
  *
  * @param target The object to check.
  * @returns `true` if the target or its constructor is an error handler, `false` otherwise.

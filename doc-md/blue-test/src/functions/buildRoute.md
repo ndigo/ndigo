@@ -8,9 +8,9 @@
 
 > **buildRoute**(`request`, `responseSink`): [`PreparedRoute`](../interfaces/PreparedRoute.md)
 
-Defined in: packages/blue-test/src/request-builder.ts:85
+Defined in: [packages/blue-test/src/request-builder.ts:85](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-test/src/request-builder.ts#lines-85)
 
-Builds a Route with `NODE_REQUEST_ATTRIBUTE` / `NODE_RESPONSE_ATTRIBUTE`
+Builds a [Route](#) with `NODE_REQUEST_ATTRIBUTE` / `NODE_RESPONSE_ATTRIBUTE`
 attributes and the path/query/body/segments populated.
 
 ## Parameters

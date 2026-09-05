@@ -8,7 +8,7 @@
 
 > **asArray**(`extractor`): [`ParameterExtractor`](../type-aliases/ParameterExtractor.md)
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:457
+Defined in: [packages/blue-dispatcher/src/route-parameter.ts:428](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-parameter.ts#lines-428)
 
 Wraps a parameter extractor to enforce array conversion.
 

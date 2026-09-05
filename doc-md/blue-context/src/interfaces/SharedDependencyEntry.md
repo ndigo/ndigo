@@ -6,7 +6,7 @@
 
 # Interface: SharedDependencyEntry
 
-Defined in: packages/blue-context/src/shared-dependency-registry.ts:15
+Defined in: [packages/blue-context/src/shared-dependency-registry.ts:15](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/shared-dependency-registry.ts#lines-15)
 
 A single shared dependency entry.
 
@@ -16,7 +16,7 @@ A single shared dependency entry.
 
 > **singleton**: `boolean`
 
-Defined in: packages/blue-context/src/shared-dependency-registry.ts:17
+Defined in: [packages/blue-context/src/shared-dependency-registry.ts:17](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/shared-dependency-registry.ts#lines-17)
 
 Whether this dependency must be a singleton. Default `true`.
 
@@ -26,6 +26,6 @@ Whether this dependency must be a singleton. Default `true`.
 
 > **version**: `string`
 
-Defined in: packages/blue-context/src/shared-dependency-registry.ts:19
+Defined in: [packages/blue-context/src/shared-dependency-registry.ts:19](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/shared-dependency-registry.ts#lines-19)
 
 Declared version string (e.g. `'1.2.0'`).

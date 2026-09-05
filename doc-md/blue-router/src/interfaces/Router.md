@@ -6,7 +6,7 @@
 
 # Interface: Router
 
-Defined in: packages/blue-router/src/router.ts:21
+Defined in: [packages/blue-router/src/router.ts:21](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/router.ts#lines-21)
 
 Defines the core interface for a router, providing access to the current route and a mechanism to refresh it.
 
@@ -20,7 +20,7 @@ Defines the core interface for a router, providing access to the current route a
 
 > `readonly` **route**: `string`
 
-Defined in: packages/blue-router/src/router.ts:22
+Defined in: [packages/blue-router/src/router.ts:22](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/router.ts#lines-22)
 
 ***
 
@@ -28,7 +28,7 @@ Defined in: packages/blue-router/src/router.ts:22
 
 > `readonly` **callback**: [`RouterCallback`](../type-aliases/RouterCallback.md)
 
-Defined in: packages/blue-router/src/router.ts:23
+Defined in: [packages/blue-router/src/router.ts:23](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/router.ts#lines-23)
 
 ## Methods
 
@@ -36,7 +36,7 @@ Defined in: packages/blue-router/src/router.ts:23
 
 > **refresh**(): `void`
 
-Defined in: packages/blue-router/src/router.ts:24
+Defined in: [packages/blue-router/src/router.ts:24](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/router.ts#lines-24)
 
 #### Returns
 
@@ -48,7 +48,7 @@ Defined in: packages/blue-router/src/router.ts:24
 
 > `optional` **navigate**(`path`): `boolean` \| `void` \| `Promise`\<`void`\>
 
-Defined in: packages/blue-router/src/router.ts:36
+Defined in: [packages/blue-router/src/router.ts:36](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/router.ts#lines-36)
 
 Programmatically navigates the router to the given path.
 

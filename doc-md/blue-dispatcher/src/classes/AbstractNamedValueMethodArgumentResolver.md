@@ -6,7 +6,7 @@
 
 # Abstract Class: AbstractNamedValueMethodArgumentResolver
 
-Defined in: packages/blue-dispatcher/src/argument-resolver.ts:51
+Defined in: [packages/blue-dispatcher/src/argument-resolver.ts:48](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/argument-resolver.ts#lines-48)
 
 Abstract base class for resolving method arguments from a named value.
 
@@ -15,8 +15,6 @@ Subclasses define how to:
 * Resolve names into argument values
 * Handle missing argument values when argument values are required
 * Optionally handle a resolved value
-
-A Factory must be supplied to the class constructor.
 
 ## Extended by
 
@@ -34,19 +32,7 @@ A Factory must be supplied to the class constructor.
 
 ### Constructor
 
-> **new AbstractNamedValueMethodArgumentResolver**(`factory?`): `AbstractNamedValueMethodArgumentResolver`
-
-Defined in: packages/blue-dispatcher/src/argument-resolver.ts:58
-
-Creates an instance of AbstractNamedValueMethodArgumentResolver.
-
-#### Parameters
-
-##### factory?
-
-`Factory` \| `null`
-
-A factory for resolving values.
+> **new AbstractNamedValueMethodArgumentResolver**(): `AbstractNamedValueMethodArgumentResolver`
 
 #### Returns
 
@@ -58,7 +44,7 @@ A factory for resolving values.
 
 > **handleMissingValue**(`name`): `void`
 
-Defined in: packages/blue-dispatcher/src/argument-resolver.ts:67
+Defined in: [packages/blue-dispatcher/src/argument-resolver.ts:54](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/argument-resolver.ts#lines-54)
 
 Handles a missing argument value by throwing a TypeError.
 
@@ -84,7 +70,7 @@ If the argument is undefined or null.
 
 > **resolveArgument**(`parameter`, `route`, `mapping`): `any`
 
-Defined in: packages/blue-dispatcher/src/argument-resolver.ts:78
+Defined in: [packages/blue-dispatcher/src/argument-resolver.ts:65](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/argument-resolver.ts#lines-65)
 
 Resolves a method parameter into an argument value from a given route.
 
@@ -98,7 +84,7 @@ The method parameter to resolve.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The current route.
 
@@ -124,7 +110,7 @@ The resolved argument value, or `null` if not resolvable.
 
 > `abstract` `protected` **resolveName**(`name`, `parameter`, `route`, `mapping`): `any`
 
-Defined in: packages/blue-dispatcher/src/argument-resolver.ts:87
+Defined in: [packages/blue-dispatcher/src/argument-resolver.ts:76](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/argument-resolver.ts#lines-76)
 
 #### Parameters
 
@@ -138,7 +124,7 @@ Defined in: packages/blue-dispatcher/src/argument-resolver.ts:87
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 ##### mapping
 
@@ -154,7 +140,7 @@ Defined in: packages/blue-dispatcher/src/argument-resolver.ts:87
 
 > `abstract` **supportsParameter**(`parameter`): `boolean`
 
-Defined in: packages/blue-dispatcher/src/argument-resolver.ts:94
+Defined in: [packages/blue-dispatcher/src/argument-resolver.ts:83](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/argument-resolver.ts#lines-83)
 
 Whether the given method parameter is supported by this resolver.
 

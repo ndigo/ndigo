@@ -6,7 +6,7 @@
 
 # Class: TimeoutInterceptor
 
-Defined in: packages/blue-http/src/interceptors/timeout-interceptor.ts:29
+Defined in: [packages/blue-http/src/interceptors/timeout-interceptor.ts:29](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/timeout-interceptor.ts#lines-29)
 
 Aborts slow requests and converts aborts into timeout responses.
 
@@ -22,7 +22,7 @@ Aborts slow requests and converts aborts into timeout responses.
 
 > **new TimeoutInterceptor**(`timeout`): `TimeoutInterceptor`
 
-Defined in: packages/blue-http/src/interceptors/timeout-interceptor.ts:39
+Defined in: [packages/blue-http/src/interceptors/timeout-interceptor.ts:39](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/timeout-interceptor.ts#lines-39)
 
 #### Parameters
 
@@ -40,7 +40,7 @@ Defined in: packages/blue-http/src/interceptors/timeout-interceptor.ts:39
 
 > `readonly` **timeout**: `number`
 
-Defined in: packages/blue-http/src/interceptors/timeout-interceptor.ts:37
+Defined in: [packages/blue-http/src/interceptors/timeout-interceptor.ts:37](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/timeout-interceptor.ts#lines-37)
 
 ## Methods
 
@@ -48,7 +48,7 @@ Defined in: packages/blue-http/src/interceptors/timeout-interceptor.ts:37
 
 > **preInit**(`url`, `settings`): `boolean`
 
-Defined in: packages/blue-http/src/interceptors/timeout-interceptor.ts:61
+Defined in: [packages/blue-http/src/interceptors/timeout-interceptor.ts:61](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/timeout-interceptor.ts#lines-61)
 
 #### Parameters
 
@@ -80,7 +80,7 @@ Whether or not the http request should continue execution.
 
 > **postError**(`error`, `request`): `Promise`\<`Response` \| `undefined`\>
 
-Defined in: packages/blue-http/src/interceptors/timeout-interceptor.ts:79
+Defined in: [packages/blue-http/src/interceptors/timeout-interceptor.ts:79](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/timeout-interceptor.ts#lines-79)
 
 #### Parameters
 
@@ -100,8 +100,6 @@ The HTTP request
 
 `Promise`\<`Response` \| `undefined`\>
 
-#### Async
-
 #### Implementation of
 
 [`ErrorAwareHTTPInterceptor`](../interfaces/ErrorAwareHTTPInterceptor.md).[`postError`](../interfaces/ErrorAwareHTTPInterceptor.md#posterror)
@@ -112,7 +110,7 @@ The HTTP request
 
 > **postComplete**(`request`, `response`): `void`
 
-Defined in: packages/blue-http/src/interceptors/timeout-interceptor.ts:90
+Defined in: [packages/blue-http/src/interceptors/timeout-interceptor.ts:90](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/timeout-interceptor.ts#lines-90)
 
 #### Parameters
 

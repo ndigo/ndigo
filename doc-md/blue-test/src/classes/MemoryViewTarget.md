@@ -6,7 +6,7 @@
 
 # Class: MemoryViewTarget
 
-Defined in: packages/blue-test/src/memory-view-target.ts:31
+Defined in: [packages/blue-test/src/memory-view-target.ts:31](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-test/src/memory-view-target.ts#lines-31)
 
 Captures rendered view output instead of mounting it into a DOM container.
 
@@ -32,7 +32,7 @@ Captures rendered view output instead of mounting it into a DOM container.
 
 > **get** **lastRender**(): [`CapturedRender`](../interfaces/CapturedRender.md) \| `null`
 
-Defined in: packages/blue-test/src/memory-view-target.ts:37
+Defined in: [packages/blue-test/src/memory-view-target.ts:37](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-test/src/memory-view-target.ts#lines-37)
 
 The last captured render, or `null` if none yet.
 
@@ -46,13 +46,13 @@ The last captured render, or `null` if none yet.
 
 > **prepare**(`route`): `Promise`\<`void`\>
 
-Defined in: packages/blue-test/src/memory-view-target.ts:42
+Defined in: [packages/blue-test/src/memory-view-target.ts:42](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-test/src/memory-view-target.ts#lines-42)
 
 #### Parameters
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 #### Returns
 
@@ -70,7 +70,7 @@ Defined in: packages/blue-test/src/memory-view-target.ts:42
 
 > **commit**(`output`, `model`, `route`): `Promise`\<`void`\>
 
-Defined in: packages/blue-test/src/memory-view-target.ts:48
+Defined in: [packages/blue-test/src/memory-view-target.ts:48](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-test/src/memory-view-target.ts#lines-48)
 
 #### Parameters
 
@@ -84,7 +84,7 @@ Defined in: packages/blue-test/src/memory-view-target.ts:48
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 #### Returns
 
@@ -102,7 +102,7 @@ Defined in: packages/blue-test/src/memory-view-target.ts:48
 
 > **clear**(): `Promise`\<`void`\>
 
-Defined in: packages/blue-test/src/memory-view-target.ts:53
+Defined in: [packages/blue-test/src/memory-view-target.ts:53](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-test/src/memory-view-target.ts#lines-53)
 
 #### Returns
 

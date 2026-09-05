@@ -6,7 +6,7 @@
 
 # Interface: Initializable
 
-Defined in: packages/blue-factory/src/lifecycle.ts:16
+Defined in: [packages/blue-factory/src/lifecycle.ts:16](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/lifecycle.ts#lines-16)
 
 ## Methods
 
@@ -14,7 +14,7 @@ Defined in: packages/blue-factory/src/lifecycle.ts:16
 
 > **init**(...`args`): `void`
 
-Defined in: packages/blue-factory/src/lifecycle.ts:17
+Defined in: [packages/blue-factory/src/lifecycle.ts:17](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/lifecycle.ts#lines-17)
 
 #### Parameters
 

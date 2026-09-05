@@ -8,7 +8,7 @@
 
 > `const` **parseWildcard**: (`pattern`) => `string`
 
-Defined in: packages/blue-core/src/wildcard-expression.ts:27
+Defined in: [packages/blue-core/src/wildcard-expression.ts:27](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/wildcard-expression.ts#lines-27)
 
 Singleton instance for backward compatibility.
 

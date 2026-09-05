@@ -8,6 +8,6 @@
 
 > `const` **PAYLOAD\_TOO\_LARGE**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
-Defined in: packages/blue-http/src/response-statuses.ts:214
+Defined in: [packages/blue-http/src/response-statuses.ts:214](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/response-statuses.ts#lines-214)
 
 Request entity is larger than limits defined by server; the server might close the connection or return an `Retry-After` header field.

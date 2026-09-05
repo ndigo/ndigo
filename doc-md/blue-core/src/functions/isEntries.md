@@ -8,7 +8,7 @@
 
 > **isEntries**(`value`): value is MapEntry\<any\> \| \[unknown, unknown\] \| ArrayEntry\<any\> \| ObjectEntry\<any\>
 
-Defined in: packages/blue-core/src/iterable.ts:118
+Defined in: [packages/blue-core/src/iterable.ts:118](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/iterable.ts#lines-118)
 
 Type guard to check if a value is an array of entries.
 

@@ -6,7 +6,7 @@
 
 # Class: ContextInstrumentation
 
-Defined in: packages/blue-telemetry/src/instrumentation/context/context.ts:11
+Defined in: [packages/blue-telemetry/src/instrumentation/context/context.ts:11](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/instrumentation/context/context.ts#lines-11)
 
 An OpenTelemetry instrumentation for `GenericApplicationContext` lifecycle events.
 
@@ -23,7 +23,7 @@ providing visibility into application context teardown processes.
 
 > **new ContextInstrumentation**(): `ContextInstrumentation`
 
-Defined in: packages/blue-telemetry/src/instrumentation/context/context.ts:12
+Defined in: [packages/blue-telemetry/src/instrumentation/context/context.ts:12](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/instrumentation/context/context.ts#lines-12)
 
 #### Returns
 
@@ -39,7 +39,7 @@ Defined in: packages/blue-telemetry/src/instrumentation/context/context.ts:12
 
 > `protected` **init**(): `any`[]
 
-Defined in: packages/blue-telemetry/src/instrumentation/base.ts:64
+Defined in: [packages/blue-telemetry/src/instrumentation/base.ts:64](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/instrumentation/base.ts#lines-64)
 
 #### Returns
 
@@ -57,7 +57,7 @@ Defined in: packages/blue-telemetry/src/instrumentation/base.ts:64
 
 > `protected` **\_patchCount**(`config`): (`original`) => (`this`, ...`args`) => `any`
 
-Defined in: packages/blue-telemetry/src/instrumentation/base.ts:77
+Defined in: [packages/blue-telemetry/src/instrumentation/base.ts:77](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/instrumentation/base.ts#lines-77)
 
 Returns a synchronous patch function that increments a counter.
 
@@ -81,7 +81,7 @@ Returns a synchronous patch function that increments a counter.
 
 > `protected` **\_patchSync**(`config`): (`original`) => (`this`, ...`args`) => `any`
 
-Defined in: packages/blue-telemetry/src/instrumentation/base.ts:93
+Defined in: [packages/blue-telemetry/src/instrumentation/base.ts:93](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/instrumentation/base.ts#lines-93)
 
 Returns a synchronous patch function that wraps the original method
 in a span with the given configuration.
@@ -106,7 +106,7 @@ in a span with the given configuration.
 
 > `protected` **\_patchAsync**(`config`): (`original`) => (`this`, ...`args`) => `Promise`\<`any`\>
 
-Defined in: packages/blue-telemetry/src/instrumentation/base.ts:119
+Defined in: [packages/blue-telemetry/src/instrumentation/base.ts:119](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/instrumentation/base.ts#lines-119)
 
 Returns an asynchronous patch function that wraps the original method
 in an active span with the given configuration.
@@ -131,7 +131,7 @@ in an active span with the given configuration.
 
 > **enable**(): `void`
 
-Defined in: packages/blue-telemetry/src/instrumentation/context/context.ts:16
+Defined in: [packages/blue-telemetry/src/instrumentation/context/context.ts:16](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/instrumentation/context/context.ts#lines-16)
 
 Hook for subclasses to wire up `_wrap` calls.
 
@@ -149,7 +149,7 @@ Hook for subclasses to wire up `_wrap` calls.
 
 > **disable**(): `void`
 
-Defined in: packages/blue-telemetry/src/instrumentation/context/context.ts:31
+Defined in: [packages/blue-telemetry/src/instrumentation/context/context.ts:31](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/instrumentation/context/context.ts#lines-31)
 
 Hook for subclasses to wire up `_unwrap` calls.
 

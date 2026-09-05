@@ -6,13 +6,9 @@
 
 # Class: MetadataHandlerAdapter
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:123
+Defined in: [packages/blue-dispatcher/src/route-handler-adapter.ts:123](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-handler-adapter.ts#lines-123)
 
-Implementation of [AbstractHandlerMethodAdapter](AbstractHandlerMethodAdapter.md) that supports HandlerMethod\|HandlerMethods decorated with `route:mapping` metadata. This is usually applied using RouteMapping\|@RouteMapping.
-
-## Implements
-
-module:core.Initializable
+Implementation of [AbstractHandlerMethodAdapter](AbstractHandlerMethodAdapter.md) that supports `HandlerMethods` decorated with `route:mapping` metadata. This is usually applied using `@RouteMapping`.
 
 ## Extends
 
@@ -20,7 +16,7 @@ module:core.Initializable
 
 ## Implements
 
-- `Initializable`
+- [`Initializable`](#)
 
 ## Constructors
 
@@ -42,7 +38,7 @@ module:core.Initializable
 
 > **applicationContext**: `ApplicationContext` \| `null`
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:67
+Defined in: [packages/blue-dispatcher/src/route-handler-adapter.ts:67](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-handler-adapter.ts#lines-67)
 
 Application context used to discover handlers and argument resolvers.
 
@@ -56,7 +52,7 @@ Application context used to discover handlers and argument resolvers.
 
 > **argumentResolvers**: [`HandlerMethodArgumentResolver`](../interfaces/HandlerMethodArgumentResolver.md)[]
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:127
+Defined in: [packages/blue-dispatcher/src/route-handler-adapter.ts:127](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-handler-adapter.ts#lines-127)
 
 Argument resolvers used to convert route values into handler method arguments.
 
@@ -66,7 +62,7 @@ Argument resolvers used to convert route values into handler method arguments.
 
 > **handlers**: `any`[]
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:132
+Defined in: [packages/blue-dispatcher/src/route-handler-adapter.ts:132](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-handler-adapter.ts#lines-132)
 
 Cached handler descriptors discovered from application context metadata.
 
@@ -78,7 +74,7 @@ Cached handler descriptors discovered from application context metadata.
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:134
+Defined in: [packages/blue-dispatcher/src/route-handler-adapter.ts:134](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-handler-adapter.ts#lines-134)
 
 ##### Returns
 
@@ -96,7 +92,7 @@ Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:134
 
 > **get** **defaultArgumentResolvers**(): [`HandlerMethodArgumentResolver`](../interfaces/HandlerMethodArgumentResolver.md)[]
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:143
+Defined in: [packages/blue-dispatcher/src/route-handler-adapter.ts:143](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-handler-adapter.ts#lines-143)
 
 Built-in argument resolvers used when no custom resolver collection is present.
 
@@ -114,7 +110,7 @@ The default resolver chain.
 
 > **get** **\[$aware\]**(): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:152
+Defined in: [packages/blue-dispatcher/src/route-handler-adapter.ts:152](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-handler-adapter.ts#lines-152)
 
 A symbol indicating that the value is aware.
 
@@ -162,7 +158,7 @@ The ApplicationContext to be used by this object.
 
 > **supports**(`handler`): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:73
+Defined in: [packages/blue-dispatcher/src/route-handler-adapter.ts:73](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-handler-adapter.ts#lines-73)
 
 Tests whether this adapter supports the given handler.
 
@@ -190,7 +186,7 @@ The handler instance to test.
 
 > **handle**(`route`, `handler`): `Promise`\<[`ModelAndView`](ModelAndView.md)\>
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:163
+Defined in: [packages/blue-dispatcher/src/route-handler-adapter.ts:163](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-handler-adapter.ts#lines-163)
 
 Execute a metadata-mapped handler method.
 
@@ -198,7 +194,7 @@ Execute a metadata-mapped handler method.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The current route.
 
@@ -224,7 +220,7 @@ The model and view produced by the handler.
 
 > **init**(...`args`): `void`
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:177
+Defined in: [packages/blue-dispatcher/src/route-handler-adapter.ts:177](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-handler-adapter.ts#lines-177)
 
 Discover handler methods and argument resolvers from the application context.
 
@@ -250,7 +246,7 @@ Reserved for framework initialization hooks.
 
 > **\_supports**(`handler`): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:238
+Defined in: [packages/blue-dispatcher/src/route-handler-adapter.ts:238](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-handler-adapter.ts#lines-238)
 
 Metadata adapters only support [RouteHandlerMethod](RouteHandlerMethod.md) instances.
 

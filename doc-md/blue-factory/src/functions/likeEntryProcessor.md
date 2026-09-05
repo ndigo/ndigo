@@ -8,7 +8,7 @@
 
 > **likeEntryProcessor**(`value`): `value is EntryProcessor`
 
-Defined in: packages/blue-factory/src/entry-processor.ts:158
+Defined in: [packages/blue-factory/src/entry-processor.ts:158](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/entry-processor.ts#lines-158)
 
 Determines whether or not the `value` provided is an [EntryProcessor](../type-aliases/EntryProcessor.md).
 
@@ -16,7 +16,7 @@ Determines whether or not the `value` provided is an [EntryProcessor](../type-al
 
 ### value
 
-`any`
+`unknown`
 
 The value to be tested.
 

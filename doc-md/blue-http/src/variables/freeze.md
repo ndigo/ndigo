@@ -8,7 +8,7 @@
 
 > **freeze**: \{\<`T`\>(`f`): `T`; \<`T`, `U`\>(`o`): `Readonly`\<`T`\>; \<`T`\>(`o`): `Readonly`\<`T`\>; \}
 
-Defined in: packages/blue-http/src/http.ts:270
+Defined in: [packages/blue-http/src/http.ts:280](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-280)
 
 ## Call Signature
 

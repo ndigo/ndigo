@@ -6,7 +6,7 @@
 
 # Class: HTTPServer
 
-Defined in: packages/blue-platform-node/src/http-server.ts:50
+Defined in: [packages/blue-platform-node/src/http-server.ts:50](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/http-server.ts#lines-50)
 
 A managed HTTP server that delegates incoming requests to a [NodeDispatcher](NodeDispatcher.md).
 
@@ -25,7 +25,7 @@ await server.close();
 
 > **new HTTPServer**(`dispatcher`, `options?`): `HTTPServer`
 
-Defined in: packages/blue-platform-node/src/http-server.ts:84
+Defined in: [packages/blue-platform-node/src/http-server.ts:83](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/http-server.ts#lines-83)
 
 Create a new HTTP server.
 
@@ -55,7 +55,7 @@ Server configuration.
 
 > **get** **port**(): `number`
 
-Defined in: packages/blue-platform-node/src/http-server.ts:60
+Defined in: [packages/blue-platform-node/src/http-server.ts:59](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/http-server.ts#lines-59)
 
 The port the server is listening on, or `0` if not yet started.
 
@@ -71,7 +71,7 @@ The port the server is listening on, or `0` if not yet started.
 
 > **get** **started**(): `boolean`
 
-Defined in: packages/blue-platform-node/src/http-server.ts:67
+Defined in: [packages/blue-platform-node/src/http-server.ts:66](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/http-server.ts#lines-66)
 
 Whether the server has been started.
 
@@ -87,7 +87,7 @@ Whether the server has been started.
 
 > **get** **server**(): `unknown`
 
-Defined in: packages/blue-platform-node/src/http-server.ts:74
+Defined in: [packages/blue-platform-node/src/http-server.ts:73](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/http-server.ts#lines-73)
 
 The underlying adapter (e.g. the `http.Server` instance).
 
@@ -101,7 +101,7 @@ The underlying adapter (e.g. the `http.Server` instance).
 
 > **start**(): `Promise`\<`void`\>
 
-Defined in: packages/blue-platform-node/src/http-server.ts:95
+Defined in: [packages/blue-platform-node/src/http-server.ts:97](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/http-server.ts#lines-97)
 
 Start listening. Safe to call multiple times — subsequent calls are no-ops.
 
@@ -115,7 +115,7 @@ Start listening. Safe to call multiple times — subsequent calls are no-ops.
 
 > **close**(): `Promise`\<`void`\>
 
-Defined in: packages/blue-platform-node/src/http-server.ts:106
+Defined in: [packages/blue-platform-node/src/http-server.ts:108](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/http-server.ts#lines-108)
 
 Stop the server gracefully.
 

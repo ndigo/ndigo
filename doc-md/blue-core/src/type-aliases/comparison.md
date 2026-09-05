@@ -8,7 +8,7 @@
 
 > **comparison**\<`T`\> = (`value1`, `value2`) => `number`
 
-Defined in: packages/blue-core/src/comparable.ts:11
+Defined in: [packages/blue-core/src/comparable.ts:11](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/comparable.ts#lines-11)
 
 A function that compares two values for order. Returns a negative integer, zero, or a positive integer
 as the first argument is less than, equal to, or greater than the second.

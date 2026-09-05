@@ -6,7 +6,7 @@
 
 # Class: FeatureRoutingRegistry
 
-Defined in: packages/blue-router/src/feature-routing-registry.ts:45
+Defined in: [packages/blue-router/src/feature-routing-registry.ts:45](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/feature-routing-registry.ts#lines-45)
 
 Manages the registration and activation of features based on routing.
 It allows features to be mounted at specific URL prefixes and provides policies for feature activation.
@@ -21,7 +21,7 @@ It allows features to be mounted at specific URL prefixes and provides policies 
 
 > **new FeatureRoutingRegistry**(`siteRouter?`, `options?`): `FeatureRoutingRegistry`
 
-Defined in: packages/blue-router/src/feature-routing-registry.ts:76
+Defined in: [packages/blue-router/src/feature-routing-registry.ts:76](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/feature-routing-registry.ts#lines-76)
 
 Creates an instance of `FeatureRoutingRegistry`.
 
@@ -55,7 +55,7 @@ Configuration options for the registry.
 
 > **get** **activeFeatureName**(): `string` \| `undefined`
 
-Defined in: packages/blue-router/src/feature-routing-registry.ts:57
+Defined in: [packages/blue-router/src/feature-routing-registry.ts:57](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/feature-routing-registry.ts#lines-57)
 
 Gets the name of the currently active feature.
 
@@ -77,7 +77,7 @@ The name of the active feature, or `undefined` if no feature is active.
 
 > **get** **siteRouter**(): [`SiteRouter`](SiteRouter.md)
 
-Defined in: packages/blue-router/src/feature-routing-registry.ts:66
+Defined in: [packages/blue-router/src/feature-routing-registry.ts:66](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/feature-routing-registry.ts#lines-66)
 
 Gets the underlying `SiteRouter` instance used by the registry.
 
@@ -97,7 +97,7 @@ The `SiteRouter` instance.
 
 > **registerFeature**(`feature`): `this`
 
-Defined in: packages/blue-router/src/feature-routing-registry.ts:92
+Defined in: [packages/blue-router/src/feature-routing-registry.ts:92](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/feature-routing-registry.ts#lines-92)
 
 Registers a new feature with the routing registry.
 Each feature is associated with a unique name and a URL prefix.
@@ -130,7 +130,7 @@ If a feature with the same name is already registered.
 
 > **setActiveFeature**(`name`): `this`
 
-Defined in: packages/blue-router/src/feature-routing-registry.ts:116
+Defined in: [packages/blue-router/src/feature-routing-registry.ts:116](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/feature-routing-registry.ts#lines-116)
 
 Explicitly sets a feature as active by its name.
 This will trigger the activation policy (e.g., deactivating other features if policy is 'exclusive').
@@ -163,7 +163,7 @@ If the specified feature name is not registered.
 
 > **navigate**(`path`): `boolean`
 
-Defined in: packages/blue-router/src/feature-routing-registry.ts:133
+Defined in: [packages/blue-router/src/feature-routing-registry.ts:133](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/feature-routing-registry.ts#lines-133)
 
 Navigates the underlying `SiteRouter` to the given path.
 If the navigation is not handled by any registered route, the currently active feature (if any) will be deactivated.
@@ -192,7 +192,7 @@ The path to navigate to.
 
 > **refresh**(): `void`
 
-Defined in: packages/blue-router/src/feature-routing-registry.ts:149
+Defined in: [packages/blue-router/src/feature-routing-registry.ts:149](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/feature-routing-registry.ts#lines-149)
 
 Refreshes the routing by calling `refresh` on the underlying `SiteRouter`.
 This can re-evaluate the current URL against registered routes.

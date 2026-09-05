@@ -8,7 +8,7 @@
 
 > **AsModuleResourceLoader**\<`T`\>(`superclass`): `Constructable`\<[`ResourceLoader`](../interfaces/ResourceLoader.md)\> & `T`
 
-Defined in: packages/blue-context/src/resource.ts:166
+Defined in: [packages/blue-context/src/resource.ts:168](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/resource.ts#lines-168)
 
 ## Type Parameters
 

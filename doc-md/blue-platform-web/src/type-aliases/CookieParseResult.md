@@ -8,6 +8,6 @@
 
 > **CookieParseResult** = `ReturnType`\<`Parser`\<`JSONObject`\>\[`"run"`\]\>
 
-Defined in: packages/blue-platform-web/src/cookies.ts:55
+Defined in: [packages/blue-platform-web/src/cookies.ts:57](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/cookies.ts#lines-57)
 
 Parsed result returned by the cookie parser.

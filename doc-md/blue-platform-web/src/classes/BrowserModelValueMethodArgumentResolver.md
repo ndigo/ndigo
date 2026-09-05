@@ -6,7 +6,7 @@
 
 # Class: BrowserModelValueMethodArgumentResolver
 
-Defined in: packages/blue-platform-web/src/model-argument-resolver.ts:23
+Defined in: [packages/blue-platform-web/src/model-argument-resolver.ts:16](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/model-argument-resolver.ts#lines-16)
 
 Browser model argument resolver.
 
@@ -23,7 +23,7 @@ key-path traversal (`profile.name`).
 
 > **new BrowserModelValueMethodArgumentResolver**(): `BrowserModelValueMethodArgumentResolver`
 
-Defined in: packages/blue-platform-web/src/model-argument-resolver.ts:24
+Defined in: [packages/blue-platform-web/src/model-argument-resolver.ts:17](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/model-argument-resolver.ts#lines-17)
 
 #### Returns
 
@@ -41,7 +41,7 @@ Defined in: packages/blue-platform-web/src/model-argument-resolver.ts:24
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-platform-web/src/model-argument-resolver.ts:28
+Defined in: [packages/blue-platform-web/src/model-argument-resolver.ts:21](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/model-argument-resolver.ts#lines-21)
 
 ##### Returns
 
@@ -67,7 +67,7 @@ Pipeline: resolveName → defaultValue fallback → convertType lookup → conve
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 ##### mapping
 
@@ -87,7 +87,7 @@ Pipeline: resolveName → defaultValue fallback → convertType lookup → conve
 
 > **handleMissingValue**(`name`): `void`
 
-Defined in: packages/blue-dispatcher/lib/argument-resolver.d.ts:55
+Defined in: packages/blue-dispatcher/lib/argument-resolver.d.ts:46
 
 Handles a missing argument value by throwing a TypeError.
 
@@ -117,7 +117,7 @@ If the argument is undefined or null.
 
 > `protected` **resolveName**(`name`, `_parameter`, `route`, `_mapping`): `any`
 
-Defined in: packages/blue-platform-web/src/model-argument-resolver.ts:33
+Defined in: [packages/blue-platform-web/src/model-argument-resolver.ts:26](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/model-argument-resolver.ts#lines-26)
 
 Resolves model data from the current route.
 
@@ -133,7 +133,7 @@ Resolves model data from the current route.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 ##### \_mapping
 
@@ -153,7 +153,7 @@ Resolves model data from the current route.
 
 > **supportsParameter**(`parameter`): `boolean`
 
-Defined in: packages/blue-platform-web/src/model-argument-resolver.ts:48
+Defined in: [packages/blue-platform-web/src/model-argument-resolver.ts:41](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/model-argument-resolver.ts#lines-41)
 
 Returns whether this resolver supports model parameters.
 

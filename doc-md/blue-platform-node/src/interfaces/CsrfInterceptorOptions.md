@@ -6,7 +6,7 @@
 
 # Interface: CsrfInterceptorOptions
 
-Defined in: packages/blue-platform-node/src/csrf-interceptor.ts:35
+Defined in: [packages/blue-platform-node/src/csrf-interceptor.ts:35](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/csrf-interceptor.ts#lines-35)
 
 Options for the CSRF interceptor.
 
@@ -16,7 +16,7 @@ Options for the CSRF interceptor.
 
 > `optional` **cookieName?**: `string`
 
-Defined in: packages/blue-platform-node/src/csrf-interceptor.ts:37
+Defined in: [packages/blue-platform-node/src/csrf-interceptor.ts:37](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/csrf-interceptor.ts#lines-37)
 
 Cookie name; defaults to `'blue-csrf'`.
 
@@ -26,7 +26,7 @@ Cookie name; defaults to `'blue-csrf'`.
 
 > `optional` **fieldName?**: `string`
 
-Defined in: packages/blue-platform-node/src/csrf-interceptor.ts:39
+Defined in: [packages/blue-platform-node/src/csrf-interceptor.ts:39](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/csrf-interceptor.ts#lines-39)
 
 Body/form field accepted as an alternative to the header.
 
@@ -36,7 +36,7 @@ Body/form field accepted as an alternative to the header.
 
 > `optional` **headerName?**: `string`
 
-Defined in: packages/blue-platform-node/src/csrf-interceptor.ts:41
+Defined in: [packages/blue-platform-node/src/csrf-interceptor.ts:41](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/csrf-interceptor.ts#lines-41)
 
 Header name; defaults to `X-CSRF-Token`.
 
@@ -46,7 +46,7 @@ Header name; defaults to `X-CSRF-Token`.
 
 > `optional` **cookieOptions?**: `string`
 
-Defined in: packages/blue-platform-node/src/csrf-interceptor.ts:43
+Defined in: [packages/blue-platform-node/src/csrf-interceptor.ts:43](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/csrf-interceptor.ts#lines-43)
 
 Cookie attributes appended to the Set-Cookie value (e.g. `'SameSite=Lax; Path=/'`).
 
@@ -56,6 +56,6 @@ Cookie attributes appended to the Set-Cookie value (e.g. `'SameSite=Lax; Path=/'
 
 > `optional` **tokenBytes?**: `number`
 
-Defined in: packages/blue-platform-node/src/csrf-interceptor.ts:45
+Defined in: [packages/blue-platform-node/src/csrf-interceptor.ts:45](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/csrf-interceptor.ts#lines-45)
 
 Token length in bytes (default 32).

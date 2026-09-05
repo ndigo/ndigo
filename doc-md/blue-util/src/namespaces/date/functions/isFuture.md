@@ -8,7 +8,7 @@
 
 > **isFuture**(`date`): `boolean`
 
-Defined in: packages/blue-util/src/date/index.ts:12
+Defined in: [packages/blue-util/src/date/index.ts:12](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-util/src/date/index.ts#lines-12)
 
 Returns whether the given date is in the future.
 

@@ -6,7 +6,7 @@
 
 # Class: CompositeRouteCondition
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:307
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:307](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-307)
 
 Implements the [RouteCondition](../interfaces/RouteCondition.md) contract by delegating to multiple `RouteCondition` types and using a logical conjunction (' && ') to ensure all conditions match a given route.
 
@@ -22,7 +22,7 @@ When `CompositeRouteCondition` instances are combined or compared they are expec
 
 > **new CompositeRouteCondition**(...`routeConditions`): `CompositeRouteCondition`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:335
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:335](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-335)
 
 Create a composite condition from one or more route conditions.
 
@@ -48,7 +48,7 @@ Conditions to combine.
 
 > `readonly` **routeConditions**: [`RouteConditionHolder`](RouteConditionHolder.md)[]
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:328
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:328](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-328)
 
 ## Accessors
 
@@ -58,7 +58,7 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:328
 
 > **get** **infix**(): `string`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:308
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:308](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-308)
 
 ##### Returns
 
@@ -76,7 +76,7 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:308
 
 > **get** **isEmpty**(): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:312
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:312](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-312)
 
 Whether this condition contains no content.
 
@@ -96,7 +96,7 @@ Whether this condition contains no content.
 
 > **get** **length**(): `number`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:316
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:316](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-316)
 
 ##### Returns
 
@@ -110,7 +110,7 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:316
 
 > **get** **conditions**(): [`RouteCondition`](../interfaces/RouteCondition.md)\<`any`\>[]
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:320
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:320](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-320)
 
 ##### Returns
 
@@ -124,7 +124,7 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:320
 
 > **get** **content**(): [`RouteCondition`](../interfaces/RouteCondition.md)\<`any`\>[]
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:324
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:324](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-324)
 
 ##### Returns
 
@@ -140,7 +140,7 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:324
 
 > **equals**(`value`): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:166
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:166](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-166)
 
 Compare this condition to another value.
 
@@ -168,7 +168,7 @@ The value to compare.
 
 > **toJSON**(): `JSONValue`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:181
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:181](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-181)
 
 Serialize the condition to JSON.
 
@@ -188,7 +188,7 @@ The string form of the condition.
 
 > **toString**(): `string`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:190
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:190](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-190)
 
 Convert the condition to its textual form.
 
@@ -208,7 +208,7 @@ The condition string.
 
 > **merge**(`other`): `CompositeRouteCondition`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:367
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:367](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-367)
 
 Merge two composite conditions element by element.
 
@@ -236,7 +236,7 @@ The merged composite condition.
 
 > **getMatchingCondition**(`route`): `CompositeRouteCondition` \| `null`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:390
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:390](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-390)
 
 Return the subset of conditions that match the route.
 
@@ -244,7 +244,7 @@ Return the subset of conditions that match the route.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The current route.
 
@@ -264,7 +264,7 @@ A matching composite condition, or `null`.
 
 > **compareTo**(`value`, `route?`): `number`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:412
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:412](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-412)
 
 Compare two composite conditions in route-specific context.
 
@@ -278,7 +278,7 @@ The condition to compare.
 
 ##### route?
 
-`Route`\<`Record`\<`string`, `string`\>\>
+[`Route`](#)\<`Record`\<`string`, `string`\>\>
 
 The route used to break ties, if needed.
 

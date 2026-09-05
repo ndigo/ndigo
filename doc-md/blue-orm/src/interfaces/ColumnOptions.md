@@ -6,7 +6,7 @@
 
 # Interface: ColumnOptions
 
-Defined in: packages/blue-orm/src/metadata.ts:34
+Defined in: [packages/blue-orm/src/metadata.ts:34](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/metadata.ts#lines-34)
 
 Options for defining a column in an entity.
 
@@ -16,7 +16,7 @@ Options for defining a column in an entity.
 
 > `optional` **name?**: `string`
 
-Defined in: packages/blue-orm/src/metadata.ts:35
+Defined in: [packages/blue-orm/src/metadata.ts:35](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/metadata.ts#lines-35)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: packages/blue-orm/src/metadata.ts:35
 
 > `optional` **type?**: `string`
 
-Defined in: packages/blue-orm/src/metadata.ts:36
+Defined in: [packages/blue-orm/src/metadata.ts:36](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/metadata.ts#lines-36)
 
 ***
 
@@ -32,4 +32,4 @@ Defined in: packages/blue-orm/src/metadata.ts:36
 
 > `optional` **nullable?**: `boolean`
 
-Defined in: packages/blue-orm/src/metadata.ts:37
+Defined in: [packages/blue-orm/src/metadata.ts:37](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/metadata.ts#lines-37)

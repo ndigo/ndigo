@@ -6,7 +6,7 @@
 
 # Class: RouteMappingInfoHandlerMethodMappingNamingStrategy
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:914
+Defined in: [packages/blue-dispatcher/src/route-mapping-info.ts:916](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-mapping-info.ts#lines-916)
 
 ## Implements
 
@@ -28,7 +28,7 @@ Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:914
 
 > `readonly` `static` **separator**: `string`
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:920
+Defined in: [packages/blue-dispatcher/src/route-mapping-info.ts:922](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-mapping-info.ts#lines-922)
 
 Separator used when generating fallback mapping names.
 
@@ -38,7 +38,7 @@ Separator used when generating fallback mapping names.
 
 > **getName**(`handlerMethod`, `mapping`): `string`
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:929
+Defined in: [packages/blue-dispatcher/src/route-mapping-info.ts:931](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-mapping-info.ts#lines-931)
 
 Create a mapping name from the handler method and mapping metadata.
 

@@ -1,0 +1,33 @@
+[**BlueJS Framework v0.0.1**](../../../README.md)
+
+***
+
+[BlueJS Framework](../../../modules.md) / [blue-core/src](../README.md) / shared
+
+# Function: shared()
+
+> **shared**(`options?`): (`target`, `context`) => `Function`
+
+Defined in: [packages/blue-core/src/shared.ts:35](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/shared.ts#lines-35)
+
+Class decorator that marks an entry as a shell-managed shared dependency.
+
+When a child (feature) context attempts to register a `@shared` entry,
+the factory skips registration and resolves the entry from the parent chain instead.
+
+## Parameters
+
+### options?
+
+[`SharedOptions`](../interfaces/SharedOptions.md)
+
+## Returns
+
+(`target`, `context`) => `Function`
+
+## Example
+
+```ts
+@shared({ version: '1.2.0' })
+class TelemetryService { … }
+```

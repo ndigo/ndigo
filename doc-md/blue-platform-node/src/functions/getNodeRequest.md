@@ -8,7 +8,7 @@
 
 > **getNodeRequest**(`route`): [`NodeRequest`](../interfaces/NodeRequest.md) \| `undefined`
 
-Defined in: packages/blue-platform-node/src/node-request.ts:36
+Defined in: [packages/blue-platform-node/src/node-request.ts:36](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/node-request.ts#lines-36)
 
 Retrieves the [NodeRequest](../interfaces/NodeRequest.md) stored in route attributes, if present.
 
@@ -16,7 +16,7 @@ Retrieves the [NodeRequest](../interfaces/NodeRequest.md) stored in route attrib
 
 ### route
 
-`Route`
+[`Route`](#)
 
 The current route.
 

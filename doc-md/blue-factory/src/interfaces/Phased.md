@@ -6,7 +6,7 @@
 
 # Interface: Phased
 
-Defined in: packages/blue-factory/src/lifecycle.ts:34
+Defined in: [packages/blue-factory/src/lifecycle.ts:34](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/lifecycle.ts#lines-34)
 
 ## Extended by
 
@@ -18,4 +18,4 @@ Defined in: packages/blue-factory/src/lifecycle.ts:34
 
 > `readonly` **phase**: `number`
 
-Defined in: packages/blue-factory/src/lifecycle.ts:35
+Defined in: [packages/blue-factory/src/lifecycle.ts:35](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/lifecycle.ts#lines-35)

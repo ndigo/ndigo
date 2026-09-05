@@ -6,7 +6,7 @@
 
 # Class: IslandView
 
-Defined in: packages/blue-view/src/island-view.ts:62
+Defined in: [packages/blue-view/src/island-view.ts:62](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/island-view.ts#lines-62)
 
 A server-rendered HTML view for partial hydration ("islands").
 
@@ -41,7 +41,7 @@ return new ModelAndView(new IslandView('todo-app'), { items: [...], filter: 'all
 
 > **new IslandView**(`name`): `IslandView`
 
-Defined in: packages/blue-view/src/island-view.ts:73
+Defined in: [packages/blue-view/src/island-view.ts:73](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/island-view.ts#lines-73)
 
 Creates an island view for the given custom element tag.
 
@@ -81,7 +81,7 @@ A symbol indicating that the value is aware.
 
 > `readonly` **tagName**: `string`
 
-Defined in: packages/blue-view/src/island-view.ts:66
+Defined in: [packages/blue-view/src/island-view.ts:66](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/island-view.ts#lines-66)
 
 The custom element tag name hydrated on the client.
 
@@ -91,7 +91,7 @@ The custom element tag name hydrated on the client.
 
 > **destroyed**: `boolean`
 
-Defined in: packages/blue-view/src/view.ts:50
+Defined in: [packages/blue-view/src/view.ts:50](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view.ts#lines-50)
 
 Indicates if the view has been destroyed.
 
@@ -105,7 +105,7 @@ Indicates if the view has been destroyed.
 
 > **mediaType**: `MediaType` \| `null`
 
-Defined in: packages/blue-view/src/view.ts:54
+Defined in: [packages/blue-view/src/view.ts:54](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view.ts#lines-54)
 
 The media type of the view.
 
@@ -119,7 +119,7 @@ The media type of the view.
 
 > **name**: `string`
 
-Defined in: packages/blue-view/src/view.ts:58
+Defined in: [packages/blue-view/src/view.ts:58](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view.ts#lines-58)
 
 The name of the view.
 
@@ -133,7 +133,7 @@ The name of the view.
 
 > **path**: `string`
 
-Defined in: packages/blue-view/src/view.ts:149
+Defined in: [packages/blue-view/src/view.ts:149](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view.ts#lines-149)
 
 The path associated with the view.
 
@@ -149,7 +149,7 @@ The path associated with the view.
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-view/src/view.ts:151
+Defined in: [packages/blue-view/src/view.ts:151](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view.ts#lines-151)
 
 Returns the string tag for this view.
 
@@ -223,7 +223,7 @@ The name to set.
 
 > `protected` **\_renderTemplate**(`templateModel`, `request`, `target?`): `Promise`\<`void`\>
 
-Defined in: packages/blue-view/src/island-view.ts:85
+Defined in: [packages/blue-view/src/island-view.ts:85](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/island-view.ts#lines-85)
 
 Renders the island markup: the element tag with the serialized model.
 
@@ -261,7 +261,7 @@ The view target to commit the HTML string to.
 
 > **destroy**(): `void`
 
-Defined in: packages/blue-view/src/view.ts:77
+Defined in: [packages/blue-view/src/view.ts:77](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view.ts#lines-77)
 
 Destroys the view, releasing any resources.
 
@@ -279,7 +279,7 @@ Destroys the view, releasing any resources.
 
 > **render**(`model`, `request`, `target?`): `Promise`\<`void`\>
 
-Defined in: packages/blue-view/src/view.ts:91
+Defined in: [packages/blue-view/src/view.ts:91](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view.ts#lines-91)
 
 Render the view given the specified model.
 
@@ -317,7 +317,7 @@ The optional view target.
 
 > **toString**(): `string`
 
-Defined in: packages/blue-view/src/view.ts:115
+Defined in: [packages/blue-view/src/view.ts:115](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view.ts#lines-115)
 
 Returns a string representation of the view.
 
@@ -337,7 +337,7 @@ A string representing the view.
 
 > `protected` **\_createViewModel**(`model`, `request`): `any`
 
-Defined in: packages/blue-view/src/view.ts:126
+Defined in: [packages/blue-view/src/view.ts:126](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view.ts#lines-126)
 
 Creates the view model from the given model and request.
 
@@ -371,7 +371,7 @@ The created view model.
 
 > **toJSON**(): `JSONObject`
 
-Defined in: packages/blue-view/src/view.ts:171
+Defined in: [packages/blue-view/src/view.ts:171](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view.ts#lines-171)
 
 Returns a JSON representation of the path-based view.
 
@@ -391,7 +391,7 @@ A JSON object representing the path-based view.
 
 > `protected` **\_projectViewModel**(`viewModel`, `request`): `any`
 
-Defined in: packages/blue-view/src/view.ts:190
+Defined in: [packages/blue-view/src/view.ts:190](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view.ts#lines-190)
 
 Creates the template model from the view model.
 
@@ -425,7 +425,7 @@ The template model.
 
 > `protected` **\_renderView**(`viewModel`, `request`, `target?`): `Promise`\<`void`\>
 
-Defined in: packages/blue-view/src/view.ts:212
+Defined in: [packages/blue-view/src/view.ts:212](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view.ts#lines-212)
 
 Renders the view with the given view model.
 

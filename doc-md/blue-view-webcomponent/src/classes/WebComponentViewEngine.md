@@ -6,7 +6,7 @@
 
 # Class: WebComponentViewEngine
 
-Defined in: packages/blue-view-webcomponent/src/engine.ts:207
+Defined in: [packages/blue-view-webcomponent/src/engine.ts:204](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view-webcomponent/src/engine.ts#lines-204)
 
 View engine that renders BlueJS views as custom elements.
 
@@ -30,7 +30,7 @@ View engine that renders BlueJS views as custom elements.
 
 > **render**(`view`, `model`, `target`, `route`): `Promise`\<`void`\>
 
-Defined in: packages/blue-view-webcomponent/src/engine.ts:218
+Defined in: [packages/blue-view-webcomponent/src/engine.ts:215](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view-webcomponent/src/engine.ts#lines-215)
 
 Renders a web component view into the target, reusing an existing matching element when possible.
 
@@ -38,7 +38,7 @@ Renders a web component view into the target, reusing an existing matching eleme
 
 ##### view
 
-`View`
+[`View`](#)
 
 The view to render.
 
@@ -56,7 +56,7 @@ The destination for rendered output.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The active route for the render pass.
 

@@ -8,7 +8,7 @@
 
 > **defineProperty**: (`target`, `propertyKey`, `attributes`) => `boolean`
 
-Defined in: packages/blue-http/src/http.ts:271
+Defined in: [packages/blue-http/src/http.ts:281](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-281)
 
 Adds a property to an object, or modifies attributes of an existing property.
 

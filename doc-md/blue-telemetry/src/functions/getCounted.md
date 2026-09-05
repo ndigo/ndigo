@@ -8,7 +8,7 @@
 
 > **getCounted**(`target`, `propertyKey`): \{ `name`: `string`; `attributes?`: `Attributes`; `featureAggregator?`: [`FeatureMetricAggregator`](../classes/FeatureMetricAggregator.md); `featureKey?`: `string`; \} \| `undefined`
 
-Defined in: packages/blue-telemetry/src/metrics/decorators.ts:15
+Defined in: [packages/blue-telemetry/src/metrics/decorators.ts:15](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/metrics/decorators.ts#lines-15)
 
 Retrieves the configuration for a counted method, including its name and attributes.
 

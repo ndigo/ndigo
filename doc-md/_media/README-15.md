@@ -1,41 +1,27 @@
-# Blue Telemetry
+# Blue Service
 
-Blue Telemetry provides tracing, metrics, and logging integrations for BlueJS using OpenTelemetry.
+Blue Service defines service-layer abstractions used by BlueJS applications.
 
 ## Features
 
-- Telemetry bootstrap via `configureTelemetry()`
-- TC39 decorators: `@traced`, `@counted`
-- Logger abstraction with threshold filtering
-- Severity mapping utilities for `syslog`, `npm`, `apache`, and `cli`
-- Context-aware logging for trace/span correlation
-- Built-in instrumentation for BlueJS context/dispatcher/router packages
+- Service composition foundations
+- Integration patterns with factory/core/http packages
+- ESM package scaffold for service-level modules
 
 ## Installation
 
 ```bash
-pnpm add @blue/telemetry
+pnpm add @blue/service
 ```
 
 ## Usage
 
-```typescript
-import { SeverityNumber } from '@opentelemetry/api-logs';
-import { configureTelemetry } from '@blue/telemetry/node';
-import { getLogger } from '@blue/telemetry';
-
-configureTelemetry({
-    minimumSeverity: SeverityNumber.INFO,
-    instrumentations: [],
-});
-
-const logger = getLogger('example');
-logger.info('telemetry initialized');
-```
+`@blue/service` currently provides framework-level service packaging and is generally consumed as part of higher-level
+BlueJS module wiring.
 
 ## Development
 
 ```bash
-pnpm --filter @blue/telemetry build:lib
-pnpm --filter @blue/telemetry test
+pnpm --filter @blue/service build:lib
+pnpm --filter @blue/service test
 ```

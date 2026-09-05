@@ -162,7 +162,7 @@ export class MockMVC {
     #dispatcher: NodeDispatcher;
 
     /**
-     * @param dispatcher - A configured node dispatcher, or an app with one.
+     * @param arg (application dispatcher) - A configured node dispatcher, or an app with one.
      */
     constructor(arg: NodeDispatcher | { dispatcher: NodeDispatcher }) {
         this.#dispatcher = typeof arg === 'object' && 'dispatcher' in arg ? arg.dispatcher : arg;

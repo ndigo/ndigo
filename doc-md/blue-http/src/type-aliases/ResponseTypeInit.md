@@ -8,7 +8,7 @@
 
 > **ResponseTypeInit** = [`HTTPInit`](HTTPInit.md) & `object`
 
-Defined in: packages/blue-http/src/interceptors/response-type-interceptor.ts:32
+Defined in: [packages/blue-http/src/interceptors/response-type-interceptor.ts:32](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/response-type-interceptor.ts#lines-32)
 
 Request settings for [ResponseTypeInterceptor](../classes/ResponseTypeInterceptor.md).
 

@@ -6,7 +6,7 @@
 
 # Interface: DurationSummary
 
-Defined in: packages/blue-telemetry/src/metrics/feature-metric-aggregator.ts:13
+Defined in: [packages/blue-telemetry/src/metrics/feature-metric-aggregator.ts:13](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/metrics/feature-metric-aggregator.ts#lines-13)
 
 Represents a statistical summary of recorded durations.
 
@@ -16,7 +16,7 @@ Represents a statistical summary of recorded durations.
 
 > `readonly` **count**: `number`
 
-Defined in: packages/blue-telemetry/src/metrics/feature-metric-aggregator.ts:14
+Defined in: [packages/blue-telemetry/src/metrics/feature-metric-aggregator.ts:14](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/metrics/feature-metric-aggregator.ts#lines-14)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: packages/blue-telemetry/src/metrics/feature-metric-aggregator.ts:14
 
 > `readonly` **max**: `number`
 
-Defined in: packages/blue-telemetry/src/metrics/feature-metric-aggregator.ts:15
+Defined in: [packages/blue-telemetry/src/metrics/feature-metric-aggregator.ts:15](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/metrics/feature-metric-aggregator.ts#lines-15)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: packages/blue-telemetry/src/metrics/feature-metric-aggregator.ts:15
 
 > `readonly` **mean**: `number`
 
-Defined in: packages/blue-telemetry/src/metrics/feature-metric-aggregator.ts:16
+Defined in: [packages/blue-telemetry/src/metrics/feature-metric-aggregator.ts:16](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/metrics/feature-metric-aggregator.ts#lines-16)
 
 ***
 
@@ -40,7 +40,7 @@ Defined in: packages/blue-telemetry/src/metrics/feature-metric-aggregator.ts:16
 
 > `readonly` **min**: `number`
 
-Defined in: packages/blue-telemetry/src/metrics/feature-metric-aggregator.ts:17
+Defined in: [packages/blue-telemetry/src/metrics/feature-metric-aggregator.ts:17](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/metrics/feature-metric-aggregator.ts#lines-17)
 
 ***
 
@@ -48,4 +48,4 @@ Defined in: packages/blue-telemetry/src/metrics/feature-metric-aggregator.ts:17
 
 > `readonly` **p50**: `number`
 
-Defined in: packages/blue-telemetry/src/metrics/feature-metric-aggregator.ts:18
+Defined in: [packages/blue-telemetry/src/metrics/feature-metric-aggregator.ts:18](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/metrics/feature-metric-aggregator.ts#lines-18)

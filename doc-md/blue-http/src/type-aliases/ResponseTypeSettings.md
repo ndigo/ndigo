@@ -8,7 +8,7 @@
 
 > **ResponseTypeSettings** = [`HTTPInit`](HTTPInit.md) & `object`
 
-Defined in: packages/blue-http/src/interceptors/response-type-interceptor.ts:40
+Defined in: [packages/blue-http/src/interceptors/response-type-interceptor.ts:40](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/response-type-interceptor.ts#lines-40)
 
 Normalized request settings used after initialization.
 

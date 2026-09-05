@@ -6,7 +6,7 @@
 
 # Class: WebComponentView
 
-Defined in: packages/blue-view-webcomponent/src/view.ts:20
+Defined in: [packages/blue-view-webcomponent/src/view.ts:20](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view-webcomponent/src/view.ts#lines-20)
 
 Template view base that delegates rendering to a web component view engine.
 
@@ -20,7 +20,7 @@ Template view base that delegates rendering to a web component view engine.
 
 > **new WebComponentView**(`name`): `WebComponentView`
 
-Defined in: packages/blue-view-webcomponent/src/view.ts:39
+Defined in: [packages/blue-view-webcomponent/src/view.ts:39](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view-webcomponent/src/view.ts#lines-39)
 
 Creates a view bound to a specific custom element tag name.
 
@@ -116,7 +116,7 @@ The path associated with the view.
 
 > **tagName**: `string`
 
-Defined in: packages/blue-view-webcomponent/src/view.ts:24
+Defined in: [packages/blue-view-webcomponent/src/view.ts:24](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view-webcomponent/src/view.ts#lines-24)
 
 The custom element tag name rendered by this view.
 
@@ -126,7 +126,7 @@ The custom element tag name rendered by this view.
 
 > **template**: `string`
 
-Defined in: packages/blue-view-webcomponent/src/view.ts:28
+Defined in: [packages/blue-view-webcomponent/src/view.ts:28](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view-webcomponent/src/view.ts#lines-28)
 
 The template root used to instantiate the component markup.
 
@@ -136,7 +136,7 @@ The template root used to instantiate the component markup.
 
 > `readonly` `optional` **applicationContext?**: `ApplicationContextLike`
 
-Defined in: packages/blue-view-webcomponent/src/view.ts:32
+Defined in: [packages/blue-view-webcomponent/src/view.ts:32](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view-webcomponent/src/view.ts#lines-32)
 
 Application context used to resolve the web component view engine.
 
@@ -382,7 +382,7 @@ The template model.
 
 > `abstract` `protected` **\_renderTemplate**(`templateModel`, `request`): `void`
 
-Defined in: packages/blue-view-webcomponent/src/view.ts:45
+Defined in: [packages/blue-view-webcomponent/src/view.ts:45](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view-webcomponent/src/view.ts#lines-45)
 
 Renders the template with the given template model and request.
 
@@ -414,7 +414,7 @@ The current request.
 
 > `protected` **\_renderView**(`viewModel`, `request`, `target?`): `Promise`\<`void`\>
 
-Defined in: packages/blue-view-webcomponent/src/view.ts:49
+Defined in: [packages/blue-view-webcomponent/src/view.ts:49](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view-webcomponent/src/view.ts#lines-49)
 
 Renders the view with the given view model.
 

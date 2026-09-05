@@ -6,7 +6,7 @@
 
 # Interface: SeverityMapping
 
-Defined in: packages/blue-telemetry/src/severity/severity-mapping.ts:18
+Defined in: [packages/blue-telemetry/src/severity/severity-mapping.ts:18](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/severity/severity-mapping.ts#lines-18)
 
 Defines an interface for mapping between string-based log level names and OpenTelemetry `SeverityNumber`s.
 
@@ -19,7 +19,7 @@ logging schemes (e.g., syslog, npm, Apache).
 
 > `readonly` **scheme**: [`SeverityScheme`](../type-aliases/SeverityScheme.md)
 
-Defined in: packages/blue-telemetry/src/severity/severity-mapping.ts:22
+Defined in: [packages/blue-telemetry/src/severity/severity-mapping.ts:22](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/severity/severity-mapping.ts#lines-22)
 
 The name of the severity scheme this mapping implements.
 
@@ -29,7 +29,7 @@ The name of the severity scheme this mapping implements.
 
 > **toSeverityNumber**(`levelName`): `SeverityNumber`
 
-Defined in: packages/blue-telemetry/src/severity/severity-mapping.ts:29
+Defined in: [packages/blue-telemetry/src/severity/severity-mapping.ts:29](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/severity/severity-mapping.ts#lines-29)
 
 Converts a string-based log level name to its corresponding OpenTelemetry `SeverityNumber`.
 
@@ -53,7 +53,7 @@ The `SeverityNumber` corresponding to the given level name.
 
 > **toSeverityText**(`severityNumber`): `string`
 
-Defined in: packages/blue-telemetry/src/severity/severity-mapping.ts:36
+Defined in: [packages/blue-telemetry/src/severity/severity-mapping.ts:36](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/severity/severity-mapping.ts#lines-36)
 
 Converts an OpenTelemetry `SeverityNumber` to its corresponding string-based log level name.
 

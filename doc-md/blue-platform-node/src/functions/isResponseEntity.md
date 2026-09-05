@@ -8,7 +8,7 @@
 
 > **isResponseEntity**(`value`): `value is ResponseEntity<unknown>`
 
-Defined in: packages/blue-platform-node/src/response-entity.ts:80
+Defined in: [packages/blue-platform-node/src/response-entity.ts:80](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/response-entity.ts#lines-80)
 
 Type guard that checks whether a value is a `ResponseEntity`.
 

@@ -6,7 +6,7 @@
 
 # Abstract Class: AbstractValueComparator
 
-Defined in: packages/blue-core/src/comparable.ts:73
+Defined in: [packages/blue-core/src/comparable.ts:72](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/comparable.ts#lines-72)
 
 Interface for objects that can compare two values of a specific type.
 
@@ -20,7 +20,7 @@ Interface for objects that can compare two values of a specific type.
 
 > **new AbstractValueComparator**(`value`): `AbstractValueComparator`
 
-Defined in: packages/blue-core/src/comparable.ts:90
+Defined in: [packages/blue-core/src/comparable.ts:89](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/comparable.ts#lines-89)
 
 Creates an instance of AbstractValueComparator.
 
@@ -42,7 +42,7 @@ The string value to be used for comparison.
 
 > `readonly` **value**: `string`
 
-Defined in: packages/blue-core/src/comparable.ts:77
+Defined in: [packages/blue-core/src/comparable.ts:76](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/comparable.ts#lines-76)
 
 The string value being compared.
 
@@ -54,7 +54,7 @@ The string value being compared.
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-core/src/comparable.ts:82
+Defined in: [packages/blue-core/src/comparable.ts:81](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/comparable.ts#lines-81)
 
 The string tag for this class.
 
@@ -68,7 +68,7 @@ The string tag for this class.
 
 > `abstract` **compare**(`pattern1`, `pattern2`): `number`
 
-Defined in: packages/blue-core/src/comparable.ts:105
+Defined in: [packages/blue-core/src/comparable.ts:104](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/comparable.ts#lines-104)
 
 Compares two string patterns. This method must be implemented by subclasses.
 

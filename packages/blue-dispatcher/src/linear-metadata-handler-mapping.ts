@@ -11,7 +11,7 @@ import type { MaybeHandler } from './_shared';
 const { defineProperty } = Reflect;
 
 /**
- * Creates {@link RequestMappingInfo|RequestMappingInfo} instances from class-level `route:handler` metadata and method-level `route:mapping` metadata. Metadata is usually applied using {@link RequestMapping|@RequestHandler} and {@link RequestMapping|@RequestMapping} decorators.
+ * Creates `RequestMappingInfo` instances from class-level `route:handler` metadata and method-level `route:mapping` metadata. Metadata is usually applied using `@RequestHandler` and `@RequestMapping` decorators.
  *
  * Map handler methods using route mapping metadata.
  */

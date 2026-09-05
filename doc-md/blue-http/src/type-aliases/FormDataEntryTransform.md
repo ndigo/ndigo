@@ -8,7 +8,7 @@
 
 > **FormDataEntryTransform** = (`key`, `value`) => \[`string`, `FormDataEntryValue`\] \| `null`
 
-Defined in: packages/blue-http/src/transformers/form-data-transformer.ts:10
+Defined in: [packages/blue-http/src/transformers/form-data-transformer.ts:10](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/transformers/form-data-transformer.ts#lines-10)
 
 Transforms a single `FormData` entry.
 

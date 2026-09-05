@@ -6,7 +6,7 @@
 
 # Interface: RequestIdCorrelation
 
-Defined in: packages/blue-service/src/request-id-correlation.ts:8
+Defined in: [packages/blue-service/src/request-id-correlation.ts:8](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-service/src/request-id-correlation.ts#lines-8)
 
 Interface for request-ID correlation across service calls.
 
@@ -16,7 +16,7 @@ Interface for request-ID correlation across service calls.
 
 > **generateRequestId**(): `string`
 
-Defined in: packages/blue-service/src/request-id-correlation.ts:14
+Defined in: [packages/blue-service/src/request-id-correlation.ts:14](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-service/src/request-id-correlation.ts#lines-14)
 
 Generates a new unique request ID.
 
@@ -32,7 +32,7 @@ A unique request ID.
 
 > **getCorrelationId**(): `string`
 
-Defined in: packages/blue-service/src/request-id-correlation.ts:20
+Defined in: [packages/blue-service/src/request-id-correlation.ts:20](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-service/src/request-id-correlation.ts#lines-20)
 
 Returns the current correlation ID.
 
@@ -48,7 +48,7 @@ The current correlation ID.
 
 > **setCorrelationId**(`id`): `void`
 
-Defined in: packages/blue-service/src/request-id-correlation.ts:26
+Defined in: [packages/blue-service/src/request-id-correlation.ts:26](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-service/src/request-id-correlation.ts#lines-26)
 
 Sets the current correlation ID.
 

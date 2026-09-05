@@ -6,7 +6,7 @@
 
 # Class: ResponseEntity\<T\>
 
-Defined in: packages/blue-platform-node/src/response-entity.ts:18
+Defined in: [packages/blue-platform-node/src/response-entity.ts:18](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/response-entity.ts#lines-18)
 
 A response with an explicit HTTP status, headers, and body.
 
@@ -22,7 +22,7 @@ A response with an explicit HTTP status, headers, and body.
 
 > **new ResponseEntity**\<`T`\>(`body`, `status`, `headers?`): `ResponseEntity`\<`T`\>
 
-Defined in: packages/blue-platform-node/src/response-entity.ts:37
+Defined in: [packages/blue-platform-node/src/response-entity.ts:37](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/response-entity.ts#lines-37)
 
 #### Parameters
 
@@ -54,7 +54,7 @@ Response headers.
 
 > `readonly` **body**: `T`
 
-Defined in: packages/blue-platform-node/src/response-entity.ts:22
+Defined in: [packages/blue-platform-node/src/response-entity.ts:22](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/response-entity.ts#lines-22)
 
 The response body.
 
@@ -64,7 +64,7 @@ The response body.
 
 > `readonly` **status**: `ResponseStatus`
 
-Defined in: packages/blue-platform-node/src/response-entity.ts:26
+Defined in: [packages/blue-platform-node/src/response-entity.ts:26](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/response-entity.ts#lines-26)
 
 The HTTP status.
 
@@ -74,7 +74,7 @@ The HTTP status.
 
 > `readonly` **headers**: `Record`\<`string`, `string`\>
 
-Defined in: packages/blue-platform-node/src/response-entity.ts:30
+Defined in: [packages/blue-platform-node/src/response-entity.ts:30](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/response-entity.ts#lines-30)
 
 Response headers, keyed by header name.
 
@@ -84,7 +84,7 @@ Response headers, keyed by header name.
 
 > `static` **ok**\<`T`\>(`body`): `ResponseEntity`\<`T`\>
 
-Defined in: packages/blue-platform-node/src/response-entity.ts:44
+Defined in: [packages/blue-platform-node/src/response-entity.ts:44](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/response-entity.ts#lines-44)
 
 `200 OK` response.
 
@@ -110,7 +110,7 @@ Defined in: packages/blue-platform-node/src/response-entity.ts:44
 
 > `static` **created**\<`T`\>(`body`): `ResponseEntity`\<`T`\>
 
-Defined in: packages/blue-platform-node/src/response-entity.ts:49
+Defined in: [packages/blue-platform-node/src/response-entity.ts:49](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/response-entity.ts#lines-49)
 
 `201 Created` response.
 
@@ -136,7 +136,7 @@ Defined in: packages/blue-platform-node/src/response-entity.ts:49
 
 > `static` **noContent**(): `ResponseEntity`\<`void`\>
 
-Defined in: packages/blue-platform-node/src/response-entity.ts:54
+Defined in: [packages/blue-platform-node/src/response-entity.ts:54](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/response-entity.ts#lines-54)
 
 `204 No Content` response.
 
@@ -150,7 +150,7 @@ Defined in: packages/blue-platform-node/src/response-entity.ts:54
 
 > `static` **notFound**(): `ResponseEntity`\<`void`\>
 
-Defined in: packages/blue-platform-node/src/response-entity.ts:59
+Defined in: [packages/blue-platform-node/src/response-entity.ts:59](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/response-entity.ts#lines-59)
 
 `404 Not Found` response.
 
@@ -164,7 +164,7 @@ Defined in: packages/blue-platform-node/src/response-entity.ts:59
 
 > `static` **badRequest**\<`T`\>(`body?`): `ResponseEntity`\<`T` \| `undefined`\>
 
-Defined in: packages/blue-platform-node/src/response-entity.ts:64
+Defined in: [packages/blue-platform-node/src/response-entity.ts:64](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/response-entity.ts#lines-64)
 
 `400 Bad Request` response.
 
@@ -190,7 +190,7 @@ Defined in: packages/blue-platform-node/src/response-entity.ts:64
 
 > `static` **internalServerError**\<`T`\>(`body?`): `ResponseEntity`\<`T` \| `undefined`\>
 
-Defined in: packages/blue-platform-node/src/response-entity.ts:69
+Defined in: [packages/blue-platform-node/src/response-entity.ts:69](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/response-entity.ts#lines-69)
 
 `500 Internal Server Error` response.
 

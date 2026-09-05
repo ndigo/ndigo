@@ -6,9 +6,9 @@
 
 # Interface: Factory
 
-Defined in: packages/blue-factory/src/factory.ts:48
+Defined in: [packages/blue-factory/src/factory.ts:57](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/factory.ts#lines-57)
 
-This interface is implemented by objects that hold a number of value definitions, each uniquely identified by a string\|string name.
+This interface is implemented by objects that hold a number of value definitions, each uniquely identified by a `string` name.
 
 The point of this approach is that the `Factory` is a central registry of application components and centralizes configuration.
 `Factory` implementations should support the standard lifecycle as much as possible. The full set of initialization methods and their standard order is:
@@ -32,11 +32,11 @@ On teardown, the full lifecycle should apply:
 ## See
 
  - [NameAware](NameAware.md)
- - [FactoryAware](FactoryAware.md)
- - EnvironmentAware
- - ApplicationEventEmitterAware
- - ContentSourceAware
- - ApplicationContextAware
+ - `FactoryAware`
+ - `EnvironmentAware`
+ - `ApplicationEventEmitterAware`
+ - `ContentSourceAware`
+ - `ApplicationContextAware`
 
 ## Extended by
 
@@ -48,7 +48,7 @@ On teardown, the full lifecycle should apply:
 
 > **getInstance**\<`T`\>(`name`): `T`
 
-Defined in: packages/blue-factory/src/factory.ts:54
+Defined in: [packages/blue-factory/src/factory.ts:63](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/factory.ts#lines-63)
 
 Return an instance of the specified value.
 

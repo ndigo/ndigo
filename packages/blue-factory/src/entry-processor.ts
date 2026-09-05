@@ -53,7 +53,7 @@ export interface ConstructionAwareProcessor {
      * The default implementation returns `null`.
      * @param name The name of instance
      * @param constructor The constructor
-     * @param argumentsList The list of arguments supplied to the `constructor`.
+     * @param argumentsList (constructor arguments) The list of arguments supplied to the `constructor`.
      * @returns The instance to expose instead of a default instance, or `null` to proceed with default construction.
      */
     processBeforeConstruction<T = any>(name: string, constructor: Function, argumentsList?: unknown[]): T | null;

@@ -8,4 +8,4 @@
 
 > **ResolverConverterOption** = [`ArgumentValueConverter`](ArgumentValueConverter.md) \| keyof *typeof* [`argumentValueConverters`](../variables/argumentValueConverters.md) \| \{ `optional?`: `boolean`; `use`: [`ArgumentValueConverter`](ArgumentValueConverter.md) \| keyof *typeof* [`argumentValueConverters`](../variables/argumentValueConverters.md); \}
 
-Defined in: packages/blue-platform-node/src/argument-value-converter.ts:17
+Defined in: [packages/blue-platform-node/src/argument-value-converter.ts:17](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/argument-value-converter.ts#lines-17)

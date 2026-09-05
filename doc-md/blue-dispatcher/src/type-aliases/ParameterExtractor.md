@@ -8,7 +8,7 @@
 
 > **ParameterExtractor** = `object`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:16
+Defined in: [packages/blue-dispatcher/src/route-parameter.ts:16](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-parameter.ts#lines-16)
 
 Factory function return type - describes a parameter extraction
 
@@ -18,7 +18,7 @@ Factory function return type - describes a parameter extraction
 
 > **type**: [`MethodParameterType`](../classes/MethodParameterType.md)
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:17
+Defined in: [packages/blue-dispatcher/src/route-parameter.ts:17](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-parameter.ts#lines-17)
 
 ***
 
@@ -26,7 +26,7 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:17
 
 > **name**: `string`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:18
+Defined in: [packages/blue-dispatcher/src/route-parameter.ts:18](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-parameter.ts#lines-18)
 
 ***
 
@@ -34,7 +34,7 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:18
 
 > **required**: `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:19
+Defined in: [packages/blue-dispatcher/src/route-parameter.ts:19](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-parameter.ts#lines-19)
 
 ***
 
@@ -42,7 +42,7 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:19
 
 > **defaultValue**: `string` \| `null`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:20
+Defined in: [packages/blue-dispatcher/src/route-parameter.ts:20](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-parameter.ts#lines-20)
 
 ***
 
@@ -50,7 +50,7 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:20
 
 > `optional` **convertType?**: `object`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:22
+Defined in: [packages/blue-dispatcher/src/route-parameter.ts:22](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-parameter.ts#lines-22)
 
 Type-based conversion: { source: SourceConstructor, target: TargetConstructor }
 
@@ -68,4 +68,4 @@ Type-based conversion: { source: SourceConstructor, target: TargetConstructor }
 
 > `optional` **prefix?**: `string` \| `null`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:23
+Defined in: [packages/blue-dispatcher/src/route-parameter.ts:23](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-parameter.ts#lines-23)

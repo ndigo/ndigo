@@ -6,7 +6,7 @@
 
 # Interface: DomainMetadata
 
-Defined in: packages/blue-domain/src/decorators.ts:96
+Defined in: [packages/blue-domain/src/decorators.ts:97](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-domain/src/decorators.ts#lines-97)
 
 Reads domain-specific metadata from a class decorated with domain decorators.
 
@@ -20,7 +20,7 @@ The constructor function of the domain component class
 
 > `optional` **name?**: `string`
 
-Defined in: packages/blue-domain/src/decorators.ts:98
+Defined in: [packages/blue-domain/src/decorators.ts:99](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-domain/src/decorators.ts#lines-99)
 
 Component name from @domainComponent, or undefined if not decorated
 
@@ -30,11 +30,9 @@ Component name from @domainComponent, or undefined if not decorated
 
 > **actions**: `string`[]
 
-Defined in: packages/blue-domain/src/decorators.ts:100
+Defined in: [packages/blue-domain/src/decorators.ts:101](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-domain/src/decorators.ts#lines-101)
 
-Action method names from
-
-#### Domain Action
+Action method names from `domainAction`
 
 ***
 
@@ -42,8 +40,6 @@ Action method names from
 
 > **data**: `string`[]
 
-Defined in: packages/blue-domain/src/decorators.ts:102
+Defined in: [packages/blue-domain/src/decorators.ts:103](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-domain/src/decorators.ts#lines-103)
 
-Data field names from
-
-#### Domain Data
+Data field names from `domainData`

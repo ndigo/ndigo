@@ -8,7 +8,7 @@
 
 > **validationGroup**(`name`): `symbol`
 
-Defined in: packages/blue-validate/src/group.ts:14
+Defined in: [packages/blue-validate/src/group.ts:14](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/group.ts#lines-14)
 
 Creates or retrieves a named validation group.
 

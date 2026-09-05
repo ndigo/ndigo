@@ -8,7 +8,7 @@
 
 > **RouterMiddleware** = (`route`) => `boolean` \| `void` \| `Promise`\<`boolean` \| `void`\>
 
-Defined in: packages/blue-router/src/router-interceptor.ts:10
+Defined in: [packages/blue-router/src/router-interceptor.ts:10](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/router-interceptor.ts#lines-10)
 
 A function signature for a router middleware, which can optionally prevent further processing.
 

@@ -6,7 +6,7 @@
 
 # Class: EventEmitterTelemetryHooks
 
-Defined in: packages/blue-service/src/telemetry-hooks.ts:35
+Defined in: [packages/blue-service/src/telemetry-hooks.ts:34](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-service/src/telemetry-hooks.ts#lines-34)
 
 Telemetry hooks implementation that uses an EventEmitter to notify about service events.
 
@@ -20,7 +20,7 @@ Telemetry hooks implementation that uses an EventEmitter to notify about service
 
 > **new EventEmitterTelemetryHooks**(`emitter`): `EventEmitterTelemetryHooks`
 
-Defined in: packages/blue-service/src/telemetry-hooks.ts:43
+Defined in: [packages/blue-service/src/telemetry-hooks.ts:42](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-service/src/telemetry-hooks.ts#lines-42)
 
 Creates a new telemetry hooks implementation.
 
@@ -42,7 +42,7 @@ The event emitter to use for notifications.
 
 > **onRequest**(`request`): `void`
 
-Defined in: packages/blue-service/src/telemetry-hooks.ts:52
+Defined in: [packages/blue-service/src/telemetry-hooks.ts:51](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-service/src/telemetry-hooks.ts#lines-51)
 
 Records the start of a service request.
 
@@ -68,7 +68,7 @@ The HTTP request.
 
 > **onResponse**(`response`): `void`
 
-Defined in: packages/blue-service/src/telemetry-hooks.ts:64
+Defined in: [packages/blue-service/src/telemetry-hooks.ts:63](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-service/src/telemetry-hooks.ts#lines-63)
 
 Records the completion of a service request.
 
@@ -94,7 +94,7 @@ The HTTP response.
 
 > **onError**(`error`): `void`
 
-Defined in: packages/blue-service/src/telemetry-hooks.ts:76
+Defined in: [packages/blue-service/src/telemetry-hooks.ts:75](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-service/src/telemetry-hooks.ts#lines-75)
 
 Records a service request failure.
 

@@ -6,7 +6,7 @@
 
 # Interface: RouteErrorResolver
 
-Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:16
+Defined in: [packages/blue-dispatcher/src/route-error-resolver.ts:16](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-error-resolver.ts#lines-16)
 
 Resolves exceptions into a route-specific response.
 
@@ -16,7 +16,7 @@ Resolves exceptions into a route-specific response.
 
 > **resolveError**(`route`, `handler`, `error`): [`ModelAndView`](../classes/ModelAndView.md) \| `null`
 
-Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:25
+Defined in: [packages/blue-dispatcher/src/route-error-resolver.ts:25](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-error-resolver.ts#lines-25)
 
 Resolve a route handler error into a model and view.
 
@@ -24,7 +24,7 @@ Resolve a route handler error into a model and view.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The current route.
 

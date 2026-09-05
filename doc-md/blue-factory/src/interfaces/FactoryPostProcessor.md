@@ -6,7 +6,7 @@
 
 # Interface: FactoryPostProcessor
 
-Defined in: packages/blue-factory/src/entry-processor.ts:98
+Defined in: [packages/blue-factory/src/entry-processor.ts:98](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/entry-processor.ts#lines-98)
 
 Factory hook that allows for custom modification of new instances, e.g. checking for marker interfaces or wrapping them with proxies.
 
@@ -16,7 +16,7 @@ Factory hook that allows for custom modification of new instances, e.g. checking
 
 > **postProcessFactory**(`factory`): `void`
 
-Defined in: packages/blue-factory/src/entry-processor.ts:103
+Defined in: [packages/blue-factory/src/entry-processor.ts:103](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/entry-processor.ts#lines-103)
 
 Post-process the given factory.
 

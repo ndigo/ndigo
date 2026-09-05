@@ -6,7 +6,7 @@
 
 # Class: SiteRouter
 
-Defined in: packages/blue-router/src/site-router.ts:31
+Defined in: [packages/blue-router/src/site-router.ts:31](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/site-router.ts#lines-31)
 
 A concrete router implementation that extends `AbstractRouter` to manage and navigate through site-wide routes.
 It supports mounting feature-specific routes at defined prefixes.
@@ -25,7 +25,7 @@ It supports mounting feature-specific routes at defined prefixes.
 
 > **new SiteRouter**(): `SiteRouter`
 
-Defined in: packages/blue-router/src/site-router.ts:49
+Defined in: [packages/blue-router/src/site-router.ts:49](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/site-router.ts#lines-49)
 
 Creates an instance of `SiteRouter`.
 
@@ -49,7 +49,7 @@ Creates an instance of `SiteRouter`.
 
 > **get** `protected` **interceptors**(): [`RouterInterceptor`](../interfaces/RouterInterceptor.md)[]
 
-Defined in: packages/blue-router/src/router.ts:60
+Defined in: [packages/blue-router/src/router.ts:60](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/router.ts#lines-60)
 
 Returns the list of registered `RouterInterceptor` instances.
 
@@ -75,7 +75,7 @@ An array of `RouterInterceptor`.
 
 > **get** **route**(): `string`
 
-Defined in: packages/blue-router/src/site-router.ts:41
+Defined in: [packages/blue-router/src/site-router.ts:41](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/site-router.ts#lines-41)
 
 Gets the current full route path managed by the `SiteRouter`.
 
@@ -99,7 +99,7 @@ The current route path as a string.
 
 > **addInterceptor**(`interceptor`): `void`
 
-Defined in: packages/blue-router/src/router.ts:70
+Defined in: [packages/blue-router/src/router.ts:70](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/router.ts#lines-70)
 
 Adds a `RouterInterceptor` to the router. Interceptors are processed in the order they are added.
 Duplicate interceptors are ignored.
@@ -130,7 +130,7 @@ The `RouterInterceptor` to add.
 
 > **use**(`interceptorOrPatterns`, `interceptor?`, `excludePatterns?`): `void`
 
-Defined in: packages/blue-router/src/router.ts:85
+Defined in: [packages/blue-router/src/router.ts:85](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/router.ts#lines-85)
 
 Registers a `RouterInterceptor` or `RouterMiddleware` with optional path matching.
 If `interceptorOrPatterns` is a string or array of strings, it defines include patterns for the interceptor.
@@ -177,7 +177,7 @@ If `interceptor` is not provided when `interceptorOrPatterns` defines patterns.
 
 > `protected` **\_toRouterInterceptor**(`interceptor`): [`RouterInterceptor`](../interfaces/RouterInterceptor.md)
 
-Defined in: packages/blue-router/src/router.ts:116
+Defined in: [packages/blue-router/src/router.ts:116](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/router.ts#lines-116)
 
 Converts a `RouterMiddleware` function into a `RouterInterceptor` object.
 If the input is already a `RouterInterceptor`, it is returned as is.
@@ -210,7 +210,7 @@ A `RouterInterceptor` instance.
 
 > `readonly` **callback**(): `undefined`
 
-Defined in: packages/blue-router/src/site-router.ts:32
+Defined in: [packages/blue-router/src/site-router.ts:32](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/site-router.ts#lines-32)
 
 #### Returns
 
@@ -226,7 +226,7 @@ Defined in: packages/blue-router/src/site-router.ts:32
 
 > **mount**(`prefix`, `callback`): `this`
 
-Defined in: packages/blue-router/src/site-router.ts:63
+Defined in: [packages/blue-router/src/site-router.ts:63](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/site-router.ts#lines-63)
 
 Mounts a feature route at a specified URL prefix.
 When a route matching the prefix is navigated, the provided callback will be invoked with the stripped route.
@@ -261,7 +261,7 @@ The current `SiteRouter` instance for chaining.
 
 > **refresh**(): `void`
 
-Defined in: packages/blue-router/src/site-router.ts:76
+Defined in: [packages/blue-router/src/site-router.ts:76](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/site-router.ts#lines-76)
 
 Refreshes the current route by re-navigating to the last known route.
 This can be used to re-evaluate all mounted routes and their callbacks.
@@ -284,7 +284,7 @@ This can be used to re-evaluate all mounted routes and their callbacks.
 
 > **navigate**(`path`): `boolean`
 
-Defined in: packages/blue-router/src/site-router.ts:89
+Defined in: [packages/blue-router/src/site-router.ts:89](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/site-router.ts#lines-89)
 
 Navigates the router to the specified path.
 It attempts to match the path against all mounted feature routes and invokes the corresponding callback.

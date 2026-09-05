@@ -8,7 +8,7 @@
 
 > **likeDestructionAwareProcessor**(`value`): `value is DestructionAwareProcessor`
 
-Defined in: packages/blue-factory/src/entry-processor.ts:142
+Defined in: [packages/blue-factory/src/entry-processor.ts:142](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/entry-processor.ts#lines-142)
 
 Determines whether or not the `value` provided is a [DestructionAwareProcessor](../interfaces/DestructionAwareProcessor.md).
 
@@ -16,7 +16,7 @@ Determines whether or not the `value` provided is a [DestructionAwareProcessor](
 
 ### value
 
-`any`
+`unknown`
 
 The value to be tested.
 

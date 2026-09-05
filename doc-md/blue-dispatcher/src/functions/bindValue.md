@@ -8,7 +8,7 @@
 
 > **bindValue**(`source`, `options?`): [`ParameterExtractor`](../type-aliases/ParameterExtractor.md)
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:328
+Defined in: [packages/blue-dispatcher/src/route-parameter.ts:308](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-parameter.ts#lines-308)
 
 Factory function: Create a binding parameter extractor.
 Binds an entire source (e.g. query, state) to an object, optionally filtering by prefix.
@@ -52,7 +52,7 @@ Binds an entire source (e.g. query, state) to an object, optionally filtering by
 ## Example
 
 ```ts
-@routeParams({
+`routeParams`({
   user: bindValue('query', { prefix: 'user.' })
 })
 ```

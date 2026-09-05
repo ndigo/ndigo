@@ -54,7 +54,7 @@ export interface FeatureRegistrationOptions extends FeatureContextOptions {
     /**
      * Async loader for dynamically code-split feature modules.
      * Resolves to a module exporting `createContext(parent)`.
-     * Use with {@link mountLazy} — mount must be awaited.
+     * Use with `mountLazy` — mount must be awaited.
      *
      * @example
      * ```ts

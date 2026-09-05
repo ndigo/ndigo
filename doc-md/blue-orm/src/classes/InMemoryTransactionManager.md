@@ -6,7 +6,7 @@
 
 # Class: InMemoryTransactionManager
 
-Defined in: packages/blue-orm/src/transaction-manager.ts:58
+Defined in: [packages/blue-orm/src/transaction-manager.ts:58](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/transaction-manager.ts#lines-58)
 
 An in-memory implementation of [TransactionManager](../interfaces/TransactionManager.md) with snapshot
 rollback.
@@ -29,7 +29,7 @@ Otherwise the transaction commits (writes stay).
 
 > **new InMemoryTransactionManager**(`dataSource`): `InMemoryTransactionManager`
 
-Defined in: packages/blue-orm/src/transaction-manager.ts:65
+Defined in: [packages/blue-orm/src/transaction-manager.ts:65](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/transaction-manager.ts#lines-65)
 
 #### Parameters
 
@@ -49,7 +49,7 @@ The in-memory data source to snapshot/roll back.
 
 > **isActive**(): `boolean`
 
-Defined in: packages/blue-orm/src/transaction-manager.ts:70
+Defined in: [packages/blue-orm/src/transaction-manager.ts:70](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/transaction-manager.ts#lines-70)
 
 Returns `true` if a transaction is currently active.
 
@@ -67,7 +67,7 @@ Returns `true` if a transaction is currently active.
 
 > **run**\<`T`\>(`fn`): `Promise`\<`T`\>
 
-Defined in: packages/blue-orm/src/transaction-manager.ts:75
+Defined in: [packages/blue-orm/src/transaction-manager.ts:75](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/transaction-manager.ts#lines-75)
 
 Executes `fn` within a transaction.
 If `fn` throws or rejects, the transaction is rolled back.

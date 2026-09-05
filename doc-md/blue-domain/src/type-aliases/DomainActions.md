@@ -8,7 +8,7 @@
 
 > **DomainActions** = `object`
 
-Defined in: packages/blue-domain/src/component.ts:9
+Defined in: [packages/blue-domain/src/component.ts:9](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-domain/src/component.ts#lines-9)
 
 Maps action names to handlers that receive domain data payloads.
 

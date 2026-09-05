@@ -8,7 +8,7 @@
 
 > `const` **isJSONArray**: (`value`) => `value is JSONArray`
 
-Defined in: packages/blue-core/src/serializable.ts:61
+Defined in: [packages/blue-core/src/serializable.ts:61](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/serializable.ts#lines-61)
 
 Tests whether a value is a JSON array.
 

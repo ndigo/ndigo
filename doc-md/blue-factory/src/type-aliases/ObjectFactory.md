@@ -8,7 +8,7 @@
 
 > **ObjectFactory**\<`T`\> = () => `T`
 
-Defined in: packages/blue-factory/src/scope.ts:10
+Defined in: [packages/blue-factory/src/scope.ts:10](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/scope.ts#lines-10)
 
 ## Type Parameters
 

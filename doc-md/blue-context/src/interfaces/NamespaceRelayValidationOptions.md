@@ -6,7 +6,7 @@
 
 # Interface: NamespaceRelayValidationOptions
 
-Defined in: packages/blue-context/src/event-gateway.ts:93
+Defined in: [packages/blue-context/src/event-gateway.ts:93](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-gateway.ts#lines-93)
 
 Options for namespace-based relay validation.
 
@@ -16,6 +16,6 @@ Options for namespace-based relay validation.
 
 > `optional` **featureNamespace?**: `string`
 
-Defined in: packages/blue-context/src/event-gateway.ts:97
+Defined in: [packages/blue-context/src/event-gateway.ts:97](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-gateway.ts#lines-97)
 
 Optional feature namespace allowed in addition to `site`.

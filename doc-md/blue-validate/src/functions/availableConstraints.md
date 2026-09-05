@@ -8,7 +8,7 @@
 
 > **availableConstraints**(): `string`[]
 
-Defined in: packages/blue-validate/src/constraints.ts:52
+Defined in: [packages/blue-validate/src/constraints.ts:52](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/constraints.ts#lines-52)
 
 Returns all available constraint names.
 

@@ -6,16 +6,12 @@
 
 # Class: CacheInterceptor
 
-Defined in: packages/blue-http/src/interceptors/cache-interceptor.ts:43
+Defined in: [packages/blue-http/src/interceptors/cache-interceptor.ts:43](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/cache-interceptor.ts#lines-43)
 
 HTTP interceptor that provides in-memory response caching.
 
 This interceptor can return a cached response in `preRequest` to avoid
 unnecessary network calls, and stores successful responses in `postResponse`.
-
-## Implements
-
-## Implements
 
 ## Implements
 
@@ -28,7 +24,7 @@ unnecessary network calls, and stores successful responses in `postResponse`.
 
 > **new CacheInterceptor**(`config?`): `CacheInterceptor`
 
-Defined in: packages/blue-http/src/interceptors/cache-interceptor.ts:52
+Defined in: [packages/blue-http/src/interceptors/cache-interceptor.ts:52](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/cache-interceptor.ts#lines-52)
 
 Creates a new cache interceptor.
 
@@ -50,7 +46,7 @@ Cache interceptor configuration.
 
 > **preRequest**(`request`, `http`): `Promise`\<`void` \| `Response`\>
 
-Defined in: packages/blue-http/src/interceptors/cache-interceptor.ts:63
+Defined in: [packages/blue-http/src/interceptors/cache-interceptor.ts:63](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/cache-interceptor.ts#lines-63)
 
 Checks the cache for a matching response before the request is sent.
 
@@ -84,7 +80,7 @@ A cached Response if available and not expired, otherwise void.
 
 > **postResponse**(`response`, `settings`): `Promise`\<`void` \| `Response`\>
 
-Defined in: packages/blue-http/src/interceptors/cache-interceptor.ts:93
+Defined in: [packages/blue-http/src/interceptors/cache-interceptor.ts:93](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/cache-interceptor.ts#lines-93)
 
 Stores a successful response in the cache.
 

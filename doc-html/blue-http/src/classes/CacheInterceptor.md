@@ -1,0 +1,109 @@
+[**BlueJS Framework v0.0.1**](../../../README.md)
+
+***
+
+[BlueJS Framework](../../../modules.md) / [blue-http/src](../README.md) / CacheInterceptor
+
+# Class: CacheInterceptor
+
+Defined in: [packages/blue-http/src/interceptors/cache-interceptor.ts:43](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/cache-interceptor.ts#lines-43)
+
+HTTP interceptor that provides in-memory response caching.
+
+This interceptor can return a cached response in `preRequest` to avoid
+unnecessary network calls, and stores successful responses in `postResponse`.
+
+## Implements
+
+- [`RequestAwareHTTPInterceptor`](../interfaces/RequestAwareHTTPInterceptor.md)
+- [`ResponseAwareHTTPInterceptor`](../interfaces/ResponseAwareHTTPInterceptor.md)
+
+## Constructors
+
+### Constructor
+
+> **new CacheInterceptor**(`config?`): `CacheInterceptor`
+
+Defined in: [packages/blue-http/src/interceptors/cache-interceptor.ts:52](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/cache-interceptor.ts#lines-52)
+
+Creates a new cache interceptor.
+
+#### Parameters
+
+##### config?
+
+[`CacheInterceptorConfig`](../interfaces/CacheInterceptorConfig.md) = `{}`
+
+Cache interceptor configuration.
+
+#### Returns
+
+`CacheInterceptor`
+
+## Methods
+
+### preRequest()
+
+> **preRequest**(`request`, `http`): `Promise`\<`void` \| `Response`\>
+
+Defined in: [packages/blue-http/src/interceptors/cache-interceptor.ts:63](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/cache-interceptor.ts#lines-63)
+
+Checks the cache for a matching response before the request is sent.
+
+#### Parameters
+
+##### request
+
+`Request`
+
+The request to check.
+
+##### http
+
+[`HTTP`](HTTP.md)
+
+The HTTP client executing the request.
+
+#### Returns
+
+`Promise`\<`void` \| `Response`\>
+
+A cached Response if available and not expired, otherwise void.
+
+#### Implementation of
+
+[`RequestAwareHTTPInterceptor`](../interfaces/RequestAwareHTTPInterceptor.md).[`preRequest`](../interfaces/RequestAwareHTTPInterceptor.md#prerequest)
+
+***
+
+### postResponse()
+
+> **postResponse**(`response`, `settings`): `Promise`\<`void` \| `Response`\>
+
+Defined in: [packages/blue-http/src/interceptors/cache-interceptor.ts:93](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/cache-interceptor.ts#lines-93)
+
+Stores a successful response in the cache.
+
+#### Parameters
+
+##### response
+
+`Response`
+
+The response to cache.
+
+##### settings
+
+`any`
+
+The request settings used for the call.
+
+#### Returns
+
+`Promise`\<`void` \| `Response`\>
+
+The response.
+
+#### Implementation of
+
+[`ResponseAwareHTTPInterceptor`](../interfaces/ResponseAwareHTTPInterceptor.md).[`postResponse`](../interfaces/ResponseAwareHTTPInterceptor.md#postresponse)

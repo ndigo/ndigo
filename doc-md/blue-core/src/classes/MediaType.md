@@ -6,7 +6,7 @@
 
 # Class: MediaType
 
-Defined in: packages/blue-core/src/media-type.ts:120
+Defined in: [packages/blue-core/src/media-type.ts:120](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/media-type.ts#lines-120)
 
 A value that can safely be converted to a string or JSON payload.
 
@@ -26,7 +26,7 @@ A value that can safely be converted to a string or JSON payload.
 
 > **new MediaType**(`type?`, `subtype?`, `parameters?`): `MediaType`
 
-Defined in: packages/blue-core/src/media-type.ts:224
+Defined in: [packages/blue-core/src/media-type.ts:226](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/media-type.ts#lines-226)
 
 #### Parameters
 
@@ -56,7 +56,7 @@ Defined in: packages/blue-core/src/media-type.ts:224
 
 > `readonly` **experimental**: `boolean`
 
-Defined in: packages/blue-core/src/media-type.ts:121
+Defined in: [packages/blue-core/src/media-type.ts:121](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/media-type.ts#lines-121)
 
 ***
 
@@ -64,7 +64,7 @@ Defined in: packages/blue-core/src/media-type.ts:121
 
 > `readonly` **facets**: `string`[]
 
-Defined in: packages/blue-core/src/media-type.ts:122
+Defined in: [packages/blue-core/src/media-type.ts:122](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/media-type.ts#lines-122)
 
 ***
 
@@ -72,7 +72,7 @@ Defined in: packages/blue-core/src/media-type.ts:122
 
 > `readonly` **parameters**: `MediaTypeParameters`
 
-Defined in: packages/blue-core/src/media-type.ts:123
+Defined in: [packages/blue-core/src/media-type.ts:123](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/media-type.ts#lines-123)
 
 ***
 
@@ -80,7 +80,7 @@ Defined in: packages/blue-core/src/media-type.ts:123
 
 > `readonly` **personal**: `boolean`
 
-Defined in: packages/blue-core/src/media-type.ts:124
+Defined in: [packages/blue-core/src/media-type.ts:124](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/media-type.ts#lines-124)
 
 ***
 
@@ -88,7 +88,7 @@ Defined in: packages/blue-core/src/media-type.ts:124
 
 > `readonly` **suffix**: `string` \| `null`
 
-Defined in: packages/blue-core/src/media-type.ts:125
+Defined in: [packages/blue-core/src/media-type.ts:125](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/media-type.ts#lines-125)
 
 ***
 
@@ -96,7 +96,7 @@ Defined in: packages/blue-core/src/media-type.ts:125
 
 > `readonly` **subtype**: `string`
 
-Defined in: packages/blue-core/src/media-type.ts:126
+Defined in: [packages/blue-core/src/media-type.ts:126](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/media-type.ts#lines-126)
 
 ***
 
@@ -104,7 +104,7 @@ Defined in: packages/blue-core/src/media-type.ts:126
 
 > `readonly` **type**: `SupportedMediaType`
 
-Defined in: packages/blue-core/src/media-type.ts:127
+Defined in: [packages/blue-core/src/media-type.ts:127](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/media-type.ts#lines-127)
 
 ***
 
@@ -112,7 +112,7 @@ Defined in: packages/blue-core/src/media-type.ts:127
 
 > `readonly` **vendor**: `boolean`
 
-Defined in: packages/blue-core/src/media-type.ts:128
+Defined in: [packages/blue-core/src/media-type.ts:128](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/media-type.ts#lines-128)
 
 ***
 
@@ -120,7 +120,7 @@ Defined in: packages/blue-core/src/media-type.ts:128
 
 > `static` **qualityFactorComparator**: `QualityFactorComparator`
 
-Defined in: packages/blue-core/src/media-type.ts:220
+Defined in: [packages/blue-core/src/media-type.ts:222](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/media-type.ts#lines-222)
 
 ***
 
@@ -128,7 +128,7 @@ Defined in: packages/blue-core/src/media-type.ts:220
 
 > `static` **specificityComparator**: `SpecificityComparator`\<`MediaType`\>
 
-Defined in: packages/blue-core/src/media-type.ts:222
+Defined in: [packages/blue-core/src/media-type.ts:224](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/media-type.ts#lines-224)
 
 ## Accessors
 
@@ -138,7 +138,7 @@ Defined in: packages/blue-core/src/media-type.ts:222
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-core/src/media-type.ts:130
+Defined in: [packages/blue-core/src/media-type.ts:130](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/media-type.ts#lines-130)
 
 ##### Returns
 
@@ -152,7 +152,7 @@ Defined in: packages/blue-core/src/media-type.ts:130
 
 > **get** **isWildcardType**(): `boolean`
 
-Defined in: packages/blue-core/src/media-type.ts:134
+Defined in: [packages/blue-core/src/media-type.ts:134](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/media-type.ts#lines-134)
 
 ##### Returns
 
@@ -166,7 +166,7 @@ Defined in: packages/blue-core/src/media-type.ts:134
 
 > **get** **isWildcardSubtype**(): `boolean`
 
-Defined in: packages/blue-core/src/media-type.ts:138
+Defined in: [packages/blue-core/src/media-type.ts:138](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/media-type.ts#lines-138)
 
 ##### Returns
 
@@ -180,7 +180,7 @@ Defined in: packages/blue-core/src/media-type.ts:138
 
 > **get** **qualityFactor**(): `number`
 
-Defined in: packages/blue-core/src/media-type.ts:142
+Defined in: [packages/blue-core/src/media-type.ts:142](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/media-type.ts#lines-142)
 
 ##### Returns
 
@@ -194,7 +194,7 @@ Defined in: packages/blue-core/src/media-type.ts:142
 
 > **get** **baseType**(): `string`
 
-Defined in: packages/blue-core/src/media-type.ts:169
+Defined in: [packages/blue-core/src/media-type.ts:169](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/media-type.ts#lines-169)
 
 Returns the base media type without parameters or suffix.
 
@@ -224,7 +224,7 @@ Base type as "type/subtype" string
 
 > `static` **for**(`mediaType`): `MediaType` \| `null`
 
-Defined in: packages/blue-core/src/media-type.ts:173
+Defined in: [packages/blue-core/src/media-type.ts:173](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/media-type.ts#lines-173)
 
 ##### Parameters
 
@@ -240,7 +240,7 @@ Defined in: packages/blue-core/src/media-type.ts:173
 
 > `static` **for**(`type`, `subtype`, `parameters?`): `MediaType` \| `null`
 
-Defined in: packages/blue-core/src/media-type.ts:174
+Defined in: [packages/blue-core/src/media-type.ts:174](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/media-type.ts#lines-174)
 
 ##### Parameters
 
@@ -266,7 +266,7 @@ Defined in: packages/blue-core/src/media-type.ts:174
 
 > **compareTo**(`mediaType`): `number`
 
-Defined in: packages/blue-core/src/media-type.ts:259
+Defined in: [packages/blue-core/src/media-type.ts:261](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/media-type.ts#lines-261)
 
 #### Parameters
 
@@ -288,7 +288,7 @@ Defined in: packages/blue-core/src/media-type.ts:259
 
 > **compareToIgnoreCase**(`mediaType`): `number`
 
-Defined in: packages/blue-core/src/media-type.ts:314
+Defined in: [packages/blue-core/src/media-type.ts:316](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/media-type.ts#lines-316)
 
 #### Parameters
 
@@ -310,7 +310,7 @@ Defined in: packages/blue-core/src/media-type.ts:314
 
 > **equals**(`mediaType`): `boolean`
 
-Defined in: packages/blue-core/src/media-type.ts:365
+Defined in: [packages/blue-core/src/media-type.ts:367](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/media-type.ts#lines-367)
 
 #### Parameters
 
@@ -328,7 +328,7 @@ Defined in: packages/blue-core/src/media-type.ts:365
 
 > **createBlob**(`data?`, `endings?`): `Blob`
 
-Defined in: packages/blue-core/src/media-type.ts:375
+Defined in: [packages/blue-core/src/media-type.ts:377](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/media-type.ts#lines-377)
 
 Creates a new blob of the media type with the given parameters
 
@@ -354,7 +354,7 @@ A new blob of the media type
 
 > **includes**(`value?`): `boolean`
 
-Defined in: packages/blue-core/src/media-type.ts:389
+Defined in: [packages/blue-core/src/media-type.ts:391](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/media-type.ts#lines-391)
 
 Indicates whether the `MediaType` includes the given `MediaType`.
 
@@ -378,7 +378,7 @@ If this `MediaType` includes the given `MediaType`.
 
 > **matches**(`mediaType`): `boolean`
 
-Defined in: packages/blue-core/src/media-type.ts:422
+Defined in: [packages/blue-core/src/media-type.ts:424](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/media-type.ts#lines-424)
 
 Determines if this object matches the specified value.
 
@@ -404,7 +404,7 @@ Determines if this object matches the specified value.
 
 > **toJSON**(): [`JSONValue`](../type-aliases/JSONValue.md)
 
-Defined in: packages/blue-core/src/media-type.ts:432
+Defined in: [packages/blue-core/src/media-type.ts:434](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/media-type.ts#lines-434)
 
 #### Returns
 
@@ -420,7 +420,7 @@ Defined in: packages/blue-core/src/media-type.ts:432
 
 > **toString**(): `string`
 
-Defined in: packages/blue-core/src/media-type.ts:436
+Defined in: [packages/blue-core/src/media-type.ts:438](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/media-type.ts#lines-438)
 
 Returns a string representation of an object.
 
@@ -438,7 +438,7 @@ Returns a string representation of an object.
 
 > **getDefaultCharset**(): `string` \| `null`
 
-Defined in: packages/blue-core/src/media-type.ts:451
+Defined in: [packages/blue-core/src/media-type.ts:453](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/media-type.ts#lines-453)
 
 Returns the default charset for this media type, if known.
 
@@ -456,7 +456,7 @@ The default charset or null if unknown
 
 > **toContentType**(`options?`): `string`
 
-Defined in: packages/blue-core/src/media-type.ts:464
+Defined in: [packages/blue-core/src/media-type.ts:466](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/media-type.ts#lines-466)
 
 Formats the media type for use in an HTTP Content-Type header.
 
@@ -486,7 +486,7 @@ The formatted Content-Type string
 
 > **withCharset**(`charset`): `MediaType`
 
-Defined in: packages/blue-core/src/media-type.ts:476
+Defined in: [packages/blue-core/src/media-type.ts:478](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/media-type.ts#lines-478)
 
 #### Parameters
 

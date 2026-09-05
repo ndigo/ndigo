@@ -8,6 +8,6 @@
 
 > `const` **FAILED\_DEPENDENCY**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
-Defined in: packages/blue-http/src/response-statuses.ts:259
+Defined in: [packages/blue-http/src/response-statuses.ts:259](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/response-statuses.ts#lines-259)
 
 The request failed due to failure of a previous request.

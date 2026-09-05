@@ -8,7 +8,7 @@
 
 > `const` **HEALTH\_REGISTRY**: [`ContextToken`](../../../blue-context/src/classes/ContextToken.md)\<[`HealthRegistry`](../classes/HealthRegistry.md)\>
 
-Defined in: packages/blue-management/src/health-registry-token.ts:13
+Defined in: [packages/blue-management/src/health-registry-token.ts:13](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-management/src/health-registry-token.ts#lines-13)
 
 Context token for the shared [HealthRegistry](../classes/HealthRegistry.md) that the `/health`
 endpoint reads. `ManagementAutoConfiguration` registers one and populates it

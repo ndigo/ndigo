@@ -8,6 +8,6 @@
 
 > **AccessLevel** = `"public"` \| `"private"`
 
-Defined in: packages/blue-dispatcher/src/access-control-condition.ts:23
+Defined in: [packages/blue-dispatcher/src/access-control-condition.ts:23](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/access-control-condition.ts#lines-23)
 
 The access level required for a route.

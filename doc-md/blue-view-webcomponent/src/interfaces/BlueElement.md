@@ -6,7 +6,7 @@
 
 # Interface: BlueElement
 
-Defined in: packages/blue-view-webcomponent/src/blue-element.ts:7
+Defined in: [packages/blue-view-webcomponent/src/blue-element.ts:7](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view-webcomponent/src/blue-element.ts#lines-7)
 
 ## Properties
 
@@ -14,4 +14,4 @@ Defined in: packages/blue-view-webcomponent/src/blue-element.ts:7
 
 > **name**: `string`
 
-Defined in: packages/blue-view-webcomponent/src/blue-element.ts:8
+Defined in: [packages/blue-view-webcomponent/src/blue-element.ts:8](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view-webcomponent/src/blue-element.ts#lines-8)

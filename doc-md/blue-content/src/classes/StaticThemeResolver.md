@@ -6,7 +6,7 @@
 
 # Class: StaticThemeResolver
 
-Defined in: packages/blue-content/src/theme.ts:49
+Defined in: [packages/blue-content/src/theme.ts:49](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-content/src/theme.ts#lines-49)
 
 In-memory theme resolver for static theme maps.
 
@@ -20,7 +20,7 @@ In-memory theme resolver for static theme maps.
 
 > **new StaticThemeResolver**(`themes`, `defaultThemeName?`): `StaticThemeResolver`
 
-Defined in: packages/blue-content/src/theme.ts:60
+Defined in: [packages/blue-content/src/theme.ts:60](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-content/src/theme.ts#lines-60)
 
 Creates a theme resolver backed by an in-memory theme list.
 
@@ -52,7 +52,7 @@ When no valid default theme is available.
 
 > **getTheme**(`name?`): [`Theme`](../interfaces/Theme.md)
 
-Defined in: packages/blue-content/src/theme.ts:76
+Defined in: [packages/blue-content/src/theme.ts:76](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-content/src/theme.ts#lines-76)
 
 Resolves the requested theme or falls back to the default theme.
 
@@ -84,7 +84,7 @@ When the theme cannot be found.
 
 > **availableThemes**(): `string`[]
 
-Defined in: packages/blue-content/src/theme.ts:90
+Defined in: [packages/blue-content/src/theme.ts:90](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-content/src/theme.ts#lines-90)
 
 Lists the available theme names.
 

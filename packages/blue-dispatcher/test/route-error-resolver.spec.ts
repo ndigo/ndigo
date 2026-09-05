@@ -1,5 +1,5 @@
 import { describe, test, beforeEach, afterEach, expect } from 'vitest';
-import { BrowserDispatcher } from '../src/dispatcher';
+import { AbstractDispatcher } from '../src/dispatcher';
 import routeErrorResolverContext from './assets/route-error-resolver-context';
 import { handleRouteSpy, renderSpy } from './test-strategies';
 import { SimpleMappingErrorResolver } from '../src/route-error-resolver';
@@ -11,10 +11,10 @@ describe('MetadataErrorResolver', () => {
         badSyntaxRoute = { path: '/bad/syntax' } as any;
 
     describe('instance', () => {
-        let dispatcher: BrowserDispatcher;
+        let dispatcher: AbstractDispatcher;
 
         beforeEach(() => {
-            dispatcher = new BrowserDispatcher();
+            dispatcher = new AbstractDispatcher();
             dispatcher.initStrategies(routeErrorResolverContext);
         });
 

@@ -3,9 +3,9 @@
  */
 
 import { ContextToken } from '@blue/factory';
-import type { BrowserDispatcher } from './dispatcher';
+import type { AbstractDispatcher } from './dispatcher';
 
 /**
- * Context token for the {@link BrowserDispatcher}.
+ * Context token for the {@link AbstractDispatcher}.
  */
-export const DISPATCHER = new ContextToken<BrowserDispatcher>('dispatcher');
+export const DISPATCHER = new ContextToken<AbstractDispatcher>('dispatcher');

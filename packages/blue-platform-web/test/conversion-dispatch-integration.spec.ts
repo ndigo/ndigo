@@ -19,7 +19,7 @@ import {
     MethodParameter,
     MethodParameterType,
 } from '@blue/dispatcher';
-import { BrowserDispatcher } from '../../blue-dispatcher/src/dispatcher';
+import { BrowserDispatcher } from '../src/browser-dispatcher';
 import { RouteErrorResolver } from '../../blue-dispatcher/src/route-error-resolver';
 import { BrowserModelValueMethodArgumentResolver } from '../src/model-argument-resolver';
 import { BrowserSessionValueMethodArgumentResolver } from '../src/session-argument-resolver';

@@ -1,5 +1,6 @@
 import { describe, test, expect, vi, afterEach } from 'vitest';
 import { Application } from '../src/application';
+import { WebAutoConfiguration } from '@blue/platform-web';
 import { configuration, entry, profile } from '@blue/context';
 import { HandlerMethodArgumentResolver } from '@blue/dispatcher';
 
@@ -66,7 +67,9 @@ describe('Application', () => {
     test('it should auto-configure web resolvers when window is defined', () => {
         vi.stubGlobal('window', {});
 
-        const app = new Application([]);
+        // Browser apps register the web auto-config explicitly (@blue/boot no
+        // longer auto-registers it — node apps must not drag DOM).
+        const app = new Application([WebAutoConfiguration]);
         const context = app.run();
 
         expect(context.hasValue('argumentResolvers')).toBe(true);

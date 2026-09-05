@@ -70,7 +70,7 @@ A descriptive string for the token, used as the backing key at runtime.
 Defined in: packages/blue-factory/lib/context-token.d.ts:27
 
 Optional semver range for the registered value, e.g. `'^1.0.0'`.
-When set, the factory checks the resolved bean's version against this range
+When set, the factory checks the resolved entry's version against this range
 and warns on mismatch.
 
 ## Methods

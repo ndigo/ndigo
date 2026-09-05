@@ -1,10 +1,16 @@
 /**
- * Platform-conditional metadata helpers.
+ * Conditional auto-configuration metadata helpers.
  *
- * Marker classes (`@conditionalOnBrowser`, `@conditionalOnNode`) and the
- * platform check they feed. Lives in `@blue/core` so platform packages
- * (`@blue/platform-node`, `@blue/platform-web`) can use it without depending
- * on the bootstrap package.
+ * Decorators mark configuration classes with conditions; {@link isActive}
+ * evaluates them against the current platform and, when a condition context is
+ * supplied, against the environment and entry registry. Lives in `@blue/core`
+ * so platform packages and `@blue/boot` can use it without depending on each
+ * other.
+ *
+ * Supported conditions:
+ * - {@link conditionalOnBrowser} / {@link conditionalOnNode} — platform
+ * - {@link conditionalOnProperty} — environment property present/valued
+ * - {@link conditionalOnMissingEntry} — an entry is not already registered
  *
  * @module
  * @since 1.0.0
@@ -16,22 +22,47 @@ import '@tsmetadata/polyfill';
 export type ConditionalPlatform = 'browser' | 'node';
 
 const CONDITIONAL_ON = 'boot:conditionalOn';
+const CONDITIONAL_PROPERTY = 'boot:conditionalOnProperty';
+const CONDITIONAL_MISSING = 'boot:conditionalOnMissingEntry';
+
+/**
+ * The runtime surface an active-condition evaluation needs: the environment
+ * (for property conditions) and the entry registry (for missing-entry
+ * conditions). Supplied by the bootstrap as it registers sources.
+ */
+export interface ConditionContext {
+    /**
+     * Resolve a configuration property.
+     *
+     * @param key - The property key.
+     * @returns The property value, or `undefined` when absent.
+     */
+    getProperty(key: string): unknown;
+    /**
+     * Whether an entry with the given name is already registered.
+     *
+     * @param name - The entry name.
+     * @returns `true` when the entry exists.
+     */
+    hasValue(name: string): boolean;
+}
 
 /**
  * Class decorator that marks a configuration class as requiring a specific platform.
  *
- * The `Application` class checks this metadata when registering sources,
- * skipping configurations that don't match the current runtime.
- *
- * @param platform - The required platform (`'browser'` or `'node'`).
- * @returns A class decorator.
+ * @param condition - The metadata condition key.
+ * @param value - The condition value.
+ * @param target - The decorated class.
+ * @param context - The decorator context.
+ * @returns The target class unchanged.
  */
-function conditionalOnDecorator(
-    platform: ConditionalPlatform,
+function conditionalDecorator(
+    key: string,
+    value: unknown,
     target: any,
     context: ClassDecoratorContext,
 ): any {
-    context.metadata[CONDITIONAL_ON] = platform;
+    context.metadata[key] = value;
     return target;
 }
 
@@ -46,7 +77,7 @@ function conditionalOnDecorator(
  * ```
  */
 export function conditionalOnBrowser(target: any, context: ClassDecoratorContext): any {
-    return conditionalOnDecorator('browser', target, context);
+    return conditionalDecorator(CONDITIONAL_ON, 'browser', target, context);
 }
 
 /**
@@ -60,7 +91,53 @@ export function conditionalOnBrowser(target: any, context: ClassDecoratorContext
  * ```
  */
 export function conditionalOnNode(target: any, context: ClassDecoratorContext): any {
-    return conditionalOnDecorator('node', target, context);
+    return conditionalDecorator(CONDITIONAL_ON, 'node', target, context);
+}
+
+/**
+ * Options for {@link conditionalOnProperty}.
+ */
+export interface ConditionalOnPropertyOptions {
+    /** The property name to check, e.g. `'app.management.enabled'`. */
+    name: string;
+    /** Required value; when omitted the property must be present and truthy. */
+    havingValue?: string;
+    /** Whether the condition is inverted. */
+    matchIfMissing?: boolean;
+}
+
+/**
+ * Marks a configuration class as active only when an environment property is
+ * present (and, when `havingValue` is set, matches it).
+ *
+ * @example
+ * ```ts
+ * @conditionalOnProperty({ name: 'app.management.enabled' })
+ * @configuration
+ * class ManagementConfiguration { … }
+ * ```
+ */
+export function conditionalOnProperty(options: ConditionalOnPropertyOptions) {
+    return function (target: any, context: ClassDecoratorContext): any {
+        return conditionalDecorator(CONDITIONAL_PROPERTY, options, target, context);
+    };
+}
+
+/**
+ * Marks a configuration class as active only when an entry is NOT already
+ * registered — the "provide your own override" guarantee for auto-configs.
+ *
+ * @example
+ * ```ts
+ * @conditionalOnMissingEntry('metricsController')
+ * @configuration
+ * class ManagementAutoConfiguration { … }
+ * ```
+ */
+export function conditionalOnMissingEntry(entryName: string) {
+    return function (target: any, context: ClassDecoratorContext): any {
+        return conditionalDecorator(CONDITIONAL_MISSING, entryName, target, context);
+    };
 }
 
 /**
@@ -78,7 +155,7 @@ export function getConditionalPlatform(target: any): ConditionalPlatform | undef
 }
 
 /**
- * Checks whether a class can run in the current environment.
+ * Checks whether a class can run in the current environment (platform only).
  *
  * @param target - The class constructor or instance to check.
  * @returns `true` when the class should be registered in this environment.
@@ -99,4 +176,68 @@ export function isActiveForCurrentPlatform(target: any): boolean {
     }
 
     return true;
+}
+
+/**
+ * Evaluates ALL conditions on a class (platform, property, missing-entry).
+ *
+ * When a {@link ConditionContext} is provided, property and missing-entry
+ * conditions are evaluated against it; without one, only the platform
+ * condition is checked (property/missing-entry conditions are treated as
+ * active so existing callers keep working).
+ *
+ * @param target - The class constructor or instance to check.
+ * @param ctx - Optional context for property/entry conditions.
+ * @returns `true` when all conditions pass.
+ */
+export function isActive(target: any, ctx?: ConditionContext): boolean {
+    if (!isActiveForCurrentPlatform(target)) {
+        return false;
+    }
+
+    const meta: Record<string, any> =
+        target?.[Symbol.metadata] ||
+        target?.constructor?.[Symbol.metadata] ||
+        {};
+
+    const property = meta[CONDITIONAL_PROPERTY] as ConditionalOnPropertyOptions | undefined;
+    if (property) {
+        if (!ctx) {
+            return true;
+        }
+        if (!propertyActive(property, ctx)) {
+            return false;
+        }
+    }
+
+    const missing = meta[CONDITIONAL_MISSING] as string | undefined;
+    if (missing) {
+        if (!ctx) {
+            return true;
+        }
+        if (ctx.hasValue(missing)) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+/**
+ * Evaluates a property condition against the environment.
+ */
+function propertyActive(options: ConditionalOnPropertyOptions, ctx: ConditionContext): boolean {
+    const value = ctx.getProperty(options.name);
+    const present = value !== undefined && value !== null && value !== '';
+
+    if (!present) {
+        return options.matchIfMissing ?? false;
+    }
+
+    if (options.havingValue !== undefined) {
+        return String(value) === options.havingValue;
+    }
+
+    // No havingValue: the property must be truthy (or the string 'true').
+    return Boolean(value) || value === 'true';
 }

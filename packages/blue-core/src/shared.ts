@@ -14,17 +14,17 @@ export const SHARED_KEY = 'blue:shared';
  * Options for the `@shared` class decorator.
  */
 export interface SharedOptions {
-    /** Whether this bean must be a singleton across the context hierarchy. Default `true`. */
+    /** Whether this entry must be a singleton across the context hierarchy. Default `true`. */
     singleton?: boolean;
-    /** Semver range for this bean, e.g. `'^1.0.0'`. Used to detect version skew. */
+    /** Semver range for this entry, e.g. `'^1.0.0'`. Used to detect version skew. */
     version?: string;
 }
 
 /**
- * Class decorator that marks a bean as a shell-managed shared dependency.
+ * Class decorator that marks an entry as a shell-managed shared dependency.
  *
- * When a child (feature) context attempts to register a `@shared` bean,
- * the factory skips registration and resolves the bean from the parent chain instead.
+ * When a child (feature) context attempts to register a `@shared` entry,
+ * the factory skips registration and resolves the entry from the parent chain instead.
  *
  * @example
  * ```ts

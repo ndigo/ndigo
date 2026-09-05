@@ -11,7 +11,7 @@ import {
 } from '@blue/context';
 import { IllegalStateError, JSONObject } from '@blue/core';
 import { RouteRegistry } from '@blue/router';
-import { isActiveForCurrentPlatform } from '@blue/core';
+import { isActive, isActiveForCurrentPlatform } from '@blue/core';
 import { NodeAutoConfiguration } from '@blue/platform-node/node-auto-configuration';
 
 /**
@@ -157,14 +157,20 @@ export class Application extends Emitter {
         const context = new MetadataConfigApplicationContext(this.#name ?? 'blue-application');
         context.setEnvironment(environment);
 
+        // Conditions are evaluated against the environment + entry registry.
+        const conditionContext = {
+            getProperty: (key: string) => environment.getProperty(key),
+            hasValue: (name: string) => context.hasValue(name),
+        };
+
         // Node apps get the node dispatch/resolver auto-config unless they
         // provide their own — the user sources can override.
-        if (isActiveForCurrentPlatform(NodeAutoConfiguration)) {
+        if (isActive(NodeAutoConfiguration, conditionContext)) {
             context.register(NodeAutoConfiguration);
         }
 
         this.#sources.forEach((source) => {
-            if (isActiveForCurrentPlatform(source)) {
+            if (isActive(source, conditionContext)) {
                 context.register(source);
             }
         });

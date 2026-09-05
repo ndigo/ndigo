@@ -23,14 +23,14 @@ const app = new ApplicationBuilder([ManagementAutoConfiguration]).run();
 ## How it works
 
 - `ManagementAutoConfiguration` registers a shared `FeatureMetricAggregator`
-  bean (the same one `@counted` and feature code populate), a `HealthRegistry`,
+  entry (the same one `@counted` and feature code populate), a `HealthRegistry`,
   and the two controllers.
 - `MetricsController` (`/metrics`) reads the aggregator from the application
   context and serializes per-feature counters/gauges.
 - `HealthController` (`/health`) runs a `HealthRegistry` plus a
   `TelemetryHealthIndicator` built at request time from the context aggregator
   (reports `UP` when the telemetry pipeline is collecting, `DOWN` otherwise).
-- Custom `HealthIndicator`s can be registered on the `HealthRegistry` bean for
+- Custom `HealthIndicator`s can be registered on the `HealthRegistry` entry for
   other subsystems (data sources, external deps).
 
 ## API

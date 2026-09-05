@@ -12,7 +12,7 @@ Default implementation of `SharedDependencyRegistry`.
 
 Validates feature dependencies against the ancestor context chain
 at mount time, checking both the registry's declarations and actual
-runtime bean presence.
+runtime entry presence.
 
 ## Implements
 

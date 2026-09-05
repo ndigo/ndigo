@@ -11,7 +11,7 @@ Defined in: packages/blue-management/src/management-auto-configuration.ts:29
 Auto-configuration for management endpoints.
 
 Registers:
-- a shared FeatureMetricAggregator bean (read by `/metrics` and by
+- a shared FeatureMetricAggregator entry (read by `/metrics` and by
   any feature using `@counted`)
 - a [HealthRegistry](HealthRegistry.md) with the [TelemetryHealthIndicator](TelemetryHealthIndicator.md) wired
 - the `/metrics` and `/health` controllers

@@ -1,6 +1,6 @@
 import { SpanKind } from '@opentelemetry/api';
 import { GenericApplicationContext } from '@blue/context';
-import { AbstractBlueInstrumentation } from '../base';
+import { AbstractBaseInstrumentation } from '../base';
 
 /**
  * An OpenTelemetry instrumentation for `GenericApplicationContext` lifecycle events.
@@ -8,7 +8,7 @@ import { AbstractBlueInstrumentation } from '../base';
  * This instrumentation automatically creates spans for the `destroy` method,
  * providing visibility into application context teardown processes.
  */
-export class ContextInstrumentation extends AbstractBlueInstrumentation {
+export class ContextInstrumentation extends AbstractBaseInstrumentation {
     constructor() {
         super('context');
     }

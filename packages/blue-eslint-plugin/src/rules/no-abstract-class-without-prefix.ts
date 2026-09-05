@@ -4,7 +4,7 @@
  * Per STYLE_GUIDE §3.10 and the AGENTS.md pre-commit check
  * (`rg "^(export )?abstract class [A-Z]" | rg -v "abstract class Abstract"`):
  * abstract classes use the `Abstract[Description][Role]` pattern
- * (e.g. `AbstractBlueInstrumentation`, not `BaseBlueInstrumentation`).
+ * (e.g. `AbstractBaseInstrumentation`, not `BaseBlueInstrumentation`).
  */
 
 import type { Context, ESTree } from '@oxlint/plugins';

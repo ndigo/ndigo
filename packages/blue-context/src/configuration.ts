@@ -279,10 +279,7 @@ class ConfigurationParser {
      */
     processConfiguration(config: any) {
         for (const key in config) {
-            if (
-                !hasProfileMetadata(config, key) ||
-                this._isActiveProfile(getProfileMetadata(config, key))
-            ) {
+            if (!hasProfileMetadata(config, key) || this._isActiveProfile(getProfileMetadata(config, key))) {
                 if (hasEntryMetadata(config, key)) {
                     const name: string = getEntryMetadata(config, key);
                     this.processEntry(name, config[key].bind(config));

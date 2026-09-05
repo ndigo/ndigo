@@ -1,7 +1,7 @@
 {
   "name": "@blue/telemetry-node",
   "version": "0.0.1",
-  "description": "Node.js telemetry for BlueJS \u2014 NodeSDK configuration and Node platform instrumentations",
+  "description": "Node.js telemetry for BlueJS — NodeSDK configuration and Node platform instrumentations",
   "type": "module",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",

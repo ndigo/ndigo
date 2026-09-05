@@ -11,10 +11,10 @@ repository: how to install, validate, change a package, and prepare a release.
   package (see Task 9 remediation). Public API changes must keep declarations
   `any`-free where the contract is public.
 - **Package boundaries are enforced** (see `docs/plans/2026-09-04_REPOSITORY_REMEDIATION.md`):
-  - `@blue/boot` is platform-neutral — never import `@blue/platform-node` or
-    `@blue/platform-web` from its runtime source (enforced by
-    `packages/blue-boot/test/platform-boundary.spec.ts`).
-  - Isomorphic core packages must not import `node:` builtins or DOM globals.
+    - `@blue/boot` is platform-neutral — never import `@blue/platform-node` or
+      `@blue/platform-web` from its runtime source (enforced by
+      `packages/blue-boot/test/platform-boundary.spec.ts`).
+    - Isomorphic core packages must not import `node:` builtins or DOM globals.
 - **One license**: ISC (root `LICENSE`). Every publishable package manifest
   conforms to `scripts/check-manifests.mjs` (ISC, `exports` map, `type: module`,
   `sideEffects`, `~0.0.1` blue workspace protocol).
@@ -54,7 +54,7 @@ pnpm exec prettier --write <changed files>
 ## Changing a package
 
 1. Read the package README and the repo graph first: `graft map` / `graft ask
-   "<question>"` give exact `file:line` spans — re-ask freely, it is cheap.
+"<question>"` give exact `file:line` spans — re-ask freely, it is cheap.
 2. Follow existing conventions: `#private` fields, executor `new Promise`,
    `defineProperty` for readonly public fields, barrel-controlled exports.
 3. Run the package's own loop while working:

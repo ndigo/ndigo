@@ -73,3 +73,7 @@ test-results/
 
 # graft's local graph cache — regenerable, not committed (run `graft build`).
 /graft/
+
+# Generated TypeDoc output — generated in CI/release jobs only (Task 17)
+doc-html/
+doc-md/

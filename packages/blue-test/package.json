@@ -33,6 +33,7 @@
     "@blue/core": "~0.0.1",
     "@blue/dispatcher": "~0.0.1",
     "@blue/platform-node": "~0.0.1",
+    "@blue/platform-web": "workspace:~",
     "@blue/router": "~0.0.1",
     "@blue/util": "~0.0.1",
     "@blue/view": "~0.0.1"

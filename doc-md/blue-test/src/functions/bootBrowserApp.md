@@ -8,7 +8,7 @@
 
 > **bootBrowserApp**(`sources`): `Promise`\<[`BrowserTestApp`](../interfaces/BrowserTestApp.md)\>
 
-Defined in: packages/blue-test/src/browser-mock-mvc.ts:63
+Defined in: packages/blue-test/src/browser-mock-mvc.ts:64
 
 Boot a browser application from configuration/controller classes, wiring the
 browser dispatcher and a [MemoryViewTarget](../classes/MemoryViewTarget.md). Requires a DOM (jsdom).

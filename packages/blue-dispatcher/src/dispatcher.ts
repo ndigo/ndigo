@@ -45,11 +45,17 @@ export interface RouteRenderer {
 }
 
 /**
- * An interface for creating application dispatchers. Dispatches to registered handlers for processing a route, providing convenient mapping and exception handling facilities.
+ * An abstract, platform-independent application dispatcher.
+ *
+ * Dispatches routes to registered handlers, providing mapping, interceptors,
+ * error handling, and view rendering. It is DOM-free: the view target is
+ * resolved from the application context, so browser and Node specializations
+ * extend this base (e.g. `@blue/platform-web`'s `BrowserDispatcher` and
+ * `@blue/platform-node`'s `NodeDispatcher`).
  *
  * It can be used with just about any workflow, with the installation of the appropriate strategies and adapter classes.
  */
-export class BrowserDispatcher
+export class AbstractDispatcher
     extends AsViewResolverStrategy(
         AsRouteErrorResolverStrategy(
             AsThemeResolverStrategy(
@@ -77,7 +83,7 @@ export class BrowserDispatcher
      * Returns the string tag for this dispatcher.
      */
     get [Symbol.toStringTag](): string {
-        return 'BrowserDispatcher';
+        return 'AbstractDispatcher';
     }
 
     private _isDestroyableView(view: View): view is View & { destroy(): void | Promise<void> } {
@@ -258,11 +264,11 @@ export class BrowserDispatcher
 /**
  * * Developer Notes
  * ? Should abstract classes be created?
- * Two abstract classes could be derived from BrowserDispatcher, an AbstractRouteDispatcher and an AbstractRouteRenderer. Then BrowserDispatcher would extend those two classes and provide
+ * Two abstract classes could be derived from AbstractDispatcher, an AbstractRouteDispatcher and an AbstractRouteRenderer. Then AbstractDispatcher would extend those two classes and provide
  * an implementation of _processDispatchResult which would unify the two abstract classes.
  *
  * ? Should EventEmitter be used?
- * There should either be an Event-based implementation of Dispatcher that mixes in AsEventEmitter or that should be intrisic to BrowserDispatcher itself. This would allow Dispatcher to emit
+ * There should either be an Event-based implementation of Dispatcher that mixes in AsEventEmitter or that should be intrinsic to AbstractDispatcher itself. This would allow Dispatcher to emit
  * lifecycle events similar to today's sysytem. There could even be an event-based implementation of RouteHandlerInterceptors; however currently if a RouteHandlerInterceptor preHandle returns false, handler
  * execution stops. That may not be possible with an event based system without enhancements to Emitter.
  */

@@ -11,7 +11,6 @@ import {
 } from '@blue/context';
 import { IllegalStateError, JSONObject } from '@blue/core';
 import { RouteRegistry } from '@blue/router';
-import { WebAutoConfiguration } from './web-auto-configuration';
 import { isActiveForCurrentPlatform } from '@blue/core';
 
 /**
@@ -156,10 +155,6 @@ export class Application extends Emitter {
     protected _prepareContext(environment: ConfigurableEnvironment, args: string[]): ConfigurableApplicationContext {
         const context = new MetadataConfigApplicationContext(this.#name ?? 'blue-application');
         context.setEnvironment(environment);
-
-        if (isActiveForCurrentPlatform(WebAutoConfiguration)) {
-            context.register(WebAutoConfiguration);
-        }
 
         this.#sources.forEach((source) => {
             if (isActiveForCurrentPlatform(source)) {

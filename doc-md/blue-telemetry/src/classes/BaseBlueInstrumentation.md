@@ -26,7 +26,6 @@ Subclasses only declare:
 
 - [`ContextInstrumentation`](ContextInstrumentation.md)
 - [`DispatcherInstrumentation`](DispatcherInstrumentation.md)
-- [`RouterInstrumentation`](RouterInstrumentation.md)
 - [`CountedInstrumentation`](CountedInstrumentation.md)
 
 ## Constructors

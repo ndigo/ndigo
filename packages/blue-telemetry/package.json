@@ -18,6 +18,10 @@
     "./node": {
       "types": "./lib/node.d.ts",
       "default": "./lib/node.js"
+    },
+    "./web": {
+      "types": "./lib/web.d.ts",
+      "default": "./lib/web.js"
     }
   },
   "types": "lib/index.d.ts",

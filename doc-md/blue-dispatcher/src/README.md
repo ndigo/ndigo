@@ -21,7 +21,7 @@
 - [AttributeValueMethodArgumentResolver](classes/AttributeValueMethodArgumentResolver.md)
 - [AbstractPathViewController](classes/AbstractPathViewController.md)
 - [PathViewController](classes/PathViewController.md)
-- [BrowserDispatcher](classes/BrowserDispatcher.md)
+- [AbstractDispatcher](classes/AbstractDispatcher.md)
 - [NoHandlerFoundError](classes/NoHandlerFoundError.md)
 - [NoViewFoundError](classes/NoViewFoundError.md)
 - [RouteBindingError](classes/RouteBindingError.md)

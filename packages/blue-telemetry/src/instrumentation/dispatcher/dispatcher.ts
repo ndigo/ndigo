@@ -15,7 +15,7 @@ export class DispatcherInstrumentation extends BaseBlueInstrumentation {
     }
 
     enable(): void {
-        const target = (dispatcher as any).BrowserDispatcher.prototype;
+        const target = (dispatcher as any).AbstractDispatcher.prototype;
         // The decorator-mixin prototype chain does not derive from
         // Object.prototype (its `propertyIsEnumerable` is absent), which
         // breaks shimmer's wrap() (it calls obj.propertyIsEnumerable).
@@ -24,7 +24,7 @@ export class DispatcherInstrumentation extends BaseBlueInstrumentation {
             target.propertyIsEnumerable = Object.prototype.propertyIsEnumerable;
         }
         this._wrap(
-            (dispatcher as any).BrowserDispatcher.prototype,
+            (dispatcher as any).AbstractDispatcher.prototype,
             'dispatch',
             this._patchAsync({
                 name: 'Dispatcher.dispatch',
@@ -51,6 +51,6 @@ export class DispatcherInstrumentation extends BaseBlueInstrumentation {
     }
 
     disable(): void {
-        this._unwrap((dispatcher as any).BrowserDispatcher.prototype, 'dispatch');
+        this._unwrap((dispatcher as any).AbstractDispatcher.prototype, 'dispatch');
     }
 }

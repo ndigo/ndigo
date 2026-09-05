@@ -1,5 +1,5 @@
 import { describe, test, beforeEach, afterEach } from 'vitest';
-import { BrowserDispatcher } from '../src/dispatcher';
+import { AbstractDispatcher } from '../src/dispatcher';
 import argumemtResolverContext from './assets/argument-resolver-context';
 
 describe('ArgumentResolver', () => {
@@ -15,10 +15,10 @@ describe('ArgumentResolver', () => {
     };
 
     describe('instance', () => {
-        let dispatcher: BrowserDispatcher;
+        let dispatcher: AbstractDispatcher;
 
         beforeEach(() => {
-            dispatcher = new BrowserDispatcher();
+            dispatcher = new AbstractDispatcher();
             dispatcher.initStrategies(argumemtResolverContext);
         });
 

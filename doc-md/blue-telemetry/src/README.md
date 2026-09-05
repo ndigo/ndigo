@@ -6,13 +6,19 @@
 
 # blue-telemetry/src
 
+@blue/telemetry — isomorphic telemetry core.
+
+Platform-specific configuration and instrumentations live behind subpath
+exports so the root import stays platform-free:
+- `@blue/telemetry/node` — NodeSDK config + node instrumentations
+- `@blue/telemetry/web` — browser telemetry config + web instrumentations
+
 ## Classes
 
 - [BaseBlueInstrumentation](classes/BaseBlueInstrumentation.md)
 - [ContextInstrumentation](classes/ContextInstrumentation.md)
 - [CountedInstrumentation](classes/CountedInstrumentation.md)
 - [DispatcherInstrumentation](classes/DispatcherInstrumentation.md)
-- [RouterInstrumentation](classes/RouterInstrumentation.md)
 - [ContextAwareLogger](classes/ContextAwareLogger.md)
 - [LoggerFactory](classes/LoggerFactory.md)
 - [SeverityFilterLogRecordProcessor](classes/SeverityFilterLogRecordProcessor.md)

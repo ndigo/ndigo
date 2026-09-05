@@ -3,14 +3,12 @@
  */
 
 import { configuration, entry } from '@blue/context';
-import {
-    argumentValueConverters,
-    BrowserBindMethodArgumentResolver,
-    BrowserCookieValueMethodArgumentResolver,
-    BrowserModelValueMethodArgumentResolver,
-    BrowserSessionValueMethodArgumentResolver,
-    BrowserStateValueMethodArgumentResolver,
-} from '@blue/platform-web';
+import { argumentValueConverters } from './argument-value-converter';
+import { BrowserBindMethodArgumentResolver } from './bind-argument-resolver';
+import { BrowserCookieValueMethodArgumentResolver } from './cookie-argument-resolver';
+import { BrowserModelValueMethodArgumentResolver } from './model-argument-resolver';
+import { BrowserSessionValueMethodArgumentResolver } from './session-argument-resolver';
+import { BrowserStateValueMethodArgumentResolver } from './state-argument-resolver';
 import { LinearMetadataHandlerMapping } from '@blue/dispatcher';
 import { NameViewResolver } from '@blue/view';
 import { WebComponentViewEngine } from '@blue/view-webcomponent';

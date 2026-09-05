@@ -8,7 +8,7 @@
 
 > **TypeDefinition** = `object`
 
-Defined in: packages/blue-validate/src/types.ts:14
+Defined in: [packages/blue-validate/src/types.ts:14](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/types.ts#lines-14)
 
 Defines the structure for a reusable validation type, composed of multiple constraints.
 
@@ -18,7 +18,7 @@ Defines the structure for a reusable validation type, composed of multiple const
 
 > **constraints**: `object`[]
 
-Defined in: packages/blue-validate/src/types.ts:15
+Defined in: [packages/blue-validate/src/types.ts:15](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/types.ts#lines-15)
 
 An array of constraint configurations that make up this type.
 

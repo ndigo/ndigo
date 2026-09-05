@@ -6,14 +6,14 @@
 
 # Class: DefaultRouteErrorResolver
 
-Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:209
+Defined in: [packages/blue-dispatcher/src/route-error-resolver.ts:209](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-error-resolver.ts#lines-209)
 
 The default implementation of the [RouteErrorResolver](../interfaces/RouteErrorResolver.md) interface, resolving standard BlueJS exceptions.
 
-This error resolver is enabled by default in the WebDispatcher\|WebDispatcher.
+This error resolver is enabled by default in the `WebDispatcher`.
 
 Error classes are mapped to view names via `errorMappings`.  Out of the box it
-maps FrameworkError to `'error/framework'` and ApplicationError
+maps `FrameworkError` to `'error/framework'` and `ApplicationError`
 to `'error/application'`.  Additional mappings can be added through
 [setErrorMapping](#seterrormapping).
 
@@ -27,7 +27,7 @@ to `'error/application'`.  Additional mappings can be added through
 
 > **new DefaultRouteErrorResolver**(`defaultErrorView?`): `DefaultRouteErrorResolver`
 
-Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:229
+Defined in: [packages/blue-dispatcher/src/route-error-resolver.ts:229](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-error-resolver.ts#lines-229)
 
 Create a resolver with sensible defaults for framework and application errors.
 
@@ -53,7 +53,7 @@ The fallback view name (defaults to `'error/default'`).
 
 > **mappedHandlers**: `any`[] \| `null`
 
-Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:55
+Defined in: [packages/blue-dispatcher/src/route-error-resolver.ts:55](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-error-resolver.ts#lines-55)
 
 Handlers explicitly targeted by this resolver, if any.
 
@@ -67,7 +67,7 @@ Handlers explicitly targeted by this resolver, if any.
 
 > **mappedHandlerClasses**: `Constructable`[]
 
-Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:60
+Defined in: [packages/blue-dispatcher/src/route-error-resolver.ts:60](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-error-resolver.ts#lines-60)
 
 Handler classes explicitly targeted by this resolver, if any.
 
@@ -81,7 +81,7 @@ Handler classes explicitly targeted by this resolver, if any.
 
 > **defaultErrorView**: `string`
 
-Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:213
+Defined in: [packages/blue-dispatcher/src/route-error-resolver.ts:213](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-error-resolver.ts#lines-213)
 
 View name used when no specific error mapping matches.
 
@@ -91,7 +91,7 @@ View name used when no specific error mapping matches.
 
 > **errorMappings**: `Map`\<`string`, `string`\>
 
-Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:218
+Defined in: [packages/blue-dispatcher/src/route-error-resolver.ts:218](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-error-resolver.ts#lines-218)
 
 Error-name-to-view-name mappings.
 
@@ -103,7 +103,7 @@ Error-name-to-view-name mappings.
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:220
+Defined in: [packages/blue-dispatcher/src/route-error-resolver.ts:220](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-error-resolver.ts#lines-220)
 
 ##### Returns
 
@@ -119,7 +119,7 @@ Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:220
 
 > **resolveError**(`route`, `handler`, `error`): [`ModelAndView`](ModelAndView.md) \| `null`
 
-Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:79
+Defined in: [packages/blue-dispatcher/src/route-error-resolver.ts:79](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-error-resolver.ts#lines-79)
 
 Resolve an error only when this resolver applies to the current handler.
 
@@ -127,7 +127,7 @@ Resolve an error only when this resolver applies to the current handler.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The current route.
 
@@ -159,7 +159,7 @@ A resolved model and view, or `null` when this resolver does not apply.
 
 > `protected` **\_shouldApplyTo**(`route`, `handler`): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:95
+Defined in: [packages/blue-dispatcher/src/route-error-resolver.ts:95](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-error-resolver.ts#lines-95)
 
 Determine whether this resolver should be applied to the given handler.
 
@@ -167,7 +167,7 @@ Determine whether this resolver should be applied to the given handler.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The current route.
 
@@ -193,7 +193,7 @@ The candidate handler.
 
 > **setErrorMapping**(`errorName`, `viewName`): `void`
 
-Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:257
+Defined in: [packages/blue-dispatcher/src/route-error-resolver.ts:257](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-error-resolver.ts#lines-257)
 
 Register an additional error-class-name-to-view-name mapping.
 
@@ -221,7 +221,7 @@ The view name to render for this error.
 
 > `protected` **\_resolveError**(`route`, `handler`, `error`): [`ModelAndView`](ModelAndView.md) \| `null`
 
-Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:272
+Defined in: [packages/blue-dispatcher/src/route-error-resolver.ts:272](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-error-resolver.ts#lines-272)
 
 Resolve built-in framework errors to configured error views.
 
@@ -232,7 +232,7 @@ Falls back to [defaultErrorView](#defaulterrorview) when no mapping is found.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The current route.
 

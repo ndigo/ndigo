@@ -1,27 +1,32 @@
-# Blue View WebComponent
+# Blue View
 
-Blue View WebComponent bridges BlueJS view patterns with Web Components.
+Blue View provides view abstractions and view resolution infrastructure for BlueJS.
 
 ## Features
 
-- Web component-oriented view integration layer
-- Designed to extend `@blue/view` abstractions to browser custom elements
-- ESM package scaffold for web-component integrations
+- `View` and `AbstractView` contracts
+- View resolver abstractions and composites
+- Content-negotiation view resolver utilities
+- Integration points for router/context/factory packages
 
 ## Installation
 
 ```bash
-pnpm add @blue/view-webcomponent
+pnpm add @blue/view
 ```
 
 ## Usage
 
-This package is currently a thin integration layer and is typically consumed alongside `@blue/view` and browser custom
-element registration code.
+```typescript
+import { RerouteView } from '@blue/view';
+
+const view = new RerouteView('/login');
+view;
+```
 
 ## Development
 
 ```bash
-pnpm --filter @blue/view-webcomponent build:lib
-pnpm --filter @blue/view-webcomponent test
+pnpm --filter @blue/view build:lib
+pnpm --filter @blue/view test
 ```

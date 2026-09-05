@@ -8,7 +8,7 @@
 
 > **configureBrowserArgumentResolvers**(`applicationContext`, `_options?`): `HandlerMethodArgumentResolver`[]
 
-Defined in: packages/blue-platform-web/src/configure-argument-resolvers.ts:16
+Defined in: [packages/blue-platform-web/src/configure-argument-resolvers.ts:16](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/configure-argument-resolvers.ts#lines-16)
 
 Registers browser-specific argument resolvers into the application context.
 

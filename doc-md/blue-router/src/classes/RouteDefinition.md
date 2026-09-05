@@ -6,7 +6,7 @@
 
 # Class: RouteDefinition\<TPattern\>
 
-Defined in: packages/blue-router/src/route-definition.ts:21
+Defined in: [packages/blue-router/src/route-definition.ts:20](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/route-definition.ts#lines-20)
 
 ## Type Parameters
 
@@ -20,7 +20,7 @@ Defined in: packages/blue-router/src/route-definition.ts:21
 
 > **new RouteDefinition**\<`TPattern`\>(`pattern`, `context`): `RouteDefinition`\<`TPattern`\>
 
-Defined in: packages/blue-router/src/route-definition.ts:25
+Defined in: [packages/blue-router/src/route-definition.ts:24](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/route-definition.ts#lines-24)
 
 #### Parameters
 
@@ -42,7 +42,7 @@ Defined in: packages/blue-router/src/route-definition.ts:25
 
 > `readonly` **pattern**: `TPattern`
 
-Defined in: packages/blue-router/src/route-definition.ts:22
+Defined in: [packages/blue-router/src/route-definition.ts:21](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/route-definition.ts#lines-21)
 
 ## Methods
 
@@ -50,7 +50,7 @@ Defined in: packages/blue-router/src/route-definition.ts:22
 
 > **url**(`params`): `string`
 
-Defined in: packages/blue-router/src/route-definition.ts:30
+Defined in: [packages/blue-router/src/route-definition.ts:29](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/route-definition.ts#lines-29)
 
 #### Parameters
 
@@ -68,7 +68,7 @@ Defined in: packages/blue-router/src/route-definition.ts:30
 
 > **href**(`params?`): `string`
 
-Defined in: packages/blue-router/src/route-definition.ts:34
+Defined in: [packages/blue-router/src/route-definition.ts:33](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/route-definition.ts#lines-33)
 
 #### Parameters
 
@@ -86,7 +86,7 @@ Defined in: packages/blue-router/src/route-definition.ts:34
 
 > **navigate**(`params`): `void`
 
-Defined in: packages/blue-router/src/route-definition.ts:38
+Defined in: [packages/blue-router/src/route-definition.ts:37](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/route-definition.ts#lines-37)
 
 #### Parameters
 
@@ -104,7 +104,7 @@ Defined in: packages/blue-router/src/route-definition.ts:38
 
 > **parse**(`path`): [`Route`](../interfaces/Route.md)\<[`RouteParams`](../type-aliases/RouteParams.md)\<`TPattern`\>\> \| `null`
 
-Defined in: packages/blue-router/src/route-definition.ts:51
+Defined in: [packages/blue-router/src/route-definition.ts:50](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/route-definition.ts#lines-50)
 
 #### Parameters
 
@@ -122,7 +122,7 @@ Defined in: packages/blue-router/src/route-definition.ts:51
 
 > **matches**(`path`): `boolean`
 
-Defined in: packages/blue-router/src/route-definition.ts:68
+Defined in: [packages/blue-router/src/route-definition.ts:67](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/route-definition.ts#lines-67)
 
 #### Parameters
 

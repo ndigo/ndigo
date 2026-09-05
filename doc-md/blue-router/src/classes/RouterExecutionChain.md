@@ -6,7 +6,7 @@
 
 # Class: RouterExecutionChain
 
-Defined in: packages/blue-router/src/router-execution-chain.ts:8
+Defined in: [packages/blue-router/src/router-execution-chain.ts:8](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/router-execution-chain.ts#lines-8)
 
 ## Constructors
 
@@ -14,7 +14,7 @@ Defined in: packages/blue-router/src/router-execution-chain.ts:8
 
 > **new RouterExecutionChain**(`chain?`): `RouterExecutionChain`
 
-Defined in: packages/blue-router/src/router-execution-chain.ts:21
+Defined in: [packages/blue-router/src/router-execution-chain.ts:21](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/router-execution-chain.ts#lines-21)
 
 #### Parameters
 
@@ -32,7 +32,7 @@ Defined in: packages/blue-router/src/router-execution-chain.ts:21
 
 > **interceptorIndex**: `number`
 
-Defined in: packages/blue-router/src/router-execution-chain.ts:11
+Defined in: [packages/blue-router/src/router-execution-chain.ts:11](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/router-execution-chain.ts#lines-11)
 
 ## Accessors
 
@@ -42,7 +42,7 @@ Defined in: packages/blue-router/src/router-execution-chain.ts:11
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-router/src/router-execution-chain.ts:13
+Defined in: [packages/blue-router/src/router-execution-chain.ts:13](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/router-execution-chain.ts#lines-13)
 
 ##### Returns
 
@@ -56,7 +56,7 @@ Defined in: packages/blue-router/src/router-execution-chain.ts:13
 
 > **get** **interceptors**(): [`RouterInterceptor`](../interfaces/RouterInterceptor.md)[]
 
-Defined in: packages/blue-router/src/router-execution-chain.ts:17
+Defined in: [packages/blue-router/src/router-execution-chain.ts:17](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/router-execution-chain.ts#lines-17)
 
 ##### Returns
 
@@ -68,7 +68,7 @@ Defined in: packages/blue-router/src/router-execution-chain.ts:17
 
 > **addInterceptor**(`interceptor`): `void`
 
-Defined in: packages/blue-router/src/router-execution-chain.ts:36
+Defined in: [packages/blue-router/src/router-execution-chain.ts:38](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/router-execution-chain.ts#lines-38)
 
 #### Parameters
 
@@ -86,7 +86,7 @@ Defined in: packages/blue-router/src/router-execution-chain.ts:36
 
 > **addInterceptors**(`interceptors`): `void`
 
-Defined in: packages/blue-router/src/router-execution-chain.ts:45
+Defined in: [packages/blue-router/src/router-execution-chain.ts:47](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/router-execution-chain.ts#lines-47)
 
 #### Parameters
 
@@ -104,7 +104,7 @@ Defined in: packages/blue-router/src/router-execution-chain.ts:45
 
 > **applyPostHandle**(`route`): `Promise`\<`void`\>
 
-Defined in: packages/blue-router/src/router-execution-chain.ts:57
+Defined in: [packages/blue-router/src/router-execution-chain.ts:59](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/router-execution-chain.ts#lines-59)
 
 #### Parameters
 
@@ -122,7 +122,7 @@ Defined in: packages/blue-router/src/router-execution-chain.ts:57
 
 > **applyAfterCompletion**(`route`): `Promise`\<`void`\>
 
-Defined in: packages/blue-router/src/router-execution-chain.ts:74
+Defined in: [packages/blue-router/src/router-execution-chain.ts:77](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/router-execution-chain.ts#lines-77)
 
 #### Parameters
 
@@ -140,7 +140,7 @@ Defined in: packages/blue-router/src/router-execution-chain.ts:74
 
 > **applyPreHandle**(`route`): `Promise`\<`boolean`\>
 
-Defined in: packages/blue-router/src/router-execution-chain.ts:91
+Defined in: [packages/blue-router/src/router-execution-chain.ts:95](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/router-execution-chain.ts#lines-95)
 
 #### Parameters
 

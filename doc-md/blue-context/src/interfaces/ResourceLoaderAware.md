@@ -6,7 +6,7 @@
 
 # Interface: ResourceLoaderAware
 
-Defined in: packages/blue-context/src/resource.ts:28
+Defined in: [packages/blue-context/src/resource.ts:28](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/resource.ts#lines-28)
 
 Receives a resource loader during initialization.
 
@@ -34,7 +34,7 @@ A symbol indicating that the value is aware.
 
 > **setResourceLoader**(`loader`): `void`
 
-Defined in: packages/blue-context/src/resource.ts:29
+Defined in: [packages/blue-context/src/resource.ts:29](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/resource.ts#lines-29)
 
 #### Parameters
 

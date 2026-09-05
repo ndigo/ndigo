@@ -6,7 +6,7 @@
 
 # Interface: ParameterExtractorOptions
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:27
+Defined in: [packages/blue-dispatcher/src/route-parameter.ts:27](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-parameter.ts#lines-27)
 
 Options for creating a parameter extractor with type-based conversion support.
 
@@ -16,7 +16,7 @@ Options for creating a parameter extractor with type-based conversion support.
 
 > `optional` **required?**: `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:28
+Defined in: [packages/blue-dispatcher/src/route-parameter.ts:28](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-parameter.ts#lines-28)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:28
 
 > `optional` **defaultValue?**: `string`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:29
+Defined in: [packages/blue-dispatcher/src/route-parameter.ts:29](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-parameter.ts#lines-29)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:29
 
 > `optional` **convertType?**: `object`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:31
+Defined in: [packages/blue-dispatcher/src/route-parameter.ts:31](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-parameter.ts#lines-31)
 
 Type-based converter: specifies source and target types for ConversionService lookup.
 

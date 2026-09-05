@@ -8,15 +8,15 @@ A modular JavaScript/TypeScript framework organized as an Nx monorepo with pnpm 
 
 ## Requirements
 
-- **Node.js:** ≥18.0.0
-- **pnpm:** ≥8.0.0
+- **Node.js:** ≥22 (runtime)
+- **pnpm:** ≥11.0.0
 
 ## Technology Stack
 
 - **TypeScript:** 5.7.2 (ES2022 target)
-- **ESLint:** 9.17.0 (flat config)
+- **Oxlint:** (via `pnpm lint`)
 - **Nx:** 20.3.2 (monorepo management)
-- **pnpm:** 8.15.0 (package manager)
+- **pnpm:** 11.4.0 (package manager)
 - **Vitest:** 2.1.8 (testing framework)
 - **Vite:** 6.0.7 (bundler)
 
@@ -72,16 +72,15 @@ pnpm lint
 - [blue-http](_media/README-9.md)
 - [blue-model](_media/README-10.md)
 - [blue-orm](_media/README-11.md)
-- [blue-parser](packages/blue-parser/README.md)
-- [blue-platform-web](_media/README-12.md)
-- [blue-print](packages/blue-print/README.md)
-- [blue-router](_media/README-13.md)
-- [blue-service](_media/README-14.md)
-- [blue-telemetry](_media/README-15.md)
-- [blue-util](_media/README-16.md)
-- [blue-validate](_media/README-17.md)
-- [blue-view](_media/README-18.md)
-- [blue-view-webcomponent](_media/README-19.md)
+- [blue-parser](_media/README-12.md)
+- [blue-platform-web](_media/README-13.md)
+- [blue-router](_media/README-14.md)
+- [blue-service](_media/README-15.md)
+- [blue-telemetry](_media/README-16.md)
+- [blue-util](_media/README-17.md)
+- [blue-validate](_media/README-18.md)
+- [blue-view](_media/README-19.md)
+- [blue-view-webcomponent](_media/README-20.md)
 
 # Development
 
@@ -127,7 +126,7 @@ nx run-many -t test --coverage
 
 ## Code Style
 
-The project uses Prettier for code formatting and ESLint 9 for code quality checks:
+The project uses Prettier for code formatting and Oxlint for code quality checks:
 
 ```bash
 # Format code
@@ -143,7 +142,7 @@ pnpm lint
 **Configuration:**
 
 - Prettier: `prettier.config.mjs`
-- ESLint: `eslint.config.mjs` (flat config)
+- Oxlint: `oxlint` configuration via `.oxlintrc.json`
 
 **Formatting Rules:**
 
@@ -193,7 +192,7 @@ The project maintains two complementary documentation files for different purpos
 
 | Concern               | ARCHITECTURE.md                                           | STYLE_GUIDE.md                                     |
 | :-------------------- | :-------------------------------------------------------- | :------------------------------------------------- |
-| Dependency Management | "Use Library Integration Layer pattern"                   | "Import from @blue/util, not from seedrandom"           |
+| Dependency Management | "Use Library Integration Layer pattern"                   | "Import from @blue/util, not from seedrandom"      |
 | Code Organization     | "Use Strategy Pattern for parsers"                        | "Name parser files: kebab-case.ts in src/"         |
 | Module Visibility     | "Internal modules are implementation details"             | "Prefix internal files with underscore: \_util.ts" |
 | Naming Philosophy     | "Use `is` prefix for type checks, `like` for duck-typing" | "isString checks with typeof, returns boolean"     |

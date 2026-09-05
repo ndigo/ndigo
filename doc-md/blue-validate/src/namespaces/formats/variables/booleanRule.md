@@ -8,6 +8,6 @@
 
 > `const` **booleanRule**: `RegExp`
 
-Defined in: packages/blue-validate/src/formats.ts:104
+Defined in: [packages/blue-validate/src/formats.ts:104](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/formats.ts#lines-104)
 
 A regular expression matching booleans.

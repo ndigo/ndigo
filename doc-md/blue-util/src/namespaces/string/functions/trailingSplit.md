@@ -10,7 +10,7 @@
 
 > **trailingSplit**(`separator`, `text`): `string`[]
 
-Defined in: packages/blue-util/src/string/trailing-split.ts:18
+Defined in: [packages/blue-util/src/string/trailing-split.ts:18](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-util/src/string/trailing-split.ts#lines-18)
 
 Splits a string into an array of strings based on the given separator.
 
@@ -42,7 +42,7 @@ trailingSplit( ",", "a,b,c," );
 
 > **trailingSplit**(`separator`): (`text`) => `string`[]
 
-Defined in: packages/blue-util/src/string/trailing-split.ts:19
+Defined in: [packages/blue-util/src/string/trailing-split.ts:19](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-util/src/string/trailing-split.ts#lines-19)
 
 Splits a string into an array of strings based on the given separator.
 

@@ -8,7 +8,7 @@
 
 > **isActive**(`target`, `ctx?`): `boolean`
 
-Defined in: packages/blue-core/src/conditional.ts:193
+Defined in: [packages/blue-core/src/conditional.ts:185](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/conditional.ts#lines-185)
 
 Evaluates ALL conditions on a class (platform, property, missing-entry).
 

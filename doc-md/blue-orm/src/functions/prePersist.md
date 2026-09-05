@@ -8,7 +8,7 @@
 
 > **prePersist**(): (`_value`, `context`) => `void`
 
-Defined in: packages/blue-orm/src/decorators.ts:229
+Defined in: [packages/blue-orm/src/decorators.ts:236](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/decorators.ts#lines-236)
 
 Marks a method to be invoked by the `EntityManager` **before** an entity is persisted
 for the first time (insert path).

@@ -8,7 +8,7 @@
 
 > **createNull**(): `any`
 
-Defined in: packages/blue-core/src/null.ts:19
+Defined in: [packages/blue-core/src/null.ts:19](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/null.ts#lines-19)
 
 Creates a plain object whose prototype is `null`.
 

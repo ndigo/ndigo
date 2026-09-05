@@ -8,6 +8,6 @@
 
 > `const` **REQUEST\_HEADER\_FIELDS\_TOO\_LARGE**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
-Defined in: packages/blue-http/src/response-statuses.ts:284
+Defined in: [packages/blue-http/src/response-statuses.ts:284](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/response-statuses.ts#lines-284)
 
 The server is unwilling to process the request because its header fields are too large. The request may be resubmitted after reducing the size of the request header fields.

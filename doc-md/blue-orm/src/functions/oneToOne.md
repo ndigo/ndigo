@@ -8,7 +8,7 @@
 
 > **oneToOne**(`targetEntity`): (`_value`, `context`) => `void`
 
-Defined in: packages/blue-orm/src/decorators.ts:194
+Defined in: [packages/blue-orm/src/decorators.ts:201](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/decorators.ts#lines-201)
 
 Marks a class field as a one-to-one relation.
 

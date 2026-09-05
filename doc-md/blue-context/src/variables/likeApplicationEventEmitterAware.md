@@ -8,7 +8,7 @@
 
 > `const` **likeApplicationEventEmitterAware**: (`value`) => `value is ApplicationEventEmitterAware`
 
-Defined in: packages/blue-context/src/event-emitter.ts:190
+Defined in: [packages/blue-context/src/event-emitter.ts:181](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-emitter.ts#lines-181)
 
 Returns whether a value can receive an application event emitter.
 

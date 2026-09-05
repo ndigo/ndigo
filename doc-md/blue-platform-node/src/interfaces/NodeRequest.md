@@ -6,7 +6,7 @@
 
 # Interface: NodeRequest
 
-Defined in: packages/blue-platform-node/src/node-request.ts:19
+Defined in: [packages/blue-platform-node/src/node-request.ts:19](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/node-request.ts#lines-19)
 
 Minimal Node.js request abstraction stored in `route.attributes[NODE_REQUEST_ATTRIBUTE]`.
 Middleware is responsible for populating this before the dispatcher resolves arguments.
@@ -17,7 +17,7 @@ Middleware is responsible for populating this before the dispatcher resolves arg
 
 > **headers**: `Record`\<`string`, `string` \| `string`[] \| `undefined`\>
 
-Defined in: packages/blue-platform-node/src/node-request.ts:21
+Defined in: [packages/blue-platform-node/src/node-request.ts:21](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/node-request.ts#lines-21)
 
 HTTP request headers (lower-cased names).
 
@@ -27,7 +27,7 @@ HTTP request headers (lower-cased names).
 
 > **body**: `Record`\<`string`, `unknown`\>
 
-Defined in: packages/blue-platform-node/src/node-request.ts:23
+Defined in: [packages/blue-platform-node/src/node-request.ts:23](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/node-request.ts#lines-23)
 
 Pre-parsed request body. Use `'*'` as a body parameter name to bind the entire object.
 
@@ -37,7 +37,7 @@ Pre-parsed request body. Use `'*'` as a body parameter name to bind the entire o
 
 > **cookies**: `Record`\<`string`, `string`\>
 
-Defined in: packages/blue-platform-node/src/node-request.ts:25
+Defined in: [packages/blue-platform-node/src/node-request.ts:25](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/node-request.ts#lines-25)
 
 Pre-parsed cookies from the `Cookie` header.
 
@@ -47,6 +47,6 @@ Pre-parsed cookies from the `Cookie` header.
 
 > **session**: `Record`\<`string`, `unknown`\>
 
-Defined in: packages/blue-platform-node/src/node-request.ts:27
+Defined in: [packages/blue-platform-node/src/node-request.ts:27](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/node-request.ts#lines-27)
 
 Server-side session data keyed by session variable name.

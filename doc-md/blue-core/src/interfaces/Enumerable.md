@@ -6,7 +6,7 @@
 
 # Interface: Enumerable\<K, V\>
 
-Defined in: packages/blue-core/src/enumerable.ts:12
+Defined in: [packages/blue-core/src/enumerable.ts:12](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/enumerable.ts#lines-12)
 
 Represents an object that can be iterated over, providing methods to access its entries, keys, and values.
 
@@ -30,7 +30,7 @@ The type of the values in the enumerable collection.
 
 > **entries**(): `Iterator`\<\[`K`, `V`\]\>
 
-Defined in: packages/blue-core/src/enumerable.ts:17
+Defined in: [packages/blue-core/src/enumerable.ts:17](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/enumerable.ts#lines-17)
 
 Returns an iterator for the key-value pairs in the collection.
 
@@ -46,7 +46,7 @@ An iterator that yields `[key, value]` pairs.
 
 > **forEach**(`callback`, `context?`): `void`
 
-Defined in: packages/blue-core/src/enumerable.ts:23
+Defined in: [packages/blue-core/src/enumerable.ts:23](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/enumerable.ts#lines-23)
 
 Executes a provided function once for each key-value pair in the collection.
 
@@ -74,7 +74,7 @@ Value to use as `this` when executing the `callback`.
 
 > **keys**(): `Iterator`\<`K`\>
 
-Defined in: packages/blue-core/src/enumerable.ts:28
+Defined in: [packages/blue-core/src/enumerable.ts:28](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/enumerable.ts#lines-28)
 
 Returns an iterator for the keys in the collection.
 
@@ -90,7 +90,7 @@ An iterator that yields keys.
 
 > **values**(): `Iterator`\<`V`\>
 
-Defined in: packages/blue-core/src/enumerable.ts:33
+Defined in: [packages/blue-core/src/enumerable.ts:33](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/enumerable.ts#lines-33)
 
 Returns an iterator for the values in the collection.
 

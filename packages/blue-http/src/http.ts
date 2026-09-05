@@ -847,7 +847,6 @@ export class HTTP {
      *
      * @param config - Configuration options for the HTTP client
      * @param config.baseURL - Base URL for resolving relative URLs
-     * @param config.headers - Default headers to include in all requests
      * @param config.params - Default query parameters to include in all requests
      * @param config.interceptors - Optional HTTP interceptors
      * @param config.fetch - Optional custom fetch implementation (defaults to globalThis.fetch)
@@ -926,7 +925,7 @@ export class HTTP {
     }
 
     /**
-     * @async
+
      * @param {string} input
      * @param {module:http.HTTPInit} [init={}]
      * @returns {Promise<external:Response>}
@@ -1009,7 +1008,7 @@ export class HTTP {
     }
 
     /**
-     * @async
+
      * @param {string} input
      * @param {module:http.HTTPInit} [init={}]
      * @returns {Promise<external:Response>}
@@ -1021,7 +1020,7 @@ export class HTTP {
     }
 
     /**
-     * @async
+
      * @param {string} input
      * @param {module:http.HTTPInit} [init={}]
      * @returns {Promise<external:Response>}
@@ -1033,7 +1032,7 @@ export class HTTP {
     }
 
     /**
-     * @async
+
      * @param {string} input
      * @param {module:http.HTTPInit} [init={}]
      * @returns {Promise<external:Response>}
@@ -1045,7 +1044,7 @@ export class HTTP {
     }
 
     /**
-     * @async
+
      * @param {string} input
      * @param {module:http.HTTPInit} [init={}]
      * @returns {Promise<external:Response>}
@@ -1057,7 +1056,7 @@ export class HTTP {
     }
 
     /**
-     * @async
+
      * @param {string} input
      * @param {module:http.HTTPInit} [init={}]
      * @returns {Promise<external:Response>}
@@ -1069,7 +1068,7 @@ export class HTTP {
     }
 
     /**
-     * @async
+
      * @param {string} input
      * @param {module:http.HTTPInit} [init={}]
      * @returns {Promise<external:Response>}
@@ -1081,7 +1080,7 @@ export class HTTP {
     }
 
     /**
-     * @async
+
      * @param {string} input
      * @param {module:http.HTTPInit} [init={}]
      * @returns {Promise<external:Response>}
@@ -1093,7 +1092,7 @@ export class HTTP {
     }
 
     /**
-     * @async
+
      * @param {string} input
      * @param {module:http.HTTPInit} [init={}]
      * @returns {Promise<external:Response>}
@@ -1105,7 +1104,7 @@ export class HTTP {
     }
 
     /**
-     * @async
+
      * @param {string} input
      * @param {module:http.HTTPInit} [init={}]
      * @returns {Promise<external:Response>}

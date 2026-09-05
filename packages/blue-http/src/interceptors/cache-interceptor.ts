@@ -37,8 +37,8 @@ interface CacheEntry {
  * This interceptor can return a cached response in `preRequest` to avoid
  * unnecessary network calls, and stores successful responses in `postResponse`.
  *
- * @implements {module:http.RequestAwareHTTPInterceptor}
- * @implements {module:http.ResponseAwareHTTPInterceptor}
+
+
  */
 export class CacheInterceptor implements RequestAwareHTTPInterceptor, ResponseAwareHTTPInterceptor {
     #config: CacheInterceptorConfig;

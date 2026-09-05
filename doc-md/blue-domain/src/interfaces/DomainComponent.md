@@ -6,13 +6,13 @@
 
 # Interface: DomainComponent
 
-Defined in: packages/blue-domain/src/component.ts:37
+Defined in: [packages/blue-domain/src/component.ts:37](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-domain/src/component.ts#lines-37)
 
 Represents a serializable, event-driven domain component with lifecycle hooks.
 
 ## Extends
 
-- `Initializable`.`EventEmitter`.`AsyncDestroyable`.`Serializable`
+- [`Initializable`](#).`EventEmitter`.`AsyncDestroyable`.`Serializable`
 
 ## Properties
 
@@ -20,7 +20,7 @@ Represents a serializable, event-driven domain component with lifecycle hooks.
 
 > **id**: `number`
 
-Defined in: packages/blue-domain/src/component.ts:38
+Defined in: [packages/blue-domain/src/component.ts:38](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-domain/src/component.ts#lines-38)
 
 ***
 
@@ -28,7 +28,7 @@ Defined in: packages/blue-domain/src/component.ts:38
 
 > **name**: `string`
 
-Defined in: packages/blue-domain/src/component.ts:39
+Defined in: [packages/blue-domain/src/component.ts:39](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-domain/src/component.ts#lines-39)
 
 ***
 
@@ -36,7 +36,7 @@ Defined in: packages/blue-domain/src/component.ts:39
 
 > **model**: `JSONObject`
 
-Defined in: packages/blue-domain/src/component.ts:40
+Defined in: [packages/blue-domain/src/component.ts:40](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-domain/src/component.ts#lines-40)
 
 ***
 
@@ -44,7 +44,7 @@ Defined in: packages/blue-domain/src/component.ts:40
 
 > **actions**: [`DomainActions`](../type-aliases/DomainActions.md)
 
-Defined in: packages/blue-domain/src/component.ts:41
+Defined in: [packages/blue-domain/src/component.ts:41](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-domain/src/component.ts#lines-41)
 
 ***
 
@@ -52,7 +52,7 @@ Defined in: packages/blue-domain/src/component.ts:41
 
 > **data**: [`DomainData`](../type-aliases/DomainData.md)
 
-Defined in: packages/blue-domain/src/component.ts:42
+Defined in: [packages/blue-domain/src/component.ts:42](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-domain/src/component.ts#lines-42)
 
 ***
 
@@ -60,7 +60,7 @@ Defined in: packages/blue-domain/src/component.ts:42
 
 > **settings**: [`DomainSettings`](../type-aliases/DomainSettings.md)
 
-Defined in: packages/blue-domain/src/component.ts:43
+Defined in: [packages/blue-domain/src/component.ts:43](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-domain/src/component.ts#lines-43)
 
 ***
 
@@ -68,7 +68,7 @@ Defined in: packages/blue-domain/src/component.ts:43
 
 > **states**: [`DomainStates`](../type-aliases/DomainStates.md)
 
-Defined in: packages/blue-domain/src/component.ts:44
+Defined in: [packages/blue-domain/src/component.ts:44](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-domain/src/component.ts#lines-44)
 
 ***
 
@@ -298,7 +298,7 @@ Defined in: packages/blue-core/lib/serializable.d.ts:23
 
 > **validate**(`options?`): `ClassValidationResult`
 
-Defined in: packages/blue-domain/src/component.ts:51
+Defined in: [packages/blue-domain/src/component.ts:51](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-domain/src/component.ts#lines-51)
 
 Validates a component property before it is used or persisted.
 

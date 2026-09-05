@@ -8,13 +8,13 @@
 
 > **bootApp**(`sources`): [`BlueTestApp`](../interfaces/BlueTestApp.md)
 
-Defined in: packages/blue-test/src/blue-test.ts:50
+Defined in: [packages/blue-test/src/blue-test.ts:50](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-test/src/blue-test.ts#lines-50)
 
 Boot a Blue application from configuration/controller classes and wire the
 dispatcher.
 
 Each source is registered into a `MetadataConfigApplicationContext`:
-a `@configuration` class is handed to `context.register`; a plain
+a `configuration` class is handed to `context.register`; a plain
 `@getMapping` controller class is instantiated and stored by its class name,
 which the handler mapping discovers during `init`.
 

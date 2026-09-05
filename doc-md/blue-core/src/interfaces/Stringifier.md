@@ -6,7 +6,7 @@
 
 # Interface: Stringifier\<T\>
 
-Defined in: packages/blue-core/src/parser.ts:46
+Defined in: [packages/blue-core/src/parser.ts:46](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/parser.ts#lines-46)
 
 Class-based interface for serializing a value of type `T` into a string.
 
@@ -29,7 +29,7 @@ The type of the value to stringify.
 
 > **stringify**(`value`): `string`
 
-Defined in: packages/blue-core/src/parser.ts:52
+Defined in: [packages/blue-core/src/parser.ts:52](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/parser.ts#lines-52)
 
 Stringifies a value of type T into its string representation.
 

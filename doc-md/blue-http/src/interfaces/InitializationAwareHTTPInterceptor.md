@@ -6,7 +6,7 @@
 
 # Interface: InitializationAwareHTTPInterceptor\<T\>
 
-Defined in: packages/blue-http/src/http.ts:98
+Defined in: [packages/blue-http/src/http.ts:108](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-108)
 
 Allows a request to be rejected before it is initialized.
 
@@ -22,7 +22,7 @@ Allows a request to be rejected before it is initialized.
 
 > **preInit**(`url`, `settings`): `boolean`
 
-Defined in: packages/blue-http/src/http.ts:106
+Defined in: [packages/blue-http/src/http.ts:116](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-116)
 
 Decides whether the request should continue after URL and settings resolution.
 

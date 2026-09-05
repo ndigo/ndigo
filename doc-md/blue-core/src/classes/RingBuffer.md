@@ -6,7 +6,7 @@
 
 # Class: RingBuffer\<T\>
 
-Defined in: packages/blue-core/src/ring-buffer.ts:23
+Defined in: [packages/blue-core/src/ring-buffer.ts:23](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/ring-buffer.ts#lines-23)
 
 A value that can safely be converted to a string or JSON payload.
 
@@ -36,7 +36,7 @@ A value that can safely be converted to a string or JSON payload.
 
 > **new RingBuffer**\<`T`\>(`elements`): `RingBuffer`\<`T`\>
 
-Defined in: packages/blue-core/src/ring-buffer.ts:101
+Defined in: [packages/blue-core/src/ring-buffer.ts:101](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/ring-buffer.ts#lines-101)
 
 Creates a new RingBuffer instance.
 
@@ -56,7 +56,7 @@ An array-like object to initialize the buffer with.
 
 > **new RingBuffer**\<`T`\>(`capacity`): `RingBuffer`\<`T`\>
 
-Defined in: packages/blue-core/src/ring-buffer.ts:106
+Defined in: [packages/blue-core/src/ring-buffer.ts:106](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/ring-buffer.ts#lines-106)
 
 Creates a new RingBuffer instance with a specified capacity.
 
@@ -78,7 +78,7 @@ The initial capacity of the buffer.
 
 > `protected` **\_capacity**: `number`
 
-Defined in: packages/blue-core/src/ring-buffer.ts:24
+Defined in: [packages/blue-core/src/ring-buffer.ts:24](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/ring-buffer.ts#lines-24)
 
 ***
 
@@ -86,7 +86,7 @@ Defined in: packages/blue-core/src/ring-buffer.ts:24
 
 > `protected` **\_head**: `number`
 
-Defined in: packages/blue-core/src/ring-buffer.ts:25
+Defined in: [packages/blue-core/src/ring-buffer.ts:25](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/ring-buffer.ts#lines-25)
 
 ***
 
@@ -94,7 +94,7 @@ Defined in: packages/blue-core/src/ring-buffer.ts:25
 
 > `protected` **\_tail**: `number`
 
-Defined in: packages/blue-core/src/ring-buffer.ts:26
+Defined in: [packages/blue-core/src/ring-buffer.ts:26](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/ring-buffer.ts#lines-26)
 
 ***
 
@@ -102,7 +102,7 @@ Defined in: packages/blue-core/src/ring-buffer.ts:26
 
 > `protected` **\_full**: `number`
 
-Defined in: packages/blue-core/src/ring-buffer.ts:27
+Defined in: [packages/blue-core/src/ring-buffer.ts:27](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/ring-buffer.ts#lines-27)
 
 ***
 
@@ -110,7 +110,7 @@ Defined in: packages/blue-core/src/ring-buffer.ts:27
 
 > `readonly` `static` **MAX\_CAPACITY**: `number`
 
-Defined in: packages/blue-core/src/ring-buffer.ts:32
+Defined in: [packages/blue-core/src/ring-buffer.ts:32](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/ring-buffer.ts#lines-32)
 
 The maximum capacity of any RingBuffer instance.
 
@@ -120,7 +120,7 @@ The maximum capacity of any RingBuffer instance.
 
 > `readonly` `static` **MIN\_CAPACITY**: `number`
 
-Defined in: packages/blue-core/src/ring-buffer.ts:36
+Defined in: [packages/blue-core/src/ring-buffer.ts:36](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/ring-buffer.ts#lines-36)
 
 The minimum capacity of any RingBuffer instance.
 
@@ -132,7 +132,7 @@ The minimum capacity of any RingBuffer instance.
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-core/src/ring-buffer.ts:43
+Defined in: [packages/blue-core/src/ring-buffer.ts:43](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/ring-buffer.ts#lines-43)
 
 The string tag for this class.
 
@@ -148,7 +148,7 @@ The string tag for this class.
 
 > **get** **capacity**(): `number`
 
-Defined in: packages/blue-core/src/ring-buffer.ts:50
+Defined in: [packages/blue-core/src/ring-buffer.ts:50](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/ring-buffer.ts#lines-50)
 
 The current capacity of the ring buffer.
 
@@ -160,7 +160,7 @@ The current capacity of the ring buffer.
 
 > **set** **capacity**(`newCapacity`): `void`
 
-Defined in: packages/blue-core/src/ring-buffer.ts:59
+Defined in: [packages/blue-core/src/ring-buffer.ts:59](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/ring-buffer.ts#lines-59)
 
 Sets the capacity of the ring buffer. The new capacity will be a power of 2
 between `MIN_CAPACITY` and `MAX_CAPACITY`.
@@ -185,7 +185,7 @@ The desired new capacity.
 
 > **get** **isEmpty**(): `boolean`
 
-Defined in: packages/blue-core/src/ring-buffer.ts:70
+Defined in: [packages/blue-core/src/ring-buffer.ts:70](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/ring-buffer.ts#lines-70)
 
 Indicates if the ring buffer is empty.
 
@@ -201,7 +201,7 @@ Indicates if the ring buffer is empty.
 
 > **get** **isFull**(): `boolean`
 
-Defined in: packages/blue-core/src/ring-buffer.ts:77
+Defined in: [packages/blue-core/src/ring-buffer.ts:77](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/ring-buffer.ts#lines-77)
 
 Indicates if the ring buffer is full.
 
@@ -217,7 +217,7 @@ Indicates if the ring buffer is full.
 
 > **get** **length**(): `number`
 
-Defined in: packages/blue-core/src/ring-buffer.ts:84
+Defined in: [packages/blue-core/src/ring-buffer.ts:84](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/ring-buffer.ts#lines-84)
 
 The number of elements currently in the ring buffer.
 
@@ -235,7 +235,7 @@ The number of elements currently in the ring buffer.
 
 > **\[iterator\]**(): `Iterator`\<`T`, `any`, `undefined`\>
 
-Defined in: packages/blue-core/src/ring-buffer.ts:153
+Defined in: [packages/blue-core/src/ring-buffer.ts:153](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/ring-buffer.ts#lines-153)
 
 Returns an iterator for the elements in the ring buffer.
 
@@ -255,7 +255,7 @@ An iterator for the elements.
 
 > **get**(): `T` \| `undefined`
 
-Defined in: packages/blue-core/src/ring-buffer.ts:161
+Defined in: [packages/blue-core/src/ring-buffer.ts:161](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/ring-buffer.ts#lines-161)
 
 Retrieves and removes the oldest element from the ring buffer.
 
@@ -271,7 +271,7 @@ The oldest element, or `undefined` if the buffer is empty.
 
 > **peek**(): `T` \| `undefined`
 
-Defined in: packages/blue-core/src/ring-buffer.ts:179
+Defined in: [packages/blue-core/src/ring-buffer.ts:179](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/ring-buffer.ts#lines-179)
 
 Returns the oldest element (tail position) without removing it.
 
@@ -287,7 +287,7 @@ The oldest element, or `undefined` if the buffer is empty.
 
 > **peekHead**(): `T` \| `undefined`
 
-Defined in: packages/blue-core/src/ring-buffer.ts:188
+Defined in: [packages/blue-core/src/ring-buffer.ts:188](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/ring-buffer.ts#lines-188)
 
 Returns the newest element (most recently added, head-1 position) without removing it.
 
@@ -303,7 +303,7 @@ The newest element, or `undefined` if the buffer is empty.
 
 > **put**(...`items`): `number`
 
-Defined in: packages/blue-core/src/ring-buffer.ts:199
+Defined in: [packages/blue-core/src/ring-buffer.ts:199](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/ring-buffer.ts#lines-199)
 
 Adds one or more elements to the ring buffer. If the buffer is full,
 the oldest elements will be overwritten.
@@ -328,7 +328,7 @@ The new length of the ring buffer.
 
 > **toJSON**(): [`JSONArray`](../interfaces/JSONArray.md)
 
-Defined in: packages/blue-core/src/ring-buffer.ts:228
+Defined in: [packages/blue-core/src/ring-buffer.ts:228](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/ring-buffer.ts#lines-228)
 
 Returns a JSON array representation of the ring buffer's contents.
 
@@ -348,7 +348,7 @@ A JSON array.
 
 > **toString**(): `string`
 
-Defined in: packages/blue-core/src/ring-buffer.ts:242
+Defined in: [packages/blue-core/src/ring-buffer.ts:242](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/ring-buffer.ts#lines-242)
 
 Returns a string representation of the ring buffer's contents.
 

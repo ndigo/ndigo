@@ -6,7 +6,7 @@
 
 # Interface: Parser\<T\>
 
-Defined in: packages/blue-core/src/parser.ts:27
+Defined in: [packages/blue-core/src/parser.ts:27](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/parser.ts#lines-27)
 
 Class-based interface for parsing a string into a structured value of type `T`.
 
@@ -42,7 +42,7 @@ The type of the parsed value.
 
 > **parse**(`value`): `T`
 
-Defined in: packages/blue-core/src/parser.ts:33
+Defined in: [packages/blue-core/src/parser.ts:33](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/parser.ts#lines-33)
 
 Parses a string value into a value of type T.
 

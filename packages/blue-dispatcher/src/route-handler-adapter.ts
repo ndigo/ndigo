@@ -86,7 +86,7 @@ export abstract class AbstractHandlerMethodAdapter
 }
 
 /**
- * This implementation expects the handler to be a {@link HandlerMethod|HandlerMethod}.
+ * This implementation expects the handler to be a `HandlerMethod`.
  */
 export class ControllerHandlerAdapter implements RouteHandlerAdapter {
     get [Symbol.toStringTag](): string {
@@ -116,9 +116,9 @@ export class ControllerHandlerAdapter implements RouteHandlerAdapter {
 }
 
 /**
- * Implementation of {@link AbstractHandlerMethodAdapter} that supports {@link HandlerMethod|HandlerMethods} decorated with `route:mapping` metadata. This is usually applied using {@link RouteMapping|@RouteMapping}.
+ * Implementation of {@link AbstractHandlerMethodAdapter} that supports `HandlerMethods` decorated with `route:mapping` metadata. This is usually applied using `@RouteMapping`.
  * @extends module:dispatcher.AbstractHandlerMethodAdapter
- * @implements module:core.Initializable
+
  */
 export class MetadataHandlerAdapter extends AbstractHandlerMethodAdapter implements Initializable {
     /**

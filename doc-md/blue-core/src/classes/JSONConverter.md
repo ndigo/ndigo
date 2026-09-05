@@ -6,7 +6,7 @@
 
 # Class: JSONConverter
 
-Defined in: packages/blue-core/src/converter.ts:170
+Defined in: [packages/blue-core/src/converter.ts:170](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/converter.ts#lines-170)
 
 Converts strings to parsed JSON values via `JSON.parse`.
 
@@ -30,7 +30,7 @@ Converts strings to parsed JSON values via `JSON.parse`.
 
 > **convert**(`value`): `any`
 
-Defined in: packages/blue-core/src/converter.ts:171
+Defined in: [packages/blue-core/src/converter.ts:171](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/converter.ts#lines-171)
 
 Converts a value of type `S` to type `T`.
 

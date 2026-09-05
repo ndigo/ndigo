@@ -8,7 +8,7 @@
 
 > **serialize**(`value`): [`JSONValue`](../type-aliases/JSONValue.md)
 
-Defined in: packages/blue-core/src/serializable.ts:106
+Defined in: [packages/blue-core/src/serializable.ts:109](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/serializable.ts#lines-109)
 
 Converts an arbitrary value into a JSON-safe representation.
 

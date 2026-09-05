@@ -56,7 +56,7 @@ import { ResourceLoader, likeResourceLoader, AsModuleResourceLoader, likeResourc
  * * The ability to resolve content.
  * * Inheritance from a parent context unless it is the root context.
  *
- * In addition to standard {@link Factory|Factory} lifecycle capabilities, `ApplicationContext` implementations detect and invoke {@link ApplicationContextAware|ApplicationContextAware} values as well as {@link ResourceLoaderAware|ResourceLoaderAware}.
+ * In addition to standard {@link Factory|Factory} lifecycle capabilities, `ApplicationContext` implementations detect and invoke {@link ApplicationContextAware|ApplicationContextAware} values as well as `ResourceLoaderAware`.
  * @extends module:factory.ConfigurableFactory
  * @extends module:content.ContentSource
  * @extends module:core.Destroyable
@@ -160,7 +160,7 @@ export interface ApplicationContext
      *
      * **Sequence:**
      * 1. Emits `'context:preparing'` — processors may register additional entries.
-     * 2. Runs all registered {@link LifecycleProcessor} and {@link EntryRegistryProcessor} instances.
+     * 2. Runs all registered `LifecycleProcessor` and `EntryRegistryProcessor` instances.
      * 3. Emits `'context:refresh'` — signals that the context is fully active.
      * 4. Sets `isActive` to `true`.
      *
@@ -180,7 +180,7 @@ export interface ApplicationContext
  *
  * Implementing this interface makes sense for example when an object requires access to a set of collaborating values.
  *
- * This interface can also be implemented if an object needs access to file resources, i.e. wants to call {@link ResourceLoader#getResource|getResource}, wants to emit an application event, or requires access to the {@link ContentSource|ContentSource}. However, it is preferable to implement the more specific {@link ResourceLoaderAware|ResourceLoaderAware}, {@link ApplicationEventEmitterAware|ApplicationEventEmitterAware} or {@link ContentSourceAware|ContentSourceAware} interface in such a specific scenario.
+ * This interface can also be implemented if an object needs access to file resources, i.e. wants to call {@link ResourceLoader#getResource|getResource}, wants to emit an application event, or requires access to the {@link ContentSource|ContentSource}. However, it is preferable to implement the more specific `ResourceLoaderAware`, `ApplicationEventEmitterAware` or `ContentSourceAware` interface in such a specific scenario.
  *
  * {@link AsApplicationContextAware|AsApplicationContextAware} is a convenience mixin for application objects, implementing this interface.
  * @extends module:factory.Aware
@@ -238,7 +238,7 @@ export interface ConfigurableApplicationContext extends ApplicationContext {
  * * The ability to resolve content.
  * * Inheritance from a parent context unless it is the root context.
  *
- * In addition to standard {@link Factory|Factory} lifecycle capabilities, `ApplicationContext` implementations detect and invoke {@link ApplicationContextAware|ApplicationContextAware} values as well as {@link ResourceLoaderAware|ResourceLoaderAware}.
+ * In addition to standard {@link Factory|Factory} lifecycle capabilities, `ApplicationContext` implementations detect and invoke {@link ApplicationContextAware|ApplicationContextAware} values as well as `ResourceLoaderAware`.
  * @extends module:factory.ConfigurableFactory
  * @extends module:content.ContentSource
  * @extends module:core.Destroyable
@@ -252,7 +252,7 @@ export interface ConfigurableApplicationContext extends ApplicationContext {
  *
  * Implementing this interface makes sense for example when an object requires access to a set of collaborating values.
  *
- * This interface can also be implemented if an object needs access to file resources, i.e. wants to call {@link ResourceLoader#getResource|getResource}, wants to emit an application event, or requires access to the {@link ContentSource|ContentSource}. However, it is preferable to implement the more specific {@link ResourceLoaderAware|ResourceLoaderAware}, {@link ApplicationEventEmitterAware|ApplicationEventEmitterAware} or {@link ContentSourceAware|ContentSourceAware} interface in such a specific scenario.
+ * This interface can also be implemented if an object needs access to file resources, i.e. wants to call {@link ResourceLoader#getResource|getResource}, wants to emit an application event, or requires access to the {@link ContentSource|ContentSource}. However, it is preferable to implement the more specific `ResourceLoaderAware`, `ApplicationEventEmitterAware` or `ContentSourceAware` interface in such a specific scenario.
  *
  * {@link AsApplicationContextAware|AsApplicationContextAware} is a convenience mixin for application objects, implementing this interface.
  * @extends module:factory.Aware
@@ -785,7 +785,7 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
 }
 
 /**
- * @implements external:Record
+
  * @extends module:context.GenericApplicationContext
  *
  * Application context proxy that exposes values as dynamic object properties.
@@ -881,7 +881,7 @@ export class ViewComponent extends ApplicationComponent {}
 
 /**
  * Create a new ApplicationContextAwareProcessor for the given context.
- * An {@link InitializationAwareProcessor|InitializationAwareProcessor} implementation that passes the ApplicationContext to value that implement the {@link EnvironmentAware|EnvironmentAware}, {@link ResourceLoaderAware|ResourceLoaderAware}, {@link ApplicationEventEmitterAware|ApplicationEventEmitterAware}, {@link ContentSourceAware|ContentSourceAware}, and/or {@link ApplicationContextAware|ApplicationContextAware} interfaces.
+ * An {@link InitializationAwareProcessor|InitializationAwareProcessor} implementation that passes the ApplicationContext to value that implement the `EnvironmentAware`, `ResourceLoaderAware`, `ApplicationEventEmitterAware`, `ContentSourceAware`, and/or {@link ApplicationContextAware|ApplicationContextAware} interfaces.
  */
 export class ApplicationContextAwareProcessor implements InitializationAwareProcessor {
     readonly applicationContext!: ApplicationContext;

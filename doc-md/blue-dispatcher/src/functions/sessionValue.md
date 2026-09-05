@@ -8,7 +8,7 @@
 
 > **sessionValue**(`name`, `options?`): [`ParameterExtractor`](../type-aliases/ParameterExtractor.md)
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:264
+Defined in: [packages/blue-dispatcher/src/route-parameter.ts:253](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-parameter.ts#lines-253)
 
 Factory function: Create a session parameter extractor
 
@@ -29,7 +29,7 @@ Factory function: Create a session parameter extractor
 ## Example
 
 ```ts
-@routeParams({
+`routeParams`({
   userId: sessionValue('userId'),
   token: sessionValue('AUTH_TOKEN', { required: true })
 })

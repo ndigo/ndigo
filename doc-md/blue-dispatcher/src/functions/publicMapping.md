@@ -8,7 +8,7 @@
 
 > **publicMapping**(`route`): (`target`, `context`) => `any`
 
-Defined in: packages/blue-dispatcher/src/route-mapping.ts:142
+Defined in: [packages/blue-dispatcher/src/route-mapping.ts:142](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-mapping.ts#lines-142)
 
 Create a public route mapping decorator.
 

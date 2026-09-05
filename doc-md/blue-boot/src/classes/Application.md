@@ -6,21 +6,13 @@
 
 # Class: Application
 
-Defined in: packages/blue-boot/src/application.ts:24
+Defined in: [packages/blue-boot/src/application.ts:23](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-boot/src/application.ts#lines-23)
 
 Class that can be used to bootstrap and launch an application.
 
 ## Param
 
 The name of the application
-
-## Fires
-
-started when the application context is ready
-
-## Fires
-
-closed when the application is closed
 
 ## Extends
 
@@ -32,7 +24,7 @@ closed when the application is closed
 
 > **new Application**(`sources`): `Application`
 
-Defined in: packages/blue-boot/src/application.ts:46
+Defined in: [packages/blue-boot/src/application.ts:44](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-boot/src/application.ts#lines-44)
 
 Creates an application bootstrapper for the given source classes.
 
@@ -96,7 +88,7 @@ Defined in: packages/blue-context/lib/event-emitter.d.ts:181
 
 > **get** **sources**(): `Set`\<`Function`\>
 
-Defined in: packages/blue-boot/src/application.ts:37
+Defined in: [packages/blue-boot/src/application.ts:35](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-boot/src/application.ts#lines-35)
 
 Gets the source classes registered with this application bootstrapper.
 
@@ -112,7 +104,7 @@ The registered source classes.
 
 > **run**(...`args`): `ConfigurableApplicationContext`
 
-Defined in: packages/blue-boot/src/application.ts:59
+Defined in: [packages/blue-boot/src/application.ts:57](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-boot/src/application.ts#lines-57)
 
 Runs the application and refreshes a new application context.
 
@@ -140,7 +132,7 @@ When application startup fails.
 
 > **setEnvironment**(`environment`): `void`
 
-Defined in: packages/blue-boot/src/application.ts:79
+Defined in: [packages/blue-boot/src/application.ts:79](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-boot/src/application.ts#lines-79)
 
 Sets the environment that will be reused instead of creating a new one.
 
@@ -162,7 +154,7 @@ The environment to reuse.
 
 > **setName**(`name`): `void`
 
-Defined in: packages/blue-boot/src/application.ts:88
+Defined in: [packages/blue-boot/src/application.ts:88](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-boot/src/application.ts#lines-88)
 
 Sets the application name used when the application context is created.
 
@@ -184,7 +176,7 @@ The application name.
 
 > **setProfiles**(...`profiles`): `void`
 
-Defined in: packages/blue-boot/src/application.ts:97
+Defined in: [packages/blue-boot/src/application.ts:97](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-boot/src/application.ts#lines-97)
 
 Replaces the active profiles that will be applied before the context refreshes.
 
@@ -206,7 +198,7 @@ The profile names to activate.
 
 > **setProperties**(`properties`): `void`
 
-Defined in: packages/blue-boot/src/application.ts:106
+Defined in: [packages/blue-boot/src/application.ts:106](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-boot/src/application.ts#lines-106)
 
 Sets the property sources that will be added during environment preparation.
 
@@ -228,7 +220,7 @@ Property values to expose to the application environment.
 
 > `protected` **\_configureEnvironment**(`environment`, `args`): `void`
 
-Defined in: packages/blue-boot/src/application.ts:117
+Defined in: [packages/blue-boot/src/application.ts:117](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-boot/src/application.ts#lines-117)
 
 Applies environment-level configuration before the application context is created.
 
@@ -256,7 +248,7 @@ Command-line arguments supplied to the application.
 
 > `protected` **\_configureProfiles**(`environment`, `args`): `void`
 
-Defined in: packages/blue-boot/src/application.ts:129
+Defined in: [packages/blue-boot/src/application.ts:129](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-boot/src/application.ts#lines-129)
 
 Applies the configured active profiles to the environment.
 
@@ -284,7 +276,7 @@ Command-line arguments supplied to the application.
 
 > `protected` **\_configurePropertySources**(`environment`, `args`): `void`
 
-Defined in: packages/blue-boot/src/application.ts:141
+Defined in: [packages/blue-boot/src/application.ts:141](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-boot/src/application.ts#lines-141)
 
 Adds configured property sources to the environment.
 
@@ -312,7 +304,7 @@ Command-line arguments supplied to the application.
 
 > `protected` **\_prepareContext**(`environment`, `args`): `ConfigurableApplicationContext`
 
-Defined in: packages/blue-boot/src/application.ts:156
+Defined in: [packages/blue-boot/src/application.ts:156](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-boot/src/application.ts#lines-156)
 
 Creates and refreshes the application context.
 
@@ -342,7 +334,7 @@ The refreshed application context.
 
 > `protected` **\_prepareEnvironment**(`args`): `ConfigurableEnvironment`
 
-Defined in: packages/blue-boot/src/application.ts:192
+Defined in: [packages/blue-boot/src/application.ts:189](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-boot/src/application.ts#lines-189)
 
 Prepares the environment used for application startup.
 
@@ -366,7 +358,7 @@ The prepared environment.
 
 > **close**(): `void`
 
-Defined in: packages/blue-boot/src/application.ts:211
+Defined in: [packages/blue-boot/src/application.ts:208](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-boot/src/application.ts#lines-208)
 
 Closes the application and releases resources.
 Emits the `'closed'` event, then destroys the emitter.

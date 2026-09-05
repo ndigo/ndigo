@@ -6,7 +6,7 @@
 
 # Class: WebAutoConfiguration
 
-Defined in: packages/blue-platform-web/src/web-auto-configuration.ts:23
+Defined in: [packages/blue-platform-web/src/web-auto-configuration.ts:23](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/web-auto-configuration.ts#lines-23)
 
 Auto-configuration for browser-based applications.
 Provisions argument resolvers and converter registries.
@@ -27,7 +27,7 @@ Provisions argument resolvers and converter registries.
 
 > **argumentValueConverterRegistry**(): `Record`\<`string`, [`ArgumentValueConverter`](../type-aliases/ArgumentValueConverter.md)\>
 
-Defined in: packages/blue-platform-web/src/web-auto-configuration.ts:30
+Defined in: [packages/blue-platform-web/src/web-auto-configuration.ts:30](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/web-auto-configuration.ts#lines-30)
 
 Exposes the shared argument-value converter registry.
 
@@ -43,7 +43,7 @@ The browser argument-value converter registry.
 
 > **argumentResolvers**(): ([`BrowserBindMethodArgumentResolver`](BrowserBindMethodArgumentResolver.md) \| [`BrowserCookieValueMethodArgumentResolver`](BrowserCookieValueMethodArgumentResolver.md) \| [`BrowserModelValueMethodArgumentResolver`](BrowserModelValueMethodArgumentResolver.md) \| [`BrowserStateValueMethodArgumentResolver`](BrowserStateValueMethodArgumentResolver.md) \| [`BrowserSessionValueMethodArgumentResolver`](BrowserSessionValueMethodArgumentResolver.md))[]
 
-Defined in: packages/blue-platform-web/src/web-auto-configuration.ts:40
+Defined in: [packages/blue-platform-web/src/web-auto-configuration.ts:40](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/web-auto-configuration.ts#lines-40)
 
 Creates the browser argument resolvers used for request binding.
 
@@ -59,10 +59,10 @@ The browser argument resolvers.
 
 > **handlerMapping**(): `LinearMetadataHandlerMapping`
 
-Defined in: packages/blue-platform-web/src/web-auto-configuration.ts:57
+Defined in: [packages/blue-platform-web/src/web-auto-configuration.ts:57](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/web-auto-configuration.ts#lines-57)
 
 Provides the default handler mapping for browser-based request dispatch.
-Can be overridden by registering a custom
+Can be overridden by registering a custom `configuration` with a handlerMapping entry.
 
 #### Returns
 
@@ -70,20 +70,16 @@ Can be overridden by registering a custom
 
 The default metadata-driven handler mapping.
 
-#### Configuration
-
-with a handlerMapping entry.
-
 ***
 
 ### viewResolver()
 
 > **viewResolver**(): `NameViewResolver`
 
-Defined in: packages/blue-platform-web/src/web-auto-configuration.ts:68
+Defined in: [packages/blue-platform-web/src/web-auto-configuration.ts:68](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/web-auto-configuration.ts#lines-68)
 
 Provides the default view resolver that matches views by name.
-Can be overridden by registering a custom
+Can be overridden by registering a custom `configuration` with a viewResolver entry.
 
 #### Returns
 
@@ -91,27 +87,19 @@ Can be overridden by registering a custom
 
 The default name-based view resolver.
 
-#### Configuration
-
-with a viewResolver entry.
-
 ***
 
 ### webComponentViewEngine()
 
 > **webComponentViewEngine**(): `WebComponentViewEngine`
 
-Defined in: packages/blue-platform-web/src/web-auto-configuration.ts:79
+Defined in: [packages/blue-platform-web/src/web-auto-configuration.ts:79](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/web-auto-configuration.ts#lines-79)
 
 Provides the default Web Component view engine.
-Can be overridden by registering a custom
+Can be overridden by registering a custom `configuration` with a webComponentViewEngine entry.
 
 #### Returns
 
 `WebComponentViewEngine`
 
 The default Web Component view engine.
-
-#### Configuration
-
-with a webComponentViewEngine entry.

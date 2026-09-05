@@ -8,7 +8,7 @@
 
 > **DomainStates** = `object`
 
-Defined in: packages/blue-domain/src/component.ts:30
+Defined in: [packages/blue-domain/src/component.ts:30](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-domain/src/component.ts#lines-30)
 
 Stores named state values for a domain component.
 

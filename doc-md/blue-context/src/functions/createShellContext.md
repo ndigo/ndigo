@@ -8,7 +8,7 @@
 
 > **createShellContext**(`options?`): [`GenericApplicationContext`](../classes/GenericApplicationContext.md)
 
-Defined in: packages/blue-context/src/context-hierarchy.ts:96
+Defined in: [packages/blue-context/src/context-hierarchy.ts:96](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context-hierarchy.ts#lines-96)
 
 Create a shell/root context with optional infrastructure overrides.
 

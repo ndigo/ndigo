@@ -6,7 +6,7 @@
 
 # Interface: SuccessAwareHTTPInterceptor
 
-Defined in: packages/blue-http/src/interceptors/response-class-interceptor.ts:25
+Defined in: [packages/blue-http/src/interceptors/response-class-interceptor.ts:25](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/response-class-interceptor.ts#lines-25)
 
 Handles successful responses.
 
@@ -16,7 +16,7 @@ Handles successful responses.
 
 > **postSuccessfulResponse**(`response`, `settings`): `Promise`\<`void` \| `JSONObject`\>
 
-Defined in: packages/blue-http/src/interceptors/response-class-interceptor.ts:26
+Defined in: [packages/blue-http/src/interceptors/response-class-interceptor.ts:26](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/response-class-interceptor.ts#lines-26)
 
 #### Parameters
 

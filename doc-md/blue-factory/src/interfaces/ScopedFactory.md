@@ -6,7 +6,7 @@
 
 # Interface: ScopedFactory
 
-Defined in: packages/blue-factory/src/scope.ts:17
+Defined in: [packages/blue-factory/src/scope.ts:17](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/scope.ts#lines-17)
 
 ## Methods
 
@@ -14,7 +14,7 @@ Defined in: packages/blue-factory/src/scope.ts:17
 
 > **destroyScopedValue**(`scopeName`, `valueName`): `void`
 
-Defined in: packages/blue-factory/src/scope.ts:18
+Defined in: [packages/blue-factory/src/scope.ts:18](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/scope.ts#lines-18)
 
 #### Parameters
 
@@ -36,7 +36,7 @@ Defined in: packages/blue-factory/src/scope.ts:18
 
 > **getScope**(`name`): [`Scope`](Scope.md)
 
-Defined in: packages/blue-factory/src/scope.ts:19
+Defined in: [packages/blue-factory/src/scope.ts:19](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/scope.ts#lines-19)
 
 #### Parameters
 
@@ -54,7 +54,7 @@ Defined in: packages/blue-factory/src/scope.ts:19
 
 > **getScopeNames**(): `string`[]
 
-Defined in: packages/blue-factory/src/scope.ts:20
+Defined in: [packages/blue-factory/src/scope.ts:20](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/scope.ts#lines-20)
 
 #### Returns
 
@@ -66,7 +66,7 @@ Defined in: packages/blue-factory/src/scope.ts:20
 
 > **registerScope**(`name`, `scope`): `void`
 
-Defined in: packages/blue-factory/src/scope.ts:21
+Defined in: [packages/blue-factory/src/scope.ts:21](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/scope.ts#lines-21)
 
 #### Parameters
 

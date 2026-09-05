@@ -8,7 +8,7 @@
 
 > **createDOMProvider**(): `Promise`\<[`DOMProvider`](../interfaces/DOMProvider.md)\>
 
-Defined in: packages/blue-dom/src/create-dom-provider.ts:14
+Defined in: [packages/blue-dom/src/create-dom-provider.ts:14](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dom/src/create-dom-provider.ts#lines-14)
 
 Creates an appropriate `DOMProvider` based on the current runtime environment.
 Returns a `BrowserDOMProvider` when a browser DOM is available, or a

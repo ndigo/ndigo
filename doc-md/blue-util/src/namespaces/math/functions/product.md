@@ -8,7 +8,7 @@
 
 > **product**(`list`): `number`
 
-Defined in: packages/blue-util/src/math/index.ts:210
+Defined in: [packages/blue-util/src/math/index.ts:210](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-util/src/math/index.ts#lines-210)
 
 Multiplies together all the elements of a list.
 
@@ -28,7 +28,7 @@ The product of all the numbers in the list.
 
 ## See
 
-reduce\|reduce
+`reduce`
 
 ## Example
 

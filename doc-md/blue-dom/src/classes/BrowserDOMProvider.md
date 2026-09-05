@@ -6,7 +6,7 @@
 
 # Class: BrowserDOMProvider
 
-Defined in: packages/blue-dom/src/browser-dom-provider.ts:11
+Defined in: [packages/blue-dom/src/browser-dom-provider.ts:11](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dom/src/browser-dom-provider.ts#lines-11)
 
 A `DOMProvider` backed by the native browser DOM APIs.
 Requires a browser environment with `DOMParser` and `document` available.
@@ -21,7 +21,7 @@ Requires a browser environment with `DOMParser` and `document` available.
 
 > **new BrowserDOMProvider**(): `BrowserDOMProvider`
 
-Defined in: packages/blue-dom/src/browser-dom-provider.ts:18
+Defined in: [packages/blue-dom/src/browser-dom-provider.ts:18](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dom/src/browser-dom-provider.ts#lines-18)
 
 #### Returns
 
@@ -35,7 +35,7 @@ Defined in: packages/blue-dom/src/browser-dom-provider.ts:18
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-dom/src/browser-dom-provider.ts:14
+Defined in: [packages/blue-dom/src/browser-dom-provider.ts:14](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dom/src/browser-dom-provider.ts#lines-14)
 
 ##### Returns
 
@@ -47,7 +47,7 @@ Defined in: packages/blue-dom/src/browser-dom-provider.ts:14
 
 > **parseHTML**(`html`): `Document`
 
-Defined in: packages/blue-dom/src/browser-dom-provider.ts:28
+Defined in: [packages/blue-dom/src/browser-dom-provider.ts:28](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dom/src/browser-dom-provider.ts#lines-28)
 
 Parses HTML using the native `DOMParser`.
 
@@ -75,7 +75,7 @@ A `Document` representing the parsed HTML.
 
 > **createElement**(`tag`): `Element`
 
-Defined in: packages/blue-dom/src/browser-dom-provider.ts:38
+Defined in: [packages/blue-dom/src/browser-dom-provider.ts:38](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dom/src/browser-dom-provider.ts#lines-38)
 
 Creates an element using `document.createElement`.
 
@@ -103,7 +103,7 @@ A new `Element`.
 
 > **createFragment**(): `DocumentFragment`
 
-Defined in: packages/blue-dom/src/browser-dom-provider.ts:47
+Defined in: [packages/blue-dom/src/browser-dom-provider.ts:47](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dom/src/browser-dom-provider.ts#lines-47)
 
 Creates a `DocumentFragment` using `document.createDocumentFragment`.
 

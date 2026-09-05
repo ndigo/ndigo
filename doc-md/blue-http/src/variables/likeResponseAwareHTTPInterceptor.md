@@ -8,7 +8,7 @@
 
 > `const` **likeResponseAwareHTTPInterceptor**: (`value`) => `value is ResponseAwareHTTPInterceptor<HTTPInit>`
 
-Defined in: packages/blue-http/src/http.ts:328
+Defined in: [packages/blue-http/src/http.ts:338](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-338)
 
 Tests whether a value exposes `postResponse()`.
 
@@ -16,7 +16,7 @@ Tests whether a value exposes `postResponse()`.
 
 ### value
 
-`any`
+`unknown`
 
 The value to be tested.
 

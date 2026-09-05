@@ -6,7 +6,7 @@
 
 # Class: ParameterBindingError
 
-Defined in: packages/blue-dispatcher/src/error.ts:86
+Defined in: [packages/blue-dispatcher/src/error.ts:86](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/error.ts#lines-86)
 
 Base error for method parameter binding issues.
 Analogous to Spring's ServletRequestBindingException.
@@ -27,7 +27,7 @@ Analogous to Spring's ServletRequestBindingException.
 
 > **new ParameterBindingError**(`message`, `parameterName?`, `methodName?`, `controllerName?`): `ParameterBindingError`
 
-Defined in: packages/blue-dispatcher/src/error.ts:95
+Defined in: [packages/blue-dispatcher/src/error.ts:95](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/error.ts#lines-95)
 
 #### Parameters
 
@@ -61,7 +61,7 @@ Defined in: packages/blue-dispatcher/src/error.ts:95
 
 > `readonly` **parameterName**: `string` \| `null`
 
-Defined in: packages/blue-dispatcher/src/error.ts:87
+Defined in: [packages/blue-dispatcher/src/error.ts:87](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/error.ts#lines-87)
 
 ***
 
@@ -69,7 +69,7 @@ Defined in: packages/blue-dispatcher/src/error.ts:87
 
 > `readonly` **methodName**: `string` \| `null`
 
-Defined in: packages/blue-dispatcher/src/error.ts:88
+Defined in: [packages/blue-dispatcher/src/error.ts:88](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/error.ts#lines-88)
 
 ***
 
@@ -77,7 +77,7 @@ Defined in: packages/blue-dispatcher/src/error.ts:88
 
 > `readonly` **controllerName**: `string` \| `null`
 
-Defined in: packages/blue-dispatcher/src/error.ts:89
+Defined in: [packages/blue-dispatcher/src/error.ts:89](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/error.ts#lines-89)
 
 ## Accessors
 
@@ -87,7 +87,7 @@ Defined in: packages/blue-dispatcher/src/error.ts:89
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-dispatcher/src/error.ts:91
+Defined in: [packages/blue-dispatcher/src/error.ts:91](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/error.ts#lines-91)
 
 ##### Returns
 

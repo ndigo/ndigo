@@ -6,12 +6,12 @@
 
 # Class: TelemetryHealthIndicator
 
-Defined in: packages/blue-management/src/telemetry-health-indicator.ts:18
+Defined in: [packages/blue-management/src/telemetry-health-indicator.ts:18](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-management/src/telemetry-health-indicator.ts#lines-18)
 
 A [HealthIndicator](../interfaces/HealthIndicator.md) reporting the health of the telemetry/metrics
 pipeline.
 
-Reports `UP` when a FeatureMetricAggregator is present (metrics are
+Reports `UP` when a [FeatureMetricAggregator](#) is present (metrics are
 being collected); details include the number of features tracked. Reports
 `DOWN` when none is wired (management endpoints would serve empty metrics).
 
@@ -29,13 +29,13 @@ being collected); details include the number of features tracked. Reports
 
 > **new TelemetryHealthIndicator**(`aggregator`): `TelemetryHealthIndicator`
 
-Defined in: packages/blue-management/src/telemetry-health-indicator.ts:26
+Defined in: [packages/blue-management/src/telemetry-health-indicator.ts:26](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-management/src/telemetry-health-indicator.ts#lines-26)
 
 #### Parameters
 
 ##### aggregator
 
-`FeatureMetricAggregator` \| `undefined`
+[`FeatureMetricAggregator`](#) \| `undefined`
 
 The shared feature-metric aggregator (may be
   `undefined` when the app has not wired one — reported `DOWN`).
@@ -50,7 +50,7 @@ The shared feature-metric aggregator (may be
 
 > `readonly` **name**: `"telemetry"` = `'telemetry'`
 
-Defined in: packages/blue-management/src/telemetry-health-indicator.ts:19
+Defined in: [packages/blue-management/src/telemetry-health-indicator.ts:19](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-management/src/telemetry-health-indicator.ts#lines-19)
 
 The stable name of the subsystem (e.g. `'telemetry'`).
 
@@ -64,7 +64,7 @@ The stable name of the subsystem (e.g. `'telemetry'`).
 
 > **check**(): [`HealthResult`](../interfaces/HealthResult.md)
 
-Defined in: packages/blue-management/src/telemetry-health-indicator.ts:31
+Defined in: [packages/blue-management/src/telemetry-health-indicator.ts:31](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-management/src/telemetry-health-indicator.ts#lines-31)
 
 Checks the subsystem health.
 

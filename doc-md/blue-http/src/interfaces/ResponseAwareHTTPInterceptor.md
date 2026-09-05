@@ -6,7 +6,7 @@
 
 # Interface: ResponseAwareHTTPInterceptor\<T\>
 
-Defined in: packages/blue-http/src/http.ts:126
+Defined in: [packages/blue-http/src/http.ts:136](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-136)
 
 Allows a response to be replaced after fetch completes.
 
@@ -22,7 +22,7 @@ Allows a response to be replaced after fetch completes.
 
 > **postResponse**(`response`, `settings`): `Promise`\<`void` \| `Response`\>
 
-Defined in: packages/blue-http/src/http.ts:134
+Defined in: [packages/blue-http/src/http.ts:144](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-144)
 
 Transforms the response after fetch succeeds and before completion hooks run.
 

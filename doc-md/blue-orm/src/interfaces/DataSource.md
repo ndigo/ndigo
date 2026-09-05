@@ -6,14 +6,14 @@
 
 # Interface: DataSource
 
-Defined in: packages/blue-orm/src/data-source.ts:10
+Defined in: [packages/blue-orm/src/data-source.ts:10](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/data-source.ts#lines-10)
 
 Represents a data source for managing entity stores.
 It extends `Initializable` and `Destroyable` for lifecycle management.
 
 ## Extends
 
-- `Initializable`.`Destroyable`
+- [`Initializable`](#).`Destroyable`
 
 ## Properties
 
@@ -71,7 +71,7 @@ Defined in: packages/blue-factory/lib/lifecycle.d.ts:10
 
 > **getStore**\<`T`\>(`entityName`): `Map`\<`unknown`, `T`\>
 
-Defined in: packages/blue-orm/src/data-source.ts:17
+Defined in: [packages/blue-orm/src/data-source.ts:17](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/data-source.ts#lines-17)
 
 Retrieves the store for a given entity name.
 
@@ -105,7 +105,7 @@ If the store for the entity does not exist.
 
 > **hasStore**(`entityName`): `boolean`
 
-Defined in: packages/blue-orm/src/data-source.ts:23
+Defined in: [packages/blue-orm/src/data-source.ts:23](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/data-source.ts#lines-23)
 
 Checks if a store for the given entity name exists.
 
@@ -129,7 +129,7 @@ The name of the entity.
 
 > **createStore**(`entityName`): `void`
 
-Defined in: packages/blue-orm/src/data-source.ts:28
+Defined in: [packages/blue-orm/src/data-source.ts:28](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/data-source.ts#lines-28)
 
 Creates a new store for the given entity name if it doesn't already exist.
 
@@ -151,7 +151,7 @@ The name of the entity.
 
 > **clear**(): `void`
 
-Defined in: packages/blue-orm/src/data-source.ts:32
+Defined in: [packages/blue-orm/src/data-source.ts:32](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/data-source.ts#lines-32)
 
 Clears all entity stores.
 

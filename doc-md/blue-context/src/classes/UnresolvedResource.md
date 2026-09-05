@@ -6,7 +6,7 @@
 
 # Class: UnresolvedResource
 
-Defined in: packages/blue-context/src/resource.ts:143
+Defined in: [packages/blue-context/src/resource.ts:145](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/resource.ts#lines-145)
 
 Resource wrapper used when loading fails.
 
@@ -20,7 +20,7 @@ Resource wrapper used when loading fails.
 
 > **new UnresolvedResource**(`path`, `value`): `UnresolvedResource`
 
-Defined in: packages/blue-context/src/resource.ts:150
+Defined in: [packages/blue-context/src/resource.ts:152](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/resource.ts#lines-152)
 
 #### Parameters
 
@@ -42,7 +42,7 @@ Defined in: packages/blue-context/src/resource.ts:150
 
 > `readonly` **value**: `Error`
 
-Defined in: packages/blue-context/src/resource.ts:144
+Defined in: [packages/blue-context/src/resource.ts:146](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/resource.ts#lines-146)
 
 #### Implementation of
 
@@ -56,7 +56,7 @@ Defined in: packages/blue-context/src/resource.ts:144
 
 > **get** **exists**(): `boolean`
 
-Defined in: packages/blue-context/src/resource.ts:146
+Defined in: [packages/blue-context/src/resource.ts:148](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/resource.ts#lines-148)
 
 ##### Returns
 

@@ -6,7 +6,7 @@
 
 # Interface: PreparedRoute
 
-Defined in: packages/blue-test/src/request-builder.ts:39
+Defined in: [packages/blue-test/src/request-builder.ts:39](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-test/src/request-builder.ts#lines-39)
 
 A route with its request context populated, ready for dispatch.
 
@@ -14,9 +14,9 @@ A route with its request context populated, ready for dispatch.
 
 ### route
 
-> **route**: `Route`
+> **route**: [`Route`](#)
 
-Defined in: packages/blue-test/src/request-builder.ts:41
+Defined in: [packages/blue-test/src/request-builder.ts:41](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-test/src/request-builder.ts#lines-41)
 
 The assembled route.
 
@@ -26,6 +26,6 @@ The assembled route.
 
 > **request**: `NodeRequest`
 
-Defined in: packages/blue-test/src/request-builder.ts:43
+Defined in: [packages/blue-test/src/request-builder.ts:43](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-test/src/request-builder.ts#lines-43)
 
 The node request context stored in `route.attributes`.

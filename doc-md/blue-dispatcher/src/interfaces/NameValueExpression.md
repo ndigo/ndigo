@@ -6,7 +6,7 @@
 
 # Interface: NameValueExpression\<T\>
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:12
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:12](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-12)
 
 Describes a parsed name/value expression.
 
@@ -22,7 +22,7 @@ Describes a parsed name/value expression.
 
 > **isNegated**: `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:13
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:13](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-13)
 
 ***
 
@@ -30,7 +30,7 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:13
 
 > **name**: `string`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:14
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:14](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-14)
 
 ***
 
@@ -38,4 +38,4 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:14
 
 > `optional` **value?**: `T`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:15
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:15](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-15)

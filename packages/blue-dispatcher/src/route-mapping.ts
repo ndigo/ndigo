@@ -18,8 +18,8 @@ type RouteMappingValue = {
  * Configuration shape for route mappings.
  *
  * `method` is optional — when absent the mapping matches any HTTP method.
- * It is normally set via `@requestMapping` / `@getMapping` (see
- * `request-mapping.ts` / `http-method-mapping.ts`), not `@routeMapping`
+ * It is normally set via `requestMapping` / `@getMapping` (see
+ * `request-mapping.ts` / `http-method-mapping.ts`), not `routeMapping`
  * directly, but the shared metadata record carries it.
  */
 export type RouteMappingConfiguration = RouteMappingValue & {
@@ -97,11 +97,11 @@ export const hasRouteMapping = (target: any, propertyKey?: string | symbol): boo
  *
  * @example
  * // Query params — selects only when ?filter=active is present
- * \@routeMapping({ value: '/:id', queryParams: 'filter=active' })
+ * \`routeMapping`({ value: '/:id', queryParams: 'filter=active' })
  *
  * @example
  * // Matrix params — selects only when ;color=red is in any path segment
- * \@routeMapping({ value: '/:id', matrixParams: 'color=red' })
+ * \`routeMapping`({ value: '/:id', matrixParams: 'color=red' })
  */
 export function routeMapping(route: string | RouteMappingConfiguration = defaultMapping) {
     const conf = toRouteMappingConfiguration(route);

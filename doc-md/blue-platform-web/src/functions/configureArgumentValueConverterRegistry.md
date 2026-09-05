@@ -8,7 +8,7 @@
 
 > **configureArgumentValueConverterRegistry**(`applicationContext`, `registry`): [`ArgumentValueConverterRegistry`](../type-aliases/ArgumentValueConverterRegistry.md)
 
-Defined in: packages/blue-platform-web/src/configure-converter-registry.ts:15
+Defined in: [packages/blue-platform-web/src/configure-converter-registry.ts:15](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/configure-converter-registry.ts#lines-15)
 
 Registers a named converter registry used by argument resolvers.
 

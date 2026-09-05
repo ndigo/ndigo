@@ -8,7 +8,7 @@
 
 > **divide**(`a`, `b`): `number`
 
-Defined in: packages/blue-util/src/math/index.ts:59
+Defined in: [packages/blue-util/src/math/index.ts:59](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-util/src/math/index.ts#lines-59)
 
 Divides two numbers. Equivalent to `a / b`.
 

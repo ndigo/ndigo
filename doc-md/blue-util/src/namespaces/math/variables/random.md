@@ -8,7 +8,7 @@
 
 > `const` **random**: () => `number`
 
-Defined in: packages/blue-util/src/math/random.ts:44
+Defined in: [packages/blue-util/src/math/random.ts:44](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-util/src/math/random.ts#lines-44)
 
 Generates a pseudo-random number.
 

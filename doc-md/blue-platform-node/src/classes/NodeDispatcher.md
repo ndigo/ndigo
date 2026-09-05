@@ -6,7 +6,7 @@
 
 # Class: NodeDispatcher
 
-Defined in: packages/blue-platform-node/src/node-dispatcher.ts:33
+Defined in: [packages/blue-platform-node/src/node-dispatcher.ts:33](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/node-dispatcher.ts#lines-33)
 
 A dispatcher for Node.js that renders its output to the HTTP response.
 
@@ -194,7 +194,7 @@ Dispatches the given route for processing.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The route to dispatch.
 
@@ -210,7 +210,7 @@ The route to dispatch.
 
 ### \_processHandlerError()
 
-> `protected` **\_processHandlerError**(`route`, `handler`, `error`): `ModelAndView` \| `null`
+> `protected` **\_processHandlerError**(`route`, `handler`, `error`): [`ModelAndView`](#) \| `null`
 
 Defined in: packages/blue-dispatcher/lib/dispatcher.d.ts:76
 
@@ -220,7 +220,7 @@ Processes a handler error by attempting to resolve it with registered error reso
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The current route.
 
@@ -238,9 +238,9 @@ The error that occurred.
 
 #### Returns
 
-`ModelAndView` \| `null`
+[`ModelAndView`](#) \| `null`
 
-A ModelAndView if the error was resolved, otherwise throws a TypeError.
+A [ModelAndView](#) if the error was resolved, otherwise throws a TypeError.
 
 #### Throws
 
@@ -254,11 +254,11 @@ If no view name can be determined for the error.
 
 ### \_resolveViewName()
 
-> `protected` **\_resolveViewName**(`viewName`, `language`): `Promise`\<`View` \| `null`\>
+> `protected` **\_resolveViewName**(`viewName`, `language`): `Promise`\<[`View`](#) \| `null`\>
 
 Defined in: packages/blue-dispatcher/lib/dispatcher.d.ts:83
 
-Resolves a view name into a View object using registered view resolvers.
+Resolves a view name into a [View](#) object using registered view resolvers.
 
 #### Parameters
 
@@ -276,9 +276,9 @@ The language to use for view resolution.
 
 #### Returns
 
-`Promise`\<`View` \| `null`\>
+`Promise`\<[`View`](#) \| `null`\>
 
-A Promise that resolves to the View object, or `null` if not found.
+A Promise that resolves to the [View](#) object, or `null` if not found.
 
 #### Inherited from
 
@@ -406,7 +406,7 @@ Defined in: packages/blue-dispatcher/lib/strategies/route-handler-mapping-strate
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 #### Returns
 
@@ -450,7 +450,7 @@ Defined in: packages/blue-dispatcher/lib/strategies/route-to-view-name-translato
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 #### Returns
 
@@ -674,7 +674,7 @@ Defined in: packages/blue-dispatcher/lib/strategies/view-resolver-strategy.d.ts:
 
 > **render**(`mv`, `route`): `Promise`\<`void`\>
 
-Defined in: packages/blue-platform-node/src/node-dispatcher.ts:44
+Defined in: [packages/blue-platform-node/src/node-dispatcher.ts:44](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/node-dispatcher.ts#lines-44)
 
 Render the given `ModelAndView` to the HTTP response.
 
@@ -686,13 +686,13 @@ renders the view into it.
 
 ##### mv
 
-`ModelAndView`
+[`ModelAndView`](#)
 
 The `ModelAndView` to render.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The route associated with the `ModelAndView`.
 

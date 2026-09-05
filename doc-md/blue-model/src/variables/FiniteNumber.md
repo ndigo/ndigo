@@ -8,6 +8,6 @@
 
 > `const` **FiniteNumber**: `any`
 
-Defined in: packages/blue-model/src/basic.ts:67
+Defined in: [packages/blue-model/src/basic.ts:67](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-model/src/basic.ts#lines-67)
 
 Matches finite numeric values.

@@ -8,7 +8,7 @@
 
 > **getSymbolMetadata**(`target`): `Record`\<`string`, `any`\>
 
-Defined in: packages/blue-core/src/metadata.ts:13
+Defined in: [packages/blue-core/src/metadata.ts:13](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/metadata.ts#lines-13)
 
 Reads the TC39 `Symbol.metadata` record for a class or instance.
 

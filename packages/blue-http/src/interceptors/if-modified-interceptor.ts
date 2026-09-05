@@ -45,7 +45,7 @@ export class IfModifiedInterceptor
     }
 
     /**
-     * @async
+
      * @param {Response} response
      * @param {module:http.IfModifiedInit} settings
      * @returns {Promise<external:void>}

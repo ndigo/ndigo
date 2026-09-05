@@ -8,7 +8,7 @@
 
 > **propIs**(`ctor`, `name`, `obj`): `boolean`
 
-Defined in: packages/blue-util/src/type/index.ts:31
+Defined in: [packages/blue-util/src/type/index.ts:31](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-util/src/type/index.ts#lines-31)
 
 Returns `true` if the specified object property is an instance of the
 supplied constructor; `false` otherwise.

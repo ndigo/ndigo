@@ -8,7 +8,7 @@
 
 > `const` **likeController**: (`value`) => `value is Controller`
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:58
+Defined in: [packages/blue-dispatcher/src/route-handler-adapter.ts:58](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-handler-adapter.ts#lines-58)
 
 ## Parameters
 

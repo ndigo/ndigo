@@ -8,6 +8,6 @@
 
 > `const` **UNSUPPORTED\_MEDIA\_TYPE**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
-Defined in: packages/blue-http/src/response-statuses.ts:224
+Defined in: [packages/blue-http/src/response-statuses.ts:224](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/response-statuses.ts#lines-224)
 
 The media format of the requested data is not supported by the server, so the server is rejecting the request.

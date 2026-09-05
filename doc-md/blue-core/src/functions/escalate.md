@@ -8,7 +8,7 @@
 
 > **escalate**\<`T`\>(`node`, `callback`, `inclusive?`): `void`
 
-Defined in: packages/blue-core/src/tree-node.ts:75
+Defined in: [packages/blue-core/src/tree-node.ts:75](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/tree-node.ts#lines-75)
 
 Traverses ancestors upward from the supplied node.
 

@@ -6,7 +6,7 @@
 
 # Interface: RouteHandlerInterceptor
 
-Defined in: packages/blue-dispatcher/src/route-handler-interceptor.ts:9
+Defined in: [packages/blue-dispatcher/src/route-handler-interceptor.ts:17](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-handler-interceptor.ts#lines-17)
 
 ## Methods
 
@@ -14,13 +14,13 @@ Defined in: packages/blue-dispatcher/src/route-handler-interceptor.ts:9
 
 > **completeHandle**(`route`, `handler`, `error`): `void` \| `Promise`\<`void`\>
 
-Defined in: packages/blue-dispatcher/src/route-handler-interceptor.ts:10
+Defined in: [packages/blue-dispatcher/src/route-handler-interceptor.ts:18](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-handler-interceptor.ts#lines-18)
 
 #### Parameters
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 ##### handler
 
@@ -40,13 +40,13 @@ Defined in: packages/blue-dispatcher/src/route-handler-interceptor.ts:10
 
 > **postHandle**(`route`, `handler`, `modelAndView`): `void` \| `Promise`\<`void`\>
 
-Defined in: packages/blue-dispatcher/src/route-handler-interceptor.ts:11
+Defined in: [packages/blue-dispatcher/src/route-handler-interceptor.ts:19](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-handler-interceptor.ts#lines-19)
 
 #### Parameters
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 ##### handler
 
@@ -64,15 +64,15 @@ Defined in: packages/blue-dispatcher/src/route-handler-interceptor.ts:11
 
 ### preHandle()
 
-> **preHandle**(`route`, `handler`): `boolean` \| `Promise`\<`boolean`\>
+> **preHandle**(`route`, `handler`): [`PreHandleOutcome`](../type-aliases/PreHandleOutcome.md) \| `Promise`\<[`PreHandleOutcome`](../type-aliases/PreHandleOutcome.md)\>
 
-Defined in: packages/blue-dispatcher/src/route-handler-interceptor.ts:12
+Defined in: [packages/blue-dispatcher/src/route-handler-interceptor.ts:20](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-handler-interceptor.ts#lines-20)
 
 #### Parameters
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 ##### handler
 
@@ -80,4 +80,4 @@ Defined in: packages/blue-dispatcher/src/route-handler-interceptor.ts:12
 
 #### Returns
 
-`boolean` \| `Promise`\<`boolean`\>
+[`PreHandleOutcome`](../type-aliases/PreHandleOutcome.md) \| `Promise`\<[`PreHandleOutcome`](../type-aliases/PreHandleOutcome.md)\>

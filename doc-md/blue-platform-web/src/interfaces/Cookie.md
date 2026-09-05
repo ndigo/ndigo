@@ -6,7 +6,7 @@
 
 # Interface: Cookie
 
-Defined in: packages/blue-platform-web/src/cookies.ts:17
+Defined in: [packages/blue-platform-web/src/cookies.ts:19](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/cookies.ts#lines-19)
 
 Parsed cookie structure returned by cookie parsing helpers.
 
@@ -16,7 +16,7 @@ Parsed cookie structure returned by cookie parsing helpers.
 
 > **name**: `string`
 
-Defined in: packages/blue-platform-web/src/cookies.ts:18
+Defined in: [packages/blue-platform-web/src/cookies.ts:20](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/cookies.ts#lines-20)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: packages/blue-platform-web/src/cookies.ts:18
 
 > **value**: `string`
 
-Defined in: packages/blue-platform-web/src/cookies.ts:19
+Defined in: [packages/blue-platform-web/src/cookies.ts:21](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/cookies.ts#lines-21)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: packages/blue-platform-web/src/cookies.ts:19
 
 > `optional` **domain?**: `string`
 
-Defined in: packages/blue-platform-web/src/cookies.ts:20
+Defined in: [packages/blue-platform-web/src/cookies.ts:22](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/cookies.ts#lines-22)
 
 ***
 
@@ -40,7 +40,7 @@ Defined in: packages/blue-platform-web/src/cookies.ts:20
 
 > `optional` **expires?**: `string`
 
-Defined in: packages/blue-platform-web/src/cookies.ts:21
+Defined in: [packages/blue-platform-web/src/cookies.ts:23](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/cookies.ts#lines-23)
 
 ***
 
@@ -48,7 +48,7 @@ Defined in: packages/blue-platform-web/src/cookies.ts:21
 
 > `optional` **maxAge?**: `string`
 
-Defined in: packages/blue-platform-web/src/cookies.ts:22
+Defined in: [packages/blue-platform-web/src/cookies.ts:24](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/cookies.ts#lines-24)
 
 ***
 
@@ -56,7 +56,7 @@ Defined in: packages/blue-platform-web/src/cookies.ts:22
 
 > `optional` **path?**: `string`
 
-Defined in: packages/blue-platform-web/src/cookies.ts:23
+Defined in: [packages/blue-platform-web/src/cookies.ts:25](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/cookies.ts#lines-25)
 
 ***
 
@@ -64,7 +64,7 @@ Defined in: packages/blue-platform-web/src/cookies.ts:23
 
 > `optional` **sameSite?**: `string`
 
-Defined in: packages/blue-platform-web/src/cookies.ts:24
+Defined in: [packages/blue-platform-web/src/cookies.ts:26](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/cookies.ts#lines-26)
 
 ***
 
@@ -72,4 +72,4 @@ Defined in: packages/blue-platform-web/src/cookies.ts:24
 
 > `optional` **secure?**: `boolean`
 
-Defined in: packages/blue-platform-web/src/cookies.ts:25
+Defined in: [packages/blue-platform-web/src/cookies.ts:27](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/cookies.ts#lines-27)

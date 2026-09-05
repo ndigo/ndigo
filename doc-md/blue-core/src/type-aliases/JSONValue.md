@@ -8,6 +8,6 @@
 
 > **JSONValue** = `boolean` \| `null` \| `number` \| `string` \| [`JSONObject`](../interfaces/JSONObject.md) \| [`JSONArray`](../interfaces/JSONArray.md)
 
-Defined in: packages/blue-core/src/serializable.ts:12
+Defined in: [packages/blue-core/src/serializable.ts:11](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/serializable.ts#lines-11)
 
 A value that can be represented in JSON.

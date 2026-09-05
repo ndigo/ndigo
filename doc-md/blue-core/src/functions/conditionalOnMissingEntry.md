@@ -8,7 +8,7 @@
 
 > **conditionalOnMissingEntry**(`entryName`): (`target`, `context`) => `any`
 
-Defined in: packages/blue-core/src/conditional.ts:137
+Defined in: [packages/blue-core/src/conditional.ts:132](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/conditional.ts#lines-132)
 
 Marks a configuration class as active only when an entry is NOT already
 registered — the "provide your own override" guarantee for auto-configs.
@@ -27,6 +27,6 @@ registered — the "provide your own override" guarantee for auto-configs.
 
 ```ts
 @conditionalOnMissingEntry('metricsController')
-@configuration
+@class
 class ManagementAutoConfiguration { … }
 ```

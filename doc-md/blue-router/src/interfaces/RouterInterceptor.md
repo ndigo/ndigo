@@ -6,7 +6,7 @@
 
 # Interface: RouterInterceptor
 
-Defined in: packages/blue-router/src/router-interceptor.ts:17
+Defined in: [packages/blue-router/src/router-interceptor.ts:17](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/router-interceptor.ts#lines-17)
 
 Defines an interface for intercepting route processing at different stages.
 Interceptors can perform actions before (`preRoute`) or after (`postRoute`) a route is handled.
@@ -21,7 +21,7 @@ Interceptors can perform actions before (`preRoute`) or after (`postRoute`) a ro
 
 > `optional` **preHandle**(`route`): `boolean` \| `Promise`\<`boolean`\>
 
-Defined in: packages/blue-router/src/router-interceptor.ts:18
+Defined in: [packages/blue-router/src/router-interceptor.ts:18](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/router-interceptor.ts#lines-18)
 
 #### Parameters
 
@@ -39,7 +39,7 @@ Defined in: packages/blue-router/src/router-interceptor.ts:18
 
 > `optional` **postHandle**(`route`): `void` \| `Promise`\<`void`\>
 
-Defined in: packages/blue-router/src/router-interceptor.ts:19
+Defined in: [packages/blue-router/src/router-interceptor.ts:19](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/router-interceptor.ts#lines-19)
 
 #### Parameters
 
@@ -57,7 +57,7 @@ Defined in: packages/blue-router/src/router-interceptor.ts:19
 
 > `optional` **afterCompletion**(`route`): `void` \| `Promise`\<`void`\>
 
-Defined in: packages/blue-router/src/router-interceptor.ts:20
+Defined in: [packages/blue-router/src/router-interceptor.ts:20](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/router-interceptor.ts#lines-20)
 
 #### Parameters
 

@@ -6,7 +6,7 @@
 
 # Class: MappedRouterInterceptor
 
-Defined in: packages/blue-router/src/router-interceptor.ts:51
+Defined in: [packages/blue-router/src/router-interceptor.ts:51](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/router-interceptor.ts#lines-51)
 
 A `RouterInterceptor` that applies a wrapped interceptor only when the route matches specified include and exclude patterns.
 It extends `AsPathMatcherFilter` to leverage path matching capabilities.
@@ -30,7 +30,7 @@ It extends `AsPathMatcherFilter` to leverage path matching capabilities.
 
 > **new MappedRouterInterceptor**(`interceptor`, `includePatterns`, `excludePatterns?`): `MappedRouterInterceptor`
 
-Defined in: packages/blue-router/src/router-interceptor.ts:93
+Defined in: [packages/blue-router/src/router-interceptor.ts:93](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/router-interceptor.ts#lines-93)
 
 Creates an instance of `MappedRouterInterceptor`.
 
@@ -72,9 +72,9 @@ An optional array of patterns that define when the interceptor should be inactiv
 
 > **pathMatcher**: `PathMatcher`
 
-Defined in: packages/blue-router/src/router-interceptor.ts:56
+Defined in: [packages/blue-router/src/router-interceptor.ts:56](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/router-interceptor.ts#lines-56)
 
-The PathMatcher instance used for matching patterns.
+The `PathMatcher` instance used for matching patterns.
 
 #### Implementation of
 
@@ -92,7 +92,7 @@ The PathMatcher instance used for matching patterns.
 
 > **get** **interceptor**(): [`RouterInterceptor`](../interfaces/RouterInterceptor.md)
 
-Defined in: packages/blue-router/src/router-interceptor.ts:63
+Defined in: [packages/blue-router/src/router-interceptor.ts:63](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/router-interceptor.ts#lines-63)
 
 Gets the underlying `RouterInterceptor` that this mapped interceptor wraps.
 
@@ -114,7 +114,7 @@ The wrapped `RouterInterceptor` instance.
 
 > **get** **excludePatterns**(): `string`[]
 
-Defined in: packages/blue-router/src/router-interceptor.ts:72
+Defined in: [packages/blue-router/src/router-interceptor.ts:72](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/router-interceptor.ts#lines-72)
 
 Gets the array of patterns that, if matched, will prevent the interceptor from being applied.
 
@@ -136,7 +136,7 @@ An array of exclusion patterns.
 
 > **get** **includePatterns**(): `string`[]
 
-Defined in: packages/blue-router/src/router-interceptor.ts:82
+Defined in: [packages/blue-router/src/router-interceptor.ts:82](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/router-interceptor.ts#lines-82)
 
 Gets the array of patterns that, if matched, will allow the interceptor to be applied.
 If no include patterns are specified, the interceptor applies to all routes (unless excluded).
@@ -173,7 +173,7 @@ The path to check.
 
 `PathMatcher`
 
-An optional PathMatcher to use for matching. If not provided, `this.pathMatcher` is used.
+An optional `PathMatcher` to use for matching. If not provided, `this.pathMatcher` is used.
 
 #### Returns
 
@@ -256,7 +256,7 @@ An array of patterns to include.
 
 > **matchesRoute**(`route`): `boolean`
 
-Defined in: packages/blue-router/src/router-interceptor.ts:110
+Defined in: [packages/blue-router/src/router-interceptor.ts:110](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/router-interceptor.ts#lines-110)
 
 Determines if the given route matches the configured include and exclude patterns.
 Exclusion patterns take precedence over inclusion patterns.
@@ -285,7 +285,7 @@ The `Route` object to check.
 
 > **resolveRouteParams**(`route`): `Record`\<`string`, `string`\> \| `null`
 
-Defined in: packages/blue-router/src/router-interceptor.ts:139
+Defined in: [packages/blue-router/src/router-interceptor.ts:139](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/router-interceptor.ts#lines-139)
 
 Resolves route parameters from the given route based on the include patterns.
 This method attempts to extract parameters if the route matches a named pattern.
@@ -314,7 +314,7 @@ An object containing resolved parameters, or `null` if no parameters are resolve
 
 > **postHandle**(`route`): `Promise`\<`void`\>
 
-Defined in: packages/blue-router/src/router-interceptor.ts:163
+Defined in: [packages/blue-router/src/router-interceptor.ts:169](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/router-interceptor.ts#lines-169)
 
 Executes the `postHandle` method of the wrapped interceptor, if it exists.
 This method is called after a route has been handled.
@@ -347,7 +347,7 @@ A promise that resolves when the `postHandle` operation is complete.
 
 > **afterCompletion**(`route`): `Promise`\<`void`\>
 
-Defined in: packages/blue-router/src/router-interceptor.ts:174
+Defined in: [packages/blue-router/src/router-interceptor.ts:180](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/router-interceptor.ts#lines-180)
 
 Executes the `afterCompletion` method of the wrapped interceptor, if it exists.
 This method is called after the entire request processing is complete.
@@ -380,7 +380,7 @@ A promise that resolves when the `afterCompletion` operation is complete.
 
 > **preHandle**(`route`): `Promise`\<`boolean`\>
 
-Defined in: packages/blue-router/src/router-interceptor.ts:185
+Defined in: [packages/blue-router/src/router-interceptor.ts:191](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/router-interceptor.ts#lines-191)
 
 Executes the `preHandle` method of the wrapped interceptor, if it exists.
 This method is called before a route is handled and can prevent further processing.

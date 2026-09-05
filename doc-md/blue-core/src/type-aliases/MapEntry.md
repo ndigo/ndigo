@@ -8,7 +8,7 @@
 
 > **MapEntry**\<`Value`\> = \[`MapKey`\<`Value`\>, `MapValue`\<`Value`\>\]
 
-Defined in: packages/blue-core/src/iterable.ts:53
+Defined in: [packages/blue-core/src/iterable.ts:53](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/iterable.ts#lines-53)
 
 Represents a single entry for a Map-like value, where the entry is `[key, value]`.
 

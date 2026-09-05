@@ -6,7 +6,7 @@
 
 # Class: WildcardMatcher
 
-Defined in: packages/blue-http/src/http.ts:348
+Defined in: [packages/blue-http/src/http.ts:358](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-358)
 
 Pattern matcher that uses wildcard expressions and caches compiled patterns.
 
@@ -30,7 +30,7 @@ Pattern matcher that uses wildcard expressions and caches compiled patterns.
 
 > **match**(`pattern`, `value`): `boolean`
 
-Defined in: packages/blue-http/src/http.ts:356
+Defined in: [packages/blue-http/src/http.ts:366](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-366)
 
 Tests whether a value matches a wildcard pattern.
 

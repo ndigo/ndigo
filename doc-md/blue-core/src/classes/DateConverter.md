@@ -6,7 +6,7 @@
 
 # Class: DateConverter
 
-Defined in: packages/blue-core/src/converter.ts:154
+Defined in: [packages/blue-core/src/converter.ts:154](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/converter.ts#lines-154)
 
 Converts strings to `Date` instances.
 
@@ -33,7 +33,7 @@ Validates the date is actually valid (not a normalized invalid date like Feb 29 
 
 > **convert**(`value`): `Date`
 
-Defined in: packages/blue-core/src/converter.ts:155
+Defined in: [packages/blue-core/src/converter.ts:155](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/converter.ts#lines-155)
 
 Converts a value of type `S` to type `T`.
 

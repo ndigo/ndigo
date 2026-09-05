@@ -8,7 +8,7 @@
 
 > **getSeverityMapping**(`scheme`): [`SeverityMapping`](../interfaces/SeverityMapping.md)
 
-Defined in: packages/blue-telemetry/src/severity/severity.ts:23
+Defined in: [packages/blue-telemetry/src/severity/severity.ts:23](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/severity/severity.ts#lines-23)
 
 Retrieves the `SeverityMapping` instance for a given severity scheme.
 

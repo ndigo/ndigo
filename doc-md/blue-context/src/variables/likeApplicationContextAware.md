@@ -8,7 +8,7 @@
 
 > `const` **likeApplicationContextAware**: (`value`) => `value is ApplicationContextAware`
 
-Defined in: packages/blue-context/src/context.ts:293
+Defined in: [packages/blue-context/src/context.ts:293](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-293)
 
 Returns whether a value can receive an application context.
 

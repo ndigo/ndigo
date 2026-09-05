@@ -6,7 +6,7 @@
 
 # Interface: Matchable\<TValue\>
 
-Defined in: packages/blue-core/src/matchable.ts:9
+Defined in: [packages/blue-core/src/matchable.ts:9](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/matchable.ts#lines-9)
 
 Represents an object that can determine if it matches a given value.
 
@@ -24,7 +24,7 @@ The type of the value to match against.
 
 > **matches**(`value`): `boolean`
 
-Defined in: packages/blue-core/src/matchable.ts:15
+Defined in: [packages/blue-core/src/matchable.ts:15](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/matchable.ts#lines-15)
 
 Determines if this object matches the specified value.
 

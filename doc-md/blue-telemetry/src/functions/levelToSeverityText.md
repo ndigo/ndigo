@@ -8,7 +8,7 @@
 
 > **levelToSeverityText**(`levelName`, `scheme?`): `string`
 
-Defined in: packages/blue-telemetry/src/severity/severity.ts:85
+Defined in: [packages/blue-telemetry/src/severity/severity.ts:85](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/severity/severity.ts#lines-85)
 
 Converts a string-based log level name to its corresponding severity text,
 first converting to `SeverityNumber` and then back to text.

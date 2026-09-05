@@ -8,6 +8,6 @@
 
 > `const` **NegativeInteger**: `any`
 
-Defined in: packages/blue-model/src/basic.ts:83
+Defined in: [packages/blue-model/src/basic.ts:83](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-model/src/basic.ts#lines-83)
 
 Matches negative integers.

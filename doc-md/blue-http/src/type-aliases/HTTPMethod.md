@@ -8,7 +8,7 @@
 
 > **HTTPMethod** = `"CONNECT"` \| `"DELETE"` \| `"GET"` \| `"HEAD"` \| `"OPTIONS"` \| `"PATCH"` \| `"POST"` \| `"PUT"` \| `"QUERY"` \| `"TRACE"`
 
-Defined in: packages/blue-http/src/http.ts:19
+Defined in: [packages/blue-http/src/http.ts:19](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-19)
 
 Represents a valid HTTP method.
 

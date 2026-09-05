@@ -8,7 +8,7 @@
 
 > **defineScope**(`value`, `target`): `void`
 
-Defined in: packages/blue-factory/src/scope.ts:38
+Defined in: [packages/blue-factory/src/scope.ts:40](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/scope.ts#lines-40)
 
 Defines scope metadata on a class
 
@@ -22,7 +22,7 @@ Scope name
 
 ### target
 
-`any`
+`unknown`
 
 Class constructor
 

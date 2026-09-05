@@ -8,7 +8,7 @@
 
 > **queryMapping**(`route`): (`target`, `context`) => `any`
 
-Defined in: packages/blue-dispatcher/src/http-method-mapping.ts:64
+Defined in: [packages/blue-dispatcher/src/http-method-mapping.ts:64](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/http-method-mapping.ts#lines-64)
 
 A request mapping with the HTTP method fixed to `'QUERY'` (RFC 9889 —
 safe method with a body, used for resource queries).

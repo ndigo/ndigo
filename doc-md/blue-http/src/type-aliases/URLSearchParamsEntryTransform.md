@@ -8,7 +8,7 @@
 
 > **URLSearchParamsEntryTransform** = (`key`, `value`) => \[`string`, `string`\] \| `null`
 
-Defined in: packages/blue-http/src/transformers/url-search-params-transformer.ts:10
+Defined in: [packages/blue-http/src/transformers/url-search-params-transformer.ts:10](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/transformers/url-search-params-transformer.ts#lines-10)
 
 Transforms a single URLSearchParams entry.
 

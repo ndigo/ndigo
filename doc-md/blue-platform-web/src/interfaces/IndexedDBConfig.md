@@ -6,7 +6,7 @@
 
 # Interface: IndexedDBConfig
 
-Defined in: packages/blue-platform-web/src/indexeddb-resource-loader.ts:8
+Defined in: [packages/blue-platform-web/src/indexeddb-resource-loader.ts:8](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/indexeddb-resource-loader.ts#lines-8)
 
 Configuration options for the IndexedDB resource loader.
 
@@ -16,7 +16,7 @@ Configuration options for the IndexedDB resource loader.
 
 > `optional` **dbName?**: `string`
 
-Defined in: packages/blue-platform-web/src/indexeddb-resource-loader.ts:10
+Defined in: [packages/blue-platform-web/src/indexeddb-resource-loader.ts:10](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/indexeddb-resource-loader.ts#lines-10)
 
 Database name. Defaults to `'blue-store'`.
 
@@ -26,7 +26,7 @@ Database name. Defaults to `'blue-store'`.
 
 > `optional` **storeName?**: `string`
 
-Defined in: packages/blue-platform-web/src/indexeddb-resource-loader.ts:12
+Defined in: [packages/blue-platform-web/src/indexeddb-resource-loader.ts:12](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/indexeddb-resource-loader.ts#lines-12)
 
 Object store name. Defaults to `'store'`.
 
@@ -36,6 +36,6 @@ Object store name. Defaults to `'store'`.
 
 > `optional` **version?**: `number`
 
-Defined in: packages/blue-platform-web/src/indexeddb-resource-loader.ts:14
+Defined in: [packages/blue-platform-web/src/indexeddb-resource-loader.ts:14](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/indexeddb-resource-loader.ts#lines-14)
 
 Database version. Defaults to `1`.

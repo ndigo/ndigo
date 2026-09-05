@@ -8,7 +8,7 @@
 
 > **getEntityMetadata**(`target`): [`EntityMetadata`](../interfaces/EntityMetadata.md)
 
-Defined in: packages/blue-orm/src/metadata.ts:83
+Defined in: [packages/blue-orm/src/metadata.ts:83](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/metadata.ts#lines-83)
 
 Retrieves the entity metadata for a given class.
 

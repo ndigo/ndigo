@@ -6,7 +6,7 @@
 
 # Interface: ErrorNormalizationInterceptorConfig
 
-Defined in: packages/blue-http/src/interceptors/error-normalization-interceptor.ts:11
+Defined in: [packages/blue-http/src/interceptors/error-normalization-interceptor.ts:11](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/error-normalization-interceptor.ts#lines-11)
 
 Configuration options for the ErrorNormalizationInterceptor.
 
@@ -16,7 +16,7 @@ Configuration options for the ErrorNormalizationInterceptor.
 
 > `optional` **defaultErrorType?**: `string`
 
-Defined in: packages/blue-http/src/interceptors/error-normalization-interceptor.ts:16
+Defined in: [packages/blue-http/src/interceptors/error-normalization-interceptor.ts:16](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/error-normalization-interceptor.ts#lines-16)
 
 The default error type to use when a specific type cannot be determined.
 

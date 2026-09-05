@@ -6,7 +6,7 @@
 
 # Interface: HealthResult
 
-Defined in: packages/blue-management/src/health.ts:21
+Defined in: [packages/blue-management/src/health.ts:21](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-management/src/health.ts#lines-21)
 
 The health result of a single indicator.
 
@@ -16,7 +16,7 @@ The health result of a single indicator.
 
 > **status**: [`HealthState`](../type-aliases/HealthState.md)
 
-Defined in: packages/blue-management/src/health.ts:23
+Defined in: [packages/blue-management/src/health.ts:23](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-management/src/health.ts#lines-23)
 
 Overall state.
 
@@ -26,6 +26,6 @@ Overall state.
 
 > `optional` **details?**: `Record`\<`string`, `unknown`\>
 
-Defined in: packages/blue-management/src/health.ts:25
+Defined in: [packages/blue-management/src/health.ts:25](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-management/src/health.ts#lines-25)
 
 Optional details (e.g. aggregated metric counts).

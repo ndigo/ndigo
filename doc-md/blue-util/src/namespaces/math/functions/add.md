@@ -8,7 +8,7 @@
 
 > **add**(`a`, `b`): `number`
 
-Defined in: packages/blue-util/src/math/index.ts:27
+Defined in: [packages/blue-util/src/math/index.ts:27](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-util/src/math/index.ts#lines-27)
 
 Adds two values.
 

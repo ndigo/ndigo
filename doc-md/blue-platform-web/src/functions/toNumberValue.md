@@ -8,7 +8,7 @@
 
 > **toNumberValue**(`value`): `number`
 
-Defined in: packages/blue-platform-web/src/argument-value-converter.ts:53
+Defined in: [packages/blue-platform-web/src/argument-value-converter.ts:53](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/argument-value-converter.ts#lines-53)
 
 Converts a value to a number using JavaScript's built-in coercion rules.
 

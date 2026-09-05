@@ -8,7 +8,7 @@
 
 > **EventModel**(`def`): `any`
 
-Defined in: packages/blue-model/src/event.ts:108
+Defined in: [packages/blue-model/src/event.ts:108](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-model/src/event.ts#lines-108)
 
 Creates a model constructor that emits change events for assigned properties.
 

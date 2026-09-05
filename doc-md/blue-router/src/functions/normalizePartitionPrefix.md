@@ -8,7 +8,7 @@
 
 > **normalizePartitionPrefix**(`prefix`): `string`
 
-Defined in: packages/blue-router/src/route-partition.ts:21
+Defined in: [packages/blue-router/src/route-partition.ts:21](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/route-partition.ts#lines-21)
 
 Normalize a route partition prefix.
 

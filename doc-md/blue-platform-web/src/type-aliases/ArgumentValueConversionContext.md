@@ -8,7 +8,7 @@
 
 > **ArgumentValueConversionContext** = `ParameterValueConversionContext` & `object`
 
-Defined in: packages/blue-platform-web/src/argument-value-converter.ts:19
+Defined in: [packages/blue-platform-web/src/argument-value-converter.ts:19](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/argument-value-converter.ts#lines-19)
 
 Conversion context passed to argument-value converters.
 
@@ -19,4 +19,4 @@ converters can resolve values from route-scoped data.
 
 ### route
 
-> **route**: `Route`
+> **route**: [`Route`](#)

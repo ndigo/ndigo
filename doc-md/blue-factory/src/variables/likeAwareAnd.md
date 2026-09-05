@@ -8,7 +8,7 @@
 
 > `const` **likeAwareAnd**: (`predicate`) => (`value`) => `boolean`
 
-Defined in: packages/blue-factory/src/aware.ts:105
+Defined in: [packages/blue-factory/src/aware.ts:105](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/aware.ts#lines-105)
 
 ## Parameters
 

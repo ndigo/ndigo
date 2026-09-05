@@ -6,7 +6,7 @@
 
 # Interface: RequestAwareHTTPInterceptor
 
-Defined in: packages/blue-http/src/http.ts:112
+Defined in: [packages/blue-http/src/http.ts:122](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-122)
 
 Allows a request object to be replaced before fetch executes.
 
@@ -16,7 +16,7 @@ Allows a request object to be replaced before fetch executes.
 
 > **preRequest**(`request`, `http`): `Promise`\<`void` \| `Response` \| `Request`\>
 
-Defined in: packages/blue-http/src/http.ts:120
+Defined in: [packages/blue-http/src/http.ts:130](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-130)
 
 Transforms the request before it is passed to fetch.
 

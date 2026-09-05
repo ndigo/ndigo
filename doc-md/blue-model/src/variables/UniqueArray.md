@@ -8,6 +8,6 @@
 
 > `const` **UniqueArray**: `any`
 
-Defined in: packages/blue-model/src/basic.ts:129
+Defined in: [packages/blue-model/src/basic.ts:129](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-model/src/basic.ts#lines-129)
 
 Matches arrays whose values are unique.

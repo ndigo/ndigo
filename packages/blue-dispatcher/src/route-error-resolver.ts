@@ -197,10 +197,10 @@ export abstract class AbstractHandlerMethodErrorResolver extends AbstractRouteEr
 /**
  * The default implementation of the {@link RouteErrorResolver|RouteErrorResolver} interface, resolving standard BlueJS exceptions.
  *
- * This error resolver is enabled by default in the {@link WebDispatcher|WebDispatcher}.
+ * This error resolver is enabled by default in the `WebDispatcher`.
  *
  * Error classes are mapped to view names via `errorMappings`.  Out of the box it
- * maps {@link FrameworkError} to `'error/framework'` and {@link ApplicationError}
+ * maps `FrameworkError` to `'error/framework'` and `ApplicationError`
  * to `'error/application'`.  Additional mappings can be added through
  * {@link setErrorMapping}.
  *
@@ -383,9 +383,9 @@ export class MetadataErrorResolver extends AbstractHandlerMethodErrorResolver im
 }
 
 /**
- * {@link RouteErrorResolver|RouteErrorResolver} implementation that allows for mapping exception class names to view names, either for a set of given handlers or for all handlers in the {@link Dispatcher|Dispatcher}.
+ * {@link RouteErrorResolver|RouteErrorResolver} implementation that allows for mapping exception class names to view names, either for a set of given handlers or for all handlers in the `Dispatcher`.
  * @extends module:dispatcher.AbstractRouteErrorResolver
- * @see {@link Dispatcher}
+ * @see `Dispatcher`
  */
 export class SimpleMappingErrorResolver extends AbstractRouteErrorResolver {
     /**

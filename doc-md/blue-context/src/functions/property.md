@@ -8,7 +8,7 @@
 
 > **property**(`path`): (`value`, `context`) => `void`
 
-Defined in: packages/blue-context/src/configuration.ts:130
+Defined in: [packages/blue-context/src/configuration.ts:130](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/configuration.ts#lines-130)
 
 Binds a class field to a property path resolved from the environment.
 

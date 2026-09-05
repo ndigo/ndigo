@@ -6,7 +6,7 @@
 
 # Class: WildcardExp
 
-Defined in: packages/blue-core/src/wildcard-exp.ts:11
+Defined in: [packages/blue-core/src/wildcard-exp.ts:10](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/wildcard-exp.ts#lines-10)
 
 A regular expression compiled from a wildcard pattern.
 
@@ -20,7 +20,7 @@ A regular expression compiled from a wildcard pattern.
 
 > **new WildcardExp**(`pattern?`): `WildcardExp`
 
-Defined in: packages/blue-core/src/wildcard-exp.ts:17
+Defined in: [packages/blue-core/src/wildcard-exp.ts:16](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/wildcard-exp.ts#lines-16)
 
 Compiles a wildcard pattern into a regular expression.
 

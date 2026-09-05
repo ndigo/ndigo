@@ -8,4 +8,4 @@
 
 > `const` **APPLICATION\_XML**: [`MediaType`](../../../classes/MediaType.md) \| `null`
 
-Defined in: packages/blue-core/src/media-types.ts:40
+Defined in: [packages/blue-core/src/media-types.ts:40](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/media-types.ts#lines-40)

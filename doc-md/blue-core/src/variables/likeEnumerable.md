@@ -8,7 +8,7 @@
 
 > `const` **likeEnumerable**: (`value`) => `value is Enumerable<any, any>`
 
-Defined in: packages/blue-core/src/enumerable.ts:41
+Defined in: [packages/blue-core/src/enumerable.ts:41](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/enumerable.ts#lines-41)
 
 Type guard to check if a value implements the `Enumerable` interface.
 

@@ -6,9 +6,9 @@
 
 # Class: QueryParamCondition
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:116
+Defined in: [packages/blue-dispatcher/src/route-mapping-info.ts:116](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-mapping-info.ts#lines-116)
 
-A logical conjunction (' && ') route condition that matches a route against a set parameter expressions with syntax defined in RouteMapping\|RouteMapping.
+A logical conjunction (' && ') route condition that matches a route against a set parameter expressions with syntax defined in `RouteMapping`.
 
 ## Extends
 
@@ -20,7 +20,7 @@ A logical conjunction (' && ') route condition that matches a route against a se
 
 > **new QueryParamCondition**(...`params`): `QueryParamCondition`
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:135
+Defined in: [packages/blue-dispatcher/src/route-mapping-info.ts:135](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-mapping-info.ts#lines-135)
 
 Create a parameter condition from one or more expressions.
 
@@ -44,7 +44,7 @@ Parameter expressions to parse.
 
 > **new QueryParamCondition**(`conditions`): `QueryParamCondition`
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:141
+Defined in: [packages/blue-dispatcher/src/route-mapping-info.ts:141](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-mapping-info.ts#lines-141)
 
 Create a parameter condition from a prebuilt expression set.
 
@@ -70,7 +70,7 @@ The parameter expressions to use.
 
 > `readonly` **expressions**: `Set`\<[`QueryParamExpression`](QueryParamExpression.md)\>
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:120
+Defined in: [packages/blue-dispatcher/src/route-mapping-info.ts:120](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-mapping-info.ts#lines-120)
 
 Parameter expressions that must all match.
 
@@ -82,7 +82,7 @@ Parameter expressions that must all match.
 
 > **get** **isEmpty**(): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:153
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:153](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-153)
 
 Whether this condition contains no content.
 
@@ -102,7 +102,7 @@ Whether this condition contains no content.
 
 > **get** **content**(): [`QueryParamExpression`](QueryParamExpression.md)[]
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:122
+Defined in: [packages/blue-dispatcher/src/route-mapping-info.ts:122](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-mapping-info.ts#lines-122)
 
 ##### Returns
 
@@ -120,7 +120,7 @@ Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:122
 
 > **get** **infix**(): `string`
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:126
+Defined in: [packages/blue-dispatcher/src/route-mapping-info.ts:126](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-mapping-info.ts#lines-126)
 
 ##### Returns
 
@@ -136,7 +136,7 @@ Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:126
 
 > **equals**(`value`): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:166
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:166](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-166)
 
 Compare this condition to another value.
 
@@ -164,7 +164,7 @@ The value to compare.
 
 > **toJSON**(): `JSONValue`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:181
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:181](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-181)
 
 Serialize the condition to JSON.
 
@@ -184,7 +184,7 @@ The string form of the condition.
 
 > **toString**(): `string`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:190
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:190](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-190)
 
 Convert the condition to its textual form.
 
@@ -204,7 +204,7 @@ The condition string.
 
 > **merge**(`value`): `QueryParamCondition`
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:164
+Defined in: [packages/blue-dispatcher/src/route-mapping-info.ts:164](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-mapping-info.ts#lines-164)
 
 Merge parameter expressions from both conditions.
 
@@ -232,7 +232,7 @@ A condition containing the union of expressions.
 
 > **getMatchingCondition**(`route`): `QueryParamCondition` \| `null`
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:183
+Defined in: [packages/blue-dispatcher/src/route-mapping-info.ts:183](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-mapping-info.ts#lines-183)
 
 Return this condition when every expression matches the route.
 
@@ -240,7 +240,7 @@ Return this condition when every expression matches the route.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The current route.
 
@@ -260,7 +260,7 @@ This condition, or `null`.
 
 > **compareTo**(`value`, `route?`): `number`
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:199
+Defined in: [packages/blue-dispatcher/src/route-mapping-info.ts:199](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-mapping-info.ts#lines-199)
 
 Compare parameter conditions by specificity.
 
@@ -274,7 +274,7 @@ The condition to compare.
 
 ##### route?
 
-`Route`\<`Record`\<`string`, `string`\>\>
+[`Route`](#)\<`Record`\<`string`, `string`\>\>
 
 Unused, but part of the shared contract.
 

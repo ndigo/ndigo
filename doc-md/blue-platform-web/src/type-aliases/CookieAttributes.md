@@ -8,7 +8,7 @@
 
 > **CookieAttributes** = `object`
 
-Defined in: packages/blue-platform-web/src/cookies.ts:42
+Defined in: [packages/blue-platform-web/src/cookies.ts:44](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/cookies.ts#lines-44)
 
 Additional attributes to append to a cookie (e.g. path, expires, secure).
 

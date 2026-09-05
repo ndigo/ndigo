@@ -6,7 +6,7 @@
 
 # Interface: FeatureRouteRegistration
 
-Defined in: packages/blue-router/src/feature-routing-registry.ts:32
+Defined in: [packages/blue-router/src/feature-routing-registry.ts:32](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/feature-routing-registry.ts#lines-32)
 
 Defines the structure for registering a feature with the `FeatureRoutingRegistry`.
 
@@ -20,7 +20,7 @@ Defines the structure for registering a feature with the `FeatureRoutingRegistry
 
 > **name**: `string`
 
-Defined in: packages/blue-router/src/feature-routing-registry.ts:33
+Defined in: [packages/blue-router/src/feature-routing-registry.ts:33](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/feature-routing-registry.ts#lines-33)
 
 ***
 
@@ -28,7 +28,7 @@ Defined in: packages/blue-router/src/feature-routing-registry.ts:33
 
 > **prefix**: `string`
 
-Defined in: packages/blue-router/src/feature-routing-registry.ts:34
+Defined in: [packages/blue-router/src/feature-routing-registry.ts:34](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/feature-routing-registry.ts#lines-34)
 
 ***
 
@@ -36,7 +36,7 @@ Defined in: packages/blue-router/src/feature-routing-registry.ts:34
 
 > `optional` **onActivate?**: () => `void`
 
-Defined in: packages/blue-router/src/feature-routing-registry.ts:35
+Defined in: [packages/blue-router/src/feature-routing-registry.ts:35](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/feature-routing-registry.ts#lines-35)
 
 #### Returns
 
@@ -48,7 +48,7 @@ Defined in: packages/blue-router/src/feature-routing-registry.ts:35
 
 > `optional` **onDeactivate?**: () => `void`
 
-Defined in: packages/blue-router/src/feature-routing-registry.ts:36
+Defined in: [packages/blue-router/src/feature-routing-registry.ts:36](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/feature-routing-registry.ts#lines-36)
 
 #### Returns
 
@@ -60,7 +60,7 @@ Defined in: packages/blue-router/src/feature-routing-registry.ts:36
 
 > **onRoute**: (`route`) => `void`
 
-Defined in: packages/blue-router/src/feature-routing-registry.ts:37
+Defined in: [packages/blue-router/src/feature-routing-registry.ts:37](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/feature-routing-registry.ts#lines-37)
 
 #### Parameters
 

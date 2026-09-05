@@ -8,6 +8,6 @@
 
 > `const` **NODE\_RESPONSE\_ATTRIBUTE**: `"__node:response"` = `'__node:response'`
 
-Defined in: packages/blue-platform-node/src/node-request.ts:13
+Defined in: [packages/blue-platform-node/src/node-request.ts:13](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/node-request.ts#lines-13)
 
 Well-known route attribute key under which the Node.js ServerResponse is stored.

@@ -8,13 +8,13 @@
 
 > **likePhased**(`value`): `value is Phased`
 
-Defined in: packages/blue-factory/src/lifecycle.ts:89
+Defined in: [packages/blue-factory/src/lifecycle.ts:89](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/lifecycle.ts#lines-89)
 
 ## Parameters
 
 ### value
 
-`any`
+`unknown`
 
 ## Returns
 

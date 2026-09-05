@@ -8,6 +8,6 @@
 
 > `const` **PARTIAL\_CONTENT**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
-Defined in: packages/blue-http/src/response-statuses.ts:76
+Defined in: [packages/blue-http/src/response-statuses.ts:76](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/response-statuses.ts#lines-76)
 
 This response code is used when the `Range` header is sent from the client to request only part of a resource.

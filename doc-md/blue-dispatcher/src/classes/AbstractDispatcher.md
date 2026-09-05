@@ -6,7 +6,7 @@
 
 # Class: AbstractDispatcher
 
-Defined in: packages/blue-dispatcher/src/dispatcher.ts:58
+Defined in: [packages/blue-dispatcher/src/dispatcher.ts:57](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/dispatcher.ts#lines-57)
 
 An abstract, platform-independent application dispatcher.
 
@@ -47,7 +47,7 @@ It can be used with just about any workflow, with the installation of the approp
 
 > **applicationContext**: `ApplicationContext`
 
-Defined in: packages/blue-dispatcher/src/dispatcher.ts:75
+Defined in: [packages/blue-dispatcher/src/dispatcher.ts:74](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/dispatcher.ts#lines-74)
 
 The application context.
 
@@ -57,7 +57,7 @@ The application context.
 
 > **defaultViewName**: `string` = `'index'`
 
-Defined in: packages/blue-dispatcher/src/dispatcher.ts:79
+Defined in: [packages/blue-dispatcher/src/dispatcher.ts:78](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/dispatcher.ts#lines-78)
 
 The default view name to use if none is specified.
 
@@ -67,7 +67,7 @@ The default view name to use if none is specified.
 
 > **languageResolver**: [`LanguageResolver`](../interfaces/LanguageResolver.md)
 
-Defined in: packages/blue-dispatcher/src/strategies/language-resolver-strategy.ts:11
+Defined in: [packages/blue-dispatcher/src/strategies/language-resolver-strategy.ts:11](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/strategies/language-resolver-strategy.ts#lines-11)
 
 #### Inherited from
 
@@ -79,7 +79,7 @@ Defined in: packages/blue-dispatcher/src/strategies/language-resolver-strategy.t
 
 > **errorResolvers**: [`RouteErrorResolver`](../interfaces/RouteErrorResolver.md)[]
 
-Defined in: packages/blue-dispatcher/src/strategies/route-error-resolver-strategy.ts:11
+Defined in: [packages/blue-dispatcher/src/strategies/route-error-resolver-strategy.ts:11](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/strategies/route-error-resolver-strategy.ts#lines-11)
 
 #### Inherited from
 
@@ -91,7 +91,7 @@ Defined in: packages/blue-dispatcher/src/strategies/route-error-resolver-strateg
 
 > **handlerAdapters**: [`RouteHandlerAdapter`](../interfaces/RouteHandlerAdapter.md)[]
 
-Defined in: packages/blue-dispatcher/src/strategies/route-handler-adapter-strategy.ts:11
+Defined in: [packages/blue-dispatcher/src/strategies/route-handler-adapter-strategy.ts:11](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/strategies/route-handler-adapter-strategy.ts#lines-11)
 
 #### Inherited from
 
@@ -103,7 +103,7 @@ Defined in: packages/blue-dispatcher/src/strategies/route-handler-adapter-strate
 
 > **handlerMappings**: [`RouteHandlerMapping`](../interfaces/RouteHandlerMapping.md)[]
 
-Defined in: packages/blue-dispatcher/src/strategies/route-handler-mapping-strategy.ts:14
+Defined in: [packages/blue-dispatcher/src/strategies/route-handler-mapping-strategy.ts:16](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/strategies/route-handler-mapping-strategy.ts#lines-16)
 
 #### Inherited from
 
@@ -115,7 +115,7 @@ Defined in: packages/blue-dispatcher/src/strategies/route-handler-mapping-strate
 
 > **routeToViewNameTranslator**: [`RouteToViewNameTranslator`](../interfaces/RouteToViewNameTranslator.md)
 
-Defined in: packages/blue-dispatcher/src/strategies/route-to-view-name-translator-strategy.ts:12
+Defined in: [packages/blue-dispatcher/src/strategies/route-to-view-name-translator-strategy.ts:12](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/strategies/route-to-view-name-translator-strategy.ts#lines-12)
 
 #### Inherited from
 
@@ -127,7 +127,7 @@ Defined in: packages/blue-dispatcher/src/strategies/route-to-view-name-translato
 
 > **strategies**: `string`[]
 
-Defined in: packages/blue-dispatcher/src/strategies/strategy-initializer.ts:10
+Defined in: [packages/blue-dispatcher/src/strategies/strategy-initializer.ts:10](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/strategies/strategy-initializer.ts#lines-10)
 
 #### Inherited from
 
@@ -139,7 +139,7 @@ Defined in: packages/blue-dispatcher/src/strategies/strategy-initializer.ts:10
 
 > **themeResolver**: [`ThemeResolver`](../interfaces/ThemeResolver.md)
 
-Defined in: packages/blue-dispatcher/src/strategies/theme-resolver-strategy.ts:12
+Defined in: [packages/blue-dispatcher/src/strategies/theme-resolver-strategy.ts:12](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/strategies/theme-resolver-strategy.ts#lines-12)
 
 #### Inherited from
 
@@ -151,7 +151,7 @@ Defined in: packages/blue-dispatcher/src/strategies/theme-resolver-strategy.ts:1
 
 > **viewResolvers**: `ViewResolver`[]
 
-Defined in: packages/blue-dispatcher/src/strategies/view-resolver-strategy.ts:11
+Defined in: [packages/blue-dispatcher/src/strategies/view-resolver-strategy.ts:11](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/strategies/view-resolver-strategy.ts#lines-11)
 
 #### Inherited from
 
@@ -165,7 +165,7 @@ Defined in: packages/blue-dispatcher/src/strategies/view-resolver-strategy.ts:11
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-dispatcher/src/dispatcher.ts:85
+Defined in: [packages/blue-dispatcher/src/dispatcher.ts:84](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/dispatcher.ts#lines-84)
 
 Returns the string tag for this dispatcher.
 
@@ -179,7 +179,7 @@ Returns the string tag for this dispatcher.
 
 > **dispatch**(`route`): `Promise`\<`void`\>
 
-Defined in: packages/blue-dispatcher/src/dispatcher.ts:97
+Defined in: [packages/blue-dispatcher/src/dispatcher.ts:96](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/dispatcher.ts#lines-96)
 
 Dispatches the given route for processing.
 
@@ -187,7 +187,7 @@ Dispatches the given route for processing.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The route to dispatch.
 
@@ -205,7 +205,7 @@ The route to dispatch.
 
 > **render**(`mv`, `route`): `Promise`\<`void`\>
 
-Defined in: packages/blue-dispatcher/src/dispatcher.ts:129
+Defined in: [packages/blue-dispatcher/src/dispatcher.ts:132](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/dispatcher.ts#lines-132)
 
 Render the given `ModelAndView`. This is the last stage of handling a route.
 
@@ -219,7 +219,7 @@ The [ModelAndView](ModelAndView.md) to render.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The route associated with the [ModelAndView](ModelAndView.md).
 
@@ -237,7 +237,7 @@ The route associated with the [ModelAndView](ModelAndView.md).
 
 > `protected` **\_processHandlerError**(`route`, `handler`, `error`): [`ModelAndView`](ModelAndView.md) \| `null`
 
-Defined in: packages/blue-dispatcher/src/dispatcher.ts:174
+Defined in: [packages/blue-dispatcher/src/dispatcher.ts:177](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/dispatcher.ts#lines-177)
 
 Processes a handler error by attempting to resolve it with registered error resolvers.
 
@@ -245,7 +245,7 @@ Processes a handler error by attempting to resolve it with registered error reso
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The current route.
 
@@ -275,11 +275,11 @@ If no view name can be determined for the error.
 
 ### \_resolveViewName()
 
-> `protected` **\_resolveViewName**(`viewName`, `language`): `Promise`\<`View` \| `null`\>
+> `protected` **\_resolveViewName**(`viewName`, `language`): `Promise`\<[`View`](#) \| `null`\>
 
-Defined in: packages/blue-dispatcher/src/dispatcher.ts:197
+Defined in: [packages/blue-dispatcher/src/dispatcher.ts:200](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/dispatcher.ts#lines-200)
 
-Resolves a view name into a View object using registered view resolvers.
+Resolves a view name into a [View](#) object using registered view resolvers.
 
 #### Parameters
 
@@ -297,9 +297,9 @@ The language to use for view resolution.
 
 #### Returns
 
-`Promise`\<`View` \| `null`\>
+`Promise`\<[`View`](#) \| `null`\>
 
-A Promise that resolves to the View object, or `null` if not found.
+A Promise that resolves to the [View](#) object, or `null` if not found.
 
 ***
 
@@ -307,7 +307,7 @@ A Promise that resolves to the View object, or `null` if not found.
 
 > **initLanguageResolver**(`context`): `void`
 
-Defined in: packages/blue-dispatcher/src/strategies/language-resolver-strategy.ts:12
+Defined in: [packages/blue-dispatcher/src/strategies/language-resolver-strategy.ts:12](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/strategies/language-resolver-strategy.ts#lines-12)
 
 #### Parameters
 
@@ -329,7 +329,7 @@ Defined in: packages/blue-dispatcher/src/strategies/language-resolver-strategy.t
 
 > **initErrorResolvers**(`context`): `void`
 
-Defined in: packages/blue-dispatcher/src/strategies/route-error-resolver-strategy.ts:12
+Defined in: [packages/blue-dispatcher/src/strategies/route-error-resolver-strategy.ts:12](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/strategies/route-error-resolver-strategy.ts#lines-12)
 
 #### Parameters
 
@@ -351,7 +351,7 @@ Defined in: packages/blue-dispatcher/src/strategies/route-error-resolver-strateg
 
 > **initHandlerAdapters**(`context`): `void`
 
-Defined in: packages/blue-dispatcher/src/strategies/route-handler-adapter-strategy.ts:12
+Defined in: [packages/blue-dispatcher/src/strategies/route-handler-adapter-strategy.ts:12](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/strategies/route-handler-adapter-strategy.ts#lines-12)
 
 #### Parameters
 
@@ -373,7 +373,7 @@ Defined in: packages/blue-dispatcher/src/strategies/route-handler-adapter-strate
 
 > **getHandlerAdapter**(`handler`): [`RouteHandlerAdapter`](../interfaces/RouteHandlerAdapter.md)
 
-Defined in: packages/blue-dispatcher/src/strategies/route-handler-adapter-strategy.ts:13
+Defined in: [packages/blue-dispatcher/src/strategies/route-handler-adapter-strategy.ts:13](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/strategies/route-handler-adapter-strategy.ts#lines-13)
 
 #### Parameters
 
@@ -395,7 +395,7 @@ Defined in: packages/blue-dispatcher/src/strategies/route-handler-adapter-strate
 
 > **initHandlerMappings**(`context`): `void`
 
-Defined in: packages/blue-dispatcher/src/strategies/route-handler-mapping-strategy.ts:15
+Defined in: [packages/blue-dispatcher/src/strategies/route-handler-mapping-strategy.ts:17](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/strategies/route-handler-mapping-strategy.ts#lines-17)
 
 #### Parameters
 
@@ -417,13 +417,13 @@ Defined in: packages/blue-dispatcher/src/strategies/route-handler-mapping-strate
 
 > **getHandler**(`route`): `RouteHandlerExecutionChain`
 
-Defined in: packages/blue-dispatcher/src/strategies/route-handler-mapping-strategy.ts:16
+Defined in: [packages/blue-dispatcher/src/strategies/route-handler-mapping-strategy.ts:18](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/strategies/route-handler-mapping-strategy.ts#lines-18)
 
 #### Parameters
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 #### Returns
 
@@ -439,7 +439,7 @@ Defined in: packages/blue-dispatcher/src/strategies/route-handler-mapping-strate
 
 > **initRouteToViewNameTranslator**(`context`): `void`
 
-Defined in: packages/blue-dispatcher/src/strategies/route-to-view-name-translator-strategy.ts:13
+Defined in: [packages/blue-dispatcher/src/strategies/route-to-view-name-translator-strategy.ts:13](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/strategies/route-to-view-name-translator-strategy.ts#lines-13)
 
 #### Parameters
 
@@ -461,13 +461,13 @@ Defined in: packages/blue-dispatcher/src/strategies/route-to-view-name-translato
 
 > **getDefaultViewName**(`route`): `string`
 
-Defined in: packages/blue-dispatcher/src/strategies/route-to-view-name-translator-strategy.ts:14
+Defined in: [packages/blue-dispatcher/src/strategies/route-to-view-name-translator-strategy.ts:14](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/strategies/route-to-view-name-translator-strategy.ts#lines-14)
 
 #### Parameters
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 #### Returns
 
@@ -483,7 +483,7 @@ Defined in: packages/blue-dispatcher/src/strategies/route-to-view-name-translato
 
 > **addStrategy**(`name`): `void`
 
-Defined in: packages/blue-dispatcher/src/strategies/strategy-initializer.ts:11
+Defined in: [packages/blue-dispatcher/src/strategies/strategy-initializer.ts:11](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/strategies/strategy-initializer.ts#lines-11)
 
 #### Parameters
 
@@ -505,7 +505,7 @@ Defined in: packages/blue-dispatcher/src/strategies/strategy-initializer.ts:11
 
 > **getDefaultStrategy**\<`T`\>(`context`, `key`, `strategy`): `T`
 
-Defined in: packages/blue-dispatcher/src/strategies/strategy-initializer.ts:12
+Defined in: [packages/blue-dispatcher/src/strategies/strategy-initializer.ts:12](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/strategies/strategy-initializer.ts#lines-12)
 
 #### Type Parameters
 
@@ -541,7 +541,7 @@ Defined in: packages/blue-dispatcher/src/strategies/strategy-initializer.ts:12
 
 > **initStrategies**(`context`): `void`
 
-Defined in: packages/blue-dispatcher/src/strategies/strategy-initializer.ts:13
+Defined in: [packages/blue-dispatcher/src/strategies/strategy-initializer.ts:13](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/strategies/strategy-initializer.ts#lines-13)
 
 #### Parameters
 
@@ -563,7 +563,7 @@ Defined in: packages/blue-dispatcher/src/strategies/strategy-initializer.ts:13
 
 > **initCollectionStrategy**\<`T`\>(`context`, `collectionStrategyKey`, `strategyKey`, `name`, `defaultStrategy`): `void`
 
-Defined in: packages/blue-dispatcher/src/strategies/strategy-initializer.ts:14
+Defined in: [packages/blue-dispatcher/src/strategies/strategy-initializer.ts:14](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/strategies/strategy-initializer.ts#lines-14)
 
 #### Type Parameters
 
@@ -607,7 +607,7 @@ Defined in: packages/blue-dispatcher/src/strategies/strategy-initializer.ts:14
 
 > **initStrategy**\<`T`\>(`context`, `strategyKey`, `name`, `defaultStrategy`): `void`
 
-Defined in: packages/blue-dispatcher/src/strategies/strategy-initializer.ts:21
+Defined in: [packages/blue-dispatcher/src/strategies/strategy-initializer.ts:21](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/strategies/strategy-initializer.ts#lines-21)
 
 #### Type Parameters
 
@@ -647,7 +647,7 @@ Defined in: packages/blue-dispatcher/src/strategies/strategy-initializer.ts:21
 
 > **initThemeResolver**(`context`): `void`
 
-Defined in: packages/blue-dispatcher/src/strategies/theme-resolver-strategy.ts:13
+Defined in: [packages/blue-dispatcher/src/strategies/theme-resolver-strategy.ts:13](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/strategies/theme-resolver-strategy.ts#lines-13)
 
 #### Parameters
 
@@ -669,7 +669,7 @@ Defined in: packages/blue-dispatcher/src/strategies/theme-resolver-strategy.ts:1
 
 > **initViewResolvers**(`context`): `void`
 
-Defined in: packages/blue-dispatcher/src/strategies/view-resolver-strategy.ts:12
+Defined in: [packages/blue-dispatcher/src/strategies/view-resolver-strategy.ts:12](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/strategies/view-resolver-strategy.ts#lines-12)
 
 #### Parameters
 

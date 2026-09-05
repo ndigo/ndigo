@@ -6,7 +6,7 @@
 
 # Class: RetryOnOfflineInterceptor
 
-Defined in: packages/blue-platform-web/src/retry-on-offline-interceptor.ts:40
+Defined in: [packages/blue-platform-web/src/retry-on-offline-interceptor.ts:40](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/retry-on-offline-interceptor.ts#lines-40)
 
 Interceptor that queues failed requests when offline and replays them when online.
 
@@ -34,7 +34,7 @@ await http.get('/api/data');
 
 > **new RetryOnOfflineInterceptor**(`config?`): `RetryOnOfflineInterceptor`
 
-Defined in: packages/blue-platform-web/src/retry-on-offline-interceptor.ts:45
+Defined in: [packages/blue-platform-web/src/retry-on-offline-interceptor.ts:51](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/retry-on-offline-interceptor.ts#lines-51)
 
 #### Parameters
 
@@ -54,7 +54,7 @@ Defined in: packages/blue-platform-web/src/retry-on-offline-interceptor.ts:45
 
 > **get** **queuedCount**(): `number`
 
-Defined in: packages/blue-platform-web/src/retry-on-offline-interceptor.ts:54
+Defined in: [packages/blue-platform-web/src/retry-on-offline-interceptor.ts:60](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/retry-on-offline-interceptor.ts#lines-60)
 
 Returns the number of currently queued requests.
 
@@ -68,7 +68,7 @@ Returns the number of currently queued requests.
 
 > **preRequest**(`request`, `http`): `Promise`\<`void` \| `Response`\>
 
-Defined in: packages/blue-platform-web/src/retry-on-offline-interceptor.ts:65
+Defined in: [packages/blue-platform-web/src/retry-on-offline-interceptor.ts:71](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/retry-on-offline-interceptor.ts#lines-71)
 
 Checks the cache for a matching response before the request is sent.
 
@@ -102,7 +102,7 @@ A cached response when available, otherwise void.
 
 > **postResponse**(`response`, `settings`): `Promise`\<`void` \| `Response`\>
 
-Defined in: packages/blue-platform-web/src/retry-on-offline-interceptor.ts:84
+Defined in: [packages/blue-platform-web/src/retry-on-offline-interceptor.ts:90](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/retry-on-offline-interceptor.ts#lines-90)
 
 Handles failed responses by queuing them for retry when offline.
 

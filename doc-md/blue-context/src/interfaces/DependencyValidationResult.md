@@ -6,7 +6,7 @@
 
 # Interface: DependencyValidationResult
 
-Defined in: packages/blue-context/src/shared-dependency-registry.ts:25
+Defined in: [packages/blue-context/src/shared-dependency-registry.ts:25](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/shared-dependency-registry.ts#lines-25)
 
 Result of validating a feature's dependency manifest against the registry.
 
@@ -16,7 +16,7 @@ Result of validating a feature's dependency manifest against the registry.
 
 > **valid**: `boolean`
 
-Defined in: packages/blue-context/src/shared-dependency-registry.ts:26
+Defined in: [packages/blue-context/src/shared-dependency-registry.ts:26](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/shared-dependency-registry.ts#lines-26)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: packages/blue-context/src/shared-dependency-registry.ts:26
 
 > **missing**: `string`[]
 
-Defined in: packages/blue-context/src/shared-dependency-registry.ts:27
+Defined in: [packages/blue-context/src/shared-dependency-registry.ts:27](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/shared-dependency-registry.ts#lines-27)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: packages/blue-context/src/shared-dependency-registry.ts:27
 
 > **versionMismatches**: `object`[]
 
-Defined in: packages/blue-context/src/shared-dependency-registry.ts:28
+Defined in: [packages/blue-context/src/shared-dependency-registry.ts:28](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/shared-dependency-registry.ts#lines-28)
 
 #### name
 
@@ -52,4 +52,4 @@ Defined in: packages/blue-context/src/shared-dependency-registry.ts:28
 
 > **warnings**: `string`[]
 
-Defined in: packages/blue-context/src/shared-dependency-registry.ts:29
+Defined in: [packages/blue-context/src/shared-dependency-registry.ts:29](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/shared-dependency-registry.ts#lines-29)

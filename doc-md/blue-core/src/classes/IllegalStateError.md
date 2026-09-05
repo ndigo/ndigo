@@ -6,7 +6,7 @@
 
 # Class: IllegalStateError
 
-Defined in: packages/blue-core/src/error.ts:94
+Defined in: [packages/blue-core/src/error.ts:96](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/error.ts#lines-96)
 
 Represents an error indicating that an operation cannot be completed due to an invalid state or misconfiguration.
 
@@ -18,9 +18,9 @@ Represents an error indicating that an operation cannot be completed due to an i
 
 ### Constructor
 
-> **new IllegalStateError**(`message?`): `IllegalStateError`
+> **new IllegalStateError**(`message?`, `options?`): `IllegalStateError`
 
-Defined in: packages/blue-core/src/error.ts:106
+Defined in: [packages/blue-core/src/error.ts:111](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/error.ts#lines-111)
 
 Creates an instance of IllegalStateError.
 
@@ -31,6 +31,14 @@ Creates an instance of IllegalStateError.
 `string` = `'Unable to complete operation due to misconfiguration'`
 
 The error message. Defaults to 'Unable to complete operation due to misconfiguration'.
+
+##### options?
+
+`ErrorOptions`
+
+Standard `Error` options; pass `{ cause }` to preserve
+  the original failure across the framework boundary
+  (e.g. `Application.run()` startup failures).
 
 #### Returns
 
@@ -48,7 +56,7 @@ The error message. Defaults to 'Unable to complete operation due to misconfigura
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-core/src/error.ts:98
+Defined in: [packages/blue-core/src/error.ts:100](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/error.ts#lines-100)
 
 The string tag for this class.
 
@@ -66,7 +74,7 @@ The string tag for this class.
 
 > **toString**(): `string`
 
-Defined in: packages/blue-core/src/serializable.ts:28
+Defined in: [packages/blue-core/src/serializable.ts:27](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/serializable.ts#lines-27)
 
 #### Returns
 
@@ -82,7 +90,7 @@ Defined in: packages/blue-core/src/serializable.ts:28
 
 > `optional` **toJSON**(): [`JSONValue`](../type-aliases/JSONValue.md)
 
-Defined in: packages/blue-core/src/serializable.ts:29
+Defined in: [packages/blue-core/src/serializable.ts:28](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/serializable.ts#lines-28)
 
 #### Returns
 

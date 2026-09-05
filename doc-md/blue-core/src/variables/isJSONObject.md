@@ -8,7 +8,7 @@
 
 > `const` **isJSONObject**: (`value`) => `value is JSONObject`
 
-Defined in: packages/blue-core/src/serializable.ts:69
+Defined in: [packages/blue-core/src/serializable.ts:71](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/serializable.ts#lines-71)
 
 Tests whether a value is a JSON object.
 

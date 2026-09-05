@@ -8,7 +8,7 @@
 
 > **invertComparison**\<`T`\>(`compare`): [`comparison`](../type-aliases/comparison.md)\<`T`\>
 
-Defined in: packages/blue-core/src/comparable.ts:138
+Defined in: [packages/blue-core/src/comparable.ts:137](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/comparable.ts#lines-137)
 
 Inverts the order of a given comparison function.
 

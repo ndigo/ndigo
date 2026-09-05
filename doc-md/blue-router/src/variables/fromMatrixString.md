@@ -8,7 +8,7 @@
 
 > `const` **fromMatrixString**: (`value`) => `JSONObject`
 
-Defined in: packages/blue-router/src/index.ts:23
+Defined in: [packages/blue-router/src/index.ts:23](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/index.ts#lines-23)
 
 Parses a matrix string into a JSON object.
 

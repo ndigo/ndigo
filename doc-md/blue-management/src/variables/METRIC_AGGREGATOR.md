@@ -6,10 +6,10 @@
 
 # Variable: METRIC\_AGGREGATOR
 
-> `const` **METRIC\_AGGREGATOR**: [`ContextToken`](../../../blue-context/src/classes/ContextToken.md)\<`FeatureMetricAggregator`\>
+> `const` **METRIC\_AGGREGATOR**: [`ContextToken`](../../../blue-context/src/classes/ContextToken.md)\<[`FeatureMetricAggregator`](#)\>
 
-Defined in: packages/blue-management/src/metric-aggregator-token.ts:13
+Defined in: [packages/blue-management/src/metric-aggregator-token.ts:13](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-management/src/metric-aggregator-token.ts#lines-13)
 
-Context token for the shared FeatureMetricAggregator entry that
+Context token for the shared [FeatureMetricAggregator](#) entry that
 management endpoints read. Apps wire one (e.g. via
 `ManagementAutoConfiguration`) so `/metrics` reflects live counters.

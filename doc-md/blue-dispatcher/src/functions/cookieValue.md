@@ -8,7 +8,7 @@
 
 > **cookieValue**(`name`, `options?`): [`ParameterExtractor`](../type-aliases/ParameterExtractor.md)
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:242
+Defined in: [packages/blue-dispatcher/src/route-parameter.ts:234](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-parameter.ts#lines-234)
 
 Factory function: Create a cookie parameter extractor
 
@@ -29,7 +29,7 @@ Factory function: Create a cookie parameter extractor
 ## Example
 
 ```ts
-@routeParams({
+`routeParams`({
   session: cookieValue('SESSIONID'),
   token: cookieValue('AUTH_TOKEN', { required: true })
 })

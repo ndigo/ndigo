@@ -6,7 +6,7 @@
 
 # Abstract Class: AbstractPathViewController
 
-Defined in: packages/blue-dispatcher/src/controller.ts:23
+Defined in: [packages/blue-dispatcher/src/controller.ts:23](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/controller.ts#lines-23)
 
 Abstract base class for controllers that resolve view names from the route path.
 
@@ -36,7 +36,7 @@ Abstract base class for controllers that resolve view names from the route path.
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-dispatcher/src/controller.ts:27
+Defined in: [packages/blue-dispatcher/src/controller.ts:27](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/controller.ts#lines-27)
 
 Returns the string tag for this controller.
 
@@ -50,7 +50,7 @@ Returns the string tag for this controller.
 
 > **handleRoute**(`route`): [`ModelAndView`](ModelAndView.md)
 
-Defined in: packages/blue-dispatcher/src/controller.ts:36
+Defined in: [packages/blue-dispatcher/src/controller.ts:36](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/controller.ts#lines-36)
 
 Handles the given route by resolving a view name from its path and returning a new [ModelAndView](ModelAndView.md).
 
@@ -58,7 +58,7 @@ Handles the given route by resolving a view name from its path and returning a n
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The route to handle.
 
@@ -78,13 +78,13 @@ A [ModelAndView](ModelAndView.md) for the route.
 
 > `abstract` `protected` **\_getViewNameForRoute**(`route`): `string`
 
-Defined in: packages/blue-dispatcher/src/controller.ts:41
+Defined in: [packages/blue-dispatcher/src/controller.ts:41](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/controller.ts#lines-41)
 
 #### Parameters
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 #### Returns
 

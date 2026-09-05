@@ -6,7 +6,7 @@
 
 # Class: PathRoute
 
-Defined in: packages/blue-router/src/path-route.ts:145
+Defined in: [packages/blue-router/src/path-route.ts:145](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/path-route.ts#lines-145)
 
 Represents a concrete route based on a URL path, parsing segments, matrix parameters, and query strings.
 It implements `Route` and `Serializable`.
@@ -34,7 +34,7 @@ A type representing the route parameters, defaulting to `Record<string, string>`
 
 > **new PathRoute**(`route`): `PathRoute`
 
-Defined in: packages/blue-router/src/path-route.ts:175
+Defined in: [packages/blue-router/src/path-route.ts:177](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/path-route.ts#lines-177)
 
 Creates an instance of `PathRoute` from a raw route string.
 The route string can include path segments, matrix parameters, and a query string.
@@ -61,7 +61,7 @@ The raw string representation of the route (e.g., `/foo;a=b/bar?c=d`).
 
 > `readonly` **data**: `JSONObject`
 
-Defined in: packages/blue-router/src/path-route.ts:148
+Defined in: [packages/blue-router/src/path-route.ts:148](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/path-route.ts#lines-148)
 
 #### Implementation of
 
@@ -73,7 +73,7 @@ Defined in: packages/blue-router/src/path-route.ts:148
 
 > `readonly` `optional` **dataString?**: `string`
 
-Defined in: packages/blue-router/src/path-route.ts:149
+Defined in: [packages/blue-router/src/path-route.ts:149](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/path-route.ts#lines-149)
 
 #### Implementation of
 
@@ -85,7 +85,7 @@ Defined in: packages/blue-router/src/path-route.ts:149
 
 > `readonly` **id**: `number`
 
-Defined in: packages/blue-router/src/path-route.ts:150
+Defined in: [packages/blue-router/src/path-route.ts:150](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/path-route.ts#lines-150)
 
 #### Implementation of
 
@@ -97,7 +97,7 @@ Defined in: packages/blue-router/src/path-route.ts:150
 
 > `optional` **method?**: `HTTPMethod`
 
-Defined in: packages/blue-router/src/path-route.ts:151
+Defined in: [packages/blue-router/src/path-route.ts:151](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/path-route.ts#lines-151)
 
 #### Implementation of
 
@@ -109,7 +109,7 @@ Defined in: packages/blue-router/src/path-route.ts:151
 
 > **params**: `Record`\<`string`, `string`\> \| `null`
 
-Defined in: packages/blue-router/src/path-route.ts:152
+Defined in: [packages/blue-router/src/path-route.ts:152](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/path-route.ts#lines-152)
 
 #### Implementation of
 
@@ -121,7 +121,7 @@ Defined in: packages/blue-router/src/path-route.ts:152
 
 > `readonly` **path**: `string`
 
-Defined in: packages/blue-router/src/path-route.ts:153
+Defined in: [packages/blue-router/src/path-route.ts:153](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/path-route.ts#lines-153)
 
 #### Implementation of
 
@@ -133,7 +133,7 @@ Defined in: packages/blue-router/src/path-route.ts:153
 
 > `readonly` **raw**: `string`
 
-Defined in: packages/blue-router/src/path-route.ts:154
+Defined in: [packages/blue-router/src/path-route.ts:154](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/path-route.ts#lines-154)
 
 #### Implementation of
 
@@ -145,7 +145,7 @@ Defined in: packages/blue-router/src/path-route.ts:154
 
 > `readonly` **attributes**: `Record`\<`string`, `any`\>
 
-Defined in: packages/blue-router/src/path-route.ts:155
+Defined in: [packages/blue-router/src/path-route.ts:155](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/path-route.ts#lines-155)
 
 #### Implementation of
 
@@ -159,7 +159,7 @@ Defined in: packages/blue-router/src/path-route.ts:155
 
 > **get** **length**(): `number`
 
-Defined in: packages/blue-router/src/path-route.ts:162
+Defined in: [packages/blue-router/src/path-route.ts:162](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/path-route.ts#lines-162)
 
 Gets the number of segments in the route.
 
@@ -183,7 +183,7 @@ The number of route segments.
 
 > **toJSON**(): `JSONValue`
 
-Defined in: packages/blue-router/src/path-route.ts:262
+Defined in: [packages/blue-router/src/path-route.ts:264](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/path-route.ts#lines-264)
 
 Serializes the `PathRoute` instance to a JSON object.
 
@@ -207,7 +207,7 @@ A `JSONValue` representation of the route.
 
 > **toString**(): `string`
 
-Defined in: packages/blue-router/src/path-route.ts:287
+Defined in: [packages/blue-router/src/path-route.ts:289](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/path-route.ts#lines-289)
 
 Returns the string representation of the `PathRoute`, including its segments and query string.
 
@@ -231,7 +231,7 @@ The string representation of the route.
 
 > **matches**(`pattern`): `boolean`
 
-Defined in: packages/blue-router/src/path-route.ts:310
+Defined in: [packages/blue-router/src/path-route.ts:312](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/path-route.ts#lines-312)
 
 Checks if the current route matches a given pattern.
 A pattern can include named parameters (e.g., `/users/:id` or `/products/{productId}`).
@@ -260,7 +260,7 @@ The route pattern to match against.
 
 > **resolveParams**(`pattern`): `Record`\<`string`, `string`\> \| `null`
 
-Defined in: packages/blue-router/src/path-route.ts:321
+Defined in: [packages/blue-router/src/path-route.ts:323](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/path-route.ts#lines-323)
 
 Resolves and extracts parameters from the route based on a given pattern.
 If the route matches the pattern, an object containing the resolved parameters is returned.

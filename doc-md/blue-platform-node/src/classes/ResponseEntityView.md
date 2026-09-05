@@ -6,7 +6,7 @@
 
 # Class: ResponseEntityView
 
-Defined in: packages/blue-platform-node/src/response-entity-view.ts:17
+Defined in: [packages/blue-platform-node/src/response-entity-view.ts:17](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/response-entity-view.ts#lines-17)
 
 A view that writes a `ResponseEntity` (status, headers, body) to the
 `ServerResponse` stored in the route's attributes.
@@ -27,7 +27,7 @@ A view that writes a `ResponseEntity` (status, headers, body) to the
 
 > **render**(`entity`, `route`): `Promise`\<`void`\>
 
-Defined in: packages/blue-platform-node/src/response-entity-view.ts:24
+Defined in: [packages/blue-platform-node/src/response-entity-view.ts:24](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/response-entity-view.ts#lines-24)
 
 Render an `ResponseEntity` to the HTTP response.
 
@@ -41,7 +41,7 @@ The response entity.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The current route.
 

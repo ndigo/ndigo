@@ -6,7 +6,7 @@
 
 # Class: ContentNegotiationManager
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:231
+Defined in: [packages/blue-view/src/content-negotiation-view-resolver.ts:235](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/content-negotiation-view-resolver.ts#lines-235)
 
 Aggregates content-negotiation strategies and file-extension resolvers.
 
@@ -21,7 +21,7 @@ Aggregates content-negotiation strategies and file-extension resolvers.
 
 > **new ContentNegotiationManager**(`strategies?`): `ContentNegotiationManager`
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:246
+Defined in: [packages/blue-view/src/content-negotiation-view-resolver.ts:250](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/content-negotiation-view-resolver.ts#lines-250)
 
 Creates a manager with the supplied strategies.
 
@@ -43,7 +43,7 @@ The strategies to manage.
 
 > **strategies**: [`ContentNegotiationStrategy`](../interfaces/ContentNegotiationStrategy.md)[]
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:235
+Defined in: [packages/blue-view/src/content-negotiation-view-resolver.ts:239](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/content-negotiation-view-resolver.ts#lines-239)
 
 The strategies consulted to resolve media types.
 
@@ -53,7 +53,7 @@ The strategies consulted to resolve media types.
 
 > **resolvers**: [`MediaTypeFileExtensionResolver`](../interfaces/MediaTypeFileExtensionResolver.md)[]
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:239
+Defined in: [packages/blue-view/src/content-negotiation-view-resolver.ts:243](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/content-negotiation-view-resolver.ts#lines-243)
 
 The strategies capable of resolving file extensions.
 
@@ -63,7 +63,7 @@ The strategies capable of resolving file extensions.
 
 > **getAllFileExtenstions**(): `string`[]
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:259
+Defined in: [packages/blue-view/src/content-negotiation-view-resolver.ts:265](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/content-negotiation-view-resolver.ts#lines-265)
 
 Returns every file extension known to the registered resolvers.
 
@@ -83,7 +83,7 @@ The union of all extensions from every resolver, deduplicated by insertion order
 
 > **resolveFileExtensions**(`mediaType`): `string`[]
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:280
+Defined in: [packages/blue-view/src/content-negotiation-view-resolver.ts:286](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/content-negotiation-view-resolver.ts#lines-286)
 
 Resolves file extensions for the given media type.
 
@@ -111,7 +111,7 @@ Extensions from the first resolver that supports this media type, or empty array
 
 > **resolveMediaTypes**(`request`): `MediaType`[]
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:295
+Defined in: [packages/blue-view/src/content-negotiation-view-resolver.ts:301](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/content-negotiation-view-resolver.ts#lines-301)
 
 Resolves the media types requested by the current request.
 

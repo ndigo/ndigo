@@ -8,6 +8,6 @@
 
 > `const` **LOCKED**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
-Defined in: packages/blue-http/src/response-statuses.ts:254
+Defined in: [packages/blue-http/src/response-statuses.ts:254](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/response-statuses.ts#lines-254)
 
 The resource that is being accessed is locked.

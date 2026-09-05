@@ -8,7 +8,7 @@
 
 > **direct**\<`T`\>(`node`, `callback`, `inclusive?`): `void`
 
-Defined in: packages/blue-core/src/tree-node.ts:60
+Defined in: [packages/blue-core/src/tree-node.ts:60](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/tree-node.ts#lines-60)
 
 Traverses descendants depth-first from the supplied node.
 

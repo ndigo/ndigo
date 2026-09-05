@@ -6,7 +6,7 @@
 
 # Abstract Class: BaseBlueInstrumentation
 
-Defined in: packages/blue-telemetry/src/instrumentation/base.ts:53
+Defined in: [packages/blue-telemetry/src/instrumentation/base.ts:53](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/instrumentation/base.ts#lines-53)
 
 Base class for BlueJS OpenTelemetry instrumentations.
 
@@ -34,7 +34,7 @@ Subclasses only declare:
 
 > **new BaseBlueInstrumentation**(`component`): `BaseBlueInstrumentation`
 
-Defined in: packages/blue-telemetry/src/instrumentation/base.ts:59
+Defined in: [packages/blue-telemetry/src/instrumentation/base.ts:59](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/instrumentation/base.ts#lines-59)
 
 Creates the instrumentation, deriving the package name from the component.
 
@@ -60,7 +60,7 @@ Short component name (e.g. `'context'`, `'dispatcher'`).
 
 > `protected` **init**(): `any`[]
 
-Defined in: packages/blue-telemetry/src/instrumentation/base.ts:64
+Defined in: [packages/blue-telemetry/src/instrumentation/base.ts:64](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/instrumentation/base.ts#lines-64)
 
 #### Returns
 
@@ -78,7 +78,7 @@ Defined in: packages/blue-telemetry/src/instrumentation/base.ts:64
 
 > `abstract` **enable**(): `void`
 
-Defined in: packages/blue-telemetry/src/instrumentation/base.ts:69
+Defined in: [packages/blue-telemetry/src/instrumentation/base.ts:69](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/instrumentation/base.ts#lines-69)
 
 Hook for subclasses to wire up `_wrap` calls.
 
@@ -96,7 +96,7 @@ Hook for subclasses to wire up `_wrap` calls.
 
 > `abstract` **disable**(): `void`
 
-Defined in: packages/blue-telemetry/src/instrumentation/base.ts:72
+Defined in: [packages/blue-telemetry/src/instrumentation/base.ts:72](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/instrumentation/base.ts#lines-72)
 
 Hook for subclasses to wire up `_unwrap` calls.
 
@@ -114,7 +114,7 @@ Hook for subclasses to wire up `_unwrap` calls.
 
 > `protected` **\_patchCount**(`config`): (`original`) => (`this`, ...`args`) => `any`
 
-Defined in: packages/blue-telemetry/src/instrumentation/base.ts:77
+Defined in: [packages/blue-telemetry/src/instrumentation/base.ts:77](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/instrumentation/base.ts#lines-77)
 
 Returns a synchronous patch function that increments a counter.
 
@@ -134,7 +134,7 @@ Returns a synchronous patch function that increments a counter.
 
 > `protected` **\_patchSync**(`config`): (`original`) => (`this`, ...`args`) => `any`
 
-Defined in: packages/blue-telemetry/src/instrumentation/base.ts:93
+Defined in: [packages/blue-telemetry/src/instrumentation/base.ts:93](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/instrumentation/base.ts#lines-93)
 
 Returns a synchronous patch function that wraps the original method
 in a span with the given configuration.
@@ -155,7 +155,7 @@ in a span with the given configuration.
 
 > `protected` **\_patchAsync**(`config`): (`original`) => (`this`, ...`args`) => `Promise`\<`any`\>
 
-Defined in: packages/blue-telemetry/src/instrumentation/base.ts:119
+Defined in: [packages/blue-telemetry/src/instrumentation/base.ts:119](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/instrumentation/base.ts#lines-119)
 
 Returns an asynchronous patch function that wraps the original method
 in an active span with the given configuration.

@@ -8,7 +8,7 @@
 
 > **replaceDiacritics**(`text`): `string`
 
-Defined in: packages/blue-util/src/string/replace-diacritics.ts:47
+Defined in: [packages/blue-util/src/string/replace-diacritics.ts:37](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-util/src/string/replace-diacritics.ts#lines-37)
 
 ## Parameters
 

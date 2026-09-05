@@ -6,7 +6,7 @@
 
 # Class: HTTPExecutionChain
 
-Defined in: packages/blue-http/src/http.ts:549
+Defined in: [packages/blue-http/src/http.ts:559](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-559)
 
 Executes registered interceptors in lifecycle order for a single request.
 
@@ -16,7 +16,7 @@ Executes registered interceptors in lifecycle order for a single request.
 
 > **new HTTPExecutionChain**(`http`, `interceptors?`): `HTTPExecutionChain`
 
-Defined in: packages/blue-http/src/http.ts:585
+Defined in: [packages/blue-http/src/http.ts:595](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-595)
 
 Creates a chain for the given HTTP client and optional interceptor list.
 
@@ -44,7 +44,7 @@ Interceptors to seed the chain with.
 
 > **http**: [`HTTP`](HTTP.md)
 
-Defined in: packages/blue-http/src/http.ts:561
+Defined in: [packages/blue-http/src/http.ts:571](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-571)
 
 The HTTP client that owns this execution chain.
 
@@ -54,7 +54,7 @@ The HTTP client that owns this execution chain.
 
 > **interceptorIndex**: `number`
 
-Defined in: packages/blue-http/src/http.ts:566
+Defined in: [packages/blue-http/src/http.ts:576](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-576)
 
 The index of the most recent initialization-aware interceptor.
 
@@ -66,7 +66,7 @@ The index of the most recent initialization-aware interceptor.
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-http/src/http.ts:568
+Defined in: [packages/blue-http/src/http.ts:578](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-578)
 
 ##### Returns
 
@@ -80,7 +80,7 @@ Defined in: packages/blue-http/src/http.ts:568
 
 > **get** **interceptors**(): [`HTTPInterceptor`](../type-aliases/HTTPInterceptor.md)[]
 
-Defined in: packages/blue-http/src/http.ts:575
+Defined in: [packages/blue-http/src/http.ts:585](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-585)
 
 The interceptors registered with this execution chain.
 
@@ -94,7 +94,7 @@ The interceptors registered with this execution chain.
 
 > **addInterceptor**(`interceptor`): `void`
 
-Defined in: packages/blue-http/src/http.ts:611
+Defined in: [packages/blue-http/src/http.ts:625](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-625)
 
 Adds a single interceptor to the chain.
 
@@ -116,7 +116,7 @@ The interceptor to append.
 
 > **addInterceptors**(`interceptors`): `void`
 
-Defined in: packages/blue-http/src/http.ts:626
+Defined in: [packages/blue-http/src/http.ts:640](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-640)
 
 Adds multiple interceptors to the chain in order.
 
@@ -138,7 +138,7 @@ Interceptors to append.
 
 > **applyPostError**(`error`, `request`, `http`): `Promise`\<`Response` \| `undefined`\>
 
-Defined in: packages/blue-http/src/http.ts:643
+Defined in: [packages/blue-http/src/http.ts:657](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-657)
 
 Runs the first error-aware interceptor that can recover from a failure.
 
@@ -174,7 +174,7 @@ A replacement response, or `undefined` when no interceptor handles the error.
 
 > **applyPostComplete**(`request`, `response`): `void`
 
-Defined in: packages/blue-http/src/http.ts:665
+Defined in: [packages/blue-http/src/http.ts:681](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-681)
 
 Runs all completion-aware interceptors after the request settles.
 
@@ -188,7 +188,7 @@ The request that completed.
 
 ##### response
 
-`Response` \| `ResponseError`
+`Response` \| [`ResponseError`](#)
 
 The final response or error wrapper.
 
@@ -202,7 +202,7 @@ The final response or error wrapper.
 
 > **applyPostResponse**(`response`, `settings`): `Promise`\<`Response`\>
 
-Defined in: packages/blue-http/src/http.ts:688
+Defined in: [packages/blue-http/src/http.ts:704](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-704)
 
 Runs response-aware interceptors and returns the final response.
 
@@ -232,7 +232,7 @@ The transformed response, or the original response when no transformer applies.
 
 > **applyPreInit**(`url`, `settings`): `boolean`
 
-Defined in: packages/blue-http/src/http.ts:719
+Defined in: [packages/blue-http/src/http.ts:737](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-737)
 
 Runs initialization-aware interceptors before the request object is created.
 
@@ -262,7 +262,7 @@ The request settings being prepared.
 
 > **applyPreRequest**(`request`, `http`): `Promise`\<`Response` \| `Request`\>
 
-Defined in: packages/blue-http/src/http.ts:746
+Defined in: [packages/blue-http/src/http.ts:764](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-764)
 
 Runs request-aware interceptors before fetch executes.
 
@@ -292,7 +292,7 @@ The transformed request, or the original request when unsupported.
 
 > `protected` **\_checkInterceptorType**(`interceptor`): `void`
 
-Defined in: packages/blue-http/src/http.ts:777
+Defined in: [packages/blue-http/src/http.ts:797](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-797)
 
 #### Parameters
 

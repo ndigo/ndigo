@@ -8,6 +8,6 @@
 
 > `const` **whitespaceRule**: `RegExp`
 
-Defined in: packages/blue-validate/src/formats.ts:244
+Defined in: [packages/blue-validate/src/formats.ts:244](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/formats.ts#lines-244)
 
 A regular expression matching whitespace.

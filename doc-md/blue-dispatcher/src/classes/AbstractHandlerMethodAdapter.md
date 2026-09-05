@@ -6,7 +6,7 @@
 
 # Abstract Class: AbstractHandlerMethodAdapter
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:60
+Defined in: [packages/blue-dispatcher/src/route-handler-adapter.ts:60](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-handler-adapter.ts#lines-60)
 
 Adapts a handler instance into route execution.
 
@@ -44,7 +44,7 @@ Implementations decide whether they support a handler type and how to invoke it 
 
 > **applicationContext**: `ApplicationContext` \| `null`
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:67
+Defined in: [packages/blue-dispatcher/src/route-handler-adapter.ts:67](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-handler-adapter.ts#lines-67)
 
 Application context used to discover handlers and argument resolvers.
 
@@ -70,7 +70,7 @@ A symbol indicating that the value is aware.
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:69
+Defined in: [packages/blue-dispatcher/src/route-handler-adapter.ts:69](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-handler-adapter.ts#lines-69)
 
 ##### Returns
 
@@ -110,7 +110,7 @@ The ApplicationContext to be used by this object.
 
 > **supports**(`handler`): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:73
+Defined in: [packages/blue-dispatcher/src/route-handler-adapter.ts:73](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-handler-adapter.ts#lines-73)
 
 Tests whether this adapter supports the given handler.
 
@@ -138,7 +138,7 @@ The handler instance to test.
 
 > `abstract` **handle**(`route`, `handler`): `Promise`\<[`ModelAndView`](ModelAndView.md)\>
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:84
+Defined in: [packages/blue-dispatcher/src/route-handler-adapter.ts:84](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-handler-adapter.ts#lines-84)
 
 Handle a route with a method-backed handler.
 
@@ -146,7 +146,7 @@ Handle a route with a method-backed handler.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The current route.
 
@@ -172,7 +172,7 @@ The model and view produced by invoking the handler.
 
 > `abstract` `protected` **\_supports**(`handler`): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:85
+Defined in: [packages/blue-dispatcher/src/route-handler-adapter.ts:85](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-handler-adapter.ts#lines-85)
 
 #### Parameters
 

@@ -8,6 +8,6 @@
 
 > `const` **CONTINUE**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
-Defined in: packages/blue-http/src/response-statuses.ts:18
+Defined in: [packages/blue-http/src/response-statuses.ts:18](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/response-statuses.ts#lines-18)
 
 This interim response indicates that everything so far is OK and that the client should continue the request, or ignore the response if the request is already finished.

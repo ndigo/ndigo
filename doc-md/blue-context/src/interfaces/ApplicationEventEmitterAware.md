@@ -6,7 +6,7 @@
 
 # Interface: ApplicationEventEmitterAware
 
-Defined in: packages/blue-context/src/event-emitter.ts:178
+Defined in: [packages/blue-context/src/event-emitter.ts:169](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-emitter.ts#lines-169)
 
 Receives the application event emitter during initialization.
 
@@ -34,7 +34,7 @@ A symbol indicating that the value is aware.
 
 > **setApplicationEventEmitter**(`eventEmitter`): `void`
 
-Defined in: packages/blue-context/src/event-emitter.ts:184
+Defined in: [packages/blue-context/src/event-emitter.ts:175](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-emitter.ts#lines-175)
 
 Receives the application event emitter.
 

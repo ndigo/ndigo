@@ -6,7 +6,7 @@
 
 # Interface: RequestAwareServiceInterceptor
 
-Defined in: packages/blue-service/src/service.ts:72
+Defined in: [packages/blue-service/src/service.ts:72](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-service/src/service.ts#lines-72)
 
 Handles request mutation before a service request is sent.
 
@@ -16,7 +16,7 @@ Handles request mutation before a service request is sent.
 
 > **preRequest**(`request`): `Promise`\<`void` \| `Request`\>
 
-Defined in: packages/blue-service/src/service.ts:79
+Defined in: [packages/blue-service/src/service.ts:79](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-service/src/service.ts#lines-79)
 
 Runs before the request is sent.
 

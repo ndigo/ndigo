@@ -8,7 +8,7 @@
 
 > **LogAttributes** = `Attributes`
 
-Defined in: packages/blue-telemetry/src/logger/logger.ts:8
+Defined in: [packages/blue-telemetry/src/logger/logger.ts:8](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/logger/logger.ts#lines-8)
 
 Represents a collection of attributes to be associated with a log entry.
 These attributes provide additional context and metadata for the log.

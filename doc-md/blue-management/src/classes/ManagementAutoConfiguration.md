@@ -6,13 +6,13 @@
 
 # Class: ManagementAutoConfiguration
 
-Defined in: packages/blue-management/src/management-auto-configuration.ts:29
+Defined in: [packages/blue-management/src/management-auto-configuration.ts:29](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-management/src/management-auto-configuration.ts#lines-29)
 
 Auto-configuration for management endpoints.
 
 Registers:
-- a shared FeatureMetricAggregator entry (read by `/metrics` and by
-  any feature using `@counted`)
+- a shared [FeatureMetricAggregator](#) entry (read by `/metrics` and by
+  any feature using `counted`)
 - a [HealthRegistry](HealthRegistry.md) with the [TelemetryHealthIndicator](TelemetryHealthIndicator.md) wired
 - the `/metrics` and `/health` controllers
 
@@ -40,15 +40,15 @@ const app = new ApplicationBuilder([NodeAutoConfiguration, ManagementAutoConfigu
 
 ### metricAggregator()
 
-> **metricAggregator**(): `FeatureMetricAggregator`
+> **metricAggregator**(): [`FeatureMetricAggregator`](#)
 
-Defined in: packages/blue-management/src/management-auto-configuration.ts:36
+Defined in: [packages/blue-management/src/management-auto-configuration.ts:36](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-management/src/management-auto-configuration.ts#lines-36)
 
 The shared feature-metric aggregator backing `/metrics`.
 
 #### Returns
 
-`FeatureMetricAggregator`
+[`FeatureMetricAggregator`](#)
 
 A fresh aggregator.
 
@@ -58,7 +58,7 @@ A fresh aggregator.
 
 > **healthRegistry**(): [`HealthRegistry`](HealthRegistry.md)
 
-Defined in: packages/blue-management/src/management-auto-configuration.ts:47
+Defined in: [packages/blue-management/src/management-auto-configuration.ts:47](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-management/src/management-auto-configuration.ts#lines-47)
 
 The health registry. The `/health` controller adds the telemetry
 indicator at request time from the context aggregator.
@@ -75,7 +75,7 @@ An empty (populated lazily) registry.
 
 > **metricsController**(): [`MetricsController`](MetricsController.md)
 
-Defined in: packages/blue-management/src/management-auto-configuration.ts:57
+Defined in: [packages/blue-management/src/management-auto-configuration.ts:57](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-management/src/management-auto-configuration.ts#lines-57)
 
 Serves `/metrics`.
 
@@ -91,7 +91,7 @@ The metrics controller.
 
 > **healthController**(): [`HealthController`](HealthController.md)
 
-Defined in: packages/blue-management/src/management-auto-configuration.ts:67
+Defined in: [packages/blue-management/src/management-auto-configuration.ts:67](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-management/src/management-auto-configuration.ts#lines-67)
 
 Serves `/health`.
 

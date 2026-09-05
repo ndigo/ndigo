@@ -6,7 +6,7 @@
 
 # Class: BrowserRouter
 
-Defined in: packages/blue-platform-web/src/browser-router.ts:60
+Defined in: [packages/blue-platform-web/src/browser-router.ts:60](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/browser-router.ts#lines-60)
 
 A History API-based router implementation for browser environments.
 
@@ -31,7 +31,7 @@ const router = new BrowserRouter((route) => {
 
 > **new BrowserRouter**(`callback`): `BrowserRouter`
 
-Defined in: packages/blue-platform-web/src/browser-router.ts:84
+Defined in: [packages/blue-platform-web/src/browser-router.ts:84](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/browser-router.ts#lines-84)
 
 Creates an instance of `BrowserRouter`.
 
@@ -58,7 +58,7 @@ The `RouterCallback` to be invoked when the route changes.
 
 > `readonly` **callback**: `RouterCallback`
 
-Defined in: packages/blue-platform-web/src/browser-router.ts:66
+Defined in: [packages/blue-platform-web/src/browser-router.ts:66](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/browser-router.ts#lines-66)
 
 #### Overrides
 
@@ -70,7 +70,7 @@ Defined in: packages/blue-platform-web/src/browser-router.ts:66
 
 > **destroyed**: `boolean`
 
-Defined in: packages/blue-platform-web/src/browser-router.ts:72
+Defined in: [packages/blue-platform-web/src/browser-router.ts:72](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/browser-router.ts#lines-72)
 
 ## Accessors
 
@@ -80,7 +80,7 @@ Defined in: packages/blue-platform-web/src/browser-router.ts:72
 
 > **get** **route**(): `string`
 
-Defined in: packages/blue-platform-web/src/browser-router.ts:68
+Defined in: [packages/blue-platform-web/src/browser-router.ts:68](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/browser-router.ts#lines-68)
 
 ##### Returns
 
@@ -98,7 +98,7 @@ Defined in: packages/blue-platform-web/src/browser-router.ts:68
 
 > **get** **history**(): `RingBuffer`\<`RouteTransaction`\>
 
-Defined in: packages/blue-platform-web/src/browser-router.ts:74
+Defined in: [packages/blue-platform-web/src/browser-router.ts:74](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/browser-router.ts#lines-74)
 
 ##### Returns
 
@@ -136,7 +136,7 @@ An array of `RouterInterceptor`.
 
 > **destroy**(): `void`
 
-Defined in: packages/blue-platform-web/src/browser-router.ts:117
+Defined in: [packages/blue-platform-web/src/browser-router.ts:117](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/browser-router.ts#lines-117)
 
 Destroys the router by removing its `popstate` event listener.
 
@@ -150,7 +150,7 @@ Destroys the router by removing its `popstate` event listener.
 
 > **setRoute**(`newRoute`, `isPublic?`): `Promise`\<`void`\>
 
-Defined in: packages/blue-platform-web/src/browser-router.ts:139
+Defined in: [packages/blue-platform-web/src/browser-router.ts:139](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/browser-router.ts#lines-139)
 
 Programmatically sets a new route.
 
@@ -182,7 +182,7 @@ A promise that resolves when the route has been processed.
 
 > **refresh**(): `void`
 
-Defined in: packages/blue-platform-web/src/browser-router.ts:156
+Defined in: [packages/blue-platform-web/src/browser-router.ts:156](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/browser-router.ts#lines-156)
 
 Refreshes the current route by re-invoking the callback.
 
@@ -200,7 +200,7 @@ Refreshes the current route by re-invoking the callback.
 
 > **navigate**(`path`): `Promise`\<`void`\>
 
-Defined in: packages/blue-platform-web/src/browser-router.ts:170
+Defined in: [packages/blue-platform-web/src/browser-router.ts:170](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/browser-router.ts#lines-170)
 
 Programmatically navigates to the given path.
 
@@ -226,7 +226,7 @@ A promise that resolves when the route has been processed.
 
 > `protected` **\_onPopState**(`_event`): `void`
 
-Defined in: packages/blue-platform-web/src/browser-router.ts:177
+Defined in: [packages/blue-platform-web/src/browser-router.ts:177](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/browser-router.ts#lines-177)
 
 Handles the native `popstate` event (back/forward navigation).
 
@@ -246,7 +246,7 @@ Handles the native `popstate` event (back/forward navigation).
 
 > `protected` **\_setRoute**(`newRoute`, `syncHash?`): `Promise`\<`boolean`\>
 
-Defined in: packages/blue-platform-web/src/browser-router.ts:194
+Defined in: [packages/blue-platform-web/src/browser-router.ts:194](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/browser-router.ts#lines-194)
 
 Internal method to set a new route, apply interceptors, and manage the transaction.
 
@@ -270,7 +270,7 @@ Internal method to set a new route, apply interceptors, and manage the transacti
 
 > `protected` **\_resolveInterceptors**(`route`): `RouterInterceptor`[]
 
-Defined in: packages/blue-platform-web/src/browser-router.ts:212
+Defined in: [packages/blue-platform-web/src/browser-router.ts:212](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/browser-router.ts#lines-212)
 
 Resolves matching interceptors for the given route.
 

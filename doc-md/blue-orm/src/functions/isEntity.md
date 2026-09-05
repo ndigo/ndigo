@@ -8,7 +8,7 @@
 
 > **isEntity**(`target`): `boolean`
 
-Defined in: packages/blue-orm/src/metadata.ts:73
+Defined in: [packages/blue-orm/src/metadata.ts:73](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/metadata.ts#lines-73)
 
 Checks if a given class is an entity.
 

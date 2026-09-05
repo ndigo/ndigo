@@ -8,6 +8,6 @@
 
 > `const` **SWITCH\_PROXY**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
-Defined in: packages/blue-http/src/response-statuses.ts:130
+Defined in: [packages/blue-http/src/response-statuses.ts:130](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/response-statuses.ts#lines-130)
 
 This response code is no longer used; it is just reserved. It was used in a previous version of the HTTP/1.1 specification. Originally meant "Subsequent requests should use the specified proxy."

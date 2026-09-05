@@ -6,7 +6,7 @@
 
 # Interface: FeatureContextComposition
 
-Defined in: packages/blue-context/src/context-hierarchy.ts:74
+Defined in: [packages/blue-context/src/context-hierarchy.ts:74](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context-hierarchy.ts#lines-74)
 
 Result of mounting a feature context.
 
@@ -16,7 +16,7 @@ Result of mounting a feature context.
 
 > **context**: [`ApplicationContext`](ApplicationContext.md)
 
-Defined in: packages/blue-context/src/context-hierarchy.ts:78
+Defined in: [packages/blue-context/src/context-hierarchy.ts:78](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context-hierarchy.ts#lines-78)
 
 The mounted feature context.
 
@@ -26,6 +26,6 @@ The mounted feature context.
 
 > `optional` **gateway?**: [`ContextEventGateway`](../classes/ContextEventGateway.md)
 
-Defined in: packages/blue-context/src/context-hierarchy.ts:82
+Defined in: [packages/blue-context/src/context-hierarchy.ts:82](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context-hierarchy.ts#lines-82)
 
 Optional relay gateway attached to the feature.

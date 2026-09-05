@@ -8,7 +8,7 @@
 
 > **TimeoutInit** = [`HTTPInit`](HTTPInit.md) & `object`
 
-Defined in: packages/blue-http/src/interceptors/timeout-interceptor.ts:18
+Defined in: [packages/blue-http/src/interceptors/timeout-interceptor.ts:18](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/timeout-interceptor.ts#lines-18)
 
 Request settings for [TimeoutInterceptor](../classes/TimeoutInterceptor.md).
 

@@ -8,7 +8,7 @@
 
 > **findDescendants**(`context`, `predicate`): [`ApplicationContext`](../interfaces/ApplicationContext.md)[]
 
-Defined in: packages/blue-context/src/context-hierarchy.ts:215
+Defined in: [packages/blue-context/src/context-hierarchy.ts:219](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context-hierarchy.ts#lines-219)
 
 Find descendants (excluding root `context`) that match `predicate`.
 

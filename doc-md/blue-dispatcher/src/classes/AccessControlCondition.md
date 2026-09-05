@@ -6,7 +6,7 @@
 
 # Class: AccessControlCondition
 
-Defined in: packages/blue-dispatcher/src/access-control-condition.ts:36
+Defined in: [packages/blue-dispatcher/src/access-control-condition.ts:36](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/access-control-condition.ts#lines-36)
 
 A route condition that enforces access control (public vs. private routes).
 
@@ -32,7 +32,7 @@ This replaces the previous TODO comment in `route-mapping-info.ts`:
 
 > **new AccessControlCondition**(`access`): `AccessControlCondition`
 
-Defined in: packages/blue-dispatcher/src/access-control-condition.ts:58
+Defined in: [packages/blue-dispatcher/src/access-control-condition.ts:58](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/access-control-condition.ts#lines-58)
 
 Create an access-control condition.
 
@@ -58,7 +58,7 @@ The required access level (`'public'` or `'private'`).
 
 > `readonly` **access**: [`AccessLevel`](../type-aliases/AccessLevel.md)
 
-Defined in: packages/blue-dispatcher/src/access-control-condition.ts:43
+Defined in: [packages/blue-dispatcher/src/access-control-condition.ts:43](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/access-control-condition.ts#lines-43)
 
 The access level required for this condition.
 
@@ -70,7 +70,7 @@ The access level required for this condition.
 
 > **get** **content**(): `string`[]
 
-Defined in: packages/blue-dispatcher/src/access-control-condition.ts:45
+Defined in: [packages/blue-dispatcher/src/access-control-condition.ts:45](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/access-control-condition.ts#lines-45)
 
 ##### Returns
 
@@ -88,7 +88,7 @@ Defined in: packages/blue-dispatcher/src/access-control-condition.ts:45
 
 > **get** **infix**(): `string`
 
-Defined in: packages/blue-dispatcher/src/access-control-condition.ts:49
+Defined in: [packages/blue-dispatcher/src/access-control-condition.ts:49](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/access-control-condition.ts#lines-49)
 
 ##### Returns
 
@@ -106,7 +106,7 @@ Defined in: packages/blue-dispatcher/src/access-control-condition.ts:49
 
 > **get** **isEmpty**(): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:153
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:153](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-153)
 
 Whether this condition contains no content.
 
@@ -124,7 +124,7 @@ Whether this condition contains no content.
 
 > **merge**(`other`): `AccessControlCondition`
 
-Defined in: packages/blue-dispatcher/src/access-control-condition.ts:77
+Defined in: [packages/blue-dispatcher/src/access-control-condition.ts:77](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/access-control-condition.ts#lines-77)
 
 Merge two access-control conditions.
 
@@ -159,7 +159,7 @@ The merged condition (most restrictive).
 
 > **getMatchingCondition**(`route`): `AccessControlCondition` \| `null`
 
-Defined in: packages/blue-dispatcher/src/access-control-condition.ts:94
+Defined in: [packages/blue-dispatcher/src/access-control-condition.ts:94](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/access-control-condition.ts#lines-94)
 
 Determine whether this condition matches the given route.
 
@@ -171,7 +171,7 @@ Determine whether this condition matches the given route.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The current route.
 
@@ -195,7 +195,7 @@ This condition when the route meets the access level, or `null`.
 
 > **compareTo**(`value`, `route?`): `number`
 
-Defined in: packages/blue-dispatcher/src/access-control-condition.ts:119
+Defined in: [packages/blue-dispatcher/src/access-control-condition.ts:119](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/access-control-condition.ts#lines-119)
 
 Compare two access-control conditions by strictness.
 
@@ -212,7 +212,7 @@ The condition to compare against.
 
 ##### route?
 
-`Route`\<`Record`\<`string`, `string`\>\>
+[`Route`](#)\<`Record`\<`string`, `string`\>\>
 
 The route used to break ties, if needed (unused here).
 
@@ -238,7 +238,7 @@ A negative number when `this` is more specific,
 
 > **equals**(`value`): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:166
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:166](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-166)
 
 Compare this condition to another value.
 
@@ -266,7 +266,7 @@ The value to compare.
 
 > **toJSON**(): `JSONValue`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:181
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:181](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-181)
 
 Serialize the condition to JSON.
 
@@ -286,7 +286,7 @@ The string form of the condition.
 
 > **toString**(): `string`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:190
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:190](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-190)
 
 Convert the condition to its textual form.
 

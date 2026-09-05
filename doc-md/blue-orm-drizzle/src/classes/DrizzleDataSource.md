@@ -6,7 +6,7 @@
 
 # Class: DrizzleDataSource
 
-Defined in: packages/blue-orm-drizzle/src/drizzle-data-source.ts:23
+Defined in: [packages/blue-orm-drizzle/src/drizzle-data-source.ts:23](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm-drizzle/src/drizzle-data-source.ts#lines-23)
 
 Drizzle-backed data source that maps `@blue/orm` entity metadata to SQL tables.
 
@@ -16,7 +16,7 @@ Drizzle-backed data source that maps `@blue/orm` entity metadata to SQL tables.
 
 > **new DrizzleDataSource**(`options?`): `DrizzleDataSource`
 
-Defined in: packages/blue-orm-drizzle/src/drizzle-data-source.ts:29
+Defined in: [packages/blue-orm-drizzle/src/drizzle-data-source.ts:29](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm-drizzle/src/drizzle-data-source.ts#lines-29)
 
 #### Parameters
 
@@ -36,7 +36,7 @@ Defined in: packages/blue-orm-drizzle/src/drizzle-data-source.ts:29
 
 > **get** **db**(): `LibSQLDatabase`
 
-Defined in: packages/blue-orm-drizzle/src/drizzle-data-source.ts:35
+Defined in: [packages/blue-orm-drizzle/src/drizzle-data-source.ts:35](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm-drizzle/src/drizzle-data-source.ts#lines-35)
 
 ##### Returns
 
@@ -50,7 +50,7 @@ Defined in: packages/blue-orm-drizzle/src/drizzle-data-source.ts:35
 
 > **get** **client**(): `Client`
 
-Defined in: packages/blue-orm-drizzle/src/drizzle-data-source.ts:39
+Defined in: [packages/blue-orm-drizzle/src/drizzle-data-source.ts:39](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm-drizzle/src/drizzle-data-source.ts#lines-39)
 
 ##### Returns
 
@@ -64,7 +64,7 @@ Defined in: packages/blue-orm-drizzle/src/drizzle-data-source.ts:39
 
 > **get** **url**(): `string`
 
-Defined in: packages/blue-orm-drizzle/src/drizzle-data-source.ts:43
+Defined in: [packages/blue-orm-drizzle/src/drizzle-data-source.ts:43](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm-drizzle/src/drizzle-data-source.ts#lines-43)
 
 ##### Returns
 
@@ -78,7 +78,7 @@ Defined in: packages/blue-orm-drizzle/src/drizzle-data-source.ts:43
 
 > **get** **initialized**(): `boolean`
 
-Defined in: packages/blue-orm-drizzle/src/drizzle-data-source.ts:47
+Defined in: [packages/blue-orm-drizzle/src/drizzle-data-source.ts:47](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm-drizzle/src/drizzle-data-source.ts#lines-47)
 
 ##### Returns
 
@@ -90,7 +90,7 @@ Defined in: packages/blue-orm-drizzle/src/drizzle-data-source.ts:47
 
 > **init**(`entities`): `Promise`\<`void`\>
 
-Defined in: packages/blue-orm-drizzle/src/drizzle-data-source.ts:51
+Defined in: [packages/blue-orm-drizzle/src/drizzle-data-source.ts:51](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm-drizzle/src/drizzle-data-source.ts#lines-51)
 
 #### Parameters
 

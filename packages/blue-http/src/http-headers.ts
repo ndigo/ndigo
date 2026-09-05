@@ -13,22 +13,22 @@ import { HTTPHeader } from './http-header';
  */
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.WWW_AUTHENTICATE
+ * @readonly The constant value documented by the code.
  */
 export const WWW_AUTHENTICATE = new HTTPHeader('WWW-Authenticate');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.AUTHORIZATION
+ * @readonly The constant value documented by the code.
  */
 export const AUTHORIZATION = new HTTPHeader('Authorization');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.PROXY_AUTHENTICATE
+ * @readonly The constant value documented by the code.
  */
 export const PROXY_AUTHENTICATE = new HTTPHeader('Proxy-Authenticate');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.PROXY_AUTHORIZATION
+ * @readonly The constant value documented by the code.
  */
 export const PROXY_AUTHORIZATION = new HTTPHeader('Proxy-Authorization');
 
@@ -37,32 +37,32 @@ export const PROXY_AUTHORIZATION = new HTTPHeader('Proxy-Authorization');
  */
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.AGE
+ * @readonly The constant value documented by the code.
  */
 export const AGE = new HTTPHeader('Age');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.CACHE_CONTROL
+ * @readonly The constant value documented by the code.
  */
 export const CACHE_CONTROL = new HTTPHeader('Cache-Control');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.CLEAR_SITE_DATA
+ * @readonly The constant value documented by the code.
  */
 export const CLEAR_SITE_DATA = new HTTPHeader('Clear-Site-Data');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.EXPIRES
+ * @readonly The constant value documented by the code.
  */
 export const EXPIRES = new HTTPHeader('Expires');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.PRAGMA
+ * @readonly The constant value documented by the code.
  */
 export const PRAGMA = new HTTPHeader('Pragma');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.WARNING
+ * @readonly The constant value documented by the code.
  */
 export const WARNING = new HTTPHeader('Warning');
 
@@ -71,37 +71,37 @@ export const WARNING = new HTTPHeader('Warning');
  */
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.ACCEPT_CH
+ * @readonly The constant value documented by the code.
  */
 export const ACCEPT_CH = new HTTPHeader('Accept-CH');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.ACCEPT_CH_LIFETIME
+ * @readonly The constant value documented by the code.
  */
 export const ACCEPT_CH_LIFETIME = new HTTPHeader('Accept-CH-Lifetime');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.EARLY_DATA
+ * @readonly The constant value documented by the code.
  */
 export const EARLY_DATA = new HTTPHeader('Early-Data');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.DEVICE_MEMORY
+ * @readonly The constant value documented by the code.
  */
 export const DEVICE_MEMORY = new HTTPHeader('Device-Memory');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.SAVE_DATA
+ * @readonly The constant value documented by the code.
  */
 export const SAVE_DATA = new HTTPHeader('Save-Data');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.VIEWPORT_WIDTH
+ * @readonly The constant value documented by the code.
  */
 export const VIEWPORT_WIDTH = new HTTPHeader('Viewport-Width');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.WIDTH
+ * @readonly The constant value documented by the code.
  */
 export const WIDTH = new HTTPHeader('Width');
 
@@ -110,37 +110,37 @@ export const WIDTH = new HTTPHeader('Width');
  */
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.LAST_MODIFIED
+ * @readonly The constant value documented by the code.
  */
 export const LAST_MODIFIED = new HTTPHeader('Last-Modified');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.ETAG
+ * @readonly The constant value documented by the code.
  */
 export const ETAG = new HTTPHeader('ETag');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.IF_MATCH
+ * @readonly The constant value documented by the code.
  */
 export const IF_MATCH = new HTTPHeader('If-Match');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.IF_NONE_MATCH
+ * @readonly The constant value documented by the code.
  */
 export const IF_NONE_MATCH = new HTTPHeader('If-None-Match');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.IF_MODIFIED_SINCE
+ * @readonly The constant value documented by the code.
  */
 export const IF_MODIFIED_SINCE = new HTTPHeader('If-Modified-Since');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.IF_UNMODIFIED_SINCE
+ * @readonly The constant value documented by the code.
  */
 export const IF_UNMODIFIED_SINCE = new HTTPHeader('If-Unmodified-Since');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.VARY
+ * @readonly The constant value documented by the code.
  */
 export const VARY = new HTTPHeader('Vary');
 
@@ -149,12 +149,12 @@ export const VARY = new HTTPHeader('Vary');
  */
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.CONNECTION
+ * @readonly The constant value documented by the code.
  */
 export const CONNECTION = new HTTPHeader('Connection');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.KEEP_ALIVE
+ * @readonly The constant value documented by the code.
  */
 export const KEEP_ALIVE = new HTTPHeader('Keep-Alive');
 
@@ -163,17 +163,17 @@ export const KEEP_ALIVE = new HTTPHeader('Keep-Alive');
  */
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.ACCEPT
+ * @readonly The constant value documented by the code.
  */
 export const ACCEPT = new HTTPHeader('Accept');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.ACCEPT_CHARSET
+ * @readonly The constant value documented by the code.
  */
 export const ACCEPT_CHARSET = new HTTPHeader('Accept-Charset');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.ACCEPT_ENCODING
+ * @readonly The constant value documented by the code.
  */
 export const ACCEPT_ENCODING = new HTTPHeader('Accept-Encoding');
 
@@ -182,12 +182,12 @@ export const ACCEPT_ENCODING = new HTTPHeader('Accept-Encoding');
  */
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.EXPECT
+ * @readonly The constant value documented by the code.
  */
 export const EXPECT = new HTTPHeader('Expect');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.MAX_FORWARDS
+ * @readonly The constant value documented by the code.
  */
 export const MAX_FORWARDS = new HTTPHeader('Max-Forwards');
 
@@ -196,22 +196,22 @@ export const MAX_FORWARDS = new HTTPHeader('Max-Forwards');
  */
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.COOKIE
+ * @readonly The constant value documented by the code.
  */
 export const COOKIE = new HTTPHeader('Cookie');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.SET_COOKIE
+ * @readonly The constant value documented by the code.
  */
 export const SET_COOKIE = new HTTPHeader('Set-Cookie');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.COOKIE2
+ * @readonly The constant value documented by the code.
  */
 export const COOKIE2 = new HTTPHeader('Cookie2');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.SET_COOKIE2
+ * @readonly The constant value documented by the code.
  */
 export const SET_COOKIE2 = new HTTPHeader('Set-Cookie2');
 
@@ -220,52 +220,52 @@ export const SET_COOKIE2 = new HTTPHeader('Set-Cookie2');
  */
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.ACCESS_CONTROL_ALLOW_ORIGIN
+ * @readonly The constant value documented by the code.
  */
 export const ACCESS_CONTROL_ALLOW_ORIGIN = new HTTPHeader('Access-Control-Allow-Origin');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.ACCESS_CONTROL_ALLOW_CREDENTIALS
+ * @readonly The constant value documented by the code.
  */
 export const ACCESS_CONTROL_ALLOW_CREDENTIALS = new HTTPHeader('Access-Control-Allow-Credentials');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.ACCESS_CONTROL_ALLOW_HEADERS
+ * @readonly The constant value documented by the code.
  */
 export const ACCESS_CONTROL_ALLOW_HEADERS = new HTTPHeader('Access-Control-Allow-Headers');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.ACCESS_CONTROL_ALLOW_METHODS
+ * @readonly The constant value documented by the code.
  */
 export const ACCESS_CONTROL_ALLOW_METHODS = new HTTPHeader('Access-Control-Allow-Methods');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.ACCESS_CONTROL_EXPOSE_HEADERS
+ * @readonly The constant value documented by the code.
  */
 export const ACCESS_CONTROL_EXPOSE_HEADERS = new HTTPHeader('Access-Control-Expose-Headers');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.ACCESS_CONTROL_MAX_AGE
+ * @readonly The constant value documented by the code.
  */
 export const ACCESS_CONTROL_MAX_AGE = new HTTPHeader('Access-Control-Max-Age');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.ACCESS_CONTROL_REQUEST_HEADERS
+ * @readonly The constant value documented by the code.
  */
 export const ACCESS_CONTROL_REQUEST_HEADERS = new HTTPHeader('Access-Control-Request-Headers');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.ACCESS_CONTROL_REQUEST_METHOD
+ * @readonly The constant value documented by the code.
  */
 export const ACCESS_CONTROL_REQUEST_METHOD = new HTTPHeader('Access-Control-Request-Method');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.ORIGIN
+ * @readonly The constant value documented by the code.
  */
 export const ORIGIN = new HTTPHeader('Origin');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.TIMING_ALLOW_ORIGIN
+ * @readonly The constant value documented by the code.
  */
 export const TIMING_ALLOW_ORIGIN = new HTTPHeader('Timing-Allow-Origin');
 
@@ -274,12 +274,12 @@ export const TIMING_ALLOW_ORIGIN = new HTTPHeader('Timing-Allow-Origin');
  */
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.DNT
+ * @readonly The constant value documented by the code.
  */
 export const DNT = new HTTPHeader('DNT');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.TK
+ * @readonly The constant value documented by the code.
  */
 export const TK = new HTTPHeader('Tk');
 
@@ -288,7 +288,7 @@ export const TK = new HTTPHeader('Tk');
  */
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.CONTENT_DISPOSITION
+ * @readonly The constant value documented by the code.
  */
 export const CONTENT_DISPOSITION = new HTTPHeader('Content-Disposition');
 
@@ -297,27 +297,27 @@ export const CONTENT_DISPOSITION = new HTTPHeader('Content-Disposition');
  */
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.CONTENT_LENGTH
+ * @readonly The constant value documented by the code.
  */
 export const CONTENT_LENGTH = new HTTPHeader('Content-Length');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.CONTENT_TYPE
+ * @readonly The constant value documented by the code.
  */
 export const CONTENT_TYPE = new HTTPHeader('Content-Type');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.CONTENT_ENCODING
+ * @readonly The constant value documented by the code.
  */
 export const CONTENT_ENCODING = new HTTPHeader('Content-Encoding');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.CONTENT_LANGUAGE
+ * @readonly The constant value documented by the code.
  */
 export const CONTENT_LANGUAGE = new HTTPHeader('Content-Language');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.CONTENT_LOCATION
+ * @readonly The constant value documented by the code.
  */
 export const CONTENT_LOCATION = new HTTPHeader('Content-Location');
 
@@ -326,27 +326,27 @@ export const CONTENT_LOCATION = new HTTPHeader('Content-Location');
  */
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.FORWARDED
+ * @readonly The constant value documented by the code.
  */
 export const FORWARDED = new HTTPHeader('Forwarded');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.X_FORWARDED_FOR
+ * @readonly The constant value documented by the code.
  */
 export const X_FORWARDED_FOR = new HTTPHeader('X-Forwarded-For');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.X_FORWARDED_HOST
+ * @readonly The constant value documented by the code.
  */
 export const X_FORWARDED_HOST = new HTTPHeader('X-Forwarded-Host');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.X_FORWARDED_PROTO
+ * @readonly The constant value documented by the code.
  */
 export const X_FORWARDED_PROTO = new HTTPHeader('X-Forwarded-Proto');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.VIA
+ * @readonly The constant value documented by the code.
  */
 export const VIA = new HTTPHeader('Via');
 
@@ -355,7 +355,7 @@ export const VIA = new HTTPHeader('Via');
  */
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.LOCATION
+ * @readonly The constant value documented by the code.
  */
 export const LOCATION = new HTTPHeader('Location');
 
@@ -364,27 +364,27 @@ export const LOCATION = new HTTPHeader('Location');
  */
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.FROM
+ * @readonly The constant value documented by the code.
  */
 export const FROM = new HTTPHeader('From');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.HOST
+ * @readonly The constant value documented by the code.
  */
 export const HOST = new HTTPHeader('Host');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.REFERER
+ * @readonly The constant value documented by the code.
  */
 export const REFERER = new HTTPHeader('Referer');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.REFERER_POLICY
+ * @readonly The constant value documented by the code.
  */
 export const REFERER_POLICY = new HTTPHeader('Referer-Policy');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.USER_AGENT
+ * @readonly The constant value documented by the code.
  */
 export const USER_AGENT = new HTTPHeader('User-Agent');
 
@@ -393,12 +393,12 @@ export const USER_AGENT = new HTTPHeader('User-Agent');
  */
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.ALLOW
+ * @readonly The constant value documented by the code.
  */
 export const ALLOW = new HTTPHeader('Allow');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.SERVER
+ * @readonly The constant value documented by the code.
  */
 export const SERVER = new HTTPHeader('Server');
 
@@ -407,22 +407,22 @@ export const SERVER = new HTTPHeader('Server');
  */
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.ACCEPT_RANGES
+ * @readonly The constant value documented by the code.
  */
 export const ACCEPT_RANGES = new HTTPHeader('Accept-Ranges');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.RANGE
+ * @readonly The constant value documented by the code.
  */
 export const RANGE = new HTTPHeader('Range');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.IF_RANGE
+ * @readonly The constant value documented by the code.
  */
 export const IF_RANGE = new HTTPHeader('If-Range');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.CONTENT_RANGE
+ * @readonly The constant value documented by the code.
  */
 export const CONTENT_RANGE = new HTTPHeader('Content-Range');
 
@@ -431,82 +431,82 @@ export const CONTENT_RANGE = new HTTPHeader('Content-Range');
  */
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.CROSS_ORIGIN_EMBEDDER_POLICY
+ * @readonly The constant value documented by the code.
  */
 export const CROSS_ORIGIN_EMBEDDER_POLICY = new HTTPHeader('Cross-Origin-Embedder-Policy');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.CROSS_ORIGIN_OPENER_POLICY
+ * @readonly The constant value documented by the code.
  */
 export const CROSS_ORIGIN_OPENER_POLICY = new HTTPHeader('Cross-Origin-Opener-Policy');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.CROSS_ORIGIN_RESOURCE_POLICY
+ * @readonly The constant value documented by the code.
  */
 export const CROSS_ORIGIN_RESOURCE_POLICY = new HTTPHeader('Cross-Origin-Resource-Policy');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.CONTENT_SECURITY_POLICY
+ * @readonly The constant value documented by the code.
  */
 export const CONTENT_SECURITY_POLICY = new HTTPHeader('Content-Security-Policy');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.CONTENT_SECURITY_POLICY_REPORT_ONLY
+ * @readonly The constant value documented by the code.
  */
 export const CONTENT_SECURITY_POLICY_REPORT_ONLY = new HTTPHeader('Content-Security-Policy-Report-Only');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.EXPECT_CT
+ * @readonly The constant value documented by the code.
  */
 export const EXPECT_CT = new HTTPHeader('Expect-CT');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.FEATURE_POLICY
+ * @readonly The constant value documented by the code.
  */
 export const FEATURE_POLICY = new HTTPHeader('Feature-Policy');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.ORIGIN_ISOLATION
+ * @readonly The constant value documented by the code.
  */
 export const ORIGIN_ISOLATION = new HTTPHeader('Origin-Isolation');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.STRICT_TRANSPORT_SECURITY
+ * @readonly The constant value documented by the code.
  */
 export const STRICT_TRANSPORT_SECURITY = new HTTPHeader('Strict-Transport-Security');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.UGPRADE_INSECURE_REQUESTS
+ * @readonly The constant value documented by the code.
  */
 export const UGPRADE_INSECURE_REQUESTS = new HTTPHeader('Upgrade-Insecure-Requests');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.X_CONTENT_TYPE_OPTIONS
+ * @readonly The constant value documented by the code.
  */
 export const X_CONTENT_TYPE_OPTIONS = new HTTPHeader('X-Content-Type-Options');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.X_DOWNLOAD_OPTIONS
+ * @readonly The constant value documented by the code.
  */
 export const X_DOWNLOAD_OPTIONS = new HTTPHeader('X-Download-Options');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.X_FRAME_OPTIONS
+ * @readonly The constant value documented by the code.
  */
 export const X_FRAME_OPTIONS = new HTTPHeader('X-Frame-Options');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.X_PERMITTED_CROSS_DOMAIN_POLICIES
+ * @readonly The constant value documented by the code.
  */
 export const X_PERMITTED_CROSS_DOMAIN_POLICIES = new HTTPHeader('X-Permitted-Cross-Domain-Policies');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.X_POWERED_BY
+ * @readonly The constant value documented by the code.
  */
 export const X_POWERED_BY = new HTTPHeader('X-Powered-By');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.X_XSS_PROTECTION
+ * @readonly The constant value documented by the code.
  */
 export const X_XSS_PROTECTION = new HTTPHeader('X-XSS-Protection');
 
@@ -515,12 +515,12 @@ export const X_XSS_PROTECTION = new HTTPHeader('X-XSS-Protection');
  */
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.PUBLIC_KEY_PINS
+ * @readonly The constant value documented by the code.
  */
 export const PUBLIC_KEY_PINS = new HTTPHeader('Public-Key-Pins');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.PUBLIC_KEY_PINS_REPORT_ONLY
+ * @readonly The constant value documented by the code.
  */
 export const PUBLIC_KEY_PINS_REPORT_ONLY = new HTTPHeader('Public-Key-Pins-Report-Only');
 
@@ -529,22 +529,22 @@ export const PUBLIC_KEY_PINS_REPORT_ONLY = new HTTPHeader('Public-Key-Pins-Repor
  */
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.SEC_FETCH_SITE
+ * @readonly The constant value documented by the code.
  */
 export const SEC_FETCH_SITE = new HTTPHeader('Sec-Fetch-Site');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.SEC_FETCH_MODE
+ * @readonly The constant value documented by the code.
  */
 export const SEC_FETCH_MODE = new HTTPHeader('Sec-Fetch-Mode');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.SEC_FETCH_USER
+ * @readonly The constant value documented by the code.
  */
 export const SEC_FETCH_USER = new HTTPHeader('Sec-Fetch-User');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.SEC_FETCH_DEST
+ * @readonly The constant value documented by the code.
  */
 export const SEC_FETCH_DEST = new HTTPHeader('Sec-Fetch-Dest');
 
@@ -553,27 +553,27 @@ export const SEC_FETCH_DEST = new HTTPHeader('Sec-Fetch-Dest');
  */
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.LAST_EVENT_ID
+ * @readonly The constant value documented by the code.
  */
 export const LAST_EVENT_ID = new HTTPHeader('Last-Event-Id');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.NEL
+ * @readonly The constant value documented by the code.
  */
 export const NEL = new HTTPHeader('NEL');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.PING_FROM
+ * @readonly The constant value documented by the code.
  */
 export const PING_FROM = new HTTPHeader('Ping-From');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.PING_TO
+ * @readonly The constant value documented by the code.
  */
 export const PING_TO = new HTTPHeader('Ping-To');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.REPORT_TO
+ * @readonly The constant value documented by the code.
  */
 export const REPORT_TO = new HTTPHeader('Report-To');
 
@@ -582,17 +582,17 @@ export const REPORT_TO = new HTTPHeader('Report-To');
  */
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.TRANSFER_ENCODING
+ * @readonly The constant value documented by the code.
  */
 export const TRANSFER_ENCODING = new HTTPHeader('Transfer-Encoding');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.TE
+ * @readonly The constant value documented by the code.
  */
 export const TE = new HTTPHeader('TE');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.TRAILER
+ * @readonly The constant value documented by the code.
  */
 export const TRAILER = new HTTPHeader('Trailer');
 
@@ -601,27 +601,27 @@ export const TRAILER = new HTTPHeader('Trailer');
  */
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.SEC_WEBSOCKET_KEY
+ * @readonly The constant value documented by the code.
  */
 export const SEC_WEBSOCKET_KEY = new HTTPHeader('Sec-WebSocket-Key');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.SEC_WEBSOCKET_EXTENSIONS
+ * @readonly The constant value documented by the code.
  */
 export const SEC_WEBSOCKET_EXTENSIONS = new HTTPHeader('Sec-WebSocket-Extensions');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.SEC_WEBSOCKET_ACCEPT
+ * @readonly The constant value documented by the code.
  */
 export const SEC_WEBSOCKET_ACCEPT = new HTTPHeader('Sec-WebSocket-Accept');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.SEC_WEBSOCKET_PROTOCOL
+ * @readonly The constant value documented by the code.
  */
 export const SEC_WEBSOCKET_PROTOCOL = new HTTPHeader('Sec-WebSocket-Protocol');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.SEC_WEBSOCKET_VERSION
+ * @readonly The constant value documented by the code.
  */
 export const SEC_WEBSOCKET_VERSION = new HTTPHeader('Sec-WebSocket-Version');
 
@@ -630,97 +630,97 @@ export const SEC_WEBSOCKET_VERSION = new HTTPHeader('Sec-WebSocket-Version');
  */
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.ACCEPT_PUSH_POLICY
+ * @readonly The constant value documented by the code.
  */
 export const ACCEPT_PUSH_POLICY = new HTTPHeader('Accept-Push-Policy');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.ACCEPT_SIGNATURE
+ * @readonly The constant value documented by the code.
  */
 export const ACCEPT_SIGNATURE = new HTTPHeader('Accept-Signature');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.ALT_SVC
+ * @readonly The constant value documented by the code.
  */
 export const ALT_SVC = new HTTPHeader('Alt-Svc');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.DATE
+ * @readonly The constant value documented by the code.
  */
 export const DATE = new HTTPHeader('Date');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.LARGE_ALLOCATION
+ * @readonly The constant value documented by the code.
  */
 export const LARGE_ALLOCATION = new HTTPHeader('Large-Allocation');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.LINK
+ * @readonly The constant value documented by the code.
  */
 export const LINK = new HTTPHeader('Link');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.PUSH_POLICY
+ * @readonly The constant value documented by the code.
  */
 export const PUSH_POLICY = new HTTPHeader('Push-Policy');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.RETRY_AFTER
+ * @readonly The constant value documented by the code.
  */
 export const RETRY_AFTER = new HTTPHeader('Retry-After');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.SIGNATURE
+ * @readonly The constant value documented by the code.
  */
 export const SIGNATURE = new HTTPHeader('Signature');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.SIGNED_HEADERS
+ * @readonly The constant value documented by the code.
  */
 export const SIGNED_HEADERS = new HTTPHeader('Signed-Headers');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.SERVER_TIMING
+ * @readonly The constant value documented by the code.
  */
 export const SERVER_TIMING = new HTTPHeader('Server-Timing');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.SERVICE_WORKER_ALLOWED
+ * @readonly The constant value documented by the code.
  */
 export const SERVICE_WORKER_ALLOWED = new HTTPHeader('Service-Worker-Allowed');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.SOURCEMAP
+ * @readonly The constant value documented by the code.
  */
 export const SOURCEMAP = new HTTPHeader('SourceMap');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.UPGRADE
+ * @readonly The constant value documented by the code.
  */
 export const UPGRADE = new HTTPHeader('Upgrade');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.X_DNS_PREFETCH_CONTROL
+ * @readonly The constant value documented by the code.
  */
 export const X_DNS_PREFETCH_CONTROL = new HTTPHeader('X-DNS-Prefetch-Control');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.X_PINGBACK
+ * @readonly The constant value documented by the code.
  */
 export const X_PINGBACK = new HTTPHeader('X-Pingback');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.X_REQUESTED_WITH
+ * @readonly The constant value documented by the code.
  */
 export const X_REQUESTED_WITH = new HTTPHeader('X-Requested-With');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.X_ROBOTS_TAG
+ * @readonly The constant value documented by the code.
  */
 export const X_ROBOTS_TAG = new HTTPHeader('X-Robots-Tag');
 
 /**
- * @constant {module:http.HTTPHeader} module:http.HTTPHeaders.X_UA_COMPATIBLE
+ * @readonly The constant value documented by the code.
  */
 export const X_UA_COMPATIBLE = new HTTPHeader('X-UA-Compatible');
 

@@ -8,4 +8,4 @@
 
 > **PossibleScope** = [`KnownScope`](KnownScope.md) \| `string`
 
-Defined in: packages/blue-factory/src/scope.ts:9
+Defined in: [packages/blue-factory/src/scope.ts:9](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/scope.ts#lines-9)

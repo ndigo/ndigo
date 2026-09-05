@@ -6,7 +6,7 @@
 
 # Class: InMemoryUnitOfWork
 
-Defined in: packages/blue-orm/src/unit-of-work.ts:64
+Defined in: [packages/blue-orm/src/unit-of-work.ts:64](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/unit-of-work.ts#lines-64)
 
 An in-memory implementation of the [UnitOfWork](../interfaces/UnitOfWork.md) interface.
 Tracks new, dirty, and removed entities and flushes changes via an `EntityManager`.
@@ -28,7 +28,7 @@ implement `UnitOfWork` with your `EntityManager` adapter.
 
 > **new InMemoryUnitOfWork**(`entityManager`): `InMemoryUnitOfWork`
 
-Defined in: packages/blue-orm/src/unit-of-work.ts:74
+Defined in: [packages/blue-orm/src/unit-of-work.ts:74](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/unit-of-work.ts#lines-74)
 
 Creates an instance of `InMemoryUnitOfWork`.
 
@@ -50,7 +50,7 @@ The `EntityManager` to use for persisting changes.
 
 > **registerNew**\<`T`\>(`entity`): `void`
 
-Defined in: packages/blue-orm/src/unit-of-work.ts:86
+Defined in: [packages/blue-orm/src/unit-of-work.ts:86](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/unit-of-work.ts#lines-86)
 
 Registers a new entity to be persisted.
 If the entity was previously marked for removal or dirty, those registrations are cleared.
@@ -83,7 +83,7 @@ The entity to register.
 
 > **registerDirty**\<`T`\>(`entity`): `void`
 
-Defined in: packages/blue-orm/src/unit-of-work.ts:97
+Defined in: [packages/blue-orm/src/unit-of-work.ts:97](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/unit-of-work.ts#lines-97)
 
 Registers an existing entity whose state has been modified.
 An entity is only marked dirty if it's not new or removed.
@@ -116,7 +116,7 @@ The entity to register.
 
 > **registerRemoved**\<`T`\>(`entity`): `void`
 
-Defined in: packages/blue-orm/src/unit-of-work.ts:110
+Defined in: [packages/blue-orm/src/unit-of-work.ts:110](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/unit-of-work.ts#lines-110)
 
 Registers an entity to be removed.
 If the entity was previously marked as new or dirty, those registrations are cleared.
@@ -149,7 +149,7 @@ The entity to register.
 
 > **getState**\<`T`\>(`entity`): [`EntityState`](../type-aliases/EntityState.md) \| `undefined`
 
-Defined in: packages/blue-orm/src/unit-of-work.ts:121
+Defined in: [packages/blue-orm/src/unit-of-work.ts:121](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/unit-of-work.ts#lines-121)
 
 Gets the current state of an entity within the Unit of Work.
 
@@ -183,7 +183,7 @@ The `EntityState` ('new', 'managed', 'removed') or `undefined` if the entity is 
 
 > **flush**(): `void`
 
-Defined in: packages/blue-orm/src/unit-of-work.ts:142
+Defined in: [packages/blue-orm/src/unit-of-work.ts:142](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/unit-of-work.ts#lines-142)
 
 Persists all registered changes (new, dirty, removed entities) to the `EntityManager`.
 New and dirty entities are persisted, removed entities are removed.
@@ -203,7 +203,7 @@ After flushing, the Unit of Work is cleared.
 
 > **clear**(): `void`
 
-Defined in: packages/blue-orm/src/unit-of-work.ts:162
+Defined in: [packages/blue-orm/src/unit-of-work.ts:162](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/unit-of-work.ts#lines-162)
 
 Clears all registered entities from the Unit of Work, resetting its state.
 

@@ -8,7 +8,7 @@
 
 > **EventEmitterTarget** = [`EventEmitter`](../interfaces/EventEmitter.md) & `object`
 
-Defined in: packages/blue-context/src/event-emitter.ts:571
+Defined in: [packages/blue-context/src/event-emitter.ts:562](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-emitter.ts#lines-562)
 
 Internal target shape used by the object mixin helper.
 

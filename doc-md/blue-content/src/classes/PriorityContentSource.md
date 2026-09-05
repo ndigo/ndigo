@@ -6,7 +6,7 @@
 
 # Class: PriorityContentSource
 
-Defined in: packages/blue-content/src/priority.ts:29
+Defined in: [packages/blue-content/src/priority.ts:29](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-content/src/priority.ts#lines-29)
 
 Content source that merges multiple sources in priority order.
 
@@ -40,7 +40,7 @@ merged.getContent('tagline', 'en'); // 'Hello!'  (from override)
 
 > **new PriorityContentSource**(`sources`): `PriorityContentSource`
 
-Defined in: packages/blue-content/src/priority.ts:39
+Defined in: [packages/blue-content/src/priority.ts:39](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-content/src/priority.ts#lines-39)
 
 Creates a priority-ordered content source.
 
@@ -67,7 +67,7 @@ When no sources are provided.
 
 > **getContent**(`key`, `language`): `string`
 
-Defined in: packages/blue-content/src/priority.ts:57
+Defined in: [packages/blue-content/src/priority.ts:57](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-content/src/priority.ts#lines-57)
 
 Resolves content by trying each source in priority order.
 

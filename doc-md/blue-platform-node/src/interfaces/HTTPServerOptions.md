@@ -6,7 +6,7 @@
 
 # Interface: HTTPServerOptions
 
-Defined in: packages/blue-platform-node/src/http-server.ts:30
+Defined in: [packages/blue-platform-node/src/http-server.ts:30](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/http-server.ts#lines-30)
 
 Options for creating an [HTTPServer](../classes/HTTPServer.md).
 
@@ -16,7 +16,7 @@ Options for creating an [HTTPServer](../classes/HTTPServer.md).
 
 > `optional` **port?**: `number`
 
-Defined in: packages/blue-platform-node/src/http-server.ts:32
+Defined in: [packages/blue-platform-node/src/http-server.ts:32](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/http-server.ts#lines-32)
 
 TCP port to listen on. Defaults to `3000` or `process.env.PORT`.
 
@@ -26,7 +26,7 @@ TCP port to listen on. Defaults to `3000` or `process.env.PORT`.
 
 > `optional` **host?**: `string`
 
-Defined in: packages/blue-platform-node/src/http-server.ts:34
+Defined in: [packages/blue-platform-node/src/http-server.ts:34](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/http-server.ts#lines-34)
 
 Host to bind to. Defaults to `'127.0.0.1'`.
 
@@ -36,6 +36,6 @@ Host to bind to. Defaults to `'127.0.0.1'`.
 
 > `optional` **adapter?**: [`HTTPServerAdapter`](HTTPServerAdapter.md)
 
-Defined in: packages/blue-platform-node/src/http-server.ts:36
+Defined in: [packages/blue-platform-node/src/http-server.ts:36](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/http-server.ts#lines-36)
 
 Custom adapter. Defaults to `NodeHTTPServerAdapter`.

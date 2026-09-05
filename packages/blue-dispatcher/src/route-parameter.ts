@@ -41,7 +41,7 @@ export interface ParameterValueConversionContext {
 export type ParameterValueConverter = (value: any, context: ParameterValueConversionContext) => any;
 
 /**
- * Parameter map for @routeParams decorator
+ * Parameter map for `routeParams` decorator
  */
 export type RouteParameterMap = Record<string, ParameterExtractor>;
 
@@ -170,7 +170,7 @@ export class MethodParameter implements Serializable {
  * Factory function: Create a query parameter extractor
  *
  * @example
- * @routeParams({
+ * `routeParams`({
  *   page: queryValue('page'),
  *   limit: queryValue('limit', { required: true, defaultValue: '10' })
  * })
@@ -189,7 +189,7 @@ export function queryValue(name: string, options: ParameterExtractorOptions = {}
  * Factory function: Create a path parameter extractor
  *
  * @example
- * @routeParams({
+ * `routeParams`({
  *   userId: pathValue('userId')
  * })
  */
@@ -207,7 +207,7 @@ export function pathValue(name: string, options: ParameterExtractorOptions = {})
  * Factory function: Create a matrix parameter extractor
  *
  * @example
- * @routeParams({
+ * `routeParams`({
  *   color: matrixValue('color'),
  *   size: matrixValue('size', { required: true })
  * })
@@ -226,7 +226,7 @@ export function matrixValue(name: string, options: ParameterExtractorOptions = {
  * Factory function: Create a cookie parameter extractor
  *
  * @example
- * @routeParams({
+ * `routeParams`({
  *   session: cookieValue('SESSIONID'),
  *   token: cookieValue('AUTH_TOKEN', { required: true })
  * })
@@ -245,7 +245,7 @@ export function cookieValue(name: string, options: ParameterExtractorOptions = {
  * Factory function: Create a session parameter extractor
  *
  * @example
- * @routeParams({
+ * `routeParams`({
  *   userId: sessionValue('userId'),
  *   token: sessionValue('AUTH_TOKEN', { required: true })
  * })
@@ -264,7 +264,7 @@ export function sessionValue(name: string, options: ParameterExtractorOptions = 
  * Factory function: Create a model parameter extractor
  *
  * @example
- * @routeParams({
+ * `routeParams`({
  *   profile: modelValue('profile'),
  * })
  */
@@ -282,7 +282,7 @@ export function modelValue(name: string, options: ParameterExtractorOptions = {}
  * Factory function: Create a history state parameter extractor
  *
  * @example
- * @routeParams({
+ * `routeParams`({
  *   token: stateValue('token'),
  * })
  */
@@ -301,7 +301,7 @@ export function stateValue(name: string, options: ParameterExtractorOptions = {}
  * Binds an entire source (e.g. query, state) to an object, optionally filtering by prefix.
  *
  * @example
- * @routeParams({
+ * `routeParams`({
  *   user: bindValue('query', { prefix: 'user.' })
  * })
  */
@@ -328,7 +328,7 @@ export function bindValue(
  * Factory function: Create a route attribute parameter extractor.
  *
  * @example
- * @routeParams({
+ * `routeParams`({
  *   user: attributeValue('user')
  * })
  */
@@ -346,7 +346,7 @@ export function attributeValue(name: string, options: ParameterExtractorOptions 
  * Factory function: Create a request-header parameter extractor.
  *
  * @example
- * @routeParams({
+ * `routeParams`({
  *   contentType: headerValue('content-type'),
  *   authorization: headerValue('authorization', { required: true })
  * })
@@ -366,7 +366,7 @@ export function headerValue(name: string, options: ParameterExtractorOptions = {
  * Use `name: '*'` to bind the entire parsed body object.
  *
  * @example
- * @routeParams({
+ * `routeParams`({
  *   user: bodyValue('user'),
  *   payload: bodyValue('*')
  * })
@@ -441,7 +441,7 @@ export function withConversion(
 }
 
 /**
- * @routeParams decorator - Maps parameter names to extractors
+ * Invoked via the `routeParams` decorator.
  *
  * Replaces legacy parameter decorators with a method-level decorator.
  * Uses function parameter name extraction to map extractors to positions.
@@ -451,7 +451,7 @@ export function withConversion(
  * handleRequest(@queryValue('page') page: string) {}
  *
  * // New (TC39):
- * @routeParams({
+ * `routeParams`({
  *   page: queryValue('page')
  * })
  * handleRequest(page: string) {}

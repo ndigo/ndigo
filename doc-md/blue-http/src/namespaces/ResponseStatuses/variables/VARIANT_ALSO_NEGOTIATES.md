@@ -8,6 +8,6 @@
 
 > `const` **VARIANT\_ALSO\_NEGOTIATES**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
-Defined in: packages/blue-http/src/response-statuses.ts:328
+Defined in: [packages/blue-http/src/response-statuses.ts:328](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/response-statuses.ts#lines-328)
 
 The server has an internal configuration error: the chosen variant resource is configured to engage in transparent content negotiation itself, and is therefore not a proper end point in the negotiation process.

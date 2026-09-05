@@ -26,7 +26,7 @@ export interface StatusInterceptorConfig {
  * This interceptor adds a normalized status string to the response, which can be used by the
  * application to handle responses without relying on numeric HTTP codes.
  *
- * @implements {module:http.ResponseAwareHTTPInterceptor}
+
  */
 export class StatusInterceptor implements ResponseAwareHTTPInterceptor {
     #config: StatusInterceptorConfig;

@@ -6,7 +6,7 @@
 
 # Interface: CounterRateAlert
 
-Defined in: packages/blue-telemetry/src/metrics/counter-rate-resolver.ts:16
+Defined in: [packages/blue-telemetry/src/metrics/counter-rate-resolver.ts:16](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/metrics/counter-rate-resolver.ts#lines-16)
 
 Represents an alert triggered when a counter's rate per second exceeds a defined threshold.
 
@@ -16,7 +16,7 @@ Represents an alert triggered when a counter's rate per second exceeds a defined
 
 > `readonly` **counterKey**: `string`
 
-Defined in: packages/blue-telemetry/src/metrics/counter-rate-resolver.ts:17
+Defined in: [packages/blue-telemetry/src/metrics/counter-rate-resolver.ts:17](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/metrics/counter-rate-resolver.ts#lines-17)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: packages/blue-telemetry/src/metrics/counter-rate-resolver.ts:17
 
 > `readonly` **feature**: `string`
 
-Defined in: packages/blue-telemetry/src/metrics/counter-rate-resolver.ts:18
+Defined in: [packages/blue-telemetry/src/metrics/counter-rate-resolver.ts:18](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/metrics/counter-rate-resolver.ts#lines-18)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: packages/blue-telemetry/src/metrics/counter-rate-resolver.ts:18
 
 > `readonly` **ratePerSecond**: `number`
 
-Defined in: packages/blue-telemetry/src/metrics/counter-rate-resolver.ts:19
+Defined in: [packages/blue-telemetry/src/metrics/counter-rate-resolver.ts:19](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/metrics/counter-rate-resolver.ts#lines-19)
 
 ***
 
@@ -40,4 +40,4 @@ Defined in: packages/blue-telemetry/src/metrics/counter-rate-resolver.ts:19
 
 > `readonly` **threshold**: `number`
 
-Defined in: packages/blue-telemetry/src/metrics/counter-rate-resolver.ts:20
+Defined in: [packages/blue-telemetry/src/metrics/counter-rate-resolver.ts:20](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/metrics/counter-rate-resolver.ts#lines-20)

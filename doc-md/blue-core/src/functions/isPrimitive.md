@@ -8,7 +8,7 @@
 
 > **isPrimitive**(`value`): `value is primitive`
 
-Defined in: packages/blue-core/src/primitive.ts:21
+Defined in: [packages/blue-core/src/primitive.ts:21](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/primitive.ts#lines-21)
 
 Tests whether a value is a primitive.
 

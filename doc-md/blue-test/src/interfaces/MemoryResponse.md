@@ -6,7 +6,7 @@
 
 # Interface: MemoryResponse
 
-Defined in: packages/blue-test/src/memory-response.ts:17
+Defined in: [packages/blue-test/src/memory-response.ts:17](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-test/src/memory-response.ts#lines-17)
 
 A captured HTTP response: status code, headers, and body.
 
@@ -19,7 +19,7 @@ The body is captured raw (as delivered by `end`) — call `.json()` or
 
 > **status**: `number`
 
-Defined in: packages/blue-test/src/memory-response.ts:19
+Defined in: [packages/blue-test/src/memory-response.ts:19](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-test/src/memory-response.ts#lines-19)
 
 HTTP status code (defaults to 200).
 
@@ -29,7 +29,7 @@ HTTP status code (defaults to 200).
 
 > **headers**: `Record`\<`string`, `string`\>
 
-Defined in: packages/blue-test/src/memory-response.ts:21
+Defined in: [packages/blue-test/src/memory-response.ts:21](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-test/src/memory-response.ts#lines-21)
 
 Response headers (lower-cased keys).
 
@@ -39,7 +39,7 @@ Response headers (lower-cased keys).
 
 > **body**: `unknown`
 
-Defined in: packages/blue-test/src/memory-response.ts:23
+Defined in: [packages/blue-test/src/memory-response.ts:23](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-test/src/memory-response.ts#lines-23)
 
 Raw body as written by the handler/view, intended for `.json()`/`.text()`.
 
@@ -49,6 +49,6 @@ Raw body as written by the handler/view, intended for `.json()`/`.text()`.
 
 > **completed**: `boolean`
 
-Defined in: packages/blue-test/src/memory-response.ts:25
+Defined in: [packages/blue-test/src/memory-response.ts:25](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-test/src/memory-response.ts#lines-25)
 
 Whether the response was finalized (`end()` called).

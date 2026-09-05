@@ -6,7 +6,7 @@
 
 # Interface: PathMatcher
 
-Defined in: packages/blue-core/src/path-matcher.ts:25
+Defined in: [packages/blue-core/src/path-matcher.ts:25](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/path-matcher.ts#lines-25)
 
 Defines a contract for matching and merging path patterns.
 This interface extends `PatternMatcher` for string patterns and paths.
@@ -21,7 +21,7 @@ This interface extends `PatternMatcher` for string patterns and paths.
 
 > **getPatternComparator**(`path`): [`Comparator`](Comparator.md)\<`string`\>
 
-Defined in: packages/blue-core/src/path-matcher.ts:34
+Defined in: [packages/blue-core/src/path-matcher.ts:34](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/path-matcher.ts#lines-34)
 
 Given a full path, returns a [Comparator](Comparator.md) suitable for sorting patterns
 in order of explicitness for that path.
@@ -48,7 +48,7 @@ A comparator capable of sorting patterns in order of explicitness.
 
 > **match**(`pattern`, `path`): `boolean`
 
-Defined in: packages/blue-core/src/path-matcher.ts:41
+Defined in: [packages/blue-core/src/path-matcher.ts:41](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/path-matcher.ts#lines-41)
 
 Match the given `path` against the given `pattern`, according to this PathMatcher's matching strategy.
 
@@ -82,7 +82,7 @@ Whether or not the `path` matched.
 
 > **merge**(`pattern1`, `pattern2`): `string`
 
-Defined in: packages/blue-core/src/path-matcher.ts:50
+Defined in: [packages/blue-core/src/path-matcher.ts:50](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/path-matcher.ts#lines-50)
 
 Combines two patterns into a new pattern.
 

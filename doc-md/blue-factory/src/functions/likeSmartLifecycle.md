@@ -8,13 +8,13 @@
 
 > **likeSmartLifecycle**(`value`): `value is SmartLifecycle`
 
-Defined in: packages/blue-factory/src/lifecycle.ts:97
+Defined in: [packages/blue-factory/src/lifecycle.ts:97](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/lifecycle.ts#lines-97)
 
 ## Parameters
 
 ### value
 
-`any`
+`unknown`
 
 ## Returns
 

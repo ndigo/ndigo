@@ -6,7 +6,7 @@
 
 # Class: NodeHTTPServerAdapter
 
-Defined in: packages/blue-platform-node/src/node-http-server-adapter.ts:27
+Defined in: [packages/blue-platform-node/src/node-http-server-adapter.ts:61](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/node-http-server-adapter.ts#lines-61)
 
 Default HTTP server adapter using raw `node:http`.
 
@@ -25,9 +25,9 @@ await adapter.listen(3000);
 
 ### Constructor
 
-> **new NodeHTTPServerAdapter**(`dispatcher`): `NodeHTTPServerAdapter`
+> **new NodeHTTPServerAdapter**(`dispatcher`, `options?`): `NodeHTTPServerAdapter`
 
-Defined in: packages/blue-platform-node/src/node-http-server-adapter.ts:38
+Defined in: [packages/blue-platform-node/src/node-http-server-adapter.ts:74](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/node-http-server-adapter.ts#lines-74)
 
 #### Parameters
 
@@ -36,6 +36,12 @@ Defined in: packages/blue-platform-node/src/node-http-server-adapter.ts:38
 [`NodeDispatcher`](NodeDispatcher.md)
 
 The dispatcher to invoke for each incoming request.
+
+##### options?
+
+[`NodeHTTPServerAdapterOptions`](../interfaces/NodeHTTPServerAdapterOptions.md) = `{}`
+
+Optional request limits and timeouts.
 
 #### Returns
 
@@ -49,7 +55,7 @@ The dispatcher to invoke for each incoming request.
 
 > **get** **server**(): `unknown`
 
-Defined in: packages/blue-platform-node/src/node-http-server-adapter.ts:31
+Defined in: [packages/blue-platform-node/src/node-http-server-adapter.ts:66](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/node-http-server-adapter.ts#lines-66)
 
 The underlying server instance (for integration tests, etc.).
 
@@ -67,11 +73,12 @@ The underlying server instance (for integration tests, etc.).
 
 ### listen()
 
-> **listen**(`port`, `host`): `Promise`\<`void`\>
+> **listen**(`port`, `host?`): `Promise`\<`void`\>
 
-Defined in: packages/blue-platform-node/src/node-http-server-adapter.ts:43
+Defined in: [packages/blue-platform-node/src/node-http-server-adapter.ts:84](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/node-http-server-adapter.ts#lines-84)
 
-Start listening on the given port and host.
+Binds the server. Rejects on bind errors (port in use, bad host, …)
+instead of resolving silently.
 
 #### Parameters
 
@@ -79,7 +86,7 @@ Start listening on the given port and host.
 
 `number`
 
-##### host
+##### host?
 
 `string`
 
@@ -97,9 +104,11 @@ Start listening on the given port and host.
 
 > **close**(): `Promise`\<`void`\>
 
-Defined in: packages/blue-platform-node/src/node-http-server-adapter.ts:52
+Defined in: [packages/blue-platform-node/src/node-http-server-adapter.ts:111](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/node-http-server-adapter.ts#lines-111)
 
-Stop the server gracefully.
+Stops the server gracefully: stop accepting new connections, then wait
+up to `shutdownTimeoutMs` for in-flight requests to drain before
+destroying remaining sockets.
 
 #### Returns
 
@@ -115,7 +124,7 @@ Stop the server gracefully.
 
 > **handleRequest**(`req`, `res`): `Promise`\<`void`\>
 
-Defined in: packages/blue-platform-node/src/node-http-server-adapter.ts:59
+Defined in: [packages/blue-platform-node/src/node-http-server-adapter.ts:125](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/node-http-server-adapter.ts#lines-125)
 
 #### Parameters
 

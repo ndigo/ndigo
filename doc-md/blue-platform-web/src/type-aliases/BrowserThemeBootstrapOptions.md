@@ -8,7 +8,7 @@
 
 > **BrowserThemeBootstrapOptions** = `object`
 
-Defined in: packages/blue-platform-web/src/browser-theme.ts:11
+Defined in: [packages/blue-platform-web/src/browser-theme.ts:11](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/browser-theme.ts#lines-11)
 
 Options used to bootstrap browser theme support.
 
@@ -18,7 +18,7 @@ Options used to bootstrap browser theme support.
 
 > `optional` **cookieName?**: `string`
 
-Defined in: packages/blue-platform-web/src/browser-theme.ts:15
+Defined in: [packages/blue-platform-web/src/browser-theme.ts:15](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/browser-theme.ts#lines-15)
 
 Cookie name used to store the selected theme.
 
@@ -28,6 +28,6 @@ Cookie name used to store the selected theme.
 
 > `optional` **themeName?**: `string`
 
-Defined in: packages/blue-platform-web/src/browser-theme.ts:20
+Defined in: [packages/blue-platform-web/src/browser-theme.ts:20](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/browser-theme.ts#lines-20)
 
 Theme name to set on the application context before resolver setup.

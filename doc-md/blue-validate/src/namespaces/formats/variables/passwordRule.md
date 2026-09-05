@@ -8,6 +8,6 @@
 
 > `const` **passwordRule**: `RegExp`
 
-Defined in: packages/blue-validate/src/formats.ts:165
+Defined in: [packages/blue-validate/src/formats.ts:165](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/formats.ts#lines-165)
 
 A regular expression matching passwords.

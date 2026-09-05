@@ -8,6 +8,6 @@
 
 > `const` **UNAVAILABLE\_FOR\_LEGAL\_REASONS**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
-Defined in: packages/blue-http/src/response-statuses.ts:289
+Defined in: [packages/blue-http/src/response-statuses.ts:289](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/response-statuses.ts#lines-289)
 
 The user-agent requested a resource that cannot legally be provided, such as a web page censored by a government.

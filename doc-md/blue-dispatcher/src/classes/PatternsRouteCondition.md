@@ -6,7 +6,7 @@
 
 # Class: PatternsRouteCondition
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:423
+Defined in: [packages/blue-dispatcher/src/route-mapping-info.ts:423](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-mapping-info.ts#lines-423)
 
 ## Param
 
@@ -32,7 +32,7 @@ a list of file extensions to consider for path matching
 
 > **new PatternsRouteCondition**(...`patterns`): `PatternsRouteCondition`
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:457
+Defined in: [packages/blue-dispatcher/src/route-mapping-info.ts:457](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-mapping-info.ts#lines-457)
 
 Create a condition from one or more patterns.
 
@@ -56,7 +56,7 @@ Route patterns to use.
 
 > **new PatternsRouteCondition**(`patterns`, `routeCondition?`): `PatternsRouteCondition`
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:464
+Defined in: [packages/blue-dispatcher/src/route-mapping-info.ts:464](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-mapping-info.ts#lines-464)
 
 Create a condition from a prebuilt pattern set.
 
@@ -86,7 +86,7 @@ A template condition to copy matcher settings from.
 
 > **new PatternsRouteCondition**(`patterns`, `pathMatcher`, `useTrailingSlashMatch`, `fileExtensions`): `PatternsRouteCondition`
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:473
+Defined in: [packages/blue-dispatcher/src/route-mapping-info.ts:473](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-mapping-info.ts#lines-473)
 
 Create a condition with explicit matcher settings.
 
@@ -130,7 +130,7 @@ File extensions to treat as suffix patterns.
 
 > `readonly` **pathMatcher**: `PathMatcher`
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:427
+Defined in: [packages/blue-dispatcher/src/route-mapping-info.ts:427](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-mapping-info.ts#lines-427)
 
 Matcher used to compare and merge route patterns.
 
@@ -140,7 +140,7 @@ Matcher used to compare and merge route patterns.
 
 > **fileExtensions**: `string`[]
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:432
+Defined in: [packages/blue-dispatcher/src/route-mapping-info.ts:432](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-mapping-info.ts#lines-432)
 
 File extensions that are treated as matchable suffixes.
 
@@ -150,7 +150,7 @@ File extensions that are treated as matchable suffixes.
 
 > **patterns**: `Set`\<`string`\>
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:437
+Defined in: [packages/blue-dispatcher/src/route-mapping-info.ts:437](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-mapping-info.ts#lines-437)
 
 Route patterns to match against.
 
@@ -160,7 +160,7 @@ Route patterns to match against.
 
 > **useTrailingSlashMatch**: `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:442
+Defined in: [packages/blue-dispatcher/src/route-mapping-info.ts:442](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-mapping-info.ts#lines-442)
 
 Whether a trailing slash may be treated as equivalent.
 
@@ -172,7 +172,7 @@ Whether a trailing slash may be treated as equivalent.
 
 > **get** **isEmpty**(): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:153
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:153](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-153)
 
 Whether this condition contains no content.
 
@@ -192,7 +192,7 @@ Whether this condition contains no content.
 
 > **get** **content**(): `string`[]
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:444
+Defined in: [packages/blue-dispatcher/src/route-mapping-info.ts:444](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-mapping-info.ts#lines-444)
 
 ##### Returns
 
@@ -210,7 +210,7 @@ Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:444
 
 > **get** **infix**(): `string`
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:448
+Defined in: [packages/blue-dispatcher/src/route-mapping-info.ts:448](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-mapping-info.ts#lines-448)
 
 ##### Returns
 
@@ -226,7 +226,7 @@ Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:448
 
 > **equals**(`value`): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:166
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:166](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-166)
 
 Compare this condition to another value.
 
@@ -254,7 +254,7 @@ The value to compare.
 
 > **toJSON**(): `JSONValue`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:181
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:181](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-181)
 
 Serialize the condition to JSON.
 
@@ -274,7 +274,7 @@ The string form of the condition.
 
 > **toString**(): `string`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:190
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:190](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-190)
 
 Convert the condition to its textual form.
 
@@ -294,7 +294,7 @@ The condition string.
 
 > **merge**(`value`): `PatternsRouteCondition`
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:584
+Defined in: [packages/blue-dispatcher/src/route-mapping-info.ts:589](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-mapping-info.ts#lines-589)
 
 Merge route patterns from both conditions.
 
@@ -322,7 +322,7 @@ A new condition containing the merged patterns.
 
 > **getMatchingCondition**(`route`): `PatternsRouteCondition` \| `null`
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:616
+Defined in: [packages/blue-dispatcher/src/route-mapping-info.ts:621](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-mapping-info.ts#lines-621)
 
 Return a condition containing only the patterns that match the route.
 
@@ -330,7 +330,7 @@ Return a condition containing only the patterns that match the route.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The current route.
 
@@ -350,7 +350,7 @@ A matching condition, or `null`.
 
 > **getMatchingPatterns**(`path`): `string`[]
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:630
+Defined in: [packages/blue-dispatcher/src/route-mapping-info.ts:635](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-mapping-info.ts#lines-635)
 
 Return the patterns that match a path.
 
@@ -374,7 +374,7 @@ The matching patterns, sorted when necessary.
 
 > **compareTo**(`value`, `route`): `number`
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:652
+Defined in: [packages/blue-dispatcher/src/route-mapping-info.ts:657](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-mapping-info.ts#lines-657)
 
 Compare route patterns using the configured path matcher.
 
@@ -388,7 +388,7 @@ The condition to compare.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The route used to obtain a pattern comparator.
 

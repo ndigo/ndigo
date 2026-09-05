@@ -8,7 +8,7 @@
 
 > **registerConstraint**(`name`, `constraint`): `void`
 
-Defined in: packages/blue-validate/src/constraints.ts:14
+Defined in: [packages/blue-validate/src/constraints.ts:14](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/constraints.ts#lines-14)
 
 Registers or replaces a constraint by name.
 

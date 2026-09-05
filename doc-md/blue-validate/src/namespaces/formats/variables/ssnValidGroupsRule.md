@@ -8,7 +8,7 @@
 
 > `const` **ssnValidGroupsRule**: `RegExp`
 
-Defined in: packages/blue-validate/src/formats.ts:233
+Defined in: [packages/blue-validate/src/formats.ts:233](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/formats.ts#lines-233)
 
 A regular expression matching SSN valid groups.
 

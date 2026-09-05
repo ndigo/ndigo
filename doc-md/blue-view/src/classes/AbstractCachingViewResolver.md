@@ -6,7 +6,7 @@
 
 # Abstract Class: AbstractCachingViewResolver
 
-Defined in: packages/blue-view/src/view-resolver.ts:40
+Defined in: [packages/blue-view/src/view-resolver.ts:40](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view-resolver.ts#lines-40)
 
 Resolves a view name to a concrete [View](../interfaces/View.md) instance.
 
@@ -24,7 +24,7 @@ Resolves a view name to a concrete [View](../interfaces/View.md) instance.
 
 > **new AbstractCachingViewResolver**(): `AbstractCachingViewResolver`
 
-Defined in: packages/blue-view/src/view-resolver.ts:53
+Defined in: [packages/blue-view/src/view-resolver.ts:53](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view-resolver.ts#lines-53)
 
 Creates a resolver with an empty cache.
 
@@ -38,7 +38,7 @@ Creates a resolver with an empty cache.
 
 > `readonly` **cache**: `object`
 
-Defined in: packages/blue-view/src/view-resolver.ts:44
+Defined in: [packages/blue-view/src/view-resolver.ts:44](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view-resolver.ts#lines-44)
 
 Cached views keyed by name and language.
 
@@ -52,7 +52,7 @@ Cached views keyed by name and language.
 
 > **isCaching**: `boolean`
 
-Defined in: packages/blue-view/src/view-resolver.ts:48
+Defined in: [packages/blue-view/src/view-resolver.ts:48](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view-resolver.ts#lines-48)
 
 Indicates whether resolved views should be cached.
 
@@ -62,7 +62,7 @@ Indicates whether resolved views should be cached.
 
 > **resolveViewName**(`name`, `language?`): `Promise`\<[`View`](../interfaces/View.md) \| `null`\>
 
-Defined in: packages/blue-view/src/view-resolver.ts:70
+Defined in: [packages/blue-view/src/view-resolver.ts:70](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view-resolver.ts#lines-70)
 
 Resolves the requested view name, optionally using the cache.
 
@@ -76,7 +76,7 @@ The view name to resolve.
 
 ##### language?
 
-`any`
+`unknown`
 
 Optional locale or language hint used during resolution.
 
@@ -96,7 +96,7 @@ A promise that resolves to the matching view, or `null` when none is available.
 
 > `protected` **\_createView**(`name`, `language?`): `Promise`\<[`View`](../interfaces/View.md) \| `null`\>
 
-Defined in: packages/blue-view/src/view-resolver.ts:89
+Defined in: [packages/blue-view/src/view-resolver.ts:89](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view-resolver.ts#lines-89)
 
 #### Parameters
 
@@ -106,7 +106,7 @@ Defined in: packages/blue-view/src/view-resolver.ts:89
 
 ##### language?
 
-`any`
+`unknown`
 
 #### Returns
 
@@ -118,7 +118,7 @@ Defined in: packages/blue-view/src/view-resolver.ts:89
 
 > `protected` **\_createCacheKey**(`name`, `language?`): `string`
 
-Defined in: packages/blue-view/src/view-resolver.ts:93
+Defined in: [packages/blue-view/src/view-resolver.ts:93](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view-resolver.ts#lines-93)
 
 #### Parameters
 
@@ -128,7 +128,7 @@ Defined in: packages/blue-view/src/view-resolver.ts:93
 
 ##### language?
 
-`any`
+`unknown`
 
 #### Returns
 
@@ -140,7 +140,7 @@ Defined in: packages/blue-view/src/view-resolver.ts:93
 
 > `abstract` `protected` **\_loadView**(`name`, `language?`): `Promise`\<[`View`](../interfaces/View.md) \| `null`\>
 
-Defined in: packages/blue-view/src/view-resolver.ts:97
+Defined in: [packages/blue-view/src/view-resolver.ts:97](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view-resolver.ts#lines-97)
 
 #### Parameters
 
@@ -150,7 +150,7 @@ Defined in: packages/blue-view/src/view-resolver.ts:97
 
 ##### language?
 
-`any`
+`unknown`
 
 #### Returns
 

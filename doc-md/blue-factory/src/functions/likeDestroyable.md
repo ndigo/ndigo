@@ -8,13 +8,13 @@
 
 > **likeDestroyable**(`value`): `value is Destroyable`
 
-Defined in: packages/blue-factory/src/lifecycle.ts:63
+Defined in: [packages/blue-factory/src/lifecycle.ts:63](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/lifecycle.ts#lines-63)
 
 ## Parameters
 
 ### value
 
-`any`
+`unknown`
 
 ## Returns
 

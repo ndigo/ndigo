@@ -8,7 +8,7 @@
 
 > **detectSeverityScheme**(`levelName`): [`SeverityScheme`](../type-aliases/SeverityScheme.md)
 
-Defined in: packages/blue-telemetry/src/severity/severity.ts:33
+Defined in: [packages/blue-telemetry/src/severity/severity.ts:33](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/severity/severity.ts#lines-33)
 
 Attempts to detect the `SeverityScheme` based on a given log level name.
 This function uses a heuristic to guess the most likely scheme.

@@ -8,6 +8,6 @@
 
 > `const` **PositiveNumber**: `any`
 
-Defined in: packages/blue-model/src/basic.ts:71
+Defined in: [packages/blue-model/src/basic.ts:71](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-model/src/basic.ts#lines-71)
 
 Matches numeric values greater than zero.

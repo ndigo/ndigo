@@ -6,7 +6,7 @@
 
 # Interface: ErrorAwareHTTPInterceptor
 
-Defined in: packages/blue-http/src/http.ts:83
+Defined in: [packages/blue-http/src/http.ts:93](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-93)
 
 Handles failures that occur while executing a request.
 
@@ -16,7 +16,7 @@ Handles failures that occur while executing a request.
 
 > **postError**(`error`, `request`, `http`): `Promise`\<`Response` \| `undefined`\>
 
-Defined in: packages/blue-http/src/http.ts:92
+Defined in: [packages/blue-http/src/http.ts:102](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-102)
 
 Recovers from a transport or interceptor error.
 

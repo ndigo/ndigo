@@ -8,7 +8,7 @@
 
 > **decodeHtml**(`value`): `string`
 
-Defined in: packages/blue-util/src/string/decode-html.ts:19
+Defined in: [packages/blue-util/src/string/decode-html.ts:19](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-util/src/string/decode-html.ts#lines-19)
 
 ## Parameters
 

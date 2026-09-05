@@ -8,7 +8,7 @@
 
 > **ConverterResolutionOptions** = `object`
 
-Defined in: packages/blue-platform-node/src/argument-value-converter.ts:16
+Defined in: [packages/blue-platform-node/src/argument-value-converter.ts:16](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/argument-value-converter.ts#lines-16)
 
 ## Properties
 
@@ -16,4 +16,4 @@ Defined in: packages/blue-platform-node/src/argument-value-converter.ts:16
 
 > `optional` **strictNamedLookup?**: `boolean`
 
-Defined in: packages/blue-platform-node/src/argument-value-converter.ts:16
+Defined in: [packages/blue-platform-node/src/argument-value-converter.ts:16](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/argument-value-converter.ts#lines-16)

@@ -6,7 +6,7 @@
 
 # Interface: SpanConfig
 
-Defined in: packages/blue-telemetry/src/instrumentation/base.ts:7
+Defined in: [packages/blue-telemetry/src/instrumentation/base.ts:7](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/instrumentation/base.ts#lines-7)
 
 Shared span configuration for method instrumentation.
 
@@ -16,7 +16,7 @@ Shared span configuration for method instrumentation.
 
 > **name**: `string`
 
-Defined in: packages/blue-telemetry/src/instrumentation/base.ts:9
+Defined in: [packages/blue-telemetry/src/instrumentation/base.ts:9](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/instrumentation/base.ts#lines-9)
 
 Span name as it appears in traces.
 
@@ -26,7 +26,7 @@ Span name as it appears in traces.
 
 > **kind**: `SpanKind`
 
-Defined in: packages/blue-telemetry/src/instrumentation/base.ts:11
+Defined in: [packages/blue-telemetry/src/instrumentation/base.ts:11](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/instrumentation/base.ts#lines-11)
 
 Span kind (CLIENT, SERVER, etc.).
 
@@ -36,7 +36,7 @@ Span kind (CLIENT, SERVER, etc.).
 
 > `optional` **attributes?**: (`instance`, `args`) => `Record`\<`string`, `any`\>
 
-Defined in: packages/blue-telemetry/src/instrumentation/base.ts:13
+Defined in: [packages/blue-telemetry/src/instrumentation/base.ts:13](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/instrumentation/base.ts#lines-13)
 
 Optional callback that produces span attributes from the patched instance and arguments.
 
@@ -60,7 +60,7 @@ Optional callback that produces span attributes from the patched instance and ar
 
 > `optional` **onEnd?**: (`span`, `outcome`, `instance`, `args`) => `void`
 
-Defined in: packages/blue-telemetry/src/instrumentation/base.ts:24
+Defined in: [packages/blue-telemetry/src/instrumentation/base.ts:24](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/instrumentation/base.ts#lines-24)
 
 Optional callback invoked just before the span ends, with the method's
 result (or thrown error) and the patched instance + args — for outcome

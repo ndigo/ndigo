@@ -6,7 +6,7 @@
 
 # Class: ApplicationBuilder
 
-Defined in: packages/blue-boot/src/application-builder.ts:12
+Defined in: [packages/blue-boot/src/application-builder.ts:12](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-boot/src/application-builder.ts#lines-12)
 
 Builder for configuring and running an application bootstrap sequence.
 
@@ -16,7 +16,7 @@ Builder for configuring and running an application bootstrap sequence.
 
 > **new ApplicationBuilder**(`sources`, `parent?`): `ApplicationBuilder`
 
-Defined in: packages/blue-boot/src/application-builder.ts:46
+Defined in: [packages/blue-boot/src/application-builder.ts:46](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-boot/src/application-builder.ts#lines-46)
 
 Creates a builder for the provided application source classes.
 
@@ -46,7 +46,7 @@ Optional parent builder used to share configuration.
 
 > **get** **application**(): [`Application`](Application.md)
 
-Defined in: packages/blue-boot/src/application-builder.ts:27
+Defined in: [packages/blue-boot/src/application-builder.ts:27](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-boot/src/application-builder.ts#lines-27)
 
 Gets the configured application instance.
 
@@ -64,7 +64,7 @@ The application built by this builder.
 
 > **get** **context**(): `ApplicationContext`
 
-Defined in: packages/blue-boot/src/application-builder.ts:36
+Defined in: [packages/blue-boot/src/application-builder.ts:36](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-boot/src/application-builder.ts#lines-36)
 
 Gets the application context created by the builder after the first run.
 
@@ -80,7 +80,7 @@ The cached application context, if the builder has already run.
 
 > **build**(): [`Application`](Application.md)
 
-Defined in: packages/blue-boot/src/application-builder.ts:60
+Defined in: [packages/blue-boot/src/application-builder.ts:60](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-boot/src/application-builder.ts#lines-60)
 
 Builds the configured application instance.
 
@@ -96,7 +96,7 @@ The configured application.
 
 > **child**(...`sources`): `ApplicationBuilder`
 
-Defined in: packages/blue-boot/src/application-builder.ts:70
+Defined in: [packages/blue-boot/src/application-builder.ts:70](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-boot/src/application-builder.ts#lines-70)
 
 Creates a child builder that inherits configuration from this builder.
 
@@ -120,7 +120,7 @@ A child application builder.
 
 > `static` **fromConfig**(`url`): `Promise`\<`ApplicationBuilder`\>
 
-Defined in: packages/blue-boot/src/application-builder.ts:104
+Defined in: [packages/blue-boot/src/application-builder.ts:104](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-boot/src/application-builder.ts#lines-104)
 
 Creates a builder from a JSON configuration URL.
 
@@ -164,7 +164,7 @@ app.run();
 
 > **environment**(`environment`): `ApplicationBuilder`
 
-Defined in: packages/blue-boot/src/application-builder.ts:144
+Defined in: [packages/blue-boot/src/application-builder.ts:146](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-boot/src/application-builder.ts#lines-146)
 
 Sets the environment used when the application prepares its context.
 
@@ -188,7 +188,7 @@ This builder for chaining.
 
 > **parent**(...`sources`): `ApplicationBuilder`
 
-Defined in: packages/blue-boot/src/application-builder.ts:156
+Defined in: [packages/blue-boot/src/application-builder.ts:158](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-boot/src/application-builder.ts#lines-158)
 
 Returns the parent builder, creating one if necessary.
 
@@ -212,7 +212,7 @@ The parent builder.
 
 > **profiles**(...`profiles`): `ApplicationBuilder`
 
-Defined in: packages/blue-boot/src/application-builder.ts:170
+Defined in: [packages/blue-boot/src/application-builder.ts:172](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-boot/src/application-builder.ts#lines-172)
 
 Adds active profiles to the application configuration.
 
@@ -236,7 +236,7 @@ This builder for chaining.
 
 > **properties**(`properties`): `ApplicationBuilder`
 
-Defined in: packages/blue-boot/src/application-builder.ts:185
+Defined in: [packages/blue-boot/src/application-builder.ts:187](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-boot/src/application-builder.ts#lines-187)
 
 Merges properties into the application configuration.
 
@@ -260,7 +260,7 @@ This builder for chaining.
 
 > **run**(...`args`): `ApplicationContext`
 
-Defined in: packages/blue-boot/src/application-builder.ts:198
+Defined in: [packages/blue-boot/src/application-builder.ts:200](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-boot/src/application-builder.ts#lines-200)
 
 Runs the configured application once and caches the resulting context.
 
@@ -284,7 +284,7 @@ The application context.
 
 > **sources**(`sources`): `ApplicationBuilder`
 
-Defined in: packages/blue-boot/src/application-builder.ts:214
+Defined in: [packages/blue-boot/src/application-builder.ts:216](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-boot/src/application-builder.ts#lines-216)
 
 Adds source classes to the application configuration.
 
@@ -308,7 +308,7 @@ This builder for chaining.
 
 > **on**(`event`, `listener`): `this`
 
-Defined in: packages/blue-boot/src/application-builder.ts:239
+Defined in: [packages/blue-boot/src/application-builder.ts:241](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-boot/src/application-builder.ts#lines-241)
 
 Registers an event listener on the application, enabling lifecycle hooks.
 Returns `this` for chaining with [run](#run).

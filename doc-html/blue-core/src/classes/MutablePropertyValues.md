@@ -1,0 +1,556 @@
+[**BlueJS Framework v0.0.1**](../../../README.md)
+
+***
+
+[BlueJS Framework](../../../modules.md) / [blue-core/src](../README.md) / MutablePropertyValues
+
+# Class: MutablePropertyValues
+
+Defined in: [packages/blue-core/src/property-value.ts:121](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/property-value.ts#lines-121)
+
+A mutable collection of named property values.
+
+## Extends
+
+- [`RingBuffer`](RingBuffer.md)\<[`PropertyValue`](PropertyValue.md)\>
+
+## Implements
+
+- `ArrayLike`\<[`PropertyValue`](PropertyValue.md) \| `undefined`\>
+- [`Equatable`](../interfaces/Equatable.md)
+- `Iterable`\<[`PropertyValue`](PropertyValue.md)\>
+- [`Serializable`](../interfaces/Serializable.md)
+
+## Indexable
+
+> \[`n`: `number`\]: [`PropertyValue`](PropertyValue.md) \| `undefined`
+
+## Constructors
+
+### Constructor
+
+> **new MutablePropertyValues**(`properties?`): `MutablePropertyValues`
+
+Defined in: [packages/blue-core/src/property-value.ts:142](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/property-value.ts#lines-142)
+
+Creates a collection seeded with existing property values.
+
+#### Parameters
+
+##### properties?
+
+`Iterable`\<[`PropertyValue`](PropertyValue.md), `any`, `any`\>
+
+Optional source collection to copy into this buffer.
+
+#### Returns
+
+`MutablePropertyValues`
+
+#### Overrides
+
+[`RingBuffer`](RingBuffer.md).[`constructor`](RingBuffer.md#constructor)
+
+## Properties
+
+### \_capacity
+
+> `protected` **\_capacity**: `number`
+
+Defined in: [packages/blue-core/src/ring-buffer.ts:24](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/ring-buffer.ts#lines-24)
+
+#### Inherited from
+
+[`RingBuffer`](RingBuffer.md).[`_capacity`](RingBuffer.md#_capacity)
+
+***
+
+### \_head
+
+> `protected` **\_head**: `number`
+
+Defined in: [packages/blue-core/src/ring-buffer.ts:25](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/ring-buffer.ts#lines-25)
+
+#### Inherited from
+
+[`RingBuffer`](RingBuffer.md).[`_head`](RingBuffer.md#_head)
+
+***
+
+### \_tail
+
+> `protected` **\_tail**: `number`
+
+Defined in: [packages/blue-core/src/ring-buffer.ts:26](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/ring-buffer.ts#lines-26)
+
+#### Inherited from
+
+[`RingBuffer`](RingBuffer.md).[`_tail`](RingBuffer.md#_tail)
+
+***
+
+### \_full
+
+> `protected` **\_full**: `number`
+
+Defined in: [packages/blue-core/src/ring-buffer.ts:27](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/ring-buffer.ts#lines-27)
+
+#### Inherited from
+
+[`RingBuffer`](RingBuffer.md).[`_full`](RingBuffer.md#_full)
+
+***
+
+### MAX\_CAPACITY
+
+> `readonly` `static` **MAX\_CAPACITY**: `number`
+
+Defined in: [packages/blue-core/src/ring-buffer.ts:32](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/ring-buffer.ts#lines-32)
+
+The maximum capacity of any RingBuffer instance.
+
+#### Inherited from
+
+[`RingBuffer`](RingBuffer.md).[`MAX_CAPACITY`](RingBuffer.md#max_capacity)
+
+***
+
+### MIN\_CAPACITY
+
+> `readonly` `static` **MIN\_CAPACITY**: `number`
+
+Defined in: [packages/blue-core/src/ring-buffer.ts:36](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/ring-buffer.ts#lines-36)
+
+The minimum capacity of any RingBuffer instance.
+
+#### Inherited from
+
+[`RingBuffer`](RingBuffer.md).[`MIN_CAPACITY`](RingBuffer.md#min_capacity)
+
+## Accessors
+
+### propertyValues
+
+#### Get Signature
+
+> **get** **propertyValues**(): [`PropertyValue`](PropertyValue.md)[]
+
+Defined in: [packages/blue-core/src/property-value.ts:126](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/property-value.ts#lines-126)
+
+All property values in iteration order.
+
+##### Returns
+
+[`PropertyValue`](PropertyValue.md)[]
+
+***
+
+### \[toStringTag\]
+
+#### Get Signature
+
+> **get** **\[toStringTag\]**(): `string`
+
+Defined in: [packages/blue-core/src/property-value.ts:133](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/property-value.ts#lines-133)
+
+The stable string tag for this collection.
+
+##### Returns
+
+`string`
+
+#### Overrides
+
+[`RingBuffer`](RingBuffer.md).[`[toStringTag]`](RingBuffer.md#tostringtag)
+
+***
+
+### capacity
+
+#### Get Signature
+
+> **get** **capacity**(): `number`
+
+Defined in: [packages/blue-core/src/ring-buffer.ts:50](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/ring-buffer.ts#lines-50)
+
+The current capacity of the ring buffer.
+
+##### Returns
+
+`number`
+
+#### Set Signature
+
+> **set** **capacity**(`newCapacity`): `void`
+
+Defined in: [packages/blue-core/src/ring-buffer.ts:59](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/ring-buffer.ts#lines-59)
+
+Sets the capacity of the ring buffer. The new capacity will be a power of 2
+between `MIN_CAPACITY` and `MAX_CAPACITY`.
+
+##### Parameters
+
+###### newCapacity
+
+`number`
+
+The desired new capacity.
+
+##### Returns
+
+`void`
+
+#### Inherited from
+
+[`RingBuffer`](RingBuffer.md).[`capacity`](RingBuffer.md#capacity)
+
+***
+
+### isEmpty
+
+#### Get Signature
+
+> **get** **isEmpty**(): `boolean`
+
+Defined in: [packages/blue-core/src/ring-buffer.ts:70](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/ring-buffer.ts#lines-70)
+
+Indicates if the ring buffer is empty.
+
+##### Returns
+
+`boolean`
+
+#### Inherited from
+
+[`RingBuffer`](RingBuffer.md).[`isEmpty`](RingBuffer.md#isempty)
+
+***
+
+### isFull
+
+#### Get Signature
+
+> **get** **isFull**(): `boolean`
+
+Defined in: [packages/blue-core/src/ring-buffer.ts:77](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/ring-buffer.ts#lines-77)
+
+Indicates if the ring buffer is full.
+
+##### Returns
+
+`boolean`
+
+#### Inherited from
+
+[`RingBuffer`](RingBuffer.md).[`isFull`](RingBuffer.md#isfull)
+
+***
+
+### length
+
+#### Get Signature
+
+> **get** **length**(): `number`
+
+Defined in: [packages/blue-core/src/ring-buffer.ts:84](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/ring-buffer.ts#lines-84)
+
+The number of elements currently in the ring buffer.
+
+##### Returns
+
+`number`
+
+#### Implementation of
+
+`ArrayLike.length`
+
+#### Inherited from
+
+[`RingBuffer`](RingBuffer.md).[`length`](RingBuffer.md#length)
+
+## Methods
+
+### addPropertyValue()
+
+#### Call Signature
+
+> **addPropertyValue**(`name`, `value`): `void`
+
+Defined in: [packages/blue-core/src/property-value.ts:157](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/property-value.ts#lines-157)
+
+Adds a property value to the collection.
+
+##### Parameters
+
+###### name
+
+`string`
+
+Property name.
+
+###### value
+
+`any`
+
+Property value.
+
+##### Returns
+
+`void`
+
+#### Call Signature
+
+> **addPropertyValue**(`pv`): `void`
+
+Defined in: [packages/blue-core/src/property-value.ts:164](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/property-value.ts#lines-164)
+
+Adds a pre-built property value to the collection.
+
+##### Parameters
+
+###### pv
+
+[`PropertyValue`](PropertyValue.md)
+
+Property value to add.
+
+##### Returns
+
+`void`
+
+***
+
+### equals()
+
+> **equals**(`value`): `boolean`
+
+Defined in: [packages/blue-core/src/property-value.ts:180](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/property-value.ts#lines-180)
+
+Compares this collection to another property collection.
+
+#### Parameters
+
+##### value
+
+`any`
+
+Value to compare.
+
+#### Returns
+
+`boolean`
+
+`true` when both collections contain the same property names and values.
+
+#### Implementation of
+
+[`Equatable`](../interfaces/Equatable.md).[`equals`](../interfaces/Equatable.md#equals)
+
+***
+
+### getValue()
+
+> **getValue**(`propertyName`): `any`
+
+Defined in: [packages/blue-core/src/property-value.ts:207](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/property-value.ts#lines-207)
+
+Retrieves only the wrapped value for a named property.
+
+#### Parameters
+
+##### propertyName
+
+`string`
+
+Property name to resolve.
+
+#### Returns
+
+`any`
+
+The stored value, or `null` when the property is missing.
+
+***
+
+### getPropertyValue()
+
+> **getPropertyValue**(`propertyName`): [`PropertyValue`](PropertyValue.md) \| `null`
+
+Defined in: [packages/blue-core/src/property-value.ts:218](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/property-value.ts#lines-218)
+
+Finds a property value by name.
+
+#### Parameters
+
+##### propertyName
+
+`string`
+
+Property name to resolve.
+
+#### Returns
+
+[`PropertyValue`](PropertyValue.md) \| `null`
+
+The matching property value, or `null` when no match exists.
+
+***
+
+### \[iterator\]()
+
+> **\[iterator\]**(): `Iterator`\<[`PropertyValue`](PropertyValue.md), `any`, `undefined`\>
+
+Defined in: [packages/blue-core/src/ring-buffer.ts:153](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/ring-buffer.ts#lines-153)
+
+Returns an iterator for the elements in the ring buffer.
+
+#### Returns
+
+`Iterator`\<[`PropertyValue`](PropertyValue.md), `any`, `undefined`\>
+
+An iterator for the elements.
+
+#### Implementation of
+
+`Iterable.[iterator]`
+
+#### Inherited from
+
+[`RingBuffer`](RingBuffer.md).[`[iterator]`](RingBuffer.md#iterator)
+
+***
+
+### get()
+
+> **get**(): [`PropertyValue`](PropertyValue.md) \| `undefined`
+
+Defined in: [packages/blue-core/src/ring-buffer.ts:161](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/ring-buffer.ts#lines-161)
+
+Retrieves and removes the oldest element from the ring buffer.
+
+#### Returns
+
+[`PropertyValue`](PropertyValue.md) \| `undefined`
+
+The oldest element, or `undefined` if the buffer is empty.
+
+#### Inherited from
+
+[`RingBuffer`](RingBuffer.md).[`get`](RingBuffer.md#get)
+
+***
+
+### peek()
+
+> **peek**(): [`PropertyValue`](PropertyValue.md) \| `undefined`
+
+Defined in: [packages/blue-core/src/ring-buffer.ts:179](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/ring-buffer.ts#lines-179)
+
+Returns the oldest element (tail position) without removing it.
+
+#### Returns
+
+[`PropertyValue`](PropertyValue.md) \| `undefined`
+
+The oldest element, or `undefined` if the buffer is empty.
+
+#### Inherited from
+
+[`RingBuffer`](RingBuffer.md).[`peek`](RingBuffer.md#peek)
+
+***
+
+### peekHead()
+
+> **peekHead**(): [`PropertyValue`](PropertyValue.md) \| `undefined`
+
+Defined in: [packages/blue-core/src/ring-buffer.ts:188](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/ring-buffer.ts#lines-188)
+
+Returns the newest element (most recently added, head-1 position) without removing it.
+
+#### Returns
+
+[`PropertyValue`](PropertyValue.md) \| `undefined`
+
+The newest element, or `undefined` if the buffer is empty.
+
+#### Inherited from
+
+[`RingBuffer`](RingBuffer.md).[`peekHead`](RingBuffer.md#peekhead)
+
+***
+
+### put()
+
+> **put**(...`items`): `number`
+
+Defined in: [packages/blue-core/src/ring-buffer.ts:199](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/ring-buffer.ts#lines-199)
+
+Adds one or more elements to the ring buffer. If the buffer is full,
+the oldest elements will be overwritten.
+
+#### Parameters
+
+##### items
+
+...[`PropertyValue`](PropertyValue.md)[]
+
+The elements to add.
+
+#### Returns
+
+`number`
+
+The new length of the ring buffer.
+
+#### Inherited from
+
+[`RingBuffer`](RingBuffer.md).[`put`](RingBuffer.md#put)
+
+***
+
+### toJSON()
+
+> **toJSON**(): [`JSONArray`](../interfaces/JSONArray.md)
+
+Defined in: [packages/blue-core/src/ring-buffer.ts:228](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/ring-buffer.ts#lines-228)
+
+Returns a JSON array representation of the ring buffer's contents.
+
+#### Returns
+
+[`JSONArray`](../interfaces/JSONArray.md)
+
+A JSON array.
+
+#### Implementation of
+
+[`Serializable`](../interfaces/Serializable.md).[`toJSON`](../interfaces/Serializable.md#tojson)
+
+#### Inherited from
+
+[`RingBuffer`](RingBuffer.md).[`toJSON`](RingBuffer.md#tojson)
+
+***
+
+### toString()
+
+> **toString**(): `string`
+
+Defined in: [packages/blue-core/src/ring-buffer.ts:242](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/ring-buffer.ts#lines-242)
+
+Returns a string representation of the ring buffer's contents.
+
+#### Returns
+
+`string`
+
+A comma-separated string of the elements.
+
+#### Implementation of
+
+[`Serializable`](../interfaces/Serializable.md).[`toString`](../interfaces/Serializable.md#tostring)
+
+#### Inherited from
+
+[`RingBuffer`](RingBuffer.md).[`toString`](RingBuffer.md#tostring)

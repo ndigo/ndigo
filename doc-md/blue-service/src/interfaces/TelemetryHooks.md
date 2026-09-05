@@ -6,7 +6,7 @@
 
 # Interface: TelemetryHooks
 
-Defined in: packages/blue-service/src/telemetry-hooks.ts:11
+Defined in: [packages/blue-service/src/telemetry-hooks.ts:10](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-service/src/telemetry-hooks.ts#lines-10)
 
 Interface for telemetry hooks that track service request lifecycles.
 
@@ -16,7 +16,7 @@ Interface for telemetry hooks that track service request lifecycles.
 
 > **onRequest**(`request`): `void`
 
-Defined in: packages/blue-service/src/telemetry-hooks.ts:17
+Defined in: [packages/blue-service/src/telemetry-hooks.ts:16](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-service/src/telemetry-hooks.ts#lines-16)
 
 Called before a service request is sent.
 
@@ -38,7 +38,7 @@ The HTTP request.
 
 > **onResponse**(`response`): `void`
 
-Defined in: packages/blue-service/src/telemetry-hooks.ts:23
+Defined in: [packages/blue-service/src/telemetry-hooks.ts:22](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-service/src/telemetry-hooks.ts#lines-22)
 
 Called after a service response is received.
 
@@ -60,7 +60,7 @@ The HTTP response.
 
 > **onError**(`error`): `void`
 
-Defined in: packages/blue-service/src/telemetry-hooks.ts:29
+Defined in: [packages/blue-service/src/telemetry-hooks.ts:28](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-service/src/telemetry-hooks.ts#lines-28)
 
 Called when a service request fails.
 

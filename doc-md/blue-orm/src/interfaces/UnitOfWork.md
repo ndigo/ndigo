@@ -6,7 +6,7 @@
 
 # Interface: UnitOfWork
 
-Defined in: packages/blue-orm/src/unit-of-work.ts:22
+Defined in: [packages/blue-orm/src/unit-of-work.ts:22](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/unit-of-work.ts#lines-22)
 
 Manages a set of changes to entities that will be committed as a single transaction.
 
@@ -24,7 +24,7 @@ for SQL-backed data sources. Pair with [TransactionManager](TransactionManager.m
 
 > **registerNew**\<`T`\>(`entity`): `void`
 
-Defined in: packages/blue-orm/src/unit-of-work.ts:27
+Defined in: [packages/blue-orm/src/unit-of-work.ts:27](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/unit-of-work.ts#lines-27)
 
 Registers a new entity to be persisted.
 
@@ -52,7 +52,7 @@ The entity to register.
 
 > **registerDirty**\<`T`\>(`entity`): `void`
 
-Defined in: packages/blue-orm/src/unit-of-work.ts:32
+Defined in: [packages/blue-orm/src/unit-of-work.ts:32](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/unit-of-work.ts#lines-32)
 
 Registers an existing entity whose state has been modified.
 
@@ -80,7 +80,7 @@ The entity to register.
 
 > **registerRemoved**\<`T`\>(`entity`): `void`
 
-Defined in: packages/blue-orm/src/unit-of-work.ts:37
+Defined in: [packages/blue-orm/src/unit-of-work.ts:37](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/unit-of-work.ts#lines-37)
 
 Registers an entity to be removed.
 
@@ -108,7 +108,7 @@ The entity to register.
 
 > **getState**\<`T`\>(`entity`): [`EntityState`](../type-aliases/EntityState.md) \| `undefined`
 
-Defined in: packages/blue-orm/src/unit-of-work.ts:43
+Defined in: [packages/blue-orm/src/unit-of-work.ts:43](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/unit-of-work.ts#lines-43)
 
 Gets the current state of an entity within the Unit of Work.
 
@@ -138,7 +138,7 @@ The `EntityState` or `undefined` if the entity is not tracked.
 
 > **flush**(): `void`
 
-Defined in: packages/blue-orm/src/unit-of-work.ts:48
+Defined in: [packages/blue-orm/src/unit-of-work.ts:48](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/unit-of-work.ts#lines-48)
 
 Persists all registered changes (new, dirty, removed entities) to the `EntityManager`.
 After flushing, the Unit of Work is cleared.
@@ -153,7 +153,7 @@ After flushing, the Unit of Work is cleared.
 
 > **clear**(): `void`
 
-Defined in: packages/blue-orm/src/unit-of-work.ts:52
+Defined in: [packages/blue-orm/src/unit-of-work.ts:52](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/unit-of-work.ts#lines-52)
 
 Clears all registered entities from the Unit of Work, resetting its state.
 

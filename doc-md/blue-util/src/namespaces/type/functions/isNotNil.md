@@ -8,7 +8,7 @@
 
 > **isNotNil**\<`T`\>(`x`): `x is T`
 
-Defined in: packages/blue-util/src/type/index.ts:73
+Defined in: [packages/blue-util/src/type/index.ts:73](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-util/src/type/index.ts#lines-73)
 
 Checks if the input value is not `null` or `undefined`.
 

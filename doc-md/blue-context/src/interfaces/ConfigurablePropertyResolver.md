@@ -6,7 +6,7 @@
 
 # Interface: ConfigurablePropertyResolver
 
-Defined in: packages/blue-context/src/property-resolver.ts:41
+Defined in: [packages/blue-context/src/property-resolver.ts:41](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/property-resolver.ts#lines-41)
 
 Property resolver that exposes mutable property sources.
 
@@ -20,7 +20,7 @@ Property resolver that exposes mutable property sources.
 
 > **propertySources**: `JSONObject`[]
 
-Defined in: packages/blue-context/src/property-resolver.ts:45
+Defined in: [packages/blue-context/src/property-resolver.ts:45](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/property-resolver.ts#lines-45)
 
 The ordered set of property sources used during resolution.
 
@@ -30,7 +30,7 @@ The ordered set of property sources used during resolution.
 
 > **getProperty**(`key`, `defaultValue?`): `JSONValue` \| `undefined`
 
-Defined in: packages/blue-context/src/property-resolver.ts:20
+Defined in: [packages/blue-context/src/property-resolver.ts:20](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/property-resolver.ts#lines-20)
 
 Resolves a property value, falling back to a default when missing.
 
@@ -64,7 +64,7 @@ The resolved property value or the default value.
 
 > **getRequiredProperty**(`key`): `JSONValue`
 
-Defined in: packages/blue-context/src/property-resolver.ts:28
+Defined in: [packages/blue-context/src/property-resolver.ts:28](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/property-resolver.ts#lines-28)
 
 Returns the resolved property value or throws when missing.
 
@@ -96,7 +96,7 @@ When the property cannot be resolved.
 
 > **hasProperty**(`key`): `boolean`
 
-Defined in: packages/blue-context/src/property-resolver.ts:35
+Defined in: [packages/blue-context/src/property-resolver.ts:35](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/property-resolver.ts#lines-35)
 
 Returns whether a property key can be resolved.
 

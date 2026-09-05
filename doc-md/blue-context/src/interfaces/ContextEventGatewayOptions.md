@@ -6,7 +6,7 @@
 
 # Interface: ContextEventGatewayOptions
 
-Defined in: packages/blue-context/src/event-gateway.ts:75
+Defined in: [packages/blue-context/src/event-gateway.ts:75](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-gateway.ts#lines-75)
 
 Configures relay validation and diagnostics for a gateway.
 
@@ -16,7 +16,7 @@ Configures relay validation and diagnostics for a gateway.
 
 > `optional` **diagnosticHandler?**: [`GatewayDiagnosticHandler`](GatewayDiagnosticHandler.md)
 
-Defined in: packages/blue-context/src/event-gateway.ts:79
+Defined in: [packages/blue-context/src/event-gateway.ts:79](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-gateway.ts#lines-79)
 
 Optional diagnostic callback sink.
 
@@ -26,7 +26,7 @@ Optional diagnostic callback sink.
 
 > `optional` **throwOnInvalid?**: `boolean`
 
-Defined in: packages/blue-context/src/event-gateway.ts:83
+Defined in: [packages/blue-context/src/event-gateway.ts:83](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-gateway.ts#lines-83)
 
 Throws instead of silently blocking invalid relays.
 
@@ -36,6 +36,6 @@ Throws instead of silently blocking invalid relays.
 
 > `optional` **validationStrategy?**: [`RelayValidationStrategy`](RelayValidationStrategy.md)
 
-Defined in: packages/blue-context/src/event-gateway.ts:87
+Defined in: [packages/blue-context/src/event-gateway.ts:87](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-gateway.ts#lines-87)
 
 Strategy used to validate relays.

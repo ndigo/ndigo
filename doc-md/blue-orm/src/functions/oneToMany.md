@@ -8,7 +8,7 @@
 
 > **oneToMany**(`targetEntity`): (`_value`, `context`) => `void`
 
-Defined in: packages/blue-orm/src/decorators.ts:140
+Defined in: [packages/blue-orm/src/decorators.ts:147](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/decorators.ts#lines-147)
 
 Marks a class field as the "one" side of a one-to-many relation.
 

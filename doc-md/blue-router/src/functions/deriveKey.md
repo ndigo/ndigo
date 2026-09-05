@@ -8,7 +8,7 @@
 
 > **deriveKey**(`path`, `name?`): `string`
 
-Defined in: packages/blue-router/src/route-registry.ts:26
+Defined in: [packages/blue-router/src/route-registry.ts:26](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/route-registry.ts#lines-26)
 
 Key derivation for route patterns.
 

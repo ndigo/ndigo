@@ -6,7 +6,7 @@
 
 # Class: JSONTransformer
 
-Defined in: packages/blue-http/src/transformers/json-transformer.ts:11
+Defined in: [packages/blue-http/src/transformers/json-transformer.ts:11](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/transformers/json-transformer.ts#lines-11)
 
 Applies a pipeline of transforms to JSON bodies.
 
@@ -20,7 +20,7 @@ Applies a pipeline of transforms to JSON bodies.
 
 > **new JSONTransformer**(`transforms`, `condition?`): `JSONTransformer`
 
-Defined in: packages/blue-http/src/transformers/json-transformer.ts:21
+Defined in: [packages/blue-http/src/transformers/json-transformer.ts:21](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/transformers/json-transformer.ts#lines-21)
 
 Creates a JSON transformer.
 
@@ -48,7 +48,7 @@ Optional predicate that controls whether the transform runs.
 
 > **canTransform**(`body`, `context`): `boolean`
 
-Defined in: packages/blue-http/src/transformers/json-transformer.ts:41
+Defined in: [packages/blue-http/src/transformers/json-transformer.ts:41](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/transformers/json-transformer.ts#lines-41)
 
 Tests whether the input is a JSON object that should be transformed.
 
@@ -82,7 +82,7 @@ The current transform context.
 
 > **transform**(`body`, `context`): `JSONObject`
 
-Defined in: packages/blue-http/src/transformers/json-transformer.ts:56
+Defined in: [packages/blue-http/src/transformers/json-transformer.ts:56](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/transformers/json-transformer.ts#lines-56)
 
 Applies the JSON transform pipeline.
 

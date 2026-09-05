@@ -6,7 +6,7 @@
 
 # Class: PropertyValue
 
-Defined in: packages/blue-core/src/property-value.ts:44
+Defined in: [packages/blue-core/src/property-value.ts:44](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/property-value.ts#lines-44)
 
 A named value wrapper used for property bags and metadata.
 
@@ -21,7 +21,7 @@ A named value wrapper used for property bags and metadata.
 
 > **new PropertyValue**(`name`, `value`): `PropertyValue`
 
-Defined in: packages/blue-core/src/property-value.ts:74
+Defined in: [packages/blue-core/src/property-value.ts:74](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/property-value.ts#lines-74)
 
 Creates a new property value.
 
@@ -49,7 +49,7 @@ Stored value.
 
 > **optional**: `boolean`
 
-Defined in: packages/blue-core/src/property-value.ts:49
+Defined in: [packages/blue-core/src/property-value.ts:49](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/property-value.ts#lines-49)
 
 Whether the property is optional when consumed by higher-level APIs.
 
@@ -61,7 +61,7 @@ Whether the property is optional when consumed by higher-level APIs.
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-core/src/property-value.ts:54
+Defined in: [packages/blue-core/src/property-value.ts:54](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/property-value.ts#lines-54)
 
 The stable string tag for this instance.
 
@@ -77,7 +77,7 @@ The stable string tag for this instance.
 
 > **get** **name**(): `string`
 
-Defined in: packages/blue-core/src/property-value.ts:59
+Defined in: [packages/blue-core/src/property-value.ts:59](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/property-value.ts#lines-59)
 
 The property name.
 
@@ -93,7 +93,7 @@ The property name.
 
 > **get** **value**(): `any`
 
-Defined in: packages/blue-core/src/property-value.ts:64
+Defined in: [packages/blue-core/src/property-value.ts:64](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/property-value.ts#lines-64)
 
 The stored property value.
 
@@ -107,7 +107,7 @@ The stored property value.
 
 > **equals**(`value`): `boolean`
 
-Defined in: packages/blue-core/src/property-value.ts:86
+Defined in: [packages/blue-core/src/property-value.ts:86](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/property-value.ts#lines-86)
 
 Compares this property value to another value.
 
@@ -135,7 +135,7 @@ Value to compare.
 
 > **toJSON**(): [`JSONValue`](../type-aliases/JSONValue.md)
 
-Defined in: packages/blue-core/src/property-value.ts:101
+Defined in: [packages/blue-core/src/property-value.ts:101](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/property-value.ts#lines-101)
 
 Serializes the property value to JSON.
 
@@ -155,7 +155,7 @@ A JSON object with `name` and `value` properties.
 
 > **toString**(): `string`
 
-Defined in: packages/blue-core/src/property-value.ts:113
+Defined in: [packages/blue-core/src/property-value.ts:113](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/property-value.ts#lines-113)
 
 Returns the property name.
 

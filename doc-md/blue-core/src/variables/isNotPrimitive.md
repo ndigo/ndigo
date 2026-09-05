@@ -8,7 +8,7 @@
 
 > `const` **isNotPrimitive**: (`value`) => `value is object`
 
-Defined in: packages/blue-core/src/primitive.ts:44
+Defined in: [packages/blue-core/src/primitive.ts:44](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/primitive.ts#lines-44)
 
 Tests whether a value is not a primitive.
 

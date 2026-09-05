@@ -8,6 +8,6 @@
 
 > `const` **NETWORK\_AUTHENTICATION\_REQUIRED**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
-Defined in: packages/blue-http/src/response-statuses.ts:348
+Defined in: [packages/blue-http/src/response-statuses.ts:348](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/response-statuses.ts#lines-348)
 
 The 511 status code indicates that the client needs to authenticate to gain network access.

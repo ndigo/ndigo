@@ -6,7 +6,7 @@
 
 # Class: CompositeContentSource
 
-Defined in: packages/blue-content/src/composite.ts:15
+Defined in: [packages/blue-content/src/composite.ts:15](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-content/src/composite.ts#lines-15)
 
 Merges multiple content sources in priority order.
 
@@ -24,7 +24,7 @@ Falls back to the key itself when all sources return the key unchanged.
 
 > **new CompositeContentSource**(`sources`): `CompositeContentSource`
 
-Defined in: packages/blue-content/src/composite.ts:23
+Defined in: [packages/blue-content/src/composite.ts:23](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-content/src/composite.ts#lines-23)
 
 Creates a composite content source.
 
@@ -46,7 +46,7 @@ Sources ordered by priority, highest first.
 
 > **getContent**(`key`, `language`): `string`
 
-Defined in: packages/blue-content/src/composite.ts:37
+Defined in: [packages/blue-content/src/composite.ts:37](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-content/src/composite.ts#lines-37)
 
 Resolves the first real translation across all sources.
 

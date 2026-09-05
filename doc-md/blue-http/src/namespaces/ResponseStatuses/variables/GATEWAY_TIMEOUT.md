@@ -8,6 +8,6 @@
 
 > `const` **GATEWAY\_TIMEOUT**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
-Defined in: packages/blue-http/src/response-statuses.ts:318
+Defined in: [packages/blue-http/src/response-statuses.ts:318](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/response-statuses.ts#lines-318)
 
 This error response is given when the server is acting as a gateway and cannot get a response in time.

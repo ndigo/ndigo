@@ -33,7 +33,7 @@ export interface BlueTestApp {
  * dispatcher.
  *
  * Each source is registered into a `MetadataConfigApplicationContext`:
- * a `@configuration` class is handed to `context.register`; a plain
+ * a `configuration` class is handed to `context.register`; a plain
  * `@getMapping` controller class is instantiated and stored by its class name,
  * which the handler mapping discovers during `init`.
  *
@@ -82,8 +82,8 @@ export function bootApp(sources: Function[]): BlueTestApp {
 }
 
 /**
- * Heuristic: a class is a `@configuration` (constructor-registered) rather than
- * a plain controller when its `@configuration` decorator set the constructor
+ * Heuristic: a class is a `configuration` (constructor-registered) rather than
+ * a plain controller when its `configuration` decorator set the constructor
  * marker in the class's `Symbol.metadata` (`config:constructor`).
  */
 function isConfiguration(source: Function): boolean {

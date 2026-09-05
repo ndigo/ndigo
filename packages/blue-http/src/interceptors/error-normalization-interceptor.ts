@@ -22,8 +22,8 @@ export interface ErrorNormalizationInterceptorConfig {
  * This interceptor ensures that both network-level failures and HTTP error
  * responses are normalized into a consistent format for the application.
  *
- * @implements {module:http.ResponseAwareHTTPInterceptor}
- * @implements {module:http.ErrorAwareHTTPInterceptor}
+
+
  */
 export class ErrorNormalizationInterceptor implements ResponseAwareHTTPInterceptor, ErrorAwareHTTPInterceptor {
     #config: ErrorNormalizationInterceptorConfig;

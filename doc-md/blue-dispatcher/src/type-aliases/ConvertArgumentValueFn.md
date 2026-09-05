@@ -8,7 +8,7 @@
 
 > **ConvertArgumentValueFn** = (`convertType`, `value`, `parameter`, `route`, `mapping`, `registry?`, `options?`) => `any`
 
-Defined in: packages/blue-dispatcher/src/abstract-platform-resolver.ts:16
+Defined in: [packages/blue-dispatcher/src/abstract-platform-resolver.ts:16](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/abstract-platform-resolver.ts#lines-16)
 
 Function signature for platform-specific argument value conversion.
 
@@ -31,7 +31,7 @@ so that the shared `resolveArgument` pipeline can remain platform-agnostic.
 
 ### route
 
-`Route`
+[`Route`](#)
 
 ### mapping
 

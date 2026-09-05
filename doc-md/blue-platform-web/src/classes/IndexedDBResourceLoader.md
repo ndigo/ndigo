@@ -6,7 +6,7 @@
 
 # Class: IndexedDBResourceLoader
 
-Defined in: packages/blue-platform-web/src/indexeddb-resource-loader.ts:30
+Defined in: [packages/blue-platform-web/src/indexeddb-resource-loader.ts:30](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/indexeddb-resource-loader.ts#lines-30)
 
 Resource loader that persists data to IndexedDB.
 
@@ -27,7 +27,7 @@ const settings = await db.getItem('settings');
 
 > **new IndexedDBResourceLoader**(`config?`): `IndexedDBResourceLoader`
 
-Defined in: packages/blue-platform-web/src/indexeddb-resource-loader.ts:36
+Defined in: [packages/blue-platform-web/src/indexeddb-resource-loader.ts:36](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/indexeddb-resource-loader.ts#lines-36)
 
 #### Parameters
 
@@ -45,7 +45,7 @@ Defined in: packages/blue-platform-web/src/indexeddb-resource-loader.ts:36
 
 > **setItem**(`key`, `value`): `Promise`\<`void`\>
 
-Defined in: packages/blue-platform-web/src/indexeddb-resource-loader.ts:74
+Defined in: [packages/blue-platform-web/src/indexeddb-resource-loader.ts:74](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/indexeddb-resource-loader.ts#lines-74)
 
 Stores a value in IndexedDB.
 
@@ -73,7 +73,7 @@ The value to store.
 
 > **getItem**\<`T`\>(`key`): `Promise`\<`T` \| `null`\>
 
-Defined in: packages/blue-platform-web/src/indexeddb-resource-loader.ts:91
+Defined in: [packages/blue-platform-web/src/indexeddb-resource-loader.ts:91](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/indexeddb-resource-loader.ts#lines-91)
 
 Retrieves a value from IndexedDB.
 
@@ -103,7 +103,7 @@ The stored value, or `null` when not found.
 
 > **removeItem**(`key`): `Promise`\<`void`\>
 
-Defined in: packages/blue-platform-web/src/indexeddb-resource-loader.ts:111
+Defined in: [packages/blue-platform-web/src/indexeddb-resource-loader.ts:111](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/indexeddb-resource-loader.ts#lines-111)
 
 Removes a value from IndexedDB.
 
@@ -125,7 +125,7 @@ The storage key to remove.
 
 > **clear**(): `Promise`\<`void`\>
 
-Defined in: packages/blue-platform-web/src/indexeddb-resource-loader.ts:125
+Defined in: [packages/blue-platform-web/src/indexeddb-resource-loader.ts:125](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/indexeddb-resource-loader.ts#lines-125)
 
 Clears all values from the store.
 
@@ -139,7 +139,7 @@ Clears all values from the store.
 
 > **keys**(): `Promise`\<`string`[]\>
 
-Defined in: packages/blue-platform-web/src/indexeddb-resource-loader.ts:139
+Defined in: [packages/blue-platform-web/src/indexeddb-resource-loader.ts:139](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/indexeddb-resource-loader.ts#lines-139)
 
 Returns all keys in the store.
 

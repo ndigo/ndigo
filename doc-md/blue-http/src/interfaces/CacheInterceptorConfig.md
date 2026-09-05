@@ -6,7 +6,7 @@
 
 # Interface: CacheInterceptorConfig
 
-Defined in: packages/blue-http/src/interceptors/cache-interceptor.ts:10
+Defined in: [packages/blue-http/src/interceptors/cache-interceptor.ts:10](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/cache-interceptor.ts#lines-10)
 
 Configuration options for the CacheInterceptor.
 
@@ -16,7 +16,7 @@ Configuration options for the CacheInterceptor.
 
 > `optional` **defaultTtl?**: `number`
 
-Defined in: packages/blue-http/src/interceptors/cache-interceptor.ts:15
+Defined in: [packages/blue-http/src/interceptors/cache-interceptor.ts:15](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/cache-interceptor.ts#lines-15)
 
 The default time-to-live for cached responses in milliseconds.
 
@@ -32,7 +32,7 @@ The default time-to-live for cached responses in milliseconds.
 
 > `optional` **maxCacheSize?**: `number`
 
-Defined in: packages/blue-http/src/interceptors/cache-interceptor.ts:20
+Defined in: [packages/blue-http/src/interceptors/cache-interceptor.ts:20](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/cache-interceptor.ts#lines-20)
 
 The maximum number of responses to store in the cache.
 
@@ -48,7 +48,7 @@ The maximum number of responses to store in the cache.
 
 > `optional` **cacheBustingHeaders?**: `string`[]
 
-Defined in: packages/blue-http/src/interceptors/cache-interceptor.ts:25
+Defined in: [packages/blue-http/src/interceptors/cache-interceptor.ts:25](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/cache-interceptor.ts#lines-25)
 
 Headers that, if present in the request, will bypass the cache.
 

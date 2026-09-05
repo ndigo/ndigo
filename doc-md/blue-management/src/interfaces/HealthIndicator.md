@@ -6,7 +6,7 @@
 
 # Interface: HealthIndicator
 
-Defined in: packages/blue-management/src/health.ts:31
+Defined in: [packages/blue-management/src/health.ts:31](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-management/src/health.ts#lines-31)
 
 A component that reports the health of one subsystem.
 
@@ -16,7 +16,7 @@ A component that reports the health of one subsystem.
 
 > `readonly` **name**: `string`
 
-Defined in: packages/blue-management/src/health.ts:33
+Defined in: [packages/blue-management/src/health.ts:33](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-management/src/health.ts#lines-33)
 
 The stable name of the subsystem (e.g. `'telemetry'`).
 
@@ -26,7 +26,7 @@ The stable name of the subsystem (e.g. `'telemetry'`).
 
 > **check**(): [`HealthResult`](HealthResult.md) \| `Promise`\<[`HealthResult`](HealthResult.md)\>
 
-Defined in: packages/blue-management/src/health.ts:39
+Defined in: [packages/blue-management/src/health.ts:39](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-management/src/health.ts#lines-39)
 
 Checks the subsystem health.
 

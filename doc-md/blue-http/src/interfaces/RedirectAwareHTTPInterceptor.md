@@ -6,7 +6,7 @@
 
 # Interface: RedirectAwareHTTPInterceptor
 
-Defined in: packages/blue-http/src/interceptors/response-class-interceptor.ts:32
+Defined in: [packages/blue-http/src/interceptors/response-class-interceptor.ts:32](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/response-class-interceptor.ts#lines-32)
 
 Handles redirect responses.
 
@@ -16,7 +16,7 @@ Handles redirect responses.
 
 > **postRedirectResponse**(`response`, `settings`): `Promise`\<`void` \| `JSONObject`\>
 
-Defined in: packages/blue-http/src/interceptors/response-class-interceptor.ts:33
+Defined in: [packages/blue-http/src/interceptors/response-class-interceptor.ts:33](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/response-class-interceptor.ts#lines-33)
 
 #### Parameters
 

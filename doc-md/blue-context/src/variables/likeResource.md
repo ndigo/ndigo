@@ -8,7 +8,7 @@
 
 > `const` **likeResource**: (`value`) => `value is Resource<any>`
 
-Defined in: packages/blue-context/src/resource.ts:84
+Defined in: [packages/blue-context/src/resource.ts:84](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/resource.ts#lines-84)
 
 Returns whether a value behaves like a resource.
 

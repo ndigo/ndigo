@@ -19,8 +19,8 @@ import { ColumnDefinition } from './metadata';
  */
 export type DerivedQueryResult<T> = T[];
 
-const FIND_BY = /^findBy([A-Z][A-Za-z0-9]*)$/;
-const FIND_BY_AND = /^findBy([A-Z][A-Za-z0-9]*)And([A-Z][A-Za-z0-9]*)$/;
+const findByPattern = /^findBy([A-Z][A-Za-z0-9]*)$/;
+const findByAndPattern = /^findBy([A-Z][A-Za-z0-9]*)And([A-Z][A-Za-z0-9]*)$/;
 
 /**
  * Parses a derived method name into a list of property filters.
@@ -42,7 +42,7 @@ export function parseDerivedQuery(
     // Check the AND form FIRST — the single-property regex also matches
     // `findByNameAndId` (as a single group `NameAndId`), which would shadow
     // the conjunction form.
-    const and = methodName.match(FIND_BY_AND);
+    const and = methodName.match(findByAndPattern);
     if (and) {
         const p1 = matches(and[1] ?? '');
         const p2 = matches(and[2] ?? '');
@@ -54,7 +54,7 @@ export function parseDerivedQuery(
             : null;
     }
 
-    const single = methodName.match(FIND_BY);
+    const single = methodName.match(findByPattern);
     if (single) {
         const prop = matches(single[1] ?? '');
         return prop ? [{ property: prop, valueIndex: 0 }] : null;

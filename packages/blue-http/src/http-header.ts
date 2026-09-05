@@ -43,7 +43,6 @@ function setPair(entries: any, name: string, value: string): void {
     if (length) {
         for (let index = 0; index < length; index++) {
             if (entries[index][0] === name) {
-                // @ts-ignore: ¯\_(ツ)_/¯
                 entries[index][1] = value;
                 found = true;
                 break;

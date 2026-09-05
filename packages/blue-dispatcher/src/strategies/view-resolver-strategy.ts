@@ -15,8 +15,7 @@ export interface ViewResolverStrategy {
 /**
  */
 
-const { defineProperty } = Reflect,
-    VIEW_RESOLVER = 'viewResolver',
+const VIEW_RESOLVER = 'viewResolver',
     VIEW_RESOLVERS = `${VIEW_RESOLVER}s`,
     defaultViewResolvers: ViewResolver[] = [new ImportViewResolver()];
 

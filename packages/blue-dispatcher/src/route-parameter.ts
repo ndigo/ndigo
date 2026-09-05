@@ -409,7 +409,7 @@ export function asDate(extractor: ParameterExtractor): ParameterExtractor {
  * Wraps a parameter extractor to enforce JSON conversion.
  * @example asJson<UserProfile>(modelValue('profile'))
  */
-export function asJson<T = any>(extractor: ParameterExtractor): ParameterExtractor {
+export function asJson<_T = any>(extractor: ParameterExtractor): ParameterExtractor {
     return { ...extractor, convertType: { source: String, target: Object } };
 }
 

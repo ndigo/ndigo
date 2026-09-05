@@ -251,7 +251,9 @@ export class ContentNegotiationManager implements ContentNegotiationStrategy, Me
         this.resolvers = [];
         this.strategies = strategies;
         this.strategies.forEach((strategy) => {
-            likeMediaTypeFileExtensionResolver(strategy) && this.resolvers.push(strategy);
+            if (likeMediaTypeFileExtensionResolver(strategy)) {
+                this.resolvers.push(strategy);
+            }
         });
     }
 

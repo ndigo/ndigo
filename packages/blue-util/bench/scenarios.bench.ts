@@ -133,7 +133,16 @@ describe('Scenario 4: isDense array check', () => {
     const dense10 = Array.from({ length: 10 }, (_, i) => i + 1);
     const dense100 = Array.from({ length: 100 }, (_, i) => i + 1);
     const dense1000 = Array.from({ length: 1000 }, (_, i) => i + 1);
-    const sparse10 = [1, , 3, 4, 5, 6, 7, 8, 9, 10] as unknown[];
+    const sparse10 = new Array(10);
+    sparse10[0] = 1;
+    sparse10[2] = 3;
+    sparse10[3] = 4;
+    sparse10[4] = 5;
+    sparse10[5] = 6;
+    sparse10[6] = 7;
+    sparse10[7] = 8;
+    sparse10[8] = 9;
+    sparse10[9] = 10;
     const sparse100 = new Array(100);
     sparse100[0] = 1;
     sparse100[50] = 2;

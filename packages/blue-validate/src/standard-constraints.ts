@@ -68,8 +68,6 @@ import {
 import { toString } from '@blue/util/string';
 import { serializable } from '@blue/core';
 
-type Counter = (value: string) => number;
-
 type Pattern = string | RegExp;
 
 type NonConsecutiveAlphaNumericsParams = import('./_numeric-constraints').Params & {

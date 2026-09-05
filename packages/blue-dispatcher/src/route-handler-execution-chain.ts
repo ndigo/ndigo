@@ -51,10 +51,14 @@ export default class RouteHandlerExecutionChain {
         if (handler instanceof RouteHandlerExecutionChain) {
             const chain = handler;
             this.handler = chain.handler;
-            interceptors && this.addInterceptors(chain.interceptors);
+            if (interceptors) {
+                this.addInterceptors(chain.interceptors);
+            }
         } else {
             this.handler = handler;
-            interceptors && this.addInterceptors(interceptors);
+            if (interceptors) {
+                this.addInterceptors(interceptors);
+            }
         }
 
         this.interceptorIndex = -1;
@@ -110,6 +114,7 @@ export default class RouteHandlerExecutionChain {
         let index = 0;
         if (length) {
             for (; index < length; index++) {
+                // oxlint-disable-next-line no-await-in-loop -- postHandle callbacks run in registration order; parallelizing would reorder interceptor side effects.
                 await interceptors[index].postHandle(route, this.handler, mv);
             }
         }
@@ -129,6 +134,7 @@ export default class RouteHandlerExecutionChain {
         let index = 0;
         if (length) {
             for (; index < length; index++) {
+                // oxlint-disable-next-line no-await-in-loop -- preHandle short-circuits on the first denial; each interceptor must see the prior outcome before running.
                 const outcome = await interceptors[index].preHandle(route, this.handler);
                 if (!resolvePreHandleOutcome(route, outcome)) {
                     return false;
@@ -154,6 +160,7 @@ export default class RouteHandlerExecutionChain {
         let index = this.interceptorIndex;
         if (interceptors && index >= 0) {
             for (; index >= 0; index--) {
+                // oxlint-disable-next-line no-await-in-loop -- completion runs in reverse registration order (LIFO teardown); parallelizing would invert cleanup semantics.
                 await interceptors[index].completeHandle(route, this.handler, error as Error);
             }
         }

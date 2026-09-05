@@ -1,6 +1,5 @@
 import { Comparator, IllegalStateError } from '@blue/core';
 import { Initializable } from '@blue/factory';
-import { ApplicationContext } from '@blue/context';
 import { Route } from '@blue/router';
 import { isFunction } from '@blue/util/types';
 import { RouteHandlerMethod, RouteHandlerMethodMappingNamingStrategy } from './route-handler-method';
@@ -20,7 +19,7 @@ import { resolveHandlerWithContext, kindOf } from './_shared';
 import type { MaybeHandler } from './_shared';
 
 const { from } = Array,
-    { defineProperty, getPrototypeOf } = Reflect,
+    { getPrototypeOf } = Reflect,
     { keys } = Object;
 
 /**
@@ -68,7 +67,9 @@ export abstract class AbstractHandlerMethodMapping<T extends RouteMappingInfo>
         }
         keys(applicationContext).forEach((name) => {
             const value = applicationContext.getValue(name);
-            this._isHandler(value) && this._detectHandlerMethods(value);
+            if (this._isHandler(value)) {
+                this._detectHandlerMethods(value);
+            }
         });
     }
 

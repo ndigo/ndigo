@@ -40,6 +40,8 @@ export class TransformInterceptor implements RequestAwareHTTPInterceptor, Respon
         // Apply transforms
         for (const transform of this.requestTransforms) {
             if (this.shouldApplyTransform(transform, body, context)) {
+                // Transform order matters and each transform consumes the previous body.
+                // oxlint-disable-next-line no-await-in-loop
                 body = await this.applyTransform(transform, body, context);
             }
         }
@@ -74,6 +76,8 @@ export class TransformInterceptor implements RequestAwareHTTPInterceptor, Respon
 
         for (const transform of this.responseTransforms) {
             if (this.shouldApplyTransform(transform, body, context)) {
+                // Transform order matters and each transform consumes the previous body.
+                // oxlint-disable-next-line no-await-in-loop
                 body = await this.applyTransform(transform, body, context);
             }
         }

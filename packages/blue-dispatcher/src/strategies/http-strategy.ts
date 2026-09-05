@@ -42,8 +42,7 @@ export interface HTTPStrategy {
  * @returns {module:http.HTTP}
  */
 
-const { defineProperty } = Reflect,
-    HTTP_INTERCEPTOR = 'httpInterceptor',
+const HTTP_INTERCEPTOR = 'httpInterceptor',
     HTTP_INTERCEPTORS = `${HTTP_INTERCEPTOR}s`,
     HTTP_SETTINGS = 'httpSettings',
     defaultHTTPInterceptors: HTTPInterceptor[] = [

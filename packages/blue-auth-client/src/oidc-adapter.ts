@@ -2,7 +2,7 @@
  * @author Jeff Rose
  */
 
-import { createRemoteJWKSet, decodeJwt, jwtVerify, type JWTPayload } from 'jose';
+import { base64url, createRemoteJWKSet, decodeJwt, jwtVerify, type JWTPayload } from 'jose';
 import { type AuthAdapter } from '@blue/auth-core';
 import { type Principal } from '@blue/auth-core';
 import { type AuthResult } from '@blue/auth-core';
@@ -186,16 +186,12 @@ function assertTrustedUrl(url: URL, label: string): void {
 function randomToken(bytes: number): string {
     const buffer = new Uint8Array(bytes);
     crypto.getRandomValues(buffer);
-    let binary = '';
-    for (const byte of buffer) binary += String.fromCharCode(byte);
-    return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    return base64url.encode(buffer);
 }
 
 async function pkceCodeChallenge(verifier: string): Promise<string> {
     const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(verifier));
-    let binary = '';
-    for (const byte of new Uint8Array(digest)) binary += String.fromCharCode(byte);
-    return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+    return base64url.encode(new Uint8Array(digest));
 }
 
 function readRoles(payload: JWTPayload): string[] {
@@ -347,6 +343,7 @@ export class OIDCAdapter implements AuthAdapter {
             const chunks: Uint8Array[] = [];
             let received = 0;
             for (;;) {
+                // oxlint-disable-next-line no-await-in-loop -- a ReadableStream must be consumed sequentially; chunks are validated and accumulated in order.
                 const { done, value } = await reader.read();
                 if (done) break;
                 received += value.byteLength;

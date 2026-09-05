@@ -2,7 +2,6 @@
  * @author Jeff Rose
  */
 
-import { toString } from '@blue/util/string';
 import { is } from '@blue/util/types';
 import { TypeDefinition } from './types';
 import { ValidationGroup, defaultValidationGroup } from './group';

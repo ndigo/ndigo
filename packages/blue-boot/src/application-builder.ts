@@ -111,8 +111,10 @@ export class ApplicationBuilder {
         const sources: Function[] = [];
         const rawSources = config.sources;
         if (Array.isArray(rawSources)) {
-            for (const specifier of rawSources) {
-                const mod = await import(/* @vite-ignore */ specifier as string);
+            const modules = await Promise.all(
+                rawSources.map((specifier) => import(/* @vite-ignore */ specifier as string))
+            );
+            for (const mod of modules) {
                 const exported = (mod as Record<string, unknown>).default ?? mod;
                 if (typeof exported === 'function') {
                     sources.push(exported as Function);

@@ -8,7 +8,9 @@ class TestContentTypeInterceptor extends ContentTypeInterceptor {
     preInit(url: URL, settings?: any) {
         const proceed = super.preInit(url, settings);
         expect(proceed).toBe(true);
-        settings.contentType && expect(settings.headers.get('Content-Type')).toBe('text/html');
+        if (settings.contentType) {
+            expect(settings.headers.get('Content-Type')).toBe('text/html');
+        }
         return proceed;
     }
 }

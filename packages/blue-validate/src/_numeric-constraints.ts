@@ -130,10 +130,6 @@ export type ValidationConstraints = {
     [name: string]: Constraint;
 };
 
-const createConstraint = (validate: constraint): Constraint => ({
-    validate,
-});
-
 /**
  * Creates a constraint that validates a value against a regex pattern.
  * @param {PatternParams} params - Pattern parameters including regex and optional flags

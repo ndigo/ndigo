@@ -97,9 +97,13 @@ export const createShellContext = (options: ShellContextOptions = {}): GenericAp
     const { contentSource, data, environment, name = 'shell', themeName, themeResolver } = options;
     const context = new GenericApplicationContext(name, data);
 
+    // eslint-disable-next-line no-unused-expressions -- guarded dispatch: skip wiring when no override was provided
     contentSource && context.setContentSource(contentSource);
+    // eslint-disable-next-line no-unused-expressions -- guarded dispatch: skip wiring when no override was provided
     environment && context.setEnvironment(environment);
+    // eslint-disable-next-line no-unused-expressions -- guarded dispatch: skip wiring when no override was provided
     themeName && context.setThemeName(themeName);
+    // eslint-disable-next-line no-unused-expressions -- guarded dispatch: skip wiring when no override was provided
     themeResolver && context.setThemeResolver(themeResolver);
 
     return context;

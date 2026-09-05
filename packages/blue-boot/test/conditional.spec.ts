@@ -7,6 +7,7 @@ import {
 } from '@blue/core';
 import { Application } from '../src/application';
 import { WebAutoConfiguration } from '@blue/platform-web';
+import { NodeAutoConfiguration } from '@blue/platform-node';
 
 describe('conditionalOnBrowser', () => {
     afterEach(() => {
@@ -105,10 +106,11 @@ describe('Application integration', () => {
         expect(context.hasValue('argumentResolvers')).toBe(true);
     });
 
-    test('registers node resolvers in node environment', () => {
+    test('registers node resolvers from an explicit node source', () => {
         vi.stubGlobal('window', undefined);
 
-        const app = new Application([]);
+        // Platform-neutral boot: node auto-config comes in as a source.
+        const app = new Application([NodeAutoConfiguration]);
         const context = app.run();
 
         expect(context.hasValue('argumentResolvers')).toBe(true);

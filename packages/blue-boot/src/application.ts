@@ -12,7 +12,6 @@ import {
 import { IllegalStateError, JSONObject } from '@blue/core';
 import { RouteRegistry } from '@blue/router';
 import { isActive, isActiveForCurrentPlatform } from '@blue/core';
-import { NodeAutoConfiguration } from '@blue/platform-node/node-auto-configuration';
 
 /**
  * Class that can be used to bootstrap and launch an application.
@@ -162,13 +161,10 @@ export class Application extends Emitter {
             getProperty: (key: string) => environment.getProperty(key),
             hasValue: (name: string) => context.hasValue(name),
         };
-
-        // Node apps get the node dispatch/resolver auto-config unless they
-        // provide their own — the user sources can override.
-        if (isActive(NodeAutoConfiguration, conditionContext)) {
-            context.register(NodeAutoConfiguration);
-        }
-
+        // Platform auto-configurations are NOT registered here: @blue/boot is
+        // isomorphic and must not import @blue/platform-node or DOM code.
+        // Node apps pass NodeAutoConfiguration explicitly; browser apps pass
+        // WebAutoConfiguration. Conditions still gate the user's own sources.
         this.#sources.forEach((source) => {
             if (isActive(source, conditionContext)) {
                 context.register(source);

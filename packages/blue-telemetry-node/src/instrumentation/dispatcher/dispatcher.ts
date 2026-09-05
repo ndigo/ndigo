@@ -1,7 +1,7 @@
 import { SpanKind } from '@opentelemetry/api';
 import * as dispatcher from '@blue/dispatcher';
 import { Route } from '@blue/router';
-import { BaseBlueInstrumentation } from '../base';
+import { AbstractBlueInstrumentation } from '@blue/telemetry';
 
 /**
  * An OpenTelemetry instrumentation for the `@blue/dispatcher` package.
@@ -9,7 +9,7 @@ import { BaseBlueInstrumentation } from '../base';
  * This instrumentation automatically creates spans for the `dispatch` method,
  * providing visibility into route dispatching processes.
  */
-export class DispatcherInstrumentation extends BaseBlueInstrumentation {
+export class DispatcherInstrumentation extends AbstractBlueInstrumentation {
     constructor() {
         super('dispatcher');
     }

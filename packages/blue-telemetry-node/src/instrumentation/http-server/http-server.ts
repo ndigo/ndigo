@@ -15,7 +15,7 @@
 import { SpanKind, SpanStatusCode } from '@opentelemetry/api';
 import { HTTPServer, NodeHTTPServerAdapter } from '@blue/platform-node';
 import type { IncomingMessage } from 'node:http';
-import { BaseBlueInstrumentation } from '../base';
+import { AbstractBlueInstrumentation } from '@blue/telemetry';
 
 /**
  * Instrumentation for `HTTPServer.listen`/`close` and per-request handling.
@@ -27,7 +27,7 @@ import { BaseBlueInstrumentation } from '../base';
  * });
  * ```
  */
-export class HTTPServerInstrumentation extends BaseBlueInstrumentation {
+export class HTTPServerInstrumentation extends AbstractBlueInstrumentation {
     constructor() {
         super('http-server');
     }

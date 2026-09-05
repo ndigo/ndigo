@@ -50,7 +50,7 @@ export interface CountConfig {
  * - the target class/method to patch
  * - the span name, kind, and attributes
  */
-export abstract class BaseBlueInstrumentation extends InstrumentationBase {
+export abstract class AbstractBlueInstrumentation extends InstrumentationBase {
     /**
      * Creates the instrumentation, deriving the package name from the component.
      *

@@ -1,6 +1,6 @@
 import { SpanKind } from '@opentelemetry/api';
 import { HashRouter } from '@blue/platform-web';
-import { BaseBlueInstrumentation } from '../base';
+import { AbstractBlueInstrumentation } from '@blue/telemetry';
 
 /**
  * An OpenTelemetry instrumentation for the `@blue/router` package, specifically `HashRouter`.
@@ -8,7 +8,7 @@ import { BaseBlueInstrumentation } from '../base';
  * This instrumentation automatically creates spans for the internal `_setRoute` method,
  * providing visibility into route change events within the application.
  */
-export class RouterInstrumentation extends BaseBlueInstrumentation {
+export class RouterInstrumentation extends AbstractBlueInstrumentation {
     constructor() {
         super('router');
     }

@@ -7,8 +7,6 @@ packages:
   - '../todomvc/examples/react'
   - '../todomvc/examples/javascript-es6'
 
-
-
 # Workspace resolution (moved from .npmrc in pnpm 10+)
 linkWorkspacePackages: deep
 preferWorkspacePackages: true

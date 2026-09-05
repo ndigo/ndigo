@@ -1,6 +1,7 @@
 import { describe, test, expect, vi, afterEach } from 'vitest';
 import { Application } from '../src/application';
 import { WebAutoConfiguration } from '@blue/platform-web';
+import { NodeAutoConfiguration } from '@blue/platform-node';
 import { configuration, entry, profile } from '@blue/context';
 import { HandlerMethodArgumentResolver } from '@blue/dispatcher';
 
@@ -77,13 +78,14 @@ describe('Application', () => {
         expect(resolvers.length).toBeGreaterThan(0);
     });
 
-    test('it should register node resolvers when window is not defined', () => {
+    test('it should register node resolvers from an explicit node source', () => {
         vi.stubGlobal('window', undefined);
 
-        const app = new Application([]);
+        // @blue/boot is platform-neutral — node auto-config is a source the
+        // app provides, exactly like the web config above.
+        const app = new Application([NodeAutoConfiguration]);
         const context = app.run();
 
-        // Node auto-config registers the node resolver set.
         expect(context.hasValue('argumentResolvers')).toBe(true);
         const resolvers = context.getValue<object[]>('argumentResolvers');
         expect(resolvers.some((r) => r.constructor.name.includes('Node'))).toBe(true);

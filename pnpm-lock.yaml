@@ -545,10 +545,6 @@ importers:
         version: 5.9.3
 
   packages/blue-boot:
-    dependencies:
-      '@blue/platform-node':
-        specifier: workspace:~
-        version: link:../blue-platform-node
     devDependencies:
       '@blue/context':
         specifier: ~0.0.1
@@ -559,6 +555,9 @@ importers:
       '@blue/dispatcher':
         specifier: ~0.0.1
         version: link:../blue-dispatcher
+      '@blue/platform-node':
+        specifier: workspace:~
+        version: link:../blue-platform-node
       '@blue/platform-web':
         specifier: ~0.0.1
         version: link:../blue-platform-web

@@ -24,15 +24,11 @@ export class StaticController {
     async serve(file?: string) {
         const result = await resolver.resolve(file ?? '');
         if (result.kind !== 'ok') {
-            const status = statusForKind(result.kind);
-        }
-        return new ResponseEntity(result.data, ResponseStatuses.OK, {
-            'Content-Type': result.contentType ?? 'application/octet-stream',
-            'X-Content-Type-Options': 'nosniff',
-        });
-    });
-});
-                status === 403 ? ResponseStatuses.FORBIDDEN : ResponseStatuses.INTERNAL_SERVER_ERROR,
+            if (result.kind === 'not-found') return ResponseEntity.notFound();
+            return new ResponseEntity(
+                { error: result.kind === 'forbidden' ? 'Forbidden' : 'Internal Server Error' },
+                result.kind === 'forbidden' ? ResponseStatuses.FORBIDDEN : ResponseStatuses.INTERNAL_SERVER_ERROR,
+            );
         }
         return new ResponseEntity(result.data, ResponseStatuses.OK, {
             'Content-Type': result.contentType ?? 'application/octet-stream',

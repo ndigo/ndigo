@@ -9,9 +9,10 @@ BlueJS is a JavaScript-first application framework inspired by the design princi
     - [SOLID Principles](#solid-principles)
     - [DRY Principle](#dry-principle)
 3. [Layered Architecture](#layered-architecture)
-4. [Dependency Management Strategy](#dependency-management-strategy)
-5. [Design Patterns](#design-patterns)
-6. [Type-Safe Enum Pattern](#type-safe-enum-pattern)
+4. [Paradigm Selection Rules](#paradigm-selection-rules)
+5. [Dependency Management Strategy](#dependency-management-strategy)
+6. [Design Patterns](#design-patterns)
+7. [Type-Safe Enum Pattern](#type-safe-enum-pattern)
     - [Overview](#overview-1)
     - [When to Use](#when-to-use)
     - [Pattern Variations](#pattern-variations)
@@ -954,6 +955,31 @@ graph TD
 ```
 
 **Key Principle:** Higher layers depend on lower layers, never the reverse. Some cross-layer dependencies inside adjacent architectural tiers are intentional for integration and orchestration.
+
+## Paradigm Selection Rules
+
+> The framework offers multiple facilities that can, superficially, solve the same problem. These rules define the single canonical use for each so developers do not invent competing idioms (see `docs/audits/2026-09-05_FRAMEWORK_ASSESSMENT.md`).
+
+### Reactive state vs. application events
+
+| Facility | Canonical use | Anti-pattern |
+|---|---|---|
+| `@blue/signals` (`signal`/`computed`/`effect`) | **Local, synchronous, derived state** within one component or service — a value that other code reads and reacts to immediately. | Using signals to broadcast asynchronous cross-component notifications (a "signal as an event bus"). |
+| `@blue/context` `EventEmitter` (`Emitter`, `AsEventEmitter`) | **Cross-component, asynchronous application events** — decoupled publish/subscribe with `:`-hierarchy dispatch (`ApplicationEvent` style). | Using an emitter to model derived/inline state that components read synchronously. |
+| `@blue/model` `asMinimalEventEmitter` | **Internal implementation detail** of the objectmodel integration. | Importing it as a public event bus — it is not exported for application use. |
+
+**Rule of thumb:** derived value you read → signal; thing that happened that others should react to → event.
+
+### Validation
+
+- `@blue/validate` is the **canonical** constraint/validation system (`@validated`, `Validator`, `constraints`). Use it for application and route validation.
+- `@blue/model` (the `objectmodel` integration layer) is a **convenience for quick model-shaped assertions**, not a second validation framework. Prefer `@blue/validate` for anything that must integrate with the dispatcher, error handling, or reporting.
+
+### Route → handler mapping
+
+- **Radix** mapping (`RadixMetadataHandlerMapping` / `RadixRouteHandlerMapping`) is canonical for production routing (trie lookup, deterministic precedence).
+- **Linear** mapping (`LinearMetadataHandlerMapping`) is the simple/dev fallback.
+- `simple-path`, `name-path`, and `abstract-path` strategies are **internal**; applications should not select them directly.
 
 ## Dependency Management Strategy
 

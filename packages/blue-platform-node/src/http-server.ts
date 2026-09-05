@@ -1,7 +1,7 @@
 /**
  * Managed HTTP server for Node.js platform applications.
  *
- * Integrates with the `ApplicationContext` lifecycle: created as a bean during
+ * Integrates with the `ApplicationContext` lifecycle: created as an entry during
  * refresh, auto-started on the `started` event, shut down on `close`/`destroy`.
  *
  * @module

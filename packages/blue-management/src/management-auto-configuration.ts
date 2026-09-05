@@ -12,7 +12,7 @@ import { HealthController } from './health-controller';
  * Auto-configuration for management endpoints.
  *
  * Registers:
- * - a shared {@link FeatureMetricAggregator} bean (read by `/metrics` and by
+ * - a shared {@link FeatureMetricAggregator} entry (read by `/metrics` and by
  *   any feature using `@counted`)
  * - a {@link HealthRegistry} with the {@link TelemetryHealthIndicator} wired
  * - the `/metrics` and `/health` controllers

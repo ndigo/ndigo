@@ -63,7 +63,7 @@ export interface SharedDependencyRegistry {
  *
  * Validates feature dependencies against the ancestor context chain
  * at mount time, checking both the registry's declarations and actual
- * runtime bean presence.
+ * runtime entry presence.
  */
 export class DefaultSharedDependencyRegistry implements SharedDependencyRegistry {
     #services: Map<string, SharedDependencyEntry>;

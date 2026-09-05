@@ -101,7 +101,7 @@ Injects the application context into aware values before initialization.
 
 `string`
 
-The bean name.
+The entry name.
 
 ##### value
 

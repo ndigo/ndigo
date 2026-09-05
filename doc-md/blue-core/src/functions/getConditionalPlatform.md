@@ -8,7 +8,7 @@
 
 > **getConditionalPlatform**(`target`): [`ConditionalPlatform`](../type-aliases/ConditionalPlatform.md) \| `undefined`
 
-Defined in: packages/blue-core/src/conditional.ts:72
+Defined in: packages/blue-core/src/conditional.ts:149
 
 Reads the conditional platform metadata from a class.
 

@@ -4,15 +4,15 @@ A modular JavaScript/TypeScript framework organized as an Nx monorepo with pnpm 
 
 ## Requirements
 
-- **Node.js:** ≥18.0.0
-- **pnpm:** ≥8.0.0
+- **Node.js:** ≥22 (runtime)
+- **pnpm:** ≥11.0.0
 
 ## Technology Stack
 
 - **TypeScript:** 5.7.2 (ES2022 target)
-- **ESLint:** 9.17.0 (flat config)
+- **Oxlint:** (via `pnpm lint`)
 - **Nx:** 20.3.2 (monorepo management)
-- **pnpm:** 8.15.0 (package manager)
+- **pnpm:** 11.4.0 (package manager)
 - **Vitest:** 2.1.8 (testing framework)
 - **Vite:** 6.0.7 (bundler)
 
@@ -70,7 +70,6 @@ pnpm lint
 - [blue-orm](packages/blue-orm/README.md)
 - [blue-parser](packages/blue-parser/README.md)
 - [blue-platform-web](packages/blue-platform-web/README.md)
-- [blue-print](packages/blue-print/README.md)
 - [blue-router](packages/blue-router/README.md)
 - [blue-service](packages/blue-service/README.md)
 - [blue-telemetry](packages/blue-telemetry/README.md)
@@ -123,7 +122,7 @@ nx run-many -t test --coverage
 
 ## Code Style
 
-The project uses Prettier for code formatting and ESLint 9 for code quality checks:
+The project uses Prettier for code formatting and Oxlint for code quality checks:
 
 ```bash
 # Format code
@@ -139,7 +138,7 @@ pnpm lint
 **Configuration:**
 
 - Prettier: `prettier.config.mjs`
-- ESLint: `eslint.config.mjs` (flat config)
+- Oxlint: `oxlint` configuration via `.oxlintrc.json`
 
 **Formatting Rules:**
 

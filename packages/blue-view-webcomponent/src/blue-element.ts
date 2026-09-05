@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { Constructable } from '@blue/core';
 
 export interface BlueElement {

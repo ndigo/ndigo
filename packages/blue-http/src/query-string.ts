@@ -1,6 +1,3 @@
-/**
- * @author Jeff Rose
- */
 import { JSONObject, Parser, Stringifier } from '@blue/core';
 import queryExpression from './parsers/query-expression';
 import { encodeURIComponent as encode } from '@blue/util/string';

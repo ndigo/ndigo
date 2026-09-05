@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { configuration, entry } from '@blue/context';
 import { FeatureMetricAggregator } from '@blue/telemetry';
 import { HealthRegistry } from './health';

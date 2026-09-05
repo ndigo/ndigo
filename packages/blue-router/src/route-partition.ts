@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 const normalizePath = (path: string): string => {
     if (!path || path === '/') {
         return '/';

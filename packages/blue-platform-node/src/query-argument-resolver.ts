@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { MethodParameter, MethodParameterType, AbstractPlatformArgumentResolver } from '@blue/dispatcher';
 import { Route } from '@blue/router';
 import { convertArgumentValue } from './_resolver-util';

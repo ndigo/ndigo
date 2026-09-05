@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { like } from '@blue/util/types';
 import { ContentSource } from './content';
 

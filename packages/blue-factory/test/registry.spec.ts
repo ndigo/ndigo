@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { describe, test, expect, beforeEach, vi } from 'vitest';
 import { likeRegistry, RegistryProxyHandler, Registry } from '../src/registry';
 

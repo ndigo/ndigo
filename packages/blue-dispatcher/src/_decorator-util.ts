@@ -1,5 +1,4 @@
 /**
- * @author Jeff Rose
  *
  * Internal utilities for decorator implementation.
  * This file should not be exported in the public API.

@@ -1,8 +1,4 @@
 /**
- * @author Jeff Rose
- */
-
-/**
  * Configuration options for the IndexedDB resource loader.
  */
 export interface IndexedDBConfig {

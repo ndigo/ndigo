@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { ContentSource } from './content';
 import { Theme, ThemeResolver } from './theme';
 

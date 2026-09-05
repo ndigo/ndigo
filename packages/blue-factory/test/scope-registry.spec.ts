@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { describe, test, expect, beforeEach, vi } from 'vitest';
 import { IllegalStateError } from '@blue/core';
 import ScopeRegistry from '../src/_scope-registry';

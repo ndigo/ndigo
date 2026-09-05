@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 export * from './http-transformer';
 export * from './json-transformer';
 export * from './composition-transformer';

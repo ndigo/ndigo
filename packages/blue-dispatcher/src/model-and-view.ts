@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { View, AbstractView } from '@blue/view';
 
 type Model<T = any> = { [key: string]: T } | Map<string, T>;

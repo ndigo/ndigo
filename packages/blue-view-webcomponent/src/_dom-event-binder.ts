@@ -1,8 +1,4 @@
 /**
- * @author Jeff Rose
- */
-
-/**
  * Utility for managing DOM event listeners on a specific element.
  *
  * Ensures that listeners are tracked and can be removed in bulk,

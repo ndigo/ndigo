@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { FrameworkError, IllegalStateError } from './error.js';
 import { MutablePropertyValues, PropertyValues } from './property-value.js';
 import { parseKeypath } from './keypath-expression.js';

@@ -1,5 +1,4 @@
 /**
- * @author Jeff Rose
  * @see {@link https://stackoverflow.com/questions/1969232/allowed-characters-in-cookies}
  * @see {@link https://curl.haxx.se/rfc/cookie_spec.html}
  * @see {@link https://www.ietf.org/rfc/rfc2109.txt}

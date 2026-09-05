@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { FrameworkError, IllegalStateError } from '@blue/core';
 import { AbstractTemplateView, ViewTarget } from '@blue/view';
 //import { BlueElement } from './blue-element';

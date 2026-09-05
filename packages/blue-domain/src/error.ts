@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { AsSerializableError } from '@blue/core';
 
 const { setPrototypeOf } = Reflect;

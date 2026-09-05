@@ -1,8 +1,4 @@
 /**
- * @author Jeff Rose
- */
-
-/**
  * An object with a `null` prototype.
  *
  * This is useful when you need a dictionary-like object without inherited members.

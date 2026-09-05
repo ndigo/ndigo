@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { HTTPTransformer, TransformContext } from './http-transformer';
 
 /**

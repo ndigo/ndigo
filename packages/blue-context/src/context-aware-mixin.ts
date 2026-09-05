@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { Constructable } from '@blue/core';
 import { AsAware } from '@blue/factory';
 import { ApplicationContext, ApplicationContextAware } from './context-interfaces';

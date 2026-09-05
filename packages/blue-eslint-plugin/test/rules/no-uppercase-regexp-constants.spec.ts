@@ -1,5 +1,3 @@
-/** @author Jeff Rose */
-
 import { RuleTester } from 'oxlint/plugins-dev';
 import { noUppercaseRegexpConstants } from '../../src/rules/no-uppercase-regexp-constants';
 

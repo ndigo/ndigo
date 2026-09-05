@@ -1,5 +1,3 @@
-/** @author Jeff Rose */
-
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({

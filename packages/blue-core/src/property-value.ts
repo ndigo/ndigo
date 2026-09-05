@@ -1,6 +1,3 @@
-/**
- * @author Jeff Rose
- */
 import { RingBuffer } from './ring-buffer.js';
 import { JSONValue, Serializable, serialize } from './serializable.js';
 import { Equatable, equates } from './equatable.js';

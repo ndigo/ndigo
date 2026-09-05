@@ -1,5 +1,3 @@
-/** @author Jeff Rose */
-
 import { bench, describe } from 'vitest';
 import * as R from 'ramda';
 

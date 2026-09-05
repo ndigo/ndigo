@@ -1,5 +1,3 @@
-/** @author Jeff Rose */
-
 /**
  * A generic Least-Recently-Used (LRU) cache backed by insertion-order Map semantics.
  *

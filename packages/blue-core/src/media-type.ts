@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { Serializable, JSONValue } from './serializable.js';
 import { Comparator, StringComparable, stringComparator, numberComparator } from './comparable.js';
 import { Null } from './null.js';

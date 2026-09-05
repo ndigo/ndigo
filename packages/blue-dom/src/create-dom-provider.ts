@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import type { DOMProvider } from './dom-provider';
 
 /**

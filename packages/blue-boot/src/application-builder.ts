@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { ApplicationContext, ConfigurableEnvironment, EventListener } from '@blue/context';
 import { JSONObject } from '@blue/core';
 import { Application } from './application';

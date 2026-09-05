@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { describe, test, expect } from 'vitest';
 import { NodeAutoConfiguration } from '../src/node-auto-configuration';
 

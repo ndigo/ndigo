@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { describe, test, expect, vi } from 'vitest';
 import { DefaultSession, AnonymousPrincipal } from '@blue/auth-core';
 import { AuthHeaderInterceptor } from '../src/auth-header-interceptor';

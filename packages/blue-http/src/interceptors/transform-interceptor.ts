@@ -1,6 +1,3 @@
-/**
- * @author Jeff Rose
- */
 import { Transform, TransformContext } from '../transformers/http-transformer';
 import { MediaType } from '@blue/core';
 import { RequestAwareHTTPInterceptor, ResponseAwareHTTPInterceptor } from '../http';

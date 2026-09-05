@@ -1,5 +1,4 @@
 /**
- * @author Jeff Rose
  *
  * Demo component showing the @blue/signals decorator API.
  *

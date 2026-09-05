@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { type AuthAdapter } from './adapter';
 
 /**

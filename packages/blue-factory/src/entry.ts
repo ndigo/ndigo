@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 export default class Entry<T> {
     #name: string;
     #scope: string;

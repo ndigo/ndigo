@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { metrics, trace, DiagConsoleLogger, DiagLogLevel, diag } from '@opentelemetry/api';
 import { logs, SeverityNumber } from '@opentelemetry/api-logs';
 import { BasicTracerProvider, SimpleSpanProcessor, ConsoleSpanExporter } from '@opentelemetry/sdk-trace-base';

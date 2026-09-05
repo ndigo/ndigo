@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { Destroyable } from './lifecycle';
 import { like } from '@blue/util/types';
 import { Registry } from './registry';

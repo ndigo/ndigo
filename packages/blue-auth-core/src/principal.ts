@@ -1,8 +1,4 @@
 /**
- * @author Jeff Rose
- */
-
-/**
  * Represents an authenticated user or entity in the system.
  * This interface is immutable to ensure identity stability.
  */

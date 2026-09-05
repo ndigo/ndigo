@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import type { FeatureMetricRecorder } from '@blue/core';
 
 export type { FeatureMetricRecorder } from '@blue/core';

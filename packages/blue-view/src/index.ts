@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 export * from './view.js';
 export * from './view-engine.js';
 export * from './view-mapping.js';

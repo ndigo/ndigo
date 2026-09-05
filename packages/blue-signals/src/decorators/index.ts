@@ -1,5 +1,4 @@
 /**
- * @author Jeff Rose
  *
  * Entry point for `@blue/signals/decorators`.
  *

@@ -1,8 +1,4 @@
 /**
- * @author Jeff Rose
- */
-
-/**
  * Provides an isomorphic abstraction over DOM parsing and element creation.
  * Implementations back this interface with either native browser APIs or
  * a server-side DOM library such as linkedom.

@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import '@tsmetadata/polyfill';
 import { FrameworkError } from '@blue/core';
 import constraints, { hasConstraint } from './constraints';

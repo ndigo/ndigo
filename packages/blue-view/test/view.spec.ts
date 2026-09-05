@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ViewTarget } from '@blue/view';
 import type { MediaType } from '@blue/core';

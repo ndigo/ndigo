@@ -1,5 +1,4 @@
 /**
- * @author Jeff Rose
  * @see external:seedrandom
  * @see external:slug
  */

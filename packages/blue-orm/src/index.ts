@@ -1,5 +1,3 @@
-/** @author Jeff Rose */
-
 // Types and interfaces
 export type {
     ColumnOptions,

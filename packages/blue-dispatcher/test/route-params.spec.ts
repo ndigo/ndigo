@@ -1,5 +1,4 @@
 /**
- * @author Jeff Rose
  * Behavioral tests for @routeParams pattern (TC39 parameter injection)
  */
 

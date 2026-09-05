@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { Route } from '@blue/router';
 import { AbstractRouteCondition, RouteCondition } from './route-condition';
 

@@ -1,8 +1,4 @@
 /**
- * @author Jeff Rose
- */
-
-/**
  * Class-based interface for parsing a string into a structured value of type `T`.
  *
  * Represents the class-based form of `Converter<string, T>` from `@blue/core/converter`.

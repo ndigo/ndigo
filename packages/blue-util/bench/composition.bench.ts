@@ -1,5 +1,3 @@
-/** @author Jeff Rose */
-
 import { bench, describe } from 'vitest';
 
 const consume = (...values: unknown[]): void => {

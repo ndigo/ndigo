@@ -1,8 +1,4 @@
 /**
- * @author Jeff Rose
- */
-
-/**
  * Splits a string into an array of strings based on the given separator.
  * @param {string} separator
  * @param {string} text

@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { BasicModel } from '@blue/model';
 
 const withinRange = (min: number, max: number) => (value: number) => value >= min && value <= max,

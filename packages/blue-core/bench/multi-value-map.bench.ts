@@ -1,5 +1,4 @@
 /**
- * @author Jeff Rose
  *
  * Benchmark suite for MultiValueMap.
  * Compares against a raw Map<K,V[]> baseline.

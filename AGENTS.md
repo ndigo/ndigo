@@ -445,7 +445,7 @@ When organizing helper functions and utilities, follow the extraction hierarchy:
 
 ### Creating New Files
 
-- Ensure standard file headers (author/copyright) if observed in adjacent files.
+- Match the standard file-header style observed in adjacent files (TSDoc module doc when the file is a module; no author/copyright lines).
 - Add to `exports` in `package.json` if the file needs to be part of the public API.
 
 ## 6. Documentation Standards

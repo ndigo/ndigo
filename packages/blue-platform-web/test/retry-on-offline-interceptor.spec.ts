@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { describe, test, expect, vi, afterEach, beforeEach } from 'vitest';
 import { RetryOnOfflineInterceptor } from '../src/retry-on-offline-interceptor';
 

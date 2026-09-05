@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { IllegalStateError, JSONValue, JSONObject, createNull, parseKeypath } from '@blue/core';
 import type { KeypathToken } from '@blue/core';
 import { like, isNil } from '@blue/util/types';

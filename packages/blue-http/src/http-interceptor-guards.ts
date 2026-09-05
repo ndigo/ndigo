@@ -1,6 +1,3 @@
-/**
- * @author Jeff Rose
- */
 /// <reference lib="dom" />
 // TypeScript 6.0 declaration generation fix
 import { like } from '@blue/util/types';

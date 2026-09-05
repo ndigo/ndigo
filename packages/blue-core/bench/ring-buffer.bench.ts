@@ -1,5 +1,4 @@
 /**
- * @author Jeff Rose
  *
  * Benchmark suite for RingBuffer.
  * Compares RingBuffer against Denque (industry FIFO baseline) and plain Array.

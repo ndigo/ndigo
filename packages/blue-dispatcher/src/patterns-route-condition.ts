@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { Route } from '@blue/router';
 import { PathMatcher, URLGlobPathMatcher, likePathMatcher } from '@blue/core';
 import { AbstractRouteCondition, likeRouteCondition } from './route-condition';
@@ -312,4 +308,3 @@ export class PatternsRouteCondition extends AbstractRouteCondition<PatternsRoute
         return null;
     }
 }
-

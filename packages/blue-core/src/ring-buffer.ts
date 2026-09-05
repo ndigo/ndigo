@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { IndexedIterator } from './iterable.js';
 import { Serializable, JSONArray, serialize } from './serializable.js';
 import { likeArray } from '@blue/util/types';

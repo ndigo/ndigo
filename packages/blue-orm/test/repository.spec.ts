@@ -1,5 +1,3 @@
-/** @author Jeff Rose */
-
 import '@tsmetadata/polyfill';
 
 import { InMemoryDataSource } from '../src/data-source';

@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { FrameworkError, serializable } from '@blue/core';
 
 /**

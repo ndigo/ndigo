@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { Null } from '@blue/core';
 import { View, ViewTarget } from '@blue/view';
 import { Route } from '@blue/router';

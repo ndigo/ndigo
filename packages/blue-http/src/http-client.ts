@@ -1,6 +1,3 @@
-/**
- * @author Jeff Rose
- */
 /// <reference lib="dom" />
 // TypeScript 6.0 declaration generation fix
 import type { Fetch, HTTPConfig, HTTPInit, HTTPInterceptor } from './http-types';

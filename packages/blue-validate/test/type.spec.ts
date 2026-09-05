@@ -468,7 +468,7 @@ describe('Type', () => {
             expect(Password.validate('testing2&').isValid).toBe(false);
             expect(Password.validate('testing3<').isValid).toBe(false);
             expect(Password.validate('testing4>').isValid).toBe(false);
-            // At some point these were supposed to fail but they pass now? -JBR
+            // At some point these were supposed to fail but they pass now?
             //expect( Password.validate( 'testing5abc' ).isValid ).toBe( false );
             //expect( Password.validate( 'testing5aBc' ).isValid ).toBe( false );
             //expect( Password.validate( '321testing6' ).isValid ).toBe( false );

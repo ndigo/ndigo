@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { Comparator } from '@blue/core';
 
 /**

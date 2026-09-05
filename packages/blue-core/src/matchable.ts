@@ -1,8 +1,4 @@
 /**
- * @author Jeff Rose
- */
-
-/**
  * Represents an object that can determine if it matches a given value.
  * @template TValue - The type of the value to match against.
  */

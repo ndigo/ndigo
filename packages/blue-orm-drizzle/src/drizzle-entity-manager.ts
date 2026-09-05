@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { Constructable, FrameworkError } from '@blue/core';
 import { getEntityMetadata, isEntity } from '@blue/orm';
 import { DrizzleDataSource } from './drizzle-data-source';

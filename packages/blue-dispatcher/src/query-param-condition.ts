@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { Route } from '@blue/router';
 import { AbstractNameValueExpression, AbstractRouteCondition } from './route-condition';
 const { defineProperty } = Reflect;
@@ -199,4 +195,3 @@ export class QueryParamCondition extends AbstractRouteCondition<QueryParamCondit
         return expressions;
     }
 }
-

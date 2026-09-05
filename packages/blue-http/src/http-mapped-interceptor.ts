@@ -1,6 +1,3 @@
-/**
- * @author Jeff Rose
- */
 /// <reference lib="dom" />
 // TypeScript 6.0 declaration generation fix
 import { type PatternMatcher, WildcardExp } from '@blue/core';
@@ -51,7 +48,6 @@ export class WildcardMatcher implements PatternMatcher<string, string> {
         return wcex.test(value);
     }
 }
-
 
 export class MappedHTTPInterceptor
     implements

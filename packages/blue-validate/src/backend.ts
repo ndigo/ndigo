@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { NativeValidationBackendAdapter } from './_native-validation-backend-adapter';
 import type { ValidationBackendAdapter } from './_validation-backend-adapter';
 

@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { Factory, likeFactory } from '@blue/factory';
 import { Route } from '@blue/router';
 import { Serializable, getSymbolMetadata } from '@blue/core';
@@ -77,7 +73,7 @@ export class RouteHandlerMethod implements HandlerMethod, Serializable {
      */
     invoke<ModelAndView>(route: Route, ...foo: any[]): ModelAndView {
         /**
-         * * Hardcoding route as a parameter is a bit of a cop-out. It would be better to allow them to pick parameters, etc. as arguments. -JBR
+         * * Hardcoding route as a parameter is a bit of a cop-out. It would be better to allow them to pick parameters, etc. as arguments.
          */
         const { argumentResolvers, parameters } = this,
             parametersLength = parameters.length,

@@ -1,5 +1,3 @@
-/** @author Jeff Rose */
-
 import { RuleTester } from 'oxlint/plugins-dev';
 import { noBrowserGlobalsInIsomorphic } from '../../src/rules/no-browser-globals-in-isomorphic';
 

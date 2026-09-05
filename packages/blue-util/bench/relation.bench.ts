@@ -1,5 +1,3 @@
-/** @author Jeff Rose */
-
 import { bench, describe } from 'vitest';
 
 const numberInputs = [10, 1, 0, -1, -10, 42, -42];

@@ -1,5 +1,4 @@
 /**
- * @author Jeff Rose
  *
  * Re-exports from `@preact/signals-core` — the underlying signals engine.
  *

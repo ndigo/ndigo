@@ -1,8 +1,4 @@
 /**
- * @author Jeff Rose
- */
-
-/**
  * A type-safe key used for value registration and retrieval in a `Registry`.
  *
  * At runtime, `description` is used as the backing string key.

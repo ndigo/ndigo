@@ -1,5 +1,4 @@
 /**
- * @author Jeff Rose
  * @see {@link http://moutjs.com/docs/latest/string.html#camelCase}
  */
 

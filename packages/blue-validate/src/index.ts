@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import * as formats from './formats';
 import types from './types';
 import Type from './type';

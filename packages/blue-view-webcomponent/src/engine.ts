@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { EventBridgeViewTarget, ViewEngine, View, ViewTarget } from '@blue/view';
 import { Route } from '@blue/router';
 import { IllegalStateError } from '@blue/core';

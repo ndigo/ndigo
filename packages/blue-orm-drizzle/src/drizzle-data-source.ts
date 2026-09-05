@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { createClient, Client } from '@libsql/client';
 import { drizzle as createDrizzle, LibSQLDatabase } from 'drizzle-orm/libsql';
 import { Constructable } from '@blue/core';

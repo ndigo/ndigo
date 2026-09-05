@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import {
     type RouteHandlerInterceptor,
     type ModelAndView,

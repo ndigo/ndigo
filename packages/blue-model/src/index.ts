@@ -1,5 +1,4 @@
 /**
- * @author Jeff Rose
  * @see core
  * @see util
  * @see {@link http://objectmodel.js.org/}

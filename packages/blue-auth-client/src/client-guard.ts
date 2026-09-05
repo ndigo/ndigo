@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { AUTH_REQUIRED_KEY, AUTH_ROLES_KEY } from '@blue/auth-core';
 import { type AuthClient } from './client';
 

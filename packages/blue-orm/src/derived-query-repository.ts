@@ -1,5 +1,3 @@
-/** @author Jeff Rose */
-
 import { ColumnDefinition } from './metadata';
 
 /**

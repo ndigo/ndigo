@@ -1,6 +1,3 @@
-/**
- * @author Jeff Rose
- */
 /// <reference lib="dom" />
 // TypeScript 6.0 declaration generation fix
 import type { WildcardExp } from '@blue/core';
@@ -24,4 +21,3 @@ export const { assign, freeze } = Object,
     },
     patternCache = new Map<string, WildcardExp>(),
     isRequest = is(Request) as (value: any) => value is Request;
-

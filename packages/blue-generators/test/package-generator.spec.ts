@@ -1,4 +1,3 @@
-/** @author Jeff Rose */
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createTreeWithEmptyWorkspace } from '@nx/devkit/testing';
 import type { Tree } from '@nx/devkit';
@@ -133,12 +132,12 @@ export default defineConfig({
         expect(packageJson.description).toBe('Authentication utilities');
     });
 
-    it('should generate index.ts with author header', async () => {
+    it('should generate index.ts with module doc, no author header', async () => {
         await packageGenerator(tree, { name: 'test-pkg' });
 
         const indexContent = tree.read('packages/blue-test-pkg/src/index.ts', 'utf-8')!;
-        expect(indexContent).toContain('@author Jeff Rose');
         expect(indexContent).toContain('@module test-pkg');
+        expect(indexContent).not.toContain('@author');
     });
 
     it('should generate correct tsconfig.build.json', async () => {

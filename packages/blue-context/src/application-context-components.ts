@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { Null } from '@blue/core';
 import { AsApplicationContextAware } from './context-aware-mixin';
 
@@ -18,4 +14,3 @@ export class BusinessComponent extends ApplicationComponent {}
  * Encapsulates presentation logic and DOM interaction.
  */
 export class ViewComponent extends ApplicationComponent {}
-

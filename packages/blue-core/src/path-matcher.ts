@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { like } from '@blue/util/types';
 import { AbstractValueComparator, Comparator } from './comparable.js';
 import { Constructable } from './constructable.js';
@@ -343,7 +339,7 @@ export class GlobPatternInfo {
     }
 }
 
-// ! Not sure I like this name. Should really come up with a better one. -JBR
+// ! Not sure I like this name. Should really come up with a better one.
 export const AsPathMatcherFilter = <T extends Constructable>(superclass: T): Constructable<PathMatcherFilter> & T =>
     class extends superclass implements PathMatcherFilter {
         #excludePatterns: string[] | null = null;

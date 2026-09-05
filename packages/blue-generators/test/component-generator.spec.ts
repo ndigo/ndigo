@@ -1,4 +1,3 @@
-/** @author Jeff Rose */
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createTreeWithEmptyWorkspace } from '@nx/devkit/testing';
 import type { Tree } from '@nx/devkit';
@@ -117,11 +116,12 @@ describe('component generator', () => {
         expect(sourceContent).toContain('get [Symbol.toStringTag]()');
     });
 
-    it('should include author header', async () => {
+    it('should include a TSDoc description block, no author header', async () => {
         await componentGenerator(tree, { name: 'my-service', package: 'core' });
 
         const sourceContent = tree.read('packages/blue-core/src/my-service.ts', 'utf-8')!;
-        expect(sourceContent).toContain('@author Jeff Rose');
+        expect(sourceContent).toContain('TODO: Add class description.');
+        expect(sourceContent).not.toContain('@author');
     });
 
     it('should generate test with correct import', async () => {

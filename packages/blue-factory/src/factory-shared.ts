@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 // Shared Object/Reflect helpers used across the factory implementation.
 
 const { create, keys } = Object,

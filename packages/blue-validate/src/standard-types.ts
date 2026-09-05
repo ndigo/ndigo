@@ -1,8 +1,4 @@
 /**
- * @author Jeff Rose
- */
-
-/**
  * @namespace module:validate.types
  */
 

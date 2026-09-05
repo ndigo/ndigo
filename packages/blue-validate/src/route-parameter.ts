@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { z } from 'zod';
 import { Validator } from './validator';
 import { ValidationError, ConstraintViolationError } from './error';

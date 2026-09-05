@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { createNull } from './null.js';
 import { JSONValue, Serializable } from './serializable.js';
 

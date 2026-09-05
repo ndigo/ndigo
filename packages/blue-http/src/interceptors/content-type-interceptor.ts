@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { MediaType } from '@blue/core';
 import { HTTPInit, InitializationAwareHTTPInterceptor } from '../http';
 import { CONTENT_TYPE } from '../http-headers';

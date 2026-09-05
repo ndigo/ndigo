@@ -3559,7 +3559,6 @@ Internal files (`_util.ts`, `_parser.ts`, etc.) should **only be created when th
  * Internal utilities for @blue/parser package.
  *
  * @internal - Do not export in index.ts or import across package boundaries
- * @author Jeff Rose
  */
 
 // Re-exports (supporting infrastructure)
@@ -3584,7 +3583,6 @@ export const lengthLessThanN = (n: number) => propSatisfies(lt(__, n), 'length')
  * Internal utilities for @blue/http package.
  *
  * @internal - Do not export in index.ts or import across package boundaries
- * @author Jeff Rose
  */
 
 // Type utilities

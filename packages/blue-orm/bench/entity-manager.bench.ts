@@ -1,5 +1,4 @@
 /**
- * @author Jeff Rose
  *
  * Benchmark suite for InMemoryEntityManager CRUD operation throughput.
  *

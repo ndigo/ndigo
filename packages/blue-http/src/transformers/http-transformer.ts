@@ -1,6 +1,3 @@
-/**
- * @author Jeff Rose
- */
 import { MediaType } from '@blue/core';
 
 /**

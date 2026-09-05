@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { entriesIterator, JSONObject, MediaType, MediaTypes } from '@blue/core';
 import { is, isString } from '@blue/util/types';
 import { HTTPInit, InitializationAwareHTTPInterceptor, ResponseAwareHTTPInterceptor } from '../http';

@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { parseHTML as linkedomParseHTML } from 'linkedom';
 import type { DOMProvider } from './dom-provider';
 

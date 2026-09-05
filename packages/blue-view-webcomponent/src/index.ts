@@ -1,6 +1,5 @@
 /**
  * @blue/view-webcomponent — Web Component view engine and custom element bindings.
- * @author Jeff Rose
  */
 
 export * from './abstract-web-component';

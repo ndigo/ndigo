@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { ModelAndView } from './model-and-view';
 import { PathMatcher, AsPathMatcherFilter, Null } from '@blue/core';
 import { Route } from '@blue/router';

@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { Route } from '@blue/router';
 import { MethodParameter, MethodParameterType } from './route-parameter';
 import { isNil, like } from '@blue/util/types';

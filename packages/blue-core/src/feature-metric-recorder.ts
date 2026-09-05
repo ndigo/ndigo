@@ -1,8 +1,4 @@
 /**
- * @author Jeff Rose
- */
-
-/**
  * Contract for recording feature-level metrics.
  */
 export interface FeatureMetricRecorder {

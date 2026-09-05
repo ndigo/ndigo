@@ -1,5 +1,3 @@
-/** @author Jeff Rose */
-
 import { IllegalStateError } from '@blue/core';
 import { InMemoryDataSource } from '../src/data-source';
 

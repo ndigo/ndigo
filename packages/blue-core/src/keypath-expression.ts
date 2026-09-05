@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import type { Converter } from './converter.js';
 
 /** A token in a parsed keypath — either a string property name or a numeric array index. */

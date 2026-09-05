@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 export default class HelloApp extends HTMLElement {
     set model(model: { message?: string }) {
         this.#message = model?.message ?? 'Hello, World!';

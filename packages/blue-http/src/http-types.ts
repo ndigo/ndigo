@@ -1,6 +1,3 @@
-/**
- * @author Jeff Rose
- */
 /// <reference lib="dom" />
 // TypeScript 6.0 declaration generation fix
 import { Aware } from '@blue/factory';
@@ -262,4 +259,3 @@ export interface HTTPAware extends Aware {
 /**
  * @param {module:http.HTTP} http
  */
-

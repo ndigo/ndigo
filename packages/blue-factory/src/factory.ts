@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 // Barrel: the factory contract (interfaces, aware mixin, guards), the
 // AbstractFactory implementation, and the concrete factories were split
 // into cohesive modules. This file re-exports the exact original public

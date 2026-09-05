@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import constraints from './constraints';
 import { ValidationBackendAdapter } from './_validation-backend-adapter';
 

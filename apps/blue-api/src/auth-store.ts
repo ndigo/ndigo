@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { AuthRegistry, Principal } from '@blue/auth-core';
 import { JWTAdapter } from '@blue/auth-server';
 

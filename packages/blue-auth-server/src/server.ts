@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { type Principal } from '@blue/auth-core';
 import { AuthRegistry } from '@blue/auth-core';
 

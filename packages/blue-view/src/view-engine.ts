@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { Route } from '@blue/router';
 import { View } from './view.js';
 import { ViewTarget } from './view-target.js';

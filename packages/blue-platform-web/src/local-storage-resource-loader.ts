@@ -1,8 +1,4 @@
 /**
- * @author Jeff Rose
- */
-
-/**
  * Resource loader that persists data to `localStorage`.
  *
  * Provides a simple key-value storage adapter backed by the browser's

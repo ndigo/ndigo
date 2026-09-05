@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { describe, test, expect, beforeEach, vi } from 'vitest';
 import { Emitter } from '@blue/context';
 import { HTTP, HeaderInterceptor, StatusInterceptor, ErrorNormalizationInterceptor } from '@blue/http';

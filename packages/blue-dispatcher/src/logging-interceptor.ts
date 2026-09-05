@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { RouteHandlerInterceptor } from './route-handler-interceptor';
 import { ModelAndView } from './model-and-view';
 import { Route } from '@blue/router';

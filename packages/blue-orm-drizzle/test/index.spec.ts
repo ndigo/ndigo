@@ -1,5 +1,3 @@
-/** @author Jeff Rose */
-
 import { describe, it } from 'vitest';
 
 /**

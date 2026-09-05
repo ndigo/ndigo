@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { is } from '@blue/util/types';
 import { isNotPrimitive } from './primitive.js';
 

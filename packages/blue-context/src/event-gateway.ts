@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { FrameworkError } from '@blue/core';
 import type { EventType } from './event-emitter';
 import type { ApplicationContext } from './context';

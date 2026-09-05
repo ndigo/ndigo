@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { Constructable } from '@blue/core';
 import { like } from '@blue/util/types';
 import { Aware, AsAware, likeAwareAnd } from './aware';
@@ -130,4 +126,3 @@ const _likeConfigurableShape = like({ addProcessor: Function, setParent: Functio
  */
 export const likeConfigurableFactory = (value: unknown) =>
     likeHierarchicalFactory(value) && _likeConfigurableShape(value);
-

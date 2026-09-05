@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { DataBinder, MutablePropertyValues, PropertyValues } from '@blue/core';
 import { MethodParameter, MethodParameterType, AbstractPlatformArgumentResolver } from '@blue/dispatcher';
 import { Route } from '@blue/router';

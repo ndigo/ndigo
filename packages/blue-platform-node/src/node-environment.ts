@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { StandardEnvironment } from '@blue/context';
 import { JSONObject } from '@blue/core';
 

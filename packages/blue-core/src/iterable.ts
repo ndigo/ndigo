@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { isNil, is } from '@blue/util/types';
 
 /**

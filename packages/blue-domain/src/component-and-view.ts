@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { ModelAndView } from '@blue/dispatcher';
 import { DomainComponent } from './component';
 

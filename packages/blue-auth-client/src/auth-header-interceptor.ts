@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { HTTP, RequestAwareHTTPInterceptor } from '@blue/http';
 import { Session } from '@blue/auth-core';
 

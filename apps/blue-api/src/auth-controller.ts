@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import '@tsmetadata/polyfill';
 import { postMapping, routeParams, bodyValue } from '@blue/dispatcher';
 import { ResponseEntity } from '@blue/platform-node';

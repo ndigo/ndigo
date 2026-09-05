@@ -1,5 +1,4 @@
 /**
- * @author Jeff Rose
  * @see {@link https://ramdajs.com/docs/}
  * @see {@link https://date-fns.org/}
  */

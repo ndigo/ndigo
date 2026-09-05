@@ -1,6 +1,3 @@
-/**
- * @author Jeff Rose
- */
 import { decodeURIComponent as decode } from '@blue/util/string';
 
 /**

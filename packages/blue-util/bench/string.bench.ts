@@ -1,5 +1,3 @@
-/** @author Jeff Rose */
-
 import { bench, describe } from 'vitest';
 
 const trimInputs = ['  alpha  ', 'beta', '\n gamma\t', 'delta'];

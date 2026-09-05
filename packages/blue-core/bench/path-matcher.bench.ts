@@ -1,5 +1,4 @@
 /**
- * @author Jeff Rose
  *
  * Benchmark: URLGlobPathMatcher.match() — LRU cache vs no-cache baseline.
  *

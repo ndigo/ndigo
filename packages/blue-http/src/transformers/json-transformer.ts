@@ -1,7 +1,3 @@
-/**
- * @author Jeff Rose
- */
-
 import { JSONObject } from '@blue/core';
 import { HTTPTransformer, TransformContext } from './http-transformer';
 

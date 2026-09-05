@@ -8,7 +8,7 @@
 
 > **formatErrorMessage**(`constraintName`, `propertyName`, `value`, `message?`): `string`
 
-Defined in: packages/blue-validate/src/decorators.ts:131
+Defined in: [packages/blue-validate/src/decorators.ts:131](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/decorators.ts#lines-131)
 
 Formats a validation error message.
 

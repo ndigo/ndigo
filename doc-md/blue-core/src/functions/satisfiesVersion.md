@@ -8,7 +8,7 @@
 
 > **satisfiesVersion**(`version`, `range`): `boolean`
 
-Defined in: packages/blue-core/src/shared.ts:83
+Defined in: [packages/blue-core/src/shared.ts:83](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/shared.ts#lines-83)
 
 Checks whether the given version satisfies a semver range.
 

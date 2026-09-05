@@ -8,7 +8,7 @@
 
 > **toNumberValue**(`value`): `number`
 
-Defined in: packages/blue-platform-node/src/argument-value-converter.ts:30
+Defined in: [packages/blue-platform-node/src/argument-value-converter.ts:30](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/argument-value-converter.ts#lines-30)
 
 ## Parameters
 

@@ -8,7 +8,7 @@
 
 > **IfModifiedInit** = [`HTTPInit`](HTTPInit.md) & `object`
 
-Defined in: packages/blue-http/src/interceptors/if-modified-interceptor.ts:11
+Defined in: [packages/blue-http/src/interceptors/if-modified-interceptor.ts:11](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/if-modified-interceptor.ts#lines-11)
 
 Request settings for [IfModifiedInterceptor](../classes/IfModifiedInterceptor.md).
 

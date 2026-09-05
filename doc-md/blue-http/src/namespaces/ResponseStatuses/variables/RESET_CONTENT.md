@@ -8,6 +8,6 @@
 
 > `const` **RESET\_CONTENT**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
-Defined in: packages/blue-http/src/response-statuses.ts:71
+Defined in: [packages/blue-http/src/response-statuses.ts:71](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/response-statuses.ts#lines-71)
 
 Tells the user-agent to reset the document which sent this request.

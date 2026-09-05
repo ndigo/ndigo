@@ -6,7 +6,7 @@
 
 # Class: MappedHandlerInterceptor
 
-Defined in: packages/blue-dispatcher/src/route-handler-interceptor.ts:41
+Defined in: [packages/blue-dispatcher/src/route-handler-interceptor.ts:49](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-handler-interceptor.ts#lines-49)
 
 Intercept the execution of a handler. Called after HandlerMapping determined
 an appropriate handler object, but before RouteHandlerAdapter invokes the handler.
@@ -25,7 +25,7 @@ an appropriate handler object, but before RouteHandlerAdapter invokes the handle
 
 > **new MappedHandlerInterceptor**(`interceptor`, `includePatterns`, `excludePatterns?`): `MappedHandlerInterceptor`
 
-Defined in: packages/blue-dispatcher/src/route-handler-interceptor.ts:50
+Defined in: [packages/blue-dispatcher/src/route-handler-interceptor.ts:58](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-handler-interceptor.ts#lines-58)
 
 #### Parameters
 
@@ -55,9 +55,9 @@ Defined in: packages/blue-dispatcher/src/route-handler-interceptor.ts:50
 
 > **pathMatcher**: `PathMatcher`
 
-Defined in: packages/blue-dispatcher/src/route-handler-interceptor.ts:44
+Defined in: [packages/blue-dispatcher/src/route-handler-interceptor.ts:52](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-handler-interceptor.ts#lines-52)
 
-The PathMatcher instance used for matching patterns.
+The `PathMatcher` instance used for matching patterns.
 
 #### Overrides
 
@@ -71,7 +71,7 @@ The PathMatcher instance used for matching patterns.
 
 > **get** **interceptor**(): [`RouteHandlerInterceptor`](../interfaces/RouteHandlerInterceptor.md)
 
-Defined in: packages/blue-dispatcher/src/route-handler-interceptor.ts:46
+Defined in: [packages/blue-dispatcher/src/route-handler-interceptor.ts:54](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-handler-interceptor.ts#lines-54)
 
 ##### Returns
 
@@ -99,7 +99,7 @@ The path to check.
 
 `PathMatcher`
 
-An optional PathMatcher to use for matching. If not provided, `this.pathMatcher` is used.
+An optional `PathMatcher` to use for matching. If not provided, `this.pathMatcher` is used.
 
 #### Returns
 
@@ -170,13 +170,13 @@ An array of patterns to include.
 
 > **completeHandle**(`route`, `handler`, `error?`): `Promise`\<`void`\>
 
-Defined in: packages/blue-dispatcher/src/route-handler-interceptor.ts:57
+Defined in: [packages/blue-dispatcher/src/route-handler-interceptor.ts:65](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-handler-interceptor.ts#lines-65)
 
 #### Parameters
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 ##### handler
 
@@ -200,13 +200,13 @@ Defined in: packages/blue-dispatcher/src/route-handler-interceptor.ts:57
 
 > **postHandle**(`route`, `handler`, `modelAndView`): `Promise`\<`void`\>
 
-Defined in: packages/blue-dispatcher/src/route-handler-interceptor.ts:61
+Defined in: [packages/blue-dispatcher/src/route-handler-interceptor.ts:69](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-handler-interceptor.ts#lines-69)
 
 #### Parameters
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 ##### handler
 
@@ -228,15 +228,15 @@ Defined in: packages/blue-dispatcher/src/route-handler-interceptor.ts:61
 
 ### preHandle()
 
-> **preHandle**(`route`, `handler`): `Promise`\<`boolean`\>
+> **preHandle**(`route`, `handler`): `Promise`\<[`PreHandleOutcome`](../type-aliases/PreHandleOutcome.md)\>
 
-Defined in: packages/blue-dispatcher/src/route-handler-interceptor.ts:65
+Defined in: [packages/blue-dispatcher/src/route-handler-interceptor.ts:73](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-handler-interceptor.ts#lines-73)
 
 #### Parameters
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 ##### handler
 
@@ -244,7 +244,7 @@ Defined in: packages/blue-dispatcher/src/route-handler-interceptor.ts:65
 
 #### Returns
 
-`Promise`\<`boolean`\>
+`Promise`\<[`PreHandleOutcome`](../type-aliases/PreHandleOutcome.md)\>
 
 #### Implementation of
 

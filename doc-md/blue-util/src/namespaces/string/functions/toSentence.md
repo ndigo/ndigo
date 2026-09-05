@@ -8,7 +8,7 @@
 
 > **toSentence**(`value`): `string`
 
-Defined in: packages/blue-util/src/string/to-sentence.ts:18
+Defined in: [packages/blue-util/src/string/to-sentence.ts:18](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-util/src/string/to-sentence.ts#lines-18)
 
 Returns the sentence case version of a string.
 

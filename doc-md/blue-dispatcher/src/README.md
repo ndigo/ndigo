@@ -84,6 +84,7 @@
 - [RouteCondition](interfaces/RouteCondition.md)
 - [RouteErrorResolver](interfaces/RouteErrorResolver.md)
 - [RouteHandlerAdapter](interfaces/RouteHandlerAdapter.md)
+- [InterceptorDenial](interfaces/InterceptorDenial.md)
 - [RouteHandlerInterceptor](interfaces/RouteHandlerInterceptor.md)
 - [Invocable](interfaces/Invocable.md)
 - [HandlerMethod](interfaces/HandlerMethod.md)
@@ -99,6 +100,7 @@
 - [MaybeHandler](type-aliases/MaybeHandler.md)
 - [ConvertArgumentValueFn](type-aliases/ConvertArgumentValueFn.md)
 - [AccessLevel](type-aliases/AccessLevel.md)
+- [PreHandleOutcome](type-aliases/PreHandleOutcome.md)
 - [RouteMappingConfiguration](type-aliases/RouteMappingConfiguration.md)
 - [ParameterExtractor](type-aliases/ParameterExtractor.md)
 - [ParameterValueConverter](type-aliases/ParameterValueConverter.md)
@@ -113,6 +115,8 @@
 - [pathPatternComparator](variables/pathPatternComparator.md)
 - [likeRouteCondition](variables/likeRouteCondition.md)
 - [likeController](variables/likeController.md)
+- [INTERCEPTOR\_DENIAL\_ATTRIBUTE](variables/INTERCEPTOR_DENIAL_ATTRIBUTE.md)
+- [DENIAL\_STATUS](variables/DENIAL_STATUS.md)
 
 ## Functions
 
@@ -127,6 +131,10 @@
 - [patchMapping](functions/patchMapping.md)
 - [queryMapping](functions/queryMapping.md)
 - [requestMapping](functions/requestMapping.md)
+- [denialOf](functions/denialOf.md)
+- [setInterceptorDenial](functions/setInterceptorDenial.md)
+- [getInterceptorDenial](functions/getInterceptorDenial.md)
+- [resolvePreHandleOutcome](functions/resolvePreHandleOutcome.md)
 - [getRouteMapping](functions/getRouteMapping.md)
 - [hasRouteMapping](functions/hasRouteMapping.md)
 - [routeMapping](functions/routeMapping.md)

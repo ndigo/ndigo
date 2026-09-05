@@ -6,7 +6,7 @@
 
 # Interface: ErrorAwareServiceInterceptor
 
-Defined in: packages/blue-service/src/service.ts:45
+Defined in: [packages/blue-service/src/service.ts:45](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-service/src/service.ts#lines-45)
 
 Handles failure callbacks when a service request throws.
 
@@ -16,7 +16,7 @@ Handles failure callbacks when a service request throws.
 
 > **postFailure**(`error`, `request`): `void`
 
-Defined in: packages/blue-service/src/service.ts:52
+Defined in: [packages/blue-service/src/service.ts:52](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-service/src/service.ts#lines-52)
 
 Runs after a request fails.
 

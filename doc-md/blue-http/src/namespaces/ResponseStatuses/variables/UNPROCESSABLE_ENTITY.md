@@ -8,6 +8,6 @@
 
 > `const` **UNPROCESSABLE\_ENTITY**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
-Defined in: packages/blue-http/src/response-statuses.ts:249
+Defined in: [packages/blue-http/src/response-statuses.ts:249](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/response-statuses.ts#lines-249)
 
 The request was well-formed but was unable to be followed due to semantic errors.

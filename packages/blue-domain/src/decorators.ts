@@ -97,9 +97,9 @@ export const domainData = (
 export interface DomainMetadata {
     /** Component name from @domainComponent, or undefined if not decorated */
     name?: string;
-    /** Action method names from @domainAction */
+    /** Action method names from `domainAction` */
     actions: string[];
-    /** Data field names from @domainData */
+    /** Data field names from `domainData` */
     data: string[];
 }
 

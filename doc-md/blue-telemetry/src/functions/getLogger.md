@@ -8,7 +8,7 @@
 
 > **getLogger**(`name`): [`Logger`](../interfaces/Logger.md)
 
-Defined in: packages/blue-telemetry/src/logger/logger-factory.ts:118
+Defined in: [packages/blue-telemetry/src/logger/logger-factory.ts:118](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/logger/logger-factory.ts#lines-118)
 
 A convenience function to get a `Logger` instance from the `LoggerFactory`.
 

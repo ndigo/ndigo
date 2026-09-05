@@ -8,7 +8,7 @@
 
 > **AsSerializableError**\<`T`\>(`superclass`): [`Constructable`](../type-aliases/Constructable.md)\<[`Serializable`](../interfaces/Serializable.md)\> & `T`
 
-Defined in: packages/blue-core/src/error.ts:17
+Defined in: [packages/blue-core/src/error.ts:17](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/error.ts#lines-17)
 
 A mixin that adds serialization capabilities to an Error class, allowing it to be converted to a JSON object.
 

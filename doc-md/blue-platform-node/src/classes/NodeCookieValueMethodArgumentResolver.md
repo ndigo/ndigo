@@ -6,7 +6,7 @@
 
 # Class: NodeCookieValueMethodArgumentResolver
 
-Defined in: packages/blue-platform-node/src/cookie-argument-resolver.ts:20
+Defined in: [packages/blue-platform-node/src/cookie-argument-resolver.ts:13](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/cookie-argument-resolver.ts#lines-13)
 
 Node.js cookie argument resolver.
 
@@ -20,7 +20,7 @@ Node.js cookie argument resolver.
 
 > **new NodeCookieValueMethodArgumentResolver**(): `NodeCookieValueMethodArgumentResolver`
 
-Defined in: packages/blue-platform-node/src/cookie-argument-resolver.ts:21
+Defined in: [packages/blue-platform-node/src/cookie-argument-resolver.ts:14](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/cookie-argument-resolver.ts#lines-14)
 
 #### Returns
 
@@ -38,7 +38,7 @@ Defined in: packages/blue-platform-node/src/cookie-argument-resolver.ts:21
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-platform-node/src/cookie-argument-resolver.ts:25
+Defined in: [packages/blue-platform-node/src/cookie-argument-resolver.ts:18](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/cookie-argument-resolver.ts#lines-18)
 
 ##### Returns
 
@@ -64,7 +64,7 @@ Pipeline: resolveName → defaultValue fallback → convertType lookup → conve
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 ##### mapping
 
@@ -84,7 +84,7 @@ Pipeline: resolveName → defaultValue fallback → convertType lookup → conve
 
 > **handleMissingValue**(`name`): `void`
 
-Defined in: packages/blue-dispatcher/lib/argument-resolver.d.ts:55
+Defined in: packages/blue-dispatcher/lib/argument-resolver.d.ts:46
 
 Handles a missing argument value by throwing a TypeError.
 
@@ -114,7 +114,7 @@ If the argument is undefined or null.
 
 > `protected` **resolveName**(`name`, `_parameter`, `route`, `_mapping`): `any`
 
-Defined in: packages/blue-platform-node/src/cookie-argument-resolver.ts:29
+Defined in: [packages/blue-platform-node/src/cookie-argument-resolver.ts:22](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/cookie-argument-resolver.ts#lines-22)
 
 #### Parameters
 
@@ -128,7 +128,7 @@ Defined in: packages/blue-platform-node/src/cookie-argument-resolver.ts:29
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 ##### \_mapping
 
@@ -148,7 +148,7 @@ Defined in: packages/blue-platform-node/src/cookie-argument-resolver.ts:29
 
 > **supportsParameter**(`parameter`): `boolean`
 
-Defined in: packages/blue-platform-node/src/cookie-argument-resolver.ts:33
+Defined in: [packages/blue-platform-node/src/cookie-argument-resolver.ts:26](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/cookie-argument-resolver.ts#lines-26)
 
 Whether the given method parameter is supported by this resolver.
 

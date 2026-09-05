@@ -8,10 +8,10 @@
 
 > `const` **errorHandler**: (`target`, `context`) => `any` & `object`
 
-Defined in: packages/blue-dispatcher/src/error-mapping.ts:91
+Defined in: [packages/blue-dispatcher/src/error-mapping.ts:89](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/error-mapping.ts#lines-89)
 
 `errorHandler` is a decorator and a utility object for managing error handler classes.
-When used as a decorator (`@errorHandler`), it marks a class as an error handler.
+When used as a decorator (the `errorHandler` decorator), it marks a class as an error handler.
 It also provides `get` and `has` methods to query the error handler status of a class.
 
 ## Type Declaration
@@ -51,8 +51,7 @@ Check if target has error handler metadata
 ## Example
 
 ```typescript
-@errorHandler
-class MyErrorHandler {
+Invoked via the `errorHandler` decorator.
   // ...
 }
 

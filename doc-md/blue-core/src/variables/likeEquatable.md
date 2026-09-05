@@ -8,7 +8,7 @@
 
 > `const` **likeEquatable**: (`value`) => `value is Equatable<any>`
 
-Defined in: packages/blue-core/src/equatable.ts:31
+Defined in: [packages/blue-core/src/equatable.ts:31](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/equatable.ts#lines-31)
 
 Type guard to check if a value implements the `Equatable` interface.
 

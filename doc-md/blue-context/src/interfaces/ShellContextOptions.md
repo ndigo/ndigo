@@ -6,7 +6,7 @@
 
 # Interface: ShellContextOptions
 
-Defined in: packages/blue-context/src/context-hierarchy.ts:14
+Defined in: [packages/blue-context/src/context-hierarchy.ts:14](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context-hierarchy.ts#lines-14)
 
 Options for creating a shell context.
 
@@ -16,7 +16,7 @@ Options for creating a shell context.
 
 > `optional` **name?**: `string`
 
-Defined in: packages/blue-context/src/context-hierarchy.ts:18
+Defined in: [packages/blue-context/src/context-hierarchy.ts:18](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context-hierarchy.ts#lines-18)
 
 Optional shell context name.
 
@@ -26,7 +26,7 @@ Optional shell context name.
 
 > `optional` **data?**: `JSONObject`
 
-Defined in: packages/blue-context/src/context-hierarchy.ts:22
+Defined in: [packages/blue-context/src/context-hierarchy.ts:22](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context-hierarchy.ts#lines-22)
 
 Initial values to populate the context with.
 
@@ -34,9 +34,9 @@ Initial values to populate the context with.
 
 ### contentSource?
 
-> `optional` **contentSource?**: `ContentSource`
+> `optional` **contentSource?**: [`ContentSource`](#)
 
-Defined in: packages/blue-context/src/context-hierarchy.ts:26
+Defined in: [packages/blue-context/src/context-hierarchy.ts:26](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context-hierarchy.ts#lines-26)
 
 Overrides the shell content source.
 
@@ -46,7 +46,7 @@ Overrides the shell content source.
 
 > `optional` **environment?**: [`ConfigurableEnvironment`](ConfigurableEnvironment.md)
 
-Defined in: packages/blue-context/src/context-hierarchy.ts:30
+Defined in: [packages/blue-context/src/context-hierarchy.ts:30](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context-hierarchy.ts#lines-30)
 
 Overrides the shell environment.
 
@@ -56,7 +56,7 @@ Overrides the shell environment.
 
 > `optional` **themeName?**: `string`
 
-Defined in: packages/blue-context/src/context-hierarchy.ts:34
+Defined in: [packages/blue-context/src/context-hierarchy.ts:34](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context-hierarchy.ts#lines-34)
 
 Sets the default theme name.
 
@@ -66,6 +66,6 @@ Sets the default theme name.
 
 > `optional` **themeResolver?**: `ThemeResolver`
 
-Defined in: packages/blue-context/src/context-hierarchy.ts:38
+Defined in: [packages/blue-context/src/context-hierarchy.ts:38](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context-hierarchy.ts#lines-38)
 
 Overrides the shell theme resolver.

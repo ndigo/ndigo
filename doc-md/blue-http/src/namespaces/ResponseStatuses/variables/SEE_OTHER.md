@@ -8,6 +8,6 @@
 
 > `const` **SEE\_OTHER**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
-Defined in: packages/blue-http/src/response-statuses.ts:115
+Defined in: [packages/blue-http/src/response-statuses.ts:115](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/response-statuses.ts#lines-115)
 
 The server sent this response to direct the client to get the requested resource at another URI with a `GET` request.

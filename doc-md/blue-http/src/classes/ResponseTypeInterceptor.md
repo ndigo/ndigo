@@ -6,7 +6,7 @@
 
 # Class: ResponseTypeInterceptor
 
-Defined in: packages/blue-http/src/interceptors/response-type-interceptor.ts:91
+Defined in: [packages/blue-http/src/interceptors/response-type-interceptor.ts:91](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/response-type-interceptor.ts#lines-91)
 
 Parses response bodies into typed data and attaches the result as `data`.
 
@@ -31,7 +31,7 @@ Parses response bodies into typed data and attaches the result as `data`.
 
 > **preInit**(`url`, `settings`): `boolean`
 
-Defined in: packages/blue-http/src/interceptors/response-type-interceptor.ts:99
+Defined in: [packages/blue-http/src/interceptors/response-type-interceptor.ts:99](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/response-type-interceptor.ts#lines-99)
 
 #### Parameters
 
@@ -63,7 +63,7 @@ Whether or not the http request should continue execution.
 
 > **postResponse**(`response`, `settings`): `Promise`\<`void` \| `Response`\>
 
-Defined in: packages/blue-http/src/interceptors/response-type-interceptor.ts:139
+Defined in: [packages/blue-http/src/interceptors/response-type-interceptor.ts:139](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/response-type-interceptor.ts#lines-139)
 
 #### Parameters
 
@@ -78,8 +78,6 @@ Defined in: packages/blue-http/src/interceptors/response-type-interceptor.ts:139
 #### Returns
 
 `Promise`\<`void` \| `Response`\>
-
-#### Async
 
 #### Implementation of
 

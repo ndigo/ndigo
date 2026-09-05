@@ -8,7 +8,7 @@
 
 > **AsResourceLoaderAware**\<`T`\>(`superclass`): `Constructable`\<[`ResourceLoaderAware`](../interfaces/ResourceLoaderAware.md)\> & `T`
 
-Defined in: packages/blue-context/src/resource.ts:64
+Defined in: [packages/blue-context/src/resource.ts:64](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/resource.ts#lines-64)
 
 ## Type Parameters
 

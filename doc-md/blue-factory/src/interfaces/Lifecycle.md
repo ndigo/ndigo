@@ -6,7 +6,7 @@
 
 # Interface: Lifecycle
 
-Defined in: packages/blue-factory/src/lifecycle.ts:28
+Defined in: [packages/blue-factory/src/lifecycle.ts:28](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/lifecycle.ts#lines-28)
 
 ## Extended by
 
@@ -19,7 +19,7 @@ Defined in: packages/blue-factory/src/lifecycle.ts:28
 
 > `readonly` **isRunning**: `boolean`
 
-Defined in: packages/blue-factory/src/lifecycle.ts:29
+Defined in: [packages/blue-factory/src/lifecycle.ts:29](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/lifecycle.ts#lines-29)
 
 ## Methods
 
@@ -27,7 +27,7 @@ Defined in: packages/blue-factory/src/lifecycle.ts:29
 
 > **start**(): `void`
 
-Defined in: packages/blue-factory/src/lifecycle.ts:30
+Defined in: [packages/blue-factory/src/lifecycle.ts:30](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/lifecycle.ts#lines-30)
 
 #### Returns
 
@@ -39,7 +39,7 @@ Defined in: packages/blue-factory/src/lifecycle.ts:30
 
 > **stop**(): `void`
 
-Defined in: packages/blue-factory/src/lifecycle.ts:31
+Defined in: [packages/blue-factory/src/lifecycle.ts:31](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/lifecycle.ts#lines-31)
 
 #### Returns
 

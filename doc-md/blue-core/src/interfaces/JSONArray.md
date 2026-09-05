@@ -6,7 +6,7 @@
 
 # Interface: JSONArray
 
-Defined in: packages/blue-core/src/serializable.ts:22
+Defined in: [packages/blue-core/src/serializable.ts:21](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/serializable.ts#lines-21)
 
 A JSON array value.
 

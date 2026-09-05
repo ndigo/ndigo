@@ -8,7 +8,7 @@
 
 > `const` **likeResourceLoaderAware**: (`value`) => `value is ResourceLoaderAware`
 
-Defined in: packages/blue-context/src/resource.ts:100
+Defined in: [packages/blue-context/src/resource.ts:100](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/resource.ts#lines-100)
 
 Returns whether a value can receive a resource loader.
 

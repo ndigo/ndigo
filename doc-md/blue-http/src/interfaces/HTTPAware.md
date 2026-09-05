@@ -6,7 +6,7 @@
 
 # Interface: HTTPAware
 
-Defined in: packages/blue-http/src/http.ts:150
+Defined in: [packages/blue-http/src/http.ts:160](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-160)
 
 Describes objects that can receive an [HTTP](../classes/HTTP.md) instance.
 
@@ -34,7 +34,7 @@ A symbol indicating that the value is aware.
 
 > **setHTTP**(`http`): `void`
 
-Defined in: packages/blue-http/src/http.ts:156
+Defined in: [packages/blue-http/src/http.ts:166](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-166)
 
 Injects the HTTP client used by the receiver.
 

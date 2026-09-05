@@ -6,7 +6,7 @@
 
 # Interface: ContextEventRelay
 
-Defined in: packages/blue-context/src/event-gateway.ts:12
+Defined in: [packages/blue-context/src/event-gateway.ts:12](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-gateway.ts#lines-12)
 
 Maps an event emitted by the source context to a target event.
 
@@ -16,7 +16,7 @@ Maps an event emitted by the source context to a target event.
 
 > **from**: [`EventType`](../type-aliases/EventType.md)
 
-Defined in: packages/blue-context/src/event-gateway.ts:16
+Defined in: [packages/blue-context/src/event-gateway.ts:16](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-gateway.ts#lines-16)
 
 The source event type.
 
@@ -26,6 +26,6 @@ The source event type.
 
 > **to**: [`EventType`](../type-aliases/EventType.md)
 
-Defined in: packages/blue-context/src/event-gateway.ts:20
+Defined in: [packages/blue-context/src/event-gateway.ts:20](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-gateway.ts#lines-20)
 
 The target event type.

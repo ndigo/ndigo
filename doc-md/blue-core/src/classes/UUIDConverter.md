@@ -6,7 +6,7 @@
 
 # Class: UUIDConverter
 
-Defined in: packages/blue-core/src/converter.ts:136
+Defined in: [packages/blue-core/src/converter.ts:136](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/converter.ts#lines-136)
 
 Converts string values to lowercase UUID strings (validation + normalization).
 
@@ -30,7 +30,7 @@ Converts string values to lowercase UUID strings (validation + normalization).
 
 > **convert**(`value`): `string`
 
-Defined in: packages/blue-core/src/converter.ts:137
+Defined in: [packages/blue-core/src/converter.ts:137](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/converter.ts#lines-137)
 
 Converts a value of type `S` to type `T`.
 

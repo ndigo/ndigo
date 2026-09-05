@@ -6,7 +6,7 @@
 
 # Class: PrototypalPropertyResolver
 
-Defined in: packages/blue-context/src/property-resolver.ts:105
+Defined in: [packages/blue-context/src/property-resolver.ts:105](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/property-resolver.ts#lines-105)
 
 Property resolver that layers sources through a prototype chain for lookup.
 
@@ -20,7 +20,7 @@ Property resolver that layers sources through a prototype chain for lookup.
 
 > **new PrototypalPropertyResolver**(`propertySources`): `PrototypalPropertyResolver`
 
-Defined in: packages/blue-context/src/property-resolver.ts:131
+Defined in: [packages/blue-context/src/property-resolver.ts:131](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/property-resolver.ts#lines-131)
 
 #### Parameters
 
@@ -38,7 +38,7 @@ Defined in: packages/blue-context/src/property-resolver.ts:131
 
 > `readonly` **properties**: `JSONObject`
 
-Defined in: packages/blue-context/src/property-resolver.ts:107
+Defined in: [packages/blue-context/src/property-resolver.ts:107](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/property-resolver.ts#lines-107)
 
 ## Accessors
 
@@ -48,7 +48,7 @@ Defined in: packages/blue-context/src/property-resolver.ts:107
 
 > **get** **propertySources**(): `JSONObject`[]
 
-Defined in: packages/blue-context/src/property-resolver.ts:112
+Defined in: [packages/blue-context/src/property-resolver.ts:112](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/property-resolver.ts#lines-112)
 
 The ordered set of configured property sources.
 
@@ -60,7 +60,7 @@ The ordered set of configured property sources.
 
 > **set** **propertySources**(`propertySources`): `void`
 
-Defined in: packages/blue-context/src/property-resolver.ts:121
+Defined in: [packages/blue-context/src/property-resolver.ts:121](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/property-resolver.ts#lines-121)
 
 Replaces the property sources and rebuilds the prototype chain used for lookups.
 
@@ -88,7 +88,7 @@ The ordered set of property sources used during resolution.
 
 > **getProperty**(`key`, `defaultValue?`): `JSONValue` \| `undefined`
 
-Defined in: packages/blue-context/src/property-resolver.ts:142
+Defined in: [packages/blue-context/src/property-resolver.ts:142](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/property-resolver.ts#lines-142)
 
 Resolves a property value from the configured sources.
 
@@ -122,7 +122,7 @@ The resolved property value or the default value.
 
 > **getRequiredProperty**(`key`): `JSONValue`
 
-Defined in: packages/blue-context/src/property-resolver.ts:156
+Defined in: [packages/blue-context/src/property-resolver.ts:156](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/property-resolver.ts#lines-156)
 
 Resolves a required property value.
 
@@ -154,7 +154,7 @@ When the property cannot be resolved.
 
 > **hasProperty**(`key`): `boolean`
 
-Defined in: packages/blue-context/src/property-resolver.ts:170
+Defined in: [packages/blue-context/src/property-resolver.ts:170](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/property-resolver.ts#lines-170)
 
 Returns whether the property can be resolved.
 

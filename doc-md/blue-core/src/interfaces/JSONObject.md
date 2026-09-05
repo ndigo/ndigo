@@ -6,7 +6,7 @@
 
 # Interface: JSONObject
 
-Defined in: packages/blue-core/src/serializable.ts:17
+Defined in: [packages/blue-core/src/serializable.ts:16](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/serializable.ts#lines-16)
 
 A JSON object value.
 

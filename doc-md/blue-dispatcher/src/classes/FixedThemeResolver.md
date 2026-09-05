@@ -6,7 +6,7 @@
 
 # Class: FixedThemeResolver
 
-Defined in: packages/blue-dispatcher/src/theme-resolver.ts:53
+Defined in: [packages/blue-dispatcher/src/theme-resolver.ts:51](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/theme-resolver.ts#lines-51)
 
 Resolve a fixed theme regardless of route.
 
@@ -20,7 +20,7 @@ Resolve a fixed theme regardless of route.
 
 > **new FixedThemeResolver**(`defaultThemeName`): `FixedThemeResolver`
 
-Defined in: packages/blue-dispatcher/src/theme-resolver.ts:37
+Defined in: [packages/blue-dispatcher/src/theme-resolver.ts:35](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/theme-resolver.ts#lines-35)
 
 Store the fallback theme name.
 
@@ -46,7 +46,7 @@ The theme to use by default.
 
 > `readonly` **defaultThemeName**: `string`
 
-Defined in: packages/blue-dispatcher/src/theme-resolver.ts:26
+Defined in: [packages/blue-dispatcher/src/theme-resolver.ts:24](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/theme-resolver.ts#lines-24)
 
 Fallback theme name used when a route-specific theme is unavailable.
 
@@ -62,7 +62,7 @@ Fallback theme name used when a route-specific theme is unavailable.
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-dispatcher/src/theme-resolver.ts:28
+Defined in: [packages/blue-dispatcher/src/theme-resolver.ts:26](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/theme-resolver.ts#lines-26)
 
 ##### Returns
 
@@ -78,7 +78,7 @@ Defined in: packages/blue-dispatcher/src/theme-resolver.ts:28
 
 > **resolveTheme**(`route`): `string`
 
-Defined in: packages/blue-dispatcher/src/theme-resolver.ts:60
+Defined in: [packages/blue-dispatcher/src/theme-resolver.ts:58](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/theme-resolver.ts#lines-58)
 
 Return the configured fallback theme.
 
@@ -86,7 +86,7 @@ Return the configured fallback theme.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The current route.
 

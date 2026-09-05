@@ -6,7 +6,7 @@
 
 # Class: InvalidParameterMappingError
 
-Defined in: packages/blue-dispatcher/src/error.ts:125
+Defined in: [packages/blue-dispatcher/src/error.ts:125](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/error.ts#lines-125)
 
 Thrown when parameter mapping configuration is invalid.
 This is a CONFIGURATION error (application startup time).
@@ -21,7 +21,7 @@ This is a CONFIGURATION error (application startup time).
 
 > **new InvalidParameterMappingError**(`message`, `parameterName?`, `methodName?`, `controllerName?`): `InvalidParameterMappingError`
 
-Defined in: packages/blue-dispatcher/src/error.ts:130
+Defined in: [packages/blue-dispatcher/src/error.ts:130](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/error.ts#lines-130)
 
 #### Parameters
 
@@ -55,7 +55,7 @@ Defined in: packages/blue-dispatcher/src/error.ts:130
 
 > `readonly` **parameterName**: `string` \| `null`
 
-Defined in: packages/blue-dispatcher/src/error.ts:87
+Defined in: [packages/blue-dispatcher/src/error.ts:87](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/error.ts#lines-87)
 
 #### Inherited from
 
@@ -67,7 +67,7 @@ Defined in: packages/blue-dispatcher/src/error.ts:87
 
 > `readonly` **methodName**: `string` \| `null`
 
-Defined in: packages/blue-dispatcher/src/error.ts:88
+Defined in: [packages/blue-dispatcher/src/error.ts:88](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/error.ts#lines-88)
 
 #### Inherited from
 
@@ -79,7 +79,7 @@ Defined in: packages/blue-dispatcher/src/error.ts:88
 
 > `readonly` **controllerName**: `string` \| `null`
 
-Defined in: packages/blue-dispatcher/src/error.ts:89
+Defined in: [packages/blue-dispatcher/src/error.ts:89](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/error.ts#lines-89)
 
 #### Inherited from
 
@@ -93,7 +93,7 @@ Defined in: packages/blue-dispatcher/src/error.ts:89
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-dispatcher/src/error.ts:126
+Defined in: [packages/blue-dispatcher/src/error.ts:126](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/error.ts#lines-126)
 
 ##### Returns
 

@@ -8,7 +8,7 @@
 
 > `const` **ssnExcludeRule**: `RegExp`
 
-Defined in: packages/blue-validate/src/formats.ts:203
+Defined in: [packages/blue-validate/src/formats.ts:203](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/formats.ts#lines-203)
 
 A regular expression matching SSN Exclude Format.
 

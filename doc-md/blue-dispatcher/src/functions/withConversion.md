@@ -8,7 +8,7 @@
 
 > **withConversion**(`extractor`, `convertType`): [`ParameterExtractor`](../type-aliases/ParameterExtractor.md)
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:465
+Defined in: [packages/blue-dispatcher/src/route-parameter.ts:436](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-parameter.ts#lines-436)
 
 Wraps a parameter extractor to enforce type-based conversion via ConversionService.
 

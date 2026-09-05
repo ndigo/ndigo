@@ -1,7 +1,7 @@
 /**
  * @author Jeff Rose
  *
- * Scans `@routeMapping` decorator metadata from registered beans and builds
+ * Scans `routeMapping` decorator metadata from registered beans and builds
  * a nested tree of type-safe {@link RouteDefinition} instances.
  *
  * The registry is constructed during application boot and registered as a
@@ -37,7 +37,7 @@ export function deriveKey(path: string, name?: string): string {
     return segment;
 }
 
-/** Internal type for route mapping metadata stored by the @routeMapping decorator. */
+/** Internal type for route mapping metadata stored by the `routeMapping` decorator. */
 interface RouteMappingMeta {
     value: string;
     name?: string;
@@ -47,7 +47,7 @@ interface RouteMappingMeta {
 }
 
 /**
- * Read `@routeMapping` metadata from a class constructor's `Symbol.metadata`.
+ * Read `routeMapping` metadata from a class constructor's `Symbol.metadata`.
  * This mirrors the logic in `@blue/dispatcher`'s `getRouteMapping` without
  * requiring a dependency on that package.
  */
@@ -74,7 +74,7 @@ function getRouteMappingMethodKeys(target: unknown): string[] {
 /**
  * Registry of type-safe route definitions.
  *
- * Created by scanning `@routeMapping` decorator metadata from registered
+ * Created by scanning `routeMapping` decorator metadata from registered
  * source classes. Provides a nested tree of {@link RouteDefinition} instances
  * for URL generation, navigation, and route matching.
  */
@@ -86,7 +86,7 @@ export class RouteRegistry {
     }
 
     /**
-     * Scan source classes for `@routeMapping` metadata and populate the registry.
+     * Scan source classes for `routeMapping` metadata and populate the registry.
      *
      * @param sources - The source/configuration classes to scan.
      * @param context - The application context for resolving the Router.
@@ -106,7 +106,7 @@ export class RouteRegistry {
     }
 
     /**
-     * Scan a single class for `@routeMapping` metadata.
+     * Scan a single class for `routeMapping` metadata.
      */
     #scanClass(source: Function, context: Registry): void {
         const classMeta = getRouteMapping(source);

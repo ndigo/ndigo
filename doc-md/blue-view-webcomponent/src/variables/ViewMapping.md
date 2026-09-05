@@ -8,7 +8,7 @@
 
 > `const` **ViewMapping**: (`viewName`) => \<`T`\>(`target`, `context`) => `T` & `object`
 
-Defined in: packages/blue-view-webcomponent/src/view-mapping.ts:44
+Defined in: [packages/blue-view-webcomponent/src/view-mapping.ts:44](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view-webcomponent/src/view-mapping.ts#lines-44)
 
 Registers a view name in decorator metadata for later lookup.
 

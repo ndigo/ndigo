@@ -50,7 +50,7 @@ const RETRY_ATTEMPT_HEADER = 'x-retry-attempt';
  * than a WeakMap so that the counter survives across the new `Request`
  * objects created on each retry call.
  *
- * @implements {module:http.ErrorAwareHTTPInterceptor}
+
  */
 export class RetryInterceptor implements ErrorAwareHTTPInterceptor {
     readonly #config: RetryInit;

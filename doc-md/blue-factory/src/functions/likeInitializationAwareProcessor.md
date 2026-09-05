@@ -8,7 +8,7 @@
 
 > **likeInitializationAwareProcessor**(`value`): `value is InitializationAwareProcessor`
 
-Defined in: packages/blue-factory/src/entry-processor.ts:120
+Defined in: [packages/blue-factory/src/entry-processor.ts:120](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/entry-processor.ts#lines-120)
 
 Determines whether or not the `value` provided is an [InitializationAwareProcessor](../interfaces/InitializationAwareProcessor.md).
 
@@ -16,7 +16,7 @@ Determines whether or not the `value` provided is an [InitializationAwareProcess
 
 ### value
 
-`any`
+`unknown`
 
 The value to be tested.
 

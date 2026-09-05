@@ -6,7 +6,7 @@
 
 # Class: ArrayConverter
 
-Defined in: packages/blue-core/src/converter.ts:221
+Defined in: [packages/blue-core/src/converter.ts:221](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/converter.ts#lines-221)
 
 Converts strings to arrays by splitting on a separator.
 
@@ -30,7 +30,7 @@ Converts strings to arrays by splitting on a separator.
 
 > **convert**(`value`, `separator?`): `string`[]
 
-Defined in: packages/blue-core/src/converter.ts:222
+Defined in: [packages/blue-core/src/converter.ts:222](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/converter.ts#lines-222)
 
 Converts a value of type `S` to type `T`.
 

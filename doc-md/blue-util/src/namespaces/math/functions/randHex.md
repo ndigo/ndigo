@@ -8,7 +8,7 @@
 
 > **randHex**(`size?`): `string`
 
-Defined in: packages/blue-util/src/math/rand-hex.ts:24
+Defined in: [packages/blue-util/src/math/rand-hex.ts:24](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-util/src/math/rand-hex.ts#lines-24)
 
 Generates a pseudo-random hexidecimal of the provided `size`.
 

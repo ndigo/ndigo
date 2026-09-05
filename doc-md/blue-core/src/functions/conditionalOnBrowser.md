@@ -8,7 +8,7 @@
 
 > **conditionalOnBrowser**(`target`, `context`): `any`
 
-Defined in: packages/blue-core/src/conditional.ts:79
+Defined in: [packages/blue-core/src/conditional.ts:74](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/conditional.ts#lines-74)
 
 Marks a configuration class as browser-only.
 
@@ -30,6 +30,6 @@ Marks a configuration class as browser-only.
 
 ```ts
 @conditionalOnBrowser
-@configuration
+@class
 class WebAutoConfiguration { … }
 ```

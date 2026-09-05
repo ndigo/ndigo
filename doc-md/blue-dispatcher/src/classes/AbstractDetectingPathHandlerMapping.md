@@ -6,7 +6,7 @@
 
 # Abstract Class: AbstractDetectingPathHandlerMapping
 
-Defined in: packages/blue-dispatcher/src/abstract-path-handler-mapping.ts:200
+Defined in: [packages/blue-dispatcher/src/abstract-path-handler-mapping.ts:199](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/abstract-path-handler-mapping.ts#lines-199)
 
 Base class for path mappings that discover handlers from the application context.
 
@@ -24,7 +24,7 @@ Base class for path mappings that discover handlers from the application context
 
 > **new AbstractDetectingPathHandlerMapping**(): `AbstractDetectingPathHandlerMapping`
 
-Defined in: packages/blue-dispatcher/src/abstract-path-handler-mapping.ts:33
+Defined in: [packages/blue-dispatcher/src/abstract-path-handler-mapping.ts:32](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/abstract-path-handler-mapping.ts#lines-32)
 
 Create a path handler mapping with empty path registrations.
 
@@ -42,7 +42,7 @@ Create a path handler mapping with empty path registrations.
 
 > **applicationContext**: `ApplicationContext`
 
-Defined in: packages/blue-dispatcher/src/abstract-handler-mapping.ts:60
+Defined in: [packages/blue-dispatcher/src/abstract-handler-mapping.ts:60](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/abstract-handler-mapping.ts#lines-60)
 
 Application context used to resolve named handlers.
 
@@ -56,7 +56,7 @@ Application context used to resolve named handlers.
 
 > **defaultHandler**: `object` \| `null` = `null`
 
-Defined in: packages/blue-dispatcher/src/abstract-handler-mapping.ts:65
+Defined in: [packages/blue-dispatcher/src/abstract-handler-mapping.ts:65](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/abstract-handler-mapping.ts#lines-65)
 
 Default handler used when no specific mapping matches.
 
@@ -70,7 +70,7 @@ Default handler used when no specific mapping matches.
 
 > **interceptors**: [`RouteHandlerInterceptor`](../interfaces/RouteHandlerInterceptor.md)[]
 
-Defined in: packages/blue-dispatcher/src/abstract-handler-mapping.ts:70
+Defined in: [packages/blue-dispatcher/src/abstract-handler-mapping.ts:70](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/abstract-handler-mapping.ts#lines-70)
 
 Interceptors applied to matched handlers.
 
@@ -84,7 +84,7 @@ Interceptors applied to matched handlers.
 
 > **pathMatcher**: `PathMatcher`
 
-Defined in: packages/blue-dispatcher/src/abstract-handler-mapping.ts:75
+Defined in: [packages/blue-dispatcher/src/abstract-handler-mapping.ts:75](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/abstract-handler-mapping.ts#lines-75)
 
 Path matcher used by path-based mappings.
 
@@ -98,7 +98,7 @@ Path matcher used by path-based mappings.
 
 > **rootHandler**: `object` \| `null` = `null`
 
-Defined in: packages/blue-dispatcher/src/abstract-path-handler-mapping.ts:21
+Defined in: [packages/blue-dispatcher/src/abstract-path-handler-mapping.ts:20](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/abstract-path-handler-mapping.ts#lines-20)
 
 Handler mapped to the root path.
 
@@ -112,7 +112,7 @@ Handler mapped to the root path.
 
 > **useTrailingSlashMatch**: `boolean` = `false`
 
-Defined in: packages/blue-dispatcher/src/abstract-path-handler-mapping.ts:26
+Defined in: [packages/blue-dispatcher/src/abstract-path-handler-mapping.ts:25](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/abstract-path-handler-mapping.ts#lines-25)
 
 Whether trailing slash variants should be considered matches.
 
@@ -156,7 +156,7 @@ The name of the value in the factory.
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-dispatcher/src/abstract-handler-mapping.ts:82
+Defined in: [packages/blue-dispatcher/src/abstract-handler-mapping.ts:82](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/abstract-handler-mapping.ts#lines-82)
 
 ##### Returns
 
@@ -172,7 +172,7 @@ Defined in: packages/blue-dispatcher/src/abstract-handler-mapping.ts:82
 
 > **getHandler**(`route`): `RouteHandlerExecutionChain` \| `null`
 
-Defined in: packages/blue-dispatcher/src/abstract-handler-mapping.ts:117
+Defined in: [packages/blue-dispatcher/src/abstract-handler-mapping.ts:117](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/abstract-handler-mapping.ts#lines-117)
 
 Resolve a route to a handler execution chain.
 
@@ -180,7 +180,7 @@ Resolve a route to a handler execution chain.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The current route.
 
@@ -200,7 +200,7 @@ The execution chain, or `null` when no handler matches.
 
 > `protected` **\_getHandlerExecutionChain**(`handler`, `route`): `RouteHandlerExecutionChain`
 
-Defined in: packages/blue-dispatcher/src/abstract-handler-mapping.ts:142
+Defined in: [packages/blue-dispatcher/src/abstract-handler-mapping.ts:142](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/abstract-handler-mapping.ts#lines-142)
 
 Build an execution chain for a resolved handler and route.
 
@@ -214,7 +214,7 @@ The resolved handler or existing execution chain.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The current route.
 
@@ -234,7 +234,7 @@ The execution chain to invoke.
 
 > **lookUpHandler**(`path`, `route`): `RouteHandlerExecutionChain` \| `null`
 
-Defined in: packages/blue-dispatcher/src/abstract-path-handler-mapping.ts:47
+Defined in: [packages/blue-dispatcher/src/abstract-path-handler-mapping.ts:46](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/abstract-path-handler-mapping.ts#lines-46)
 
 Look up the handler for a path.
 
@@ -248,7 +248,7 @@ The request path.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The current route.
 
@@ -268,7 +268,7 @@ The resolved execution chain, or `null`.
 
 > **match**(`route`, `pattern`): [`RouteMatchResult`](RouteMatchResult.md) \| `null`
 
-Defined in: packages/blue-dispatcher/src/abstract-path-handler-mapping.ts:108
+Defined in: [packages/blue-dispatcher/src/abstract-path-handler-mapping.ts:107](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/abstract-path-handler-mapping.ts#lines-107)
 
 Check whether a route matches a path pattern.
 
@@ -276,7 +276,7 @@ Check whether a route matches a path pattern.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The current route.
 
@@ -302,7 +302,7 @@ A match result, or `null`.
 
 > `protected` **\_getHandler**(`route`): `RouteHandlerExecutionChain` \| `null`
 
-Defined in: packages/blue-dispatcher/src/abstract-path-handler-mapping.ts:128
+Defined in: [packages/blue-dispatcher/src/abstract-path-handler-mapping.ts:127](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/abstract-path-handler-mapping.ts#lines-127)
 
 Resolve the most appropriate handler for a route.
 
@@ -310,7 +310,7 @@ Resolve the most appropriate handler for a route.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The current route.
 
@@ -330,7 +330,7 @@ The execution chain, or `null`.
 
 > `protected` **\_registerHandler**(`path`, `handler`): `void`
 
-Defined in: packages/blue-dispatcher/src/abstract-path-handler-mapping.ts:155
+Defined in: [packages/blue-dispatcher/src/abstract-path-handler-mapping.ts:154](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/abstract-path-handler-mapping.ts#lines-154)
 
 Register a handler against one or more paths.
 
@@ -362,7 +362,7 @@ The handler instance or application-context name.
 
 > **setApplicationContext**(`context`): `void`
 
-Defined in: packages/blue-dispatcher/src/abstract-path-handler-mapping.ts:206
+Defined in: [packages/blue-dispatcher/src/abstract-path-handler-mapping.ts:205](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/abstract-path-handler-mapping.ts#lines-205)
 
 Store the application context and detect handlers immediately.
 
@@ -388,7 +388,7 @@ The application context to use.
 
 > `protected` **\_detectHandlers**(): `void`
 
-Defined in: packages/blue-dispatcher/src/abstract-path-handler-mapping.ts:214
+Defined in: [packages/blue-dispatcher/src/abstract-path-handler-mapping.ts:213](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/abstract-path-handler-mapping.ts#lines-213)
 
 Scan the application context for handlers and register their paths.
 
@@ -402,7 +402,7 @@ Scan the application context for handlers and register their paths.
 
 > `abstract` `protected` **\_determinePathsForHandler**(`name`): `string`[]
 
-Defined in: packages/blue-dispatcher/src/abstract-path-handler-mapping.ts:228
+Defined in: [packages/blue-dispatcher/src/abstract-path-handler-mapping.ts:229](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/abstract-path-handler-mapping.ts#lines-229)
 
 Determine the paths for a handler name.
 

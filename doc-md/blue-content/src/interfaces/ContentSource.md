@@ -6,7 +6,7 @@
 
 # Interface: ContentSource
 
-Defined in: packages/blue-content/src/content.ts:12
+Defined in: [packages/blue-content/src/content.ts:12](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-content/src/content.ts#lines-12)
 
 Resolves localized content for a given key and language.
 
@@ -20,7 +20,7 @@ Resolves localized content for a given key and language.
 
 > **getContent**(`key`, `language`): `string`
 
-Defined in: packages/blue-content/src/content.ts:20
+Defined in: [packages/blue-content/src/content.ts:20](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-content/src/content.ts#lines-20)
 
 Gets translated content for the requested key and language.
 

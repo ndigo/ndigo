@@ -6,7 +6,7 @@
 
 # Interface: Logger
 
-Defined in: packages/blue-telemetry/src/logger/logger.ts:16
+Defined in: [packages/blue-telemetry/src/logger/logger.ts:16](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/logger/logger.ts#lines-16)
 
 Defines the interface for a logger that supports different severity levels and structured logging.
 
@@ -19,7 +19,7 @@ potentially integrating with OpenTelemetry logging systems.
 
 > `readonly` **threshold**: `SeverityNumber`
 
-Defined in: packages/blue-telemetry/src/logger/logger.ts:21
+Defined in: [packages/blue-telemetry/src/logger/logger.ts:21](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/logger/logger.ts#lines-21)
 
 The minimum severity level for log messages to be processed by this logger.
 Messages with a severity lower than this threshold will be ignored.
@@ -30,7 +30,7 @@ Messages with a severity lower than this threshold will be ignored.
 
 > **setThreshold**(`threshold`): `void`
 
-Defined in: packages/blue-telemetry/src/logger/logger.ts:27
+Defined in: [packages/blue-telemetry/src/logger/logger.ts:27](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/logger/logger.ts#lines-27)
 
 Sets the minimum severity level for log messages.
 
@@ -52,7 +52,7 @@ The new minimum `SeverityNumber`.
 
 > **isEnabled**(`severityNumber`): `boolean`
 
-Defined in: packages/blue-telemetry/src/logger/logger.ts:34
+Defined in: [packages/blue-telemetry/src/logger/logger.ts:34](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/logger/logger.ts#lines-34)
 
 Checks if logging is enabled for a given severity number.
 
@@ -76,7 +76,7 @@ The `SeverityNumber` to check.
 
 > **debug**(`message`, `attributes?`): `void`
 
-Defined in: packages/blue-telemetry/src/logger/logger.ts:41
+Defined in: [packages/blue-telemetry/src/logger/logger.ts:41](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/logger/logger.ts#lines-41)
 
 Logs a message with `DEBUG` severity.
 
@@ -104,7 +104,7 @@ Optional attributes to associate with the log entry.
 
 > **info**(`message`, `attributes?`): `void`
 
-Defined in: packages/blue-telemetry/src/logger/logger.ts:48
+Defined in: [packages/blue-telemetry/src/logger/logger.ts:48](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/logger/logger.ts#lines-48)
 
 Logs a message with `INFO` severity.
 
@@ -132,7 +132,7 @@ Optional attributes to associate with the log entry.
 
 > **warn**(`message`, `attributes?`): `void`
 
-Defined in: packages/blue-telemetry/src/logger/logger.ts:55
+Defined in: [packages/blue-telemetry/src/logger/logger.ts:55](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/logger/logger.ts#lines-55)
 
 Logs a message with `WARN` severity.
 
@@ -160,7 +160,7 @@ Optional attributes to associate with the log entry.
 
 > **error**(`message`, `error?`, `attributes?`): `void`
 
-Defined in: packages/blue-telemetry/src/logger/logger.ts:63
+Defined in: [packages/blue-telemetry/src/logger/logger.ts:63](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/logger/logger.ts#lines-63)
 
 Logs a message with `ERROR` severity.
 

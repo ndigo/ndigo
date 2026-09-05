@@ -6,7 +6,7 @@
 
 # Class: ContextAwareLogger
 
-Defined in: packages/blue-telemetry/src/logger/context-aware-logger.ts:12
+Defined in: [packages/blue-telemetry/src/logger/context-aware-logger.ts:12](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/logger/context-aware-logger.ts#lines-12)
 
 A decorator logger that automatically injects OpenTelemetry trace and span IDs into log attributes
 if an active span is present in the current context.
@@ -24,7 +24,7 @@ by adding `traceId` and `spanId` to the `LogAttributes` before passing them to t
 
 > **new ContextAwareLogger**(`logger`): `ContextAwareLogger`
 
-Defined in: packages/blue-telemetry/src/logger/context-aware-logger.ts:17
+Defined in: [packages/blue-telemetry/src/logger/context-aware-logger.ts:17](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/logger/context-aware-logger.ts#lines-17)
 
 Creates an instance of `ContextAwareLogger`.
 
@@ -48,7 +48,7 @@ The underlying `Logger` instance to wrap.
 
 > **get** **threshold**(): `SeverityNumber`
 
-Defined in: packages/blue-telemetry/src/logger/context-aware-logger.ts:22
+Defined in: [packages/blue-telemetry/src/logger/context-aware-logger.ts:22](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/logger/context-aware-logger.ts#lines-22)
 
 Gets the minimum severity level for log messages, delegated to the wrapped logger.
 
@@ -69,7 +69,7 @@ Messages with a severity lower than this threshold will be ignored.
 
 > **setThreshold**(`threshold`): `void`
 
-Defined in: packages/blue-telemetry/src/logger/context-aware-logger.ts:30
+Defined in: [packages/blue-telemetry/src/logger/context-aware-logger.ts:30](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/logger/context-aware-logger.ts#lines-30)
 
 Sets the minimum severity level for log messages, delegated to the wrapped logger.
 
@@ -95,7 +95,7 @@ The new minimum `SeverityNumber`.
 
 > **isEnabled**(`severityNumber`): `boolean`
 
-Defined in: packages/blue-telemetry/src/logger/context-aware-logger.ts:39
+Defined in: [packages/blue-telemetry/src/logger/context-aware-logger.ts:39](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/logger/context-aware-logger.ts#lines-39)
 
 Checks if logging is enabled for a given severity number, delegated to the wrapped logger.
 
@@ -123,7 +123,7 @@ The `SeverityNumber` to check.
 
 > **debug**(`message`, `attributes?`): `void`
 
-Defined in: packages/blue-telemetry/src/logger/context-aware-logger.ts:48
+Defined in: [packages/blue-telemetry/src/logger/context-aware-logger.ts:48](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/logger/context-aware-logger.ts#lines-48)
 
 Logs a message with `DEBUG` severity, injecting trace context into attributes.
 
@@ -155,7 +155,7 @@ Optional attributes to associate with the log entry.
 
 > **info**(`message`, `attributes?`): `void`
 
-Defined in: packages/blue-telemetry/src/logger/context-aware-logger.ts:57
+Defined in: [packages/blue-telemetry/src/logger/context-aware-logger.ts:57](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/logger/context-aware-logger.ts#lines-57)
 
 Logs a message with `INFO` severity, injecting trace context into attributes.
 
@@ -187,7 +187,7 @@ Optional attributes to associate with the log entry.
 
 > **warn**(`message`, `attributes?`): `void`
 
-Defined in: packages/blue-telemetry/src/logger/context-aware-logger.ts:66
+Defined in: [packages/blue-telemetry/src/logger/context-aware-logger.ts:66](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/logger/context-aware-logger.ts#lines-66)
 
 Logs a message with `WARN` severity, injecting trace context into attributes.
 
@@ -219,7 +219,7 @@ Optional attributes to associate with the log entry.
 
 > **error**(`message`, `error?`, `attributes?`): `void`
 
-Defined in: packages/blue-telemetry/src/logger/context-aware-logger.ts:76
+Defined in: [packages/blue-telemetry/src/logger/context-aware-logger.ts:76](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/logger/context-aware-logger.ts#lines-76)
 
 Logs a message with `ERROR` severity, injecting trace context into attributes.
 

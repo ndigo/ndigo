@@ -6,7 +6,7 @@
 
 # Interface: Comparable\<T\>
 
-Defined in: packages/blue-core/src/comparable.ts:28
+Defined in: [packages/blue-core/src/comparable.ts:26](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/comparable.ts#lines-26)
 
 Interface for objects that can be compared to another object of the same type.
 
@@ -28,7 +28,7 @@ The type of the object being compared.
 
 > **compareTo**(`value`): `number`
 
-Defined in: packages/blue-core/src/comparable.ts:35
+Defined in: [packages/blue-core/src/comparable.ts:33](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/comparable.ts#lines-33)
 
 Compares this object with the specified object for order. Returns a negative integer, zero, or a positive integer
 as this object is less than, equal to, or greater than the specified object.

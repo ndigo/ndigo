@@ -8,6 +8,6 @@
 
 > `const` **LOOP\_DETECTED**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
-Defined in: packages/blue-http/src/response-statuses.ts:338
+Defined in: [packages/blue-http/src/response-statuses.ts:338](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/response-statuses.ts#lines-338)
 
 The server detected an infinite loop while processing the request.

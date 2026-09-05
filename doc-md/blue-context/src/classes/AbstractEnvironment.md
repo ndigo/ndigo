@@ -6,7 +6,7 @@
 
 # Abstract Class: AbstractEnvironment
 
-Defined in: packages/blue-context/src/environment.ts:115
+Defined in: [packages/blue-context/src/environment.ts:115](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/environment.ts#lines-115)
 
 Base implementation for environments with profile and property-source support.
 
@@ -25,7 +25,7 @@ Base implementation for environments with profile and property-source support.
 
 > **new AbstractEnvironment**(`propertySources?`): `AbstractEnvironment`
 
-Defined in: packages/blue-context/src/environment.ts:152
+Defined in: [packages/blue-context/src/environment.ts:154](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/environment.ts#lines-154)
 
 #### Parameters
 
@@ -45,7 +45,7 @@ Defined in: packages/blue-context/src/environment.ts:152
 
 > **get** **propertySources**(): `JSONObject`[]
 
-Defined in: packages/blue-context/src/environment.ts:120
+Defined in: [packages/blue-context/src/environment.ts:120](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/environment.ts#lines-120)
 
 The ordered property sources used for resolution.
 
@@ -57,7 +57,7 @@ The ordered property sources used for resolution.
 
 > **set** **propertySources**(`propertySources`): `void`
 
-Defined in: packages/blue-context/src/environment.ts:124
+Defined in: [packages/blue-context/src/environment.ts:124](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/environment.ts#lines-124)
 
 The ordered property sources used for resolution.
 
@@ -85,7 +85,7 @@ The ordered property sources used for resolution.
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-context/src/environment.ts:128
+Defined in: [packages/blue-context/src/environment.ts:128](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/environment.ts#lines-128)
 
 ##### Returns
 
@@ -99,7 +99,7 @@ Defined in: packages/blue-context/src/environment.ts:128
 
 > **get** **activeProfiles**(): `string`[]
 
-Defined in: packages/blue-context/src/environment.ts:132
+Defined in: [packages/blue-context/src/environment.ts:132](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/environment.ts#lines-132)
 
 The explicitly active profiles.
 
@@ -111,7 +111,7 @@ The explicitly active profiles.
 
 > **set** **activeProfiles**(`profiles`): `void`
 
-Defined in: packages/blue-context/src/environment.ts:136
+Defined in: [packages/blue-context/src/environment.ts:136](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/environment.ts#lines-136)
 
 The explicitly active profiles.
 
@@ -139,7 +139,7 @@ The explicitly active profiles.
 
 > **get** **defaultProfiles**(): `string`[]
 
-Defined in: packages/blue-context/src/environment.ts:142
+Defined in: [packages/blue-context/src/environment.ts:143](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/environment.ts#lines-143)
 
 The default profiles used when no active profile is configured.
 
@@ -151,7 +151,7 @@ The default profiles used when no active profile is configured.
 
 > **set** **defaultProfiles**(`profiles`): `void`
 
-Defined in: packages/blue-context/src/environment.ts:146
+Defined in: [packages/blue-context/src/environment.ts:147](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/environment.ts#lines-147)
 
 The default profiles used when no active profile is configured.
 
@@ -177,7 +177,7 @@ The default profiles used when no active profile is configured.
 
 > **addActiveProfile**(`profile`): `void`
 
-Defined in: packages/blue-context/src/environment.ts:158
+Defined in: [packages/blue-context/src/environment.ts:160](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/environment.ts#lines-160)
 
 Adds a profile to the active set.
 
@@ -203,7 +203,7 @@ The profile name.
 
 > **addDefaultProfile**(`profile`): `void`
 
-Defined in: packages/blue-context/src/environment.ts:162
+Defined in: [packages/blue-context/src/environment.ts:164](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/environment.ts#lines-164)
 
 Adds a profile to the default set.
 
@@ -229,7 +229,7 @@ The profile name.
 
 > **hasProperty**(`key`): `boolean`
 
-Defined in: packages/blue-context/src/environment.ts:166
+Defined in: [packages/blue-context/src/environment.ts:168](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/environment.ts#lines-168)
 
 Returns whether a property key can be resolved.
 
@@ -257,7 +257,7 @@ The property name to resolve.
 
 > **getProperty**(`key`, `defaultValue?`): `JSONValue` \| `undefined`
 
-Defined in: packages/blue-context/src/environment.ts:170
+Defined in: [packages/blue-context/src/environment.ts:172](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/environment.ts#lines-172)
 
 Resolves a property value, falling back to a default when missing.
 
@@ -291,7 +291,7 @@ The resolved property value or the default value.
 
 > **getRequiredProperty**(`key`): `JSONValue`
 
-Defined in: packages/blue-context/src/environment.ts:174
+Defined in: [packages/blue-context/src/environment.ts:176](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/environment.ts#lines-176)
 
 Returns the resolved property value or throws when missing.
 
@@ -323,7 +323,7 @@ When the property cannot be resolved.
 
 > **merge**(`environment`): `void`
 
-Defined in: packages/blue-context/src/environment.ts:178
+Defined in: [packages/blue-context/src/environment.ts:180](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/environment.ts#lines-180)
 
 Merges another environment into this one.
 
@@ -349,7 +349,7 @@ The environment to merge.
 
 > `protected` **\_isActiveProfile**(`profile`): `boolean`
 
-Defined in: packages/blue-context/src/environment.ts:189
+Defined in: [packages/blue-context/src/environment.ts:193](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/environment.ts#lines-193)
 
 #### Parameters
 

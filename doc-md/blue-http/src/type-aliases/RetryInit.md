@@ -8,7 +8,7 @@
 
 > **RetryInit** = [`HTTPInit`](HTTPInit.md) & `object`
 
-Defined in: packages/blue-http/src/interceptors/retry-interceptor.ts:11
+Defined in: [packages/blue-http/src/interceptors/retry-interceptor.ts:11](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/retry-interceptor.ts#lines-11)
 
 Configuration options for the retry interceptor.
 

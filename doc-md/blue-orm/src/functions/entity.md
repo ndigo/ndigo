@@ -8,7 +8,7 @@
 
 > **entity**(`tableName?`): \<`T`\>(`target`, `context`) => `T`
 
-Defined in: packages/blue-orm/src/decorators.ts:31
+Defined in: [packages/blue-orm/src/decorators.ts:38](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/decorators.ts#lines-38)
 
 Decorator that marks a class as an entity.
 It can optionally specify a custom table name for the entity.

@@ -8,7 +8,7 @@
 
 > `const` **parseKeypath**: (`input`) => [`KeypathToken`](../type-aliases/KeypathToken.md)[] \| `null`
 
-Defined in: packages/blue-core/src/keypath-expression.ts:88
+Defined in: [packages/blue-core/src/keypath-expression.ts:88](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/keypath-expression.ts#lines-88)
 
 Singleton instance for backward compatibility.
 

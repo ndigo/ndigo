@@ -8,7 +8,7 @@
 
 > **dec**(`n`): `number`
 
-Defined in: packages/blue-util/src/math/index.ts:39
+Defined in: [packages/blue-util/src/math/index.ts:39](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-util/src/math/index.ts#lines-39)
 
 Decrements its argument.
 

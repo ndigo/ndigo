@@ -6,7 +6,7 @@
 
 # Interface: ViewResolver
 
-Defined in: packages/blue-view/src/view-resolver.ts:18
+Defined in: [packages/blue-view/src/view-resolver.ts:18](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view-resolver.ts#lines-18)
 
 Resolves a view name to a concrete [View](View.md) instance.
 
@@ -16,7 +16,7 @@ Resolves a view name to a concrete [View](View.md) instance.
 
 > **resolveViewName**(`name`, `language?`): `Promise`\<[`View`](View.md) \| `null`\>
 
-Defined in: packages/blue-view/src/view-resolver.ts:26
+Defined in: [packages/blue-view/src/view-resolver.ts:26](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view-resolver.ts#lines-26)
 
 Resolves the requested view name.
 
@@ -30,7 +30,7 @@ The view name to resolve.
 
 ##### language?
 
-`any`
+`unknown`
 
 Optional locale or language hint used during resolution.
 

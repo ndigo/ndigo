@@ -8,7 +8,7 @@
 
 > **EventListener** = `void`
 
-Defined in: packages/blue-context/src/event-emitter.ts:40
+Defined in: [packages/blue-context/src/event-emitter.ts:31](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-emitter.ts#lines-31)
 
 Listener function shape used by the emitter implementation.
 
@@ -32,4 +32,4 @@ Listener function shape used by the emitter implementation.
 
 > `optional` **listener?**: `EventListener`
 
-Defined in: packages/blue-context/src/event-emitter.ts:40
+Defined in: [packages/blue-context/src/event-emitter.ts:31](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-emitter.ts#lines-31)

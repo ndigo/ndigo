@@ -8,7 +8,7 @@
 
 > **isConfigurationProperties**(`target`): `boolean`
 
-Defined in: packages/blue-boot/src/configuration-properties.ts:69
+Defined in: [packages/blue-boot/src/configuration-properties.ts:69](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-boot/src/configuration-properties.ts#lines-69)
 
 Utility to check if a class is decorated with `@ConfigurationProperties`.
 

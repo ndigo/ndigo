@@ -8,6 +8,6 @@
 
 > `const` **FullArray**: `any`
 
-Defined in: packages/blue-model/src/basic.ts:123
+Defined in: [packages/blue-model/src/basic.ts:123](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-model/src/basic.ts#lines-123)
 
 Matches arrays that contain at least one item.

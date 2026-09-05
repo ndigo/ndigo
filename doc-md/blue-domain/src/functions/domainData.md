@@ -8,7 +8,7 @@
 
 > **domainData**(`value`, `context`): `void` \| ((`initialValue`) => `any`)
 
-Defined in: packages/blue-domain/src/decorators.ts:57
+Defined in: [packages/blue-domain/src/decorators.ts:58](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-domain/src/decorators.ts#lines-58)
 
 Field decorator that mirrors the field through `this.model` (a `JSONObject` from `@blue/core`).
 On `addInitializer`, initializes `this.model` if not already set (to a `createNull()` object),

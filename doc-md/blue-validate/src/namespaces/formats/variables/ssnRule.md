@@ -8,6 +8,6 @@
 
 > `const` **ssnRule**: `RegExp`
 
-Defined in: packages/blue-validate/src/formats.ts:208
+Defined in: [packages/blue-validate/src/formats.ts:208](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/formats.ts#lines-208)
 
 A regular expression matching SSN.

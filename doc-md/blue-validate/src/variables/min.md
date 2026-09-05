@@ -8,7 +8,7 @@
 
 > `const` **min**: (`params`) => (`value`, `context`) => `void`
 
-Defined in: packages/blue-validate/src/decorators.ts:360
+Defined in: [packages/blue-validate/src/decorators.ts:358](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/decorators.ts#lines-358)
 
 TC39 Stage 3 decorator that validates a numeric property to be greater than or equal to a specified minimum value.
 

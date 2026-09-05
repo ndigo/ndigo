@@ -8,7 +8,7 @@
 
 > **likeConfigurableFactory**(`value`): `boolean`
 
-Defined in: packages/blue-factory/src/factory.ts:169
+Defined in: [packages/blue-factory/src/factory.ts:178](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/factory.ts#lines-178)
 
 Determines whether or not the `value` provided is [ConfigurableFactory](../interfaces/ConfigurableFactory.md).
 
@@ -16,7 +16,7 @@ Determines whether or not the `value` provided is [ConfigurableFactory](../inter
 
 ### value
 
-`any`
+`unknown`
 
 The value to be tested.
 

@@ -8,7 +8,7 @@
 
 > **likeFactoryAware**(`value`): `value is FactoryAware`
 
-Defined in: packages/blue-factory/src/factory.ts:150
+Defined in: [packages/blue-factory/src/factory.ts:159](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/factory.ts#lines-159)
 
 Determines whether or not the `value` provided is [FactoryAware](../interfaces/FactoryAware.md).
 
@@ -16,7 +16,7 @@ Determines whether or not the `value` provided is [FactoryAware](../interfaces/F
 
 ### value
 
-`any`
+`unknown`
 
 The value to be tested.
 

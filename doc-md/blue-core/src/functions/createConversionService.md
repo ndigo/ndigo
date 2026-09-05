@@ -8,7 +8,7 @@
 
 > **createConversionService**(`options?`): [`ConversionService`](../interfaces/ConversionService.md)
 
-Defined in: packages/blue-core/src/converter.ts:300
+Defined in: [packages/blue-core/src/converter.ts:303](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/converter.ts#lines-303)
 
 Creates a new ConversionService instance with built-in converters registered.
 

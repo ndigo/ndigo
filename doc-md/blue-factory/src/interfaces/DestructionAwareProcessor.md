@@ -6,7 +6,7 @@
 
 # Interface: DestructionAwareProcessor
 
-Defined in: packages/blue-factory/src/entry-processor.ts:75
+Defined in: [packages/blue-factory/src/entry-processor.ts:75](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/entry-processor.ts#lines-75)
 
 Factory hook that allows for custom modification of new instances, e.g. checking for marker interfaces or wrapping them with proxies.
 
@@ -16,7 +16,7 @@ Factory hook that allows for custom modification of new instances, e.g. checking
 
 > **processBeforeDestruction**\<`T`\>(`name`, `instance`): `void`
 
-Defined in: packages/blue-factory/src/entry-processor.ts:81
+Defined in: [packages/blue-factory/src/entry-processor.ts:81](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/entry-processor.ts#lines-81)
 
 Apply this EntryProcessor to the given instance before its destruction.
 

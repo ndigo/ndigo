@@ -6,7 +6,7 @@
 
 # Interface: CounterRateResolverOptions
 
-Defined in: packages/blue-telemetry/src/metrics/counter-rate-resolver.ts:26
+Defined in: [packages/blue-telemetry/src/metrics/counter-rate-resolver.ts:26](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/metrics/counter-rate-resolver.ts#lines-26)
 
 Options for configuring the `CounterRateResolver`.
 
@@ -16,7 +16,7 @@ Options for configuring the `CounterRateResolver`.
 
 > `readonly` **aggregator**: [`FeatureMetricAggregator`](../classes/FeatureMetricAggregator.md)
 
-Defined in: packages/blue-telemetry/src/metrics/counter-rate-resolver.ts:27
+Defined in: [packages/blue-telemetry/src/metrics/counter-rate-resolver.ts:27](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/metrics/counter-rate-resolver.ts#lines-27)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: packages/blue-telemetry/src/metrics/counter-rate-resolver.ts:27
 
 > `readonly` `optional` **thresholds?**: `ReadonlyMap`\<`string`, `number`\>
 
-Defined in: packages/blue-telemetry/src/metrics/counter-rate-resolver.ts:28
+Defined in: [packages/blue-telemetry/src/metrics/counter-rate-resolver.ts:28](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/metrics/counter-rate-resolver.ts#lines-28)
 
 ***
 
@@ -32,4 +32,4 @@ Defined in: packages/blue-telemetry/src/metrics/counter-rate-resolver.ts:28
 
 > `readonly` `optional` **windowSize?**: `number`
 
-Defined in: packages/blue-telemetry/src/metrics/counter-rate-resolver.ts:29
+Defined in: [packages/blue-telemetry/src/metrics/counter-rate-resolver.ts:29](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/metrics/counter-rate-resolver.ts#lines-29)

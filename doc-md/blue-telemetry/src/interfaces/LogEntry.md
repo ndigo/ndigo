@@ -6,7 +6,7 @@
 
 # Interface: LogEntry
 
-Defined in: packages/blue-telemetry/src/logger/entry.ts:11
+Defined in: [packages/blue-telemetry/src/logger/entry.ts:11](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/logger/entry.ts#lines-11)
 
 Represents a single log entry with structured information.
 This interface defines the common properties expected for a log record,
@@ -18,7 +18,7 @@ including severity, message body, attributes, and optional OpenTelemetry trace c
 
 > **name**: `string`
 
-Defined in: packages/blue-telemetry/src/logger/entry.ts:15
+Defined in: [packages/blue-telemetry/src/logger/entry.ts:15](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/logger/entry.ts#lines-15)
 
 The name of the logger that emitted this entry.
 
@@ -28,7 +28,7 @@ The name of the logger that emitted this entry.
 
 > **severityNumber**: `SeverityNumber`
 
-Defined in: packages/blue-telemetry/src/logger/entry.ts:19
+Defined in: [packages/blue-telemetry/src/logger/entry.ts:19](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/logger/entry.ts#lines-19)
 
 The numerical representation of the log entry's severity.
 
@@ -38,7 +38,7 @@ The numerical representation of the log entry's severity.
 
 > **severityText**: `string`
 
-Defined in: packages/blue-telemetry/src/logger/entry.ts:23
+Defined in: [packages/blue-telemetry/src/logger/entry.ts:23](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/logger/entry.ts#lines-23)
 
 The textual representation of the log entry's severity (e.g., "INFO", "ERROR").
 
@@ -48,7 +48,7 @@ The textual representation of the log entry's severity (e.g., "INFO", "ERROR").
 
 > **body**: `string`
 
-Defined in: packages/blue-telemetry/src/logger/entry.ts:27
+Defined in: [packages/blue-telemetry/src/logger/entry.ts:27](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/logger/entry.ts#lines-27)
 
 The main message body of the log entry.
 
@@ -58,7 +58,7 @@ The main message body of the log entry.
 
 > `optional` **attributes?**: `Attributes`
 
-Defined in: packages/blue-telemetry/src/logger/entry.ts:31
+Defined in: [packages/blue-telemetry/src/logger/entry.ts:31](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/logger/entry.ts#lines-31)
 
 Optional. Additional attributes providing context for the log entry.
 
@@ -68,7 +68,7 @@ Optional. Additional attributes providing context for the log entry.
 
 > `optional` **timestamp?**: `number`
 
-Defined in: packages/blue-telemetry/src/logger/entry.ts:36
+Defined in: [packages/blue-telemetry/src/logger/entry.ts:36](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/logger/entry.ts#lines-36)
 
 Optional. The Unix timestamp (in milliseconds) when the log entry was created.
 If not provided, the current time will be used by the logging system.
@@ -79,7 +79,7 @@ If not provided, the current time will be used by the logging system.
 
 > `optional` **error?**: `Exception`
 
-Defined in: packages/blue-telemetry/src/logger/entry.ts:40
+Defined in: [packages/blue-telemetry/src/logger/entry.ts:40](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/logger/entry.ts#lines-40)
 
 Optional. An `Exception` object associated with the log entry, if applicable.
 
@@ -89,7 +89,7 @@ Optional. An `Exception` object associated with the log entry, if applicable.
 
 > `optional` **traceId?**: `string`
 
-Defined in: packages/blue-telemetry/src/logger/entry.ts:44
+Defined in: [packages/blue-telemetry/src/logger/entry.ts:44](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/logger/entry.ts#lines-44)
 
 Optional. The OpenTelemetry trace ID associated with the log entry.
 
@@ -99,7 +99,7 @@ Optional. The OpenTelemetry trace ID associated with the log entry.
 
 > `optional` **spanId?**: `string`
 
-Defined in: packages/blue-telemetry/src/logger/entry.ts:48
+Defined in: [packages/blue-telemetry/src/logger/entry.ts:48](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/logger/entry.ts#lines-48)
 
 Optional. The OpenTelemetry span ID associated with the log entry.
 
@@ -109,6 +109,6 @@ Optional. The OpenTelemetry span ID associated with the log entry.
 
 > `optional` **severityScheme?**: [`SeverityScheme`](../type-aliases/SeverityScheme.md)
 
-Defined in: packages/blue-telemetry/src/logger/entry.ts:52
+Defined in: [packages/blue-telemetry/src/logger/entry.ts:52](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/logger/entry.ts#lines-52)
 
 Optional. The severity scheme used to interpret `severityNumber` and `severityText`.

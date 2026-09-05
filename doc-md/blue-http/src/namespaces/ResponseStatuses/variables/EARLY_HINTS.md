@@ -8,6 +8,6 @@
 
 > `const` **EARLY\_HINTS**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
-Defined in: packages/blue-http/src/response-statuses.ts:33
+Defined in: [packages/blue-http/src/response-statuses.ts:33](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/response-statuses.ts#lines-33)
 
 This status code is primarily intended to be used with the `Link` header, letting the user agent start preloading resources while the server prepares a response.

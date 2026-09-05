@@ -1,6 +1,6 @@
 /**
  * @author David Ensinger
- * @copyright &copy; JPMorgan Chase & Co. All rights reserved.
+ * `copyright` &copy; JPMorgan Chase & Co. All rights reserved.
  */
 
 import { MultiValueMap, getSymbolMetadata } from '@blue/core';
@@ -13,7 +13,7 @@ const { defineProperty } = Reflect;
 
 /**
  * Create a new MetadataScanner for a given target.
- * @classdesc Scan a class or prototype for TC39 decorator metadata stored in Symbol.metadata and cache property names.
+ * Invoked via the `classdesc` decorator.
  *
  * **TC39 Decorator Migration Note:**
  * This class has been updated to work with TC39 Stage 3 decorators. It scans Symbol.metadata
@@ -175,7 +175,7 @@ export class MetadataScanner {
 
 /**
  * Create a WeakMap to store instances of Metadata Scanners
- * @classdesc Store Metadata Scanners for performant retrieval across an entire application
+ * Invoked via the `classdesc` decorator.
  */
 class MetadataManager {
     /**

@@ -6,11 +6,11 @@
 
 # Class: NodeEnvironment
 
-Defined in: packages/blue-platform-node/src/node-environment.ts:15
+Defined in: [packages/blue-platform-node/src/node-environment.ts:15](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/node-environment.ts#lines-15)
 
 Node.js environment implementation that includes `process.env` as the first property source.
 
-Extends StandardEnvironment so that DI containers can discriminate between
+Extends `StandardEnvironment` so that DI containers can discriminate between
 browser and Node environments by class identity (e.g., `instanceof NodeEnvironment`).
 All other environment behaviour (profiles, property resolution) is inherited.
 
@@ -24,7 +24,7 @@ All other environment behaviour (profiles, property resolution) is inherited.
 
 > **new NodeEnvironment**(`propertySources?`): `NodeEnvironment`
 
-Defined in: packages/blue-platform-node/src/node-environment.ts:21
+Defined in: [packages/blue-platform-node/src/node-environment.ts:21](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/node-environment.ts#lines-21)
 
 Creates a Node.js environment.
 

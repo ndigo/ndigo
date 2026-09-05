@@ -8,10 +8,6 @@
 
 > **RouteParameterMap** = `Record`\<`string`, [`ParameterExtractor`](ParameterExtractor.md)\>
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:46
+Defined in: [packages/blue-dispatcher/src/route-parameter.ts:46](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-parameter.ts#lines-46)
 
-Parameter map for
-
-## Route Params
-
-decorator
+Parameter map for `routeParams` decorator

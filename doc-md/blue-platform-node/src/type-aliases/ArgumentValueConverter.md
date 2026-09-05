@@ -8,7 +8,7 @@
 
 > **ArgumentValueConverter** = (`value`, `context`) => `any`
 
-Defined in: packages/blue-platform-node/src/argument-value-converter.ts:14
+Defined in: [packages/blue-platform-node/src/argument-value-converter.ts:14](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/argument-value-converter.ts#lines-14)
 
 ## Parameters
 

@@ -8,9 +8,9 @@
 
 > **configuration**\<`T`\>(`target`, `context`): `T`
 
-Defined in: packages/blue-context/src/configuration.ts:98
+Defined in: [packages/blue-context/src/configuration.ts:98](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/configuration.ts#lines-98)
 
-Indicates that a class declares one or more @entry\|@entry methods and may be processed to provide the method results at runtime. For example:
+Indicates that a class declares one or more `entry` methods and may be processed to provide the method results at runtime. For example:
 ```javascript
 &#064;Configuration
 class FooBarConfig {
@@ -24,7 +24,7 @@ class FooBarConfig {
  }
 }
 ```
-@configuration\|@configuration classes are bootstrapped using the [MetadataConfigApplicationContext](../classes/MetadataConfigApplicationContext.md).
+`configuration` classes are bootstrapped using the [MetadataConfigApplicationContext](../classes/MetadataConfigApplicationContext.md).
 ```javascript
 const context = new MetadataConfigApplicationContext( 'foobar' );
 context.register( FooBarConfig );

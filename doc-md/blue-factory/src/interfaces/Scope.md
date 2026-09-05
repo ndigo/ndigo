@@ -6,7 +6,7 @@
 
 # Interface: Scope
 
-Defined in: packages/blue-factory/src/scope.ts:12
+Defined in: [packages/blue-factory/src/scope.ts:12](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/scope.ts#lines-12)
 
 ## Methods
 
@@ -14,7 +14,7 @@ Defined in: packages/blue-factory/src/scope.ts:12
 
 > **destroyValue**(`name`): `void`
 
-Defined in: packages/blue-factory/src/scope.ts:13
+Defined in: [packages/blue-factory/src/scope.ts:13](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/scope.ts#lines-13)
 
 #### Parameters
 
@@ -32,7 +32,7 @@ Defined in: packages/blue-factory/src/scope.ts:13
 
 > **getValue**\<`T`\>(`name`, `objectFactory`): `T`
 
-Defined in: packages/blue-factory/src/scope.ts:14
+Defined in: [packages/blue-factory/src/scope.ts:14](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/scope.ts#lines-14)
 
 #### Type Parameters
 

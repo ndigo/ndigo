@@ -8,7 +8,7 @@
 
 > **createStringSplitConverter**(`separator?`): [`ArgumentValueConverter`](../type-aliases/ArgumentValueConverter.md)
 
-Defined in: packages/blue-platform-web/src/argument-value-converter.ts:87
+Defined in: [packages/blue-platform-web/src/argument-value-converter.ts:87](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/argument-value-converter.ts#lines-87)
 
 Creates a converter that splits a string into list items.
 

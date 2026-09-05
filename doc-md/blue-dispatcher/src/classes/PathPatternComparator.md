@@ -6,7 +6,7 @@
 
 # Class: PathPatternComparator
 
-Defined in: packages/blue-dispatcher/src/path-pattern-comparator.ts:39
+Defined in: [packages/blue-dispatcher/src/path-pattern-comparator.ts:39](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/path-pattern-comparator.ts#lines-39)
 
 Compares two path patterns by specificity so that more specific patterns
 sort before less specific ones. This ensures deterministic route matching
@@ -27,7 +27,7 @@ when multiple patterns can match a given request path.
 
 > **new PathPatternComparator**(): `PathPatternComparator`
 
-Defined in: packages/blue-dispatcher/src/path-pattern-comparator.ts:47
+Defined in: [packages/blue-dispatcher/src/path-pattern-comparator.ts:47](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/path-pattern-comparator.ts#lines-47)
 
 Creates a comparator for path pattern specificity.
 
@@ -43,7 +43,7 @@ Creates a comparator for path pattern specificity.
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-dispatcher/src/path-pattern-comparator.ts:40
+Defined in: [packages/blue-dispatcher/src/path-pattern-comparator.ts:40](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/path-pattern-comparator.ts#lines-40)
 
 ##### Returns
 
@@ -55,7 +55,7 @@ Defined in: packages/blue-dispatcher/src/path-pattern-comparator.ts:40
 
 > **compare**(`pattern1`, `pattern2`): `number`
 
-Defined in: packages/blue-dispatcher/src/path-pattern-comparator.ts:60
+Defined in: [packages/blue-dispatcher/src/path-pattern-comparator.ts:60](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/path-pattern-comparator.ts#lines-60)
 
 Compares two path patterns for specificity ordering.
 

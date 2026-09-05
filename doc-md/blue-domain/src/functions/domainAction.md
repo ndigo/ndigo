@@ -8,7 +8,7 @@
 
 > **domainAction**\<`T`\>(`target`, `context`): `void` \| `T`
 
-Defined in: packages/blue-domain/src/decorators.ts:27
+Defined in: [packages/blue-domain/src/decorators.ts:28](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-domain/src/decorators.ts#lines-28)
 
 Method decorator that wraps the method with try/catch error logging and stores the method name in Symbol.metadata
 so the component knows which methods are actions.

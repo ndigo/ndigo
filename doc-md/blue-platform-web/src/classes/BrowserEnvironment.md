@@ -6,7 +6,7 @@
 
 # Class: BrowserEnvironment
 
-Defined in: packages/blue-platform-web/src/browser-environment.ts:12
+Defined in: [packages/blue-platform-web/src/browser-environment.ts:12](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/browser-environment.ts#lines-12)
 
 Browser-specific environment implementation for `@blue/platform-web` applications.
 

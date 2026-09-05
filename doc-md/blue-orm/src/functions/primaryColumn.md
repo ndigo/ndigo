@@ -8,7 +8,7 @@
 
 > **primaryColumn**(): (`value`, `context`) => `void`
 
-Defined in: packages/blue-orm/src/decorators.ts:77
+Defined in: [packages/blue-orm/src/decorators.ts:84](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/decorators.ts#lines-84)
 
 Decorator that marks a class property as the primary column of the entity.
 This implicitly also marks it as a regular column.

@@ -6,7 +6,7 @@
 
 # Abstract Class: AbstractRouter
 
-Defined in: packages/blue-router/src/router.ts:44
+Defined in: [packages/blue-router/src/router.ts:44](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/router.ts#lines-44)
 
 An abstract base class that provides common functionality for router implementations.
 It includes mechanisms for managing route interceptors.
@@ -30,7 +30,7 @@ It includes mechanisms for managing route interceptors.
 
 > **new AbstractRouter**(): `AbstractRouter`
 
-Defined in: packages/blue-router/src/router.ts:47
+Defined in: [packages/blue-router/src/router.ts:47](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/router.ts#lines-47)
 
 #### Returns
 
@@ -42,7 +42,7 @@ Defined in: packages/blue-router/src/router.ts:47
 
 > `abstract` `readonly` **callback**: [`RouterCallback`](../type-aliases/RouterCallback.md)
 
-Defined in: packages/blue-router/src/router.ts:52
+Defined in: [packages/blue-router/src/router.ts:52](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/router.ts#lines-52)
 
 #### Implementation of
 
@@ -56,7 +56,7 @@ Defined in: packages/blue-router/src/router.ts:52
 
 > **get** `abstract` **route**(): `string`
 
-Defined in: packages/blue-router/src/router.ts:51
+Defined in: [packages/blue-router/src/router.ts:51](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/router.ts#lines-51)
 
 ##### Returns
 
@@ -74,7 +74,7 @@ Defined in: packages/blue-router/src/router.ts:51
 
 > **get** `protected` **interceptors**(): [`RouterInterceptor`](../interfaces/RouterInterceptor.md)[]
 
-Defined in: packages/blue-router/src/router.ts:60
+Defined in: [packages/blue-router/src/router.ts:60](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/router.ts#lines-60)
 
 Returns the list of registered `RouterInterceptor` instances.
 
@@ -94,7 +94,7 @@ An array of `RouterInterceptor`.
 
 > **addInterceptor**(`interceptor`): `void`
 
-Defined in: packages/blue-router/src/router.ts:70
+Defined in: [packages/blue-router/src/router.ts:70](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/router.ts#lines-70)
 
 Adds a `RouterInterceptor` to the router. Interceptors are processed in the order they are added.
 Duplicate interceptors are ignored.
@@ -125,7 +125,7 @@ The `RouterInterceptor` to add.
 
 > **use**(`interceptorOrPatterns`, `interceptor?`, `excludePatterns?`): `void`
 
-Defined in: packages/blue-router/src/router.ts:85
+Defined in: [packages/blue-router/src/router.ts:85](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/router.ts#lines-85)
 
 Registers a `RouterInterceptor` or `RouterMiddleware` with optional path matching.
 If `interceptorOrPatterns` is a string or array of strings, it defines include patterns for the interceptor.
@@ -172,7 +172,7 @@ If `interceptor` is not provided when `interceptorOrPatterns` defines patterns.
 
 > `protected` **\_toRouterInterceptor**(`interceptor`): [`RouterInterceptor`](../interfaces/RouterInterceptor.md)
 
-Defined in: packages/blue-router/src/router.ts:116
+Defined in: [packages/blue-router/src/router.ts:116](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/router.ts#lines-116)
 
 Converts a `RouterMiddleware` function into a `RouterInterceptor` object.
 If the input is already a `RouterInterceptor`, it is returned as is.
@@ -201,7 +201,7 @@ A `RouterInterceptor` instance.
 
 > **refresh**(): `void`
 
-Defined in: packages/blue-router/src/router.ts:134
+Defined in: [packages/blue-router/src/router.ts:134](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/router.ts#lines-134)
 
 Refreshes the current route by re-evaluating it and invoking the router's callback.
 This is useful for re-applying routing logic or interceptors without a full page reload.

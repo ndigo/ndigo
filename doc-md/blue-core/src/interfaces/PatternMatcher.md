@@ -6,7 +6,7 @@
 
 # Interface: PatternMatcher\<TPattern, TValue\>
 
-Defined in: packages/blue-core/src/matchable.ts:23
+Defined in: [packages/blue-core/src/matchable.ts:23](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/matchable.ts#lines-23)
 
 Represents an object that can match a pattern against a value.
 
@@ -34,7 +34,7 @@ The type of the value to match against.
 
 > **match**(`pattern`, `value`): `boolean`
 
-Defined in: packages/blue-core/src/matchable.ts:30
+Defined in: [packages/blue-core/src/matchable.ts:30](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/matchable.ts#lines-30)
 
 Matches a given pattern against a value.
 

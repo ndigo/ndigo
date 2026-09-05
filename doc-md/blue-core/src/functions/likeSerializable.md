@@ -8,7 +8,7 @@
 
 > **likeSerializable**(`value`): `boolean`
 
-Defined in: packages/blue-core/src/serializable.ts:98
+Defined in: [packages/blue-core/src/serializable.ts:101](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/serializable.ts#lines-101)
 
 Tests whether a value can be serialized using the `Serializable` contract.
 

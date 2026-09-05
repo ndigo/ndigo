@@ -8,7 +8,7 @@
 
 > **profile**(`name`): (`target`, `context`) => `any`
 
-Defined in: packages/blue-context/src/configuration.ts:109
+Defined in: [packages/blue-context/src/configuration.ts:109](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/configuration.ts#lines-109)
 
 Marks a class or method as active only for the named profile(s).
 

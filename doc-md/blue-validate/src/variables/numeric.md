@@ -8,7 +8,7 @@
 
 > `const` **numeric**: (`params`) => (`value`, `context`) => `void`
 
-Defined in: packages/blue-validate/src/decorators.ts:551
+Defined in: [packages/blue-validate/src/decorators.ts:549](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/decorators.ts#lines-549)
 
 TC39 Stage 3 decorator that validates a property to be a numeric value.
 
@@ -17,6 +17,8 @@ TC39 Stage 3 decorator that validates a property to be a numeric value.
 ### params?
 
 `Record`\<`string`, `unknown`\> \| `DecoratorConfig`\<`Record`\<`string`, `unknown`\>\>
+
+Optional configuration for the decorator.
 
 ## Returns
 

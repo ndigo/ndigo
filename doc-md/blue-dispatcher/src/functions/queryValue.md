@@ -8,7 +8,7 @@
 
 > **queryValue**(`name`, `options?`): [`ParameterExtractor`](../type-aliases/ParameterExtractor.md)
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:177
+Defined in: [packages/blue-dispatcher/src/route-parameter.ts:178](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-parameter.ts#lines-178)
 
 Factory function: Create a query parameter extractor
 
@@ -29,7 +29,7 @@ Factory function: Create a query parameter extractor
 ## Example
 
 ```ts
-@routeParams({
+`routeParams`({
   page: queryValue('page'),
   limit: queryValue('limit', { required: true, defaultValue: '10' })
 })

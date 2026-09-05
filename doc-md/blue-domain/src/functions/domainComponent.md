@@ -8,7 +8,7 @@
 
 > **domainComponent**(`name`): \<`T`\>(`target`, `context`) => `T`
 
-Defined in: packages/blue-domain/src/decorators.ts:15
+Defined in: [packages/blue-domain/src/decorators.ts:16](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-domain/src/decorators.ts#lines-16)
 
 Class decorator that registers a name in Symbol.metadata so the factory/registry can auto-discover domain components.
 

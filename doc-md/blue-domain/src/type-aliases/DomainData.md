@@ -8,7 +8,7 @@
 
 > **DomainData** = `object`
 
-Defined in: packages/blue-domain/src/component.ts:16
+Defined in: [packages/blue-domain/src/component.ts:16](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-domain/src/component.ts#lines-16)
 
 Stores JSON-compatible data exposed by a domain component.
 

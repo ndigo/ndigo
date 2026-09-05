@@ -8,7 +8,7 @@
 
 > **stateValue**(`name`, `options?`): [`ParameterExtractor`](../type-aliases/ParameterExtractor.md)
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:306
+Defined in: [packages/blue-dispatcher/src/route-parameter.ts:289](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-parameter.ts#lines-289)
 
 Factory function: Create a history state parameter extractor
 
@@ -29,7 +29,7 @@ Factory function: Create a history state parameter extractor
 ## Example
 
 ```ts
-@routeParams({
+`routeParams`({
   token: stateValue('token'),
 })
 ```

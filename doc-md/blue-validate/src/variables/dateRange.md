@@ -8,7 +8,7 @@
 
 > `const` **dateRange**: (`params`) => (`value`, `context`) => `void`
 
-Defined in: packages/blue-validate/src/decorators.ts:459
+Defined in: [packages/blue-validate/src/decorators.ts:457](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/decorators.ts#lines-457)
 
 TC39 Stage 3 decorator that validates a date property to be within a specified date range.
 

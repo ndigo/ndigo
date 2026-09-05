@@ -8,7 +8,7 @@
 
 > **releaseCachedApp**(`sources`): `void`
 
-Defined in: packages/blue-test/src/blue-test.ts:159
+Defined in: [packages/blue-test/src/blue-test.ts:157](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-test/src/blue-test.ts#lines-157)
 
 Releases one cached-app reference for the given sources, closing the app
 when the last reference is released.

@@ -6,7 +6,7 @@
 
 # Class: GenericDomainComponent
 
-Defined in: packages/blue-domain/src/component.ts:70
+Defined in: [packages/blue-domain/src/component.ts:70](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-domain/src/component.ts#lines-70)
 
 Represents a serializable, event-driven domain component with lifecycle hooks.
 
@@ -24,7 +24,7 @@ Represents a serializable, event-driven domain component with lifecycle hooks.
 
 > **new GenericDomainComponent**(): `GenericDomainComponent`
 
-Defined in: packages/blue-domain/src/component.ts:97
+Defined in: [packages/blue-domain/src/component.ts:97](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-domain/src/component.ts#lines-97)
 
 Creates a new component instance with a unique identifier.
 
@@ -82,7 +82,7 @@ Defined in: packages/blue-context/lib/event-emitter.d.ts:181
 
 > **id**: `number`
 
-Defined in: packages/blue-domain/src/component.ts:71
+Defined in: [packages/blue-domain/src/component.ts:71](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-domain/src/component.ts#lines-71)
 
 #### Implementation of
 
@@ -94,7 +94,7 @@ Defined in: packages/blue-domain/src/component.ts:71
 
 > **name**: `string`
 
-Defined in: packages/blue-domain/src/component.ts:72
+Defined in: [packages/blue-domain/src/component.ts:72](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-domain/src/component.ts#lines-72)
 
 #### Implementation of
 
@@ -106,7 +106,7 @@ Defined in: packages/blue-domain/src/component.ts:72
 
 > **model**: `JSONObject`
 
-Defined in: packages/blue-domain/src/component.ts:73
+Defined in: [packages/blue-domain/src/component.ts:73](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-domain/src/component.ts#lines-73)
 
 #### Implementation of
 
@@ -118,7 +118,7 @@ Defined in: packages/blue-domain/src/component.ts:73
 
 > **actions**: [`DomainActions`](../type-aliases/DomainActions.md)
 
-Defined in: packages/blue-domain/src/component.ts:74
+Defined in: [packages/blue-domain/src/component.ts:74](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-domain/src/component.ts#lines-74)
 
 #### Implementation of
 
@@ -130,7 +130,7 @@ Defined in: packages/blue-domain/src/component.ts:74
 
 > **settings**: [`DomainSettings`](../type-aliases/DomainSettings.md)
 
-Defined in: packages/blue-domain/src/component.ts:75
+Defined in: [packages/blue-domain/src/component.ts:75](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-domain/src/component.ts#lines-75)
 
 #### Implementation of
 
@@ -142,7 +142,7 @@ Defined in: packages/blue-domain/src/component.ts:75
 
 > **states**: [`DomainStates`](../type-aliases/DomainStates.md)
 
-Defined in: packages/blue-domain/src/component.ts:76
+Defined in: [packages/blue-domain/src/component.ts:76](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-domain/src/component.ts#lines-76)
 
 #### Implementation of
 
@@ -154,7 +154,7 @@ Defined in: packages/blue-domain/src/component.ts:76
 
 > **validate**: (`options?`) => `ClassValidationResult`
 
-Defined in: packages/blue-domain/src/component.ts:77
+Defined in: [packages/blue-domain/src/component.ts:77](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-domain/src/component.ts#lines-77)
 
 Validates a component property before it is used or persisted.
 
@@ -182,7 +182,7 @@ Validation options.
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-domain/src/component.ts:79
+Defined in: [packages/blue-domain/src/component.ts:79](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-domain/src/component.ts#lines-79)
 
 ##### Returns
 
@@ -196,7 +196,7 @@ Defined in: packages/blue-domain/src/component.ts:79
 
 > **set** **data**(`newData`): `void`
 
-Defined in: packages/blue-domain/src/component.ts:88
+Defined in: [packages/blue-domain/src/component.ts:88](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-domain/src/component.ts#lines-88)
 
 Assigns initial data by mirroring model values onto the component instance.
 
@@ -452,7 +452,7 @@ This emitter.
 
 > **init**(`name`): `void`
 
-Defined in: packages/blue-domain/src/component.ts:126
+Defined in: [packages/blue-domain/src/component.ts:126](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-domain/src/component.ts#lines-126)
 
 Sets the component name after construction.
 
@@ -478,7 +478,7 @@ Human-readable component name.
 
 > **destroy**(): `Promise`\<`void`\>
 
-Defined in: packages/blue-domain/src/component.ts:139
+Defined in: [packages/blue-domain/src/component.ts:139](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-domain/src/component.ts#lines-139)
 
 Destroys the component and releases any associated resources.
 
@@ -502,7 +502,7 @@ A promise that resolves when destruction is complete.
 
 > **toJSON**(): `JSONObject`
 
-Defined in: packages/blue-domain/src/component.ts:151
+Defined in: [packages/blue-domain/src/component.ts:151](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-domain/src/component.ts#lines-151)
 
 Serializes the component to a JSON-compatible object.
 
@@ -526,7 +526,7 @@ A JSON object containing the component identity.
 
 > **toString**(): `string`
 
-Defined in: packages/blue-domain/src/component.ts:165
+Defined in: [packages/blue-domain/src/component.ts:165](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-domain/src/component.ts#lines-165)
 
 Returns the component name for string coercion.
 

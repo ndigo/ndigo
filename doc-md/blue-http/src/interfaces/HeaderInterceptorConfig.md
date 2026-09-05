@@ -6,7 +6,7 @@
 
 # Interface: HeaderInterceptorConfig
 
-Defined in: packages/blue-http/src/interceptors/header-interceptor.ts:11
+Defined in: [packages/blue-http/src/interceptors/header-interceptor.ts:11](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/header-interceptor.ts#lines-11)
 
 Configuration options for the HeaderInterceptor.
 
@@ -16,7 +16,7 @@ Configuration options for the HeaderInterceptor.
 
 > `optional` **csrfToken?**: `string`
 
-Defined in: packages/blue-http/src/interceptors/header-interceptor.ts:15
+Defined in: [packages/blue-http/src/interceptors/header-interceptor.ts:15](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/header-interceptor.ts#lines-15)
 
 The CSRF token to include in the X-CSRF-Token header.
 
@@ -26,7 +26,7 @@ The CSRF token to include in the X-CSRF-Token header.
 
 > `optional` **channelId?**: `string`
 
-Defined in: packages/blue-http/src/interceptors/header-interceptor.ts:19
+Defined in: [packages/blue-http/src/interceptors/header-interceptor.ts:19](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/header-interceptor.ts#lines-19)
 
 The channel ID to include in the X-Channel-ID header.
 
@@ -36,7 +36,7 @@ The channel ID to include in the X-Channel-ID header.
 
 > `optional` **generateRequestId?**: `boolean`
 
-Defined in: packages/blue-http/src/interceptors/header-interceptor.ts:24
+Defined in: [packages/blue-http/src/interceptors/header-interceptor.ts:24](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/header-interceptor.ts#lines-24)
 
 Whether to generate a unique request ID for each request.
 

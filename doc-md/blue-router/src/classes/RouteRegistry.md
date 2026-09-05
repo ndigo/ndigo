@@ -6,11 +6,11 @@
 
 # Class: RouteRegistry
 
-Defined in: packages/blue-router/src/route-registry.ts:79
+Defined in: [packages/blue-router/src/route-registry.ts:81](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/route-registry.ts#lines-81)
 
 Registry of type-safe route definitions.
 
-Created by scanning `@routeMapping` decorator metadata from registered
+Created by scanning `routeMapping` decorator metadata from registered
 source classes. Provides a nested tree of [RouteDefinition](RouteDefinition.md) instances
 for URL generation, navigation, and route matching.
 
@@ -20,7 +20,7 @@ for URL generation, navigation, and route matching.
 
 > **new RouteRegistry**(): `RouteRegistry`
 
-Defined in: packages/blue-router/src/route-registry.ts:83
+Defined in: [packages/blue-router/src/route-registry.ts:84](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/route-registry.ts#lines-84)
 
 #### Returns
 
@@ -32,9 +32,9 @@ Defined in: packages/blue-router/src/route-registry.ts:83
 
 > **scanSources**(`sources`, `context`): `void`
 
-Defined in: packages/blue-router/src/route-registry.ts:94
+Defined in: [packages/blue-router/src/route-registry.ts:94](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/route-registry.ts#lines-94)
 
-Scan source classes for `@routeMapping` metadata and populate the registry.
+Scan source classes for `routeMapping` metadata and populate the registry.
 
 #### Parameters
 
@@ -60,7 +60,7 @@ The application context for resolving the Router.
 
 > **get**\<`T`\>(`path`): [`RouteDefinition`](RouteDefinition.md)\<`T`\> \| `undefined`
 
-Defined in: packages/blue-router/src/route-registry.ts:141
+Defined in: [packages/blue-router/src/route-registry.ts:141](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/route-registry.ts#lines-141)
 
 Access a route definition by dotted path.
 
@@ -86,7 +86,7 @@ Access a route definition by dotted path.
 
 > **keys**(): `IterableIterator`\<`string`\>
 
-Defined in: packages/blue-router/src/route-registry.ts:148
+Defined in: [packages/blue-router/src/route-registry.ts:148](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/route-registry.ts#lines-148)
 
 Returns all registered route definition keys.
 
@@ -100,7 +100,7 @@ Returns all registered route definition keys.
 
 > **entries**(): `IterableIterator`\<\[`string`, [`RouteDefinition`](RouteDefinition.md)\<`string`\>\]\>
 
-Defined in: packages/blue-router/src/route-registry.ts:155
+Defined in: [packages/blue-router/src/route-registry.ts:155](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/route-registry.ts#lines-155)
 
 Returns the flat definition map entries.
 

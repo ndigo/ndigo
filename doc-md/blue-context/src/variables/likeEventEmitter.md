@@ -8,7 +8,7 @@
 
 > `const` **likeEventEmitter**: (`value`) => `value is EventEmitter`
 
-Defined in: packages/blue-context/src/event-emitter.ts:196
+Defined in: [packages/blue-context/src/event-emitter.ts:187](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-emitter.ts#lines-187)
 
 ## Parameters
 

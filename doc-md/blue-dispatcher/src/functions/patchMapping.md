@@ -8,7 +8,7 @@
 
 > **patchMapping**(`route`): (`target`, `context`) => `any`
 
-Defined in: packages/blue-dispatcher/src/http-method-mapping.ts:54
+Defined in: [packages/blue-dispatcher/src/http-method-mapping.ts:54](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/http-method-mapping.ts#lines-54)
 
 A request mapping with the HTTP method fixed to `'PATCH'`.
 

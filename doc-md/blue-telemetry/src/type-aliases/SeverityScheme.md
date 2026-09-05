@@ -8,7 +8,7 @@
 
 > **SeverityScheme** = `"syslog"` \| `"npm"` \| `"apache"` \| `"cli"`
 
-Defined in: packages/blue-telemetry/src/severity/severity-mapping.ts:10
+Defined in: [packages/blue-telemetry/src/severity/severity-mapping.ts:10](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/severity/severity-mapping.ts#lines-10)
 
 Defines the supported severity schemes for mapping log levels.
 - `'syslog'`: Standard Unix syslog severity levels.

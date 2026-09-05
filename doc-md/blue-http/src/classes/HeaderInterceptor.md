@@ -6,14 +6,12 @@
 
 # Class: HeaderInterceptor
 
-Defined in: packages/blue-http/src/interceptors/header-interceptor.ts:35
+Defined in: [packages/blue-http/src/interceptors/header-interceptor.ts:35](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/header-interceptor.ts#lines-35)
 
 HTTP interceptor that adds standard headers to outgoing requests.
 
 This interceptor implements the RequestAwareHTTPInterceptor interface and
 adds CSRF tokens, channel IDs, and request IDs to the request headers.
-
-## Implements
 
 ## Implements
 
@@ -25,7 +23,7 @@ adds CSRF tokens, channel IDs, and request IDs to the request headers.
 
 > **new HeaderInterceptor**(`config?`): `HeaderInterceptor`
 
-Defined in: packages/blue-http/src/interceptors/header-interceptor.ts:43
+Defined in: [packages/blue-http/src/interceptors/header-interceptor.ts:43](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/header-interceptor.ts#lines-43)
 
 Creates a new header interceptor.
 
@@ -47,7 +45,7 @@ Header interceptor configuration.
 
 > **preRequest**(`request`, `http`): `Promise`\<`Request`\>
 
-Defined in: packages/blue-http/src/interceptors/header-interceptor.ts:54
+Defined in: [packages/blue-http/src/interceptors/header-interceptor.ts:54](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/header-interceptor.ts#lines-54)
 
 Adds configured headers to the request before it is sent.
 

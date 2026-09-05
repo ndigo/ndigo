@@ -8,7 +8,7 @@
 
 > **parseAcceptLanguage**(`header`): `string` \| `undefined`
 
-Defined in: packages/blue-content/src/negotiation.ts:19
+Defined in: [packages/blue-content/src/negotiation.ts:19](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-content/src/negotiation.ts#lines-19)
 
 Parses the first language tag from an `Accept-Language` header value.
 

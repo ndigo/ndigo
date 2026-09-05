@@ -8,7 +8,7 @@
 
 > **getMethodParameter**(`target`, `propertyKey`): [`MethodParameter`](../classes/MethodParameter.md)[] \| `undefined`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:526
+Defined in: [packages/blue-dispatcher/src/route-parameter.ts:500](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-parameter.ts#lines-500)
 
 Get method parameters
 

@@ -6,7 +6,7 @@
 
 # Interface: ConditionalEventEmitter
 
-Defined in: packages/blue-context/src/event-emitter.ts:124
+Defined in: [packages/blue-context/src/event-emitter.ts:115](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-emitter.ts#lines-115)
 
 Event emitter with conditional and finite listeners.
 
@@ -20,7 +20,7 @@ Event emitter with conditional and finite listeners.
 
 > **emit**(`type`, ...`data`): `boolean`
 
-Defined in: packages/blue-context/src/event-emitter.ts:68
+Defined in: [packages/blue-context/src/event-emitter.ts:59](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-emitter.ts#lines-59)
 
 Emits an event to the listeners registered for the given type.
 
@@ -54,7 +54,7 @@ Event payload values.
 
 > **eventTypes**(): [`EventType`](../type-aliases/EventType.md)[]
 
-Defined in: packages/blue-context/src/event-emitter.ts:74
+Defined in: [packages/blue-context/src/event-emitter.ts:65](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-emitter.ts#lines-65)
 
 Returns the event types with registered listeners.
 
@@ -74,7 +74,7 @@ The registered event types.
 
 > **listenerCount**(`type`): `number`
 
-Defined in: packages/blue-context/src/event-emitter.ts:81
+Defined in: [packages/blue-context/src/event-emitter.ts:72](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-emitter.ts#lines-72)
 
 Returns the number of listeners for a type.
 
@@ -102,7 +102,7 @@ The listener count.
 
 > **listeners**(`type`): `Function`[]
 
-Defined in: packages/blue-context/src/event-emitter.ts:88
+Defined in: [packages/blue-context/src/event-emitter.ts:79](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-emitter.ts#lines-79)
 
 Returns a snapshot of listeners for a type.
 
@@ -130,7 +130,7 @@ The registered listeners.
 
 > **on**(`type`, `listener?`): `this`
 
-Defined in: packages/blue-context/src/event-emitter.ts:96
+Defined in: [packages/blue-context/src/event-emitter.ts:87](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-emitter.ts#lines-87)
 
 Adds a listener for an event type.
 
@@ -164,7 +164,7 @@ This emitter.
 
 > **off**(`type`, `listener`): `this`
 
-Defined in: packages/blue-context/src/event-emitter.ts:104
+Defined in: [packages/blue-context/src/event-emitter.ts:95](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-emitter.ts#lines-95)
 
 Removes a listener for an event type.
 
@@ -198,7 +198,7 @@ This emitter.
 
 > **many**(`type`, `times`, `listener`): `this`
 
-Defined in: packages/blue-context/src/event-emitter.ts:133
+Defined in: [packages/blue-context/src/event-emitter.ts:124](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-emitter.ts#lines-124)
 
 Registers a listener that fires a fixed number of times.
 
@@ -234,7 +234,7 @@ This emitter.
 
 > **once**(`type`, `listener`): `this`
 
-Defined in: packages/blue-context/src/event-emitter.ts:141
+Defined in: [packages/blue-context/src/event-emitter.ts:132](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-emitter.ts#lines-132)
 
 Registers a listener that fires once.
 
@@ -264,7 +264,7 @@ This emitter.
 
 > **until**(`type`, `listener`): `this`
 
-Defined in: packages/blue-context/src/event-emitter.ts:149
+Defined in: [packages/blue-context/src/event-emitter.ts:140](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-emitter.ts#lines-140)
 
 Registers a listener that removes itself when it returns `true`.
 

@@ -8,9 +8,9 @@
 
 > **hasTraced**(`target`, `propertyKey`): `boolean`
 
-Defined in: packages/blue-telemetry/src/trace/decorators.ts:33
+Defined in: [packages/blue-telemetry/src/trace/decorators.ts:33](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/trace/decorators.ts#lines-33)
 
-Checks if a method has been decorated with `@traced`.
+Checks if a method has been decorated with the `traced` decorator.
 
 ## Parameters
 

@@ -1,5 +1,5 @@
 /**
- * HTTP verb route mapping decorators — sugar over `@requestMapping` with the
+ * HTTP verb route mapping decorators — sugar over `requestMapping` with the
  * HTTP method fixed.
  *
  * @module

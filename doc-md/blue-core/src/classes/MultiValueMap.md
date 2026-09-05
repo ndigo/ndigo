@@ -6,9 +6,9 @@
 
 # Class: MultiValueMap\<K, V\>
 
-Defined in: packages/blue-core/src/multi-value-map.ts:8
+Defined in: [packages/blue-core/src/multi-value-map.ts:8](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/multi-value-map.ts#lines-8)
 
-Extension of the external:Map\|Map interface that stores multiple values under a single key.
+Extension of the [ap\|Map](#) interface that stores multiple values under a single key.
 
 ## Extends
 
@@ -74,7 +74,7 @@ Defined in: node\_modules/.pnpm/typescript@6.0.3/node\_modules/typescript/lib/li
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-core/src/multi-value-map.ts:12
+Defined in: [packages/blue-core/src/multi-value-map.ts:12](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/multi-value-map.ts#lines-12)
 
 The string tag for this class.
 
@@ -92,7 +92,7 @@ The string tag for this class.
 
 > **add**(`key`, `value`): `this`
 
-Defined in: packages/blue-core/src/multi-value-map.ts:23
+Defined in: [packages/blue-core/src/multi-value-map.ts:23](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/multi-value-map.ts#lines-23)
 
 Adds a value to the collection associated with the given key.
 If the key does not exist, a new array is created for the value.
@@ -123,7 +123,7 @@ This MultiValueMap instance.
 
 > **remove**(`key`, `value`): `boolean`
 
-Defined in: packages/blue-core/src/multi-value-map.ts:36
+Defined in: [packages/blue-core/src/multi-value-map.ts:36](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/multi-value-map.ts#lines-36)
 
 Removes a single value from the array stored at a key.
 If the array becomes empty after removal, deletes the key entirely.

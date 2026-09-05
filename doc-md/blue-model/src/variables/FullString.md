@@ -8,6 +8,6 @@
 
 > `const` **FullString**: `any`
 
-Defined in: packages/blue-model/src/basic.ts:89
+Defined in: [packages/blue-model/src/basic.ts:89](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-model/src/basic.ts#lines-89)
 
 Matches strings that are not blank.

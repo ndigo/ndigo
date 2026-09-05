@@ -8,7 +8,7 @@
 
 > **isNumeric**(`value`): `value is Numeric`
 
-Defined in: packages/blue-util/src/type/is-numeric.ts:29
+Defined in: [packages/blue-util/src/type/is-numeric.ts:29](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-util/src/type/is-numeric.ts#lines-29)
 
 Determines whether a given value is numeric, i.e. a number or a string containing a number. The [isNumber](isNumber.md) method determines whether the value, parsed or not, is a number.
 

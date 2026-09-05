@@ -6,7 +6,7 @@
 
 # Interface: Destroyable
 
-Defined in: packages/blue-factory/src/lifecycle.ts:7
+Defined in: [packages/blue-factory/src/lifecycle.ts:7](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/lifecycle.ts#lines-7)
 
 ## Extended by
 
@@ -18,7 +18,7 @@ Defined in: packages/blue-factory/src/lifecycle.ts:7
 
 > **destroyed**: `boolean`
 
-Defined in: packages/blue-factory/src/lifecycle.ts:8
+Defined in: [packages/blue-factory/src/lifecycle.ts:8](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/lifecycle.ts#lines-8)
 
 ## Methods
 
@@ -26,7 +26,7 @@ Defined in: packages/blue-factory/src/lifecycle.ts:8
 
 > **destroy**(): `void`
 
-Defined in: packages/blue-factory/src/lifecycle.ts:9
+Defined in: [packages/blue-factory/src/lifecycle.ts:9](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/lifecycle.ts#lines-9)
 
 #### Returns
 

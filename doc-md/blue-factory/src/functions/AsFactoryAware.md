@@ -8,7 +8,7 @@
 
 > **AsFactoryAware**\<`T`\>(`superclass`): `Constructable`\<[`FactoryAware`](../interfaces/FactoryAware.md)\> & `T`
 
-Defined in: packages/blue-factory/src/factory.ts:118
+Defined in: [packages/blue-factory/src/factory.ts:127](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/factory.ts#lines-127)
 
 A mixin that adds [FactoryAware](../interfaces/FactoryAware.md) capabilities to a class.
 

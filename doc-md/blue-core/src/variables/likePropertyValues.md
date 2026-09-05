@@ -8,7 +8,7 @@
 
 > `const` **likePropertyValues**: (`value`) => `value is PropertyValues`
 
-Defined in: packages/blue-core/src/property-value.ts:37
+Defined in: [packages/blue-core/src/property-value.ts:37](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/property-value.ts#lines-37)
 
 ## Parameters
 

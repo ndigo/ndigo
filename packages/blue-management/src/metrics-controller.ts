@@ -12,7 +12,7 @@ import { METRIC_AGGREGATOR } from './metric-aggregator-token';
  * Serves aggregated application metrics under `/metrics`.
  *
  * Reads the context-level {@link FeatureMetricAggregator} (populated by the
- * `@counted` decorator and feature code) and serializes per-feature counters,
+ * `counted` decorator and feature code) and serializes per-feature counters,
  * gauges, and durations as JSON — the Blue-native pull view over telemetry.
  *
  * @since 1.0.0

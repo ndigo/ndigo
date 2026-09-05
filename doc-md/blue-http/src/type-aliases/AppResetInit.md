@@ -8,7 +8,7 @@
 
 > **AppResetInit** = [`HTTPInit`](HTTPInit.md) & `object`
 
-Defined in: packages/blue-http/src/interceptors/app-reset-interceptor.ts:10
+Defined in: [packages/blue-http/src/interceptors/app-reset-interceptor.ts:10](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/app-reset-interceptor.ts#lines-10)
 
 Extends HTTP initialization with app-reset response handling options.
 

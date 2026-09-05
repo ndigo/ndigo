@@ -6,7 +6,7 @@
 
 # Class: NodeBodyValueMethodArgumentResolver
 
-Defined in: packages/blue-platform-node/src/body-argument-resolver.ts:22
+Defined in: [packages/blue-platform-node/src/body-argument-resolver.ts:15](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/body-argument-resolver.ts#lines-15)
 
 Node.js request body argument resolver.
 
@@ -22,7 +22,7 @@ Use `name: '*'` to bind the entire parsed body object.
 
 > **new NodeBodyValueMethodArgumentResolver**(): `NodeBodyValueMethodArgumentResolver`
 
-Defined in: packages/blue-platform-node/src/body-argument-resolver.ts:23
+Defined in: [packages/blue-platform-node/src/body-argument-resolver.ts:16](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/body-argument-resolver.ts#lines-16)
 
 #### Returns
 
@@ -40,7 +40,7 @@ Defined in: packages/blue-platform-node/src/body-argument-resolver.ts:23
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-platform-node/src/body-argument-resolver.ts:27
+Defined in: [packages/blue-platform-node/src/body-argument-resolver.ts:20](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/body-argument-resolver.ts#lines-20)
 
 ##### Returns
 
@@ -66,7 +66,7 @@ Pipeline: resolveName → defaultValue fallback → convertType lookup → conve
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 ##### mapping
 
@@ -86,7 +86,7 @@ Pipeline: resolveName → defaultValue fallback → convertType lookup → conve
 
 > **handleMissingValue**(`name`): `void`
 
-Defined in: packages/blue-dispatcher/lib/argument-resolver.d.ts:55
+Defined in: packages/blue-dispatcher/lib/argument-resolver.d.ts:46
 
 Handles a missing argument value by throwing a TypeError.
 
@@ -116,7 +116,7 @@ If the argument is undefined or null.
 
 > `protected` **resolveName**(`name`, `_parameter`, `route`, `_mapping`): `any`
 
-Defined in: packages/blue-platform-node/src/body-argument-resolver.ts:31
+Defined in: [packages/blue-platform-node/src/body-argument-resolver.ts:24](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/body-argument-resolver.ts#lines-24)
 
 #### Parameters
 
@@ -130,7 +130,7 @@ Defined in: packages/blue-platform-node/src/body-argument-resolver.ts:31
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 ##### \_mapping
 
@@ -150,7 +150,7 @@ Defined in: packages/blue-platform-node/src/body-argument-resolver.ts:31
 
 > **supportsParameter**(`parameter`): `boolean`
 
-Defined in: packages/blue-platform-node/src/body-argument-resolver.ts:39
+Defined in: [packages/blue-platform-node/src/body-argument-resolver.ts:32](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/body-argument-resolver.ts#lines-32)
 
 Whether the given method parameter is supported by this resolver.
 

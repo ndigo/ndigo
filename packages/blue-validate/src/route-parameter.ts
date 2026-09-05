@@ -43,7 +43,7 @@ type ParameterExtractor<T = unknown> = {
  * Wraps a parameter extractor with a Zod schema for validation and coercion.
  *
  * @example
- * @routeParams({
+ * `routeParams`({
  *   user: validatedBy(UserSchema, bindValue('query'))
  * })
  */
@@ -53,7 +53,7 @@ export function validatedBy<T>(schema: z.ZodType<T>, extractor: ParameterExtract
  * Wraps a parameter extractor with a @blue/validate Validator.
  *
  * @example
- * @routeParams({
+ * `routeParams`({
  *   email: validatedBy(myValidator, 'Email', queryValue('email'))
  * })
  */

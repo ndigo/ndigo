@@ -6,7 +6,7 @@
 
 # Class: HashScope
 
-Defined in: packages/blue-factory/src/scope.ts:123
+Defined in: [packages/blue-factory/src/scope.ts:125](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/scope.ts#lines-125)
 
 **`Internal`**
 
@@ -35,7 +35,7 @@ Activate a scope context by calling `setCurrentKey(key)` before `getValue()`.
 
 > **endScope**(`key`): `void`
 
-Defined in: packages/blue-factory/src/scope.ts:127
+Defined in: [packages/blue-factory/src/scope.ts:129](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/scope.ts#lines-129)
 
 #### Parameters
 
@@ -53,7 +53,7 @@ Defined in: packages/blue-factory/src/scope.ts:127
 
 > **getCurrentKey**(): `string` \| `null`
 
-Defined in: packages/blue-factory/src/scope.ts:134
+Defined in: [packages/blue-factory/src/scope.ts:136](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/scope.ts#lines-136)
 
 #### Returns
 
@@ -65,7 +65,7 @@ Defined in: packages/blue-factory/src/scope.ts:134
 
 > **setCurrentKey**(`key`): `void`
 
-Defined in: packages/blue-factory/src/scope.ts:138
+Defined in: [packages/blue-factory/src/scope.ts:140](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/scope.ts#lines-140)
 
 #### Parameters
 
@@ -83,7 +83,7 @@ Defined in: packages/blue-factory/src/scope.ts:138
 
 > **destroyValue**(`name`): `void`
 
-Defined in: packages/blue-factory/src/scope.ts:146
+Defined in: [packages/blue-factory/src/scope.ts:148](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/scope.ts#lines-148)
 
 #### Parameters
 
@@ -105,7 +105,7 @@ Defined in: packages/blue-factory/src/scope.ts:146
 
 > **getValue**\<`T`\>(`name`, `objectFactory`): `T`
 
-Defined in: packages/blue-factory/src/scope.ts:157
+Defined in: [packages/blue-factory/src/scope.ts:159](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/scope.ts#lines-159)
 
 #### Type Parameters
 

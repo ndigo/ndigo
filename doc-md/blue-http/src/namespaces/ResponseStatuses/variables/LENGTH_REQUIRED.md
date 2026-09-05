@@ -8,6 +8,6 @@
 
 > `const` **LENGTH\_REQUIRED**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
-Defined in: packages/blue-http/src/response-statuses.ts:204
+Defined in: [packages/blue-http/src/response-statuses.ts:204](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/response-statuses.ts#lines-204)
 
 Server rejected the request because the `Content-Length` header field is not defined and the server requires it.

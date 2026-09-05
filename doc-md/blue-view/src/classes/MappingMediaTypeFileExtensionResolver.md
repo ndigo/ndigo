@@ -6,7 +6,7 @@
 
 # Class: MappingMediaTypeFileExtensionResolver
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:59
+Defined in: [packages/blue-view/src/content-negotiation-view-resolver.ts:62](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/content-negotiation-view-resolver.ts#lines-62)
 
 Resolves file extensions from a map of extension-to-media-type pairs.
 
@@ -25,7 +25,7 @@ Resolves file extensions from a map of extension-to-media-type pairs.
 
 > **new MappingMediaTypeFileExtensionResolver**(`mediaTypes`): `MappingMediaTypeFileExtensionResolver`
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:78
+Defined in: [packages/blue-view/src/content-negotiation-view-resolver.ts:81](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/content-negotiation-view-resolver.ts#lines-81)
 
 Creates a resolver from extension-to-media-type mappings.
 
@@ -47,7 +47,7 @@ The source map of file extensions to media types.
 
 > **mediaTypes**: `Map`\<`string`, `MediaType`\>
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:63
+Defined in: [packages/blue-view/src/content-negotiation-view-resolver.ts:66](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/content-negotiation-view-resolver.ts#lines-66)
 
 The registered media types by normalized file extension.
 
@@ -57,7 +57,7 @@ The registered media types by normalized file extension.
 
 > **fileExtensions**: `MultiValueMap`\<`MediaType`, `string`\>
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:67
+Defined in: [packages/blue-view/src/content-negotiation-view-resolver.ts:70](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/content-negotiation-view-resolver.ts#lines-70)
 
 The reverse lookup from media type to file extensions.
 
@@ -67,7 +67,7 @@ The reverse lookup from media type to file extensions.
 
 > **allFileExtensions**: `string`[]
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:71
+Defined in: [packages/blue-view/src/content-negotiation-view-resolver.ts:74](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/content-negotiation-view-resolver.ts#lines-74)
 
 All registered file extensions in insertion order.
 
@@ -77,7 +77,7 @@ All registered file extensions in insertion order.
 
 > **getAllFileExtenstions**(): `string`[]
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:98
+Defined in: [packages/blue-view/src/content-negotiation-view-resolver.ts:101](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/content-negotiation-view-resolver.ts#lines-101)
 
 Returns all known file extensions.
 
@@ -97,7 +97,7 @@ The known file extensions.
 
 > **getAllMediaTypes**(): `MediaType`[]
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:107
+Defined in: [packages/blue-view/src/content-negotiation-view-resolver.ts:110](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/content-negotiation-view-resolver.ts#lines-110)
 
 Returns all media types known to this resolver.
 
@@ -113,7 +113,7 @@ The known media types.
 
 > **lookupMediaType**(`extension`): `MediaType` \| `null`
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:117
+Defined in: [packages/blue-view/src/content-negotiation-view-resolver.ts:120](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/content-negotiation-view-resolver.ts#lines-120)
 
 Looks up the media type for the given file extension.
 
@@ -137,7 +137,7 @@ The matching media type, or `null` when none exists.
 
 > **resolveFileExtensions**(`mediaType`): `string`[]
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:127
+Defined in: [packages/blue-view/src/content-negotiation-view-resolver.ts:130](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/content-negotiation-view-resolver.ts#lines-130)
 
 Returns the file extensions associated with the given media type.
 

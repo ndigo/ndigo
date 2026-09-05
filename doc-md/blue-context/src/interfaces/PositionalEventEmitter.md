@@ -6,7 +6,7 @@
 
 # Interface: PositionalEventEmitter
 
-Defined in: packages/blue-context/src/event-emitter.ts:155
+Defined in: [packages/blue-context/src/event-emitter.ts:146](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-emitter.ts#lines-146)
 
 Event emitter that supports listener insertion positions.
 
@@ -20,7 +20,7 @@ Event emitter that supports listener insertion positions.
 
 > **emit**(`type`, ...`data`): `boolean`
 
-Defined in: packages/blue-context/src/event-emitter.ts:68
+Defined in: [packages/blue-context/src/event-emitter.ts:59](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-emitter.ts#lines-59)
 
 Emits an event to the listeners registered for the given type.
 
@@ -54,7 +54,7 @@ Event payload values.
 
 > **eventTypes**(): [`EventType`](../type-aliases/EventType.md)[]
 
-Defined in: packages/blue-context/src/event-emitter.ts:74
+Defined in: [packages/blue-context/src/event-emitter.ts:65](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-emitter.ts#lines-65)
 
 Returns the event types with registered listeners.
 
@@ -74,7 +74,7 @@ The registered event types.
 
 > **listenerCount**(`type`): `number`
 
-Defined in: packages/blue-context/src/event-emitter.ts:81
+Defined in: [packages/blue-context/src/event-emitter.ts:72](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-emitter.ts#lines-72)
 
 Returns the number of listeners for a type.
 
@@ -102,7 +102,7 @@ The listener count.
 
 > **listeners**(`type`): `Function`[]
 
-Defined in: packages/blue-context/src/event-emitter.ts:88
+Defined in: [packages/blue-context/src/event-emitter.ts:79](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-emitter.ts#lines-79)
 
 Returns a snapshot of listeners for a type.
 
@@ -130,7 +130,7 @@ The registered listeners.
 
 > **on**(`type`, `listener?`): `this`
 
-Defined in: packages/blue-context/src/event-emitter.ts:96
+Defined in: [packages/blue-context/src/event-emitter.ts:87](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-emitter.ts#lines-87)
 
 Adds a listener for an event type.
 
@@ -164,7 +164,7 @@ This emitter.
 
 > **off**(`type`, `listener`): `this`
 
-Defined in: packages/blue-context/src/event-emitter.ts:104
+Defined in: [packages/blue-context/src/event-emitter.ts:95](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-emitter.ts#lines-95)
 
 Removes a listener for an event type.
 
@@ -198,7 +198,7 @@ This emitter.
 
 > **at**(`type`, `index`, `listener`): `this`
 
-Defined in: packages/blue-context/src/event-emitter.ts:164
+Defined in: [packages/blue-context/src/event-emitter.ts:155](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-emitter.ts#lines-155)
 
 Inserts a listener at a specific position.
 
@@ -234,7 +234,7 @@ This emitter.
 
 > **first**(`type`, `listener`): `this`
 
-Defined in: packages/blue-context/src/event-emitter.ts:172
+Defined in: [packages/blue-context/src/event-emitter.ts:163](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-emitter.ts#lines-163)
 
 Inserts a listener at the beginning of the listener list.
 

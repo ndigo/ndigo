@@ -6,7 +6,7 @@
 
 # Interface: ResourceLoader
 
-Defined in: packages/blue-context/src/resource.ts:21
+Defined in: [packages/blue-context/src/resource.ts:21](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/resource.ts#lines-21)
 
 Loads resources from a location string.
 
@@ -20,7 +20,7 @@ Loads resources from a location string.
 
 > **getResource**(`location`): `Promise`\<[`Resource`](Resource.md)\<`any`\>\>
 
-Defined in: packages/blue-context/src/resource.ts:22
+Defined in: [packages/blue-context/src/resource.ts:22](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/resource.ts#lines-22)
 
 #### Parameters
 

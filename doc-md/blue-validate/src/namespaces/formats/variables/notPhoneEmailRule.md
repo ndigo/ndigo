@@ -8,6 +8,6 @@
 
 > `const` **notPhoneEmailRule**: `RegExp`
 
-Defined in: packages/blue-validate/src/formats.ts:155
+Defined in: [packages/blue-validate/src/formats.ts:155](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/formats.ts#lines-155)
 
 A regular expression matching non-phone number email addresses.

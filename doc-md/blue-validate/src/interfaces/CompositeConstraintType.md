@@ -6,7 +6,7 @@
 
 # Interface: CompositeConstraintType\<T\>
 
-Defined in: packages/blue-validate/src/constraint.ts:47
+Defined in: [packages/blue-validate/src/constraint.ts:47](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/constraint.ts#lines-47)
 
 Defines the interface for a validation constraint.
 
@@ -24,7 +24,7 @@ The type of the value that this constraint can validate.
 
 > **validate**: `constraint`\<`T`\>
 
-Defined in: packages/blue-validate/src/constraint.ts:54
+Defined in: [packages/blue-validate/src/constraint.ts:54](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/constraint.ts#lines-54)
 
 The validation function for the constraint.
 

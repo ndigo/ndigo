@@ -6,7 +6,7 @@
 
 # Interface: FeatureContextOptions
 
-Defined in: packages/blue-context/src/context-hierarchy.ts:44
+Defined in: [packages/blue-context/src/context-hierarchy.ts:44](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context-hierarchy.ts#lines-44)
 
 Options for creating a feature context and its optional relay gateway.
 
@@ -20,7 +20,7 @@ Options for creating a feature context and its optional relay gateway.
 
 > `optional` **createContext?**: (`parent`) => [`ApplicationContext`](ApplicationContext.md)
 
-Defined in: packages/blue-context/src/context-hierarchy.ts:48
+Defined in: [packages/blue-context/src/context-hierarchy.ts:48](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context-hierarchy.ts#lines-48)
 
 Creates the feature context instead of using `parent.newChild`.
 
@@ -40,7 +40,7 @@ Creates the feature context instead of using `parent.newChild`.
 
 > **name**: `string`
 
-Defined in: packages/blue-context/src/context-hierarchy.ts:52
+Defined in: [packages/blue-context/src/context-hierarchy.ts:52](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context-hierarchy.ts#lines-52)
 
 The feature context name.
 
@@ -50,7 +50,7 @@ The feature context name.
 
 > `optional` **data?**: `JSONObject`
 
-Defined in: packages/blue-context/src/context-hierarchy.ts:56
+Defined in: [packages/blue-context/src/context-hierarchy.ts:56](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context-hierarchy.ts#lines-56)
 
 Initial values for the feature context.
 
@@ -60,7 +60,7 @@ Initial values for the feature context.
 
 > `optional` **gatewayOptions?**: [`ContextEventGatewayOptions`](ContextEventGatewayOptions.md)
 
-Defined in: packages/blue-context/src/context-hierarchy.ts:60
+Defined in: [packages/blue-context/src/context-hierarchy.ts:60](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context-hierarchy.ts#lines-60)
 
 Relay gateway validation options.
 
@@ -70,7 +70,7 @@ Relay gateway validation options.
 
 > `optional` **relayTarget?**: [`ApplicationContext`](ApplicationContext.md)
 
-Defined in: packages/blue-context/src/context-hierarchy.ts:64
+Defined in: [packages/blue-context/src/context-hierarchy.ts:64](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context-hierarchy.ts#lines-64)
 
 Optional relay target context.
 
@@ -80,6 +80,6 @@ Optional relay target context.
 
 > `optional` **relays?**: [`ContextEventRelay`](ContextEventRelay.md)[]
 
-Defined in: packages/blue-context/src/context-hierarchy.ts:68
+Defined in: [packages/blue-context/src/context-hierarchy.ts:68](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context-hierarchy.ts#lines-68)
 
 Event relays to attach to the feature context.

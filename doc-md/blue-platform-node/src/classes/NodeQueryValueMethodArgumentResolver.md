@@ -6,7 +6,7 @@
 
 # Class: NodeQueryValueMethodArgumentResolver
 
-Defined in: packages/blue-platform-node/src/query-argument-resolver.ts:19
+Defined in: [packages/blue-platform-node/src/query-argument-resolver.ts:12](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/query-argument-resolver.ts#lines-12)
 
 Node.js query parameter argument resolver.
 
@@ -20,7 +20,7 @@ Node.js query parameter argument resolver.
 
 > **new NodeQueryValueMethodArgumentResolver**(): `NodeQueryValueMethodArgumentResolver`
 
-Defined in: packages/blue-platform-node/src/query-argument-resolver.ts:20
+Defined in: [packages/blue-platform-node/src/query-argument-resolver.ts:13](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/query-argument-resolver.ts#lines-13)
 
 #### Returns
 
@@ -38,7 +38,7 @@ Defined in: packages/blue-platform-node/src/query-argument-resolver.ts:20
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-platform-node/src/query-argument-resolver.ts:24
+Defined in: [packages/blue-platform-node/src/query-argument-resolver.ts:17](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/query-argument-resolver.ts#lines-17)
 
 ##### Returns
 
@@ -64,7 +64,7 @@ Pipeline: resolveName → defaultValue fallback → convertType lookup → conve
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 ##### mapping
 
@@ -84,7 +84,7 @@ Pipeline: resolveName → defaultValue fallback → convertType lookup → conve
 
 > **handleMissingValue**(`name`): `void`
 
-Defined in: packages/blue-dispatcher/lib/argument-resolver.d.ts:55
+Defined in: packages/blue-dispatcher/lib/argument-resolver.d.ts:46
 
 Handles a missing argument value by throwing a TypeError.
 
@@ -114,7 +114,7 @@ If the argument is undefined or null.
 
 > `protected` **resolveName**(`name`, `_parameter`, `route`, `_mapping`): `any`
 
-Defined in: packages/blue-platform-node/src/query-argument-resolver.ts:28
+Defined in: [packages/blue-platform-node/src/query-argument-resolver.ts:21](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/query-argument-resolver.ts#lines-21)
 
 #### Parameters
 
@@ -128,7 +128,7 @@ Defined in: packages/blue-platform-node/src/query-argument-resolver.ts:28
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 ##### \_mapping
 
@@ -148,7 +148,7 @@ Defined in: packages/blue-platform-node/src/query-argument-resolver.ts:28
 
 > **supportsParameter**(`parameter`): `boolean`
 
-Defined in: packages/blue-platform-node/src/query-argument-resolver.ts:32
+Defined in: [packages/blue-platform-node/src/query-argument-resolver.ts:25](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/query-argument-resolver.ts#lines-25)
 
 Whether the given method parameter is supported by this resolver.
 

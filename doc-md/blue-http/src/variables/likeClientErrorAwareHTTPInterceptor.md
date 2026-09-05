@@ -8,7 +8,7 @@
 
 > `const` **likeClientErrorAwareHTTPInterceptor**: (`value`) => `value is ClientErrorAwareHTTPInterceptor`
 
-Defined in: packages/blue-http/src/interceptors/response-class-interceptor.ts:96
+Defined in: [packages/blue-http/src/interceptors/response-class-interceptor.ts:96](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/response-class-interceptor.ts#lines-96)
 
 Tests whether a value exposes `postClientErrorResponse()`.
 

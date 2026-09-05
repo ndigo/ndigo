@@ -6,7 +6,7 @@
 
 # Interface: LifecycleProcessor
 
-Defined in: packages/blue-factory/src/lifecycle.ts:42
+Defined in: [packages/blue-factory/src/lifecycle.ts:42](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/lifecycle.ts#lines-42)
 
 ## Extends
 
@@ -18,7 +18,7 @@ Defined in: packages/blue-factory/src/lifecycle.ts:42
 
 > `readonly` **isRunning**: `boolean`
 
-Defined in: packages/blue-factory/src/lifecycle.ts:29
+Defined in: [packages/blue-factory/src/lifecycle.ts:29](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/lifecycle.ts#lines-29)
 
 #### Inherited from
 
@@ -30,7 +30,7 @@ Defined in: packages/blue-factory/src/lifecycle.ts:29
 
 > **start**(): `void`
 
-Defined in: packages/blue-factory/src/lifecycle.ts:30
+Defined in: [packages/blue-factory/src/lifecycle.ts:30](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/lifecycle.ts#lines-30)
 
 #### Returns
 
@@ -46,7 +46,7 @@ Defined in: packages/blue-factory/src/lifecycle.ts:30
 
 > **stop**(): `void`
 
-Defined in: packages/blue-factory/src/lifecycle.ts:31
+Defined in: [packages/blue-factory/src/lifecycle.ts:31](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/lifecycle.ts#lines-31)
 
 #### Returns
 
@@ -62,7 +62,7 @@ Defined in: packages/blue-factory/src/lifecycle.ts:31
 
 > **onClose**(`registry`): `void`
 
-Defined in: packages/blue-factory/src/lifecycle.ts:43
+Defined in: [packages/blue-factory/src/lifecycle.ts:43](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/lifecycle.ts#lines-43)
 
 #### Parameters
 
@@ -80,7 +80,7 @@ Defined in: packages/blue-factory/src/lifecycle.ts:43
 
 > **onRefresh**(`registry`): `void`
 
-Defined in: packages/blue-factory/src/lifecycle.ts:44
+Defined in: [packages/blue-factory/src/lifecycle.ts:44](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/lifecycle.ts#lines-44)
 
 #### Parameters
 

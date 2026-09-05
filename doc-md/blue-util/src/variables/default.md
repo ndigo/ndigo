@@ -8,7 +8,7 @@
 
 > **default**: `object`
 
-Defined in: packages/blue-util/src/index.ts:31
+Defined in: [packages/blue-util/src/index.ts:31](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-util/src/index.ts#lines-31)
 
 ## Type Declaration
 

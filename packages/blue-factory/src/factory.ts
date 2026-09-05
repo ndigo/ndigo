@@ -27,7 +27,7 @@ import {
 } from './entry-processor';
 
 /**
- * This interface is implemented by objects that hold a number of value definitions, each uniquely identified by a {@link string|string} name.
+ * This interface is implemented by objects that hold a number of value definitions, each uniquely identified by a `string` name.
  *
  * The point of this approach is that the `Factory` is a central registry of application components and centralizes configuration.
  * `Factory` implementations should support the standard lifecycle as much as possible. The full set of initialization methods and their standard order is:
@@ -48,11 +48,11 @@ import {
  * 2. `destroy`
  * 3. `LifecycleProcessor#onClose` (stop `SmartLifecycle` values in descending phase order)
  * @see {@link NameAware}
- * @see {@link FactoryAware}
- * @see {@link EnvironmentAware}
- * @see {@link ApplicationEventEmitterAware}
- * @see {@link ContentSourceAware}
- * @see {@link ApplicationContextAware}
+ * @see `FactoryAware`
+ * @see `EnvironmentAware`
+ * @see `ApplicationEventEmitterAware`
+ * @see `ContentSourceAware`
+ * @see `ApplicationContextAware`
  */
 export interface Factory {
     /**
@@ -300,7 +300,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
 
     /**
      * Destroys a value managed by the factory.
-     * @param nameOrToken The name or ContextToken of the value to destroy.
+     * @param token (the scope-entry key) The name or ContextToken of the value to destroy.
      * @template T The type of the value.
      */
     destroyValue<T = any>(token: ContextToken<T>): void;
@@ -332,7 +332,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
     /**
      * Returns an instance of the specified value.
      * @param name The name of the value.
-     * @param argumentsList Optional arguments to pass to the constructor if the value is a constructor.
+     * @param argumentsList (constructor arguments) Optional arguments to pass to the constructor if the value is a constructor.
      * @returns An instance of the value.
      * @template T The type of the instance.
      */
@@ -342,8 +342,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
 
     /**
      * Retrieves a value from the factory, creating it if necessary.
-     * @param nameOrToken The name or ContextToken of the value to retrieve.
-     * @param argumentsList Optional arguments to pass to the constructor if the value is a constructor.
+     * @param token (the scope-entry key) The name or ContextToken of the value to retrieve.
      * @returns The retrieved value.
      * @template T The type of the value.
      */
@@ -469,7 +468,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
 
     /**
      * Checks if the factory has a value (either an instance or a constructor) registered under the given name or token.
-     * @param nameOrToken The name or ContextToken of the value.
+     * @param token (the scope-entry key) The name or ContextToken of the value.
      * @returns `true` if a value is registered, `false` otherwise.
      * @template T The type of the value.
      */
@@ -503,7 +502,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
 
     /**
      * Sets a value (either a constructor or an instance) in the factory.
-     * @param nameOrToken The name or ContextToken under which to register the value.
+     * @param token (the scope-entry key) The name or ContextToken under which to register the value.
      * @param value The value to register.
      * @template T The type of the value.
      */
@@ -625,7 +624,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
      * Applies construction-aware processors before an instance is constructed.
      * @param name The name of the instance.
      * @param constructor The constructor function.
-     * @param argumentsList Optional arguments to pass to the constructor.
+     * @param argumentsList (constructor arguments) Optional arguments to pass to the constructor.
      * @returns The instance to use, or `null` to proceed with default construction.
      * @template T The type of the instance.
      */
@@ -723,7 +722,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
     /**
      * Creates a new instance from a registered constructor.
      * @param name The name of the constructor.
-     * @param argumentsList Optional arguments to pass to the constructor.
+     * @param argumentsList (constructor arguments) Optional arguments to pass to the constructor.
      * @returns The newly created instance.
      * @throws {FrameworkError} If instance creation fails.
      * @template T The type of the instance.
@@ -861,7 +860,7 @@ export class DefaultFactory extends AbstractFactory {}
 /**
  * A factory that uses a Proxy to allow direct property access for value manipulation.
  * @extends DefaultFactory
- * @implements {Record<string, any>}
+
  * @example
  * const factory = new ProxiedFactory();
  * factory.foo = 123;

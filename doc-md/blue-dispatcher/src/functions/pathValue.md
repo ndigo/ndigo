@@ -8,7 +8,7 @@
 
 > **pathValue**(`name`, `options?`): [`ParameterExtractor`](../type-aliases/ParameterExtractor.md)
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:198
+Defined in: [packages/blue-dispatcher/src/route-parameter.ts:196](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-parameter.ts#lines-196)
 
 Factory function: Create a path parameter extractor
 
@@ -29,7 +29,7 @@ Factory function: Create a path parameter extractor
 ## Example
 
 ```ts
-@routeParams({
+`routeParams`({
   userId: pathValue('userId')
 })
 ```

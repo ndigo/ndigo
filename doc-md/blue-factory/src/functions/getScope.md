@@ -8,7 +8,7 @@
 
 > **getScope**(`target`): `string` \| `undefined`
 
-Defined in: packages/blue-factory/src/scope.ts:56
+Defined in: [packages/blue-factory/src/scope.ts:58](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/scope.ts#lines-58)
 
 Retrieves scope metadata from a class or instance
 
@@ -16,7 +16,7 @@ Retrieves scope metadata from a class or instance
 
 ### target
 
-`any`
+`unknown`
 
 Class constructor or instance
 

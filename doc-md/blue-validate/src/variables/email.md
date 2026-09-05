@@ -8,7 +8,7 @@
 
 > `const` **email**: (`params`) => (`value`, `context`) => `void`
 
-Defined in: packages/blue-validate/src/decorators.ts:507
+Defined in: [packages/blue-validate/src/decorators.ts:505](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/decorators.ts#lines-505)
 
 TC39 Stage 3 decorator that validates a string property to be a valid email address.
 
@@ -17,6 +17,8 @@ TC39 Stage 3 decorator that validates a string property to be a valid email addr
 ### params?
 
 `Record`\<`string`, `unknown`\> \| `DecoratorConfig`\<`Record`\<`string`, `unknown`\>\>
+
+Optional configuration for the decorator.
 
 ## Returns
 

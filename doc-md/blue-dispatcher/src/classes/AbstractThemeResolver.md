@@ -6,7 +6,7 @@
 
 # Abstract Class: AbstractThemeResolver
 
-Defined in: packages/blue-dispatcher/src/theme-resolver.ts:22
+Defined in: [packages/blue-dispatcher/src/theme-resolver.ts:20](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/theme-resolver.ts#lines-20)
 
 Resolves the active theme for a route.
 
@@ -24,7 +24,7 @@ Resolves the active theme for a route.
 
 > **new AbstractThemeResolver**(`defaultThemeName`): `AbstractThemeResolver`
 
-Defined in: packages/blue-dispatcher/src/theme-resolver.ts:37
+Defined in: [packages/blue-dispatcher/src/theme-resolver.ts:35](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/theme-resolver.ts#lines-35)
 
 Store the fallback theme name.
 
@@ -46,7 +46,7 @@ The theme to use by default.
 
 > `readonly` **defaultThemeName**: `string`
 
-Defined in: packages/blue-dispatcher/src/theme-resolver.ts:26
+Defined in: [packages/blue-dispatcher/src/theme-resolver.ts:24](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/theme-resolver.ts#lines-24)
 
 Fallback theme name used when a route-specific theme is unavailable.
 
@@ -58,7 +58,7 @@ Fallback theme name used when a route-specific theme is unavailable.
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-dispatcher/src/theme-resolver.ts:28
+Defined in: [packages/blue-dispatcher/src/theme-resolver.ts:26](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/theme-resolver.ts#lines-26)
 
 ##### Returns
 
@@ -70,7 +70,7 @@ Defined in: packages/blue-dispatcher/src/theme-resolver.ts:28
 
 > `abstract` **resolveTheme**(`route`): `string`
 
-Defined in: packages/blue-dispatcher/src/theme-resolver.ts:47
+Defined in: [packages/blue-dispatcher/src/theme-resolver.ts:45](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/theme-resolver.ts#lines-45)
 
 Resolve the theme name for a route.
 
@@ -78,7 +78,7 @@ Resolve the theme name for a route.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The current route.
 

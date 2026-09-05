@@ -62,6 +62,7 @@
     "source-order"
   ],
   "gitRevision": "main",
+  "sourceLinkTemplate": "https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/{gitRevision}/{path}#lines-{line}",
   "skipErrorChecking": true,
   "treatWarningsAsErrors": false,
   "treatValidationWarningsAsErrors": false,

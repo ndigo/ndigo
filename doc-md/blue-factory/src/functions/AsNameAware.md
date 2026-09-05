@@ -8,7 +8,7 @@
 
 > **AsNameAware**\<`T`\>(`superclass`): `Constructable`\<[`NameAware`](../interfaces/NameAware.md)\> & `T`
 
-Defined in: packages/blue-factory/src/aware.ts:62
+Defined in: [packages/blue-factory/src/aware.ts:62](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/aware.ts#lines-62)
 
 ## Type Parameters
 
@@ -29,7 +29,3 @@ Defined in: packages/blue-factory/src/aware.ts:62
 ## See
 
 module:factory.AsNameAware
-
-## Implements
-
-module:factory.NameAware

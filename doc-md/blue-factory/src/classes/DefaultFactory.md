@@ -6,7 +6,7 @@
 
 # Class: DefaultFactory
 
-Defined in: packages/blue-factory/src/factory.ts:843
+Defined in: [packages/blue-factory/src/factory.ts:858](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/factory.ts#lines-858)
 
 A default implementation of [AbstractFactory](AbstractFactory.md).
 
@@ -44,7 +44,7 @@ Allows arbitrary properties to be added to the factory, which are then managed a
 
 > **new DefaultFactory**(): `DefaultFactory`
 
-Defined in: packages/blue-factory/src/factory.ts:221
+Defined in: [packages/blue-factory/src/factory.ts:231](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/factory.ts#lines-231)
 
 Creates a new AbstractFactory instance and initializes its scope registry and default scopes.
 
@@ -62,7 +62,7 @@ Creates a new AbstractFactory instance and initializes its scope registry and de
 
 > **processors**: [`EntryProcessor`](../type-aliases/EntryProcessor.md)[]
 
-Defined in: packages/blue-factory/src/factory.ts:187
+Defined in: [packages/blue-factory/src/factory.ts:197](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/factory.ts#lines-197)
 
 A list of entry processors applied to instances.
 
@@ -76,7 +76,7 @@ A list of entry processors applied to instances.
 
 > **hasConstructionAwareProcessors**: `boolean`
 
-Defined in: packages/blue-factory/src/factory.ts:192
+Defined in: [packages/blue-factory/src/factory.ts:202](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/factory.ts#lines-202)
 
 Indicates if there are any construction-aware processors.
 
@@ -90,7 +90,7 @@ Indicates if there are any construction-aware processors.
 
 > **hasDestructionAwareProcessors**: `boolean`
 
-Defined in: packages/blue-factory/src/factory.ts:196
+Defined in: [packages/blue-factory/src/factory.ts:206](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/factory.ts#lines-206)
 
 Indicates if there are any destruction-aware processors.
 
@@ -104,7 +104,7 @@ Indicates if there are any destruction-aware processors.
 
 > **hasInitializationAwareProcessors**: `boolean`
 
-Defined in: packages/blue-factory/src/factory.ts:200
+Defined in: [packages/blue-factory/src/factory.ts:210](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/factory.ts#lines-210)
 
 Indicates if there are any initialization-aware processors.
 
@@ -120,7 +120,7 @@ Indicates if there are any initialization-aware processors.
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-factory/src/factory.ts:206
+Defined in: [packages/blue-factory/src/factory.ts:216](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/factory.ts#lines-216)
 
 Returns the string tag for this factory.
 
@@ -142,7 +142,7 @@ Always 'Factory'.
 
 > **get** **parent**(): [`Factory`](../interfaces/Factory.md) \| `null`
 
-Defined in: packages/blue-factory/src/factory.ts:214
+Defined in: [packages/blue-factory/src/factory.ts:224](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/factory.ts#lines-224)
 
 Returns the parent factory.
 
@@ -164,7 +164,7 @@ The parent factory in the hierarchy.
 
 > **addProcessor**(`processor`): `void`
 
-Defined in: packages/blue-factory/src/factory.ts:259
+Defined in: [packages/blue-factory/src/factory.ts:269](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/factory.ts#lines-269)
 
 Adds an entry processor to the factory.
 
@@ -192,7 +192,7 @@ The entry processor to add.
 
 > **destroyValue**\<`T`\>(`token`): `void`
 
-Defined in: packages/blue-factory/src/factory.ts:296
+Defined in: [packages/blue-factory/src/factory.ts:306](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/factory.ts#lines-306)
 
 Destroys a value managed by the factory.
 
@@ -210,6 +210,8 @@ The type of the value.
 
 [`ContextToken`](ContextToken.md)\<`T`\>
 
+(the scope-entry key) The name or ContextToken of the value to destroy.
+
 ##### Returns
 
 `void`
@@ -222,7 +224,7 @@ The type of the value.
 
 > **destroyValue**(`name`): `void`
 
-Defined in: packages/blue-factory/src/factory.ts:297
+Defined in: [packages/blue-factory/src/factory.ts:307](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/factory.ts#lines-307)
 
 Destroys a value managed by the factory.
 
@@ -246,7 +248,7 @@ Destroys a value managed by the factory.
 
 > **getInstance**\<`T`\>(`name`, `argumentsList?`): `T`
 
-Defined in: packages/blue-factory/src/factory.ts:329
+Defined in: [packages/blue-factory/src/factory.ts:339](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/factory.ts#lines-339)
 
 Returns an instance of the specified value.
 
@@ -270,7 +272,7 @@ The name of the value.
 
 `any`[] = `[]`
 
-Optional arguments to pass to the constructor if the value is a constructor.
+(constructor arguments) Optional arguments to pass to the constructor if the value is a constructor.
 
 #### Returns
 
@@ -290,7 +292,7 @@ An instance of the value.
 
 > **getValue**\<`T`\>(`token`): `T`
 
-Defined in: packages/blue-factory/src/factory.ts:340
+Defined in: [packages/blue-factory/src/factory.ts:349](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/factory.ts#lines-349)
 
 Retrieves a value from the factory, creating it if necessary.
 
@@ -308,6 +310,8 @@ The type of the value.
 
 [`ContextToken`](ContextToken.md)\<`T`\>
 
+(the scope-entry key) The name or ContextToken of the value to retrieve.
+
 ##### Returns
 
 `T`
@@ -322,7 +326,7 @@ The retrieved value.
 
 > **getValue**\<`T`\>(`name`, `argumentsList?`): `T`
 
-Defined in: packages/blue-factory/src/factory.ts:341
+Defined in: [packages/blue-factory/src/factory.ts:350](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/factory.ts#lines-350)
 
 Retrieves a value from the factory, creating it if necessary.
 
@@ -344,8 +348,6 @@ The type of the value.
 
 `any`[]
 
-Optional arguments to pass to the constructor if the value is a constructor.
-
 ##### Returns
 
 `T`
@@ -362,7 +364,7 @@ The retrieved value.
 
 > **\_checkVersion**\<`T`\>(`nameOrToken`, `value`): `void`
 
-Defined in: packages/blue-factory/src/factory.ts:381
+Defined in: [packages/blue-factory/src/factory.ts:390](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/factory.ts#lines-390)
 
 Checks the resolved value's version against the token's requiredVersion and warns on mismatch.
 
@@ -396,7 +398,7 @@ Checks the resolved value's version against the token's requiredVersion and warn
 
 > **destroyScopedValue**(`scopeName`, `valueName`): `void`
 
-Defined in: packages/blue-factory/src/factory.ts:410
+Defined in: [packages/blue-factory/src/factory.ts:419](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/factory.ts#lines-419)
 
 Destroys a scoped value.
 
@@ -428,7 +430,7 @@ The name of the value within the scope.
 
 > **getScope**(`name`): [`Scope`](../interfaces/Scope.md)
 
-Defined in: packages/blue-factory/src/factory.ts:419
+Defined in: [packages/blue-factory/src/factory.ts:428](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/factory.ts#lines-428)
 
 Retrieves a scope by its name.
 
@@ -456,7 +458,7 @@ The Scope instance.
 
 > **getScopeNames**(): `string`[]
 
-Defined in: packages/blue-factory/src/factory.ts:427
+Defined in: [packages/blue-factory/src/factory.ts:436](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/factory.ts#lines-436)
 
 Returns an array of all registered scope names.
 
@@ -476,7 +478,7 @@ An array of PossibleScope names.
 
 > **hasConstructor**(`name`): `boolean`
 
-Defined in: packages/blue-factory/src/factory.ts:436
+Defined in: [packages/blue-factory/src/factory.ts:445](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/factory.ts#lines-445)
 
 Checks if the factory has a constructor registered under the given name.
 
@@ -504,7 +506,7 @@ The name of the constructor.
 
 > **hasInstance**(`name`): `boolean`
 
-Defined in: packages/blue-factory/src/factory.ts:445
+Defined in: [packages/blue-factory/src/factory.ts:454](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/factory.ts#lines-454)
 
 Checks if the factory has an instance registered under the given name.
 
@@ -532,7 +534,7 @@ The name of the instance.
 
 > **hasOwnValue**(`name`): `boolean`
 
-Defined in: packages/blue-factory/src/factory.ts:454
+Defined in: [packages/blue-factory/src/factory.ts:463](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/factory.ts#lines-463)
 
 Checks if the factory has its own value (either an instance or a constructor) registered under the given name.
 
@@ -562,7 +564,7 @@ The name of the value.
 
 > **hasValue**\<`T`\>(`token`): `boolean`
 
-Defined in: packages/blue-factory/src/factory.ts:464
+Defined in: [packages/blue-factory/src/factory.ts:475](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/factory.ts#lines-475)
 
 Checks if the factory has a value (either an instance or a constructor) registered under the given name or token.
 
@@ -580,6 +582,8 @@ The type of the value.
 
 [`ContextToken`](ContextToken.md)\<`T`\>
 
+(the scope-entry key) The name or ContextToken of the value.
+
 ##### Returns
 
 `boolean`
@@ -594,7 +598,7 @@ The type of the value.
 
 > **hasValue**(`name`): `boolean`
 
-Defined in: packages/blue-factory/src/factory.ts:465
+Defined in: [packages/blue-factory/src/factory.ts:476](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/factory.ts#lines-476)
 
 Checks if the factory has a value (either an instance or a constructor) registered under the given name or token.
 
@@ -620,7 +624,7 @@ Checks if the factory has a value (either an instance or a constructor) register
 
 > **registerScope**(`name`, `scope`): `void`
 
-Defined in: packages/blue-factory/src/factory.ts:476
+Defined in: [packages/blue-factory/src/factory.ts:491](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/factory.ts#lines-491)
 
 Registers a new scope with the factory.
 
@@ -652,7 +656,7 @@ The Scope instance to register.
 
 > **setParent**(`parent`): `void`
 
-Defined in: packages/blue-factory/src/factory.ts:484
+Defined in: [packages/blue-factory/src/factory.ts:499](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/factory.ts#lines-499)
 
 Sets the parent factory for this hierarchical factory.
 
@@ -680,7 +684,7 @@ The parent factory.
 
 > **setValue**\<`T`\>(`token`, `value`): `void`
 
-Defined in: packages/blue-factory/src/factory.ts:494
+Defined in: [packages/blue-factory/src/factory.ts:509](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/factory.ts#lines-509)
 
 Sets a value (either a constructor or an instance) in the factory.
 
@@ -697,6 +701,8 @@ The type of the value.
 ###### token
 
 [`ContextToken`](ContextToken.md)\<`T`\>
+
+(the scope-entry key) The name or ContextToken under which to register the value.
 
 ###### value
 
@@ -716,7 +722,7 @@ The value to register.
 
 > **setValue**\<`T`\>(`name`, `value`): `void`
 
-Defined in: packages/blue-factory/src/factory.ts:495
+Defined in: [packages/blue-factory/src/factory.ts:510](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/factory.ts#lines-510)
 
 Sets a value (either a constructor or an instance) in the factory.
 
@@ -754,7 +760,7 @@ The value to register.
 
 > `protected` **\_applyProcessorsAfterConstruction**\<`T`\>(`name`, `instance`): `boolean`
 
-Defined in: packages/blue-factory/src/factory.ts:560
+Defined in: [packages/blue-factory/src/factory.ts:575](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/factory.ts#lines-575)
 
 Applies construction-aware processors after an instance has been constructed.
 
@@ -796,7 +802,7 @@ The constructed instance.
 
 > `protected` **\_applyProcessorsAfterInitialization**\<`T`\>(`name`, `instance`): `T`
 
-Defined in: packages/blue-factory/src/factory.ts:587
+Defined in: [packages/blue-factory/src/factory.ts:602](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/factory.ts#lines-602)
 
 Applies initialization-aware processors after an instance has been initialized.
 
@@ -838,7 +844,7 @@ The processed instance.
 
 > `protected` **\_applyProcessorsBeforeConstruction**\<`T`\>(`name`, `constructor`, `argumentsList?`): `T` \| `null`
 
-Defined in: packages/blue-factory/src/factory.ts:616
+Defined in: [packages/blue-factory/src/factory.ts:631](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/factory.ts#lines-631)
 
 Applies construction-aware processors before an instance is constructed.
 
@@ -868,7 +874,7 @@ The constructor function.
 
 `any`[] = `[]`
 
-Optional arguments to pass to the constructor.
+(constructor arguments) Optional arguments to pass to the constructor.
 
 #### Returns
 
@@ -886,7 +892,7 @@ The instance to use, or `null` to proceed with default construction.
 
 > `protected` **\_applyProcessorsBeforeDestruction**(`name`, `instance`): `void`
 
-Defined in: packages/blue-factory/src/factory.ts:645
+Defined in: [packages/blue-factory/src/factory.ts:660](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/factory.ts#lines-660)
 
 Applies destruction-aware processors before an instance is destroyed.
 
@@ -918,7 +924,7 @@ The instance to be destroyed.
 
 > `protected` **\_applyProcessorsBeforeInitialization**\<`T`\>(`name`, `instance`): `T`
 
-Defined in: packages/blue-factory/src/factory.ts:665
+Defined in: [packages/blue-factory/src/factory.ts:680](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/factory.ts#lines-680)
 
 Applies initialization-aware processors before an instance is initialized.
 
@@ -960,7 +966,7 @@ The processed instance.
 
 > `protected` **\_configure**\<`T`\>(`name`, `instance`): `T`
 
-Defined in: packages/blue-factory/src/factory.ts:693
+Defined in: [packages/blue-factory/src/factory.ts:708](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/factory.ts#lines-708)
 
 Configures an instance by populating properties, invoking aware callbacks, and initializing.
 
@@ -1006,7 +1012,7 @@ If configuration fails.
 
 > `protected` **\_create**\<`T`\>(`name`, `argumentsList?`): `T`
 
-Defined in: packages/blue-factory/src/factory.ts:715
+Defined in: [packages/blue-factory/src/factory.ts:730](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/factory.ts#lines-730)
 
 Creates a new instance from a registered constructor.
 
@@ -1030,7 +1036,7 @@ The name of the constructor.
 
 `any`[] = `[]`
 
-Optional arguments to pass to the constructor.
+(constructor arguments) Optional arguments to pass to the constructor.
 
 #### Returns
 
@@ -1052,7 +1058,7 @@ If instance creation fails.
 
 > `protected` **\_initialize**\<`T`\>(`name`, `instance`): `T`
 
-Defined in: packages/blue-factory/src/factory.ts:739
+Defined in: [packages/blue-factory/src/factory.ts:754](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/factory.ts#lines-754)
 
 Initializes an instance by applying initialization processors and invoking the `init` method if available.
 
@@ -1094,7 +1100,7 @@ The initialized instance.
 
 > `protected` **\_populate**\<`T`\>(`name`, `instance`, `properties?`): `void`
 
-Defined in: packages/blue-factory/src/factory.ts:762
+Defined in: [packages/blue-factory/src/factory.ts:777](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/factory.ts#lines-777)
 
 Populates properties of an instance, applying construction-aware processors.
 

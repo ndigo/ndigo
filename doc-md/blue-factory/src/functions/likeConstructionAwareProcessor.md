@@ -8,7 +8,7 @@
 
 > **likeConstructionAwareProcessor**(`value`): `value is ConstructionAwareProcessor`
 
-Defined in: packages/blue-factory/src/entry-processor.ts:131
+Defined in: [packages/blue-factory/src/entry-processor.ts:131](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/entry-processor.ts#lines-131)
 
 Determines whether or not the `value` provided is a [ConstructionAwareProcessor](../interfaces/ConstructionAwareProcessor.md).
 
@@ -16,7 +16,7 @@ Determines whether or not the `value` provided is a [ConstructionAwareProcessor]
 
 ### value
 
-`any`
+`unknown`
 
 The value to be tested.
 

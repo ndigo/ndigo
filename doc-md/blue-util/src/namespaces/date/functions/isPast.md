@@ -8,7 +8,7 @@
 
 > **isPast**(`date`): `boolean`
 
-Defined in: packages/blue-util/src/date/index.ts:20
+Defined in: [packages/blue-util/src/date/index.ts:20](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-util/src/date/index.ts#lines-20)
 
 Returns whether the given date is in the past.
 

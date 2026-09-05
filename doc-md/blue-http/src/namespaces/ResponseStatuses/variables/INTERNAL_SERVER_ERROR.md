@@ -8,6 +8,6 @@
 
 > `const` **INTERNAL\_SERVER\_ERROR**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
-Defined in: packages/blue-http/src/response-statuses.ts:298
+Defined in: [packages/blue-http/src/response-statuses.ts:298](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/response-statuses.ts#lines-298)
 
 The server has encountered a situation it doesn't know how to handle.

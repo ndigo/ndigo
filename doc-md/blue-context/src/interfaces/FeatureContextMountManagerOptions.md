@@ -6,7 +6,7 @@
 
 # Interface: FeatureContextMountManagerOptions
 
-Defined in: packages/blue-context/src/feature-context-mount-manager.ts:74
+Defined in: [packages/blue-context/src/feature-context-mount-manager.ts:74](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/feature-context-mount-manager.ts#lines-74)
 
 Options for the feature context mount manager.
 
@@ -16,4 +16,4 @@ Options for the feature context mount manager.
 
 > `optional` **metricRecorder?**: [`FeatureMetricRecorder`](FeatureMetricRecorder.md)
 
-Defined in: packages/blue-context/src/feature-context-mount-manager.ts:75
+Defined in: [packages/blue-context/src/feature-context-mount-manager.ts:75](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/feature-context-mount-manager.ts#lines-75)

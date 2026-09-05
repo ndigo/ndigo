@@ -8,6 +8,6 @@
 
 > `const` **SWITCHING\_PROTOCOL**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
-Defined in: packages/blue-http/src/response-statuses.ts:23
+Defined in: [packages/blue-http/src/response-statuses.ts:23](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/response-statuses.ts#lines-23)
 
 This code is sent in response to an `Upgrade` request header from the client, and indicates the protocol the server is switching to.

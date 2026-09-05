@@ -8,7 +8,7 @@
 
 > **formatValidationError**(`error`, `contentLookup?`, `language?`): `string`[]
 
-Defined in: packages/blue-validate/src/format.ts:45
+Defined in: [packages/blue-validate/src/format.ts:45](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/format.ts#lines-45)
 
 Formats the violation names from a [ConstraintViolationError](../classes/ConstraintViolationError.md) into
 human-readable strings.

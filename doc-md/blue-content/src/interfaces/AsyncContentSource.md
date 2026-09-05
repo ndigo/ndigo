@@ -6,7 +6,7 @@
 
 # Interface: AsyncContentSource
 
-Defined in: packages/blue-content/src/async.ts:15
+Defined in: [packages/blue-content/src/async.ts:15](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-content/src/async.ts#lines-15)
 
 Extends ContentSource with asynchronous content loading.
 
@@ -20,7 +20,7 @@ Extends ContentSource with asynchronous content loading.
 
 > **getContentAsync**(`key`, `language`): `Promise`\<`string`\>
 
-Defined in: packages/blue-content/src/async.ts:19
+Defined in: [packages/blue-content/src/async.ts:19](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-content/src/async.ts#lines-19)
 
 Asynchronously resolves content for the requested key and language.
 
@@ -44,7 +44,7 @@ Asynchronously resolves content for the requested key and language.
 
 > **getContent**(`key`, `language`): `string`
 
-Defined in: packages/blue-content/src/content.ts:20
+Defined in: [packages/blue-content/src/content.ts:20](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-content/src/content.ts#lines-20)
 
 Gets translated content for the requested key and language.
 

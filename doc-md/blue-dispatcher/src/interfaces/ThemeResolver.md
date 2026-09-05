@@ -6,7 +6,7 @@
 
 # Interface: ThemeResolver
 
-Defined in: packages/blue-dispatcher/src/theme-resolver.ts:10
+Defined in: [packages/blue-dispatcher/src/theme-resolver.ts:10](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/theme-resolver.ts#lines-10)
 
 Resolves the active theme for a route.
 
@@ -16,7 +16,7 @@ Resolves the active theme for a route.
 
 > **resolveTheme**(`route`): `string`
 
-Defined in: packages/blue-dispatcher/src/theme-resolver.ts:17
+Defined in: [packages/blue-dispatcher/src/theme-resolver.ts:17](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/theme-resolver.ts#lines-17)
 
 Resolve the theme name for a route.
 
@@ -24,7 +24,7 @@ Resolve the theme name for a route.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The current route.
 

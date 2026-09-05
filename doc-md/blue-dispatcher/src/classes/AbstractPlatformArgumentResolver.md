@@ -6,7 +6,7 @@
 
 # Abstract Class: AbstractPlatformArgumentResolver
 
-Defined in: packages/blue-dispatcher/src/abstract-platform-resolver.ts:37
+Defined in: [packages/blue-dispatcher/src/abstract-platform-resolver.ts:37](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/abstract-platform-resolver.ts#lines-37)
 
 Shared base class for platform argument resolvers.
 
@@ -28,7 +28,7 @@ Subclasses only need to implement:
 
 > **new AbstractPlatformArgumentResolver**(`convertFn`): `AbstractPlatformArgumentResolver`
 
-Defined in: packages/blue-dispatcher/src/abstract-platform-resolver.ts:45
+Defined in: [packages/blue-dispatcher/src/abstract-platform-resolver.ts:45](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/abstract-platform-resolver.ts#lines-45)
 
 Creates a platform argument resolver.
 
@@ -54,7 +54,7 @@ Platform-specific `convertArgumentValue` function.
 
 > **resolveArgument**(`parameter`, `route`, `mapping`): `any`
 
-Defined in: packages/blue-dispatcher/src/abstract-platform-resolver.ts:55
+Defined in: [packages/blue-dispatcher/src/abstract-platform-resolver.ts:55](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/abstract-platform-resolver.ts#lines-55)
 
 Resolves and converts a method argument value.
 
@@ -68,7 +68,7 @@ Pipeline: resolveName → defaultValue fallback → convertType lookup → conve
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 ##### mapping
 
@@ -88,7 +88,7 @@ Pipeline: resolveName → defaultValue fallback → convertType lookup → conve
 
 > **handleMissingValue**(`name`): `void`
 
-Defined in: packages/blue-dispatcher/src/argument-resolver.ts:67
+Defined in: [packages/blue-dispatcher/src/argument-resolver.ts:54](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/argument-resolver.ts#lines-54)
 
 Handles a missing argument value by throwing a TypeError.
 
@@ -118,7 +118,7 @@ If the argument is undefined or null.
 
 > `abstract` `protected` **resolveName**(`name`, `parameter`, `route`, `mapping`): `any`
 
-Defined in: packages/blue-dispatcher/src/argument-resolver.ts:87
+Defined in: [packages/blue-dispatcher/src/argument-resolver.ts:76](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/argument-resolver.ts#lines-76)
 
 #### Parameters
 
@@ -132,7 +132,7 @@ Defined in: packages/blue-dispatcher/src/argument-resolver.ts:87
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 ##### mapping
 
@@ -152,7 +152,7 @@ Defined in: packages/blue-dispatcher/src/argument-resolver.ts:87
 
 > `abstract` **supportsParameter**(`parameter`): `boolean`
 
-Defined in: packages/blue-dispatcher/src/argument-resolver.ts:94
+Defined in: [packages/blue-dispatcher/src/argument-resolver.ts:83](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/argument-resolver.ts#lines-83)
 
 Whether the given method parameter is supported by this resolver.
 

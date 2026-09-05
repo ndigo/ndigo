@@ -8,9 +8,9 @@
 
 > **hasCounted**(`target`, `propertyKey`): `boolean`
 
-Defined in: packages/blue-telemetry/src/metrics/decorators.ts:28
+Defined in: [packages/blue-telemetry/src/metrics/decorators.ts:30](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/metrics/decorators.ts#lines-30)
 
-Checks if a method has been decorated with `@counted`.
+Checks if a method has been decorated with `counted`.
 
 ## Parameters
 

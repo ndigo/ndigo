@@ -251,7 +251,7 @@ export abstract class AbstractHandlerMethodMapping<T extends RouteMappingInfo>
     /**
      * Build a {@link RouteMappingInfo} for the given handler method.
      *
-     * Reads `@routeMapping` metadata from both the method and the containing class,
+     * Reads `routeMapping` metadata from both the method and the containing class,
      * constructs {@link QueryParamCondition} and {@link MatrixParamCondition} from the
      * `params` and `matrixParams` fields respectively, and merges class-level and
      * method-level mappings when both are present.

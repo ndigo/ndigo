@@ -8,7 +8,7 @@
 
 > **CurrencyFormats** = `object`
 
-Defined in: packages/blue-validate/src/formats.ts:26
+Defined in: [packages/blue-validate/src/formats.ts:26](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/formats.ts#lines-26)
 
 A collection of `CurrencyFormat` objects, keyed by currency name (e.g., 'USD').
 

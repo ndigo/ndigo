@@ -8,7 +8,7 @@
 
 > **getConfigurationPropertiesPrefix**(`target`): `string` \| `undefined`
 
-Defined in: packages/blue-boot/src/configuration-properties.ts:76
+Defined in: [packages/blue-boot/src/configuration-properties.ts:76](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-boot/src/configuration-properties.ts#lines-76)
 
 Reads the optional prefix from a `@ConfigurationProperties` class.
 

@@ -8,7 +8,7 @@
 
 > **isFunction**(`value`): `value is Function`
 
-Defined in: packages/blue-util/src/type/is-function.ts:21
+Defined in: [packages/blue-util/src/type/is-function.ts:21](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-util/src/type/is-function.ts#lines-21)
 
 Determines whether a given object is a function.
 

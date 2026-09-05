@@ -6,7 +6,7 @@
 
 # Class: InMemoryRepository\<T, ID\>
 
-Defined in: packages/blue-orm/src/repository.ts:186
+Defined in: [packages/blue-orm/src/repository.ts:186](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/repository.ts#lines-186)
 
 An in-memory implementation of a repository, extending `AbstractRepository`.
 It uses an `InMemoryEntityManager` for data operations, and supports derived
@@ -36,7 +36,7 @@ The type of the entity's primary identifier.
 
 > **new InMemoryRepository**\<`T`, `ID`\>(`entityClass`, `entityManager`): `InMemoryRepository`\<`T`, `ID`\>
 
-Defined in: packages/blue-orm/src/repository.ts:192
+Defined in: [packages/blue-orm/src/repository.ts:192](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/repository.ts#lines-192)
 
 Creates an instance of `InMemoryRepository`.
 
@@ -68,7 +68,7 @@ The `EntityManager` to use for data operations.
 
 > `protected` **getEntityClass**(): `Constructable`\<`T`\>
 
-Defined in: packages/blue-orm/src/repository.ts:73
+Defined in: [packages/blue-orm/src/repository.ts:73](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/repository.ts#lines-73)
 
 The entity class this repository manages.
 
@@ -86,7 +86,7 @@ The entity class this repository manages.
 
 > **save**(`entity`): `T`
 
-Defined in: packages/blue-orm/src/repository.ts:82
+Defined in: [packages/blue-orm/src/repository.ts:82](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/repository.ts#lines-82)
 
 Saves a given entity by persisting it through the `EntityManager`.
 
@@ -114,7 +114,7 @@ The saved entity.
 
 > **findById**(`id`): `T` \| `undefined`
 
-Defined in: packages/blue-orm/src/repository.ts:92
+Defined in: [packages/blue-orm/src/repository.ts:92](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/repository.ts#lines-92)
 
 Retrieves an entity by its ID using the `EntityManager`.
 
@@ -142,7 +142,7 @@ The entity with the given ID or `undefined` if not found.
 
 > **findAll**(): `T`[]
 
-Defined in: packages/blue-orm/src/repository.ts:100
+Defined in: [packages/blue-orm/src/repository.ts:100](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/repository.ts#lines-100)
 
 Retrieves all entities of the managed type using the `EntityManager`.
 
@@ -162,7 +162,7 @@ An array containing all entities.
 
 > **deleteById**(`id`): `boolean`
 
-Defined in: packages/blue-orm/src/repository.ts:109
+Defined in: [packages/blue-orm/src/repository.ts:109](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/repository.ts#lines-109)
 
 Deletes an entity by its ID. It first finds the entity and then removes it via the `EntityManager`.
 
@@ -190,7 +190,7 @@ The ID of the entity to delete.
 
 > **count**(): `number`
 
-Defined in: packages/blue-orm/src/repository.ts:124
+Defined in: [packages/blue-orm/src/repository.ts:124](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/repository.ts#lines-124)
 
 Returns the number of entities available by fetching all and counting them.
 
@@ -210,7 +210,7 @@ The total number of entities.
 
 > **existsById**(`id`): `boolean`
 
-Defined in: packages/blue-orm/src/repository.ts:133
+Defined in: [packages/blue-orm/src/repository.ts:133](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/repository.ts#lines-133)
 
 Checks if an entity with the given ID exists by attempting to find it.
 
@@ -238,7 +238,7 @@ The ID of the entity to check.
 
 > **derive**(`methodName`, `args`): `T`[]
 
-Defined in: packages/blue-orm/src/repository.ts:163
+Defined in: [packages/blue-orm/src/repository.ts:163](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/repository.ts#lines-163)
 
 Evaluates a derived-query method name against `this.findAll()`.
 

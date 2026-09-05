@@ -8,7 +8,7 @@
 
 > **getTraced**(`target`, `propertyKey`): `string` \| `undefined`
 
-Defined in: packages/blue-telemetry/src/trace/decorators.ts:23
+Defined in: [packages/blue-telemetry/src/trace/decorators.ts:23](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/trace/decorators.ts#lines-23)
 
 Retrieves the span name associated with a traced method.
 

@@ -6,14 +6,12 @@
 
 # Class: StatusInterceptor
 
-Defined in: packages/blue-http/src/interceptors/status-interceptor.ts:31
+Defined in: [packages/blue-http/src/interceptors/status-interceptor.ts:31](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/status-interceptor.ts#lines-31)
 
 HTTP interceptor that normalizes HTTP status codes into consistent application-level status representations.
 
 This interceptor adds a normalized status string to the response, which can be used by the
 application to handle responses without relying on numeric HTTP codes.
-
-## Implements
 
 ## Implements
 
@@ -25,7 +23,7 @@ application to handle responses without relying on numeric HTTP codes.
 
 > **new StatusInterceptor**(`config?`): `StatusInterceptor`
 
-Defined in: packages/blue-http/src/interceptors/status-interceptor.ts:39
+Defined in: [packages/blue-http/src/interceptors/status-interceptor.ts:39](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/status-interceptor.ts#lines-39)
 
 Creates a new status interceptor.
 
@@ -47,7 +45,7 @@ Status interceptor configuration.
 
 > **postResponse**(`response`, `settings`): `Promise`\<`void` \| `Response`\>
 
-Defined in: packages/blue-http/src/interceptors/status-interceptor.ts:50
+Defined in: [packages/blue-http/src/interceptors/status-interceptor.ts:50](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/status-interceptor.ts#lines-50)
 
 Normalizes the HTTP status code of the response.
 

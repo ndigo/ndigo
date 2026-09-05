@@ -6,7 +6,7 @@
 
 # Class: InMemoryEntityManager
 
-Defined in: packages/blue-orm/src/entity-manager.ts:49
+Defined in: [packages/blue-orm/src/entity-manager.ts:49](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/entity-manager.ts#lines-49)
 
 An in-memory implementation of the `EntityManager` interface.
 It uses an `InMemoryDataSource` to store and manage entities.
@@ -21,7 +21,7 @@ It uses an `InMemoryDataSource` to store and manage entities.
 
 > **new InMemoryEntityManager**(`dataSource`): `InMemoryEntityManager`
 
-Defined in: packages/blue-orm/src/entity-manager.ts:57
+Defined in: [packages/blue-orm/src/entity-manager.ts:57](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/entity-manager.ts#lines-57)
 
 Creates an instance of `InMemoryEntityManager`.
 
@@ -43,7 +43,7 @@ The data source to use for entity storage.
 
 > **persist**\<`T`\>(`entity`): `void`
 
-Defined in: packages/blue-orm/src/entity-manager.ts:73
+Defined in: [packages/blue-orm/src/entity-manager.ts:73](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/entity-manager.ts#lines-73)
 
 Persists a new entity or updates an existing one in the in-memory store.
 Automatically assigns generated primary IDs if applicable.
@@ -87,7 +87,7 @@ If the entity has a `validate()` method and validation fails.
 
 > **find**\<`T`\>(`entityClass`, `id`): `T` \| `undefined`
 
-Defined in: packages/blue-orm/src/entity-manager.ts:115
+Defined in: [packages/blue-orm/src/entity-manager.ts:115](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/entity-manager.ts#lines-115)
 
 Finds an entity by its class and primary ID in the in-memory store.
 
@@ -127,7 +127,7 @@ The found entity or `undefined` if not found.
 
 > **findAll**\<`T`\>(`entityClass`): `T`[]
 
-Defined in: packages/blue-orm/src/entity-manager.ts:134
+Defined in: [packages/blue-orm/src/entity-manager.ts:134](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/entity-manager.ts#lines-134)
 
 Finds all entities of a given class in the in-memory store.
 
@@ -161,7 +161,7 @@ An array of all found entities.
 
 > **remove**\<`T`\>(`entity`): `void`
 
-Defined in: packages/blue-orm/src/entity-manager.ts:152
+Defined in: [packages/blue-orm/src/entity-manager.ts:152](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/entity-manager.ts#lines-152)
 
 Removes an entity from the in-memory store.
 
@@ -193,7 +193,7 @@ The entity to remove.
 
 > **flush**(): `void`
 
-Defined in: packages/blue-orm/src/entity-manager.ts:171
+Defined in: [packages/blue-orm/src/entity-manager.ts:171](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/entity-manager.ts#lines-171)
 
 Flushes any pending changes to the data source. No operation for `InMemoryEntityManager`.
 
@@ -211,7 +211,7 @@ Flushes any pending changes to the data source. No operation for `InMemoryEntity
 
 > **clear**(): `void`
 
-Defined in: packages/blue-orm/src/entity-manager.ts:176
+Defined in: [packages/blue-orm/src/entity-manager.ts:176](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/entity-manager.ts#lines-176)
 
 Clears all managed entities and resets identity counters in the in-memory store.
 

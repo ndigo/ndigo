@@ -6,7 +6,7 @@
 
 # Abstract Class: AbstractWebComponent
 
-Defined in: packages/blue-view-webcomponent/src/abstract-web-component.ts:16
+Defined in: [packages/blue-view-webcomponent/src/abstract-web-component.ts:16](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view-webcomponent/src/abstract-web-component.ts#lines-16)
 
 Base class for BlueJS custom elements.
 
@@ -28,7 +28,7 @@ batched rendering, and lifecycle hooks.
 
 > **new AbstractWebComponent**(): `AbstractWebComponent`
 
-Defined in: packages/blue-view-webcomponent/src/abstract-web-component.ts:24
+Defined in: [packages/blue-view-webcomponent/src/abstract-web-component.ts:27](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view-webcomponent/src/abstract-web-component.ts#lines-27)
 
 #### Returns
 
@@ -44,7 +44,7 @@ Defined in: packages/blue-view-webcomponent/src/abstract-web-component.ts:24
 
 > `readonly` **\[$aware\]**: `true` = `true`
 
-Defined in: packages/blue-view-webcomponent/src/abstract-web-component.ts:17
+Defined in: [packages/blue-view-webcomponent/src/abstract-web-component.ts:20](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view-webcomponent/src/abstract-web-component.ts#lines-20)
 
 #### Implementation of
 
@@ -56,7 +56,7 @@ Defined in: packages/blue-view-webcomponent/src/abstract-web-component.ts:17
 
 > **name**: `string`
 
-Defined in: packages/blue-view-webcomponent/src/blue-element.ts:8
+Defined in: [packages/blue-view-webcomponent/src/blue-element.ts:8](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view-webcomponent/src/blue-element.ts#lines-8)
 
 #### Inherited from
 
@@ -70,7 +70,7 @@ Defined in: packages/blue-view-webcomponent/src/blue-element.ts:8
 
 > **get** **applicationContext**(): `ApplicationContext`
 
-Defined in: packages/blue-view-webcomponent/src/abstract-web-component.ts:42
+Defined in: [packages/blue-view-webcomponent/src/abstract-web-component.ts:45](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view-webcomponent/src/abstract-web-component.ts#lines-45)
 
 Retrieves the ApplicationContext associated with this component.
 
@@ -84,7 +84,7 @@ Retrieves the ApplicationContext associated with this component.
 
 > **setApplicationContext**(`applicationContext`): `void`
 
-Defined in: packages/blue-view-webcomponent/src/abstract-web-component.ts:35
+Defined in: [packages/blue-view-webcomponent/src/abstract-web-component.ts:38](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view-webcomponent/src/abstract-web-component.ts#lines-38)
 
 Set the ApplicationContext that this object runs in.
 
@@ -110,7 +110,7 @@ The ApplicationContext to be used by this object.
 
 > **bindEvents**(`mapping`): `void`
 
-Defined in: packages/blue-view-webcomponent/src/abstract-web-component.ts:65
+Defined in: [packages/blue-view-webcomponent/src/abstract-web-component.ts:68](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view-webcomponent/src/abstract-web-component.ts#lines-68)
 
 Binds DOM events to class methods using event delegation.
 
@@ -135,7 +135,7 @@ Example: { '.btn': 'handleBtn', 'change .input': 'handleInput' }
 
 > **emit**(`type`, ...`data`): `boolean`
 
-Defined in: packages/blue-view-webcomponent/src/abstract-web-component.ts:102
+Defined in: [packages/blue-view-webcomponent/src/abstract-web-component.ts:105](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view-webcomponent/src/abstract-web-component.ts#lines-105)
 
 Emits an event to the listeners registered for the given type.
 
@@ -171,7 +171,7 @@ Event payload values.
 
 > **on**(`type`, `listener?`): `this`
 
-Defined in: packages/blue-view-webcomponent/src/abstract-web-component.ts:121
+Defined in: [packages/blue-view-webcomponent/src/abstract-web-component.ts:124](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view-webcomponent/src/abstract-web-component.ts#lines-124)
 
 Adds a listener for an event type.
 
@@ -208,7 +208,7 @@ This component.
 
 > **off**(`type`, `listener`): `this`
 
-Defined in: packages/blue-view-webcomponent/src/abstract-web-component.ts:188
+Defined in: [packages/blue-view-webcomponent/src/abstract-web-component.ts:191](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view-webcomponent/src/abstract-web-component.ts#lines-191)
 
 Removes a listener for an event type.
 
@@ -242,7 +242,7 @@ This component.
 
 > **eventTypes**(): `EventType`[]
 
-Defined in: packages/blue-view-webcomponent/src/abstract-web-component.ts:220
+Defined in: [packages/blue-view-webcomponent/src/abstract-web-component.ts:223](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view-webcomponent/src/abstract-web-component.ts#lines-223)
 
 Returns the event types with registered listeners.
 
@@ -260,7 +260,7 @@ Returns the event types with registered listeners.
 
 > **listenerCount**(`type`): `number`
 
-Defined in: packages/blue-view-webcomponent/src/abstract-web-component.ts:227
+Defined in: [packages/blue-view-webcomponent/src/abstract-web-component.ts:230](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view-webcomponent/src/abstract-web-component.ts#lines-230)
 
 Returns the number of listeners for a type.
 
@@ -284,7 +284,7 @@ Returns the number of listeners for a type.
 
 > **listeners**(`type`): `Function`[]
 
-Defined in: packages/blue-view-webcomponent/src/abstract-web-component.ts:235
+Defined in: [packages/blue-view-webcomponent/src/abstract-web-component.ts:238](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view-webcomponent/src/abstract-web-component.ts#lines-238)
 
 Returns a snapshot of listeners for a type.
 
@@ -308,7 +308,7 @@ Returns a snapshot of listeners for a type.
 
 > **select**(`selector`): `Element` \| `null`
 
-Defined in: packages/blue-view-webcomponent/src/abstract-web-component.ts:246
+Defined in: [packages/blue-view-webcomponent/src/abstract-web-component.ts:249](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view-webcomponent/src/abstract-web-component.ts#lines-249)
 
 Shorthand for querySelector.
 
@@ -332,7 +332,7 @@ The first matching element, or null if none found.
 
 > **create**(`tag`, `props?`): `HTMLElement`
 
-Defined in: packages/blue-view-webcomponent/src/abstract-web-component.ts:257
+Defined in: [packages/blue-view-webcomponent/src/abstract-web-component.ts:260](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view-webcomponent/src/abstract-web-component.ts#lines-260)
 
 Creates a DOM element with the specified properties.
 
@@ -362,7 +362,7 @@ The created HTMLElement.
 
 > **requestUpdate**(): `void`
 
-Defined in: packages/blue-view-webcomponent/src/abstract-web-component.ts:278
+Defined in: [packages/blue-view-webcomponent/src/abstract-web-component.ts:281](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view-webcomponent/src/abstract-web-component.ts#lines-281)
 
 Schedules a render pass on the next animation frame.
 
@@ -376,7 +376,7 @@ Schedules a render pass on the next animation frame.
 
 > **connectedCallback**(): `void`
 
-Defined in: packages/blue-view-webcomponent/src/abstract-web-component.ts:289
+Defined in: [packages/blue-view-webcomponent/src/abstract-web-component.ts:292](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view-webcomponent/src/abstract-web-component.ts#lines-292)
 
 #### Returns
 
@@ -388,7 +388,7 @@ Defined in: packages/blue-view-webcomponent/src/abstract-web-component.ts:289
 
 > **disconnectedCallback**(): `void`
 
-Defined in: packages/blue-view-webcomponent/src/abstract-web-component.ts:294
+Defined in: [packages/blue-view-webcomponent/src/abstract-web-component.ts:297](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view-webcomponent/src/abstract-web-component.ts#lines-297)
 
 #### Returns
 
@@ -400,7 +400,7 @@ Defined in: packages/blue-view-webcomponent/src/abstract-web-component.ts:294
 
 > `protected` **handleConnect**(): `void`
 
-Defined in: packages/blue-view-webcomponent/src/abstract-web-component.ts:303
+Defined in: [packages/blue-view-webcomponent/src/abstract-web-component.ts:306](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view-webcomponent/src/abstract-web-component.ts#lines-306)
 
 Lifecycle hook called when the component is added to the DOM.
 
@@ -414,7 +414,7 @@ Lifecycle hook called when the component is added to the DOM.
 
 > `protected` **handleDisconnect**(): `void`
 
-Defined in: packages/blue-view-webcomponent/src/abstract-web-component.ts:310
+Defined in: [packages/blue-view-webcomponent/src/abstract-web-component.ts:313](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view-webcomponent/src/abstract-web-component.ts#lines-313)
 
 Lifecycle hook called when the component is removed from the DOM.
 
@@ -428,7 +428,7 @@ Lifecycle hook called when the component is removed from the DOM.
 
 > `abstract` **render**(): `void`
 
-Defined in: packages/blue-view-webcomponent/src/abstract-web-component.ts:319
+Defined in: [packages/blue-view-webcomponent/src/abstract-web-component.ts:322](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view-webcomponent/src/abstract-web-component.ts#lines-322)
 
 Renders the component's UI.
 

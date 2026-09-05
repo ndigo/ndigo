@@ -6,7 +6,7 @@
 
 # Class: ServiceExecutionChain
 
-Defined in: packages/blue-service/src/service.ts:261
+Defined in: [packages/blue-service/src/service.ts:261](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-service/src/service.ts#lines-261)
 
 Builds and advances the interceptor chain for a service call.
 
@@ -16,7 +16,7 @@ Builds and advances the interceptor chain for a service call.
 
 > **new ServiceExecutionChain**(`service`, `interceptors?`): `ServiceExecutionChain`
 
-Defined in: packages/blue-service/src/service.ts:281
+Defined in: [packages/blue-service/src/service.ts:281](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-service/src/service.ts#lines-281)
 
 Creates a chain from a service or an existing chain.
 
@@ -44,7 +44,7 @@ Additional interceptors to append.
 
 > **service**: `Service`
 
-Defined in: packages/blue-service/src/service.ts:264
+Defined in: [packages/blue-service/src/service.ts:264](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-service/src/service.ts#lines-264)
 
 ***
 
@@ -52,7 +52,7 @@ Defined in: packages/blue-service/src/service.ts:264
 
 > **interceptorIndex**: `number`
 
-Defined in: packages/blue-service/src/service.ts:265
+Defined in: [packages/blue-service/src/service.ts:265](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-service/src/service.ts#lines-265)
 
 ## Accessors
 
@@ -62,7 +62,7 @@ Defined in: packages/blue-service/src/service.ts:265
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-service/src/service.ts:267
+Defined in: [packages/blue-service/src/service.ts:267](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-service/src/service.ts#lines-267)
 
 ##### Returns
 
@@ -76,7 +76,7 @@ Defined in: packages/blue-service/src/service.ts:267
 
 > **get** **interceptors**(): [`ServiceInterceptor`](../type-aliases/ServiceInterceptor.md)[]
 
-Defined in: packages/blue-service/src/service.ts:271
+Defined in: [packages/blue-service/src/service.ts:271](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-service/src/service.ts#lines-271)
 
 ##### Returns
 
@@ -88,7 +88,7 @@ Defined in: packages/blue-service/src/service.ts:271
 
 > **addInterceptor**(`interceptor`): `void`
 
-Defined in: packages/blue-service/src/service.ts:303
+Defined in: [packages/blue-service/src/service.ts:309](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-service/src/service.ts#lines-309)
 
 Adds a single interceptor to the chain.
 
@@ -114,7 +114,7 @@ When the value does not look like a service interceptor.
 
 > **addInterceptors**(`interceptors`): `void`
 
-Defined in: packages/blue-service/src/service.ts:323
+Defined in: [packages/blue-service/src/service.ts:329](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-service/src/service.ts#lines-329)
 
 Adds multiple interceptors to the chain in order.
 

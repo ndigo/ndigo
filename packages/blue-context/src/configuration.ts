@@ -70,7 +70,7 @@ const { defineProperty, getOwnPropertyDescriptor } = Reflect,
     };
 
 /**
- * Indicates that a class declares one or more {@link @entry|@entry} methods and may be processed to provide the method results at runtime. For example:
+ * Indicates that a class declares one or more `entry` methods and may be processed to provide the method results at runtime. For example:
  * ```javascript
  * &#064;Configuration
  * class FooBarConfig {
@@ -84,7 +84,7 @@ const { defineProperty, getOwnPropertyDescriptor } = Reflect,
  *  }
  * }
  * ```
- * {@link @configuration|@configuration} classes are bootstrapped using the {@link MetadataConfigApplicationContext|MetadataConfigApplicationContext}.
+ * `configuration` classes are bootstrapped using the {@link MetadataConfigApplicationContext|MetadataConfigApplicationContext}.
  * ```javascript
  * const context = new MetadataConfigApplicationContext( 'foobar' );
  * context.register( FooBarConfig );
@@ -178,7 +178,7 @@ export function propertySource(source: JSONObject | Enumerable<string, JSONValue
 /**
  * Marks a method as a configuration entry factory.
  *
- * Can be used as `@entry()`, `@entry('customName')`, or legacy `@entry`.
+ * Can be used as `@entry()`, `@entry('customName')`, or legacy the `entry` decorator.
  *
  * @param nameOrTarget - Entry name or the decorated method target.
  * @param maybeContext - Decorator context for legacy usage.
@@ -232,7 +232,7 @@ export function entry(nameOrTarget?: string | any, maybeContext?: ClassMethodDec
 }
 
 /**
- * Parses a {@link @configuration|@configuration} class definition.
+ * Parses a `configuration` class definition.
  * @see {@link MetadataConfigApplicationContext}
  */
 class ConfigurationParser {
@@ -275,7 +275,7 @@ class ConfigurationParser {
     }
 
     /**
-     * Process the given `@configuration` decorator metadata.
+     * Process the given the `configuration` decorator decorator metadata.
      */
     processConfiguration(config: any) {
         for (const key in config) {
@@ -317,7 +317,7 @@ class ConfigurationParser {
     }
 
     /**
-     * Process the given `@entry` decorator metadata.
+     * Process the given the `entry` decorator decorator metadata.
      */
     processEntry(name: string, value: () => any) {
         this.registry.setValue(name, value());
@@ -342,8 +342,8 @@ class ConfigurationParser {
 }
 
 /**
- * A {@link EntryRegistryProcessor|EntryRegistryProcessor} used for processing of {@link @configuration|@configuration} classes.
- * This processor should be prioritized as it is important that any {@link @entry|@entry} methods declared in the `@configuration` classes have their values registered before any other {@link EntryProcessor|EntryProcessor} executes.
+ * A {@link EntryRegistryProcessor|EntryRegistryProcessor} used for processing of `configuration` classes.
+ * This processor should be prioritized as it is important that any `entry` methods declared in the the `configuration` decorator classes have their values registered before any other `EntryProcessor` executes.
  */
 export class ConfigurationProcessor
     extends AsResourceLoaderAware(AsEnvironmentAware(Null))

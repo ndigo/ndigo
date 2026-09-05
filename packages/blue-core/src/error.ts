@@ -40,7 +40,7 @@ export const AsSerializableError = <T extends Constructable<Error>>(superclass: 
 /**
  * Represents a general application-level error.
  * @extends Error
- * @implements Serializable
+
  */
 export class ApplicationError extends AsSerializableError(Error) {
     /**
@@ -65,7 +65,7 @@ export class ApplicationError extends AsSerializableError(Error) {
 /**
  * Represents an error within the framework itself.
  * @extends Error
- * @implements Serializable
+
  */
 export class FrameworkError extends AsSerializableError(Error) {
     /**

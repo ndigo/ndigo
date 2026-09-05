@@ -6,7 +6,7 @@
 
 # Class: DefaultLifecycleProcessor
 
-Defined in: packages/blue-factory/src/lifecycle.ts:100
+Defined in: [packages/blue-factory/src/lifecycle.ts:100](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/lifecycle.ts#lines-100)
 
 ## Implements
 
@@ -18,7 +18,7 @@ Defined in: packages/blue-factory/src/lifecycle.ts:100
 
 > **new DefaultLifecycleProcessor**(): `DefaultLifecycleProcessor`
 
-Defined in: packages/blue-factory/src/lifecycle.ts:103
+Defined in: [packages/blue-factory/src/lifecycle.ts:103](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/lifecycle.ts#lines-103)
 
 #### Returns
 
@@ -30,7 +30,7 @@ Defined in: packages/blue-factory/src/lifecycle.ts:103
 
 > **isRunning**: `boolean`
 
-Defined in: packages/blue-factory/src/lifecycle.ts:101
+Defined in: [packages/blue-factory/src/lifecycle.ts:101](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/lifecycle.ts#lines-101)
 
 #### Implementation of
 
@@ -42,7 +42,7 @@ Defined in: packages/blue-factory/src/lifecycle.ts:101
 
 > **onClose**(`registry`): `void`
 
-Defined in: packages/blue-factory/src/lifecycle.ts:107
+Defined in: [packages/blue-factory/src/lifecycle.ts:107](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/lifecycle.ts#lines-107)
 
 #### Parameters
 
@@ -64,7 +64,7 @@ Defined in: packages/blue-factory/src/lifecycle.ts:107
 
 > **onRefresh**(`registry`): `void`
 
-Defined in: packages/blue-factory/src/lifecycle.ts:121
+Defined in: [packages/blue-factory/src/lifecycle.ts:121](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/lifecycle.ts#lines-121)
 
 #### Parameters
 
@@ -86,7 +86,7 @@ Defined in: packages/blue-factory/src/lifecycle.ts:121
 
 > **start**(): `void`
 
-Defined in: packages/blue-factory/src/lifecycle.ts:136
+Defined in: [packages/blue-factory/src/lifecycle.ts:136](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/lifecycle.ts#lines-136)
 
 #### Returns
 
@@ -102,7 +102,7 @@ Defined in: packages/blue-factory/src/lifecycle.ts:136
 
 > **stop**(): `void`
 
-Defined in: packages/blue-factory/src/lifecycle.ts:140
+Defined in: [packages/blue-factory/src/lifecycle.ts:140](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/lifecycle.ts#lines-140)
 
 #### Returns
 

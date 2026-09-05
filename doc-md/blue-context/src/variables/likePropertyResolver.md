@@ -8,7 +8,7 @@
 
 > `const` **likePropertyResolver**: (`value`) => `value is PropertyResolver`
 
-Defined in: packages/blue-context/src/property-resolver.ts:96
+Defined in: [packages/blue-context/src/property-resolver.ts:96](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/property-resolver.ts#lines-96)
 
 ## Parameters
 

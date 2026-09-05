@@ -125,5 +125,5 @@
     "typedoc-plugin-markdown",
     "./scripts/typedoc-tags-plugin.mjs"
   ],
-  "gitRemote": "bluejs/blue"
+  "sourceLinkTemplate": "https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/{gitRevision}/{path}#lines-{line}"
 }

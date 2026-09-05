@@ -8,7 +8,7 @@
 
 > **entry**(`nameOrTarget?`, `maybeContext?`): `any`
 
-Defined in: packages/blue-context/src/configuration.ts:219
+Defined in: [packages/blue-context/src/configuration.ts:219](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/configuration.ts#lines-219)
 
 Marks a method as a configuration entry factory.
 

@@ -8,7 +8,7 @@
 
 > **LifecycleEvent** = `"prePersist"` \| `"postLoad"` \| `"preUpdate"` \| `"postRemove"`
 
-Defined in: packages/blue-orm/src/metadata.ts:24
+Defined in: [packages/blue-orm/src/metadata.ts:24](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/metadata.ts#lines-24)
 
 ## Author
 

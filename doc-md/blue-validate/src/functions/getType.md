@@ -8,7 +8,7 @@
 
 > **getType**(`name`): [`TypeDefinition`](../type-aliases/TypeDefinition.md)
 
-Defined in: packages/blue-validate/src/types.ts:56
+Defined in: [packages/blue-validate/src/types.ts:56](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/types.ts#lines-56)
 
 Gets a registered type by name.
 

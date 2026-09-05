@@ -6,7 +6,7 @@
 
 # Class: HTTPResponseViewTarget
 
-Defined in: packages/blue-platform-node/src/node-view-target.ts:17
+Defined in: [packages/blue-platform-node/src/node-view-target.ts:17](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/node-view-target.ts#lines-17)
 
 A `ViewTarget` implementation that writes rendered view output to an HTTP
 `ServerResponse`. Supports content negotiation via the `Accept` header.
@@ -21,7 +21,7 @@ A `ViewTarget` implementation that writes rendered view output to an HTTP
 
 > **new HTTPResponseViewTarget**(`response`): `HTTPResponseViewTarget`
 
-Defined in: packages/blue-platform-node/src/node-view-target.ts:23
+Defined in: [packages/blue-platform-node/src/node-view-target.ts:23](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/node-view-target.ts#lines-23)
 
 #### Parameters
 
@@ -41,13 +41,13 @@ The Node.js `ServerResponse` to write to.
 
 > **prepare**(`route`): `Promise`\<`void`\>
 
-Defined in: packages/blue-platform-node/src/node-view-target.ts:28
+Defined in: [packages/blue-platform-node/src/node-view-target.ts:28](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/node-view-target.ts#lines-28)
 
 #### Parameters
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 #### Returns
 
@@ -65,7 +65,7 @@ Defined in: packages/blue-platform-node/src/node-view-target.ts:28
 
 > **commit**(`output`, `model`, `route`): `Promise`\<`void`\>
 
-Defined in: packages/blue-platform-node/src/node-view-target.ts:33
+Defined in: [packages/blue-platform-node/src/node-view-target.ts:33](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/node-view-target.ts#lines-33)
 
 #### Parameters
 
@@ -79,7 +79,7 @@ Defined in: packages/blue-platform-node/src/node-view-target.ts:33
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 #### Returns
 
@@ -97,7 +97,7 @@ Defined in: packages/blue-platform-node/src/node-view-target.ts:33
 
 > **clear**(): `Promise`\<`void`\>
 
-Defined in: packages/blue-platform-node/src/node-view-target.ts:72
+Defined in: [packages/blue-platform-node/src/node-view-target.ts:69](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/node-view-target.ts#lines-69)
 
 #### Returns
 

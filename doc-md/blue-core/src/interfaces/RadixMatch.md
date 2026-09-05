@@ -6,7 +6,7 @@
 
 # Interface: RadixMatch\<V\>
 
-Defined in: packages/blue-core/src/radix-tree.ts:13
+Defined in: [packages/blue-core/src/radix-tree.ts:13](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/radix-tree.ts#lines-13)
 
 Result of a successful radix tree path lookup.
 
@@ -22,7 +22,7 @@ Result of a successful radix tree path lookup.
 
 > `readonly` **value**: `V`
 
-Defined in: packages/blue-core/src/radix-tree.ts:15
+Defined in: [packages/blue-core/src/radix-tree.ts:15](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/radix-tree.ts#lines-15)
 
 The value stored at the matched node.
 
@@ -32,7 +32,7 @@ The value stored at the matched node.
 
 > `readonly` **params**: `Record`\<`string`, `string`\> \| `null`
 
-Defined in: packages/blue-core/src/radix-tree.ts:17
+Defined in: [packages/blue-core/src/radix-tree.ts:17](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/radix-tree.ts#lines-17)
 
 Named parameters extracted from the path, or `null` when none were captured.
 
@@ -42,6 +42,6 @@ Named parameters extracted from the path, or `null` when none were captured.
 
 > `readonly` **pattern**: `string`
 
-Defined in: packages/blue-core/src/radix-tree.ts:19
+Defined in: [packages/blue-core/src/radix-tree.ts:19](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/radix-tree.ts#lines-19)
 
 The original pattern string that was matched.

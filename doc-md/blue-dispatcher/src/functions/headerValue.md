@@ -8,7 +8,7 @@
 
 > **headerValue**(`name`, `options?`): [`ParameterExtractor`](../type-aliases/ParameterExtractor.md)
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:377
+Defined in: [packages/blue-dispatcher/src/route-parameter.ts:354](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-parameter.ts#lines-354)
 
 Factory function: Create a request-header parameter extractor.
 
@@ -29,7 +29,7 @@ Factory function: Create a request-header parameter extractor.
 ## Example
 
 ```ts
-@routeParams({
+`routeParams`({
   contentType: headerValue('content-type'),
   authorization: headerValue('authorization', { required: true })
 })

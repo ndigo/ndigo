@@ -6,7 +6,7 @@
 
 # Interface: Resource\<T\>
 
-Defined in: packages/blue-context/src/resource.ts:13
+Defined in: [packages/blue-context/src/resource.ts:13](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/resource.ts#lines-13)
 
 Represents a resolved resource handle and its loaded value.
 
@@ -22,7 +22,7 @@ Represents a resolved resource handle and its loaded value.
 
 > `readonly` **exists**: `boolean`
 
-Defined in: packages/blue-context/src/resource.ts:14
+Defined in: [packages/blue-context/src/resource.ts:14](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/resource.ts#lines-14)
 
 ***
 
@@ -30,4 +30,4 @@ Defined in: packages/blue-context/src/resource.ts:14
 
 > `readonly` **value**: `T`
 
-Defined in: packages/blue-context/src/resource.ts:15
+Defined in: [packages/blue-context/src/resource.ts:15](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/resource.ts#lines-15)

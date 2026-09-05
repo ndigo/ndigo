@@ -6,7 +6,7 @@
 
 # Class: GlobPatternInfo
 
-Defined in: packages/blue-core/src/path-matcher.ts:286
+Defined in: [packages/blue-core/src/path-matcher.ts:286](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/path-matcher.ts#lines-286)
 
 ## Constructors
 
@@ -14,7 +14,7 @@ Defined in: packages/blue-core/src/path-matcher.ts:286
 
 > **new GlobPatternInfo**(`pattern?`): `GlobPatternInfo`
 
-Defined in: packages/blue-core/src/path-matcher.ts:310
+Defined in: [packages/blue-core/src/path-matcher.ts:310](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/path-matcher.ts#lines-310)
 
 #### Parameters
 
@@ -32,7 +32,7 @@ Defined in: packages/blue-core/src/path-matcher.ts:310
 
 > `readonly` **pattern**: `string`
 
-Defined in: packages/blue-core/src/path-matcher.ts:289
+Defined in: [packages/blue-core/src/path-matcher.ts:289](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/path-matcher.ts#lines-289)
 
 ***
 
@@ -40,7 +40,7 @@ Defined in: packages/blue-core/src/path-matcher.ts:289
 
 > **doubleWildcards**: `number`
 
-Defined in: packages/blue-core/src/path-matcher.ts:291
+Defined in: [packages/blue-core/src/path-matcher.ts:291](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/path-matcher.ts#lines-291)
 
 ***
 
@@ -48,7 +48,7 @@ Defined in: packages/blue-core/src/path-matcher.ts:291
 
 > **singleWildcards**: `number`
 
-Defined in: packages/blue-core/src/path-matcher.ts:292
+Defined in: [packages/blue-core/src/path-matcher.ts:292](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/path-matcher.ts#lines-292)
 
 ## Accessors
 
@@ -58,7 +58,7 @@ Defined in: packages/blue-core/src/path-matcher.ts:292
 
 > **get** **isLeastSpecific**(): `boolean`
 
-Defined in: packages/blue-core/src/path-matcher.ts:294
+Defined in: [packages/blue-core/src/path-matcher.ts:294](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/path-matcher.ts#lines-294)
 
 ##### Returns
 
@@ -72,7 +72,7 @@ Defined in: packages/blue-core/src/path-matcher.ts:294
 
 > **get** **isPrefixPattern**(): `boolean`
 
-Defined in: packages/blue-core/src/path-matcher.ts:298
+Defined in: [packages/blue-core/src/path-matcher.ts:298](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/path-matcher.ts#lines-298)
 
 ##### Returns
 
@@ -86,7 +86,7 @@ Defined in: packages/blue-core/src/path-matcher.ts:298
 
 > **get** **length**(): `number`
 
-Defined in: packages/blue-core/src/path-matcher.ts:302
+Defined in: [packages/blue-core/src/path-matcher.ts:302](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/path-matcher.ts#lines-302)
 
 ##### Returns
 
@@ -100,7 +100,7 @@ Defined in: packages/blue-core/src/path-matcher.ts:302
 
 > **get** **totalCount**(): `number`
 
-Defined in: packages/blue-core/src/path-matcher.ts:306
+Defined in: [packages/blue-core/src/path-matcher.ts:306](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/path-matcher.ts#lines-306)
 
 ##### Returns
 
@@ -112,7 +112,7 @@ Defined in: packages/blue-core/src/path-matcher.ts:306
 
 > `protected` **\_initCounters**(): `void`
 
-Defined in: packages/blue-core/src/path-matcher.ts:323
+Defined in: [packages/blue-core/src/path-matcher.ts:323](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/path-matcher.ts#lines-323)
 
 #### Returns
 

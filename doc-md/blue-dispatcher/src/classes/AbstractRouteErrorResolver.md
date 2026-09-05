@@ -6,7 +6,7 @@
 
 # Abstract Class: AbstractRouteErrorResolver
 
-Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:51
+Defined in: [packages/blue-dispatcher/src/route-error-resolver.ts:51](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-error-resolver.ts#lines-51)
 
 Resolves exceptions into a route-specific response.
 
@@ -26,7 +26,7 @@ Resolves exceptions into a route-specific response.
 
 > **new AbstractRouteErrorResolver**(): `AbstractRouteErrorResolver`
 
-Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:66
+Defined in: [packages/blue-dispatcher/src/route-error-resolver.ts:66](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-error-resolver.ts#lines-66)
 
 #### Returns
 
@@ -38,7 +38,7 @@ Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:66
 
 > **mappedHandlers**: `any`[] \| `null`
 
-Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:55
+Defined in: [packages/blue-dispatcher/src/route-error-resolver.ts:55](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-error-resolver.ts#lines-55)
 
 Handlers explicitly targeted by this resolver, if any.
 
@@ -48,7 +48,7 @@ Handlers explicitly targeted by this resolver, if any.
 
 > **mappedHandlerClasses**: `Constructable`[]
 
-Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:60
+Defined in: [packages/blue-dispatcher/src/route-error-resolver.ts:60](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-error-resolver.ts#lines-60)
 
 Handler classes explicitly targeted by this resolver, if any.
 
@@ -60,7 +60,7 @@ Handler classes explicitly targeted by this resolver, if any.
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:62
+Defined in: [packages/blue-dispatcher/src/route-error-resolver.ts:62](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-error-resolver.ts#lines-62)
 
 ##### Returns
 
@@ -72,7 +72,7 @@ Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:62
 
 > **resolveError**(`route`, `handler`, `error`): [`ModelAndView`](ModelAndView.md) \| `null`
 
-Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:79
+Defined in: [packages/blue-dispatcher/src/route-error-resolver.ts:79](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-error-resolver.ts#lines-79)
 
 Resolve an error only when this resolver applies to the current handler.
 
@@ -80,7 +80,7 @@ Resolve an error only when this resolver applies to the current handler.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The current route.
 
@@ -112,7 +112,7 @@ A resolved model and view, or `null` when this resolver does not apply.
 
 > `protected` **\_shouldApplyTo**(`route`, `handler`): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:95
+Defined in: [packages/blue-dispatcher/src/route-error-resolver.ts:95](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-error-resolver.ts#lines-95)
 
 Determine whether this resolver should be applied to the given handler.
 
@@ -120,7 +120,7 @@ Determine whether this resolver should be applied to the given handler.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The current route.
 
@@ -142,7 +142,7 @@ The candidate handler.
 
 > `abstract` `protected` **\_resolveError**(`route`, `handler`, `error`): [`ModelAndView`](ModelAndView.md) \| `null`
 
-Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:125
+Defined in: [packages/blue-dispatcher/src/route-error-resolver.ts:125](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-error-resolver.ts#lines-125)
 
 Resolve the error once applicability has been established.
 
@@ -150,7 +150,7 @@ Resolve the error once applicability has been established.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The current route.
 

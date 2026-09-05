@@ -6,7 +6,7 @@
 
 # Interface: TreeNode\<T\>
 
-Defined in: packages/blue-core/src/tree-node.ts:24
+Defined in: [packages/blue-core/src/tree-node.ts:24](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/tree-node.ts#lines-24)
 
 A tree node that supports bidirectional navigation and child mutation.
 
@@ -26,7 +26,7 @@ A tree node that supports bidirectional navigation and child mutation.
 
 > `readonly` **parent**: `T` \| `null` \| `undefined`
 
-Defined in: packages/blue-core/src/tree-node.ts:10
+Defined in: [packages/blue-core/src/tree-node.ts:10](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/tree-node.ts#lines-10)
 
 The parent node, or `null`/`undefined` for roots.
 
@@ -40,7 +40,7 @@ The parent node, or `null`/`undefined` for roots.
 
 > `readonly` **children**: readonly `T`[]
 
-Defined in: packages/blue-core/src/tree-node.ts:18
+Defined in: [packages/blue-core/src/tree-node.ts:18](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/tree-node.ts#lines-18)
 
 The node's direct children.
 
@@ -54,7 +54,7 @@ The node's direct children.
 
 > `readonly` **root**: `T`
 
-Defined in: packages/blue-core/src/tree-node.ts:26
+Defined in: [packages/blue-core/src/tree-node.ts:26](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/tree-node.ts#lines-26)
 
 The root node of the tree.
 
@@ -64,7 +64,7 @@ The root node of the tree.
 
 > **hasChild**(`node`): `boolean`
 
-Defined in: packages/blue-core/src/tree-node.ts:34
+Defined in: [packages/blue-core/src/tree-node.ts:34](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/tree-node.ts#lines-34)
 
 Tests whether the node has the given direct child.
 
@@ -88,7 +88,7 @@ Candidate child node.
 
 > **newChild**(...`args`): `T`
 
-Defined in: packages/blue-core/src/tree-node.ts:42
+Defined in: [packages/blue-core/src/tree-node.ts:42](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/tree-node.ts#lines-42)
 
 Creates and appends a new child node.
 
@@ -112,7 +112,7 @@ The newly created child node.
 
 > **removeChild**(`node`): `boolean`
 
-Defined in: packages/blue-core/src/tree-node.ts:50
+Defined in: [packages/blue-core/src/tree-node.ts:50](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/tree-node.ts#lines-50)
 
 Removes a direct child from the node.
 

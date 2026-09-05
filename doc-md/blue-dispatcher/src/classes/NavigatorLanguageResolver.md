@@ -6,7 +6,7 @@
 
 # Class: NavigatorLanguageResolver
 
-Defined in: packages/blue-dispatcher/src/language-resolver.ts:56
+Defined in: [packages/blue-dispatcher/src/language-resolver.ts:56](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/language-resolver.ts#lines-56)
 
 Resolve language from the browser's `navigator` object.
 
@@ -24,7 +24,7 @@ https://developer.mozilla.org/en-US/docs/Web/API/NavigatorLanguage
 
 > **new NavigatorLanguageResolver**(`defaultLanguage`): `NavigatorLanguageResolver`
 
-Defined in: packages/blue-dispatcher/src/language-resolver.ts:33
+Defined in: [packages/blue-dispatcher/src/language-resolver.ts:33](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/language-resolver.ts#lines-33)
 
 Store the fallback language.
 
@@ -50,7 +50,7 @@ The default language to use.
 
 > `readonly` **defaultLanguage**: `string`
 
-Defined in: packages/blue-dispatcher/src/language-resolver.ts:26
+Defined in: [packages/blue-dispatcher/src/language-resolver.ts:26](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/language-resolver.ts#lines-26)
 
 Fallback language used when no route-specific language is available.
 
@@ -66,7 +66,7 @@ Fallback language used when no route-specific language is available.
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-dispatcher/src/language-resolver.ts:57
+Defined in: [packages/blue-dispatcher/src/language-resolver.ts:57](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/language-resolver.ts#lines-57)
 
 ##### Returns
 
@@ -78,7 +78,7 @@ Defined in: packages/blue-dispatcher/src/language-resolver.ts:57
 
 > **resolveLanguage**(`_route`): `string`
 
-Defined in: packages/blue-dispatcher/src/language-resolver.ts:67
+Defined in: [packages/blue-dispatcher/src/language-resolver.ts:67](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/language-resolver.ts#lines-67)
 
 Resolve the browser language, falling back to the configured default when needed.
 
@@ -86,7 +86,9 @@ Resolve the browser language, falling back to the configured default when needed
 
 ##### \_route
 
-`Route`
+[`Route`](#)
+
+The current route.
 
 #### Returns
 

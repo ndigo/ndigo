@@ -8,7 +8,7 @@ import { JSONObject } from '@blue/core';
 /**
  * Node.js environment implementation that includes `process.env` as the first property source.
  *
- * Extends {@link StandardEnvironment} so that DI containers can discriminate between
+ * Extends `StandardEnvironment` so that DI containers can discriminate between
  * browser and Node environments by class identity (e.g., `instanceof NodeEnvironment`).
  * All other environment behaviour (profiles, property resolution) is inherited.
  */

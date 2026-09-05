@@ -8,7 +8,7 @@
 
 > **traverseToRoot**(`context`, `visitor`): `void`
 
-Defined in: packages/blue-context/src/context-hierarchy.ts:159
+Defined in: [packages/blue-context/src/context-hierarchy.ts:163](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context-hierarchy.ts#lines-163)
 
 Walk from `context` up to root (inclusive), invoking `visitor` for each node.
 

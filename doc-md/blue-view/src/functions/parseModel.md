@@ -8,7 +8,7 @@
 
 > **parseModel**(`raw`): `unknown`
 
-Defined in: packages/blue-view/src/island-view.ts:30
+Defined in: [packages/blue-view/src/island-view.ts:26](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/island-view.ts#lines-26)
 
 Parses a serialized island model back into a JS value.
 

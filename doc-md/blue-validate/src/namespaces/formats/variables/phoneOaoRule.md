@@ -8,6 +8,6 @@
 
 > `const` **phoneOaoRule**: `RegExp`
 
-Defined in: packages/blue-validate/src/formats.ts:175
+Defined in: [packages/blue-validate/src/formats.ts:175](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/formats.ts#lines-175)
 
 A regular expression matching non-blacklisted phone numbers per Online Account Opening (OAO).

@@ -8,7 +8,7 @@
 
 > `const` **likeComparable**: (`value`) => `value is Comparable<any>`
 
-Defined in: packages/blue-core/src/comparable.ts:113
+Defined in: [packages/blue-core/src/comparable.ts:112](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/comparable.ts#lines-112)
 
 Type guard to check if a value implements the `Comparable` interface.
 

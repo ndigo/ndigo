@@ -6,7 +6,7 @@
 
 # Interface: ConstructionAwareProcessor
 
-Defined in: packages/blue-factory/src/entry-processor.ts:38
+Defined in: [packages/blue-factory/src/entry-processor.ts:38](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/entry-processor.ts#lines-38)
 
 Subinterface of [EntryProcessor](../type-aliases/EntryProcessor.md) that adds a before-construction callback, and a callback after construction but before explicit properties are set.
 
@@ -20,7 +20,7 @@ Typically used to suppress default construction for specific values.
 
 > **processAfterConstruction**\<`T`\>(`name`, `instance`): `boolean`
 
-Defined in: packages/blue-factory/src/entry-processor.ts:49
+Defined in: [packages/blue-factory/src/entry-processor.ts:49](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/entry-processor.ts#lines-49)
 
 Perform operations after the instance has constructed, but before property population occurs.
 
@@ -60,7 +60,7 @@ The instance without properties having been set yet.
 
 > **processBeforeConstruction**\<`T`\>(`name`, `constructor`, `argumentsList?`): `T` \| `null`
 
-Defined in: packages/blue-factory/src/entry-processor.ts:59
+Defined in: [packages/blue-factory/src/entry-processor.ts:59](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/entry-processor.ts#lines-59)
 
 Apply this EntryProcessor _before the target value gets constructed_. The returned value may be a proxy instead of the target instance, effectively supressing default construction.
 
@@ -88,9 +88,9 @@ The constructor
 
 ##### argumentsList?
 
-`any`[]
+`unknown`[]
 
-The list of arguments supplied to the `constructor`.
+(constructor arguments) The list of arguments supplied to the `constructor`.
 
 #### Returns
 
@@ -104,7 +104,7 @@ The instance to expose instead of a default instance, or `null` to proceed with 
 
 > **processProperties**\<`T`\>(`properties`, `name`, `instance`): `PropertyDescriptorMap`
 
-Defined in: packages/blue-factory/src/entry-processor.ts:69
+Defined in: [packages/blue-factory/src/entry-processor.ts:69](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/entry-processor.ts#lines-69)
 
 Process the given property values before the factory applies them to the given instance.
 

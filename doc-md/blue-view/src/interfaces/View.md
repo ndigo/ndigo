@@ -6,13 +6,13 @@
 
 # Interface: View
 
-Defined in: packages/blue-view/src/view.ts:20
+Defined in: [packages/blue-view/src/view.ts:20](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view.ts#lines-20)
 
 View for a web interaction. Implementations are responsible for rendering content, and exposing the model. A single view exposes multiple model attributes.
 
 View implementations may differ widely. This interface is designed to avoid restricting the range of possible implementations.
 
-They are likely to be instantiated by a ViewResolver\|\`ViewResolver\` .
+They are likely to be instantiated by a `ViewResolver` .
 
 ## Properties
 
@@ -20,7 +20,7 @@ They are likely to be instantiated by a ViewResolver\|\`ViewResolver\` .
 
 > **mediaType**: `MediaType` \| `null`
 
-Defined in: packages/blue-view/src/view.ts:24
+Defined in: [packages/blue-view/src/view.ts:24](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view.ts#lines-24)
 
 The media type of the view.
 
@@ -30,7 +30,7 @@ The media type of the view.
 
 > `optional` **destroyed?**: `boolean`
 
-Defined in: packages/blue-view/src/view.ts:28
+Defined in: [packages/blue-view/src/view.ts:28](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view.ts#lines-28)
 
 Indicates if the view has been destroyed.
 
@@ -40,7 +40,7 @@ Indicates if the view has been destroyed.
 
 > `optional` **destroy**(): `void` \| `Promise`\<`void`\>
 
-Defined in: packages/blue-view/src/view.ts:32
+Defined in: [packages/blue-view/src/view.ts:32](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view.ts#lines-32)
 
 Destroys the view, releasing any resources.
 
@@ -54,7 +54,7 @@ Destroys the view, releasing any resources.
 
 > **render**(`model`, `request`, `target?`): `void` \| `Promise`\<`void`\>
 
-Defined in: packages/blue-view/src/view.ts:39
+Defined in: [packages/blue-view/src/view.ts:39](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view.ts#lines-39)
 
 Render the view given the specified model.
 

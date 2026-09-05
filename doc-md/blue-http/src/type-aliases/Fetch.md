@@ -8,7 +8,7 @@
 
 > **Fetch** = (`input`, `init?`) => `Promise`\<`Response`\>
 
-Defined in: packages/blue-http/src/http.ts:65
+Defined in: [packages/blue-http/src/http.ts:75](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-75)
 
 Fetch implementation signature used by [HTTP](../classes/HTTP.md).
 

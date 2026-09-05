@@ -8,7 +8,7 @@
 
 > **EntityState** = `"new"` \| `"managed"` \| `"removed"`
 
-Defined in: packages/blue-orm/src/unit-of-work.ts:11
+Defined in: [packages/blue-orm/src/unit-of-work.ts:11](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/unit-of-work.ts#lines-11)
 
 Represents the state of an entity within the Unit of Work.
 - 'new': The entity has been created but not yet persisted.

@@ -6,7 +6,7 @@
 
 # Class: CookieThemeResolver
 
-Defined in: packages/blue-platform-web/src/cookie-theme-resolver.ts:13
+Defined in: [packages/blue-platform-web/src/cookie-theme-resolver.ts:13](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/cookie-theme-resolver.ts#lines-13)
 
 ## Extends
 
@@ -18,7 +18,7 @@ Defined in: packages/blue-platform-web/src/cookie-theme-resolver.ts:13
 
 > **new CookieThemeResolver**(`cookieName?`, `defaultThemeName?`): `CookieThemeResolver`
 
-Defined in: packages/blue-platform-web/src/cookie-theme-resolver.ts:27
+Defined in: [packages/blue-platform-web/src/cookie-theme-resolver.ts:27](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/cookie-theme-resolver.ts#lines-27)
 
 Creates a cookie-backed theme resolver.
 
@@ -64,7 +64,7 @@ Fallback theme name used when a route-specific theme is unavailable.
 
 > `readonly` **cookieName**: `string`
 
-Defined in: packages/blue-platform-web/src/cookie-theme-resolver.ts:15
+Defined in: [packages/blue-platform-web/src/cookie-theme-resolver.ts:15](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/cookie-theme-resolver.ts#lines-15)
 
 ## Accessors
 
@@ -74,7 +74,7 @@ Defined in: packages/blue-platform-web/src/cookie-theme-resolver.ts:15
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-platform-web/src/cookie-theme-resolver.ts:17
+Defined in: [packages/blue-platform-web/src/cookie-theme-resolver.ts:17](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/cookie-theme-resolver.ts#lines-17)
 
 ##### Returns
 
@@ -90,7 +90,7 @@ Defined in: packages/blue-platform-web/src/cookie-theme-resolver.ts:17
 
 > **resolveTheme**(`route`): `string`
 
-Defined in: packages/blue-platform-web/src/cookie-theme-resolver.ts:34
+Defined in: [packages/blue-platform-web/src/cookie-theme-resolver.ts:34](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/cookie-theme-resolver.ts#lines-34)
 
 Resolves the current theme from cookies or the fallback value.
 
@@ -98,7 +98,7 @@ Resolves the current theme from cookies or the fallback value.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 #### Returns
 
@@ -114,7 +114,7 @@ Resolves the current theme from cookies or the fallback value.
 
 > `static` **fromApplicationContext**(`applicationContext`, `cookieName?`): `CookieThemeResolver`
 
-Defined in: packages/blue-platform-web/src/cookie-theme-resolver.ts:52
+Defined in: [packages/blue-platform-web/src/cookie-theme-resolver.ts:52](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/cookie-theme-resolver.ts#lines-52)
 
 Creates a resolver from application-context defaults.
 

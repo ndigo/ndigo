@@ -3,15 +3,15 @@
  */
 
 /**
- * A type-safe key used for value registration and retrieval in a {@link Registry}.
+ * A type-safe key used for value registration and retrieval in a `Registry`.
  *
- * At runtime, {@link ContextToken.description|description} is used as the backing string key.
+ * At runtime, `description` is used as the backing string key.
  * The generic parameter `T` provides compile-time type association.
  */
 /**
- * A type-safe key used for value registration and retrieval in a {@link Registry}.
+ * A type-safe key used for value registration and retrieval in a `Registry`.
  *
- * At runtime, {@link ContextToken.description|description} is used as the backing string key.
+ * At runtime, `description` is used as the backing string key.
  * The generic parameter `T` provides compile-time type association.
  * @template _T The type of the value associated with this token.
  */

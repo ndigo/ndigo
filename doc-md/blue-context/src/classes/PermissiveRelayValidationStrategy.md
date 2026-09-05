@@ -6,7 +6,7 @@
 
 # Class: PermissiveRelayValidationStrategy
 
-Defined in: packages/blue-context/src/event-gateway.ts:118
+Defined in: [packages/blue-context/src/event-gateway.ts:118](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-gateway.ts#lines-118)
 
 Permissive relay validator that accepts all relays.
 
@@ -30,7 +30,7 @@ Permissive relay validator that accepts all relays.
 
 > **validate**(`relay`): [`RelayValidationResult`](../interfaces/RelayValidationResult.md)
 
-Defined in: packages/blue-context/src/event-gateway.ts:125
+Defined in: [packages/blue-context/src/event-gateway.ts:125](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-gateway.ts#lines-125)
 
 Accepts every relay without additional checks.
 

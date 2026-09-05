@@ -8,7 +8,7 @@
 
 > **likeFactory**(`value`): `value is Factory`
 
-Defined in: packages/blue-factory/src/factory.ts:143
+Defined in: [packages/blue-factory/src/factory.ts:152](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/factory.ts#lines-152)
 
 Determines whether or not the `value` provided is a [Factory](../interfaces/Factory.md).
 
@@ -16,7 +16,7 @@ Determines whether or not the `value` provided is a [Factory](../interfaces/Fact
 
 ### value
 
-`any`
+`unknown`
 
 The value to be tested.
 

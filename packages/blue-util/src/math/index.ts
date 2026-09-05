@@ -202,7 +202,7 @@ export const negate = (n: number): number => -n;
  * @category Math
  * @param {Array} list An array of numbers
  * @returns {number} The product of all the numbers in the list.
- * @see {@link reduce|reduce}
+ * @see `reduce`
  * @example
  * product( [ 2, 4, 6, 8, 100, 1 ] );
  * //=> 38400
@@ -240,7 +240,7 @@ export const subtract = (a: number, b: number): number => a - b;
  * @category Math
  * @param {Array} list An array of numbers
  * @returns {number} The sum of all the numbers in the list.
- * @see {@link reduce|reduce}
+ * @see `reduce`
  * @example
  * sum( [ 2, 4, 6, 8, 100, 1 ] );
  * //=> 121

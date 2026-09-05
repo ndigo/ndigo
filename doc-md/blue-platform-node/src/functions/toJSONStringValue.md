@@ -8,7 +8,7 @@
 
 > **toJSONStringValue**(`value`): `any`
 
-Defined in: packages/blue-platform-node/src/argument-value-converter.ts:39
+Defined in: [packages/blue-platform-node/src/argument-value-converter.ts:49](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/argument-value-converter.ts#lines-49)
 
 ## Parameters
 

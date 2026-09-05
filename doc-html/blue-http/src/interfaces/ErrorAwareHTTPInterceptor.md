@@ -1,0 +1,47 @@
+[**BlueJS Framework v0.0.1**](../../../README.md)
+
+***
+
+[BlueJS Framework](../../../modules.md) / [blue-http/src](../README.md) / ErrorAwareHTTPInterceptor
+
+# Interface: ErrorAwareHTTPInterceptor
+
+Defined in: [packages/blue-http/src/http.ts:93](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-93)
+
+Handles failures that occur while executing a request.
+
+## Methods
+
+### postError()
+
+> **postError**(`error`, `request`, `http`): `Promise`\<`Response` \| `undefined`\>
+
+Defined in: [packages/blue-http/src/http.ts:102](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-102)
+
+Recovers from a transport or interceptor error.
+
+#### Parameters
+
+##### error
+
+`Error`
+
+The failure that interrupted request execution.
+
+##### request
+
+`Request`
+
+The request that failed.
+
+##### http
+
+[`HTTP`](../classes/HTTP.md)
+
+The HTTP client executing the request.
+
+#### Returns
+
+`Promise`\<`Response` \| `undefined`\>
+
+A replacement response, or `undefined` to keep the failure.

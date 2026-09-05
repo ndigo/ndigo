@@ -6,7 +6,7 @@
 
 # Class: ResponseStatus
 
-Defined in: packages/blue-http/src/response-status.ts:28
+Defined in: [packages/blue-http/src/response-status.ts:28](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/response-status.ts#lines-28)
 
 Represents an HTTP response status code and reason phrase.
 
@@ -29,7 +29,7 @@ possible.
 
 > **new ResponseStatus**(`code`, `text`): `ResponseStatus`
 
-Defined in: packages/blue-http/src/response-status.ts:120
+Defined in: [packages/blue-http/src/response-status.ts:120](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/response-status.ts#lines-120)
 
 Creates a new response status.
 
@@ -57,7 +57,7 @@ The reason phrase.
 
 > `readonly` **code**: `number`
 
-Defined in: packages/blue-http/src/response-status.ts:32
+Defined in: [packages/blue-http/src/response-status.ts:32](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/response-status.ts#lines-32)
 
 The numeric HTTP status code.
 
@@ -67,7 +67,7 @@ The numeric HTTP status code.
 
 > `readonly` **text**: `string`
 
-Defined in: packages/blue-http/src/response-status.ts:37
+Defined in: [packages/blue-http/src/response-status.ts:37](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/response-status.ts#lines-37)
 
 The reason phrase associated with the status code.
 
@@ -79,7 +79,7 @@ The reason phrase associated with the status code.
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-http/src/response-status.ts:75
+Defined in: [packages/blue-http/src/response-status.ts:75](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/response-status.ts#lines-75)
 
 ##### Returns
 
@@ -93,7 +93,7 @@ Defined in: packages/blue-http/src/response-status.ts:75
 
 > **get** **isInformationClass**(): `boolean`
 
-Defined in: packages/blue-http/src/response-status.ts:82
+Defined in: [packages/blue-http/src/response-status.ts:82](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/response-status.ts#lines-82)
 
 Whether the status code is in the 1xx informational range.
 
@@ -109,7 +109,7 @@ Whether the status code is in the 1xx informational range.
 
 > **get** **isSuccessClass**(): `boolean`
 
-Defined in: packages/blue-http/src/response-status.ts:89
+Defined in: [packages/blue-http/src/response-status.ts:89](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/response-status.ts#lines-89)
 
 Whether the status code is in the 2xx success range.
 
@@ -125,7 +125,7 @@ Whether the status code is in the 2xx success range.
 
 > **get** **isRedirectClass**(): `boolean`
 
-Defined in: packages/blue-http/src/response-status.ts:96
+Defined in: [packages/blue-http/src/response-status.ts:96](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/response-status.ts#lines-96)
 
 Whether the status code is in the 3xx redirect range.
 
@@ -141,7 +141,7 @@ Whether the status code is in the 3xx redirect range.
 
 > **get** **isClientErrorClass**(): `boolean`
 
-Defined in: packages/blue-http/src/response-status.ts:103
+Defined in: [packages/blue-http/src/response-status.ts:103](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/response-status.ts#lines-103)
 
 Whether the status code is in the 4xx client error range.
 
@@ -157,7 +157,7 @@ Whether the status code is in the 4xx client error range.
 
 > **get** **isServerErrorClass**(): `boolean`
 
-Defined in: packages/blue-http/src/response-status.ts:110
+Defined in: [packages/blue-http/src/response-status.ts:110](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/response-status.ts#lines-110)
 
 Whether the status code is in the 5xx server error range.
 
@@ -173,7 +173,7 @@ Whether the status code is in the 5xx server error range.
 
 > `static` **for**(`response`): `ResponseStatus`
 
-Defined in: packages/blue-http/src/response-status.ts:45
+Defined in: [packages/blue-http/src/response-status.ts:45](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/response-status.ts#lines-45)
 
 Returns a cached status for the given response.
 
@@ -195,7 +195,7 @@ The matching status, or `null` when the response status is unknown.
 
 > `static` **for**(`code`, `text?`): `ResponseStatus`
 
-Defined in: packages/blue-http/src/response-status.ts:53
+Defined in: [packages/blue-http/src/response-status.ts:53](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/response-status.ts#lines-53)
 
 Returns a cached status for the given code.
 
@@ -225,7 +225,7 @@ The matching or newly created status, or `null` when no text is provided.
 
 > **compareTo**(`value`): `number`
 
-Defined in: packages/blue-http/src/response-status.ts:145
+Defined in: [packages/blue-http/src/response-status.ts:145](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/response-status.ts#lines-145)
 
 Compares this status with another status.
 
@@ -253,7 +253,7 @@ A negative, zero, or positive comparison result.
 
 > **equals**(`value`): `boolean`
 
-Defined in: packages/blue-http/src/response-status.ts:169
+Defined in: [packages/blue-http/src/response-status.ts:169](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/response-status.ts#lines-169)
 
 Tests whether this status matches another status.
 
@@ -281,7 +281,7 @@ The status to compare against.
 
 > **createResponse**(`body`, `headers?`): `Response`
 
-Defined in: packages/blue-http/src/response-status.ts:180
+Defined in: [packages/blue-http/src/response-status.ts:180](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/response-status.ts#lines-180)
 
 Creates a `Response` using this status and the supplied body.
 
@@ -311,7 +311,7 @@ A new `Response` using this status code and text.
 
 > **toJSON**(): `JSONObject`
 
-Defined in: packages/blue-http/src/response-status.ts:189
+Defined in: [packages/blue-http/src/response-status.ts:189](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/response-status.ts#lines-189)
 
 Serializes the status to a JSON object.
 
@@ -331,7 +331,7 @@ A JSON object containing the status code and text.
 
 > **toResponseInit**(): `ResponseInit`
 
-Defined in: packages/blue-http/src/response-status.ts:203
+Defined in: [packages/blue-http/src/response-status.ts:203](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/response-status.ts#lines-203)
 
 Converts the status to `ResponseInit` fields.
 
@@ -347,7 +347,7 @@ A `ResponseInit` object with `status` and `statusText`.
 
 > **toString**(): `string`
 
-Defined in: packages/blue-http/src/response-status.ts:217
+Defined in: [packages/blue-http/src/response-status.ts:217](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/response-status.ts#lines-217)
 
 Formats the status as `"<code> <text>"`.
 

@@ -6,7 +6,7 @@
 
 # Interface: StatusInterceptorConfig
 
-Defined in: packages/blue-http/src/interceptors/status-interceptor.ts:10
+Defined in: [packages/blue-http/src/interceptors/status-interceptor.ts:10](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/status-interceptor.ts#lines-10)
 
 Configuration options for the StatusInterceptor.
 
@@ -16,7 +16,7 @@ Configuration options for the StatusInterceptor.
 
 > `optional` **statusMappings?**: `Record`\<`number`, `string`\>
 
-Defined in: packages/blue-http/src/interceptors/status-interceptor.ts:15
+Defined in: [packages/blue-http/src/interceptors/status-interceptor.ts:15](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/status-interceptor.ts#lines-15)
 
 A mapping of HTTP status codes to application-specific status strings.
 
@@ -32,7 +32,7 @@ A mapping of HTTP status codes to application-specific status strings.
 
 > `optional` **defaultStatus?**: `string`
 
-Defined in: packages/blue-http/src/interceptors/status-interceptor.ts:20
+Defined in: [packages/blue-http/src/interceptors/status-interceptor.ts:20](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/status-interceptor.ts#lines-20)
 
 The default status string to use when no mapping is found.
 

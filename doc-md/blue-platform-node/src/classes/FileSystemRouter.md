@@ -6,7 +6,7 @@
 
 # Class: FileSystemRouter
 
-Defined in: packages/blue-platform-node/src/file-system-router.ts:11
+Defined in: [packages/blue-platform-node/src/file-system-router.ts:11](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/file-system-router.ts#lines-11)
 
 A router implementation for Node.js that resolves routes based on the file system.
 
@@ -24,7 +24,7 @@ A router implementation for Node.js that resolves routes based on the file syste
 
 > **new FileSystemRouter**(`callback`): `FileSystemRouter`
 
-Defined in: packages/blue-platform-node/src/file-system-router.ts:15
+Defined in: [packages/blue-platform-node/src/file-system-router.ts:15](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/file-system-router.ts#lines-15)
 
 #### Parameters
 
@@ -48,7 +48,7 @@ Defined in: packages/blue-platform-node/src/file-system-router.ts:15
 
 > **get** **route**(): `string`
 
-Defined in: packages/blue-platform-node/src/file-system-router.ts:20
+Defined in: [packages/blue-platform-node/src/file-system-router.ts:20](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/file-system-router.ts#lines-20)
 
 ##### Returns
 
@@ -66,7 +66,7 @@ Defined in: packages/blue-platform-node/src/file-system-router.ts:20
 
 > **get** **callback**(): `RouterCallback`
 
-Defined in: packages/blue-platform-node/src/file-system-router.ts:24
+Defined in: [packages/blue-platform-node/src/file-system-router.ts:24](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/file-system-router.ts#lines-24)
 
 ##### Returns
 
@@ -108,7 +108,7 @@ An array of `RouterInterceptor`.
 
 > **navigate**(`path`): `void`
 
-Defined in: packages/blue-platform-node/src/file-system-router.ts:28
+Defined in: [packages/blue-platform-node/src/file-system-router.ts:28](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/file-system-router.ts#lines-28)
 
 #### Parameters
 

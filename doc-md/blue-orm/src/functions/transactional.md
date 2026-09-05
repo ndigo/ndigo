@@ -8,7 +8,7 @@
 
 > **transactional**(): (`target`, `context`) => `Function`
 
-Defined in: packages/blue-orm/src/decorators.ts:325
+Defined in: [packages/blue-orm/src/decorators.ts:332](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/decorators.ts#lines-332)
 
 Marks a method as participating in a transaction.
 

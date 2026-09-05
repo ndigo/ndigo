@@ -17,8 +17,8 @@ import { isActive } from '@blue/core';
  * Class that can be used to bootstrap and launch an application.
  *
  * @param {string} name The name of the application
- * @fires started when the application context is ready
- * @fires closed when the application is closed
+
+
  */
 export class Application extends Emitter {
     #environment: ConfigurableEnvironment | null = null;

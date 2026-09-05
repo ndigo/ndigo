@@ -8,7 +8,7 @@
 
 > **likeArray**(`value`): `value is ArrayLike<any>`
 
-Defined in: packages/blue-util/src/type/like-array.ts:26
+Defined in: [packages/blue-util/src/type/like-array.ts:26](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-util/src/type/like-array.ts#lines-26)
 
 Determines whether a given object is an array-like.
 

@@ -6,7 +6,7 @@
 
 # Class: Emitter
 
-Defined in: packages/blue-context/src/event-emitter.ts:484
+Defined in: [packages/blue-context/src/event-emitter.ts:474](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-emitter.ts#lines-474)
 
 Standalone event emitter with destroy and serialization support.
 
@@ -25,7 +25,7 @@ Standalone event emitter with destroy and serialization support.
 
 > **new Emitter**(`mapping?`): `Emitter`
 
-Defined in: packages/blue-context/src/event-emitter.ts:495
+Defined in: [packages/blue-context/src/event-emitter.ts:485](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-emitter.ts#lines-485)
 
 Creates an emitter and optionally seeds it with listeners.
 
@@ -51,7 +51,7 @@ Optional initial event mappings.
 
 > `readonly` `static` **every**: `string` = `$every`
 
-Defined in: packages/blue-context/src/event-emitter.ts:485
+Defined in: [packages/blue-context/src/event-emitter.ts:475](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-emitter.ts#lines-475)
 
 ***
 
@@ -59,7 +59,7 @@ Defined in: packages/blue-context/src/event-emitter.ts:485
 
 > `readonly` `static` **version**: `string` = `'3.0.0'`
 
-Defined in: packages/blue-context/src/event-emitter.ts:486
+Defined in: [packages/blue-context/src/event-emitter.ts:476](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-emitter.ts#lines-476)
 
 ***
 
@@ -67,7 +67,7 @@ Defined in: packages/blue-context/src/event-emitter.ts:486
 
 > **destroyed**: `boolean` = `false`
 
-Defined in: packages/blue-context/src/event-emitter.ts:488
+Defined in: [packages/blue-context/src/event-emitter.ts:478](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-emitter.ts#lines-478)
 
 #### Implementation of
 
@@ -79,7 +79,7 @@ Defined in: packages/blue-context/src/event-emitter.ts:488
 
 > **emit**(`type`, ...`data`): `boolean`
 
-Defined in: packages/blue-context/src/event-emitter.ts:68
+Defined in: [packages/blue-context/src/event-emitter.ts:59](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-emitter.ts#lines-59)
 
 Emits an event to the listeners registered for the given type.
 
@@ -113,7 +113,7 @@ Event payload values.
 
 > **eventTypes**(): [`EventType`](../type-aliases/EventType.md)[]
 
-Defined in: packages/blue-context/src/event-emitter.ts:74
+Defined in: [packages/blue-context/src/event-emitter.ts:65](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-emitter.ts#lines-65)
 
 Returns the event types with registered listeners.
 
@@ -133,7 +133,7 @@ The registered event types.
 
 > **listenerCount**(`type`): `number`
 
-Defined in: packages/blue-context/src/event-emitter.ts:81
+Defined in: [packages/blue-context/src/event-emitter.ts:72](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-emitter.ts#lines-72)
 
 Returns the number of listeners for a type.
 
@@ -161,7 +161,7 @@ The listener count.
 
 > **listeners**(`type`): `Function`[]
 
-Defined in: packages/blue-context/src/event-emitter.ts:88
+Defined in: [packages/blue-context/src/event-emitter.ts:79](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-emitter.ts#lines-79)
 
 Returns a snapshot of listeners for a type.
 
@@ -189,7 +189,7 @@ The registered listeners.
 
 > **on**(`type`, `listener?`): `this`
 
-Defined in: packages/blue-context/src/event-emitter.ts:96
+Defined in: [packages/blue-context/src/event-emitter.ts:87](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-emitter.ts#lines-87)
 
 Adds a listener for an event type.
 
@@ -223,7 +223,7 @@ This emitter.
 
 > **off**(`type`, `listener`): `this`
 
-Defined in: packages/blue-context/src/event-emitter.ts:104
+Defined in: [packages/blue-context/src/event-emitter.ts:95](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-emitter.ts#lines-95)
 
 Removes a listener for an event type.
 
@@ -257,7 +257,7 @@ This emitter.
 
 > **clear**(`type?`): `this`
 
-Defined in: packages/blue-context/src/event-emitter.ts:514
+Defined in: [packages/blue-context/src/event-emitter.ts:505](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-emitter.ts#lines-505)
 
 Removes listeners for one type or for all types.
 
@@ -281,7 +281,7 @@ This emitter.
 
 > **toJSON**(): `JSONValue`
 
-Defined in: packages/blue-context/src/event-emitter.ts:524
+Defined in: [packages/blue-context/src/event-emitter.ts:515](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-emitter.ts#lines-515)
 
 Serializes the listener counts to JSON.
 
@@ -301,7 +301,7 @@ A JSON representation of the emitter state.
 
 > **toString**(): `string`
 
-Defined in: packages/blue-context/src/event-emitter.ts:543
+Defined in: [packages/blue-context/src/event-emitter.ts:534](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-emitter.ts#lines-534)
 
 Returns a compact textual summary of the emitter.
 
@@ -321,7 +321,7 @@ A string representation.
 
 > **destroy**(): `void`
 
-Defined in: packages/blue-context/src/event-emitter.ts:550
+Defined in: [packages/blue-context/src/event-emitter.ts:541](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-emitter.ts#lines-541)
 
 Destroys the emitter and clears its listeners.
 

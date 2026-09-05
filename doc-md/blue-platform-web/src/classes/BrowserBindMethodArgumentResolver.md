@@ -6,12 +6,12 @@
 
 # Class: BrowserBindMethodArgumentResolver
 
-Defined in: packages/blue-platform-web/src/bind-argument-resolver.ts:22
+Defined in: [packages/blue-platform-web/src/bind-argument-resolver.ts:22](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/bind-argument-resolver.ts#lines-22)
 
 Browser-specific bind resolver.
 
 Resolves values from browser data sources (query, state, session, cookie)
-and binds them to objects using DataBinder.
+and binds them to objects using `DataBinder`.
 
 Overrides `resolveArgument()` because the bind pipeline (source data →
 filter by prefix → bind to object → convert) differs from the standard
@@ -27,7 +27,7 @@ name-resolution pipeline used by other resolvers.
 
 > **new BrowserBindMethodArgumentResolver**(): `BrowserBindMethodArgumentResolver`
 
-Defined in: packages/blue-platform-web/src/bind-argument-resolver.ts:23
+Defined in: [packages/blue-platform-web/src/bind-argument-resolver.ts:23](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/bind-argument-resolver.ts#lines-23)
 
 #### Returns
 
@@ -45,7 +45,7 @@ Defined in: packages/blue-platform-web/src/bind-argument-resolver.ts:23
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-platform-web/src/bind-argument-resolver.ts:27
+Defined in: [packages/blue-platform-web/src/bind-argument-resolver.ts:27](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/bind-argument-resolver.ts#lines-27)
 
 ##### Returns
 
@@ -57,7 +57,7 @@ Defined in: packages/blue-platform-web/src/bind-argument-resolver.ts:27
 
 > **handleMissingValue**(`name`): `void`
 
-Defined in: packages/blue-dispatcher/lib/argument-resolver.d.ts:55
+Defined in: packages/blue-dispatcher/lib/argument-resolver.d.ts:46
 
 Handles a missing argument value by throwing a TypeError.
 
@@ -87,7 +87,7 @@ If the argument is undefined or null.
 
 > **resolveArgument**(`parameter`, `route`, `mapping`): `any`
 
-Defined in: packages/blue-platform-web/src/bind-argument-resolver.ts:31
+Defined in: [packages/blue-platform-web/src/bind-argument-resolver.ts:31](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/bind-argument-resolver.ts#lines-31)
 
 Resolves and converts a method argument value.
 
@@ -101,7 +101,7 @@ Pipeline: resolveName → defaultValue fallback → convertType lookup → conve
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 ##### mapping
 
@@ -121,7 +121,7 @@ Pipeline: resolveName → defaultValue fallback → convertType lookup → conve
 
 > **supportsParameter**(`parameter`): `boolean`
 
-Defined in: packages/blue-platform-web/src/bind-argument-resolver.ts:104
+Defined in: [packages/blue-platform-web/src/bind-argument-resolver.ts:100](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/bind-argument-resolver.ts#lines-100)
 
 Whether the given method parameter is supported by this resolver.
 
@@ -149,7 +149,7 @@ Whether or not the given method parameter is supported by this resolver.
 
 > `protected` **resolveName**(): `any`
 
-Defined in: packages/blue-platform-web/src/bind-argument-resolver.ts:108
+Defined in: [packages/blue-platform-web/src/bind-argument-resolver.ts:104](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/bind-argument-resolver.ts#lines-104)
 
 #### Returns
 

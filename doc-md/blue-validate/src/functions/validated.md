@@ -8,7 +8,7 @@
 
 > **validated**(`config?`): \<`T`\>(`target`, `context`) => `T`
 
-Defined in: packages/blue-validate/src/decorators.ts:585
+Defined in: [packages/blue-validate/src/decorators.ts:583](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/decorators.ts#lines-583)
 
 TC39 Stage 3 class decorator that enables validation for a class's fields.
 When applied, it adds a `validate` method to the class prototype, allowing programmatic validation.

@@ -8,7 +8,7 @@
 
 > **configureCookieThemeResolver**(`applicationContext`, `cookieName?`): [`CookieThemeResolver`](../classes/CookieThemeResolver.md)
 
-Defined in: packages/blue-platform-web/src/cookie-theme-resolver.ts:67
+Defined in: [packages/blue-platform-web/src/cookie-theme-resolver.ts:67](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/cookie-theme-resolver.ts#lines-67)
 
 Registers a cookie-backed theme resolver into the given context.
 

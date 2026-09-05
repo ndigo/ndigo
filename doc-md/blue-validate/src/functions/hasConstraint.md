@@ -8,7 +8,7 @@
 
 > **hasConstraint**(`name`): `boolean`
 
-Defined in: packages/blue-validate/src/constraints.ts:36
+Defined in: [packages/blue-validate/src/constraints.ts:36](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/constraints.ts#lines-36)
 
 Checks whether a constraint has been registered.
 

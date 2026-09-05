@@ -8,6 +8,6 @@
 
 > `const` **DISPATCHER**: [`ContextToken`](../../../blue-context/src/classes/ContextToken.md)\<[`AbstractDispatcher`](../classes/AbstractDispatcher.md)\>
 
-Defined in: packages/blue-dispatcher/src/context-tokens.ts:11
+Defined in: [packages/blue-dispatcher/src/context-tokens.ts:11](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/context-tokens.ts#lines-11)
 
 Context token for the [AbstractDispatcher](../classes/AbstractDispatcher.md).

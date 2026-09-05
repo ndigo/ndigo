@@ -8,7 +8,7 @@
 
 > **counted**(`nameOrTarget?`, `attributesOrContext?`, `maybeContext?`): `any`
 
-Defined in: packages/blue-telemetry/src/metrics/decorators.ts:118
+Defined in: [packages/blue-telemetry/src/metrics/decorators.ts:120](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/metrics/decorators.ts#lines-120)
 
 A method decorator that increments a counter each time the decorated method is called.
 
@@ -49,22 +49,22 @@ If applied to anything other than a method.
 
 ```typescript
 class MyService {
-  @counted()
+  `counted`()
   myMethod() {
     // Increments 'myMethod.count'
   }
 
-  @counted('custom.event.count')
+  `counted`('custom.event.count')
   anotherMethod() {
     // Increments 'custom.event.count'
   }
 
-  @counted({ name: 'api.calls', attributes: { endpoint: '/users' } })
+  `counted`({ name: 'api.calls', attributes: { endpoint: '/users' } })
   apiCall() {
     // Increments 'api.calls' with 'endpoint: /users'
   }
 
-  @counted('feature.usage', { feature: 'dashboard' })
+  `counted`('feature.usage', { feature: 'dashboard' })
   dashboardView() {
     // Increments 'feature.usage' with 'feature: dashboard'
   }

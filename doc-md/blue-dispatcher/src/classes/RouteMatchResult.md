@@ -6,7 +6,7 @@
 
 # Class: RouteMatchResult
 
-Defined in: packages/blue-dispatcher/src/route-match-result.ts:6
+Defined in: [packages/blue-dispatcher/src/route-match-result.ts:6](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-match-result.ts#lines-6)
 
 Result of matching a route pattern to a path.
 
@@ -16,7 +16,7 @@ Result of matching a route pattern to a path.
 
 > **new RouteMatchResult**(`pattern`, `path`): `RouteMatchResult`
 
-Defined in: packages/blue-dispatcher/src/route-match-result.ts:27
+Defined in: [packages/blue-dispatcher/src/route-match-result.ts:27](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-match-result.ts#lines-27)
 
 Create a route match result.
 
@@ -44,7 +44,7 @@ The matched path.
 
 > `readonly` **pattern**: `string`
 
-Defined in: packages/blue-dispatcher/src/route-match-result.ts:10
+Defined in: [packages/blue-dispatcher/src/route-match-result.ts:10](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-match-result.ts#lines-10)
 
 The matched pattern.
 
@@ -54,7 +54,7 @@ The matched pattern.
 
 > `readonly` **path**: `string`
 
-Defined in: packages/blue-dispatcher/src/route-match-result.ts:15
+Defined in: [packages/blue-dispatcher/src/route-match-result.ts:15](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-match-result.ts#lines-15)
 
 The matched path.
 
@@ -66,7 +66,7 @@ The matched path.
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-dispatcher/src/route-match-result.ts:17
+Defined in: [packages/blue-dispatcher/src/route-match-result.ts:17](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-match-result.ts#lines-17)
 
 ##### Returns
 
@@ -78,7 +78,7 @@ Defined in: packages/blue-dispatcher/src/route-match-result.ts:17
 
 > **toJSON**(): `JSONValue`
 
-Defined in: packages/blue-dispatcher/src/route-match-result.ts:37
+Defined in: [packages/blue-dispatcher/src/route-match-result.ts:37](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-match-result.ts#lines-37)
 
 Serialize the match result to JSON.
 

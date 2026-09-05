@@ -6,7 +6,7 @@
 
 # Interface: LifecycleHookDefinition
 
-Defined in: packages/blue-orm/src/metadata.ts:26
+Defined in: [packages/blue-orm/src/metadata.ts:26](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/metadata.ts#lines-26)
 
 ## Author
 
@@ -18,7 +18,7 @@ Jeff Rose
 
 > **event**: [`LifecycleEvent`](../type-aliases/LifecycleEvent.md)
 
-Defined in: packages/blue-orm/src/metadata.ts:27
+Defined in: [packages/blue-orm/src/metadata.ts:27](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/metadata.ts#lines-27)
 
 ***
 
@@ -26,4 +26,4 @@ Defined in: packages/blue-orm/src/metadata.ts:27
 
 > **methodName**: `string`
 
-Defined in: packages/blue-orm/src/metadata.ts:28
+Defined in: [packages/blue-orm/src/metadata.ts:28](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/metadata.ts#lines-28)

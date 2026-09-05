@@ -6,7 +6,7 @@
 
 # Class: BusinessComponent
 
-Defined in: packages/blue-context/src/context.ts:868
+Defined in: [packages/blue-context/src/context.ts:874](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-874)
 
 Base class for business logic components.
 Encapsulates domain rules and state orchestration.
@@ -49,7 +49,7 @@ A symbol indicating that the value is aware.
 
 > **setApplicationContext**(`applicationContext`): `void`
 
-Defined in: packages/blue-context/src/context.ts:195
+Defined in: [packages/blue-context/src/context.ts:195](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-195)
 
 Set the ApplicationContext that this object runs in. Normally this call will be used to initialize the object.
 

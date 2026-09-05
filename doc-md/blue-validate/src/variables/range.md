@@ -8,7 +8,7 @@
 
 > `const` **range**: (`params`) => (`value`, `context`) => `void`
 
-Defined in: packages/blue-validate/src/decorators.ts:395
+Defined in: [packages/blue-validate/src/decorators.ts:393](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/decorators.ts#lines-393)
 
 TC39 Stage 3 decorator that validates a numeric property to be within a specified range (inclusive).
 

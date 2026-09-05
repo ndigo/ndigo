@@ -8,7 +8,7 @@
 
 > **inc**(`n`): `number`
 
-Defined in: packages/blue-util/src/math/index.ts:71
+Defined in: [packages/blue-util/src/math/index.ts:71](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-util/src/math/index.ts#lines-71)
 
 Increments its argument.
 

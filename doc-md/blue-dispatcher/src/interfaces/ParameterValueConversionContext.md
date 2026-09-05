@@ -6,7 +6,7 @@
 
 # Interface: ParameterValueConversionContext
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:34
+Defined in: [packages/blue-dispatcher/src/route-parameter.ts:34](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-parameter.ts#lines-34)
 
 ## Properties
 
@@ -14,7 +14,7 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:34
 
 > **name**: `string`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:35
+Defined in: [packages/blue-dispatcher/src/route-parameter.ts:35](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-parameter.ts#lines-35)
 
 ***
 
@@ -22,7 +22,7 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:35
 
 > **parameter**: [`MethodParameter`](../classes/MethodParameter.md)
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:36
+Defined in: [packages/blue-dispatcher/src/route-parameter.ts:36](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-parameter.ts#lines-36)
 
 ***
 
@@ -30,7 +30,7 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:36
 
 > **route**: `any`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:37
+Defined in: [packages/blue-dispatcher/src/route-parameter.ts:37](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-parameter.ts#lines-37)
 
 ***
 
@@ -38,4 +38,4 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:37
 
 > **mapping**: `any`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:38
+Defined in: [packages/blue-dispatcher/src/route-parameter.ts:38](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-parameter.ts#lines-38)

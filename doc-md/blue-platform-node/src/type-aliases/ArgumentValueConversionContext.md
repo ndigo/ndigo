@@ -8,10 +8,10 @@
 
 > **ArgumentValueConversionContext** = `ParameterValueConversionContext` & `object`
 
-Defined in: packages/blue-platform-node/src/argument-value-converter.ts:13
+Defined in: [packages/blue-platform-node/src/argument-value-converter.ts:13](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/argument-value-converter.ts#lines-13)
 
 ## Type Declaration
 
 ### route
 
-> **route**: `Route`
+> **route**: [`Route`](#)

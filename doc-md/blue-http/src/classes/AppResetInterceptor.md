@@ -6,7 +6,7 @@
 
 # Class: AppResetInterceptor
 
-Defined in: packages/blue-http/src/interceptors/app-reset-interceptor.ts:40
+Defined in: [packages/blue-http/src/interceptors/app-reset-interceptor.ts:40](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/app-reset-interceptor.ts#lines-40)
 
 HTTP interceptor that reloads the page when a matching reset response is received.
 
@@ -18,8 +18,6 @@ triggers a page reload when:
 
 ## Implements
 
-## Implements
-
 - [`ResponseAwareHTTPInterceptor`](../interfaces/ResponseAwareHTTPInterceptor.md)\<[`AppResetInit`](../type-aliases/AppResetInit.md)\>
 
 ## Constructors
@@ -28,7 +26,7 @@ triggers a page reload when:
 
 > **new AppResetInterceptor**(`reloadCallback?`): `AppResetInterceptor`
 
-Defined in: packages/blue-http/src/interceptors/app-reset-interceptor.ts:48
+Defined in: [packages/blue-http/src/interceptors/app-reset-interceptor.ts:48](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/app-reset-interceptor.ts#lines-48)
 
 Creates a new app reset interceptor.
 
@@ -50,7 +48,7 @@ A callback to trigger page reload. Defaults to a no-op.
 
 > **postResponse**(`response`, `settings`): `Promise`\<`void` \| `Response`\>
 
-Defined in: packages/blue-http/src/interceptors/app-reset-interceptor.ts:59
+Defined in: [packages/blue-http/src/interceptors/app-reset-interceptor.ts:59](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/app-reset-interceptor.ts#lines-59)
 
 Reloads the current page when a matching reset response is received.
 

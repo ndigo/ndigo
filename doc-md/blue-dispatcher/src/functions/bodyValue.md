@@ -8,7 +8,7 @@
 
 > **bodyValue**(`name`, `options?`): [`ParameterExtractor`](../type-aliases/ParameterExtractor.md)
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:400
+Defined in: [packages/blue-dispatcher/src/route-parameter.ts:374](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-parameter.ts#lines-374)
 
 Factory function: Create a request-body parameter extractor.
 Use `name: '*'` to bind the entire parsed body object.
@@ -30,7 +30,7 @@ Use `name: '*'` to bind the entire parsed body object.
 ## Example
 
 ```ts
-@routeParams({
+`routeParams`({
   user: bodyValue('user'),
   payload: bodyValue('*')
 })

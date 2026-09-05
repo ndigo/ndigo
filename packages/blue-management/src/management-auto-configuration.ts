@@ -13,7 +13,7 @@ import { HealthController } from './health-controller';
  *
  * Registers:
  * - a shared {@link FeatureMetricAggregator} entry (read by `/metrics` and by
- *   any feature using `@counted`)
+ *   any feature using `counted`)
  * - a {@link HealthRegistry} with the {@link TelemetryHealthIndicator} wired
  * - the `/metrics` and `/health` controllers
  *

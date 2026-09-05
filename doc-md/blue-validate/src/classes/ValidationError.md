@@ -6,7 +6,7 @@
 
 # Class: ValidationError
 
-Defined in: packages/blue-validate/src/error.ts:7
+Defined in: [packages/blue-validate/src/error.ts:7](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/error.ts#lines-7)
 
 Base error class for all validation-related failures.
 
@@ -24,7 +24,7 @@ Base error class for all validation-related failures.
 
 > **new ValidationError**(`message`, `cause?`): `ValidationError`
 
-Defined in: packages/blue-validate/src/error.ts:19
+Defined in: [packages/blue-validate/src/error.ts:19](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/error.ts#lines-19)
 
 Creates an instance of ValidationError.
 
@@ -56,7 +56,7 @@ The original error that caused this validation failure.
 
 > **cause**: `Error`
 
-Defined in: packages/blue-validate/src/error.ts:8
+Defined in: [packages/blue-validate/src/error.ts:8](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/error.ts#lines-8)
 
 The underlying cause of the validation error, if any.
 
@@ -72,7 +72,7 @@ The underlying cause of the validation error, if any.
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-validate/src/error.ts:10
+Defined in: [packages/blue-validate/src/error.ts:10](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/error.ts#lines-10)
 
 ##### Returns
 

@@ -6,7 +6,7 @@
 
 # Class: FormDataTransformer
 
-Defined in: packages/blue-http/src/transformers/form-data-transformer.ts:15
+Defined in: [packages/blue-http/src/transformers/form-data-transformer.ts:15](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/transformers/form-data-transformer.ts#lines-15)
 
 Transforms `FormData` entries one by one while preserving multipart semantics.
 
@@ -20,7 +20,7 @@ Transforms `FormData` entries one by one while preserving multipart semantics.
 
 > **new FormDataTransformer**(`entryTransform`, `condition?`): `FormDataTransformer`
 
-Defined in: packages/blue-http/src/transformers/form-data-transformer.ts:25
+Defined in: [packages/blue-http/src/transformers/form-data-transformer.ts:25](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/transformers/form-data-transformer.ts#lines-25)
 
 Creates a `FormData` transformer.
 
@@ -48,7 +48,7 @@ Optional predicate that controls whether the transform runs.
 
 > **canTransform**(`body`, `context`): `boolean`
 
-Defined in: packages/blue-http/src/transformers/form-data-transformer.ts:40
+Defined in: [packages/blue-http/src/transformers/form-data-transformer.ts:40](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/transformers/form-data-transformer.ts#lines-40)
 
 Tests whether the input is a `FormData` value that should be transformed.
 
@@ -82,7 +82,7 @@ The current transform context.
 
 > **transform**(`body`, `context`): `FormData`
 
-Defined in: packages/blue-http/src/transformers/form-data-transformer.ts:55
+Defined in: [packages/blue-http/src/transformers/form-data-transformer.ts:55](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/transformers/form-data-transformer.ts#lines-55)
 
 Applies the entry transform to each `FormData` item.
 

@@ -8,7 +8,7 @@
 
 > **unmountFeatureContext**(`feature`, `policy?`): `void`
 
-Defined in: packages/blue-context/src/context-hierarchy.ts:142
+Defined in: [packages/blue-context/src/context-hierarchy.ts:146](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context-hierarchy.ts#lines-146)
 
 Unmount a feature context by disconnecting relay gateway and optionally closing the context.
 

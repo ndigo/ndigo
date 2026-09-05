@@ -8,13 +8,13 @@
 
 > **RouteMappingConfiguration** = `RouteMappingValue` & `object`
 
-Defined in: packages/blue-dispatcher/src/route-mapping.ts:25
+Defined in: [packages/blue-dispatcher/src/route-mapping.ts:25](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-mapping.ts#lines-25)
 
 Configuration shape for route mappings.
 
 `method` is optional — when absent the mapping matches any HTTP method.
-It is normally set via `@requestMapping` / `@getMapping` (see
-`request-mapping.ts` / `http-method-mapping.ts`), not `@routeMapping`
+It is normally set via `requestMapping` / `@getMapping` (see
+`request-mapping.ts` / `http-method-mapping.ts`), not `routeMapping`
 directly, but the shared metadata record carries it.
 
 ## Type Declaration

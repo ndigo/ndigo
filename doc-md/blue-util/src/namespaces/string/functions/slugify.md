@@ -8,7 +8,7 @@
 
 > **slugify**(`delimiter`, `value`): `string`
 
-Defined in: packages/blue-util/src/string/slugify.ts:22
+Defined in: [packages/blue-util/src/string/slugify.ts:22](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-util/src/string/slugify.ts#lines-22)
 
 Converts a string into a slug.
 

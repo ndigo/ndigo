@@ -8,6 +8,6 @@
 
 > `const` **postalCodeRule**: `RegExp`
 
-Defined in: packages/blue-validate/src/formats.ts:180
+Defined in: [packages/blue-validate/src/formats.ts:180](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/formats.ts#lines-180)
 
 A regular expression matching postal codes.

@@ -8,7 +8,7 @@
 
 > `const` **ROUTER**: [`ContextToken`](../../../blue-context/src/classes/ContextToken.md)\<[`Router`](../interfaces/Router.md)\>
 
-Defined in: packages/blue-router/src/context-tokens.ts:12
+Defined in: [packages/blue-router/src/context-tokens.ts:12](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/context-tokens.ts#lines-12)
 
 A `ContextToken` for retrieving the application's `Router` instance from the dependency injection context.
 

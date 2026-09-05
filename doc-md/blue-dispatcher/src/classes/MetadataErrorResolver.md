@@ -6,7 +6,7 @@
 
 # Class: MetadataErrorResolver
 
-Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:297
+Defined in: [packages/blue-dispatcher/src/route-error-resolver.ts:297](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-error-resolver.ts#lines-297)
 
 An [AbstractRouteErrorResolver](AbstractRouteErrorResolver.md) that resolves exceptions through 'error:mapping' metadata.
 
@@ -24,7 +24,7 @@ An [AbstractRouteErrorResolver](AbstractRouteErrorResolver.md) that resolves exc
 
 > **new MetadataErrorResolver**(): `MetadataErrorResolver`
 
-Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:66
+Defined in: [packages/blue-dispatcher/src/route-error-resolver.ts:66](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-error-resolver.ts#lines-66)
 
 #### Returns
 
@@ -40,7 +40,7 @@ Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:66
 
 > **mappedHandlers**: `any`[] \| `null`
 
-Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:55
+Defined in: [packages/blue-dispatcher/src/route-error-resolver.ts:55](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-error-resolver.ts#lines-55)
 
 Handlers explicitly targeted by this resolver, if any.
 
@@ -54,7 +54,7 @@ Handlers explicitly targeted by this resolver, if any.
 
 > **mappedHandlerClasses**: `Constructable`[]
 
-Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:60
+Defined in: [packages/blue-dispatcher/src/route-error-resolver.ts:60](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-error-resolver.ts#lines-60)
 
 Handler classes explicitly targeted by this resolver, if any.
 
@@ -68,7 +68,7 @@ Handler classes explicitly targeted by this resolver, if any.
 
 > **applicationContext**: `ApplicationContext` \| `null`
 
-Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:301
+Defined in: [packages/blue-dispatcher/src/route-error-resolver.ts:301](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-error-resolver.ts#lines-301)
 
 Application context used to discover error handlers.
 
@@ -80,7 +80,7 @@ Application context used to discover error handlers.
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:62
+Defined in: [packages/blue-dispatcher/src/route-error-resolver.ts:62](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-error-resolver.ts#lines-62)
 
 ##### Returns
 
@@ -98,7 +98,7 @@ Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:62
 
 > **get** **\[$aware\]**(): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:303
+Defined in: [packages/blue-dispatcher/src/route-error-resolver.ts:303](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-error-resolver.ts#lines-303)
 
 ##### Returns
 
@@ -114,7 +114,7 @@ Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:303
 
 > **resolveError**(`route`, `handler`, `error`): [`ModelAndView`](ModelAndView.md) \| `null`
 
-Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:79
+Defined in: [packages/blue-dispatcher/src/route-error-resolver.ts:79](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-error-resolver.ts#lines-79)
 
 Resolve an error only when this resolver applies to the current handler.
 
@@ -122,7 +122,7 @@ Resolve an error only when this resolver applies to the current handler.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The current route.
 
@@ -154,7 +154,7 @@ A resolved model and view, or `null` when this resolver does not apply.
 
 > `protected` **\_shouldApplyTo**(`route`, `handler`): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:136
+Defined in: [packages/blue-dispatcher/src/route-error-resolver.ts:136](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-error-resolver.ts#lines-136)
 
 Narrow applicability to wrapped route handler methods.
 
@@ -162,7 +162,7 @@ Narrow applicability to wrapped route handler methods.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The current route.
 
@@ -188,7 +188,7 @@ The candidate handler.
 
 > `protected` **\_resolveError**(`route`, `handler`, `error`): [`ModelAndView`](ModelAndView.md) \| `null`
 
-Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:154
+Defined in: [packages/blue-dispatcher/src/route-error-resolver.ts:154](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-error-resolver.ts#lines-154)
 
 Delegate resolution to the wrapped handler method.
 
@@ -196,7 +196,7 @@ Delegate resolution to the wrapped handler method.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The current route.
 
@@ -228,7 +228,7 @@ A resolved model and view, or `null`.
 
 > **setApplicationContext**(`applicationContext`): `void`
 
-Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:312
+Defined in: [packages/blue-dispatcher/src/route-error-resolver.ts:312](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-error-resolver.ts#lines-312)
 
 Store the application context for later error-handler lookup.
 
@@ -254,7 +254,7 @@ The application context to use.
 
 > `protected` **\_getErrorHandlerMethod**(`handlerMethod`, `error`): [`ErrorHandlerMethod`](ErrorHandlerMethod.md) \| `null`
 
-Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:328
+Defined in: [packages/blue-dispatcher/src/route-error-resolver.ts:328](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-error-resolver.ts#lines-328)
 
 Find the first error handler method that matches the thrown error.
 
@@ -288,7 +288,7 @@ A matching error handler method, or `null`.
 
 > `protected` **\_resolveHandlerMethodError**(`route`, `handlerMethod`, `error`): [`ModelAndView`](ModelAndView.md) \| `null`
 
-Defined in: packages/blue-dispatcher/src/route-error-resolver.ts:366
+Defined in: [packages/blue-dispatcher/src/route-error-resolver.ts:366](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-error-resolver.ts#lines-366)
 
 Resolve an error by invoking a matching error handler method.
 
@@ -296,7 +296,7 @@ Resolve an error by invoking a matching error handler method.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The current route.
 

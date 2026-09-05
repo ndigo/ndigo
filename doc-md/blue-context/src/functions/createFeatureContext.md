@@ -8,7 +8,7 @@
 
 > **createFeatureContext**(`parent`, `options`): [`FeatureContextComposition`](../interfaces/FeatureContextComposition.md)
 
-Defined in: packages/blue-context/src/context-hierarchy.ts:115
+Defined in: [packages/blue-context/src/context-hierarchy.ts:119](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context-hierarchy.ts#lines-119)
 
 Create a feature context as a child of `parent`, optionally wiring an allowlisted relay gateway.
 

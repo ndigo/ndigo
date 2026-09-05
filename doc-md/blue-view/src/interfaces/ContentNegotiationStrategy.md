@@ -6,7 +6,7 @@
 
 # Interface: ContentNegotiationStrategy
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:33
+Defined in: [packages/blue-view/src/content-negotiation-view-resolver.ts:33](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/content-negotiation-view-resolver.ts#lines-33)
 
 Resolves the media types supported for a request.
 
@@ -16,7 +16,7 @@ Resolves the media types supported for a request.
 
 > **resolveMediaTypes**(`request`): `MediaType`[]
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:40
+Defined in: [packages/blue-view/src/content-negotiation-view-resolver.ts:40](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/content-negotiation-view-resolver.ts#lines-40)
 
 Resolves the media types requested by the current request.
 

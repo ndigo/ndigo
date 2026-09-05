@@ -8,7 +8,7 @@
 
 > **preUpdate**(): (`_value`, `context`) => `void`
 
-Defined in: packages/blue-orm/src/decorators.ts:270
+Defined in: [packages/blue-orm/src/decorators.ts:277](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/decorators.ts#lines-277)
 
 Marks a method to be invoked by the `EntityManager` **before** an already-persisted
 entity is updated (update path).

@@ -6,7 +6,7 @@
 
 # Class: SiteBuilder
 
-Defined in: packages/blue-boot/src/site-builder.ts:26
+Defined in: [packages/blue-boot/src/site-builder.ts:26](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-boot/src/site-builder.ts#lines-26)
 
 **`Experimental`**
 
@@ -44,7 +44,7 @@ SiteBuilder.create()
 
 > `static` **create**(): `SiteBuilder`
 
-Defined in: packages/blue-boot/src/site-builder.ts:33
+Defined in: [packages/blue-boot/src/site-builder.ts:33](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-boot/src/site-builder.ts#lines-33)
 
 **`Experimental`**
 
@@ -62,7 +62,7 @@ A new SiteBuilder instance.
 
 > **child**(`_builder`): `this`
 
-Defined in: packages/blue-boot/src/site-builder.ts:44
+Defined in: [packages/blue-boot/src/site-builder.ts:44](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-boot/src/site-builder.ts#lines-44)
 
 **`Experimental`**
 
@@ -73,6 +73,8 @@ Registers a child application builder as part of the site composition.
 ##### \_builder
 
 [`ApplicationBuilder`](ApplicationBuilder.md)
+
+The child application builder to include.
 
 #### Returns
 
@@ -86,7 +88,7 @@ This builder for chaining.
 
 > **run**(...`_args`): `void`
 
-Defined in: packages/blue-boot/src/site-builder.ts:54
+Defined in: [packages/blue-boot/src/site-builder.ts:54](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-boot/src/site-builder.ts#lines-54)
 
 **`Experimental`**
 
@@ -97,6 +99,8 @@ Launches all registered child contexts and mounts the site.
 ##### \_args
 
 ...`string`[]
+
+Command-line arguments forwarded to each child.
 
 #### Returns
 

@@ -8,6 +8,6 @@
 
 > `const` **alphaRule**: `RegExp`
 
-Defined in: packages/blue-validate/src/formats.ts:94
+Defined in: [packages/blue-validate/src/formats.ts:94](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/formats.ts#lines-94)
 
 A regular expression matching letters.

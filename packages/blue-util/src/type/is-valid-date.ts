@@ -11,10 +11,10 @@ import isNumber from './is-number.js';
  * @category Type
  * @summary Is the given value a valid date?
  *
- * @description
+ *
  * Returns false if argument is and invalid date and true otherwise.
  * Invalid Date is a Date, whose time value is NaN.
- * @param {Date|external:Number} date The date to validate
+ * @param {Date|external:Number} value The date to validate
  * @returns {boolean} the date is valid
  * @throws {TypeError} 1 argument required
  * @example

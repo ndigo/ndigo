@@ -1,180 +1,99 @@
-# Blue Platform Web
+# @blue/parser
 
-Blue Platform Web provides browser-specific platform integrations for BlueJS.
+Parser combinators and string processing utilities for the BlueJS framework.
 
-## Features
+## Overview
 
-- Browser environment helpers
-- Cookie utilities and cookie-based argument resolution
-- Cookie theme resolver support
-- Router/dispatcher web-platform glue components
+`@blue/parser` provides:
+
+- **Glob pattern matching** with brace expansion (`{a,b}`, `{1..10}`)
+- **Extended glob support** (`@()`, `*()`, `?()`, `+()`, `!()`)
+- **Keypath expression parsing** for nested object access
+- **Re-exported parsers** from [arcsecond](https://github.com/francisrstokes/arcsecond) for building custom parsers
 
 ## Installation
 
 ```bash
-pnpm add @blue/platform-web
+pnpm add @blue/parser
 ```
 
 ## Usage
 
-> **Note**: If you are using `@blue/boot` to launch your application in the browser, these resolvers and converters are registered automatically. Manual configuration is only required for custom setups.
+### Brace Expansion
 
 ```typescript
-import {
-    argumentValueConverters,
-    configureArgumentValueConverterRegistry,
-    configureStrictBrowserArgumentResolvers,
-    Cookies,
-    configureBrowserArgumentResolvers,
-    configureCookieThemeResolver,
-} from '@blue/platform-web';
-import { GenericApplicationContext } from '@blue/context';
+import { braceExpression } from '@blue/parser';
 
-Cookies.set('theme', 'dark');
-Cookies.get('theme');
+const result = braceExpression.run('file{1..3}.txt');
+// result.result => ['file1.txt', 'file2.txt', 'file3.txt']
 
-const context = new GenericApplicationContext('app');
-context.setThemeName('default');
-
-// Register browser-specific method argument resolvers.
-// - BrowserCookieValueMethodArgumentResolver
-// - BrowserModelValueMethodArgumentResolver
-// - BrowserStateValueMethodArgumentResolver
-// - BrowserSessionValueMethodArgumentResolver
-configureBrowserArgumentResolvers(context);
-
-// Use built-in converter presets per resolver type.
-configureBrowserArgumentResolvers(context, {
-    state: 'number',
-    session: { optional: true, use: argumentValueConverters.boolean },
-});
-
-// Optional: provide an app-level converter registry.
-configureArgumentValueConverterRegistry(context, {
-    toInt: argumentValueConverters.number,
-});
-
-configureBrowserArgumentResolvers(context, {
-    state: 'toInt',
-    strictNamedConverterLookup: true,
-});
-
-// Convenience helper: strict mode enabled by default.
-configureStrictBrowserArgumentResolvers(context, {
-    registerConverterRegistry: {
-        toInt: argumentValueConverters.number,
-    },
-    state: 'toInt',
-});
-
-// Register cookie-backed theme resolver strategy.
-configureCookieThemeResolver(context, 'theme');
+const nested = braceExpression.run('a{b,{c,d}}e');
+// nested.result => ['abe', 'ace', 'ade']
 ```
 
-### End-to-End Conversion Pattern
+### Glob Patterns
 
 ```typescript
-import { GenericApplicationContext } from '@blue/context';
-import {
-    cookieValue,
-    errorHandler,
-    errorMapping,
-    ParameterConversionError,
-    routeMapping,
-    routeParams,
-    stateValue,
-} from '@blue/dispatcher';
-import {
-    argumentValueConverters,
-    configureArgumentValueConverterRegistry,
-    configureBrowserArgumentResolvers,
-} from '@blue/platform-web';
+import { glob } from '@blue/parser';
 
-const context = new GenericApplicationContext('app');
-
-configureArgumentValueConverterRegistry(context, {
-    toInt: argumentValueConverters.number,
-});
-
-configureBrowserArgumentResolvers(context, {
-    state: 'toInt',
-    strictNamedConverterLookup: true,
-});
-
-@routeMapping('/account')
-class AccountController {
-    @routeMapping('/summary')
-    @routeParams({
-        amount: cookieValue('amount', { convert: 'toInt' }),
-        txCount: stateValue('txCount', { convert: { optional: true, use: 'toInt' } }),
-    })
-    summary(amount: number, txCount: number | null) {
-        return { amount, txCount };
-    }
-}
-
-@errorHandler
-class GlobalErrorHandler {
-    @errorMapping(ParameterConversionError)
-    onConversionError(route, error: ParameterConversionError) {
-        return { viewName: 'conversion-error', message: error.message };
-    }
-}
+const pattern = glob.run('src/**/*.{js,ts}');
+// Matches: src/utils/helper.js, src/components/Button.ts, etc.
 ```
 
-### Route Parameter Extractors
-
-`@blue/dispatcher` route parameter extractors can now resolve browser-backed cookie and session values:
-
-- `cookieValue(name, options?)`
-- `modelValue(name, options?)`
-- `stateValue(name, options?)`
-- `sessionValue(name, options?)`
-
-These are resolved at dispatch-time when compatible argument resolvers are registered in the application context.
-
-### Optional Value Conversion
-
-Browser argument resolvers accept an optional value converter callback:
+### Keypath Expressions
 
 ```typescript
-import { BrowserStateValueMethodArgumentResolver } from '@blue/platform-web';
+import { keypathExpression } from '@blue/parser';
 
-const resolver = new BrowserStateValueMethodArgumentResolver((value) => Number(value));
+const path = keypathExpression.run('user.address.city');
+// Parses nested object paths
 ```
 
-Use conversion callbacks for lightweight coercion (e.g. `string` → `number`/`boolean`) while keeping parsing responsibilities in dedicated parser utilities.
+## Public API
 
-If a converter throws, resolvers wrap the failure in `ParameterConversionError`.
-This allows error resolvers to map conversion failures to dedicated views consistently.
+All public exports are defined in [`src/index.ts`](./src/index.ts):
 
-Built-in converter presets are exported as `argumentValueConverters`:
+| Export               | Type       | Description                                                    |
+| :------------------- | :--------- | :------------------------------------------------------------- |
+| `braceExpression`    | Parser     | Bash-style brace expansion                                     |
+| `glob`               | Parser     | Standard glob pattern matching                                 |
+| `keypathExpression`  | Parser     | Nested object path parsing                                     |
+| `sequenceExpression` | Parser     | Numeric/alphabetic sequences                                   |
+| `wildcardExpression` | Parser     | Simple wildcard patterns                                       |
+| `posixClass`         | Parser     | POSIX character classes `[:alpha:]`                            |
+| `manyN`              | Combinator | Match at least N occurrences                                   |
+| `sepByN`             | Combinator | Match N+ separated values                                      |
+| `noop`               | Parser     | No-op parser (identity)                                        |
+| **[arcsecond]**      | Re-exports | Core parser combinators (`char`, `choice`, `sequenceOf`, etc.) |
 
-- `identity`
-- `number`
-- `boolean`
-- `date`
-- `json`
+## Internal Modules
 
-You can also supply named converter references in `routeParams` extractor options:
+The following files are **internal implementation details** and not part of the public API:
 
-```typescript
-import { modelValue, routeMapping, routeParams } from '@blue/dispatcher';
+- **`src/_util.ts`** - Internal utility re-exports from `@blue/util` (Ramda functions, list operations)
+- **`src/_parser.ts`** - Low-level parser primitives used by public parsers
+- **`test/_expect.ts`** - Test helper utilities for parser validation
 
-class AccountController {
-    @routeMapping('/summary')
-    @routeParams({
-        profileId: modelValue('profile.id', { convert: 'number' }),
-    })
-    summary(profileId: number) {
-        return profileId;
-    }
-}
-```
+❌ **Do not import these files directly** - they are subject to change without notice.
 
-## Development
+## Testing
 
 ```bash
-pnpm --filter @blue/platform-web build:lib
-pnpm --filter @blue/platform-web test
+# Run all parser tests
+pnpm test
+
+# Run specific test suite
+pnpm vitest run test/brace-expression.spec.ts
 ```
+
+## Architecture
+
+This package follows the [BlueJS Architecture](../../ARCHITECTURE.md) as a **Layer 1: Support** package, providing foundational parsing capabilities used by higher-level framework components.
+
+## Contributing
+
+See [AGENTS.md](../../AGENTS.md) for development guidelines and conventions.
+
+## License
+
+ISC © BlueJS Team

@@ -8,6 +8,6 @@
 
 > `const` **addressLineRule**: `RegExp`
 
-Defined in: packages/blue-validate/src/formats.ts:79
+Defined in: [packages/blue-validate/src/formats.ts:79](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/formats.ts#lines-79)
 
 A regular expression matching an address line.

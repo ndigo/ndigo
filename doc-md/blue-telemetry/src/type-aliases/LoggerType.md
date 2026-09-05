@@ -8,7 +8,7 @@
 
 > **LoggerType** = `"open-telemetry"` \| `"console"` \| `"none"`
 
-Defined in: packages/blue-telemetry/src/logger/logger-factory.ts:13
+Defined in: [packages/blue-telemetry/src/logger/logger-factory.ts:13](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/logger/logger-factory.ts#lines-13)
 
 Defines the available types of loggers that can be created by the `LoggerFactory`.
 - `'open-telemetry'`: Uses OpenTelemetry for logging.

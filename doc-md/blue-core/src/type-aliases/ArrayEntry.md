@@ -8,7 +8,7 @@
 
 > **ArrayEntry**\<`Value`\> = \[`number`, `Value`\[`number`\]\]
 
-Defined in: packages/blue-core/src/iterable.ts:47
+Defined in: [packages/blue-core/src/iterable.ts:47](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/iterable.ts#lines-47)
 
 Represents a single entry for an array-like value, where the entry is `[index, value]`.
 

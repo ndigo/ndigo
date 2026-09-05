@@ -6,7 +6,7 @@
 
 # Class: AttributeValueMethodArgumentResolver
 
-Defined in: packages/blue-dispatcher/src/argument-resolver.ts:174
+Defined in: [packages/blue-dispatcher/src/argument-resolver.ts:163](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/argument-resolver.ts#lines-163)
 
 Resolves method arguments from request attributes.
 
@@ -18,19 +18,7 @@ Resolves method arguments from request attributes.
 
 ### Constructor
 
-> **new AttributeValueMethodArgumentResolver**(`factory?`): `AttributeValueMethodArgumentResolver`
-
-Defined in: packages/blue-dispatcher/src/argument-resolver.ts:58
-
-Creates an instance of AbstractNamedValueMethodArgumentResolver.
-
-#### Parameters
-
-##### factory?
-
-`Factory` \| `null`
-
-A factory for resolving values.
+> **new AttributeValueMethodArgumentResolver**(): `AttributeValueMethodArgumentResolver`
 
 #### Returns
 
@@ -46,7 +34,7 @@ A factory for resolving values.
 
 > **handleMissingValue**(`name`): `void`
 
-Defined in: packages/blue-dispatcher/src/argument-resolver.ts:67
+Defined in: [packages/blue-dispatcher/src/argument-resolver.ts:54](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/argument-resolver.ts#lines-54)
 
 Handles a missing argument value by throwing a TypeError.
 
@@ -76,7 +64,7 @@ If the argument is undefined or null.
 
 > **resolveArgument**(`parameter`, `route`, `mapping`): `any`
 
-Defined in: packages/blue-dispatcher/src/argument-resolver.ts:78
+Defined in: [packages/blue-dispatcher/src/argument-resolver.ts:65](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/argument-resolver.ts#lines-65)
 
 Resolves a method parameter into an argument value from a given route.
 
@@ -90,7 +78,7 @@ The method parameter to resolve.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The current route.
 
@@ -116,7 +104,7 @@ The resolved argument value, or `null` if not resolvable.
 
 > `protected` **resolveName**(`name`, `parameter`, `route`, `mapping`): `any`
 
-Defined in: packages/blue-dispatcher/src/argument-resolver.ts:175
+Defined in: [packages/blue-dispatcher/src/argument-resolver.ts:164](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/argument-resolver.ts#lines-164)
 
 #### Parameters
 
@@ -130,7 +118,7 @@ Defined in: packages/blue-dispatcher/src/argument-resolver.ts:175
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 ##### mapping
 
@@ -150,7 +138,7 @@ Defined in: packages/blue-dispatcher/src/argument-resolver.ts:175
 
 > **supportsParameter**(`parameter`): `boolean`
 
-Defined in: packages/blue-dispatcher/src/argument-resolver.ts:184
+Defined in: [packages/blue-dispatcher/src/argument-resolver.ts:173](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/argument-resolver.ts#lines-173)
 
 Whether the given method parameter is supported by this resolver.
 

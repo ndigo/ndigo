@@ -8,6 +8,6 @@
 
 > `const` **NOT\_MODIFIED**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
-Defined in: packages/blue-http/src/response-statuses.ts:120
+Defined in: [packages/blue-http/src/response-statuses.ts:120](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/response-statuses.ts#lines-120)
 
 This is used for caching purposes. It tells the client that the response has not been modified, so the client can continue to use the same cached version of the response.

@@ -8,7 +8,7 @@
 
 > **ContentTypeInit** = [`HTTPInit`](HTTPInit.md) & `object`
 
-Defined in: packages/blue-http/src/interceptors/content-type-interceptor.ts:12
+Defined in: [packages/blue-http/src/interceptors/content-type-interceptor.ts:12](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/content-type-interceptor.ts#lines-12)
 
 Request settings for [ContentTypeInterceptor](../classes/ContentTypeInterceptor.md).
 

@@ -6,7 +6,7 @@
 
 # Class: IfModifiedInterceptor
 
-Defined in: packages/blue-http/src/interceptors/if-modified-interceptor.ts:16
+Defined in: [packages/blue-http/src/interceptors/if-modified-interceptor.ts:16](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/if-modified-interceptor.ts#lines-16)
 
 Adds conditional request headers and caches validators from prior responses.
 
@@ -21,7 +21,7 @@ Adds conditional request headers and caches validators from prior responses.
 
 > **new IfModifiedInterceptor**(): `IfModifiedInterceptor`
 
-Defined in: packages/blue-http/src/interceptors/if-modified-interceptor.ts:22
+Defined in: [packages/blue-http/src/interceptors/if-modified-interceptor.ts:22](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/if-modified-interceptor.ts#lines-22)
 
 #### Returns
 
@@ -33,7 +33,7 @@ Defined in: packages/blue-http/src/interceptors/if-modified-interceptor.ts:22
 
 > **preInit**(`url`, `settings`): `boolean`
 
-Defined in: packages/blue-http/src/interceptors/if-modified-interceptor.ts:32
+Defined in: [packages/blue-http/src/interceptors/if-modified-interceptor.ts:32](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/if-modified-interceptor.ts#lines-32)
 
 #### Parameters
 
@@ -65,7 +65,7 @@ Whether or not the http request should continue execution.
 
 > **postResponse**(`response`, `settings`): `Promise`\<`void`\>
 
-Defined in: packages/blue-http/src/interceptors/if-modified-interceptor.ts:49
+Defined in: [packages/blue-http/src/interceptors/if-modified-interceptor.ts:53](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/if-modified-interceptor.ts#lines-53)
 
 #### Parameters
 
@@ -80,8 +80,6 @@ Defined in: packages/blue-http/src/interceptors/if-modified-interceptor.ts:49
 #### Returns
 
 `Promise`\<`void`\>
-
-#### Async
 
 #### Implementation of
 

@@ -6,7 +6,7 @@
 
 # Interface: RouteSegment
 
-Defined in: packages/blue-router/src/route.ts:8
+Defined in: [packages/blue-router/src/route.ts:8](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/route.ts#lines-8)
 
 Represents a single segment within a route, including its name, associated data, and raw string value.
 
@@ -24,7 +24,7 @@ Represents a single segment within a route, including its name, associated data,
 
 > **name**: `string`
 
-Defined in: packages/blue-router/src/route.ts:9
+Defined in: [packages/blue-router/src/route.ts:9](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/route.ts#lines-9)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: packages/blue-router/src/route.ts:9
 
 > **data**: `JSONObject`
 
-Defined in: packages/blue-router/src/route.ts:10
+Defined in: [packages/blue-router/src/route.ts:10](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/route.ts#lines-10)
 
 ***
 
@@ -40,7 +40,7 @@ Defined in: packages/blue-router/src/route.ts:10
 
 > `optional` **dataString?**: `string`
 
-Defined in: packages/blue-router/src/route.ts:11
+Defined in: [packages/blue-router/src/route.ts:11](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/route.ts#lines-11)
 
 ***
 
@@ -48,7 +48,7 @@ Defined in: packages/blue-router/src/route.ts:11
 
 > **raw**: `string`
 
-Defined in: packages/blue-router/src/route.ts:12
+Defined in: [packages/blue-router/src/route.ts:12](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/route.ts#lines-12)
 
 ## Methods
 

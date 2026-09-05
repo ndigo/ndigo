@@ -8,6 +8,6 @@
 
 > `const` **conversionService**: [`ConversionService`](../interfaces/ConversionService.md)
 
-Defined in: packages/blue-core/src/converter.ts:353
+Defined in: [packages/blue-core/src/converter.ts:354](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/converter.ts#lines-354)
 
 The default ConversionService singleton.

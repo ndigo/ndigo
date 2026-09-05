@@ -6,7 +6,7 @@
 
 # Interface: ChildNode\<T\>
 
-Defined in: packages/blue-core/src/tree-node.ts:8
+Defined in: [packages/blue-core/src/tree-node.ts:8](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/tree-node.ts#lines-8)
 
 A node that can reference its parent.
 
@@ -26,6 +26,6 @@ A node that can reference its parent.
 
 > `readonly` **parent**: `T` \| `null` \| `undefined`
 
-Defined in: packages/blue-core/src/tree-node.ts:10
+Defined in: [packages/blue-core/src/tree-node.ts:10](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/tree-node.ts#lines-10)
 
 The parent node, or `null`/`undefined` for roots.

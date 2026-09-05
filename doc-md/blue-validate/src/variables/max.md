@@ -8,7 +8,7 @@
 
 > `const` **max**: (`params`) => (`value`, `context`) => `void`
 
-Defined in: packages/blue-validate/src/decorators.ts:377
+Defined in: [packages/blue-validate/src/decorators.ts:375](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/decorators.ts#lines-375)
 
 TC39 Stage 3 decorator that validates a numeric property to be less than or equal to a specified maximum value.
 

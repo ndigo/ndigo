@@ -6,13 +6,13 @@
 
 # Class: ComponentAndView
 
-Defined in: packages/blue-domain/src/component-and-view.ts:13
+Defined in: [packages/blue-domain/src/component-and-view.ts:13](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-domain/src/component-and-view.ts#lines-13)
 
 Couples a domain component with a dispatcher model-and-view instance.
 
 ## Extends
 
-- `ModelAndView`
+- [`ModelAndView`](#)
 
 ## Constructors
 
@@ -28,7 +28,7 @@ Create a model and view pair.
 
 ##### view
 
-`string` \| `View`
+`string` \| [`View`](#)
 
 The view name or view instance.
 
@@ -64,7 +64,7 @@ Model data supplied to the view.
 
 ### view
 
-> **view**: `View` \| `null`
+> **view**: [`View`](#) \| `null`
 
 Defined in: packages/blue-dispatcher/lib/model-and-view.d.ts:23
 
@@ -80,7 +80,7 @@ Resolved view instance, when known.
 
 > **viewName**: `string`
 
-Defined in: packages/blue-domain/src/component-and-view.ts:14
+Defined in: [packages/blue-domain/src/component-and-view.ts:14](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-domain/src/component-and-view.ts#lines-14)
 
 Resolved view name, when known.
 
@@ -94,7 +94,7 @@ Resolved view name, when known.
 
 > **component**: [`DomainComponent`](../interfaces/DomainComponent.md)
 
-Defined in: packages/blue-domain/src/component-and-view.ts:23
+Defined in: [packages/blue-domain/src/component-and-view.ts:23](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-domain/src/component-and-view.ts#lines-23)
 
 Domain component associated with the current view model.
 
@@ -126,7 +126,7 @@ Whether this instance has either a view name or view object.
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-domain/src/component-and-view.ts:16
+Defined in: [packages/blue-domain/src/component-and-view.ts:16](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-domain/src/component-and-view.ts#lines-16)
 
 ##### Returns
 

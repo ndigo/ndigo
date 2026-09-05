@@ -6,7 +6,7 @@
 
 # Interface: ParentNode\<T\>
 
-Defined in: packages/blue-core/src/tree-node.ts:16
+Defined in: [packages/blue-core/src/tree-node.ts:16](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/tree-node.ts#lines-16)
 
 A node that can enumerate its children.
 
@@ -26,6 +26,6 @@ A node that can enumerate its children.
 
 > `readonly` **children**: readonly `T`[]
 
-Defined in: packages/blue-core/src/tree-node.ts:18
+Defined in: [packages/blue-core/src/tree-node.ts:18](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/tree-node.ts#lines-18)
 
 The node's direct children.

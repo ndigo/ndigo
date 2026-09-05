@@ -13,7 +13,7 @@ import Cookies from './cookies';
  * Browser-specific bind resolver.
  *
  * Resolves values from browser data sources (query, state, session, cookie)
- * and binds them to objects using {@link DataBinder}.
+ * and binds them to objects using `DataBinder`.
  *
  * Overrides `resolveArgument()` because the bind pipeline (source data →
  * filter by prefix → bind to object → convert) differs from the standard

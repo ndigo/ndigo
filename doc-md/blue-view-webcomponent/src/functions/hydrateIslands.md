@@ -8,7 +8,7 @@
 
 > **hydrateIslands**(`root?`): `number`
 
-Defined in: packages/blue-view-webcomponent/src/hydrate.ts:28
+Defined in: [packages/blue-view-webcomponent/src/hydrate.ts:28](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view-webcomponent/src/hydrate.ts#lines-28)
 
 Hydrates all islands in a root element: finds every `[data-blue-island]`
 marker, constructs the corresponding custom element, sets its `.model` from

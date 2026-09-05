@@ -6,7 +6,7 @@
 
 # Class: InvalidRelayError
 
-Defined in: packages/blue-context/src/event-gateway.ts:209
+Defined in: [packages/blue-context/src/event-gateway.ts:209](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-gateway.ts#lines-209)
 
 Error thrown when a relay is rejected and throw-on-invalid mode is enabled.
 
@@ -20,7 +20,7 @@ Error thrown when a relay is rejected and throw-on-invalid mode is enabled.
 
 > **new InvalidRelayError**(`message`): `InvalidRelayError`
 
-Defined in: packages/blue-context/src/event-gateway.ts:219
+Defined in: [packages/blue-context/src/event-gateway.ts:219](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-gateway.ts#lines-219)
 
 Creates an invalid-relay error.
 
@@ -48,7 +48,7 @@ The error message.
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-context/src/event-gateway.ts:210
+Defined in: [packages/blue-context/src/event-gateway.ts:210](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-gateway.ts#lines-210)
 
 ##### Returns
 

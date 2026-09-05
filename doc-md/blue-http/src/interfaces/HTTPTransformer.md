@@ -6,7 +6,7 @@
 
 # Interface: HTTPTransformer\<TInput, TOutput\>
 
-Defined in: packages/blue-http/src/transformers/http-transformer.ts:42
+Defined in: [packages/blue-http/src/transformers/http-transformer.ts:42](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/transformers/http-transformer.ts#lines-42)
 
 Contract for request/response body transformers.
 
@@ -28,7 +28,7 @@ Inspired by Spring Framework's `HttpMessageConverter` pattern.
 
 > **canTransform**(`body`, `context`): `boolean`
 
-Defined in: packages/blue-http/src/transformers/http-transformer.ts:50
+Defined in: [packages/blue-http/src/transformers/http-transformer.ts:50](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/transformers/http-transformer.ts#lines-50)
 
 Determines if this transformer can handle the given body and context.
 
@@ -58,7 +58,7 @@ true if this transformer should be applied
 
 > **transform**(`body`, `context`): `TOutput` \| `Promise`\<`TOutput`\>
 
-Defined in: packages/blue-http/src/transformers/http-transformer.ts:59
+Defined in: [packages/blue-http/src/transformers/http-transformer.ts:59](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/transformers/http-transformer.ts#lines-59)
 
 Transforms the request/response body.
 

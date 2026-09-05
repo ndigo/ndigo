@@ -6,7 +6,7 @@
 
 # Class: MappedHTTPInterceptor
 
-Defined in: packages/blue-http/src/http.ts:376
+Defined in: [packages/blue-http/src/http.ts:386](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-386)
 
 Runs after a request finishes, whether it succeeded or failed.
 
@@ -24,7 +24,7 @@ Runs after a request finishes, whether it succeeded or failed.
 
 > **new MappedHTTPInterceptor**(`interceptor`, `includePatterns`, `excludePatterns?`): `MappedHTTPInterceptor`
 
-Defined in: packages/blue-http/src/http.ts:407
+Defined in: [packages/blue-http/src/http.ts:417](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-417)
 
 Creates a URL-scoped interceptor wrapper.
 
@@ -58,7 +58,7 @@ URL patterns that disable the interceptor.
 
 > **urlMatcher**: [`WildcardMatcher`](WildcardMatcher.md)
 
-Defined in: packages/blue-http/src/http.ts:391
+Defined in: [packages/blue-http/src/http.ts:401](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-401)
 
 URL matcher used to evaluate include/exclude patterns.
 
@@ -70,7 +70,7 @@ URL matcher used to evaluate include/exclude patterns.
 
 > **get** **interceptor**(): [`HTTPInterceptor`](../type-aliases/HTTPInterceptor.md)
 
-Defined in: packages/blue-http/src/http.ts:396
+Defined in: [packages/blue-http/src/http.ts:406](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-406)
 
 The wrapped interceptor that will run when the URL matches.
 
@@ -84,7 +84,7 @@ The wrapped interceptor that will run when the URL matches.
 
 > **matches**(`url`, `matcher?`): `boolean`
 
-Defined in: packages/blue-http/src/http.ts:421
+Defined in: [packages/blue-http/src/http.ts:431](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-431)
 
 Tests whether the supplied URL is included and not excluded.
 
@@ -114,7 +114,7 @@ Optional matcher to reuse for pattern checks.
 
 > **postError**(`error`, `request`, `http`): `Promise`\<`Response` \| `undefined`\>
 
-Defined in: packages/blue-http/src/http.ts:461
+Defined in: [packages/blue-http/src/http.ts:471](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-471)
 
 Delegates post-error handling to the wrapped interceptor when supported.
 
@@ -154,7 +154,7 @@ A replacement response, or `undefined` if the interceptor does not handle errors
 
 > **postComplete**(`request`, `response`): `void`
 
-Defined in: packages/blue-http/src/http.ts:474
+Defined in: [packages/blue-http/src/http.ts:484](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-484)
 
 Delegates completion handling to the wrapped interceptor when supported.
 
@@ -168,7 +168,7 @@ The request that completed.
 
 ##### response
 
-`Response` \| `ResponseError`
+`Response` \| [`ResponseError`](#)
 
 The final response or error wrapper.
 
@@ -186,7 +186,7 @@ The final response or error wrapper.
 
 > **postResponse**(`response`, `settings`): `Promise`\<`void` \| `Response`\>
 
-Defined in: packages/blue-http/src/http.ts:488
+Defined in: [packages/blue-http/src/http.ts:498](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-498)
 
 Delegates response handling to the wrapped interceptor when supported.
 
@@ -220,7 +220,7 @@ A replacement response, or `void` to keep the original.
 
 > **preInit**(`url`, `settings`): `boolean`
 
-Defined in: packages/blue-http/src/http.ts:502
+Defined in: [packages/blue-http/src/http.ts:512](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-512)
 
 Delegates initialization handling to the wrapped interceptor when supported.
 
@@ -254,7 +254,7 @@ The request settings being prepared.
 
 > **preRequest**(`request`, `http`): `Promise`\<`void` \| `Response` \| `Request`\>
 
-Defined in: packages/blue-http/src/http.ts:517
+Defined in: [packages/blue-http/src/http.ts:527](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-527)
 
 Delegates request handling to the wrapped interceptor when supported.
 
@@ -288,7 +288,7 @@ A replacement request, or the original request when unsupported.
 
 > **setExcludePatterns**(`excludePatterns?`): `void`
 
-Defined in: packages/blue-http/src/http.ts:530
+Defined in: [packages/blue-http/src/http.ts:540](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-540)
 
 Replaces the patterns that block the wrapped interceptor.
 
@@ -310,7 +310,7 @@ URL patterns that disable the interceptor.
 
 > **setIncludePatterns**(`includePatterns?`): `void`
 
-Defined in: packages/blue-http/src/http.ts:539
+Defined in: [packages/blue-http/src/http.ts:549](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-549)
 
 Replaces the patterns that enable the wrapped interceptor.
 

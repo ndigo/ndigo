@@ -6,7 +6,7 @@
 
 # Interface: ContentLookup
 
-Defined in: packages/blue-validate/src/format.ts:11
+Defined in: [packages/blue-validate/src/format.ts:11](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/format.ts#lines-11)
 
 Minimal interface for resolving localised strings by key and language.
 Compatible with `ContentSource` from `@blue/content`.
@@ -17,7 +17,7 @@ Compatible with `ContentSource` from `@blue/content`.
 
 > **getContent**(`key`, `language`): `string`
 
-Defined in: packages/blue-validate/src/format.ts:19
+Defined in: [packages/blue-validate/src/format.ts:19](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/format.ts#lines-19)
 
 Returns the localised string for the given key and language.
 

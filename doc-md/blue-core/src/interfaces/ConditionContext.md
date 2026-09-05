@@ -6,7 +6,7 @@
 
 # Interface: ConditionContext
 
-Defined in: packages/blue-core/src/conditional.ts:33
+Defined in: [packages/blue-core/src/conditional.ts:33](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/conditional.ts#lines-33)
 
 The runtime surface an active-condition evaluation needs: the environment
 (for property conditions) and the entry registry (for missing-entry
@@ -18,7 +18,7 @@ conditions). Supplied by the bootstrap as it registers sources.
 
 > **getProperty**(`key`): `unknown`
 
-Defined in: packages/blue-core/src/conditional.ts:40
+Defined in: [packages/blue-core/src/conditional.ts:40](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/conditional.ts#lines-40)
 
 Resolve a configuration property.
 
@@ -42,7 +42,7 @@ The property value, or `undefined` when absent.
 
 > **hasValue**(`name`): `boolean`
 
-Defined in: packages/blue-core/src/conditional.ts:47
+Defined in: [packages/blue-core/src/conditional.ts:47](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/conditional.ts#lines-47)
 
 Whether an entry with the given name is already registered.
 

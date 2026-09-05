@@ -8,6 +8,6 @@
 
 > `const` **SHARED\_DEPENDENCY\_REGISTRY\_TOKEN**: [`ContextToken`](../classes/ContextToken.md)\<[`SharedDependencyRegistry`](../interfaces/SharedDependencyRegistry.md)\>
 
-Defined in: packages/blue-context/src/feature-context-mount-manager.ts:396
+Defined in: [packages/blue-context/src/feature-context-mount-manager.ts:389](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/feature-context-mount-manager.ts#lines-389)
 
 ContextToken for resolving the SharedDependencyRegistry through the context hierarchy.

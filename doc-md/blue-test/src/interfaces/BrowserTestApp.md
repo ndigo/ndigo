@@ -6,7 +6,7 @@
 
 # Interface: BrowserTestApp
 
-Defined in: packages/blue-test/src/browser-mock-mvc.ts:24
+Defined in: [packages/blue-test/src/browser-mock-mvc.ts:24](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-test/src/browser-mock-mvc.ts#lines-24)
 
 A browser application booted for in-process dispatch.
 
@@ -16,7 +16,7 @@ A browser application booted for in-process dispatch.
 
 > **context**: `ApplicationContext`
 
-Defined in: packages/blue-test/src/browser-mock-mvc.ts:26
+Defined in: [packages/blue-test/src/browser-mock-mvc.ts:26](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-test/src/browser-mock-mvc.ts#lines-26)
 
 The browser application context.
 
@@ -24,9 +24,9 @@ The browser application context.
 
 ### dispatcher
 
-> **dispatcher**: `BrowserDispatcher`
+> **dispatcher**: [`BrowserDispatcher`](#)
 
-Defined in: packages/blue-test/src/browser-mock-mvc.ts:28
+Defined in: [packages/blue-test/src/browser-mock-mvc.ts:28](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-test/src/browser-mock-mvc.ts#lines-28)
 
 The configured browser dispatcher.
 
@@ -36,7 +36,7 @@ The configured browser dispatcher.
 
 > **viewTarget**: [`MemoryViewTarget`](../classes/MemoryViewTarget.md)
 
-Defined in: packages/blue-test/src/browser-mock-mvc.ts:30
+Defined in: [packages/blue-test/src/browser-mock-mvc.ts:30](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-test/src/browser-mock-mvc.ts#lines-30)
 
 The capture view target.
 
@@ -46,7 +46,7 @@ The capture view target.
 
 > **close**(): `void`
 
-Defined in: packages/blue-test/src/browser-mock-mvc.ts:32
+Defined in: [packages/blue-test/src/browser-mock-mvc.ts:32](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-test/src/browser-mock-mvc.ts#lines-32)
 
 Close the context.
 

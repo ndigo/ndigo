@@ -6,15 +6,15 @@
 
 # Function: propertySource()
 
-> **propertySource**(`propertySource`): \<`T`\>(`target`, `context`) => `T`
+> **propertySource**(`source`): \<`T`\>(`target`, `context`) => `T`
 
-Defined in: packages/blue-context/src/configuration.ts:159
+Defined in: [packages/blue-context/src/configuration.ts:159](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/configuration.ts#lines-159)
 
 Adds a property source to a configuration class.
 
 ## Parameters
 
-### propertySource
+### source
 
 `JSONObject` \| `Enumerable`\<`string`, `JSONValue`\>
 

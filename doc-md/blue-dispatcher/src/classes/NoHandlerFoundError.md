@@ -6,7 +6,7 @@
 
 # Class: NoHandlerFoundError
 
-Defined in: packages/blue-dispatcher/src/error.ts:16
+Defined in: [packages/blue-dispatcher/src/error.ts:16](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/error.ts#lines-16)
 
 Error thrown when no suitable handler is found for a given route.
 This typically indicates a misconfiguration or an unhandled route.
@@ -21,13 +21,13 @@ This typically indicates a misconfiguration or an unhandled route.
 
 > **new NoHandlerFoundError**(`route`): `NoHandlerFoundError`
 
-Defined in: packages/blue-dispatcher/src/error.ts:23
+Defined in: [packages/blue-dispatcher/src/error.ts:23](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/error.ts#lines-23)
 
 #### Parameters
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 #### Returns
 
@@ -41,9 +41,9 @@ Defined in: packages/blue-dispatcher/src/error.ts:23
 
 ### route
 
-> **route**: `Route`
+> **route**: [`Route`](#)
 
-Defined in: packages/blue-dispatcher/src/error.ts:17
+Defined in: [packages/blue-dispatcher/src/error.ts:17](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/error.ts#lines-17)
 
 ## Accessors
 
@@ -53,7 +53,7 @@ Defined in: packages/blue-dispatcher/src/error.ts:17
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-dispatcher/src/error.ts:19
+Defined in: [packages/blue-dispatcher/src/error.ts:19](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/error.ts#lines-19)
 
 ##### Returns
 

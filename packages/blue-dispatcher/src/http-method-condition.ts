@@ -4,7 +4,7 @@
  * Follows the same pattern as `QueryParamCondition` / `MatrixParamCondition`
  * so the shared mapping stack (`RouteMappingInfo`) treats it uniformly.
  * A condition with no method (`undefined`) matches any method — this preserves
- * `@routeMapping` behavior, which never sets a method.
+ * `routeMapping` behavior, which never sets a method.
  *
  * @module
  * @since 1.0.0

@@ -8,7 +8,7 @@
 
 > **matrixValue**(`name`, `options?`): [`ParameterExtractor`](../type-aliases/ParameterExtractor.md)
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:220
+Defined in: [packages/blue-dispatcher/src/route-parameter.ts:215](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-parameter.ts#lines-215)
 
 Factory function: Create a matrix parameter extractor
 
@@ -29,7 +29,7 @@ Factory function: Create a matrix parameter extractor
 ## Example
 
 ```ts
-@routeParams({
+`routeParams`({
   color: matrixValue('color'),
   size: matrixValue('size', { required: true })
 })

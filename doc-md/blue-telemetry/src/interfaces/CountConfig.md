@@ -6,7 +6,7 @@
 
 # Interface: CountConfig
 
-Defined in: packages/blue-telemetry/src/instrumentation/base.ts:35
+Defined in: [packages/blue-telemetry/src/instrumentation/base.ts:35](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/instrumentation/base.ts#lines-35)
 
 Configuration for counter instrumentation.
 
@@ -16,7 +16,7 @@ Configuration for counter instrumentation.
 
 > **name**: `string`
 
-Defined in: packages/blue-telemetry/src/instrumentation/base.ts:37
+Defined in: [packages/blue-telemetry/src/instrumentation/base.ts:37](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/instrumentation/base.ts#lines-37)
 
 The name of the counter.
 
@@ -26,6 +26,6 @@ The name of the counter.
 
 > `optional` **attributes?**: `Record`\<`string`, `any`\>
 
-Defined in: packages/blue-telemetry/src/instrumentation/base.ts:39
+Defined in: [packages/blue-telemetry/src/instrumentation/base.ts:39](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/instrumentation/base.ts#lines-39)
 
 Optional attributes to associate with the counter.

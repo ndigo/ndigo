@@ -6,7 +6,7 @@
 
 # Abstract Class: AbstractView
 
-Defined in: packages/blue-view/src/view.ts:46
+Defined in: [packages/blue-view/src/view.ts:46](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view.ts#lines-46)
 
 Abstract base class for [\`View\`](../interfaces/View.md) implementations. Subclasses need to implement the actual rendering.
 
@@ -29,7 +29,7 @@ Abstract base class for [\`View\`](../interfaces/View.md) implementations. Subcl
 
 > **new AbstractView**(): `AbstractView`
 
-Defined in: packages/blue-view/src/view.ts:68
+Defined in: [packages/blue-view/src/view.ts:68](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view.ts#lines-68)
 
 #### Returns
 
@@ -59,7 +59,7 @@ A symbol indicating that the value is aware.
 
 > **destroyed**: `boolean`
 
-Defined in: packages/blue-view/src/view.ts:50
+Defined in: [packages/blue-view/src/view.ts:50](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view.ts#lines-50)
 
 Indicates if the view has been destroyed.
 
@@ -73,7 +73,7 @@ Indicates if the view has been destroyed.
 
 > **mediaType**: `MediaType` \| `null`
 
-Defined in: packages/blue-view/src/view.ts:54
+Defined in: [packages/blue-view/src/view.ts:54](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view.ts#lines-54)
 
 The media type of the view.
 
@@ -87,7 +87,7 @@ The media type of the view.
 
 > **name**: `string`
 
-Defined in: packages/blue-view/src/view.ts:58
+Defined in: [packages/blue-view/src/view.ts:58](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view.ts#lines-58)
 
 The name of the view.
 
@@ -103,7 +103,7 @@ The name of the view.
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-view/src/view.ts:64
+Defined in: [packages/blue-view/src/view.ts:64](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view.ts#lines-64)
 
 Returns the string tag for this view.
 
@@ -173,7 +173,7 @@ The name to set.
 
 > **destroy**(): `void`
 
-Defined in: packages/blue-view/src/view.ts:77
+Defined in: [packages/blue-view/src/view.ts:77](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view.ts#lines-77)
 
 Destroys the view, releasing any resources.
 
@@ -191,7 +191,7 @@ Destroys the view, releasing any resources.
 
 > **render**(`model`, `request`, `target?`): `Promise`\<`void`\>
 
-Defined in: packages/blue-view/src/view.ts:91
+Defined in: [packages/blue-view/src/view.ts:91](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view.ts#lines-91)
 
 Render the view given the specified model.
 
@@ -229,7 +229,7 @@ The optional view target.
 
 > **toJSON**(): `JSONObject`
 
-Defined in: packages/blue-view/src/view.ts:104
+Defined in: [packages/blue-view/src/view.ts:104](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view.ts#lines-104)
 
 Returns a JSON representation of the view.
 
@@ -249,7 +249,7 @@ A JSON object representing the view.
 
 > **toString**(): `string`
 
-Defined in: packages/blue-view/src/view.ts:115
+Defined in: [packages/blue-view/src/view.ts:115](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view.ts#lines-115)
 
 Returns a string representation of the view.
 
@@ -269,7 +269,7 @@ A string representing the view.
 
 > `protected` **\_createViewModel**(`model`, `request`): `any`
 
-Defined in: packages/blue-view/src/view.ts:126
+Defined in: [packages/blue-view/src/view.ts:126](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view.ts#lines-126)
 
 Creates the view model from the given model and request.
 
@@ -299,7 +299,7 @@ The created view model.
 
 > `abstract` `protected` **\_renderView**(`viewModel`, `request`, `target?`): `void` \| `Promise`\<`void`\>
 
-Defined in: packages/blue-view/src/view.ts:138
+Defined in: [packages/blue-view/src/view.ts:138](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view.ts#lines-138)
 
 Renders the view with the given view model, request, and optional target.
 

@@ -8,7 +8,12 @@
 
 > **routeParams**(`paramMap`): (`target`, `context`) => `void`
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:485
+Defined in: [packages/blue-dispatcher/src/route-parameter.ts:459](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-parameter.ts#lines-459)
+
+Invoked via the `routeParams` decorator.
+
+Replaces legacy parameter decorators with a method-level decorator.
+Uses function parameter name extraction to map extractors to positions.
 
 ## Parameters
 
@@ -20,13 +25,6 @@ Defined in: packages/blue-dispatcher/src/route-parameter.ts:485
 
 (`target`, `context`) => `void`
 
-## Route Params
-
-decorator - Maps parameter names to extractors
-
-Replaces legacy parameter decorators with a method-level decorator.
-Uses function parameter name extraction to map extractors to positions.
-
 ## Example
 
 ```ts
@@ -34,7 +32,7 @@ Uses function parameter name extraction to map extractors to positions.
 handleRequest(@queryValue('page') page: string) {}
 
 // New (TC39):
-@routeParams({
+`routeParams`({
   page: queryValue('page')
 })
 handleRequest(page: string) {}

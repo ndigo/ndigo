@@ -6,7 +6,7 @@
 
 # Class: URLGlobPathMatcher
 
-Defined in: packages/blue-core/src/path-matcher.ts:229
+Defined in: [packages/blue-core/src/path-matcher.ts:229](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/path-matcher.ts#lines-229)
 
 ## Implements
 
@@ -18,7 +18,7 @@ Defined in: packages/blue-core/src/path-matcher.ts:229
 
 > **new URLGlobPathMatcher**(`cacheCapacity?`): `URLGlobPathMatcher`
 
-Defined in: packages/blue-core/src/path-matcher.ts:235
+Defined in: [packages/blue-core/src/path-matcher.ts:235](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/path-matcher.ts#lines-235)
 
 #### Parameters
 
@@ -38,7 +38,7 @@ Maximum number of compiled patterns to cache. Default: 256.
 
 > **getPatternComparator**(`path`): [`Comparator`](../interfaces/Comparator.md)\<`string`\>
 
-Defined in: packages/blue-core/src/path-matcher.ts:239
+Defined in: [packages/blue-core/src/path-matcher.ts:239](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/path-matcher.ts#lines-239)
 
 Given a full path, returns a [Comparator](../interfaces/Comparator.md) suitable for sorting patterns
 in order of explicitness for that path.
@@ -69,7 +69,7 @@ A comparator capable of sorting patterns in order of explicitness.
 
 > **match**(`pattern`, `path`): `boolean`
 
-Defined in: packages/blue-core/src/path-matcher.ts:243
+Defined in: [packages/blue-core/src/path-matcher.ts:243](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/path-matcher.ts#lines-243)
 
 Match the given `path` against the given `pattern`, according to this PathMatcher's matching strategy.
 
@@ -103,7 +103,7 @@ Whether or not the `path` matched.
 
 > **merge**(`pattern1`, `pattern2`): `string`
 
-Defined in: packages/blue-core/src/path-matcher.ts:254
+Defined in: [packages/blue-core/src/path-matcher.ts:254](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/path-matcher.ts#lines-254)
 
 Combines two patterns into a new pattern.
 

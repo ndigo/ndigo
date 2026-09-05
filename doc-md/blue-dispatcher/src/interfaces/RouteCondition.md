@@ -6,7 +6,7 @@
 
 # Interface: RouteCondition\<T\>
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:21
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:21](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-21)
 
 Contract for route matching conditions.
 
@@ -22,7 +22,7 @@ Contract for route matching conditions.
 
 > **merge**(`value`): `T`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:28
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:28](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-28)
 
 Merge this condition with another condition of the same type.
 
@@ -46,7 +46,7 @@ The merged condition.
 
 > **getMatchingCondition**(`route`): `T` \| `null`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:36
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:36](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-36)
 
 Return the condition that matches a route, or `null` when no match exists.
 
@@ -54,7 +54,7 @@ Return the condition that matches a route, or `null` when no match exists.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The current route.
 
@@ -70,7 +70,7 @@ A matching condition instance or `null`.
 
 > **compareTo**(`value`, `route?`): `number`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:45
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:45](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-45)
 
 Compare this condition with another condition.
 
@@ -84,7 +84,7 @@ The condition to compare against.
 
 ##### route?
 
-`Route`\<`Record`\<`string`, `string`\>\>
+[`Route`](#)\<`Record`\<`string`, `string`\>\>
 
 The route used to break ties, if needed.
 

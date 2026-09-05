@@ -8,7 +8,7 @@
 
 > **findAncestor**(`context`, `predicate`): [`ApplicationContext`](../interfaces/ApplicationContext.md) \| `undefined`
 
-Defined in: packages/blue-context/src/context-hierarchy.ts:191
+Defined in: [packages/blue-context/src/context-hierarchy.ts:195](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context-hierarchy.ts#lines-195)
 
 Find the first ancestor (excluding self) that matches `predicate`.
 

@@ -8,7 +8,7 @@
 
 > `const` **likeRedirectAwareHTTPInterceptor**: (`value`) => `value is RedirectAwareHTTPInterceptor`
 
-Defined in: packages/blue-http/src/interceptors/response-class-interceptor.ts:86
+Defined in: [packages/blue-http/src/interceptors/response-class-interceptor.ts:86](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/response-class-interceptor.ts#lines-86)
 
 Tests whether a value exposes `postRedirectResponse()`.
 

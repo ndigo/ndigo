@@ -6,9 +6,9 @@
 
 # Class: CountedInstrumentation
 
-Defined in: packages/blue-telemetry/src/instrumentation/counted.ts:13
+Defined in: [packages/blue-telemetry/src/instrumentation/counted.ts:13](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/instrumentation/counted.ts#lines-13)
 
-An OpenTelemetry instrumentation that automatically wraps methods decorated with `@counted`.
+An OpenTelemetry instrumentation that automatically wraps methods decorated with `counted`.
 
 This instrumentation discovers decorated methods via the `CountedRegistry` and
 applies the counting logic using the instrumentation's patching mechanism.
@@ -23,7 +23,7 @@ applies the counting logic using the instrumentation's patching mechanism.
 
 > **new CountedInstrumentation**(): `CountedInstrumentation`
 
-Defined in: packages/blue-telemetry/src/instrumentation/counted.ts:14
+Defined in: [packages/blue-telemetry/src/instrumentation/counted.ts:14](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/instrumentation/counted.ts#lines-14)
 
 #### Returns
 
@@ -39,7 +39,7 @@ Defined in: packages/blue-telemetry/src/instrumentation/counted.ts:14
 
 > `protected` **init**(): `any`[]
 
-Defined in: packages/blue-telemetry/src/instrumentation/base.ts:64
+Defined in: [packages/blue-telemetry/src/instrumentation/base.ts:64](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/instrumentation/base.ts#lines-64)
 
 #### Returns
 
@@ -57,7 +57,7 @@ Defined in: packages/blue-telemetry/src/instrumentation/base.ts:64
 
 > `protected` **\_patchCount**(`config`): (`original`) => (`this`, ...`args`) => `any`
 
-Defined in: packages/blue-telemetry/src/instrumentation/base.ts:77
+Defined in: [packages/blue-telemetry/src/instrumentation/base.ts:77](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/instrumentation/base.ts#lines-77)
 
 Returns a synchronous patch function that increments a counter.
 
@@ -81,7 +81,7 @@ Returns a synchronous patch function that increments a counter.
 
 > `protected` **\_patchSync**(`config`): (`original`) => (`this`, ...`args`) => `any`
 
-Defined in: packages/blue-telemetry/src/instrumentation/base.ts:93
+Defined in: [packages/blue-telemetry/src/instrumentation/base.ts:93](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/instrumentation/base.ts#lines-93)
 
 Returns a synchronous patch function that wraps the original method
 in a span with the given configuration.
@@ -106,7 +106,7 @@ in a span with the given configuration.
 
 > `protected` **\_patchAsync**(`config`): (`original`) => (`this`, ...`args`) => `Promise`\<`any`\>
 
-Defined in: packages/blue-telemetry/src/instrumentation/base.ts:119
+Defined in: [packages/blue-telemetry/src/instrumentation/base.ts:119](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/instrumentation/base.ts#lines-119)
 
 Returns an asynchronous patch function that wraps the original method
 in an active span with the given configuration.
@@ -131,7 +131,7 @@ in an active span with the given configuration.
 
 > **enable**(): `void`
 
-Defined in: packages/blue-telemetry/src/instrumentation/counted.ts:18
+Defined in: [packages/blue-telemetry/src/instrumentation/counted.ts:18](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/instrumentation/counted.ts#lines-18)
 
 Hook for subclasses to wire up `_wrap` calls.
 
@@ -149,7 +149,7 @@ Hook for subclasses to wire up `_wrap` calls.
 
 > **disable**(): `void`
 
-Defined in: packages/blue-telemetry/src/instrumentation/counted.ts:41
+Defined in: [packages/blue-telemetry/src/instrumentation/counted.ts:37](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/instrumentation/counted.ts#lines-37)
 
 Hook for subclasses to wire up `_unwrap` calls.
 

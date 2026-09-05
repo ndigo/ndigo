@@ -6,7 +6,7 @@
 
 # Class: LoggingRouteHandlerInterceptor
 
-Defined in: packages/blue-dispatcher/src/logging-interceptor.ts:42
+Defined in: [packages/blue-dispatcher/src/logging-interceptor.ts:42](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/logging-interceptor.ts#lines-42)
 
 A standard interceptor that logs the execution time and outcome of a route handler.
 Useful for performance monitoring and debugging.
@@ -24,7 +24,7 @@ is provided, falls back to `console`-based logging for backward compatibility.
 
 > **new LoggingRouteHandlerInterceptor**(`logger?`): `LoggingRouteHandlerInterceptor`
 
-Defined in: packages/blue-dispatcher/src/logging-interceptor.ts:58
+Defined in: [packages/blue-dispatcher/src/logging-interceptor.ts:58](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/logging-interceptor.ts#lines-58)
 
 Create a logging interceptor.
 
@@ -46,7 +46,7 @@ Optional structured logger implementation.
 
 > **preHandle**(`route`, `handler`): `Promise`\<`boolean`\>
 
-Defined in: packages/blue-dispatcher/src/logging-interceptor.ts:77
+Defined in: [packages/blue-dispatcher/src/logging-interceptor.ts:77](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/logging-interceptor.ts#lines-77)
 
 Record the start time and emit a "route started" log entry.
 
@@ -54,7 +54,7 @@ Record the start time and emit a "route started" log entry.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The current route.
 
@@ -80,7 +80,7 @@ The route handler.
 
 > **postHandle**(`route`, `handler`, `modelAndView`): `Promise`\<`void`\>
 
-Defined in: packages/blue-dispatcher/src/logging-interceptor.ts:90
+Defined in: [packages/blue-dispatcher/src/logging-interceptor.ts:90](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/logging-interceptor.ts#lines-90)
 
 Emit a completion log entry after successful handler execution.
 
@@ -88,7 +88,7 @@ Emit a completion log entry after successful handler execution.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The current route.
 
@@ -118,7 +118,7 @@ The model and view returned by the handler.
 
 > **completeHandle**(`route`, `handler`, `error`): `Promise`\<`void`\>
 
-Defined in: packages/blue-dispatcher/src/logging-interceptor.ts:108
+Defined in: [packages/blue-dispatcher/src/logging-interceptor.ts:108](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/logging-interceptor.ts#lines-108)
 
 Emit a failure log entry and clear the recorded start time.
 
@@ -126,7 +126,7 @@ Emit a failure log entry and clear the recorded start time.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The current route.
 

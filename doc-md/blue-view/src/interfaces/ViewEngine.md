@@ -6,7 +6,7 @@
 
 # Interface: ViewEngine
 
-Defined in: packages/blue-view/src/view-engine.ts:14
+Defined in: [packages/blue-view/src/view-engine.ts:14](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view-engine.ts#lines-14)
 
 Translates a view and model into a rendered output for a target.
 
@@ -18,7 +18,7 @@ Engines own the rendering format; targets own the destination.
 
 > **render**(`view`, `model`, `target`, `route`): `Promise`\<`void`\>
 
-Defined in: packages/blue-view/src/view-engine.ts:24
+Defined in: [packages/blue-view/src/view-engine.ts:24](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view-engine.ts#lines-24)
 
 Renders the view and commits the output to the target.
 
@@ -44,7 +44,7 @@ The destination that receives the rendered output.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The current route used during rendering.
 

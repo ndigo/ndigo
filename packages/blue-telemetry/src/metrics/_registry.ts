@@ -1,5 +1,5 @@
 /**
- * Registry for prototypes that have been decorated with `@counted`.
+ * Registry for prototypes that have been decorated with `counted`.
  * This allows the `CountedInstrumentation` to discover and wrap these methods
  * without the decorator itself having to perform the wrapping.
  */

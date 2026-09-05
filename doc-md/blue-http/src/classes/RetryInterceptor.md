@@ -6,15 +6,13 @@
 
 # Class: RetryInterceptor
 
-Defined in: packages/blue-http/src/interceptors/retry-interceptor.ts:55
+Defined in: [packages/blue-http/src/interceptors/retry-interceptor.ts:55](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/retry-interceptor.ts#lines-55)
 
 Retries failed HTTP requests up to a configurable limit.
 
 Retry state is tracked via the `x-retry-attempt` request header rather
 than a WeakMap so that the counter survives across the new `Request`
 objects created on each retry call.
-
-## Implements
 
 ## Implements
 
@@ -26,7 +24,7 @@ objects created on each retry call.
 
 > **new RetryInterceptor**(`config?`): `RetryInterceptor`
 
-Defined in: packages/blue-http/src/interceptors/retry-interceptor.ts:64
+Defined in: [packages/blue-http/src/interceptors/retry-interceptor.ts:64](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/retry-interceptor.ts#lines-64)
 
 Creates a new retry interceptor.
 
@@ -49,7 +47,7 @@ Retry configuration.  All fields are optional and
 
 > **postError**(`error`, `request`, `http`): `Promise`\<`Response` \| `undefined`\>
 
-Defined in: packages/blue-http/src/interceptors/retry-interceptor.ts:81
+Defined in: [packages/blue-http/src/interceptors/retry-interceptor.ts:81](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/retry-interceptor.ts#lines-81)
 
 Potentially retries the failed request according to the configured policy.
 

@@ -8,13 +8,13 @@
 
 > **likeRegistry**(`value`): `value is Registry`
 
-Defined in: packages/blue-factory/src/registry.ts:27
+Defined in: [packages/blue-factory/src/registry.ts:27](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/registry.ts#lines-27)
 
 ## Parameters
 
 ### value
 
-`any`
+`unknown`
 
 The value to be tested
 

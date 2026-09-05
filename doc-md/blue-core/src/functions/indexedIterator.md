@@ -8,7 +8,7 @@
 
 > **indexedIterator**\<`T`\>(`indexed`): `IterableIterator`\<`T`\>
 
-Defined in: packages/blue-core/src/iterable.ts:176
+Defined in: [packages/blue-core/src/iterable.ts:176](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/iterable.ts#lines-176)
 
 Creates a new `IndexedIterator` for an array-like collection.
 

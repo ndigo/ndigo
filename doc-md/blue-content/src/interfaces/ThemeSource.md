@@ -6,7 +6,7 @@
 
 # Interface: ThemeSource
 
-Defined in: packages/blue-content/src/theme.ts:26
+Defined in: [packages/blue-content/src/theme.ts:26](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-content/src/theme.ts#lines-26)
 
 Provides the currently selected theme.
 
@@ -16,6 +16,6 @@ Provides the currently selected theme.
 
 > **theme**: [`Theme`](Theme.md)
 
-Defined in: packages/blue-content/src/theme.ts:30
+Defined in: [packages/blue-content/src/theme.ts:30](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-content/src/theme.ts#lines-30)
 
 The active theme.

@@ -6,9 +6,9 @@
 
 # Class: CsrfInterceptor
 
-Defined in: packages/blue-platform-node/src/csrf-interceptor.ts:58
+Defined in: [packages/blue-platform-node/src/csrf-interceptor.ts:58](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/csrf-interceptor.ts#lines-58)
 
-A RouteHandlerInterceptor enforcing double-submit-cookie CSRF.
+A [RouteHandlerInterceptor](#) enforcing double-submit-cookie CSRF.
 
 Register on a handler mapping alongside the logging interceptor:
 
@@ -19,7 +19,7 @@ mapping.interceptors.push(new CsrfInterceptor());
 
 ## Implements
 
-- `RouteHandlerInterceptor`
+- [`RouteHandlerInterceptor`](#)
 
 ## Constructors
 
@@ -27,7 +27,7 @@ mapping.interceptors.push(new CsrfInterceptor());
 
 > **new CsrfInterceptor**(`options?`): `CsrfInterceptor`
 
-Defined in: packages/blue-platform-node/src/csrf-interceptor.ts:68
+Defined in: [packages/blue-platform-node/src/csrf-interceptor.ts:68](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/csrf-interceptor.ts#lines-68)
 
 #### Parameters
 
@@ -47,7 +47,7 @@ Interceptor options.
 
 > **postHandle**(): `void`
 
-Defined in: packages/blue-platform-node/src/csrf-interceptor.ts:76
+Defined in: [packages/blue-platform-node/src/csrf-interceptor.ts:76](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/csrf-interceptor.ts#lines-76)
 
 #### Returns
 
@@ -63,7 +63,7 @@ Defined in: packages/blue-platform-node/src/csrf-interceptor.ts:76
 
 > **completeHandle**(): `void`
 
-Defined in: packages/blue-platform-node/src/csrf-interceptor.ts:80
+Defined in: [packages/blue-platform-node/src/csrf-interceptor.ts:80](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/csrf-interceptor.ts#lines-80)
 
 #### Returns
 
@@ -79,7 +79,7 @@ Defined in: packages/blue-platform-node/src/csrf-interceptor.ts:80
 
 > **preHandle**(`route`): `boolean`
 
-Defined in: packages/blue-platform-node/src/csrf-interceptor.ts:91
+Defined in: [packages/blue-platform-node/src/csrf-interceptor.ts:91](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/csrf-interceptor.ts#lines-91)
 
 Validates the request's CSRF token for mutating methods, issuing the
 cookie on first (safe) visit.
@@ -88,7 +88,7 @@ cookie on first (safe) visit.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The current route.
 

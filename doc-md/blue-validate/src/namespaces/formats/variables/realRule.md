@@ -8,6 +8,6 @@
 
 > `const` **realRule**: `RegExp`
 
-Defined in: packages/blue-validate/src/formats.ts:185
+Defined in: [packages/blue-validate/src/formats.ts:185](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/formats.ts#lines-185)
 
 A regular expression matching real numbers.

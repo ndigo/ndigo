@@ -6,7 +6,7 @@
 
 # Interface: PropertyValues
 
-Defined in: packages/blue-core/src/property-value.ts:14
+Defined in: [packages/blue-core/src/property-value.ts:14](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/property-value.ts#lines-14)
 
 A collection that can look up property values by name.
 
@@ -20,7 +20,7 @@ A collection that can look up property values by name.
 
 > `readonly` **propertyValues**: [`PropertyValue`](../classes/PropertyValue.md)[]
 
-Defined in: packages/blue-core/src/property-value.ts:16
+Defined in: [packages/blue-core/src/property-value.ts:16](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/property-value.ts#lines-16)
 
 All property values in iteration order.
 
@@ -30,7 +30,7 @@ All property values in iteration order.
 
 > **getPropertyValue**(`propertyName`): [`PropertyValue`](../classes/PropertyValue.md)
 
-Defined in: packages/blue-core/src/property-value.ts:24
+Defined in: [packages/blue-core/src/property-value.ts:24](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/property-value.ts#lines-24)
 
 Returns the property value for the given name.
 

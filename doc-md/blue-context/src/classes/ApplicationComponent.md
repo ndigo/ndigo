@@ -6,7 +6,7 @@
 
 # Class: ApplicationComponent
 
-Defined in: packages/blue-context/src/context.ts:862
+Defined in: [packages/blue-context/src/context.ts:868](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-868)
 
 Base class for any object managed by the ApplicationContext.
 Provides a standard way to access the application context.
@@ -54,7 +54,7 @@ A symbol indicating that the value is aware.
 
 > **setApplicationContext**(`applicationContext`): `void`
 
-Defined in: packages/blue-context/src/context.ts:195
+Defined in: [packages/blue-context/src/context.ts:195](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-195)
 
 Set the ApplicationContext that this object runs in. Normally this call will be used to initialize the object.
 

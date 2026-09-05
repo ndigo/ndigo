@@ -6,7 +6,7 @@
 
 # Class: BindError
 
-Defined in: packages/blue-core/src/data-binder.ts:16
+Defined in: [packages/blue-core/src/data-binder.ts:16](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/data-binder.ts#lines-16)
 
 Represents an error that occurs during data binding operations.
 
@@ -18,9 +18,9 @@ Represents an error that occurs during data binding operations.
 
 ### Constructor
 
-> **new BindError**(`message?`): `BindError`
+> **new BindError**(`message?`, `options?`): `BindError`
 
-Defined in: packages/blue-core/src/error.ts:83
+Defined in: [packages/blue-core/src/error.ts:85](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/error.ts#lines-85)
 
 Creates an instance of FrameworkError.
 Uses `new.target.name` so subclasses inherit the correct name automatically.
@@ -32,6 +32,13 @@ Uses `new.target.name` so subclasses inherit the correct name automatically.
 `string`
 
 The error message.
+
+##### options?
+
+`ErrorOptions`
+
+Standard `Error` options; `{ cause }` preserves the
+  original failure (e.g. across `Application.run()` startup failures).
 
 #### Returns
 
@@ -49,7 +56,7 @@ The error message.
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-core/src/error.ts:74
+Defined in: [packages/blue-core/src/error.ts:74](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/error.ts#lines-74)
 
 The string tag for this class.
 
@@ -67,7 +74,7 @@ The string tag for this class.
 
 > **toString**(): `string`
 
-Defined in: packages/blue-core/src/serializable.ts:28
+Defined in: [packages/blue-core/src/serializable.ts:27](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/serializable.ts#lines-27)
 
 #### Returns
 
@@ -83,7 +90,7 @@ Defined in: packages/blue-core/src/serializable.ts:28
 
 > `optional` **toJSON**(): [`JSONValue`](../type-aliases/JSONValue.md)
 
-Defined in: packages/blue-core/src/serializable.ts:29
+Defined in: [packages/blue-core/src/serializable.ts:28](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/serializable.ts#lines-28)
 
 #### Returns
 

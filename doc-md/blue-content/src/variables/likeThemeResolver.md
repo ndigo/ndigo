@@ -8,7 +8,7 @@
 
 > `const` **likeThemeResolver**: (`value`) => `value is ThemeResolver`
 
-Defined in: packages/blue-content/src/theme.ts:109
+Defined in: [packages/blue-content/src/theme.ts:109](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-content/src/theme.ts#lines-109)
 
 Tests whether a value looks like a theme resolver.
 

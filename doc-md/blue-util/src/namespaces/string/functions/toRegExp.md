@@ -8,7 +8,7 @@
 
 > **toRegExp**(`value`): `RegExp`
 
-Defined in: packages/blue-util/src/string/to-reg-exp.ts:32
+Defined in: [packages/blue-util/src/string/to-reg-exp.ts:32](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-util/src/string/to-reg-exp.ts#lines-32)
 
 Returns a regular expression for the given `pattern`.
 
@@ -27,9 +27,6 @@ The pattern string (with optional /pattern/flags format)
 ## Throws
 
 If the pattern is malformed
-
-## Security
-
-WARNING: This function accepts arbitrary regex patterns. 
+`security` WARNING: This function accepts arbitrary regex patterns.
   Do not use with untrusted user input without validation.
   Patterns with nested quantifiers (e.g., /(a+)+/) can cause ReDoS.

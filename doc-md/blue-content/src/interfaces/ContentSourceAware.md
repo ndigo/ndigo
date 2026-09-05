@@ -6,7 +6,7 @@
 
 # Interface: ContentSourceAware
 
-Defined in: packages/blue-content/src/content.ts:83
+Defined in: [packages/blue-content/src/content.ts:83](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-content/src/content.ts#lines-83)
 
 Marks an object that can receive a content source.
 
@@ -34,7 +34,7 @@ A symbol indicating that the value is aware.
 
 > **setContentSource**(`contentSource`): `void`
 
-Defined in: packages/blue-content/src/content.ts:89
+Defined in: [packages/blue-content/src/content.ts:89](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-content/src/content.ts#lines-89)
 
 Sets the content source used by the receiver.
 

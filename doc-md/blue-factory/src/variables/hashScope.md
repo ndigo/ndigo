@@ -8,7 +8,7 @@
 
 > `const` **hashScope**: \<`T`\>(`target`, `context`) => `T`
 
-Defined in: packages/blue-factory/src/scope.ts:98
+Defined in: [packages/blue-factory/src/scope.ts:100](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/scope.ts#lines-100)
 
 Decorator for hash/route scope (convenience factory)
 

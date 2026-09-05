@@ -8,7 +8,7 @@
 
 > **cachedBootApp**(`sources`): [`BlueTestApp`](../interfaces/BlueTestApp.md)
 
-Defined in: packages/blue-test/src/blue-test.ts:133
+Defined in: [packages/blue-test/src/blue-test.ts:131](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-test/src/blue-test.ts#lines-131)
 
 Boots (or reuses a cached) application for the given sources.
 

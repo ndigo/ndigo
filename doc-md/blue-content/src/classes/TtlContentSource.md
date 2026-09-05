@@ -6,7 +6,7 @@
 
 # Class: TtlContentSource
 
-Defined in: packages/blue-content/src/async.ts:28
+Defined in: [packages/blue-content/src/async.ts:28](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-content/src/async.ts#lines-28)
 
 Content source that wraps an async loader with a TTL-based in-memory cache.
 
@@ -23,7 +23,7 @@ itself as a fallback until the first async load completes.
 
 > **new TtlContentSource**(`loader`, `ttl?`): `TtlContentSource`
 
-Defined in: packages/blue-content/src/async.ts:39
+Defined in: [packages/blue-content/src/async.ts:39](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-content/src/async.ts#lines-39)
 
 Creates a TTL content source.
 
@@ -51,7 +51,7 @@ Cache lifetime in milliseconds. Defaults to 60 000 ms.
 
 > **getContent**(`key`, `language`): `string`
 
-Defined in: packages/blue-content/src/async.ts:49
+Defined in: [packages/blue-content/src/async.ts:49](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-content/src/async.ts#lines-49)
 
 Returns the cached content for the key+language pair, or the key itself
 when no cached value is present.
@@ -80,7 +80,7 @@ when no cached value is present.
 
 > **getContentAsync**(`key`, `language`): `Promise`\<`string`\>
 
-Defined in: packages/blue-content/src/async.ts:64
+Defined in: [packages/blue-content/src/async.ts:64](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-content/src/async.ts#lines-64)
 
 Loads content via the async loader, stores it in the cache, and returns it.
 Uses the cached value when it has not yet expired.
@@ -109,7 +109,7 @@ Uses the cached value when it has not yet expired.
 
 > **invalidate**(): `void`
 
-Defined in: packages/blue-content/src/async.ts:85
+Defined in: [packages/blue-content/src/async.ts:85](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-content/src/async.ts#lines-85)
 
 Evicts all cached entries, forcing the next load to call the loader.
 
@@ -123,7 +123,7 @@ Evicts all cached entries, forcing the next load to call the loader.
 
 > **invalidateEntry**(`key`, `language`): `void`
 
-Defined in: packages/blue-content/src/async.ts:92
+Defined in: [packages/blue-content/src/async.ts:92](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-content/src/async.ts#lines-92)
 
 Evicts the cache entry for a specific key+language pair.
 

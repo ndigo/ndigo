@@ -6,7 +6,7 @@
 
 # Class: CryptoRequestIdCorrelation
 
-Defined in: packages/blue-service/src/request-id-correlation.ts:32
+Defined in: [packages/blue-service/src/request-id-correlation.ts:32](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-service/src/request-id-correlation.ts#lines-32)
 
 Request-ID correlation implementation using crypto.randomUUID().
 
@@ -30,7 +30,7 @@ Request-ID correlation implementation using crypto.randomUUID().
 
 > **generateRequestId**(): `string`
 
-Defined in: packages/blue-service/src/request-id-correlation.ts:40
+Defined in: [packages/blue-service/src/request-id-correlation.ts:40](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-service/src/request-id-correlation.ts#lines-40)
 
 Generates a new unique request ID using crypto.randomUUID().
 
@@ -50,7 +50,7 @@ A unique request ID.
 
 > **getCorrelationId**(): `string`
 
-Defined in: packages/blue-service/src/request-id-correlation.ts:49
+Defined in: [packages/blue-service/src/request-id-correlation.ts:49](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-service/src/request-id-correlation.ts#lines-49)
 
 Returns the current correlation ID.
 
@@ -70,7 +70,7 @@ The current correlation ID, or a new one if none is set.
 
 > **setCorrelationId**(`id`): `void`
 
-Defined in: packages/blue-service/src/request-id-correlation.ts:61
+Defined in: [packages/blue-service/src/request-id-correlation.ts:61](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-service/src/request-id-correlation.ts#lines-61)
 
 Sets the current correlation ID.
 

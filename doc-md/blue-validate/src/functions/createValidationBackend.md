@@ -8,7 +8,7 @@
 
 > **createValidationBackend**(`_name?`): `ValidationBackendAdapter`
 
-Defined in: packages/blue-validate/src/backend.ts:17
+Defined in: [packages/blue-validate/src/backend.ts:17](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/backend.ts#lines-17)
 
 Creates a backend adapter for validation execution.
 

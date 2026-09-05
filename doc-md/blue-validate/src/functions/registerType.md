@@ -8,7 +8,7 @@
 
 > **registerType**(`name`, `definition`): `void`
 
-Defined in: packages/blue-validate/src/types.ts:29
+Defined in: [packages/blue-validate/src/types.ts:29](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/types.ts#lines-29)
 
 Registers or replaces a type by name.
 

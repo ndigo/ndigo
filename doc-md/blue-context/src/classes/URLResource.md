@@ -6,7 +6,7 @@
 
 # Class: URLResource\<T\>
 
-Defined in: packages/blue-context/src/resource.ts:107
+Defined in: [packages/blue-context/src/resource.ts:109](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/resource.ts#lines-109)
 
 Resource implementation backed by a URL.
 
@@ -26,7 +26,7 @@ Resource implementation backed by a URL.
 
 > **new URLResource**\<`T`\>(`path`, `value`): `URLResource`\<`T`\>
 
-Defined in: packages/blue-context/src/resource.ts:115
+Defined in: [packages/blue-context/src/resource.ts:117](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/resource.ts#lines-117)
 
 #### Parameters
 
@@ -48,7 +48,7 @@ Defined in: packages/blue-context/src/resource.ts:115
 
 > `readonly` **url**: `URL`
 
-Defined in: packages/blue-context/src/resource.ts:108
+Defined in: [packages/blue-context/src/resource.ts:110](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/resource.ts#lines-110)
 
 ***
 
@@ -56,7 +56,7 @@ Defined in: packages/blue-context/src/resource.ts:108
 
 > `readonly` **value**: `T`
 
-Defined in: packages/blue-context/src/resource.ts:109
+Defined in: [packages/blue-context/src/resource.ts:111](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/resource.ts#lines-111)
 
 #### Implementation of
 
@@ -70,7 +70,7 @@ Defined in: packages/blue-context/src/resource.ts:109
 
 > **get** **exists**(): `boolean`
 
-Defined in: packages/blue-context/src/resource.ts:111
+Defined in: [packages/blue-context/src/resource.ts:113](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/resource.ts#lines-113)
 
 ##### Returns
 

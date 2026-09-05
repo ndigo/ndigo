@@ -8,7 +8,7 @@
 
 > `const` **toMatrixString**: (`value`) => `string`
 
-Defined in: packages/blue-router/src/index.ts:24
+Defined in: [packages/blue-router/src/index.ts:24](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/index.ts#lines-24)
 
 Serializes a JSON-like value to a matrix string.
 

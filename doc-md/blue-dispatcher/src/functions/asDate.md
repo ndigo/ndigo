@@ -8,7 +8,7 @@
 
 > **asDate**(`extractor`): [`ParameterExtractor`](../type-aliases/ParameterExtractor.md)
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:433
+Defined in: [packages/blue-dispatcher/src/route-parameter.ts:404](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-parameter.ts#lines-404)
 
 Wraps a parameter extractor to enforce Date conversion.
 

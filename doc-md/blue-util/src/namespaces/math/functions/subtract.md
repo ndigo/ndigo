@@ -8,7 +8,7 @@
 
 > **subtract**(`a`, `b`): `number`
 
-Defined in: packages/blue-util/src/math/index.ts:235
+Defined in: [packages/blue-util/src/math/index.ts:235](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-util/src/math/index.ts#lines-235)
 
 Subtracts its second argument from its first argument.
 

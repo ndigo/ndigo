@@ -8,7 +8,7 @@
 
 > **asUUID**(`extractor`): [`ParameterExtractor`](../type-aliases/ParameterExtractor.md)
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:449
+Defined in: [packages/blue-dispatcher/src/route-parameter.ts:420](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-parameter.ts#lines-420)
 
 Wraps a parameter extractor to enforce UUID conversion.
 

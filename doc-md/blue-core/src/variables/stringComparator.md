@@ -8,6 +8,6 @@
 
 > `const` **stringComparator**: `StringComparator`
 
-Defined in: packages/blue-core/src/comparable.ts:222
+Defined in: [packages/blue-core/src/comparable.ts:220](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/comparable.ts#lines-220)
 
 A `Comparator` instance for `string` objects.

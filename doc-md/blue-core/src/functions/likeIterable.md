@@ -8,7 +8,7 @@
 
 > **likeIterable**(`value`): `value is Iterable<any, any, any>`
 
-Defined in: packages/blue-core/src/iterable.ts:126
+Defined in: [packages/blue-core/src/iterable.ts:126](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/iterable.ts#lines-126)
 
 Type guard to check if a value is iterable (has a `Symbol.iterator` method).
 

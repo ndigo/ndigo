@@ -8,6 +8,6 @@
 
 > `const` **RANGE\_NOT\_SATISFIED**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
-Defined in: packages/blue-http/src/response-statuses.ts:229
+Defined in: [packages/blue-http/src/response-statuses.ts:229](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/response-statuses.ts#lines-229)
 
 The range specified by the Range header field in the request can't be fulfilled; it's possible that the range is outside the size of the target URI's data.

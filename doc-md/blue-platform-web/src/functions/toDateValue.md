@@ -8,7 +8,7 @@
 
 > **toDateValue**(`value`): `Date`
 
-Defined in: packages/blue-platform-web/src/argument-value-converter.ts:77
+Defined in: [packages/blue-platform-web/src/argument-value-converter.ts:77](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/argument-value-converter.ts#lines-77)
 
 Converts a value to a `Date` instance.
 

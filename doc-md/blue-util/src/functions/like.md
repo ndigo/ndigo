@@ -10,7 +10,7 @@
 
 > **like**(`descriptor`, `value`): `boolean`
 
-Defined in: packages/blue-util/src/type/like.ts:163
+Defined in: [packages/blue-util/src/type/like.ts:160](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-util/src/type/like.ts#lines-160)
 
 ### Parameters
 
@@ -30,7 +30,7 @@ Defined in: packages/blue-util/src/type/like.ts:163
 
 > **like**(`descriptor`): (`value`) => `boolean`
 
-Defined in: packages/blue-util/src/type/like.ts:164
+Defined in: [packages/blue-util/src/type/like.ts:161](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-util/src/type/like.ts#lines-161)
 
 ### Parameters
 

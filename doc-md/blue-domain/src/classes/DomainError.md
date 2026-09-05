@@ -6,7 +6,7 @@
 
 # Class: DomainError
 
-Defined in: packages/blue-domain/src/error.ts:9
+Defined in: [packages/blue-domain/src/error.ts:9](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-domain/src/error.ts#lines-9)
 
 ## Extends
 
@@ -18,7 +18,7 @@ Defined in: packages/blue-domain/src/error.ts:9
 
 > **new DomainError**(`message?`): `DomainError`
 
-Defined in: packages/blue-domain/src/error.ts:24
+Defined in: [packages/blue-domain/src/error.ts:24](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-domain/src/error.ts#lines-24)
 
 Creates a domain-specific error that can be serialized safely.
 
@@ -46,7 +46,7 @@ Optional error message.
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-domain/src/error.ts:15
+Defined in: [packages/blue-domain/src/error.ts:15](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-domain/src/error.ts#lines-15)
 
 Returns the error tag used by object inspection.
 

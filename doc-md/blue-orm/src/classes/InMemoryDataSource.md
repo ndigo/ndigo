@@ -6,7 +6,7 @@
 
 # Class: InMemoryDataSource
 
-Defined in: packages/blue-orm/src/data-source.ts:39
+Defined in: [packages/blue-orm/src/data-source.ts:39](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/data-source.ts#lines-39)
 
 An in-memory implementation of the `DataSource` interface.
 It stores entity data in JavaScript Maps.
@@ -21,7 +21,7 @@ It stores entity data in JavaScript Maps.
 
 > **new InMemoryDataSource**(): `InMemoryDataSource`
 
-Defined in: packages/blue-orm/src/data-source.ts:46
+Defined in: [packages/blue-orm/src/data-source.ts:46](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/data-source.ts#lines-46)
 
 Creates an instance of `InMemoryDataSource`.
 
@@ -35,7 +35,7 @@ Creates an instance of `InMemoryDataSource`.
 
 > **destroyed**: `boolean`
 
-Defined in: packages/blue-orm/src/data-source.ts:40
+Defined in: [packages/blue-orm/src/data-source.ts:40](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/data-source.ts#lines-40)
 
 #### Implementation of
 
@@ -47,7 +47,7 @@ Defined in: packages/blue-orm/src/data-source.ts:40
 
 > **init**(): `void`
 
-Defined in: packages/blue-orm/src/data-source.ts:54
+Defined in: [packages/blue-orm/src/data-source.ts:54](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/data-source.ts#lines-54)
 
 Initializes the data source. No operation for `InMemoryDataSource`.
 
@@ -65,7 +65,7 @@ Initializes the data source. No operation for `InMemoryDataSource`.
 
 > **destroy**(): `void`
 
-Defined in: packages/blue-orm/src/data-source.ts:59
+Defined in: [packages/blue-orm/src/data-source.ts:59](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/data-source.ts#lines-59)
 
 Destroys the data source by clearing all stores and marking it as destroyed.
 
@@ -83,7 +83,7 @@ Destroys the data source by clearing all stores and marking it as destroyed.
 
 > **getStore**\<`T`\>(`entityName`): `Map`\<`unknown`, `T`\>
 
-Defined in: packages/blue-orm/src/data-source.ts:70
+Defined in: [packages/blue-orm/src/data-source.ts:70](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/data-source.ts#lines-70)
 
 Retrieves the store for a given entity name.
 
@@ -121,7 +121,7 @@ If the store for the entity does not exist.
 
 > **hasStore**(`entityName`): `boolean`
 
-Defined in: packages/blue-orm/src/data-source.ts:85
+Defined in: [packages/blue-orm/src/data-source.ts:85](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/data-source.ts#lines-85)
 
 Checks if a store for the given entity name exists.
 
@@ -149,7 +149,7 @@ The name of the entity.
 
 > **createStore**(`entityName`): `void`
 
-Defined in: packages/blue-orm/src/data-source.ts:93
+Defined in: [packages/blue-orm/src/data-source.ts:93](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/data-source.ts#lines-93)
 
 Creates a new store for the given entity name if it doesn't already exist.
 
@@ -175,7 +175,7 @@ The name of the entity.
 
 > **clear**(): `void`
 
-Defined in: packages/blue-orm/src/data-source.ts:102
+Defined in: [packages/blue-orm/src/data-source.ts:102](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/data-source.ts#lines-102)
 
 Clears all entity stores.
 
@@ -193,7 +193,7 @@ Clears all entity stores.
 
 > **snapshot**(): `object`
 
-Defined in: packages/blue-orm/src/data-source.ts:114
+Defined in: [packages/blue-orm/src/data-source.ts:114](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/data-source.ts#lines-114)
 
 Captures a deep snapshot of all entity stores (for transaction rollback).
 
@@ -216,7 +216,7 @@ An opaque snapshot handle to pass to [restore](#restore).
 
 > **restore**(`snapshot`): `void`
 
-Defined in: packages/blue-orm/src/data-source.ts:128
+Defined in: [packages/blue-orm/src/data-source.ts:128](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/data-source.ts#lines-128)
 
 Restores entity stores to a previously captured snapshot, discarding any
 writes made after it. Used for transaction rollback.

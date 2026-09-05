@@ -6,7 +6,7 @@
 
 # Class: CounterRateResolver
 
-Defined in: packages/blue-telemetry/src/metrics/counter-rate-resolver.ts:38
+Defined in: [packages/blue-telemetry/src/metrics/counter-rate-resolver.ts:38](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/metrics/counter-rate-resolver.ts#lines-38)
 
 Resolves and monitors the rate of change for various counters across different features.
 
@@ -19,7 +19,7 @@ It can also trigger alerts if a counter's rate exceeds a predefined threshold.
 
 > **new CounterRateResolver**(`options`): `CounterRateResolver`
 
-Defined in: packages/blue-telemetry/src/metrics/counter-rate-resolver.ts:48
+Defined in: [packages/blue-telemetry/src/metrics/counter-rate-resolver.ts:48](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/metrics/counter-rate-resolver.ts#lines-48)
 
 Creates an instance of `CounterRateResolver`.
 
@@ -41,7 +41,7 @@ Configuration options for the resolver.
 
 > **clearThresholds**(): `void`
 
-Defined in: packages/blue-telemetry/src/metrics/counter-rate-resolver.ts:58
+Defined in: [packages/blue-telemetry/src/metrics/counter-rate-resolver.ts:58](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/metrics/counter-rate-resolver.ts#lines-58)
 
 Clears all previously set thresholds for counter rates.
 
@@ -55,7 +55,7 @@ Clears all previously set thresholds for counter rates.
 
 > **removeThreshold**(`counterKey`): `boolean`
 
-Defined in: packages/blue-telemetry/src/metrics/counter-rate-resolver.ts:67
+Defined in: [packages/blue-telemetry/src/metrics/counter-rate-resolver.ts:67](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/metrics/counter-rate-resolver.ts#lines-67)
 
 Removes a specific threshold for a given counter key.
 
@@ -79,7 +79,7 @@ The key of the counter for which to remove the threshold.
 
 > **reset**(): `void`
 
-Defined in: packages/blue-telemetry/src/metrics/counter-rate-resolver.ts:74
+Defined in: [packages/blue-telemetry/src/metrics/counter-rate-resolver.ts:74](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/metrics/counter-rate-resolver.ts#lines-74)
 
 Resets the internal sample history, effectively clearing all past counter data.
 
@@ -93,7 +93,7 @@ Resets the internal sample history, effectively clearing all past counter data.
 
 > **resolve**(): readonly [`CounterRateSnapshot`](../interfaces/CounterRateSnapshot.md)[]
 
-Defined in: packages/blue-telemetry/src/metrics/counter-rate-resolver.ts:87
+Defined in: [packages/blue-telemetry/src/metrics/counter-rate-resolver.ts:87](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/metrics/counter-rate-resolver.ts#lines-87)
 
 Resolves the current counter rates per second for all tracked features and counters.
 
@@ -113,7 +113,7 @@ An array of `CounterRateSnapshot` objects, each representing the current rate
 
 > **resolveAlerts**(`snapshots?`): readonly [`CounterRateAlert`](../interfaces/CounterRateAlert.md)[]
 
-Defined in: packages/blue-telemetry/src/metrics/counter-rate-resolver.ts:166
+Defined in: [packages/blue-telemetry/src/metrics/counter-rate-resolver.ts:166](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/metrics/counter-rate-resolver.ts#lines-166)
 
 Resolves and returns any counter rate alerts based on the provided snapshots and configured thresholds.
 
@@ -138,7 +138,7 @@ An array of `CounterRateAlert` objects for any counters whose rates exceed their
 
 > **setThreshold**(`counterKey`, `threshold`): `void`
 
-Defined in: packages/blue-telemetry/src/metrics/counter-rate-resolver.ts:192
+Defined in: [packages/blue-telemetry/src/metrics/counter-rate-resolver.ts:192](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/metrics/counter-rate-resolver.ts#lines-192)
 
 Sets a threshold for a specific counter key. If the counter's rate per second
 exceeds this threshold, an alert will be triggered by `resolveAlerts`.

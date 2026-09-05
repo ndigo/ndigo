@@ -8,6 +8,6 @@
 
 > **ArgumentValueConverterRegistry** = `Record`\<`string`, [`ArgumentValueConverter`](ArgumentValueConverter.md)\>
 
-Defined in: packages/blue-platform-web/src/argument-value-converter.ts:27
+Defined in: [packages/blue-platform-web/src/argument-value-converter.ts:27](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/argument-value-converter.ts#lines-27)
 
 Registry of named converters available to resolver configuration.

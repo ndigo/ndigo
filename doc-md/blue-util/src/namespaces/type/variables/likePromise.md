@@ -8,7 +8,7 @@
 
 > `const` **likePromise**: (`value`) => `value is PromiseLike<any>`
 
-Defined in: packages/blue-util/src/type/like-promise.ts:22
+Defined in: [packages/blue-util/src/type/like-promise.ts:22](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-util/src/type/like-promise.ts#lines-22)
 
 ## Parameters
 

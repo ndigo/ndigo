@@ -6,7 +6,7 @@
 
 # Class: DefaultResourceLoader
 
-Defined in: packages/blue-context/src/resource.ts:189
+Defined in: [packages/blue-context/src/resource.ts:191](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/resource.ts#lines-191)
 
 Resource loader that resolves modules through dynamic import.
 
@@ -34,7 +34,7 @@ Resource loader that resolves modules through dynamic import.
 
 > **getResource**(`location`): `Promise`\<[`Resource`](../interfaces/Resource.md)\<`any`\>\>
 
-Defined in: packages/blue-context/src/resource.ts:22
+Defined in: [packages/blue-context/src/resource.ts:22](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/resource.ts#lines-22)
 
 #### Parameters
 

@@ -6,7 +6,7 @@
 
 # Class: FeatureContextMountManager
 
-Defined in: packages/blue-context/src/feature-context-mount-manager.ts:108
+Defined in: [packages/blue-context/src/feature-context-mount-manager.ts:108](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/feature-context-mount-manager.ts#lines-108)
 
 Creates, tracks, and tears down mounted feature contexts.
 
@@ -16,7 +16,7 @@ Creates, tracks, and tears down mounted feature contexts.
 
 > **new FeatureContextMountManager**(`parent`, `options?`): `FeatureContextMountManager`
 
-Defined in: packages/blue-context/src/feature-context-mount-manager.ts:113
+Defined in: [packages/blue-context/src/feature-context-mount-manager.ts:113](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/feature-context-mount-manager.ts#lines-113)
 
 #### Parameters
 
@@ -38,7 +38,7 @@ Defined in: packages/blue-context/src/feature-context-mount-manager.ts:113
 
 > **registerFeature**(`options`): `this`
 
-Defined in: packages/blue-context/src/feature-context-mount-manager.ts:119
+Defined in: [packages/blue-context/src/feature-context-mount-manager.ts:119](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/feature-context-mount-manager.ts#lines-119)
 
 #### Parameters
 
@@ -56,7 +56,7 @@ Defined in: packages/blue-context/src/feature-context-mount-manager.ts:119
 
 > **mount**(`name`): [`FeatureContextComposition`](../interfaces/FeatureContextComposition.md)
 
-Defined in: packages/blue-context/src/feature-context-mount-manager.ts:132
+Defined in: [packages/blue-context/src/feature-context-mount-manager.ts:132](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/feature-context-mount-manager.ts#lines-132)
 
 #### Parameters
 
@@ -74,7 +74,7 @@ Defined in: packages/blue-context/src/feature-context-mount-manager.ts:132
 
 > **mountLazy**(`name`): `Promise`\<[`FeatureContextComposition`](../interfaces/FeatureContextComposition.md)\>
 
-Defined in: packages/blue-context/src/feature-context-mount-manager.ts:184
+Defined in: [packages/blue-context/src/feature-context-mount-manager.ts:184](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/feature-context-mount-manager.ts#lines-184)
 
 Mount a feature whose context is loaded dynamically via its registered `loader`.
 
@@ -112,7 +112,7 @@ If the loader rejects or `createContext` throws.
 
 > **remountLazy**(`name`, `policy?`): `Promise`\<[`FeatureContextComposition`](../interfaces/FeatureContextComposition.md)\>
 
-Defined in: packages/blue-context/src/feature-context-mount-manager.ts:229
+Defined in: [packages/blue-context/src/feature-context-mount-manager.ts:227](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/feature-context-mount-manager.ts#lines-227)
 
 Unmount and re-mount a feature, re-executing its loader.
 Useful for retrying after a failed load.
@@ -137,7 +137,7 @@ Useful for retrying after a failed load.
 
 > **unmount**(`name`, `policy?`): `boolean`
 
-Defined in: packages/blue-context/src/feature-context-mount-manager.ts:234
+Defined in: [packages/blue-context/src/feature-context-mount-manager.ts:232](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/feature-context-mount-manager.ts#lines-232)
 
 #### Parameters
 
@@ -159,7 +159,7 @@ Defined in: packages/blue-context/src/feature-context-mount-manager.ts:234
 
 > **hasRegistration**(`name`): `boolean`
 
-Defined in: packages/blue-context/src/feature-context-mount-manager.ts:254
+Defined in: [packages/blue-context/src/feature-context-mount-manager.ts:252](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/feature-context-mount-manager.ts#lines-252)
 
 #### Parameters
 
@@ -177,7 +177,7 @@ Defined in: packages/blue-context/src/feature-context-mount-manager.ts:254
 
 > **isMounted**(`name`): `boolean`
 
-Defined in: packages/blue-context/src/feature-context-mount-manager.ts:258
+Defined in: [packages/blue-context/src/feature-context-mount-manager.ts:256](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/feature-context-mount-manager.ts#lines-256)
 
 #### Parameters
 
@@ -195,7 +195,7 @@ Defined in: packages/blue-context/src/feature-context-mount-manager.ts:258
 
 > **getMountedFeature**(`name`): [`FeatureContextComposition`](../interfaces/FeatureContextComposition.md) \| `undefined`
 
-Defined in: packages/blue-context/src/feature-context-mount-manager.ts:279
+Defined in: [packages/blue-context/src/feature-context-mount-manager.ts:277](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/feature-context-mount-manager.ts#lines-277)
 
 #### Parameters
 
@@ -213,7 +213,7 @@ Defined in: packages/blue-context/src/feature-context-mount-manager.ts:279
 
 > **destroy**(): `void`
 
-Defined in: packages/blue-context/src/feature-context-mount-manager.ts:283
+Defined in: [packages/blue-context/src/feature-context-mount-manager.ts:281](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/feature-context-mount-manager.ts#lines-281)
 
 #### Returns
 

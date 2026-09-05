@@ -61,7 +61,7 @@ export class NavigatorLanguageResolver extends AbstractLanguageResolver {
     /**
      * Resolve the browser language, falling back to the configured default when needed.
      *
-     * @param route - The current route.
+     * @param _route - The current route.
      * @returns The browser language or the configured default language.
      */
     resolveLanguage(_route: Route): string {

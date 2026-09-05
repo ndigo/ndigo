@@ -8,7 +8,7 @@
 
 > **modelValue**(`name`, `options?`): [`ParameterExtractor`](../type-aliases/ParameterExtractor.md)
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:285
+Defined in: [packages/blue-dispatcher/src/route-parameter.ts:271](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-parameter.ts#lines-271)
 
 Factory function: Create a model parameter extractor
 
@@ -29,7 +29,7 @@ Factory function: Create a model parameter extractor
 ## Example
 
 ```ts
-@routeParams({
+`routeParams`({
   profile: modelValue('profile'),
 })
 ```

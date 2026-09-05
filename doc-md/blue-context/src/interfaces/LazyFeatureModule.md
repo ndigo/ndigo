@@ -6,7 +6,7 @@
 
 # Interface: LazyFeatureModule
 
-Defined in: packages/blue-context/src/feature-context-mount-manager.ts:29
+Defined in: [packages/blue-context/src/feature-context-mount-manager.ts:29](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/feature-context-mount-manager.ts#lines-29)
 
 A module loaded lazily by a feature's `loader`.
 
@@ -16,7 +16,7 @@ A module loaded lazily by a feature's `loader`.
 
 > **createContext**(`parent`): [`ApplicationContext`](ApplicationContext.md)
 
-Defined in: packages/blue-context/src/feature-context-mount-manager.ts:36
+Defined in: [packages/blue-context/src/feature-context-mount-manager.ts:36](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/feature-context-mount-manager.ts#lines-36)
 
 Creates a feature context instance from the lazy-loaded module.
 

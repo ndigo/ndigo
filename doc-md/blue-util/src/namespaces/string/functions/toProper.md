@@ -8,7 +8,7 @@
 
 > **toProper**(`value`): `string`
 
-Defined in: packages/blue-util/src/string/to-proper.ts:18
+Defined in: [packages/blue-util/src/string/to-proper.ts:18](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-util/src/string/to-proper.ts#lines-18)
 
 Returns the proper case version of a string.
 

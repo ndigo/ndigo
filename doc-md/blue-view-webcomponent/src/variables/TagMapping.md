@@ -8,7 +8,7 @@
 
 > `const` **TagMapping**: (`tagName`) => \<`T`\>(`target`, `context`) => `T` & `object`
 
-Defined in: packages/blue-view-webcomponent/src/tag-mapping.ts:48
+Defined in: [packages/blue-view-webcomponent/src/tag-mapping.ts:48](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view-webcomponent/src/tag-mapping.ts#lines-48)
 
 Registers a custom element name and stores it in decorator metadata.
 

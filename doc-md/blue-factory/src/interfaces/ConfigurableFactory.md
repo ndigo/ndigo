@@ -6,7 +6,7 @@
 
 # Interface: ConfigurableFactory
 
-Defined in: packages/blue-factory/src/factory.ts:76
+Defined in: [packages/blue-factory/src/factory.ts:85](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/factory.ts#lines-85)
 
 Extends [HierarchicalFactory](HierarchicalFactory.md) and [Registry](Registry.md) to provide configurable factory capabilities.
 
@@ -20,7 +20,7 @@ Extends [HierarchicalFactory](HierarchicalFactory.md) and [Registry](Registry.md
 
 > `readonly` **parent**: [`Factory`](Factory.md) \| `null`
 
-Defined in: packages/blue-factory/src/factory.ts:64
+Defined in: [packages/blue-factory/src/factory.ts:73](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/factory.ts#lines-73)
 
 The parent factory in the hierarchy.
 
@@ -34,7 +34,7 @@ The parent factory in the hierarchy.
 
 > **getInstance**\<`T`\>(`name`): `T`
 
-Defined in: packages/blue-factory/src/factory.ts:54
+Defined in: [packages/blue-factory/src/factory.ts:63](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/factory.ts#lines-63)
 
 Return an instance of the specified value.
 
@@ -68,7 +68,7 @@ An instance of the value specified by the `name`.
 
 > **hasOwnValue**(`name`): `boolean`
 
-Defined in: packages/blue-factory/src/factory.ts:70
+Defined in: [packages/blue-factory/src/factory.ts:79](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/factory.ts#lines-79)
 
 Determines whether this factory contains a value with the given name.
 
@@ -96,7 +96,7 @@ The name of the value.
 
 > **addProcessor**(`processor`): `void`
 
-Defined in: packages/blue-factory/src/factory.ts:81
+Defined in: [packages/blue-factory/src/factory.ts:90](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/factory.ts#lines-90)
 
 Adds an entry processor to the factory.
 
@@ -118,7 +118,7 @@ The entry processor to add.
 
 > **setParent**(`parent`): `void`
 
-Defined in: packages/blue-factory/src/factory.ts:86
+Defined in: [packages/blue-factory/src/factory.ts:95](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/factory.ts#lines-95)
 
 Sets the parent factory.
 
@@ -142,7 +142,7 @@ The parent factory.
 
 > **destroyValue**\<`T`\>(`token`): `void`
 
-Defined in: packages/blue-factory/src/registry.ts:9
+Defined in: [packages/blue-factory/src/registry.ts:9](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/registry.ts#lines-9)
 
 ##### Type Parameters
 
@@ -168,7 +168,7 @@ Defined in: packages/blue-factory/src/registry.ts:9
 
 > **destroyValue**(`name`): `void`
 
-Defined in: packages/blue-factory/src/registry.ts:10
+Defined in: [packages/blue-factory/src/registry.ts:10](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/registry.ts#lines-10)
 
 ##### Parameters
 
@@ -192,7 +192,7 @@ Defined in: packages/blue-factory/src/registry.ts:10
 
 > **getValue**\<`T`\>(`token`): `T`
 
-Defined in: packages/blue-factory/src/registry.ts:11
+Defined in: [packages/blue-factory/src/registry.ts:11](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/registry.ts#lines-11)
 
 ##### Type Parameters
 
@@ -218,7 +218,7 @@ Defined in: packages/blue-factory/src/registry.ts:11
 
 > **getValue**\<`T`\>(`name`): `T`
 
-Defined in: packages/blue-factory/src/registry.ts:12
+Defined in: [packages/blue-factory/src/registry.ts:12](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/registry.ts#lines-12)
 
 ##### Type Parameters
 
@@ -248,7 +248,7 @@ Defined in: packages/blue-factory/src/registry.ts:12
 
 > **hasValue**\<`T`\>(`token`): `boolean`
 
-Defined in: packages/blue-factory/src/registry.ts:13
+Defined in: [packages/blue-factory/src/registry.ts:13](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/registry.ts#lines-13)
 
 ##### Type Parameters
 
@@ -274,7 +274,7 @@ Defined in: packages/blue-factory/src/registry.ts:13
 
 > **hasValue**(`name`): `boolean`
 
-Defined in: packages/blue-factory/src/registry.ts:14
+Defined in: [packages/blue-factory/src/registry.ts:14](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/registry.ts#lines-14)
 
 ##### Parameters
 
@@ -298,7 +298,7 @@ Defined in: packages/blue-factory/src/registry.ts:14
 
 > **setValue**\<`T`\>(`token`, `value`): `void`
 
-Defined in: packages/blue-factory/src/registry.ts:15
+Defined in: [packages/blue-factory/src/registry.ts:15](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/registry.ts#lines-15)
 
 ##### Type Parameters
 
@@ -328,7 +328,7 @@ Defined in: packages/blue-factory/src/registry.ts:15
 
 > **setValue**\<`T`\>(`name`, `value`): `void`
 
-Defined in: packages/blue-factory/src/registry.ts:16
+Defined in: [packages/blue-factory/src/registry.ts:16](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/registry.ts#lines-16)
 
 ##### Type Parameters
 

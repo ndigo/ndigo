@@ -8,6 +8,6 @@
 
 > `const` **NOT\_EXTENDED**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
-Defined in: packages/blue-http/src/response-statuses.ts:343
+Defined in: [packages/blue-http/src/response-statuses.ts:343](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/response-statuses.ts#lines-343)
 
 Further extensions to the request are required for the server to fulfil it.

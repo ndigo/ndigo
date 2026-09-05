@@ -8,7 +8,7 @@
 
 > **postRemove**(): (`_value`, `context`) => `void`
 
-Defined in: packages/blue-orm/src/decorators.ts:289
+Defined in: [packages/blue-orm/src/decorators.ts:296](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/decorators.ts#lines-296)
 
 Marks a method to be invoked by the `EntityManager` **after** an entity has been
 removed from the data source.

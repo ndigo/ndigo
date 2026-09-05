@@ -8,7 +8,7 @@
 
 > **type**(`val`): `string`
 
-Defined in: packages/blue-util/src/type/index.ts:56
+Defined in: [packages/blue-util/src/type/index.ts:56](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-util/src/type/index.ts#lines-56)
 
 Gives a single-word string description of the (native) type of a value,
 returning such answers as 'Object', 'Number', 'Array', or 'Null'. Does not

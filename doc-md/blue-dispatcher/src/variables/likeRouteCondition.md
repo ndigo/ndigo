@@ -8,7 +8,7 @@
 
 > `const` **likeRouteCondition**: (`value`) => `value is RouteCondition<any>`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:56
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:56](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-56)
 
 Tests whether a value behaves like a [RouteCondition](../interfaces/RouteCondition.md).
 

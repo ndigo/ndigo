@@ -8,6 +8,6 @@
 
 > `const` **PositiveInteger**: `any`
 
-Defined in: packages/blue-model/src/basic.ts:79
+Defined in: [packages/blue-model/src/basic.ts:79](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-model/src/basic.ts#lines-79)
 
 Matches positive integers.

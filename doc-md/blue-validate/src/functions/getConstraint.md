@@ -8,7 +8,7 @@
 
 > **getConstraint**(`name`): `Constraint`
 
-Defined in: packages/blue-validate/src/constraints.ts:41
+Defined in: [packages/blue-validate/src/constraints.ts:41](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/constraints.ts#lines-41)
 
 Gets a registered constraint by name.
 

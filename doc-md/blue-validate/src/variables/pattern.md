@@ -8,7 +8,7 @@
 
 > `const` **pattern**: (`params`) => (`value`, `context`) => `void`
 
-Defined in: packages/blue-validate/src/decorators.ts:339
+Defined in: [packages/blue-validate/src/decorators.ts:337](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/decorators.ts#lines-337)
 
 TC39 Stage 3 decorator that validates property values against a regex pattern.
 

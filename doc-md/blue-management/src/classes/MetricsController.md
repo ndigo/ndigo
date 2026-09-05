@@ -6,12 +6,12 @@
 
 # Class: MetricsController
 
-Defined in: packages/blue-management/src/metrics-controller.ts:21
+Defined in: [packages/blue-management/src/metrics-controller.ts:21](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-management/src/metrics-controller.ts#lines-21)
 
 Serves aggregated application metrics under `/metrics`.
 
-Reads the context-level FeatureMetricAggregator (populated by the
-`@counted` decorator and feature code) and serializes per-feature counters,
+Reads the context-level [FeatureMetricAggregator](#) (populated by the
+`counted` decorator and feature code) and serializes per-feature counters,
 gauges, and durations as JSON — the Blue-native pull view over telemetry.
 
 ## Since
@@ -56,7 +56,7 @@ A symbol indicating that the value is aware.
 
 > `readonly` **applicationContext**: `ApplicationContext`
 
-Defined in: packages/blue-management/src/metrics-controller.ts:22
+Defined in: [packages/blue-management/src/metrics-controller.ts:22](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-management/src/metrics-controller.ts#lines-22)
 
 ## Methods
 
@@ -92,7 +92,7 @@ The ApplicationContext to be used by this object.
 
 > **metrics**(): \{ `error`: `string`; `features?`: `undefined`; \} \| \{ `error?`: `undefined`; `features`: `Record`\<`string`, \{ `counters`: `Record`\<`string`, `number`\>; `gauges`: `Record`\<`string`, `number`\>; `updatedAt`: `string`; \}\>; \}
 
-Defined in: packages/blue-management/src/metrics-controller.ts:31
+Defined in: [packages/blue-management/src/metrics-controller.ts:31](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-management/src/metrics-controller.ts#lines-31)
 
 Returns the full metrics snapshot.
 

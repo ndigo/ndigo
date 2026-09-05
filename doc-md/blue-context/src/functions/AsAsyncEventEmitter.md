@@ -8,7 +8,7 @@
 
 > **AsAsyncEventEmitter**\<`T`\>(`superclass`): `Constructable`\<[`AsyncEventEmitter`](../interfaces/AsyncEventEmitter.md)\> & `T`
 
-Defined in: packages/blue-context/src/event-emitter.ts:207
+Defined in: [packages/blue-context/src/event-emitter.ts:198](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-emitter.ts#lines-198)
 
 Adds async event dispatch behavior to a base class.
 

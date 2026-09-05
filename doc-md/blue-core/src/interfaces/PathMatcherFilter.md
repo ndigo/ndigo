@@ -6,7 +6,7 @@
 
 # Interface: PathMatcherFilter
 
-Defined in: packages/blue-core/src/path-matcher.ts:57
+Defined in: [packages/blue-core/src/path-matcher.ts:57](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/path-matcher.ts#lines-57)
 
 Defines a contract for filtering paths based on include and exclude patterns.
 This interface is typically implemented by mixins or classes that need path filtering capabilities.
@@ -17,9 +17,9 @@ This interface is typically implemented by mixins or classes that need path filt
 
 > **pathMatcher**: [`PathMatcher`](PathMatcher.md)
 
-Defined in: packages/blue-core/src/path-matcher.ts:61
+Defined in: [packages/blue-core/src/path-matcher.ts:61](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/path-matcher.ts#lines-61)
 
-The [PathMatcher](PathMatcher.md) instance used for matching patterns.
+The `PathMatcher` instance used for matching patterns.
 
 ## Methods
 
@@ -27,7 +27,7 @@ The [PathMatcher](PathMatcher.md) instance used for matching patterns.
 
 > **matches**(`path`, `matcher?`): `boolean`
 
-Defined in: packages/blue-core/src/path-matcher.ts:68
+Defined in: [packages/blue-core/src/path-matcher.ts:68](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/path-matcher.ts#lines-68)
 
 Checks if a given path matches the configured include/exclude patterns.
 
@@ -43,7 +43,7 @@ The path to check.
 
 [`PathMatcher`](PathMatcher.md)
 
-An optional [PathMatcher](PathMatcher.md) to use for matching. If not provided, `this.pathMatcher` is used.
+An optional `PathMatcher` to use for matching. If not provided, `this.pathMatcher` is used.
 
 #### Returns
 
@@ -57,7 +57,7 @@ An optional [PathMatcher](PathMatcher.md) to use for matching. If not provided, 
 
 > **setExcludePatterns**(`excludePatterns`): `void`
 
-Defined in: packages/blue-core/src/path-matcher.ts:73
+Defined in: [packages/blue-core/src/path-matcher.ts:73](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/path-matcher.ts#lines-73)
 
 Sets the patterns to exclude. Paths matching these patterns will be filtered out.
 
@@ -79,7 +79,7 @@ An array of patterns to exclude.
 
 > **setIncludePatterns**(`includePatterns`): `void`
 
-Defined in: packages/blue-core/src/path-matcher.ts:79
+Defined in: [packages/blue-core/src/path-matcher.ts:79](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/path-matcher.ts#lines-79)
 
 Sets the patterns to include. Paths must match at least one of these patterns to be included.
 If no include patterns are set, all paths are considered included (unless excluded by `excludePatterns`).

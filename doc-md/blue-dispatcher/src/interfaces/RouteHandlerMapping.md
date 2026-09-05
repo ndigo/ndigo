@@ -6,7 +6,7 @@
 
 # Interface: RouteHandlerMapping
 
-Defined in: packages/blue-dispatcher/src/abstract-handler-mapping.ts:26
+Defined in: [packages/blue-dispatcher/src/abstract-handler-mapping.ts:26](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/abstract-handler-mapping.ts#lines-26)
 
 Resolves a route to a handler execution chain.
 
@@ -20,7 +20,7 @@ Resolves a route to a handler execution chain.
 
 > **getHandler**(`route`): `RouteHandlerExecutionChain` \| `null`
 
-Defined in: packages/blue-dispatcher/src/abstract-handler-mapping.ts:33
+Defined in: [packages/blue-dispatcher/src/abstract-handler-mapping.ts:33](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/abstract-handler-mapping.ts#lines-33)
 
 Resolve the handler for a route.
 
@@ -28,7 +28,7 @@ Resolve the handler for a route.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The current route.
 

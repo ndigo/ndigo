@@ -6,7 +6,7 @@
 
 # Interface: EnvironmentAware
 
-Defined in: packages/blue-context/src/environment.ts:45
+Defined in: [packages/blue-context/src/environment.ts:45](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/environment.ts#lines-45)
 
 Receives the current environment during initialization.
 
@@ -34,7 +34,7 @@ A symbol indicating that the value is aware.
 
 > **setEnvironment**(`environment`): `void`
 
-Defined in: packages/blue-context/src/environment.ts:46
+Defined in: [packages/blue-context/src/environment.ts:46](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/environment.ts#lines-46)
 
 #### Parameters
 

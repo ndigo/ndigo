@@ -8,7 +8,7 @@
 
 > **isJSONValue**(`value`): `value is JSONValue`
 
-Defined in: packages/blue-core/src/serializable.ts:79
+Defined in: [packages/blue-core/src/serializable.ts:82](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/serializable.ts#lines-82)
 
 Tests whether a value is directly representable in JSON.
 

@@ -8,6 +8,6 @@
 
 > `const` **BAD\_REQUEST**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
-Defined in: packages/blue-http/src/response-statuses.ts:149
+Defined in: [packages/blue-http/src/response-statuses.ts:149](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/response-statuses.ts#lines-149)
 
 The server could not understand the request due to invalid syntax.

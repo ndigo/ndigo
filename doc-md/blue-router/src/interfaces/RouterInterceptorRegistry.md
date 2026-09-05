@@ -6,7 +6,7 @@
 
 # Interface: RouterInterceptorRegistry
 
-Defined in: packages/blue-router/src/router-interceptor.ts:39
+Defined in: [packages/blue-router/src/router-interceptor.ts:39](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/router-interceptor.ts#lines-39)
 
 Defines the interface for a registry that manages `RouterInterceptor` instances.
 It provides methods to add interceptors and middleware, with support for path-based matching.
@@ -21,7 +21,7 @@ It provides methods to add interceptors and middleware, with support for path-ba
 
 > **addInterceptor**(`interceptor`): `void`
 
-Defined in: packages/blue-router/src/router-interceptor.ts:40
+Defined in: [packages/blue-router/src/router-interceptor.ts:40](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/router-interceptor.ts#lines-40)
 
 #### Parameters
 
@@ -41,7 +41,7 @@ Defined in: packages/blue-router/src/router-interceptor.ts:40
 
 > **use**(`interceptor`): `void`
 
-Defined in: packages/blue-router/src/router-interceptor.ts:41
+Defined in: [packages/blue-router/src/router-interceptor.ts:41](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/router-interceptor.ts#lines-41)
 
 ##### Parameters
 
@@ -57,7 +57,7 @@ Defined in: packages/blue-router/src/router-interceptor.ts:41
 
 > **use**(`includePattern`, `interceptor`): `void`
 
-Defined in: packages/blue-router/src/router-interceptor.ts:42
+Defined in: [packages/blue-router/src/router-interceptor.ts:42](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/router-interceptor.ts#lines-42)
 
 ##### Parameters
 
@@ -77,7 +77,7 @@ Defined in: packages/blue-router/src/router-interceptor.ts:42
 
 > **use**(`includePatterns`, `interceptor`, `excludePatterns?`): `void`
 
-Defined in: packages/blue-router/src/router-interceptor.ts:43
+Defined in: [packages/blue-router/src/router-interceptor.ts:43](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/router-interceptor.ts#lines-43)
 
 ##### Parameters
 

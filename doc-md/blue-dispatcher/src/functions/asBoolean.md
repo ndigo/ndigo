@@ -8,7 +8,7 @@
 
 > **asBoolean**(`extractor`): [`ParameterExtractor`](../type-aliases/ParameterExtractor.md)
 
-Defined in: packages/blue-dispatcher/src/route-parameter.ts:425
+Defined in: [packages/blue-dispatcher/src/route-parameter.ts:396](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-parameter.ts#lines-396)
 
 Wraps a parameter extractor to enforce boolean conversion.
 

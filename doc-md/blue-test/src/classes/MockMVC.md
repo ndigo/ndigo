@@ -6,11 +6,11 @@
 
 # Class: MockMVC
 
-Defined in: packages/blue-test/src/mock-mvc.ts:161
+Defined in: [packages/blue-test/src/mock-mvc.ts:161](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-test/src/mock-mvc.ts#lines-161)
 
 A socket-free mock MVC client for testing Blue server-side applications.
 
-Wraps a configured NodeDispatcher and dispatches mock requests
+Wraps a configured [NodeDispatcher](#) and dispatches mock requests
 through it, capturing the resulting HTTP response in memory.
 
 ## Example
@@ -27,13 +27,15 @@ const res = await mockMVC.get('/todos').exec();
 
 > **new MockMVC**(`arg`): `MockMVC`
 
-Defined in: packages/blue-test/src/mock-mvc.ts:167
+Defined in: [packages/blue-test/src/mock-mvc.ts:167](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-test/src/mock-mvc.ts#lines-167)
 
 #### Parameters
 
 ##### arg
 
-`NodeDispatcher` \| \{ `dispatcher`: `NodeDispatcher`; \}
+[`NodeDispatcher`](#) \| \{ `dispatcher`: [`NodeDispatcher`](#); \}
+
+(application dispatcher) - A configured node dispatcher, or an app with one.
 
 #### Returns
 
@@ -45,15 +47,15 @@ Defined in: packages/blue-test/src/mock-mvc.ts:167
 
 #### Get Signature
 
-> **get** **dispatcher**(): `NodeDispatcher`
+> **get** **dispatcher**(): [`NodeDispatcher`](#)
 
-Defined in: packages/blue-test/src/mock-mvc.ts:174
+Defined in: [packages/blue-test/src/mock-mvc.ts:174](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-test/src/mock-mvc.ts#lines-174)
 
 The configured dispatcher.
 
 ##### Returns
 
-`NodeDispatcher`
+[`NodeDispatcher`](#)
 
 ## Methods
 
@@ -61,7 +63,7 @@ The configured dispatcher.
 
 > **request**(`req`): `Promise`\<`MockResult`\>
 
-Defined in: packages/blue-test/src/mock-mvc.ts:188
+Defined in: [packages/blue-test/src/mock-mvc.ts:188](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-test/src/mock-mvc.ts#lines-188)
 
 Dispatch an arbitrary mock request.
 
@@ -89,7 +91,7 @@ The mock result.
 
 > **get**(`path`): [`MockMVCRequestBuilder`](MockMVCRequestBuilder.md)
 
-Defined in: packages/blue-test/src/mock-mvc.ts:216
+Defined in: [packages/blue-test/src/mock-mvc.ts:216](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-test/src/mock-mvc.ts#lines-216)
 
 GET request builder.
 
@@ -111,7 +113,7 @@ The path, e.g. `/todos`.
 
 > **post**(`path`): [`MockMVCRequestBuilder`](MockMVCRequestBuilder.md)
 
-Defined in: packages/blue-test/src/mock-mvc.ts:221
+Defined in: [packages/blue-test/src/mock-mvc.ts:221](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-test/src/mock-mvc.ts#lines-221)
 
 POST request builder.
 
@@ -131,7 +133,7 @@ POST request builder.
 
 > **put**(`path`): [`MockMVCRequestBuilder`](MockMVCRequestBuilder.md)
 
-Defined in: packages/blue-test/src/mock-mvc.ts:226
+Defined in: [packages/blue-test/src/mock-mvc.ts:226](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-test/src/mock-mvc.ts#lines-226)
 
 PUT request builder.
 
@@ -151,7 +153,7 @@ PUT request builder.
 
 > **delete**(`path`): [`MockMVCRequestBuilder`](MockMVCRequestBuilder.md)
 
-Defined in: packages/blue-test/src/mock-mvc.ts:231
+Defined in: [packages/blue-test/src/mock-mvc.ts:231](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-test/src/mock-mvc.ts#lines-231)
 
 DELETE request builder.
 
@@ -171,7 +173,7 @@ DELETE request builder.
 
 > **patch**(`path`): [`MockMVCRequestBuilder`](MockMVCRequestBuilder.md)
 
-Defined in: packages/blue-test/src/mock-mvc.ts:236
+Defined in: [packages/blue-test/src/mock-mvc.ts:236](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-test/src/mock-mvc.ts#lines-236)
 
 PATCH request builder.
 
@@ -191,7 +193,7 @@ PATCH request builder.
 
 > **query**(`path`): [`MockMVCRequestBuilder`](MockMVCRequestBuilder.md)
 
-Defined in: packages/blue-test/src/mock-mvc.ts:241
+Defined in: [packages/blue-test/src/mock-mvc.ts:241](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-test/src/mock-mvc.ts#lines-241)
 
 QUERY (RFC 9889) request builder.
 

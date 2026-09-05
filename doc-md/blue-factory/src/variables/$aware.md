@@ -8,4 +8,4 @@
 
 > `const` **$aware**: unique `symbol`
 
-Defined in: packages/blue-factory/src/aware.ts:16
+Defined in: [packages/blue-factory/src/aware.ts:16](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/aware.ts#lines-16)

@@ -6,7 +6,7 @@
 
 # Interface: ConversionServiceOptions
 
-Defined in: packages/blue-core/src/converter.ts:244
+Defined in: [packages/blue-core/src/converter.ts:247](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/converter.ts#lines-247)
 
 Options for creating a [ConversionService](ConversionService.md).
 
@@ -16,7 +16,7 @@ Options for creating a [ConversionService](ConversionService.md).
 
 > `optional` **converters?**: `object`[]
 
-Defined in: packages/blue-core/src/converter.ts:246
+Defined in: [packages/blue-core/src/converter.ts:249](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/converter.ts#lines-249)
 
 Pre-populated converters to register.
 

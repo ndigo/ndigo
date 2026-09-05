@@ -8,7 +8,7 @@
 
 > **ValidatedConfig** = `object`
 
-Defined in: packages/blue-validate/src/decorators.ts:556
+Defined in: [packages/blue-validate/src/decorators.ts:554](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/decorators.ts#lines-554)
 
 Options for the `@validated` class decorator.
 
@@ -18,7 +18,7 @@ Options for the `@validated` class decorator.
 
 > `optional` **groups?**: [`ValidationGroup`](ValidationGroup.md)[]
 
-Defined in: packages/blue-validate/src/decorators.ts:557
+Defined in: [packages/blue-validate/src/decorators.ts:555](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/decorators.ts#lines-555)
 
 ***
 
@@ -26,7 +26,7 @@ Defined in: packages/blue-validate/src/decorators.ts:557
 
 > `optional` **backend?**: [`ValidationBackendName`](ValidationBackendName.md)
 
-Defined in: packages/blue-validate/src/decorators.ts:562
+Defined in: [packages/blue-validate/src/decorators.ts:560](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/decorators.ts#lines-560)
 
 Backend adapter to use for constraint validation. Defaults to 'native'.
 Currently only the native BlueJS backend is available.

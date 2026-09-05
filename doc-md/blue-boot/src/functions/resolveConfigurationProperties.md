@@ -8,7 +8,7 @@
 
 > **resolveConfigurationProperties**\<`T`\>(`ctor`, `context`): [`ConfigurationPropertiesResult`](../interfaces/ConfigurationPropertiesResult.md)\<`T`\>
 
-Defined in: packages/blue-boot/src/configuration-properties.ts:110
+Defined in: [packages/blue-boot/src/configuration-properties.ts:110](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-boot/src/configuration-properties.ts#lines-110)
 
 ## Type Parameters
 

@@ -8,7 +8,7 @@
 
 > **encodeHtml**(`value`): `string`
 
-Defined in: packages/blue-util/src/string/encode-html.ts:18
+Defined in: [packages/blue-util/src/string/encode-html.ts:18](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-util/src/string/encode-html.ts#lines-18)
 
 ## Parameters
 

@@ -6,7 +6,7 @@
 
 # Abstract Class: AbstractPathViewMapping
 
-Defined in: packages/blue-view/src/view-mapping.ts:100
+Defined in: [packages/blue-view/src/view-mapping.ts:100](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view-mapping.ts#lines-100)
 
 Base implementation for mappings that resolve targets by path.
 
@@ -20,7 +20,7 @@ Base implementation for mappings that resolve targets by path.
 
 > **new AbstractPathViewMapping**(): `AbstractPathViewMapping`
 
-Defined in: packages/blue-view/src/view-mapping.ts:112
+Defined in: [packages/blue-view/src/view-mapping.ts:112](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view-mapping.ts#lines-112)
 
 #### Returns
 
@@ -64,7 +64,7 @@ The name of the value in the factory.
 
 > **applicationContext**: `ApplicationContext`
 
-Defined in: packages/blue-view/src/view-mapping.ts:35
+Defined in: [packages/blue-view/src/view-mapping.ts:35](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view-mapping.ts#lines-35)
 
 The application context used to look up mapping dependencies.
 
@@ -78,7 +78,7 @@ The application context used to look up mapping dependencies.
 
 > **defaultTarget**: `any`
 
-Defined in: packages/blue-view/src/view-mapping.ts:39
+Defined in: [packages/blue-view/src/view-mapping.ts:39](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view-mapping.ts#lines-39)
 
 The fallback target returned when no route-specific target is found.
 
@@ -92,7 +92,7 @@ The fallback target returned when no route-specific target is found.
 
 > **interceptors**: `any`[]
 
-Defined in: packages/blue-view/src/view-mapping.ts:43
+Defined in: [packages/blue-view/src/view-mapping.ts:43](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view-mapping.ts#lines-43)
 
 The interceptors applied while resolving targets.
 
@@ -106,7 +106,7 @@ The interceptors applied while resolving targets.
 
 > **pathMatcher**: `PathMatcher`
 
-Defined in: packages/blue-view/src/view-mapping.ts:47
+Defined in: [packages/blue-view/src/view-mapping.ts:47](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view-mapping.ts#lines-47)
 
 The path matcher used to match request paths to targets.
 
@@ -120,7 +120,7 @@ The path matcher used to match request paths to targets.
 
 > **rootTarget**: `any`
 
-Defined in: packages/blue-view/src/view-mapping.ts:104
+Defined in: [packages/blue-view/src/view-mapping.ts:104](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view-mapping.ts#lines-104)
 
 The target returned for the root path when one is configured.
 
@@ -130,7 +130,7 @@ The target returned for the root path when one is configured.
 
 > **useTrailingSlashMatch**: `boolean`
 
-Defined in: packages/blue-view/src/view-mapping.ts:108
+Defined in: [packages/blue-view/src/view-mapping.ts:108](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view-mapping.ts#lines-108)
 
 Indicates whether trailing slashes should be treated as equivalent.
 
@@ -140,7 +140,7 @@ Indicates whether trailing slashes should be treated as equivalent.
 
 > `protected` `readonly` **\_targets**: `Map`\<`string`, `any`\>
 
-Defined in: packages/blue-view/src/view-mapping.ts:110
+Defined in: [packages/blue-view/src/view-mapping.ts:110](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view-mapping.ts#lines-110)
 
 ## Accessors
 
@@ -150,7 +150,7 @@ Defined in: packages/blue-view/src/view-mapping.ts:110
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-view/src/view-mapping.ts:49
+Defined in: [packages/blue-view/src/view-mapping.ts:49](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view-mapping.ts#lines-49)
 
 ##### Returns
 
@@ -220,7 +220,7 @@ The name to set.
 
 > **getTarget**(`route`): `any`
 
-Defined in: packages/blue-view/src/view-mapping.ts:81
+Defined in: [packages/blue-view/src/view-mapping.ts:81](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view-mapping.ts#lines-81)
 
 Returns the target associated with the given route.
 
@@ -228,7 +228,7 @@ Returns the target associated with the given route.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The route being resolved.
 
@@ -248,13 +248,13 @@ The resolved target, or `null` when no target matches.
 
 > `abstract` `protected` **\_getTarget**(`route`): `any`
 
-Defined in: packages/blue-view/src/view-mapping.ts:94
+Defined in: [packages/blue-view/src/view-mapping.ts:94](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view-mapping.ts#lines-94)
 
 #### Parameters
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 #### Returns
 

@@ -8,7 +8,7 @@
 
 > `const` **likeSuccessAwareHTTPInterceptor**: (`value`) => `value is SuccessAwareHTTPInterceptor`
 
-Defined in: packages/blue-http/src/interceptors/response-class-interceptor.ts:76
+Defined in: [packages/blue-http/src/interceptors/response-class-interceptor.ts:76](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/response-class-interceptor.ts#lines-76)
 
 Tests whether a value exposes `postSuccessfulResponse()`.
 

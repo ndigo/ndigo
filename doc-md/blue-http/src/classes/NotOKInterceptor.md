@@ -6,9 +6,9 @@
 
 # Class: NotOKInterceptor
 
-Defined in: packages/blue-http/src/interceptors/not-ok-interceptor.ts:11
+Defined in: [packages/blue-http/src/interceptors/not-ok-interceptor.ts:11](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/not-ok-interceptor.ts#lines-11)
 
-Throws a ResponseError when the response status is outside 200-299.
+Throws a [ResponseError](#) when the response status is outside 200-299.
 
 ## Implements
 
@@ -30,7 +30,7 @@ Throws a ResponseError when the response status is outside 200-299.
 
 > **postResponse**(`response`, `settings`): `Promise`\<`void` \| `Response`\>
 
-Defined in: packages/blue-http/src/interceptors/not-ok-interceptor.ts:18
+Defined in: [packages/blue-http/src/interceptors/not-ok-interceptor.ts:18](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/not-ok-interceptor.ts#lines-18)
 
 #### Parameters
 
@@ -49,8 +49,6 @@ The HTTP request settings
 #### Returns
 
 `Promise`\<`void` \| `Response`\>
-
-#### Async
 
 #### Implementation of
 

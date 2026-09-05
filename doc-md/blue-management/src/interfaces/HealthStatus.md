@@ -6,7 +6,7 @@
 
 # Interface: HealthStatus
 
-Defined in: packages/blue-management/src/health.ts:117
+Defined in: [packages/blue-management/src/health.ts:130](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-management/src/health.ts#lines-130)
 
 The aggregated health status served by `/health`.
 
@@ -16,7 +16,7 @@ The aggregated health status served by `/health`.
 
 > **status**: [`HealthState`](../type-aliases/HealthState.md)
 
-Defined in: packages/blue-management/src/health.ts:119
+Defined in: [packages/blue-management/src/health.ts:132](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-management/src/health.ts#lines-132)
 
 Overall state across all indicators.
 
@@ -26,7 +26,7 @@ Overall state across all indicators.
 
 > **components**: `Record`\<`string`, [`HealthResult`](HealthResult.md)\>
 
-Defined in: packages/blue-management/src/health.ts:121
+Defined in: [packages/blue-management/src/health.ts:134](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-management/src/health.ts#lines-134)
 
 Per-indicator results keyed by indicator name.
 
@@ -36,6 +36,6 @@ Per-indicator results keyed by indicator name.
 
 > **timestamp**: `string`
 
-Defined in: packages/blue-management/src/health.ts:123
+Defined in: [packages/blue-management/src/health.ts:136](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-management/src/health.ts#lines-136)
 
 ISO timestamp of the check.

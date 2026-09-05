@@ -6,7 +6,7 @@
 
 # Interface: FeatureMetricRecorder
 
-Defined in: packages/blue-core/src/feature-metric-recorder.ts:8
+Defined in: [packages/blue-core/src/feature-metric-recorder.ts:8](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/feature-metric-recorder.ts#lines-8)
 
 Contract for recording feature-level metrics.
 
@@ -16,7 +16,7 @@ Contract for recording feature-level metrics.
 
 > **incrementCounter**(`feature`, `metricName`, `value?`): `void`
 
-Defined in: packages/blue-core/src/feature-metric-recorder.ts:15
+Defined in: [packages/blue-core/src/feature-metric-recorder.ts:15](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/feature-metric-recorder.ts#lines-15)
 
 Increments a counter metric for a specific feature.
 
@@ -50,7 +50,7 @@ The amount to increment the counter by. Defaults to 1.
 
 > `optional` **recordDuration**(`feature`, `metricName`, `durationMs`): `void`
 
-Defined in: packages/blue-core/src/feature-metric-recorder.ts:22
+Defined in: [packages/blue-core/src/feature-metric-recorder.ts:22](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/feature-metric-recorder.ts#lines-22)
 
 Records a duration metric for a specific feature.
 
@@ -84,7 +84,7 @@ The duration in milliseconds.
 
 > `optional` **setGauge**(`feature`, `metricName`, `value`): `void`
 
-Defined in: packages/blue-core/src/feature-metric-recorder.ts:29
+Defined in: [packages/blue-core/src/feature-metric-recorder.ts:29](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/feature-metric-recorder.ts#lines-29)
 
 Sets a gauge metric to a specific value for a feature.
 

@@ -8,6 +8,6 @@
 
 > **QueryString**: `QueryString`
 
-Defined in: packages/blue-http/src/query-string.ts:76
+Defined in: [packages/blue-http/src/query-string.ts:76](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/query-string.ts#lines-76)
 
 Query-string parser and serializer singleton.

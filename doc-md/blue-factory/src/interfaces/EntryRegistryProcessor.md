@@ -6,7 +6,7 @@
 
 # Interface: EntryRegistryProcessor
 
-Defined in: packages/blue-factory/src/entry-processor.ts:87
+Defined in: [packages/blue-factory/src/entry-processor.ts:87](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/entry-processor.ts#lines-87)
 
 Factory hook that allows for modification of an application context's values.
 
@@ -16,7 +16,7 @@ Factory hook that allows for modification of an application context's values.
 
 > **processEntryRegistry**(`registry`): `void`
 
-Defined in: packages/blue-factory/src/entry-processor.ts:92
+Defined in: [packages/blue-factory/src/entry-processor.ts:92](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/entry-processor.ts#lines-92)
 
 Process the given registry.
 

@@ -6,7 +6,7 @@
 
 # Interface: InformationAwareHTTPInterceptor
 
-Defined in: packages/blue-http/src/interceptors/response-class-interceptor.ts:18
+Defined in: [packages/blue-http/src/interceptors/response-class-interceptor.ts:18](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/response-class-interceptor.ts#lines-18)
 
 Handles informational responses.
 
@@ -16,7 +16,7 @@ Handles informational responses.
 
 > **postInformationalResponse**(`response`, `settings`): `Promise`\<`void` \| `JSONObject`\>
 
-Defined in: packages/blue-http/src/interceptors/response-class-interceptor.ts:19
+Defined in: [packages/blue-http/src/interceptors/response-class-interceptor.ts:19](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/response-class-interceptor.ts#lines-19)
 
 #### Parameters
 

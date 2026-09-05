@@ -8,7 +8,7 @@
 
 > **generated**(): (`_value`, `context`) => `void`
 
-Defined in: packages/blue-orm/src/decorators.ts:96
+Defined in: [packages/blue-orm/src/decorators.ts:103](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/decorators.ts#lines-103)
 
 Decorator that marks a class property as a generated column.
 This is typically used for auto-incrementing primary keys or other database-generated values.

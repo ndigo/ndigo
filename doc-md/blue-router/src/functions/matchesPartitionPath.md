@@ -8,7 +8,7 @@
 
 > **matchesPartitionPath**(`path`, `prefix`): `boolean`
 
-Defined in: packages/blue-router/src/route-partition.ts:30
+Defined in: [packages/blue-router/src/route-partition.ts:30](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/route-partition.ts#lines-30)
 
 Determine whether `path` belongs to `prefix` partition.
 

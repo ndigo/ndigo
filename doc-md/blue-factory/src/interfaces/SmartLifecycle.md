@@ -6,7 +6,7 @@
 
 # Interface: SmartLifecycle
 
-Defined in: packages/blue-factory/src/lifecycle.ts:38
+Defined in: [packages/blue-factory/src/lifecycle.ts:38](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/lifecycle.ts#lines-38)
 
 ## Extends
 
@@ -18,7 +18,7 @@ Defined in: packages/blue-factory/src/lifecycle.ts:38
 
 > `readonly` **isRunning**: `boolean`
 
-Defined in: packages/blue-factory/src/lifecycle.ts:29
+Defined in: [packages/blue-factory/src/lifecycle.ts:29](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/lifecycle.ts#lines-29)
 
 #### Inherited from
 
@@ -30,7 +30,7 @@ Defined in: packages/blue-factory/src/lifecycle.ts:29
 
 > `readonly` **phase**: `number`
 
-Defined in: packages/blue-factory/src/lifecycle.ts:35
+Defined in: [packages/blue-factory/src/lifecycle.ts:35](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/lifecycle.ts#lines-35)
 
 #### Inherited from
 
@@ -42,7 +42,7 @@ Defined in: packages/blue-factory/src/lifecycle.ts:35
 
 > `readonly` **isAutoStartup**: `boolean`
 
-Defined in: packages/blue-factory/src/lifecycle.ts:39
+Defined in: [packages/blue-factory/src/lifecycle.ts:39](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/lifecycle.ts#lines-39)
 
 ## Methods
 
@@ -50,7 +50,7 @@ Defined in: packages/blue-factory/src/lifecycle.ts:39
 
 > **start**(): `void`
 
-Defined in: packages/blue-factory/src/lifecycle.ts:30
+Defined in: [packages/blue-factory/src/lifecycle.ts:30](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/lifecycle.ts#lines-30)
 
 #### Returns
 
@@ -66,7 +66,7 @@ Defined in: packages/blue-factory/src/lifecycle.ts:30
 
 > **stop**(): `void`
 
-Defined in: packages/blue-factory/src/lifecycle.ts:31
+Defined in: [packages/blue-factory/src/lifecycle.ts:31](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/lifecycle.ts#lines-31)
 
 #### Returns
 

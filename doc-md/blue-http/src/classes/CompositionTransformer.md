@@ -6,7 +6,7 @@
 
 # Class: CompositionTransformer\<TInput, TOutput\>
 
-Defined in: packages/blue-http/src/transformers/composition-transformer.ts:10
+Defined in: [packages/blue-http/src/transformers/composition-transformer.ts:10](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/transformers/composition-transformer.ts#lines-10)
 
 Composes a sequence of body transforms into a single transformer.
 
@@ -30,7 +30,7 @@ Composes a sequence of body transforms into a single transformer.
 
 > **new CompositionTransformer**\<`TInput`, `TOutput`\>(`transforms`, `condition?`): `CompositionTransformer`\<`TInput`, `TOutput`\>
 
-Defined in: packages/blue-http/src/transformers/composition-transformer.ts:20
+Defined in: [packages/blue-http/src/transformers/composition-transformer.ts:20](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/transformers/composition-transformer.ts#lines-20)
 
 Creates a composed transformer.
 
@@ -58,7 +58,7 @@ Optional predicate that controls whether the pipeline runs.
 
 > **canTransform**(`body`, `context`): `boolean`
 
-Defined in: packages/blue-http/src/transformers/composition-transformer.ts:40
+Defined in: [packages/blue-http/src/transformers/composition-transformer.ts:40](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/transformers/composition-transformer.ts#lines-40)
 
 Tests whether the pipeline should run for the current body.
 
@@ -92,7 +92,7 @@ The current transform context.
 
 > **transform**(`body`, `context`): `TOutput`
 
-Defined in: packages/blue-http/src/transformers/composition-transformer.ts:51
+Defined in: [packages/blue-http/src/transformers/composition-transformer.ts:51](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/transformers/composition-transformer.ts#lines-51)
 
 Applies the composed transform pipeline.
 

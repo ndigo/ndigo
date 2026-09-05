@@ -6,7 +6,7 @@
 
 # Interface: ConversionService
 
-Defined in: packages/blue-core/src/converter.ts:265
+Defined in: [packages/blue-core/src/converter.ts:268](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/converter.ts#lines-268)
 
 Central type-conversion service (modelled on Spring's `ConversionService`).
 
@@ -30,7 +30,7 @@ const uuid = conversionService.convert('a1b2c3d4-e5f6-7890-abcd-ef1234567890', S
 
 > `readonly` **registry**: [`ConverterRegistry`](../classes/ConverterRegistry.md)
 
-Defined in: packages/blue-core/src/converter.ts:292
+Defined in: [packages/blue-core/src/converter.ts:295](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/converter.ts#lines-295)
 
 Returns the underlying converter registry.
 
@@ -40,7 +40,7 @@ Returns the underlying converter registry.
 
 > **canConvert**(`sourceType`, `targetType`): `boolean`
 
-Defined in: packages/blue-core/src/converter.ts:269
+Defined in: [packages/blue-core/src/converter.ts:272](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/converter.ts#lines-272)
 
 Checks whether a converter exists for the given source/target type pair.
 
@@ -64,7 +64,7 @@ Checks whether a converter exists for the given source/target type pair.
 
 > **convert**(`source`, `targetType`): `any`
 
-Defined in: packages/blue-core/src/converter.ts:277
+Defined in: [packages/blue-core/src/converter.ts:280](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/converter.ts#lines-280)
 
 Converts a value from one type to another using the registered converter.
 
@@ -94,7 +94,7 @@ The converted value, or throws if no converter is found.
 
 > **register**\<`S`, `T`\>(`converter`, `sourceType`, `targetType`): `void`
 
-Defined in: packages/blue-core/src/converter.ts:282
+Defined in: [packages/blue-core/src/converter.ts:285](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/converter.ts#lines-285)
 
 Registers a converter for a source/target type pair.
 
@@ -132,7 +132,7 @@ Registers a converter for a source/target type pair.
 
 > **unregister**(`sourceType`, `targetType`): `void`
 
-Defined in: packages/blue-core/src/converter.ts:287
+Defined in: [packages/blue-core/src/converter.ts:290](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/converter.ts#lines-290)
 
 Removes the converter for a source/target type pair.
 

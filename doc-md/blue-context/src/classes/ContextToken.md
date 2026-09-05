@@ -8,9 +8,9 @@
 
 Defined in: packages/blue-factory/lib/context-token.d.ts:17
 
-A type-safe key used for value registration and retrieval in a Registry.
+A type-safe key used for value registration and retrieval in a `Registry`.
 
-At runtime, ContextToken.description\|description is used as the backing string key.
+At runtime, `description` is used as the backing string key.
 The generic parameter `T` provides compile-time type association.
 
 ## Type Parameters

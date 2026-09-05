@@ -8,11 +8,11 @@
 
 > **requestMapping**(`route`): (`target`, `context`) => `any`
 
-Defined in: packages/blue-dispatcher/src/request-mapping.ts:47
+Defined in: [packages/blue-dispatcher/src/request-mapping.ts:47](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/request-mapping.ts#lines-47)
 
 Apply route mapping metadata with HTTP request semantics to a class or method.
 
-Works as both a class and method decorator, exactly like `@routeMapping`.
+Works as both a class and method decorator, exactly like the `routeMapping` decorator.
 
 ## Parameters
 
@@ -31,19 +31,16 @@ A decorator function for the target.
 ## Examples
 
 ```ts
-// Any method — equivalent to @routeMapping('/users')
-@requestMapping('/users')
+// Any method — equivalent to `routeMapping`('/users')
+`requestMapping`('/users')
 ```
 
 ```ts
 // GET only
-@requestMapping({ value: '/users', method: 'GET' })
+`requestMapping`({ value: '/users', method: 'GET' })
 ```
 
 ```ts
-// With the same query/matrix conditions as
+// With the same query/matrix conditions as `routeMapping`
+`requestMapping`({ value: '/users/{id}', method: 'DELETE', queryParams: 'filter=all' })
 ```
-
-## Route Mapping
-
-@requestMapping({ value: '/users/{id}', method: 'DELETE', queryParams: 'filter=all' })

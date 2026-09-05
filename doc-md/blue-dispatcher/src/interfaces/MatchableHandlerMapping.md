@@ -6,7 +6,7 @@
 
 # Interface: MatchableHandlerMapping
 
-Defined in: packages/blue-dispatcher/src/abstract-handler-mapping.ts:39
+Defined in: [packages/blue-dispatcher/src/abstract-handler-mapping.ts:39](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/abstract-handler-mapping.ts#lines-39)
 
 A handler mapping that can also report whether a route matches a pattern.
 
@@ -20,7 +20,7 @@ A handler mapping that can also report whether a route matches a pattern.
 
 > **getHandler**(`route`): `RouteHandlerExecutionChain` \| `null`
 
-Defined in: packages/blue-dispatcher/src/abstract-handler-mapping.ts:33
+Defined in: [packages/blue-dispatcher/src/abstract-handler-mapping.ts:33](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/abstract-handler-mapping.ts#lines-33)
 
 Resolve the handler for a route.
 
@@ -28,7 +28,7 @@ Resolve the handler for a route.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The current route.
 
@@ -48,7 +48,7 @@ The execution chain for the chosen handler, or `null`.
 
 > **match**(`route`, `pattern`): [`RouteMatchResult`](../classes/RouteMatchResult.md) \| `null`
 
-Defined in: packages/blue-dispatcher/src/abstract-handler-mapping.ts:47
+Defined in: [packages/blue-dispatcher/src/abstract-handler-mapping.ts:47](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/abstract-handler-mapping.ts#lines-47)
 
 Check whether the route matches a pattern.
 
@@ -56,7 +56,7 @@ Check whether the route matches a pattern.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The current route.
 

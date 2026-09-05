@@ -6,7 +6,7 @@
 
 # Interface: ViewTarget
 
-Defined in: packages/blue-view/src/view-target.ts:13
+Defined in: [packages/blue-view/src/view-target.ts:13](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view-target.ts#lines-13)
 
 Destination that receives rendered view output.
 
@@ -23,7 +23,7 @@ iframes, streams, or other host-specific outputs.
 
 > **prepare**(`route`): `void` \| `Promise`\<`void`\>
 
-Defined in: packages/blue-view/src/view-target.ts:20
+Defined in: [packages/blue-view/src/view-target.ts:20](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view-target.ts#lines-20)
 
 Prepares the target for rendering (e.g., clearing previous content).
 
@@ -31,7 +31,7 @@ Prepares the target for rendering (e.g., clearing previous content).
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The route being rendered.
 
@@ -47,7 +47,7 @@ A promise that resolves when preparation completes.
 
 > **commit**(`output`, `model`, `route`): `void` \| `Promise`\<`void`\>
 
-Defined in: packages/blue-view/src/view-target.ts:31
+Defined in: [packages/blue-view/src/view-target.ts:31](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view-target.ts#lines-31)
 
 Commits the rendered output to the target.
 The type of `output` depends on the View engine (e.g., HTMLElement, string).
@@ -68,7 +68,7 @@ The model used to produce the output.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The route being rendered.
 
@@ -84,7 +84,7 @@ A promise that resolves when the output has been committed.
 
 > **clear**(): `void` \| `Promise`\<`void`\>
 
-Defined in: packages/blue-view/src/view-target.ts:38
+Defined in: [packages/blue-view/src/view-target.ts:38](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view-target.ts#lines-38)
 
 Cleans up the ViewTarget.
 

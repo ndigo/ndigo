@@ -6,7 +6,7 @@
 
 # Class: NamespaceRelayValidationStrategy
 
-Defined in: packages/blue-context/src/event-gateway.ts:136
+Defined in: [packages/blue-context/src/event-gateway.ts:136](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-gateway.ts#lines-136)
 
 Namespace-based relay validator for `site:*` and `<feature>:*` contracts.
 
@@ -20,7 +20,7 @@ Namespace-based relay validator for `site:*` and `<feature>:*` contracts.
 
 > **new NamespaceRelayValidationStrategy**(`options?`): `NamespaceRelayValidationStrategy`
 
-Defined in: packages/blue-context/src/event-gateway.ts:144
+Defined in: [packages/blue-context/src/event-gateway.ts:144](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-gateway.ts#lines-144)
 
 Creates a namespace validator.
 
@@ -42,7 +42,7 @@ Validation options.
 
 > `readonly` `optional` **featureNamespace?**: `string`
 
-Defined in: packages/blue-context/src/event-gateway.ts:137
+Defined in: [packages/blue-context/src/event-gateway.ts:137](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-gateway.ts#lines-137)
 
 ## Methods
 
@@ -50,7 +50,7 @@ Defined in: packages/blue-context/src/event-gateway.ts:137
 
 > **validate**(`relay`): [`RelayValidationResult`](../interfaces/RelayValidationResult.md)
 
-Defined in: packages/blue-context/src/event-gateway.ts:154
+Defined in: [packages/blue-context/src/event-gateway.ts:154](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-gateway.ts#lines-154)
 
 Validates that both relay endpoints use allowed namespaces.
 

@@ -26,6 +26,8 @@
 - [blue-service/src](blue-service/src/README.md)
 - [blue-signals/src](blue-signals/src/README.md)
 - [blue-telemetry/src](blue-telemetry/src/README.md)
+- [blue-telemetry-node/src](blue-telemetry-node/src/README.md)
+- [blue-telemetry-web/src](blue-telemetry-web/src/README.md)
 - [blue-test/src](blue-test/src/README.md)
 - [blue-util/src](blue-util/src/README.md)
 - [blue-validate/src](blue-validate/src/README.md)

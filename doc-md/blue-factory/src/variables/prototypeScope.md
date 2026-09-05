@@ -8,7 +8,7 @@
 
 > `const` **prototypeScope**: \<`T`\>(`target`, `context`) => `T`
 
-Defined in: packages/blue-factory/src/scope.ts:93
+Defined in: [packages/blue-factory/src/scope.ts:95](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/scope.ts#lines-95)
 
 Decorator for prototype scope (convenience factory)
 

@@ -6,7 +6,7 @@
 
 # Class: ContentNegotiationViewResolver
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:307
+Defined in: [packages/blue-view/src/content-negotiation-view-resolver.ts:313](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/content-negotiation-view-resolver.ts#lines-313)
 
 Resolves views using content negotiation results.
 
@@ -20,7 +20,7 @@ Resolves views using content negotiation results.
 
 > **new ContentNegotiationViewResolver**(`manager`): `ContentNegotiationViewResolver`
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:326
+Defined in: [packages/blue-view/src/content-negotiation-view-resolver.ts:332](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/content-negotiation-view-resolver.ts#lines-332)
 
 Creates a resolver backed by the given negotiation manager.
 
@@ -42,7 +42,7 @@ The negotiation manager to consult.
 
 > **contentNegotiationManager**: [`ContentNegotiationManager`](ContentNegotiationManager.md)
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:311
+Defined in: [packages/blue-view/src/content-negotiation-view-resolver.ts:317](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/content-negotiation-view-resolver.ts#lines-317)
 
 The manager used to derive acceptable media types.
 
@@ -52,7 +52,7 @@ The manager used to derive acceptable media types.
 
 > **defaultViews**: [`View`](../interfaces/View.md)[]
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:315
+Defined in: [packages/blue-view/src/content-negotiation-view-resolver.ts:321](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/content-negotiation-view-resolver.ts#lines-321)
 
 The fallback views used when negotiation cannot resolve a specific one.
 
@@ -62,7 +62,7 @@ The fallback views used when negotiation cannot resolve a specific one.
 
 > **viewResolvers**: [`ViewResolver`](../interfaces/ViewResolver.md)[]
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:319
+Defined in: [packages/blue-view/src/content-negotiation-view-resolver.ts:325](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/content-negotiation-view-resolver.ts#lines-325)
 
 The delegate resolvers queried after negotiation.
 
@@ -72,7 +72,7 @@ The delegate resolvers queried after negotiation.
 
 > **getMediaTypes**(`request`): `MediaType`[]
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:336
+Defined in: [packages/blue-view/src/content-negotiation-view-resolver.ts:342](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/content-negotiation-view-resolver.ts#lines-342)
 
 Returns the media types supported by the current request.
 
@@ -96,7 +96,7 @@ The negotiated media types.
 
 > **resolveViewName**(`name`, `language?`): `Promise`\<[`View`](../interfaces/View.md)\>
 
-Defined in: packages/blue-view/src/content-negotiation-view-resolver.ts:348
+Defined in: [packages/blue-view/src/content-negotiation-view-resolver.ts:354](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/content-negotiation-view-resolver.ts#lines-354)
 
 Resolves a view name using negotiated media types.
 
@@ -110,7 +110,7 @@ The view name to resolve.
 
 ##### language?
 
-`any`
+`unknown`
 
 Optional locale or language hint.
 

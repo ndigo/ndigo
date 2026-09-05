@@ -6,7 +6,7 @@
 
 # Class: RadixMetadataHandlerMapping
 
-Defined in: packages/blue-dispatcher/src/radix-route-handler-mapping.ts:22
+Defined in: [packages/blue-dispatcher/src/radix-route-handler-mapping.ts:22](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/radix-route-handler-mapping.ts#lines-22)
 
 A handler mapping that can also report whether a route matches a pattern.
 
@@ -24,7 +24,7 @@ A handler mapping that can also report whether a route matches a pattern.
 
 > **new RadixMetadataHandlerMapping**(): `RadixMetadataHandlerMapping`
 
-Defined in: packages/blue-dispatcher/src/abstract-handler-method-mapping.ts:43
+Defined in: [packages/blue-dispatcher/src/abstract-handler-method-mapping.ts:50](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/abstract-handler-method-mapping.ts#lines-50)
 
 Create a handler-method mapping with an empty registry.
 
@@ -42,7 +42,7 @@ Create a handler-method mapping with an empty registry.
 
 > **applicationContext**: `ApplicationContext`
 
-Defined in: packages/blue-dispatcher/src/abstract-handler-mapping.ts:60
+Defined in: [packages/blue-dispatcher/src/abstract-handler-mapping.ts:60](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/abstract-handler-mapping.ts#lines-60)
 
 Application context used to resolve named handlers.
 
@@ -56,7 +56,7 @@ Application context used to resolve named handlers.
 
 > **defaultHandler**: `object` \| `null` = `null`
 
-Defined in: packages/blue-dispatcher/src/abstract-handler-mapping.ts:65
+Defined in: [packages/blue-dispatcher/src/abstract-handler-mapping.ts:65](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/abstract-handler-mapping.ts#lines-65)
 
 Default handler used when no specific mapping matches.
 
@@ -70,7 +70,7 @@ Default handler used when no specific mapping matches.
 
 > **interceptors**: [`RouteHandlerInterceptor`](../interfaces/RouteHandlerInterceptor.md)[]
 
-Defined in: packages/blue-dispatcher/src/abstract-handler-mapping.ts:70
+Defined in: [packages/blue-dispatcher/src/abstract-handler-mapping.ts:70](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/abstract-handler-mapping.ts#lines-70)
 
 Interceptors applied to matched handlers.
 
@@ -84,7 +84,7 @@ Interceptors applied to matched handlers.
 
 > **pathMatcher**: `PathMatcher`
 
-Defined in: packages/blue-dispatcher/src/abstract-handler-mapping.ts:75
+Defined in: [packages/blue-dispatcher/src/abstract-handler-mapping.ts:75](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/abstract-handler-mapping.ts#lines-75)
 
 Path matcher used by path-based mappings.
 
@@ -98,7 +98,7 @@ Path matcher used by path-based mappings.
 
 > **namingStrategy**: [`RouteHandlerMethodMappingNamingStrategy`](../interfaces/RouteHandlerMethodMappingNamingStrategy.md)\<[`RouteMappingInfo`](RouteMappingInfo.md)\>
 
-Defined in: packages/blue-dispatcher/src/abstract-handler-method-mapping.ts:28
+Defined in: [packages/blue-dispatcher/src/abstract-handler-method-mapping.ts:35](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/abstract-handler-method-mapping.ts#lines-35)
 
 Naming strategy used when exposing handler methods by name.
 
@@ -112,7 +112,7 @@ Naming strategy used when exposing handler methods by name.
 
 > `readonly` **mappingRegistry**: `MappingRegistry`\<[`RouteMappingInfo`](RouteMappingInfo.md)\>
 
-Defined in: packages/blue-dispatcher/src/abstract-handler-method-mapping.ts:33
+Defined in: [packages/blue-dispatcher/src/abstract-handler-method-mapping.ts:40](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/abstract-handler-method-mapping.ts#lines-40)
 
 Registry of route mappings and their handler methods.
 
@@ -156,7 +156,7 @@ The name of the value in the factory.
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-dispatcher/src/radix-route-handler-mapping.ts:38
+Defined in: [packages/blue-dispatcher/src/radix-route-handler-mapping.ts:38](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/radix-route-handler-mapping.ts#lines-38)
 
 ##### Returns
 
@@ -172,7 +172,7 @@ Defined in: packages/blue-dispatcher/src/radix-route-handler-mapping.ts:38
 
 > **setApplicationContext**(`applicationContext`): `void`
 
-Defined in: packages/blue-dispatcher/src/abstract-handler-mapping.ts:101
+Defined in: [packages/blue-dispatcher/src/abstract-handler-mapping.ts:101](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/abstract-handler-mapping.ts#lines-101)
 
 Store the application context for later handler resolution.
 
@@ -198,7 +198,7 @@ The application context to use.
 
 > **getHandler**(`route`): `RouteHandlerExecutionChain` \| `null`
 
-Defined in: packages/blue-dispatcher/src/abstract-handler-mapping.ts:117
+Defined in: [packages/blue-dispatcher/src/abstract-handler-mapping.ts:117](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/abstract-handler-mapping.ts#lines-117)
 
 Resolve a route to a handler execution chain.
 
@@ -206,7 +206,7 @@ Resolve a route to a handler execution chain.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The current route.
 
@@ -230,7 +230,7 @@ The execution chain, or `null` when no handler matches.
 
 > `protected` **\_getHandlerExecutionChain**(`handler`, `route`): `RouteHandlerExecutionChain`
 
-Defined in: packages/blue-dispatcher/src/abstract-handler-mapping.ts:142
+Defined in: [packages/blue-dispatcher/src/abstract-handler-mapping.ts:142](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/abstract-handler-mapping.ts#lines-142)
 
 Build an execution chain for a resolved handler and route.
 
@@ -244,7 +244,7 @@ The resolved handler or existing execution chain.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The current route.
 
@@ -264,7 +264,7 @@ The execution chain to invoke.
 
 > **init**(): `void`
 
-Defined in: packages/blue-dispatcher/src/abstract-handler-method-mapping.ts:56
+Defined in: [packages/blue-dispatcher/src/abstract-handler-method-mapping.ts:63](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/abstract-handler-method-mapping.ts#lines-63)
 
 Detect and register handler methods from the application context.
 
@@ -287,7 +287,7 @@ must set the context first, then re-run `init`.
 
 > **getHandlerMethods**(): `Map`\<[`RouteMappingInfo`](RouteMappingInfo.md), [`RouteHandlerMethod`](RouteHandlerMethod.md)\>
 
-Defined in: packages/blue-dispatcher/src/abstract-handler-method-mapping.ts:72
+Defined in: [packages/blue-dispatcher/src/abstract-handler-method-mapping.ts:81](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/abstract-handler-method-mapping.ts#lines-81)
 
 Return all registered handler methods.
 
@@ -307,7 +307,7 @@ The mapping-to-handler-method registry.
 
 > **getHandlerMethodsForMappingName**(`name`): [`RouteHandlerMethod`](RouteHandlerMethod.md)[]
 
-Defined in: packages/blue-dispatcher/src/abstract-handler-method-mapping.ts:82
+Defined in: [packages/blue-dispatcher/src/abstract-handler-method-mapping.ts:91](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/abstract-handler-method-mapping.ts#lines-91)
 
 Return handler methods registered under a mapping name.
 
@@ -335,7 +335,7 @@ The matching handler methods.
 
 > **unregisterMapping**(`mapping`): `void`
 
-Defined in: packages/blue-dispatcher/src/abstract-handler-method-mapping.ts:103
+Defined in: [packages/blue-dispatcher/src/abstract-handler-method-mapping.ts:112](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/abstract-handler-method-mapping.ts#lines-112)
 
 Remove a mapping from the registry.
 
@@ -361,7 +361,7 @@ The mapping metadata to remove.
 
 > `protected` **\_createRequestHandlerMethod**(`handler`, `method`): [`RouteHandlerMethod`](RouteHandlerMethod.md)
 
-Defined in: packages/blue-dispatcher/src/abstract-handler-method-mapping.ts:114
+Defined in: [packages/blue-dispatcher/src/abstract-handler-method-mapping.ts:123](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/abstract-handler-method-mapping.ts#lines-123)
 
 Create a handler method reference from a handler object and method name.
 
@@ -395,7 +395,7 @@ The resolved handler method.
 
 > `protected` **\_detectHandlerMethods**(`handler`): `void`
 
-Defined in: packages/blue-dispatcher/src/abstract-handler-method-mapping.ts:134
+Defined in: [packages/blue-dispatcher/src/abstract-handler-method-mapping.ts:143](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/abstract-handler-method-mapping.ts#lines-143)
 
 Scan a handler for mapped methods and register them.
 
@@ -421,7 +421,7 @@ The handler instance or application-context name.
 
 > `protected` **\_lookupHandlerMethod**(`path`, `route`): [`RouteHandlerMethod`](RouteHandlerMethod.md) \| `null`
 
-Defined in: packages/blue-dispatcher/src/abstract-handler-method-mapping.ts:171
+Defined in: [packages/blue-dispatcher/src/abstract-handler-method-mapping.ts:180](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/abstract-handler-method-mapping.ts#lines-180)
 
 Find the best handler method for a path.
 
@@ -435,7 +435,7 @@ The request path.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The current route.
 
@@ -455,7 +455,7 @@ The best matching handler method, or `null`.
 
 > `protected` **\_registerHandlerMethod**(`handler`, `method`, `mapping`): `void`
 
-Defined in: packages/blue-dispatcher/src/abstract-handler-method-mapping.ts:223
+Defined in: [packages/blue-dispatcher/src/abstract-handler-method-mapping.ts:232](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/abstract-handler-method-mapping.ts#lines-232)
 
 Register a handler method for the given mapping.
 
@@ -493,11 +493,11 @@ The mapping metadata.
 
 > `protected` **\_getMappingForMethod**(`method`, `handler`): [`RouteMappingInfo`](RouteMappingInfo.md) \| `undefined`
 
-Defined in: packages/blue-dispatcher/src/abstract-handler-method-mapping.ts:254
+Defined in: [packages/blue-dispatcher/src/abstract-handler-method-mapping.ts:263](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/abstract-handler-method-mapping.ts#lines-263)
 
 Build a [RouteMappingInfo](RouteMappingInfo.md) for the given handler method.
 
-Reads `@routeMapping` metadata from both the method and the containing class,
+Reads `routeMapping` metadata from both the method and the containing class,
 constructs [QueryParamCondition](QueryParamCondition.md) and [MatrixParamCondition](MatrixParamCondition.md) from the
 `params` and `matrixParams` fields respectively, and merges class-level and
 method-level mappings when both are present.
@@ -532,7 +532,7 @@ The combined [RouteMappingInfo](RouteMappingInfo.md), or `undefined` if no mappi
 
 > **match**(`route`, `pattern`): [`RouteMatchResult`](RouteMatchResult.md) \| `null`
 
-Defined in: packages/blue-dispatcher/src/radix-route-handler-mapping.ts:42
+Defined in: [packages/blue-dispatcher/src/radix-route-handler-mapping.ts:42](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/radix-route-handler-mapping.ts#lines-42)
 
 Check whether the route matches a pattern.
 
@@ -540,7 +540,7 @@ Check whether the route matches a pattern.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The current route.
 
@@ -566,13 +566,13 @@ A match result, or `null`.
 
 > `protected` **\_getMappingComparator**(`route`): `Comparator`\<[`RouteMappingInfo`](RouteMappingInfo.md)\>
 
-Defined in: packages/blue-dispatcher/src/radix-route-handler-mapping.ts:52
+Defined in: [packages/blue-dispatcher/src/radix-route-handler-mapping.ts:52](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/radix-route-handler-mapping.ts#lines-52)
 
 #### Parameters
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 #### Returns
 
@@ -588,7 +588,7 @@ Defined in: packages/blue-dispatcher/src/radix-route-handler-mapping.ts:52
 
 > `protected` **\_getMatchingMapping**(`mapping`, `route`): [`RouteMappingInfo`](RouteMappingInfo.md) \| `null`
 
-Defined in: packages/blue-dispatcher/src/radix-route-handler-mapping.ts:58
+Defined in: [packages/blue-dispatcher/src/radix-route-handler-mapping.ts:58](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/radix-route-handler-mapping.ts#lines-58)
 
 #### Parameters
 
@@ -598,7 +598,7 @@ Defined in: packages/blue-dispatcher/src/radix-route-handler-mapping.ts:58
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 #### Returns
 
@@ -614,7 +614,7 @@ Defined in: packages/blue-dispatcher/src/radix-route-handler-mapping.ts:58
 
 > `protected` **\_getHandler**(`route`): [`RouteHandlerMethod`](RouteHandlerMethod.md) \| `null`
 
-Defined in: packages/blue-dispatcher/src/radix-route-handler-mapping.ts:62
+Defined in: [packages/blue-dispatcher/src/radix-route-handler-mapping.ts:62](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/radix-route-handler-mapping.ts#lines-62)
 
 Resolve a route by looking up the best handler method.
 
@@ -622,7 +622,7 @@ Resolve a route by looking up the best handler method.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The current route.
 
@@ -642,7 +642,7 @@ The resolved handler method, or `null`.
 
 > `protected` **\_handleNoMatch**(`mappings`, `path`, `route`): [`RouteHandlerMethod`](RouteHandlerMethod.md) \| `null`
 
-Defined in: packages/blue-dispatcher/src/radix-route-handler-mapping.ts:111
+Defined in: [packages/blue-dispatcher/src/radix-route-handler-mapping.ts:111](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/radix-route-handler-mapping.ts#lines-111)
 
 #### Parameters
 
@@ -656,7 +656,7 @@ Defined in: packages/blue-dispatcher/src/radix-route-handler-mapping.ts:111
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 #### Returns
 
@@ -668,7 +668,7 @@ Defined in: packages/blue-dispatcher/src/radix-route-handler-mapping.ts:111
 
 > `protected` **\_isHandler**(`value`): `boolean`
 
-Defined in: packages/blue-dispatcher/src/radix-route-handler-mapping.ts:115
+Defined in: [packages/blue-dispatcher/src/radix-route-handler-mapping.ts:115](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/radix-route-handler-mapping.ts#lines-115)
 
 #### Parameters
 
@@ -690,7 +690,7 @@ Defined in: packages/blue-dispatcher/src/radix-route-handler-mapping.ts:115
 
 > `protected` **\_handleMatch**(`mapping`, `path`, `route`): `void`
 
-Defined in: packages/blue-dispatcher/src/radix-route-handler-mapping.ts:119
+Defined in: [packages/blue-dispatcher/src/radix-route-handler-mapping.ts:119](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/radix-route-handler-mapping.ts#lines-119)
 
 Record route metadata for a successful mapping match.
 
@@ -710,7 +710,7 @@ The matched path.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The current route.
 
@@ -728,7 +728,7 @@ The current route.
 
 > **registerMapping**(`mapping`, `handler`, `method`): `void`
 
-Defined in: packages/blue-dispatcher/src/radix-route-handler-mapping.ts:123
+Defined in: [packages/blue-dispatcher/src/radix-route-handler-mapping.ts:123](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/radix-route-handler-mapping.ts#lines-123)
 
 Register a single mapping and handler method.
 

@@ -8,7 +8,7 @@
 
 > **asEventEmitter**\<`TTarget`\>(`target`): `TTarget` & [`EventEmitter`](../interfaces/EventEmitter.md)
 
-Defined in: packages/blue-context/src/event-emitter.ts:584
+Defined in: [packages/blue-context/src/event-emitter.ts:575](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-emitter.ts#lines-575)
 
 Mixes event emitter behavior into an existing object.
 

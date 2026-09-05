@@ -6,7 +6,7 @@
 
 # Class: TransformInterceptor
 
-Defined in: packages/blue-http/src/interceptors/transform-interceptor.ts:14
+Defined in: [packages/blue-http/src/interceptors/transform-interceptor.ts:14](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/transform-interceptor.ts#lines-14)
 
 Applies request and response body transforms at the interceptor boundary.
 
@@ -24,7 +24,7 @@ type and other request context.
 
 > **new TransformInterceptor**(`requestTransforms?`, `responseTransforms?`): `TransformInterceptor`
 
-Defined in: packages/blue-http/src/interceptors/transform-interceptor.ts:15
+Defined in: [packages/blue-http/src/interceptors/transform-interceptor.ts:15](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/transform-interceptor.ts#lines-15)
 
 #### Parameters
 
@@ -46,7 +46,7 @@ Defined in: packages/blue-http/src/interceptors/transform-interceptor.ts:15
 
 > **preRequest**(`request`): `Promise`\<`Request`\>
 
-Defined in: packages/blue-http/src/interceptors/transform-interceptor.ts:26
+Defined in: [packages/blue-http/src/interceptors/transform-interceptor.ts:26](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/transform-interceptor.ts#lines-26)
 
 Applies request body transformations.
 
@@ -74,7 +74,7 @@ A replacement request when a transform changes the body.
 
 > **postResponse**(`response`): `Promise`\<`void` \| `Response`\>
 
-Defined in: packages/blue-http/src/interceptors/transform-interceptor.ts:62
+Defined in: [packages/blue-http/src/interceptors/transform-interceptor.ts:64](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/transform-interceptor.ts#lines-64)
 
 Applies response body transformations.
 

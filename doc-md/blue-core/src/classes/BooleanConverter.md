@@ -6,7 +6,7 @@
 
 # Class: BooleanConverter
 
-Defined in: packages/blue-core/src/converter.ts:197
+Defined in: [packages/blue-core/src/converter.ts:197](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/converter.ts#lines-197)
 
 Converts strings to booleans using common truthy/falsy conventions.
 
@@ -33,7 +33,7 @@ Falsy values (case-insensitive): `false`, `0`, `no`, `off`
 
 > **convert**(`value`): `boolean`
 
-Defined in: packages/blue-core/src/converter.ts:198
+Defined in: [packages/blue-core/src/converter.ts:198](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/converter.ts#lines-198)
 
 Converts a value of type `S` to type `T`.
 

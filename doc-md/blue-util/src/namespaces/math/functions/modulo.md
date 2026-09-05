@@ -8,7 +8,7 @@
 
 > **modulo**(`a`, `b`): `number`
 
-Defined in: packages/blue-util/src/math/index.ts:165
+Defined in: [packages/blue-util/src/math/index.ts:165](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-util/src/math/index.ts#lines-165)
 
 Divides the first parameter by the second and returns the remainder. Note
 that this function preserves the JavaScript-style behavior for modulo. For

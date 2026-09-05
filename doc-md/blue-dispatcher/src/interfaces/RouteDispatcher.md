@@ -6,7 +6,7 @@
 
 # Interface: RouteDispatcher
 
-Defined in: packages/blue-dispatcher/src/dispatcher.ts:27
+Defined in: [packages/blue-dispatcher/src/dispatcher.ts:26](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/dispatcher.ts#lines-26)
 
 Interface for dispatching routes.
 
@@ -16,7 +16,7 @@ Interface for dispatching routes.
 
 > **dispatch**(`route`): `Promise`\<`void`\>
 
-Defined in: packages/blue-dispatcher/src/dispatcher.ts:32
+Defined in: [packages/blue-dispatcher/src/dispatcher.ts:31](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/dispatcher.ts#lines-31)
 
 Dispatches the given route for processing.
 
@@ -24,7 +24,7 @@ Dispatches the given route for processing.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The route to dispatch.
 

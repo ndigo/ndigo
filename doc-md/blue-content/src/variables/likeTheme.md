@@ -8,7 +8,7 @@
 
 > `const` **likeTheme**: (`value`) => `value is Theme`
 
-Defined in: packages/blue-content/src/theme.ts:101
+Defined in: [packages/blue-content/src/theme.ts:101](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-content/src/theme.ts#lines-101)
 
 Tests whether a value looks like a theme.
 

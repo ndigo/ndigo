@@ -6,7 +6,7 @@
 
 # Class: MappedServiceInterceptor
 
-Defined in: packages/blue-service/src/service.ts:197
+Defined in: [packages/blue-service/src/service.ts:197](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-service/src/service.ts#lines-197)
 
 Wraps an interceptor so it only applies to matching request paths.
 
@@ -16,7 +16,7 @@ Wraps an interceptor so it only applies to matching request paths.
 
 > **new MappedServiceInterceptor**(`interceptor`, `includePatterns`, `excludePatterns?`): `MappedServiceInterceptor`
 
-Defined in: packages/blue-service/src/service.ts:213
+Defined in: [packages/blue-service/src/service.ts:213](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-service/src/service.ts#lines-213)
 
 Creates a path-mapped interceptor.
 
@@ -52,7 +52,7 @@ Glob patterns that opt the interceptor out.
 
 > **get** **interceptor**(): [`ServiceInterceptor`](../type-aliases/ServiceInterceptor.md)
 
-Defined in: packages/blue-service/src/service.ts:202
+Defined in: [packages/blue-service/src/service.ts:202](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-service/src/service.ts#lines-202)
 
 ##### Returns
 
@@ -64,7 +64,7 @@ Defined in: packages/blue-service/src/service.ts:202
 
 > **matches**(`path`, `matcher?`): `boolean`
 
-Defined in: packages/blue-service/src/service.ts:226
+Defined in: [packages/blue-service/src/service.ts:226](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-service/src/service.ts#lines-226)
 
 Checks whether a path matches the configured include and exclude patterns.
 
@@ -94,7 +94,7 @@ Optional pattern matcher used for comparisons.
 
 > **setExcludePatterns**(`excludePatterns?`): `void`
 
-Defined in: packages/blue-service/src/service.ts:244
+Defined in: [packages/blue-service/src/service.ts:244](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-service/src/service.ts#lines-244)
 
 Replaces the exclude pattern list.
 
@@ -116,7 +116,7 @@ Glob patterns to skip.
 
 > **setIncludePatterns**(`includePatterns?`): `void`
 
-Defined in: packages/blue-service/src/service.ts:253
+Defined in: [packages/blue-service/src/service.ts:253](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-service/src/service.ts#lines-253)
 
 Replaces the include pattern list.
 

@@ -8,10 +8,13 @@
 
 @blue/telemetry — isomorphic telemetry core.
 
-Platform-specific configuration and instrumentations live behind subpath
-exports so the root import stays platform-free:
-- `@blue/telemetry/node` — NodeSDK config + node instrumentations
-- `@blue/telemetry/web` — browser telemetry config + web instrumentations
+API-only: logger, metrics, severity, tracing decorators, and platform-free
+instrumentation bases. Installing/importing this package pulls no Node SDK
+exporters and no browser SDK.
+
+Platform setup lives in sibling packages:
+- `@blue/telemetry-node` — NodeSDK config + Node platform instrumentations
+- `@blue/telemetry-web` — browser config + web instrumentations
 
 ## Classes
 
@@ -21,7 +24,7 @@ exports so the root import stays platform-free:
 - [DispatcherInstrumentation](classes/DispatcherInstrumentation.md)
 - [ContextAwareLogger](classes/ContextAwareLogger.md)
 - [LoggerFactory](classes/LoggerFactory.md)
-- [SeverityFilterLogRecordProcessor](classes/SeverityFilterLogRecordProcessor.md)
+- [CountedRegistry](classes/CountedRegistry.md)
 - [CounterRateResolver](classes/CounterRateResolver.md)
 - [FeatureMetricAggregator](classes/FeatureMetricAggregator.md)
 

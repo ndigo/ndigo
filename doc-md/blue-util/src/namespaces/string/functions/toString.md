@@ -8,7 +8,7 @@
 
 > **toString**(`value`): `string`
 
-Defined in: packages/blue-util/src/string/to-string.ts:48
+Defined in: [packages/blue-util/src/string/to-string.ts:48](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-util/src/string/to-string.ts#lines-48)
 
 Returns the string representation of the given value. `eval`'ing the output
 should result in a value equivalent to the input value. Many of the built-in

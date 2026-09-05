@@ -6,7 +6,7 @@
 
 # Interface: RelationDefinition
 
-Defined in: packages/blue-orm/src/metadata.ts:18
+Defined in: [packages/blue-orm/src/metadata.ts:18](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/metadata.ts#lines-18)
 
 ## Author
 
@@ -18,7 +18,7 @@ Jeff Rose
 
 > **kind**: [`RelationKind`](../type-aliases/RelationKind.md)
 
-Defined in: packages/blue-orm/src/metadata.ts:19
+Defined in: [packages/blue-orm/src/metadata.ts:19](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/metadata.ts#lines-19)
 
 ***
 
@@ -26,7 +26,7 @@ Defined in: packages/blue-orm/src/metadata.ts:19
 
 > **fieldName**: `string`
 
-Defined in: packages/blue-orm/src/metadata.ts:20
+Defined in: [packages/blue-orm/src/metadata.ts:20](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/metadata.ts#lines-20)
 
 ***
 
@@ -34,7 +34,7 @@ Defined in: packages/blue-orm/src/metadata.ts:20
 
 > **targetEntity**: () => `ClassType`
 
-Defined in: packages/blue-orm/src/metadata.ts:21
+Defined in: [packages/blue-orm/src/metadata.ts:21](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/metadata.ts#lines-21)
 
 #### Returns
 

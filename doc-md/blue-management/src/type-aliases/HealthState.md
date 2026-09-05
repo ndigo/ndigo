@@ -8,6 +8,6 @@
 
 > **HealthState** = `"UP"` \| `"DOWN"` \| `"UNKNOWN"`
 
-Defined in: packages/blue-management/src/health.ts:16
+Defined in: [packages/blue-management/src/health.ts:16](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-management/src/health.ts#lines-16)
 
 The overall health of a subsystem.

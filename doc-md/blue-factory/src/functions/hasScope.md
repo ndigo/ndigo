@@ -8,7 +8,7 @@
 
 > **hasScope**(`target`): `boolean`
 
-Defined in: packages/blue-factory/src/scope.ts:66
+Defined in: [packages/blue-factory/src/scope.ts:68](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/scope.ts#lines-68)
 
 Checks if target has scope metadata
 
@@ -16,7 +16,7 @@ Checks if target has scope metadata
 
 ### target
 
-`any`
+`unknown`
 
 Class constructor or instance
 

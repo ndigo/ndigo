@@ -8,7 +8,7 @@
 
 > `const` **repeatingSequenceRule**: `RegExp`
 
-Defined in: packages/blue-validate/src/formats.ts:193
+Defined in: [packages/blue-validate/src/formats.ts:193](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/formats.ts#lines-193)
 
 A regular expression matching repeating sequences of characters.
 

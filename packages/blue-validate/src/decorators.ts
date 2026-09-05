@@ -494,7 +494,7 @@ export const enumeration = createConstraintDecorator<{ value: string | string[] 
 
 /**
  * TC39 Stage 3 decorator that validates a string property to be a valid email address.
- * @param {DecoratorConfig} [config] - Optional configuration for the decorator.
+ * @param {DecoratorConfig} [params] - Optional configuration for the decorator.
  * @returns {ClassFieldDecorator} A class field decorator function.
  * @example
  * class MyClass {
@@ -505,7 +505,7 @@ export const enumeration = createConstraintDecorator<{ value: string | string[] 
 export const email = createConstraintDecorator('Email');
 /**
  * TC39 Stage 3 decorator that validates a string property to not be null, undefined, or an empty string (after trimming).
- * @param {DecoratorConfig} [config] - Optional configuration for the decorator.
+ * @param {DecoratorConfig} [params] - Optional configuration for the decorator.
  * @returns {ClassFieldDecorator} A class field decorator function.
  * @example
  * class MyClass {
@@ -516,7 +516,7 @@ export const email = createConstraintDecorator('Email');
 export const notBlank = createConstraintDecorator('NotBlank');
 /**
  * TC39 Stage 3 decorator that validates a string property to be a valid URL.
- * @param {DecoratorConfig} [config] - Optional configuration for the decorator.
+ * @param {DecoratorConfig} [params] - Optional configuration for the decorator.
  * @returns {ClassFieldDecorator} A class field decorator function.
  * @example
  * class MyClass {
@@ -527,7 +527,7 @@ export const notBlank = createConstraintDecorator('NotBlank');
 export const url = createConstraintDecorator('URL');
 /**
  * TC39 Stage 3 decorator that validates a numeric property to be an integer.
- * @param {DecoratorConfig} [config] - Optional configuration for the decorator.
+ * @param {DecoratorConfig} [params] - Optional configuration for the decorator.
  * @returns {ClassFieldDecorator} A class field decorator function.
  * @example
  * class MyClass {
@@ -538,7 +538,7 @@ export const url = createConstraintDecorator('URL');
 export const integer = createConstraintDecorator('Integer');
 /**
  * TC39 Stage 3 decorator that validates a property to be a numeric value.
- * @param {DecoratorConfig} [config] - Optional configuration for the decorator.
+ * @param {DecoratorConfig} [params] - Optional configuration for the decorator.
  * @returns {ClassFieldDecorator} A class field decorator function.
  * @example
  * class MyClass {

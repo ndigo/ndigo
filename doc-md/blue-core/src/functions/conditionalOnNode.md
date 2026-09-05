@@ -8,7 +8,7 @@
 
 > **conditionalOnNode**(`target`, `context`): `any`
 
-Defined in: packages/blue-core/src/conditional.ts:93
+Defined in: [packages/blue-core/src/conditional.ts:88](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/conditional.ts#lines-88)
 
 Marks a configuration class as node-only.
 
@@ -30,6 +30,6 @@ Marks a configuration class as node-only.
 
 ```ts
 @conditionalOnNode
-@configuration
+@class
 class NodeAutoConfiguration { … }
 ```

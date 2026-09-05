@@ -6,7 +6,7 @@
 
 # Class: DrizzleEntityManager
 
-Defined in: packages/blue-orm-drizzle/src/drizzle-entity-manager.ts:9
+Defined in: [packages/blue-orm-drizzle/src/drizzle-entity-manager.ts:9](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm-drizzle/src/drizzle-entity-manager.ts#lines-9)
 
 ## Constructors
 
@@ -14,7 +14,7 @@ Defined in: packages/blue-orm-drizzle/src/drizzle-entity-manager.ts:9
 
 > **new DrizzleEntityManager**(`dataSource`): `DrizzleEntityManager`
 
-Defined in: packages/blue-orm-drizzle/src/drizzle-entity-manager.ts:12
+Defined in: [packages/blue-orm-drizzle/src/drizzle-entity-manager.ts:12](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm-drizzle/src/drizzle-entity-manager.ts#lines-12)
 
 #### Parameters
 
@@ -32,7 +32,7 @@ Defined in: packages/blue-orm-drizzle/src/drizzle-entity-manager.ts:12
 
 > **persist**\<`T`\>(`entity`): `Promise`\<`void`\>
 
-Defined in: packages/blue-orm-drizzle/src/drizzle-entity-manager.ts:20
+Defined in: [packages/blue-orm-drizzle/src/drizzle-entity-manager.ts:20](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm-drizzle/src/drizzle-entity-manager.ts#lines-20)
 
 #### Type Parameters
 
@@ -56,7 +56,7 @@ Defined in: packages/blue-orm-drizzle/src/drizzle-entity-manager.ts:20
 
 > **find**\<`T`\>(`entityClass`, `id`): `Promise`\<`T` \| `undefined`\>
 
-Defined in: packages/blue-orm-drizzle/src/drizzle-entity-manager.ts:68
+Defined in: [packages/blue-orm-drizzle/src/drizzle-entity-manager.ts:68](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm-drizzle/src/drizzle-entity-manager.ts#lines-68)
 
 #### Type Parameters
 
@@ -84,7 +84,7 @@ Defined in: packages/blue-orm-drizzle/src/drizzle-entity-manager.ts:68
 
 > **findAll**\<`T`\>(`entityClass`): `Promise`\<`T`[]\>
 
-Defined in: packages/blue-orm-drizzle/src/drizzle-entity-manager.ts:84
+Defined in: [packages/blue-orm-drizzle/src/drizzle-entity-manager.ts:84](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm-drizzle/src/drizzle-entity-manager.ts#lines-84)
 
 #### Type Parameters
 
@@ -108,7 +108,7 @@ Defined in: packages/blue-orm-drizzle/src/drizzle-entity-manager.ts:84
 
 > **remove**\<`T`\>(`entity`): `Promise`\<`void`\>
 
-Defined in: packages/blue-orm-drizzle/src/drizzle-entity-manager.ts:97
+Defined in: [packages/blue-orm-drizzle/src/drizzle-entity-manager.ts:95](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm-drizzle/src/drizzle-entity-manager.ts#lines-95)
 
 #### Type Parameters
 

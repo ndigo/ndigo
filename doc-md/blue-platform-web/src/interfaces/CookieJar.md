@@ -6,7 +6,7 @@
 
 # Interface: CookieJar
 
-Defined in: packages/blue-platform-web/src/cookies.ts:29
+Defined in: [packages/blue-platform-web/src/cookies.ts:31](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/cookies.ts#lines-31)
 
 Minimal cookie-jar API exposed by the platform-web package.
 
@@ -16,7 +16,7 @@ Minimal cookie-jar API exposed by the platform-web package.
 
 > **get**(`key`): `JSONValue`
 
-Defined in: packages/blue-platform-web/src/cookies.ts:30
+Defined in: [packages/blue-platform-web/src/cookies.ts:32](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/cookies.ts#lines-32)
 
 #### Parameters
 
@@ -34,7 +34,7 @@ Defined in: packages/blue-platform-web/src/cookies.ts:30
 
 > **getJSON**(`key`): `JSONValue`
 
-Defined in: packages/blue-platform-web/src/cookies.ts:31
+Defined in: [packages/blue-platform-web/src/cookies.ts:33](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/cookies.ts#lines-33)
 
 #### Parameters
 
@@ -52,7 +52,7 @@ Defined in: packages/blue-platform-web/src/cookies.ts:31
 
 > **remove**(`key`, `attributes?`): `string`
 
-Defined in: packages/blue-platform-web/src/cookies.ts:32
+Defined in: [packages/blue-platform-web/src/cookies.ts:34](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/cookies.ts#lines-34)
 
 #### Parameters
 
@@ -74,7 +74,7 @@ Defined in: packages/blue-platform-web/src/cookies.ts:32
 
 > **set**(`key`, `value`, `attributes?`): `string`
 
-Defined in: packages/blue-platform-web/src/cookies.ts:33
+Defined in: [packages/blue-platform-web/src/cookies.ts:35](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/cookies.ts#lines-35)
 
 #### Parameters
 
@@ -100,7 +100,7 @@ Defined in: packages/blue-platform-web/src/cookies.ts:33
 
 > **run**(`input`): \{ `isError`: `true`; `error`: `string`; `index`: `number`; `data`: `unknown`; \} \| \{ `isError`: `false`; `result`: `JSONObject`; `index`: `number`; `data`: `unknown`; \}
 
-Defined in: packages/blue-platform-web/src/cookies.ts:34
+Defined in: [packages/blue-platform-web/src/cookies.ts:36](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/cookies.ts#lines-36)
 
 #### Parameters
 

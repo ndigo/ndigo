@@ -8,7 +8,7 @@
 
 > **kindOf**(`value`): `string` \| `undefined`
 
-Defined in: packages/blue-dispatcher/src/\_shared.ts:9
+Defined in: [packages/blue-dispatcher/src/\_shared.ts:9](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/_shared.ts#lines-9)
 
 ## Parameters
 

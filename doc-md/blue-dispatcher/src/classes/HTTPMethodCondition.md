@@ -6,7 +6,7 @@
 
 # Class: HTTPMethodCondition
 
-Defined in: packages/blue-dispatcher/src/http-method-condition.ts:28
+Defined in: [packages/blue-dispatcher/src/http-method-condition.ts:28](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/http-method-condition.ts#lines-28)
 
 Matches a route's `method` against a required HTTP method.
 
@@ -29,7 +29,7 @@ condition.getMatchingCondition({ method: 'POST', … } as Route) // null
 
 > **new HTTPMethodCondition**(`method?`): `HTTPMethodCondition`
 
-Defined in: packages/blue-dispatcher/src/http-method-condition.ts:47
+Defined in: [packages/blue-dispatcher/src/http-method-condition.ts:47](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/http-method-condition.ts#lines-47)
 
 Create a method condition.
 
@@ -55,7 +55,7 @@ The required HTTP method. Omit for any-method matching.
 
 > `readonly` **method**: `HTTPMethod` \| `undefined`
 
-Defined in: packages/blue-dispatcher/src/http-method-condition.ts:32
+Defined in: [packages/blue-dispatcher/src/http-method-condition.ts:32](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/http-method-condition.ts#lines-32)
 
 The required HTTP method, or `undefined` to match any method.
 
@@ -67,7 +67,7 @@ The required HTTP method, or `undefined` to match any method.
 
 > **get** **content**(): `HTTPMethod`[]
 
-Defined in: packages/blue-dispatcher/src/http-method-condition.ts:34
+Defined in: [packages/blue-dispatcher/src/http-method-condition.ts:34](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/http-method-condition.ts#lines-34)
 
 ##### Returns
 
@@ -85,7 +85,7 @@ Defined in: packages/blue-dispatcher/src/http-method-condition.ts:34
 
 > **get** **infix**(): `string`
 
-Defined in: packages/blue-dispatcher/src/http-method-condition.ts:38
+Defined in: [packages/blue-dispatcher/src/http-method-condition.ts:38](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/http-method-condition.ts#lines-38)
 
 ##### Returns
 
@@ -103,7 +103,7 @@ Defined in: packages/blue-dispatcher/src/http-method-condition.ts:38
 
 > **get** **isEmpty**(): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:153
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:153](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-153)
 
 Whether this condition contains no content.
 
@@ -121,7 +121,7 @@ Whether this condition contains no content.
 
 > **merge**(`other`): `HTTPMethodCondition`
 
-Defined in: packages/blue-dispatcher/src/http-method-condition.ts:65
+Defined in: [packages/blue-dispatcher/src/http-method-condition.ts:65](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/http-method-condition.ts#lines-65)
 
 Merge two conditions. A concrete method wins over `undefined`; when both
 specify a method, `other` (the method-level mapping) wins as the more
@@ -151,7 +151,7 @@ The merged condition.
 
 > **getMatchingCondition**(`route`): `HTTPMethodCondition` \| `null`
 
-Defined in: packages/blue-dispatcher/src/http-method-condition.ts:76
+Defined in: [packages/blue-dispatcher/src/http-method-condition.ts:76](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/http-method-condition.ts#lines-76)
 
 Return this condition when the route's method matches (or this condition
 has no method constraint); `null` otherwise.
@@ -160,7 +160,7 @@ has no method constraint); `null` otherwise.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The current route.
 
@@ -180,7 +180,7 @@ This condition, or `null`.
 
 > **compareTo**(`value`, `route?`): `number`
 
-Defined in: packages/blue-dispatcher/src/http-method-condition.ts:90
+Defined in: [packages/blue-dispatcher/src/http-method-condition.ts:90](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/http-method-condition.ts#lines-90)
 
 A concrete method is more specific than the any-method condition.
 
@@ -194,7 +194,7 @@ The condition to compare.
 
 ##### route?
 
-`Route`\<`Record`\<`string`, `string`\>\>
+[`Route`](#)\<`Record`\<`string`, `string`\>\>
 
 Unused, part of the shared contract.
 
@@ -214,7 +214,7 @@ A comparison result.
 
 > **toString**(): `string`
 
-Defined in: packages/blue-dispatcher/src/http-method-condition.ts:105
+Defined in: [packages/blue-dispatcher/src/http-method-condition.ts:105](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/http-method-condition.ts#lines-105)
 
 The method name, or an empty string for the any-method condition.
 
@@ -234,7 +234,7 @@ The method or `''`.
 
 > **equals**(`value`): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:166
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:166](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-166)
 
 Compare this condition to another value.
 
@@ -262,7 +262,7 @@ The value to compare.
 
 > **toJSON**(): `JSONValue`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:181
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:181](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-181)
 
 Serialize the condition to JSON.
 

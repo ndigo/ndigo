@@ -6,7 +6,7 @@
 
 # Class: MappedResponseClassHTTPInterceptor
 
-Defined in: packages/blue-http/src/interceptors/response-class-interceptor.ts:113
+Defined in: [packages/blue-http/src/interceptors/response-class-interceptor.ts:113](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/response-class-interceptor.ts#lines-113)
 
 Dispatches response hooks based on the response status class.
 
@@ -20,7 +20,7 @@ Dispatches response hooks based on the response status class.
 
 > **new MappedResponseClassHTTPInterceptor**(`interceptor`): `MappedResponseClassHTTPInterceptor`
 
-Defined in: packages/blue-http/src/interceptors/response-class-interceptor.ts:133
+Defined in: [packages/blue-http/src/interceptors/response-class-interceptor.ts:133](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/response-class-interceptor.ts#lines-133)
 
 Creates a response-class dispatcher.
 
@@ -44,7 +44,7 @@ The interceptor to wrap.
 
 > **get** **interceptor**(): [`ResponseClassAwareHTTPInterceptor`](../type-aliases/ResponseClassAwareHTTPInterceptor.md)
 
-Defined in: packages/blue-http/src/interceptors/response-class-interceptor.ts:124
+Defined in: [packages/blue-http/src/interceptors/response-class-interceptor.ts:124](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/response-class-interceptor.ts#lines-124)
 
 The wrapped interceptor that receives class-specific callbacks.
 
@@ -58,7 +58,7 @@ The wrapped interceptor that receives class-specific callbacks.
 
 > **postResponse**(`response`, `settings`): `Promise`\<`void` \| `Response`\>
 
-Defined in: packages/blue-http/src/interceptors/response-class-interceptor.ts:149
+Defined in: [packages/blue-http/src/interceptors/response-class-interceptor.ts:149](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/response-class-interceptor.ts#lines-149)
 
 Dispatches the response to the appropriate class-specific hook.
 

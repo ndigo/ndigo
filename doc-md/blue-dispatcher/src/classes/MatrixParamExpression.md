@@ -6,7 +6,7 @@
 
 # Class: MatrixParamExpression
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:242
+Defined in: [packages/blue-dispatcher/src/route-mapping-info.ts:242](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-mapping-info.ts#lines-242)
 
 Parses and matches a single matrix-parameter expression against a route segment.
 
@@ -23,7 +23,7 @@ This expression walks every segment of the route looking for a matching name/val
 
 > **new MatrixParamExpression**(`expression`): `MatrixParamExpression`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:75
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:75](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-75)
 
 Parse a name/value expression.
 
@@ -49,7 +49,7 @@ The expression to parse.
 
 > `readonly` **isNegated**: `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:64
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:64](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-64)
 
 #### Inherited from
 
@@ -61,7 +61,7 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:64
 
 > `readonly` **name**: `string`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:65
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:65](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-65)
 
 #### Inherited from
 
@@ -73,7 +73,7 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:65
 
 > `readonly` `optional` **value?**: `string`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:66
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:66](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-66)
 
 #### Inherited from
 
@@ -87,7 +87,7 @@ Defined in: packages/blue-dispatcher/src/route-condition.ts:66
 
 > **get** **isCaseSensitiveName**(): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:243
+Defined in: [packages/blue-dispatcher/src/route-mapping-info.ts:243](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-mapping-info.ts#lines-243)
 
 ##### Returns
 
@@ -103,7 +103,7 @@ Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:243
 
 > **match**(`route`): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:118
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:118](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-118)
 
 Determine whether this expression matches the given route.
 
@@ -111,7 +111,7 @@ Determine whether this expression matches the given route.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The current route.
 
@@ -131,7 +131,7 @@ The current route.
 
 > **toJSON**(): `JSONValue`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:128
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:128](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-128)
 
 Serialize the expression to JSON.
 
@@ -151,7 +151,7 @@ The string form of the expression.
 
 > **toString**(): `string`
 
-Defined in: packages/blue-dispatcher/src/route-condition.ts:137
+Defined in: [packages/blue-dispatcher/src/route-condition.ts:137](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-condition.ts#lines-137)
 
 Convert the expression to its textual form.
 
@@ -171,7 +171,7 @@ The expression string.
 
 > **matchName**(`route`): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:253
+Defined in: [packages/blue-dispatcher/src/route-mapping-info.ts:253](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-mapping-info.ts#lines-253)
 
 Check whether any route segment contains a matching matrix-parameter name.
 
@@ -179,7 +179,7 @@ Check whether any route segment contains a matching matrix-parameter name.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The current route.
 
@@ -199,7 +199,7 @@ The current route.
 
 > **matchValue**(`route`): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:270
+Defined in: [packages/blue-dispatcher/src/route-mapping-info.ts:270](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-mapping-info.ts#lines-270)
 
 Check whether any route segment carries the expected matrix-parameter value.
 
@@ -207,7 +207,7 @@ Check whether any route segment carries the expected matrix-parameter value.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The current route.
 
@@ -227,7 +227,7 @@ The current route.
 
 > **parseValue**(`valueExpression`): `string`
 
-Defined in: packages/blue-dispatcher/src/route-mapping-info.ts:289
+Defined in: [packages/blue-dispatcher/src/route-mapping-info.ts:289](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-mapping-info.ts#lines-289)
 
 Return the parameter value as-is.
 

@@ -6,7 +6,7 @@
 
 # Interface: EntityMetadata
 
-Defined in: packages/blue-orm/src/metadata.ts:53
+Defined in: [packages/blue-orm/src/metadata.ts:53](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/metadata.ts#lines-53)
 
 Represents the metadata for an entity, including its name, columns, primary key, and generated columns.
 
@@ -16,7 +16,7 @@ Represents the metadata for an entity, including its name, columns, primary key,
 
 > **entityName**: `string`
 
-Defined in: packages/blue-orm/src/metadata.ts:54
+Defined in: [packages/blue-orm/src/metadata.ts:54](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/metadata.ts#lines-54)
 
 ***
 
@@ -24,7 +24,7 @@ Defined in: packages/blue-orm/src/metadata.ts:54
 
 > **columns**: [`ColumnDefinition`](ColumnDefinition.md)[]
 
-Defined in: packages/blue-orm/src/metadata.ts:55
+Defined in: [packages/blue-orm/src/metadata.ts:55](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/metadata.ts#lines-55)
 
 ***
 
@@ -32,7 +32,7 @@ Defined in: packages/blue-orm/src/metadata.ts:55
 
 > **primaryColumn**: `string`
 
-Defined in: packages/blue-orm/src/metadata.ts:56
+Defined in: [packages/blue-orm/src/metadata.ts:56](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/metadata.ts#lines-56)
 
 ***
 
@@ -40,7 +40,7 @@ Defined in: packages/blue-orm/src/metadata.ts:56
 
 > **generatedColumns**: `string`[]
 
-Defined in: packages/blue-orm/src/metadata.ts:57
+Defined in: [packages/blue-orm/src/metadata.ts:57](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/metadata.ts#lines-57)
 
 ***
 
@@ -48,7 +48,7 @@ Defined in: packages/blue-orm/src/metadata.ts:57
 
 > **relations**: [`RelationDefinition`](RelationDefinition.md)[]
 
-Defined in: packages/blue-orm/src/metadata.ts:58
+Defined in: [packages/blue-orm/src/metadata.ts:58](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/metadata.ts#lines-58)
 
 ***
 
@@ -56,4 +56,4 @@ Defined in: packages/blue-orm/src/metadata.ts:58
 
 > **lifecycleHooks**: [`LifecycleHookDefinition`](LifecycleHookDefinition.md)[]
 
-Defined in: packages/blue-orm/src/metadata.ts:59
+Defined in: [packages/blue-orm/src/metadata.ts:59](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-orm/src/metadata.ts#lines-59)

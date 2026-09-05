@@ -8,7 +8,7 @@
 
 > **sum**(`list`): `number`
 
-Defined in: packages/blue-util/src/math/index.ts:248
+Defined in: [packages/blue-util/src/math/index.ts:248](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-util/src/math/index.ts#lines-248)
 
 Adds together all the elements of a list.
 
@@ -28,7 +28,7 @@ The sum of all the numbers in the list.
 
 ## See
 
-reduce\|reduce
+`reduce`
 
 ## Example
 

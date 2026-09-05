@@ -5,7 +5,7 @@ import { getCounted } from '@blue/telemetry';
 import { getSymbolMetadata } from '@blue/core';
 
 /**
- * An OpenTelemetry instrumentation that automatically wraps methods decorated with `@counted`.
+ * An OpenTelemetry instrumentation that automatically wraps methods decorated with `counted`.
  *
  * This instrumentation discovers decorated methods via the `CountedRegistry` and
  * applies the counting logic using the instrumentation's patching mechanism.

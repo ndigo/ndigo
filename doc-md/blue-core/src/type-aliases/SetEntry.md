@@ -8,7 +8,7 @@
 
 > **SetEntry**\<`Value`\> = `Value` *extends* `Set`\<infer ValueType\> ? \[`ValueType`, `ValueType`\] : `never`
 
-Defined in: packages/blue-core/src/iterable.ts:65
+Defined in: [packages/blue-core/src/iterable.ts:65](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/iterable.ts#lines-65)
 
 Represents a single entry for a Set-like value, where the entry is `[value, value]`.
 

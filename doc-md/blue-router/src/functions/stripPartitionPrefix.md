@@ -8,7 +8,7 @@
 
 > **stripPartitionPrefix**(`path`, `prefix`): `string`
 
-Defined in: packages/blue-router/src/route-partition.ts:48
+Defined in: [packages/blue-router/src/route-partition.ts:48](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/route-partition.ts#lines-48)
 
 Strip a shell partition prefix from a full route path to produce feature-local route.
 

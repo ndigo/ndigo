@@ -6,7 +6,7 @@
 
 # Class: BrowserDispatcher
 
-Defined in: packages/blue-platform-web/src/browser-dispatcher.ts:26
+Defined in: [packages/blue-platform-web/src/browser-dispatcher.ts:26](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/browser-dispatcher.ts#lines-26)
 
 Browser application dispatcher.
 
@@ -168,7 +168,7 @@ Defined in: packages/blue-dispatcher/lib/strategies/view-resolver-strategy.d.ts:
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-platform-web/src/browser-dispatcher.ts:28
+Defined in: [packages/blue-platform-web/src/browser-dispatcher.ts:28](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/browser-dispatcher.ts#lines-28)
 
 ##### Inherit Doc
 
@@ -194,7 +194,7 @@ Dispatches the given route for processing.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The route to dispatch.
 
@@ -220,15 +220,15 @@ Render the given `ModelAndView`. This is the last stage of handling a route.
 
 ##### mv
 
-`ModelAndView`
+[`ModelAndView`](#)
 
-The ModelAndView to render.
+The [ModelAndView](#) to render.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
-The route associated with the ModelAndView.
+The route associated with the [ModelAndView](#).
 
 #### Returns
 
@@ -242,7 +242,7 @@ The route associated with the ModelAndView.
 
 ### \_processHandlerError()
 
-> `protected` **\_processHandlerError**(`route`, `handler`, `error`): `ModelAndView` \| `null`
+> `protected` **\_processHandlerError**(`route`, `handler`, `error`): [`ModelAndView`](#) \| `null`
 
 Defined in: packages/blue-dispatcher/lib/dispatcher.d.ts:76
 
@@ -252,7 +252,7 @@ Processes a handler error by attempting to resolve it with registered error reso
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The current route.
 
@@ -270,9 +270,9 @@ The error that occurred.
 
 #### Returns
 
-`ModelAndView` \| `null`
+[`ModelAndView`](#) \| `null`
 
-A ModelAndView if the error was resolved, otherwise throws a TypeError.
+A [ModelAndView](#) if the error was resolved, otherwise throws a TypeError.
 
 #### Throws
 
@@ -286,11 +286,11 @@ If no view name can be determined for the error.
 
 ### \_resolveViewName()
 
-> `protected` **\_resolveViewName**(`viewName`, `language`): `Promise`\<`View` \| `null`\>
+> `protected` **\_resolveViewName**(`viewName`, `language`): `Promise`\<[`View`](#) \| `null`\>
 
 Defined in: packages/blue-dispatcher/lib/dispatcher.d.ts:83
 
-Resolves a view name into a View object using registered view resolvers.
+Resolves a view name into a [View](#) object using registered view resolvers.
 
 #### Parameters
 
@@ -308,9 +308,9 @@ The language to use for view resolution.
 
 #### Returns
 
-`Promise`\<`View` \| `null`\>
+`Promise`\<[`View`](#) \| `null`\>
 
-A Promise that resolves to the View object, or `null` if not found.
+A Promise that resolves to the [View](#) object, or `null` if not found.
 
 #### Inherited from
 
@@ -438,7 +438,7 @@ Defined in: packages/blue-dispatcher/lib/strategies/route-handler-mapping-strate
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 #### Returns
 
@@ -482,7 +482,7 @@ Defined in: packages/blue-dispatcher/lib/strategies/route-to-view-name-translato
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 #### Returns
 

@@ -6,7 +6,7 @@
 
 # Interface: InterceptorLogger
 
-Defined in: packages/blue-dispatcher/src/logging-interceptor.ts:16
+Defined in: [packages/blue-dispatcher/src/logging-interceptor.ts:16](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/logging-interceptor.ts#lines-16)
 
 A minimal logger interface for the [LoggingRouteHandlerInterceptor](../classes/LoggingRouteHandlerInterceptor.md).
 
@@ -20,7 +20,7 @@ logger is provided, trace context (traceId, spanId) is automatically injected.
 
 > **info**(`message`, `attributes?`): `void`
 
-Defined in: packages/blue-dispatcher/src/logging-interceptor.ts:23
+Defined in: [packages/blue-dispatcher/src/logging-interceptor.ts:23](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/logging-interceptor.ts#lines-23)
 
 Log an informational message.
 
@@ -48,7 +48,7 @@ Structured attributes for the event.
 
 > **error**(`message`, `error?`, `attributes?`): `void`
 
-Defined in: packages/blue-dispatcher/src/logging-interceptor.ts:32
+Defined in: [packages/blue-dispatcher/src/logging-interceptor.ts:32](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/logging-interceptor.ts#lines-32)
 
 Log an error message.
 

@@ -8,6 +8,6 @@
 
 > **ServiceInterceptor** = [`CompletionAwareServiceInterceptor`](../interfaces/CompletionAwareServiceInterceptor.md) \| [`ErrorAwareServiceInterceptor`](../interfaces/ErrorAwareServiceInterceptor.md) \| [`InitializationAwareServiceInterceptor`](../interfaces/InitializationAwareServiceInterceptor.md) \| [`RequestAwareServiceInterceptor`](../interfaces/RequestAwareServiceInterceptor.md) \| [`ResponseAwareServiceInterceptor`](../interfaces/ResponseAwareServiceInterceptor.md)
 
-Defined in: packages/blue-service/src/service.ts:99
+Defined in: [packages/blue-service/src/service.ts:99](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-service/src/service.ts#lines-99)
 
 Union of all supported service interceptor shapes.

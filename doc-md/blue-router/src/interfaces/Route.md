@@ -6,7 +6,7 @@
 
 # Interface: Route\<TParams\>
 
-Defined in: packages/blue-router/src/route.ts:21
+Defined in: [packages/blue-router/src/route.ts:21](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/route.ts#lines-21)
 
 Represents a complete route, composed of multiple segments, along with its parameters, path, and associated data.
 It extends `ArrayLike<RouteSegment>` to allow iteration over its segments.
@@ -37,7 +37,7 @@ A type representing the route parameters, defaulting to `Record<string, string>`
 
 > **data**: `JSONObject`
 
-Defined in: packages/blue-router/src/route.ts:26
+Defined in: [packages/blue-router/src/route.ts:26](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/route.ts#lines-26)
 
 ***
 
@@ -45,7 +45,7 @@ Defined in: packages/blue-router/src/route.ts:26
 
 > `optional` **dataString?**: `string`
 
-Defined in: packages/blue-router/src/route.ts:27
+Defined in: [packages/blue-router/src/route.ts:27](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/route.ts#lines-27)
 
 ***
 
@@ -53,7 +53,7 @@ Defined in: packages/blue-router/src/route.ts:27
 
 > **id**: `number`
 
-Defined in: packages/blue-router/src/route.ts:28
+Defined in: [packages/blue-router/src/route.ts:28](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/route.ts#lines-28)
 
 ***
 
@@ -61,7 +61,7 @@ Defined in: packages/blue-router/src/route.ts:28
 
 > `optional` **method?**: `HTTPMethod`
 
-Defined in: packages/blue-router/src/route.ts:29
+Defined in: [packages/blue-router/src/route.ts:29](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/route.ts#lines-29)
 
 ***
 
@@ -69,7 +69,7 @@ Defined in: packages/blue-router/src/route.ts:29
 
 > **params**: `TParams` \| `null`
 
-Defined in: packages/blue-router/src/route.ts:30
+Defined in: [packages/blue-router/src/route.ts:30](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/route.ts#lines-30)
 
 ***
 
@@ -77,7 +77,7 @@ Defined in: packages/blue-router/src/route.ts:30
 
 > **path**: `string`
 
-Defined in: packages/blue-router/src/route.ts:31
+Defined in: [packages/blue-router/src/route.ts:31](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/route.ts#lines-31)
 
 ***
 
@@ -85,7 +85,7 @@ Defined in: packages/blue-router/src/route.ts:31
 
 > **raw**: `string`
 
-Defined in: packages/blue-router/src/route.ts:32
+Defined in: [packages/blue-router/src/route.ts:32](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/route.ts#lines-32)
 
 ***
 
@@ -93,7 +93,7 @@ Defined in: packages/blue-router/src/route.ts:32
 
 > **attributes**: `Record`\<`string`, `unknown`\>
 
-Defined in: packages/blue-router/src/route.ts:33
+Defined in: [packages/blue-router/src/route.ts:33](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/route.ts#lines-33)
 
 ## Methods
 

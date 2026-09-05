@@ -8,7 +8,7 @@
 
 > **indexOf**\<`T`\>(`children`, `child`): `number`
 
-Defined in: packages/blue-core/src/tree-node.ts:90
+Defined in: [packages/blue-core/src/tree-node.ts:92](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/tree-node.ts#lines-92)
 
 Finds the index of a child within a list of tree nodes.
 

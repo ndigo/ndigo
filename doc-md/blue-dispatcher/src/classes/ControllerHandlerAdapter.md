@@ -6,9 +6,9 @@
 
 # Class: ControllerHandlerAdapter
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:91
+Defined in: [packages/blue-dispatcher/src/route-handler-adapter.ts:91](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-handler-adapter.ts#lines-91)
 
-This implementation expects the handler to be a HandlerMethod\|HandlerMethod.
+This implementation expects the handler to be a `HandlerMethod`.
 
 ## Implements
 
@@ -32,7 +32,7 @@ This implementation expects the handler to be a HandlerMethod\|HandlerMethod.
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:92
+Defined in: [packages/blue-dispatcher/src/route-handler-adapter.ts:92](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-handler-adapter.ts#lines-92)
 
 ##### Returns
 
@@ -44,7 +44,7 @@ Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:92
 
 > **handle**(`route`, `handler`): `Promise`\<[`ModelAndView`](ModelAndView.md)\>
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:103
+Defined in: [packages/blue-dispatcher/src/route-handler-adapter.ts:103](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-handler-adapter.ts#lines-103)
 
 Invoke a controller's [Controller.handleRoute](../interfaces/Controller.md#handleroute) method for the current route.
 
@@ -52,7 +52,7 @@ Invoke a controller's [Controller.handleRoute](../interfaces/Controller.md#handl
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The current route.
 
@@ -78,7 +78,7 @@ The model and view returned by the controller.
 
 > **supports**(`handler`): `boolean`
 
-Defined in: packages/blue-dispatcher/src/route-handler-adapter.ts:113
+Defined in: [packages/blue-dispatcher/src/route-handler-adapter.ts:113](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-handler-adapter.ts#lines-113)
 
 Controllers are supported when they expose a `handleRoute` method.
 

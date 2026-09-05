@@ -8,7 +8,7 @@
 
 > **FeatureActivationPolicy** = `"tracked"` \| `"exclusive"`
 
-Defined in: packages/blue-router/src/feature-routing-registry.ts:17
+Defined in: [packages/blue-router/src/feature-routing-registry.ts:17](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/feature-routing-registry.ts#lines-17)
 
 Defines the policy for how features are activated within the `FeatureRoutingRegistry`.
 - `'tracked'`: Allows multiple features to be active, tracking each one.

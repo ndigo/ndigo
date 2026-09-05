@@ -6,7 +6,7 @@
 
 # Interface: CompletionAwareHTTPInterceptor
 
-Defined in: packages/blue-http/src/http.ts:70
+Defined in: [packages/blue-http/src/http.ts:80](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-80)
 
 Runs after a request finishes, whether it succeeded or failed.
 
@@ -16,7 +16,7 @@ Runs after a request finishes, whether it succeeded or failed.
 
 > **postComplete**(`request`, `response`): `void`
 
-Defined in: packages/blue-http/src/http.ts:77
+Defined in: [packages/blue-http/src/http.ts:87](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/http.ts#lines-87)
 
 Observes the final request/response pair after all other hooks complete.
 
@@ -30,7 +30,7 @@ The original request.
 
 ##### response
 
-`Response` \| `ResponseError`
+`Response` \| [`ResponseError`](#)
 
 The final response or error wrapper.
 

@@ -6,7 +6,7 @@
 
 # Class: DefaultRouteToViewNameTranslator
 
-Defined in: packages/blue-dispatcher/src/route-to-view-name-translator.ts:23
+Defined in: [packages/blue-dispatcher/src/route-to-view-name-translator.ts:22](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-to-view-name-translator.ts#lines-22)
 
 Translates a route into a view name.
 
@@ -20,7 +20,7 @@ Translates a route into a view name.
 
 > **new DefaultRouteToViewNameTranslator**(): `DefaultRouteToViewNameTranslator`
 
-Defined in: packages/blue-dispatcher/src/route-to-view-name-translator.ts:42
+Defined in: [packages/blue-dispatcher/src/route-to-view-name-translator.ts:41](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-to-view-name-translator.ts#lines-41)
 
 Create a translator with empty prefix and suffix.
 
@@ -34,7 +34,7 @@ Create a translator with empty prefix and suffix.
 
 > **prefix**: `string`
 
-Defined in: packages/blue-dispatcher/src/route-to-view-name-translator.ts:27
+Defined in: [packages/blue-dispatcher/src/route-to-view-name-translator.ts:26](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-to-view-name-translator.ts#lines-26)
 
 Prefix added to every translated view name.
 
@@ -44,7 +44,7 @@ Prefix added to every translated view name.
 
 > **separator**: `string`
 
-Defined in: packages/blue-dispatcher/src/route-to-view-name-translator.ts:32
+Defined in: [packages/blue-dispatcher/src/route-to-view-name-translator.ts:31](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-to-view-name-translator.ts#lines-31)
 
 Separator used when rewriting the route path.
 
@@ -54,7 +54,7 @@ Separator used when rewriting the route path.
 
 > **suffix**: `string`
 
-Defined in: packages/blue-dispatcher/src/route-to-view-name-translator.ts:37
+Defined in: [packages/blue-dispatcher/src/route-to-view-name-translator.ts:36](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-to-view-name-translator.ts#lines-36)
 
 Suffix added to every translated view name.
 
@@ -64,7 +64,7 @@ Suffix added to every translated view name.
 
 > **getViewName**(`route`): `string`
 
-Defined in: packages/blue-dispatcher/src/route-to-view-name-translator.ts:54
+Defined in: [packages/blue-dispatcher/src/route-to-view-name-translator.ts:53](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/route-to-view-name-translator.ts#lines-53)
 
 Translate a route path into a view name.
 
@@ -72,7 +72,7 @@ Translate a route path into a view name.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The current route.
 

@@ -8,7 +8,7 @@
 
 > **createOptionalConverter**(`converter`): [`ArgumentValueConverter`](../type-aliases/ArgumentValueConverter.md)
 
-Defined in: packages/blue-platform-node/src/argument-value-converter.ts:45
+Defined in: [packages/blue-platform-node/src/argument-value-converter.ts:57](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-node/src/argument-value-converter.ts#lines-57)
 
 ## Parameters
 

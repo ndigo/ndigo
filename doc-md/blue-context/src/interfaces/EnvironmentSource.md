@@ -6,7 +6,7 @@
 
 # Interface: EnvironmentSource
 
-Defined in: packages/blue-context/src/environment.ts:52
+Defined in: [packages/blue-context/src/environment.ts:52](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/environment.ts#lines-52)
 
 Provides access to the environment associated with a component.
 
@@ -20,6 +20,6 @@ Provides access to the environment associated with a component.
 
 > `readonly` **environment**: [`Environment`](Environment.md)
 
-Defined in: packages/blue-context/src/environment.ts:56
+Defined in: [packages/blue-context/src/environment.ts:56](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/environment.ts#lines-56)
 
 The environment associated with the component.

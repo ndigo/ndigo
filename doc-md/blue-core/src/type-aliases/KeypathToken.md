@@ -8,6 +8,6 @@
 
 > **KeypathToken** = `string` \| `number`
 
-Defined in: packages/blue-core/src/keypath-expression.ts:8
+Defined in: [packages/blue-core/src/keypath-expression.ts:8](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/keypath-expression.ts#lines-8)
 
 A token in a parsed keypath — either a string property name or a numeric array index.

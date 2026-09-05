@@ -6,7 +6,7 @@
 
 # Interface: ServiceRegistry
 
-Defined in: packages/blue-service/src/service-registry.ts:10
+Defined in: [packages/blue-service/src/service-registry.ts:8](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-service/src/service-registry.ts#lines-8)
 
 Interface for a service registry that maps service tokens to endpoints.
 
@@ -16,7 +16,7 @@ Interface for a service registry that maps service tokens to endpoints.
 
 > **register**(`token`, `endpoint`): `void`
 
-Defined in: packages/blue-service/src/service-registry.ts:17
+Defined in: [packages/blue-service/src/service-registry.ts:15](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-service/src/service-registry.ts#lines-15)
 
 Registers a service token with a specific endpoint.
 
@@ -44,7 +44,7 @@ The endpoint URL for the service.
 
 > **getEndpoint**(`token`): `string` \| `null`
 
-Defined in: packages/blue-service/src/service-registry.ts:24
+Defined in: [packages/blue-service/src/service-registry.ts:22](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-service/src/service-registry.ts#lines-22)
 
 Resolves a service token to its endpoint.
 
@@ -68,7 +68,7 @@ The endpoint URL, or null if not found.
 
 > **getAllEndpoints**(): `Map`\<`string`, `string`\>
 
-Defined in: packages/blue-service/src/service-registry.ts:30
+Defined in: [packages/blue-service/src/service-registry.ts:28](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-service/src/service-registry.ts#lines-28)
 
 Returns all registered service endpoints.
 

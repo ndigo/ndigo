@@ -8,7 +8,7 @@
 
 > **traverseSubtree**(`context`, `visitor`): `void`
 
-Defined in: packages/blue-context/src/context-hierarchy.ts:176
+Defined in: [packages/blue-context/src/context-hierarchy.ts:180](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context-hierarchy.ts#lines-180)
 
 Walk a subtree depth-first from `context` (inclusive), invoking `visitor` for each node.
 

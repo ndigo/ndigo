@@ -8,7 +8,7 @@
 
 > **primitive** = `boolean` \| `null` \| `number` \| `string` \| `symbol` \| `bigint` \| `undefined`
 
-Defined in: packages/blue-core/src/primitive.ts:12
+Defined in: [packages/blue-core/src/primitive.ts:12](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-core/src/primitive.ts#lines-12)
 
 A JavaScript primitive value.
 

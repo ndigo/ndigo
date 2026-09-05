@@ -129,7 +129,7 @@ export const likeIterable = (value: any): value is Iterable<any> =>
 /**
  * An iterator for array-like objects, providing sequential access to elements by index.
  * @template T - The type of elements in the indexed collection.
- * @implements {IterableIterator}
+
  */
 export class IndexedIterator<T = any> implements IterableIterator<T> {
     #indexed: ArrayLike<T | undefined>;
@@ -180,7 +180,7 @@ export const indexedIterator = <T = any>(indexed: ArrayLike<T | undefined>): Ite
  * An iterator for the key-value pairs (entries) of an object or collection.
  * It can adapt to objects with an `entries()` method, or fall back to `Object.entries()`.
  * @template T - The type of values in the entries.
- * @implements external:IterableIterator
+
  */
 export class EntriesIterator<T = any> implements IterableIterator<Entry<T>> {
     #iterator: Iterator<Entry<T>>;

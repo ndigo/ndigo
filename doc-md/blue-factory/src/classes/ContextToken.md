@@ -6,11 +6,11 @@
 
 # Class: ContextToken\<_T\>
 
-Defined in: packages/blue-factory/src/context-token.ts:18
+Defined in: [packages/blue-factory/src/context-token.ts:18](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/context-token.ts#lines-18)
 
-A type-safe key used for value registration and retrieval in a [Registry](../interfaces/Registry.md).
+A type-safe key used for value registration and retrieval in a `Registry`.
 
-At runtime, ContextToken.description\|description is used as the backing string key.
+At runtime, `description` is used as the backing string key.
 The generic parameter `T` provides compile-time type association.
 
 ## Type Parameters
@@ -27,7 +27,7 @@ The type of the value associated with this token.
 
 > **new ContextToken**\<`_T`\>(`description`, `options?`): `ContextToken`\<`_T`\>
 
-Defined in: packages/blue-factory/src/context-token.ts:36
+Defined in: [packages/blue-factory/src/context-token.ts:36](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/context-token.ts#lines-36)
 
 Creates a new ContextToken.
 
@@ -57,7 +57,7 @@ Optional configuration including `requiredVersion`.
 
 > `readonly` **description**: `string`
 
-Defined in: packages/blue-factory/src/context-token.ts:22
+Defined in: [packages/blue-factory/src/context-token.ts:22](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/context-token.ts#lines-22)
 
 A descriptive string for the token, used as the backing key at runtime.
 
@@ -67,7 +67,7 @@ A descriptive string for the token, used as the backing key at runtime.
 
 > `readonly` `optional` **requiredVersion?**: `string`
 
-Defined in: packages/blue-factory/src/context-token.ts:29
+Defined in: [packages/blue-factory/src/context-token.ts:29](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/context-token.ts#lines-29)
 
 Optional semver range for the registered value, e.g. `'^1.0.0'`.
 When set, the factory checks the resolved entry's version against this range
@@ -79,7 +79,7 @@ and warns on mismatch.
 
 > **toString**(): `string`
 
-Defined in: packages/blue-factory/src/context-token.ts:45
+Defined in: [packages/blue-factory/src/context-token.ts:45](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/context-token.ts#lines-45)
 
 Returns a string representation of the ContextToken.
 

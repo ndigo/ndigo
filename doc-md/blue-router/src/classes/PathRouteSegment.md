@@ -6,7 +6,7 @@
 
 # Class: PathRouteSegment
 
-Defined in: packages/blue-router/src/path-route.ts:40
+Defined in: [packages/blue-router/src/path-route.ts:40](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/path-route.ts#lines-40)
 
 Represents a single segment of a `PathRoute`, including its name, matrix parameters, and raw string value.
 It implements `RouteSegment` and `Serializable`.
@@ -26,7 +26,7 @@ It implements `RouteSegment` and `Serializable`.
 
 > **new PathRouteSegment**(`segment`): `PathRouteSegment`
 
-Defined in: packages/blue-router/src/path-route.ts:52
+Defined in: [packages/blue-router/src/path-route.ts:52](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/path-route.ts#lines-52)
 
 Creates an instance of `PathRouteSegment` from a raw segment string.
 The segment string can include matrix parameters (e.g., `segment;key=value`).
@@ -53,7 +53,7 @@ The raw string representation of the route segment.
 
 > `readonly` **name**: `string`
 
-Defined in: packages/blue-router/src/path-route.ts:41
+Defined in: [packages/blue-router/src/path-route.ts:41](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/path-route.ts#lines-41)
 
 #### Implementation of
 
@@ -65,7 +65,7 @@ Defined in: packages/blue-router/src/path-route.ts:41
 
 > `readonly` **data**: `JSONObject`
 
-Defined in: packages/blue-router/src/path-route.ts:42
+Defined in: [packages/blue-router/src/path-route.ts:42](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/path-route.ts#lines-42)
 
 #### Implementation of
 
@@ -77,7 +77,7 @@ Defined in: packages/blue-router/src/path-route.ts:42
 
 > `readonly` `optional` **dataString?**: `string`
 
-Defined in: packages/blue-router/src/path-route.ts:43
+Defined in: [packages/blue-router/src/path-route.ts:43](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/path-route.ts#lines-43)
 
 #### Implementation of
 
@@ -89,7 +89,7 @@ Defined in: packages/blue-router/src/path-route.ts:43
 
 > `readonly` **raw**: `string`
 
-Defined in: packages/blue-router/src/path-route.ts:44
+Defined in: [packages/blue-router/src/path-route.ts:44](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/path-route.ts#lines-44)
 
 #### Implementation of
 
@@ -101,7 +101,7 @@ Defined in: packages/blue-router/src/path-route.ts:44
 
 > **toJSON**(): `JSONValue`
 
-Defined in: packages/blue-router/src/path-route.ts:118
+Defined in: [packages/blue-router/src/path-route.ts:118](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/path-route.ts#lines-118)
 
 Serializes the `PathRouteSegment` instance to a JSON object.
 
@@ -125,7 +125,7 @@ A `JSONValue` representation of the segment.
 
 > **toString**(): `string`
 
-Defined in: packages/blue-router/src/path-route.ts:132
+Defined in: [packages/blue-router/src/path-route.ts:132](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-router/src/path-route.ts#lines-132)
 
 Returns the string representation of the `PathRouteSegment`, including its name and matrix parameters.
 

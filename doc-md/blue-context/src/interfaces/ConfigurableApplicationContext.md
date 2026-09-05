@@ -6,7 +6,7 @@
 
 # Interface: ConfigurableApplicationContext
 
-Defined in: packages/blue-context/src/context.ts:201
+Defined in: [packages/blue-context/src/context.ts:201](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-201)
 
 Mutable application-context variant used during configuration.
 
@@ -20,7 +20,7 @@ Mutable application-context variant used during configuration.
 
 > `readonly` **createdTimestamp**: `number`
 
-Defined in: packages/blue-context/src/context.ts:77
+Defined in: [packages/blue-context/src/context.ts:77](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-77)
 
 The timestamp when this context was created.
 
@@ -34,7 +34,7 @@ The timestamp when this context was created.
 
 > `readonly` **children**: readonly [`ApplicationContext`](ApplicationContext.md)[]
 
-Defined in: packages/blue-context/src/context.ts:81
+Defined in: [packages/blue-context/src/context.ts:81](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-81)
 
 A read-only array of child contexts.
 
@@ -48,7 +48,7 @@ A read-only array of child contexts.
 
 > `readonly` **id**: `number`
 
-Defined in: packages/blue-context/src/context.ts:85
+Defined in: [packages/blue-context/src/context.ts:85](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-85)
 
 The unique identifier for this context.
 
@@ -62,7 +62,7 @@ The unique identifier for this context.
 
 > `readonly` **isActive**: `boolean`
 
-Defined in: packages/blue-context/src/context.ts:89
+Defined in: [packages/blue-context/src/context.ts:89](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-89)
 
 Indicates if the context is currently active.
 
@@ -76,7 +76,7 @@ Indicates if the context is currently active.
 
 > `readonly` **name**: `string`
 
-Defined in: packages/blue-context/src/context.ts:93
+Defined in: [packages/blue-context/src/context.ts:93](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-93)
 
 The name of this context.
 
@@ -90,7 +90,7 @@ The name of this context.
 
 > `readonly` **path**: `string`
 
-Defined in: packages/blue-context/src/context.ts:97
+Defined in: [packages/blue-context/src/context.ts:97](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-97)
 
 The hierarchical path of this context within the application context tree.
 
@@ -104,7 +104,7 @@ The hierarchical path of this context within the application context tree.
 
 > `readonly` **themeName**: `string`
 
-Defined in: packages/blue-context/src/context.ts:101
+Defined in: [packages/blue-context/src/context.ts:101](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-101)
 
 The name of the theme associated with this context.
 
@@ -118,7 +118,7 @@ The name of the theme associated with this context.
 
 > **parent**: [`ApplicationContext`](ApplicationContext.md) \| `null`
 
-Defined in: packages/blue-context/src/context.ts:106
+Defined in: [packages/blue-context/src/context.ts:106](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-106)
 
 The parent context in the hierarchy.
 
@@ -132,7 +132,7 @@ The parent context in the hierarchy.
 
 > `optional` **destroyedTimestamp?**: `number`
 
-Defined in: packages/blue-context/src/context.ts:111
+Defined in: [packages/blue-context/src/context.ts:111](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-111)
 
 The timestamp when this context was destroyed, if applicable.
 
@@ -146,7 +146,7 @@ The timestamp when this context was destroyed, if applicable.
 
 > `readonly` **environment**: [`Environment`](Environment.md)
 
-Defined in: packages/blue-context/src/environment.ts:56
+Defined in: [packages/blue-context/src/environment.ts:56](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/environment.ts#lines-56)
 
 The environment associated with the component.
 
@@ -206,7 +206,7 @@ The resolved content string.
 
 > **broadcast**(`type`, ...`data`): `void`
 
-Defined in: packages/blue-context/src/context.ts:118
+Defined in: [packages/blue-context/src/context.ts:118](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-118)
 
 Broadcasts an event to all direct and indirect children of this context.
 
@@ -238,7 +238,7 @@ The data associated with the event.
 
 > **bubble**(`type`, ...`data`): `void`
 
-Defined in: packages/blue-context/src/context.ts:124
+Defined in: [packages/blue-context/src/context.ts:124](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-124)
 
 Bubbles an event up the context hierarchy to all parent contexts.
 
@@ -270,7 +270,7 @@ The data associated with the event.
 
 > **close**(): `void`
 
-Defined in: packages/blue-context/src/context.ts:138
+Defined in: [packages/blue-context/src/context.ts:138](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-138)
 
 Closes this application context and all of its descendants, then destroys associated resources.
 
@@ -298,7 +298,7 @@ Calling `close()` on an already-destroyed context is a safe no-op.
 
 > **getTheme**(`name?`): `Theme`
 
-Defined in: packages/blue-context/src/context.ts:144
+Defined in: [packages/blue-context/src/context.ts:144](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-144)
 
 Retrieves a theme by name.
 
@@ -326,7 +326,7 @@ The requested theme.
 
 > **hasChild**(`node`): `boolean`
 
-Defined in: packages/blue-context/src/context.ts:150
+Defined in: [packages/blue-context/src/context.ts:150](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-150)
 
 Checks if this context has a specific child context.
 
@@ -354,7 +354,7 @@ True if the context is a child, false otherwise.
 
 > **newChild**(`name?`, `data?`): [`ApplicationContext`](ApplicationContext.md)
 
-Defined in: packages/blue-context/src/context.ts:157
+Defined in: [packages/blue-context/src/context.ts:157](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-157)
 
 Creates a new child application context.
 
@@ -388,13 +388,13 @@ The newly created child application context.
 
 > **refresh**(): `void`
 
-Defined in: packages/blue-context/src/context.ts:169
+Defined in: [packages/blue-context/src/context.ts:169](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-169)
 
 Activates the application context and runs the full initialization lifecycle.
 
 **Sequence:**
 1. Emits `'context:preparing'` — processors may register additional entries.
-2. Runs all registered LifecycleProcessor and EntryRegistryProcessor instances.
+2. Runs all registered `LifecycleProcessor` and `EntryRegistryProcessor` instances.
 3. Emits `'context:refresh'` — signals that the context is fully active.
 4. Sets `isActive` to `true`.
 
@@ -414,7 +414,7 @@ Calling `refresh()` on an already-active context is a safe no-op.
 
 > **removeChild**(`node`): `boolean`
 
-Defined in: packages/blue-context/src/context.ts:175
+Defined in: [packages/blue-context/src/context.ts:175](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-175)
 
 Removes a child context from this context.
 
@@ -442,7 +442,7 @@ True if the child was successfully removed, false otherwise.
 
 > **setContentSource**(`contentSource`): `void`
 
-Defined in: packages/blue-context/src/context.ts:205
+Defined in: [packages/blue-context/src/context.ts:205](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-205)
 
 Replaces the content source used by this context.
 
@@ -450,7 +450,7 @@ Replaces the content source used by this context.
 
 ##### contentSource
 
-`ContentSource`
+[`ContentSource`](#)
 
 #### Returns
 
@@ -462,7 +462,7 @@ Replaces the content source used by this context.
 
 > **setEnvironment**(`environment`): `void`
 
-Defined in: packages/blue-context/src/context.ts:209
+Defined in: [packages/blue-context/src/context.ts:209](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-209)
 
 Replaces the environment used by this context.
 
@@ -482,7 +482,7 @@ Replaces the environment used by this context.
 
 > **setId**(`id`): `void`
 
-Defined in: packages/blue-context/src/context.ts:213
+Defined in: [packages/blue-context/src/context.ts:213](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-213)
 
 Updates the context identifier.
 
@@ -502,7 +502,7 @@ Updates the context identifier.
 
 > **setName**(`name`): `void`
 
-Defined in: packages/blue-context/src/context.ts:217
+Defined in: [packages/blue-context/src/context.ts:217](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-217)
 
 Updates the context name.
 
@@ -522,7 +522,7 @@ Updates the context name.
 
 > **setParent**(`parent`): `void`
 
-Defined in: packages/blue-context/src/context.ts:221
+Defined in: [packages/blue-context/src/context.ts:221](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-221)
 
 Reassigns the parent context and keeps the child list in sync.
 
@@ -546,7 +546,7 @@ Reassigns the parent context and keeps the child list in sync.
 
 > **setThemeName**(`themeName`): `void`
 
-Defined in: packages/blue-context/src/context.ts:225
+Defined in: [packages/blue-context/src/context.ts:225](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-225)
 
 Updates the default theme name.
 
@@ -566,7 +566,7 @@ Updates the default theme name.
 
 > **setThemeResolver**(`themeResolver`): `void`
 
-Defined in: packages/blue-context/src/context.ts:229
+Defined in: [packages/blue-context/src/context.ts:229](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/context.ts#lines-229)
 
 Overrides the theme resolver used by this context.
 
@@ -586,7 +586,7 @@ Overrides the theme resolver used by this context.
 
 > **emit**(`type`, ...`data`): `boolean`
 
-Defined in: packages/blue-context/src/event-emitter.ts:68
+Defined in: [packages/blue-context/src/event-emitter.ts:59](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-emitter.ts#lines-59)
 
 Emits an event to the listeners registered for the given type.
 
@@ -620,7 +620,7 @@ Event payload values.
 
 > **eventTypes**(): [`EventType`](../type-aliases/EventType.md)[]
 
-Defined in: packages/blue-context/src/event-emitter.ts:74
+Defined in: [packages/blue-context/src/event-emitter.ts:65](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-emitter.ts#lines-65)
 
 Returns the event types with registered listeners.
 
@@ -640,7 +640,7 @@ The registered event types.
 
 > **listenerCount**(`type`): `number`
 
-Defined in: packages/blue-context/src/event-emitter.ts:81
+Defined in: [packages/blue-context/src/event-emitter.ts:72](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-emitter.ts#lines-72)
 
 Returns the number of listeners for a type.
 
@@ -668,7 +668,7 @@ The listener count.
 
 > **listeners**(`type`): `Function`[]
 
-Defined in: packages/blue-context/src/event-emitter.ts:88
+Defined in: [packages/blue-context/src/event-emitter.ts:79](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-emitter.ts#lines-79)
 
 Returns a snapshot of listeners for a type.
 
@@ -696,7 +696,7 @@ The registered listeners.
 
 > **on**(`type`, `listener?`): `this`
 
-Defined in: packages/blue-context/src/event-emitter.ts:96
+Defined in: [packages/blue-context/src/event-emitter.ts:87](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-emitter.ts#lines-87)
 
 Adds a listener for an event type.
 
@@ -730,7 +730,7 @@ This emitter.
 
 > **off**(`type`, `listener`): `this`
 
-Defined in: packages/blue-context/src/event-emitter.ts:104
+Defined in: [packages/blue-context/src/event-emitter.ts:95](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/event-emitter.ts#lines-95)
 
 Removes a listener for an event type.
 
@@ -764,7 +764,7 @@ This emitter.
 
 > **getResource**(`location`): `Promise`\<[`Resource`](Resource.md)\<`any`\>\>
 
-Defined in: packages/blue-context/src/resource.ts:22
+Defined in: [packages/blue-context/src/resource.ts:22](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/resource.ts#lines-22)
 
 #### Parameters
 

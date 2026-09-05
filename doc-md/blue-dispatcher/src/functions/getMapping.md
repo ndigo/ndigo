@@ -8,7 +8,7 @@
 
 > **getMapping**(`route`): (`target`, `context`) => `any`
 
-Defined in: packages/blue-dispatcher/src/http-method-mapping.ts:18
+Defined in: [packages/blue-dispatcher/src/http-method-mapping.ts:18](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/http-method-mapping.ts#lines-18)
 
 A request mapping with the HTTP method fixed to `'GET'`.
 

@@ -8,6 +8,6 @@
 
 > `const` **NO\_CONTENT**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
-Defined in: packages/blue-http/src/response-statuses.ts:66
+Defined in: [packages/blue-http/src/response-statuses.ts:66](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/response-statuses.ts#lines-66)
 
 There is no content to send for this request, but the headers may be useful. The user-agent may update its cached headers for this resource with the new ones.

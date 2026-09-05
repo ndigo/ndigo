@@ -8,7 +8,7 @@
 
 > **isString**(`value`): `value is string`
 
-Defined in: packages/blue-util/src/type/is-string.ts:19
+Defined in: [packages/blue-util/src/type/is-string.ts:19](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-util/src/type/is-string.ts#lines-19)
 
 Determines whether a given object is a string.
 

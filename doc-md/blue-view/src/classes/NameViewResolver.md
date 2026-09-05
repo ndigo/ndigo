@@ -6,15 +6,11 @@
 
 # Class: NameViewResolver
 
-Defined in: packages/blue-view/src/view-resolver.ts:221
+Defined in: [packages/blue-view/src/view-resolver.ts:221](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view-resolver.ts#lines-221)
 
 A simple implementation of [\`ViewResolver\`](../interfaces/ViewResolver.md) that interprets a view name as a value in the current application context.
 
 This resolver can be handy for small applications, keeping all definitions ranging from controllers to views in the same place.
-
-## Implements
-
-module:view.ViewResolver
 
 ## Extends
 
@@ -58,7 +54,7 @@ A symbol indicating that the value is aware.
 
 > `readonly` **applicationContext**: `ApplicationContext`
 
-Defined in: packages/blue-view/src/view-resolver.ts:225
+Defined in: [packages/blue-view/src/view-resolver.ts:225](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view-resolver.ts#lines-225)
 
 The application context used as the view registry.
 
@@ -96,7 +92,7 @@ The ApplicationContext to be used by this object.
 
 > **resolveViewName**(`name`, `language?`): `Promise`\<[`View`](../interfaces/View.md) \| `null`\>
 
-Defined in: packages/blue-view/src/view-resolver.ts:234
+Defined in: [packages/blue-view/src/view-resolver.ts:234](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view-resolver.ts#lines-234)
 
 Resolves a view from the application context by name.
 
@@ -110,7 +106,7 @@ The view name to resolve.
 
 ##### language?
 
-`any`
+`unknown`
 
 Optional locale or language hint.
 

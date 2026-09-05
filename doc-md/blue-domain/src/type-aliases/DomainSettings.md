@@ -8,7 +8,7 @@
 
 > **DomainSettings** = `object`
 
-Defined in: packages/blue-domain/src/component.ts:23
+Defined in: [packages/blue-domain/src/component.ts:23](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-domain/src/component.ts#lines-23)
 
 Stores configuration values that affect how a domain component behaves.
 

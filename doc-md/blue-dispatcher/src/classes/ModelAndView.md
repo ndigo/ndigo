@@ -6,7 +6,7 @@
 
 # Class: ModelAndView
 
-Defined in: packages/blue-dispatcher/src/model-and-view.ts:12
+Defined in: [packages/blue-dispatcher/src/model-and-view.ts:12](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/model-and-view.ts#lines-12)
 
 Holds a view plus its optional model data.
 
@@ -16,7 +16,7 @@ Holds a view plus its optional model data.
 
 > **new ModelAndView**(`view`, `model?`): `ModelAndView`
 
-Defined in: packages/blue-dispatcher/src/model-and-view.ts:45
+Defined in: [packages/blue-dispatcher/src/model-and-view.ts:45](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/model-and-view.ts#lines-45)
 
 Create a model and view pair.
 
@@ -24,7 +24,7 @@ Create a model and view pair.
 
 ##### view
 
-`string` \| `View`
+`string` \| [`View`](#)
 
 The view name or view instance.
 
@@ -44,7 +44,7 @@ Optional model data to expose to the view.
 
 > **model**: `Model`\<`any`\> \| `null`
 
-Defined in: packages/blue-dispatcher/src/model-and-view.ts:16
+Defined in: [packages/blue-dispatcher/src/model-and-view.ts:16](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/model-and-view.ts#lines-16)
 
 Model data supplied to the view.
 
@@ -54,7 +54,7 @@ Model data supplied to the view.
 
 > **viewName**: `string` \| `null`
 
-Defined in: packages/blue-dispatcher/src/model-and-view.ts:21
+Defined in: [packages/blue-dispatcher/src/model-and-view.ts:21](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/model-and-view.ts#lines-21)
 
 Resolved view name, when known.
 
@@ -62,9 +62,9 @@ Resolved view name, when known.
 
 ### view
 
-> **view**: `View` \| `null`
+> **view**: [`View`](#) \| `null`
 
-Defined in: packages/blue-dispatcher/src/model-and-view.ts:26
+Defined in: [packages/blue-dispatcher/src/model-and-view.ts:26](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/model-and-view.ts#lines-26)
 
 Resolved view instance, when known.
 
@@ -76,7 +76,7 @@ Resolved view instance, when known.
 
 > **get** **hasView**(): `boolean`
 
-Defined in: packages/blue-dispatcher/src/model-and-view.ts:31
+Defined in: [packages/blue-dispatcher/src/model-and-view.ts:31](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/model-and-view.ts#lines-31)
 
 Whether this instance has either a view name or view object.
 
@@ -92,7 +92,7 @@ Whether this instance has either a view name or view object.
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-dispatcher/src/model-and-view.ts:35
+Defined in: [packages/blue-dispatcher/src/model-and-view.ts:35](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-dispatcher/src/model-and-view.ts#lines-35)
 
 ##### Returns
 

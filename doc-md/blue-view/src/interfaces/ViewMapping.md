@@ -6,7 +6,7 @@
 
 # Interface: ViewMapping
 
-Defined in: packages/blue-view/src/view-mapping.ts:13
+Defined in: [packages/blue-view/src/view-mapping.ts:13](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view-mapping.ts#lines-13)
 
 Resolves a route to the view target that should handle it.
 
@@ -16,7 +16,7 @@ Resolves a route to the view target that should handle it.
 
 > **getTarget**(`route`): `any`
 
-Defined in: packages/blue-view/src/view-mapping.ts:20
+Defined in: [packages/blue-view/src/view-mapping.ts:20](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/view-mapping.ts#lines-20)
 
 Returns the target associated with the given route.
 
@@ -24,7 +24,7 @@ Returns the target associated with the given route.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The route being resolved.
 

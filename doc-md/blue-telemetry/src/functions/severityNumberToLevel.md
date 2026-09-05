@@ -8,7 +8,7 @@
 
 > **severityNumberToLevel**(`severityNumber`, `scheme?`): `string`
 
-Defined in: packages/blue-telemetry/src/severity/severity.ts:73
+Defined in: [packages/blue-telemetry/src/severity/severity.ts:73](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-telemetry/src/severity/severity.ts#lines-73)
 
 Converts an OpenTelemetry `SeverityNumber` to its corresponding string-based log level name.
 

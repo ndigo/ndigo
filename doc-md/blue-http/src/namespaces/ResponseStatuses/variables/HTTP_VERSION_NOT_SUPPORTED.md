@@ -8,6 +8,6 @@
 
 > `const` **HTTP\_VERSION\_NOT\_SUPPORTED**: [`ResponseStatus`](../../../classes/ResponseStatus.md)
 
-Defined in: packages/blue-http/src/response-statuses.ts:323
+Defined in: [packages/blue-http/src/response-statuses.ts:323](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/response-statuses.ts#lines-323)
 
 The HTTP version used in the request is not supported by the server.

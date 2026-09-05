@@ -8,6 +8,6 @@
 
 > `const` **Primitive**: `any`
 
-Defined in: packages/blue-model/src/basic.ts:41
+Defined in: [packages/blue-model/src/basic.ts:41](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-model/src/basic.ts#lines-41)
 
 Matches primitive values accepted by ObjectModel.

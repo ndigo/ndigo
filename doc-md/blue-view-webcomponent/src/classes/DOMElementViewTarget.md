@@ -6,7 +6,7 @@
 
 # Class: DOMElementViewTarget
 
-Defined in: packages/blue-view-webcomponent/src/engine.ts:54
+Defined in: [packages/blue-view-webcomponent/src/engine.ts:54](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view-webcomponent/src/engine.ts#lines-54)
 
 View target implementation that renders into a host HTMLElement.
 
@@ -20,7 +20,7 @@ View target implementation that renders into a host HTMLElement.
 
 > **new DOMElementViewTarget**(`element`, `options?`): `DOMElementViewTarget`
 
-Defined in: packages/blue-view-webcomponent/src/engine.ts:68
+Defined in: [packages/blue-view-webcomponent/src/engine.ts:68](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view-webcomponent/src/engine.ts#lines-68)
 
 Creates a DOM-backed view target for the provided element.
 
@@ -54,7 +54,7 @@ When `element` is null or undefined.
 
 > **destroyed**: `boolean`
 
-Defined in: packages/blue-view-webcomponent/src/engine.ts:59
+Defined in: [packages/blue-view-webcomponent/src/engine.ts:59](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view-webcomponent/src/engine.ts#lines-59)
 
 ## Accessors
 
@@ -64,7 +64,7 @@ Defined in: packages/blue-view-webcomponent/src/engine.ts:59
 
 > **get** **container**(): `HTMLElement`
 
-Defined in: packages/blue-view-webcomponent/src/engine.ts:86
+Defined in: [packages/blue-view-webcomponent/src/engine.ts:85](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view-webcomponent/src/engine.ts#lines-85)
 
 The host element that receives rendered output.
 
@@ -84,7 +84,7 @@ The host element that receives rendered output.
 
 > **setApplicationContext**(`applicationContext`): `void`
 
-Defined in: packages/blue-view-webcomponent/src/engine.ts:95
+Defined in: [packages/blue-view-webcomponent/src/engine.ts:94](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view-webcomponent/src/engine.ts#lines-94)
 
 Connects the target to the application event emitter so DOM events can be forwarded.
 
@@ -106,7 +106,7 @@ The application event emitter used for event bridging.
 
 > **setEventMap**(`eventMap`): `void`
 
-Defined in: packages/blue-view-webcomponent/src/engine.ts:109
+Defined in: [packages/blue-view-webcomponent/src/engine.ts:107](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view-webcomponent/src/engine.ts#lines-107)
 
 Replaces the DOM-to-application event map and refreshes listeners.
 
@@ -132,7 +132,7 @@ Mapping from DOM event names to application event names.
 
 > **listen**(): `void`
 
-Defined in: packages/blue-view-webcomponent/src/engine.ts:122
+Defined in: [packages/blue-view-webcomponent/src/engine.ts:120](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view-webcomponent/src/engine.ts#lines-120)
 
 Installs DOM event listeners for the current event map.
 
@@ -148,7 +148,7 @@ Existing listeners are removed first so repeated calls stay idempotent.
 
 > **unlisten**(): `void`
 
-Defined in: packages/blue-view-webcomponent/src/engine.ts:143
+Defined in: [packages/blue-view-webcomponent/src/engine.ts:141](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view-webcomponent/src/engine.ts#lines-141)
 
 Removes all installed DOM event listeners from the host element.
 
@@ -162,7 +162,7 @@ Removes all installed DOM event listeners from the host element.
 
 > **prepare**(`route`): `void`
 
-Defined in: packages/blue-view-webcomponent/src/engine.ts:154
+Defined in: [packages/blue-view-webcomponent/src/engine.ts:151](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view-webcomponent/src/engine.ts#lines-151)
 
 Prepares the target for a new render pass by clearing existing content.
 
@@ -170,7 +170,7 @@ Prepares the target for a new render pass by clearing existing content.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The active route associated with the render pass.
 
@@ -192,7 +192,7 @@ When the target has already been destroyed.
 
 > **commit**(`output`, `model`, `route`): `void`
 
-Defined in: packages/blue-view-webcomponent/src/engine.ts:170
+Defined in: [packages/blue-view-webcomponent/src/engine.ts:167](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view-webcomponent/src/engine.ts#lines-167)
 
 Appends rendered output to the host element and re-enables event bridging.
 
@@ -212,7 +212,7 @@ The model passed through from the view engine.
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 The active route associated with the render pass.
 
@@ -234,7 +234,7 @@ When the target has already been destroyed.
 
 > **clear**(): `void`
 
-Defined in: packages/blue-view-webcomponent/src/engine.ts:181
+Defined in: [packages/blue-view-webcomponent/src/engine.ts:178](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view-webcomponent/src/engine.ts#lines-178)
 
 Clears rendered content without permanently destroying the target.
 
@@ -252,7 +252,7 @@ Clears rendered content without permanently destroying the target.
 
 > **destroy**(): `void`
 
-Defined in: packages/blue-view-webcomponent/src/engine.ts:192
+Defined in: [packages/blue-view-webcomponent/src/engine.ts:189](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view-webcomponent/src/engine.ts#lines-189)
 
 Permanently disables the target and releases its event listeners.
 

@@ -6,7 +6,7 @@
 
 # Interface: Theme
 
-Defined in: packages/blue-content/src/theme.ts:11
+Defined in: [packages/blue-content/src/theme.ts:11](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-content/src/theme.ts#lines-11)
 
 Describes a named theme and the content source it exposes.
 
@@ -16,7 +16,7 @@ Describes a named theme and the content source it exposes.
 
 > **name**: `string`
 
-Defined in: packages/blue-content/src/theme.ts:15
+Defined in: [packages/blue-content/src/theme.ts:15](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-content/src/theme.ts#lines-15)
 
 Human-readable theme name.
 
@@ -26,6 +26,6 @@ Human-readable theme name.
 
 > **contentSource**: [`ContentSource`](ContentSource.md)
 
-Defined in: packages/blue-content/src/theme.ts:20
+Defined in: [packages/blue-content/src/theme.ts:20](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-content/src/theme.ts#lines-20)
 
 Content source associated with the theme.

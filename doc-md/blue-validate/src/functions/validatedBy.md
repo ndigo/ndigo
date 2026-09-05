@@ -10,7 +10,7 @@
 
 > **validatedBy**\<`T`\>(`schema`, `extractor`): `ParameterExtractor`\<`T`\>
 
-Defined in: packages/blue-validate/src/route-parameter.ts:50
+Defined in: [packages/blue-validate/src/route-parameter.ts:50](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/route-parameter.ts#lines-50)
 
 Wraps a parameter extractor with a Zod schema for validation and coercion.
 
@@ -37,7 +37,7 @@ Wraps a parameter extractor with a Zod schema for validation and coercion.
 ### Example
 
 ```ts
-@routeParams({
+`routeParams`({
   user: validatedBy(UserSchema, bindValue('query'))
 })
 ```
@@ -46,7 +46,7 @@ Wraps a parameter extractor with a Zod schema for validation and coercion.
 
 > **validatedBy**\<`T`\>(`validator`, `typeName`, `extractor`): `ParameterExtractor`\<`T`\>
 
-Defined in: packages/blue-validate/src/route-parameter.ts:60
+Defined in: [packages/blue-validate/src/route-parameter.ts:60](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/route-parameter.ts#lines-60)
 
 Wraps a parameter extractor with a @blue/validate Validator.
 
@@ -77,7 +77,7 @@ Wraps a parameter extractor with a @blue/validate Validator.
 ### Example
 
 ```ts
-@routeParams({
+`routeParams`({
   email: validatedBy(myValidator, 'Email', queryValue('email'))
 })
 ```

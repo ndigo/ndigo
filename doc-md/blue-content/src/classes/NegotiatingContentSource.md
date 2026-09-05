@@ -6,7 +6,7 @@
 
 # Class: NegotiatingContentSource
 
-Defined in: packages/blue-content/src/negotiation.ts:44
+Defined in: [packages/blue-content/src/negotiation.ts:44](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-content/src/negotiation.ts#lines-44)
 
 Content source that resolves content using Accept-Language negotiation.
 
@@ -39,7 +39,7 @@ negotiator.getContent('title', 'de');
 
 > **new NegotiatingContentSource**(`source`, `defaultLanguage?`): `NegotiatingContentSource`
 
-Defined in: packages/blue-content/src/negotiation.ts:54
+Defined in: [packages/blue-content/src/negotiation.ts:54](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-content/src/negotiation.ts#lines-54)
 
 Creates a negotiating content source.
 
@@ -69,7 +69,7 @@ Fallback language when the header cannot be parsed.
 
 > **get** **defaultLanguage**(): `string`
 
-Defined in: packages/blue-content/src/negotiation.ts:101
+Defined in: [packages/blue-content/src/negotiation.ts:99](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-content/src/negotiation.ts#lines-99)
 
 The default language configured for this source.
 
@@ -83,7 +83,7 @@ The default language configured for this source.
 
 > **getContent**(`key`, `language`): `string`
 
-Defined in: packages/blue-content/src/negotiation.ts:71
+Defined in: [packages/blue-content/src/negotiation.ts:71](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-content/src/negotiation.ts#lines-71)
 
 Resolves content using the language from the Accept-Language header.
 

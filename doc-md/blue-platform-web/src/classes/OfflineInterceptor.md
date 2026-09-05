@@ -6,14 +6,12 @@
 
 # Class: OfflineInterceptor
 
-Defined in: packages/blue-platform-web/src/offline-interceptor.ts:27
+Defined in: [packages/blue-platform-web/src/offline-interceptor.ts:27](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/offline-interceptor.ts#lines-27)
 
 HTTP interceptor that detects browser offline status.
 
 This interceptor monitors the browser's online/offline state and can
 be used to trigger retry logic or notify the application.
-
-## Implements
 
 ## Implements
 
@@ -25,7 +23,7 @@ be used to trigger retry logic or notify the application.
 
 > **new OfflineInterceptor**(`config?`, `emitter`): `OfflineInterceptor`
 
-Defined in: packages/blue-platform-web/src/offline-interceptor.ts:38
+Defined in: [packages/blue-platform-web/src/offline-interceptor.ts:38](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/offline-interceptor.ts#lines-38)
 
 Creates a new offline interceptor.
 
@@ -55,7 +53,7 @@ Event emitter to notify about status changes.
 
 > **get** **isOnline**(): `boolean`
 
-Defined in: packages/blue-platform-web/src/offline-interceptor.ts:49
+Defined in: [packages/blue-platform-web/src/offline-interceptor.ts:49](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/offline-interceptor.ts#lines-49)
 
 Returns the current online status.
 
@@ -69,7 +67,7 @@ Returns the current online status.
 
 > **postResponse**(`response`, `settings`): `Promise`\<`void` \| `Response`\>
 
-Defined in: packages/blue-platform-web/src/offline-interceptor.ts:60
+Defined in: [packages/blue-platform-web/src/offline-interceptor.ts:60](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/offline-interceptor.ts#lines-60)
 
 Handles the response after a request.
 

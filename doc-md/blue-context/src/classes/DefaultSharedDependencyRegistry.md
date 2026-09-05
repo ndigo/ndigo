@@ -6,7 +6,7 @@
 
 # Class: DefaultSharedDependencyRegistry
 
-Defined in: packages/blue-context/src/shared-dependency-registry.ts:68
+Defined in: [packages/blue-context/src/shared-dependency-registry.ts:68](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/shared-dependency-registry.ts#lines-68)
 
 Default implementation of `SharedDependencyRegistry`.
 
@@ -24,7 +24,7 @@ runtime entry presence.
 
 > **new DefaultSharedDependencyRegistry**(): `DefaultSharedDependencyRegistry`
 
-Defined in: packages/blue-context/src/shared-dependency-registry.ts:71
+Defined in: [packages/blue-context/src/shared-dependency-registry.ts:71](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/shared-dependency-registry.ts#lines-71)
 
 #### Returns
 
@@ -36,7 +36,7 @@ Defined in: packages/blue-context/src/shared-dependency-registry.ts:71
 
 > **declare**(`manifest`): `void`
 
-Defined in: packages/blue-context/src/shared-dependency-registry.ts:75
+Defined in: [packages/blue-context/src/shared-dependency-registry.ts:75](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/shared-dependency-registry.ts#lines-75)
 
 Declare shared dependencies from shell configuration.
 
@@ -62,7 +62,7 @@ A map of token description (string) to dependency entry.
 
 > **getDependency**(`name`): [`SharedDependencyEntry`](../interfaces/SharedDependencyEntry.md) \| `undefined`
 
-Defined in: packages/blue-context/src/shared-dependency-registry.ts:81
+Defined in: [packages/blue-context/src/shared-dependency-registry.ts:81](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/shared-dependency-registry.ts#lines-81)
 
 Get a dependency entry by name.
 
@@ -90,7 +90,7 @@ The dependency entry, or `undefined` if not declared.
 
 > **validate**(`required`, `optional`): [`DependencyValidationResult`](../interfaces/DependencyValidationResult.md)
 
-Defined in: packages/blue-context/src/shared-dependency-registry.ts:85
+Defined in: [packages/blue-context/src/shared-dependency-registry.ts:85](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-context/src/shared-dependency-registry.ts#lines-85)
 
 Validate a feature's dependency requirements against this registry.
 

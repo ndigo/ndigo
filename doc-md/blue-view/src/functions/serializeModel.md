@@ -8,7 +8,7 @@
 
 > **serializeModel**(`model`): `string`
 
-Defined in: packages/blue-view/src/island-view.ts:15
+Defined in: [packages/blue-view/src/island-view.ts:15](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-view/src/island-view.ts#lines-15)
 
 Serializes a view model into a JSON string safe to embed in an HTML attribute.
 

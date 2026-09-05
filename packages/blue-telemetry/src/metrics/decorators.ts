@@ -22,7 +22,7 @@ export function getCounted(
 }
 
 /**
- * Checks if a method has been decorated with `@counted`.
+ * Checks if a method has been decorated with `counted`.
  * @param target - The target object or prototype.
  * @param propertyKey - The name of the method.
  * @returns `true` if the method is counted, otherwise `false`.
@@ -32,7 +32,7 @@ export function hasCounted(target: any, propertyKey: string | symbol): boolean {
 }
 
 /**
- * Options for the `@counted` decorator.
+ * Options for the `counted` decorator.
  */
 export interface CountedOptions {
     /**
@@ -95,22 +95,22 @@ function createCountedDecorator(options: CountedOptions = {}) {
  * @example
  * ```typescript
  * class MyService {
- *   @counted()
+ *   `counted`()
  *   myMethod() {
  *     // Increments 'myMethod.count'
  *   }
  *
- *   @counted('custom.event.count')
+ *   `counted`('custom.event.count')
  *   anotherMethod() {
  *     // Increments 'custom.event.count'
  *   }
  *
- *   @counted({ name: 'api.calls', attributes: { endpoint: '/users' } })
+ *   `counted`({ name: 'api.calls', attributes: { endpoint: '/users' } })
  *   apiCall() {
  *     // Increments 'api.calls' with 'endpoint: /users'
  *   }
  *
- *   @counted('feature.usage', { feature: 'dashboard' })
+ *   `counted`('feature.usage', { feature: 'dashboard' })
  *   dashboardView() {
  *     // Increments 'feature.usage' with 'feature: dashboard'
  *   }
@@ -151,5 +151,5 @@ export function counted(
 
 export const getCountedConfig = getCounted;
 
-/** @deprecated Use @counted instead. */
+/** @deprecated Use `counted` instead. */
 export const Counted = counted;

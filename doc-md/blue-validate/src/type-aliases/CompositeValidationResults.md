@@ -8,7 +8,7 @@
 
 > **CompositeValidationResults**\<`T`, `U`\> = `object`
 
-Defined in: packages/blue-validate/src/constraint.ts:26
+Defined in: [packages/blue-validate/src/constraint.ts:26](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/constraint.ts#lines-26)
 
 Represents the detailed results of a validation operation.
 
@@ -32,7 +32,7 @@ The type of parameters used during validation.
 
 > **name**: `string`
 
-Defined in: packages/blue-validate/src/constraint.ts:27
+Defined in: [packages/blue-validate/src/constraint.ts:27](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/constraint.ts#lines-27)
 
 The name of the constraint or type that was validated.
 
@@ -42,7 +42,7 @@ The name of the constraint or type that was validated.
 
 > **params**: [`CompositeConstraintParams`](CompositeConstraintParams.md)\<`U`\>
 
-Defined in: packages/blue-validate/src/constraint.ts:28
+Defined in: [packages/blue-validate/src/constraint.ts:28](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/constraint.ts#lines-28)
 
 The parameters passed to the validation.
 
@@ -52,7 +52,7 @@ The parameters passed to the validation.
 
 > **value**: `T`
 
-Defined in: packages/blue-validate/src/constraint.ts:29
+Defined in: [packages/blue-validate/src/constraint.ts:29](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/constraint.ts#lines-29)
 
 The value that was validated.
 
@@ -62,7 +62,7 @@ The value that was validated.
 
 > **isValid**: `boolean`
 
-Defined in: packages/blue-validate/src/constraint.ts:30
+Defined in: [packages/blue-validate/src/constraint.ts:30](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/constraint.ts#lines-30)
 
 True if the validation passed, false otherwise.
 
@@ -72,6 +72,6 @@ True if the validation passed, false otherwise.
 
 > **violations**: [`CompositeConstraintType`](../interfaces/CompositeConstraintType.md)\<`T`\>[]
 
-Defined in: packages/blue-validate/src/constraint.ts:31
+Defined in: [packages/blue-validate/src/constraint.ts:31](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-validate/src/constraint.ts#lines-31)
 
 An array of constraints that were violated.

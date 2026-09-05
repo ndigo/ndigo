@@ -8,7 +8,7 @@
 
 > `const` **likeInformationAwareHTTPInterceptor**: (`value`) => `value is InformationAwareHTTPInterceptor`
 
-Defined in: packages/blue-http/src/interceptors/response-class-interceptor.ts:66
+Defined in: [packages/blue-http/src/interceptors/response-class-interceptor.ts:66](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-http/src/interceptors/response-class-interceptor.ts#lines-66)
 
 Tests whether a value exposes `postInformationalResponse()`.
 

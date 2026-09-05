@@ -6,7 +6,7 @@
 
 # Interface: AsyncCloseable
 
-Defined in: packages/blue-factory/src/lifecycle.ts:24
+Defined in: [packages/blue-factory/src/lifecycle.ts:24](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/lifecycle.ts#lines-24)
 
 ## Extends
 
@@ -18,7 +18,7 @@ Defined in: packages/blue-factory/src/lifecycle.ts:24
 
 > **close**(): `Promise`\<`void`\>
 
-Defined in: packages/blue-factory/src/lifecycle.ts:25
+Defined in: [packages/blue-factory/src/lifecycle.ts:25](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-factory/src/lifecycle.ts#lines-25)
 
 #### Returns
 

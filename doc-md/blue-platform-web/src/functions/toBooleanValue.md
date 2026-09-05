@@ -8,7 +8,7 @@
 
 > **toBooleanValue**(`value`): `boolean`
 
-Defined in: packages/blue-platform-web/src/argument-value-converter.ts:58
+Defined in: [packages/blue-platform-web/src/argument-value-converter.ts:58](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/argument-value-converter.ts#lines-58)
 
 Converts common string and boolean inputs into a boolean value.
 

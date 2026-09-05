@@ -8,7 +8,7 @@
 
 > `const` **likeCompletionAwareServiceInterceptor**: (`value`) => `value is CompletionAwareServiceInterceptor`
 
-Defined in: packages/blue-service/src/service.ts:112
+Defined in: [packages/blue-service/src/service.ts:112](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-service/src/service.ts#lines-112)
 
 Tests whether a value provides completion-aware interceptor behavior.
 

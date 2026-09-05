@@ -8,7 +8,7 @@
 
 > `const` **toPascal**: (`value`) => `string`
 
-Defined in: packages/blue-util/src/string/to-pascal.ts:20
+Defined in: [packages/blue-util/src/string/to-pascal.ts:20](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-util/src/string/to-pascal.ts#lines-20)
 
 ## Parameters
 

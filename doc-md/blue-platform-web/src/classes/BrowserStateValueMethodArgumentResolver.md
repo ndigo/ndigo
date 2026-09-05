@@ -6,7 +6,7 @@
 
 # Class: BrowserStateValueMethodArgumentResolver
 
-Defined in: packages/blue-platform-web/src/state-argument-resolver.ts:20
+Defined in: [packages/blue-platform-web/src/state-argument-resolver.ts:12](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/state-argument-resolver.ts#lines-12)
 
 Browser history state argument resolver.
 
@@ -20,7 +20,7 @@ Browser history state argument resolver.
 
 > **new BrowserStateValueMethodArgumentResolver**(): `BrowserStateValueMethodArgumentResolver`
 
-Defined in: packages/blue-platform-web/src/state-argument-resolver.ts:21
+Defined in: [packages/blue-platform-web/src/state-argument-resolver.ts:13](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/state-argument-resolver.ts#lines-13)
 
 #### Returns
 
@@ -38,7 +38,7 @@ Defined in: packages/blue-platform-web/src/state-argument-resolver.ts:21
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-platform-web/src/state-argument-resolver.ts:25
+Defined in: [packages/blue-platform-web/src/state-argument-resolver.ts:17](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/state-argument-resolver.ts#lines-17)
 
 ##### Returns
 
@@ -64,7 +64,7 @@ Pipeline: resolveName → defaultValue fallback → convertType lookup → conve
 
 ##### route
 
-`Route`
+[`Route`](#)
 
 ##### mapping
 
@@ -84,7 +84,7 @@ Pipeline: resolveName → defaultValue fallback → convertType lookup → conve
 
 > **handleMissingValue**(`name`): `void`
 
-Defined in: packages/blue-dispatcher/lib/argument-resolver.d.ts:55
+Defined in: packages/blue-dispatcher/lib/argument-resolver.d.ts:46
 
 Handles a missing argument value by throwing a TypeError.
 
@@ -114,7 +114,7 @@ If the argument is undefined or null.
 
 > `protected` **resolveName**(`name`, `_parameter`, `_route`, `_mapping`): `any`
 
-Defined in: packages/blue-platform-web/src/state-argument-resolver.ts:30
+Defined in: [packages/blue-platform-web/src/state-argument-resolver.ts:22](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/state-argument-resolver.ts#lines-22)
 
 Retrieves a value from `history.state` if it exists.
 
@@ -130,7 +130,7 @@ Retrieves a value from `history.state` if it exists.
 
 ##### \_route
 
-`Route`
+[`Route`](#)
 
 ##### \_mapping
 
@@ -150,7 +150,7 @@ Retrieves a value from `history.state` if it exists.
 
 > **supportsParameter**(`parameter`): `boolean`
 
-Defined in: packages/blue-platform-web/src/state-argument-resolver.ts:36
+Defined in: [packages/blue-platform-web/src/state-argument-resolver.ts:28](https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/main/packages/blue-platform-web/src/state-argument-resolver.ts#lines-28)
 
 Returns whether this resolver supports history-state parameters.
 

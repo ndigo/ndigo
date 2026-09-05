@@ -57,7 +57,7 @@ export class ApplicationContextAwareProcessor implements InitializationAwareProc
             // eslint-disable-next-line no-unused-expressions -- guarded dispatch: inject only into values implementing the contract
             likeApplicationEventEmitterAware(value) && value.setApplicationEventEmitter(applicationContext);
             // eslint-disable-next-line no-unused-expressions -- guarded dispatch: inject only into values implementing the contract
-            likeContentSourceAware(value) && (value as any).setContentSource(applicationContext);
+            likeContentSourceAware(value) && value.setContentSource(applicationContext);
             // eslint-disable-next-line no-unused-expressions -- guarded dispatch: inject only into values implementing the contract
             likeApplicationContextAware(value) && value.setApplicationContext(applicationContext);
         }

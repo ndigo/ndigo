@@ -2,7 +2,7 @@
  * @author Jeff Rose
  */
 
-import { View, AbstractPathBasedView } from './view.js';
+import { View } from './view.js';
 import { createNull, MediaType, MediaTypes, Null, Constructable } from '@blue/core';
 import { Initializable, likeInitializable } from '@blue/factory';
 import { ApplicationContext, AsApplicationContextAware, likeApplicationContextAware } from '@blue/context';
@@ -111,10 +111,6 @@ export abstract class AbstractPathBasedViewResolver extends AbstractCachingViewR
      */
     suffix: string;
     /**
-     * The concrete view class that will be instantiated.
-     */
-    viewClass!: Constructable<View>;
-    /**
      * The set of names this resolver supports.
      */
     viewNames: (string | RegExp)[] | null;
@@ -152,15 +148,6 @@ export abstract class AbstractPathBasedViewResolver extends AbstractCachingViewR
         }
 
         return isSupported;
-    }
-
-    protected _buildView(name: string): View {
-        // TODO Update this to represent how views are really created
-        // As a result this could become async
-        const ViewClass = this.viewClass,
-            view: AbstractPathBasedView = new ViewClass(`${this.prefix}${name}${this.suffix}`) as AbstractPathBasedView;
-        view.mediaType = this.mediaType;
-        return view;
     }
 }
 

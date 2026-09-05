@@ -41,12 +41,14 @@ export const authClient = new AuthClient();
 
 // ── Initialize auth system (register adapters, set up client) ────────────────
 export function initAuth(): void {
-    // Register a mock OIDC adapter for demo purposes
+    // Demo adapter: explicit validator, NOT a real security boundary. Real
+    // deployments must use jwksUrl or discovery: true against a trusted IdP.
     const oidcAdapter = new OIDCAdapter({
         issuer: 'https://blue-todo.local',
         clientId: 'blue-todo-client',
         redirectUri: `${window.location.origin}/callback`,
         scopes: ['openid', 'profile', 'email'],
+        tokenValidator: async () => true,
     });
     AuthRegistry.register(oidcAdapter);
 

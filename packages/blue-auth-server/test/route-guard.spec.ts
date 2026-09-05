@@ -47,11 +47,10 @@ function setHandlerMetadata(handler: (...args: any[]) => any, metadata: Record<s
 describe('AuthRouteGuard', () => {
     let authServer: AuthServer;
     let guard: AuthRouteGuard;
-
     beforeEach(() => {
         AuthRegistry.clear();
         authServer = new AuthServer();
-        guard = new AuthRouteGuard(authServer, (route) => (route as any).getToken?.() ?? null);
+        guard = new AuthRouteGuard(authServer, (route) => (route as any).getToken?.() ?? null, 'jwt');
     });
 
     describe('preHandle - no auth required', () => {
@@ -103,7 +102,7 @@ describe('AuthRouteGuard', () => {
             };
 
             const result = await guard.preHandle(route, handlerMethod);
-            expect(result).toBe(false);
+            expect(result).toMatchObject({ statusCode: 401 });
         });
 
         test('returns false when token is invalid', async () => {
@@ -121,7 +120,7 @@ describe('AuthRouteGuard', () => {
             };
 
             const result = await guard.preHandle(route, handlerMethod);
-            expect(result).toBe(false);
+            expect(result).toMatchObject({ statusCode: 401 });
         });
     });
 
@@ -204,7 +203,7 @@ describe('AuthRouteGuard', () => {
             };
 
             const result = await guard.preHandle(route, handlerMethod);
-            expect(result).toBe(false);
+            expect(result).toMatchObject({ statusCode: 403 });
         });
 
         test('returns true when class and method both require roles and principal has all', async () => {
@@ -245,7 +244,7 @@ describe('AuthRouteGuard', () => {
             };
 
             const result = await guard.preHandle(route, handlerMethod);
-            expect(result).toBe(false);
+            expect(result).toMatchObject({ statusCode: 403 });
         });
     });
 
@@ -261,10 +260,11 @@ describe('AuthRouteGuard', () => {
                 path: '/test',
             };
 
-            // validateAny returns null when no adapters are registered,
-            // causing the guard to return false (no valid principal)
+
+            // validate() with an explicit adapter returns 401 when the
+            // adapter is not registered — fail-closed, never tried-any.
             const result = await guard.preHandle(route, handlerMethod);
-            expect(result).toBe(false);
+            expect(result).toMatchObject({ statusCode: 401 });
         });
     });
 

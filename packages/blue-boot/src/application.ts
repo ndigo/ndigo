@@ -12,6 +12,7 @@ import {
 import { IllegalStateError, JSONObject } from '@blue/core';
 import { RouteRegistry } from '@blue/router';
 import { isActiveForCurrentPlatform } from '@blue/core';
+import { NodeAutoConfiguration } from '@blue/platform-node/node-auto-configuration';
 
 /**
  * Class that can be used to bootstrap and launch an application.
@@ -155,6 +156,12 @@ export class Application extends Emitter {
     protected _prepareContext(environment: ConfigurableEnvironment, args: string[]): ConfigurableApplicationContext {
         const context = new MetadataConfigApplicationContext(this.#name ?? 'blue-application');
         context.setEnvironment(environment);
+
+        // Node apps get the node dispatch/resolver auto-config unless they
+        // provide their own — the user sources can override.
+        if (isActiveForCurrentPlatform(NodeAutoConfiguration)) {
+            context.register(NodeAutoConfiguration);
+        }
 
         this.#sources.forEach((source) => {
             if (isActiveForCurrentPlatform(source)) {

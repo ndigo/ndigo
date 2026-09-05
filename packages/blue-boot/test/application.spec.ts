@@ -77,12 +77,15 @@ describe('Application', () => {
         expect(resolvers.length).toBeGreaterThan(0);
     });
 
-    test('it should skip web auto-configuration when window is not defined', () => {
+    test('it should register node resolvers when window is not defined', () => {
         vi.stubGlobal('window', undefined);
 
         const app = new Application([]);
         const context = app.run();
 
-        expect(context.hasValue('argumentResolvers')).toBe(false);
+        // Node auto-config registers the node resolver set.
+        expect(context.hasValue('argumentResolvers')).toBe(true);
+        const resolvers = context.getValue<object[]>('argumentResolvers');
+        expect(resolvers.some((r) => r.constructor.name.includes('Node'))).toBe(true);
     });
 });

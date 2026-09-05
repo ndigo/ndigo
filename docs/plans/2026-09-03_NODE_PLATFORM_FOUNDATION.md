@@ -270,7 +270,7 @@ const app = new ApplicationBuilder([NodeAutoConfiguration, MyConfiguration]);
 
 `_prepareContext` already loops `this.#sources` and conditionally registers each via `isActiveForCurrentPlatform`.
 
-**Future:** when the packages are reorganized into `web` / `node` / `isomorphic` groupings (see roadmap TODO), reintroduce automatic node auto-registration from a node-only bootstrap entry point, keeping `@blue/boot` isomorphic and free of a `node:http` import.
+**Resolved (2026-09-04):** after the package-separation refactor, `@blue/boot` now auto-registers `NodeAutoConfiguration` on the node platform. It imports it via the browser-safe `@blue/platform-node/node-auto-configuration` subpath (its transitive `node:http` imports are type-only, so no runtime `node:http` is dragged into browser bundles). Node apps no longer need to pass `NodeAutoConfiguration` explicitly; the SSR demo simplifies accordingly.
 
 ### 6.3 `NodeAutoConfiguration` should also register:
 

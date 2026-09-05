@@ -11,10 +11,10 @@ Complements `@blue/telemetry`: telemetry *produces* metric data
 ```ts
 // node app bootstrap
 import { ApplicationBuilder } from '@blue/boot';
-import { NodeAutoConfiguration } from '@blue/platform-node';
 import { ManagementAutoConfiguration } from '@blue/management';
 
-const app = new ApplicationBuilder([NodeAutoConfiguration, ManagementAutoConfiguration]).run();
+// NodeAutoConfiguration is auto-registered by @blue/boot on Node.
+const app = new ApplicationBuilder([ManagementAutoConfiguration]).run();
 ```
 
 - `GET /health` → `{ status, components, timestamp }`

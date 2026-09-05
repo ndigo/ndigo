@@ -1,0 +1,10 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "strict": true,
+    "paths": {
+      "@blue/*": ["../blue-*/src"]
+    }
+  },
+  "include": ["src/**/*"]
+}

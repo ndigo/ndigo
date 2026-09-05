@@ -17,8 +17,7 @@ export interface RouteToViewNameTranslatorStrategy {
 /**
  */
 
-const { defineProperty } = Reflect,
-    ROUTE_TO_VIEW_NAME_TRANSLATOR = 'routeToViewNameTranslator',
+const ROUTE_TO_VIEW_NAME_TRANSLATOR = 'routeToViewNameTranslator',
     defaultRouteToViewNameTranslator: RouteToViewNameTranslator = new DefaultRouteToViewNameTranslator();
 
 export const AsRouteToViewNameTranslatorStrategy = <T extends Constructable<StrategyInitializer>>(

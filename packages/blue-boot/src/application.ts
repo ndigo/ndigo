@@ -11,7 +11,7 @@ import {
 } from '@blue/context';
 import { IllegalStateError, JSONObject } from '@blue/core';
 import { RouteRegistry } from '@blue/router';
-import { isActive, isActiveForCurrentPlatform } from '@blue/core';
+import { isActive } from '@blue/core';
 
 /**
  * Class that can be used to bootstrap and launch an application.
@@ -21,7 +21,6 @@ import { isActive, isActiveForCurrentPlatform } from '@blue/core';
  * @fires closed when the application is closed
  */
 export class Application extends Emitter {
-    #context: ConfigurableApplicationContext | null = null;
     #environment: ConfigurableEnvironment | null = null;
     #name: string | null = null;
     #profiles: string[];
@@ -61,7 +60,6 @@ export class Application extends Emitter {
         try {
             const environment = this._prepareEnvironment(args);
             context = this._prepareContext(environment, args);
-            this.#context = context;
             this.emit('started', context);
         } catch (error: unknown) {
             throw new IllegalStateError(

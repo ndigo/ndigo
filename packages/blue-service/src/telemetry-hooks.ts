@@ -2,7 +2,6 @@
  * @author Jeff Rose
  */
 
-import { HTTP } from '@blue/http';
 import { EventEmitter } from '@blue/context';
 
 /**

@@ -124,10 +124,10 @@ describe('@computed with @reactive', () => {
         const c = new Calc() as any;
         expect(computeCount).toBe(0); // lazy — not computed yet
 
-        c.doubled; // first access
+        void c.doubled; // first access
         expect(computeCount).toBe(1);
 
-        c.doubled; // cached
+        void c.doubled; // cached
         expect(computeCount).toBe(1);
     });
 });

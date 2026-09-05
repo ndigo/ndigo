@@ -15,8 +15,7 @@ export interface LanguageResolverStrategy {
 /**
  */
 
-const { defineProperty } = Reflect,
-    LANGUAGE_RESOLVER = 'languageResolver',
+const LANGUAGE_RESOLVER = 'languageResolver',
     defaultLanguageResolver: LanguageResolver = new NavigatorLanguageResolver('en-US');
 
 export const AsLanguageResolverStrategy = <T extends Constructable<StrategyInitializer>>(

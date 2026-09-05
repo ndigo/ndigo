@@ -112,7 +112,7 @@ export class ResponseTypeInterceptor
 
         if ('responseParsers' in settings) {
             const { responseParsers } = settings;
-            parsers = new Map<MediaType, ResponseParser>([...defaultParsers]);
+            parsers = new Map<MediaType, ResponseParser>(defaultParsers);
 
             if (responseParsers) {
                 for (const [type, parser] of entriesIterator(responseParsers)) {

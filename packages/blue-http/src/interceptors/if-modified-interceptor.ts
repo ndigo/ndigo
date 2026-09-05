@@ -33,8 +33,12 @@ export class IfModifiedInterceptor
         if (settings.ifModified) {
             const headers = new Headers(settings.headers ?? {}),
                 fullURL = url.toString();
-            this.#lastModified.has(fullURL) && IF_MODIFIED_SINCE.set(headers, this.#lastModified.get(fullURL));
-            this.#eTag.has(fullURL) && IF_NONE_MATCH.set(headers, this.#eTag.get(fullURL));
+            if (this.#lastModified.has(fullURL)) {
+                IF_MODIFIED_SINCE.set(headers, this.#lastModified.get(fullURL));
+            }
+            if (this.#eTag.has(fullURL)) {
+                IF_NONE_MATCH.set(headers, this.#eTag.get(fullURL));
+            }
             settings.headers = headers;
         }
         return true;

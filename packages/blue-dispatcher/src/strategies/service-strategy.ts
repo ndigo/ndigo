@@ -12,8 +12,7 @@ export interface ServiceStrategy {
     initServiceStrategy(context: ApplicationContext): void;
 }
 
-const { defineProperty } = Reflect,
-    SERVICE_CALL = 'serviceCall',
+const SERVICE_CALL = 'serviceCall',
     SERVICE_CALLS = `${SERVICE_CALL}s`,
     SERVICE_INTERCEPTOR = 'serviceInterceptor',
     SERVICE_INTERCEPTORS = `${SERVICE_INTERCEPTOR}s`,

@@ -13,7 +13,9 @@ describe('HashRouter', () => {
     });
 
     afterEach(() => {
-        router && router.destroy();
+        if (router) {
+            router.destroy();
+        }
     });
 
     test('it should create a HashRouter instance', () => {

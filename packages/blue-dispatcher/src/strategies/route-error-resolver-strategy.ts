@@ -15,8 +15,7 @@ export interface RouteErrorResolverStrategy {
 /**
  */
 
-const { defineProperty } = Reflect,
-    ERROR_RESOLVER = 'errorResolver',
+const ERROR_RESOLVER = 'errorResolver',
     ERROR_RESOLVERS = `${ERROR_RESOLVER}s`,
     defaultRouteErrorResolvers: RouteErrorResolver[] = [new MetadataErrorResolver()];
 

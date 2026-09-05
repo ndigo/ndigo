@@ -13,7 +13,7 @@ const entityMap: { [entity: string]: string } = {
         '`': '&#x60;',
         '=': '&#x3D;',
     },
-    decodedEntities = /[&<>"'`=\/]/g,
+    decodedEntities = /[&<>"'`=/]/g,
     encodeEntity = (entity: string): string => entityMap[entity],
     encodeHTML = (value: string): string => value.replace(decodedEntities, encodeEntity);
 

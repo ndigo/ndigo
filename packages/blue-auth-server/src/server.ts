@@ -36,6 +36,7 @@ export class AuthServer {
     async validateAny(token: string): Promise<Principal | null> {
         for (const adapter of AuthRegistry.getAllAdapters()) {
             try {
+                // oxlint-disable-next-line no-await-in-loop -- adapters form an ordered fallback chain; the first successful validation wins, so later adapters must not run early or in parallel.
                 const principal = await adapter.validate(token);
                 if (principal) return principal;
             } catch {

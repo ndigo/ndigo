@@ -46,7 +46,9 @@ export class BrowserBindMethodArgumentResolver extends AbstractPlatformArgumentR
 
         const finalValue = convertedValue ?? parameter.defaultValue;
 
-        isNil(finalValue) && parameter.required && this.handleMissingValue(parameter.name);
+        if (isNil(finalValue) && parameter.required) {
+            this.handleMissingValue(parameter.name);
+        }
 
         return finalValue;
     }

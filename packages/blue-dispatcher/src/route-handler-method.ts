@@ -44,8 +44,6 @@ export interface RouteHandlerMethodMappingNamingStrategy<T = any> {
  * @returns {string} The name
  */
 
-const { defineProperty } = Reflect;
-
 export class RouteHandlerMethod implements HandlerMethod, Serializable {
     readonly factory!: Factory | null;
     readonly name!: string | null;
@@ -88,7 +86,7 @@ export class RouteHandlerMethod implements HandlerMethod, Serializable {
         if (parametersLength) {
             for (let index = 0; index < parametersLength; index++) {
                 const parameter = parameters[index],
-                    resolver = argumentResolvers.find((resolver) => resolver.supportsParameter(parameter));
+                    resolver = argumentResolvers.find((candidate) => candidate.supportsParameter(parameter));
 
                 args[index] = resolver ? resolver.resolveArgument(parameter, route, mapping) : void 0;
             }

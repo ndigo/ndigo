@@ -153,7 +153,7 @@ export class MetadataScanner {
     get(metadataKey: string): string[] | undefined {
         const cache = this._cache;
 
-        if (Boolean(cache.size)) {
+        if (cache.size) {
             if (cache.has(metadataKey)) {
                 return cache.get(metadataKey);
             }

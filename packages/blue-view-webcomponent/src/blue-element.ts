@@ -26,6 +26,8 @@ export const AsBlueElement = <T extends Constructable<HTMLElement>>(superclass: 
         }
 
         set name(newName: string) {
-            newName && this.setAttribute(NAME, newName);
+            if (newName) {
+                this.setAttribute(NAME, newName);
+            }
         }
     };

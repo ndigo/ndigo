@@ -76,7 +76,9 @@ export function escalate<T extends ChildNode>(node: T, callback: (node: T) => an
     const target = inclusive ? node : node.parent;
 
     if (target) {
-        callback(target) !== false && escalate<T>(target, callback);
+        if (callback(target) !== false) {
+            escalate<T>(target, callback);
+        }
     }
 }
 

@@ -31,8 +31,7 @@ export interface RouteHandlerAdapterStrategy {
  * @throws {Error} If no adapter can be found for the handler.
  */
 
-const { defineProperty } = Reflect,
-    HANDLER_ADAPTER = 'handlerAdapter',
+const HANDLER_ADAPTER = 'handlerAdapter',
     HANDLER_ADAPTERS = `${HANDLER_ADAPTER}s`,
     defaultRouteHandlerAdapters: RouteHandlerAdapter[] = [new ControllerHandlerAdapter(), new MetadataHandlerAdapter()];
 
@@ -65,10 +64,11 @@ export const AsRouteHandlerAdapterStrategy = <T extends Constructable<StrategyIn
         }
 
         getHandlerAdapter(handler: any): RouteHandlerAdapter {
-            const handlerAdapter: RouteHandlerAdapter | undefined = this.handlerAdapters.find((handlerAdapter) => {
-                // Check if the adapter has a supports method and call it
-                if (typeof (handlerAdapter as any).supports === 'function') {
-                    return (handlerAdapter as any).supports(handler);
+            const handlerAdapter: RouteHandlerAdapter | undefined = this.handlerAdapters.find((adapter) => {
+                // The interface declares supports(); the typeof check guards
+                // against duck-typed entries entering the collection.
+                if (typeof adapter.supports === 'function') {
+                    return adapter.supports(handler);
                 }
                 return false;
             });

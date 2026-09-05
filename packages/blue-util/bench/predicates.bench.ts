@@ -3,8 +3,6 @@
  */
 
 import { bench, describe } from 'vitest';
-import isNumber from '../src/type/is-number.js';
-import isString from '../src/type/is-string.js';
 
 let _sink = 0;
 

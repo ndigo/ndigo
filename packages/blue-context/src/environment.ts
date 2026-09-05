@@ -135,6 +135,7 @@ export abstract class AbstractEnvironment implements ConfigurableEnvironment {
 
     set activeProfiles(profiles: string[]) {
         const activeProfiles = this.#activeProfiles;
+        // eslint-disable-next-line no-unused-expressions -- guarded call: clear only when the set is non-empty
         activeProfiles.size && activeProfiles.clear();
         profiles.forEach(activeProfiles.add, activeProfiles);
     }
@@ -145,6 +146,7 @@ export abstract class AbstractEnvironment implements ConfigurableEnvironment {
 
     set defaultProfiles(profiles: string[]) {
         const defaultProfiles = this.#defaultProfiles;
+        // eslint-disable-next-line no-unused-expressions -- guarded call: clear only when the set is non-empty
         defaultProfiles.size && defaultProfiles.clear();
         profiles.forEach(defaultProfiles.add, defaultProfiles);
     }
@@ -180,8 +182,10 @@ export abstract class AbstractEnvironment implements ConfigurableEnvironment {
             const propertySources = this.propertySources.concat(environment.propertySources);
             this.propertySources = propertySources;
         }
+        // eslint-disable-next-line no-unused-expressions -- guarded dispatch: merge profiles only when present
         environment.activeProfiles.length &&
             environment.activeProfiles.forEach((profile) => this.addActiveProfile(profile));
+        // eslint-disable-next-line no-unused-expressions -- guarded dispatch: merge profiles only when present
         environment.defaultProfiles.length &&
             environment.defaultProfiles.forEach((profile) => this.addDefaultProfile(profile));
     }

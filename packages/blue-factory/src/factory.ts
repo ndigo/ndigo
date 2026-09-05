@@ -538,14 +538,14 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
                 const alwaysName = () => name,
                     entries = entriesIterator(this[name]);
 
-                for (const [key, value] of entries) {
+                for (const [key, entryValue] of entries) {
                     // Do not process an enumerable of primitives
-                    if (isPrimitive(value)) {
+                    if (isPrimitive(entryValue)) {
                         break;
                     }
 
                     let instanceName: string;
-                    if (key === value) {
+                    if (key === entryValue) {
                         // Simple Collection, e.g. Set, where entry is [ value, value ]
                         instanceName = alwaysName();
                     } else if (isNumber(key)) {
@@ -558,7 +558,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
                         instanceName = alwaysName();
                     }
 
-                    this._configure(instanceName, value);
+                    this._configure(instanceName, entryValue);
                 }
             } else {
                 this._configure(name, this[name]);

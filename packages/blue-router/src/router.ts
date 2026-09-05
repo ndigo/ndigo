@@ -118,7 +118,7 @@ export abstract class AbstractRouter implements Router, RouterInterceptorRegistr
             return {
                 preHandle(route) {
                     const result = interceptor(route);
-                    return result === false ? false : true;
+                    return result !== false;
                 },
             };
         }

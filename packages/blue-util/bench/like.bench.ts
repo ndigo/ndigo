@@ -17,7 +17,7 @@
  */
 
 import { bench, describe } from 'vitest';
-import like, { LikeDescriptor } from '../src/type/like.js';
+import type { LikeDescriptor } from '../src/type/like.js';
 
 /* ------------------------------------------------------------------ */
 /*  Helpers                                                            */
@@ -56,10 +56,10 @@ const precomputeDescriptor = (
 
 const isNilLike = (x: any): x is null | undefined => x == null;
 
-function likeCached(descriptor: LikeDescriptor, value?: any): boolean | ((v: any) => boolean) {
+function likeCached(descriptor: LikeDescriptor, candidate?: any): boolean | ((v: any) => boolean) {
     if (arguments.length >= 2) {
         // Two-arg path: evaluate immediately
-        if (isNilLike(value)) return false;
+        if (isNilLike(candidate)) return false;
         let cached = descriptorCache.get(descriptor);
         if (!cached) {
             cached = precomputeDescriptor(descriptor);
@@ -68,9 +68,9 @@ function likeCached(descriptor: LikeDescriptor, value?: any): boolean | ((v: any
         const { keys, types, isTrue } = cached;
         for (let i = 0; i < keys.length; i++) {
             if (isTrue[i]) {
-                if (!(keys[i] in value)) return false;
+                if (!(keys[i] in candidate)) return false;
             } else {
-                const prop = (value as any)[keys[i]];
+                const prop = (candidate as any)[keys[i]];
                 if (prop === null) continue;
                 if (prop == null) return false;
                 const type = types[i];

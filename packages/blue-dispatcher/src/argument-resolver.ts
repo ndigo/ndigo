@@ -2,7 +2,6 @@
  * @author Jeff Rose
  */
 
-import { Factory } from '@blue/factory';
 import { Route } from '@blue/router';
 import { MethodParameter, MethodParameterType } from './route-parameter';
 import { isNil, like } from '@blue/util/types';
@@ -45,20 +44,8 @@ export const likeArgumentResolver = like({
  * * Resolve names into argument values
  * * Handle missing argument values when argument values are required
  * * Optionally handle a resolved value
- *
- * A {@link Factory} must be supplied to the class constructor.
  */
 export abstract class AbstractNamedValueMethodArgumentResolver implements HandlerMethodArgumentResolver {
-    #factory: Factory | null;
-
-    /**
-     * Creates an instance of AbstractNamedValueMethodArgumentResolver.
-     * @param factory - A factory for resolving values.
-     */
-    constructor(factory?: Factory | null) {
-        this.#factory = factory ?? null;
-    }
-
     /**
      * Handles a missing argument value by throwing a TypeError.
      * @param name - The name of the missing argument.
@@ -79,7 +66,9 @@ export abstract class AbstractNamedValueMethodArgumentResolver implements Handle
         const resolveValue = (v: any) => v ?? parameter.defaultValue,
             value = resolveValue(this.resolveName(parameter.name, parameter, route, mapping));
 
-        isNil(value) && parameter.required && this.handleMissingValue(parameter.name);
+        if (isNil(value) && parameter.required) {
+            this.handleMissingValue(parameter.name);
+        }
 
         return value;
     }

@@ -5,30 +5,21 @@
  */
 
 import { Constructable, JSONValue, Serializable, Null, createNull } from '@blue/core';
-import { is, isFunction, isNil, isNumber, isString, like } from '@blue/util/types';
+import { like } from '@blue/util/types';
 import { Aware, Destroyable, likeAwareAnd } from '@blue/factory';
 import {
     $events,
     $every,
     defineProperty,
-    deleteProperty,
     keys,
     addConditionalEventListener,
-    addEventHandler,
     addEventHandlers,
-    defineEventsProperty,
     addEventListener,
     addFiniteEventListener,
     emitAllEvents,
-    emitErrors,
     emitEvent,
-    eventListenerEquals,
-    executeHandler,
     getEventTypes,
-    isEventHandler,
-    isEventType,
     isPositiveNumber,
-    removeEventHandler,
     removeAllEventListeners,
     removeEventListener,
     tickAllEvents,
@@ -501,6 +492,7 @@ export class Emitter extends AsEventEmitter(Null) implements Destroyable, Serial
             writable: false,
         });
 
+        // eslint-disable-next-line no-unused-expressions -- guarded dispatch: seed listeners only when a mapping was provided
         typeof mapping !== 'undefined' && addEventHandlers(this, mapping, false);
     }
 

@@ -23,7 +23,9 @@ export class NamePathHandlerMapping extends AbstractDetectingPathHandlerMapping 
      */
     protected _determinePathsForHandler(name: string): string[] {
         const paths: string[] = [];
-        name.startsWith('/') && paths.push(...name.split(' '));
+        if (name.startsWith('/')) {
+            paths.push(...name.split(' '));
+        }
         return paths;
     }
 }

@@ -141,6 +141,7 @@ export class RetryOnOfflineInterceptor implements RequestAwareHTTPInterceptor, R
 
         for (const entry of queue) {
             try {
+                // oxlint-disable-next-line no-await-in-loop -- sequential queue drain: retries are paced by the retry timer; parallelizing would burst all queued requests and reorder retry scheduling.
                 const response = await fetch(entry.request);
                 entry.resolve(response);
             } catch (error) {

@@ -72,6 +72,7 @@ export function addEventHandlers(
 
         if (type != null) {
             const handler = mappings[type as string];
+            // eslint-disable-next-line no-unused-expressions -- guarded dispatch: only register the handler when the predicate passes
             isEventHandler(handler) && addEventHandler(emitter, type, handler);
         }
     }

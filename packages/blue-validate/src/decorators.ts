@@ -617,7 +617,9 @@ export const validated =
                         return !constraints[fieldConfig.constraint].validate(value, fieldConfig.params);
                     });
 
-                    hasBlockingFailure && failures.add(fieldName);
+                    if (hasBlockingFailure) {
+                        failures.add(fieldName);
+                    }
                 });
 
                 return {

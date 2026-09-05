@@ -17,8 +17,7 @@ export interface RouteToViewNameTranslator {
     getViewName(route: Route): string;
 }
 
-const { defineProperty } = Reflect,
-    slash = '/';
+const slash = '/';
 
 export class DefaultRouteToViewNameTranslator implements RouteToViewNameTranslator {
     /**

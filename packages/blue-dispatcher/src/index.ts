@@ -39,3 +39,4 @@ export { AbstractThemeResolver } from './theme-resolver';
 
 export * from './route-handler-interceptor';
 export * from './route-handler-denial';
+export * from './logging-interceptor';

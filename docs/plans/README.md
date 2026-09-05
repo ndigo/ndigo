@@ -42,6 +42,7 @@ Standardized all UPPER_SNAKE_CASE RegExp constants to camelCase with Rule suffix
 
 ## Active Plans
 
+- [2026-09-04_REPOSITORY_REMEDIATION.md](2026-09-04_REPOSITORY_REMEDIATION.md) - Comprehensive architecture, security, quality, documentation, and release remediation plan
 - [2026-05-27_FEATURE_COMPLETENESS_ROADMAP.md](2026-05-27_FEATURE_COMPLETENESS_ROADMAP.md) - Full 10-wave framework feature completeness roadmap
 - [2026-03-08_PACKAGE_ROADMAP.md](2026-03-08_PACKAGE_ROADMAP.md)
 - [2026-03-08_VALIDATE_DESIGN.md](2026-03-08_VALIDATE_DESIGN.md)

@@ -3,6 +3,7 @@
  */
 
 import { RouteHandlerInterceptor } from './route-handler-interceptor';
+import { resolvePreHandleOutcome } from './route-handler-denial';
 import { ModelAndView } from './model-and-view';
 import { Route } from '@blue/router';
 
@@ -115,10 +116,9 @@ export default class RouteHandlerExecutionChain {
     }
 
     /**
-     * @param {module:router.Route} route
-     */
-    /**
-     * Run pre-handle callbacks until one returns `false`.
+     * Run pre-handle callbacks until one denies. Denial outcomes (bare
+     * `false` or an explicit {@link InterceptorDenial}) are recorded on the
+     * route via `resolvePreHandleOutcome`.
      *
      * @param route - The current route.
      * @returns `true` when all interceptors allow processing to continue.
@@ -129,7 +129,8 @@ export default class RouteHandlerExecutionChain {
         let index = 0;
         if (length) {
             for (; index < length; index++) {
-                if ((await interceptors[index].preHandle(route, this.handler)) === false) {
+                const outcome = await interceptors[index].preHandle(route, this.handler);
+                if (!resolvePreHandleOutcome(route, outcome)) {
                     return false;
                 }
                 this.interceptorIndex = index;

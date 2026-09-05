@@ -5,11 +5,19 @@
 import { ModelAndView } from './model-and-view';
 import { PathMatcher, AsPathMatcherFilter, Null } from '@blue/core';
 import { Route } from '@blue/router';
+import type { InterceptorDenial } from './route-handler-denial';
+
+/**
+ * The outcome of a `preHandle` invocation: `true` allows the request,
+ * `false` is the default denial, and an explicit {@link InterceptorDenial}
+ * carries the finalized status/body/redirect for the platform adapter.
+ */
+export type PreHandleOutcome = boolean | InterceptorDenial;
 
 export interface RouteHandlerInterceptor {
     completeHandle(route: Route, handler: object | undefined, error: Error): void | Promise<void>;
     postHandle(route: Route, handler: object | undefined, modelAndView: ModelAndView): void | Promise<void>;
-    preHandle(route: Route, handler: object | undefined): boolean | Promise<boolean>;
+    preHandle(route: Route, handler: object | undefined): PreHandleOutcome | Promise<PreHandleOutcome>;
 }
 
 /**
@@ -62,10 +70,11 @@ export class MappedHandlerInterceptor extends AsPathMatcherFilter(Null) implemen
         await this.#interceptor.postHandle(route, handler, modelAndView);
     }
 
-    async preHandle(route: Route, handler: object | undefined): Promise<boolean> {
+    async preHandle(route: Route, handler: object | undefined): Promise<PreHandleOutcome> {
         if (this.pathMatcher && !this.pathMatcher.match(route.path, route.path)) {
             return true;
         }
         return await this.#interceptor.preHandle(route, handler);
     }
+
 }

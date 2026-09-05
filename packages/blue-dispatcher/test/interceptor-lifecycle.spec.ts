@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { BrowserDispatcher } from '../src/dispatcher';
+import { AbstractDispatcher } from '../src/dispatcher';
 import { RouteHandlerInterceptor } from '../src/route-handler-interceptor';
 import { ModelAndView } from '../src/model-and-view';
 import { routeMapping } from '../src/route-mapping';
@@ -13,13 +13,13 @@ import { TestErrorResolver, TestViewResolver } from './test-strategies';
 import { LinearMetadataHandlerMapping } from '../src/route-handler-mapping';
 
 describe('Interceptor Lifecycle Guarantees', () => {
-    let dispatcher: BrowserDispatcher;
+    let dispatcher: AbstractDispatcher;
     let context: MetadataConfigApplicationContext;
 
     beforeEach(() => {
         context = new MetadataConfigApplicationContext('test');
         context.addProcessor(new ApplicationContextAwareProcessor(context));
-        dispatcher = new BrowserDispatcher();
+        dispatcher = new AbstractDispatcher();
     });
 
     it('should call completeHandle in reverse order only for interceptors that passed preHandle', async () => {

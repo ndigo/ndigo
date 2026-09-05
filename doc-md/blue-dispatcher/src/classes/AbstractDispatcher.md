@@ -2,13 +2,19 @@
 
 ***
 
-[BlueJS Framework](../../../modules.md) / [blue-dispatcher/src](../README.md) / BrowserDispatcher
+[BlueJS Framework](../../../modules.md) / [blue-dispatcher/src](../README.md) / AbstractDispatcher
 
-# Class: BrowserDispatcher
+# Class: AbstractDispatcher
 
-Defined in: packages/blue-dispatcher/src/dispatcher.ts:52
+Defined in: packages/blue-dispatcher/src/dispatcher.ts:58
 
-An interface for creating application dispatchers. Dispatches to registered handlers for processing a route, providing convenient mapping and exception handling facilities.
+An abstract, platform-independent application dispatcher.
+
+Dispatches routes to registered handlers, providing mapping, interceptors,
+error handling, and view rendering. It is DOM-free: the view target is
+resolved from the application context, so browser and Node specializations
+extend this base (e.g. `@blue/platform-web`'s `BrowserDispatcher` and
+`@blue/platform-node`'s `NodeDispatcher`).
 
 It can be used with just about any workflow, with the installation of the appropriate strategies and adapter classes.
 
@@ -25,11 +31,11 @@ It can be used with just about any workflow, with the installation of the approp
 
 ### Constructor
 
-> **new BrowserDispatcher**(): `BrowserDispatcher`
+> **new AbstractDispatcher**(): `AbstractDispatcher`
 
 #### Returns
 
-`BrowserDispatcher`
+`AbstractDispatcher`
 
 #### Inherited from
 
@@ -41,7 +47,7 @@ It can be used with just about any workflow, with the installation of the approp
 
 > **applicationContext**: `ApplicationContext`
 
-Defined in: packages/blue-dispatcher/src/dispatcher.ts:69
+Defined in: packages/blue-dispatcher/src/dispatcher.ts:75
 
 The application context.
 
@@ -51,7 +57,7 @@ The application context.
 
 > **defaultViewName**: `string` = `'index'`
 
-Defined in: packages/blue-dispatcher/src/dispatcher.ts:73
+Defined in: packages/blue-dispatcher/src/dispatcher.ts:79
 
 The default view name to use if none is specified.
 
@@ -159,7 +165,7 @@ Defined in: packages/blue-dispatcher/src/strategies/view-resolver-strategy.ts:11
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-dispatcher/src/dispatcher.ts:79
+Defined in: packages/blue-dispatcher/src/dispatcher.ts:85
 
 Returns the string tag for this dispatcher.
 
@@ -173,7 +179,7 @@ Returns the string tag for this dispatcher.
 
 > **dispatch**(`route`): `Promise`\<`void`\>
 
-Defined in: packages/blue-dispatcher/src/dispatcher.ts:91
+Defined in: packages/blue-dispatcher/src/dispatcher.ts:97
 
 Dispatches the given route for processing.
 
@@ -199,7 +205,7 @@ The route to dispatch.
 
 > **render**(`mv`, `route`): `Promise`\<`void`\>
 
-Defined in: packages/blue-dispatcher/src/dispatcher.ts:123
+Defined in: packages/blue-dispatcher/src/dispatcher.ts:129
 
 Render the given `ModelAndView`. This is the last stage of handling a route.
 
@@ -231,7 +237,7 @@ The route associated with the [ModelAndView](ModelAndView.md).
 
 > `protected` **\_processHandlerError**(`route`, `handler`, `error`): [`ModelAndView`](ModelAndView.md) \| `null`
 
-Defined in: packages/blue-dispatcher/src/dispatcher.ts:168
+Defined in: packages/blue-dispatcher/src/dispatcher.ts:174
 
 Processes a handler error by attempting to resolve it with registered error resolvers.
 
@@ -271,7 +277,7 @@ If no view name can be determined for the error.
 
 > `protected` **\_resolveViewName**(`viewName`, `language`): `Promise`\<`View` \| `null`\>
 
-Defined in: packages/blue-dispatcher/src/dispatcher.ts:191
+Defined in: packages/blue-dispatcher/src/dispatcher.ts:197
 
 Resolves a view name into a View object using registered view resolvers.
 

@@ -6,6 +6,7 @@ import {
     isActiveForCurrentPlatform,
 } from '@blue/core';
 import { Application } from '../src/application';
+import { WebAutoConfiguration } from '@blue/platform-web';
 
 describe('conditionalOnBrowser', () => {
     afterEach(() => {
@@ -98,7 +99,7 @@ describe('Application integration', () => {
     test('runs web auto-configuration in browser environment', () => {
         vi.stubGlobal('window', {});
 
-        const app = new Application([]);
+        const app = new Application([WebAutoConfiguration]);
         const context = app.run();
 
         expect(context.hasValue('argumentResolvers')).toBe(true);

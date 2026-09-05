@@ -1,13 +1,13 @@
 import { describe, test, beforeEach, afterEach, expect, vi } from 'vitest';
 import { DISPATCHER } from '../src/context-tokens';
-import { BrowserDispatcher } from '../src/dispatcher';
+import { AbstractDispatcher } from '../src/dispatcher';
 import dispatcherContext from './assets/dispatcher-context';
 import errorContext from './assets/route-error-resolver-context';
 import { completeHandleSpy, destroyViewSpy, handleRouteSpy, renderSpy, resolveLanguageSpy } from './test-strategies';
 import { MetadataConfigApplicationContext } from '@blue/context';
 import { Route } from '@blue/router';
 
-describe('BrowserDispatcher', () => {
+describe('AbstractDispatcher', () => {
     const fooRoute: Route = { path: '/foo' } as any,
         barRoute: Route = { path: '/bar' } as any,
         bazRoute: Route = { path: '/baz' } as any,
@@ -15,10 +15,10 @@ describe('BrowserDispatcher', () => {
         helloWorldRoute: Route = { path: '/hello/world' } as any;
 
     describe('instance', () => {
-        let dispatcher: BrowserDispatcher;
+        let dispatcher: AbstractDispatcher;
 
         beforeEach(() => {
-            dispatcher = new BrowserDispatcher();
+            dispatcher = new AbstractDispatcher();
             dispatcher.initStrategies(dispatcherContext);
             vi.clearAllMocks();
         });
@@ -58,7 +58,7 @@ describe('BrowserDispatcher', () => {
             const themeContext = new MetadataConfigApplicationContext('theme-context');
             themeContext.setThemeName('night');
 
-            const themeDispatcher = new BrowserDispatcher();
+            const themeDispatcher = new AbstractDispatcher();
             themeDispatcher.initStrategies(themeContext);
 
             expect(themeDispatcher.themeResolver.resolveTheme(fooRoute)).toBe('night');
@@ -86,7 +86,7 @@ describe('Error View Dispatch', () => {
     });
 
     it('resolves errors through metadata error resolvers', async () => {
-        const dispatcher = new BrowserDispatcher();
+        const dispatcher = new AbstractDispatcher();
         dispatcher.initStrategies(errorContext);
 
         await dispatcher.dispatch({ path: '/bad/bad' } as any);
@@ -95,7 +95,7 @@ describe('Error View Dispatch', () => {
     });
 
     it('returns error ModelAndView with viewName from error handler', async () => {
-        const dispatcher = new BrowserDispatcher();
+        const dispatcher = new AbstractDispatcher();
         dispatcher.initStrategies(errorContext);
 
         await dispatcher.dispatch({ path: '/bad/bad' } as any);

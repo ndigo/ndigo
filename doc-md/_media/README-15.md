@@ -21,7 +21,8 @@ pnpm add @blue/telemetry
 
 ```typescript
 import { SeverityNumber } from '@opentelemetry/api-logs';
-import { configureTelemetry, getLogger } from '@blue/telemetry';
+import { configureTelemetry } from '@blue/telemetry/node';
+import { getLogger } from '@blue/telemetry';
 
 configureTelemetry({
     minimumSeverity: SeverityNumber.INFO,

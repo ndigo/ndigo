@@ -20,7 +20,7 @@ dispatcher.initStrategies(context);
 
 ## Extends
 
-- `BrowserDispatcher`
+- `AbstractDispatcher`
 
 ## Constructors
 
@@ -34,7 +34,7 @@ dispatcher.initStrategies(context);
 
 #### Inherited from
 
-`BrowserDispatcher.constructor`
+`AbstractDispatcher.constructor`
 
 ## Properties
 
@@ -42,13 +42,13 @@ dispatcher.initStrategies(context);
 
 > **applicationContext**: `ApplicationContext`
 
-Defined in: packages/blue-dispatcher/lib/dispatcher.d.ts:41
+Defined in: packages/blue-dispatcher/lib/dispatcher.d.ts:47
 
 The application context.
 
 #### Inherited from
 
-`BrowserDispatcher.applicationContext`
+`AbstractDispatcher.applicationContext`
 
 ***
 
@@ -56,13 +56,13 @@ The application context.
 
 > **defaultViewName**: `string`
 
-Defined in: packages/blue-dispatcher/lib/dispatcher.d.ts:45
+Defined in: packages/blue-dispatcher/lib/dispatcher.d.ts:51
 
 The default view name to use if none is specified.
 
 #### Inherited from
 
-`BrowserDispatcher.defaultViewName`
+`AbstractDispatcher.defaultViewName`
 
 ***
 
@@ -74,7 +74,7 @@ Defined in: packages/blue-dispatcher/lib/strategies/language-resolver-strategy.d
 
 #### Inherited from
 
-`BrowserDispatcher.languageResolver`
+`AbstractDispatcher.languageResolver`
 
 ***
 
@@ -86,7 +86,7 @@ Defined in: packages/blue-dispatcher/lib/strategies/route-error-resolver-strateg
 
 #### Inherited from
 
-`BrowserDispatcher.errorResolvers`
+`AbstractDispatcher.errorResolvers`
 
 ***
 
@@ -98,7 +98,7 @@ Defined in: packages/blue-dispatcher/lib/strategies/route-handler-adapter-strate
 
 #### Inherited from
 
-`BrowserDispatcher.handlerAdapters`
+`AbstractDispatcher.handlerAdapters`
 
 ***
 
@@ -110,7 +110,7 @@ Defined in: packages/blue-dispatcher/lib/strategies/route-handler-mapping-strate
 
 #### Inherited from
 
-`BrowserDispatcher.handlerMappings`
+`AbstractDispatcher.handlerMappings`
 
 ***
 
@@ -122,7 +122,7 @@ Defined in: packages/blue-dispatcher/lib/strategies/route-to-view-name-translato
 
 #### Inherited from
 
-`BrowserDispatcher.routeToViewNameTranslator`
+`AbstractDispatcher.routeToViewNameTranslator`
 
 ***
 
@@ -134,7 +134,7 @@ Defined in: packages/blue-dispatcher/lib/strategies/strategy-initializer.d.ts:7
 
 #### Inherited from
 
-`BrowserDispatcher.strategies`
+`AbstractDispatcher.strategies`
 
 ***
 
@@ -146,7 +146,7 @@ Defined in: packages/blue-dispatcher/lib/strategies/theme-resolver-strategy.d.ts
 
 #### Inherited from
 
-`BrowserDispatcher.themeResolver`
+`AbstractDispatcher.themeResolver`
 
 ***
 
@@ -158,7 +158,7 @@ Defined in: packages/blue-dispatcher/lib/strategies/view-resolver-strategy.d.ts:
 
 #### Inherited from
 
-`BrowserDispatcher.viewResolvers`
+`AbstractDispatcher.viewResolvers`
 
 ## Accessors
 
@@ -168,7 +168,7 @@ Defined in: packages/blue-dispatcher/lib/strategies/view-resolver-strategy.d.ts:
 
 > **get** **\[toStringTag\]**(): `string`
 
-Defined in: packages/blue-dispatcher/lib/dispatcher.d.ts:49
+Defined in: packages/blue-dispatcher/lib/dispatcher.d.ts:55
 
 Returns the string tag for this dispatcher.
 
@@ -178,7 +178,7 @@ Returns the string tag for this dispatcher.
 
 #### Inherited from
 
-`BrowserDispatcher.[toStringTag]`
+`AbstractDispatcher.[toStringTag]`
 
 ## Methods
 
@@ -186,7 +186,7 @@ Returns the string tag for this dispatcher.
 
 > **dispatch**(`route`): `Promise`\<`void`\>
 
-Defined in: packages/blue-dispatcher/lib/dispatcher.d.ts:55
+Defined in: packages/blue-dispatcher/lib/dispatcher.d.ts:61
 
 Dispatches the given route for processing.
 
@@ -204,7 +204,7 @@ The route to dispatch.
 
 #### Inherited from
 
-`BrowserDispatcher.dispatch`
+`AbstractDispatcher.dispatch`
 
 ***
 
@@ -212,7 +212,7 @@ The route to dispatch.
 
 > `protected` **\_processHandlerError**(`route`, `handler`, `error`): `ModelAndView` \| `null`
 
-Defined in: packages/blue-dispatcher/lib/dispatcher.d.ts:70
+Defined in: packages/blue-dispatcher/lib/dispatcher.d.ts:76
 
 Processes a handler error by attempting to resolve it with registered error resolvers.
 
@@ -248,7 +248,7 @@ If no view name can be determined for the error.
 
 #### Inherited from
 
-`BrowserDispatcher._processHandlerError`
+`AbstractDispatcher._processHandlerError`
 
 ***
 
@@ -256,7 +256,7 @@ If no view name can be determined for the error.
 
 > `protected` **\_resolveViewName**(`viewName`, `language`): `Promise`\<`View` \| `null`\>
 
-Defined in: packages/blue-dispatcher/lib/dispatcher.d.ts:77
+Defined in: packages/blue-dispatcher/lib/dispatcher.d.ts:83
 
 Resolves a view name into a View object using registered view resolvers.
 
@@ -282,7 +282,7 @@ A Promise that resolves to the View object, or `null` if not found.
 
 #### Inherited from
 
-`BrowserDispatcher._resolveViewName`
+`AbstractDispatcher._resolveViewName`
 
 ***
 
@@ -304,7 +304,7 @@ Defined in: packages/blue-dispatcher/lib/strategies/language-resolver-strategy.d
 
 #### Inherited from
 
-`BrowserDispatcher.initLanguageResolver`
+`AbstractDispatcher.initLanguageResolver`
 
 ***
 
@@ -326,7 +326,7 @@ Defined in: packages/blue-dispatcher/lib/strategies/route-error-resolver-strateg
 
 #### Inherited from
 
-`BrowserDispatcher.initErrorResolvers`
+`AbstractDispatcher.initErrorResolvers`
 
 ***
 
@@ -348,7 +348,7 @@ Defined in: packages/blue-dispatcher/lib/strategies/route-handler-adapter-strate
 
 #### Inherited from
 
-`BrowserDispatcher.initHandlerAdapters`
+`AbstractDispatcher.initHandlerAdapters`
 
 ***
 
@@ -370,7 +370,7 @@ Defined in: packages/blue-dispatcher/lib/strategies/route-handler-adapter-strate
 
 #### Inherited from
 
-`BrowserDispatcher.getHandlerAdapter`
+`AbstractDispatcher.getHandlerAdapter`
 
 ***
 
@@ -392,7 +392,7 @@ Defined in: packages/blue-dispatcher/lib/strategies/route-handler-mapping-strate
 
 #### Inherited from
 
-`BrowserDispatcher.initHandlerMappings`
+`AbstractDispatcher.initHandlerMappings`
 
 ***
 
@@ -414,7 +414,7 @@ Defined in: packages/blue-dispatcher/lib/strategies/route-handler-mapping-strate
 
 #### Inherited from
 
-`BrowserDispatcher.getHandler`
+`AbstractDispatcher.getHandler`
 
 ***
 
@@ -436,7 +436,7 @@ Defined in: packages/blue-dispatcher/lib/strategies/route-to-view-name-translato
 
 #### Inherited from
 
-`BrowserDispatcher.initRouteToViewNameTranslator`
+`AbstractDispatcher.initRouteToViewNameTranslator`
 
 ***
 
@@ -458,7 +458,7 @@ Defined in: packages/blue-dispatcher/lib/strategies/route-to-view-name-translato
 
 #### Inherited from
 
-`BrowserDispatcher.getDefaultViewName`
+`AbstractDispatcher.getDefaultViewName`
 
 ***
 
@@ -480,7 +480,7 @@ Defined in: packages/blue-dispatcher/lib/strategies/strategy-initializer.d.ts:8
 
 #### Inherited from
 
-`BrowserDispatcher.addStrategy`
+`AbstractDispatcher.addStrategy`
 
 ***
 
@@ -516,7 +516,7 @@ Defined in: packages/blue-dispatcher/lib/strategies/strategy-initializer.d.ts:9
 
 #### Inherited from
 
-`BrowserDispatcher.getDefaultStrategy`
+`AbstractDispatcher.getDefaultStrategy`
 
 ***
 
@@ -538,7 +538,7 @@ Defined in: packages/blue-dispatcher/lib/strategies/strategy-initializer.d.ts:10
 
 #### Inherited from
 
-`BrowserDispatcher.initStrategies`
+`AbstractDispatcher.initStrategies`
 
 ***
 
@@ -582,7 +582,7 @@ Defined in: packages/blue-dispatcher/lib/strategies/strategy-initializer.d.ts:11
 
 #### Inherited from
 
-`BrowserDispatcher.initCollectionStrategy`
+`AbstractDispatcher.initCollectionStrategy`
 
 ***
 
@@ -622,7 +622,7 @@ Defined in: packages/blue-dispatcher/lib/strategies/strategy-initializer.d.ts:12
 
 #### Inherited from
 
-`BrowserDispatcher.initStrategy`
+`AbstractDispatcher.initStrategy`
 
 ***
 
@@ -644,7 +644,7 @@ Defined in: packages/blue-dispatcher/lib/strategies/theme-resolver-strategy.d.ts
 
 #### Inherited from
 
-`BrowserDispatcher.initThemeResolver`
+`AbstractDispatcher.initThemeResolver`
 
 ***
 
@@ -666,7 +666,7 @@ Defined in: packages/blue-dispatcher/lib/strategies/view-resolver-strategy.d.ts:
 
 #### Inherited from
 
-`BrowserDispatcher.initViewResolvers`
+`AbstractDispatcher.initViewResolvers`
 
 ***
 
@@ -702,4 +702,4 @@ The route associated with the `ModelAndView`.
 
 #### Overrides
 
-`BrowserDispatcher.render`
+`AbstractDispatcher.render`

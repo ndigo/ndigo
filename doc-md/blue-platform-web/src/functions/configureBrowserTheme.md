@@ -2,13 +2,13 @@
 
 ***
 
-[BlueJS Framework](../../../modules.md) / [blue-boot/src](../README.md) / configureBrowserTheme
+[BlueJS Framework](../../../modules.md) / [blue-platform-web/src](../README.md) / configureBrowserTheme
 
 # Function: configureBrowserTheme()
 
-> **configureBrowserTheme**(`applicationContext`, `options?`): `CookieThemeResolver`
+> **configureBrowserTheme**(`applicationContext`, `options?`): [`CookieThemeResolver`](../classes/CookieThemeResolver.md)
 
-Defined in: packages/blue-boot/src/browser-theme.ts:31
+Defined in: packages/blue-platform-web/src/browser-theme.ts:31
 
 Configures browser theme support for an application context by wiring
 cookie-backed theme resolution into the dispatcher strategy key.
@@ -29,6 +29,6 @@ Optional browser theme bootstrap settings.
 
 ## Returns
 
-`CookieThemeResolver`
+[`CookieThemeResolver`](../classes/CookieThemeResolver.md)
 
 The configured cookie theme resolver.

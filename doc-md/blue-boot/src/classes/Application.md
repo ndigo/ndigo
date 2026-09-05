@@ -6,7 +6,7 @@
 
 # Class: Application
 
-Defined in: packages/blue-boot/src/application.ts:24
+Defined in: packages/blue-boot/src/application.ts:23
 
 Class that can be used to bootstrap and launch an application.
 
@@ -32,7 +32,7 @@ closed when the application is closed
 
 > **new Application**(`sources`): `Application`
 
-Defined in: packages/blue-boot/src/application.ts:46
+Defined in: packages/blue-boot/src/application.ts:45
 
 Creates an application bootstrapper for the given source classes.
 
@@ -96,7 +96,7 @@ Defined in: packages/blue-context/lib/event-emitter.d.ts:181
 
 > **get** **sources**(): `Set`\<`Function`\>
 
-Defined in: packages/blue-boot/src/application.ts:37
+Defined in: packages/blue-boot/src/application.ts:36
 
 Gets the source classes registered with this application bootstrapper.
 
@@ -112,7 +112,7 @@ The registered source classes.
 
 > **run**(...`args`): `ConfigurableApplicationContext`
 
-Defined in: packages/blue-boot/src/application.ts:59
+Defined in: packages/blue-boot/src/application.ts:58
 
 Runs the application and refreshes a new application context.
 
@@ -140,7 +140,7 @@ When application startup fails.
 
 > **setEnvironment**(`environment`): `void`
 
-Defined in: packages/blue-boot/src/application.ts:79
+Defined in: packages/blue-boot/src/application.ts:78
 
 Sets the environment that will be reused instead of creating a new one.
 
@@ -162,7 +162,7 @@ The environment to reuse.
 
 > **setName**(`name`): `void`
 
-Defined in: packages/blue-boot/src/application.ts:88
+Defined in: packages/blue-boot/src/application.ts:87
 
 Sets the application name used when the application context is created.
 
@@ -184,7 +184,7 @@ The application name.
 
 > **setProfiles**(...`profiles`): `void`
 
-Defined in: packages/blue-boot/src/application.ts:97
+Defined in: packages/blue-boot/src/application.ts:96
 
 Replaces the active profiles that will be applied before the context refreshes.
 
@@ -206,7 +206,7 @@ The profile names to activate.
 
 > **setProperties**(`properties`): `void`
 
-Defined in: packages/blue-boot/src/application.ts:106
+Defined in: packages/blue-boot/src/application.ts:105
 
 Sets the property sources that will be added during environment preparation.
 
@@ -228,7 +228,7 @@ Property values to expose to the application environment.
 
 > `protected` **\_configureEnvironment**(`environment`, `args`): `void`
 
-Defined in: packages/blue-boot/src/application.ts:117
+Defined in: packages/blue-boot/src/application.ts:116
 
 Applies environment-level configuration before the application context is created.
 
@@ -256,7 +256,7 @@ Command-line arguments supplied to the application.
 
 > `protected` **\_configureProfiles**(`environment`, `args`): `void`
 
-Defined in: packages/blue-boot/src/application.ts:129
+Defined in: packages/blue-boot/src/application.ts:128
 
 Applies the configured active profiles to the environment.
 
@@ -284,7 +284,7 @@ Command-line arguments supplied to the application.
 
 > `protected` **\_configurePropertySources**(`environment`, `args`): `void`
 
-Defined in: packages/blue-boot/src/application.ts:141
+Defined in: packages/blue-boot/src/application.ts:140
 
 Adds configured property sources to the environment.
 
@@ -312,7 +312,7 @@ Command-line arguments supplied to the application.
 
 > `protected` **\_prepareContext**(`environment`, `args`): `ConfigurableApplicationContext`
 
-Defined in: packages/blue-boot/src/application.ts:156
+Defined in: packages/blue-boot/src/application.ts:155
 
 Creates and refreshes the application context.
 
@@ -342,7 +342,7 @@ The refreshed application context.
 
 > `protected` **\_prepareEnvironment**(`args`): `ConfigurableEnvironment`
 
-Defined in: packages/blue-boot/src/application.ts:184
+Defined in: packages/blue-boot/src/application.ts:179
 
 Prepares the environment used for application startup.
 
@@ -366,7 +366,7 @@ The prepared environment.
 
 > **close**(): `void`
 
-Defined in: packages/blue-boot/src/application.ts:203
+Defined in: packages/blue-boot/src/application.ts:198
 
 Closes the application and releases resources.
 Emits the `'closed'` event, then destroys the emitter.

@@ -1,5 +1,6 @@
 import { configuration, entry } from '@blue/context';
 import { ApplicationBuilder } from '@blue/boot';
+import { WebAutoConfiguration } from '@blue/platform-web';
 import { LoggingRouteHandlerInterceptor, LinearMetadataHandlerMapping } from '@blue/dispatcher';
 import { getLogger } from '@blue/telemetry';
 import { NameViewResolver } from '@blue/view';
@@ -72,6 +73,8 @@ class ToDoconfiguration {
 }
 
 export const createTodoContext = () => {
-    const context = new ApplicationBuilder([ToDoconfiguration]).run();
+    // The browser auto-config (argument resolvers etc.) is registered
+    // explicitly — @blue/boot no longer auto-registers it.
+    const context = new ApplicationBuilder([WebAutoConfiguration, ToDoconfiguration]).run();
     return context;
 };

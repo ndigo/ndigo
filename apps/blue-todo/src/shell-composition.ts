@@ -6,7 +6,7 @@ import {
     type RelayValidationResult,
 } from '@blue/context';
 import { IllegalStateError } from '@blue/core';
-import { BrowserDispatcher } from '@blue/dispatcher';
+import { BrowserDispatcher } from '@blue/platform-web';
 import { FeatureRoutingRegistry, Route, SiteRouter, restorePartitionPrefix, RouteDefinition, RouteRegistry } from '@blue/router';
 import { HashRouter } from '@blue/platform-web';
 import { FeatureMetricAggregator, getLogger } from '@blue/telemetry';

@@ -6,7 +6,7 @@
 
 # Class: BrowserMockMVC
 
-Defined in: packages/blue-test/src/browser-mock-mvc.ts:123
+Defined in: packages/blue-test/src/browser-mock-mvc.ts:125
 
 Socket-free mock MVC client for browser applications. Dispatches routes
 through the real `BrowserDispatcher` and captures the rendered view.
@@ -17,7 +17,7 @@ through the real `BrowserDispatcher` and captures the rendered view.
 
 > **new BrowserMockMVC**(`app`): `BrowserMockMVC`
 
-Defined in: packages/blue-test/src/browser-mock-mvc.ts:129
+Defined in: packages/blue-test/src/browser-mock-mvc.ts:131
 
 #### Parameters
 
@@ -39,7 +39,7 @@ A booted browser app.
 
 > **get** **lastRender**(): [`CapturedRender`](../interfaces/CapturedRender.md) \| `null`
 
-Defined in: packages/blue-test/src/browser-mock-mvc.ts:161
+Defined in: packages/blue-test/src/browser-mock-mvc.ts:163
 
 The captured render from the last dispatch.
 
@@ -53,7 +53,7 @@ The captured render from the last dispatch.
 
 > **dispatch**(`path`): `Promise`\<[`CapturedRender`](../interfaces/CapturedRender.md)\>
 
-Defined in: packages/blue-test/src/browser-mock-mvc.ts:139
+Defined in: packages/blue-test/src/browser-mock-mvc.ts:141
 
 Dispatches a route through the browser pipeline.
 

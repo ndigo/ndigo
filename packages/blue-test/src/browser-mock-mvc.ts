@@ -13,7 +13,8 @@
 
 import { MetadataConfigApplicationContext, ApplicationContext } from '@blue/context';
 import { isFunction } from '@blue/util/types';
-import { BrowserDispatcher, LinearMetadataHandlerMapping } from '@blue/dispatcher';
+import { LinearMetadataHandlerMapping } from '@blue/dispatcher';
+import type { BrowserDispatcher as BrowserDispatcherType } from '@blue/platform-web/browser-dispatcher';
 import { Route } from '@blue/router';
 import { MemoryViewTarget, CapturedRender } from './memory-view-target';
 
@@ -24,7 +25,7 @@ export interface BrowserTestApp {
     /** The browser application context. */
     context: ApplicationContext;
     /** The configured browser dispatcher. */
-    dispatcher: BrowserDispatcher;
+    dispatcher: BrowserDispatcherType;
     /** The capture view target. */
     viewTarget: MemoryViewTarget;
     /** Close the context. */
@@ -36,13 +37,13 @@ interface WebAutoConfigurationLike {
 }
 
 /**
- * Lazy-load `@blue/boot`'s `WebAutoConfiguration`. Imported dynamically so
- * `@blue/test`'s static module graph stays node-pure (boot's index re-exports
- * browser DOM); only the browser path pays that cost.
+ * Lazy-load `@blue/platform-web`'s `WebAutoConfiguration`. Imported
+ * dynamically so `@blue/test`'s static module graph stays node-pure; only the
+ * browser path pays that cost.
  */
 async function loadWebAutoConfiguration(): Promise<WebAutoConfigurationLike> {
-    const boot = await import('@blue/boot');
-    return (boot as { WebAutoConfiguration: WebAutoConfigurationLike }).WebAutoConfiguration;
+    const web = await import('@blue/platform-web');
+    return (web as { WebAutoConfiguration: WebAutoConfigurationLike }).WebAutoConfiguration;
 }
 
 /**
@@ -86,6 +87,7 @@ export async function bootBrowserApp(sources: Function[]): Promise<BrowserTestAp
 
     // WebAutoConfiguration provides the mapping/resolvers but not a dispatcher
     // entry — create and wire a BrowserDispatcher (the app does this manually).
+    const { BrowserDispatcher } = await import('@blue/platform-web/browser-dispatcher');
     const dispatcher = new BrowserDispatcher();
     dispatcher.initStrategies(context);
     dispatcher.applicationContext = context;

@@ -6,7 +6,7 @@ import {
     MetadataConfigApplicationContext,
 } from '@blue/context';
 import { Route } from '@blue/router';
-import { BrowserDispatcher } from '../src/dispatcher';
+import { AbstractDispatcher } from '../src/dispatcher';
 import { HandlerMethodArgumentResolver } from '../src/argument-resolver';
 import { ModelAndView } from '../src/model-and-view';
 import { MetadataHandlerAdapter } from '../src/route-handler-adapter';
@@ -67,7 +67,7 @@ describe('custom argument resolvers', () => {
         context.addProcessor(new ApplicationContextAwareProcessor(context));
         context.register(TestConfiguration);
 
-        const dispatcher = new BrowserDispatcher();
+        const dispatcher = new AbstractDispatcher();
         dispatcher.initStrategies(context);
 
         const request = {

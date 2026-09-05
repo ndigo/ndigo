@@ -9,6 +9,7 @@
 ## Classes
 
 - [BrowserBindMethodArgumentResolver](classes/BrowserBindMethodArgumentResolver.md)
+- [BrowserDispatcher](classes/BrowserDispatcher.md)
 - [BrowserEnvironment](classes/BrowserEnvironment.md)
 - [BrowserRouter](classes/BrowserRouter.md)
 - [BrowserCookieValueMethodArgumentResolver](classes/BrowserCookieValueMethodArgumentResolver.md)
@@ -22,6 +23,7 @@
 - [RetryOnOfflineInterceptor](classes/RetryOnOfflineInterceptor.md)
 - [BrowserSessionValueMethodArgumentResolver](classes/BrowserSessionValueMethodArgumentResolver.md)
 - [BrowserStateValueMethodArgumentResolver](classes/BrowserStateValueMethodArgumentResolver.md)
+- [WebAutoConfiguration](classes/WebAutoConfiguration.md)
 
 ## Interfaces
 
@@ -39,6 +41,7 @@
 - [ArgumentValueConverterRegistry](type-aliases/ArgumentValueConverterRegistry.md)
 - [ConverterResolutionOptions](type-aliases/ConverterResolutionOptions.md)
 - [ResolverConverterOption](type-aliases/ResolverConverterOption.md)
+- [BrowserThemeBootstrapOptions](type-aliases/BrowserThemeBootstrapOptions.md)
 - [CookieAttributes](type-aliases/CookieAttributes.md)
 - [CookieParseResult](type-aliases/CookieParseResult.md)
 
@@ -56,6 +59,7 @@
 - [createStringSplitConverter](functions/createStringSplitConverter.md)
 - [createOptionalConverter](functions/createOptionalConverter.md)
 - [resolveConverter](functions/resolveConverter.md)
+- [configureBrowserTheme](functions/configureBrowserTheme.md)
 - [configureBrowserArgumentResolvers](functions/configureBrowserArgumentResolvers.md)
 - [configureArgumentValueConverterRegistry](functions/configureArgumentValueConverterRegistry.md)
 - [configureStrictBrowserArgumentResolvers](functions/configureStrictBrowserArgumentResolvers.md)

@@ -1,5 +1,5 @@
 /**
- * Node.js dispatcher extending `BrowserDispatcher` for server-side rendering.
+ * Node.js dispatcher extending the platform-independent `AbstractDispatcher` for server-side rendering.
  *
  * Overrides `render()` to write the view output to the HTTP response via
  * `HTTPResponseViewTarget`, instead of the browser DOM. The dispatch pipeline
@@ -9,7 +9,7 @@
  * @since 1.0.0
  */
 
-import { BrowserDispatcher } from '@blue/dispatcher';
+import { AbstractDispatcher } from '@blue/dispatcher';
 import { ModelAndView } from '@blue/dispatcher';
 import { Route } from '@blue/router';
 import { ApplicationContext, likeApplicationContextAware } from '@blue/context';
@@ -30,7 +30,7 @@ import { isResponseEntity } from './response-entity';
  * dispatcher.initStrategies(context);
  * ```
  */
-export class NodeDispatcher extends BrowserDispatcher {
+export class NodeDispatcher extends AbstractDispatcher {
     /**
      * Render the given `ModelAndView` to the HTTP response.
      *

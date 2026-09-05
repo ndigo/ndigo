@@ -1,7 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { z } from 'zod';
 import {
-    BrowserDispatcher,
     ModelAndView,
     routeMapping,
     routeParams,
@@ -9,6 +8,7 @@ import {
     ParameterConversionError,
     RouteErrorResolver,
 } from '@blue/dispatcher';
+import { BrowserDispatcher } from '../src/browser-dispatcher';
 import { validatedBy, ValidationError } from '@blue/validate';
 import {
     MetadataConfigApplicationContext,

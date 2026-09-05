@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { BrowserDispatcher } from '../src/dispatcher';
+import { AbstractDispatcher } from '../src/dispatcher';
 import { RouteHandlerInterceptor } from '../src/route-handler-interceptor';
 import { ModelAndView } from '../src/model-and-view';
 import { routeMapping } from '../src/route-mapping';
@@ -59,7 +59,7 @@ describe('Asynchronous Interceptors', () => {
         context.addProcessor(new ApplicationContextAwareProcessor(context));
         context.register(TestConfig);
 
-        const dispatcher = new BrowserDispatcher();
+        const dispatcher = new AbstractDispatcher();
         dispatcher.initStrategies(context);
 
         const route = {
@@ -121,7 +121,7 @@ describe('Asynchronous Interceptors', () => {
         context.addProcessor(new ApplicationContextAwareProcessor(context));
         context.register(TestConfig);
 
-        const dispatcher = new BrowserDispatcher();
+        const dispatcher = new AbstractDispatcher();
         dispatcher.initStrategies(context);
 
         const route = {
@@ -186,7 +186,7 @@ describe('Asynchronous Interceptors', () => {
         context.addProcessor(new ApplicationContextAwareProcessor(context));
         context.register(TestConfig);
 
-        const dispatcher = new BrowserDispatcher();
+        const dispatcher = new AbstractDispatcher();
         dispatcher.initStrategies(context);
 
         const route = {

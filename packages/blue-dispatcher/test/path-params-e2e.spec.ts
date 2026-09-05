@@ -6,7 +6,7 @@ import {
     MetadataConfigApplicationContext,
 } from '@blue/context';
 import { PathRoute } from '@blue/router';
-import { BrowserDispatcher } from '../src/dispatcher';
+import { AbstractDispatcher } from '../src/dispatcher';
 import { ModelAndView } from '../src/model-and-view';
 import { routeMapping } from '../src/route-mapping';
 import { pathValue, routeParams } from '../src/route-parameter';
@@ -50,7 +50,7 @@ describe('path params e2e', () => {
         context.addProcessor(new ApplicationContextAwareProcessor(context));
         context.register(TestConfiguration);
 
-        const dispatcher = new BrowserDispatcher();
+        const dispatcher = new AbstractDispatcher();
         dispatcher.initStrategies(context);
 
         const route = new PathRoute('/users/42');

@@ -35,7 +35,7 @@ pnpm lint            # Check code quality
 
 ⚠️ **STYLE_GUIDE.md Section 3.14 (Type-Safe Enums)** - Use class-based pattern for enums with methods/inheritance, built-in enums for simple constants
 
-⚠️ **STYLE_GUIDE.md Section 9 (Self-Documenting Code)** - Names carry meaning, comments carry rationale. Document *why*, not *what*. Bare `as any`/`as unknown as T`/`// @ts-ignore` need a one-line reason; `// NOTE:` is technical debt; one public type per file, files under 300 lines.
+⚠️ **STYLE_GUIDE.md Section 9 (Self-Documenting Code)** - Names carry meaning, comments carry rationale. Document _why_, not _what_. Bare `as any`/`as unknown as T`/`// @ts-ignore` need a one-line reason; `// NOTE:` is technical debt; one public type per file, files under 300 lines.
 
 **Pre-Commit Validation:**
 
@@ -254,11 +254,11 @@ This will prevent `TypeError` exceptions at runtime. The build process may not a
 
 **Integration Layer Packages:**
 
-| Package        | Encapsulates                                             | Import From    |
-| :------------- | :------------------------------------------------------- | :------------- |
-| `@blue/util`           | `seedrandom`, `slug`                                     | `@blue/util`   |
-| `@blue/parser`         | `arcsecond`                                              | `@blue/parser` |
-| `@blue/model`          | `objectmodel`                                            | `@blue/model`  |
+| Package        | Encapsulates         | Import From    |
+| :------------- | :------------------- | :------------- |
+| `@blue/util`   | `seedrandom`, `slug` | `@blue/util`   |
+| `@blue/parser` | `arcsecond`          | `@blue/parser` |
+| `@blue/model`  | `objectmodel`        | `@blue/model`  |
 
 **Import Rules by Package Type:**
 
@@ -308,11 +308,11 @@ import { choice, sequenceOf } from '@blue/parser';
 
 These rules are **automatically enforced** by `@blue/eslint-plugin`, which provides three oxlint rules:
 
-| Rule                                  | Severity | Description                                                                                                                                                          |
-| :------------------------------------ | :------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Rule                                  | Severity | Description                                                                                                                                                           |
+| :------------------------------------ | :------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `@blue/no-direct-integration-imports` | warn     | Forbids importing encapsulated libraries (seedrandom, slug, arcsecond, etc.) outside their integration layer packages. Allows in integration packages and test files. |
-| `@blue/no-internal-file-imports`      | error    | Forbids `@blue/<pkg>/_*` cross-package imports of internal files.                                                                                                    |
-| `@blue/no-internal-file-exports`      | error    | Forbids `export * from './_*'` barrel re-exports in `*/src/index.ts`. Named re-exports (`export { foo } from './_*'`) are allowed (deliberate/controlled).           |
+| `@blue/no-internal-file-imports`      | error    | Forbids `@blue/<pkg>/_*` cross-package imports of internal files.                                                                                                     |
+| `@blue/no-internal-file-exports`      | error    | Forbids `export * from './_*'` barrel re-exports in `*/src/index.ts`. Named re-exports (`export { foo } from './_*'`) are allowed (deliberate/controlled).            |
 
 Run `pnpm lint` to check for violations. These rules are integrated into the root `.oxlintrc.json`.
 
@@ -427,7 +427,7 @@ When organizing helper functions and utilities, follow the extraction hierarchy:
 1.  **Read:** Analyze existing code and `package.json` first.
 2.  **Research:** Before writing code, understand the relevant code and avoid duplication. This repo is graft-indexed — prefer the graph:
     - **Understand first (graft):** Run `graft ask "<question>" --source` for ranked context with inlined spans, `graft callers <symbol>` for who-calls-what, `graft skeleton <file>` to skim an API. Only open a source file at the exact span the graph cites. See the Graft section at the end of this file.
-    - **Fallback (unindexed/exhaustive):** When the graph lacks a detail or you need *every* occurrence, grep the target:
+    - **Fallback (unindexed/exhaustive):** When the graph lacks a detail or you need _every_ occurrence, grep the target:
         - **Step 1 - Scan target package:** Search for related functionality, established patterns, internal utilities (`_util.ts`, `_parsers.ts`), naming conventions, and design patterns currently in use.
         - **Step 2 - Scan related packages:** Check common utilities and specialized tools:
             - `@blue/util` - Common utilities (string utils, seedrandom, slug) - **Check first!**
@@ -507,6 +507,7 @@ Where:
 **Each directory has a README.md** that indexes all documents in that category.
 
 <!-- graft:start -->
+
 ## Graft — repo context graph
 
 This repo is indexed in `graft/`: small linked markdown nodes that explain each
@@ -546,4 +547,5 @@ re-read whole files.
 
 After big code changes, refresh the graph with `graft build` (deterministic,
 no API key, $0).
+
 <!-- graft:end -->

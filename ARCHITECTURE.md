@@ -824,16 +824,16 @@ When reviewing code, check for:
 
 The framework is organized into 8 architectural layers with clear dependency direction and platform-aware boundaries:
 
-| Layer                      | Packages                                                                         | Description                                                                    | Spring MVC Analogue                           |
-| :------------------------- | :------------------------------------------------------------------------------- | :----------------------------------------------------------------------------- | :-------------------------------------------- |
-| **7: Bootstrap**           | `@blue/boot`                                                                     | Application bootstrap, startup orchestration, and site/app lifecycle           | `SpringApplication`                           |
-| **6: Application**         | `@blue/service`, `@blue/domain`, `@blue/platform-web`, `@blue/print`             | Business services, domain model, platform adapters, browser fingerprinting     | User application + platform adapters          |
-| **5: Request Processing**  | `@blue/dispatcher`, `@blue/view`, `@blue/view-webcomponent`, `@blue/view-wicket` | Front controller, handler execution, and view resolution/rendering adapters    | `DispatcherServlet` + `ViewResolver`          |
-| **4: Web Infrastructure**  | `@blue/http`, `@blue/router`, `@blue/telemetry`                                  | HTTP client/interceptors/transforms, routing primitives, observability         | HTTP stack + routing + observability          |
-| **3: Application Context** | `@blue/context`                                                                  | Application context, environment, events, configuration metadata               | `ApplicationContext`                          |
-| **2: Infrastructure**      | `@blue/factory`, `@blue/content`, `@blue/validate`, `@blue/orm`                  | IoC container internals, i18n/theming, validation, persistence abstractions    | `BeanFactory` + `MessageSource` + `Validator` |
-| **1: Foundation**          | `@blue/core`, `@blue/reactive`                                                   | Core primitives, collection types, path matching, reactive models | Spring Core                                   |
-| **0: Integration Layer**   | `@blue/util`, `@blue/parser`, `@blue/model`, `@blue/dom`                         | Encapsulated third-party libraries via stable BlueJS wrappers                  | Commons / utility integration layer           |
+| Layer                      | Packages                                                                         | Description                                                                 | Spring MVC Analogue                           |
+| :------------------------- | :------------------------------------------------------------------------------- | :-------------------------------------------------------------------------- | :-------------------------------------------- |
+| **7: Bootstrap**           | `@blue/boot`                                                                     | Application bootstrap, startup orchestration, and site/app lifecycle        | `SpringApplication`                           |
+| **6: Application**         | `@blue/service`, `@blue/domain`, `@blue/platform-web`, `@blue/print`             | Business services, domain model, platform adapters, browser fingerprinting  | User application + platform adapters          |
+| **5: Request Processing**  | `@blue/dispatcher`, `@blue/view`, `@blue/view-webcomponent`, `@blue/view-wicket` | Front controller, handler execution, and view resolution/rendering adapters | `DispatcherServlet` + `ViewResolver`          |
+| **4: Web Infrastructure**  | `@blue/http`, `@blue/router`, `@blue/telemetry`                                  | HTTP client/interceptors/transforms, routing primitives, observability      | HTTP stack + routing + observability          |
+| **3: Application Context** | `@blue/context`                                                                  | Application context, environment, events, configuration metadata            | `ApplicationContext`                          |
+| **2: Infrastructure**      | `@blue/factory`, `@blue/content`, `@blue/validate`, `@blue/orm`                  | IoC container internals, i18n/theming, validation, persistence abstractions | `BeanFactory` + `MessageSource` + `Validator` |
+| **1: Foundation**          | `@blue/core`, `@blue/reactive`                                                   | Core primitives, collection types, path matching, reactive models           | Spring Core                                   |
+| **0: Integration Layer**   | `@blue/util`, `@blue/parser`, `@blue/model`, `@blue/dom`                         | Encapsulated third-party libraries via stable BlueJS wrappers               | Commons / utility integration layer           |
 
 The `blue-todo` app sits above these layers as a reference implementation and integration proving ground.
 
@@ -963,12 +963,12 @@ graph TD
 
 **Current Integration Layers:**
 
-| Integration Layer | Encapsulated Libraries                                   | Purpose                                                    |
-| :---------------- | :------------------------------------------------------- | :--------------------------------------------------------- |
-| `@blue/util`      | `seedrandom`, `slug`                                     | Randomness, URL slugs                                      |
-| `@blue/parser`    | `arcsecond`                                              | Parser combinators and parsing primitives                  |
-| `@blue/model`     | `objectmodel`                                            | Runtime type validation and model definitions              |
-| `@blue/dom`       | `linkedom`                                               | Isomorphic DOM parsing and element creation                |
+| Integration Layer | Encapsulated Libraries | Purpose                                       |
+| :---------------- | :--------------------- | :-------------------------------------------- |
+| `@blue/util`      | `seedrandom`, `slug`   | Randomness, URL slugs                         |
+| `@blue/parser`    | `arcsecond`            | Parser combinators and parsing primitives     |
+| `@blue/model`     | `objectmodel`          | Runtime type validation and model definitions |
+| `@blue/dom`       | `linkedom`             | Isomorphic DOM parsing and element creation   |
 
 ### Usage Rules
 
@@ -1394,7 +1394,7 @@ BlueJS is fully compliant with modern JavaScript standards for decorators:
 
 - **STYLE_GUIDE.md Section 3.12** - Properties vs Methods (when to use properties, get-methods, or to-methods)
 - **STYLE_GUIDE.md Section 3.13** - Method Naming Conventions (get\*, is\*, has\*, set\*, from\*, to\*, with\*, etc.)
-- **STYLE_GUIDE.md Section 9** - Self-Documenting Code (names carry meaning, comments carry rationale; *why*-not-*what* comments; assertion rationale; `// NOTE:` as technical debt; one public type per file under 300 lines)
+- **STYLE_GUIDE.md Section 9** - Self-Documenting Code (names carry meaning, comments carry rationale; _why_-not-_what_ comments; assertion rationale; `// NOTE:` as technical debt; one public type per file under 300 lines)
 
 These sections provide detailed decision matrices, examples from the codebase, and rationale for choosing between different API design patterns.
 

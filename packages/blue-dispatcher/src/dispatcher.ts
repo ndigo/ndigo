@@ -104,12 +104,16 @@ export class AbstractDispatcher
                 throw new NoHandlerFoundError(route);
             }
 
-            const handlerAdapter: RouteHandlerAdapter = this.getHandlerAdapter(mappedHandler.handler);
-
+            // Interceptors run BEFORE handler-adapter resolution (standard MVC
+            // ordering): a denial (auth, CSRF, CORS preflight short-circuit)
+            // must be able to finalize a response even when no adapter
+            // supports the handler — e.g. an unmatched-route preflight.
             if ((await mappedHandler.applyPreHandle(route)) === false) {
                 await this._processDispatchResult(route, mappedHandler, null, null);
                 return;
             }
+
+            const handlerAdapter: RouteHandlerAdapter = this.getHandlerAdapter(mappedHandler.handler);
 
             mv = await handlerAdapter.handle(route, mappedHandler.handler);
             this._applyDefaultViewName(route, mv);

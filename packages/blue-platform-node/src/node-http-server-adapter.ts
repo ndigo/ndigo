@@ -170,17 +170,23 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
 
             const chain = this.#dispatcher.getHandler(route);
             const noHandler = !chain?.handler || Object.keys(chain.handler).length === 0;
-            if (noHandler) {
-                this.#writeJson(res, 404, { error: 'Not Found' });
-                return;
-            }
+
+            // The mapping strategy's fallback chain carries interceptors even
+            // for unmatched routes, so interceptor-only concerns (CORS
+            // preflight short-circuiting) can finalize the request. Dispatch
+            // always; denial finalizes immediately, unmatched requests fall
+            // through to 404 below.
             await this.#dispatcher.dispatch(route);
-            // An interceptor denial (auth guard, CSRF, …) leaves no rendered
-            // view — finalize a deterministic response so the request never
-            // stays open.
+            // An interceptor denial (auth guard, CSRF, CORS preflight, …)
+            // leaves no rendered view — finalize a deterministic response so
+            // the request never stays open.
             const denial = getInterceptorDenial(route);
             if (denial) {
                 this.#finalizeDenial(res, denial);
+                return;
+            }
+            if (noHandler) {
+                this.#writeJson(res, 404, { error: 'Not Found' });
             }
         } catch (error: unknown) {
             this.#writeErrorResponse(res, error);

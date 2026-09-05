@@ -26,3 +26,4 @@ export * from './static-file-view';
 export * from './static-resource-resolver';
 export * from './cookie-parser';
 export * from './csrf-interceptor';
+export * from './cors-interceptor';

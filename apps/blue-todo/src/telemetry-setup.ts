@@ -5,7 +5,7 @@
  * OpenTelemetry providers are registered before `@traced` decorators or
  * `getLogger` calls execute.
  */
-import { configureBrowserTelemetry } from '@blue/telemetry/browser';
+import { configureBrowserTelemetry } from '@blue/telemetry-web';
 
 configureBrowserTelemetry({
     serviceName: 'blue-todo',

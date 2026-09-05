@@ -5,6 +5,8 @@
  * Uses createOnce + before hook pattern for dual compatibility and future performance.
  */
 
+import type { Context, ESTree } from '@oxlint/plugins';
+
 const CROSS_PACKAGE_INTERNAL_IMPORT_PATTERN = /^@blue\/[^/]+\/_/u;
 
 /**
@@ -23,12 +25,8 @@ export const noInternalFileImports = {
         schema: [],
     } as const,
     defaultOptions: [],
-    createOnce(context: any) {
-        function checkSource(sourceNode: any): void {
-            if (!sourceNode || typeof sourceNode.value !== 'string') {
-                return;
-            }
-
+    createOnce(context: Context) {
+        function checkSource(sourceNode: ESTree.StringLiteral): void {
             if (!CROSS_PACKAGE_INTERNAL_IMPORT_PATTERN.test(sourceNode.value)) {
                 return;
             }
@@ -46,11 +44,13 @@ export const noInternalFileImports = {
             before() {
                 // Per-file setup if needed in the future
             },
-            ImportDeclaration(node: any) {
+            ImportDeclaration(node: ESTree.ImportDeclaration) {
                 checkSource(node.source);
             },
-            ExportNamedDeclaration(node: any) {
-                checkSource(node.source);
+            ExportNamedDeclaration(node: ESTree.ExportNamedDeclaration) {
+                if (node.source !== null) {
+                    checkSource(node.source);
+                }
             },
         };
     },

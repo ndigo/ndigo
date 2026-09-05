@@ -308,7 +308,7 @@ export class OIDCAdapter implements AuthAdapter {
     }
 
     /** The effective signature verifier, or null when a custom validator is configured. */
-    async #resolveJwsVerification(): Promise<ReturnType<typeof createRemoteJWKSet>> {
+    async #resolveJwsVerification(): Promise<ReturnType<typeof createRemoteJWKSet> | null> {
         if (this.#config.tokenValidator) return null;
         const jwksUrl = await this.#resolveJwksUrl();
         if (!jwksUrl) {

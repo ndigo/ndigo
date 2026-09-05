@@ -105,12 +105,14 @@ describe('Application integration', () => {
         expect(context.hasValue('argumentResolvers')).toBe(true);
     });
 
-    test('skips web auto-configuration in node environment', () => {
+    test('registers node resolvers in node environment', () => {
         vi.stubGlobal('window', undefined);
 
         const app = new Application([]);
         const context = app.run();
 
-        expect(context.hasValue('argumentResolvers')).toBe(false);
+        expect(context.hasValue('argumentResolvers')).toBe(true);
+        const resolvers = context.getValue<object[]>('argumentResolvers');
+        expect(resolvers.some((r) => r.constructor.name.includes('Node'))).toBe(true);
     });
 });

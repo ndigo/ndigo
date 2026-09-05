@@ -7,7 +7,16 @@
     "doc",
     "lib"
   ],
-  "exports": "./lib/index.js",
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "default": "./lib/index.js"
+    },
+    "./node-auto-configuration": {
+      "types": "./lib/node-auto-configuration.d.ts",
+      "default": "./lib/node-auto-configuration.js"
+    }
+  },
   "types": "lib/index.d.ts",
   "scripts": {
     "build:lib": "tsc -b tsconfig.build.json",

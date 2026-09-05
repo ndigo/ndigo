@@ -2,7 +2,7 @@ import { Context, ROOT_CONTEXT } from '@opentelemetry/api';
 import { SeverityNumber } from '@opentelemetry/api-logs';
 import { LogRecord, LogRecordProcessor } from '@opentelemetry/sdk-logs';
 import { describe, expect, it, vi } from 'vitest';
-import { SeverityFilterLogRecordProcessor } from '../src/logger/severity-filter-log-record-processor';
+import { SeverityFilterLogRecordProcessor } from '../src/severity-filter-log-record-processor';
 
 class MockLogRecordProcessor implements LogRecordProcessor {
     readonly onEmit = vi.fn();

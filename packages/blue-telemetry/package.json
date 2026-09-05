@@ -1,7 +1,7 @@
 {
   "name": "@blue/telemetry",
   "version": "0.0.1",
-  "description": "Blue Telemetry",
+  "description": "Isomorphic telemetry core for BlueJS \u2014 API-only: logger, metrics, severity, tracing decorators",
   "type": "module",
   "files": [
     "lib"
@@ -10,18 +10,6 @@
     ".": {
       "types": "./lib/index.d.ts",
       "default": "./lib/index.js"
-    },
-    "./browser": {
-      "types": "./lib/browser-config.d.ts",
-      "default": "./lib/browser-config.js"
-    },
-    "./node": {
-      "types": "./lib/node.d.ts",
-      "default": "./lib/node.js"
-    },
-    "./web": {
-      "types": "./lib/web.d.ts",
-      "default": "./lib/web.js"
     }
   },
   "types": "lib/index.d.ts",
@@ -50,32 +38,13 @@
   "dependencies": {
     "@opentelemetry/api": "~1.9.0",
     "@opentelemetry/api-logs": "~0.222.0",
-    "@opentelemetry/exporter-logs-otlp-http": "~0.222.0",
-    "@opentelemetry/exporter-metrics-otlp-http": "~0.222.0",
-    "@opentelemetry/exporter-trace-otlp-http": "~0.222.0",
-    "@opentelemetry/instrumentation": "~0.222.0",
-    "@opentelemetry/resources": "~2.11.0",
-    "@opentelemetry/sdk-logs": "~0.222.0",
-    "@opentelemetry/sdk-metrics": "~2.11.0",
-    "@opentelemetry/sdk-node": "~0.222.0",
-    "@opentelemetry/sdk-trace-base": "~2.11.0",
-    "@opentelemetry/semantic-conventions": "~1.25.1"
+    "@opentelemetry/instrumentation": "~0.222.0"
   },
   "devDependencies": {
     "@blue/context": "~0.0.1",
     "@blue/core": "~0.0.1",
     "@blue/dispatcher": "~0.0.1",
-    "@blue/platform-node": "~0.0.1",
-    "@blue/platform-web": "~0.0.1",
     "@blue/router": "~0.0.1",
-    "@opentelemetry/context-async-hooks": "~2.11.0"
-  },
-  "peerDependencies": {
-    "@blue/context": "~0.0.1",
-    "@blue/core": "~0.0.1",
-    "@blue/dispatcher": "~0.0.1",
-    "@blue/platform-node": "~0.0.1",
-    "@blue/platform-web": "~0.0.1",
-    "@blue/router": "~0.0.1"
+    "@blue/telemetry-node": "workspace:~"
   }
 }

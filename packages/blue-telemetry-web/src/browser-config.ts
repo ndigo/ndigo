@@ -8,7 +8,7 @@ import { BasicTracerProvider, SimpleSpanProcessor, ConsoleSpanExporter } from '@
 import { resourceFromAttributes } from '@opentelemetry/resources';
 import { MeterProvider, PeriodicExportingMetricReader, ConsoleMetricExporter } from '@opentelemetry/sdk-metrics';
 import { LoggerProvider, SimpleLogRecordProcessor, ConsoleLogRecordExporter } from '@opentelemetry/sdk-logs';
-import { LoggerFactory } from './logger/logger-factory';
+import { LoggerFactory } from '@blue/telemetry';
 
 export interface BrowserTelemetryConfig {
     serviceName: string;

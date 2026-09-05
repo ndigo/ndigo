@@ -4,7 +4,7 @@ import { trace, metrics, diag, DiagConsoleLogger, DiagLogLevel } from '@opentele
 import { logs, SeverityNumber } from '@opentelemetry/api-logs';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { configureBrowserTelemetry } from '../src/browser-config';
-import { LoggerFactory } from '../src/logger/logger-factory';
+import { LoggerFactory } from '@blue/telemetry';
 
 describe('configureBrowserTelemetry', () => {
     afterEach(() => {

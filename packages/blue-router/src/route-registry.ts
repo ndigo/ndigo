@@ -5,7 +5,7 @@
  * a nested tree of type-safe {@link RouteDefinition} instances.
  *
  * The registry is constructed during application boot and registered as a
- * singleton bean in the application context.
+ * singleton entry in the application context.
  *
  * @see RouteDefinition
  */

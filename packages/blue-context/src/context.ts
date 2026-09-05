@@ -907,7 +907,7 @@ export class ApplicationContextAwareProcessor implements InitializationAwareProc
     /**
      * Injects the application context into aware values before initialization.
      *
-     * @param name - The bean name.
+     * @param name - The entry name.
      * @param value - The initialized value.
      */
     processBeforeInitialization<T = any>(name: string, value: T): T {

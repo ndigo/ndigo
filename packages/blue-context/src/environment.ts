@@ -83,7 +83,7 @@ export interface ConfigurableEnvironment extends Environment {
  */
 
 /**
- * The set of profiles explicitly made active for this environment. Profiles are used for creating logical groupings of bean definitions to be registered conditionally, for example based on deployment environment.
+ * The set of profiles explicitly made active for this environment. Profiles are used for creating logical groupings of entries to be registered conditionally, for example based on deployment environment.
  * If no profiles have explicitly been specified as active, then any {@link Environment#defaultProfiles|default profiles} will be activated.
  * @see {@link Environment#defaultProfiles}
  */

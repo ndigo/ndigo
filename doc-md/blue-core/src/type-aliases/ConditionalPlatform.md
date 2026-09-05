@@ -8,6 +8,6 @@
 
 > **ConditionalPlatform** = `"browser"` \| `"node"`
 
-Defined in: packages/blue-core/src/conditional.ts:16
+Defined in: packages/blue-core/src/conditional.ts:22
 
 Platform types for conditional auto-configuration.

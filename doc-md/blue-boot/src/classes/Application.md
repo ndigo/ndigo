@@ -342,7 +342,7 @@ The refreshed application context.
 
 > `protected` **\_prepareEnvironment**(`args`): `ConfigurableEnvironment`
 
-Defined in: packages/blue-boot/src/application.ts:186
+Defined in: packages/blue-boot/src/application.ts:192
 
 Prepares the environment used for application startup.
 
@@ -366,7 +366,7 @@ The prepared environment.
 
 > **close**(): `void`
 
-Defined in: packages/blue-boot/src/application.ts:205
+Defined in: packages/blue-boot/src/application.ts:211
 
 Closes the application and releases resources.
 Emits the `'closed'` event, then destroys the emitter.

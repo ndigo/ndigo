@@ -8,9 +8,9 @@
 
 > **isActiveForCurrentPlatform**(`target`): `boolean`
 
-Defined in: packages/blue-core/src/conditional.ts:86
+Defined in: packages/blue-core/src/conditional.ts:163
 
-Checks whether a class can run in the current environment.
+Checks whether a class can run in the current environment (platform only).
 
 ## Parameters
 

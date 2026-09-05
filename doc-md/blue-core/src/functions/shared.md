@@ -10,10 +10,10 @@
 
 Defined in: packages/blue-core/src/shared.ts:35
 
-Class decorator that marks a bean as a shell-managed shared dependency.
+Class decorator that marks an entry as a shell-managed shared dependency.
 
-When a child (feature) context attempts to register a `@shared` bean,
-the factory skips registration and resolves the bean from the parent chain instead.
+When a child (feature) context attempts to register a `@shared` entry,
+the factory skips registration and resolves the entry from the parent chain instead.
 
 ## Parameters
 

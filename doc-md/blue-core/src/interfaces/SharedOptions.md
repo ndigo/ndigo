@@ -18,7 +18,7 @@ Options for the `@shared` class decorator.
 
 Defined in: packages/blue-core/src/shared.ts:18
 
-Whether this bean must be a singleton across the context hierarchy. Default `true`.
+Whether this entry must be a singleton across the context hierarchy. Default `true`.
 
 ***
 
@@ -28,4 +28,4 @@ Whether this bean must be a singleton across the context hierarchy. Default `tru
 
 Defined in: packages/blue-core/src/shared.ts:20
 
-Semver range for this bean, e.g. `'^1.0.0'`. Used to detect version skew.
+Semver range for this entry, e.g. `'^1.0.0'`. Used to detect version skew.

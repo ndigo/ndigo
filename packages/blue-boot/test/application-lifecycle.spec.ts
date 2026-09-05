@@ -82,3 +82,26 @@ describe('Application.close() safety', () => {
     expect(() => app.close()).not.toThrow();
   });
 });
+
+describe('Application.run() failure cause preservation', () => {
+  it('wraps startup failures with an inspectable cause', () => {
+    @configuration
+    class ExplodingConfiguration {
+      @entry
+      boom() {
+        throw new TypeError('boom-on-startup');
+      }
+    }
+
+    const app = new Application([ExplodingConfiguration]);
+    try {
+      app.run();
+      expect.unreachable('run() must throw');
+    } catch (error) {
+      expect(error).toBeInstanceOf(Error);
+      const e = error as Error & { cause?: unknown };
+      expect(e.message).toContain('startup failed');
+      expect((e.cause as Error | undefined)?.message).toBe('boom-on-startup');
+    }
+  });
+});

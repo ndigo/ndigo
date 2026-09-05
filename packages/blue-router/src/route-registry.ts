@@ -51,20 +51,20 @@ interface RouteMappingMeta {
  * This mirrors the logic in `@blue/dispatcher`'s `getRouteMapping` without
  * requiring a dependency on that package.
  */
-function getRouteMapping(target: any, propertyKey?: string | symbol): RouteMappingMeta | undefined {
-    const metadata = (target as any)?.[Symbol.metadata] ?? {};
+function getRouteMapping(target: unknown, propertyKey?: string | symbol): RouteMappingMeta | undefined {
+    const metadata = (target as { [Symbol.metadata]?: Record<string, unknown> } | undefined)?.[Symbol.metadata] ?? {};
     if (propertyKey) {
-        return metadata[`route:mapping:${String(propertyKey)}`];
+        return metadata[`route:mapping:${String(propertyKey)}`] as RouteMappingMeta | undefined;
     }
-    return metadata['route:mapping'];
+    return metadata['route:mapping'] as RouteMappingMeta | undefined;
 }
 
 /**
  * Read metadata keys from a class constructor's `Symbol.metadata`.
  * Returns all keys that start with the route mapping prefix.
  */
-function getRouteMappingMethodKeys(target: any): string[] {
-    const metadata = (target as any)?.[Symbol.metadata] ?? {};
+function getRouteMappingMethodKeys(target: unknown): string[] {
+    const metadata = (target as { [Symbol.metadata]?: Record<string, unknown> } | undefined)?.[Symbol.metadata] ?? {};
     const prefix = 'route:mapping:';
     return Object.keys(metadata).filter(k => k.startsWith(prefix)).map(k => k.slice(prefix.length));
 }

@@ -15,7 +15,7 @@ const isResponse = is(Response) as (value: any) => value is Response;
  * @param value - The value to test.
  * @returns `true` when the value matches the `Response` shape.
  */
-export const likeResponse = (value: any): value is Response => isResponse(value) || likeResponseShape(value);
+export const likeResponse = (value: unknown): value is Response => isResponse(value) || likeResponseShape(value);
 
 const likeResponseShape = like({
     body: ReadableStream,

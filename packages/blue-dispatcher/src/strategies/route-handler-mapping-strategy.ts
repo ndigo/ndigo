@@ -7,6 +7,8 @@ import { Constructable } from '@blue/core';
 import { LinearMetadataHandlerMapping, NamePathHandlerMapping, RouteHandlerMapping } from '../route-handler-mapping';
 import { RadixMetadataHandlerMapping } from '../radix-route-handler-mapping';
 import RouteHandlerExecutionChain from '../route-handler-execution-chain';
+import { MappedHandlerInterceptor, RouteHandlerInterceptor } from '../route-handler-interceptor';
+import type { PathMatcher } from '@blue/core';
 import { Route } from '@blue/router';
 import { StrategyInitializer } from './strategy-initializer';
 
@@ -62,7 +64,27 @@ export const AsRouteHandlerMappingStrategy = <T extends Constructable<StrategyIn
                 }
             }
 
-            // Return an empty execution chain when no handler is found
-            return new RouteHandlerExecutionChain({});
+            // No mapping matched: return an empty handler chain that still
+            // carries the mappings' interceptors, so interceptor-only
+            // concerns (e.g. CORS preflight short-circuiting) can finalize
+            // unhandled routes.
+            const fallback = new RouteHandlerExecutionChain({});
+            for (let index = 0; index < length; index++) {
+                const mapping = handlerMappings[index] as unknown as {
+                    interceptors?: RouteHandlerInterceptor[];
+                    pathMatcher?: PathMatcher;
+                };
+                const { interceptors, pathMatcher } = mapping;
+                for (const interceptor of interceptors ?? []) {
+                    if (interceptor instanceof MappedHandlerInterceptor) {
+                        if (interceptor.matches(route.path, pathMatcher)) {
+                            fallback.addInterceptor(interceptor.interceptor);
+                        }
+                    } else {
+                        fallback.addInterceptor(interceptor);
+                    }
+                }
+            }
+            return fallback;
         }
     };

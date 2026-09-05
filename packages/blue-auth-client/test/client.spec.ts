@@ -79,7 +79,9 @@ describe('AuthClient', () => {
             expect(client.isAuthenticated).toBe(true);
             expect(client.principal).toBe(principal);
             expect(client.state.token).toBe('access-token');
-            expect(client.state.expiresAt).toBe(Date.now() + 3600000);
+            // The mock's expiresAt was captured before the async round-trip;
+            // allow the millisecond to tick between capture and assertion.
+            expect(client.state.expiresAt).toBeGreaterThanOrEqual(Date.now() + 3600000 - 1000);
         });
 
         test('sets unauthenticated state when principal is null', async () => {

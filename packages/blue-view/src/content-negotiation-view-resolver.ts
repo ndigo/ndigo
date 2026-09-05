@@ -50,7 +50,7 @@ const hasFunction = (prop: string) => (obj: any): boolean => isFunction(obj?.[pr
     hasGetAllFileExtenstions = hasFunction('getAllFileExtenstions'),
     hasResolveFileExtensions = hasFunction('resolveFileExtensions');
 
-export const likeMediaTypeFileExtensionResolver = (value: any): value is MediaTypeFileExtensionResolver =>
+export const likeMediaTypeFileExtensionResolver = (value: unknown): value is MediaTypeFileExtensionResolver =>
     isNotNil(value) && hasGetAllFileExtenstions(value) && hasResolveFileExtensions(value);
 
 /**
@@ -345,7 +345,7 @@ export class ContentNegotiationViewResolver implements ViewResolver {
      * @returns Never returns normally.
      * @throws {FrameworkError} Always thrown because the method is not implemented.
      */
-    resolveViewName(name: string, language?: any): Promise<View> {
+    resolveViewName(name: string, language?: unknown): Promise<View> {
         throw new FrameworkError('Method not implemented.');
     }
 }

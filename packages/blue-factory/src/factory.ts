@@ -140,14 +140,14 @@ export const AsFactoryAware = <T extends Constructable>(superclass: T): Construc
  * @param value The value to be tested.
  * @returns Whether or not the `value` provided is a {@link Factory}.
  */
-export const likeFactory = (value: any): value is Factory => like({ getInstance: Function })(value);
+export const likeFactory = (value: unknown): value is Factory => like({ getInstance: Function })(value);
 
 /**
  * Determines whether or not the `value` provided is {@link FactoryAware}.
  * @param value The value to be tested.
  * @returns Whether or not the `value` provided is {@link FactoryAware}.
  */
-export const likeFactoryAware = (value: any): value is FactoryAware =>
+export const likeFactoryAware = (value: unknown): value is FactoryAware =>
     likeAwareAnd(like({ setFactory: Function }))(value);
 
 const _likeHierarchicalShape = like({ parent: true, hasOwnValue: Function });
@@ -157,7 +157,7 @@ const _likeHierarchicalShape = like({ parent: true, hasOwnValue: Function });
  * @param value The value to be tested.
  * @returns Whether or not the `value` provided is {@link HierarchicalFactory}.
  */
-export const likeHierarchicalFactory = (value: any) => likeFactory(value) && _likeHierarchicalShape(value);
+export const likeHierarchicalFactory = (value: unknown) => likeFactory(value) && _likeHierarchicalShape(value);
 
 const _likeConfigurableShape = like({ addProcessor: Function, setParent: Function });
 
@@ -166,7 +166,7 @@ const _likeConfigurableShape = like({ addProcessor: Function, setParent: Functio
  * @param value The value to be tested.
  * @returns Whether or not the `value` provided is {@link ConfigurableFactory}.
  */
-export const likeConfigurableFactory = (value: any) => likeHierarchicalFactory(value) && _likeConfigurableShape(value);
+export const likeConfigurableFactory = (value: unknown) => likeHierarchicalFactory(value) && _likeConfigurableShape(value);
 
 /**
  * An abstract base class for implementing a {@link ConfigurableFactory} and {@link ScopedFactory}.

@@ -142,8 +142,8 @@ export class MappedRouterInterceptor extends AsPathMatcherFilter(Null) implement
             // concrete route implementations MAY provide. The Route interface
             // doesn't declare them — they're checked at runtime with a type
             // guard rather than baked into every route contract.
-            if (this._isNamedRoutePattern(pattern) && typeof (route as any).resolveParams === 'function') {
-                const params = (route as any).resolveParams(pattern);
+            if (this._isNamedRoutePattern(pattern) && typeof (route as Route & { resolveParams?: (pattern: string) => Record<string, string> | null }).resolveParams === 'function') {
+                const params = (route as Route & { resolveParams: (pattern: string) => Record<string, string> | null }).resolveParams(pattern);
                 if (params) {
                     return params;
                 }
@@ -207,8 +207,8 @@ export class MappedRouterInterceptor extends AsPathMatcherFilter(Null) implement
      * @since 1.0.0
      */
     private _matchesPattern(route: Route, routePath: string, pattern: string): boolean {
-            if (this._isNamedRoutePattern(pattern) && typeof (route as any).matches === 'function') {
-            return (route as any).matches(pattern);
+            if (this._isNamedRoutePattern(pattern) && typeof (route as Route & { matches?: (pattern: string) => boolean }).matches === 'function') {
+            return (route as Route & { matches: (pattern: string) => boolean }).matches(pattern);
         }
 
         return this.pathMatcher.match(pattern, routePath);

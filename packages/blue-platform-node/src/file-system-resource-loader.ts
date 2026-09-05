@@ -31,8 +31,8 @@ export class FileSystemResourceLoader implements ResourceLoader {
      * Loads a file resource from the given path.
      *
      * @param location - Absolute or relative file path.
-* @returns A resolved `Resource` containing the file contents as a string,
- *          or an `UnresolvedResource` if the read fails.
+     * @returns A resolved `Resource` containing the file contents as a string,
+     *          or an `UnresolvedResource` if the read fails.
      */
     async getResource(location: string): Promise<Resource> {
         try {

@@ -1,7 +1,7 @@
 {
   "name": "@blue/telemetry",
   "version": "0.0.1",
-  "description": "Isomorphic telemetry core for BlueJS \u2014 API-only: logger, metrics, severity, tracing decorators",
+  "description": "Isomorphic telemetry core for BlueJS — API-only: logger, metrics, severity, tracing decorators",
   "type": "module",
   "files": [
     "lib"
@@ -44,8 +44,7 @@
     "@blue/context": "~0.0.1",
     "@blue/core": "~0.0.1",
     "@blue/dispatcher": "~0.0.1",
-    "@blue/router": "~0.0.1",
-    "@blue/telemetry-node": "~0.0.1"
+    "@blue/router": "~0.0.1"
   },
   "sideEffects": false
 }

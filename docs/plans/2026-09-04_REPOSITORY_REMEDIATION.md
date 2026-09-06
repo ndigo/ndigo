@@ -45,7 +45,7 @@ Existing strengths to preserve:
 | DOC-1   | Medium   | Documentation            | Root README tool versions are stale, says ESLint while the repository uses Oxlint, lists removed packages, and omits current packages. Platform/auth READMEs show obsolete APIs and insecure defaults. TypeDoc has stale entry points and 289 warnings.                                                                                                                                           |
 | PKG-1   | Medium   | Package consistency      | Manifests mix `workspace:*`, `workspace:~`, and `~0.0.1`; use MIT and ISC inconsistently; alternate between `main` and export maps; and pin different TypeScript versions. The generator edits a central alias list with a fragile regular expression and does not update docs, TypeDoc, or other package metadata.                                                                               |
 | BUILD-1 | Medium   | Supply chain and release | CI omits formatting, API report compatibility, documentation validation, dependency audit, and coverage. GitHub Actions use mutable major tags and workflow permissions are not minimized. There is no visible release/publish validation path.                                                                                                                                                   |
-| CLEAN-1 | Low      | Repository hygiene       | Legacy root bundles/entry points, `.scratch` output, stale package output-only directories (`blue-reactive`, `blue-view-wicket`), generated documentation, old implementation summaries, and build metadata obscure the maintained source of truth.                                                                                                                                               |
+| CLEAN-1 | Low      | Repository hygiene       | Legacy root bundles/entry points, `.scratch` output, stale package output-only directories, generated documentation, old implementation summaries, and build metadata obscure the maintained source of truth.                                                                                                                                                                                     |
 | DOC-2   | Low      | Governance               | No root `CONTRIBUTING`, `SECURITY`, or license file was found. The plans index is stale and does not list recent plans. Architecture guidance is long and partly generic, making enforceable package-boundary decisions difficult to find.                                                                                                                                                        |
 
 ## 3. Remediation Principles
@@ -281,7 +281,7 @@ Existing strengths to preserve:
 
 - **Objective:** Leave one obvious source of truth.
 - **Changes:**
-    - Determine ownership of root `index.js`/maps, `src/index.*`, `.scratch`, output-only `blue-reactive`/`blue-view-wicket` directories, generated docs, old implementation reports, and build metadata.
+    - Determine ownership of root `index.js`/maps, `src/index.*`, `.scratch`, output-only directories, generated docs, old implementation reports, and build metadata.
     - Delete obsolete tracked files; generate required release/docs artifacts only in designated jobs.
     - Extend ignores narrowly for reproducible outputs, including OS metadata and scratch output.
 - **Acceptance:** A clean build/test/doc run does not create untracked source-tree artifacts and no stale package appears in workspace tooling or docs.

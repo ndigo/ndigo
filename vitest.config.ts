@@ -53,7 +53,6 @@ export default defineConfig({
             { find: /^@blue\/http$/, replacement: resolve(__dirname, './packages/blue-http/src') },
             { find: /^@blue\/logger$/, replacement: resolve(__dirname, './packages/blue-logger/src') },
             { find: /^@blue\/content$/, replacement: resolve(__dirname, './packages/blue-content/src') },
-            { find: /^@blue\/domain$/, replacement: resolve(__dirname, './packages/blue-domain/src') },
             { find: /^@blue\/platform-web$/, replacement: resolve(__dirname, './packages/blue-platform-web/src') },
             { find: /^@blue\/platform-node$/, replacement: resolve(__dirname, './packages/blue-platform-node/src') },
             { find: /^@blue\/dispatcher$/, replacement: resolve(__dirname, './packages/blue-dispatcher/src') },

@@ -825,16 +825,16 @@ When reviewing code, check for:
 
 The framework is organized into 8 architectural layers with clear dependency direction and platform-aware boundaries:
 
-| Layer                      | Packages                                                                         | Description                                                                 | Spring MVC Analogue                  |
-| :------------------------- | :------------------------------------------------------------------------------- | :-------------------------------------------------------------------------- | :----------------------------------- |
-| **7: Bootstrap**           | `@blue/boot`                                                                     | Application bootstrap, startup orchestration, and site/app lifecycle        | `SpringApplication`                  |
-| **6: Application**         | `@blue/service`, `@blue/domain`, `@blue/platform-web`, `@blue/print`             | Business services, domain model, platform adapters, browser fingerprinting  | User application + platform adapters |
-| **5: Request Processing**  | `@blue/dispatcher`, `@blue/view`, `@blue/view-webcomponent`, `@blue/view-wicket` | Front controller, handler execution, and view resolution/rendering adapters | `DispatcherServlet` + `ViewResolver` |
-| **4: Web Infrastructure**  | `@blue/http`, `@blue/router`, `@blue/telemetry`                                  | HTTP client/interceptors/transforms, routing primitives, observability      | HTTP stack + routing + observability |
-| **3: Application Context** | `@blue/context`                                                                  | Application context, environment, events, configuration metadata            | `ApplicationContext`                 |
-| **2: Infrastructure**      | `@blue/factory`, `@blue/content`, `@blue/orm`                                    | IoC container internals, i18n/theming, persistence abstractions             | `BeanFactory` + `MessageSource`      |
-| **1: Foundation**          | `@blue/core`, `@blue/signals`                                                    | Core primitives, collection types, path matching, reactive state            | Spring Core                          |
-| **0: Integration Layer**   | `@blue/util`, `@blue/parser`, `@blue/dom`                                        | Encapsulated third-party libraries via stable BlueJS wrappers               | Commons / utility integration layer  |
+| Layer                      | Packages                                                    | Description                                                                 | Spring MVC Analogue                  |
+| :------------------------- | :---------------------------------------------------------- | :-------------------------------------------------------------------------- | :----------------------------------- |
+| **7: Bootstrap**           | `@blue/boot`                                                | Application bootstrap, startup orchestration, and site/app lifecycle        | `SpringApplication`                  |
+| **6: Application**         | `@blue/service`, `@blue/platform-web`                       | Business services, platform adapters                                        | User application + platform adapters |
+| **5: Request Processing**  | `@blue/dispatcher`, `@blue/view`, `@blue/view-webcomponent` | Front controller, handler execution, and view resolution/rendering adapters | `DispatcherServlet` + `ViewResolver` |
+| **4: Web Infrastructure**  | `@blue/http`, `@blue/router`, `@blue/telemetry`             | HTTP client/interceptors/transforms, routing primitives, observability      | HTTP stack + routing + observability |
+| **3: Application Context** | `@blue/context`                                             | Application context, environment, events, configuration metadata            | `ApplicationContext`                 |
+| **2: Infrastructure**      | `@blue/factory`, `@blue/content`, `@blue/orm`               | IoC container internals, i18n/theming, persistence abstractions             | `BeanFactory` + `MessageSource`      |
+| **1: Foundation**          | `@blue/core`, `@blue/signals`                               | Core primitives, collection types, path matching, reactive state            | Spring Core                          |
+| **0: Integration Layer**   | `@blue/util`, `@blue/parser`, `@blue/dom`                   | Encapsulated third-party libraries via stable BlueJS wrappers               | Commons / utility integration layer  |
 
 The `blue-todo` app sits above these layers as a reference implementation and integration proving ground.
 
@@ -862,16 +862,13 @@ graph TD
 
     subgraph L6["Layer 6: Application"]
         Service[@blue/service]
-        Domain[@blue/domain]
         PlatformWeb[@blue/platform-web]
-        Print[@blue/print]
     end
 
     subgraph L5["Layer 5: Request Processing"]
         Dispatcher[@blue/dispatcher]
         View[@blue/view]
         ViewWebComponent[@blue/view-webcomponent]
-        ViewWicket[@blue/view-wicket]
     end
 
     subgraph L4["Layer 4: Web Infrastructure"]
@@ -905,16 +902,12 @@ graph TD
     Boot --> Dispatcher
     Service --> Http
     Service --> Telemetry
-    Domain --> Core
     PlatformWeb --> Context
     PlatformWeb --> Router
     Dispatcher --> Context
     Dispatcher --> Router
     Dispatcher --> View
     ViewWebComponent --> View
-    ViewWicket --> View
-    ViewWicket --> Core
-    ViewWicket --> Dom
     Http --> Core
     Http --> Parser
     Router --> Core
@@ -925,17 +918,13 @@ graph TD
     Core --> Util
     Signals --> Util
     Parser --> Util
-    Model --> Util
 
     style Boot fill:#f0f0f0
     style Service fill:#fff4e1
-    style Domain fill:#fff4e1
     style PlatformWeb fill:#fff4e1
-    style Print fill:#fff4e1
     style Dispatcher fill:#f5e1ff
     style View fill:#f5e1ff
     style ViewWebComponent fill:#f5e1ff
-    style ViewWicket fill:#f5e1ff
     style Http fill:#e1f5ff
     style Router fill:#e1f5ff
     style Telemetry fill:#e1f5ff
@@ -945,7 +934,6 @@ graph TD
     style Core fill:#fff9e1
     style Util fill:#e1f0ff
     style Parser fill:#e1f0ff
-    style Model fill:#e1f0ff
     style Dom fill:#e1f0ff
 ```
 

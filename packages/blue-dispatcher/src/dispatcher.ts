@@ -73,6 +73,13 @@ export class AbstractDispatcher
      */
     defaultViewName: string = 'index';
     #activeView: View | null = null;
+    /**
+     * Views obtained through the resolver chain. Resolvers cache their
+     * instances (singletons owned by the cache), so the dispatcher must not
+     * destroy them — only handler-created (ephemeral) views are destroyed
+     * when replaced.
+     */
+    readonly #resolvedViews = new WeakSet<View>();
 
     /**
      * Returns the string tag for this dispatcher.
@@ -136,6 +143,9 @@ export class AbstractDispatcher
             if (!view) {
                 throw new NoViewFoundError(viewName as string, route);
             }
+            // Resolved views are owned by the resolver chain (cached
+            // singletons) — never destroy them when replaced.
+            this.#resolvedViews.add(view);
         } else {
             view = mv?.view;
             if (!view) {
@@ -153,7 +163,12 @@ export class AbstractDispatcher
         const previousView = this.#activeView;
         this.#activeView = view;
 
-        if (previousView && previousView !== view && this._isDestroyableView(previousView)) {
+        if (
+            previousView &&
+            previousView !== view &&
+            this._isDestroyableView(previousView) &&
+            !this.#resolvedViews.has(previousView)
+        ) {
             try {
                 await previousView.destroy();
             } catch {

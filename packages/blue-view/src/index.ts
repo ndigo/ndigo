@@ -5,3 +5,5 @@ export * from './view-resolver.js';
 export * from './view-target.js';
 export * from './content-negotiation-view-resolver.js';
 export * from './island-view.js';
+export * from './island-view-resolver.js';
+export * from './like-view.js';

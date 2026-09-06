@@ -10,10 +10,9 @@
   "dependencies": {
     "@tsmetadata/polyfill": "^1.1.3"
   },
-  "peerDependencies": {},
   "devDependencies": {
     "@blue/core": "~0.0.1",
-    "typescript": "^5.7.2"
+    "typescript": "^6.0.3"
   },
   "scripts": {
     "build:lib": "tsc -b tsconfig.build.json",

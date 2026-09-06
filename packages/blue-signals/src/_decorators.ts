@@ -20,6 +20,26 @@ const pendingSignals = new WeakMap<object, Map<string | symbol, unknown>>();
 const pendingEffects = new WeakMap<object, Array<() => void>>();
 
 export function getSignal<T>(instance: object, field: string): Signal<T> | undefined {
+    // Anti-pattern detection (A2): a @signal/@effect field registered without
+    // the @reactive class decorator is silently inert — the decorators store
+    // pending metadata that never activates. Fail loudly instead of returning
+    // undefined with a "working" appearance.
+    const pending = pendingSignals.get(instance);
+    if (pending && pending.size > 0) {
+        throw new Error(
+            `@signal/@effect fields (${[...pending.keys()].join(', ')}) are pending on an instance of ` +
+                `${(instance as object).constructor?.name ?? 'object'} but were never activated — ` +
+                `the class is missing the @reactive class decorator.`
+        );
+    }
+    const effectsPending = pendingEffects.get(instance);
+    if (effectsPending && effectsPending.length > 0) {
+        throw new Error(
+            `@effect methods (${effectsPending.length}) are pending on an instance of ` +
+                `${(instance as object).constructor?.name ?? 'object'} but were never activated — ` +
+                `the class is missing the @reactive class decorator.`
+        );
+    }
     return signalMap.get(instance)?.get(field) as Signal<T> | undefined;
 }
 

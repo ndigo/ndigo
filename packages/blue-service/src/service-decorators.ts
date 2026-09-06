@@ -91,6 +91,12 @@ type DecoratorMetadata = { [key: string | symbol]: unknown };
  */
 export function service(name: string, config: Omit<ServiceClientConfig, 'name'>) {
     return function <T extends new (...args: unknown[]) => unknown>(target: T, context: ClassDecoratorContext<T>): T {
+        if (context.kind !== 'class') {
+            throw new TypeError(
+                `@service('${name}') can only be applied to a class — received '${context.kind}'. ` +
+                    `Use @service on the client class and @getCall/@postCall (etc.) on its methods.`
+            );
+        }
         context.metadata[SERVICE_METADATA_KEY] = { name, ...config };
         return target;
     };
@@ -105,6 +111,12 @@ export function service(name: string, config: Omit<ServiceClientConfig, 'name'>)
 function callDecorator(method: HTTPMethod) {
     return function (path: string, config?: Omit<ServiceCallConfig, 'method' | 'path'>) {
         return function (_target: unknown, context: ClassMethodDecoratorContext): void {
+            if (context.kind !== 'method') {
+                throw new TypeError(
+                    `@${method.toLowerCase()}Call('${path}') can only be applied to a method — received '${context.kind}'. ` +
+                        `Use @service on the class and @getCall/@postCall (etc.) on its methods.`
+                );
+            }
             const calls: Record<string, ServiceCallConfig> =
                 (context.metadata[SERVICE_CALL_METADATA_KEY] as Record<string, ServiceCallConfig> | undefined) ?? {};
             calls[String(context.name)] = { method, path, ...config };

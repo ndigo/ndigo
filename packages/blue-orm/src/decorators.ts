@@ -330,6 +330,9 @@ export function postRemove() {
  */
 export function transactional() {
     return function (target: Function, context: ClassMethodDecoratorContext): Function {
+        if (context.kind !== 'method') {
+            throw new TypeError(`@transactional can only be applied to a method — received '${context.kind}'.`);
+        }
         context.metadata[transactionalMetadataKey] = true;
 
         return async function (this: any, ...args: any[]): Promise<any> {

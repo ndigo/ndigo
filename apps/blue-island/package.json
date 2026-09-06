@@ -1,0 +1,36 @@
+{
+  "name": "blue-island",
+  "version": "0.0.1",
+  "description": "Hybrid island demo — Node server renders Web Component islands; client hydrates them",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build:client": "vite build",
+    "start": "STATIC_DIR=dist tsx src/index.ts",
+    "start:full": "npm run build:client && STATIC_DIR=dist tsx src/index.ts",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@blue/context": "~0.0.1",
+    "@blue/core": "~0.0.1",
+    "@blue/dispatcher": "~0.0.1",
+    "@blue/platform-node": "~0.0.1",
+    "@blue/router": "~0.0.1",
+    "@blue/util": "~0.0.1",
+    "@blue/view": "~0.0.1",
+    "@blue/view-webcomponent": "~0.0.1"
+  },
+  "devDependencies": {
+    "@blue/context": "~0.0.1",
+    "@blue/core": "~0.0.1",
+    "@blue/dispatcher": "~0.0.1",
+    "@blue/platform-node": "~0.0.1",
+    "@blue/router": "~0.0.1",
+    "@blue/test": "~0.0.1",
+    "@blue/util": "~0.0.1",
+    "@blue/view": "~0.0.1",
+    "@blue/view-webcomponent": "~0.0.1",
+    "tsx": "*",
+    "vite": "^8.0.0"
+  }
+}

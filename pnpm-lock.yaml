@@ -432,6 +432,43 @@ importers:
         specifier: ~6.0.7
         version: 6.0.15(@types/node@22.10.10)(lightningcss@1.32.0)(terser@5.48.0)(tsx@4.22.3)(yaml@2.9.0)
 
+  apps/blue-island:
+    dependencies:
+      '@blue/context':
+        specifier: ~0.0.1
+        version: link:../../packages/blue-context
+      '@blue/core':
+        specifier: ~0.0.1
+        version: link:../../packages/blue-core
+      '@blue/dispatcher':
+        specifier: ~0.0.1
+        version: link:../../packages/blue-dispatcher
+      '@blue/platform-node':
+        specifier: ~0.0.1
+        version: link:../../packages/blue-platform-node
+      '@blue/router':
+        specifier: ~0.0.1
+        version: link:../../packages/blue-router
+      '@blue/util':
+        specifier: ~0.0.1
+        version: link:../../packages/blue-util
+      '@blue/view':
+        specifier: ~0.0.1
+        version: link:../../packages/blue-view
+      '@blue/view-webcomponent':
+        specifier: ~0.0.1
+        version: link:../../packages/blue-view-webcomponent
+    devDependencies:
+      '@blue/test':
+        specifier: ~0.0.1
+        version: link:../../packages/blue-test
+      tsx:
+        specifier: '*'
+        version: 4.22.3
+      vite:
+        specifier: ^8.0.0
+        version: 8.0.16(@types/node@22.10.10)(esbuild@0.28.0)(terser@5.48.0)(tsx@4.22.3)(yaml@2.9.0)
+
   apps/blue-todo:
     dependencies:
       '@blue/auth-client':

@@ -3350,13 +3350,12 @@ export class HttpMethod implements Equatable, Serializable {
 
 **Pick the shape by what you are validating:**
 
-| What                   | Canonical form                                                                                  |
-| :--------------------- | :---------------------------------------------------------------------------------------------- |
-| DTO / object shape     | `z.object({ ... })` — static type via `z.infer`                                                 |
-| Route parameter        | `validatedBy(schema, bindValue('query'))` in `@routeParams` (from `@blue/dispatcher`)           |
-| ENTITY field           | `@column({ schema: z.string().min(2) })` — the ORM derives the full entity schema from metadata |
-| Domain component field | `get validationSchemas(): Record<string, z.ZodType>` on a `GenericDomainComponent` subclass     |
-| A reusable value type  | `z.string().refine(...)` or `z.number().min(0)` — a schema _is_ the type                        |
+| What                  | Canonical form                                                                                  |
+| :-------------------- | :---------------------------------------------------------------------------------------------- |
+| DTO / object shape    | `z.object({ ... })` — static type via `z.infer`                                                 |
+| Route parameter       | `validatedBy(schema, bindValue('query'))` in `@routeParams` (from `@blue/dispatcher`)           |
+| ENTITY field          | `@column({ schema: z.string().min(2) })` — the ORM derives the full entity schema from metadata |
+| A reusable value type | `z.string().refine(...)` or `z.number().min(0)` — a schema _is_ the type                        |
 
 ```typescript
 // ✅ Correct: Entity validation is derived from @column metadata

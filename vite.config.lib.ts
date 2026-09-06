@@ -79,7 +79,6 @@ export function createLibConfig(options: {
                 '@blue/http': resolve(__dirname, './packages/blue-http/src'),
                 '@blue/telemetry': resolve(__dirname, './packages/blue-telemetry/src'),
                 '@blue/content': resolve(__dirname, './packages/blue-content/src'),
-                '@blue/domain': resolve(__dirname, './packages/blue-domain/src'),
                 '@blue/platform-web': resolve(__dirname, './packages/blue-platform-web/src'),
                 '@blue/dispatcher': resolve(__dirname, './packages/blue-dispatcher/src'),
                 '@blue/boot': resolve(__dirname, './packages/blue-boot/src'),

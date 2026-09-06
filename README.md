@@ -65,7 +65,6 @@ pnpm lint
 - [blue-context](packages/blue-context/README.md)
 - [blue-core](packages/blue-core/README.md)
 - [blue-dispatcher](packages/blue-dispatcher/README.md)
-- [blue-dom](packages/blue-dom/README.md)
 - [blue-domain](packages/blue-domain/README.md)
 - [blue-eslint-plugin](packages/blue-eslint-plugin/README.md)
 - [blue-factory](packages/blue-factory/README.md)

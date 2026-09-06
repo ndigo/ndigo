@@ -6,13 +6,19 @@ import { resolve } from 'node:path';
 process.env['STATIC_DIR'] = resolve('dist');
 
 import { describe, test, beforeAll, afterAll, expect } from 'vitest';
+import type { AddressInfo } from 'node:net';
 import { bootApp, MockMVC } from '@blue/test';
+import { MetadataConfigApplicationContext } from '@blue/context';
+import { RadixMetadataHandlerMapping } from '@blue/dispatcher';
+import { NodeAutoConfiguration, NodeDispatcher, NodeHTTPServerAdapter } from '@blue/platform-node';
 import { IslandConfiguration } from '../src/island-configuration';
+import { TodoModelStore } from '../src/todo-model-store';
 
 /**
  * Hybrid island demo integration: the server renders a full shell document
  * containing the server-side island markup (`<todo-app data-blue-island
- * data-blue-model="…">`), and serves the built client bundle that hydrates it.
+ * data-blue-model="…">`), serves the built client bundle that hydrates it,
+ * and pushes source-of-truth model updates to islands over SSE (AD-9).
  */
 
 describe('blue-island hybrid demo', () => {
@@ -63,5 +69,88 @@ describe('blue-island hybrid demo', () => {
         // Bundle contains the hydrate logic + the todo-app component tag.
         expect(body).toContain('todo-app');
         expect(body.length).toBeGreaterThan(1000);
+    });
+});
+
+describe('GET /events pushes model updates over SSE (AD-9)', () => {
+    let adapter: NodeHTTPServerAdapter;
+    let base: string;
+    let store: TodoModelStore;
+
+    beforeAll(async () => {
+        const context = new MetadataConfigApplicationContext('island-events');
+        context.register(NodeAutoConfiguration);
+        context.register(IslandConfiguration);
+        context.refresh();
+        const handlerMapping = context.getValue<RadixMetadataHandlerMapping>('handlerMapping');
+        handlerMapping.setApplicationContext(context);
+        handlerMapping.init();
+        const dispatcher = context.getValue<NodeDispatcher>('dispatcher');
+        dispatcher.initStrategies(context);
+        dispatcher.applicationContext = context;
+        store = context.getValue<TodoModelStore>('modelStore');
+        adapter = new NodeHTTPServerAdapter(dispatcher);
+        await adapter.listen(0, '127.0.0.1');
+        base = `http://127.0.0.1:${(adapter.server as { address(): AddressInfo }).address().port}`;
+    });
+
+    afterAll(async () => {
+        await adapter?.close();
+    });
+
+    test('streams one frameless model event per store update', async () => {
+        const res = await fetch(`${base}/events`);
+        expect(res.status).toBe(200);
+        expect(res.headers.get('content-type')).toBe('text/event-stream; charset=utf-8');
+
+        const reader = res.body!.getReader();
+        const decoder = new TextDecoder();
+        let text = '';
+
+        // Trigger a push and read until the event frame completes.
+        store.update((model) => {
+            model.items.push({ text: 'pushed from test', done: false });
+        });
+        while (!text.includes('\n\n')) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            text += decoder.decode(value);
+        }
+        await reader.cancel();
+
+        expect(text).toContain('event: model\n');
+        expect(text).toContain('data: {"model":{');
+        expect(text).toContain('"text":"pushed from test"');
+    });
+
+    test('each store update reaches the connected client in order', async () => {
+        const res = await fetch(`${base}/events`);
+        const reader = res.body!.getReader();
+        const decoder = new TextDecoder();
+        let text = '';
+
+        store.update((model) => {
+            model.items.push({ text: 'first', done: false });
+        });
+        while (!text.includes('\n\n')) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            text += decoder.decode(value);
+        }
+        store.update((model) => {
+            model.items.push({ text: 'second', done: false });
+        });
+        const frameCount = (): number => text.split('\n\n').filter((frame) => frame.length > 0).length;
+        while (frameCount() < 2) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            text += decoder.decode(value);
+        }
+        await reader.cancel();
+
+        const frames = text.split('\n\n').filter((frame) => frame.length > 0);
+        expect(frames).toHaveLength(2);
+        expect(frames[0]).toContain('"first"');
+        expect(frames[1]).toContain('"second"');
     });
 });

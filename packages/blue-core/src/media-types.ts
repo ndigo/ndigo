@@ -78,6 +78,9 @@ export const TEXT_CSS = MediaType.for('text', 'css');
 export const TEXT_CSV = MediaType.for('text', 'csv');
 /**
  */
+export const TEXT_EVENT_STREAM = MediaType.for('text', 'event-stream');
+/**
+ */
 export const TEXT_HTML = MediaType.for('text', 'html');
 /**
  */

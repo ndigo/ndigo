@@ -1,7 +1,7 @@
 # AD-9: Server push (SSE/WebSocket) — transport for the hybrid topology
 
 **Date:** 2026-09-05
-**Status:** Proposed (research complete; implementation gated on the hybrid demo consumer)
+**Status:** Implemented (SSE-first landed 2026-09-06 — see follow-up below); WebSocket remains opt-in, gated on a bidirectional consumer
 
 ## Background
 
@@ -68,3 +68,21 @@ Revisit WebSocket when a **bidirectional** consumer (chat, collaborative presenc
 2. `stream: true` on `@blue/service` `@*Call` (AD-8 proxy returns `AsyncIterable`).
 3. Client `EventSource` → `@blue/signals` bridge.
 4. Wire the island demo: server pushes tick/model events; island re-renders.
+
+## Follow-up (2026-09-06): SSE-first implementation landed
+
+All four implementation-order items are built and proven by the hybrid demo (`apps/blue-island`):
+
+1. **SSE response support in `blue-platform-node`** — `EventStreamView` (exported from the package index): a `View` that writes a model's `events` async iterable to the `ServerResponse` as `text/event-stream` frames (JSON `data:` lines, optional `event:` name), ending the response when the source ends. `MediaTypes.TEXT_EVENT_STREAM` added in `blue-core`. Headers are flushed before the stream begins (Node buffers headers until the first write — a waiting stream deadlocks otherwise). Verified over a real `node:http` server in `test/event-stream-view.spec.ts`.
+
+2. **`stream: true` on `@blue/service` calls** — `ServiceCallConfig.stream`; the AD-8 proxy returns an `AsyncIterable` of parsed Server-Sent Events for a `stream: true` call (sends `Accept: text/event-stream`), validating each event's `data` with the call's `responseSchema` when declared. `ServerSentEventParser`/`parseServerSentEvents` (exported) implement incremental `text/event-stream` parsing (fields, JSON data fallback to raw, comments, CRLF, chunk-boundary assembly). Same interceptor/correlation/telemetry pipeline as any call.
+
+3. **Client `EventSource`→signals bridge** — instead of the DOM `EventSource` (no fetch, no typed contracts), the demo consumes the typed service stream; `streamToSignal(source, signal)` (`@blue/signals`) writes each yielded value into a `Signal`, and an `effect` re-renders the island. `stop()` cancels consumption and closes the source.
+
+4. **Island demo wired** — `TodoModelStore` (server-owned snapshot + push channel with unsubscribe) feeds `GET /events`; the shell's initial model and the pushed models share one store instance (composition root in `IslandConfiguration` — cross-entry `this.method()` calls do NOT share beans, so a private field is the single source). The client subscribes via a `@service('blue-island')` typed stream (`responseSchema` zod — AD-7) and re-renders on each push.
+
+## Consequences (updated)
+
+- **No new dependency** — SSE rides raw `node:http` + `fetch`/`ReadableStream`; `ws` remains deferred (opt-in, bidirectional consumers only).
+- **Unified mental model realized** — a push endpoint is a streaming response of the service layer: `@getCall('/events', { stream: true })` + `serviceClient()` is the whole client API; the server side is a controller returning `new ModelAndView(new EventStreamView(), { events })`.
+- **The reactive hybrid is demonstrated** — server push → signal → island re-render, exercised by `apps/blue-island/test` (10 tests, incl. two sequential pushes over a real server) and live smoke.

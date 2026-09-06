@@ -58,14 +58,14 @@ beforeEach(() => {
     http = new HTTP([], {}, fetchMock as unknown as typeof fetch);
 });
 
-describe('serviceClient', () => {
-    /** The HTTP client passes a Request object to fetch; extract it. */
-    function lastRequest(): Request {
-        const req = fetchMock.mock.calls[0]?.[0];
-        expect(req).toBeInstanceOf(Request);
-        return req as Request;
-    }
+/** The HTTP client passes a Request object to fetch; extract it. */
+function lastRequest(): Request {
+    const req = fetchMock.mock.calls[0]?.[0];
+    expect(req).toBeInstanceOf(Request);
+    return req as Request;
+}
 
+describe('serviceClient', () => {
     test('resolves path params and sends GET', async () => {
         fetchMock.mockResolvedValue(new Response(JSON.stringify({ ok: true }), { status: 200 }));
         const client = serviceClient(AccountsAPI, http);
@@ -147,5 +147,89 @@ describe('serviceClient', () => {
         class NotAService {}
 
         expect(() => serviceClient(NotAService, http)).toThrow('not @service-decorated');
+    });
+});
+
+@service('ticker', { baseUrl: 'https://api.example.com' })
+class TickerAPI {
+    @getCall('/ticks', { stream: true })
+    ticks(): AsyncIterable<unknown> {
+        return undefined as unknown;
+    }
+
+    @getCall('/models', { stream: true, responseSchema: AccountSchema })
+    models(): AsyncIterable<{ id: number; name: string }> {
+        return undefined as unknown;
+    }
+}
+
+describe('serviceClient stream calls (AD-9)', () => {
+    /** Builds an SSE response whose body is enqueued in the given chunks. */
+    function sseResponse(chunks: string[], status = 200): Response {
+        const encoder = new TextEncoder();
+        return new Response(
+            new ReadableStream({
+                start(controller) {
+                    for (const chunk of chunks) {
+                        controller.enqueue(encoder.encode(chunk));
+                    }
+                    controller.close();
+                },
+            }),
+            { status, headers: { 'Content-Type': 'text/event-stream' } }
+        );
+    }
+
+    async function collect<T>(stream: AsyncIterable<T>): Promise<T[]> {
+        const values: T[] = [];
+        for await (const value of stream) {
+            values.push(value);
+        }
+        return values;
+    }
+
+    beforeEach(() => {
+        fetchMock = vi.fn();
+        http = new HTTP([], {}, fetchMock as unknown as typeof fetch);
+    });
+
+    test('sends Accept: text/event-stream and returns parsed events in order', async () => {
+        fetchMock.mockResolvedValue(sseResponse(['event: tick\ndata: {"n":1}\n\n', 'event: tick\ndata: {"n":2}\n\n']));
+        const client = serviceClient(TickerAPI, http);
+
+        const events = await collect(client.ticks());
+
+        expect(lastRequest().method).toBe('GET');
+        expect(lastRequest().headers.get('Accept')).toBe('text/event-stream');
+        expect(events).toEqual([
+            { event: 'tick', data: { n: 1 } },
+            { event: 'tick', data: { n: 2 } },
+        ]);
+    });
+
+    test('yields schema-validated data for stream calls with a responseSchema', async () => {
+        fetchMock.mockResolvedValue(
+            sseResponse(['data: {"id":1,"name":"Alice"}\n\n', 'data: {"id":2,"name":"Bob"}\n\n'])
+        );
+        const client = serviceClient(TickerAPI, http);
+
+        expect(await collect(client.models())).toEqual([
+            { id: 1, name: 'Alice' },
+            { id: 2, name: 'Bob' },
+        ]);
+    });
+
+    test('throws when a streamed event fails Zod validation', async () => {
+        fetchMock.mockResolvedValue(sseResponse(['data: {"id":"nope","name":42}\n\n']));
+        const client = serviceClient(TickerAPI, http);
+
+        await expect(collect(client.models())).rejects.toThrow('response validation failed');
+    });
+
+    test('throws when the stream request fails', async () => {
+        fetchMock.mockResolvedValue(new Response('nope', { status: 500 }));
+        const client = serviceClient(TickerAPI, http);
+
+        await expect(collect(client.ticks())).rejects.toThrow('stream request failed');
     });
 });

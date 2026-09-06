@@ -47,6 +47,14 @@ export interface ServiceCallConfig {
      * `Response` is returned when omitted.
      */
     responseSchema?: z.ZodType;
+    /**
+     * Declares a streaming (SSE) call (AD-9): the method returns an
+     * `AsyncIterable` of parsed Server-Sent Events instead of a single
+     * response, with `Accept: text/event-stream` sent on the request. When
+     * combined with `responseSchema`, each event's `data` payload is
+     * validated and the typed value is yielded.
+     */
+    stream?: boolean;
 }
 
 /**

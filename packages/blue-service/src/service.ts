@@ -8,6 +8,11 @@ import {
     ResponseTypeInit,
     IfModifiedInit,
     TimeoutInit,
+    CompletionAwareHTTPInterceptor,
+    ErrorAwareHTTPInterceptor,
+    InitializationAwareHTTPInterceptor,
+    RequestAwareHTTPInterceptor,
+    ResponseAwareHTTPInterceptor,
 } from '@blue/http';
 import { like } from '@blue/util';
 import { ServiceRegistry } from './service-registry';
@@ -25,9 +30,12 @@ export type ServiceInit = HTTPInit &
     TimeoutInit & {};
 
 /**
- * Handles completion callbacks after a service request succeeds.
+ * Service-level completion interceptor.
+ *
+ * Reuses the {@link CompletionAwareHTTPInterceptor} interface; `postRequest`
+ * is the service-level "request completed" hook (HTTP's `postComplete`).
  */
-export interface CompletionAwareServiceInterceptor {
+export interface CompletionAwareServiceInterceptor extends CompletionAwareHTTPInterceptor {
     /**
      * Runs after the request has completed successfully.
      *
@@ -37,9 +45,12 @@ export interface CompletionAwareServiceInterceptor {
 }
 
 /**
- * Handles failure callbacks when a service request throws.
+ * Service-level failure interceptor.
+ *
+ * Reuses the {@link ErrorAwareHTTPInterceptor} interface; `postFailure` is the
+ * service-level "request failed" hook.
  */
-export interface ErrorAwareServiceInterceptor {
+export interface ErrorAwareServiceInterceptor extends ErrorAwareHTTPInterceptor {
     /**
      * Runs after a request fails.
      *
@@ -50,9 +61,13 @@ export interface ErrorAwareServiceInterceptor {
 }
 
 /**
- * Handles pre-initialization checks before a service request is created.
+ * Service-level pre-initialization interceptor.
+ *
+ * Reuses the {@link InitializationAwareHTTPInterceptor} contract (settings are
+ * `ServiceInit`, which extends `HTTPInit`).
  */
-export interface InitializationAwareServiceInterceptor<T extends ServiceInit = ServiceInit> {
+export interface InitializationAwareServiceInterceptor<T extends ServiceInit = ServiceInit>
+    extends InitializationAwareHTTPInterceptor<T> {
     /**
      * Decides whether the interceptor should participate in the request.
      *
@@ -64,9 +79,11 @@ export interface InitializationAwareServiceInterceptor<T extends ServiceInit = S
 }
 
 /**
- * Handles request mutation before a service request is sent.
+ * Service-level request interceptor.
+ *
+ * Reuses the {@link RequestAwareHTTPInterceptor} contract.
  */
-export interface RequestAwareServiceInterceptor {
+export interface RequestAwareServiceInterceptor extends RequestAwareHTTPInterceptor {
     /**
      * Runs before the request is sent.
      *
@@ -77,9 +94,13 @@ export interface RequestAwareServiceInterceptor {
 }
 
 /**
- * Handles response processing after a service request succeeds.
+ * Service-level response interceptor.
+ *
+ * Reuses the {@link ResponseAwareHTTPInterceptor} contract; `postSuccess` is the
+ * service-level success hook (HTTP's `postResponse`).
  */
-export interface ResponseAwareServiceInterceptor<T extends ServiceInit = ServiceInit> {
+export interface ResponseAwareServiceInterceptor<T extends ServiceInit = ServiceInit>
+    extends ResponseAwareHTTPInterceptor<T> {
     /**
      * Runs after the request succeeds.
      *

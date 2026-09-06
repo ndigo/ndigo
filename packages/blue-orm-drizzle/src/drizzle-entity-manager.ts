@@ -1,5 +1,5 @@
 import { Constructable, FrameworkError } from '@blue/core';
-import { getEntityMetadata, isEntity } from '@blue/orm';
+import { getEntityMetadata, isEntity, validateEntity } from '@blue/orm';
 import { DrizzleDataSource } from './drizzle-data-source';
 
 export class DrizzleEntityManager {
@@ -22,6 +22,9 @@ export class DrizzleEntityManager {
         const meta = getEntityMetadata(entityClass);
         const record = entity as Record<string, unknown>;
         const tableName = meta.entityName;
+
+        // Validate against the Zod schema derived from @column metadata (AD-7).
+        validateEntity(entityClass, entity);
 
         const colNames: string[] = [];
         const values: unknown[] = [];

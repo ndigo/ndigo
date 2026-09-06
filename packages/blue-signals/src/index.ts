@@ -18,3 +18,5 @@
 export { signal, computed, effect, batch, untracked, Signal } from '@preact/signals-core';
 
 export type { SignalOptions } from '@preact/signals-core';
+
+export { streamToSignal } from './stream-to-signal';

@@ -3,8 +3,9 @@
  *
  * Serves a shell page containing a server-rendered Web Component island
  * (`<todo-app data-blue-island data-blue-model="…">`) plus the client bundle
- * that hydrates it. Demonstrates the hybrid topology (server controllers +
- * client-side views) through `IslandView` + `hydrateIslands()`.
+ * that hydrates it, and pushes source-of-truth model updates into the island
+ * over SSE (AD-9): `GET /events` streams them; the client consumes them into
+ * `@blue/signals` and re-renders.
  */
 
 import 'node:process';
@@ -12,6 +13,7 @@ import { MetadataConfigApplicationContext } from '@blue/context';
 import { RadixMetadataHandlerMapping } from '@blue/dispatcher';
 import { NodeAutoConfiguration, NodeDispatcher, HTTPServer, NodeHTTPServerAdapter } from '@blue/platform-node';
 import { IslandConfiguration } from './island-configuration';
+import { TodoModelStore } from './todo-model-store';
 
 const PORT = Number(process.env['PORT'] ?? '3200');
 
@@ -29,6 +31,11 @@ async function main() {
     dispatcher.initStrategies(context);
     dispatcher.applicationContext = context;
 
+    // The reactive half of the demo: push model updates to connected
+    // islands over SSE until the ticker completes (three pushes, one/sec).
+    const modelStore = context.getValue<TodoModelStore>('modelStore');
+    modelStore.startTicker();
+
     const server = new HTTPServer(dispatcher, {
         adapter: new NodeHTTPServerAdapter(dispatcher),
         port: PORT,
@@ -39,6 +46,8 @@ async function main() {
     console.log(`[blue-island] listening on http://localhost:${PORT}`);
     // eslint-disable-next-line no-console
     console.log(`  GET /            (shell + server-rendered island)`);
+    // eslint-disable-next-line no-console
+    console.log(`  GET /events      (SSE — server pushes model updates into the island)`);
     // eslint-disable-next-line no-console
     console.log(`  GET /static/*    (client bundle → hydrates the island)`);
 }

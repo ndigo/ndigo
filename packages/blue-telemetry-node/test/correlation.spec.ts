@@ -5,7 +5,7 @@ import { AsyncHooksContextManager } from '@opentelemetry/context-async-hooks';
 import { context as otelContext, trace } from '@opentelemetry/api';
 import { HTTPServerInstrumentation } from '../src/instrumentation/http-server/http-server';
 import { DispatcherInstrumentation } from '../src/instrumentation/dispatcher/dispatcher';
-import { getMapping, RadixMetadataHandlerMapping } from '@blue/dispatcher';
+import { getMapping, ModelAndView, RadixMetadataHandlerMapping } from '@blue/dispatcher';
 import { MetadataConfigApplicationContext } from '@blue/context';
 import { NodeAutoConfiguration, NodeDispatcher, HTTPServer } from '@blue/platform-node';
 
@@ -22,6 +22,11 @@ class APIController {
     @getMapping('/')
     index() {
         return { ok: true };
+    }
+
+    @getMapping('/view')
+    view() {
+        return new ModelAndView('test');
     }
 }
 
@@ -97,5 +102,19 @@ describe('telemetry request→dispatch correlation (real HTTP)', () => {
         expect(dispatchSpan.parentSpanContext?.spanId).toBe(requestSpan.spanContext().spanId);
         expect(dispatchSpan.attributes['http.route']).toBe('/');
         expect(dispatchSpan.attributes['http.method']).toBe('GET');
+    });
+
+    test('view-name resolution records the winning resolver', async () => {
+        const res = await fetch(`${base}/view`);
+        expect(res.status).toBe(200);
+        await new Promise((r) => setTimeout(r, 50));
+
+        const resolveSpans = exporter.getFinishedSpans().filter((s) => s.name === 'Dispatcher.resolveViewName');
+        expect(resolveSpans.length).toBeGreaterThan(0);
+        const span = resolveSpans[resolveSpans.length - 1]!;
+        expect(span.attributes['view.name']).toBe('test');
+        expect(span.attributes['view.resolved']).toBe(true);
+        // The node default resolver (IslandViewResolver) served an IslandView.
+        expect(span.attributes['view.resolved_by']).toBe('IslandView');
     });
 });

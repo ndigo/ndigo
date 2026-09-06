@@ -48,9 +48,32 @@ export class DispatcherInstrumentation extends AbstractBaseInstrumentation {
                 },
             })
         );
+
+        // View-name resolution: which resolver served the name (and whether
+        // the chain fell through) is otherwise invisible.
+        this._wrap(
+            (dispatcher as any).AbstractDispatcher.prototype,
+            '_resolveViewName',
+            this._patchAsync({
+                name: 'Dispatcher.resolveViewName',
+                kind: SpanKind.INTERNAL,
+                attributes: (_instance: any, args: any[]) => ({
+                    'view.name': args[0],
+                }),
+                onEnd(span, outcome, _instance, args) {
+                    const resolved = outcome.ok && outcome.value !== null;
+                    span.setAttribute('view.resolved', resolved);
+                    if (resolved) {
+                        // The winning resolver owns the instance → its name.
+                        span.setAttribute('view.resolved_by', (outcome.value as object).constructor?.name);
+                    }
+                },
+            })
+        );
     }
 
     disable(): void {
         this._unwrap((dispatcher as any).AbstractDispatcher.prototype, 'dispatch');
+        this._unwrap((dispatcher as any).AbstractDispatcher.prototype, '_resolveViewName');
     }
 }

@@ -19,6 +19,7 @@
  * @module
  */
 
+import { SpanKind, SpanStatusCode, trace } from '@opentelemetry/api';
 import { HTTP, HTTPInit } from '@blue/http';
 import {
     getServiceCalls,
@@ -87,67 +88,92 @@ async function* streamCall(
     init: HTTPInit,
     http: HTTP
 ): AsyncGenerator<unknown> {
-    const response = await http.request(url, init);
-    if (!response.ok || !response.body) {
-        throw new IllegalStateError(
-            `Service '${config.name}' stream request failed (HTTP ${response.status ?? 'unknown'}).`
-        );
-    }
-
-    const parser = new ServerSentEventParser();
-    const reader = response.body.getReader();
-    const decoder = new TextDecoder();
-
-    const deliver = (event: ServerSentEvent): unknown => {
-        if (!call.responseSchema) {
-            return event;
-        }
-        const result = call.responseSchema.safeParse(event.data);
-        if (!result.success) {
-            const message = result.error?.issues
-                ?.map((issue) => `${issue.path.join('.') || 'body'}: ${issue.message}`)
-                .join(', ');
-            throw new IllegalStateError(`Service '${config.name}' response validation failed: ${message}`);
-        }
-        return result.data;
-    };
+    // The long-lived client span: an open stream call may last indefinitely,
+    // and without instrumentation its full duration + event count are
+    // invisible (only the X-Blue-Service header correlates it).
+    const span = trace.getTracer('@blue/telemetry').startSpan('ServiceClient.streamCall', {
+        kind: SpanKind.CLIENT,
+        attributes: {
+            'service.name': config.name,
+            'http.method': call.method,
+            'http.route': call.path,
+        },
+    });
+    const began = Date.now();
+    let events = 0;
 
     try {
-        for (;;) {
-            // oxlint-disable-next-line no-await-in-loop -- stream consumption is inherently sequential
-            const { done, value } = await reader.read();
-            if (done) {
-                break;
+        const response = await http.request(url, init);
+        if (!response.ok || !response.body) {
+            throw new IllegalStateError(
+                `Service '${config.name}' stream request failed (HTTP ${response.status ?? 'unknown'}).`
+            );
+        }
+
+        const parser = new ServerSentEventParser();
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+
+        const deliver = (event: ServerSentEvent): unknown => {
+            if (!call.responseSchema) {
+                return event;
             }
-            if (value.length > 0) {
-                for (const event of parser.feed(decoder.decode(value, { stream: true }))) {
+            const result = call.responseSchema.safeParse(event.data);
+            if (!result.success) {
+                const message = result.error?.issues
+                    ?.map((issue) => `${issue.path.join('.') || 'body'}: ${issue.message}`)
+                    .join(', ');
+                throw new IllegalStateError(`Service '${config.name}' response validation failed: ${message}`);
+            }
+            return result.data;
+        };
+
+        try {
+            for (;;) {
+                // oxlint-disable-next-line no-await-in-loop -- stream consumption is inherently sequential
+                const { done, value } = await reader.read();
+                if (done) {
+                    break;
+                }
+                if (value.length > 0) {
+                    for (const event of parser.feed(decoder.decode(value, { stream: true }))) {
+                        events += 1;
+                        yield deliver(event);
+                    }
+                }
+            }
+            const tail = decoder.decode();
+            if (tail.length > 0) {
+                for (const event of parser.feed(tail)) {
+                    events += 1;
                     yield deliver(event);
                 }
             }
-        }
-        const tail = decoder.decode();
-        if (tail.length > 0) {
-            for (const event of parser.feed(tail)) {
+        } catch (error: unknown) {
+            span.recordException(error as Error);
+            span.setStatus({ code: SpanStatusCode.ERROR });
+            if (error instanceof IllegalStateError) {
+                throw error;
+            }
+            throw new IllegalStateError(`Service '${config.name}' stream failed: ${(error as Error).message}`);
+        } finally {
+            // Flush any event buffered without a trailing newline, then release
+            // the reader so the underlying stream can be reused/cancelled.
+            for (const event of parser.finish()) {
+                events += 1;
                 yield deliver(event);
             }
+            try {
+                reader.releaseLock();
+            } catch {
+                // A read is still pending (consumer disposed mid-flight); the
+                // stream is released by GC once the connection settles.
+            }
         }
-    } catch (error: unknown) {
-        if (error instanceof IllegalStateError) {
-            throw error;
-        }
-        throw new IllegalStateError(`Service '${config.name}' stream failed: ${(error as Error).message}`);
     } finally {
-        // Flush any event buffered without a trailing newline, then release
-        // the reader so the underlying stream can be reused/cancelled.
-        for (const event of parser.finish()) {
-            yield deliver(event);
-        }
-        try {
-            reader.releaseLock();
-        } catch {
-            // A read is still pending (consumer disposed mid-flight); the
-            // stream is released by GC once the connection settles.
-        }
+        span.setAttribute('stream.events', events);
+        span.setAttribute('stream.duration_ms', Date.now() - began);
+        span.end();
     }
 }
 

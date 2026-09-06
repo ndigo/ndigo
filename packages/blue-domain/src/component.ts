@@ -1,7 +1,7 @@
 import { JSONValue, JSONObject, Serializable, createNull } from '@blue/core';
 import { Emitter, EventEmitter } from '@blue/context';
 import { AsyncDestroyable, Initializable } from '@blue/factory';
-import { validated, ClassValidationOptions, ClassValidationResult } from '@blue/validate';
+import { z } from 'zod';
 
 /**
  * Maps action names to handlers that receive domain data payloads.
@@ -46,9 +46,29 @@ export interface DomainComponent extends Initializable, EventEmitter, AsyncDestr
     /**
      * Validates a component property before it is used or persisted.
      *
-     * @param options - Validation options.
+     * The validation is Zod-backed: subclasses declare validation schemas per
+     * group (see `validationSchemas`) and `validate()` runs `safeParse` over
+     * the selected groups.
+     *
+     * @param options - Validation options (group selection).
      */
-    validate(options?: ClassValidationOptions): ClassValidationResult;
+    validate(options?: ComponentValidationOptions): ComponentValidationResult;
+}
+
+/**
+ * Options for {@link DomainComponent.validate}.
+ */
+export interface ComponentValidationOptions {
+    /** Validation groups to run. Defaults to all declared groups. */
+    groups?: string[];
+}
+
+/**
+ * Result of {@link DomainComponent.validate}.
+ */
+export interface ComponentValidationResult {
+    isValid: boolean;
+    failedProperties: Set<string>;
 }
 
 const { defineProperty, deleteProperty } = Reflect,
@@ -66,7 +86,6 @@ const { defineProperty, deleteProperty } = Reflect,
 
 let uuid = 0;
 
-@validated()
 export class GenericDomainComponent extends Emitter implements DomainComponent {
     id!: number;
     name!: string;
@@ -74,7 +93,51 @@ export class GenericDomainComponent extends Emitter implements DomainComponent {
     actions!: DomainActions;
     settings!: DomainSettings;
     states!: DomainStates;
-    declare validate: (options?: ClassValidationOptions) => ClassValidationResult;
+
+    /**
+     * Zod validation schemas keyed by group name. Subclasses override this to
+     * declare field constraints; `validate()` runs the selected groups.
+     *
+     * @example
+     * ```ts
+     * class ProfileComponent extends GenericDomainComponent {
+     *   username: string = '';
+     *
+     *   get validationSchemas(): Record<string, z.ZodType> {
+     *     return { create: z.object({ username: z.string().regex(/^[a-z]+$/) }) };
+     *   }
+     * }
+     * ```
+     */
+    get validationSchemas(): Record<string, z.ZodType> {
+        return {};
+    }
+
+    /**
+     * Runs the Zod schemas for the selected groups and reports failures.
+     *
+     * @param options - Optional group selection; defaults to all groups.
+     * @returns Whether the component is valid and the set of failed fields.
+     */
+    validate(options: ComponentValidationOptions = {}): ComponentValidationResult {
+        const groups = options.groups?.length ? options.groups : Object.keys(this.validationSchemas);
+        const failedProperties = new Set<string>();
+
+        for (const group of groups) {
+            const schema = this.validationSchemas[group];
+            if (!schema) {
+                continue;
+            }
+            const result = schema.safeParse(this);
+            if (!result.success) {
+                for (const issue of result.error.issues) {
+                    failedProperties.add(issue.path.join('.') || group);
+                }
+            }
+        }
+
+        return { isValid: failedProperties.size === 0, failedProperties };
+    }
 
     get [Symbol.toStringTag](): string {
         return `DomainComponent:${this.name}`;

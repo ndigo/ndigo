@@ -17,6 +17,8 @@ export type ParameterExtractor = {
     /** Type-based conversion: { source: SourceConstructor, target: TargetConstructor } */
     convertType?: { source: any; target: any };
     prefix?: string | null;
+    /** Optional post-bind validator/converter (e.g. Zod via `validatedBy`). */
+    convert?: (value: any) => any;
 };
 
 /** Options for creating a parameter extractor with type-based conversion support. */
@@ -126,6 +128,11 @@ export class MethodParameter implements Serializable {
     readonly defaultValue!: string | null;
     readonly convertType!: { source: any; target: any } | undefined;
     readonly prefix!: string | null;
+    /**
+     * Optional post-bind validator/converter applied to the resolved value.
+     * Set by {@link validatedBy} (Zod-backed, AD-7).
+     */
+    readonly convert!: ((value: any) => any) | undefined;
 
     constructor(
         type: MethodParameterType,
@@ -133,7 +140,8 @@ export class MethodParameter implements Serializable {
         required: boolean = false,
         defaultValue: string | null = null,
         convertType?: { source: any; target: any },
-        prefix: string | null = null
+        prefix: string | null = null,
+        convert?: (value: any) => any
     ) {
         if (!isString(name)) {
             throw new TypeError(`"name" must be a string but was ${name}`);
@@ -144,6 +152,7 @@ export class MethodParameter implements Serializable {
         this.defaultValue = defaultValue;
         this.convertType = convertType ?? undefined;
         this.prefix = prefix;
+        this.convert = convert ?? undefined;
     }
 
     toJSON(): JSONObject {
@@ -481,7 +490,8 @@ export function routeParams(paramMap: RouteParameterMap) {
                 extractor.required,
                 extractor.defaultValue,
                 extractor.convertType,
-                extractor.prefix
+                extractor.prefix,
+                extractor.convert
             );
         }
 

@@ -5,11 +5,11 @@ import {
     routeMapping,
     routeParams,
     bindValue,
+    validatedBy,
     ParameterConversionError,
     RouteErrorResolver,
 } from '@blue/dispatcher';
 import { BrowserDispatcher } from '../src/browser-dispatcher';
-import { validatedBy, ValidationError } from '@blue/validate';
 import {
     MetadataConfigApplicationContext,
     configuration,
@@ -85,6 +85,7 @@ describe('Zod Validation Integration', () => {
         // Zod's z.coerce.number() handles string-to-number conversion
         expect(capturedUser).toBeDefined();
         expect(capturedUser!.name).toBe('Jeff');
+        expect(capturedUser!.age).toBe(30); // coerced from '30' — proves validatedBy's convert ran
         // Note: z.coerce.number() conversion depends on Zod schema validation being applied
     });
 
@@ -143,7 +144,8 @@ describe('Zod Validation Integration', () => {
 
         await dispatcher.dispatch(route as any);
 
-        // Validation errors should be captured
+        // Validation errors should be captured and surfaced as conversion errors
         expect(capturedError).toBeDefined();
+        expect(capturedError).toBeInstanceOf(ParameterConversionError);
     });
 });

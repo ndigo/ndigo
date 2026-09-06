@@ -1,6 +1,6 @@
 import '@tsmetadata/polyfill';
 import { describe, expect, test } from 'vitest';
-import { pattern, validationGroup } from '@blue/validate';
+import { z } from 'zod';
 import { GenericDomainComponent } from '../src/component';
 
 describe('GenericDomainComponent', () => {
@@ -39,7 +39,7 @@ describe('GenericDomainComponent', () => {
         expect(component[Symbol.toStringTag]).toBe('DomainComponent:tagged');
     });
 
-    test('it should return isValid:true when no constrained fields exist', () => {
+    test('it should return isValid:true when no validation schemas exist', () => {
         const component = new GenericDomainComponent();
         component.init('test');
         const result = component.validate();
@@ -48,32 +48,34 @@ describe('GenericDomainComponent', () => {
     });
 
     test('it should detect validation failures on constrained subclass fields', () => {
-        const onCreate = validationGroup('create');
-
         class ProfileComponent extends GenericDomainComponent {
-            @pattern({ regex: /^[a-z]+$/, groups: [onCreate] })
             username: string = '';
+
+            get validationSchemas(): Record<string, z.ZodType> {
+                return { create: z.object({ username: z.string().regex(/^[a-z]+$/) }) };
+            }
         }
 
         const c = new ProfileComponent();
         c.init('profile');
         c.username = 'INVALID123';
-        const result = c.validate({ groups: [onCreate] });
+        const result = c.validate({ groups: ['create'] });
         expect(result.isValid).toBe(false);
         expect(result.failedProperties.has('username')).toBe(true);
     });
 
     test('it should return isValid:true when constrained fields pass', () => {
-        const onCreate = validationGroup('create');
-
         class ProfileComponent extends GenericDomainComponent {
-            @pattern({ regex: /^[a-z]+$/, groups: [onCreate] })
             username: string = 'alice';
+
+            get validationSchemas(): Record<string, z.ZodType> {
+                return { create: z.object({ username: z.string().regex(/^[a-z]+$/) }) };
+            }
         }
 
         const c = new ProfileComponent();
         c.init('profile');
-        const result = c.validate({ groups: [onCreate] });
+        const result = c.validate({ groups: ['create'] });
         expect(result.isValid).toBe(true);
     });
 

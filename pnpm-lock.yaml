@@ -618,6 +618,10 @@ importers:
         version: 7.8.0
 
   packages/blue-dispatcher:
+    dependencies:
+      zod:
+        specifier: ^4.5.4
+        version: 4.5.4
     devDependencies:
       '@blue/context':
         specifier: ~0.0.1
@@ -654,6 +658,10 @@ importers:
         version: 0.18.12
 
   packages/blue-domain:
+    dependencies:
+      zod:
+        specifier: ^4.5.4
+        version: 4.5.4
     devDependencies:
       '@blue/context':
         specifier: ~0.0.1

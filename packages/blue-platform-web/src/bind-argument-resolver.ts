@@ -40,7 +40,10 @@ export class BrowserBindMethodArgumentResolver extends AbstractPlatformArgumentR
 
         const convertedValue = convertArgumentValue(parameter.convertType, unflattened, parameter, route, mapping);
 
-        const finalValue = convertedValue ?? parameter.defaultValue;
+        // Post-bind validation/conversion (e.g. Zod via validatedBy, AD-7).
+        const validatedValue = parameter.convert ? parameter.convert(convertedValue) : convertedValue;
+
+        const finalValue = validatedValue ?? parameter.defaultValue;
 
         if (isNil(finalValue) && parameter.required) {
             this.handleMissingValue(parameter.name);

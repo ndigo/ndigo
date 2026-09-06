@@ -2,7 +2,6 @@ import { describe, test, beforeEach, afterEach, expect } from 'vitest';
 import { GenericApplicationContext } from '@blue/context';
 import { routeMapping } from '../src/route-mapping';
 import { RadixMetadataHandlerMapping } from '../src/radix-metadata-handler-mapping';
-import { LinearMetadataHandlerMapping } from '../src/route-handler-mapping';
 
 describe('RadixMetadataHandlerMapping', () => {
     let ctx: GenericApplicationContext;
@@ -275,10 +274,7 @@ describe('RadixMetadataHandlerMapping', () => {
             expect(chain).toBeNull();
         });
 
-        // Test with LinearMetadataHandlerMapping as well
-        // Note: LinearMetadataHandlerMapping uses GlobPathMatcher, which does not understand
-        // :param segments — use /* wildcards instead.
-        test('handler selected when queryParams condition matches query string (Linear)', () => {
+        test('handler selected when queryParams condition matches query string', () => {
             @routeMapping('/items')
             class ItemsController {
                 @routeMapping({ value: '/*', queryParams: 'filter=active' })
@@ -290,7 +286,7 @@ describe('RadixMetadataHandlerMapping', () => {
             const ctx = new GenericApplicationContext('test');
             ctx.setValue('itemsController', new ItemsController());
 
-            const mapping = new LinearMetadataHandlerMapping();
+            const mapping = new RadixMetadataHandlerMapping();
             mapping.setApplicationContext(ctx);
             mapping.init();
 
@@ -299,7 +295,7 @@ describe('RadixMetadataHandlerMapping', () => {
             expect(chain).not.toBeNull();
         });
 
-        test('handler rejected when queryParams condition does not match (Linear)', () => {
+        test('handler rejected when queryParams condition does not match', () => {
             @routeMapping('/items')
             class ItemsController {
                 @routeMapping({ value: '/*', queryParams: 'filter=active' })
@@ -311,7 +307,7 @@ describe('RadixMetadataHandlerMapping', () => {
             const ctx = new GenericApplicationContext('test');
             ctx.setValue('itemsController', new ItemsController());
 
-            const mapping = new LinearMetadataHandlerMapping();
+            const mapping = new RadixMetadataHandlerMapping();
             mapping.setApplicationContext(ctx);
             mapping.init();
 
@@ -320,7 +316,7 @@ describe('RadixMetadataHandlerMapping', () => {
             expect(chain).toBeNull();
         });
 
-        test('handler selected when matrixParams condition matches segment data (Linear)', () => {
+        test('handler selected when matrixParams condition matches segment data', () => {
             @routeMapping('/products')
             class ProductsController {
                 @routeMapping({ value: '/*', matrixParams: 'color=red' })
@@ -332,7 +328,7 @@ describe('RadixMetadataHandlerMapping', () => {
             const ctx = new GenericApplicationContext('test');
             ctx.setValue('productsController', new ProductsController());
 
-            const mapping = new LinearMetadataHandlerMapping();
+            const mapping = new RadixMetadataHandlerMapping();
             mapping.setApplicationContext(ctx);
             mapping.init();
 
@@ -342,7 +338,7 @@ describe('RadixMetadataHandlerMapping', () => {
             expect(chain).not.toBeNull();
         });
 
-        test('handler rejected when matrixParams condition does not match (Linear)', () => {
+        test('handler rejected when matrixParams condition does not match', () => {
             @routeMapping('/products')
             class ProductsController {
                 @routeMapping({ value: '/*', matrixParams: 'color=red' })
@@ -354,7 +350,7 @@ describe('RadixMetadataHandlerMapping', () => {
             const ctx = new GenericApplicationContext('test');
             ctx.setValue('productsController', new ProductsController());
 
-            const mapping = new LinearMetadataHandlerMapping();
+            const mapping = new RadixMetadataHandlerMapping();
             mapping.setApplicationContext(ctx);
             mapping.init();
 

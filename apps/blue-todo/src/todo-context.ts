@@ -1,7 +1,7 @@
 import { configuration, entry } from '@blue/context';
 import { ApplicationBuilder } from '@blue/boot';
 import { WebAutoConfiguration } from '@blue/platform-web';
-import { LoggingRouteHandlerInterceptor, LinearMetadataHandlerMapping } from '@blue/dispatcher';
+import { LoggingRouteHandlerInterceptor, RadixMetadataHandlerMapping } from '@blue/dispatcher';
 import { getLogger } from '@blue/telemetry';
 import { NameViewResolver } from '@blue/view';
 import { DOMElementViewTarget, WebComponentViewEngine } from '@blue/view-webcomponent';
@@ -36,7 +36,7 @@ class ToDoconfiguration {
     @entry
     handlerMapping() {
         // TODO Fix the default handler mappings
-        const mapping = new LinearMetadataHandlerMapping();
+        const mapping = new RadixMetadataHandlerMapping();
         mapping.interceptors.push(new LoggingRouteHandlerInterceptor(getLogger('blue-todo:dispatcher')));
         return mapping;
     }

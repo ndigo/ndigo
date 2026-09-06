@@ -2,7 +2,7 @@ import { AbstractDetectingPathHandlerMapping } from './abstract-path-handler-map
 
 /**
  * Implementation of the {@link RouteHandlerMapping|HandlerMapping} interface that map from paths to handlers with names that start with slash ("/").
- * <p>This is the default implementation used by {@link Dispatcher|the dispatcher} along with {@link LinearMetadataHandlerMapping|LinearMetadataHandlerMapping}.
+ * <p>This is the default implementation used by {@link Dispatcher|the dispatcher} along with {@link RadixMetadataHandlerMapping|RadixMetadataHandlerMapping}.
  * <p>The mapping is from path to handler name. An incoming path "/foo" would map to a handler named "/foo".
  * <p>Supports direct matches and wildcard matches.
  * @extends module:dispatcher.AbstractDetectingPathHandlerMapping

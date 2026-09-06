@@ -974,9 +974,9 @@ graph TD
 
 ### Route → handler mapping
 
-- **Radix** mapping (`RadixMetadataHandlerMapping` / `RadixRouteHandlerMapping`) is canonical for production routing (trie lookup, deterministic precedence).
-- **Linear** mapping (`LinearMetadataHandlerMapping`) is the simple/dev fallback.
-- `simple-path`, `name-path`, and `abstract-path` strategies are **internal**; applications should not select them directly.
+- **Radix** mapping (`RadixMetadataHandlerMapping`) is the **only** handler mapping — trie lookup, deterministic precedence, 40–63× faster than the retired linear scan (measured in `bench/routing.bench.ts`).
+- `NamePathHandlerMapping` remains the first element of the default strategy chain (name-based lookup fallback); `SimplePathHandlerMapping` is internal.
+- The former `LinearMetadataHandlerMapping` was deleted 2026-09-05 (radix proved faster in every benchmark scenario and is isomorphic — browser and node both default to radix).
 
 ## Dependency Management Strategy
 

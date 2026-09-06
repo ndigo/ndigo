@@ -13,7 +13,7 @@
 
 import { MetadataConfigApplicationContext, ApplicationContext } from '@blue/context';
 import { isFunction } from '@blue/util/types';
-import { LinearMetadataHandlerMapping } from '@blue/dispatcher';
+import { RadixMetadataHandlerMapping } from '@blue/dispatcher';
 import { NodeDispatcher, NodeAutoConfiguration } from '@blue/platform-node';
 
 /**
@@ -64,7 +64,7 @@ export function bootApp(sources: Function[]): BlueTestApp {
 
     // The handler mapping entry from NodeAutoConfiguration. Bind it to the
     // context and re-init so it detects concrete controller methods.
-    const handlerMapping = context.getValue<LinearMetadataHandlerMapping>('handlerMapping');
+    const handlerMapping = context.getValue<RadixMetadataHandlerMapping>('handlerMapping');
     handlerMapping.setApplicationContext(context);
     handlerMapping.init();
 

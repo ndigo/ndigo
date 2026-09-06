@@ -1,12 +1,6 @@
-import {
-    ApplicationContextAwareProcessor,
-    configuration,
-    MetadataConfigApplicationContext,
-    entry,
-} from '@blue/context';
-import { RadixMetadataHandlerMapping } from '@blue/dispatcher';
-import { NameViewResolver } from '@blue/view';
-import { DOMElementViewTarget, WebComponentViewEngine } from '@blue/view-webcomponent';
+import { configuration, entry, MetadataConfigApplicationContext } from '@blue/context';
+import { WebAutoConfiguration } from '@blue/platform-web';
+import { DOMElementViewTarget } from '@blue/view-webcomponent';
 import HelloController from './hello-controller';
 
 @configuration
@@ -16,31 +10,18 @@ class HelloConfiguration {
         return new HelloController();
     }
 
-    @entry
-    handlerMapping() {
-        return new RadixMetadataHandlerMapping();
-    }
-
-    @entry
-    viewResolver() {
-        return new NameViewResolver();
-    }
-
+    /**
+     * The render destination. Everything else (handler mapping, view
+     * resolver chain, web-component engine) comes from WebAutoConfiguration.
+     */
     @entry
     viewTarget() {
         return new DOMElementViewTarget(document.getElementById('app'));
     }
-
-    @entry
-    webComponentViewEngine() {
-        return new WebComponentViewEngine();
-    }
 }
 
 const context = new MetadataConfigApplicationContext('hello');
-const processor = new ApplicationContextAwareProcessor(context);
-
-context.addProcessor(processor);
+context.register(WebAutoConfiguration);
 context.register(HelloConfiguration);
 
 export default context;

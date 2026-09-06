@@ -1,9 +1,18 @@
 import { describe, test, beforeEach, afterEach, expect, vi } from 'vitest';
 import { DISPATCHER } from '../src/context-tokens';
 import { AbstractDispatcher } from '../src/dispatcher';
+import { ModelAndView } from '../src/model-and-view';
 import dispatcherContext from './assets/dispatcher-context';
 import errorContext from './assets/route-error-resolver-context';
-import { completeHandleSpy, destroyViewSpy, handleRouteSpy, renderSpy, resolveLanguageSpy } from './test-strategies';
+import {
+    completeHandleSpy,
+    destroyViewSpy,
+    handleRouteSpy,
+    renderSpy,
+    resolveLanguageSpy,
+    testModel,
+    TestView,
+} from './test-strategies';
 import { MetadataConfigApplicationContext } from '@blue/context';
 import { Route } from '@blue/router';
 
@@ -70,12 +79,28 @@ describe('AbstractDispatcher', () => {
             expect(completeHandleSpy).toHaveBeenCalledWith(bazRoute, expect.anything(), null);
         });
 
-        test('it should destroy previous view instance after route navigation', async () => {
+        test('it should reuse resolver-cached views without destroying them', async () => {
+            // Views obtained through the resolver chain are cache-owned
+            // singletons — replacing them must not destroy the cached
+            // instances (destroying would poison the resolver cache).
             await dispatcher.dispatch(fooRoute);
             await dispatcher.dispatch(barRoute);
 
+            expect(destroyViewSpy).not.toHaveBeenCalled();
+        });
+
+        test('it should destroy handler-created views when replaced', async () => {
+            const one = new TestView('one'),
+                two = new TestView('two');
+            handleRouteSpy.mockReturnValue(new ModelAndView(one));
+            await dispatcher.dispatch(fooRoute);
+            handleRouteSpy.mockReturnValue(new ModelAndView(two));
+            await dispatcher.dispatch(barRoute);
+
             expect(destroyViewSpy).toHaveBeenCalledTimes(1);
-            expect(destroyViewSpy).toHaveBeenCalledWith('test');
+            expect(destroyViewSpy).toHaveBeenCalledWith('one');
+            // Restore the shared spy's default for other tests.
+            handleRouteSpy.mockReturnValue(testModel);
         });
     });
 });

@@ -1,0 +1,37 @@
+{
+  "name": "blue-views",
+  "version": "0.0.1",
+  "description": "View resolution demo — three resolvers, three view locations (component module, context bean, module on disk) in one composite chain",
+  "type": "module",
+  "private": true,
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest run"
+  },
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "dependencies": {
+    "@blue/context": "~0.0.1",
+    "@blue/core": "~0.0.1",
+    "@blue/dispatcher": "~0.0.1",
+    "@blue/platform-web": "~0.0.1",
+    "@blue/router": "~0.0.1",
+    "@blue/view": "~0.0.1",
+    "@blue/view-webcomponent": "~0.0.1"
+  },
+  "devDependencies": {
+    "@blue/context": "~0.0.1",
+    "@blue/core": "~0.0.1",
+    "@blue/dispatcher": "~0.0.1",
+    "@blue/platform-web": "~0.0.1",
+    "@blue/test": "~0.0.1",
+    "@blue/view": "~0.0.1",
+    "@blue/view-webcomponent": "~0.0.1",
+    "vite": "~8.2.2"
+  }
+}

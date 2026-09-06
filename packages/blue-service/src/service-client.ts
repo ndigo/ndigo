@@ -28,7 +28,8 @@ import {
     type ServiceClientConfig,
 } from './service-decorators';
 import { IllegalStateError } from '@blue/core';
-import { ServerSentEventParser, type ServerSentEvent } from './server-sent-events';
+import { ServerSentEventParser } from './server-sent-events';
+import { ServerSentEvent } from '@blue/core';
 
 /** Header carrying the service name for correlation/tracing. */
 export const SERVICE_NAME_HEADER = 'X-Blue-Service';

@@ -1,4 +1,4 @@
-import { AbstractWebComponent } from '@blue/view-webcomponent';
+import { AbstractWebComponent, TagMapping } from '@blue/view-webcomponent';
 import { toAccountShellRoute, toTodoShellRoute } from './shell-composition';
 import './shell-nav-view';
 
@@ -17,6 +17,7 @@ interface TodoModel {
     filter?: 'all' | 'active' | 'completed';
 }
 
+@TagMapping('todo-app')
 export default class MyTodoApp extends AbstractWebComponent {
     #list: TodoItem[] = [];
     #filter: 'all' | 'active' | 'completed' = 'all';
@@ -114,5 +115,3 @@ export default class MyTodoApp extends AbstractWebComponent {
         });
     }
 }
-
-window.customElements.define('todo-app', MyTodoApp);

@@ -13,20 +13,7 @@
  * @module
  */
 
-/**
- * One parsed Server-Sent Event.
- */
-export interface ServerSentEvent {
-    /** Optional event id from the `id:` field (last occurrence wins). */
-    id?: string;
-    /** Event type from the `event:` field; defaults to `'message'`. */
-    event: string;
-    /**
-     * The `data:` payload — JSON-parsed when possible, the raw string
-     * otherwise. `undefined` when the event carried no data field.
-     */
-    data: unknown;
-}
+import { ServerSentEvent } from '@blue/core';
 
 /** Pending fields of the event currently being assembled. */
 interface PendingEvent {

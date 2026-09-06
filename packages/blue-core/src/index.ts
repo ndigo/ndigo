@@ -260,6 +260,7 @@ export * from './feature-metric-recorder.js';
 export * from './iterable.js';
 export * from './matchable.js';
 export * from './metadata.js';
+export * from './server-sent-event.js';
 export { default as MediaType, parseMediaType } from './media-type.js';
 export * from './multi-value-map.js';
 export * from './null.js';

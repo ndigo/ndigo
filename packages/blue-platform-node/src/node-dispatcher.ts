@@ -13,7 +13,7 @@ import { AbstractDispatcher } from '@blue/dispatcher';
 import { ModelAndView } from '@blue/dispatcher';
 import { Route } from '@blue/router';
 import { likeApplicationContextAware } from '@blue/context';
-import { View } from '@blue/view';
+import { View, likeView } from '@blue/view';
 import type { ServerResponse } from 'node:http';
 import { NODE_RESPONSE_ATTRIBUTE } from './node-request';
 import { HTTPResponseViewTarget } from './node-view-target';
@@ -48,6 +48,14 @@ export class NodeDispatcher extends AbstractDispatcher {
         // ResponseEntity — write status/headers/body directly
         if (isResponseEntity(mv)) {
             await new ResponseEntityView().render(mv, route);
+            return;
+        }
+
+        // Imperative View return (e.g. ServerSentEventView): the handler produced a
+        // stateful view for THIS request — render it directly, do not
+        // JSON-serialize. (Spring's ViewMethodReturnValueHandler parity.)
+        if (likeView(mv)) {
+            await mv.render(null, route, viewTarget);
             return;
         }
 

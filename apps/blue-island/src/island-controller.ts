@@ -1,5 +1,5 @@
 import { getMapping, ModelAndView } from '@blue/dispatcher';
-import { EventStreamView } from '@blue/platform-node';
+import { ServerSentEventView } from '@blue/platform-node';
 import { StringTemplateView } from '@blue/view';
 import { TodoModel, TodoModelStore } from './todo-model-store';
 
@@ -49,10 +49,11 @@ export class IslandController {
     }
 
     /**
-     * The push endpoint: one SSE event per model update, as it happens.
+     * The push endpoint: one SSE event per model update, as it happens. The
+     * view is a per-connection, imperative view — returned directly.
      */
     @getMapping('/events')
-    events(): ModelAndView {
+    events(): ServerSentEventView {
         const modelStore = this.#modelStore;
 
         async function* pushUpdates(): AsyncGenerator<{ event: string; data: { model: TodoModel } }> {
@@ -80,12 +81,12 @@ export class IslandController {
                     yield { event: 'model', data: { model } };
                 }
             } finally {
-                // The client disconnected (EventStreamView closes the
-                // iterator); stop queueing updates for it.
+                // The client disconnected (ServerSentEventView closes the iterator);
+                // stop queueing updates for it.
                 unsubscribe();
             }
         }
 
-        return new ModelAndView(new EventStreamView(), { events: pushUpdates() });
+        return new ServerSentEventView(pushUpdates());
     }
 }

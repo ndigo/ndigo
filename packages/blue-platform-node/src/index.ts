@@ -24,4 +24,4 @@ export * from './static-controller';
 export * from './cookie-parser';
 export * from './csrf-interceptor';
 export * from './cors-interceptor';
-export * from './event-stream-view';
+export * from './server-sent-event-view';

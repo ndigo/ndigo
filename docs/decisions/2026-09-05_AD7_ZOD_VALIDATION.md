@@ -22,14 +22,14 @@ The framework accumulated three overlapping "data shape" facilities:
 - **Reactive state** = plain Zod-validated values held in signals (`signal(schema.parse(x))`); a computed re-validates. No Proxy-based instances.
 - **Value objects / DTOs / route params** = schema-first Zod (`z.string().refine(...)`, `z.object(...)`), replacing objectmodel's value objects and `blue-validate`'s `validatedBy` decorators.
 
-**`blue-orm` entities remain decorator-annotated classes** (Blue's established annotation style — `@entity`/`@column`/`@primaryColumn`/lifecycle hooks). Validation is *derived from* those annotations: the field decorators assemble a per-entity Zod schema at definition time, so a class field declares its column and its validation in one place. The standalone `@min`/`@max`-style constraint decorators are **not** retained — Zod refinements cover those.
+**`blue-orm` entities remain decorator-annotated classes** (Blue's established annotation style — `@entity`/`@column`/`@primaryColumn`/lifecycle hooks). Validation is _derived from_ those annotations: the field decorators assemble a per-entity Zod schema at definition time, so a class field declares its column and its validation in one place. The standalone `@min`/`@max`-style constraint decorators are **not** retained — Zod refinements cover those.
 
 ## Versions (verified 2026-09-05)
 
-| Package | Version | Note |
-|---|---|---|
-| `zod` | `^4.5.4` | latest major; repo currently resolves 4.4.3 |
-| `drizzle-zod` | `^0.8.3` | peer-supports `zod ^3.25.0 \|\| ^4.0.0` |
+| Package       | Version  | Note                                         |
+| ------------- | -------- | -------------------------------------------- |
+| `zod`         | `^4.5.4` | latest major; repo currently resolves 4.4.3  |
+| `drizzle-zod` | `^0.8.3` | peer-supports `zod ^3.25.0 \|\| ^4.0.0`      |
 | `drizzle-orm` | `0.45.2` | already `>=0.36.0` (drizzle-zod requirement) |
 
 ## Consequences
@@ -62,7 +62,15 @@ The framework accumulated three overlapping "data shape" facilities:
 6. Delete `blue-validate` + `blue-model`; remove `objectmodel` from the integration map. ✅
 7. Update docs + eslint rule sweep. ✅
 
-**Note:** `drizzle-zod` was deferred — `blue-orm-drizzle` builds raw SQL DDL from metadata rather than Drizzle table objects, so `drizzle-zod` has no integration point yet. The derivation is direct from metadata; `drizzle-zod` applies once the adapter adopts Drizzle table schemas.
+**Note:** `drizzle-zod` remains deferred — `blue-orm-drizzle` builds raw SQL DDL from metadata rather than Drizzle table objects, so `drizzle-zod` has no integration point yet. The derivation is direct from metadata; `drizzle-zod` applies once the adapter adopts Drizzle table schemas.
+
+### Follow-up (2026-09-05, `1518ae0c`)
+
+Completed the remaining `blue-orm` persistence contracts in `blue-orm-drizzle`:
+`DrizzleTransactionManager` (BEGIN/COMMIT/ROLLBACK, nested-run rejection),
+`DrizzleUnitOfWork` (async new/dirty/removed tracking, `Promise.all` flush), and
+`DrizzleRepository` (async CRUD). `DrizzleEntityManager.persist` validates
+against the AD-7-derived Zod schema. 12 libSQL in-memory integration tests.
 
 ## Revisit Trigger
 

@@ -3,6 +3,7 @@ import { configuration, entry } from '@blue/context';
 import { GreetingController } from './greeting-controller';
 import { AuthController } from './auth-controller';
 import { NoteController } from './note-controller';
+import { DrizzleNoteController } from './drizzle-note-controller';
 import { ProductController } from './product-controller';
 import { StaticController } from './static-controller';
 
@@ -16,6 +17,9 @@ export class NodeAppConfiguration {
     }
     @entry noteController() {
         return new NoteController();
+    }
+    @entry drizzleNoteController() {
+        return new DrizzleNoteController();
     }
     @entry productController() {
         return new ProductController();

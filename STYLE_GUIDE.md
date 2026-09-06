@@ -3976,10 +3976,9 @@ Complex setup required for every test suggests too many dependencies.
 
 ```typescript
 // ❌ Wrong: >200 lines doing multiple things
-// 965 lines: packages/blue-validate/src/standard-constraints.ts
-// Contains: string validation, number validation, date validation,
-//           type checking, format validation, helpers, types
-// Should split by validation category
+// e.g. a 965-line module mixing string validation, number validation,
+//      date validation, type checking, and helpers
+// Should split by responsibility
 ```
 
 #### How to Break Up Large Files

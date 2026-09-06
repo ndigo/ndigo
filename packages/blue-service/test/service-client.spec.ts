@@ -232,4 +232,28 @@ describe('serviceClient stream calls (AD-9)', () => {
 
         await expect(collect(client.ticks())).rejects.toThrow('stream request failed');
     });
+
+    test('emits a ServiceClient.streamCall CLIENT span with event count', async () => {
+        const { BasicTracerProvider, InMemorySpanExporter, SimpleSpanProcessor } = await import(
+            '@opentelemetry/sdk-trace-base'
+        );
+        const { trace } = await import('@opentelemetry/api');
+        const exporter = new InMemorySpanExporter();
+        const provider = new BasicTracerProvider({ spanProcessors: [new SimpleSpanProcessor(exporter)] });
+        trace.setGlobalTracerProvider(provider);
+
+        fetchMock.mockResolvedValue(sseResponse(['event: tick\ndata: {"n":1}\n\n', 'event: tick\ndata: {"n":2}\n\n']));
+        const client = serviceClient(TickerAPI, http);
+
+        await collect(client.ticks());
+
+        await new Promise((r) => setTimeout(r, 50));
+        const spans = exporter.getFinishedSpans().filter((s) => s.name === 'ServiceClient.streamCall');
+        expect(spans).toHaveLength(1);
+        expect(spans[0]!.kind).toBe(2 /* SpanKind.CLIENT */);
+        expect(spans[0]!.attributes['service.name']).toBe('ticker');
+        expect(spans[0]!.attributes['http.route']).toBe('/ticks');
+        expect(spans[0]!.attributes['stream.events']).toBe(2);
+        expect(Number(spans[0]!.attributes['stream.duration_ms'])).toBeGreaterThanOrEqual(0);
+    });
 });

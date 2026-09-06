@@ -51,7 +51,7 @@ It also accepts the second framing: a public API that "meets most needs" is legi
 
 Corrected: `blue-validate` is the _legacy_ constraint/decorator system; `blue-model`/objectmodel was the intended modernization that never landed. **Both deleted**; `blue-orm` derives Zod schemas from `@entity`/`@column` metadata; `blue-domain` components + `blue-dispatcher` route params are Zod-backed.
 
-**R3 — `blue-service` duplicates `blue-http`'s interceptor pattern (not a full redundancy).** ✅ *RESOLVED 2026-09-05 → AD-8*
+**R3 — `blue-service` duplicates `blue-http`'s interceptor pattern (not a full redundancy).** ✅ _RESOLVED 2026-09-05 → AD-8_
 
 Corrected from the initial read: `blue-service` is a _typed service client_ (`Service.call(token, data)` via a `ServiceRegistry`, with request-id correlation and telemetry hooks) — a legitimate layer over `blue-http`, exactly the "meets most needs, drop to the underlying package for edge cases" pattern. The smell is narrower: it re-declares five interceptor interfaces (`CompletionAwareServiceInterceptor`, …) that mirror `blue-http`'s five, and its `postSuccess` differs from `postResponse` only semantically. **Action:** either reuse/extend the `@blue/http` interceptor contracts where the lifecycle is the same, or document the service lifecycle as intentionally distinct. Not a deletion candidate.
 
@@ -73,7 +73,9 @@ The only app consumer (`blue-api`) uses `InMemoryDataSource`. That is acceptable
 
 ### Anti-pattern avoidance (one way to solve)
 
-**A1 — Six handler-mapping strategies.** `linear-metadata`, `radix-metadata`, `radix-route`, `simple-path`, `name-path`, `abstract-path` all exist; demo apps each pick one arbitrarily (`blue-api` radix, `blue-todo`/`blue-hello` linear). Multiple ways to map routes→handlers with no canonical guidance. **Action:** document the canonical choice (radix for production routing, linear for explicit/dev) and mark the rest as internal/legacy.
+**A1 — Six handler-mapping strategies.** ✅ _RESOLVED 2026-09-05_
+
+Reworked to radix-only: the duplicate `radix-route-handler-mapping.ts`/`radix-metadata-handler-mapping.ts` files (byte-identical, both exporting `RadixMetadataHandlerMapping`) were consolidated; `LinearMetadataHandlerMapping` was **deleted** after the repo's own benchmark (`bench/routing.bench.ts`) showed radix is 40–63× faster on every hit scenario and isomorphic (no node-only code) — so both browser and node now default to radix. `NamePathHandlerMapping` stays as the strategy-chain fallback; `SimplePathHandlerMapping` is internal. Docs updated (ARCHITECTURE §Paradigm Selection Rules).
 
 **A2 — Paradigm selection is not enforced.** The `like*` guards (77 of them) _detect_ structural roles, and 64 `FrameworkError` throw sites enforce lifecycle/state (destroyed targets, double-listen, missing handlers/views, duplicate feature registration). But nothing throws or warns when a paradigm is misapplied — e.g. using signals to replicate application events, or an emitter to model derived state. The "one way to solve" property is enforced for naming/imports (oxlint) and lifecycle/state, **not** for paradigm selection.
 

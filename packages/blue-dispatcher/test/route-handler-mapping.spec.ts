@@ -2,7 +2,7 @@ import { describe, test, beforeEach, afterEach, expect, vi } from 'vitest';
 import {
     NamePathHandlerMapping,
     SimplePathHandlerMapping,
-    LinearMetadataHandlerMapping,
+    RadixMetadataHandlerMapping,
 } from '../src/route-handler-mapping';
 import { GenericApplicationContext } from '@blue/context';
 import { TestController } from './test-strategies';
@@ -76,8 +76,8 @@ describe('RouteHandlerMapping', () => {
         });
     });
 
-    describe('LinearMetadataHandlerMapping', () => {
-        test('static routes are indexed in #pathLookup fast path', () => {
+    describe('RadixMetadataHandlerMapping', () => {
+        test('static routes resolve through the radix index', () => {
             @routeMapping('/hello')
             class StaticController {
                 @routeMapping('/world')
@@ -89,20 +89,16 @@ describe('RouteHandlerMapping', () => {
             const ctx = new GenericApplicationContext('test');
             ctx.setValue('staticController', new StaticController());
 
-            const handlerMapping = new LinearMetadataHandlerMapping();
+            const handlerMapping = new RadixMetadataHandlerMapping();
             handlerMapping.setApplicationContext(ctx);
             handlerMapping.init();
 
-            const spy = vi.spyOn(handlerMapping.mappingRegistry, 'getMappingsByPath');
-            handlerMapping.getHandler({ path: '/hello/world' } as any);
-
-            expect(spy).toHaveBeenCalledWith('/hello/world');
-            const result = handlerMapping.mappingRegistry.getMappingsByPath('/hello/world');
-            expect(result).not.toBeNull();
-            expect(result.length).toBeGreaterThan(0);
+            const chain = handlerMapping.getHandler({ path: '/hello/world' } as any);
+            expect(chain).not.toBeNull();
+            expect(chain!.handler).toBeDefined();
         });
 
-        test('wildcard routes are NOT indexed in #pathLookup', () => {
+        test('wildcard routes match through the radix index', () => {
             @routeMapping('/api')
             class WildcardController {
                 @routeMapping('/*')
@@ -114,12 +110,13 @@ describe('RouteHandlerMapping', () => {
             const ctx = new GenericApplicationContext('test');
             ctx.setValue('wildcardController', new WildcardController());
 
-            const handlerMapping = new LinearMetadataHandlerMapping();
+            const handlerMapping = new RadixMetadataHandlerMapping();
             handlerMapping.setApplicationContext(ctx);
             handlerMapping.init();
 
-            const result = handlerMapping.mappingRegistry.getMappingsByPath('/api/anything');
-            expect(!result || result.length === 0).toBe(true);
+            const chain = handlerMapping.getHandler({ path: '/api/anything' } as any);
+            expect(chain).not.toBeNull();
+            expect(chain!.handler).toBeDefined();
         });
     });
 });

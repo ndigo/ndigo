@@ -4,7 +4,7 @@
  * Extends the shared route-mapping metadata with HTTP request semantics
  * (`method` now; `headers`, `consumes`, `produces` later). Writes the same
  * `Symbol.metadata` record as the `routeMapping` decorator, so the shared mapping stack
- * (`RadixMetadataHandlerMapping`, `LinearMetadataHandlerMapping`,
+ * (`RadixMetadataHandlerMapping`, `RadixMetadataHandlerMapping`,
  * `RouteMappingInfo`) consumes both without a fork. Hybrid controllers can
  * serve both client routes and server HTTP from one class.
  *

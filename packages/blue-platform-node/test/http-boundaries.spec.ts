@@ -2,7 +2,7 @@
 import { describe, test, beforeAll, afterAll, expect } from 'vitest';
 import type { AddressInfo } from 'node:net';
 import { MetadataConfigApplicationContext } from '@blue/context';
-import { getMapping, LinearMetadataHandlerMapping } from '@blue/dispatcher';
+import { getMapping, RadixMetadataHandlerMapping } from '@blue/dispatcher';
 import { NodeAutoConfiguration } from '../src/node-auto-configuration';
 import { NodeDispatcher } from '../src/node-dispatcher';
 import { NodeHTTPServerAdapter } from '../src/node-http-server-adapter';
@@ -34,7 +34,7 @@ describe('HTTP request pipeline boundaries', () => {
         context.register(NodeAutoConfiguration);
         context.setValue(ProbeController.name, new ProbeController());
         context.refresh();
-        const handlerMapping = context.getValue<LinearMetadataHandlerMapping>('handlerMapping');
+        const handlerMapping = context.getValue<RadixMetadataHandlerMapping>('handlerMapping');
         handlerMapping.setApplicationContext(context);
         handlerMapping.init();
         dispatcher = context.getValue<NodeDispatcher>('dispatcher');

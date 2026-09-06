@@ -3,6 +3,8 @@ import { describe, test, beforeAll, afterAll, expect } from 'vitest';
 import { bootApp, MockMVC } from '@blue/test';
 import { NodeAppConfiguration } from '../src/node-app-configuration';
 import { initAuth } from '../src/auth-store';
+import { DrizzleNote } from '../src/drizzle-note.entity';
+import { getDrizzleDataSource } from '../src/drizzle-note-controller';
 
 /**
  * Integration test for the real blue-api app through @blue/test.
@@ -58,5 +60,56 @@ describe('blue-api through @blue/test', () => {
         const res = await mockMVC.post('/auth/login').body({ username: 'bob', password: 'wrong' }).exec();
         expect(res.response.status).toBe(400);
         expect(res.json()).toEqual({ error: 'Invalid credentials' });
+    });
+
+    test('Drizzle-backed notes list + get-by-id read from SQL', async () => {
+        // Acquire a valid demo token
+        const login = await mockMVC.post('/auth/login').body({ username: 'admin', password: 'demo' }).exec();
+        const { token } = login.json() as { token?: string };
+        expect(token).toBeDefined();
+
+        // Seed through the SAME data source the routes read from.
+        const { DrizzleEntityManager } = await import('@blue/orm-drizzle');
+        const seedDs = getDrizzleDataSource();
+        await seedDs.init([DrizzleNote]);
+        const seedEm = new DrizzleEntityManager(seedDs);
+        const seeded = new DrizzleNote();
+        seeded.title = 'Seeded SQL Note';
+        seeded.body = 'from adapter';
+        await seedEm.persist(seeded);
+
+        // LIST via the framework route
+        const list = await mockMVC
+            .get('/drizzle/notes')
+            .headers({ authorization: `Bearer ${token}` })
+            .exec();
+        expect(list.response.status).toBe(200);
+        const { notes } = list.json() as { notes?: Array<{ id: number; title: string }> };
+        expect(notes).toBeDefined();
+        expect(notes!.some((n) => n.title === 'Seeded SQL Note')).toBe(true);
+
+        // GET by-id via the framework route
+        const byId = await mockMVC
+            .get(`/drizzle/notes/${seeded.id}`)
+            .headers({ authorization: `Bearer ${token}` })
+            .exec();
+        expect(byId.response.status).toBe(200);
+        const { note } = byId.json() as { note?: { id: number; title: string } };
+        expect(note?.id).toBe(seeded.id);
+        expect(note?.title).toBe('Seeded SQL Note');
+
+        // Missing id → not found
+        const missing = await mockMVC
+            .get('/drizzle/notes/999999')
+            .headers({ authorization: `Bearer ${token}` })
+            .exec();
+        expect(missing.response.status).toBe(404);
+    });
+
+    test('Drizzle-backed notes require authentication', async () => {
+        const res = await mockMVC.get('/drizzle/notes').exec();
+        // Without an auth header the handler rejects; the key assertion is it
+        // is not a 200 listing.
+        expect([400, 401, 403]).toContain(res.response.status);
     });
 });

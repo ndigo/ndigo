@@ -61,9 +61,14 @@ Corrected from the initial read: `blue-service` is a _typed service client_ (`Se
 
 `blue-domain` (the legacy `DomainComponent`/`BusinessComponent`/`ViewComponent` + `ComponentAndView` concept — a business object as a union of content/data/behavior, paired with a view component at render time) never gained a consumer and its roadmap items were superseded by the client-first pivot. The concept's modern equivalents already exist: business objects → `@blue/orm` entities / Zod classes (AD-7); stateful event-emitting rendering components → `AbstractWebComponent`/`BlueElement`; composition → dispatcher `ModelAndView`. Moved to `archive/blue-domain` with a decision note.
 
-**M2 — `blue-orm` is in-memory only in practice.**
+**M2 — `blue-orm` is in-memory only in practice.** ✅ _RESOLVED 2026-09-05 — Drizzle demo path_
 
-The only app consumer (`blue-api`) uses `InMemoryDataSource`. That is acceptable for a public API that "meets most needs" (unit testing, prototyping) provided a real adapter exists — see M3. Per AD-7, entity validation moves from the legacy `validate()` hook to a Zod schema derived from `@entity`/`@column` metadata.
+`blue-api` gained a Drizzle-backed read path: `DrizzleNoteController` (`@blue/orm-drizzle`, libSQL `:memory:`) exposes `GET /drizzle/notes` + `GET /drizzle/notes/:id` through the real framework (async handlers, auth header, 404 handling); integration tests seed the same data source and assert SQL-backed reads end-to-end. The in-memory `NoteController` remains the zero-config demo path.
+
+Surfaced two framework gaps while wiring the SQL path:
+
+- **Async handler + `bodyValue('*')` loses response serialization** (a `POST` returning a plain object/`ResponseEntity` from an async handler yields an empty body; async GET works, sync POST works) — the framework has no async-controller tests; flagged for a follow-up fix.
+- **`DrizzleEntityManager` never ran lifecycle hooks** — `@prePersist`/`@preUpdate` were ignored (validation ran against unfilled fields). Fixed: hooks now run before validation, matching `InMemoryEntityManager`.
 
 **M3 — `blue-orm-drizzle` is incomplete (2 of 5 interfaces) and un-consumed.** ✅ _RESOLVED 2026-09-05_
 

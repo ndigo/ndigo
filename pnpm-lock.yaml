@@ -325,6 +325,9 @@ importers:
       '@blue/orm':
         specifier: ~0.0.1
         version: link:../../packages/blue-orm
+      '@blue/orm-drizzle':
+        specifier: ~0.0.1
+        version: link:../../packages/blue-orm-drizzle
       '@blue/platform-node':
         specifier: ~0.0.1
         version: link:../../packages/blue-platform-node
@@ -656,25 +659,6 @@ importers:
       linkedom:
         specifier: ^0.18.9
         version: 0.18.12
-
-  packages/blue-domain:
-    dependencies:
-      zod:
-        specifier: ^4.5.4
-        version: 4.5.4
-    devDependencies:
-      '@blue/context':
-        specifier: ~0.0.1
-        version: link:../blue-context
-      '@blue/core':
-        specifier: ~0.0.1
-        version: link:../blue-core
-      '@blue/dispatcher':
-        specifier: ~0.0.1
-        version: link:../blue-dispatcher
-      '@blue/factory':
-        specifier: ~0.0.1
-        version: link:../blue-factory
 
   packages/blue-eslint-plugin:
     dependencies:

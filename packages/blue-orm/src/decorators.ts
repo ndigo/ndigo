@@ -62,6 +62,7 @@ export function column(options?: ColumnOptions) {
             columnName: options?.name ?? String(context.name),
             type: options?.type,
             nullable: options?.nullable,
+            schema: options?.schema,
         });
 
         context.metadata[columnsMetadataKey] = columns;

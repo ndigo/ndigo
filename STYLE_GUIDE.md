@@ -538,7 +538,7 @@ class MediaType extends Null implements Serializable {}
 class DataBinder {}
 class SpecificityComparator<T> implements Comparator<T> {}
 class PredicateComparator<T> implements Comparator<T> {}
-class EventModel {}
+class MediaType extends Null implements Serializable {}
 ```
 
 **Abstract Classes:**
@@ -651,20 +651,23 @@ Decorator functions follow standard function naming conventions (camelCase).
 @configuration
 class AppConfig {
     @entry
-    databaseConnection() { }
+    databaseConnection() {}
 }
 
 @routeMapping('/api/users')
-class UserController { }
+class UserController {}
 
-@pattern({ regex: /^[A-Z][a-z]+$/ })
-firstName: string;
+@entity('users')
+class User {
+    @column({ name: 'first_name', type: 'varchar' })
+    firstName: string;
+}
 
 @scope('singleton')
-class UserService { }
+class UserService {}
 
 @viewMapping('user-profile')
-class UserProfileView { }
+class UserProfileView {}
 ```
 
 **Rationale:** Decorators are functions that modify classes, methods, fields, or parameters. Following standard function naming conventions (camelCase) maintains consistency with JavaScript/TypeScript ecosystem patterns and TC39 decorator standards.
@@ -3041,10 +3044,10 @@ export const createOptionalConverter = (converter: ArgumentValueConverter) => {
     /* ... */
 };
 export const createNull = () => Object.create(null);
-export const createTypeValidator = (type: string) => {
+export const createDataSource = (options: DataSourceOptions) => {
     /* ... */
 };
-export const createValidationBackend = (name: ValidationBackendName) => {
+export const createUnitOfWork = (entityManager: EntityManager) => {
     /* ... */
 };
 
@@ -3338,6 +3341,41 @@ export class HttpMethod implements Equatable, Serializable {
 **Built-in Enum (Appropriate Use):**
 
 - `RouteAccess`, `RouteSource` - `@blue/router/src/hash-router.ts`
+
+---
+
+### 3.15. Validation [CONVENTION: Code Review]
+
+**Pattern:** Zod is the single runtime-schema primitive. There is exactly one way to validate a value at each level — no parallel constraint/decorator APIs. (`blue-validate` and `blue-model`/objectmodel were retired 2026-09-05 per AD-7; do not re-introduce them.)
+
+**Pick the shape by what you are validating:**
+
+| What                   | Canonical form                                                                                  |
+| :--------------------- | :---------------------------------------------------------------------------------------------- |
+| DTO / object shape     | `z.object({ ... })` — static type via `z.infer`                                                 |
+| Route parameter        | `validatedBy(schema, bindValue('query'))` in `@routeParams` (from `@blue/dispatcher`)           |
+| ENTITY field           | `@column({ schema: z.string().min(2) })` — the ORM derives the full entity schema from metadata |
+| Domain component field | `get validationSchemas(): Record<string, z.ZodType>` on a `GenericDomainComponent` subclass     |
+| A reusable value type  | `z.string().refine(...)` or `z.number().min(0)` — a schema _is_ the type                        |
+
+```typescript
+// ✅ Correct: Entity validation is derived from @column metadata
+@entity('users')
+class User {
+    @generated() @primaryColumn() id!: number;
+
+    @column({ type: 'varchar', schema: z.string().min(2) })
+    name!: string;
+}
+// schemaForEntity(User) / validateEntity(User, inst) from @blue/orm
+
+// ✅ Correct: Route param validation via validatedBy
+@routeMapping('/create')
+@routeParams({ user: validatedBy(UserSchema, bindValue('query')) })
+create(user: z.infer<typeof UserSchema>) { /* ... */ }
+```
+
+**Rationale:** One schema produces runtime validation _and_ the static type (`z.infer`), eliminating the `as any` casts that a decorator-based constraint system and third-party model wrappers required. The ORM, dispatcher, and domain component all consume the same Zod primitive, so there is no competing idiom to choose between.
 
 ---
 
@@ -4498,10 +4536,9 @@ const metadata = (handler?.constructor as any)?.[Symbol.metadata];
 When a module has many similar assertions (e.g., a library whose types end at `any`), a single module-level comment suffices:
 
 ```typescript
-// NOTE: objectmodel's `.as()` chain returns `ModelConstructor<any>`.
-// Every primitive export casts the final value because the library types
-// provide no constraint-level generics. A typed wrapper would require
-// wrapping every assertion — this is accepted for an integration layer.
+// NOTE: this third-party runtime resolves types dynamically, so the fluent
+// API returns `any`. A typed wrapper would require wrapping every call —
+// this is accepted for the integration layer.
 ```
 
 ### `// NOTE:` comments are technical debt

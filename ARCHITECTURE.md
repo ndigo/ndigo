@@ -23,15 +23,15 @@ BlueJS is a JavaScript-first application framework inspired by the design princi
     - [Related Pattern: Factory Registry](#related-pattern-factory-registry)
     - [Usage Examples](#usage-examples)
     - [Examples from Codebase](#examples-from-codebase)
-7. [Decorators & Separation of Concerns](#decorators--separation-of-concerns)
+8. [Decorators & Separation of Concerns](#decorators--separation-of-concerns)
     - [Cross-Cutting Concerns](#cross-cutting-concerns)
     - [Decorator Metadata](#decorator-metadata)
     - [Performance Considerations](#performance-considerations-2)
     - [Creating Custom Decorators](#creating-custom-decorators)
     - [Standards Compliance](#standards-compliance)
-8. [Naming Conventions](#naming-conventions)
-9. [Module Visibility & API Design](#module-visibility--api-design)
-10. [Roadmap](#roadmap)
+9. [Naming Conventions](#naming-conventions)
+10. [Module Visibility & API Design](#module-visibility--api-design)
+11. [Roadmap](#roadmap)
 
 ## Core Philosophy
 
@@ -825,16 +825,16 @@ When reviewing code, check for:
 
 The framework is organized into 8 architectural layers with clear dependency direction and platform-aware boundaries:
 
-| Layer                      | Packages                                                                         | Description                                                                 | Spring MVC Analogue                           |
-| :------------------------- | :------------------------------------------------------------------------------- | :-------------------------------------------------------------------------- | :-------------------------------------------- |
-| **7: Bootstrap**           | `@blue/boot`                                                                     | Application bootstrap, startup orchestration, and site/app lifecycle        | `SpringApplication`                           |
-| **6: Application**         | `@blue/service`, `@blue/domain`, `@blue/platform-web`, `@blue/print`             | Business services, domain model, platform adapters, browser fingerprinting  | User application + platform adapters          |
-| **5: Request Processing**  | `@blue/dispatcher`, `@blue/view`, `@blue/view-webcomponent`, `@blue/view-wicket` | Front controller, handler execution, and view resolution/rendering adapters | `DispatcherServlet` + `ViewResolver`          |
-| **4: Web Infrastructure**  | `@blue/http`, `@blue/router`, `@blue/telemetry`                                  | HTTP client/interceptors/transforms, routing primitives, observability      | HTTP stack + routing + observability          |
-| **3: Application Context** | `@blue/context`                                                                  | Application context, environment, events, configuration metadata            | `ApplicationContext`                          |
-| **2: Infrastructure**      | `@blue/factory`, `@blue/content`, `@blue/orm`                                   | IoC container internals, i18n/theming, persistence abstractions | `BeanFactory` + `MessageSource`             |
-| **1: Foundation**          | `@blue/core`, `@blue/signals`                                                    | Core primitives, collection types, path matching, reactive state            | Spring Core                                   |
-| **0: Integration Layer**   | `@blue/util`, `@blue/parser`, `@blue/dom`                                        | Encapsulated third-party libraries via stable BlueJS wrappers               | Commons / utility integration layer           |
+| Layer                      | Packages                                                                         | Description                                                                 | Spring MVC Analogue                  |
+| :------------------------- | :------------------------------------------------------------------------------- | :-------------------------------------------------------------------------- | :----------------------------------- |
+| **7: Bootstrap**           | `@blue/boot`                                                                     | Application bootstrap, startup orchestration, and site/app lifecycle        | `SpringApplication`                  |
+| **6: Application**         | `@blue/service`, `@blue/domain`, `@blue/platform-web`, `@blue/print`             | Business services, domain model, platform adapters, browser fingerprinting  | User application + platform adapters |
+| **5: Request Processing**  | `@blue/dispatcher`, `@blue/view`, `@blue/view-webcomponent`, `@blue/view-wicket` | Front controller, handler execution, and view resolution/rendering adapters | `DispatcherServlet` + `ViewResolver` |
+| **4: Web Infrastructure**  | `@blue/http`, `@blue/router`, `@blue/telemetry`                                  | HTTP client/interceptors/transforms, routing primitives, observability      | HTTP stack + routing + observability |
+| **3: Application Context** | `@blue/context`                                                                  | Application context, environment, events, configuration metadata            | `ApplicationContext`                 |
+| **2: Infrastructure**      | `@blue/factory`, `@blue/content`, `@blue/orm`                                    | IoC container internals, i18n/theming, persistence abstractions             | `BeanFactory` + `MessageSource`      |
+| **1: Foundation**          | `@blue/core`, `@blue/signals`                                                    | Core primitives, collection types, path matching, reactive state            | Spring Core                          |
+| **0: Integration Layer**   | `@blue/util`, `@blue/parser`, `@blue/dom`                                        | Encapsulated third-party libraries via stable BlueJS wrappers               | Commons / utility integration layer  |
 
 The `blue-todo` app sits above these layers as a reference implementation and integration proving ground.
 
@@ -957,10 +957,10 @@ graph TD
 
 ### Reactive state vs. application events
 
-| Facility | Canonical use | Anti-pattern |
-|---|---|---|
-| `@blue/signals` (`signal`/`computed`/`effect`) | **Local, synchronous, derived state** within one component or service — a value that other code reads and reacts to immediately. | Using signals to broadcast asynchronous cross-component notifications (a "signal as an event bus"). |
-| `@blue/context` `EventEmitter` (`Emitter`, `AsEventEmitter`) | **Cross-component, asynchronous application events** — decoupled publish/subscribe with `:`-hierarchy dispatch (`ApplicationEvent` style). | Using an emitter to model derived/inline state that components read synchronously. |
+| Facility                                                     | Canonical use                                                                                                                              | Anti-pattern                                                                                        |
+| ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------- |
+| `@blue/signals` (`signal`/`computed`/`effect`)               | **Local, synchronous, derived state** within one component or service — a value that other code reads and reacts to immediately.           | Using signals to broadcast asynchronous cross-component notifications (a "signal as an event bus"). |
+| `@blue/context` `EventEmitter` (`Emitter`, `AsEventEmitter`) | **Cross-component, asynchronous application events** — decoupled publish/subscribe with `:`-hierarchy dispatch (`ApplicationEvent` style). | Using an emitter to model derived/inline state that components read synchronously.                  |
 
 **Rule of thumb:** derived value you read → signal; thing that happened that others should react to → event.
 
@@ -969,7 +969,7 @@ graph TD
 ### Validation
 
 - **Zod is the canonical runtime-schema primitive** (`safeParse`/`parse` + `z.infer`). Schemas validate DTOs, route params, domain value objects, and signal state; `drizzle-zod` derives entity schemas from `blue-orm`'s decorator metadata so persistence, validation, and typing share one definition. See `docs/decisions/2026-09-05_AD7_ZOD_VALIDATION.md`.
-- `blue-orm` entities stay decorator-annotated (`@entity`/`@column`/`@primaryColumn`); validation is *derived from* those annotations, not a parallel decorator API.
+- `blue-orm` entities stay decorator-annotated (`@entity`/`@column`/`@primaryColumn`); validation is _derived from_ those annotations, not a parallel decorator API.
 - `blue-validate` (constraint/decorator system) and `blue-model` (objectmodel) were retired 2026-09-05 per AD-7; do not re-add them.
 
 ### Route → handler mapping
@@ -986,11 +986,11 @@ graph TD
 
 **Current Integration Layers:**
 
-| Integration Layer | Encapsulated Libraries | Purpose                                       |
-| :---------------- | :--------------------- | :-------------------------------------------- |
-| `@blue/util`      | `seedrandom`, `slug`   | Randomness, URL slugs                         |
-| `@blue/parser`    | `arcsecond`            | Parser combinators and parsing primitives     |
-| `@blue/dom`       | `linkedom`             | Isomorphic DOM parsing and element creation   |
+| Integration Layer | Encapsulated Libraries | Purpose                                     |
+| :---------------- | :--------------------- | :------------------------------------------ |
+| `@blue/util`      | `seedrandom`, `slug`   | Randomness, URL slugs                       |
+| `@blue/parser`    | `arcsecond`            | Parser combinators and parsing primitives   |
+| `@blue/dom`       | `linkedom`             | Isomorphic DOM parsing and element creation |
 
 ### Usage Rules
 
@@ -1272,19 +1272,26 @@ class RequestHandler {
 
 #### 4. Data Validation
 
-Validation decorators attach validation rules directly to model properties, keeping validation logic co-located with the data it protects.
+Entity decorators carry validation metadata that the framework derives into a Zod schema — validation logic is co-located with the field it protects, and the derived schema is the single source of truth (AD-7).
 
-- **Decorators**: `@pattern`
-- **Problem Solved**: Avoids scattering validation logic throughout the codebase. Provides a single source of truth for data integrity rules.
+- **Decorators**: `@column({ schema })`, `@primaryColumn`, `@generated`
+- **Problem Solved**: Keeps validation with the data it protects while producing a runtime schema _and_ a static type (`z.infer`) from one declaration. Route params use `validatedBy(schema, bindValue(...))` from `@blue/dispatcher`; domain components override `validationSchemas`.
 
 **Example:**
 
 ```typescript
+import { z } from 'zod';
+import { entity, column, primaryColumn } from '@blue/orm';
+
+@entity('users')
 class User {
-    @pattern({ regex: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i })
+    @primaryColumn()
+    id: number;
+
+    @column({ type: 'varchar', schema: z.string().email() })
     email: string;
 
-    @pattern({ regex: /^[A-Za-z\s]+$/ })
+    @column({ type: 'varchar', schema: z.string().regex(/^[A-Za-z\s]+$/) })
     name: string;
 }
 ```

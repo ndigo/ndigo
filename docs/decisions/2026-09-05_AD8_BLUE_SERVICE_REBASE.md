@@ -1,7 +1,7 @@
 # AD-8: blue-service — rebase interceptors onto @blue/http, roadmap to declarative service clients
 
 **Date:** 2026-09-05
-**Status:** Accepted (near-term rebase); full proxy generation is a documented roadmap item to build _after_ the current validation effort
+**Status:** Accepted (near-term rebase ✅); declarative service-client proxy pattern landed 2026-09-05 (see follow-up below)
 
 ## Background
 
@@ -35,16 +35,20 @@ The industry direction (OpenFeign, Retrofit, Spring Boot 4 `@HttpExchange` decla
 Target shape:
 
 ```ts
-@Service('accounts', { baseUrl: 'https://api.example.com' })
-interface AccountsAPI {
-    @getCall('/{id}')
-    getById(id: number): Promise<Account>;
+@service('accounts', { baseUrl: 'https://api.example.com' })
+class AccountsAPI {
+    @getCall('/accounts/:id')
+    getById(id: number): Promise<Account> {
+        return undefined as unknown;
+    }
 
-    @postCall('/')
-    create(account: Account): Promise<Account>;
+    @postCall('/accounts')
+    create(account: Account): Promise<Account> {
+        return undefined as unknown;
+    }
 }
 
-// Injected / constructed as AccountsAPI — the service name is the token,
+// serviceClient(AccountsAPI, http) — the service name is the token,
 // methods are typed, HTTP stays under the generated client.
 ```
 
@@ -55,6 +59,20 @@ Planned work items (deferred):
 3. **Service-name correlation** — the generated client propagates the service name as a header/tag so `RequestIdCorrelation` and telemetry hooks work unchanged.
 4. **Remove the name→URL registry indirection** — `@service` _is_ the registration; `MapServiceRegistry` becomes an internal detail or is deleted.
 5. **Drop the remaining service-specific interceptor surface** — with HTTP's contracts reused (near-term), the proxy delegates to `@blue/http`'s execution chain directly; no `ServiceExecutionChain` fork.
+
+## Follow-up (2026-09-05): declarative service-client proxy landed
+
+The roadmap proxy pattern is implemented in `blue-service` (commit pending):
+`@service(name, config)` + `@getCall`/`@postCall`/`@putCall`/`@deleteCall`/`@patchCall`/`@queryCall` write
+`Symbol.metadata`; `serviceClient(API, http)` (exported from the package index) reads it and returns a
+`Proxy` delegating to `@blue/http` with path-param substitution (`:id`), JSON body serialization,
+service-name correlation header (`X-Blue-Service`), and optional Zod response validation (AD-7).
+`resolveCallBody` and `fillPathTemplate` are exported for custom calls.
+
+Remaining deferred from the original plan (unbuilt by design, YAGNI):
+
+- **Registry indirection**: `MapServiceRegistry`/`Service.call(token, …)` stays as the imperative path; the proxy is the declarative path — not yet unified.
+- **`ServiceExecutionChain` fork**: the proxy currently delegates directly to `@blue/http`; service interceptors are not yet re-applied over the proxy path.
 
 ## Consequences
 

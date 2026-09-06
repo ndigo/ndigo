@@ -973,8 +973,9 @@ graph TD
 
 ### Validation
 
-- `@blue/validate` is the **canonical** constraint/validation system (`@validated`, `Validator`, `constraints`). Use it for application and route validation.
-- `@blue/model` (the `objectmodel` integration layer) is a **convenience for quick model-shaped assertions**, not a second validation framework. Prefer `@blue/validate` for anything that must integrate with the dispatcher, error handling, or reporting.
+- **Zod is the canonical runtime-schema primitive** (`safeParse`/`parse` + `z.infer`). Schemas validate DTOs, route params, domain value objects, and signal state; `drizzle-zod` derives entity schemas from `blue-orm`'s decorator metadata so persistence, validation, and typing share one definition. See `docs/decisions/2026-09-05_AD7_ZOD_VALIDATION.md`.
+- `blue-orm` entities stay decorator-annotated (`@entity`/`@column`/`@primaryColumn`); validation is *derived from* those annotations, not a parallel decorator API.
+- `blue-validate` (constraint/decorator system) and `blue-model` (objectmodel) are legacy — being retired per AD-7; do not add new code against them.
 
 ### Route → handler mapping
 

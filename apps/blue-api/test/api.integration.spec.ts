@@ -62,6 +62,30 @@ describe('blue-api through @blue/test', () => {
         expect(res.json()).toEqual({ error: 'Invalid credentials' });
     });
 
+    test('Drizzle-backed POST /drizzle/notes persists to SQL and lists it', async () => {
+        const login = await mockMVC.post('/auth/login').body({ username: 'admin', password: 'demo' }).exec();
+        const { token } = login.json() as { token?: string };
+        expect(token).toBeDefined();
+
+        const create = await mockMVC
+            .post('/drizzle/notes')
+            .headers({ authorization: `Bearer ${token}` })
+            .body({ title: 'SQL Note', body: 'persisted via libSQL' })
+            .exec();
+        expect(create.response.status).toBe(200);
+        const created = create.json() as { note?: { id?: number; title?: string; createdAt?: string } };
+        expect(created.note?.id).toBeGreaterThan(0); // generated PK read back from SQL
+        expect(created.note?.title).toBe('SQL Note');
+        expect(created.note?.createdAt).toBeDefined(); // @prePersist filled it
+
+        const list = await mockMVC
+            .get('/drizzle/notes')
+            .headers({ authorization: `Bearer ${token}` })
+            .exec();
+        const { notes } = list.json() as { notes?: Array<{ id: number; title: string }> };
+        expect(notes!.some((n) => n.title === 'SQL Note')).toBe(true);
+    });
+
     test('Drizzle-backed notes list + get-by-id read from SQL', async () => {
         // Acquire a valid demo token
         const login = await mockMVC.post('/auth/login').body({ username: 'admin', password: 'demo' }).exec();

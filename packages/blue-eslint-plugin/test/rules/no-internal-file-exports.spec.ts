@@ -48,7 +48,7 @@ ruleTester.run('no-internal-file-exports', noInternalFileExports, {
         },
         {
             code: "export * from './_constants';",
-            filename: '/packages/blue-model/src/index.ts',
+            filename: '/packages/blue-factory/src/index.ts',
             errors: [
                 {
                     messageId: 'internalExport',

@@ -832,9 +832,9 @@ The framework is organized into 8 architectural layers with clear dependency dir
 | **5: Request Processing**  | `@blue/dispatcher`, `@blue/view`, `@blue/view-webcomponent`, `@blue/view-wicket` | Front controller, handler execution, and view resolution/rendering adapters | `DispatcherServlet` + `ViewResolver`          |
 | **4: Web Infrastructure**  | `@blue/http`, `@blue/router`, `@blue/telemetry`                                  | HTTP client/interceptors/transforms, routing primitives, observability      | HTTP stack + routing + observability          |
 | **3: Application Context** | `@blue/context`                                                                  | Application context, environment, events, configuration metadata            | `ApplicationContext`                          |
-| **2: Infrastructure**      | `@blue/factory`, `@blue/content`, `@blue/validate`, `@blue/orm`                  | IoC container internals, i18n/theming, validation, persistence abstractions | `BeanFactory` + `MessageSource` + `Validator` |
-| **1: Foundation**          | `@blue/core`, `@blue/reactive`                                                   | Core primitives, collection types, path matching, reactive models           | Spring Core                                   |
-| **0: Integration Layer**   | `@blue/util`, `@blue/parser`, `@blue/model`, `@blue/dom`                         | Encapsulated third-party libraries via stable BlueJS wrappers               | Commons / utility integration layer           |
+| **2: Infrastructure**      | `@blue/factory`, `@blue/content`, `@blue/orm`                                   | IoC container internals, i18n/theming, persistence abstractions | `BeanFactory` + `MessageSource`             |
+| **1: Foundation**          | `@blue/core`, `@blue/signals`                                                    | Core primitives, collection types, path matching, reactive state            | Spring Core                                   |
+| **0: Integration Layer**   | `@blue/util`, `@blue/parser`, `@blue/dom`                                        | Encapsulated third-party libraries via stable BlueJS wrappers               | Commons / utility integration layer           |
 
 The `blue-todo` app sits above these layers as a reference implementation and integration proving ground.
 
@@ -887,18 +887,17 @@ graph TD
     subgraph L2["Layer 2: Infrastructure"]
         Factory[@blue/factory]
         Content[@blue/content]
-        Validate[@blue/validate]
+        Orm[@blue/orm]
     end
 
     subgraph L1["Layer 1: Foundation"]
         Core[@blue/core]
-        Reactive[@blue/reactive]
+        Signals[@blue/signals]
     end
 
     subgraph L0["Layer 0: Integration Layer"]
         Util[@blue/util]
         Parser[@blue/parser]
-        Model[@blue/model]
         Dom[@blue/dom]
     end
 
@@ -915,7 +914,6 @@ graph TD
     ViewWebComponent --> View
     ViewWicket --> View
     ViewWicket --> Core
-    ViewWicket --> Reactive
     ViewWicket --> Dom
     Http --> Core
     Http --> Parser
@@ -924,9 +922,8 @@ graph TD
     Context --> Core
     Factory --> Core
     Content --> Core
-    Validate --> Core
     Core --> Util
-    Reactive --> Util
+    Signals --> Util
     Parser --> Util
     Model --> Util
 
@@ -945,9 +942,7 @@ graph TD
     style Context fill:#e1ffe5
     style Factory fill:#ffe1e1
     style Content fill:#ffe1e1
-    style Validate fill:#ffe1e1
     style Core fill:#fff9e1
-    style Reactive fill:#fff9e1
     style Util fill:#e1f0ff
     style Parser fill:#e1f0ff
     style Model fill:#e1f0ff
@@ -969,13 +964,13 @@ graph TD
 
 **Rule of thumb:** derived value you read → signal; thing that happened that others should react to → event.
 
-> **Removed (2026-09-05):** `@blue/model`'s `EventModel`/`asMinimalEventEmitter` — the legacy pre-signals "observable model" emitter — has been deleted. Reactive models are now `@blue/signals`' `@reactive`/`@signal` decorators, with validation layered on via `@blue/validate` (or `objectmodel`'s `BasicModel`).
+> **Removed (2026-09-05):** `@blue/model`'s `EventModel`/`asMinimalEventEmitter` — the legacy pre-signals "observable model" emitter — has been deleted. Reactive models are now `@blue/signals`' `@reactive`/`@signal` decorators, with validation via Zod schemas (AD-7).
 
 ### Validation
 
 - **Zod is the canonical runtime-schema primitive** (`safeParse`/`parse` + `z.infer`). Schemas validate DTOs, route params, domain value objects, and signal state; `drizzle-zod` derives entity schemas from `blue-orm`'s decorator metadata so persistence, validation, and typing share one definition. See `docs/decisions/2026-09-05_AD7_ZOD_VALIDATION.md`.
 - `blue-orm` entities stay decorator-annotated (`@entity`/`@column`/`@primaryColumn`); validation is *derived from* those annotations, not a parallel decorator API.
-- `blue-validate` (constraint/decorator system) and `blue-model` (objectmodel) are legacy — being retired per AD-7; do not add new code against them.
+- `blue-validate` (constraint/decorator system) and `blue-model` (objectmodel) were retired 2026-09-05 per AD-7; do not re-add them.
 
 ### Route → handler mapping
 
@@ -995,7 +990,6 @@ graph TD
 | :---------------- | :--------------------- | :-------------------------------------------- |
 | `@blue/util`      | `seedrandom`, `slug`   | Randomness, URL slugs                         |
 | `@blue/parser`    | `arcsecond`            | Parser combinators and parsing primitives     |
-| `@blue/model`     | `objectmodel`          | Runtime type validation and model definitions |
 | `@blue/dom`       | `linkedom`             | Isomorphic DOM parsing and element creation   |
 
 ### Usage Rules
@@ -1464,7 +1458,7 @@ Files beginning with underscore (`_`) are **internal implementation details**:
 
 ### Current Status (March 2026)
 
-- **Foundation is stable**: `@blue/util`, `@blue/parser`, `@blue/model`, and `@blue/core` are mature and broadly reusable.
+- **Foundation is stable**: `@blue/util`, `@blue/parser`, `@blue/core`, and `@blue/signals` are mature and broadly reusable.
 - **IoC/context are functional**: `@blue/factory` and `@blue/context` provide working DI/context patterns, with some infrastructure stubs still open.
 - **Web stack is operational**: `@blue/http`, `@blue/router`, and `@blue/dispatcher` support a complete dispatch flow demonstrated in `blue-todo`.
 - **Observability migrated**: `@blue/telemetry` now owns tracing/metrics/logging concerns; `@blue/logger` has been removed.

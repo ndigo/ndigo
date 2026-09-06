@@ -1,3 +1,4 @@
+import { TagMapping } from '@blue/view-webcomponent';
 import { routes } from './shell-composition';
 import './shell-nav-view';
 
@@ -22,6 +23,7 @@ interface ShellNavElement extends HTMLElement {
     model: unknown;
 }
 
+@TagMapping('account-app')
 class AccountApp extends HTMLElement {
     #section: 'overview' | 'settings';
     #title: string;
@@ -84,7 +86,5 @@ class AccountApp extends HTMLElement {
         };
     }
 }
-
-window.customElements.define('account-app', AccountApp);
 
 export default AccountApp;

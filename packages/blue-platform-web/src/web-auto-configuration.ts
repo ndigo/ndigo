@@ -6,8 +6,8 @@ import { BrowserModelValueMethodArgumentResolver } from './model-argument-resolv
 import { BrowserSessionValueMethodArgumentResolver } from './session-argument-resolver';
 import { BrowserStateValueMethodArgumentResolver } from './state-argument-resolver';
 import { RadixMetadataHandlerMapping } from '@blue/dispatcher';
-import { NameViewResolver } from '@blue/view';
-import { WebComponentViewEngine } from '@blue/view-webcomponent';
+import { NameViewResolver, ViewResolverComposite } from '@blue/view';
+import { WebComponentViewEngine, WebComponentViewResolver } from '@blue/view-webcomponent';
 import { conditionalOnBrowser } from '@blue/core';
 
 /**
@@ -55,14 +55,15 @@ export class WebAutoConfiguration {
     }
 
     /**
-     * Provides the default view resolver that matches views by name.
-     * Can be overridden by registering a custom `configuration` with a viewResolver entry.
+     * Provides the default view resolver chain: web-component descriptors
+     * first, then name-registered view beans. Can be overridden by
+     * registering a custom `configuration` with a viewResolver entry.
      *
-     * @returns The default name-based view resolver.
+     * @returns The composite view resolver.
      */
     @entry
     viewResolver() {
-        return new NameViewResolver();
+        return new ViewResolverComposite([new WebComponentViewResolver(), new NameViewResolver()]);
     }
 
     /**

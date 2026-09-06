@@ -1,16 +1,20 @@
 /**
- * View that streams a model as Server-Sent Events to the HTTP response (AD-9).
+ * Imperative server-push view: streams Server-Sent Events to the HTTP
+ * response (AD-9, naming cleanup).
  *
- * The model must carry an async-iterable event source under the `events` key:
+ * The view is constructed **per request** with its own event source — unlike
+ * resolved views, it carries per-connection state (the source, the open
+ * response). Handlers return it directly; it is never resolved by name (see
+ * the view-resolution strategy plan).
  *
  * ```ts
  * @getMapping('/events')
  * events() {
- *     return new ModelAndView(new EventStreamView(), { events: tickStream() });
+ *     return new ServerSentEventView(tickStream());
  * }
  * ```
  *
- * Each yielded value is written as one SSE frame. A value shaped
+ * The source's yielded values become SSE frames. A value shaped
  * `{ event?, data }` contributes an `event:` line (when present) plus a JSON
  * `data:` line; any other value is framed as JSON data only. Frames are
  * terminated by a blank line, so JSON-serialized payloads (which escape
@@ -23,45 +27,48 @@
  * @since 1.0.0
  */
 
-import { MediaTypes } from '@blue/core';
+import { MediaTypes, ServerSentEvent } from '@blue/core';
 import { Route } from '@blue/router';
 import { View } from '@blue/view';
 import type { ServerResponse } from 'node:http';
 import { NODE_RESPONSE_ATTRIBUTE } from './node-request';
 
 /**
- * One server-pushed event: an optional event name plus a payload to
- * JSON-serialize into the frame's `data:` line.
- */
-export interface StreamEvent {
-    /** Optional event name written to the `event:` line. */
-    event?: string;
-    /** Payload JSON-serialized into the `data:` line. */
-    data: unknown;
-}
-
-/** An event source as carried by the view model (`{ events: source }`). */
-export type EventSource = AsyncIterable<unknown>;
-
-/**
- * Normalizes a yielded item into an event envelope: `{ event, data }`-shaped
- * values pass through, anything else becomes an unnamed data event.
+ * Normalizes a yielded item into the shared event envelope: `{ event, data }`
+ * -shaped values pass through, anything else becomes an unnamed data event.
  *
  * @param item - The value yielded by the event source.
  * @returns The normalized envelope.
  */
-function normalize(item: unknown): StreamEvent {
+function normalize(item: unknown): ServerSentEvent {
     if (typeof item === 'object' && item !== null && 'data' in item) {
-        return { event: (item as StreamEvent).event, data: (item as StreamEvent).data };
+        return {
+            event: typeof (item as ServerSentEvent).event === 'string' ? (item as ServerSentEvent).event : 'message',
+            data: (item as ServerSentEvent).data,
+        };
     }
-    return { data: item };
+    return { event: 'message', data: item };
 }
 
 /**
- * A `View` that writes an async-iterable model to the HTTP response as
+ * A `View` that writes an async-iterable event source to the HTTP response as
  * `text/event-stream`, one SSE frame per yielded value.
  */
-export class EventStreamView implements View {
+export class ServerSentEventView implements View {
+    readonly #source: AsyncIterable<unknown>;
+
+    /**
+     * Creates a view for the given event source.
+     *
+     * @param source - The async iterable of events to push.
+     */
+    constructor(source: AsyncIterable<unknown>) {
+        if (typeof source[Symbol.asyncIterator] !== 'function') {
+            throw new TypeError('ServerSentEventView requires an async-iterable event source.');
+        }
+        this.#source = source;
+    }
+
     /**
      * The media type of the streamed response.
      */
@@ -80,31 +87,20 @@ export class EventStreamView implements View {
     }
 
     /**
-     * Stream the model's event source to the `ServerResponse` stored in the
+     * Stream the view's event source to the `ServerResponse` stored in the
      * route's attributes. Ends the response when the source completes.
      *
-     * @param model - The view model; `model.events` must be an async iterable.
+     * @param _model - Unused — the source is owned by the view.
      * @param route - The current route; supplies the `ServerResponse`.
      * @param _target - Unused — this view writes directly to the response.
      */
-    async render(model: unknown, route: Route, _target: unknown): Promise<void> {
+    async render(_model: unknown, route: Route, _target: unknown): Promise<void> {
         if (this.destroyed) {
             return;
         }
 
         const res = route.attributes?.[NODE_RESPONSE_ATTRIBUTE] as unknown as ServerResponse | undefined;
         if (!res || res.headersSent || res.destroyed) {
-            return;
-        }
-
-        const source = (model as { events?: unknown } | null)?.events;
-        if (
-            typeof source !== 'object' ||
-            source === null ||
-            typeof (source as EventSource)[Symbol.asyncIterator] !== 'function'
-        ) {
-            res.writeHead(500, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ error: 'EventStreamView requires model.events to be an async iterable' }));
             return;
         }
 
@@ -119,7 +115,7 @@ export class EventStreamView implements View {
         res.flushHeaders();
 
         try {
-            for await (const item of source as EventSource) {
+            for await (const item of this.#source) {
                 if (res.destroyed) {
                     break;
                 }

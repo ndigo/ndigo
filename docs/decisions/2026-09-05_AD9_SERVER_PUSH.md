@@ -64,7 +64,7 @@ Revisit WebSocket when a **bidirectional** consumer (chat, collaborative presenc
 
 ## Implementation order (proposed)
 
-1. SSE response support in `blue-platform-node` (`EventStreamView`/streaming `ResponseEntity`).
+1. SSE response support in `blue-platform-node` (`ServerSentEventView`/streaming response).
 2. `stream: true` on `@blue/service` `@*Call` (AD-8 proxy returns `AsyncIterable`).
 3. Client `EventSource` → `@blue/signals` bridge.
 4. Wire the island demo: server pushes tick/model events; island re-renders.
@@ -73,7 +73,7 @@ Revisit WebSocket when a **bidirectional** consumer (chat, collaborative presenc
 
 All four implementation-order items are built and proven by the hybrid demo (`apps/blue-island`):
 
-1. **SSE response support in `blue-platform-node`** — `EventStreamView` (exported from the package index): a `View` that writes a model's `events` async iterable to the `ServerResponse` as `text/event-stream` frames (JSON `data:` lines, optional `event:` name), ending the response when the source ends. `MediaTypes.TEXT_EVENT_STREAM` added in `blue-core`. Headers are flushed before the stream begins (Node buffers headers until the first write — a waiting stream deadlocks otherwise). Verified over a real `node:http` server in `test/event-stream-view.spec.ts`.
+1. **SSE response support in `blue-platform-node`** — `ServerSentEventView` (exported from the package index; naming cleanup, see plan): an imperative view constructed per request with its own async-iterable event source, writing `text/event-stream` frames (JSON `data:` lines, optional `event:` name) and ending the response when the source ends. `MediaTypes.TEXT_EVENT_STREAM` added in `blue-core`; the wire envelope is the shared `ServerSentEvent` type (also produced by the client parser). Headers are flushed before the stream begins (Node buffers headers until the first write — a waiting stream deadlocks otherwise). Handlers return the view directly (imperative View — rendered through the direct-View branch). Verified over a real `node:http` server in `test/server-sent-event-view.spec.ts`.
 
 2. **`stream: true` on `@blue/service` calls** — `ServiceCallConfig.stream`; the AD-8 proxy returns an `AsyncIterable` of parsed Server-Sent Events for a `stream: true` call (sends `Accept: text/event-stream`), validating each event's `data` with the call's `responseSchema` when declared. `ServerSentEventParser`/`parseServerSentEvents` (exported) implement incremental `text/event-stream` parsing (fields, JSON data fallback to raw, comments, CRLF, chunk-boundary assembly). Same interceptor/correlation/telemetry pipeline as any call.
 
@@ -84,5 +84,5 @@ All four implementation-order items are built and proven by the hybrid demo (`ap
 ## Consequences (updated)
 
 - **No new dependency** — SSE rides raw `node:http` + `fetch`/`ReadableStream`; `ws` remains deferred (opt-in, bidirectional consumers only).
-- **Unified mental model realized** — a push endpoint is a streaming response of the service layer: `@getCall('/events', { stream: true })` + `serviceClient()` is the whole client API; the server side is a controller returning `new ModelAndView(new EventStreamView(), { events })`.
+- **Unified mental model realized** — a push endpoint is a streaming response of the service layer: `@getCall('/events', { stream: true })` + `serviceClient()` is the whole client API; the server side is a controller returning `new ServerSentEventView(events)` (the view is imperative — constructed per request — unlike resolved views; see the view-resolution strategy plan).
 - **The reactive hybrid is demonstrated** — server push → signal → island re-render, exercised by `apps/blue-island/test` (10 tests, incl. two sequential pushes over a real server) and live smoke.

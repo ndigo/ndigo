@@ -1,6 +1,7 @@
 import { configuration, entry } from '@blue/context';
 import { conditionalOnNode } from '@blue/core';
 import { RadixMetadataHandlerMapping } from '@blue/dispatcher';
+import { IslandViewResolver } from '@blue/view';
 import { NodeDispatcher } from './node-dispatcher';
 import { argumentValueConverters } from './argument-value-converter';
 import { NodeQueryValueMethodArgumentResolver } from './query-argument-resolver';
@@ -65,5 +66,16 @@ export class NodeAutoConfiguration {
     @entry
     dispatcher() {
         return new NodeDispatcher();
+    }
+
+    /**
+     * Provides the default view resolver for server-side rendering:
+     * island markers (server-rendered pairs of the client web components).
+     *
+     * @returns The island view resolver.
+     */
+    @entry
+    viewResolver() {
+        return new IslandViewResolver();
     }
 }

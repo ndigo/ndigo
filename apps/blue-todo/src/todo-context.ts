@@ -3,29 +3,20 @@ import { ApplicationBuilder } from '@blue/boot';
 import { WebAutoConfiguration } from '@blue/platform-web';
 import { LoggingRouteHandlerInterceptor, RadixMetadataHandlerMapping } from '@blue/dispatcher';
 import { getLogger } from '@blue/telemetry';
-import { NameViewResolver } from '@blue/view';
-import { DOMElementViewTarget, WebComponentViewEngine } from '@blue/view-webcomponent';
+import { DOMElementViewTarget } from '@blue/view-webcomponent';
 import AccountController from './account-controller';
 import IndexController from './index-controller';
-import AccountApp from './account-app-view';
-import MyTodoApp from './todo-app-view';
+// Side-effect imports: loading these modules registers the components
+// (`@TagMapping` → `customElements.define`).
+import './account-app-view';
+import './todo-app-view';
 import TodoService from './todo-service';
 
 @configuration
 class ToDoconfiguration {
     @entry
-    accountApp() {
-        return new AccountApp();
-    }
-
-    @entry
     accountController() {
         return new AccountController();
-    }
-
-    @entry
-    todoApp() {
-        return new MyTodoApp();
     }
 
     @entry
@@ -42,11 +33,6 @@ class ToDoconfiguration {
     }
 
     @entry
-    viewResolver() {
-        return new NameViewResolver();
-    }
-
-    @entry
     viewTarget() {
         const target = new DOMElementViewTarget(document.getElementById('app'));
         target.setEventMap({
@@ -55,11 +41,6 @@ class ToDoconfiguration {
             onToggle: 'user:todo:toggled',
         });
         return target;
-    }
-
-    @entry
-    webComponentViewEngine() {
-        return new WebComponentViewEngine();
     }
 
     @entry
@@ -72,8 +53,9 @@ class ToDoconfiguration {
 }
 
 export const createTodoContext = () => {
-    // The browser auto-config (argument resolvers etc.) is registered
-    // explicitly — @blue/boot no longer auto-registers it.
+    // The browser auto-config (view resolver chain, web component engine,
+    // argument resolvers) is registered explicitly — @blue/boot no longer
+    // auto-registers it.
     const context = new ApplicationBuilder([WebAutoConfiguration, ToDoconfiguration]).run();
     return context;
 };

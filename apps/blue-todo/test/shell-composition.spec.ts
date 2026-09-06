@@ -136,7 +136,8 @@ describe('todo shell composition', () => {
 
         expect(composition.featureMountManager.isMounted('todo')).toBe(true);
         expect(composition.featureMountManager.isMounted('account')).toBe(false);
-        expect(document.querySelector('#app todo-app')).not.toBeNull();
+        // The dispatch renders asynchronously (resolver chain) — wait for it.
+        await vi.waitFor(() => expect(document.querySelector('#app todo-app')).not.toBeNull());
 
         dispose();
     });

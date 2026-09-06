@@ -34,6 +34,14 @@ export {
 // Metadata utilities
 export { getEntityMetadata, isEntity } from './metadata';
 
+// Zod schema derivation (AD-7)
+export {
+    schemaForEntity,
+    schemaForColumn,
+    baseSchemaForType,
+    validateEntity,
+} from './entity-schema';
+
 // Implementations
 export { InMemoryDataSource } from './data-source';
 export { InMemoryEntityManager } from './entity-manager';

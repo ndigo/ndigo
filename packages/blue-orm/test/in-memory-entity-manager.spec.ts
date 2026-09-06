@@ -1,5 +1,6 @@
 import '@tsmetadata/polyfill';
 
+import { z } from 'zod';
 import { IllegalStateError } from '@blue/core';
 import { InMemoryDataSource } from '../src/data-source';
 import {
@@ -287,26 +288,15 @@ describe('validate-on-persist integration', () => {
         @primaryColumn()
         id: number | undefined;
 
-        @column()
+        @column({ type: 'varchar', schema: z.string().min(2) })
         name: string;
 
-        @column()
+        @column({ type: 'int', schema: z.number().min(18) })
         age: number;
 
         constructor(name: string, age: number) {
             this.name = name;
             this.age = age;
-        }
-
-        validate(): { isValid: boolean; failedProperties: Set<string> } {
-            const failures = new Set<string>();
-            if (!this.name || this.name.trim().length < 2) {
-                failures.add('name');
-            }
-            if (this.age < 18) {
-                failures.add('age');
-            }
-            return { isValid: failures.size === 0, failedProperties: failures };
         }
     }
 
@@ -324,10 +314,10 @@ describe('validate-on-persist integration', () => {
 
     test('throws when entity validation fails', () => {
         const user = new ValidatedUser('', 15);
-        expect(() => entityValidator.persist(user)).toThrow('Entity validation failed');
+        expect(() => entityValidator.persist(user)).toThrow('Entity validation failed for fields: name, age');
     });
 
-    test('does not validate entities without validate method', () => {
+    test('does not validate entities without declared column schemas', () => {
         @entity()
         class SimpleUser {
             @generated()

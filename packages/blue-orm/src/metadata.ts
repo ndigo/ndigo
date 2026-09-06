@@ -1,3 +1,4 @@
+import type { z } from 'zod';
 import { Constructable } from '@blue/core';
 import {
     columnsMetadataKey,
@@ -33,6 +34,12 @@ export interface ColumnOptions {
     name?: string;
     type?: string;
     nullable?: boolean;
+    /**
+     * Optional Zod schema validating this column's value. When set, the
+     * entity's derived schema (see `schemaForEntity`) validates the field
+     * with this type instead of an untyped passthrough.
+     */
+    schema?: z.ZodType;
 }
 
 /**
@@ -43,6 +50,7 @@ export interface ColumnDefinition {
     columnName: string;
     type?: string;
     nullable?: boolean;
+    schema?: z.ZodType;
 }
 
 /**

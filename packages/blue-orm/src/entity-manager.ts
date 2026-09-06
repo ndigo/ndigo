@@ -1,6 +1,7 @@
-import { Constructable, IllegalStateError, FrameworkError } from '@blue/core';
+import { Constructable, IllegalStateError } from '@blue/core';
 import { DataSource } from './data-source';
 import { getEntityMetadata, isEntity } from './metadata';
+import { validateEntity } from './entity-schema';
 
 /**
  * Manages the lifecycle of entities, including persistence, retrieval, and removal.
@@ -60,8 +61,8 @@ export class InMemoryEntityManager implements EntityManager {
     /**
      * Persists a new entity or updates an existing one in the in-memory store.
      * Automatically assigns generated primary IDs if applicable.
-     * Runs any `@prePersist` / `@preUpdate` lifecycle hooks and calls `validate()`
-     * on the entity if the method exists (e.g. via `@validated` from `@blue/validate`).
+     * Runs any `@prePersist` / `@preUpdate` lifecycle hooks, then validates the
+     * entity against its Zod schema derived from `@column` metadata (AD-7).
      *
      * @param entity - The entity to persist.
      * @throws {IllegalStateError} If the entity class is not decorated with `@entity`,
@@ -98,8 +99,8 @@ export class InMemoryEntityManager implements EntityManager {
             this.#callLifecycleHooks(entity, 'preUpdate');
         }
 
-        // Validate if the entity has a validate() method (e.g. via @validated decorator)
-        this.#validateEntity(entity);
+        // Validate against the Zod schema derived from @column metadata (AD-7)
+        this.#validateEntity(entityClass, entity);
 
         store.set(primaryId, entity);
     }
@@ -217,20 +218,14 @@ export class InMemoryEntityManager implements EntityManager {
     }
 
     /**
-     * Calls `validate()` on the entity when the method exists (e.g. via `@validated` from `@blue/validate`).
+     * Validates the entity against its derived Zod schema (AD-7).
      * Throws a `FrameworkError` when validation fails.
      *
+     * @param entityClass - The entity constructor.
      * @param entity - The entity to validate.
      * @throws {FrameworkError} When validation fails.
      */
-    #validateEntity<T extends object>(entity: T): void {
-        const record = entity as Record<string, (...args: unknown[]) => unknown>;
-        if (typeof record.validate === 'function') {
-            const result = record.validate() as { isValid: boolean; failedProperties?: Set<string> };
-            if (!result.isValid) {
-                const fields = result.failedProperties ? [...result.failedProperties].join(', ') : 'unknown';
-                throw new FrameworkError(`Entity validation failed for fields: ${fields}`);
-            }
-        }
+    #validateEntity<T extends object>(entityClass: Constructable<T>, entity: T): void {
+        validateEntity(entityClass, entity);
     }
 }

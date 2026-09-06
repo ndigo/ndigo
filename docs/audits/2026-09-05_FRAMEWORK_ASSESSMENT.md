@@ -47,9 +47,9 @@ It also accepts the second framing: a public API that "meets most needs" is legi
 
 `apps/blue-todo` uses both `@blue/signals` (item state in `todo-service.ts`) and the context emitter (controllers) — now with a documented boundary.
 
-**R2 — Two validation systems: `blue-model` vs `blue-validate`.**
+**R2 — Two validation systems: `blue-model` vs `blue-validate`.** ✅ *DECIDED 2026-09-05 → AD-7*
 
-`blue-model` wraps third-party `objectmodel` (assertion-at-construction); `blue-validate` is the first-party constraint/`@validated` system. Both validate objects. `blue-domain` consumes `blue-validate`; `blue-model`'s only framework consumer is `blue-domain`'s `types.ts`. **Action:** declare `blue-validate` canonical for application/route validation; demote `blue-model` to an integration-layer convenience (or absorb it) and document the boundary.
+Corrected: `blue-validate` is the *legacy* constraint/decorator system; `blue-model`/objectmodel was the intended modernization that never landed (no type inference, no ORM/signal integration). Decision (AD-7): **Zod is the canonical runtime-schema primitive** — retire both, derive entity schemas from `blue-orm` decorator metadata via `drizzle-zod`, keep `blue-orm` entities decorator-annotated. See `docs/decisions/2026-09-05_AD7_ZOD_VALIDATION.md`.
 
 **R3 — `blue-service` duplicates `blue-http`'s interceptor pattern (not a full redundancy).**
 
@@ -63,11 +63,11 @@ It composes `blue-model` + `blue-validate` + `blue-context` + `blue-factory` int
 
 **M2 — `blue-orm` is in-memory only in practice.**
 
-The only app consumer (`blue-api`) uses `InMemoryDataSource`. That is acceptable for a public API that "meets most needs" (unit testing, prototyping) provided a real adapter exists — see M3.
+The only app consumer (`blue-api`) uses `InMemoryDataSource`. That is acceptable for a public API that "meets most needs" (unit testing, prototyping) provided a real adapter exists — see M3. Per AD-7, entity validation moves from the legacy `validate()` hook to a Zod schema derived from `@entity`/`@column` metadata.
 
 **M3 — `blue-orm-drizzle` is incomplete (2 of 5 interfaces) and un-consumed.**
 
-`blue-orm` defines five contracts (`DataSource`, `EntityManager`, `UnitOfWork`, `TransactionManager`, `Repository`); `blue-orm-drizzle` implements only `DataSource` + `EntityManager`. No migrations/schema management. **Action:** complete the remaining three interfaces + a migration story, or document the package as WIP and stop exporting it as if complete.
+`blue-orm` defines five contracts (`DataSource`, `EntityManager`, `UnitOfWork`, `TransactionManager`, `Repository`); `blue-orm-drizzle` implements only `DataSource` + `EntityManager`. No migrations/schema management. **Action:** complete the remaining three interfaces + a migration story, or document the package as WIP and stop exporting it as if complete. AD-7 adds `drizzle-zod` (zod v4 compatible, `0.8.3`) so the Drizzle table schema becomes the validation source of truth.
 
 **M4 — No real persistence, scheduling, websockets/SSE, server-side template engine, or session *store*.** Session *argument resolvers* exist in both platforms, but no backing store package. These are gaps to record, not necessarily to fill now.
 

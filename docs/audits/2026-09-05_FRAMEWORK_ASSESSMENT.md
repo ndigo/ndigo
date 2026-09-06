@@ -77,7 +77,15 @@ The only app consumer (`blue-api`) uses `InMemoryDataSource`. That is acceptable
 
 Reworked to radix-only: the duplicate `radix-route-handler-mapping.ts`/`radix-metadata-handler-mapping.ts` files (byte-identical, both exporting `RadixMetadataHandlerMapping`) were consolidated; `LinearMetadataHandlerMapping` was **deleted** after the repo's own benchmark (`bench/routing.bench.ts`) showed radix is 40–63× faster on every hit scenario and isomorphic (no node-only code) — so both browser and node now default to radix. `NamePathHandlerMapping` stays as the strategy-chain fallback; `SimplePathHandlerMapping` is internal. Docs updated (ARCHITECTURE §Paradigm Selection Rules).
 
-**A2 — Paradigm selection is not enforced.** The `like*` guards (77 of them) _detect_ structural roles, and 64 `FrameworkError` throw sites enforce lifecycle/state (destroyed targets, double-listen, missing handlers/views, duplicate feature registration). But nothing throws or warns when a paradigm is misapplied — e.g. using signals to replicate application events, or an emitter to model derived state. The "one way to solve" property is enforced for naming/imports (oxlint) and lifecycle/state, **not** for paradigm selection.
+**A2 — Paradigm selection is not enforced.** ✅ _RESOLVED 2026-09-05 — two-tier enforcement_
+
+Anti-pattern detection now has three tiers:
+
+- **Structural/misuse → runtime `FrameworkError`/`TypeError` throws.** Added decorator kind-guards to `@service`/`@*Call` (blue-service), `@authenticated`/`@authorized` (blue-auth-core), `@transactional` (blue-orm); `getSignal` throws when `@signal`/`@effect` fields are used without the required `@reactive` class decorator. Pre-existing: `@entry`, `@routeMapping("")`, `serviceClient` without `@service`, entity without `@primaryColumn`, OIDC/CORS config misuse.
+- **Cross-paradigm confusion → lint.** Two new `@blue/eslint-plugin` rules (error): `no-cross-paradigm-decorators` (mixing `@service`/`@*Call` with `@routeMapping`/`@*Mapping` on one class) and `no-signals-in-entity` (`@blue/signals` imported where an `@entity` class is declared). Repo is clean under both.
+- **Intent-level (e.g. "used an event when a derived field belonged") → documented for review** (ARCHITECTURE.md §Paradigm Selection Rules). Not mechanically detectable: `emit` vs `effect` have identical call shapes; this tier is enforcement-by-documented-rule + code review.
+
+The "one way to solve" property is now enforced for naming/imports (oxlint), structural misuse (throws), and cross-paradigm mixing (lint); only intent-level idiom choice remains review-based.
 
 ## Decision rules (to be added to architecture docs)
 

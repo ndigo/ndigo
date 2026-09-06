@@ -15,6 +15,8 @@ import { noBrowserGlobalsInIsomorphic } from './rules/no-browser-globals-in-isom
 import { noUppercaseRegexpConstants } from './rules/no-uppercase-regexp-constants.js';
 import { noAbstractClassWithoutPrefix } from './rules/no-abstract-class-without-prefix.js';
 import { noMixedCaseAcronyms } from './rules/no-mixed-case-acronyms.js';
+import { noCrossParadigmDecorators } from './rules/no-cross-paradigm-decorators.js';
+import { noSignalsInEntity } from './rules/no-signals-in-entity.js';
 
 const plugin = eslintCompatPlugin({
     meta: {
@@ -28,6 +30,8 @@ const plugin = eslintCompatPlugin({
         'no-uppercase-regexp-constants': noUppercaseRegexpConstants,
         'no-abstract-class-without-prefix': noAbstractClassWithoutPrefix,
         'no-mixed-case-acronyms': noMixedCaseAcronyms,
+        'no-cross-paradigm-decorators': noCrossParadigmDecorators,
+        'no-signals-in-entity': noSignalsInEntity,
     },
 });
 
@@ -50,6 +54,8 @@ const plugin = eslintCompatPlugin({
             '@blue/no-uppercase-regexp-constants': 'error',
             '@blue/no-abstract-class-without-prefix': 'error',
             '@blue/no-mixed-case-acronyms': 'error',
+            '@blue/no-cross-paradigm-decorators': 'error',
+            '@blue/no-signals-in-entity': 'error',
         },
     },
 };

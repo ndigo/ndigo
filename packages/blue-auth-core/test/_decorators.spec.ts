@@ -27,18 +27,19 @@ describe('@authenticated decorator', () => {
         expect(metadata[`${AUTH_REQUIRED_KEY}:handle`]).toBe(true);
     });
 
-    test('does not set metadata on non-class, non-method contexts', () => {
-        let metadata: Record<string, unknown> = {};
+    test('throws on non-class, non-method contexts (anti-pattern detection)', () => {
+        const metadata: Record<string, unknown> = {};
 
         function dummyMethod() {}
 
-        authenticated(dummyMethod, {
-            kind: 'field',
-            name: 'prop',
-            metadata: metadata as any,
-            type: 'field',
-        } as any);
-
+        expect(() =>
+            authenticated(dummyMethod, {
+                kind: 'field',
+                name: 'prop',
+                metadata: metadata as any,
+                type: 'field',
+            } as any)
+        ).toThrow('@authenticated can only be applied to a class or method');
         expect(metadata[AUTH_REQUIRED_KEY]).toBeUndefined();
     });
 });

@@ -1,7 +1,7 @@
 # AD-7: Zod as the canonical runtime-schema primitive
 
 **Date:** 2026-09-05
-**Status:** Accepted
+**Status:** Executed — all 7 migration steps landed 2026-09-05
 
 ## Background
 
@@ -52,15 +52,17 @@ The framework accumulated three overlapping "data shape" facilities:
 - Static entity/domain types via `z.infer` (removes the `as any` surface in `blue-model`).
 - Single-source-of-truth persistence + validation via `drizzle-zod`.
 
-## Migration order (proposed)
+## Migration order (executed 2026-09-05)
 
-1. Bump `zod` to `^4.5.4`; add `drizzle-zod@^0.8.3` where needed.
-2. Add a `blue-orm` Zod-schema derivation from entity metadata (decorator → `z.object`).
-3. Replace `blue-orm`'s `validate()` hook with the derived Zod schema; add tests.
-4. Migrate `blue-domain` value objects to Zod schemas.
-5. Migrate `blue-platform-web` route params to schema-first Zod; drop the `Validator` overload.
-6. Delete `blue-validate` (constraint system) and `blue-model`; remove `objectmodel` from the integration map.
-7. Update `ARCHITECTURE.md` / `AGENTS.md` / `docs/audits` and the `no-direct-integration-imports` rule.
+1. Bump `zod` to `^4.5.4`; add where needed. ✅
+2. Add a `blue-orm` Zod-schema derivation from entity metadata (decorator → `z.object`). ✅ `entity-schema.ts`
+3. Replace `blue-orm`'s `validate()` hook with the derived Zod schema; add tests. ✅
+4. Migrate `blue-domain` value objects to Zod — deleted dead `types.ts`; `GenericDomainComponent.validate()` is now Zod-backed via `validationSchemas`. ✅
+5. Migrate `blue-platform-web` route params; drop the `Validator` overload — `validatedBy` (Zod-only) moved to `blue-dispatcher`, wired through a new `MethodParameter.convert` slot + bind resolver. ✅
+6. Delete `blue-validate` + `blue-model`; remove `objectmodel` from the integration map. ✅
+7. Update docs + eslint rule sweep. ✅
+
+**Note:** `drizzle-zod` was deferred — `blue-orm-drizzle` builds raw SQL DDL from metadata rather than Drizzle table objects, so `drizzle-zod` has no integration point yet. The derivation is direct from metadata; `drizzle-zod` applies once the adapter adopts Drizzle table schemas.
 
 ## Revisit Trigger
 

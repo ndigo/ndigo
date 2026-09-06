@@ -258,11 +258,10 @@ This will prevent `TypeError` exceptions at runtime. The build process may not a
 | :------------- | :------------------- | :------------- |
 | `@blue/util`   | `seedrandom`, `slug` | `@blue/util`   |
 | `@blue/parser` | `arcsecond`          | `@blue/parser` |
-| `@blue/model`  | `objectmodel`        | `@blue/model`  |
 
 **Import Rules by Package Type:**
 
-1. **Integration Layer Packages** (`@blue/util`, `@blue/parser`, `@blue/model`):
+1. **Integration Layer Packages** (`@blue/util`, `@blue/parser`):
 
     - ✅ May import directly from their encapsulated libraries
     - ✅ Must re-export functionality through `src/index.ts`
@@ -432,7 +431,7 @@ When organizing helper functions and utilities, follow the extraction hierarchy:
         - **Step 2 - Scan related packages:** Check common utilities and specialized tools:
             - `@blue/util` - Common utilities (string utils, seedrandom, slug) - **Check first!**
             - `@blue/parser` - String parsing (arcsecond wrappers) - Use for parsing URLs, queries, expressions
-            - `@blue/model` - Object validation (objectmodel) - Use for data validation
+            - `@blue/validate` - (retired 2026-09-05 per AD-7; use `zod` via `@blue/orm` entity schemas / `@blue/dispatcher` `validatedBy`)
             - `@blue/core` - Core primitives, containers, patterns - Use for application context, DI, base types
     - **After big changes:** refresh the graph with `graft build`.
 3.  **Plan:** Check `docs/migrations/` or `ARCHITECTURE.md` for recent architectural shifts.

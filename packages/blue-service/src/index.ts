@@ -33,3 +33,5 @@ export {
 } from './service-decorators';
 export type { ServiceClientConfig, ServiceCallConfig } from './service-decorators';
 export { serviceClient, fillPathTemplate, resolveCallBody, SERVICE_NAME_HEADER } from './service-client';
+export { parseServerSentEvents, ServerSentEventParser } from './server-sent-events';
+export type { ServerSentEvent } from './server-sent-events';

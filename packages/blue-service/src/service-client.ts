@@ -9,6 +9,8 @@
  * - the first object arg becomes the JSON body for methods that carry one,
  * - a `responseSchema` (Zod) validates the JSON body and returns typed data,
  * - otherwise the raw `Response` is returned,
+ * - `stream: true` calls return an async iterable of Server-Sent Events
+ *   (JSON data validated by `responseSchema` when declared),
  * - the service name rides along as a correlation tag header.
  *
  * Works with either an `@service`-decorated class (prototype metadata) or a
@@ -18,8 +20,15 @@
  */
 
 import { HTTP, HTTPInit } from '@blue/http';
-import { getServiceCalls, getServiceConfig, SERVICE_METADATA_KEY, type ServiceCallConfig } from './service-decorators';
+import {
+    getServiceCalls,
+    getServiceConfig,
+    SERVICE_METADATA_KEY,
+    type ServiceCallConfig,
+    type ServiceClientConfig,
+} from './service-decorators';
 import { IllegalStateError } from '@blue/core';
+import { ServerSentEventParser, type ServerSentEvent } from './server-sent-events';
 
 /** Header carrying the service name for correlation/tracing. */
 export const SERVICE_NAME_HEADER = 'X-Blue-Service';
@@ -58,6 +67,90 @@ export function resolveCallBody(method: string, args: unknown[]): unknown {
 }
 
 /**
+ * Executes a `stream: true` call: performs the HTTP request, decodes the
+ * response body chunks as they arrive, and yields each parsed Server-Sent
+ * Event (AD-9). With a declared `responseSchema`, each event's `data` payload
+ * is validated and the typed value is yielded instead of the raw event.
+ *
+ * @param config - The service config (name used in error messages).
+ * @param call - The call config (method, path, optional schema).
+ * @param url - The fully resolved request URL.
+ * @param init - The request settings (already carrying the stream Accept header).
+ * @param http - The HTTP client executing the call.
+ * @returns An async iterable of events (or validated data) as they arrive.
+ */
+async function* streamCall(
+    config: ServiceClientConfig,
+    call: ServiceCallConfig,
+    url: string,
+    init: HTTPInit,
+    http: HTTP
+): AsyncGenerator<unknown> {
+    const response = await http.request(url, init);
+    if (!response.ok || !response.body) {
+        throw new IllegalStateError(
+            `Service '${config.name}' stream request failed (HTTP ${response.status ?? 'unknown'}).`
+        );
+    }
+
+    const parser = new ServerSentEventParser();
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder();
+
+    const deliver = (event: ServerSentEvent): unknown => {
+        if (!call.responseSchema) {
+            return event;
+        }
+        const result = call.responseSchema.safeParse(event.data);
+        if (!result.success) {
+            const message = result.error?.issues
+                ?.map((issue) => `${issue.path.join('.') || 'body'}: ${issue.message}`)
+                .join(', ');
+            throw new IllegalStateError(`Service '${config.name}' response validation failed: ${message}`);
+        }
+        return result.data;
+    };
+
+    try {
+        for (;;) {
+            // oxlint-disable-next-line no-await-in-loop -- stream consumption is inherently sequential
+            const { done, value } = await reader.read();
+            if (done) {
+                break;
+            }
+            if (value.length > 0) {
+                for (const event of parser.feed(decoder.decode(value, { stream: true }))) {
+                    yield deliver(event);
+                }
+            }
+        }
+        const tail = decoder.decode();
+        if (tail.length > 0) {
+            for (const event of parser.feed(tail)) {
+                yield deliver(event);
+            }
+        }
+    } catch (error: unknown) {
+        if (error instanceof IllegalStateError) {
+            throw error;
+        }
+        throw new IllegalStateError(`Service '${config.name}' stream failed: ${(error as Error).message}`);
+    } finally {
+        // Flush any event buffered without a trailing newline, then release
+        // the reader so the underlying stream can be reused/cancelled.
+        for (const event of parser.finish()) {
+            yield deliver(event);
+        }
+        try {
+            reader.releaseLock();
+        } catch {
+            // A read is still pending (consumer disposed mid-flight); the
+            // stream is released by GC once the connection settles.
+        }
+    }
+}
+
+/**
  * Builds a runtime service client from `@service`/`@*Call` metadata.
  *
  * @param target - The `@service`-decorated class/interface constructor or object.
@@ -89,34 +182,45 @@ export function serviceClient<T extends object>(target: T, http: HTTP): T {
                 return Reflect.get(target as object, prop);
             }
 
-            return async (...args: unknown[]): Promise<unknown> => {
+            return (...args: unknown[]): unknown => {
                 const path = fillPathTemplate(call.path, args);
                 const body = resolveCallBody(call.method, args);
+                const url = `${config.baseUrl.replace(/\/$/, '')}${path}`;
+                const headers: Record<string, string> = {
+                    ...config.headers,
+                    [SERVICE_NAME_HEADER]: config.name,
+                };
+
+                // Streaming call — return the event iterable directly so the
+                // consumer iterates events as they arrive over the open response.
+                if (call.stream) {
+                    headers['Accept'] = 'text/event-stream';
+                    return streamCall(config, call, url, { method: call.method, headers }, http);
+                }
 
                 const init: HTTPInit = {
                     method: call.method,
-                    headers: {
-                        ...config.headers,
-                        [SERVICE_NAME_HEADER]: config.name,
-                    },
+                    headers,
                     ...(body !== undefined ? { body: JSON.stringify(body) } : {}),
                 };
 
-                const response = await http.request(`${config.baseUrl.replace(/\/$/, '')}${path}`, init);
-
-                if (call.responseSchema) {
-                    const data: unknown = await response.json().catch(() => undefined);
-                    const result = call.responseSchema.safeParse(data);
-                    if (!result.success) {
-                        const message = result.error?.issues
-                            ?.map((issue) => `${issue.path.join('.') || 'body'}: ${issue.message}`)
-                            .join(', ');
-                        throw new IllegalStateError(`Service '${config.name}' response validation failed: ${message}`);
+                return http.request(url, init).then(async (response): Promise<unknown> => {
+                    if (call.responseSchema) {
+                        const data: unknown = await response.json().catch(() => undefined);
+                        const result = call.responseSchema.safeParse(data);
+                        if (!result.success) {
+                            const message = result.error?.issues
+                                ?.map((issue) => `${issue.path.join('.') || 'body'}: ${issue.message}`)
+                                .join(', ');
+                            throw new IllegalStateError(
+                                `Service '${config.name}' response validation failed: ${message}`
+                            );
+                        }
+                        return result.data;
                     }
-                    return result.data;
-                }
 
-                return response;
+                    return response;
+                });
             };
         },
     }) as T;

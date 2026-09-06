@@ -1,5 +1,7 @@
 import { getMapping, ModelAndView } from '@blue/dispatcher';
+import { EventStreamView } from '@blue/platform-node';
 import { StringTemplateView } from '@blue/view';
+import { TodoModel, TodoModelStore } from './todo-model-store';
 
 // The server-rendered island markup — the Web Component tag with the
 // serialized model. `hydrateIslands()` on the client upgrades it to a live
@@ -17,35 +19,73 @@ const SHELL = `<!DOCTYPE html>
 <body>
     <h1>Blue Island</h1>
     <p>Rendered by the <strong>server</strong>; the component below is a
-       Web Component island hydrated on the <strong>client</strong>.</p>
+       Web Component island hydrated on the <strong>client</strong>. Model
+       updates are pushed from the server over SSE (AD-9).</p>
     <todo-app data-blue-island data-blue-model="{{islandModel}}"></todo-app>
     <script type="module" src="/static/client.js"></script>
 </body>
 </html>`;
 
-/** The server-side todo model serialized into the island. */
-function todoModel(): unknown {
-    return {
-        items: [
-            { text: 'Server-rendered island', done: true },
-            { text: 'Hydrated on the client', done: false },
-        ],
-        filter: 'all',
-    };
-}
-
 /**
- * Serves the hybrid shell: a full HTML document containing the server-rendered
- * island (Web Component tag + serialized model) and the client bundle that
- * upgrades it via `hydrateIslands()`.
+ * Serves the hybrid shell (the server-rendered island + client bundle) and
+ * the reactive half of the demo (AD-9): `GET /events` pushes source-of-truth
+ * model updates to the client as Server-Sent Events, which the hydrated
+ * island consumes into its local reactive state (`@blue/signals`).
  */
 @getMapping('/')
 export class IslandController {
+    readonly #modelStore: TodoModelStore;
+
+    constructor(modelStore: TodoModelStore) {
+        this.#modelStore = modelStore;
+    }
+
     @getMapping('/')
     index() {
-        const serialized = encodeURIComponent(JSON.stringify(todoModel()));
+        const serialized = encodeURIComponent(JSON.stringify(this.#modelStore.get()));
         const view = new StringTemplateView();
         view.template = SHELL.replace('{{islandModel}}', serialized);
         return new ModelAndView(view, { islandModel: serialized });
+    }
+
+    /**
+     * The push endpoint: one SSE event per model update, as it happens.
+     */
+    @getMapping('/events')
+    events(): ModelAndView {
+        const modelStore = this.#modelStore;
+
+        async function* pushUpdates(): AsyncGenerator<{ event: string; data: { model: TodoModel } }> {
+            const queue: TodoModel[] = [];
+            let release: (() => void) | undefined;
+
+            const notify = async (): Promise<void> => {
+                queue.push(modelStore.get());
+                release?.();
+                release = undefined;
+            };
+            const unsubscribe = modelStore.subscribe(notify);
+            try {
+                while (true) {
+                    if (queue.length === 0) {
+                        // oxlint-disable-next-line no-await-in-loop -- a push channel is inherently sequential
+                        await new Promise<void>((resolve) => {
+                            release = resolve;
+                        });
+                    }
+                    const model = queue.shift();
+                    if (model === undefined) {
+                        continue;
+                    }
+                    yield { event: 'model', data: { model } };
+                }
+            } finally {
+                // The client disconnected (EventStreamView closes the
+                // iterator); stop queueing updates for it.
+                unsubscribe();
+            }
+        }
+
+        return new ModelAndView(new EventStreamView(), { events: pushUpdates() });
     }
 }

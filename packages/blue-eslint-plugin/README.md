@@ -22,7 +22,6 @@ contracts:
 
 - `@blue/util` encapsulates utilities such as `ramda` and `date-fns`
 - `@blue/parser` encapsulates `arcsecond`
-- `@blue/model` encapsulates `objectmodel`
 
 This plugin helps ensure that other BlueJS packages import through those integration layers rather
 than directly from encapsulated libraries.

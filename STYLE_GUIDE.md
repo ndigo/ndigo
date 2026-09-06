@@ -2027,7 +2027,7 @@ function isPrimitive(value: unknown): boolean {
     return value == null || typeof value !== 'object';
 }
 
-// From @blue/validate (validation predicates)
+// isValidDate-style predicates live in @blue/util (date utilities)
 function isValidDate(value: temporal, format: string): boolean {
     return !isNaN(Date.parse(value));
 }

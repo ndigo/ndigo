@@ -1,11 +1,11 @@
 import '@tsmetadata/polyfill';
 import { configuration, entry } from '@blue/context';
+import { StaticController } from '@blue/platform-node';
 import { GreetingController } from './greeting-controller';
 import { AuthController } from './auth-controller';
 import { NoteController } from './note-controller';
 import { DrizzleNoteController } from './drizzle-note-controller';
 import { ProductController } from './product-controller';
-import { StaticController } from './static-controller';
 
 @configuration
 export class NodeAppConfiguration {

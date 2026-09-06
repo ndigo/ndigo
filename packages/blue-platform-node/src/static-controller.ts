@@ -11,18 +11,25 @@ import { getMapping, pathValue, routeParams } from '@blue/dispatcher';
 import { ResponseStatuses } from '@blue/http';
 import { ResponseEntity, StaticResourceResolver } from '@blue/platform-node';
 
-const BASE = process.env['STATIC_DIR'] ?? `${process.cwd()}/public`;
-const resolver = new StaticResourceResolver(BASE);
-
 @getMapping('/static')
 export class StaticController {
+    readonly #resolver: StaticResourceResolver;
+
+    /**
+     * @param baseDir - Static root. Defaults to `STATIC_DIR` env or `./public`.
+     */
+    constructor(baseDir?: string) {
+        const base = baseDir ?? process.env['STATIC_DIR'] ?? `${process.cwd()}/public`;
+        this.#resolver = new StaticResourceResolver(base);
+    }
+
     /**
      * GET /static/{file} — serves a file from the public directory.
      */
     @getMapping('/{file}')
     @routeParams({ file: pathValue('file') })
     async serve(file?: string) {
-        const result = await resolver.resolve(file ?? '');
+        const result = await this.#resolver.resolve(file ?? '');
         if (result.kind !== 'ok') {
             if (result.kind === 'not-found') return ResponseEntity.notFound();
             return new ResponseEntity(

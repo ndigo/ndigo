@@ -40,6 +40,10 @@ export class ResponseEntityView {
             // Raw string body for non-JSON content types (e.g. HTML, CSS, images).
             res.writeHead(entity.status.code, headers);
             res.end(entity.body);
+        } else if (Buffer.isBuffer(entity.body)) {
+            // Raw binary body (e.g. static file bytes) — never JSON-encode.
+            res.writeHead(entity.status.code, headers);
+            res.end(entity.body);
         } else {
             res.writeHead(entity.status.code, headers);
             res.end(JSON.stringify(entity.body));

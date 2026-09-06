@@ -20,6 +20,7 @@ export * from './response-entity';
 export * from './response-entity-view';
 export * from './static-file-view';
 export * from './static-resource-resolver';
+export * from './static-controller';
 export * from './cookie-parser';
 export * from './csrf-interceptor';
 export * from './cors-interceptor';

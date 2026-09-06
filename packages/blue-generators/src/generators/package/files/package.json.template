@@ -14,10 +14,6 @@
         "test": "vitest run",
         "test:watch": "vitest"
     },
-    "repository": {
-        "type": "git",
-        "url": "https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue.git"
-    },
     "author": "Jeff Rose <jeff_rose@outlook.com>",
     "license": "ISC",
     "dependencies": {},

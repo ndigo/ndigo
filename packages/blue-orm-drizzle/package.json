@@ -1,7 +1,7 @@
 {
   "name": "@blue/orm-drizzle",
   "version": "0.0.1",
-  "description": "Blue ORM Drizzle – Drizzle ORM adapter for @blue/orm",
+  "description": "Blue ORM Drizzle \u2013 Drizzle ORM adapter for @blue/orm",
   "type": "module",
   "files": [
     "lib"
@@ -15,13 +15,7 @@
   "types": "lib/index.d.ts",
   "scripts": {
     "build:lib": "tsc -b tsconfig.build.json",
-    "test": "vitest run",
-    "api-report": "api-extractor run --local --verbose"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue.git",
-    "directory": "packages/blue-orm-drizzle"
+    "test": "vitest run"
   },
   "keywords": [
     "blue",

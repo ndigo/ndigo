@@ -1,7 +1,7 @@
 {
   "name": "@blue/management",
   "version": "0.0.1",
-  "description": "Blue management endpoints — /health and /metrics (actuator-style)",
+  "description": "Blue management endpoints \u2014 /health and /metrics (actuator-style)",
   "type": "module",
   "files": [
     "doc",
@@ -17,10 +17,6 @@
   "scripts": {
     "build:lib": "tsc -b tsconfig.build.json",
     "test": "vitest run"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue.git"
   },
   "keywords": [
     "blue",

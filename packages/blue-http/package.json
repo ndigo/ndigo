@@ -21,12 +21,7 @@
   "scripts": {
     "build:lib": "tsc -b tsconfig.build.json",
     "test": "vitest run",
-    "test:watch": "vitest",
-    "api-report": "api-extractor run --local --verbose"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue.git"
+    "test:watch": "vitest"
   },
   "keywords": [
     "blue",

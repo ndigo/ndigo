@@ -675,12 +675,6 @@ importers:
       '@blue/factory':
         specifier: ~0.0.1
         version: link:../blue-factory
-      '@blue/model':
-        specifier: ~0.0.1
-        version: link:../blue-model
-      '@blue/validate':
-        specifier: ~0.0.1
-        version: link:../blue-validate
 
   packages/blue-eslint-plugin:
     dependencies:
@@ -761,19 +755,6 @@ importers:
       '@blue/view':
         specifier: ~0.0.1
         version: link:../blue-view
-
-  packages/blue-model:
-    dependencies:
-      objectmodel:
-        specifier: ~4.4.6
-        version: 4.4.8
-    devDependencies:
-      '@blue/core':
-        specifier: ~0.0.1
-        version: link:../blue-core
-      '@blue/util':
-        specifier: ~0.0.1
-        version: link:../blue-util
 
   packages/blue-orm:
     dependencies:
@@ -1080,19 +1061,6 @@ importers:
       '@types/slug':
         specifier: ~5.0.9
         version: 5.0.9
-
-  packages/blue-validate:
-    dependencies:
-      zod:
-        specifier: ^4.5.4
-        version: 4.5.4
-    devDependencies:
-      '@blue/core':
-        specifier: ~0.0.1
-        version: link:../blue-core
-      '@blue/util':
-        specifier: ~0.0.1
-        version: link:../blue-util
 
   packages/blue-view:
     devDependencies:
@@ -6070,10 +6038,6 @@ packages:
   object-inspect@1.13.4:
     resolution: {integrity: sha512-W67iLl4J2EXEGTbfeHCffrjDfitvLANg0UlX3wFUUSTx92KXRFegMHUVgSqE+wvhAbi4WqjGg9czysTV2Epbew==}
     engines: {node: '>= 0.4'}
-
-  objectmodel@4.4.8:
-    resolution: {integrity: sha512-8KM8RLIDrs7GlTiePlvdca3KszyzdHGCMDPVzPq1g5wUeS41t1mfamjDhrqiW/zVEqmDrh2XNqMaCvhu1Xq0Pg==}
-    engines: {node: '>=13', npm: '>=6.14'}
 
   obuf@1.1.2:
     resolution: {integrity: sha512-PX1wu0AmAdPqOL1mWhqmlOd8kOIZQwGZw6rh7uby9fTc5lhaOWFLX3I6R1hrF9k3zUY40e6igsLGkDXK92LJNg==}
@@ -13185,8 +13149,6 @@ snapshots:
   object-assign@4.1.1: {}
 
   object-inspect@1.13.4: {}
-
-  objectmodel@4.4.8: {}
 
   obuf@1.1.2: {}
 

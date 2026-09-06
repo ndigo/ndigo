@@ -58,6 +58,20 @@ export class ServerSentEventView implements View {
     readonly #source: AsyncIterable<unknown>;
 
     /**
+     * Number of frames written to the response. Observable (public) so
+     * telemetry instrumentations can report streaming totals without hooks
+     * in the hot write path.
+     */
+    frameCount = 0;
+
+    /**
+     * Set when the stream ends because the client disconnected (the write
+     * failed or the response was destroyed mid-stream). Observable for
+     * telemetry.
+     */
+    clientDisconnected = false;
+
+    /**
      * Creates a view for the given event source.
      *
      * @param source - The async iterable of events to push.
@@ -100,7 +114,12 @@ export class ServerSentEventView implements View {
         }
 
         const res = route.attributes?.[NODE_RESPONSE_ATTRIBUTE] as unknown as ServerResponse | undefined;
-        if (!res || res.headersSent || res.destroyed) {
+        if (!res || res.headersSent) {
+            return;
+        }
+        if (res.destroyed) {
+            // The client was already gone before this render started.
+            this.clientDisconnected = true;
             return;
         }
 
@@ -114,21 +133,33 @@ export class ServerSentEventView implements View {
         // proceeds.
         res.flushHeaders();
 
+        // Node surfaces a client abort on the socket close, not on write()
+        // (writes to a closed socket may succeed while buffered). Watch the
+        // response's close so a mid-stream disconnect is observable.
+        const onClose = (): void => {
+            this.clientDisconnected = true;
+        };
+        res.on('close', onClose);
+
         try {
             for await (const item of this.#source) {
                 if (res.destroyed) {
+                    this.clientDisconnected = true;
                     break;
                 }
                 const { event, data } = normalize(item);
                 const frame = `${event !== undefined ? `event: ${event}\n` : ''}data: ${JSON.stringify(data)}\n\n`;
                 try {
                     res.write(frame);
+                    this.frameCount += 1;
                 } catch {
                     // The client disconnected mid-stream; stop pushing.
+                    this.clientDisconnected = true;
                     break;
                 }
             }
         } finally {
+            res.off('close', onClose);
             try {
                 res.end();
             } catch {

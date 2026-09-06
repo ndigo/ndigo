@@ -918,6 +918,9 @@ importers:
 
   packages/blue-service:
     dependencies:
+      '@opentelemetry/api':
+        specifier: ~1.9.1
+        version: 1.9.1
       zod:
         specifier: ^4.5.4
         version: 4.5.4
@@ -934,9 +937,15 @@ importers:
       '@blue/http':
         specifier: ~0.0.1
         version: link:../blue-http
+      '@blue/telemetry':
+        specifier: ~0.0.1
+        version: link:../blue-telemetry
       '@blue/util':
         specifier: ~0.0.1
         version: link:../blue-util
+      '@opentelemetry/sdk-trace-base':
+        specifier: ~2.11.0
+        version: 2.11.0(@opentelemetry/api@1.9.1)
 
   packages/blue-signals:
     dependencies:

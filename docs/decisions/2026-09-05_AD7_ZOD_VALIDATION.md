@@ -62,7 +62,7 @@ The framework accumulated three overlapping "data shape" facilities:
 6. Delete `blue-validate` + `blue-model`; remove `objectmodel` from the integration map. ✅
 7. Update docs + eslint rule sweep. ✅
 
-**Note:** `drizzle-zod` remains deferred — `blue-orm-drizzle` builds raw SQL DDL from metadata rather than Drizzle table objects, so `drizzle-zod` has no integration point yet. The derivation is direct from metadata; `drizzle-zod` applies once the adapter adopts Drizzle table schemas.
+**Note (resolved 2026-09-05):** `drizzle-zod` is now integrated — `blue-orm-drizzle/src/drizzle-zod.ts` materializes a real Drizzle `sqliteTable` from `@entity`/`@column` metadata (`drizzleTableForEntity`, with SQL-type → sqlite-core builder mapping, `.notNull()`/nullable + autoincrement PK handling) and derives insert/select Zod schemas via `createInsertSchema`/`createSelectSchema`. The metadata-built table's columns are dynamic, so the drizzle-zod boundary uses a documented bounded cast. Tests confirm the derived schemas enforce the entity shape (id string-coerced, required non-nullables, optional nullables).
 
 ### Follow-up (2026-09-05, `1518ae0c`)
 

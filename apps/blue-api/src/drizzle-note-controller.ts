@@ -1,4 +1,4 @@
-import { getMapping, routeParams, headerValue, pathValue } from '@blue/dispatcher';
+import { getMapping, postMapping, routeParams, headerValue, pathValue, bodyValue } from '@blue/dispatcher';
 import { ResponseEntity } from '@blue/platform-node';
 import { DrizzleDataSource, DrizzleEntityManager } from '@blue/orm-drizzle';
 import { DrizzleNote } from './drizzle-note.entity';
@@ -22,13 +22,9 @@ export function getDrizzleDataSource(): DrizzleDataSource {
 }
 
 /**
- * Drizzle-backed note controller (M2): SQL persistence through the framework's
- * async handler support (read path). The in-memory `NoteController` remains
- * the zero-config path; this demonstrates the SQL adapter end-to-end.
- *
- * Write path: `DrizzleEntityManager.persist` is exercised by the adapter's
- * own integration tests — an async POST handler with a `bodyValue('*')` param
- * currently drops its response serialization (framework gap, see audit).
+ * Drizzle-backed note controller (M2): SQL persistence (read + write) through
+ * the framework's async handler support. The in-memory `NoteController`
+ * remains the zero-config path; this demonstrates the SQL adapter end-to-end.
  */
 @getMapping('/drizzle')
 export class DrizzleNoteController {
@@ -64,5 +60,24 @@ export class DrizzleNoteController {
         return {
             note: { id: note.id, title: note.title, body: note.body, createdAt: note.createdAt },
         };
+    }
+
+    @postMapping('/notes')
+    @routeParams({ token: headerValue('authorization'), data: bodyValue('*') })
+    async create(token: string | undefined, data: Record<string, unknown>) {
+        const bearer = token?.replace(/^Bearer\s+/i, '');
+        if (!bearer || !lookupPrincipal(bearer)) {
+            return ResponseEntity.badRequest({ error: 'Unauthorized' });
+        }
+        await ensureInit();
+        const note = new DrizzleNote();
+        note.title = String(data?.['title'] ?? '');
+        note.body = String(data?.['body'] ?? '');
+        await this.#entityManager.persist(note);
+        // Entity fields are decorator-affixed (non-enumerable); return a plain
+        // object so JSON serialization carries the values.
+        return ResponseEntity.ok({
+            note: { id: note.id, title: note.title, body: note.body, createdAt: note.createdAt },
+        });
     }
 }

@@ -784,6 +784,9 @@ importers:
       '@blue/orm':
         specifier: ~0.0.1
         version: link:../blue-orm
+      zod:
+        specifier: ^4.5.4
+        version: 4.5.4
 
   packages/blue-platform-node:
     devDependencies:

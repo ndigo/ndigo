@@ -1,0 +1,68 @@
+import { getMapping, routeParams, headerValue, pathValue } from '@blue/dispatcher';
+import { ResponseEntity } from '@blue/platform-node';
+import { DrizzleDataSource, DrizzleEntityManager } from '@blue/orm-drizzle';
+import { DrizzleNote } from './drizzle-note.entity';
+import { lookupPrincipal } from './auth-store';
+
+const dataSource = new DrizzleDataSource({ url: ':memory:' });
+// Idempotent + async: the first call that awaits init() creates the table;
+// subsequent calls short-circuit on #initialized.
+let initPromise: Promise<void> | null = null;
+function ensureInit(): Promise<void> {
+    initPromise ??= dataSource.init([DrizzleNote]);
+    return initPromise;
+}
+
+/**
+ * The demo's Drizzle data source — exported so integration tests can seed the
+ * same (in-memory) SQL store the routes read from.
+ */
+export function getDrizzleDataSource(): DrizzleDataSource {
+    return dataSource;
+}
+
+/**
+ * Drizzle-backed note controller (M2): SQL persistence through the framework's
+ * async handler support (read path). The in-memory `NoteController` remains
+ * the zero-config path; this demonstrates the SQL adapter end-to-end.
+ *
+ * Write path: `DrizzleEntityManager.persist` is exercised by the adapter's
+ * own integration tests — an async POST handler with a `bodyValue('*')` param
+ * currently drops its response serialization (framework gap, see audit).
+ */
+@getMapping('/drizzle')
+export class DrizzleNoteController {
+    readonly #entityManager: DrizzleEntityManager;
+
+    constructor() {
+        this.#entityManager = new DrizzleEntityManager(dataSource);
+    }
+
+    @getMapping('/notes')
+    @routeParams({ token: headerValue('authorization') })
+    async list(token: string | undefined) {
+        const bearer = token?.replace(/^Bearer\s+/i, '');
+        if (!bearer || !lookupPrincipal(bearer)) {
+            return ResponseEntity.badRequest({ error: 'Unauthorized' });
+        }
+        await ensureInit();
+        return { notes: await this.#entityManager.findAll(DrizzleNote) };
+    }
+
+    @getMapping('/notes/:id')
+    @routeParams({ token: headerValue('authorization'), id: pathValue('id') })
+    async getById(token: string | undefined, id: string) {
+        const bearer = token?.replace(/^Bearer\s+/i, '');
+        if (!bearer || !lookupPrincipal(bearer)) {
+            return ResponseEntity.badRequest({ error: 'Unauthorized' });
+        }
+        await ensureInit();
+        const note = await this.#entityManager.find(DrizzleNote, Number(id));
+        if (!note) {
+            return ResponseEntity.notFound();
+        }
+        return {
+            note: { id: note.id, title: note.title, body: note.body, createdAt: note.createdAt },
+        };
+    }
+}

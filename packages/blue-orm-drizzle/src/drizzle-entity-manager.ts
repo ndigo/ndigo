@@ -1,5 +1,5 @@
 import { Constructable, FrameworkError } from '@blue/core';
-import { getEntityMetadata, isEntity, validateEntity } from '@blue/orm';
+import { getEntityMetadata, isEntity, validateEntity, LifecycleEvent } from '@blue/orm';
 import { DrizzleDataSource } from './drizzle-data-source';
 
 export class DrizzleEntityManager {
@@ -22,6 +22,10 @@ export class DrizzleEntityManager {
         const meta = getEntityMetadata(entityClass);
         const record = entity as Record<string, unknown>;
         const tableName = meta.entityName;
+
+        // Lifecycle hooks run first (e.g. @prePersist fills createdAt), then
+        // validation — matching the in-memory manager's order.
+        this.#callLifecycleHooks(entity, 'prePersist');
 
         // Validate against the Zod schema derived from @column metadata (AD-7).
         validateEntity(entityClass, entity);
@@ -115,5 +119,25 @@ export class DrizzleEntityManager {
         }
 
         return entity as T;
+    }
+
+    /**
+     * Invokes the registered lifecycle hooks for an event (e.g. `@prePersist`),
+     * mirroring the in-memory manager's behavior. Runs BEFORE schema
+     * validation so hooks can fill defaults (e.g. `createdAt`).
+     *
+     * @param entity - The entity instance.
+     * @param event - The lifecycle event name.
+     */
+    #callLifecycleHooks<T extends object>(entity: T, event: LifecycleEvent): void {
+        const entityClass = entity.constructor as Constructable<T>;
+        const metadata = getEntityMetadata(entityClass);
+        const hooks = metadata.lifecycleHooks.filter((h) => h.event === event);
+        const record = entity as Record<string, (...args: unknown[]) => unknown>;
+        for (const hook of hooks) {
+            if (typeof record[hook.methodName] === 'function') {
+                record[hook.methodName]();
+            }
+        }
     }
 }

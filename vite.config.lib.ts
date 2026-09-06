@@ -26,7 +26,6 @@ export function createLibConfig(options: {
         'ramda',
         'seedrandom',
         'slug',
-        'objectmodel',
         /^node:.*/, // Node built-ins
     ];
 
@@ -78,11 +77,9 @@ export function createLibConfig(options: {
                 '@blue/router': resolve(__dirname, './packages/blue-router/src'),
                 '@blue/view': resolve(__dirname, './packages/blue-view/src'),
                 '@blue/http': resolve(__dirname, './packages/blue-http/src'),
-                '@blue/model': resolve(__dirname, './packages/blue-model/src'),
                 '@blue/telemetry': resolve(__dirname, './packages/blue-telemetry/src'),
                 '@blue/content': resolve(__dirname, './packages/blue-content/src'),
                 '@blue/domain': resolve(__dirname, './packages/blue-domain/src'),
-                '@blue/validate': resolve(__dirname, './packages/blue-validate/src'),
                 '@blue/platform-web': resolve(__dirname, './packages/blue-platform-web/src'),
                 '@blue/dispatcher': resolve(__dirname, './packages/blue-dispatcher/src'),
                 '@blue/boot': resolve(__dirname, './packages/blue-boot/src'),

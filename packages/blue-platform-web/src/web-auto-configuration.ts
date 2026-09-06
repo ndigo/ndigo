@@ -5,7 +5,7 @@ import { BrowserCookieValueMethodArgumentResolver } from './cookie-argument-reso
 import { BrowserModelValueMethodArgumentResolver } from './model-argument-resolver';
 import { BrowserSessionValueMethodArgumentResolver } from './session-argument-resolver';
 import { BrowserStateValueMethodArgumentResolver } from './state-argument-resolver';
-import { LinearMetadataHandlerMapping } from '@blue/dispatcher';
+import { RadixMetadataHandlerMapping } from '@blue/dispatcher';
 import { NameViewResolver } from '@blue/view';
 import { WebComponentViewEngine } from '@blue/view-webcomponent';
 import { conditionalOnBrowser } from '@blue/core';
@@ -51,7 +51,7 @@ export class WebAutoConfiguration {
      */
     @entry
     handlerMapping() {
-        return new LinearMetadataHandlerMapping();
+        return new RadixMetadataHandlerMapping();
     }
 
     /**

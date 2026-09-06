@@ -1,8 +1,7 @@
 import { describe, test, beforeEach, afterEach, expect } from 'vitest';
 import { GenericApplicationContext } from '@blue/context';
 import { routeMapping } from '../src/route-mapping';
-import { RadixMetadataHandlerMapping } from '../src/radix-route-handler-mapping';
-import { LinearMetadataHandlerMapping } from '../src/route-handler-mapping';
+import { RadixMetadataHandlerMapping } from '../src/radix-metadata-handler-mapping';
 
 describe('RadixMetadataHandlerMapping', () => {
     let ctx: GenericApplicationContext;
@@ -275,8 +274,8 @@ describe('RadixMetadataHandlerMapping', () => {
             expect(chain).toBeNull();
         });
 
-        // Test with LinearMetadataHandlerMapping as well
-        // Note: LinearMetadataHandlerMapping uses GlobPathMatcher, which does not understand
+        // Test with RadixMetadataHandlerMapping as well
+        // Note: RadixMetadataHandlerMapping uses GlobPathMatcher, which does not understand
         // :param segments — use /* wildcards instead.
         test('handler selected when queryParams condition matches query string (Linear)', () => {
             @routeMapping('/items')
@@ -290,7 +289,7 @@ describe('RadixMetadataHandlerMapping', () => {
             const ctx = new GenericApplicationContext('test');
             ctx.setValue('itemsController', new ItemsController());
 
-            const mapping = new LinearMetadataHandlerMapping();
+            const mapping = new RadixMetadataHandlerMapping();
             mapping.setApplicationContext(ctx);
             mapping.init();
 
@@ -311,7 +310,7 @@ describe('RadixMetadataHandlerMapping', () => {
             const ctx = new GenericApplicationContext('test');
             ctx.setValue('itemsController', new ItemsController());
 
-            const mapping = new LinearMetadataHandlerMapping();
+            const mapping = new RadixMetadataHandlerMapping();
             mapping.setApplicationContext(ctx);
             mapping.init();
 
@@ -332,7 +331,7 @@ describe('RadixMetadataHandlerMapping', () => {
             const ctx = new GenericApplicationContext('test');
             ctx.setValue('productsController', new ProductsController());
 
-            const mapping = new LinearMetadataHandlerMapping();
+            const mapping = new RadixMetadataHandlerMapping();
             mapping.setApplicationContext(ctx);
             mapping.init();
 
@@ -354,7 +353,7 @@ describe('RadixMetadataHandlerMapping', () => {
             const ctx = new GenericApplicationContext('test');
             ctx.setValue('productsController', new ProductsController());
 
-            const mapping = new LinearMetadataHandlerMapping();
+            const mapping = new RadixMetadataHandlerMapping();
             mapping.setApplicationContext(ctx);
             mapping.init();
 

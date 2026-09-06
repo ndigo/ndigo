@@ -2,7 +2,7 @@
 import { describe, test, expect, beforeAll, afterAll } from 'vitest';
 import { MetadataConfigApplicationContext } from '@blue/context';
 import { NodeAutoConfiguration, NodeDispatcher, NodeHTTPServerAdapter } from '@blue/platform-node';
-import { LinearMetadataHandlerMapping } from '@blue/dispatcher';
+import { RadixMetadataHandlerMapping } from '@blue/dispatcher';
 import { ManagementAutoConfiguration } from '../src/management-auto-configuration';
 import { METRIC_AGGREGATOR } from '../src/metric-aggregator-token';
 import { FeatureMetricAggregator } from '@blue/telemetry';
@@ -22,7 +22,7 @@ describe('ManagementAutoConfiguration endpoints', () => {
         context.register(ManagementAutoConfiguration);
         context.refresh();
 
-        const mapping = context.getValue<LinearMetadataHandlerMapping>('handlerMapping');
+        const mapping = context.getValue<RadixMetadataHandlerMapping>('handlerMapping');
         mapping.setApplicationContext(context);
         mapping.init();
 

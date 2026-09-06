@@ -1,7 +1,7 @@
 // @vitest-environment node
 import { describe, test, beforeAll, afterAll, expect } from 'vitest';
 import { MetadataConfigApplicationContext } from '@blue/context';
-import { getMapping, routeParams, queryValue, LinearMetadataHandlerMapping } from '@blue/dispatcher';
+import { getMapping, routeParams, queryValue, RadixMetadataHandlerMapping } from '@blue/dispatcher';
 import { NodeAutoConfiguration } from '../src/node-auto-configuration';
 import { NodeDispatcher } from '../src/node-dispatcher';
 import { NodeHTTPServerAdapter } from '../src/node-http-server-adapter';
@@ -43,7 +43,7 @@ describe('Node SSR pipeline', () => {
 
         // Mirror the demo wiring: the handler mapping must be context-bound
         // and re-initialized after refresh so it discovers controller methods.
-        const handlerMapping = context.getValue<LinearMetadataHandlerMapping>('handlerMapping');
+        const handlerMapping = context.getValue<RadixMetadataHandlerMapping>('handlerMapping');
         handlerMapping.setApplicationContext(context);
         handlerMapping.init();
 

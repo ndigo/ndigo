@@ -10,7 +10,7 @@ import {
     ApplicationContextAwareProcessor,
 } from '@blue/context';
 import { TestErrorResolver, TestViewResolver } from './test-strategies';
-import { LinearMetadataHandlerMapping } from '../src/route-handler-mapping';
+import { RadixMetadataHandlerMapping } from '../src/route-handler-mapping';
 
 describe('Asynchronous Interceptors', () => {
     it('should support async preHandle interceptors', async () => {
@@ -49,7 +49,7 @@ describe('Asynchronous Interceptors', () => {
             }
             @entry
             handlerMappings() {
-                const mapping = new LinearMetadataHandlerMapping();
+                const mapping = new RadixMetadataHandlerMapping();
                 mapping.interceptors.push(asyncInterceptor);
                 return [mapping];
             }
@@ -111,7 +111,7 @@ describe('Asynchronous Interceptors', () => {
             }
             @entry
             handlerMappings() {
-                const mapping = new LinearMetadataHandlerMapping();
+                const mapping = new RadixMetadataHandlerMapping();
                 mapping.interceptors.push(asyncInterceptor);
                 return [mapping];
             }
@@ -176,7 +176,7 @@ describe('Asynchronous Interceptors', () => {
             }
             @entry
             handlerMappings() {
-                const mapping = new LinearMetadataHandlerMapping();
+                const mapping = new RadixMetadataHandlerMapping();
                 mapping.interceptors.push(asyncInterceptor);
                 return [mapping];
             }

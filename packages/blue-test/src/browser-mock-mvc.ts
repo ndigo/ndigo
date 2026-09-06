@@ -13,7 +13,7 @@
 
 import { MetadataConfigApplicationContext, ApplicationContext } from '@blue/context';
 import { isFunction } from '@blue/util/types';
-import { LinearMetadataHandlerMapping } from '@blue/dispatcher';
+import { RadixMetadataHandlerMapping } from '@blue/dispatcher';
 import type { BrowserDispatcher as BrowserDispatcherType } from '@blue/platform-web/browser-dispatcher';
 import { Route } from '@blue/router';
 import { MemoryViewTarget, CapturedRender } from './memory-view-target';
@@ -81,7 +81,7 @@ export async function bootBrowserApp(sources: Function[]): Promise<BrowserTestAp
     context.refresh();
 
     // Bind the handler mapping to the context and detect controller methods.
-    const handlerMapping = context.getValue<LinearMetadataHandlerMapping>('handlerMapping');
+    const handlerMapping = context.getValue<RadixMetadataHandlerMapping>('handlerMapping');
     handlerMapping.setApplicationContext(context);
     handlerMapping.init();
 

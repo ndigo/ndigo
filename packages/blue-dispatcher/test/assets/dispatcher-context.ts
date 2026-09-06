@@ -15,7 +15,7 @@ import {
 
 import {
     SimplePathHandlerMapping,
-    LinearMetadataHandlerMapping,
+    RadixMetadataHandlerMapping,
     NamePathHandlerMapping,
 } from '../../src/route-handler-mapping';
 import { routeMapping } from '../../src/route-mapping';
@@ -75,7 +75,7 @@ class TestConfiguration {
             '/baz': 'bazController',
             '/qux': 'quxController',
         });
-        return [new NamePathHandlerMapping(), simplePathHandlerMapping, new LinearMetadataHandlerMapping()];
+        return [new NamePathHandlerMapping(), simplePathHandlerMapping, new RadixMetadataHandlerMapping()];
     }
 
     @entry

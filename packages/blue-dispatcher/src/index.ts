@@ -18,7 +18,7 @@ export * from './route-handler-adapter';
 export * from './route-error-resolver';
 export * from './route-handler-execution-chain';
 export * from './route-handler-mapping';
-export * from './radix-route-handler-mapping';
+export * from './radix-metadata-handler-mapping';
 export * from './language-resolver';
 export * from './metadata-manager';
 export * from './model-and-view';

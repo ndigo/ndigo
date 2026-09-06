@@ -10,7 +10,7 @@
 
 import 'node:process';
 import { MetadataConfigApplicationContext } from '@blue/context';
-import { LinearMetadataHandlerMapping } from '@blue/dispatcher';
+import { RadixMetadataHandlerMapping } from '@blue/dispatcher';
 import { NodeAutoConfiguration, NodeDispatcher, HTTPServer, NodeHTTPServerAdapter } from '@blue/platform-node';
 import { HelloConfiguration } from './hello-configuration';
 
@@ -25,7 +25,7 @@ async function main() {
 
     // ── Dispatcher + server ────────────────────────────────────────────────
     // Discover handler methods from the context (controllers registered above).
-    const handlerMapping = context.getValue<LinearMetadataHandlerMapping>('handlerMapping');
+    const handlerMapping = context.getValue<RadixMetadataHandlerMapping>('handlerMapping');
     handlerMapping.setApplicationContext(context);
     handlerMapping.init();
 

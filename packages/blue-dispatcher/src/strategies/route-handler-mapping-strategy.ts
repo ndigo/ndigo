@@ -1,7 +1,7 @@
 import { ApplicationContext } from '@blue/context';
 import { Constructable } from '@blue/core';
 import { NamePathHandlerMapping, RouteHandlerMapping } from '../route-handler-mapping';
-import { RadixMetadataHandlerMapping } from '../radix-route-handler-mapping';
+import { RadixMetadataHandlerMapping } from '../radix-metadata-handler-mapping';
 import RouteHandlerExecutionChain from '../route-handler-execution-chain';
 import { MappedHandlerInterceptor, RouteHandlerInterceptor } from '../route-handler-interceptor';
 import type { PathMatcher } from '@blue/core';

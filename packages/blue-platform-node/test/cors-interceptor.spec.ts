@@ -2,7 +2,7 @@
 import { describe, test, expect, beforeAll, afterAll } from 'vitest';
 import type { AddressInfo } from 'node:net';
 import { MetadataConfigApplicationContext } from '@blue/context';
-import { getMapping, LinearMetadataHandlerMapping } from '@blue/dispatcher';
+import { getMapping, RadixMetadataHandlerMapping } from '@blue/dispatcher';
 import { NodeAutoConfiguration } from '../src/node-auto-configuration';
 import { NodeDispatcher } from '../src/node-dispatcher';
 import { NodeHTTPServerAdapter } from '../src/node-http-server-adapter';
@@ -35,7 +35,7 @@ async function boot(options: ConstructorParameters<typeof CORSInterceptor>[0]): 
     context.register(NodeAutoConfiguration);
     context.setValue(APIController.name, new APIController());
     context.refresh();
-    const handlerMapping = context.getValue<LinearMetadataHandlerMapping>('handlerMapping');
+    const handlerMapping = context.getValue<RadixMetadataHandlerMapping>('handlerMapping');
     handlerMapping.setApplicationContext(context);
     handlerMapping.init();
     const dispatcher = context.getValue<NodeDispatcher>('dispatcher');

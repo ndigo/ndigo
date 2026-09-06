@@ -29,7 +29,7 @@ It also accepts the second framing: a public API that "meets most needs" is legi
 | `blue-signals`                                                                                                  | **app-facing public API**       | 2 (`blue-todo`)    | ⚠️ see R1                           |
 | `blue-model`                                                                                                    | **app-facing public API**       | 1 (`blue-domain`)  | ⚠️ see R2                           |
 | `blue-validate`                                                                                                 | app-facing public API           | 2                  | ✅ (first-party validation)         |
-| `blue-domain`                                                                                                   | app-facing public API           | 0                  | ⚠️ see M1                           |
+| ~~`blue-domain`~~ (archived)                                                                                    | former public API               | 0                  | ✅ M1 — archived 2026-09-05         |
 | `blue-service`                                                                                                  | app-facing public API           | 0                  | ⚠️ see R3                           |
 | `blue-orm`                                                                                                      | app-facing public API           | 2 (`blue-api`)     | ⚠️ see M2                           |
 | `blue-orm-drizzle`                                                                                              | app-facing public API           | 0                  | ⚠️ see M3                           |
@@ -49,7 +49,7 @@ It also accepts the second framing: a public API that "meets most needs" is legi
 
 **R2 — Two validation systems: `blue-model` vs `blue-validate`.** ✅ _RESOLVED 2026-09-05 → AD-7 executed_
 
-Corrected: `blue-validate` is the _legacy_ constraint/decorator system; `blue-model`/objectmodel was the intended modernization that never landed. **Both deleted**; `blue-orm` derives Zod schemas from `@entity`/`@column` metadata; `blue-domain` components + `blue-dispatcher` route params are Zod-backed.
+Corrected: `blue-validate` is the _legacy_ constraint/decorator system; `blue-model`/objectmodel was the intended modernization that never landed. **Both deleted**; `blue-orm` derives Zod schemas from `@entity`/`@column` metadata; `blue-dispatcher` route params are Zod-backed (and `blue-domain` — archived 2026-09-05 — had been migrated to Zod before archiving).
 
 **R3 — `blue-service` duplicates `blue-http`'s interceptor pattern (not a full redundancy).** ✅ _RESOLVED 2026-09-05 → AD-8_
 
@@ -57,9 +57,9 @@ Corrected from the initial read: `blue-service` is a _typed service client_ (`Se
 
 ### Missing / incomplete features
 
-**M1 — `blue-domain` has no consumer; cohesion unproven.**
+**M1 — `blue-domain` has no consumer; cohesion unproven.** ✅ _RESOLVED 2026-09-05 — ARCHIVED_
 
-It composes `blue-model` + `blue-validate` + `blue-context` + `blue-factory` into a `DomainComponent` abstraction. The design is plausible but nothing exercises it, so "does it fulfill an application need / interact cohesively" cannot yet be affirmed. **Action:** write one integration spec against a real domain object (or archive until it earns a consumer).
+`blue-domain` (the legacy `DomainComponent`/`BusinessComponent`/`ViewComponent` + `ComponentAndView` concept — a business object as a union of content/data/behavior, paired with a view component at render time) never gained a consumer and its roadmap items were superseded by the client-first pivot. The concept's modern equivalents already exist: business objects → `@blue/orm` entities / Zod classes (AD-7); stateful event-emitting rendering components → `AbstractWebComponent`/`BlueElement`; composition → dispatcher `ModelAndView`. Moved to `archive/blue-domain` with a decision note.
 
 **M2 — `blue-orm` is in-memory only in practice.**
 

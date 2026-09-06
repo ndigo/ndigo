@@ -51,7 +51,7 @@ It also accepts the second framing: a public API that "meets most needs" is legi
 
 Corrected: `blue-validate` is the _legacy_ constraint/decorator system; `blue-model`/objectmodel was the intended modernization that never landed. **Both deleted**; `blue-orm` derives Zod schemas from `@entity`/`@column` metadata; `blue-domain` components + `blue-dispatcher` route params are Zod-backed.
 
-**R3 — `blue-service` duplicates `blue-http`'s interceptor pattern (not a full redundancy).**
+**R3 — `blue-service` duplicates `blue-http`'s interceptor pattern (not a full redundancy).** ✅ *RESOLVED 2026-09-05 → AD-8*
 
 Corrected from the initial read: `blue-service` is a _typed service client_ (`Service.call(token, data)` via a `ServiceRegistry`, with request-id correlation and telemetry hooks) — a legitimate layer over `blue-http`, exactly the "meets most needs, drop to the underlying package for edge cases" pattern. The smell is narrower: it re-declares five interceptor interfaces (`CompletionAwareServiceInterceptor`, …) that mirror `blue-http`'s five, and its `postSuccess` differs from `postResponse` only semantically. **Action:** either reuse/extend the `@blue/http` interceptor contracts where the lifecycle is the same, or document the service lifecycle as intentionally distinct. Not a deletion candidate.
 

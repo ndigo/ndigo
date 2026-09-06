@@ -4,3 +4,4 @@ export { DrizzleEntityManager } from './drizzle-entity-manager';
 export { DrizzleTransactionManager } from './drizzle-transaction-manager';
 export { DrizzleUnitOfWork } from './drizzle-unit-of-work';
 export { DrizzleRepository } from './drizzle-repository';
+export { drizzleTableForEntity, insertSchemaForEntity, selectSchemaForEntity } from './drizzle-zod';

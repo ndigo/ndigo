@@ -1,7 +1,7 @@
 {
   "name": "@blue/auth-server",
   "version": "0.0.1",
-  "description": "Server-side authentication for BlueJS — AuthServer, AuthRouteGuard, and JWT adapter",
+  "description": "Server-side authentication for BlueJS \u2014 AuthServer, AuthRouteGuard, and JWT adapter",
   "type": "module",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
@@ -16,7 +16,7 @@
     "@blue/auth-core": "~0.0.1",
     "@blue/dispatcher": "~0.0.1",
     "@blue/router": "~0.0.1",
-    "typescript": "^5.7.2"
+    "typescript": "^6.0.3"
   },
   "scripts": {
     "build:lib": "tsc -b tsconfig.build.json",
@@ -24,7 +24,7 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "jose": "^5.10.0"
+    "jose": "^6.2.12"
   },
   "exports": {
     ".": {

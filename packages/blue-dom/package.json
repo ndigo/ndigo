@@ -1,7 +1,7 @@
 {
   "name": "@blue/dom",
   "version": "0.0.1",
-  "description": "Blue DOM – Isomorphic DOM parsing integration layer",
+  "description": "Blue DOM \u2013 Isomorphic DOM parsing integration layer",
   "type": "module",
   "files": [
     "doc",
@@ -17,12 +17,7 @@
   "scripts": {
     "build:lib": "tsc -b tsconfig.build.json",
     "test": "vitest run",
-    "test:watch": "vitest",
-    "api-report": "api-extractor run --local --verbose"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue.git"
+    "test:watch": "vitest"
   },
   "keywords": [
     "blue",
@@ -36,9 +31,8 @@
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
   "dependencies": {
-    "linkedom": "^0.18.9"
+    "linkedom": "^0.18.13"
   },
-  "devDependencies": {},
   "peerDependencies": {
     "linkedom": "^0.18.9"
   },

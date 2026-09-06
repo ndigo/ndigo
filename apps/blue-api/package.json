@@ -22,7 +22,7 @@
     "@blue/platform-node": "~0.0.1",
     "@blue/router": "~0.0.1",
     "@blue/util": "~0.0.1",
-    "@tsmetadata/polyfill": "*"
+    "@tsmetadata/polyfill": "^1.1.3"
   },
   "devDependencies": {
     "@blue/auth-core": "~0.0.1",
@@ -34,8 +34,8 @@
     "@blue/orm": "~0.0.1",
     "@blue/platform-node": "~0.0.1",
     "@blue/router": "~0.0.1",
-    "@blue/test": "workspace:~",
+    "@blue/test": "~0.0.1",
     "@blue/util": "~0.0.1",
-    "tsx": "*"
+    "tsx": "^4.23.13"
   }
 }

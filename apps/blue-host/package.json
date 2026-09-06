@@ -33,6 +33,6 @@
     "@blue/util": "~0.0.1",
     "@blue/view": "~0.0.1",
     "@blue/view-webcomponent": "~0.0.1",
-    "vite": "~6.0.7"
+    "vite": "~8.2.2"
   }
 }

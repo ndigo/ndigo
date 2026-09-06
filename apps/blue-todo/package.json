@@ -14,10 +14,6 @@
     "test": "vitest run test",
     "test:e2e": "playwright test"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue.git"
-  },
   "keywords": [
     "todo",
     "todomvc",
@@ -38,11 +34,11 @@
     "@blue/router": "~0.0.1",
     "@blue/signals": "~0.0.1",
     "@blue/telemetry": "~0.0.1",
-    "@blue/telemetry-web": "workspace:~",
+    "@blue/telemetry-web": "~0.0.1",
     "@blue/util": "~0.0.1",
     "@blue/view": "~0.0.1",
     "@blue/view-webcomponent": "~0.0.1",
-    "todomvc-app-css": "~2.4.2",
+    "todomvc-app-css": "~2.4.3",
     "todomvc-common": "~1.0.5"
   },
   "devDependencies": {
@@ -54,11 +50,11 @@
     "@blue/dom": "~0.0.1",
     "@blue/platform-web": "~0.0.1",
     "@blue/telemetry": "~0.0.1",
-    "@blue/test": "workspace:~",
+    "@blue/test": "~0.0.1",
     "@blue/util": "~0.0.1",
-    "@playwright/test": "^1.53.1",
-    "@vitejs/plugin-basic-ssl": "^1.2.0",
-    "vite": "~6.0.7",
-    "vite-plugin-dts": "~4.3.0"
+    "@playwright/test": "^1.63.0",
+    "@vitejs/plugin-basic-ssl": "^2.3.0",
+    "vite": "~8.2.2",
+    "vite-plugin-dts": "~5.1.0"
   }
 }

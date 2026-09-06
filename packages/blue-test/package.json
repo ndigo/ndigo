@@ -1,7 +1,7 @@
 {
   "name": "@blue/test",
   "version": "0.0.1",
-  "description": "Blue integration test harness — MockMVC-style in-process request dispatch",
+  "description": "Blue integration test harness \u2014 MockMVC-style in-process request dispatch",
   "type": "module",
   "files": [
     "doc",
@@ -17,10 +17,6 @@
   "scripts": {
     "build:lib": "tsc -b tsconfig.build.json",
     "test": "vitest run"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue.git"
   },
   "keywords": [
     "blue",

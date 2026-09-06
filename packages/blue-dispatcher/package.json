@@ -17,12 +17,7 @@
   "scripts": {
     "build:lib": "tsc -b tsconfig.build.json",
     "test": "vitest run",
-    "test:watch": "vitest",
-    "api-report": "api-extractor run --local --verbose"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue.git"
+    "test:watch": "vitest"
   },
   "keywords": [
     "blue",
@@ -40,7 +35,7 @@
     "@blue/router": "~0.0.1",
     "@blue/util": "~0.0.1",
     "@blue/view": "~0.0.1",
-    "find-my-way": "^9.6.0",
+    "find-my-way": "^9.9.0",
     "radix3": "^1.1.2"
   },
   "peerDependencies": {

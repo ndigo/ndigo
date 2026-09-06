@@ -21,12 +21,12 @@
     "test:watch": "vitest"
   },
   "dependencies": {
-    "@nx/devkit": "~22.0.0"
+    "@nx/devkit": "~23.2.0"
   },
   "devDependencies": {
-    "nx": "~22.7.7",
-    "typescript": "~5.8.0",
-    "vitest": "~3.0.0"
+    "nx": "~23.2.0",
+    "typescript": "~6.0.3",
+    "vitest": "~4.0.18"
   },
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",

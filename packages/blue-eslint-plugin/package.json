@@ -16,16 +16,15 @@
   "scripts": {
     "build:lib": "tsc -b tsconfig.build.json",
     "test": "vitest run",
-    "test:watch": "vitest",
-    "api-report": "api-extractor run --local --verbose"
+    "test:watch": "vitest"
   },
   "dependencies": {
-    "@oxlint/plugins": "^1.78.0"
+    "@oxlint/plugins": "^1.81.0"
   },
   "devDependencies": {
-    "oxlint": "^1.78.0",
-    "typescript": "~5.8.0",
-    "vitest": "~3.0.0"
+    "oxlint": "^1.81.0",
+    "typescript": "~6.0.3",
+    "vitest": "~4.0.18"
   },
   "peerDependencies": {
     "oxlint": ">=1.0.0"
@@ -39,10 +38,5 @@
   ],
   "license": "ISC",
   "author": "Jeff Rose <jeff_rose@outlook.com>",
-  "repository": {
-    "type": "git",
-    "url": "https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue.git",
-    "directory": "packages/blue-eslint-plugin"
-  },
   "sideEffects": false
 }

@@ -34,15 +34,6 @@ export default defineConfig({
                 replacement: resolve(__dirname, './packages/blue-logger/src/otel/entry-to-logrecord'),
             },
 
-            {
-                find: /^@nx\/devkit\/testing$/,
-                replacement: resolve(__dirname, './node_modules/nx/src/devkit-testing-exports'),
-            },
-            {
-                find: /^@nx\/devkit$/,
-                replacement: resolve(__dirname, './node_modules/nx/src/devkit-exports'),
-            },
-
             { find: /^@blue\/core$/, replacement: resolve(__dirname, './packages/blue-core/src') },
             { find: /^@blue\/dom$/, replacement: resolve(__dirname, './packages/blue-dom/src') },
             { find: /^@blue\/util$/, replacement: resolve(__dirname, './packages/blue-util/src') },

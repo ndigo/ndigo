@@ -28,12 +28,7 @@
   "types": "lib/index.d.ts",
   "scripts": {
     "build:lib": "tsc -b tsconfig.build.json",
-    "test": "vitest run",
-    "api-report": "api-extractor run --local --verbose"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue.git"
+    "test": "vitest run"
   },
   "keywords": [
     "blue",

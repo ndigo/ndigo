@@ -3,27 +3,33 @@
   "parallel": 3,
   "targetDefaults": {
     "build:lib": {
-      "dependsOn": ["^build:lib"],
+      "dependsOn": [
+        "^build:lib"
+      ],
       "cache": true,
-      "inputs": ["production", "^production"],
-      "outputs": ["{projectRoot}/lib"]
-    },
-    "api-report": {
-      "dependsOn": ["build:lib"],
-      "cache": true,
-      "inputs": ["production"],
-      "outputs": ["{projectRoot}/etc"]
+      "inputs": [
+        "production",
+        "^production"
+      ],
+      "outputs": [
+        "{projectRoot}/lib"
+      ]
     }
   },
   "namedInputs": {
-    "default": ["{projectRoot}/**/*", "sharedGlobals"],
+    "default": [
+      "{projectRoot}/**/*",
+      "sharedGlobals"
+    ],
     "production": [
       "default",
       "!{projectRoot}/**/?(*.)+(spec|test).[jt]s?(x)?(.snap)",
       "!{projectRoot}/tsconfig.spec.json",
       "!{projectRoot}/test/**/*"
     ],
-    "sharedGlobals": ["{workspaceRoot}/tsconfig.base.json"]
+    "sharedGlobals": [
+      "{workspaceRoot}/tsconfig.base.json"
+    ]
   },
   "plugins": [],
   "generators": {},
@@ -46,7 +52,9 @@
             "command": "pnpm build",
             "cwd": "apps/blue-todo"
           },
-          "outputs": ["{projectRoot}/dist"]
+          "outputs": [
+            "{projectRoot}/dist"
+          ]
         },
         "e2e": {
           "executor": "nx:run-commands",
@@ -76,7 +84,9 @@
             "command": "pnpm build",
             "cwd": "apps/blue-hello"
           },
-          "outputs": ["{projectRoot}/dist"]
+          "outputs": [
+            "{projectRoot}/dist"
+          ]
         }
       }
     },

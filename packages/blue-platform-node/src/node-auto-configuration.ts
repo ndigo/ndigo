@@ -3,6 +3,7 @@ import { conditionalOnNode } from '@blue/core';
 import { RadixMetadataHandlerMapping } from '@blue/dispatcher';
 import { IslandViewResolver } from '@blue/view';
 import { NodeDispatcher } from './node-dispatcher';
+import { HTTPServer } from './http-server';
 import { argumentValueConverters } from './argument-value-converter';
 import { NodeQueryValueMethodArgumentResolver } from './query-argument-resolver';
 import { NodePathValueMethodArgumentResolver } from './path-argument-resolver';
@@ -66,6 +67,21 @@ export class NodeAutoConfiguration {
     @entry
     dispatcher() {
         return new NodeDispatcher();
+    }
+
+    /**
+     * Creates the managed HTTP server used for server-side request handling.
+     *
+     * The server resolves the {@link NodeDispatcher} from the application
+     * context when it starts, so no dispatcher is passed here. Start it
+     * explicitly after `refresh()`: `await context.getValue('httpServer').start()`.
+     * The context stops it when closed.
+     *
+     * @returns The managed HTTP server.
+     */
+    @entry
+    httpServer(): HTTPServer {
+        return new HTTPServer();
     }
 
     /**

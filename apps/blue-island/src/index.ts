@@ -11,7 +11,7 @@
 import 'node:process';
 import { MetadataConfigApplicationContext } from '@blue/context';
 import { RadixMetadataHandlerMapping } from '@blue/dispatcher';
-import { NodeAutoConfiguration, NodeDispatcher, HTTPServer, NodeHTTPServerAdapter } from '@blue/platform-node';
+import { NodeAutoConfiguration, NodeDispatcher, HTTPServer, NodeHTTPServerAdapter, gracefulShutdown } from '@blue/platform-node';
 import { IslandConfiguration } from './island-configuration';
 import { TodoModelStore } from './todo-model-store';
 
@@ -41,6 +41,7 @@ async function main() {
         port: PORT,
     });
     await server.start();
+    gracefulShutdown(context, { resources: [server] });
 
     // eslint-disable-next-line no-console
     console.log(`[blue-island] listening on http://localhost:${PORT}`);

@@ -13,6 +13,7 @@ export * from './node-auto-configuration';
 export * from './file-system-router';
 export * from './http-server';
 export * from './node-http-server-adapter';
+export * from './graceful-shutdown';
 export * from './http-request-limits';
 export * from './node-dispatcher';
 export * from './node-view-target';

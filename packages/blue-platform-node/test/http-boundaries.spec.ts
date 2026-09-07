@@ -2,7 +2,7 @@
 import { describe, test, beforeAll, afterAll, expect, vi } from 'vitest';
 import type { AddressInfo } from 'node:net';
 import { MetadataConfigApplicationContext } from '@blue/context';
-import { getMapping, RadixMetadataHandlerMapping } from '@blue/dispatcher';
+import { getMapping } from '@blue/dispatcher';
 import { NodeAutoConfiguration } from '../src/node-auto-configuration';
 import { NodeDispatcher } from '../src/node-dispatcher';
 import { NodeHTTPServerAdapter } from '../src/node-http-server-adapter';
@@ -33,13 +33,8 @@ describe('HTTP request pipeline boundaries', () => {
         const context = new MetadataConfigApplicationContext('boundaries');
         context.register(NodeAutoConfiguration);
         context.setValue(ProbeController.name, new ProbeController());
-        context.refresh();
-        const handlerMapping = context.getValue<RadixMetadataHandlerMapping>('handlerMapping');
-        handlerMapping.setApplicationContext(context);
-        handlerMapping.init();
+        context.refresh(); // auto-initializes the handler mapping + dispatcher
         dispatcher = context.getValue<NodeDispatcher>('dispatcher');
-        dispatcher.initStrategies(context);
-        dispatcher.applicationContext = context;
         adapter = new NodeHTTPServerAdapter(dispatcher, { limits } as never);
         await adapter.listen(0, '127.0.0.1');
         base = `http://127.0.0.1:${(adapter.server as { address(): AddressInfo }).address().port}`;

@@ -2,7 +2,6 @@
 import { describe, test, expect, beforeAll, afterAll } from 'vitest';
 import { MetadataConfigApplicationContext } from '@blue/context';
 import { NodeAutoConfiguration, NodeDispatcher, NodeHTTPServerAdapter } from '@blue/platform-node';
-import { RadixMetadataHandlerMapping } from '@blue/dispatcher';
 import { ManagementAutoConfiguration } from '../src/management-auto-configuration';
 import { METRIC_AGGREGATOR } from '../src/metric-aggregator-token';
 import { FeatureMetricAggregator } from '@blue/telemetry';
@@ -20,15 +19,9 @@ describe('ManagementAutoConfiguration endpoints', () => {
         const context = new MetadataConfigApplicationContext('management');
         context.register(NodeAutoConfiguration);
         context.register(ManagementAutoConfiguration);
-        context.refresh();
-
-        const mapping = context.getValue<RadixMetadataHandlerMapping>('handlerMapping');
-        mapping.setApplicationContext(context);
-        mapping.init();
+        context.refresh(); // auto-initializes the handler mapping + dispatcher
 
         const dispatcher = context.getValue<NodeDispatcher>('dispatcher');
-        dispatcher.initStrategies(context);
-        dispatcher.applicationContext = context;
 
         // Seed some metrics through the shared aggregator.
         const aggregator = context.getValue<FeatureMetricAggregator>(METRIC_AGGREGATOR);

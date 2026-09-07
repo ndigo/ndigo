@@ -2,7 +2,7 @@
 import { describe, test, beforeAll, afterAll, expect } from 'vitest';
 import type { AddressInfo } from 'node:net';
 import { MetadataConfigApplicationContext } from '@blue/context';
-import { getMapping, RadixMetadataHandlerMapping } from '@blue/dispatcher';
+import { getMapping } from '@blue/dispatcher';
 import { NodeAutoConfiguration } from '../src/node-auto-configuration';
 import { NodeDispatcher } from '../src/node-dispatcher';
 import { NodeHTTPServerAdapter } from '../src/node-http-server-adapter';
@@ -47,13 +47,9 @@ describe('ServerSentEventView over a real HTTP server', () => {
     beforeAll(async () => {
         const context = new MetadataConfigApplicationContext('server-sent-event-view');
         context.register(NodeAutoConfiguration);
-        const dispatcher = context.getValue<NodeDispatcher>('dispatcher');
-        dispatcher.initStrategies(context);
-        dispatcher.applicationContext = context;
         context.setValue(EventStreamProbeController.name, new EventStreamProbeController());
-        const handlerMapping = context.getValue<RadixMetadataHandlerMapping>('handlerMapping');
-        handlerMapping.setApplicationContext(context);
-        handlerMapping.init();
+        context.refresh(); // auto-initializes the handler mapping + dispatcher
+        const dispatcher = context.getValue<NodeDispatcher>('dispatcher');
         adapter = new NodeHTTPServerAdapter(dispatcher);
         await adapter.listen(0, '127.0.0.1');
         base = `http://127.0.0.1:${(adapter.server as { address(): AddressInfo }).address().port}`;

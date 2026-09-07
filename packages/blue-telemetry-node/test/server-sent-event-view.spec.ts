@@ -4,7 +4,7 @@ import type { AddressInfo } from 'node:net';
 import { BasicTracerProvider, InMemorySpanExporter, SimpleSpanProcessor } from '@opentelemetry/sdk-trace-base';
 import { AsyncHooksContextManager } from '@opentelemetry/context-async-hooks';
 import { context as otelContext, trace, SpanKind } from '@opentelemetry/api';
-import { getMapping, RadixMetadataHandlerMapping } from '@blue/dispatcher';
+import { getMapping } from '@blue/dispatcher';
 import { MetadataConfigApplicationContext } from '@blue/context';
 import {
     NODE_RESPONSE_ATTRIBUTE,
@@ -66,13 +66,8 @@ describe('ServerSentEventViewInstrumentation', () => {
         const context = new MetadataConfigApplicationContext('sse-telemetry');
         context.register(NodeAutoConfiguration);
         context.setValue(EventsController.name, new EventsController());
-        context.refresh();
-        const mapping = context.getValue<RadixMetadataHandlerMapping>('handlerMapping');
-        mapping.setApplicationContext(context);
-        mapping.init();
+        context.refresh(); // auto-initializes the handler mapping + dispatcher
         const dispatcher = context.getValue<NodeDispatcher>('dispatcher');
-        dispatcher.initStrategies(context);
-        dispatcher.applicationContext = context;
         adapter = new NodeHTTPServerAdapter(dispatcher);
         await adapter.listen(0, '127.0.0.1');
         base = `http://127.0.0.1:${(adapter.server as { address(): AddressInfo }).address().port}`;

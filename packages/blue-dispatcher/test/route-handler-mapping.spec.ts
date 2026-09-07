@@ -118,5 +118,34 @@ describe('RouteHandlerMapping', () => {
             expect(chain).not.toBeNull();
             expect(chain!.handler).toBeDefined();
         });
+
+        test('init is idempotent across DI auto-init and lifecycle start', () => {
+            @routeMapping('/repeated')
+            class RepeatedController {
+                @routeMapping('/run')
+                handle() {
+                    return 'ok';
+                }
+            }
+
+            const ctx = new GenericApplicationContext('idem');
+            ctx.setValue('repeatedController', new RepeatedController());
+
+            const handlerMapping = new RadixMetadataHandlerMapping();
+            handlerMapping.setApplicationContext(ctx);
+            // First init (the DI container auto-initializes Initializable
+            // beans at registration).
+            handlerMapping.init();
+            // Second init (the lifecycle processor re-runs on refresh).
+            handlerMapping.start();
+
+            // Exactly one registration — no ambiguous-route duplicates.
+            const handler = handlerMapping.getHandler({ path: '/repeated/run' } as any);
+            expect(handler).not.toBeNull();
+            expect(handlerMapping.getHandlerMethods().size).toBe(1);
+            expect(handlerMapping.isRunning).toBe(true);
+            expect(handlerMapping.isAutoStartup).toBe(true);
+            expect(handlerMapping.phase).toBeLessThan(0);
+        });
     });
 });

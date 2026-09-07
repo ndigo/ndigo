@@ -7,6 +7,8 @@ import {
     likeEntryRegistryProcessor,
     DefaultFactory,
     Factory,
+    likeCloseable,
+    likeDestroyable,
 } from '@blue/factory';
 import { Environment, StandardEnvironment, ConfigurableEnvironment } from './environment';
 import { AsModuleResourceLoader } from './resource';
@@ -430,7 +432,7 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
     }
 
     protected _destroyValues(): void {
-        const constructorKeys: string[] = [];
+        const names: Set<string> = new Set();
 
         for (const key of ownKeys(this)) {
             if (typeof key !== 'string') {
@@ -438,13 +440,27 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
             }
 
             if (key.startsWith('$')) {
-                constructorKeys.push(key.slice(1));
+                // Constructor-registered beans (`$name` holds the constructor);
+                // destroyValue resolves the instance from the scope.
+                names.add(key.slice(1));
+            } else if (this.hasInstance(key)) {
+                // Plain-instance entries (`@entry` results and `setValue`
+                // values). Only lifecycle-bearing values are torn down —
+                // internal state fields and container references (`root` may
+                // point at an ancestor context) never qualify.
+                const value = this[key];
+                if (
+                    !(value instanceof GenericApplicationContext) &&
+                    (likeDestroyable(value) || likeCloseable(value))
+                ) {
+                    names.add(key);
+                }
             }
         }
 
-        for (const key of constructorKeys) {
-            // eslint-disable-next-line no-unused-expressions -- guarded dispatch: destroy only truthy keys
-            key && this.destroyValue(key);
+        for (const name of names) {
+            // eslint-disable-next-line no-unused-expressions -- guarded dispatch: destroy only truthy names
+            name && this.destroyValue(name);
         }
     }
 

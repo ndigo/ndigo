@@ -73,6 +73,46 @@ export function schemaForEntity<T extends object>(
 }
 
 /**
+ * Derives a Zod **insert** schema for an entity: the writable shape for a new
+ * row. Identical to {@link schemaForEntity} except that the primary key and
+ * any `@generated()` columns are omitted — the database owns them, so a
+ * client-created payload must not carry (or be required to carry) them.
+ *
+ * Use this for request-body validation of create endpoints:
+ *
+ * ```ts
+ * @postMapping('/')
+ * @routeParams({ note: validatedBody(insertSchemaForEntity(Note)) })
+ * create(note: z.infer<ReturnType<typeof insertSchemaForEntity<Note>>>) { … }
+ * ```
+ *
+ * @param entityClass - The entity constructor (must be decorated with `@entity`).
+ * @returns A Zod object schema over the writable columns.
+ */
+export function insertSchemaForEntity<T extends object>(
+    entityClass: Constructable<T>
+): z.ZodObject<Record<string, z.ZodType>> {
+    const metadata = getEntityMetadata(entityClass);
+    const shape: Record<string, z.ZodType> = {};
+    for (const column of metadata.columns) {
+        if (column.fieldName === metadata.primaryColumn || metadata.generatedColumns.includes(column.fieldName)) {
+            continue;
+        }
+        let schema = schemaForColumn(column);
+        // Insert semantics: a column the client is not obligated to supply —
+        // nullable (an explicit "no value" is allowed, so absence is too) or
+        // untyped (no constraint declared) — is optional in the writable
+        // shape. Server-managed columns (e.g. filled by a @prePersist hook)
+        // declare themselves with nullable: true.
+        if (column.nullable === true || (!column.type && !column.schema)) {
+            schema = schema.optional();
+        }
+        shape[column.fieldName] = schema;
+    }
+    return z.object(shape);
+}
+
+/**
  * Validates an entity instance against its derived schema.
  *
  * @param entityClass - The entity constructor.

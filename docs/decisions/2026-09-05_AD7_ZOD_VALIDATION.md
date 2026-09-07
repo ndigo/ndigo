@@ -75,3 +75,32 @@ against the AD-7-derived Zod schema. 12 libSQL in-memory integration tests.
 ## Revisit Trigger
 
 Revisit if a requirement emerges that Zod cannot express (e.g. class-instance identity semantics, or a decorator API that must remain for a specific consumer).
+
+### Follow-up (2026-09-07, `AbstractPlatformArgumentResolver` fix)
+
+**Silently-dead `validatedBy` on the shared resolver pipeline — fixed.**
+
+AD-7 step 5 wired `validatedBy`'s `convert` hook through the browser **BIND**
+resolver only. When the 11 per-platform resolver implementations were later
+deduplicated into `AbstractPlatformArgumentResolver` (the shared
+`resolveArgument` pipeline in `blue-dispatcher`), the `parameter.convert`
+invocation was not carried over. Result: every resolver extending the shared
+base — all six Node resolvers (body, query, path, header, cookie, session)
+and the web query/cookie/model/session/state resolvers — silently ignored
+Zod validation. Only the BIND path (`BrowserBindMethodArgumentResolver`)
+validated. The AD-7 "structurally dead" failure (from the legacy system) had
+partially returned.
+
+**Fix:** `AbstractPlatformArgumentResolver.resolveArgument` now runs
+`parameter.convert` after `convertType` conversion and before the nil-check,
+mirroring the BIND resolver. Schemas see coerced values, so
+`z.coerce.number()` composes with both steps.
+
+**Documentation of usage:** see the `validatedBy`/`validateParams` docstrings
+in `packages/blue-dispatcher/src/zod-validated-by.ts` (whole-body Node,
+whole-map, and per-field forms).
+
+**Regression coverage:** `packages/blue-platform-node/test/zod-validation.spec.ts`
+— whole-body coercion, per-field query, per-field body, and both failure
+paths surfacing as `ParameterConversionError`. Web coverage remains in
+`packages/blue-platform-web/test/zod-validation.spec.ts`.

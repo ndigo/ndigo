@@ -872,6 +872,9 @@ importers:
       '@blue/view':
         specifier: ~0.0.1
         version: link:../blue-view
+      zod:
+        specifier: ^4.5.4
+        version: 4.5.4
 
   packages/blue-platform-web:
     dependencies:

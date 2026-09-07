@@ -1,15 +1,49 @@
 /**
- * Zod-backed route parameter validation (AD-7).
+ * Zod-backed request validation (AD-7).
  *
- * `validatedBy` wraps a parameter extractor (e.g. `bindValue('query')`) with a
- * Zod schema. The schema runs after the value is resolved/bound and coerces or
- * rejects it: on failure a {@link ParameterConversionError} is thrown, which
- * flows through the dispatcher's error resolver like any argument conversion
- * failure.
+ * `validatedBy` wraps a parameter extractor (e.g. `bindValue('query')`,
+ * `queryValue('email')`, `bodyValue('*')`) with a Zod schema. The schema runs
+ * after the value is resolved and type-converted, and coerces or rejects it:
+ * on failure a {@link ParameterConversionError} is thrown, which flows
+ * through the dispatcher's error resolver like any argument conversion
+ * failure (a `400` in the Node platform's HTTP pipeline).
  *
- * This replaces the legacy `@blue/validate` `validatedBy` (constraint system),
- * which was structurally dead — `routeParams` never invoked its `.convert`
- * hook and the resolver only read `convertType`.
+ * Replaces the legacy `@blue/validate` constraint system, which was
+ * structurally dead — `routeParams` never invoked its `.convert` hook and the
+ * resolver only read `convertType`.
+ *
+ * ## Whole-body (Node)
+ *
+ * ```ts
+ * const NoteSchema = z.object({
+ *     title: z.string().min(1).max(140),
+ *     body: z.string().optional(),
+ * });
+ *
+ * @postMapping('/')
+ * @routeParams({ note: validatedBy(NoteSchema, bodyValue('*')) })
+ * create(note: z.infer<typeof NoteSchema>) { … }
+ * ```
+ *
+ * ## Whole map (browser BIND or shared extractors)
+ *
+ * ```ts
+ * @routeParams(validateParams(UserSchema, { user: bindValue('query') }))
+ * ```
+ *
+ * ## Per-field
+ *
+ * Validation applies per argument — a single schema over one extractor:
+ *
+ * ```ts
+ * @routeParams({ email: validatedBy(z.email(), queryValue('email')) })
+ * subscribe(email: string) { … }
+ * ```
+ *
+ * The hook runs on every platform resolver: it is invoked by the shared
+ * `AbstractPlatformArgumentResolver` pipeline (after `convertType`
+ * conversion) and by the browser BIND resolver. Schemas therefore see
+ * already-coerced values (`z.coerce.number()` on a query string works).
  *
  * @module
  */

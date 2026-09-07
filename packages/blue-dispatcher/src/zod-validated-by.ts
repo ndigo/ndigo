@@ -58,12 +58,55 @@
  * resolvers. Schemas therefore see already-coerced values
  * (`z.coerce.number()` on a query string works).
  *
+ * On failure the thrown {@link ParameterConversionError} carries a
+ * {@link ZodValidationError} as its `cause`: the flattened human message
+ * plus a structured `issues` array (path / message / code per failed field)
+ * that error resolvers can render into machine-readable response detail.
+ *
  * @module
  */
 
 import { z } from 'zod';
 import { ParameterConversionError } from './error';
 import { type ParameterExtractor, type RouteParameterMap, bodyValue, queryValue } from './route-parameter';
+
+/**
+ * A single failed check from a Zod schema parse.
+ *
+ * Mirrors the stable subset of a Zod v4 issue: the failing path, human
+ * message, and error code (`too_small`, `invalid_type`, `email`, …).
+ */
+export interface ValidationIssue {
+    /** The failing path, e.g. `['title']` for a nested field. */
+    readonly path: readonly PropertyKey[];
+    /** The failure message. */
+    readonly message: string;
+    /** The Zod error code, e.g. `too_small`, `invalid_type`, `email`. */
+    readonly code: string;
+}
+
+/**
+ * The `cause` carried by a `ParameterConversionError` thrown from
+ * {@link validatedBy}. Preserves the flattened human-readable message (in
+ * `message`) alongside the machine-readable per-issue details (in `issues`),
+ * so error resolvers can render either a flat detail string or a structured
+ * `errors` array.
+ */
+export class ZodValidationError extends Error {
+    /** The structured per-field failures from the Zod parse. */
+    readonly issues: readonly ValidationIssue[];
+
+    /**
+     * Create a validation error.
+     *
+     * @param message - The flattened, human-readable failure message.
+     * @param issues - The structured per-field failures.
+     */
+    constructor(message: string, issues: readonly ValidationIssue[]) {
+        super(message);
+        this.issues = issues;
+    }
+}
 
 /**
  * Wraps a parameter extractor with a Zod schema for validation and coercion.
@@ -88,10 +131,18 @@ export function validatedBy<T>(schema: z.ZodType<T>, extractor: ParameterExtract
     const convert: (value: any) => any = (value: any) => {
         const result = schema.safeParse(value);
         if (!result.success) {
-            const message = result.error.issues
+            const issues = result.error.issues.map((issue) => ({
+                path: issue.path,
+                message: issue.message,
+                code: issue.code,
+            }));
+            const message = issues
                 .map((issue) => `${issue.path.join('.') || 'value'}: ${issue.message}`)
                 .join(', ');
-            throw new ParameterConversionError(extractor.name, 'validated', new Error(message));
+            // The cause is a ZodValidationError: it preserves the flattened
+            // human message AND the structured per-field issues, so error
+            // resolvers can render either (Phase 4A).
+            throw new ParameterConversionError(extractor.name, 'validated', new ZodValidationError(message, issues));
         }
         return result.data;
     };

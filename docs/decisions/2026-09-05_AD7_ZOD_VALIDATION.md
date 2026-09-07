@@ -128,3 +128,35 @@ validatedQuery, validateParams, validatedBy — whole-source, per-field, and
 whole-map forms). Coverage: `platform-node/test/zod-validation.spec.ts` adds
 whole-query coercion + whole-query failure; `platform-web/test/zod-validation.spec.ts`
 adds shared-resolver per-field query validation.
+
+### Follow-up (2026-09-07, Phase 3 — entity-derived request validation, dogfood)
+
+Closed the loop between entity metadata and request validation:
+
+- **`insertSchemaForEntity(entityClass)`** (`@blue/orm`) derives the
+  writable shape of an entity: `schemaForEntity` minus the primary key and
+  any `@generated()` columns, with nullable/untyped columns made optional. A
+  client-created payload never carries (or is required to carry)
+  server-owned fields.
+- **Dogfooded in `blue-api`:** both note controllers
+  (`NoteController` in-memory, `DrizzleNoteController` SQL) now validate the
+  request body with `validatedBody(insertSchemaForEntity(Note))`. The
+  entities declare `@column({ schema: z.string().min(1) })` — the metadata
+  is the single source of truth for the constraint.
+- **Framework gap found and closed:** a binding failure (`ParameterConversionError`
+  from Zod rejection) had no default HTTP mapping in the Node pipeline —
+  `MetadataErrorResolver` only resolves user-configured `@errorMapping`
+  handlers, so validation failures fell through to a generic 200/empty
+  response. New `NodeParameterBindingErrorResolver` (`@blue/platform-node`)
+  maps any `ParameterBindingError` (missing params, failed conversions,
+  Zod validation) to a 400 JSON response with the failure message;
+  `NodeAutoConfiguration.errorResolvers` registers it before
+  `MetadataErrorResolver` so app error handlers still win. This is the
+  minimal piece of the planned error-model work (Item 3, RFC 7807) that the
+  validation feature needed to be correct end-to-end.
+
+**Verified:** `POST /drizzle/notes` with `{ title: '' }` → `400`
+`{"error":"Failed to convert validated parameter '*': title: Too small: …"}`
+from the entity-derived schema; valid title persists (200). Full suites:
+orm 87, platform-node 163, platform-web 143, dispatcher 211, api 10,
+management 8, boot 51, island 10.

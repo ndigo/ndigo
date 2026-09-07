@@ -1,5 +1,6 @@
-import { getMapping, postMapping, routeParams, headerValue, pathValue, bodyValue } from '@blue/dispatcher';
+import { getMapping, postMapping, routeParams, headerValue, pathValue, validatedBody } from '@blue/dispatcher';
 import { ResponseEntity } from '@blue/platform-node';
+import { insertSchemaForEntity } from '@blue/orm';
 import { DrizzleDataSource, DrizzleEntityManager } from '@blue/orm-drizzle';
 import { DrizzleNote } from './drizzle-note.entity';
 import { lookupPrincipal } from './auth-store';
@@ -63,7 +64,13 @@ export class DrizzleNoteController {
     }
 
     @postMapping('/notes')
-    @routeParams({ token: headerValue('authorization'), data: bodyValue('*') })
+    @routeParams({
+        token: headerValue('authorization'),
+        // Request-body validation derived from the entity (Phase 3 dogfood):
+        // the Drizzle entity's column constraint rejects an empty title with
+        // a 400 before the SQL write.
+        data: validatedBody(insertSchemaForEntity(DrizzleNote)),
+    })
     async create(token: string | undefined, data: Record<string, unknown>) {
         const bearer = token?.replace(/^Bearer\s+/i, '');
         if (!bearer || !lookupPrincipal(bearer)) {

@@ -10,6 +10,7 @@ export * from './session-argument-resolver';
 export * from './file-system-resource-loader';
 export * from './configure-argument-resolvers';
 export * from './node-auto-configuration';
+export * from './parameter-binding-error-resolver';
 export * from './file-system-router';
 export * from './http-server';
 export * from './node-http-server-adapter';

@@ -1,9 +1,10 @@
 import { configuration, entry } from '@blue/context';
 import { conditionalOnNode } from '@blue/core';
-import { RadixMetadataHandlerMapping } from '@blue/dispatcher';
+import { RadixMetadataHandlerMapping, MetadataErrorResolver } from '@blue/dispatcher';
 import { IslandViewResolver } from '@blue/view';
 import { NodeDispatcher } from './node-dispatcher';
 import { HTTPServer } from './http-server';
+import { NodeParameterBindingErrorResolver } from './parameter-binding-error-resolver';
 import { argumentValueConverters } from './argument-value-converter';
 import { NodeQueryValueMethodArgumentResolver } from './query-argument-resolver';
 import { NodePathValueMethodArgumentResolver } from './path-argument-resolver';
@@ -67,6 +68,18 @@ export class NodeAutoConfiguration {
     @entry
     dispatcher() {
         return new NodeDispatcher();
+    }
+
+    /**
+     * Creates the default Node error-resolver chain: request-binding failures
+     * (missing params, failed conversions, Zod validation) map to 400, then
+     * user-configured `@errorMapping` handlers win.
+     *
+     * @returns The error resolvers.
+     */
+    @entry
+    errorResolvers() {
+        return [new NodeParameterBindingErrorResolver(), new MetadataErrorResolver()];
     }
 
     /**

@@ -39,6 +39,7 @@ export {
     schemaForEntity,
     schemaForColumn,
     baseSchemaForType,
+    insertSchemaForEntity,
     validateEntity,
 } from './entity-schema';
 

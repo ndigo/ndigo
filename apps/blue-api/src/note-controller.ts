@@ -1,7 +1,7 @@
 import '@tsmetadata/polyfill';
-import { getMapping, postMapping, routeParams, bodyValue, headerValue } from '@blue/dispatcher';
+import { getMapping, postMapping, routeParams, headerValue, validatedBody } from '@blue/dispatcher';
 import { ResponseEntity } from '@blue/platform-node';
-import { InMemoryDataSource, InMemoryEntityManager } from '@blue/orm';
+import { insertSchemaForEntity, InMemoryDataSource, InMemoryEntityManager } from '@blue/orm';
 import { Note } from './note.entity';
 import { lookupPrincipal } from './auth-store';
 
@@ -22,7 +22,14 @@ export class NoteController {
     }
 
     @postMapping('/')
-    @routeParams({ token: headerValue('authorization'), data: bodyValue('*') })
+    @routeParams({
+        token: headerValue('authorization'),
+        // Validate the request body against the entity's derived insert
+        // schema (AD-7 + Phase 3 dogfood): rejects an empty title with a 400
+        // before persist() runs, with the zod constraint declared on the
+        // entity column as the single source of truth.
+        data: validatedBody(insertSchemaForEntity(Note)),
+    })
     create(token: string | undefined, data: Record<string, unknown>) {
         const bearer = token?.replace(/^Bearer\s+/i, '');
         if (!bearer || !lookupPrincipal(bearer)) {

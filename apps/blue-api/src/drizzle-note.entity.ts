@@ -1,4 +1,5 @@
 import '@tsmetadata/polyfill';
+import { z } from 'zod';
 import { entity, primaryColumn, generated, column, prePersist } from '@blue/orm';
 
 /**
@@ -13,13 +14,13 @@ export class DrizzleNote {
     @primaryColumn()
     id!: number;
 
-    @column({ name: 'title', type: 'varchar' })
+    @column({ name: 'title', type: 'varchar', schema: z.string().min(1) })
     title!: string;
 
-    @column({ name: 'body', type: 'text' })
+    @column({ name: 'body', type: 'text', nullable: true })
     body!: string;
 
-    @column({ name: 'created_at', type: 'varchar' })
+    @column({ name: 'created_at', type: 'varchar', nullable: true })
     createdAt!: string;
 
     @prePersist()

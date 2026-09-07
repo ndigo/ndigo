@@ -160,3 +160,20 @@ Closed the loop between entity metadata and request validation:
 from the entity-derived schema; valid title persists (200). Full suites:
 orm 87, platform-node 163, platform-web 143, dispatcher 211, api 10,
 management 8, boot 51, island 10.
+
+### Follow-up (2026-09-07, Phase 4A — structured validation issues)
+
+`ParameterConversionError` now carries the machine-readable per-field failures,
+not just a flattened message. `validatedBy`'s failure path builds a
+`ZodValidationError` (the `ParameterConversionError.cause`) holding a
+structured `issues` array — each with `path`, `message`, and Zod `code`
+(e.g. `too_small`, `invalid_type`) — alongside the human-readable flattened
+`message`. Error resolvers can now render either a flat detail string or a
+structured `errors` array without string-parsing.
+
+Coverage: `platform-node/test/zod-validation.spec.ts` asserts the cause is a
+`ZodValidationError` and that its `issues` survive the whole resolver chain
+for whole-query, whole-body (both failing fields listed), and per-field
+paths. The browser BIND path shares `validatedBy`, so it gets the structure
+for free. The RFC 7807 envelope that renders these issues (`application/problem+json`)
+remains Item 3's scope — Phase 4B.

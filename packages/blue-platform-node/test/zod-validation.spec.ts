@@ -10,6 +10,7 @@ import {
     validatedBody,
     validatedQuery,
     ParameterConversionError,
+    ZodValidationError,
     RouteErrorResolver,
 } from '@blue/dispatcher';
 import {
@@ -224,6 +225,9 @@ describe('Zod validation over the Node argument pipeline', () => {
 
         expect(capturedError).toBeDefined();
         expect(capturedError).toBeInstanceOf(ParameterConversionError);
+        const queryCause = (capturedError as ParameterConversionError).cause;
+        expect(queryCause).toBeInstanceOf(ZodValidationError);
+        expect((queryCause as ZodValidationError).issues.map((i) => i.path.join('.'))).toContain('page');
     });
 
     it('surfaces an invalid whole-body object as a ParameterConversionError', async () => {
@@ -252,6 +256,13 @@ describe('Zod validation over the Node argument pipeline', () => {
 
         expect(capturedError).toBeDefined();
         expect(capturedError).toBeInstanceOf(ParameterConversionError);
+        // Phase 4A: the cause carries the structured per-field issues, not
+        // just the flattened message.
+        const bodyCause = (capturedError as ParameterConversionError).cause;
+        expect(bodyCause).toBeInstanceOf(ZodValidationError);
+        const bodyIssuePaths = (bodyCause as ZodValidationError).issues.map((issue) => issue.path.join('.'));
+        expect(bodyIssuePaths).toContain('name');
+        expect(bodyIssuePaths).toContain('age');
     });
 
     it('surfaces an invalid per-field value as a ParameterConversionError', async () => {
@@ -280,5 +291,10 @@ describe('Zod validation over the Node argument pipeline', () => {
 
         expect(capturedError).toBeDefined();
         expect(capturedError).toBeInstanceOf(ParameterConversionError);
+        // Per-field validation: the value itself failed, so the issue paths to
+        // the root ([]) — but the structure still survives.
+        const fieldCause = (capturedError as ParameterConversionError).cause;
+        expect(fieldCause).toBeInstanceOf(ZodValidationError);
+        expect((fieldCause as ZodValidationError).issues.length).toBeGreaterThan(0);
     });
 });

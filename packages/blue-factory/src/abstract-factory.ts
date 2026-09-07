@@ -7,7 +7,7 @@ import {
     getSharedOptions,
     satisfiesVersion,
 } from '@blue/core';
-import { Destroyable, Initializable, likeDestroyable, likeInitializable } from './lifecycle';
+import { Destroyable, Initializable, likeCloseable, likeDestroyable, likeInitializable } from './lifecycle';
 import { isConstructor, isFunction, isNumber, isString } from '@blue/util/types';
 import { Aware, likeAware, likeNameAware } from './aware';
 import { ContextToken } from './context-token';
@@ -161,6 +161,8 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
             if (likeDestroyable(value)) {
                 this._applyProcessorsBeforeDestruction(name, value);
                 value.destroy();
+            } else if (likeCloseable(value)) {
+                value.close();
             }
             deleteProperty(this, name);
         }

@@ -1,6 +1,60 @@
 import { describe, test, expect, vi } from 'vitest';
 import { GenericApplicationContext } from '../src/context';
 
+describe('GenericApplicationContext — teardown of managed values on close', () => {
+    test('a plain setValue bean implementing Destroyable is destroyed on close', () => {
+        const context = new GenericApplicationContext('t1');
+        const bean = {
+            destroyed: false,
+            destroy() {
+                this.destroyed = true;
+            },
+        };
+        context.setValue('destroyableBean', bean);
+
+        expect(bean.destroyed).toBe(false);
+        context.close();
+        expect(bean.destroyed).toBe(true);
+    });
+
+    test('a plain setValue bean implementing Closeable is closed on close', () => {
+        const context = new GenericApplicationContext('t2');
+        const closed = vi.fn();
+        context.setValue('closeableBean', { close: closed });
+
+        context.close();
+        expect(closed).toHaveBeenCalledTimes(1);
+    });
+
+    test('a constructor-registered Destroyable bean is destroyed on close', () => {
+        class DestroyMe {
+            destroyed = false;
+            destroy() {
+                this.destroyed = true;
+            }
+        }
+
+        const context = new GenericApplicationContext('t3');
+        context.setValue('lazyBean', DestroyMe);
+        const bean = context.getValue<DestroyMe>('lazyBean');
+
+        context.close();
+        expect(bean.destroyed).toBe(true);
+    });
+
+    test('internal state fields and non-lifecycle values are not torn down', () => {
+        const context = new GenericApplicationContext('t4');
+        context.setValue('scalarBean', 42);
+
+        context.close();
+
+        // A scalar is not lifecycle-bearing, so it is neither destroyed nor
+        // removed — and internal context state survives intact.
+        expect(context.destroyed).toBe(true);
+        expect((context as unknown as { scalarBean: number }).scalarBean).toBe(42);
+    });
+});
+
 describe('GenericApplicationContext — remaining branch coverage', () => {
     test('bubble on root context emits only on self (no parent to climb)', () => {
         const root = new GenericApplicationContext('root');

@@ -12,7 +12,7 @@
  * structurally dead — `routeParams` never invoked its `.convert` hook and the
  * resolver only read `convertType`.
  *
- * ## Whole-body (Node)
+ * ## Whole-body (Node) — validatedBody
  *
  * ```ts
  * const NoteSchema = z.object({
@@ -21,17 +21,29 @@
  * });
  *
  * @postMapping('/')
- * @routeParams({ note: validatedBy(NoteSchema, bodyValue('*')) })
+ * @routeParams({ note: validatedBody(NoteSchema) })
  * create(note: z.infer<typeof NoteSchema>) { … }
  * ```
  *
- * ## Whole map (browser BIND or shared extractors)
+ * ## Whole query — validatedQuery
+ *
+ * ```ts
+ * const SearchSchema = z.object({
+ *     page: z.coerce.number().min(1),
+ *     q: z.string().max(80),
+ * });
+ *
+ * @routeParams({ search: validatedQuery(SearchSchema) })
+ * search(search: z.infer<typeof SearchSchema>) { … }
+ * ```
+ *
+ * ## Whole map — validateParams
  *
  * ```ts
  * @routeParams(validateParams(UserSchema, { user: bindValue('query') }))
  * ```
  *
- * ## Per-field
+ * ## Per-field — validatedBy
  *
  * Validation applies per argument — a single schema over one extractor:
  *
@@ -42,15 +54,16 @@
  *
  * The hook runs on every platform resolver: it is invoked by the shared
  * `AbstractPlatformArgumentResolver` pipeline (after `convertType`
- * conversion) and by the browser BIND resolver. Schemas therefore see
- * already-coerced values (`z.coerce.number()` on a query string works).
+ * conversion), the browser BIND resolver, and the shared named-value
+ * resolvers. Schemas therefore see already-coerced values
+ * (`z.coerce.number()` on a query string works).
  *
  * @module
  */
 
 import { z } from 'zod';
 import { ParameterConversionError } from './error';
-import { type ParameterExtractor, type RouteParameterMap } from './route-parameter';
+import { type ParameterExtractor, type RouteParameterMap, bodyValue, queryValue } from './route-parameter';
 
 /**
  * Wraps a parameter extractor with a Zod schema for validation and coercion.
@@ -103,6 +116,47 @@ export function validateParams(schema: z.ZodType, extractors: RouteParameterMap)
         mapped[name] = validatedBy(schema, extractor);
     }
     return mapped;
+}
+
+/**
+ * Sugar for validating the entire parsed request body against a Zod schema.
+ *
+ * Equivalent to {@link validatedBy}`(schema, bodyValue('*'))`. The `'*'`
+ * extractor convention binds the whole parsed body object (Node platform).
+ *
+ * @example
+ * ```ts
+ * @routeParams({ note: validatedBody(NoteSchema) })
+ * create(note: z.infer<typeof NoteSchema>) { … }
+ * ```
+ *
+ * @param schema - The Zod schema validating the whole body.
+ * @returns A parameter extractor binding `bodyValue('*')` through the schema.
+ */
+export function validatedBody<T>(schema: z.ZodType<T>): ParameterExtractor {
+    return validatedBy(schema, bodyValue('*'));
+}
+
+/**
+ * Sugar for validating the entire query object against a Zod schema.
+ *
+ * Equivalent to {@link validatedBy}`(schema, queryValue('*'))`. The `'*'`
+ * extractor convention binds the whole `route.data` object (all query
+ * parameters), so an object schema validates/coerces the whole query — e.g.
+ * `z.object({ page: z.coerce.number(), q: z.string() })` against
+ * `?page=2&q=search`.
+ *
+ * @example
+ * ```ts
+ * @routeParams({ search: validatedQuery(SearchSchema) })
+ * search(search: z.infer<typeof SearchSchema>) { … }
+ * ```
+ *
+ * @param schema - The Zod schema validating the whole query object.
+ * @returns A parameter extractor binding `queryValue('*')` through the schema.
+ */
+export function validatedQuery<T>(schema: z.ZodType<T>): ParameterExtractor {
+    return validatedBy(schema, queryValue('*'));
 }
 
 export type { MethodParameter } from './route-parameter';

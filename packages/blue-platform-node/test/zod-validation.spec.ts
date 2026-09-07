@@ -7,6 +7,8 @@ import {
     bodyValue,
     queryValue,
     validatedBy,
+    validatedBody,
+    validatedQuery,
     ParameterConversionError,
     RouteErrorResolver,
 } from '@blue/dispatcher';
@@ -96,13 +98,13 @@ describe('Zod validation over the Node argument pipeline', () => {
     const TitleSchema = z.string().min(3);
     type User = z.infer<typeof UserSchema>;
 
-    it('validates and coerces a whole-body object via validatedBy + bodyValue("*")', async () => {
+    it('validates and coerces a whole-body object via validatedBody sugar', async () => {
         let captured: User | null = null;
 
         @routeMapping('/notes')
         class NotesController {
             @routeMapping('/create')
-            @routeParams({ data: validatedBy(UserSchema, bodyValue('*')) })
+            @routeParams({ data: validatedBody(UserSchema) })
             create(data: User) {
                 captured = data;
                 return { ok: true };
@@ -160,6 +162,68 @@ describe('Zod validation over the Node argument pipeline', () => {
         await app.dispatcher.dispatch(route);
 
         expect(captured).toBe('Build validation');
+    });
+
+    it('validates and coerces the whole query object via validatedQuery sugar', async () => {
+        const SearchSchema = z.object({
+            page: z.coerce.number().min(1),
+            q: z.string().max(80),
+        });
+        type Search = z.infer<typeof SearchSchema>;
+        let captured: Search | null = null;
+
+        @routeMapping('/search')
+        class SearchController {
+            @routeMapping('/')
+            @routeParams({ search: validatedQuery(SearchSchema) })
+            search(search: Search) {
+                captured = search;
+                return { ok: true };
+            }
+        }
+
+        const app = await boot(dispatcherConfig(SearchController));
+        const route = nodeRoute('/search/', { page: '2', q: 'hello' }, bodyRequest({}), ['search', '']);
+
+        await app.dispatcher.dispatch(route);
+
+        // z.coerce.number() ran on the whole query object — proves the '*'
+        // whole-query binding and the convert hook both fire.
+        expect(captured).toBeDefined();
+        expect(captured!.page).toBe(2);
+        expect(captured!.q).toBe('hello');
+    });
+
+    it('surfaces an invalid whole query as a ParameterConversionError', async () => {
+        let capturedError: Error | null = null;
+
+        class ErrorCapturingResolver implements RouteErrorResolver {
+            resolveError(route: Route, handler: object | null, error: Error) {
+                capturedError = error;
+                return null;
+            }
+        }
+
+        const SearchSchema = z.object({
+            page: z.coerce.number().min(1),
+        });
+
+        @routeMapping('/search')
+        class SearchController {
+            @routeMapping('/')
+            @routeParams({ search: validatedQuery(SearchSchema) })
+            search(search: { page: number }) {
+                return { ok: true };
+            }
+        }
+
+        const app = await boot(dispatcherConfig(SearchController, [new ErrorCapturingResolver()]));
+        const route = nodeRoute('/search/', { page: '0' }, bodyRequest({}), ['search', '']);
+
+        await app.dispatcher.dispatch(route);
+
+        expect(capturedError).toBeDefined();
+        expect(capturedError).toBeInstanceOf(ParameterConversionError);
     });
 
     it('surfaces an invalid whole-body object as a ParameterConversionError', async () => {

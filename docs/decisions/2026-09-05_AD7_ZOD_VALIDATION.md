@@ -104,3 +104,27 @@ whole-map, and per-field forms).
 — whole-body coercion, per-field query, per-field body, and both failure
 paths surfacing as `ParameterConversionError`. Web coverage remains in
 `packages/blue-platform-web/test/zod-validation.spec.ts`.
+
+### Follow-up (2026-09-07, Phase 2 — `validatedBody` / `validatedQuery` sugar)
+
+Added ergonomic entry points to the same mechanism, so a single zod schema
+wraps an entire request source instead of composing `validatedBy` with a
+star extractor by hand:
+
+- `validatedBody(schema)` — validates the whole parsed body; equivalent to
+  `validatedBy(schema, bodyValue('*'))`. The `'*'` convention for "whole
+  source" already existed for the body; this is the sugar over it.
+- `validatedQuery(schema)` — validates the whole query object; implements the
+  matching `'*'` convention in both query resolvers (`QueryValueMethodArgumentResolver`
+  in dispatcher and `NodeQueryValueMethodArgumentResolver` in platform-node),
+  binding all of `route.data`.
+- The shared `AbstractNamedValueMethodArgumentResolver` (browser query, path,
+  matrix, attribute) now invokes `parameter.convert`, closing the same
+  silent-death gap Phase 1 fixed for the platform base pipeline — per-field
+  validation on those resolvers previously no-op'd.
+
+Full usage surface documented in `zod-validated-by.ts` (validatedBody,
+validatedQuery, validateParams, validatedBy — whole-source, per-field, and
+whole-map forms). Coverage: `platform-node/test/zod-validation.spec.ts` adds
+whole-query coercion + whole-query failure; `platform-web/test/zod-validation.spec.ts`
+adds shared-resolver per-field query validation.

@@ -5,9 +5,11 @@ import {
     routeMapping,
     routeParams,
     bindValue,
+    queryValue,
     validatedBy,
     ParameterConversionError,
     RouteErrorResolver,
+    QueryValueMethodArgumentResolver,
 } from '@blue/dispatcher';
 import { BrowserDispatcher } from '../src/browser-dispatcher';
 import {
@@ -147,5 +149,55 @@ describe('Zod Validation Integration', () => {
         // Validation errors should be captured and surfaced as conversion errors
         expect(capturedError).toBeDefined();
         expect(capturedError).toBeInstanceOf(ParameterConversionError);
+    });
+
+    it('should validate a per-field query parameter through the shared resolver', async () => {
+        let captured: string | undefined;
+
+        @routeMapping('/sub')
+        class SubscribeController {
+            @routeMapping('/go')
+            @routeParams({ email: validatedBy(z.email(), queryValue('email')) })
+            subscribe(email: string) {
+                captured = email;
+                return new ModelAndView('success');
+            }
+        }
+
+        @configuration
+        class TestConfig {
+            @entry controller() {
+                return new SubscribeController();
+            }
+            @entry viewResolver() {
+                return new TestViewResolver();
+            }
+            @entry argumentResolvers() {
+                return [new QueryValueMethodArgumentResolver()];
+            }
+        }
+
+        const context = new MetadataConfigApplicationContext('shared-query');
+        context.addProcessor(new ApplicationContextAwareProcessor(context));
+        context.register(TestConfig);
+
+        const dispatcher = new BrowserDispatcher();
+        dispatcher.initStrategies(context);
+
+        const route = {
+            path: '/sub/go',
+            params: {},
+            data: { email: 'jeff@example.co' },
+            0: { name: 'sub', raw: 'sub', data: null },
+            1: { name: 'go', raw: 'go', data: null },
+            length: 2,
+        };
+
+        await dispatcher.dispatch(route as any);
+
+        // The shared AbstractNamedValueMethodArgumentResolver pipeline must
+        // invoke parameter.convert — previously only BIND and the platform
+        // base did, so per-field query validation was silently skipped.
+        expect(captured).toBe('jeff@example.co');
     });
 });

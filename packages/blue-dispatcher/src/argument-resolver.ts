@@ -60,13 +60,17 @@ export abstract class AbstractNamedValueMethodArgumentResolver implements Handle
      */
     resolveArgument(parameter: MethodParameter, route: Route, mapping: any): any {
         const resolveValue = (v: any) => v ?? parameter.defaultValue,
-            value = resolveValue(this.resolveName(parameter.name, parameter, route, mapping));
+            value = resolveValue(this.resolveName(parameter.name, parameter, route, mapping)),
+            // The convert hook (installed by validatedBy, AD-7) runs after
+            // named resolution so Zod schemas see the field value. Mirrors
+            // the AbstractPlatformArgumentResolver pipeline.
+            validatedValue = parameter.convert ? parameter.convert(value) : value;
 
-        if (isNil(value) && parameter.required) {
+        if (isNil(validatedValue) && parameter.required) {
             this.handleMissingValue(parameter.name);
         }
 
-        return value;
+        return validatedValue;
     }
 
     protected abstract resolveName(name: string, parameter: MethodParameter, route: Route, mapping: any): any;
@@ -121,7 +125,9 @@ export class MatrixValueMethodArgumentResolver extends AbstractNamedValueMethodA
  */
 export class QueryValueMethodArgumentResolver extends AbstractNamedValueMethodArgumentResolver {
     protected resolveName(name: string, parameter: MethodParameter, route: Route, mapping: any): any {
-        return route.data[name];
+        // '*' binds the entire query object (validatedQuery sugar), mirroring
+        // the body resolver's '*' convention.
+        return name === '*' ? route.data : route.data[name];
     }
 
     /**

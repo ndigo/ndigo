@@ -9,7 +9,6 @@ import { describe, test, beforeAll, afterAll, expect } from 'vitest';
 import type { AddressInfo } from 'node:net';
 import { bootApp, MockMVC } from '@blue/test';
 import { MetadataConfigApplicationContext } from '@blue/context';
-import { RadixMetadataHandlerMapping } from '@blue/dispatcher';
 import { NodeAutoConfiguration, NodeDispatcher, NodeHTTPServerAdapter } from '@blue/platform-node';
 import { IslandConfiguration } from '../src/island-configuration';
 import { TodoModelStore } from '../src/todo-model-store';
@@ -81,13 +80,8 @@ describe('GET /events pushes model updates over SSE (AD-9)', () => {
         const context = new MetadataConfigApplicationContext('island-events');
         context.register(NodeAutoConfiguration);
         context.register(IslandConfiguration);
-        context.refresh();
-        const handlerMapping = context.getValue<RadixMetadataHandlerMapping>('handlerMapping');
-        handlerMapping.setApplicationContext(context);
-        handlerMapping.init();
+        context.refresh(); // auto-initializes the handler mapping + dispatcher
         const dispatcher = context.getValue<NodeDispatcher>('dispatcher');
-        dispatcher.initStrategies(context);
-        dispatcher.applicationContext = context;
         store = context.getValue<TodoModelStore>('modelStore');
         adapter = new NodeHTTPServerAdapter(dispatcher);
         await adapter.listen(0, '127.0.0.1');

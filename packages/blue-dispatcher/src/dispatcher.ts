@@ -1,6 +1,7 @@
 import { Null } from '@blue/core';
 import { View, ViewTarget } from '@blue/view';
 import { Route } from '@blue/router';
+import { $aware } from '@blue/factory';
 import { ApplicationContext, likeApplicationContextAware } from '@blue/context';
 
 import { NoHandlerFoundError, NoViewFoundError } from './error';
@@ -73,6 +74,57 @@ export class AbstractDispatcher
      */
     defaultViewName: string = 'index';
     #activeView: View | null = null;
+
+    /**
+     * Marks the value as `Aware` for the factory's aware injection, so the
+     * application context is injected when the dispatcher is registered as an
+     * entry.
+     */
+    get [$aware](): boolean {
+        return true;
+    }
+
+    /**
+     * Injects the owning application context, used by {@link start} to
+     * initialize strategies.
+     *
+     * @param context - The application context that owns this dispatcher.
+     */
+    setApplicationContext(context: ApplicationContext): void {
+        this.applicationContext = context;
+    }
+
+    #lifecycleStarted: boolean = false;
+
+    /** `SmartLifecycle` — whether the lifecycle has driven strategy init. */
+    get isRunning(): boolean {
+        return this.#lifecycleStarted;
+    }
+
+    /** `SmartLifecycle` — initialize after the handler mapping, before the server. */
+    readonly phase = -90;
+
+    /** `SmartLifecycle` — dispatchers must initialize once the context refreshes. */
+    readonly isAutoStartup = true;
+
+    /**
+     * `SmartLifecycle` — initialize strategies from the application context.
+     * Runs on refresh, after every configuration has registered.
+     */
+    start(): void {
+        this.#lifecycleStarted = true;
+        if (this.applicationContext) {
+            this.initStrategies(this.applicationContext);
+        }
+    }
+
+    /**
+     * `SmartLifecycle` — strategies are immutable once initialized; nothing to
+     * release. Present so this type is a well-behaved lifecycle bean.
+     */
+    stop(): void {
+        this.#lifecycleStarted = false;
+    }
     /**
      * Views obtained through the resolver chain. Resolvers cache their
      * instances (singletons owned by the cache), so the dispatcher must not

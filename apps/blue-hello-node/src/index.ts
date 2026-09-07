@@ -10,8 +10,7 @@
 
 import 'node:process';
 import { MetadataConfigApplicationContext } from '@blue/context';
-import { RadixMetadataHandlerMapping } from '@blue/dispatcher';
-import { NodeAutoConfiguration, NodeDispatcher, HTTPServer, gracefulShutdown } from '@blue/platform-node';
+import { NodeAutoConfiguration, HTTPServer, gracefulShutdown } from '@blue/platform-node';
 import { HelloConfiguration } from './hello-configuration';
 
 const PORT = Number(process.env['PORT'] ?? '3000');
@@ -23,19 +22,11 @@ async function main() {
     context.register(HelloConfiguration);
     context.refresh();
 
-    // ── Dispatcher + server ────────────────────────────────────────────────
-    // Discover handler methods from the context (controllers registered above).
-    const handlerMapping = context.getValue<RadixMetadataHandlerMapping>('handlerMapping');
-    handlerMapping.setApplicationContext(context);
-    handlerMapping.init();
-
-    const dispatcher = context.getValue<NodeDispatcher>('dispatcher');
-    dispatcher.initStrategies(context);
-    dispatcher.applicationContext = context;
-
-    // Managed HTTP server: provisioned by NodeAutoConfiguration, so resolve it
-    // from the context and await its start so "listening" fires once the
-    // socket is actually bound. The context stops it on close.
+    // ── Server ─────────────────────────────────────────────────────────────
+    // NodeAutoConfiguration auto-initializes the handler mapping and the
+    // dispatcher during refresh. Resolve the managed server and await its
+    // start so "listening" fires once the socket is bound. The context stops
+    // it on close.
     const server = context.getValue<HTTPServer>('httpServer');
     await server.start();
     gracefulShutdown(context, { resources: [server] });

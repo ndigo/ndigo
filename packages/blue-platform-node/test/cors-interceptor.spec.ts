@@ -34,13 +34,9 @@ async function boot(options: ConstructorParameters<typeof CORSInterceptor>[0]): 
     const context = new MetadataConfigApplicationContext('cors');
     context.register(NodeAutoConfiguration);
     context.setValue(APIController.name, new APIController());
-    context.refresh();
+    context.refresh(); // auto-initializes the handler mapping + dispatcher
     const handlerMapping = context.getValue<RadixMetadataHandlerMapping>('handlerMapping');
-    handlerMapping.setApplicationContext(context);
-    handlerMapping.init();
     const dispatcher = context.getValue<NodeDispatcher>('dispatcher');
-    dispatcher.initStrategies(context);
-    dispatcher.applicationContext = context;
 
     // Attach the CORS interceptor to every dispatch (the documented wiring:
     // push onto the handler mapping's interceptor list).

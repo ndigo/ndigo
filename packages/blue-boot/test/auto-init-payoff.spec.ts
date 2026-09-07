@@ -1,0 +1,39 @@
+// @vitest-environment node
+import { describe, test, expect } from 'vitest';
+import { Application } from '../src/application';
+import { ApplicationBuilder } from '../src/application-builder';
+import { NodeAutoConfiguration } from '@blue/platform-node';
+
+describe('ApplicationBuilder + NodeAutoConfiguration payoff', () => {
+    test('run() produces auto-initialized mapping, dispatcher, and httpServer entry', () => {
+        const app = new Application([NodeAutoConfiguration]);
+        const context = app.run();
+
+        expect(context.hasValue('httpServer')).toBe(true);
+        expect(context.hasValue('dispatcher')).toBe(true);
+        expect(context.hasValue('handlerMapping')).toBe(true);
+
+        // The mapping is a SmartLifecycle driven by refresh: auto-started.
+        const mapping = context.getValue('handlerMapping');
+        expect(mapping.isRunning).toBe(true);
+
+        // The dispatcher is SmartLifecycle + auto-started with strategies.
+        const dispatcher = context.getValue('dispatcher');
+        expect(dispatcher.isRunning).toBe(true);
+        expect(dispatcher.applicationContext).toBeDefined();
+
+        // The server is provisioned but must NOT auto-bind a socket on refresh.
+        const server = context.getValue('httpServer');
+        expect(server.isAutoStartup).toBe(false);
+        expect(server.isRunning).toBe(false);
+
+        app.close();
+    });
+
+    test('builder.run() idempotently returns the same context', () => {
+        const builder = new ApplicationBuilder([NodeAutoConfiguration]);
+        const first = builder.run();
+        const second = builder.run();
+        expect(second).toBe(first);
+    });
+});

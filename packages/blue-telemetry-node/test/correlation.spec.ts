@@ -5,7 +5,7 @@ import { AsyncHooksContextManager } from '@opentelemetry/context-async-hooks';
 import { context as otelContext, trace } from '@opentelemetry/api';
 import { HTTPServerInstrumentation } from '../src/instrumentation/http-server/http-server';
 import { DispatcherInstrumentation } from '../src/instrumentation/dispatcher/dispatcher';
-import { getMapping, ModelAndView, RadixMetadataHandlerMapping } from '@blue/dispatcher';
+import { getMapping, ModelAndView } from '@blue/dispatcher';
 import { MetadataConfigApplicationContext } from '@blue/context';
 import { NodeAutoConfiguration, NodeDispatcher, HTTPServer } from '@blue/platform-node';
 
@@ -59,15 +59,9 @@ describe('telemetry request→dispatch correlation (real HTTP)', () => {
         const context = new MetadataConfigApplicationContext('corr');
         context.register(NodeAutoConfiguration);
         context.setValue(APIController.name, new APIController());
-        context.refresh();
-
-        const mapping = context.getValue<RadixMetadataHandlerMapping>('handlerMapping');
-        mapping.setApplicationContext(context);
-        mapping.init();
+        context.refresh(); // auto-initializes the handler mapping + dispatcher
 
         const dispatcher = context.getValue<NodeDispatcher>('dispatcher');
-        dispatcher.initStrategies(context);
-        dispatcher.applicationContext = context;
 
         server = new HTTPServer(dispatcher, { port: 0, host: '127.0.0.1' });
         await server.start();

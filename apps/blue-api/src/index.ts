@@ -1,7 +1,6 @@
 import 'node:process';
 import { MetadataConfigApplicationContext } from '@blue/context';
-import { RadixMetadataHandlerMapping } from '@blue/dispatcher';
-import { NodeAutoConfiguration, NodeDispatcher, HTTPServer, gracefulShutdown } from '@blue/platform-node';
+import { NodeAutoConfiguration, HTTPServer, gracefulShutdown } from '@blue/platform-node';
 import { NodeAppConfiguration } from './node-app-configuration';
 import { initAuth } from './auth-store';
 
@@ -16,16 +15,8 @@ async function main() {
     context.register(NodeAppConfiguration);
     context.refresh();
 
-    // Discover handler methods from registered controllers.
-    const handlerMapping = context.getValue<RadixMetadataHandlerMapping>('handlerMapping');
-    handlerMapping.setApplicationContext(context);
-    handlerMapping.init();
-
-    const dispatcher = context.getValue<NodeDispatcher>('dispatcher');
-    dispatcher.initStrategies(context);
-    dispatcher.applicationContext = context;
-
-    // Managed HTTP server: provisioned by NodeAutoConfiguration; await its
+    // NodeAutoConfiguration auto-initializes the handler mapping and the
+    // dispatcher during refresh. Resolve the managed server and await its
     // start so "listening" fires once the socket is bound. It reads the port
     // from process.env.PORT (default 3000) and stops when the context closes.
     const server = context.getValue<HTTPServer>('httpServer');

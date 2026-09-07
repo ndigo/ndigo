@@ -1,13 +1,18 @@
 /**
  * Managed HTTP server for Node.js platform applications.
  *
- * Integrates with the `ApplicationContext` lifecycle: created as an entry during
- * refresh, auto-started on the `started` event, shut down on `close`/`destroy`.
+ * Integrates with the `ApplicationContext` lifecycle: provisioned as an entry
+ * by {@link NodeAutoConfiguration}, started on demand (typically
+ * `await context.getValue('httpServer').start()`), and shut down automatically
+ * when the context closes. The dispatcher is resolved from the application
+ * context at start time, or may be supplied to the constructor directly.
  *
  * @module
  * @since 1.0.0
  */
 
+import { $aware, type SmartLifecycle } from '@blue/factory';
+import type { ApplicationContext, ApplicationContextAware } from '@blue/context';
 import type { NodeDispatcher } from './node-dispatcher';
 import { NodeHTTPServerAdapter } from './node-http-server-adapter';
 
@@ -39,19 +44,29 @@ export interface HTTPServerOptions {
 /**
  * A managed HTTP server that delegates incoming requests to a {@link NodeDispatcher}.
  *
+ * Implements `SmartLifecycle` so the context stops it on `close()`, and
+ * `ApplicationContextAware` so it can resolve the dispatcher from the context
+ * when none is supplied to the constructor. `isAutoStartup` is `false`:
+ * registering a `NodeAutoConfiguration` context must not bind ports during
+ * `refresh()` — applications start the server explicitly once their handler
+ * mapping and dispatcher strategies are ready.
+ *
  * @example
  * ```ts
- * const server = new HTTPServer(dispatcher, { port: 3000 });
+ * const server = context.getValue<HTTPServer>('httpServer');
  * await server.start();
  * // ... later
- * await server.close();
+ * context.close(); // stops the server
  * ```
  */
-export class HTTPServer {
-    #adapter: HTTPServerAdapter;
+export class HTTPServer implements SmartLifecycle, ApplicationContextAware {
+    #adapter: HTTPServerAdapter | null;
     #port: number;
     #host: string;
     #started: boolean;
+    #dispatcher: NodeDispatcher | null;
+    #applicationContext: ApplicationContext | null = null;
+    #startPromise: Promise<void> | null = null;
 
     /**
      * The port the server is listening on, or `0` if not yet started.
@@ -71,45 +86,108 @@ export class HTTPServer {
      * The underlying adapter (e.g. the `http.Server` instance).
      */
     get server(): unknown {
-        return this.#adapter.server;
+        return this.#adapter?.server;
     }
+
+    /** `SmartLifecycle` — whether the server is currently listening. */
+    get isRunning(): boolean {
+        return this.#started;
+    }
+
+    /** `SmartLifecycle` — start/stop ordering. */
+    readonly phase = 0;
+
+    /** `SmartLifecycle` — never auto-start; the application starts the server explicitly. */
+    readonly isAutoStartup = false;
 
     /**
      * Create a new HTTP server.
      *
-     * @param dispatcher - The dispatcher to handle incoming requests.
+     * @param dispatcher - The dispatcher to handle incoming requests. When
+     * omitted, the dispatcher is resolved from the application context at
+     * start time.
      * @param options - Server configuration.
      */
-    constructor(dispatcher: NodeDispatcher, options: HTTPServerOptions = {}) {
+    constructor(dispatcher: NodeDispatcher | null = null, options: HTTPServerOptions = {}) {
         const rawPort = options.port ?? Number(process.env['PORT'] ?? '3000');
         if (!Number.isInteger(rawPort) || rawPort < 0 || rawPort > 65_535) {
             throw new RangeError(`HTTPServer: invalid port ${String(rawPort)} — must be an integer in [0, 65535]`);
         }
         this.#port = rawPort;
         this.#host = options.host ?? '127.0.0.1';
-        this.#adapter = options.adapter ?? new NodeHTTPServerAdapter(dispatcher);
+        this.#dispatcher = dispatcher;
+        this.#adapter = options.adapter ?? null;
         this.#started = false;
     }
 
     /**
-     * Start listening. Safe to call multiple times — subsequent calls are no-ops.
+     * Injects the owning application context, used to resolve the dispatcher.
+     *
+     * @param context - The application context that owns this server.
      */
-    async start(): Promise<void> {
+    setApplicationContext(context: ApplicationContext): void {
+        this.#applicationContext = context;
+    }
+
+    /**
+     * Start listening. Idempotent: concurrent callers share the same start
+     * until the server is closed, after which a fresh start can be issued.
+     */
+    start(): Promise<void> {
+        if (!this.#startPromise) {
+            this.#startPromise = this.#doStart();
+        }
+        return this.#startPromise;
+    }
+
+    async #doStart(): Promise<void> {
         if (this.#started) {
             return;
+        }
+        if (!this.#adapter) {
+            this.#adapter = new NodeHTTPServerAdapter(this.#resolveDispatcher());
         }
         await this.#adapter.listen(this.#port, this.#host);
         this.#started = true;
     }
 
     /**
-     * Stop the server gracefully.
+     * `SmartLifecycle` — stop the server, delegated to {@link close}.
+     */
+    stop(): Promise<void> {
+        return this.close();
+    }
+
+    /**
+     * Stop the server gracefully. Idempotent.
      */
     async close(): Promise<void> {
-        if (!this.#started) {
+        if (!this.#adapter || !this.#started) {
             return;
         }
         await this.#adapter.close();
         this.#started = false;
+        this.#startPromise = null;
+    }
+
+    /**
+     * Marks the value as `Aware` for the factory's aware injection, so
+     * `setApplicationContext` is invoked when the entry is registered.
+     */
+    get [$aware](): boolean {
+        return true;
+    }
+
+    #resolveDispatcher(): NodeDispatcher {
+        if (this.#dispatcher) {
+            return this.#dispatcher;
+        }
+        if (this.#applicationContext) {
+            return this.#applicationContext.getValue<NodeDispatcher>('dispatcher');
+        }
+        throw new Error(
+            'HTTPServer: no dispatcher provided and no application context available — pass a dispatcher to the ' +
+                'constructor or register the server as a context entry'
+        );
     }
 }

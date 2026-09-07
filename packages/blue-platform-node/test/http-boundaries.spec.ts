@@ -1,5 +1,5 @@
 // @vitest-environment node
-import { describe, test, beforeAll, afterAll, expect } from 'vitest';
+import { describe, test, beforeAll, afterAll, expect, vi } from 'vitest';
 import type { AddressInfo } from 'node:net';
 import { MetadataConfigApplicationContext } from '@blue/context';
 import { getMapping, RadixMetadataHandlerMapping } from '@blue/dispatcher';
@@ -157,5 +157,27 @@ describe('HTTPServer lifecycle', () => {
         expect(() => new HTTPServer(dispatcher, { port: -1 })).toThrow(RangeError);
         expect(() => new HTTPServer(dispatcher, { port: 65_536 })).toThrow(RangeError);
         expect(() => new HTTPServer(dispatcher, { port: 1.5 })).toThrow(RangeError);
+    });
+
+    test('managed entry stays inert on refresh, starts on demand, stops on close', async () => {
+        const context = new MetadataConfigApplicationContext('managed-server');
+        context.register(NodeAutoConfiguration);
+        context.refresh();
+
+        // NodeAutoConfiguration provisions the server as an entry…
+        const server = context.getValue<HTTPServer>('httpServer');
+        expect(server).toBeInstanceOf(HTTPServer);
+        // …but must not bind a port during refresh (isAutoStartup = false).
+        expect(server.isRunning).toBe(false);
+
+        // Starts on demand, resolving the dispatcher from the context.
+        await server.start();
+        expect(server.isRunning).toBe(true);
+
+        // context.close() fires LifecycleProcessor.onClose → server.stop().
+        context.close();
+        await vi.waitFor(() => {
+            expect(server.isRunning).toBe(false);
+        });
     });
 });

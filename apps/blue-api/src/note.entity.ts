@@ -1,4 +1,5 @@
 import '@tsmetadata/polyfill';
+import { z } from 'zod';
 import { entity, primaryColumn, generated, column, prePersist } from '@blue/orm';
 
 @entity('notes')
@@ -7,13 +8,13 @@ export class Note {
     @primaryColumn()
     id!: number;
 
-    @column()
+    @column({ type: 'varchar', schema: z.string().min(1) })
     title!: string;
 
-    @column()
+    @column({ type: 'text', nullable: true })
     body!: string;
 
-    @column()
+    @column({ type: 'varchar', nullable: true })
     createdAt!: string;
 
     @prePersist()

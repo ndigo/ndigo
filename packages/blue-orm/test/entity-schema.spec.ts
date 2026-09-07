@@ -2,7 +2,13 @@ import '@tsmetadata/polyfill';
 
 import { z } from 'zod';
 import { entity, generated, primaryColumn, column } from '../src/decorators';
-import { baseSchemaForType, schemaForColumn, schemaForEntity, validateEntity } from '../src/entity-schema';
+import {
+    baseSchemaForType,
+    schemaForColumn,
+    schemaForEntity,
+    insertSchemaForEntity,
+    validateEntity,
+} from '../src/entity-schema';
 import { getEntityMetadata } from '../src/metadata';
 
 @entity()
@@ -80,6 +86,24 @@ describe('schemaForEntity', () => {
         const value = { id: 1, name: 'Widget', rating: 5 } as ProductShape;
         expect(value.name).toBe('Widget');
         expect(nameType.schema).toBeDefined();
+    });
+});
+
+describe('insertSchemaForEntity', () => {
+    test('omits generated and primary columns from the writable shape', () => {
+        const schema = insertSchemaForEntity(Product);
+        expect(schema.safeParse({ name: 'Widget', rating: 5 }).success).toBe(true);
+        expect(schema.safeParse({ name: 'x', rating: 5 }).success).toBe(false);
+        // Generated/primary column is not required by the insert schema.
+        expect(schema.safeParse({ name: 'Widget', rating: 5, id: 1 }).success).toBe(true);
+    });
+
+    test('insert schema is a subset of the full entity schema', () => {
+        const insert = insertSchemaForEntity(Product);
+        const full = schemaForEntity(Product);
+        expect(insert.safeParse({ name: 'Widget', rating: 5 }).success).toBe(true);
+        // The full schema requires the generated id; the insert schema does not.
+        expect(full.safeParse({ name: 'Widget', rating: 5 }).success).toBe(false);
     });
 });
 

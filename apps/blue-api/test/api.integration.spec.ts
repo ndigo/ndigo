@@ -136,4 +136,20 @@ describe('blue-api through @blue/test', () => {
         // is not a 200 listing.
         expect([400, 401, 403]).toContain(res.response.status);
     });
+
+    test('POST /drizzle/notes validates the body against the entity-derived schema', async () => {
+        const login = await mockMVC.post('/auth/login').body({ username: 'admin', password: 'demo' }).exec();
+        const { token } = login.json() as { token?: string };
+        expect(token).toBeDefined();
+
+        // Empty title violates the entity column's z.string().min(1) — the
+        // derived insert schema (insertSchemaForEntity + validatedBody) must
+        // reject it with a 400 before any SQL write.
+        const bad = await mockMVC
+            .post('/drizzle/notes')
+            .headers({ authorization: `Bearer ${token}` })
+            .body({ title: '', body: 'no title' })
+            .exec();
+        expect(bad.response.status).toBe(400);
+    });
 });

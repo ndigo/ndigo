@@ -1,5 +1,5 @@
 import { Comparator, IllegalStateError } from '@blue/core';
-import { Initializable } from '@blue/factory';
+import { Initializable, SmartLifecycle } from '@blue/factory';
 import { Route } from '@blue/router';
 import { isFunction } from '@blue/util/types';
 import { RouteHandlerMethod, RouteHandlerMethodMappingNamingStrategy } from './route-handler-method';
@@ -27,7 +27,7 @@ const { from } = Array,
  */
 export abstract class AbstractHandlerMethodMapping<T extends RouteMappingInfo>
     extends AbstractHandlerMapping
-    implements Initializable
+    implements Initializable, SmartLifecycle
 {
     /**
      * Naming strategy used when exposing handler methods by name.
@@ -53,12 +53,56 @@ export abstract class AbstractHandlerMethodMapping<T extends RouteMappingInfo>
     }
 
     /**
+     * Set of handler instances already scanned by {@link init}. Guards against
+     * duplicate registrations when init runs more than once: the DI container
+     * auto-initializes Initializable beans at registration time, and the
+     * lifecycle processor re-runs init on refresh — the same controllers must
+     * not be registered twice.
+     */
+    #detectedHandlers: Set<object> = new Set<object>();
+    #lifecycleStarted: boolean = false;
+
+    /**
+     * `SmartLifecycle` — whether the lifecycle has driven init.
+     */
+    get isRunning(): boolean {
+        return this.#lifecycleStarted;
+    }
+
+    /**
+     * `SmartLifecycle` — init runs before the dispatcher and server.
+     */
+    readonly phase = -100;
+
+    /**
+     * `SmartLifecycle` — handler mappings must be initialized once the context refreshes.
+     */
+    readonly isAutoStartup = true;
+
+    /**
+     * `SmartLifecycle` — initialize handler discovery from the application
+     * context. Runs on refresh, after every configuration has registered.
+     */
+    start(): void {
+        this.#lifecycleStarted = true;
+        this.init();
+    }
+
+    /**
+     * `SmartLifecycle` — mappings are immutable once initialized; nothing to
+     * release. Present so this type is a well-behaved lifecycle bean.
+     */
+    stop(): void {
+        this.#lifecycleStarted = false;
+    }
+
+    /**
      * Detect and register handler methods from the application context.
      *
      * No-op when the application context has not been injected yet (the DI
      * container auto-initializes initializable beans during refresh, which can
-     * run before `setApplicationContext`). Callers that need handlers registered
-     * must set the context first, then re-run `init`.
+     * run before `setApplicationContext`). Idempotent: handlers already
+     * detected on a previous init are skipped.
      */
     init(): void {
         const { applicationContext } = this;
@@ -67,7 +111,8 @@ export abstract class AbstractHandlerMethodMapping<T extends RouteMappingInfo>
         }
         keys(applicationContext).forEach((name) => {
             const value = applicationContext.getValue(name);
-            if (this._isHandler(value)) {
+            if (this._isHandler(value) && !this.#detectedHandlers.has(value)) {
+                this.#detectedHandlers.add(value);
                 this._detectHandlerMethods(value);
             }
         });

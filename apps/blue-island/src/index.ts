@@ -10,8 +10,7 @@
 
 import 'node:process';
 import { MetadataConfigApplicationContext } from '@blue/context';
-import { RadixMetadataHandlerMapping } from '@blue/dispatcher';
-import { NodeAutoConfiguration, NodeDispatcher, HTTPServer, gracefulShutdown } from '@blue/platform-node';
+import { NodeAutoConfiguration, HTTPServer, gracefulShutdown } from '@blue/platform-node';
 import { IslandConfiguration } from './island-configuration';
 import { TodoModelStore } from './todo-model-store';
 
@@ -26,22 +25,15 @@ async function main() {
     context.register(IslandConfiguration);
     context.refresh();
 
-    const handlerMapping = context.getValue<RadixMetadataHandlerMapping>('handlerMapping');
-    handlerMapping.setApplicationContext(context);
-    handlerMapping.init();
-
-    const dispatcher = context.getValue<NodeDispatcher>('dispatcher');
-    dispatcher.initStrategies(context);
-    dispatcher.applicationContext = context;
-
-    // The reactive half of the demo: push model updates to connected
-    // islands over SSE until the ticker completes (three pushes, one/sec).
+    // NodeAutoConfiguration auto-initializes the handler mapping and the
+    // dispatcher during refresh. The reactive half of the demo pushes model
+    // updates to connected islands over SSE until the ticker completes.
     const modelStore = context.getValue<TodoModelStore>('modelStore');
     modelStore.startTicker();
 
-    // Managed HTTP server: provisioned by NodeAutoConfiguration; await its
-    // start so "listening" fires once the socket is bound. It reads the port
-    // from process.env.PORT (defaulted to 3200 above) and stops on close.
+    // Resolve the managed server and await its start so "listening" fires
+    // once the socket is bound. It reads the port from process.env.PORT
+    // (defaulted to 3200 above) and stops on close.
     const server = context.getValue<HTTPServer>('httpServer');
     await server.start();
     gracefulShutdown(context, { resources: [server] });

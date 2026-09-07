@@ -46,17 +46,23 @@ export abstract class AbstractPlatformArgumentResolver extends AbstractNamedValu
     /**
      * Resolves and converts a method argument value.
      *
-     * Pipeline: resolveName → defaultValue fallback → convertType lookup → conversion → nil check.
+     * Pipeline: resolveName → defaultValue fallback → convertType lookup → conversion → extractor validation → nil check.
+     *
+     * The `parameter.convert` hook (installed by `validatedBy` for Zod
+     * validation, AD-7) runs after type conversion so schemas see coerced
+     * values. Without this invocation the hook was dead on every resolver
+     * extending this base — only the BIND path invoked it.
      */
     resolveArgument(parameter: MethodParameter, route: Route, mapping: any): any {
         const resolveValue = (v: any) => v ?? parameter.defaultValue,
             value = resolveValue(this.resolveName(parameter.name, parameter, route, mapping)),
-            convertedValue = this.#convertFn(parameter.convertType, value, parameter, route, mapping);
+            convertedValue = this.#convertFn(parameter.convertType, value, parameter, route, mapping),
+            validatedValue = parameter.convert ? parameter.convert(convertedValue) : convertedValue;
 
-        if (isNil(convertedValue) && parameter.required) {
+        if (isNil(validatedValue) && parameter.required) {
             this.handleMissingValue(parameter.name);
         }
 
-        return convertedValue;
+        return validatedValue;
     }
 }

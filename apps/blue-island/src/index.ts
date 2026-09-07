@@ -11,11 +11,14 @@
 import 'node:process';
 import { MetadataConfigApplicationContext } from '@blue/context';
 import { RadixMetadataHandlerMapping } from '@blue/dispatcher';
-import { NodeAutoConfiguration, NodeDispatcher, HTTPServer, NodeHTTPServerAdapter, gracefulShutdown } from '@blue/platform-node';
+import { NodeAutoConfiguration, NodeDispatcher, HTTPServer, gracefulShutdown } from '@blue/platform-node';
 import { IslandConfiguration } from './island-configuration';
 import { TodoModelStore } from './todo-model-store';
 
-const PORT = Number(process.env['PORT'] ?? '3200');
+// The managed server reads its port from process.env.PORT, so surface the
+// app's default there before any context is created.
+process.env.PORT ??= '3200';
+const PORT = Number(process.env['PORT']);
 
 async function main() {
     const context = new MetadataConfigApplicationContext('blue-island');
@@ -36,10 +39,10 @@ async function main() {
     const modelStore = context.getValue<TodoModelStore>('modelStore');
     modelStore.startTicker();
 
-    const server = new HTTPServer(dispatcher, {
-        adapter: new NodeHTTPServerAdapter(dispatcher),
-        port: PORT,
-    });
+    // Managed HTTP server: provisioned by NodeAutoConfiguration; await its
+    // start so "listening" fires once the socket is bound. It reads the port
+    // from process.env.PORT (defaulted to 3200 above) and stops on close.
+    const server = context.getValue<HTTPServer>('httpServer');
     await server.start();
     gracefulShutdown(context, { resources: [server] });
 

@@ -860,6 +860,9 @@ importers:
       '@blue/dispatcher':
         specifier: ~0.0.1
         version: link:../blue-dispatcher
+      '@blue/factory':
+        specifier: ~0.0.1
+        version: link:../blue-factory
       '@blue/http':
         specifier: ~0.0.1
         version: link:../blue-http

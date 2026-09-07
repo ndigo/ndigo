@@ -11,7 +11,7 @@
 import 'node:process';
 import { MetadataConfigApplicationContext } from '@blue/context';
 import { RadixMetadataHandlerMapping } from '@blue/dispatcher';
-import { NodeAutoConfiguration, NodeDispatcher, HTTPServer, NodeHTTPServerAdapter, gracefulShutdown } from '@blue/platform-node';
+import { NodeAutoConfiguration, NodeDispatcher, HTTPServer, gracefulShutdown } from '@blue/platform-node';
 import { HelloConfiguration } from './hello-configuration';
 
 const PORT = Number(process.env['PORT'] ?? '3000');
@@ -33,9 +33,10 @@ async function main() {
     dispatcher.initStrategies(context);
     dispatcher.applicationContext = context;
 
-    const server = new HTTPServer(dispatcher, {
-        adapter: new NodeHTTPServerAdapter(dispatcher),
-    });
+    // Managed HTTP server: provisioned by NodeAutoConfiguration, so resolve it
+    // from the context and await its start so "listening" fires once the
+    // socket is actually bound. The context stops it on close.
+    const server = context.getValue<HTTPServer>('httpServer');
     await server.start();
     gracefulShutdown(context, { resources: [server] });
 

@@ -1,7 +1,7 @@
 import 'node:process';
 import { MetadataConfigApplicationContext } from '@blue/context';
 import { RadixMetadataHandlerMapping } from '@blue/dispatcher';
-import { NodeAutoConfiguration, NodeDispatcher, HTTPServer, NodeHTTPServerAdapter } from '@blue/platform-node';
+import { NodeAutoConfiguration, NodeDispatcher, HTTPServer, NodeHTTPServerAdapter, gracefulShutdown } from '@blue/platform-node';
 import { NodeAppConfiguration } from './node-app-configuration';
 import { initAuth } from './auth-store';
 
@@ -30,6 +30,7 @@ async function main() {
         port: PORT,
     });
     await server.start();
+    gracefulShutdown(context, { resources: [server] });
 
     // eslint-disable-next-line no-console
     console.log(`[blue-api] listening on http://localhost:${PORT}`);

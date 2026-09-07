@@ -11,7 +11,7 @@
 import 'node:process';
 import { MetadataConfigApplicationContext } from '@blue/context';
 import { RadixMetadataHandlerMapping } from '@blue/dispatcher';
-import { NodeAutoConfiguration, NodeDispatcher, HTTPServer, NodeHTTPServerAdapter } from '@blue/platform-node';
+import { NodeAutoConfiguration, NodeDispatcher, HTTPServer, NodeHTTPServerAdapter, gracefulShutdown } from '@blue/platform-node';
 import { HelloConfiguration } from './hello-configuration';
 
 const PORT = Number(process.env['PORT'] ?? '3000');
@@ -37,6 +37,7 @@ async function main() {
         adapter: new NodeHTTPServerAdapter(dispatcher),
     });
     await server.start();
+    gracefulShutdown(context, { resources: [server] });
 
     // eslint-disable-next-line no-console
     console.log(`[hello-node] listening on http://127.0.0.1:${PORT}`);

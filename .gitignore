@@ -1,6 +1,7 @@
 .awcache
 .nyc_output
 .vscode
+.omp/
 archive
 coverage
 lerna-debug.log

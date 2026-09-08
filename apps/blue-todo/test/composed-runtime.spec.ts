@@ -27,12 +27,12 @@ describe('composed todo runtime end-to-end', () => {
     let dispatch: (path: string) => Promise<void>;
     let dispose: () => void;
 
-    beforeAll(() => {
+    beforeAll(async () => {
         const appEl = document.createElement('div');
         appEl.id = 'app';
         document.body.appendChild(appEl);
 
-        const runtime = composeTodoRuntime(createTodoContext());
+        const runtime = composeTodoRuntime(await createTodoContext());
         dispatch = (path: string) => runtime.dispatcher.dispatch(makeRoute(path));
         dispose = () => {
             runtime.shellContext.close();

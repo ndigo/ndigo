@@ -9,7 +9,7 @@ import './todo-input-view';
 import './todo-item-view';
 import './signals-counter-view';
 
-const composition = composeTodoRuntime(createTodoContext());
+const composition = composeTodoRuntime(await createTodoContext());
 const { routes } = composition;
 const metricsPanel = document.createElement('feature-metrics-panel') as HTMLElement & {
     aggregator?: unknown;

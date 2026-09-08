@@ -24,12 +24,12 @@ vi.spyOn(global, 'requestAnimationFrame').mockImplementation((cb: FrameRequestCa
  * + controllers + DOMElementViewTarget on #app) composed via composeTodoRuntime().
  * Mount/route tests therefore exercise real dispatch, not empty contexts.
  */
-function composeRealRuntime() {
+async function composeRealRuntime() {
     const appEl = document.createElement('div');
     appEl.id = 'app';
     document.body.appendChild(appEl);
 
-    const composition = composeTodoRuntime(createTodoContext());
+    const composition = composeTodoRuntime(await createTodoContext());
 
     return {
         composition,
@@ -88,8 +88,8 @@ describe('todo shell composition', () => {
         shell.destroy();
     });
 
-    test('it should compose the real runtime with a working relay gateway', () => {
-        const { composition, dispose } = composeRealRuntime();
+    test('it should compose the real runtime with a working relay gateway', async () => {
+        const { composition, dispose } = await composeRealRuntime();
 
         const mountedFeature = composition.featureMountManager.getMountedFeature('todo');
 
@@ -108,7 +108,7 @@ describe('todo shell composition', () => {
     });
 
     test('it should unmount todo feature when route is outside mounted partition', async () => {
-        const { composition, dispose } = composeRealRuntime();
+        const { composition, dispose } = await composeRealRuntime();
 
         await composition.shellRouter.setRoute('/account');
 
@@ -125,7 +125,7 @@ describe('todo shell composition', () => {
     });
 
     test('it should unmount account feature when routing back to todo partition', async () => {
-        const { composition, dispose } = composeRealRuntime();
+        const { composition, dispose } = await composeRealRuntime();
 
         await composition.shellRouter.setRoute('/account');
         expect(composition.featureMountManager.isMounted('account')).toBe(true);

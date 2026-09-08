@@ -19,7 +19,7 @@ const { assign } = Object,
  * Instances are cached by code so repeated lookups return the same object when
  * possible.
  *
- * @see {@link https://tools.ietf.org/html/rfc2616#section-10}
+ * @see {@link https://www.rfc-editor.org/rfc/rfc9110.html#name-status-codes}
  */
 export default class ResponseStatus implements Comparable<ResponseStatus>, Equatable, Serializable {
     /**

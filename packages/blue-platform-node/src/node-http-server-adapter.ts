@@ -18,6 +18,8 @@ import { createServer, IncomingMessage, ServerResponse } from 'node:http';
 import { Route, RouteSegment } from '@blue/router';
 import { getInterceptorDenial, getMethodNotAllowed, type InterceptorDenial } from '@blue/dispatcher';
 import { NodeRequest, NODE_REQUEST_ATTRIBUTE, NODE_RESPONSE_ATTRIBUTE } from './node-request';
+import { ProblemTypes, writeProblem } from './problem-details';
+import { ResponseStatus } from '@blue/http';
 import type { NodeDispatcher } from './node-dispatcher';
 import type { HTTPServerAdapter } from './http-server';
 import {
@@ -173,14 +175,29 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
             if (noHandler) {
                 const allowed = getMethodNotAllowed(route);
                 if (allowed) {
-                    this.#writeJson(res, 405, { error: 'Method Not Allowed' }, { Allow: allowed });
+                    writeProblem(
+                        res,
+                        {
+                            type: ProblemTypes.methodNotAllowed,
+                            title: 'Method Not Allowed',
+                            status: 405,
+                            instance: route.path,
+                        },
+                        { Allow: allowed }
+                    );
                     return;
                 }
                 if (route.method !== 'OPTIONS') {
                     // RFC 9110 §15.5.6: unmatched request → 404. Dispatching a
                     // non-OPTIONS unmatched route would fall into the error path
                     // (a deterministic 500) instead of the correct 404.
-                    this.#writeJson(res, 404, { error: 'Not Found' });
+                    writeProblem(res, {
+                        type: ProblemTypes.notFound,
+                        title: 'Not Found',
+                        status: 404,
+                        instance: route.path,
+                    });
+                    res.end();
                     return;
                 }
                 // OPTIONS is always allowable and the CORS interceptor on the
@@ -203,25 +220,25 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
 
             if (noHandler) {
                 // OPTIONS preflight that no interceptor finalized: default to 404.
-                this.#writeJson(res, 404, { error: 'Not Found' });
+                writeProblem(res, {
+                    type: ProblemTypes.notFound,
+                    title: 'Not Found',
+                    status: 404,
+                    instance: route.path,
+                });
+                res.end();
             }
         } catch (error: unknown) {
             this.#writeErrorResponse(res, error);
         }
     }
 
-    #writeJson(res: ServerResponse, statusCode: number, payload: Record<string, unknown>, headers: Record<string, string> = {}): void {
-        if (res.writableEnded || res.destroyed) return;
-        res.writeHead(statusCode, { 'Content-Type': 'application/json', ...headers });
-        res.end(JSON.stringify(payload));
-    }
-
     /**
-     * Finalizes an interceptor denial: explicit status/body, or the default
-     * `403` for bare `false` denials. Browser redirects use the `redirect`
-     * target with a Location header.
-     *
-     * A `401` denial carries `WWW-Authenticate: Bearer` per RFC 9110 §15.5.2.
+     * Finalizes an interceptor denial. A `401` denial carries
+     * `WWW-Authenticate: Bearer` (RFC 9110 §15.5.2); `401`/`403` are problem
+     * documents with registered types; other `4xx/5xx` denials are an
+     * about:blank problem at the given status; a status `<= 399` (CORS
+     * preflight `204`, browser redirects) writes headers with no body.
      */
     #finalizeDenial(res: ServerResponse, denial: InterceptorDenial): void {
         if (res.writableEnded || res.destroyed) return;
@@ -231,31 +248,79 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
             res.end();
             return;
         }
-        const headers: Record<string, string> = statusCode === 401 ? { 'WWW-Authenticate': 'Bearer' } : {};
-        this.#writeJson(res, statusCode, denial.body ?? { error: statusCode === 401 ? 'Unauthorized' : 'Forbidden' }, headers);
+        if (statusCode <= 399) {
+            // CORS preflight (204): headers were set by the interceptor; no body.
+            res.writeHead(statusCode, {});
+            res.end();
+            return;
+        }
+        if (statusCode === 401) {
+            writeProblem(
+                res,
+                {
+                    type: ProblemTypes.unauthorized,
+                    title: 'Unauthorized',
+                    status: 401,
+                },
+                { 'WWW-Authenticate': 'Bearer' }
+            );
+            return;
+        }
+        if (statusCode === 403) {
+            writeProblem(res, {
+                type: ProblemTypes.forbidden,
+                title: 'Forbidden',
+                status: 403,
+            });
+            return;
+        }
+        const statusText = ResponseStatus.for(statusCode)?.text;
+        writeProblem(res, {
+            status: statusCode,
+            title: statusText,
+        });
     }
+
     /**
      * Central safe error response: maps transport errors to deterministic
-     * statuses; everything else is a generic 500 with internal details
-     * logged, never leaked to the client.
+     * problem documents; everything else is a generic 500 with internal
+     * details logged, never leaked to the client.
      */
     #writeErrorResponse(res: ServerResponse, error: unknown): void {
         if (res.writableEnded || res.destroyed) return;
         if (error instanceof RequestLimitError) {
-            this.#writeJson(res, error.statusCode, { error: error.code });
+            writeProblem(res, {
+                type: `urn:blue:${error.code}`,
+                status: error.statusCode,
+                detail: error.code,
+            });
             return;
         }
         if (error instanceof SyntaxError) {
-            this.#writeJson(res, 400, { error: 'malformed_body' });
+            writeProblem(res, {
+                type: ProblemTypes.malformedBody,
+                title: 'Bad Request',
+                status: 400,
+                detail: 'malformed_body',
+            });
             return;
         }
         if (error instanceof URIError) {
-            this.#writeJson(res, 400, { error: 'malformed_url' });
+            writeProblem(res, {
+                type: ProblemTypes.malformedUrl,
+                title: 'Bad Request',
+                status: 400,
+                detail: 'malformed_url',
+            });
             return;
         }
         const message = error instanceof Error ? (error.stack ?? error.message) : String(error);
         console.error('[NodeHTTPServerAdapter] dispatch failure:', message);
-        this.#writeJson(res, 500, { error: 'Internal Server Error' });
+        writeProblem(res, {
+            type: ProblemTypes.internalError,
+            title: 'Internal Server Error',
+            status: 500,
+        });
     }
 
     /**

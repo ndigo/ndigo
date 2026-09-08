@@ -92,7 +92,7 @@ describe('CsrfInterceptor', () => {
         mode.rejected = interceptor.preHandle(route) === false;
         expect(mode.rejected).toBe(true);
         expect(status).toBe(403);
-        expect(JSON.parse(body)).toEqual({ error: 'Invalid CSRF token' });
+        expect(JSON.parse(body)).toMatchObject({ type: 'urn:blue:forbidden', status: 403, detail: 'Invalid CSRF token' });
     });
 
     test('rejects a mutating request with a mismatched token', () => {

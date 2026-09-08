@@ -7,7 +7,7 @@
 
 import '@tsmetadata/polyfill';
 import { getMapping, socketMapping, type SocketSession, requestMapping } from '@blue/dispatcher';
-import { queryValue, routeParams } from '@blue/dispatcher';
+import { queryValue, parameters } from '@blue/dispatcher';
 
 /**
  * Serves a JSON greeting and a WebSocket echo endpoint.
@@ -24,7 +24,7 @@ export class HelloController {
     }
 
     @getMapping('/hello')
-    @routeParams({ name: queryValue('name') })
+    @parameters({ name: queryValue('name') })
     greetByName(name?: string) {
         return { message: `Hello, ${name || 'World'}!` };
     }

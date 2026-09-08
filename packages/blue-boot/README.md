@@ -17,7 +17,7 @@ Blue Boot provides application startup primitives for BlueJS.
 
 When running in a browser environment, `@blue/boot` automatically registers:
 
-- **Argument Resolvers**: Cookie, Model, Session, and State resolvers for `@routeParams`.
+- **Argument Resolvers**: Cookie, Model, Session, and State resolvers for `@parameters`.
 - **Converter Registry**: Built-in converters (number, boolean, date, json) for type-safe parameter extraction.
 
 This behavior is enabled by default when using `Application` or `ApplicationBuilder` in the browser.

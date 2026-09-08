@@ -30,7 +30,7 @@ export * from './request-mapping';
 export * from './http-method-mapping';
 export * from './http-method-condition';
 export * from './route-mapping-info';
-export * from './route-parameter';
+export * from './parameters';
 export * from './zod-validated-by';
 export * from './path-pattern-comparator';
 export * from './route-to-view-name-translator';

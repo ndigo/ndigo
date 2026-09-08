@@ -1,11 +1,11 @@
 /**
- * Behavioral tests for @routeParams pattern (TC39 parameter injection)
+ * Behavioral tests for @parameters pattern (TC39 parameter injection)
  */
 
 import { describe, it, expect } from 'vitest';
 import '@tsmetadata/polyfill';
 import {
-    routeParams,
+    parameters,
     queryValue,
     matrixValue,
     cookieValue,
@@ -13,17 +13,19 @@ import {
     stateValue,
     sessionValue,
     pathValue,
+    bodyValue,
     asNumber,
     asBoolean,
     asDate,
     asJson,
     bindValue,
-    getMethodParameter,
-    hasMethodParameter,
+    resolveParameters,
+    getParameterMap,
     MethodParameterType,
-} from '../src/route-parameter';
+} from '../src/parameters';
+import { socketMapping } from '../src/socket-mapping';
 
-describe('@routeParams - TC39 Parameter Injection Pattern', () => {
+describe('@parameters - TC39 Parameter Injection Pattern', () => {
     describe('Factory Functions', () => {
         it('queryValue should create query parameter extractor', () => {
             const extractor = queryValue('page');
@@ -43,7 +45,7 @@ describe('@routeParams - TC39 Parameter Injection Pattern', () => {
         });
 
         it('queryValue should accept converter option', () => {
-            const converter = (value) => Number(value);
+            const converter = (value: any) => Number(value);
             const extractor = queryValue('limit', { convertType: converter });
 
             expect(extractor.convertType).toBe(converter);
@@ -141,47 +143,53 @@ describe('@routeParams - TC39 Parameter Injection Pattern', () => {
             });
 
             it('wrappers should override existing converter', () => {
-                const inner = queryValue('age', { convertType: (v) => v });
+                const inner = queryValue('age', { convertType: (v: any) => v });
                 const wrapped = asNumber(inner);
                 expect(wrapped.convertType).toEqual({ source: String, target: Number });
             });
         });
     });
 
-    describe('@routeParams Decorator', () => {
-        it('should map single parameter', () => {
+    describe('@parameters Decorator (declarative storage + resolution-time conversion)', () => {
+        it('stores the raw map declaratively at decoration time', () => {
             class TestController {
-                @routeParams({
-                    page: queryValue('page'),
-                })
+                @parameters({ page: queryValue('page') })
                 handleQuery(page: string) {}
             }
+            const raw = getParameterMap(TestController.prototype, 'handleQuery');
+            expect(raw).toBeDefined();
+            expect(raw!['page'].type).toEqual(MethodParameterType.QUERY);
+            expect(raw!['page'].name).toBe('page');
+        });
 
-            expect(hasMethodParameter(TestController.prototype, 'handleQuery')).toBe(true);
-            const params = getMethodParameter(TestController.prototype, 'handleQuery');
+        it('should map single parameter', () => {
+            class TestController {
+                @parameters({ page: queryValue('page') })
+                handleQuery(page: string) {}
+            }
+            const params = resolveParameters(TestController.prototype, 'handleQuery', TestController.prototype.handleQuery as Function);
             expect(params).toHaveLength(1);
-            expect(params![0].name).toBe('page');
-            expect(params![0].type).toEqual(MethodParameterType.QUERY);
+            expect(params[0].name).toBe('page');
+            expect(params[0].type).toEqual(MethodParameterType.QUERY);
         });
 
         it('should map multiple parameters', () => {
             class TestController {
-                @routeParams({
+                @parameters({
                     page: queryValue('page'),
                     limit: queryValue('limit'),
                 })
                 handleQuery(page: string, limit: string) {}
             }
-
-            const params = getMethodParameter(TestController.prototype, 'handleQuery');
+            const params = resolveParameters(TestController.prototype, 'handleQuery', TestController.prototype.handleQuery as Function);
             expect(params).toHaveLength(2);
-            expect(params![0].name).toBe('page');
-            expect(params![1].name).toBe('limit');
+            expect(params[0].name).toBe('page');
+            expect(params[1].name).toBe('limit');
         });
 
         it('should handle mixed parameter types', () => {
             class TestController {
-                @routeParams({
+                @parameters({
                     page: queryValue('page'),
                     session: cookieValue('SESSIONID'),
                     profile: modelValue('profile'),
@@ -200,132 +208,133 @@ describe('@routeParams - TC39 Parameter Injection Pattern', () => {
                     userId: string
                 ) {}
             }
-
-            const params = getMethodParameter(TestController.prototype, 'handleMixed');
+            const fn = TestController.prototype.handleMixed as Function;
+            const params = resolveParameters(TestController.prototype, 'handleMixed', fn);
             expect(params).toHaveLength(7);
-            expect(params![0].type).toEqual(MethodParameterType.QUERY);
-            expect(params![1].type).toEqual(MethodParameterType.COOKIE);
-            expect(params![2].type).toEqual(MethodParameterType.MODEL);
-            expect(params![3].type).toEqual(MethodParameterType.STATE);
-            expect(params![4].type).toEqual(MethodParameterType.SESSION);
-            expect(params![5].type).toEqual(MethodParameterType.MATRIX);
-            expect(params![6].type).toEqual(MethodParameterType.PATH);
+            expect(params[0].type).toEqual(MethodParameterType.QUERY);
+            expect(params[1].type).toEqual(MethodParameterType.COOKIE);
+            expect(params[2].type).toEqual(MethodParameterType.MODEL);
+            expect(params[3].type).toEqual(MethodParameterType.STATE);
+            expect(params[4].type).toEqual(MethodParameterType.SESSION);
+            expect(params[5].type).toEqual(MethodParameterType.MATRIX);
+            expect(params[6].type).toEqual(MethodParameterType.PATH);
         });
 
         it('should handle sparse parameters (not all decorated)', () => {
             class TestController {
-                @routeParams({
+                @parameters({
                     page: queryValue('page'),
                     session: cookieValue('SESSIONID'),
                 })
                 handleSparse(normal: string, page: string, another: number, session: string) {}
             }
-
-            const params = getMethodParameter(TestController.prototype, 'handleSparse');
-            // params array has holes for non-decorated parameters
-            expect(params![0]).toBeUndefined(); // normal
-            expect(params![1].name).toBe('page');
-            expect(params![2]).toBeUndefined(); // another
-            expect(params![3].name).toBe('SESSIONID');
+            const params = resolveParameters(TestController.prototype, 'handleSparse', TestController.prototype.handleSparse as Function);
+            expect(params[0]).toBeUndefined(); // normal
+            expect(params[1].name).toBe('page');
+            expect(params[2]).toBeUndefined(); // another
+            expect(params[3].name).toBe('SESSIONID');
         });
 
         it('should preserve parameter options', () => {
             class TestController {
-                @routeParams({
-                    limit: queryValue('limit', { required: true, defaultValue: '10' }),
-                })
+                @parameters({ limit: queryValue('limit', { required: true, defaultValue: '10' }) })
                 handleQuery(limit: string) {}
             }
-
-            const params = getMethodParameter(TestController.prototype, 'handleQuery');
-            expect(params![0].required).toBe(true);
-            expect(params![0].defaultValue).toBe('10');
+            const params = resolveParameters(TestController.prototype, 'handleQuery', TestController.prototype.handleQuery as Function);
+            expect(params[0].required).toBe(true);
+            expect(params[0].defaultValue).toBe('10');
         });
 
         it('should preserve converter options', () => {
             const converter = (v: any) => Number(v);
-
             class TestController {
-                @routeParams({
-                    limit: queryValue('limit', { convertType: converter }),
-                })
+                @parameters({ limit: queryValue('limit', { convertType: converter }) })
                 handleQuery(limit: string) {}
             }
-
-            const params = getMethodParameter(TestController.prototype, 'handleQuery');
-            expect(params![0].convertType).toBe(converter);
+            const params = resolveParameters(TestController.prototype, 'handleQuery', TestController.prototype.handleQuery as Function);
+            expect(params[0].convertType).toBe(converter);
         });
 
         it('should preserve named converter options', () => {
             class TestController {
-                @routeParams({
-                    limit: queryValue('limit', { convertType: 'number' }),
-                })
+                @parameters({ limit: queryValue('limit', { convertType: 'number' }) })
                 handleQuery(limit: string) {}
             }
-
-            const params = getMethodParameter(TestController.prototype, 'handleQuery');
-            expect(params![0].convertType).toBe('number');
+            const params = resolveParameters(TestController.prototype, 'handleQuery', TestController.prototype.handleQuery as Function);
+            expect(params[0].convertType).toBe('number');
         });
 
-        it('should throw error if parameter name not found', () => {
-            expect(() => {
-                class TestController {
-                    @routeParams({
-                        wrongName: queryValue('page'),
-                    })
-                    handleQuery(page: string) {}
-                }
-
-                return TestController;
-            }).toThrow('Parameter "wrongName" not found in method signature');
+        it('should throw error if parameter name not found (at resolution, not decoration)', () => {
+            class TestController {
+                @parameters({ wrongName: queryValue('page') })
+                handleQuery(page: string) {}
+            }
+            expect(() =>
+                resolveParameters(TestController.prototype, 'handleQuery', TestController.prototype.handleQuery as Function)
+            ).toThrow('Parameter "wrongName" not found in method signature');
         });
     });
 
     describe('Integration with Route Mapping', () => {
-        it('should work alongside route mapping', async () => {
+        it('should work alongside route mapping (resolution-time)', async () => {
             const { routeMapping, getRouteMapping } = await import('../src/route-mapping');
 
             class TestController {
                 @routeMapping('/users')
-                @routeParams({
+                @parameters({
                     page: queryValue('page'),
                     limit: queryValue('limit'),
                 })
                 getUsers(page: string, limit: string) {}
             }
 
-            // Both decorators work
             const mapping = getRouteMapping(TestController.prototype, 'getUsers');
             expect(mapping.value).toBe('/users');
 
-            const params = getMethodParameter(TestController.prototype, 'getUsers');
+            const params = resolveParameters(TestController.prototype, 'getUsers', TestController.prototype.getUsers as Function);
             expect(params).toHaveLength(2);
         });
     });
 
-    describe('Comparison with Legacy Pattern', () => {
-        it('demonstrates new API pattern', () => {
-            // New TC39 pattern
-            class NewController {
-                @routeParams({
-                    name: queryValue('name'),
-                    id: matrixValue('id'),
+    describe('Socket mapping: @parameters resolves into session.params', () => {
+        it('builds a name-ordered parameter list without requiring signature names', () => {
+            
+
+            class SocketController {
+                @socketMapping('/room')
+                @parameters({
+                    token: queryValue('token'),
+                    via: queryValue('via'),
                 })
-                handleRequest(name: string, id: string) {
-                    return { name, id };
+                async *room(session: unknown) {
+                    yield session;
                 }
             }
+            const fn = SocketController.prototype.room as Function;
+            const params = resolveParameters(SocketController.prototype, 'room', fn);
+            expect(params).toHaveLength(2);
+            // Parameter carries both the extractor source name and the map key.
+            expect(params[0].name).toBe('token');
+            expect(params[0].parameterName).toBe('token');
+            expect(params[1].parameterName).toBe('via');
+            expect(params[1].type).toEqual(MethodParameterType.QUERY);
+        });
 
-            const params = getMethodParameter(NewController.prototype, 'handleRequest');
-            expect(params![0].type).toEqual(MethodParameterType.QUERY);
-            expect(params![1].type).toEqual(MethodParameterType.MATRIX);
+        it('rejects bodyValue on a socket mapping at resolution time', () => {
+            
+            
 
-            // Benefits of new pattern:
-            // 1. ✅ TC39 compliant (no parameter decorators)
-            // 2. ✅ Clear parameter mapping in one place
-            // 3. ✅ Type-safe with TypeScript
-            // 4. ✅ Easier to test and debug
+            class SocketController {
+                @socketMapping('/room')
+                @parameters({ payload: bodyValue('*') })
+                async *room(session: unknown) {
+                    yield session;
+                }
+            }
+            const fn = SocketController.prototype.room as Function;
+            expect(() => resolveParameters(SocketController.prototype, 'room', fn)).toThrow(
+                /not available for that mapping kind/
+            );
         });
     });
 });

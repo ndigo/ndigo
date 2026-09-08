@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { Route, RouteSegment } from '@blue/router';
 import {
     routeMapping,
-    routeParams,
+    parameters,
     bodyValue,
     queryValue,
     validatedBy,
@@ -105,7 +105,7 @@ describe('Zod validation over the Node argument pipeline', () => {
         @routeMapping('/notes')
         class NotesController {
             @routeMapping('/create')
-            @routeParams({ data: validatedBody(UserSchema) })
+            @parameters({ data: validatedBody(UserSchema) })
             create(data: User) {
                 captured = data;
                 return { ok: true };
@@ -129,7 +129,7 @@ describe('Zod validation over the Node argument pipeline', () => {
         @routeMapping('/subscribe')
         class SubscribeController {
             @routeMapping('/')
-            @routeParams({ email: validatedBy(EmailSchema, queryValue('email')) })
+            @parameters({ email: validatedBy(EmailSchema, queryValue('email')) })
             subscribe(email: string) {
                 captured = email;
                 return { ok: true };
@@ -150,7 +150,7 @@ describe('Zod validation over the Node argument pipeline', () => {
         @routeMapping('/todos')
         class TodosController {
             @routeMapping('/create')
-            @routeParams({ title: validatedBy(TitleSchema, bodyValue('title')) })
+            @parameters({ title: validatedBy(TitleSchema, bodyValue('title')) })
             create(title: string) {
                 captured = title;
                 return { ok: true };
@@ -176,7 +176,7 @@ describe('Zod validation over the Node argument pipeline', () => {
         @routeMapping('/search')
         class SearchController {
             @routeMapping('/')
-            @routeParams({ search: validatedQuery(SearchSchema) })
+            @parameters({ search: validatedQuery(SearchSchema) })
             search(search: Search) {
                 captured = search;
                 return { ok: true };
@@ -212,7 +212,7 @@ describe('Zod validation over the Node argument pipeline', () => {
         @routeMapping('/search')
         class SearchController {
             @routeMapping('/')
-            @routeParams({ search: validatedQuery(SearchSchema) })
+            @parameters({ search: validatedQuery(SearchSchema) })
             search(search: { page: number }) {
                 return { ok: true };
             }
@@ -243,7 +243,7 @@ describe('Zod validation over the Node argument pipeline', () => {
         @routeMapping('/notes')
         class NotesController {
             @routeMapping('/create')
-            @routeParams({ data: validatedBy(UserSchema, bodyValue('*')) })
+            @parameters({ data: validatedBy(UserSchema, bodyValue('*')) })
             create(data: User) {
                 return { ok: true };
             }
@@ -278,7 +278,7 @@ describe('Zod validation over the Node argument pipeline', () => {
         @routeMapping('/subscribe')
         class SubscribeController {
             @routeMapping('/')
-            @routeParams({ email: validatedBy(EmailSchema, queryValue('email')) })
+            @parameters({ email: validatedBy(EmailSchema, queryValue('email')) })
             subscribe(email: string) {
                 return { ok: true };
             }

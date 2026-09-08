@@ -44,7 +44,7 @@ export interface SocketSession {
     readonly path: string;
 
     /**
-     * Params extracted from the upgrade request via `@routeParams`
+     * Params extracted from the upgrade request via `@parameters`
      * extractors (query/path/header values, validated with Zod as usual).
      */
     readonly params: Record<string, unknown>;

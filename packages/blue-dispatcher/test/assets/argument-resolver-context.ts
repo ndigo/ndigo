@@ -9,13 +9,13 @@ import { TestErrorResolver, TestViewResolver } from '../test-strategies';
 
 import { routeMapping } from '../../src/route-mapping';
 import { ModelAndView } from '../../src/model-and-view';
-import { queryValue, matrixValue, pathValue, routeParams } from '../../src/route-parameter';
+import { queryValue, matrixValue, pathValue, parameters } from '../../src/parameters';
 
 @routeMapping('/hello')
 class HelloController {
     // /hello/there;name=Jack?name=John
     @routeMapping('/there')
-    @routeParams({
+    @parameters({
         n1: queryValue('name'),
         n2: matrixValue('name'),
         id: pathValue('id'),

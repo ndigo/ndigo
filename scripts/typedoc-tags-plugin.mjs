@@ -16,7 +16,7 @@ const CUSTOM_TAGS = [
     'errorMapping',
     'requestMapping',
     'routeMapping',
-    'routeParams',
+    'parameters',
     'security',
     'traced',
 ];

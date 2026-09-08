@@ -1,5 +1,5 @@
 import '@tsmetadata/polyfill';
-import { postMapping, routeParams, bodyValue, requestMapping } from '@blue/dispatcher';
+import { postMapping, parameters, bodyValue, requestMapping } from '@blue/dispatcher';
 import { ResponseEntity } from '@blue/platform-node';
 import { authenticate } from './auth-store';
 
@@ -10,7 +10,7 @@ export class AuthController {
      * Returns 401 with an error body on bad credentials.
      */
     @postMapping('/login')
-    @routeParams({ credentials: bodyValue('*') })
+    @parameters({ credentials: bodyValue('*') })
     async login(credentials: unknown) {
         const username = (credentials as { username?: unknown })?.username;
         const password = (credentials as { password?: unknown })?.password;

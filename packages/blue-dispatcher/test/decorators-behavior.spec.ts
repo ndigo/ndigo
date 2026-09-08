@@ -7,7 +7,7 @@ import { describe, it, expect } from 'vitest';
 import '@tsmetadata/polyfill';
 import { routeMapping, getRouteMapping, hasRouteMapping, publicMapping, privateMapping } from '../src/route-mapping';
 import { errorHandler, errorMapping } from '../src/error-mapping';
-// Note: Parameter decorators removed - will be replaced with @routeParams pattern
+// Note: Parameter decorators removed - will be replaced with @parameters pattern
 // import {
 //     cookieValue,
 //     matrixValue,
@@ -15,7 +15,7 @@ import { errorHandler, errorMapping } from '../src/error-mapping';
 //     getMethodParameter,
 //     hasMethodParameter,
 //     MethodParameterType,
-// } from '../src/route-parameter';
+// } from '../src/parameters';
 
 describe('Dispatcher Decorators - Behavioral Tests', () => {
     describe('@routeMapping', () => {

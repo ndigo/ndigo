@@ -3,6 +3,7 @@ import { Initializable, SmartLifecycle } from '@blue/factory';
 import { Route } from '@blue/router';
 import { isFunction } from '@blue/util/types';
 import { RouteHandlerMethod, RouteHandlerMethodMappingNamingStrategy } from './route-handler-method';
+import { resolveParameters, storeResolvedParameters, getMethodParameter, MethodParameter } from './parameters';
 import {
     RouteMappingInfo,
     PatternsRouteCondition,
@@ -11,7 +12,6 @@ import {
 } from './route-mapping-info';
 import { HTTPMethodCondition } from './http-method-condition';
 import { hasRouteMapping, getRouteMapping } from './route-mapping';
-import { hasMethodParameter, getMethodParameter, MethodParameter } from './route-parameter';
 import { AbstractHandlerMapping } from './abstract-handler-mapping';
 import { MappingRegistry } from './_mapping-registry';
 import { Match, MatchComparator } from './_match';
@@ -173,9 +173,12 @@ export abstract class AbstractHandlerMethodMapping<T extends RouteMappingInfo>
 
         const handlerMethod = new RouteHandlerMethod(resolvedHandler, method);
 
-        if (hasMethodParameter(resolvedHandler, method)) {
-            handlerMethod.parameters = getMethodParameter(resolvedHandler, method) as MethodParameter[];
-        }
+        // @parameters is declarative: resolve the raw map against THIS method
+        // and its mapping kind (route/request/socket), validating source
+        // compatibility, then store + attach the positional parameters.
+        const resolved = resolveParameters(resolvedHandler, method, (resolvedHandler as Record<string, unknown>)[method] as Function);
+        storeResolvedParameters(resolvedHandler, method, resolved);
+        handlerMethod.parameters = getMethodParameter(resolvedHandler, method) as MethodParameter[] | undefined ?? [];
 
         return handlerMethod;
     }

@@ -3,7 +3,7 @@ import { z } from 'zod';
 import {
     ModelAndView,
     routeMapping,
-    routeParams,
+    parameters,
     bindValue,
     queryValue,
     validatedBy,
@@ -44,7 +44,7 @@ describe('Zod Validation Integration', () => {
         @routeMapping('/users')
         class UserController {
             @routeMapping('/create')
-            @routeParams({
+            @parameters({
                 user: validatedBy(UserSchema, bindValue('query')),
             })
             create(user: User) {
@@ -97,7 +97,7 @@ describe('Zod Validation Integration', () => {
         @routeMapping('/users')
         class UserController {
             @routeMapping('/invalid')
-            @routeParams({
+            @parameters({
                 user: validatedBy(UserSchema, bindValue('query')),
             })
             invalid(user: User) {
@@ -157,7 +157,7 @@ describe('Zod Validation Integration', () => {
         @routeMapping('/sub')
         class SubscribeController {
             @routeMapping('/go')
-            @routeParams({ email: validatedBy(z.email(), queryValue('email')) })
+            @parameters({ email: validatedBy(z.email(), queryValue('email')) })
             subscribe(email: string) {
                 captured = email;
                 return new ModelAndView('success');

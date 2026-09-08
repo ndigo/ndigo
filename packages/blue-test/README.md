@@ -1,6 +1,6 @@
 # @blue/test
 
-Blue integration test harness — **MockMVC**-style, socket-free request dispatch
+Blue integration test harness — **MockHTTP**-style, socket-free request dispatch
 for testing Blue applications end-to-end (dispatcher → interceptors → argument
 resolvers → handler → JSON/view response) without binding a port.
 
@@ -20,16 +20,16 @@ in-process and asserts on the HTTP response.
 ```ts
 // @vitest-environment node
 import { describe, test, beforeAll, afterAll, expect } from 'vitest';
-import { bootApp, MockMVC } from '@blue/test';
+import { bootApp, MockHTTP } from '@blue/test';
 import { TodoController } from '../src/todo-controller';
 
 describe('Todo API', () => {
-    let mockMVC: MockMVC;
+    let mockMVC: MockHTTP;
     let close: () => void;
 
     beforeAll(() => {
         const app = bootApp([TodoController]); // boots context + dispatcher
-        mockMVC = new MockMVC(app);
+        mockMVC = new MockHTTP(app);
         close = app.close;
     });
 
@@ -64,7 +64,7 @@ or plain `@getMapping` controller classes (stored by class name).
 - **`cachedBootApp(sources)` / `releaseCachedApp(sources)`** — same-sources
   dedupe within a worker: multiple suites booting the same sources share one
   context (ref-counted; released via `releaseCachedApp` or `app.close()`).
-- **`MockMVC(dispatcher | app)`** — socket-free request client. Methods
+- **`MockHTTP(dispatcher | app)`** — socket-free request client. Methods
   `get/post/put/delete/patch/query`, then fluent `.query()/.body()/.headers()/
 .cookies()/.session()`, then `.exec()` → `MockResult`.
 - **`MockResult`** — `{ response, route, json(), text() }`. `response` is a
@@ -75,16 +75,16 @@ or plain `@getMapping` controller classes (stored by class name).
 
 `NodeDispatcher.render()` reads the response from
 `route.attributes[NODE_RESPONSE_ATTRIBUTE]` and writes through
-`HTTPResponseViewTarget`. MockMVC builds the same `Route` + `NodeRequest` a real
+`HTTPResponseViewTarget`. MockHTTP builds the same `Route` + `NodeRequest` a real
 HTTP request would, swaps the real `ServerResponse` for an in-memory
 `ResponseSink`, and dispatches — so behavior matches a real HTTP hit with **no
 socket, no process, no port**.
 
 ## Not included
 
-- No browser for `MockMVC` (use Playwright for E2E; `BrowserMockMVC` for jsdom).
+- No browser for `MockHTTP` (use Playwright for E2E; `BrowserMockClient` for jsdom).
 - No real listener by default (`live: true` is a future mode).
-- No assertion library — MockMVC returns shaped values for Vitest's `expect`.
+- No assertion library — MockHTTP returns shaped values for Vitest's `expect`.
 
 ## Test-strategy notes (blue-todo)
 
@@ -99,9 +99,9 @@ socket, no process, no port**.
 
 ```
 src/
-  index.ts              # exports bootApp, MockMVC, buildRoute, createMemoryResponse
+  index.ts              # exports bootApp, MockHTTP, buildRoute, createMemoryResponse
   blue-test.ts          # bootApp(): context boot + dispatcher wiring
-  mock-mvc.ts           # MockMVC + MockMVCRequestBuilder
+  mock-http.ts          # MockHTTP + MockHTTPRequestBuilder
   request-builder.ts    # MockRequest → Route/NodeRequest (matches NodeHTTPServerAdapter)
   memory-response.ts    # in-memory ResponseSink + MemoryResponse capture
 ```

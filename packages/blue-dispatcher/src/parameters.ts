@@ -691,7 +691,12 @@ export function resolveParameters(
     const allowed = SOURCES_BY_KIND[kind];
     const nameToIndex = new Map<string, number>();
     if (kind !== 'socket') {
-        const paramNames = getFunctionParamNames(handlerMethod);
+        // @traced wraps methods in a `(...args)` proxy that destroys the
+        // declared signature; telemetry preserves the original so framework
+        // code can still read the true parameter names.
+        const original =
+            getSymbolMetadata(target)[`telemetry:traced:${String(propertyKey)}:original`] ?? handlerMethod;
+        const paramNames = getFunctionParamNames(original);
         for (let index = 0; index < paramNames.length; index++) nameToIndex.set(paramNames[index], index);
     }
     const resolved: MethodParameter[] = [];

@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import '@tsmetadata/polyfill';
 import { describe, expect, it } from 'vitest';
-import { bootBrowserApp, BrowserMockMVC } from '@blue/test';
+import { bootBrowserApp, BrowserMockClient } from '@blue/test';
 import { ViewsAppConfiguration } from '../src/views-app-configuration';
 
 /**
@@ -28,7 +28,7 @@ function renderText(output: unknown): string {
 describe('blue-views composite resolver demo', () => {
     it('resolves a component-module view by name', async () => {
         const app = await bootBrowserApp([ViewsAppConfiguration]);
-        const mvc = new BrowserMockMVC(app);
+        const mvc = new BrowserMockClient(app);
 
         await mvc.dispatch('/');
         const output = app.viewTarget.lastRender?.output;
@@ -42,7 +42,7 @@ describe('blue-views composite resolver demo', () => {
 
     it('resolves a context-bean view by name', async () => {
         const app = await bootBrowserApp([ViewsAppConfiguration]);
-        const mvc = new BrowserMockMVC(app);
+        const mvc = new BrowserMockClient(app);
 
         await mvc.dispatch('/widget');
         expect(renderText(app.viewTarget.lastRender?.output)).toContain('NameViewResolver');
@@ -52,7 +52,7 @@ describe('blue-views composite resolver demo', () => {
 
     it('resolves a module-on-disk view by name (lazy import)', async () => {
         const app = await bootBrowserApp([ViewsAppConfiguration]);
-        const mvc = new BrowserMockMVC(app);
+        const mvc = new BrowserMockClient(app);
 
         await mvc.dispatch('/report');
         expect(renderText(app.viewTarget.lastRender?.output)).toContain('Report');
@@ -62,7 +62,7 @@ describe('blue-views composite resolver demo', () => {
 
     it('falls through the chain and errors for an unsupported name', async () => {
         const app = await bootBrowserApp([ViewsAppConfiguration]);
-        const mvc = new BrowserMockMVC(app);
+        const mvc = new BrowserMockClient(app);
 
         await expect(mvc.dispatch('/nope')).rejects.toThrow();
 

@@ -75,7 +75,7 @@ export const ProblemTypes = {
 
 /**
  * Minimal response writer accepted by {@link writeProblem} — compatible with
- * Node's `ServerResponse` and the in-memory MockMVC sink.
+ * Node's `ServerResponse` and the in-memory MockHTTP sink.
  */
 export interface ProblemResponseWriter {
     /** Write the status line + headers. */
@@ -89,7 +89,7 @@ export interface ProblemResponseWriter {
  * content type, `Cache-Control: no-store`, and `Vary: Accept` (negotiation may
  * later select a content type; error responses must not be cached).
  *
- * @param res - The response writer (ServerResponse or MockMVC sink).
+ * @param res - The response writer (ServerResponse or MockHTTP sink).
  * @param details - The problem document.
  */
 export function writeProblem(

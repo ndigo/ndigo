@@ -32,7 +32,7 @@ chain to a 422 with `errors[]`.
 import { z } from 'zod';
 import { getMapping, routeParams, queryValue, validatedBy } from '@blue/dispatcher';
 
-@getMapping('/subscribe')
+@requestMapping('/subscribe')
 class SubscribeController {
     @getMapping('/')
     @routeParams({ email: validatedBy(z.email(), queryValue('email')) })

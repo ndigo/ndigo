@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { describe, test, beforeAll, afterAll, expect } from 'vitest';
-import { getMapping, postMapping, ModelAndView, routeParams, queryValue, bodyValue } from '@blue/dispatcher';
+import { requestMapping, getMapping, postMapping, ModelAndView, routeParams, queryValue, bodyValue } from '@blue/dispatcher';
 import { IslandView } from '@blue/view';
 import { bootApp, MockMVC } from '../src/index';
 
@@ -10,7 +10,7 @@ import { bootApp, MockMVC } from '../src/index';
  * MockMVC, socket-free.
  */
 
-@getMapping('/')
+@requestMapping('/')
 class GreetingController {
     @getMapping('/')
     greet() {
@@ -75,7 +75,7 @@ describe('MockMVC', () => {
 });
 
 describe('IslandView through MockMVC dispatch (SSR islands)', () => {
-    @getMapping('/islands')
+    @requestMapping('/islands')
     class IslandsController {
         @getMapping('/todo')
         todo() {

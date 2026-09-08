@@ -1,4 +1,4 @@
-import { getMapping } from '@blue/dispatcher';
+import { getMapping, requestMapping } from '@blue/dispatcher';
 import { ApplicationContext, AsApplicationContextAware } from '@blue/context';
 import { Null } from '@blue/core';
 import { FeatureMetricAggregator } from '@blue/telemetry';
@@ -17,7 +17,7 @@ import { TelemetryHealthIndicator } from './telemetry-health-indicator';
  *
  * @since 1.0.0
  */
-@getMapping('/health')
+@requestMapping('/health')
 export class HealthController extends AsApplicationContextAware(Null) {
     readonly applicationContext!: ApplicationContext;
 

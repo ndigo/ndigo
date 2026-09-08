@@ -77,7 +77,7 @@ method; `@routeParams` describes how method arguments are bound.
 import '@tsmetadata/polyfill';
 import { getMapping, postMapping, routeParams, queryValue, bodyValue, pathValue } from '@blue/dispatcher';
 
-@getMapping('/api')
+@requestMapping('/api')
 export class GreetingController {
     @getMapping('/hello')
     @routeParams({ name: queryValue('name') })
@@ -188,7 +188,7 @@ outbound (mirroring the SSE view style):
 ```ts
 import { socketMapping, type SocketSession } from '@blue/dispatcher';
 
-@getMapping('/chat')
+@requestMapping('/chat')
 class ChatController {
     @socketMapping('/room')
     async *room(session: SocketSession) {

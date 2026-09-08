@@ -1,4 +1,4 @@
-import { getMapping, postMapping, routeParams, headerValue, pathValue, validatedBody } from '@blue/dispatcher';
+import { getMapping, postMapping, routeParams, headerValue, pathValue, validatedBody, requestMapping } from '@blue/dispatcher';
 import { ResponseEntity } from '@blue/platform-node';
 import { insertSchemaForEntity } from '@blue/orm';
 import { DrizzleDataSource, DrizzleEntityManager } from '@blue/orm-drizzle';
@@ -27,7 +27,7 @@ export function getDrizzleDataSource(): DrizzleDataSource {
  * the framework's async handler support. The in-memory `NoteController`
  * remains the zero-config path; this demonstrates the SQL adapter end-to-end.
  */
-@getMapping('/drizzle')
+@requestMapping('/drizzle')
 export class DrizzleNoteController {
     readonly #entityManager: DrizzleEntityManager;
 

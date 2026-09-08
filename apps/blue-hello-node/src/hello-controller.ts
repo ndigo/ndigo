@@ -6,7 +6,7 @@
  */
 
 import '@tsmetadata/polyfill';
-import { getMapping, socketMapping, type SocketSession } from '@blue/dispatcher';
+import { getMapping, socketMapping, type SocketSession, requestMapping } from '@blue/dispatcher';
 import { queryValue, routeParams } from '@blue/dispatcher';
 
 /**
@@ -16,7 +16,7 @@ import { queryValue, routeParams } from '@blue/dispatcher';
  * - `GET /hello?name=X` → `{ message: "Hello, X!" }`
  * - `WS /echo` → echoes each received message as `{ event: 'echo', data }`
  */
-@getMapping('/')
+@requestMapping('/')
 export class HelloController {
     @getMapping('/')
     greet() {

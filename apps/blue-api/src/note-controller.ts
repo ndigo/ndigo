@@ -1,5 +1,5 @@
 import '@tsmetadata/polyfill';
-import { getMapping, postMapping, routeParams, headerValue, validatedBody } from '@blue/dispatcher';
+import { getMapping, postMapping, routeParams, headerValue, validatedBody, requestMapping } from '@blue/dispatcher';
 import { ResponseEntity } from '@blue/platform-node';
 import { insertSchemaForEntity, InMemoryDataSource, InMemoryEntityManager } from '@blue/orm';
 import { Note } from './note.entity';
@@ -9,7 +9,7 @@ const dataSource = new InMemoryDataSource();
 dataSource.init();
 const entityManager = new InMemoryEntityManager(dataSource);
 
-@getMapping('/notes')
+@requestMapping('/notes')
 export class NoteController {
     @getMapping('/')
     @routeParams({ token: headerValue('authorization') })

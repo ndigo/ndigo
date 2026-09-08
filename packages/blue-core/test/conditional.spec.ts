@@ -4,6 +4,7 @@ import {
     conditionalOnNode,
     conditionalOnProperty,
     conditionalOnMissingEntry,
+    conditionalOnProfile,
     isActive,
     isActiveForCurrentPlatform,
     type ConditionContext,
@@ -67,5 +68,68 @@ describe('isActive combines conditions', () => {
         class C {}
         expect(isActive(C, ctx({ 'app.feature': true }))).toBe(true);
         expect(isActive(C, ctx({}))).toBe(false);
+    });
+});
+
+describe('conditionalOnProfile', () => {
+    test('matches when the profile is active', () => {
+        @conditionalOnProfile('prod')
+        class C {}
+        const ctxProfiles = (members: Set<string>): ConditionContext => ({
+            getProperty: () => undefined,
+            hasValue: () => false,
+            acceptsProfiles: (expr) => members.has(expr),
+        });
+        expect(isActive(C, ctxProfiles(new Set(['prod'])))).toBe(true);
+        expect(isActive(C, ctxProfiles(new Set(['dev'])))).toBe(false);
+    });
+
+    test('supports expressions (delegated to the context evaluator)', () => {
+        @conditionalOnProfile('!prod & (dev | test)')
+        class C {}
+        // The core decorator forwards the raw expression to the context's
+        // acceptsProfiles; full grammar verification lives in blue-context's
+        // profile-expression.spec. Here: a correct set-membership stub.
+        const ctxEval = (members: Set<string>): ConditionContext => ({
+            getProperty: () => undefined,
+            hasValue: () => false,
+            acceptsProfiles: (expr) => {
+                // Exact semantic mirror of evaluateProfileExpression for this
+                // one expression shape — NOT a general parser (core tests
+                // must not reimplement the grammar).
+                if (expr === '!prod & (dev | test)') {
+                    const [left, right] = expr.split('&').map((s) => s.trim());
+                    const notProd = !members.has(left.slice(1).trim());
+                    const inside = right
+                        .slice(1, -1)
+                        .split('|')
+                        .map((s) => s.trim());
+                    return notProd && inside.some((p) => members.has(p));
+                }
+                return members.has(expr);
+            },
+        });
+        expect(isActive(C, ctxEval(new Set(['dev'])))).toBe(true);
+        expect(isActive(C, ctxEval(new Set(['prod'])))).toBe(false);
+        expect(isActive(C, ctxEval(new Set(['test'])))).toBe(true);
+    });
+
+    test('no acceptsProfiles in context passes through (ctx-less behavior)', () => {
+        @conditionalOnProfile('prod')
+        class C {}
+        expect(isActive(C)).toBe(true);
+    });
+
+    test('combines with property conditions', () => {
+        @conditionalOnProfile('dev')
+        @conditionalOnProperty({ name: 'app.feature' })
+        class C {}
+        const ctxDev: ConditionContext = {
+            getProperty: () => undefined,
+            hasValue: () => false,
+            acceptsProfiles: (expr) => expr === 'dev',
+        };
+        expect(isActive(C, { ...ctxDev, getProperty: () => true })).toBe(true);
+        expect(isActive(C, ctxDev)).toBe(false);
     });
 });

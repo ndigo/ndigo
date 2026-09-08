@@ -12,6 +12,15 @@ import { parseCommandLineArgs } from '@blue/context';
 import { StandardConfigFileLoader } from './config-file-loader';
 
 /**
+ * Splits a comma-separated profile list, trimming + dropping empties.
+ */
+const splitProfiles = (raw: string): string[] =>
+    raw
+        .split(',')
+        .map((profile) => profile.trim())
+        .filter((profile) => profile.length > 0);
+
+/**
  * Class that can be used to bootstrap and launch an application.
  *
  * @param {string} name The name of the application
@@ -142,16 +151,89 @@ export class Application extends Emitter {
     }
 
     /**
-     * Applies the configured active profiles to the environment.
+     * Applies the configured active profiles to the environment, in
+     * precedence order (AD-14): CLI `--profiles.active=` > env
+     * `BLUE_PROFILES_ACTIVE` > builder `.profiles()`. `profiles.default` /
+     * `BLUE_PROFILES_DEFAULT` set the default set; `profiles.group.*` /
+     * `BLUE_PROFILES_GROUPS` expand group names to members.
      *
      * @param environment - The environment being prepared.
      * @param args - Command-line arguments supplied to the application.
      * @protected
      */
     protected _configureProfiles(environment: ConfigurableEnvironment, args: string[]): void {
-        if (this.#profiles.length) {
-            environment.activeProfiles = this.#profiles;
+        const parsed = parseCommandLineArgs(args);
+
+        // Lower-precedence first: builder (programmatic baseline), then env,
+        // then CLI (deployer, most specific). Each later source REPLACES the
+        // effective active set — precedence is last-writer-wins per channel.
+        let active: string[] | null = null;
+        let defaults: string[] | null = null;
+
+        const fromBuilder = this.#profiles;
+        if (fromBuilder.length) active = [...fromBuilder];
+
+        const envActive = process.env.BLUE_PROFILES_ACTIVE;
+        if (envActive) active = splitProfiles(envActive);
+
+        const cli = parsed as Record<string, unknown>;
+        const cliProfiles = (parsed as { profiles?: Record<string, unknown> }).profiles;
+        const cliActive = typeof cliProfiles?.active === 'string' ? cliProfiles.active : undefined;
+        if (cliActive) active = splitProfiles(cliActive);
+
+        if (active) {
+            environment.activeProfiles = active;
+        } else if (this.#profiles.length === 0) {
+            // No explicit activation anywhere → defaults may apply (P0 set).
+            // The env's own defaultProfiles (if set) are consulted by gates.
         }
+
+        // Defaults as config (profiles.default / BLUE_PROFILES_DEFAULT).
+        const envDefault = process.env.BLUE_PROFILES_DEFAULT;
+        if (envDefault) defaults = splitProfiles(envDefault);
+        const cliDefault = typeof cliProfiles?.default === 'string' ? cliProfiles.default : undefined;
+        if (cliDefault) defaults = splitProfiles(cliDefault);
+        if (defaults) environment.defaultProfiles = defaults;
+
+        // Profile groups: activating a group activates its members.
+        const groups = this.#profileGroups(cli);
+        if (groups.size && active) {
+            const expanded = new Set<string>();
+            for (const profile of active) {
+                expanded.add(profile);
+                for (const member of groups.get(profile) ?? []) expanded.add(member);
+            }
+            environment.activeProfiles = [...expanded];
+        }
+    }
+
+    /**
+     * Reads profile group mappings from CLI `--profiles.group.<name>=…` and
+     * env `BLUE_PROFILES_GROUPS` (comma-separated `name=members` pairs).
+     *
+     * @param cli - The parsed CLI arguments.
+     * @returns The group name → member-profiles map.
+     */
+    #profileGroups(cli: Record<string, unknown>): Map<string, string[]> {
+        const groups = new Map<string, string[]>();
+        const cliGroup = (cli as { profiles?: { group?: Record<string, unknown> } }).profiles?.group;
+        if (cliGroup) {
+            for (const [name, members] of Object.entries(cliGroup)) {
+                if (typeof members === 'string') groups.set(name, splitProfiles(members));
+            }
+        }
+        const envGroups = process.env.BLUE_PROFILES_GROUPS;
+        if (envGroups) {
+            // Pairs are `;`-separated; members within a pair are `,`-separated
+            // (`short=dev,test;other=prod`) — a bare `,` is ambiguous as both
+            // pair and member separator.
+            for (const pair of envGroups.split(';')) {
+                const eq = pair.indexOf('=');
+                if (eq === -1) continue;
+                groups.set(pair.slice(0, eq).trim(), splitProfiles(pair.slice(eq + 1)));
+            }
+        }
+        return groups;
     }
 
     /**
@@ -185,6 +267,7 @@ export class Application extends Emitter {
         const conditionContext = {
             getProperty: (key: string) => environment.getProperty(key),
             hasValue: (name: string) => context.hasValue(name),
+            acceptsProfiles: (expression: string) => environment.acceptsProfiles(expression),
         };
         // Platform auto-configurations are NOT registered here: @blue/boot is
         // isomorphic and must not import @blue/platform-node or DOM code.

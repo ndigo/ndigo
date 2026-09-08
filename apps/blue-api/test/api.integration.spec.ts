@@ -60,7 +60,12 @@ describe('blue-api through @blue/test', () => {
         const res = await mockMVC.post('/auth/login').body({ username: 'bob', password: 'wrong' }).exec();
         // AD-10 / RFC 9110 §15.5.2: authentication failure is 401, not 400.
         expect(res.response.status).toBe(401);
-        expect(res.json()).toEqual({ error: 'Invalid credentials' });
+        // Handler-returned errors wrap to an about:blank problem (no `type`).
+        expect(res.json()).toMatchObject({
+            title: 'Unauthorized',
+            status: 401,
+            detail: 'Invalid credentials',
+        });
     });
 
     test('Drizzle-backed POST /drizzle/notes persists to SQL and lists it', async () => {
@@ -145,12 +150,21 @@ describe('blue-api through @blue/test', () => {
 
         // Empty title violates the entity column's z.string().min(1) — the
         // derived insert schema (insertSchemaForEntity + validatedBody) must
-        // reject it with a 400 before any SQL write.
+        // reject it with a 422 validation-failed problem document (AD-10)
+        // before any SQL write, carrying the structured issues (Phase 4A).
         const bad = await mockMVC
             .post('/drizzle/notes')
             .headers({ authorization: `Bearer ${token}` })
             .body({ title: '', body: 'no title' })
             .exec();
-        expect(bad.response.status).toBe(400);
+        expect(bad.response.status).toBe(422);
+        const problem = bad.json() as {
+            type?: string;
+            status?: number;
+            errors?: Array<{ path: Array<string | number>; message: string }>;
+        };
+        expect(problem.type).toBe('urn:blue:validation-failed');
+        expect(problem.status).toBe(422);
+        expect(problem.errors?.some((issue) => issue.path.join('.') === 'title')).toBe(true);
     });
 });

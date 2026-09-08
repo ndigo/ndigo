@@ -13,7 +13,8 @@ import type { ServerResponse } from 'node:http';
 import { Route } from '@blue/router';
 import { ViewTarget } from '@blue/view';
 import { NODE_RESPONSE_ATTRIBUTE } from './node-request';
-import { StaticResourceResolver, statusForKind } from './static-resource-resolver';
+import { StaticResourceResolver } from './static-resource-resolver';
+import { ProblemTypes, writeProblem } from './problem-details';
 
 /**
  * Serve a static file from a base directory for a matching request path.
@@ -41,8 +42,13 @@ export class StaticFileView {
 
         if (result.kind !== 'ok') {
             if (res && !res.headersSent) {
-                res.writeHead(statusForKind(result.kind), { 'Content-Type': 'application/json' });
-                res.end(JSON.stringify({ error: result.kind === 'forbidden' ? 'Forbidden' : 'Not Found' }));
+                const forbidden = result.kind === 'forbidden';
+                writeProblem(res, {
+                    type: forbidden ? ProblemTypes.forbidden : ProblemTypes.notFound,
+                    title: forbidden ? 'Forbidden' : 'Not Found',
+                    status: forbidden ? 403 : 404,
+                    instance: route.path,
+                });
             }
             return;
         }

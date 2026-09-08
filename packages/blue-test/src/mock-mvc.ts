@@ -11,6 +11,7 @@
 
 import { NodeDispatcher } from '@blue/platform-node';
 import { getMethodNotAllowed } from '@blue/dispatcher';
+import { ProblemTypes, writeProblem } from '@blue/platform-node';
 import { buildRoute, MockRequest, PreparedRoute } from './request-builder';
 import { createMemoryResponse, MemoryResponse } from './memory-response';
 
@@ -202,12 +203,20 @@ export class MockMVC {
                 // into the error path (a 500) instead of the correct status.
                 const allowed = getMethodNotAllowed(prepared.route);
                 if (allowed) {
-                    sink.writeHead(405, { 'Content-Type': 'application/json', Allow: allowed });
-                    sink.end(JSON.stringify({ error: 'Method Not Allowed' }));
+                    writeProblem(sink, {
+                        type: ProblemTypes.methodNotAllowed,
+                        title: 'Method Not Allowed',
+                        status: 405,
+                        instance: prepared.route.path,
+                    }, { Allow: allowed });
                     return toResult(prepared, response);
                 }
-                sink.writeHead(404, { 'Content-Type': 'application/json' });
-                sink.end(JSON.stringify({ error: 'Not Found', path: prepared.route.path }));
+                writeProblem(sink, {
+                    type: ProblemTypes.notFound,
+                    title: 'Not Found',
+                    status: 404,
+                    instance: prepared.route.path,
+                });
                 return toResult(prepared, response);
             }
             // Dispatch through the real pipeline; the handler writes to the sink.

@@ -180,7 +180,33 @@ that models the HTTP layer: `ResponseStatuses`, `HTTPHeader`/`HTTPHeaders`,
   silently drift a reason phrase; also fixed the stale `@see rfc2616`
   citation (→ RFC 9110).
 
-**3B — The RFC 9457 envelope — pending** (see sequencing above).
+**3B — The RFC 9457 envelope — DONE (2026-09-07):**
+
+- `ProblemDetails` + `ProblemTypes` (`urn:blue:*`, placeholder scheme) +
+  `writeProblem` in `@blue/platform-node/src/problem-details.ts`.
+- **Every 4xx/5xx response is `application/problem+json`** with
+  `Cache-Control: no-store`, `Vary: Accept`, and (where known) `instance`
+  = request path:
+  - framework resolvers (`NodeParameterBindingErrorResolver`,
+    `NodeLastResortErrorResolver`) return registered problems; validation
+    failures → `422 urn:blue:validation-failed` with the structured
+    `errors` extension (Phase 4A);
+  - transport errors (413/400/408) map by code (`urn:blue:<code>`);
+  - 401/403 denials → `urn:blue:unauthorized`/`urn:blue:forbidden` (401
+    carries `WWW-Authenticate`);
+  - 404/405 → `urn:blue:not-found`/`urn:blue:method-not-allowed` (405
+    carries `Allow`);
+  - handler-returned `ResponseEntity` 4xx/5xx wrap to an about:blank
+    problem (`title` = reason phrase, `detail` = string/`error`/JSON body);
+  - CSRF/static-file/dispatcher view-not-found migrated.
+- MockMVC matches the live adapter (404/405 problem documents).
+
+**Consistency sweep:** existing tests migrated from `{ error }` to problem
+documents, and `api` validation test now asserts the 422 problem with
+`errors`. Live e2e over a real `blue-hello-node` socket confirms the
+headers (problem+json, no-store, Vary, Allow) and bodies. Remaining
+follow-ups, still parked: `Accept-Language` → localized `detail`, and the
+`urn:blue:*` → real HTTPS problem-type URIs before first public release.
 
 ## Revisit Trigger
 

@@ -62,7 +62,7 @@ describe('HTTP request pipeline boundaries', () => {
         });
         expect(res.status).toBe(405);
         expect(res.headers.get('allow')).toBe('GET');
-        expect(await res.json()).toEqual({ error: 'Method Not Allowed' });
+        expect(await res.json()).toMatchObject({ type: 'urn:blue:method-not-allowed', status: 405 });
     });
 
     test('oversized body returns 413 with bounded error code', async () => {
@@ -73,7 +73,7 @@ describe('HTTP request pipeline boundaries', () => {
             body: JSON.stringify({ data: 'x'.repeat(64) }),
         });
         expect(res.status).toBe(413);
-        expect(await res.json()).toEqual({ error: 'body_too_large' });
+        expect(await res.json()).toMatchObject({ type: 'urn:blue:body_too_large', status: 413, detail: 'body_too_large' });
     });
 
     test('malformed JSON body returns 400, not a wildcard string', async () => {
@@ -84,7 +84,7 @@ describe('HTTP request pipeline boundaries', () => {
             body: '{"broken": ',
         });
         expect(res.status).toBe(400);
-        expect(await res.json()).toEqual({ error: 'malformed_body' });
+        expect(await res.json()).toMatchObject({ type: 'urn:blue:malformed-body', status: 400, detail: 'malformed_body' });
     });
 
     test('requests still dispatch after boundary errors (server stays healthy)', async () => {

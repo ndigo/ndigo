@@ -15,12 +15,12 @@ class TestConfiguration {
 }
 
 describe('Application lifecycle events', () => {
-    it('emits "started" event after run()', () => {
+    it('emits "started" event after run()', async () => {
         const app = new Application([TestConfiguration]);
         const handler = vi.fn();
 
         app.on('started', handler);
-        const context = app.run();
+        const context = await app.run();
 
         expect(handler).toHaveBeenCalledTimes(1);
         expect(handler).toHaveBeenCalledWith(context);
@@ -47,29 +47,29 @@ describe('Application lifecycle events', () => {
 });
 
 describe('ApplicationBuilder lifecycle integration', () => {
-    it('builder.on("started") fires after run()', () => {
+    it('builder.on("started") fires after run()', async () => {
         const builder = new ApplicationBuilder([TestConfiguration]);
         const handler = vi.fn();
 
         builder.on('started', handler);
-        const context = builder.run();
+        const context = await builder.run();
 
         expect(handler).toHaveBeenCalledTimes(1);
         expect(handler).toHaveBeenCalledWith(context);
     });
 
-    it('builder.on() is chainable before run()', () => {
+    it('builder.on() is chainable before run()', async () => {
         const builder = new ApplicationBuilder([TestConfiguration]);
         const result = builder.on('started', () => {});
 
         expect(result).toBe(builder);
     });
 
-    it('run-once guard returns same context on second run()', () => {
+    it('run-once guard returns same context on second run()', async () => {
         const builder = new ApplicationBuilder([TestConfiguration]);
 
-        const first = builder.run();
-        const second = builder.run();
+        const first = await builder.run();
+        const second = await builder.run();
 
         expect(first).toBe(second);
     });
@@ -84,7 +84,7 @@ describe('Application.close() safety', () => {
 });
 
 describe('Application.run() failure cause preservation', () => {
-    it('wraps startup failures with an inspectable cause', () => {
+    it('wraps startup failures with an inspectable cause', async () => {
         @configuration
         class ExplodingConfiguration {
             @entry
@@ -94,14 +94,9 @@ describe('Application.run() failure cause preservation', () => {
         }
 
         const app = new Application([ExplodingConfiguration]);
-        try {
-            app.run();
-            expect.unreachable('run() must throw');
-        } catch (error) {
-            expect(error).toBeInstanceOf(Error);
-            const e = error as Error & { cause?: unknown };
-            expect(e.message).toContain('startup failed');
-            expect((e.cause as Error | undefined)?.message).toBe('boom-on-startup');
-        }
+        await expect(app.run()).rejects.toThrowError(/startup failed/);
+        await expect(app.run()).rejects.toMatchObject({
+            cause: expect.objectContaining({ message: 'boom-on-startup' }),
+        });
     });
 });

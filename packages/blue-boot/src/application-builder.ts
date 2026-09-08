@@ -1,6 +1,7 @@
 import { ApplicationContext, ConfigurableEnvironment, EventListener } from '@blue/context';
 import { JSONObject } from '@blue/core';
 import { Application } from './application';
+import { StandardConfigFileLoader } from './config-file-loader';
 
 /**
  * Builder for configuring and running an application bootstrap sequence.
@@ -191,16 +192,37 @@ export class ApplicationBuilder {
      * Runs the configured application once and caches the resulting context.
      *
      * @param args - Command-line arguments passed to the application.
-     * @returns The application context.
+     * @returns A promise resolving to the application context (file loading is async).
      */
-    run(...args: string[]): ApplicationContext {
+    async run(...args: string[]): Promise<ApplicationContext> {
         if (this.#running) {
             return this.#context;
-        } else {
-            this.#context = this.build().run(...args);
-            this.#running = true;
         }
+        this.#context = await this.build().run(...args);
+        this.#running = true;
         return this.#context;
+    }
+
+    /**
+     * Sets the config-file loader used during environment preparation.
+     *
+     * @param loader - The loader (supply a reader to enable file loading).
+     * @returns This builder for chaining.
+     */
+    configFiles(loader: StandardConfigFileLoader): ApplicationBuilder {
+        this.#application.setConfigFileLoader(loader);
+        return this;
+    }
+
+    /**
+     * Sets the default property source (lowest precedence).
+     *
+     * @param defaults - The default property values.
+     * @returns This builder for chaining.
+     */
+    defaults(defaults: JSONObject): ApplicationBuilder {
+        this.#application.setDefaults(defaults);
+        return this;
     }
 
     /**

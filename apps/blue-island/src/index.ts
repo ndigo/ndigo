@@ -26,7 +26,7 @@ async function main() {
     // Spring-style bootstrap: register platform auto-config + app config, then
     // run() refreshes the context — the handler mapping + dispatcher
     // auto-initialize on refresh.
-    const context = new ApplicationBuilder([NodeAutoConfiguration, IslandConfiguration]).run();
+    const context = await new ApplicationBuilder([NodeAutoConfiguration, IslandConfiguration]).run();
 
     // The reactive half of the demo pushes model updates to connected islands
     // over SSE until the ticker completes.

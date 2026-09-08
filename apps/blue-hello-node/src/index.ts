@@ -23,7 +23,7 @@ async function main() {
     // Spring-style bootstrap: register platform auto-config + app config, then
     // run() prepares the environment, refreshes the context, and returns it —
     // the handler mapping and dispatcher initialize themselves on refresh.
-    const context = new ApplicationBuilder([NodeAutoConfiguration, HelloConfiguration]).run();
+    const context = await new ApplicationBuilder([NodeAutoConfiguration, HelloConfiguration]).run();
 
     // Managed HTTP server: resolve it from the context and await its start so
     // "listening" fires once the socket is bound. The context stops it on close.

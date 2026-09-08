@@ -9,6 +9,7 @@ import { IllegalStateError, JSONObject } from '@blue/core';
 import { RouteRegistry } from '@blue/router';
 import { isActive } from '@blue/core';
 import { parseCommandLineArgs } from '@blue/context';
+import { StandardConfigFileLoader } from './config-file-loader';
 
 /**
  * Class that can be used to bootstrap and launch an application.
@@ -22,6 +23,8 @@ export class Application extends Emitter {
     #name: string | null = null;
     #profiles: string[];
     #properties: JSONObject | null = null;
+    #defaults: JSONObject | null = null;
+    #configFileLoader: StandardConfigFileLoader | null = null;
     #sources: Set<Function>;
 
     /**
@@ -51,21 +54,18 @@ export class Application extends Emitter {
      * @returns The refreshed application context.
      * @throws {IllegalStateError} When application startup fails.
      */
-    run(...args: string[]): ConfigurableApplicationContext {
-        let context;
-
+    async run(...args: string[]): Promise<ConfigurableApplicationContext> {
         try {
-            const environment = this._prepareEnvironment(args);
-            context = this._prepareContext(environment, args);
+            const environment = await this._prepareEnvironment(args);
+            const context = this._prepareContext(environment, args);
             this.emit('started', context);
+            return context;
         } catch (error: unknown) {
             throw new IllegalStateError(
                 'Application startup failed',
                 error instanceof Error ? { cause: error } : { cause: new Error(String(error)) }
             );
         }
-
-        return context;
     }
 
     /**
@@ -105,15 +105,40 @@ export class Application extends Emitter {
     }
 
     /**
+     * Sets the config-file loader used during environment preparation (AD-13).
+     *
+     * @param loader - The loader, or `null` to disable file loading.
+     */
+    setConfigFileLoader(loader: StandardConfigFileLoader | null): void {
+        this.#configFileLoader = loader;
+    }
+
+    /**
+     * Sets the default property source (lowest precedence; always present).
+     *
+     * @param defaults - The default property values.
+     */
+    setDefaults(defaults: JSONObject): void {
+        this.#defaults = defaults;
+    }
+
+    /**
      * Applies environment-level configuration before the application context is created.
+     *
+     * Order matters (AD-13): profiles first (file loading is profile-aware),
+     * then config files, then CLI + builder sources (CLI > boot > files > env
+     * > defaults).
      *
      * @param environment - The environment being prepared.
      * @param args - Command-line arguments supplied to the application.
      * @protected
      */
-    protected _configureEnvironment(environment: ConfigurableEnvironment, args: string[]): void {
-        this._configurePropertySources(environment, args);
+    protected async _configureEnvironment(environment: ConfigurableEnvironment, args: string[]): Promise<void> {
         this._configureProfiles(environment, args);
+        if (this.#configFileLoader) {
+            await this.#configFileLoader.load(environment);
+        }
+        this._configurePropertySources(environment, args);
     }
 
     /**
@@ -185,9 +210,14 @@ export class Application extends Emitter {
      * @param args - Command-line arguments supplied to the application.
      * @returns The prepared environment.
      */
-    protected _prepareEnvironment(args: string[]): ConfigurableEnvironment {
+    protected async _prepareEnvironment(args: string[]): Promise<ConfigurableEnvironment> {
         const env = this._getOrCreateEnvironment();
-        this._configureEnvironment(env, args);
+        // The defaults source is always present (empty when unused), lowest
+        // precedence (AD-13 Q8).
+        if (!env.getPropertySources().contains('defaults')) {
+            env.getPropertySources().addLast('defaults', this.#defaults ?? {});
+        }
+        await this._configureEnvironment(env, args);
         return env;
     }
 

@@ -4,6 +4,17 @@ import { like } from '@blue/util/types';
 import { Constructable, Null } from '@blue/core';
 
 /**
+ * Reads a file's text content, or `null` when the file does not exist.
+ *
+ * The config-file seam (AD-13 Q1) keeps `@blue/boot` isomorphic:
+ * `@blue/platform-node` supplies an `fs`-backed implementation; browsers and
+ * specs pass none (files skipped / fake reader). Return `null` for missing
+ * files — do not throw. Lives here (the shared core) so both `@blue/boot` and
+ * `@blue/platform-node` reference the same seam type.
+ */
+export type ConfigFileReader = (path: string) => Promise<string | null>;
+
+/**
  * Represents a resolved resource handle and its loaded value.
  */
 export interface Resource<T = any> {

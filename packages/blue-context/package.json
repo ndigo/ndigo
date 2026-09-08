@@ -41,5 +41,8 @@
     "@blue/factory": "~0.0.1",
     "@blue/util": "~0.0.1"
   },
-  "sideEffects": false
+  "sideEffects": false,
+  "dependencies": {
+    "dotenv": "^17.4.2"
+  }
 }

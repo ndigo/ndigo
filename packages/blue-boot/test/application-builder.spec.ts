@@ -41,11 +41,11 @@ describe('ApplicationBuilder', () => {
         expect(() => builder.properties({ featureFlag: true })).not.toThrow();
     });
 
-    test('it should only run once and return same context', () => {
+    test('it should only run once and return same context', async () => {
         const builder = new ApplicationBuilder([BuilderConfiguration]);
 
-        const first = builder.run();
-        const second = builder.run();
+        const first = await builder.run();
+        const second = await builder.run();
 
         expect(first).toBe(second);
     });
@@ -57,52 +57,52 @@ describe('ApplicationBuilder', () => {
         expect(() => parent.child(BuilderConfiguration)).not.toThrow();
     });
 
-    test('it should register additional sources added through sources()', () => {
+    test('it should register additional sources added through sources()', async () => {
         const builder = new ApplicationBuilder([BuilderConfiguration]);
         builder.sources([ExtraConfiguration]);
 
-        const context = builder.run();
+        const context = await builder.run();
 
         expect(context.getValue('builderName')).toBe('builder');
         expect(context.getValue('extraValue')).toBe('extra');
     });
 
-    test('it should apply profiles to the built application context', () => {
+    test('it should apply profiles to the built application context', async () => {
         const builder = new ApplicationBuilder([BuilderConfiguration]);
 
-        const context = builder.profiles('dev', 'test').run();
+        const context = await builder.profiles('dev', 'test').run();
 
         expect(context.environment.activeProfiles).toEqual(['dev', 'test']);
     });
 
-    test('it should apply explicit environment to the built application context', () => {
+    test('it should apply explicit environment to the built application context', async () => {
         const builder = new ApplicationBuilder([BuilderConfiguration]);
         const environment = new StandardEnvironment();
 
-        const context = builder.environment(environment).run();
+        const context = await builder.environment(environment).run();
 
         expect(context.environment).toBe(environment);
     });
 
-    test('it should keep child properties isolated from parent', () => {
+    test('it should keep child properties isolated from parent', async () => {
         const parent = new ApplicationBuilder([BuilderConfiguration]).properties({ parentOnly: true });
         const child = parent.child(ChildConfiguration).properties({ childOnly: true });
 
-        const parentContext = parent.run();
-        const childContext = child.run();
+        const parentContext = await parent.run();
+        const childContext = await child.run();
 
         expect(parentContext.getValue('childValue')).toBeUndefined();
         expect(childContext.getValue('childValue')).toBe('child');
     });
 
-    test('it should not mutate existing parent sources when calling parent()', () => {
+    test('it should not mutate existing parent sources when calling parent()', async () => {
         const child = new ApplicationBuilder([ChildConfiguration]);
         const parent = child.parent(ParentConfiguration);
         const sameParent = child.parent(BuilderConfiguration);
 
         expect(sameParent).toBe(parent);
 
-        const firstParentContext = parent.run();
+        const firstParentContext = await parent.run();
         expect(firstParentContext.getValue('parentValue')).toBe('parent');
         expect(firstParentContext.getValue('builderName')).toBeUndefined();
     });
@@ -126,7 +126,7 @@ describe('ApplicationBuilder.fromConfig', () => {
         const builder = await ApplicationBuilder.fromConfig('/config.json');
 
         expect(fetch).toHaveBeenCalledWith('/config.json');
-        const context = builder.run();
+        const context = await builder.run();
         expect(context.environment.getProperty('server')).toEqual({ port: 8080 });
     });
 
@@ -146,7 +146,7 @@ describe('ApplicationBuilder.fromConfig', () => {
         } as Response);
 
         const builder = await ApplicationBuilder.fromConfig('/config.json');
-        const context = builder.run();
+        const context = await builder.run();
 
         expect(context.environment.activeProfiles).toContain('production');
         expect(context.environment.activeProfiles).toContain('us-east');
@@ -161,6 +161,6 @@ describe('ApplicationBuilder.fromConfig', () => {
         const builder = await ApplicationBuilder.fromConfig('/config.json');
         expect(builder).toBeInstanceOf(ApplicationBuilder);
         // Should run without error
-        expect(() => builder.run()).not.toThrow();
+        await expect(builder.run()).resolves.toBeInstanceOf(Object);
     });
 });

@@ -15,7 +15,7 @@ async function main() {
     // run() refreshes the context. The handler mapping + dispatcher
     // auto-initialize on refresh; the managed server reads process.env.PORT
     // (default 3000) and stops when the context closes.
-    const context = new ApplicationBuilder([NodeAutoConfiguration, NodeAppConfiguration]).run();
+    const context = await new ApplicationBuilder([NodeAutoConfiguration, NodeAppConfiguration]).run();
 
     const server = context.getValue<HTTPServer>('httpServer');
     await server.start();

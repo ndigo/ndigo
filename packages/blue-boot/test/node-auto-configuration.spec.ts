@@ -14,9 +14,9 @@ import { configuration, entry } from '@blue/context';
  */
 
 describe('Application node auto-configuration', () => {
-    test('registers the node dispatcher + argument resolvers from an explicit source', () => {
+    test('registers the node dispatcher + argument resolvers from an explicit source', async () => {
         const app = new Application([NodeAutoConfiguration]);
-        const context = app.run();
+        const context = await app.run();
 
         expect(context.hasValue('dispatcher')).toBe(true);
         expect(context.hasValue('handlerMapping')).toBe(true);
@@ -25,9 +25,9 @@ describe('Application node auto-configuration', () => {
         expect(resolvers.length).toBeGreaterThan(0);
     });
 
-    test('user sources can override the node config entries', () => {
+    test('user sources can override the node config entries', async () => {
         const app = new Application([NodeAutoConfiguration, NodeDefiningConfiguration]);
-        const context = app.run();
+        const context = await app.run();
         expect(context.hasValue('handlerMapping')).toBe(true);
         expect(context.getValue('handlerMapping')).toMatchObject({ custom: true });
     });

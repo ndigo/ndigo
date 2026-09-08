@@ -47,10 +47,10 @@ describe('ConfigurationProperties decorator', () => {
 });
 
 describe('resolveConfigurationProperties', () => {
-    test('resolves prefixed properties from environment', () => {
+    test('resolves prefixed properties from environment', async () => {
         const builder = new ApplicationBuilder([]);
         builder.properties({ server: { port: '8080', host: 'localhost' } });
-        const context = builder.run();
+        const context = await builder.run();
 
         const { instance, isValid, bindings } = resolveConfigurationProperties(ServerConfig, context);
 
@@ -61,10 +61,10 @@ describe('resolveConfigurationProperties', () => {
         expect(bindings['server.host']).toBe('localhost');
     });
 
-    test('resolves unprefixed properties from environment', () => {
+    test('resolves unprefixed properties from environment', async () => {
         const builder = new ApplicationBuilder([]);
         builder.properties({ app: { title: 'MyApp' } });
-        const context = builder.run();
+        const context = await builder.run();
 
         const { instance, isValid } = resolveConfigurationProperties(AppConfig, context);
 
@@ -72,9 +72,9 @@ describe('resolveConfigurationProperties', () => {
         expect(instance.title).toBe('MyApp');
     });
 
-    test('returns isValid false when property is missing', () => {
+    test('returns isValid false when property is missing', async () => {
         const builder = new ApplicationBuilder([]);
-        const context = builder.run();
+        const context = await builder.run();
 
         const { instance, isValid, bindings } = resolveConfigurationProperties(ServerConfig, context);
 
@@ -83,14 +83,14 @@ describe('resolveConfigurationProperties', () => {
         expect(bindings['server.port']).toBeUndefined();
     });
 
-    test('returns null and isValid false when property is missing', () => {
+    test('returns null and isValid false when property is missing', async () => {
         class DefaultConfig {
             @property('server.port')
             port: number | null = 3000;
         }
 
         const builder = new ApplicationBuilder([]);
-        const context = builder.run();
+        const context = await builder.run();
 
         const { instance, isValid } = resolveConfigurationProperties(DefaultConfig as any, context);
 

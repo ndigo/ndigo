@@ -5,9 +5,9 @@ import { ApplicationBuilder } from '../src/application-builder';
 import { NodeAutoConfiguration } from '@blue/platform-node';
 
 describe('ApplicationBuilder + NodeAutoConfiguration payoff', () => {
-    test('run() produces auto-initialized mapping, dispatcher, and httpServer entry', () => {
+    test('run() produces auto-initialized mapping, dispatcher, and httpServer entry', async () => {
         const app = new Application([NodeAutoConfiguration]);
-        const context = app.run();
+        const context = await app.run();
 
         expect(context.hasValue('httpServer')).toBe(true);
         expect(context.hasValue('dispatcher')).toBe(true);
@@ -30,10 +30,10 @@ describe('ApplicationBuilder + NodeAutoConfiguration payoff', () => {
         app.close();
     });
 
-    test('builder.run() idempotently returns the same context', () => {
+    test('builder.run() idempotently returns the same context', async () => {
         const builder = new ApplicationBuilder([NodeAutoConfiguration]);
-        const first = builder.run();
-        const second = builder.run();
+        const first = await builder.run();
+        const second = await builder.run();
         expect(second).toBe(first);
     });
 });

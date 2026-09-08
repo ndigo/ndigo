@@ -52,6 +52,19 @@ describe('HTTP request pipeline boundaries', () => {
         await second.close();
     });
 
+    test('method mismatch on an existing path returns 405 with Allow (RFC 9110)', async () => {
+        await boot();
+        // /probe is GET-only — a POST to it must be 405, not 404.
+        const res = await fetch(base + '/probe', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ x: 1 }),
+        });
+        expect(res.status).toBe(405);
+        expect(res.headers.get('allow')).toBe('GET');
+        expect(await res.json()).toEqual({ error: 'Method Not Allowed' });
+    });
+
     test('oversized body returns 413 with bounded error code', async () => {
         await boot({ maxBodyBytes: 16 });
         const res = await fetch(base, {

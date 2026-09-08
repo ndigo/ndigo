@@ -17,7 +17,7 @@ export class AuthController {
 
         const token = await authenticate(String(username ?? ''), String(password ?? ''));
         if (!token) {
-            return ResponseEntity.badRequest({ error: 'Invalid credentials' });
+            return ResponseEntity.unauthorized({ error: 'Invalid credentials' }, { 'WWW-Authenticate': 'Bearer' });
         }
 
         // Extract principal info from token for demo purposes

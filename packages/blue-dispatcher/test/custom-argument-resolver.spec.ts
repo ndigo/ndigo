@@ -11,7 +11,7 @@ import { HandlerMethodArgumentResolver } from '../src/argument-resolver';
 import { ModelAndView } from '../src/model-and-view';
 import { MetadataHandlerAdapter } from '../src/route-handler-adapter';
 import { routeMapping } from '../src/route-mapping';
-import { MethodParameter, MethodParameterType, queryValue, routeParams } from '../src/route-parameter';
+import { MethodParameter, MethodParameterType, queryValue, parameters } from '../src/parameters';
 import { TestErrorResolver, TestViewResolver } from './test-strategies';
 
 class CustomQueryArgumentResolver implements HandlerMethodArgumentResolver {
@@ -31,7 +31,7 @@ describe('custom argument resolvers', () => {
         @routeMapping('/hello')
         class HelloController {
             @routeMapping('/there')
-            @routeParams({
+            @parameters({
                 name: queryValue('name'),
             })
             handleThere(name: string): ModelAndView {

@@ -1,7 +1,7 @@
 # Guide 02 — Request Validation
 
 How request validation fits the BlueJS pipeline: coercive binding via
-`@routeParams` extractors, schema validation with Zod, and schemas that are
+`@parameters` extractors, schema validation with Zod, and schemas that are
 derived directly from `@blue/orm` entity metadata.
 
 The validation mechanism is a single pipeline (AD-7): an extractor resolves
@@ -30,12 +30,12 @@ chain to a 422 with `errors[]`.
 
 ```ts
 import { z } from 'zod';
-import { getMapping, routeParams, queryValue, validatedBy } from '@blue/dispatcher';
+import { getMapping, parameters, queryValue, validatedBy } from '@blue/dispatcher';
 
 @requestMapping('/subscribe')
 class SubscribeController {
     @getMapping('/')
-    @routeParams({ email: validatedBy(z.email(), queryValue('email')) })
+    @parameters({ email: validatedBy(z.email(), queryValue('email')) })
     subscribe(email: string) {
         return { ok: true };
     }
@@ -58,7 +58,7 @@ const NoteSchema = z.object({
 });
 
 @postMapping('/')
-@routeParams({ note: validatedBody(NoteSchema) })
+@parameters({ note: validatedBody(NoteSchema) })
 create(note: z.infer<typeof NoteSchema>) {
     // note is validated + coerced
 }
@@ -75,18 +75,18 @@ const SearchSchema = z.object({
     q: z.string().max(80),
 });
 
-@routeParams({ search: validatedQuery(SearchSchema) })
+@parameters({ search: validatedQuery(SearchSchema) })
 search(search: z.infer<typeof SearchSchema>) {
     // search.page: number, search.q: string
 }
 ```
 
-## 4. Whole map: `validateParams(schema, extractors)`
+## 4. Whole map: `validateParameters(schema, extractors)`
 
 Apply one schema across several extractors.
 
 ```ts
-@routeParams(validateParams(UserSchema, {
+@parameters(validateParameters(UserSchema, {
     user: bindValue('query'),
 }))
 ```
@@ -121,7 +121,7 @@ optional) and validate the body:
 import { insertSchemaForEntity } from '@blue/orm';
 
 @postMapping('/')
-@routeParams({ data: validatedBody(insertSchemaForEntity(Note)) })
+@parameters({ data: validatedBody(insertSchemaForEntity(Note)) })
 create(data: Record<string, unknown>) { … }
 ```
 
@@ -144,7 +144,7 @@ A `POST` with `{ title: '' }` now yields:
 
 ## 6. Browser parity
 
-`validatedBy`/`validateParams` also run on the browser pipeline — the BIND
+`validatedBy`/`validateParameters` also run on the browser pipeline — the BIND
 resolver and the shared named-value resolvers invoke the same `convert`
 hook, so per-field validation works in `@blue/platform-web` with the same
 single-decorator surface. (Whole-body `validatedBody` is Node-specific:

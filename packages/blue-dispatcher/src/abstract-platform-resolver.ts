@@ -1,7 +1,7 @@
 import { isNil } from '@blue/util/types';
 import { Route } from '@blue/router';
 import { AbstractNamedValueMethodArgumentResolver } from './argument-resolver';
-import { MethodParameter } from './route-parameter';
+import { MethodParameter } from './parameters';
 
 /**
  * Function signature for platform-specific argument value conversion.

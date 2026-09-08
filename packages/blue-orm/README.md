@@ -39,7 +39,7 @@ export class Note {
 import { insertSchemaForEntity } from '@blue/orm';
 import { validatedBody } from '@blue/dispatcher';
 
-// @routeParams({ data: validatedBody(insertSchemaForEntity(Note)) })
+// @parameters({ data: validatedBody(insertSchemaForEntity(Note)) })
 ```
 
 Unvalidated create bodies are rejected with a 422 problem document carrying

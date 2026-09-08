@@ -9,7 +9,7 @@
  * failure (a `400` in the Node platform's HTTP pipeline).
  *
  * Replaces the legacy `@blue/validate` constraint system, which was
- * structurally dead — `routeParams` never invoked its `.convert` hook and the
+ * structurally dead — `parameters` never invoked its `.convert` hook and the
  * resolver only read `convertType`.
  *
  * ## Whole-body (Node) — validatedBody
@@ -21,7 +21,7 @@
  * });
  *
  * @postMapping('/')
- * @routeParams({ note: validatedBody(NoteSchema) })
+ * @parameters({ note: validatedBody(NoteSchema) })
  * create(note: z.infer<typeof NoteSchema>) { … }
  * ```
  *
@@ -33,14 +33,14 @@
  *     q: z.string().max(80),
  * });
  *
- * @routeParams({ search: validatedQuery(SearchSchema) })
+ * @parameters({ search: validatedQuery(SearchSchema) })
  * search(search: z.infer<typeof SearchSchema>) { … }
  * ```
  *
- * ## Whole map — validateParams
+ * ## Whole map — validateParameters
  *
  * ```ts
- * @routeParams(validateParams(UserSchema, { user: bindValue('query') }))
+ * @parameters(validateParameters(UserSchema, { user: bindValue('query') }))
  * ```
  *
  * ## Per-field — validatedBy
@@ -48,7 +48,7 @@
  * Validation applies per argument — a single schema over one extractor:
  *
  * ```ts
- * @routeParams({ email: validatedBy(z.email(), queryValue('email')) })
+ * @parameters({ email: validatedBy(z.email(), queryValue('email')) })
  * subscribe(email: string) { … }
  * ```
  *
@@ -68,7 +68,7 @@
 
 import { z } from 'zod';
 import { ParameterConversionError } from './error';
-import { type ParameterExtractor, type RouteParameterMap, bodyValue, queryValue } from './route-parameter';
+import { type ParameterExtractor, type ParameterMap, bodyValue, queryValue } from './parameters';
 
 /**
  * A single failed check from a Zod schema parse.
@@ -119,7 +119,7 @@ export class ZodValidationError extends Error {
  * });
  *
  * @routeMapping('/create')
- * @routeParams({ user: validatedBy(UserSchema, bindValue('query')) })
+ * @parameters({ user: validatedBy(UserSchema, bindValue('query')) })
  * create(user: z.infer<typeof UserSchema>) { … }
  * ```
  *
@@ -150,19 +150,19 @@ export function validatedBy<T>(schema: z.ZodType<T>, extractor: ParameterExtract
 }
 
 /**
- * Convenience overlay for {@link validatedBy} over a whole `routeParams` map.
+ * Convenience overlay for {@link validatedBy} over a whole `parameters` map.
  *
  * @example
  * ```ts
- * @routeParams(validateParams(UserSchema, { user: bindValue('query') }))
+ * @parameters(validateParameters(UserSchema, { user: bindValue('query') }))
  * ```
  *
  * @param schema - The Zod schema validating the bound object.
- * @param extractors - The route-parameter map.
+ * @param extractors - The parameters map.
  * @returns The map with the schema attached to each extractor.
  */
-export function validateParams(schema: z.ZodType, extractors: RouteParameterMap): RouteParameterMap {
-    const mapped: RouteParameterMap = {};
+export function validateParameters(schema: z.ZodType, extractors: ParameterMap): ParameterMap {
+    const mapped: ParameterMap = {};
     for (const [name, extractor] of Object.entries(extractors)) {
         mapped[name] = validatedBy(schema, extractor);
     }
@@ -177,7 +177,7 @@ export function validateParams(schema: z.ZodType, extractors: RouteParameterMap)
  *
  * @example
  * ```ts
- * @routeParams({ note: validatedBody(NoteSchema) })
+ * @parameters({ note: validatedBody(NoteSchema) })
  * create(note: z.infer<typeof NoteSchema>) { … }
  * ```
  *
@@ -199,7 +199,7 @@ export function validatedBody<T>(schema: z.ZodType<T>): ParameterExtractor {
  *
  * @example
  * ```ts
- * @routeParams({ search: validatedQuery(SearchSchema) })
+ * @parameters({ search: validatedQuery(SearchSchema) })
  * search(search: z.infer<typeof SearchSchema>) { … }
  * ```
  *
@@ -210,4 +210,4 @@ export function validatedQuery<T>(schema: z.ZodType<T>): ParameterExtractor {
     return validatedBy(schema, queryValue('*'));
 }
 
-export type { MethodParameter } from './route-parameter';
+export type { MethodParameter } from './parameters';

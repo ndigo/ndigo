@@ -82,7 +82,7 @@ export function schemaForEntity<T extends object>(
  *
  * ```ts
  * @postMapping('/')
- * @routeParams({ note: validatedBody(insertSchemaForEntity(Note)) })
+ * @parameters({ note: validatedBody(insertSchemaForEntity(Note)) })
  * create(note: z.infer<ReturnType<typeof insertSchemaForEntity<Note>>>) { … }
  * ```
  *

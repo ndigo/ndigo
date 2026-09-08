@@ -20,7 +20,7 @@
  * The handler is an **async-iterable producer-consumer**: it `for await`s
  * inbound messages from `session.messages` and `yield`s outbound values that
  * the platform writes to the socket. Control (params, headers, auth) is
- * expressed through the same `@routeParams` extractors as HTTP handlers —
+ * expressed through the same `@parameters` extractors as HTTP handlers —
  * the upgrade request resolves them exactly like a normal request — and the
  * interceptor chain runs before the handshake, so an auth denial rejects the
  * upgrade with `401`/`403` instead of `101`.

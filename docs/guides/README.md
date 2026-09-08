@@ -12,7 +12,7 @@ explain the *how* with runnable patterns grounded in the demo apps.
    controllers, request binding, validation, errors, and shutdown.
    Reference application: `apps/blue-api`.
 2. [02 — Request Validation](02-request-validation.md) — how validation fits
-   the request pipeline: `@routeParams` extractor composition, the
+   the request pipeline: `@parameters` extractor composition, the
    `validatedBy` / `validatedBody` / `validatedQuery` surface, and
    entity-derived schemas (`insertSchemaForEntity`).
 

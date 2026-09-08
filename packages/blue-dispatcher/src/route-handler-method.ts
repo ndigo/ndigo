@@ -3,7 +3,7 @@ import { Route } from '@blue/router';
 import { Serializable, getSymbolMetadata } from '@blue/core';
 import { type } from '@blue/util/types';
 import { HandlerMethodArgumentResolver } from './argument-resolver';
-import { MethodParameter } from './route-parameter';
+import { MethodParameter } from './parameters';
 import { getRouteMapping } from './route-mapping';
 import { getFunctionParamNames } from './_decorator-util';
 
@@ -87,7 +87,7 @@ export class RouteHandlerMethod implements HandlerMethod, Serializable {
                 args[index] = resolver ? resolver.resolveArgument(parameter, route, mapping) : void 0;
             }
         } else {
-            // No @routeParams metadata — check for an implicit route-named
+            // No @parameters metadata — check for an implicit route-named
             // parameter (e.g. `handleIndex(route: Route)`). Mirrors Spring's
             // implicit resolved-arg injection; without this the route is
             // `undefined`. The @traced wrapper destroys the signature, so use

@@ -2,6 +2,9 @@ import '@tsmetadata/polyfill';
 import { isString } from '@blue/util/types';
 import { Serializable, JSONObject, createNull, Equatable, getSymbolMetadata, IllegalStateError } from '@blue/core';
 import { getFunctionParamNames } from './_decorator-util';
+import { isSocketMapping } from './socket-mapping';
+import { getRouteMapping } from './route-mapping';
+import { InvalidParameterMappingError } from './error';
 
 const { keys } = Object;
 const { defineProperty } = Reflect;
@@ -39,9 +42,9 @@ export interface ParameterValueConversionContext {
 export type ParameterValueConverter = (value: any, context: ParameterValueConversionContext) => any;
 
 /**
- * Parameter map for `routeParams` decorator
+ * Parameter map for `parameters` decorator
  */
-export type RouteParameterMap = Record<string, ParameterExtractor>;
+export type ParameterMap = Record<string, ParameterExtractor>;
 
 /**
  * Method parameter type enum
@@ -133,6 +136,15 @@ export class MethodParameter implements Serializable {
      * Set by {@link validatedBy} (Zod-backed, AD-7).
      */
     readonly convert!: ((value: any) => any) | undefined;
+    /**
+     * The `@parameters` map key this parameter was declared under. For HTTP
+     * and browser mappings this equals the method-argument name (and usually
+     * the extractor name); for socket mappings it is the `session.params`
+     * key, which may differ from the extractor's source name (e.g.
+     * `via: headerValue('x-via')` → `parameterName: 'via'`,
+     * `name: 'x-via'`).
+     */
+    readonly parameterName!: string;
 
     constructor(
         type: MethodParameterType,
@@ -141,7 +153,8 @@ export class MethodParameter implements Serializable {
         defaultValue: string | null = null,
         convertType?: { source: any; target: any },
         prefix: string | null = null,
-        convert?: (value: any) => any
+        convert?: (value: any) => any,
+        parameterName?: string
     ) {
         if (!isString(name)) {
             throw new TypeError(`"name" must be a string but was ${name}`);
@@ -153,6 +166,7 @@ export class MethodParameter implements Serializable {
         this.convertType = convertType ?? undefined;
         this.prefix = prefix;
         this.convert = convert ?? undefined;
+        this.parameterName = parameterName ?? name;
     }
 
     toJSON(): JSONObject {
@@ -175,7 +189,7 @@ export class MethodParameter implements Serializable {
  * Factory function: Create a query parameter extractor
  *
  * @example
- * `routeParams`({
+ * `parameters`({
  *   page: queryValue('page'),
  *   limit: queryValue('limit', { required: true, defaultValue: '10' })
  * })
@@ -194,7 +208,7 @@ export function queryValue(name: string, options: ParameterExtractorOptions = {}
  * Factory function: Create a path parameter extractor
  *
  * @example
- * `routeParams`({
+ * `parameters`({
  *   userId: pathValue('userId')
  * })
  */
@@ -212,7 +226,7 @@ export function pathValue(name: string, options: ParameterExtractorOptions = {})
  * Factory function: Create a matrix parameter extractor
  *
  * @example
- * `routeParams`({
+ * `parameters`({
  *   color: matrixValue('color'),
  *   size: matrixValue('size', { required: true })
  * })
@@ -231,7 +245,7 @@ export function matrixValue(name: string, options: ParameterExtractorOptions = {
  * Factory function: Create a cookie parameter extractor
  *
  * @example
- * `routeParams`({
+ * `parameters`({
  *   session: cookieValue('SESSIONID'),
  *   token: cookieValue('AUTH_TOKEN', { required: true })
  * })
@@ -250,7 +264,7 @@ export function cookieValue(name: string, options: ParameterExtractorOptions = {
  * Factory function: Create a session parameter extractor
  *
  * @example
- * `routeParams`({
+ * `parameters`({
  *   userId: sessionValue('userId'),
  *   token: sessionValue('AUTH_TOKEN', { required: true })
  * })
@@ -269,7 +283,7 @@ export function sessionValue(name: string, options: ParameterExtractorOptions = 
  * Factory function: Create a model parameter extractor
  *
  * @example
- * `routeParams`({
+ * `parameters`({
  *   profile: modelValue('profile'),
  * })
  */
@@ -287,7 +301,7 @@ export function modelValue(name: string, options: ParameterExtractorOptions = {}
  * Factory function: Create a history state parameter extractor
  *
  * @example
- * `routeParams`({
+ * `parameters`({
  *   token: stateValue('token'),
  * })
  */
@@ -306,7 +320,7 @@ export function stateValue(name: string, options: ParameterExtractorOptions = {}
  * Binds an entire source (e.g. query, state) to an object, optionally filtering by prefix.
  *
  * @example
- * `routeParams`({
+ * `parameters`({
  *   user: bindValue('query', { prefix: 'user.' })
  * })
  */
@@ -333,7 +347,7 @@ export function bindValue(
  * Factory function: Create a route attribute parameter extractor.
  *
  * @example
- * `routeParams`({
+ * `parameters`({
  *   user: attributeValue('user')
  * })
  */
@@ -351,7 +365,7 @@ export function attributeValue(name: string, options: ParameterExtractorOptions 
  * Factory function: Create a request-header parameter extractor.
  *
  * @example
- * `routeParams`({
+ * `parameters`({
  *   contentType: headerValue('content-type'),
  *   authorization: headerValue('authorization', { required: true })
  * })
@@ -371,7 +385,7 @@ export function headerValue(name: string, options: ParameterExtractorOptions = {
  * Use `name: '*'` to bind the entire parsed body object.
  *
  * @example
- * `routeParams`({
+ * `parameters`({
  *   user: bodyValue('user'),
  *   payload: bodyValue('*')
  * })
@@ -446,7 +460,7 @@ export function withConversion(
 }
 
 /**
- * Invoked via the `routeParams` decorator.
+ * Invoked via the `parameters` decorator.
  *
  * Replaces legacy parameter decorators with a method-level decorator.
  * Uses function parameter name extraction to map extractors to positions.
@@ -456,48 +470,211 @@ export function withConversion(
  * handleRequest(@queryValue('page') page: string) {}
  *
  * // New (TC39):
- * `routeParams`({
+ * `parameters`({
  *   page: queryValue('page')
  * })
  * handleRequest(page: string) {}
  */
-export function routeParams(paramMap: RouteParameterMap) {
+export function parameters(paramMap: ParameterMap) {
     return function (target: any, context: ClassMethodDecoratorContext): void {
-        // Extract parameter names from the method
-        const paramNames = getFunctionParamNames(target);
+        // Store the raw parameter map declaratively. The framework converts
+        // it to MethodParameter[] at registration time, where the mapping
+        // kind (route/request/socket) is known: HTTP and browser mappings
+        // bind method arguments positionally; socket mappings resolve the
+        // sources into `session.params`. Validation (names-in-signature and
+        // source-vs-mapping-kind compatibility) also happens there, not at
+        // decoration time, so the same decorator works across all three.
+        context.metadata[`method:parameters:${String(context.name)}`] = paramMap;
+    };
+}
 
-        // Pre-compute name→index map for O(1) lookup instead of O(P) indexOf per parameter.
-        const nameToIndex = new Map<string, number>();
-        for (let i = 0; i < paramNames.length; i++) {
-            nameToIndex.set(paramNames[i], i);
+/** Metadata key suffix for the raw parameter map (name → extractor). */
+const PARAMETER_MAP_KEY = (name: string | symbol) => `method:parameters:${String(name)}`;
+/** Metadata key suffix for the converted positional parameters array. */
+const PARAMETER_ARRAY_KEY = (name: string | symbol) => `method:parameter:${String(name)}`;
+
+/**
+ * The mapping kind determines which sources exist for a handler method.
+ * Named after how the value is bound per transport.
+ */
+export type ParameterMappingKind = 'route' | 'request' | 'socket';
+
+/**
+ * Which sources each mapping kind exposes. A `*Value` extractor whose type is
+ * not in the kind's set is a configuration error — the framework throws
+ * {@link InvalidParameterMappingError} at registration.
+ *
+ * - `route` (browser client-side navigation): route.data + browser state
+ *   (+ model/state/bind form binding).
+ * - `request` (Node HTTP): the request wire sources including a body.
+ * - `socket` (WebSocket upgrade): the upgrade URL query + handshake
+ *   headers/cookies — no request body, no browser state.
+ */
+const SOURCES_BY_KIND: Record<ParameterMappingKind, ReadonlySet<MethodParameterType>> = {
+    // Method-less routeMapping: transport-agnostic — may match any verb and
+    // be dispatched on either platform, so it accepts every source. The
+    // restrictive sets below are what make the checks valuable.
+    route: new Set<MethodParameterType>([
+        MethodParameterType.QUERY,
+        MethodParameterType.PATH,
+        MethodParameterType.MATRIX,
+        MethodParameterType.STATE,
+        MethodParameterType.SESSION,
+        MethodParameterType.MODEL,
+        MethodParameterType.COOKIE,
+        MethodParameterType.ATTRIBUTE,
+        MethodParameterType.BIND,
+        MethodParameterType.HEADER,
+        MethodParameterType.BODY,
+    ]),
+    request: new Set<MethodParameterType>([
+        MethodParameterType.QUERY,
+        MethodParameterType.PATH,
+        MethodParameterType.MATRIX,
+        MethodParameterType.HEADER,
+        MethodParameterType.COOKIE,
+        MethodParameterType.SESSION,
+        MethodParameterType.ATTRIBUTE,
+        MethodParameterType.BODY,
+    ]),
+    socket: new Set<MethodParameterType>([
+        MethodParameterType.QUERY,
+        MethodParameterType.PATH,
+        MethodParameterType.HEADER,
+        MethodParameterType.COOKIE,
+    ]),
+};
+
+const SOURCE_LABEL: Record<ParameterMappingKind, string> = {
+    route: '@routeMapping (method-less: any method)',
+    request: '@requestMapping / @getMapping / … (HTTP)',
+    socket: '@socketMapping (WebSocket)',
+};
+
+/**
+ * Determine a method's mapping kind from its metadata.
+ *
+ * @param target - The class prototype or constructor.
+ * @param propertyKey - The method name.
+ * @returns `'socket'` for socket-mapped methods, `'request'` when a verb is
+ *   set (requestMapping/getMapping/…), else `'route'`.
+ */
+export function parameterMappingKind(target: any, propertyKey: string | symbol): ParameterMappingKind {
+    try {
+        if (isSocketMapping(target, propertyKey)) return 'socket';
+    } catch {
+        // isSocketMapping may be unavailable before socket-mapping metadata
+        // is imported; treat as route.
+    }
+    const mapping = getRouteMapping(target, propertyKey);
+    return mapping?.method ? 'request' : 'route';
+}
+
+/**
+ * Read the raw parameter map declared on a method by `@parameters`.
+ *
+ * @param target - The class prototype or constructor.
+ * @param propertyKey - The method name.
+ * @returns The name → extractor map, or `undefined` when not decorated.
+ */
+export function getParameterMap(
+    target: any,
+    propertyKey: string | symbol
+): ParameterMap | undefined {
+    return getSymbolMetadata(target)[PARAMETER_MAP_KEY(propertyKey)];
+}
+
+/**
+ * Convert a raw `@parameters` map into the positional {@link MethodParameter}
+ * array the dispatch pipeline + socket resolution consume, validating the
+ * map against the method and its mapping kind.
+ *
+ * - `route`/`request`: each key must be a method-signature argument name;
+ *   the resulting array is indexed by argument position.
+ * - `socket`: no signature mapping — each declared parameter is resolved
+ *   from the upgrade sources into `session.params` (keyed by extractor
+ *   name); the array is in declaration order.
+ *
+ * Throws `InvalidParameterMappingError` when a `*Value` extractor has no
+ * source for the mapping kind (e.g. `bodyValue` on a socket mapping).
+ *
+ * @param target - The class prototype or constructor.
+ * @param propertyKey - The method name.
+ * @param handlerMethod - The method function (for signature discovery).
+ * @returns The converted parameters (may be the empty array).
+ * @throws {InvalidParameterMappingError} On source/kind incompatibility.
+ */
+export function resolveParameters(
+    target: any,
+    propertyKey: string | symbol,
+    handlerMethod: Function
+): MethodParameter[] {
+    const map = getParameterMap(target, propertyKey);
+    if (!map) return [];
+    const kind = parameterMappingKind(target, propertyKey);
+    const allowed = SOURCES_BY_KIND[kind];
+    const nameToIndex = new Map<string, number>();
+    if (kind !== 'socket') {
+        const paramNames = getFunctionParamNames(handlerMethod);
+        for (let index = 0; index < paramNames.length; index++) nameToIndex.set(paramNames[index], index);
+    }
+    const resolved: MethodParameter[] = [];
+    for (const [paramName, extractor] of Object.entries(map)) {
+        if (!allowed.has(extractor.type)) {
+            throw new InvalidParameterMappingError(
+                `@parameters uses ${extractor.type} on a ${SOURCE_LABEL[kind]} method — this source is not ` +
+                    `available for that mapping kind. Allowed sources: ${[...allowed].map((t) => t.type).join(', ')}`,
+                paramName,
+                String(propertyKey)
+            );
         }
-
-        // Convert paramMap to array indexed by parameter position
-        const parameters: MethodParameter[] = [];
-
-        for (const [paramName, extractor] of Object.entries(paramMap)) {
+        if (kind !== 'socket') {
             const index = nameToIndex.get(paramName);
             if (index === undefined) {
                 throw new IllegalStateError(
                     `Parameter "${paramName}" not found in method signature. ` +
-                        `Available parameters: ${paramNames.join(', ')}`
+                        `Available parameters: ${getFunctionParamNames(handlerMethod).join(', ')}`
                 );
             }
-
-            parameters[index] = new MethodParameter(
-                extractor.type,
-                extractor.name,
-                extractor.required,
-                extractor.defaultValue,
-                extractor.convertType,
-                extractor.prefix,
-                extractor.convert
-            );
+            resolved[index] = toMethodParameter(paramName, extractor);
+        } else {
+            resolved.push(toMethodParameter(paramName, extractor));
         }
+    }
+    return resolved;
+}
 
-        // Store in metadata
-        context.metadata[`method:parameter:${String(context.name)}`] = parameters;
-    };
+/** Build a `MethodParameter` from an extractor, labeling it with the map key. */
+function toMethodParameter(paramName: string, extractor: ParameterExtractor): MethodParameter {
+    return new MethodParameter(
+        extractor.type,
+        extractor.name,
+        extractor.required,
+        extractor.defaultValue,
+        extractor.convertType,
+        extractor.prefix,
+        extractor.convert,
+        paramName
+    );
+}
+
+/**
+ * Register-time hook: store the resolved parameters for a method so
+ * `getMethodParameter` / `hasMethodParameter` (and `RouteHandlerMethod`)
+ * see them.
+ *
+ * @param target - The class prototype or constructor.
+ * @param propertyKey - The method name.
+ */
+export function storeResolvedParameters(target: any, propertyKey: string | symbol, resolvedParams: MethodParameter[]): void {
+    if (resolvedParams.length > 0) {
+        defineProperty(getSymbolMetadata(target), PARAMETER_ARRAY_KEY(propertyKey), {
+            value: resolvedParams,
+            configurable: true,
+            enumerable: false,
+            writable: false,
+        });
+    }
 }
 
 /**
@@ -505,7 +682,7 @@ export function routeParams(paramMap: RouteParameterMap) {
  */
 export function getMethodParameter(target: any, propertyKey: string | symbol): MethodParameter[] | undefined {
     const metadata = getSymbolMetadata(target);
-    return metadata[`method:parameter:${String(propertyKey)}`];
+    return metadata[PARAMETER_ARRAY_KEY(propertyKey)];
 }
 
 /**

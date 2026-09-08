@@ -3328,7 +3328,7 @@ export class HttpMethod implements Equatable, Serializable {
 
 **Simple Type-Safe Enum:**
 
-- `MethodParameterType` - `@blue/dispatcher/src/route-parameter.ts`
+- `MethodParameterType` - `@blue/dispatcher/src/parameters.ts`
 
 **Enum Hierarchy:**
 
@@ -3353,7 +3353,7 @@ export class HttpMethod implements Equatable, Serializable {
 | What                  | Canonical form                                                                                  |
 | :-------------------- | :---------------------------------------------------------------------------------------------- |
 | DTO / object shape    | `z.object({ ... })` — static type via `z.infer`                                                 |
-| Route parameter       | `validatedBy(schema, bindValue('query'))` in `@routeParams` (from `@blue/dispatcher`)           |
+| Route parameter       | `validatedBy(schema, bindValue('query'))` in `@parameters` (from `@blue/dispatcher`)           |
 | ENTITY field          | `@column({ schema: z.string().min(2) })` — the ORM derives the full entity schema from metadata |
 | A reusable value type | `z.string().refine(...)` or `z.number().min(0)` — a schema _is_ the type                        |
 
@@ -3370,7 +3370,7 @@ class User {
 
 // ✅ Correct: Route param validation via validatedBy
 @routeMapping('/create')
-@routeParams({ user: validatedBy(UserSchema, bindValue('query')) })
+@parameters({ user: validatedBy(UserSchema, bindValue('query')) })
 create(user: z.infer<typeof UserSchema>) { /* ... */ }
 ```
 

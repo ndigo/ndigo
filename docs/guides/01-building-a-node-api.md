@@ -71,28 +71,28 @@ entries typically don't need this; controllers are plain classes.
 
 Controllers are plain classes whose methods carry mapping decorators.
 `@getMapping` / `@postMapping` (from `@blue/dispatcher`) describe path and
-method; `@routeParams` describes how method arguments are bound.
+method; `@parameters` describes how method arguments are bound.
 
 ```ts
 import '@tsmetadata/polyfill';
-import { getMapping, postMapping, routeParams, queryValue, bodyValue, pathValue } from '@blue/dispatcher';
+import { getMapping, postMapping, parameters, queryValue, bodyValue, pathValue } from '@blue/dispatcher';
 
 @requestMapping('/api')
 export class GreetingController {
     @getMapping('/hello')
-    @routeParams({ name: queryValue('name') })
+    @parameters({ name: queryValue('name') })
     hello(name?: string) {
         return { message: `Hello, ${name ?? 'World'}!` };
     }
 
     @postMapping('/echo')
-    @routeParams({ payload: bodyValue('*') })
+    @parameters({ payload: bodyValue('*') })
     echo(payload: unknown) {
         return { echo: payload };
     }
 
     @getMapping('/greet/:name')
-    @routeParams({ name: pathValue('name') })
+    @parameters({ name: pathValue('name') })
     greet(name: string) {
         return { greeting: `Greetings, ${name}!` };
     }
@@ -109,7 +109,7 @@ Notes:
 
 ## 4. Request binding: extractors
 
-`@routeParams` maps argument names to *extractors* — declarative sources for
+`@parameters` maps argument names to *extractors* — declarative sources for
 the argument's value. The Node platform resolves them through
 `AbstractPlatformArgumentResolver` subclasses.
 
@@ -216,16 +216,37 @@ read the upgrade sources with the standard vocabulary:
 
 ```ts
 @socketMapping({ value: '/room', queryParams: 'token=abc', private: false })
+@parameters({ token: queryValue('token'), via: headerValue('x-via') })
 async *room(session: SocketSession) {
-    const token = String(session.query['token']);       // from the WS URL query
-    const auth = String(session.headers['x-auth']);     // from the upgrade headers
-    // session.cookies[...] — from the upgrade Cookie header
+    const token = String(session.params['token']);  // bound from ?token=
+    const via = String(session.params['via']);      // bound from the x-via header
+    // session.query / session.headers / session.cookies also exposed directly
 }
 ```
 
-`session.query` / `session.headers` / `session.cookies` mirror the HTTP
-argument sources, so the original query/matrix/header APIs are reused for
-every transport.
+`@parameters` on a socket method binds its extractors against the **upgrade
+request sources** (query, path, header, cookie) into `session.params`
+(validated + coerced, Zod included). A missing required parameter closes the
+socket with `1008` before the handler runs.
+
+## 6c. Parameter source compatibility (the `@parameters` matrix)
+
+`@parameters` is **mapping-agnostic**: the same decorator + `*Value`
+extractors work across `@routeMapping`, `@requestMapping`, and
+`@socketMapping`. Each mapping kind exposes different sources, and using a
+binder without a source for its mapping is a configuration error — the
+framework throws at registration:
+
+| Mapping kind | Available `*Value` sources |
+| --- | --- |
+| `@routeMapping` (method-less) | any source (transport-agnostic: query, path, matrix, header, cookie, session, attribute, body, bind/model/state…) |
+| `@requestMapping` / verbs | query, path, matrix, header, cookie, session, attribute, body |
+| `@socketMapping` | query, path, header, cookie (no body; no browser state) |
+
+So `bodyValue` on a socket mapping is rejected (no body on an upgrade), as is
+`stateValue`/`modelValue`/`bindValue` on a verbed HTTP mapping (browser-only
+sources) — the error says which sources the mapping kind allows. Method-less
+`@routeMapping` accepts anything because it may dispatch on either platform.
 
 ## 7. Putting it together
 

@@ -81,7 +81,7 @@ import {
     errorMapping,
     ParameterConversionError,
     routeMapping,
-    routeParams,
+    parameters,
     stateValue,
 } from '@blue/dispatcher';
 import {
@@ -104,7 +104,7 @@ configureBrowserArgumentResolvers(context, {
 @routeMapping('/account')
 class AccountController {
     @routeMapping('/summary')
-    @routeParams({
+    @parameters({
         amount: cookieValue('amount', { convert: 'toInt' }),
         txCount: stateValue('txCount', { convert: { optional: true, use: 'toInt' } }),
     })
@@ -156,14 +156,14 @@ Built-in converter presets are exported as `argumentValueConverters`:
 - `date`
 - `json`
 
-You can also supply named converter references in `routeParams` extractor options:
+You can also supply named converter references in `parameters` extractor options:
 
 ```typescript
-import { modelValue, routeMapping, routeParams } from '@blue/dispatcher';
+import { modelValue, routeMapping, parameters } from '@blue/dispatcher';
 
 class AccountController {
     @routeMapping('/summary')
-    @routeParams({
+    @parameters({
         profileId: modelValue('profile.id', { convert: 'number' }),
     })
     summary(profileId: number) {

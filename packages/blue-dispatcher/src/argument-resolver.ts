@@ -1,5 +1,5 @@
 import { Route } from '@blue/router';
-import { MethodParameter, MethodParameterType } from './route-parameter';
+import { MethodParameter, MethodParameterType } from './parameters';
 import { isNil, like } from '@blue/util/types';
 
 /**

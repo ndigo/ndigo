@@ -1488,7 +1488,7 @@ NodeHTTPServerAdapter → NodeDispatcher → handler mapping → interceptors
    → argument resolvers (extractors + conversion) → handler → view/JSON
 ```
 
-- Extractors bound via `@routeParams` resolve + type-convert arguments; a
+- Extractors bound via `@parameters` resolve + type-convert arguments; a
   post-conversion Zod hook runs in every platform resolver.
 - Responses: plain objects → JSON; `ResponseEntity` → explicit
   status/headers/body; `ModelAndView`/`View` → view resolution.
@@ -1513,7 +1513,7 @@ before first public release.
 | `@blue/boot` | Bootstrap primitives | `ApplicationBuilder`, `Application` |
 | `@blue/context` | DI container + lifecycle | `Configuration`, `@entry`, context hierarchy |
 | `@blue/factory` | Bean lifecycle | `SmartLifecycle`, `Destroyable`, `Closeable` |
-| `@blue/dispatcher` | Routing + dispatch | mappings, `@routeParams` extractors, validation, interceptors, error resolvers |
+| `@blue/dispatcher` | Routing + dispatch | mappings, `@parameters` extractors, validation, interceptors, error resolvers |
 | `@blue/platform-node` | Node adapter | `NodeAutoConfiguration`, `HTTPServer`, `NodeDispatcher`, argument resolvers, `ProblemDetails`, `gracefulShutdown` |
 | `@blue/http` | HTTP vocabulary | `ResponseStatuses`, `HTTPHeaders` |
 | `@blue/orm` | Persistence + schema | `@entity`/`@column`, `insertSchemaForEntity` |

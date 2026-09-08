@@ -96,7 +96,7 @@ partially returned.
 mirroring the BIND resolver. Schemas see coerced values, so
 `z.coerce.number()` composes with both steps.
 
-**Documentation of usage:** see the `validatedBy`/`validateParams` docstrings
+**Documentation of usage:** see the `validatedBy`/`validateParameters` docstrings
 in `packages/blue-dispatcher/src/zod-validated-by.ts` (whole-body Node,
 whole-map, and per-field forms).
 
@@ -124,7 +124,7 @@ star extractor by hand:
   validation on those resolvers previously no-op'd.
 
 Full usage surface documented in `zod-validated-by.ts` (validatedBody,
-validatedQuery, validateParams, validatedBy — whole-source, per-field, and
+validatedQuery, validateParameters, validatedBy — whole-source, per-field, and
 whole-map forms). Coverage: `platform-node/test/zod-validation.spec.ts` adds
 whole-query coercion + whole-query failure; `platform-web/test/zod-validation.spec.ts`
 adds shared-resolver per-field query validation.

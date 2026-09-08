@@ -18,7 +18,17 @@ import { guid } from '@blue/util/math';
 import { createServer, IncomingMessage, ServerResponse } from 'node:http';
 import { WebSocketServer } from 'ws';
 import { Route, RouteSegment } from '@blue/router';
-import { getInterceptorDenial, getMethodNotAllowed, isSocketMapping, type InterceptorDenial, type SocketRequestSources, type SocketSession, type MethodParameter, type HandlerMethodArgumentResolver, MethodParameterType } from '@blue/dispatcher';
+import {
+    getInterceptorDenial,
+    getMethodNotAllowed,
+    isSocketMapping,
+    type InterceptorDenial,
+    type SocketRequestSources,
+    type SocketSession,
+    type MethodParameter,
+    type HandlerMethodArgumentResolver,
+    MethodParameterType,
+} from '@blue/dispatcher';
 import { NodeRequest, NODE_REQUEST_ATTRIBUTE, NODE_RESPONSE_ATTRIBUTE } from './node-request';
 import { nodeSocketSession } from './node-socket-session';
 import { ProblemTypes, writeProblem } from './problem-details';
@@ -116,7 +126,13 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
             // WebSocket upgrades (RFC 6455 via `ws`): attach an `upgrade`
             // listener to this http.Server; `shouldHandle` gates by path so
             // only socket-mapped routes upgrade, then `connection` dispatches.
+            // ws forwards the server's `error` onto itself unconditionally
+            // (its `error` option does not apply to the http server); without
+            // a listener here, a bind failure would re-emit and crash the
+            // process as an uncaught exception. Bind errors are already
+            // surfaced by the server `error` path above (reject).
             const websocket = new WebSocketServer({ server, verifyClient: undefined });
+            websocket.on('error', () => undefined);
             websocket.shouldHandle = (req: IncomingMessage): boolean => {
                 const [path, queryString] = (req.url ?? '').split('?', 2);
                 const query: Record<string, string | string[]> = {};
@@ -149,7 +165,11 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
             };
             websocket.on('connection', (ws: unknown) => {
                 const pending = this.#pendingUpgrades.shift();
-                void this.#dispatchSocket(ws, pending?.path ?? '', pending?.sources ?? { query: {}, headers: {}, cookies: {} });
+                void this.#dispatchSocket(
+                    ws,
+                    pending?.path ?? '',
+                    pending?.sources ?? { query: {}, headers: {}, cookies: {} }
+                );
             });
             this.#websocket = websocket;
         });
@@ -194,7 +214,11 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
         };
         const controller = candidate.handler;
         const methodName = candidate.method;
-        if (controller && typeof methodName === 'string' && isSocketMapping(Object.getPrototypeOf(controller), methodName)) {
+        if (
+            controller &&
+            typeof methodName === 'string' &&
+            isSocketMapping(Object.getPrototypeOf(controller), methodName)
+        ) {
             return {
                 instance: controller,
                 method: methodName,
@@ -221,11 +245,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
      * @param sources - The upgrade request sources.
      * @returns The resolved param values keyed by extractor name.
      */
-    #socketRoute(
-        parameter: MethodParameter,
-        pathParams: Record<string, string>,
-        sources: SocketRequestSources
-    ): Route {
+    #socketRoute(parameter: MethodParameter, pathParams: Record<string, string>, sources: SocketRequestSources): Route {
         return {
             path: '',
             raw: '',
@@ -247,9 +267,10 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
     #findResolver(parameter: MethodParameter): HandlerMethodArgumentResolver | undefined {
         const context = this.#dispatcher.applicationContext;
         if (!context) return undefined;
-        const resolvers = (context.hasValue?.('argumentResolvers')
-            ? context.getValue<HandlerMethodArgumentResolver[]>('argumentResolvers')
-            : undefined) ?? [];
+        const resolvers =
+            (context.hasValue?.('argumentResolvers')
+                ? context.getValue<HandlerMethodArgumentResolver[]>('argumentResolvers')
+                : undefined) ?? [];
         return resolvers.find((candidate) => candidate.supportsParameter(parameter));
     }
 
@@ -262,11 +283,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
      *
      * @param rawWs - The upgraded `ws` connection.
      */
-    async #dispatchSocket(
-        rawWs: unknown,
-        path: string,
-        sources: SocketRequestSources
-    ): Promise<void> {
+    async #dispatchSocket(rawWs: unknown, path: string, sources: SocketRequestSources): Promise<void> {
         // The `ws` server hands us a `WebSocket` (RFC 6455 connection) which
         // we only partially surface through SocketSession; the structural
         // surface is all we touch, so a boundary cast to the library type is
@@ -291,7 +308,14 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
                         args.push(session);
                     } else {
                         const resolver = this.#findResolver(param);
-                        if (resolver) args.push(resolver.resolveArgument(param, this.#socketRoute(param, target.pathParams, sources), null));
+                        if (resolver)
+                            args.push(
+                                resolver.resolveArgument(
+                                    param,
+                                    this.#socketRoute(param, target.pathParams, sources),
+                                    null
+                                )
+                            );
                         else args.push(undefined);
                     }
                 }
@@ -310,7 +334,10 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
             const result: unknown = handlerMethod.call(target.instance, ...args);
             // The handler is an async generator: pump inbound → handler →
             // yield outbound until the stream (connection) ends.
-            if (result && typeof (result as { [Symbol.asyncIterator]?: unknown })[Symbol.asyncIterator] === 'function') {
+            if (
+                result &&
+                typeof (result as { [Symbol.asyncIterator]?: unknown })[Symbol.asyncIterator] === 'function'
+            ) {
                 await this.#pumpFunction(result as AsyncGenerator<unknown>, session);
             }
         } catch (error) {
@@ -326,7 +353,10 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
      * @param gen - The handler's async-iterable result.
      * @param session - The session to send/poll.
      */
-    async #pumpFunction(gen: AsyncGenerator<unknown>, session: { messages: AsyncIterable<unknown>; send(data: unknown): void }): Promise<void> {
+    async #pumpFunction(
+        gen: AsyncGenerator<unknown>,
+        session: { messages: AsyncIterable<unknown>; send(data: unknown): void }
+    ): Promise<void> {
         const iterator = gen[Symbol.asyncIterator]();
         try {
             for await (const value of iterator) {

@@ -1,12 +1,9 @@
 import { Constructable, JSONValue, JSONObject } from '@blue/core';
 import { like, isNil } from '@blue/util/types';
 import { AsAware, Aware, likeAwareAnd } from '@blue/factory';
-import {
-    ConfigurablePropertyResolver,
-    likePropertyResolver,
-    PropertyResolver,
-    PrototypalPropertyResolver,
-} from './property-resolver';
+import { likePropertyResolver, PropertyResolver, PrototypalPropertyResolver } from './property-resolver';
+import type { ResolverOptions } from './property-resolver';
+import { MutablePropertySources } from './property-sources';
 
 /**
  * Resolves properties and manages profile activation for an application environment.
@@ -57,7 +54,12 @@ export interface EnvironmentSource {
  */
 export interface ConfigurableEnvironment extends Environment {
     /**
-     * The ordered property sources used for resolution.
+     * The ordered, named property source registry.
+     */
+    getPropertySources(): MutablePropertySources;
+    /**
+     * Compatibility alias (deprecated): the captured property sources.
+     * Mutating the returned array is a no-op; use the registry instead.
      */
     propertySources: JSONObject[];
     /**
@@ -109,16 +111,30 @@ const { defineProperty } = Reflect;
  * Base implementation for environments with profile and property-source support.
  */
 export abstract class AbstractEnvironment implements ConfigurableEnvironment {
-    #propertyResolver: ConfigurablePropertyResolver;
+    #propertyResolver: PrototypalPropertyResolver;
     #activeProfiles: Set<string>;
     #defaultProfiles: Set<string>;
 
     get propertySources(): JSONObject[] {
+        // Compatibility alias (deprecated): fresh snapshot per call; mutating
+        // the returned array is a documented no-op. Use the registry instead.
         return this.#propertyResolver.propertySources;
     }
 
     set propertySources(propertySources) {
-        this.#propertyResolver.propertySources = propertySources;
+        this.#replaceAll(propertySources);
+    }
+
+    /**
+     * The ordered, named property source registry (Phase 0).
+     *
+     * Mutations (add/replace/remove) are picked up lazily on the next lookup,
+     * so burst edits cost a single rebuild.
+     *
+     * @returns The live registry.
+     */
+    getPropertySources(): MutablePropertySources {
+        return this.#propertyResolver.registry;
     }
 
     get [Symbol.toStringTag](): string {
@@ -147,10 +163,11 @@ export abstract class AbstractEnvironment implements ConfigurableEnvironment {
         profiles.forEach(defaultProfiles.add, defaultProfiles);
     }
 
-    constructor(propertySources: JSONObject[] = []) {
+    constructor(propertySources: JSONObject[] = [], options: ResolverOptions = {}) {
         this.#activeProfiles = new Set<string>();
         this.#defaultProfiles = new Set<string>();
-        this.#propertyResolver = new PrototypalPropertyResolver(propertySources);
+        this.#propertyResolver = PrototypalPropertyResolver.create(new MutablePropertySources(), options);
+        this.#replaceAll(propertySources);
     }
 
     addActiveProfile(profile: string): void {
@@ -174,9 +191,13 @@ export abstract class AbstractEnvironment implements ConfigurableEnvironment {
     }
 
     merge(environment: ConfigurableEnvironment): void {
-        if (environment.propertySources.length) {
-            const propertySources = this.propertySources.concat(environment.propertySources);
-            this.propertySources = propertySources;
+        const sources = this.getPropertySources();
+        for (const source of environment.getPropertySources()) {
+            // The registry allows unique names only; a colliding name is
+            // appended under a merged marker (previous concat appended the
+            // duplicate, with this environment's entry winning — preserved:
+            // this entry stays earlier in precedence).
+            sources.addLast(sources.contains(source.name) ? `${source.name}:merged` : source.name, source.properties);
         }
         // eslint-disable-next-line no-unused-expressions -- guarded dispatch: merge profiles only when present
         environment.activeProfiles.length &&
@@ -184,6 +205,14 @@ export abstract class AbstractEnvironment implements ConfigurableEnvironment {
         // eslint-disable-next-line no-unused-expressions -- guarded dispatch: merge profiles only when present
         environment.defaultProfiles.length &&
             environment.defaultProfiles.forEach((profile) => this.addDefaultProfile(profile));
+    }
+
+    #replaceAll(propertySources: JSONObject[]): void {
+        const sources = new MutablePropertySources();
+        for (let index = 0; index < propertySources.length; index++) {
+            sources.addLast(`source:${index}`, propertySources[index]);
+        }
+        this.#propertyResolver = PrototypalPropertyResolver.create(sources, this.#propertyResolver.options);
     }
 
     protected _isActiveProfile(profile: string): boolean {

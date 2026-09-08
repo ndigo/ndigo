@@ -4,7 +4,8 @@
     "paths": {
       "@blue/*": ["../blue-*/src"]
     },
-    "strict": true
+    "strict": true,
+    "rootDir": "../../"
   },
   "include": ["src/**/*"]
 }

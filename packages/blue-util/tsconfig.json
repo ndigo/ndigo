@@ -5,7 +5,8 @@
       "@blue/*": ["../blue-*/src"]
     },
     "strict": true,
-    "types": ["node"]
+    "types": ["node"],
+    "rootDir": "../../"
   },
   "include": ["src/**/*"]
 }

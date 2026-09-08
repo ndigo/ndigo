@@ -30,6 +30,19 @@ class SocketController {
             yield { event: 'echo', data: message };
         }
     }
+
+    // Query-conditioned endpoint: only upgrades carrying ?token=abc match
+    // (the standard queryParams condition applied to a socket mapping, so the
+    // original mapping-condition API is reused for WebSocket upgrades).
+    @socketMapping({ value: '/room', queryParams: 'token=abc', private: false })
+    async *room(session: SocketSession) {
+        for await (const message of session.messages) {
+            yield {
+                event: 'room',
+                data: { token: String(session.query['token']), auth: String(session.headers['x-auth'] ?? ''), text: String(message) },
+            };
+        }
+    }
 }
 
 describe('Node WebSocket pipeline', () => {
@@ -103,6 +116,42 @@ describe('Node WebSocket pipeline', () => {
         await new Promise<void>((resolve) => {
             setTimeout(resolve, 300);
         });
+        expect(failed).toBe(true);
+    });
+
+    test('queryParams condition gates a socket upgrade (original mapping API reused)', async () => {
+        const ws = new WebSocket(`${wsUrl}/room?token=abc`, { headers: { 'x-auth': 'yes' } });
+        const opened = new Promise<void>((resolve, reject) => {
+            ws.on('open', () => resolve());
+            ws.on('error', reject);
+        });
+        await opened;
+
+        const received = new Promise<unknown>((resolve) => {
+            ws.once('message', (data: unknown) => resolve(data));
+        });
+        ws.send('hello room');
+
+        const reply = await received;
+        const parsed = JSON.parse(String(reply));
+        expect(parsed).toEqual({ event: 'room', data: { token: 'abc', auth: 'yes', text: 'hello room' } });
+        ws.close(1000, 'done');
+    });
+
+    test('wrong query token fails the socket handshake (condition does not match)', async () => {
+        const ws = new WebSocket(`${wsUrl}/room?token=wrong`);
+        let failed = false;
+        ws.on('open', () => {
+            failed = false;
+        });
+        ws.on('error', () => {
+            failed = true;
+        });
+        await new Promise<void>((resolve) => {
+            setTimeout(resolve, 300);
+        });
+        // Either the handshake errors (refused) or never opens — the socket
+        // must not be usable.
         expect(failed).toBe(true);
     });
 });

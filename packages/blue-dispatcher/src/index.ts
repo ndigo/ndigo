@@ -36,6 +36,8 @@ export * from './path-pattern-comparator';
 export * from './route-to-view-name-translator';
 export * from './theme-resolver';
 export { AbstractThemeResolver } from './theme-resolver';
+export * from './socket-mapping';
+export * from './socket-session';
 
 export * from './route-handler-interceptor';
 export * from './route-handler-denial';

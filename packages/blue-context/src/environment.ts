@@ -4,6 +4,7 @@ import { AsAware, Aware, likeAwareAnd } from '@blue/factory';
 import { likePropertyResolver, PropertyResolver, PrototypalPropertyResolver } from './property-resolver';
 import type { ResolverOptions } from './property-resolver';
 import { MutablePropertySources } from './property-sources';
+import { evaluateProfileExpression } from './profile-expression';
 
 /**
  * Resolves properties and manages profile activation for an application environment.
@@ -30,6 +31,15 @@ export interface Environment extends PropertyResolver {
      * @param profile - The profile name.
      */
     addDefaultProfile(profile: string): void;
+    /**
+     * Evaluates a profile expression against the effective active set
+     * (explicit profiles, or defaults when none are explicit).
+     *
+     * @param expression - The profile expression (`dev`, `!prod`, `a & b`, `(a | b) & c`).
+     * @returns `true` when the expression matches.
+     * @throws {IllegalStateError} On malformed expressions.
+     */
+    acceptsProfiles(expression: string): boolean;
 }
 
 /**
@@ -178,6 +188,18 @@ export abstract class AbstractEnvironment implements ConfigurableEnvironment {
         this.#defaultProfiles.add(profile);
     }
 
+    /**
+     * The effective active set: explicit profiles when present, else the
+     * defaults (Spring parity — defaults gate only when nothing is explicit).
+     */
+    get activeProfilesOrDefaults(): string[] {
+        return this.#activeProfiles.size ? [...this.#activeProfiles] : [...this.#defaultProfiles];
+    }
+
+    acceptsProfiles(expression: string): boolean {
+        return evaluateProfileExpression(expression, new Set(this.activeProfilesOrDefaults));
+    }
+
     hasProperty(key: string): boolean {
         return this.#propertyResolver.hasProperty(key);
     }
@@ -273,6 +295,7 @@ const _likeEnvironmentShape = like({
     defaultProfiles: Array,
     addActiveProfile: Function,
     addDefaultProfile: Function,
+    acceptsProfiles: Function,
 });
 
 export const likeEnvironment = ((value: any) => likePropertyResolver(value) && _likeEnvironmentShape(value)) as (

@@ -102,9 +102,9 @@ export function configuration<T extends new (...args: any[]) => any>(target: T, 
  * @param name - A comma-delimited list of profile names.
  * @returns A decorator that stores profile metadata.
  */
-export function profile(name: string) {
+export function profile(...expressions: string[]) {
     return function (target: any, context: ClassDecoratorContext | ClassMethodDecoratorContext) {
-        const profiles = toUniqueArray(name);
+        const profiles = toUniqueArray(expressions.join(','));
 
         if (context.kind === 'class') {
             context.metadata[CONFIG_PROFILE] = profiles;
@@ -318,15 +318,12 @@ class ConfigurationParser {
 
     /**
      * @private
-     * @param {Array<external:string>} profiles
-     * @returns {boolean} Whether or not the profiles provided are active
+     * @param {Array<string>} expressions The profile expressions (OR across entries).
+     * @returns {boolean} Whether any expression is accepted by the environment.
      */
-    private _isActiveProfile(profiles: string[]): boolean {
-        const activeProfiles = this.environment.activeProfiles,
-            length = profiles.length;
-        let index = 0;
-        for (; index < length; index++) {
-            if (activeProfiles.indexOf(profiles[index]) !== -1) {
+    private _isActiveProfile(expressions: string[]): boolean {
+        for (const expression of expressions) {
+            if (this.environment.acceptsProfiles(expression)) {
                 return true;
             }
         }

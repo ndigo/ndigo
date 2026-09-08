@@ -42,7 +42,7 @@ It also accepts the second framing: a public API that "meets most needs" is legi
 **R1 — Three reactive/event surfaces with no decision rule (the primary concern).** ✅ _RESOLVED 2026-09-05_
 
 - `@blue/signals` — reactive state (`signal`/`computed`/`effect`), a re-export of `@preact/signals-core` plus a BlueJS decorator API.
-- `@blue/context` `EventEmitter` — Spring-style pub/sub application events (`:`-hierarchy, `AsConditionalEventEmitter`/`AsPositionalEventEmitter` mixins).
+- `@blue/context` `EventEmitter` — cascading pub/sub application events (`:`-hierarchy, `AsConditionalEventEmitter`/`AsPositionalEventEmitter` mixins).
 - `@blue/model` `EventModel`/`asMinimalEventEmitter` — a third, hand-rolled minimal emitter (`event.ts`). **Deleted 2026-09-05** — it was dead code (zero production consumers) and a legacy pre-signals conflation of validation + change-observation. The decision rule is documented in `ARCHITECTURE.md` (Paradigm Selection Rules): signals for local derived state, `EventEmitter` for cross-component events, reactive models via `@blue/signals`' `@reactive`/`@signal` with validation layered on.
 
 `apps/blue-todo` uses both `@blue/signals` (item state in `todo-service.ts`) and the context emitter (controllers) — now with a documented boundary.

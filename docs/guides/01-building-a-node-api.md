@@ -1,7 +1,7 @@
 # Guide 01 — Building a Node API
 
 This guide walks through the primary BlueJS server-side workflow end-to-end:
-Spring-style bootstrap, dependency configuration, controllers, request
+DI-scaffolded bootstrap, dependency configuration, controllers, request
 binding, validation, the error contract, and graceful shutdown.
 
 The finished shape of every pattern here lives in `apps/blue-api` — use it as
@@ -16,7 +16,7 @@ is worth reading.
 
 ## 1. Bootstrap: `ApplicationBuilder`
 
-An application is assembled Spring-style: register platform auto-configuration
+An application is assembled around a DI container: register platform auto-configuration
 plus your own `@configuration` classes, then `run()`.
 
 ```ts

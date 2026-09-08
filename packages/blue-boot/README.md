@@ -37,7 +37,7 @@ pnpm add @blue/boot
 
 ### ApplicationBuilder (recommended)
 
-Spring-style bootstrap for server-side apps. Registers sources, prepares the
+DI-container bootstrap for server-side apps. Registers sources, prepares the
 environment, refreshes the context, and returns it — the handler mapping +
 dispatcher auto-initialize on refresh, and a managed `httpServer` entry is
 provisioned by `NodeAutoConfiguration`.

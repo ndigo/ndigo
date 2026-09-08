@@ -13,7 +13,7 @@ The design accumulated a problem: it **re-declared five interceptor interfaces**
 
 ### 1. Terminology (mirrors the mapping decorators)
 
-Keep the Spring-inspired family coherent:
+Keep the declarative-service family coherent:
 
 - **`@service(name, config)`** — class/interface decorator declaring a named service (the registry token) with shared HTTP config (base URL, timeouts, interceptors).
 - **`@getCall(path)` / `@postCall(path)` / `@putCall` / `@deleteCall` / `@patchCall` / `@headCall` / `@optionsCall`** — method decorators for a single service call, matching the existing `@getMapping` / `@postMapping` / … naming in `blue-dispatcher`.

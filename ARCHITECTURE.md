@@ -31,7 +31,8 @@ BlueJS is a JavaScript-first application framework inspired by the design princi
     - [Standards Compliance](#standards-compliance)
 9. [Naming Conventions](#naming-conventions)
 10. [Module Visibility & API Design](#module-visibility--api-design)
-11. [Roadmap](#roadmap)
+11. [Node Platform & Application Lifecycle](#node-platform--application-lifecycle)
+12. [Roadmap](#roadmap)
 
 ## Core Philosophy
 
@@ -1448,6 +1449,79 @@ Files beginning with underscore (`_`) are **internal implementation details**:
 - Provides clear API boundaries without exposing implementation details
 - Allows internal refactoring without breaking external consumers
 - Reduces cognitive load when exploring package capabilities
+
+## Node Platform & Application Lifecycle
+
+The Node server-side stack (`@blue/platform-node` + `@blue/boot` +
+`@blue/http` + `@blue/dispatcher`) follows the same philosophy as the rest of
+the framework — dependency injection, declarative metadata, and lifecycle
+management — applied to HTTP services. The developer-facing story is covered
+in the guides; this section captures the architecture.
+
+### Bootstrap
+
+Applications are assembled Spring-style through `ApplicationBuilder.run()`
+(`@blue/boot`): it prepares the environment, registers platform
+auto-configuration (`NodeAutoConfiguration`) plus the app's
+`@configuration` classes, and refreshes the context. Registration is
+conditional on platform (`@conditionalOnNode`) and environment.
+
+### Lifecycle model
+
+The context drives two lifecycle passes:
+
+- **Refresh** (`context.refresh()`) — after entries are created, the
+  `LifecycleProcessor` starts `SmartLifecycle` beans that are
+  `isAutoStartup` (mapping, dispatcher). Ordering is by phase; the mapping
+  and dispatcher initialize before the server would start.
+- **Close** (`context.close()`) — the processor stops running lifecycle
+  beans in reverse order, then `_destroyValues()` tears down values that
+  implement `Destroyable`/`Closeable` (including plain `@entry`/`setValue`
+  instances, AD-10 fix). `HTTPServer` is a managed entry created by
+  `NodeAutoConfiguration` (not manually); see
+  `docs/reference/2026-08-22_CONTEXT_LIFECYCLE.md` for the full sequence.
+
+### Request pipeline
+
+```
+NodeHTTPServerAdapter → NodeDispatcher → handler mapping → interceptors
+   → argument resolvers (extractors + conversion) → handler → view/JSON
+```
+
+- Extractors bound via `@routeParams` resolve + type-convert arguments; a
+  post-conversion Zod hook runs in every platform resolver.
+- Responses: plain objects → JSON; `ResponseEntity` → explicit
+  status/headers/body; `ModelAndView`/`View` → view resolution.
+- Errors: the adapter → dispatch error path → `RouteErrorResolver` chain →
+  the last-resort resolver guarantees a deterministic status for anything
+  unhandled.
+
+### The HTTP error contract (RFC 9457)
+
+Every 4xx/5xx response is an [`application/problem+json`][rfc9457] document
+(decision: AD-10): `type` (`urn:blue:*` placeholder), `title`, `status`,
+`detail`, `instance`, plus the `errors` extension for validation issues.
+Status conventions are canonical — 400 binding, 401 + `WWW-Authenticate`,
+403, 404, 405 + `Allow`, 413/408 transport, 415, 422 validation, 429, 503,
+500 last-resort. Real HTTPS problem-type URIs replace the `urn:` scheme
+before first public release.
+
+### Modules at a glance (Node path)
+
+| Package | Responsibilities | Key exported concepts |
+| --- | --- | --- |
+| `@blue/boot` | Bootstrap primitives | `ApplicationBuilder`, `Application` |
+| `@blue/context` | DI container + lifecycle | `Configuration`, `@entry`, context hierarchy |
+| `@blue/factory` | Bean lifecycle | `SmartLifecycle`, `Destroyable`, `Closeable` |
+| `@blue/dispatcher` | Routing + dispatch | mappings, `@routeParams` extractors, validation, interceptors, error resolvers |
+| `@blue/platform-node` | Node adapter | `NodeAutoConfiguration`, `HTTPServer`, `NodeDispatcher`, argument resolvers, `ProblemDetails`, `gracefulShutdown` |
+| `@blue/http` | HTTP vocabulary | `ResponseStatuses`, `HTTPHeaders` |
+| `@blue/orm` | Persistence + schema | `@entity`/`@column`, `insertSchemaForEntity` |
+| `@blue/telemetry` | Logging/tracing/metrics | `getLogger`, `LoggerFactory` |
+
+Guides: [`docs/guides/`](docs/guides/README.md).
+
+[rfc9457]: https://www.rfc-editor.org/rfc/rfc9457.html
 
 ## Roadmap
 

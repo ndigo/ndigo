@@ -32,6 +32,37 @@ Auto-configuration for Node.js-based applications that provisions:
 - Argument-value converter registry
 - All 6 argument resolvers
 - Default handler mapping for metadata-driven dispatch
+- The error-resolver chain (400 binding, 401/403 denials, 422 validation,
+  500 last-resort — AD-10)
+- A managed `httpServer` entry (`HTTPServer`, a `SmartLifecycle` bean)
+
+## Managed server + graceful shutdown
+
+`HTTPServer` is provisioned by `NodeAutoConfiguration` (not constructed
+manually). Start it explicitly and wire signals:
+
+```ts
+const context = new ApplicationBuilder([NodeAutoConfiguration, AppConfig]).run();
+const server = context.getValue<HTTPServer>('httpServer');
+await server.start();
+gracefulShutdown(context, { resources: [server] });
+```
+
+`context.close()` also stops the server via the lifecycle processor.
+`gracefulShutdown` drains the server then closes the context on
+`SIGINT`/`SIGTERM`, exiting `0`.
+
+## RFC 9457 error documents
+
+Every 4xx/5xx response is `application/problem+json` (AD-10): `type`
+(`urn:blue:*` placeholder), `title`, `status`, `detail`, `instance`, and an
+`errors` extension for validation issues. `ProblemDetails`, `ProblemTypes`,
+and `writeProblem` are exported for custom errors.
+
+## Guides
+
+- [Building a Node API](../../docs/guides/01-building-a-node-api.md)
+- [Request Validation](../../docs/guides/02-request-validation.md)
 
 ## Usage
 

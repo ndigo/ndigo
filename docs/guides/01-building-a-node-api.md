@@ -179,6 +179,34 @@ rely on the default chain. The `urn:blue:*` problem-type scheme is a
 placeholder — replace with real HTTPS URIs before first public release
 (tracked in AD-10).
 
+## 6b. WebSockets (`@socketMapping`)
+
+Real-time endpoints are declared with `@socketMapping` and handled as
+**async-iterable producer-consumers** — `for await` inbound messages, `yield`
+outbound (mirroring the SSE view style):
+
+```ts
+import { socketMapping, type SocketSession } from '@blue/dispatcher';
+
+@getMapping('/chat')
+class ChatController {
+    @socketMapping('/room')
+    async *room(session: SocketSession) {
+        for await (const message of session.messages) {
+            yield { event: 'chat', data: { text: String(message) } };
+        }
+    }
+}
+```
+
+- The adapter performs the RFC 6455 handshake (via `ws`) only when the
+  request carries `Connection: Upgrade` + `Upgrade: websocket`; a plain HTTP
+  request to a socket path is `404`.
+- `SocketSession` (`@blue/dispatcher`) is transport-neutral: `messages`
+  (async iterable), `send`, `close(code, reason)`, `closed`, `isClosed`.
+- Params/interceptors run on the upgrade request like a normal request, so
+  auth denial rejects the upgrade with `401`/`403`.
+
 ## 7. Putting it together
 
 `apps/blue-hello-node/src/index.ts` is the minimal complete app (~30 lines):

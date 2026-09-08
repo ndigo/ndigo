@@ -17,7 +17,7 @@
 import { createServer, IncomingMessage, ServerResponse } from 'node:http';
 import { WebSocketServer } from 'ws';
 import { Route, RouteSegment } from '@blue/router';
-import { getInterceptorDenial, getMethodNotAllowed, isSocketMapping, type InterceptorDenial } from '@blue/dispatcher';
+import { getInterceptorDenial, getMethodNotAllowed, isSocketMapping, type InterceptorDenial, type SocketRequestSources } from '@blue/dispatcher';
 import { NodeRequest, NODE_REQUEST_ATTRIBUTE, NODE_RESPONSE_ATTRIBUTE } from './node-request';
 import { nodeSocketSession } from './node-socket-session';
 import { ProblemTypes, writeProblem } from './problem-details';
@@ -64,7 +64,12 @@ export interface NodeHTTPServerAdapterOptions {
  * ```
  */
 export class NodeHTTPServerAdapter implements HTTPServerAdapter {
-    #upgradePath: string | null = null;
+    /**
+     * Pending upgrade sources, FIFO: `shouldHandle(req)` runs before
+     * `handleUpgrade`/`connection` for each upgrade, so push the parsed
+     * request sources there and the `connection` callback shifts them off.
+     */
+    #pendingUpgrades: Array<{ path: string; sources: SocketRequestSources }> = [];
     #dispatcher: NodeDispatcher;
     readonly #limits: ResolvedHTTPRequestLimits;
     #server: ReturnType<typeof createServer> | null;
@@ -112,10 +117,39 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
             // only socket-mapped routes upgrade, then `connection` dispatches.
             const websocket = new WebSocketServer({ server, verifyClient: undefined });
             websocket.shouldHandle = (req: IncomingMessage): boolean => {
-                this.#upgradePath = (req.url ?? '').split('?')[0];
-                return this.#findSocketHandler(this.#upgradePath) !== null;
+                const [path, queryString] = (req.url ?? '').split('?', 2);
+                const query: Record<string, string | string[]> = {};
+                if (queryString) {
+                    for (const [key, value] of new URLSearchParams(queryString)) {
+                        if (key in query) {
+                            const existing = query[key];
+                            query[key] = Array.isArray(existing) ? [...existing, value] : [existing, value];
+                        } else {
+                            query[key] = value;
+                        }
+                    }
+                }
+                const sources: SocketRequestSources = {
+                    query,
+                    headers: req.headers as Record<string, string | string[] | undefined>,
+                    cookies: parseCookies(
+                        typeof req.headers['cookie'] === 'string' ? req.headers['cookie'] : undefined
+                    ),
+                };
+                const accepts = this.#findSocketHandler(path, query) !== null;
+                // Only track accepted upgrades: when `shouldHandle` returns
+                // false, ws aborts the handshake and `connection` never fires,
+                // so pushing first would leave a stale entry that corrupts the
+                // next upgrade's FIFO dispatch.
+                if (accepts) {
+                    this.#pendingUpgrades.push({ path, sources });
+                }
+                return accepts;
             };
-            websocket.on('connection', (ws: unknown) => void this.#dispatchSocket(ws, this.#upgradePath ?? ''));
+            websocket.on('connection', (ws: unknown) => {
+                const pending = this.#pendingUpgrades.shift();
+                void this.#dispatchSocket(ws, pending?.path ?? '', pending?.sources ?? { query: {}, headers: {}, cookies: {} });
+            });
             this.#websocket = websocket;
         });
     }
@@ -124,14 +158,24 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
      * Resolve a controller instance (and its socket method) for a request
      * path, through the dispatcher's handler mapping.
      *
+     * The upgrade request's query parameters are parsed into the route's
+     * `data` so the mapping's `queryParams`/`matrixParams` conditions apply
+     * to WebSocket upgrades exactly as they do to HTTP requests — e.g.
+     * `@socketMapping({ value: '/room', queryParams: 'token=abc' })` gates
+     * the upgrade by query string.
+     *
      * @param path - The request path (e.g. `/chat/room`).
+     * @param query - Parsed query parameters from the upgrade URL.
      * @returns `{ instance, method }` for the socket-mapped method, or `null`.
      */
-    #findSocketHandler(path: string): { instance: object; method: string } | null {
+    #findSocketHandler(
+        path: string,
+        query: Record<string, string | string[]> = {}
+    ): { instance: object; method: string } | null {
         const route: Route = {
             path,
             raw: path,
-            data: {},
+            data: query,
             params: null,
             id: Date.now(),
             attributes: {},
@@ -164,18 +208,22 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
      *
      * @param rawWs - The upgraded `ws` connection.
      */
-    async #dispatchSocket(rawWs: unknown, path: string): Promise<void> {
+    async #dispatchSocket(
+        rawWs: unknown,
+        path: string,
+        sources: SocketRequestSources
+    ): Promise<void> {
         // The `ws` server hands us a `WebSocket` (RFC 6455 connection) which
         // we only partially surface through SocketSession; the structural
         // surface is all we touch, so a boundary cast to the library type is
         // deliberate (the upgrade path is the only wire into this hook).
         const ws = rawWs as WebSocket;
-        const target = this.#findSocketHandler(path);
+        const target = this.#findSocketHandler(path, sources.query);
         if (!target) {
             ws.close(1011, 'no socket handler');
             return;
         }
-        const session = nodeSocketSession(ws, path, {});
+        const session = nodeSocketSession(ws, path, sources);
         const handlerMethod = (target.instance as Record<string, unknown>)[target.method] as unknown;
         if (typeof handlerMethod !== 'function') {
             ws.close(1011, 'socket handler is not a function');

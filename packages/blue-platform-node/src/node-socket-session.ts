@@ -6,12 +6,14 @@
  * writes text/JSON frames; close code/reason propagate to `closed` and
  * `isClosed`. The `ws` connection is an event emitter, so this adapter
  * bridges its events to the async-iterable contract the dispatcher defines.
+ * Request sources (query/headers/cookies from the upgrade) are exposed so
+ * handlers can read and validate them like HTTP arguments.
  *
  * @module
  * @since 1.0.0
  */
 
-import type { SocketSession } from '@blue/dispatcher';
+import type { SocketSession, SocketRequestSources } from '@blue/dispatcher';
 import type { WebSocket } from 'ws';
 
 /**
@@ -20,13 +22,13 @@ import type { WebSocket } from 'ws';
  * @param transport - The underlying `ws` WebSocket (or transport-compatible
  *   double in tests).
  * @param path - The request path (for `session.path`).
- * @param params - Extracted request params (for `session.params`).
+ * @param sources - Request sources captured from the upgrade request.
  * @returns The session.
  */
 export function nodeSocketSession(
     transport: WebSocket,
     path: string,
-    params: Record<string, unknown> = {}
+    sources: SocketRequestSources = { query: {}, headers: {}, cookies: {} }
 ): SocketSession {
     const inbound = new AsyncReader<unknown>();
     const closed = new AsyncReader<number>();
@@ -52,7 +54,19 @@ export function nodeSocketSession(
             return path;
         },
         get params() {
-            return params;
+            // Reserved for extractor-derived params (currently the sources
+            // surface is query/headers/cookies); a fresh object so callers
+            // cannot mutate the captured sources.
+            return {};
+        },
+        get query() {
+            return sources.query;
+        },
+        get headers() {
+            return sources.headers;
+        },
+        get cookies() {
+            return sources.cookies;
         },
         get messages() {
             return inbound.iterable();

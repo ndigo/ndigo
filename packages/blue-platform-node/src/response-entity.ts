@@ -65,6 +65,46 @@ export class ResponseEntity<T = unknown> {
         return new ResponseEntity(body, ResponseStatuses.BAD_REQUEST);
     }
 
+    /** `401 Unauthorized` response. */
+    static unauthorized<T = unknown>(body?: T, headers: Record<string, string> = {}): ResponseEntity<T | undefined> {
+        return new ResponseEntity(body, ResponseStatuses.UNAUTHORIZED, headers);
+    }
+
+    /** `403 Forbidden` response. */
+    static forbidden<T = unknown>(body?: T): ResponseEntity<T | undefined> {
+        return new ResponseEntity(body, ResponseStatuses.FORBIDDEN);
+    }
+
+    /** `405 Method Not Allowed` response. */
+    static methodNotAllowed<T = unknown>(body?: T): ResponseEntity<T | undefined> {
+        return new ResponseEntity(body, ResponseStatuses.METHOD_NOT_ALLOWED);
+    }
+
+    /** `406 Not Acceptable` response. */
+    static notAcceptable<T = unknown>(body?: T): ResponseEntity<T | undefined> {
+        return new ResponseEntity(body, ResponseStatuses.NOT_ACCEPTABLE);
+    }
+
+    /** `415 Unsupported Media Type` response. */
+    static unsupportedMediaType<T = unknown>(body?: T): ResponseEntity<T | undefined> {
+        return new ResponseEntity(body, ResponseStatuses.UNSUPPORTED_MEDIA_TYPE);
+    }
+
+    /** `422 Unprocessable Entity` response (schema validation failures). */
+    static unprocessableEntity<T = unknown>(body?: T): ResponseEntity<T | undefined> {
+        return new ResponseEntity(body, ResponseStatuses.UNPROCESSABLE_ENTITY);
+    }
+
+    /** `429 Too Many Requests` response. */
+    static tooManyRequests<T = unknown>(body?: T): ResponseEntity<T | undefined> {
+        return new ResponseEntity(body, ResponseStatuses.TOO_MANY_REQUESTS);
+    }
+
+    /** `503 Service Unavailable` response. */
+    static serviceUnavailable<T = unknown>(body?: T): ResponseEntity<T | undefined> {
+        return new ResponseEntity(body, ResponseStatuses.SERVICE_UNAVAILABLE);
+    }
+
     /** `500 Internal Server Error` response. */
     static internalServerError<T = unknown>(body?: T): ResponseEntity<T | undefined> {
         return new ResponseEntity(body, ResponseStatuses.INTERNAL_SERVER_ERROR);

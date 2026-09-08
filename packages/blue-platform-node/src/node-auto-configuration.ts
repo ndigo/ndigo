@@ -5,6 +5,7 @@ import { IslandViewResolver } from '@blue/view';
 import { NodeDispatcher } from './node-dispatcher';
 import { HTTPServer } from './http-server';
 import { NodeParameterBindingErrorResolver } from './parameter-binding-error-resolver';
+import { NodeLastResortErrorResolver } from './last-resort-error-resolver';
 import { argumentValueConverters } from './argument-value-converter';
 import { NodeQueryValueMethodArgumentResolver } from './query-argument-resolver';
 import { NodePathValueMethodArgumentResolver } from './path-argument-resolver';
@@ -79,7 +80,11 @@ export class NodeAutoConfiguration {
      */
     @entry
     errorResolvers() {
-        return [new NodeParameterBindingErrorResolver(), new MetadataErrorResolver()];
+        return [
+            new NodeParameterBindingErrorResolver(),
+            new MetadataErrorResolver(),
+            new NodeLastResortErrorResolver(),
+        ];
     }
 
     /**

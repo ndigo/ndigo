@@ -1,5 +1,4 @@
-import { routeMapping, ModelAndView } from '@blue/dispatcher';
-import { Route } from '@blue/router';
+import { routeMapping, parameters, pathValue, ModelAndView } from '@blue/dispatcher';
 import { ApplicationContext, AsApplicationContextAware } from '@blue/context';
 import { Null } from '@blue/core';
 import { traced, getLogger } from '@blue/telemetry';
@@ -20,33 +19,37 @@ class IndexController extends AsApplicationContextAware(Null) {
     }
 
     @routeMapping('/index')
+    @parameters({ path: pathValue() })
     @traced
-    handleIndex(route: Route) {
-        logger.info('Handling route', { 'route.path': route.path });
+    handleIndex(path: string) {
+        logger.info('Handling route', { 'path': path });
         const model = this._createModel('all');
         return new ModelAndView('todo-app', model);
     }
 
     @routeMapping('/')
+    @parameters({ path: pathValue() })
     @traced
-    handleAll(route: Route) {
-        logger.info('Handling route', { 'route.path': route.path });
+    handleAll(path: string) {
+        logger.info('Handling route', { 'path': path });
         const model = this._createModel('all', false);
         return new ModelAndView('todo-app', model);
     }
 
     @routeMapping('/active')
+    @parameters({ path: pathValue() })
     @traced
-    handleActive(route: Route) {
-        logger.info('Handling route', { 'route.path': route.path });
+    handleActive(path: string) {
+        logger.info('Handling route', { 'path': path });
         const model = this._createModel('active', false);
         return new ModelAndView('todo-app', model);
     }
 
     @routeMapping('/completed')
+    @parameters({ path: pathValue() })
     @traced
-    handleCompleted(route: Route) {
-        logger.info('Handling route', { 'route.path': route.path });
+    handleCompleted(path: string) {
+        logger.info('Handling route', { 'path': path });
         const model = this._createModel('completed', false);
         return new ModelAndView('todo-app', model);
     }

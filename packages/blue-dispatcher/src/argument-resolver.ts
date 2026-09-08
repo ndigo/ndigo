@@ -175,3 +175,22 @@ export class AttributeValueMethodArgumentResolver extends AbstractNamedValueMeth
         return MethodParameterType.ATTRIBUTE.equals(parameter.type);
     }
 }
+
+/**
+ * Resolves route meta values: `pathValue()` binds the full matched path,
+ * `methodValue()` binds the request HTTP method, and the request id is
+ * available via `requestIdValue()`. Reads `route.path`/`route.method`/
+ * `route.id` by the extractor's name (the ROUTE meta source).
+ */
+export class RouteValueMethodArgumentResolver extends AbstractNamedValueMethodArgumentResolver {
+    protected resolveName(name: string, parameter: MethodParameter, route: Route, mapping: any): any {
+        if (name === 'path') return route.path;
+        if (name === 'method') return route.method;
+        if (name === 'id') return route.id;
+        return route.attributes?.[name];
+    }
+
+    supportsParameter(parameter: MethodParameter): boolean {
+        return MethodParameterType.ROUTE.equals(parameter.type);
+    }
+}

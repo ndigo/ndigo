@@ -25,7 +25,7 @@ export interface Route<TParams extends Record<string, string> = Record<string, s
 
     data: JSONObject;
     dataString?: string;
-    id: number;
+    id: string;
     method?: HTTPMethod;
     params: TParams | null;
     path: string;

@@ -28,8 +28,7 @@ import type { WebSocket } from 'ws';
 export function nodeSocketSession(
     transport: WebSocket,
     path: string,
-    sources: SocketRequestSources = { query: {}, headers: {}, cookies: {} },
-    params: Record<string, unknown> = {}
+    sources: SocketRequestSources = { query: {}, headers: {}, cookies: {} }
 ): SocketSession {
     const inbound = new AsyncReader<unknown>();
     const closed = new AsyncReader<number>();
@@ -55,9 +54,9 @@ export function nodeSocketSession(
             return path;
         },
         get params() {
-            // Values bound from `@parameters` extractors resolved against the
-            // upgrade request sources (validated/coerced by extractor + Zod).
-            return params;
+            // Reserved for parity with the dispatcher contract; socket
+            // parameters are bound positionally to the handler arguments.
+            return {};
         },
         get query() {
             return sources.query;

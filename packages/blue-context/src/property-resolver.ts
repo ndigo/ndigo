@@ -1,8 +1,23 @@
 import { IllegalStateError, JSONValue, JSONObject, createNull, parseKeypath } from '@blue/core';
 import type { KeypathToken } from '@blue/core';
+import type { ConversionService } from '@blue/core';
+import { createConversionService } from '@blue/core';
 import { like, isNil } from '@blue/util/types';
 import { PropertySource, wrapSource } from './property-source';
 import type { MutablePropertySources } from './property-sources';
+import { resolvePlaceholders } from './placeholder-resolver';
+
+type PrimitiveLike = 'string' | 'number' | 'boolean';
+
+/**
+ * Maps a constructor/function name to the primitive type name, or `undefined`
+ * for non-primitive targets (`Boolean` → `'boolean'`, `Number` → `'number'`,
+ * `String` → `'string'`, `Date` → `undefined`).
+ */
+const primitiveNameOf = (name: string): PrimitiveLike | undefined => {
+    const lower = name.toLowerCase();
+    return lower === 'boolean' || lower === 'number' || lower === 'string' ? lower : undefined;
+};
 
 /**
  * Resolves property values from a configured set of sources.
@@ -31,6 +46,37 @@ export interface PropertyResolver {
      * @returns `true` when the property exists.
      */
     hasProperty(key: string): boolean;
+    /**
+     * Resolves a property as a typed value, converting when needed.
+     *
+     * @param key - The property name to resolve.
+     * @param targetType - The target constructor or primitive (`Number`, `Boolean`, `Date`, ...).
+     * @param defaultValue - The value to return when the property is missing.
+     * @returns The typed value or the default.
+     * @throws {IllegalStateError} When a present value cannot be converted.
+     */
+    getPropertyAs<T>(
+        key: string,
+        targetType: (new (...args: never[]) => T) | (() => T) | T,
+        defaultValue?: T
+    ): T | undefined;
+    /**
+     * Returns a typed property or throws when missing or unconvertible.
+     *
+     * @param key - The property name to resolve.
+     * @param targetType - The target constructor or primitive.
+     * @returns The typed value.
+     * @throws {IllegalStateError} When missing, unresolved, or unconvertible.
+     */
+    getRequiredPropertyAs<T>(key: string, targetType: (new (...args: never[]) => T) | (() => T) | T): T;
+    /**
+     * Raw index lookup, bypassing placeholder resolution (internal use by the
+     * placeholder resolver; consumers should use {@link getProperty}).
+     *
+     * @param key - The property name to resolve.
+     * @returns The raw value or `undefined`.
+     */
+    getRawProperty(key: string): JSONValue | undefined;
 }
 
 /**
@@ -231,6 +277,11 @@ export interface ResolverOptions {
      * framework's historical behavior).
      */
     index?: 'prototype' | 'flat';
+    /**
+     * The conversion service for typed lookups (`getPropertyAs`). Defaults to
+     * a fresh `createConversionService()` when typed reads are used.
+     */
+    conversionService?: ConversionService;
 }
 
 /**
@@ -248,6 +299,8 @@ export class PrototypalPropertyResolver implements ConfigurablePropertyResolver 
     #registry: MutablePropertySources | null = null;
     #seenVersion = -1;
     #options: ResolverOptions;
+    #placeholderCache = new Map<string, JSONValue>();
+    #conversionService: ConversionService | null = null;
 
     /**
      * The live registry backing this resolver, when created via
@@ -320,15 +373,58 @@ export class PrototypalPropertyResolver implements ConfigurablePropertyResolver 
 
     getProperty(key: string, defaultValue?: JSONValue): JSONValue | undefined {
         this.#syncRegistry();
-        const value = this.#index.getProperty(key);
-        return value ?? (defaultValue === undefined ? undefined : defaultValue);
+        return (
+            this.#resolve(key, this.#index.getProperty(key)) ?? (defaultValue === undefined ? undefined : defaultValue)
+        );
     }
 
     getRequiredProperty(key: string): JSONValue {
         this.#syncRegistry();
-        const value = this.#index.getProperty(key);
-        if (typeof value === 'undefined') {
+        const raw = this.#index.getProperty(key);
+        if (typeof raw === 'undefined') {
             throw new IllegalStateError(`Required property "${key}" missing`);
+        }
+        const resolved = this.#resolve(key, raw);
+        if (typeof resolved === 'string' && resolved.includes('${')) {
+            throw new IllegalStateError(
+                `Required property "${key}" could not be resolved: unresolved placeholder in value "${resolved}"`
+            );
+        }
+        return resolved as JSONValue;
+    }
+
+    getPropertyAs<T>(
+        key: string,
+        targetType: (new (...args: never[]) => T) | (() => T) | T,
+        defaultValue?: T
+    ): T | undefined {
+        this.#syncRegistry();
+        const raw = this.#index.getProperty(key);
+        if (typeof raw === 'undefined') return defaultValue;
+        const resolved = this.#resolve(key, raw);
+        return this.#convert(key, resolved, targetType) ?? defaultValue;
+    }
+
+    getRequiredPropertyAs<T>(key: string, targetType: (new (...args: never[]) => T) | (() => T) | T): T {
+        this.#syncRegistry();
+        const raw = this.#index.getProperty(key);
+        if (typeof raw === 'undefined') {
+            throw new IllegalStateError(`Required property "${key}" missing`);
+        }
+        const resolved = this.#resolve(key, raw);
+        if (typeof resolved === 'string' && resolved.includes('${')) {
+            throw new IllegalStateError(
+                `Required property "${key}" could not be resolved: unresolved placeholder in value "${resolved}"`
+            );
+        }
+        const value = this.#convert(key, resolved, targetType);
+        if (value === undefined) {
+            // Label extraction only: the targetType union has no narrowing for
+            // `name`; the message is cosmetic, so a structural read suffices.
+            const label = (targetType as { name?: string }).name ?? String(targetType);
+            throw new IllegalStateError(
+                `Required property "${key}" could not be converted to ${label}: ${JSON.stringify(resolved)}`
+            );
         }
         return value;
     }
@@ -338,12 +434,67 @@ export class PrototypalPropertyResolver implements ConfigurablePropertyResolver 
         return this.#index.hasProperty(key);
     }
 
+    /**
+     * Raw index lookup, bypassing placeholder resolution.
+     *
+     * Used internally by the placeholder resolver so value chains resolve with
+     * cycle/depth tracking intact (each public `getProperty` would re-resolve
+     * and lose the in-progress state, overflowing the stack on cycles).
+     *
+     * @param key - The property name.
+     * @returns The raw value or `undefined`.
+     */
+    getRawProperty(key: string): JSONValue | undefined {
+        this.#syncRegistry();
+        return this.#index.getProperty(key);
+    }
+
     #syncRegistry(): void {
         const registry = this.#registry;
         if (registry && registry.version !== this.#seenVersion) {
             this.#seenVersion = registry.version;
             this.#sources = registry.toArray();
             this.#index.build(this.#sources);
+            this.#placeholderCache.clear(); // version change → stale resolutions
         }
+    }
+
+    /** Resolves placeholders in a raw value, engaging the cache only for `${`-bearing strings. */
+    #resolve(key: string, raw: JSONValue | undefined): JSONValue | undefined {
+        if (typeof raw !== 'string' || !raw.includes('${')) return raw;
+        const cached = this.#placeholderCache.get(key);
+        if (cached !== undefined) return cached;
+        const resolved = resolvePlaceholders(raw, this);
+        this.#placeholderCache.set(key, resolved);
+        return resolved;
+    }
+
+    /** Converts a resolved value to the target type via the injected conversion service. */
+    #convert<T>(
+        key: string,
+        value: JSONValue | undefined,
+        targetType: (new (...args: never[]) => T) | (() => T) | T
+    ): T | undefined {
+        const conversion = this.#options.conversionService ?? (this.#conversionService ??= createConversionService());
+        if (value === undefined) return undefined;
+        // Identity short-circuit: already the target type. Primitives are
+        // matched by typeof against the primitive name ('boolean' from
+        // Boolean.name.toLowerCase()), constructors via instanceof.
+        const targetName = (targetType as { name?: string }).name;
+        const primitiveName = targetName ? primitiveNameOf(targetName) : undefined;
+        if (
+            value instanceof (targetType as { new (...args: never[]): T }) ||
+            (primitiveName !== undefined && typeof value === primitiveName)
+        ) {
+            return value as T;
+        }
+        const converted = conversion.convert(value, targetType);
+        // NaN rejection: NumberConverter yields NaN for non-numeric strings.
+        if (typeof converted === 'number' && Number.isNaN(converted)) {
+            throw new IllegalStateError(
+                `Property "${key}" could not be converted to ${targetName ?? String(targetType)}: ${JSON.stringify(value)} (NaN)`
+            );
+        }
+        return converted as T;
     }
 }

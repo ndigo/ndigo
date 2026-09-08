@@ -8,6 +8,7 @@ import {
 import { IllegalStateError, JSONObject } from '@blue/core';
 import { RouteRegistry } from '@blue/router';
 import { isActive } from '@blue/core';
+import { parseCommandLineArgs } from '@blue/context';
 
 /**
  * Class that can be used to bootstrap and launch an application.
@@ -137,6 +138,10 @@ export class Application extends Emitter {
     protected _configurePropertySources(environment: ConfigurableEnvironment, args: string[]): void {
         if (this.#properties) {
             environment.getPropertySources().addLast('boot', this.#properties);
+        }
+        const parsed = parseCommandLineArgs(args);
+        if (Object.keys(parsed).length) {
+            environment.getPropertySources().addFirst('commandLine', parsed);
         }
     }
 

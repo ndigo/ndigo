@@ -1,5 +1,5 @@
 import '@tsmetadata/polyfill';
-import { getMapping, postMapping, routeParams, headerValue, validatedBody, requestMapping } from '@blue/dispatcher';
+import { getMapping, postMapping, parameters, headerValue, validatedBody, requestMapping } from '@blue/dispatcher';
 import { ResponseEntity } from '@blue/platform-node';
 import { insertSchemaForEntity, InMemoryDataSource, InMemoryEntityManager } from '@blue/orm';
 import { Note } from './note.entity';
@@ -12,7 +12,7 @@ const entityManager = new InMemoryEntityManager(dataSource);
 @requestMapping('/notes')
 export class NoteController {
     @getMapping('/')
-    @routeParams({ token: headerValue('authorization') })
+    @parameters({ token: headerValue('authorization') })
     list(token: string | undefined) {
         const bearer = token?.replace(/^Bearer\s+/i, '');
         if (!bearer || !lookupPrincipal(bearer)) {
@@ -22,7 +22,7 @@ export class NoteController {
     }
 
     @postMapping('/')
-    @routeParams({
+    @parameters({
         token: headerValue('authorization'),
         // Validate the request body against the entity's derived insert
         // schema (AD-7 + Phase 3 dogfood): rejects an empty title with a 400

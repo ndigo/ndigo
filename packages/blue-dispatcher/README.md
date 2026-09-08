@@ -29,18 +29,18 @@ src/
 
 ## Request Validation (AD-7)
 
-`@routeParams` extractors compose with Zod schemas: every platform resolver
+`@parameters` extractors compose with Zod schemas: every platform resolver
 runs a post-conversion `convert` hook, so validation + coercion apply
 uniformly across Node and browser pipelines.
 
 ```ts
 import { z } from 'zod';
-import { routeParams, queryValue, validatedBy, validatedBody, validatedQuery } from '@blue/dispatcher';
+import { parameters, queryValue, validatedBy, validatedBody, validatedQuery } from '@blue/dispatcher';
 
-@routeParams({ email: validatedBy(z.email(), queryValue('email')) })  // per-field
-@routeParams({ note: validatedBody(NoteSchema) })                    // whole body (Node)
-@routeParams({ search: validatedQuery(SearchSchema) })               // whole query
-@routeParams(validateParams(UserSchema, { user: bindValue('query') })) // whole map
+@parameters({ email: validatedBy(z.email(), queryValue('email')) })  // per-field
+@parameters({ note: validatedBody(NoteSchema) })                    // whole body (Node)
+@parameters({ search: validatedQuery(SearchSchema) })               // whole query
+@parameters(validateParameters(UserSchema, { user: bindValue('query') })) // whole map
 ```
 
 Failures surface as `ParameterConversionError`, which the Node pipeline

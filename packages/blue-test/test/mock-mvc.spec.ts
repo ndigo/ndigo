@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { describe, test, beforeAll, afterAll, expect } from 'vitest';
-import { requestMapping, getMapping, postMapping, ModelAndView, routeParams, queryValue, bodyValue } from '@blue/dispatcher';
+import { requestMapping, getMapping, postMapping, ModelAndView, parameters, queryValue, bodyValue } from '@blue/dispatcher';
 import { IslandView } from '@blue/view';
 import { bootApp, MockMVC } from '../src/index';
 
@@ -18,13 +18,13 @@ class GreetingController {
     }
 
     @getMapping('/hello')
-    @routeParams({ name: queryValue('name') })
+    @parameters({ name: queryValue('name') })
     greetByName(name?: string) {
         return { message: `Hello, ${name ?? 'World'}!` };
     }
 
     @postMapping('/echo')
-    @routeParams({ value: bodyValue('value') })
+    @parameters({ value: bodyValue('value') })
     echo(value?: string) {
         return { echoed: value ?? null };
     }

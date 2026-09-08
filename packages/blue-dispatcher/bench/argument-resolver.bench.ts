@@ -32,7 +32,7 @@ import {
     MatrixValueMethodArgumentResolver,
     HandlerMethodArgumentResolver,
 } from '../src/argument-resolver';
-import { MethodParameter, MethodParameterType } from '../src/route-parameter';
+import { MethodParameter, MethodParameterType } from '../src/parameters';
 
 /* ------------------------------------------------------------------ */
 /*  Handler under test                                                  */

@@ -1,7 +1,7 @@
 // @vitest-environment node
 import { describe, test, beforeAll, afterAll, expect } from 'vitest';
 import { MetadataConfigApplicationContext } from '@blue/context';
-import { getMapping, socketMapping, type SocketSession, requestMapping } from '@blue/dispatcher';
+import { getMapping, requestMapping, socketMapping, parameters, queryValue, headerValue, type SocketSession } from '@blue/dispatcher';
 import { NodeAutoConfiguration } from '../src/node-auto-configuration';
 import { NodeDispatcher } from '../src/node-dispatcher';
 import { NodeHTTPServerAdapter } from '../src/node-http-server-adapter';
@@ -31,15 +31,15 @@ class SocketController {
         }
     }
 
-    // Query-conditioned endpoint: only upgrades carrying ?token=abc match
-    // (the standard queryParams condition applied to a socket mapping, so the
-    // original mapping-condition API is reused for WebSocket upgrades).
+    // @parameters on a socket: bound from the upgrade sources into
+    // session.params (query/header), gated by the query condition.
     @socketMapping({ value: '/room', queryParams: 'token=abc', private: false })
+    @parameters({ token: queryValue('token'), via: headerValue('x-via') })
     async *room(session: SocketSession) {
         for await (const message of session.messages) {
             yield {
                 event: 'room',
-                data: { token: String(session.query['token']), auth: String(session.headers['x-auth'] ?? ''), text: String(message) },
+                data: { token: String(session.params['token']), via: String(session.params['via']), text: String(message) },
             };
         }
     }
@@ -120,7 +120,7 @@ describe('Node WebSocket pipeline', () => {
     });
 
     test('queryParams condition gates a socket upgrade (original mapping API reused)', async () => {
-        const ws = new WebSocket(`${wsUrl}/room?token=abc`, { headers: { 'x-auth': 'yes' } });
+        const ws = new WebSocket(`${wsUrl}/room?token=abc`, { headers: { 'x-via': 'ws-client' } });
         const opened = new Promise<void>((resolve, reject) => {
             ws.on('open', () => resolve());
             ws.on('error', reject);
@@ -134,7 +134,8 @@ describe('Node WebSocket pipeline', () => {
 
         const reply = await received;
         const parsed = JSON.parse(String(reply));
-        expect(parsed).toEqual({ event: 'room', data: { token: 'abc', auth: 'yes', text: 'hello room' } });
+        // @parameters bound from the upgrade sources into session.params.
+        expect(parsed).toEqual({ event: 'room', data: { token: 'abc', via: 'ws-client', text: 'hello room' } });
         ws.close(1000, 'done');
     });
 

@@ -17,7 +17,7 @@
 import { createServer, IncomingMessage, ServerResponse } from 'node:http';
 import { WebSocketServer } from 'ws';
 import { Route, RouteSegment } from '@blue/router';
-import { getInterceptorDenial, getMethodNotAllowed, isSocketMapping, type InterceptorDenial, type SocketRequestSources } from '@blue/dispatcher';
+import { getInterceptorDenial, getMethodNotAllowed, isSocketMapping, type InterceptorDenial, type SocketRequestSources, type MethodParameter, type HandlerMethodArgumentResolver } from '@blue/dispatcher';
 import { NodeRequest, NODE_REQUEST_ATTRIBUTE, NODE_RESPONSE_ATTRIBUTE } from './node-request';
 import { nodeSocketSession } from './node-socket-session';
 import { ProblemTypes, writeProblem } from './problem-details';
@@ -171,7 +171,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
     #findSocketHandler(
         path: string,
         query: Record<string, string | string[]> = {}
-    ): { instance: object; method: string } | null {
+    ): { instance: object; method: string; parameters: MethodParameter[]; pathParams: Record<string, string> } | null {
         const route: Route = {
             path,
             raw: path,
@@ -185,18 +185,81 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
         const handler = chain?.handler;
         if (!handler) return null;
         // The chain's handler is a RouteHandlerMethod wrapping the controller
-        // instance + the selected method name. Verify the method is
-        // socket-mapped on the controller's prototype.
+        // instance + the selected method name + its @parameters metadata.
         const candidate = handler as {
             handler: object;
             method: string;
+            parameters: MethodParameter[];
         };
         const controller = candidate.handler;
         const methodName = candidate.method;
         if (controller && typeof methodName === 'string' && isSocketMapping(Object.getPrototypeOf(controller), methodName)) {
-            return { instance: controller, method: methodName };
+            return {
+                instance: controller,
+                method: methodName,
+                parameters: candidate.parameters ?? [],
+                // The mapping mutates the matched route with the path segments.
+                pathParams: (route.params as Record<string, string> | null) ?? {},
+            };
         }
         return null;
+    }
+
+    /**
+     * Resolve a socket method's `@parameters` against the upgrade request
+     * sources, through the same argument resolvers the HTTP path uses.
+     *
+     * Each declared parameter is resolved by its supporting resolver
+     * (`queryValue` → query string, `pathValue` → path segment, `headerValue`
+     * / `cookieValue` → handshake sources) and the value is coerced/validated
+     * (including Zod hooks). A missing required parameter closes the socket
+     * with `1008` (policy violation) instead of invoking the handler.
+     *
+     * @param parameters - The socket method's `@parameters`.
+     * @param pathParams - Path-segment values captured from the mapping match.
+     * @param sources - The upgrade request sources.
+     * @returns The resolved param values keyed by extractor name.
+     */
+    #resolveSocketParameters(
+        parameters: MethodParameter[],
+        pathParams: Record<string, string>,
+        sources: SocketRequestSources
+    ): Record<string, unknown> {
+        const context = this.#dispatcher.applicationContext;
+        if (!context) return {};
+        const resolvers = (context.hasValue?.('argumentResolvers')
+            ? context.getValue<HandlerMethodArgumentResolver[]>('argumentResolvers')
+            : undefined) ?? [];
+        if (resolvers.length === 0 || parameters.length === 0) return {};
+
+        const nodeRequest = {
+            headers: sources.headers,
+            body: {},
+            cookies: sources.cookies,
+            session: {},
+        };
+        const route: Route = {
+            path: '',
+            raw: '',
+            data: sources.query,
+            params: pathParams,
+            id: Date.now(),
+            attributes: { [NODE_REQUEST_ATTRIBUTE]: nodeRequest },
+            length: 0,
+        };
+        const resolved: Record<string, unknown> = {};
+        for (const parameter of parameters) {
+            const resolver = resolvers.find((candidate) => candidate.supportsParameter(parameter));
+            if (!resolver) continue;
+            try {
+                // session.params is keyed by the @parameters map key
+                // (parameterName), not the extractor's source name.
+                resolved[parameter.parameterName] = resolver.resolveArgument(parameter, route, null);
+            } catch (error) {
+                if (parameter.required) throw error;
+            }
+        }
+        return resolved;
     }
 
     /**
@@ -223,7 +286,19 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
             ws.close(1011, 'no socket handler');
             return;
         }
-        const session = nodeSocketSession(ws, path, sources);
+        // Bound @parameters (validated, coerced — including Zod) resolved from
+        // the upgrade sources into session.params; a missing required param
+        // closes 1008 so the handler never sees an invalid session.
+        let resolvedParams: Record<string, unknown> = {};
+        if (target.parameters.length > 0) {
+            try {
+                resolvedParams = this.#resolveSocketParameters(target.parameters, target.pathParams, sources);
+            } catch {
+                ws.close(1008, 'missing required parameter');
+                return;
+            }
+        }
+        const session = nodeSocketSession(ws, path, sources, resolvedParams);
         const handlerMethod = (target.instance as Record<string, unknown>)[target.method] as unknown;
         if (typeof handlerMethod !== 'function') {
             ws.close(1011, 'socket handler is not a function');

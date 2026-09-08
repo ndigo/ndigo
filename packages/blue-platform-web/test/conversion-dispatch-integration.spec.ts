@@ -11,7 +11,7 @@ import {
     modelValue,
     ParameterConversionError,
     routeMapping,
-    routeParams,
+    parameters,
     stateValue,
     sessionValue,
     asNumber,
@@ -47,7 +47,7 @@ describe('conversion + error flow integration', () => {
         @routeMapping('/checkout')
         class CheckoutController {
             @routeMapping('/pay')
-            @routeParams({
+            @parameters({
                 amount: asNumber(cookieValue('amount')),
                 profileId: asNumber(modelValue('profile.id')),
                 txCount: asNumber(stateValue('txCount')),

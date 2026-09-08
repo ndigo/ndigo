@@ -28,7 +28,8 @@ import type { WebSocket } from 'ws';
 export function nodeSocketSession(
     transport: WebSocket,
     path: string,
-    sources: SocketRequestSources = { query: {}, headers: {}, cookies: {} }
+    sources: SocketRequestSources = { query: {}, headers: {}, cookies: {} },
+    params: Record<string, unknown> = {}
 ): SocketSession {
     const inbound = new AsyncReader<unknown>();
     const closed = new AsyncReader<number>();
@@ -54,10 +55,9 @@ export function nodeSocketSession(
             return path;
         },
         get params() {
-            // Reserved for extractor-derived params (currently the sources
-            // surface is query/headers/cookies); a fresh object so callers
-            // cannot mutate the captured sources.
-            return {};
+            // Values bound from `@parameters` extractors resolved against the
+            // upgrade request sources (validated/coerced by extractor + Zod).
+            return params;
         },
         get query() {
             return sources.query;

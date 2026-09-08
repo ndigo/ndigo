@@ -12,13 +12,13 @@ import {
     modelValue,
     stateValue,
     sessionValue,
-    pathValue,
+    pathVariable,
     bodyValue,
     asNumber,
     asBoolean,
     asDate,
     asJson,
-    bindValue,
+    bindBrowserValue,
     resolveParameters,
     getParameterMap,
     MethodParameterType,
@@ -77,8 +77,8 @@ describe('@parameters - TC39 Parameter Injection Pattern', () => {
             expect(extractor.required).toBe(false);
         });
 
-        it('pathValue should create path parameter extractor', () => {
-            const extractor = pathValue('userId');
+        it('pathVariable should create path parameter extractor', () => {
+            const extractor = pathVariable('userId');
             expect(extractor.type).toEqual(MethodParameterType.PATH);
             expect(extractor.name).toBe('userId');
             expect(extractor.required).toBe(false);
@@ -108,8 +108,8 @@ describe('@parameters - TC39 Parameter Injection Pattern', () => {
             expect(extractor.defaultValue).toBeNull();
         });
 
-        it('bindValue should create bind parameter extractor', () => {
-            const extractor = bindValue('query', { prefix: 'user.' });
+        it('bindBrowserValue should create bind parameter extractor', () => {
+            const extractor = bindBrowserValue('query', { prefix: 'user.' });
             expect(extractor.type).toEqual(MethodParameterType.BIND);
             expect(extractor.name).toBe('query');
             expect(extractor.prefix).toBe('user.');
@@ -196,7 +196,7 @@ describe('@parameters - TC39 Parameter Injection Pattern', () => {
                     token: stateValue('token'),
                     sessionId: sessionValue('sessionId'),
                     color: matrixValue('color'),
-                    userId: pathValue('userId'),
+                    userId: pathVariable('userId'),
                 })
                 handleMixed(
                     page: string,

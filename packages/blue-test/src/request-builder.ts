@@ -1,3 +1,4 @@
+import { guid } from '@blue/util/math';
 /**
  * Builds a Blue `Route` and `NodeRequest` from a MockMVC request spec.
  *
@@ -101,7 +102,7 @@ export function buildRoute(request: MockRequest, responseSink: ResponseSink): Pr
     // until populated (cast with a named const + reason).
     const route = {
         length: segments.length,
-        id: Date.now(),
+        id: guid(),
         path: cleanedPath,
         raw: request.path,
         data,

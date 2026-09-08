@@ -1,4 +1,4 @@
-import { getMapping, postMapping, parameters, headerValue, pathValue, validatedBody, requestMapping } from '@blue/dispatcher';
+import { getMapping, postMapping, parameters, headerValue, pathVariable, validatedBody, requestMapping } from '@blue/dispatcher';
 import { ResponseEntity } from '@blue/platform-node';
 import { insertSchemaForEntity } from '@blue/orm';
 import { DrizzleDataSource, DrizzleEntityManager } from '@blue/orm-drizzle';
@@ -47,7 +47,7 @@ export class DrizzleNoteController {
     }
 
     @getMapping('/notes/:id')
-    @parameters({ token: headerValue('authorization'), id: pathValue('id') })
+    @parameters({ token: headerValue('authorization'), id: pathVariable('id') })
     async getById(token: string | undefined, id: string) {
         const bearer = token?.replace(/^Bearer\s+/i, '');
         if (!bearer || !lookupPrincipal(bearer)) {

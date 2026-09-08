@@ -1,7 +1,7 @@
 // @vitest-environment node
 import { describe, test, beforeAll, afterAll, expect } from 'vitest';
 import { MetadataConfigApplicationContext } from '@blue/context';
-import { getMapping, requestMapping, socketMapping, parameters, queryValue, headerValue, type SocketSession } from '@blue/dispatcher';
+import { getMapping, requestMapping, socketMapping, parameters, socketSession, queryValue, headerValue, type SocketSession } from '@blue/dispatcher';
 import { NodeAutoConfiguration } from '../src/node-auto-configuration';
 import { NodeDispatcher } from '../src/node-dispatcher';
 import { NodeHTTPServerAdapter } from '../src/node-http-server-adapter';
@@ -25,6 +25,7 @@ class SocketController {
     }
 
     @socketMapping('/echo')
+    @parameters({ session: socketSession('session') })
     async *echo(session: SocketSession) {
         for await (const message of session.messages) {
             yield { event: 'echo', data: message };
@@ -34,12 +35,16 @@ class SocketController {
     // @parameters on a socket: bound from the upgrade sources into
     // session.params (query/header), gated by the query condition.
     @socketMapping({ value: '/room', queryParams: 'token=abc', private: false })
-    @parameters({ token: queryValue('token'), via: headerValue('x-via') })
-    async *room(session: SocketSession) {
+    @parameters({
+        session: socketSession('session'),
+        token: queryValue('token'),
+        via: headerValue('x-via'),
+    })
+    async *room(session: SocketSession, token: string, via: string) {
         for await (const message of session.messages) {
             yield {
                 event: 'room',
-                data: { token: String(session.params['token']), via: String(session.params['via']), text: String(message) },
+                data: { token: String(token), via: String(via), text: String(message) },
             };
         }
     }

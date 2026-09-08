@@ -1,3 +1,4 @@
+import { guid } from '@blue/util/math';
 /**
  * BrowserMockMVC — drive `BrowserDispatcher` with a DOM-free capture target.
  *
@@ -139,7 +140,7 @@ export class BrowserMockMVC {
     async dispatch(path: string): Promise<CapturedRender> {
         const route: Route = {
             length: 0,
-            id: Date.now(),
+            id: guid(),
             path,
             raw: path,
             data: {},

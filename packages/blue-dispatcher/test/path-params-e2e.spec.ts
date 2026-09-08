@@ -9,7 +9,7 @@ import { PathRoute } from '@blue/router';
 import { AbstractDispatcher } from '../src/dispatcher';
 import { ModelAndView } from '../src/model-and-view';
 import { routeMapping } from '../src/route-mapping';
-import { pathValue, parameters } from '../src/parameters';
+import { pathVariable, parameters } from '../src/parameters';
 import { TestErrorResolver, TestViewResolver } from './test-strategies';
 
 describe('path params e2e', () => {
@@ -20,7 +20,7 @@ describe('path params e2e', () => {
         class UsersController {
             @routeMapping('/42')
             @parameters({
-                userId: pathValue('userId'),
+                userId: pathVariable('userId'),
             })
             handleUser(userId: string): ModelAndView {
                 capturedUserId = userId;

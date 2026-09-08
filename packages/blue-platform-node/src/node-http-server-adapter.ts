@@ -1,3 +1,4 @@
+import { guid } from '@blue/util/math';
 /**
  * Node.js HTTP server adapter wrapping `node:http.createServer()`.
  *
@@ -17,7 +18,7 @@
 import { createServer, IncomingMessage, ServerResponse } from 'node:http';
 import { WebSocketServer } from 'ws';
 import { Route, RouteSegment } from '@blue/router';
-import { getInterceptorDenial, getMethodNotAllowed, isSocketMapping, type InterceptorDenial, type SocketRequestSources, type MethodParameter, type HandlerMethodArgumentResolver } from '@blue/dispatcher';
+import { getInterceptorDenial, getMethodNotAllowed, isSocketMapping, type InterceptorDenial, type SocketRequestSources, type SocketSession, type MethodParameter, type HandlerMethodArgumentResolver, MethodParameterType } from '@blue/dispatcher';
 import { NodeRequest, NODE_REQUEST_ATTRIBUTE, NODE_RESPONSE_ATTRIBUTE } from './node-request';
 import { nodeSocketSession } from './node-socket-session';
 import { ProblemTypes, writeProblem } from './problem-details';
@@ -177,7 +178,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
             raw: path,
             data: query,
             params: null,
-            id: Date.now(),
+            id: guid(),
             attributes: {},
             length: 0,
         };
@@ -210,7 +211,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
      * sources, through the same argument resolvers the HTTP path uses.
      *
      * Each declared parameter is resolved by its supporting resolver
-     * (`queryValue` → query string, `pathValue` → path segment, `headerValue`
+     * (`queryValue` → query string, `pathVariable` → path segment, `headerValue`
      * / `cookieValue` → handshake sources) and the value is coerced/validated
      * (including Zod hooks). A missing required parameter closes the socket
      * with `1008` (policy violation) instead of invoking the handler.
@@ -220,46 +221,36 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
      * @param sources - The upgrade request sources.
      * @returns The resolved param values keyed by extractor name.
      */
-    #resolveSocketParameters(
-        parameters: MethodParameter[],
+    #socketRoute(
+        parameter: MethodParameter,
         pathParams: Record<string, string>,
         sources: SocketRequestSources
-    ): Record<string, unknown> {
-        const context = this.#dispatcher.applicationContext;
-        if (!context) return {};
-        const resolvers = (context.hasValue?.('argumentResolvers')
-            ? context.getValue<HandlerMethodArgumentResolver[]>('argumentResolvers')
-            : undefined) ?? [];
-        if (resolvers.length === 0 || parameters.length === 0) return {};
-
-        const nodeRequest = {
-            headers: sources.headers,
-            body: {},
-            cookies: sources.cookies,
-            session: {},
-        };
-        const route: Route = {
+    ): Route {
+        return {
             path: '',
             raw: '',
             data: sources.query,
             params: pathParams,
-            id: Date.now(),
-            attributes: { [NODE_REQUEST_ATTRIBUTE]: nodeRequest },
+            id: guid(),
+            attributes: {
+                [NODE_REQUEST_ATTRIBUTE]: {
+                    headers: sources.headers,
+                    body: {},
+                    cookies: sources.cookies,
+                    session: {},
+                },
+            },
             length: 0,
         };
-        const resolved: Record<string, unknown> = {};
-        for (const parameter of parameters) {
-            const resolver = resolvers.find((candidate) => candidate.supportsParameter(parameter));
-            if (!resolver) continue;
-            try {
-                // session.params is keyed by the @parameters map key
-                // (parameterName), not the extractor's source name.
-                resolved[parameter.parameterName] = resolver.resolveArgument(parameter, route, null);
-            } catch (error) {
-                if (parameter.required) throw error;
-            }
-        }
-        return resolved;
+    }
+
+    #findResolver(parameter: MethodParameter): HandlerMethodArgumentResolver | undefined {
+        const context = this.#dispatcher.applicationContext;
+        if (!context) return undefined;
+        const resolvers = (context.hasValue?.('argumentResolvers')
+            ? context.getValue<HandlerMethodArgumentResolver[]>('argumentResolvers')
+            : undefined) ?? [];
+        return resolvers.find((candidate) => candidate.supportsParameter(parameter));
     }
 
     /**
@@ -286,26 +277,37 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
             ws.close(1011, 'no socket handler');
             return;
         }
-        // Bound @parameters (validated, coerced — including Zod) resolved from
-        // the upgrade sources into session.params; a missing required param
-        // closes 1008 so the handler never sees an invalid session.
-        let resolvedParams: Record<string, unknown> = {};
+        // Bind @parameters positionally (validated, coerced — including Zod):
+        // a socketSession() extractor yields the session; the other extractors
+        // resolve against the upgrade sources. The handler is invoked with the
+        // declared args in signature order — no implicit session injection.
+        const args: unknown[] = [];
+        let session: SocketSession | null = null;
         if (target.parameters.length > 0) {
             try {
-                resolvedParams = this.#resolveSocketParameters(target.parameters, target.pathParams, sources);
+                for (const param of target.parameters) {
+                    if (param.type === MethodParameterType.SOCKET_SESSION) {
+                        session = nodeSocketSession(ws, path, sources);
+                        args.push(session);
+                    } else {
+                        const resolver = this.#findResolver(param);
+                        if (resolver) args.push(resolver.resolveArgument(param, this.#socketRoute(param, target.pathParams, sources), null));
+                        else args.push(undefined);
+                    }
+                }
             } catch {
                 ws.close(1008, 'missing required parameter');
                 return;
             }
         }
-        const session = nodeSocketSession(ws, path, sources, resolvedParams);
+        if (!session) session = nodeSocketSession(ws, path, sources);
         const handlerMethod = (target.instance as Record<string, unknown>)[target.method] as unknown;
         if (typeof handlerMethod !== 'function') {
             ws.close(1011, 'socket handler is not a function');
             return;
         }
         try {
-            const result: unknown = handlerMethod.call(target.instance, session);
+            const result: unknown = handlerMethod.call(target.instance, ...args);
             // The handler is an async generator: pump inbound → handler →
             // yield outbound until the stream (connection) ends.
             if (result && typeof (result as { [Symbol.asyncIterator]?: unknown })[Symbol.asyncIterator] === 'function') {
@@ -391,7 +393,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
 
             const route: Route = {
                 length: segments.length,
-                id: Date.now(),
+                id: guid(),
                 path: cleanedPath,
                 raw: req.url ?? '/',
                 data,

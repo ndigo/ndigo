@@ -4,7 +4,7 @@ import {
     ModelAndView,
     routeMapping,
     parameters,
-    bindValue,
+    bindBrowserValue,
     queryValue,
     validatedBy,
     ParameterConversionError,
@@ -38,14 +38,14 @@ describe('Zod Validation Integration', () => {
 
     type User = z.infer<typeof UserSchema>;
 
-    it('should validate and coerce data using validatedBy and bindValue', async () => {
+    it('should validate and coerce data using validatedBy and bindBrowserValue', async () => {
         let capturedUser: User | null = null;
 
         @routeMapping('/users')
         class UserController {
             @routeMapping('/create')
             @parameters({
-                user: validatedBy(UserSchema, bindValue('query')),
+                user: validatedBy(UserSchema, bindBrowserValue('query')),
             })
             create(user: User) {
                 capturedUser = user;
@@ -98,7 +98,7 @@ describe('Zod Validation Integration', () => {
         class UserController {
             @routeMapping('/invalid')
             @parameters({
-                user: validatedBy(UserSchema, bindValue('query')),
+                user: validatedBy(UserSchema, bindBrowserValue('query')),
             })
             invalid(user: User) {
                 return new ModelAndView('success');

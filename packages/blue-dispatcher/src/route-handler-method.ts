@@ -1,11 +1,10 @@
 import { Factory, likeFactory } from '@blue/factory';
 import { Route } from '@blue/router';
-import { Serializable, getSymbolMetadata } from '@blue/core';
+import { Serializable } from '@blue/core';
 import { type } from '@blue/util/types';
 import { HandlerMethodArgumentResolver } from './argument-resolver';
 import { MethodParameter } from './parameters';
 import { getRouteMapping } from './route-mapping';
-import { getFunctionParamNames } from './_decorator-util';
 
 export interface Invocable {
     invoke<T = any>(...args: any): T;
@@ -87,21 +86,10 @@ export class RouteHandlerMethod implements HandlerMethod, Serializable {
                 args[index] = resolver ? resolver.resolveArgument(parameter, route, mapping) : void 0;
             }
         } else {
-            // No @parameters metadata — check for an implicit route-named
-            // parameter (e.g. `handleIndex(route: Route)`). Mirrors Spring's
-            // implicit resolved-arg injection; without this the route is
-            // `undefined`. The @traced wrapper destroys the signature, so use
-            // the original function preserved in metadata when present.
-            const original =
-                getSymbolMetadata(this.handler)[`telemetry:traced:${String(this.method)}:original`] ??
-                (this.handler as Record<string, unknown>)[this.method];
-            const paramNames = getFunctionParamNames(original as Function);
-            const routeParamIndex = paramNames.findIndex(
-                (name) => name === 'route' || name === 'request' || name === 'req'
-            );
-            if (routeParamIndex !== -1) {
-                args[routeParamIndex] = route;
-            }
+            // No @parameters metadata — no implicit injection. Handlers that
+            // want request-scoped data declare it explicitly via @parameters
+            // (e.g. pathVariable for a segment, pathValue for the full path);
+            // the Route object itself is not auto-injected.
         }
 
         return (this.handler as any)[this.method](...args);

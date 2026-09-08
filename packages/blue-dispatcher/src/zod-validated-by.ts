@@ -1,7 +1,7 @@
 /**
  * Zod-backed request validation (AD-7).
  *
- * `validatedBy` wraps a parameter extractor (e.g. `bindValue('query')`,
+ * `validatedBy` wraps a parameter extractor (e.g. `bindBrowserValue('query')`,
  * `queryValue('email')`, `bodyValue('*')`) with a Zod schema. The schema runs
  * after the value is resolved and type-converted, and coerces or rejects it:
  * on failure a {@link ParameterConversionError} is thrown, which flows
@@ -40,7 +40,7 @@
  * ## Whole map — validateParameters
  *
  * ```ts
- * @parameters(validateParameters(UserSchema, { user: bindValue('query') }))
+ * @parameters(validateParameters(UserSchema, { user: bindBrowserValue('query') }))
  * ```
  *
  * ## Per-field — validatedBy
@@ -119,12 +119,12 @@ export class ZodValidationError extends Error {
  * });
  *
  * @routeMapping('/create')
- * @parameters({ user: validatedBy(UserSchema, bindValue('query')) })
+ * @parameters({ user: validatedBy(UserSchema, bindBrowserValue('query')) })
  * create(user: z.infer<typeof UserSchema>) { … }
  * ```
  *
  * @param schema - The Zod schema to validate and coerce the resolved value.
- * @param extractor - The parameter extractor (e.g. `bindValue('query')`).
+ * @param extractor - The parameter extractor (e.g. `bindBrowserValue('query')`).
  * @returns The extractor with the Zod validation attached.
  */
 export function validatedBy<T>(schema: z.ZodType<T>, extractor: ParameterExtractor): ParameterExtractor {
@@ -154,7 +154,7 @@ export function validatedBy<T>(schema: z.ZodType<T>, extractor: ParameterExtract
  *
  * @example
  * ```ts
- * @parameters(validateParameters(UserSchema, { user: bindValue('query') }))
+ * @parameters(validateParameters(UserSchema, { user: bindBrowserValue('query') }))
  * ```
  *
  * @param schema - The Zod schema validating the bound object.

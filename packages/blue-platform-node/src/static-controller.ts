@@ -7,7 +7,7 @@
  * implementation `StaticFileView` uses.
  */
 import '@tsmetadata/polyfill';
-import { getMapping, pathValue, parameters, requestMapping } from '@blue/dispatcher';
+import { getMapping, pathVariable, parameters, requestMapping } from '@blue/dispatcher';
 import { ResponseStatuses } from '@blue/http';
 import { ResponseEntity, StaticResourceResolver } from '@blue/platform-node';
 
@@ -27,7 +27,7 @@ export class StaticController {
      * GET /static/{file} — serves a file from the public directory.
      */
     @getMapping('/{file}')
-    @parameters({ file: pathValue('file') })
+    @parameters({ file: pathVariable('file') })
     async serve(file?: string) {
         const result = await this.#resolver.resolve(file ?? '');
         if (result.kind !== 'ok') {

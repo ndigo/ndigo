@@ -1,5 +1,5 @@
 import '@tsmetadata/polyfill';
-import { getMapping, parameters, pathValue, requestMapping } from '@blue/dispatcher';
+import { getMapping, parameters, pathVariable, requestMapping } from '@blue/dispatcher';
 
 /**
  * Demonstration controller for matrix-parameter routing.
@@ -13,7 +13,7 @@ export class ProductController {
      * GET /api/products/:id;color=<value>
      */
     @getMapping({ value: '/:id', matrixParams: 'color', private: false })
-    @parameters({ id: pathValue('id') })
+    @parameters({ id: pathVariable('id') })
     getProduct(id: string) {
         return { product: { id, color: 'matched via matrix param' } };
     }
@@ -23,7 +23,7 @@ export class ProductController {
      * GET /api/products/:id  (fallback when no color matrix param)
      */
     @getMapping('/:id')
-    @parameters({ id: pathValue('id') })
+    @parameters({ id: pathVariable('id') })
     getProductPlain(id: string) {
         return { product: { id, color: null } };
     }

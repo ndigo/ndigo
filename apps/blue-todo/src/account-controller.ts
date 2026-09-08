@@ -1,5 +1,4 @@
-import { routeMapping, ModelAndView } from '@blue/dispatcher';
-import { Route } from '@blue/router';
+import { routeMapping, parameters, pathValue, ModelAndView } from '@blue/dispatcher';
 import { traced, getLogger } from '@blue/telemetry';
 
 const logger = getLogger('blue-todo:account-controller');
@@ -7,9 +6,10 @@ const logger = getLogger('blue-todo:account-controller');
 @routeMapping('/account')
 class AccountController {
     @routeMapping('/')
+    @parameters({ path: pathValue() })
     @traced
-    handleIndex(route: Route) {
-        logger.info('Handling route', { 'route.path': route.path });
+    handleIndex(path: string) {
+        logger.info('Handling route', { 'path': path });
 
         return new ModelAndView('account-app', {
             section: 'overview',
@@ -18,9 +18,10 @@ class AccountController {
     }
 
     @routeMapping('/settings')
+    @parameters({ path: pathValue() })
     @traced
-    handleSettings(route: Route) {
-        logger.info('Handling route', { 'route.path': route.path });
+    handleSettings(path: string) {
+        logger.info('Handling route', { 'path': path });
 
         return new ModelAndView('account-app', {
             section: 'settings',

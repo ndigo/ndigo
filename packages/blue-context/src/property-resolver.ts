@@ -1,6 +1,8 @@
 import { IllegalStateError, JSONValue, JSONObject, createNull, parseKeypath } from '@blue/core';
 import type { KeypathToken } from '@blue/core';
 import { like, isNil } from '@blue/util/types';
+import { PropertySource, wrapSource } from './property-source';
+import type { MutablePropertySources } from './property-sources';
 
 /**
  * Resolves property values from a configured set of sources.
@@ -42,50 +44,6 @@ export interface ConfigurablePropertyResolver extends PropertyResolver {
 }
 
 /**
- * Interface for resolving properties against any underlying source.
- */
-
-/**
- * Return whether the given property key is available for resolution.
- * @param {string} key The property name to resolve
- * @returns {boolean}
- */
-
-/**
- * Return the property value associated with the given `key` or `defaultValue`, if provided, and the key cannot be resolved.
- * @param {string} key The property name to resolve
- * @param {T} [defaultValue] The default value to return if no value is found
- * @returns {T}
- */
-
-/**
- * Return the property value associated with the given `key` or throw an error if it cannot be resolved.
- * @param {string} key The property name to resolve
- * @returns {T}
- * @throws {Error} If the property cannot be resolved.
- */
-
-/**
- * @extends module:context.PropertyResolver
- */
-
-const { defineProperty, getPrototypeOf, setPrototypeOf } = Reflect,
-    pathIsDefined = (keypath: KeypathToken[], obj: any): boolean => {
-        const value = keypath.reduce((acc: any, k) => acc?.[k], obj);
-        return !isNil(value);
-    },
-    linkPrototype = (current: any, next: any) => {
-        setPrototypeOf(next, null);
-        setPrototypeOf(current, next);
-        return getPrototypeOf(current);
-    },
-    toPrototypeChain = (list: JSONObject[]): JSONObject => {
-        const data: JSONObject = createNull();
-        list.reduce(linkPrototype, data);
-        return data;
-    };
-
-/**
  * @param {*} value The value to be tested.
  * @returns {boolean} Whether or not the value is like a {@link PropertyResolver|PropertyResolver}.
  */
@@ -95,76 +53,297 @@ export const likePropertyResolver = like({
     hasProperty: Function,
 }) as (value: any) => value is PropertyResolver;
 
-/**
- * Property resolver that layers sources through a prototype chain for lookup.
- */
-export class PrototypalPropertyResolver implements ConfigurablePropertyResolver {
-    #propertySources!: JSONObject[];
-    readonly properties!: JSONObject;
+const pathIsDefined = (keypath: KeypathToken[], obj: unknown): boolean => {
+    let value: unknown = obj;
+    for (const token of keypath) {
+        if (value === null || typeof value !== 'object') return false;
+        value = (value as Record<string | number, unknown>)[token];
+    }
+    return !isNil(value);
+};
 
+const linkPrototype = (current: object, next: object): object => {
+    Reflect.setPrototypeOf(next, null);
+    Reflect.setPrototypeOf(current, next);
+    return next;
+};
+
+const toPrototypeChain = (list: JSONObject[]): JSONObject => {
+    const data: JSONObject = createNull();
+    list.reduce<object>(linkPrototype, data);
+    return data; // chain of the captured source objects, by construction a JSONObject
+};
+
+/**
+ * Bounded FIFO cache of parsed keypaths, so hot lookups never allocate.
+ */
+class TokenCache {
+    #entries = new Map<string, KeypathToken[]>();
+    #cap: number;
+
+    constructor(cap = 256) {
+        this.#cap = cap;
+    }
+
+    get(key: string): KeypathToken[] | null {
+        const cached = this.#entries.get(key);
+        if (cached) return cached;
+        const tokens = parseKeypath(key);
+        if (tokens) {
+            if (this.#entries.size >= this.#cap) {
+                // Evict the oldest entry (Map preserves insertion order).
+                this.#entries.delete(this.#entries.keys().next().value as string);
+            }
+            this.#entries.set(key, tokens);
+        }
+        return tokens;
+    }
+}
+
+/**
+ * Internal lookup strategy behind {@link PrototypalPropertyResolver}.
+ *
+ * Strategies produce identical query results for identical registries; the
+ * resolver picks one per platform (see the Phase 0 plan, D3/D6).
+ */
+export interface PropertyIndex {
     /**
-     * The ordered set of configured property sources.
+     * Rebuilds the index from the given ordered sources (first = highest
+     * precedence).
+     *
+     * @param sources - The ordered property sources.
      */
-    get propertySources(): JSONObject[] {
-        return this.#propertySources;
+    build(sources: PropertySource[]): void;
+    /**
+     * Resolves a property value, or `undefined` when absent.
+     *
+     * @param key - The property name (keypath syntax).
+     * @returns The resolved value or `undefined`.
+     */
+    getProperty(key: string): JSONValue | undefined;
+    /**
+     * Returns whether the property resolves to a non-null value.
+     *
+     * @param key - The property name (keypath syntax).
+     * @returns `true` when the property is defined.
+     */
+    hasProperty(key: string): boolean;
+}
+
+/**
+ * Index that layers sources through a prototype chain.
+ *
+ * The chain object gives source precedence only for top-level keys; deeper
+ * tokens index into the resolved value, matching the framework's historical
+ * resolution semantics. Mutations to a captured source map remain visible
+ * without a rebuild.
+ */
+export class PrototypeChainIndex implements PropertyIndex {
+    #chain: unknown;
+    #tokens = new TokenCache();
+
+    build(sources: PropertySource[]): void {
+        const properties = sources.map((source) => source.properties);
+        this.#chain = properties.length === 1 ? properties[0] : toPrototypeChain(properties);
+    }
+
+    getProperty(key: string): JSONValue | undefined {
+        const keypath = this.#tokens.get(key);
+        if (!keypath) return undefined;
+        let value: unknown = this.#chain;
+        for (const token of keypath) {
+            if (value === null || typeof value !== 'object') return undefined;
+            value = (value as Record<string | number, unknown>)[token];
+        }
+        return value as JSONValue | undefined;
+    }
+
+    hasProperty(key: string): boolean {
+        const keypath = this.#tokens.get(key);
+        return keypath ? pathIsDefined(keypath, this.#chain) : false;
+    }
+}
+
+/**
+ * Index that merges sources into one flat object on build.
+ *
+ * Top-level keys are taken first-source-wins, so lookups are a single
+ * property read instead of a prototype-chain walk. Per-key winning sources
+ * are retained for origin tracking (Phase 5). Captured source maps are
+ * replaced, not mutated — in-place edits after build stay invisible until
+ * the next rebuild.
+ */
+export class FlatMergedIndex implements PropertyIndex {
+    #merged: Record<string | number, unknown> = createNull();
+    #origins = new Map<string, string>();
+    #tokens = new TokenCache();
+
+    build(sources: PropertySource[]): void {
+        const merged: Record<string | number, unknown> = createNull();
+        const origins = new Map<string, string>();
+        for (const source of sources) {
+            for (const key of Object.keys(source.properties)) {
+                if (key in merged) continue; // first source with the key wins
+                merged[key] = (source.properties as Record<string, unknown>)[key];
+                origins.set(key, source.name);
+            }
+        }
+        this.#merged = merged;
+        this.#origins = origins;
+    }
+
+    getProperty(key: string): JSONValue | undefined {
+        const keypath = this.#tokens.get(key);
+        if (!keypath) return undefined;
+        let value: unknown = this.#merged;
+        for (const token of keypath) {
+            if (value === null || typeof value !== 'object') return undefined;
+            value = (value as Record<string | number, unknown>)[token];
+        }
+        return value as JSONValue | undefined;
+    }
+
+    hasProperty(key: string): boolean {
+        const keypath = this.#tokens.get(key);
+        return keypath ? pathIsDefined(keypath, this.#merged) : false;
     }
 
     /**
-     * Replaces the property sources and rebuilds the prototype chain used for lookups.
+     * Returns the name of the source that first defined the top-level key.
+     *
+     * Internal origin surface for Phase 5 origin tracking; not part of the
+     * index contract.
+     *
+     * @param key - The top-level property key.
+     * @returns The winning source name, or `undefined`.
+     */
+    getOrigin(key: string): string | undefined {
+        return this.#origins.get(key);
+    }
+}
+
+/**
+ * Options controlling the resolver's internal lookup strategy.
+ */
+export interface ResolverOptions {
+    /**
+     * The lookup index to use. Defaults to the prototype chain (the
+     * framework's historical behavior).
+     */
+    index?: 'prototype' | 'flat';
+}
+
+/**
+ * Property resolver that layers sources through a configured index.
+ *
+ * Preferred construction is {@link PrototypalPropertyResolver.create}, which
+ * backs the resolver with a live {@link PropertySources|registry} (mutations
+ * are picked up lazily). The plain constructor stays for compatibility: the
+ * source array is captured once and replaced via the `propertySources`
+ * setter.
+ */
+export class PrototypalPropertyResolver implements ConfigurablePropertyResolver {
+    #sources!: PropertySource[];
+    #index: PropertyIndex;
+    #registry: MutablePropertySources | null = null;
+    #seenVersion = -1;
+    #options: ResolverOptions;
+
+    /**
+     * The live registry backing this resolver, when created via
+     * {@link PrototypalPropertyResolver.create}.
+     *
+     * @returns The registry, or throws when this resolver is array-backed.
+     * @throws {IllegalStateError} When the resolver was not created from a registry.
+     */
+    get registry(): MutablePropertySources {
+        if (!this.#registry) {
+            throw new IllegalStateError('Resolver is not backed by a property source registry');
+        }
+        return this.#registry;
+    }
+
+    /**
+     * The options this resolver was created with.
+     */
+    get options(): ResolverOptions {
+        return this.#options;
+    }
+
+    /**
+     * The ordered set of configured property sources (snapshot).
+     */
+    get propertySources(): JSONObject[] {
+        this.#syncRegistry();
+        return this.#sources.map((source) => source.properties);
+    }
+
+    /**
+     * Replaces the property sources and rebuilds the lookup index.
      *
      * @param propertySources - The new property sources.
      */
     set propertySources(propertySources) {
-        this.#propertySources = propertySources;
-        defineProperty(this, 'properties', {
-            value: propertySources.length === 1 ? propertySources[0] : toPrototypeChain(propertySources),
-            configurable: true,
-            enumerable: false,
-            writable: false,
-        });
+        this.#sources = propertySources.map((source, index) => wrapSource(`source:${index}`, source));
+        this.#registry = null; // explicit array replaces any live registry binding
+        this.#index.build(this.#sources);
     }
 
-    constructor(propertySources: JSONObject[]) {
+    /**
+     * Creates a resolver over the given sources (compatibility path).
+     *
+     * @param propertySources - The ordered property sources.
+     * @param options - Resolver options (index strategy).
+     */
+    constructor(propertySources: JSONObject[] = [], options: ResolverOptions = {}) {
+        this.#options = options;
+        this.#index = options.index === 'flat' ? new FlatMergedIndex() : new PrototypeChainIndex();
         this.propertySources = propertySources;
     }
 
     /**
-     * Resolves a property value from the configured sources.
+     * Creates a resolver backed by a live property source registry.
      *
-     * @param key - The property name to resolve.
-     * @param defaultValue - The value to return when the property is missing.
-     * @returns The resolved property value or the default value.
+     * The registry is read lazily: mutations are picked up on the next
+     * lookup, so burst edits cost a single index rebuild.
+     *
+     * @param registry - The registry to resolve against.
+     * @param options - Resolver options (index strategy).
+     * @returns The registry-backed resolver.
      */
+    static create(registry: MutablePropertySources, options: ResolverOptions = {}): PrototypalPropertyResolver {
+        const resolver = new PrototypalPropertyResolver([], options);
+        resolver.#registry = registry;
+        resolver.#syncRegistry();
+        return resolver;
+    }
+
     getProperty(key: string, defaultValue?: JSONValue): JSONValue | undefined {
-        const keypath = parseKeypath(key);
-        if (!keypath) return defaultValue ?? undefined;
-        const value = keypath.reduce((acc: any, k) => acc?.[k], this.properties as any);
+        this.#syncRegistry();
+        const value = this.#index.getProperty(key);
         return value ?? (defaultValue === undefined ? undefined : defaultValue);
     }
 
-    /**
-     * Resolves a required property value.
-     *
-     * @param key - The property name to resolve.
-     * @returns The resolved property value.
-     * @throws {IllegalStateError} When the property cannot be resolved.
-     */
     getRequiredProperty(key: string): JSONValue {
-        const value = this.getProperty(key);
+        this.#syncRegistry();
+        const value = this.#index.getProperty(key);
         if (typeof value === 'undefined') {
             throw new IllegalStateError(`Required property "${key}" missing`);
         }
         return value;
     }
 
-    /**
-     * Returns whether the property can be resolved.
-     *
-     * @param key - The property name to resolve.
-     * @returns `true` when the property exists.
-     */
     hasProperty(key: string): boolean {
-        const keypath = parseKeypath(key);
-        return keypath ? pathIsDefined(keypath, this.properties) : false;
+        this.#syncRegistry();
+        return this.#index.hasProperty(key);
+    }
+
+    #syncRegistry(): void {
+        const registry = this.#registry;
+        if (registry && registry.version !== this.#seenVersion) {
+            this.#seenVersion = registry.version;
+            this.#sources = registry.toArray();
+            this.#index.build(this.#sources);
+        }
     }
 }

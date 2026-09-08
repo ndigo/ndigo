@@ -49,4 +49,54 @@ describe('NodeEnvironment', () => {
         const result = env.getProperty('NONEXISTENT');
         expect(result === null || result === undefined).toBe(true);
     });
+
+    test('should register process.env under the systemEnvironment name', () => {
+        process.env.TEST_VAR = 'hello';
+
+        const env = new NodeEnvironment();
+
+        expect(env.getPropertySources().get('systemEnvironment')).toBeDefined();
+        expect(env.getPropertySources().get('systemEnvironment')?.getProperty('TEST_VAR')).toBe('hello');
+    });
+
+    test('should snapshot process.env at construction (post-boot mutation invisible)', () => {
+        process.env.TEST_VAR = 'before';
+
+        const env = new NodeEnvironment();
+        process.env.TEST_VAR = 'after';
+
+        expect(env.getProperty('TEST_VAR')).toBe('before');
+    });
+
+    test('refresh should re-snapshot process.env in place', () => {
+        process.env.TEST_VAR = 'before';
+
+        const env = new NodeEnvironment();
+        process.env.TEST_VAR = 'after';
+
+        expect(env.getProperty('TEST_VAR')).toBe('before');
+
+        env.refresh();
+
+        expect(env.getProperty('TEST_VAR')).toBe('after');
+    });
+
+    test('refresh should keep the systemEnvironment position', () => {
+        const customSource = { PORT: '9999' };
+        const env = new NodeEnvironment([customSource]);
+        process.env.PORT = '8080';
+
+        expect(env.getProperty('PORT')).toBe('9999'); // custom source wins
+
+        env.refresh();
+
+        // Position kept: custom source still first, still wins.
+        expect(env.getProperty('PORT')).toBe('9999');
+        expect(
+            env
+                .getPropertySources()
+                .toArray()
+                .map((s) => s.name)
+        ).toEqual(['source:0', 'systemEnvironment']);
+    });
 });

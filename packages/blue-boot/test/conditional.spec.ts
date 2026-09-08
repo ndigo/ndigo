@@ -97,21 +97,21 @@ describe('Application integration', () => {
         vi.unstubAllGlobals();
     });
 
-    test('runs web auto-configuration in browser environment', () => {
+    test('runs web auto-configuration in browser environment', async () => {
         vi.stubGlobal('window', {});
 
         const app = new Application([WebAutoConfiguration]);
-        const context = app.run();
+        const context = await app.run();
 
         expect(context.hasValue('argumentResolvers')).toBe(true);
     });
 
-    test('registers node resolvers from an explicit node source', () => {
+    test('registers node resolvers from an explicit node source', async () => {
         vi.stubGlobal('window', undefined);
 
         // Platform-neutral boot: node auto-config comes in as a source.
         const app = new Application([NodeAutoConfiguration]);
-        const context = app.run();
+        const context = await app.run();
 
         expect(context.hasValue('argumentResolvers')).toBe(true);
         const resolvers = context.getValue<object[]>('argumentResolvers');

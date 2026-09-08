@@ -207,6 +207,26 @@ class ChatController {
 - Params/interceptors run on the upgrade request like a normal request, so
   auth denial rejects the upgrade with `401`/`403`.
 
+**Mapping conditions apply to sockets too.** The same `queryParams` /
+`matrixParams` conditions that gate HTTP mappings gate WebSocket upgrades —
+the upgrade request's query string is parsed into the route, so e.g.
+`@socketMapping({ value: '/room', queryParams: 'token=abc' })` only upgrades
+when the URL query matches (`ws://host/room?token=abc`), and a handler can
+read the upgrade sources with the standard vocabulary:
+
+```ts
+@socketMapping({ value: '/room', queryParams: 'token=abc', private: false })
+async *room(session: SocketSession) {
+    const token = String(session.query['token']);       // from the WS URL query
+    const auth = String(session.headers['x-auth']);     // from the upgrade headers
+    // session.cookies[...] — from the upgrade Cookie header
+}
+```
+
+`session.query` / `session.headers` / `session.cookies` mirror the HTTP
+argument sources, so the original query/matrix/header APIs are reused for
+every transport.
+
 ## 7. Putting it together
 
 `apps/blue-hello-node/src/index.ts` is the minimal complete app (~30 lines):

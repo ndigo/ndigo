@@ -23,6 +23,20 @@
  */
 
 /**
+ * Request sources captured from the upgrade request — the same vocabulary
+ * HTTP handlers use (`query`/`headers`/`cookies`), so WebSocket handlers can
+ * read and validate them (e.g. `z.email().parse(session.query.user)`).
+ */
+export interface SocketRequestSources {
+    /** Query parameters from the upgrade URL. */
+    query: Record<string, string | string[]>;
+    /** Headers from the upgrade request (lower-cased names). */
+    headers: Record<string, string | string[] | undefined>;
+    /** Cookies from the upgrade request. */
+    cookies: Record<string, string>;
+}
+
+/**
  * A live WebSocket connection as seen by a socket handler.
  */
 export interface SocketSession {
@@ -34,6 +48,23 @@ export interface SocketSession {
      * extractors (query/path/header values, validated with Zod as usual).
      */
     readonly params: Record<string, unknown>;
+
+    /**
+     * Query parameters from the upgrade request URL
+     * (`ws://host/room?room=abc&raw=1` → `{ room: 'abc', raw: '1' }`).
+     * Repeated parameters are arrays, matching the HTTP path.
+     */
+    readonly query: Record<string, string | string[]>;
+
+    /**
+     * Headers from the upgrade request (lower-cased names).
+     */
+    readonly headers: Record<string, string | string[] | undefined>;
+
+    /**
+     * Cookies from the upgrade request's `Cookie` header.
+     */
+    readonly cookies: Record<string, string>;
 
     /**
      * Inbound messages from the peer, as an async iterable.

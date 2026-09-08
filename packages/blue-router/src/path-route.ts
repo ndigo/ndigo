@@ -147,7 +147,7 @@ export class PathRoute implements Route<Record<string, string>>, Serializable {
 
     readonly data!: JSONObject;
     readonly dataString?: string;
-    readonly id!: number;
+    readonly id!: string;
     method?: HTTPMethod;
     params!: Record<string, string> | null;
     readonly path!: string;

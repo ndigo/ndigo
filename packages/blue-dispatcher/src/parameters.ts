@@ -61,6 +61,8 @@ export class MethodParameterType implements Equatable, Serializable {
     static ATTRIBUTE: MethodParameterType;
     static HEADER: MethodParameterType;
     static BODY: MethodParameterType;
+    static ROUTE: MethodParameterType;
+    static SOCKET_SESSION: MethodParameterType;
 
     static fromType(type: string): MethodParameterType | null {
         const types = keys(this);
@@ -120,6 +122,8 @@ MethodParameterType.BIND = new MethodParameterType('bind:value');
 MethodParameterType.ATTRIBUTE = new MethodParameterType('attribute:value');
 MethodParameterType.HEADER = new MethodParameterType('header:value');
 MethodParameterType.BODY = new MethodParameterType('body:value');
+MethodParameterType.ROUTE = new MethodParameterType('route:value');
+MethodParameterType.SOCKET_SESSION = new MethodParameterType('socket-session:value');
 
 /**
  * Method parameter metadata
@@ -212,7 +216,7 @@ export function queryValue(name: string, options: ParameterExtractorOptions = {}
  *   userId: pathValue('userId')
  * })
  */
-export function pathValue(name: string, options: ParameterExtractorOptions = {}): ParameterExtractor {
+export function pathVariable(name: string, options: ParameterExtractorOptions = {}): ParameterExtractor {
     return {
         type: MethodParameterType.PATH,
         name,
@@ -324,7 +328,7 @@ export function stateValue(name: string, options: ParameterExtractorOptions = {}
  *   user: bindValue('query', { prefix: 'user.' })
  * })
  */
-export function bindValue(
+export function bindBrowserValue(
     source: 'query' | 'state' | 'session' | 'model' | 'cookie' | 'matrix' | 'path',
     options: {
         required?: boolean;
@@ -397,6 +401,74 @@ export function bodyValue(name: string, options: ParameterExtractorOptions = {})
         required: options.required ?? false,
         defaultValue: options.defaultValue ?? null,
         convertType: options.convertType ?? undefined,
+    };
+}
+
+/**
+ * Binder for the current `Route` object. Explicit replacement for the
+ * removed implicit route-injection: `@parameters({ route: routeValue('route') })`
+ * binds the `Route` to the argument named in the map. Available on
+ * route/request mappings (the dispatch unit); not available on sockets.
+ *
+ * @param name - The extractor name (defaults to `'route'`).
+ * @returns A route-value extractor.
+ */
+export function routeValue(name: string = 'route'): ParameterExtractor {
+    return {
+        type: MethodParameterType.ROUTE,
+        name,
+        required: false,
+        defaultValue: null,
+    };
+}
+
+/**
+ * Binder for the `SocketSession` on a socket mapping. Explicit replacement
+ * for the removed implicit session injection: the session is only bound
+ * where the handler asks for it, like every other value.
+ *
+ * @param name - The extractor name (defaults to `'session'`).
+ * @returns A socket-session extractor.
+ */
+export function socketSession(name: string = 'session'): ParameterExtractor {
+    return {
+        type: MethodParameterType.SOCKET_SESSION,
+        name,
+        required: false,
+        defaultValue: null,
+    };
+}
+
+/**
+ * Binder for the entire matched path string — `pathValue()` binds the
+ * request/socket path (e.g. `/abc/42`) as a value, distinct from
+ * `pathVariable` which extracts a single inferred segment (`:id` → `42`).
+ * Available on route, request, and socket mappings.
+ *
+ * @returns A full-path extractor.
+ */
+export function pathValue(): ParameterExtractor {
+    return {
+        type: MethodParameterType.ROUTE,
+        name: 'path',
+        required: false,
+        defaultValue: null,
+    };
+}
+
+/**
+ * Binder for the request's HTTP method (`route.method`) — e.g. to branch at
+ * runtime on which verb hit a method-less route mapping. Available on route
+ * and request mappings.
+ *
+ * @returns A method extractor.
+ */
+export function methodValue(): ParameterExtractor {
+    return {
+        type: MethodParameterType.ROUTE,
+        name: 'method',
+        required: false,
+        defaultValue: null,
     };
 }
 
@@ -526,6 +598,7 @@ const SOURCES_BY_KIND: Record<ParameterMappingKind, ReadonlySet<MethodParameterT
         MethodParameterType.BIND,
         MethodParameterType.HEADER,
         MethodParameterType.BODY,
+        MethodParameterType.ROUTE,
     ]),
     request: new Set<MethodParameterType>([
         MethodParameterType.QUERY,
@@ -536,12 +609,15 @@ const SOURCES_BY_KIND: Record<ParameterMappingKind, ReadonlySet<MethodParameterT
         MethodParameterType.SESSION,
         MethodParameterType.ATTRIBUTE,
         MethodParameterType.BODY,
+        MethodParameterType.ROUTE,
     ]),
     socket: new Set<MethodParameterType>([
         MethodParameterType.QUERY,
         MethodParameterType.PATH,
         MethodParameterType.HEADER,
         MethodParameterType.COOKIE,
+        MethodParameterType.ROUTE,
+        MethodParameterType.SOCKET_SESSION,
     ]),
 };
 

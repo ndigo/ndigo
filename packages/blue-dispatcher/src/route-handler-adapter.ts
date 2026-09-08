@@ -13,6 +13,7 @@ import {
     PathValueMethodArgumentResolver,
     QueryValueMethodArgumentResolver,
     AttributeValueMethodArgumentResolver,
+    RouteValueMethodArgumentResolver,
     likeArgumentResolver,
 } from './argument-resolver';
 import { IllegalStateError } from '@blue/core';
@@ -142,6 +143,7 @@ export class MetadataHandlerAdapter extends AbstractHandlerMethodAdapter impleme
             new MatrixValueMethodArgumentResolver(),
             new QueryValueMethodArgumentResolver(),
             new AttributeValueMethodArgumentResolver(),
+            new RouteValueMethodArgumentResolver(),
         ];
     }
 

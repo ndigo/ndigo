@@ -9,7 +9,7 @@ import { TestErrorResolver, TestViewResolver } from '../test-strategies';
 
 import { routeMapping } from '../../src/route-mapping';
 import { ModelAndView } from '../../src/model-and-view';
-import { queryValue, matrixValue, pathValue, parameters } from '../../src/parameters';
+import { queryValue, matrixValue, pathVariable, parameters } from '../../src/parameters';
 
 @routeMapping('/hello')
 class HelloController {
@@ -18,7 +18,7 @@ class HelloController {
     @parameters({
         n1: queryValue('name'),
         n2: matrixValue('name'),
-        id: pathValue('id'),
+        id: pathVariable('id'),
     })
     handleThere(n1: string, n2: string, id: string) {
         expect(n1).toBe('John');

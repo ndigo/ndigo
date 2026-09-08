@@ -7,7 +7,7 @@ import { describe, test, expect } from 'vitest';
 import { conversionService } from '@blue/core';
 import {
     queryValue,
-    pathValue,
+    pathVariable,
     asUUID,
     asNumber,
     asBoolean,
@@ -23,7 +23,7 @@ import { resolveConverter, ArgumentValueConversionContext } from '@blue/platform
 describe('Conversion Pipeline Integration', () => {
     describe('ParameterExtractor → resolveConverter() → ConversionService', () => {
         test('asUUID() wrapper produces correct convertType', () => {
-            const extractor = asUUID(pathValue('userId'));
+            const extractor = asUUID(pathVariable('userId'));
             expect(extractor.convertType).toEqual({ source: String, target: String });
         });
 
@@ -60,7 +60,7 @@ describe('Conversion Pipeline Integration', () => {
 
     describe('MethodParameter → convertType propagation', () => {
         test('MethodParameter preserves convertType', () => {
-            const extractor = asUUID(pathValue('userId'));
+            const extractor = asUUID(pathVariable('userId'));
             const parameter = new MethodParameter(
                 extractor.type,
                 extractor.name,

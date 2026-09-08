@@ -874,6 +874,9 @@ importers:
 
   packages/blue-platform-node:
     dependencies:
+      '@blue/util':
+        specifier: ~0.0.1
+        version: link:../blue-util
       ws:
         specifier: ^8.18.0
         version: 8.21.3

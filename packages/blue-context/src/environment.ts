@@ -190,6 +190,22 @@ export abstract class AbstractEnvironment implements ConfigurableEnvironment {
         return this.#propertyResolver.getRequiredProperty(key);
     }
 
+    getPropertyAs<T>(
+        key: string,
+        targetType: (new (...args: never[]) => T) | (() => T) | T,
+        defaultValue?: T
+    ): T | undefined {
+        return this.#propertyResolver.getPropertyAs(key, targetType, defaultValue);
+    }
+
+    getRequiredPropertyAs<T>(key: string, targetType: (new (...args: never[]) => T) | (() => T) | T): T {
+        return this.#propertyResolver.getRequiredPropertyAs(key, targetType);
+    }
+
+    getRawProperty(key: string): JSONValue | undefined {
+        return this.#propertyResolver.getRawProperty(key);
+    }
+
     merge(environment: ConfigurableEnvironment): void {
         const sources = this.getPropertySources();
         for (const source of environment.getPropertySources()) {

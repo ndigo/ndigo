@@ -1,8 +1,8 @@
 import { guid } from '@blue/util/math';
 /**
- * BrowserMockMVC — drive `BrowserDispatcher` with a DOM-free capture target.
+ * BrowserMockClient — drive `BrowserDispatcher` with a DOM-free capture target.
  *
- * Mirrors `MockMVC` for the client side: boots a browser application context
+ * Mirrors `MockHTTP` for the client side: boots a browser application context
  * (`WebAutoConfiguration` + user configs), registers a {@link MemoryViewTarget}
  * as `viewTarget`, and dispatches routes through the real handler-mapping /
  * interceptor / view pipeline. The rendered output is captured for assertions,
@@ -57,7 +57,7 @@ async function loadWebAutoConfiguration(): Promise<WebAutoConfigurationLike> {
  * @example
  * ```ts
  * const app = await bootBrowserApp([ToDoconfiguration]);
- * const browser = new BrowserMockMVC(app);
+ * const browser = new BrowserMockClient(app);
  * await browser.dispatch('/account');
  * expect(app.viewTarget.lastRender?.model).toEqual({ section: 'overview' });
  * ```
@@ -121,7 +121,7 @@ function isConfiguration(source: Function): boolean {
  * Socket-free mock MVC client for browser applications. Dispatches routes
  * through the real `BrowserDispatcher` and captures the rendered view.
  */
-export class BrowserMockMVC {
+export class BrowserMockClient {
     #app: BrowserTestApp;
 
     /**

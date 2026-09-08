@@ -18,7 +18,7 @@ export interface MemoryResponse {
     /** HTTP status code (defaults to 200). */
     status: number;
     /** Response headers (lower-cased keys). */
-    headers: Record<string, string>;
+    headers: Record<string, string | string[]>;
     /** Raw body as written by the handler/view, intended for `.json()`/`.text()`. */
     body: unknown;
     /** Whether the response was finalized (`end()` called). */
@@ -35,7 +35,7 @@ export interface ResponseSink {
     /** Whether the response head has been written. */
     readonly headersSent: boolean;
     /** Record the status and headers. */
-    writeHead(status: number, headers?: Record<string, string>): void;
+    writeHead(status: number, headers?: Record<string, string | string[]>): void;
     /** Finalize the response with the given body. */
     end(body?: string | unknown): void;
 }
@@ -60,7 +60,7 @@ export function createMemoryResponse(): { response: MemoryResponse; sink: Respon
             return headersSent;
         },
 
-        writeHead(status: number, headers?: Record<string, string>): void {
+        writeHead(status: number, headers?: Record<string, string | string[]>): void {
             response.status = status;
             if (headers) {
                 response.headers = { ...headers };

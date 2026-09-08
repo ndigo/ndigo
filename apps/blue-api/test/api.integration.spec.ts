@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { describe, test, beforeAll, afterAll, expect } from 'vitest';
-import { bootApp, MockMVC } from '@blue/test';
+import { bootApp, MockHTTP } from '@blue/test';
 import { NodeAppConfiguration } from '../src/node-app-configuration';
 import { initAuth } from '../src/auth-store';
 import { DrizzleNote } from '../src/drizzle-note.entity';
@@ -14,13 +14,13 @@ import { getDrizzleDataSource } from '../src/drizzle-note-controller';
  */
 
 describe('blue-api through @blue/test', () => {
-    let mockMVC: MockMVC;
+    let mockMVC: MockHTTP;
     let close: () => void;
 
     beforeAll(() => {
         initAuth();
         const app = bootApp([NodeAppConfiguration]);
-        mockMVC = new MockMVC(app);
+        mockMVC = new MockHTTP(app);
         close = app.close;
     });
 
@@ -53,7 +53,10 @@ describe('blue-api through @blue/test', () => {
     test('unknown route yields 404 JSON', async () => {
         const res = await mockMVC.get('/no-such-route').exec();
         expect(res.response.status).toBe(404);
-        expect(res.json()).toEqual({ error: 'Not Found', path: '/no-such-route' });
+        const problem = res.json() as { status?: number; type?: string; title?: string; instance?: string };
+        expect(problem.status).toBe(404);
+        expect(problem.type).toBe('urn:blue:not-found');
+        expect(problem.instance).toBe('/no-such-route');
     });
 
     test('POST /auth/login returns 401 on bad credentials', async () => {

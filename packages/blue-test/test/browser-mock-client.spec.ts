@@ -2,10 +2,10 @@
 import { describe, test, beforeAll, afterAll, expect } from 'vitest';
 import { routeMapping, ModelAndView } from '@blue/dispatcher';
 import { WebComponentView } from '@blue/view-webcomponent';
-import { bootBrowserApp, BrowserMockMVC } from '../src/index';
+import { bootBrowserApp, BrowserMockClient } from '../src/index';
 
 /**
- * BrowserMockMVC: dispatches routes through the real BrowserDispatcher and
+ * BrowserMockClient: dispatches routes through the real BrowserDispatcher and
  * captures the rendered view (output element + model) with no DOM container
  * assertions — just the model produced by the handler.
  */
@@ -29,13 +29,13 @@ class AccountController {
     }
 }
 
-describe('BrowserMockMVC', () => {
-    let browser: BrowserMockMVC;
+describe('BrowserMockClient', () => {
+    let browser: BrowserMockClient;
     let close: () => void;
 
     beforeAll(async () => {
         const app = await bootBrowserApp([AccountController]);
-        browser = new BrowserMockMVC(app);
+        browser = new BrowserMockClient(app);
         close = app.close;
     });
 

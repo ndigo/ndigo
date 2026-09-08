@@ -1,22 +1,22 @@
 // @vitest-environment jsdom
 import '@tsmetadata/polyfill';
 import { describe, test, beforeAll, afterAll, expect } from 'vitest';
-import { bootBrowserApp, BrowserMockMVC } from '@blue/test';
+import { bootBrowserApp, BrowserMockClient } from '@blue/test';
 import AccountController from '../src/account-controller';
 
 /**
- * Real blue-todo controller through BrowserMockMVC: dispatches `/account`
+ * Real blue-todo controller through BrowserMockClient: dispatches `/account`
  * and `/account/settings` through the real BrowserDispatcher and asserts the
  * model produced by the actual AccountController — no stubbed context.
  */
 
-describe('blue-todo AccountController via BrowserMockMVC', () => {
-    let browser: BrowserMockMVC;
+describe('blue-todo AccountController via BrowserMockClient', () => {
+    let browser: BrowserMockClient;
     let close: () => void;
 
     beforeAll(async () => {
         const app = await bootBrowserApp([AccountController]);
-        browser = new BrowserMockMVC(app);
+        browser = new BrowserMockClient(app);
         close = app.close;
     });
 

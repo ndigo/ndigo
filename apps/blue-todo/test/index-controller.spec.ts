@@ -2,7 +2,7 @@
 import '@tsmetadata/polyfill';
 import { describe, test, beforeAll, afterAll, expect } from 'vitest';
 import { configuration, entry } from '@blue/context';
-import { bootBrowserApp, BrowserMockMVC } from '@blue/test';
+import { bootBrowserApp, BrowserMockClient } from '@blue/test';
 import IndexController from '../src/index-controller';
 import TodoService from '../src/todo-service';
 
@@ -29,13 +29,13 @@ class IndexTestConfiguration {
     }
 }
 
-describe('IndexController through BrowserMockMVC', () => {
-    let browser: BrowserMockMVC;
+describe('IndexController through BrowserMockClient', () => {
+    let browser: BrowserMockClient;
     let close: () => void;
 
     beforeAll(async () => {
         const app = await bootBrowserApp([IndexTestConfiguration]);
-        browser = new BrowserMockMVC(app);
+        browser = new BrowserMockClient(app);
         close = app.close;
     });
 

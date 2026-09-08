@@ -35,6 +35,30 @@ pnpm add @blue/boot
 
 ## Usage
 
+### ApplicationBuilder (recommended)
+
+Spring-style bootstrap for server-side apps. Registers sources, prepares the
+environment, refreshes the context, and returns it — the handler mapping +
+dispatcher auto-initialize on refresh, and a managed `httpServer` entry is
+provisioned by `NodeAutoConfiguration`.
+
+```typescript
+import { ApplicationBuilder } from '@blue/boot';
+import { NodeAutoConfiguration, HTTPServer, gracefulShutdown } from '@blue/platform-node';
+import { MyConfiguration } from './my-configuration';
+
+const context = new ApplicationBuilder([NodeAutoConfiguration, MyConfiguration]).run();
+const server = context.getValue<HTTPServer>('httpServer');
+await server.start();
+gracefulShutdown(context, { resources: [server] });
+
+// SIGINT/SIGTERM → server drains → context.close() → exit 0
+```
+
+Full walkthrough: [`docs/guides/01-building-a-node-api.md`](../../docs/guides/01-building-a-node-api.md).
+
+### Programmatic context
+
 ```typescript
 import { GenericApplicationContext } from '@blue/context';
 import { configureBrowserTheme } from '@blue/boot';

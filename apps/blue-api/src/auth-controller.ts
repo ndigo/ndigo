@@ -1,9 +1,9 @@
 import '@tsmetadata/polyfill';
-import { postMapping, routeParams, bodyValue } from '@blue/dispatcher';
+import { postMapping, routeParams, bodyValue, requestMapping } from '@blue/dispatcher';
 import { ResponseEntity } from '@blue/platform-node';
 import { authenticate } from './auth-store';
 
-@postMapping('/auth')
+@requestMapping('/auth')
 export class AuthController {
     /**
      * POST /auth/login — authenticates a user and returns a token.

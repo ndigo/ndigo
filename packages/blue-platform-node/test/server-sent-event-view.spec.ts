@@ -2,7 +2,7 @@
 import { describe, test, beforeAll, afterAll, expect } from 'vitest';
 import type { AddressInfo } from 'node:net';
 import { MetadataConfigApplicationContext } from '@blue/context';
-import { getMapping } from '@blue/dispatcher';
+import { getMapping, requestMapping } from '@blue/dispatcher';
 import { NodeAutoConfiguration } from '../src/node-auto-configuration';
 import { NodeDispatcher } from '../src/node-dispatcher';
 import { NodeHTTPServerAdapter } from '../src/node-http-server-adapter';
@@ -16,7 +16,7 @@ import { ServerSentEventView } from '../src/server-sent-event-view';
  * `SseEmitter`-style semantics, rendered through the direct-View branch).
  */
 
-@getMapping('/')
+@requestMapping('/')
 class EventStreamProbeController {
     @getMapping('/events')
     events() {

@@ -5,7 +5,7 @@ import { AsyncHooksContextManager } from '@opentelemetry/context-async-hooks';
 import { context as otelContext, trace } from '@opentelemetry/api';
 import { HTTPServerInstrumentation } from '../src/instrumentation/http-server/http-server';
 import { DispatcherInstrumentation } from '../src/instrumentation/dispatcher/dispatcher';
-import { getMapping, ModelAndView } from '@blue/dispatcher';
+import { getMapping, ModelAndView, requestMapping } from '@blue/dispatcher';
 import { MetadataConfigApplicationContext } from '@blue/context';
 import { NodeAutoConfiguration, NodeDispatcher, HTTPServer } from '@blue/platform-node';
 
@@ -17,7 +17,7 @@ import { NodeAutoConfiguration, NodeDispatcher, HTTPServer } from '@blue/platfor
  * gap, closed for the Node server path.
  */
 
-@getMapping('/')
+@requestMapping('/')
 class APIController {
     @getMapping('/')
     index() {

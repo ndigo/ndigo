@@ -1,4 +1,4 @@
-import { getMapping } from '@blue/dispatcher';
+import { getMapping, requestMapping } from '@blue/dispatcher';
 import { FeatureMetricAggregator } from '@blue/telemetry';
 import { ApplicationContext, AsApplicationContextAware } from '@blue/context';
 import { Null } from '@blue/core';
@@ -13,7 +13,7 @@ import { METRIC_AGGREGATOR } from './metric-aggregator-token';
  *
  * @since 1.0.0
  */
-@getMapping('/metrics')
+@requestMapping('/metrics')
 export class MetricsController extends AsApplicationContextAware(Null) {
     readonly applicationContext!: ApplicationContext;
 

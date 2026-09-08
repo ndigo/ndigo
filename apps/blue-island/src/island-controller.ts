@@ -1,4 +1,4 @@
-import { getMapping, ModelAndView } from '@blue/dispatcher';
+import { getMapping, ModelAndView, requestMapping } from '@blue/dispatcher';
 import { ServerSentEventView } from '@blue/platform-node';
 import { StringTemplateView } from '@blue/view';
 import { TodoModel, TodoModelStore } from './todo-model-store';
@@ -32,7 +32,7 @@ const SHELL = `<!DOCTYPE html>
  * model updates to the client as Server-Sent Events, which the hydrated
  * island consumes into its local reactive state (`@blue/signals`).
  */
-@getMapping('/')
+@requestMapping('/')
 export class IslandController {
     readonly #modelStore: TodoModelStore;
 

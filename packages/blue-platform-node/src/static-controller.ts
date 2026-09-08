@@ -7,11 +7,11 @@
  * implementation `StaticFileView` uses.
  */
 import '@tsmetadata/polyfill';
-import { getMapping, pathValue, routeParams } from '@blue/dispatcher';
+import { getMapping, pathValue, routeParams, requestMapping } from '@blue/dispatcher';
 import { ResponseStatuses } from '@blue/http';
 import { ResponseEntity, StaticResourceResolver } from '@blue/platform-node';
 
-@getMapping('/static')
+@requestMapping('/static')
 export class StaticController {
     readonly #resolver: StaticResourceResolver;
 

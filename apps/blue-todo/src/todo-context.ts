@@ -52,10 +52,9 @@ class ToDoconfiguration {
     }
 }
 
-export const createTodoContext = () => {
+export const createTodoContext = async () => {
     // The browser auto-config (view resolver chain, web component engine,
     // argument resolvers) is registered explicitly — @blue/boot no longer
     // auto-registers it.
-    const context = new ApplicationBuilder([WebAutoConfiguration, ToDoconfiguration]).run();
-    return context;
+    return new ApplicationBuilder([WebAutoConfiguration, ToDoconfiguration]).run();
 };

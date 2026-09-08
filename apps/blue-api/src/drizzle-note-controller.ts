@@ -40,7 +40,7 @@ export class DrizzleNoteController {
     async list(token: string | undefined) {
         const bearer = token?.replace(/^Bearer\s+/i, '');
         if (!bearer || !lookupPrincipal(bearer)) {
-            return ResponseEntity.badRequest({ error: 'Unauthorized' });
+            return ResponseEntity.unauthorized({ error: 'Unauthorized' }, { 'WWW-Authenticate': 'Bearer' });
         }
         await ensureInit();
         return { notes: await this.#entityManager.findAll(DrizzleNote) };
@@ -51,7 +51,7 @@ export class DrizzleNoteController {
     async getById(token: string | undefined, id: string) {
         const bearer = token?.replace(/^Bearer\s+/i, '');
         if (!bearer || !lookupPrincipal(bearer)) {
-            return ResponseEntity.badRequest({ error: 'Unauthorized' });
+            return ResponseEntity.unauthorized({ error: 'Unauthorized' }, { 'WWW-Authenticate': 'Bearer' });
         }
         await ensureInit();
         const note = await this.#entityManager.find(DrizzleNote, Number(id));
@@ -74,7 +74,7 @@ export class DrizzleNoteController {
     async create(token: string | undefined, data: Record<string, unknown>) {
         const bearer = token?.replace(/^Bearer\s+/i, '');
         if (!bearer || !lookupPrincipal(bearer)) {
-            return ResponseEntity.badRequest({ error: 'Unauthorized' });
+            return ResponseEntity.unauthorized({ error: 'Unauthorized' }, { 'WWW-Authenticate': 'Bearer' });
         }
         await ensureInit();
         const note = new DrizzleNote();

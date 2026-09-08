@@ -1,4 +1,5 @@
 import { RadixTree, RadixMatch, Comparator, MultiValueMap } from '@blue/core';
+import type { HTTPMethod } from '@blue/http';
 import { Route } from '@blue/router';
 import {
     AbstractHandlerMethodMapping,
@@ -9,6 +10,7 @@ import {
 import { RouteHandlerMethod } from './route-handler-method';
 import { RouteMappingInfo } from './route-mapping-info';
 import { hasRouteMapping } from './route-mapping';
+import { setMethodNotAllowed } from './route-handler-denial';
 
 interface RadixEntry {
     readonly handlerMethod: RouteHandlerMethod;
@@ -82,6 +84,29 @@ export class RadixMetadataHandlerMapping
         );
 
         if (matching.length === 0) {
+            // RFC 9110 §15.5.6: when the path exists but no handler accepts the
+            // request method, that's 405 Method Not Allowed, not 404. Distinguish
+            // "path + params match, only the method differs" from a true no-match:
+            // candidates that pass the non-method conditions. OPTIONS is exempt —
+            // it is always allowable (RFC 9110 §9.3.7) and platform interceptors
+            // (CORS preflight) finalize it, so it must reach dispatch.
+            if (route.method !== 'OPTIONS') {
+                const nonMethodMatches = candidates.filter(
+                    ({ mapping }) =>
+                        mapping.queryCondition.getMatchingCondition(route) !== null &&
+                        mapping.matrixCondition.getMatchingCondition(route) !== null
+                );
+                if (nonMethodMatches.length > 0) {
+                    const allowed = [
+                        ...new Set(
+                            nonMethodMatches
+                                .map(({ mapping }) => mapping.methodCondition.method)
+                                .filter((method: HTTPMethod | undefined): method is HTTPMethod => method !== undefined)
+                        ),
+                    ].join(', ');
+                    setMethodNotAllowed(route, allowed);
+                }
+            }
             return this._handleNoMatch([], path, route);
         }
 

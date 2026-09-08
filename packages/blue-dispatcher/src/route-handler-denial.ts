@@ -31,6 +31,36 @@ export interface InterceptorDenial {
 /** Route attribute key under which a denial outcome is stored after denial. */
 export const INTERCEPTOR_DENIAL_ATTRIBUTE = '__interceptor:denial';
 
+/**
+ * Route attribute key under which the `Allow` header value is stored when a
+ * path resolves but the request method matches none of its handlers (RFC
+ * 9110 §15.5.6). The platform adapter finalizes the response as `405 Method
+ * Not Allowed` with this `Allow` value.
+ */
+export const METHOD_NOT_ALLOWED_ATTRIBUTE = '__mapping:methodNotAllowed';
+
+/**
+ * Records a method-mismatch on the route: the path exists but the request
+ * method is not among the handlers' allowed methods.
+ *
+ * @param route - The route being resolved.
+ * @param allow - The `Allow` header value (comma-separated methods).
+ */
+export function setMethodNotAllowed(route: Route, allow: string): void {
+    route.attributes ??= {};
+    route.attributes[METHOD_NOT_ALLOWED_ATTRIBUTE] = allow;
+}
+
+/**
+ * Reads the recorded `Allow` value for a method-mismatch, if any.
+ *
+ * @param route - The resolved route.
+ * @returns The `Allow` header value, or `null` when no method-mismatch occurred.
+ */
+export function getMethodNotAllowed(route: Route): string | null {
+    return (route.attributes?.[METHOD_NOT_ALLOWED_ATTRIBUTE] as string | undefined) ?? null;
+}
+
 /** Well-known denial statuses. */
 export const DENIAL_STATUS = {
     /** Not authenticated. */

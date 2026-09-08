@@ -56,9 +56,10 @@ describe('blue-api through @blue/test', () => {
         expect(res.json()).toEqual({ error: 'Not Found', path: '/no-such-route' });
     });
 
-    test('POST /auth/login returns 400 on bad credentials', async () => {
+    test('POST /auth/login returns 401 on bad credentials', async () => {
         const res = await mockMVC.post('/auth/login').body({ username: 'bob', password: 'wrong' }).exec();
-        expect(res.response.status).toBe(400);
+        // AD-10 / RFC 9110 §15.5.2: authentication failure is 401, not 400.
+        expect(res.response.status).toBe(401);
         expect(res.json()).toEqual({ error: 'Invalid credentials' });
     });
 

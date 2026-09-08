@@ -16,7 +16,7 @@
  */
 import { createServer, IncomingMessage, ServerResponse } from 'node:http';
 import { Route, RouteSegment } from '@blue/router';
-import { getInterceptorDenial, type InterceptorDenial } from '@blue/dispatcher';
+import { getInterceptorDenial, getMethodNotAllowed, type InterceptorDenial } from '@blue/dispatcher';
 import { NodeRequest, NODE_REQUEST_ATTRIBUTE, NODE_RESPONSE_ATTRIBUTE } from './node-request';
 import type { NodeDispatcher } from './node-dispatcher';
 import type { HTTPServerAdapter } from './http-server';
@@ -170,11 +170,27 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
             const chain = this.#dispatcher.getHandler(route);
             const noHandler = !chain?.handler || Object.keys(chain.handler).length === 0;
 
+            if (noHandler) {
+                const allowed = getMethodNotAllowed(route);
+                if (allowed) {
+                    this.#writeJson(res, 405, { error: 'Method Not Allowed' }, { Allow: allowed });
+                    return;
+                }
+                if (route.method !== 'OPTIONS') {
+                    // RFC 9110 §15.5.6: unmatched request → 404. Dispatching a
+                    // non-OPTIONS unmatched route would fall into the error path
+                    // (a deterministic 500) instead of the correct 404.
+                    this.#writeJson(res, 404, { error: 'Not Found' });
+                    return;
+                }
+                // OPTIONS is always allowable and the CORS interceptor on the
+                // fallback chain finalizes preflights — dispatch so it runs.
+            }
+
             // The mapping strategy's fallback chain carries interceptors even
             // for unmatched routes, so interceptor-only concerns (CORS
             // preflight short-circuiting) can finalize the request. Dispatch
-            // always; denial finalizes immediately, unmatched requests fall
-            // through to 404 below.
+            // always; denial finalizes immediately.
             await this.#dispatcher.dispatch(route);
             // An interceptor denial (auth guard, CSRF, CORS preflight, …)
             // leaves no rendered view — finalize a deterministic response so
@@ -184,7 +200,9 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
                 this.#finalizeDenial(res, denial);
                 return;
             }
+
             if (noHandler) {
+                // OPTIONS preflight that no interceptor finalized: default to 404.
                 this.#writeJson(res, 404, { error: 'Not Found' });
             }
         } catch (error: unknown) {
@@ -192,9 +210,9 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
         }
     }
 
-    #writeJson(res: ServerResponse, statusCode: number, payload: Record<string, unknown>): void {
+    #writeJson(res: ServerResponse, statusCode: number, payload: Record<string, unknown>, headers: Record<string, string> = {}): void {
         if (res.writableEnded || res.destroyed) return;
-        res.writeHead(statusCode, { 'Content-Type': 'application/json' });
+        res.writeHead(statusCode, { 'Content-Type': 'application/json', ...headers });
         res.end(JSON.stringify(payload));
     }
 
@@ -202,6 +220,8 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
      * Finalizes an interceptor denial: explicit status/body, or the default
      * `403` for bare `false` denials. Browser redirects use the `redirect`
      * target with a Location header.
+     *
+     * A `401` denial carries `WWW-Authenticate: Bearer` per RFC 9110 §15.5.2.
      */
     #finalizeDenial(res: ServerResponse, denial: InterceptorDenial): void {
         if (res.writableEnded || res.destroyed) return;
@@ -211,7 +231,8 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
             res.end();
             return;
         }
-        this.#writeJson(res, statusCode, denial.body ?? { error: statusCode === 401 ? 'Unauthorized' : 'Forbidden' });
+        const headers: Record<string, string> = statusCode === 401 ? { 'WWW-Authenticate': 'Bearer' } : {};
+        this.#writeJson(res, statusCode, denial.body ?? { error: statusCode === 401 ? 'Unauthorized' : 'Forbidden' }, headers);
     }
     /**
      * Central safe error response: maps transport errors to deterministic

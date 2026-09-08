@@ -154,6 +154,34 @@ that models the HTTP layer: `ResponseStatuses`, `HTTPHeader`/`HTTPHeaders`,
 
 **AD-10 implementation tracked in docs/plans/ (see the error-model plan).**
 
+## Implementation status
+
+**3A — Correctness — DONE (2026-09-07):**
+
+- **Last-resort 500 resolver:** `NodeLastResortErrorResolver` is the final
+  link in the Node error chain — any unhandled error becomes a deterministic
+  `500 Internal Server Error` JSON body instead of the previous
+  500/empty `TypeError('view name is undefined')` path.
+- **405 + Allow (RFC 9110 §15.5.6):** the radix mapping records the allowed
+  methods on the route when the path resolves but the method matches none;
+  the adapter (and MockMVC) finalize `405 Method Not Allowed` with the
+  `Allow` header. `OPTIONS` is exempt (RFC 9110 §9.3.7 — always allowable;
+  CORS preflight dispatches and short-circuits to 204).
+- **Auth 401 + `WWW-Authenticate` (RFC 9110 §15.5.2):** the 5 controller
+  sites (`note-controller`, `drizzle-note-controller`) and `auth-controller`
+  now return `401 Unauthorized` with `WWW-Authenticate: Bearer` instead of
+  400; the adapter's denial finalizer emits the header on 401.
+- **`ResponseEntity` status factories** for the AD's table
+  (unauthorized/forbidden/methodNotAllowed/notAcceptable/unsupportedMediaType/
+  unprocessableEntity/tooManyRequests/serviceUnavailable) — wiring the
+  existing `ResponseStatuses` vocabulary.
+- **Reason-phrase regression test:** `blue-http` `response-status.spec.ts`
+  locks the RFC 9110 code→phrase table (63 codes) so a future edit cannot
+  silently drift a reason phrase; also fixed the stale `@see rfc2616`
+  citation (→ RFC 9110).
+
+**3B — The RFC 9457 envelope — pending** (see sequencing above).
+
 ## Revisit Trigger
 
 Revisit if (a) a real external consumer needs legacy `{ error }`

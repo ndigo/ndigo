@@ -16,7 +16,7 @@ export class NoteController {
     list(token: string | undefined) {
         const bearer = token?.replace(/^Bearer\s+/i, '');
         if (!bearer || !lookupPrincipal(bearer)) {
-            return ResponseEntity.badRequest({ error: 'Unauthorized' });
+            return ResponseEntity.unauthorized({ error: 'Unauthorized' }, { 'WWW-Authenticate': 'Bearer' });
         }
         return { notes: entityManager.findAll(Note) };
     }
@@ -33,7 +33,7 @@ export class NoteController {
     create(token: string | undefined, data: Record<string, unknown>) {
         const bearer = token?.replace(/^Bearer\s+/i, '');
         if (!bearer || !lookupPrincipal(bearer)) {
-            return ResponseEntity.badRequest({ error: 'Unauthorized' });
+            return ResponseEntity.unauthorized({ error: 'Unauthorized' }, { 'WWW-Authenticate': 'Bearer' });
         }
         const note = new Note();
         note.title = String(data?.['title'] ?? '');

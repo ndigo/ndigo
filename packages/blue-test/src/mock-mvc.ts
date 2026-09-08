@@ -10,6 +10,7 @@
  */
 
 import { NodeDispatcher } from '@blue/platform-node';
+import { getMethodNotAllowed } from '@blue/dispatcher';
 import { buildRoute, MockRequest, PreparedRoute } from './request-builder';
 import { createMemoryResponse, MemoryResponse } from './memory-response';
 
@@ -195,6 +196,16 @@ export class MockMVC {
             // when nothing matches — detect a real handler by its own keys.
             const noHandler = !chain?.handler || Object.keys(chain.handler).length === 0;
             if (noHandler) {
+                // RFC 9110 §15.5.6: a path whose handlers reject the request
+                // method is 405 with an Allow header, not 404. Short-circuit
+                // before dispatch: dispatching an unmatched route would fall
+                // into the error path (a 500) instead of the correct status.
+                const allowed = getMethodNotAllowed(prepared.route);
+                if (allowed) {
+                    sink.writeHead(405, { 'Content-Type': 'application/json', Allow: allowed });
+                    sink.end(JSON.stringify({ error: 'Method Not Allowed' }));
+                    return toResult(prepared, response);
+                }
                 sink.writeHead(404, { 'Content-Type': 'application/json' });
                 sink.end(JSON.stringify({ error: 'Not Found', path: prepared.route.path }));
                 return toResult(prepared, response);

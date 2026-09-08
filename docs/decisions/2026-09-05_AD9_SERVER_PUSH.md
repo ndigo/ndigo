@@ -31,7 +31,7 @@ BlueJS currently has **no socket/SSE code** — `blue-platform-node` wraps raw `
 
 ### Normalization: sockets as a _response modality of the service layer_
 
-Spring's model: reactive push is a **stream alongside REST** (`Flux`/`Mono`, `SseEmitter`), and RSocket/WebFlux extend the interaction model (request/response, request/stream, fire-and-forget, channel) rather than inventing a separate socket paradigm.
+The established industry model: reactive push is a **stream alongside REST** (Flux/Mono, SseEmitter), and RSocket/WebFlux extend the interaction model (request/response, request/stream, fire-and-forget, channel) rather than inventing a separate socket paradigm.
 
 BlueJS analog: **a service call can declare a streaming response.** In the `@blue/service` proxy (AD-8), a `@getCall`/`@postCall` that returns a _stream_ (SSE) is the same service contract as one returning a single value — the socket is not a new paradigm but a **response modality**. Concretely:
 

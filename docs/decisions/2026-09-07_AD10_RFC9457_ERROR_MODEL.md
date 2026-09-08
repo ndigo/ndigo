@@ -159,7 +159,7 @@ that models the HTTP layer: `ResponseStatuses`, `HTTPHeader`/`HTTPHeaders`,
 **Application bootstrap (2026-09-07) — Node apps on `ApplicationBuilder`:**
 
 The three Node demo apps (`blue-hello-node`, `blue-api`, `blue-island`) now
-boot Spring-style through `@blue/boot`'s `ApplicationBuilder`:
+boot through `@blue/boot`'s `ApplicationBuilder` (a DI-container bootstrap):
 
 ```ts
 const context = new ApplicationBuilder([NodeAutoConfiguration, AppConfiguration]).run();

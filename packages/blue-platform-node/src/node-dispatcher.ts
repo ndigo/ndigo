@@ -16,6 +16,7 @@ import { likeApplicationContextAware } from '@blue/context';
 import { View, likeView } from '@blue/view';
 import type { ServerResponse } from 'node:http';
 import { NODE_RESPONSE_ATTRIBUTE } from './node-request';
+import { ProblemTypes, writeProblem } from './problem-details';
 import { HTTPResponseViewTarget } from './node-view-target';
 import { ResponseEntityView } from './response-entity-view';
 import { isResponseEntity } from './response-entity';
@@ -84,8 +85,13 @@ export class NodeDispatcher extends AbstractDispatcher {
             view = await this._resolveViewName(viewName, language);
             if (!view) {
                 if (res && !res.headersSent) {
-                    res.writeHead(404, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify({ error: `View not found: ${viewName}` }));
+                    writeProblem(res, {
+                        type: ProblemTypes.notFound,
+                        title: 'Not Found',
+                        status: 404,
+                        detail: `View not found: ${viewName}`,
+                        instance: route.path,
+                    });
                 }
                 return;
             }

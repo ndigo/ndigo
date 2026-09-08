@@ -18,6 +18,7 @@ import { Route } from '@blue/router';
 import { RouteHandlerInterceptor } from '@blue/dispatcher';
 import { HTTPHeaders } from '@blue/http';
 import { getNodeRequest, NODE_RESPONSE_ATTRIBUTE, NodeRequest } from './node-request';
+import { ProblemTypes, writeProblem } from './problem-details';
 import type { ServerResponse } from 'node:http';
 
 /** The cookie name holding the CSRF token. */
@@ -127,13 +128,17 @@ export class CsrfInterceptor implements RouteHandlerInterceptor {
     }
 
     /**
-     * Writes a 403 JSON response for a rejected request.
+     * Writes a 403 problem document for a rejected request.
      */
     #reject(route: Route, reason: string): void {
         const res = route.attributes?.[NODE_RESPONSE_ATTRIBUTE] as ServerResponse | undefined;
         if (res && !res.headersSent) {
-            res.writeHead(403, { 'Content-Type': 'application/json' });
-            res.end(JSON.stringify({ error: reason }));
+            writeProblem(res, {
+                type: ProblemTypes.forbidden,
+                title: 'Forbidden',
+                status: 403,
+                detail: reason,
+            });
         }
     }
 }

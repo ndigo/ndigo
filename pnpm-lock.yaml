@@ -870,6 +870,8 @@ importers:
         specifier: ^4.5.4
         version: 4.5.4
 
+  packages/blue-page: {}
+
   packages/blue-platform-node:
     devDependencies:
       '@blue/context':

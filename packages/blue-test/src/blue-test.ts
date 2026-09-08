@@ -17,7 +17,7 @@ import { RadixMetadataHandlerMapping } from '@blue/dispatcher';
 import { NodeDispatcher, NodeAutoConfiguration } from '@blue/platform-node';
 
 /**
- * A booted application ready for MockMVC dispatch.
+ * A booted application ready for MockHTTP dispatch.
  */
 export interface BlueTestApp {
     /** The application context (real DI graph + auto-configs). */
@@ -43,7 +43,7 @@ export interface BlueTestApp {
  * @example
  * ```ts
  * const app = bootApp([HelloConfiguration]);
- * const mockMVC = new MockMVC(app);
+ * const mockMVC = new MockHTTP(app);
  * const res = await mockMVC.get('/').exec();
  * ```
  */

@@ -55,7 +55,7 @@ describe('telemetry request→dispatch correlation (real HTTP)', () => {
         dispatcherInstr.enable();
 
         // Boot a real HTTP server through the node pipeline (the request span
-        // fires on NodeHTTPServerAdapter.handleRequest, which MockMVC bypasses).
+        // fires on NodeHTTPServerAdapter.handleRequest, which MockHTTP bypasses).
         const context = new MetadataConfigApplicationContext('corr');
         context.register(NodeAutoConfiguration);
         context.setValue(APIController.name, new APIController());

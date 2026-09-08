@@ -1,7 +1,7 @@
 // @vitest-environment node
 import { describe, test, beforeAll, afterAll, expect } from 'vitest';
 import { requestMapping, getMapping } from '@blue/dispatcher';
-import { bootApp, cachedBootApp, releaseCachedApp, MockMVC } from '../src/index';
+import { bootApp, cachedBootApp, releaseCachedApp, MockHTTP } from '../src/index';
 
 /**
  * Canonical usage: a real app context is booted once per suite (beforeAll) and
@@ -22,13 +22,13 @@ class MathController {
     }
 }
 
-describe('bootApp + MockMVC (canonical app test)', () => {
-    let mockMVC: MockMVC;
+describe('bootApp + MockHTTP (canonical app test)', () => {
+    let mockMVC: MockHTTP;
     let close: () => void;
 
     beforeAll(() => {
         const app = bootApp([MathController]);
-        mockMVC = new MockMVC(app);
+        mockMVC = new MockHTTP(app);
         close = app.close;
     });
 

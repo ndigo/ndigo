@@ -2,12 +2,12 @@
 import { describe, test, beforeAll, afterAll, expect } from 'vitest';
 import { requestMapping, getMapping, postMapping, ModelAndView, parameters, queryValue, bodyValue } from '@blue/dispatcher';
 import { IslandView } from '@blue/view';
-import { bootApp, MockMVC } from '../src/index';
+import { bootApp, MockHTTP } from '../src/index';
 
 /**
  * Self-tests for `@blue/test`: a real controller is dispatched through the
  * actual Blue pipeline (NodeAutoConfiguration → NodeDispatcher → handler) via
- * MockMVC, socket-free.
+ * MockHTTP, socket-free.
  */
 
 @requestMapping('/')
@@ -35,11 +35,11 @@ class GreetingController {
     }
 }
 
-describe('MockMVC', () => {
-    let mockMVC: MockMVC;
+describe('MockHTTP', () => {
+    let mockMVC: MockHTTP;
 
     beforeAll(() => {
-        mockMVC = new MockMVC(bootApp([GreetingController]));
+        mockMVC = new MockHTTP(bootApp([GreetingController]));
     });
 
     afterAll(() => {
@@ -74,7 +74,7 @@ describe('MockMVC', () => {
     });
 });
 
-describe('IslandView through MockMVC dispatch (SSR islands)', () => {
+describe('IslandView through MockHTTP dispatch (SSR islands)', () => {
     @requestMapping('/islands')
     class IslandsController {
         @getMapping('/todo')
@@ -89,7 +89,7 @@ describe('IslandView through MockMVC dispatch (SSR islands)', () => {
     test('server dispatches island markup with the serialized model', async () => {
         const app = bootApp([IslandsController]);
         try {
-            const mockMVC = new MockMVC(app);
+            const mockMVC = new MockHTTP(app);
             const res = await mockMVC.get('/islands/todo').exec();
             expect(res.response.status).toBe(200);
             const html = res.text();

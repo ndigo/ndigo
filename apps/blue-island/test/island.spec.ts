@@ -7,7 +7,7 @@ process.env['STATIC_DIR'] = resolve('dist');
 
 import { describe, test, beforeAll, afterAll, expect } from 'vitest';
 import type { AddressInfo } from 'node:net';
-import { bootApp, MockMVC } from '@blue/test';
+import { bootApp, MockHTTP } from '@blue/test';
 import { MetadataConfigApplicationContext } from '@blue/context';
 import { NodeAutoConfiguration, NodeDispatcher, NodeHTTPServerAdapter } from '@blue/platform-node';
 import { IslandConfiguration } from '../src/island-configuration';
@@ -21,13 +21,13 @@ import { TodoModelStore } from '../src/todo-model-store';
  */
 
 describe('blue-island hybrid demo', () => {
-    let mockMVC: MockMVC;
+    let mockMVC: MockHTTP;
     let close: () => void;
 
     beforeAll(() => {
         process.env['STATIC_DIR'] = resolve('dist');
         const app = bootApp([IslandConfiguration]);
-        mockMVC = new MockMVC(app);
+        mockMVC = new MockHTTP(app);
         close = app.close;
     });
 

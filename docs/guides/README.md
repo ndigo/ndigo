@@ -8,7 +8,7 @@ explain the *how* with runnable patterns grounded in the demo apps.
 ## Available Guides
 
 1. [01 — Building a Node API](01-building-a-node-api.md) — the primary
-   workflow end-to-end: Spring-style bootstrap, configuration + entries,
+   workflow end-to-end: DI bootstrap, configuration + entries,
    controllers, request binding, validation, errors, and shutdown.
    Reference application: `apps/blue-api`.
 2. [02 — Request Validation](02-request-validation.md) — how validation fits

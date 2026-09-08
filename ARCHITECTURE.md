@@ -1,6 +1,6 @@
 # BlueJS Architecture & Philosophy
 
-BlueJS is a JavaScript-first application framework inspired by the design principles of Spring MVC, adapted for the modern, multi-paradigm (OOP + FP) JavaScript ecosystem.
+BlueJS is a JavaScript-first application framework built on the enduring architectural principles that modern DI-and-dispatch frameworks share — inversion of control, declarative metadata, a layered object graph, and platform portability — adapted for the multi-paradigm (OOP + FP) JavaScript ecosystem.
 
 ## Table of Contents
 
@@ -826,16 +826,16 @@ When reviewing code, check for:
 
 The framework is organized into 8 architectural layers with clear dependency direction and platform-aware boundaries:
 
-| Layer                      | Packages                                                    | Description                                                                 | Spring MVC Analogue                  |
+| Layer                      | Packages                                                    | Description                                                                 | Design Analogue                     |
 | :------------------------- | :---------------------------------------------------------- | :-------------------------------------------------------------------------- | :----------------------------------- |
-| **7: Bootstrap**           | `@blue/boot`                                                | Application bootstrap, startup orchestration, and site/app lifecycle        | `SpringApplication`                  |
-| **6: Application**         | `@blue/service`, `@blue/platform-web`                       | Business services, platform adapters                                        | User application + platform adapters |
-| **5: Request Processing**  | `@blue/dispatcher`, `@blue/view`, `@blue/view-webcomponent` | Front controller, handler execution, and view resolution/rendering adapters | `DispatcherServlet` + `ViewResolver` |
-| **4: Web Infrastructure**  | `@blue/http`, `@blue/router`, `@blue/telemetry`             | HTTP client/interceptors/transforms, routing primitives, observability      | HTTP stack + routing + observability |
-| **3: Application Context** | `@blue/context`                                             | Application context, environment, events, configuration metadata            | `ApplicationContext`                 |
-| **2: Infrastructure**      | `@blue/factory`, `@blue/content`, `@blue/orm`               | IoC container internals, i18n/theming, persistence abstractions             | `BeanFactory` + `MessageSource`      |
-| **1: Foundation**          | `@blue/core`, `@blue/signals`                               | Core primitives, collection types, path matching, reactive state            | Spring Core                          |
-| **0: Integration Layer**   | `@blue/util`, `@blue/parser`, `@blue/dom`                   | Encapsulated third-party libraries via stable BlueJS wrappers               | Commons / utility integration layer  |
+| **7: Bootstrap**           | `@blue/boot`                                                | Application bootstrap, startup orchestration, and site/app lifecycle        | Application bootstrap entrypoint       |
+| **6: Application**         | `@blue/service`, `@blue/platform-web`                       | Business services, platform adapters                                        | App services + platform adapters       |
+| **5: Request Processing**  | `@blue/dispatcher`, `@blue/view`, `@blue/view-webcomponent` | Front controller, handler execution, and view resolution/rendering adapters | Front controller + view resolution     |
+| **4: Web Infrastructure**  | `@blue/http`, `@blue/router`, `@blue/telemetry`             | HTTP client/interceptors/transforms, routing primitives, observability      | HTTP vocabulary + routing + telemetry  |
+| **3: Application Context** | `@blue/context`                                             | Application context, environment, events, configuration metadata            | DI container + application context     |
+| **2: Infrastructure**      | `@blue/factory`, `@blue/content`, `@blue/orm`               | IoC container internals, i18n/theming, persistence abstractions             | IoC container internals + theme/i18n   |
+| **1: Foundation**          | `@blue/core`, `@blue/signals`                               | Core primitives, collection types, path matching, reactive state            | Core primitives + reactive state       |
+| **0: Integration Layer**   | `@blue/util`, `@blue/parser`, `@blue/dom`                   | Encapsulated third-party libraries via stable BlueJS wrappers               | Third-party facade + utility layer     |
 
 The `blue-todo` app sits above these layers as a reference implementation and integration proving ground.
 
@@ -1460,7 +1460,7 @@ in the guides; this section captures the architecture.
 
 ### Bootstrap
 
-Applications are assembled Spring-style through `ApplicationBuilder.run()`
+Applications are assembled through `ApplicationBuilder.run()`
 (`@blue/boot`): it prepares the environment, registers platform
 auto-configuration (`NodeAutoConfiguration`) plus the app's
 `@configuration` classes, and refreshes the context. Registration is
@@ -1542,7 +1542,7 @@ Guides: [`docs/guides/`](docs/guides/README.md).
 
 ### Future Architectural Items
 
-- **`ConversionService`** — A registry-backed type conversion service (modelled on Spring's `ConversionService`) for registering `Converter<S,T>` implementations and resolving them by source/target type at runtime. Primarily useful for HTTP argument binding (e.g. `String → UUID`, `String → Date`, `String → domain type`) and `@ConfigurationProperties`-style binding. Would be registered in `ApplicationContext` and consumed by the dispatcher's argument resolver chain. The `Converter<S, T>`, `Parser<T>`, and `Stringifier<T>` types in `@blue/core` form the intended foundation.
+- **`ConversionService`** — A registry-backed type conversion service (a long-established DI-framework pattern) for registering `Converter<S,T>` implementations and resolving them by source/target type at runtime. Primarily useful for HTTP argument binding (e.g. `String → UUID`, `String → Date`, `String → domain type`) and `@ConfigurationProperties`-style binding. Would be registered in `ApplicationContext` and consumed by the dispatcher's argument resolver chain. The `Converter<S, T>`, `Parser<T>`, and `Stringifier<T>` types in `@blue/core` form the intended foundation.
 
 For strategic architecture direction (platform portability, boot lifecycle, boundary decisions, and package maturity), see [2026-03-08_ARCHITECTURE_ROADMAP.md](./docs/reference/2026-03-08_ARCHITECTURE_ROADMAP.md).
 

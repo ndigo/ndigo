@@ -2,21 +2,7 @@
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "paths": {
-      "@blue/core": ["./packages/blue-core/src"],
-      "@blue/util": ["./packages/blue-util/src"],
-      "@blue/context": ["./packages/blue-context/src"],
-      "@blue/factory": ["./packages/blue-factory/src"],
-      "@blue/router": ["./packages/blue-router/src"],
-      "@blue/view": ["./packages/blue-view/src"],
-      "@blue/http": ["./packages/blue-http/src"],
-      "@blue/telemetry": ["./packages/blue-telemetry/src"],
-      "@blue/content": ["./packages/blue-content/src"],
-      "@blue/platform-web": ["./packages/blue-platform-web/src"],
-      "@blue/dispatcher": ["./packages/blue-dispatcher/src"],
-      "@blue/boot": ["./packages/blue-boot/src"],
-      "@blue/dom": ["./packages/blue-dom/src"],
-      "@blue/orm": ["./packages/blue-orm/src"],
-      "@blue/service": ["./packages/blue-service/src"]
+      "@blue/*": ["./packages/blue-*/src"]
     }
   },
   "include": ["packages/*/src/**/*", "apps/*/src/**/*"],

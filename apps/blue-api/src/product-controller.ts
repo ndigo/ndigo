@@ -1,11 +1,11 @@
 import '@tsmetadata/polyfill';
-import { getMapping, routeParams, pathValue } from '@blue/dispatcher';
+import { getMapping, routeParams, pathValue, requestMapping } from '@blue/dispatcher';
 
 /**
  * Demonstration controller for matrix-parameter routing.
  * Handles product routes under /api/products.
  */
-@getMapping('/api/products')
+@requestMapping('/api/products')
 export class ProductController {
     /**
      * Returns product info, filtered by matrix param 'color'.

@@ -1,7 +1,7 @@
 // @vitest-environment node
 import { describe, test, beforeAll, afterAll, expect } from 'vitest';
 import { MetadataConfigApplicationContext } from '@blue/context';
-import { getMapping, routeParams, queryValue } from '@blue/dispatcher';
+import { getMapping, routeParams, queryValue, requestMapping } from '@blue/dispatcher';
 import { NodeAutoConfiguration } from '../src/node-auto-configuration';
 import { NodeDispatcher } from '../src/node-dispatcher';
 import { NodeHTTPServerAdapter } from '../src/node-http-server-adapter';
@@ -15,7 +15,7 @@ import { HTTPServer } from '../src/http-server';
  * HTTP responses for JSON, parameterized, and unknown routes.
  */
 
-@getMapping('/')
+@requestMapping('/')
 class GreetingController {
     @getMapping('/')
     greet() {

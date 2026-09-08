@@ -4,7 +4,7 @@ import type { AddressInfo } from 'node:net';
 import { BasicTracerProvider, InMemorySpanExporter, SimpleSpanProcessor } from '@opentelemetry/sdk-trace-base';
 import { AsyncHooksContextManager } from '@opentelemetry/context-async-hooks';
 import { context as otelContext, trace, SpanKind } from '@opentelemetry/api';
-import { getMapping } from '@blue/dispatcher';
+import { getMapping, requestMapping } from '@blue/dispatcher';
 import { MetadataConfigApplicationContext } from '@blue/context';
 import {
     NODE_RESPONSE_ATTRIBUTE,
@@ -19,7 +19,7 @@ import { ServerSentEventViewInstrumentation } from '../src/instrumentation/serve
  * G1: SSE streaming gets a span — frames, duration, and client disconnect.
  */
 
-@getMapping('/')
+@requestMapping('/')
 class EventsController {
     @getMapping('/events')
     events() {

@@ -2,7 +2,7 @@
 import { describe, test, expect, beforeAll, afterAll } from 'vitest';
 import type { AddressInfo } from 'node:net';
 import { MetadataConfigApplicationContext } from '@blue/context';
-import { getMapping, RadixMetadataHandlerMapping } from '@blue/dispatcher';
+import { getMapping, RadixMetadataHandlerMapping, requestMapping } from '@blue/dispatcher';
 import { NodeAutoConfiguration } from '../src/node-auto-configuration';
 import { NodeDispatcher } from '../src/node-dispatcher';
 import { NodeHTTPServerAdapter } from '../src/node-http-server-adapter';
@@ -15,7 +15,7 @@ import { CORSInterceptor } from '../src/cors-interceptor';
  * construction, and `Vary: Origin` for shared caches.
  */
 
-@getMapping('/api')
+@requestMapping('/api')
 class APIController {
     @getMapping('/quote')
     quote() {

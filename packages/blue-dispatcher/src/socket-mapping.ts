@@ -6,7 +6,7 @@
  * returning a response, it receives a {@link SocketSession} and is a duplex:
  *
  * ```ts
- * @getMapping('/chat')              // class-level prefix
+ * @requestMapping('/chat')          // class-level prefix
  * class ChatController {
  *     @socketMapping('/room')       // WS endpoint at /chat/room
  *     async *room(session: SocketSession) {
@@ -32,7 +32,7 @@
  * - A plain HTTP request to a socket-mapped path is not an upgrade: it falls
  *   through to normal dispatch (404/405 for the method).
  * - Socket handlers share the metadata record with HTTP mappings, so a class
- *   can mix HTTP and WebSocket endpoints (`@chat`, `@getMapping('/')`,
+ *   can mix HTTP and WebSocket endpoints (`@chat`, `@requestMapping('/')`,
  *   `@socketMapping('/ws')`).
  *
  * @module

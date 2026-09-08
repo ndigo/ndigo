@@ -1,7 +1,7 @@
 // @vitest-environment node
 import { describe, test, beforeAll, afterAll, expect } from 'vitest';
 import { MetadataConfigApplicationContext } from '@blue/context';
-import { getMapping, socketMapping, type SocketSession } from '@blue/dispatcher';
+import { getMapping, socketMapping, type SocketSession, requestMapping } from '@blue/dispatcher';
 import { NodeAutoConfiguration } from '../src/node-auto-configuration';
 import { NodeDispatcher } from '../src/node-dispatcher';
 import { NodeHTTPServerAdapter } from '../src/node-http-server-adapter';
@@ -17,7 +17,7 @@ import { WebSocket } from 'ws';
  * handler receive/send contract.
  */
 
-@getMapping('/')
+@requestMapping('/')
 class SocketController {
     @getMapping('/')
     greet() {

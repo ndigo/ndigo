@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { describe, test, beforeAll, afterAll, expect } from 'vitest';
-import { getMapping } from '@blue/dispatcher';
+import { requestMapping, getMapping } from '@blue/dispatcher';
 import { bootApp, cachedBootApp, releaseCachedApp, MockMVC } from '../src/index';
 
 /**
@@ -9,7 +9,7 @@ import { bootApp, cachedBootApp, releaseCachedApp, MockMVC } from '../src/index'
  * controllers through the real dispatcher, without a socket.
  */
 
-@getMapping('/math')
+@requestMapping('/math')
 class MathController {
     @getMapping('/double')
     double(value = 2) {
@@ -80,7 +80,7 @@ describe('cachedBootApp', () => {
     });
 
     test('different sources do not collide', () => {
-        @getMapping('/other')
+        @requestMapping('/other')
         class OtherController {
             @getMapping('/')
             index() {

@@ -58,7 +58,18 @@ The normalization answer: **services + HTTP + SSE are one continuum**; a "socket
 - **Unified mental model**: services/HTTP/SSE are one layer; the developer declares a stream where needed.
 - The reactive hybrid (server push → signal → island) becomes implementable and testable.
 
-## Revisit trigger
+## Adopting WebSockets (`@socketMapping`)
+
+**Status (2026-09-07):** implemented. `@socketMapping` decorator +
+`SocketSession` contract in `@blue/dispatcher`; the Node adapter
+(`@blue/platform-node`) performs the RFC 6455 handshake via the `ws`
+library and dispatches upgraded connections to socket handlers
+(async-iterable producer-consumers — `for await` inbound, `yield`
+outbound, mirroring the SSE view). The model keeps the AD-9 principle —
+reactive push is a stream alongside REST — extended to full-duplex:
+sockets and SSE coexist; `GET` to a socket path is 404 (socket-only
+endpoints do not serve plain HTTP). See
+`docs/guides/01-building-a-node-api.md` §6b.
 
 Revisit WebSocket when a **bidirectional** consumer (chat, collaborative presence) appears; revisit uWebSockets.js only if throughput profiling demands it (native addon cost accepted).
 

@@ -15,13 +15,16 @@
  * @since 1.0.0
  */
 import { createServer, IncomingMessage, ServerResponse } from 'node:http';
+import { WebSocketServer } from 'ws';
 import { Route, RouteSegment } from '@blue/router';
-import { getInterceptorDenial, getMethodNotAllowed, type InterceptorDenial } from '@blue/dispatcher';
+import { getInterceptorDenial, getMethodNotAllowed, isSocketMapping, type InterceptorDenial } from '@blue/dispatcher';
 import { NodeRequest, NODE_REQUEST_ATTRIBUTE, NODE_RESPONSE_ATTRIBUTE } from './node-request';
+import { nodeSocketSession } from './node-socket-session';
 import { ProblemTypes, writeProblem } from './problem-details';
 import { ResponseStatus } from '@blue/http';
 import type { NodeDispatcher } from './node-dispatcher';
 import type { HTTPServerAdapter } from './http-server';
+import type { WebSocket } from 'ws';
 import {
     type HTTPRequestLimits,
     type ResolvedHTTPRequestLimits,
@@ -61,9 +64,11 @@ export interface NodeHTTPServerAdapterOptions {
  * ```
  */
 export class NodeHTTPServerAdapter implements HTTPServerAdapter {
-    readonly #dispatcher: NodeDispatcher;
+    #upgradePath: string | null = null;
+    #dispatcher: NodeDispatcher;
     readonly #limits: ResolvedHTTPRequestLimits;
     #server: ReturnType<typeof createServer> | null;
+    #websocket: WebSocketServer | null = null;
 
     get server(): unknown {
         return this.#server;
@@ -102,7 +107,110 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
                 resolve();
             });
             this.#server = server;
+            // WebSocket upgrades (RFC 6455 via `ws`): attach an `upgrade`
+            // listener to this http.Server; `shouldHandle` gates by path so
+            // only socket-mapped routes upgrade, then `connection` dispatches.
+            const websocket = new WebSocketServer({ server, verifyClient: undefined });
+            websocket.shouldHandle = (req: IncomingMessage): boolean => {
+                this.#upgradePath = (req.url ?? '').split('?')[0];
+                return this.#findSocketHandler(this.#upgradePath) !== null;
+            };
+            websocket.on('connection', (ws: unknown) => void this.#dispatchSocket(ws, this.#upgradePath ?? ''));
+            this.#websocket = websocket;
         });
+    }
+
+    /**
+     * Resolve a controller instance (and its socket method) for a request
+     * path, through the dispatcher's handler mapping.
+     *
+     * @param path - The request path (e.g. `/chat/room`).
+     * @returns `{ instance, method }` for the socket-mapped method, or `null`.
+     */
+    #findSocketHandler(path: string): { instance: object; method: string } | null {
+        const route: Route = {
+            path,
+            raw: path,
+            data: {},
+            params: null,
+            id: Date.now(),
+            attributes: {},
+            length: 0,
+        };
+        const chain = this.#dispatcher.getHandler(route);
+        const handler = chain?.handler;
+        if (!handler) return null;
+        // The chain's handler is a RouteHandlerMethod wrapping the controller
+        // instance + the selected method name. Verify the method is
+        // socket-mapped on the controller's prototype.
+        const candidate = handler as {
+            handler: object;
+            method: string;
+        };
+        const controller = candidate.handler;
+        const methodName = candidate.method;
+        if (controller && typeof methodName === 'string' && isSocketMapping(Object.getPrototypeOf(controller), methodName)) {
+            return { instance: controller, method: methodName };
+        }
+        return null;
+    }
+
+    /**
+     * Dispatch an upgraded WebSocket to its socket-mapped handler.
+     *
+     * Builds a `SocketSession` from the `ws` connection, invokes the handler
+     * (an async-iterable producer-consumer), and drains inbound + yields
+     * outbound until the connection closes.
+     *
+     * @param rawWs - The upgraded `ws` connection.
+     */
+    async #dispatchSocket(rawWs: unknown, path: string): Promise<void> {
+        // The `ws` server hands us a `WebSocket` (RFC 6455 connection) which
+        // we only partially surface through SocketSession; the structural
+        // surface is all we touch, so a boundary cast to the library type is
+        // deliberate (the upgrade path is the only wire into this hook).
+        const ws = rawWs as WebSocket;
+        const target = this.#findSocketHandler(path);
+        if (!target) {
+            ws.close(1011, 'no socket handler');
+            return;
+        }
+        const session = nodeSocketSession(ws, path, {});
+        const handlerMethod = (target.instance as Record<string, unknown>)[target.method] as unknown;
+        if (typeof handlerMethod !== 'function') {
+            ws.close(1011, 'socket handler is not a function');
+            return;
+        }
+        try {
+            const result: unknown = handlerMethod.call(target.instance, session);
+            // The handler is an async generator: pump inbound → handler →
+            // yield outbound until the stream (connection) ends.
+            if (result && typeof (result as { [Symbol.asyncIterator]?: unknown })[Symbol.asyncIterator] === 'function') {
+                await this.#pumpFunction(result as AsyncGenerator<unknown>, session);
+            }
+        } catch (error) {
+            console.log(`[socket] handler failed: ${(error as Error).message}`);
+            session.close(1011, 'handler error');
+        }
+    }
+
+    /**
+     * Drain a socket handler's async generator: each yielded value is sent;
+     * the loop ends when the connection closes (the inbound reader completes).
+     *
+     * @param gen - The handler's async-iterable result.
+     * @param session - The session to send/poll.
+     */
+    async #pumpFunction(gen: AsyncGenerator<unknown>, session: { messages: AsyncIterable<unknown>; send(data: unknown): void }): Promise<void> {
+        const iterator = gen[Symbol.asyncIterator]();
+        try {
+            for await (const value of iterator) {
+                const outbound = value === undefined ? null : value;
+                session.send(outbound);
+            }
+        } catch (error) {
+            console.error('[NodeHTTPServerAdapter] socket generator error:', (error as Error).message);
+        }
     }
 
     /**
@@ -114,6 +222,13 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
         const server = this.#server;
         if (!server) return;
         this.#server = null;
+        // Stop accepting upgrades and close connected sockets.
+        const wss = this.#websocket;
+        this.#websocket = null;
+        if (wss) {
+            const clients = wss.clients as unknown as Set<{ close(code: number, reason: string): void }> | undefined;
+            clients?.forEach((client) => client.close(1001, 'server shutting down'));
+        }
         await new Promise<void>((resolve) => {
             server.close(() => resolve());
         });
@@ -171,6 +286,19 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
 
             const chain = this.#dispatcher.getHandler(route);
             const noHandler = !chain?.handler || Object.keys(chain.handler).length === 0;
+
+            if (!noHandler && this.#findSocketHandler(route.path) !== null) {
+                // A WebSocket-only endpoint (socketMapped) reached through a
+                // plain HTTP request: the method exists but only for upgraded
+                // sockets. Respond 404 — this path is not served over HTTP.
+                writeProblem(res, {
+                    type: ProblemTypes.notFound,
+                    title: 'Not Found',
+                    status: 404,
+                    instance: route.path,
+                });
+                return;
+            }
 
             if (noHandler) {
                 const allowed = getMethodNotAllowed(route);

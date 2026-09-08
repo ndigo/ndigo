@@ -41,7 +41,8 @@
     "@blue/http": "~0.0.1",
     "@blue/router": "~0.0.1",
     "@blue/view": "~0.0.1",
-    "zod": "^4.5.4"
+    "zod": "^4.5.4",
+    "@types/ws": "^8.18.0"
   },
   "peerDependencies": {
     "@blue/context": "~0.0.1",
@@ -52,5 +53,8 @@
     "@blue/router": "~0.0.1",
     "@blue/view": "~0.0.1"
   },
-  "sideEffects": false
+  "sideEffects": false,
+  "dependencies": {
+    "ws": "^8.18.0"
+  }
 }

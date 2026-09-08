@@ -156,6 +156,28 @@ that models the HTTP layer: `ResponseStatuses`, `HTTPHeader`/`HTTPHeaders`,
 
 ## Implementation status
 
+**Application bootstrap (2026-09-07) — Node apps on `ApplicationBuilder`:**
+
+The three Node demo apps (`blue-hello-node`, `blue-api`, `blue-island`) now
+boot Spring-style through `@blue/boot`'s `ApplicationBuilder`:
+
+```ts
+const context = new ApplicationBuilder([NodeAutoConfiguration, AppConfiguration]).run();
+const server = context.getValue<HTTPServer>('httpServer');
+await server.start();
+gracefulShutdown(context, { resources: [server] });
+```
+
+`run()` prepares the environment, registers + refreshes the context, and
+returns it — the handler mapping and dispatcher auto-initialize on refresh
+(AD-10's 3A correctness work made this safe). This is the roadmap criterion
+("`@blue/boot` auto-starts server on Node | `ApplicationBuilder.run()` →
+server listening on port") and collapses the previous manual
+`MetadataConfigApplicationContext` + hand-wiring classes per app. The apps
+also log banners through `@blue/telemetry`'s `getLogger` instead of raw
+`console` (modernization item 4's cosmetic gap). `@blue/boot` + `@blue/telemetry`
+added to the three app manifests.
+
 **3A — Correctness — DONE (2026-09-07):**
 
 - **Last-resort 500 resolver:** `NodeLastResortErrorResolver` is the final

@@ -304,6 +304,9 @@ importers:
       '@blue/auth-server':
         specifier: ~0.0.1
         version: link:../../packages/blue-auth-server
+      '@blue/boot':
+        specifier: ~0.0.1
+        version: link:../../packages/blue-boot
       '@blue/context':
         specifier: ~0.0.1
         version: link:../../packages/blue-context
@@ -328,6 +331,9 @@ importers:
       '@blue/router':
         specifier: ~0.0.1
         version: link:../../packages/blue-router
+      '@blue/telemetry':
+        specifier: ~0.0.1
+        version: link:../../packages/blue-telemetry
       '@blue/util':
         specifier: ~0.0.1
         version: link:../../packages/blue-util
@@ -375,6 +381,9 @@ importers:
 
   apps/blue-hello-node:
     dependencies:
+      '@blue/boot':
+        specifier: ~0.0.1
+        version: link:../../packages/blue-boot
       '@blue/context':
         specifier: ~0.0.1
         version: link:../../packages/blue-context
@@ -390,6 +399,9 @@ importers:
       '@blue/router':
         specifier: ~0.0.1
         version: link:../../packages/blue-router
+      '@blue/telemetry':
+        specifier: ~0.0.1
+        version: link:../../packages/blue-telemetry
       '@blue/util':
         specifier: ~0.0.1
         version: link:../../packages/blue-util
@@ -431,6 +443,9 @@ importers:
 
   apps/blue-island:
     dependencies:
+      '@blue/boot':
+        specifier: ~0.0.1
+        version: link:../../packages/blue-boot
       '@blue/context':
         specifier: ~0.0.1
         version: link:../../packages/blue-context
@@ -455,6 +470,9 @@ importers:
       '@blue/signals':
         specifier: ~0.0.1
         version: link:../../packages/blue-signals
+      '@blue/telemetry':
+        specifier: ~0.0.1
+        version: link:../../packages/blue-telemetry
       '@blue/util':
         specifier: ~0.0.1
         version: link:../../packages/blue-util

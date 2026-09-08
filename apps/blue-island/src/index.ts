@@ -5,12 +5,14 @@
  * (`<todo-app data-blue-island data-blue-model="…">`) plus the client bundle
  * that hydrates it, and pushes source-of-truth model updates into the island
  * over SSE (AD-9): `GET /events` streams them; the client consumes them into
- * `@blue/signals` and re-renders.
+ * `@blue/signals` and re-renders. Spring-style bootstrap via
+ * `ApplicationBuilder.run()`.
  */
 
 import 'node:process';
-import { MetadataConfigApplicationContext } from '@blue/context';
+import { ApplicationBuilder } from '@blue/boot';
 import { NodeAutoConfiguration, HTTPServer, gracefulShutdown } from '@blue/platform-node';
+import { getLogger } from '@blue/telemetry';
 import { IslandConfiguration } from './island-configuration';
 import { TodoModelStore } from './todo-model-store';
 
@@ -18,16 +20,16 @@ import { TodoModelStore } from './todo-model-store';
 // app's default there before any context is created.
 process.env.PORT ??= '3200';
 const PORT = Number(process.env['PORT']);
+const logger = getLogger('blue-island');
 
 async function main() {
-    const context = new MetadataConfigApplicationContext('blue-island');
-    context.register(NodeAutoConfiguration);
-    context.register(IslandConfiguration);
-    context.refresh();
+    // Spring-style bootstrap: register platform auto-config + app config, then
+    // run() refreshes the context — the handler mapping + dispatcher
+    // auto-initialize on refresh.
+    const context = new ApplicationBuilder([NodeAutoConfiguration, IslandConfiguration]).run();
 
-    // NodeAutoConfiguration auto-initializes the handler mapping and the
-    // dispatcher during refresh. The reactive half of the demo pushes model
-    // updates to connected islands over SSE until the ticker completes.
+    // The reactive half of the demo pushes model updates to connected islands
+    // over SSE until the ticker completes.
     const modelStore = context.getValue<TodoModelStore>('modelStore');
     modelStore.startTicker();
 
@@ -38,18 +40,13 @@ async function main() {
     await server.start();
     gracefulShutdown(context, { resources: [server] });
 
-    // eslint-disable-next-line no-console
-    console.log(`[blue-island] listening on http://localhost:${PORT}`);
-    // eslint-disable-next-line no-console
-    console.log(`  GET /            (shell + server-rendered island)`);
-    // eslint-disable-next-line no-console
-    console.log(`  GET /events      (SSE — server pushes model updates into the island)`);
-    // eslint-disable-next-line no-console
-    console.log(`  GET /static/*    (client bundle → hydrates the island)`);
+    logger.info(`listening on http://localhost:${PORT}`);
+    logger.info(`  GET /            (shell + server-rendered island)`);
+    logger.info(`  GET /events      (SSE — server pushes model updates into the island)`);
+    logger.info(`  GET /static/*    (client bundle → hydrates the island)`);
 }
 
 main().catch((err) => {
-    // eslint-disable-next-line no-console
-    console.error('[blue-island] failed to start:', err);
+    logger.error(`failed to start: ${err instanceof Error ? err.message : String(err)}`);
     process.exit(1);
 });

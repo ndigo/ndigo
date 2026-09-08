@@ -1,7 +1,7 @@
 {
   "name": "@blue/hello-node",
   "version": "0.0.1",
-  "description": "Blue Hello Node — minimal HTTP server using the Node platform foundation",
+  "description": "Blue Hello Node \u2014 minimal HTTP server using the Node platform foundation",
   "type": "module",
   "private": true,
   "scripts": {
@@ -10,20 +10,24 @@
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
   "dependencies": {
+    "@blue/boot": "~0.0.1",
     "@blue/context": "~0.0.1",
     "@blue/core": "~0.0.1",
     "@blue/dispatcher": "~0.0.1",
     "@blue/platform-node": "~0.0.1",
     "@blue/router": "~0.0.1",
+    "@blue/telemetry": "~0.0.1",
     "@blue/util": "~0.0.1"
   },
   "devDependencies": {
+    "tsx": "^4.23.13",
+    "@blue/boot": "~0.0.1",
     "@blue/context": "~0.0.1",
     "@blue/core": "~0.0.1",
     "@blue/dispatcher": "~0.0.1",
     "@blue/platform-node": "~0.0.1",
     "@blue/router": "~0.0.1",
-    "@blue/util": "~0.0.1",
-    "tsx": "^4.23.13"
+    "@blue/telemetry": "~0.0.1",
+    "@blue/util": "~0.0.1"
   }
 }

@@ -113,6 +113,54 @@ describe('@profile Decorator', () => {
         expect(devContext.getValue('devOnly')).toBe('dev');
         expect(devContext.getValue('prodOnly')).toBeUndefined();
     });
+
+    it('evaluates profile expressions on entries (AD-14)', () => {
+        @configuration
+        class TestConfig {
+            @profile('!prod & (dev | test)')
+            @entry()
+            devOrTest() {
+                return 'dev-or-test';
+            }
+
+            @profile('prod')
+            @entry()
+            prodOnly() {
+                return 'prod';
+            }
+        }
+
+        const devContext = new MetadataConfigApplicationContext();
+        devContext.environment.activeProfiles = ['dev'];
+        devContext.register(TestConfig);
+
+        expect(devContext.getValue('devOrTest')).toBe('dev-or-test');
+        expect(devContext.getValue('prodOnly')).toBeUndefined();
+
+        const prodContext = new MetadataConfigApplicationContext();
+        prodContext.environment.activeProfiles = ['prod'];
+        prodContext.register(TestConfig);
+
+        expect(prodContext.getValue('devOrTest')).toBeUndefined();
+        expect(prodContext.getValue('prodOnly')).toBe('prod');
+    });
+
+    it('default profiles gate when nothing is explicit (AD-14)', () => {
+        @configuration
+        class TestConfig {
+            @profile('base')
+            @entry()
+            baseOnly() {
+                return 'base';
+            }
+        }
+
+        const context = new MetadataConfigApplicationContext();
+        context.environment.addDefaultProfile('base');
+        context.register(TestConfig);
+
+        expect(context.getValue('baseOnly')).toBe('base');
+    });
 });
 
 describe('@property Decorator', () => {

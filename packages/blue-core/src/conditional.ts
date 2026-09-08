@@ -10,6 +10,7 @@
  * Supported conditions:
  * - {@link conditionalOnBrowser} / {@link conditionalOnNode} — platform
  * - {@link conditionalOnProperty} — environment property present/valued
+ * - {@link conditionalOnProfile} — profile expression matches (AD-14)
  * - {@link conditionalOnMissingEntry} — an entry is not already registered
  *
  * @module
@@ -23,6 +24,7 @@ export type ConditionalPlatform = 'browser' | 'node';
 
 const CONDITIONAL_ON = 'boot:conditionalOn';
 const CONDITIONAL_PROPERTY = 'boot:conditionalOnProperty';
+const CONDITIONAL_PROFILE = 'boot:conditionalOnProfile';
 const CONDITIONAL_MISSING = 'boot:conditionalOnMissingEntry';
 
 /**
@@ -45,6 +47,13 @@ export interface ConditionContext {
      * @returns `true` when the entry exists.
      */
     hasValue(name: string): boolean;
+    /**
+     * Whether a profile expression matches the effective active set.
+     *
+     * @param expression - The profile expression (`dev`, `!prod`, `a & b`).
+     * @returns `true` when the expression matches.
+     */
+    acceptsProfiles?(expression: string): boolean;
 }
 
 /**
@@ -115,6 +124,25 @@ export interface ConditionalOnPropertyOptions {
 export function conditionalOnProperty(options: ConditionalOnPropertyOptions) {
     return function (target: any, context: ClassDecoratorContext): any {
         return conditionalDecorator(CONDITIONAL_PROPERTY, options, target, context);
+    };
+}
+
+/**
+ * Class decorator that marks a configuration class as active only when a
+ * profile expression matches the environment's effective active set (AD-14).
+ *
+ * @param expression - The profile expression (`dev`, `!prod`, `a & b`, `(a | b) & c`).
+ * @returns A class decorator.
+ *
+ * @example
+ * ```ts
+ * @conditionalOnProfile('!prod & (dev | test)')
+ * class DevOnlyConfiguration { ... }
+ * ```
+ */
+export function conditionalOnProfile(expression: string) {
+    return function (target: any, context: ClassDecoratorContext): any {
+        return conditionalDecorator(CONDITIONAL_PROFILE, expression, target, context);
     };
 }
 
@@ -195,6 +223,16 @@ export function isActive(target: any, ctx?: ConditionContext): boolean {
             return true;
         }
         if (!propertyActive(property, ctx)) {
+            return false;
+        }
+    }
+
+    const profile = meta[CONDITIONAL_PROFILE] as string | undefined;
+    if (profile) {
+        if (!ctx?.acceptsProfiles) {
+            return true;
+        }
+        if (!ctx.acceptsProfiles(profile)) {
             return false;
         }
     }

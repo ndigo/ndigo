@@ -1,4 +1,5 @@
 import { ApplicationContext, ConfigurableEnvironment, EventListener } from '@blue/context';
+import type { EnvironmentCustomizer } from '@blue/context';
 import { JSONObject } from '@blue/core';
 import { Application } from './application';
 import { StandardConfigFileLoader } from './config-file-loader';
@@ -211,6 +212,18 @@ export class ApplicationBuilder {
      */
     configFiles(loader: StandardConfigFileLoader): ApplicationBuilder {
         this.#application.setConfigFileLoader(loader);
+        return this;
+    }
+
+    /**
+     * Registers environment customizers, applied after the environment is
+     * prepared and before the context reads it (registration order).
+     *
+     * @param customizers - The customizers to run.
+     * @returns This builder for chaining.
+     */
+    customizers(...customizers: EnvironmentCustomizer[]): ApplicationBuilder {
+        this.#application.setCustomizers(customizers);
         return this;
     }
 

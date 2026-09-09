@@ -77,6 +77,15 @@ export interface PropertyResolver {
      * @returns The raw value or `undefined`.
      */
     getRawProperty(key: string): JSONValue | undefined;
+    /**
+     * Returns the name of the source that won the given key, or `null` when
+     * the active index does not retain origins or the key is unknown.
+     *
+     * @param key - The property key (top-level granularity).
+     * @returns The winning source name, or `null`.
+     * @see PropertyIndex#originOf
+     */
+    originOf(key: string): string | null;
 }
 
 /**
@@ -174,6 +183,15 @@ export interface PropertyIndex {
      * @returns `true` when the property is defined.
      */
     hasProperty(key: string): boolean;
+    /**
+     * Returns the name of the source that won the given key — optional:
+     * strategies that retain origins implement it; others omit it (the
+     * resolver reports `null`). Top-level-key granularity (AD-16 D1/Q7).
+     *
+     * @param key - The top-level property key.
+     * @returns The winning source name, or `undefined` when unsupported/unknown.
+     */
+    originOf?(key: string): string | undefined;
 }
 
 /**
@@ -255,16 +273,17 @@ export class FlatMergedIndex implements PropertyIndex {
     }
 
     /**
-     * Returns the name of the source that first defined the top-level key.
+     * Returns the name of the source that first defined the top-level segment
+     * of the key (`server.port` reports the source owning `server` — top-level
+     * granularity, AD-16 D1/Q7).
      *
-     * Internal origin surface for Phase 5 origin tracking; not part of the
-     * index contract.
-     *
-     * @param key - The top-level property key.
+     * @param key - The property key (only the top-level segment is consulted).
      * @returns The winning source name, or `undefined`.
      */
-    getOrigin(key: string): string | undefined {
-        return this.#origins.get(key);
+    originOf(key: string): string | undefined {
+        const dot = key.indexOf('.');
+        const top = dot === -1 ? key : key.slice(0, dot);
+        return this.#origins.get(top);
     }
 }
 
@@ -301,6 +320,7 @@ export class PrototypalPropertyResolver implements ConfigurablePropertyResolver 
     #options: ResolverOptions;
     #placeholderCache = new Map<string, JSONValue>();
     #conversionService: ConversionService | null = null;
+    #forceRebuild = false;
 
     /**
      * The live registry backing this resolver, when created via
@@ -382,7 +402,7 @@ export class PrototypalPropertyResolver implements ConfigurablePropertyResolver 
         this.#syncRegistry();
         const raw = this.#index.getProperty(key);
         if (typeof raw === 'undefined') {
-            throw new IllegalStateError(`Required property "${key}" missing`);
+            throw new IllegalStateError(this.#missingMessage(key));
         }
         const resolved = this.#resolve(key, raw);
         if (typeof resolved === 'string' && resolved.includes('${')) {
@@ -449,9 +469,45 @@ export class PrototypalPropertyResolver implements ConfigurablePropertyResolver 
         return this.#index.getProperty(key);
     }
 
+    /**
+     * Returns the name of the source that won the given key, or `null` when
+     * the active index does not retain origins (prototype chain) or the key
+     * is unknown. Top-level-key granularity (AD-16 D1).
+     *
+     * @param key - The top-level property key.
+     * @returns The winning source name, or `null`.
+     */
+    originOf(key: string): string | null {
+        this.#syncRegistry();
+        return this.#index.originOf?.(key) ?? null;
+    }
+
+    /**
+     * Forces the index to rebuild and clears the placeholder cache —
+     * "recompute from the current sources" (AD-16 D3). Does NOT re-run
+     * customizers or re-read platform snapshots (environment-scope only).
+     */
+    refresh(): void {
+        this.#placeholderCache.clear();
+        if (this.#registry) {
+            this.#forceRebuild = true;
+            this.#syncRegistry();
+            this.#forceRebuild = false;
+        } else {
+            this.#index.build(this.#sources);
+        }
+    }
+
+    #missingMessage(key: string): string {
+        const origin = this.#index.originOf?.(key);
+        return origin
+            ? `Required property "${key}" missing (from source: ${origin})`
+            : `Required property "${key}" missing`;
+    }
+
     #syncRegistry(): void {
         const registry = this.#registry;
-        if (registry && registry.version !== this.#seenVersion) {
+        if (registry && (registry.version !== this.#seenVersion || this.#forceRebuild)) {
             this.#seenVersion = registry.version;
             this.#sources = registry.toArray();
             this.#index.build(this.#sources);

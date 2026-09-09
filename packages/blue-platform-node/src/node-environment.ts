@@ -45,8 +45,10 @@ export class NodeEnvironment extends StandardEnvironment {
     }
 
     /**
-     * Re-snapshots `process.env` into the `systemEnvironment` source, keeping
-     * its position in the precedence order.
+     * Re-snapshots `process.env` into the `systemEnvironment` source and
+     * refreshes the environment (formal `super.refresh()` — recompute from
+     * current sources, AD-16 D3), keeping the source's position in the
+     * precedence order.
      *
      * Call after mutating `process.env` at runtime to make the new values
      * observable through this environment.
@@ -55,6 +57,7 @@ export class NodeEnvironment extends StandardEnvironment {
      */
     refresh(): this {
         this.getPropertySources().replace('systemEnvironment', snapshotProcessEnv());
+        super.refresh();
         return this;
     }
 }

@@ -40,6 +40,19 @@ export interface Environment extends PropertyResolver {
      * @throws {IllegalStateError} On malformed expressions.
      */
     acceptsProfiles(expression: string): boolean;
+    /**
+     * Returns the name of the source that won the given property key, or
+     * `null` when unknown or the active index retains no origins.
+     *
+     * @param key - The property key (top-level granularity).
+     * @returns The winning source name, or `null`.
+     */
+    originOf(key: string): string | null;
+    /**
+     * Recomputes the environment from its current sources: rebuilds the
+     * lookup index and clears caches. Environment-scope only (AD-16 D3).
+     */
+    refresh(): void;
 }
 
 /**
@@ -228,6 +241,14 @@ export abstract class AbstractEnvironment implements ConfigurableEnvironment {
         return this.#propertyResolver.getRawProperty(key);
     }
 
+    originOf(key: string): string | null {
+        return this.#propertyResolver.originOf(key);
+    }
+
+    refresh(): void {
+        this.#propertyResolver.refresh();
+    }
+
     merge(environment: ConfigurableEnvironment): void {
         const sources = this.getPropertySources();
         for (const source of environment.getPropertySources()) {
@@ -296,6 +317,8 @@ const _likeEnvironmentShape = like({
     addActiveProfile: Function,
     addDefaultProfile: Function,
     acceptsProfiles: Function,
+    originOf: Function,
+    refresh: Function,
 });
 
 export const likeEnvironment = ((value: any) => likePropertyResolver(value) && _likeEnvironmentShape(value)) as (

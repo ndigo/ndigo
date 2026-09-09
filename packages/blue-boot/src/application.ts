@@ -9,6 +9,8 @@ import { IllegalStateError, JSONObject } from '@blue/core';
 import { RouteRegistry } from '@blue/router';
 import { isActive } from '@blue/core';
 import { parseCommandLineArgs } from '@blue/context';
+import { applyCustomizers } from '@blue/context';
+import type { EnvironmentCustomizer } from '@blue/context';
 import { StandardConfigFileLoader } from './config-file-loader';
 import { isConfigurationProperties, resolveConfigurationProperties } from './configuration-properties';
 
@@ -41,6 +43,7 @@ export class Application extends Emitter {
     #properties: JSONObject | null = null;
     #defaults: JSONObject | null = null;
     #configFileLoader: StandardConfigFileLoader | null = null;
+    #customizers: EnvironmentCustomizer[] = [];
     #sources: Set<Function>;
 
     /**
@@ -127,6 +130,16 @@ export class Application extends Emitter {
      */
     setConfigFileLoader(loader: StandardConfigFileLoader | null): void {
         this.#configFileLoader = loader;
+    }
+
+    /**
+     * Registers environment customizers, applied in registration order after
+     * the environment is prepared and before the context reads it.
+     *
+     * @param customizers - The customizers to run.
+     */
+    setCustomizers(customizers: readonly EnvironmentCustomizer[]): void {
+        this.#customizers = [...customizers];
     }
 
     /**
@@ -319,6 +332,9 @@ export class Application extends Emitter {
             env.getPropertySources().addLast('defaults', this.#defaults ?? {});
         }
         await this._configureEnvironment(env, args);
+        // Customizers run after the fully-wired environment, before the
+        // context reads it (AD-16 D2); registration order, fail-loud.
+        applyCustomizers(env, this.#customizers);
         return env;
     }
 

@@ -10,6 +10,13 @@ import { RouteRegistry } from '@blue/router';
 import { isActive } from '@blue/core';
 import { parseCommandLineArgs } from '@blue/context';
 import { StandardConfigFileLoader } from './config-file-loader';
+import { isConfigurationProperties, resolveConfigurationProperties } from './configuration-properties';
+
+/**
+ * Derives the entry bean name from a class name (`ServerConfig` →
+ * `serverConfig` — the repo's `@entry serverConfig()` bean idiom).
+ */
+const camelCaseName = (className: string): string => className.charAt(0).toLowerCase() + className.slice(1);
 
 /**
  * Splits a comma-separated profile list, trimming + dropping empties.
@@ -279,6 +286,17 @@ export class Application extends Emitter {
             }
         });
         context.refresh();
+
+        // Auto-register @configurationProperties classes as bound entry beans
+        // (AD-15 D1): after refresh so the environment is fully prepared.
+        for (const source of this.#sources) {
+            if (isConfigurationProperties(source)) {
+                const name = camelCaseName(source.name);
+                // Structural cast: `source` is a ctor (decorator-verified).
+                const { instance } = resolveConfigurationProperties(source as new () => unknown, context);
+                context.setValue(name, instance);
+            }
+        }
 
         // Build the RouteRegistry from @routeMapping decorator metadata
         const routes = new RouteRegistry();

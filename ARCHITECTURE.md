@@ -1521,6 +1521,11 @@ before first public release.
 
 Guides: [`docs/guides/`](docs/guides/README.md).
 
+**Environment/configuration docs** (sources, profiles, binding, validation):
+[guide 03](docs/guides/03-environment-configuration.md),
+[API reference](docs/reference/2026-09-08_ENVIRONMENT_API.md),
+[architecture](docs/architecture/environment.md).
+
 [rfc9457]: https://www.rfc-editor.org/rfc/rfc9457.html
 
 ## Roadmap

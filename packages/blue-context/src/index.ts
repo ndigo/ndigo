@@ -20,3 +20,4 @@ export * from './shared-dependency-registry';
 export * from './property-resolver';
 export * from './resource';
 export { ContextToken, isContextToken } from '@blue/factory';
+export { EntryRegistryProcessor, likeEntryRegistryProcessor, Registry } from '@blue/factory';

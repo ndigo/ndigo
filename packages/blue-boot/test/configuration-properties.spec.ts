@@ -1,43 +1,42 @@
 import { describe, test, expect } from 'vitest';
+import type { JSONObject } from '@blue/core';
 import {
     ApplicationBuilder,
-    ConfigurationProperties,
+    configurationProperties,
     isConfigurationProperties,
     getConfigurationPropertiesPrefix,
     resolveConfigurationProperties,
 } from '../src/index';
-import { property, configuration, entry, StandardEnvironment } from '@blue/context';
+import { property, defaultValue, nested, configuration, entry } from '@blue/context';
 
-@ConfigurationProperties('server')
-class ServerConfig {
-    @property('port')
-    port: number | null = null;
-
-    @property('host')
-    host: string | null = null;
+class DbConfig {
+    @property('url', String) @defaultValue('mongodb://localhost') url!: string;
 }
 
-@ConfigurationProperties()
+@configurationProperties('server')
+class ServerConfig {
+    @property('port', Number) @defaultValue('8080') port!: number;
+    @property('host', String) @defaultValue('localhost') host!: string;
+    @nested db: DbConfig = new DbConfig();
+}
+
+@configurationProperties()
 class AppConfig {
-    @property('app.title')
-    title: string | null = null;
+    @property('app.title', String) @defaultValue('blue') title!: string;
 }
 
 class UndecoratedConfig {
-    @property('app.mode')
-    mode: string | null = null;
+    @property('app.mode') mode: string | null = null;
 }
 
-describe('ConfigurationProperties decorator', () => {
+describe('configurationProperties decorator (AD-15)', () => {
     test('stores metadata on decorated class', () => {
         expect(isConfigurationProperties(ServerConfig)).toBe(true);
+        expect(isConfigurationProperties(UndecoratedConfig)).toBe(false);
     });
 
     test('stores prefix in metadata', () => {
         expect(getConfigurationPropertiesPrefix(ServerConfig)).toBe('server');
-    });
-
-    test('stores undefined prefix when none given', () => {
         expect(getConfigurationPropertiesPrefix(AppConfig)).toBeUndefined();
     });
 
@@ -46,57 +45,81 @@ describe('ConfigurationProperties decorator', () => {
     });
 });
 
-describe('resolveConfigurationProperties', () => {
-    test('resolves prefixed properties from environment', async () => {
-        const builder = new ApplicationBuilder([]);
-        builder.properties({ server: { port: '8080', host: 'localhost' } });
-        const context = await builder.run();
+describe('resolveConfigurationProperties v2', () => {
+    const runBoot = async (properties: JSONObject) => {
+        @configuration
+        class BootConfig {}
+        const app = new ApplicationBuilder([BootConfig]);
+        app.properties(properties);
+        return app.run();
+    };
 
-        const { instance, isValid, bindings } = resolveConfigurationProperties(ServerConfig, context);
+    test('binds converted values via the environment', async () => {
+        const context = await runBoot({
+            server: { port: '9090', host: 'blue.dev', db: { url: 'postgres://x' } },
+        });
 
-        expect(isValid).toBe(true);
-        expect(instance.port).toBe('8080');
+        const { instance } = resolveConfigurationProperties(ServerConfig, context);
+        expect(instance.port).toBe(9090); // string → number
+        expect(instance.host).toBe('blue.dev');
+        expect(instance.db.url).toBe('postgres://x'); // nested binding
+    });
+
+    test('uses @defaultValue when the property is missing (converted)', async () => {
+        const context = await runBoot({});
+
+        const { instance } = resolveConfigurationProperties(ServerConfig, context);
+        expect(instance.port).toBe(8080); // '8080' → number via conversion
         expect(instance.host).toBe('localhost');
-        expect(bindings['server.port']).toBe('8080');
-        expect(bindings['server.host']).toBe('localhost');
+        expect(instance.db.url).toBe('mongodb://localhost');
     });
 
-    test('resolves unprefixed properties from environment', async () => {
-        const builder = new ApplicationBuilder([]);
-        builder.properties({ app: { title: 'MyApp' } });
-        const context = await builder.run();
-
-        const { instance, isValid } = resolveConfigurationProperties(AppConfig, context);
-
-        expect(isValid).toBe(true);
-        expect(instance.title).toBe('MyApp');
-    });
-
-    test('returns isValid false when property is missing', async () => {
-        const builder = new ApplicationBuilder([]);
-        const context = await builder.run();
-
-        const { instance, isValid, bindings } = resolveConfigurationProperties(ServerConfig, context);
-
-        expect(isValid).toBe(false);
-        expect(instance.port).toBeNull();
-        expect(bindings['server.port']).toBeUndefined();
-    });
-
-    test('returns null and isValid false when property is missing', async () => {
-        class DefaultConfig {
-            @property('server.port')
-            port: number | null = 3000;
+    test('throws fail-loud when a required property is missing', async () => {
+        @configurationProperties('strict')
+        class StrictConfig {
+            @property('token', String) token!: string;
         }
+        @configuration
+        class BootConfig {}
+        const app = new ApplicationBuilder([BootConfig]);
+        app.properties({});
+        const context = await app.run();
 
-        const builder = new ApplicationBuilder([]);
-        const context = await builder.run();
+        expect(() => resolveConfigurationProperties(StrictConfig, context)).toThrowError(
+            /Missing required property "strict\.token"/
+        );
+    });
 
-        const { instance, isValid } = resolveConfigurationProperties(DefaultConfig as any, context);
+    test('throws fail-loud on conversion failure, naming field/value/type', async () => {
+        @configurationProperties('server')
+        class PortConfig {
+            @property('port', Number) port!: number;
+        }
+        @configuration
+        class BootConfig {}
+        const app = new ApplicationBuilder([BootConfig]);
+        app.properties({ server: { port: 'abc' } });
+        const context = await app.run();
 
-        expect(isValid).toBe(false);
-        // @property decorator sets field to null via addInitializer,
-        // overwriting the class field default
-        expect(instance.port).toBeNull();
+        expect(() => resolveConfigurationProperties(PortConfig, context)).toThrowError(/PortConfig\.port/);
+    });
+});
+
+describe('@configurationProperties auto-registration (AD-15 D1)', () => {
+    test('registers a bound singleton under the camelCase class name', async () => {
+        @configuration
+        class AppConfigWithProps {
+            @entry ignored() {
+                return 'ignored';
+            }
+        }
+        const app = new ApplicationBuilder([AppConfigWithProps, ServerConfig]);
+        app.properties({ server: { port: '9090' } });
+
+        const context = await app.run();
+        const registered = context.getValue('serverConfig');
+
+        expect(registered).toBeDefined();
+        expect((registered as ServerConfig).port).toBe(9090);
     });
 });

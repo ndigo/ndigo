@@ -13,6 +13,9 @@ const { defineProperty, getOwnPropertyDescriptor } = Reflect,
     CONFIG_PROFILE = 'config:profile',
     CONFIG_PROPERTY = 'config:property',
     CONFIG_PROPERTY_SOURCE = 'config:property:source',
+    CONFIG_DEFAULT_VALUE = 'config:defaultValue',
+    CONFIG_NESTED = 'config:nested',
+    CONFIG_PROPERTY_TYPE = 'config:propertyType',
     CONFIG_ENTRY = 'config:entry',
     toUniqueArray = (name: string): string[] => [...new Set(name.split(','))],
     // Helper to get metadata from a class constructor
@@ -123,7 +126,15 @@ export function profile(...expressions: string[]) {
  * @param path - The property path to resolve.
  * @returns A field decorator that captures the path in metadata.
  */
-export function property(path: string) {
+export function property(
+    path: string,
+    propertyType?:
+        | (new (...args: never[]) => number)
+        | (new (...args: never[]) => boolean)
+        | (new (...args: never[]) => Date)
+        | (new (...args: never[]) => string)
+        | string
+) {
     return function (value: undefined, context: ClassFieldDecoratorContext) {
         if (context.kind !== 'field') {
             throw new FrameworkError('@property can only be applied to class fields');
@@ -131,6 +142,9 @@ export function property(path: string) {
 
         // Store metadata
         context.metadata[`${CONFIG_PROPERTY}:${String(context.name)}`] = path;
+        if (propertyType) {
+            context.metadata[`${CONFIG_PROPERTY_TYPE}:${String(context.name)}`] = propertyType;
+        }
 
         // Return initializer that sets up the property
         context.addInitializer(function (this: any) {
@@ -144,6 +158,56 @@ export function property(path: string) {
             });
         });
     };
+}
+
+/**
+ * Supplies the fallback value for a `@property` field when the property is
+ * missing. The default is a raw string, converted through the same
+ * ConversionService path as real property values (AD-15 D2).
+ *
+ * @param rawDefault - The default value (string; converted to the field type).
+ * @returns A field decorator.
+ *
+ * @example
+ * ```ts
+ * @configurationProperties('server')
+ * class ServerConfig {
+ *     @property('port') @defaultValue('8080') port!: number;
+ * }
+ * ```
+ */
+export function defaultValue(rawDefault: string) {
+    return function (value: undefined, context: ClassFieldDecoratorContext) {
+        if (context.kind !== 'field') {
+            throw new FrameworkError('@defaultValue can only be applied to class fields');
+        }
+        context.metadata[`${CONFIG_DEFAULT_VALUE}:${String(context.name)}`] = rawDefault;
+        return value;
+    };
+}
+
+/**
+ * Marks a `@property('prefix')` field as a nested configuration object: bind
+ * recursively into this plain-class field under the property's keypath
+ * (AD-15 D3). One prefix mechanism (`@property`), one recursion flag.
+ *
+ * @returns A field decorator.
+ *
+ * @example
+ * ```ts
+ * @configurationProperties('server')
+ * class ServerConfig {
+ *     @property('port') @defaultValue('8080') port!: number;
+ *     @property('db') @nested db!: DbConfig;
+ * }
+ * class DbConfig { @property('url') url!: string; } // binds server.db.url
+ * ```
+ */
+export function nested<T>(value: undefined, context: ClassFieldDecoratorContext): void {
+    if (context.kind !== 'field') {
+        throw new FrameworkError('@nested can only be applied to class fields');
+    }
+    context.metadata[`${CONFIG_NESTED}:${String(context.name)}`] = true;
 }
 
 /**

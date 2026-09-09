@@ -8,9 +8,10 @@ import {
 import { IllegalStateError, JSONObject } from '@blue/core';
 import { RouteRegistry } from '@blue/router';
 import { isActive } from '@blue/core';
-import { parseCommandLineArgs } from '@blue/context';
+import { parseCommandLineArgs, getEnvironmentSchema, validateEnvironment } from '@blue/context';
 import { applyCustomizers } from '@blue/context';
 import type { EnvironmentCustomizer } from '@blue/context';
+import { z } from 'zod';
 import { StandardConfigFileLoader } from './config-file-loader';
 import { isConfigurationProperties, resolveConfigurationProperties } from './configuration-properties';
 
@@ -44,6 +45,7 @@ export class Application extends Emitter {
     #defaults: JSONObject | null = null;
     #configFileLoader: StandardConfigFileLoader | null = null;
     #customizers: EnvironmentCustomizer[] = [];
+    #schema: z.ZodType | null = null;
     #sources: Set<Function>;
 
     /**
@@ -140,6 +142,15 @@ export class Application extends Emitter {
      */
     setCustomizers(customizers: readonly EnvironmentCustomizer[]): void {
         this.#customizers = [...customizers];
+    }
+
+    /**
+     * Sets a zod schema the prepared environment must satisfy (fail-loud boot).
+     *
+     * @param schema - The zod object schema of the environment's shape.
+     */
+    setValidationSchema(schema: z.ZodType): void {
+        this.#schema = schema;
     }
 
     /**
@@ -308,6 +319,29 @@ export class Application extends Emitter {
                 // Structural cast: `source` is a ctor (decorator-verified).
                 const { instance } = resolveConfigurationProperties(source as new () => unknown, context);
                 context.setValue(name, instance);
+            }
+        }
+
+        // Validate the environment against declared schemas (AD-17 D3):
+        // explicit validateWith schema first, then @environment schemas on
+        // registered sources. Invalid → fail boot loudly with the report.
+        const schemas: z.ZodType[] = [];
+        if (this.#schema) schemas.push(this.#schema);
+        for (const source of this.#sources) {
+            const declared = getEnvironmentSchema(source as new () => unknown);
+            if (declared) schemas.push(declared);
+        }
+        for (const schema of schemas) {
+            const env = context.environment;
+            if (!env) continue;
+            const result = validateEnvironment(env, schema);
+            if (!result.valid) {
+                const detail = result.issues
+                    .map(
+                        (issue) => `  - ${issue.path}: expected ${issue.expected}, got ${JSON.stringify(issue.actual)}`
+                    )
+                    .join('\n');
+                throw new IllegalStateError(`Environment validation failed:\n${detail}`, undefined);
             }
         }
 

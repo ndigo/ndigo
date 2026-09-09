@@ -1,6 +1,7 @@
 import { ApplicationContext, ConfigurableEnvironment, EventListener } from '@blue/context';
 import type { EnvironmentCustomizer } from '@blue/context';
 import { JSONObject } from '@blue/core';
+import { z } from 'zod';
 import { Application } from './application';
 import { StandardConfigFileLoader } from './config-file-loader';
 
@@ -224,6 +225,18 @@ export class ApplicationBuilder {
      */
     customizers(...customizers: EnvironmentCustomizer[]): ApplicationBuilder {
         this.#application.setCustomizers(customizers);
+        return this;
+    }
+
+    /**
+     * Declares a zod schema the prepared environment must satisfy — boot
+     * fails loudly with the aggregate report when invalid (AD-17 D3).
+     *
+     * @param schema - The zod object schema of the environment's shape.
+     * @returns This builder for chaining.
+     */
+    validateWith(schema: z.ZodType): ApplicationBuilder {
+        this.#application.setValidationSchema(schema);
         return this;
     }
 

@@ -15,6 +15,10 @@ explain the *how* with runnable patterns grounded in the demo apps.
    the request pipeline: `@parameters` extractor composition, the
    `validatedBy` / `validatedBody` / `validatedQuery` surface, and
    entity-derived schemas (`insertSchemaForEntity`).
+3. [03 — Environment & Configuration](03-environment-configuration.md) — the
+   configuration pipeline: property sources + precedence, profiles,
+   `@configurationProperties` typed binding, placeholders, customizers,
+   and `@environment` validation.
 
 ## Reading Order
 

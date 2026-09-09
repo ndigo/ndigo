@@ -43,6 +43,7 @@
   },
   "sideEffects": false,
   "dependencies": {
-    "dotenv": "^17.4.2"
+    "dotenv": "^17.4.2",
+    "zod": "^4.5.4"
   }
 }

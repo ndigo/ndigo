@@ -15,6 +15,7 @@ export * from './feature-context-mount-manager';
 export * from './cli-arguments';
 export * from './placeholder-resolver';
 export * from './customizer';
+export * from './environment-schema';
 export * from './property-source';
 export * from './property-sources';
 export * from './shared-dependency-registry';

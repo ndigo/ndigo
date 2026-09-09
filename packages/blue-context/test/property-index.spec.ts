@@ -73,10 +73,10 @@ describe('FlatMergedIndex origin + rebuild semantics', () => {
         const flat = new FlatMergedIndex();
         flat.build([wrapSource('first', { a: 1, shared: 1 }), wrapSource('second', { shared: 2, b: 3 })]);
 
-        expect(flat.getOrigin('a')).toBe('first');
-        expect(flat.getOrigin('shared')).toBe('first');
-        expect(flat.getOrigin('b')).toBe('second');
-        expect(flat.getOrigin('missing')).toBeUndefined();
+        expect(flat.originOf('a')).toBe('first');
+        expect(flat.originOf('shared')).toBe('first');
+        expect(flat.originOf('b')).toBe('second');
+        expect(flat.originOf('missing')).toBeUndefined();
     });
 
     test('rebuild after registry replace repoints origins and values', () => {
@@ -87,7 +87,7 @@ describe('FlatMergedIndex origin + rebuild semantics', () => {
 
         expect(flat.getProperty('a')).toBe(9);
         expect(flat.getProperty('b')).toBeUndefined();
-        expect(flat.getOrigin('a')).toBe('new');
+        expect(flat.originOf('a')).toBe('new');
     });
 
     test('registry-driven resolver picks up mutations lazily', () => {

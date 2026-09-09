@@ -12,6 +12,7 @@ This directory contains reference documentation for dependencies, configurations
 - [2026-03-10_LEGACY_ROUTER_PATTERNS.md](./2026-03-10_LEGACY_ROUTER_PATTERNS.md) - Archived legacy-router patterns and migration notes
 - [2026-03-16_ARGUMENT_CONVERTER_REFERENCES.md](./2026-03-16_ARGUMENT_CONVERTER_REFERENCES.md) - Converter reference types, registry resolution, and error-handling behavior
 - [2026-03-16_ARGUMENT_RESOLVER_CONVERSION_SUMMARY.md](./2026-03-16_ARGUMENT_RESOLVER_CONVERSION_SUMMARY.md) - Consolidated upgrade summary for browser resolvers and conversion features
+- [2026-09-08_ENVIRONMENT_API.md](./2026-09-08_ENVIRONMENT_API.md) - BlueJS environment API surface: sources, profiles, binding, validation, decorators (Phases 0-6, AD-11..17)
 - [2026-03-25_FEATURE_METRIC_NAMING_AND_DASHBOARD_PATTERNS.md](./2026-03-25_FEATURE_METRIC_NAMING_AND_DASHBOARD_PATTERNS.md) - Feature-metric naming contract and dashboard grouping patterns
 
 ## Naming Convention

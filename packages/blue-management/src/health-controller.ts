@@ -1,19 +1,16 @@
 import { getMapping, requestMapping } from '@blue/dispatcher';
 import { ApplicationContext, AsApplicationContextAware } from '@blue/context';
 import { Null } from '@blue/core';
-import { FeatureMetricAggregator } from '@blue/telemetry';
 import { HealthRegistry } from './health';
 import { HEALTH_REGISTRY } from './health-registry-token';
-import { METRIC_AGGREGATOR } from './metric-aggregator-token';
-import { TelemetryHealthIndicator } from './telemetry-health-indicator';
 
 /**
  * Serves application health under `/health`.
  *
- * Runs the context-level {@link HealthRegistry} (all registered indicators),
- * plus a {@link TelemetryHealthIndicator} built at request time from the
- * context aggregator — so `/health` always reflects the telemetry pipeline,
- * even when the registry was wired without it.
+ * Runs the context-level {@link HealthRegistry} (all registered indicators —
+ * including the telemetry indicator wired at context refresh by
+ * {@link ManagementAutoConfiguration}). The registry is read-only here;
+ * it is never mutated per request.
  *
  * @since 1.0.0
  */
@@ -33,10 +30,6 @@ export class HealthController extends AsApplicationContextAware(Null) {
         if (!registry) {
             return { status: 'UNKNOWN', components: {}, timestamp: new Date().toISOString() };
         }
-
-        const aggregator = this.applicationContext?.getValue<FeatureMetricAggregator>(METRIC_AGGREGATOR);
-        registry.register(new TelemetryHealthIndicator(aggregator));
-
         return registry.checkAll();
     }
 }

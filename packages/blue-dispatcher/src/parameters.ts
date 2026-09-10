@@ -18,10 +18,10 @@ export type ParameterExtractor = {
     required: boolean;
     defaultValue: string | null;
     /** Type-based conversion: { source: SourceConstructor, target: TargetConstructor } */
-    convertType?: { source: any; target: any };
+    convertType?: { source: unknown; target: unknown };
     prefix?: string | null;
     /** Optional post-bind validator/converter (e.g. Zod via `validatedBy`). */
-    convert?: (value: any) => any;
+    convert?: (value: unknown) => unknown;
 };
 
 /** Options for creating a parameter extractor with type-based conversion support. */
@@ -29,17 +29,17 @@ export interface ParameterExtractorOptions {
     required?: boolean;
     defaultValue?: string;
     /** Type-based converter: specifies source and target types for ConversionService lookup. */
-    convertType?: { source: any; target: any };
+    convertType?: { source: unknown; target: unknown };
 }
 
 export interface ParameterValueConversionContext {
     name: string;
     parameter: MethodParameter;
-    route: any;
-    mapping: any;
+    route: unknown;
+    mapping: unknown;
 }
 
-export type ParameterValueConverter = (value: any, context: ParameterValueConversionContext) => any;
+export type ParameterValueConverter = (value: unknown, context: ParameterValueConversionContext) => unknown;
 
 /**
  * Parameter map for `parameters` decorator
@@ -98,7 +98,7 @@ export class MethodParameterType implements Equatable, Serializable {
         });
     }
 
-    equals(value: any): boolean {
+    equals(value: unknown): boolean {
         return value instanceof MethodParameterType && value.type === this.type;
     }
 
@@ -133,13 +133,13 @@ export class MethodParameter implements Serializable {
     readonly type!: MethodParameterType;
     readonly required!: boolean;
     readonly defaultValue!: string | null;
-    readonly convertType!: { source: any; target: any } | undefined;
+    readonly convertType!: { source: unknown; target: unknown } | undefined;
     readonly prefix!: string | null;
     /**
      * Optional post-bind validator/converter applied to the resolved value.
      * Set by {@link validatedBy} (Zod-backed, AD-7).
      */
-    readonly convert!: ((value: any) => any) | undefined;
+    readonly convert!: ((value: unknown) => unknown) | undefined;
     /**
      * The `@parameters` map key this parameter was declared under. For HTTP
      * and browser mappings this equals the method-argument name (and usually
@@ -155,9 +155,9 @@ export class MethodParameter implements Serializable {
         name: string,
         required: boolean = false,
         defaultValue: string | null = null,
-        convertType?: { source: any; target: any },
+        convertType?: { source: unknown; target: unknown },
         prefix: string | null = null,
-        convert?: (value: any) => any,
+        convert?: (value: unknown) => unknown,
         parameterName?: string
     ) {
         if (!isString(name)) {
@@ -332,8 +332,8 @@ export function bindBrowserValue(
     source: 'query' | 'state' | 'session' | 'model' | 'cookie' | 'matrix' | 'path',
     options: {
         required?: boolean;
-        defaultValue?: any;
-        convertType?: { source: any; target: any };
+        defaultValue?: string;
+        convertType?: { source: unknown; target: unknown };
         prefix?: string;
     } = {}
 ): ParameterExtractor {
@@ -500,7 +500,7 @@ export function asDate(extractor: ParameterExtractor): ParameterExtractor {
  * Wraps a parameter extractor to enforce JSON conversion.
  * @example asJson<UserProfile>(modelValue('profile'))
  */
-export function asJson<_T = any>(extractor: ParameterExtractor): ParameterExtractor {
+export function asJson<_T = unknown>(extractor: ParameterExtractor): ParameterExtractor {
     return { ...extractor, convertType: { source: String, target: Object } };
 }
 
@@ -526,7 +526,7 @@ export function asArray(extractor: ParameterExtractor): ParameterExtractor {
  */
 export function withConversion(
     extractor: ParameterExtractor,
-    convertType: { source: any; target: any }
+    convertType: { source: unknown; target: unknown }
 ): ParameterExtractor {
     return { ...extractor, convertType };
 }
@@ -548,7 +548,7 @@ export function withConversion(
  * handleRequest(page: string) {}
  */
 export function parameters(paramMap: ParameterMap) {
-    return function (target: any, context: ClassMethodDecoratorContext): void {
+    return function (target: unknown, context: ClassMethodDecoratorContext): void {
         // Store the raw parameter map declaratively. The framework converts
         // it to MethodParameter[] at registration time, where the mapping
         // kind (route/request/socket) is known: HTTP and browser mappings
@@ -635,7 +635,7 @@ const SOURCE_LABEL: Record<ParameterMappingKind, string> = {
  * @returns `'socket'` for socket-mapped methods, `'request'` when a verb is
  *   set (requestMapping/getMapping/…), else `'route'`.
  */
-export function parameterMappingKind(target: any, propertyKey: string | symbol): ParameterMappingKind {
+export function parameterMappingKind(target: unknown, propertyKey: string | symbol): ParameterMappingKind {
     try {
         if (isSocketMapping(target, propertyKey)) return 'socket';
     } catch {
@@ -653,10 +653,7 @@ export function parameterMappingKind(target: any, propertyKey: string | symbol):
  * @param propertyKey - The method name.
  * @returns The name → extractor map, or `undefined` when not decorated.
  */
-export function getParameterMap(
-    target: any,
-    propertyKey: string | symbol
-): ParameterMap | undefined {
+export function getParameterMap(target: unknown, propertyKey: string | symbol): ParameterMap | undefined {
     return getSymbolMetadata(target)[PARAMETER_MAP_KEY(propertyKey)];
 }
 
@@ -681,7 +678,7 @@ export function getParameterMap(
  * @throws {InvalidParameterMappingError} On source/kind incompatibility.
  */
 export function resolveParameters(
-    target: any,
+    target: unknown,
     propertyKey: string | symbol,
     handlerMethod: Function
 ): MethodParameter[] {
@@ -694,8 +691,7 @@ export function resolveParameters(
         // @traced wraps methods in a `(...args)` proxy that destroys the
         // declared signature; telemetry preserves the original so framework
         // code can still read the true parameter names.
-        const original =
-            getSymbolMetadata(target)[`telemetry:traced:${String(propertyKey)}:original`] ?? handlerMethod;
+        const original = getSymbolMetadata(target)[`telemetry:traced:${String(propertyKey)}:original`] ?? handlerMethod;
         const paramNames = getFunctionParamNames(original);
         for (let index = 0; index < paramNames.length; index++) nameToIndex.set(paramNames[index], index);
     }
@@ -747,7 +743,11 @@ function toMethodParameter(paramName: string, extractor: ParameterExtractor): Me
  * @param target - The class prototype or constructor.
  * @param propertyKey - The method name.
  */
-export function storeResolvedParameters(target: any, propertyKey: string | symbol, resolvedParams: MethodParameter[]): void {
+export function storeResolvedParameters(
+    target: unknown,
+    propertyKey: string | symbol,
+    resolvedParams: MethodParameter[]
+): void {
     if (resolvedParams.length > 0) {
         defineProperty(getSymbolMetadata(target), PARAMETER_ARRAY_KEY(propertyKey), {
             value: resolvedParams,
@@ -761,7 +761,7 @@ export function storeResolvedParameters(target: any, propertyKey: string | symbo
 /**
  * Get method parameters
  */
-export function getMethodParameter(target: any, propertyKey: string | symbol): MethodParameter[] | undefined {
+export function getMethodParameter(target: unknown, propertyKey: string | symbol): MethodParameter[] | undefined {
     const metadata = getSymbolMetadata(target);
     return metadata[PARAMETER_ARRAY_KEY(propertyKey)];
 }
@@ -769,6 +769,6 @@ export function getMethodParameter(target: any, propertyKey: string | symbol): M
 /**
  * Check if method has parameters
  */
-export function hasMethodParameter(target: any, propertyKey: string | symbol): boolean {
+export function hasMethodParameter(target: unknown, propertyKey: string | symbol): boolean {
     return getMethodParameter(target, propertyKey) !== undefined;
 }

@@ -8,12 +8,12 @@ function getParameterTypeName(parameter: MethodParameter): string {
 
 /** Converts a resolved argument value and wraps conversion failures. */
 export function convertArgumentValue(
-    convertType: { source: any; target: any } | undefined,
-    value: any,
+    convertType: { source: unknown; target: unknown } | undefined,
+    value: unknown,
     parameter: MethodParameter,
     route: Route,
-    mapping: any
-): any {
+    mapping: unknown
+): unknown {
     const context: ArgumentValueConversionContext = { name: parameter.name, parameter, route, mapping };
     try {
         // Use ConversionService to look up converter based on convertType

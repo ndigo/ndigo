@@ -128,9 +128,17 @@ export function effect(target: (...args: unknown[]) => void, context: ClassMetho
  * }
  * ```
  */
-export function reactive<T extends new (...args: any[]) => object>(target: T, _context: ClassDecoratorContext<T>): T {
-    return class extends target {
-        constructor(...args: any[]) {
+export function reactive<T extends new (...args: unknown[]) => object>(
+    target: T,
+    _context: ClassDecoratorContext<T>
+): T {
+    // TS2545 only allows a `class extends <type-var>` constructor to be written
+    // as (...args: any[]), which is banned repo-wide. Widen the base to a concrete
+    // constructor so the mixin can accept unknown[] args; the returned class
+    // literally extends `target`, so it still is exactly `T` plus extra wiring.
+    const Base: new (...args: unknown[]) => object = target;
+    return class extends Base {
+        constructor(...args: unknown[]) {
             super(...args);
 
             const instance = this as unknown as Record<string | symbol, unknown>;
@@ -207,5 +215,5 @@ export function reactive<T extends new (...args: any[]) => object>(target: T, _c
                 origDispose?.call(instance);
             };
         }
-    };
+    } as unknown as T;
 }

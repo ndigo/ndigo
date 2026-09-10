@@ -18,7 +18,7 @@ export type DataParameterInit = HTTPInit & { data?: DataInit };
  * * to affect processing.
  */
 
-const getEntries = (data: any) => entriesIterator(isString(data) ? QueryString.parse(data) : data),
+const getEntries = (data: DataInit) => entriesIterator(isString(data) ? QueryString.parse(data) : data),
     getOrHead = /^(GET|HEAD)$/i,
     isBodyless = (method: HTTPMethod): boolean => getOrHead.test(method),
     isArrayBuffer = is(ArrayBuffer),
@@ -32,7 +32,7 @@ const getEntries = (data: any) => entriesIterator(isString(data) ? QueryString.p
     isUint8ClampedArray = is(Uint8ClampedArray),
     isUint16Array = is(Uint16Array),
     isUint32Array = is(Uint32Array),
-    isTypedArray = (value: any): boolean =>
+    isTypedArray = (value: unknown): boolean =>
         isFloat32Array(value) ||
         isFloat64Array(value) ||
         isInt8Array(value) ||
@@ -42,8 +42,8 @@ const getEntries = (data: any) => entriesIterator(isString(data) ? QueryString.p
         isUint8ClampedArray(value) ||
         isUint16Array(value) ||
         isUint32Array(value),
-    isArrayBufferView = (value: any): boolean => isTypedArray(value) || isDataView(value),
-    isBufferSource = (value: any): boolean => isArrayBuffer(value) || isArrayBufferView(value),
+    isArrayBufferView = (value: unknown): boolean => isTypedArray(value) || isDataView(value),
+    isBufferSource = (value: unknown): boolean => isArrayBuffer(value) || isArrayBufferView(value),
     isBlob = is(Blob),
     isFormData = is(FormData),
     isURLSearchParams = is(URLSearchParams),
@@ -78,9 +78,12 @@ export class DataParameterInterceptor implements InitializationAwareHTTPIntercep
         if ('data' in settings) {
             const { data, method } = settings;
             if (method && isBodyless(method)) {
+                if (data === undefined) {
+                    return true;
+                }
                 const entries = getEntries(data);
                 if (entries && typeof entries[Symbol.iterator] === 'function') {
-                    for (const [key, value] of entries as Iterable<[string, any]>) {
+                    for (const [key, value] of entries) {
                         url.searchParams.set(String(key), String(value));
                     }
                 }

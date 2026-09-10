@@ -10,7 +10,7 @@ import {
 
 describe('ContentNegotiationManager', () => {
     let manager: ContentNegotiationManager;
-    let resolver: any; // Will be a mock
+    let resolver: PathExtensionContentNegotiationStrategy;
 
     beforeEach(() => {
         const mediaTypes = new Map<string, MediaType>([
@@ -195,6 +195,6 @@ describe('StringTemplateView', () => {
     it('renders template without target throws error', async () => {
         const view = new StringTemplateView('/test');
         view.template = TEMPLATE;
-        await expect(view._renderTemplate({} as any, {} as any)).rejects.toThrow();
+        await expect(view._renderTemplate({}, {})).rejects.toThrow();
     });
 });

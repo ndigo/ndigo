@@ -50,6 +50,10 @@ vite.config.d.ts.map
 
 # Vitest
 .vitest
+# Generated vitest config artifacts (the .ts source is maintained)
+vitest.config.js
+vitest.config.d.ts
+vitest.config.d.ts.map
 
 # App build output (Vite bundles). Committed source only — dist/ and the
 # root index.js bundle are generated per build.
@@ -75,8 +79,11 @@ test-results/
 .opencode/
 
 # graft's local graph cache — regenerable, not committed (run `graft build`).
-/graft/
+**/graft/
 
 # Generated TypeDoc output — generated in CI/release jobs only (Task 17)
 doc-html/
 doc-md/
+
+# graft's local graph cache — regenerable, not committed (run `graft build`).
+/graft/

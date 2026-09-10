@@ -40,7 +40,7 @@ pnpm lint            # Check code quality
 **Pre-Commit Validation:**
 
 ```bash
-# Integration layer, internal imports, and internal exports are enforced by @blue/eslint-plugin.
+# Integration layer, internal imports, and internal exports are enforced by @blue/oxlint-plugin.
 # Run `pnpm lint` to check — no manual rg needed for those.
 
 # Verify no mixed-case acronyms
@@ -305,7 +305,7 @@ import { choice, sequenceOf } from '@blue/parser';
 
 **Enforcement:**
 
-These rules are **automatically enforced** by `@blue/eslint-plugin`, which provides three oxlint rules:
+These rules are **automatically enforced** by `@blue/oxlint-plugin`, which provides three oxlint rules:
 
 | Rule                                  | Severity | Description                                                                                                                                                           |
 | :------------------------------------ | :------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -326,7 +326,7 @@ When reviewing or writing code:
 When adding new integration layers or encapsulated libraries:
 
 1. Update this section with the new mapping
-2. Update `@blue/eslint-plugin` constants in `packages/blue-eslint-plugin/src/_constants.ts`
+2. Update `@blue/oxlint-plugin` constants in `packages/blue-oxlint-plugin/src/_constants.ts`
 3. Update `ARCHITECTURE.md` "Dependency Management Strategy" section
 
 ### Decorator Naming and Conventions

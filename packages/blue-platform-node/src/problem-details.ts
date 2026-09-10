@@ -106,7 +106,7 @@ export function writeProblem(
     res.writeHead(details.status, {
         'Content-Type': 'application/problem+json',
         'Cache-Control': 'no-store',
-        'Vary': 'Accept',
+        Vary: 'Accept',
         ...headers,
     });
     res.end(JSON.stringify(payload));
@@ -120,11 +120,7 @@ export function writeProblem(
  * @returns `true` when the value is a problem document.
  */
 export function isProblemDetails(value: unknown): value is ProblemDetails {
-    return (
-        value !== null &&
-        typeof value === 'object' &&
-        typeof (value as { status?: unknown }).status === 'number'
-    );
+    return value !== null && typeof value === 'object' && typeof (value as { status?: unknown }).status === 'number';
 }
 
 /**

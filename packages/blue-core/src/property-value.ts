@@ -1,6 +1,6 @@
 import { RingBuffer } from './ring-buffer.js';
 import { JSONValue, Serializable, serialize } from './serializable.js';
-import { Equatable, equates } from './equatable.js';
+import { Equatable, equates, equatable } from './equatable.js';
 import { is, like } from '@blue/util/types';
 import { likeIterable } from './iterable.js';
 import { createNull } from './null.js';
@@ -21,7 +21,7 @@ export interface PropertyValues extends Iterable<PropertyValue> {
     getPropertyValue(propertyName: string): PropertyValue;
 }
 
-const isString = is(String) as (value: any) => value is string;
+const isString = is(String) as (value: unknown) => value is string;
 
 /**
  * Tests whether a value behaves like a `PropertyValues` collection.
@@ -31,8 +31,8 @@ const isString = is(String) as (value: any) => value is string;
  */
 const _likePropertyValuesShape = like({ propertyValues: Array, getPropertyValue: Function });
 
-export const likePropertyValues = ((value: any) => likeIterable(value) && _likePropertyValuesShape(value)) as (
-    value: any
+export const likePropertyValues = ((value: unknown) => likeIterable(value) && _likePropertyValuesShape(value)) as (
+    value: unknown
 ) => value is PropertyValues;
 
 /**
@@ -40,7 +40,7 @@ export const likePropertyValues = ((value: any) => likeIterable(value) && _likeP
  */
 export class PropertyValue implements Equatable, Serializable {
     #name: string;
-    #value: any;
+    #value: unknown;
 
     /** Whether the property is optional when consumed by higher-level APIs. */
     optional: boolean;
@@ -68,7 +68,7 @@ export class PropertyValue implements Equatable, Serializable {
      * @param name - Property name.
      * @param value - Stored value.
      */
-    constructor(name: string, value: any) {
+    constructor(name: string, value: unknown) {
         this.#name = name;
         this.#value = value;
         this.optional = false;
@@ -80,14 +80,15 @@ export class PropertyValue implements Equatable, Serializable {
      * @param value - Value to compare.
      * @returns `true` when both the name and wrapped value match.
      */
-    equals(value: any): boolean {
+    equals(value: unknown): boolean {
         if (value === this) {
             return true;
         }
         if (!(value instanceof PropertyValue)) {
             return false;
         }
-        return this.name === value.name && equates(this.value, value.value);
+        // Wrapped values may be arbitrary; `equates` falls back to deep equality for unknown shapes.
+        return this.name === value.name && equates(this.value as equatable, value.value as equatable);
     }
 
     /**
@@ -151,7 +152,7 @@ export class MutablePropertyValues
      * @param name - Property name.
      * @param value - Property value.
      */
-    addPropertyValue(name: string, value: any): void;
+    addPropertyValue(name: string, value: unknown): void;
 
     /**
      * Adds a pre-built property value to the collection.
@@ -160,7 +161,7 @@ export class MutablePropertyValues
      */
     addPropertyValue(pv: PropertyValue): void;
 
-    addPropertyValue(nameOrPropertyValue: string | PropertyValue, value?: any): void {
+    addPropertyValue(nameOrPropertyValue: string | PropertyValue, value?: unknown): void {
         if (isString(nameOrPropertyValue)) {
             this.put(new PropertyValue(nameOrPropertyValue, value));
         } else {
@@ -174,7 +175,7 @@ export class MutablePropertyValues
      * @param value - Value to compare.
      * @returns `true` when both collections contain the same property names and values.
      */
-    equals(value: any): boolean {
+    equals(value: unknown): boolean {
         let result = value === this;
 
         if (!result && likePropertyValues(value) && this.length === value.propertyValues.length) {
@@ -185,7 +186,9 @@ export class MutablePropertyValues
                     result = false;
                     break;
                 }
-                result = equates(value.getPropertyValue(pv.name)?.value, pv.value);
+                // Wrapped values may be arbitrary; `equates` handles any shape via deep equality.
+                const other = value.getPropertyValue(pv.name)?.value;
+                result = equates(other as equatable, pv.value as equatable);
                 if (!result) {
                     break;
                 }

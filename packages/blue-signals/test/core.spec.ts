@@ -123,8 +123,10 @@ describe('computed', () => {
         expect(c.value).toBe(0);
         s.value = 3;
         expect(c.value).toBe(6);
+        // ReadonlySignal marks `value` readonly, but the runtime guard is what throws; widen to a writable shape to exercise it.
+        const writable: { value: unknown } = c;
         expect(() => {
-            (c as any).value = 42;
+            writable.value = 42;
         }).toThrow();
     });
 

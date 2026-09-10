@@ -42,12 +42,15 @@ import isString from '../type/is-string.js';
  * toString( new Date('2001-02-03T04:05:06Z' ) );
  * //=> 'new Date( "2001-02-03T04:05:06.000Z" )'
  */
-function toString(value: any): string {
+function toString(value: unknown): string {
     if (value == null) return '';
     if (isString(value)) return value;
-    if (typeof value === 'object' && typeof (value as any).toString === 'function') {
-        const custom = (value as any).toString();
-        if (typeof custom === 'string') return custom;
+    if (typeof value === 'object' && value !== null) {
+        const customToString = (value as { toString?: unknown }).toString;
+        if (typeof customToString === 'function') {
+            const custom: unknown = customToString.call(value);
+            if (typeof custom === 'string') return custom;
+        }
     }
     return String(value);
 }

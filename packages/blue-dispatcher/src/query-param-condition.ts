@@ -74,7 +74,6 @@ export class QueryParamExpression extends AbstractNameValueExpression<string> {
 
 /**
  * A logical conjunction (' && ') route condition that matches a route against a set parameter expressions with syntax defined in `RouteMapping`.
- * @extends module:dispatcher.AbstractRouteCondition
  */
 export class QueryParamCondition extends AbstractRouteCondition<QueryParamCondition> {
     /**

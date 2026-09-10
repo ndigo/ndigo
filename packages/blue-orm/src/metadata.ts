@@ -10,7 +10,7 @@ import {
     lifecycleHooksMetadataKey,
 } from './_constants';
 
-export type ClassType = new (...args: any[]) => any;
+export type ClassType = new (...args: unknown[]) => unknown;
 
 export type RelationKind = 'one-to-many' | 'many-to-one' | 'many-to-many' | 'one-to-one';
 
@@ -68,7 +68,9 @@ export interface EntityMetadata {
 type MetadataRecord = Record<string, unknown>;
 
 function getMetadata(target: Constructable): MetadataRecord {
-    return ((target as any)[Symbol.metadata] as MetadataRecord) || {};
+    // TS's Function type doesn't declare the TC39 Symbol.metadata property;
+    // it exists on every decorated class constructor at runtime.
+    return (target as unknown as { [Symbol.metadata]?: MetadataRecord })?.[Symbol.metadata] ?? {};
 }
 
 /**

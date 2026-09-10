@@ -92,10 +92,15 @@ export type Entries<Value> =
 
 const { isArray } = Array,
     { entries } = Object,
-    propIs = (type: any) => (name: any) => (obj: any) => is(type, obj?.[name]),
+    propIs =
+        (type: Function) =>
+        (name: string | symbol) =>
+        (obj: unknown): boolean =>
+            is(type, (obj as Record<PropertyKey, unknown> | undefined)?.[name]),
     hasFunction = propIs(Function),
     hasEntries = hasFunction('entries'),
-    _invokeEntries = (obj: any) => obj.entries(),
+    _invokeEntries = (obj: object): IterableIterator<unknown> =>
+        (obj as { entries(): IterableIterator<[PropertyKey, unknown]> }).entries(),
     _T = (): boolean => true,
     _entriesToIterator = (obj: object) => indexedIterator(entries(obj));
 
@@ -104,14 +109,14 @@ const { isArray } = Array,
  * @param value - The value to be tested.
  * @returns `true` if the value is an entry, `false` otherwise.
  */
-export const isEntry = (value: any): value is Entry<any> => isArray(value) && value.length === 2;
+export const isEntry = (value: unknown): value is [unknown, unknown] => isArray(value) && value.length === 2;
 
 /**
  * Type guard to check if a value is an array of entries.
  * @param value - The value to be tested.
  * @returns `true` if the value is an array of entries, `false` otherwise.
  */
-export const isEntries = (value: any): value is Entry<any> =>
+export const isEntries = (value: unknown): value is [unknown, unknown][] =>
     isArray(value) && (value.length ? isEntry(value[0]) : true);
 
 /**
@@ -119,15 +124,15 @@ export const isEntries = (value: any): value is Entry<any> =>
  * @param value - The value to be tested.
  * @returns `true` if the value is iterable, `false` otherwise.
  */
-export const likeIterable = (value: any): value is Iterable<any> =>
-    !isNil(value) && value[Symbol.iterator] !== undefined;
+export const likeIterable = (value: unknown): value is Iterable<unknown> =>
+    !isNil(value) && (value as { [Symbol.iterator]?: unknown })[Symbol.iterator] !== undefined;
 
 /**
  * An iterator for array-like objects, providing sequential access to elements by index.
  * @template T - The type of elements in the indexed collection.
 
  */
-export class IndexedIterator<T = any> implements IterableIterator<T> {
+export class IndexedIterator<T = unknown> implements IterableIterator<T> {
     #indexed: ArrayLike<T | undefined>;
     #index: number;
 
@@ -169,7 +174,7 @@ export class IndexedIterator<T = any> implements IterableIterator<T> {
  * @param indexed - The array-like collection to iterate over.
  * @returns An `IterableIterator` for the provided collection.
  */
-export const indexedIterator = <T = any>(indexed: ArrayLike<T | undefined>): IterableIterator<T> =>
+export const indexedIterator = <T = unknown>(indexed: ArrayLike<T | undefined>): IterableIterator<T> =>
     new IndexedIterator<T>(indexed);
 
 /**
@@ -178,7 +183,7 @@ export const indexedIterator = <T = any>(indexed: ArrayLike<T | undefined>): Ite
  * @template T - The type of values in the entries.
 
  */
-export class EntriesIterator<T = any> implements IterableIterator<Entry<T>> {
+export class EntriesIterator<T = unknown> implements IterableIterator<Entry<T>> {
     #iterator: Iterator<Entry<T>>;
 
     /**
@@ -214,4 +219,5 @@ export class EntriesIterator<T = any> implements IterableIterator<Entry<T>> {
  * @param target - The object or collection to iterate over its entries.
  * @returns An `IterableIterator` for the entries of the provided target.
  */
+// oxlint-disable-next-line typescript/no-explicit-any -- the default type param feeds the distributive `Entry<T>` conditional; `unknown` resolves it to `never`, gutting the exported iterator's element type for callers that don't supply T.
 export const entriesIterator = <T = any>(target: object): IterableIterator<Entry<T>> => new EntriesIterator<T>(target);

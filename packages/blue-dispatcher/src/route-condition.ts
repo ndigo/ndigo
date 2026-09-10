@@ -14,7 +14,7 @@ export interface NameValueExpression<T> {
 /**
  * Contract for route matching conditions.
  */
-export interface RouteCondition<T = any> {
+export interface RouteCondition<T = unknown> {
     /**
      * Merge this condition with another condition of the same type.
      *
@@ -50,7 +50,7 @@ const { defineProperty } = Reflect;
  * @returns `true` when the value is a RouteCondition.
  */
 export const likeRouteCondition = like({ merge: Function, getMatchingCondition: Function }) as (
-    value: any
+    value: unknown
 ) => value is RouteCondition;
 
 /**
@@ -150,7 +150,7 @@ export abstract class AbstractRouteCondition<T extends AbstractRouteCondition<T>
         return this.content.length === 0;
     }
 
-    abstract content: any[];
+    abstract content: unknown[];
     abstract infix: string;
 
     /**
@@ -159,11 +159,11 @@ export abstract class AbstractRouteCondition<T extends AbstractRouteCondition<T>
      * @param value - The value to compare.
      * @returns `true` when both conditions are equivalent.
      */
-    equals(value: any): boolean {
+    equals(value: unknown): boolean {
         if (this === value) {
             return true;
         }
-        if (value === void 0 || this.constructor !== value.constructor) {
+        if (typeof value !== 'object' || value === null || this.constructor !== value.constructor) {
             return false;
         }
         return this.toString() === value.toString();
@@ -257,7 +257,9 @@ export class RouteConditionHolder extends AbstractRouteCondition<RouteConditionH
             return this;
         } else {
             const combined = this.condition.merge(other.condition);
-            return new RouteConditionHolder(combined);
+            // merge returns the same concrete condition type this holder wraps;
+            // the RouteCondition<unknown> interface is widened only here.
+            return new RouteConditionHolder(combined as RouteCondition);
         }
     }
 
@@ -271,7 +273,9 @@ export class RouteConditionHolder extends AbstractRouteCondition<RouteConditionH
         if (!this.condition) {
             return this;
         }
-        const match: RouteCondition | null = this.condition.getMatchingCondition(route);
+        // A matching condition is the same concrete type this holder wraps;
+        // the RouteCondition<unknown> interface is widened only here.
+        const match = this.condition.getMatchingCondition(route) as RouteCondition | null;
         return match ? new RouteConditionHolder(match) : null;
     }
 

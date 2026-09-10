@@ -5,6 +5,7 @@
 
 import { describe, test, expect } from 'vitest';
 import { conversionService } from '@blue/core';
+import { Route } from '@blue/router';
 import {
     queryValue,
     pathVariable,
@@ -100,8 +101,8 @@ describe('Conversion Pipeline Integration', () => {
             const context: ArgumentValueConversionContext = {
                 name: 'id',
                 parameter,
-                route: {} as any,
-                mapping: {} as any,
+                route: {} as unknown as Route,
+                mapping: {},
             };
 
             const result = converter('A1B2C3D4-E5F6-7890-ABCD-EF1234567890', context);
@@ -118,8 +119,8 @@ describe('Conversion Pipeline Integration', () => {
             const context: ArgumentValueConversionContext = {
                 name: 'count',
                 parameter,
-                route: {} as any,
-                mapping: {} as any,
+                route: {} as unknown as Route,
+                mapping: {},
             };
 
             const result = converter('42', context);
@@ -136,8 +137,8 @@ describe('Conversion Pipeline Integration', () => {
             const context: ArgumentValueConversionContext = {
                 name: 'active',
                 parameter,
-                route: {} as any,
-                mapping: {} as any,
+                route: {} as unknown as Route,
+                mapping: {},
             };
 
             const resultTrue = converter('true', context);
@@ -157,8 +158,8 @@ describe('Conversion Pipeline Integration', () => {
             const context: ArgumentValueConversionContext = {
                 name: 'createdAt',
                 parameter,
-                route: {} as any,
-                mapping: {} as any,
+                route: {} as unknown as Route,
+                mapping: {},
             };
 
             const result = converter('2024-01-15T10:30:00.000Z', context);
@@ -175,8 +176,8 @@ describe('Conversion Pipeline Integration', () => {
             const context: ArgumentValueConversionContext = {
                 name: 'data',
                 parameter,
-                route: {} as any,
-                mapping: {} as any,
+                route: {} as unknown as Route,
+                mapping: {},
             };
 
             const result = converter('{"key":"value"}', context);
@@ -193,8 +194,8 @@ describe('Conversion Pipeline Integration', () => {
             const context: ArgumentValueConversionContext = {
                 name: 'tags',
                 parameter,
-                route: {} as any,
-                mapping: {} as any,
+                route: {} as unknown as Route,
+                mapping: {},
             };
 
             const result = converter('one,two,three', context);
@@ -216,8 +217,8 @@ describe('Conversion Pipeline Integration', () => {
             const context: ArgumentValueConversionContext = {
                 name: 'hex',
                 parameter,
-                route: {} as any,
-                mapping: {} as any,
+                route: {} as unknown as Route,
+                mapping: {},
             };
 
             const result = converter('ff', context);
@@ -236,8 +237,8 @@ describe('Conversion Pipeline Integration', () => {
             const context: ArgumentValueConversionContext = {
                 name: 'id',
                 parameter,
-                route: {} as any,
-                mapping: {} as any,
+                route: {} as unknown as Route,
+                mapping: {},
             };
 
             expect(() => converter('not-a-uuid', context)).toThrow(TypeError);
@@ -253,8 +254,8 @@ describe('Conversion Pipeline Integration', () => {
             const context: ArgumentValueConversionContext = {
                 name: 'flag',
                 parameter,
-                route: {} as any,
-                mapping: {} as any,
+                route: {} as unknown as Route,
+                mapping: {},
             };
 
             expect(() => converter('maybe', context)).toThrow(TypeError);
@@ -270,8 +271,8 @@ describe('Conversion Pipeline Integration', () => {
             const context: ArgumentValueConversionContext = {
                 name: 'json',
                 parameter,
-                route: {} as any,
-                mapping: {} as any,
+                route: {} as unknown as Route,
+                mapping: {},
             };
 
             expect(() => converter('{invalid}', context)).toThrow(TypeError);

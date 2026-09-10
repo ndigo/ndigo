@@ -1,4 +1,4 @@
-import { HTTP, ResponseAwareHTTPInterceptor, ErrorAwareHTTPInterceptor } from '../http';
+import { HTTP, HTTPInit, ResponseAwareHTTPInterceptor, ErrorAwareHTTPInterceptor } from '../http';
 import ResponseError from '../response-error';
 
 /**
@@ -40,7 +40,7 @@ export class ErrorNormalizationInterceptor implements ResponseAwareHTTPIntercept
      * @param settings - The request settings used for the call.
      * @returns A normalized response or void.
      */
-    async postResponse(response: Response, settings: any): Promise<Response | void> {
+    async postResponse(response: Response, settings: HTTPInit): Promise<Response | void> {
         if (response.ok) {
             return response;
         }

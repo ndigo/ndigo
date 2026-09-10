@@ -292,7 +292,7 @@ describe('parseMediaType', () => {
 
     test('should throw on invalid input', () => {
         expect(() => parseMediaType('')).toThrow();
-        expect(() => parseMediaType(null as any)).toThrow();
+        expect(() => parseMediaType(null as unknown as string)).toThrow();
     });
 
     test('should use registry', () => {

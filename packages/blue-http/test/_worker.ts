@@ -32,14 +32,13 @@ const handlers = [
     http.get('http://localhost/responseType/:type/:subtype', async ({ params }) => {
         const { type, subtype } = params;
         const mediaType = `${type}/${subtype}`;
-        let data: any;
+        let data: string;
         let buffer: ArrayBuffer;
         let length: string;
 
         switch (mediaType) {
             case 'application/pdf':
-                data = await fetch(base64PDF);
-                buffer = await data.arrayBuffer();
+                buffer = await (await fetch(base64PDF)).arrayBuffer();
                 length = buffer.byteLength.toString();
                 return HttpResponse.arrayBuffer(buffer, {
                     headers: {
@@ -48,8 +47,7 @@ const handlers = [
                     },
                 });
             case 'image/gif':
-                data = await fetch(base64GIF);
-                buffer = await data.arrayBuffer();
+                buffer = await (await fetch(base64GIF)).arrayBuffer();
                 length = buffer.byteLength.toString();
                 return HttpResponse.arrayBuffer(buffer, {
                     headers: {
@@ -58,8 +56,7 @@ const handlers = [
                     },
                 });
             case 'image/jpg':
-                data = await fetch(base64JPG);
-                buffer = await data.arrayBuffer();
+                buffer = await (await fetch(base64JPG)).arrayBuffer();
                 length = buffer.byteLength.toString();
                 return HttpResponse.arrayBuffer(buffer, {
                     headers: {
@@ -68,8 +65,7 @@ const handlers = [
                     },
                 });
             case 'image/png':
-                data = await fetch(base64PNG);
-                buffer = await data.arrayBuffer();
+                buffer = await (await fetch(base64PNG)).arrayBuffer();
                 length = buffer.byteLength.toString();
                 return HttpResponse.arrayBuffer(buffer, {
                     headers: {

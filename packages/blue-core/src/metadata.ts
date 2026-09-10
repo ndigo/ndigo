@@ -9,13 +9,15 @@ import '@tsmetadata/polyfill';
  * @param target - Class constructor, prototype, or instance.
  * @returns The metadata record, or an empty object when no metadata is present.
  */
-export function getSymbolMetadata(target: any): Record<string, any> {
-    if (typeof target === 'function' && target[Symbol.metadata]) {
-        return target[Symbol.metadata];
-    }
+type MetadataCarrier = { [Symbol.metadata]?: unknown; constructor?: MetadataCarrier };
 
-    if (target && target.constructor && target.constructor[Symbol.metadata]) {
-        return target.constructor[Symbol.metadata];
+// oxlint-disable-next-line typescript/no-explicit-any -- callers (blue-dispatcher, blue-telemetry) return values read from this record as their own typed payloads; `unknown` values would break those returns.
+export function getSymbolMetadata(target: unknown): Record<string, any> {
+    const carrier = (typeof target === 'function' ? target : target?.constructor) as MetadataCarrier | undefined;
+    const meta = carrier?.[Symbol.metadata];
+
+    if (meta) {
+        return meta;
     }
 
     return {};

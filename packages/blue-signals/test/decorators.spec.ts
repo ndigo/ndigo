@@ -8,7 +8,7 @@ describe('@signal with @reactive', () => {
             @signal count = 0;
         }
 
-        const c = new Counter() as any;
+        const c = new Counter();
         expect(c.count).toBe(0);
 
         c.count = 5;
@@ -25,7 +25,7 @@ describe('@signal with @reactive', () => {
             }
         }
 
-        const c = new Counter() as any;
+        const c = new Counter();
         expect(c.doubled).toBe(0);
 
         c.count = 3;
@@ -38,8 +38,8 @@ describe('@signal with @reactive', () => {
             @signal value = 'default';
         }
 
-        const a = new Store() as any;
-        const b = new Store() as any;
+        const a = new Store();
+        const b = new Store();
 
         a.value = 'a-value';
         expect(a.value).toBe('a-value');
@@ -76,7 +76,7 @@ describe('@computed with @reactive', () => {
             }
         }
 
-        const calc = new Calculator() as any;
+        const calc = new Calculator();
         expect(calc.sum).toBe(5);
 
         calc.a = 10;
@@ -97,7 +97,7 @@ describe('@computed with @reactive', () => {
             }
         }
 
-        const c = new Calc() as any;
+        const c = new Calc();
         expect(c.quadrupled).toBe(8);
 
         c.value = 3;
@@ -117,7 +117,7 @@ describe('@computed with @reactive', () => {
             }
         }
 
-        const c = new Calc() as any;
+        const c = new Calc();
         expect(computeCount).toBe(0); // lazy — not computed yet
 
         void c.doubled; // first access
@@ -157,7 +157,7 @@ describe('@effect with @reactive', () => {
             }
         }
 
-        const w = new Watcher() as any;
+        const w = new Watcher();
 
         w.count = 1;
         w.count = 2;
@@ -178,7 +178,7 @@ describe('@effect with @reactive', () => {
             }
         }
 
-        const w = new Watcher() as any;
+        const w = new Watcher();
         w.count = 1;
         expect(values.some((v) => v === 1)).toBe(true);
     });
@@ -197,7 +197,8 @@ describe('@reactive lifecycle', () => {
             }
         }
 
-        const w = new Watcher() as any;
+        // @reactive installs a dispose() method at runtime that the class type doesn't declare.
+        const w = new Watcher() as Watcher & { dispose(): void };
 
         w.count = 1;
         expect(w.count).toBe(1);
@@ -232,7 +233,7 @@ describe('@reactive lifecycle', () => {
             }
         }
 
-        const c = new Component() as any;
+        const c = new Component();
         c.destroy();
         c.value = 42;
 
@@ -248,12 +249,16 @@ describe('getSignal', () => {
             @signal count = 0;
         }
 
-        const c = new Counter() as any;
+        const c = new Counter();
         const sig = getSignal<number>(c, 'count');
         expect(sig).toBeDefined();
-        expect(sig!.value).toBe(0);
+        // sig is proven defined by the assertion above; narrow for typed access.
+        if (sig === undefined) {
+            throw new Error('expected getSignal to return the backing signal');
+        }
+        expect(sig.value).toBe(0);
 
         c.count = 10;
-        expect(sig!.value).toBe(10);
+        expect(sig.value).toBe(10);
     });
 });

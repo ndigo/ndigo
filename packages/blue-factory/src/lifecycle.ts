@@ -11,7 +11,7 @@ export interface AsyncDestroyable extends Destroyable {
 }
 
 export interface Initializable {
-    init(...args: any[]): void;
+    init(...args: unknown[]): void;
 }
 
 export interface Closeable {
@@ -46,7 +46,6 @@ export interface LifecycleProcessor extends Lifecycle {
  */
 
 /**
- * @extends module:factory.Destroyable
  */
 
 /**

@@ -1,11 +1,26 @@
 import { describe, test, expect, beforeEach, afterEach, vi } from 'vitest';
+import { JSONObject, JSONValue } from '@blue/core';
 import {
     Emitter,
     AsAsyncEventEmitter,
     AsConditionalEventEmitter,
     AsPositionalEventEmitter,
     asEventEmitter,
+    type EventListener,
+    type EventType,
+    type EventHandlers,
 } from '../src/event-emitter';
+
+/** Positional-emitter surface exercised by the specs below. */
+type PositionalEmitter = Emitter & {
+    at: (event: string | symbol, index: number, listener: Function) => void;
+    first: (event: string | symbol, listener: Function) => void;
+};
+
+/** Async-emitter surface exercised by the specs below. */
+type AsyncEmitter = Emitter & {
+    tick: (event: string | symbol, ...args: unknown[]) => Promise<void>;
+};
 
 describe('Emitter', () => {
     test('it should be a function', () => {
@@ -24,7 +39,7 @@ describe('Emitter', () => {
 
         afterEach(() => {
             emitter.destroy();
-            emitter = undefined as any;
+            emitter = undefined as unknown as Emitter;
         });
 
         test('it should provide event subscription', () => {
@@ -81,7 +96,7 @@ describe('Emitter', () => {
             expect(emitter.listeners('foo')[0]).toBe(onFoo);
             expect(emitter.listeners('foo')[1]).toBe(onFooToo);
 
-            expect(() => (emitter as any).on('foo')).not.toThrow();
+            expect(() => emitter.on('foo')).not.toThrow();
         });
 
         test('it should support namespaced event types', () => {
@@ -167,14 +182,15 @@ describe('Emitter', () => {
             emitter.on('test', onEmit);
             emitter.on('test', onEmitToo);
 
-            (emitter as any).on(onAll);
+            emitter.on(onAll as unknown as EventType | EventHandlers);
 
             emitter.emit('test', 1, 2, 3);
             emitter.off('test', onEmit);
             emitter.emit('test', 4, 5, 6);
             emitter.off('test', onEmitToo);
 
-            (emitter as any).off(onAll);
+            // A function-only `off(listener)` removes the listener everywhere (`$every`)
+            (emitter as { off(listener: Function): Emitter }).off(onAll);
 
             emitter.off('undefined', onEmit);
 
@@ -221,10 +237,11 @@ describe('Emitter', () => {
 
         test('it should provide a clean JSON and String representation', () => {
             let noop = () => {},
-                json: any,
+                json: JSONValue,
                 string: string;
 
-            (emitter as any).maxListeners = 5;
+            // Emitter allows a maxListeners tuning knob not declared on the class type
+            (emitter as unknown as { maxListeners: number }).maxListeners = 5;
             emitter.on('test', noop);
             emitter.on('test', noop);
 
@@ -236,9 +253,11 @@ describe('Emitter', () => {
 
             // toJSON()
             expect(json).toHaveProperty('listenerCount');
-            expect(typeof json.listenerCount).toBe('object');
-            expect(json.listenerCount).toHaveProperty('test');
-            expect(typeof json.listenerCount.test).toBe('number');
+            // toJSON() reports per-type listener counts (JSON shape asserted below)
+            const listenerCount = (json as JSONObject)['listenerCount'] as Record<string, number>;
+            expect(typeof listenerCount).toBe('object');
+            expect(listenerCount).toHaveProperty('test');
+            expect(typeof listenerCount.test).toBe('number');
 
             // toString()
             expect(string).toMatch(/^EventEmitter {.+}$/);
@@ -304,10 +323,7 @@ describe('AsPositionalEventEmitter', () => {
     });
 
     describe('instances', () => {
-        let emitter: Emitter & {
-            at: (event: string | symbol, index: number, listener: Function) => any;
-            first: (event: string | symbol, listener: Function) => any;
-        };
+        let emitter: PositionalEmitter;
 
         beforeEach(() => {
             const PositionalEmitter = AsPositionalEventEmitter(Emitter);
@@ -316,7 +332,7 @@ describe('AsPositionalEventEmitter', () => {
 
         afterEach(() => {
             emitter.destroy();
-            emitter = undefined as any;
+            emitter = undefined as unknown as PositionalEmitter;
         });
 
         test('it should add listeners at a specific position', () => {
@@ -343,7 +359,8 @@ describe('AsPositionalEventEmitter', () => {
         test('it should default to every-event subscription when type is omitted', () => {
             const listener = vi.fn();
 
-            (emitter as any).first(listener);
+            // A function-only `first(listener)` registers for every event (`$every`)
+            (emitter as { first(listener: Function): PositionalEmitter }).first(listener);
             emitter.emit('foo');
             emitter.emit('bar');
 
@@ -352,8 +369,8 @@ describe('AsPositionalEventEmitter', () => {
 
         test('it should validate index and listener arguments', () => {
             expect(() => emitter.at('test', -1, () => null)).toThrow('index must be a positive number');
-            expect(() => emitter.at('test', 0, null as any)).toThrow('listener must be a function');
-            expect(() => emitter.first('test', null as any)).toThrow('listener must be a function');
+            expect(() => emitter.at('test', 0, null as unknown as Function)).toThrow('listener must be a function');
+            expect(() => emitter.first('test', null as unknown as Function)).toThrow('listener must be a function');
         });
     });
 });
@@ -382,7 +399,7 @@ describe('asEventEmitter', () => {
     });
 
     test('it should reject non-object targets', () => {
-        expect(() => asEventEmitter(undefined as any)).toThrow('asEventEmitter target must be an object');
+        expect(() => asEventEmitter(undefined as unknown as object)).toThrow('asEventEmitter target must be an object');
     });
 });
 
@@ -392,7 +409,7 @@ describe('AsAsyncEventEmitter', () => {
     });
 
     describe('instances', () => {
-        let emitter: Emitter & { tick: (event: string | symbol, ...args: any[]) => Promise<any> };
+        let emitter: AsyncEmitter;
 
         beforeEach(() => {
             const AsyncEmitter = AsAsyncEventEmitter(Emitter);
@@ -401,7 +418,7 @@ describe('AsAsyncEventEmitter', () => {
 
         afterEach(() => {
             emitter.destroy();
-            emitter = undefined as any;
+            emitter = undefined as unknown as AsyncEmitter;
         });
 
         test('it should have functions and properties', () => {
@@ -452,7 +469,11 @@ describe('AsConditionalEventEmitter', () => {
 
         afterEach(() => {
             emitter.destroy();
-            emitter = undefined as any;
+            emitter = undefined as unknown as Emitter & {
+                many: (event: string | symbol, times: number, listener: Function) => void;
+                once: (event: string | symbol, listener: Function) => void;
+                until: (event: string | symbol, listener: Function) => void;
+            };
         });
 
         test('it should have functions and properties', () => {

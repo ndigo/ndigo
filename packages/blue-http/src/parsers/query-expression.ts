@@ -46,8 +46,8 @@ function parseQueryString(input: string): Record<string, unknown> {
         pairs.push([key, value]);
     }
 
-    function fromRepeatedPairs(pairList: [any, any][]): Record<any, any> {
-        const result: Record<any, any> = {};
+    function fromRepeatedPairs(pairList: [string, unknown][]): Record<string, unknown> {
+        const result: Record<string, unknown> = {};
         for (const [key, value] of pairList) {
             if (!Object.prototype.hasOwnProperty.call(result, key)) {
                 result[key] = value;
@@ -60,7 +60,7 @@ function parseQueryString(input: string): Record<string, unknown> {
         return result;
     }
 
-    return fromRepeatedPairs(pairs as [any, any][]);
+    return fromRepeatedPairs(pairs);
 }
 
 /** Parses a URL query string into a key→value(s) record. */

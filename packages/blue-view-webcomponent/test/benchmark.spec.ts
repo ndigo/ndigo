@@ -19,13 +19,15 @@ describe('TodoMVC Benchmark', () => {
 
         // Mock window.parent to capture the result
         const parentMock = {
-            postMessage: (message: any) => {
+            postMessage: (message: { type: string; result?: unknown }) => {
                 if (message.type === 'suite-complete') {
                     window.dispatchEvent(new CustomEvent('benchmark-done', { detail: message.result }));
                 }
             },
         };
-        (window as any).parent = parentMock;
+        // window.parent is readonly in the DOM types; the harness posts its results through it.
+        const benchmarkWindow = window as { parent: unknown };
+        benchmarkWindow.parent = parentMock;
 
         // Trigger the benchmark
         window.postMessage(
@@ -39,9 +41,17 @@ describe('TodoMVC Benchmark', () => {
         );
 
         // Wait for the result
-        const result = await new Promise((resolve) => {
-            window.addEventListener('benchmark-done', (e: any) => resolve(e.detail), { once: true });
-        });
+        const { promise, resolve } = Promise.withResolvers<{ total: number }>();
+        window.addEventListener(
+            'benchmark-done',
+            (e: Event) => {
+                const customEvent = e as CustomEvent; // the harness dispatches CustomEvents
+                resolve(customEvent.detail);
+            },
+            { once: true }
+        );
+
+        const result = await promise;
 
         console.log('Benchmark Results:', result);
         expect(result).toBeDefined();

@@ -9,12 +9,12 @@ A modular JavaScript/TypeScript framework organized as an Nx monorepo with pnpm 
 
 ## Technology Stack
 
-- **TypeScript:** 5.7.2 (ES2022 target)
+- **TypeScript:** 6.0.3 (ES2022 target)
 - **Oxlint:** (via `pnpm lint`)
-- **Nx:** 20.3.2 (monorepo management)
+- **Nx:** 23.2.0 (monorepo management)
 - **pnpm:** 11.4.0 (package manager)
-- **Vitest:** 2.1.8 (testing framework)
-- **Vite:** 6.0.7 (bundler)
+- **Vitest:** 4.0.18 (testing framework)
+- **Vite:** 8.2.2 (bundler)
 
 ## Versioning
 
@@ -65,15 +65,13 @@ pnpm lint
 - [blue-context](packages/blue-context/README.md)
 - [blue-core](packages/blue-core/README.md)
 - [blue-dispatcher](packages/blue-dispatcher/README.md)
-- [blue-domain](packages/blue-domain/README.md)
-- [blue-eslint-plugin](packages/blue-eslint-plugin/README.md)
+- [blue-oxlint-plugin](packages/blue-oxlint-plugin/README.md)
 - [blue-factory](packages/blue-factory/README.md)
 - [blue-generators](packages/blue-generators/README.md)
 - [blue-http](packages/blue-http/README.md)
 - [blue-management](packages/blue-management/README.md)
 - [blue-orm](packages/blue-orm/README.md)
 - [blue-orm-drizzle](packages/blue-orm-drizzle/README.md)
-- [blue-parser](packages/blue-parser/README.md)
 - [blue-platform-node](packages/blue-platform-node/README.md)
 - [blue-platform-web](packages/blue-platform-web/README.md)
 - [blue-router](packages/blue-router/README.md)

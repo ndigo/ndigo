@@ -93,7 +93,7 @@ export interface ContentSourceAware extends Aware {
  */
 export const AsContentSourceAware = <T extends Constructable>(superclass: T): Constructable<ContentSourceAware> & T =>
     class extends AsAware(superclass) implements ContentSourceAware {
-        contentSource!: ContentSource;
+        contentSource: ContentSource | null = null;
 
         /**
          * Attaches a content source to the instance.
@@ -125,5 +125,5 @@ export const likeContentSource = like({ getContent: Function }) as (value: unkno
  * @returns Whether the value can receive a content source.
  */
 export const likeContentSourceAware = likeAwareAnd(like({ setContentSource: Function })) as (
-    value: any
+    value: unknown
 ) => value is ContentSourceAware;

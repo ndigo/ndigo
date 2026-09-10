@@ -199,16 +199,14 @@ describe('RadixTree', () => {
 
     describe('toJSON', () => {
         test('returns size 0 for empty tree', () => {
-            const json = tree.toJSON() as any;
-            expect(json.size).toBe(0);
+            expect(tree.toJSON()).toHaveProperty('size', 0);
         });
 
         test('counts only terminal nodes with values', () => {
             tree.insert('/users', 'a');
             tree.insert('/users/:id', 'b');
             tree.insert('/api/*', 'c');
-            const json = tree.toJSON() as any;
-            expect(json.size).toBe(3);
+            expect(tree.toJSON()).toHaveProperty('size', 3);
         });
 
         test('toString tag is correct', () => {

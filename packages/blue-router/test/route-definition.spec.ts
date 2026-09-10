@@ -41,7 +41,7 @@ describe('RouteDefinition', () => {
             const def = new RouteDefinition('/users/{id}', {} as never);
             const result = def.parse('/users/123');
             expect(result).not.toBeNull();
-            expect(result!.path).toBe('users/123');
+            expect(result?.path).toBe('users/123');
         });
 
         it('returns null for non-matching path', () => {
@@ -54,7 +54,7 @@ describe('RouteDefinition', () => {
             const def = new RouteDefinition('/users', {} as never);
             const result = def.parse('/users');
             expect(result).not.toBeNull();
-            expect(result!.path).toBe('users');
+            expect(result?.path).toBe('users');
         });
     });
 

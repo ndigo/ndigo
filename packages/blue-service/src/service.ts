@@ -66,8 +66,9 @@ export interface ErrorAwareServiceInterceptor extends ErrorAwareHTTPInterceptor 
  * Reuses the {@link InitializationAwareHTTPInterceptor} contract (settings are
  * `ServiceInit`, which extends `HTTPInit`).
  */
-export interface InitializationAwareServiceInterceptor<T extends ServiceInit = ServiceInit>
-    extends InitializationAwareHTTPInterceptor<T> {
+export interface InitializationAwareServiceInterceptor<
+    T extends ServiceInit = ServiceInit,
+> extends InitializationAwareHTTPInterceptor<T> {
     /**
      * Decides whether the interceptor should participate in the request.
      *
@@ -99,8 +100,9 @@ export interface RequestAwareServiceInterceptor extends RequestAwareHTTPIntercep
  * Reuses the {@link ResponseAwareHTTPInterceptor} contract; `postSuccess` is the
  * service-level success hook (HTTP's `postResponse`).
  */
-export interface ResponseAwareServiceInterceptor<T extends ServiceInit = ServiceInit>
-    extends ResponseAwareHTTPInterceptor<T> {
+export interface ResponseAwareServiceInterceptor<
+    T extends ServiceInit = ServiceInit,
+> extends ResponseAwareHTTPInterceptor<T> {
     /**
      * Runs after the request succeeds.
      *
@@ -417,7 +419,7 @@ export class Service implements AsyncDestroyable {
      * @param init - Service initialization settings.
      * @returns A promise that resolves to the service response.
      */
-    async call(token: string, data: any, init: ServiceInit = {}): Promise<Response> {
+    async call(token: string, data: unknown, init: ServiceInit = {}): Promise<Response> {
         const endpoint = this.#registry.getEndpoint(token);
         if (!endpoint) {
             throw new IllegalStateError(`Service token '${token}' not registered.`);
@@ -426,12 +428,9 @@ export class Service implements AsyncDestroyable {
         const url = new URL(endpoint);
         const correlationId = this.#correlation.getCorrelationId();
 
-        const settings = Object.assign({}, init, {
-            headers: {
-                ...init.headers,
-                'X-Correlation-ID': correlationId,
-            },
-        });
+        const headers = new Headers(init.headers);
+        headers.set('X-Correlation-ID', correlationId);
+        const settings = Object.assign({}, init, { headers });
 
         this.#telemetry.onRequest(new Request(url.toString(), settings));
 

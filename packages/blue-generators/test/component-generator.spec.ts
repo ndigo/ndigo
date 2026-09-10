@@ -104,7 +104,10 @@ describe('component generator', () => {
     it('should use PascalCase class name', async () => {
         await componentGenerator(tree, { name: 'data-transformer', package: 'core' });
 
-        const sourceContent = tree.read('packages/blue-core/src/data-transformer.ts', 'utf-8')!;
+        const sourceContent = tree.read('packages/blue-core/src/data-transformer.ts', 'utf-8');
+        if (sourceContent === null) {
+            throw new Error('expected generated data-transformer.ts to exist');
+        }
         expect(sourceContent).toContain('class DataTransformer');
         expect(sourceContent).toContain("return 'DataTransformer'");
     });
@@ -112,14 +115,20 @@ describe('component generator', () => {
     it('should include Symbol.toStringTag getter', async () => {
         await componentGenerator(tree, { name: 'my-service', package: 'core' });
 
-        const sourceContent = tree.read('packages/blue-core/src/my-service.ts', 'utf-8')!;
+        const sourceContent = tree.read('packages/blue-core/src/my-service.ts', 'utf-8');
+        if (sourceContent === null) {
+            throw new Error('expected generated my-service.ts to exist');
+        }
         expect(sourceContent).toContain('get [Symbol.toStringTag]()');
     });
 
     it('should include a TSDoc description block, no author header', async () => {
         await componentGenerator(tree, { name: 'my-service', package: 'core' });
 
-        const sourceContent = tree.read('packages/blue-core/src/my-service.ts', 'utf-8')!;
+        const sourceContent = tree.read('packages/blue-core/src/my-service.ts', 'utf-8');
+        if (sourceContent === null) {
+            throw new Error('expected generated my-service.ts to exist');
+        }
         expect(sourceContent).toContain('TODO: Add class description.');
         expect(sourceContent).not.toContain('@author');
     });
@@ -127,7 +136,10 @@ describe('component generator', () => {
     it('should generate test with correct import', async () => {
         await componentGenerator(tree, { name: 'my-service', package: 'core' });
 
-        const testContent = tree.read('packages/blue-core/test/my-service.spec.ts', 'utf-8')!;
+        const testContent = tree.read('packages/blue-core/test/my-service.spec.ts', 'utf-8');
+        if (testContent === null) {
+            throw new Error('expected generated my-service.spec.ts to exist');
+        }
         expect(testContent).toContain("from '@blue/core'");
         expect(testContent).toContain('MyService');
     });
@@ -135,7 +147,10 @@ describe('component generator', () => {
     it('should allow custom class name', async () => {
         await componentGenerator(tree, { name: 'util', package: 'core', className: 'CoreUtility' });
 
-        const sourceContent = tree.read('packages/blue-core/src/util.ts', 'utf-8')!;
+        const sourceContent = tree.read('packages/blue-core/src/util.ts', 'utf-8');
+        if (sourceContent === null) {
+            throw new Error('expected generated util.ts to exist');
+        }
         expect(sourceContent).toContain('class CoreUtility');
     });
 

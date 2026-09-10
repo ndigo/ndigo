@@ -2,8 +2,8 @@
 
 Conceptual and hands-on guides for building applications with BlueJS.
 These complement the API reference (generated from JSDoc via `pnpm doc`) and
-the decision records (`docs/decisions/`), which explain the *why*; guides
-explain the *how* with runnable patterns grounded in the demo apps.
+the decision records (`docs/decisions/`), which explain the _why_; guides
+explain the _how_ with runnable patterns grounded in the demo apps.
 
 ## Available Guides
 

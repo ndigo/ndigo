@@ -5,7 +5,7 @@ import {
     entry,
     MetadataConfigApplicationContext,
 } from '@blue/context';
-import { PathRoute } from '@blue/router';
+import { PathRoute, type Route } from '@blue/router';
 import { AbstractDispatcher } from '../src/dispatcher';
 import { ModelAndView } from '../src/model-and-view';
 import { routeMapping } from '../src/route-mapping';
@@ -67,7 +67,7 @@ describe('path params e2e', () => {
             data: route.data,
         };
 
-        await dispatcher.dispatch(request as any);
+        await dispatcher.dispatch(request as unknown as Route);
 
         expect(capturedUserId).toBe('42');
     });

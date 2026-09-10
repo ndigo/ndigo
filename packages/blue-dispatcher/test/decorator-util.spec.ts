@@ -55,7 +55,7 @@ describe('getFunctionParamNames', () => {
     });
 
     it('handles mixed TypeScript features', () => {
-        const example = (foo: string, bar: number = 10, baz?: boolean, ...rest: any[]) => {};
+        const example = (foo: string, bar: number = 10, baz?: boolean, ...rest: unknown[]) => {};
         expect(getFunctionParamNames(example)).toEqual(['foo', 'bar', 'baz', 'rest']);
     });
 });

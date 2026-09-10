@@ -31,7 +31,11 @@ export type serializable = JSONValue | Serializable;
 
 const { isArray } = Array,
     { parse, stringify } = JSON,
-    propIs = (type: any) => (name: any) => (obj: any) => is(type, obj?.[name]),
+    propIs =
+        (type: Function) =>
+        (name: string | symbol) =>
+        (obj: unknown): boolean =>
+            is(type, (obj as Record<PropertyKey, unknown> | undefined)?.[name]),
     hasFunction = propIs(Function),
     hasToJSON = hasFunction('toJSON'),
     hasToString = hasFunction('toString'),
@@ -42,10 +46,12 @@ const { isArray } = Array,
         if (a === null || b === null) return false;
         if (typeof a !== 'object' || typeof b !== 'object') return false;
         if (Array.isArray(a) !== Array.isArray(b)) return false;
-        const keysA = Object.keys(a as object),
-            keysB = Object.keys(b as object);
+        const aRecord = a as Record<string, unknown>,
+            bRecord = b as Record<string, unknown>;
+        const keysA = Object.keys(aRecord),
+            keysB = Object.keys(bRecord);
         if (keysA.length !== keysB.length) return false;
-        return keysA.every((k) => _deepEqual((a as any)[k], (b as any)[k]));
+        return keysA.every((k) => _deepEqual(aRecord[k], bRecord[k]));
     };
 
 /**
@@ -54,8 +60,8 @@ const { isArray } = Array,
  * @param value - Value to test.
  * @returns `true` when the value is an array that survives a JSON round trip unchanged.
  */
-export const isJSONArray = ((value: any) => isArray(value) && _deepEqual(parse(stringify(value)), value)) as (
-    value: any
+export const isJSONArray = ((value: unknown) => isArray(value) && _deepEqual(parse(stringify(value)), value)) as (
+    value: unknown
 ) => value is JSONArray;
 
 /**
@@ -64,9 +70,9 @@ export const isJSONArray = ((value: any) => isArray(value) && _deepEqual(parse(s
  * @param value - Value to test.
  * @returns `true` when the value is a non-primitive, non-array object that survives a JSON round trip unchanged.
  */
-export const isJSONObject = ((value: any) =>
+export const isJSONObject = ((value: unknown) =>
     isNotPrimitive(value) && isNotArray(value) && _deepEqual(parse(stringify(value)), value)) as (
-    value: any
+    value: unknown
 ) => value is JSONObject;
 
 /**
@@ -75,7 +81,7 @@ export const isJSONObject = ((value: any) =>
  * @param value - Value to test.
  * @returns `true` for JSON primitives, arrays, objects, and `null`.
  */
-export const isJSONValue = (value: any): value is JSONValue => {
+export const isJSONValue = (value: unknown): value is JSONValue => {
     switch (typeof value) {
         case 'boolean':
         case 'number':
@@ -94,7 +100,7 @@ export const isJSONValue = (value: any): value is JSONValue => {
  * @param value - Value to test.
  * @returns `true` when the value is already JSON-compatible or exposes `toJSON()`/`toString()`.
  */
-export const likeSerializable = (value: any) => isJSONValue(value) || hasToJSON(value) || hasToString(value);
+export const likeSerializable = (value: unknown) => isJSONValue(value) || hasToJSON(value) || hasToString(value);
 
 /**
  * Converts an arbitrary value into a JSON-safe representation.
@@ -102,12 +108,13 @@ export const likeSerializable = (value: any) => isJSONValue(value) || hasToJSON(
  * @param value - Value to serialize.
  * @returns A JSON-compatible value derived from the best available serialization strategy.
  */
-export const serialize = (value: any): JSONValue => {
-    if (hasToJSON(value)) return value.toJSON();
+export const serialize = (value: unknown): JSONValue => {
+    // `hasToJSON`/`hasToString` already established the shape; cast past the boolean predicate.
+    if (hasToJSON(value)) return (value as { toJSON(): JSONValue }).toJSON();
     if (isJSONValue(value)) return value;
-    if (hasToString(value)) return value.toString();
+    if (hasToString(value)) return (value as { toString(): string }).toString();
     if (isArray(value)) return value.map((v) => serialize(v));
-    return { ...value };
+    return { ...(value as object) } as JSONValue;
 };
 
 /**

@@ -1,7 +1,20 @@
 import { SpanKind } from '@opentelemetry/api';
-import * as dispatcher from '@blue/dispatcher';
+import { AbstractDispatcher } from '@blue/dispatcher';
 import { Route } from '@blue/router';
 import { AbstractBaseInstrumentation } from '@blue/telemetry';
+
+/**
+ * The prototype slots the dispatcher instrumentation's shimmer patches need.
+ * `AbstractDispatcher` is built from a decorator-mixin strategy stack, so the
+ * runtime prototype chain diverges from the declared class shape (it even
+ * lacks `Object.prototype` members like `propertyIsEnumerable`).
+ */
+interface DispatcherPatchTarget {
+    dispatch(route: Route): Promise<void>;
+    _resolveViewName(viewName: string, language: string): Promise<unknown>;
+    /** Missing on the mixin prototype chain; restored before shimmer wraps. */
+    propertyIsEnumerable?(propertyName: string | symbol): boolean;
+}
 
 /**
  * An OpenTelemetry instrumentation for the `@blue/dispatcher` package.
@@ -15,7 +28,9 @@ export class DispatcherInstrumentation extends AbstractBaseInstrumentation {
     }
 
     enable(): void {
-        const target = (dispatcher as any).AbstractDispatcher.prototype;
+        // Patch slots live on the mixin-built prototype; the declared class
+        // type hides `_resolveViewName` (protected) and the runtime chain shape.
+        const target = AbstractDispatcher.prototype as unknown as DispatcherPatchTarget;
         // The decorator-mixin prototype chain does not derive from
         // Object.prototype (its `propertyIsEnumerable` is absent), which
         // breaks shimmer's wrap() (it calls obj.propertyIsEnumerable).
@@ -24,14 +39,16 @@ export class DispatcherInstrumentation extends AbstractBaseInstrumentation {
             target.propertyIsEnumerable = Object.prototype.propertyIsEnumerable;
         }
         this._wrap(
-            (dispatcher as any).AbstractDispatcher.prototype,
+            target,
             'dispatch',
             this._patchAsync({
                 name: 'Dispatcher.dispatch',
                 kind: SpanKind.SERVER,
-                attributes: (_instance: any, args: any[]) => ({
-                    'route.path': (args[0] as Route).path,
-                }),
+                attributes: (_instance: unknown, args: unknown[]) => {
+                    // `dispatch`'s signature: the first argument is the route.
+                    const route = args[0] as Route;
+                    return { 'route.path': route.path };
+                },
                 onEnd(span, outcome, _instance, args) {
                     const route = args[0] as Route;
                     if (route.method) {
@@ -52,20 +69,21 @@ export class DispatcherInstrumentation extends AbstractBaseInstrumentation {
         // View-name resolution: which resolver served the name (and whether
         // the chain fell through) is otherwise invisible.
         this._wrap(
-            (dispatcher as any).AbstractDispatcher.prototype,
+            target,
             '_resolveViewName',
             this._patchAsync({
                 name: 'Dispatcher.resolveViewName',
                 kind: SpanKind.INTERNAL,
-                attributes: (_instance: any, args: any[]) => ({
+                attributes: (_instance: unknown, args: unknown[]) => ({
                     'view.name': args[0],
                 }),
-                onEnd(span, outcome, _instance, args) {
+                onEnd(span, outcome) {
                     const resolved = outcome.ok && outcome.value !== null;
                     span.setAttribute('view.resolved', resolved);
-                    if (resolved) {
-                        // The winning resolver owns the instance → its name.
-                        span.setAttribute('view.resolved_by', (outcome.value as object).constructor?.name);
+                    if (resolved && typeof outcome.value === 'object' && outcome.value !== null) {
+                        // The winning resolver owns the instance → its
+                        // constructor names the view type it produced.
+                        span.setAttribute('view.resolved_by', outcome.value.constructor.name);
                     }
                 },
             })
@@ -73,7 +91,8 @@ export class DispatcherInstrumentation extends AbstractBaseInstrumentation {
     }
 
     disable(): void {
-        this._unwrap((dispatcher as any).AbstractDispatcher.prototype, 'dispatch');
-        this._unwrap((dispatcher as any).AbstractDispatcher.prototype, '_resolveViewName');
+        const target = AbstractDispatcher.prototype as unknown as DispatcherPatchTarget;
+        this._unwrap(target, 'dispatch');
+        this._unwrap(target, '_resolveViewName');
     }
 }

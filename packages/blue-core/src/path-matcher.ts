@@ -82,11 +82,10 @@ export interface PathMatcherFilter {
  * @returns `true` if the value is a `PathMatcher`, `false` otherwise.
  */
 export const likePathMatcher = like({ getPatternComparator: Function, match: Function, merge: Function }) as (
-    value: any
+    value: unknown
 ) => value is PathMatcher;
 
 /**
- * @extends module:core.AbstractStringComparator
  */
 class EqualsPathComparator extends AbstractValueComparator {
     compare(pattern1: string, pattern2: string): number {
@@ -107,7 +106,6 @@ class EqualsPathComparator extends AbstractValueComparator {
 }
 
 /**
- * @extends module:core.AbstractStringComparator
  */
 class GlobPatternComparator extends AbstractValueComparator {
     compare(pattern1: string, pattern2: string): number {
@@ -161,7 +159,6 @@ class GlobPatternComparator extends AbstractValueComparator {
 }
 
 /**
- * @extends module:core.PathMatcher
  */
 export class EqualsPathMatcher implements PathMatcher {
     merge(pattern1: string, pattern2: string): string {
@@ -220,7 +217,6 @@ export class EqualsPathMatcher implements PathMatcher {
 }
 
 /**
- * @extends module:core.PathMatcher
  */
 export class URLGlobPathMatcher implements PathMatcher {
     #cache: LRUCache<string, RegExp>;

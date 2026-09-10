@@ -19,7 +19,7 @@ import {
 } from './metadata';
 import type { TransactionManager } from './transaction-manager';
 
-type ClassType = new (...args: any[]) => any;
+type ClassType = new (...args: unknown[]) => unknown;
 
 /**
  * Decorator that marks a class as an entity.
@@ -335,7 +335,10 @@ export function transactional() {
         }
         context.metadata[transactionalMetadataKey] = true;
 
-        return async function (this: any, ...args: any[]): Promise<any> {
+        return async function (
+            this: { transactionManager?: TransactionManager } | undefined,
+            ...args: unknown[]
+        ): Promise<unknown> {
             const txManager: TransactionManager | undefined = this?.transactionManager;
 
             if (txManager) {

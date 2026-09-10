@@ -1,5 +1,5 @@
 import { EventEmitter } from '@blue/context';
-import { ResponseAwareHTTPInterceptor } from '@blue/http';
+import { HTTPInit, ResponseAwareHTTPInterceptor } from '@blue/http';
 
 /**
  * Configuration options for the OfflineInterceptor.
@@ -53,7 +53,7 @@ export class OfflineInterceptor implements ResponseAwareHTTPInterceptor {
      * @param settings - The request settings used for the call.
      * @returns The response.
      */
-    async postResponse(response: Response, settings: any): Promise<Response | void> {
+    async postResponse(response: Response, settings: HTTPInit): Promise<Response | void> {
         return response;
     }
 

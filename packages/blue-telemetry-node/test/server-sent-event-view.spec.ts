@@ -85,7 +85,7 @@ describe('ServerSentEventViewInstrumentation', () => {
 
         const spans = exporter.getFinishedSpans().filter((s) => s.name === 'ServerSentEventView.render');
         expect(spans).toHaveLength(1);
-        const span = spans[0]!;
+        const span = spans[0];
         expect(span.kind).toBe(SpanKind.SERVER);
         expect(span.attributes['http.response.status_code']).toBe('200');
         expect(span.attributes['sse.frames']).toBe(3);

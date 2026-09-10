@@ -20,7 +20,7 @@
  *
  * @template T The type of the parsed value.
  */
-export interface Parser<T = any> {
+export interface Parser<T = unknown> {
     /**
      * Parses a string value into a value of type T.
      * @param value - The string value to parse.
@@ -39,7 +39,7 @@ export interface Parser<T = any> {
  *
  * @template T The type of the value to stringify.
  */
-export interface Stringifier<T = any> {
+export interface Stringifier<T = unknown> {
     /**
      * Stringifies a value of type T into its string representation.
      * @param value - The value of type T to stringify.

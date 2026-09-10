@@ -1,4 +1,4 @@
-import { ResponseAwareHTTPInterceptor } from '../http';
+import { HTTPInit, ResponseAwareHTTPInterceptor } from '../http';
 
 /**
  * Configuration options for the StatusInterceptor.
@@ -43,7 +43,7 @@ export class StatusInterceptor implements ResponseAwareHTTPInterceptor {
      * @param settings - The request settings used for the call.
      * @returns The response.
      */
-    async postResponse(response: Response, settings: any): Promise<Response | void> {
+    async postResponse(response: Response, settings: HTTPInit): Promise<Response | void> {
         const status = response.status;
         const normalizedStatus = this.#config.statusMappings?.[status] ?? this.#config.defaultStatus ?? 'UNKNOWN';
 

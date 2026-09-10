@@ -1,17 +1,24 @@
 import { describe, test, expect, beforeAll, afterEach, afterAll } from 'vitest';
 import { server } from './_worker';
 import { HTTP, HTTPExecutionChain } from '../src/http';
-import type { HTTPInterceptor } from '../src/http';
+import type {
+    CompletionAwareHTTPInterceptor,
+    InitializationAwareHTTPInterceptor,
+    RequestAwareHTTPInterceptor,
+    ResponseAwareHTTPInterceptor,
+} from '../src/http';
 
 const requestPath = /\/request$/;
 
-class ExceptInterceptor implements Partial<HTTPInterceptor> {
+class ExceptInterceptor
+    implements InitializationAwareHTTPInterceptor, ResponseAwareHTTPInterceptor, CompletionAwareHTTPInterceptor
+{
     preInit(url: URL) {
         expect(url.pathname).toBe('/request');
         return true;
     }
 
-    async postResponse(response: Response) {
+    async postResponse(response: Response): Promise<Response | void> {
         expect(response.url).toMatch(requestPath);
     }
 
@@ -21,13 +28,19 @@ class ExceptInterceptor implements Partial<HTTPInterceptor> {
     }
 }
 
-class HaltInterceptor implements Partial<HTTPInterceptor> {
+class HaltInterceptor implements InitializationAwareHTTPInterceptor {
     preInit(url: URL) {
         return false;
     }
 }
 
-class TestInterceptor implements Partial<HTTPInterceptor> {
+class TestInterceptor
+    implements
+        InitializationAwareHTTPInterceptor,
+        RequestAwareHTTPInterceptor,
+        ResponseAwareHTTPInterceptor,
+        CompletionAwareHTTPInterceptor
+{
     preInit(url: URL) {
         return true;
     }
@@ -36,7 +49,7 @@ class TestInterceptor implements Partial<HTTPInterceptor> {
         return;
     }
 
-    async postResponse(response: Response) {
+    async postResponse(response: Response): Promise<Response | void> {
         return;
     }
 
@@ -60,7 +73,7 @@ describe('HTTP', () => {
     });
 
     test('it should make requests with interceptors', async () => {
-        const http = new HTTP([new TestInterceptor() as any, new ExceptInterceptor() as any]);
+        const http = new HTTP([new TestInterceptor(), new ExceptInterceptor()]);
         const response = await http.request('http://localhost/request');
         const text = await response.text();
         expect(http).toHaveProperty('interceptors');
@@ -70,11 +83,7 @@ describe('HTTP', () => {
     });
 
     test('it should halt requests when preInit returns false', async () => {
-        const http = new HTTP([
-            new TestInterceptor() as any,
-            new HaltInterceptor() as any,
-            new ExceptInterceptor() as any,
-        ]);
+        const http = new HTTP([new TestInterceptor(), new HaltInterceptor(), new ExceptInterceptor()]);
         const response = await http.request('http://localhost/request');
         const text = await response.text();
         expect(http).toHaveProperty('interceptors');
@@ -145,7 +154,7 @@ describe('HTTP', () => {
         test('should accept interceptors in config', async () => {
             const http = HTTP.create({
                 baseURL: 'http://localhost/',
-                interceptors: [new TestInterceptor() as any, new ExceptInterceptor() as any],
+                interceptors: [new TestInterceptor(), new ExceptInterceptor()],
             });
 
             expect(http.interceptors).toHaveLength(2);
@@ -165,11 +174,7 @@ describe('HTTP', () => {
         test('should work with multiple interceptors', async () => {
             const http = HTTP.create({
                 baseURL: 'http://localhost/',
-                interceptors: [
-                    new TestInterceptor() as any,
-                    new ExceptInterceptor() as any,
-                    new TestInterceptor() as any,
-                ],
+                interceptors: [new TestInterceptor(), new ExceptInterceptor(), new TestInterceptor()],
             });
 
             expect(http.interceptors).toHaveLength(3);
@@ -228,7 +233,7 @@ describe('HTTP', () => {
         });
 
         test('should produce same result as constructor with interceptors', async () => {
-            const interceptors = [new TestInterceptor() as any, new ExceptInterceptor() as any];
+            const interceptors = [new TestInterceptor(), new ExceptInterceptor()];
             const config = {
                 baseURL: 'http://localhost/',
                 headers: { 'X-Test': 'value' },
@@ -260,16 +265,16 @@ describe('HTTPExecutionChain', () => {
 
     test('it should manage interceptors', async () => {
         const interceptor = new TestInterceptor();
-        const chain = new HTTPExecutionChain(http, [interceptor as any]);
+        const chain = new HTTPExecutionChain(http, [interceptor]);
 
         expect(chain).toBeInstanceOf(HTTPExecutionChain);
         expect(chain.interceptors).toHaveProperty('length', 1);
 
-        chain.addInterceptor(new ExceptInterceptor() as any);
+        chain.addInterceptor(new ExceptInterceptor());
 
         expect(chain.interceptors).toHaveProperty('length', 2);
 
-        chain.addInterceptors([new HaltInterceptor() as any]);
+        chain.addInterceptors([new HaltInterceptor()]);
 
         expect(chain.interceptors).toHaveProperty('length', 3);
 
@@ -280,7 +285,7 @@ describe('HTTPExecutionChain', () => {
 
     test('it should derive from other chains', async () => {
         const interceptor = new TestInterceptor();
-        const chain1 = new HTTPExecutionChain(http, [interceptor as any]);
+        const chain1 = new HTTPExecutionChain(http, [interceptor]);
         const chain2 = new HTTPExecutionChain(chain1);
 
         expect(chain2).toBeInstanceOf(HTTPExecutionChain);

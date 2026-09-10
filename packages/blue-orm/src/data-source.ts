@@ -36,14 +36,14 @@ export interface DataSource extends Initializable, Destroyable {
  */
 export class InMemoryDataSource implements DataSource {
     destroyed: boolean;
-    #stores: Map<string, Map<unknown, any>>;
+    #stores: Map<string, Map<unknown, unknown>>;
 
     /**
      * Creates an instance of `InMemoryDataSource`.
      */
     constructor() {
         this.destroyed = false;
-        this.#stores = new Map<string, Map<unknown, any>>();
+        this.#stores = new Map<string, Map<unknown, unknown>>();
     }
 
     /**
@@ -90,7 +90,7 @@ export class InMemoryDataSource implements DataSource {
      */
     createStore(entityName: string): void {
         if (!this.hasStore(entityName)) {
-            this.#stores.set(entityName, new Map<unknown, any>());
+            this.#stores.set(entityName, new Map<unknown, unknown>());
         }
     }
 
@@ -121,10 +121,10 @@ export class InMemoryDataSource implements DataSource {
      * Restores entity stores to a previously captured snapshot, discarding any
      * writes made after it. Used for transaction rollback.
      *
-     * @param snapshot - The snapshot from {@link snapshot}.
+     * @param snapshot - The snapshot from `snapshot()`.
      */
     restore(snapshot: { stores: Map<string, Map<unknown, unknown>> }): void {
-        this.#stores = new Map<string, Map<unknown, any>>();
+        this.#stores = new Map<string, Map<unknown, unknown>>();
         for (const [name, store] of snapshot.stores) {
             this.#stores.set(name, new Map(store));
         }

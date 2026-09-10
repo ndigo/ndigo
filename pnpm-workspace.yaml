@@ -14,15 +14,12 @@ saveWorkspaceProtocol: rolling
 
 # Approved build scripts (pnpm 10+ requires explicit allowlist)
 onlyBuiltDependencies:
-  - '@ast-grep/cli'
   - esbuild
   - msw
   - nx
   - protobufjs
 
 allowBuilds:
-  '@ast-grep/cli': true
-  cypress: set this to true or false
   esbuild: true
   msw: true
   nx: true

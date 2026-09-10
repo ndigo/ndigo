@@ -10,7 +10,7 @@ describe('direct', () => {
     });
 
     afterEach(() => {
-        directSpy = undefined as any;
+        directSpy = undefined as unknown as ReturnType<typeof vi.fn>;
     });
 
     test('it should exclude the root node by default', () => {
@@ -33,7 +33,7 @@ describe('escalate', () => {
     });
 
     afterEach(() => {
-        escalateSpy = undefined as any;
+        escalateSpy = undefined as unknown as ReturnType<typeof vi.fn>;
     });
 
     test('it should exclude the root node by default', () => {

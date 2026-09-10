@@ -6,7 +6,7 @@ import { Null, isNotPrimitive } from '@blue/core';
 import { Initializable, $aware } from '@blue/factory';
 import { RouteHandlerMethod } from './route-handler-method';
 import { AsApplicationContextAware, ApplicationContext } from '@blue/context';
-import { getRouteMapping, hasRouteMapping } from './route-mapping';
+import { getRouteMapping, hasRouteMapping, type RouteMappingConfiguration } from './route-mapping';
 import {
     HandlerMethodArgumentResolver,
     MatrixValueMethodArgumentResolver,
@@ -98,7 +98,7 @@ export class ControllerHandlerAdapter implements RouteHandlerAdapter {
      * @returns The model and view returned by the controller.
      */
     async handle(route: Route, handler: object | undefined): Promise<ModelAndView> {
-        return await (handler as Controller).handleRoute(route);
+        return (handler as Controller).handleRoute(route);
     }
 
     /**
@@ -114,7 +114,6 @@ export class ControllerHandlerAdapter implements RouteHandlerAdapter {
 
 /**
  * Implementation of {@link AbstractHandlerMethodAdapter} that supports `HandlerMethods` decorated with `route:mapping` metadata. This is usually applied using `@RouteMapping`.
- * @extends module:dispatcher.AbstractHandlerMethodAdapter
 
  */
 export class MetadataHandlerAdapter extends AbstractHandlerMethodAdapter implements Initializable {
@@ -126,7 +125,7 @@ export class MetadataHandlerAdapter extends AbstractHandlerMethodAdapter impleme
     /**
      * Cached handler descriptors discovered from application context metadata.
      */
-    handlers!: any[];
+    handlers!: RouteMappingConfiguration[];
 
     get [Symbol.toStringTag](): string {
         return 'MetadataHandlerAdapter';
@@ -164,7 +163,7 @@ export class MetadataHandlerAdapter extends AbstractHandlerMethodAdapter impleme
         }
         handler.argumentResolvers = this.argumentResolvers;
 
-        return await handler.invoke<ModelAndView>(route);
+        return handler.invoke<ModelAndView>(route);
     }
 
     /**
@@ -172,16 +171,19 @@ export class MetadataHandlerAdapter extends AbstractHandlerMethodAdapter impleme
      *
      * @param args - Reserved for framework initialization hooks.
      */
-    init(...args: any[]): void {
-        const { applicationContext } = this,
-            contextKeys = keys(applicationContext!),
+    init(...args: unknown[]): void {
+        const { applicationContext } = this;
+        if (applicationContext === null) {
+            throw new IllegalStateError('Application context is required to discover handler methods.');
+        }
+        const contextKeys = keys(applicationContext),
             contextKeysLength = contextKeys.length,
-            handlers = [];
+            handlers: RouteMappingConfiguration[] = [];
 
         if (contextKeysLength) {
             for (let contextKeyIndex = 0; contextKeyIndex < contextKeysLength; contextKeyIndex++) {
                 const contextKey = contextKeys[contextKeyIndex],
-                    contextValue = applicationContext!.getValue<object>(contextKey);
+                    contextValue = applicationContext.getValue<object>(contextKey);
 
                 if (isNotPrimitive(contextValue)) {
                     const valuePrototype = getPrototypeOf(contextValue);
@@ -246,7 +248,7 @@ export class MetadataHandlerAdapter extends AbstractHandlerMethodAdapter impleme
         }
 
         if (applicationContext.hasValue('argumentResolvers')) {
-            const resolverCollection = applicationContext.getValue<any>('argumentResolvers');
+            const resolverCollection = applicationContext.getValue<unknown>('argumentResolvers');
 
             if (Array.isArray(resolverCollection)) {
                 for (let index = 0; index < resolverCollection.length; index++) {
@@ -259,7 +261,7 @@ export class MetadataHandlerAdapter extends AbstractHandlerMethodAdapter impleme
         }
 
         if (applicationContext.hasValue('argumentResolver')) {
-            const resolver = applicationContext.getValue<any>('argumentResolver');
+            const resolver = applicationContext.getValue<unknown>('argumentResolver');
             if (likeArgumentResolver(resolver) && !resolvers.includes(resolver)) {
                 resolvers.push(resolver);
             }

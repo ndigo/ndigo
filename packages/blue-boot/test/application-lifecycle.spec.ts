@@ -28,7 +28,7 @@ describe('Application lifecycle events', () => {
 
     it('emits "closed" event on close()', () => {
         const app = new Application([TestConfiguration]);
-        app.run();
+        void app.run();
 
         const handler = vi.fn();
         app.on('closed', handler);
@@ -39,7 +39,7 @@ describe('Application lifecycle events', () => {
 
     it('close() marks destroyed as true', () => {
         const app = new Application([TestConfiguration]);
-        app.run();
+        void app.run();
         app.close();
 
         expect(app.destroyed).toBe(true);

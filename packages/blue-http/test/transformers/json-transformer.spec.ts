@@ -20,7 +20,7 @@ describe('JSONTransformer', () => {
 
     test('rejects non-object values in canTransform', () => {
         const transformer = new JSONTransformer([(value) => value]);
-        expect(transformer.canTransform(null as any, context)).toBe(false);
-        expect(transformer.canTransform('text' as any, context)).toBe(false);
+        expect(transformer.canTransform(null, context)).toBe(false);
+        expect(transformer.canTransform('text', context)).toBe(false);
     });
 });

@@ -5,7 +5,6 @@ import { AbstractDetectingPathHandlerMapping } from './abstract-path-handler-map
  * <p>This is the default implementation used by {@link Dispatcher|the dispatcher} along with {@link RadixMetadataHandlerMapping|RadixMetadataHandlerMapping}.
  * <p>The mapping is from path to handler name. An incoming path "/foo" would map to a handler named "/foo".
  * <p>Supports direct matches and wildcard matches.
- * @extends module:dispatcher.AbstractDetectingPathHandlerMapping
  */
 /**
  * Map handlers by application-context names that start with `/`.

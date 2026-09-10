@@ -15,7 +15,7 @@ import { guid } from '@blue/util/math';
  * @module
  * @since 1.0.0
  */
-import { createServer, IncomingMessage, ServerResponse } from 'node:http';
+import { createServer, IncomingMessage, ServerResponse, type Server } from 'node:http';
 import { WebSocketServer } from 'ws';
 import { Route, RouteSegment } from '@blue/router';
 import {
@@ -41,21 +41,9 @@ import {
     type ResolvedHTTPRequestLimits,
     resolveHTTPRequestLimits,
     parseBody,
+    RequestLimitError,
 } from './http-request-limits';
 import { parseCookies } from './cookie-parser';
-
-/** Error classes for deterministic transport-level status mapping. */
-class RequestLimitError extends Error {
-    readonly statusCode: number;
-    readonly code: string;
-
-    constructor(statusCode: number, code: string, message: string) {
-        super(message);
-        this.name = 'RequestLimitError';
-        this.statusCode = statusCode;
-        this.code = code;
-    }
-}
 
 /**
  * Options for {@link NodeHTTPServerAdapter}.
@@ -63,6 +51,40 @@ class RequestLimitError extends Error {
 export interface NodeHTTPServerAdapterOptions {
     /** Request pipeline limits/timeouts. Defaults are conservative and safe. */
     limits?: HTTPRequestLimits;
+    /**
+     * When set, WebSocket upgrades must carry an `Origin` (or
+     * `Sec-WebSocket-Origin`) header whose scheme/host/port match one of
+     * these bare origins exactly (implicit default ports compare equal).
+     * Upgrades from any other origin — or with no Origin header at all —
+     * are rejected with `403` before the `connection` event fires. Omit for
+     * public socket endpoints that must accept any client.
+     */
+    allowedWebSocketOrigins?: string[];
+}
+
+/**
+ * Normalizes a bare `Origin` header value (`scheme://host[:port]`) into a
+ * canonical comparison key — lowercase host, default ports dropped (e.g.
+ * `http://EXAMPLE.com:80` → `http://example.com`). Returns `null` for
+ * anything that is not a bare origin (credentials, path, query, fragment,
+ * out-of-range port, or unparseable input).
+ */
+function normalizeOrigin(origin: string): string | null {
+    try {
+        const url = new URL(origin);
+        if (
+            url.username !== '' ||
+            url.password !== '' ||
+            url.pathname !== '/' ||
+            url.search !== '' ||
+            url.hash !== ''
+        ) {
+            return null;
+        }
+        return url.origin;
+    } catch {
+        return null;
+    }
 }
 
 /**
@@ -83,7 +105,9 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
     #pendingUpgrades: Array<{ path: string; sources: SocketRequestSources }> = [];
     #dispatcher: NodeDispatcher;
     readonly #limits: ResolvedHTTPRequestLimits;
-    #server: ReturnType<typeof createServer> | null;
+    /** Normalized allowed WebSocket origins, or `null` when unconstrained. */
+    readonly #allowedWebSocketOrigins: Record<string, true> | null;
+    #server: Server | null;
     #websocket: WebSocketServer | null = null;
 
     get server(): unknown {
@@ -98,6 +122,17 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
         this.#dispatcher = dispatcher;
         this.#limits = resolveHTTPRequestLimits(options.limits);
         this.#server = null;
+        const origins: Record<string, true> = {};
+        for (const entry of options.allowedWebSocketOrigins ?? []) {
+            const normalized = normalizeOrigin(entry);
+            if (normalized === null) {
+                throw new RangeError(
+                    `NodeHTTPServerAdapter allowedWebSocketOrigins entry is not a bare origin (scheme://host[:port]): ${entry}`
+                );
+            }
+            origins[normalized] = true;
+        }
+        this.#allowedWebSocketOrigins = options.allowedWebSocketOrigins === undefined ? null : origins;
     }
 
     /**
@@ -126,12 +161,37 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
             // WebSocket upgrades (RFC 6455 via `ws`): attach an `upgrade`
             // listener to this http.Server; `shouldHandle` gates by path so
             // only socket-mapped routes upgrade, then `connection` dispatches.
+            // When `allowedWebSocketOrigins` is configured, `verifyClient`
+            // rejects forged-origin upgrades with `403` before `connection`
+            // fires (default fail-closed once configured; absent the option
+            // any origin may upgrade — intended for public sockets).
             // ws forwards the server's `error` onto itself unconditionally
             // (its `error` option does not apply to the http server); without
             // a listener here, a bind failure would re-emit and crash the
             // process as an uncaught exception. Bind errors are already
             // surfaced by the server `error` path above (reject).
-            const websocket = new WebSocketServer({ server, verifyClient: undefined });
+            const websocket = new WebSocketServer({
+                server,
+                verifyClient:
+                    this.#allowedWebSocketOrigins === null
+                        ? undefined
+                        : (info, callback) => {
+                              const normalized = typeof info.origin === 'string' ? normalizeOrigin(info.origin) : null;
+                              const allowed =
+                                  normalized !== null &&
+                                  this.#allowedWebSocketOrigins !== null &&
+                                  this.#allowedWebSocketOrigins[normalized] === true;
+                              if (!allowed) {
+                                  // Discard the FIFO entry `shouldHandle`
+                                  // pushed for this request: ws aborts the
+                                  // handshake straight to the client, so the
+                                  // `connection` event that would shift it
+                                  // never fires.
+                                  this.#pendingUpgrades.shift();
+                              }
+                              callback(allowed, 403, 'WebSocket origin not allowed');
+                          },
+            });
             websocket.on('error', () => undefined);
             websocket.shouldHandle = (req: IncomingMessage): boolean => {
                 const [path, queryString] = (req.url ?? '').split('?', 2);
@@ -572,6 +632,17 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
     #writeErrorResponse(res: ServerResponse, error: unknown): void {
         if (res.writableEnded || res.destroyed) return;
         if (error instanceof RequestLimitError) {
+            if (error.code === 'malformed_body') {
+                // Same registered problem type as the JSON-syntax path so
+                // clients see one contract for malformed bodies.
+                writeProblem(res, {
+                    type: ProblemTypes.malformedBody,
+                    title: 'Bad Request',
+                    status: 400,
+                    detail: 'malformed_body',
+                });
+                return;
+            }
             writeProblem(res, {
                 type: `urn:blue:${error.code}`,
                 status: error.statusCode,
@@ -633,8 +704,13 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
     }
 
     /**
-     * Streams the body with a hard byte cap. `413` on overflow (memory stays
-     * bounded because the stream is destroyed), `408` when the client stalls.
+     * Streams the body with a hard byte cap enforced *inside* the loop:
+     * reading stops at the limit, so a client streaming past `maxBodyBytes`
+     * is cut off immediately (memory stays bounded) and gets `413` while the
+     * socket is still writable. `408` when the client stalls. The stream is
+     * not destroyed on overflow — a destroyed request cannot deliver the
+     * `413` response to the client (verified), and the socket is simply
+     * discarded once the response is flushed, so no further garbage is read.
      */
     async #readBody(req: IncomingMessage): Promise<Buffer> {
         return new Promise<Buffer>((resolve, reject) => {
@@ -664,18 +740,24 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
             void (async () => {
                 try {
                     for await (const chunk of req) {
-                        received += (chunk as Buffer).byteLength;
+                        const bytes = (chunk as Buffer).byteLength;
+                        if (received + bytes > this.#limits.maxBodyBytes) {
+                            // Over the cap: stop reading now, respond 413,
+                            // and let the response flush on the still-alive
+                            // socket. Remaining body bytes are discarded by
+                            // the server when the response completes without
+                            // ever being buffered here.
+                            settleError(
+                                new RequestLimitError(
+                                    413,
+                                    'body_too_large',
+                                    'Request body exceeds the configured limit'
+                                )
+                            );
+                            return;
+                        }
+                        received += bytes;
                         chunks.push(chunk as Buffer);
-                    }
-                    if (received > this.#limits.maxBodyBytes) {
-                        // Body fully received — respond 413 without destroying
-                        // the socket so the client can read the response.
-                        settled = true;
-                        clearTimeout(timer);
-                        reject(
-                            new RequestLimitError(413, 'body_too_large', 'Request body exceeds the configured limit')
-                        );
-                        return;
                     }
                     if (!settled) {
                         settled = true;

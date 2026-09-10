@@ -253,7 +253,6 @@ export interface HTTPAware extends Aware {
  */
 
 /**
- * @extends module:factory.Aware
  */
 
 /**

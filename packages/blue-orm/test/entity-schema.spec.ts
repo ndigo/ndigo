@@ -79,13 +79,14 @@ describe('schemaForEntity', () => {
     });
 
     test('inferred type matches z.infer', () => {
-        const nameType = getEntityMetadata(Product).columns.find((c) => c.fieldName === 'name')!;
+        const nameType = getEntityMetadata(Product).columns.find((c) => c.fieldName === 'name');
+        expect(nameType).toBeDefined();
         // The derived shape is a plain object schema, so the entity type is inferable.
         const schema = schemaForEntity(Product);
         type ProductShape = z.infer<typeof schema>;
         const value = { id: 1, name: 'Widget', rating: 5 } as ProductShape;
         expect(value.name).toBe('Widget');
-        expect(nameType.schema).toBeDefined();
+        expect(nameType?.schema).toBeDefined();
     });
 });
 

@@ -16,8 +16,8 @@ export class BindError extends FrameworkError {}
  */
 export class DataBinder {
     #name: string;
-    #target: any;
-    #result: any;
+    #target: unknown;
+    #result: unknown;
     #requiredFields: Set<string>;
 
     /**
@@ -73,7 +73,7 @@ export class DataBinder {
      * @param target - The object to bind data to.
      * @param name - The name of the data binder (defaults to 'target').
      */
-    constructor(target: any, name = 'target') {
+    constructor(target: unknown, name = 'target') {
         this.#target = target;
         this.#name = name;
         this.#requiredFields = new Set<string>();
@@ -112,7 +112,7 @@ export class DataBinder {
             const propertyKeys = keys(properties);
             for (let index = 0; index < length; index++) {
                 const key = propertyKeys[index],
-                    property = properties[key as any];
+                    property = properties[Number(key)];
                 if (property) {
                     const keypath = parseKeypath(property.name);
                     if (keypath) {
@@ -153,17 +153,14 @@ function _assocPath(path: KeypathToken[], value: unknown, obj: unknown): unknown
     if (path.length === 0) return value;
     const head = path[0];
     const tail = path.slice(1);
+    const current = (obj as Record<PropertyKey, unknown> | undefined)?.[head];
     const updatedChild = _assocPath(
         tail,
         value,
-        tail.length > 0 && typeof tail[0] === 'number'
-            ? Array.isArray((obj as any)?.[head])
-                ? (obj as any)[head]
-                : []
-            : ((obj as any)?.[head] ?? {})
+        tail.length > 0 && typeof tail[0] === 'number' ? (Array.isArray(current) ? current : []) : (current ?? {})
     );
     if (typeof head === 'number') {
-        const arr = Array.isArray(obj) ? [...(obj as any[])] : [];
+        const arr = Array.isArray(obj) ? [...(obj as unknown[])] : [];
         arr[head] = updatedChild;
         return arr;
     }

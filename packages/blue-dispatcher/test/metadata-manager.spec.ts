@@ -11,7 +11,7 @@ import metadataManager, { MetadataScanner } from '../src/metadata-manager';
 describe('metadataManager', () => {
     describe('MetadataScanner', () => {
         let metadataScanner: MetadataScanner;
-        let target: any;
+        let target: Record<string, unknown> | undefined;
 
         // Create a test class with TC39 metadata
         class Target {
@@ -42,7 +42,7 @@ describe('metadataManager', () => {
 
         afterEach(() => {
             target = undefined;
-            metadataScanner = undefined as any;
+            metadataScanner = undefined as unknown as MetadataScanner;
         });
 
         test('it should be a class that returns an instance', () => {
@@ -62,7 +62,7 @@ describe('metadataManager', () => {
         });
 
         test("it should prime the cache once with all the metadata defined on the target's properties", () => {
-            metadataScanner = new MetadataScanner(target);
+            metadataScanner = new MetadataScanner(target as Record<string, unknown>);
             expect(metadataScanner._cache.size).toBe(0);
 
             // prime the cache by asking for one key
@@ -129,8 +129,8 @@ describe('metadataManager', () => {
         });
     });
 
-    let target: any;
-    let scannerMapGetSpy: any;
+    let target: Record<string, unknown> | undefined;
+    let scannerMapGetSpy: ReturnType<typeof vi.spyOn> | undefined;
 
     // Test MetadataManager with TC39 metadata
     class MappingTarget {
@@ -152,26 +152,29 @@ describe('metadataManager', () => {
 
     afterEach(() => {
         target = undefined;
-        scannerMapGetSpy.mockRestore();
+        scannerMapGetSpy?.mockRestore();
     });
 
     test("it should return undefined if metadata isn't set anywhere in the object", () => {
-        expect(metadataManager.get(target, 'doesnot:exist')).toBeUndefined();
+        expect(metadataManager.get(target as Record<string, unknown>, 'doesnot:exist')).toBeUndefined();
     });
 
     test('it should return properties on an object that have metadata', () => {
         // add target object MetadataScanner to WeakMap
-        expect(metadataManager.get(target, 'request:mapping')).toEqual(['handleMapping', 'handleSurprise']);
+        expect(metadataManager.get(target as Record<string, unknown>, 'request:mapping')).toEqual([
+            'handleMapping',
+            'handleSurprise',
+        ]);
         expect(scannerMapGetSpy).toHaveBeenCalledTimes(0);
 
         // get metadata properties from target object via WeakMap
-        expect(metadataManager.get(target, 'error:handling')).toEqual(['handleError']);
+        expect(metadataManager.get(target as Record<string, unknown>, 'error:handling')).toEqual(['handleError']);
         expect(scannerMapGetSpy).toHaveBeenCalledTimes(1);
     });
 
     test('it should cache scanners in WeakMap', () => {
-        const result1 = metadataManager.get(target, 'request:mapping');
-        const result2 = metadataManager.get(target, 'request:mapping');
+        const result1 = metadataManager.get(target as Record<string, unknown>, 'request:mapping');
+        const result2 = metadataManager.get(target as Record<string, unknown>, 'request:mapping');
 
         expect(result1).toEqual(result2);
         // First call creates scanner (0 calls), second call uses cached scanner (1 call)

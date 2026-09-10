@@ -26,7 +26,7 @@ export function deriveKey(path: string, name?: string): string {
     if (name) return name;
     if (path === '/' || path === '') return 'index';
 
-    const segment = path.replace(/^\//, '').split('/').pop()!;
+    const segment = path.replace(/^\//, '').split('/').pop() ?? '';
 
     if (segment.startsWith('{') && segment.endsWith('}')) {
         const param = segment.slice(1, -1);

@@ -75,7 +75,7 @@ const emRemove = new InMemoryEntityManager(dsRemove);
 const removeUser = new BenchUser('remove-target');
 emRemove.persist(removeUser); // id auto-assigned → 1
 
-let _sink: any = 0;
+let _sink: unknown = 0;
 
 /* ------------------------------------------------------------------ */
 /*  Benchmarks                                                         */

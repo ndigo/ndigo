@@ -48,7 +48,7 @@ export abstract class AbstractRouteErrorResolver implements RouteErrorResolver {
     /**
      * Handlers explicitly targeted by this resolver, if any.
      */
-    mappedHandlers: any[] | null;
+    mappedHandlers: object[] | null;
 
     /**
      * Handler classes explicitly targeted by this resolver, if any.
@@ -200,7 +200,6 @@ export abstract class AbstractHandlerMethodErrorResolver extends AbstractRouteEr
  * to `'error/application'`.  Additional mappings can be added through
  * {@link setErrorMapping}.
  *
- * @extends module:dispatcher.AbstractRouteErrorResolver
  */
 export class DefaultRouteErrorResolver extends AbstractRouteErrorResolver {
     /**
@@ -338,7 +337,9 @@ export class MetadataErrorResolver extends AbstractHandlerMethodErrorResolver im
                         const key = contextKeys[index],
                             value = applicationContext.getValue(key);
                         if (likeErrorHandler(value)) {
-                            errorHandlerMethod = getErrorHandlerMethodForError(value, error);
+                            // likeErrorHandler true implies an object value;
+                            // widen only here, at the boundary.
+                            errorHandlerMethod = getErrorHandlerMethodForError(value as object, error);
                             if (errorHandlerMethod) {
                                 return errorHandlerMethod;
                             }
@@ -380,7 +381,6 @@ export class MetadataErrorResolver extends AbstractHandlerMethodErrorResolver im
 
 /**
  * {@link RouteErrorResolver|RouteErrorResolver} implementation that allows for mapping exception class names to view names, either for a set of given handlers or for all handlers in the `Dispatcher`.
- * @extends module:dispatcher.AbstractRouteErrorResolver
  * @see `Dispatcher`
  */
 export class SimpleMappingErrorResolver extends AbstractRouteErrorResolver {

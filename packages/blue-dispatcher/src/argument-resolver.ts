@@ -19,7 +19,7 @@ export interface HandlerMethodArgumentResolver {
      * @param mapping - The route handler mapping.
      * @returns The resolved argument value, or `null` if not resolvable.
      */
-    resolveArgument(parameter: MethodParameter, route: Route, mapping: any): any;
+    resolveArgument(parameter: MethodParameter, route: Route, mapping: unknown): unknown;
 }
 
 /**
@@ -30,7 +30,7 @@ export interface HandlerMethodArgumentResolver {
 export const likeArgumentResolver = like({
     supportsParameter: Function,
     resolveArgument: Function,
-}) as (value: any) => value is HandlerMethodArgumentResolver;
+}) as (value: unknown) => value is HandlerMethodArgumentResolver;
 
 /**
  * Abstract base class for resolving method arguments from a named value.
@@ -58,8 +58,8 @@ export abstract class AbstractNamedValueMethodArgumentResolver implements Handle
      * @param mapping - The route handler mapping.
      * @returns The resolved argument value, or `null` if not resolvable.
      */
-    resolveArgument(parameter: MethodParameter, route: Route, mapping: any): any {
-        const resolveValue = (v: any) => v ?? parameter.defaultValue,
+    resolveArgument(parameter: MethodParameter, route: Route, mapping: unknown): unknown {
+        const resolveValue = (v: unknown) => v ?? parameter.defaultValue,
             value = resolveValue(this.resolveName(parameter.name, parameter, route, mapping)),
             // The convert hook (installed by validatedBy, AD-7) runs after
             // named resolution so Zod schemas see the field value. Mirrors
@@ -73,7 +73,7 @@ export abstract class AbstractNamedValueMethodArgumentResolver implements Handle
         return validatedValue;
     }
 
-    protected abstract resolveName(name: string, parameter: MethodParameter, route: Route, mapping: any): any;
+    protected abstract resolveName(name: string, parameter: MethodParameter, route: Route, mapping: unknown): unknown;
 
     /**
      * Whether the given method parameter is supported by this resolver.
@@ -87,11 +87,15 @@ export abstract class AbstractNamedValueMethodArgumentResolver implements Handle
  * Resolves method arguments from matrix variables in the URL path.
  */
 export class MatrixValueMethodArgumentResolver extends AbstractNamedValueMethodArgumentResolver {
-    protected resolveName(name: string, parameter: MethodParameter, route: Route, mapping: any): any {
+    protected resolveName(name: string, parameter: MethodParameter, route: Route, mapping: unknown): unknown {
         let index = -1,
-            segmentName = mapping.value.slice(1),
+            segmentName = '',
             segment,
             value;
+        // mapping is the method's RouteMappingConfiguration (see invoke()).
+        if (mapping && typeof mapping === 'object' && 'value' in mapping && typeof mapping.value === 'string') {
+            segmentName = mapping.value.slice(1);
+        }
         while ((segment = route[++index])) {
             if (!segment) {
                 break;
@@ -124,7 +128,7 @@ export class MatrixValueMethodArgumentResolver extends AbstractNamedValueMethodA
  * Resolves method arguments from query parameters.
  */
 export class QueryValueMethodArgumentResolver extends AbstractNamedValueMethodArgumentResolver {
-    protected resolveName(name: string, parameter: MethodParameter, route: Route, mapping: any): any {
+    protected resolveName(name: string, parameter: MethodParameter, route: Route, mapping: unknown): unknown {
         // '*' binds the entire query object (validatedQuery sugar), mirroring
         // the body resolver's '*' convention.
         return name === '*' ? route.data : route.data[name];
@@ -144,7 +148,7 @@ export class QueryValueMethodArgumentResolver extends AbstractNamedValueMethodAr
  * Resolves method arguments from path variables.
  */
 export class PathValueMethodArgumentResolver extends AbstractNamedValueMethodArgumentResolver {
-    protected resolveName(name: string, parameter: MethodParameter, route: Route, mapping: any): any {
+    protected resolveName(name: string, parameter: MethodParameter, route: Route, mapping: unknown): unknown {
         return route.params?.[name];
     }
 
@@ -162,7 +166,7 @@ export class PathValueMethodArgumentResolver extends AbstractNamedValueMethodArg
  * Resolves method arguments from request attributes.
  */
 export class AttributeValueMethodArgumentResolver extends AbstractNamedValueMethodArgumentResolver {
-    protected resolveName(name: string, parameter: MethodParameter, route: Route, mapping: any): any {
+    protected resolveName(name: string, parameter: MethodParameter, route: Route, mapping: unknown): unknown {
         return route.attributes?.[name];
     }
 
@@ -183,7 +187,7 @@ export class AttributeValueMethodArgumentResolver extends AbstractNamedValueMeth
  * `route.id` by the extractor's name (the ROUTE meta source).
  */
 export class RouteValueMethodArgumentResolver extends AbstractNamedValueMethodArgumentResolver {
-    protected resolveName(name: string, parameter: MethodParameter, route: Route, mapping: any): any {
+    protected resolveName(name: string, parameter: MethodParameter, route: Route, mapping: unknown): unknown {
         if (name === 'path') return route.path;
         if (name === 'method') return route.method;
         if (name === 'id') return route.id;

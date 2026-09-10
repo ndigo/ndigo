@@ -36,7 +36,10 @@ describe('hydrateIslands', () => {
         const n = hydrateIslands(document);
 
         expect(n).toBe(1);
-        const live = document.querySelector('counter-island')!;
+        const live = document.querySelector('counter-island');
+        if (!live) {
+            throw new Error('expected a hydrated counter-island element');
+        }
         expect(live.textContent).toBe('42'); // model set → render ran
         expect(live.hasAttribute('data-blue-island')).toBe(true);
     });

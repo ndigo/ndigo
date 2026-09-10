@@ -28,7 +28,7 @@ import { ResponseStatuses } from '@blue/http';
 import { problemEntity, ProblemTypes } from './problem-details';
 
 /**
- * A {@link RouteErrorResolver} mapping {@link ParameterBindingError} to
+ * A {@link AbstractRouteErrorResolver} mapping {@link ParameterBindingError} to
  * 400/422 problem documents.
  */
 export class NodeParameterBindingErrorResolver extends AbstractRouteErrorResolver {

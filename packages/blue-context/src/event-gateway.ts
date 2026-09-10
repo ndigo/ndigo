@@ -225,7 +225,7 @@ export class ContextEventGateway {
     #blockedRelays: RelayValidationResult[];
     #diagnosticHandler?: GatewayDiagnosticHandler;
     #relayedEventCount: number;
-    #subscriptions: Array<{ eventType: EventType; listener: (...data: any[]) => void }>;
+    #subscriptions: Array<{ eventType: EventType; listener: (...data: unknown[]) => void }>;
     #throwOnInvalid: boolean;
     #validationStrategy: RelayValidationStrategy;
 
@@ -375,8 +375,8 @@ export class ContextEventGateway {
         this.destroyed = true;
     }
 
-    #createRelayListener(eventType: EventType): (...data: any[]) => void {
-        return (...data: any[]) => {
+    #createRelayListener(eventType: EventType): (...data: unknown[]) => void {
+        return (...data: unknown[]) => {
             this.#relayedEventCount++;
             this.target.emit(eventType, ...data);
         };

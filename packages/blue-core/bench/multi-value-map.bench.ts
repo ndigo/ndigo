@@ -12,17 +12,19 @@ import { bench, describe } from 'vitest';
 import { MultiValueMap } from '../src/multi-value-map';
 
 const keys = Array.from({ length: 10 }, (_, i) => `key-${i}`);
-let _sink: any = 0;
+let _sink: unknown = 0;
 
 // Pre-fill for scenarios 2 and 3
 const prefillValues = Array.from({ length: 100 }, (_, i) => i);
 const prefillMap = new Map<string, number[]>();
 for (let i = 0; i < 100; i++) {
     const key = keys[i % 10];
-    if (!prefillMap.has(key)) {
-        prefillMap.set(key, []);
+    let values = prefillMap.get(key);
+    if (!values) {
+        values = [];
+        prefillMap.set(key, values);
     }
-    prefillMap.get(key)!.push(i);
+    values.push(i);
 }
 
 describe('add – insert 1000 values across 10 keys', () => {

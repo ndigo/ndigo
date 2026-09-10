@@ -100,7 +100,6 @@ export interface ConfigurableEnvironment extends Environment {
  * The role of the `Environment` with relation to profiles is in determining which profiles (if any) are currently {@link Environment#activeProfiles|active}, and which profiles (if any) should be {@link Environment#defaultProfiles|active by default}.
  * **Properties** may originate from a variety of sources. The role of the environment object with relation to properties is to provide a convenient interface for configuring property sources and resolving properties from them.
  * Values managed within an {@link ApplicationContext|ApplicationContext} may register to be {@link EnvironmentAware|EnvironmentAware} in order to get the profile state and resolve properties directly.
- * @extends module:context.PropertyResolver
  */
 
 /**
@@ -115,7 +114,6 @@ export interface ConfigurableEnvironment extends Environment {
  */
 
 /**
- * @extends module:factory.Aware
  */
 
 /**
@@ -321,8 +319,8 @@ const _likeEnvironmentShape = like({
     refresh: Function,
 });
 
-export const likeEnvironment = ((value: any) => likePropertyResolver(value) && _likeEnvironmentShape(value)) as (
-    value: any
+export const likeEnvironment = ((value: unknown) => likePropertyResolver(value) && _likeEnvironmentShape(value)) as (
+    value: unknown
 ) => value is Environment;
 
 /**
@@ -332,10 +330,11 @@ export const likeEnvironment = ((value: any) => likePropertyResolver(value) && _
  * @returns `true` when the value looks like environment aware.
  */
 export const likeEnvironmentAware = likeAwareAnd(like({ setEnvironment: Function })) as (
-    value: any
+    value: unknown
 ) => value is EnvironmentAware;
 
-const hasEnvironmentProperty = (value: any): boolean => likeEnvironment(value?.['environment']);
+const hasEnvironmentProperty = (value: unknown): boolean =>
+    likeEnvironment((value as Record<PropertyKey, unknown>)?.['environment']);
 
 /**
  * Returns whether a value exposes an environment.
@@ -343,8 +342,8 @@ const hasEnvironmentProperty = (value: any): boolean => likeEnvironment(value?.[
  * @param value - The value to test.
  * @returns `true` when the value looks like an environment source.
  */
-export const likeEnvironmentSource = ((value: any) => !isNil(value) && hasEnvironmentProperty(value)) as (
-    value: any
+export const likeEnvironmentSource = ((value: unknown) => !isNil(value) && hasEnvironmentProperty(value)) as (
+    value: unknown
 ) => value is EnvironmentSource;
 
 /**

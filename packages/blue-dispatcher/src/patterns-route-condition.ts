@@ -7,7 +7,6 @@ const preprendPeriod = (value: string) => (value[0] === '.' ? value : `.${value}
 const prependSlash = (value: string) => (value[0] === '/' ? value : `/${value}`);
 
 /**
- * @extends module:dispatcher.AbstractRouteCondition<module:dispatcher.PatternsRouteConditionPatternsRouteCondition>
  * @param {Array<external:string>} patterns the route patterns to use; if 0, the condition will match to every route.
  * @param {module:core.PathMatcher} pathMatcher
  * @param {boolean} useTrailingSlashMatch whether to match irrespective of a trailing slash
@@ -75,13 +74,11 @@ export class PatternsRouteCondition extends AbstractRouteCondition<PatternsRoute
 
         if (typeof patterns === 'string') {
             const collectedPatterns = [patterns];
-            const remainingArgs: any[] = [
-                pathMatcherOrRouteCondition,
-                useTrailingSlashMatch,
-                fileExtensions,
-                ...morePatterns,
-            ];
-            const options: any[] = [];
+            const remainingArgs: Array<string | PathMatcher | PatternsRouteCondition | boolean | string[] | undefined> =
+                [pathMatcherOrRouteCondition, useTrailingSlashMatch, fileExtensions, ...morePatterns];
+            // Non-string, non-undefined args are matcher/settings per the
+            // legacy positional API, collected in slots below.
+            const options: Array<PathMatcher | PatternsRouteCondition | boolean | string[]> = [];
 
             for (const arg of remainingArgs) {
                 if (typeof arg === 'string') {
@@ -92,9 +89,14 @@ export class PatternsRouteCondition extends AbstractRouteCondition<PatternsRoute
             }
 
             patterns = collectedPatterns;
-            pathMatcherOrRouteCondition = options[0] ?? new URLGlobPathMatcher();
-            useTrailingSlashMatch = options[1] ?? true;
-            fileExtensions = options[2] ?? [];
+            // Each slot's runtime value matches its documented constructor
+            // parameter; widen only here, at the boundary.
+            const matcherOption = options[0] as PathMatcher | PatternsRouteCondition | undefined;
+            const trailingOption = options[1] as boolean | undefined;
+            const extensionOption = options[2] as string[] | undefined;
+            pathMatcherOrRouteCondition = matcherOption ?? new URLGlobPathMatcher();
+            useTrailingSlashMatch = trailingOption ?? true;
+            fileExtensions = extensionOption ?? [];
         }
 
         if (isArray(patterns)) {
@@ -253,7 +255,7 @@ export class PatternsRouteCondition extends AbstractRouteCondition<PatternsRoute
             iterator1 = this.patterns.values(),
             iterator2 = value.patterns.values();
 
-        for (let item1, item2; !(item1 = iterator1.next()).done && !(item2 = iterator2.next()).done; ) {
+        for (let item1, item2; !(item1 = iterator1.next()).done && !(item2 = iterator2.next()).done;) {
             const result = patternComparator.compare(item1.value, item2.value);
             if (result !== 0) {
                 return result;

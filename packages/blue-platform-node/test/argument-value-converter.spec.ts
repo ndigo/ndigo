@@ -203,7 +203,7 @@ describe('argument-value-converter', () => {
         });
 
         test('should handle null/undefined values with optional converters', () => {
-            const optionalConverter = createOptionalConverter((value: any) => Number(value));
+            const optionalConverter = createOptionalConverter((value: unknown) => Number(value));
             expect(optionalConverter(null)).toBeNull();
             expect(optionalConverter(undefined)).toBeUndefined();
             expect(optionalConverter('10')).toBe(10);

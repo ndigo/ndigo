@@ -7,7 +7,7 @@ import { NodeAutoConfiguration } from '../src/node-auto-configuration';
 import { NodeDispatcher } from '../src/node-dispatcher';
 import { NodeHTTPServerAdapter } from '../src/node-http-server-adapter';
 import { HTTPServer } from '../src/http-server';
-import { resolveHTTPRequestLimits, parseBody } from '../src/http-request-limits';
+import { resolveHTTPRequestLimits, parseBody, RequestLimitError } from '../src/http-request-limits';
 
 /**
  * Boundary behavior of the Node request pipeline: oversized bodies (413),
@@ -73,7 +73,11 @@ describe('HTTP request pipeline boundaries', () => {
             body: JSON.stringify({ data: 'x'.repeat(64) }),
         });
         expect(res.status).toBe(413);
-        expect(await res.json()).toMatchObject({ type: 'urn:blue:body_too_large', status: 413, detail: 'body_too_large' });
+        expect(await res.json()).toMatchObject({
+            type: 'urn:blue:body_too_large',
+            status: 413,
+            detail: 'body_too_large',
+        });
     });
 
     test('malformed JSON body returns 400, not a wildcard string', async () => {
@@ -84,7 +88,58 @@ describe('HTTP request pipeline boundaries', () => {
             body: '{"broken": ',
         });
         expect(res.status).toBe(400);
-        expect(await res.json()).toMatchObject({ type: 'urn:blue:malformed-body', status: 400, detail: 'malformed_body' });
+        expect(await res.json()).toMatchObject({
+            type: 'urn:blue:malformed-body',
+            status: 400,
+            detail: 'malformed_body',
+        });
+    });
+
+    test('well-formed JSON with a non-object shape returns 400, not 500', async () => {
+        await boot();
+        for (const payload of ['[1,2]', '"hello"', '42']) {
+            // oxlint-disable-next-line no-await-in-loop -- each payload is an isolated request; sequential sends keep assertions independent.
+            const res = await fetch(base, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: payload,
+            });
+            expect(res.status).toBe(400);
+            // oxlint-disable-next-line no-await-in-loop -- response body follows its own request in the loop above.
+            expect(await res.json()).toMatchObject({
+                type: 'urn:blue:malformed-body',
+                status: 400,
+                detail: 'malformed_body',
+            });
+        }
+    });
+
+    test('413 lands as soon as the cap is hit — a streaming body is never fully buffered', async () => {
+        // The body stream never ends. The old adapter waited for EOF before
+        // checking the cap, so this would stall into the 408 timeout instead.
+        // The fix rejects at the first chunk pushing past the limit.
+        await boot({ maxBodyBytes: 32, requestTimeoutMs: 1_500 });
+        const chunk = new TextEncoder().encode('x'.repeat(16));
+        const body = new ReadableStream({
+            async pull(controller) {
+                controller.enqueue(chunk);
+                const { promise, resolve } = Promise.withResolvers<void>();
+                setTimeout(resolve, 25);
+                await promise;
+            },
+        });
+        const res = await fetch(base, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body,
+            duplex: 'half',
+        });
+        expect(res.status).toBe(413);
+        expect(await res.json()).toMatchObject({
+            type: 'urn:blue:body_too_large',
+            status: 413,
+            detail: 'body_too_large',
+        });
     });
 
     test('requests still dispatch after boundary errors (server stays healthy)', async () => {
@@ -124,7 +179,8 @@ describe('parseBody', () => {
         const ok = parseBody('application/json', Buffer.from('{"a":1}'));
         expect(ok).toEqual({ kind: 'json', value: { a: 1 } });
         expect(() => parseBody('application/json', Buffer.from('{"broken":'))).toThrow(SyntaxError);
-        expect(() => parseBody('application/json', Buffer.from('[1,2]'))).toThrow(TypeError);
+        expect(() => parseBody('application/json', Buffer.from('[1,2]'))).toThrow(RequestLimitError);
+        expect(() => parseBody('application/json', Buffer.from('"just a string"'))).toThrow(RequestLimitError);
     });
 
     test('urlencoded bodies parse into records with repeated keys as arrays', () => {

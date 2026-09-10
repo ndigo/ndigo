@@ -24,7 +24,7 @@ export interface ViewTarget {
      * @param route - The route being rendered.
      * @returns A promise that resolves when the output has been committed.
      */
-    commit(output: any, model: any, route: Route): void | Promise<void>;
+    commit(output: unknown, model: unknown, route: Route): void | Promise<void>;
 
     /**
      * Cleans up the ViewTarget.

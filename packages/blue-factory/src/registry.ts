@@ -2,14 +2,14 @@ import { like } from '@blue/util/types';
 import { ContextToken } from './context-token';
 
 export interface Registry {
-    destroyValue<T = any>(token: ContextToken<T>): void;
+    destroyValue<T = unknown>(token: ContextToken<T>): void;
     destroyValue(name: string): void;
-    getValue<T = any>(token: ContextToken<T>): T;
-    getValue<T = any>(name: string): T;
-    hasValue<T = any>(token: ContextToken<T>): boolean;
+    getValue<T = unknown>(token: ContextToken<T>): T;
+    getValue<T = unknown>(name: string): T;
+    hasValue<T = unknown>(token: ContextToken<T>): boolean;
     hasValue(name: string): boolean;
-    setValue<T = any>(token: ContextToken<T>, value: T): void;
-    setValue<T = any>(name: string, value: T): void;
+    setValue<T = unknown>(token: ContextToken<T>, value: T): void;
+    setValue<T = unknown>(name: string, value: T): void;
 }
 
 /**
@@ -44,7 +44,7 @@ export class RegistryProxyHandler<T extends Registry> implements ProxyHandler<T>
         }
     }
 
-    get<U = any>(target: T, key: PropertyKey): U {
+    get<U = unknown>(target: T, key: PropertyKey): U {
         const value = target.getValue<U>(key as string);
         return typeof value === 'function' ? ((value as Function).bind(target) as U) : value;
     }
@@ -53,7 +53,7 @@ export class RegistryProxyHandler<T extends Registry> implements ProxyHandler<T>
         return target.hasValue(key as string);
     }
 
-    set<U = any>(target: T, key: PropertyKey, value: U): boolean {
+    set<U = unknown>(target: T, key: PropertyKey, value: U): boolean {
         try {
             target.setValue<U>(key as string, value);
             return true;

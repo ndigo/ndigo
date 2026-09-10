@@ -20,10 +20,14 @@ export class ContextInstrumentation extends AbstractBaseInstrumentation {
             this._patchSync({
                 name: 'ApplicationContext.destroy',
                 kind: SpanKind.CLIENT,
-                attributes: (ctx: GenericApplicationContext) => ({
-                    'context.name': ctx.name,
-                    'context.id': ctx.id,
-                }),
+                attributes: (ctx: unknown) => {
+                    // The patched `destroy` target is always the context instance.
+                    const context = ctx as GenericApplicationContext;
+                    return {
+                        'context.name': context.name,
+                        'context.id': context.id,
+                    };
+                },
             })
         );
     }

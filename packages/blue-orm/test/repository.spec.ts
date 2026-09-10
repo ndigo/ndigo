@@ -153,7 +153,8 @@ describe('derived queries', () => {
 
     it('findByNameAndId requires both conditions', () => {
         const ada = entityManager.findAll(TestUser).find((u) => u.name === 'Ada');
-        expect(repository.findByNameAndId('Ada', ada!.id as number)).toHaveLength(1);
+        expect(ada).toBeDefined();
+        expect(repository.findByNameAndId('Ada', ada?.id as number)).toHaveLength(1);
         expect(repository.findByNameAndId('Ada', 999)).toHaveLength(0);
     });
 

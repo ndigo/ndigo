@@ -1,4 +1,4 @@
 export interface Validator {
-    supports(value: any): boolean;
-    validate(value: any): void;
+    supports(value: unknown): boolean;
+    validate(value: unknown): void;
 }

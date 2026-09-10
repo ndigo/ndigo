@@ -1,7 +1,7 @@
 # Architecture Documentation
 
 Design rationale and subsystem maps for BlueJS — the "why" behind the code.
-Guides explain the *how*; decision records (`docs/decisions/`) hold the full
+Guides explain the _how_; decision records (`docs/decisions/`) hold the full
 rationale per change; these documents are the cross-cutting maps.
 
 ## Available Architecture Docs

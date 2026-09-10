@@ -9,7 +9,7 @@ class AccountController {
     @parameters({ path: pathValue() })
     @traced
     handleIndex(path: string) {
-        logger.info('Handling route', { 'path': path });
+        logger.info('Handling route', { path: path });
 
         return new ModelAndView('account-app', {
             section: 'overview',
@@ -21,7 +21,7 @@ class AccountController {
     @parameters({ path: pathValue() })
     @traced
     handleSettings(path: string) {
-        logger.info('Handling route', { 'path': path });
+        logger.info('Handling route', { path: path });
 
         return new ModelAndView('account-app', {
             section: 'settings',

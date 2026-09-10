@@ -17,7 +17,7 @@ describe('GenericApplicationContext', () => {
 
     afterEach(() => {
         context.destroy();
-        context = undefined as any;
+        context = undefined as unknown as GenericApplicationContext;
     });
 
     test('it should have certain properties', () => {
@@ -64,7 +64,7 @@ describe('GenericApplicationContext', () => {
         context.setValue('testValue', TestValue);
         context.refresh();
 
-        expect((context as any).isActive).toBe(true);
+        expect(context.isActive).toBe(true);
         expect(context.getValue<TestValue>('testValue').initialized).toBe(true);
     });
 
@@ -232,12 +232,12 @@ describe('GenericApplicationContext', () => {
 
         context.setParent(root1);
         expect(root1.hasChild(context)).toBe(true);
-        expect((context as any).root).toBe(root1);
+        expect((context as unknown as { root: GenericApplicationContext }).root).toBe(root1);
 
         context.setParent(root2);
         expect(root1.hasChild(context)).toBe(false);
         expect(root2.hasChild(context)).toBe(true);
-        expect((context as any).root).toBe(root2);
+        expect((context as unknown as { root: GenericApplicationContext }).root).toBe(root2);
         expect(context.path).toBe('root2/test');
 
         root1.destroy();
@@ -368,28 +368,28 @@ describe('ProxiedGenericContext', () => {
 
     afterEach(() => {
         context.destroy();
-        context = undefined as any;
+        context = undefined as unknown as ProxiedGenericApplicationContext;
     });
 
     test('it should alias methods', () => {
         context.setValue('foo', 123);
-        (context as any).bar = 456;
+        context.bar = 456;
 
         expect(context.getValue('foo')).toBe(123);
-        expect((context as any).foo).toBe(123);
+        expect(context.foo).toBe(123);
         expect(context.hasValue('foo')).toBe(true);
         expect('foo' in context).toBe(true);
         expect(context.getValue('bar')).toBe(456);
-        expect((context as any).bar).toBe(456);
+        expect(context.bar).toBe(456);
         expect(context.hasValue('bar')).toBe(true);
         expect('bar' in context).toBe(true);
     });
 
     test('it should support delete through proxy', () => {
-        (context as any).foo = 123;
+        context.foo = 123;
         expect(context.hasValue('foo')).toBe(true);
 
-        expect(delete (context as any).foo).toBe(true);
+        expect(delete context.foo).toBe(true);
         expect(context.hasValue('foo')).toBe(false);
     });
 });
@@ -420,7 +420,9 @@ describe('ApplicationContextAwareProcessor', () => {
 
     afterEach(() => {
         context.destroy();
-        context = env = processor = undefined as any;
+        context = undefined as unknown as GenericApplicationContext;
+        env = undefined as unknown as MockEnvironment;
+        processor = undefined as unknown as ApplicationContextAwareProcessor;
     });
 
     test('it should set context values on singletons', () => {

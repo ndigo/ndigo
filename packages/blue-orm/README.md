@@ -20,7 +20,7 @@ pnpm add @blue/orm
 ## Entity-derived validation schemas
 
 Column metadata — including an optional `@column({ schema })` constraint —
-derives Zod schemas. `insertSchemaForEntity` yields the *writable* shape
+derives Zod schemas. `insertSchemaForEntity` yields the _writable_ shape
 (primary/generated columns omitted; nullable/untyped optional) for request
 body validation:
 

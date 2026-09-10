@@ -10,7 +10,6 @@ export interface URLMatcher extends PatternMatcher<string, string> {
 }
 
 /**
- * @extends module:core.PatternMatcher
  */
 
 /**
@@ -37,7 +36,7 @@ const { defineProperty } = Reflect;
  * @returns `true` when the value exposes URL matching behavior.
  */
 export const likeURLMatcher = like({ getPatternComparator: Function, match: Function }) as (
-    value: any
+    value: unknown
 ) => value is URLMatcher;
 
 abstract class AbstractURLComparator implements Comparator<string> {
@@ -76,7 +75,6 @@ class EqualsURLComparator extends AbstractURLComparator {
 /**
  * URL matcher that only accepts exact string matches.
  *
- * @extends module:http.URLMatcher
  */
 export class EqualsURLMatcher implements URLMatcher {
     /**

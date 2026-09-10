@@ -24,10 +24,11 @@ export interface AuthAdapter {
     /**
      * Performs the primary authentication flow.
      *
-     * @param credentials - The credentials provided by the user.
+     * @param credentials - The credentials provided by the user. Adapters
+     * narrow this opaque value to their protocol-specific credential shape.
      * @returns An {@link AuthResult} containing the principal and session token.
      */
-    authenticate(credentials: any): Promise<AuthResult>;
+    authenticate(credentials: unknown): Promise<AuthResult>;
 
     /**
      * Refreshes an existing session token.

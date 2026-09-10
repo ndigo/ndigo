@@ -11,7 +11,7 @@ import { configureBrowserArgumentResolvers } from './configure-argument-resolver
  */
 export function configureStrictBrowserArgumentResolvers(
     applicationContext: ApplicationContext,
-    _options?: any
+    _options?: unknown
 ): HandlerMethodArgumentResolver[] {
     return configureBrowserArgumentResolvers(applicationContext);
 }

@@ -51,8 +51,8 @@ describe('composed todo runtime end-to-end', () => {
         const todoApp = document.querySelector('#app todo-app');
         expect(todoApp).not.toBeNull();
         // Header + input shell rendered by the real view target.
-        expect(todoApp!.querySelector('.todoapp')).not.toBeNull();
-        expect(todoApp!.querySelector('todo-input')).not.toBeNull();
+        expect(todoApp?.querySelector('.todoapp')).not.toBeNull();
+        expect(todoApp?.querySelector('todo-input')).not.toBeNull();
     });
 
     test('dispatching different filters re-renders the same shell', async () => {
@@ -63,6 +63,6 @@ describe('composed todo runtime end-to-end', () => {
         await dispatch('/completed');
         const completedApp = document.querySelector('#app todo-app');
         expect(completedApp).not.toBeNull();
-        expect(completedApp!.querySelector('.todoapp')).not.toBeNull();
+        expect(completedApp?.querySelector('.todoapp')).not.toBeNull();
     });
 });

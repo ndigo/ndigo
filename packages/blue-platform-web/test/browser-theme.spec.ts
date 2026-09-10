@@ -1,8 +1,10 @@
 import { describe, test, expect } from 'vitest';
 import { GenericApplicationContext } from '@blue/context';
 
-if (typeof (globalThis as any).DOMParser === 'undefined') {
-    (globalThis as any).DOMParser = class DOMParser {
+// Minimal DOM parser stub for environments without DOMParser support.
+const parsingGlobal = globalThis as unknown as { DOMParser: unknown };
+if (typeof parsingGlobal.DOMParser === 'undefined') {
+    parsingGlobal.DOMParser = class DOMParser {
         parseFromString(): Document {
             return null as unknown as Document;
         }

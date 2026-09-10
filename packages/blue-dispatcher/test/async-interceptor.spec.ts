@@ -3,6 +3,7 @@ import { AbstractDispatcher } from '../src/dispatcher';
 import { RouteHandlerInterceptor } from '../src/route-handler-interceptor';
 import { ModelAndView } from '../src/model-and-view';
 import { routeMapping } from '../src/route-mapping';
+import { Route } from '@blue/router';
 import {
     MetadataConfigApplicationContext,
     configuration,
@@ -71,7 +72,7 @@ describe('Asynchronous Interceptors', () => {
             length: 2,
         };
 
-        await dispatcher.dispatch(route as any);
+        await dispatcher.dispatch(route as unknown as Route);
         expect(interceptorCalled).toBe(true);
     });
 
@@ -133,7 +134,7 @@ describe('Asynchronous Interceptors', () => {
             length: 2,
         };
 
-        await dispatcher.dispatch(route as any);
+        await dispatcher.dispatch(route as unknown as Route);
         expect(handlerCalled).toBe(false);
     });
 
@@ -198,7 +199,7 @@ describe('Asynchronous Interceptors', () => {
             length: 2,
         };
 
-        await dispatcher.dispatch(route as any);
+        await dispatcher.dispatch(route as unknown as Route);
         expect(postHandleCalled).toBe(true);
         expect(completeHandleCalled).toBe(true);
     });

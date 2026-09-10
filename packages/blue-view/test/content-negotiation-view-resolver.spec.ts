@@ -3,17 +3,18 @@ import {
     ContentNegotiationViewResolver,
     MappingMediaTypeFileExtensionResolver,
     FixedContentNegotiationStrategy,
+    ContentNegotiationManager,
     likeMediaTypeFileExtensionResolver,
 } from '../src/content-negotiation-view-resolver';
-import { MediaTypes } from '@blue/core';
+import { MediaTypes, type MediaType } from '@blue/core';
 
 describe('ContentNegotiationViewResolver', () => {
     test('it should delegate media type resolution to the content negotiation manager', () => {
         const request = { path: '/index' };
-        const mediaTypes = [{ type: 'text', subtype: 'html' }] as any;
+        const mediaTypes = [{ type: 'text', subtype: 'html' }];
         const manager = {
             resolveMediaTypes: vi.fn().mockReturnValue(mediaTypes),
-        } as any;
+        } as unknown as ContentNegotiationManager;
 
         const resolver = new ContentNegotiationViewResolver(manager);
 
@@ -22,7 +23,7 @@ describe('ContentNegotiationViewResolver', () => {
     });
 
     test('it should resolve media types and extensions from mapping', () => {
-        const mediaTypes = new Map<string, any>([
+        const mediaTypes = new Map<string, MediaType>([
             ['html', MediaTypes.TEXT_HTML],
             ['json', MediaTypes.APPLICATION_JSON],
         ]);

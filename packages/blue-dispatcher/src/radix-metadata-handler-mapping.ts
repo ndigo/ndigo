@@ -129,12 +129,18 @@ export class RadixMetadataHandlerMapping
         return winner.handlerMethod;
     }
 
-    protected _handleNoMatch(mappings: any, path: string, route: Route): RouteHandlerMethod | null {
+    protected _handleNoMatch(mappings: unknown, path: string, route: Route): RouteHandlerMethod | null {
         return null;
     }
 
-    protected _isHandler(value: any): boolean {
-        return hasRouteMapping(value) || ('constructor' in value && hasRouteMapping(value.constructor));
+    protected _isHandler(value: unknown): boolean {
+        return (
+            hasRouteMapping(value) ||
+            (typeof value === 'object' &&
+                value !== null &&
+                'constructor' in value &&
+                hasRouteMapping(value.constructor))
+        );
     }
 
     protected override _handleMatch(mapping: RouteMappingInfo, path: string, route: Route): void {

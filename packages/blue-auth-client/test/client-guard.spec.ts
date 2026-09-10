@@ -1,7 +1,7 @@
 import { describe, test, expect, beforeEach } from 'vitest';
 import { ClientAuthGuard, extractAuthMetadata } from '../src/client-guard';
 import { AuthClient } from '../src/client';
-import { AuthRegistry } from '@blue/auth-core';
+import { AuthRegistry, Principal } from '@blue/auth-core';
 import { AUTH_REQUIRED_KEY, AUTH_ROLES_KEY } from '@blue/auth-core';
 
 function createMockPrincipal(id = '1', name = 'Test', roles: string[] = ['user']) {
@@ -18,7 +18,7 @@ function createMockPrincipal(id = '1', name = 'Test', roles: string[] = ['user']
  * Helper to set up Symbol.metadata on a handler function.
  * The guard reads: handler.constructor[Symbol.metadata]
  */
-function setHandlerMetadata(handler: any, metadata: Record<string, unknown>): void {
+function setHandlerMetadata(handler: { constructor: object }, metadata: Record<string, unknown>): void {
     handler.constructor = { [Symbol.metadata]: metadata };
 }
 
@@ -85,7 +85,7 @@ describe('ClientAuthGuard', () => {
     let authClient: AuthClient;
     let guard: ClientAuthGuard;
 
-    function authenticateClient(principal: any) {
+    function authenticateClient(principal: Principal | null) {
         const mockAdapter = {
             id: 'jwt',
             validate: async () => null,

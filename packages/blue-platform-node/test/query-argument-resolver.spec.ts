@@ -1,9 +1,11 @@
 import { describe, test, expect, beforeEach } from 'vitest';
 import { MethodParameter, MethodParameterType } from '@blue/dispatcher';
+import { Route } from '@blue/router';
 import { NodeQueryValueMethodArgumentResolver } from '../src/query-argument-resolver';
 
-function makeRoute(data: Record<string, any> = {}): any {
-    return { data, params: {}, attributes: {} };
+// Route-shaped helper; the query resolver only reads data/params/attributes.
+function makeRoute(data: Record<string, string> = {}): Route {
+    return { data, params: {}, path: '/', raw: '/', id: 'test', length: 0, attributes: {} };
 }
 
 describe('NodeQueryValueMethodArgumentResolver', () => {
@@ -64,9 +66,10 @@ describe('NodeQueryValueMethodArgumentResolver', () => {
         });
 
         test('should handle missing route.data gracefully', () => {
-            const route = { data: null, params: {}, attributes: {} };
+            // Route.data is declared non-nullable; runtime-null data is exercised via cast.
+            const route = { data: null, params: {}, path: '/', raw: '/', id: 'test', length: 0, attributes: {} };
             const param = new MethodParameter(MethodParameterType.QUERY, 'name', false, 'default');
-            expect(resolver.resolveArgument(param, route as any, {})).toBe('default');
+            expect(resolver.resolveArgument(param, route as unknown as Route, {})).toBe('default');
         });
     });
 });

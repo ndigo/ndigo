@@ -1,5 +1,6 @@
 import { describe, expect, test, vi } from 'vitest';
 import { MethodParameter, MethodParameterType } from '@blue/dispatcher';
+import { Route } from '@blue/router';
 import { BrowserCookieValueMethodArgumentResolver } from '../src/cookie-argument-resolver';
 
 describe('resolver conversion errors', () => {
@@ -12,7 +13,7 @@ describe('resolver conversion errors', () => {
             target: Number,
         });
 
-        const value = resolver.resolveArgument(parameter, { data: {}, params: null } as any, {} as any);
+        const value = resolver.resolveArgument(parameter, { data: {}, params: null } as unknown as Route, {});
         expect(value).toBe(42);
     });
 });

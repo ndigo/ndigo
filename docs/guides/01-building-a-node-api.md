@@ -109,18 +109,18 @@ Notes:
 
 ## 4. Request binding: extractors
 
-`@parameters` maps argument names to *extractors* — declarative sources for
+`@parameters` maps argument names to _extractors_ — declarative sources for
 the argument's value. The Node platform resolves them through
 `AbstractPlatformArgumentResolver` subclasses.
 
-| Extractor | Source | Whole-source |
-| --- | --- | --- |
-| `queryValue(name)` | query string (`route.data`) | `queryValue('*')` |
-| `pathValue(name)` | path parameter | — |
-| `headerValue(name)` | request header | — |
-| `cookieValue(name)` | cookie | — |
-| `sessionValue(name)` | session | — |
-| `bodyValue(name)` | request body field | `bodyValue('*')` binds the whole parsed body |
+| Extractor            | Source                      | Whole-source                                 |
+| -------------------- | --------------------------- | -------------------------------------------- |
+| `queryValue(name)`   | query string (`route.data`) | `queryValue('*')`                            |
+| `pathValue(name)`    | path parameter              | —                                            |
+| `headerValue(name)`  | request header              | —                                            |
+| `cookieValue(name)`  | cookie                      | —                                            |
+| `sessionValue(name)` | session                     | —                                            |
+| `bodyValue(name)`    | request body field          | `bodyValue('*')` binds the whole parsed body |
 
 The `'*'` convention binds the entire source object. Follow guide
 [02 — Request Validation](02-request-validation.md) for coercion and
@@ -139,7 +139,7 @@ Because `refresh()` must never bind sockets, the server is
 
 ```ts
 const server = context.getValue<HTTPServer>('httpServer');
-await server.start();                       // bound + listening
+await server.start(); // bound + listening
 gracefulShutdown(context, { resources: [server] });
 ```
 
@@ -155,24 +155,24 @@ Every 4xx/5xx response is an `application/problem+json` document (AD-10):
 
 ```json
 {
-  "type": "urn:blue:not-found",
-  "title": "Not Found",
-  "status": 404,
-  "instance": "/nope"
+    "type": "urn:blue:not-found",
+    "title": "Not Found",
+    "status": 404,
+    "instance": "/nope"
 }
 ```
 
 The framework maps errors deterministically:
 
-| Condition | Status |
-| --- | --- |
-| Malformed URL / body, missing or unconvertible parameter | 400 |
-| Missing/invalid credentials (handler or guard) | 401 + `WWW-Authenticate` |
-| Insufficient role | 403 |
-| No route / no view | 404 |
-| Path exists, method not allowed | 405 + `Allow` |
-| Zod validation failure | 422 + `errors[]` (see guide 02) |
-| Anything unhandled | 500 (internals never leaked) |
+| Condition                                                | Status                          |
+| -------------------------------------------------------- | ------------------------------- |
+| Malformed URL / body, missing or unconvertible parameter | 400                             |
+| Missing/invalid credentials (handler or guard)           | 401 + `WWW-Authenticate`        |
+| Insufficient role                                        | 403                             |
+| No route / no view                                       | 404                             |
+| Path exists, method not allowed                          | 405 + `Allow`                   |
+| Zod validation failure                                   | 422 + `errors[]` (see guide 02) |
+| Anything unhandled                                       | 500 (internals never leaked)    |
 
 Handlers can return a `ResponseEntity<ProblemDetails>` for full control, or
 rely on the default chain. The `urn:blue:*` problem-type scheme is a
@@ -237,11 +237,11 @@ extractors work across `@routeMapping`, `@requestMapping`, and
 binder without a source for its mapping is a configuration error — the
 framework throws at registration:
 
-| Mapping kind | Available `*Value` sources |
-| --- | --- |
+| Mapping kind                  | Available `*Value` sources                                                                                        |
+| ----------------------------- | ----------------------------------------------------------------------------------------------------------------- |
 | `@routeMapping` (method-less) | any source (transport-agnostic: query, path, matrix, header, cookie, session, attribute, body, bind/model/state…) |
-| `@requestMapping` / verbs | query, path, matrix, header, cookie, session, attribute, body |
-| `@socketMapping` | query, path, header, cookie (no body; no browser state) |
+| `@requestMapping` / verbs     | query, path, matrix, header, cookie, session, attribute, body                                                     |
+| `@socketMapping`              | query, path, header, cookie (no body; no browser state)                                                           |
 
 So `bodyValue` on a socket mapping is rejected (no body on an upgrade), as is
 `stateValue`/`modelValue`/`bindValue` on a verbed HTTP mapping (browser-only

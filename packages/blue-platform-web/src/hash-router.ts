@@ -229,7 +229,7 @@ export class HashRouter extends AbstractRouter {
      */
     protected _onHashChange(event: HashChangeEvent) {
         const newRoute = extractRouteFromURL(event.newURL);
-        this._setRoute(newRoute, true).then((success) => {
+        void this._setRoute(newRoute, true).then((success) => {
             if (success) {
                 const route = this.route,
                     routeTx = new RouteTransaction(route, RouteAccess.PUBLIC, RouteSource.EXTERNAL);

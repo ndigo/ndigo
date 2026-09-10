@@ -1,6 +1,6 @@
 import { is, like } from '@blue/util/types';
 
-const isResponse = is(Response) as (value: any) => value is Response;
+const isResponse = is(Response) as (value: unknown) => value is Response;
 
 /**
  * Tests whether a value behaves like a `Response`.

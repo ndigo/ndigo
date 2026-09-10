@@ -1,134 +1,147 @@
 import { describe, test, expect } from 'vitest';
 import { authenticated, authorized, AUTH_REQUIRED_KEY, AUTH_ROLES_KEY } from '../src/_decorators';
 
+type DecoratorContext = ClassDecoratorContext | ClassMethodDecoratorContext;
+
+/** Builds a fake class-decorator context backed by the given metadata bag. */
+function classContext(metadata: Record<PropertyKey, unknown>): ClassDecoratorContext {
+    return {
+        kind: 'class',
+        name: undefined,
+        addInitializer() {},
+        metadata,
+    };
+}
+
+/** Builds a fake method-decorator context backed by the given metadata bag. */
+function methodContext(name: string, metadata: Record<PropertyKey, unknown>): ClassMethodDecoratorContext {
+    return {
+        kind: 'method',
+        name,
+        static: false,
+        private: false,
+        access: {
+            has: () => false,
+            get: () => () => {},
+        },
+        addInitializer() {},
+        metadata,
+    };
+}
+
+/**
+ * Builds a fake context for a non-class, non-method element (e.g. a field) to
+ * exercise the decorators' anti-pattern detection. Its shape is intentionally
+ * incompatible with the real decorator context types, so it is narrowed
+ * through the union the decorators accept.
+ */
+function fieldContext(name: string, metadata: Record<PropertyKey, unknown>): DecoratorContext {
+    const context: { kind: string; name: string | undefined; metadata: Record<PropertyKey, unknown> } = {
+        kind: 'field',
+        name,
+        metadata,
+    };
+    return context as DecoratorContext;
+}
+
 describe('@authenticated decorator', () => {
     test('sets metadata on class', () => {
-        let metadata: Record<string, unknown> = {};
+        const metadata: Record<PropertyKey, unknown> = {};
 
         class DummyClass {}
 
-        authenticated(DummyClass, { kind: 'class', name: '', metadata: metadata as any, type: 'class' } as any);
+        authenticated(DummyClass, classContext(metadata));
 
         expect(metadata[AUTH_REQUIRED_KEY]).toBe(true);
     });
 
     test('sets metadata on class method', () => {
-        let metadata: Record<string, unknown> = {};
+        const metadata: Record<PropertyKey, unknown> = {};
 
         function dummyMethod() {}
 
-        authenticated(dummyMethod, {
-            kind: 'method',
-            name: 'handle',
-            metadata: metadata as any,
-            type: 'method',
-        } as any);
+        authenticated(dummyMethod, methodContext('handle', metadata));
 
         expect(metadata[`${AUTH_REQUIRED_KEY}:handle`]).toBe(true);
     });
 
     test('throws on non-class, non-method contexts (anti-pattern detection)', () => {
-        const metadata: Record<string, unknown> = {};
+        const metadata: Record<PropertyKey, unknown> = {};
 
         function dummyMethod() {}
 
-        expect(() =>
-            authenticated(dummyMethod, {
-                kind: 'field',
-                name: 'prop',
-                metadata: metadata as any,
-                type: 'field',
-            } as any)
-        ).toThrow('@authenticated can only be applied to a class or method');
+        expect(() => authenticated(dummyMethod, fieldContext('prop', metadata))).toThrow(
+            '@authenticated can only be applied to a class or method'
+        );
         expect(metadata[AUTH_REQUIRED_KEY]).toBeUndefined();
     });
 });
 
 describe('@authorized decorator', () => {
     test('adds role to class metadata', () => {
-        let metadata: Record<string, unknown> = {};
+        const metadata: Record<PropertyKey, unknown> = {};
 
         class DummyClass {}
 
         const decorator = authorized('admin');
-        decorator(DummyClass, { kind: 'class', name: '', metadata: metadata as any, type: 'class' } as any);
+        decorator(DummyClass, classContext(metadata));
 
         expect(metadata[AUTH_ROLES_KEY]).toEqual(['admin']);
     });
 
     test('adds role to method metadata', () => {
-        let metadata: Record<string, unknown> = {};
+        const metadata: Record<PropertyKey, unknown> = {};
 
         function dummyMethod() {}
 
         const decorator = authorized('admin');
-        decorator(dummyMethod, {
-            kind: 'method',
-            name: 'handle',
-            metadata: metadata as any,
-            type: 'method',
-        } as any);
+        decorator(dummyMethod, methodContext('handle', metadata));
 
         expect(metadata[`${AUTH_ROLES_KEY}:handle`]).toEqual(['admin']);
     });
 
     test('stacking decorators accumulates roles on class', () => {
-        let metadata: Record<string, unknown> = {};
+        const metadata: Record<PropertyKey, unknown> = {};
 
         class DummyClass {}
 
         const d1 = authorized('admin');
         const d2 = authorized('user');
-        d1(DummyClass, { kind: 'class', name: '', metadata: metadata as any, type: 'class' } as any);
-        d2(DummyClass, { kind: 'class', name: '', metadata: metadata as any, type: 'class' } as any);
+        d1(DummyClass, classContext(metadata));
+        d2(DummyClass, classContext(metadata));
 
         expect(metadata[AUTH_ROLES_KEY]).toEqual(['admin', 'user']);
     });
 
     test('stacking decorators accumulates roles on method', () => {
-        let metadata: Record<string, unknown> = {};
+        const metadata: Record<PropertyKey, unknown> = {};
 
         function dummyMethod() {}
 
         const d1 = authorized('admin');
         const d2 = authorized('user');
-        d1(dummyMethod, { kind: 'method', name: 'handle', metadata: metadata as any, type: 'method' } as any);
-        d2(dummyMethod, { kind: 'method', name: 'handle', metadata: metadata as any, type: 'method' } as any);
+        d1(dummyMethod, methodContext('handle', metadata));
+        d2(dummyMethod, methodContext('handle', metadata));
 
         expect(metadata[`${AUTH_ROLES_KEY}:handle`]).toEqual(['admin', 'user']);
     });
 
     test('different methods have separate role lists', () => {
-        let classMetadata: Record<string, unknown> = {};
-        let methodAMetadata: Record<string, unknown> = {};
-        let methodBMetadata: Record<string, unknown> = {};
+        const classMetadata: Record<PropertyKey, unknown> = {};
+        const methodAMetadata: Record<PropertyKey, unknown> = {};
+        const methodBMetadata: Record<PropertyKey, unknown> = {};
 
         function methodA() {}
         function methodB() {}
 
         // Class-level roles
-        authorized('admin')(class {}, {
-            kind: 'class',
-            name: '',
-            metadata: classMetadata as any,
-            type: 'class',
-        } as any);
+        authorized('admin')(class {}, classContext(classMetadata));
 
         // Method A roles
-        authorized('roleA')(methodA, {
-            kind: 'method',
-            name: 'methodA',
-            metadata: methodAMetadata as any,
-            type: 'method',
-        } as any);
+        authorized('roleA')(methodA, methodContext('methodA', methodAMetadata));
 
         // Method B roles
-        authorized('roleB')(methodB, {
-            kind: 'method',
-            name: 'methodB',
-            metadata: methodBMetadata as any,
-            type: 'method',
-        } as any);
+        authorized('roleB')(methodB, methodContext('methodB', methodBMetadata));
 
         expect(classMetadata[AUTH_ROLES_KEY]).toEqual(['admin']);
         expect(methodAMetadata[`${AUTH_ROLES_KEY}:methodA`]).toEqual(['roleA']);

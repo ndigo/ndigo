@@ -1,29 +1,33 @@
 import { describe, test, expect, beforeAll, beforeEach, afterEach, afterAll } from 'vitest';
 import { server } from '../_worker';
 import { HTTP } from '../../src/http';
-import { ResponseTypeInterceptor } from '../../src/interceptors/response-type-interceptor';
+import {
+    ResponseTypeInit,
+    ResponseTypeSettings,
+    ResponseTypeInterceptor,
+} from '../../src/interceptors/response-type-interceptor';
 import { MediaTypes } from '@blue/core';
 
 class TestResponseTypeInterceptor extends ResponseTypeInterceptor {
-    preInit(url: URL, settings?: any) {
+    preInit(url: URL, settings: ResponseTypeInit) {
         const proceed = super.preInit(url, settings);
         expect(proceed).toBe(true);
         return proceed;
     }
 
-    async postResponse(response: Response, settings?: any) {
+    async postResponse(response: Response, settings: ResponseTypeSettings) {
         return super.postResponse(response, settings);
     }
 }
 
 describe('ResponseTypeInterceptor', () => {
     let http: HTTP | undefined;
-    let response: any;
+    let response: (Response & { data?: unknown }) | undefined;
 
     beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
 
     beforeEach(() => {
-        http = new HTTP([new TestResponseTypeInterceptor() as any]);
+        http = new HTTP([new TestResponseTypeInterceptor()]);
     });
 
     afterEach(() => {
@@ -36,7 +40,8 @@ describe('ResponseTypeInterceptor', () => {
     test('it should report bad response types', async () => {
         const interceptor = new TestResponseTypeInterceptor();
 
-        http = new HTTP([interceptor as any], { responseType: 0 } as any);
+        // Deliberately invalid responseType (0) to exercise the preInit guard.
+        http = new HTTP([interceptor], { responseType: 0 } as unknown as ResponseTypeInit);
         try {
             await http.request('http://localhost/responseType/');
             expect(true).toBe(false);
@@ -46,57 +51,60 @@ describe('ResponseTypeInterceptor', () => {
     });
 
     test('it should handle different response types', async () => {
-        response = await http!.request('http://localhost/responseType/application/pdf', {
+        expect(http).toBeDefined();
+        response = await http?.request('http://localhost/responseType/application/pdf', {
             responseType: 'application/pdf',
-        } as any);
-
+        } as ResponseTypeInit);
+        expect(response).toBeDefined();
         expect(response).toHaveProperty('data');
-        expect(response.data).toBeInstanceOf(Blob);
+        expect(response?.data).toBeInstanceOf(Blob);
 
-        response = await http!.request('http://localhost/responseType/image/gif', {
+        response = await http?.request('http://localhost/responseType/image/gif', {
             responseType: MediaTypes.IMAGE_GIF,
-        } as any);
-
+        } as ResponseTypeInit);
+        expect(response).toBeDefined();
         expect(response).toHaveProperty('data');
-        expect(response.data).toBeInstanceOf(Blob);
+        expect(response?.data).toBeInstanceOf(Blob);
 
-        response = await http!.request('http://localhost/responseType/image/jpeg', {
+        response = await http?.request('http://localhost/responseType/image/jpeg', {
             responseType: MediaTypes.IMAGE_JPEG,
-        } as any);
-
+        } as ResponseTypeInit);
+        expect(response).toBeDefined();
         expect(response).toHaveProperty('data');
-        expect(response.data).toBeInstanceOf(Blob);
+        expect(response?.data).toBeInstanceOf(Blob);
 
-        response = await http!.request('http://localhost/responseType/image/png', {
+        response = await http?.request('http://localhost/responseType/image/png', {
             responseType: MediaTypes.IMAGE_PNG,
-        } as any);
-
+        } as ResponseTypeInit);
+        expect(response).toBeDefined();
         expect(response).toHaveProperty('data');
-        expect(response.data).toBeInstanceOf(Blob);
+        expect(response?.data).toBeInstanceOf(Blob);
 
-        response = await http!.request('http://localhost/responseType/text/html', {
+        response = await http?.request('http://localhost/responseType/text/html', {
             responseType: 'text/html',
-        } as any);
-
+        } as ResponseTypeInit);
+        expect(response).toBeDefined();
         expect(response).toHaveProperty('data');
-        expect(response.data).toBeInstanceOf(Document);
+        expect(response?.data).toBeInstanceOf(Document);
 
-        response = await http!.request('http://localhost/responseType/text/xml', {
+        response = await http?.request('http://localhost/responseType/text/xml', {
             responseType: 'text/xml',
-        } as any);
-
+        } as ResponseTypeInit);
+        expect(response).toBeDefined();
         expect(response).toHaveProperty('data');
-        expect(response.data).toBeInstanceOf(Document);
+        expect(response?.data).toBeInstanceOf(Document);
     });
 
     test('it should handle custom parsers', async () => {
-        response = await http!.request('http://localhost/responseType/text/foo', {
+        expect(http).toBeDefined();
+        response = await http?.request('http://localhost/responseType/text/foo', {
             responseType: 'text/foo',
             responseParsers: {
-                'text/foo': (mediaType: any) => async (response: Response) => await response.text(),
+                'text/foo': (mediaType: string) => async (response: Response) => await response.text(),
             },
-        } as any);
+        } as ResponseTypeInit);
 
+        expect(response).toBeDefined();
         expect(response).toHaveProperty('data', 'foo=123');
     });
 });

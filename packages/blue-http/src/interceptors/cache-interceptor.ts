@@ -1,4 +1,4 @@
-import { HTTP, RequestAwareHTTPInterceptor, ResponseAwareHTTPInterceptor } from '../http';
+import { HTTP, HTTPInit, RequestAwareHTTPInterceptor, ResponseAwareHTTPInterceptor } from '../http';
 
 /**
  * Configuration options for the CacheInterceptor.
@@ -86,7 +86,7 @@ export class CacheInterceptor implements RequestAwareHTTPInterceptor, ResponseAw
      * @param settings - The request settings used for the call.
      * @returns The response.
      */
-    async postResponse(response: Response, settings: any): Promise<Response | void> {
+    async postResponse(response: Response, settings: HTTPInit): Promise<Response | void> {
         if (response.status !== 200) {
             return response;
         }

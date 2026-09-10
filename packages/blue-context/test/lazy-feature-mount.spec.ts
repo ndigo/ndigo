@@ -125,13 +125,12 @@ describe('FeatureContextMountManager lazy loading', () => {
         const composition = await manager.mountLazy('messaging');
 
         expect(composition.gateway).toBeDefined();
-        expect(composition.gateway!.destroyed).toBe(false);
+        expect(composition.gateway?.destroyed).toBe(false);
     });
 
     test('it should support dependencies validation with lazy loading', async () => {
-        const { SharedDependencyRegistry, DefaultSharedDependencyRegistry } = await import(
-            '../src/shared-dependency-registry'
-        );
+        const { SharedDependencyRegistry, DefaultSharedDependencyRegistry } =
+            await import('../src/shared-dependency-registry');
         const { SHARED_DEPENDENCY_REGISTRY_TOKEN } = await import('../src/feature-context-mount-manager');
 
         const parent = new GenericApplicationContext('shell');

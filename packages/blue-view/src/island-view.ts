@@ -1,4 +1,5 @@
 import { FrameworkError } from '@blue/core';
+import type { Route } from '@blue/router';
 import { AbstractTemplateView } from './view';
 import { ViewTarget } from './view-target';
 
@@ -78,12 +79,13 @@ export class IslandView extends AbstractTemplateView {
      * @param request - The current request (unused).
      * @param target - The view target to commit the HTML string to.
      */
-    protected async _renderTemplate(templateModel: any, request: any, target?: ViewTarget): Promise<void> {
+    protected async _renderTemplate(templateModel: unknown, request: unknown, target?: ViewTarget): Promise<void> {
         if (!target) {
             throw new FrameworkError('IslandView requires a ViewTarget to render.');
         }
 
         const html = `<${this.tagName} data-blue-island data-blue-model="${serializeModel(templateModel)}"></${this.tagName}>`;
-        await target.commit(html, templateModel, request);
+        // The view target's commit slot expects the route; the request is what the view pipeline supplies.
+        await target.commit(html, templateModel, request as Route);
     }
 }

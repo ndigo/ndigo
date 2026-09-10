@@ -9,10 +9,7 @@
     "packages/blue-router/src/index.ts",
     "packages/blue-view/src/index.ts",
     "packages/blue-http/src/index.ts",
-    "packages/blue-model/src/index.ts",
     "packages/blue-content/src/index.ts",
-    "packages/blue-domain/src/index.ts",
-    "packages/blue-validate/src/index.ts",
     "packages/blue-boot/src/index.ts",
     "packages/blue-service/src/index.ts",
     "packages/blue-dispatcher/src/index.ts",
@@ -45,8 +42,8 @@
   "gitRevision": "main",
   "sourceLinkTemplate": "https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/{gitRevision}/{path}#lines-{line}",
   "skipErrorChecking": true,
-  "treatWarningsAsErrors": false,
-  "treatValidationWarningsAsErrors": false,
+  "treatWarningsAsErrors": true,
+  "treatValidationWarningsAsErrors": true,
   "compilerOptions": {
     "skipLibCheck": true,
     "noEmit": true
@@ -71,7 +68,10 @@
       "RouteHandlerInterceptor": "#",
       "Dispatcher": "#",
       "ModelAndView": "#",
-      "ViewNameTranslator": "#"
+      "ViewNameTranslator": "#",
+      "ParameterBindingError": "#",
+      "SocketSession": "#",
+      "AbstractRouteErrorResolver": "#"
     },
     "@blue/context": {
       "ResourceLoaderAware": "#",
@@ -86,7 +86,12 @@
       "LoggerFactory": "#"
     },
     "@blue/http": {
-      "ResponseError": "#"
+      "ResponseError": "#",
+      "CompletionAwareHTTPInterceptor": "#",
+      "ErrorAwareHTTPInterceptor": "#",
+      "InitializationAwareHTTPInterceptor": "#",
+      "RequestAwareHTTPInterceptor": "#",
+      "ResponseAwareHTTPInterceptor": "#"
     },
     "@blue/core": {
       "Factory": "#",

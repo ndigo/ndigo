@@ -19,13 +19,16 @@ import isString from './is-string.js';
  * likeArray( {} );
  * //=> false
  */
-const likeArray = (value: any): value is ArrayLike<any> => {
+const likeArray = (value: unknown): value is ArrayLike<unknown> => {
     if (value == null) return false;
     if (Array.isArray(value) || isString(value)) return true;
     if (typeof value !== 'object') return false;
-    if (value.nodeType === 1) return value.length > 0;
-    if (value.length === 0) return true;
-    if (value.length > 0) return '0' in value && String(value.length - 1) in value;
+    // Arbitrary structured input: DOM nodes and array-likes via generic property reflection
+    const record = value as Record<string, unknown>;
+    const length: unknown = record.length;
+    if (record.nodeType === 1) return typeof length === 'number' && length > 0;
+    if (length === 0) return true;
+    if (typeof length === 'number' && length > 0) return '0' in value && String(length - 1) in value;
     return false;
 };
 

@@ -76,7 +76,7 @@ export class TimeoutInterceptor
         if (error.name === 'AbortError') {
             this._clearTimeout();
         }
-        return new ResponseError(REQUEST_TIMEOUT.createResponse(undefined as any), error);
+        return new ResponseError(REQUEST_TIMEOUT.createResponse(''), error);
     }
 
     /**

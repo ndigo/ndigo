@@ -1,7 +1,7 @@
 /**
  * A node that can reference its parent.
  */
-export interface ChildNode<T = any> {
+export interface ChildNode<T = unknown> {
     /** The parent node, or `null`/`undefined` for roots. */
     readonly parent: T | null | undefined;
 }
@@ -9,7 +9,7 @@ export interface ChildNode<T = any> {
 /**
  * A node that can enumerate its children.
  */
-export interface ParentNode<T = any> {
+export interface ParentNode<T = unknown> {
     /** The node's direct children. */
     readonly children: readonly T[];
 }
@@ -17,7 +17,7 @@ export interface ParentNode<T = any> {
 /**
  * A tree node that supports bidirectional navigation and child mutation.
  */
-export interface TreeNode<T = any> extends ChildNode<T>, ParentNode<T> {
+export interface TreeNode<T = unknown> extends ChildNode<T>, ParentNode<T> {
     /** The root node of the tree. */
     readonly root: T;
 
@@ -35,7 +35,7 @@ export interface TreeNode<T = any> extends ChildNode<T>, ParentNode<T> {
      * @param args - Arguments used to construct the child.
      * @returns The newly created child node.
      */
-    newChild(...args: any[]): T;
+    newChild(...args: unknown[]): T;
 
     /**
      * Removes a direct child from the node.
@@ -53,8 +53,13 @@ export interface TreeNode<T = any> extends ChildNode<T>, ParentNode<T> {
  * @param callback - Function invoked for each visited node.
  * @param inclusive - When `true`, include the starting node in the traversal.
  */
-export function direct<T extends ParentNode>(node: T, callback: (node: T) => any, inclusive: boolean = false): void {
-    const targets: readonly T[] = inclusive ? [node] : node.children;
+export function direct<T extends ParentNode>(
+    node: T,
+    callback: (node: T) => unknown,
+    inclusive: boolean = false
+): void {
+    // The `ParentNode` constraint erases the element type; a node's own `children` are always `T[]`.
+    const targets: readonly T[] = inclusive ? [node] : (node.children as readonly T[]);
 
     if (targets?.length) {
         targets.forEach((target: T) => callback(target) !== false && direct<T>(target, callback));
@@ -68,8 +73,13 @@ export function direct<T extends ParentNode>(node: T, callback: (node: T) => any
  * @param callback - Function invoked for each visited node.
  * @param inclusive - When `true`, include the starting node in the traversal.
  */
-export function escalate<T extends ChildNode>(node: T, callback: (node: T) => any, inclusive: boolean = false): void {
-    const target = inclusive ? node : node.parent;
+export function escalate<T extends ChildNode>(
+    node: T,
+    callback: (node: T) => unknown,
+    inclusive: boolean = false
+): void {
+    // The `ChildNode` constraint erases the parent type; a node's own `parent` is always `T`.
+    const target: T | null | undefined = inclusive ? node : (node.parent as T | null | undefined);
 
     if (target) {
         if (callback(target) !== false) {
@@ -85,5 +95,5 @@ export function escalate<T extends ChildNode>(node: T, callback: (node: T) => an
  * @param child - Child node to locate.
  * @returns The index of the child, or `-1` when it is not present.
  */
-export const indexOf = <T = any>(children: TreeNode<T>[], child: TreeNode<T>): number =>
+export const indexOf = <T = unknown>(children: TreeNode<T>[], child: TreeNode<T>): number =>
     children?.length && child ? children.indexOf(child) : -1;

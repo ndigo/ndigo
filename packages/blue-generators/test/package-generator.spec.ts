@@ -118,7 +118,11 @@ export default defineConfig({
     it('should set correct package name', async () => {
         await packageGenerator(tree, { name: 'my-feature' });
 
-        const packageJson = JSON.parse(tree.read('packages/blue-my-feature/package.json', 'utf-8')!);
+        const packageJsonContent = tree.read('packages/blue-my-feature/package.json', 'utf-8');
+        if (packageJsonContent === null) {
+            throw new Error('expected generated package.json to exist');
+        }
+        const packageJson = JSON.parse(packageJsonContent);
         expect(packageJson.name).toBe('@blue/my-feature');
         expect(packageJson.type).toBe('module');
         expect(packageJson.exports).toBe('./lib/index.js');
@@ -128,14 +132,21 @@ export default defineConfig({
     it('should use custom description when provided', async () => {
         await packageGenerator(tree, { name: 'auth', description: 'Authentication utilities' });
 
-        const packageJson = JSON.parse(tree.read('packages/blue-auth/package.json', 'utf-8')!);
+        const packageJsonContent = tree.read('packages/blue-auth/package.json', 'utf-8');
+        if (packageJsonContent === null) {
+            throw new Error('expected generated package.json to exist');
+        }
+        const packageJson = JSON.parse(packageJsonContent);
         expect(packageJson.description).toBe('Authentication utilities');
     });
 
     it('should generate index.ts with module doc, no author header', async () => {
         await packageGenerator(tree, { name: 'test-pkg' });
 
-        const indexContent = tree.read('packages/blue-test-pkg/src/index.ts', 'utf-8')!;
+        const indexContent = tree.read('packages/blue-test-pkg/src/index.ts', 'utf-8');
+        if (indexContent === null) {
+            throw new Error('expected generated index.ts to exist');
+        }
         expect(indexContent).toContain('@module test-pkg');
         expect(indexContent).not.toContain('@author');
     });
@@ -143,7 +154,11 @@ export default defineConfig({
     it('should generate correct tsconfig.build.json', async () => {
         await packageGenerator(tree, { name: 'test-pkg' });
 
-        const tsconfig = JSON.parse(tree.read('packages/blue-test-pkg/tsconfig.build.json', 'utf-8')!);
+        const tsconfigContent = tree.read('packages/blue-test-pkg/tsconfig.build.json', 'utf-8');
+        if (tsconfigContent === null) {
+            throw new Error('expected generated tsconfig.build.json to exist');
+        }
+        const tsconfig = JSON.parse(tsconfigContent);
         expect(tsconfig.extends).toBe('../../tsconfig.build.json');
         expect(tsconfig.compilerOptions.composite).toBe(true);
         expect(tsconfig.compilerOptions.outDir).toBe('./lib');
@@ -153,7 +168,10 @@ export default defineConfig({
     it('should update vitest.config.ts with new alias', async () => {
         await packageGenerator(tree, { name: 'test-pkg' });
 
-        const vitestConfig = tree.read('vitest.config.ts', 'utf-8')!;
+        const vitestConfig = tree.read('vitest.config.ts', 'utf-8');
+        if (vitestConfig === null) {
+            throw new Error('expected vitest.config.ts to exist');
+        }
         expect(vitestConfig).toContain('@blue\\/test\\\\-pkg');
         expect(vitestConfig).toContain('blue-test-pkg/src');
     });

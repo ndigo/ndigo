@@ -12,7 +12,7 @@ import { NodeSessionValueMethodArgumentResolver } from './session-argument-resol
  */
 export function configureNodeArgumentResolvers(
     applicationContext: ApplicationContext,
-    _options?: any
+    _options?: unknown
 ): HandlerMethodArgumentResolver[] {
     const resolvers: HandlerMethodArgumentResolver[] = [
         new NodeQueryValueMethodArgumentResolver(),

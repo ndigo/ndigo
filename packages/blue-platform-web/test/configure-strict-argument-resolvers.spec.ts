@@ -3,6 +3,7 @@ import { MetadataConfigApplicationContext } from '@blue/context';
 import { configureStrictBrowserArgumentResolvers } from '../src/configure-strict-argument-resolvers';
 import { BrowserStateValueMethodArgumentResolver } from '../src/state-argument-resolver';
 import { MethodParameter, MethodParameterType } from '@blue/dispatcher';
+import { Route } from '@blue/router';
 
 describe('configureStrictBrowserArgumentResolvers', () => {
     test('registers browser argument resolvers', () => {
@@ -18,6 +19,9 @@ describe('configureStrictBrowserArgumentResolvers', () => {
         const resolvers = configureStrictBrowserArgumentResolvers(context);
 
         const stateResolver = resolvers.find((r) => r instanceof BrowserStateValueMethodArgumentResolver);
+        if (!stateResolver) {
+            throw new Error('state resolver not registered');
+        }
         const parameter = new MethodParameter(MethodParameterType.STATE, 'count', false, null, {
             source: String,
             target: Number,
@@ -27,7 +31,7 @@ describe('configureStrictBrowserArgumentResolvers', () => {
         const originalState = globalThis.history?.state;
         vi.stubGlobal('history', { state: { count: '88' } });
 
-        const value = stateResolver.resolveArgument(parameter, {} as any, {} as any);
+        const value = stateResolver.resolveArgument(parameter, {} as unknown as Route, {});
         expect(value).toBe(88);
 
         // Restore original state

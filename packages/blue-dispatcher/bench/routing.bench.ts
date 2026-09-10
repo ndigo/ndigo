@@ -12,6 +12,7 @@
  */
 
 import { bench, describe } from 'vitest';
+import { type Route } from '@blue/router';
 import '@tsmetadata/polyfill';
 import { RadixMetadataHandlerMapping } from '../src/route-handler-mapping';
 import {
@@ -88,10 +89,10 @@ r3.insert('/api/v1/users/:id/profile', { handler: () => {} });
 /*  Route fixtures (minimal shape that satisfies getHandler)           */
 /* ------------------------------------------------------------------ */
 
-const routeUsers = { path: '/users' } as any;
-const routeUserId = { path: '/users/42' } as any;
-const routeProfile = { path: '/api/v1/users/42/profile' } as any;
-const routeMiss = { path: '/nonexistent' } as any;
+const routeUsers = { path: '/users' } as unknown as Route;
+const routeUserId = { path: '/users/42' } as unknown as Route;
+const routeProfile = { path: '/api/v1/users/42/profile' } as unknown as Route;
+const routeMiss = { path: '/nonexistent' } as unknown as Route;
 const multiRoutes = [routeUsers, routeUserId, routeProfile] as const;
 
 let _sink = 0;

@@ -84,14 +84,14 @@ describe('telemetry request→dispatch correlation (real HTTP)', () => {
         // Request-root span (regression: previously the dispatch instrumentation
         // could not even wrap the mixin prototype; both must now emit).
         expect(requestSpans.length).toBeGreaterThan(0);
-        const requestSpan = requestSpans[requestSpans.length - 1]!;
+        const requestSpan = requestSpans[requestSpans.length - 1];
         expect(requestSpan.attributes['http.request.method']).toBe('GET');
         expect(requestSpan.attributes['http.route']).toBe('/');
 
         // Dispatch span emitted with route/method attrs and nested under the
         // request span (trace correlation).
         expect(dispatchSpans.length).toBeGreaterThan(0);
-        const dispatchSpan = dispatchSpans[dispatchSpans.length - 1]!;
+        const dispatchSpan = dispatchSpans[dispatchSpans.length - 1];
         expect(dispatchSpan.spanContext().traceId).toBe(requestSpan.spanContext().traceId);
         expect(dispatchSpan.parentSpanContext?.spanId).toBe(requestSpan.spanContext().spanId);
         expect(dispatchSpan.attributes['http.route']).toBe('/');
@@ -105,7 +105,7 @@ describe('telemetry request→dispatch correlation (real HTTP)', () => {
 
         const resolveSpans = exporter.getFinishedSpans().filter((s) => s.name === 'Dispatcher.resolveViewName');
         expect(resolveSpans.length).toBeGreaterThan(0);
-        const span = resolveSpans[resolveSpans.length - 1]!;
+        const span = resolveSpans[resolveSpans.length - 1];
         expect(span.attributes['view.name']).toBe('test');
         expect(span.attributes['view.resolved']).toBe(true);
         // The node default resolver (IslandViewResolver) served an IslandView.

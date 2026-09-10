@@ -152,7 +152,7 @@ export class PathRoute implements Route<Record<string, string>>, Serializable {
     params!: Record<string, string> | null;
     readonly path!: string;
     readonly raw!: string;
-    readonly attributes!: Record<string, any>;
+    readonly attributes!: Record<string, unknown>;
 
     /**
      * Gets the number of segments in the route.

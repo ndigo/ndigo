@@ -40,8 +40,11 @@ class SignalsCounterView extends AbstractWebComponent {
     render(): void {
         const shadow = this.shadowRoot;
         if (!shadow) return;
-        shadow.getElementById('count-value')!.textContent = String(this.count);
-        shadow.getElementById('doubled-value')!.textContent = String(this.doubled);
+        const countValue = shadow.getElementById('count-value');
+        const doubledValue = shadow.getElementById('doubled-value');
+        if (!countValue || !doubledValue) return;
+        countValue.textContent = String(this.count);
+        doubledValue.textContent = String(this.doubled);
     }
 
     /** Reactive side effect: re-renders whenever `count` (and thus `doubled`) changes. */
@@ -51,10 +54,11 @@ class SignalsCounterView extends AbstractWebComponent {
 
     connectedCallback(): void {
         super.connectedCallback();
-        const shadow = this.shadowRoot!;
-        shadow.getElementById('increment')!.addEventListener('click', () => this.count++);
-        shadow.getElementById('decrement')!.addEventListener('click', () => this.count--);
-        shadow.getElementById('reset')!.addEventListener('click', () => {
+        const shadow = this.shadowRoot;
+        if (!shadow) return;
+        shadow.getElementById('increment')?.addEventListener('click', () => this.count++);
+        shadow.getElementById('decrement')?.addEventListener('click', () => this.count--);
+        shadow.getElementById('reset')?.addEventListener('click', () => {
             this.count = 0;
         });
     }

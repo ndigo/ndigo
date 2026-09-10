@@ -4,39 +4,42 @@ import { encodeURIComponent as encode } from '@blue/util/string';
 
 const arrayStringifier = (key: string, value: string, index?: number): string =>
         value === null ? encode(key) : `${encode(key)}=${encode(value)}`,
-    toQueryString = (object: any): string =>
-        object
-            ? Object.keys(object)
-                  .sort()
-                  .map(function (key: string): string {
-                      const value = object[key];
+    toQueryString = (input: unknown): string => {
+        if (!input) {
+            return '';
+        }
+        const object = input as Record<string, unknown>;
+        return Object.keys(object)
+            .sort()
+            .map(function (key: string): string {
+                const value = object[key];
 
-                      if (value === undefined) {
-                          return '';
-                      }
+                if (value === undefined) {
+                    return '';
+                }
 
-                      if (value === null) {
-                          return encode(key);
-                      }
+                if (value === null) {
+                    return encode(key);
+                }
 
-                      if (Array.isArray(value)) {
-                          const result: string[] = [];
+                if (Array.isArray(value)) {
+                    const result: string[] = [];
 
-                          value.slice().forEach(function (val: string): void {
-                              if (val === undefined) {
-                                  return;
-                              }
-                              result.push(arrayStringifier(key, val, result.length));
-                          });
+                    value.slice().forEach(function (val: string): void {
+                        if (val === undefined) {
+                            return;
+                        }
+                        result.push(arrayStringifier(key, val, result.length));
+                    });
 
-                          return result.join('&');
-                      }
+                    return result.join('&');
+                }
 
-                      return `${encode(key)}=${encode(value)}`;
-                  })
-                  .filter((s) => s.length > 0)
-                  .join('&')
-            : '';
+                return `${encode(key)}=${encode(String(value))}`;
+            })
+            .filter((s) => s.length > 0)
+            .join('&');
+    };
 
 /**
  * Parses and serializes query strings using stable key ordering.
@@ -62,7 +65,7 @@ class QueryString implements Parser, Stringifier {
      * @param value - The value to serialize.
      * @returns The encoded query string.
      */
-    stringify(value: any): string {
+    stringify(value: unknown): string {
         return toQueryString(value);
     }
 }

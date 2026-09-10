@@ -88,11 +88,12 @@ This document provides a quick reference for all dependency versions after the 2
 | seedrandom  | ~3.0.5  | No changes                         |
 
 **DevDependencies:**
-| Package | Version |
-|---------|---------|
-| @types/ramda | ~0.31.1 |
-| @types/seedrandom | ~3.0.8 |
-| @types/slug | ~5.0.9 |
+
+| Package           | Version |
+| ----------------- | ------- |
+| @types/ramda      | ~0.31.1 |
+| @types/seedrandom | ~3.0.8  |
+| @types/slug       | ~5.0.9  |
 
 ### blue-factory (packages/blue-factory)
 
@@ -109,16 +110,18 @@ This document provides a quick reference for all dependency versions after the 2
 ### blue-context (packages/blue-context)
 
 **DevDependencies / PeerDependencies:**
-| Package | Version |
-|---------|---------|
-| reflect-metadata | 0.2.2 |
+
+| Package          | Version |
+| ---------------- | ------- |
+| reflect-metadata | 0.2.2   |
 
 ### blue-dispatcher (packages/blue-dispatcher)
 
 **DevDependencies / PeerDependencies:**
-| Package | Version |
-|---------|---------|
-| reflect-metadata | 0.2.2 |
+
+| Package          | Version |
+| ---------------- | ------- |
+| reflect-metadata | 0.2.2   |
 
 ### blue-fill (packages/blue-fill)
 

@@ -107,7 +107,13 @@ describe('PathRoute', () => {
 
     test('it should serialize route and segment to json', () => {
         const route = new PathRoute('/users;active=true/42?sort=asc');
-        const json = route.toJSON() as any;
+        // toJSON() returns a generic JSONValue; the serialized shape is fully known here.
+        const json = route.toJSON() as unknown as {
+            id: number;
+            length: number;
+            data: { sort: string };
+            [segment: number]: { name: string; data: { active: string } };
+        };
 
         expect(json.id).toBeTypeOf('number');
         expect(json.length).toBe(2);

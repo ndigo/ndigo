@@ -3,9 +3,9 @@ import { like } from '@blue/util/types';
 
 /**
  * Represents an object that can be compared for equality with another object of the same type.
- * @template T - The type of the object being compared. Defaults to `any`.
+ * @template T - The type of the object being compared. Defaults to `unknown`.
  */
-export interface Equatable<T = any> {
+export interface Equatable<T = unknown> {
     /**
      * Determines if this object is equal to the specified value.
      * @param value - The value to compare with this object.
@@ -41,21 +41,24 @@ const _deepEqual = (a: unknown, b: unknown): boolean => {
     // Handle arrays
     if (Array.isArray(a) !== Array.isArray(b)) return false;
     if (Array.isArray(a)) {
-        if (a.length !== (b as any[]).length) return false;
+        const bArray = b as unknown[];
+        if (a.length !== bArray.length) return false;
         for (let i = 0; i < a.length; i++) {
-            if (!_deepEqual(a[i], (b as any[])[i])) return false;
+            if (!_deepEqual(a[i], bArray[i])) return false;
         }
         return true;
     }
 
     // Handle objects
-    const keysA = Object.keys(a as object);
-    const keysB = Object.keys(b as object);
+    const aObject = a as Record<string, unknown>,
+        bObject = b as Record<string, unknown>;
+    const keysA = Object.keys(aObject),
+        keysB = Object.keys(bObject);
     if (keysA.length !== keysB.length) return false;
 
     for (const key of keysA) {
-        if (!(key in (b as object))) return false;
-        if (!_deepEqual((a as any)[key], (b as any)[key])) return false;
+        if (!(key in bObject)) return false;
+        if (!_deepEqual(aObject[key], bObject[key])) return false;
     }
 
     return true;

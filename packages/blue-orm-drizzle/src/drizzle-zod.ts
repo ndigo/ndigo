@@ -12,6 +12,7 @@
  * @module
  */
 
+import type { Table } from 'drizzle-orm';
 import { sqliteTable, integer, text, real, blob } from 'drizzle-orm/sqlite-core';
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod';
 import { z } from 'zod';
@@ -87,8 +88,9 @@ export function insertSchemaForEntity<E extends object>(entityClass: Constructab
 export function selectSchemaForEntity<E extends object>(entityClass: Constructable<E>): z.ZodType {
     // The metadata-built table's columns are dynamic (typed `Record<string,
     // unknown>` at build time); drizzle-zod derives the schema from the
-    // table's runtime column config, so the generic table type is not
-    // statically expressible here without TS deep-instantiation errors.
-    // `any` is deliberate and bounded to this bridge's boundary call.
-    return createSelectSchema(drizzleTableForEntity(entityClass) as any) as z.ZodType;
+    // table's runtime column config, so the concrete generic table type is
+    // not statically expressible here without TS deep-instantiation errors.
+    // `Table` is the widest drizzle-zod schema input; the schema shape is
+    // derived from the table's runtime column config.
+    return createSelectSchema(drizzleTableForEntity(entityClass) as Table) as z.ZodType;
 }

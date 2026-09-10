@@ -25,19 +25,18 @@ import type { HTTPMethod } from '@blue/http';
  * @returns A method-only verb decorator.
  */
 const verbDecorator =
-    (method: HTTPMethod, label: string) =>
-    (route: string | Omit<RequestMappingConfiguration, 'method'>) => {
+    (method: HTTPMethod, label: string) => (route: string | Omit<RequestMappingConfiguration, 'method'>) => {
         const config: RequestMappingConfiguration = isString(route)
             ? { value: route, method, private: false }
             : { ...route, method };
         const routeDecorator = requestMapping(config);
-        return (target: any, context: ClassDecoratorContext | ClassMethodDecoratorContext): any => {
+        return (target: unknown, context: ClassDecoratorContext | ClassMethodDecoratorContext): void => {
             if (context.kind !== 'method') {
                 throw new FrameworkError(
                     `@${label} is method-only — annotate the class with @requestMapping for the path context.`
                 );
             }
-            return routeDecorator(target, context);
+            routeDecorator(target, context);
         };
     };
 

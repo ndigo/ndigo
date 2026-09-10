@@ -16,7 +16,7 @@ export class BrowserCookieValueMethodArgumentResolver extends AbstractPlatformAr
     }
 
     /** Retrieves a raw cookie string from `document.cookie`. */
-    protected resolveName(name: string, _parameter: MethodParameter, _route: Route, _mapping: any): any {
+    protected resolveName(name: string, _parameter: MethodParameter, _route: Route, _mapping: unknown): unknown {
         const value = Cookies.get(name);
         return typeof value === 'string' ? value : undefined;
     }

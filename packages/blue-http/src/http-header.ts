@@ -2,10 +2,12 @@ import { isEntries, isJSONObject, JSONValue, Serializable } from '@blue/core';
 import { is, isString } from '@blue/util/types';
 
 const { defineProperty, deleteProperty, get, set } = Reflect,
-    isHeaders = is(Headers) as (value: any) => value is Headers,
-    isRecord = isJSONObject as (value: any) => value is Record<string, string>;
+    isHeaders = is(Headers) as (value: unknown) => value is Headers,
+    isRecord = isJSONObject as (value: unknown) => value is Record<string, string>;
 
-function deletePair(entries: any, name: string): void {
+type HeaderEntries = Array<[string, string]>;
+
+function deletePair(entries: HeaderEntries, name: string): void {
     const length = entries.length;
 
     if (length) {
@@ -18,7 +20,7 @@ function deletePair(entries: any, name: string): void {
     }
 }
 
-function getPair(entries: any, name: string): string | null {
+function getPair(entries: HeaderEntries, name: string): string | null {
     const length = entries.length;
 
     if (length) {
@@ -32,7 +34,7 @@ function getPair(entries: any, name: string): string | null {
     return null;
 }
 
-function setPair(entries: any, name: string, value: string): void {
+function setPair(entries: HeaderEntries, name: string, value: string): void {
     const length = entries.length;
     let found = false;
 
@@ -55,7 +57,8 @@ function deleteHeader(headers: HeadersInit, name: string): void {
     if (isHeaders(headers)) {
         (headers as Headers).delete(name);
     } else if (isEntries(headers)) {
-        deletePair(headers, name);
+        // isEntries narrows to the core Entry shape; the pair helpers only read [name, value] tuples.
+        deletePair(headers as unknown as HeaderEntries, name);
     } else if (isRecord(headers)) {
         deleteProperty(headers as Record<string, string>, name);
     }
@@ -65,7 +68,7 @@ function getHeader(headers: HeadersInit, name: string): string | null {
     if (isHeaders(headers)) {
         return (headers as Headers).get(name);
     } else if (isEntries(headers)) {
-        return getPair(headers, name);
+        return getPair(headers as unknown as HeaderEntries, name);
     } else if (isRecord(headers)) {
         return get(headers as Record<string, string>, name) as string;
     }
@@ -76,12 +79,12 @@ function hasHeader(headers: HeadersInit, name: string): boolean {
     return isString(getHeader(headers, name));
 }
 
-function setHeader(headers: HeadersInit, name: string, value: any): void {
+function setHeader(headers: HeadersInit, name: string, value: unknown): void {
     const stringValue = String(value);
     if (isHeaders(headers)) {
         (headers as Headers).set(name, stringValue);
     } else if (isEntries(headers)) {
-        setPair(headers, name, stringValue);
+        setPair(headers as unknown as HeaderEntries, name, stringValue);
     } else if (isRecord(headers)) {
         set(headers as Record<string, string>, name, stringValue);
     }
@@ -158,7 +161,7 @@ export class HTTPHeader implements Serializable {
      * @param value - The header value to store.
      * @throws {TypeError} When `headers` is not provided.
      */
-    set(headers: HeadersInit, value: any): void {
+    set(headers: HeadersInit, value: unknown): void {
         if (!headers) {
             throw new TypeError('headers is undefined');
         }

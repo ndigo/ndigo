@@ -53,7 +53,7 @@ export const SOCKET_MAPPING_KEY = 'route:socket';
  * @returns A method decorator.
  */
 export function socketMapping(route: string | RouteMappingConfiguration) {
-    return function (target: any, context: ClassDecoratorContext | ClassMethodDecoratorContext): any {
+    return function (target: unknown, context: ClassDecoratorContext | ClassMethodDecoratorContext): void {
         if (context.kind !== 'method') {
             throw new FrameworkError('@socketMapping is a method-only decorator.');
         }
@@ -61,7 +61,7 @@ export function socketMapping(route: string | RouteMappingConfiguration) {
         // endpoint from sibling HTTP methods on the same controller.
         context.metadata[`${SOCKET_MAPPING_KEY}:${String(context.name)}`] = true;
         const routeDecorator = routeMapping(route);
-        return routeDecorator(target as any, context as any);
+        routeDecorator(target, context);
     };
 }
 
@@ -76,8 +76,10 @@ export function socketMapping(route: string | RouteMappingConfiguration) {
  * @param propertyKey - The method name.
  * @returns `true` when the method is socket-mapped.
  */
-export function isSocketMapping(target: any, propertyKey: string | symbol): boolean {
+export function isSocketMapping(target: unknown, propertyKey: string | symbol): boolean {
     const metadata = getSymbolMetadata(target);
-    return metadata[`${SOCKET_MAPPING_KEY}:${String(propertyKey)}`] === true &&
-        metadata[`route:mapping:${String(propertyKey)}`] !== undefined;
+    return (
+        metadata[`${SOCKET_MAPPING_KEY}:${String(propertyKey)}`] === true &&
+        metadata[`route:mapping:${String(propertyKey)}`] !== undefined
+    );
 }

@@ -1,5 +1,6 @@
 import { metrics } from '@opentelemetry/api';
 import { AbstractBaseInstrumentation, CountedRegistry, getCounted } from '@blue/telemetry';
+import type { CountedMethodConfig } from '@blue/telemetry';
 import { getSymbolMetadata } from '@blue/core';
 
 /**
@@ -25,7 +26,14 @@ export class CountedInstrumentation extends AbstractBaseInstrumentation {
                     const config = getCounted(prototype, methodName);
 
                     if (config) {
-                        this._wrap(prototype, methodName, this._createCountPatch(config));
+                        // The registry holds prototypes of counted-decorated
+                        // classes; the instrumented method slot exists by
+                        // construction, so widen to shimmer's wrap contract.
+                        this._wrap(
+                            prototype as { [method: string]: (this: unknown, ...args: unknown[]) => unknown },
+                            methodName,
+                            this._createCountPatch(config)
+                        );
                     }
                 }
             }
@@ -41,7 +49,7 @@ export class CountedInstrumentation extends AbstractBaseInstrumentation {
             for (const key of Object.keys(metadata)) {
                 if (key.startsWith('telemetry:counted:')) {
                     const methodName = key.replace('telemetry:counted:', '');
-                    this._unwrap(prototype, methodName);
+                    this._unwrap(prototype as { [method: string]: unknown }, methodName);
                 }
             }
         }
@@ -50,12 +58,14 @@ export class CountedInstrumentation extends AbstractBaseInstrumentation {
     /**
      * Creates a patch function that increments the counter and handles feature aggregation.
      */
-    private _createCountPatch(config: any) {
-        return (original: (...args: any[]) => any) => {
+    private _createCountPatch(config: CountedMethodConfig) {
+        return <This, Args extends unknown[], Return>(
+            original: (this: This, ...args: Args) => Return
+        ): ((this: This, ...args: Args) => Return) => {
             const meter = metrics.getMeter('@blue/telemetry');
             const counter = meter.createCounter(config.name);
 
-            return function (this: any, ...args: any[]) {
+            return function (this: This, ...args: Args): Return {
                 // Increment the OTel counter
                 counter.add(1, config.attributes);
 

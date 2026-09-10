@@ -1,4 +1,4 @@
-import { HTTP, RequestAwareHTTPInterceptor, ResponseAwareHTTPInterceptor } from '@blue/http';
+import { HTTPInit, HTTP, RequestAwareHTTPInterceptor, ResponseAwareHTTPInterceptor } from '@blue/http';
 
 /**
  * Configuration options for the RetryOnOfflineInterceptor.
@@ -37,7 +37,7 @@ export class RetryOnOfflineInterceptor implements RequestAwareHTTPInterceptor, R
     readonly #config: RetryOnOfflineConfig;
     #queue: Array<{
         request: Request;
-        http: HTTP;
+        http: HTTP | undefined;
         resolve: (r: Response) => void;
         reject: (e: Error) => void;
         retries: number;
@@ -83,7 +83,7 @@ export class RetryOnOfflineInterceptor implements RequestAwareHTTPInterceptor, R
      * @param settings - The request settings.
      * @returns The response, or a queued promise when offline.
      */
-    async postResponse(response: Response, settings: any): Promise<Response | void> {
+    async postResponse(response: Response, settings: HTTPInit): Promise<Response | void> {
         if (response.ok) {
             return response;
         }
@@ -94,7 +94,8 @@ export class RetryOnOfflineInterceptor implements RequestAwareHTTPInterceptor, R
             });
 
             return new Promise<Response>((resolve, reject) => {
-                this.#queue.push({ request, http: undefined as any, resolve, reject, retries: 0 });
+                // postResponse has no HTTP client; the queue is drained over fetch().
+                this.#queue.push({ request, http: undefined, resolve, reject, retries: 0 });
                 this.#startRetryTimer();
             });
         }

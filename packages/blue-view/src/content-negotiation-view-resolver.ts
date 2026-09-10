@@ -33,7 +33,7 @@ export interface ContentNegotiationStrategy {
      * @param request - The current request.
      * @returns The acceptable media types, in priority order.
      */
-    resolveMediaTypes(request: any): MediaType[];
+    resolveMediaTypes(request: unknown): MediaType[];
 }
 
 /**
@@ -44,8 +44,8 @@ export interface ContentNegotiationStrategy {
 
 const hasFunction =
         (prop: string) =>
-        (obj: any): boolean =>
-            isFunction(obj?.[prop]),
+        (obj: unknown): boolean =>
+            isFunction((obj as Record<string, unknown> | null)?.[prop]),
     hasGetAllFileExtenstions = hasFunction('getAllFileExtenstions'),
     hasResolveFileExtensions = hasFunction('resolveFileExtensions');
 
@@ -152,7 +152,7 @@ export class FixedContentNegotiationStrategy implements ContentNegotiationStrate
      * @param request - The current request.
      * @returns The configured media types.
      */
-    resolveMediaTypes(request: any): MediaType[] {
+    resolveMediaTypes(request: unknown): MediaType[] {
         return this.mediaTypes;
     }
 }
@@ -170,9 +170,9 @@ export abstract class AbstractMappingContentNegotiationStrategy
      * @param request - The current request.
      * @returns Media types from this resolver, optionally filtered by request params.
      */
-    resolveMediaTypes(request: any): MediaType[] {
+    resolveMediaTypes(request: unknown): MediaType[] {
         const all = this.getAllMediaTypes();
-        const hint = request?.mediaTypeHint as string | undefined;
+        const hint = (request as { mediaTypeHint?: string } | undefined)?.mediaTypeHint;
         if (!hint) return all;
 
         // Filter by media type hint from the request (e.g., Accept header).
@@ -192,7 +192,7 @@ export abstract class AbstractMappingContentNegotiationStrategy
      * @param key - The request key to inspect.
      * @returns The matching media types, or `null` when none are found.
      */
-    resolveMediaTypeKey(request: any, key: string): MediaType[] | null {
+    resolveMediaTypeKey(request: unknown, key: string): MediaType[] | null {
         return null;
     }
 }
@@ -210,9 +210,10 @@ export class PathExtensionContentNegotiationStrategy
      * @param request - The current request.
      * @returns Media types matching the file extension extracted from the path.
      */
-    resolveMediaTypes(request: any): MediaType[] {
+    resolveMediaTypes(request: unknown): MediaType[] {
         // Try to extract a path or URI from the request
-        const uri = request?.uri || request?.path || '';
+        const req = request as { uri?: string; path?: string } | undefined;
+        const uri = req?.uri || req?.path || '';
         if (!uri) return [];
 
         // Extract the file extension (last segment after the last dot, ignoring query string)
@@ -294,7 +295,7 @@ export class ContentNegotiationManager implements ContentNegotiationStrategy, Me
      * @param request - The current request.
      * @returns Media types in priority order from the first strategy that matches.
      */
-    resolveMediaTypes(request: any): MediaType[] {
+    resolveMediaTypes(request: unknown): MediaType[] {
         for (const strategy of this.strategies) {
             const result = strategy.resolveMediaTypes(request);
             if (result && result.length > 0) return result;
@@ -335,7 +336,7 @@ export class ContentNegotiationViewResolver implements ViewResolver {
      * @param request - The current request.
      * @returns The negotiated media types.
      */
-    getMediaTypes(request: any): MediaType[] {
+    getMediaTypes(request: unknown): MediaType[] {
         return this.contentNegotiationManager.resolveMediaTypes(request);
     }
 

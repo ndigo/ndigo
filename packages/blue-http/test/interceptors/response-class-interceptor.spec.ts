@@ -6,18 +6,26 @@ import { MappedResponseClassHTTPInterceptor } from '../../src/interceptors/respo
 describe('ResponseClassHTTPInterceptor', () => {
     let http: HTTP | undefined;
     let interceptor: MappedResponseClassHTTPInterceptor | undefined;
+    let hooks: {
+        postInformationalResponse: ReturnType<typeof vi.fn>;
+        postSuccessfulResponse: ReturnType<typeof vi.fn>;
+        postRedirectResponse: ReturnType<typeof vi.fn>;
+        postClientErrorResponse: ReturnType<typeof vi.fn>;
+        postServerErrorResponse: ReturnType<typeof vi.fn>;
+    };
 
     beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
 
     beforeEach(() => {
-        interceptor = new MappedResponseClassHTTPInterceptor({
+        hooks = {
             postInformationalResponse: vi.fn(),
             postSuccessfulResponse: vi.fn(),
             postRedirectResponse: vi.fn(),
             postClientErrorResponse: vi.fn(),
             postServerErrorResponse: vi.fn(),
-        });
-        http = new HTTP([interceptor as any]);
+        };
+        interceptor = new MappedResponseClassHTTPInterceptor(hooks);
+        http = new HTTP([interceptor]);
     });
 
     afterEach(() => {
@@ -29,52 +37,47 @@ describe('ResponseClassHTTPInterceptor', () => {
 
     //! This does not work and I do not know why.
     test.skip('it should handle informational responses', async () => {
-        await http!.request('http://localhost/responseClass/100');
-        const interceptorObj = (http!.interceptors[0] as any).interceptor;
-        expect(interceptorObj.postInformationalResponse).toHaveBeenCalled();
-        expect(interceptorObj.postSuccessfulResponse).not.toHaveBeenCalled();
-        expect(interceptorObj.postRedirectResponse).not.toHaveBeenCalled();
-        expect(interceptorObj.postClientErrorResponse).not.toHaveBeenCalled();
-        expect(interceptorObj.postServerErrorResponse).not.toHaveBeenCalled();
+        await http?.request('http://localhost/responseClass/100');
+        expect(hooks.postInformationalResponse).toHaveBeenCalled();
+        expect(hooks.postSuccessfulResponse).not.toHaveBeenCalled();
+        expect(hooks.postRedirectResponse).not.toHaveBeenCalled();
+        expect(hooks.postClientErrorResponse).not.toHaveBeenCalled();
+        expect(hooks.postServerErrorResponse).not.toHaveBeenCalled();
     });
 
     test('it should handle successful responses', async () => {
-        await http!.request('http://localhost/responseClass/200');
-        const interceptorObj = (http!.interceptors[0] as any).interceptor;
-        expect(interceptorObj.postInformationalResponse).not.toHaveBeenCalled();
-        expect(interceptorObj.postSuccessfulResponse).toHaveBeenCalled();
-        expect(interceptorObj.postRedirectResponse).not.toHaveBeenCalled();
-        expect(interceptorObj.postClientErrorResponse).not.toHaveBeenCalled();
-        expect(interceptorObj.postServerErrorResponse).not.toHaveBeenCalled();
+        await http?.request('http://localhost/responseClass/200');
+        expect(hooks.postInformationalResponse).not.toHaveBeenCalled();
+        expect(hooks.postSuccessfulResponse).toHaveBeenCalled();
+        expect(hooks.postRedirectResponse).not.toHaveBeenCalled();
+        expect(hooks.postClientErrorResponse).not.toHaveBeenCalled();
+        expect(hooks.postServerErrorResponse).not.toHaveBeenCalled();
     });
 
     test('it should handle redirect responses', async () => {
-        await http!.request('http://localhost/responseClass/300');
-        const interceptorObj = (http!.interceptors[0] as any).interceptor;
-        expect(interceptorObj.postInformationalResponse).not.toHaveBeenCalled();
-        expect(interceptorObj.postSuccessfulResponse).not.toHaveBeenCalled();
-        expect(interceptorObj.postRedirectResponse).toHaveBeenCalled();
-        expect(interceptorObj.postClientErrorResponse).not.toHaveBeenCalled();
-        expect(interceptorObj.postServerErrorResponse).not.toHaveBeenCalled();
+        await http?.request('http://localhost/responseClass/300');
+        expect(hooks.postInformationalResponse).not.toHaveBeenCalled();
+        expect(hooks.postSuccessfulResponse).not.toHaveBeenCalled();
+        expect(hooks.postRedirectResponse).toHaveBeenCalled();
+        expect(hooks.postClientErrorResponse).not.toHaveBeenCalled();
+        expect(hooks.postServerErrorResponse).not.toHaveBeenCalled();
     });
 
     test('it should handle client error responses', async () => {
-        await http!.request('http://localhost/responseClass/400');
-        const interceptorObj = (http!.interceptors[0] as any).interceptor;
-        expect(interceptorObj.postInformationalResponse).not.toHaveBeenCalled();
-        expect(interceptorObj.postSuccessfulResponse).not.toHaveBeenCalled();
-        expect(interceptorObj.postRedirectResponse).not.toHaveBeenCalled();
-        expect(interceptorObj.postClientErrorResponse).toHaveBeenCalled();
-        expect(interceptorObj.postServerErrorResponse).not.toHaveBeenCalled();
+        await http?.request('http://localhost/responseClass/400');
+        expect(hooks.postInformationalResponse).not.toHaveBeenCalled();
+        expect(hooks.postSuccessfulResponse).not.toHaveBeenCalled();
+        expect(hooks.postRedirectResponse).not.toHaveBeenCalled();
+        expect(hooks.postClientErrorResponse).toHaveBeenCalled();
+        expect(hooks.postServerErrorResponse).not.toHaveBeenCalled();
     });
 
     test('it should handle server error responses', async () => {
-        await http!.request('http://localhost/responseClass/500');
-        const interceptorObj = (http!.interceptors[0] as any).interceptor;
-        expect(interceptorObj.postInformationalResponse).not.toHaveBeenCalled();
-        expect(interceptorObj.postSuccessfulResponse).not.toHaveBeenCalled();
-        expect(interceptorObj.postRedirectResponse).not.toHaveBeenCalled();
-        expect(interceptorObj.postClientErrorResponse).not.toHaveBeenCalled();
-        expect(interceptorObj.postServerErrorResponse).toHaveBeenCalled();
+        await http?.request('http://localhost/responseClass/500');
+        expect(hooks.postInformationalResponse).not.toHaveBeenCalled();
+        expect(hooks.postSuccessfulResponse).not.toHaveBeenCalled();
+        expect(hooks.postRedirectResponse).not.toHaveBeenCalled();
+        expect(hooks.postClientErrorResponse).not.toHaveBeenCalled();
+        expect(hooks.postServerErrorResponse).toHaveBeenCalled();
     });
 });

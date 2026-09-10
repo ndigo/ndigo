@@ -6,7 +6,7 @@ describe('PathViewController', () => {
     let controller: PathViewController;
 
     afterEach(() => {
-        controller = undefined as any;
+        controller = undefined as unknown as PathViewController;
     });
 
     beforeEach(() => {

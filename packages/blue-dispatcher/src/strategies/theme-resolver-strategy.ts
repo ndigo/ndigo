@@ -44,6 +44,7 @@ export const AsThemeResolverStrategy = <T extends Constructable<StrategyInitiali
 
         themeResolver!: ThemeResolver;
 
+        // oxlint-disable-next-line no-explicit-any -- TS2545: mixin constructor must be exactly (...args: any[]).
         constructor(...args: any[]) {
             super(...args);
             this.themeResolverKey = THEME_RESOLVER;

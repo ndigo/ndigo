@@ -77,7 +77,7 @@ export interface ConfigurationPropertiesOptions {
  * ```
  */
 export function configurationProperties(prefix?: string, options?: ConfigurationPropertiesOptions) {
-    return function <T extends new (...args: any[]) => any>(target: T, context: ClassDecoratorContext): T {
+    return function <T extends new (...args: never[]) => unknown>(target: T, context: ClassDecoratorContext): T {
         context.metadata[CONFIG_PROPS] = true;
         if (prefix) {
             context.metadata[CONFIG_PROPS_PREFIX] = prefix;
@@ -237,10 +237,16 @@ export function resolveConfigurationProperties<T>(
  */
 function targetFor(instance: unknown, key: string, meta: Record<string, unknown>): string {
     const declared = meta[`${PROPERTY_KEY_TYPE}${key}`] as
-        (new (...args: never[]) => number | boolean | Date | string) | string | undefined;
+        | (new (...args: never[]) => number | boolean | Date | string)
+        | string
+        | undefined;
     if (typeof declared === 'string') return declared;
     if (typeof declared === 'function') return declared.name.toLowerCase();
-    return targetFor(instance, key, meta);
+    // No declared type: infer from the field's current value (initialized by
+    // `new ctor()`; `undefined`/absent → String). Previously recursed forever.
+    // T is an unconstrained generic property bag — key access needs the cast.
+    const bag = instance as Record<string, unknown>;
+    return inferTarget(bag[key]);
 }
 
 /**

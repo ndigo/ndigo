@@ -1,0 +1,57 @@
+{
+  "tabWidth": 4,
+  "useTabs": false,
+  "endOfLine": "lf",
+  "semi": true,
+  "singleQuote": true,
+  "trailingComma": "es5",
+  "printWidth": 120,
+  "arrowParens": "always",
+  "bracketSpacing": true,
+  "jsxSingleQuote": false,
+  "sortPackageJson": false,
+  "proseWrap": "preserve",
+  "ignorePatterns": [
+    "doc/",
+    "**/graft/",
+    "doc-html/",
+    "doc-md/",
+    "lib/",
+    "dist/",
+    "coverage/",
+    "*.map",
+    "*.tsbuildinfo",
+    ".nx/",
+    ".cache/",
+    ".vitest/",
+    "*.log",
+    ".scratch/",
+    ".ideas/",
+    ".examples/",
+    "scratch/",
+    "archive/",
+    "packages/blue-reactive/",
+    "packages/blue-view-wicket/",
+    "packages/blue-parser/",
+    "pnpm-lock.yaml",
+    "yarn.lock",
+    "package-lock.json",
+    "node_modules/",
+    ".pnpm-store/",
+    ".mcp.json",
+    ".opencode/",
+    ".claude/",
+    ".review-notes.md",
+    "index.js",
+    "index.cjs",
+    "src/index.js"
+  ],
+  "overrides": [
+    {
+      "files": ["*.json", "*.yaml", "*.yml"],
+      "options": {
+        "tabWidth": 2
+      }
+    }
+  ]
+}

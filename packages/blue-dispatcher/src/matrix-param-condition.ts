@@ -179,6 +179,5 @@ export class MatrixParamCondition extends AbstractRouteCondition<MatrixParamCond
 
 /**
  * Creates a new instance with the given route patterns. Each pattern that is not empty and does not start with "/" is prepended with "/".
- * @extends module:dispatcher.AbstractRouteCondition<module:dispatcher.PatternsRouteConditionPatternsRouteCondition>
  * @param {...external:string} [patterns] 0 or more route patterns; if 0 the condition will match to every route.
  */

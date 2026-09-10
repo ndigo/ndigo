@@ -12,7 +12,7 @@ export interface InitializationAwareProcessor {
      * @param instance The instance
      * @returns The instance to use, either the original or a wrapped one; if `null`, no subsequent EntryProcessors will be invoked.
      */
-    processAfterInitialization<T = any>(name: string, instance: T): T;
+    processAfterInitialization<T = unknown>(name: string, instance: T): T;
     /**
      * Apply this {@link EntryProcessor} to the given new instance _after_ any initialization callbacks. The instance will already be populated with property values. The returned instance may be a wrapper around the original.
      *
@@ -21,7 +21,7 @@ export interface InitializationAwareProcessor {
      * @param instance The instance
      * @returns The instance to use, either the original or a wrapped one; if `null`, no subsequent EntryProcessors will be invoked.
      */
-    processBeforeInitialization<T = any>(name: string, instance: T): T;
+    processBeforeInitialization<T = unknown>(name: string, instance: T): T;
 }
 
 /**
@@ -42,7 +42,7 @@ export interface ConstructionAwareProcessor {
      * @param instance The instance without properties having been set yet.
      * @returns `true` if properties should be set on the instance; `false` if property population should be skipped. Normal implementations should return `true`. Returning `false` will also prevent any subsequent ConstructionAwarePostProcessors being invoked on this instance.
      */
-    processAfterConstruction<T = any>(name: string, instance: T): boolean;
+    processAfterConstruction<T = unknown>(name: string, instance: T): boolean;
     /**
      * Apply this EntryProcessor _before the target value gets constructed_. The returned value may be a proxy instead of the target instance, effectively supressing default construction.
      *
@@ -52,7 +52,7 @@ export interface ConstructionAwareProcessor {
      * @param argumentsList (constructor arguments) The list of arguments supplied to the `constructor`.
      * @returns The instance to expose instead of a default instance, or `null` to proceed with default construction.
      */
-    processBeforeConstruction<T = any>(name: string, constructor: Function, argumentsList?: unknown[]): T | null;
+    processBeforeConstruction<T = unknown>(name: string, constructor: Function, argumentsList?: unknown[]): T | null;
     /**
      * Process the given property values before the factory applies them to the given instance.
      *
@@ -62,7 +62,7 @@ export interface ConstructionAwareProcessor {
      * @param instance The instance without properties having been set yet.
      * @returns The property values to apply to the given instance.
      */
-    processProperties<T = any>(properties: PropertyDescriptorMap, name: string, instance: T): PropertyDescriptorMap;
+    processProperties<T = unknown>(properties: PropertyDescriptorMap, name: string, instance: T): PropertyDescriptorMap;
 }
 
 /**
@@ -159,15 +159,15 @@ export const likeEntryProcessor = (value: unknown): value is EntryProcessor =>
 
 /*
 export class InjectDecoratorEntryProcessor extends AsFactoryAware( Null ) implements ConstructionAwareProcessor {
-    processAfterConstruction<T = any>( name: string, instance: T ): boolean {
+    processAfterConstruction<T = unknown>( name: string, instance: T ): boolean {
         return true;
     }
 
-    processBeforeConstruction<T = any>( name: string, constructor: Function, argumentsList?: any[] ): T {
+    processBeforeConstruction<T = unknown>( name: string, constructor: Function, argumentsList?: any[] ): T {
         return null;
     }
 
-    processProperties<T = any>( properties: PropertyDescriptorMap, name: string, instance: T ): PropertyDescriptorMap {
+    processProperties<T = unknown>( properties: PropertyDescriptorMap, name: string, instance: T ): PropertyDescriptorMap {
         return properties;
     }
 

@@ -65,9 +65,8 @@ export interface ConditionContext {
  * @param context - The decorator context.
  * @returns The target class unchanged.
  */
-function conditionalDecorator(key: string, value: unknown, target: any, context: ClassDecoratorContext): any {
+function conditionalDecorator(key: string, value: unknown, target: Function, context: ClassDecoratorContext): void {
     context.metadata[key] = value;
-    return target;
 }
 
 /**
@@ -80,8 +79,8 @@ function conditionalDecorator(key: string, value: unknown, target: any, context:
  * class WebAutoConfiguration { … }
  * ```
  */
-export function conditionalOnBrowser(target: any, context: ClassDecoratorContext): any {
-    return conditionalDecorator(CONDITIONAL_ON, 'browser', target, context);
+export function conditionalOnBrowser(target: Function, context: ClassDecoratorContext): void {
+    conditionalDecorator(CONDITIONAL_ON, 'browser', target, context);
 }
 
 /**
@@ -94,8 +93,8 @@ export function conditionalOnBrowser(target: any, context: ClassDecoratorContext
  * class NodeAutoConfiguration { … }
  * ```
  */
-export function conditionalOnNode(target: any, context: ClassDecoratorContext): any {
-    return conditionalDecorator(CONDITIONAL_ON, 'node', target, context);
+export function conditionalOnNode(target: Function, context: ClassDecoratorContext): void {
+    conditionalDecorator(CONDITIONAL_ON, 'node', target, context);
 }
 
 /**
@@ -122,8 +121,8 @@ export interface ConditionalOnPropertyOptions {
  * ```
  */
 export function conditionalOnProperty(options: ConditionalOnPropertyOptions) {
-    return function (target: any, context: ClassDecoratorContext): any {
-        return conditionalDecorator(CONDITIONAL_PROPERTY, options, target, context);
+    return function (target: Function, context: ClassDecoratorContext): void {
+        conditionalDecorator(CONDITIONAL_PROPERTY, options, target, context);
     };
 }
 
@@ -141,8 +140,8 @@ export function conditionalOnProperty(options: ConditionalOnPropertyOptions) {
  * ```
  */
 export function conditionalOnProfile(expression: string) {
-    return function (target: any, context: ClassDecoratorContext): any {
-        return conditionalDecorator(CONDITIONAL_PROFILE, expression, target, context);
+    return function (target: Function, context: ClassDecoratorContext): void {
+        conditionalDecorator(CONDITIONAL_PROFILE, expression, target, context);
     };
 }
 
@@ -158,10 +157,18 @@ export function conditionalOnProfile(expression: string) {
  * ```
  */
 export function conditionalOnMissingEntry(entryName: string) {
-    return function (target: any, context: ClassDecoratorContext): any {
-        return conditionalDecorator(CONDITIONAL_MISSING, entryName, target, context);
+    return function (target: Function, context: ClassDecoratorContext): void {
+        conditionalDecorator(CONDITIONAL_MISSING, entryName, target, context);
     };
 }
+
+const getMetadata = (target: unknown): Record<string, unknown> => {
+    const carrier = (typeof target === 'function' ? target : target?.constructor) as
+        | { [Symbol.metadata]?: Record<string, unknown> }
+        | undefined;
+
+    return carrier?.[Symbol.metadata] ?? {};
+};
 
 /**
  * Reads the conditional platform metadata from a class.
@@ -169,9 +176,9 @@ export function conditionalOnMissingEntry(entryName: string) {
  * @param target - The class constructor or instance to inspect.
  * @returns The required platform, or `undefined` when no condition is set.
  */
-export function getConditionalPlatform(target: any): ConditionalPlatform | undefined {
-    const meta: Record<string, any> = target?.[Symbol.metadata] || target?.constructor?.[Symbol.metadata] || {};
-    return meta[CONDITIONAL_ON];
+export function getConditionalPlatform(target: unknown): ConditionalPlatform | undefined {
+    const meta = getMetadata(target);
+    return meta[CONDITIONAL_ON] as ConditionalPlatform | undefined;
 }
 
 /**
@@ -180,7 +187,7 @@ export function getConditionalPlatform(target: any): ConditionalPlatform | undef
  * @param target - The class constructor or instance to check.
  * @returns `true` when the class should be registered in this environment.
  */
-export function isActiveForCurrentPlatform(target: any): boolean {
+export function isActiveForCurrentPlatform(target: unknown): boolean {
     const platform = getConditionalPlatform(target);
 
     if (!platform) {
@@ -210,12 +217,12 @@ export function isActiveForCurrentPlatform(target: any): boolean {
  * @param ctx - Optional context for property/entry conditions.
  * @returns `true` when all conditions pass.
  */
-export function isActive(target: any, ctx?: ConditionContext): boolean {
+export function isActive(target: unknown, ctx?: ConditionContext): boolean {
     if (!isActiveForCurrentPlatform(target)) {
         return false;
     }
 
-    const meta: Record<string, any> = target?.[Symbol.metadata] || target?.constructor?.[Symbol.metadata] || {};
+    const meta: Record<string, unknown> = getMetadata(target);
 
     const property = meta[CONDITIONAL_PROPERTY] as ConditionalOnPropertyOptions | undefined;
     if (property) {

@@ -106,7 +106,7 @@ export const likePropertyResolver = like({
     getProperty: Function,
     getRequiredProperty: Function,
     hasProperty: Function,
-}) as (value: any) => value is PropertyResolver;
+}) as (value: unknown) => value is PropertyResolver;
 
 const pathIsDefined = (keypath: KeypathToken[], obj: unknown): boolean => {
     let value: unknown = obj;
@@ -307,7 +307,7 @@ export interface ResolverOptions {
  * Property resolver that layers sources through a configured index.
  *
  * Preferred construction is {@link PrototypalPropertyResolver.create}, which
- * backs the resolver with a live {@link PropertySources|registry} (mutations
+ * backs the resolver with a live `PropertySources` registry (mutations
  * are picked up lazily). The plain constructor stays for compatibility: the
  * source array is captured once and replaced via the `propertySources`
  * setter.

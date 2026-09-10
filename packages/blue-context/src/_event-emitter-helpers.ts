@@ -16,6 +16,26 @@ export const $every = '@@emitter/every';
 /** Matcher for `onEventName` style handler keys. */
 export const onMatcher = /^on(.+)$/;
 
+/**
+ * The per-emitter listener registry.
+ *
+ * @internal
+ */
+export type EventRegistry = {
+    [type: string]: EventHandler | undefined;
+    [type: symbol]: EventHandler | undefined;
+};
+
+/**
+ * An event emitter carrying its listener registry under `$events`.
+ *
+ * @internal
+ */
+export type EmitterWithStore = { [$events]?: EventRegistry } & EventEmitter;
+
+/** Reads an emitter's listener registry (or `undefined` when not initialized). */
+const getEvents = (emitter: EventEmitter): EventRegistry | undefined => (emitter as EmitterWithStore)[$events];
+
 export const { defineProperty, deleteProperty } = Reflect;
 export const { keys } = Object;
 const { getPrototypeOf } = Reflect,
@@ -29,7 +49,9 @@ const greaterThanOrEqualZero = (value: number): boolean => value >= 0,
 
 export function addConditionalEventListener(emitter: EventEmitter, type: EventType, listener: EventListener): void {
     const conditionalListener: EventListener = function (this: EventEmitter): void {
-        const done: any = listener.apply(this, arguments as any);
+        // `arguments` is not an array; coerce it so the listener can forward its args.
+        // Conditional listeners return a boolean at runtime even though the type is `void`.
+        const done = listener.apply(this, Array.prototype.slice.call(arguments) as unknown[]) as unknown;
         if (done) {
             // When a conditional listener removes itself (once/many/until), tests expect
             // ':off' meta events to include only the event type (no listener argument).
@@ -77,11 +99,11 @@ export function addEventHandlers(
     }
 }
 
-export function defineEventsProperty(target: any, value: any): void {
+export function defineEventsProperty(target: EventEmitter, value: EventRegistry): EventRegistry {
     const hasEvents: boolean = hasOwnProperty.call(target, $events),
         targetPrototype = getPrototypeOf(target);
 
-    if (!hasEvents || (targetPrototype && (target as any)[$events] === (targetPrototype as any)[$events])) {
+    if (!hasEvents || (targetPrototype && getEvents(target) === getEvents(targetPrototype as EventEmitter))) {
         defineProperty(target, $events, {
             value,
             configurable: true,
@@ -89,18 +111,18 @@ export function defineEventsProperty(target: any, value: any): void {
             writable: true,
         });
     }
+
+    return getEvents(target) ?? value;
 }
 
 export function addEventListener(emitter: EventEmitter, type: EventType, listener: EventListener, index: number): void {
-    defineEventsProperty(emitter as any, createNull());
-
-    const _events = (emitter as any)[$events];
+    const _events = defineEventsProperty(emitter, createNull() as EventRegistry);
 
     if (_events[':on']) {
         emitEvent(emitter, ':on', [type], false);
 
         // Emitting ':on' may have changed the registry.
-        _events[':on'] = (emitter as any)[$events][':on'];
+        _events[':on'] = getEvents(emitter)?.[':on'];
     }
 
     if (!_events[type]) {
@@ -120,8 +142,6 @@ export function addEventListener(emitter: EventEmitter, type: EventType, listene
     } else {
         _events[type] = index === 0 ? [listener, _events[type]] : [_events[type], listener];
     }
-
-    (emitter as any)[$events] = _events;
 }
 
 export function addFiniteEventListener(
@@ -131,7 +151,8 @@ export function addFiniteEventListener(
     listener: EventListener
 ): void {
     const finiteListener: EventListener = function (this: EventEmitter): boolean {
-        listener.apply(this, arguments as any);
+        // Coerce `arguments` so the listener can forward its args.
+        listener.apply(this, Array.prototype.slice.call(arguments) as unknown[]);
         return --times === 0;
     };
 
@@ -139,7 +160,7 @@ export function addFiniteEventListener(
     addConditionalEventListener(emitter, type, finiteListener);
 }
 
-export function emitAllEvents(emitter: EventEmitter, type: EventType, data: any[]): boolean {
+export function emitAllEvents(emitter: EventEmitter, type: EventType, data: unknown[]): boolean {
     let executed = false,
         index = typeof type === 'string' ? lastIndexOfColon(type) : -1;
 
@@ -159,8 +180,8 @@ export function emitErrors(emitter: EventEmitter, errors: Error[]): void {
     }
 }
 
-export function emitEvent(emitter: EventEmitter, type: EventType, data: any[], emitEvery: boolean): boolean {
-    const _events = (emitter as any)[$events];
+export function emitEvent(emitter: EventEmitter, type: EventType, data: unknown[], emitEvery: boolean): boolean {
+    const _events = getEvents(emitter);
     let executed = false;
 
     if (!isNil(_events)) {
@@ -171,16 +192,16 @@ export function emitEvent(emitter: EventEmitter, type: EventType, data: any[], e
             throw new Error('Uncaught, unspecified "error" event.');
         }
 
-        let listener: EventListener = _events[type];
+        let listener: EventHandler | undefined = _events[type];
         if (!isNil(listener)) {
-            executeHandler(listener as any, data, emitter);
+            executeHandler(listener, data, emitter);
             executed = true;
         }
 
         if (emitEvery) {
             listener = _events[$every];
             if (!isNil(listener)) {
-                executeHandler(listener as any, data, emitter);
+                executeHandler(listener, data, emitter);
                 executed = true;
             }
         }
@@ -198,10 +219,10 @@ export function eventListenerEquals(handler: EventListener | undefined, listener
         return true;
     }
 
-    return typeof (handler as any).listener !== 'undefined' && (handler as any).listener === listener;
+    return typeof handler.listener !== 'undefined' && handler.listener === listener;
 }
 
-export function executeHandler(handler: EventHandler, data: any[], scope: any): void {
+export function executeHandler(handler: EventHandler, data: unknown[], scope: EventEmitter): void {
     const isFn = isFunction(handler);
 
     switch (data.length) {
@@ -223,8 +244,10 @@ export function executeHandler(handler: EventHandler, data: any[], scope: any): 
     }
 }
 
-export const getEventTypes = (emitter: EventEmitter): EventType[] =>
-    (emitter as any)[$events] ? (keys((emitter as any)[$events]) as any) : [];
+export const getEventTypes = (emitter: EventEmitter): EventType[] => {
+    const events = getEvents(emitter);
+    return events ? (keys(events) as EventType[]) : [];
+};
 
 export const isEventHandler = (value: unknown): value is EventHandler => isFunction(value) || isArray(value);
 
@@ -259,7 +282,7 @@ function handleEmpty(handler: EventHandler, isFn: boolean, emitter: EventEmitter
     }
 }
 
-function handleOne(handler: EventHandler, isFn: boolean, emitter: EventEmitter, arg1: any): void {
+function handleOne(handler: EventHandler, isFn: boolean, emitter: EventEmitter, arg1: unknown): void {
     const errors: Error[] = [];
 
     if (isFn) {
@@ -284,7 +307,7 @@ function handleOne(handler: EventHandler, isFn: boolean, emitter: EventEmitter, 
     }
 }
 
-function handleTwo(handler: EventHandler, isFn: boolean, emitter: EventEmitter, arg1: any, arg2: any): void {
+function handleTwo(handler: EventHandler, isFn: boolean, emitter: EventEmitter, arg1: unknown, arg2: unknown): void {
     const errors: Error[] = [];
 
     if (isFn) {
@@ -313,9 +336,9 @@ function handleThree(
     handler: EventHandler,
     isFn: boolean,
     emitter: EventEmitter,
-    arg1: any,
-    arg2: any,
-    arg3: any
+    arg1: unknown,
+    arg2: unknown,
+    arg3: unknown
 ): void {
     const errors: Error[] = [];
 
@@ -341,7 +364,7 @@ function handleThree(
     }
 }
 
-function handleMany(handler: EventHandler, isFn: boolean, emitter: EventEmitter, args: any[]): void {
+function handleMany(handler: EventHandler, isFn: boolean, emitter: EventEmitter, args: unknown[]): void {
     const errors: Error[] = [];
 
     if (isFn) {
@@ -378,12 +401,14 @@ export function removeEventHandler(emitter: EventEmitter, type: EventType, handl
 }
 
 export function removeAllEventListeners(emitter: EventEmitter, type?: EventType): void {
-    if ((emitter as any)[$events]) {
-        if (!(emitter as any)[$events][':off']) {
+    const events = getEvents(emitter);
+
+    if (events) {
+        if (!events[':off']) {
             if (isEventType(type)) {
-                (emitter as any)[$events] = createNull();
-            } else if (type && (emitter as any)[$events][type]) {
-                deleteProperty((emitter as any)[$events], type);
+                (emitter as EmitterWithStore)[$events] = createNull() as EventRegistry;
+            } else if (type && events[type]) {
+                deleteProperty(events, type);
             }
         } else if (isEventType(type)) {
             const types: EventType[] = getEventTypes(emitter);
@@ -395,18 +420,21 @@ export function removeAllEventListeners(emitter: EventEmitter, type?: EventType)
             }
 
             removeAllEventListeners(emitter, ':off');
-            (emitter as any)[$events] = createNull();
+            (emitter as EmitterWithStore)[$events] = createNull() as EventRegistry;
         } else {
             if (type != null) {
-                const handler: EventHandler = (emitter as any)[$events][type];
-                removeEventHandler(emitter, type, handler);
-                deleteProperty((emitter as any)[$events], type);
+                const handler: EventHandler | undefined = events[type];
+                // Absent handler: nothing to remove; the delete below still clears the entry.
+                if (handler != null) {
+                    removeEventHandler(emitter, type, handler);
+                }
+                deleteProperty(events, type);
             }
         }
     }
 }
 
-function spliceList<T = any>(list: T[], index: number): void {
+function spliceList<T = unknown>(list: T[], index: number): void {
     const length = list.length;
     let i = index,
         j = i + 1;
@@ -424,17 +452,23 @@ export function removeEventListener(
     listener: EventListener,
     includeListenerInMeta: boolean = true
 ): void {
-    const handler: EventHandler = (emitter as any)[$events][type];
+    const events = getEvents(emitter);
+
+    if (!events) {
+        return;
+    }
+
+    const handler: EventHandler | undefined = events[type];
 
     if (eventListenerEquals(handler as EventListener, listener)) {
-        deleteProperty((emitter as any)[$events], type);
-        if ((emitter as any)[$events][':off']) {
+        deleteProperty(events, type);
+        if (events[':off']) {
             emitEvent(emitter, ':off', includeListenerInMeta ? [type, listener] : [type], false);
         }
     } else if (isArray(handler)) {
         let index = -1;
 
-        for (let i = handler.length; i-- > 0; ) {
+        for (let i = handler.length; i-- > 0;) {
             if (eventListenerEquals(handler[i], listener)) {
                 index = i;
                 break;
@@ -444,19 +478,19 @@ export function removeEventListener(
         if (index > -1) {
             if (handler.length === 1) {
                 handler.length = 0;
-                deleteProperty((emitter as any)[$events], type);
+                deleteProperty(events, type);
             } else {
                 spliceList(handler, index);
             }
 
-            if ((emitter as any)[$events][':off']) {
+            if (events[':off']) {
                 emitEvent(emitter, ':off', includeListenerInMeta ? [type, listener] : [type], false);
             }
         }
     }
 }
 
-export function tickAllEvents(emitter: EventEmitter, type: EventType, data: any[]): Promise<void> {
+export function tickAllEvents(emitter: EventEmitter, type: EventType, data: unknown[]): Promise<void> {
     return new Promise<void>(function (resolve, reject): void {
         queueMicrotask(() => (emitAllEvents(emitter, type, data) ? resolve() : reject()));
     });

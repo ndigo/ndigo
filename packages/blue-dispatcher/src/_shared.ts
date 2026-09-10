@@ -6,7 +6,7 @@ const { toString } = Object.prototype;
 const doesNotStartWithSlash = (value: string) => !value.startsWith('/');
 
 const kind = /^\[object (.+)\]$/;
-const kindOf = (value: any): string | undefined => kind.exec(toString.call(value))?.[1];
+const kindOf = (value: unknown): string | undefined => kind.exec(toString.call(value))?.[1];
 
 type Maybe<T> = string | T;
 type MaybeHandler = Maybe<object>;

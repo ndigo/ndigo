@@ -10,7 +10,7 @@ export interface Factory {
      * @param name The name of the value.
      * @returns An instance of the value specified by the `name`.
      */
-    getInstance<T = any>(name: string): T;
+    getInstance<T = unknown>(name: string): T;
 }
 
 /**

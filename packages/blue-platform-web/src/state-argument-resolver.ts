@@ -15,7 +15,7 @@ export class BrowserStateValueMethodArgumentResolver extends AbstractPlatformArg
     }
 
     /** Retrieves a value from `history.state` if it exists. */
-    protected resolveName(name: string, _parameter: MethodParameter, _route: Route, _mapping: any): any {
+    protected resolveName(name: string, _parameter: MethodParameter, _route: Route, _mapping: unknown): unknown {
         const state = globalThis.history?.state;
         return state && Object.prototype.hasOwnProperty.call(state, name) ? state[name] : undefined;
     }

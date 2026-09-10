@@ -69,14 +69,16 @@ function isCookieParseSuccess(result: CookieParseResult): result is CookieParseS
 
 /** Creates a cookie-jar API bound to the current browser environment. */
 function init(converter: CookieConverter = {}): CookieJar {
-    const api = createNull();
+    // Progressive construction: the jar methods are attached below after the closure
+    // definitions, so the object starts as a bare null-prototype and is widened.
+    const api = createNull() as unknown as CookieJar & { defaults: CookieAttributes; withConverter: typeof init };
 
     function set(key: string, value: string, attributes?: CookieAttributes): string {
         if (typeof document === 'undefined') {
             return '';
         }
 
-        const finalAttributes: CookieAttributes = assign({ path: '/' }, (api as any).defaults, attributes);
+        const finalAttributes: CookieAttributes = assign({ path: '/' }, api.defaults, attributes);
 
         if (typeof finalAttributes.expires === 'number') {
             finalAttributes.expires = new Date(Date.now() * 1 + finalAttributes.expires * 864e5);

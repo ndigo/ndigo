@@ -1,5 +1,6 @@
 import { describe, expect, test } from 'vitest';
 import { MethodParameter, MethodParameterType } from '@blue/dispatcher';
+import { Route } from '@blue/router';
 import { BrowserModelValueMethodArgumentResolver } from '../src/model-argument-resolver';
 
 describe('BrowserModelValueMethodArgumentResolver', () => {
@@ -20,7 +21,7 @@ describe('BrowserModelValueMethodArgumentResolver', () => {
     test('resolves direct model value from route data', () => {
         const resolver = new BrowserModelValueMethodArgumentResolver();
         const parameter = new MethodParameter(MethodParameterType.MODEL, 'name');
-        const value = resolver.resolveArgument(parameter, { data: { name: 'Jeff' } } as any, {} as any);
+        const value = resolver.resolveArgument(parameter, { data: { name: 'Jeff' } } as unknown as Route, {});
 
         expect(value).toBe('Jeff');
     });
@@ -28,7 +29,11 @@ describe('BrowserModelValueMethodArgumentResolver', () => {
     test('resolves dotted model key path from route data', () => {
         const resolver = new BrowserModelValueMethodArgumentResolver();
         const parameter = new MethodParameter(MethodParameterType.MODEL, 'profile.name');
-        const value = resolver.resolveArgument(parameter, { data: { profile: { name: 'Jeff' } } } as any, {} as any);
+        const value = resolver.resolveArgument(
+            parameter,
+            { data: { profile: { name: 'Jeff' } } } as unknown as Route,
+            {}
+        );
 
         expect(value).toBe('Jeff');
     });
@@ -36,7 +41,7 @@ describe('BrowserModelValueMethodArgumentResolver', () => {
     test('uses default value when model value is absent', () => {
         const resolver = new BrowserModelValueMethodArgumentResolver();
         const parameter = new MethodParameter(MethodParameterType.MODEL, 'name', false, 'default');
-        const value = resolver.resolveArgument(parameter, { data: {} } as any, {} as any);
+        const value = resolver.resolveArgument(parameter, { data: {} } as unknown as Route, {});
 
         expect(value).toBe('default');
     });
@@ -47,7 +52,7 @@ describe('BrowserModelValueMethodArgumentResolver', () => {
             source: String,
             target: Number,
         });
-        const value = resolver.resolveArgument(parameter, { data: { count: '42' } } as any, {} as any);
+        const value = resolver.resolveArgument(parameter, { data: { count: '42' } } as unknown as Route, {});
 
         expect(value).toBe(42);
     });
@@ -58,7 +63,7 @@ describe('BrowserModelValueMethodArgumentResolver', () => {
             source: String,
             target: Boolean,
         });
-        const value = resolver.resolveArgument(parameter, { data: { active: 'true' } } as any, {} as any);
+        const value = resolver.resolveArgument(parameter, { data: { active: 'true' } } as unknown as Route, {});
 
         expect(value).toBe(true);
     });

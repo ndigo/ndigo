@@ -138,15 +138,17 @@ export class RadixTree<V> implements Serializable {
             const kind = this._classifySegment(segment);
 
             switch (kind) {
-                case 'static':
-                    if (node.staticChildren.has(segment)) {
-                        node = node.staticChildren.get(segment)!;
+                case 'static': {
+                    const existing = node.staticChildren.get(segment);
+                    if (existing) {
+                        node = existing;
                     } else {
                         const child = new RadixNode<V>('static', segment);
                         node.staticChildren.set(segment, child);
                         node = child;
                     }
                     break;
+                }
                 case 'param':
                     if (node.paramChild === null) {
                         node.paramChild = new RadixNode<V>('param', this._extractParamLabel(segment));
@@ -250,14 +252,17 @@ export class RadixTree<V> implements Serializable {
         }
 
         // All segments consumed — check if terminal
-        if (node.value === null) {
+        const value = node.value;
+        const pattern = node.pattern;
+
+        if (value === null || pattern === null) {
             return null;
         }
 
         return {
-            value: node.value,
+            value,
             params,
-            pattern: node.pattern!,
+            pattern,
         };
     }
 

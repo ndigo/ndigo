@@ -1,32 +1,48 @@
 import '@tsmetadata/polyfill';
+import { Constructable } from '@blue/core';
 
 const VIEW_MAPPING = 'view:mapping',
     { assign } = Object,
-    getConstructor = (target: any): any => (typeof target === 'function' ? target : target?.constructor),
-    defineViewMapping = (value: string, target: any): void => {
-        const ctor = getConstructor(target);
-        if (!ctor[Symbol.metadata]) {
-            ctor[Symbol.metadata] = {};
+    getConstructor = (target: unknown): (Function & { [Symbol.metadata]?: Record<string, unknown> }) | undefined => {
+        if (typeof target === 'function') {
+            return target as Function & { [Symbol.metadata]?: Record<string, unknown> };
         }
-        ctor[Symbol.metadata][VIEW_MAPPING] = value;
+        return (target as object | undefined)?.constructor as
+            | (Function & { [Symbol.metadata]?: Record<string, unknown> })
+            | undefined;
     },
-    deleteViewMapping = (target: any): void => {
+    defineViewMapping = (value: string, target: unknown): void => {
         const ctor = getConstructor(target);
-        if (ctor[Symbol.metadata]) {
-            delete ctor[Symbol.metadata][VIEW_MAPPING];
+        if (!ctor) return;
+
+        // Trust: ctor has Symbol.metadata from @tsmetadata/polyfill at runtime.
+        // The TS Function type doesn't declare it — this cast is needed.
+        const ctorWithMeta = ctor as Function & { [Symbol.metadata]: Record<string, unknown> };
+        if (!ctorWithMeta[Symbol.metadata]) {
+            ctorWithMeta[Symbol.metadata] = {};
+        }
+        ctorWithMeta[Symbol.metadata][VIEW_MAPPING] = value;
+    },
+    deleteViewMapping = (target: unknown): void => {
+        const ctor = getConstructor(target);
+        if (!ctor) return;
+
+        const metadata = ctor[Symbol.metadata];
+        if (metadata) {
+            delete metadata[VIEW_MAPPING];
         }
     },
-    getViewMapping = (target: any): string | undefined => {
+    getViewMapping = (target: unknown): string | undefined => {
         const ctor = getConstructor(target);
-        return ctor?.[Symbol.metadata]?.[VIEW_MAPPING];
+        return ctor?.[Symbol.metadata]?.[VIEW_MAPPING] as string | undefined;
     },
-    hasViewMapping = (target: any): boolean => {
+    hasViewMapping = (target: unknown): boolean => {
         const ctor = getConstructor(target);
         return ctor?.[Symbol.metadata]?.[VIEW_MAPPING] !== undefined;
     },
     viewMapping =
         (viewName: string) =>
-        <T extends new (...args: any[]) => any>(target: T, context: ClassDecoratorContext): T => {
+        <T extends Constructable>(target: T, context: ClassDecoratorContext): T => {
             context.metadata[VIEW_MAPPING] = viewName;
             return target;
         };

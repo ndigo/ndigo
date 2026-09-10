@@ -20,7 +20,7 @@ describe('StandardEnvironment', () => {
     });
 
     afterEach(() => {
-        env = void 0 as any;
+        env = undefined as unknown as StandardEnvironment;
     });
 
     test('it should track active profiles', () => {

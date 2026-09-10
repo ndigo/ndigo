@@ -1,11 +1,11 @@
-# Blue ESLint Plugin
+# Blue Oxlint Plugin
 
-Blue ESLint Plugin provides custom ESLint rules that enforce BlueJS architecture conventions.
+Blue Oxlint Plugin provides custom oxlint rules that enforce BlueJS architecture conventions.
 
 ## Installation
 
 ```bash
-pnpm add -D @blue/eslint-plugin
+pnpm add -D @blue/oxlint-plugin
 ```
 
 ## Rules

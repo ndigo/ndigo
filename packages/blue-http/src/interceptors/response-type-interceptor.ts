@@ -5,9 +5,14 @@ import { CONTENT_TYPE } from '../http-headers';
 import ResponseError from '../response-error';
 
 /**
+ * Resolved parser that reads a response body into typed data.
+ */
+export type ResponseBodyParser<T = unknown> = (response: Response) => Promise<T>;
+
+/**
  * Factory that produces a parser for a specific media type.
  */
-export type ResponseParser<T = any> = (mediaType: string) => (response: Response) => Promise<T>;
+export type ResponseParser<T = unknown> = (mediaType: string) => ResponseBodyParser<T>;
 
 /**
  * Map of media types to response parsers.
@@ -49,8 +54,8 @@ const { defineProperty } = Reflect,
     textParser: ResponseParser<string> = (mediaType: string) => async (response: Response) => await response.text(),
     markupParser: ResponseParser<Document | null> = (mediaType: string) => async (response: Response) =>
         domParser?.parseFromString(await response.text(), mediaType as DOMParserSupportedType) ?? null,
-    isBoolean = is(Boolean) as (value: any) => value is boolean,
-    isMediaType = is(MediaType) as (value: any) => value is MediaType,
+    isBoolean = is(Boolean) as (value: unknown) => value is boolean,
+    isMediaType = is(MediaType) as (value: unknown) => value is MediaType,
     getMediaType = (value: unknown): MediaType | null => {
         if (isString(value)) {
             return MediaType.for(value);
@@ -62,24 +67,31 @@ const { defineProperty } = Reflect,
     },
     getParser = (mediaType: MediaType, parsers: Map<MediaType, ResponseParser> = defaultParsers) => {
         const type = mediaType;
-        return parsers.has(type) ? parsers.get(type)!(type.toString()) : null;
+        const parser = parsers.get(type);
+        return parser ? parser(type.toString()) : null;
     };
 
-defaultParsers.set(MediaTypes.APPLICATION_JSON!, jsonParser);
-defaultParsers.set(MediaTypes.APPLICATION_PDF!, binaryParser);
-defaultParsers.set(MediaTypes.APPLICATION_XML!, markupParser);
-defaultParsers.set(MediaTypes.IMAGE_BMP!, binaryParser);
-defaultParsers.set(MediaTypes.IMAGE_GIF!, binaryParser);
-defaultParsers.set(MediaTypes.IMAGE_JPEG!, binaryParser);
-defaultParsers.set(MediaTypes.IMAGE_PNG!, binaryParser);
-defaultParsers.set(MediaTypes.IMAGE_SVG_XML!, markupParser);
-defaultParsers.set(MediaTypes.IMAGE_TIFF!, binaryParser);
-defaultParsers.set(MediaTypes.IMAGE_X_ICON!, binaryParser);
-defaultParsers.set(MediaTypes.IMAGE_WEBP!, binaryParser);
-defaultParsers.set(MediaTypes.TEXT_HTML!, markupParser);
-defaultParsers.set(MediaTypes.TEXT_JSON!, jsonParser);
-defaultParsers.set(MediaTypes.TEXT_PLAIN!, textParser);
-defaultParsers.set(MediaTypes.TEXT_XML!, markupParser);
+const addDefaultParser = (mediaType: MediaType | null, parser: ResponseParser): void => {
+    if (mediaType !== null) {
+        defaultParsers.set(mediaType, parser);
+    }
+};
+
+addDefaultParser(MediaTypes.APPLICATION_JSON, jsonParser);
+addDefaultParser(MediaTypes.APPLICATION_PDF, binaryParser);
+addDefaultParser(MediaTypes.APPLICATION_XML, markupParser);
+addDefaultParser(MediaTypes.IMAGE_BMP, binaryParser);
+addDefaultParser(MediaTypes.IMAGE_GIF, binaryParser);
+addDefaultParser(MediaTypes.IMAGE_JPEG, binaryParser);
+addDefaultParser(MediaTypes.IMAGE_PNG, binaryParser);
+addDefaultParser(MediaTypes.IMAGE_SVG_XML, markupParser);
+addDefaultParser(MediaTypes.IMAGE_TIFF, binaryParser);
+addDefaultParser(MediaTypes.IMAGE_X_ICON, binaryParser);
+addDefaultParser(MediaTypes.IMAGE_WEBP, binaryParser);
+addDefaultParser(MediaTypes.TEXT_HTML, markupParser);
+addDefaultParser(MediaTypes.TEXT_JSON, jsonParser);
+addDefaultParser(MediaTypes.TEXT_PLAIN, textParser);
+addDefaultParser(MediaTypes.TEXT_XML, markupParser);
 
 /**
  * Parses response bodies into typed data and attaches the result as `data`.
@@ -135,10 +147,11 @@ export class ResponseTypeInterceptor
     async postResponse(response: Response, settings: ResponseTypeSettings): Promise<Response | void> {
         if ('responseType' in settings) {
             const { responseType, responseParsers } = settings;
-            let mediaType: MediaType, parser;
+            let mediaType: MediaType | null = null,
+                parser: ResponseBodyParser<unknown> | null = null;
 
             if (!isBoolean(responseType)) {
-                const mt = getMediaType(responseType as any);
+                const mt = getMediaType(responseType);
                 if (mt) {
                     mediaType = mt;
                     parser = getParser(mediaType, responseParsers);
@@ -155,7 +168,10 @@ export class ResponseTypeInterceptor
             }
 
             if (!parser) {
-                parser = getParser(MediaTypes.TEXT_PLAIN!, responseParsers);
+                const textPlain = MediaTypes.TEXT_PLAIN;
+                if (textPlain !== null) {
+                    parser = getParser(textPlain, responseParsers);
+                }
             }
 
             try {

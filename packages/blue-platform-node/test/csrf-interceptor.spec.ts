@@ -49,7 +49,33 @@ describe('CsrfInterceptor', () => {
 
         expect(interceptor.preHandle(route)).toBe(true);
         const cookie = headers['Set-Cookie'];
-        expect(cookie).toMatch(/^blue-csrf=[A-Za-z0-9_-]+; SameSite=Lax; Path=\/$/);
+        expect(cookie).toMatch(/^blue-csrf=[A-Za-z0-9_-]+; SameSite=Lax; Secure; Path=\/$/);
+    });
+
+    test('Secure flag is overridable while defaulting on', () => {
+        const headers: Record<string, string> = {};
+        const interceptor = new CsrfInterceptor({ cookieOptions: 'SameSite=None; Path=/' });
+        const response = {
+            headersSent: false,
+            setHeader: (name: string, value: string) => {
+                headers[name] = value;
+            },
+            writeHead: () => undefined,
+            end: () => undefined,
+        };
+        const route = makeRoute('GET', {}) as unknown as Route;
+        (route.attributes as Record<string, unknown>)[NODE_RESPONSE_ATTRIBUTE] = response;
+
+        expect(interceptor.preHandle(route)).toBe(true);
+        expect(headers['Set-Cookie']).toMatch(/^blue-csrf=[A-Za-z0-9_-]+; SameSite=None; Path=\/$/);
+    });
+
+    test('tokenBytes outside 16–1024 is rejected at construction', () => {
+        expect(() => new CsrfInterceptor({ tokenBytes: 8 })).toThrow(RangeError);
+        expect(() => new CsrfInterceptor({ tokenBytes: 0 })).toThrow(RangeError);
+        expect(() => new CsrfInterceptor({ tokenBytes: 4096 })).toThrow(RangeError);
+        expect(() => new CsrfInterceptor({ tokenBytes: 1.5 })).toThrow(RangeError);
+        expect(() => new CsrfInterceptor({ tokenBytes: 32 })).not.toThrow();
     });
 
     test('allows a mutating request with a matching header token', () => {
@@ -92,7 +118,11 @@ describe('CsrfInterceptor', () => {
         mode.rejected = interceptor.preHandle(route) === false;
         expect(mode.rejected).toBe(true);
         expect(status).toBe(403);
-        expect(JSON.parse(body)).toMatchObject({ type: 'urn:blue:forbidden', status: 403, detail: 'Invalid CSRF token' });
+        expect(JSON.parse(body)).toMatchObject({
+            type: 'urn:blue:forbidden',
+            status: 403,
+            detail: 'Invalid CSRF token',
+        });
     });
 
     test('rejects a mutating request with a mismatched token', () => {

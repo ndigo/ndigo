@@ -8,7 +8,7 @@ import { defineProperty } from './context-shared';
 
 /**
  * Create a new ApplicationContextAwareProcessor for the given context.
- * An {@link InitializationAwareProcessor|InitializationAwareProcessor} implementation that passes the ApplicationContext to value that implement the `EnvironmentAware`, `ResourceLoaderAware`, `ApplicationEventEmitterAware`, `ContentSourceAware`, and/or {@link ApplicationContextAware|ApplicationContextAware} interfaces.
+ * An {@link InitializationAwareProcessor|InitializationAwareProcessor} implementation that passes the ApplicationContext to value that implement the `EnvironmentAware`, `ResourceLoaderAware`, `ApplicationEventEmitterAware`, `ContentSourceAware`, and/or `ApplicationContextAware` interfaces.
  */
 export class ApplicationContextAwareProcessor implements InitializationAwareProcessor {
     readonly applicationContext!: ApplicationContext;
@@ -33,7 +33,7 @@ export class ApplicationContextAwareProcessor implements InitializationAwareProc
     /**
      * Returns the value unchanged after initialization.
      */
-    processAfterInitialization<T = any>(name: string, value: T): T {
+    processAfterInitialization<T = unknown>(name: string, value: T): T {
         return value;
     }
 
@@ -43,7 +43,7 @@ export class ApplicationContextAwareProcessor implements InitializationAwareProc
      * @param name - The entry name.
      * @param value - The initialized value.
      */
-    processBeforeInitialization<T = any>(name: string, value: T): T {
+    processBeforeInitialization<T = unknown>(name: string, value: T): T {
         if (likeAware(value)) {
             const { applicationContext } = this;
             // eslint-disable-next-line no-unused-expressions -- guarded dispatch: inject only into values implementing the contract

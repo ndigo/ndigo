@@ -1,10 +1,11 @@
 import { describe, test, expect, beforeEach } from 'vitest';
 import { AuthServer } from '../src/server';
 import { AuthRouteGuard } from '../src/route-guard';
-import { AuthRegistry, AUTH_REQUIRED_KEY, AUTH_ROLES_KEY } from '@blue/auth-core';
-import { RouteHandlerMethod } from '@blue/dispatcher';
+import { AuthRegistry, Principal, AUTH_REQUIRED_KEY, AUTH_ROLES_KEY } from '@blue/auth-core';
+import { RouteHandlerMethod, type ModelAndView } from '@blue/dispatcher';
+import { type Route } from '@blue/router';
 
-function createMockAdapter(id: string, validateResult: any = null) {
+function createMockAdapter(id: string, validateResult: Principal | null = null) {
     return {
         id,
         validate: async () => validateResult,
@@ -36,12 +37,32 @@ function createMockRoute(token: string | null = null) {
 }
 
 /**
+ * Token extractor for the guard under test: pulls the bearer token off the
+ * mock routes, which carry a `getToken` helper that Route's type doesn't declare.
+ */
+function extractMockToken(route: Route): string | null {
+    if (!('getToken' in route)) {
+        return null;
+    }
+    const getToken = route.getToken;
+    if (typeof getToken !== 'function') {
+        return null;
+    }
+    // getToken is a function (checked above); Route lacks the member.
+    return (getToken as () => string | null)();
+}
+
+/**
  * Helper to set up Symbol.metadata on a handler function.
  * The guard reads: handler.constructor[Symbol.metadata]
  * Since TC39 decorators don't auto-apply in tests, we set this manually.
  */
-function setHandlerMetadata(handler: (...args: any[]) => any, metadata: Record<string, unknown>): void {
-    (handler as any).constructor = { [Symbol.metadata]: metadata };
+function setHandlerMetadata(handler: object, metadata: Record<string, unknown>): void {
+    // `constructor` is not declared on TS's Function type; attach the carrier
+    // object matching the runtime decorator shape the guard reads
+    // (handler.constructor[Symbol.metadata]).
+    const carrier = { constructor: { [Symbol.metadata]: metadata } };
+    Object.assign(handler, carrier);
 }
 
 describe('AuthRouteGuard', () => {
@@ -50,7 +71,7 @@ describe('AuthRouteGuard', () => {
     beforeEach(() => {
         AuthRegistry.clear();
         authServer = new AuthServer();
-        guard = new AuthRouteGuard(authServer, (route) => (route as any).getToken?.() ?? null, 'jwt');
+        guard = new AuthRouteGuard(authServer, extractMockToken, 'jwt');
     });
 
     describe('preHandle - no auth required', () => {
@@ -290,7 +311,7 @@ describe('AuthRouteGuard', () => {
     describe('postHandle / completeHandle', () => {
         test('postHandle is a no-op', async () => {
             const route = createMockRoute();
-            const mv = {} as any;
+            const mv = {} as ModelAndView;
             await guard.postHandle(route, undefined, mv);
             // Should complete without error
         });

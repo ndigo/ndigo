@@ -3,9 +3,7 @@ import { RouteMappingInfo } from './route-mapping-info-model';
 const { defineProperty } = Reflect;
 const separator = '';
 
-export class RouteMappingInfoHandlerMethodMappingNamingStrategy
-    implements RouteHandlerMethodMappingNamingStrategy<RouteMappingInfo>
-{
+export class RouteMappingInfoHandlerMethodMappingNamingStrategy implements RouteHandlerMethodMappingNamingStrategy<RouteMappingInfo> {
     /**
      * Separator used when generating fallback mapping names.
      */

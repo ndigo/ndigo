@@ -17,6 +17,15 @@ interface TodoModel {
     filter?: 'all' | 'active' | 'completed';
 }
 
+interface ShellNavElement extends HTMLElement {
+    model: unknown;
+}
+
+interface TodoItemElement extends HTMLElement {
+    checked: boolean;
+    index: number;
+}
+
 @TagMapping('todo-app')
 export default class MyTodoApp extends AbstractWebComponent {
     #list: TodoItem[] = [];
@@ -86,7 +95,7 @@ export default class MyTodoApp extends AbstractWebComponent {
         if (!this.$listContainer) return;
 
         if (this.$shellNav) {
-            (this.$shellNav as any).model = {
+            (this.$shellNav as ShellNavElement).model = {
                 containerClass: 'filters',
                 items: [
                     { href: allRoute, label: 'All', selected: this.#filter === 'all' },
@@ -107,7 +116,7 @@ export default class MyTodoApp extends AbstractWebComponent {
         this.$listContainer.innerHTML = '';
         filteredList.forEach((item) => {
             const index = this.#list.indexOf(item);
-            const $item = this.create('todo-item') as any;
+            const $item = this.create('todo-item') as TodoItemElement;
             $item.setAttribute('text', item.text);
             $item.checked = item.checked;
             $item.index = index;

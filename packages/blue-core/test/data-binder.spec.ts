@@ -4,7 +4,7 @@ import { MutablePropertyValues } from '../src/property-value';
 
 describe('DataBinder', () => {
     let db: DataBinder;
-    let target: Record<string, any>;
+    let target: Record<string, unknown>;
 
     beforeEach(() => {
         target = {};
@@ -12,7 +12,8 @@ describe('DataBinder', () => {
     });
 
     afterEach(() => {
-        db = target = undefined as any;
+        db = undefined as unknown as DataBinder;
+        target = undefined as unknown as Record<string, unknown>;
     });
 
     test('it should bind data to empty objects', () => {

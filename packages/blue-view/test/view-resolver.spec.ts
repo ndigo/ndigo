@@ -6,6 +6,7 @@ import {
     AbstractCachingViewResolver,
 } from '../src/view-resolver';
 import { View } from '../src/view';
+import type { ApplicationContext } from '@blue/context';
 
 class TestView {
     mediaType = null;
@@ -15,7 +16,7 @@ class TestView {
 }
 
 class TestPathBasedViewResolver extends AbstractPathBasedViewResolver {
-    protected async _loadView(name: string, language?: any): Promise<View> {
+    protected async _loadView(name: string, language?: unknown): Promise<View> {
         return null;
     }
 }
@@ -24,7 +25,7 @@ class TestCachingResolver extends AbstractCachingViewResolver {
     loadCount = 0;
     nextView: View | null = { mediaType: null, render: () => null };
 
-    protected async _loadView(name: string, language?: any): Promise<View> {
+    protected async _loadView(name: string, language?: unknown): Promise<View> {
         this.loadCount++;
         return this.nextView;
     }
@@ -64,7 +65,7 @@ describe('AbstractPathBasedViewResolver', () => {
 
     test('it should cache resolved views when caching enabled', async () => {
         const resolver = new TestCachingResolver();
-        resolver.nextView = new TestView() as any;
+        resolver.nextView = new TestView();
 
         const first = await resolver.resolveViewName('home');
         const second = await resolver.resolveViewName('home');
@@ -79,11 +80,11 @@ describe('AbstractPathBasedViewResolver', () => {
         const context = {
             hasValue: (name: string) => name === 'home',
             getValue: () => view,
-        } as any;
+        } as unknown as ApplicationContext;
 
-        (resolver as any).setApplicationContext(context);
+        resolver.setApplicationContext(context);
 
-        expect(await resolver.resolveViewName('home')).toBe(view as any);
+        expect(await resolver.resolveViewName('home')).toBe(view);
         expect(await resolver.resolveViewName('missing')).toBeNull();
     });
 
@@ -96,8 +97,8 @@ describe('AbstractPathBasedViewResolver', () => {
             resolveViewName: async () => secondView,
         };
 
-        const composite = new ViewResolverComposite([first as any, second as any]);
+        const composite = new ViewResolverComposite([first, second]);
 
-        expect(await composite.resolveViewName('home')).toBe(secondView as any);
+        expect(await composite.resolveViewName('home')).toBe(secondView);
     });
 });

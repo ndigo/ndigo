@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
+import { Route } from '@blue/router';
 import { AbstractDispatcher } from '../src/dispatcher';
 import { RouteHandlerInterceptor } from '../src/route-handler-interceptor';
 import { ModelAndView } from '../src/model-and-view';
@@ -81,7 +82,7 @@ describe('Interceptor Lifecycle Guarantees', () => {
             length: 2,
         };
 
-        await dispatcher.dispatch(route as any);
+        await dispatcher.dispatch(route as unknown as Route);
 
         // i1.pre passes, i2.pre fails.
         // i3.pre should not be called.
@@ -142,7 +143,7 @@ describe('Interceptor Lifecycle Guarantees', () => {
             length: 2,
         };
 
-        await dispatcher.dispatch(route as any);
+        await dispatcher.dispatch(route as unknown as Route);
 
         expect(capturedError).toBe(testError);
     });

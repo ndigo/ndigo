@@ -34,9 +34,13 @@ describe('DrizzleEntityManager CRUD', () => {
 
         expect(user.id).toBeTypeOf('number');
 
-        const found = await em.find(CrudUser, user.id!);
+        const found = await em.find(CrudUser, user.id);
         expect(found).not.toBeNull();
-        expect(found!.name).toBe('Alice');
+        // The row was just inserted above, so the read-back entity must exist.
+        if (found === undefined) {
+            throw new Error('persisted entity could not be read back');
+        }
+        expect(found.name).toBe('Alice');
     });
 
     test('creates and retrieves multiple entities', async () => {
@@ -50,19 +54,23 @@ describe('DrizzleEntityManager CRUD', () => {
     test('updates existing entity', async () => {
         const user = new CrudUser('Before');
         await em.persist(user);
-        const id = user.id!;
+        const id = user.id;
 
         user.name = 'After';
         await em.persist(user);
 
         const updated = await em.find(CrudUser, id);
-        expect(updated!.name).toBe('After');
+        // persist() backfilled the id, so the updated row must exist.
+        if (updated === undefined) {
+            throw new Error('updated entity could not be read back');
+        }
+        expect(updated.name).toBe('After');
     });
 
     test('deletes entity', async () => {
         const user = new CrudUser('DeleteMe');
         await em.persist(user);
-        const id = user.id!;
+        const id = user.id;
 
         await em.remove(user);
         const gone = await em.find(CrudUser, id);

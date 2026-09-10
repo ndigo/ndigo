@@ -61,6 +61,7 @@ export const AsHTTPStrategy = <T extends Constructable<StrategyInitializer>>(
         httpInterceptors!: HTTPInterceptor[];
         httpSettings!: HTTPInit;
 
+        // oxlint-disable-next-line no-explicit-any -- TS2545: mixin constructor must be exactly (...args: any[]).
         constructor(...args: any[]) {
             super(...args);
             this.httpInterceptorKey = HTTP_INTERCEPTOR;

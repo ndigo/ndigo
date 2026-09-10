@@ -42,7 +42,7 @@ export class RouteDefinition<TPattern extends string = string> {
         }
         const path = this.#interpolate(params);
         if (router.navigate) {
-            router.navigate(path);
+            void router.navigate(path);
         }
     }
 

@@ -114,7 +114,7 @@ describe('JSONConverter', () => {
 
     test('parses nested JSON structures', () => {
         const input = '{"user": {"name": "Alice", "roles": ["admin"]}}';
-        const result = converter.convert(input);
+        const result = converter.convert(input) as { user: { name: string; roles: string[] } };
         expect(result.user.name).toBe('Alice');
         expect(result.user.roles).toEqual(['admin']);
     });
@@ -400,7 +400,7 @@ describe('Integration: ConversionService + built-in converters', () => {
     });
 
     test('converts ISO date string to Date object', () => {
-        const result = service.convert('2024-01-15T10:30:00.000Z', Date);
+        const result = service.convert('2024-01-15T10:30:00.000Z', Date) as Date;
         expect(result).toBeInstanceOf(Date);
         expect(result.getTime()).toBeGreaterThan(0);
     });

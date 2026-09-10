@@ -3,6 +3,7 @@ import { IllegalStateError, JSONObject, MediaType, MediaTypes, Serializable, cre
 import { AsApplicationContextAware } from '@blue/context';
 import type { ApplicationContext } from '@blue/context';
 import { toMatrixString, toQueryString, ROUTER } from '@blue/router';
+import type { Route } from '@blue/router';
 
 import { ViewTarget } from './view-target.js';
 
@@ -32,7 +33,7 @@ export interface View {
      * @param request The current request.
      * @param target The optional view target.
      */
-    render(model: any, request: any, target?: ViewTarget): void | Promise<void>;
+    render(model: unknown, request: unknown, target?: ViewTarget): void | Promise<void>;
 }
 
 /**
@@ -64,7 +65,7 @@ export abstract class AbstractView extends AsNameAware(AsApplicationContextAware
     constructor() {
         super();
         this.destroyed = false;
-        this.mediaType = MediaTypes.TEXT_HTML!.withCharset('UTF-8');
+        this.mediaType = MediaTypes.TEXT_HTML?.withCharset('UTF-8') ?? null;
     }
 
     /**
@@ -84,7 +85,7 @@ export abstract class AbstractView extends AsNameAware(AsApplicationContextAware
      * @param request The current request.
      * @param target The optional view target.
      */
-    async render(model: any, request: any, target?: ViewTarget): Promise<void> {
+    async render(model: unknown, request: unknown, target?: ViewTarget): Promise<void> {
         if (this.destroyed) {
             return;
         }
@@ -119,7 +120,7 @@ export abstract class AbstractView extends AsNameAware(AsApplicationContextAware
      * @returns The created view model.
      * @protected
      */
-    protected _createViewModel(model: any, request: any): any {
+    protected _createViewModel(model: unknown, request: unknown): unknown {
         return model;
     }
 
@@ -131,7 +132,7 @@ export abstract class AbstractView extends AsNameAware(AsApplicationContextAware
      * @protected
      * @abstract
      */
-    protected abstract _renderView(viewModel: any, request: any, target?: ViewTarget): void | Promise<void>;
+    protected abstract _renderView(viewModel: unknown, request: unknown, target?: ViewTarget): void | Promise<void>;
 }
 
 /**
@@ -183,7 +184,7 @@ export abstract class AbstractTemplateView extends AbstractPathBasedView {
      * @returns The template model.
      * @protected
      */
-    protected _projectViewModel(viewModel: any, request: any): any {
+    protected _projectViewModel(viewModel: unknown, request: unknown): unknown {
         return viewModel;
     }
 
@@ -195,7 +196,11 @@ export abstract class AbstractTemplateView extends AbstractPathBasedView {
      * @protected
      * @abstract
      */
-    protected abstract _renderTemplate(templateModel: any, request: any, target?: ViewTarget): void | Promise<void>;
+    protected abstract _renderTemplate(
+        templateModel: unknown,
+        request: unknown,
+        target?: ViewTarget
+    ): void | Promise<void>;
 
     /**
      * Renders the view with the given view model.
@@ -205,7 +210,7 @@ export abstract class AbstractTemplateView extends AbstractPathBasedView {
      * @param target The optional view target (required for rendering).
      * @protected
      */
-    protected async _renderView(viewModel: any, request: any, target?: ViewTarget): Promise<void> {
+    protected async _renderView(viewModel: unknown, request: unknown, target?: ViewTarget): Promise<void> {
         if (!target) throw new IllegalStateError('View requires a ViewTarget to render.');
 
         const templateModel = this._projectViewModel(viewModel, request);
@@ -245,7 +250,7 @@ export class RerouteView extends AbstractPathBasedView {
      * @returns The created target path.
      * @protected
      */
-    protected _createTargetPath(model: any, request: any): string {
+    protected _createTargetPath(model: unknown, request: unknown): string {
         const data: string = this.contextRelative ? toMatrixString(model) : toQueryString(model);
         return `${this.path}${data}`;
     }
@@ -261,12 +266,12 @@ export class RerouteView extends AbstractPathBasedView {
      * @param target The optional view target.
      * @protected
      */
-    protected _renderView(viewModel: any, request: any, target?: ViewTarget): void {
+    protected _renderView(viewModel: unknown, request: unknown, target?: ViewTarget): void {
         const targetPath: string = this._createTargetPath(viewModel, request);
         const router = this.applicationContext?.getValue(ROUTER);
 
         if (router?.navigate) {
-            router.navigate(targetPath);
+            void router.navigate(targetPath);
         } else if (typeof history !== 'undefined') {
             history.pushState(undefined, '', targetPath);
         }
@@ -301,11 +306,12 @@ export class StringTemplateView extends AbstractTemplateView {
      * @param request The current request.
      * @param target The view target (required for rendering).
      */
-    protected async _renderTemplate(templateModel: any, request: any, target?: ViewTarget): Promise<void> {
+    protected async _renderTemplate(templateModel: unknown, request: unknown, target?: ViewTarget): Promise<void> {
         if (!target) throw new IllegalStateError('View requires a ViewTarget.');
 
         const html = this.renderTemplate(this.template, templateModel);
-        target.commit(html, templateModel, request);
+        // The view target's commit slot expects the route; the request is what the view pipeline supplies.
+        await target.commit(html, templateModel, request as Route);
     }
 
     /**
@@ -315,7 +321,7 @@ export class StringTemplateView extends AbstractTemplateView {
      *   - {{var}} for simple variables
      *   - {{array[key]}} for object/array access
      */
-    private renderTemplate(template: string, model: any): string {
+    private renderTemplate(template: string, model: unknown): string {
         return template.replace(/\{\{([^}]+)\}\}/g, (match, key) => {
             let value = model;
 
@@ -323,7 +329,7 @@ export class StringTemplateView extends AbstractTemplateView {
             const parts = key.split('.');
             for (const part of parts) {
                 if (typeof value === 'object' && value !== null && typeof part !== 'number') {
-                    value = value[part];
+                    value = (value as Record<string, unknown>)[part];
                 } else if (value instanceof Array && !isNaN(part)) {
                     value = value[part];
                 } else {

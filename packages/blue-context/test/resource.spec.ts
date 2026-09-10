@@ -8,6 +8,7 @@ import {
     likeResource,
     likeResourceLoader,
     likeResourceLoaderAware,
+    type ResourceLoader,
 } from '../src/resource';
 
 describe('URLResource', () => {
@@ -26,7 +27,8 @@ describe('URLResource', () => {
     });
 
     test('it should resolve relative URLs against location', () => {
-        const previous = (globalThis as any).location;
+        const globalLocation = globalThis as { location?: Location };
+        const previous = globalLocation.location;
 
         if (!previous) {
             Reflect.defineProperty(globalThis, 'location', {
@@ -38,7 +40,8 @@ describe('URLResource', () => {
         }
 
         const resource = new URLResource('./mod/sample', 1);
-        const expected = new URL('./mod/sample.js', (globalThis as any).location.href);
+        const location = globalLocation.location ?? new URL('https://example.test/app/');
+        const expected = new URL('./mod/sample.js', location.href);
 
         expect(resource.url.href).toBe(expected.href);
 
@@ -84,7 +87,7 @@ describe('AsResourceLoaderAware', () => {
 
         instance.setResourceLoader(loader);
 
-        expect((instance as any).loader).toBe(loader);
+        expect((instance as unknown as { loader: ResourceLoader }).loader).toBe(loader);
         expect(Object.keys(instance)).not.toContain('loader');
         expect(likeResourceLoaderAware(instance)).toBe(true);
     });

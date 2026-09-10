@@ -4,7 +4,6 @@ import { Route } from '@blue/router';
 import Cookies from './cookies';
 
 /**
- * @extends module:dispatcher.AbstractThemeResolver
  */
 export class CookieThemeResolver extends AbstractThemeResolver {
     #fallbackThemeName: string;

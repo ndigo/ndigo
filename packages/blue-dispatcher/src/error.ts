@@ -7,7 +7,6 @@ const { defineProperty } = Reflect;
 /**
  * Error thrown when no suitable handler is found for a given route.
  * This typically indicates a misconfiguration or an unhandled route.
- * @extends module:core.FrameworkError
  */
 export class NoHandlerFoundError extends FrameworkError {
     route!: Route;
@@ -29,7 +28,6 @@ export class NoHandlerFoundError extends FrameworkError {
 /**
  * Error thrown when a view cannot be resolved for a given view name and route.
  * This indicates that the specified view template or component could not be located.
- * @extends module:core.FrameworkError
  */
 export class NoViewFoundError extends FrameworkError {
     readonly route!: Route;
@@ -48,7 +46,6 @@ export class NoViewFoundError extends FrameworkError {
 
 /**
  * An error that represents a failure to retrieve a required {@link Route|Route} property.
- * @extends module:core.FrameworkError
  */
 export class RouteBindingError extends FrameworkError {
     route!: Route | null;
@@ -77,7 +74,6 @@ export class RouteBindingError extends FrameworkError {
  * Base error for method parameter binding issues.
  * Analogous to Spring's ServletRequestBindingException.
  *
- * @extends module:core.FrameworkError
  */
 export class ParameterBindingError extends FrameworkError {
     readonly parameterName!: string | null;
@@ -116,7 +112,6 @@ export class ParameterBindingError extends FrameworkError {
  * Thrown when parameter mapping configuration is invalid.
  * This is a CONFIGURATION error (application startup time).
  *
- * @extends module:dispatcher.ParameterBindingError
  */
 export class InvalidParameterMappingError extends ParameterBindingError {
     get [Symbol.toStringTag](): string {
@@ -133,7 +128,6 @@ export class InvalidParameterMappingError extends ParameterBindingError {
  * This is a RUNTIME error (request processing time).
  * Analogous to Spring's MissingServletRequestParameterException.
  *
- * @extends module:dispatcher.ParameterBindingError
  */
 export class MissingParameterError extends ParameterBindingError {
     readonly parameterType!: string | null;
@@ -176,7 +170,6 @@ export class MissingParameterError extends ParameterBindingError {
  * Thrown when a parameter converter fails at runtime.
  * This is a RUNTIME error (request processing time).
  *
- * @extends module:dispatcher.ParameterBindingError
  */
 export class ParameterConversionError extends ParameterBindingError {
     readonly parameterType!: string | null;

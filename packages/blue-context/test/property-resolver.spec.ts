@@ -1,4 +1,5 @@
 import { describe, test, expect, beforeEach, afterEach } from 'vitest';
+import { JSONObject } from '@blue/core';
 import { PrototypalPropertyResolver } from '../src/property-resolver';
 
 describe('PrototypalPropertyResolver', () => {
@@ -6,7 +7,7 @@ describe('PrototypalPropertyResolver', () => {
         jsonData2 = { d: 4, e: 5, f: 6 },
         jsonData3 = { g: 7, h: 8, i: 9 },
         jsonData4 = { j: { k: 10, l: 11 } };
-    let propertySources: any[];
+    let propertySources: JSONObject[];
     let propertyResolver: PrototypalPropertyResolver;
 
     beforeEach(() => {
@@ -15,7 +16,8 @@ describe('PrototypalPropertyResolver', () => {
     });
 
     afterEach(() => {
-        propertySources = propertyResolver = void 0 as any;
+        propertySources = undefined as unknown as JSONObject[];
+        propertyResolver = undefined as unknown as PrototypalPropertyResolver;
     });
 
     test('it should check whether properties exist', () => {

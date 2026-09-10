@@ -5,9 +5,10 @@ How request validation fits the BlueJS pipeline: coercive binding via
 derived directly from `@blue/orm` entity metadata.
 
 The validation mechanism is a single pipeline (AD-7): an extractor resolves
-+ converts a value, then a Zod schema runs over it. Failures are reported as
-`ParameterConversionError` and surface as a **422 problem document** with the
-structured issues (AD-10).
+
+- converts a value, then a Zod schema runs over it. Failures are reported as
+  `ParameterConversionError` and surface as a **422 problem document** with the
+  structured issues (AD-10).
 
 ## The pipeline
 
@@ -114,7 +115,7 @@ export class Note {
 }
 ```
 
-Derive the *writable* shape (w/o primary/generated columns; nullable/untyped
+Derive the _writable_ shape (w/o primary/generated columns; nullable/untyped
 optional) and validate the body:
 
 ```ts
@@ -129,11 +130,11 @@ A `POST` with `{ title: '' }` now yields:
 
 ```json
 {
-  "type": "urn:blue:validation-failed",
-  "title": "Validation Failed",
-  "status": 422,
-  "detail": "title: Too small: expected string to have >=1 characters",
-  "errors": [{ "path": ["title"], "message": "Too small: …", "code": "too_small" }]
+    "type": "urn:blue:validation-failed",
+    "title": "Validation Failed",
+    "status": 422,
+    "detail": "title: Too small: expected string to have >=1 characters",
+    "errors": [{ "path": ["title"], "message": "Too small: …", "code": "too_small" }]
 }
 ```
 

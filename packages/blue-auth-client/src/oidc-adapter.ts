@@ -313,8 +313,17 @@ export class OIDCAdapter implements AuthAdapter {
         return this.#jwks;
     }
 
-    /** Fetches a JSON document with a timeout, HTTPS enforcement, and a size cap. */
-    async #fetchJson(url: URL, label: string): Promise<unknown> {
+    /**
+     * Fetches a JSON document with a timeout, HTTPS enforcement, a size cap,
+     * and `redirect: 'error'` (a redirect must never carry a POST body such
+     * as `client_secret` to an arbitrary URL). `init` adds method/body/
+     * headers on top of those invariants.
+     */
+    async #fetchJson(
+        url: URL,
+        label: string,
+        init: { method?: string; body?: BodyInit; headers?: Record<string, string> } = {}
+    ): Promise<unknown> {
         assertTrustedUrl(url, label);
         const maxBytes = this.#config.maxResponseBytes ?? DEFAULT_MAX_RESPONSE_BYTES;
         const timeoutMs = this.#config.fetchTimeoutMs ?? DEFAULT_FETCH_TIMEOUT_MS;
@@ -324,7 +333,7 @@ export class OIDCAdapter implements AuthAdapter {
             timeoutMs
         );
         try {
-            const response = await fetch(url, { signal: controller.signal, redirect: 'error' });
+            const response = await fetch(url, { ...init, signal: controller.signal, redirect: 'error' });
             if (!response.ok) {
                 throw new OIDCError('network', `${label} fetch failed with status ${response.status}`);
             }
@@ -412,9 +421,14 @@ export class OIDCAdapter implements AuthAdapter {
         }
 
         const jwks = await this.#resolveJwsVerification();
+        // A custom validator returns above; without one the resolver throws when
+        // no JWKS source exists, so this guard never fires for configured sources.
+        if (!jwks) {
+            throw new OIDCError('configuration', 'No JWKS source available for token verification');
+        }
         const algorithms = this.#config.allowedAlgorithms ?? [...DEFAULT_ALLOWED_ALGORITHMS];
         try {
-            const { payload: verified } = await jwtVerify(token, jwks!, {
+            const { payload: verified } = await jwtVerify(token, jwks, {
                 issuer: this.#config.issuer,
                 audience: this.#audience,
                 algorithms,
@@ -443,7 +457,10 @@ export class OIDCAdapter implements AuthAdapter {
 
         // Bound memory: evict the oldest pending request when full.
         while (this.#pending.size >= MAX_PENDING_AUTHORIZATIONS) {
-            this.#pending.delete(this.#pending.keys().next().value!);
+            // The loop condition guarantees a pending entry, so the oldest key is present.
+            const oldestKey = this.#pending.keys().next().value;
+            if (oldestKey === undefined) break;
+            this.#pending.delete(oldestKey);
         }
         this.#pending.set(state, { state, nonce, codeVerifier, expiresAt });
 
@@ -481,7 +498,7 @@ export class OIDCAdapter implements AuthAdapter {
 
         let rawResponse: unknown;
         try {
-            const response = await fetch(tokenEndpoint, {
+            rawResponse = await this.#fetchJson(new URL(tokenEndpoint), 'token exchange', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: new URLSearchParams({
@@ -493,10 +510,6 @@ export class OIDCAdapter implements AuthAdapter {
                     code_verifier: pending.codeVerifier,
                 }),
             });
-            if (!response.ok) {
-                throw new OIDCError('network', `Token exchange failed with status ${response.status}`);
-            }
-            rawResponse = await response.json();
         } catch (error) {
             if (error instanceof OIDCError) throw error;
             throw new OIDCError('network', 'Token exchange request failed', { cause: error });

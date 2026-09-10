@@ -15,9 +15,10 @@ The view-resolution/SSE session added new runtime surfaces that the current tele
 
 - A long-lived streaming connection **never completes its view phase**: only the `handleRequest` span exists, open for the whole stream (possibly hours), with no status, no body/event visibility.
 - **No frame count, no stream duration, no disconnect detection** — the exact operational questions for a push endpoint (`/events`).
-- The `likeView` direct-return path in `NodeDispatcher` means even the *200 status* is never recorded today for these responses.
+- The `likeView` direct-return path in `NodeDispatcher` means even the _200 status_ is never recorded today for these responses.
 
 **Instrumentation:** `ServerSentEventViewInstrumentation` (node, `blue-telemetry-node`) — wrap `ServerSentEventView.prototype.render`:
+
 - span `ServerSentEventView.render`, SERVER kind, child of `handleRequest` (inside the dispatch span's subtree as today)
 - attrs: `http.response.status_code = 200`, `http.route` (from the route when available)
 - end attrs (set in `onEnd`/at end): `sse.frames` (count), `sse.duration_ms`, and on premature close `sse.client_disconnected=true` (the view's write loop already breaks on `res.destroyed` — surfacing that is the instrumentation's job)
@@ -26,9 +27,10 @@ The view-resolution/SSE session added new runtime surfaces that the current tele
 
 ### G2 — View resolution is a blind spot (which resolver served the name?)
 
-`_resolveViewName` iterates the resolver chain; no span or attribute records *which* resolver won or whether resolution failed (fall-through → `NoViewFoundError`). With the new family (WebComponent/Island/Name/Import/path-based), "which resolver, which name" is genuinely new diagnostic surface.
+`_resolveViewName` iterates the resolver chain; no span or attribute records _which_ resolver won or whether resolution failed (fall-through → `NoViewFoundError`). With the new family (WebComponent/Island/Name/Import/path-based), "which resolver, which name" is genuinely new diagnostic surface.
 
 **Instrumentation:** small `ViewResolutionInstrumentation` (node + web) — wrap `AbstractDispatcher.prototype._resolveViewName`:
+
 - span `Dispatcher.resolveViewName`, INTERNAL
 - attrs: `view.name`, `view.resolved_by` (resolver constructor name, set at end), `view.resolved=true|false`
 - cheap: one span per name resolution, no hot-path impact
@@ -38,6 +40,7 @@ The view-resolution/SSE session added new runtime surfaces that the current tele
 `streamCall` (blue-service) performs an unbounded-duration response read; today the service client has zero telemetry beyond the `X-Blue-Service` correlation header. A stream call is a long-lived client span with no visibility into duration/event count.
 
 **Instrumentation:** `ServiceClientInstrumentation` or a focused span inside `streamCall`:
+
 - span `ServiceClient.streamCall`, CLIENT kind
 - attrs: `service.name` (config name), `http.method`, `http.route` (call path); end attrs `stream.events` (or `sse.events`) count + duration
 - instrumented from blue-service directly (it already imports telemetry hooks) — either a trace-aware wrapper or, cleaner, an OTel span via `@blue/telemetry`'s tracer (blue-service has no `@blue/telemetry` dep today — add to peer/dev + wire one small span, or expose a hook the telemetry package instruments)

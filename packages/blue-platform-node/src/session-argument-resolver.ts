@@ -15,7 +15,7 @@ export class NodeSessionValueMethodArgumentResolver extends AbstractPlatformArgu
         return 'NodeSessionValueMethodArgumentResolver';
     }
 
-    protected resolveName(name: string, _parameter: MethodParameter, route: Route, _mapping: any): any {
+    protected resolveName(name: string, _parameter: MethodParameter, route: Route, _mapping: unknown): unknown {
         return getNodeRequest(route)?.session?.[name];
     }
 

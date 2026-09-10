@@ -72,13 +72,14 @@ Key Findings:
 - BlueJS provides superset of RFC requirements with valuable extensions
 
 **Alignment Table:**
-| Feature | RFC 9110 | BlueJS MediaType | Status |
-|---------|----------|------------------|--------|
-| Terminology | "media type" | MediaType | ✅ Aligned |
-| Representation | String | Class wrapping string | ✅ Extension |
-| Wildcards | Accept header only | includes(), matches() | ⚠️ Extension |
-| Quality factors | Accept q param | qualityFactor property | ✅ Extension |
-| Registry | Not mentioned | Map-based deduplication | ⚠️ Extension |
+
+| Feature         | RFC 9110           | BlueJS MediaType        | Status       |
+| --------------- | ------------------ | ----------------------- | ------------ |
+| Terminology     | "media type"       | MediaType               | ✅ Aligned   |
+| Representation  | String             | Class wrapping string   | ✅ Extension |
+| Wildcards       | Accept header only | includes(), matches()   | ⚠️ Extension |
+| Quality factors | Accept q param     | qualityFactor property  | ✅ Extension |
+| Registry        | Not mentioned      | Map-based deduplication | ⚠️ Extension |
 
 ---
 

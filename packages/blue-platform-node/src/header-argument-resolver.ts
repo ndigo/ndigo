@@ -15,7 +15,7 @@ export class NodeHeaderValueMethodArgumentResolver extends AbstractPlatformArgum
         return 'NodeHeaderValueMethodArgumentResolver';
     }
 
-    protected resolveName(name: string, _parameter: MethodParameter, route: Route, _mapping: any): any {
+    protected resolveName(name: string, _parameter: MethodParameter, route: Route, _mapping: unknown): unknown {
         const request = getNodeRequest(route);
         if (!request) {
             return undefined;

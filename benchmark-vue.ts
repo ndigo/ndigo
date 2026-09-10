@@ -5,6 +5,8 @@ import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
+/** Node's types don't declare the jsdom surface on globalThis — install it typed. */
+const jsdomGlobals: Record<string, unknown> = globalThis as unknown as Record<string, unknown>;
 const dom = new JSDOM('<!DOCTYPE html><html><body><section class="todoapp"></section></body></html>', {
     url: 'http://localhost',
     pretendToBeVisual: true,
@@ -12,28 +14,31 @@ const dom = new JSDOM('<!DOCTYPE html><html><body><section class="todoapp"></sec
     runScripts: 'dangerously',
 });
 
-(global as any).window = dom.window;
-(global as any).document = dom.window.document;
-(global as any).HTMLElement = dom.window.HTMLElement;
-(global as any).Element = dom.window.Element;
-(global as any).Node = dom.window.Node;
-(global as any).localStorage = dom.window.localStorage;
-(global as any).Event = dom.window.Event;
-(global as any).KeyboardEvent = dom.window.KeyboardEvent;
+jsdomGlobals.window = dom.window;
+jsdomGlobals.document = dom.window.document;
+jsdomGlobals.HTMLElement = dom.window.HTMLElement;
+jsdomGlobals.Element = dom.window.Element;
+jsdomGlobals.Node = dom.window.Node;
+jsdomGlobals.localStorage = dom.window.localStorage;
+jsdomGlobals.Event = dom.window.Event;
+jsdomGlobals.KeyboardEvent = dom.window.KeyboardEvent;
 
 const window = dom.window;
+/** Window slots the DOM types mark readonly — polyfilled here. */
+const windowSlots: Record<string, unknown> = window as unknown as Record<string, unknown>;
 
 if (!window.requestAnimationFrame) {
-    window.requestAnimationFrame = (cb: FrameRequestCallback) => setTimeout(cb, 16) as any;
+    window.requestAnimationFrame = (cb: FrameRequestCallback) => setTimeout(cb, 16) as unknown as number;
 }
-(globalThis as any).requestAnimationFrame = window.requestAnimationFrame.bind(window);
+jsdomGlobals.requestAnimationFrame = window.requestAnimationFrame.bind(window);
 
 if (!window.performance?.now) {
-    (window as any).performance = { now: () => Date.now() };
+    windowSlots.performance = { now: () => Date.now() };
 }
 
-if (!(globalThis as any).crypto?.randomUUID) {
-    (globalThis as any).crypto = {
+const webcrypto = jsdomGlobals.crypto as { randomUUID?: () => string } | undefined;
+if (!webcrypto?.randomUUID) {
+    jsdomGlobals.crypto = {
         randomUUID: () =>
             'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c: string) => {
                 const r = (Math.random() * 16) | 0;
@@ -43,11 +48,12 @@ if (!(globalThis as any).crypto?.randomUUID) {
     };
 }
 
-(window as any).parent = {
-    postMessage: (message: any, _targetOrigin: string) => {
-        if (message && message.type === 'suite-complete') {
+windowSlots.parent = {
+    postMessage: (message: unknown, _targetOrigin: string) => {
+        const frame = message as { type?: string; result?: unknown } | null;
+        if (frame && frame.type === 'suite-complete') {
             console.log('\n=== Vue Benchmark Results ===');
-            console.table(message.result);
+            console.table(frame.result);
             console.log('========================\n');
         }
     },

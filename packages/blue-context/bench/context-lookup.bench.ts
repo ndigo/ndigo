@@ -66,7 +66,7 @@ ctx.getValue('bean3');
 ctx.getValue('bean4');
 ctx.getValue('bean5');
 
-let _sink: any = 0;
+let _sink: unknown = 0;
 
 /* ------------------------------------------------------------------ */
 /*  Benchmarks                                                         */

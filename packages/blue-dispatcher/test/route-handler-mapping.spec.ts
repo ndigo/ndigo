@@ -5,6 +5,7 @@ import {
     RadixMetadataHandlerMapping,
 } from '../src/route-handler-mapping';
 import { GenericApplicationContext } from '@blue/context';
+import { type Route } from '@blue/router';
 import { TestController } from './test-strategies';
 import { routeMapping } from '../src/route-mapping';
 
@@ -26,7 +27,9 @@ describe('RouteHandlerMapping', () => {
 
     afterEach(() => {
         applicationContext.destroy();
-        fooController = barController = applicationContext = undefined as any;
+        fooController = undefined;
+        barController = undefined;
+        applicationContext = undefined;
     });
 
     describe('NamePathHandlerMapping', () => {
@@ -93,9 +96,9 @@ describe('RouteHandlerMapping', () => {
             handlerMapping.setApplicationContext(ctx);
             handlerMapping.init();
 
-            const chain = handlerMapping.getHandler({ path: '/hello/world' } as any);
+            const chain = handlerMapping.getHandler({ path: '/hello/world' } as unknown as Route);
             expect(chain).not.toBeNull();
-            expect(chain!.handler).toBeDefined();
+            expect(chain?.handler).toBeDefined();
         });
 
         test('wildcard routes match through the radix index', () => {
@@ -114,9 +117,9 @@ describe('RouteHandlerMapping', () => {
             handlerMapping.setApplicationContext(ctx);
             handlerMapping.init();
 
-            const chain = handlerMapping.getHandler({ path: '/api/anything' } as any);
+            const chain = handlerMapping.getHandler({ path: '/api/anything' } as unknown as Route);
             expect(chain).not.toBeNull();
-            expect(chain!.handler).toBeDefined();
+            expect(chain?.handler).toBeDefined();
         });
 
         test('init is idempotent across DI auto-init and lifecycle start', () => {
@@ -140,7 +143,7 @@ describe('RouteHandlerMapping', () => {
             handlerMapping.start();
 
             // Exactly one registration — no ambiguous-route duplicates.
-            const handler = handlerMapping.getHandler({ path: '/repeated/run' } as any);
+            const handler = handlerMapping.getHandler({ path: '/repeated/run' } as unknown as Route);
             expect(handler).not.toBeNull();
             expect(handlerMapping.getHandlerMethods().size).toBe(1);
             expect(handlerMapping.isRunning).toBe(true);

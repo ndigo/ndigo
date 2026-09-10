@@ -1,13 +1,18 @@
 import { describe, test, expect, beforeEach } from 'vitest';
 import { MethodParameter, MethodParameterType } from '@blue/dispatcher';
+import { Route } from '@blue/router';
 import { NodeSessionValueMethodArgumentResolver } from '../src/session-argument-resolver';
-import { NODE_REQUEST_ATTRIBUTE } from '../src/node-request';
+import { NODE_REQUEST_ATTRIBUTE, NodeRequest } from '../src/node-request';
 
 // Route helper with NodeRequest in attributes:
-function makeRoute(req: Partial<any> = {}): any {
+function makeRoute(req: Partial<NodeRequest> = {}): Route {
     return {
         data: {},
         params: {},
+        path: '/',
+        raw: '/',
+        id: 'test',
+        length: 0,
         attributes: { [NODE_REQUEST_ATTRIBUTE]: { headers: {}, body: {}, cookies: {}, session: {}, ...req } },
     };
 }

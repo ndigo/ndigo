@@ -30,8 +30,19 @@ describe('@blue/content content utilities', () => {
         const instance = new AwareExample();
         instance.setContentSource(source);
 
-        expect((instance as any).contentSource).toBe(source);
-        expect((instance as any).contentSource.getContent('hello', 'en')).toBe('Hello');
+        // contentSource is attached reflectively and not part of the public type:
+        // narrow from unknown, then validate the runtime shape with the package guard.
+        const candidate: unknown = instance;
+        if (typeof candidate !== 'object' || candidate === null || !('contentSource' in candidate)) {
+            throw new Error('expected content source to be attached');
+        }
+        const attached = candidate.contentSource;
+        if (!likeContentSource(attached)) {
+            throw new Error('expected content source to be attached');
+        }
+
+        expect(attached).toBe(source);
+        expect(attached.getContent('hello', 'en')).toBe('Hello');
     });
 
     test('duck typing guards for content source and aware objects', () => {

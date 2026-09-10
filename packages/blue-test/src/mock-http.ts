@@ -203,12 +203,16 @@ export class MockHTTP {
                 // into the error path (a 500) instead of the correct status.
                 const allowed = getMethodNotAllowed(prepared.route);
                 if (allowed) {
-                    writeProblem(sink, {
-                        type: ProblemTypes.methodNotAllowed,
-                        title: 'Method Not Allowed',
-                        status: 405,
-                        instance: prepared.route.path,
-                    }, { Allow: allowed });
+                    writeProblem(
+                        sink,
+                        {
+                            type: ProblemTypes.methodNotAllowed,
+                            title: 'Method Not Allowed',
+                            status: 405,
+                            instance: prepared.route.path,
+                        },
+                        { Allow: allowed }
+                    );
                     return toResult(prepared, response);
                 }
                 writeProblem(sink, {

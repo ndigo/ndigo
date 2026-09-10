@@ -32,7 +32,7 @@ function getMetadata(target: unknown): Record<string, unknown> {
  * ```
  */
 export function environment(schema: z.ZodType) {
-    return function <T extends new (...args: any[]) => any>(target: T, context: ClassDecoratorContext): T {
+    return function <T extends new (...args: never[]) => unknown>(target: T, context: ClassDecoratorContext): T {
         context.metadata[ENV_SCHEMA] = schema;
         return target;
     };

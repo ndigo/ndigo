@@ -1,3 +1,4 @@
+import type { InValue } from '@libsql/client';
 import { Constructable, FrameworkError } from '@blue/core';
 import { getEntityMetadata, isEntity, validateEntity, LifecycleEvent } from '@blue/orm';
 import { DrizzleDataSource } from './drizzle-data-source';
@@ -48,7 +49,7 @@ export class DrizzleEntityManager {
         const insertSql = `INSERT INTO "${tableName}" (${colNames.join(', ')}) VALUES (${placeholders})`;
 
         try {
-            const result: any = await this.#client.execute(insertSql, values as any[]);
+            const result = await this.#client.execute(insertSql, values as InValue[]);
 
             // Read back generated primary key for AUTOINCREMENT columns
             if (meta.generatedColumns.includes(meta.primaryColumn)) {
@@ -63,7 +64,7 @@ export class DrizzleEntityManager {
             if (pkColumn) {
                 const pkValue = record[meta.primaryColumn];
                 const updateSql = `UPDATE "${tableName}" SET ${setClauses} WHERE "${pkColumn.columnName}" = ?`;
-                await this.#client.execute(updateSql, [...values, pkValue] as any[]);
+                await this.#client.execute(updateSql, [...values, pkValue] as InValue[]);
             }
         }
     }
@@ -78,7 +79,7 @@ export class DrizzleEntityManager {
         if (!pkColumn) return undefined;
 
         const sql = `SELECT * FROM "${meta.entityName}" WHERE "${pkColumn.columnName}" = ?`;
-        const result = await this.#client.execute(sql, [id] as any[]);
+        const result = await this.#client.execute(sql, [id] as InValue[]);
 
         if (!result.rows || result.rows.length === 0) return undefined;
         return this.#mapRowToEntity(entityClass, result.rows[0] as Record<string, unknown>);
@@ -107,7 +108,7 @@ export class DrizzleEntityManager {
         if (pkValue === undefined || pkValue === null) return;
 
         const sql = `DELETE FROM "${meta.entityName}" WHERE "${pkColumn.columnName}" = ?`;
-        await this.#client.execute(sql, [pkValue] as any[]);
+        await this.#client.execute(sql, [pkValue] as InValue[]);
     }
 
     #mapRowToEntity<T extends object>(entityClass: Constructable<T>, row: Record<string, unknown>): T {

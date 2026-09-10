@@ -75,9 +75,7 @@ if (adapter) {
 ```typescript
 import { Principal } from '@blue/auth-core';
 
-const principal: Principal = {
-    /* ... */
-};
+const principal: Principal = {/* ... */};
 
 if (principal.hasRole('admin')) {
     // User is an admin

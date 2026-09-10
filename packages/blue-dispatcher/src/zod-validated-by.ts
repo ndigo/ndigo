@@ -128,7 +128,7 @@ export class ZodValidationError extends Error {
  * @returns The extractor with the Zod validation attached.
  */
 export function validatedBy<T>(schema: z.ZodType<T>, extractor: ParameterExtractor): ParameterExtractor {
-    const convert: (value: any) => any = (value: any) => {
+    const convert: (value: unknown) => unknown = (value: unknown) => {
         const result = schema.safeParse(value);
         if (!result.success) {
             const issues = result.error.issues.map((issue) => ({
@@ -136,9 +136,7 @@ export function validatedBy<T>(schema: z.ZodType<T>, extractor: ParameterExtract
                 message: issue.message,
                 code: issue.code,
             }));
-            const message = issues
-                .map((issue) => `${issue.path.join('.') || 'value'}: ${issue.message}`)
-                .join(', ');
+            const message = issues.map((issue) => `${issue.path.join('.') || 'value'}: ${issue.message}`).join(', ');
             // The cause is a ZodValidationError: it preserves the flattened
             // human message AND the structured per-field issues, so error
             // resolvers can render either (Phase 4A).

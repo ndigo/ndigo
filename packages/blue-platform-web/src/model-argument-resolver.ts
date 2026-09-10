@@ -19,7 +19,7 @@ export class BrowserModelValueMethodArgumentResolver extends AbstractPlatformArg
     }
 
     /** Resolves model data from the current route. */
-    protected resolveName(name: string, _parameter: MethodParameter, route: Route, _mapping: any): any {
+    protected resolveName(name: string, _parameter: MethodParameter, route: Route, _mapping: unknown): unknown {
         const data = route?.data;
         if (!data) {
             return undefined;
@@ -39,17 +39,19 @@ export class BrowserModelValueMethodArgumentResolver extends AbstractPlatformArg
     }
 
     /** Resolves a dotted path against a nested object graph. */
-    private _getPathValue(source: Record<string, any>, path: string): any {
+    private _getPathValue(source: Record<string, unknown>, path: string): unknown {
         const tokens = path.split('.');
         const length = tokens.length;
-        let value: any = source;
+        let value: unknown = source;
 
         for (let index = 0; index < length; index++) {
             const token = tokens[index];
-            if (isNil(value) || !Object.prototype.hasOwnProperty.call(value, token)) {
+            // Only plain objects are traversable — milestone: keep the original
+            // any-based traversal, narrowed to objects to satisfy the type system.
+            if (isNil(value) || typeof value !== 'object' || !Object.prototype.hasOwnProperty.call(value, token)) {
                 return undefined;
             }
-            value = value[token];
+            value = (value as Record<string, unknown>)[token];
         }
 
         return value;

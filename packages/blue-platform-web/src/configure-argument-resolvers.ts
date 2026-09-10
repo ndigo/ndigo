@@ -11,7 +11,7 @@ import { BrowserSessionValueMethodArgumentResolver } from './session-argument-re
  */
 export function configureBrowserArgumentResolvers(
     applicationContext: ApplicationContext,
-    _options?: any
+    _options?: unknown
 ): HandlerMethodArgumentResolver[] {
     const resolvers: HandlerMethodArgumentResolver[] = [
         new BrowserBindMethodArgumentResolver(),

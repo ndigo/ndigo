@@ -24,6 +24,7 @@ export const AsRouteErrorResolverStrategy = <T extends Constructable<StrategyIni
 
         errorResolvers!: RouteErrorResolver[];
 
+        // oxlint-disable-next-line no-explicit-any -- TS2545: mixin constructor must be exactly (...args: any[]).
         constructor(...args: any[]) {
             super(...args);
             this.errorResolverKey = ERROR_RESOLVER;

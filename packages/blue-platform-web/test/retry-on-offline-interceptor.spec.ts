@@ -1,4 +1,5 @@
 import { describe, test, expect, vi, afterEach, beforeEach } from 'vitest';
+import { HTTP } from '@blue/http';
 import { RetryOnOfflineInterceptor } from '../src/retry-on-offline-interceptor';
 
 function makeRequest(url: string, method = 'GET'): Request {
@@ -23,7 +24,7 @@ describe('RetryOnOfflineInterceptor', () => {
         const interceptor = new RetryOnOfflineInterceptor();
         const request = makeRequest('http://localhost/test');
 
-        const result = await interceptor.preRequest(request, undefined as any);
+        const result = await interceptor.preRequest(request, new HTTP());
 
         expect(result).toBeUndefined();
         expect(interceptor.queuedCount).toBe(0);

@@ -1,4 +1,6 @@
 import { describe, expect, test } from 'vitest';
+import { MethodParameter, MethodParameterType } from '@blue/dispatcher';
+import { Route } from '@blue/router';
 import {
     argumentValueConverters,
     createOptionalConverter,
@@ -8,8 +10,17 @@ import {
     toDateValue,
     toJSONStringValue,
     toNumberValue,
+    ArgumentValueConversionContext,
 } from '../src/argument-value-converter';
 import { conversionService } from '@blue/core';
+
+/** Context is never read by the built-in converters under test. */
+const noContext = (): ArgumentValueConversionContext => ({
+    name: 'value',
+    parameter: new MethodParameter(MethodParameterType.QUERY, 'value'),
+    route: {} as unknown as Route,
+    mapping: undefined,
+});
 
 describe('argument-value-converter', () => {
     test('toNumberValue converts to number', () => {
@@ -37,39 +48,39 @@ describe('argument-value-converter', () => {
     test('createStringSplitConverter splits values', () => {
         const converter = createStringSplitConverter(',');
 
-        expect(converter('a,b,c', {} as any)).toEqual(['a', 'b', 'c']);
+        expect(converter('a,b,c', noContext())).toEqual(['a', 'b', 'c']);
     });
 
     test('createOptionalConverter skips nullish values', () => {
         const converter = createOptionalConverter((value) => Number(value));
 
-        expect(converter(null, {} as any)).toBeNull();
-        expect(converter(undefined, {} as any)).toBeUndefined();
-        expect(converter('10', {} as any)).toBe(10);
+        expect(converter(null, noContext())).toBeNull();
+        expect(converter(undefined, noContext())).toBeUndefined();
+        expect(converter('10', noContext())).toBe(10);
     });
 
     test('argumentValueConverters registry exposes built-ins', () => {
-        expect(argumentValueConverters.number('42', null as any)).toBe(42);
-        expect(argumentValueConverters.boolean('true', null as any)).toBe(true);
-        expect(argumentValueConverters.identity('x', {} as any)).toBe('x');
+        expect(argumentValueConverters.number('42', noContext())).toBe(42);
+        expect(argumentValueConverters.boolean('true', noContext())).toBe(true);
+        expect(argumentValueConverters.identity('x', noContext())).toBe('x');
     });
 
     test('resolveConverter returns identity converter when no convertType', () => {
         const converter = resolveConverter(undefined);
-        expect(converter('anything', {} as any)).toBe('anything');
+        expect(converter('anything', noContext())).toBe('anything');
     });
 
     test('resolveConverter uses ConversionService for type-based conversion', () => {
         const converter = resolveConverter({ source: String, target: Number });
 
-        expect(converter('42', {} as any)).toBe(42);
+        expect(converter('42', noContext())).toBe(42);
     });
 
     test('resolveConverter supports UUID conversion via ConversionService', () => {
         const converter = resolveConverter({ source: String, target: String });
 
         // UUID converter normalizes to lowercase
-        expect(converter('A1B2C3D4-E5F6-7890-ABCD-EF1234567890', {} as any)).toBe(
+        expect(converter('A1B2C3D4-E5F6-7890-ABCD-EF1234567890', noContext())).toBe(
             'a1b2c3d4-e5f6-7890-abcd-ef1234567890'
         );
     });
@@ -77,32 +88,32 @@ describe('argument-value-converter', () => {
     test('resolveConverter supports boolean conversion via ConversionService', () => {
         const converter = resolveConverter({ source: String, target: Boolean });
 
-        expect(converter('true', {} as any)).toBe(true);
-        expect(converter('false', {} as any)).toBe(false);
+        expect(converter('true', noContext())).toBe(true);
+        expect(converter('false', noContext())).toBe(false);
     });
 
     test('resolveConverter supports date conversion via ConversionService', () => {
         const converter = resolveConverter({ source: String, target: Date });
 
-        const result = converter('2024-01-15T10:30:00.000Z', {} as any);
+        const result = converter('2024-01-15T10:30:00.000Z', noContext());
         expect(result).toBeInstanceOf(Date);
     });
 
     test('resolveConverter supports JSON conversion via ConversionService', () => {
         const converter = resolveConverter({ source: String, target: Object });
 
-        expect(converter('{"key":"value"}', {} as any)).toEqual({ key: 'value' });
+        expect(converter('{"key":"value"}', noContext())).toEqual({ key: 'value' });
     });
 
     test('resolveConverter supports array conversion via ConversionService', () => {
         const converter = resolveConverter({ source: String, target: Array });
 
-        expect(converter('one,two,three', {} as any)).toEqual(['one', 'two', 'three']);
+        expect(converter('one,two,three', noContext())).toEqual(['one', 'two', 'three']);
     });
 
     test('resolveConverter throws on invalid conversion', () => {
         const converter = resolveConverter({ source: String, target: Boolean });
 
-        expect(() => converter('invalid', {} as any)).toThrow(TypeError);
+        expect(() => converter('invalid', noContext())).toThrow(TypeError);
     });
 });

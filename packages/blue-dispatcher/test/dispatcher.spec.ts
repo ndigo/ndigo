@@ -17,11 +17,13 @@ import { MetadataConfigApplicationContext } from '@blue/context';
 import { Route } from '@blue/router';
 
 describe('AbstractDispatcher', () => {
-    const fooRoute: Route = { path: '/foo' } as any,
-        barRoute: Route = { path: '/bar' } as any,
-        bazRoute: Route = { path: '/baz' } as any,
-        quxRoute: Route = { path: '/qux' } as any,
-        helloWorldRoute: Route = { path: '/hello/world' } as any;
+    // Tests need only the path; the rest of Route is filled by the router.
+    const toRoute = (path: string): Route => ({ path }) as unknown as Route,
+        fooRoute = toRoute('/foo'),
+        barRoute = toRoute('/bar'),
+        bazRoute = toRoute('/baz'),
+        quxRoute = toRoute('/qux'),
+        helloWorldRoute = toRoute('/hello/world');
 
     describe('instance', () => {
         let dispatcher: AbstractDispatcher;
@@ -33,7 +35,7 @@ describe('AbstractDispatcher', () => {
         });
 
         afterEach(() => {
-            dispatcher = undefined as any;
+            dispatcher = undefined as unknown as AbstractDispatcher;
         });
 
         test('it should init strategies on contexts', async () => {
@@ -114,7 +116,7 @@ describe('Error View Dispatch', () => {
         const dispatcher = new AbstractDispatcher();
         dispatcher.initStrategies(errorContext);
 
-        await dispatcher.dispatch({ path: '/bad/bad' } as any);
+        await dispatcher.dispatch({ path: '/bad/bad' } as unknown as Route);
 
         expect(renderSpy).toHaveBeenCalled();
     });
@@ -123,7 +125,7 @@ describe('Error View Dispatch', () => {
         const dispatcher = new AbstractDispatcher();
         dispatcher.initStrategies(errorContext);
 
-        await dispatcher.dispatch({ path: '/bad/bad' } as any);
+        await dispatcher.dispatch({ path: '/bad/bad' } as unknown as Route);
 
         expect(renderSpy).toHaveBeenCalledWith(undefined, expect.objectContaining({ path: '/bad/bad' }), undefined);
     });

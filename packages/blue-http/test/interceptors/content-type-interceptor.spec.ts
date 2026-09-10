@@ -1,14 +1,14 @@
 import { describe, test, expect, beforeAll, beforeEach, afterEach, afterAll } from 'vitest';
 import { server } from '../_worker';
 import { HTTP } from '../../src/http';
-import { ContentTypeInterceptor } from '../../src/interceptors/content-type-interceptor';
+import { ContentTypeInit, ContentTypeInterceptor } from '../../src/interceptors/content-type-interceptor';
 import { MediaTypes } from '@blue/core';
 
 class TestContentTypeInterceptor extends ContentTypeInterceptor {
-    preInit(url: URL, settings?: any) {
+    preInit(url: URL, settings: ContentTypeInit) {
         const proceed = super.preInit(url, settings);
         expect(proceed).toBe(true);
-        if (settings.contentType) {
+        if (settings.contentType && settings.headers instanceof Headers) {
             expect(settings.headers.get('Content-Type')).toBe('text/html');
         }
         return proceed;
@@ -28,7 +28,7 @@ describe('ContentTypeInterceptor', () => {
     beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
 
     beforeEach(() => {
-        http = new HTTP([new TestContentTypeInterceptor() as any]);
+        http = new HTTP([new TestContentTypeInterceptor()]);
     });
 
     afterEach(() => {
@@ -39,39 +39,47 @@ describe('ContentTypeInterceptor', () => {
     afterAll(() => server.close());
 
     test('it should handle string media types', async () => {
-        const response = await http!.request('http://localhost/contentType', {
+        expect(http).toBeDefined();
+        const response = await http?.request('http://localhost/contentType', {
             contentType: 'text/html',
-        } as any);
-        const text = await parseXML(response);
+        } as ContentTypeInit);
+        expect(response).toBeDefined();
+        const text = response ? await parseXML(response) : '';
         expect(text).toBe('<div id="foo">123</div>');
     });
 
     test('it should handle instance media types', async () => {
-        const response = await http!.request('http://localhost/contentType', {
+        expect(http).toBeDefined();
+        const response = await http?.request('http://localhost/contentType', {
             contentType: MediaTypes.TEXT_HTML,
-        } as any);
-        const text = await parseXML(response);
+        } as ContentTypeInit);
+        expect(response).toBeDefined();
+        const text = response ? await parseXML(response) : '';
         expect(text).toBe('<div id="foo">123</div>');
     });
 
     test('it should overwrite the existing Content-Type header', async () => {
-        const response = await http!.request('http://localhost/contentType', {
+        expect(http).toBeDefined();
+        const response = await http?.request('http://localhost/contentType', {
             contentType: 'text/html',
             headers: new Headers({
                 'Content-type': 'application/json',
             }),
-        } as any);
-        const text = await parseXML(response);
+        } as ContentTypeInit);
+        expect(response).toBeDefined();
+        const text = response ? await parseXML(response) : '';
         expect(text).toBe('<div id="foo">123</div>');
     });
 
     test('it should ignore requests that lack a contentType setting', async () => {
-        const response = await http!.request('http://localhost/contentType', {
+        expect(http).toBeDefined();
+        const response = await http?.request('http://localhost/contentType', {
             headers: new Headers({
                 'Content-type': 'application/json',
             }),
         });
-        const json = await response.json();
+        expect(response).toBeDefined();
+        const json = await response?.json();
         expect(json).toEqual({ foo: 123 });
     });
 });

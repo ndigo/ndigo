@@ -7,7 +7,7 @@ import { conversionService } from '@blue/core';
 // ---------------------------------------------------------------------------
 
 export type ArgumentValueConversionContext = ParameterValueConversionContext & { route: Route };
-export type ArgumentValueConverter = (value: any, context: ArgumentValueConversionContext) => any;
+export type ArgumentValueConverter = (value: unknown, context: ArgumentValueConversionContext) => unknown;
 export type ArgumentValueConverterRegistry = Record<string, ArgumentValueConverter>;
 export type ConverterResolutionOptions = { strictNamedLookup?: boolean };
 export type ResolverConverterOption =
@@ -21,12 +21,12 @@ export type ResolverConverterOption =
 
 export const identityArgumentValueConverter: ArgumentValueConverter = (value) => value;
 
-const toLowerString = (value: any): string => `${value}`.toLowerCase();
+const toLowerString = (value: unknown): string => `${value}`.toLowerCase();
 
-export function toNumberValue(value: any): number {
+export function toNumberValue(value: unknown): number {
     return Number(value);
 }
-export function toBooleanValue(value: any): boolean {
+export function toBooleanValue(value: unknown): boolean {
     if (typeof value === 'boolean') {
         return value;
     }
@@ -39,11 +39,14 @@ export function toBooleanValue(value: any): boolean {
     }
     return Boolean(value);
 }
-export function toDateValue(value: any): Date {
-    return new Date(value);
+export function toDateValue(value: unknown): Date {
+    // new Date coerces any input (ToNumber for non-strings) and never throws;
+    // the cast is erased, so behavior is identical to the former `any` param.
+    return new Date(value as number | string);
 }
-export function toJSONStringValue(value: any): any {
-    return JSON.parse(value);
+export function toJSONStringValue(value: unknown): unknown {
+    // JSON.parse ToString-coerces its argument; the cast is erased.
+    return JSON.parse(value as string);
 }
 
 export function createStringSplitConverter(separator: string | RegExp = ','): ArgumentValueConverter {
@@ -75,7 +78,7 @@ export const argumentValueConverters: Record<string, ArgumentValueConverter> = {
  * Resolves a type-based converter from the ConversionService.
  * If no converter is found, returns undefined.
  */
-function resolveTypeConverter(sourceType: any, targetType: any): ArgumentValueConverter | undefined {
+function resolveTypeConverter(sourceType: unknown, targetType: unknown): ArgumentValueConverter | undefined {
     if (!conversionService.canConvert(sourceType, targetType)) {
         return undefined;
     }
@@ -83,7 +86,7 @@ function resolveTypeConverter(sourceType: any, targetType: any): ArgumentValueCo
     // Get the underlying Converter<S,T> from ConversionService
     const converter = conversionService.registry.getConverter(sourceType, targetType);
 
-    return (value: any, _context: ArgumentValueConversionContext) => {
+    return (value: unknown, _context: ArgumentValueConversionContext) => {
         try {
             return converter.convert(value);
         } catch (error) {
@@ -98,7 +101,7 @@ function resolveTypeConverter(sourceType: any, targetType: any): ArgumentValueCo
 // Main resolver function
 // ---------------------------------------------------------------------------
 
-export function resolveConverter(convertType?: { source: any; target: any }): ArgumentValueConverter {
+export function resolveConverter(convertType?: { source: unknown; target: unknown }): ArgumentValueConverter {
     // Use type-based conversion via ConversionService
     if (convertType && convertType.source && convertType.target) {
         const typeConverter = resolveTypeConverter(convertType.source, convertType.target);

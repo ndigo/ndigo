@@ -6,7 +6,7 @@ import { StrategyInitializer } from './strategy-initializer';
 export interface RouteHandlerAdapterStrategy {
     handlerAdapters: RouteHandlerAdapter[];
     initHandlerAdapters(context: ApplicationContext): void;
-    getHandlerAdapter(handler: any): RouteHandlerAdapter;
+    getHandlerAdapter(handler: object | undefined): RouteHandlerAdapter;
 }
 
 /**
@@ -40,6 +40,7 @@ export const AsRouteHandlerAdapterStrategy = <T extends Constructable<StrategyIn
 
         handlerAdapters!: RouteHandlerAdapter[];
 
+        // oxlint-disable-next-line no-explicit-any -- TS2545: mixin constructor must be exactly (...args: any[]).
         constructor(...args: any[]) {
             super(...args);
             this.handlerAdapterKey = HANDLER_ADAPTER;
@@ -59,7 +60,7 @@ export const AsRouteHandlerAdapterStrategy = <T extends Constructable<StrategyIn
             );
         }
 
-        getHandlerAdapter(handler: any): RouteHandlerAdapter {
+        getHandlerAdapter(handler: object | undefined): RouteHandlerAdapter {
             const handlerAdapter: RouteHandlerAdapter | undefined = this.handlerAdapters.find((adapter) => {
                 // The interface declares supports(); the typeof check guards
                 // against duck-typed entries entering the collection.

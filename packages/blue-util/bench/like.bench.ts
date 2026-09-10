@@ -53,23 +53,25 @@ const precomputeDescriptor = (
     return { keys, types, isTrue };
 };
 
-const isNilLike = (x: any): x is null | undefined => x == null;
+const isNilLike = (x: unknown): x is null | undefined => x == null;
 
-function likeCached(descriptor: LikeDescriptor, candidate?: any): boolean | ((v: any) => boolean) {
+function likeCached(descriptor: LikeDescriptor, candidate?: unknown): boolean | ((v: unknown) => boolean) {
     if (arguments.length >= 2) {
         // Two-arg path: evaluate immediately
         if (isNilLike(candidate)) return false;
+        if (typeof candidate !== 'object' && typeof candidate !== 'function') return false;
         let cached = descriptorCache.get(descriptor);
         if (!cached) {
             cached = precomputeDescriptor(descriptor);
             descriptorCache.set(descriptor, cached);
         }
         const { keys, types, isTrue } = cached;
+        const record = candidate as Record<string, unknown>;
         for (let i = 0; i < keys.length; i++) {
             if (isTrue[i]) {
                 if (!(keys[i] in candidate)) return false;
             } else {
-                const prop = (candidate as any)[keys[i]];
+                const prop = record[keys[i]];
                 if (prop === null) continue;
                 if (prop == null) return false;
                 const type = types[i];
@@ -93,13 +95,15 @@ function likeCached(descriptor: LikeDescriptor, candidate?: any): boolean | ((v:
         descriptorCache.set(descriptor, cached);
     }
     const { keys, types, isTrue } = cached;
-    return (value: any): boolean => {
+    return (value: unknown): boolean => {
         if (isNilLike(value)) return false;
+        if (typeof value !== 'object' && typeof value !== 'function') return false;
+        const record = value as Record<string, unknown>;
         for (let i = 0; i < keys.length; i++) {
             if (isTrue[i]) {
                 if (!(keys[i] in value)) return false;
             } else {
-                const prop = (value as any)[keys[i]];
+                const prop = record[keys[i]];
                 if (prop === null) continue;
                 if (prop == null) return false;
                 const type = types[i];
@@ -143,7 +147,7 @@ function likeCached(descriptor: LikeDescriptor, candidate?: any): boolean | ((v:
  * in the BlueJS codebase.  Uses `Object.prototype.toString.call()`
  * for reliable type detection across all cases.
  */
-const isLike = (Ctor: Function, value: any): boolean => {
+const isLike = (Ctor: Function, value: unknown): boolean => {
     if (value == null) return false;
     // Function – typeof check is fastest and correct
     if (Ctor === Function) return typeof value === 'function';
@@ -167,13 +171,15 @@ const isLike = (Ctor: Function, value: any): boolean => {
 // --------------------------------------------------------------------
 //  Alternative 2 – for-of loop
 // --------------------------------------------------------------------
-const likeForOf = (descriptor: LikeDescriptor, value: any): boolean => {
+const likeForOf = (descriptor: LikeDescriptor, value: unknown): boolean => {
     if (value == null) return false;
+    if (typeof value !== 'object' && typeof value !== 'function') return false;
+    const record = value as Record<string, unknown>;
     for (const [key, type] of Object.entries(descriptor)) {
         if (type === true) {
             if (!(key in value)) return false;
         } else {
-            const prop = (value as any)[key];
+            const prop = record[key];
             // null always passes
             if (prop === null) continue;
             if (!isLike(type as Function, prop)) return false;
@@ -185,11 +191,13 @@ const likeForOf = (descriptor: LikeDescriptor, value: any): boolean => {
 // --------------------------------------------------------------------
 //  Alternative 3 – Object.entries + Array.every
 // --------------------------------------------------------------------
-const likeEvery = (descriptor: LikeDescriptor, value: any): boolean => {
+const likeEvery = (descriptor: LikeDescriptor, value: unknown): boolean => {
     if (value == null) return false;
+    if (typeof value !== 'object' && typeof value !== 'function') return false;
+    const record = value as Record<string, unknown>;
     return Object.entries(descriptor).every(([key, type]) => {
         if (type === true) return key in value;
-        const prop = (value as any)[key];
+        const prop = record[key];
         if (prop === null) return true; // null always passes
         return isLike(type as Function, prop);
     });
@@ -198,8 +206,10 @@ const likeEvery = (descriptor: LikeDescriptor, value: any): boolean => {
 // --------------------------------------------------------------------
 //  Alternative 4 – Object.keys + hasOwnProperty, inline typeof
 // --------------------------------------------------------------------
-const likeKeys = (descriptor: LikeDescriptor, value: any): boolean => {
+const likeKeys = (descriptor: LikeDescriptor, value: unknown): boolean => {
     if (value == null) return false;
+    if (typeof value !== 'object' && typeof value !== 'function') return false;
+    const record = value as Record<string, unknown>;
     const keys = Object.keys(descriptor);
     for (let i = 0; i < keys.length; i++) {
         const key = keys[i];
@@ -207,7 +217,7 @@ const likeKeys = (descriptor: LikeDescriptor, value: any): boolean => {
         if (type === true) {
             if (!Object.prototype.hasOwnProperty.call(value, key)) return false;
         } else {
-            const prop = (value as any)[key];
+            const prop = record[key];
             if (prop === null) continue; // null passes
             if (!isLike(type as Function, prop)) return false;
         }
@@ -233,15 +243,17 @@ const precompute = (descriptor: LikeDescriptor): { keys: string[]; types: (Funct
 
 const likePreKeys = (
     cached: { keys: string[]; types: (Function | true)[]; isTrue: boolean[] },
-    value: any
+    value: unknown
 ): boolean => {
     if (value == null) return false;
+    if (typeof value !== 'object' && typeof value !== 'function') return false;
+    const record = value as Record<string, unknown>;
     const { keys, types, isTrue } = cached;
     for (let i = 0; i < keys.length; i++) {
         if (isTrue[i]) {
             if (!(keys[i] in value)) return false;
         } else {
-            const prop = (value as any)[keys[i]];
+            const prop = record[keys[i]];
             if (prop === null) continue;
             if (!isLike(types[i] as Function, prop)) return false;
         }
@@ -253,8 +265,10 @@ const likePreKeys = (
 //  Alternative 6 – Direct property access (minimal overhead)
 //  Uses inline toString checks, avoids Object.entries allocation
 // --------------------------------------------------------------------
-const likeDirect = (descriptor: LikeDescriptor, value: any): boolean => {
+const likeDirect = (descriptor: LikeDescriptor, value: unknown): boolean => {
     if (value == null) return false;
+    if (typeof value !== 'object' && typeof value !== 'function') return false;
+    const record = value as Record<string, unknown>;
     const entries = Object.entries(descriptor);
     for (let i = 0; i < entries.length; i++) {
         const key = entries[i][0];
@@ -262,7 +276,7 @@ const likeDirect = (descriptor: LikeDescriptor, value: any): boolean => {
         if (type === true) {
             if (!(key in value)) return false;
         } else {
-            const prop = (value as any)[key];
+            const prop = record[key];
             if (prop === null) continue;
             // Inline isLike for Function (most common case)
             if (type === Function) {

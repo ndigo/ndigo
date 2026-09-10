@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeAll } from 'vitest';
 import { Route } from '@blue/router';
+import { View } from '@blue/view';
 import { WebComponentView } from '../src/view';
 import { DOMElementViewTarget, WebComponentViewEngine, likeDOMViewTarget } from '../src/engine';
 import { TagMapping } from '../src/tag-mapping';
@@ -98,7 +99,7 @@ describe('DOMElementViewTarget', () => {
     });
 
     it('throws TypeError when created with undefined element', () => {
-        expect(() => new DOMElementViewTarget(undefined as any)).toThrow(TypeError);
+        expect(() => new DOMElementViewTarget(undefined as unknown as HTMLElement | null)).toThrow(TypeError);
     });
 
     it('creates target with element and exposes container', () => {
@@ -139,7 +140,7 @@ describe('DOMElementViewTarget', () => {
 
         target.clear();
         expect(el.innerHTML).toBe('');
-        expect((target as any).destroyed).toBe(false);
+        expect(target.destroyed).toBe(false);
     });
 
     it('destroy permanently disables the target', () => {
@@ -147,7 +148,7 @@ describe('DOMElementViewTarget', () => {
         const target = new DOMElementViewTarget(el);
 
         target.destroy();
-        expect((target as any).destroyed).toBe(true);
+        expect(target.destroyed).toBe(true);
 
         expect(() => target.prepare(mockRoute)).toThrow();
         expect(() => target.commit(document.createElement('div'), {}, mockRoute)).toThrow();
@@ -216,13 +217,16 @@ describe('WebComponentViewEngine', () => {
 
         await engine.render(view, model, target, mockRoute);
 
-        const rendered = container.children[0] as any;
+        const rendered = container.children[0] as Element & { model?: unknown };
         expect(rendered.model).toEqual(model);
     });
 
     it('reuses existing element when tagName matches', async () => {
         container.innerHTML = '<existing-el></existing-el>';
-        const existing = container.firstElementChild!;
+        const existing = container.firstElementChild;
+        if (!existing) {
+            throw new Error('expected an existing element before reuse check');
+        }
 
         const view = new WebComponentView('existing-el');
         view.name = 'existingEl';
@@ -231,7 +235,8 @@ describe('WebComponentViewEngine', () => {
 
         expect(container.children.length).toBe(1);
         expect(container.firstElementChild).toBe(existing);
-        expect((existing as any).model).toEqual({ updated: true });
+        const reusedModel = existing as Element & { model?: unknown }; // engine sets .model on the reused element
+        expect(reusedModel.model).toEqual({ updated: true });
     });
 
     it('creates new element when tagName does not match existing', async () => {
@@ -247,7 +252,8 @@ describe('WebComponentViewEngine', () => {
     });
 
     it('throws TypeError when view is not a WebComponentView', async () => {
-        const fakeView = { name: 'fake' } as any;
+        // Intentionally not a WebComponentView — the engine must reject it.
+        const fakeView = { name: 'fake' } as unknown as View;
 
         await expect(engine.render(fakeView, {}, target, mockRoute)).rejects.toThrow(TypeError);
     });

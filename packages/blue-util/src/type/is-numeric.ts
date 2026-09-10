@@ -25,7 +25,7 @@ export type Numeric = number | `${number}`;
  * //=> false
  * @see {@link isNumber}
  */
-const isNumeric = (value: any): value is Numeric => {
+const isNumeric = (value: unknown): value is Numeric => {
     if (isNumber(value)) return true;
 
     if (isString(value)) {

@@ -109,7 +109,7 @@ function computeDescriptor(descriptor: LikeDescriptor): {
  * - Type checking uses `typeof` for Function, `Object.prototype.toString.call()` for others
  * - Property presence checked with `in` operator
  */
-function checkLike(cached: { keys: string[]; types: (Function | true)[]; isTrue: boolean[] }, value: any): boolean {
+function checkLike(cached: { keys: string[]; types: (Function | true)[]; isTrue: boolean[] }, value: unknown): boolean {
     // Top-level nil check
     if (value == null) return false;
     if (typeof value !== 'object' && typeof value !== 'function') return false;
@@ -121,7 +121,9 @@ function checkLike(cached: { keys: string[]; types: (Function | true)[]; isTrue:
             // Property presence check
             if (!(keys[i] in value)) return false;
         } else {
-            const prop = (value as any)[keys[i]];
+            // Arbitrary structured input: unknown property reflection after the guard above
+            const record = value as Record<string, unknown>;
+            const prop = record[keys[i]];
 
             // Null property values always pass
             if (prop === null) continue;
@@ -129,20 +131,21 @@ function checkLike(cached: { keys: string[]; types: (Function | true)[]; isTrue:
             // Undefined property values fail
             if (prop == null) return false;
 
-            // Inline type checking using typeof and Object.prototype.toString for common types
+            // Type checking using typeof and Object.prototype.toString for common types
             const type = types[i];
             if (type === Function) {
                 if (typeof prop !== 'function') return false;
             } else if (type === Boolean || type === Number || type === String || type === Object) {
-                // Use toString for reliable primitive + boxed detection
+                // toString for reliable primitive + boxed detection
                 const tag = Object.prototype.toString.call(prop);
                 if (type === Boolean && tag !== '[object Boolean]') return false;
                 else if (type === Number && tag !== '[object Number]') return false;
                 else if (type === String && tag !== '[object String]') return false;
                 else if (type === Object && tag !== '[object Object]') return false;
             } else {
-                // For unknown types, fall back to instanceof
-                if (!(prop instanceof (type as Function))) return false;
+                // Descriptor values are Function | true; the isTrue branch handled `true`
+                const Ctor = type as Function;
+                if (!(prop instanceof Ctor)) return false;
             }
         }
     }
@@ -154,9 +157,9 @@ function checkLike(cached: { keys: string[]; types: (Function | true)[]; isTrue:
 //  Public API
 // --------------------------------------------------------------------
 
-function like(descriptor: LikeDescriptor, value: any): boolean;
-function like(descriptor: LikeDescriptor): (value: any) => boolean;
-function like(descriptor: LikeDescriptor, value?: any): boolean | ((value: any) => boolean) {
+function like(descriptor: LikeDescriptor, value: unknown): boolean;
+function like(descriptor: LikeDescriptor): (value: unknown) => boolean;
+function like(descriptor: LikeDescriptor, value?: unknown): boolean | ((value: unknown) => boolean) {
     // Get or create cached descriptor metadata
     let cached = descriptorCache.get(descriptor);
     if (!cached) {
@@ -170,7 +173,7 @@ function like(descriptor: LikeDescriptor, value?: any): boolean | ((value: any) 
     }
 
     // Single-arg form: return curried function
-    return (v: any): boolean => checkLike(cached, v);
+    return (v: unknown): boolean => checkLike(cached, v);
 }
 
 export default like;

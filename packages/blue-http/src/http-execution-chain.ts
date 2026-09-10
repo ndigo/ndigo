@@ -229,9 +229,12 @@ export class HTTPExecutionChain {
                     const interceptor = interceptors[index];
                     if (likeRequestAwareHTTPInterceptor(interceptor)) {
                         // Pre-request interceptors run in order and can short-circuit the chain.
+                        // Response-shaped results return early above; build defensively for anything else.
                         // oxlint-disable-next-line no-await-in-loop
                         const result = await interceptor.preRequest(
-                            currentRequest instanceof Request ? currentRequest : new Request(currentRequest as any),
+                            currentRequest instanceof Request
+                                ? currentRequest
+                                : new Request(currentRequest as unknown as RequestInfo),
                             http
                         );
                         if (isRequest(result) || likeResponse(result)) {
@@ -274,4 +277,4 @@ export class HTTPExecutionChain {
 /**
  * @internal
  */
-export const isHTTPExecutionChain = is(HTTPExecutionChain) as (value: any) => value is HTTPExecutionChain;
+export const isHTTPExecutionChain = is(HTTPExecutionChain) as (value: unknown) => value is HTTPExecutionChain;

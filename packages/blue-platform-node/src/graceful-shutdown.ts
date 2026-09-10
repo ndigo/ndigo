@@ -71,10 +71,7 @@ export interface GracefulShutdownOptions {
  * @param options - Shutdown configuration.
  * @returns A function that unregisters the signal listeners.
  */
-export function gracefulShutdown(
-    context: ApplicationContext,
-    options: GracefulShutdownOptions = {}
-): () => void {
+export function gracefulShutdown(context: ApplicationContext, options: GracefulShutdownOptions = {}): () => void {
     const signals = options.signals ?? ['SIGINT', 'SIGTERM'];
     const resources = options.resources ?? [];
     const timeoutMs = options.timeoutMs ?? 10_000;

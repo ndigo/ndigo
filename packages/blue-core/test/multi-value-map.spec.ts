@@ -11,7 +11,7 @@ describe('MultiValueMap', () => {
     });
 
     afterEach(() => {
-        map = undefined as any;
+        map = undefined as unknown as MultiValueMap<string, string>;
     });
 
     test('it should add values to a key', () => {

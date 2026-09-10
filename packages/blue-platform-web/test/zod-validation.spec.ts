@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { z } from 'zod';
+import { Route } from '@blue/router';
 import {
     ModelAndView,
     routeMapping,
@@ -82,12 +83,13 @@ describe('Zod Validation Integration', () => {
             length: 2,
         };
 
-        await dispatcher.dispatch(route as any);
+        await dispatcher.dispatch(route as unknown as Route);
 
         // Zod's z.coerce.number() handles string-to-number conversion
         expect(capturedUser).toBeDefined();
-        expect(capturedUser!.name).toBe('Jeff');
-        expect(capturedUser!.age).toBe(30); // coerced from '30' — proves validatedBy's convert ran
+        const captured = capturedUser ?? null;
+        expect(captured?.name).toBe('Jeff');
+        expect(captured?.age).toBe(30); // coerced from '30' — proves validatedBy's convert ran
         // Note: z.coerce.number() conversion depends on Zod schema validation being applied
     });
 
@@ -106,7 +108,7 @@ describe('Zod Validation Integration', () => {
         }
 
         class ErrorCapturingResolver implements RouteErrorResolver {
-            resolveError(route: any, handler: any, error: Error) {
+            resolveError(route: Route, handler: object | null, error: Error) {
                 capturedError = error;
                 return new ModelAndView('error');
             }
@@ -144,7 +146,7 @@ describe('Zod Validation Integration', () => {
             length: 2,
         };
 
-        await dispatcher.dispatch(route as any);
+        await dispatcher.dispatch(route as unknown as Route);
 
         // Validation errors should be captured and surfaced as conversion errors
         expect(capturedError).toBeDefined();
@@ -193,7 +195,7 @@ describe('Zod Validation Integration', () => {
             length: 2,
         };
 
-        await dispatcher.dispatch(route as any);
+        await dispatcher.dispatch(route as unknown as Route);
 
         // The shared AbstractNamedValueMethodArgumentResolver pipeline must
         // invoke parameter.convert — previously only BIND and the platform

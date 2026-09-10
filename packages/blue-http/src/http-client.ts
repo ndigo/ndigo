@@ -75,7 +75,7 @@ export class HTTP {
             resolvedInterceptors.push(new TransformInterceptor(requestTransforms, responseTransforms));
         }
 
-        return new HTTP(resolvedInterceptors, init, fetch as any);
+        return new HTTP(resolvedInterceptors, init, fetch);
     }
 
     /**

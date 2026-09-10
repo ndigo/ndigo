@@ -119,14 +119,15 @@ export class DOMElementViewTarget implements DOMViewTarget {
         }
         this.unlisten();
 
-        if (!this.#applicationContext) {
+        const applicationContext = this.#applicationContext;
+        if (!applicationContext) {
             return;
         }
 
         Object.entries(this.#eventMap).forEach(([domEventName, contextEventName]) => {
             this.#binder.bind(domEventName, (event: Event) => {
                 const { detail } = event as CustomEvent;
-                this.#applicationContext!.emit(contextEventName, detail);
+                applicationContext.emit(contextEventName, detail);
             });
         });
     }
@@ -160,7 +161,7 @@ export class DOMElementViewTarget implements DOMViewTarget {
      * @param route - The active route associated with the render pass.
      * @throws {IllegalStateError} When the target has already been destroyed.
      */
-    commit(output: HTMLElement, model: any, route: Route): void {
+    commit(output: HTMLElement, model: unknown, route: Route): void {
         if (this.destroyed) {
             throw new IllegalStateError('Cannot commit to a destroyed DOMElementViewTarget.');
         }
@@ -208,7 +209,7 @@ export class WebComponentViewEngine implements ViewEngine {
      * @returns A promise that resolves when rendering completes.
      * @throws {TypeError} When `view` is not a `WebComponentView`.
      */
-    async render(view: View, model: any, target: ViewTarget, route: Route): Promise<void> {
+    async render(view: View, model: unknown, target: ViewTarget, route: Route): Promise<void> {
         if (!(view instanceof WebComponentView)) {
             throw new TypeError('WebComponentViewEngine can only render WebComponentView instances.');
         }

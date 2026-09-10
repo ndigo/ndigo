@@ -25,7 +25,7 @@ export interface ViewResolver {
 class UnresolvedView implements View {
     readonly mediaType: MediaType | null = null;
 
-    render(model: any, request: any): void {
+    render(model: unknown, request: unknown): void {
         return;
     }
 }
@@ -172,14 +172,6 @@ export abstract class AbstractPathBasedViewResolver extends AbstractCachingViewR
  * @see {@link ViewResolver#loadView}
  */
 
-/**
- * @abstract
- * @extends module:view.AbstractCachingViewResolver
- */
-
-/**
- * @extends module:view.AbstractPathBasedViewResolver
- */
 export class ImportViewResolver extends AbstractPathBasedViewResolver {
     /**
      * Loads a view module dynamically and instantiates its default export.
@@ -221,8 +213,8 @@ export class NameViewResolver extends AsApplicationContextAware(Null) implements
 
         // ApplicationContext extends ConfigurableFactory which extends Registry
         // Registry provides hasValue and getValue methods
-        if ((applicationContext as any).hasValue(name)) {
-            view = (applicationContext as any).getValue(name);
+        if (applicationContext.hasValue(name)) {
+            view = applicationContext.getValue(name);
         }
 
         return view;
@@ -259,14 +251,14 @@ export class ViewResolverComposite extends AsApplicationContextAware(Null) imple
      *
      * @param args - Initialization arguments forwarded to delegates.
      */
-    init(...args: any[]): void {
+    init(...args: unknown[]): void {
         const { viewResolvers } = this;
         const length = viewResolvers.length;
         if (length) {
             for (let index = 0; index < length; index++) {
                 const viewResolver = viewResolvers[index];
                 if (likeInitializable(viewResolver)) {
-                    (viewResolver as any).init(...args);
+                    viewResolver.init(...args);
                 }
             }
         }
@@ -307,7 +299,7 @@ export class ViewResolverComposite extends AsApplicationContextAware(Null) imple
             for (let index = 0; index < length; index++) {
                 const viewResolver = viewResolvers[index];
                 if (likeApplicationContextAware(viewResolver)) {
-                    (viewResolver as any).setApplicationContext(applicationContext);
+                    viewResolver.setApplicationContext(applicationContext);
                 }
             }
         }

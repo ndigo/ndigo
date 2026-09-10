@@ -30,7 +30,8 @@ function trailingSplit(separator: string, text?: string): string[] | ((text: str
     };
 
     if (arguments.length >= 2) {
-        return impl(text!);
+        // Two-arg overload guarantees both positional arguments were supplied
+        return impl(text as string);
     }
     return impl;
 }

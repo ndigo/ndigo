@@ -38,11 +38,11 @@ export class WebComponentView extends AbstractTemplateView {
         this.template = `<${name}>`;
     }
 
-    protected _renderTemplate(templateModel: any, request: any): void {
+    protected _renderTemplate(templateModel: unknown, request: unknown): void {
         throw new FrameworkError('Method not implemented.');
     }
 
-    protected async _renderView(viewModel: any, request: any, target?: ViewTarget): Promise<void> {
+    protected async _renderView(viewModel: unknown, request: unknown, target?: ViewTarget): Promise<void> {
         if (!target) {
             throw new IllegalStateError('WebComponentView requires a ViewTarget to render.');
         }

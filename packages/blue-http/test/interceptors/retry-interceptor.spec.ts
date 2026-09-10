@@ -21,7 +21,7 @@ describe('RetryInterceptor', () => {
         const http = new HTTP([interceptor, new NotOKInterceptor()]);
 
         // base handler at /retry/always-fails already returns 503
-        let response: any;
+        let response: unknown;
         try {
             response = await http.request('http://localhost/retry/always-fails');
         } catch (error) {
@@ -58,7 +58,7 @@ describe('RetryInterceptor', () => {
         const http = new HTTP([interceptor, new NotOKInterceptor()]);
 
         // base handler already returns 503 for every call — no override needed
-        let response: any;
+        let response: unknown;
         try {
             response = await http.request('http://localhost/retry/always-fails');
         } catch (error) {
@@ -74,7 +74,7 @@ describe('RetryInterceptor', () => {
         const http = new HTTP([interceptor, new NotOKInterceptor()]);
 
         // 404 — not in retryStatusCodes, should not retry (base handler returns 404)
-        let response: any;
+        let response: unknown;
         try {
             response = await http.request('http://localhost/retry/fail-404');
         } catch (error) {
@@ -108,7 +108,9 @@ describe('RetryInterceptor', () => {
         vi.useFakeTimers();
 
         const interceptor = new RetryInterceptor({ retryLimit: 1, retryBufferInterval: 1 });
-        const mockHTTP = { request: vi.fn().mockResolvedValue(new Response('success')) } as any;
+        const mockHTTP = {
+            request: vi.fn().mockResolvedValue(new Response('success')),
+        } as unknown as HTTP;
         const mockRequest = new Request('http://localhost/retry/with-interval');
         const mockResponse = new Response('failed', { status: 503 });
         const responseError = new ResponseError(mockResponse);
@@ -130,7 +132,9 @@ describe('RetryInterceptor', () => {
         vi.useFakeTimers();
 
         const interceptor = new RetryInterceptor({ retryLimit: 1, retryHeader: 'Retry-After' });
-        const mockHTTP = { request: vi.fn().mockResolvedValue(new Response('success')) } as any;
+        const mockHTTP = {
+            request: vi.fn().mockResolvedValue(new Response('success')),
+        } as unknown as HTTP;
         const mockRequest = new Request('http://localhost/retry/with-header');
         const mockResponse = new Response('failed', {
             status: 503,

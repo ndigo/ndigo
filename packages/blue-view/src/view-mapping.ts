@@ -13,7 +13,7 @@ export interface ViewMapping {
      * @param route - The route being resolved.
      * @returns The resolved target, or `null` when no target matches.
      */
-    getTarget(route: Route): any;
+    getTarget(route: Route): unknown;
 }
 
 const { defineProperty } = Reflect;
@@ -32,11 +32,11 @@ export abstract class AbstractViewMapping extends AsNameAware(AsApplicationConte
     /**
      * The fallback target returned when no route-specific target is found.
      */
-    defaultTarget: any;
+    defaultTarget: unknown;
     /**
      * The interceptors applied while resolving targets.
      */
-    interceptors!: any[];
+    interceptors!: unknown[];
     /**
      * The path matcher used to match request paths to targets.
      */
@@ -74,7 +74,7 @@ export abstract class AbstractViewMapping extends AsNameAware(AsApplicationConte
      * @param route - The route being resolved.
      * @returns The resolved target, or `null` when no target matches.
      */
-    getTarget(route: Route): any {
+    getTarget(route: Route): unknown {
         let target = this._getTarget(route);
 
         if (!target) {
@@ -87,7 +87,7 @@ export abstract class AbstractViewMapping extends AsNameAware(AsApplicationConte
         return target;
     }
 
-    protected abstract _getTarget(route: Route): any;
+    protected abstract _getTarget(route: Route): unknown;
 }
 
 /**
@@ -97,13 +97,13 @@ export abstract class AbstractPathViewMapping extends AbstractViewMapping {
     /**
      * The target returned for the root path when one is configured.
      */
-    rootTarget: any;
+    rootTarget: unknown;
     /**
      * Indicates whether trailing slashes should be treated as equivalent.
      */
     useTrailingSlashMatch: boolean;
 
-    protected readonly _targets!: Map<string, any>;
+    protected readonly _targets!: Map<string, unknown>;
 
     constructor() {
         super();
@@ -111,7 +111,7 @@ export abstract class AbstractPathViewMapping extends AbstractViewMapping {
         this.useTrailingSlashMatch = false;
 
         defineProperty(this, '_targets', {
-            value: new Map<string, string | any>(),
+            value: new Map<string, unknown>(),
             configurable: true,
             enumerable: false,
             writable: false,

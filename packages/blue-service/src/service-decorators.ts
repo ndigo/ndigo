@@ -64,7 +64,9 @@ export interface ServiceCallConfig {
  * @returns The service configuration, or `undefined` when not decorated.
  */
 export function getServiceConfig(target: object): ServiceClientConfig | undefined {
-    const metadata = (target as any)[Symbol.metadata] as DecoratorMetadata | undefined;
+    // `object` doesn't declare TC39's Symbol.metadata; every @service-decorated target carries it at runtime.
+    const targetWithMetadata = target as { [Symbol.metadata]?: DecoratorMetadata };
+    const metadata = targetWithMetadata[Symbol.metadata];
     return metadata?.[SERVICE_METADATA_KEY] as ServiceClientConfig | undefined;
 }
 
@@ -75,7 +77,9 @@ export function getServiceConfig(target: object): ServiceClientConfig | undefine
  * @returns A map of method name → call config, or an empty record.
  */
 export function getServiceCalls(target: object): Record<string, ServiceCallConfig> {
-    const metadata = (target as any)[Symbol.metadata] as DecoratorMetadata | undefined;
+    // `object` doesn't declare TC39's Symbol.metadata; every @service-decorated target carries it at runtime.
+    const targetWithMetadata = target as { [Symbol.metadata]?: DecoratorMetadata };
+    const metadata = targetWithMetadata[Symbol.metadata];
     return (metadata?.[SERVICE_CALL_METADATA_KEY] as Record<string, ServiceCallConfig> | undefined) ?? {};
 }
 

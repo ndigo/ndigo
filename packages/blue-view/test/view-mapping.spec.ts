@@ -3,14 +3,14 @@ import { AbstractViewMapping, AbstractPathViewMapping } from '../src/view-mappin
 import { Route } from '@blue/router';
 
 class TestViewMapping extends AbstractViewMapping {
-    target: any;
+    target: unknown;
 
-    constructor(target: any = null) {
+    constructor(target: unknown = null) {
         super();
         this.target = target;
     }
 
-    protected _getTarget(route: Route): any {
+    protected _getTarget(route: Route): unknown {
         return this.target;
     }
 }
@@ -39,7 +39,7 @@ describe('AbstractViewMapping', () => {
 
     test('it should initialize path view mapping defaults', () => {
         class TestPathMapping extends AbstractPathViewMapping {
-            protected _getTarget(): any {
+            protected _getTarget(): unknown {
                 return null;
             }
         }
@@ -48,6 +48,8 @@ describe('AbstractViewMapping', () => {
 
         expect(mapping.rootTarget).toBeNull();
         expect(mapping.useTrailingSlashMatch).toBe(false);
-        expect((mapping as any)._targets).toBeInstanceOf(Map);
+        // Test seam: introspect the protected path-target registry.
+        const mappingWithTargets = mapping as unknown as { _targets: Map<string, unknown> };
+        expect(mappingWithTargets._targets).toBeInstanceOf(Map);
     });
 });

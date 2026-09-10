@@ -42,7 +42,7 @@ async function updateAuthNav(): Promise<void> {
         `;
         authNav.querySelector('#auth-logout-btn')?.addEventListener('click', async () => {
             await logout();
-            updateAuthNav();
+            await updateAuthNav();
         });
     } else {
         authNav.innerHTML = `
@@ -54,12 +54,12 @@ async function updateAuthNav(): Promise<void> {
 }
 
 // Initial auth nav update
-updateAuthNav();
+void updateAuthNav();
 
 // Re-check auth state on route changes
 composition.shellRouter.addInterceptor({
     async postHandle() {
-        updateAuthNav();
+        await updateAuthNav();
     },
 });
 

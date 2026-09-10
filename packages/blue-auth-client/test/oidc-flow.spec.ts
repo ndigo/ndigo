@@ -18,8 +18,10 @@ let privateKey: CryptoKey;
 let jwksBody: string;
 /** Maps authorization code → nonce the issued ID token must carry. */
 const noncesByCode = new Map<string, string>();
-/** When set, the token endpoint responds with this status/body. */
-let tokenResponseOverride: { status: number; body: unknown } | null = null;
+/** When set, the token endpoint responds with this status/body (status 599 = stall forever). */
+let tokenResponseOverride: { status: number; body: unknown; location?: string } | null = null;
+/** Body received by the redirect target — proves POST bodies never follow redirects. */
+let leakedBody = '';
 
 const issuer = () => `${ISSUER_BASE}:${port}`;
 
@@ -66,8 +68,14 @@ beforeAll(async () => {
             res.writeHead(200, { 'Content-Type': 'application/json' });
             res.end(jwksBody);
         } else if (path === '/token') {
+            if (tokenResponseOverride?.status === 599) {
+                // Stall forever — the adapter's timeout must abort the fetch.
+                return;
+            }
             if (tokenResponseOverride) {
-                res.writeHead(tokenResponseOverride.status, { 'Content-Type': 'application/json' });
+                const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+                if (tokenResponseOverride.location) headers['Location'] = tokenResponseOverride.location;
+                res.writeHead(tokenResponseOverride.status, headers);
                 res.end(JSON.stringify(tokenResponseOverride.body));
                 return;
             }
@@ -83,6 +91,10 @@ beforeAll(async () => {
             res.end(
                 JSON.stringify({ access_token: 'at-123', id_token: idToken, token_type: 'Bearer', expires_in: 3600 })
             );
+        } else if (path === '/leak') {
+            leakedBody = await readBody(req);
+            res.writeHead(200, { 'Content-Type': 'application/json' });
+            res.end('{}');
         } else {
             res.writeHead(404).end();
         }
@@ -92,6 +104,7 @@ beforeAll(async () => {
 
 afterAll(async () => {
     tokenResponseOverride = null;
+    leakedBody = '';
     await close(server);
 });
 
@@ -184,6 +197,51 @@ describe('OIDCAdapter full authorization-code flow', () => {
         const adapter = makeAdapter();
         const request = await adapter.createAuthorizationRequest();
         tokenResponseOverride = { status: 400, body: { error: 'invalid_grant' } };
+        try {
+            await expect(adapter.exchangeCodeForTokens('code', request.state)).rejects.toMatchObject({
+                code: 'network',
+            });
+        } finally {
+            tokenResponseOverride = null;
+        }
+    });
+
+    test('a token-endpoint redirect never forwards the POST body (client_secret stays put)', async () => {
+        const adapter = makeAdapter();
+        const request = await adapter.createAuthorizationRequest();
+        leakedBody = '';
+        tokenResponseOverride = { status: 307, body: {}, location: `${issuer()}/leak` };
+        try {
+            await expect(adapter.exchangeCodeForTokens('code', request.state)).rejects.toMatchObject({
+                code: 'network',
+            });
+            // Redirects are errored, not followed, so the target never sees
+            // the code/client_secret form body.
+            expect(leakedBody).toBe('');
+        } finally {
+            tokenResponseOverride = null;
+        }
+    });
+
+    test('a stalling token endpoint fails with a network timeout, not a hang', async () => {
+        const adapter = makeAdapter({ fetchTimeoutMs: 150 });
+        const request = await adapter.createAuthorizationRequest();
+        tokenResponseOverride = { status: 599, body: null }; // stub stalls forever
+        const startedAt = Date.now();
+        try {
+            await expect(adapter.exchangeCodeForTokens('code', request.state)).rejects.toMatchObject({
+                code: 'network',
+            });
+            expect(Date.now() - startedAt).toBeLessThan(2_000);
+        } finally {
+            tokenResponseOverride = null;
+        }
+    });
+
+    test('an oversized token-endpoint response is rejected', async () => {
+        const adapter = makeAdapter({ maxResponseBytes: 1024 });
+        const request = await adapter.createAuthorizationRequest();
+        tokenResponseOverride = { status: 200, body: { access_token: 'x'.repeat(10_000) } };
         try {
             await expect(adapter.exchangeCodeForTokens('code', request.state)).rejects.toMatchObject({
                 code: 'network',

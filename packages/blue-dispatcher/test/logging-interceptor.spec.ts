@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, type MockInstance } from 'vitest';
 import { Route } from '@blue/router';
 import { ModelAndView } from '../src/model-and-view';
 import { LoggingRouteHandlerInterceptor, type InterceptorLogger } from '../src/logging-interceptor';
@@ -17,7 +17,7 @@ describe('LoggingRouteHandlerInterceptor', () => {
         });
 
         it('should log preHandle with structured attributes', async () => {
-            const route = { path: '/test/log' } as Route;
+            const route = { path: '/test/log' } as unknown as Route;
 
             await interceptor.preHandle(route, {});
 
@@ -28,7 +28,7 @@ describe('LoggingRouteHandlerInterceptor', () => {
         });
 
         it('should log postHandle with duration and view name', async () => {
-            const route = { path: '/test/log' } as Route;
+            const route = { path: '/test/log' } as unknown as Route;
             const mv = new ModelAndView('test-view');
 
             await interceptor.preHandle(route, {});
@@ -45,7 +45,7 @@ describe('LoggingRouteHandlerInterceptor', () => {
         });
 
         it('should log completeHandle on error', async () => {
-            const route = { path: '/test/error' } as Route;
+            const route = { path: '/test/error' } as unknown as Route;
             const error = new Error('Test Error');
 
             await interceptor.preHandle(route, {});
@@ -62,10 +62,10 @@ describe('LoggingRouteHandlerInterceptor', () => {
         });
 
         it('should not log error on completeHandle without error', async () => {
-            const route = { path: '/test/ok' } as Route;
+            const route = { path: '/test/ok' } as unknown as Route;
 
             await interceptor.preHandle(route, {});
-            await interceptor.completeHandle(route, {}, null as any);
+            await interceptor.completeHandle(route, {}, null as unknown as Error);
 
             expect(mockLogger.error).not.toHaveBeenCalled();
         });
@@ -73,8 +73,8 @@ describe('LoggingRouteHandlerInterceptor', () => {
 
     describe('with default console fallback', () => {
         let interceptor: LoggingRouteHandlerInterceptor;
-        let consoleLogSpy: any;
-        let consoleErrorSpy: any;
+        let consoleLogSpy: MockInstance;
+        let consoleErrorSpy: MockInstance;
 
         beforeEach(() => {
             interceptor = new LoggingRouteHandlerInterceptor();
@@ -83,7 +83,7 @@ describe('LoggingRouteHandlerInterceptor', () => {
         });
 
         it('should fall back to console.log when no logger is provided', async () => {
-            const route = { path: '/test/fallback' } as Route;
+            const route = { path: '/test/fallback' } as unknown as Route;
 
             await interceptor.preHandle(route, {});
 
@@ -91,7 +91,7 @@ describe('LoggingRouteHandlerInterceptor', () => {
         });
 
         it('should fall back to console.error on error', async () => {
-            const route = { path: '/test/fallback-error' } as Route;
+            const route = { path: '/test/fallback-error' } as unknown as Route;
             const error = new Error('Fallback Error');
 
             await interceptor.preHandle(route, {});

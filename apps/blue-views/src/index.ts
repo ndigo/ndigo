@@ -19,7 +19,7 @@ dispatcher.initStrategies(viewsContext);
 dispatcher.applicationContext = viewsContext;
 
 const router = new HashRouter((route: Route) => {
-    dispatcher.dispatch(route);
+    void dispatcher.dispatch(route);
 });
 
 if (location.hash === '#/') {

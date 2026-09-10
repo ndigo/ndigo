@@ -8,7 +8,7 @@ const dispatcher = new BrowserDispatcher();
 dispatcher.initStrategies(helloContext);
 
 const router = new HashRouter((route: Route) => {
-    dispatcher.dispatch(route);
+    void dispatcher.dispatch(route);
 });
 
 // Ensure the root route is dispatched on initial load.

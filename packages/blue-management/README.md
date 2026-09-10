@@ -20,16 +20,28 @@ const app = new ApplicationBuilder([ManagementAutoConfiguration]).run();
 - `GET /health` → `{ status, components, timestamp }`
 - `GET /metrics` → `{ features: { <feature>: { counters, gauges, updatedAt } } }`
 
+> **⚠️ Open by default.** These endpoints carry no authentication: **any
+> caller that can reach the port can read them.** On an untrusted network,
+> pass an access guard to `ManagementAutoConfiguration({ accessGuard })`
+> (any `RouteHandlerInterceptor` — e.g. the `AuthRouteGuard` from
+> `@blue/auth-server`) so every management request is denied before its
+> handler runs, and/or firewall the management routes at the network
+> boundary. Indicator error messages are surfaced in `/health` responses —
+> guard or firewall when they may reveal sensitive subsystem details.
+
 ## How it works
 
 - `ManagementAutoConfiguration` registers a shared `FeatureMetricAggregator`
-  entry (the same one `@counted` and feature code populate), a `HealthRegistry`,
-  and the two controllers.
+  entry (the same one `@counted` and feature code populate), a `HealthRegistry`
+  pre-wired with a `TelemetryHealthIndicator`, and the two controllers.
+- When `accessGuard` is configured, a `handlerMappings` entry attaches the
+  guard to the dispatch interceptor chain, scoped to management paths only —
+  `/health` and `/metrics` are denied before their handlers run while every
+  other route is untouched.
 - `MetricsController` (`/metrics`) reads the aggregator from the application
   context and serializes per-feature counters/gauges.
-- `HealthController` (`/health`) runs a `HealthRegistry` plus a
-  `TelemetryHealthIndicator` built at request time from the context aggregator
-  (reports `UP` when the telemetry pipeline is collecting, `DOWN` otherwise).
+- `HealthController` (`/health`) runs the context `HealthRegistry` — the
+  registry is wired once at context refresh and never mutated per request.
 - Custom `HealthIndicator`s can be registered on the `HealthRegistry` entry for
   other subsystems (data sources, external deps).
 

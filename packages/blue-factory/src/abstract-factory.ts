@@ -8,7 +8,7 @@ import {
     satisfiesVersion,
 } from '@blue/core';
 import { Destroyable, Initializable, likeCloseable, likeDestroyable, likeInitializable } from './lifecycle';
-import { isConstructor, isFunction, isNumber, isString } from '@blue/util/types';
+import { isConstructor, isNumber, isString } from '@blue/util/types';
 import { Aware, likeAware, likeNameAware } from './aware';
 import { ContextToken } from './context-token';
 import { getScope, HashScope, PossibleScope, PrototypeScope, Scope, ScopedFactory, SingletonScope } from './scope';
@@ -104,7 +104,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
     /**
      * Allows arbitrary properties to be added to the factory, which are then managed as values.
      */
-    [key: string]: any;
+    [key: string]: unknown;
 
     /**
      * Adds an entry processor to the factory.
@@ -147,9 +147,9 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
      * @param token (the scope-entry key) The name or ContextToken of the value to destroy.
      * @template T The type of the value.
      */
-    destroyValue<T = any>(token: ContextToken<T>): void;
+    destroyValue<T = unknown>(token: ContextToken<T>): void;
     destroyValue(name: string): void;
-    destroyValue<T = any>(nameOrToken: string | ContextToken<T>): void {
+    destroyValue<T = unknown>(nameOrToken: string | ContextToken<T>): void {
         const name = typeof nameOrToken === 'string' ? nameOrToken : nameOrToken.description;
 
         if (!this.hasValue(name)) {
@@ -182,8 +182,10 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
      * @returns An instance of the value.
      * @template T The type of the instance.
      */
-    getInstance<T = any>(name: string, argumentsList: any[] = []): T {
-        return this.hasConstructor(name) ? this._create<T>(name, argumentsList) : create(this[name]);
+    getInstance<T = unknown>(name: string, argumentsList: unknown[] = []): T {
+        const value = this[name];
+        // Non-constructor values are stored directly under `name`.
+        return this.hasConstructor(name) ? this._create<T>(name, argumentsList) : create(value as object | null);
     }
 
     /**
@@ -192,13 +194,14 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
      * @returns The retrieved value.
      * @template T The type of the value.
      */
-    getValue<T = any>(token: ContextToken<T>): T;
-    getValue<T = any>(name: string, argumentsList?: any[]): T;
-    getValue<T = any>(nameOrToken: string | ContextToken<T>, argumentsList: any[] = []): T {
+    getValue<T = unknown>(token: ContextToken<T>): T;
+    getValue<T = unknown>(name: string, argumentsList?: unknown[]): T;
+    getValue<T = unknown>(nameOrToken: string | ContextToken<T>, argumentsList: unknown[] = []): T {
         const name = typeof nameOrToken === 'string' ? nameOrToken : nameOrToken.description;
 
         if (this.hasInstance(name)) {
-            return this[name];
+            // The value was stored under `name` via `setValue<T>`, so it is `T`.
+            return this[name] as T;
         }
 
         if (this.hasConstructor(name)) {
@@ -227,7 +230,8 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
             return value;
         }
 
-        return this[name];
+        // Last resort: the value (if any) was stored under `name` via `setValue<T>`.
+        return this[name] as T;
     }
 
     /**
@@ -318,9 +322,9 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
      * @returns `true` if a value is registered, `false` otherwise.
      * @template T The type of the value.
      */
-    hasValue<T = any>(token: ContextToken<T>): boolean;
+    hasValue<T = unknown>(token: ContextToken<T>): boolean;
     hasValue(name: string): boolean;
-    hasValue<T = any>(nameOrToken: string | ContextToken<T>): boolean {
+    hasValue<T = unknown>(nameOrToken: string | ContextToken<T>): boolean {
         const name = typeof nameOrToken === 'string' ? nameOrToken : nameOrToken.description;
         return (
             this.hasInstance(name) ||
@@ -352,9 +356,9 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
      * @param value The value to register.
      * @template T The type of the value.
      */
-    setValue<T = any>(token: ContextToken<T>, value: T): void;
-    setValue<T = any>(name: string, value: T): void;
-    setValue<T = any>(nameOrToken: string | ContextToken<T>, value: T): void {
+    setValue<T = unknown>(token: ContextToken<T>, value: T): void;
+    setValue<T = unknown>(name: string, value: T): void;
+    setValue<T = unknown>(nameOrToken: string | ContextToken<T>, value: T): void {
         const name = typeof nameOrToken === 'string' ? nameOrToken : nameOrToken.description;
 
         // Skip @shared beans in child factories — resolved from parent chain
@@ -379,9 +383,11 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
                 writable: false,
             });
 
-            if (likeEnumerable(this[name])) {
+            const stored = this[name];
+
+            if (likeEnumerable(stored)) {
                 const alwaysName = () => name,
-                    entries = entriesIterator(this[name]);
+                    entries = entriesIterator(stored);
 
                 for (const [key, entryValue] of entries) {
                     // Do not process an enumerable of primitives
@@ -406,7 +412,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
                     this._configure(instanceName, entryValue);
                 }
             } else {
-                this._configure(name, this[name]);
+                this._configure(name, stored);
             }
         }
     }
@@ -418,7 +424,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
      * @returns `true` if properties should be populated, `false` otherwise.
      * @template T The type of the instance.
      */
-    protected _applyProcessorsAfterConstruction<T = any>(name: string, instance: T): boolean {
+    protected _applyProcessorsAfterConstruction<T = unknown>(name: string, instance: T): boolean {
         let populateProperties = true;
 
         if (this.hasConstructionAwareProcessors) {
@@ -474,10 +480,10 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
      * @returns The instance to use, or `null` to proceed with default construction.
      * @template T The type of the instance.
      */
-    protected _applyProcessorsBeforeConstruction<T = any>(
+    protected _applyProcessorsBeforeConstruction<T = unknown>(
         name: string,
         constructor: Function,
-        argumentsList: any[] = []
+        argumentsList: unknown[] = []
     ): T | null {
         let result: T | null = null;
 
@@ -551,7 +557,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
      * @throws {FrameworkError} If configuration fails.
      * @template T The type of the instance.
      */
-    protected _configure<T = any>(name: string, instance: T): T {
+    protected _configure<T = unknown>(name: string, instance: T): T {
         try {
             this._populate<T>(name, instance);
             if (likeAware(instance)) {
@@ -573,15 +579,20 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
      * @throws {FrameworkError} If instance creation fails.
      * @template T The type of the instance.
      */
-    protected _create<T = any>(name: string, argumentsList: any[] = []): T {
-        let constructor: Function = this[`$${name}`],
-            instance: T | null = null;
+    protected _create<T = unknown>(name: string, argumentsList: unknown[] = []): T {
+        let instance: T | null = null;
 
         try {
-            instance = this._applyProcessorsBeforeConstruction<T>(name, constructor, argumentsList);
+            // `hasConstructor(name)` was verified by the caller, so `$${name}` holds a Function.
+            const registered = this[`$${name}`];
+            const constructor = typeof registered === 'function' ? registered : undefined;
 
-            if (!instance && isFunction(constructor)) {
-                instance = construct(constructor, argumentsList);
+            if (constructor) {
+                instance = this._applyProcessorsBeforeConstruction<T>(name, constructor, argumentsList);
+
+                if (!instance) {
+                    instance = construct(constructor, argumentsList);
+                }
             }
         } catch (e) {
             throw new FrameworkError(`Failed to create entry '${name}': ${getErrorMessage(e)}`);
@@ -620,7 +631,7 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
      * @param properties Optional property descriptor map to apply.
      * @template T The type of the instance.
      */
-    protected _populate<T = any>(name: string, instance: T, properties: PropertyDescriptorMap = {}): void {
+    protected _populate<T = unknown>(name: string, instance: T, properties: PropertyDescriptorMap = {}): void {
         if (instance === null) {
             return;
         }
@@ -650,8 +661,9 @@ export abstract class AbstractFactory implements ConfigurableFactory, ScopedFact
         }
 
         if (processedProperties) {
-            keys(processedProperties).forEach(function (key) {
-                defineProperty(processedValue as object, key, processedProperties![key]);
+            const props = processedProperties;
+            keys(props).forEach(function (key) {
+                defineProperty(processedValue as object, key, props[key]);
             });
         }
     }

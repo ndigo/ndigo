@@ -18,7 +18,7 @@ export type RetryInit = HTTPInit & {
     retryBufferInterval?: number;
 
     /**
-     * Response header whose value (in seconds) overrides {@link retryBufferInterval}.
+     * Response header whose value (in seconds) overrides `retryBufferInterval`.
      * Commonly set to `'Retry-After'`.
      */
     retryHeader?: string;

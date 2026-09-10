@@ -21,7 +21,7 @@ const createRoute = (path: string, data?: Record<string, string | null>): Route 
     }) as unknown as Route;
 
 const createRouteWithSegments = (path: string, segments: Array<{ data: Record<string, string> }>): Route => {
-    const route: any = {
+    const route: unknown = {
         attributes: {},
         data: {},
         id: 0,

@@ -111,9 +111,13 @@ export abstract class AbstractHandlerMethodMapping<T extends RouteMappingInfo>
         }
         keys(applicationContext).forEach((name) => {
             const value = applicationContext.getValue(name);
-            if (this._isHandler(value) && !this.#detectedHandlers.has(value)) {
-                this.#detectedHandlers.add(value);
-                this._detectHandlerMethods(value);
+            if (this._isHandler(value)) {
+                // _isHandler true implies an object handler; widen only here.
+                const handler = value as object;
+                if (!this.#detectedHandlers.has(handler)) {
+                    this.#detectedHandlers.add(handler);
+                    this._detectHandlerMethods(handler);
+                }
             }
         });
     }
@@ -176,9 +180,13 @@ export abstract class AbstractHandlerMethodMapping<T extends RouteMappingInfo>
         // @parameters is declarative: resolve the raw map against THIS method
         // and its mapping kind (route/request/socket), validating source
         // compatibility, then store + attach the positional parameters.
-        const resolved = resolveParameters(resolvedHandler, method, (resolvedHandler as Record<string, unknown>)[method] as Function);
+        const resolved = resolveParameters(
+            resolvedHandler,
+            method,
+            (resolvedHandler as Record<string, unknown>)[method] as Function
+        );
         storeResolvedParameters(resolvedHandler, method, resolved);
-        handlerMethod.parameters = getMethodParameter(resolvedHandler, method) as MethodParameter[] | undefined ?? [];
+        handlerMethod.parameters = (getMethodParameter(resolvedHandler, method) as MethodParameter[] | undefined) ?? [];
 
         return handlerMethod;
     }
@@ -196,7 +204,10 @@ export abstract class AbstractHandlerMethodMapping<T extends RouteMappingInfo>
 
             if (handlerPrototype !== null) {
                 keys(handlerPrototype).forEach((key) => {
-                    if (isFunction((handlerPrototype as any)[key]) && hasRouteMapping(resolvedHandler, key)) {
+                    if (
+                        isFunction((handlerPrototype as Record<string, unknown>)[key]) &&
+                        hasRouteMapping(resolvedHandler, key)
+                    ) {
                         const info = this._getMappingForMethod(key, handlerPrototype);
                         if (info !== undefined) {
                             this._registerHandlerMethod(resolvedHandler, key, info);
@@ -266,7 +277,10 @@ export abstract class AbstractHandlerMethodMapping<T extends RouteMappingInfo>
     protected _handleMatch(mapping: T, path: string, route: Route): void {
         const kindOfTag = (this.#kindOfTag ??= kindOf(this));
         if (kindOfTag) {
-            (route as any)[kindOfTag] = path;
+            // kindOfTag is this mapping's kind name (e.g. "RouteHandlerMapping");
+            // the route exposes it as a dynamic attribute for kindOf narrowing.
+            const dynamicRoute = route as unknown as Record<string, unknown>;
+            dynamicRoute[kindOfTag] = path;
         }
     }
 
@@ -294,7 +308,7 @@ export abstract class AbstractHandlerMethodMapping<T extends RouteMappingInfo>
         }
     }
 
-    protected abstract _isHandler(value: any): boolean;
+    protected abstract _isHandler(value: unknown): boolean;
     protected abstract _getMappingComparator(route: Route): Comparator<T>;
     /**
      * Build a {@link RouteMappingInfo} for the given handler method.
@@ -308,21 +322,17 @@ export abstract class AbstractHandlerMethodMapping<T extends RouteMappingInfo>
      * @param handler - The handler instance whose prototype carries the metadata.
      * @returns The combined {@link RouteMappingInfo}, or `undefined` if no mapping exists.
      */
-    protected _getMappingForMethod(method: string, handler: any): T | undefined {
+    protected _getMappingForMethod(method: string, handler: object): T | undefined {
         const methodMapping = getRouteMapping(handler, method);
         let methodInfo: RouteMappingInfo | undefined;
         if (methodMapping) {
-            const methodParams = (methodMapping as any).queryParams
-                ? new QueryParamCondition(
-                      ...((methodMapping as any).queryParams as string).split(',').map((s) => s.trim())
-                  )
+            const methodParams = methodMapping.queryParams
+                ? new QueryParamCondition(...methodMapping.queryParams.split(',').map((s) => s.trim()))
                 : new QueryParamCondition();
-            const methodMatrix = (methodMapping as any).matrixParams
-                ? new MatrixParamCondition(
-                      ...((methodMapping as any).matrixParams as string).split(',').map((s) => s.trim())
-                  )
+            const methodMatrix = methodMapping.matrixParams
+                ? new MatrixParamCondition(...methodMapping.matrixParams.split(',').map((s) => s.trim()))
                 : new MatrixParamCondition();
-            const methodMethod = new HTTPMethodCondition((methodMapping as any).method);
+            const methodMethod = new HTTPMethodCondition(methodMapping.method);
 
             methodInfo = new RouteMappingInfo(
                 methodMapping.value,
@@ -336,15 +346,11 @@ export abstract class AbstractHandlerMethodMapping<T extends RouteMappingInfo>
 
             const handlerMapping = getRouteMapping(handler.constructor);
             if (handlerMapping) {
-                const handlerParams = (handlerMapping as any).queryParams
-                    ? new QueryParamCondition(
-                          ...((handlerMapping as any).queryParams as string).split(',').map((s) => s.trim())
-                      )
+                const handlerParams = handlerMapping.queryParams
+                    ? new QueryParamCondition(...handlerMapping.queryParams.split(',').map((s) => s.trim()))
                     : new QueryParamCondition();
-                const handlerMatrix = (handlerMapping as any).matrixParams
-                    ? new MatrixParamCondition(
-                          ...((handlerMapping as any).matrixParams as string).split(',').map((s) => s.trim())
-                      )
+                const handlerMatrix = handlerMapping.matrixParams
+                    ? new MatrixParamCondition(...handlerMapping.matrixParams.split(',').map((s) => s.trim()))
                     : new MatrixParamCondition();
 
                 const handlerInfo = new RouteMappingInfo(
@@ -354,7 +360,7 @@ export abstract class AbstractHandlerMethodMapping<T extends RouteMappingInfo>
                     handlerMatrix,
                     null,
                     null,
-                    new HTTPMethodCondition((handlerMapping as any).method)
+                    new HTTPMethodCondition(handlerMapping.method)
                 );
                 methodInfo = handlerInfo.merge(methodInfo);
             }

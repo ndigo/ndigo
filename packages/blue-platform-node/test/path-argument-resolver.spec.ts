@@ -1,9 +1,11 @@
 import { describe, test, expect, beforeEach } from 'vitest';
 import { MethodParameter, MethodParameterType } from '@blue/dispatcher';
+import { Route } from '@blue/router';
 import { NodePathValueMethodArgumentResolver } from '../src/path-argument-resolver';
 
-function makeRoute(params: Record<string, any> = {}): any {
-    return { data: {}, params, attributes: {} };
+// Route-shaped helper; the path resolver only reads data/params/attributes.
+function makeRoute(params: Record<string, string> = {}): Route {
+    return { data: {}, params, path: '/', raw: '/', id: 'test', length: 0, attributes: {} };
 }
 
 describe('NodePathValueMethodArgumentResolver', () => {
@@ -64,9 +66,10 @@ describe('NodePathValueMethodArgumentResolver', () => {
         });
 
         test('should handle null route.params gracefully', () => {
-            const route = { data: {}, params: null, attributes: {} };
+            // Route.params is declared non-nullable; runtime-null params is exercised via cast.
+            const route = { data: {}, params: null, path: '/', raw: '/', id: 'test', length: 0, attributes: {} };
             const param = new MethodParameter(MethodParameterType.PATH, 'id', false, 'default');
-            expect(resolver.resolveArgument(param, route as any, {})).toBe('default');
+            expect(resolver.resolveArgument(param, route as unknown as Route, {})).toBe('default');
         });
     });
 });

@@ -4,7 +4,7 @@ import { RouteHandlerMethod } from './route-handler-method';
 /**
  * Internal registry entry for a mapping and its resolved handler method.
  */
-class MappingEntry<T = any> {
+class MappingEntry<T = unknown> {
     readonly mapping: T;
     readonly handlerMethod: RouteHandlerMethod;
     readonly directPaths: string[];
@@ -33,7 +33,7 @@ class MappingEntry<T = any> {
 /**
  * Maintains mapping-to-handler-method lookups.
  */
-class MappingRegistry<T = any> {
+class MappingRegistry<T = unknown> {
     #registry = new Map<T, MappingEntry<T>>();
     #mappingLookup = new Map<T, RouteHandlerMethod>();
     #pathLookup = new MultiValueMap<string, T>();

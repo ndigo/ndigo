@@ -3,11 +3,11 @@ import { IllegalStateError } from '@blue/core';
 
 export type KnownScope = 'singleton' | 'prototype' | 'route' | 'hash';
 export type PossibleScope = KnownScope | string;
-export type ObjectFactory<T = any> = () => T;
+export type ObjectFactory<T = unknown> = () => T;
 
 export interface Scope {
     destroyValue(name: string): void;
-    getValue<T = any>(name: string, objectFactory: ObjectFactory<T>): T;
+    getValue<T = unknown>(name: string, objectFactory: ObjectFactory<T>): T;
 }
 
 export interface ScopedFactory {
@@ -72,7 +72,7 @@ export const hasScope = (target: unknown): boolean => {
  * @returns {ClassDecorator} TC39 class decorator
  */
 export function scope(scopeName: PossibleScope) {
-    return function <T extends new (...args: any[]) => any>(target: T, context: ClassDecoratorContext): T {
+    return function <T extends new (...args: never[]) => unknown>(target: T, context: ClassDecoratorContext): T {
         // Store scope in TC39 metadata
         context.metadata[SCOPE_KEY] = scopeName;
 
@@ -107,7 +107,7 @@ export class PrototypeScope implements Scope {
         // Intentionally no-op. Prototype values are not cached/tracked.
     }
 
-    getValue<T = any>(_name: string, objectFactory: ObjectFactory<T>): T {
+    getValue<T = unknown>(_name: string, objectFactory: ObjectFactory<T>): T {
         return objectFactory();
     }
 }
@@ -119,7 +119,7 @@ export class PrototypeScope implements Scope {
  * @internal AD-6: Implementation detail — see {@link PrototypeScope} for rationale.
  */
 export class HashScope implements Scope {
-    #scopeMap: Map<string, Map<string, any>> = new Map<string, Map<string, any>>();
+    #scopeMap: Map<string, Map<string, unknown>> = new Map<string, Map<string, unknown>>();
     #currentKey: string | null = null;
 
     endScope(key: string): void {
@@ -137,7 +137,7 @@ export class HashScope implements Scope {
         this.#currentKey = key;
 
         if (!this.#scopeMap.has(key)) {
-            this.#scopeMap.set(key, new Map<string, any>());
+            this.#scopeMap.set(key, new Map<string, unknown>());
         }
     }
 
@@ -152,7 +152,7 @@ export class HashScope implements Scope {
         }
     }
 
-    getValue<T = any>(name: string, objectFactory: ObjectFactory<T>): T {
+    getValue<T = unknown>(name: string, objectFactory: ObjectFactory<T>): T {
         if (!this.#currentKey) {
             throw new IllegalStateError('No active hash scope context. Call setCurrentKey() first.');
         }
@@ -177,7 +177,7 @@ export class HashScope implements Scope {
  * @internal AD-6: Implementation detail — see {@link PrototypeScope} for rationale.
  */
 export class SingletonScope implements Scope {
-    #instances: Map<string, any> = new Map<string, any>();
+    #instances: Map<string, unknown> = new Map<string, unknown>();
     #destructionCallbacks: Map<string, () => void> = new Map<string, () => void>();
 
     destroyValue(name: string): void {
@@ -191,7 +191,7 @@ export class SingletonScope implements Scope {
         this.#instances.delete(name);
     }
 
-    getValue<T = any>(name: string, objectFactory: ObjectFactory<T>): T {
+    getValue<T = unknown>(name: string, objectFactory: ObjectFactory<T>): T {
         if (!this.#instances.has(name)) {
             this.#instances.set(name, objectFactory());
         }

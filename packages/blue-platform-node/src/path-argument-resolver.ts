@@ -14,7 +14,7 @@ export class NodePathValueMethodArgumentResolver extends AbstractPlatformArgumen
         return 'NodePathValueMethodArgumentResolver';
     }
 
-    protected resolveName(name: string, _parameter: MethodParameter, route: Route, _mapping: any): any {
+    protected resolveName(name: string, _parameter: MethodParameter, route: Route, _mapping: unknown): unknown {
         return route.params?.[name];
     }
 

@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { MethodParameter, MethodParameterType } from '@blue/dispatcher';
+import { Route } from '@blue/router';
 import { BrowserSessionValueMethodArgumentResolver } from '../src/session-argument-resolver';
 
 describe('BrowserSessionValueMethodArgumentResolver', () => {
@@ -36,7 +37,7 @@ describe('BrowserSessionValueMethodArgumentResolver', () => {
         });
 
         const parameter = new MethodParameter(MethodParameterType.SESSION, 'sessionId');
-        const value = resolver.resolveArgument(parameter, { data: {}, params: null } as any, {} as any);
+        const value = resolver.resolveArgument(parameter, { data: {}, params: null } as unknown as Route, {});
 
         expect(value).toBe('abc-123');
     });
@@ -47,7 +48,7 @@ describe('BrowserSessionValueMethodArgumentResolver', () => {
         });
 
         const parameter = new MethodParameter(MethodParameterType.SESSION, 'sessionId', false, 'fallback-id');
-        const value = resolver.resolveArgument(parameter, { data: {}, params: null } as any, {} as any);
+        const value = resolver.resolveArgument(parameter, { data: {}, params: null } as unknown as Route, {});
 
         expect(value).toBe('fallback-id');
     });
@@ -59,7 +60,7 @@ describe('BrowserSessionValueMethodArgumentResolver', () => {
 
         const parameter = new MethodParameter(MethodParameterType.SESSION, 'sessionId', true);
 
-        expect(() => resolver.resolveArgument(parameter, { data: {}, params: null } as any, {} as any)).toThrow(
+        expect(() => resolver.resolveArgument(parameter, { data: {}, params: null } as unknown as Route, {})).toThrow(
             '"sessionId" cannot be undefined or null'
         );
     });
@@ -73,7 +74,7 @@ describe('BrowserSessionValueMethodArgumentResolver', () => {
             source: String,
             target: Boolean,
         });
-        const value = resolver.resolveArgument(parameter, { data: {}, params: null } as any, {} as any);
+        const value = resolver.resolveArgument(parameter, { data: {}, params: null } as unknown as Route, {});
 
         expect(value).toBe(true);
     });
@@ -87,7 +88,7 @@ describe('BrowserSessionValueMethodArgumentResolver', () => {
             source: String,
             target: Number,
         });
-        const value = resolver.resolveArgument(parameter, { data: {}, params: null } as any, {} as any);
+        const value = resolver.resolveArgument(parameter, { data: {}, params: null } as unknown as Route, {});
 
         expect(value).toBe(42);
     });

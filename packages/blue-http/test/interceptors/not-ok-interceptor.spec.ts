@@ -10,7 +10,7 @@ describe('NotOKInterceptor', () => {
     beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
 
     beforeEach(() => {
-        http = new HTTP([new NotOKInterceptor() as any]);
+        http = new HTTP([new NotOKInterceptor()]);
     });
 
     afterEach(() => {
@@ -21,10 +21,11 @@ describe('NotOKInterceptor', () => {
     afterAll(() => server.close());
 
     test('it should reject when response is not okay', async () => {
-        let response: any;
+        let response: unknown;
 
+        expect(http).toBeDefined();
         try {
-            response = await http!.request('http://localhost/notOK');
+            response = await http?.request('http://localhost/notOK');
         } catch (error) {
             response = error;
         }

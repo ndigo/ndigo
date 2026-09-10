@@ -25,7 +25,7 @@
  * isNumber( Infinity );
  * //=> false
  */
-const isNumber = (value: any): value is number => {
+const isNumber = (value: unknown): value is number => {
     const n = typeof value === 'number' ? value : value instanceof Number ? value.valueOf() : NaN;
     return Number.isFinite(n);
 };

@@ -1,6 +1,6 @@
 import { View, AbstractView } from '@blue/view';
 
-type Model<T = any> = { [key: string]: T } | Map<string, T>;
+type Model<T = unknown> = { [key: string]: T } | Map<string, T>;
 
 /**
  * Holds a view plus its optional model data.

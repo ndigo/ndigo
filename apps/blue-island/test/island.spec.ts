@@ -50,7 +50,7 @@ describe('blue-island hybrid demo', () => {
         const html = res.text();
         const match = /data-blue-model="([^"]+)"/.exec(html);
         expect(match).not.toBeNull();
-        const decoded = decodeURIComponent(match![1]);
+        const decoded = match ? decodeURIComponent(match[1]) : '';
         const model = JSON.parse(decoded);
         expect(model).toEqual({
             items: [
@@ -97,7 +97,11 @@ describe('GET /events pushes model updates over SSE (AD-9)', () => {
         expect(res.status).toBe(200);
         expect(res.headers.get('content-type')).toBe('text/event-stream; charset=utf-8');
 
-        const reader = res.body!.getReader();
+        const body = res.body;
+        if (body === null) {
+            throw new Error('expected an SSE response body');
+        }
+        const reader = body.getReader();
         const decoder = new TextDecoder();
         let text = '';
 
@@ -106,6 +110,7 @@ describe('GET /events pushes model updates over SSE (AD-9)', () => {
             model.items.push({ text: 'pushed from test', done: false });
         });
         while (!text.includes('\n\n')) {
+            // oxlint-disable-next-line no-await-in-loop -- SSE frames arrive over one stream; reads must be consumed in arrival order.
             const { done, value } = await reader.read();
             if (done) break;
             text += decoder.decode(value);
@@ -119,7 +124,11 @@ describe('GET /events pushes model updates over SSE (AD-9)', () => {
 
     test('each store update reaches the connected client in order', async () => {
         const res = await fetch(`${base}/events`);
-        const reader = res.body!.getReader();
+        const body = res.body;
+        if (body === null) {
+            throw new Error('expected an SSE response body');
+        }
+        const reader = body.getReader();
         const decoder = new TextDecoder();
         let text = '';
 
@@ -127,6 +136,7 @@ describe('GET /events pushes model updates over SSE (AD-9)', () => {
             model.items.push({ text: 'first', done: false });
         });
         while (!text.includes('\n\n')) {
+            // oxlint-disable-next-line no-await-in-loop -- SSE frames arrive over one stream; reads must be consumed in arrival order.
             const { done, value } = await reader.read();
             if (done) break;
             text += decoder.decode(value);
@@ -136,6 +146,7 @@ describe('GET /events pushes model updates over SSE (AD-9)', () => {
         });
         const frameCount = (): number => text.split('\n\n').filter((frame) => frame.length > 0).length;
         while (frameCount() < 2) {
+            // oxlint-disable-next-line no-await-in-loop -- SSE frames arrive over one stream; reads must be consumed in arrival order.
             const { done, value } = await reader.read();
             if (done) break;
             text += decoder.decode(value);

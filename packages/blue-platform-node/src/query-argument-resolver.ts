@@ -14,7 +14,7 @@ export class NodeQueryValueMethodArgumentResolver extends AbstractPlatformArgume
         return 'NodeQueryValueMethodArgumentResolver';
     }
 
-    protected resolveName(name: string, _parameter: MethodParameter, route: Route, _mapping: any): any {
+    protected resolveName(name: string, _parameter: MethodParameter, route: Route, _mapping: unknown): unknown {
         // '*' binds the entire query object (validatedQuery sugar), mirroring
         // the body resolver's '*' convention.
         return name === '*' ? route.data : route.data?.[name];

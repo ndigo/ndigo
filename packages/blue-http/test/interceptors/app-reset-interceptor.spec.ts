@@ -19,7 +19,7 @@ describe('AppResetInterceptor', () => {
         const http = new HTTP([interceptor]);
 
         // base handler at /app-reset/normal returns 200 with no Alt-Location header
-        let response: any;
+        let response: unknown;
         try {
             response = await http.request('http://localhost/app-reset/normal');
         } catch (error) {
@@ -47,7 +47,7 @@ describe('AppResetInterceptor', () => {
             })
         );
 
-        let response: any;
+        let response: unknown;
         try {
             response = await http.request('http://localhost/app-reset/205');
         } catch (error) {

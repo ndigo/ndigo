@@ -36,7 +36,7 @@ export interface TransformContext {
  *
  * Inspired by Spring Framework's `HttpMessageConverter` pattern.
  */
-export interface HTTPTransformer<TInput = any, TOutput = any> {
+export interface HTTPTransformer<TInput = unknown, TOutput = unknown> {
     /**
      * Determines if this transformer can handle the given body and context.
      *
@@ -59,6 +59,6 @@ export interface HTTPTransformer<TInput = any, TOutput = any> {
 /**
  * User-provided transform function or transformer object.
  */
-export type Transform<TInput = any, TOutput = any> =
+export type Transform<TInput = unknown, TOutput = unknown> =
     | HTTPTransformer<TInput, TOutput>
     | ((body: TInput, context: TransformContext) => TOutput | Promise<TOutput>);

@@ -1,5 +1,6 @@
 import { describe, expect, test } from 'vitest';
 import { MethodParameter, MethodParameterType } from '@blue/dispatcher';
+import { Route } from '@blue/router';
 import { BrowserBindMethodArgumentResolver } from '../src/bind-argument-resolver';
 
 describe('BrowserBindMethodArgumentResolver', () => {
@@ -20,7 +21,11 @@ describe('BrowserBindMethodArgumentResolver', () => {
     test('binds and unflattens query data', () => {
         const resolver = new BrowserBindMethodArgumentResolver();
         const parameter = new MethodParameter(MethodParameterType.BIND, 'query');
-        const value = resolver.resolveArgument(parameter, { data: { name: 'Jeff', age: '30' } } as any, {} as any);
+        const value = resolver.resolveArgument(
+            parameter,
+            { data: { name: 'Jeff', age: '30' } } as unknown as Route,
+            {}
+        );
 
         expect(value).toEqual({ name: 'Jeff', age: '30' });
     });
@@ -30,8 +35,8 @@ describe('BrowserBindMethodArgumentResolver', () => {
         const parameter = new MethodParameter(MethodParameterType.BIND, 'query', false, null, undefined, 'user.');
         const value = resolver.resolveArgument(
             parameter,
-            { data: { 'user.name': 'Jeff', 'user.age': '30', 'other.field': 'ignored' } } as any,
-            {} as any
+            { data: { 'user.name': 'Jeff', 'user.age': '30', 'other.field': 'ignored' } } as unknown as Route,
+            {}
         );
 
         expect(value).toEqual({ name: 'Jeff', age: '30' });
@@ -40,7 +45,11 @@ describe('BrowserBindMethodArgumentResolver', () => {
     test('binds object data without nested conversion', () => {
         const resolver = new BrowserBindMethodArgumentResolver();
         const parameter = new MethodParameter(MethodParameterType.BIND, 'query');
-        const value = resolver.resolveArgument(parameter, { data: { name: 'Jeff', age: '30' } } as any, {} as any);
+        const value = resolver.resolveArgument(
+            parameter,
+            { data: { name: 'Jeff', age: '30' } } as unknown as Route,
+            {}
+        );
 
         expect(value).toEqual({ name: 'Jeff', age: '30' });
     });

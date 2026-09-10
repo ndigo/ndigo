@@ -7,17 +7,27 @@ import { CountedRegistry } from './_registry';
 const COUNTED_KEY = 'telemetry:counted';
 
 /**
+ * The configuration recorded for a method decorated with `counted`: the
+ * counter name, attributes, and optional feature aggregation.
+ */
+export interface CountedMethodConfig {
+    /** The counter name (defaults to `<method>.count`). */
+    name: string;
+    /** Attributes associated with the counter. */
+    attributes?: LogAttributes;
+    /** Optional aggregator for feature-scoped counters. */
+    featureAggregator?: FeatureMetricAggregator;
+    /** The attribute key holding the feature (defaults to 'feature'). */
+    featureKey?: string;
+}
+
+/**
  * Retrieves the configuration for a counted method, including its name and attributes.
  * @param target - The target object or prototype.
  * @param propertyKey - The name of the method.
- * @returns An object containing the counter name and optional attributes if the method is counted, otherwise `undefined`.
+ * @returns The counter configuration if the method is counted, otherwise `undefined`.
  */
-export function getCounted(
-    target: any,
-    propertyKey: string | symbol
-):
-    | { name: string; attributes?: LogAttributes; featureAggregator?: FeatureMetricAggregator; featureKey?: string }
-    | undefined {
+export function getCounted(target: object, propertyKey: string | symbol): CountedMethodConfig | undefined {
     return getSymbolMetadata(target)[`${COUNTED_KEY}:${String(propertyKey)}`];
 }
 
@@ -27,7 +37,7 @@ export function getCounted(
  * @param propertyKey - The name of the method.
  * @returns `true` if the method is counted, otherwise `false`.
  */
-export function hasCounted(target: any, propertyKey: string | symbol): boolean {
+export function hasCounted(target: object, propertyKey: string | symbol): boolean {
     return getCounted(target, propertyKey) !== undefined;
 }
 
@@ -71,7 +81,11 @@ function createCountedDecorator(options: CountedOptions = {}) {
             featureKey: options.featureKey,
         };
 
-        (context.addInitializer as any)((cls: any) => {
+        // TS types method-context initializers as `(this: This) => void`; the
+        // tsmetadata polyfill instead hands the decorated class to the
+        // initializer, which is what the registry needs.
+        const addInitializer = context.addInitializer as unknown as (initializer: (cls: CountedClass) => void) => void;
+        addInitializer((cls) => {
             if (cls) {
                 CountedRegistry.register(cls.prototype || cls);
             }
@@ -80,6 +94,9 @@ function createCountedDecorator(options: CountedOptions = {}) {
         return target;
     };
 }
+
+/** A decorated class (or its prototype) as handed to the registry initializer. */
+type CountedClass = { prototype?: object } | undefined;
 
 /**
  * A method decorator that increments a counter each time the decorated method is called.
@@ -121,6 +138,11 @@ export function counted(
     nameOrTarget?: string | CountedOptions | Function,
     attributesOrContext?: LogAttributes | ClassMethodDecoratorContext,
     maybeContext?: ClassMethodDecoratorContext
+    // The dual form (@counted bare applies directly; @counted(...) returns a
+    // replacement decorator) has no single precise type: TS requires the bare
+    // form's return to be `void | Method`, and the factory form's result to be
+    // the decorator — only `any` satisfies both call shapes.
+    // oxlint-disable-next-line no-explicit-any -- untypeable dual-form decorator
 ): any {
     if (typeof nameOrTarget === 'string') {
         return createCountedDecorator({

@@ -36,7 +36,7 @@ export class AuthClient {
      * @param credentials - The credentials to authenticate with.
      * @returns The {@link AuthResult} containing the principal and token.
      */
-    async authenticate(adapterId: string, credentials: any): Promise<AuthResult> {
+    async authenticate(adapterId: string, credentials: unknown): Promise<AuthResult> {
         const adapter = AuthRegistry.getAdapter(adapterId);
         if (!adapter) {
             throw new Error(`Authentication adapter '${adapterId}' not found`);

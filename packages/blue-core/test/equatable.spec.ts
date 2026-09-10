@@ -1,6 +1,7 @@
 import { describe, test, expect, beforeEach } from 'vitest';
 
 import { equates, likeEquatable } from '../src/equatable';
+import type { equatable } from '../src/equatable';
 
 describe('likeEquatable', () => {
     test('it should return true for objects with an equals method', () => {
@@ -56,7 +57,7 @@ describe('equates', () => {
 
         // value1 is Equatable but value2 is not — falls through to native _deepEqual.
         // { equals: fn } vs { a: 1 } are structurally different, so result is false.
-        expect(equates(value1, value2 as any)).toBe(false);
+        expect(equates(value1, value2 as unknown as equatable)).toBe(false);
         expect(value1.equals).not.toHaveBeenCalled();
     });
 
@@ -65,6 +66,6 @@ describe('equates', () => {
         const value2 = { a: 1 } as unknown as object;
 
         // Both are plain objects — native _deepEqual compares them structurally.
-        expect(equates(value1 as any, value2 as any)).toBe(true);
+        expect(equates(value1 as unknown as equatable, value2 as unknown as equatable)).toBe(true);
     });
 });

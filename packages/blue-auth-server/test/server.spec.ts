@@ -1,11 +1,17 @@
 import { describe, test, expect, beforeEach } from 'vitest';
 import { AuthServer } from '../src/server';
 import { AuthRegistry } from '@blue/auth-core';
-import { AuthAdapter } from '@blue/auth-core';
+import { AuthAdapter, Principal } from '@blue/auth-core';
 
 function createMockAdapter(
     id: string,
-    validateResult: any = { id: '1', name: 'Test', roles: [], hasRole: () => false, hasAnyRole: () => false }
+    validateResult: Principal | null = {
+        id: '1',
+        name: 'Test',
+        roles: [],
+        hasRole: () => false,
+        hasAnyRole: () => false,
+    }
 ): AuthAdapter {
     return {
         id,

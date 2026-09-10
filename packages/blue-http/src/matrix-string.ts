@@ -14,7 +14,7 @@ const isNull = (value: unknown): boolean => value === null,
     // ["a",undefined,"b","c",undefined,"#"] -> "a,b,c,%23"
     encodeList = (arr: unknown[]): string => joinOnComma(encodeValues(arr.filter(isDefined) as string[])),
     encodeParam =
-        (object: any) =>
+        (object: Record<string, unknown>) =>
         (key: string): string => {
             const value = object[key];
             if (isUndefined(value)) {
@@ -26,12 +26,13 @@ const isNull = (value: unknown): boolean => value === null,
             if (Array.isArray(value)) {
                 return joinOnEqual([encodeValue(key), encodeList(value)]);
             }
-            return joinOnEqual([encodeValue(key), encodeValue(value as string)]);
+            return joinOnEqual([encodeValue(key), encodeValue(String(value))]);
         },
-    toMatrixString = (object: any): string => {
-        if (!object) {
+    toMatrixString = (value: unknown): string => {
+        if (!value) {
             return '';
         }
+        const object = value as Record<string, unknown>;
         const encode = encodeParam(object);
         const sortedKeys = Object.keys(object).sort((a, b) => (a < b ? -1 : a > b ? 1 : 0));
         return sortedKeys
@@ -67,7 +68,7 @@ class MatrixString implements Parser, Stringifier {
      * @param value - The value to serialize.
      * @returns The encoded matrix string.
      */
-    stringify(value: any): string {
+    stringify(value: unknown): string {
         return toMatrixString(value);
     }
 }

@@ -27,9 +27,14 @@ import likePromise from './like-promise.js';
  * propIs( Number, 'x', { x: 'foo' } ); //=> false
  * propIs( Number, 'x', {} ); //=> false
  */
-function propIs(ctor: any, name: string, obj: any): boolean {
+function propIs(ctor: Function, name: string, obj: unknown): boolean {
     if (obj == null) return false;
-    return obj[name] instanceof ctor || Object.prototype.toString.call(obj[name]) === `[${ctor.name}]`;
+    // Arbitrary structured input: reflect properties generically after the nil guard
+    const record = obj as Record<string, unknown>;
+    const prop = record[name];
+    // lib.es5 `Function` lacks `name`; every runtime function exposes it
+    const ctorName = (ctor as { readonly name?: string }).name;
+    return prop instanceof ctor || Object.prototype.toString.call(prop) === `[${ctorName}]`;
 }
 
 /**
@@ -52,22 +57,22 @@ function propIs(ctor: any, name: string, obj: any): boolean {
  * type( () => {} ); //=> "Function"
  * type( undefined ); //=> "Undefined"
  */
-function type(val: any): string {
+function type(val: unknown): string {
     if (val == null) return val === null ? 'Null' : 'Undefined';
     return Object.prototype.toString.call(val).slice(8, -1);
 }
 
-function is<T>(Ctor: any): (val: any) => val is T;
-function is<T>(Ctor: any, val: any): val is T;
-function is<T>(Ctor: any, val?: any): ((v: any) => v is T) | boolean {
+function is<T>(Ctor: Function): (val: unknown) => val is T;
+function is<T>(Ctor: Function, val: unknown): val is T;
+function is<T>(Ctor: Function, val?: unknown): ((v: unknown) => v is T) | boolean {
     if (arguments.length === 1) {
-        return (v: any): v is T => v != null && (v.constructor === Ctor || v instanceof Ctor);
+        return (v: unknown): v is T => v != null && (v.constructor === Ctor || v instanceof Ctor);
     }
 
     return val != null && (val.constructor === Ctor || val instanceof Ctor);
 }
 
-const isNil = (x: any): x is null | undefined => x == null;
+const isNil = (x: unknown): x is null | undefined => x == null;
 
 const isNotNil = <T>(x: T | null | undefined): x is T => x != null;
 

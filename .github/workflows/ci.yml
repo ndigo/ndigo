@@ -62,10 +62,17 @@ jobs:
         run: pnpm manifest:check
 
       - name: Strict type-check
-        # Per-package tsc -b with the build config — the same gate the
-        # `build:lib` scripts run; a clean workspace build implies this,
-        # kept as an explicit loud lane for failure isolation.
-        run: pnpm -r exec tsc -b tsconfig.build.json
+        # Per-project tsc -b with the build config (packages + the three
+        # tsc-built apps). Scoped with --filter so out-of-tree workspace
+        # members and JS-only apps (blue-hello, blue-host, blue-island,
+        # blue-views) never abort the lane; pnpm -r alone would TS5083 on
+        # any project without tsconfig.build.json.
+        run: pnpm --filter './packages/**' --filter './apps/blue-todo' --filter './apps/blue-api' --filter './apps/blue-hello-node' -r exec tsc -b tsconfig.build.json
+
+      - name: API docs (TypeDoc, zero warnings)
+        # treatWarningsAsErrors is on: dead links, missing params, or
+        # unresolved symbols fail the lane.
+        run: pnpm doc
 
       - name: Install graft
         # The repo graph tool is a global npm package on dev machines; make it

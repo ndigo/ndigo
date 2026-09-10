@@ -17,11 +17,11 @@ export class DefaultFactory extends AbstractFactory {}
  * //=> false
  * @see {@link DefaultFactory}
  */
-export class ProxiedFactory extends DefaultFactory implements Record<string, any> {
+export class ProxiedFactory extends DefaultFactory implements Record<string, unknown> {
     /**
      * Allows arbitrary properties to be added to the factory, which are then managed as values.
      */
-    [key: string]: any;
+    [key: string]: unknown;
 
     /**
      * Creates a new ProxiedFactory instance.

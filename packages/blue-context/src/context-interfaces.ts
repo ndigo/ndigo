@@ -15,12 +15,7 @@ import { EnvironmentSource, likeEnvironmentSource, ConfigurableEnvironment } fro
 import { ResourceLoader, likeResourceLoader } from './resource';
 
 export interface ApplicationContext
-    extends ConfigurableFactory,
-        ContentSource,
-        Destroyable,
-        EventEmitter,
-        EnvironmentSource,
-        ResourceLoader {
+    extends ConfigurableFactory, ContentSource, Destroyable, EventEmitter, EnvironmentSource, ResourceLoader {
     /**
      * The timestamp when this context was created.
      */
@@ -65,13 +60,13 @@ export interface ApplicationContext
      * @param type - The type of the event.
      * @param data - The data associated with the event.
      */
-    broadcast(type: EventType, ...data: any[]): void;
+    broadcast(type: EventType, ...data: unknown[]): void;
     /**
      * Bubbles an event up the context hierarchy to all parent contexts.
      * @param type - The type of the event.
      * @param data - The data associated with the event.
      */
-    bubble(type: EventType, ...data: any[]): void;
+    bubble(type: EventType, ...data: unknown[]): void;
     /**
      * Closes this application context and all of its descendants, then destroys associated resources.
      *
@@ -132,8 +127,7 @@ export interface ApplicationContext
  *
  * This interface can also be implemented if an object needs access to file resources, i.e. wants to call {@link ResourceLoader#getResource|getResource}, wants to emit an application event, or requires access to the {@link ContentSource|ContentSource}. However, it is preferable to implement the more specific `ResourceLoaderAware`, `ApplicationEventEmitterAware` or `ContentSourceAware` interface in such a specific scenario.
  *
- * {@link AsApplicationContextAware|AsApplicationContextAware} is a convenience mixin for application objects, implementing this interface.
- * @extends module:factory.Aware
+ * `AsApplicationContextAware` is a convenience mixin for application objects, implementing this interface.
  */
 export interface ApplicationContextAware extends Aware {
     /**
@@ -188,13 +182,7 @@ export interface ConfigurableApplicationContext extends ApplicationContext {
  * * The ability to resolve content.
  * * Inheritance from a parent context unless it is the root context.
  *
- * In addition to standard {@link Factory|Factory} lifecycle capabilities, `ApplicationContext` implementations detect and invoke {@link ApplicationContextAware|ApplicationContextAware} values as well as `ResourceLoaderAware`.
- * @extends module:factory.ConfigurableFactory
- * @extends module:content.ContentSource
- * @extends module:core.Destroyable
- * @extends module:context.EventEmitter
- * @extends module:context.EnvironmentSource
- * @extends module:context.ResourceLoader
+ * In addition to standard {@link Factory|Factory} lifecycle capabilities, `ApplicationContext` implementations detect and invoke `ApplicationContextAware` values as well as `ResourceLoaderAware`.
  */
 
 /**
@@ -204,8 +192,7 @@ export interface ConfigurableApplicationContext extends ApplicationContext {
  *
  * This interface can also be implemented if an object needs access to file resources, i.e. wants to call {@link ResourceLoader#getResource|getResource}, wants to emit an application event, or requires access to the {@link ContentSource|ContentSource}. However, it is preferable to implement the more specific `ResourceLoaderAware`, `ApplicationEventEmitterAware` or `ContentSourceAware` interface in such a specific scenario.
  *
- * {@link AsApplicationContextAware|AsApplicationContextAware} is a convenience mixin for application objects, implementing this interface.
- * @extends module:factory.Aware
+ * `AsApplicationContextAware` is a convenience mixin for application objects, implementing this interface.
  */
 
 /**
@@ -221,14 +208,14 @@ export interface ConfigurableApplicationContext extends ApplicationContext {
  * @param value - The value to test.
  * @returns `true` when the value looks like an application context.
  */
-export const likeApplicationContext = ((value: any) =>
+export const likeApplicationContext = ((value: unknown) =>
     likeContentSource(value) &&
     likeDestroyable(value) &&
     likeEnvironmentSource(value) &&
     likeEventEmitter(value) &&
     likeFactory(value) &&
     likeRegistry(value) &&
-    likeResourceLoader(value)) as (value: any) => value is ApplicationContext;
+    likeResourceLoader(value)) as (value: unknown) => value is ApplicationContext;
 
 /**
  * Returns whether a value can receive an application context.
@@ -237,7 +224,7 @@ export const likeApplicationContext = ((value: any) =>
  * @returns `true` when the value looks like an application context aware.
  */
 export const likeApplicationContextAware = likeAwareAnd(like({ setApplicationContext: Function })) as (
-    value: any
+    value: unknown
 ) => value is ApplicationContextAware;
 
 // GenericApplicationContext extends AsEventEmitter(AsModuleResourceLoader(DefaultFactory))

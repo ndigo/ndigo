@@ -8,7 +8,6 @@ const { keys } = Object;
 
 /**
  * Implementation of the {@link RouteHandlerMapping|HandlerMapping} interface to map from paths to handlers.
- * @extends module:dispatcher.AbstractPathHandlerMapping
  * @param {module:core.ApplicationContext} [context]
  * @param {Map<external:string, module:dispatcher.MaybeHandler>} [mappings]
  */

@@ -16,7 +16,7 @@ const { defineProperty } = Reflect,
         return n + 1;
     };
 
-export class RingBuffer<T = any> implements ArrayLike<T | undefined>, Iterable<T>, Serializable {
+export class RingBuffer<T = unknown> implements ArrayLike<T | undefined>, Iterable<T>, Serializable {
     protected _capacity!: number;
     protected _head!: number;
     protected _tail!: number;
@@ -146,7 +146,7 @@ export class RingBuffer<T = any> implements ArrayLike<T | undefined>, Iterable<T
      * Returns an iterator for the elements in the ring buffer.
      * @returns An iterator for the elements.
      */
-    [Symbol.iterator](): Iterator<T, any, undefined> {
+    [Symbol.iterator](): Iterator<T, undefined, undefined> {
         return new IndexedIterator<T>(this);
     }
 

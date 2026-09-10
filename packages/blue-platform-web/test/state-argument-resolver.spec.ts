@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { MethodParameter, MethodParameterType } from '@blue/dispatcher';
+import { Route } from '@blue/router';
 import { BrowserStateValueMethodArgumentResolver } from '../src/state-argument-resolver';
 
 describe('BrowserStateValueMethodArgumentResolver', () => {
@@ -34,7 +35,7 @@ describe('BrowserStateValueMethodArgumentResolver', () => {
         vi.stubGlobal('history', { state: { token: 'abc-123' } });
 
         const parameter = new MethodParameter(MethodParameterType.STATE, 'token');
-        const value = resolver.resolveArgument(parameter, { data: {} } as any, {} as any);
+        const value = resolver.resolveArgument(parameter, { data: {} } as unknown as Route, {});
 
         expect(value).toBe('abc-123');
     });
@@ -43,7 +44,7 @@ describe('BrowserStateValueMethodArgumentResolver', () => {
         vi.stubGlobal('history', { state: {} });
 
         const parameter = new MethodParameter(MethodParameterType.STATE, 'token', false, 'fallback');
-        const value = resolver.resolveArgument(parameter, { data: {} } as any, {} as any);
+        const value = resolver.resolveArgument(parameter, { data: {} } as unknown as Route, {});
 
         expect(value).toBe('fallback');
     });
@@ -53,7 +54,7 @@ describe('BrowserStateValueMethodArgumentResolver', () => {
 
         const parameter = new MethodParameter(MethodParameterType.STATE, 'token', true);
 
-        expect(() => resolver.resolveArgument(parameter, { data: {} } as any, {} as any)).toThrow(
+        expect(() => resolver.resolveArgument(parameter, { data: {} } as unknown as Route, {})).toThrow(
             '"token" cannot be undefined or null'
         );
     });
@@ -65,7 +66,7 @@ describe('BrowserStateValueMethodArgumentResolver', () => {
             source: String,
             target: Number,
         });
-        const value = resolver.resolveArgument(parameter, { data: {} } as any, {} as any);
+        const value = resolver.resolveArgument(parameter, { data: {} } as unknown as Route, {});
 
         expect(value).toBe(42);
     });
@@ -77,7 +78,7 @@ describe('BrowserStateValueMethodArgumentResolver', () => {
             source: String,
             target: Boolean,
         });
-        const value = resolver.resolveArgument(parameter, { data: {} } as any, {} as any);
+        const value = resolver.resolveArgument(parameter, { data: {} } as unknown as Route, {});
 
         expect(value).toBe(true);
     });

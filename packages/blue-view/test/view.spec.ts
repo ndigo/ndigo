@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ViewTarget } from '@blue/view';
 import type { MediaType } from '@blue/core';
+import type { ApplicationContext } from '@blue/context';
 import {
     AbstractTemplateView,
     StringTemplateView,
@@ -30,7 +31,7 @@ describe('AbstractTemplateView', () => {
     class MockRenderable extends AbstractTemplateView {
         renderCalled: boolean = false;
 
-        protected _renderTemplate(templateModel: any, request: any): void {
+        protected _renderTemplate(templateModel: unknown, request: unknown): void {
             this.renderCalled = true;
         }
     }
@@ -50,7 +51,7 @@ describe('AbstractTemplateView', () => {
 
     it('throws when no target is provided', async () => {
         const view = new MockRenderable('/test');
-        await expect(() => view.render({} as any, {} as any)).rejects.toThrow();
+        await expect(() => view.render({}, {})).rejects.toThrow();
     });
 });
 
@@ -114,10 +115,10 @@ describe('StringTemplateView', () => {
     });
 
     it('renders template with undefined property returns empty string', async () => {
-        await view._renderTemplate({} as any, {}, target);
+        await view._renderTemplate({}, {}, target);
 
         const expected = '<!DOCTYPE html>\n<html><body>Test Template View</body></html>';
-        expect(target.commit).toHaveBeenCalledWith(expected, {} as any, {});
+        expect(target.commit).toHaveBeenCalledWith(expected, {}, {});
     });
 
     it('renders template with function returns "[object Function]"', async () => {
@@ -130,7 +131,7 @@ describe('StringTemplateView', () => {
     it('renders template without target throws error', async () => {
         const view = new StringTemplateView('/test');
         view.template = '<!DOCTYPE html>\n<html><body>Test Template View</body></html>';
-        await expect(view._renderTemplate({} as any, {} as any)).rejects.toThrow();
+        await expect(view._renderTemplate({}, {})).rejects.toThrow();
     });
 });
 
@@ -167,7 +168,7 @@ describe('StringTemplateView — integration (view.render pipeline)', () => {
 
     it('renders end-to-end with custom _createViewModel projection', async () => {
         class ProjectingView extends StringTemplateView {
-            protected _createViewModel(model: any, request: any): any {
+            protected _createViewModel(model: unknown, request: unknown): unknown {
                 return { displayName: model.name?.toUpperCase(), timestamp: Date.now() };
             }
         }
@@ -188,7 +189,7 @@ describe('StringTemplateView — integration (view.render pipeline)', () => {
 
     it('renders end-to-end with custom _projectViewModel hook', async () => {
         class TemplateProjectingView extends StringTemplateView {
-            protected _projectViewModel(viewModel: any, request: any): any {
+            protected _projectViewModel(viewModel: unknown, request: unknown): unknown {
                 return { title: viewModel.pageTitle ?? 'Default', items: viewModel.items ?? [] };
             }
         }
@@ -236,11 +237,11 @@ describe('RerouteView', () => {
 
     it('delegates navigation to router.navigate when available', () => {
         const navigate = vi.fn();
-        const mockAppContext = { getValue: () => ({ navigate }) };
+        const mockAppContext = { getValue: () => ({ navigate }) } as unknown as ApplicationContext;
         const view = new RerouteView('/new-path');
-        (view as any).applicationContext = mockAppContext;
+        view.setApplicationContext(mockAppContext);
 
-        view.render({}, { path: '/current' });
+        void view.render({}, { path: '/current' });
 
         expect(navigate).toHaveBeenCalledWith('/new-path');
     });
@@ -250,7 +251,7 @@ describe('RerouteView', () => {
         vi.stubGlobal('history', { pushState });
 
         const view = new RerouteView('/fallback');
-        view.render({}, { path: '/current' });
+        void view.render({}, { path: '/current' });
 
         expect(pushState).toHaveBeenCalledWith(undefined, '', '/fallback');
         vi.unstubAllGlobals();

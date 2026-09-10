@@ -4,7 +4,7 @@ import { is } from '@blue/util/types';
 import { likeResponse } from './like-response';
 
 const { defineProperty } = Reflect,
-    isError = is(Error) as (value: any) => value is Error;
+    isError = is(Error) as (value: unknown) => value is Error;
 
 /**
  * Error wrapper that also exposes the `Response` interface.
@@ -163,7 +163,7 @@ export class ResponseError extends FrameworkError implements Error, Response {
      *
      * @returns A promise for the parsed JSON value.
      */
-    json(): Promise<any> {
+    json(): Promise<unknown> {
         if (this.#bodyBuffer !== null) {
             return Promise.resolve(JSON.parse(new TextDecoder().decode(this.#bodyBuffer)));
         }

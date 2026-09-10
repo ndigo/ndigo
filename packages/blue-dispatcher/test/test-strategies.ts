@@ -20,11 +20,11 @@ export class TestController {
 }
 
 export class TestControllerHandlerAdapter {
-    handle(route: any, handler: any) {
+    handle(route: unknown, handler: unknown) {
         expect(handler).toBeInstanceOf(TestController);
-        return handler.handleRoute(route);
+        return (handler as TestController).handleRoute(route);
     }
-    supports(handler: any) {
+    supports(handler: unknown) {
         const isSupported = handler instanceof TestController;
         expect(isSupported).toBe(true);
         return isSupported;
@@ -32,19 +32,19 @@ export class TestControllerHandlerAdapter {
 }
 
 export class TestErrorResolver {
-    resolveError(route: any, handler: any, error: any) {
+    resolveError(route: unknown, handler: unknown, error: unknown) {
         return errorModel;
     }
 }
 
 export class TestHandlerInterceptor {
-    completeHandle(route: any, handler: any, error: any) {
+    completeHandle(route: unknown, handler: unknown, error: unknown) {
         completeHandleSpy(route, handler, error);
     }
 
-    postHandle(route: any, handler: any, modelAndView: any) {}
+    postHandle(route: unknown, handler: unknown, modelAndView: unknown) {}
 
-    preHandle(route: any, handler: any) {
+    preHandle(route: unknown, handler: unknown) {
         return true;
     }
 }
@@ -54,7 +54,7 @@ export class TestLanguageResolver {
 }
 
 export class TestThemeResolver {
-    resolveTheme(route: any) {
+    resolveTheme(route: unknown) {
         return 'testTheme';
     }
 }
@@ -63,7 +63,7 @@ export class TestView {
     destroyed = false;
     name: string;
 
-    render(model: any, route: any, target?: any) {
+    render(model: unknown, route: unknown, target?: unknown) {
         return renderSpy(model, route, target);
     }
 

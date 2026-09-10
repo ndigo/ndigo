@@ -19,7 +19,16 @@ export interface NodeRequest {
     body: Record<string, unknown>;
     /** Pre-parsed cookies from the `Cookie` header. */
     cookies: Record<string, string>;
-    /** Server-side session data keyed by session variable name. */
+    /**
+     * Server-side session data keyed by session variable name.
+     *
+     * **Reserved — always empty in the built-in pipeline.** The adapter
+     * creates requests with `session: {}` and no session provider populates
+     * it yet; session persistence/restoration is an open contract (see the
+     * repo's remediation plan, "Session contract"). Middleware may fill this
+     * record before dispatch (e.g. from a signed cookie or a session store);
+     * the `session()` argument extractor reads it.
+     */
     session: Record<string, unknown>;
 }
 

@@ -2,11 +2,12 @@ import { signal, effect } from '@blue/signals';
 import { ApplicationContext, AsApplicationContextAware } from '@blue/context';
 import { Null } from '@blue/core';
 import { traced, getLogger } from '@blue/telemetry';
+import type { Router } from '@blue/router';
 import { ROUTER } from './context-tokens';
 
 const logger = getLogger('blue-todo:todo-service');
 
-interface TodoItem {
+export interface TodoItem {
     text: string;
     checked: boolean;
 }
@@ -38,7 +39,7 @@ export default class TodoService extends AsApplicationContextAware(Null) {
         this.#refreshEffect = effect(() => {
             // Read the signal to subscribe to it
             const _ = this.#items.value;
-            const router = this.applicationContext.getValue(ROUTER) as any;
+            const router = this.applicationContext.getValue<Router | undefined>(ROUTER);
             if (router && typeof router.refresh === 'function') {
                 router.refresh();
             }

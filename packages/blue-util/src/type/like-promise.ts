@@ -18,6 +18,6 @@ const /**
      * likePromise( {} );
      * //=> false
      */
-    likePromise = like({ then: Function }) as (value: any) => value is PromiseLike<any>;
+    likePromise = like({ then: Function }) as (value: unknown) => value is PromiseLike<unknown>;
 
 export default likePromise;

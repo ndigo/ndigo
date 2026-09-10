@@ -17,7 +17,7 @@ export type ConfigFileReader = (path: string) => Promise<string | null>;
 /**
  * Represents a resolved resource handle and its loaded value.
  */
-export interface Resource<T = any> {
+export interface Resource<T = unknown> {
     readonly exists: boolean;
     readonly value: T;
 }
@@ -50,7 +50,6 @@ export interface ResourceLoaderAware extends Aware {
  * Interface to be implemented by any object that wishes to be notified of the {@link ResourceLoader|ResourceLoader} (typically the {@link ApplicationContext|ApplicationContext}) that it runs in. This is an alternative to a full ApplicationContext dependency via the {@link ApplicationContextAware|ApplicationContextAware} interface.
  *
  * You typically need a ResourceLoader when your application object has to access a variety of file resources whose names are calculated. A good strategy is to make the object use a {@link DefaultResourceLoader|DefaultResourceLoader} but still implement ResourceLoaderAware to allow for overriding when running in an ApplicationContext.
- * @extends module:context.Aware
  */
 
 /**
@@ -113,7 +112,7 @@ export const likeResourceLoaderAware = like({ setResourceLoader: Function }) as 
 /**
  * Resource implementation backed by a URL.
  */
-export class URLResource<T = any> implements Resource<T> {
+export class URLResource<T = unknown> implements Resource<T> {
     readonly url!: URL;
     readonly value!: T;
 
@@ -174,7 +173,7 @@ export class UnresolvedResource implements Resource<Error> {
 
 export const AsModuleResourceLoader = <T extends Constructable>(superclass: T): Constructable<ResourceLoader> & T => {
     // TypeScript 5.7 requires explicit type assertion for mixin pattern
-    const LoaderClass = class extends (superclass as new (...args: any[]) => any) implements ResourceLoader {
+    const LoaderClass = class extends (superclass as new (...args: never[]) => object) implements ResourceLoader {
         async getResource(location: string): Promise<Resource> {
             try {
                 const value = await import(/* @vite-ignore */ location);

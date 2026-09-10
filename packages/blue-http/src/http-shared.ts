@@ -20,4 +20,4 @@ export const { assign, freeze } = Object,
         redirect: 'follow',
     },
     patternCache = new Map<string, WildcardExp>(),
-    isRequest = is(Request) as (value: any) => value is Request;
+    isRequest = is(Request) as (value: unknown) => value is Request;

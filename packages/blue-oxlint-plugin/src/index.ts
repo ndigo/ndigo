@@ -1,9 +1,9 @@
 /**
- * ESLint plugin that bundles BlueJS's repository-specific lint rules.
+ * Oxlint plugin that bundles BlueJS's repository-specific lint rules.
  *
- * This plugin uses oxlint's eslintCompatPlugin API for dual compatibility
- * with both ESLint and oxlint. Rules use createOnce + before hook pattern
- * for future performance benefits.
+ * Loaded by oxlint via the `jsPlugins` entry in `.oxlintrc.json` (rules are
+ * referenced as `@blue/<rule>`). `eslintCompatPlugin` keeps the `createOnce`
+ * rules loadable by ESLint as well.
  */
 
 import { eslintCompatPlugin } from '@oxlint/plugins';
@@ -20,7 +20,7 @@ import { noSignalsInEntity } from './rules/no-signals-in-entity.js';
 
 const plugin = eslintCompatPlugin({
     meta: {
-        name: '@blue/eslint-plugin',
+        name: '@blue/oxlint-plugin',
     },
     rules: {
         'no-direct-integration-imports': noDirectIntegrationImports,
@@ -36,34 +36,8 @@ const plugin = eslintCompatPlugin({
 });
 
 /**
- * Recommended BlueJS ESLint plugin configuration.
+ * The BlueJS oxlint plugin entry point.
  *
- * The plugin exposes repository-specific rules and a ready-to-use recommended config
- * so consumers can opt into the standard rule set with minimal setup.
- */
-(plugin as unknown as Record<string, unknown>).configs = {
-    recommended: {
-        plugins: {
-            '@blue': plugin,
-        },
-        rules: {
-            '@blue/no-direct-integration-imports': 'warn',
-            '@blue/no-internal-file-imports': 'error',
-            '@blue/no-internal-file-exports': 'error',
-            '@blue/no-browser-globals-in-isomorphic': 'warn',
-            '@blue/no-uppercase-regexp-constants': 'error',
-            '@blue/no-abstract-class-without-prefix': 'error',
-            '@blue/no-mixed-case-acronyms': 'error',
-            '@blue/no-cross-paradigm-decorators': 'error',
-            '@blue/no-signals-in-entity': 'error',
-        },
-    },
-};
-
-/**
- * The BlueJS ESLint plugin entry point.
- *
- * Consumers can import this default export to register the packaged rules and recommended
- * configuration.
+ * Consumers can import this default export to register the packaged rules.
  */
 export default plugin;

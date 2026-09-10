@@ -826,16 +826,16 @@ When reviewing code, check for:
 
 The framework is organized into 8 architectural layers with clear dependency direction and platform-aware boundaries:
 
-| Layer                      | Packages                                                    | Description                                                                 | Design Analogue                     |
-| :------------------------- | :---------------------------------------------------------- | :-------------------------------------------------------------------------- | :----------------------------------- |
-| **7: Bootstrap**           | `@blue/boot`                                                | Application bootstrap, startup orchestration, and site/app lifecycle        | Application bootstrap entrypoint       |
-| **6: Application**         | `@blue/service`, `@blue/platform-web`                       | Business services, platform adapters                                        | App services + platform adapters       |
-| **5: Request Processing**  | `@blue/dispatcher`, `@blue/view`, `@blue/view-webcomponent` | Front controller, handler execution, and view resolution/rendering adapters | Front controller + view resolution     |
-| **4: Web Infrastructure**  | `@blue/http`, `@blue/router`, `@blue/telemetry`             | HTTP client/interceptors/transforms, routing primitives, observability      | HTTP vocabulary + routing + telemetry  |
-| **3: Application Context** | `@blue/context`                                             | Application context, environment, events, configuration metadata            | DI container + application context     |
-| **2: Infrastructure**      | `@blue/factory`, `@blue/content`, `@blue/orm`               | IoC container internals, i18n/theming, persistence abstractions             | IoC container internals + theme/i18n   |
-| **1: Foundation**          | `@blue/core`, `@blue/signals`                               | Core primitives, collection types, path matching, reactive state            | Core primitives + reactive state       |
-| **0: Integration Layer**   | `@blue/util`, `@blue/parser`, `@blue/dom`                   | Encapsulated third-party libraries via stable BlueJS wrappers               | Third-party facade + utility layer     |
+| Layer                      | Packages                                                                                                                                                      | Description                                                                                                              | Design Analogue                       |
+| :------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------ | :----------------------------------------------------------------------------------------------------------------------- | :------------------------------------ |
+| **7: Bootstrap**           | `@blue/boot`                                                                                                                                                  | Application bootstrap, startup orchestration, and context assembly                                                       | Application bootstrap entrypoint      |
+| **6: Application**         | `@blue/service`, `@blue/management`, `@blue/platform-node`, `@blue/platform-web`, `@blue/auth-*`, `@blue/telemetry-node`, `@blue/telemetry-web`, `@blue/test` | Business services, platform adapters, management surface, auth, Node/browser platform bindings, integration test harness | App services + platform adapters      |
+| **5: Request Processing**  | `@blue/dispatcher`, `@blue/view`, `@blue/view-webcomponent`                                                                                                   | Front controller, handler execution, and view resolution/rendering adapters                                              | Front controller + view resolution    |
+| **4: Web Infrastructure**  | `@blue/http`, `@blue/router`, `@blue/telemetry`                                                                                                               | HTTP client/interceptors/transforms, routing primitives, observability                                                   | HTTP vocabulary + routing + telemetry |
+| **3: Application Context** | `@blue/context`                                                                                                                                               | Application context, environment, events, configuration metadata                                                         | DI container + application context    |
+| **2: Infrastructure**      | `@blue/factory`, `@blue/content`, `@blue/orm`, `@blue/orm-drizzle`                                                                                            | IoC container internals, i18n/theming, persistence abstractions                                                          | IoC container internals + theme/i18n  |
+| **1: Foundation**          | `@blue/core`, `@blue/signals`                                                                                                                                 | Core primitives, collection types, path matching, reactive state                                                         | Core primitives + reactive state      |
+| **0: Integration Layer**   | `@blue/util`, `@blue/dom` (+ tooling: `@blue/oxlint-plugin`, `@blue/generators`)                                                                              | Encapsulated third-party libraries via stable BlueJS wrappers                                                            | Third-party facade + utility layer    |
 
 The `blue-todo` app sits above these layers as a reference implementation and integration proving ground.
 
@@ -863,7 +863,13 @@ graph TD
 
     subgraph L6["Layer 6: Application"]
         Service[@blue/service]
+        Management[@blue/management]
+        PlatformNode[@blue/platform-node]
         PlatformWeb[@blue/platform-web]
+        AuthClient[@blue/auth-client]
+        AuthServer[@blue/auth-server]
+        TelemetryNode[@blue/telemetry-node]
+        TelemetryWeb[@blue/telemetry-web]
     end
 
     subgraph L5["Layer 5: Request Processing"]
@@ -886,6 +892,7 @@ graph TD
         Factory[@blue/factory]
         Content[@blue/content]
         Orm[@blue/orm]
+        OrmDrizzle[@blue/orm-drizzle]
     end
 
     subgraph L1["Layer 1: Foundation"]
@@ -895,34 +902,49 @@ graph TD
 
     subgraph L0["Layer 0: Integration Layer"]
         Util[@blue/util]
-        Parser[@blue/parser]
         Dom[@blue/dom]
     end
 
-    Boot --> Context
+    Boot --> PlatformWeb
     Boot --> Dispatcher
-    Service --> Http
-    Service --> Telemetry
-    PlatformWeb --> Context
-    PlatformWeb --> Router
+    Boot --> Context
+    Service --> Dispatcher
+    Http --> Router
+    Management --> PlatformNode
+    PlatformNode --> Dispatcher
+    PlatformWeb --> Dispatcher
+    PlatformWeb --> ViewWebComponent
+    AuthServer --> Dispatcher
+    TelemetryNode --> PlatformNode
+    TelemetryWeb --> PlatformWeb
     Dispatcher --> Context
     Dispatcher --> Router
     Dispatcher --> View
     ViewWebComponent --> View
+    View --> Context
     Http --> Core
-    Http --> Parser
+    Http --> Factory
     Router --> Core
+    Telemetry --> Core
     Context --> Factory
+    Context --> Content
     Context --> Core
     Factory --> Core
     Content --> Core
+    Orm --> Core
+    OrmDrizzle --> Orm
     Core --> Util
-    Signals --> Util
-    Parser --> Util
+    Signals --> Core
 
     style Boot fill:#f0f0f0
     style Service fill:#fff4e1
+    style Management fill:#fff4e1
+    style PlatformNode fill:#fff4e1
     style PlatformWeb fill:#fff4e1
+    style AuthClient fill:#fff4e1
+    style AuthServer fill:#fff4e1
+    style TelemetryNode fill:#fff4e1
+    style TelemetryWeb fill:#fff4e1
     style Dispatcher fill:#f5e1ff
     style View fill:#f5e1ff
     style ViewWebComponent fill:#f5e1ff
@@ -932,13 +954,15 @@ graph TD
     style Context fill:#e1ffe5
     style Factory fill:#ffe1e1
     style Content fill:#ffe1e1
+    style Orm fill:#ffe1e1
+    style OrmDrizzle fill:#ffe1e1
     style Core fill:#fff9e1
+    style Signals fill:#fff9e1
     style Util fill:#e1f0ff
-    style Parser fill:#e1f0ff
     style Dom fill:#e1f0ff
 ```
 
-**Key Principle:** Higher layers depend on lower layers, never the reverse. Some cross-layer dependencies inside adjacent architectural tiers are intentional for integration and orchestration.
+**Key Principle:** Higher layers depend on lower layers, never the reverse. Some cross-layer dependencies inside adjacent architectural tiers are intentional for integration and orchestration. The stack is acyclic (verified via the Nx dependency graph).
 
 ## Paradigm Selection Rules
 
@@ -978,7 +1002,6 @@ graph TD
 | Integration Layer | Encapsulated Libraries | Purpose                                     |
 | :---------------- | :--------------------- | :------------------------------------------ |
 | `@blue/util`      | `seedrandom`, `slug`   | Randomness, URL slugs                       |
-| `@blue/parser`    | `arcsecond`            | Parser combinators and parsing primitives   |
 | `@blue/dom`       | `linkedom`             | Isomorphic DOM parsing and element creation |
 
 ### Usage Rules
@@ -1034,7 +1057,7 @@ When adding a new external dependency:
 ### Enforcement
 
 - **Manual Review**: Check imports during code review
-- **oxlint Plugin** (implemented): Custom rule to detect direct imports of encapsulated libraries (`@blue/eslint-plugin` loaded via oxlint JS Plugins)
+- **oxlint Plugin** (implemented): Custom rule to detect direct imports of encapsulated libraries (`@blue/oxlint-plugin` loaded via oxlint JS Plugins)
 - **CI Dependency Checker** (planned): Script to scan codebase and fail on violations
 
 ### Type-Only Imports
@@ -1508,16 +1531,16 @@ before first public release.
 
 ### Modules at a glance (Node path)
 
-| Package | Responsibilities | Key exported concepts |
-| --- | --- | --- |
-| `@blue/boot` | Bootstrap primitives | `ApplicationBuilder`, `Application` |
-| `@blue/context` | DI container + lifecycle | `Configuration`, `@entry`, context hierarchy |
-| `@blue/factory` | Bean lifecycle | `SmartLifecycle`, `Destroyable`, `Closeable` |
-| `@blue/dispatcher` | Routing + dispatch | mappings, `@parameters` extractors, validation, interceptors, error resolvers |
-| `@blue/platform-node` | Node adapter | `NodeAutoConfiguration`, `HTTPServer`, `NodeDispatcher`, argument resolvers, `ProblemDetails`, `gracefulShutdown` |
-| `@blue/http` | HTTP vocabulary | `ResponseStatuses`, `HTTPHeaders` |
-| `@blue/orm` | Persistence + schema | `@entity`/`@column`, `insertSchemaForEntity` |
-| `@blue/telemetry` | Logging/tracing/metrics | `getLogger`, `LoggerFactory` |
+| Package               | Responsibilities         | Key exported concepts                                                                                             |
+| --------------------- | ------------------------ | ----------------------------------------------------------------------------------------------------------------- |
+| `@blue/boot`          | Bootstrap primitives     | `ApplicationBuilder`, `Application`                                                                               |
+| `@blue/context`       | DI container + lifecycle | `Configuration`, `@entry`, context hierarchy                                                                      |
+| `@blue/factory`       | Bean lifecycle           | `SmartLifecycle`, `Destroyable`, `Closeable`                                                                      |
+| `@blue/dispatcher`    | Routing + dispatch       | mappings, `@parameters` extractors, validation, interceptors, error resolvers                                     |
+| `@blue/platform-node` | Node adapter             | `NodeAutoConfiguration`, `HTTPServer`, `NodeDispatcher`, argument resolvers, `ProblemDetails`, `gracefulShutdown` |
+| `@blue/http`          | HTTP vocabulary          | `ResponseStatuses`, `HTTPHeaders`                                                                                 |
+| `@blue/orm`           | Persistence + schema     | `@entity`/`@column`, `insertSchemaForEntity`                                                                      |
+| `@blue/telemetry`     | Logging/tracing/metrics  | `getLogger`, `LoggerFactory`                                                                                      |
 
 Guides: [`docs/guides/`](docs/guides/README.md).
 
@@ -1532,7 +1555,7 @@ Guides: [`docs/guides/`](docs/guides/README.md).
 
 ### Current Status (March 2026)
 
-- **Foundation is stable**: `@blue/util`, `@blue/parser`, `@blue/core`, and `@blue/signals` are mature and broadly reusable.
+- **Foundation is stable**: `@blue/util`, `@blue/core`, and `@blue/signals` are mature and broadly reusable.
 - **IoC/context are functional**: `@blue/factory` and `@blue/context` provide working DI/context patterns, with some infrastructure stubs still open.
 - **Web stack is operational**: `@blue/http`, `@blue/router`, and `@blue/dispatcher` support a complete dispatch flow demonstrated in `blue-todo`.
 - **Observability migrated**: `@blue/telemetry` now owns tracing/metrics/logging concerns; `@blue/logger` has been removed.
@@ -1541,7 +1564,7 @@ Guides: [`docs/guides/`](docs/guides/README.md).
 ### Near-Term Priorities
 
 1. ~~End-to-end telemetry integration in `blue-todo`~~ ✅
-2. ~~Convention automation via `@blue/eslint-plugin`~~ ✅
+2. ~~Convention automation via `@blue/oxlint-plugin`~~ ✅
 3. `@blue/auth` MVP definition and implementation
 4. ~~`@blue/orm` MVP definition and implementation~~ ✅
 

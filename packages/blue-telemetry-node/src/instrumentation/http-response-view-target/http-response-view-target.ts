@@ -35,7 +35,7 @@ export class HTTPResponseViewTargetInstrumentation extends AbstractBaseInstrumen
             this._patchAsync({
                 name: 'HTTPResponseViewTarget.commit',
                 kind: SpanKind.SERVER,
-                attributes: (_instance: HTTPResponseViewTarget, args: unknown[]) => {
+                attributes: (_instance: unknown, args: unknown[]) => {
                     const output = args[0];
                     const model = args[1] as { constructor?: { name?: string } } | undefined;
                     return {

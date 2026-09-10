@@ -25,9 +25,12 @@ describe('Scope Decorators - TC39 Behavioral Tests', () => {
             @scope('singleton')
             class TestService {}
 
-            const metadata = (TestService as any)[Symbol.metadata];
+            // TC39 decorators write into Symbol.metadata, which TS's Function type does not declare.
+            const metadata = (TestService as unknown as { [Symbol.metadata]?: Record<string, unknown> })[
+                Symbol.metadata
+            ];
             expect(metadata).toBeDefined();
-            expect(metadata['scope:mapping']).toBe('singleton');
+            expect(metadata?.['scope:mapping']).toBe('singleton');
         });
 
         it('should work with different scope types', () => {

@@ -24,7 +24,7 @@ export class BrowserBindMethodArgumentResolver extends AbstractPlatformArgumentR
         return 'BrowserBindMethodArgumentResolver';
     }
 
-    resolveArgument(parameter: MethodParameter, route: Route, mapping: any): any {
+    resolveArgument(parameter: MethodParameter, route: Route, mapping: unknown): unknown {
         const rawData = this.getSourceData(parameter.name, route);
         const filteredData = this.filterByPrefix(rawData, parameter.prefix);
 
@@ -53,14 +53,14 @@ export class BrowserBindMethodArgumentResolver extends AbstractPlatformArgumentR
     }
 
     /** Retrieves the browser data source identified by the source name. */
-    private getSourceData(source: string, route: Route): Record<string, any> {
+    private getSourceData(source: string, route: Route): Record<string, unknown> {
         switch (source) {
             case 'query':
                 return route.data || {};
             case 'state':
                 return globalThis.history?.state || {};
             case 'session': {
-                const session: Record<string, any> = {};
+                const session: Record<string, unknown> = {};
                 if (globalThis.sessionStorage) {
                     for (let i = 0; i < globalThis.sessionStorage.length; i++) {
                         const key = globalThis.sessionStorage.key(i);
@@ -71,20 +71,22 @@ export class BrowserBindMethodArgumentResolver extends AbstractPlatformArgumentR
                 }
                 return session;
             }
-            case 'cookie':
-                return (Cookies.get('') as Record<string, any>) || {};
+            case 'cookie': {
+                const jar: unknown = Cookies.get('');
+                return typeof jar === 'object' && jar !== null ? (jar as Record<string, unknown>) : {};
+            }
             default:
                 return {};
         }
     }
 
     /** Removes a prefix from keys before binding nested values. */
-    private filterByPrefix(data: Record<string, any>, prefix: string | null): Record<string, any> {
+    private filterByPrefix(data: Record<string, unknown>, prefix: string | null): Record<string, unknown> {
         if (!prefix) {
             return data;
         }
 
-        const filtered: Record<string, any> = {};
+        const filtered: Record<string, unknown> = {};
         const prefixLength = prefix.length;
 
         for (const [key, value] of Object.entries(data)) {
@@ -100,7 +102,7 @@ export class BrowserBindMethodArgumentResolver extends AbstractPlatformArgumentR
         return MethodParameterType.BIND.equals(parameter.type);
     }
 
-    protected resolveName(): any {
+    protected resolveName(): null {
         return null;
     }
 }

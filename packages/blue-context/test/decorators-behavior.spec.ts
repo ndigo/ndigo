@@ -5,6 +5,7 @@
  */
 
 import { describe, it, expect, beforeEach } from 'vitest';
+import { Enumerable, JSONObject, JSONValue } from '@blue/core';
 import {
     configuration,
     entry,
@@ -14,13 +15,20 @@ import {
     MetadataConfigApplicationContext,
 } from '../src/configuration';
 
+/**
+ * Reads the decorator metadata store (Symbol.metadata), dynamically typed at
+ * runtime; the tests assert the shapes the decorators wrote.
+ */
+const metadataOf = (target: object): Record<string, unknown> =>
+    (target as { [Symbol.metadata]?: Record<string, unknown> })?.[Symbol.metadata] ?? {};
+
 describe('@configuration Decorator', () => {
     it('marks a class as a configuration class', () => {
         @configuration
         class TestConfig {}
 
         // Check that the metadata was set (TC39 style)
-        const metadata = (TestConfig as any)[Symbol.metadata];
+        const metadata = metadataOf(TestConfig);
         expect(metadata).toBeDefined();
         expect(metadata['config:constructor']).toBe(true);
     });
@@ -54,7 +62,7 @@ describe('@profile Decorator', () => {
         @profile('dev')
         class TestConfig {}
 
-        const metadata = (TestConfig as any)[Symbol.metadata];
+        const metadata = metadataOf(TestConfig);
         expect(metadata['config:profile']).toEqual(['dev']);
     });
 
@@ -68,7 +76,7 @@ describe('@profile Decorator', () => {
             }
         }
 
-        const metadata = (TestConfig as any)[Symbol.metadata];
+        const metadata = metadataOf(TestConfig);
         expect(metadata['config:profile:foo']).toEqual(['dev']);
     });
 
@@ -77,7 +85,7 @@ describe('@profile Decorator', () => {
         @profile('dev,test')
         class TestConfig {}
 
-        const metadata = (TestConfig as any)[Symbol.metadata];
+        const metadata = metadataOf(TestConfig);
         expect(metadata['config:profile']).toEqual(['dev', 'test']);
     });
 
@@ -86,7 +94,7 @@ describe('@profile Decorator', () => {
         @profile('dev,test,dev')
         class TestConfig {}
 
-        const metadata = (TestConfig as any)[Symbol.metadata];
+        const metadata = metadataOf(TestConfig);
         expect(metadata['config:profile']).toEqual(['dev', 'test']);
     });
 
@@ -168,10 +176,10 @@ describe('@property Decorator', () => {
         @configuration
         class TestConfig {
             @property('foo.bar')
-            myProp: any;
+            myProp: unknown;
         }
 
-        const metadata = (TestConfig as any)[Symbol.metadata];
+        const metadata = metadataOf(TestConfig);
         expect(metadata['config:property:myProp']).toBe('foo.bar');
     });
 
@@ -179,7 +187,7 @@ describe('@property Decorator', () => {
         @configuration
         class TestConfig {
             @property('foo')
-            myProp: any;
+            myProp: unknown;
         }
 
         // With TC39 field decorators, properties are created on instances via addInitializer
@@ -187,22 +195,22 @@ describe('@property Decorator', () => {
         const instance = new TestConfig();
         const descriptor = Object.getOwnPropertyDescriptor(instance, 'myProp');
         expect(descriptor).toBeDefined();
-        expect(descriptor!.writable).toBe(false);
-        expect(descriptor!.value).toBe(null);
+        expect(descriptor?.writable).toBe(false);
+        expect(descriptor?.value).toBe(null);
     });
 
     it('makes property configurable and enumerable', () => {
         @configuration
         class TestConfig {
             @property('foo')
-            myProp: any;
+            myProp: unknown;
         }
 
         // Properties are created on instances with TC39 field decorators
         const instance = new TestConfig();
         const descriptor = Object.getOwnPropertyDescriptor(instance, 'myProp');
-        expect(descriptor!.configurable).toBe(true);
-        expect(descriptor!.enumerable).toBe(true);
+        expect(descriptor?.configurable).toBe(true);
+        expect(descriptor?.enumerable).toBe(true);
     });
 
     it('resolves property values from property sources', () => {
@@ -210,10 +218,10 @@ describe('@property Decorator', () => {
         @propertySource({ foo: 'bar', nested: { value: 42 } })
         class TestConfig {
             @property('foo')
-            fooValue: any;
+            fooValue: unknown;
 
             @property('nested.value')
-            nestedValue: any;
+            nestedValue: unknown;
 
             @entry()
             getFoo() {
@@ -238,7 +246,7 @@ describe('@property Decorator', () => {
         @propertySource({ arr: [1, 2, 3] })
         class TestConfig {
             @property('arr[1]')
-            secondItem: any;
+            secondItem: unknown;
 
             @entry()
             getItem() {
@@ -259,7 +267,7 @@ describe('@propertySource Decorator', () => {
         @propertySource({ foo: 'bar' })
         class TestConfig {}
 
-        const metadata = (TestConfig as any)[Symbol.metadata];
+        const metadata = metadataOf(TestConfig);
         expect(metadata['config:property:source']).toEqual([{ foo: 'bar' }]);
     });
 
@@ -269,11 +277,13 @@ describe('@propertySource Decorator', () => {
         @propertySource({ bar: 'second' })
         class TestConfig {}
 
-        const metadata = (TestConfig as any)[Symbol.metadata];
-        expect(metadata['config:property:source']).toHaveLength(2);
+        const metadata = metadataOf(TestConfig);
+        // The decorator wrote the property source array under this key
+        const sources = metadata['config:property:source'] as JSONObject[];
+        expect(sources).toHaveLength(2);
         // First applied decorator is first in array
-        expect(metadata['config:property:source'][0]).toEqual({ foo: 'first' });
-        expect(metadata['config:property:source'][1]).toEqual({ bar: 'second' });
+        expect(sources[0]).toEqual({ foo: 'first' });
+        expect(sources[1]).toEqual({ bar: 'second' });
     });
 
     it('accepts Enumerable objects', () => {
@@ -283,23 +293,25 @@ describe('@propertySource Decorator', () => {
         ]);
 
         @configuration
-        @propertySource(map as any)
+        @propertySource(map as unknown as Enumerable<string, JSONValue>)
         class TestConfig {}
 
-        const metadata = (TestConfig as any)[Symbol.metadata];
-        expect(metadata['config:property:source'][0]).toEqual({ key1: 'value1', key2: 'value2' });
+        const metadata = metadataOf(TestConfig);
+        const sources = metadata['config:property:source'] as JSONObject[];
+        expect(sources[0]).toEqual({ key1: 'value1', key2: 'value2' });
     });
 
     it('handles non-object inputs gracefully', () => {
         // Non-objects that don't match likeEnumerable are stored as-is
         @configuration
-        @propertySource('string' as any)
+        @propertySource('string' as unknown as JSONObject)
         class TestConfig {}
 
-        const metadata = (TestConfig as any)[Symbol.metadata];
-        expect(metadata['config:property:source']).toHaveLength(1);
+        const metadata = metadataOf(TestConfig);
+        const sources = metadata['config:property:source'] as unknown[];
+        expect(sources).toHaveLength(1);
         // Implementation detail: non-enumerable values are stored as-is
-        expect(metadata['config:property:source'][0]).toBe('string');
+        expect(sources[0]).toBe('string');
     });
 });
 
@@ -313,7 +325,7 @@ describe('@entry Decorator', () => {
             }
         }
 
-        const metadata = (TestConfig as any)[Symbol.metadata];
+        const metadata = metadataOf(TestConfig);
         expect(metadata['config:entry:myMethod']).toBe('myMethod');
     });
 
@@ -326,7 +338,7 @@ describe('@entry Decorator', () => {
             }
         }
 
-        const metadata = (TestConfig as any)[Symbol.metadata];
+        const metadata = metadataOf(TestConfig);
         expect(metadata['config:entry:myMethod']).toBe('customName');
     });
 
@@ -396,10 +408,10 @@ describe('Decorator Integration', () => {
         @propertySource({ appName: 'MyApp', version: '1.0.0' })
         class AppConfig {
             @property('appName')
-            name: any;
+            name: unknown;
 
             @property('version')
-            ver: any;
+            ver: unknown;
 
             @entry()
             getAppInfo() {
@@ -419,7 +431,7 @@ describe('Decorator Integration', () => {
         @propertySource({ foo: 'bar' })
         class TestConfig {
             @property('foo')
-            fooValue: any;
+            fooValue: unknown;
 
             @profile('dev')
             @entry()

@@ -7,21 +7,21 @@ describe('RingBuffer', () => {
     let rb: RingBuffer<string | number>;
 
     test('it should initialize with no arguments', () => {
-        rb = new RingBuffer();
+        rb = new RingBuffer<string | number>();
         expect(rb).toBeInstanceOf(RingBuffer);
         expect(rb).toHaveProperty('capacity', RingBuffer.MIN_CAPACITY);
         expect(rb).toHaveProperty('length', 0);
     });
 
     test('it should initialize with a capacity argument', () => {
-        rb = new RingBuffer(6);
+        rb = new RingBuffer<string | number>(6);
         expect(rb).toHaveProperty('capacity', RingBuffer.MIN_CAPACITY);
         expect(rb).toHaveProperty('length', 0);
 
-        rb = new RingBuffer(20);
+        rb = new RingBuffer<string | number>(20);
         expect(rb).toHaveProperty('capacity', 32);
 
-        rb = new RingBuffer(64);
+        rb = new RingBuffer<string | number>(64);
         expect(rb).toHaveProperty('capacity', 64);
     });
 
@@ -39,10 +39,10 @@ describe('RingBuffer', () => {
 
     describe('instances', () => {
         beforeEach(() => {
-            rb = new RingBuffer();
+            rb = new RingBuffer<string | number>();
         });
         afterEach(() => {
-            rb = undefined as any;
+            rb = undefined as unknown as RingBuffer<string | number>;
         });
 
         describe('put', () => {
@@ -177,7 +177,7 @@ describe('RingBuffer', () => {
         });
 
         test('it should only allow numeric capacity', () => {
-            (rb as any).capacity = 'a';
+            (rb as { capacity: unknown }).capacity = 'a';
             expect(rb.capacity).toBe(RingBuffer.MIN_CAPACITY);
         });
 

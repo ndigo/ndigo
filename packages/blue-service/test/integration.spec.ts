@@ -75,7 +75,7 @@ describe('Service Layer Integration', () => {
     });
 
     test('should emit error telemetry with error details', () => {
-        let emittedData: any = null;
+        let emittedData: { error: string; stack: string | undefined } | null = null;
         emitter.on('service:request:error', (data) => {
             emittedData = data;
         });
@@ -83,7 +83,7 @@ describe('Service Layer Integration', () => {
         const error = new Error('Connection refused');
         telemetry.onError(error);
 
-        expect(emittedData.error).toBe('Connection refused');
-        expect(emittedData.stack).toBeDefined();
+        expect(emittedData?.error).toBe('Connection refused');
+        expect(emittedData?.stack).toBeDefined();
     });
 });

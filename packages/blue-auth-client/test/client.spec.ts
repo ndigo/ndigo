@@ -1,18 +1,21 @@
 import { describe, test, expect, beforeEach } from 'vitest';
 import { AuthClient } from '../src/client';
-import { AuthRegistry, AuthAdapter, Principal } from '@blue/auth-core';
+import { AuthRegistry, AuthAdapter, Principal, type AuthResult } from '@blue/auth-core';
 
 function createMockAdapter(
     id: string,
-    authResult: any = null,
-    validateResult: any = null,
-    refreshResult: any = null
+    authResult: AuthResult | null = null,
+    validateResult: Principal | null = null,
+    refreshResult: AuthResult | null = null
 ): AuthAdapter {
+    // Null auth/refresh results only fill unused parameters; fall back to a
+    // failed-result shape to honor the adapter's non-null return contract.
+    const nullResult: AuthResult = { principal: null, token: null, expiresAt: null };
     return {
         id,
         validate: async () => validateResult,
-        authenticate: async () => authResult,
-        refresh: async () => refreshResult,
+        authenticate: async () => authResult ?? nullResult,
+        refresh: async () => refreshResult ?? nullResult,
         logout: async () => {},
     };
 }

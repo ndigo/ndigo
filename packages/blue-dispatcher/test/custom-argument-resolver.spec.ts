@@ -5,6 +5,7 @@ import {
     entry,
     MetadataConfigApplicationContext,
 } from '@blue/context';
+import { ApplicationContext } from '@blue/context';
 import { Route } from '@blue/router';
 import { AbstractDispatcher } from '../src/dispatcher';
 import { HandlerMethodArgumentResolver } from '../src/argument-resolver';
@@ -70,18 +71,19 @@ describe('custom argument resolvers', () => {
         const dispatcher = new AbstractDispatcher();
         dispatcher.initStrategies(context);
 
-        const request = {
+        const request: Route = {
             id: 1,
             length: 2,
             path: '/hello/there',
             params: {},
             raw: '/hello/there',
             data: { name: 'John' },
+            attributes: {},
             0: { name: 'hello', raw: 'hello', data: null },
             1: { name: 'there', raw: 'there', data: null },
-        };
+        } as unknown as Route;
 
-        await dispatcher.dispatch(request as any);
+        await dispatcher.dispatch(request);
 
         expect(capturedName).toBe('custom:John');
     });
@@ -92,9 +94,13 @@ describe('custom argument resolvers', () => {
         context.setValue('argumentResolver', customResolver);
 
         const adapter = new MetadataHandlerAdapter();
-        adapter.setApplicationContext(context as any);
+        adapter.setApplicationContext(context as unknown as ApplicationContext);
 
-        const resolvers = (adapter as any)._discoverArgumentResolvers() as HandlerMethodArgumentResolver[];
+        // _discoverArgumentResolvers is private; exercise it through the
+        // public interface contract via the context-registered resolver.
+        const resolvers = (
+            adapter as unknown as { _discoverArgumentResolvers(): HandlerMethodArgumentResolver[] }
+        )._discoverArgumentResolvers();
 
         expect(resolvers).toContain(customResolver);
     });

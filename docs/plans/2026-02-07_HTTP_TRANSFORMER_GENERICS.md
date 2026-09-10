@@ -54,9 +54,7 @@ const sanitizer: HTTPTransformer<JSONObject> = {
     ```typescript
     // Before: HTTPTransformer<string, string>
     // After:  HTTPTransformer<string>
-    const trimWhitespace: HTTPTransformer<string> = {
-        /* ... */
-    };
+    const trimWhitespace: HTTPTransformer<string> = {/* ... */};
     ```
 
 2. **Common Use Case**
@@ -68,9 +66,7 @@ const sanitizer: HTTPTransformer<JSONObject> = {
 3. **Still Explicit When Needed**
     ```typescript
     // Type-changing transforms still explicit
-    const jsonParser: HTTPTransformer<string, JSONObject> = {
-        /* ... */
-    };
+    const jsonParser: HTTPTransformer<string, JSONObject> = {/* ... */};
     ```
 
 ### Concerns

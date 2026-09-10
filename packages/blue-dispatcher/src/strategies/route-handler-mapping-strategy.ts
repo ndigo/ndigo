@@ -33,6 +33,7 @@ export const AsRouteHandlerMappingStrategy = <T extends Constructable<StrategyIn
 
         handlerMappings!: RouteHandlerMapping[];
 
+        // oxlint-disable-next-line no-explicit-any -- TS2545: mixin constructor must be exactly (...args: any[]).
         constructor(...args: any[]) {
             super(...args);
             this.handlerMappingKey = HANDLER_MAPPING;

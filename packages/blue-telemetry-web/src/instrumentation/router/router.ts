@@ -3,6 +3,15 @@ import { HashRouter } from '@blue/platform-web';
 import { AbstractBaseInstrumentation } from '@blue/telemetry';
 
 /**
+ * The prototype slot the router instrumentation's shimmer patch needs.
+ * `_setRoute` is protected on `HashRouter`, so it is not part of the
+ * instance's public `keyof` — widen to the slot shape for wrapping.
+ */
+interface HashRouterPatchTarget {
+    _setRoute(newRoute: string, syncHash?: boolean): Promise<boolean>;
+}
+
+/**
  * An OpenTelemetry instrumentation for the `@blue/router` package, specifically `HashRouter`.
  *
  * This instrumentation automatically creates spans for the internal `_setRoute` method,
@@ -15,12 +24,12 @@ export class RouterInstrumentation extends AbstractBaseInstrumentation {
 
     enable(): void {
         this._wrap(
-            (HashRouter as any).prototype,
+            HashRouter.prototype as unknown as HashRouterPatchTarget,
             '_setRoute',
             this._patchSync({
                 name: 'Router.setRoute',
                 kind: SpanKind.SERVER,
-                attributes: (_instance: any, args: any[]) => ({
+                attributes: (_instance: unknown, args: unknown[]) => ({
                     'router.route': args[0],
                 }),
             })
@@ -28,6 +37,6 @@ export class RouterInstrumentation extends AbstractBaseInstrumentation {
     }
 
     disable(): void {
-        this._unwrap((HashRouter as any).prototype, '_setRoute');
+        this._unwrap(HashRouter.prototype as unknown as HashRouterPatchTarget, '_setRoute');
     }
 }

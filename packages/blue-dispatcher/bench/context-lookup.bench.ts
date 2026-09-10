@@ -68,7 +68,7 @@ for (let i = 0; i < 10; i++) {
     multiFactory.getValue(`entry${i}`); // warm each
 }
 
-let _sink: any = 0;
+let _sink: unknown = 0;
 
 /* ------------------------------------------------------------------ */
 /*  1. getValue – warm singleton (fast path)                           */

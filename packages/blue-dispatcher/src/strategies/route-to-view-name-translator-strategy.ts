@@ -24,6 +24,7 @@ export const AsRouteToViewNameTranslatorStrategy = <T extends Constructable<Stra
 
         routeToViewNameTranslator!: RouteToViewNameTranslator;
 
+        // oxlint-disable-next-line no-explicit-any -- TS2545: mixin constructor must be exactly (...args: any[]).
         constructor(...args: any[]) {
             super(...args);
             this.routeToViewNameTranslatorKey = ROUTE_TO_VIEW_NAME_TRANSLATOR;

@@ -37,7 +37,7 @@ describe('HTTPHeader', () => {
     });
 
     test('it should work with matrices', () => {
-        const headers: any[] = [];
+        const headers: Array<[string, string]> = [];
 
         expect(pragma.has(headers)).toBe(false);
         expect(pragma.get(headers)).toBeNull();
@@ -58,7 +58,7 @@ describe('HTTPHeader', () => {
     });
 
     test('it should work with records', () => {
-        const headers: Record<string, any> = {};
+        const headers: Record<string, string> = {};
 
         expect(pragma.has(headers)).toBe(false);
 

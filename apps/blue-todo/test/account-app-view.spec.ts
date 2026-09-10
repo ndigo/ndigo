@@ -3,13 +3,14 @@
 import { beforeEach, describe, expect, test } from 'vitest';
 
 import '../src/account-app-view';
+import type AccountApp from '../src/account-app-view';
 
 describe('account-app view rendering', () => {
-    let element: any;
+    let element: AccountApp;
 
     beforeEach(() => {
         document.body.innerHTML = '';
-        element = document.createElement('account-app');
+        element = document.createElement('account-app') as AccountApp;
         document.body.appendChild(element);
     });
 
@@ -21,8 +22,8 @@ describe('account-app view rendering', () => {
 
         await Promise.resolve();
 
-        expect(element.querySelector('.title').textContent).toBe('Account Overview');
-        expect(element.querySelector('.account-content').textContent).toContain('overview');
+        expect(element.querySelector('.title')?.textContent).toBe('Account Overview');
+        expect(element.querySelector('.account-content')?.textContent).toContain('overview');
         const overviewLink = element.querySelector(`a[href="#/account"]`);
         expect(overviewLink).not.toBeNull();
         expect(overviewLink?.classList.contains('selected')).toBe(true);
@@ -36,8 +37,8 @@ describe('account-app view rendering', () => {
 
         await Promise.resolve();
 
-        expect(element.querySelector('.title').textContent).toBe('Account Settings');
-        expect(element.querySelector('.account-content').textContent).toContain('settings');
+        expect(element.querySelector('.title')?.textContent).toBe('Account Settings');
+        expect(element.querySelector('.account-content')?.textContent).toContain('settings');
         const settingsLink = element.querySelector(`a[href="#/account/settings"]`);
         expect(settingsLink).not.toBeNull();
         expect(settingsLink?.classList.contains('selected')).toBe(true);

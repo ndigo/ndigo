@@ -79,7 +79,7 @@ export abstract class AbstractWebComponent
         for (const [selector, methodName] of typeMap.entries()) {
             const target = (event.target as HTMLElement).closest(selector);
             if (target && this.contains(target)) {
-                const method = (this as any)[methodName];
+                const method = (this as Record<string, unknown>)[methodName];
                 if (typeof method === 'function') {
                     method.call(this, event);
                 }
@@ -98,7 +98,7 @@ export abstract class AbstractWebComponent
      * @param data - Event payload values.
      * @returns `true` when the event was dispatched.
      */
-    emit(type: EventType, ...data: any[]): boolean {
+    emit(type: EventType, ...data: unknown[]): boolean {
         const event = new CustomEvent(type.toString(), {
             detail: data.length === 1 ? data[0] : data,
             bubbles: true,
@@ -201,8 +201,10 @@ export abstract class AbstractWebComponent
         // Handle standard event removal
         const typeMap = this.#wrappedListeners.get(typeStr);
         if (typeMap && typeMap.has(listener as Function)) {
-            const wrapped = typeMap.get(listener as Function)!;
-            this.removeEventListener(typeStr, wrapped);
+            const wrapped = typeMap.get(listener as Function);
+            if (wrapped) {
+                this.removeEventListener(typeStr, wrapped);
+            }
             typeMap.delete(listener as Function);
 
             if (typeMap.size === 0) {
@@ -253,18 +255,18 @@ export abstract class AbstractWebComponent
      * @param props - A record of properties to apply to the element.
      * @returns The created HTMLElement.
      */
-    create(tag: string, props: Record<string, any> = {}): HTMLElement {
+    create(tag: string, props: Record<string, unknown> = {}): HTMLElement {
         const element = document.createElement(tag);
 
         for (const [key, value] of Object.entries(props)) {
             if (key === 'className') {
-                element.className = value;
+                element.className = String(value);
             } else if (key === 'textContent') {
-                element.textContent = value;
+                element.textContent = String(value);
             } else if (key === 'id') {
-                element.id = value;
+                element.id = String(value);
             } else {
-                element.setAttribute(key, value);
+                element.setAttribute(key, String(value));
             }
         }
 

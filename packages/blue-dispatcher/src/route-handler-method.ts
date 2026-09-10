@@ -7,14 +7,14 @@ import { MethodParameter } from './parameters';
 import { getRouteMapping } from './route-mapping';
 
 export interface Invocable {
-    invoke<T = any>(...args: any): T;
+    invoke<T = unknown>(...args: unknown[]): T;
 }
 
 export interface HandlerMethod extends Invocable {
-    invoke<ModelAndView>(route: Route, ...args: any): ModelAndView;
+    invoke<ModelAndView>(route: Route, ...args: unknown[]): ModelAndView;
 }
 
-export interface RouteHandlerMethodMappingNamingStrategy<T = any> {
+export interface RouteHandlerMethodMappingNamingStrategy<T = unknown> {
     getName(handlerMethod: RouteHandlerMethod, mapping: T): string;
 }
 
@@ -23,7 +23,6 @@ export interface RouteHandlerMethodMappingNamingStrategy<T = any> {
 
 /**
  * Encapsulates information about a handler method consisting of a `method` and `handler`.
- * @extends module:dispatcher.Invocable
  */
 
 /**
@@ -48,14 +47,16 @@ export class RouteHandlerMethod implements HandlerMethod, Serializable {
     parameters!: MethodParameter[];
     argumentResolvers!: HandlerMethodArgumentResolver[];
 
-    constructor(handler: object, method: string, ...args: any[]);
-    constructor(factory: Factory, name: string, method: string, ...args: any[]);
-    constructor(factoryOrHandler: Factory | object, nameOrMethod: string, ...args: any[]) {
+    constructor(handler: object, method: string, ...args: unknown[]);
+    constructor(factory: Factory, name: string, method: string, ...args: unknown[]);
+    constructor(factoryOrHandler: Factory | object, nameOrMethod: string, ...args: unknown[]) {
         if (likeFactory(factoryOrHandler)) {
             this.factory = factoryOrHandler;
             this.name = nameOrMethod;
             this.handler = this.factory.getInstance(this.name);
-            this.method = args.shift();
+            const method = args.shift();
+            // Factory path stores the method name as the first variadic arg.
+            this.method = typeof method === 'string' ? method : '';
         } else {
             this.factory = null;
             this.name = null;
@@ -63,14 +64,14 @@ export class RouteHandlerMethod implements HandlerMethod, Serializable {
             this.method = nameOrMethod;
         }
 
-        this.parameters = args.length ? args : [];
+        this.parameters = args.filter((arg) => arg instanceof MethodParameter);
     }
 
     /**
      * @param {module:router.Request} route
      * @returns {module:dispatcher.ModelAndView}
      */
-    invoke<ModelAndView>(route: Route, ...foo: any[]): ModelAndView {
+    invoke<ModelAndView>(route: Route, ...foo: unknown[]): ModelAndView {
         /**
          * * Hardcoding route as a parameter is a bit of a cop-out. It would be better to allow them to pick parameters, etc. as arguments.
          */
@@ -92,7 +93,7 @@ export class RouteHandlerMethod implements HandlerMethod, Serializable {
             // the Route object itself is not auto-injected.
         }
 
-        return (this.handler as any)[this.method](...args);
+        return (this.handler as Record<string, Function>)[this.method](...args);
     }
 
     /**
@@ -104,7 +105,6 @@ export class RouteHandlerMethod implements HandlerMethod, Serializable {
 }
 
 /**
- * @extends module:router.RouteHandlerMethod
  */
 export class ErrorHandlerMethod extends RouteHandlerMethod {
     invoke<ModelAndView>(route: Route, error: Error, handlerMethod: RouteHandlerMethod): ModelAndView {

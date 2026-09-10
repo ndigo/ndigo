@@ -3,12 +3,11 @@ import { GenericApplicationContext } from './generic-application-context';
 
 /**
 
- * @extends module:context.GenericApplicationContext
  *
  * Application context proxy that exposes values as dynamic object properties.
  */
-export class ProxiedGenericApplicationContext extends GenericApplicationContext implements Record<string, any> {
-    [key: string]: any;
+export class ProxiedGenericApplicationContext extends GenericApplicationContext implements Record<string, unknown> {
+    [key: string]: unknown;
 
     /**
      * Creates a proxied context that forwards property access to values.
@@ -31,14 +30,14 @@ export class ProxiedGenericApplicationContext extends GenericApplicationContext 
                     return false;
                 }
             },
-            get(_t, key: PropertyKey): any {
+            get(_t, key: PropertyKey): unknown {
                 const value = target.getValue(key as string);
                 return typeof value === 'function' ? value.bind(target) : value;
             },
             has(_t, key: PropertyKey): boolean {
                 return target.hasValue(key as string);
             },
-            set(_t, key: PropertyKey, value: any): boolean {
+            set(_t, key: PropertyKey, value: unknown): boolean {
                 try {
                     target.setValue(key as string, value);
                     return true;

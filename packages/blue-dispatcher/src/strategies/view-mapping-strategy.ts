@@ -3,7 +3,7 @@ import { Constructable } from '@blue/core';
 import { StrategyInitializer } from './strategy-initializer';
 
 export interface ViewMappingStrategy {
-    viewMapping: any;
+    viewMapping: unknown;
     initViewMapping(context: ApplicationContext): void;
 }
 
@@ -18,7 +18,7 @@ export const AsViewMappingStrategy = <T extends Constructable<StrategyInitialize
     class extends superclass implements ViewMappingStrategy {
         readonly viewMappingKey = 'viewMapping';
 
-        viewMapping!: any;
+        viewMapping!: unknown;
 
         initViewMapping(context: ApplicationContext) {
             const { viewMappingKey } = this;

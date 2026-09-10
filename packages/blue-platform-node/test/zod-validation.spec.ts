@@ -13,11 +13,7 @@ import {
     ZodValidationError,
     RouteErrorResolver,
 } from '@blue/dispatcher';
-import {
-    MetadataConfigApplicationContext,
-    configuration,
-    entry,
-} from '@blue/context';
+import { MetadataConfigApplicationContext, configuration, entry } from '@blue/context';
 import { NodeDispatcher } from '../src/node-dispatcher';
 import { NodeBodyValueMethodArgumentResolver } from '../src/body-argument-resolver';
 import { NodeQueryValueMethodArgumentResolver } from '../src/query-argument-resolver';
@@ -38,7 +34,12 @@ type TestApp = { dispatcher: NodeDispatcher; context: MetadataConfigApplicationC
 type ConfigClass = new () => object;
 
 /** Build a fully-typed route for the Node dispatcher. */
-const nodeRoute = (path: string, data: Record<string, unknown>, attributes: Record<string, unknown>, segments: string[]): Route => {
+const nodeRoute = (
+    path: string,
+    data: Record<string, unknown>,
+    attributes: Record<string, unknown>,
+    segments: string[]
+): Route => {
     const route: Route = {
         path,
         raw: path,
@@ -71,10 +72,7 @@ async function boot(configClass: ConfigClass): Promise<TestApp> {
     return { dispatcher, context };
 }
 
-const dispatcherConfig = (
-    controller: ConfigClass,
-    errorResolvers: RouteErrorResolver[] = []
-): ConfigClass => {
+const dispatcherConfig = (controller: ConfigClass, errorResolvers: RouteErrorResolver[] = []): ConfigClass => {
     @configuration
     class C {
         @entry controller() {
@@ -119,8 +117,8 @@ describe('Zod validation over the Node argument pipeline', () => {
 
         // z.coerce.number() ran after binding — proves validatedBy's convert hook fired.
         expect(captured).toBeDefined();
-        expect(captured!.name).toBe('Jeff');
-        expect(captured!.age).toBe(30);
+        expect(captured?.name).toBe('Jeff');
+        expect(captured?.age).toBe(30);
     });
 
     it('validates a per-field query parameter', async () => {
@@ -191,8 +189,8 @@ describe('Zod validation over the Node argument pipeline', () => {
         // z.coerce.number() ran on the whole query object — proves the '*'
         // whole-query binding and the convert hook both fire.
         expect(captured).toBeDefined();
-        expect(captured!.page).toBe(2);
-        expect(captured!.q).toBe('hello');
+        expect(captured?.page).toBe(2);
+        expect(captured?.q).toBe('hello');
     });
 
     it('surfaces an invalid whole query as a ParameterConversionError', async () => {
@@ -285,7 +283,10 @@ describe('Zod validation over the Node argument pipeline', () => {
         }
 
         const app = await boot(dispatcherConfig(SubscribeController, [new ErrorCapturingResolver()]));
-        const route = nodeRoute('/subscribe/', { email: 'definitely-not-an-email' }, bodyRequest({}), ['subscribe', '']);
+        const route = nodeRoute('/subscribe/', { email: 'definitely-not-an-email' }, bodyRequest({}), [
+            'subscribe',
+            '',
+        ]);
 
         await app.dispatcher.dispatch(route);
 

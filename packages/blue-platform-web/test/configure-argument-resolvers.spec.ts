@@ -1,12 +1,13 @@
 import { describe, expect, test } from 'vitest';
 import { MetadataConfigApplicationContext, configuration, entry } from '@blue/context';
+import { HandlerMethodArgumentResolver, MethodParameter, MethodParameterType } from '@blue/dispatcher';
+import { Route } from '@blue/router';
 import { configureBrowserArgumentResolvers } from '../src/configure-argument-resolvers';
 import { BrowserCookieValueMethodArgumentResolver } from '../src/cookie-argument-resolver';
 import { BrowserModelValueMethodArgumentResolver } from '../src/model-argument-resolver';
 import { BrowserStateValueMethodArgumentResolver } from '../src/state-argument-resolver';
 import { BrowserSessionValueMethodArgumentResolver } from '../src/session-argument-resolver';
 import { BrowserBindMethodArgumentResolver } from '../src/bind-argument-resolver';
-import { MethodParameter, MethodParameterType } from '@blue/dispatcher';
 
 describe('configureBrowserArgumentResolvers', () => {
     test('registers browser argument resolvers in context', () => {
@@ -56,10 +57,14 @@ describe('configureBrowserArgumentResolvers', () => {
         const context = new MetadataConfigApplicationContext('test');
         configureBrowserArgumentResolvers(context);
 
-        const resolvers = context.getValue<any[]>('argumentResolvers');
+        const resolvers: HandlerMethodArgumentResolver[] =
+            context.getValue<HandlerMethodArgumentResolver[]>('argumentResolvers');
         const stateResolver = resolvers.find((r) =>
             r.supportsParameter(new MethodParameter(MethodParameterType.STATE, 'count'))
         );
+        if (!stateResolver) {
+            throw new Error('state resolver not registered');
+        }
 
         // Mock history.state to return an object with count property
         const originalState = globalThis.history?.state;
@@ -69,7 +74,7 @@ describe('configureBrowserArgumentResolvers', () => {
             source: String,
             target: Number,
         });
-        const value = stateResolver.resolveArgument(parameter, {} as any, {} as any);
+        const value = stateResolver.resolveArgument(parameter, {} as unknown as Route, {});
 
         expect(value).toBe(123);
 

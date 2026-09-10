@@ -1,10 +1,10 @@
-import { describe, test, expect, beforeEach, afterEach, vi } from 'vitest';
-import { Emitter } from '@blue/context';
+import { describe, test, expect, beforeEach, afterEach, vi, Mock } from 'vitest';
+import { Emitter, EventEmitter } from '@blue/context';
 import { OfflineInterceptor } from '../src/offline-interceptor';
 
 describe('OfflineInterceptor', () => {
-    let emitter: any;
-    let onLineSpy: any;
+    let emitter: EventEmitter;
+    let onLineSpy: Mock<() => boolean>;
 
     beforeEach(() => {
         emitter = new Emitter();
@@ -26,11 +26,15 @@ describe('OfflineInterceptor', () => {
 
     test('should emit offline event when window offline event fires', () => {
         const interceptor = new OfflineInterceptor({}, emitter);
-        const offlineHandler = (
-            vi.mocked(window.addEventListener).mock.calls.find((call: any[]) => call[0] === 'offline') as any[]
-        )[1];
+        const offlineCall = (
+            vi.mocked(window.addEventListener).mock.calls as unknown as Array<[string, () => void]>
+        ).find((call) => call[0] === 'offline');
+        if (!offlineCall) {
+            throw new Error('offline listener was not registered');
+        }
+        const offlineHandler = offlineCall[1];
 
-        let emittedEvent: any = null;
+        let emittedEvent: unknown = null;
         emitter.on('offline', (data) => {
             emittedEvent = data;
         });
@@ -46,12 +50,16 @@ describe('OfflineInterceptor', () => {
         onLineSpy.mockReturnValue(false);
         const interceptor = new OfflineInterceptor({}, emitter);
 
-        const onlineHandler = (
-            vi.mocked(window.addEventListener).mock.calls.find((call: any[]) => call[0] === 'online') as any[]
-        )[1];
+        const onlineCall = (
+            vi.mocked(window.addEventListener).mock.calls as unknown as Array<[string, () => void]>
+        ).find((call) => call[0] === 'online');
+        if (!onlineCall) {
+            throw new Error('online listener was not registered');
+        }
+        const onlineHandler = onlineCall[1];
 
-        let emittedEvent: any = null;
-        emitter.on('online', (data: any) => {
+        let emittedEvent: unknown = null;
+        emitter.on('online', (data: unknown) => {
             emittedEvent = data;
         });
 
@@ -64,7 +72,7 @@ describe('OfflineInterceptor', () => {
     test('should update status via heartbeat when navigator.onLine changes', () => {
         const interceptor = new OfflineInterceptor({ checkInterval: 1000 }, emitter);
 
-        let emittedEvent: any = null;
+        let emittedEvent: unknown = null;
         emitter.on('offline', (data) => {
             emittedEvent = data;
         });

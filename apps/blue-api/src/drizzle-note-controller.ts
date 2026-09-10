@@ -1,4 +1,12 @@
-import { getMapping, postMapping, parameters, headerValue, pathVariable, validatedBody, requestMapping } from '@blue/dispatcher';
+import {
+    getMapping,
+    postMapping,
+    parameters,
+    headerValue,
+    pathVariable,
+    validatedBody,
+    requestMapping,
+} from '@blue/dispatcher';
 import { ResponseEntity } from '@blue/platform-node';
 import { insertSchemaForEntity } from '@blue/orm';
 import { DrizzleDataSource, DrizzleEntityManager } from '@blue/orm-drizzle';

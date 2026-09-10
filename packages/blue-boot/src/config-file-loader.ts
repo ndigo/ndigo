@@ -115,6 +115,7 @@ export class StandardConfigFileLoader {
             for (const rawLocation of this.#locations) {
                 const { path: location, optional, required: requiredLocation } = stripPrefix(rawLocation.trim());
                 required ||= requiredLocation;
+                // oxlint-disable-next-line no-await-in-loop -- first-present-wins: locations must be probed in order so an earlier hit stops the search.
                 if (await loadFile(`${withTrailingSlash(location)}${fileName}.json`, required && !optional))
                     return true;
             }
@@ -127,16 +128,22 @@ export class StandardConfigFileLoader {
         };
 
         await addLocation(this.#baseName);
+        // Profile order is meaningful: later profiles must not shadow earlier
+        // ones, so each is resolved (and may throw) before the next loads.
         for (const profile of environment.activeProfiles) {
+            // oxlint-disable-next-line no-await-in-loop -- activeProfiles are first-present-wins and ordered; parallelizing would race the merge semantics.
             await addLocation(`${this.#baseName}-${profile}`);
         }
 
         const importValue = process.env.BLUE_CONFIG_IMPORT;
         if (importValue) {
+            // Imports load in declaration order and share the same
+            // first-present-wins source chain, so they must stay sequential.
             for (const spec of importValue.split(',')) {
                 const trimmed = spec.trim();
                 if (!trimmed) continue;
                 const { path, optional } = stripPrefix(trimmed);
+                // oxlint-disable-next-line no-await-in-loop -- imports resolve into one ordered source chain; parallel loads would race last-writer semantics.
                 await loadFile(path, !optional);
             }
         }

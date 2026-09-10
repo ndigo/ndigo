@@ -59,7 +59,7 @@ export class RouteMappingInfo implements RouteCondition<RouteMappingInfo> {
         patterns: PatternsRouteCondition = new PatternsRouteCondition(),
         params: QueryParamCondition = new QueryParamCondition(),
         matrix: MatrixParamCondition = new MatrixParamCondition(),
-        custom: RouteCondition<any> | null = null,
+        custom: RouteCondition<unknown> | null = null,
         access: AccessControlCondition | null = null,
         method: HTTPMethodCondition = new HTTPMethodCondition()
     ) {

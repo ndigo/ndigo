@@ -11,7 +11,7 @@ import isFunction from './is-function.js';
  * @returns {boolean} Whether or not `value` is a constructor.
  * @category Type
  */
-const isConstructor = (value: any): value is Function => {
+const isConstructor = (value: unknown): value is Function => {
     if (!isFunction(value)) return false;
 
     try {

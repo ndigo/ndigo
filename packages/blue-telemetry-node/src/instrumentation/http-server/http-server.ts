@@ -39,9 +39,11 @@ export class HTTPServerInstrumentation extends AbstractBaseInstrumentation {
             this._patchAsync({
                 name: 'HTTPServer.start',
                 kind: SpanKind.SERVER,
-                attributes: (instance: HTTPServer) => ({
-                    'server.port': instance.port,
-                }),
+                attributes: (instance: unknown) => {
+                    // The patched `start`/`close` target is always the server.
+                    const server = instance as HTTPServer;
+                    return { 'server.port': server.port };
+                },
             })
         );
 
@@ -51,9 +53,11 @@ export class HTTPServerInstrumentation extends AbstractBaseInstrumentation {
             this._patchAsync({
                 name: 'HTTPServer.close',
                 kind: SpanKind.INTERNAL,
-                attributes: (instance: HTTPServer) => ({
-                    'server.port': instance.port,
-                }),
+                attributes: (instance: unknown) => {
+                    // The patched `start`/`close` target is always the server.
+                    const server = instance as HTTPServer;
+                    return { 'server.port': server.port };
+                },
             })
         );
 
@@ -65,7 +69,7 @@ export class HTTPServerInstrumentation extends AbstractBaseInstrumentation {
             this._patchAsync({
                 name: 'HTTPServer.handleRequest',
                 kind: SpanKind.SERVER,
-                attributes: (_instance: NodeHTTPServerAdapter, args: unknown[]) => {
+                attributes: (_instance: unknown, args: unknown[]) => {
                     const req = args[0] as IncomingMessage | undefined;
                     return {
                         'http.request.method': req?.method ?? 'GET',

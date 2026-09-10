@@ -2,7 +2,7 @@ import { describe, test, expect, beforeEach, vi } from 'vitest';
 import { likeRegistry, RegistryProxyHandler, Registry } from '../src/registry';
 
 const createMockRegistry = () => {
-    const store = new Map<string, any>();
+    const store = new Map<string, unknown>();
 
     return {
         destroyValue: vi.fn((name: string) => {
@@ -10,7 +10,7 @@ const createMockRegistry = () => {
         }),
         getValue: vi.fn((name: string) => store.get(name)),
         hasValue: vi.fn((name: string) => store.has(name)),
-        setValue: vi.fn((name: string, value: any) => {
+        setValue: vi.fn((name: string, value: unknown) => {
             store.set(name, value);
         }),
     };

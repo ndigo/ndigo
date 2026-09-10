@@ -45,13 +45,13 @@ export function shared(options?: SharedOptions): (target: Function, context: Cla
  * @param target - Class constructor, prototype, or instance.
  * @returns The `SharedOptions` if the class is marked `@shared`, or `undefined`.
  */
-export function getSharedOptions(target: any): SharedOptions | undefined {
-    const meta =
-        typeof target === 'function' && target[Symbol.metadata]
-            ? target[Symbol.metadata]
-            : target?.constructor?.[Symbol.metadata];
+export function getSharedOptions(target: unknown): SharedOptions | undefined {
+    const carrier = (typeof target === 'function' ? target : target?.constructor) as
+        | { [Symbol.metadata]?: Record<string, unknown> }
+        | undefined;
 
-    return meta?.[SHARED_KEY];
+    // Metadata polyfill guarantees a record on decorated classes; read and cast once.
+    return carrier?.[Symbol.metadata]?.[SHARED_KEY] as SharedOptions | undefined;
 }
 
 /**
@@ -60,7 +60,7 @@ export function getSharedOptions(target: any): SharedOptions | undefined {
  * @param target - Class constructor, prototype, or instance.
  * @returns `true` if the class is decorated with `@shared`.
  */
-export function isShared(target: any): boolean {
+export function isShared(target: unknown): boolean {
     return getSharedOptions(target) !== undefined;
 }
 

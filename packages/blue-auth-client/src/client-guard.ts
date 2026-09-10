@@ -19,10 +19,8 @@ export function extractAuthMetadata(handler: object | undefined): AuthRouteMetad
     // constructor[Symbol.metadata] is a runtime TC39 decorator property
     // that TS 5.7's Function type doesn't declare. The property exists on
     // every decorated class's constructor at runtime.
-    const metadata: Record<string, unknown> = ((handler?.constructor as any)?.[Symbol.metadata] ?? {}) as Record<
-        string,
-        unknown
-    >;
+    const metadata: Record<string, unknown> =
+        (handler?.constructor as { [Symbol.metadata]?: Record<string, unknown> } | undefined)?.[Symbol.metadata] ?? {};
     const methodName: string | null =
         typeof (handler as unknown as Record<string, unknown>)?.method === 'string'
             ? ((handler as unknown as Record<string, unknown>).method as string)
@@ -79,8 +77,10 @@ export class ClientAuthGuard {
             return this.#loginRedirect;
         }
 
-        if (metadata.requiredRoles.length > 0 && this.#authClient.principal) {
-            const hasRequiredRoles = metadata.requiredRoles.every((role) => this.#authClient.principal!.hasRole(role));
+        const principal = this.#authClient.principal;
+        if (metadata.requiredRoles.length > 0 && principal) {
+            // Narrowed local so the `.every` callback closes over a non-null principal.
+            const hasRequiredRoles = metadata.requiredRoles.every((role) => principal.hasRole(role));
             if (!hasRequiredRoles) {
                 return this.#forbiddenRedirect;
             }

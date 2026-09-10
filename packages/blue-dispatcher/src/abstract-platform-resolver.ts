@@ -10,14 +10,14 @@ import { MethodParameter } from './parameters';
  * so that the shared `resolveArgument` pipeline can remain platform-agnostic.
  */
 export type ConvertArgumentValueFn = (
-    convertType: { source: any; target: any } | undefined,
-    value: any,
+    convertType: { source: unknown; target: unknown } | undefined,
+    value: unknown,
     parameter: MethodParameter,
     route: Route,
-    mapping: any,
-    registry?: any,
-    options?: any
-) => any;
+    mapping: unknown,
+    registry?: unknown,
+    options?: unknown
+) => unknown;
 
 /**
  * Shared base class for platform argument resolvers.
@@ -53,8 +53,8 @@ export abstract class AbstractPlatformArgumentResolver extends AbstractNamedValu
      * values. Without this invocation the hook was dead on every resolver
      * extending this base — only the BIND path invoked it.
      */
-    resolveArgument(parameter: MethodParameter, route: Route, mapping: any): any {
-        const resolveValue = (v: any) => v ?? parameter.defaultValue,
+    resolveArgument(parameter: MethodParameter, route: Route, mapping: unknown): unknown {
+        const resolveValue = (v: unknown) => v ?? parameter.defaultValue,
             value = resolveValue(this.resolveName(parameter.name, parameter, route, mapping)),
             convertedValue = this.#convertFn(parameter.convertType, value, parameter, route, mapping),
             validatedValue = parameter.convert ? parameter.convert(convertedValue) : convertedValue;

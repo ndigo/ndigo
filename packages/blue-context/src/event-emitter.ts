@@ -23,11 +23,12 @@ import {
     removeEventListener,
     tickAllEvents,
 } from './_event-emitter-helpers';
+import type { EmitterWithStore } from './_event-emitter-helpers';
 
 /**
  * Listener function shape used by the emitter implementation.
  */
-export type EventListener = { (...args: any[]): void; listener?: EventListener };
+export type EventListener = { (...args: unknown[]): void; listener?: EventListener };
 
 /**
  * A single listener or a listener list for an event type.
@@ -55,7 +56,7 @@ export interface EventEmitter {
      * @param data - Event payload values.
      * @returns `true` when at least one listener ran.
      */
-    emit(type: EventType, ...data: any[]): boolean;
+    emit(type: EventType, ...data: unknown[]): boolean;
     /**
      * Returns the event types with registered listeners.
      *
@@ -105,7 +106,7 @@ export interface AsyncEventEmitter extends EventEmitter {
      * @param data - Event payload values.
      * @returns A promise that resolves after dispatch.
      */
-    tick(type: EventType, ...data: any[]): Promise<void>;
+    tick(type: EventType, ...data: unknown[]): Promise<void>;
 }
 
 /**
@@ -205,7 +206,7 @@ export const likeEventEmitter = like({
          * @param data - Event payload values.
          * @returns A promise that resolves after dispatch.
          */
-        async tick(type: string | symbol, ...data: any[]): Promise<void> {
+        async tick(type: string | symbol, ...data: unknown[]): Promise<void> {
             return tickAllEvents(this, type, data);
         }
     };
@@ -362,7 +363,7 @@ export const AsEventEmitter = <T extends Constructable>(superclass: T): Construc
          * @param data - Event payload values.
          * @returns `true` when at least one listener ran.
          */
-        emit(type: string | symbol, ...data: any[]): boolean {
+        emit(type: string | symbol, ...data: unknown[]): boolean {
             return emitAllEvents(this, type, data);
         }
 
@@ -382,13 +383,14 @@ export const AsEventEmitter = <T extends Constructable>(superclass: T): Construc
          * @returns The listener count.
          */
         listenerCount(type: string | symbol): number {
+            const registered = (this as EmitterWithStore)[$events]?.[type];
             let count: number;
-            if (!(this as any)[$events] || !(this as any)[$events][type]) {
+            if (!registered) {
                 count = 0;
-            } else if (typeof (this as any)[$events][type] === 'function') {
+            } else if (typeof registered === 'function') {
                 count = 1;
             } else {
-                count = (this as any)[$events][type].length;
+                count = registered.length;
             }
             return count;
         }
@@ -402,18 +404,14 @@ export const AsEventEmitter = <T extends Constructable>(superclass: T): Construc
         listeners(type: string | symbol): Function[] {
             let listeners: EventListener[];
 
-            if (!(this as any)[$events] || !(this as any)[$events][type]) {
-                listeners = [];
-            } else {
-                const handler: EventHandler = (this as any)[$events][type];
+            const handler: EventHandler | undefined = (this as EmitterWithStore)[$events]?.[type];
 
-                if (typeof handler === 'undefined') {
-                    listeners = [];
-                } else if (typeof handler === 'function') {
-                    listeners = [handler];
-                } else {
-                    listeners = handler.slice();
-                }
+            if (typeof handler === 'undefined') {
+                listeners = [];
+            } else if (typeof handler === 'function') {
+                listeners = [handler];
+            } else {
+                listeners = handler.slice();
             }
 
             return listeners;
@@ -458,7 +456,7 @@ export const AsEventEmitter = <T extends Constructable>(superclass: T): Construc
                 throw new TypeError('listener must be a function');
             }
 
-            if (!(this as any)[$events] || !(this as any)[$events][type]) {
+            if (!(this as EmitterWithStore)[$events]?.[type]) {
                 return this;
             }
 
@@ -513,7 +511,7 @@ export class Emitter extends AsEventEmitter(Null) implements Destroyable, Serial
      */
     toJSON(): JSONValue {
         const json: { listenerCount?: { [type: string]: number } } = createNull();
-        const types = keys((this as any)[$events] || createNull());
+        const types = keys((this as EmitterWithStore)[$events] || createNull());
 
         const listenerCount: { [type: string]: number } = createNull();
         for (let index = 0; index < types.length; index += 1) {
@@ -531,7 +529,9 @@ export class Emitter extends AsEventEmitter(Null) implements Destroyable, Serial
      * @returns A string representation.
      */
     toString(): string {
-        return `${(this as any)[Symbol.toStringTag]} ${JSON.stringify(this.toJSON())}`.trim();
+        // The mixin always installs a `Symbol.toStringTag` getter.
+        const self = this as unknown as { [Symbol.toStringTag]: string };
+        return `${self[Symbol.toStringTag]} ${JSON.stringify(this.toJSON())}`.trim();
     }
 
     /**
@@ -591,8 +591,10 @@ export const asEventEmitter = <TTarget extends object>(target: TTarget): TTarget
     });
 
     const forward = (key: keyof EventEmitter) =>
-        function (this: EventEmitter, ...args: any[]) {
-            return ((this as any)[$events] as any)[key](...args);
+        function (this: EventEmitter, ...args: unknown[]) {
+            // The stored value under $events is the backing Emitter instance.
+            const backingEmitter = (this as EventEmitterTarget)[$events] as EventEmitter;
+            return (backingEmitter[key] as (...args: unknown[]) => unknown).call(backingEmitter, ...args);
         };
 
     (['emit', 'eventTypes', 'listenerCount', 'listeners', 'off', 'on'] as (keyof EventEmitter)[]).forEach((key) => {

@@ -3,6 +3,7 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import { toAccountShellRoute, toTodoShellRoute } from '../src/shell-composition';
 import '../src/todo-app-view';
+import type MyTodoApp from '../src/todo-app-view';
 import '../src/todo-input-view';
 import '../src/todo-item-view';
 
@@ -17,11 +18,11 @@ vi.spyOn(global, 'requestAnimationFrame').mockImplementation((cb: FrameRequestCa
 });
 
 describe('todo-app view filtering', () => {
-    let element: any;
+    let element: MyTodoApp;
 
     beforeEach(() => {
         document.body.innerHTML = '';
-        element = document.createElement('todo-app');
+        element = document.createElement('todo-app') as MyTodoApp;
         document.body.appendChild(element);
     });
 
@@ -41,8 +42,8 @@ describe('todo-app view filtering', () => {
         const allLink = element.querySelector(`a[href="#${toTodoShellRoute('/')}"]`);
         const activeLink = element.querySelector(`a[href="#${toTodoShellRoute('/active')}"]`);
         const accountLink = element.querySelector(`a[href="#${toAccountShellRoute('/')}"]`);
-        expect(allLink.classList.contains('selected')).toBe(true);
-        expect(activeLink.classList.contains('selected')).toBe(false);
+        expect(allLink?.classList.contains('selected')).toBe(true);
+        expect(activeLink?.classList.contains('selected')).toBe(false);
         expect(accountLink).not.toBeNull();
     });
 
@@ -90,9 +91,9 @@ describe('todo-app view filtering', () => {
         expect(input).not.toBeNull();
         expect(item).not.toBeNull();
 
-        input!.dispatchEvent(new CustomEvent('onSubmit', { detail: 'new item', bubbles: true }));
-        item!.dispatchEvent(new CustomEvent('onRemove', { detail: 0, bubbles: true }));
-        item!.dispatchEvent(new CustomEvent('onToggle', { detail: 0, bubbles: true }));
+        input?.dispatchEvent(new CustomEvent('onSubmit', { detail: 'new item', bubbles: true }));
+        item?.dispatchEvent(new CustomEvent('onRemove', { detail: 0, bubbles: true }));
+        item?.dispatchEvent(new CustomEvent('onToggle', { detail: 0, bubbles: true }));
 
         expect(submitSpy).toHaveBeenCalledTimes(1);
         expect(removeSpy).toHaveBeenCalledTimes(1);

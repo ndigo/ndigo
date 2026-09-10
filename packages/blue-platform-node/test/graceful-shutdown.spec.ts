@@ -4,8 +4,7 @@ import type { ApplicationContext } from '@blue/context';
 import { gracefulShutdown, type Closable } from '../src/graceful-shutdown';
 
 /** A context stand-in whose `close()` is a spy. */
-const mockContext = (): ApplicationContext =>
-    ({ close: vi.fn() }) as unknown as ApplicationContext;
+const mockContext = (): ApplicationContext => ({ close: vi.fn() }) as unknown as ApplicationContext;
 
 /** A resource whose `close()` never settles — simulates a hung drain. */
 const hangingResource = (): Closable => ({ close: () => new Promise<void>(() => {}) });
@@ -41,8 +40,16 @@ describe('gracefulShutdown', () => {
     test('closes resources in order, then the context, then exits 0', async () => {
         const context = mockContext();
         const order: string[] = [];
-        const a: Closable = { close: () => { order.push('a'); } };
-        const b: Closable = { close: async () => { order.push('b'); } };
+        const a: Closable = {
+            close: () => {
+                order.push('a');
+            },
+        };
+        const b: Closable = {
+            close: async () => {
+                order.push('b');
+            },
+        };
 
         stop = gracefulShutdown(context, { resources: [a, b], timeoutMs: 1000 });
         const code = waitForExit();

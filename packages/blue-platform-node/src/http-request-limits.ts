@@ -71,6 +71,24 @@ export function resolveHTTPRequestLimits(limits?: HTTPRequestLimits): ResolvedHT
 }
 
 /**
+ * Transport-level request failure with a deterministic status mapping
+ * (`413` oversized body, `408` timeout, `400` malformed input, …). Thrown by
+ * the request pipeline so the adapter can map it to a problem document
+ * without ever leaking internals to the client.
+ */
+export class RequestLimitError extends Error {
+    readonly statusCode: number;
+    readonly code: string;
+
+    constructor(statusCode: number, code: string, message: string) {
+        super(message);
+        this.name = 'RequestLimitError';
+        this.statusCode = statusCode;
+        this.code = code;
+    }
+}
+
+/**
  * Body parse outcomes. Malformed input is a `400` (never silently reshaped).
  */
 export type BodyParseResult =
@@ -92,7 +110,7 @@ export function parseBody(contentType: string | undefined, raw: Buffer): BodyPar
         const text = raw.toString('utf-8');
         const parsed: unknown = JSON.parse(text);
         if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) {
-            throw new TypeError('JSON body must be an object');
+            throw new RequestLimitError(400, 'malformed_body', 'JSON body must be an object');
         }
         return { kind: 'json', value: parsed as Record<string, unknown> };
     }

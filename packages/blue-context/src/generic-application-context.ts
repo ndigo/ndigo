@@ -176,7 +176,7 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
      * @param type - The event type.
      * @param data - Event payload values.
      */
-    broadcast(type: EventType, ...data: any[]): void {
+    broadcast(type: EventType, ...data: unknown[]): void {
         direct<ApplicationContext>(
             this as unknown as ApplicationContext,
             (targetContext) => targetContext.emit(type, ...data),
@@ -190,7 +190,7 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
      * @param type - The event type.
      * @param data - Event payload values.
      */
-    bubble(type: EventType, ...data: any[]): void {
+    bubble(type: EventType, ...data: unknown[]): void {
         escalate<ApplicationContext>(this, (parentContext) => parentContext.emit(type, ...data), true);
     }
 
@@ -449,10 +449,7 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
                 // internal state fields and container references (`root` may
                 // point at an ancestor context) never qualify.
                 const value = this[key];
-                if (
-                    !(value instanceof GenericApplicationContext) &&
-                    (likeDestroyable(value) || likeCloseable(value))
-                ) {
+                if (!(value instanceof GenericApplicationContext) && (likeDestroyable(value) || likeCloseable(value))) {
                     names.add(key);
                 }
             }

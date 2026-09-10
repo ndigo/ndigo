@@ -34,7 +34,7 @@ describe('RouteRegistry', () => {
 
     it('registers a route definition', () => {
         const registry = new RouteRegistry();
-        registry.scanSources([], {} as any);
+        registry.scanSources([], {} as never);
         // No source classes with @routeMapping — just verify it doesn't throw
         expect(registry.keys().next().done).toBe(true);
     });
@@ -48,11 +48,11 @@ describe('RouteRegistry', () => {
         }
 
         const registry = new RouteRegistry();
-        registry.scanSources([UsersController], {} as any);
+        registry.scanSources([UsersController], {} as never);
 
         const def = registry.get('users.byId');
         expect(def).toBeDefined();
-        expect(def!.pattern).toBe('/users/{id}');
+        expect(def?.pattern).toBe('/users/{id}');
     });
 
     it('handles root-level class routes', () => {
@@ -63,11 +63,11 @@ describe('RouteRegistry', () => {
         }
 
         const registry = new RouteRegistry();
-        registry.scanSources([IndexController], {} as any);
+        registry.scanSources([IndexController], {} as never);
 
         const def = registry.get('index');
         expect(def).toBeDefined();
-        expect(def!.pattern).toBe('/index');
+        expect(def?.pattern).toBe('/index');
     });
 });
 
@@ -79,7 +79,7 @@ describe('RouteRegistry', () => {
  */
 function routeMapping(route: string | { value: string; name?: string }) {
     const conf = typeof route === 'string' ? { value: route } : route;
-    return function (target: any, context: ClassDecoratorContext | ClassMethodDecoratorContext): any {
+    return function (target: Function, context: ClassDecoratorContext | ClassMethodDecoratorContext): Function | void {
         if (context.kind === 'class') {
             context.metadata['route:mapping'] = conf;
             return target;

@@ -17,18 +17,27 @@ const stache = /\{\{([^}]+)\}\}/g, //mustache-like
      */
     interpolate = (
         template: string,
-        replacements: string | any[] | { [key: string]: any },
+        replacements: string | unknown[] | { [key: string]: unknown },
         syntax: RegExp = stache
     ): string => {
         const replacer = (match: string, value: string) => {
             // Simple nested property access
-            let obj: any = replacements;
+            let obj: unknown = replacements;
             const keys = value.split('.');
             for (const key of keys) {
                 if (obj == null) return '';
-                obj = obj[key];
+                if (typeof obj === 'string') {
+                    // Strings are boxed indexable containers; keep original bracket lookup behavior
+                    obj = (obj as unknown as Record<string, unknown>)[key];
+                } else if (typeof obj === 'object' || typeof obj === 'function') {
+                    const record = obj as Record<string, unknown>;
+                    obj = record[key];
+                } else {
+                    // Primitives other than strings expose no own properties
+                    return '';
+                }
             }
-            return obj ?? '';
+            return typeof obj === 'string' ? obj : String(obj ?? '');
         };
         return (template ?? '').replace(syntax, replacer);
     };

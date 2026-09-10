@@ -46,13 +46,12 @@ export abstract class AbstractPathHandlerMapping extends AbstractHandlerMapping 
     lookUpHandler(path: string, route: Route): RouteHandlerExecutionChain | null {
         const { applicationContext, pathMatcher, useTrailingSlashMatch } = this,
             _handlers = this.#handlers;
-        let handler: MaybeHandler;
-        if (_handlers.has(path)) {
-            handler = _handlers.get(path)!;
 
-            const resolvedHandler = resolveHandlerWithContext(applicationContext)(handler);
+        const directHandler = _handlers.get(path);
+        if (directHandler !== undefined) {
+            const resolvedHandler = resolveHandlerWithContext(applicationContext)(directHandler);
             if (!resolvedHandler) {
-                throw new IllegalStateError(`Could not resolve handler: ${handler} for path "${path}"`);
+                throw new IllegalStateError(`Could not resolve handler: ${directHandler} for path "${path}"`);
             }
 
             return new RouteHandlerExecutionChain(resolvedHandler);
@@ -76,10 +75,10 @@ export abstract class AbstractPathHandlerMapping extends AbstractHandlerMapping 
         }
 
         if (bestMatch) {
-            handler = _handlers.get(bestMatch)!;
+            let handler = _handlers.get(bestMatch);
             if (!handler) {
                 if (bestMatch.endsWith('/')) {
-                    handler = _handlers.get(bestMatch.substring(0, bestMatch.length - 1))!;
+                    handler = _handlers.get(bestMatch.substring(0, bestMatch.length - 1));
                 }
                 if (!handler) {
                     throw new IllegalStateError(`Could not find handler for pattern "${bestMatch}"`);

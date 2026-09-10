@@ -6,18 +6,20 @@ import { MappedResponseCodeHTTPInterceptor } from '../../src/interceptors/respon
 describe('ResponseCodeHTTPInterceptor', () => {
     let http: HTTP | undefined;
     let interceptor: MappedResponseCodeHTTPInterceptor | undefined;
+    let handlers: Record<number, ReturnType<typeof vi.fn>>;
 
     beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
 
     beforeEach(() => {
-        interceptor = new MappedResponseCodeHTTPInterceptor({
+        handlers = {
             100: vi.fn(),
             200: vi.fn(),
             300: vi.fn(),
             400: vi.fn(),
             500: vi.fn(),
-        });
-        http = new HTTP([interceptor as any]);
+        };
+        interceptor = new MappedResponseCodeHTTPInterceptor(handlers);
+        http = new HTTP([interceptor]);
     });
 
     afterEach(() => {
@@ -29,52 +31,47 @@ describe('ResponseCodeHTTPInterceptor', () => {
 
     //! This does not work and I do not know why.
     test.skip('it should handle informational responses', async () => {
-        await http!.request('http://localhost/responseClass/100');
-        const interceptorObj = (http!.interceptors[0] as any).interceptor;
-        expect(interceptorObj[100]).toHaveBeenCalled();
-        expect(interceptorObj[200]).not.toHaveBeenCalled();
-        expect(interceptorObj[300]).not.toHaveBeenCalled();
-        expect(interceptorObj[400]).not.toHaveBeenCalled();
-        expect(interceptorObj[500]).not.toHaveBeenCalled();
+        await http?.request('http://localhost/responseClass/100');
+        expect(handlers[100]).toHaveBeenCalled();
+        expect(handlers[200]).not.toHaveBeenCalled();
+        expect(handlers[300]).not.toHaveBeenCalled();
+        expect(handlers[400]).not.toHaveBeenCalled();
+        expect(handlers[500]).not.toHaveBeenCalled();
     });
 
     test('it should handle successful responses', async () => {
-        await http!.request('http://localhost/responseClass/200');
-        const interceptorObj = (http!.interceptors[0] as any).interceptor;
-        expect(interceptorObj[100]).not.toHaveBeenCalled();
-        expect(interceptorObj[200]).toHaveBeenCalled();
-        expect(interceptorObj[300]).not.toHaveBeenCalled();
-        expect(interceptorObj[400]).not.toHaveBeenCalled();
-        expect(interceptorObj[500]).not.toHaveBeenCalled();
+        await http?.request('http://localhost/responseClass/200');
+        expect(handlers[100]).not.toHaveBeenCalled();
+        expect(handlers[200]).toHaveBeenCalled();
+        expect(handlers[300]).not.toHaveBeenCalled();
+        expect(handlers[400]).not.toHaveBeenCalled();
+        expect(handlers[500]).not.toHaveBeenCalled();
     });
 
     test('it should handle redirect responses', async () => {
-        await http!.request('http://localhost/responseClass/300');
-        const interceptorObj = (http!.interceptors[0] as any).interceptor;
-        expect(interceptorObj[100]).not.toHaveBeenCalled();
-        expect(interceptorObj[200]).not.toHaveBeenCalled();
-        expect(interceptorObj[300]).toHaveBeenCalled();
-        expect(interceptorObj[400]).not.toHaveBeenCalled();
-        expect(interceptorObj[500]).not.toHaveBeenCalled();
+        await http?.request('http://localhost/responseClass/300');
+        expect(handlers[100]).not.toHaveBeenCalled();
+        expect(handlers[200]).not.toHaveBeenCalled();
+        expect(handlers[300]).toHaveBeenCalled();
+        expect(handlers[400]).not.toHaveBeenCalled();
+        expect(handlers[500]).not.toHaveBeenCalled();
     });
 
     test('it should handle client error responses', async () => {
-        await http!.request('http://localhost/responseClass/400');
-        const interceptorObj = (http!.interceptors[0] as any).interceptor;
-        expect(interceptorObj[100]).not.toHaveBeenCalled();
-        expect(interceptorObj[200]).not.toHaveBeenCalled();
-        expect(interceptorObj[300]).not.toHaveBeenCalled();
-        expect(interceptorObj[400]).toHaveBeenCalled();
-        expect(interceptorObj[500]).not.toHaveBeenCalled();
+        await http?.request('http://localhost/responseClass/400');
+        expect(handlers[100]).not.toHaveBeenCalled();
+        expect(handlers[200]).not.toHaveBeenCalled();
+        expect(handlers[300]).not.toHaveBeenCalled();
+        expect(handlers[400]).toHaveBeenCalled();
+        expect(handlers[500]).not.toHaveBeenCalled();
     });
 
     test('it should handle server error responses', async () => {
-        await http!.request('http://localhost/responseClass/500');
-        const interceptorObj = (http!.interceptors[0] as any).interceptor;
-        expect(interceptorObj[100]).not.toHaveBeenCalled();
-        expect(interceptorObj[200]).not.toHaveBeenCalled();
-        expect(interceptorObj[300]).not.toHaveBeenCalled();
-        expect(interceptorObj[400]).not.toHaveBeenCalled();
-        expect(interceptorObj[500]).toHaveBeenCalled();
+        await http?.request('http://localhost/responseClass/500');
+        expect(handlers[100]).not.toHaveBeenCalled();
+        expect(handlers[200]).not.toHaveBeenCalled();
+        expect(handlers[300]).not.toHaveBeenCalled();
+        expect(handlers[400]).not.toHaveBeenCalled();
+        expect(handlers[500]).toHaveBeenCalled();
     });
 });

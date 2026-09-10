@@ -19,8 +19,7 @@ export interface RouteSegment extends Serializable {
  * @since 1.0.0
  */
 export interface Route<TParams extends Record<string, string> = Record<string, string>>
-    extends ArrayLike<RouteSegment>,
-        Serializable {
+    extends ArrayLike<RouteSegment>, Serializable {
     [n: number]: RouteSegment;
 
     data: JSONObject;

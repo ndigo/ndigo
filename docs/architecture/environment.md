@@ -31,7 +31,7 @@ this is the map.
    semantics for defaults. **(P4)**
 6. **One source of truth per contract.** The environment owns what's active
    (`activeProfilesOrDefaults`); `PrecedenceDoc` pins the documented chain;
-   `@environment` schemas *are* the config contract. **(P3, P2, P6)**
+   `@environment` schemas _are_ the config contract. **(P3, P2, P6)**
 7. **No eval-family.** Profile expressions and keys are parsed, never
    `new Function`'d — CSP-safe and scanner-clean. (D8 holds for all phases.)
 8. **JS-standard camelCase decorators.** `@property`, `@entry`, `@profile`,
@@ -52,16 +52,16 @@ so doctrine cannot drift.
 
 ## Key tensions & how they resolved
 
-| Tension | Resolution |
-|---|---|
-| Origins are flat-only; the default is prototype | Optional `originOf?` on the index — `null` on prototype (structural winner not stored); strategy-local later fix (P5/Q1) |
-| Refresh scope | Minimal: rebuild + clear caches; customizers don't re-run (double-apply footgun); platform snapshots are the platform's own chain (P5/Q4) |
-| Relaxed binding vs silent key drift | Opt-in per class — exact keypaths default, `{ relaxed: true }` for kebab↔camel (P4/Q8); typo'd env keys stay fail-loud |
-| Profile defaults docstring vs reality | `defaultProfiles` was documented-but-dead; P3 made the environment own the effective set — defaults gate only when nothing explicit (Spring parity) |
-| Config profile files as separate sources vs merged | Chain whole-subtree first-wins would shadow nested overrides; all files deep-merge into one `application` source (P2, impl-corrected) |
-| Fail-fast vs aggregate | Dependent errors (binding) → fail-fast; independent config-shape violations (validation) → aggregate report (P4/Q4 vs P6/Q1) |
-| `@nested` prefix source | Field decorators can't read types; the field name is the sub-prefix and the author provides the initializer (P4) |
-| Type conversion targets | TS types are compile-time-only; `@property(path, Type)` declares the runtime target (P4, impl-corrected) |
+| Tension                                            | Resolution                                                                                                                                          |
+| -------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Origins are flat-only; the default is prototype    | Optional `originOf?` on the index — `null` on prototype (structural winner not stored); strategy-local later fix (P5/Q1)                            |
+| Refresh scope                                      | Minimal: rebuild + clear caches; customizers don't re-run (double-apply footgun); platform snapshots are the platform's own chain (P5/Q4)           |
+| Relaxed binding vs silent key drift                | Opt-in per class — exact keypaths default, `{ relaxed: true }` for kebab↔camel (P4/Q8); typo'd env keys stay fail-loud                              |
+| Profile defaults docstring vs reality              | `defaultProfiles` was documented-but-dead; P3 made the environment own the effective set — defaults gate only when nothing explicit (Spring parity) |
+| Config profile files as separate sources vs merged | Chain whole-subtree first-wins would shadow nested overrides; all files deep-merge into one `application` source (P2, impl-corrected)               |
+| Fail-fast vs aggregate                             | Dependent errors (binding) → fail-fast; independent config-shape violations (validation) → aggregate report (P4/Q4 vs P6/Q1)                        |
+| `@nested` prefix source                            | Field decorators can't read types; the field name is the sub-prefix and the author provides the initializer (P4)                                    |
+| Type conversion targets                            | TS types are compile-time-only; `@property(path, Type)` declares the runtime target (P4, impl-corrected)                                            |
 
 ## Security posture
 
@@ -78,15 +78,15 @@ so doctrine cannot drift.
 
 **Complete** (commits `f79d5dc3` .. `b8cf9851`):
 
-| Phase | Delivered |
-|---|---|
-| P0 | Named, ordered sources + JS-native index strategies |
-| P1 | Placeholders (`${key:default}`, cycle guards), typed reads, CLI args |
-| P2 | Standard sources + documented precedence (`PrecedenceDoc`) |
-| P3 | Profiles: expressions, defaults, env/CLI activation, groups |
-| P4 | Typed config binding: `@configurationProperties`, defaults, nested, relaxed |
-| P5 | Origins (`originOf`), `EnvironmentCustomizer`, formal `refresh()` |
-| P6 | Zod validation: `@environment`, aggregate fail-loud boot |
+| Phase | Delivered                                                                   |
+| ----- | --------------------------------------------------------------------------- |
+| P0    | Named, ordered sources + JS-native index strategies                         |
+| P1    | Placeholders (`${key:default}`, cycle guards), typed reads, CLI args        |
+| P2    | Standard sources + documented precedence (`PrecedenceDoc`)                  |
+| P3    | Profiles: expressions, defaults, env/CLI activation, groups                 |
+| P4    | Typed config binding: `@configurationProperties`, defaults, nested, relaxed |
+| P5    | Origins (`originOf`), `EnvironmentCustomizer`, formal `refresh()`           |
+| P6    | Zod validation: `@environment`, aggregate fail-loud boot                    |
 
 **Deferred / revisit triggers** (from the ADRs): prototype-chain origins;
 per-keypath origin granularity; validation-per-bind; coercive (transformative)

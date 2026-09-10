@@ -30,7 +30,7 @@ import isNumber from './is-number.js';
  * //=> false
  * @see {@link http://es5.github.io/#x15.9.1.1}
  */
-const isValidDate = (value: any): value is Date => {
+const isValidDate = (value: unknown): value is Date => {
     if (value instanceof Date) return !isNaN(value.getTime());
     if (isNumber(value)) return !isNaN(new Date(value).getTime());
     return false;

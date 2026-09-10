@@ -17,7 +17,7 @@ export type ArgumentValueConversionContext = ParameterValueConversionContext & {
 };
 
 /** Converts a raw argument value into the target parameter type. */
-export type ArgumentValueConverter = (value: any, context: ArgumentValueConversionContext) => any;
+export type ArgumentValueConverter = (value: unknown, context: ArgumentValueConversionContext) => unknown;
 
 /** Registry of named converters available to resolver configuration. */
 export type ArgumentValueConverterRegistry = Record<string, ArgumentValueConverter>;
@@ -43,15 +43,15 @@ export type ResolverConverterOption =
 /** Identity converter used when no conversion is required. */
 export const identityArgumentValueConverter: ArgumentValueConverter = (value) => value;
 
-const toLowerString = (value: any): string => `${value}`.toLowerCase();
+const toLowerString = (value: unknown): string => `${value}`.toLowerCase();
 
 /** Converts a value to a number using JavaScript's built-in coercion rules. */
-export function toNumberValue(value: any): number {
+export function toNumberValue(value: unknown): number {
     return Number(value);
 }
 
 /** Converts common string and boolean inputs into a boolean value. */
-export function toBooleanValue(value: any): boolean {
+export function toBooleanValue(value: unknown): boolean {
     if (typeof value === 'boolean') {
         return value;
     }
@@ -70,13 +70,15 @@ export function toBooleanValue(value: any): boolean {
 }
 
 /** Converts a value to a `Date` instance. */
-export function toDateValue(value: any): Date {
-    return new Date(value);
+export function toDateValue(value: unknown): Date {
+    // Date's constructor accepts any coercible input (ISO strings, timestamps, Date).
+    return new Date(value as string | number | Date);
 }
 
 /** Parses a JSON string into a JavaScript value. */
-export function toJSONStringValue(value: any): any {
-    return JSON.parse(value);
+export function toJSONStringValue(value: unknown): unknown {
+    // JSON.parse coerces its argument to a string before parsing.
+    return JSON.parse(value as string);
 }
 
 /** Creates a converter that splits a string into list items. */
@@ -112,7 +114,7 @@ export const argumentValueConverters: Record<string, ArgumentValueConverter> = {
  * Resolves a type-based converter from the ConversionService.
  * If no converter is found, returns undefined.
  */
-function resolveTypeConverter(sourceType: any, targetType: any): ArgumentValueConverter | undefined {
+function resolveTypeConverter(sourceType: unknown, targetType: unknown): ArgumentValueConverter | undefined {
     if (!conversionService.canConvert(sourceType, targetType)) {
         return undefined;
     }
@@ -120,7 +122,7 @@ function resolveTypeConverter(sourceType: any, targetType: any): ArgumentValueCo
     // Get the underlying Converter<S,T> from ConversionService
     const converter = conversionService.registry.getConverter(sourceType, targetType);
 
-    return (value: any, _context: ArgumentValueConversionContext) => {
+    return (value: unknown, _context: ArgumentValueConversionContext) => {
         try {
             return converter.convert(value);
         } catch (error) {
@@ -136,7 +138,7 @@ function resolveTypeConverter(sourceType: any, targetType: any): ArgumentValueCo
 // ---------------------------------------------------------------------------
 
 /** Resolves a converter based on convertType using ConversionService. */
-export function resolveConverter(convertType?: { source: any; target: any }): ArgumentValueConverter {
+export function resolveConverter(convertType?: { source: unknown; target: unknown }): ArgumentValueConverter {
     // Use type-based conversion via ConversionService
     if (convertType && convertType.source && convertType.target) {
         const typeConverter = resolveTypeConverter(convertType.source, convertType.target);

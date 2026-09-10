@@ -254,8 +254,8 @@ describe('decorators', () => {
 
             const relation = metadata.relations.find((r) => r.fieldName === 'comments');
             expect(relation).toBeDefined();
-            expect(relation!.kind).toBe('one-to-many');
-            expect(relation!.targetEntity()).toBe(Comment);
+            expect(relation?.kind).toBe('one-to-many');
+            expect(relation?.targetEntity()).toBe(Comment);
         });
 
         it('stores many-to-one relation', () => {
@@ -264,8 +264,8 @@ describe('decorators', () => {
 
             const relation = metadata.relations.find((r) => r.fieldName === 'parent');
             expect(relation).toBeDefined();
-            expect(relation!.kind).toBe('many-to-one');
-            expect(relation!.targetEntity()).toBe(Post);
+            expect(relation?.kind).toBe('many-to-one');
+            expect(relation?.targetEntity()).toBe(Post);
         });
 
         it('stores many-to-many relation', () => {
@@ -274,8 +274,8 @@ describe('decorators', () => {
 
             const relation = metadata.relations.find((r) => r.fieldName === 'tags');
             expect(relation).toBeDefined();
-            expect(relation!.kind).toBe('many-to-many');
-            expect(relation!.targetEntity()).toBe(Tag);
+            expect(relation?.kind).toBe('many-to-many');
+            expect(relation?.targetEntity()).toBe(Tag);
         });
 
         it('stores one-to-one relation', () => {
@@ -284,8 +284,8 @@ describe('decorators', () => {
 
             const relation = metadata.relations.find((r) => r.fieldName === 'featuredPost');
             expect(relation).toBeDefined();
-            expect(relation!.kind).toBe('one-to-one');
-            expect(relation!.targetEntity()).toBe(Post);
+            expect(relation?.kind).toBe('one-to-one');
+            expect(relation?.targetEntity()).toBe(Post);
         });
 
         it('handles multiple relations on one entity', () => {
@@ -329,19 +329,19 @@ describe('decorators', () => {
 
             const prePersistHook = metadata.lifecycleHooks.find((h) => h.event === 'prePersist');
             expect(prePersistHook).toBeDefined();
-            expect(prePersistHook!.methodName).toBe('onBeforeSave');
+            expect(prePersistHook?.methodName).toBe('onBeforeSave');
 
             const postLoadHook = metadata.lifecycleHooks.find((h) => h.event === 'postLoad');
             expect(postLoadHook).toBeDefined();
-            expect(postLoadHook!.methodName).toBe('onAfterLoad');
+            expect(postLoadHook?.methodName).toBe('onAfterLoad');
 
             const preUpdateHook = metadata.lifecycleHooks.find((h) => h.event === 'preUpdate');
             expect(preUpdateHook).toBeDefined();
-            expect(preUpdateHook!.methodName).toBe('onBeforeUpdate');
+            expect(preUpdateHook?.methodName).toBe('onBeforeUpdate');
 
             const postRemoveHook = metadata.lifecycleHooks.find((h) => h.event === 'postRemove');
             expect(postRemoveHook).toBeDefined();
-            expect(postRemoveHook!.methodName).toBe('onAfterDelete');
+            expect(postRemoveHook?.methodName).toBe('onAfterDelete');
         });
 
         it('stores multiple hooks of same event type', () => {

@@ -17,5 +17,5 @@ export interface ViewEngine {
      * @param route - The current route used during rendering.
      * @returns A promise that resolves when rendering completes.
      */
-    render(view: View, model: any, target: ViewTarget, route: Route): Promise<void>;
+    render(view: View, model: unknown, target: ViewTarget, route: Route): Promise<void>;
 }

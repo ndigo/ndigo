@@ -40,9 +40,9 @@ export interface CsrfInterceptorOptions {
     fieldName?: string;
     /** Header name; defaults to `X-CSRF-Token`. */
     headerName?: string;
-    /** Cookie attributes appended to the Set-Cookie value (e.g. `'SameSite=Lax; Path=/'`). */
+    /** Cookie attributes appended to the Set-Cookie value. Defaults to `'SameSite=Lax; Secure; Path=/'`. */
     cookieOptions?: string;
-    /** Token length in bytes (default 32). */
+    /** Token length in bytes (default 32; must be an integer in 16–1024). */
     tokenBytes?: number;
 }
 
@@ -70,8 +70,15 @@ export class CsrfInterceptor implements RouteHandlerInterceptor {
         this.#cookieName = options.cookieName ?? CSRF_COOKIE;
         this.#fieldName = options.fieldName ?? 'csrf_token';
         this.#headerName = options.headerName ?? CSRF_HEADER;
-        this.#cookieOptions = options.cookieOptions ?? 'SameSite=Lax; Path=/';
+        // `Secure` by default: on HTTPS deployments served alongside an HTTP
+        // listener, a cookie without it would be transmitted in clear.
+        this.#cookieOptions = options.cookieOptions ?? 'SameSite=Lax; Secure; Path=/';
         this.#tokenBytes = options.tokenBytes ?? 32;
+        if (!Number.isInteger(this.#tokenBytes) || this.#tokenBytes < 16 || this.#tokenBytes > 1024) {
+            throw new RangeError(
+                `CsrfInterceptor tokenBytes must be an integer between 16 and 1024, received ${String(this.#tokenBytes)}`
+            );
+        }
     }
 
     postHandle(): void {

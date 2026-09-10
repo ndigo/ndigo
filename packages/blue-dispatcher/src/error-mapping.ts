@@ -2,7 +2,7 @@ import '@tsmetadata/polyfill';
 import { Constructable, getSymbolMetadata } from '@blue/core';
 import { propIs, isNotNil } from '@blue/util/types';
 
-function _hasFunction(key: string, obj: any): boolean {
+function _hasFunction(key: string, obj: unknown): boolean {
     return propIs(Function, key, obj);
 }
 
@@ -12,15 +12,14 @@ const { defineProperty } = Reflect;
 /**
  * Invoked via the `errorHandler` decorator.
  */
-function errorHandlerDecorator(target: any, context: ClassDecoratorContext): any {
+function errorHandlerDecorator(target: unknown, context: ClassDecoratorContext): void {
     context.metadata['error:handler'] = true;
-    return target;
 }
 
 /**
  * Get error handler status
  */
-const getErrorHandler = (target: any): boolean => {
+const getErrorHandler = (target: unknown): boolean => {
     const metadata = getSymbolMetadata(target);
     return metadata['error:handler'] === true;
 };
@@ -28,7 +27,7 @@ const getErrorHandler = (target: any): boolean => {
 /**
  * Check if target has error handler metadata
  */
-const hasErrorHandler = (target: any): boolean => {
+const hasErrorHandler = (target: unknown): boolean => {
     return getErrorHandler(target);
 };
 
@@ -36,12 +35,12 @@ const hasErrorHandler = (target: any): boolean => {
  * Invoked via the `errorMapping` decorator.
  */
 function errorMappingDecorator(errorClass: Constructable<Error> | Constructable<Error>[] = Error) {
-    return function (target: any, context: ClassMethodDecoratorContext): void {
+    return function (target: unknown, context: ClassMethodDecoratorContext): void {
         const errors = Array.isArray(errorClass) ? errorClass : [errorClass];
         context.metadata[`error:mapping:${String(context.name)}`] = errors;
 
         // Make method enumerable
-        context.addInitializer(function (this: any) {
+        context.addInitializer(function (this: unknown) {
             const descriptor = getOwnPropertyDescriptor(Object.getPrototypeOf(this), context.name);
             if (descriptor && !descriptor.enumerable) {
                 defineProperty(Object.getPrototypeOf(this), context.name, {
@@ -56,7 +55,7 @@ function errorMappingDecorator(errorClass: Constructable<Error> | Constructable<
 /**
  * Get error mapping for a method
  */
-const getErrorMapping = (target: any, propertyKey: string | symbol): Constructable<Error>[] => {
+const getErrorMapping = (target: unknown, propertyKey: string | symbol): Constructable<Error>[] => {
     const metadata = getSymbolMetadata(target);
     return metadata[`error:mapping:${String(propertyKey)}`];
 };
@@ -64,7 +63,7 @@ const getErrorMapping = (target: any, propertyKey: string | symbol): Constructab
 /**
  * Check if method has error mapping
  */
-const hasErrorMapping = (target: any, propertyKey: string | symbol): boolean => {
+const hasErrorMapping = (target: unknown, propertyKey: string | symbol): boolean => {
     return getErrorMapping(target, propertyKey) !== undefined;
 };
 
@@ -87,8 +86,13 @@ export const errorHandler = assign(errorHandlerDecorator, {
     has: hasErrorHandler,
 });
 
-const constructorIsErrorHandler = (value: any): boolean => hasErrorHandler(value?.constructor);
-const _isConstructorErrorHandler = (value: any): boolean =>
+const constructorIsErrorHandler = (value: unknown): boolean => {
+    if (typeof value !== 'object' || value === null || !('constructor' in value)) {
+        return false;
+    }
+    return hasErrorHandler(value.constructor);
+};
+const _isConstructorErrorHandler = (value: unknown): boolean =>
     _hasFunction('constructor', value) && constructorIsErrorHandler(value);
 
 /**
@@ -99,7 +103,7 @@ const _isConstructorErrorHandler = (value: any): boolean =>
  * @param target The object to check.
  * @returns `true` if the target or its constructor is an error handler, `false` otherwise.
  */
-export const likeErrorHandler = (target: any): boolean =>
+export const likeErrorHandler = (target: unknown): boolean =>
     isNotNil(target) && (hasErrorHandler(target) || _isConstructorErrorHandler(target));
 
 /**

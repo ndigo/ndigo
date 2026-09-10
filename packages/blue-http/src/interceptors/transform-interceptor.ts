@@ -26,7 +26,7 @@ export class TransformInterceptor implements RequestAwareHTTPInterceptor, Respon
         }
 
         // Extract body
-        let body: any = await this.extractBody(request);
+        let body: unknown = await this.extractBody(request);
         if (body === null) {
             return request; // No body to transform
         }

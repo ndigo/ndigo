@@ -1,14 +1,22 @@
 import { describe, test, expect, beforeEach, afterEach } from 'vitest';
 import { $aware, AsAware, AsNameAware, likeAware, likeNameAware } from '../src/aware';
 
+/** Asserts that a fixture initialized in `beforeEach` is present. */
+function defined<T>(value: T | undefined): T {
+    if (value === undefined) {
+        throw new Error('Expected fixture to be defined');
+    }
+    return value;
+}
+
 describe('AsAware', () => {
     class Empty {}
 
     const AwareEmpty = AsAware(Empty);
     const NameAwareEmpty = AsNameAware(Empty);
 
-    let aware: any;
-    let nameAware: any;
+    let aware: InstanceType<typeof AwareEmpty> | undefined;
+    let nameAware: InstanceType<typeof NameAwareEmpty> | undefined;
 
     beforeEach(() => {
         aware = new AwareEmpty();
@@ -20,16 +28,19 @@ describe('AsAware', () => {
     });
 
     test('it should create aware instances', () => {
-        expect(Reflect.get(aware, $aware)).toBe(true);
-        expect(Reflect.get(nameAware, $aware)).toBe(true);
+        const a = defined(aware);
+        const n = defined(nameAware);
 
-        nameAware.setName('test');
+        expect(Reflect.get(a, $aware)).toBe(true);
+        expect(Reflect.get(n, $aware)).toBe(true);
 
-        expect(nameAware).toHaveProperty('name', 'test');
+        n.setName('test');
 
-        expect(likeAware(aware)).toBe(true);
-        expect(likeAware(nameAware)).toBe(true);
-        expect(likeNameAware(aware)).toBe(false);
-        expect(likeNameAware(nameAware)).toBe(true);
+        expect(n).toHaveProperty('name', 'test');
+
+        expect(likeAware(a)).toBe(true);
+        expect(likeAware(n)).toBe(true);
+        expect(likeNameAware(a)).toBe(false);
+        expect(likeNameAware(n)).toBe(true);
     });
 });

@@ -24,7 +24,7 @@
     "*.config.mjs",
     "*.config.ts"
   ],
-  "jsPlugins": ["./packages/blue-eslint-plugin/lib/index.js"],
+  "jsPlugins": ["./packages/blue-oxlint-plugin/lib/index.js"],
   "rules": {
     "no-unused-vars": "off",
     "no-undef": "off",
@@ -33,10 +33,16 @@
     "@typescript-eslint/explicit-member-accessibility": "off",
     "@typescript-eslint/no-array-constructor": "error",
     "@typescript-eslint/no-empty-interface": "off",
-    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-explicit-any": "error",
     "@typescript-eslint/no-inferrable-types": "off",
-    "@typescript-eslint/no-namespace": ["error", { "allowDeclarations": false, "allowDefinitionFiles": false }],
-    "@typescript-eslint/no-non-null-assertion": "off",
+    "@typescript-eslint/no-namespace": [
+      "error",
+      {
+        "allowDeclarations": false,
+        "allowDefinitionFiles": false
+      }
+    ],
+    "@typescript-eslint/no-non-null-assertion": "error",
     "@typescript-eslint/triple-slash-reference": "off",
     "@typescript-eslint/no-unused-vars": [
       "warn",
@@ -50,11 +56,15 @@
     ],
     "@typescript-eslint/no-use-before-define": [
       "error",
-      { "classes": false, "functions": false, "typedefs": false, "variables": false }
+      {
+        "classes": false,
+        "functions": false,
+        "typedefs": false,
+        "variables": false
+      }
     ],
     "@typescript-eslint/no-require-imports": "off",
     "@typescript-eslint/prefer-namespace-keyword": "error",
-
     "@blue/no-direct-integration-imports": "warn",
     "@blue/no-internal-file-imports": "error",
     "@blue/no-internal-file-exports": "error",
@@ -64,7 +74,6 @@
     "@blue/no-mixed-case-acronyms": "error",
     "@blue/no-cross-paradigm-decorators": "error",
     "@blue/no-signals-in-entity": "error",
-
     "no-shadow": "warn",
     "no-useless-escape": "warn",
     "no-unsafe-optional-chaining": "warn",
@@ -73,14 +82,18 @@
     "no-extra-boolean-cast": "warn",
     "no-unused-private-class-members": "warn",
     "no-this-alias": "warn",
-    "no-instanceof-builtins": "warn",
+    "no-instanceof-builtins": "off",
     "prefer-set-size": "warn",
     "require-module-specifiers": "warn",
     "preserve-caught-error": "warn",
     "no-await-in-loop": "warn",
     "no-new-array": "off",
     "no-thenable": "off",
-    "no-instanceof-builtins": "off"
+    "typescript/no-base-to-string": "off",
+    "typescript/restrict-template-expressions": "off",
+    "typescript/unbound-method": "off",
+    "typescript/no-redundant-type-constituents": "off",
+    "typescript/no-implied-eval": "off"
   },
   "env": {
     "browser": true,

@@ -15,10 +15,10 @@ class Qux {}
 @propertySource({ foo: 12, bar: 34, fuu: [56, 78] })
 class TestConfiguration {
     @property('foo') // Get value for property "foo" from the property source
-    fooValue: any;
+    fooValue: unknown;
 
     @property('fuu[1]') // Get value for property "fuu[1]" from the property source
-    fuuValue: any;
+    fuuValue: unknown;
 
     @profile('test') // Run only if the active profile is "test"
     @entry('bar') // Create an entry "bar" in context with the result from the factory
@@ -64,8 +64,10 @@ Reflect.defineProperty(TestConfiguration.prototype, 'baz', {
     writable: false,
 });
 // Add the entry metadata using the TC39 approach
-(TestConfiguration as any)[Symbol.metadata] = (TestConfiguration as any)[Symbol.metadata] || {};
-(TestConfiguration as any)[Symbol.metadata]['config:entry:baz'] = 'baz';
+const metadataTarget = TestConfiguration as { [Symbol.metadata]?: Record<string, unknown> };
+const metadata = metadataTarget[Symbol.metadata] || {};
+metadataTarget[Symbol.metadata] = metadata;
+metadata['config:entry:baz'] = 'baz';
 
 context.register(TestConfiguration);
 

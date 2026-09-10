@@ -1,9 +1,11 @@
 import { describe, expect, test, vi } from 'vitest';
+import type { Mock } from 'vitest';
+import type { ApplicationContext } from '@blue/context';
 import { ROUTER } from '../src/context-tokens';
 import TodoService from '../src/todo-service';
 
 describe('TodoService', () => {
-    function createMockContext(refresh: import('vitest').Mock) {
+    function createMockContext(refresh: Mock) {
         const listeners = new Map<string, Function[]>();
         return {
             listeners,
@@ -32,7 +34,7 @@ describe('TodoService', () => {
                     }
                     return undefined;
                 }),
-            },
+            } as ApplicationContext,
         };
     }
 
@@ -41,7 +43,7 @@ describe('TodoService', () => {
         const { listeners, context } = createMockContext(refresh);
 
         const service = new TodoService([{ text: 'a', checked: false }]);
-        (service as any).setApplicationContext(context);
+        service.setApplicationContext(context);
         service.init();
 
         // Effect fires during init, calling refresh once
@@ -65,7 +67,7 @@ describe('TodoService', () => {
             { text: 'a', checked: false },
             { text: 'b', checked: true },
         ]);
-        (service as any).setApplicationContext(context);
+        service.setApplicationContext(context);
         service.init();
 
         listeners.get('user:todo:removed')?.[0]?.(0);
@@ -79,7 +81,7 @@ describe('TodoService', () => {
         const { listeners, context } = createMockContext(refresh);
 
         const service = new TodoService([{ text: 'a', checked: false }]);
-        (service as any).setApplicationContext(context);
+        service.setApplicationContext(context);
         service.init();
 
         listeners.get('user:todo:toggled')?.[0]?.(0);
@@ -93,7 +95,7 @@ describe('TodoService', () => {
         const { listeners, context } = createMockContext(refresh);
 
         const service = new TodoService([{ text: 'a', checked: false }]);
-        (service as any).setApplicationContext(context);
+        service.setApplicationContext(context);
         service.init();
 
         // Effect fires during init

@@ -33,14 +33,14 @@ export class MetadataScanner {
     /**
      * Target object whose metadata is being scanned.
      */
-    _target!: Record<string, any>;
+    _target!: Record<string, unknown>;
 
     /**
      * Create a scanner for a target object.
      *
      * @param target - The object, prototype, or constructor to scan.
      */
-    constructor(target: Record<string, any> = {}) {
+    constructor(target: Record<string, unknown> = {}) {
         this._cache = new MultiValueMap();
 
         /**
@@ -112,10 +112,12 @@ export class MetadataScanner {
                     const propertyName = fullKey.substring(lastColonIndex + 1);
 
                     // Add to method keys
-                    if (!methodKeys.has(potentialBase)) {
-                        methodKeys.set(potentialBase, []);
+                    const names = methodKeys.get(potentialBase);
+                    if (names) {
+                        names.push(propertyName);
+                    } else {
+                        methodKeys.set(potentialBase, [propertyName]);
                     }
-                    methodKeys.get(potentialBase)!.push(propertyName);
                 } else {
                     // No colon: standalone class-level key
                     cache.add(fullKey, '');
@@ -179,7 +181,7 @@ class MetadataManager {
     /**
      * Weakly cached scanners keyed by target object.
      */
-    _scannerMap: WeakMap<Record<string, any>, MetadataScanner>;
+    _scannerMap: WeakMap<Record<string, unknown>, MetadataScanner>;
 
     /**
      * Create a metadata manager.
@@ -195,11 +197,13 @@ class MetadataManager {
      * @param metadataKey - The metadata key to query.
      * @returns The matching property names, or `undefined` when none are found.
      */
-    get(target: Record<string, any>, metadataKey: string): string[] | undefined {
+    get(target: Record<string, unknown>, metadataKey: string): string[] | undefined {
         const scannerMap = this._scannerMap;
         if (scannerMap.has(target)) {
             const scanner = scannerMap.get(target);
-            return scanner!.get(metadataKey);
+            if (scanner) {
+                return scanner.get(metadataKey);
+            }
         }
         const targetScanner = new MetadataScanner(target);
         scannerMap.set(target, targetScanner);

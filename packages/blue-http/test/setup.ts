@@ -3,7 +3,7 @@ import { beforeAll } from 'vitest';
 // Mock location object for browser-specific code
 beforeAll(() => {
     if (typeof location === 'undefined') {
-        (globalThis as any).location = {
+        (globalThis as unknown as { location?: unknown }).location = {
             href: 'http://localhost:3000/',
             origin: 'http://localhost',
             protocol: 'http:',

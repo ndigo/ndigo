@@ -1,6 +1,7 @@
 import { describe, test, expect, beforeAll, afterEach, afterAll } from 'vitest';
 import { server } from './_worker';
 import { HTTP, MappedHTTPInterceptor } from '../src/http'; // Import MappedHTTPInterceptor
+import type { InitializationAwareHTTPInterceptor } from '../src/http';
 
 describe('HTTP baseURL', () => {
     beforeAll(() => server.listen({ onUnhandledRequest: 'error' }));
@@ -45,14 +46,14 @@ describe('HTTP baseURL', () => {
     });
 
     describe('Environment fallback', () => {
-        let originalLocation: any;
+        let originalLocation: Location | undefined;
 
         beforeAll(() => {
-            originalLocation = (globalThis as any).location;
+            originalLocation = (globalThis as unknown as { location?: Location }).location;
         });
 
         afterEach(() => {
-            (globalThis as any).location = originalLocation;
+            (globalThis as unknown as { location?: Location }).location = originalLocation;
         });
 
         test('should use location.href fallback in browser', async () => {
@@ -63,7 +64,7 @@ describe('HTTP baseURL', () => {
         });
 
         test('should use http://localhost/ fallback when location is undefined', async () => {
-            delete (globalThis as any).location;
+            delete (globalThis as unknown as { location?: Location }).location;
 
             const http = new HTTP();
             const response = await http.get('request');
@@ -85,7 +86,7 @@ describe('HTTP baseURL with interceptors', () => {
         test('should match resolved URL not input URL', async () => {
             let interceptorCalled = false;
 
-            class TestInterceptor {
+            class TestInterceptor implements InitializationAwareHTTPInterceptor {
                 preInit(url: URL) {
                     // URL should be resolved: http://localhost/api/v1/users
                     interceptorCalled = true;
@@ -94,7 +95,7 @@ describe('HTTP baseURL with interceptors', () => {
                 }
             }
 
-            const http = new HTTP([new TestInterceptor() as any], { baseURL: 'http://localhost/api/v1/' });
+            const http = new HTTP([new TestInterceptor()], { baseURL: 'http://localhost/api/v1/' });
 
             await http.get('users'); // Input: 'users'
             expect(interceptorCalled).toBe(true);
@@ -103,7 +104,7 @@ describe('HTTP baseURL with interceptors', () => {
         test('MappedHTTPInterceptor should match against resolved URL', async () => {
             let interceptorApplied = false;
 
-            class MarkedInterceptor {
+            class MarkedInterceptor implements InitializationAwareHTTPInterceptor {
                 preInit() {
                     interceptorApplied = true;
                     return true;
@@ -111,7 +112,7 @@ describe('HTTP baseURL with interceptors', () => {
             }
 
             const mapped = new MappedHTTPInterceptor(
-                new MarkedInterceptor() as any,
+                new MarkedInterceptor(),
                 ['http://localhost/api/*'] // Match pattern
             );
 

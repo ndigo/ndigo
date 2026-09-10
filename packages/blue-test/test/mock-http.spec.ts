@@ -1,6 +1,14 @@
 // @vitest-environment node
 import { describe, test, beforeAll, afterAll, expect } from 'vitest';
-import { requestMapping, getMapping, postMapping, ModelAndView, parameters, queryValue, bodyValue } from '@blue/dispatcher';
+import {
+    requestMapping,
+    getMapping,
+    postMapping,
+    ModelAndView,
+    parameters,
+    queryValue,
+    bodyValue,
+} from '@blue/dispatcher';
 import { IslandView } from '@blue/view';
 import { bootApp, MockHTTP } from '../src/index';
 

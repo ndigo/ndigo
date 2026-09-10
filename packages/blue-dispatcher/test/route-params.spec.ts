@@ -45,7 +45,7 @@ describe('@parameters - TC39 Parameter Injection Pattern', () => {
         });
 
         it('queryValue should accept converter option', () => {
-            const converter = (value: any) => Number(value);
+            const converter = (value: unknown) => Number(value);
             const extractor = queryValue('limit', { convertType: converter });
 
             expect(extractor.convertType).toBe(converter);
@@ -143,7 +143,7 @@ describe('@parameters - TC39 Parameter Injection Pattern', () => {
             });
 
             it('wrappers should override existing converter', () => {
-                const inner = queryValue('age', { convertType: (v: any) => v });
+                const inner = queryValue('age', { convertType: (v: unknown) => v });
                 const wrapped = asNumber(inner);
                 expect(wrapped.convertType).toEqual({ source: String, target: Number });
             });
@@ -157,9 +157,12 @@ describe('@parameters - TC39 Parameter Injection Pattern', () => {
                 handleQuery(page: string) {}
             }
             const raw = getParameterMap(TestController.prototype, 'handleQuery');
+            // @parameters always stores the map; guard here for the typed contract.
             expect(raw).toBeDefined();
-            expect(raw!['page'].type).toEqual(MethodParameterType.QUERY);
-            expect(raw!['page'].name).toBe('page');
+            if (raw) {
+                expect(raw['page'].type).toEqual(MethodParameterType.QUERY);
+                expect(raw['page'].name).toBe('page');
+            }
         });
 
         it('should map single parameter', () => {
@@ -167,7 +170,11 @@ describe('@parameters - TC39 Parameter Injection Pattern', () => {
                 @parameters({ page: queryValue('page') })
                 handleQuery(page: string) {}
             }
-            const params = resolveParameters(TestController.prototype, 'handleQuery', TestController.prototype.handleQuery as Function);
+            const params = resolveParameters(
+                TestController.prototype,
+                'handleQuery',
+                TestController.prototype.handleQuery as Function
+            );
             expect(params).toHaveLength(1);
             expect(params[0].name).toBe('page');
             expect(params[0].type).toEqual(MethodParameterType.QUERY);
@@ -181,7 +188,11 @@ describe('@parameters - TC39 Parameter Injection Pattern', () => {
                 })
                 handleQuery(page: string, limit: string) {}
             }
-            const params = resolveParameters(TestController.prototype, 'handleQuery', TestController.prototype.handleQuery as Function);
+            const params = resolveParameters(
+                TestController.prototype,
+                'handleQuery',
+                TestController.prototype.handleQuery as Function
+            );
             expect(params).toHaveLength(2);
             expect(params[0].name).toBe('page');
             expect(params[1].name).toBe('limit');
@@ -228,7 +239,11 @@ describe('@parameters - TC39 Parameter Injection Pattern', () => {
                 })
                 handleSparse(normal: string, page: string, another: number, session: string) {}
             }
-            const params = resolveParameters(TestController.prototype, 'handleSparse', TestController.prototype.handleSparse as Function);
+            const params = resolveParameters(
+                TestController.prototype,
+                'handleSparse',
+                TestController.prototype.handleSparse as Function
+            );
             expect(params[0]).toBeUndefined(); // normal
             expect(params[1].name).toBe('page');
             expect(params[2]).toBeUndefined(); // another
@@ -240,18 +255,26 @@ describe('@parameters - TC39 Parameter Injection Pattern', () => {
                 @parameters({ limit: queryValue('limit', { required: true, defaultValue: '10' }) })
                 handleQuery(limit: string) {}
             }
-            const params = resolveParameters(TestController.prototype, 'handleQuery', TestController.prototype.handleQuery as Function);
+            const params = resolveParameters(
+                TestController.prototype,
+                'handleQuery',
+                TestController.prototype.handleQuery as Function
+            );
             expect(params[0].required).toBe(true);
             expect(params[0].defaultValue).toBe('10');
         });
 
         it('should preserve converter options', () => {
-            const converter = (v: any) => Number(v);
+            const converter = (v: unknown) => Number(v);
             class TestController {
                 @parameters({ limit: queryValue('limit', { convertType: converter }) })
                 handleQuery(limit: string) {}
             }
-            const params = resolveParameters(TestController.prototype, 'handleQuery', TestController.prototype.handleQuery as Function);
+            const params = resolveParameters(
+                TestController.prototype,
+                'handleQuery',
+                TestController.prototype.handleQuery as Function
+            );
             expect(params[0].convertType).toBe(converter);
         });
 
@@ -260,7 +283,11 @@ describe('@parameters - TC39 Parameter Injection Pattern', () => {
                 @parameters({ limit: queryValue('limit', { convertType: 'number' }) })
                 handleQuery(limit: string) {}
             }
-            const params = resolveParameters(TestController.prototype, 'handleQuery', TestController.prototype.handleQuery as Function);
+            const params = resolveParameters(
+                TestController.prototype,
+                'handleQuery',
+                TestController.prototype.handleQuery as Function
+            );
             expect(params[0].convertType).toBe('number');
         });
 
@@ -270,7 +297,11 @@ describe('@parameters - TC39 Parameter Injection Pattern', () => {
                 handleQuery(page: string) {}
             }
             expect(() =>
-                resolveParameters(TestController.prototype, 'handleQuery', TestController.prototype.handleQuery as Function)
+                resolveParameters(
+                    TestController.prototype,
+                    'handleQuery',
+                    TestController.prototype.handleQuery as Function
+                )
             ).toThrow('Parameter "wrongName" not found in method signature');
         });
     });
@@ -291,15 +322,17 @@ describe('@parameters - TC39 Parameter Injection Pattern', () => {
             const mapping = getRouteMapping(TestController.prototype, 'getUsers');
             expect(mapping.value).toBe('/users');
 
-            const params = resolveParameters(TestController.prototype, 'getUsers', TestController.prototype.getUsers as Function);
+            const params = resolveParameters(
+                TestController.prototype,
+                'getUsers',
+                TestController.prototype.getUsers as Function
+            );
             expect(params).toHaveLength(2);
         });
     });
 
     describe('Socket mapping: @parameters resolves into session.params', () => {
         it('builds a name-ordered parameter list without requiring signature names', () => {
-            
-
             class SocketController {
                 @socketMapping('/room')
                 @parameters({
@@ -321,9 +354,6 @@ describe('@parameters - TC39 Parameter Injection Pattern', () => {
         });
 
         it('rejects bodyValue on a socket mapping at resolution time', () => {
-            
-            
-
             class SocketController {
                 @socketMapping('/room')
                 @parameters({ payload: bodyValue('*') })

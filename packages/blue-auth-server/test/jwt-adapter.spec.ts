@@ -3,10 +3,10 @@
 import { describe, test, expect, beforeEach } from 'vitest';
 import { JWTAdapter } from '../src/jwt-adapter';
 import { Principal } from '@blue/auth-core';
-import { generateKeyPair, exportSPKI, SignJWT } from 'jose';
+import { generateKeyPair, exportSPKI, SignJWT, type JWTPayload } from 'jose';
 import { createHmac } from 'node:crypto';
 
-function createJWT(payload: Record<string, any>, secret = 'test-secret'): string {
+function createJWT(payload: JWTPayload, secret = 'test-secret'): string {
     const header = Buffer.from(JSON.stringify({ alg: 'HS256', typ: 'JWT' })).toString('base64url');
     const body = Buffer.from(JSON.stringify(payload)).toString('base64url');
     const signature = createHmac('sha256', secret).update(`${header}.${body}`).digest('base64url');
@@ -103,8 +103,9 @@ describe('JWTAdapter', () => {
                 exp: futureTime,
             });
 
-            const result = (await adapter.validate(token)) as Principal;
-            expect(result!.name).toBe('alice@example.com');
+            const result = await adapter.validate(token);
+            expect(result).toBeDefined();
+            expect(result?.name).toBe('alice@example.com');
         });
 
         test('uses unknown as id when sub is missing', async () => {
@@ -116,8 +117,9 @@ describe('JWTAdapter', () => {
                 exp: futureTime,
             });
 
-            const result = (await adapter.validate(token)) as Principal;
-            expect(result!.id).toBe('unknown');
+            const result = await adapter.validate(token);
+            expect(result).toBeDefined();
+            expect(result?.id).toBe('unknown');
         });
 
         test('uses Unknown as name when name and email are missing', async () => {
@@ -129,8 +131,9 @@ describe('JWTAdapter', () => {
                 exp: futureTime,
             });
 
-            const result = (await adapter.validate(token)) as Principal;
-            expect(result!.name).toBe('Unknown');
+            const result = await adapter.validate(token);
+            expect(result).toBeDefined();
+            expect(result?.name).toBe('Unknown');
         });
 
         test('uses empty roles when roles claim is missing', async () => {
@@ -143,8 +146,9 @@ describe('JWTAdapter', () => {
                 exp: futureTime,
             });
 
-            const result = (await adapter.validate(token)) as Principal;
-            expect(result!.roles).toEqual([]);
+            const result = await adapter.validate(token);
+            expect(result).toBeDefined();
+            expect(result?.roles).toEqual([]);
         });
 
         test('returns null when no exp claim (no expiration check)', async () => {
@@ -155,9 +159,9 @@ describe('JWTAdapter', () => {
                 aud: 'my-app',
             });
 
-            const result = (await adapter.validate(token)) as Principal;
+            const result = await adapter.validate(token);
             expect(result).not.toBeNull();
-            expect(result!.id).toBe('1');
+            expect(result?.id).toBe('1');
         });
     });
 

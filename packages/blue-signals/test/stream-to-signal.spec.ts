@@ -13,6 +13,7 @@ function gatedStream<T>(values: T[]): { stream: AsyncIterable<T>; release: () =>
         async *[Symbol.asyncIterator]() {
             try {
                 for (const value of values) {
+                    // oxlint-disable-next-line no-await-in-loop -- each value gates on its own release() call; the test drives arrival timing sequentially.
                     await new Promise<void>((resolve) => {
                         releaseNext = resolve;
                     });

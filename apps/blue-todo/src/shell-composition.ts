@@ -196,7 +196,7 @@ export const composeTodoRuntime = (todoContext: ApplicationContext): TodoRuntime
             logRelayMetrics('todo', 'Todo feature relay metrics after unmount', 0, 0, 0);
         },
         onRoute: (route) => {
-            dispatcher.dispatch(route);
+            void dispatcher.dispatch(route);
         },
     });
 
@@ -210,7 +210,7 @@ export const composeTodoRuntime = (todoContext: ApplicationContext): TodoRuntime
             featureMountManager.unmount('account');
         },
         onRoute: (route) => {
-            dispatcher.dispatch(route);
+            void dispatcher.dispatch(route);
             logger.info('Account feature route handled', {
                 feature: 'account',
                 path: route.path,
@@ -248,7 +248,7 @@ export const composeTodoRuntime = (todoContext: ApplicationContext): TodoRuntime
             featureMountManager.unmount('login');
         },
         onRoute: (route) => {
-            dispatcher.dispatch(route);
+            void dispatcher.dispatch(route);
             logger.info('Login route handled', {
                 feature: 'login',
                 path: route.path,
@@ -274,7 +274,7 @@ export const composeTodoRuntime = (todoContext: ApplicationContext): TodoRuntime
             featureMountManager.unmount('profile');
         },
         onRoute: (route) => {
-            dispatcher.dispatch(route);
+            void dispatcher.dispatch(route);
             logger.info('Profile route handled', {
                 feature: 'profile',
                 path: route.path,
@@ -300,7 +300,7 @@ export const composeTodoRuntime = (todoContext: ApplicationContext): TodoRuntime
             featureMountManager.unmount('admin');
         },
         onRoute: (route) => {
-            dispatcher.dispatch(route);
+            void dispatcher.dispatch(route);
             logger.info('Admin route handled', {
                 feature: 'admin',
                 path: route.path,
@@ -326,7 +326,7 @@ export const composeTodoRuntime = (todoContext: ApplicationContext): TodoRuntime
             featureMountManager.unmount('forbidden');
         },
         onRoute: (route) => {
-            dispatcher.dispatch(route);
+            void dispatcher.dispatch(route);
             logger.info('Forbidden route handled', {
                 feature: 'forbidden',
                 path: route.path,

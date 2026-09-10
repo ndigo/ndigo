@@ -3,9 +3,13 @@ import { bench, describe } from 'vitest';
 let _benchmarkSink = 0;
 
 describe('Scenario 1: EntriesIterator dispatch', () => {
-    const nativeDispatch = (obj: any) => {
-        if (typeof obj.entries === 'function') {
-            return obj.entries();
+    const nativeDispatch = (obj: unknown) => {
+        if (obj == null) return null;
+        if (typeof obj !== 'object' && typeof obj !== 'function') return null;
+        const record = obj as Record<string, unknown>;
+        const entries = record.entries;
+        if (typeof entries === 'function') {
+            return entries.call(obj);
         }
         return Object.entries(obj)[Symbol.iterator]();
     };
@@ -23,7 +27,7 @@ describe('Scenario 1: EntriesIterator dispatch', () => {
     bench('native: typeof entries dispatch', () => {
         let total = 0;
         for (let i = 0; i < 1000; i++) {
-            const sample = samples[i % samples.length] as any;
+            const sample = samples[i % samples.length];
             const iterator = nativeDispatch(sample) as IterableIterator<[unknown, unknown]>;
             const next = iterator.next();
             total += next.done ? 0 : 1;
@@ -193,8 +197,8 @@ describe('Scenario 6: Predicate-based guard', () => {
     bench('native: value ?? fallback', () => {
         let total = 0;
         for (let i = 0; i < 1000; i++) {
-            const value = inputs[i % inputs.length] as any;
-            const resolved = resolveWithDefault_N(value, fallback as any);
+            const value: unknown = inputs[i % inputs.length];
+            const resolved = resolveWithDefault_N<unknown>(value, fallback);
             total += String(resolved).length;
         }
         _benchmarkSink += total;

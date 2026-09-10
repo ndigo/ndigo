@@ -137,7 +137,7 @@ export class JWTAdapter implements AuthAdapter {
         return this.#getLocalJwks();
     }
 
-    async authenticate(_credentials: any): Promise<AuthResult> {
+    async authenticate(_credentials: unknown): Promise<AuthResult> {
         // Credential validation is outside the scope of a JWT adapter.
         // Use an identity provider or database-backed auth flow.
         throw new Error('JWTAdapter.authenticate() not implemented - use a proper auth flow');

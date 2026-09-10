@@ -22,6 +22,7 @@
  */
 
 import { bench, describe } from 'vitest';
+import { type Route } from '@blue/router';
 import '@tsmetadata/polyfill';
 import { routeMapping } from '../src/route-mapping';
 import { RouteHandlerMethod } from '../src/route-handler-method';
@@ -89,14 +90,14 @@ const queryParam = new MethodParameter(MethodParameterType.QUERY, 'name');
 const attrParam = new MethodParameter(MethodParameterType.ATTRIBUTE, 'token');
 
 // Route fixtures
-const routeWithPath = { path: '/users/42', params: { id: '42' }, data: {}, attributes: {} } as any;
-const routeWithQuery = { path: '/search', params: null, data: { name: 'Alice' }, attributes: {} } as any;
+const routeWithPath = { path: '/users/42', params: { id: '42' }, data: {}, attributes: {} } as unknown as Route;
+const routeWithQuery = { path: '/search', params: null, data: { name: 'Alice' }, attributes: {} } as unknown as Route;
 const routeWithAll = {
     path: '/api/42/data',
     params: { id: '42' },
     data: { name: 'Alice' },
     attributes: { token: 'xyz' },
-} as any;
+} as unknown as Route;
 
 // RouteHandlerMethod instances
 const noParamMethod = new RouteHandlerMethod(controller, 'noParams');
@@ -115,7 +116,7 @@ const mixedParamMethod = new RouteHandlerMethod(controller, 'withMixedParams');
 mixedParamMethod.parameters = [pathParam, queryParam, attrParam];
 mixedParamMethod.argumentResolvers = defaultResolvers;
 
-let _sink: any = 0;
+let _sink: unknown = 0;
 
 /* ------------------------------------------------------------------ */
 /*  1. Resolver lookup in isolation                                     */

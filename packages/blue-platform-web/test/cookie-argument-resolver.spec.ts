@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import { MethodParameter, MethodParameterType } from '@blue/dispatcher';
+import { Route } from '@blue/router';
 import { BrowserCookieValueMethodArgumentResolver } from '../src/cookie-argument-resolver';
 
 describe('BrowserCookieValueMethodArgumentResolver', () => {
@@ -14,7 +15,9 @@ describe('BrowserCookieValueMethodArgumentResolver', () => {
     afterEach(() => {
         vi.unstubAllGlobals();
         if (originalCookie !== undefined) {
-            (document as any).cookie = originalCookie;
+            // Reassign onto the (possibly stubbed) document object.
+            const cookieTarget = document as unknown as { cookie: unknown };
+            cookieTarget.cookie = originalCookie;
         }
     });
 
@@ -34,7 +37,7 @@ describe('BrowserCookieValueMethodArgumentResolver', () => {
         vi.stubGlobal('document', { cookie: 'sessionId=abc-123' });
 
         const parameter = new MethodParameter(MethodParameterType.COOKIE, 'sessionId');
-        const value = resolver.resolveArgument(parameter, { data: {} } as any, {} as any);
+        const value = resolver.resolveArgument(parameter, { data: {} } as unknown as Route, {});
 
         expect(value).toBe('abc-123');
     });
@@ -43,7 +46,7 @@ describe('BrowserCookieValueMethodArgumentResolver', () => {
         vi.stubGlobal('document', { cookie: '' });
 
         const parameter = new MethodParameter(MethodParameterType.COOKIE, 'sessionId', false, 'fallback-id');
-        const value = resolver.resolveArgument(parameter, { data: {} } as any, {} as any);
+        const value = resolver.resolveArgument(parameter, { data: {} } as unknown as Route, {});
 
         expect(value).toBe('fallback-id');
     });
@@ -53,7 +56,7 @@ describe('BrowserCookieValueMethodArgumentResolver', () => {
 
         const parameter = new MethodParameter(MethodParameterType.COOKIE, 'sessionId', true);
 
-        expect(() => resolver.resolveArgument(parameter, { data: {} } as any, {} as any)).toThrow(
+        expect(() => resolver.resolveArgument(parameter, { data: {} } as unknown as Route, {})).toThrow(
             '"sessionId" cannot be undefined or null'
         );
     });
@@ -65,7 +68,7 @@ describe('BrowserCookieValueMethodArgumentResolver', () => {
             source: String,
             target: Number,
         });
-        const value = resolver.resolveArgument(parameter, { data: {} } as any, {} as any);
+        const value = resolver.resolveArgument(parameter, { data: {} } as unknown as Route, {});
 
         expect(value).toBe(42);
     });
@@ -77,7 +80,7 @@ describe('BrowserCookieValueMethodArgumentResolver', () => {
             source: String,
             target: Boolean,
         });
-        const value = resolver.resolveArgument(parameter, { data: {} } as any, {} as any);
+        const value = resolver.resolveArgument(parameter, { data: {} } as unknown as Route, {});
 
         expect(value).toBe(true);
     });

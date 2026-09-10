@@ -19,7 +19,7 @@ import { ResponseStatuses } from '@blue/http';
 import { problemEntity, ProblemTypes } from './problem-details';
 
 /**
- * A {@link RouteErrorResolver} that always resolves — the final link in the
+ * A {@link AbstractRouteErrorResolver} that always resolves — the final link in the
  * Node error chain. Maps any unhandled error to a 500 problem document.
  */
 export class NodeLastResortErrorResolver extends AbstractRouteErrorResolver {

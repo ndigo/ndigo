@@ -22,6 +22,7 @@ export const AsLanguageResolverStrategy = <T extends Constructable<StrategyIniti
 
         languageResolver!: LanguageResolver;
 
+        // oxlint-disable-next-line no-explicit-any -- TS2545: mixin constructor must be exactly (...args: any[]).
         constructor(...args: any[]) {
             super(...args);
             this.languageResolverKey = LANGUAGE_RESOLVER;

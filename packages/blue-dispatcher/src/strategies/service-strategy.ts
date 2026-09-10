@@ -3,8 +3,8 @@ import { Constructable } from '@blue/core';
 import { StrategyInitializer } from './strategy-initializer';
 
 export interface ServiceStrategy {
-    serviceCalls: any;
-    serviceInterceptors: any;
+    serviceCalls: unknown;
+    serviceInterceptors: unknown;
     initServiceStrategy(context: ApplicationContext): void;
 }
 
@@ -12,7 +12,7 @@ const SERVICE_CALL = 'serviceCall',
     SERVICE_CALLS = `${SERVICE_CALL}s`,
     SERVICE_INTERCEPTOR = 'serviceInterceptor',
     SERVICE_INTERCEPTORS = `${SERVICE_INTERCEPTOR}s`,
-    defaultServiceInterceptors: any[] = [];
+    defaultServiceInterceptors: unknown[] = [];
 
 export const AsServiceStrategy = <T extends Constructable<StrategyInitializer>>(
     superclass: T
@@ -23,9 +23,10 @@ export const AsServiceStrategy = <T extends Constructable<StrategyInitializer>>(
         readonly serviceInterceptorKey: string;
         readonly serviceInterceptorCollectionKey: string;
 
-        serviceCalls!: any;
-        serviceInterceptors!: any;
+        serviceCalls!: unknown;
+        serviceInterceptors!: unknown;
 
+        // oxlint-disable-next-line no-explicit-any -- TS2545: mixin constructor must be exactly (...args: any[]).
         constructor(...args: any[]) {
             super(...args);
             this.serviceCallKey = SERVICE_CALL;

@@ -4,7 +4,7 @@ import { TagMapping } from '../src/tag-mapping.js';
 
 // Mock customElements API
 const mockDefine = vi.fn();
-global.customElements = { define: mockDefine } as any;
+global.customElements = { define: mockDefine } as unknown as CustomElementRegistry;
 
 describe('@tagMapping decorator (TC39)', () => {
     beforeEach(() => {

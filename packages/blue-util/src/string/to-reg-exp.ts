@@ -28,8 +28,9 @@ const regExpFlags = /[gimsuy]+/,
 const toRegExp = (value: string): RegExp => {
     let regex: RegExp;
 
-    if (cache.has(value)) {
-        regex = cache.get(value)!;
+    const cached = cache.get(value);
+    if (cached !== undefined) {
+        regex = cached;
     } else {
         const flags = extractFlags(value),
             pattern = removeSlashesAndFlags(value);

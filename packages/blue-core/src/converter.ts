@@ -44,13 +44,15 @@ export interface Converter<S, T> {
 
 /** Internal entry stored in the converter map. */
 interface ConverterEntry {
-    sourceType: any;
-    targetType: any;
-    converter: any;
+    sourceType: unknown;
+    targetType: unknown;
+    converter: unknown;
 }
 
-function makeKey(sourceId: any, targetId: any): string {
-    return `${sourceId?.name ?? 'unknown'}→${targetId?.name ?? 'unknown'}`;
+function makeKey(sourceId: unknown, targetId: unknown): string {
+    const sourceName = (sourceId as { name?: string } | undefined)?.name;
+    const targetName = (targetId as { name?: string } | undefined)?.name;
+    return `${sourceName ?? 'unknown'}→${targetName ?? 'unknown'}`;
 }
 
 /**
@@ -69,7 +71,7 @@ export class ConverterRegistry {
      * @param sourceType - Runtime identity of the source type (e.g., `String`, `Date`).
      * @param targetType - Runtime identity of the target type (e.g., `UUID`, `Number`).
      */
-    register(converter: any, sourceType: any, targetType: any): void {
+    register(converter: unknown, sourceType: unknown, targetType: unknown): void {
         const key = makeKey(sourceType, targetType);
 
         this.#entries.set(key, { sourceType, targetType, converter });
@@ -81,7 +83,8 @@ export class ConverterRegistry {
      * @param targetType - Runtime identity of the target type.
      * @returns The converter instance, or `undefined` if none is registered.
      */
-    getConverter(sourceType: any, targetType: any): any | undefined {
+    // oxlint-disable-next-line typescript/no-explicit-any -- callers (blue-platform-node/web) call `.convert(value)` on the result without narrowing; `unknown` would break those call sites.
+    getConverter(sourceType: unknown, targetType: unknown): any | undefined {
         return this.#entries.get(makeKey(sourceType, targetType))?.converter;
     }
 
@@ -91,7 +94,7 @@ export class ConverterRegistry {
      * @param targetType - Runtime identity of the target type.
      * @returns `true` if a converter is registered.
      */
-    hasConverter(sourceType: any, targetType: any): boolean {
+    hasConverter(sourceType: unknown, targetType: unknown): boolean {
         return this.#entries.has(makeKey(sourceType, targetType));
     }
 
@@ -100,14 +103,14 @@ export class ConverterRegistry {
      * @param sourceType - Runtime identity of the source type.
      * @param targetType - Runtime identity of the target type.
      */
-    unregister(sourceType: any, targetType: any): void {
+    unregister(sourceType: unknown, targetType: unknown): void {
         this.#entries.delete(makeKey(sourceType, targetType));
     }
 
     /**
      * Returns all registered converters as an array of entries.
      */
-    getAll(): Array<{ sourceType: any; targetType: any; converter: any }> {
+    getAll(): Array<{ sourceType: unknown; targetType: unknown; converter: unknown }> {
         return Array.from(this.#entries.values());
     }
 
@@ -163,8 +166,8 @@ export class DateConverter implements Converter<string, Date> {
 /**
  * Converts strings to parsed JSON values via `JSON.parse`.
  */
-export class JSONConverter implements Converter<string, any> {
-    convert(value: string): any {
+export class JSONConverter implements Converter<string, unknown> {
+    convert(value: string): unknown {
         try {
             return JSON.parse(value);
         } catch (error) {
@@ -242,7 +245,7 @@ const defaultConverters = [
  */
 export interface ConversionServiceOptions {
     /** Pre-populated converters to register. */
-    converters?: Array<{ converter: any; sourceType: any; targetType: any }>;
+    converters?: Array<{ converter: unknown; sourceType: unknown; targetType: unknown }>;
 }
 
 /**
@@ -265,7 +268,7 @@ export interface ConversionService {
     /**
      * Checks whether a converter exists for the given source/target type pair.
      */
-    canConvert(sourceType: any, targetType: any): boolean;
+    canConvert(sourceType: unknown, targetType: unknown): boolean;
 
     /**
      * Converts a value from one type to another using the registered converter.
@@ -273,17 +276,17 @@ export interface ConversionService {
      * @param targetType - The target type constructor (e.g., `Date`, `Number`).
      * @returns The converted value, or throws if no converter is found.
      */
-    convert(source: any, targetType: any): any;
+    convert(source: unknown, targetType: unknown): unknown;
 
     /**
      * Registers a converter for a source/target type pair.
      */
-    register<S, T>(converter: Converter<S, T>, sourceType: any, targetType: any): void;
+    register<S, T>(converter: Converter<S, T>, sourceType: unknown, targetType: unknown): void;
 
     /**
      * Removes the converter for a source/target type pair.
      */
-    unregister(sourceType: any, targetType: any): void;
+    unregister(sourceType: unknown, targetType: unknown): void;
 
     /**
      * Returns the underlying converter registry.
@@ -312,25 +315,27 @@ export function createConversionService(options: ConversionServiceOptions = {}):
     }
 
     const service: ConversionService = {
-        canConvert(sourceType: any, targetType: any): boolean {
+        canConvert(sourceType: unknown, targetType: unknown): boolean {
             return registry.hasConverter(sourceType, targetType);
         },
 
-        convert(source: any, targetType: any): any {
+        convert(source: unknown, targetType: unknown): unknown {
             const converter = registry.getConverter(String, targetType);
 
             if (!converter) {
-                throw new TypeError(`No converter registered for String → ${targetType?.name ?? 'unknown'}`);
+                throw new TypeError(
+                    `No converter registered for String → ${(targetType as { name?: string })?.name ?? 'unknown'}`
+                );
             }
 
             return converter.convert(source);
         },
 
-        register<S, T>(converter: Converter<S, T>, sourceType: any, targetType: any): void {
-            registry.register(converter as any, sourceType, targetType);
+        register<S, T>(converter: Converter<S, T>, sourceType: unknown, targetType: unknown): void {
+            registry.register(converter, sourceType, targetType);
         },
 
-        unregister(sourceType: any, targetType: any): void {
+        unregister(sourceType: unknown, targetType: unknown): void {
             registry.unregister(sourceType, targetType);
         },
 

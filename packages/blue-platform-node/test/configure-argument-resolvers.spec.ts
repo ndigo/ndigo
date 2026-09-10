@@ -43,7 +43,7 @@ describe('configureNodeArgumentResolvers', () => {
     test('should use context registry if available', () => {
         // Set up a custom converter registry in the context
         const customRegistry = {
-            customConverter: (value: any) => `converted-${value}`,
+            customConverter: (value: unknown) => `converted-${value}`,
         };
         // Note: This is a simplified test since we don't have direct access to setService
 
@@ -54,7 +54,7 @@ describe('configureNodeArgumentResolvers', () => {
     test('should allow option-level registry to override context registry', () => {
         // Set up an option-level registry that overrides it
         const optionRegistry = {
-            optionConverter: (value: any) => `option-${value}`,
+            optionConverter: (value: unknown) => `option-${value}`,
         };
 
         const resolvers = configureNodeArgumentResolvers(context, { converterRegistry: optionRegistry });

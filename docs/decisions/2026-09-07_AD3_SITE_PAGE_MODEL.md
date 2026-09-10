@@ -23,7 +23,7 @@ the view up in the Application's Page.
 Two properties defined the model's value:
 
 1. **Independent boot**: Applications and Pages could boot separately and
-   be *linked*. Boot a desktop Page first → fast time-to-first-render;
+   be _linked_. Boot a desktop Page first → fast time-to-first-render;
    boot the Application afterwards → slower time-to-interactive. Or the
    reverse (heavy app first, page later).
 2. **Decoupled assembly**: behavior (Application) and presentation (Page)
@@ -40,18 +40,18 @@ of SiteBuilder.
 The three capabilities did **not** die; they were re-implemented with the
 modern primitives and re-named:
 
-| Legacy concept | Modern equivalent | Where |
-| --- | --- | --- |
-| Site (owner of top-level route, delegates by segment) | **`SiteRouter` + `FeatureRoutingRegistry`** — prefix-partitioned route delegation; features mount at URL prefixes | `@blue/router` |
-| Application (independent context: controllers + models) | **`ApplicationContext` + `@community configuration`/`@entry`** — an app context owns its beans; `ApplicationBuilder.run()` assembles one | `@blue/context`, `@blue/boot` |
-| Page (independently-mounted presentation owning views) | **View targets + `IslandView`/web-component mounts** — a render surface target is a mountable presentation unit; islands prime a fast first render | `@blue/view`, `@blue/view-webcomponent`, `@blue/platform-node` |
-| Independent boot / link-time assembly | **Context tree + `FeatureContextMountManager`** — parent/child contexts + lazily-mounted feature contexts with shared-dependency validation (see `apps/blue-host`, `apps/blue-todo` shell composition) | `@blue/context`, demo apps |
-| Progressive render (TTFB vs TTI) | **Island/server-render-then-hydrate + lazy feature mounts** — the modern incarnation of "boot the Page first" | `IslandView`, `FeatureContextMountManager` |
+| Legacy concept                                          | Modern equivalent                                                                                                                                                                                      | Where                                                          |
+| ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------- |
+| Site (owner of top-level route, delegates by segment)   | **`SiteRouter` + `FeatureRoutingRegistry`** — prefix-partitioned route delegation; features mount at URL prefixes                                                                                      | `@blue/router`                                                 |
+| Application (independent context: controllers + models) | **`ApplicationContext` + `@community configuration`/`@entry`** — an app context owns its beans; `ApplicationBuilder.run()` assembles one                                                               | `@blue/context`, `@blue/boot`                                  |
+| Page (independently-mounted presentation owning views)  | **View targets + `IslandView`/web-component mounts** — a render surface target is a mountable presentation unit; islands prime a fast first render                                                     | `@blue/view`, `@blue/view-webcomponent`, `@blue/platform-node` |
+| Independent boot / link-time assembly                   | **Context tree + `FeatureContextMountManager`** — parent/child contexts + lazily-mounted feature contexts with shared-dependency validation (see `apps/blue-host`, `apps/blue-todo` shell composition) | `@blue/context`, demo apps                                     |
+| Progressive render (TTFB vs TTI)                        | **Island/server-render-then-hydrate + lazy feature mounts** — the modern incarnation of "boot the Page first"                                                                                          | `IslandView`, `FeatureContextMountManager`                     |
 
 **Reference implementation:** `apps/blue-host/src/shell-composition.ts` is
 the canonical live heir — shell context + shared dependency registry +
 `SiteRouter` feature mounts, all composed at runtime. This is what the
-legacy Site model *became*.
+legacy Site model _became_.
 
 ## Decision: SiteBuilder is removed
 
@@ -67,32 +67,45 @@ legacy Site model *became*.
 - The `@experimental SiteBuilder` row in migration docs is now obsolete; see
   this AD.
 
-Rationale for removal rather than resurrection: the *capabilities* were
+Rationale for removal rather than resurrection: the _capabilities_ were
 re-implemented with better primitives; keeping a dead stub named after the
 legacy model only advertised a shape the framework had already outgrown.
 
 ## The open question: does "Page" deserve a first-class concept?
 
-What the legacy model offered that still has no *named* modern equivalent is
+What the legacy model offered that still has no _named_ modern equivalent is
 **Page** as an independently-bootable, named presentation container — a view
 surface that can render its own model before (or without) a full application
 context. Today the island/web-component mount and view targets express the
-*mechanics*, but there is no "Page" concept, no registration API, and no
+_mechanics_, but there is no "Page" concept, no registration API, and no
 documented TTFB-vs-TTI contract.
 
 This is a real, modern capability (app-shell + feature, islands, partial
-hydration — the same progressive-render story). It is deliberately *not*
+hydration — the same progressive-render story). It is deliberately _not_
 designed here: it deserves its own design conversation (API shape,
 relationship to `ViewTarget` vs a new `Page` seam, whether it subsumes
-`IslandView`, and how it composes with the shell/feature model).
+`IslandView`, and how it composes with the shell/feature model). The design
+conversation must answer:
+
+1. Is "Page" a distinct seam from `ViewTarget`, or a composition of it?
+2. Does it subsume / replace `IslandView` (server-render-then-hydrate)?
+   How does it relate to `FeatureContextMountManager`?
+3. What is the registration API (decorator? builder? mount call)?
+4. What is the TTFB-vs-TTI contract (boot order, dependency between page and
+   application context)?
+5. How does it compose with the shell/feature routing model?
+
+The placeholder `@blue/page` package (the former record of this deferred
+design) was removed on 2026-09-08; this AD is the single source of truth for
+the open question.
 
 ## Status
 
-| Item | Status |
-| --- | --- |
-| SiteBuilder removal | ✅ Done 2026-09-07 (`@blue/boot` no longer exports it) |
-| Lineage + successors documented | ✅ This AD |
-| Page concept design | ⚠️ **Deferred** — dedicated conversation + AD; initial stub only |
+| Item                            | Status                                                           |
+| ------------------------------- | ---------------------------------------------------------------- |
+| SiteBuilder removal             | ✅ Done 2026-09-07 (`@blue/boot` no longer exports it)           |
+| Lineage + successors documented | ✅ This AD                                                       |
+| Page concept design             | ⚠️ **Deferred** — dedicated conversation + AD; initial stub only |
 
 ## Revisit Trigger
 

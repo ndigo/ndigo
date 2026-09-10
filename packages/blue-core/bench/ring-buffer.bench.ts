@@ -18,7 +18,7 @@ const dq = new Denque<number>();
 const arr: number[] = [];
 const circArr = new Array(16).fill(0);
 
-let _sink: any = 0;
+let _sink: unknown = 0;
 
 describe('FIFO enqueue+dequeue – 1000 ops', () => {
     bench('RingBuffer', () => {

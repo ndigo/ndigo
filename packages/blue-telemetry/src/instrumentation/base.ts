@@ -1,5 +1,7 @@
-import { SpanKind, trace, metrics } from '@opentelemetry/api';
+import { SpanKind, SpanStatusCode, trace, metrics } from '@opentelemetry/api';
+import type { Attributes, Span } from '@opentelemetry/api';
 import { InstrumentationBase } from '@opentelemetry/instrumentation';
+import type { InstrumentationModuleDefinition } from '@opentelemetry/instrumentation';
 
 /**
  * Shared span configuration for method instrumentation.
@@ -10,7 +12,7 @@ export interface SpanConfig {
     /** Span kind (CLIENT, SERVER, etc.). */
     kind: SpanKind;
     /** Optional callback that produces span attributes from the patched instance and arguments. */
-    attributes?: (instance: any, args: any[]) => Record<string, any>;
+    attributes?: (instance: unknown, args: unknown[]) => Record<string, unknown>;
     /**
      * Optional callback invoked just before the span ends, with the method's
      * result (or thrown error) and the patched instance + args — for outcome
@@ -22,10 +24,10 @@ export interface SpanConfig {
      * @param args - The original method arguments.
      */
     onEnd?: (
-        span: import('@opentelemetry/api').Span,
+        span: Span,
         outcome: { ok: boolean; value?: unknown; error?: unknown },
-        instance: any,
-        args: any[]
+        instance: unknown,
+        args: unknown[]
     ) => void;
 }
 
@@ -36,7 +38,7 @@ export interface CountConfig {
     /** The name of the counter. */
     name: string;
     /** Optional attributes to associate with the counter. */
-    attributes?: Record<string, any>;
+    attributes?: Attributes;
 }
 
 /**
@@ -61,7 +63,7 @@ export abstract class AbstractBaseInstrumentation extends InstrumentationBase {
     }
 
     /** @inheritdoc */
-    protected init(): any[] {
+    protected init(): InstrumentationModuleDefinition[] {
         return [];
     }
 
@@ -75,11 +77,13 @@ export abstract class AbstractBaseInstrumentation extends InstrumentationBase {
      * Returns a synchronous patch function that increments a counter.
      */
     protected _patchCount(config: CountConfig) {
-        return (original: (...args: any[]) => any) => {
+        return <This, Args extends unknown[], Return>(
+            original: (this: This, ...args: Args) => Return
+        ): ((this: This, ...args: Args) => Return) => {
             const meter = metrics.getMeter('@blue/telemetry');
             const counter = meter.createCounter(config.name);
 
-            return function (this: any, ...args: any[]) {
+            return function (this: This, ...args: Args): Return {
                 counter.add(1, config.attributes);
                 return original.apply(this, args);
             };
@@ -91,12 +95,16 @@ export abstract class AbstractBaseInstrumentation extends InstrumentationBase {
      * in a span with the given configuration.
      */
     protected _patchSync(config: SpanConfig) {
-        return (original: (...args: any[]) => any) => {
-            return function (this: any, ...args: any[]) {
+        return <This, Args extends unknown[], Return>(
+            original: (this: This, ...args: Args) => Return
+        ): ((this: This, ...args: Args) => Return) => {
+            return function (this: This, ...args: Args): Return {
                 const tracer = trace.getTracer('@blue/telemetry');
                 const span = tracer.startSpan(config.name, {
                     kind: config.kind,
-                    attributes: config.attributes?.(this, args) ?? {},
+                    // Config callbacks build arbitrary bags from runtime args;
+                    // OTel accepts only AttributeValues — assert at the boundary.
+                    attributes: config.attributes?.(this, args) as Attributes | undefined,
                 });
                 try {
                     const result = original.apply(this, args);
@@ -104,7 +112,7 @@ export abstract class AbstractBaseInstrumentation extends InstrumentationBase {
                     return result;
                 } catch (error) {
                     span.recordException(error as Error);
-                    span.setStatus({ code: 2 /* ERROR */ });
+                    span.setStatus({ code: SpanStatusCode.ERROR });
                     span.end();
                     throw error;
                 }
@@ -117,26 +125,30 @@ export abstract class AbstractBaseInstrumentation extends InstrumentationBase {
      * in an active span with the given configuration.
      */
     protected _patchAsync(config: SpanConfig) {
-        return (original: (...args: any[]) => Promise<any>) => {
-            return function (this: any, ...args: any[]) {
+        return <This, Args extends unknown[], Return>(
+            original: (this: This, ...args: Args) => Promise<Return>
+        ): ((this: This, ...args: Args) => Promise<Return>) => {
+            return function (this: This, ...args: Args): Promise<Return> {
                 const tracer = trace.getTracer('@blue/telemetry');
                 return tracer.startActiveSpan(
                     config.name,
                     {
                         kind: config.kind,
-                        attributes: config.attributes?.(this, args) ?? {},
+                        // Config callbacks build arbitrary bags from runtime args;
+                        // OTel accepts only AttributeValues — assert at the boundary.
+                        attributes: config.attributes?.(this, args) as Attributes | undefined,
                     },
                     (span) => {
                         return original
                             .apply(this, args)
-                            .then((result: any) => {
+                            .then((result) => {
                                 config.onEnd?.(span, { ok: true, value: result }, this, args);
                                 span.end();
                                 return result;
                             })
-                            .catch((error: Error) => {
+                            .catch((error) => {
                                 span.recordException(error);
-                                span.setStatus({ code: 2 /* ERROR */ });
+                                span.setStatus({ code: SpanStatusCode.ERROR });
                                 config.onEnd?.(span, { ok: false, error }, this, args);
                                 span.end();
                                 throw error;

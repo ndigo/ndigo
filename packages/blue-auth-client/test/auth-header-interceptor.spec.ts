@@ -1,5 +1,6 @@
 import { describe, test, expect, vi } from 'vitest';
 import { DefaultSession, AnonymousPrincipal } from '@blue/auth-core';
+import { HTTP } from '@blue/http';
 import { AuthHeaderInterceptor } from '../src/auth-header-interceptor';
 
 function makeRequest(url: string, method = 'GET'): Request {
@@ -12,7 +13,7 @@ describe('AuthHeaderInterceptor', () => {
         const interceptor = new AuthHeaderInterceptor(session);
         const request = makeRequest('/api/data');
 
-        const result = await interceptor.preRequest(request, undefined as any);
+        const result = await interceptor.preRequest(request, new HTTP());
 
         expect(result).toBeUndefined();
     });
@@ -24,7 +25,7 @@ describe('AuthHeaderInterceptor', () => {
         const interceptor = new AuthHeaderInterceptor(session);
         const request = makeRequest('/api/data');
 
-        const result = await interceptor.preRequest(request, undefined as any);
+        const result = await interceptor.preRequest(request, new HTTP());
 
         expect(result).toBeInstanceOf(Request);
         expect((result as Request).headers.get('Authorization')).toBe('Bearer test-token');
@@ -40,7 +41,7 @@ describe('AuthHeaderInterceptor', () => {
             headers: { 'X-Custom': 'value' },
         });
 
-        const result = await interceptor.preRequest(request, undefined as any);
+        const result = await interceptor.preRequest(request, new HTTP());
 
         expect((result as Request).headers.get('Authorization')).toBe('Bearer token-789');
         expect((result as Request).headers.get('X-Custom')).toBe('value');
@@ -54,7 +55,7 @@ describe('AuthHeaderInterceptor', () => {
         const interceptor = new AuthHeaderInterceptor(session);
         const request = makeRequest('/api/data');
 
-        const result = await interceptor.preRequest(request, undefined as any);
+        const result = await interceptor.preRequest(request, new HTTP());
 
         expect(result).toBeUndefined();
     });

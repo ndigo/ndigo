@@ -12,14 +12,14 @@ import { decodeURIComponent as decode } from '@blue/util/string';
  * - Comma-separated values produce an array; empty segments become `null`.
  * - Empty values (`key=`) produce `null`.
  */
-function parseMatrix(input: string): Record<string, any> {
+function parseMatrix(input: string): Record<string, unknown> {
     let pos = 0;
     const len = input.length;
 
     // Skip optional leading ';'
     if (pos < len && input[pos] === ';') pos++;
 
-    const pairs: [string, any][] = [];
+    const pairs: [string, unknown][] = [];
 
     while (pos < len) {
         // Parse key: /^[^=;]+/
@@ -40,7 +40,7 @@ function parseMatrix(input: string): Record<string, any> {
         // Replace + with space before decoding (avoids regex-escape issues in the decode fallback path)
         const key = decode(rawKey.replace(/\+/g, ' '));
 
-        let value: any = null;
+        let value: unknown = null;
 
         if (pos < len && input[pos] === '=') {
             pos++; // consume '='
@@ -64,8 +64,8 @@ function parseMatrix(input: string): Record<string, any> {
         if (pos < len && input[pos] === ';') pos++;
     }
 
-    function fromRepeatedPairs(pairList: [any, any][]): Record<any, any> {
-        const result: Record<any, any> = {};
+    function fromRepeatedPairs(pairList: [string, unknown][]): Record<string, unknown> {
+        const result: Record<string, unknown> = {};
         for (const [key, value] of pairList) {
             if (!Object.prototype.hasOwnProperty.call(result, key)) {
                 result[key] = value;
@@ -82,7 +82,7 @@ function parseMatrix(input: string): Record<string, any> {
 }
 
 export const matrixExpression = {
-    run(input: string): { isError: false; result: Record<string, any>; index: number; data: string } {
+    run(input: string): { isError: false; result: Record<string, unknown>; index: number; data: string } {
         return { isError: false, result: parseMatrix(input), index: input.length, data: '' };
     },
 };

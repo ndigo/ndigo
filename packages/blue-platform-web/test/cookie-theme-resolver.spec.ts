@@ -1,5 +1,6 @@
 import { describe, test, expect, afterEach, vi } from 'vitest';
 import { GenericApplicationContext } from '@blue/context';
+import { Route } from '@blue/router';
 import Cookies from '../src/cookies';
 import { CookieThemeResolver, configureCookieThemeResolver } from '../src/cookie-theme-resolver';
 
@@ -12,14 +13,14 @@ describe('CookieThemeResolver', () => {
         vi.spyOn(Cookies, 'get').mockReturnValue('night');
 
         const resolver = new CookieThemeResolver('theme', 'default');
-        expect(resolver.resolveTheme({ path: '/hello' } as any)).toBe('night');
+        expect(resolver.resolveTheme({ path: '/hello' } as unknown as Route)).toBe('night');
     });
 
     test('falls back to default theme name', () => {
         vi.spyOn(Cookies, 'get').mockReturnValue(undefined);
 
         const resolver = new CookieThemeResolver('theme', 'default');
-        expect(resolver.resolveTheme({ path: '/hello' } as any)).toBe('default');
+        expect(resolver.resolveTheme({ path: '/hello' } as unknown as Route)).toBe('default');
     });
 
     test('fromApplicationContext uses context theme name', () => {
@@ -30,7 +31,7 @@ describe('CookieThemeResolver', () => {
 
         const resolver = CookieThemeResolver.fromApplicationContext(context, 'theme');
 
-        expect(resolver.resolveTheme({ path: '/hello' } as any)).toBe('ocean');
+        expect(resolver.resolveTheme({ path: '/hello' } as unknown as Route)).toBe('ocean');
     });
 
     test('configureCookieThemeResolver registers strategy in context', () => {
@@ -43,7 +44,7 @@ describe('CookieThemeResolver', () => {
         expect(resolver.cookieName).toBe('themeName');
 
         vi.spyOn(Cookies, 'get').mockReturnValue(undefined);
-        expect(resolver.resolveTheme({ path: '/hello' } as any)).toBe('forest');
+        expect(resolver.resolveTheme({ path: '/hello' } as unknown as Route)).toBe('forest');
     });
 
     test('resolver should expose Symbol.toStringTag with cookie name', () => {

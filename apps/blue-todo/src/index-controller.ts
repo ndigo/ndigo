@@ -22,7 +22,7 @@ class IndexController extends AsApplicationContextAware(Null) {
     @parameters({ path: pathValue() })
     @traced
     handleIndex(path: string) {
-        logger.info('Handling route', { 'path': path });
+        logger.info('Handling route', { path: path });
         const model = this._createModel('all');
         return new ModelAndView('todo-app', model);
     }
@@ -31,7 +31,7 @@ class IndexController extends AsApplicationContextAware(Null) {
     @parameters({ path: pathValue() })
     @traced
     handleAll(path: string) {
-        logger.info('Handling route', { 'path': path });
+        logger.info('Handling route', { path: path });
         const model = this._createModel('all', false);
         return new ModelAndView('todo-app', model);
     }
@@ -40,7 +40,7 @@ class IndexController extends AsApplicationContextAware(Null) {
     @parameters({ path: pathValue() })
     @traced
     handleActive(path: string) {
-        logger.info('Handling route', { 'path': path });
+        logger.info('Handling route', { path: path });
         const model = this._createModel('active', false);
         return new ModelAndView('todo-app', model);
     }
@@ -49,7 +49,7 @@ class IndexController extends AsApplicationContextAware(Null) {
     @parameters({ path: pathValue() })
     @traced
     handleCompleted(path: string) {
-        logger.info('Handling route', { 'path': path });
+        logger.info('Handling route', { path: path });
         const model = this._createModel('completed', false);
         return new ModelAndView('todo-app', model);
     }

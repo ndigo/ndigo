@@ -1,4 +1,5 @@
 import { describe, expect, test } from 'vitest';
+import { Constructable } from '@blue/core';
 import { AsBlueElement } from '../src/blue-element';
 
 class TestHTMLElement {
@@ -13,7 +14,7 @@ class TestHTMLElement {
     }
 }
 
-class TestBlueElement extends AsBlueElement(TestHTMLElement as any) {}
+class TestBlueElement extends AsBlueElement(TestHTMLElement as unknown as Constructable<HTMLElement>) {}
 
 describe('AsBlueElement', () => {
     test('it should read name from attribute', () => {

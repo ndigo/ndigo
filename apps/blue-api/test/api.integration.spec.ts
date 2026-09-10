@@ -92,7 +92,7 @@ describe('blue-api through @blue/test', () => {
             .headers({ authorization: `Bearer ${token}` })
             .exec();
         const { notes } = list.json() as { notes?: Array<{ id: number; title: string }> };
-        expect(notes!.some((n) => n.title === 'SQL Note')).toBe(true);
+        expect(notes?.some((n) => n.title === 'SQL Note')).toBe(true);
     });
 
     test('Drizzle-backed notes list + get-by-id read from SQL', async () => {
@@ -119,7 +119,7 @@ describe('blue-api through @blue/test', () => {
         expect(list.response.status).toBe(200);
         const { notes } = list.json() as { notes?: Array<{ id: number; title: string }> };
         expect(notes).toBeDefined();
-        expect(notes!.some((n) => n.title === 'Seeded SQL Note')).toBe(true);
+        expect(notes?.some((n) => n.title === 'Seeded SQL Note')).toBe(true);
 
         // GET by-id via the framework route
         const byId = await mockMVC

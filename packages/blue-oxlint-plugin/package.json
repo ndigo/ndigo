@@ -1,7 +1,7 @@
 {
-  "name": "@blue/eslint-plugin",
+  "name": "@blue/oxlint-plugin",
   "version": "0.0.1",
-  "description": "Custom ESLint rules for BlueJS architectural enforcement",
+  "description": "Custom oxlint rules for BlueJS architectural enforcement",
   "type": "module",
   "files": [
     "lib"
@@ -32,8 +32,8 @@
   "keywords": [
     "blue",
     "bluejs",
-    "eslint",
-    "eslint-plugin",
+    "oxlint",
+    "oxlint-plugin",
     "architecture"
   ],
   "license": "ISC",

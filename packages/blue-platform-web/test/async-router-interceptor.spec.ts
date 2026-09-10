@@ -2,6 +2,11 @@ import { describe, it, expect, vi } from 'vitest';
 import { HashRouter } from '../src/hash-router';
 import { RouterInterceptor } from '@blue/router';
 
+/** Private `_setRoute` surface of HashRouter exercised by these tests. */
+type TestableRouter = { _setRoute(route: string): Promise<boolean> };
+
+const asTestableRouter = (router: HashRouter): TestableRouter => router as unknown as TestableRouter;
+
 describe('Asynchronous Router Interceptors', () => {
     it('should support async preHandle interceptors', async () => {
         let interceptorCalled = false;
@@ -19,7 +24,7 @@ describe('Asynchronous Router Interceptors', () => {
         });
         router.addInterceptor(asyncInterceptor);
 
-        const result = await (router as any)._setRoute('/test');
+        const result = await asTestableRouter(router)._setRoute('/test');
         expect(interceptorCalled).toBe(true);
         expect(result).toBe(true);
     });
@@ -38,7 +43,7 @@ describe('Asynchronous Router Interceptors', () => {
         });
         router.addInterceptor(asyncInterceptor);
 
-        const result = await (router as any)._setRoute('/blocked');
+        const result = await asTestableRouter(router)._setRoute('/blocked');
         expect(result).toBe(false);
         expect(callbackCalled).toBe(false);
     });
@@ -55,7 +60,7 @@ describe('Asynchronous Router Interceptors', () => {
         const router = new HashRouter(() => {});
         router.addInterceptor(asyncInterceptor);
 
-        await (router as any)._setRoute('/full');
+        await asTestableRouter(router)._setRoute('/full');
         expect(postHandleCalled).toBe(true);
     });
 });

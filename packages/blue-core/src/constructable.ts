@@ -4,6 +4,7 @@ import { like } from '@blue/util/types';
  * Represents a constructor type, allowing for the creation of new instances of a class.
  * @template T - The type of the instance created by the constructor. Defaults to an empty object.
  */
+// oxlint-disable-next-line typescript/no-explicit-any -- TS2545 requires mixin bases to be `new (...args: any[]) => T`; `unknown[]` breaks `class extends` in blue-dispatcher/blue-factory.
 export type Constructable<T = {}> = new (...args: any[]) => T;
 
 /**

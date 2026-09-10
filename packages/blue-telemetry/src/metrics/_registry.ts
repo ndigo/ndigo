@@ -4,13 +4,13 @@
  * without the decorator itself having to perform the wrapping.
  */
 export class CountedRegistry {
-    private static readonly prototypes = new Set<any>();
+    private static readonly prototypes = new Set<object>();
 
     /**
      * Registers a prototype for instrumentation.
      * @param prototype - The class prototype to register.
      */
-    static register(prototype: any): void {
+    static register(prototype: object): void {
         if (prototype) {
             this.prototypes.add(prototype);
         }
@@ -20,7 +20,7 @@ export class CountedRegistry {
      * Returns all registered prototypes.
      * @returns A set of registered prototypes.
      */
-    static getPrototypes(): Set<any> {
+    static getPrototypes(): Set<object> {
         return this.prototypes;
     }
 

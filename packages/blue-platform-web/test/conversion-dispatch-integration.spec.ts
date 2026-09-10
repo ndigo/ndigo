@@ -18,7 +18,9 @@ import {
     asBoolean,
     MethodParameter,
     MethodParameterType,
+    HandlerMethodArgumentResolver,
 } from '@blue/dispatcher';
+import { Route } from '@blue/router';
 import { BrowserDispatcher } from '../src/browser-dispatcher';
 import { RouteErrorResolver } from '../../blue-dispatcher/src/route-error-resolver';
 import { BrowserModelValueMethodArgumentResolver } from '../src/model-argument-resolver';
@@ -41,7 +43,7 @@ class TestViewResolver {
 
 describe('conversion + error flow integration', () => {
     test('handles mixed converted params and maps conversion errors', async () => {
-        let successCapture: any = null;
+        let successCapture: unknown = null;
         let errorCapture: Error | null = null;
 
         @routeMapping('/checkout')
@@ -98,13 +100,17 @@ describe('conversion + error flow integration', () => {
 
         const context = new MetadataConfigApplicationContext([TestConfiguration]);
         context.addProcessor(new ApplicationContextAwareProcessor());
-        await context.refresh();
+        context.refresh();
 
         // Verify resolvers are registered
-        const resolvers = context.getValue<any[]>('argumentResolvers');
+        const resolvers: HandlerMethodArgumentResolver[] =
+            context.getValue<HandlerMethodArgumentResolver[]>('argumentResolvers');
         if (resolvers && resolvers.length > 0) {
             // Test type-based conversion directly
             const stateResolver = resolvers.find((r) => r instanceof BrowserStateValueMethodArgumentResolver);
+            if (!stateResolver) {
+                throw new Error('state resolver not registered');
+            }
             const parameter = new MethodParameter(MethodParameterType.STATE, 'txCount', false, null, {
                 source: String,
                 target: Number,
@@ -114,7 +120,7 @@ describe('conversion + error flow integration', () => {
             const originalState = globalThis.history?.state;
             vi.stubGlobal('history', { state: { txCount: '7' } });
 
-            const value = stateResolver.resolveArgument(parameter, {} as any, {} as any);
+            const value = stateResolver.resolveArgument(parameter, {} as unknown as Route, {});
             expect(value).toBe(7);
 
             // Restore original state

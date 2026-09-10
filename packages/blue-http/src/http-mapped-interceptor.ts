@@ -220,4 +220,4 @@ export class MappedHTTPInterceptor
 /**
  * @internal
  */
-export const isMappedHTTPInterceptor = is(MappedHTTPInterceptor) as (value: any) => value is MappedHTTPInterceptor;
+export const isMappedHTTPInterceptor = is(MappedHTTPInterceptor) as (value: unknown) => value is MappedHTTPInterceptor;

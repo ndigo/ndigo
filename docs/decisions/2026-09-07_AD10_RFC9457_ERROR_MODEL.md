@@ -8,16 +8,16 @@
 Blue's Node HTTP surface produces an **inconsistent, custom error envelope**.
 Grounded audit of today's response shaping:
 
-| Location | Today's shape | Problem |
-| --- | --- | --- |
-| `NodeParameterBindingErrorResolver` | `{ "error": "<flattened message>" }` | Custom; machine data unavailable |
-| `node-http-server-adapter` (#writeJson) | `{ "error": code }` **and** `{ "error": "Not Found" }` mixed | Custom; code-vs-message ambiguity |
-| `note-controller` / `drizzle-note-controller` (5 sites) | `ResponseEntity.badRequest({ error: 'Unauthorized' })` | **Wrong status** — auth failure is 401 not 400 (RFC 9110 §15.5.2) |
-| `auth-controller` | 400 `{ error: 'Invalid credentials' }`; comment claims 401 | Same status error |
-| `static-file-view`, `static-controller`, `csrf-interceptor` | `{ error: 'Forbidden'/'Not Found'/'…' }` | Custom; unnegotiated |
-| Method-mismatch (POST to GET-only route) | Falls through to 404 | Should be **405 + `Allow`** (RFC 9110 §15.5.6) |
-| Unresolved server error | 500/empty via `TypeError('view name is undefined')` | No default last-resort handler |
-| `ParameterConversionError` (Phase 4A) | `{ error }` body; structured `issues` in the `cause` | Structure unused at the wire |
+| Location                                                    | Today's shape                                                | Problem                                                           |
+| ----------------------------------------------------------- | ------------------------------------------------------------ | ----------------------------------------------------------------- |
+| `NodeParameterBindingErrorResolver`                         | `{ "error": "<flattened message>" }`                         | Custom; machine data unavailable                                  |
+| `node-http-server-adapter` (#writeJson)                     | `{ "error": code }` **and** `{ "error": "Not Found" }` mixed | Custom; code-vs-message ambiguity                                 |
+| `note-controller` / `drizzle-note-controller` (5 sites)     | `ResponseEntity.badRequest({ error: 'Unauthorized' })`       | **Wrong status** — auth failure is 401 not 400 (RFC 9110 §15.5.2) |
+| `auth-controller`                                           | 400 `{ error: 'Invalid credentials' }`; comment claims 401   | Same status error                                                 |
+| `static-file-view`, `static-controller`, `csrf-interceptor` | `{ error: 'Forbidden'/'Not Found'/'…' }`                     | Custom; unnegotiated                                              |
+| Method-mismatch (POST to GET-only route)                    | Falls through to 404                                         | Should be **405 + `Allow`** (RFC 9110 §15.5.6)                    |
+| Unresolved server error                                     | 500/empty via `TypeError('view name is undefined')`          | No default last-resort handler                                    |
+| `ParameterConversionError` (Phase 4A)                       | `{ error }` body; structured `issues` in the `cause`         | Structure unused at the wire                                      |
 
 The framework's own `ResponseStatuses` **already models 401/405/406/413/415/422/429/503** but
 they are wired nowhere on the response path. The HTTP vocabulary audit in
@@ -46,33 +46,33 @@ since 7230/9110).
    consumers to migrate; revisit negotiation only if a legacy-client
    requirement emerges.)
 4. **Status conventions (the "error type → status" table):**
-   - 400 — transport/binding failures (malformed URL, malformed body,
-     missing parameter, conversion failure)
-   - 401 — missing/invalid credentials **+ `WWW-Authenticate` header**
-   - 403 — insufficient role
-   - 404 — no route, no resource, no view
-   - 405 — method not allowed **+ `Allow` header**
-   - 406 — not acceptable (unfulfillable `Accept`)
-   - 413 — payload too large (already deterministic in the adapter)
-   - 415 — unsupported media type
-   - 422 — **schema validation failure** (Zod issues from `validatedBy`);
-     400 stays reserved for syntax/binding
-   - 429 — rate limited
-   - 503 — service unavailable
-   - 500 — anything else (unhandled), **never leaking internals**
-   This table is the canonical wiring of the existing-but-unused
-   `ResponseStatuses` vocabulary.
+    - 400 — transport/binding failures (malformed URL, malformed body,
+      missing parameter, conversion failure)
+    - 401 — missing/invalid credentials **+ `WWW-Authenticate` header**
+    - 403 — insufficient role
+    - 404 — no route, no resource, no view
+    - 405 — method not allowed **+ `Allow` header**
+    - 406 — not acceptable (unfulfillable `Accept`)
+    - 413 — payload too large (already deterministic in the adapter)
+    - 415 — unsupported media type
+    - 422 — **schema validation failure** (Zod issues from `validatedBy`);
+      400 stays reserved for syntax/binding
+    - 429 — rate limited
+    - 503 — service unavailable
+    - 500 — anything else (unhandled), **never leaking internals**
+      This table is the canonical wiring of the existing-but-unused
+      `ResponseStatuses` vocabulary.
 5. **`type`/`detail` split:** `type` is the machine code (the
    `urn:blue:<slug>`); `detail` is the human-readable message. Today's
    `{ error: code }` vs `{ error: message }` ambiguity disappears.
 
 ## Versions
 
-| Artifact | Status |
-| --- | --- |
-| RFC 9457 | Proposed standard (2025-08); obsoletes 7807 |
-| RFC 9110 | HTTP Semantics (auth, 401/405, `Allow`, `WWW-Authenticate`) |
-| RFC 9111 | HTTP Caching (`Cache-Control` on errors) |
+| Artifact                       | Status                                                                                      |
+| ------------------------------ | ------------------------------------------------------------------------------------------- |
+| RFC 9457                       | Proposed standard (2025-08); obsoletes 7807                                                 |
+| RFC 9110                       | HTTP Semantics (auth, 401/405, `Allow`, `WWW-Authenticate`)                                 |
+| RFC 9111                       | HTTP Caching (`Cache-Control` on errors)                                                    |
 | `ResponseStatuses` (blue-http) | 63 codes incl. 103/208/226/418/421/422/425/428/429/431/451/506–511 — audit-verified reasons |
 
 ## Consequences
@@ -116,13 +116,13 @@ The audit target is everything in `@blue/http` (and `@blue/core` where shared)
 that models the HTTP layer: `ResponseStatuses`, `HTTPHeader`/`HTTPHeaders`,
 `MediaType`, quality factors, and any RFC citations.
 
-| Item | Action |
-| --- | --- |
-| `ResponseStatus` `@see rfc2616` | Update to RFC 9110 (2616 is obsolete) |
-| Reason phrases | Spot-verified correct (413 Payload Too Large, 422 Unprocessable Entity, 425 Too Early, 429, 431, 451, 506–511) — add a regression test locking reasons/phrases against the RFC table |
-| Header names present | `WWW_AUTHENTICATE`, `ALLOW`, `VARY`, `CACHE_CONTROL`, `CONTENT_TYPE`, `ACCEPT_CH`, `ACCEPT_RANGES` — audit for missing modern headers (e.g. `Retry-After`, `Alt-Svc`, `Digest`, `Reporting-Endpoints`), add the ones we emit |
-| Status-set gaps | `PAYMENT_REQUIRED`(402) present but unused — deliberate (reserved); document rather than wire |
-| Content negotiation | `quality-factor`, `MediaType`, `ContentNegotiationViewResolver` exist — reuse for error negotiation later (3B+); no new machinery |
+| Item                            | Action                                                                                                                                                                                                                       |
+| ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ResponseStatus` `@see rfc2616` | Update to RFC 9110 (2616 is obsolete)                                                                                                                                                                                        |
+| Reason phrases                  | Spot-verified correct (413 Payload Too Large, 422 Unprocessable Entity, 425 Too Early, 429, 431, 451, 506–511) — add a regression test locking reasons/phrases against the RFC table                                         |
+| Header names present            | `WWW_AUTHENTICATE`, `ALLOW`, `VARY`, `CACHE_CONTROL`, `CONTENT_TYPE`, `ACCEPT_CH`, `ACCEPT_RANGES` — audit for missing modern headers (e.g. `Retry-After`, `Alt-Svc`, `Digest`, `Reporting-Endpoints`), add the ones we emit |
+| Status-set gaps                 | `PAYMENT_REQUIRED`(402) present but unused — deliberate (reserved); document rather than wire                                                                                                                                |
+| Content negotiation             | `quality-factor`, `MediaType`, `ContentNegotiationViewResolver` exist — reuse for error negotiation later (3B+); no new machinery                                                                                            |
 
 ## Sequencing
 
@@ -141,7 +141,7 @@ that models the HTTP layer: `ResponseStatuses`, `HTTPHeader`/`HTTPHeaders`,
 
 5. `ProblemDetails` type + `application/problem+json` writing.
 6. `NodeParameterBindingErrorResolver` renders `issues` (Phase 4A) → `detail`
-   + `errors`; validation failures → 422.
+    - `errors`; validation failures → 422.
 7. `instance` ← request-id correlation; `Cache-Control: no-store` on errors;
    `Vary: Accept`; `Accept-Language` → localized `detail` where resolvable.
 8. Adapter/static/CSRF/CORS error bodies migrate onto the envelope.
@@ -150,7 +150,7 @@ that models the HTTP layer: `ResponseStatuses`, `HTTPHeader`/`HTTPHeaders`,
 
 9. Update every test asserting the old `{ error }` shape (~30 sites).
 10. `urn:blue:*` → real HTTPS problem-type URIs **before first public
-   release** (placeholder scheme is tracked here).
+    release** (placeholder scheme is tracked here).
 
 **AD-10 implementation tracked in docs/plans/ (see the error-model plan).**
 
@@ -209,18 +209,18 @@ added to the three app manifests.
 - **Every 4xx/5xx response is `application/problem+json`** with
   `Cache-Control: no-store`, `Vary: Accept`, and (where known) `instance`
   = request path:
-  - framework resolvers (`NodeParameterBindingErrorResolver`,
-    `NodeLastResortErrorResolver`) return registered problems; validation
-    failures → `422 urn:blue:validation-failed` with the structured
-    `errors` extension (Phase 4A);
-  - transport errors (413/400/408) map by code (`urn:blue:<code>`);
-  - 401/403 denials → `urn:blue:unauthorized`/`urn:blue:forbidden` (401
-    carries `WWW-Authenticate`);
-  - 404/405 → `urn:blue:not-found`/`urn:blue:method-not-allowed` (405
-    carries `Allow`);
-  - handler-returned `ResponseEntity` 4xx/5xx wrap to an about:blank
-    problem (`title` = reason phrase, `detail` = string/`error`/JSON body);
-  - CSRF/static-file/dispatcher view-not-found migrated.
+    - framework resolvers (`NodeParameterBindingErrorResolver`,
+      `NodeLastResortErrorResolver`) return registered problems; validation
+      failures → `422 urn:blue:validation-failed` with the structured
+      `errors` extension (Phase 4A);
+    - transport errors (413/400/408) map by code (`urn:blue:<code>`);
+    - 401/403 denials → `urn:blue:unauthorized`/`urn:blue:forbidden` (401
+      carries `WWW-Authenticate`);
+    - 404/405 → `urn:blue:not-found`/`urn:blue:method-not-allowed` (405
+      carries `Allow`);
+    - handler-returned `ResponseEntity` 4xx/5xx wrap to an about:blank
+      problem (`title` = reason phrase, `detail` = string/`error`/JSON body);
+    - CSRF/static-file/dispatcher view-not-found migrated.
 - MockMVC matches the live adapter (404/405 problem documents).
 
 **Consistency sweep:** existing tests migrated from `{ error }` to problem

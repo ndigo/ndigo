@@ -15,7 +15,7 @@ export class BrowserSessionValueMethodArgumentResolver extends AbstractPlatformA
     }
 
     /** Retrieves a value from `sessionStorage` if available. */
-    protected resolveName(name: string, _parameter: MethodParameter, _route: Route, _mapping: any): any {
+    protected resolveName(name: string, _parameter: MethodParameter, _route: Route, _mapping: unknown): unknown {
         const storage = globalThis.sessionStorage;
         return storage ? storage.getItem(name) : null;
     }

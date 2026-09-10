@@ -177,7 +177,7 @@ export class BrowserRouter extends AbstractRouter {
     protected _onPopState(_event: PopStateEvent): void {
         const newRoute = window.location.pathname + window.location.search || '/';
 
-        this._setRoute(newRoute, true).then((success) => {
+        void this._setRoute(newRoute, true).then((success) => {
             if (success) {
                 const route = this.route,
                     routeTx = new RouteTransaction(route, RouteAccess.PUBLIC, RouteSource.EXTERNAL);

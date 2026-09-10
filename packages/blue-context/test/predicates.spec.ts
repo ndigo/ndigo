@@ -40,7 +40,7 @@ describe('context predicates', () => {
         class AwareContext extends AsApplicationContextAware(Null) {}
 
         expect(likeApplicationContextAware(new AwareContext())).toBe(true);
-        expect(likeApplicationContextAware({ setApplicationContext: () => null, [awareFlag]: true } as any)).toBe(true);
+        expect(likeApplicationContextAware({ setApplicationContext: () => null, [awareFlag]: true })).toBe(true);
         expect(likeApplicationContextAware({ setApplicationContext: () => null })).toBe(true);
         expect(likeApplicationContextAware(null)).toBe(false);
     });
@@ -64,9 +64,9 @@ describe('event-emitter predicates', () => {
         };
 
         expect(likeApplicationEventEmitterAware(aware)).toBe(true);
-        expect(
-            likeApplicationEventEmitterAware({ setApplicationEventEmitter: () => null, [awareFlag]: true } as any)
-        ).toBe(true);
+        expect(likeApplicationEventEmitterAware({ setApplicationEventEmitter: () => null, [awareFlag]: true })).toBe(
+            true
+        );
         expect(likeApplicationEventEmitterAware({ setApplicationEventEmitter: () => null })).toBe(true);
         expect(likeApplicationEventEmitterAware(null)).toBe(false);
     });
@@ -84,7 +84,7 @@ describe('environment predicates', () => {
         class AwareEnvironment extends AsEnvironmentAware(Null) {}
 
         expect(likeEnvironmentAware(new AwareEnvironment())).toBe(true);
-        expect(likeEnvironmentAware({ setEnvironment: () => null, [awareFlag]: true } as any)).toBe(true);
+        expect(likeEnvironmentAware({ setEnvironment: () => null, [awareFlag]: true })).toBe(true);
         expect(likeEnvironmentAware({ isAware: true })).toBe(false);
     });
 

@@ -1,34 +1,50 @@
 import '@tsmetadata/polyfill';
+import { Constructable } from '@blue/core';
 
 const TAG_MAPPING = 'tag:mapping',
     { assign } = Object,
-    getConstructor = (target: any): any => (typeof target === 'function' ? target : target?.constructor),
-    defineTagMapping = (value: string, target: any): void => {
-        const ctor = getConstructor(target);
-        if (!ctor[Symbol.metadata]) {
-            ctor[Symbol.metadata] = {};
+    getConstructor = (target: unknown): (Function & { [Symbol.metadata]?: Record<string, unknown> }) | undefined => {
+        if (typeof target === 'function') {
+            return target as Function & { [Symbol.metadata]?: Record<string, unknown> };
         }
-        ctor[Symbol.metadata][TAG_MAPPING] = value;
+        return (target as object | undefined)?.constructor as
+            | (Function & { [Symbol.metadata]?: Record<string, unknown> })
+            | undefined;
     },
-    deleteTagMapping = (target: any): void => {
+    defineTagMapping = (value: string, target: unknown): void => {
         const ctor = getConstructor(target);
-        if (ctor[Symbol.metadata]) {
-            delete ctor[Symbol.metadata][TAG_MAPPING];
+        if (!ctor) return;
+
+        // Trust: ctor has Symbol.metadata from @tsmetadata/polyfill at runtime.
+        // The TS Function type doesn't declare it — this cast is needed.
+        const ctorWithMeta = ctor as Function & { [Symbol.metadata]: Record<string, unknown> };
+        if (!ctorWithMeta[Symbol.metadata]) {
+            ctorWithMeta[Symbol.metadata] = {};
+        }
+        ctorWithMeta[Symbol.metadata][TAG_MAPPING] = value;
+    },
+    deleteTagMapping = (target: unknown): void => {
+        const ctor = getConstructor(target);
+        if (!ctor) return;
+
+        const metadata = ctor[Symbol.metadata];
+        if (metadata) {
+            delete metadata[TAG_MAPPING];
         }
     },
-    getTagMapping = (target: any): string | undefined => {
+    getTagMapping = (target: unknown): string | undefined => {
         const ctor = getConstructor(target);
-        return ctor?.[Symbol.metadata]?.[TAG_MAPPING];
+        return ctor?.[Symbol.metadata]?.[TAG_MAPPING] as string | undefined;
     },
-    hasTagMapping = (target: any): boolean => {
+    hasTagMapping = (target: unknown): boolean => {
         const ctor = getConstructor(target);
         return ctor?.[Symbol.metadata]?.[TAG_MAPPING] !== undefined;
     },
     tagMapping =
         (tagName: string) =>
-        <T extends new (...args: any[]) => any>(target: T, context: ClassDecoratorContext): T => {
+        <T extends Constructable<HTMLElement>>(target: T, context: ClassDecoratorContext): T => {
             context.metadata[TAG_MAPPING] = tagName;
-            customElements.define(tagName, target as CustomElementConstructor);
+            customElements.define(tagName, target);
             return target;
         };
 

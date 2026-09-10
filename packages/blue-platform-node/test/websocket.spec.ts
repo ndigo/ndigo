@@ -1,7 +1,16 @@
 // @vitest-environment node
 import { describe, test, beforeAll, afterAll, expect } from 'vitest';
 import { MetadataConfigApplicationContext } from '@blue/context';
-import { getMapping, requestMapping, socketMapping, parameters, socketSession, queryValue, headerValue, type SocketSession } from '@blue/dispatcher';
+import {
+    getMapping,
+    requestMapping,
+    socketMapping,
+    parameters,
+    socketSession,
+    queryValue,
+    headerValue,
+    type SocketSession,
+} from '@blue/dispatcher';
 import { NodeAutoConfiguration } from '../src/node-auto-configuration';
 import { NodeDispatcher } from '../src/node-dispatcher';
 import { NodeHTTPServerAdapter } from '../src/node-http-server-adapter';
@@ -159,5 +168,86 @@ describe('Node WebSocket pipeline', () => {
         // Either the handshake errors (refused) or never opens — the socket
         // must not be usable.
         expect(failed).toBe(true);
+    });
+});
+
+describe('WebSocket origin enforcement', () => {
+    let originServer: HTTPServer;
+    let originWsUrl: string;
+
+    beforeAll(async () => {
+        const originContext = new MetadataConfigApplicationContext('ws-origin');
+        originContext.register(NodeAutoConfiguration);
+        originContext.setValue(SocketController.name, new SocketController());
+        originContext.refresh();
+        const dispatcher = originContext.getValue<NodeDispatcher>('dispatcher');
+        const adapter = new NodeHTTPServerAdapter(dispatcher, {
+            allowedWebSocketOrigins: ['http://127.0.0.1:9999'],
+        });
+        await adapter.listen(0, '127.0.0.1');
+        // adapter.server is `unknown` by contract; the http server's
+        // address() is the only shape offered here.
+        const boundAddress = adapter.server as { address: () => { port: number } | null };
+        const boundPort = boundAddress.address()?.port;
+        originWsUrl = `ws://127.0.0.1:${boundPort}`;
+        originServer = new HTTPServer(dispatcher, { adapter });
+    });
+
+    afterAll(async () => {
+        await originServer?.close();
+    });
+
+    test('an allowlisted Origin upgrades normally', async () => {
+        const ws = new WebSocket(`${originWsUrl}/echo`, { origin: 'http://127.0.0.1:9999' });
+        const { promise: opened, resolve, reject } = Promise.withResolvers<void>();
+        ws.on('open', resolve);
+        ws.on('error', reject);
+        await opened;
+
+        const received = new Promise<unknown>((resolve) => {
+            ws.once('message', (data: unknown) => resolve(data));
+        });
+        ws.send('ping');
+
+        const reply = await received;
+        expect(JSON.parse(String(reply))).toEqual({ event: 'echo', data: 'ping' });
+        ws.close(1000, 'done');
+    });
+
+    test('a forged Origin is rejected with 403 before the connection fires', async () => {
+        const ws = new WebSocket(`${originWsUrl}/echo`, { headers: { origin: 'https://evil.example' } });
+        let failed = false;
+        ws.on('error', () => {
+            failed = true;
+        });
+        const { promise, resolve } = Promise.withResolvers<void>();
+        setTimeout(resolve, 400);
+        await promise;
+        expect(failed).toBe(true);
+    });
+
+    test('a missing Origin fails closed when the allowlist is configured', async () => {
+        const ws = new WebSocket(`${originWsUrl}/echo`);
+        let failed = false;
+        ws.on('error', () => {
+            failed = true;
+        });
+        const { promise, resolve } = Promise.withResolvers<void>();
+        setTimeout(resolve, 400);
+        await promise;
+        expect(failed).toBe(true);
+    });
+
+    test('invalid allowedWebSocketOrigins entries are rejected at construction', () => {
+        const context = new MetadataConfigApplicationContext('ws-origin-invalid');
+        context.register(NodeAutoConfiguration);
+        context.refresh();
+        const dispatcher = context.getValue<NodeDispatcher>('dispatcher');
+        expect(
+            () => new NodeHTTPServerAdapter(dispatcher, { allowedWebSocketOrigins: ['https://x.example/path'] })
+        ).toThrow(RangeError);
+        expect(() => new NodeHTTPServerAdapter(dispatcher, { allowedWebSocketOrigins: ['not-a-url'] })).toThrow(
+            RangeError
+        );
     });
 });

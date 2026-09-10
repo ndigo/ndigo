@@ -16,7 +16,7 @@ export interface Enumerable<K extends PropertyKey, V> {
      * @param callback - Function to execute for each element. It receives `value`, `key`, and the `list` itself as arguments.
      * @param context - Value to use as `this` when executing the `callback`.
      */
-    forEach(callback: (value: V, key: K, list: Enumerable<K, V>) => void, context?: any): void;
+    forEach(callback: (value: V, key: K, list: Enumerable<K, V>) => void, context?: unknown): void;
     /**
      * Returns an iterator for the keys in the collection.
      * @returns An iterator that yields keys.
@@ -35,5 +35,5 @@ export interface Enumerable<K extends PropertyKey, V> {
  * @returns `true` if the `value` is `Enumerable`, `false` otherwise.
  */
 export const likeEnumerable = like({ entries: Function, forEach: Function, keys: Function, values: Function }) as (
-    value: any
-) => value is Enumerable<any, any>;
+    value: unknown
+) => value is Enumerable<PropertyKey, unknown>;

@@ -64,7 +64,10 @@ const toRouteMappingConfiguration = (value: string | RouteMappingConfiguration):
  * @param propertyKey - The method name, when reading method-level metadata.
  * @returns The stored route mapping, or `undefined`.
  */
-export const getRouteMapping = (target: any, propertyKey?: string | symbol): RouteMappingConfiguration | undefined => {
+export const getRouteMapping = (
+    target: unknown,
+    propertyKey?: string | symbol
+): RouteMappingConfiguration | undefined => {
     const metadata = getSymbolMetadata(target);
     if (propertyKey) {
         return metadata[`route:mapping:${String(propertyKey)}`];
@@ -79,7 +82,7 @@ export const getRouteMapping = (target: any, propertyKey?: string | symbol): Rou
  * @param propertyKey - The method name, when checking method-level metadata.
  * @returns `true` when route mapping metadata is present.
  */
-export const hasRouteMapping = (target: any, propertyKey?: string | symbol): boolean => {
+export const hasRouteMapping = (target: unknown, propertyKey?: string | symbol): boolean => {
     return getRouteMapping(target, propertyKey) !== undefined;
 };
 
@@ -106,17 +109,17 @@ export function routeMapping(route: string | RouteMappingConfiguration = default
         throw new FrameworkError('@routeMapping("") is not allowed. Use @routeMapping("/") for the root route.');
     }
 
-    return function (target: any, context: ClassDecoratorContext | ClassMethodDecoratorContext): any {
+    return function (target: unknown, context: ClassDecoratorContext | ClassMethodDecoratorContext): void {
         if (context.kind === 'class') {
             // Class decorator
             context.metadata['route:mapping'] = conf;
-            return target;
+            return;
         } else if (context.kind === 'method') {
             // Method decorator
             context.metadata[`route:mapping:${String(context.name)}`] = conf;
 
             // Make method enumerable so it can be discovered via for...in
-            context.addInitializer(function (this: any) {
+            context.addInitializer(function (this: unknown) {
                 const descriptor = getOwnPropertyDescriptor(Object.getPrototypeOf(this), context.name);
                 if (descriptor && !descriptor.enumerable) {
                     defineProperty(Object.getPrototypeOf(this), context.name, {

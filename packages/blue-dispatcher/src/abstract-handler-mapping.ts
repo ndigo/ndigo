@@ -115,21 +115,18 @@ export abstract class AbstractHandlerMapping
      * @returns The execution chain, or `null` when no handler matches.
      */
     getHandler(route: Route): RouteHandlerExecutionChain | null {
-        let handler: any | string | RouteHandlerExecutionChain = this._getHandler(route);
+        let handler: object | null = this._getHandler(route) ?? this.defaultHandler;
 
-        if (!handler) {
-            handler = this.defaultHandler;
-        }
         if (!handler) {
             return null;
         }
 
-        handler = this.#resolveHandler(handler);
-        if (!handler) {
+        const resolvedHandler = this.#resolveHandler(handler);
+        if (!resolvedHandler) {
             return null;
         }
 
-        return this._getHandlerExecutionChain(handler, route);
+        return this._getHandlerExecutionChain(resolvedHandler, route);
     }
 
     /**
@@ -140,7 +137,7 @@ export abstract class AbstractHandlerMapping
      * @returns The execution chain to invoke.
      */
     protected _getHandlerExecutionChain(
-        handler: any | RouteHandlerExecutionChain,
+        handler: object | RouteHandlerExecutionChain,
         route: Route
     ): RouteHandlerExecutionChain {
         const chain = handler instanceof RouteHandlerExecutionChain ? handler : new RouteHandlerExecutionChain(handler),
@@ -169,5 +166,5 @@ export abstract class AbstractHandlerMapping
      * @param route - The current route.
      * @returns The handler or execution chain, or `null`.
      */
-    protected abstract _getHandler(route: Route): any | null;
+    protected abstract _getHandler(route: Route): object | null;
 }

@@ -20,7 +20,7 @@ function getTracer(): Tracer {
  * @param propertyKey - The name of the method.
  * @returns The span name if the method is traced, otherwise `undefined`.
  */
-export function getTraced(target: any, propertyKey: string | symbol): string | undefined {
+export function getTraced(target: object, propertyKey: string | symbol): string | undefined {
     return getSymbolMetadata(target)[`${TRACED_KEY}:${String(propertyKey)}`];
 }
 
@@ -30,7 +30,7 @@ export function getTraced(target: any, propertyKey: string | symbol): string | u
  * @param propertyKey - The name of the method.
  * @returns `true` if the method is traced, otherwise `false`.
  */
-export function hasTraced(target: any, propertyKey: string | symbol): boolean {
+export function hasTraced(target: object, propertyKey: string | symbol): boolean {
     return getTraced(target, propertyKey) !== undefined;
 }
 
@@ -115,7 +115,15 @@ function createTracedDecorator(spanName?: string) {
  * }
  * ```
  */
-export function traced(nameOrTarget?: string | Function, maybeContext?: ClassMethodDecoratorContext): any {
+export function traced(
+    nameOrTarget?: string | Function,
+    maybeContext?: ClassMethodDecoratorContext
+    // The dual form (@traced bare applies directly; @traced(...) returns a
+    // replacement decorator) has no single precise type: TS requires the bare
+    // form's return to be `void | Method`, and the factory form's result to be
+    // the decorator — only `any` satisfies both call shapes.
+    // oxlint-disable-next-line no-explicit-any -- untypeable dual-form decorator
+): any {
     if (typeof nameOrTarget === 'string') {
         return createTracedDecorator(nameOrTarget);
     }

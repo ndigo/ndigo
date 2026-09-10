@@ -32,17 +32,17 @@ JavaScript-native structures with fail-loud semantics throughout.
 
 Sources are **named and ordered** — higher wins:
 
-| Source | Name | How it's set |
-|---|---|---|
-| Command line | `commandLine` | `app.run('--server.port=9000', '--debug')` |
-| Builder properties | `boot` | `builder.properties({ server: { port: 8080 } })` |
-| Process env | `systemEnvironment` | `process.env` (snapshot at construction) |
-| `.env` file | `dotenv` | auto-loaded (never overrides a set env var) |
-| Config files | `application` | `./config/application.json` + profile variants |
-| Defaults | `defaults` | `builder.defaults({...})` (always present, lowest) |
+| Source             | Name                | How it's set                                       |
+| ------------------ | ------------------- | -------------------------------------------------- |
+| Command line       | `commandLine`       | `app.run('--server.port=9000', '--debug')`         |
+| Builder properties | `boot`              | `builder.properties({ server: { port: 8080 } })`   |
+| Process env        | `systemEnvironment` | `process.env` (snapshot at construction)           |
+| `.env` file        | `dotenv`            | auto-loaded (never overrides a set env var)        |
+| Config files       | `application`       | `./config/application.json` + profile variants     |
+| Defaults           | `defaults`          | `builder.defaults({...})` (always present, lowest) |
 
 `getProperty('server.port')` consults this order; `originOf('server')` tells
-you *which source won* (the observability payoff):
+you _which source won_ (the observability payoff):
 
 ```ts
 environment.originOf('server'); // → 'commandLine' | 'systemEnvironment' | ...
@@ -58,7 +58,7 @@ import { configuration, entry, profile } from '@blue/context';
 @configuration
 class AppConfiguration {
     @entry
-    @profile('dev | (test & !ci)')   // expressions, not just exact names
+    @profile('dev | (test & !ci)') // expressions, not just exact names
     devTools() {
         return new DevToolsGate();
     }
@@ -103,9 +103,9 @@ class DbConfig {
 }
 
 @configuration
-class AppConfig {}   // register the app; ServerConfig is bound too
+class AppConfig {} // register the app; ServerConfig is bound too
 // ...
-const serverConfig = await app.run();               // auto-registered
+const serverConfig = await app.run(); // auto-registered
 const port = serverConfig.getValue('serverConfig').port; // number, fail-loud
 ```
 
@@ -117,8 +117,8 @@ const port = serverConfig.getValue('serverConfig').port; // number, fail-loud
 ## 4. Placeholders & typed reads (AD-12, P1)
 
 ```ts
-environment.getProperty('endpoint');        // 'https://${HOST:local.dev}/api'
-environment.getPropertyAs('port', Number);  // 8080 (string → number)
+environment.getProperty('endpoint'); // 'https://${HOST:local.dev}/api'
+environment.getPropertyAs('port', Number); // 8080 (string → number)
 environment.getRequiredPropertyAs('port', Number); // throws if missing/unconvertible
 ```
 

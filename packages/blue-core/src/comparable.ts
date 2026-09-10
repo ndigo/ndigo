@@ -109,14 +109,14 @@ export abstract class AbstractValueComparator implements Comparator<string> {
  * @param value - The value to check.
  * @returns `true` if the value is `Comparable`, `false` otherwise.
  */
-export const likeComparable = like({ compareTo: Function }) as (value: unknown) => value is Comparable<any>;
+export const likeComparable = like({ compareTo: Function }) as (value: unknown) => value is Comparable<unknown>;
 
 /**
  * Type guard to check if a value implements the `Comparator` interface.
  * @param value - The value to check.
  * @returns `true` if the value is `Comparator`, `false` otherwise.
  */
-export const likeComparator = like({ compare: Function }) as (value: unknown) => value is Comparator<any>;
+export const likeComparator = like({ compare: Function }) as (value: unknown) => value is Comparator<unknown>;
 
 /**
  * A comparison function that uses natural ordering (less than operator).

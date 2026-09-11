@@ -9,7 +9,7 @@ import { AbstractTemplateView, ViewTarget } from '@blue/view';
 import { IllegalStateError } from '@blue/core';
 import type { Route } from '@blue/router';
 
-import { EjsTemplateEngine } from './ejs-template-engine';
+import { EJSTemplateEngine } from './ejs-template-engine';
 import type { TemplateSourceProvider } from './template-source-provider';
 
 /**
@@ -24,9 +24,9 @@ export interface EJSViewOptions {
 
     /**
      * The engine used to render template source. Defaults to a fresh
-     * {@link EjsTemplateEngine} when omitted.
+     * {@link EJSTemplateEngine} when omitted.
      */
-    engine?: EjsTemplateEngine;
+    engine?: EJSTemplateEngine;
 
     /**
      * Provider used to resolve template source by path when no inline
@@ -50,7 +50,7 @@ export interface EJSViewOptions {
  * it render into whatever target the platform provides.
  */
 export class EJSView extends AbstractTemplateView {
-    readonly #engine: EjsTemplateEngine;
+    readonly #engine: EJSTemplateEngine;
     readonly #provider?: TemplateSourceProvider;
 
     /**
@@ -68,7 +68,7 @@ export class EJSView extends AbstractTemplateView {
     constructor(path: string | null = null, options: EJSViewOptions = {}) {
         super(path);
         this.template = options.template;
-        this.#engine = options.engine ?? new EjsTemplateEngine();
+        this.#engine = options.engine ?? new EJSTemplateEngine();
         this.#provider = options.provider;
     }
 

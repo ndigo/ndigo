@@ -3,7 +3,7 @@ import type { Route } from '@blue/router';
 import type { ViewTarget } from '@blue/view';
 
 import { EJSView } from '../src/ejs-view';
-import { EjsTemplateEngine } from '../src/ejs-template-engine';
+import { EJSTemplateEngine } from '../src/ejs-template-engine';
 import { InMemoryTemplateSourceProvider } from '../src/template-source-provider';
 import { EJSViewResolver } from '../src/ejs-view-resolver';
 
@@ -33,21 +33,21 @@ class CaptureViewTarget implements ViewTarget {
     }
 }
 
-describe('EjsTemplateEngine', () => {
+describe('EJSTemplateEngine', () => {
     it('renders escaped interpolation with <%= %>', async () => {
-        const engine = new EjsTemplateEngine();
+        const engine = new EJSTemplateEngine();
         expect(await engine.render('<p><%= value %></p>', { value: '<b>&x</b>' })).toBe(
             '<p>&lt;b&gt;&amp;x&lt;/b&gt;</p>',
         );
     });
 
     it('renders unescaped interpolation with <%- %>', async () => {
-        const engine = new EjsTemplateEngine();
+        const engine = new EJSTemplateEngine();
         expect(await engine.render('<p><%- value %></p>', { value: '<b>raw</b>' })).toBe('<p><b>raw</b></p>');
     });
 
     it('supports loops and conditionals', async () => {
-        const engine = new EjsTemplateEngine();
+        const engine = new EJSTemplateEngine();
         const html = await engine.render(
             '<ul><% items.forEach(function (item) { %><li><%= item %></li><% }); %></ul>',
             { items: ['a', 'b'] },

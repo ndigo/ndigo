@@ -8,9 +8,9 @@
 import ejs from 'ejs';
 
 /**
- * Options accepted by {@link EjsTemplateEngine}.
+ * Options accepted by {@link EJSTemplateEngine}.
  */
-export interface EjsTemplateEngineOptions {
+export interface EJSTemplateEngineOptions {
     /**
      * EJS render options forwarded to `ejs.render` (delimiter, cache, root,
      * strict, etc.).
@@ -26,10 +26,10 @@ export interface EjsTemplateEngineOptions {
  * environment. File resolution for path-backed views is owned by an injected
  * {@link TemplateSourceProvider}, keeping this package free of platform I/O.
  */
-export class EjsTemplateEngine {
+export class EJSTemplateEngine {
     readonly #options: ejs.Options;
 
-    constructor(options: EjsTemplateEngineOptions = {}) {
+    constructor(options: EJSTemplateEngineOptions = {}) {
         this.#options = options.options ?? {};
     }
 

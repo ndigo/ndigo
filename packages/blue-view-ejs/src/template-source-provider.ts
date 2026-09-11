@@ -12,7 +12,7 @@ import { IllegalStateError } from '@blue/core';
  *
  * This is the platform seam for {@link EJSView}: Node supplies a filesystem
  * implementation, browsers/tests supply an in-memory one. Keeping resolution
- * behind this interface leaves {@link EjsTemplateEngine} and {@link EJSView}
+ * behind this interface leaves {@link EJSTemplateEngine} and {@link EJSView}
  * free of any platform I/O.
  */
 export interface TemplateSourceProvider {

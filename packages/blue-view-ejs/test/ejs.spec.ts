@@ -1,10 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import type { Route } from '@blue/router';
-import type { ViewTarget } from '@blue/view';
+import { InMemoryTemplateSourceProvider, type ViewTarget } from '@blue/view';
 
 import { EJSView } from '../src/ejs-view';
 import { EJSTemplateEngine } from '../src/ejs-template-engine';
-import { InMemoryTemplateSourceProvider } from '../src/template-source-provider';
 import { EJSViewResolver } from '../src/ejs-view-resolver';
 
 interface CapturedRender {
@@ -37,7 +36,7 @@ describe('EJSTemplateEngine', () => {
     it('renders escaped interpolation with <%= %>', async () => {
         const engine = new EJSTemplateEngine();
         expect(await engine.render('<p><%= value %></p>', { value: '<b>&x</b>' })).toBe(
-            '<p>&lt;b&gt;&amp;x&lt;/b&gt;</p>',
+            '<p>&lt;b&gt;&amp;x&lt;/b&gt;</p>'
         );
     });
 
@@ -50,7 +49,7 @@ describe('EJSTemplateEngine', () => {
         const engine = new EJSTemplateEngine();
         const html = await engine.render(
             '<ul><% items.forEach(function (item) { %><li><%= item %></li><% }); %></ul>',
-            { items: ['a', 'b'] },
+            { items: ['a', 'b'] }
         );
         expect(html).toBe('<ul><li>a</li><li>b</li></ul>');
     });

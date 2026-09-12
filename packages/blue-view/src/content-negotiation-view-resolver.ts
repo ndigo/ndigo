@@ -2,6 +2,43 @@ import { FrameworkError, MediaType, MultiValueMap } from '@blue/core';
 import { isFunction, isNotNil } from '@blue/util/types';
 import { View } from './view.js';
 import { ViewResolver } from './view-resolver.js';
+/**
+ * Per-request context for content negotiation.
+ *
+ * `ViewResolver.resolveViewName` receives only a name and language, never the
+ * live request. Spring supplies it through a request-scoped holder; this mirrors
+ * that model. The dispatcher stores the current request (typically the platform
+ * request carrying `Accept` headers, or the {@link Route}) around dispatch and
+ * clears it afterwards, so negotiation strategies can read request data.
+ *
+ * This is shared per-process state: it must be set and cleared around a single
+ * request's resolution. Concurrency-safe deployments should scope it to the
+ * async request context rather than a module-level variable.
+ */
+let currentRequest: unknown = undefined;
+
+/**
+ * Stores the current request used for content negotiation.
+ *
+ * @param request - The current request (or route).
+ */
+export function setCurrentRequest(request: unknown): void {
+    currentRequest = request;
+}
+
+/**
+ * Returns the current request, or `undefined` when none is active.
+ */
+export function getCurrentRequest(): unknown {
+    return currentRequest;
+}
+
+/**
+ * Clears the current request. Call once a dispatch completes.
+ */
+export function clearCurrentRequest(): void {
+    currentRequest = undefined;
+}
 
 /**
  * Resolves file extensions for a media type and can enumerate all known extensions.
@@ -341,14 +378,66 @@ export class ContentNegotiationViewResolver implements ViewResolver {
     }
 
     /**
-     * Resolves a view name using negotiated media types.
+     * Resolves a view name by aggregating candidate views from every delegate
+     * resolver and selecting one by the request's negotiated media types — the
+     * Spring ContentNegotiatingViewResolver model.
      *
      * @param name - The view name to resolve.
      * @param language - Optional locale or language hint.
-     * @returns Never returns normally.
-     * @throws {FrameworkError} Always thrown because the method is not implemented.
+     * @returns The matching view, or `null` when none is available.
      */
-    resolveViewName(name: string, language?: unknown): Promise<View> {
-        throw new FrameworkError('Method not implemented.');
+    async resolveViewName(name: string, language?: unknown): Promise<View | null> {
+        // 1. Aggregate candidate views from every delegate resolver.
+        const results = await Promise.all(
+            this.viewResolvers.map((resolver) => resolver.resolveViewName(name, language)),
+        );
+        const candidates = results.filter(isNotNil);
+
+        // 2. Nothing resolved — fall back to configured default views.
+        if (candidates.length === 0) {
+            return this.defaultViews?.[0] ?? null;
+        }
+
+        // 3. Negotiate the request's accepted media types. Without an active
+        //    request (non-HTTP context, or no strategy matched) take the first.
+        const requested = this.resolveRequestedMediaTypes();
+        if (requested.length === 0) {
+            return candidates[0];
+        }
+
+        // 4. Pick the first candidate whose media type is compatible with an accepted type.
+        for (const view of candidates) {
+            const mediaType = view.mediaType;
+            if (!mediaType) {
+                continue;
+            }
+            const supported = requested.some(
+                (accepted) =>
+                    mediaType.includes(accepted) || accepted.includes(mediaType) || mediaType.matches(accepted)
+            );
+            if (supported) {
+                return view;
+            }
+        }
+
+        // 5. No representation matched — use the first default, else the last candidate.
+        return this.defaultViews?.[0] ?? candidates[candidates.length - 1];
+    }
+
+    /**
+     * Resolves the accepted media types for the current request, or an empty
+     * array when none can be determined (no active request, or no strategy
+     * matched). Degrades gracefully so negotiation never breaks resolution.
+     */
+    private resolveRequestedMediaTypes(): MediaType[] {
+        const request = getCurrentRequest();
+        if (request === undefined) {
+            return [];
+        }
+        try {
+            return this.contentNegotiationManager.resolveMediaTypes(request) ?? [];
+        } catch {
+            return [];
+        }
     }
 }

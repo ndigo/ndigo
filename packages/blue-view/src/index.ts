@@ -3,6 +3,7 @@ export * from './view-engine.js';
 export * from './view-mapping.js';
 export * from './view-resolver.js';
 export * from './view-target.js';
+export * from './template-source-provider.js';
 export * from './json-view.js';
 export * from './content-negotiation-view-resolver.js';
 export * from './island-view.js';

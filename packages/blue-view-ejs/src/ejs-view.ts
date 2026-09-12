@@ -5,12 +5,11 @@
  * @since 1.0.0
  */
 
-import { AbstractTemplateView, ViewTarget } from '@blue/view';
+import { AbstractTemplateView, type TemplateSourceProvider, ViewTarget } from '@blue/view';
 import { IllegalStateError } from '@blue/core';
 import type { Route } from '@blue/router';
 
 import { EJSTemplateEngine } from './ejs-template-engine';
-import type { TemplateSourceProvider } from './template-source-provider';
 
 /**
  * Construction options for {@link EJSView}.
@@ -73,11 +72,7 @@ export class EJSView extends AbstractTemplateView {
     }
 
     /** @inheritdoc */
-    protected async _renderTemplate(
-        templateModel: unknown,
-        request: unknown,
-        target?: ViewTarget,
-    ): Promise<void> {
+    protected async _renderTemplate(templateModel: unknown, request: unknown, target?: ViewTarget): Promise<void> {
         if (!target) {
             throw new IllegalStateError('EJSView requires a ViewTarget to render.');
         }
@@ -107,7 +102,7 @@ export class EJSView extends AbstractTemplateView {
         }
 
         throw new IllegalStateError(
-            'EJSView requires either a `template` string or a `path` with a TemplateSourceProvider.',
+            'EJSView requires either a `template` string or a `path` with a TemplateSourceProvider.'
         );
     }
 }

@@ -1,5 +1,5 @@
 /**
- * @blue/view-ejs — template source resolution.
+ * @blue/view — template source resolution.
  *
  * @module
  * @since 1.0.0
@@ -10,10 +10,10 @@ import { IllegalStateError } from '@blue/core';
 /**
  * Resolves the raw source of a template by its logical path.
  *
- * This is the platform seam for {@link EJSView}: Node supplies a filesystem
- * implementation, browsers/tests supply an in-memory one. Keeping resolution
- * behind this interface leaves {@link EJSTemplateEngine} and {@link EJSView}
- * free of any platform I/O.
+ * This is the input-side platform seam for template-based views: Node supplies
+ * a filesystem implementation, browser/tests supply an in-memory one. Keeping
+ * resolution behind this interface leaves template engines and views free of
+ * any platform I/O.
  */
 export interface TemplateSourceProvider {
     /**
@@ -50,7 +50,7 @@ export class InMemoryTemplateSourceProvider implements TemplateSourceProvider {
     loadTemplate(path: string): string {
         const source = this.#sources.get(path);
         if (source === undefined) {
-            throw new IllegalStateError(`EJS template not found in provider: ${path}`);
+            throw new IllegalStateError(`Template source not found in provider: ${path}`);
         }
         return source;
     }

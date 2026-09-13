@@ -21,9 +21,12 @@ export async function writeRenderResult(res: ServerResponse | undefined, result:
 
     const headers: Record<string, string> = { ...result.headers };
     if (headers['Content-Type'] === undefined && result.mediaType) {
-        headers['Content-Type'] = typeof result.mediaType === 'string' ? result.mediaType : result.mediaType.toString();
+        headers['Content-Type'] = result.mediaType.toString();
     }
     res.writeHead(result.status ?? 200, headers);
+    // Deliver headers now — a streaming body (e.g. SSE) must not hold the
+    // response open waiting for its first frame.
+    res.flushHeaders();
 
     const { body } = result;
     if (typeof body === 'string') {
@@ -38,7 +41,12 @@ export async function writeRenderResult(res: ServerResponse | undefined, result:
         if (res.destroyed) {
             return;
         }
-        res.write(typeof chunk === 'string' ? chunk : Buffer.from(chunk as Uint8Array));
+        try {
+            res.write(typeof chunk === 'string' ? chunk : Buffer.from(chunk as Uint8Array));
+        } catch {
+            // The client disconnected mid-stream; stop pushing.
+            return;
+        }
     }
     res.end();
 }

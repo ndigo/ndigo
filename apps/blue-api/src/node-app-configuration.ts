@@ -1,5 +1,6 @@
 import '@tsmetadata/polyfill';
-import { configuration, entry } from '@blue/context';
+import { configuration, entry, profile } from '@blue/context';
+import { StaticContentSource } from '@blue/content';
 import { type MediaType, MediaTypes } from '@blue/core';
 import { StaticController } from '@blue/platform-node';
 import {
@@ -26,7 +27,15 @@ const requireMediaType = (value: MediaType | null): MediaType => {
 @configuration
 export class NodeAppConfiguration {
     @entry greetingController() {
-        return new GreetingController();
+        return new GreetingController(
+            new StaticContentSource({
+                greeting: {
+                    en: 'Hello, {name}!',
+                    de: 'Hallo, {name}!',
+                    fr: 'Bonjour, {name}!',
+                },
+            })
+        );
     }
     @entry authController() {
         return new AuthController();
@@ -42,6 +51,23 @@ export class NodeAppConfiguration {
     }
     @entry staticController() {
         return new StaticController();
+    }
+
+    /**
+     * Management endpoints (`/health`, `/metrics`) come from
+     * `ManagementAutoConfiguration` (registered in the app entry) — its
+     * `handlerMappings` collection now supplements rather than replaces the
+     * platform mapping.
+     */
+
+    /**
+     * Profile-gated bean (AD-14): registered only when the `dev` profile is
+     * active — `ApplicationBuilder.profiles('dev')` in the app entry.
+     */
+    @profile('dev')
+    @entry
+    devInfo() {
+        return { flavor: 'dev', note: 'profile-gated bean (AD-14)' };
     }
 
     /**

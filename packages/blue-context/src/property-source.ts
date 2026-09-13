@@ -89,6 +89,45 @@ export class MapPropertySource implements PropertySource {
 }
 
 /**
+ * Normalizes Spring-style dotted keys (`server.port`) into nested objects
+ * (`server: { port: ... }`) so keypath resolution can find them.
+ *
+ * Produces a null-prototype copy — registration stays immune to caller
+ * mutation and prototype pollution. Nested keys win collision (whatever
+ * entry is processed last); `__proto__`-named segments land as plain data
+ * properties via the null-prototype target.
+ *
+ * @param source - The property values to capture.
+ * @returns The normalized, captured property values.
+ */
+function nestDottedKeys(source: JSONObject): JSONObject {
+    const out: JSONObject = createNull();
+    for (const [key, value] of Object.entries(source)) {
+        // Array-index paths (`items[0].name`) would be corrupted by nesting —
+        // leave them literal (keypath resolution still handles them).
+        if (!key.includes('.') || key.includes('[')) {
+            out[key] = value;
+            continue;
+        }
+        const segments = key.split('.');
+        let cursor: JSONObject = out;
+        for (let index = 0; index < segments.length - 1; index++) {
+            const segment = segments[index];
+            const existing = cursor[segment];
+            if (existing === null || typeof existing !== 'object' || Array.isArray(existing)) {
+                const next: JSONObject = createNull();
+                cursor[segment] = next;
+                cursor = next;
+            } else {
+                cursor = existing as JSONObject;
+            }
+        }
+        cursor[segments[segments.length - 1]] = value;
+    }
+    return out;
+}
+
+/**
  * Creates a {@link PropertySource} that captures the given object.
  *
  * The object is copied into a null-prototype plain object, so registration is
@@ -100,7 +139,5 @@ export class MapPropertySource implements PropertySource {
  * @returns The captured property source.
  */
 export function wrapSource(name: string, source: JSONObject): PropertySource {
-    // Object.assign onto a null-prototype target: `__proto__`-named keys land
-    // as plain data properties (no inherited setter to hijack).
-    return new MapPropertySource(name, Object.assign(createNull(), source));
+    return new MapPropertySource(name, nestDottedKeys(source));
 }

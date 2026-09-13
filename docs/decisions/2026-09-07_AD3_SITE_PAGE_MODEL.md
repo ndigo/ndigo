@@ -42,7 +42,7 @@ modern primitives and re-named:
 
 | Legacy concept                                          | Modern equivalent                                                                                                                                                                                      | Where                                                          |
 | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------- |
-| Site (owner of top-level route, delegates by segment)   | **`SiteRouter` + `FeatureRoutingRegistry`** — prefix-partitioned route delegation; features mount at URL prefixes                                                                                      | `@blue/router`                                                 |
+| Site (owner of top-level route, delegates by segment)   | **`PartitionRouter` + `FeatureRoutingRegistry`** — prefix-partitioned route delegation; features mount at URL prefixes                                                                                      | `@blue/router`                                                 |
 | Application (independent context: controllers + models) | **`ApplicationContext` + `@community configuration`/`@entry`** — an app context owns its beans; `ApplicationBuilder.run()` assembles one                                                               | `@blue/context`, `@blue/boot`                                  |
 | Page (independently-mounted presentation owning views)  | **View targets + `IslandView`/web-component mounts** — a render surface target is a mountable presentation unit; islands prime a fast first render                                                     | `@blue/view`, `@blue/view-webcomponent`, `@blue/platform-node` |
 | Independent boot / link-time assembly                   | **Context tree + `FeatureContextMountManager`** — parent/child contexts + lazily-mounted feature contexts with shared-dependency validation (see `apps/blue-host`, `apps/blue-todo` shell composition) | `@blue/context`, demo apps                                     |
@@ -50,7 +50,7 @@ modern primitives and re-named:
 
 **Reference implementation:** `apps/blue-host/src/shell-composition.ts` is
 the canonical live heir — shell context + shared dependency registry +
-`SiteRouter` feature mounts, all composed at runtime. This is what the
+`PartitionRouter` feature mounts, all composed at runtime. This is what the
 legacy Site model _became_.
 
 ## Decision: SiteBuilder is removed
@@ -114,5 +114,5 @@ presentation units emerges (app-shell + feature with measurable TTFB goals,
 multi-tenant resource prioritization), or (b) the islands/hydration story
 grows to need a named container with a registration API. Design, when
 pursued, must reconcile: the modern context tree + `ViewTarget`/`IslandView`
-mechanics, the `SiteRouter` feature-mount pattern, and the TTFB/TTI contract
+mechanics, the `PartitionRouter` feature-mount pattern, and the TTFB/TTI contract
 the legacy model promised.

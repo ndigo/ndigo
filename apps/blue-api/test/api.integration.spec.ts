@@ -1,6 +1,7 @@
 // @vitest-environment node
 import { describe, test, beforeAll, afterAll, expect } from 'vitest';
 import { bootApp, MockHTTP } from '@blue/test';
+import { ManagementAutoConfiguration } from '@blue/management';
 import { NodeAppConfiguration } from '../src/node-app-configuration';
 import { initAuth } from '../src/auth-store';
 import { DrizzleNote } from '../src/drizzle-note.entity';
@@ -19,7 +20,7 @@ describe('blue-api through @blue/test', () => {
 
     beforeAll(() => {
         initAuth();
-        const app = bootApp([NodeAppConfiguration]);
+        const app = bootApp([ManagementAutoConfiguration, NodeAppConfiguration]);
         mockMVC = new MockHTTP(app);
         close = app.close;
     });
@@ -186,5 +187,52 @@ describe('blue-api through @blue/test', () => {
         const res = await mockMVC.get('/api/report.csv').exec();
         expect(res.response.status).toBe(200);
         expect(res.text()).toBe('name,role\r\nAda,admin\r\nGrace,user');
+    });
+
+    test('GET /api/report honors the Accept header (CSV without extension)', async () => {
+        const res = await mockMVC.get('/api/report').headers({ accept: 'text/csv' }).exec();
+        expect(res.response.status).toBe(200);
+        expect(res.text()).toBe('name,role\r\nAda,admin\r\nGrace,user');
+    });
+
+    test('GET /api/report honors the Accept header (JSON explicitly)', async () => {
+        const res = await mockMVC.get('/api/report').headers({ accept: 'application/json' }).exec();
+        expect(res.response.status).toBe(200);
+        expect(res.json()).toEqual({
+            rows: [
+                { name: 'Ada', role: 'admin' },
+                { name: 'Grace', role: 'user' },
+            ],
+        });
+    });
+
+    test('GET /health reports the registry status', async () => {
+        const res = await mockMVC.get('/health').exec();
+        expect(res.response.status).toBe(200);
+        const body = res.json() as { status?: string; components?: Record<string, unknown> };
+        expect(typeof body.status).toBe('string');
+        expect(typeof body.components).toBe('object');
+    });
+
+    test('GET /metrics returns the aggregator snapshot', async () => {
+        const res = await mockMVC.get('/metrics').exec();
+        expect(res.response.status).toBe(200);
+        const body = res.json() as { features?: Record<string, unknown> };
+        expect(typeof body.features).toBe('object');
+    });
+
+    test('GET /api/greeting resolves the language from Accept-Language', async () => {
+        const res = await mockMVC
+            .get('/api/greeting')
+            .query({ name: 'Ada' })
+            .headers({ 'accept-language': 'de-DE,de;q=0.9' })
+            .exec();
+        expect(res.response.status).toBe(200);
+        expect(res.json()).toEqual({ message: 'Hallo, Ada!', language: 'de' });
+    });
+
+    test('GET /api/greeting falls back to English without the header', async () => {
+        const res = await mockMVC.get('/api/greeting').query({ name: 'Ada' }).exec();
+        expect(res.json()).toEqual({ message: 'Hello, Ada!', language: 'en' });
     });
 });

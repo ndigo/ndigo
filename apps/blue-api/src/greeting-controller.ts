@@ -11,11 +11,19 @@ import {
     bodyValue,
     pathVariable,
     requestMapping,
+    headerValue,
 } from '@blue/dispatcher';
 import { ModelAndView } from '@blue/dispatcher';
+import type { ContentSource } from '@blue/content';
 
 @requestMapping('/api')
 export class GreetingController {
+    readonly #content: ContentSource;
+
+    constructor(contentSource: ContentSource) {
+        this.#content = contentSource;
+    }
+
     /**
      * Returns a greeting for the given name.
      * GET /api/hello?name=<name>
@@ -24,6 +32,22 @@ export class GreetingController {
     @parameters({ name: queryValue('name') })
     hello(name?: string) {
         return { message: `Hello, ${name ?? 'World'}!` };
+    }
+
+    /**
+     * Accept-Language-aware greeting: resolves the first language tag from the
+     * `Accept-Language` header (e.g. `de-DE,de;q=0.9` → `de`) and renders the
+     * `greeting` content-key through a `ContentSource` (`@blue/content`) —
+     * the i18n demo.
+     *
+     * GET /api/greeting?name=Ada   (Accept-Language: de → "Hallo, Ada!")
+     */
+    @getMapping('/greeting')
+    @parameters({ name: queryValue('name'), languageTag: headerValue('accept-language') })
+    greeting(name: string | undefined, languageTag: string | undefined) {
+        const language = this.#languageOf(languageTag);
+        const message = this.#content.getContent('greeting', language).replace('{name}', name ?? 'World');
+        return { message, language };
     }
 
     /**
@@ -67,5 +91,14 @@ export class GreetingController {
                 { name: 'Grace', role: 'user' },
             ],
         });
+    }
+
+    /**
+     * Extracts the primary language tag ("de" from "de-DE,de;q=0.9").
+     * Full quality-factor negotiation exists in `@blue/core` — the demo
+     * keeps the header parse minimal on purpose.
+     */
+    #languageOf(header: string | undefined): string {
+        return header?.split(',')[0]?.trim().split('-')[0] ?? 'en';
     }
 }

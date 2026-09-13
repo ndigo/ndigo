@@ -1,5 +1,13 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { BenchmarkHarness } from '../../../../todomvc/examples/bluejs/src/benchmark';
+import { TodoStateService } from '../../../../todomvc/examples/bluejs/src/state';
+
+// jsdom never fires requestAnimationFrame, which the harness awaits once per
+// benchmark step — fire it synchronously so the suite completes.
+vi.stubGlobal('requestAnimationFrame', (cb: FrameRequestCallback) => {
+    cb(0);
+    return 0;
+});
 
 describe('TodoMVC Benchmark', () => {
     it('should run the benchmark suite', async () => {
@@ -15,7 +23,7 @@ describe('TodoMVC Benchmark', () => {
             </section>
         `;
 
-        const harness = new BenchmarkHarness();
+        const harness = new BenchmarkHarness(new TodoStateService());
 
         // Mock window.parent to capture the result
         const parentMock = {

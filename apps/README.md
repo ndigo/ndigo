@@ -5,13 +5,15 @@ from simple to complex. Each app demonstrates a distinct slice of the framework.
 
 ## Progression
 
-| #   | App               | Demonstrates                                                                                                                                   |
-| --- | ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | `blue-hello`      | Browser — context + route + template/Web Component render                                                                                      |
-| 2   | `blue-hello-node` | Node — `HTTPServer` + `NodeDispatcher` + `@getMapping`, JSON responses                                                                         |
-| 3   | `blue-todo`       | Browser — TodoMVC + micro frontend shell (feature mount, relay gateway, routing registry)                                                      |
-| 4   | `blue-api`        | Node — controllers with `@requestMapping`/`@getMapping`/`@postMapping`, `ResponseEntity`, interceptors, ORM, auth, static files, matrix params |
-| 5   | `blue-host`       | Browser — micro frontend host: shell + 3 lazy-loaded feature chunks (`mountLazy` + dynamic `import()`), shared-dependency validation           |
+| #   | App               | Demonstrates                                                                                                                                                           |
+| --- | ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | `blue-hello`      | Browser — context + route + template/Web Component render                                                                                                              |
+| 2   | `blue-hello-node` | Node — `HTTPServer` + `NodeDispatcher` + `@getMapping`, JSON responses                                                                                                 |
+| 3   | `blue-todo`       | Browser — TodoMVC + micro frontend shell (`@blue/host` one-call registration, relay gateway)                                                                           |
+| 4   | `blue-api`        | Node — controllers, JWT auth, ORM (+Drizzle), content negotiation, problem+json errors, **management `/health`/`/metrics`**, **Accept-Language i18n**, config bindings |
+| 5   | `blue-host`       | Browser — micro frontend host: `@blue/host` `HostManager` + 3 lazy-loaded feature chunks, shared-dependency validation                                                 |
+| 6   | `blue-island`     | Node SSR — EJS shell + island hydration, SSE push → `@blue/signals`, typed service stream                                                                              |
+| 7   | `blue-views`      | Browser — view-resolution composite, i18n/themes (`@blue/content`), HTTP client with offline queueing                                                                  |
 
 ## Applications
 
@@ -59,7 +61,8 @@ cd apps/blue-api && pnpm start
 
 Micro frontend host: a shell context with a shared dependency registry, three
 features (catalog, checkout, reports) loaded as lazy chunks via `mountLazy` +
-dynamic `import()`, and a feature routing registry with exclusive activation.
+dynamic `import()`, and one-call feature registration through the
+`@blue/host` `HostManager` (exclusive activation).
 
 ```bash
 cd apps/blue-host && pnpm dev

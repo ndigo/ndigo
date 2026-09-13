@@ -5,6 +5,42 @@
 
 ---
 
+## Status refresh (2026-09-13)
+
+What changed since this assessment was written:
+
+| Assessment item                                    | Status now                                                                                                                                                                                                                                                                                                               |
+| -------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Signals** (rewrite, high priority)               | ✅ Landed — `@blue/signals` (signals plan); demoed in `blue-island` (SSE push → `streamToSignal` → re-render) and `blue-todo` (counter view)                                                                                                                                                                             |
+| **Server-rendered HTML pipeline**                  | ✅ Landed — `blue-island`: EJS whole-page shell + island SSR on Node (`@blue/view-ejs`), the Spring+Thymeleaf-style posture                                                                                                                                                                                              |
+| **Testing harness**                                | ✅ Landed — `@blue/test` (`bootApp`, `MockHTTP`, `bootBrowserApp`/`BrowserMockClient`, `MemoryViewTarget`); integration suites in `blue-api`, `blue-island`, `blue-todo`, `blue-views`                                                                                                                                   |
+| **Micro frontend shell**                           | ✅ Landed — `@blue/host` `HostManager` (AD-18): one-call registration, lazy chunks, shared-dependency validation; both demo hosts migrated                                                                                                                                                                               |
+| **Partial hydration**                              | ✅ Landed — islands SSR + `hydrateIslands()`; reactive half via SSE (AD-9)                                                                                                                                                                                                                                               |
+| **Management endpoints**                           | ✅ Demoed in `blue-api` (`/health`, `/metrics` through `ManagementAutoConfiguration` — the mapping-collection shadowing defect is fixed; blue-api boots it directly)                                                                                                                                                     |
+| **Type-safe routing**                              | 🟡 Partial — `RouteRegistry`/`RouteDefinition` exist; **blue-todo now derives account route defs from `@routeMapping` metadata via `RouteRegistry.scanSources`** (typed authoring demo, with manual fallbacks for feature partitions)                                                                                    |
+| **Auth gaps** (RS256/JWKS, OAuth2 resource server) | Unchanged — HMAC JWT + mock-validator OIDC in demos                                                                                                                                                                                                                                                                      |
+| **`@transactional` / Transactions**                | Unchanged — still `@experimental`                                                                                                                                                                                                                                                                                        |
+| **Telemetry (distributed/OTel)**                   | ✅ Landed — browser→server journey pattern: `configureBrowserTelemetry` (W3C propagator + OTLP trace export option) + `TraceHeaderInterceptor` inject `traceparent` from a client span; `HTTPServerInstrumentation` extracts and CONTINUES the trace server-side (same traceId, parent = client span; continuation spec) |
+
+New demo coverage since 2026-09-01 (Wave A + B + telemetry): management endpoints, `Accept-Language`-aware content (`@blue/content` + `ContentSource`), `@configurationProperties` binding + AD-14 profile activation (`blue-api` full-bootstrap spec); localized footer + theme resolution and the `@blue/http` client chain — headers, **cache-hit refresh**, offline queueing/replay (`blue-views` `/client`); **header-driven content negotiation** — `Accept: text/csv` serves the same `report` view as CSV without the `.csv` extension (Accept → `mediaTypeHint` bridge in the negotiation manager + path-extension fallback; `blue-api` tests); **browser→server distributed tracing** — the visitor journey pattern: `blue-views` starts a client span per request, `TraceHeaderInterceptor` carries it as `traceparent`, `blue-api`'s `HTTPServerInstrumentation` extracts it and continues the SAME trace (continuation spec in `blue-telemetry-node`; collector export via `OTEL_EXPORTER_OTLP_ENDPOINT` in `blue-api`).
+
+**Pre-existing (not caused by this work):** `blue-telemetry-node`'s server-sent-event-view spec fails in this environment (harness/timing) with and without these changes.
+
+Framework defects surfaced by the Wave-A work — **all resolved 2026-09-13**:
+
+1. ~~`ApplicationBuilder.properties()` — the `'boot'` property source does not resolve~~ — **Fixed**: property sources normalize dotted keys (`server.port`) into nested objects at registration, so builder/env/file sources resolve through the context environment.
+2. ~~`@configurationProperties` numeric `@defaultValue` conversion returns the raw string~~ — **Fixed**: the `@property` decorator no longer nulls fields, so the binder infers the declared initializer type and converts numerically.
+3. ~~`@profile`-gated entry methods skipped~~ — **Fixed**: `ConfigurationParser` is created lazily per use, evaluating gates against the prepared environment (builder profiles).
+4. ~~`ManagementAutoConfiguration.handlerMappings` shadows other app routes~~ — **Fixed**: a `handlerMappings` collection now _supplements_ the platform `handlerMapping` (appended as final fallback in the mapping strategy); blue-api boots the auto-config directly.
+5. ~~relative `baseURL` / relative `Request` URL throws "Invalid URL"~~ — **Fixed**: the HTTP client only trusts absolute base URLs; the demo uses a same-origin absolute endpoint.
+6. View-engine contract: components render via the `model` setter — **Documented** in `WebComponentView` TSDoc + the `blue-views` client demo.
+7. **New (Wave B):** `CacheInterceptor`/`RetryOnOfflineInterceptor` `new Request(response.url)` on empty stub URLs → 418 — **Fixed**: unkeyable responses (`!response.url`) are skipped, not replayed/cached.
+8. **New (Wave B):** Accept-header negotiation was never plumbed — the strategies read a `mediaTypeHint` nobody set, and `PathExtensionContentNegotiationStrategy` claimed a `super.resolveMediaTypes` it doesn't inherit — **Fixed**: the manager bridges `Accept` → hint from Node request headers (dispatcher), and the strategy falls back to the hint filter when no extension matches.
+
+**Still open (demo slices, not defects):** telemetry-depth demo (request-id correlation across the chain, OTLP/span export — needs an exporter seam or collector; the correlation utility exists in `@blue/service`); CSRF/CORS interceptor wiring demo (lowest value).
+
+---
+
 ## 1. Production-Ready (✅ 1.0 Quality)
 
 | Area                   | Details                                                                                                                                                                                                  |

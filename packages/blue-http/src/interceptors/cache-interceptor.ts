@@ -87,7 +87,10 @@ export class CacheInterceptor implements RequestAwareHTTPInterceptor, ResponseAw
      * @returns The response.
      */
     async postResponse(response: Response, settings: HTTPInit): Promise<Response | void> {
-        if (response.status !== 200) {
+        // A response without a URL (stubbed/mock responses, some in-process
+        // sources) cannot be keyed — and `new Request('')` throws. Skip
+        // caching rather than breaking the caller.
+        if (response.status !== 200 || !response.url) {
             return response;
         }
 

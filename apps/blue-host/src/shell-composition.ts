@@ -5,13 +5,8 @@
  * @module
  */
 
-import {
-    FeatureContextMountManager,
-    createShellContext,
-    DefaultSharedDependencyRegistry,
-    SHARED_DEPENDENCY_REGISTRY_TOKEN,
-} from '@blue/context';
-import { FeatureRoutingRegistry } from '@blue/router';
+import { createShellContext, DefaultSharedDependencyRegistry, SHARED_DEPENDENCY_REGISTRY_TOKEN } from '@blue/context';
+import { HOST_MANAGER_TOKEN, HostManager } from '@blue/host';
 
 /** Feature route prefixes. */
 export const CATALOG_PREFIX = '/catalog';
@@ -19,11 +14,11 @@ export const CHECKOUT_PREFIX = '/checkout';
 export const REPORTS_PREFIX = '/reports';
 
 /**
- * Compose the host runtime: shell context + shared registry + lazy features.
+ * Compose the host runtime: shell context + shared registry + HostManager.
  *
- * @returns A composition with the shell context, mount manager, and router.
+ * @returns A composition with the shell context, host manager, and cart.
  */
-export async function composeHostRuntime() {
+export function composeHostRuntime() {
     // ── Shell context with shared dependency registry ──────────────────────
     const shellContext = createShellContext({ name: 'site-shell' });
 
@@ -44,59 +39,31 @@ export async function composeHostRuntime() {
     };
     shellContext.setValue('cart', cart);
 
-    // ── Feature mount manager ──────────────────────────────────────────────
-    const mountManager = new FeatureContextMountManager(shellContext);
+    // ── Host manager: one-call registration of the lazy features ───────────
+    const host = new HostManager(shellContext, { activationPolicy: 'exclusive' });
 
     // Lazily-loaded features: each loader dynamic-imports its code chunk, so
     // the feature is only fetched when its route is activated.
-    mountManager.registerFeature({
+    host.registerFeature({
         name: 'catalog',
+        prefix: CATALOG_PREFIX,
         loader: () => import('./features/catalog'),
         dependencies: { requires: { router: '^1.0.0' } },
     });
-    mountManager.registerFeature({
+    host.registerFeature({
         name: 'checkout',
+        prefix: CHECKOUT_PREFIX,
         loader: () => import('./features/checkout'),
         dependencies: { requires: { router: '^1.0.0', cart: '^1.0.0' } },
     });
-    mountManager.registerFeature({
+    host.registerFeature({
         name: 'reports',
+        prefix: REPORTS_PREFIX,
         loader: () => import('./features/reports'),
         dependencies: { requires: { router: '^1.0.0' } },
     });
 
-    // ── Feature routing registry ───────────────────────────────────────────
-    const featureRouter = new FeatureRoutingRegistry(undefined, {
-        activationPolicy: 'exclusive',
-    });
+    shellContext.setValue(HOST_MANAGER_TOKEN, host);
 
-    const mountOnActivate =
-        (name: string): (() => void) =>
-        () => {
-            void mountManager.mountLazy(name);
-        };
-
-    featureRouter.registerFeature({
-        name: 'catalog',
-        prefix: CATALOG_PREFIX,
-        onActivate: mountOnActivate('catalog'),
-        onDeactivate: () => void mountManager.unmount('catalog'),
-        onRoute: () => {},
-    });
-    featureRouter.registerFeature({
-        name: 'checkout',
-        prefix: CHECKOUT_PREFIX,
-        onActivate: mountOnActivate('checkout'),
-        onDeactivate: () => void mountManager.unmount('checkout'),
-        onRoute: () => {},
-    });
-    featureRouter.registerFeature({
-        name: 'reports',
-        prefix: REPORTS_PREFIX,
-        onActivate: mountOnActivate('reports'),
-        onDeactivate: () => void mountManager.unmount('reports'),
-        onRoute: () => {},
-    });
-
-    return { shellContext, mountManager, featureRouter, cart };
+    return { shellContext, host, cart };
 }

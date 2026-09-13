@@ -1,9 +1,11 @@
 import '@tsmetadata/polyfill';
 import { configuration, entry } from '@blue/context';
+import { StaticContentSource } from '@blue/content';
 import { NameViewResolver } from '@blue/view';
 import { WebComponentViewResolver } from '@blue/view-webcomponent';
 import ViewsController from './views-controller';
 import { BlueViewsShell } from './components/shell-component';
+import { ClientDemoComponent } from './components/client-demo';
 import { FooterView } from './views/footer-view';
 import { ReportViewResolver } from './report-view-resolver';
 
@@ -26,7 +28,15 @@ import { ReportViewResolver } from './report-view-resolver';
 export class ViewsAppConfiguration {
     @entry
     viewsController() {
-        return new ViewsController();
+        return new ViewsController(
+            new StaticContentSource({
+                footer: {
+                    en: 'Built with BlueJS',
+                    de: 'Gebaut mit BlueJS',
+                    fr: 'Construit avec BlueJS',
+                },
+            })
+        );
     }
 
     /** Context-bean view for NameViewResolver. */
@@ -38,9 +48,13 @@ export class ViewsAppConfiguration {
     @entry
     viewResolvers() {
         return [
-            // viewNames filter: only `shell` resolves here — `nope` falls
-            // through to the next resolvers (first-match-wins chain).
-            new WebComponentViewResolver({ registry: { shell: BlueViewsShell }, viewNames: [/^shell$/] }),
+            // viewNames filter: only the component names resolve here —
+            // `nope` falls through to the next resolvers (first-match-wins
+            // chain).
+            new WebComponentViewResolver({
+                registry: { shell: BlueViewsShell, clientDemo: ClientDemoComponent },
+                viewNames: [/^shell$/, /^clientDemo$/],
+            }),
             new NameViewResolver(),
             new ReportViewResolver(),
         ];

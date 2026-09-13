@@ -25,7 +25,7 @@ export interface Router {
     /**
      * Programmatically navigates the router to the given path.
      *
-     * Implementations that support programmatic navigation (e.g., `SiteRouter`, `HashRouter`)
+     * Implementations that support programmatic navigation (e.g., `PartitionRouter`, `HashRouter`)
      * should provide this method. When absent, callers should fall back to platform-specific
      * navigation (e.g., `history.pushState`).
      *

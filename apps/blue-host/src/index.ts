@@ -1,8 +1,8 @@
 /**
  * Blue Micro Frontend Host entry point.
  *
- * Composes the shell, wires a hash router to the feature routing registry, and
- * mounts lazy-loaded feature contexts into the page on navigation.
+ * Composes the shell, wires a hash router to the host manager, and mounts
+ * lazy-loaded feature contexts into the page on navigation.
  *
  * @module
  */
@@ -15,7 +15,7 @@ const $feature = document.getElementById('feature') as HTMLElement;
 const $status = document.getElementById('status') as HTMLElement;
 
 async function main() {
-    const { mountManager, featureRouter } = await composeHostRuntime();
+    const { host } = composeHostRuntime();
 
     // ── Router wiring ──────────────────────────────────────────────────────
     const router = new HashRouter((route: Route) => {
@@ -23,8 +23,8 @@ async function main() {
         const path = route.path[0] === '/' ? route.path : `/${route.path}`;
         $status.textContent = `Route: ${path} — activating feature…`;
 
-        // Feature routing registry activates/deactivates features by prefix.
-        featureRouter.navigate(path);
+        // Host manager activates/deactivates features by prefix partition.
+        host.navigate(path);
 
         void renderFeature(currentFeatureFor(path));
     });
@@ -51,7 +51,7 @@ async function main() {
         }
 
         // Lazy-load the feature chunk on first navigation, then render its data.
-        const composition = await mountManager.mountLazy(name);
+        const composition = await host.mountLazy(name);
         $status.textContent = `Mounted feature: ${name}`;
         $feature.textContent = `[${name}] ${JSON.stringify(composition.context.getValue(featureDataKey(name)))}`;
     }

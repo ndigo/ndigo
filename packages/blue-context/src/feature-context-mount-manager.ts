@@ -245,6 +245,24 @@ export class FeatureContextMountManager {
         return true;
     }
 
+    /**
+     * Unmount (close policy) a feature and remove its registration entirely.
+     *
+     * @param name - The registered feature name.
+     * @returns `true` if a registration was removed.
+     * @since 1.0.0
+     */
+    unregister(name: string): boolean {
+        const registration = this.#registrations.get(name);
+
+        if (!registration) {
+            return false;
+        }
+
+        this.unmount(name, 'close');
+        return this.#registrations.delete(name);
+    }
+
     hasRegistration(name: string): boolean {
         return this.#registrations.has(name);
     }

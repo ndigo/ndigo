@@ -311,7 +311,7 @@ When a feature uses a custom `createContext` factory (instead of `parent.newChil
 
 ### Unchanged
 
-| `@blue/context` ApplicationContext / GenericApplicationContext | `@blue/router` SiteRouter / FeatureRoutingRegistry |
+| `@blue/context` ApplicationContext / GenericApplicationContext | `@blue/router` PartitionRouter / FeatureRoutingRegistry |
 | -------------------------------------------------------------- | -------------------------------------------------- |
 | Event gateway                                                  | Router interceptors                                |
 | `@blue/boot` ApplicationBuilder                                | Existing tests                                     |

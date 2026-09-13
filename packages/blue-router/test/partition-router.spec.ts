@@ -1,13 +1,13 @@
 import { describe, expect, test, vi } from 'vitest';
 import { PathRoute } from '../src/path-route';
-import { SiteRouter } from '../src/site-router';
+import { PartitionRouter } from '../src/partition-router';
 import { restorePartitionPrefix } from '../src/route-partition';
 
-describe('SiteRouter', () => {
+describe('PartitionRouter', () => {
     test('it should route partitioned paths to mounted feature callback', () => {
         const todoCallback = vi.fn();
         const accountCallback = vi.fn();
-        const router = new SiteRouter();
+        const router = new PartitionRouter();
 
         router.mount('/todo', todoCallback);
         router.mount('/account', accountCallback);
@@ -25,7 +25,7 @@ describe('SiteRouter', () => {
 
     test('it should pass root feature path when navigating to feature prefix', () => {
         const todoCallback = vi.fn();
-        const router = new SiteRouter();
+        const router = new PartitionRouter();
 
         router.mount('/todo', todoCallback);
         router.navigate('/todo');
@@ -36,7 +36,7 @@ describe('SiteRouter', () => {
 
     test('it should return false when no mount matches', () => {
         const todoCallback = vi.fn();
-        const router = new SiteRouter();
+        const router = new PartitionRouter();
 
         router.mount('/todo', todoCallback);
 
@@ -48,7 +48,7 @@ describe('SiteRouter', () => {
 
     test('it should use current route on refresh', () => {
         const todoCallback = vi.fn();
-        const router = new SiteRouter();
+        const router = new PartitionRouter();
 
         router.mount('/todo', todoCallback);
         router.navigate('/todo/completed');
@@ -61,5 +61,31 @@ describe('SiteRouter', () => {
 
     test('it should restore shell route from feature-local path', () => {
         expect(restorePartitionPrefix('/active', '/todo')).toBe('/todo/active');
+    });
+
+    test('it should unmount a mounted prefix', () => {
+        const todoCallback = vi.fn();
+        const accountCallback = vi.fn();
+        const router = new PartitionRouter();
+
+        router.mount('/todo', todoCallback);
+        router.mount('/account', accountCallback);
+
+        expect(router.unmount('/todo')).toBe(true);
+        expect(router.navigate('/todo/active')).toBe(false);
+        expect(todoCallback).not.toHaveBeenCalled();
+        expect(router.navigate('/account')).toBe(true);
+
+        expect(router.unmount('/account')).toBe(true);
+        expect(router.unmount('/account')).toBe(false);
+        expect(router.navigate('/account')).toBe(false);
+    });
+
+    test('it should normalize prefixes on unmount', () => {
+        const router = new PartitionRouter();
+
+        router.mount('/todo', vi.fn());
+        expect(router.unmount('todo')).toBe(true);
+        expect(router.unmount('todo')).toBe(false);
     });
 });

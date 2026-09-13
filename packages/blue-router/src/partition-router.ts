@@ -20,17 +20,18 @@ export interface FeatureRouteMount {
 }
 
 /**
- * A concrete router implementation that extends `AbstractRouter` to manage and navigate through site-wide routes.
+ * A concrete router implementation that extends `AbstractRouter` to manage
+ * and navigate through partitioned routes.
  * It supports mounting feature-specific routes at defined prefixes.
  * @since 1.0.0
  */
-export class SiteRouter extends AbstractRouter {
+export class PartitionRouter extends AbstractRouter {
     readonly callback = () => undefined;
     #mounts: FeatureRouteMount[];
     #route: string;
 
     /**
-     * Gets the current full route path managed by the `SiteRouter`.
+     * Gets the current full route path managed by the `PartitionRouter`.
      * @returns The current route path as a string.
      * @since 1.0.0
      */
@@ -39,7 +40,7 @@ export class SiteRouter extends AbstractRouter {
     }
 
     /**
-     * Creates an instance of `SiteRouter`.
+     * Creates an instance of `PartitionRouter`.
      * @since 1.0.0
      */
     constructor() {
@@ -53,7 +54,7 @@ export class SiteRouter extends AbstractRouter {
      * When a route matching the prefix is navigated, the provided callback will be invoked with the stripped route.
      * @param prefix - The URL prefix at which to mount the feature route.
      * @param callback - The `FeatureRouteCallback` to execute when the prefix matches.
-     * @returns The current `SiteRouter` instance for chaining.
+     * @returns The current `PartitionRouter` instance for chaining.
      * @since 1.0.0
      */
     mount(prefix: string, callback: FeatureRouteCallback): this {
@@ -62,6 +63,20 @@ export class SiteRouter extends AbstractRouter {
             prefix: normalizePartitionPrefix(prefix),
         });
         return this;
+    }
+
+    /**
+     * Removes a mounted feature route at the specified URL prefix.
+     *
+     * @param prefix - The URL prefix to unmount.
+     * @returns `true` if a mount was removed, `false` if none matched.
+     * @since 1.0.0
+     */
+    unmount(prefix: string): boolean {
+        const normalized = normalizePartitionPrefix(prefix);
+        const before = this.#mounts.length;
+        this.#mounts = this.#mounts.filter((mount) => mount.prefix !== normalized);
+        return this.#mounts.length !== before;
     }
 
     /**

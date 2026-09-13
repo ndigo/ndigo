@@ -144,4 +144,29 @@ describe('FeatureContextMountManager', () => {
         manager.destroy();
         shell.destroy();
     });
+
+    test('it should unregister a feature and allow re-registration', () => {
+        const shell = new GenericApplicationContext('shell');
+        const manager = new FeatureContextMountManager(shell);
+
+        manager.registerFeature({
+            name: 'todo',
+            unmountPolicy: 'close',
+        });
+        manager.mount('todo');
+        expect(manager.isMounted('todo')).toBe(true);
+
+        expect(manager.unregister('todo')).toBe(true);
+        expect(manager.hasRegistration('todo')).toBe(false);
+        expect(manager.isMounted('todo')).toBe(false);
+        expect(manager.unregister('todo')).toBe(false);
+
+        manager.registerFeature({
+            name: 'todo',
+        });
+        expect(manager.mount('todo')).toBeDefined();
+
+        manager.destroy();
+        shell.destroy();
+    });
 });

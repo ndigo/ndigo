@@ -89,6 +89,10 @@ export class RetryOnOfflineInterceptor implements RequestAwareHTTPInterceptor, R
         }
 
         if (!navigator.onLine) {
+            if (!response.url) {
+                // Unkeyable response (mock/stub) — no replay possible.
+                return response;
+            }
             const request = new Request(response.url, {
                 method: response.headers.get('X-HTTP-Method') || 'GET',
             });

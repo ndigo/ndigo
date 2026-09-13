@@ -22,6 +22,14 @@ export interface CSVViewOptions {
      * Field delimiter. Defaults to `,`.
      */
     delimiter?: string;
+
+    /**
+     * Model attribute holding the record array. Views receive the whole
+     * model map (Spring-style attributes), so when the records live under a
+     * named attribute (e.g. `{ rows: [...] }`), name it here. When omitted,
+     * the model itself must be the array.
+     */
+    records?: string;
 }
 
 /**
@@ -32,17 +40,20 @@ export interface CSVViewOptions {
 export class CSVView extends AbstractSerializingView {
     readonly #columns?: string[];
     readonly #delimiter: string;
+    readonly #records?: string;
 
     constructor(options: CSVViewOptions = {}) {
         super();
         this.mediaType = MediaTypes.TEXT_CSV?.withCharset('UTF-8') ?? null;
         this.#columns = options.columns;
         this.#delimiter = options.delimiter ?? ',';
+        this.#records = options.records;
     }
 
     /** @inheritdoc */
     protected serialize(model: unknown): string {
-        const records = Array.isArray(model) ? model : [];
+        const data = this.#records ? (model as Record<string, unknown> | null | undefined)?.[this.#records] : model;
+        const records = Array.isArray(data) ? data : [];
         const columns =
             this.#columns ??
             (records[0] != null && typeof records[0] === 'object'

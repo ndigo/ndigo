@@ -12,6 +12,7 @@ import {
     pathVariable,
     requestMapping,
 } from '@blue/dispatcher';
+import { ModelAndView } from '@blue/dispatcher';
 
 @requestMapping('/api')
 export class GreetingController {
@@ -43,5 +44,28 @@ export class GreetingController {
     @parameters({ name: pathVariable('name') })
     greet(name: string) {
         return { greeting: `Greetings, ${name}!` };
+    }
+
+    /**
+     * The same report data through the content-negotiating view resolver:
+     * JSON by default, CSV for the `.csv` path extension.
+     */
+    @getMapping('/report')
+    report() {
+        return this.#report();
+    }
+
+    @getMapping('/report.csv')
+    reportCSV() {
+        return this.#report();
+    }
+
+    #report(): ModelAndView {
+        return new ModelAndView('report', {
+            rows: [
+                { name: 'Ada', role: 'admin' },
+                { name: 'Grace', role: 'user' },
+            ],
+        });
     }
 }

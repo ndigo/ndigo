@@ -32,7 +32,8 @@
     "doc:json": "typedoc --json doc-md/api.json",
     "doc:watch": "typedoc --watch",
     "manifest:check": "node scripts/check-manifests.mjs",
-    "graft:build": "graft build --deep --allow-partial"
+    "graft:build": "graft build --deep --allow-partial",
+    "postinstall": "node scripts/typedoc-ts-shim.mjs"
   },
   "keywords": [
     "blue",

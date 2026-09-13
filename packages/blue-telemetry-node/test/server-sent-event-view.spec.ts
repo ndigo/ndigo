@@ -83,7 +83,7 @@ describe('ServerSentEventViewInstrumentation', () => {
         await Promise.resolve();
         await new Promise((r) => setTimeout(r, 50));
 
-        const spans = exporter.getFinishedSpans().filter((s) => s.name === 'ServerSentEventView.render');
+        const spans = exporter.getFinishedSpans().filter((s) => s.name === 'ServerSentEventView.renderTo');
         expect(spans).toHaveLength(1);
         const span = spans[0];
         expect(span.kind).toBe(SpanKind.SERVER);
@@ -114,7 +114,12 @@ describe('ServerSentEventViewInstrumentation', () => {
             end: () => {},
         } as never;
 
-        await view.render(null, { attributes: { [NODE_RESPONSE_ATTRIBUTE]: res } } as never, null);
+        // ProducerView contract: renderTo returns the streaming document;
+        // the body iterator is what observes the abort, so drain it.
+        const result = await view.renderTo(null, { attributes: { [NODE_RESPONSE_ATTRIBUTE]: res } } as never);
+        for await (const _chunk of result.body) {
+            // drain
+        }
         expect(view.frameCount).toBe(0);
         expect(view.clientDisconnected).toBe(true);
     });

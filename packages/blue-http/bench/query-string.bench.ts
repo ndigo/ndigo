@@ -1,13 +1,18 @@
 /**
- * Benchmark suite for `queryExpression` parser throughput.
+ * Benchmark suite for `QueryString.parse` throughput.
  *
  * Scenarios:
- *   1. queryExpression – arcsecond parser        – parse all query strings
- *   2. queryExpression – URLSearchParams baseline – built-in JS parser
+ *   1. blue-http QueryString.parse  – single-pass native scan
+ *   2. URLSearchParams baseline      – built-in JS parser
+ *
+ * The parser preserves a deliberately conservative contract (see
+ * packages/blue-http/src/query-string.ts) that `URLSearchParams` cannot
+ * express — `;` separators, bare/empty values as `null`, whole-parse
+ * rejection of empty segments — so the built-in is a floor, not a target.
  */
 
 import { bench, describe } from 'vitest';
-import { queryExpression } from '../src/parsers/query-expression';
+import QueryString from '../src/query-string';
 
 /* ------------------------------------------------------------------ */
 /*  Test patterns                                                      */
@@ -36,13 +41,12 @@ let _sink: unknown = 0;
 /*  Benchmarks                                                         */
 /* ------------------------------------------------------------------ */
 
-describe('queryExpression – URL query strings', () => {
-    bench('arcsecond parser', () => {
+describe('QueryString.parse – URL query strings', () => {
+    bench('blue-http QueryString.parse', () => {
         let accumulator = 0;
         for (let i = 0; i < 1000; i++) {
             for (const qs of queryStrings) {
-                const result = queryExpression.run(qs);
-                accumulator += result.isError ? 0 : 1;
+                accumulator += Object.keys(QueryString.parse(qs)).length;
             }
         }
         _sink = accumulator;

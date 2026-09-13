@@ -7,8 +7,10 @@ describe('QueryString', () => {
             expect(QueryString.parse('?foo=bar')).toEqual({ foo: 'bar' });
         });
 
-        test('it should parse query strings starting with a `#`', () => {
-            expect(QueryString.parse('#foo=bar')).toEqual({ foo: 'bar' });
+        test('it should treat a leading `#` as part of the first key', () => {
+            // URLSearchParams only strips a leading `?`; `#` is a plain
+            // character in a query string.
+            expect(QueryString.parse('#foo=bar')).toEqual({ '#foo': 'bar' });
         });
 
         test('it should parse query strings starting with a `&`', () => {
@@ -26,31 +28,49 @@ describe('QueryString', () => {
             });
         });
 
-        test('it should parse query string without a value', () => {
-            expect(QueryString.parse('foo')).toEqual({ foo: null });
+        test('it should parse query string without a value as empty strings', () => {
+            // Aligned with URLSearchParams, which reports missing and empty
+            // values as '' rather than null.
+            expect(QueryString.parse('foo')).toEqual({ foo: '' });
             expect(QueryString.parse('foo&key')).toEqual({
-                foo: null,
-                key: null,
+                foo: '',
+                key: '',
             });
             expect(QueryString.parse('foo=bar&key')).toEqual({
                 foo: 'bar',
-                key: null,
+                key: '',
             });
             // Added from router tests
-            expect(QueryString.parse('a&a')).toEqual({ a: [null, null] });
-            expect(QueryString.parse('a=&a')).toEqual({ a: [null, null] }); // Changed from router test: '' -> null
+            expect(QueryString.parse('a&a')).toEqual({ a: ['', ''] });
+            expect(QueryString.parse('a=&a')).toEqual({ a: ['', ''] });
         });
 
-        test('it should return empty object if no query string can be found', () => {
+        test('it should return empty object when nothing is paired', () => {
             expect(QueryString.parse('?')).toEqual({});
             expect(QueryString.parse('&')).toEqual({});
-            expect(QueryString.parse('#')).toEqual({});
-            expect(QueryString.parse(' ')).toEqual({});
+            // '#' and ' ' are ordinary query characters — URLSearchParams
+            // yields a single empty-valued key for each.
+            expect(QueryString.parse('#')).toEqual({ '#': '' });
+            expect(QueryString.parse(' ')).toEqual({ ' ': '' });
+        });
+
+        test('it should treat semicolons as ordinary value characters', () => {
+            // URLSearchParams splits on `&` only; `;` belongs to a value.
+            expect(QueryString.parse('a=1;b=2')).toEqual({ a: '1;b=2' });
+            expect(QueryString.parse('?a=1;b=2&c=3')).toEqual({ a: '1;b=2', c: '3' });
+        });
+
+        test('it should drop empty parts between delimiters', () => {
+            // URLSearchParams ignores empty parts; a trailing `&` is a no-op
+            // and `;` is not a delimiter at all.
+            expect(QueryString.parse('a=1&&b=2')).toEqual({ a: '1', b: '2' });
+            expect(QueryString.parse('a=1&')).toEqual({ a: '1' });
+            expect(QueryString.parse(';a=1')).toEqual({ ';a': '1' });
         });
 
         test('it should handle multiple values and preserve appearence order', () => {
-            expect(QueryString.parse('a=value&a=')).toEqual({ a: ['value', null] }); // Changed from router test: '' -> null
-            expect(QueryString.parse('a=&a=value')).toEqual({ a: [null, 'value'] }); // Changed from router test: '' -> null
+            expect(QueryString.parse('a=value&a=')).toEqual({ a: ['value', ''] });
+            expect(QueryString.parse('a=&a=value')).toEqual({ a: ['', 'value'] });
         });
 
         test('it should handle `+` correctly', () => {
@@ -62,8 +82,8 @@ describe('QueryString', () => {
         });
 
         test('it should handle multiple values and preserve appearence order', () => {
-            expect(QueryString.parse('a=value&a=')).toEqual({ a: ['value', null] });
-            expect(QueryString.parse('a=&a=value')).toEqual({ a: [null, 'value'] });
+            expect(QueryString.parse('a=value&a=')).toEqual({ a: ['value', ''] });
+            expect(QueryString.parse('a=&a=value')).toEqual({ a: ['', 'value'] });
         });
 
         test.skip('it should handle multiple values and preserve appearance order with brackets', () => {
@@ -167,11 +187,13 @@ describe('QueryString', () => {
         test('it should parse decode keys and values', () => {
             const result1 = QueryString.parse('st%C3%A5le=foo');
             expect(result1).toHaveProperty('ståle', 'foo');
+            // URLSearchParams semantics: valid escapes decode, invalid byte
+            // sequences (%ab, %de) become U+FFFD, unknown `%` stays literal.
             const result2 = QueryString.parse('foo=%7B%ab%%7C%de%%7D+%%7Bst%C3%A5le%7D%');
-            expect(result2).toHaveProperty('foo', '{%ab%|%de%} %{ståle}%');
+            expect(result2).toHaveProperty('foo', '{\uFFFD%|\uFFFD%} %{ståle}%');
         });
-        test('it should support `;` as a separator (RFC 3986)', () => {
-            expect(QueryString.parse('a=1;b=2')).toEqual({ a: '1', b: '2' });
+        test('it should not split on `;`', () => {
+            expect(QueryString.parse('a=1;b=2')).toEqual({ a: '1;b=2' });
         });
     });
 

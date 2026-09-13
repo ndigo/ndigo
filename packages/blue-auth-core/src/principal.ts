@@ -41,8 +41,10 @@ export class AnonymousPrincipal implements Principal {
 }
 
 /**
- * Duck-type guard — returns `true` when `value` looks like a {@link Principal}.
+ * Duck-type guard for {@link Principal}: shape check, not identity —
+ * per STYLE_GUIDE §3.7, property/method-presence guards use the `like*`
+ * prefix (`is*` is reserved for `instanceof`/`typeof` checks).
  */
-export function isPrincipal(value: unknown): value is Principal {
+export function likePrincipal(value: unknown): value is Principal {
     return typeof value === 'object' && value !== null && 'id' in value && 'name' in value && 'roles' in value;
 }

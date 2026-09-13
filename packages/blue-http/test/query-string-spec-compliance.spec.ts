@@ -8,6 +8,7 @@ import QueryString from '../src/query-string';
  * - RFC 3986: URI Generic Syntax
  * - WHATWG URL Standard: URLSearchParams and application/x-www-form-urlencoded
  *
+ * See: docs/reference/2026-02-06_URL_PARSING_SPECIFICATIONS.md
  */
 
 describe('Query String - RFC 3986 Compliance', () => {

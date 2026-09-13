@@ -27,13 +27,12 @@ This document describes BlueJS's implementation of URL query string and matrix s
 
 - **Query Strings:**
 
-    - Parser: `packages/blue-http/src/parsers/query-expression.ts`
-    - Stringifier: `packages/blue-http/src/query-string.ts`
+    - Parser + stringifier: `packages/blue-http/src/query-string.ts`
+      (parsing delegates to the WHATWG `URLSearchParams` parser)
     - Tests: `packages/blue-http/test/query-string*.spec.ts`
 
 - **Matrix Strings:**
-    - Parser: `packages/blue-http/src/parsers/matrix-expression.ts`
-    - Stringifier: `packages/blue-http/src/matrix-string.ts`
+    - Parser + stringifier: `packages/blue-http/src/matrix-string.ts`
     - Tests: `packages/blue-http/test/matrix-string*.spec.ts`
 
 ---
@@ -136,27 +135,28 @@ This document describes BlueJS's implementation of URL query string and matrix s
 ```
 ?foo=bar              → { foo: 'bar' }
 &foo=bar              → { foo: 'bar' }
-#foo=bar              → { foo: 'bar' }
 foo=bar               → { foo: 'bar' }
 foo=bar&baz=qux       → { foo: 'bar', baz: 'qux' }
-foo=bar;baz=qux       → { foo: 'bar', baz: 'qux' }  // Semicolon supported
+foo=bar;baz=qux       → { foo: 'bar;baz=qux' }      // ';' is a value character
 foo=bar&foo=baz       → { foo: ['bar', 'baz'] }     // Multiple values
-foo                   → { foo: null }                // No value
-foo=                  → { foo: null }                // Empty value
+foo                   → { foo: '' }                 // No value
+foo=                  → { foo: '' }                 // Empty value
+foo[]=a&foo[]=b       → { 'foo[]': ['a', 'b'] }     // Brackets are literal
 foo+bar=baz+qux       → { 'foo bar': 'baz qux' }    // Plus-to-space
 ```
 
-**Parser Behavior:**
+**Parser Behavior (2026-09-13: aligned with WHATWG `URLSearchParams`):**
 
 1. **Delimiter Support:**
 
-    - Primary: `&` (ampersand)
-    - Also accepts: `;` (semicolon) per RFC 3986
-    - Prefix characters ignored: `?`, `#`, `&`
+    - Sole delimiter: `&` (ampersand), per the WHATWG parser
+    - Empty parts between delimiters are dropped (`a=1&&b=2` → `{'a': '1', 'b': '2'}`)
+    - A single leading `?` is stripped by the standard itself
+    - `#` and `;` are ordinary characters: `#foo=bar` → `{ '#foo': 'bar' }`
 
 2. **Space Encoding:**
 
-    - `+` decoded as space (application/x-www-form-urlencoded)
+    - `+` decoded as space (application/x-www-form-urlencoded) in keys and values
     - `%20` also decoded as space
 
 3. **Multiple Values:**
@@ -166,13 +166,18 @@ foo+bar=baz+qux       → { 'foo bar': 'baz qux' }    // Plus-to-space
 
 4. **Empty Values:**
 
-    - `key=` → `null`
-    - `key` → `null`
-    - Rationale: Simplifies null handling, avoids empty string confusion
+    - `key=` → `''`
+    - `key` → `''`
+    - Values are always strings; there is no `null` in parse output
 
 5. **Percent-Encoding:**
-    - Standard `decodeURIComponent` applied
-    - Invalid sequences preserved (e.g., `%ZZ`)
+    - Standard WHATWG percent-decoding applied
+    - Invalid sequences preserved literally (e.g., `%ZZ`)
+    - Invalid byte sequences decode as `U+FFFD`
+
+6. **Prototype Safety:**
+    - The result record has a null prototype, so keys like `__proto__` are
+      preserved as ordinary data
 
 ### Stringification Rules
 
@@ -186,7 +191,9 @@ foo+bar=baz+qux       → { 'foo bar': 'baz qux' }    // Plus-to-space
 3. **Empty Values:**
     - `null` → `key` (no equals)
     - `undefined` → omitted
-    - Empty string `""` → `key=` (not used in practice due to parse→null)
+    - Empty string `""` → `key=`
+    - Parse→stringify of a bare key shifts shape: `parse('a')` → `{'a': ''}` →
+      `stringify` → `'a='`
 4. **Arrays:** Repeated keys (`foo=bar&foo=baz`)
 5. **Percent-Encoding:** `encodeURIComponent` for keys and values
 
@@ -271,12 +278,12 @@ MatrixString.stringify({
 | Feature                         | RFC 3986 | WHATWG | BlueJS | Status             |
 | ------------------------------- | -------- | ------ | ------ | ------------------ |
 | Ampersand delimiter             | ✓        | ✓      | ✓      | ✅ Compliant       |
-| Semicolon delimiter             | ✓        | ✗      | ✓      | ✅ Extended        |
+| Semicolon delimiter             | ✓        | ✗      | ✗      | ✅ Aligned (WHATWG)  |
 | Percent-encoding                | ✓        | ✓      | ✓      | ✅ Compliant       |
 | Plus-to-space                   | —        | ✓      | ✓      | ✅ Compliant       |
 | Multiple values (repeated keys) | —        | ✓      | ✓      | ✅ Compliant       |
-| Empty value semantics           | —        | `""`   | `null` | ⚠️ Deviation       |
-| Missing value semantics         | —        | N/A    | `null` | ⚠️ Extension       |
+| Empty value semantics           | —        | `""`   | `""`   | ✅ Aligned (WHATWG)  |
+| Missing value semantics         | —        | N/A    | `""`   | ✅ Aligned (WHATWG)  |
 | Key sorting                     | —        | ✗      | ✓      | ℹ️ Extension       |
 | Bracket arrays (`foo[]`)        | —        | ✗      | ✗      | ℹ️ Not implemented |
 | Indexed arrays (`foo[0]`)       | —        | ✗      | ✗      | ℹ️ Not implemented |
@@ -303,34 +310,7 @@ MatrixString.stringify({
 
 ## Intentional Deviations
 
-### 1. Empty Value Handling
-
-**Specification:** WHATWG defines `key=` as empty string `""`
-
-**BlueJS Implementation:** Both `key=` and `key` map to `null`
-
-**Rationale:**
-
-- **Simplification:** Consumers don't need to distinguish `""`, `null`, and `undefined`
-- **JavaScript Idioms:** `null` is the standard "no value" indicator
-- **Consistency:** Both "no value" and "empty value" treated identically
-- **Practical Usage:** Most APIs treat empty string and null equivalently
-
-**Impact:** Low - Most applications treat empty strings as falsy anyway
-
-**Example:**
-
-```typescript
-// Specification behavior (WHATWG)
-URLSearchParams('key=').get('key'); // → ""
-URLSearchParams('key').get('key'); // → null
-
-// BlueJS behavior
-QueryString.parse('key='); // → { key: null }
-QueryString.parse('key'); // → { key: null }
-```
-
-### 2. Space Encoding with Plus Sign
+### 1. Space Encoding with Plus Sign
 
 **Specification:** RFC 3986 uses `%20`, WHATWG form encoding uses `+`
 
@@ -376,19 +356,11 @@ QueryString.parse('key'); // → { key: null }
 
 **Status:** Can be added as opt-in feature if demand exists
 
-### 5. Semicolon Delimiter Support in Query Strings
+### 5. Representation: Repeated Keys
 
-**Specification:** RFC 3986 includes `;` in sub-delims, WHATWG uses `&` only
-
-**BlueJS Implementation:** Parser accepts both `&` and `;` as delimiters
-
-**Rationale:**
-
-- **RFC Compliance:** RFC 3986 allows semicolon in query component
-- **Historical Usage:** Some servers use semicolon (W3C recommended it historically)
-- **Flexibility:** No harm in accepting both, helps interoperability
-
-**Impact:** Positive - More lenient parsing
+`URLSearchParams` keeps duplicate pairs; `QueryString.parse` aggregates
+repeated keys into arrays (`{'foo': ['bar', 'baz']}`). A plain record cannot
+hold duplicate keys, and `getAll()`-style access is the framework's shape.
 
 ---
 
@@ -403,17 +375,17 @@ import QueryString from '@blue/http/query-string';
 QueryString.parse('foo=bar&baz=qux');
 // → { foo: 'bar', baz: 'qux' }
 
-// Semicolon delimiter (accepted)
+// Semicolon belongs to a value (WHATWG)
 QueryString.parse('foo=bar;baz=qux');
-// → { foo: 'bar', baz: 'qux' }
+// → { foo: 'bar;baz=qux' }
 
 // Multiple values
 QueryString.parse('foo=bar&foo=baz&foo=qux');
 // → { foo: ['bar', 'baz', 'qux'] }
 
-// Empty values
+// Empty values are empty strings (WHATWG)
 QueryString.parse('foo=&bar');
-// → { foo: null, bar: null }
+// → { foo: '', bar: '' }
 
 // Percent-encoding
 QueryString.parse('message=Hello%20World&emoji=%F0%9F%92%A9');
@@ -566,9 +538,12 @@ MatrixString.parse('emoji=%F0%9F%8D%95;chinese=%E4%B8%AD%E6%96%87');
 ### Version History
 
 - **2025-02-06:** Initial version documenting Phase 5 consolidation results
+- **2026-09-13:** Query parsing aligned with WHATWG `URLSearchParams`
+  (empty values `''`, `&`-only splitting, lenient percent-decoding);
+  parser modules folded into `query-string.ts` / `matrix-string.ts`
 
 ---
 
 **Document Status:** Complete  
-**Last Updated:** 2025-02-06  
+**Last Updated:** 2026-09-13  
 **Maintained By:** BlueJS Core Team

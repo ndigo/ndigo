@@ -40,6 +40,7 @@ export default defineConfig({
             { find: /^@blue\/factory$/, replacement: resolve(__dirname, './packages/blue-factory/src') },
             { find: /^@blue\/context$/, replacement: resolve(__dirname, './packages/blue-context/src') },
             { find: /^@blue\/router$/, replacement: resolve(__dirname, './packages/blue-router/src') },
+            { find: /^@blue\/host$/, replacement: resolve(__dirname, './packages/blue-host/src') },
             { find: /^@blue\/view$/, replacement: resolve(__dirname, './packages/blue-view/src') },
             { find: /^@blue\/http$/, replacement: resolve(__dirname, './packages/blue-http/src') },
             { find: /^@blue\/logger$/, replacement: resolve(__dirname, './packages/blue-logger/src') },

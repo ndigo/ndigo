@@ -51,6 +51,19 @@ export const AsRouteHandlerMappingStrategy = <T extends Constructable<StrategyIn
                 HANDLER_MAPPINGS,
                 defaultRouteHandlerMappings
             );
+
+            // A user-supplied `handlerMappings` collection supplements — never
+            // replaces — the platform mapping: append the singular mapping as
+            // the final fallback so routes not claimed by contributors (e.g.
+            // `ManagementAutoConfiguration`'s guard-carrying collection) still
+            // resolve through the platform default.
+            if (context.hasValue(handlerMappingKey)) {
+                const platform = context.getValue<RouteHandlerMapping>(handlerMappingKey);
+                const current = this.handlerMappings;
+                if (current && !current.some((mapping) => mapping === platform)) {
+                    this.handlerMappings = [...current, platform];
+                }
+            }
         }
 
         getHandler(route: Route): RouteHandlerExecutionChain {

@@ -50,9 +50,9 @@ Scale 2 extends this to **multi-context applications** (site shell + isolated fe
     - `ContextEventGateway` for explicit allowlisted source→target relays.
     - Unit tests for relay behavior, dynamic registration, and destroy semantics.
 
-2. **Site router partitioning baseline** in `@blue/router`
+2. **Partition router baseline** in `@blue/router`
 
-    - `SiteRouter` mounts feature callbacks on route prefixes.
+    - `PartitionRouter` mounts feature callbacks on route prefixes.
     - `refresh()` replays current mounted route callback.
 
 3. **Route partition helpers** in `@blue/router`
@@ -297,7 +297,7 @@ All planned Scale 2 primitives have been implemented and validated:
 
 - Typed context tokens with `ContextToken<T>`
 - Hierarchical shell/feature contexts with event gateway isolation
-- Site router partitioning and feature routing registry
+- Partition router dispatch and feature routing registry
 - Feature mount/unmount orchestration with preserve/close policies
 - Activation policies (tracked/exclusive)
 - Per-feature telemetry with `FeatureMetricAggregator`, `CounterRateResolver`, and `@counted` decorator

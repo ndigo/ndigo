@@ -9,7 +9,7 @@ export * from './router';
 export { default as RouterExecutionChain } from './router-execution-chain';
 export * from './feature-routing-registry';
 export * from './route-partition';
-export * from './site-router';
+export * from './partition-router';
 export * from './path-route';
 export * from './router-interceptor';
 export * from './route-definition';

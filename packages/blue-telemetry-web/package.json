@@ -1,7 +1,7 @@
 {
   "name": "@blue/telemetry-web",
   "version": "0.0.1",
-  "description": "Browser telemetry for BlueJS \u2014 browser telemetry configuration and web instrumentations",
+  "description": "Browser telemetry for BlueJS — browser telemetry configuration and web instrumentations",
   "type": "module",
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",
@@ -35,7 +35,9 @@
     "@opentelemetry/resources": "~2.11.0",
     "@opentelemetry/sdk-logs": "~0.222.0",
     "@opentelemetry/sdk-metrics": "~2.11.0",
-    "@opentelemetry/sdk-trace-base": "~2.11.0"
+    "@opentelemetry/sdk-trace-base": "~2.11.0",
+    "@opentelemetry/core": "~2.11.0",
+    "@opentelemetry/exporter-trace-otlp-http": "~0.222.0"
   },
   "peerDependencies": {
     "@blue/context": "~0.0.1",

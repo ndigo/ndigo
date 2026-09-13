@@ -197,4 +197,25 @@ describe('FeatureRoutingRegistry', () => {
         expect(setGauge).toHaveBeenCalledWith('todo', 'todo.isActive', 1);
         expect(setGauge).toHaveBeenCalledWith('todo', 'todo.isActive', 0);
     });
+
+    test('it should unregister a feature, deactivate it, and unmount its prefix', () => {
+        const todoDeactivate = vi.fn();
+        const registry = new FeatureRoutingRegistry();
+
+        registry.registerFeature({
+            name: 'todo',
+            prefix: '/todo',
+            onDeactivate: todoDeactivate,
+            onRoute: vi.fn(),
+        });
+
+        registry.navigate('/todo/active');
+        expect(registry.activeFeatureName).toBe('todo');
+
+        expect(registry.unregister('todo')).toBe(true);
+        expect(registry.activeFeatureName).toBeUndefined();
+        expect(todoDeactivate).toHaveBeenCalledTimes(1);
+        expect(registry.navigate('/todo')).toBe(false);
+        expect(registry.unregister('todo')).toBe(false);
+    });
 });

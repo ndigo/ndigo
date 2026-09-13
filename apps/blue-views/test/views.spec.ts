@@ -1,8 +1,19 @@
 // @vitest-environment jsdom
 import '@tsmetadata/polyfill';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { bootBrowserApp, BrowserMockClient } from '@blue/test';
+import { StaticContentSource, StaticThemeResolver } from '@blue/content';
+import { propagation, trace } from '@opentelemetry/api';
+import { W3CTraceContextPropagator } from '@opentelemetry/core';
+import { BasicTracerProvider } from '@opentelemetry/sdk-trace-base';
 import { ViewsAppConfiguration } from '../src/views-app-configuration';
+
+// The view engine attaches rendered elements on a requestAnimationFrame tick,
+// which never fires in jsdom — fire it synchronously so dispatches complete.
+vi.spyOn(global, 'requestAnimationFrame').mockImplementation((cb: FrameRequestCallback) => {
+    cb(0);
+    return 0;
+});
 
 /**
  * Three resolvers, three view locations, one composite chain (view
@@ -66,6 +77,101 @@ describe('blue-views composite resolver demo', () => {
 
         await expect(mvc.dispatch('/nope')).rejects.toThrow();
 
+        app.close();
+    });
+
+    it('localizes the context-bean view through the ContentSource', async () => {
+        const app = await bootBrowserApp([ViewsAppConfiguration]);
+        const mvc = new BrowserMockClient(app);
+
+        await mvc.dispatch('/widget/de');
+        expect(renderText(app.viewTarget.lastRender?.output)).toContain('Gebaut mit BlueJS');
+
+        await mvc.dispatch('/widget/fr');
+        expect(renderText(app.viewTarget.lastRender?.output)).toContain('Construit avec BlueJS');
+
+        app.close();
+    });
+
+    it('resolves themes through the context theme machinery', async () => {
+        const app = await bootBrowserApp([ViewsAppConfiguration]);
+        const themeContent = new StaticContentSource();
+        app.context.setThemeName('night');
+        app.context.setThemeResolver(new StaticThemeResolver([{ name: 'night', contentSource: themeContent }]));
+
+        expect(app.context.getTheme('night').name).toBe('night');
+        expect(app.context.getTheme('night').contentSource).toBe(themeContent);
+        expect(app.context.getTheme().name).toBe('night');
+
+        app.close();
+    });
+
+    it('fetches through the HTTP client with the interceptor chain applied', async () => {
+        trace.setGlobalTracerProvider(new BasicTracerProvider());
+        propagation.setGlobalPropagator(new W3CTraceContextPropagator());
+        const body = new Response(JSON.stringify({ items: ['alpha', 'beta'] }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+        });
+        // The cache keys on response.url; native/mock Responses carry '' —
+        // shadow a URL so the cache stores the entry (real fetch sets it).
+        Object.defineProperty(body, 'url', { value: `${location.href}data.json`, configurable: true });
+        const fetchMock = vi.fn().mockResolvedValue(body);
+        vi.stubGlobal('fetch', fetchMock);
+
+        const app = await bootBrowserApp([ViewsAppConfiguration]);
+        const mvc = new BrowserMockClient(app);
+
+        await mvc.dispatch('/client');
+        await vi.waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1));
+        const output = app.viewTarget.lastRender?.output;
+        const request = fetchMock.mock.calls[0]?.[0] as Request;
+        expect(request.headers.get('X-Client')).toBe('blue-views');
+        expect(request.headers.get('Authorization')).toBe('Bearer demo');
+        // Browser→server journey: the component span is carried to the
+        // server as a W3C traceparent (server continuation is covered by
+        // blue-telemetry-node's continuation spec).
+        expect(request.headers.get('traceparent')).toMatch(/^00-[0-9a-f]{32}-[0-9a-f]{16}-01$/);
+        await vi.waitFor(() => expect(renderText(app.viewTarget.lastRender?.output)).toContain('alpha, beta'));
+        expect(renderText(output)).toContain('online');
+
+        // Refresh hits the in-memory cache: no second network fetch.
+        const refresh = output instanceof HTMLElement ? (output.querySelector('button') as HTMLButtonElement) : null;
+        expect(refresh).not.toBeNull();
+        refresh?.click();
+        await vi.waitFor(() => expect(renderText(app.viewTarget.lastRender?.output)).toContain('requests: 2'));
+        expect(fetchMock).toHaveBeenCalledTimes(1);
+        expect(renderText(app.viewTarget.lastRender?.output)).toContain('alpha, beta');
+
+        vi.unstubAllGlobals();
+        app.close();
+    });
+
+    it('queues the request while offline and replays it when online', async () => {
+        vi.useFakeTimers();
+        const fetchMock = vi.fn().mockResolvedValue(
+            new Response(JSON.stringify({ items: ['alpha'] }), {
+                status: 200,
+                headers: { 'Content-Type': 'application/json' },
+            })
+        );
+        vi.stubGlobal('fetch', fetchMock);
+
+        Object.defineProperty(navigator, 'onLine', { configurable: true, value: false });
+        const app = await bootBrowserApp([ViewsAppConfiguration]);
+        const mvc = new BrowserMockClient(app);
+
+        await mvc.dispatch('/client');
+        expect(fetchMock).not.toHaveBeenCalled();
+
+        // Back online: the retry timer replays the queued request.
+        Object.defineProperty(navigator, 'onLine', { configurable: true, value: true });
+        vi.advanceTimersByTime(3100);
+        await vi.waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(1));
+        await vi.waitFor(() => expect(renderText(app.viewTarget.lastRender?.output)).toContain('online'));
+
+        vi.unstubAllGlobals();
+        vi.useRealTimers();
         app.close();
     });
 });

@@ -134,7 +134,17 @@ export class HTTP {
         });
         settings.headers = instanceHeaders;
 
-        const baseURL = settings.baseURL || (typeof location !== 'undefined' ? location.href : 'http://localhost/');
+        const candidateBase =
+            settings.baseURL || (typeof location !== 'undefined' ? location.href : 'http://localhost/');
+        // A relative base (e.g. '/') makes `new URL(input, base)` throw in
+        // Node's parser even for absolute inputs — only absolute bases are
+        // trusted, otherwise the platform default applies.
+        const baseURL =
+            candidateBase && /^[a-z][a-z\d+.-]*:\/\//i.test(candidateBase)
+                ? candidateBase
+                : typeof location !== 'undefined'
+                  ? location.href
+                  : 'http://localhost/';
         const url = new URL(input, baseURL);
 
         // Merge instance and request query parameters

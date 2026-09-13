@@ -1,36 +1,25 @@
 # BlueJS
 
-A modular JavaScript/TypeScript framework organized as an Nx monorepo with pnpm workspaces.
+A modular JavaScript/TypeScript framework organized as an Nx monorepo with
+pnpm workspaces. The framework spans the browser and Node: a shared context
+and dispatcher core, view and template technologies, HTTP clients and
+servers, ORM, telemetry (OpenTelemetry), auth, and micro frontend hosting.
 
 ## Requirements
 
-- **Node.js:** ≥22 (runtime)
+- **Node.js:** ≥22 (runtime, engines entry in the root manifest)
 - **pnpm:** ≥11.0.0
 
 ## Technology Stack
 
-- **TypeScript:** 6.0.3 (ES2022 target)
-- **Oxlint:** (via `pnpm lint`)
+- **TypeScript:** 7.0.2 (native compiler line; **doc tooling** runs on the
+  pinned 6.0.3 toolchain — see `scripts/typedoc-ts-shim.mjs`)
+- **Oxlint** (`pnpm lint`) + **oxfmt** (`pnpm format`) — formatting and
+  linting
 - **Nx:** 23.2.0 (monorepo management)
 - **pnpm:** 11.4.0 (package manager)
-- **Vitest:** 4.0.18 (testing framework)
+- **Vitest:** 4.0.18 (testing + `vitest bench` benchmarks)
 - **Vite:** 8.2.2 (bundler)
-
-## Versioning
-
-All BlueJS packages and applications are currently at version **0.0.1**, indicating active development status. During this phase:
-
-- **Breaking changes may occur without notice** as the framework evolves
-- APIs are subject to change based on development needs
-- No stability guarantees are provided
-
-Once the framework reaches stability, all packages will follow **[Semantic Versioning 2.0.0](https://semver.org/)**:
-
-- **MAJOR** version: Breaking changes and incompatible API changes
-- **MINOR** version: New features added in a backward-compatible manner
-- **PATCH** version: Backward-compatible bug fixes
-
-The transition to `1.0.0` will signal the first stable release with semantic versioning guarantees.
 
 ## Getting Started
 
@@ -38,7 +27,7 @@ The transition to `1.0.0` will signal the first stable release with semantic ver
 # Enable pnpm via corepack (first time only)
 corepack enable
 
-# Install dependencies
+# Install dependencies (postinstall applies the typedoc toolchain shim)
 pnpm install
 
 # Build all packages
@@ -47,41 +36,96 @@ pnpm build
 # Run tests
 pnpm test
 
-# Lint code
+# Lint + format
 pnpm lint
+pnpm format:check
 ```
 
 ## Applications
 
-- [blue-todo](apps/blue-todo/README.md)
+| App | What it demonstrates |
+| --- | --- |
+| [blue-hello](apps/blue-hello/README.md) | Minimal browser SPA — context + route + Web Component |
+| [blue-hello-node](apps/blue-hello-node/README.md) | Minimal Node HTTP server |
+| [blue-todo](apps/blue-todo/README.md) | TodoMVC + micro frontend shell |
+| [blue-api](apps/blue-api/README.md) | Node API server — auth, ORM, negotiation, problem+json |
+| [blue-host](apps/blue-host/README.md) | Micro frontend host with lazy feature chunks |
+| [blue-island](apps/blue-island/README.md) | Node SSR — EJS shell + island hydration + SSE |
+| [blue-views](apps/blue-views/README.md) | View-resolution composite and negotiation |
+
+The [apps/README](apps/README.md) documents the progression from simple to
+complex.
 
 ## Packages
 
-- [blue-auth-client](packages/blue-auth-client/README.md)
-- [blue-auth-core](packages/blue-auth-core/README.md)
-- [blue-auth-server](packages/blue-auth-server/README.md)
-- [blue-boot](packages/blue-boot/README.md)
-- [blue-content](packages/blue-content/README.md)
-- [blue-context](packages/blue-context/README.md)
-- [blue-core](packages/blue-core/README.md)
-- [blue-dispatcher](packages/blue-dispatcher/README.md)
-- [blue-oxlint-plugin](packages/blue-oxlint-plugin/README.md)
-- [blue-factory](packages/blue-factory/README.md)
-- [blue-generators](packages/blue-generators/README.md)
-- [blue-http](packages/blue-http/README.md)
-- [blue-management](packages/blue-management/README.md)
-- [blue-orm](packages/blue-orm/README.md)
-- [blue-orm-drizzle](packages/blue-orm-drizzle/README.md)
-- [blue-platform-node](packages/blue-platform-node/README.md)
-- [blue-platform-web](packages/blue-platform-web/README.md)
-- [blue-router](packages/blue-router/README.md)
-- [blue-service](packages/blue-service/README.md)
-- [blue-signals](packages/blue-signals/README.md)
-- [blue-telemetry](packages/blue-telemetry/README.md)
-- [blue-test](packages/blue-test/README.md)
-- [blue-util](packages/blue-util/README.md)
-- [blue-view](packages/blue-view/README.md)
-- [blue-view-webcomponent](packages/blue-view-webcomponent/README.md)
+Core & infrastructure:
+
+- [blue-core](packages/blue-core/README.md) — primitives, radix tree, media types
+- [blue-util](packages/blue-util/README.md) — native helper utilities
+- [blue-factory](packages/blue-factory/README.md) — IoC factory + scopes
+- [blue-context](packages/blue-context/README.md) — application context, configuration, environments
+- [blue-boot](packages/blue-boot/README.md) — application bootstrap, profiles, typed config
+- [blue-signals](packages/blue-signals/README.md) — reactive state
+- [blue-dom](packages/blue-dom/README.md) — isomorphic DOM providers
+
+HTTP & routing:
+
+- [blue-http](packages/blue-http/README.md) — fetch-based client, interceptors, parsers
+- [blue-router](packages/blue-router/README.md) — routes, feature/partition routing
+- [blue-service](packages/blue-service/README.md) — typed service clients, SSE
+
+Dispatch & views:
+
+- [blue-dispatcher](packages/blue-dispatcher/README.md) — request dispatch, parameters, radix mapping
+- [blue-view](packages/blue-view/README.md) — views, targets, content negotiation
+- [blue-view-ejs](packages/blue-view-ejs/README.md) — EJS template technology
+- [blue-view-webcomponent](packages/blue-view-webcomponent/README.md) — Web Component views
+
+Platforms:
+
+- [blue-platform-node](packages/blue-platform-node/README.md) — Node HTTP server, dispatcher, static files
+- [blue-platform-web](packages/blue-platform-web/README.md) — browser platform glue
+
+Data & management:
+
+- [blue-orm](packages/blue-orm/README.md) — repository/data-mapper persistence
+- [blue-orm-drizzle](packages/blue-orm-drizzle/README.md) — Drizzle ORM adapter
+- [blue-management](packages/blue-management/README.md) — `/health`, `/metrics` endpoints
+
+Auth:
+
+- [blue-auth-core](packages/blue-auth-core/README.md) — contracts, principal, registry
+- [blue-auth-client](packages/blue-auth-client/README.md) — client auth + OIDC
+- [blue-auth-server](packages/blue-auth-server/README.md) — server auth + JWT
+
+Telemetry:
+
+- [blue-telemetry](packages/blue-telemetry/README.md) — isomorphic API core
+- [blue-telemetry-node](packages/blue-telemetry-node/README.md) — NodeSDK + Node instrumentations
+- [blue-telemetry-web](packages/blue-telemetry-web/README.md) — browser setup + instrumentations
+
+Testing & tooling:
+
+- [blue-test](packages/blue-test/README.md) — MockHTTP in-process test harness
+- [blue-oxlint-plugin](packages/blue-oxlint-plugin/README.md) — architecture-enforcing oxlint rules
+- [blue-generators](packages/blue-generators/README.md) — Nx scaffolding
+
+Micro frontends:
+
+- [blue-host](packages/blue-host/README.md) — host orchestration + feature mounting
+
+## Documentation
+
+- **API reference** — `pnpm doc:md` generates the markdown reference into
+  `doc-md/`; `pnpm doc:html` the alternate rendering into `doc-html/`
+- **Guides** — the hand-written documentation set lives in `docs/`:
+  [guides](docs/guides/README.md), [architecture](docs/architecture/README.md),
+  [reference](docs/reference/README.md), [decisions](docs/decisions/),
+  [migrations](docs/migrations/README.md)
+- **Benchmarks** — `pnpm test:bench` runs the vitest bench suites; the
+  todomvc Speedometer-3-style comparison runs via `pnpm test:benchmark:*`
+- **Repository graph** — `graft build` maintains the local `graft/` code
+  graph used by context-aware tooling
 
 # Development
 
@@ -94,7 +138,6 @@ pnpm build:all        # Build lib and bundles
 
 # Build with Nx directly
 nx run-many -t build:lib
-nx run-many -t build:all
 
 # Build specific package
 nx run @blue/core:build:lib
@@ -115,19 +158,16 @@ nx run-many -t test          # Nx directly
 nx run @blue/core:test
 cd packages/blue-core && pnpm test
 
-# Run tests in watch mode
+# Run tests in watch mode / with UI / with coverage
 pnpm vitest --watch
-
-# Run tests with UI
 pnpm vitest --ui
-
-# Run with coverage
 nx run-many -t test --coverage
 ```
 
 ## Code Style
 
-The project uses Prettier for code formatting and Oxlint for code quality checks:
+The project uses **oxfmt** for formatting and **oxlint** for code quality
+checks:
 
 ```bash
 # Format code
@@ -142,18 +182,9 @@ pnpm lint
 
 **Configuration:**
 
-- Prettier: `prettier.config.mjs`
-- Oxlint: `oxlint` configuration via `.oxlintrc.json`
-
-**Formatting Rules:**
-
-- 4-space indentation for JavaScript/TypeScript
-- 2-space indentation for JSON/YAML
-- Single quotes for strings
-- Semicolons required
-- LF line endings
-- 120 character line width
-- Trailing commas (ES5)
+- Oxfmt: `oxfmt` via `pnpm format` (120-column, 4-space indent, single quotes)
+- Oxlint: `.oxlintrc.json` plus the repository rules in
+  `@blue/oxlint-plugin`
 
 ## Documentation Guide
 
@@ -168,7 +199,7 @@ The project maintains two complementary documentation files for different purpos
 - **Content:**
     - File naming conventions (kebab-case, underscore prefix, etc.)
     - Code naming conventions (camelCase, PascalCase, UPPER_SNAKE_CASE)
-    - Prettier formatting rules (indentation, quotes, semicolons, etc.)
+    - oxfmt formatting rules (indentation, quotes, semicolons, etc.)
     - Module organization structure
     - Special patterns (internal files, test helpers, mixins)
     - Before/after examples of correct usage
@@ -243,3 +274,12 @@ Files prefixed with an underscore (`_*.ts`) are **internal to their package** an
 ### Public API Surface
 
 Each package's public API is defined by its `src/index.ts` file. Only modules explicitly exported there are considered public and stable.
+
+## Versioning
+
+All BlueJS packages and applications are currently versioned below `1.0.0`,
+indicating active development:
+
+- Breaking changes may occur between commits
+- Please file an issue when an API surprises you — the roadmap targets
+  [Semantic Versioning 2.0.0](https://semver.org/) guarantees at `1.0.0`

@@ -1,68 +1,35 @@
 # Blue Router
 
-Blue Router provides routing primitives and hash-router implementations for BlueJS.
+Routing primitives for BlueJS: route construction, feature routing, route
+partitions, and query/matrix-string helpers.
 
 ## Features
 
-- `HashRouter` implementation
-- Route/path abstractions (`Route`, `PathRoute`)
-- Route pattern params (`:id`, `{id}`)
-- Query-string and matrix-string helpers
-- Interceptor registry for route execution
-- Middleware shorthand (`router.use('/path/:id', (route) => { ... })`)
-
-## Installation
-
-```bash
-pnpm add @blue/router
-```
+- **Route model** — `Route`/`PathRoute` with pattern params (`:id`, `{id}`),
+  query-string and matrix-string parsing
+- **`Router`** — router with interceptor/middleware chains
+  (`router.use('/path/:id', handler)`)
+- **`FeatureRoutingRegistry`** — feature-scoped routing for micro frontend
+  shells (activate/lock routes per feature)
+- **`PartitionRouter`** — partition-prefixed route trees for isolating route
+  namespaces
+- **Interceptors** — router execution chain with include/exclude patterns
 
 ## Usage
 
-```typescript
-import { HashRouter, PathRoute } from '@blue/router';
+```ts
+import { Router, fromQueryString, toQueryString } from '@blue/router';
 
-const route = new PathRoute('/users/42/orders/abc');
-const params = route.resolveParams('/users/:userId/orders/{orderId}');
-// params.userId === '42'
-// params.orderId === 'abc'
-
-const router = new HashRouter((nextRoute) => {
-    console.log('navigated to', nextRoute.path);
+const router = new Router();
+router.use('/users/:id', (route) => {
+    const id = route.resolveParam('id');
+    const query = fromQueryString(route.queryString);
 });
-
-// Global middleware
-router.use((activeRoute) => {
-    console.log('pre-route', activeRoute.path);
-    return true;
-});
-
-// Pattern middleware with automatic param binding
-router.use('/teams/:teamId', (activeRoute) => {
-    console.log(activeRoute.params.teamId);
-    return true;
-});
-
-// Private navigation (internal state transition, no hash/history mutation)
-router.setRoute('/teams/42/panel', false);
 ```
 
-## Middleware and Params
+## See Also
 
-`HashRouter#use` accepts both object interceptors and function middleware.
-
-- `router.use(interceptor)` — global middleware
-- `router.use('/users/:id', interceptor)` — mapped middleware for one pattern
-- `router.use(['/a/*', '/b/*'], interceptor, ['/b/internal/*'])` — mapped middleware with exclusions
-
-For mapped patterns, `route.params` is automatically populated when the pattern uses named params:
-
-- Colon syntax: `:name`
-- Brace syntax: `{name}`
-
-## Development
-
-```bash
-pnpm --filter @blue/router build:lib
-pnpm --filter @blue/router test
-```
+- [@blue/http](../blue-http/README.md) — `URLSearchParams`-aligned query
+  parsing
+- [@blue/host](../../packages/blue-host/README.md) — shell orchestration that
+  consumes the feature registry

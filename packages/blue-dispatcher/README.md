@@ -1,67 +1,67 @@
 # BlueJS Dispatcher
 
-The BlueJS Dispatcher is a core component that handles routing, handler execution, and error resolution for web applications built with the BlueJS framework.
+Platform-independent request dispatch for BlueJS: maps routes to handler
+methods, binds parameters, runs interceptors, resolves errors, and renders
+the resulting view.
 
 ## Features
 
-- Route mapping and handling
-- Handler adapter support for different controller types
-- Error resolution with customizable resolvers
-- Interceptor support for pre/post processing
-- View resolution and rendering
+- **Metadata-driven handler mapping** — `@requestMapping`/`@getMapping`/…
+  decorators registered through a radix tree (`RadixMetadataHandlerMapping`),
+  with route conditions (matrix params, query params, patterns)
+- **Explicit parameter binding** — `@parameters` with typed extractors
+  (`pathVariable`, `queryValue`, `bodyValue`, `attributeValue`, `sessionValue`,
+  …) wrapped by converters (`asNumber`, `asJson`, `asUUID`, …); resolver
+  selection is cached per parameter
+- **Handler adapters** — controller/handler-method adapters with interceptor
+  chains (`applyPreHandle`/`applyPostHandle`)
+- **View routing** — `ModelAndView` results handed to the view-resolution
+  strategy (language, theme, content negotiation)
+- **Error resolution** — pluggable error resolvers (401/403 denials,
+  binding errors, last-resort 500)
+- **WebSocket endpoints** — `@socketMapping` on the same condition API
+- **Performance** — route lookup through a radix tree is 3–6x faster than
+  popular router libraries on parameterized paths
 
-## Package Structure
-
-```
-src/
-├── dispatcher.ts                 # Main dispatcher implementation
-├── error.ts                      # Custom error types
-├── route-condition.ts            # Route condition handling
-├── route-error-resolver.ts       # Error resolution logic
-├── route-handler-adapter.ts      # Handler adapter implementations
-├── route-handler-execution-chain.ts  # Execution chain management
-├── route-handler-interceptor.ts  # Interceptor support
-├── route-handler-method.ts       # Handler method abstraction
-├── route-mapping-info.ts         # Route mapping information
-├── zod-validated-by.ts           # Zod-backed request validation (AD-7)
-└── strategies/                   # Strategy implementations
-```
-
-## Request Validation (AD-7)
-
-`@parameters` extractors compose with Zod schemas: every platform resolver
-runs a post-conversion `convert` hook, so validation + coercion apply
-uniformly across Node and browser pipelines.
+## Usage
 
 ```ts
-import { z } from 'zod';
-import { parameters, queryValue, validatedBy, validatedBody, validatedQuery } from '@blue/dispatcher';
+import { configuration } from '@blue/context';
+import { requestMapping, getMapping, parameters } from '@blue/dispatcher';
+import { pathVariable, queryValue, bodyValue, asNumber } from '@blue/dispatcher';
 
-@parameters({ email: validatedBy(z.email(), queryValue('email')) })  // per-field
-@parameters({ note: validatedBody(NoteSchema) })                    // whole body (Node)
-@parameters({ search: validatedQuery(SearchSchema) })               // whole query
-@parameters(validateParameters(UserSchema, { user: bindValue('query') })) // whole map
+@requestMapping('/api')
+class GreetingController {
+    @getMapping('/greet/:name')
+    @parameters({ name: pathVariable('name'), lang: queryValue('lang') })
+    greet({ name, lang }) {
+        return `Hello, ${name}!`;
+    }
+}
+
+@configuration
+class AppConfig {
+    // the dispatcher + radix handler mapping are auto-wired by the
+    // platform auto-configuration (NodeAutoConfiguration / boot)
+}
 ```
 
-Failures surface as `ParameterConversionError`, which the Node pipeline
-renders as a `422` problem document with structured `errors[]` (AD-10).
-Full walkthrough: [`docs/guides/02-request-validation.md`](../../docs/guides/02-request-validation.md).
+Platform-specific dispatchers extend the same core:
 
-## Error Resolution
+- [@blue/platform-node](../blue-platform-node/README.md) — `NodeDispatcher`
+  writes rendered output to the HTTP response
+- [@blue/platform-web](../blue-platform-web/README.md) — browser dispatch
 
-`RouteErrorResolver` chain (metadata-driven `@errorMapping` handlers +
-platform defaults + a last-resort resolver) gives every error a
-deterministic status. See
-[`docs/guides/01-building-a-node-api.md`](../../docs/guides/01-building-a-node-api.md#6-the-error-contract-rfc-9457).
-
-## Building
+## Development
 
 ```bash
-pnpm build
+pnpm --filter @blue/dispatcher build:lib
+pnpm --filter @blue/dispatcher test
+# benchmark route matching and parameter binding
+pnpm --filter @blue/dispatcher test:bench
 ```
 
-## Testing
+## See Also
 
-```bash
-pnpm test
-```
+- [@blue/view](../blue-view/README.md) — the view layer dispatcher renders
+- [@blue/router](../blue-router/README.md) — browser routing primitives

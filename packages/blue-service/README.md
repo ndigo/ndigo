@@ -1,23 +1,36 @@
 # Blue Service
 
-Blue Service defines service-layer abstractions used by BlueJS applications.
+Service-layer abstractions for BlueJS: typed service clients, server-sent
+event streams, and service registration.
 
-## Features
+## Overview
 
-- Service composition foundations
-- Integration patterns with factory/core/http packages
-- ESM package scaffold for service-level modules
+`@blue/service` packages remote services behind BlueJS contracts:
 
-## Installation
-
-```bash
-pnpm add @blue/service
-```
+- **`serviceClient`** — build a typed client for a service definition; each
+  method yields validated response data, or an async iterable of events for
+  streaming endpoints
+- **`@service` decorators** — declare service methods and schemas on a class
+- **Server-sent events** — `feed`/`finish` helpers for SSE-style streams with
+  request-id correlation
+- **Service registry** — locate service definitions at runtime
 
 ## Usage
 
-`@blue/service` currently provides framework-level service packaging and is generally consumed as part of higher-level
-BlueJS module wiring.
+```ts
+import { serviceClient, getCall } from '@blue/service';
+import { HTTP } from '@blue/http';
+
+class TickerAPI {
+    @getCall('/events')
+    events(): AsyncIterable<{ n: number }>;
+}
+
+const client = serviceClient(TickerAPI, http);
+for await (const event of client.events()) {
+    console.log(event.n);
+}
+```
 
 ## Development
 
@@ -25,3 +38,9 @@ BlueJS module wiring.
 pnpm --filter @blue/service build:lib
 pnpm --filter @blue/service test
 ```
+
+## See Also
+
+- [@blue/http](../blue-http/README.md) — the underlying HTTP client
+- [apps/blue-island](../../apps/blue-island/README.md) — typed service streams
+  bridged to signals

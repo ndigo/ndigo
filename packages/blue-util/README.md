@@ -1,14 +1,53 @@
 # Blue Utility
 
-This repository is the BlueJS utility library
+The BlueJS utility library — zero-dependency helpers for strings, types,
+dates, math, and structure matching, with **no third-party runtime deps**.
 
-## Description
+## Overview
 
-blue-util, a part of BlueJS, contains interfaces and utilties used throughout the framework and its client applcations. It is built on top of [Ramda](https://ramdajs.com/), [date-fns/fp](https://date-fns.org/), [date-fns-tz](https://github.com/marnusw/date-fns-tz), [seedrandom](https://github.com/davidbau/seedrandom), and [slug](https://github.com/Trott/slug). It passes through a curated set of the underlying functionality.
+`@blue/util` was historically a pass-through over Ramda/date-fns; those
+libraries were removed in favor of native, benchmarked implementations
+(2.7–200x faster in the worst offenders — see `audits/2026-04-03_RAMDA_BENCHMARK_ANALYSIS.md`).
+Today it is fully native.
 
-## Documentation
+## Categories
 
-- [BlueJS API documentation](http://blueplatform.gaiacloud.jpmchase.net/bluejs/api/) -
-  detailed function and property information for all the BlueJS entities
-- [BlueJS Developer Guide](http://blueplatform.gaiacloud.jpmchase.net/bluejs/guide/) -
-  a high level guide to key BlueJS concepts and components
+- **Type guards** — `isString`, `isNumber`, `isNumeric`, `isFunction`,
+  `isValidDate`, `isConstructor`, `type()`, and structural matching with `like`
+  (WeakMap-cached descriptors: 40+ call sites at ~175–200k Hz warm)
+- **String utilities** — encoding/decoding, slugify, camel/Pascal/proper/sentence
+  case, diacritics removal, interpolation, regex builders
+- **Math & ids** — `randInt`, `randHex`, `guid`, seeded random
+- **Date** — `isValidDate` and date helpers
+- **Predicates & composition** — native replacements for the removed Ramda
+  combinators (`allPass`-style checks are plain `&&` chains now)
+
+## Usage
+
+```ts
+import { isString, like, guid } from '@blue/util';
+
+isString('abc');          // true
+like({ then: Function }, thenable); // true — duck-type check
+
+const id = guid();
+```
+
+## Performance notes
+
+The `bench/` suites guard the native implementations against regression:
+
+```bash
+pnpm --filter @blue/util test:bench
+```
+
+## Development
+
+```bash
+pnpm --filter @blue/util build:lib
+pnpm --filter @blue/util test
+```
+
+## See Also
+
+- [@blue/core](../blue-core/README.md) — foundational primitives

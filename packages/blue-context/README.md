@@ -1,48 +1,46 @@
 # Blue Context
 
-Blue Context provides application context, environment, configuration decorators, and resource/event infrastructure.
+The BlueJS application context: dependency container, configuration
+decorators, property sources, environment, and resource/event infrastructure.
 
 ## Features
 
-- `ApplicationContext` and `GenericApplicationContext` support
-- TC39 decorators for configuration workflows
-- Environment and property resolution APIs
-- Event emitter support and context-aware mixins
-- Content source integration with parent-context fallback
-- Theme name and resolver support
-- Resource loading abstractions
-
-## Installation
-
-```bash
-pnpm add @blue/context
-```
+- **`ApplicationContext`** — the IoC container (`getValue`, `setValue`,
+  `hasValue`, lifecycle-aware registration) with factory scope support
+  (`@blue/factory`): `@singletonScope`, `@prototypeScope`, `@hashScope`
+- **Configuration decorators** — TC39 metadata-based wiring: `@configuration`,
+  `@entry`, profile gating (`@profile('dev')`), environment validation
+  (`@environment` with zod schemas), origins and customizers
+- **Property sources** — named, ordered sources (env, CLI, files) with
+  placeholder resolution and a strategy `PropertyIndex` (prototype-chain by
+  default), `@Value`-style typed lookup
+- **Environment + profiles** — full profile activation (defaults, expressions)
+  and typed config binding (`@configurationProperties` v2)
+- **Resource & events** — `ResourceLoader`/`Resource` abstractions, in-memory
+  loaders, event emitters and context-aware mixins
 
 ## Usage
 
-```typescript
-import { GenericApplicationContext } from '@blue/context';
-import { StaticContentSource } from '@blue/content';
+```ts
+import { MetadataConfigApplicationContext, configuration, entry } from '@blue/context';
 
-const context = new GenericApplicationContext('app');
-context.setValue('name', 'blue');
-context.setContentSource(
-    new StaticContentSource({
-        greeting: {
-            en: 'Hello',
-        },
-    })
-);
+@configuration
+class AppConfig {
+    @entry greetingService() {
+        return new GreetingService();
+    }
+}
 
-context.getValue('name');
-context.getContent('greeting', 'en');
-context.setThemeName('default');
-context.getTheme().name;
+const context = new MetadataConfigApplicationContext('app');
+context.register(AppConfig);
+context.refresh();
+
+const service = context.getValue<GreetingService>('greetingService');
 ```
 
-## Development
+## See Also
 
-```bash
-pnpm --filter @blue/context build:lib
-pnpm --filter @blue/context test
-```
+- [@blue/factory](../blue-factory/README.md) — factory scope and lifecycle
+- [@blue/boot](../blue-boot/README.md) — `ApplicationBuilder` on top of the
+  context
+- [@blue/test](../blue-test/README.md) — boots real contexts in tests

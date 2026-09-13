@@ -14,7 +14,7 @@ import { AbstractDispatcher } from '@blue/dispatcher';
 import { ModelAndView } from '@blue/dispatcher';
 import { Route } from '@blue/router';
 import { likeApplicationContextAware } from '@blue/context';
-import { View, likeProducerView } from '@blue/view';
+import { View, clearCurrentRequest, likeProducerView, setCurrentRequest } from '@blue/view';
 import type { ServerResponse } from 'node:http';
 import { NODE_RESPONSE_ATTRIBUTE } from './node-request';
 import { ProblemTypes, writeProblem } from './problem-details';
@@ -80,7 +80,14 @@ export class NodeDispatcher extends AbstractDispatcher {
         let view: View | null = null;
 
         if (viewName) {
-            view = await this._resolveViewName(viewName, language);
+            // Content negotiation reads the current request; scope it to
+            // resolution so strategies can match path extensions / Accept.
+            setCurrentRequest(route);
+            try {
+                view = await this._resolveViewName(viewName, language);
+            } finally {
+                clearCurrentRequest();
+            }
             if (!view) {
                 if (res && !res.headersSent) {
                     writeProblem(res, {

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>Blue Island — hybrid demo</title>
+    <style>
+        body { font-family: system-ui, sans-serif; max-width: 40rem; margin: 3rem auto; padding: 0 1rem; }
+        todo-app { display: block; border: 1px solid #ddd; border-radius: 8px; padding: 1rem; }
+    </style>
+</head>
+<body>
+    <h1>Blue Island</h1>
+    <p>Rendered by the <strong>server</strong>; the component below is a
+       Web Component island hydrated on the <strong>client</strong>. Model
+       updates are pushed from the server over SSE (AD-9).</p>
+    <todo-app data-blue-island data-blue-model="<%- islandModel %>"></todo-app>
+    <script type="module" src="/static/client.js"></script>
+</body>
+</html>

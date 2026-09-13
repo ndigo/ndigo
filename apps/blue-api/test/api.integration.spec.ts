@@ -170,4 +170,21 @@ describe('blue-api through @blue/test', () => {
         expect(problem.status).toBe(422);
         expect(problem.errors?.some((issue) => issue.path.join('.') === 'title')).toBe(true);
     });
+
+    test('GET /api/report serves the report model as JSON by default', async () => {
+        const res = await mockMVC.get('/api/report').exec();
+        expect(res.response.status).toBe(200);
+        expect(res.json()).toEqual({
+            rows: [
+                { name: 'Ada', role: 'admin' },
+                { name: 'Grace', role: 'user' },
+            ],
+        });
+    });
+
+    test('GET /api/report.csv serves the same model as CSV via negotiation', async () => {
+        const res = await mockMVC.get('/api/report.csv').exec();
+        expect(res.response.status).toBe(200);
+        expect(res.text()).toBe('name,role\r\nAda,admin\r\nGrace,user');
+    });
 });

@@ -73,21 +73,23 @@ Custom rules are provided by `@blue/eslint-plugin` as oxlint-compatible JS plugi
 
 ### New Packages
 
-| Package                   | Purpose                                                                                            |
-| ------------------------- | -------------------------------------------------------------------------------------------------- |
-| `@blue/auth-core`         | Shared auth interfaces (`Principal`, `Session`, `AuthAdapter`)                                     |
-| `@blue/auth-client`       | Client-side auth (`AuthClient`, `ClientAuthGuard`, `OIDCAdapter`, `AuthHeaderInterceptor`)         |
-| `@blue/auth-server`       | Server-side auth (`AuthServer`, `AuthRouteGuard`, `JWTAdapter`)                                    |
-| `@blue/orm-drizzle`       | SQL persistence via Drizzle ORM (`DrizzleDataSource`, `DrizzleEntityManager`)                      |
-| `@blue/platform-node`     | Node.js platform support (`NodeEnvironment`, argument resolvers, `FileSystemRouter`)               |
-| `@blue/platform-web`      | Browser platform support (`HashRouter`, `BrowserRouter`, `OfflineInterceptor`, argument resolvers) |
-| `@blue/view-webcomponent` | Web Component view engine and custom element bindings                                              |
+| Package                   | Purpose                                                                                                                |
+| ------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `@blue/auth-core`         | Shared auth interfaces (`Principal`, `Session`, `AuthAdapter`)                                                         |
+| `@blue/auth-client`       | Client-side auth (`AuthClient`, `ClientAuthGuard`, `OIDCAdapter`, `AuthHeaderInterceptor`)                             |
+| `@blue/auth-server`       | Server-side auth (`AuthServer`, `AuthRouteGuard`, `JWTAdapter`)                                                        |
+| `@blue/orm-drizzle`       | SQL persistence via Drizzle ORM (`DrizzleDataSource`, `DrizzleEntityManager`)                                          |
+| `@blue/platform-node`     | Node.js platform support (`NodeEnvironment`, argument resolvers, `FileSystemRouter`)                                   |
+| `@blue/platform-web`      | Browser platform support (`HashRouter`, `BrowserRouter`, `OfflineInterceptor`, argument resolvers)                     |
+| `@blue/view-webcomponent` | Web Component view engine and custom element bindings                                                                  |
+| `@blue/host`              | Centralized micro frontend orchestration (`HostManager` + `HOST_MANAGER_TOKEN`; one-call feature registration — AD-18) |
 
 ### Removed/Consolidated
 
 - `@blue/logger` replaced by `@blue/telemetry`
 - Legacy `.legacy.js` files removed from all packages
 - `eslint.config.mjs` removed (oxlint is the linter)
+- Demo app `apps/blue-host` npm name renamed `@blue/host` → `@blue/host-demo` (scope name now the framework package `@blue/host`)
 
 ---
 
@@ -183,15 +185,94 @@ console.log(instance.port); // → from environment
 
 ## 8. Deprecated APIs
 
-| API                            | Replacement                                | Removed In |
-| ------------------------------ | ------------------------------------------ | ---------- |
-| `reflect-metadata` import      | `@tsmetadata/polyfill`                     | 1.0        |
-| `eslint.config.mjs`            | `.oxlintrc.json`                           | 1.0        |
-| `@blue/logger`                 | `@blue/telemetry`                          | Pre-1.0    |
-| `.legacy.js` files             | Modern TypeScript equivalents              | Pre-1.0    |
-| `experimentalDecorators: true` | TC39 Stage 3 decorators (default)          | 1.0        |
-| `SiteBuilder`                  | `@experimental` — use `ApplicationBuilder` | Post-1.0   |
-| `CompositionTransformer`       | Use named transformer classes              | Future     |
+| API                                 | Replacement                                | Removed In |
+| ----------------------------------- | ------------------------------------------ | ---------- |
+| `reflect-metadata` import           | `@tsmetadata/polyfill`                     | 1.0        |
+| `eslint.config.mjs`                 | `.oxlintrc.json`                           | 1.0        |
+| `@blue/logger`                      | `@blue/telemetry`                          | Pre-1.0    |
+| `.legacy.js` files                  | Modern TypeScript equivalents              | Pre-1.0    |
+| `experimentalDecorators: true`      | TC39 Stage 3 decorators (default)          | 1.0        |
+| `SiteBuilder`                       | `@experimental` — use `ApplicationBuilder` | Post-1.0   |
+| `SiteRouter`                        | `PartitionRouter` (rename, see §8.1)       | Pre-1.0    |
+| `FeatureRoutingRegistry.siteRouter` | `partitionRouter` getter                   | Pre-1.0    |
+| `CompositionTransformer`            | Use named transformer classes              | Future     |
+
+---
+
+### 8.1 `SiteRouter` → `PartitionRouter` (Pre-1.0)
+
+The micro frontend route partitioner was renamed to match the
+`route-partition.ts` vocabulary (`matchesPartitionPath`,
+`normalizePartitionPrefix`, `stripPartitionPrefix`,
+`restorePartitionPrefix`) and retires the last "Site" identifier (the Site
+model was retired in AD-3).
+
+**Before (legacy):**
+
+```typescript
+import { SiteRouter } from '@blue/router';
+const router = new SiteRouter();
+router.mount('/todo', callback);
+```
+
+**After (modern):**
+
+```typescript
+import { PartitionRouter } from '@blue/router';
+const router = new PartitionRouter();
+router.mount('/todo', callback);
+```
+
+**Migration:**
+
+- `SiteRouter` → `PartitionRouter`
+- `FeatureRoutingRegistry.siteRouter` getter/constructor param → `partitionRouter`
+- Demo-only `createTodoSiteRouter`/`createTodoPartitionRouter` helpers removed — use `PartitionRouter.mount` directly or `HostManager.registerFeature`
+- New additive capabilities: `PartitionRouter.unmount(prefix)`,
+  `FeatureRoutingRegistry.unregister(name)`, `FeatureContextMountManager.unregister(name)`
+
+### 8.2 Host orchestration via `@blue/host` (Pre-1.0)
+
+Micro frontend hosts compose the shell through `@blue/host` `HostManager`
+(AD-18) instead of hand-wiring `FeatureContextMountManager` +
+`FeatureRoutingRegistry` with closure joins.
+
+**Before (legacy):**
+
+```typescript
+const mountManager = new FeatureContextMountManager(shell);
+const featureRouter = new FeatureRoutingRegistry(undefined, { activationPolicy: 'exclusive' });
+mountManager.registerFeature({ name: 'catalog', loader: () => import('./catalog') });
+featureRouter.registerFeature({
+    name: 'catalog',
+    prefix: '/catalog',
+    onActivate: () => mountManager.mountLazy('catalog'),
+    onDeactivate: () => mountManager.unmount('catalog'),
+    onRoute: () => {},
+});
+```
+
+**After (modern):**
+
+```typescript
+import { HostManager, HOST_MANAGER_TOKEN } from '@blue/host';
+const host = new HostManager(shell, { activationPolicy: 'exclusive' });
+host.registerFeature({
+    name: 'catalog',
+    prefix: '/catalog',
+    loader: () => import('./catalog'),
+    dependencies: { requires: { router: '^1.0.0' } },
+});
+shell.setValue(HOST_MANAGER_TOKEN, host);
+```
+
+**Migration:**
+
+- Replace the two-registry registration pair with one
+  `HostManager.registerFeature` call per feature
+- Resolve the orchestrator from the shell context via `HOST_MANAGER_TOKEN`
+- `onRoute` (feature-local route dispatch) and `onDeactivate` (post-unmount
+  hook) are available as registration options
 
 ---
 

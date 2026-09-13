@@ -23,6 +23,12 @@ export interface ModelAwareElement extends HTMLElement {
  * binds the view model to it, and commits it to the target — the element's own
  * custom-element lifecycle performs the actual rendering. Placement and reuse
  * of the rendered subtree belong to the target.
+ *
+ * Components MUST render from the `model` setter, not `connectedCallback`
+ * alone: `MemoryViewTarget` retains the element without attaching it to the
+ * DOM, so `connectedCallback` never fires under test harnesses (and
+ * `requestAnimationFrame`-gated targets defer attach). Treat
+ * `connectedCallback` as a real-DOM fallback only.
  */
 export class WebComponentView extends AbstractView {
     /**

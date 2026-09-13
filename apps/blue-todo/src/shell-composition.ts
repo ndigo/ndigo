@@ -1,23 +1,17 @@
 import {
     ApplicationContext,
-    FeatureContextMountManager,
-    NamespaceRelayValidationStrategy,
     createShellContext,
-    type RelayValidationResult,
+    NamespaceRelayValidationStrategy,
+    RelayValidationResult,
 } from '@blue/context';
 import { IllegalStateError } from '@blue/core';
-import { BrowserDispatcher } from '@blue/platform-web';
-import {
-    FeatureRoutingRegistry,
-    Route,
-    SiteRouter,
-    restorePartitionPrefix,
-    RouteDefinition,
-    RouteRegistry,
-} from '@blue/router';
-import { HashRouter } from '@blue/platform-web';
+import { BrowserDispatcher, HashRouter } from '@blue/platform-web';
+import { Route, restorePartitionPrefix, RouteDefinition, RouteRegistry } from '@blue/router';
+import { HostManager } from '@blue/host';
 import { FeatureMetricAggregator, getLogger } from '@blue/telemetry';
 import { DISPATCHER, ROUTER } from './context-tokens';
+import { IndexController } from './index-controller';
+import { AccountController } from './account-controller';
 import { authClient, initAuth } from './auth-store';
 import { AuthRouterInterceptor } from './auth-router-interceptor';
 import { ClientAuthGuard } from '@blue/auth-client';
@@ -41,20 +35,12 @@ export const toAuthShellRoute = (featureRoute: string): string =>
  */
 export const routes: Record<string, RouteDefinition> = {};
 
-export const createTodoSiteRouter = (callback: (route: Route) => void): SiteRouter => {
-    const router = new SiteRouter();
-    router.mount(TODO_ROUTE_PREFIX, callback);
-    return router;
-};
-
 export interface TodoRuntimeComposition {
     dispatcher: BrowserDispatcher;
     featureMetrics: FeatureMetricAggregator;
-    featureMountManager: FeatureContextMountManager;
-    featureRoutingRegistry: FeatureRoutingRegistry;
+    host: HostManager;
     shellRouter: HashRouter;
     shellContext: ApplicationContext;
-    siteRouter: SiteRouter;
     routes: Record<string, RouteDefinition>;
 }
 
@@ -120,6 +106,13 @@ const logRegisteredRelay = (result: { from: string | symbol; to: string | symbol
     });
 };
 
+const dispatchRoute =
+    (feature: string, dispatcher: BrowserDispatcher) =>
+    (route: Route): void => {
+        void dispatcher.dispatch(route);
+        logger.info(`${feature} route handled`, { feature, path: route.path });
+    };
+
 export const composeTodoRuntime = (todoContext: ApplicationContext): TodoRuntimeComposition => {
     // ── Initialize auth system ───────────────────────────────────────────────
     initAuth();
@@ -132,16 +125,15 @@ export const composeTodoRuntime = (todoContext: ApplicationContext): TodoRuntime
     const dispatcher = new BrowserDispatcher();
     dispatcher.initStrategies(todoContext);
 
-    const featureMountManager = new FeatureContextMountManager(shellContext, {
-        metricRecorder: featureMetricAggregator,
-    });
-    const featureRoutingRegistry = new FeatureRoutingRegistry(undefined, {
+    // ── Host manager: one-call registration of features + route partitions ──
+    const host = new HostManager(shellContext, {
         activationPolicy: 'exclusive',
         metricRecorder: featureMetricAggregator,
     });
 
-    featureMountManager.registerFeature({
+    host.registerFeature({
         name: 'todo',
+        prefix: TODO_ROUTE_PREFIX,
         createContext: () => todoContext,
         gatewayOptions: {
             validationStrategy: new NamespaceRelayValidationStrategy({
@@ -159,17 +151,25 @@ export const composeTodoRuntime = (todoContext: ApplicationContext): TodoRuntime
             },
         ],
         unmountPolicy: 'preserve',
+        onRoute: (route) => {
+            void dispatcher.dispatch(route);
+        },
+        onDeactivate: () => {
+            logRelayMetrics('todo', 'Todo feature relay metrics after unmount', 0, 0, 0);
+        },
     });
 
-    featureMountManager.registerFeature({
+    host.registerFeature({
         name: 'account',
+        prefix: ACCOUNT_ROUTE_PREFIX,
         data: {
             title: 'Account',
         },
         unmountPolicy: 'close',
+        onRoute: dispatchRoute('account', dispatcher),
     });
 
-    const mountedFeature = featureMountManager.mount('todo');
+    const mountedFeature = host.mount('todo');
 
     if (!mountedFeature.gateway) {
         throw new IllegalStateError('Todo feature relay gateway was not created');
@@ -185,43 +185,9 @@ export const composeTodoRuntime = (todoContext: ApplicationContext): TodoRuntime
         mountedMetrics.relayedEventCount
     );
 
-    featureRoutingRegistry.registerFeature({
-        name: 'todo',
-        prefix: TODO_ROUTE_PREFIX,
-        onActivate: () => {
-            featureMountManager.mount('todo');
-        },
-        onDeactivate: () => {
-            featureMountManager.unmount('todo');
-            logRelayMetrics('todo', 'Todo feature relay metrics after unmount', 0, 0, 0);
-        },
-        onRoute: (route) => {
-            void dispatcher.dispatch(route);
-        },
-    });
-
-    featureRoutingRegistry.registerFeature({
-        name: 'account',
-        prefix: ACCOUNT_ROUTE_PREFIX,
-        onActivate: () => {
-            featureMountManager.mount('account');
-        },
-        onDeactivate: () => {
-            featureMountManager.unmount('account');
-        },
-        onRoute: (route) => {
-            void dispatcher.dispatch(route);
-            logger.info('Account feature route handled', {
-                feature: 'account',
-                path: route.path,
-            });
-        },
-    });
-
-    const siteRouter = featureRoutingRegistry.siteRouter;
-
+    // ── Shell router: hash URLs → host partition navigation ──────────────────
     const shellRouter = new HashRouter((route) => {
-        featureRoutingRegistry.navigate(route.toString());
+        host.navigate(route.toString());
     });
 
     // ── Register auth interceptor on the shell router ─────────────────────────
@@ -229,109 +195,45 @@ export const composeTodoRuntime = (todoContext: ApplicationContext): TodoRuntime
     const authInterceptor = new AuthRouterInterceptor(authGuard);
     shellRouter.addInterceptor(authInterceptor);
 
-    // ── Register auth-related features ────────────────────────────────────────
-    featureMountManager.registerFeature({
+    // ── Auth-related features ─────────────────────────────────────────────────
+    host.registerFeature({
         name: 'login',
+        prefix: '/auth/login',
         data: {
             title: 'Login',
         },
         unmountPolicy: 'close',
+        onRoute: dispatchRoute('login', dispatcher),
     });
 
-    featureRoutingRegistry.registerFeature({
-        name: 'login',
-        prefix: '/auth/login',
-        onActivate: () => {
-            featureMountManager.mount('login');
-        },
-        onDeactivate: () => {
-            featureMountManager.unmount('login');
-        },
-        onRoute: (route) => {
-            void dispatcher.dispatch(route);
-            logger.info('Login route handled', {
-                feature: 'login',
-                path: route.path,
-            });
-        },
-    });
-
-    featureMountManager.registerFeature({
+    host.registerFeature({
         name: 'profile',
+        prefix: '/auth/profile',
         data: {
             title: 'Profile',
         },
         unmountPolicy: 'close',
+        onRoute: dispatchRoute('profile', dispatcher),
     });
 
-    featureRoutingRegistry.registerFeature({
-        name: 'profile',
-        prefix: '/auth/profile',
-        onActivate: () => {
-            featureMountManager.mount('profile');
-        },
-        onDeactivate: () => {
-            featureMountManager.unmount('profile');
-        },
-        onRoute: (route) => {
-            void dispatcher.dispatch(route);
-            logger.info('Profile route handled', {
-                feature: 'profile',
-                path: route.path,
-            });
-        },
-    });
-
-    featureMountManager.registerFeature({
+    host.registerFeature({
         name: 'admin',
+        prefix: '/auth/admin',
         data: {
             title: 'Admin Panel',
         },
         unmountPolicy: 'close',
+        onRoute: dispatchRoute('admin', dispatcher),
     });
 
-    featureRoutingRegistry.registerFeature({
-        name: 'admin',
-        prefix: '/auth/admin',
-        onActivate: () => {
-            featureMountManager.mount('admin');
-        },
-        onDeactivate: () => {
-            featureMountManager.unmount('admin');
-        },
-        onRoute: (route) => {
-            void dispatcher.dispatch(route);
-            logger.info('Admin route handled', {
-                feature: 'admin',
-                path: route.path,
-            });
-        },
-    });
-
-    featureMountManager.registerFeature({
+    host.registerFeature({
         name: 'forbidden',
+        prefix: '/auth/forbidden',
         data: {
             title: 'Forbidden',
         },
         unmountPolicy: 'close',
-    });
-
-    featureRoutingRegistry.registerFeature({
-        name: 'forbidden',
-        prefix: '/auth/forbidden',
-        onActivate: () => {
-            featureMountManager.mount('forbidden');
-        },
-        onDeactivate: () => {
-            featureMountManager.unmount('forbidden');
-        },
-        onRoute: (route) => {
-            void dispatcher.dispatch(route);
-            logger.info('Forbidden route handled', {
-                feature: 'forbidden',
-                path: route.path,
-            });
-        },
+        onRoute: dispatchRoute('forbidden', dispatcher),
     });
 
     shellContext.setValue(ROUTER, shellRouter);
@@ -339,14 +241,21 @@ export const composeTodoRuntime = (todoContext: ApplicationContext): TodoRuntime
     todoContext.setValue(ROUTER, shellRouter);
     todoContext.setValue(DISPATCHER, dispatcher);
 
-    // Populate module-level routes for views
-    const registry = todoContext.getValue('routeRegistry') as RouteRegistry | undefined;
+    // Populate module-level routes for views. `@blue/boot`'s Application
+    // auto-registers a scanned RouteRegistry ('routeRegistry'); without boot
+    // (Vite dev) scan the app controllers directly — the RouteRegistry
+    // authoring pattern: typed definitions derived from @routeMapping
+    // metadata, with manual fallbacks for feature partitions (which have no
+    // controller route of their own).
+    const registry = (todoContext.getValue('routeRegistry') as RouteRegistry | undefined) ?? new RouteRegistry();
+    registry.scanSources([IndexController, AccountController], todoContext);
     if (registry) {
         routes.todoAll = new RouteDefinition('/todo', todoContext);
         routes.todoActive = new RouteDefinition('/todo/active', todoContext);
         routes.todoCompleted = new RouteDefinition('/todo/completed', todoContext);
-        routes.accountOverview = new RouteDefinition('/account', todoContext);
-        routes.accountSettings = new RouteDefinition('/account/settings', todoContext);
+        routes.accountOverview = registry.get('account') ?? new RouteDefinition('/account', todoContext);
+        routes.accountSettings =
+            registry.get('account.settings') ?? new RouteDefinition('/account/settings', todoContext);
         routes.authLogin = new RouteDefinition('/auth/login', todoContext);
         routes.authProfile = new RouteDefinition('/auth/profile', todoContext);
         routes.authAdmin = new RouteDefinition('/auth/admin', todoContext);
@@ -355,11 +264,9 @@ export const composeTodoRuntime = (todoContext: ApplicationContext): TodoRuntime
     return {
         dispatcher,
         featureMetrics: featureMetricAggregator,
-        featureMountManager,
-        featureRoutingRegistry,
+        host,
         shellRouter,
         shellContext,
-        siteRouter,
         routes,
     };
 };

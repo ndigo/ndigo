@@ -2,7 +2,7 @@ import type { FeatureMetricRecorder } from '@blue/core';
 
 export type { FeatureMetricRecorder } from '@blue/core';
 import { Route } from './route';
-import { SiteRouter } from './site-router';
+import { PartitionRouter } from './partition-router';
 
 /**
  * Defines the policy for how features are activated within the `FeatureRoutingRegistry`.
@@ -43,7 +43,7 @@ export class FeatureRoutingRegistry {
     #activeFeatureName?: string;
     #featureMap: Map<string, FeatureRouteRegistration>;
     #metricRecorder?: FeatureMetricRecorder;
-    #siteRouter: SiteRouter;
+    #partitionRouter: PartitionRouter;
 
     /**
      * Gets the name of the currently active feature.
@@ -55,26 +55,26 @@ export class FeatureRoutingRegistry {
     }
 
     /**
-     * Gets the underlying `SiteRouter` instance used by the registry.
-     * @returns The `SiteRouter` instance.
+     * Gets the underlying `PartitionRouter` instance used by the registry.
+     * @returns The `PartitionRouter` instance.
      * @since 1.0.0
      */
-    get siteRouter(): SiteRouter {
-        return this.#siteRouter;
+    get partitionRouter(): PartitionRouter {
+        return this.#partitionRouter;
     }
 
     /**
      * Creates an instance of `FeatureRoutingRegistry`.
-     * @param siteRouter - The `SiteRouter` instance to use for routing. Defaults to a new `SiteRouter`.
+     * @param partitionRouter - The `PartitionRouter` instance to use for routing. Defaults to a new `PartitionRouter`.
      * @param options - Configuration options for the registry.
      * @since 1.0.0
      */
-    constructor(siteRouter: SiteRouter = new SiteRouter(), options: FeatureRoutingRegistryOptions = {}) {
+    constructor(partitionRouter: PartitionRouter = new PartitionRouter(), options: FeatureRoutingRegistryOptions = {}) {
         this.#activationPolicy = options.activationPolicy ?? 'tracked';
         this.#activeFeatureName = undefined;
         this.#featureMap = new Map();
         this.#metricRecorder = options.metricRecorder;
-        this.#siteRouter = siteRouter;
+        this.#partitionRouter = partitionRouter;
     }
 
     /**
@@ -92,7 +92,7 @@ export class FeatureRoutingRegistry {
 
         this.#featureMap.set(feature.name, feature);
         this.#recordCounter(feature.name, 'registeredCount');
-        this.#siteRouter.mount(feature.prefix, (route) => {
+        this.#partitionRouter.mount(feature.prefix, (route) => {
             this.#activate(feature.name);
             this.#recordCounter(feature.name, 'routeHandledCount');
             feature.onRoute(route);
@@ -120,14 +120,41 @@ export class FeatureRoutingRegistry {
     }
 
     /**
-     * Navigates the underlying `SiteRouter` to the given path.
+     * Removes a feature registration: deactivates it if active and unmounts
+     * its route prefix so future navigation no longer matches.
+     *
+     * @param name - The registered feature name.
+     * @returns `true` if a registration was removed.
+     * @since 1.0.0
+     */
+    unregister(name: string): boolean {
+        const feature = this.#featureMap.get(name);
+
+        if (!feature) {
+            return false;
+        }
+
+        if (this.#activeFeatureName === name) {
+            this.#deactivate(name);
+            this.#activeFeatureName = undefined;
+        }
+
+        this.#featureMap.delete(name);
+        this.#partitionRouter.unmount(feature.prefix);
+        this.#recordCounter(name, 'unregisteredCount');
+
+        return true;
+    }
+
+    /**
+     * Navigates the underlying `PartitionRouter` to the given path.
      * If the navigation is not handled by any registered route, the currently active feature (if any) will be deactivated.
      * @param path - The path to navigate to.
      * @returns `true` if the navigation was handled by a registered route, `false` otherwise.
      * @since 1.0.0
      */
     navigate(path: string): boolean {
-        const handled = this.#siteRouter.navigate(path);
+        const handled = this.#partitionRouter.navigate(path);
 
         if (!handled) {
             this.#deactivate(this.#activeFeatureName);
@@ -138,12 +165,12 @@ export class FeatureRoutingRegistry {
     }
 
     /**
-     * Refreshes the routing by calling `refresh` on the underlying `SiteRouter`.
+     * Refreshes the routing by calling `refresh` on the underlying `PartitionRouter`.
      * This can re-evaluate the current URL against registered routes.
      * @since 1.0.0
      */
     refresh(): void {
-        this.#siteRouter.refresh();
+        this.#partitionRouter.refresh();
     }
 
     #activate(name: string): void {

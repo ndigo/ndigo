@@ -8,7 +8,6 @@ import {
     composeTodoRuntime,
     toAccountShellRoute,
     toTodoShellRoute,
-    createTodoSiteRouter,
     TODO_ROUTE_PREFIX,
 } from '../src/shell-composition';
 
@@ -34,7 +33,7 @@ async function composeRealRuntime() {
     return {
         composition,
         dispose() {
-            composition.featureMountManager.destroy();
+            composition.host.destroy();
             composition.shellRouter.destroy();
             composition.shellContext.destroy();
             appEl.remove();
@@ -53,28 +52,6 @@ describe('todo shell composition', () => {
         expect(toAccountShellRoute('/settings')).toBe('/account/settings');
     });
 
-    test('it should mount todo partition and dispatch feature-local route', () => {
-        const callback = vi.fn();
-        const router = createTodoSiteRouter(callback);
-
-        const matched = router.navigate('/todo/active');
-
-        expect(matched).toBe(true);
-        expect(callback).toHaveBeenCalledTimes(1);
-        const featureRoute = callback.mock.calls[0]?.[0];
-        expect(featureRoute.toString()).toBe('/active');
-    });
-
-    test('it should reject non-todo partition paths', () => {
-        const callback = vi.fn();
-        const router = createTodoSiteRouter(callback);
-
-        const matched = router.navigate('/account/profile');
-
-        expect(matched).toBe(false);
-        expect(callback).not.toHaveBeenCalled();
-    });
-
     test('it should support shell/feature parent-child relationship', () => {
         const shell = new GenericApplicationContext('shell');
         const feature = new GenericApplicationContext('todo');
@@ -91,17 +68,16 @@ describe('todo shell composition', () => {
     test('it should compose the real runtime with a working relay gateway', async () => {
         const { composition, dispose } = await composeRealRuntime();
 
-        const mountedFeature = composition.featureMountManager.getMountedFeature('todo');
+        const mountedFeature = composition.host.getMountedFeature('todo');
 
         expect(mountedFeature?.gateway).toBeDefined();
         expect(mountedFeature?.gateway?.activeRelayCount).toBe(1);
         expect(mountedFeature?.gateway?.blockedRelayCount).toBe(0);
-        expect(composition.featureRoutingRegistry).toBeDefined();
         expect(composition.featureMetrics.getFeatureMetrics('todo')?.counters.get('todo.mountCount')).toBeGreaterThan(
             0
         );
         // The real todo feature context is a child of the shell context.
-        const todoContext = composition.featureMountManager.getMountedFeature('todo')?.context;
+        const todoContext = composition.host.getMountedFeature('todo')?.context;
         expect(todoContext?.parent).toBe(composition.shellContext);
 
         dispose();
@@ -112,8 +88,8 @@ describe('todo shell composition', () => {
 
         await composition.shellRouter.setRoute('/account');
 
-        expect(composition.featureMountManager.isMounted('todo')).toBe(false);
-        expect(composition.featureMountManager.isMounted('account')).toBe(true);
+        expect(composition.host.isMounted('todo')).toBe(false);
+        expect(composition.host.isMounted('account')).toBe(true);
         expect(composition.featureMetrics.getFeatureMetrics('todo')?.counters.get('todo.unmountCount')).toBeGreaterThan(
             0
         );
@@ -128,14 +104,14 @@ describe('todo shell composition', () => {
         const { composition, dispose } = await composeRealRuntime();
 
         await composition.shellRouter.setRoute('/account');
-        expect(composition.featureMountManager.isMounted('account')).toBe(true);
+        expect(composition.host.isMounted('account')).toBe(true);
         // The todo feature is unmounted (its view target no longer active) —
         // the account partition is a marker feature without a view.
 
         await composition.shellRouter.setRoute('/todo/active');
 
-        expect(composition.featureMountManager.isMounted('todo')).toBe(true);
-        expect(composition.featureMountManager.isMounted('account')).toBe(false);
+        expect(composition.host.isMounted('todo')).toBe(true);
+        expect(composition.host.isMounted('account')).toBe(false);
         // The dispatch renders asynchronously (resolver chain) — wait for it.
         await vi.waitFor(() => expect(document.querySelector('#app todo-app')).not.toBeNull());
 

@@ -1,7 +1,7 @@
 {
   "name": "@blue/api",
   "version": "0.0.1",
-  "description": "Blue API \u2014 Node server showcase using @blue/platform-node",
+  "description": "Blue API — Node server showcase using @blue/platform-node",
   "type": "module",
   "private": true,
   "scripts": {
@@ -16,9 +16,11 @@
     "@blue/auth-server": "~0.0.1",
     "@blue/boot": "~0.0.1",
     "@blue/context": "~0.0.1",
+    "@blue/content": "~0.0.1",
     "@blue/core": "~0.0.1",
     "@blue/dispatcher": "~0.0.1",
     "@blue/http": "~0.0.1",
+    "@blue/management": "~0.0.1",
     "@blue/orm": "~0.0.1",
     "@blue/orm-drizzle": "~0.0.1",
     "@blue/platform-node": "~0.0.1",
@@ -26,7 +28,8 @@
     "@blue/telemetry": "~0.0.1",
     "@blue/util": "~0.0.1",
     "@blue/view": "~0.0.1",
-    "@tsmetadata/polyfill": "^1.1.3"
+    "@tsmetadata/polyfill": "^1.1.3",
+    "@blue/telemetry-node": "~0.0.1"
   },
   "devDependencies": {
     "tsx": "^4.23.13",
@@ -34,14 +37,17 @@
     "@blue/auth-server": "~0.0.1",
     "@blue/boot": "~0.0.1",
     "@blue/context": "~0.0.1",
+    "@blue/content": "~0.0.1",
     "@blue/core": "~0.0.1",
     "@blue/dispatcher": "~0.0.1",
     "@blue/http": "~0.0.1",
+    "@blue/management": "~0.0.1",
     "@blue/orm": "~0.0.1",
     "@blue/platform-node": "~0.0.1",
     "@blue/router": "~0.0.1",
     "@blue/telemetry": "~0.0.1",
     "@blue/test": "~0.0.1",
-    "@blue/util": "~0.0.1"
+    "@blue/util": "~0.0.1",
+    "@blue/telemetry-node": "~0.0.1"
   }
 }

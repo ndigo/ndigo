@@ -16,7 +16,7 @@ import { Route } from '@blue/router';
 import { likeApplicationContextAware } from '@blue/context';
 import { View, clearCurrentRequest, likeProducerView, setCurrentRequest } from '@blue/view';
 import type { ServerResponse } from 'node:http';
-import { NODE_RESPONSE_ATTRIBUTE } from './node-request';
+import { NODE_RESPONSE_ATTRIBUTE, getNodeRequest } from './node-request';
 import { ProblemTypes, writeProblem } from './problem-details';
 import { HTTPResponseViewTarget } from './node-view-target';
 import { ResponseEntityView } from './response-entity-view';
@@ -82,6 +82,13 @@ export class NodeDispatcher extends AbstractDispatcher {
         if (viewName) {
             // Content negotiation reads the current request; scope it to
             // resolution so strategies can match path extensions / Accept.
+            const nodeRequest = getNodeRequest(route);
+            const accept = nodeRequest?.headers?.['accept'];
+            if (accept) {
+                (route as { mediaTypeHint?: string }).mediaTypeHint = Array.isArray(accept)
+                    ? accept.join(', ')
+                    : accept;
+            }
             setCurrentRequest(route);
             try {
                 view = await this._resolveViewName(viewName, language);

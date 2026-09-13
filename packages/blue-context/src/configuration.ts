@@ -162,19 +162,6 @@ export function property(
         if (propertyType) {
             context.metadata[`${CONFIG_PROPERTY_TYPE}:${String(context.name)}`] = propertyType;
         }
-
-        // Return initializer that sets up the property
-        context.addInitializer(function (this: unknown) {
-            // The property will be set to null by the ConfigurationParser
-            // when it resolves the property value from sources
-            // `this` is the decorated field's instance (runtime-provided)
-            defineProperty(this as object, context.name, {
-                value: null,
-                configurable: true,
-                enumerable: true,
-                writable: false,
-            });
-        });
     };
 }
 
@@ -469,11 +456,10 @@ export class ConfigurationProcessor
 /**
  */
 export class MetadataConfigApplicationContext extends GenericApplicationContext {
-    #configurationParser: ConfigurationParser;
+    #configurationParser: ConfigurationParser | null = null;
 
     constructor(name: string) {
         super(name);
-        this.#configurationParser = new ConfigurationParser(this, this.environment);
         // Register the ApplicationContextAwareProcessor before any @entry
         // configs are parsed, so entry-created aware beans receive context
         // injection when they are eagerly configured in register().
@@ -484,11 +470,26 @@ export class MetadataConfigApplicationContext extends GenericApplicationContext 
     }
 
     /**
+     * Parses configuration classes against the CURRENT environment.
+     *
+     * The parser is created lazily per use: `ApplicationBuilder` prepares
+     * (profiles, property sources) and replaces the environment before
+     * registration, so a parser captured at construction would evaluate
+     * `@profile` gates and `@propertySource` against a stale environment.
+     *
+     * @returns The parser bound to the current environment.
+     */
+    #parser(): ConfigurationParser {
+        this.#configurationParser ??= new ConfigurationParser(this, this.environment);
+        return this.#configurationParser;
+    }
+
+    /**
      * Registers a configuration class for metadata-driven initialization.
      *
      * @param configClass - The configuration class to parse.
      */
     register(configClass: unknown): void {
-        this.#configurationParser.parse([configClass]);
+        this.#parser().parse([configClass]);
     }
 }

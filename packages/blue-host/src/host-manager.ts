@@ -1,0 +1,236 @@
+/**
+ * Host orchestration — the centralized micro frontend host (AD-18).
+ *
+ * `HostManager` assembles the feature mount + routing machinery of
+ * `@blue/context` / `@blue/router` into one registrable service: one
+ * `registerFeature` call covers shared-dependency validation, lazy loading,
+ * mount-on-activate / unmount-on-deactivate, relay gateways, and route
+ * dispatch. The instance is resolved through the shell context via
+ * {@link HOST_MANAGER_TOKEN}.
+ *
+ * @module
+ */
+
+import type { FeatureMetricRecorder } from '@blue/core';
+import { ContextToken, FeatureContextMountManager } from '@blue/context';
+import type {
+    ApplicationContext,
+    FeatureContextComposition,
+    FeatureRegistrationOptions,
+    FeatureUnmountPolicy,
+} from '@blue/context';
+import { FeatureRoutingRegistry } from '@blue/router';
+import type { FeatureActivationPolicy, PartitionRouter, Route } from '@blue/router';
+
+/**
+ * Options for registering a feature with a {@link HostManager}.
+ *
+ * Adds the routing half (`prefix`, optional `onRoute`) to the mount-manager
+ * registration contract.
+ */
+export interface HostRegistrationOptions extends FeatureRegistrationOptions {
+    /**
+     * URL prefix partition that activates the feature (e.g. `/catalog`).
+     */
+    prefix: string;
+    /**
+     * Optional callback invoked with the feature-local route after
+     * activation — e.g. `(route) => dispatcher.dispatch(route)`.
+     */
+    onRoute?: (route: Route) => void;
+    /**
+     * Optional callback invoked after the feature is unmounted on
+     * deactivation.
+     */
+    onDeactivate?: () => void;
+}
+
+/**
+ * Options for the {@link HostManager}.
+ */
+export interface HostManagerOptions {
+    /**
+     * Records feature mount/activation metrics.
+     */
+    metricRecorder?: FeatureMetricRecorder;
+    /**
+     * Feature activation policy; defaults to `'tracked'`.
+     */
+    activationPolicy?: FeatureActivationPolicy;
+}
+
+/**
+ * ContextToken for resolving the host orchestrator through the context
+ * hierarchy — the same placement pattern as
+ * `SHARED_DEPENDENCY_REGISTRY_TOKEN`.
+ */
+export const HOST_MANAGER_TOKEN = new ContextToken<HostManager>('blue:hostManager');
+
+/**
+ * Creates, tracks, and tears down feature contexts and their route partitions.
+ *
+ * One registration call wires both registries:
+ *
+ * ```ts
+ * const host = new HostManager(shellContext, { activationPolicy: 'exclusive' });
+ * host.registerFeature({
+ *     name: 'catalog',
+ *     prefix: '/catalog',
+ *     loader: () => import('./features/catalog'),
+ *     dependencies: { requires: { router: '^1.0.0' } },
+ * });
+ * shellContext.setValue(HOST_MANAGER_TOKEN, host);
+ * ```
+ *
+ * Pure delegation: mount/unmount/dependency-validation/metrics behavior is
+ * exactly the `FeatureContextMountManager` + `DefaultSharedDependencyRegistry`
+ * + `FeatureRoutingRegistry` machinery this class assembles.
+ */
+export class HostManager {
+    #mountManager: FeatureContextMountManager;
+    #routingRegistry: FeatureRoutingRegistry;
+    #names: Set<string>;
+
+    /**
+     * Creates the host orchestrator above `parent` (the shell context).
+     */
+    constructor(parent: ApplicationContext, options: HostManagerOptions = {}) {
+        this.#mountManager = new FeatureContextMountManager(parent, {
+            metricRecorder: options.metricRecorder,
+        });
+        this.#routingRegistry = new FeatureRoutingRegistry(undefined, {
+            activationPolicy: options.activationPolicy,
+            metricRecorder: options.metricRecorder,
+        });
+        this.#names = new Set();
+    }
+
+    /**
+     * Gets the name of the currently active feature.
+     */
+    get activeFeature(): string | undefined {
+        return this.#routingRegistry.activeFeatureName;
+    }
+
+    /**
+     * Gets the underlying `PartitionRouter` used by the routing registry.
+     */
+    get partitionRouter(): PartitionRouter {
+        return this.#routingRegistry.partitionRouter;
+    }
+
+    /**
+     * Registers a feature in one call: mount manager + routing registry,
+     * with mount-on-activate / unmount-on-deactivate wiring.
+     *
+     * @throws {TypeError} If a feature with the same name is already registered.
+     */
+    registerFeature(options: HostRegistrationOptions): this {
+        if (this.#names.has(options.name)) {
+            throw new TypeError(`Feature '${options.name}' is already registered`);
+        }
+
+        const { onDeactivate, onRoute, prefix, ...featureOptions } = options;
+
+        this.#mountManager.registerFeature(featureOptions);
+        this.#routingRegistry.registerFeature({
+            name: options.name,
+            prefix,
+            onActivate: () => {
+                if (options.loader) {
+                    void this.mountLazy(options.name);
+                    return;
+                }
+                this.mount(options.name);
+            },
+            onDeactivate: () => {
+                this.unmount(options.name);
+                onDeactivate?.();
+            },
+            onRoute: (route: Route) => {
+                onRoute?.(route);
+            },
+        });
+        this.#names.add(options.name);
+
+        return this;
+    }
+
+    /**
+     * Mount a registered feature (static `createContext`/`data` features).
+     */
+    mount(name: string): FeatureContextComposition {
+        return this.#mountManager.mount(name);
+    }
+
+    /**
+     * Mount a feature loaded dynamically via its registered `loader`.
+     */
+    mountLazy(name: string): Promise<FeatureContextComposition> {
+        return this.#mountManager.mountLazy(name);
+    }
+
+    /**
+     * Unmount a feature, honoring the registration's `unmountPolicy` unless
+     * one is given.
+     */
+    unmount(name: string, policy?: FeatureUnmountPolicy): boolean {
+        return this.#mountManager.unmount(name, policy);
+    }
+
+    /**
+     * Whether a feature is currently mounted.
+     */
+    isMounted(name: string): boolean {
+        return this.#mountManager.isMounted(name);
+    }
+
+    /**
+     * Get the mounted feature composition, if any.
+     */
+    getMountedFeature(name: string): FeatureContextComposition | undefined {
+        return this.#mountManager.getMountedFeature(name);
+    }
+
+    /**
+     * Navigate the host's partition router; activates/deactivates features
+     * per the activation policy. Returns whether a feature handled the path.
+     */
+    navigate(path: string): boolean {
+        return this.#routingRegistry.navigate(path);
+    }
+
+    /**
+     * Re-evaluate the current route against all mounted partitions.
+     */
+    refresh(): void {
+        this.#routingRegistry.refresh();
+    }
+
+    /**
+     * Unmount (close policy) a feature and remove it from both registries,
+     * freeing its name for re-registration.
+     *
+     * @returns `true` if a registration was removed.
+     */
+    unregister(name: string): boolean {
+        if (!this.#names.delete(name)) {
+            return false;
+        }
+
+        this.unmount(name, 'close');
+        this.#routingRegistry.unregister(name);
+        this.#mountManager.unregister(name);
+
+        return true;
+    }
+
+    /**
+     * Unregister every feature and clear the host.
+     */
+    destroy(): void {
+        for (const name of this.#names) {
+            this.unregister(name);
+        }
+    }
+}

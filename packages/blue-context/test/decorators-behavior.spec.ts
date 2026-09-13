@@ -183,20 +183,21 @@ describe('@property Decorator', () => {
         expect(metadata['config:property:myProp']).toBe('foo.bar');
     });
 
-    it('defines the property as non-writable', () => {
+    it('preserves field initializers for type inference', () => {
         @configuration
         class TestConfig {
             @property('foo')
-            myProp: unknown;
+            myProp: string = 'initial';
         }
 
-        // With TC39 field decorators, properties are created on instances via addInitializer
-        // not on the prototype, so we need to instantiate
         const instance = new TestConfig();
         const descriptor = Object.getOwnPropertyDescriptor(instance, 'myProp');
         expect(descriptor).toBeDefined();
-        expect(descriptor?.writable).toBe(false);
-        expect(descriptor?.value).toBe(null);
+        // The decorator no longer replaces the field with null — the
+        // author's initializer survives so config binders can infer the
+        // field type (AD-15); the parser overwrites resolved values.
+        expect(descriptor?.value).toBe('initial');
+        expect(descriptor?.writable).toBe(true);
     });
 
     it('makes property configurable and enumerable', () => {

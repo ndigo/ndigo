@@ -256,10 +256,25 @@ export class PathExtensionContentNegotiationStrategy
         // Extract the file extension (last segment after the last dot, ignoring query string)
         const pathname = uri.split('?')[0]; // strip query string
         const ext = pathname.match(/\.([^/]+)$/);
-        if (!ext) return [];
+        if (ext) {
+            const mediaType = this.lookupMediaType(ext[1].toLowerCase());
+            return mediaType ? [mediaType] : [];
+        }
 
-        const mediaType = this.lookupMediaType(ext[1].toLowerCase());
-        return mediaType ? [mediaType] : [];
+        // No extension: honor an Accept-header hint (set by the negotiation
+        // manager) so the same logical view can be requested by media type.
+        // Mirrors AbstractMappingContentNegotiationStrategy's filter — this
+        // class does not extend it (sibling hierarchy).
+        const hint = (request as { mediaTypeHint?: string } | undefined)?.mediaTypeHint;
+        if (hint) {
+            const primary = hint.split(';')[0].trim().toLowerCase();
+            for (const mediaType of this.getAllMediaTypes()) {
+                if (mediaType.type === primary || mediaType.baseType === primary) {
+                    return [mediaType];
+                }
+            }
+        }
+        return [];
     }
 }
 
@@ -333,6 +348,18 @@ export class ContentNegotiationManager implements ContentNegotiationStrategy, Me
      * @returns Media types in priority order from the first strategy that matches.
      */
     resolveMediaTypes(request: unknown): MediaType[] {
+        // Node requests carry headers but not the strategy protocol's
+        // `mediaTypeHint` — bridge the Accept header here so header-driven
+        // negotiation works for every app (the strategies are unchanged).
+        const nodeHeaders = (request as { headers?: Record<string, string> } | undefined)?.headers;
+        const hint = (request as { mediaTypeHint?: string } | undefined)?.mediaTypeHint;
+        if (!hint && nodeHeaders && typeof nodeHeaders === 'object') {
+            const accept = Array.isArray(nodeHeaders) ? nodeHeaders.join(', ') : nodeHeaders['accept'];
+            if (accept) {
+                (request as { mediaTypeHint?: string }).mediaTypeHint = accept;
+            }
+        }
+
         for (const strategy of this.strategies) {
             const result = strategy.resolveMediaTypes(request);
             if (result && result.length > 0) return result;
@@ -389,7 +416,7 @@ export class ContentNegotiationViewResolver implements ViewResolver {
     async resolveViewName(name: string, language?: unknown): Promise<View | null> {
         // 1. Aggregate candidate views from every delegate resolver.
         const results = await Promise.all(
-            this.viewResolvers.map((resolver) => resolver.resolveViewName(name, language)),
+            this.viewResolvers.map((resolver) => resolver.resolveViewName(name, language))
         );
         const candidates = results.filter(isNotNil);
 

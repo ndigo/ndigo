@@ -12,9 +12,9 @@
  * @since 1.0.0
  */
 
-import { SpanKind, SpanStatusCode } from '@opentelemetry/api';
+import { context as otelContext, propagation, ROOT_CONTEXT, SpanKind, SpanStatusCode, trace } from '@opentelemetry/api';
 import { HTTPServer, NodeHTTPServerAdapter } from '@blue/platform-node';
-import type { IncomingMessage } from 'node:http';
+import type { IncomingMessage, ServerResponse } from 'node:http';
 import { AbstractBaseInstrumentation } from '@blue/telemetry';
 
 /**
@@ -62,28 +62,45 @@ export class HTTPServerInstrumentation extends AbstractBaseInstrumentation {
         );
 
         // Per-request root span: every inbound HTTP request gets a SERVER span
-        // that the dispatch + view-target spans nest under.
-        this._wrap(
-            NodeHTTPServerAdapter.prototype,
-            'handleRequest',
-            this._patchAsync({
-                name: 'HTTPServer.handleRequest',
-                kind: SpanKind.SERVER,
-                attributes: (_instance: unknown, args: unknown[]) => {
-                    const req = args[0] as IncomingMessage | undefined;
-                    return {
-                        'http.request.method': req?.method ?? 'GET',
-                        'http.route': req?.url ? String(new URL(req.url, 'http://local').pathname) : undefined,
-                    };
-                },
-                onEnd(span, outcome) {
-                    // The response status is recorded by the view-target
-                    // instrumentation per commit; mark the request span's
-                    // outcome only (OK when handling completed).
-                    span.setStatus(resultStatus(outcome));
-                },
-            })
-        );
+        // that the dispatch + view-target spans nest under. When the client
+        // propagated a W3C traceparent (the browser→server journey pattern),
+        // the span continues the caller's trace: the extracted context
+        // becomes the parent of this SERVER span.
+        this._wrap(NodeHTTPServerAdapter.prototype, 'handleRequest', (original) => {
+            // Must stay a function (not an arrow): the adapter invocation
+            // binds `this`, and `original` relies on it (private dispatcher).
+            return function (this: unknown, req: IncomingMessage, res: ServerResponse<IncomingMessage>): Promise<void> {
+                const tracer = trace.getTracer('@blue/telemetry');
+                // Continue the caller's trace: extracted traceparent
+                // becomes the parent of the SERVER span.
+                const parent = propagation.extract(ROOT_CONTEXT, req.headers ?? {});
+                return otelContext.with(parent, () =>
+                    tracer.startActiveSpan(
+                        'HTTPServer.handleRequest',
+                        {
+                            kind: SpanKind.SERVER,
+                            attributes: {
+                                'http.request.method': req.method ?? 'GET',
+                                'http.route': req.url ? String(new URL(req.url, 'http://local').pathname) : undefined,
+                            },
+                        },
+                        (span) =>
+                            original
+                                .apply(this, [req, res])
+                                .then(() => {
+                                    span.setStatus(resultStatus({ ok: true }));
+                                    span.end();
+                                })
+                                .catch((error: unknown) => {
+                                    span.recordException(error as Error);
+                                    span.setStatus(resultStatus({ ok: false }));
+                                    span.end();
+                                    throw error;
+                                })
+                    )
+                );
+            };
+        });
     }
 
     disable(): void {

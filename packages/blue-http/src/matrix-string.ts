@@ -1,6 +1,82 @@
 import { JSONObject, Parser, Stringifier } from '@blue/core';
-import matrixExpression from './parsers/matrix-expression';
-import { encodeURIComponent as encodeValue } from '@blue/util/string';
+import { decodeURIComponent as decode, encodeURIComponent as encodeValue } from '@blue/util/string';
+
+/**
+ * Parses a raw matrix-parameter segment into a key→value(s) record.
+ *
+ * Rules:
+ * - Leading `;` is optional and skipped.
+ * - Parameters are separated by `;`.
+ * - `key=value` pairs: value may contain any character except `;`.
+ * - Key-only params produce `[key, null]`.
+ * - `+` is decoded to a space (via {@link decode}).
+ * - Comma-separated values produce an array; empty segments become `null`.
+ * - Empty values (`key=`) produce `null`.
+ */
+function parseMatrix(input: string): Record<string, unknown> {
+    let pos = 0;
+    const len = input.length;
+
+    // Skip optional leading ';'
+    if (pos < len && input[pos] === ';') pos++;
+
+    const pairs: [string, unknown][] = [];
+
+    while (pos < len) {
+        // Parse key: /^[^=;]+/
+        const keyStart = pos;
+        while (pos < len && input[pos] !== '=' && input[pos] !== ';') pos++;
+
+        const rawKey = input.slice(keyStart, pos);
+        if (!rawKey) {
+            // Empty key — skip the stray '=' and its value (if any), then any trailing ';'
+            if (pos < len && input[pos] === '=') {
+                pos++; // skip '='
+                while (pos < len && input[pos] !== ';') pos++; // skip value
+            }
+            if (pos < len && input[pos] === ';') pos++; // skip separator
+            continue;
+        }
+
+        // Replace + with space before decoding (avoids regex-escape issues in the decode fallback path)
+        const key = decode(rawKey.replace(/\+/g, ' '));
+
+        let value: unknown = null;
+
+        if (pos < len && input[pos] === '=') {
+            pos++; // consume '='
+            // Parse value: /^[^;]*/ — may be empty
+            const valueStart = pos;
+            while (pos < len && input[pos] !== ';') pos++;
+            const decoded = decode(input.slice(valueStart, pos).replace(/\+/g, ' '));
+
+            if (decoded.includes(',')) {
+                value = decoded.split(',').map((v) => (v === '' ? null : v));
+            } else if (decoded === '') {
+                value = null;
+            } else {
+                value = decoded;
+            }
+        }
+
+        pairs.push([key, value]);
+
+        // Consume the ';' separator before the next parameter
+        if (pos < len && input[pos] === ';') pos++;
+    }
+
+    const result: Record<string, unknown> = {};
+    for (const [key, value] of pairs) {
+        if (!Object.prototype.hasOwnProperty.call(result, key)) {
+            result[key] = value;
+        } else if (Array.isArray(result[key])) {
+            result[key].push(value);
+        } else {
+            result[key] = [result[key], value];
+        }
+    }
+    return result;
+}
 
 const isNull = (value: unknown): boolean => value === null,
     isUndefined = (value: unknown): boolean => value === undefined,
@@ -56,11 +132,8 @@ class MatrixString implements Parser, Stringifier {
         if (!trimmed || trimmed === ';') {
             return {};
         }
-        const parseResult = matrixExpression.run(trimmed);
-        if (!parseResult.isError) {
-            return (parseResult as { isError: false; result: JSONObject; index: number; data: string }).result;
-        }
-        return {};
+        // Values are strings, nulls, or arrays thereof — all JSON values.
+        return parseMatrix(trimmed) as JSONObject;
     }
     /**
      * Serializes a JSON-like value to a matrix string.

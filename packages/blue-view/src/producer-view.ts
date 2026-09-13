@@ -26,7 +26,7 @@ export interface RenderResult {
     /**
      * The media type of the produced body.
      */
-    mediaType?: MediaType | string;
+    mediaType?: MediaType;
 
     /**
      * The produced body: a complete document string, raw bytes, or a stream.

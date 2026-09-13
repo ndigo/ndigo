@@ -14,7 +14,7 @@ import { AbstractDispatcher } from '@blue/dispatcher';
 import { ModelAndView } from '@blue/dispatcher';
 import { Route } from '@blue/router';
 import { likeApplicationContextAware } from '@blue/context';
-import { View, likeProducerView, likeView } from '@blue/view';
+import { View, likeProducerView } from '@blue/view';
 import type { ServerResponse } from 'node:http';
 import { NODE_RESPONSE_ATTRIBUTE } from './node-request';
 import { ProblemTypes, writeProblem } from './problem-details';
@@ -55,11 +55,11 @@ export class NodeDispatcher extends AbstractDispatcher {
             return;
         }
 
-        // Imperative View return (e.g. ServerSentEventView): the handler produced a
-        // stateful view for THIS request — render it directly, do not
-        // JSON-serialize. (Spring's ViewMethodReturnValueHandler parity.)
-        if (likeView(mv)) {
-            await mv.render(null, route, viewTarget);
+        // Producing views (e.g. ServerSentEventView): the handler returned a
+        // stateful producing view for THIS request — stream its response
+        // document. (Spring's ViewMethodReturnValueHandler parity.)
+        if (likeProducerView(mv)) {
+            await writeRenderResult(res, await mv.renderTo(null, route));
             return;
         }
 

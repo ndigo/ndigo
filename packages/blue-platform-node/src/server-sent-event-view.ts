@@ -20,8 +20,10 @@
  * terminated by a blank line, so JSON-serialized payloads (which escape
  * newlines) are safe. The response ends when the source ends.
  *
- * No new dependency: the stream rides the existing `node:http` response
- * (WebSocket was deliberately deferred — see AD-9).
+ * As a {@link ProducerView}, rendering returns a streaming response document
+ * whose body is the framed event stream; the dispatcher writes the headers
+ * and streams the frames to the response. The view still observes the
+ * response's lifecycle (client disconnect) for telemetry.
  *
  * @module
  * @since 1.0.0
@@ -29,32 +31,37 @@
 
 import { MediaTypes, ServerSentEvent } from '@blue/core';
 import { Route } from '@blue/router';
-import { View } from '@blue/view';
+import { type ProducerView, type RenderResult } from '@blue/view';
 import type { ServerResponse } from 'node:http';
 import { NODE_RESPONSE_ATTRIBUTE } from './node-request';
+
+const SSE_HEADERS: Record<string, string> = {
+    'Content-Type': 'text/event-stream; charset=utf-8',
+    'Cache-Control': 'no-cache',
+};
 
 /**
  * Normalizes a yielded item into the shared event envelope: `{ event, data }`
  * -shaped values pass through, anything else becomes an unnamed data event.
  *
- * @param item - The value yielded by the event source.
+ * @param item - The item yielded by the event source.
  * @returns The normalized envelope.
  */
 function normalize(item: unknown): ServerSentEvent {
     if (typeof item === 'object' && item !== null && 'data' in item) {
         return {
-            event: typeof (item as ServerSentEvent).event === 'string' ? (item as ServerSentEvent).event : 'message',
-            data: (item as ServerSentEvent).data,
+            event: 'event' in item && typeof item.event === 'string' ? item.event : 'message',
+            data: item.data,
         };
     }
     return { event: 'message', data: item };
 }
 
 /**
- * A `View` that writes an async-iterable event source to the HTTP response as
+ * A producing view that streams an async-iterable event source as
  * `text/event-stream`, one SSE frame per yielded value.
  */
-export class ServerSentEventView implements View {
+export class ServerSentEventView implements ProducerView {
     readonly #source: AsyncIterable<unknown>;
 
     /**
@@ -94,77 +101,51 @@ export class ServerSentEventView implements View {
     destroyed = false;
 
     /**
-     * Destroys the view; renders after destruction become no-ops.
+     * Destroys the view; renders after destruction produce an empty stream.
      */
     destroy(): void {
         this.destroyed = true;
     }
 
-    /**
-     * Stream the view's event source to the `ServerResponse` stored in the
-     * route's attributes. Ends the response when the source completes.
-     *
-     * @param _model - Unused — the source is owned by the view.
-     * @param route - The current route; supplies the `ServerResponse`.
-     * @param _target - Unused — this view writes directly to the response.
-     */
-    async render(_model: unknown, route: Route, _target: unknown): Promise<void> {
-        if (this.destroyed) {
-            return;
-        }
-
+    /** @inheritdoc */
+    async renderTo(_model: unknown, route: Route): Promise<RenderResult> {
         const res = route.attributes?.[NODE_RESPONSE_ATTRIBUTE] as unknown as ServerResponse | undefined;
-        if (!res || res.headersSent) {
-            return;
+
+        if (this.destroyed || !res) {
+            return { status: 200, headers: SSE_HEADERS, body: (async function* () {})() };
         }
-        if (res.destroyed) {
-            // The client was already gone before this render started.
+
+        const source = this.#source;
+        const aborted = () => res.destroyed;
+        const onDisconnect = () => {
             this.clientDisconnected = true;
-            return;
-        }
-
-        res.writeHead(200, {
-            'Content-Type': 'text/event-stream; charset=utf-8',
-            'Cache-Control': 'no-cache',
-        });
-        // Send the response headers NOW: Node buffers headers until the first
-        // write, and a waiting stream would otherwise never deliver them —
-        // the client waits for the 200 before it (or its own push trigger)
-        // proceeds.
-        res.flushHeaders();
-
-        // Node surfaces a client abort on the socket close, not on write()
-        // (writes to a closed socket may succeed while buffered). Watch the
-        // response's close so a mid-stream disconnect is observable.
+        };
+        const onFrame = () => {
+            this.frameCount += 1;
+        };
         const onClose = (): void => {
             this.clientDisconnected = true;
         };
         res.on('close', onClose);
 
-        try {
-            for await (const item of this.#source) {
-                if (res.destroyed) {
-                    this.clientDisconnected = true;
-                    break;
-                }
-                const { event, data } = normalize(item);
-                const frame = `${event !== undefined ? `event: ${event}\n` : ''}data: ${JSON.stringify(data)}\n\n`;
+        return {
+            status: 200,
+            headers: SSE_HEADERS,
+            body: (async function* () {
                 try {
-                    res.write(frame);
-                    this.frameCount += 1;
-                } catch {
-                    // The client disconnected mid-stream; stop pushing.
-                    this.clientDisconnected = true;
-                    break;
+                    for await (const item of source) {
+                        if (aborted()) {
+                            onDisconnect();
+                            return;
+                        }
+                        const { event, data } = normalize(item);
+                        yield `${event !== undefined ? `event: ${event}\n` : ''}data: ${JSON.stringify(data)}\n\n`;
+                        onFrame();
+                    }
+                } finally {
+                    res.off('close', onClose);
                 }
-            }
-        } finally {
-            res.off('close', onClose);
-            try {
-                res.end();
-            } catch {
-                // The response is already gone (client disconnect).
-            }
-        }
+            })(),
+        };
     }
 }

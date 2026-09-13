@@ -1,77 +1,35 @@
 # Blue Boot
 
-Blue Boot provides application startup primitives for BlueJS.
+Application startup for BlueJS: profile-aware bootstrapping, typed config
+binding, and environment auto-configuration.
 
 ## Features
 
-- Application lifecycle bootstrap helpers
-- Environment-aware auto-configuration
-- Strong integration with `@blue/context`
-- ESM-first package for Nx/pnpm monorepo workflows
-
-## Auto-configuration
-
-`@blue/boot` automatically provisions common framework components based on the environment.
-
-### Web Auto-configuration
-
-When running in a browser environment, `@blue/boot` automatically registers:
-
-- **Argument Resolvers**: Cookie, Model, Session, and State resolvers for `@parameters`.
-- **Converter Registry**: Built-in converters (number, boolean, date, json) for type-safe parameter extraction.
-
-This behavior is enabled by default when using `Application` or `ApplicationBuilder` in the browser.
-
-## Notes
-
-- `Site` and `SiteBuilder` were removed.
-- Use the context tree (`@blue/context`) to orchestrate multiple applications via parent/child contexts.
-
-## Installation
-
-```bash
-pnpm add @blue/boot
-```
+- **`Application` / `ApplicationBuilder`** — lifecycle bootstrap: register
+  configurations, activate profiles (`ApplicationBuilder.profiles('dev')`),
+  and run
+- **Environment + profiles** — profile activation with defaults and
+  expressions; `@profile('dev')`-gated beans (AD-14)
+- **Typed config binding v2** — `@configurationProperties` class binding with
+  zod schema validation (`@environment`)
+- **Config sources & precedence** — standard environment/file/CLI sources
+  with documented precedence, placeholder resolution
+- **Auto-configuration** — provisions platform components by environment:
+  - *Node*: `NodeAutoConfiguration` (argument resolvers, converter registry,
+    metadata handler mapping, error-resolver chain, managed `HTTPServer`)
+  - *Browser*: Web auto-configuration (cookie/model/session/state resolvers,
+    built-in converters)
 
 ## Usage
 
-### ApplicationBuilder (recommended)
-
-DI-container bootstrap for server-side apps. Registers sources, prepares the
-environment, refreshes the context, and returns it — the handler mapping +
-dispatcher auto-initialize on refresh, and a managed `httpServer` entry is
-provisioned by `NodeAutoConfiguration`.
-
-```typescript
+```ts
 import { ApplicationBuilder } from '@blue/boot';
-import { NodeAutoConfiguration, HTTPServer, gracefulShutdown } from '@blue/platform-node';
 import { MyConfiguration } from './my-configuration';
 
-const context = new ApplicationBuilder([NodeAutoConfiguration, MyConfiguration]).run();
-const server = context.getValue<HTTPServer>('httpServer');
-await server.start();
-gracefulShutdown(context, { resources: [server] });
-
-// SIGINT/SIGTERM → server drains → context.close() → exit 0
+const app = new ApplicationBuilder([MyConfiguration])
+    .profiles('dev')
+    .run();
 ```
-
-Full walkthrough: [`docs/guides/01-building-a-node-api.md`](../../docs/guides/01-building-a-node-api.md).
-
-### Programmatic context
-
-```typescript
-import { GenericApplicationContext } from '@blue/context';
-import { configureBrowserTheme } from '@blue/boot';
-
-const context = new GenericApplicationContext('app');
-
-configureBrowserTheme(context, {
-    themeName: 'default',
-    cookieName: 'theme',
-});
-```
-
-`@blue/boot` provides framework-level bootstrap helpers and is typically consumed by application setup code.
 
 ## Development
 
@@ -79,3 +37,9 @@ configureBrowserTheme(context, {
 pnpm --filter @blue/boot build:lib
 pnpm --filter @blue/boot test
 ```
+
+## See Also
+
+- [@blue/context](../blue-context/README.md) — the context underneath
+- [@blue/platform-node](../blue-platform-node/README.md) — the Node
+  auto-configuration provisions this on Node

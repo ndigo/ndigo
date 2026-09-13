@@ -72,6 +72,43 @@ cd apps/blue-host && pnpm dev
 Build output shows each feature as its own chunk (`catalog-*.js`,
 `checkout-*.js`, `reports-*.js`) — fetched only on demand.
 
+### blue-island
+
+Hybrid island demo: the Node server renders a whole shell document with EJS
+(`@blue/view-ejs`) containing server-side island markup, serves the built
+client bundle that hydrates it, and pushes source-of-truth model updates to
+islands over SSE (AD-9).
+
+```bash
+cd apps/blue-island && pnpm dev
+# GET http://127.0.0.1:3001/
+# GET http://127.0.0.1:3001/events   (SSE stream)
+```
+
+### blue-views
+
+View-resolution demo: three resolvers, three view locations (component
+module, context bean, content-negotiated representation family). The same
+`report` view is served as JSON or CSV via
+`PathExtensionContentNegotiationStrategy`.
+
+```bash
+cd apps/blue-views && pnpm dev
+```
+
+## Per-App READMEs
+
+Each application directory carries its own README with run instructions,
+endpoints, and what the app demonstrates:
+
+- [blue-hello](blue-hello/README.md)
+- [blue-hello-node](blue-hello-node/README.md)
+- [blue-todo](blue-todo/README.md)
+- [blue-api](blue-api/README.md)
+- [blue-host](blue-host/README.md)
+- [blue-island](blue-island/README.md)
+- [blue-views](blue-views/README.md)
+
 ## Development
 
 **Run an application:**

@@ -85,7 +85,7 @@ export class EJSView extends AbstractTemplateView implements ProducerView {
             throw new IllegalStateError('EJSView requires a ViewTarget to render.');
         }
 
-        const html = await this.#renderHtml(templateModel);
+        const html = await this.#renderHTML(templateModel);
         await target.commit(html, templateModel, request as Route);
     }
 
@@ -94,7 +94,7 @@ export class EJSView extends AbstractTemplateView implements ProducerView {
         void _route;
         return {
             mediaType: this.mediaType ?? undefined,
-            body: await this.#renderHtml(model),
+            body: await this.#renderHTML(model),
         };
     }
 
@@ -104,7 +104,7 @@ export class EJSView extends AbstractTemplateView implements ProducerView {
      * @param model - The data model exposed to the template.
      * @returns The rendered HTML.
      */
-    async #renderHtml(model: unknown): Promise<string> {
+    async #renderHTML(model: unknown): Promise<string> {
         return this.#engine.render(await this.#resolveSource(), model as object | null | undefined);
     }
 

@@ -1,5 +1,5 @@
 import { Null } from '@blue/core';
-import { View, ViewTarget } from '@blue/view';
+import { View, ViewTarget, clearCurrentRequest, setCurrentRequest } from '@blue/view';
 import { Route } from '@blue/router';
 import { $aware } from '@blue/factory';
 import { ApplicationContext, likeApplicationContextAware } from '@blue/context';
@@ -191,7 +191,14 @@ export class AbstractDispatcher
         let view: View | null = null;
 
         if (viewName) {
-            view = await this._resolveViewName(viewName, language);
+            // Content negotiation reads the current request; scope it to
+            // resolution so strategies can match path extensions / Accept.
+            setCurrentRequest(route);
+            try {
+                view = await this._resolveViewName(viewName, language);
+            } finally {
+                clearCurrentRequest();
+            }
             if (!view) {
                 throw new NoViewFoundError(viewName as string, route);
             }

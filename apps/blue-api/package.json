@@ -25,6 +25,7 @@
     "@blue/router": "~0.0.1",
     "@blue/telemetry": "~0.0.1",
     "@blue/util": "~0.0.1",
+    "@blue/view": "~0.0.1",
     "@tsmetadata/polyfill": "^1.1.3"
   },
   "devDependencies": {

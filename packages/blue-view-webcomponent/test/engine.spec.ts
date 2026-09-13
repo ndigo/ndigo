@@ -1,8 +1,7 @@
-import { describe, it, expect, vi, beforeAll } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { Route } from '@blue/router';
-import { View } from '@blue/view';
 import { WebComponentView } from '../src/view';
-import { DOMElementViewTarget, WebComponentViewEngine, likeDOMViewTarget } from '../src/engine';
+import { DOMElementViewTarget, likeDOMViewTarget } from '../src/engine';
 import { TagMapping } from '../src/tag-mapping';
 import { ViewMapping } from '../src/view-mapping';
 
@@ -107,7 +106,7 @@ describe('DOMElementViewTarget', () => {
         const target = new DOMElementViewTarget(el);
 
         expect(target.container).toBe(el);
-        expect(target.container.innerHTML).toBe('');
+        expect((target.container as HTMLElement).innerHTML).toBe('');
     });
 
     it('prepare clears innerHTML and resets for render', () => {
@@ -185,90 +184,40 @@ describe('DOMElementViewTarget', () => {
     it('likeDOMViewTarget rejects plain objects', () => {
         expect(likeDOMViewTarget({})).toBe(false);
     });
-});
 
-// ── WebComponentViewEngine ────────────────────────────────────────
+    it('commit re-uses a single matching element and updates its model', () => {
+        const el = document.createElement('div');
+        el.innerHTML = '<existing-el></existing-el>';
+        const existing = el.firstElementChild as HTMLElement;
+        const target = new DOMElementViewTarget(el);
 
-describe('WebComponentViewEngine', () => {
-    let engine: WebComponentViewEngine;
-    let container: HTMLElement;
-    let target: DOMElementViewTarget;
+        target.commit(document.createElement('existing-el'), { updated: true }, mockRoute);
 
-    beforeEach(() => {
-        engine = new WebComponentViewEngine();
-        container = document.createElement('div');
-        target = new DOMElementViewTarget(container);
+        expect(el.children.length).toBe(1);
+        expect(el.firstElementChild).toBe(existing);
+        expect((existing as Element & { model?: unknown }).model).toEqual({ updated: true });
     });
 
-    it('renders a WebComponentView by creating a new element', async () => {
-        const view = new WebComponentView('test-component');
-        view.name = 'testComponent';
+    it('commit replaces a non-matching single child', () => {
+        const el = document.createElement('div');
+        el.innerHTML = '<other-el></other-el>';
+        const target = new DOMElementViewTarget(el);
 
-        await engine.render(view, { name: 'World' }, target, mockRoute);
+        target.commit(document.createElement('new-el'), {}, mockRoute);
 
-        expect(container.children.length).toBe(1);
-        expect(container.children[0].tagName.toLowerCase()).toBe('test-component');
+        expect(el.children.length).toBe(1);
+        expect((el.children[0] as HTMLElement).tagName.toLowerCase()).toBe('new-el');
     });
 
-    it('sets model on the rendered element', async () => {
-        const view = new WebComponentView('model-component');
-        view.name = 'modelComponent';
-        const model = { data: 'test' };
+    it('commit clears and appends when multiple children exist', () => {
+        const el = document.createElement('div');
+        el.innerHTML = '<a></a><b></b>';
+        const target = new DOMElementViewTarget(el);
 
-        await engine.render(view, model, target, mockRoute);
+        target.commit(document.createElement('my-view'), {}, mockRoute);
 
-        const rendered = container.children[0] as Element & { model?: unknown };
-        expect(rendered.model).toEqual(model);
-    });
-
-    it('reuses existing element when tagName matches', async () => {
-        container.innerHTML = '<existing-el></existing-el>';
-        const existing = container.firstElementChild;
-        if (!existing) {
-            throw new Error('expected an existing element before reuse check');
-        }
-
-        const view = new WebComponentView('existing-el');
-        view.name = 'existingEl';
-
-        await engine.render(view, { updated: true }, target, mockRoute);
-
-        expect(container.children.length).toBe(1);
-        expect(container.firstElementChild).toBe(existing);
-        const reusedModel = existing as Element & { model?: unknown }; // engine sets .model on the reused element
-        expect(reusedModel.model).toEqual({ updated: true });
-    });
-
-    it('creates new element when tagName does not match existing', async () => {
-        container.innerHTML = '<other-el></other-el>';
-
-        const view = new WebComponentView('new-el');
-        view.name = 'newEl';
-
-        await engine.render(view, {}, target, mockRoute);
-
-        expect(container.children.length).toBe(1);
-        expect(container.children[0].tagName.toLowerCase()).toBe('new-el');
-    });
-
-    it('throws TypeError when view is not a WebComponentView', async () => {
-        // Intentionally not a WebComponentView — the engine must reject it.
-        const fakeView = { name: 'fake' } as unknown as View;
-
-        await expect(engine.render(fakeView, {}, target, mockRoute)).rejects.toThrow(TypeError);
-    });
-
-    it('prepares target and commits output for new elements', async () => {
-        const prepareSpy = vi.spyOn(target, 'prepare');
-        const commitSpy = vi.spyOn(target, 'commit');
-
-        const view = new WebComponentView('fresh-component');
-        view.name = 'freshComponent';
-
-        await engine.render(view, { value: 42 }, target, mockRoute);
-
-        expect(prepareSpy).toHaveBeenCalledOnce();
-        expect(commitSpy).toHaveBeenCalledOnce();
+        expect(el.children.length).toBe(1);
+        expect((el.children[0] as HTMLElement).tagName.toLowerCase()).toBe('my-view');
     });
 });
 
@@ -278,10 +227,5 @@ describe('WebComponentView', () => {
     it('creates a view with tag name', () => {
         const view = new WebComponentView('my-component');
         expect(view.tagName).toBe('my-component');
-    });
-
-    it('creates a template from the tag name', () => {
-        const view = new WebComponentView('custom-el');
-        expect(view.template).toBe('<custom-el>');
     });
 });

@@ -1,25 +1,27 @@
-import { EventBridgeViewTarget, ViewEngine, View, ViewTarget } from '@blue/view';
+import { EventBridgeViewTarget } from '@blue/view';
 import { Route } from '@blue/router';
 import { IllegalStateError } from '@blue/core';
 import { EventEmitter } from '@blue/context';
-import { WebComponentView } from './view';
+import { ModelAwareElement } from './view';
 import { DOMEventBinder } from './_dom-event-binder';
 
-interface ModelAwareElement extends HTMLElement {
-    model: unknown;
-}
+/**
+ * A DOM node that can host a rendered subtree: an element, a shadow root,
+ * an iframe document, or a fragment.
+ */
+export type RenderHost = Element | ShadowRoot | DocumentFragment | Document;
 
 /**
  * View target contract for DOM-backed render destinations.
  *
- * It extends the shared event-bridge target with a concrete container element so the
- * engine can reuse or replace the rendered subtree.
+ * It extends the shared event-bridge target with a concrete host node so the
+ * target can reuse or replace the rendered subtree.
  */
 export interface DOMViewTarget extends EventBridgeViewTarget {
     /**
-     * The host element that receives rendered output.
+     * The host node that receives rendered output.
      */
-    readonly container: HTMLElement;
+    readonly container: RenderHost;
 }
 
 /**
@@ -40,46 +42,46 @@ export const likeDOMViewTarget = (value: unknown): value is DOMViewTarget => {
         typeof target.commit === 'function' &&
         typeof target.clear === 'function' &&
         typeof target.setEventMap === 'function' &&
-        target.container instanceof HTMLElement
+        target.container instanceof Node
     );
 };
 
 /**
- * View target implementation that renders into a host HTMLElement.
+ * View target implementation that renders into a host DOM node.
  */
 export class DOMElementViewTarget implements DOMViewTarget {
-    #element: HTMLElement;
+    #host: RenderHost;
     #eventMap: Record<string, string>;
     #applicationContext: EventEmitter | null;
     #binder: DOMEventBinder;
     destroyed: boolean;
 
     /**
-     * Creates a DOM-backed view target for the provided element.
+     * Creates a DOM-backed view target for the provided host node.
      *
-     * @param element - The root element that will host rendered content.
+     * @param host - The host node that will contain rendered content.
      * @param options - Event mapping used to bridge DOM events to the application context.
-     * @throws {TypeError} When `element` is null or undefined.
+     * @throws {TypeError} When `host` is null or undefined.
      */
     constructor(
-        element: HTMLElement | null,
+        host: RenderHost | null,
         options: {
             eventMap?: Record<string, string>;
         } = {}
     ) {
-        if (!element) {
-            throw new TypeError('DOMElementViewTarget requires a root HTMLElement.');
+        if (!host) {
+            throw new TypeError('DOMElementViewTarget requires a container node.');
         }
 
-        this.#element = element;
+        this.#host = host;
         this.#eventMap = options.eventMap ?? {};
         this.#applicationContext = null;
-        this.#binder = new DOMEventBinder(element);
+        this.#binder = new DOMEventBinder(host);
         this.destroyed = false;
     }
 
-    get container(): HTMLElement {
-        return this.#element;
+    get container(): RenderHost {
+        return this.#host;
     }
 
     /**
@@ -133,7 +135,7 @@ export class DOMElementViewTarget implements DOMViewTarget {
     }
 
     /**
-     * Removes all installed DOM event listeners from the host element.
+     * Removes all installed DOM event listeners from the host node.
      */
     unlisten(): void {
         this.#binder.unbindAll();
@@ -145,16 +147,21 @@ export class DOMElementViewTarget implements DOMViewTarget {
      * @param route - The active route associated with the render pass.
      * @throws {IllegalStateError} When the target has already been destroyed.
      */
-    prepare(route: Route): void {
+    prepare(_route: Route): void {
+        void _route;
         if (this.destroyed) {
             throw new IllegalStateError('Cannot prepare a destroyed DOMElementViewTarget.');
         }
         this.unlisten();
-        this.#element.innerHTML = '';
+        this.#host.replaceChildren();
     }
 
     /**
-     * Appends rendered output to the host element and re-enables event bridging.
+     * Commits rendered output to the host node and re-enables event bridging.
+     *
+     * A single existing child whose tag name matches the output is reused by
+     * updating its model instead of being replaced, so web component model
+     * updates drive re-rendering in place.
      *
      * @param output - The rendered DOM subtree to attach.
      * @param model - The model passed through from the view engine.
@@ -165,7 +172,19 @@ export class DOMElementViewTarget implements DOMViewTarget {
         if (this.destroyed) {
             throw new IllegalStateError('Cannot commit to a destroyed DOMElementViewTarget.');
         }
-        this.#element.appendChild(output);
+
+        const children = this.#host.children;
+        if (children.length === 1) {
+            const existing = children[0] as HTMLElement;
+            if (existing.tagName !== undefined && existing.tagName.toLowerCase() === output.tagName.toLowerCase()) {
+                (existing as ModelAwareElement).model = model;
+                this.listen();
+                return;
+            }
+        }
+
+        this.prepare(route);
+        this.#host.appendChild(output);
         this.listen();
     }
 
@@ -177,7 +196,7 @@ export class DOMElementViewTarget implements DOMViewTarget {
             return;
         }
         this.unlisten();
-        this.#element.innerHTML = '';
+        this.#host.replaceChildren();
     }
 
     /**
@@ -189,53 +208,8 @@ export class DOMElementViewTarget implements DOMViewTarget {
         }
 
         this.unlisten();
-        this.#element.innerHTML = '';
+        this.#host.replaceChildren();
         this.#applicationContext = null;
         this.destroyed = true;
-    }
-}
-
-/**
- * View engine that renders BlueJS views as custom elements.
- */
-export class WebComponentViewEngine implements ViewEngine {
-    /**
-     * Renders a web component view into the target, reusing an existing matching element when possible.
-     *
-     * @param view - The view to render.
-     * @param model - The view model passed to the component.
-     * @param target - The destination for rendered output.
-     * @param route - The active route for the render pass.
-     * @returns A promise that resolves when rendering completes.
-     * @throws {TypeError} When `view` is not a `WebComponentView`.
-     */
-    async render(view: View, model: unknown, target: ViewTarget, route: Route): Promise<void> {
-        if (!(view instanceof WebComponentView)) {
-            throw new TypeError('WebComponentViewEngine can only render WebComponentView instances.');
-        }
-
-        let element: HTMLElement | null = null;
-
-        if (likeDOMViewTarget(target)) {
-            const existingElement = target.container.firstElementChild;
-
-            if (
-                existingElement instanceof HTMLElement &&
-                target.container.children.length === 1 &&
-                existingElement.tagName.toLowerCase() === view.tagName.toLowerCase()
-            ) {
-                element = existingElement;
-            }
-        }
-
-        if (!element) {
-            await target.prepare(route);
-            const output = document.createElement(view.tagName) as ModelAwareElement;
-            output.model = model;
-            await target.commit(output, model, route);
-            return;
-        }
-
-        (element as ModelAwareElement).model = model;
     }
 }

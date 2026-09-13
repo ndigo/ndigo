@@ -6,22 +6,14 @@ import { WebComponentView } from '../src/view';
  * exercise the render pipeline without widening the public API.
  */
 interface ExposedView {
-    _renderTemplate(templateModel: unknown, request: unknown): void;
     _renderView(viewModel: unknown, request: unknown, target?: unknown): Promise<void>;
-    setApplicationContext(context: unknown): void;
 }
 
 describe('WebComponentView', () => {
-    test('it should create template from name', () => {
+    test('it should expose the tag name', () => {
         const view = new WebComponentView('user-profile');
 
-        expect(view.template).toBe('<user-profile>');
-    });
-
-    test('it should throw for unimplemented _renderTemplate', () => {
-        const view = new WebComponentView('test-view') as unknown as ExposedView;
-
-        expect(() => view._renderTemplate({}, {})).toThrow('Method not implemented.');
+        expect(view.tagName).toBe('user-profile');
     });
 
     test('it should throw when _renderView has no target', async () => {
@@ -30,34 +22,18 @@ describe('WebComponentView', () => {
         await expect(view._renderView({}, {})).rejects.toThrow('WebComponentView requires a ViewTarget to render.');
     });
 
-    test('it should throw when application context is missing', async () => {
+    test('it should create the custom element and commit it to the target', async () => {
         const view = new WebComponentView('test-view') as unknown as ExposedView;
-
-        await expect(view._renderView({}, {}, {})).rejects.toThrow(
-            'WebComponentView requires an ApplicationContext to resolve the ViewEngine.'
-        );
-    });
-
-    test('it should throw when engine is missing from application context', async () => {
-        const view = new WebComponentView('test-view') as unknown as ExposedView;
-        view.setApplicationContext({ getValue: () => null });
-
-        await expect(view._renderView({}, {}, {})).rejects.toThrow(
-            'No WebComponentViewEngine found in ApplicationContext.'
-        );
-    });
-
-    test('it should delegate rendering to resolved engine', async () => {
-        const view = new WebComponentView('test-view') as unknown as ExposedView;
-        const engine = { render: vi.fn().mockResolvedValue(undefined) };
-        const target = { prepare: vi.fn(), commit: vi.fn(), clear: vi.fn() };
+        const target = { commit: vi.fn() };
         const route = { path: '/index' };
         const model = { items: [] };
 
-        view.setApplicationContext({ getValue: () => engine });
-
         await view._renderView(model, route, target);
 
-        expect(engine.render).toHaveBeenCalledWith(view, model, target, route);
+        expect(target.commit).toHaveBeenCalledTimes(1);
+        const [element, committedModel] = target.commit.mock.calls[0] as [HTMLElement & { model?: unknown }, unknown];
+        expect(element.tagName.toLowerCase()).toBe('test-view');
+        expect(element.model).toBe(model);
+        expect(committedModel).toBe(model);
     });
 });

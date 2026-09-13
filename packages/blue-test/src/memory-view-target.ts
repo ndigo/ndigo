@@ -2,8 +2,9 @@
  * Memory view target — a DOM-free `ViewTarget` that captures rendered output
  * so browser controllers can be asserted on without a real DOM container.
  *
- * The web-component engine falls into the `!likeDOMViewTarget` branch when the
- * target is a plain `ViewTarget`, creating the element and committing it here.
+ * `WebComponentView` renders by creating its custom element and committing it
+ * to the target, so a plain capture target receives the element exactly as a
+ * DOM-backed target would.
  *
  * @module
  * @since 1.0.0

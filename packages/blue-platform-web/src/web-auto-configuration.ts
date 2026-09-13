@@ -7,7 +7,7 @@ import { BrowserSessionValueMethodArgumentResolver } from './session-argument-re
 import { BrowserStateValueMethodArgumentResolver } from './state-argument-resolver';
 import { RadixMetadataHandlerMapping } from '@blue/dispatcher';
 import { NameViewResolver, ViewResolverComposite } from '@blue/view';
-import { WebComponentViewEngine, WebComponentViewResolver } from '@blue/view-webcomponent';
+import { WebComponentViewResolver } from '@blue/view-webcomponent';
 import { conditionalOnBrowser } from '@blue/core';
 
 /**
@@ -64,16 +64,5 @@ export class WebAutoConfiguration {
     @entry
     viewResolver() {
         return new ViewResolverComposite([new WebComponentViewResolver(), new NameViewResolver()]);
-    }
-
-    /**
-     * Provides the default Web Component view engine.
-     * Can be overridden by registering a custom `configuration` with a webComponentViewEngine entry.
-     *
-     * @returns The default Web Component view engine.
-     */
-    @entry
-    webComponentViewEngine() {
-        return new WebComponentViewEngine();
     }
 }

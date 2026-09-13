@@ -94,6 +94,16 @@ describe('EJSView', () => {
         const view = new EJSView('home', { template: '<p>hi</p>' });
         await expect(view.render({}, {} as Route, undefined)).rejects.toThrow(/ViewTarget/);
     });
+
+    it('produces a whole-page HTML document in document mode', async () => {
+        const loader = new InMemoryResourceLoader().set('pages/home.html', '<h1><%= title %></h1>');
+        const view = new EJSView('pages/home.html', { loader });
+
+        const result = await view.renderTo({ title: 'Page' }, {} as Route);
+
+        expect(result.body).toBe('<h1>Page</h1>');
+        expect(String(result.mediaType)).toMatch(/^text\/html/);
+    });
 });
 
 describe('EJSViewResolver', () => {

@@ -1,61 +1,53 @@
-import { FrameworkError, IllegalStateError } from '@blue/core';
-import { AbstractTemplateView, ViewTarget } from '@blue/view';
-//import { BlueElement } from './blue-element';
+/**
+ * @blue/view-webcomponent — Web component view.
+ *
+ * @module
+ * @since 1.0.0
+ */
 
-interface ApplicationContextLike {
-    getValue<T = unknown>(name: string): T;
-}
+import { AbstractView, ViewTarget } from '@blue/view';
+import { IllegalStateError } from '@blue/core';
+import type { Route } from '@blue/router';
 
-interface WebComponentViewEngineLike {
-    render(view: WebComponentView, model: unknown, target: ViewTarget, route: unknown): Promise<void>;
+/**
+ * An HTMLElement that carries the view model used to render it.
+ */
+export interface ModelAwareElement extends HTMLElement {
+    model: unknown;
 }
 
 /**
- * Template view base that delegates rendering to a web component view engine.
+ * A view that renders a custom element into a view target.
+ *
+ * Rendering creates an element for {@link WebComponentView.tagName | `tagName`},
+ * binds the view model to it, and commits it to the target — the element's own
+ * custom-element lifecycle performs the actual rendering. Placement and reuse
+ * of the rendered subtree belong to the target.
  */
-export class WebComponentView extends AbstractTemplateView {
+export class WebComponentView extends AbstractView {
     /**
      * The custom element tag name rendered by this view.
      */
     tagName: string;
-    /**
-     * The template root used to instantiate the component markup.
-     */
-    template: string;
-    /**
-     * Application context used to resolve the web component view engine.
-     */
-    readonly applicationContext?: ApplicationContextLike;
 
     /**
      * Creates a view bound to a specific custom element tag name.
      *
-     * @param name - The custom element tag name to render.
+     * @param tagName - The custom element tag name to render.
      */
-    constructor(name: string) {
+    constructor(tagName: string) {
         super();
-        this.tagName = name;
-        this.template = `<${name}>`;
+        this.tagName = tagName;
     }
 
-    protected _renderTemplate(templateModel: unknown, request: unknown): void {
-        throw new FrameworkError('Method not implemented.');
-    }
-
+    /** @inheritdoc */
     protected async _renderView(viewModel: unknown, request: unknown, target?: ViewTarget): Promise<void> {
         if (!target) {
             throw new IllegalStateError('WebComponentView requires a ViewTarget to render.');
         }
 
-        if (!this.applicationContext) {
-            throw new IllegalStateError('WebComponentView requires an ApplicationContext to resolve the ViewEngine.');
-        }
-
-        const engine = this.applicationContext.getValue<WebComponentViewEngineLike>('webComponentViewEngine');
-        if (!engine) {
-            throw new IllegalStateError('No WebComponentViewEngine found in ApplicationContext.');
-        }
-
-        await engine.render(this, viewModel, target, request);
+        const element = document.createElement(this.tagName) as ModelAwareElement;
+        element.model = viewModel;
+        await target.commit(element, viewModel, request as Route);
     }
 }

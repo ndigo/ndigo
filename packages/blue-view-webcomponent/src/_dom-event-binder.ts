@@ -5,7 +5,7 @@
  * preventing memory leaks and duplicate listeners.
  */
 export class DOMEventBinder {
-    #element: HTMLElement;
+    #element: EventTarget;
     #listeners: Map<string, EventListener> = new Map();
 
     /**
@@ -13,7 +13,7 @@ export class DOMEventBinder {
      *
      * @param element - The element to bind events to.
      */
-    constructor(element: HTMLElement) {
+    constructor(element: EventTarget) {
         this.#element = element;
     }
 

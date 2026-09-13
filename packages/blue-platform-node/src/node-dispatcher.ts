@@ -2,8 +2,9 @@
  * Node.js dispatcher extending the platform-independent `AbstractDispatcher` for server-side rendering.
  *
  * Overrides `render()` to write the view output to the HTTP response via
- * `HTTPResponseViewTarget`, instead of the browser DOM. The dispatch pipeline
- * (handler mapping, interceptors, error resolution) is inherited unchanged.
+ * `HTTPResponseViewTarget` or — for document-producing views — directly as a
+ * `RenderResult`. The dispatch pipeline (handler mapping, interceptors, error
+ * resolution) is inherited unchanged.
  *
  * @module
  * @since 1.0.0
@@ -13,13 +14,14 @@ import { AbstractDispatcher } from '@blue/dispatcher';
 import { ModelAndView } from '@blue/dispatcher';
 import { Route } from '@blue/router';
 import { likeApplicationContextAware } from '@blue/context';
-import { View, likeView } from '@blue/view';
+import { View, likeProducerView, likeView } from '@blue/view';
 import type { ServerResponse } from 'node:http';
 import { NODE_RESPONSE_ATTRIBUTE } from './node-request';
 import { ProblemTypes, writeProblem } from './problem-details';
 import { HTTPResponseViewTarget } from './node-view-target';
 import { ResponseEntityView } from './response-entity-view';
 import { isResponseEntity } from './response-entity';
+import { writeRenderResult } from './producer-writer';
 
 /**
  * A dispatcher for Node.js that renders its output to the HTTP response.
@@ -36,8 +38,9 @@ export class NodeDispatcher extends AbstractDispatcher {
      * Render the given `ModelAndView` to the HTTP response.
      *
      * Reads the `ServerResponse` from `route.attributes[NODE_RESPONSE_ATTRIBUTE]`
-     * (set by the HTTP server adapter), creates an `HTTPResponseViewTarget`, and
-     * renders the view into it.
+     * (set by the HTTP server adapter) and renders according to the result
+     * shape: response entities and document-producing views write the response
+     * directly; fragment views render into an `HTTPResponseViewTarget`.
      *
      * @param mv - The `ModelAndView` to render.
      * @param route - The route associated with the `ModelAndView`.
@@ -46,9 +49,9 @@ export class NodeDispatcher extends AbstractDispatcher {
         const res = route.attributes?.[NODE_RESPONSE_ATTRIBUTE] as unknown as ServerResponse | undefined;
         const viewTarget = new HTTPResponseViewTarget(res);
 
-        // ResponseEntity — write status/headers/body directly
+        // ResponseEntity — produce a full response document.
         if (isResponseEntity(mv)) {
-            await new ResponseEntityView().render(mv, route);
+            await writeRenderResult(res, await new ResponseEntityView().renderTo(mv, route));
             return;
         }
 
@@ -61,18 +64,13 @@ export class NodeDispatcher extends AbstractDispatcher {
         }
 
         // JSON API — a plain return with no view (object OR scalar): serialize
-        // it directly. Only a real ModelAndView carries view/viewName semantics.
+        // it as a JSON response document. Only a real ModelAndView carries
+        // view/viewName semantics.
         if (!(mv instanceof ModelAndView) && mv !== undefined && mv !== null) {
-            // Scalars (string/number/boolean) would be misread by the view
-            // target's `typeof === 'string' → HTML` heuristic; emit them as JSON.
-            if (typeof mv === 'string' || typeof mv === 'number' || typeof mv === 'boolean') {
-                if (res && !res.headersSent) {
-                    res.writeHead(200, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify(mv));
-                }
-                return;
-            }
-            await viewTarget.commit(mv, null, route);
+            await writeRenderResult(res, {
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(mv),
+            });
             return;
         }
 
@@ -98,17 +96,24 @@ export class NodeDispatcher extends AbstractDispatcher {
         } else {
             view = mv?.view;
             if (!view) {
-                // No view — fall back to serializing the model as JSON
-                if (res && !res.headersSent) {
-                    res.writeHead(200, { 'Content-Type': 'application/json' });
-                    res.end(JSON.stringify(mv?.model ?? {}));
-                }
+                // No view — fall back to serializing the model as JSON.
+                await writeRenderResult(res, {
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(mv?.model ?? {}),
+                });
                 return;
             }
         }
 
         if (likeApplicationContextAware(view)) {
             view.setApplicationContext(this.applicationContext);
+        }
+
+        // Document-producing views (e.g. EJS whole pages) write the response
+        // directly; fragment views render into the response view target.
+        if (likeProducerView(view)) {
+            await writeRenderResult(res, await view.renderTo(mv.model, route));
+            return;
         }
 
         await view.render(mv.model, route, viewTarget);

@@ -5,7 +5,7 @@
  * @since 1.0.0
  */
 
-import { AbstractTemplateView, ViewTarget } from '@blue/view';
+import { AbstractTemplateView, type ProducerView, type RenderResult, ViewTarget } from '@blue/view';
 import { IllegalStateError } from '@blue/core';
 import type { ApplicationContext, ResourceLoader } from '@blue/context';
 import type { Route } from '@blue/router';
@@ -45,13 +45,12 @@ export interface EJSViewOptions {
  * 2. a `path` resolved through a {@link ResourceLoader} — the injected
  *    `loader`, or the view's application context.
  *
- * Rendering produces a string committed to the supplied {@link ViewTarget}, so
- * the same view serves Node HTTP responses, browser SSR DOM, or a DOM-free
- * capture target in tests — it never touches a platform directly. This mirrors
- * Spring MVC's self-rendering `View`: the dispatcher resolves the view and lets
- * it render into whatever target the platform provides.
+ * Like Spring MVC's self-rendering `View`, the view renders into a supplied
+ * {@link ViewTarget} for fragment mode (islands, client-side DOM) and —
+ * through {@link ProducerView} — produces a whole HTML page for document mode
+ * (servlet/JSP-style server-side rendering).
  */
-export class EJSView extends AbstractTemplateView {
+export class EJSView extends AbstractTemplateView implements ProducerView {
     /**
      * The application context, provided by the mixin via `setApplicationContext`.
      * Declared here so TypeScript can see it through the mixin inheritance chain.
@@ -86,8 +85,27 @@ export class EJSView extends AbstractTemplateView {
             throw new IllegalStateError('EJSView requires a ViewTarget to render.');
         }
 
-        const html = await this.#engine.render(await this.#resolveSource(), templateModel as object | null | undefined);
+        const html = await this.#renderHtml(templateModel);
         await target.commit(html, templateModel, request as Route);
+    }
+
+    /** @inheritdoc */
+    async renderTo(model: unknown, _route: Route): Promise<RenderResult> {
+        void _route;
+        return {
+            mediaType: this.mediaType ?? undefined,
+            body: await this.#renderHtml(model),
+        };
+    }
+
+    /**
+     * Render the template source against the given model.
+     *
+     * @param model - The data model exposed to the template.
+     * @returns The rendered HTML.
+     */
+    async #renderHtml(model: unknown): Promise<string> {
+        return this.#engine.render(await this.#resolveSource(), model as object | null | undefined);
     }
 
     /**

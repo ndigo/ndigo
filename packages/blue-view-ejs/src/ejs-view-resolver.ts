@@ -36,7 +36,7 @@ export class EJSViewResolver extends AbstractPathBasedViewResolver {
     /**
      * Creates a new EJS view resolver.
      *
-     * @param options - Engine, source-provider, and path-framing options shared by resolved views.
+     * @param options - Engine, resource-loader, and path-framing options shared by resolved views.
      */
     constructor(options: EJSViewResolverOptions = {}) {
         super();
@@ -58,7 +58,7 @@ export class EJSViewResolver extends AbstractPathBasedViewResolver {
 
         return new EJSView(`${this.prefix}${name}${this.suffix}`, {
             engine: this.#options.engine,
-            provider: this.#options.provider,
+            loader: this.#options.loader,
         });
     }
 }

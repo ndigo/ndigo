@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { Route } from '@blue/router';
-import { InMemoryTemplateSourceProvider, type ViewTarget } from '@blue/view';
+import type { ViewTarget } from '@blue/view';
+import { InMemoryResourceLoader } from '@blue/context';
 
 import { EJSView } from '../src/ejs-view';
 import { EJSTemplateEngine } from '../src/ejs-template-engine';
@@ -74,9 +75,9 @@ describe('EJSView', () => {
         expect(target.last?.model).toEqual({ name: 'Grace' });
     });
 
-    it('loads the template source from a provider by path', async () => {
-        const provider = new InMemoryTemplateSourceProvider().set('pages/home.html', '<h1><%= title %></h1>');
-        const view = new EJSView('pages/home.html', { provider });
+    it('loads the template source from a resource loader by path', async () => {
+        const loader = new InMemoryResourceLoader().set('pages/home.html', '<h1><%= title %></h1>');
+        const view = new EJSView('pages/home.html', { loader });
         const target = new CaptureViewTarget();
 
         await view.render({ title: 'Welcome' }, {} as Route, target);
@@ -84,7 +85,7 @@ describe('EJSView', () => {
         expect(target.last?.output).toBe('<h1>Welcome</h1>');
     });
 
-    it('throws when neither a template nor a path+provider is available', async () => {
+    it('throws when neither a template nor a path+loader is available', async () => {
         const view = new EJSView('orphan');
         await expect(view.render({ name: 'x' }, {} as Route, new CaptureViewTarget())).rejects.toThrow(/template/i);
     });
@@ -97,8 +98,8 @@ describe('EJSView', () => {
 
 describe('EJSViewResolver', () => {
     it('maps a logical name through prefix/suffix and renders HTML', async () => {
-        const provider = new InMemoryTemplateSourceProvider().set('views/home.html', '<h1><%= title %></h1>');
-        const resolver = new EJSViewResolver({ provider, prefix: 'views/', suffix: '.html' });
+        const loader = new InMemoryResourceLoader().set('views/home.html', '<h1><%= title %></h1>');
+        const resolver = new EJSViewResolver({ loader, prefix: 'views/', suffix: '.html' });
 
         const view = await resolver.resolveViewName('home', '');
         const target = new CaptureViewTarget();

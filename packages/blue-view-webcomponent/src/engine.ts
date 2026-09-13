@@ -147,8 +147,8 @@ export class DOMElementViewTarget implements DOMViewTarget {
      * @param route - The active route associated with the render pass.
      * @throws {IllegalStateError} When the target has already been destroyed.
      */
-    prepare(_route: Route): void {
-        void _route;
+    prepare(route: Route): void {
+        void route;
         if (this.destroyed) {
             throw new IllegalStateError('Cannot prepare a destroyed DOMElementViewTarget.');
         }

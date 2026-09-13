@@ -166,10 +166,10 @@ export abstract class AbstractPathBasedViewResolver extends AbstractCachingViewR
 
 /**
  * Convenient base class for {@link ViewResolver|`ViewResolver`} implementations. Caches {@link View|`View`} instances once resolved.
- * Subclasses need to implement the {@link ViewResolver#loadView|`loadView`} method, building the instance for the specific view name and locale.
+ * Subclasses need to implement the {@link AbstractCachingViewResolver#_loadView|`_loadView`} method, building the instance for the specific view name and locale.
  * @abstract
 
- * @see {@link ViewResolver#loadView}
+ * @see {@link AbstractCachingViewResolver#_loadView}
  */
 
 export class ImportViewResolver extends AbstractPathBasedViewResolver {

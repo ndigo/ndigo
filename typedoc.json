@@ -8,6 +8,7 @@
     "packages/blue-context/src/index.ts",
     "packages/blue-router/src/index.ts",
     "packages/blue-view/src/index.ts",
+    "packages/blue-view-ejs/src/index.ts",
     "packages/blue-http/src/index.ts",
     "packages/blue-content/src/index.ts",
     "packages/blue-boot/src/index.ts",
@@ -17,7 +18,7 @@
     "packages/blue-platform-web/src/index.ts",
     "packages/blue-factory/src/index.ts",
     "packages/blue-dom/src/index.ts",
-    "packages/blue-eslint-plugin/src/index.ts",
+    "packages/blue-oxlint-plugin/src/index.ts",
     "packages/blue-orm/src/index.ts",
     "packages/blue-orm-drizzle/src/index.ts",
     "packages/blue-platform-node/src/index.ts",
@@ -28,17 +29,36 @@
     "packages/blue-test/src/index.ts",
     "packages/blue-management/src/index.ts"
   ],
-  "exclude": ["**/node_modules/**", "**/test/**", "archive/**"],
+  "exclude": [
+    "**/node_modules/**",
+    "**/test/**",
+    "archive/**"
+  ],
   "out": "doc-md",
-  "plugin": ["typedoc-plugin-markdown", "./scripts/typedoc-tags-plugin.mjs"],
+  "plugin": [
+    "typedoc-plugin-markdown",
+    "./scripts/typedoc-tags-plugin.mjs"
+  ],
   "readme": "README.md",
   "categorizeByGroup": true,
-  "categoryOrder": ["Function", "List", "Object", "String", "Type", "Logic", "Math", "Relation", "*"],
+  "categoryOrder": [
+    "Function",
+    "List",
+    "Object",
+    "String",
+    "Type",
+    "Logic",
+    "Math",
+    "Relation",
+    "*"
+  ],
   "excludePrivate": true,
   "excludeProtected": false,
   "excludeInternal": false,
   "includeVersion": true,
-  "sort": ["source-order"],
+  "sort": [
+    "source-order"
+  ],
   "gitRevision": "main",
   "sourceLinkTemplate": "https://bitbucketdc-digital.jpmchase.net/scm/bluejs/blue/src/{gitRevision}/{path}#lines-{line}",
   "skipErrorChecking": true,
@@ -62,7 +82,9 @@
       "Route": "#"
     },
     "@blue/view": {
-      "View": "#"
+      "View": "#",
+      "ProducerView": "#",
+      "ViewTarget": "#"
     },
     "@blue/dispatcher": {
       "RouteHandlerInterceptor": "#",
@@ -79,7 +101,8 @@
       "ContentSourceAware": "#",
       "ContentSource": "#",
       "EntryRegistryProcessor": "#",
-      "LifecycleProcessor": "#"
+      "LifecycleProcessor": "#",
+      "ResourceLoader": "#"
     },
     "@blue/telemetry": {
       "FeatureMetricAggregator": "#",

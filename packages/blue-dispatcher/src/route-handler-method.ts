@@ -47,6 +47,17 @@ export class RouteHandlerMethod implements HandlerMethod, Serializable {
     parameters!: MethodParameter[];
     argumentResolvers!: HandlerMethodArgumentResolver[];
 
+    /**
+     * Cached resolver selection per {@link MethodParameter}, keyed to the
+     * `argumentResolvers` array it was derived from. Resolvers are chosen for
+     * a parameter at most once: every resolver's `supportsParameter` is a
+     * pure type check, so the first verdict never changes for the method's
+     * lifetime. Rebuilt transparently if the resolvers array is replaced.
+     */
+    #resolverSelection:
+        | { resolvers: HandlerMethodArgumentResolver[]; byParameter: Map<MethodParameter, HandlerMethodArgumentResolver | null> }
+        | null = null;
+
     constructor(handler: object, method: string, ...args: unknown[]);
     constructor(factory: Factory, name: string, method: string, ...args: unknown[]);
     constructor(factoryOrHandler: Factory | object, nameOrMethod: string, ...args: unknown[]) {
@@ -80,10 +91,20 @@ export class RouteHandlerMethod implements HandlerMethod, Serializable {
             args = new Array(parametersLength),
             mapping = getRouteMapping(this.handler, this.method);
         if (parametersLength) {
+            let selection = this.#resolverSelection;
+            if (selection === null || selection.resolvers !== argumentResolvers) {
+                selection = this.#resolverSelection = {
+                    resolvers: argumentResolvers,
+                    byParameter: new Map(),
+                };
+            }
             for (let index = 0; index < parametersLength; index++) {
-                const parameter = parameters[index],
-                    resolver = argumentResolvers.find((candidate) => candidate.supportsParameter(parameter));
-
+                const parameter = parameters[index];
+                let resolver = selection.byParameter.get(parameter);
+                if (resolver === undefined) {
+                    resolver = argumentResolvers.find((candidate) => candidate.supportsParameter(parameter)) ?? null;
+                    selection.byParameter.set(parameter, resolver);
+                }
                 args[index] = resolver ? resolver.resolveArgument(parameter, route, mapping) : void 0;
             }
         } else {

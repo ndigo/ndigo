@@ -195,3 +195,60 @@ export const AsModuleResourceLoader = <T extends Constructable>(superclass: T): 
  * Resource loader that resolves modules through dynamic import.
  */
 export class DefaultResourceLoader extends AsModuleResourceLoader(Null) {}
+
+/**
+ * Resource loader backed by an in-memory map of location to value.
+ *
+ * Useful for tests, browser rendering with bundled content, and prototypes
+ * where resource content is known at construction time.
+ */
+export class InMemoryResourceLoader implements ResourceLoader {
+    readonly #sources = new Map<string, unknown>();
+
+    /**
+     * Register a resource value under the given location.
+     *
+     * @param location - The resource location to register.
+     * @param value - The resource content.
+     * @returns This loader, for chaining.
+     */
+    set(location: string, value: unknown): this {
+        this.#sources.set(location, value);
+        return this;
+    }
+
+    /** @inheritdoc */
+    async getResource(location: string): Promise<Resource> {
+        const value = this.#sources.get(location);
+        if (value === undefined) {
+            return new UnresolvedResource(location, new Error(`No resource registered for: ${location}`));
+        }
+        return new InMemoryResource(location, value);
+    }
+}
+
+/**
+ * Resource wrapper holding a value registered in an {@link InMemoryResourceLoader}.
+ */
+class InMemoryResource implements Resource {
+    readonly value!: unknown;
+
+    get exists(): boolean {
+        return true;
+    }
+
+    constructor(location: string, value: unknown) {
+        defineProperty(this, 'location', {
+            value: location,
+            configurable: true,
+            enumerable: false,
+            writable: false,
+        });
+        defineProperty(this, 'value', {
+            value: value,
+            configurable: true,
+            enumerable: false,
+            writable: false,
+        });
+    }
+}

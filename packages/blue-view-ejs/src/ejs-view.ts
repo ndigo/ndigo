@@ -5,8 +5,9 @@
  * @since 1.0.0
  */
 
-import { AbstractTemplateView, type TemplateSourceProvider, ViewTarget } from '@blue/view';
+import { AbstractTemplateView, ViewTarget } from '@blue/view';
 import { IllegalStateError } from '@blue/core';
+import type { ApplicationContext, ResourceLoader } from '@blue/context';
 import type { Route } from '@blue/router';
 
 import { EJSTemplateEngine } from './ejs-template-engine';
@@ -17,7 +18,7 @@ import { EJSTemplateEngine } from './ejs-template-engine';
 export interface EJSViewOptions {
     /**
      * An inline EJS template source. When set, it takes precedence over any
-     * `path`/{@link TemplateSourceProvider} during rendering.
+     * `path`/{@link ResourceLoader} during rendering.
      */
     template?: string;
 
@@ -28,10 +29,11 @@ export interface EJSViewOptions {
     engine?: EJSTemplateEngine;
 
     /**
-     * Provider used to resolve template source by path when no inline
-     * `template` is supplied.
+     * Loader used to resolve template source by path when no inline
+     * `template` is supplied. Falls back to the view's application context,
+     * which is itself a {@link ResourceLoader}.
      */
-    provider?: TemplateSourceProvider;
+    loader?: ResourceLoader;
 }
 
 /**
@@ -40,7 +42,8 @@ export interface EJSViewOptions {
  * The template source comes from one of two places, in order of precedence:
  *
  * 1. an inline {@link EJSView.template | `template`} string, or
- * 2. a `path` resolved through an injected {@link TemplateSourceProvider}.
+ * 2. a `path` resolved through a {@link ResourceLoader} — the injected
+ *    `loader`, or the view's application context.
  *
  * Rendering produces a string committed to the supplied {@link ViewTarget}, so
  * the same view serves Node HTTP responses, browser SSR DOM, or a DOM-free
@@ -49,26 +52,32 @@ export interface EJSViewOptions {
  * it render into whatever target the platform provides.
  */
 export class EJSView extends AbstractTemplateView {
+    /**
+     * The application context, provided by the mixin via `setApplicationContext`.
+     * Declared here so TypeScript can see it through the mixin inheritance chain.
+     */
+    readonly applicationContext?: ApplicationContext;
+
     readonly #engine: EJSTemplateEngine;
-    readonly #provider?: TemplateSourceProvider;
+    readonly #loader?: ResourceLoader;
 
     /**
      * An inline EJS template source. When set, it takes precedence over any
-     * `path`/{@link TemplateSourceProvider}.
+     * `path`/{@link ResourceLoader}.
      */
     template?: string;
 
     /**
      * Creates a new EJS view.
      *
-     * @param path - The template path (used with a {@link TemplateSourceProvider}).
-     * @param options - Engine and source-provider options.
+     * @param path - The template path (used with a {@link ResourceLoader}).
+     * @param options - Engine and resource-loader options.
      */
     constructor(path: string | null = null, options: EJSViewOptions = {}) {
         super(path);
         this.template = options.template;
         this.#engine = options.engine ?? new EJSTemplateEngine();
-        this.#provider = options.provider;
+        this.#loader = options.loader;
     }
 
     /** @inheritdoc */
@@ -86,23 +95,24 @@ export class EJSView extends AbstractTemplateView {
      *
      * @returns The template source text.
      * @throws {IllegalStateError} When neither an inline `template` nor a
-     *   `path` with a {@link TemplateSourceProvider} is available.
+     *   `path` with a resource loader is available.
      */
     async #resolveSource(): Promise<string> {
         if (this.template != null) {
             return this.template;
         }
 
-        if (this.path && this.#provider) {
-            const source = await this.#provider.loadTemplate(this.path);
-            if (source == null) {
-                throw new IllegalStateError(`EJS template not found: ${this.path}`);
-            }
-            return source;
+        const loader = this.#loader ?? this.applicationContext;
+        if (!this.path || !loader) {
+            throw new IllegalStateError(
+                'EJSView requires either a `template` string or a `path` with a ResourceLoader.'
+            );
         }
 
-        throw new IllegalStateError(
-            'EJSView requires either a `template` string or a `path` with a TemplateSourceProvider.'
-        );
+        const resource = await loader.getResource(this.path);
+        if (!resource.exists) {
+            throw new IllegalStateError(`EJS template not found: ${this.path}`);
+        }
+        return resource.value as string;
     }
 }

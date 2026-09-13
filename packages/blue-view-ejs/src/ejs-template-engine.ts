@@ -24,7 +24,7 @@ export interface EJSTemplateEngineOptions {
  * The adapter operates purely on a source string and returns a string, so it is
  * platform-agnostic: it runs identically in Node and in a browser/jsdom test
  * environment. File resolution for path-backed views is owned by an injected
- * {@link TemplateSourceProvider}, keeping this package free of platform I/O.
+ * {@link ResourceLoader}, keeping this package free of platform I/O.
  */
 export class EJSTemplateEngine {
     readonly #options: ejs.Options;

@@ -87,6 +87,21 @@ describe('ContentNegotiationViewResolver.resolveViewName', () => {
         await expect(resolver.resolveViewName('page', '')).resolves.toBe(html);
     });
 
+    test('asks delegate resolvers once per view name across requests', async () => {
+        const json = view(MediaTypes.APPLICATION_JSON);
+        const resolveViewName = vi.fn(async (): Promise<View | null> => json);
+        const resolver = new ContentNegotiationViewResolver({
+            resolveMediaTypes: () => [MediaTypes.APPLICATION_JSON],
+        } as unknown as ContentNegotiationManager);
+        resolver.viewResolvers = [{ resolveViewName }];
+
+        setCurrentRequest({ headers: { accept: 'application/json' } });
+        await resolver.resolveViewName('report', '');
+        await resolver.resolveViewName('report', '');
+
+        expect(resolveViewName).toHaveBeenCalledTimes(1);
+    });
+
     test('selects the candidate whose media type matches an accepted type', async () => {
         const html = view(MediaTypes.TEXT_HTML);
         const json = view(MediaTypes.APPLICATION_JSON);

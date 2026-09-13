@@ -1,5 +1,5 @@
 import { describe, test, expect } from 'vitest';
-import { Principal, AnonymousPrincipal, isPrincipal } from '../src/principal';
+import { Principal, AnonymousPrincipal, likePrincipal } from '../src/principal';
 
 describe('AnonymousPrincipal', () => {
     test('has correct default id', () => {
@@ -30,9 +30,9 @@ describe('AnonymousPrincipal', () => {
     });
 });
 
-describe('isPrincipal', () => {
+describe('likePrincipal', () => {
     test('returns true for AnonymousPrincipal', () => {
-        expect(isPrincipal(new AnonymousPrincipal())).toBe(true);
+        expect(likePrincipal(new AnonymousPrincipal())).toBe(true);
     });
 
     test('returns true for object with id, name, roles', () => {
@@ -43,36 +43,36 @@ describe('isPrincipal', () => {
             hasRole: () => true,
             hasAnyRole: () => false,
         };
-        expect(isPrincipal(principal)).toBe(true);
+        expect(likePrincipal(principal)).toBe(true);
     });
 
     test('returns false for null', () => {
-        expect(isPrincipal(null)).toBe(false);
+        expect(likePrincipal(null)).toBe(false);
     });
 
     test('returns false for undefined', () => {
-        expect(isPrincipal(undefined)).toBe(false);
+        expect(likePrincipal(undefined)).toBe(false);
     });
 
     test('returns false for primitive values', () => {
-        expect(isPrincipal('string')).toBe(false);
-        expect(isPrincipal(123)).toBe(false);
-        expect(isPrincipal(true)).toBe(false);
+        expect(likePrincipal('string')).toBe(false);
+        expect(likePrincipal(123)).toBe(false);
+        expect(likePrincipal(true)).toBe(false);
     });
 
     test('returns false for object missing id', () => {
-        expect(isPrincipal({ name: 'Test', roles: [] })).toBe(false);
+        expect(likePrincipal({ name: 'Test', roles: [] })).toBe(false);
     });
 
     test('returns false for object missing name', () => {
-        expect(isPrincipal({ id: '1', roles: [] })).toBe(false);
+        expect(likePrincipal({ id: '1', roles: [] })).toBe(false);
     });
 
     test('returns false for object missing roles', () => {
-        expect(isPrincipal({ id: '1', name: 'Test' })).toBe(false);
+        expect(likePrincipal({ id: '1', name: 'Test' })).toBe(false);
     });
 
     test('returns false for empty object', () => {
-        expect(isPrincipal({})).toBe(false);
+        expect(likePrincipal({})).toBe(false);
     });
 });

@@ -37,7 +37,7 @@ The package follows a **contract-first** approach:
 
 ### Utility Functions
 
-- **`isPrincipal(value)`** — Duck-type guard for Principal
+- **`likePrincipal(value)`** — Duck-type guard for Principal
 
 ## Usage
 

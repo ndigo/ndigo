@@ -25,8 +25,11 @@ export async function writeRenderResult(res: ServerResponse | undefined, result:
     }
     res.writeHead(result.status ?? 200, headers);
     // Deliver headers now — a streaming body (e.g. SSE) must not hold the
-    // response open waiting for its first frame.
-    res.flushHeaders();
+    // response open waiting for its first frame. Guarded: mock responses may
+    // not implement the flush.
+    if (typeof res.flushHeaders === 'function') {
+        res.flushHeaders();
+    }
 
     const { body } = result;
     if (typeof body === 'string') {

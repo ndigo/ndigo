@@ -8,7 +8,6 @@ import QueryString from '../src/query-string';
  * - RFC 3986: URI Generic Syntax
  * - WHATWG URL Standard: URLSearchParams and application/x-www-form-urlencoded
  *
- * See: docs/reference/2025-02-06_URL_PARSING_SPECIFICATIONS.md
  */
 
 describe('Query String - RFC 3986 Compliance', () => {
@@ -113,13 +112,12 @@ describe('Query String - RFC 3986 Compliance', () => {
                 key: '0123456789',
             });
 
-            // Note: Parser regex doesn't include hyphen, so it stops at '-'
-            expect(QueryString.parse('key=hello')).toEqual({
-                key: 'hello',
+            // WHATWG parsing places no restriction on raw characters.
+            expect(QueryString.parse('key=v-1.2_3~4')).toEqual({
+                key: 'v-1.2_3~4',
             });
 
-            // Note: Parser regex doesn't include dot, underscore, or tilde
-            // These characters stop the parser - they need to be percent-encoded
+            // Percent-encoded forms decode to the same characters.
             expect(QueryString.parse('key=%2D%2E%5F%7E')).toEqual({
                 key: '-._~',
             });
@@ -137,7 +135,6 @@ describe('Query String - RFC 3986 Compliance', () => {
         });
 
         test('it should preserve tilde when percent-encoded', () => {
-            // Note: Tilde not in regex pattern, must be percent-encoded
             expect(QueryString.parse('key=%7Etest%7E')).toEqual({
                 key: '~test~',
             });
@@ -215,27 +212,27 @@ describe('Query String - RFC 3986 Compliance', () => {
             });
         });
 
-        test('it should support semicolon delimiter', () => {
-            // RFC 3986 includes ; in sub-delims
+        test('it should treat semicolons as value characters', () => {
+            // RFC 3986 lists ';' among sub-delims; WHATWG pair parsing
+            // splits on '&' only, so a raw ';' is part of a value.
             expect(QueryString.parse('a=1;b=2;c=3')).toEqual({
-                a: '1',
-                b: '2',
-                c: '3',
+                a: '1;b=2;c=3',
             });
         });
 
-        test('it should handle mixed delimiters', () => {
+        test('it should not split on semicolons alongside ampersands', () => {
             expect(QueryString.parse('a=1&b=2;c=3')).toEqual({
                 a: '1',
-                b: '2',
-                c: '3',
+                b: '2;c=3',
             });
         });
 
-        test('it should ignore prefix characters', () => {
+        test('it should ignore leading question marks and orphan ampersands', () => {
+            // URLSearchParams strips a single leading '?'; a leading '&'
+            // produces an empty part, which is dropped. '#' is data.
             expect(QueryString.parse('?foo=bar')).toEqual({ foo: 'bar' });
             expect(QueryString.parse('&foo=bar')).toEqual({ foo: 'bar' });
-            expect(QueryString.parse('#foo=bar')).toEqual({ foo: 'bar' });
+            expect(QueryString.parse('#foo=bar')).toEqual({ '#foo': 'bar' });
         });
     });
 });
@@ -303,45 +300,44 @@ describe('Query String - WHATWG URL Standard Compliance', () => {
     });
 
     describe('Empty and Missing Values', () => {
-        test('it should handle key without equals as null', () => {
+        test('it should handle key without equals as empty string', () => {
             expect(QueryString.parse('key')).toEqual({
-                key: null,
+                key: '',
             });
 
             expect(QueryString.parse('foo&bar')).toEqual({
-                foo: null,
-                bar: null,
+                foo: '',
+                bar: '',
             });
         });
 
-        test('it should handle key with empty value as null', () => {
-            // Deviation from WHATWG (which returns "")
-            // See: docs/reference/2025-02-06_URL_PARSING_SPECIFICATIONS.md
+        test('it should handle key with empty value as empty string', () => {
+            // Aligned with WHATWG, which reports empty values as ''.
             expect(QueryString.parse('key=')).toEqual({
-                key: null,
+                key: '',
             });
 
             expect(QueryString.parse('foo=&bar=')).toEqual({
-                foo: null,
-                bar: null,
+                foo: '',
+                bar: '',
             });
         });
 
         test('it should handle mixed empty and non-empty values', () => {
             expect(QueryString.parse('a=value&b=&c')).toEqual({
                 a: 'value',
-                b: null,
-                c: null,
+                b: '',
+                c: '',
             });
         });
 
         test('it should handle multiple empty values', () => {
             expect(QueryString.parse('key=&key')).toEqual({
-                key: [null, null],
+                key: ['', ''],
             });
 
             expect(QueryString.parse('key&key=')).toEqual({
-                key: [null, null],
+                key: ['', ''],
             });
         });
     });
@@ -422,26 +418,27 @@ describe('Query String - Edge Cases and Robustness', () => {
     describe('Malformed Input', () => {
         test('it should handle empty input', () => {
             expect(QueryString.parse('')).toEqual({});
-            expect(QueryString.parse(' ')).toEqual({});
+            expect(QueryString.parse(' ')).toEqual({ ' ': '' }); // a space is a key
             expect(QueryString.parse('?')).toEqual({});
             expect(QueryString.parse('&')).toEqual({});
-            expect(QueryString.parse('#')).toEqual({});
+            expect(QueryString.parse('#')).toEqual({ '#': '' }); // '#' is a key
         });
 
         test('it should handle only delimiters', () => {
-            expect(QueryString.parse('&&&')).toEqual({});
-            expect(QueryString.parse(';;;')).toEqual({});
-            expect(QueryString.parse('?&;')).toEqual({});
+            expect(QueryString.parse('&&&')).toEqual({}); // empty parts dropped
+            expect(QueryString.parse(';;;')).toEqual({ ';;;': '' }); // ';' is data
+            expect(QueryString.parse('?&;')).toEqual({ ';': '' });
         });
 
         test('it should handle only equals signs', () => {
-            expect(QueryString.parse('=')).toEqual({});
-            expect(QueryString.parse('===')).toEqual({});
+            // Empty names are legal pairs under WHATWG parsing.
+            expect(QueryString.parse('=')).toEqual({ '': '' });
+            expect(QueryString.parse('===')).toEqual({ '': '==' });
         });
 
         test('it should handle malformed key-value pairs', () => {
-            expect(QueryString.parse('=value')).toEqual({});
-            expect(QueryString.parse('==value')).toEqual({});
+            expect(QueryString.parse('=value')).toEqual({ '': 'value' });
+            expect(QueryString.parse('==value')).toEqual({ '': '=value' });
         });
 
         test('it should handle multiple equals signs in value', () => {
@@ -470,9 +467,11 @@ describe('Query String - Edge Cases and Robustness', () => {
                 constructor: 'baz',
             });
 
-            expect(QueryString.parse('__proto__=evil')).toEqual({
-                __proto__: 'evil',
-            });
+            // An object literal cannot express a __proto__ data key (the
+            // literal form sets the prototype), so build the expectation out.
+            const protoExpected: Record<string, string> = Object.create(null);
+            protoExpected['__proto__'] = 'evil';
+            expect(QueryString.parse('__proto__=evil')).toEqual(protoExpected);
         });
 
         test('it should handle numeric keys', () => {
@@ -484,7 +483,7 @@ describe('Query String - Edge Cases and Robustness', () => {
         });
 
         test('it should handle empty string key', () => {
-            expect(QueryString.parse('=value')).toEqual({});
+            expect(QueryString.parse('=value')).toEqual({ '': 'value' });
         });
     });
 

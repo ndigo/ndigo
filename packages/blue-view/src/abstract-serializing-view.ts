@@ -16,7 +16,7 @@ import type { ViewTarget } from './view-target.js';
  * representation family served by content negotiation (JSON, CSV, text,
  * bytes, …).
  *
- * Dual-mode like {@link EJSView}: renders into a {@link ViewTarget} (fragment
+ * Dual-mode like the EJS view (see `@blue/view-ejs`): renders into a {@link ViewTarget} (fragment
  * mode) and produces a complete {@link RenderResult} (document mode), both
  * from the same {@link AbstractSerializingView.serialize | `serialize`} encoding.
  * Subclasses declare their `mediaType` in the constructor and implement

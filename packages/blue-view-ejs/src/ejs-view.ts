@@ -59,6 +59,8 @@ export class EJSView extends AbstractTemplateView implements ProducerView {
 
     readonly #engine: EJSTemplateEngine;
     readonly #loader?: ResourceLoader;
+    /** Cached template source for this view's path; null until first load. */
+    #source: string | null = null;
 
     /**
      * An inline EJS template source. When set, it takes precedence over any
@@ -120,6 +122,15 @@ export class EJSView extends AbstractTemplateView implements ProducerView {
             return this.template;
         }
 
+        // Path-backed views load their source once and keep rendering it for
+        // the view's lifetime: views are resolved and cached per name by the
+        // resolver, so this is one read per template per application run.
+        // Template edits on disk therefore require a restart to take effect —
+        // the tradeoff that buys a filesystem read off the render path.
+        if (this.#source !== null) {
+            return this.#source;
+        }
+
         const loader = this.#loader ?? this.applicationContext;
         if (!this.path || !loader) {
             throw new IllegalStateError(
@@ -131,6 +142,7 @@ export class EJSView extends AbstractTemplateView implements ProducerView {
         if (!resource.exists) {
             throw new IllegalStateError(`EJS template not found: ${this.path}`);
         }
-        return resource.value as string;
+        this.#source = resource.value as string;
+        return this.#source;
     }
 }

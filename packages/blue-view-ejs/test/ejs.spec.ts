@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import type { Route } from '@blue/router';
 import type { ViewTarget } from '@blue/view';
 import { InMemoryResourceLoader } from '@blue/context';
@@ -83,6 +83,31 @@ describe('EJSView', () => {
         await view.render({ title: 'Welcome' }, {} as Route, target);
 
         expect(target.last?.output).toBe('<h1>Welcome</h1>');
+    });
+
+    it('loads the template source once and reuses it across renders', async () => {
+        const loader = new InMemoryResourceLoader().set('pages/home.html', '<h1><%= title %></h1>');
+        const view = new EJSView('pages/home.html', { loader });
+        const target = new CaptureViewTarget();
+        const spy = vi.spyOn(loader, 'getResource');
+
+        await view.render({ title: 'A' }, {} as Route, target);
+        await view.render({ title: 'B' }, {} as Route, target);
+
+        expect(spy).toHaveBeenCalledTimes(1);
+        expect(target.last?.output).toBe('<h1>B</h1>');
+    });
+
+    it('keeps rendering the initially loaded source for the view lifetime', async () => {
+        const loader = new InMemoryResourceLoader().set('pages/home.html', '<h1><%= title %></h1>');
+        const view = new EJSView('pages/home.html', { loader });
+        const target = new CaptureViewTarget();
+
+        await view.render({ title: 'A' }, {} as Route, target);
+        loader.set('pages/home.html', '<h2>changed</h2>');
+        await view.render({ title: 'B' }, {} as Route, target);
+
+        expect(target.last?.output).toBe('<h1>B</h1>');
     });
 
     it('throws when neither a template nor a path+loader is available', async () => {

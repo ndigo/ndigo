@@ -386,6 +386,15 @@ export class ContentNegotiationViewResolver implements ViewResolver {
     viewResolvers!: ViewResolver[];
 
     /**
+     * Candidate views per logical view name + language. Candidate aggregation
+     * (the `Promise.all` over every delegate resolver) is request-independent
+     * — only the final negotiation passes are per-request — so each name is
+     * aggregated once and reused. Delegates must be configured before the
+     * first resolution.
+     */
+    readonly #candidates = new Map<string, View[]>();
+
+    /**
      * Creates a resolver backed by the given negotiation manager.
      *
      * @param manager - The negotiation manager to consult.
@@ -414,11 +423,17 @@ export class ContentNegotiationViewResolver implements ViewResolver {
      * @returns The matching view, or `null` when none is available.
      */
     async resolveViewName(name: string, language?: unknown): Promise<View | null> {
-        // 1. Aggregate candidate views from every delegate resolver.
-        const results = await Promise.all(
-            this.viewResolvers.map((resolver) => resolver.resolveViewName(name, language))
-        );
-        const candidates = results.filter(isNotNil);
+        // 1. Aggregate candidate views from every delegate resolver — once
+        //    per view name: aggregation never depends on the request.
+        const cacheKey = `${name}\u0000${language ?? ''}`;
+        let candidates = this.#candidates.get(cacheKey);
+        if (candidates === undefined) {
+            const results = await Promise.all(
+                this.viewResolvers.map((resolver) => resolver.resolveViewName(name, language))
+            );
+            candidates = results.filter(isNotNil);
+            this.#candidates.set(cacheKey, candidates);
+        }
 
         // 2. Nothing resolved — fall back to configured default views.
         if (candidates.length === 0) {

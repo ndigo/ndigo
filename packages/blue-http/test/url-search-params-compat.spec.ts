@@ -9,6 +9,7 @@ import QueryString from '../src/query-string';
  * difference is representation: repeated keys aggregate into arrays (a record
  * cannot hold duplicate pairs), and values are never null.
  *
+ * See: docs/reference/2026-02-06_URL_PARSING_SPECIFICATIONS.md
  */
 
 const corpus = [

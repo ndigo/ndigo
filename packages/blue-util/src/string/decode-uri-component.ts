@@ -51,6 +51,10 @@ function decodeURIComponentList(components: string[], index: number = 1): string
     //return Array.prototype.concat.call( [], decodeURIComponentList( left ), decodeURIComponentList( right ) );
 }
 
+/** Escapes characters that are significant in a `RegExp` source. */
+const regexSpecial = /[.*+?^${}()|[\]\\]/g,
+    escapeRegExp = (pattern: string): string => pattern.replace(regexSpecial, '\\$&');
+
 function enhancedDecodeURIComponent(input: string): string {
     // Keep track of all the replacements and prefill the map with the
     const replaceMap: { [key: string]: string } = {
@@ -83,9 +87,11 @@ function enhancedDecodeURIComponent(input: string): string {
         key: string;
 
     for (; index < length; index++) {
-        // Replace all decoded components
+        // Replace all decoded components. Keys can be any single matched
+        // character (including regex metacharacters like `+`), so interpolate
+        // them escaped — a raw key would throw or match unintended text.
         key = entries[index];
-        input = input.replace(new RegExp(key, 'g'), replaceMap[key]);
+        input = input.replace(new RegExp(escapeRegExp(key), 'g'), replaceMap[key]);
     }
 
     return input;
@@ -107,7 +113,8 @@ export default function (value: string): string {
         return decodeURIComponent(value.replace(plusMatcher, ' '));
     } catch (error) {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        // Fallback to a more advanced decoder
-        return enhancedDecodeURIComponent(value);
+        // Fallback to a more advanced decoder. The plus-to-space contract
+        // applies on this path too, so apply it before enhancing.
+        return enhancedDecodeURIComponent(value.replace(plusMatcher, ' '));
     }
 }

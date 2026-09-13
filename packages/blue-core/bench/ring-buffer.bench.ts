@@ -1,7 +1,7 @@
 /**
  *
  * Benchmark suite for RingBuffer.
- * Compares RingBuffer against Denque (industry FIFO baseline) and plain Array.
+ * Compares RingBuffer against a plain Array FIFO baseline.
  *
  * Scenarios:
  *   1. FIFO enqueue+dequeue throughput
@@ -10,11 +10,9 @@
  */
 import { bench, describe } from 'vitest';
 import { RingBuffer } from '../src/ring-buffer';
-import Denque from 'denque';
 
 // module-level instances
 const rb = new RingBuffer<number>(16);
-const dq = new Denque<number>();
 const arr: number[] = [];
 const circArr = new Array(16).fill(0);
 
@@ -25,13 +23,6 @@ describe('FIFO enqueue+dequeue – 1000 ops', () => {
         for (let i = 0; i < 1000; i++) {
             rb.put(i);
             _sink = rb.get();
-        }
-    });
-
-    bench('Denque', () => {
-        for (let i = 0; i < 1000; i++) {
-            dq.push(i);
-            _sink = dq.shift();
         }
     });
 
@@ -50,12 +41,6 @@ describe('Burst put – fill 16-slot buffer 1000 times', () => {
         }
     });
 
-    bench('Denque', () => {
-        for (let i = 0; i < 16000; i++) {
-            dq.push(i);
-        }
-    });
-
     bench('Circular Array simulation', () => {
         let head = 0;
         for (let i = 0; i < 16000; i++) {
@@ -69,19 +54,12 @@ describe('peek front – non-destructive read', () => {
     // pre-fill with 8 items before measuring
     for (let i = 0; i < 8; i++) {
         rb.put(i);
-        dq.push(i);
         arr.push(i);
     }
 
     bench('RingBuffer.peek', () => {
         for (let i = 0; i < 1000; i++) {
             _sink = rb.peek();
-        }
-    });
-
-    bench('Denque.peekFront', () => {
-        for (let i = 0; i < 1000; i++) {
-            _sink = dq.peekFront();
         }
     });
 

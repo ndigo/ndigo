@@ -32,12 +32,14 @@
     "ejs": "^3.1.10"
   },
   "devDependencies": {
+    "@blue/context": "~0.0.1",
     "@blue/core": "~0.0.1",
     "@blue/router": "~0.0.1",
     "@blue/view": "~0.0.1",
     "@types/ejs": "^3.1.5"
   },
   "peerDependencies": {
+    "@blue/context": "~0.0.1",
     "@blue/core": "~0.0.1",
     "@blue/router": "~0.0.1",
     "@blue/view": "~0.0.1"

@@ -1,3 +1,8 @@
+/**
+ * @module blue-oxlint-plugin
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { RuleTester } from 'oxlint/plugins-dev';
 import { noUppercaseRegexpConstants } from '../../src/rules/no-uppercase-regexp-constants';
 

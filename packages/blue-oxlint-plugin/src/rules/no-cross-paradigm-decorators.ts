@@ -1,21 +1,9 @@
 /**
  * Rule that flags cross-paradigm decorator misuse.
- *
- * BlueJS distinguishes *server-side route mapping* (`@routeMapping`,
- * `@getMapping`, `@postMapping`, … — the dispatcher) from *client-side service
- * calls* (`@service`, `@getCall`, `@postCall`, … — the service client). They
- * are two different paradigms and must not be mixed on the same class:
- *
- * - `@getCall`/`@postCall`/… on a `@routeMapping` controller — a service call
- *   made inside a server controller is a paradigm error (client binding on a
- *   request handler).
- * - `@getMapping`/`@postMapping`/… on a `@service` class — a server route on a
- *   service client indicates the wrong abstraction was chosen.
- *
- * Mirrors the A2 anti-pattern enforcement: runtime throws catch metadata
- * misuse; this rule catches the statically-visible paradigm confusion.
+ * * @module blue-oxlint-plugin
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import type { Context, ESTree } from '@oxlint/plugins';
 
 const CALL_DECORATORS = new Set([

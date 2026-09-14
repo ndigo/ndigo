@@ -1,15 +1,9 @@
 /**
  * Rule that flags UPPER_SNAKE_CASE constants initialized with a RegExp literal.
- *
- * Per STYLE_GUIDE §3.9 (Acronym Casing) and the "no UPPER_SNAKE_CASE RegExp
- * constants" convention in AGENTS.md: RegExp instances are objects, not
- * primitives, so they follow camelCase identifier conventions like other
- * objects (e.g. `findByPattern`, not `FIND_BY`).
- *
- * Migrated from a pre-commit grep (`rg "^[export ]*const [A-Z_]+.*= /"`)
- * into a first-class oxlint rule so the convention cannot regress.
+ * * @module blue-oxlint-plugin
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import type { Context, ESTree } from '@oxlint/plugins';
 
 const upperSnakeIdentifier = /^[A-Z][A-Z0-9_]*$/u;

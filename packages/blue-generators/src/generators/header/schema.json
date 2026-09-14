@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/schema",
+  "id": "BlueHeader",
+  "title": "Add the BlueJS standard documentation header",
+  "type": "object",
+  "properties": {
+    "file": {
+      "type": "string",
+      "description": "Target file path (e.g., 'packages/blue-core/src/widget.ts')",
+      "x-prompt": "Which file needs the standard doc header?"
+    },
+    "module": {
+      "type": "string",
+      "description": "Module name for the @module tag (defaults to the containing blue-* package or app)"
+    },
+    "summary": {
+      "type": "string",
+      "description": "One-line summary used as the doc header description",
+      "default": ""
+    },
+    "author": {
+      "type": "string",
+      "description": "Value for the @author tag",
+      "default": "Jeff Rose"
+    },
+    "force": {
+      "type": "boolean",
+      "description": "Replace an existing top-of-file doc block with the standard header",
+      "default": false
+    }
+  },
+  "required": ["file"]
+}

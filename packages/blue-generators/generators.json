@@ -9,6 +9,11 @@
       "factory": "./src/generators/component/generator",
       "schema": "./src/generators/component/schema.json",
       "description": "Generate a source file + test file pair with BlueJS conventions"
+    },
+    "header": {
+      "factory": "./src/generators/header/generator",
+      "schema": "./src/generators/header/schema.json",
+      "description": "Add or replace the standard BlueJS documentation header on a source file"
     }
   }
 }

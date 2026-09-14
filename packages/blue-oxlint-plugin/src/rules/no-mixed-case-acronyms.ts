@@ -1,13 +1,9 @@
 /**
- * Rule that flags mixed-case acronyms (Http, Json, Xml, Url, Api, Html, Dto,
- * Uuid, Uri) inside class, interface, and type declaration names.
- *
- * Per STYLE_GUIDE §3.9 (Acronym Casing) and the AGENTS.md pre-commit check:
- * - All-uppercase in types: `HTTPTransformer`, `JSONParser`
- * - All-lowercase or all-uppercase in identifiers: `httpTransformer`, `myHTTPData`
- * Title-case acronyms (`HttpTransformer`, `JsonParser`) are never correct.
+ * Rule that flags mixed-case acronyms (Http, Json, Xml, Url, Api, Html, Dto,.
+ * * @module blue-oxlint-plugin
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import type { Context, ESTree } from '@oxlint/plugins';
 
 const titleCaseAcronyms = /(Http|Json|Xml|Url|Api|Html|Dto|Uuid|Uri)/u;

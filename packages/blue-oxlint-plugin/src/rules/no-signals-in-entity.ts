@@ -1,16 +1,9 @@
 /**
  * Rule that flags `@blue/signals` imports inside `@blue/orm` entity files.
- *
- * Signals are for local, synchronous, derived state within a component or
- * service. An ORM entity is a *persistence model* — its fields describe the
- * stored shape (columns), not reactive UI state. Importing signals into an
- * entity file is the "signals as domain-state" anti-pattern: state that
- * belongs in the persistence layer is being made reactive.
- *
- * Mirrors the A2 anti-pattern enforcement (see ARCHITECTURE.md §Paradigm
- * Selection Rules).
+ * * @module blue-oxlint-plugin
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import type { Context, ESTree } from '@oxlint/plugins';
 
 const signalsImportPattern = /^@blue\/signals(?:\/|$)/u;

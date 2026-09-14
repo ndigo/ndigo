@@ -24,7 +24,9 @@
     "*.config.mjs",
     "*.config.ts"
   ],
-  "jsPlugins": ["./packages/blue-oxlint-plugin/lib/index.js"],
+  "jsPlugins": [
+    "./packages/blue-oxlint-plugin/lib/index.js"
+  ],
   "rules": {
     "no-unused-vars": "off",
     "no-undef": "off",
@@ -93,7 +95,8 @@
     "typescript/restrict-template-expressions": "off",
     "typescript/unbound-method": "off",
     "typescript/no-redundant-type-constituents": "off",
-    "typescript/no-implied-eval": "off"
+    "typescript/no-implied-eval": "off",
+    "@blue/requires-doc-header": "error"
   },
   "env": {
     "browser": true,
@@ -115,7 +118,13 @@
   },
   "overrides": [
     {
-      "files": ["**/*.spec.ts", "**/*.test.ts", "**/test/**/*.ts", "**/test/**/*.js", "**/test/**/*.mjs"],
+      "files": [
+        "**/*.spec.ts",
+        "**/*.test.ts",
+        "**/test/**/*.ts",
+        "**/test/**/*.js",
+        "**/test/**/*.mjs"
+      ],
       "rules": {
         "@typescript-eslint/no-unused-vars": "off",
         "no-shadow": "off",
@@ -124,7 +133,11 @@
       }
     },
     {
-      "files": ["apps/**/*.ts", "apps/**/*.js", "apps/**/*.mjs"],
+      "files": [
+        "apps/**/*.ts",
+        "apps/**/*.js",
+        "apps/**/*.mjs"
+      ],
       "rules": {
         "@blue/no-browser-globals-in-isomorphic": "off"
       }

@@ -34,7 +34,18 @@ Auto-configuration for Node.js-based applications that provisions:
 - Default handler mapping for metadata-driven dispatch
 - The error-resolver chain (400 binding, 401/403 denials, 422 validation,
   500 last-resort — AD-10)
+- An `Accept-Language` language resolver (`AcceptHeaderLanguageResolver`,
+  default `en-US`) — the negotiated language reaches views, templates,
+  and islands via the route's `language` attribute (AD-19)
+- A `taskScheduler` + `scheduleRegistry` pair: `@scheduled` methods on
+  registered beans are auto-discovered and auto-started with zero wiring
+  (AD-20)
 - A managed `httpServer` entry (`HTTPServer`, a `SmartLifecycle` bean)
+
+Applications that previously relied on no language negotiation now render
+with the header-negotiated locale (`en-US` default) — see
+[the i18n guide](../../docs/guides/04-i18n-and-content.md) to override the
+resolver bean.
 
 ## Managed server + graceful shutdown
 

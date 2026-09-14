@@ -6,7 +6,7 @@
  */
 import { AbstractDispatcher } from '@blue/dispatcher';
 import { ModelAndView } from '@blue/dispatcher';
-import { Route } from '@blue/router';
+import { Route, applyNegotiatedLanguage } from '@blue/router';
 import { likeApplicationContextAware } from '@blue/context';
 import { View, clearCurrentRequest, likeProducerView, setCurrentRequest } from '@blue/view';
 import type { ServerResponse } from 'node:http';
@@ -70,6 +70,9 @@ export class NodeDispatcher extends AbstractDispatcher {
 
         const language = this.languageResolver ? this.languageResolver.resolveLanguage(route) : '',
             viewName = mv?.viewName;
+
+        // Expose the negotiated language to views and templates.
+        applyNegotiatedLanguage(route, language);
 
         let view: View | null = null;
 

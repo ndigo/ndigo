@@ -42,21 +42,25 @@
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
   "devDependencies": {
+    "@blue/content": "~0.0.1",
     "@blue/context": "~0.0.1",
     "@blue/core": "~0.0.1",
     "@blue/dispatcher": "~0.0.1",
     "@blue/http": "~0.0.1",
     "@blue/router": "~0.0.1",
     "@blue/util": "~0.0.1",
-    "zod": "^4.5.4"
+    "zod": "^4.5.4",
+    "@blue/signals": "~0.0.1"
   },
   "peerDependencies": {
+    "@blue/content": "~0.0.1",
     "@blue/context": "~0.0.1",
     "@blue/core": "~0.0.1",
     "@blue/dispatcher": "~0.0.1",
     "@blue/http": "~0.0.1",
     "@blue/router": "~0.0.1",
-    "@blue/util": "~0.0.1"
+    "@blue/util": "~0.0.1",
+    "@blue/signals": "~0.0.1"
   },
   "dependencies": {
     "@blue/view": "~0.0.1",

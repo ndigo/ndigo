@@ -4,6 +4,7 @@
  * @author Jeff Rose
  */
 export * from './content';
+export * from './message-source';
 export * from './theme';
 export * from './async';
 export * from './composite';

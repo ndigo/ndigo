@@ -22,7 +22,7 @@ import { guid } from '@blue/util/math';
  */
 import { createServer, IncomingMessage, ServerResponse, type Server } from 'node:http';
 import { WebSocketServer } from 'ws';
-import { Route, RouteSegment } from '@blue/router';
+import { Route, RouteSegment, ACCEPT_LANGUAGE_ATTRIBUTE } from '@blue/router';
 import {
     getInterceptorDenial,
     getMethodNotAllowed,
@@ -324,6 +324,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
                     cookies: sources.cookies,
                     session: {},
                 },
+                [ACCEPT_LANGUAGE_ATTRIBUTE]: sources.headers['accept-language'],
             },
             length: 0,
         };
@@ -497,6 +498,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
                 attributes: {
                     [NODE_REQUEST_ATTRIBUTE]: nodeRequest,
                     [NODE_RESPONSE_ATTRIBUTE]: res,
+                    [ACCEPT_LANGUAGE_ATTRIBUTE]: req.headers['accept-language'],
                 },
             };
 

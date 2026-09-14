@@ -57,6 +57,19 @@ describe('hydrateIslands', () => {
         expect(document.querySelector('unknown-island')).toBeTruthy(); // untouched
     });
 
+    test('assigns the negotiated locale before the element connects', () => {
+        class LocaleAwareElement extends HTMLElement {}
+        customElements.define('locale-island', LocaleAwareElement);
+        document.body.innerHTML =
+            '<locale-island data-blue-island data-blue-locale="fr-CA" data-blue-model="{}"></locale-island>';
+
+        const n = hydrateIslands(document);
+        expect(n).toBe(1);
+
+        const live = document.querySelector('locale-island') as HTMLElement & { locale?: string };
+        expect(live.locale).toBe('fr-CA');
+    });
+
     test('returns 0 when no islands present', () => {
         document.body.innerHTML = '<div>plain</div>';
         expect(hydrateIslands(document)).toBe(0);

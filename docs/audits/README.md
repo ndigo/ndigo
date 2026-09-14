@@ -4,6 +4,7 @@ This directory contains audit reports analyzing various aspects of the BlueJS co
 
 ## Available Audits
 
+- [2026-09-13_FRAMEWORK_GAP_ANALYSIS.md](./2026-09-13_FRAMEWORK_GAP_ANALYSIS.md) - Enterprise-framework gap analysis (missing features, incomplete features, Content/i18n direction with implement-vs-wrap split, client-side angle)
 - [2026-09-05_FRAMEWORK_ASSESSMENT.md](./2026-09-05_FRAMEWORK_ASSESSMENT.md) - Framework feature/redundancy/purpose evaluation (public-API vs framework-internal classification, reactive/event overlap, validation split, semantic enforcement)
 - [2026-04-03_RAMDA_BENCHMARK_ANALYSIS.md](./2026-04-03_RAMDA_BENCHMARK_ANALYSIS.md) - Ramda vs native JS performance benchmarks across all @blue/util categories
 - [2026-03-30_HOLISTIC_AUDIT.md](./2026-03-30_HOLISTIC_AUDIT.md) - 7-dimension holistic repository audit (architecture, naming, tests, docs, deps, API, DRY)

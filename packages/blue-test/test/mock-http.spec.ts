@@ -106,7 +106,7 @@ describe('IslandView through MockHTTP dispatch (SSR islands)', () => {
             const res = await mockMVC.get('/islands/todo').exec();
             expect(res.response.status).toBe(200);
             const html = res.text();
-            expect(html).toContain('<todo-app data-blue-island data-blue-model=');
+            expect(html).toContain('<todo-app data-blue-island data-blue-locale="en-US" data-blue-model=');
             expect(html).toContain('&quot;filter&quot;:&quot;all&quot;');
         } finally {
             app.close();

@@ -18,7 +18,6 @@ export default defineConfig({
         // Use ordered aliases so package-root aliases don't accidentally
         // capture subpath imports like `@blue/util/types`.
         alias: [
-            { find: /^@blue\/util\/date/, replacement: resolve(__dirname, './packages/blue-util/src/date') },
             { find: /^@blue\/util\/function/, replacement: resolve(__dirname, './packages/blue-util/src/function') },
             { find: /^@blue\/util\/list/, replacement: resolve(__dirname, './packages/blue-util/src/list') },
             { find: /^@blue\/util\/logic/, replacement: resolve(__dirname, './packages/blue-util/src/logic') },
@@ -42,14 +41,21 @@ export default defineConfig({
             { find: /^@blue\/router$/, replacement: resolve(__dirname, './packages/blue-router/src') },
             { find: /^@blue\/host$/, replacement: resolve(__dirname, './packages/blue-host/src') },
             { find: /^@blue\/view$/, replacement: resolve(__dirname, './packages/blue-view/src') },
+            { find: /^@blue\/view-ejs$/, replacement: resolve(__dirname, './packages/blue-view-ejs/src') },
             { find: /^@blue\/http$/, replacement: resolve(__dirname, './packages/blue-http/src') },
             { find: /^@blue\/logger$/, replacement: resolve(__dirname, './packages/blue-logger/src') },
             { find: /^@blue\/content$/, replacement: resolve(__dirname, './packages/blue-content/src') },
+            {
+                find: /^@blue\/content-i18next$/,
+                replacement: resolve(__dirname, './packages/blue-content-i18next/src'),
+            },
             { find: /^@blue\/platform-web$/, replacement: resolve(__dirname, './packages/blue-platform-web/src') },
             { find: /^@blue\/platform-node$/, replacement: resolve(__dirname, './packages/blue-platform-node/src') },
             { find: /^@blue\/dispatcher$/, replacement: resolve(__dirname, './packages/blue-dispatcher/src') },
             { find: /^@blue\/boot$/, replacement: resolve(__dirname, './packages/blue-boot/src') },
             { find: /^@blue\/service$/, replacement: resolve(__dirname, './packages/blue-service/src') },
+            { find: /^@blue\/scheduler$/, replacement: resolve(__dirname, './packages/blue-scheduler/src') },
+            { find: /^@blue\/signals$/, replacement: resolve(__dirname, './packages/blue-signals/src') },
             { find: /^@blue\/eslint-plugin$/, replacement: resolve(__dirname, './packages/blue-eslint-plugin/src') },
             { find: /^@blue\/orm$/, replacement: resolve(__dirname, './packages/blue-orm/src') },
             { find: /^@blue\/auth$/, replacement: resolve(__dirname, './packages/blue-auth/src') },

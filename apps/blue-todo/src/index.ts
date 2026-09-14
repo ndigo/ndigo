@@ -8,6 +8,7 @@ import { composeTodoRuntime } from './shell-composition';
 import { createTodoContext } from './todo-context';
 import './account-app-view';
 import './feature-metrics-panel-view';
+import './locale-switcher-view';
 import './shell-nav-view';
 import './todo-app-view';
 import './todo-input-view';
@@ -25,6 +26,13 @@ const metricsPanel = document.createElement('feature-metrics-panel') as HTMLElem
 metricsPanel.aggregator = composition.featureMetrics;
 metricsPanel.routeHandledRateAlertThreshold = 5;
 document.body.appendChild(metricsPanel);
+
+// ── Reactive locale switcher (AD-19 demo): changeLocale → cookie + signal ──
+const localeSwitcher = document.createElement('locale-switcher') as HTMLElement & {
+    messages?: unknown;
+};
+localeSwitcher.messages = composition.shellContext;
+document.body.appendChild(localeSwitcher);
 
 window.setInterval(() => {
     metricsPanel.refresh?.();

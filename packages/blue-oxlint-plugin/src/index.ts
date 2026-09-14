@@ -14,6 +14,7 @@ import { noUppercaseRegexpConstants } from './rules/no-uppercase-regexp-constant
 import { noAbstractClassWithoutPrefix } from './rules/no-abstract-class-without-prefix.js';
 import { noMixedCaseAcronyms } from './rules/no-mixed-case-acronyms.js';
 import { noCrossParadigmDecorators } from './rules/no-cross-paradigm-decorators.js';
+import { noScheduledInBrowser } from './rules/no-scheduled-in-browser.js';
 import { noSignalsInEntity } from './rules/no-signals-in-entity.js';
 import { requiresDocHeader } from './rules/requires-doc-header.js';
 
@@ -30,6 +31,7 @@ const plugin = eslintCompatPlugin({
         'no-abstract-class-without-prefix': noAbstractClassWithoutPrefix,
         'no-mixed-case-acronyms': noMixedCaseAcronyms,
         'no-cross-paradigm-decorators': noCrossParadigmDecorators,
+        'no-scheduled-in-browser': noScheduledInBrowser,
         'no-signals-in-entity': noSignalsInEntity,
         'requires-doc-header': requiresDocHeader,
     },

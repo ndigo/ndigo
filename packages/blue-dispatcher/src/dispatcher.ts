@@ -5,7 +5,7 @@
  */
 import { Null } from '@blue/core';
 import { View, ViewTarget, clearCurrentRequest, setCurrentRequest } from '@blue/view';
-import { Route } from '@blue/router';
+import { Route, applyNegotiatedLanguage } from '@blue/router';
 import { $aware } from '@blue/factory';
 import { ApplicationContext, likeApplicationContextAware } from '@blue/context';
 
@@ -192,6 +192,9 @@ export class AbstractDispatcher
     async render(mv: ModelAndView, route: Route): Promise<void> {
         const language = this.languageResolver ? this.languageResolver.resolveLanguage(route) : '',
             viewName = mv.viewName;
+
+        // Expose the negotiated language to views and templates.
+        applyNegotiatedLanguage(route, language);
 
         let view: View | null = null;
 

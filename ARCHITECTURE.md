@@ -1570,7 +1570,17 @@ Guides: [`docs/guides/`](docs/guides/README.md).
 
 ### Future Architectural Items
 
-- **`ConversionService`** — A registry-backed type conversion service (a long-established DI-framework pattern) for registering `Converter<S,T>` implementations and resolving them by source/target type at runtime. Primarily useful for HTTP argument binding (e.g. `String → UUID`, `String → Date`, `String → domain type`) and `@ConfigurationProperties`-style binding. Would be registered in `ApplicationContext` and consumed by the dispatcher's argument resolver chain. The `Converter<S, T>`, `Parser<T>`, and `Stringifier<T>` types in `@blue/core` form the intended foundation.
+- **Decorator naming review (pre-1.0).** `@scheduled`, `@authenticated`,
+  `@authorized`, `@generated`, and `@transactional` are all
+  past-participle/adjectival names. The convention ships documented
+  (AD-20 D8), but deserves one deliberate consistency review — including a
+  rename if rejected — before the 1.0 API freeze.
+- **Full time-zone catalog generator.** `TimeZones` in `@blue/scheduler`
+  ships as curated constants + `Intl` validation (AD-20 D6). If the curated
+  set proves insufficient, generate a full IANA catalog at build time
+  (tzdata dependency) instead of hand-maintaining ~400 entries.
+
+- **`ConversionService`** — A registry-backed type conversion service (a long-established DI-framework pattern) for registering `Converter<S,T>` implementations and resolving them by source/target type at runtime. Primarily useful for HTTP argument binding (e.g. `String → UUID`, `String → Date`, `String → domain type`) and `@ConfigurationProperties`-style binding. Would be registered in `ApplicationContext` and consumed by the dispatcher's argument resolver chain. The `Converter<S, T>`, `Parser<T...`
 
 For strategic architecture direction (platform portability, boot lifecycle, boundary decisions, and package maturity), see [2026-03-08_ARCHITECTURE_ROADMAP.md](./docs/reference/2026-03-08_ARCHITECTURE_ROADMAP.md).
 

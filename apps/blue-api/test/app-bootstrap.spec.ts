@@ -8,9 +8,11 @@ import { describe, test, beforeAll, afterAll, expect } from 'vitest';
 import { ApplicationBuilder } from '@blue/boot';
 import { ManagementAutoConfiguration } from '@blue/management';
 import { NodeAutoConfiguration, NodeDispatcher } from '@blue/platform-node';
+import { TaskScheduler } from '@blue/scheduler';
 import { MockHTTP } from '@blue/test';
 import { NodeAppConfiguration } from '../src/node-app-configuration';
 import { ServerConfig } from '../src/server-config';
+import { Heartbeat } from '../src/heartbeat';
 import { initAuth } from '../src/auth-store';
 
 /**
@@ -90,5 +92,24 @@ describe('blue-api full bootstrap (ApplicationBuilder path)', () => {
         const res = await mockMVC.get('/api/greeting').query({ name: 'Ada' }).exec();
 
         expect(res.json()).toEqual({ message: 'Hello, Ada!', language: 'en' });
+    });
+
+    test('the scheduled heartbeat is auto-discovered and auto-started (AD-20)', async () => {
+        const scheduler = context.getValue<TaskScheduler>('taskScheduler');
+        expect(context.hasValue('scheduleRegistry')).toBe(true);
+        expect(scheduler.taskNames()).toContain('heartbeat.ping');
+
+        // The auto-started timer runs on the system clock — stop it and
+        // drive the engine deterministically.
+        scheduler.stop();
+        await scheduler.tick(new Date());
+        expect(scheduler.getStats('heartbeat.ping')?.runs).toBe(0);
+
+        await scheduler.tick(new Date(Date.now() + 3_600_000));
+        expect(scheduler.getStats('heartbeat.ping')?.runs).toBe(1);
+
+        // The ping ran the real bean: the counter incremented.
+        const heartbeat = context.getValue<Heartbeat>('heartbeat');
+        expect(heartbeat.pings).toBe(1);
     });
 });

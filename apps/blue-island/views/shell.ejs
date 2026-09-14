@@ -1,19 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="<%= locale %>">
 <head>
     <meta charset="utf-8" />
-    <title>Blue Island — hybrid demo</title>
+    <title><%= t('app.title') %></title>
     <style>
         body { font-family: system-ui, sans-serif; max-width: 40rem; margin: 3rem auto; padding: 0 1rem; }
         todo-app { display: block; border: 1px solid #ddd; border-radius: 8px; padding: 1rem; }
     </style>
 </head>
 <body>
-    <h1>Blue Island</h1>
-    <p>Rendered by the <strong>server</strong>; the component below is a
-       Web Component island hydrated on the <strong>client</strong>. Model
-       updates are pushed from the server over SSE (AD-9).</p>
-    <todo-app data-blue-island data-blue-model="<%- islandModel %>"></todo-app>
+    <h1><%= t('app.title') %></h1>
+    <p><%- t('app.intro') %></p>
+    <p><%= t('app.today', { values: { date: formatDate(today, { dateStyle: 'long', timeZone: 'UTC' }) } }) %></p>
+    <p><%= t('app.mode.switched', { values: { language: locale.toUpperCase() } }) %></p>
+    <todo-app data-blue-island data-blue-locale="<%= locale %>" data-blue-model="<%- islandModel %>"></todo-app>
     <script type="module" src="/static/client.js"></script>
 </body>
 </html>

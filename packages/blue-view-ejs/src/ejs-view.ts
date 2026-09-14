@@ -5,10 +5,55 @@
  */
 import { AbstractTemplateView, type ProducerView, type RenderResult, ViewTarget } from '@blue/view';
 import { IllegalStateError } from '@blue/core';
+import {
+    createFormattingService,
+    type DateTimeFormatOptions,
+    type ListFormatOptions,
+    type NumberFormatOptions,
+    type RelativeTimeFormatOptions,
+} from '@blue/core';
+import type { MessageParams } from '@blue/content';
+import { normalizeLocale } from '@blue/content';
 import type { ApplicationContext, ResourceLoader } from '@blue/context';
-import type { Route } from '@blue/router';
+import { LANGUAGE_ATTRIBUTE, type Route } from '@blue/router';
 
 import { EJSTemplateEngine } from './ejs-template-engine';
+
+const DEFAULT_LOCALE = 'en-US';
+
+/**
+ * Locale-aware template locals injected by {@link EJSView}.
+ *
+ * `t` resolves messages through the view's application context (itself a
+ * {@link MessageSource}); the formatter helpers wrap `Intl` through
+ * `@blue/core` formatters and use the request's negotiated language.
+ */
+export interface EJSLocaleHelpers {
+    /**
+     * The negotiated language for the current request.
+     */
+    locale: string;
+    /**
+     * Formats a message key; falls back to the key when unavailable.
+     */
+    t(key: string, params?: MessageParams): string;
+    /**
+     * Formats a date value in the request locale.
+     */
+    formatDate(value: Date | string | number, options?: DateTimeFormatOptions): string;
+    /**
+     * Formats a number in the request locale.
+     */
+    formatNumber(value: number, options?: NumberFormatOptions): string;
+    /**
+     * Formats a relative-time delta in the request locale.
+     */
+    formatRelativeTime(value: number, unit: Intl.RelativeTimeFormatUnit, options?: RelativeTimeFormatOptions): string;
+    /**
+     * Formats a string list in the request locale.
+     */
+    formatList(values: readonly string[], options?: ListFormatOptions): string;
+}
 
 /**
  * Construction options for {@link EJSView}.
@@ -85,27 +130,63 @@ export class EJSView extends AbstractTemplateView implements ProducerView {
             throw new IllegalStateError('EJSView requires a ViewTarget to render.');
         }
 
-        const html = await this.#renderHTML(templateModel);
+        const html = await this.#renderHTML(templateModel, request as Route);
         await target.commit(html, templateModel, request as Route);
     }
 
     /** @inheritdoc */
-    async renderTo(model: unknown, _route: Route): Promise<RenderResult> {
-        void _route;
+    async renderTo(model: unknown, route: Route): Promise<RenderResult> {
         return {
             mediaType: this.mediaType ?? undefined,
-            body: await this.#renderHTML(model),
+            body: await this.#renderHTML(model, route),
         };
     }
 
     /**
-     * Render the template source against the given model.
+     * Render the template source against the given model, enriched with the
+     * locale helpers for the current request.
      *
      * @param model - The data model exposed to the template.
+     * @param route - The current route (provides the negotiated language).
      * @returns The rendered HTML.
      */
-    async #renderHTML(model: unknown): Promise<string> {
-        return this.#engine.render(await this.#resolveSource(), model as object | null | undefined);
+    async #renderHTML(model: unknown, route: Route): Promise<string> {
+        const helpers = this.#localeHelpers(route);
+        const locals =
+            model !== null && typeof model === 'object' && !Array.isArray(model)
+                ? { ...(model as object), ...helpers }
+                : helpers;
+
+        return this.#engine.render(await this.#resolveSource(), locals);
+    }
+
+    /**
+     * Builds the locale-aware template helpers for a request.
+     *
+     * @param route - The current route.
+     * @returns The helper locals.
+     */
+    #localeHelpers(route: Route): EJSLocaleHelpers {
+        const rawLocale = route.attributes?.[LANGUAGE_ATTRIBUTE];
+        // Validated at the boundary: junk attributes (hand-rolled routes,
+        // corrupted adapters) fall back instead of throwing inside Intl.
+        const locale = normalizeLocale(rawLocale) ?? DEFAULT_LOCALE;
+        const format = createFormattingService({ locale });
+        const messages = this.applicationContext;
+
+        return {
+            locale,
+            t: (key: string, params?: MessageParams) => messages?.getMessage(key, params, locale) ?? key,
+            formatDate: (value: Date | string | number, options?: DateTimeFormatOptions) =>
+                format.date(options).format(value),
+            formatNumber: (value: number, options?: NumberFormatOptions) => format.number(options).format(value),
+            formatRelativeTime: (
+                value: number,
+                unit: Intl.RelativeTimeFormatUnit,
+                options?: RelativeTimeFormatOptions
+            ) => format.relativeTime(options).format(value, unit),
+            formatList: (values: readonly string[], options?: ListFormatOptions) => format.list(options).format(values),
+        };
     }
 
     /**

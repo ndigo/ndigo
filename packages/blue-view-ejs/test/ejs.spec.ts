@@ -5,8 +5,9 @@
  */
 import { describe, expect, it, vi } from 'vitest';
 import type { Route } from '@blue/router';
+import { LANGUAGE_ATTRIBUTE } from '@blue/router';
 import type { ViewTarget } from '@blue/view';
-import { InMemoryResourceLoader } from '@blue/context';
+import { GenericApplicationContext, InMemoryResourceLoader } from '@blue/context';
 
 import { EJSView } from '../src/ejs-view';
 import { EJSTemplateEngine } from '../src/ejs-template-engine';
@@ -165,5 +166,96 @@ describe('EJSViewResolver', () => {
 
         const view = await resolver.resolveViewName('allowed', '');
         expect(view).not.toBeNull();
+    });
+});
+
+describe('EJSView locale helpers', () => {
+    const messages = {
+        greeting: { en: 'Hello {name}!', fr: 'Bonjour {name} !' },
+    };
+    const fakeMessageSource = {
+        getMessage(key: string, params?: { values?: Record<string, unknown> }, language?: string) {
+            const template = messages[key as keyof typeof messages]?.[(language ?? 'en') as 'en' | 'fr'];
+            if (!template) return key;
+            const value = params?.values?.name ?? '';
+            return template.replace('{name}', String(value));
+        },
+    };
+
+    it('injects t, formatDate, and locale helpers into the template locals', async () => {
+        const context = new GenericApplicationContext('test');
+        context.setMessageSource(fakeMessageSource);
+
+        const view = new EJSView('home', {
+            template:
+                "<h1><%= t('greeting', { values: { name: 'Ada' } }) %></h1>" +
+                "<time><%= formatDate(when, { timeZone: 'UTC', dateStyle: 'medium' }) %></time>" +
+                '<span><%= locale %></span>',
+        });
+        view.setApplicationContext(context);
+        const target = new CaptureViewTarget();
+
+        await view.render(
+            { when: new Date('2026-09-13T12:00:00Z') },
+            { attributes: { [LANGUAGE_ATTRIBUTE]: 'fr' } } as unknown as Route,
+            target
+        );
+
+        const output = target.last?.output as string;
+        expect(output).toContain('<h1>Bonjour Ada !</h1>');
+        expect(output).toContain('<time>13 sept. 2026</time>');
+        expect(output).toContain('<span>fr</span>');
+    });
+
+test('falls back to the key and en-US without a negotiated language', async () => {
+        const context = new GenericApplicationContext('test');
+        context.setMessageSource(fakeMessageSource);
+
+        const view = new EJSView('home', {
+            template: "<p><%= t('missing.key') %>|<%= locale %></p>",
+        });
+        view.setApplicationContext(context);
+        const target = new CaptureViewTarget();
+
+        await view.render({}, {} as Route, target);
+
+        expect(target.last?.output).toBe('<p>missing.key|en-US</p>');
+    });
+
+    it('falls back to en-US for hostile locale attributes instead of throwing in Intl', async () => {
+        const context = new GenericApplicationContext('test');
+        context.setMessageSource(fakeMessageSource);
+
+        const view = new EJSView('home', {
+            template: "<p><%= locale %>|<%= formatDate(when, { timeZone: 'UTC', dateStyle: 'medium' }) %></p>",
+        });
+        view.setApplicationContext(context);
+        const target = new CaptureViewTarget();
+
+        await view.render(
+            { when: new Date('2026-09-13T12:00:00Z') },
+            { attributes: { [LANGUAGE_ATTRIBUTE]: '" autofocus onfocus="alert(1)' } } as unknown as Route,
+            target
+        );
+
+        expect(target.last?.output).toBe('<p>en-US|Sep 13, 2026</p>');
+    });
+
+    it('formats numbers and lists in the request locale', async () => {
+        const context = new GenericApplicationContext('test');
+        context.setMessageSource(fakeMessageSource);
+
+        const view = new EJSView('home', {
+            template: "<%= formatNumber(1234.5) %>|<%= formatRelativeTime(-2, 'day') %>|<%= formatList(['a', 'b']) %>",
+        });
+        view.setApplicationContext(context);
+        const target = new CaptureViewTarget();
+
+        await view.render({}, { attributes: { [LANGUAGE_ATTRIBUTE]: 'de' } } as unknown as Route, target);
+
+        const output = target.last?.output as string;
+        expect(output).toContain('1.234,5');
+        expect(output).toContain('Tagen');
+        expect(output).toContain('und');
     });
 });

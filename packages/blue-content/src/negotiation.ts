@@ -22,6 +22,47 @@ export const parseAcceptLanguage = (header: string): string | undefined => {
 };
 
 /**
+ * BCP 47-ish shape for a language tag: a 2–8 letter primary subtag followed
+ * by 1–8 alphanumeric extension subtags. This is deliberately stricter
+ * than `Intl` (which silently accepts near-anything): quotable and
+ * whitespace characters — `"`, `<`, `>`, `'`, `&`, control chars — never
+ * pass, so a validated value is safe in generated markup and as a cache
+ * key.
+ */
+const languageTagPattern = /^[A-Za-z]{2,8}(?:-[A-Za-z0-9]{1,8})*$/u;
+
+/**
+ * Cap on tag length — 8 primary + 8×(8+1) extension chars worst case is
+ * 80; 64 keeps room for real tags while bounding attacker-supplied input.
+ */
+const MAX_LOCALE_LENGTH = 64;
+
+/**
+ * Validates and canonicalizes a language tag.
+ *
+ * Rejects non-strings, empty/overlong values, tags with characters outside
+ * the BCP 47 alphabet (quotes, whitespace, angle brackets), and tags the
+ * platform's `Intl` implementation refuses. Returns the canonical form
+ * (`EN-us` → `en-US`) or `undefined` when the value is not a usable tag.
+ *
+ * @param value - The candidate language tag.
+ * @returns The canonical tag, or `undefined` when unusable.
+ */
+export const normalizeLocale = (value: unknown): string | undefined => {
+    if (typeof value !== 'string' || value.length === 0 || value.length > MAX_LOCALE_LENGTH) {
+        return undefined;
+    }
+    if (!languageTagPattern.test(value)) {
+        return undefined;
+    }
+    try {
+        return Intl.getCanonicalLocales(value)[0];
+    } catch {
+        return undefined;
+    }
+};
+
+/**
  * Content source that resolves content using Accept-Language negotiation.
  *
  * Parses the `Accept-Language` header from a request to determine the preferred

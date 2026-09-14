@@ -27,6 +27,9 @@ export class IslandController {
         // name through the EJSViewResolver — servlet/JSP-style, no inline HTML.
         return new ModelAndView('shell', {
             islandModel: encodeURIComponent(JSON.stringify(this.#modelStore.get())),
+            // Fixed sample timestamp so the localized date rendering stays
+            // deterministic across runs (locale helpers format it).
+            today: new Date('2026-09-13T12:00:00Z'),
         });
     }
 

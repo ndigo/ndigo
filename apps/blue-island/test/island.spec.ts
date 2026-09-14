@@ -32,6 +32,8 @@ describe('blue-island hybrid demo', () => {
     beforeAll(() => {
         process.env['STATIC_DIR'] = resolve('dist');
         const app = bootApp([IslandConfiguration]);
+        // Same wiring as the app bootstrap: entry-resolved message source.
+        app.context.setMessageSource(app.context.getValue('messageSource'));
         mockMVC = new MockHTTP(app);
         close = app.close;
     });
@@ -46,7 +48,7 @@ describe('blue-island hybrid demo', () => {
         expect(res.response.status).toBe(200);
         const html = res.text();
         // The island markup + serialized model are present in the served doc.
-        expect(html).toContain('<todo-app data-blue-island data-blue-model=');
+        expect(html).toContain('<todo-app data-blue-island data-blue-locale="');
         expect(html).toContain('/static/client.js');
     });
 
@@ -73,6 +75,27 @@ describe('blue-island hybrid demo', () => {
         // Bundle contains the hydrate logic + the todo-app component tag.
         expect(body).toContain('todo-app');
         expect(body.length).toBeGreaterThan(1000);
+    });
+
+    test('GET / negotiates the shell language from Accept-Language', async () => {
+        const res = await mockMVC.get('/').headers({ 'accept-language': 'fr, en;q=0.8' }).exec();
+        const html = res.text();
+
+        expect(html).toContain('data-blue-locale="fr"');
+        expect(html).toContain('Rendu par le <strong>serveur</strong>');
+        expect(html).toContain('septembre 2026');
+        expect(html).toContain('Langue du serveur : FR');
+        expect(html).toMatch(/<html lang="fr">/);
+    });
+
+    test('GET / defaults to English without an Accept-Language header', async () => {
+        const res = await mockMVC.get('/').exec();
+        const html = res.text();
+
+        expect(html).toContain('data-blue-locale="en-US"');
+        expect(html).toContain('Rendered by the <strong>server</strong>');
+        expect(html).toContain('September 13, 2026');
+        expect(html).toMatch(/<html lang="en-US">/);
     });
 });
 

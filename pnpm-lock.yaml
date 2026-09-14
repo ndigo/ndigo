@@ -346,6 +346,9 @@ importers:
       '@blue/router':
         specifier: ~0.0.1
         version: link:../../packages/blue-router
+      '@blue/scheduler':
+        specifier: ~0.0.1
+        version: link:../../packages/blue-scheduler
       '@blue/telemetry':
         specifier: ~0.0.1
         version: link:../../packages/blue-telemetry
@@ -470,6 +473,9 @@ importers:
       '@blue/boot':
         specifier: ~0.0.1
         version: link:../../packages/blue-boot
+      '@blue/content-i18next':
+        specifier: ~0.0.1
+        version: link:../../packages/blue-content-i18next
       '@blue/context':
         specifier: ~0.0.1
         version: link:../../packages/blue-context
@@ -534,6 +540,9 @@ importers:
       '@blue/content':
         specifier: ~0.0.1
         version: link:../../packages/blue-content
+      '@blue/content-i18next':
+        specifier: ~0.0.1
+        version: link:../../packages/blue-content-i18next
       '@blue/context':
         specifier: ~0.0.1
         version: link:../../packages/blue-context
@@ -736,6 +745,16 @@ importers:
         specifier: ~0.0.1
         version: link:../blue-util
 
+  packages/blue-content-i18next:
+    dependencies:
+      i18next:
+        specifier: ^24.2.3
+        version: 24.2.3(typescript@5.9.3)
+    devDependencies:
+      '@blue/content':
+        specifier: ~0.0.1
+        version: link:../blue-content
+
   packages/blue-context:
     dependencies:
       dotenv:
@@ -780,6 +799,9 @@ importers:
         specifier: ^4.5.4
         version: 4.5.4
     devDependencies:
+      '@blue/content':
+        specifier: ~0.0.1
+        version: link:../blue-content
       '@blue/context':
         specifier: ~0.0.1
         version: link:../blue-context
@@ -981,6 +1003,9 @@ importers:
       '@blue/router':
         specifier: ~0.0.1
         version: link:../blue-router
+      '@blue/scheduler':
+        specifier: ~0.0.1
+        version: link:../blue-scheduler
       '@blue/view':
         specifier: ~0.0.1
         version: link:../blue-view
@@ -1000,6 +1025,9 @@ importers:
         specifier: ~0.0.1
         version: link:../blue-view-webcomponent
     devDependencies:
+      '@blue/content':
+        specifier: ~0.0.1
+        version: link:../blue-content
       '@blue/context':
         specifier: ~0.0.1
         version: link:../blue-context
@@ -1015,6 +1043,9 @@ importers:
       '@blue/router':
         specifier: ~0.0.1
         version: link:../blue-router
+      '@blue/signals':
+        specifier: ~0.0.1
+        version: link:../blue-signals
       '@blue/util':
         specifier: ~0.0.1
         version: link:../blue-util
@@ -1036,6 +1067,28 @@ importers:
       '@blue/util':
         specifier: ~0.0.1
         version: link:../blue-util
+
+  packages/blue-scheduler:
+    dependencies:
+      '@opentelemetry/api':
+        specifier: ~1.9.1
+        version: 1.9.1
+      croner:
+        specifier: ^10.0.1
+        version: 10.0.1
+    devDependencies:
+      '@blue/context':
+        specifier: ~0.0.1
+        version: link:../blue-context
+      '@blue/core':
+        specifier: ~0.0.1
+        version: link:../blue-core
+      '@blue/util':
+        specifier: ~0.0.1
+        version: link:../blue-util
+      '@opentelemetry/sdk-trace-base':
+        specifier: ~2.11.0
+        version: 2.11.0(@opentelemetry/api@1.9.1)
 
   packages/blue-service:
     dependencies:
@@ -1160,6 +1213,9 @@ importers:
       '@blue/router':
         specifier: ~0.0.1
         version: link:../blue-router
+      '@blue/view':
+        specifier: ~0.0.1
+        version: link:../blue-view
       '@opentelemetry/context-async-hooks':
         specifier: ~2.11.0
         version: 2.11.0(@opentelemetry/api@1.9.1)
@@ -1293,6 +1349,9 @@ importers:
         specifier: ^3.1.10
         version: 3.1.10
     devDependencies:
+      '@blue/content':
+        specifier: ~0.0.1
+        version: link:../blue-content
       '@blue/context':
         specifier: ~0.0.1
         version: link:../blue-context
@@ -1872,6 +1931,10 @@ packages:
     engines: {node: '>=6.9.0'}
     peerDependencies:
       '@babel/core': ^7.0.0-0
+
+  '@babel/runtime@7.29.7':
+    resolution: {integrity: sha512-Nq8OhGWiZIZGV6hLHoyAKLLcJihP/xFeBMGJoUrxTX2psI8dCifzLhZISFb+VWS3wFMRDmCGw5R+dOySCqPLhw==}
+    engines: {node: '>=6.9.0'}
 
   '@babel/template@7.29.7':
     resolution: {integrity: sha512-puq+Gf35oI24FeN11LkoUQFqv9uwNeWpxXZi/Ji3rRIoKAzKnxRaZ+Gkj0vKS9ZCiTESfng1N9LyOyXvo+m+Gg==}
@@ -4284,6 +4347,10 @@ packages:
   create-require@1.1.1:
     resolution: {integrity: sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ==}
 
+  croner@10.0.1:
+    resolution: {integrity: sha512-ixNtAJndqh173VQ4KodSdJEI6nuioBWI0V1ITNKhZZsO0pEMoDxz539T4FTTbSZ/xIOSuDnzxLVRqBVSvPNE2g==}
+    engines: {node: '>=18.0'}
+
   cross-env@10.1.0:
     resolution: {integrity: sha512-GsYosgnACZTADcmEyJctkJIoqAhHjttw7RsFrVoJNXbsWWqaq6Ym+7kZjq6mS45O0jij6vtiReppKQEtqWy6Dw==}
     engines: {node: '>=20'}
@@ -5184,6 +5251,14 @@ packages:
   hyperdyperid@1.2.0:
     resolution: {integrity: sha512-Y93lCzHYgGWdrJ66yIktxiaGULYc6oGiABxhcO5AufBeOyoIdZF7bIfLaOrbM0iGIOXQQgxxRrFEnb+Y6w1n4A==}
     engines: {node: '>=10.18'}
+
+  i18next@24.2.3:
+    resolution: {integrity: sha512-lfbf80OzkocvX7nmZtu7nSTNbrTYR52sLWxPtlXX1zAhVw8WEnFk4puUkCR4B1dNQwbSpEHHHemcZu//7EcB7A==}
+    peerDependencies:
+      typescript: ^5
+    peerDependenciesMeta:
+      typescript:
+        optional: true
 
   iconv-lite@0.4.24:
     resolution: {integrity: sha512-v3MXnZAcvnywkTUEZomIActle7RXXeedOR31wwl7VlyoXO4Qi9arvSenNQWne1TcRwhCL1HwLI21bEqdpj8/rA==}
@@ -8327,6 +8402,8 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  '@babel/runtime@7.29.7': {}
+
   '@babel/template@7.29.7':
     dependencies:
       '@babel/code-frame': 7.29.7
@@ -10463,6 +10540,8 @@ snapshots:
 
   create-require@1.1.1: {}
 
+  croner@10.0.1: {}
+
   cross-env@10.1.0:
     dependencies:
       '@epic-web/invariant': 1.0.0
@@ -11359,6 +11438,12 @@ snapshots:
   human-signals@2.1.0: {}
 
   hyperdyperid@1.2.0: {}
+
+  i18next@24.2.3(typescript@5.9.3):
+    dependencies:
+      '@babel/runtime': 7.29.7
+    optionalDependencies:
+      typescript: 5.9.3
 
   iconv-lite@0.4.24:
     dependencies:

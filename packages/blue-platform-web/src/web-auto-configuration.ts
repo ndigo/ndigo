@@ -7,6 +7,7 @@ import { configuration, entry } from '@blue/context';
 import { argumentValueConverters } from './argument-value-converter';
 import { BrowserBindMethodArgumentResolver } from './bind-argument-resolver';
 import { BrowserCookieValueMethodArgumentResolver } from './cookie-argument-resolver';
+import { CookieLanguageResolver } from './cookie-language-resolver';
 import { BrowserModelValueMethodArgumentResolver } from './model-argument-resolver';
 import { BrowserSessionValueMethodArgumentResolver } from './session-argument-resolver';
 import { BrowserStateValueMethodArgumentResolver } from './state-argument-resolver';
@@ -69,5 +70,17 @@ export class WebAutoConfiguration {
     @entry
     viewResolver() {
         return new ViewResolverComposite([new WebComponentViewResolver(), new NameViewResolver()]);
+    }
+
+    /**
+     * Resolves the request language from the persisted cookie, falling back
+     * to the browser language. Can be overridden by registering a custom
+     * `configuration` with a languageResolver entry.
+     *
+     * @returns The cookie-backed language resolver.
+     */
+    @entry
+    languageResolver() {
+        return new CookieLanguageResolver();
     }
 }

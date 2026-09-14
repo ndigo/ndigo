@@ -25,7 +25,8 @@
     "@blue/util": "~0.0.1",
     "@blue/view": "~0.0.1",
     "@blue/view-ejs": "~0.0.1",
-    "@blue/view-webcomponent": "~0.0.1"
+    "@blue/view-webcomponent": "~0.0.1",
+    "@blue/content-i18next": "~0.0.1"
   },
   "devDependencies": {
     "tsx": "^4.23.13",

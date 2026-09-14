@@ -3,7 +3,7 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import { likeContentSourceAware } from '@blue/content';
+import { likeContentSourceAware, likeMessageSourceAware } from '@blue/content';
 import { likeApplicationEventEmitterAware } from './event-emitter';
 import { InitializationAwareProcessor, likeAware } from '@blue/factory';
 import { likeEnvironmentAware } from './environment';
@@ -13,7 +13,7 @@ import { defineProperty } from './context-shared';
 
 /**
  * Create a new ApplicationContextAwareProcessor for the given context.
- * An {@link InitializationAwareProcessor|InitializationAwareProcessor} implementation that passes the ApplicationContext to value that implement the `EnvironmentAware`, `ResourceLoaderAware`, `ApplicationEventEmitterAware`, `ContentSourceAware`, and/or `ApplicationContextAware` interfaces.
+ * An {@link InitializationAwareProcessor|InitializationAwareProcessor} implementation that passes the ApplicationContext to value that implement the `EnvironmentAware`, `ResourceLoaderAware`, `ApplicationEventEmitterAware`, `ContentSourceAware`, `MessageSourceAware`, and/or `ApplicationContextAware` interfaces.
  */
 export class ApplicationContextAwareProcessor implements InitializationAwareProcessor {
     readonly applicationContext!: ApplicationContext;
@@ -59,6 +59,8 @@ export class ApplicationContextAwareProcessor implements InitializationAwareProc
             likeApplicationEventEmitterAware(value) && value.setApplicationEventEmitter(applicationContext);
             // eslint-disable-next-line no-unused-expressions -- guarded dispatch: inject only into values implementing the contract
             likeContentSourceAware(value) && value.setContentSource(applicationContext);
+            // eslint-disable-next-line no-unused-expressions -- guarded dispatch: inject only into values implementing the contract
+            likeMessageSourceAware(value) && value.setMessageSource(applicationContext);
             // eslint-disable-next-line no-unused-expressions -- guarded dispatch: inject only into values implementing the contract
             likeApplicationContextAware(value) && value.setApplicationContext(applicationContext);
         }

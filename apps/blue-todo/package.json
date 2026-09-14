@@ -40,7 +40,8 @@
     "@blue/view": "~0.0.1",
     "@blue/view-webcomponent": "~0.0.1",
     "todomvc-app-css": "~2.4.3",
-    "todomvc-common": "~1.0.5"
+    "todomvc-common": "~1.0.5",
+    "@blue/content-i18next": "~0.0.1"
   },
   "devDependencies": {
     "@blue/boot": "~0.0.1",

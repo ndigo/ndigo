@@ -23,6 +23,10 @@ async function main() {
     // auto-initialize on refresh.
     const context = await new ApplicationBuilder([NodeAutoConfiguration, IslandConfiguration]).run();
 
+    // The application message source (i18next resources) backs the shell's
+    // locale helpers; negotiated per request via the Accept-Language header.
+    context.setMessageSource(context.getValue('messageSource'));
+
     // The reactive half of the demo pushes model updates to connected islands
     // over SSE until the ticker completes.
     const modelStore = context.getValue<TodoModelStore>('modelStore');

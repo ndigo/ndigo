@@ -43,15 +43,15 @@ pnpm format:check
 
 ## Applications
 
-| App | What it demonstrates |
-| --- | --- |
-| [blue-hello](apps/blue-hello/README.md) | Minimal browser SPA — context + route + Web Component |
-| [blue-hello-node](apps/blue-hello-node/README.md) | Minimal Node HTTP server |
-| [blue-todo](apps/blue-todo/README.md) | TodoMVC + micro frontend shell |
-| [blue-api](apps/blue-api/README.md) | Node API server — auth, ORM, negotiation, problem+json |
-| [blue-host](apps/blue-host/README.md) | Micro frontend host with lazy feature chunks |
-| [blue-island](apps/blue-island/README.md) | Node SSR — EJS shell + island hydration + SSE |
-| [blue-views](apps/blue-views/README.md) | View-resolution composite and negotiation |
+| App                                               | What it demonstrates                                   |
+| ------------------------------------------------- | ------------------------------------------------------ |
+| [blue-hello](apps/blue-hello/README.md)           | Minimal browser SPA — context + route + Web Component  |
+| [blue-hello-node](apps/blue-hello-node/README.md) | Minimal Node HTTP server                               |
+| [blue-todo](apps/blue-todo/README.md)             | TodoMVC + micro frontend shell                         |
+| [blue-api](apps/blue-api/README.md)               | Node API server — auth, ORM, negotiation, problem+json |
+| [blue-host](apps/blue-host/README.md)             | Micro frontend host with lazy feature chunks           |
+| [blue-island](apps/blue-island/README.md)         | Node SSR — EJS shell + island hydration + SSE          |
+| [blue-views](apps/blue-views/README.md)           | View-resolution composite and negotiation              |
 
 The [apps/README](apps/README.md) documents the progression from simple to
 complex.
@@ -67,6 +67,11 @@ Core & infrastructure:
 - [blue-boot](packages/blue-boot/README.md) — application bootstrap, profiles, typed config
 - [blue-signals](packages/blue-signals/README.md) — reactive state
 - [blue-dom](packages/blue-dom/README.md) — isomorphic DOM providers
+
+Content & i18n:
+
+- [blue-content](packages/blue-content/README.md) — content keys, themes, message-source contract
+- [blue-content-i18next](packages/blue-content-i18next/README.md) — i18next `MessageSource` adapter
 
 HTTP & routing:
 

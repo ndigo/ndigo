@@ -5,8 +5,18 @@
  */
 import { FrameworkError } from '@blue/core';
 import type { Route } from '@blue/router';
+import { LANGUAGE_ATTRIBUTE } from '@blue/router';
 import { AbstractTemplateView } from './view';
 import { ViewTarget } from './view-target';
+
+/**
+ * Escapes a string for safe embedding in a double-quoted HTML attribute.
+ *
+ * @param value - The raw value.
+ * @returns The value with HTML metacharacters entity-escaped.
+ */
+const escapeAttributeValue = (value: string): string =>
+    value.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
 /**
  * Serializes a view model into a JSON string safe to embed in an HTML attribute.
@@ -16,7 +26,7 @@ import { ViewTarget } from './view-target';
  */
 export function serializeModel(model: unknown): string {
     const json = JSON.stringify(model ?? null);
-    return json.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    return escapeAttributeValue(json);
 }
 
 /**
@@ -89,7 +99,14 @@ export class IslandView extends AbstractTemplateView {
             throw new FrameworkError('IslandView requires a ViewTarget to render.');
         }
 
-        const html = `<${this.tagName} data-blue-island data-blue-model="${serializeModel(templateModel)}"></${this.tagName}>`;
+        // The resolved request language rides along so the hydrated element
+        // can format identically to the server-rendered output (AD-19 D5).
+        // Escaped like the model: the attribute sits in generated markup and
+        // the value may originate from request headers.
+        const rawLocale = (request as Route | null)?.attributes?.[LANGUAGE_ATTRIBUTE];
+        const locale = typeof rawLocale === 'string' ? rawLocale : '';
+
+        const html = `<${this.tagName} data-blue-island data-blue-locale="${escapeAttributeValue(locale)}" data-blue-model="${serializeModel(templateModel)}"></${this.tagName}>`;
         // The view target's commit slot expects the route; the request is what the view pipeline supplies.
         await target.commit(html, templateModel, request as Route);
     }

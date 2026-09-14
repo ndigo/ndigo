@@ -4,6 +4,7 @@
  * @author Jeff Rose
  */
 export * from './route';
+export * from './route-attributes';
 export * from './context-tokens';
 export * from './router';
 export { default as RouterExecutionChain } from './router-execution-chain';

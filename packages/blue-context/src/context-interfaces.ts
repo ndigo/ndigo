@@ -4,7 +4,14 @@
  * @author Jeff Rose
  */
 import { JSONObject } from '@blue/core';
-import { ContentSource, Theme, ThemeResolver, likeContentSource } from '@blue/content';
+import {
+    ContentSource,
+    MessageSource,
+    Theme,
+    ThemeResolver,
+    likeContentSource,
+    likeMessageSource,
+} from '@blue/content';
 import { like } from '@blue/util/types';
 import { EventEmitter, likeEventEmitter, EventType } from './event-emitter';
 import {
@@ -20,7 +27,14 @@ import { EnvironmentSource, likeEnvironmentSource, ConfigurableEnvironment } fro
 import { ResourceLoader, likeResourceLoader } from './resource';
 
 export interface ApplicationContext
-    extends ConfigurableFactory, ContentSource, Destroyable, EventEmitter, EnvironmentSource, ResourceLoader {
+    extends
+        ConfigurableFactory,
+        ContentSource,
+        MessageSource,
+        Destroyable,
+        EventEmitter,
+        EnvironmentSource,
+        ResourceLoader {
     /**
      * The timestamp when this context was created.
      */
@@ -153,6 +167,10 @@ export interface ConfigurableApplicationContext extends ApplicationContext {
      */
     setContentSource(contentSource: ContentSource): void;
     /**
+     * Replaces the message source used by this context.
+     */
+    setMessageSource(messageSource: MessageSource): void;
+    /**
      * Replaces the environment used by this context.
      */
     setEnvironment(environment: ConfigurableEnvironment): void;
@@ -215,6 +233,7 @@ export interface ConfigurableApplicationContext extends ApplicationContext {
  */
 export const likeApplicationContext = ((value: unknown) =>
     likeContentSource(value) &&
+    likeMessageSource(value) &&
     likeDestroyable(value) &&
     likeEnvironmentSource(value) &&
     likeEventEmitter(value) &&

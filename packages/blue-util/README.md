@@ -1,7 +1,7 @@
 # Blue Utility
 
 The BlueJS utility library — zero-dependency helpers for strings, types,
-dates, math, and structure matching, with **no third-party runtime deps**.
+math, and structure matching, with **no third-party runtime deps**.
 
 ## Overview
 
@@ -18,7 +18,6 @@ Today it is fully native.
 - **String utilities** — encoding/decoding, slugify, camel/Pascal/proper/sentence
   case, diacritics removal, interpolation, regex builders
 - **Math & ids** — `randInt`, `randHex`, `guid`, seeded random
-- **Date** — `isValidDate` and date helpers
 - **Predicates & composition** — native replacements for the removed Ramda
   combinators (`allPass`-style checks are plain `&&` chains now)
 
@@ -27,7 +26,7 @@ Today it is fully native.
 ```ts
 import { isString, like, guid } from '@blue/util';
 
-isString('abc');          // true
+isString('abc'); // true
 like({ then: Function }, thenable); // true — duck-type check
 
 const id = guid();

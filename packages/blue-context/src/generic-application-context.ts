@@ -4,7 +4,15 @@
  * @author Jeff Rose
  */
 import { JSONObject, direct, escalate } from '@blue/core';
-import { ContentSource, StaticContentSource, Theme, ThemeResolver, StaticThemeResolver } from '@blue/content';
+import {
+    ContentSource,
+    MessageParams,
+    MessageSource,
+    StaticContentSource,
+    Theme,
+    ThemeResolver,
+    StaticThemeResolver,
+} from '@blue/content';
 import { AsEventEmitter, EventType } from './event-emitter';
 import {
     DefaultLifecycleProcessor,
@@ -34,6 +42,7 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
     #id!: number;
     #isActive: boolean;
     #lifecycleProcessor: LifecycleProcessor | null;
+    #messageSource: MessageSource | null;
     #name: string;
     #parent: ApplicationContext | null;
     #themeName: string;
@@ -136,6 +145,7 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
         this.#environment = null;
         this.#isActive = false;
         this.#lifecycleProcessor = null;
+        this.#messageSource = null;
         this.#name = name ?? '';
         this.#parent = null;
         this.#themeName = 'default';
@@ -270,6 +280,36 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
     }
 
     /**
+     * Resolves and formats a message, delegating to the registered message
+     * source when present, the content source otherwise, and the parent
+     * context last.
+     *
+     * @param key - The message key to resolve.
+     * @param params - Optional formatting parameters.
+     * @param language - The language to use.
+     * @returns The formatted message, or the key when nothing resolves it.
+     */
+    getMessage(key: string, params?: MessageParams, language?: string): string {
+        let value: string | undefined;
+        if (this.#messageSource) {
+            value = this.#messageSource.getMessage(key, params, language);
+        }
+        if (value === undefined || value === key) {
+            value = this.#contentSource.getContent(key, language ?? '');
+        }
+        if (value !== undefined && value !== key) {
+            return value;
+        }
+        if (this.parent) {
+            const parentValue = this.parent.getMessage(key, params, language);
+            if (parentValue !== undefined && parentValue !== key) {
+                return parentValue;
+            }
+        }
+        return key;
+    }
+
+    /**
      * Resolves a theme by name or the default theme.
      *
      * @param name - Optional theme name.
@@ -357,6 +397,15 @@ export class GenericApplicationContext extends AsEventEmitter(AsModuleResourceLo
         if (!this.#customThemeResolver) {
             this.#themeResolver = null;
         }
+    }
+
+    /**
+     * Replaces the message source used by message lookups.
+     *
+     * @param messageSource - The message source to attach.
+     */
+    setMessageSource(messageSource: MessageSource): void {
+        this.#messageSource = messageSource;
     }
 
     /**

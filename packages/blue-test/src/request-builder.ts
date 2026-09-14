@@ -15,7 +15,7 @@ import { guid } from '@blue/util/math';
  * @since 1.0.0
  */
 
-import { Route, RouteSegment } from '@blue/router';
+import { Route, RouteSegment, ACCEPT_LANGUAGE_ATTRIBUTE } from '@blue/router';
 import { NODE_REQUEST_ATTRIBUTE, NODE_RESPONSE_ATTRIBUTE, NodeRequest } from '@blue/platform-node';
 import { ResponseSink } from './memory-response';
 
@@ -116,6 +116,7 @@ export function buildRoute(request: MockRequest, responseSink: ResponseSink): Pr
         attributes: {
             [NODE_REQUEST_ATTRIBUTE]: nodeRequest,
             [NODE_RESPONSE_ATTRIBUTE]: responseSink,
+            [ACCEPT_LANGUAGE_ATTRIBUTE]: (request.headers ?? {})['accept-language'],
         },
     } as unknown as Route;
 

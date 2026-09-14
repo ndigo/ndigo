@@ -33,6 +33,8 @@ GET  /metrics                  live telemetry counters (management)
 - JWT auth (`@blue/auth-server`) and profile-gated dev beans (`@profile('dev')`)
 - In-memory and Drizzle ORM entity managers
 - RFC 9457 problem+json error envelope (AD-10)
+- Scheduled heartbeat task (`@scheduled`, auto-discovered and auto-started —
+  AD-20, [scheduling guide](../../docs/guides/05-scheduling.md))
 
 ## Development
 

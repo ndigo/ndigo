@@ -1,0 +1,41 @@
+{
+  "name": "@blue/content-i18next",
+  "version": "0.0.1",
+  "description": "Blue Content i18next Adapter",
+  "type": "module",
+  "files": [
+    "doc",
+    "lib"
+  ],
+  "exports": {
+    ".": {
+      "default": "./lib/index.js",
+      "types": "./lib/index.d.ts"
+    }
+  },
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build:lib": "tsc -b tsconfig.build.json",
+    "test": "vitest run"
+  },
+  "keywords": [
+    "blue",
+    "bluejs",
+    "blue-js",
+    "blue-content",
+    "i18next",
+    "i18n"
+  ],
+  "author": "Jeff Rose <jeff_rose@outlook.com>",
+  "license": "ISC",
+  "dependencies": {
+    "i18next": "^24.2.3"
+  },
+  "devDependencies": {
+    "@blue/content": "~0.0.1"
+  },
+  "peerDependencies": {
+    "@blue/content": "~0.0.1"
+  },
+  "sideEffects": false
+}

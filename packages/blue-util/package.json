@@ -12,10 +12,6 @@
       "default": "./lib/index.js",
       "types": "./lib/index.d.ts"
     },
-    "./date": {
-      "types": "./lib/date/index.d.ts",
-      "default": "./lib/date/index.js"
-    },
     "./math": {
       "types": "./lib/math/index.d.ts",
       "default": "./lib/math/index.js"
@@ -32,9 +28,6 @@
   "types": "lib/index.d.ts",
   "typesVersions": {
     "*": {
-      "date": [
-        "./lib/date/index.d.ts"
-      ],
       "math": [
         "./lib/math/index.d.ts"
       ],

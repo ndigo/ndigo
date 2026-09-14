@@ -118,9 +118,10 @@ Micro frontends:
 
 - **API reference** — `pnpm doc:md` generates the markdown reference into
   `doc-md/`; `pnpm doc:html` the alternate rendering into `doc-html/`
-- **Guides** — the hand-written documentation set lives in `docs/`:
-  [guides](docs/guides/README.md), [architecture](docs/architecture/README.md),
-  [reference](docs/reference/README.md), [decisions](docs/decisions/),
+- **Guides** — the hand-written documentation set lives in `docs/`
+  ([index](docs/README.md)): [guides](docs/guides/README.md),
+  [architecture](docs/architecture/README.md),
+  [reference](docs/reference/README.md),
   [migrations](docs/migrations/README.md)
 - **Benchmarks** — `pnpm test:bench` runs the vitest bench suites; the
   todomvc Speedometer-3-style comparison runs via `pnpm test:benchmark:*`

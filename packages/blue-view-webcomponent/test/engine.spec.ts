@@ -1,3 +1,8 @@
+/**
+ * @module blue-view-webcomponent
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { describe, it, expect } from 'vitest';
 import { Route } from '@blue/router';
 import { WebComponentView } from '../src/view';

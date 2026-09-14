@@ -1,3 +1,8 @@
+/**
+ * @module blue-platform-web
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { describe, expect, test } from 'vitest';
 import { MetadataConfigApplicationContext, configuration, entry } from '@blue/context';
 import { HandlerMethodArgumentResolver, MethodParameter, MethodParameterType } from '@blue/dispatcher';

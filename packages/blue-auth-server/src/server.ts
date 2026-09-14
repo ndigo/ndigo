@@ -1,3 +1,8 @@
+/**
+ * @module blue-auth-server
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { type Principal } from '@blue/auth-core';
 import { AuthRegistry } from '@blue/auth-core';
 

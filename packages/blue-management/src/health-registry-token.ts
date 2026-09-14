@@ -1,3 +1,8 @@
+/**
+ * @module blue-management
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { ContextToken } from '@blue/context';
 import { HealthRegistry } from './health';
 

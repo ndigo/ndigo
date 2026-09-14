@@ -1,3 +1,8 @@
+/**
+ * @module blue-island
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import '@tsmetadata/polyfill';
 import { configuration, entry } from '@blue/context';
 import { resolve } from 'node:path';

@@ -1,3 +1,8 @@
+/**
+ * @module blue-todo
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { AuthClient, AuthRegistry, OIDCAdapter, Principal } from '@blue/auth-client';
 
 // ── Demo credentials (in-memory, for demo only) ──────────────────────────────

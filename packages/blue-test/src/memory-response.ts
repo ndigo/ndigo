@@ -1,13 +1,9 @@
 /**
  * In-memory HTTP response captured by a {@link MockMvcDispatch}.
- *
- * Replaces the real `node:http` `ServerResponse` with a plain object the
- * dispatcher can write to, so integration tests run socket-free.
- *
- * @module
+ * * @module blue-test
  * @since 1.0.0
+ * @author Jeff Rose
  */
-
 /**
  * A captured HTTP response: status code, headers, and body.
  *

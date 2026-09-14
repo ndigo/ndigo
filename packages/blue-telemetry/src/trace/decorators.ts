@@ -1,3 +1,8 @@
+/**
+ * @module blue-telemetry
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import '@tsmetadata/polyfill';
 import { getSymbolMetadata } from '@blue/core';
 import { SpanStatusCode, Tracer, trace } from '@opentelemetry/api';

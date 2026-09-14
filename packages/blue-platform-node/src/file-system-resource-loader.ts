@@ -1,3 +1,8 @@
+/**
+ * @module blue-platform-node
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { readFile } from 'node:fs/promises';
 import { Resource, ResourceLoader, UnresolvedResource } from '@blue/context';
 

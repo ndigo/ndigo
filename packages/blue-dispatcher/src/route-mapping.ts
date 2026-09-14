@@ -1,3 +1,8 @@
+/**
+ * @module blue-dispatcher
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import '@tsmetadata/polyfill';
 import { FrameworkError, getSymbolMetadata } from '@blue/core';
 import type { HTTPMethod } from '@blue/http';

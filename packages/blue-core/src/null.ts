@@ -1,7 +1,8 @@
 /**
  * An object with a `null` prototype.
- *
- * This is useful when you need a dictionary-like object without inherited members.
+ * * @module blue-core
+ * @since 1.0.0
+ * @author Jeff Rose
  */
 export class Null {}
 

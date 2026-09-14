@@ -1,11 +1,9 @@
 /**
  * Structural guard for the {@link View} contract.
- *
- * Handlers may return a concrete view directly (imperative views such as
- * `ServerSentEventView` — see AD-9), so dispatchers need a way to recognize a
- * `View`-shaped object before falling back to JSON serialization.
+ * * @module blue-view
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import { isFunction } from '@blue/util/types';
 import { View } from './view.js';
 

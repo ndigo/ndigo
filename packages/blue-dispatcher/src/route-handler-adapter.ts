@@ -1,3 +1,8 @@
+/**
+ * @module blue-dispatcher
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { like } from '@blue/util/types';
 import { ModelAndView } from './model-and-view';
 import { Controller } from './controller';

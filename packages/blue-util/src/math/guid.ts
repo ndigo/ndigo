@@ -1,3 +1,8 @@
+/**
+ * @module blue-util
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import randHex from './rand-hex.js';
 import randInt from './rand-int.js';
 

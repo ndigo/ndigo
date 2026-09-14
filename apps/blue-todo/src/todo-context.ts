@@ -1,3 +1,8 @@
+/**
+ * @module blue-todo
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { configuration, entry } from '@blue/context';
 import { ApplicationBuilder } from '@blue/boot';
 import { WebAutoConfiguration } from '@blue/platform-web';

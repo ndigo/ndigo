@@ -1,9 +1,9 @@
 /**
- *
  * Internal utilities for decorator implementation.
- * This file should not be exported in the public API.
+ * * @module blue-dispatcher
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 /**
  * Extract parameter names from a function signature.
  * Used by decorators to map parameter names to positions.

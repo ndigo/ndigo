@@ -1,22 +1,9 @@
 /**
  * Conditional auto-configuration metadata helpers.
- *
- * Decorators mark configuration classes with conditions; {@link isActive}
- * evaluates them against the current platform and, when a condition context is
- * supplied, against the environment and entry registry. Lives in `@blue/core`
- * so platform packages and `@blue/boot` can use it without depending on each
- * other.
- *
- * Supported conditions:
- * - {@link conditionalOnBrowser} / {@link conditionalOnNode} — platform
- * - {@link conditionalOnProperty} — environment property present/valued
- * - {@link conditionalOnProfile} — profile expression matches (AD-14)
- * - {@link conditionalOnMissingEntry} — an entry is not already registered
- *
- * @module
+ * * @module blue-core
  * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import '@tsmetadata/polyfill';
 
 /** Platform types for conditional auto-configuration. */

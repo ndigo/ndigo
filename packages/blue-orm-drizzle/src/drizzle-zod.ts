@@ -1,17 +1,9 @@
 /**
- * Drizzle table + Zod schema derivation from `@blue/orm` entity metadata
- * (AD-7 follow-up: drizzle-zod).
- *
- * `blue-orm-drizzle` persists via raw SQL built from `@entity`/`@column`
- * metadata. This bridge additionally materializes a real Drizzle
- * `sqliteTable` from that same metadata so the standard Drizzle tooling —
- * especially `drizzle-zod`'s `createInsertSchema`/`createSelectSchema` —
- * can derive Zod schemas. One entity declaration thus drives persistence,
- * the Drizzle table object, and the validation/type schemas.
- *
- * @module
+ * Drizzle table + Zod schema derivation from `@blue/orm` entity metadata.
+ * * @module blue-orm-drizzle
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import type { Table } from 'drizzle-orm';
 import { sqliteTable, integer, text, real, blob } from 'drizzle-orm/sqlite-core';
 import { createInsertSchema, createSelectSchema } from 'drizzle-zod';

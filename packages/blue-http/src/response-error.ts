@@ -1,3 +1,8 @@
+/**
+ * @module blue-http
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { FrameworkError } from '@blue/core';
 import { IM_A_TEAPOT } from './response-statuses';
 import { is } from '@blue/util/types';

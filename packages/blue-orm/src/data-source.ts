@@ -1,3 +1,8 @@
+/**
+ * @module blue-orm
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { IllegalStateError } from '@blue/core';
 import { Destroyable, Initializable } from '@blue/factory';
 

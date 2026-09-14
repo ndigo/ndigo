@@ -1,16 +1,9 @@
 /**
- * Resolver that maps a view name to an `IslandView` (AD — view resolution
- * strategy).
- *
- * The server-side twin of `WebComponentViewResolver`: the same logical name
- * produces the server-rendered island marker (`<tag data-blue-island
- * data-blue-model="…">`) that the client later hydrates into the live
- * component. Node has no customElements registry — the name is the tag, and
- * the component module is loaded on the client by the hydrated bundle.
- *
- * @module
+ * Resolver that maps a view name to an `IslandView` (AD — view resolution.
+ * * @module blue-view
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import { AbstractPathBasedViewResolver } from './view-resolver.js';
 import { View } from './view.js';
 import { IslandView } from './island-view.js';

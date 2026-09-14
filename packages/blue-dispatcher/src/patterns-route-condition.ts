@@ -1,3 +1,8 @@
+/**
+ * @module blue-dispatcher
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { Route } from '@blue/router';
 import { PathMatcher, URLGlobPathMatcher, likePathMatcher } from '@blue/core';
 import { AbstractRouteCondition, likeRouteCondition } from './route-condition';

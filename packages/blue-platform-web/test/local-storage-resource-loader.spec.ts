@@ -1,3 +1,8 @@
+/**
+ * @module blue-platform-web
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { describe, test, expect, vi, afterEach, beforeEach } from 'vitest';
 import { LocalStorageResourceLoader } from '../src/local-storage-resource-loader';
 

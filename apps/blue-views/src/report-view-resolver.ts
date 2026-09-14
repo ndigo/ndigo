@@ -1,3 +1,8 @@
+/**
+ * @module blue-views
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { AbstractPathBasedViewResolver, View } from '@blue/view';
 
 /**

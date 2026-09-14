@@ -1,3 +1,8 @@
+/**
+ * @module blue-http
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 // @vitest-environment node
 import { describe, expect, test, vi } from 'vitest';
 import { ROOT_CONTEXT, context as otelContext, propagation, trace } from '@opentelemetry/api';

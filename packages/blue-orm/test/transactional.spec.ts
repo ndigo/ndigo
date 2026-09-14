@@ -1,3 +1,8 @@
+/**
+ * @module blue-orm
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { describe, test, expect } from 'vitest';
 import { InMemoryDataSource } from '../src/data-source';
 import { InMemoryEntityManager } from '../src/entity-manager';

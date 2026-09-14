@@ -1,3 +1,8 @@
+/**
+ * @module blue-platform-node
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 // @vitest-environment node
 import { describe, test, beforeAll, afterAll, expect, vi } from 'vitest';
 import type { AddressInfo } from 'node:net';

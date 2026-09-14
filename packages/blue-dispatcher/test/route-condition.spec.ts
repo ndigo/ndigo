@@ -1,3 +1,8 @@
+/**
+ * @module blue-dispatcher
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { describe, test, expect } from 'vitest';
 import { RouteCondition, RouteConditionHolder } from '../src/route-condition';
 import { PathRoute } from '@blue/router';

@@ -1,8 +1,8 @@
 /**
- * @see {@link https://ramdajs.com/docs/}
- * @see {@link http://moutjs.com/docs/latest/string.html#sentenceCase}
+ * @module blue-util
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 const regex = /(^\w)|\.\s+(\w)/gm;
 
 /**

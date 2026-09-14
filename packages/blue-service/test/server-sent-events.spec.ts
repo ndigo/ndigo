@@ -1,3 +1,8 @@
+/**
+ * @module blue-service
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 // @vitest-environment node
 import { describe, expect, test } from 'vitest';
 import { parseServerSentEvents, ServerSentEventParser } from '../src/server-sent-events';

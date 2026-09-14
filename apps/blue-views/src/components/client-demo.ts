@@ -1,3 +1,8 @@
+/**
+ * @module blue-views
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { ROOT_CONTEXT, trace, type Span } from '@opentelemetry/api';
 import { CacheInterceptor, HTTP, TraceHeaderInterceptor } from '@blue/http';
 import { RetryOnOfflineInterceptor } from '@blue/platform-web';

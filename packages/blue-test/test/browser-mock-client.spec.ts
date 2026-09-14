@@ -1,3 +1,8 @@
+/**
+ * @module blue-test
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 // @vitest-environment jsdom
 import { describe, test, beforeAll, afterAll, expect } from 'vitest';
 import { routeMapping, ModelAndView } from '@blue/dispatcher';

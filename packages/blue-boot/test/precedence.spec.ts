@@ -1,3 +1,8 @@
+/**
+ * @module blue-boot
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { describe, test, expect } from 'vitest';
 import { MutablePropertySources } from '@blue/context';
 import { PRECEDENCE } from '../src/precedence';

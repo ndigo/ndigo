@@ -1,3 +1,8 @@
+/**
+ * @module blue-todo
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { describe, expect, test, vi } from 'vitest';
 import { GenericApplicationContext } from '@blue/context';
 import { FeatureContextMountManager } from '@blue/context';

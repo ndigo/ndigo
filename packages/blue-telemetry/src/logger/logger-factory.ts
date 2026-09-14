@@ -1,3 +1,8 @@
+/**
+ * @module blue-telemetry
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { Logger } from './logger';
 import { OpenTelemetryLogger } from './open-telemetry-logger';
 import { ConsoleLogger } from './console-logger';

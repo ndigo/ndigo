@@ -1,3 +1,8 @@
+/**
+ * @module blue-telemetry
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 export { CountedRegistry } from './_registry';
 export * from './decorators';
 export * from './counter-rate-resolver';

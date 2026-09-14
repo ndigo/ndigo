@@ -1,3 +1,8 @@
+/**
+ * @module blue-dispatcher
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { RadixTree, RadixMatch, Comparator, MultiValueMap } from '@blue/core';
 import type { HTTPMethod } from '@blue/http';
 import { Route } from '@blue/router';

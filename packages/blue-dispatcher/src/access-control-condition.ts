@@ -1,3 +1,8 @@
+/**
+ * @module blue-dispatcher
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { Route } from '@blue/router';
 import { AbstractRouteCondition, RouteCondition } from './route-condition';
 

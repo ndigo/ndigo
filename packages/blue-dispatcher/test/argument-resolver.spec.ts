@@ -1,3 +1,8 @@
+/**
+ * @module blue-dispatcher
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { describe, test, beforeEach, afterEach } from 'vitest';
 import { AbstractDispatcher } from '../src/dispatcher';
 import argumemtResolverContext from './assets/argument-resolver-context';

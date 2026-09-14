@@ -1,3 +1,8 @@
+/**
+ * @module blue-auth-server
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import {
     jwtVerify,
     importSPKI,

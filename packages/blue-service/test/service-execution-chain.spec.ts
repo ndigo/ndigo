@@ -1,3 +1,8 @@
+/**
+ * @module blue-service
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { describe, expect, test } from 'vitest';
 import { IllegalStateError } from '@blue/core';
 import { ServiceExecutionChain, ServiceInterceptor } from '../src/service';

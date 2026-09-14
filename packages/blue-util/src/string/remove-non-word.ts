@@ -1,7 +1,8 @@
 /**
- * @see {@link http://moutjs.com/docs/latest/string.html#removeNonWord}
+ * @module blue-util
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 /**
  * Remove non-word characters.
  * @param {string} value The string to be transformed.

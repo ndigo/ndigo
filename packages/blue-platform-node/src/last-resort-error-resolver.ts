@@ -1,18 +1,9 @@
 /**
- * Last-resort error resolver for the Node pipeline: any error that no other
- * `RouteErrorResolver` handled becomes a deterministic 500 problem document.
- *
- * Without this final link, an unresolved dispatch error falls through the
- * resolver chain to a bare `TypeError('view name is undefined')` in
- * `AbstractDispatcher._processDispatchResult` — surfacing as an empty/500
- * response with no useful contract. This resolver guarantees every error
- * produces a deterministic `urn:blue:internal-error` problem document
- * (internal detail is logged by the adapter, never returned).
- *
- * @module
+ * Last-resort error resolver for the Node pipeline: any error that no other.
+ * * @module blue-platform-node
  * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import { AbstractRouteErrorResolver, ModelAndView } from '@blue/dispatcher';
 import { Route } from '@blue/router';
 import { ResponseStatuses } from '@blue/http';

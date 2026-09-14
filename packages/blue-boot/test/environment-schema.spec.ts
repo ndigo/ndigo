@@ -1,3 +1,8 @@
+/**
+ * @module blue-boot
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { describe, test, expect } from 'vitest';
 import { z } from 'zod';
 import { environment, configuration } from '@blue/context';

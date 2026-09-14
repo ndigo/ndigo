@@ -1,3 +1,8 @@
+/**
+ * @module blue-platform-web
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { createNull, JSONObject, JSONValue } from '@blue/core';
 import cookieExpression from './parser/cookie-expression';
 import { decodeURIComponent as decode } from '@blue/util/string';

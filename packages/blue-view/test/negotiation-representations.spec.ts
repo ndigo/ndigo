@@ -1,3 +1,8 @@
+/**
+ * @module blue-view
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { describe, expect, it, afterEach } from 'vitest';
 import { MediaType, MediaTypes } from '@blue/core';
 import type { View } from '../src/view';

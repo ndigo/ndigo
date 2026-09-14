@@ -1,3 +1,8 @@
+/**
+ * @module blue-core
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import '@tsmetadata/polyfill';
 import { describe, test, expect } from 'vitest';
 import { shared, isShared, getSharedOptions } from '../src/shared';

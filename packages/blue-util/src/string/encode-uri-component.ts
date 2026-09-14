@@ -1,8 +1,8 @@
 /**
- * @see {@link https://github.com/kevva/strict-uri-encode}
- * @see {@link https://tools.ietf.org/html/rfc3986}
+ * @module blue-util
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 const charMatcher = /[!'()*]/g,
     hexEncode = (value: string): string => `%${value.charCodeAt(0).toString(16).toUpperCase()}`,
     strictEncodeURIComponent = (value: string): string => encodeURIComponent(value).replace(charMatcher, hexEncode);

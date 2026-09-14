@@ -1,12 +1,9 @@
 /**
  * Blue Micro Frontend Host entry point.
- *
- * Composes the shell, wires a hash router to the host manager, and mounts
- * lazy-loaded feature contexts into the page on navigation.
- *
- * @module
+ * * @module blue-host
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import { HashRouter } from '@blue/platform-web';
 import type { Route } from '@blue/router';
 import { composeHostRuntime } from './shell-composition';

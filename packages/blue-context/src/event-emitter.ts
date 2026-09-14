@@ -1,8 +1,8 @@
 /**
- * @see {@link https://nodejs.org/api/events.html#events_class_eventemitter}
- * @see {@link https://github.com/jeffrose/emitter}
+ * @module blue-context
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import { Constructable, JSONValue, Serializable, Null, createNull } from '@blue/core';
 import { like } from '@blue/util/types';
 import { Aware, Destroyable, likeAwareAnd } from '@blue/factory';

@@ -1,6 +1,8 @@
 /**
  * Demonstration controller for the Node.js platform demo.
- * Handles greeting and echo routes under /api.
+ * * @module blue-api
+ * @since 1.0.0
+ * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
 import {

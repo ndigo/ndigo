@@ -1,14 +1,9 @@
 /**
  * View that serves static files from the filesystem.
- *
- * Path safety is delegated to {@link StaticResourceResolver}: canonical-base
- * containment (prefix + separator), symlink resolution, and a MIME allowlist
- * with `nosniff`. Binary files are served byte-for-byte.
- *
- * @module
+ * * @module blue-platform-node
  * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import type { ServerResponse } from 'node:http';
 import { Route } from '@blue/router';
 import { ViewTarget } from '@blue/view';

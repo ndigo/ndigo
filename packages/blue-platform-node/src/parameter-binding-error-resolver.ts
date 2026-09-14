@@ -1,27 +1,9 @@
 /**
- * Node platform default error resolver: request-binding failures → problem
- * documents (AD-10, RFC 9457).
- *
- * `ParameterBindingError` (and its subclasses — missing required parameters,
- * failed conversions, and Zod validation failures via `ParameterConversionError`)
- * are client errors by definition: the request could not be bound into the
- * handler signature. The generic `MetadataErrorResolver` only resolves
- * user-configured `@errorMapping` handlers, so without this resolver a
- * validation failure falls through to a generic 500/empty response.
- *
- * Resolutions (per the AD-10 status table):
- * - `ZodValidationError` cause (from `validatedBy`): `422 Unprocessable
- *   Entity`, `urn:blue:validation-failed`, with the structured issues in the
- *   `errors` extension member.
- * - Any other binding failure: `400 Bad Request`, `urn:blue:binding-failed`.
- *
- * Node auto-configuration registers this resolver before `MetadataErrorResolver`,
- * so app-level error handlers still win when configured.
- *
- * @module
+ * Node platform default error resolver: request-binding failures → problem.
+ * * @module blue-platform-node
  * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import { AbstractRouteErrorResolver, ParameterBindingError, ModelAndView, ZodValidationError } from '@blue/dispatcher';
 import { Route } from '@blue/router';
 import { ResponseStatuses } from '@blue/http';

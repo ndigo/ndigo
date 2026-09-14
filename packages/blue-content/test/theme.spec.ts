@@ -1,3 +1,8 @@
+/**
+ * @module blue-content
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { describe, test, expect } from 'vitest';
 import { StaticContentSource } from '../src/content';
 import { StaticThemeResolver, Theme, likeTheme, likeThemeResolver } from '../src/theme';

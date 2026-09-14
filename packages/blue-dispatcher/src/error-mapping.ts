@@ -1,3 +1,8 @@
+/**
+ * @module blue-dispatcher
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import '@tsmetadata/polyfill';
 import { Constructable, getSymbolMetadata } from '@blue/core';
 import { propIs, isNotNil } from '@blue/util/types';

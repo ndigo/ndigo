@@ -1,3 +1,8 @@
+/**
+ * @module blue-management
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { getMapping, requestMapping } from '@blue/dispatcher';
 import { FeatureMetricAggregator } from '@blue/telemetry';
 import { ApplicationContext, AsApplicationContextAware } from '@blue/context';

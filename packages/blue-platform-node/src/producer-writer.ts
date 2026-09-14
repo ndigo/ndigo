@@ -1,10 +1,8 @@
 /**
- * @blue/platform-node — response-document writer.
- *
- * @module
+ * @module blue-platform-node
  * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import type { ServerResponse } from 'node:http';
 import { RenderResult } from '@blue/view';
 

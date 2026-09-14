@@ -1,3 +1,8 @@
+/**
+ * @module blue-management
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { configuration, entry } from '@blue/context';
 import { type RouteHandlerInterceptor, RadixMetadataHandlerMapping } from '@blue/dispatcher';
 import { FeatureMetricAggregator } from '@blue/telemetry';

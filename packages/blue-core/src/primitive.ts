@@ -1,9 +1,8 @@
 /**
  * A JavaScript primitive value.
- *
- * Primitives are the values that are not objects and do not carry methods or state.
- *
- * @see {@link https://developer.mozilla.org/en-US/docs/Glossary/Primitive}
+ * * @module blue-core
+ * @since 1.0.0
+ * @author Jeff Rose
  */
 export type primitive = boolean | null | number | string | symbol | bigint | undefined;
 

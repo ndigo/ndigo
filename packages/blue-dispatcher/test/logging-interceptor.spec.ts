@@ -1,3 +1,8 @@
+/**
+ * @module blue-dispatcher
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { describe, it, expect, vi, beforeEach, type MockInstance } from 'vitest';
 import { Route } from '@blue/router';
 import { ModelAndView } from '../src/model-and-view';

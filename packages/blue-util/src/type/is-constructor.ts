@@ -1,8 +1,8 @@
 /**
- * @see {@link https://ramdajs.com/docs/}
- * @see {@link https://stackoverflow.com/questions/40922531/how-to-check-if-a-javascript-function-is-a-constructor}
+ * @module blue-util
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import isFunction from './is-function.js';
 
 /**

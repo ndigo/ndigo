@@ -1,9 +1,9 @@
 /**
- *
- * Behavioral tests for @blue/context decorators
- * These tests document the current behavior before migrating to TC39 decorators
+ * Behavioral tests for @blue/context decorators.
+ * * @module blue-context
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import { describe, it, expect, beforeEach } from 'vitest';
 import { Enumerable, JSONObject, JSONValue } from '@blue/core';
 import {

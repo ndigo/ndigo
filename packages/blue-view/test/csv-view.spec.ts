@@ -1,3 +1,8 @@
+/**
+ * @module blue-view
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { describe, expect, it } from 'vitest';
 import type { Route } from '@blue/router';
 import { CSVView } from '../src/csv-view';

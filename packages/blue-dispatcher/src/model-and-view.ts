@@ -1,3 +1,8 @@
+/**
+ * @module blue-dispatcher
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { View, AbstractView } from '@blue/view';
 
 type Model<T = unknown> = { [key: string]: T } | Map<string, T>;

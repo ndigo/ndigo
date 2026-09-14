@@ -1,14 +1,9 @@
 /**
  * Bridges an async event stream into a reactive signal (AD-9).
- *
- * Consumes `source` as it arrives and writes each value into `target`,
- * so `effect`-driven views re-render on every server push. Consumption
- * starts immediately and runs until the source ends, errors, or `stop()`
- * is called.
- *
- * @module
+ * * @module blue-signals
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import { Signal } from '@preact/signals-core';
 
 /**

@@ -1,3 +1,8 @@
+/**
+ * @module blue-dispatcher
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { FrameworkError } from '@blue/core';
 import { Route } from '@blue/router';
 import { isString } from '@blue/util/types';

@@ -1,3 +1,8 @@
+/**
+ * @module blue-http
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { describe, test, expect, beforeAll, afterEach, afterAll, vi } from 'vitest';
 import { http as mswHttp, HttpResponse } from 'msw';
 import { server } from '../_worker';

@@ -1,23 +1,9 @@
 /**
  * OpenTelemetry instrumentation for `ServerSentEventView` streaming renders.
- *
- * Streaming responses bypass `HTTPResponseViewTarget.commit` (the view writes
- * frames directly to the `ServerResponse`), so without this instrumentation a
- * long-lived SSE connection only ever shows its `handleRequest` root span.
- * This adds the stream-lifetime span with the telemetry-relevant totals:
- * frames written, stream duration, and client disconnect.
- *
- * The view implements the {@link ProducerView} contract: `renderTo` returns
- * the streaming document (headers + body iterable) and resolves while frames
- * are still in flight — the dispatcher's writer consumes the body. The span
- * therefore wraps the **consumed body**: it starts with the render document
- * and ends when the frame iterator is exhausted or closed (a mid-stream
- * abort included).
- *
- * @module
+ * * @module blue-telemetry-node
  * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import { Attributes, SpanKind, SpanStatusCode, trace } from '@opentelemetry/api';
 import { ServerSentEventView } from '@blue/platform-node';
 import { Route } from '@blue/router';

@@ -1,15 +1,9 @@
 /**
- * `@configurationProperties` — type-safe binding from environment properties
- * to class fields (AD-15).
- *
- * Builds on `@blue/context`'s `@property` decorator, adding class-level prefix
- * support, automatic registration at refresh, conversion via `getPropertyAs`,
- * `@defaultValue` fallbacks, and `@nested` structured prefixes.
- *
- * @module
+ * `@configurationProperties` — type-safe binding from environment properties.
+ * * @module blue-boot
  * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import { IllegalStateError, JSONValue } from '@blue/core';
 import { property } from '@blue/context';
 import { defaultValue, nested } from '@blue/context';

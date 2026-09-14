@@ -1,10 +1,8 @@
 /**
- * @blue/view-ejs — EJS view.
- *
- * @module
+ * @module blue-view-ejs
  * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import { AbstractTemplateView, type ProducerView, type RenderResult, ViewTarget } from '@blue/view';
 import { IllegalStateError } from '@blue/core';
 import type { ApplicationContext, ResourceLoader } from '@blue/context';

@@ -1,18 +1,9 @@
 /**
  * Server-Sent Events parsing for streaming service calls (AD-9).
- *
- * The wire format is the standard `text/event-stream` framing: `event:`,
- * `id:`, and `data:` fields terminated by a blank line (`data:` fields are
- * `\n`-joined when repeated). A `: ` comment line is skipped. `data` values
- * are JSON-parsed when possible and kept as raw strings otherwise.
- *
- * `ServerSentEventParser` is incremental: feed it transport chunks and it
- * returns the complete events found at each step, so events arrive as the
- * server pushes them rather than after the stream closes.
- *
- * @module
+ * * @module blue-service
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import { ServerSentEvent } from '@blue/core';
 
 /** Pending fields of the event currently being assembled. */

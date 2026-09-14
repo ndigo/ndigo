@@ -1,12 +1,9 @@
 /**
  * Shared dependency registry for the application context hierarchy.
- *
- * The shell declares shared singletons, and features declare what they require.
- * Validation runs at mount time to catch missing or version-mismatched deps.
- *
+ * * @module blue-context
  * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import { satisfiesVersion } from '@blue/core';
 
 /**

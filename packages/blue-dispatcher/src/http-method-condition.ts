@@ -1,15 +1,9 @@
 /**
  * A route condition that matches an HTTP request method.
- *
- * Follows the same pattern as `QueryParamCondition` / `MatrixParamCondition`
- * so the shared mapping stack (`RouteMappingInfo`) treats it uniformly.
- * A condition with no method (`undefined`) matches any method — this preserves
- * `routeMapping` behavior, which never sets a method.
- *
- * @module
+ * * @module blue-dispatcher
  * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import { Route } from '@blue/router';
 import type { HTTPMethod } from '@blue/http';
 import { AbstractRouteCondition } from './route-condition';

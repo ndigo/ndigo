@@ -1,3 +1,8 @@
+/**
+ * @module blue-host
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { describe, expect, test, vi } from 'vitest';
 import { createShellContext, DefaultSharedDependencyRegistry, SHARED_DEPENDENCY_REGISTRY_TOKEN } from '@blue/context';
 import type { ApplicationContext } from '@blue/context';

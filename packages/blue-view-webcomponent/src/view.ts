@@ -1,10 +1,8 @@
 /**
- * @blue/view-webcomponent — Web component view.
- *
- * @module
+ * @module blue-view-webcomponent
  * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import { AbstractView, ViewTarget } from '@blue/view';
 import { IllegalStateError } from '@blue/core';
 import type { Route } from '@blue/router';

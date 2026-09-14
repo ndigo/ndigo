@@ -1,3 +1,8 @@
+/**
+ * @module blue-http
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { context as otelContext, propagation, trace, type Context } from '@opentelemetry/api';
 import { HTTP, RequestAwareHTTPInterceptor } from '../http';
 

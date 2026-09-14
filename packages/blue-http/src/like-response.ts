@@ -1,3 +1,8 @@
+/**
+ * @module blue-http
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { is, like } from '@blue/util/types';
 
 const isResponse = is(Response) as (value: unknown) => value is Response;

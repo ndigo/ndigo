@@ -69,7 +69,7 @@ Multi-application orchestration was envisioned through `Site`, but in practice o
 
 - `@blue/boot` contains `Application`, `ApplicationBuilder`, and `Site` scaffolding
 - `Application.run()` initializes `GenericApplicationContext`
-- `SiteBuilder` and full site orchestration remain incomplete
+- `SiteBuilder` and full site orchestration remain incomplete (retired — see AD-3)
 
 ## 3) View Engine Flexibility
 
@@ -85,7 +85,9 @@ Concrete view engines are adapter packages:
 - potential `@blue/view-react`
 - potential `@blue/view-lit`
 
-Dispatcher integration model remains engine-agnostic: it resolves a `View` and calls `view.render()`.
+Dispatcher integration model remains engine-agnostic: it resolves a `View` and calls `view.render()`
+  (updated: producer views return a `RenderResult` document the dispatcher writes — `renderTo` +
+  `writeRenderResult`; fragment views still render into a `ViewTarget`).
 
 ## 4) Domain/Model Reconciliation
 

@@ -1,26 +1,9 @@
 /**
- * Resolver that maps a logical view name to a `WebComponentView` (AD — view
- * resolution strategy).
- *
- * Web components self-register: `customElements.define` runs as the side
- * effect of loading the component's module. The resolver therefore never
- * registers anything — it maps a name to a thin view descriptor:
- *
- * - **Zero-config** (`name === tagName`): no registry entry needed; the
- *   resolved view is `new WebComponentView(name)`, the tag the controller
- *   (or route) already names.
- * - **Registry entries** (logical names ≠ tags, and/or lazy loading):
- *   `{ 'todo': TodoAppClass }` for already-imported component classes, or
- *   `{ 'todo': './components/todo-app.ts' }` for module paths loaded with
- *   `import()` on first resolution (the Vite code-split point). The tag is
- *   the class's `@TagMapping` metadata, falling back to the view name.
- *
- * Caching comes from `AbstractCachingViewResolver` — resolved views are
- * stateless descriptors (tag name only), safe to share across requests.
- *
- * @module
+ * Resolver that maps a logical view name to a `WebComponentView` (AD — view.
+ * * @module blue-view-webcomponent
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import { AbstractPathBasedViewResolver, View } from '@blue/view';
 import { Constructable } from '@blue/core';
 import { TagMapping } from './tag-mapping';

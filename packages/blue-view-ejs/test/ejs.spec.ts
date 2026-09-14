@@ -1,3 +1,8 @@
+/**
+ * @module blue-view-ejs
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { describe, expect, it, vi } from 'vitest';
 import type { Route } from '@blue/router';
 import type { ViewTarget } from '@blue/view';

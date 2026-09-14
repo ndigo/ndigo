@@ -1,3 +1,8 @@
+/**
+ * @module blue-view
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { AsNameAware } from '@blue/factory';
 import { IllegalStateError, JSONObject, MediaType, MediaTypes, Serializable, createNull, Null } from '@blue/core';
 import { AsApplicationContextAware } from '@blue/context';

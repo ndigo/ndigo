@@ -1,3 +1,8 @@
+/**
+ * @module blue-http
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { JSONObject } from '@blue/core';
 import { like } from '@blue/util/types';
 import { HTTPInit, ResponseAwareHTTPInterceptor } from '../http';

@@ -1,3 +1,8 @@
+/**
+ * @module blue-hello
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { configuration, entry, MetadataConfigApplicationContext } from '@blue/context';
 import { WebAutoConfiguration } from '@blue/platform-web';
 import { DOMElementViewTarget } from '@blue/view-webcomponent';

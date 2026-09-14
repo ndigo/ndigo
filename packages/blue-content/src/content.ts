@@ -1,3 +1,8 @@
+/**
+ * @module blue-content
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { like } from '@blue/util/types';
 import { Constructable } from '@blue/core';
 import { likeAwareAnd, Aware, AsAware } from '@blue/factory';

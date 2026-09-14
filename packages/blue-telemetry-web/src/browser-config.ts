@@ -1,3 +1,8 @@
+/**
+ * @module blue-telemetry-web
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { metrics, trace, DiagConsoleLogger, DiagLogLevel, diag, propagation } from '@opentelemetry/api';
 import { logs, SeverityNumber } from '@opentelemetry/api-logs';
 import { BasicTracerProvider, SimpleSpanProcessor, ConsoleSpanExporter } from '@opentelemetry/sdk-trace-base';

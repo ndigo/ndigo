@@ -1,3 +1,8 @@
+/**
+ * @module blue-router
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { describe, expect, test } from 'vitest';
 import {
     matchesPartitionPath,

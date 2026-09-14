@@ -1,3 +1,8 @@
+/**
+ * @module blue-orm
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 // Types and interfaces
 export type {
     ColumnOptions,

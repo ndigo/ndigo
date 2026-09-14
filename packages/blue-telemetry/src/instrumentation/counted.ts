@@ -1,3 +1,8 @@
+/**
+ * @module blue-telemetry
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { metrics } from '@opentelemetry/api';
 import { AbstractBaseInstrumentation } from './base';
 import { CountedRegistry } from '../metrics/_registry';

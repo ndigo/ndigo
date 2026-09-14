@@ -1,10 +1,8 @@
 /**
- * @blue/view — document-producing view contract.
- *
- * @module
+ * @module blue-view
  * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import { MediaType } from '@blue/core';
 import type { Route } from '@blue/router';
 

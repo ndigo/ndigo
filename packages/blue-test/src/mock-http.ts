@@ -1,14 +1,9 @@
 /**
  * MockHTTP — in-process, socket-free integration-test client for Blue applications.
- *
- * Dispatches a mock HTTP request through the application's real pipeline
- * (handler mappings → interceptors → argument resolvers → view/JSON → response)
- * without binding a port, producing a {@link MemoryResponse} to assert on.
- *
- * @module
+ * * @module blue-test
  * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import { NodeDispatcher } from '@blue/platform-node';
 import { getMethodNotAllowed } from '@blue/dispatcher';
 import { ProblemTypes, writeProblem } from '@blue/platform-node';

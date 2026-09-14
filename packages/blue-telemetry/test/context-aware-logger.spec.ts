@@ -1,3 +1,8 @@
+/**
+ * @module blue-telemetry
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { trace } from '@opentelemetry/api';
 import type { Span } from '@opentelemetry/api';
 import { describe, expect, it, vi } from 'vitest';

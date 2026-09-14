@@ -1,15 +1,9 @@
 /**
  * `ResponseEntity` — rich HTTP response wrapper for Node.js handlers.
- *
- * Lets a route handler set the status code, headers, and body of the response
- * instead of returning a plain object. Status codes and header names reuse the
- * vocabulary from `@blue/http` (`ResponseStatus`, `ResponseStatuses`,
- * `HTTPHeaders`).
- *
- * @module
+ * * @module blue-platform-node
  * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import { ResponseStatus, ResponseStatuses } from '@blue/http';
 
 /**

@@ -1,3 +1,8 @@
+/**
+ * @module blue-context
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { z } from 'zod';
 import { IllegalStateError, JSONValue } from '@blue/core';
 import type { PropertyResolver } from './property-resolver';

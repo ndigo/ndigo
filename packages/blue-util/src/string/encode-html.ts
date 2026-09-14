@@ -1,7 +1,8 @@
 /**
- * @see {@link https://github.com/janl/mustache.js/blob/master/mustache.js#L73}
+ * @module blue-util
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 const entityMap: { [entity: string]: string } = {
         '&': '&amp;',
         '<': '&lt;',

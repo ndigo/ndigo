@@ -1,7 +1,8 @@
 /**
- * @module string
+ * @module blue-util
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 // Import custom functions for re-export
 import decodeHtml from './decode-html.js';
 import decodeURIComponent from './decode-uri-component.js';

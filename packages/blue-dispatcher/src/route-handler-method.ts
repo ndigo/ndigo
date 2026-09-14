@@ -1,3 +1,8 @@
+/**
+ * @module blue-dispatcher
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { Factory, likeFactory } from '@blue/factory';
 import { Route } from '@blue/router';
 import { Serializable } from '@blue/core';

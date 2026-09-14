@@ -1,3 +1,8 @@
+/**
+ * @module blue-dispatcher
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { describe, test, beforeEach, afterEach, expect, vi } from 'vitest';
 import { DISPATCHER } from '../src/context-tokens';
 import { AbstractDispatcher } from '../src/dispatcher';

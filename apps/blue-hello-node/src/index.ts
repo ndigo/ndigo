@@ -1,15 +1,9 @@
 /**
  * Blue Hello Node — minimal HTTP server.
- *
- * Demonstrates the Node platform foundation:
- * - `NodeAutoConfiguration` provisions the dispatcher, handler mapping, and `HTTPServer`
- * - `@getMapping` on a controller serves JSON
- * - Spring-style bootstrap: `ApplicationBuilder.run()` registers + refreshes the
- *   context; the handler mapping + dispatcher auto-initialize on refresh
- *
- * @module
+ * * @module blue-hello-node
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import 'node:process';
 import { ApplicationBuilder } from '@blue/boot';
 import { NodeAutoConfiguration, HTTPServer, gracefulShutdown } from '@blue/platform-node';

@@ -1,3 +1,8 @@
+/**
+ * @module blue-dispatcher
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { MultiValueMap } from '@blue/core';
 import { RouteHandlerMethod } from './route-handler-method';
 

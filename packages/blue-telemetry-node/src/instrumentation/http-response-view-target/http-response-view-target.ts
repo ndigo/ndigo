@@ -1,14 +1,9 @@
 /**
  * OpenTelemetry instrumentation for `HTTPResponseViewTarget.commit`.
- *
- * Records the response write — the only place the final `http.status_code` and
- * `content-type` are visible. The dispatch span (see `DispatcherInstrumentation`)
- * covers routing and handler execution; this covers the response phase.
- *
- * @module
+ * * @module blue-telemetry-node
  * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import { SpanKind } from '@opentelemetry/api';
 import { HTTPResponseViewTarget } from '@blue/platform-node';
 import { AbstractBaseInstrumentation } from '@blue/telemetry';

@@ -1,15 +1,9 @@
 /**
  * Declarative service-client decorators (AD-8).
- *
- * Mirrors the `@getMapping`/`@postMapping`/… family from `@blue/dispatcher`
- * on the client side: `@service` declares a named service (base URL + shared
- * HTTP config); `@getCall`/`@postCall`/… declare a single typed service call.
- * `serviceClient()` reads the `Symbol.metadata` written by these decorators
- * and builds a runtime proxy that delegates to `@blue/http`.
- *
- * @module
+ * * @module blue-service
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import { HTTPMethod } from '@blue/http';
 import { z } from 'zod';
 

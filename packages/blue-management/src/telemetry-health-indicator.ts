@@ -1,3 +1,8 @@
+/**
+ * @module blue-management
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { FeatureMetricAggregator } from '@blue/telemetry';
 import { HealthIndicator, HealthResult, HealthState } from './health';
 

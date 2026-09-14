@@ -1,8 +1,8 @@
 /**
- * @see {@link http://moutjs.com/docs/latest/string.html#slugify}
- * @see {@link https://github.com/dodo/node-slug}
+ * @module blue-util
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import removeNonWord from './remove-non-word.js';
 import slug from 'slug';
 

@@ -1,5 +1,8 @@
 /**
  * A node that can reference its parent.
+ * * @module blue-core
+ * @since 1.0.0
+ * @author Jeff Rose
  */
 export interface ChildNode<T = unknown> {
     /** The parent node, or `null`/`undefined` for roots. */

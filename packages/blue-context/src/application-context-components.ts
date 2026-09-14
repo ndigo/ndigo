@@ -1,3 +1,8 @@
+/**
+ * @module blue-context
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { Null } from '@blue/core';
 import { AsApplicationContextAware } from './context-aware-mixin';
 

@@ -1,19 +1,9 @@
 /**
- * @blue/telemetry-node — Node.js telemetry entry point.
- *
- * NodeSDK configuration and the Node platform instrumentations:
- * - `HTTPServerInstrumentation`, `HTTPResponseViewTargetInstrumentation`,
- *   `ServerSentEventViewInstrumentation`
- * - `DispatcherInstrumentation`, `ContextInstrumentation`, `CountedRegistry`
- *   instrumentation bases (isomorphic, re-exported for Node setup paths)
- *
- * Import `@blue/telemetry` (root) for the isomorphic API — logger, metrics,
- * severity, and tracing decorators with zero Node SDK weight.
- *
- * @module
+ * NodeSDK configuration and the Node platform instrumentations:.
+ * * @module blue-telemetry-node
  * @since 1.0.0
+ * @author Jeff Rose
  */
-
 export { configureTelemetry, type TelemetryConfig } from './node-config';
 export { HTTPServerInstrumentation } from './instrumentation/http-server/http-server';
 export { HTTPResponseViewTargetInstrumentation } from './instrumentation/http-response-view-target/http-response-view-target';

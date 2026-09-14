@@ -1,16 +1,9 @@
 /**
  * Browser-flavored dispatcher.
- *
- * The platform-independent dispatch pipeline lives in
- * `@blue/dispatcher`'s {@link AbstractDispatcher} (DOM-free). This subclass is
- * the browser identity: it exists so browser applications can construct a
- * dispatcher by its platform name, and the `viewTarget` it renders into is
- * a DOM-backed target resolved from the application context.
- *
- * @module
+ * * @module blue-platform-web
  * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import { AbstractDispatcher } from '@blue/dispatcher';
 
 /**

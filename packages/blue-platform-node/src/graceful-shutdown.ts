@@ -1,16 +1,8 @@
 /**
  * OS-signal-driven graceful shutdown for Node.js platform applications.
- *
- * Binds `SIGINT`/`SIGTERM` to a teardown sequence that closes registered
- * resources (e.g. an {@link HTTPServer}) and then the application context
- * before the process exits. A second signal during shutdown — or a teardown
- * that exceeds its deadline — force-exits so a hung close can be interrupted.
- *
- * Lives in `@blue/platform-node` (not the isomorphic `@blue/boot`) because it
- * depends on the Node.js `process` object.
- *
- * @module
+ * * @module blue-platform-node
  * @since 1.0.0
+ * @author Jeff Rose
  */
 import type { ApplicationContext } from '@blue/context';
 

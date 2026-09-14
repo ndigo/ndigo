@@ -1,3 +1,8 @@
+/**
+ * @module blue-telemetry
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { context, trace, Exception } from '@opentelemetry/api';
 import { SeverityNumber } from '@opentelemetry/api-logs';
 import { LogAttributes, Logger } from './logger';

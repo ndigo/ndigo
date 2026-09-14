@@ -1,3 +1,8 @@
+/**
+ * @module blue-factory
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { IllegalStateError } from '@blue/core';
 import { PossibleScope, Scope } from './scope';
 

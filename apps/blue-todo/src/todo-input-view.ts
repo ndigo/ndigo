@@ -1,3 +1,8 @@
+/**
+ * @module blue-todo
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { AbstractWebComponent } from '@blue/view-webcomponent';
 
 export default class TodoInput extends AbstractWebComponent {

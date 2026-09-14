@@ -1,8 +1,8 @@
 /**
- * @see external:seedrandom
- * @see external:slug
+ * @module blue-util
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 /**
  * @global
  * @external seedrandom

@@ -1,7 +1,8 @@
 /**
- * @see {@link https://en.wikipedia.org/wiki/Glob_(programming)#Syntax}
+ * @module blue-core
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 const DOT_LITERAL = '\\.',
     SLASH_LITERAL = '\\/',
     NOT_SLASH = '[^/]',

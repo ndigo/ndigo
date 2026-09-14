@@ -1,3 +1,8 @@
+/**
+ * @module blue-platform-web
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { ApplicationContext } from '@blue/context';
 import { HandlerMethodArgumentResolver } from '@blue/dispatcher';
 import { BrowserCookieValueMethodArgumentResolver } from './cookie-argument-resolver';

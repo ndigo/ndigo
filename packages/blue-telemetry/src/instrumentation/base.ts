@@ -1,3 +1,8 @@
+/**
+ * @module blue-telemetry
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { SpanKind, SpanStatusCode, trace, metrics } from '@opentelemetry/api';
 import type { Attributes, Span } from '@opentelemetry/api';
 import { InstrumentationBase } from '@opentelemetry/instrumentation';

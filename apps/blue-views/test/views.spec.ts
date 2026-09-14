@@ -1,3 +1,8 @@
+/**
+ * @module blue-views
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 // @vitest-environment jsdom
 import '@tsmetadata/polyfill';
 import { describe, expect, it, vi } from 'vitest';

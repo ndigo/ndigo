@@ -1,5 +1,8 @@
 /**
  * Interface for a service registry that maps service tokens to endpoints.
+ * * @module blue-service
+ * @since 1.0.0
+ * @author Jeff Rose
  */
 export interface ServiceRegistry {
     /**

@@ -1,3 +1,8 @@
+/**
+ * @module blue-http
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { describe, test, expect, beforeAll, beforeEach, afterEach, afterAll, vi } from 'vitest';
 import { eTag, lastModified, server } from '../_worker';
 import { HTTP } from '../../src/http';

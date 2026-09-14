@@ -1,3 +1,8 @@
+/**
+ * @module blue-dispatcher
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { describe, test, expect } from 'vitest';
 import { MetadataConfigApplicationContext, configuration, entry } from '@blue/context';
 import {

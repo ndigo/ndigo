@@ -1,3 +1,8 @@
+/**
+ * @module blue-island
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { AbstractWebComponent, hydrateIslands, TagMapping } from '@blue/view-webcomponent';
 import { service, getCall, serviceClient } from '@blue/service';
 import { HTTP } from '@blue/http';

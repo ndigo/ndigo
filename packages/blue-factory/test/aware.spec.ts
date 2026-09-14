@@ -1,3 +1,8 @@
+/**
+ * @module blue-factory
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { describe, test, expect, beforeEach, afterEach } from 'vitest';
 import { $aware, AsAware, AsNameAware, likeAware, likeNameAware } from '../src/aware';
 

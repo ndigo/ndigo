@@ -1,7 +1,8 @@
 /**
- * @module date
+ * @module blue-util
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 /**
  * Returns whether the given date is in the future.
  * @category Date

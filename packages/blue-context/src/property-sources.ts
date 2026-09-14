@@ -1,3 +1,8 @@
+/**
+ * @module blue-context
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { IllegalStateError, JSONObject } from '@blue/core';
 import { PropertySource, wrapSource } from './property-source';
 

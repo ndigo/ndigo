@@ -1,8 +1,8 @@
 /**
  * A type-safe key used for value registration and retrieval in a `Registry`.
- *
- * At runtime, `description` is used as the backing string key.
- * The generic parameter `T` provides compile-time type association.
+ * * @module blue-factory
+ * @since 1.0.0
+ * @author Jeff Rose
  */
 /**
  * A type-safe key used for value registration and retrieval in a `Registry`.

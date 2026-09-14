@@ -1,3 +1,8 @@
+/**
+ * @module blue-telemetry
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { describe, expect, it } from 'vitest';
 import { FeatureMetricAggregator } from '../src/metrics/feature-metric-aggregator';
 

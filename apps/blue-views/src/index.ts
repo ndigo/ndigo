@@ -1,3 +1,8 @@
+/**
+ * @module blue-views
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { MetadataConfigApplicationContext } from '@blue/context';
 import { configureBrowserTelemetry } from '@blue/telemetry-web';
 import { WebAutoConfiguration } from '@blue/platform-web';

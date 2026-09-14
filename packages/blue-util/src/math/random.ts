@@ -1,7 +1,8 @@
 /**
- * @see {@link https://github.com/davidbau/seedrandom}
+ * @module blue-util
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import alea from 'seedrandom/lib/alea.js';
 
 function seed(): string {

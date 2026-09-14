@@ -1,10 +1,9 @@
 /**
- * @internal
- *
  * Internal helper functions for the event emitter.
- * Extracted from event-emitter.ts to reduce file size.
+ * * @module blue-context
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import { is, isFunction, isNil, isNumber, isString } from '@blue/util/types';
 import { createNull } from '@blue/core';
 import type { EventEmitter, EventHandler, EventListener, EventType } from './event-emitter';

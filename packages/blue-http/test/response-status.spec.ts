@@ -1,3 +1,8 @@
+/**
+ * @module blue-http
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { describe, test, expect } from 'vitest';
 import ResponseStatus from '../src/response-status';
 import * as ResponseStatuses from '../src/response-statuses';

@@ -1,3 +1,8 @@
+/**
+ * @module blue-auth-client
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { describe, test, expect, vi } from 'vitest';
 import { DefaultSession, AnonymousPrincipal } from '@blue/auth-core';
 import { HTTP } from '@blue/http';

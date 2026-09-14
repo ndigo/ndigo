@@ -1,3 +1,8 @@
+/**
+ * @module blue-platform-web
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { describe, it, expect, vi } from 'vitest';
 import { z } from 'zod';
 import { Route } from '@blue/router';

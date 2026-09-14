@@ -1,3 +1,8 @@
+/**
+ * @module blue-dom
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import type { DOMProvider } from './dom-provider';
 
 /**

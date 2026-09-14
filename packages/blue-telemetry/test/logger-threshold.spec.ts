@@ -1,3 +1,8 @@
+/**
+ * @module blue-telemetry
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { describe, expect, it, vi } from 'vitest';
 import { SeverityNumber } from '@opentelemetry/api-logs';
 import { ConsoleLogger } from '../src/logger/console-logger';

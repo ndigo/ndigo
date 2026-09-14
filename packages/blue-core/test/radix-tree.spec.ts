@@ -1,3 +1,8 @@
+/**
+ * @module blue-core
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { describe, test, expect } from 'vitest';
 import { RadixTree } from '../src/radix-tree';
 

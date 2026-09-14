@@ -1,3 +1,8 @@
+/**
+ * @module blue-core
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { describe, bench } from 'vitest';
 import { like } from '@blue/util/types';
 import { FrameworkError } from '@blue/core';

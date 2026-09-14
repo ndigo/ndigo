@@ -1,3 +1,8 @@
+/**
+ * @module blue-dispatcher
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { describe, test, beforeEach, afterEach, expect } from 'vitest';
 import { AbstractDispatcher } from '../src/dispatcher';
 import routeErrorResolverContext from './assets/route-error-resolver-context';

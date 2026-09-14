@@ -1,10 +1,8 @@
 /**
- *
  * Entry point for `@blue/signals/decorators`.
- *
- * ```ts
- * import { signal, computed, effect, reactive } from '@blue/signals/decorators';
- * ```
+ * * @module blue-signals
+ * @since 1.0.0
+ * @author Jeff Rose
  */
 export { signal, computed, effect, reactive, getSignal } from '../_decorators';
 

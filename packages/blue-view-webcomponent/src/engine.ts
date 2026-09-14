@@ -1,3 +1,8 @@
+/**
+ * @module blue-view-webcomponent
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { EventBridgeViewTarget } from '@blue/view';
 import { Route } from '@blue/router';
 import { IllegalStateError } from '@blue/core';

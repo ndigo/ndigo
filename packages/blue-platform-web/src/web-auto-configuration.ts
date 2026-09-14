@@ -1,3 +1,8 @@
+/**
+ * @module blue-platform-web
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { configuration, entry } from '@blue/context';
 import { argumentValueConverters } from './argument-value-converter';
 import { BrowserBindMethodArgumentResolver } from './bind-argument-resolver';

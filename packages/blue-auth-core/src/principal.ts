@@ -1,6 +1,8 @@
 /**
  * Represents an authenticated user or entity in the system.
- * This interface is immutable to ensure identity stability.
+ * * @module blue-auth-core
+ * @since 1.0.0
+ * @author Jeff Rose
  */
 export interface Principal {
     /** Unique identifier for this principal. */

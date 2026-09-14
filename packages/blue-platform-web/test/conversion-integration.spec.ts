@@ -1,8 +1,9 @@
 /**
- * Integration tests for the full conversion pipeline:
- * ParameterExtractor → resolveConverter() → ConversionService → actual conversion
+ * Integration tests for the full conversion pipeline:.
+ * * @module blue-platform-web
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import { describe, test, expect } from 'vitest';
 import { conversionService } from '@blue/core';
 import { Route } from '@blue/router';

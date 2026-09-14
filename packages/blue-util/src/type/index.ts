@@ -1,7 +1,8 @@
 /**
- * @module type
+ * @module blue-util
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 // Import custom functions for re-export
 import isConstructor from './is-constructor.js';
 import isFunction from './is-function.js';

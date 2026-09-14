@@ -1,10 +1,8 @@
 /**
  * Static file serving controller.
- *
- * Serves a file from the `./public` directory under `/static/{file}`.
- * Path safety (canonical containment, symlink resolution, MIME allowlist,
- * `nosniff`) is delegated to the shared `StaticResourceResolver` — the same
- * implementation `StaticFileView` uses.
+ * * @module blue-platform-node
+ * @since 1.0.0
+ * @author Jeff Rose
  */
 import '@tsmetadata/polyfill';
 import { getMapping, pathVariable, parameters, requestMapping } from '@blue/dispatcher';

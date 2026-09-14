@@ -1,3 +1,8 @@
+/**
+ * @module blue-view-webcomponent
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { describe, it, expect, vi } from 'vitest';
 import { BenchmarkHarness } from '../../../../todomvc/examples/bluejs/src/benchmark';
 import { TodoStateService } from '../../../../todomvc/examples/bluejs/src/state';

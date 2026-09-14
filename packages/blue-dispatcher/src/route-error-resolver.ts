@@ -1,3 +1,8 @@
+/**
+ * @module blue-dispatcher
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { Constructable } from '@blue/core';
 import { ModelAndView } from './model-and-view';
 import { Route } from '@blue/router';

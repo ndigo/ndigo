@@ -1,3 +1,8 @@
+/**
+ * @module blue-auth-client
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { base64url, createRemoteJWKSet, decodeJwt, jwtVerify, type JWTPayload } from 'jose';
 import { type AuthAdapter } from '@blue/auth-core';
 import { type Principal } from '@blue/auth-core';

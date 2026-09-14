@@ -1,10 +1,9 @@
 /**
- * Minimal demonstration controller using the node platform's HTTP method
- * decorators.
- *
- * @module
+ * Minimal demonstration controller using the node platform's HTTP method.
+ * * @module blue-hello-node
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import '@tsmetadata/polyfill';
 import { getMapping, socketMapping, type SocketSession, requestMapping } from '@blue/dispatcher';
 import { queryValue, parameters } from '@blue/dispatcher';

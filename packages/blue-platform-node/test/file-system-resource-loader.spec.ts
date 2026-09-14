@@ -1,3 +1,8 @@
+/**
+ * @module blue-platform-node
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { describe, test, expect, beforeEach } from 'vitest';
 import { writeFile, mkdtemp } from 'node:fs/promises';
 import { join } from 'node:path';

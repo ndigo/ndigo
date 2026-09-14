@@ -1,10 +1,8 @@
 /**
- * @blue/view — serializing view base.
- *
- * @module
+ * @module blue-view
  * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import { IllegalStateError } from '@blue/core';
 import type { Route } from '@blue/router';
 import { AbstractView } from './view.js';

@@ -1,5 +1,8 @@
 /**
  * Contract for recording feature-level metrics.
+ * * @module blue-core
+ * @since 1.0.0
+ * @author Jeff Rose
  */
 export interface FeatureMetricRecorder {
     /**

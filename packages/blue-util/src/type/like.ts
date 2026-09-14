@@ -1,6 +1,8 @@
 /**
+ * @module blue-util
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 export type LikeDescriptor = { [key: string]: Function | true };
 
 /**

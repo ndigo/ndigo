@@ -1,3 +1,8 @@
+/**
+ * @module blue-signals
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { describe, it, expect } from 'vitest';
 import { signal, computed, effect, batch, untracked, Signal } from '../src/index';
 

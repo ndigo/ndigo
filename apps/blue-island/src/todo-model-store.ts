@@ -1,12 +1,9 @@
 /**
  * The island demo's server-side todo model (AD-9).
- *
- * The server owns source-of-truth state; each update is queued to all
- * `subscribe()` callers and the current snapshot is available via `get()`.
- * The stream ends when `stop()` cancels the ticker — the demo pushes three
- * updates (one per second), proving server push into the hydrated island.
+ * * @module blue-island
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 export type TodoItem = { text: string; done: boolean };
 export type TodoModel = { items: TodoItem[]; filter: string };
 

@@ -1,15 +1,9 @@
 /**
  * Repository for the Drizzle-backed persistence layer.
- *
- * Mirrors the {@link Repository} contract from `@blue/orm` (save / findById /
- * findAll / deleteById / count / existsById) but asynchronously, because SQL
- * operations through {@link DrizzleEntityManager} are async. The sync
- * `Repository` interface is satisfied by the in-memory implementations; this
- * adapter exposes the same method surface as promises.
- *
- * @module
+ * * @module blue-orm-drizzle
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import { Constructable } from '@blue/core';
 import { DrizzleEntityManager } from './drizzle-entity-manager';
 

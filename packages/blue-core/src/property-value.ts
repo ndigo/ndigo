@@ -1,3 +1,8 @@
+/**
+ * @module blue-core
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { RingBuffer } from './ring-buffer.js';
 import { JSONValue, Serializable, serialize } from './serializable.js';
 import { Equatable, equates, equatable } from './equatable.js';

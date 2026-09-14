@@ -1,6 +1,8 @@
 /**
+ * @module blue-dispatcher
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import { MultiValueMap, getSymbolMetadata } from '@blue/core';
 
 const { defineProperty } = Reflect;

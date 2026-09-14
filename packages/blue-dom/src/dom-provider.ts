@@ -1,7 +1,8 @@
 /**
  * Provides an isomorphic abstraction over DOM parsing and element creation.
- * Implementations back this interface with either native browser APIs or
- * a server-side DOM library such as linkedom.
+ * * @module blue-dom
+ * @since 1.0.0
+ * @author Jeff Rose
  */
 export interface DOMProvider {
     /**

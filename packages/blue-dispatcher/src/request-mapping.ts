@@ -1,17 +1,9 @@
 /**
  * the `requestMapping` decorator — server-side route mapping decorator.
- *
- * Extends the shared route-mapping metadata with HTTP request semantics
- * (`method` now; `headers`, `consumes`, `produces` later). Writes the same
- * `Symbol.metadata` record as the `routeMapping` decorator, so the shared mapping stack
- * (`RadixMetadataHandlerMapping`, `RadixMetadataHandlerMapping`,
- * `RouteMappingInfo`) consumes both without a fork. Hybrid controllers can
- * serve both client routes and server HTTP from one class.
- *
- * @module
+ * * @module blue-dispatcher
  * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import type { HTTPMethod } from '@blue/http';
 import { routeMapping, RouteMappingConfiguration } from './route-mapping';
 

@@ -1,3 +1,8 @@
+/**
+ * @module blue-api
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import '@tsmetadata/polyfill';
 import { configuration, entry, profile } from '@blue/context';
 import { StaticContentSource } from '@blue/content';

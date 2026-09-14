@@ -1,3 +1,8 @@
+/**
+ * @module blue-context
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { IllegalStateError } from '@blue/core';
 
 /** Maximum parentheses nesting depth (panic switch for pathological input). */

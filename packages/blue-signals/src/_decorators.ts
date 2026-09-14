@@ -1,6 +1,8 @@
 /**
- *
  * Blue Signals decorator API.
+ * * @module blue-signals
+ * @since 1.0.0
+ * @author Jeff Rose
  */
 import {
     signal as _signal,

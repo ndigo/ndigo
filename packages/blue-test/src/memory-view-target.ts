@@ -1,15 +1,9 @@
 /**
- * Memory view target — a DOM-free `ViewTarget` that captures rendered output
- * so browser controllers can be asserted on without a real DOM container.
- *
- * `WebComponentView` renders by creating its custom element and committing it
- * to the target, so a plain capture target receives the element exactly as a
- * DOM-backed target would.
- *
- * @module
+ * Memory view target — a DOM-free `ViewTarget` that captures rendered output.
+ * * @module blue-test
  * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import { Route } from '@blue/router';
 import { ViewTarget } from '@blue/view';
 

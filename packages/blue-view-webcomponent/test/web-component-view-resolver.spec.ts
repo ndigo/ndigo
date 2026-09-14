@@ -1,3 +1,8 @@
+/**
+ * @module blue-view-webcomponent
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { describe, expect, it } from 'vitest';
 import { TagMapping } from '../src/tag-mapping';
 import { WebComponentView } from '../src/view';

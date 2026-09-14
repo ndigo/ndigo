@@ -1,3 +1,8 @@
+/**
+ * @module blue-http
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { HTTPInit, ResponseAwareHTTPInterceptor } from '../http';
 
 /**

@@ -1,3 +1,8 @@
+/**
+ * @module blue-core
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { isNumber, isString } from '@blue/util/types';
 import { Comparator, numberComparator } from './comparable.js';
 

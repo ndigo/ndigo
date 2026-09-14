@@ -1,3 +1,8 @@
+/**
+ * @module blue-telemetry-node
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 // @vitest-environment node
 import { describe, expect, test, afterEach } from 'vitest';
 import { context as otelContext, propagation, trace } from '@opentelemetry/api';

@@ -1,3 +1,8 @@
+/**
+ * @module blue-http
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { describe, expect, test } from 'vitest';
 import { HTTP } from '../../src/http';
 import type { TransformContext } from '../../src/transformers/http-transformer';

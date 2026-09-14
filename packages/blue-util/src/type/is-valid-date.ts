@@ -1,8 +1,8 @@
 /**
- * @see {@link https://ramdajs.com/docs/}
- * @see {@link https://date-fns.org/}
+ * @module blue-util
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import isNumber from './is-number.js';
 
 /**

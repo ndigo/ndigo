@@ -1,7 +1,8 @@
 /**
- * @see {@link http://moutjs.com/docs/latest/string.html#replaceAccents}
+ * @module blue-util
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 const accented = /[\xC0-\xFF\u0152\u0153\u0160\u0161\u0178\u0192\uA732\uA733]/g,
     combiningCharacters = /[\u0300-\u036f]/g,
     upperAA = /[\uA732]/g,

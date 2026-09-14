@@ -1,3 +1,8 @@
+/**
+ * @module blue-api
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import '@tsmetadata/polyfill';
 import { postMapping, parameters, bodyValue, requestMapping } from '@blue/dispatcher';
 import { ResponseEntity } from '@blue/platform-node';

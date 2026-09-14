@@ -1,3 +1,8 @@
+/**
+ * @module blue-view
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 // @vitest-environment node
 import { describe, test, expect } from 'vitest';
 import { IslandView, serializeModel } from '../src/island-view';

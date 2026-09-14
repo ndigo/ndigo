@@ -1,3 +1,8 @@
+/**
+ * @module blue-dispatcher
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { RouteHandlerInterceptor } from './route-handler-interceptor';
 import { resolvePreHandleOutcome } from './route-handler-denial';
 import { ModelAndView } from './model-and-view';

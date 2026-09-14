@@ -1,3 +1,8 @@
+/**
+ * @module blue-http
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { isEntries, isJSONObject, JSONValue, Serializable } from '@blue/core';
 import { is, isString } from '@blue/util/types';
 

@@ -1,3 +1,8 @@
+/**
+ * @module blue-router
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { describe, it, expect } from 'vitest';
 import { RouteDefinition } from '../src/route-definition';
 

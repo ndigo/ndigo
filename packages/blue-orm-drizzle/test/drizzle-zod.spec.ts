@@ -1,3 +1,8 @@
+/**
+ * @module blue-orm-drizzle
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import '@tsmetadata/polyfill';
 
 import { describe, expect, test } from 'vitest';

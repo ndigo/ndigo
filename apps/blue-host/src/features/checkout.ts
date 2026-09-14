@@ -1,11 +1,9 @@
 /**
  * Checkout feature module — lazy-loaded by the host via dynamic import.
- *
- * Demonstrates a feature that requires the shell's shared `cart` dependency.
- *
- * @module
+ * * @module blue-host
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import type { ApplicationContext } from '@blue/context';
 
 /**

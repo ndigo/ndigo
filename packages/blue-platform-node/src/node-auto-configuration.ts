@@ -1,3 +1,8 @@
+/**
+ * @module blue-platform-node
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { configuration, entry } from '@blue/context';
 import { conditionalOnNode } from '@blue/core';
 import { RadixMetadataHandlerMapping, MetadataErrorResolver } from '@blue/dispatcher';

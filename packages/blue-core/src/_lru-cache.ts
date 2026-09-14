@@ -1,11 +1,8 @@
 /**
  * A generic Least-Recently-Used (LRU) cache backed by insertion-order Map semantics.
- *
- * On cache hit, the entry is deleted and re-inserted to move it to the "most recently used"
- * end of the Map. On overflow, the first Map entry (least recently used) is evicted.
- *
- * @template K - Key type
- * @template V - Value type
+ * * @module blue-core
+ * @since 1.0.0
+ * @author Jeff Rose
  */
 export class LRUCache<K, V> {
     readonly #capacity: number;

@@ -1,3 +1,8 @@
+/**
+ * @module blue-dispatcher
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { vi, expect } from 'vitest';
 import { ModelAndView } from '../src/model-and-view';
 

@@ -1,3 +1,8 @@
+/**
+ * @module blue-dom
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { describe, expect, it } from 'vitest';
 
 import { createDOMProvider } from '../src/create-dom-provider';

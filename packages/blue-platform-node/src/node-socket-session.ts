@@ -1,18 +1,9 @@
 /**
- * Node WebSocket session — wraps a `ws` (RFC 6455) connection as a
- * {@link SocketSession}.
- *
- * Inbound frames surface through `messages` as an async iterable; `send`
- * writes text/JSON frames; close code/reason propagate to `closed` and
- * `isClosed`. The `ws` connection is an event emitter, so this adapter
- * bridges its events to the async-iterable contract the dispatcher defines.
- * Request sources (query/headers/cookies from the upgrade) are exposed so
- * handlers can read and validate them like HTTP arguments.
- *
- * @module
+ * Node WebSocket session — wraps a `ws` (RFC 6455) connection as a.
+ * * @module blue-platform-node
  * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import type { SocketSession, SocketRequestSources } from '@blue/dispatcher';
 import type { WebSocket } from 'ws';
 

@@ -1,3 +1,8 @@
+/**
+ * @module blue-auth-client
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { type Principal } from '@blue/auth-core';
 import { type AuthenticationState, type AuthResult } from '@blue/auth-core';
 import { AuthRegistry } from '@blue/auth-core';

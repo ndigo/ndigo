@@ -1,3 +1,8 @@
+/**
+ * @module blue-dispatcher
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { Comparator, IllegalStateError } from '@blue/core';
 import { Initializable, SmartLifecycle } from '@blue/factory';
 import { Route } from '@blue/router';

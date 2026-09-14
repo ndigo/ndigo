@@ -1,3 +1,8 @@
+/**
+ * @module blue-api
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import '@tsmetadata/polyfill';
 import { z } from 'zod';
 import { entity, primaryColumn, generated, column, prePersist } from '@blue/orm';

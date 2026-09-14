@@ -1,6 +1,8 @@
 /**
  * Represents an object that can determine if it matches a given value.
- * @template TValue - The type of the value to match against.
+ * * @module blue-core
+ * @since 1.0.0
+ * @author Jeff Rose
  */
 export interface Matchable<TValue> {
     /**

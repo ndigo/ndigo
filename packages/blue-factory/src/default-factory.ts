@@ -1,3 +1,8 @@
+/**
+ * @module blue-factory
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { RegistryProxyHandler } from './registry';
 import { AbstractFactory } from './abstract-factory';
 

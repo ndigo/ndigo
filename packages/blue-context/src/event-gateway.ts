@@ -1,3 +1,8 @@
+/**
+ * @module blue-context
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { FrameworkError } from '@blue/core';
 import type { EventType } from './event-emitter';
 import type { ApplicationContext } from './context';

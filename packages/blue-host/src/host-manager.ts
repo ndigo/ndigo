@@ -1,16 +1,9 @@
 /**
  * Host orchestration — the centralized micro frontend host (AD-18).
- *
- * `HostManager` assembles the feature mount + routing machinery of
- * `@blue/context` / `@blue/router` into one registrable service: one
- * `registerFeature` call covers shared-dependency validation, lazy loading,
- * mount-on-activate / unmount-on-deactivate, relay gateways, and route
- * dispatch. The instance is resolved through the shell context via
- * {@link HOST_MANAGER_TOKEN}.
- *
- * @module
+ * * @module blue-host
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import type { FeatureMetricRecorder } from '@blue/core';
 import { ContextToken, FeatureContextMountManager } from '@blue/context';
 import type {

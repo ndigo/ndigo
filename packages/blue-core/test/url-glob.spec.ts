@@ -1,3 +1,8 @@
+/**
+ * @module blue-core
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { describe, it, expect } from 'vitest';
 import { parseUrlGlob } from '../src/url-glob';
 

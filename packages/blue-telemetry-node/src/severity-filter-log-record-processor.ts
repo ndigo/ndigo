@@ -1,3 +1,8 @@
+/**
+ * @module blue-telemetry-node
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { Context } from '@opentelemetry/api';
 import { LogRecordProcessor, SdkLogRecord } from '@opentelemetry/sdk-logs';
 import { SeverityNumber } from '@opentelemetry/api-logs';

@@ -1,17 +1,9 @@
 /**
- * Interceptor-denial contract: a {@link RouteHandlerInterceptor} may deny a
- * request with an explicit result instead of a bare `false`, so the platform
- * adapter can finalize a deterministic response (e.g. `401`/`403` on Node,
- * a redirect in the browser).
- *
- * Fail-closed: a bare `false` from `preHandle` maps to the platform's default
- * denial (Node: `403 Forbidden`); an explicit {@link InterceptorDenial}
- * carries its own status.
- *
- * @module
+ * Interceptor-denial contract: a {@link RouteHandlerInterceptor} may deny a.
+ * * @module blue-dispatcher
  * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import { Route } from '@blue/router';
 
 /**

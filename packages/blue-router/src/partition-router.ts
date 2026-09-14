@@ -1,3 +1,8 @@
+/**
+ * @module blue-router
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { PathRoute } from './path-route';
 import { Route } from './route';
 import { AbstractRouter } from './router';

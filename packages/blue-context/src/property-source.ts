@@ -1,3 +1,8 @@
+/**
+ * @module blue-context
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { JSONObject, JSONValue, createNull, parseKeypath } from '@blue/core';
 import { isNil } from '@blue/util/types';
 

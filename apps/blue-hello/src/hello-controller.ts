@@ -1,3 +1,8 @@
+/**
+ * @module blue-hello
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { routeMapping, ModelAndView } from '@blue/dispatcher';
 import { WebComponentView } from '@blue/view-webcomponent';
 

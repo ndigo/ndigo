@@ -1,3 +1,8 @@
+/**
+ * @module blue-context
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import '@tsmetadata/polyfill';
 import { FrameworkError } from '@blue/core';
 import { GenericApplicationContext, ApplicationContextAwareProcessor } from './context';

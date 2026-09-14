@@ -1,3 +1,8 @@
+/**
+ * @module blue-island
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { getMapping, ModelAndView, requestMapping } from '@blue/dispatcher';
 import { ServerSentEventView } from '@blue/platform-node';
 import { TodoModel, TodoModelStore } from './todo-model-store';

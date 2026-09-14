@@ -1,3 +1,8 @@
+/**
+ * @module blue-dom
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { parseHTML as linkedomParseHTML } from 'linkedom';
 import type { DOMProvider } from './dom-provider';
 

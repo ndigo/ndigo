@@ -1,3 +1,8 @@
+/**
+ * @module blue-telemetry-web
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { trace, metrics, diag, DiagConsoleLogger, DiagLogLevel } from '@opentelemetry/api';
 import { logs, SeverityNumber } from '@opentelemetry/api-logs';
 import { afterEach, describe, expect, it, vi } from 'vitest';

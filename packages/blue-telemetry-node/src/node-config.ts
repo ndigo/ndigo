@@ -1,3 +1,8 @@
+/**
+ * @module blue-telemetry-node
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { SeverityNumber } from '@opentelemetry/api-logs';
 import { NodeSDK } from '@opentelemetry/sdk-node';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';

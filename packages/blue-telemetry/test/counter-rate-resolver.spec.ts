@@ -1,3 +1,8 @@
+/**
+ * @module blue-telemetry
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { CounterRateResolver } from '../src/metrics/counter-rate-resolver';
 import { FeatureMetricAggregator } from '../src/metrics/feature-metric-aggregator';

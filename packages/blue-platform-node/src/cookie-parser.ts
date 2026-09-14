@@ -1,14 +1,9 @@
 /**
  * RFC 6265-style cookie parsing for `NodeRequest.cookies`.
- *
- * Deliberately minimal: splits the `Cookie` header on `;`, trims optional
- * whitespace, and rejects malformed pairs. Bounded by entry and value-size
- * limits so a hostile header cannot exhaust memory.
- *
- * @module
+ * * @module blue-platform-node
  * @since 1.0.0
+ * @author Jeff Rose
  */
-
 /** Default cap on parsed cookie entries per request. */
 export const DEFAULT_MAX_COOKIES = 50;
 

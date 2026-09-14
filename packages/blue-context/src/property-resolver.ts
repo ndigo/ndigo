@@ -1,3 +1,8 @@
+/**
+ * @module blue-context
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { IllegalStateError, JSONValue, JSONObject, createNull, parseKeypath } from '@blue/core';
 import type { KeypathToken } from '@blue/core';
 import type { ConversionService } from '@blue/core';

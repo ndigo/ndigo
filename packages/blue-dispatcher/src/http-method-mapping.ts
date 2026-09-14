@@ -1,17 +1,9 @@
 /**
- * HTTP verb route mapping decorators — sugar over `requestMapping` with the
- * HTTP method fixed.
- *
- * Verbs are **method-only** decorators: they set the HTTP method for a single
- * handler method. A class-level path prefix carries no HTTP verb — use
- * `@requestMapping` on classes (path + conditions are the class-level
- * context; a verb there is either dead config or an accidental default for
- * method-less methods, never an access rule).
- *
- * @module
+ * HTTP verb route mapping decorators — sugar over `requestMapping` with the.
+ * * @module blue-dispatcher
  * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import { FrameworkError } from '@blue/core';
 import { isString } from '@blue/util/types';
 import { requestMapping, RequestMappingConfiguration } from './request-mapping';

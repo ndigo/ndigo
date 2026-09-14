@@ -1,3 +1,8 @@
+/**
+ * @module blue-view
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { FrameworkError } from '@blue/core';
 import type { Route } from '@blue/router';
 import { AbstractTemplateView } from './view';

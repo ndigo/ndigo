@@ -1,16 +1,8 @@
 /**
  * Resource loader that persists data to `localStorage`.
- *
- * Provides a simple key-value storage adapter backed by the browser's
- * `localStorage` API. Useful for caching user preferences, theme selections,
- * or small amounts of data that should survive page reloads.
- *
- * @example
- * ```ts
- * const storage = new LocalStorageResourceLoader('my-app');
- * storage.setItem('theme', 'dark');
- * const theme = storage.getItem('theme'); // 'dark'
- * ```
+ * * @module blue-platform-web
+ * @since 1.0.0
+ * @author Jeff Rose
  */
 export class LocalStorageResourceLoader {
     readonly #prefix: string;

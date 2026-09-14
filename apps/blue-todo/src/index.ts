@@ -1,3 +1,8 @@
+/**
+ * @module blue-todo
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import './telemetry-setup';
 import { composeTodoRuntime } from './shell-composition';
 import { createTodoContext } from './todo-context';

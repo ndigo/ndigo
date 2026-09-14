@@ -1,3 +1,8 @@
+/**
+ * @module blue-boot
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { describe, test, expect, vi } from 'vitest';
 import { ApplicationBuilder } from '../src/application-builder';
 import { StandardEnvironment, configuration, entry } from '@blue/context';

@@ -1,3 +1,8 @@
+/**
+ * @module blue-http
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { is, isString } from '@blue/util/types';
 import QueryString from '../query-string';
 import { HTTPInit, HTTPMethod, InitializationAwareHTTPInterceptor } from '../http';

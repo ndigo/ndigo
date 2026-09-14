@@ -1,30 +1,9 @@
 /**
  * RFC 9457 Problem Details for HTTP APIs (obsoletes RFC 7807).
- *
- * Every 4xx/5xx response from the Node platform's HTTP pipeline is an
- * `application/problem+json` document (AD-10):
- *
- * ```json
- * {
- *   "type": "urn:blue:validation-failed",
- *   "title": "Validation Failed",
- *   "status": 422,
- *   "detail": "title: Too small: expected string to have >=1 characters",
- *   "instance": "/drizzle/notes",
- *   "errors": [{ "path": ["title"], "message": "…", "code": "too_small" }]
- * }
- * ```
- *
- * `type` is a `urn:blue:<slug>` — a **placeholder scheme**. Real HTTPS
- * problem-type URIs must be registered before the first public release
- * (tracked in AD-10); no external consumers exist to notify (development
- * mode). `errors` is a Blue extension member carrying the structured
- * per-field validation failures (Phase 4A).
- *
- * @module
+ * * @module blue-platform-node
  * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import { ValidationIssue } from '@blue/dispatcher';
 import { ResponseStatus } from '@blue/http';
 import { ResponseEntity } from './response-entity';

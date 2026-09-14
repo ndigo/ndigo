@@ -1,3 +1,8 @@
+/**
+ * @module blue-platform-web
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { describe, expect, test } from 'vitest';
 import { StandardEnvironment } from '@blue/context';
 import { BrowserEnvironment, filterImportMetaEnv } from '../src/browser-environment';

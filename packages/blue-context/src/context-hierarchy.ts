@@ -1,3 +1,8 @@
+/**
+ * @module blue-context
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { ContentSource, ThemeResolver } from '@blue/content';
 import { JSONObject } from '@blue/core';
 import { ConfigurableEnvironment } from './environment';

@@ -1,14 +1,9 @@
 /**
- *
  * Demo component showing the @blue/signals decorator API.
- *
- * A simple counter with increment/decrement, demonstrating:
- * - @signal for reactive state
- * - @computed for derived values
- * - @effect for side effects
- * - @reactive for lifecycle management
+ * * @module blue-todo
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import { AbstractWebComponent } from '@blue/view-webcomponent';
 import { signal, computed, effect, reactive } from '@blue/signals/decorators';
 

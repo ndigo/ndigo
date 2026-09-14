@@ -1,3 +1,8 @@
+/**
+ * @module blue-context
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { describe, expect, test, vi } from 'vitest';
 import { GenericApplicationContext } from '../src/context';
 import { FeatureContextMountManager } from '../src/feature-context-mount-manager';

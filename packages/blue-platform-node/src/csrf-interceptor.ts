@@ -1,18 +1,9 @@
 /**
  * CSRF protection for Node applications (Double-Submit Cookie pattern).
- *
- * Issues a session cookie carrying a random CSRF token, and requires mutating
- * requests (POST/PUT/DELETE/PATCH/QUERY) to echo that token back via the
- * `X-CSRF-Token` header (or a `csrf_token` form/body field). This is the
- * standard double-submit defense: a cross-site attacker cannot read the cookie,
- * so the echoed token cannot match.
- *
- * Safe methods (GET/HEAD/OPTIONS/TRACE/CONNECT) pass through.
- *
- * @module
+ * * @module blue-platform-node
  * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import { randomBytes } from 'node:crypto';
 import { Route } from '@blue/router';
 import { RouteHandlerInterceptor } from '@blue/dispatcher';

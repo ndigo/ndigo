@@ -1,3 +1,8 @@
+/**
+ * @module blue-dispatcher
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { Serializable, Equatable, JSONValue } from '@blue/core';
 import { like } from '@blue/util/types';
 import { Route } from '@blue/router';

@@ -1,3 +1,8 @@
+/**
+ * @module blue-orm
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 export const entityMetadataKey = 'orm:entity';
 export const entityNameMetadataKey = 'orm:entity:name';
 export const columnsMetadataKey = 'orm:columns';

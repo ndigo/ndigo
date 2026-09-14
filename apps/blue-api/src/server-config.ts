@@ -1,3 +1,8 @@
+/**
+ * @module blue-api
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { configurationProperties, defaultValue, property } from '@blue/boot';
 
 /**

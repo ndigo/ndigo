@@ -1,3 +1,8 @@
+/**
+ * @module blue-http
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { Transform, TransformContext } from '../transformers/http-transformer';
 import { MediaType } from '@blue/core';
 import { RequestAwareHTTPInterceptor, ResponseAwareHTTPInterceptor } from '../http';

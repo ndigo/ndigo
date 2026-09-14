@@ -1,3 +1,8 @@
+/**
+ * @module blue-telemetry
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { describe, expect, it, beforeEach, afterEach } from 'vitest';
 import '@tsmetadata/polyfill';
 import { counted, getCounted, hasCounted } from '../src/metrics/decorators';

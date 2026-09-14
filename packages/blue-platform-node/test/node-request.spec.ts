@@ -1,3 +1,8 @@
+/**
+ * @module blue-platform-node
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { describe, test, expect } from 'vitest';
 import { NODE_REQUEST_ATTRIBUTE, NodeRequest, getNodeRequest } from '../src/node-request';
 

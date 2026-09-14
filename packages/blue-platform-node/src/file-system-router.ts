@@ -1,3 +1,8 @@
+/**
+ * @module blue-platform-node
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { AbstractRouter, RouterCallback } from '@blue/router';
 
 /**

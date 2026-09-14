@@ -1,3 +1,8 @@
+/**
+ * @module blue-util
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import rand from './rand.js';
 
 /**

@@ -1,3 +1,8 @@
+/**
+ * @module blue-platform-web
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { describe, test, expect, afterEach, vi } from 'vitest';
 import { GenericApplicationContext } from '@blue/context';
 import { Route } from '@blue/router';

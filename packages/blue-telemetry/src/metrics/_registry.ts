@@ -1,7 +1,8 @@
 /**
  * Registry for prototypes that have been decorated with `counted`.
- * This allows the `CountedInstrumentation` to discover and wrap these methods
- * without the decorator itself having to perform the wrapping.
+ * * @module blue-telemetry
+ * @since 1.0.0
+ * @author Jeff Rose
  */
 export class CountedRegistry {
     private static readonly prototypes = new Set<object>();

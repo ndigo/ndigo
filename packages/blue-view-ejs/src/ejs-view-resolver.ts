@@ -1,10 +1,8 @@
 /**
- * @blue/view-ejs — EJS view resolver.
- *
- * @module
+ * @module blue-view-ejs
  * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import { AbstractPathBasedViewResolver, View } from '@blue/view';
 import { MediaTypes } from '@blue/core';
 

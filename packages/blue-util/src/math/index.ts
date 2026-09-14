@@ -1,7 +1,8 @@
 /**
- * @module math
+ * @module blue-util
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 // Import custom functions for re-export
 import guid from './guid.js';
 import rand from './rand.js';

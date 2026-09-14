@@ -1,3 +1,8 @@
+/**
+ * @module blue-orm
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import type { z } from 'zod';
 import { Constructable } from '@blue/core';
 import {

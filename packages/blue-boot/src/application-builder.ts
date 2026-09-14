@@ -1,3 +1,8 @@
+/**
+ * @module blue-boot
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { ApplicationContext, ConfigurableEnvironment, EventListener } from '@blue/context';
 import type { EnvironmentCustomizer } from '@blue/context';
 import { JSONObject } from '@blue/core';

@@ -1,3 +1,8 @@
+/**
+ * @module blue-orm-drizzle
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import type { InValue } from '@libsql/client';
 import { Constructable, FrameworkError } from '@blue/core';
 import { getEntityMetadata, isEntity, validateEntity, LifecycleEvent } from '@blue/orm';

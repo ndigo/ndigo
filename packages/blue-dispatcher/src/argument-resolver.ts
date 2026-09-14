@@ -1,3 +1,8 @@
+/**
+ * @module blue-dispatcher
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { Route } from '@blue/router';
 import { MethodParameter, MethodParameterType } from './parameters';
 import { isNil, like } from '@blue/util/types';

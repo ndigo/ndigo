@@ -1,3 +1,8 @@
+/**
+ * @module blue-platform-web
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 /* eslint-disable @blue/no-browser-globals-in-isomorphic -- BrowserRouter is a browser-only implementation; browser globals are intentional and expected here */
 
 import { PathRoute } from '@blue/router';

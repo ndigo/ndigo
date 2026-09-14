@@ -1,8 +1,8 @@
 /**
- * @see core
- * @see util
+ * @module blue-factory
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 export * from './aware';
 export * from './context-token';
 export * from './entry-processor';

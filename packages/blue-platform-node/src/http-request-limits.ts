@@ -1,13 +1,9 @@
 /**
  * Request-pipeline limits and timeouts for {@link NodeHTTPServerAdapter}.
- *
- * All limits are conservative by default so an unconfigured server is safe
- * against slow-loris style attacks, oversized payloads, and hung connections.
- *
- * @module
+ * * @module blue-platform-node
  * @since 1.0.0
+ * @author Jeff Rose
  */
-
 /**
  * Tunable bounds for the Node HTTP request pipeline.
  */

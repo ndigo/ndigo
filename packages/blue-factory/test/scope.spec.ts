@@ -1,10 +1,9 @@
 /**
- * Behavioral tests for @blue/factory scope decorators (TC39)
- *
- * Tests verify that scope decorators store metadata correctly using TC39 Symbol.metadata
- * and that helper functions and mixins can read the metadata.
+ * Behavioral tests for @blue/factory scope decorators (TC39).
+ * * @module blue-factory
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import { describe, it, expect, vi } from 'vitest';
 import {
     scope,

@@ -1,3 +1,8 @@
+/**
+ * @module blue-platform-node
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { ApplicationContext } from '@blue/context';
 import { HandlerMethodArgumentResolver } from '@blue/dispatcher';
 import { NodeQueryValueMethodArgumentResolver } from './query-argument-resolver';

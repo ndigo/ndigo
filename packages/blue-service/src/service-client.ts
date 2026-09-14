@@ -1,24 +1,9 @@
 /**
  * Runtime proxy generator for declarative service clients (AD-8).
- *
- * `serviceClient()` reads the `@service`/`@*Call` metadata from
- * `Symbol.metadata` and returns a Proxy whose methods perform the declared
- * HTTP call through `@blue/http`:
- *
- * - `:param` path templates are filled positionally from the method args,
- * - the first object arg becomes the JSON body for methods that carry one,
- * - a `responseSchema` (Zod) validates the JSON body and returns typed data,
- * - otherwise the raw `Response` is returned,
- * - `stream: true` calls return an async iterable of Server-Sent Events
- *   (JSON data validated by `responseSchema` when declared),
- * - the service name rides along as a correlation tag header.
- *
- * Works with either an `@service`-decorated class (prototype metadata) or a
- * plain object/interface shape carrying the same metadata.
- *
- * @module
+ * * @module blue-service
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import { SpanKind, SpanStatusCode, trace } from '@opentelemetry/api';
 import { HTTP, HTTPInit } from '@blue/http';
 import {

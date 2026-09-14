@@ -1,3 +1,8 @@
+/**
+ * @module blue-view-webcomponent
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { describe, expect, test } from 'vitest';
 import { Constructable } from '@blue/core';
 import { AsBlueElement } from '../src/blue-element';

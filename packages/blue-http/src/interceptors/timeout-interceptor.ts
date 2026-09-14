@@ -1,3 +1,8 @@
+/**
+ * @module blue-http
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import ResponseError from '../response-error';
 import { isNumber } from '@blue/util/types';
 import {

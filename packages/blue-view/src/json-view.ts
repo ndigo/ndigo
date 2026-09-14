@@ -1,10 +1,8 @@
 /**
- * @blue/view — JSON view.
- *
- * @module
+ * @module blue-view
  * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import { MediaTypes } from '@blue/core';
 import { AbstractSerializingView } from './abstract-serializing-view.js';
 

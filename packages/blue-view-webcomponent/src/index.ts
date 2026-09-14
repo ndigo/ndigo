@@ -1,7 +1,8 @@
 /**
- * @blue/view-webcomponent — Web Component view engine and custom element bindings.
+ * @module blue-view-webcomponent
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 export * from './abstract-web-component';
 export * from './blue-element';
 export * from './engine';

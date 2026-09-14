@@ -1,3 +1,8 @@
+/**
+ * @module blue-platform-web
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { describe, expect, it } from 'vitest';
 import type { CookieParseResult } from '../../src/cookies';
 import cookies from '../../src/cookies';

@@ -1,9 +1,9 @@
 /**
  * Blue integration test harness — MockHTTP-style in-process dispatch.
- *
- * @module
+ * * @module blue-test
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 export { MockHTTP, MockHTTPRequestBuilder } from './mock-http';
 export type { MockRequest, PreparedRoute } from './request-builder';
 export { buildRoute } from './request-builder';

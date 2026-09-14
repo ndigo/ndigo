@@ -1,3 +1,8 @@
+/**
+ * @module blue-factory
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { like } from '@blue/util/types';
 //import { Constructable } from '@blue/core';
 

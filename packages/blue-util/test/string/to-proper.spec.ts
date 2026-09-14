@@ -1,3 +1,8 @@
+/**
+ * @module blue-util
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { describe, test, expect } from 'vitest';
 
 import toProper from '@blue/util/string/to-proper';

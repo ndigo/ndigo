@@ -1,3 +1,8 @@
+/**
+ * @module blue-platform-web
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { ConfigurableApplicationContext } from '@blue/context';
 import { CookieThemeResolver, configureCookieThemeResolver } from './cookie-theme-resolver';
 

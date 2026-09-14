@@ -1,3 +1,8 @@
+/**
+ * @module blue-auth-client
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { describe, test, expect, beforeEach } from 'vitest';
 import { AuthClient } from '../src/client';
 import { AuthRegistry, AuthAdapter, Principal, type AuthResult } from '@blue/auth-core';

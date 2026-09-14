@@ -1,34 +1,9 @@
 /**
- * Imperative server-push view: streams Server-Sent Events to the HTTP
- * response (AD-9, naming cleanup).
- *
- * The view is constructed **per request** with its own event source — unlike
- * resolved views, it carries per-connection state (the source, the open
- * response). Handlers return it directly; it is never resolved by name (see
- * the view-resolution strategy plan).
- *
- * ```ts
- * @getMapping('/events')
- * events() {
- *     return new ServerSentEventView(tickStream());
- * }
- * ```
- *
- * The source's yielded values become SSE frames. A value shaped
- * `{ event?, data }` contributes an `event:` line (when present) plus a JSON
- * `data:` line; any other value is framed as JSON data only. Frames are
- * terminated by a blank line, so JSON-serialized payloads (which escape
- * newlines) are safe. The response ends when the source ends.
- *
- * As a {@link ProducerView}, rendering returns a streaming response document
- * whose body is the framed event stream; the dispatcher writes the headers
- * and streams the frames to the response. The view still observes the
- * response's lifecycle (client disconnect) for telemetry.
- *
- * @module
+ * Imperative server-push view: streams Server-Sent Events to the HTTP.
+ * * @module blue-platform-node
  * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import { MediaTypes, ServerSentEvent } from '@blue/core';
 import { Route } from '@blue/router';
 import { type ProducerView, type RenderResult } from '@blue/view';

@@ -1,7 +1,9 @@
 /**
- * Behavioral tests for @parameters pattern (TC39 parameter injection)
+ * Behavioral tests for @parameters pattern (TC39 parameter injection).
+ * * @module blue-dispatcher
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import { describe, it, expect } from 'vitest';
 import '@tsmetadata/polyfill';
 import {

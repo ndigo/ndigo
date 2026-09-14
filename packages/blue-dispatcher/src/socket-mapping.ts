@@ -1,44 +1,9 @@
 /**
  * `@socketMapping` — WebSocket route mapping decorator (RFC 6455).
- *
- * Marks a controller method as a WebSocket endpoint. The method is routed by
- * path like an HTTP mapping but, instead of receiving request arguments and
- * returning a response, it receives a {@link SocketSession} and is a duplex:
- *
- * ```ts
- * @requestMapping('/chat')          // class-level prefix
- * class ChatController {
- *     @socketMapping('/room')       // WS endpoint at /chat/room
- *     async *room(session: SocketSession) {
- *         for await (const msg of session.messages) {
- *             yield { event: 'chat', data: { text: String(msg) } };
- *         }
- *     }
- * }
- * ```
- *
- * The handler is an **async-iterable producer-consumer**: it `for await`s
- * inbound messages from `session.messages` and `yield`s outbound values that
- * the platform writes to the socket. Control (params, headers, auth) is
- * expressed through the same `@parameters` extractors as HTTP handlers —
- * the upgrade request resolves them exactly like a normal request — and the
- * interceptor chain runs before the handshake, so an auth denial rejects the
- * upgrade with `401`/`403` instead of `101`.
- *
- * Semantics:
- * - A socket mapping matches its **path** regardless of HTTP method. The
- *   platform adapter performs the RFC 6455 handshake only when the request
- *   carries `Connection: Upgrade` + `Upgrade: websocket`.
- * - A plain HTTP request to a socket-mapped path is not an upgrade: it falls
- *   through to normal dispatch (404/405 for the method).
- * - Socket handlers share the metadata record with HTTP mappings, so a class
- *   can mix HTTP and WebSocket endpoints (`@chat`, `@requestMapping('/')`,
- *   `@socketMapping('/ws')`).
- *
- * @module
+ * * @module blue-dispatcher
  * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import { FrameworkError, getSymbolMetadata } from '@blue/core';
 import { routeMapping, RouteMappingConfiguration } from './route-mapping';
 

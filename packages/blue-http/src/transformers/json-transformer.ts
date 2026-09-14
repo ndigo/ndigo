@@ -1,3 +1,8 @@
+/**
+ * @module blue-http
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { JSONObject } from '@blue/core';
 import { HTTPTransformer, TransformContext } from './http-transformer';
 

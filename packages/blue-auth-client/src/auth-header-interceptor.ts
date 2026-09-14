@@ -1,3 +1,8 @@
+/**
+ * @module blue-auth-client
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { HTTP, RequestAwareHTTPInterceptor } from '@blue/http';
 import { Session } from '@blue/auth-core';
 

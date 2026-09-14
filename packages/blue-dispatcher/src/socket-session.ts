@@ -1,27 +1,9 @@
 /**
- * WebSocket session contract — the socket handler's view of a live
- * connection (AD-3 follow-up, sockets).
- *
- * Platform-neutral: the Node adapter (`@blue/platform-node`) supplies an
- * implementation backed by the `ws` library's RFC 6455 connection. Handlers
- * only depend on this interface, so socket behavior is testable and the
- * transport could be swapped.
- *
- * A socket handler is an async-iterable producer-consumer:
- *
- * ```ts
- * @socketMapping('/room')
- * async *room(session: SocketSession) {
- *     for await (const msg of session.messages) {
- *         yield { event: 'chat', data: { text: String(msg) } };
- *     }
- * }
- * ```
- *
- * @module
+ * WebSocket session contract — the socket handler's view of a live.
+ * * @module blue-dispatcher
  * @since 1.0.0
+ * @author Jeff Rose
  */
-
 /**
  * Request sources captured from the upgrade request — the same vocabulary
  * HTTP handlers use (`query`/`headers`/`cookies`), so WebSocket handlers can

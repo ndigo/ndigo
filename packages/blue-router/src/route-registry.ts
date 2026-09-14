@@ -1,12 +1,8 @@
 /**
- *
- * Scans `routeMapping` decorator metadata from registered beans and builds
- * a nested tree of type-safe {@link RouteDefinition} instances.
- *
- * The registry is constructed during application boot and registered as a
- * singleton entry in the application context.
- *
- * @see RouteDefinition
+ * Scans `routeMapping` decorator metadata from registered beans and builds.
+ * * @module blue-router
+ * @since 1.0.0
+ * @author Jeff Rose
  */
 import { type Registry } from '@blue/factory';
 import { URLGlobPathMatcher } from '@blue/core';

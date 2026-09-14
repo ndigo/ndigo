@@ -1,8 +1,8 @@
 /**
  * Utility for managing DOM event listeners on a specific element.
- *
- * Ensures that listeners are tracked and can be removed in bulk,
- * preventing memory leaks and duplicate listeners.
+ * * @module blue-view-webcomponent
+ * @since 1.0.0
+ * @author Jeff Rose
  */
 export class DOMEventBinder {
     #element: EventTarget;

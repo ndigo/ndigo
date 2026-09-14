@@ -1,3 +1,8 @@
+/**
+ * @module blue-http
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 export * from './app-reset-interceptor';
 export * from './cache-interceptor';
 export * from './content-type-interceptor';

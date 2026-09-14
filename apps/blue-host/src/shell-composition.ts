@@ -1,10 +1,9 @@
 /**
- * Host shell composition — sets up the micro frontend shell, a shared
- * dependency registry, and feature routing for lazy-loaded features.
- *
- * @module
+ * Host shell composition — sets up the micro frontend shell, a shared.
+ * * @module blue-host
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import { createShellContext, DefaultSharedDependencyRegistry, SHARED_DEPENDENCY_REGISTRY_TOKEN } from '@blue/context';
 import { HOST_MANAGER_TOKEN, HostManager } from '@blue/host';
 

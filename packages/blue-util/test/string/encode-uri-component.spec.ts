@@ -1,3 +1,8 @@
+/**
+ * @module blue-util
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { describe, test, expect } from 'vitest';
 
 import encode from '@blue/util/string/encode-uri-component';

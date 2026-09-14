@@ -1,3 +1,8 @@
+/**
+ * @module blue-todo
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { routeMapping, parameters, pathValue, ModelAndView } from '@blue/dispatcher';
 import { ApplicationContext, AsApplicationContextAware } from '@blue/context';
 import { Null } from '@blue/core';

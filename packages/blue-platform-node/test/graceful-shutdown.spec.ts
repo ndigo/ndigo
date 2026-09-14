@@ -1,3 +1,8 @@
+/**
+ * @module blue-platform-node
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 // @vitest-environment node
 import { describe, test, expect, vi, beforeEach, afterEach } from 'vitest';
 import type { ApplicationContext } from '@blue/context';

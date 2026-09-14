@@ -1,3 +1,8 @@
+/**
+ * @module blue-core
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { describe, test, expect, beforeEach, afterEach } from 'vitest';
 import { RingBuffer } from '../src/ring-buffer';
 

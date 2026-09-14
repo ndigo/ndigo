@@ -1,3 +1,8 @@
+/**
+ * @module blue-router
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { describe, test, expect, vi } from 'vitest';
 import RouterExecutionChain from '../src/router-execution-chain';
 import { PathRoute } from '../src/path-route';

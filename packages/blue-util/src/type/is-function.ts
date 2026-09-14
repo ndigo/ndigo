@@ -1,7 +1,8 @@
 /**
- * @see {@link https://ramdajs.com/docs/}
+ * @module blue-util
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 /**
  * Determines whether a given object is a function.
  * @category Type

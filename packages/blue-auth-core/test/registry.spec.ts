@@ -1,3 +1,8 @@
+/**
+ * @module blue-auth-core
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { describe, test, expect, beforeEach } from 'vitest';
 import { AuthRegistry } from '../src/registry';
 import { AuthAdapter } from '../src/adapter';

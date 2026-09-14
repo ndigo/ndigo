@@ -1,3 +1,8 @@
+/**
+ * @module blue-view
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { FrameworkError, MediaType, MultiValueMap } from '@blue/core';
 import { isFunction, isNotNil } from '@blue/util/types';
 import { View } from './view.js';

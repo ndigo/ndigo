@@ -1,3 +1,8 @@
+/**
+ * @module blue-router
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { RouteSegment, Route } from './route';
 import { JSONValue, Serializable, JSONObject, createNull } from '@blue/core';
 import { isNil } from '@blue/util/types';

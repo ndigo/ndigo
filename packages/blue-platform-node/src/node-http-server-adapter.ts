@@ -1,3 +1,8 @@
+/**
+ * @module blue-platform-node
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { guid } from '@blue/util/math';
 /**
  * Node.js HTTP server adapter wrapping `node:http.createServer()`.

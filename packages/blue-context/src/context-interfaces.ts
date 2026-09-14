@@ -1,3 +1,8 @@
+/**
+ * @module blue-context
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { JSONObject } from '@blue/core';
 import { ContentSource, Theme, ThemeResolver, likeContentSource } from '@blue/content';
 import { like } from '@blue/util/types';

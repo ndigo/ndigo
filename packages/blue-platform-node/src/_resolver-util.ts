@@ -1,3 +1,8 @@
+/**
+ * @module blue-platform-node
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { MethodParameter, ParameterConversionError } from '@blue/dispatcher';
 import { Route } from '@blue/router';
 import { ArgumentValueConversionContext, ArgumentValueConverter, resolveConverter } from './argument-value-converter';

@@ -1,9 +1,9 @@
 /**
  * Blue management endpoints — actuator-style `/health` and `/metrics`.
- *
- * @module
+ * * @module blue-management
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 export { HealthRegistry } from './health';
 export type { HealthState, HealthResult, HealthIndicator, HealthStatus } from './health';
 export { METRIC_AGGREGATOR } from './metric-aggregator-token';

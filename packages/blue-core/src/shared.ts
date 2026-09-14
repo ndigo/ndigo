@@ -1,10 +1,9 @@
 /**
  * TC39 Stage 3 decorator and metadata utilities for shared dependency declarations.
- *
- * @module
+ * * @module blue-core
  * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import '@tsmetadata/polyfill';
 import semver from 'semver';
 

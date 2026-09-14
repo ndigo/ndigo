@@ -1,3 +1,8 @@
+/**
+ * @module blue-telemetry
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { SeverityNumber } from '@opentelemetry/api-logs';
 import { SeverityMapping } from './severity-mapping';
 

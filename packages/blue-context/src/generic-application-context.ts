@@ -1,3 +1,8 @@
+/**
+ * @module blue-context
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { JSONObject, direct, escalate } from '@blue/core';
 import { ContentSource, StaticContentSource, Theme, ThemeResolver, StaticThemeResolver } from '@blue/content';
 import { AsEventEmitter, EventType } from './event-emitter';

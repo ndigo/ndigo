@@ -1,3 +1,8 @@
+/**
+ * @module blue-views
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import '@tsmetadata/polyfill';
 import { configuration, entry } from '@blue/context';
 import { StaticContentSource } from '@blue/content';

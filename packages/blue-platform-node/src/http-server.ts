@@ -1,16 +1,9 @@
 /**
  * Managed HTTP server for Node.js platform applications.
- *
- * Integrates with the `ApplicationContext` lifecycle: provisioned as an entry
- * by {@link NodeAutoConfiguration}, started on demand (typically
- * `await context.getValue('httpServer').start()`), and shut down automatically
- * when the context closes. The dispatcher is resolved from the application
- * context at start time, or may be supplied to the constructor directly.
- *
- * @module
+ * * @module blue-platform-node
  * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import { $aware, type SmartLifecycle } from '@blue/factory';
 import type { ApplicationContext, ApplicationContextAware } from '@blue/context';
 import type { NodeDispatcher } from './node-dispatcher';

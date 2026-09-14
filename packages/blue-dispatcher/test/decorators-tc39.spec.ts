@@ -1,8 +1,9 @@
 /**
- * Behavioral tests for @blue/dispatcher decorators (TC39)
- * Tests class and method decorators only (parameter decorators not supported in TC39)
+ * Behavioral tests for @blue/dispatcher decorators (TC39).
+ * * @module blue-dispatcher
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import { describe, it, expect } from 'vitest';
 import '@tsmetadata/polyfill';
 import { routeMapping, getRouteMapping, hasRouteMapping, publicMapping, privateMapping } from '../src/route-mapping';

@@ -1,3 +1,8 @@
+/**
+ * @module blue-dispatcher
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { Null } from '@blue/core';
 import { View, ViewTarget, clearCurrentRequest, setCurrentRequest } from '@blue/view';
 import { Route } from '@blue/router';

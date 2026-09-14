@@ -1,22 +1,9 @@
 /**
  * Zod schema derivation for `@blue/orm` entities (AD-7).
- *
- * Entity classes stay decorator-annotated (`@entity`/`@column`/`@primaryColumn`);
- * validation is *derived* from that metadata rather than declared as a
- * parallel constraint API. Per column:
- *
- * - an explicit `@column({ schema })` Zod type wins,
- * - otherwise the declared SQL `type` maps to a base Zod type
- *   (`int*` → `z.number()`, `bool*` → `z.boolean()`, text family → `z.string()`),
- * - untyped columns are `z.unknown()` passthroughs — validation enforces only
- *   what the annotations declare.
- *
- * `z.infer<ReturnType<typeof schemaForEntity>>` yields the validated entity
- * shape, giving static types from the same source of truth.
- *
- * @module
+ * * @module blue-orm
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import { z } from 'zod';
 import { Constructable, FrameworkError } from '@blue/core';
 import { type ColumnDefinition, getEntityMetadata } from './metadata';

@@ -1,5 +1,8 @@
 /**
  * Interface for request-ID correlation across service calls.
+ * * @module blue-service
+ * @since 1.0.0
+ * @author Jeff Rose
  */
 export interface RequestIdCorrelation {
     /**

@@ -1,3 +1,8 @@
+/**
+ * @module blue-platform-web
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 export * from './browser-environment';
 export * from './argument-value-converter';
 export * from './bind-argument-resolver';

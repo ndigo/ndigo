@@ -1,3 +1,8 @@
+/**
+ * @module blue-telemetry-node
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 // @vitest-environment node
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import type { AddressInfo } from 'node:net';

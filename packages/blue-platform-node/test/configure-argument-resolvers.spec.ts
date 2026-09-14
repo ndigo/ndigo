@@ -1,3 +1,8 @@
+/**
+ * @module blue-platform-node
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { describe, test, expect, beforeEach, vi } from 'vitest';
 import { GenericApplicationContext } from '@blue/context';
 import { configureNodeArgumentResolvers } from '../src/configure-argument-resolvers';

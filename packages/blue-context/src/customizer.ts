@@ -1,3 +1,8 @@
+/**
+ * @module blue-context
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import type { ConfigurableEnvironment } from './environment';
 
 /**

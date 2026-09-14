@@ -1,10 +1,9 @@
 /**
  * View target that writes rendered output to a Node.js `ServerResponse`.
- *
- * @module
+ * * @module blue-platform-node
  * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import type { ServerResponse } from 'node:http';
 import { Route } from '@blue/router';
 import { ViewTarget } from '@blue/view';

@@ -1,15 +1,9 @@
 /**
  * Node.js dispatcher extending the platform-independent `AbstractDispatcher` for server-side rendering.
- *
- * Overrides `render()` to write the view output to the HTTP response via
- * `HTTPResponseViewTarget` or — for document-producing views — directly as a
- * `RenderResult`. The dispatch pipeline (handler mapping, interceptors, error
- * resolution) is inherited unchanged.
- *
- * @module
+ * * @module blue-platform-node
  * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import { AbstractDispatcher } from '@blue/dispatcher';
 import { ModelAndView } from '@blue/dispatcher';
 import { Route } from '@blue/router';

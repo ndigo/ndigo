@@ -1,3 +1,8 @@
+/**
+ * @module blue-http
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { like } from '@blue/util/types';
 import { Comparator, PatternMatcher } from '@blue/core';
 

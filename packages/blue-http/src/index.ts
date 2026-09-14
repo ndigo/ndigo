@@ -1,9 +1,8 @@
 /**
- * @see core
- * @see parser
- * @see util
+ * @module blue-http
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 /**
  * @external fetch
  * @see {@link https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch}

@@ -1,3 +1,8 @@
+/**
+ * @module blue-platform-node
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 export * from './argument-value-converter';
 export * from './node-environment';
 export * from './node-request';

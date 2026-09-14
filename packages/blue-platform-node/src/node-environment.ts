@@ -1,3 +1,8 @@
+/**
+ * @module blue-platform-node
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { StandardEnvironment } from '@blue/context';
 import type { ResolverOptions } from '@blue/context';
 import { JSONObject } from '@blue/core';

@@ -1,3 +1,8 @@
+/**
+ * @module blue-platform-web
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { describe, test, expect, beforeEach, afterEach, vi } from 'vitest';
 import { HashRouter } from '../src/hash-router';
 import { RouterInterceptor } from '@blue/router';

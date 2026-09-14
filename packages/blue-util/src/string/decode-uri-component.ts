@@ -1,7 +1,8 @@
 /**
- * @see {@link https://github.com/samverschueren/decode-uri-component}
+ * @module blue-util
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 const token = '%[a-f0-9]{2}',
     singleMatcher = new RegExp(token, 'gi'),
     multiMatcher = new RegExp(`(?:${token})+|${token}|.`, 'gi'),

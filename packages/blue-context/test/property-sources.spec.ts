@@ -1,3 +1,8 @@
+/**
+ * @module blue-context
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { describe, test, expect } from 'vitest';
 import type { JSONObject } from '@blue/core';
 import { wrapSource } from '../src/property-source';

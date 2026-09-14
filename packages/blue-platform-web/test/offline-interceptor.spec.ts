@@ -1,3 +1,8 @@
+/**
+ * @module blue-platform-web
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { describe, test, expect, beforeEach, afterEach, vi, Mock } from 'vitest';
 import { Emitter, EventEmitter } from '@blue/context';
 import { OfflineInterceptor } from '../src/offline-interceptor';

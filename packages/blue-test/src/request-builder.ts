@@ -1,3 +1,8 @@
+/**
+ * @module blue-test
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { guid } from '@blue/util/math';
 /**
  * Builds a Blue `Route` and `NodeRequest` from a MockHTTP request spec.

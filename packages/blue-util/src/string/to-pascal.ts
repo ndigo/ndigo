@@ -1,7 +1,8 @@
 /**
- * @see {@link http://moutjs.com/docs/latest/string.html#pascalCase}
+ * @module blue-util
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import toCamel from './to-camel.js';
 
 const // Lower case letters at the beginning of a string

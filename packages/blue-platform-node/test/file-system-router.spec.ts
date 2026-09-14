@@ -1,3 +1,8 @@
+/**
+ * @module blue-platform-node
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { describe, test, expect, vi } from 'vitest';
 import { FileSystemRouter } from '../src/file-system-router';
 

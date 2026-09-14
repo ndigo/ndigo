@@ -1,3 +1,8 @@
+/**
+ * @module blue-orm
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { Constructable, IllegalStateError } from '@blue/core';
 import { DataSource } from './data-source';
 import { getEntityMetadata, isEntity } from './metadata';

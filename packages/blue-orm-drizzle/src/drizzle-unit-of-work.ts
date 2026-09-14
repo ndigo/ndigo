@@ -1,17 +1,9 @@
 /**
  * Unit of work for the Drizzle-backed persistence layer.
- *
- * Mirrors the tracking semantics of {@link InMemoryUnitOfWork} (new / dirty /
- * removed entity registration, state queries, clearing) but flushes
- * asynchronously through {@link DrizzleEntityManager}, whose SQL operations
- * are inherently asynchronous. The `UnitOfWork` interface in `@blue/orm` is
- * synchronous by design (its reference implementation is in-memory); this
- * adapter exposes the same method surface with `flush()` returning a promise
- * and does not claim the sync interface.
- *
- * @module
+ * * @module blue-orm-drizzle
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import { EntityState } from '@blue/orm';
 import { DrizzleEntityManager } from './drizzle-entity-manager';
 

@@ -1,3 +1,8 @@
+/**
+ * @module blue-auth-client
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 // @vitest-environment node
 import { describe, test, expect, beforeAll, afterAll } from 'vitest';
 import { createServer, Server } from 'node:http';

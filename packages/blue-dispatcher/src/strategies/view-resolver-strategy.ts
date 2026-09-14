@@ -1,3 +1,8 @@
+/**
+ * @module blue-dispatcher
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { ApplicationContext } from '@blue/context';
 import { Constructable } from '@blue/core';
 import { ImportViewResolver, ViewResolver } from '@blue/view';

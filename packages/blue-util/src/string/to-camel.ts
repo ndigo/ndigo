@@ -1,7 +1,8 @@
 /**
- * @see {@link http://moutjs.com/docs/latest/string.html#camelCase}
+ * @module blue-util
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import removeNonWord from './remove-non-word.js';
 import replaceDiacritics from './replace-diacritics.js';
 

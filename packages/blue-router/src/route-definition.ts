@@ -1,6 +1,8 @@
 /**
- *
  * A type-safe route definition that can generate URLs, navigate, parse, and match routes.
+ * * @module blue-router
+ * @since 1.0.0
+ * @author Jeff Rose
  */
 import { type Route } from './route';
 import { PathRoute } from './path-route';

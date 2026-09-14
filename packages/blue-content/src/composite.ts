@@ -1,3 +1,8 @@
+/**
+ * @module blue-content
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { ContentSource } from './content';
 import { Theme, ThemeResolver } from './theme';
 

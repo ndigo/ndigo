@@ -1,3 +1,8 @@
+/**
+ * @module blue-api
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import '@tsmetadata/polyfill';
 import { getMapping, parameters, pathVariable, requestMapping } from '@blue/dispatcher';
 

@@ -1,3 +1,8 @@
+/**
+ * @module blue-dispatcher
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { ModelAndView } from './model-and-view';
 import { PathRoute, Route } from '@blue/router';
 

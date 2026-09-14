@@ -1,16 +1,9 @@
 /**
- * Boot helpers for `@blue/test` — boot a Blue application context and wire a
- * dispatcher for in-process integration testing.
- *
- * Uses `MetadataConfigApplicationContext` directly (node-pure) rather than
- * `@blue/boot`'s `ApplicationBuilder`, whose index re-exports the browser
- * `web-auto-configuration` (and `@blue/view-webcomponent`, which needs
- * `HTMLElement`). This keeps `@blue/test` free of DOM-coupled imports.
- *
- * @module
+ * Boot helpers for `@blue/test` — boot a Blue application context and wire a.
+ * * @module blue-test
  * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import { MetadataConfigApplicationContext, ApplicationContext } from '@blue/context';
 import { isFunction } from '@blue/util/types';
 import { RadixMetadataHandlerMapping } from '@blue/dispatcher';

@@ -1,3 +1,8 @@
+/**
+ * @module blue-http
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { JSONObject, Parser, Stringifier } from '@blue/core';
 import { decodeURIComponent as decode, encodeURIComponent as encodeValue } from '@blue/util/string';
 

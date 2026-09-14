@@ -1,15 +1,9 @@
 /**
- * Health indicators and the registry that aggregates them for a management
- * `/health` endpoint.
- *
- * A `HealthIndicator` reports the health of a single subsystem (e.g. the
- * OTel/telemetry pipeline, the application context, a data source). The
- * {@link HealthRegistry} collects their results into one `HealthStatus`.
- *
- * @module
+ * Health indicators and the registry that aggregates them for a management.
+ * * @module blue-management
  * @since 1.0.0
+ * @author Jeff Rose
  */
-
 /**
  * The overall health of a subsystem.
  */

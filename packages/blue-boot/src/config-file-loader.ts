@@ -1,3 +1,8 @@
+/**
+ * @module blue-boot
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { IllegalStateError, JSONObject } from '@blue/core';
 import type { ConfigurableEnvironment } from '@blue/context';
 import type { ConfigFileReader } from '@blue/context';

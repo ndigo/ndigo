@@ -1,10 +1,8 @@
 /**
- * @blue/view-ejs — EJS template engine adapter.
- *
- * @module
+ * @module blue-view-ejs
  * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import ejs from 'ejs';
 
 /**

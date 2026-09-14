@@ -1,3 +1,8 @@
+/**
+ * @module blue-telemetry-web
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { SpanKind } from '@opentelemetry/api';
 import { GenericApplicationContext } from '@blue/context';
 import { AbstractBaseInstrumentation } from '@blue/telemetry';

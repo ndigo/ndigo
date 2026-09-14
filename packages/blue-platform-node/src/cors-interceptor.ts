@@ -1,19 +1,9 @@
 /**
  * Server-side CORS enforcement for Node applications.
- *
- * This is a real security boundary — NOT a client helper. It validates the
- * request `Origin` against an allowlist, attaches response headers, handles
- * preflight short-circuiting, and rejects invalid configurations at startup
- * (wildcard origin combined with credentials).
- *
- * Same-origin requests (no `Origin` header) pass through untouched; the
- * browser is left to enforce the policy for disallowed origins (no CORS
- * headers are attached, so the browser blocks the cross-origin read).
- *
- * @module
+ * * @module blue-platform-node
  * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import type { ServerResponse } from 'node:http';
 import {
     ACCESS_CONTROL_ALLOW_CREDENTIALS,

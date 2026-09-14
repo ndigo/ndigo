@@ -1,3 +1,8 @@
+/**
+ * @module blue-todo
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { TagMapping } from '@blue/view-webcomponent';
 import { routes } from './shell-composition';
 import './shell-nav-view';

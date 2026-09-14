@@ -1,23 +1,9 @@
 /**
- * Secure static-resource resolution shared by `StaticFileView` and any
- * controller serving files from a configured root.
- *
- * Security model (fail-closed):
- * 1. The base directory is canonicalized once (`realpath`) at construction.
- * 2. A candidate is joined onto the base and canonicalized; containment
- *    requires `candidate === base` or `candidate` starting with `base + sep`
- *    — never a bare prefix (defeats sibling-prefix escapes).
- * 3. Filesystem symlinks are resolved (`realpath` of the candidate) and the
- *    real path must still be inside the canonical base.
- * 4. Only regular files are served; MIME comes from a maintained allowlist
- *    with `X-Content-Type-Options: nosniff`.
- * 5. Errors are classified as forbidden/not-found/internal without leaking
- *    filesystem paths.
- *
- * @module
+ * Secure static-resource resolution shared by `StaticFileView` and any.
+ * * @module blue-platform-node
  * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import { realpath, stat, readFile } from 'node:fs/promises';
 import { sep, resolve, isAbsolute } from 'node:path';
 

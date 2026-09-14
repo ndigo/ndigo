@@ -1,3 +1,8 @@
+/**
+ * @module blue-dispatcher
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { describe, it, expect } from 'vitest';
 import { getFunctionParamNames } from '../src/_decorator-util';
 

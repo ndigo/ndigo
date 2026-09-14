@@ -1,8 +1,8 @@
 /**
- * @see core
- * @see util
+ * @module blue-router
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 export * from './route';
 export * from './context-tokens';
 export * from './router';

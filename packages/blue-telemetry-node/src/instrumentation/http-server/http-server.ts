@@ -1,17 +1,9 @@
 /**
  * OpenTelemetry instrumentation for `HTTPServer` lifecycle + inbound requests.
- *
- * Creates:
- * - spans for `listen` and `close` (server lifecycle boundaries)
- * - a per-request SERVER span wrapping `NodeHTTPServerAdapter.handleRequest`,
- *   which becomes the trace root for each inbound HTTP request — the
- *   `Dispatcher.dispatch` span and the `HTTPResponseViewTarget.commit` span
- *   nest under it, correlating the full request in one trace.
- *
- * @module
+ * * @module blue-telemetry-node
  * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import { context as otelContext, propagation, ROOT_CONTEXT, SpanKind, SpanStatusCode, trace } from '@opentelemetry/api';
 import { HTTPServer, NodeHTTPServerAdapter } from '@blue/platform-node';
 import type { IncomingMessage, ServerResponse } from 'node:http';

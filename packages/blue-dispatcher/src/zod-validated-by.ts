@@ -1,71 +1,9 @@
 /**
  * Zod-backed request validation (AD-7).
- *
- * `validatedBy` wraps a parameter extractor (e.g. `bindBrowserValue('query')`,
- * `queryValue('email')`, `bodyValue('*')`) with a Zod schema. The schema runs
- * after the value is resolved and type-converted, and coerces or rejects it:
- * on failure a {@link ParameterConversionError} is thrown, which flows
- * through the dispatcher's error resolver like any argument conversion
- * failure (a `400` in the Node platform's HTTP pipeline).
- *
- * Replaces the legacy `@blue/validate` constraint system, which was
- * structurally dead — `parameters` never invoked its `.convert` hook and the
- * resolver only read `convertType`.
- *
- * ## Whole-body (Node) — validatedBody
- *
- * ```ts
- * const NoteSchema = z.object({
- *     title: z.string().min(1).max(140),
- *     body: z.string().optional(),
- * });
- *
- * @postMapping('/')
- * @parameters({ note: validatedBody(NoteSchema) })
- * create(note: z.infer<typeof NoteSchema>) { … }
- * ```
- *
- * ## Whole query — validatedQuery
- *
- * ```ts
- * const SearchSchema = z.object({
- *     page: z.coerce.number().min(1),
- *     q: z.string().max(80),
- * });
- *
- * @parameters({ search: validatedQuery(SearchSchema) })
- * search(search: z.infer<typeof SearchSchema>) { … }
- * ```
- *
- * ## Whole map — validateParameters
- *
- * ```ts
- * @parameters(validateParameters(UserSchema, { user: bindBrowserValue('query') }))
- * ```
- *
- * ## Per-field — validatedBy
- *
- * Validation applies per argument — a single schema over one extractor:
- *
- * ```ts
- * @parameters({ email: validatedBy(z.email(), queryValue('email')) })
- * subscribe(email: string) { … }
- * ```
- *
- * The hook runs on every platform resolver: it is invoked by the shared
- * `AbstractPlatformArgumentResolver` pipeline (after `convertType`
- * conversion), the browser BIND resolver, and the shared named-value
- * resolvers. Schemas therefore see already-coerced values
- * (`z.coerce.number()` on a query string works).
- *
- * On failure the thrown {@link ParameterConversionError} carries a
- * {@link ZodValidationError} as its `cause`: the flattened human message
- * plus a structured `issues` array (path / message / code per failed field)
- * that error resolvers can render into machine-readable response detail.
- *
- * @module
+ * * @module blue-dispatcher
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import { z } from 'zod';
 import { ParameterConversionError } from './error';
 import { type ParameterExtractor, type ParameterMap, bodyValue, queryValue } from './parameters';

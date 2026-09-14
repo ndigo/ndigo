@@ -1,14 +1,9 @@
 /**
  * Blue Island — hybrid island demo server.
- *
- * Serves a shell page containing a server-rendered Web Component island
- * (`<todo-app data-blue-island data-blue-model="…">`) plus the client bundle
- * that hydrates it, and pushes source-of-truth model updates into the island
- * over SSE (AD-9): `GET /events` streams them; the client consumes them into
- * `@blue/signals` and re-renders. Spring-style bootstrap via
- * `ApplicationBuilder.run()`.
+ * * @module blue-island
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import 'node:process';
 import { ApplicationBuilder } from '@blue/boot';
 import { NodeAutoConfiguration, HTTPServer, gracefulShutdown } from '@blue/platform-node';

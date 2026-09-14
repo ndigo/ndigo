@@ -1,10 +1,8 @@
 /**
- * @see content
- * @see core
- * @see factory
- * @see util
+ * @module blue-context
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 export * from './context';
 export * from './context-hierarchy';
 export * from './configuration';

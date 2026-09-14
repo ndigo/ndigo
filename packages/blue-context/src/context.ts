@@ -1,3 +1,8 @@
+/**
+ * @module blue-context
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 // Barrel: the application-context contract and implementations were split
 // into cohesive modules (interfaces, GenericApplicationContext, proxied
 // context, aware mixin + component bases, and the aware processor). This

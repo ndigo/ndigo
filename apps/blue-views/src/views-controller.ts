@@ -1,3 +1,8 @@
+/**
+ * @module blue-views
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { parameters, pathVariable, routeMapping, ModelAndView } from '@blue/dispatcher';
 import type { ContentSource } from '@blue/content';
 

@@ -1,3 +1,8 @@
+/**
+ * @module blue-telemetry
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { IllegalStateError } from '@blue/core';
 import { FeatureMetricAggregator } from './feature-metric-aggregator';
 

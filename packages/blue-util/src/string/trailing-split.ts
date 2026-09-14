@@ -1,15 +1,8 @@
 /**
  * Splits a string into an array of strings based on the given separator.
- * @param {string} separator
- * @param {string} text
- * @returns {Array<external:string>}
- * @category String
- * @example
- * const trailingSplitOnPipe = trailingSplit( "|" );
- * trailingSplitOnPipe( "a|b|c|" );
- * //=> [ "a", "b", "c" ]
- * trailingSplit( ",", "a,b,c," );
- * //=> [ "a", "b", "c" ]
+ * * @module blue-util
+ * @since 1.0.0
+ * @author Jeff Rose
  */
 function trailingSplit(separator: string, text: string): string[];
 function trailingSplit(separator: string): (text: string) => string[];

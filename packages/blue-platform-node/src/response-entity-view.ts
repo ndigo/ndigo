@@ -1,17 +1,9 @@
 /**
  * View that renders a `ResponseEntity` to a response document.
- *
- * 4xx/5xx entities are rendered as RFC 9457 `application/problem+json`
- * documents (AD-10): a body that is already a `ProblemDetails` (framework
- * resolvers) is used verbatim; any other 4xx/5xx body is wrapped with a
- * problem envelope (`type` omitted → `about:blank`, `title` = reason phrase,
- * `detail` = the string body / the `error` member / the JSON body, `instance`
- * = request path). Success responses are unchanged.
- *
- * @module
+ * * @module blue-platform-node
  * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import { Route } from '@blue/router';
 import { type ProducerView, type RenderResult } from '@blue/view';
 import { ResponseEntity } from './response-entity';

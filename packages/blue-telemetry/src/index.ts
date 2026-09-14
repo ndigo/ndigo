@@ -1,17 +1,9 @@
 /**
- * @blue/telemetry — isomorphic telemetry core.
- *
- * API-only: logger, metrics, severity, tracing decorators, and platform-free
- * instrumentation bases. Installing/importing this package pulls no Node SDK
- * exporters and no browser SDK.
- *
- * Platform setup lives in sibling packages:
- * - `@blue/telemetry-node` — NodeSDK config + Node platform instrumentations
- * - `@blue/telemetry-web` — browser config + web instrumentations
- *
- * @module
+ * API-only: logger, metrics, severity, tracing decorators, and platform-free.
+ * * @module blue-telemetry
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 export * from './trace';
 export * from './metrics';
 export * from './logger';

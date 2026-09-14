@@ -1,9 +1,8 @@
 /**
- * @see core
- * @see factory
- * @see util
+ * @module blue-content
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 export * from './content';
 export * from './theme';
 export * from './async';

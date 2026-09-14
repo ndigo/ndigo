@@ -1,3 +1,8 @@
+/**
+ * @module blue-todo
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { RouterInterceptor, type RouterMiddleware } from '@blue/router';
 import { Route } from '@blue/router';
 import { ClientAuthGuard } from '@blue/auth-client';

@@ -1,15 +1,9 @@
 /**
  * LibSQL/Drizzle-backed transaction manager (AD-7 completion).
- *
- * Implements the async {@link TransactionManager} contract from `@blue/orm`
- * by issuing `BEGIN` / `COMMIT` / `ROLLBACK` on the underlying libSQL client.
- * Pair with the `@transactional()` decorator: the decorated method's
- * `transactionManager` property receives this instance and every call runs
- * inside a real SQL transaction.
- *
- * @module
+ * * @module blue-orm-drizzle
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import { TransactionManager } from '@blue/orm';
 import { DrizzleDataSource } from './drizzle-data-source';
 

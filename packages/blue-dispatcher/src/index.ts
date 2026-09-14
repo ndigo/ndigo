@@ -1,10 +1,8 @@
 /**
- * @see core
- * @see util
- * @see router
- * @see view
+ * @module blue-dispatcher
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 export * from './argument-resolver';
 export * from './abstract-platform-resolver';
 export * from './route-handler-method';

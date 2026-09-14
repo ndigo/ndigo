@@ -1,11 +1,9 @@
 /**
  * Oxlint plugin that bundles BlueJS's repository-specific lint rules.
- *
- * Loaded by oxlint via the `jsPlugins` entry in `.oxlintrc.json` (rules are
- * referenced as `@blue/<rule>`). `eslintCompatPlugin` keeps the `createOnce`
- * rules loadable by ESLint as well.
+ * * @module blue-oxlint-plugin
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import { eslintCompatPlugin } from '@oxlint/plugins';
 
 import { noDirectIntegrationImports } from './rules/no-direct-integration-imports.js';
@@ -17,6 +15,7 @@ import { noAbstractClassWithoutPrefix } from './rules/no-abstract-class-without-
 import { noMixedCaseAcronyms } from './rules/no-mixed-case-acronyms.js';
 import { noCrossParadigmDecorators } from './rules/no-cross-paradigm-decorators.js';
 import { noSignalsInEntity } from './rules/no-signals-in-entity.js';
+import { requiresDocHeader } from './rules/requires-doc-header.js';
 
 const plugin = eslintCompatPlugin({
     meta: {
@@ -32,6 +31,7 @@ const plugin = eslintCompatPlugin({
         'no-mixed-case-acronyms': noMixedCaseAcronyms,
         'no-cross-paradigm-decorators': noCrossParadigmDecorators,
         'no-signals-in-entity': noSignalsInEntity,
+        'requires-doc-header': requiresDocHeader,
     },
 });
 

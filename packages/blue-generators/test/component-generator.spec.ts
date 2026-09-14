@@ -1,3 +1,8 @@
+/**
+ * @module blue-generators
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createTreeWithEmptyWorkspace } from '@nx/devkit/testing';
 import type { Tree } from '@nx/devkit';
@@ -129,8 +134,10 @@ describe('component generator', () => {
         if (sourceContent === null) {
             throw new Error('expected generated my-service.ts to exist');
         }
-        expect(sourceContent).toContain('TODO: Add class description.');
-        expect(sourceContent).not.toContain('@author');
+        expect(sourceContent).toContain('@module blue-core');
+        expect(sourceContent).toContain('@since 1.0.0');
+        expect(sourceContent).toContain('@author Jeff Rose');
+        expect(sourceContent).not.toContain('TODO');
     });
 
     it('should generate test with correct import', async () => {

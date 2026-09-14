@@ -1,3 +1,8 @@
+/**
+ * @module blue-generators
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createTreeWithEmptyWorkspace } from '@nx/devkit/testing';
 import type { Tree } from '@nx/devkit';
@@ -148,7 +153,9 @@ export default defineConfig({
             throw new Error('expected generated index.ts to exist');
         }
         expect(indexContent).toContain('@module test-pkg');
-        expect(indexContent).not.toContain('@author');
+        expect(indexContent).toContain('@since 1.0.0');
+        expect(indexContent).toContain('@author Jeff Rose');
+        expect(indexContent).not.toContain('TODO');
     });
 
     it('should generate correct tsconfig.build.json', async () => {

@@ -4252,9 +4252,45 @@ Ref: STYLE_GUIDE.md Section 4.6"
 - Commit working changes before next extraction
 - Document rationale in commit messages
 
+
 ---
 
-## 6. Special Patterns
+## 5. Documentation Blocks
+
+Every source file begins with a single canonical TSDoc block at the very top
+of the file, carrying the module name, the since-version stamp, and the
+author. This is the standard form — `@blue/generators` emits it for new
+packages/components and the `header` generator adds/replaces it on existing
+files:
+
+```
+/**
+ * <One-line summary ending with a period>.
+ *
+ * @module blue-<package>
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
+```
+
+**Rules:**
+
+- ✅ One block per file, first thing in the file (before imports)
+- ✅ `<summary>` is a single sentence ending in a period; it may be omitted
+- ✅ `@module blue-<package>` for package sources (`<app>` name for apps)
+- ✅ `@since 1.0.0` stamps the framework version the file first shipped in
+- ✅ `@author Jeff Rose` (override per file only with `--author`)
+- ❌ Headings (`#`) inside doc blocks
+- ❌ `TODO:` summary placeholders — describe what the file does
+- ❌ `@file`, `@category`, or duplicate summary lines
+- ✅ Generate with:
+  `pnpm exec nx generate @blue/generators:header --file <path> [--summary ...]`
+
+The file-level block documents the whole module; class/method members carry
+their own focused TSDoc. `@blue/oxlint-plugin` enforcement can be layered on
+top of this convention.
+
+
 
 ### Mixin Naming [CONVENTION: Code Review]
 

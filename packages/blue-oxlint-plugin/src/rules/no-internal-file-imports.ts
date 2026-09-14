@@ -1,10 +1,9 @@
 /**
  * Rule that prevents cross-package imports of underscore-prefixed internal files.
- *
- * Migrated from ESLint to oxlint JS Plugin API.
- * Uses createOnce + before hook pattern for dual compatibility and future performance.
+ * * @module blue-oxlint-plugin
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import type { Context, ESTree } from '@oxlint/plugins';
 
 const crossPackageInternalImportPattern = /^@blue\/[^/]+\/_/u;

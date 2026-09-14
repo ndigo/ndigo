@@ -6,6 +6,7 @@
 import { configuration, entry } from '@blue/context';
 import { ApplicationBuilder } from '@blue/boot';
 import { WebAutoConfiguration } from '@blue/platform-web';
+import { I18nextMessageSource } from '@blue/content-i18next';
 import { LoggingRouteHandlerInterceptor, RadixMetadataHandlerMapping } from '@blue/dispatcher';
 import { getLogger } from '@blue/telemetry';
 import { DOMElementViewTarget } from '@blue/view-webcomponent';
@@ -61,5 +62,20 @@ export const createTodoContext = async () => {
     // The browser auto-config (view resolver chain, web component engine,
     // argument resolvers) is registered explicitly — @blue/boot no longer
     // auto-registers it.
-    return new ApplicationBuilder([WebAutoConfiguration, ToDoconfiguration]).run();
+    const context = await new ApplicationBuilder([WebAutoConfiguration, ToDoconfiguration]).run();
+
+    // The demo message source: the locale switcher renders its label through
+    // these keys, and the EJS/template helpers would use the same seam.
+    context.setMessageSource(
+        new I18nextMessageSource({
+            resources: {
+                en: { translation: { 'locale.current': 'Language: {{language}}' } },
+                fr: { translation: { 'locale.current': 'Langue : {{language}}' } },
+            },
+            language: 'en',
+            fallbackLanguage: 'en',
+        })
+    );
+
+    return context;
 };

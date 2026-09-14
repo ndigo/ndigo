@@ -5,6 +5,7 @@
  */
 // @vitest-environment node
 import { describe, test, expect } from 'vitest';
+import { LANGUAGE_ATTRIBUTE } from '@blue/router';
 import { IslandView, serializeModel } from '../src/island-view';
 
 const stringifyHtml = (html: string) => html;
@@ -23,9 +24,50 @@ describe('IslandView (server-side island render)', () => {
             async clear() {},
         });
 
-        expect(committed).toContain('<todo-app data-blue-island data-blue-model=');
+        expect(committed).toContain('<todo-app data-blue-island data-blue-locale="" data-blue-model=');
         expect(committed).toMatch(/^<todo-app /); // pure markup, no children needed
         expect(committed).not.toContain('<section'); // no DOM rendering happened
+    });
+
+    test('carries the resolved request language on the marker', async () => {
+        const view = new IslandView('todo-app');
+        let committed = '';
+
+        await view._renderTemplate(
+            { items: [] },
+            { attributes: { [LANGUAGE_ATTRIBUTE]: 'fr-CA' } } as unknown as Route,
+            {
+                async commit(html: unknown) {
+                    committed = stringifyHtml(html as string);
+                },
+                async prepare() {},
+                async clear() {},
+            }
+        );
+
+        expect(committed).toContain('data-blue-locale="fr-CA"');
+    });
+
+    test('escapes hostile locale values so the attribute cannot break out', async () => {
+        const view = new IslandView('todo-app');
+        let committed = '';
+
+        await view._renderTemplate(
+            { items: [] },
+            { attributes: { [LANGUAGE_ATTRIBUTE]: '" autofocus onfocus="alert(1)' } } as unknown as Route,
+            {
+                async commit(html: unknown) {
+                    committed = stringifyHtml(html as string);
+                },
+                async prepare() {},
+                async clear() {},
+            }
+        );
+
+        // The whole hostile value stays inside the quoted attribute —
+        // escaped quotes, no key-value breakout.
+        expect(committed).toContain('data-blue-locale="&quot; autofocus onfocus=&quot;alert(1)"');
+        expect(committed).not.toContain('onfocus="alert(1)"');
     });
 
     test('serialized model round-trips via parseModel', async () => {

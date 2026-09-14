@@ -4,6 +4,36 @@ Implementation plans for features and technical specifications.
 
 ## Completed Plans
 
+### 2026-09-13 - Scheduling
+
+`@scheduled` decorator, ScheduleRegistry + TaskScheduler engine, croner
+seam, Node-only guardrails, zero-config discovery, per-run OTel spans —
+Phase 4 demo gate in blue-api.
+
+**Status:** Completed (2026-09-13)  
+**Commit:** (pending)  
+**Impact:** Enterprise scheduling (AD-20) — Spring's shape, Nest/AdonisJS
+semantics
+
+[Read full plan](2026-09-13_SCHEDULING.md)
+
+---
+
+### 2026-09-13 - Content/i18n
+
+Content/i18n completion: `MessageSource` contract, i18next adapter
+(`@blue/content-i18next`), Intl formatters, locale flow (server +
+client), EJS/island integration, and both demo gates.
+
+**Status:** Completed (2026-09-13)  
+**Commit:** (pending)  
+**Impact:** Full i18n story — contract + wrapped i18next + `Intl` formatting,
+with reactive client-side locale switching (AD-19)
+
+[Read full plan](2026-09-13_CONTENT_I18N.md)
+
+---
+
 ### 2026-03-22 - View Event Architecture
 
 Hardened the Spring MVC-inspired view/event contracts with explicit event-bridge interfaces, router refresh contract, lifecycle cleanup, and legacy Bridge removal.

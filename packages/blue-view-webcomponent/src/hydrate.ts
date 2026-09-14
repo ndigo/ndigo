@@ -41,8 +41,12 @@ export function hydrateIslands(root: ParentNode = document): number {
         live.setAttribute('data-blue-model', inert.getAttribute('data-blue-model') ?? '');
 
         const model = parseModel(live.getAttribute('data-blue-model') ?? undefined);
-        // Order matters: set the model (which may read on connect) before
-        // replacing, so connectedCallback sees it.
+        // Order matters: set the locale and model (which may read on connect)
+        // before replacing, so connectedCallback sees them.
+        const locale = inert.getAttribute('data-blue-locale');
+        if (locale) {
+            assignLocale(live, locale);
+        }
         assignModel(live, model);
 
         inert.replaceWith(live);
@@ -50,6 +54,15 @@ export function hydrateIslands(root: ParentNode = document): number {
     });
 
     return hydrated;
+}
+
+/**
+ * Copies the negotiated locale onto a web-component element via its `locale`
+ * setter (or an expando when no setter exists).
+ */
+function assignLocale(element: HTMLElement, locale: string): void {
+    const localeAware = element as HTMLElement & { locale?: string };
+    localeAware.locale = locale;
 }
 
 /**

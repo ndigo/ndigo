@@ -17,6 +17,7 @@ import {
     JSONView,
 } from '@blue/view';
 import { GreetingController } from './greeting-controller';
+import { Heartbeat } from './heartbeat';
 import { AuthController } from './auth-controller';
 import { NoteController } from './note-controller';
 import { DrizzleNoteController } from './drizzle-note-controller';
@@ -56,6 +57,15 @@ export class NodeAppConfiguration {
     }
     @entry staticController() {
         return new StaticController();
+    }
+
+    /**
+     * The scheduled heartbeat (AD-20 demo gate): a registered bean picked
+     * up by the node platform's scheduler auto-discovery — zero wiring.
+     */
+    @entry
+    heartbeat() {
+        return new Heartbeat();
     }
 
     /**

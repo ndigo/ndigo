@@ -5,7 +5,8 @@
  */
 import { configuration, entry } from '@blue/context';
 import { conditionalOnNode } from '@blue/core';
-import { RadixMetadataHandlerMapping, MetadataErrorResolver } from '@blue/dispatcher';
+import { AcceptHeaderLanguageResolver, RadixMetadataHandlerMapping, MetadataErrorResolver } from '@blue/dispatcher';
+import { ScheduleRegistry, TaskScheduler } from '@blue/scheduler';
 import { IslandViewResolver } from '@blue/view';
 import { NodeDispatcher } from './node-dispatcher';
 import { HTTPServer } from './http-server';
@@ -74,6 +75,39 @@ export class NodeAutoConfiguration {
     @entry
     dispatcher() {
         return new NodeDispatcher();
+    }
+
+    /**
+     * Resolves the request language from the `Accept-Language` header.
+     *
+     * @returns The accept-header language resolver.
+     */
+    @entry
+    languageResolver() {
+        return new AcceptHeaderLanguageResolver('en-US');
+    }
+
+    /**
+     * The shared task scheduler for `@scheduled` methods (AD-20). The
+     * registry bean discovers and starts scheduled tasks on refresh.
+     *
+     * @returns The task scheduler.
+     */
+    @entry
+    taskScheduler() {
+        return new TaskScheduler();
+    }
+
+    /**
+     * Discovers `@scheduled` methods on registered beans and runs them on
+     * the task scheduler. Auto-started on refresh (SmartLifecycle) and torn
+     * down with the context — zero wiring for Node apps (AD-20 D2).
+     *
+     * @returns The schedule registry.
+     */
+    @entry
+    scheduleRegistry() {
+        return new ScheduleRegistry();
     }
 
     /**

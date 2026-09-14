@@ -1,11 +1,8 @@
 /**
  * Maps encapsulated third-party library names to their BlueJS integration layer package.
- *
- * Any import from a key in this map should instead come from the corresponding value,
- * unless the importing file is inside the integration layer package itself or is a test file.
- *
- * @remarks
- * Keep this map in sync with the integration layer packages enforced by the ESLint rules.
+ * * @module blue-oxlint-plugin
+ * @since 1.0.0
+ * @author Jeff Rose
  */
 export const INTEGRATION_LAYER_MAP: Record<string, string> = {
     seedrandom: '@blue/util',

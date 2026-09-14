@@ -1,10 +1,9 @@
 /**
  * Rule that prevents public index files from re-exporting internal underscore-prefixed files.
- *
- * Migrated from ESLint to oxlint JS Plugin API.
- * Uses createOnce + before hook pattern for dual compatibility and future performance.
+ * * @module blue-oxlint-plugin
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import type { Context, ESTree } from '@oxlint/plugins';
 
 function isPublicIndexFile(filename: string): boolean {

@@ -1,10 +1,9 @@
 /**
  * Rule that blocks unguarded access to browser globals in isomorphic packages.
- *
- * Migrated from ESLint to oxlint JS Plugin API.
- * Uses createOnce + before hook pattern for dual compatibility and future performance.
+ * * @module blue-oxlint-plugin
+ * @since 1.0.0
+ * @author Jeff Rose
  */
-
 import type { Context, ESTree, Scope } from '@oxlint/plugins';
 
 import { BROWSER_GLOBALS, BROWSER_ONLY_PACKAGES } from '../_constants.js';

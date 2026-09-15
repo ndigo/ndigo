@@ -36,6 +36,7 @@ export * from './theme-resolver';
 export { AbstractThemeResolver } from './theme-resolver';
 export * from './socket-mapping';
 export * from './socket-session';
+export * from './socket-session-registry';
 
 export * from './route-handler-interceptor';
 export * from './route-handler-denial';

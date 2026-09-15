@@ -26,6 +26,10 @@ explain the _how_ with runnable patterns grounded in the demo apps.
 5. [05 — Scheduling](05-scheduling.md) — the `@scheduled` decorator,
    zero-wiring discovery, single-flight/error-isolation semantics,
    per-run OTel spans, and the Node-only guardrails (AD-20).
+6. [06 — WebSockets, Rooms, and Broadcast](06-websockets.md) — the
+   `@socketMapping` contract, the session registry (`SocketSessionRegistry`
+   bean: rooms, broadcast, heartbeat), and scheduler-driven room pushes
+   (AD-21).
 
 ## Reading Order
 

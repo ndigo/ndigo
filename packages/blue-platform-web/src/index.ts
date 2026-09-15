@@ -25,5 +25,6 @@ export * from './browser-theme';
 export * from './offline-interceptor';
 export * from './fetch-credentials';
 export * from './retry-on-offline-interceptor';
+export * from './online-reconnect-trigger';
 export * from './local-storage-resource-loader';
 export * from './indexeddb-resource-loader';

@@ -11,7 +11,7 @@ import { type Principal } from './principal';
  * Sessions are managed by the framework and provide access to the current
  * principal, authentication token, and session lifecycle methods.
  */
-export interface Session {
+export interface AuthSession {
     readonly principal: Principal | null;
     readonly token: string | null;
     readonly isAuthenticated: boolean;
@@ -31,12 +31,12 @@ export interface Session {
 }
 
 /**
- * Default implementation of {@link Session}.
+ * Default implementation of {@link AuthSession}.
  *
  * Stores the principal and token in private fields. Starts in an
  * unauthenticated state with no principal or token.
  */
-export class DefaultSession implements Session {
+export class DefaultAuthSession implements AuthSession {
     #principal: Principal | null = null;
     #token: string | null = null;
 

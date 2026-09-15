@@ -4,7 +4,7 @@
  * @author Jeff Rose
  */
 import { HTTP, RequestAwareHTTPInterceptor } from '@blue/http';
-import { Session } from '@blue/auth-core';
+import { AuthSession } from '@blue/auth-core';
 
 /**
  * HTTP interceptor that injects an `Authorization: Bearer <token>` header
@@ -22,12 +22,12 @@ import { Session } from '@blue/auth-core';
  * ```
  */
 export class AuthHeaderInterceptor implements RequestAwareHTTPInterceptor {
-    readonly #session: Session;
+    readonly #session: AuthSession;
 
     /**
      * @param session - The session providing the current auth token.
      */
-    constructor(session: Session) {
+    constructor(session: AuthSession) {
         this.#session = session;
     }
 

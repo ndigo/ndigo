@@ -21,7 +21,10 @@ describe('resolveSocketRegistryOptions', () => {
 
     test('reads explicit values', () => {
         expect(
-            resolveSocketRegistryOptions({ BLUE_SOCKET_HEARTBEAT_INTERVAL_MS: '5000', BLUE_SOCKET_IDLE_TIMEOUT_MS: '15000' })
+            resolveSocketRegistryOptions({
+                BLUE_SOCKET_HEARTBEAT_INTERVAL_MS: '5000',
+                BLUE_SOCKET_IDLE_TIMEOUT_MS: '15000',
+            })
         ).toEqual({ heartbeatIntervalMs: 5000, idleTimeoutMs: 15000 });
     });
 
@@ -57,7 +60,7 @@ describe('socket auto-configuration wiring (AD-21 D4)', () => {
 
     afterAll(async () => {
         await server?.close();
-        await context.close();
+        context.close();
     });
 
     test('registry bean and the server adapter share one instance', async () => {
@@ -89,7 +92,7 @@ describe('socket auto-configuration wiring (AD-21 D4)', () => {
             ws.once('message', (data: unknown) => resolve(JSON.parse(String(data))));
         });
         bean.broadcast('/echo', { event: 'server', data: 'via-bean' });
-        await expect(received).resolves.toEqual({ event: 'server', data: 'via-bean' });
+        expect(await received).toEqual({ event: 'server', data: 'via-bean' });
         expect(bean.count('/echo')).toBe(1);
         ws.close(1000, 'done');
     });

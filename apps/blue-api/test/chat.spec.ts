@@ -76,7 +76,7 @@ describe('blue-api WebSocket chat room (AD-21 demo gate)', () => {
         for (const client of clients) {
             client.close(1000, 'spec done');
         }
-        await context.close();
+        context.close();
         delete process.env['PORT'];
     });
 
@@ -101,13 +101,13 @@ describe('blue-api WebSocket chat room (AD-21 demo gate)', () => {
         const deliveredB = waitFor<{ event: string; data: string }>(b, (m) => m.event === 'chat', 5_000);
         a.send('hello room');
 
-        await expect(deliveredA).resolves.toEqual({ event: 'chat', data: 'hello room' });
-        await expect(deliveredB).resolves.toEqual({ event: 'chat', data: 'hello room' });
+        expect(await deliveredA).toEqual({ event: 'chat', data: 'hello room' });
+        expect(await deliveredB).toEqual({ event: 'chat', data: 'hello room' });
     });
 
     test('the scheduler pushes a periodic chat-tick into the room', async () => {
         const c = await open();
         const tick = waitFor<{ event: string }>(c, (m) => m.event === 'chat-tick', 10_000);
-        await expect(tick).resolves.toMatchObject({ event: 'chat-tick' });
+        expect(await tick).toMatchObject({ event: 'chat-tick' });
     });
 });

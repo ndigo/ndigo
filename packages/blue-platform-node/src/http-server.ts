@@ -148,8 +148,7 @@ export class HTTPServer implements SmartLifecycle, ApplicationContextAware {
             return;
         }
         if (!this.#adapter) {
-            const registry =
-                this.#socketRegistry ?? this.#resolveSocketRegistry() ?? new NodeSocketSessionRegistry();
+            const registry = this.#socketRegistry ?? this.#resolveSocketRegistry() ?? new NodeSocketSessionRegistry();
             this.#adapter = new NodeHTTPServerAdapter(this.#resolveDispatcher(), { socketRegistry: registry });
         }
         await this.#adapter.listen(this.#port, this.#host);

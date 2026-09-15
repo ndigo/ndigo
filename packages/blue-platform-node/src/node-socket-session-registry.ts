@@ -8,6 +8,37 @@ import type { SocketSession, SocketSessionRegistry } from '@blue/dispatcher';
 import type { WebSocket } from 'ws';
 
 /**
+ * Server-side fan-out backpressure policy — the slow-consumer guard
+ * (Spring `bufferSizeLimit` shape).
+ *
+ * A peer that stops reading (stalled tab, throttled network) accumulates
+ * buffered frames in its transport buffer (`ws` `bufferedAmount`). Without a
+ * watermark, the memory cost of a room is set by its slowest member.
+ */
+export type SocketBackpressurePolicy = {
+    /**
+     * Buffer watermark in bytes. A session whose transport has **more than
+     * this many bytes queued is handled per `onOverflow`. Default
+     * `1_048_576` (1 MiB).
+     */
+    maxBufferedBytes: number;
+    /**
+     * `close` (default) — close the session with `1013` ("try again later",
+     * Spring's `SESSION_NOT_RELIABLE`): bounded memory, an explicit
+     * client-visible signal — the AD-22 client reconnects automatically.
+     * `drop` — silently skip fan-out to that session (ordered gaps for that
+     * consumer only).
+     */
+    onOverflow: 'close' | 'drop';
+};
+
+/** Default policy: 1 MiB watermark, close on overflow (fail-closed, AD-21 D6). */
+const DEFAULT_BACKPRESSURE: SocketBackpressurePolicy = Object.freeze({
+    maxBufferedBytes: 1_048_576,
+    onOverflow: 'close',
+});
+
+/**
  * Options for {@link NodeSocketSessionRegistry}.
  */
 export interface NodeSocketSessionRegistryOptions {
@@ -23,6 +54,12 @@ export interface NodeSocketSessionRegistryOptions {
      * seen for this many milliseconds. Default `60_000` (~2 missed pongs).
      */
     idleTimeoutMs?: number;
+    /**
+     * Backpressure policy (default: 1 MiB watermark, `close` on overflow).
+     * `null` disables the guard entirely — the transport's own buffering
+     * remains the final backstop.
+     */
+    backpressure?: SocketBackpressurePolicy | null;
     /**
      * Injectable clock for deterministic tests (the TaskScheduler clock
      * precedent, AD-20). Defaults to `Date.now`.
@@ -86,18 +123,20 @@ export class NodeSocketSessionRegistry implements SocketSessionRegistry {
     #rooms: Map<string, Set<SocketSession>> = new Map();
     #transports: WeakMap<SocketSession, WebSocket> = new WeakMap();
     #lastSeen: WeakMap<SocketSession, number> = new WeakMap();
+    readonly #backpressure: SocketBackpressurePolicy | null;
     #heartbeatIntervalMs: number | null;
     #idleTimeoutMs: number;
     #now: () => number;
     #timer: NodeJS.Timeout | null = null;
 
     /**
-     * @param options - Heartbeat cadence and clock.
+     * @param options - Heartbeat/backpressure knobs and clock.
      */
     constructor(options: NodeSocketSessionRegistryOptions = {}) {
         this.#heartbeatIntervalMs = options.heartbeatIntervalMs === undefined ? 30_000 : options.heartbeatIntervalMs;
         this.#idleTimeoutMs = options.idleTimeoutMs ?? 60_000;
         this.#now = options.now ?? Date.now;
+        this.#backpressure = options.backpressure === undefined ? DEFAULT_BACKPRESSURE : options.backpressure;
     }
 
     /**
@@ -295,6 +334,20 @@ export class NodeSocketSessionRegistry implements SocketSessionRegistry {
     #safeSend(session: SocketSession, payload: unknown): void {
         if (session.isClosed) {
             return;
+        }
+        const policy = this.#backpressure;
+        if (policy !== null) {
+            const transport = this.#transports.get(session);
+            if (transport !== undefined && transport.bufferedAmount > policy.maxBufferedBytes) {
+                if (policy.onOverflow === 'close') {
+                    // 1013 "try again later" — bounded memory, explicit
+                    // client-visible signal; the AD-22 client reconnects
+                    // with backoff. Close flows through the transport's
+                    // close event → registry removal (no leaks).
+                    session.close(1013, 'consumer too slow');
+                }
+                return;
+            }
         }
         try {
             session.send(payload);

@@ -16,6 +16,7 @@ import type { SocketSession } from '@blue/dispatcher';
 function fakeTransport() {
     const listeners = new Map<string, Array<(...args: unknown[]) => void>>();
     return {
+        bufferedAmount: 0,
         on(event: string, fn: (...args: unknown[]) => void) {
             const bucket = listeners.get(event) ?? [];
             bucket.push(fn);
@@ -127,6 +128,42 @@ describe('NodeSocketSessionRegistry', () => {
         expect(() => a.join('')).toThrow(RangeError);
         expect(() => a.join(42 as unknown as string)).toThrow(RangeError);
         expect(() => registry.join(a, '')).toThrow(RangeError);
+    });
+
+    test('backpressure default closes the overloaded session at the 1 MiB watermark', () => {
+        registry = new NodeSocketSessionRegistry({ heartbeatIntervalMs: null });
+        sessionAt('/echo');
+        sessionAt('/echo');
+        transports[0].bufferedAmount = 2_000_000; // > default 1 MiB
+
+        registry.broadcast('/echo', 'x');
+        expect(transports[0].close).toHaveBeenCalledWith(1013, 'consumer too slow');
+        expect(transports[0].send).not.toHaveBeenCalled();
+        expect(transports[1].send).toHaveBeenCalledWith('x');
+    });
+
+    test('backpressure drop policy skips the overloaded session silently', () => {
+        registry = new NodeSocketSessionRegistry({
+            heartbeatIntervalMs: null,
+            backpressure: { maxBufferedBytes: 1024, onOverflow: 'drop' },
+        });
+        sessionAt('/echo');
+        sessionAt('/echo');
+        transports[0].bufferedAmount = 4096;
+
+        registry.broadcast('/echo', 'y');
+        expect(transports[0].send).not.toHaveBeenCalled();
+        expect(transports[0].close).not.toHaveBeenCalled();
+        expect(transports[1].send).toHaveBeenCalledWith('y');
+    });
+
+    test('backpressure null disables the watermark guard', () => {
+        registry = new NodeSocketSessionRegistry({ heartbeatIntervalMs: null, backpressure: null });
+        sessionAt('/echo');
+        transports[0].bufferedAmount = 100_000_000;
+
+        registry.broadcast('/echo', 'z');
+        expect(transports[0].send).toHaveBeenCalledWith('z');
     });
 
     test('closeAll closes every open session', () => {

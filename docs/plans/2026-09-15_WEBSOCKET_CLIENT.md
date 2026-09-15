@@ -143,8 +143,10 @@ immediately. The only browser-global code in the feature.
 
 ## 6. Non-goals / deferred (documented)
 
-- Backpressure policy (`ws.bufferedAmount` handling: drop vs close `1008`) —
-  separate small follow-up, not this plan.
+- **Backpressure policy** — implemented 2026-09-15 outside this plan: the
+  registry's `SocketBackpressurePolicy` (1 MiB watermark, `close` `1013` —
+  Spring's `SESSION_NOT_RELIABLE` — or `drop`; default `close`, disabled
+  explicitly). Server-side only; see the broadcast plan.
 - STOMP layer — future, post-client (AD-22 D5): client codec in
   `@blue/socket`, server in `blue-platform-node`.
 - SockJS — never (AD-22 D4); third-party territory.

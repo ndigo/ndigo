@@ -8,6 +8,7 @@ import { $aware, type SmartLifecycle } from '@blue/factory';
 import type { ApplicationContext, ApplicationContextAware } from '@blue/context';
 import type { NodeDispatcher } from './node-dispatcher';
 import { NodeHTTPServerAdapter } from './node-http-server-adapter';
+import { NodeSocketSessionRegistry } from './node-socket-session-registry';
 
 /**
  * Adapter interface for platform HTTP servers.
@@ -32,6 +33,13 @@ export interface HTTPServerOptions {
     host?: string;
     /** Custom adapter. Defaults to `NodeHTTPServerAdapter`. */
     adapter?: HTTPServerAdapter;
+    /**
+     * Socket session registry shared with the default adapter (AD-21 D4).
+     * When omitted, the registry is resolved from the application context
+     * (`socketSessionRegistry` bean) at start, falling back to a fresh
+     * instance — so broadcasts from the bean reach the adapter's sessions.
+     */
+    socketRegistry?: NodeSocketSessionRegistry;
 }
 
 /**
@@ -58,6 +66,7 @@ export class HTTPServer implements SmartLifecycle, ApplicationContextAware {
     #host: string;
     #started: boolean;
     #dispatcher: NodeDispatcher | null;
+    #socketRegistry: NodeSocketSessionRegistry | null;
     #applicationContext: ApplicationContext | null = null;
     #startPromise: Promise<void> | null = null;
 
@@ -109,6 +118,7 @@ export class HTTPServer implements SmartLifecycle, ApplicationContextAware {
         this.#port = rawPort;
         this.#host = options.host ?? '127.0.0.1';
         this.#dispatcher = dispatcher;
+        this.#socketRegistry = options.socketRegistry ?? null;
         this.#adapter = options.adapter ?? null;
         this.#started = false;
     }
@@ -138,7 +148,9 @@ export class HTTPServer implements SmartLifecycle, ApplicationContextAware {
             return;
         }
         if (!this.#adapter) {
-            this.#adapter = new NodeHTTPServerAdapter(this.#resolveDispatcher());
+            const registry =
+                this.#socketRegistry ?? this.#resolveSocketRegistry() ?? new NodeSocketSessionRegistry();
+            this.#adapter = new NodeHTTPServerAdapter(this.#resolveDispatcher(), { socketRegistry: registry });
         }
         await this.#adapter.listen(this.#port, this.#host);
         this.#started = true;
@@ -182,5 +194,12 @@ export class HTTPServer implements SmartLifecycle, ApplicationContextAware {
             'HTTPServer: no dispatcher provided and no application context available — pass a dispatcher to the ' +
                 'constructor or register the server as a context entry'
         );
+    }
+
+    #resolveSocketRegistry(): NodeSocketSessionRegistry | null {
+        if (this.#applicationContext?.hasValue?.('socketSessionRegistry')) {
+            return this.#applicationContext.getValue<NodeSocketSessionRegistry>('socketSessionRegistry');
+        }
+        return null;
     }
 }

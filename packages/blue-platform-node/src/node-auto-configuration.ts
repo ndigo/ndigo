@@ -10,6 +10,7 @@ import { ScheduleRegistry, TaskScheduler } from '@blue/scheduler';
 import { IslandViewResolver } from '@blue/view';
 import { NodeDispatcher } from './node-dispatcher';
 import { HTTPServer } from './http-server';
+import { NodeSocketSessionRegistry, resolveSocketRegistryOptions } from './node-socket-session-registry';
 import { NodeParameterBindingErrorResolver } from './parameter-binding-error-resolver';
 import { NodeLastResortErrorResolver } from './last-resort-error-resolver';
 import { argumentValueConverters } from './argument-value-converter';
@@ -108,6 +109,21 @@ export class NodeAutoConfiguration {
     @entry
     scheduleRegistry() {
         return new ScheduleRegistry();
+    }
+
+    /**
+     * Tracks open WebSocket sessions — broadcast, rooms, heartbeat (AD-21).
+     *
+     * The HTTP server resolves this bean when it starts, so broadcasts from
+     * any service reach the adapter's live sessions. Heartbeat defaults to
+     * on; tune via `BLUE_SOCKET_HEARTBEAT_INTERVAL_MS` /
+     * `BLUE_SOCKET_IDLE_TIMEOUT_MS` (heartbeat `0` disables it).
+     *
+     * @returns The socket session registry.
+     */
+    @entry
+    socketSessionRegistry() {
+        return new NodeSocketSessionRegistry(resolveSocketRegistryOptions());
     }
 
     /**

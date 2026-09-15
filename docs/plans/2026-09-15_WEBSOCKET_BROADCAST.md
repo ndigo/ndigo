@@ -240,7 +240,9 @@ session-base abstractions are introduced (D1/D3 guardrails).
   never** (pre-2015 fallback-transport workaround — AD-22 D4, third-party territory).
 - Client-side reconnect/backoff — **now its own feature**: `@blue/socket`
   client package, see [2026-09-15_WEBSOCKET_CLIENT.md](2026-09-15_WEBSOCKET_CLIENT.md) + AD-22.
-- Message persistence/history, per-session backpressure policies.
+- Message persistence/history. (Backpressure: **implemented 2026-09-15** —
+  `SocketBackpressurePolicy` on the registry: 1 MiB watermark, `close` `1013`
+  / `drop`, enabled by default.)
 - Generic `SessionRegistry<S>`; shared ID+bag contract — deferred to audit M4
   (HTTP session store), which also reserves the `HttpSession` name (D2).
 

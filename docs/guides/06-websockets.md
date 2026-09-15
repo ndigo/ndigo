@@ -73,7 +73,12 @@ Every session auto-joins a set keyed by its endpoint path, so
 `broadcast(path, …)` is zero-setup. Named rooms are the finer grouping:
 `session.join('room')` / `session.leave('room')` in the handler, and
 `broadcastTo('room', …)` from anywhere. Fan-out is best-effort — closed
-sessions are skipped, transport errors tolerated.
+sessions are skipped, transport errors tolerated. Backpressure is on by
+default: a session whose transport buffer exceeds 1 MiB is closed with
+`1013` ("try again later", Spring's `SESSION_NOT_RELIABLE`) — the AD-22
+client reconnects and resyncs. Tune per registry:
+`{ backpressure: { maxBufferedBytes, onOverflow: 'drop' | 'close' } }`
+(`drop` skips silently; `null` disables the guard).
 
 Also on the session: `session.attributes` — a per-connection state bag
 (Micronaut/Spring/Jakarta parity), and `session.close(code, reason)` for a

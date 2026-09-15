@@ -1,0 +1,85 @@
+/**
+ * WebSocket chat room + scheduler-driven tick — the AD-21 demo gate.
+ *
+ * Clients on `/ws/chat` join the `room` group; every client message is
+ * fanned out to the whole room (including the sender). A `chat-tick` fires
+ * into the room every 2 seconds — the scheduler → registry reachability
+ * proof (AD-21 D4): zero-wiring `@scheduled` next to the socket endpoint.
+ * @module blue-api
+ * @since 1.0.0
+ * @author Jeff Rose
+ */
+import '@tsmetadata/polyfill';
+import { $aware } from '@blue/factory';
+import type { ApplicationContext, ApplicationContextAware } from '@blue/context';
+import {
+    parameters,
+    requestMapping,
+    socketMapping,
+    socketSession,
+    type SocketSession,
+    type SocketSessionRegistry,
+} from '@blue/dispatcher';
+import { scheduled } from '@blue/scheduler';
+
+/**
+ * The chat room controller — sockets (`,`socketMapping`) and scheduled
+ * pushes (`,`scheduled`) on one registered bean.
+ */
+@requestMapping('/ws')
+export class ChatController implements ApplicationContextAware {
+    #context: ApplicationContext | null = null;
+
+    /**
+     * Marks the value as `Aware` for the factory's aware injection, so
+     * `setApplicationContext` runs when this entry is registered.
+     */
+    get [$aware](): boolean {
+        return true;
+    }
+
+    /**
+     * Injects the owning application context.
+     *
+     * @param context - The application context that owns this controller.
+     */
+    setApplicationContext(context: ApplicationContext): void {
+        this.#context = context;
+    }
+
+    /**
+     * Lazy registry resolution: the registry bean is owned by
+     * `NodeAutoConfiguration`, so entry creation order never matters — the
+     * first socket connection (or tick) resolves it.
+     *
+     * @returns The socket session registry, or `null` when unavailable
+     *   (e.g. unit-instantiated controller).
+     */
+    #registry(): SocketSessionRegistry | null {
+        if (!this.#context?.hasValue?.('socketSessionRegistry')) {
+            return null;
+        }
+        return this.#context.getValue<SocketSessionRegistry>('socketSessionRegistry');
+    }
+
+    /**
+     * Chat room endpoint: every client joins the `room` group; each message
+     * is broadcast to every session in the room (including the sender).
+     */
+    @socketMapping('/chat')
+    @parameters({ session: socketSession('session') })
+    async *chat(session: SocketSession) {
+        session.join('room');
+        for await (const message of session.messages) {
+            this.#registry()?.broadcastTo('room', { event: 'chat', data: String(message) });
+        }
+    }
+
+    /**
+     * Periodic room tick — the scheduler → registry fan-out path (AD-21 D4).
+     */
+    @scheduled('*/2 * * * * *')
+    chatTick() {
+        this.#registry()?.broadcastTo('room', { event: 'chat-tick', at: Date.now() });
+    }
+}

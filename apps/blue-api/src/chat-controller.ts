@@ -65,10 +65,12 @@ export class ChatController implements ApplicationContextAware {
     /**
      * Chat room endpoint: every client joins the `room` group; each message
      * is broadcast to every session in the room (including the sender).
+     * Broadcast-style handler: outbound goes through the registry, so the
+     * method consumes `session.messages` without yielding.
      */
     @socketMapping('/chat')
     @parameters({ session: socketSession('session') })
-    async *chat(session: SocketSession) {
+    async chat(session: SocketSession) {
         session.join('room');
         for await (const message of session.messages) {
             this.#registry()?.broadcastTo('room', { event: 'chat', data: String(message) });

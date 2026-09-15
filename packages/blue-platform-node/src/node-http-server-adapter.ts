@@ -414,7 +414,9 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
         // handler (or any service with the registry) reach it immediately;
         // the close event drops it from the registry (AD-21 D3/D4).
         this.#socketRegistry.register(session, path, ws);
-        ws.on('close', () => this.#socketRegistry.remove(session));
+        // The close code flows into `remove` for observability (e.g. 1013
+        // backpressure closes) — AD-21 D4 + socket telemetry.
+        ws.on('close', (code: number) => this.#socketRegistry.remove(session, code));
         const handlerMethod = (target.instance as Record<string, unknown>)[target.method] as unknown;
         if (typeof handlerMethod !== 'function') {
             ws.close(1011, 'socket handler is not a function');

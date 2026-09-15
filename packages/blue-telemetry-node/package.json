@@ -48,7 +48,8 @@
     "@blue/dispatcher": "~0.0.1",
     "@blue/platform-node": "~0.0.1",
     "@blue/router": "~0.0.1",
-    "@blue/view": "~0.0.1"
+    "@blue/view": "~0.0.1",
+    "@blue/socket": "~0.0.1"
   },
   "devDependencies": {
     "@blue/context": "~0.0.1",
@@ -57,6 +58,9 @@
     "@blue/platform-node": "~0.0.1",
     "@blue/router": "~0.0.1",
     "@blue/view": "~0.0.1",
+    "@blue/socket": "~0.0.1",
+    "@types/ws": "^8.18.0",
+    "ws": "^8.18.0",
     "@opentelemetry/context-async-hooks": "~2.11.0",
     "@opentelemetry/core": "~2.11.0"
   }

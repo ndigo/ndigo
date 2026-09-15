@@ -14,6 +14,9 @@ instrumentations, built on the isomorphic [`@blue/telemetry`](../blue-telemetry/
   - `HTTPServerInstrumentation` — HTTP request spans (method, route, status)
   - `ServerSentEventViewInstrumentation` — SSE stream-lifetime spans with
     frame counts, duration, and client-disconnect flags (`sse.*` attributes)
+  - `WebSocketServerInstrumentation` — socket session-lifetime spans +
+    counters: sessions opened/closed (path, close code), fan-out
+    messages/bytes (path/room), backpressure overflows (`blue.socket.*`)
   - `HTTPResponseViewTargetInstrumentation` — view-commit spans
 - **`SeverityFilterLogRecordProcessor`** — drops log records below a
   configured severity so production logs stay quiet

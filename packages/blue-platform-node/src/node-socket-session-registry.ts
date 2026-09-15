@@ -39,6 +39,19 @@ const DEFAULT_BACKPRESSURE: SocketBackpressurePolicy = Object.freeze({
 });
 
 /**
+ * Backpressure enforcement event — the decision-point seam for telemetry
+ * and logging (the private `#safeSend` decision is otherwise unobservable).
+ */
+export type SocketBackpressureEvent = {
+    /** Endpoint path the session belongs to (auto-join set key). */
+    path: string;
+    /** What the policy did: `close` (`1013`) or `drop` (silent skip). */
+    action: 'close' | 'drop';
+    /** Transport bytes queued at the decision point. */
+    bufferedBytes: number;
+};
+
+/**
  * Options for {@link NodeSocketSessionRegistry}.
  */
 export interface NodeSocketSessionRegistryOptions {
@@ -60,6 +73,13 @@ export interface NodeSocketSessionRegistryOptions {
      * remains the final backstop.
      */
     backpressure?: SocketBackpressurePolicy | null;
+    /**
+     * Observer invoked at each backpressure decision (close or drop), with
+     * the path, action, and queued bytes. Constructor-only, like the policy
+     * itself — the seam for telemetry/logging of the otherwise-private
+     * decision point.
+     */
+    onOverflow?: (event: SocketBackpressureEvent) => void;
     /**
      * Injectable clock for deterministic tests (the TaskScheduler clock
      * precedent, AD-20). Defaults to `Date.now`.
@@ -124,6 +144,7 @@ export class NodeSocketSessionRegistry implements SocketSessionRegistry {
     #transports: WeakMap<SocketSession, WebSocket> = new WeakMap();
     #lastSeen: WeakMap<SocketSession, number> = new WeakMap();
     readonly #backpressure: SocketBackpressurePolicy | null;
+    readonly #onOverflow: ((event: SocketBackpressureEvent) => void) | null;
     #heartbeatIntervalMs: number | null;
     #idleTimeoutMs: number;
     #now: () => number;
@@ -137,6 +158,7 @@ export class NodeSocketSessionRegistry implements SocketSessionRegistry {
         this.#idleTimeoutMs = options.idleTimeoutMs ?? 60_000;
         this.#now = options.now ?? Date.now;
         this.#backpressure = options.backpressure === undefined ? DEFAULT_BACKPRESSURE : options.backpressure;
+        this.#onOverflow = options.onOverflow ?? null;
     }
 
     /**
@@ -276,13 +298,16 @@ export class NodeSocketSessionRegistry implements SocketSessionRegistry {
     }
 
     /**
-     * Drop a session from the registry. Idempotent; called by the transport
-     * on connection close (peer or server initiated). Also stops the
-     * heartbeat sweep when the last session goes away.
+     * Drop a session from the registry. Idempotent; called by the
+     * transport on connection close (peer or server initiated). Also stops
+     * the heartbeat sweep when the last session goes away.
      *
      * @param session - The session to remove.
+     * @param closeCode - WebSocket close status code when known — surfaced
+     *   for observability (e.g. backpressure closes carry `1013`).
      */
-    remove(session: SocketSession): void {
+    remove(session: SocketSession, closeCode?: number): void {
+        void closeCode;
         if (!this.#sessions.delete(session)) {
             return;
         }
@@ -339,6 +364,11 @@ export class NodeSocketSessionRegistry implements SocketSessionRegistry {
         if (policy !== null) {
             const transport = this.#transports.get(session);
             if (transport !== undefined && transport.bufferedAmount > policy.maxBufferedBytes) {
+                this.#onOverflow?.({
+                    path: this.#sessions.get(session) ?? '',
+                    action: policy.onOverflow,
+                    bufferedBytes: transport.bufferedAmount,
+                });
                 if (policy.onOverflow === 'close') {
                     // 1013 "try again later" — bounded memory, explicit
                     // client-visible signal; the AD-22 client reconnects

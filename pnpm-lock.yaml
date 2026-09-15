@@ -328,6 +328,9 @@ importers:
       '@blue/dispatcher':
         specifier: ~0.0.1
         version: link:../../packages/blue-dispatcher
+      '@blue/factory':
+        specifier: ~0.0.1
+        version: link:../../packages/blue-factory
       '@blue/http':
         specifier: ~0.0.1
         version: link:../../packages/blue-http
@@ -371,9 +374,15 @@ importers:
       '@blue/test':
         specifier: ~0.0.1
         version: link:../../packages/blue-test
+      '@types/ws':
+        specifier: ^8.18.0
+        version: 8.18.1
       tsx:
         specifier: ^4.23.13
         version: 4.23.13
+      ws:
+        specifier: ^8.18.0
+        version: 8.21.3
 
   apps/blue-hello:
     dependencies:

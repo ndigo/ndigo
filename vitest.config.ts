@@ -55,6 +55,7 @@ export default defineConfig({
             { find: /^@blue\/boot$/, replacement: resolve(__dirname, './packages/blue-boot/src') },
             { find: /^@blue\/service$/, replacement: resolve(__dirname, './packages/blue-service/src') },
             { find: /^@blue\/scheduler$/, replacement: resolve(__dirname, './packages/blue-scheduler/src') },
+            { find: /^@blue\/socket$/, replacement: resolve(__dirname, './packages/blue-socket/src') },
             { find: /^@blue\/signals$/, replacement: resolve(__dirname, './packages/blue-signals/src') },
             { find: /^@blue\/eslint-plugin$/, replacement: resolve(__dirname, './packages/blue-eslint-plugin/src') },
             { find: /^@blue\/orm$/, replacement: resolve(__dirname, './packages/blue-orm/src') },

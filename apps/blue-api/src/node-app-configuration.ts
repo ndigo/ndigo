@@ -19,6 +19,7 @@ import {
 import { GreetingController } from './greeting-controller';
 import { Heartbeat } from './heartbeat';
 import { AuthController } from './auth-controller';
+import { ChatController } from './chat-controller';
 import { NoteController } from './note-controller';
 import { DrizzleNoteController } from './drizzle-note-controller';
 import { ProductController } from './product-controller';
@@ -45,6 +46,9 @@ export class NodeAppConfiguration {
     }
     @entry authController() {
         return new AuthController();
+    }
+    @entry chatController() {
+        return new ChatController();
     }
     @entry noteController() {
         return new NoteController();

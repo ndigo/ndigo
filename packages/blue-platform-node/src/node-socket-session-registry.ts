@@ -45,7 +45,9 @@ export interface NodeSocketSessionRegistryOptions {
  * @param env - Environment to read (defaults to `process.env`).
  * @returns Resolved registry options.
  */
-export function resolveSocketRegistryOptions(env: Readonly<Record<string, string | undefined>> = process.env): NodeSocketSessionRegistryOptions {
+export function resolveSocketRegistryOptions(
+    env: Readonly<Record<string, string | undefined>> = process.env
+): NodeSocketSessionRegistryOptions {
     const heartbeatRaw = env['BLUE_SOCKET_HEARTBEAT_INTERVAL_MS'];
     const idleRaw = env['BLUE_SOCKET_IDLE_TIMEOUT_MS'];
     const options: NodeSocketSessionRegistryOptions = {};
@@ -147,7 +149,7 @@ export class NodeSocketSessionRegistry implements SocketSessionRegistry {
             if (sessionPath === path) {
                 total++;
             }
-    }
+        }
         return total;
     }
 
@@ -182,7 +184,7 @@ export class NodeSocketSessionRegistry implements SocketSessionRegistry {
         if (!members) {
             return;
         }
-        for (const session of [...members]) {
+        for (const session of members) {
             this.#safeSend(session, payload);
         }
     }
@@ -229,7 +231,7 @@ export class NodeSocketSessionRegistry implements SocketSessionRegistry {
      * @param reason - Human-readable close reason.
      */
     closeAll(code: number = 1001, reason: string = 'server shutting down'): void {
-        for (const session of [...this.#sessions.keys()]) {
+        for (const session of this.#sessions.keys()) {
             session.close(code, reason);
         }
     }

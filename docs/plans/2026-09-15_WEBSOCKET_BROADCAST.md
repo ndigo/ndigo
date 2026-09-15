@@ -236,9 +236,10 @@ session-base abstractions are introduced (D1/D3 guardrails).
 ## 8. Non-goals / deferred (documented, not built)
 
 - Cross-node pub/sub (Redis-backed fan-out) — needs a store contract; revisit post-1.0.
-- STOMP/SockJS subprotocols — protocol layering, separate feature.
-- Client-side reconnect/backoff — browser `WebSocketClient` belongs to
-  `blue-platform-web`/`blue-service`; separate plan.
+- STOMP/SockJS subprotocols — STOMP is a future layer (AD-22 D5); **SockJS is
+  never** (pre-2015 fallback-transport workaround — AD-22 D4, third-party territory).
+- Client-side reconnect/backoff — **now its own feature**: `@blue/socket`
+  client package, see [2026-09-15_WEBSOCKET_CLIENT.md](2026-09-15_WEBSOCKET_CLIENT.md) + AD-22.
 - Message persistence/history, per-session backpressure policies.
 - Generic `SessionRegistry<S>`; shared ID+bag contract — deferred to audit M4
   (HTTP session store), which also reserves the `HttpSession` name (D2).

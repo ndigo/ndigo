@@ -133,9 +133,13 @@ same options; `server.close()` stops the sweep (graceful shutdown).
   attribute-bag mixin, not a base).
 - **Names are adjectival**: `AuthSession` (auth state), `SocketSession`
   (connection), `HttpSession` (reserved for the future session store).
+- **Client story**: `@blue/socket` — the isomorphic client package
+  (`SocketClient`, reconnect + status signal) — see
+  [AD-22](../decisions/2026-09-15_AD22_WEBSOCKET_CLIENT.md) and
+  [plan](../plans/2026-09-15_WEBSOCKET_CLIENT.md).
 - **Deferred, not built**: cross-node pub/sub (needs a store contract),
-  STOMP/SockJS subprotocols, client-side reconnect/backoff (a
-  browser-story for `@blue/service`).
+  STOMP (future layer), message history — **SockJS: never** (pre-2015
+  fallback-transport workaround; third-party territory, AD-22 D4).
 
 ## 6. References
 

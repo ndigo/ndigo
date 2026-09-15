@@ -44,7 +44,7 @@ export function createOnlineReconnectTrigger(): OnlineReconnectTrigger {
     const onOnline = (): void => {
         if (!online.value) {
             online.value = true;
-            for (const listener of [...listeners]) {
+            for (const listener of listeners) {
                 listener();
             }
         }

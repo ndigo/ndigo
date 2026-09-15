@@ -826,6 +826,9 @@ importers:
       '@blue/router':
         specifier: ~0.0.1
         version: link:../blue-router
+      '@blue/socket':
+        specifier: ~0.0.1
+        version: link:../blue-socket
       '@blue/util':
         specifier: ~0.0.1
         version: link:../blue-util
@@ -1139,6 +1142,19 @@ importers:
       '@blue/core':
         specifier: ~0.0.1
         version: link:../blue-core
+
+  packages/blue-socket:
+    dependencies:
+      '@blue/signals':
+        specifier: ~0.0.1
+        version: link:../blue-signals
+    devDependencies:
+      '@types/ws':
+        specifier: ^8.18.0
+        version: 8.18.1
+      ws:
+        specifier: ^8.18.0
+        version: 8.21.3
 
   packages/blue-telemetry:
     dependencies:

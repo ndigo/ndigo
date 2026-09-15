@@ -4,7 +4,7 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import type { SocketSession, SocketRequestSources } from '@blue/dispatcher';
+import type { SocketSession, SocketRequestSources, SocketSessionRegistry } from '@blue/dispatcher';
 import type { WebSocket } from 'ws';
 
 /**
@@ -14,12 +14,15 @@ import type { WebSocket } from 'ws';
  *   double in tests).
  * @param path - The request path (for `session.path`).
  * @param sources - Request sources captured from the upgrade request.
+ * @param registry - Optional session registry backing `join`/`leave`
+ *   (AD-21 D5); when `null`, room membership is a no-op.
  * @returns The session.
  */
 export function nodeSocketSession(
     transport: WebSocket,
     path: string,
-    sources: SocketRequestSources = { query: {}, headers: {}, cookies: {} }
+    sources: SocketRequestSources = { query: {}, headers: {}, cookies: {} },
+    registry: Pick<SocketSessionRegistry, 'join' | 'leave'> | null = null
 ): SocketSession {
     const inbound = new AsyncReader<unknown>();
     const closed = new AsyncReader<number>();
@@ -67,6 +70,7 @@ export function nodeSocketSession(
         get isClosed() {
             return isClosed;
         },
+        attributes: {},
         send(data: unknown) {
             if (typeof data === 'string') {
                 transport.send(data);
@@ -76,6 +80,16 @@ export function nodeSocketSession(
         },
         close(code?: number, reason?: string) {
             transport.close(code ?? 1000, reason ?? '');
+        },
+        join(room: string) {
+            if (!isClosed) {
+                registry?.join(this, room);
+            }
+        },
+        leave(room: string) {
+            if (!isClosed) {
+                registry?.leave(this, room);
+            }
         },
     };
 }

@@ -67,6 +67,13 @@ export interface SocketSession {
     readonly isClosed: boolean;
 
     /**
+     * Per-connection state bag (AD-21 D3, Micronaut/Spring/Jakarta
+     * parity). Any value may be stored; the bag lives as long as the
+     * session and is never shared with other sessions.
+     */
+    readonly attributes: Record<string, unknown>;
+
+    /**
      * Send a message to the peer. Text strings are sent as text frames; any
      * other value is JSON-encoded before sending.
      *
@@ -82,4 +89,21 @@ export interface SocketSession {
      * @param reason - Human-readable close reason.
      */
     close(code?: number, reason?: string): void;
+
+    /**
+     * Join a named room (AD-21 D5). Membership is registry-backed: other
+     * sessions (or any service with the registry) can reach this session
+     * via `broadcastTo(room, …)`. No-op once the session is closed.
+     *
+     * @param room - The room name.
+     */
+    join(room: string): void;
+
+    /**
+     * Leave a named room. No-op once the session is closed (or if the
+     * session never joined).
+     *
+     * @param room - The room name.
+     */
+    leave(room: string): void;
 }

@@ -4,7 +4,7 @@
  * @author Jeff Rose
  */
 import { describe, test, expect, vi } from 'vitest';
-import { DefaultSession, AnonymousPrincipal } from '@blue/auth-core';
+import { DefaultAuthSession, AnonymousPrincipal } from '@blue/auth-core';
 import { HTTP } from '@blue/http';
 import { AuthHeaderInterceptor } from '../src/auth-header-interceptor';
 
@@ -14,7 +14,7 @@ function makeRequest(url: string, method = 'GET'): Request {
 
 describe('AuthHeaderInterceptor', () => {
     test('does not add header when session is not authenticated', async () => {
-        const session = new DefaultSession();
+        const session = new DefaultAuthSession();
         const interceptor = new AuthHeaderInterceptor(session);
         const request = makeRequest('/api/data');
 
@@ -24,7 +24,7 @@ describe('AuthHeaderInterceptor', () => {
     });
 
     test('injects Authorization header for authenticated session', async () => {
-        const session = new DefaultSession();
+        const session = new DefaultAuthSession();
         session.setPrincipal(new AnonymousPrincipal(), 'test-token');
 
         const interceptor = new AuthHeaderInterceptor(session);
@@ -37,7 +37,7 @@ describe('AuthHeaderInterceptor', () => {
     });
 
     test('preserves existing headers when adding Authorization', async () => {
-        const session = new DefaultSession();
+        const session = new DefaultAuthSession();
         session.setPrincipal(new AnonymousPrincipal(), 'token-789');
 
         const interceptor = new AuthHeaderInterceptor(session);
@@ -53,7 +53,7 @@ describe('AuthHeaderInterceptor', () => {
     });
 
     test('does not add header when session has no token (not authenticated)', async () => {
-        const session = new DefaultSession();
+        const session = new DefaultAuthSession();
         // Session starts unauthenticated — no token set
         expect(session.isAuthenticated).toBe(false);
 

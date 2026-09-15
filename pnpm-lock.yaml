@@ -1244,6 +1244,9 @@ importers:
       '@blue/router':
         specifier: ~0.0.1
         version: link:../blue-router
+      '@blue/socket':
+        specifier: ~0.0.1
+        version: link:../blue-socket
       '@blue/view':
         specifier: ~0.0.1
         version: link:../blue-view
@@ -1253,6 +1256,12 @@ importers:
       '@opentelemetry/core':
         specifier: ~2.11.0
         version: 2.11.0(@opentelemetry/api@1.9.1)
+      '@types/ws':
+        specifier: ^8.18.0
+        version: 8.18.1
+      ws:
+        specifier: ^8.18.0
+        version: 8.21.3
 
   packages/blue-telemetry-web:
     dependencies:

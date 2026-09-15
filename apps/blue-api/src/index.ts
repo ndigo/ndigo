@@ -7,7 +7,7 @@ import 'node:process';
 import { ApplicationBuilder } from '@blue/boot';
 import { ManagementAutoConfiguration } from '@blue/management';
 import { NodeAutoConfiguration, HTTPServer, gracefulShutdown } from '@blue/platform-node';
-import { configureTelemetry, HTTPServerInstrumentation } from '@blue/telemetry-node';
+import { configureTelemetry, HTTPServerInstrumentation, WebSocketServerInstrumentation } from '@blue/telemetry-node';
 import { getLogger } from '@blue/telemetry';
 import { NodeAppConfiguration } from './node-app-configuration';
 import { ServerConfig } from './server-config';
@@ -26,7 +26,7 @@ async function main() {
     if (process.env['OTEL_EXPORTER_OTLP_ENDPOINT']) {
         configureTelemetry({
             traceExporter: { url: `${process.env['OTEL_EXPORTER_OTLP_ENDPOINT']}/v1/traces` },
-            instrumentations: [new HTTPServerInstrumentation()],
+            instrumentations: [new HTTPServerInstrumentation(), new WebSocketServerInstrumentation()],
         });
     }
 

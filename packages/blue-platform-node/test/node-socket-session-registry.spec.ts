@@ -166,6 +166,32 @@ describe('NodeSocketSessionRegistry', () => {
         expect(transports[0].send).toHaveBeenCalledWith('z');
     });
 
+    test('onOverflow observer reports close decisions with path and bytes', () => {
+        const onOverflow = vi.fn();
+        registry = new NodeSocketSessionRegistry({ heartbeatIntervalMs: null, onOverflow });
+        sessionAt('/echo');
+        transports[0].bufferedAmount = 2_000_000;
+
+        registry.broadcast('/echo', 'x');
+        expect(onOverflow).toHaveBeenCalledWith({ path: '/echo', action: 'close', bufferedBytes: 2_000_000 });
+        expect(transports[0].close).toHaveBeenCalledWith(1013, 'consumer too slow');
+    });
+
+    test('onOverflow observer reports drop decisions', () => {
+        const onOverflow = vi.fn();
+        registry = new NodeSocketSessionRegistry({
+            heartbeatIntervalMs: null,
+            backpressure: { maxBufferedBytes: 1024, onOverflow: 'drop' },
+            onOverflow,
+        });
+        sessionAt('/echo');
+        transports[0].bufferedAmount = 4096;
+
+        registry.broadcast('/echo', 'y');
+        expect(onOverflow).toHaveBeenCalledWith({ path: '/echo', action: 'drop', bufferedBytes: 4096 });
+        expect(transports[0].close).not.toHaveBeenCalled();
+    });
+
     test('closeAll closes every open session', () => {
         sessionAt('/echo');
         sessionAt('/room');

@@ -11,3 +11,4 @@
  */
 export * from './socket-session';
 export * from './socket-session-registry';
+export * from './socket-client';

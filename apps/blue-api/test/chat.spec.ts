@@ -1,10 +1,12 @@
 /**
- * End-to-end WebSocket demo gate (AD-21): the blue-api chat room.
+ * End-to-end WebSocket demo gate (AD-21/AD-22): the blue-api chat room
+ * **consumed through the `@blue/socket` client** — the node global WHATWG
+ * `WebSocket` transport, same wire as a browser.
  *
- * Boots the real application stack (auto-config + app config) on an
- * ephemeral port, connects real `ws` clients to `/ws/chat`, and asserts
- * the room fan-out plus the scheduler-driven `chat-tick` (scheduler →
- * registry reachability, AD-21 D4).
+ * Boots the real application stack on an ephemeral port, connects
+ * `WebSocketClient`s to `/ws/chat`, and asserts the room fan-out, the
+ * scheduler-driven `chat-tick`, and deliberate-close status transitions
+ * (AD-22 D3/D6).
  * @module blue-api
  * @since 1.0.0
  * @author Jeff Rose
@@ -15,44 +17,86 @@ import type { ApplicationContext } from '@blue/context';
 import { ApplicationBuilder } from '@blue/boot';
 import { ManagementAutoConfiguration } from '@blue/management';
 import { NodeAutoConfiguration, HTTPServer } from '@blue/platform-node';
+import { WebSocketClient, type SocketClient } from '@blue/socket';
 import { NodeAppConfiguration } from '../src/node-app-configuration';
 import { ServerConfig } from '../src/server-config';
 import { initAuth } from '../src/auth-store';
-import { WebSocket } from 'ws';
 
 /**
- * Resolves once the first message matching `predicate` arrives.
+ * Drains a client's message stream into an array (parsed as JSON objects).
  *
- * @param ws - The client socket.
- * @param predicate - Match predicate over parsed messages.
- * @param timeoutMs - Fail the wait after this many milliseconds.
- * @returns The matching parsed message.
+ * @param client - The client to consume.
+ * @returns The collected messages and a promise completing on close.
  */
-function waitFor<T>(ws: WebSocket, predicate: (message: T) => boolean, timeoutMs: number): Promise<T> {
-    const { promise, resolve, reject } = Promise.withResolvers<T>();
-    function onMessage(data: unknown): void {
-        const parsed = JSON.parse(String(data)) as T;
-        if (predicate(parsed)) {
-            cleanup();
-            resolve(parsed);
+function collectMessages(client: SocketClient): { messages: Array<Record<string, unknown>>; done: Promise<void> } {
+    const messages: Array<Record<string, unknown>> = [];
+    const done = (async () => {
+        for await (const message of client.messages) {
+            messages.push(JSON.parse(String(message)) as Record<string, unknown>);
         }
-    }
-    function cleanup(): void {
-        clearTimeout(timer);
-        ws.off('message', onMessage);
-    }
-    const timer = setTimeout(() => {
-        cleanup();
-        reject(new Error('timed out waiting for a matching WebSocket message'));
-    }, timeoutMs);
-    ws.on('message', onMessage);
+    })();
+    return { messages, done };
+}
+
+/**
+ * Polls until the client reports `open`.
+ *
+ * @param client - The client.
+ * @param timeoutMs - Fail the wait after this many milliseconds.
+ */
+function waitForOpen(client: SocketClient, timeoutMs: number): Promise<void> {
+    const { promise, resolve, reject } = Promise.withResolvers<void>();
+    const started = Date.now();
+    const poll = (): void => {
+        if (client.status.value === 'open') {
+            resolve();
+            return;
+        }
+        if (Date.now() - started > timeoutMs) {
+            reject(new Error('socket did not open in time'));
+            return;
+        }
+        setTimeout(poll, 25);
+    };
+    poll();
     return promise;
 }
 
-describe('blue-api WebSocket chat room (AD-21 demo gate)', () => {
+/**
+ * Resolves once the first collected message matches `predicate`.
+ *
+ * @param messages - Collected messages (see {@link collectMessages}).
+ * @param predicate - Match predicate.
+ * @param timeoutMs - Fail the wait after this many milliseconds.
+ * @returns The matching message.
+ */
+function waitFor(
+    messages: readonly Record<string, unknown>[],
+    predicate: (message: Record<string, unknown>) => boolean,
+    timeoutMs: number
+): Promise<Record<string, unknown>> {
+    const { promise, resolve, reject } = Promise.withResolvers<Record<string, unknown>>();
+    const started = Date.now();
+    const poll = (): void => {
+        const match = messages.find((message) => predicate(message));
+        if (match !== undefined) {
+            resolve(match);
+            return;
+        }
+        if (Date.now() - started > timeoutMs) {
+            reject(new Error(`timed out waiting for a matching WebSocket message (have ${messages.length})`));
+            return;
+        }
+        setTimeout(poll, 25);
+    };
+    poll();
+    return promise;
+}
+
+describe('blue-api WebSocket chat room via @blue/socket client (AD-22 D6)', () => {
     let context: ApplicationContext;
     let wsUrl: string;
-    const clients: WebSocket[] = [];
+    const clients: WebSocketClient[] = [];
 
     beforeAll(async () => {
         initAuth();
@@ -80,34 +124,46 @@ describe('blue-api WebSocket chat room (AD-21 demo gate)', () => {
         delete process.env['PORT'];
     });
 
-    const open = (): Promise<WebSocket> => {
-        const ws = new WebSocket(`${wsUrl}/ws/chat`);
-        const { promise, resolve, reject } = Promise.withResolvers<WebSocket>();
-        ws.once('open', () => resolve(ws));
-        ws.once('error', reject);
-        return promise.then((opened) => {
-            clients.push(opened);
-            return opened;
-        });
+    const chat = (): WebSocketClient => {
+        const client = new WebSocketClient(`${wsUrl}/ws/chat`, { reconnect: null });
+        clients.push(client);
+        return client;
     };
 
     test('a message sent by one client is broadcast to the whole room', async () => {
-        const a = await open();
-        const b = await open();
+        const a = chat();
+        const b = chat();
+        await Promise.all([waitForOpen(a, 5_000), waitForOpen(b, 5_000)]);
+        const receivedA = collectMessages(a);
+        const receivedB = collectMessages(b);
 
-        // Both clients joined the `room` group before messaging; the sender
-        // also receives its own message (room echo semantics).
-        const deliveredA = waitFor<{ event: string; data: string }>(a, (m) => m.event === 'chat', 5_000);
-        const deliveredB = waitFor<{ event: string; data: string }>(b, (m) => m.event === 'chat', 5_000);
         a.send('hello room');
 
-        expect(await deliveredA).toEqual({ event: 'chat', data: 'hello room' });
-        expect(await deliveredB).toEqual({ event: 'chat', data: 'hello room' });
+        // Both clients joined the `room` group; the sender also receives its
+        // own message (room echo semantics).
+        const deliveredA = await waitFor(receivedA.messages, (m) => m.event === 'chat', 5_000);
+        const deliveredB = await waitFor(receivedB.messages, (m) => m.event === 'chat', 5_000);
+        expect(deliveredA).toEqual({ event: 'chat', data: 'hello room' });
+        expect(deliveredB).toEqual({ event: 'chat', data: 'hello room' });
     });
 
     test('the scheduler pushes a periodic chat-tick into the room', async () => {
-        const c = await open();
-        const tick = waitFor<{ event: string }>(c, (m) => m.event === 'chat-tick', 10_000);
-        expect(await tick).toMatchObject({ event: 'chat-tick' });
+        const c = chat();
+        await waitForOpen(c, 5_000);
+        const received = collectMessages(c);
+        const tick = await waitFor(received.messages, (m) => m.event === 'chat-tick', 10_000);
+        expect(tick).toMatchObject({ event: 'chat-tick' });
+    });
+
+    test('client status transitions open → closed on deliberate close (AD-22 D3)', async () => {
+        const d = chat();
+        await waitForOpen(d, 5_000);
+        expect(d.status.value).toBe('open');
+
+        d.close(1000, 'done');
+        expect(d.status.value).toBe('closed');
+
+        const received = collectMessages(d);
+        await received.done; // deliberate close completes the message stream
     });
 });

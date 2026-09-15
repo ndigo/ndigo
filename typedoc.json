@@ -13,6 +13,7 @@
     "packages/blue-content/src/index.ts",
     "packages/blue-boot/src/index.ts",
     "packages/blue-service/src/index.ts",
+    "packages/blue-socket/src/index.ts",
     "packages/blue-dispatcher/src/index.ts",
     "packages/blue-view-webcomponent/src/index.ts",
     "packages/blue-platform-web/src/index.ts",

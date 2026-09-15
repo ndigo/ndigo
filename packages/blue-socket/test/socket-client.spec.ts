@@ -8,7 +8,12 @@
  * @author Jeff Rose
  */
 import { describe, test, expect, beforeEach, afterEach, vi } from 'vitest';
-import { WebSocketClient, type ReconnectTrigger, type SocketTransport, type WebSocketClientOptions } from '../src/index';
+import {
+    WebSocketClient,
+    type ReconnectTrigger,
+    type SocketTransport,
+    type WebSocketClientOptions,
+} from '../src/index';
 
 /**
  * Controlled WHATWG-subset transport: tests fire events; sent frames and
@@ -59,7 +64,7 @@ class FakeTrigger implements ReconnectTrigger {
     }
 
     notify(): void {
-        for (const listener of [...this.#listeners]) {
+        for (const listener of this.#listeners) {
             listener();
         }
     }
@@ -82,9 +87,11 @@ function createHarness(
 
 /** Yield enough microtask turns for async-generator resumption (fake-timer-safe). */
 const drain = async (): Promise<void> => {
+    let turn: Promise<void> = Promise.resolve();
     for (let index = 0; index < 32; index++) {
-        await Promise.resolve();
+        turn = turn.then(() => undefined);
     }
+    await turn;
 };
 
 describe('WebSocketClient', () => {

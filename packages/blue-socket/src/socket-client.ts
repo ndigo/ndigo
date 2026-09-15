@@ -137,6 +137,51 @@ function defaultTransportFactory(url: string): SocketTransport {
 }
 
 /**
+ * A minimal async iterable built from push + complete events.
+ *
+ * Bridges the event-driven transport to `for await` consumers without
+ * buffering the whole stream: pushed values are queued; consumers await the
+ * next slot. `complete()` (deliberate close) ends the stream after the
+ * remaining queue has drained.
+ */
+class AsyncReader<T> {
+    readonly #queue: T[] = [];
+    readonly #waiter: Array<() => void> = [];
+    #completed = false;
+
+    push(value: T): void {
+        const waiter = this.#waiter.shift();
+        if (waiter) {
+            waiter();
+        }
+        this.#queue.push(value);
+    }
+
+    complete(): void {
+        this.#completed = true;
+        while (this.#waiter.length > 0) {
+            const waiter = this.#waiter.shift();
+            if (waiter) {
+                waiter();
+            }
+        }
+    }
+
+    async *iterable(): AsyncGenerator<T> {
+        while (true) {
+            while (this.#queue.length > 0) {
+                yield this.#queue.shift() as T;
+            }
+            if (this.#completed) {
+                return;
+            }
+            // eslint-disable-next-line no-await-in-loop -- consumer-pull iterator: each iteration awaits a fresh "next value available" signal; parallelizing is impossible (single stream, ordering required).
+            await new Promise<void>((resolve) => this.#waiter.push(resolve));
+        }
+    }
+}
+
+/**
  * WHATWG-`WebSocket`-based client with reconnect (AD-22 D3).
  *
  * @example
@@ -268,11 +313,14 @@ export class WebSocketClient implements SocketClient {
         const delay = Math.min(policy.baseMs * Math.pow(2, this.#attempt), policy.maxMs);
         const jittered = delay * (1 - policy.jitter + Math.random() * 2 * policy.jitter);
         this.#attempt += 1;
-        this.#timer = setTimeout(() => {
-            this.#timer = null;
-            this.status.value = 'connecting';
-            this.#connect();
-        }, Math.max(0, jittered));
+        this.#timer = setTimeout(
+            () => {
+                this.#timer = null;
+                this.status.value = 'connecting';
+                this.#connect();
+            },
+            Math.max(0, jittered)
+        );
     }
 
     #retryNow(): void {
@@ -291,53 +339,6 @@ export class WebSocketClient implements SocketClient {
         const transport = this.#transport;
         while (transport !== null && this.#outbound.length > 0 && this.status.value === 'open') {
             transport.send(this.#outbound.shift() as string);
-        }
-    }
-}
-
-/**
- * A minimal async iterable built from push + complete events.
- *
- * Bridges the event-driven transport to `for await` consumers without
- * buffering the whole stream: pushed values are queued; consumers await the
- * next slot. `complete()` (deliberate close) ends the stream after the
- * remaining queue has drained.
- */
-class AsyncReader<T> {
-    readonly #queue: T[] = [];
-    readonly #waiter: Array<() => void> = [];
-    #completed = false;
-
-    push(value: T): void {
-        const waiter = this.#waiter.shift();
-        if (waiter) {
-            waiter();
-        }
-        this.#queue.push(value);
-    }
-
-    complete(): void {
-        this.#completed = true;
-        while (this.#waiter.length > 0) {
-            const waiter = this.#waiter.shift();
-            if (waiter) {
-                waiter();
-            }
-        }
-    }
-
-    async *iterable(): AsyncGenerator<T> {
-        while (true) {
-            if (this.#queue.length > 0) {
-                yield this.#queue.shift() as T;
-                continue;
-            }
-            if (this.#completed) {
-                return;
-            }
-            const { promise, resolve } = Promise.withResolvers<void>();
-            this.#waiter.push(resolve);
-            await promise;
         }
     }
 }

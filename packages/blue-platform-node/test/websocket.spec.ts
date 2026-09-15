@@ -46,6 +46,17 @@ class SocketController {
         }
     }
 
+    // Room membership (AD-21 D5): the handler joins 'lobby' on connect;
+    // the adapter's registry then fans out broadcastTo('lobby', …) to it.
+    @socketMapping('/lobby')
+    @parameters({ session: socketSession('session') })
+    async *lobby(session: SocketSession) {
+        session.join('lobby');
+        for await (const message of session.messages) {
+            yield { event: 'lobby', data: message };
+        }
+    }
+
     // @parameters on a socket: bound from the upgrade sources into
     // session.params (query/header), gated by the query condition.
     @socketMapping({ value: '/room', queryParams: 'token=abc', private: false })
@@ -67,6 +78,7 @@ class SocketController {
 describe('Node WebSocket pipeline', () => {
     let context: MetadataConfigApplicationContext;
     let server: HTTPServer;
+    let adapter: NodeHTTPServerAdapter;
     let httpBase: string;
     let wsUrl: string;
 
@@ -77,7 +89,7 @@ describe('Node WebSocket pipeline', () => {
         context.refresh();
 
         const dispatcher = context.getValue<NodeDispatcher>('dispatcher');
-        const adapter = new NodeHTTPServerAdapter(dispatcher);
+        adapter = new NodeHTTPServerAdapter(dispatcher);
         await adapter.listen(0, '127.0.0.1');
         const boundPort = (
             adapter.server as unknown as {
@@ -173,6 +185,55 @@ describe('Node WebSocket pipeline', () => {
         // Either the handshake errors (refused) or never opens — the socket
         // must not be usable.
         expect(failed).toBe(true);
+    });
+
+    const open = (ws: WebSocket): Promise<void> => {
+        const { promise, resolve, reject } = Promise.withResolvers<void>();
+        ws.once('open', resolve);
+        ws.once('error', reject);
+        return promise;
+    };
+    const waitMessage = (ws: WebSocket): Promise<unknown> => {
+        const { promise, resolve } = Promise.withResolvers<unknown>();
+        ws.once('message', (data: unknown) => resolve(JSON.parse(String(data))));
+        return promise;
+    };
+    const delay = (ms: number): Promise<void> => {
+        const { promise, resolve } = Promise.withResolvers<void>();
+        setTimeout(resolve, ms);
+        return promise;
+    };
+
+    test('registry tracks live sessions and broadcasts to a path (AD-21)', async () => {
+        const a = new WebSocket(`${wsUrl}/echo`);
+        const b = new WebSocket(`${wsUrl}/echo`);
+        await Promise.all([open(a), open(b)]);
+        expect(adapter.socketRegistry.count('/echo')).toBe(2);
+
+        // Out-of-handler push: any service with the registry can fan out.
+        const ra = waitMessage(a);
+        const rb = waitMessage(b);
+        adapter.socketRegistry.broadcast('/echo', { event: 'server', data: 'fan' });
+        await expect(ra).resolves.toEqual({ event: 'server', data: 'fan' });
+        await expect(rb).resolves.toEqual({ event: 'server', data: 'fan' });
+
+        a.close(1000, 'done');
+        b.close(1000, 'done');
+        await delay(150);
+        expect(adapter.socketRegistry.count('/echo')).toBe(0);
+    });
+
+    test('handler room join enables broadcastTo (AD-21 D5)', async () => {
+        const ws = new WebSocket(`${wsUrl}/lobby`);
+        await open(ws);
+        expect(adapter.socketRegistry.count('/lobby')).toBe(1);
+        // Give the handler a beat to run session.join('lobby').
+        await delay(50);
+
+        const received = waitMessage(ws);
+        adapter.socketRegistry.broadcastTo('lobby', { event: 'push', data: 'tick' });
+        await expect(received).resolves.toEqual({ event: 'push', data: 'tick' });
+        ws.close(1000, 'done');
     });
 });
 

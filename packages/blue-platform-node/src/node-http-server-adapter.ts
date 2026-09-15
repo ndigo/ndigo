@@ -36,6 +36,7 @@ import {
 } from '@blue/dispatcher';
 import { NodeRequest, NODE_REQUEST_ATTRIBUTE, NODE_RESPONSE_ATTRIBUTE } from './node-request';
 import { nodeSocketSession } from './node-socket-session';
+import { NodeSocketSessionRegistry } from './node-socket-session-registry';
 import { ProblemTypes, writeProblem } from './problem-details';
 import { ResponseStatus } from '@blue/http';
 import type { NodeDispatcher } from './node-dispatcher';
@@ -65,6 +66,13 @@ export interface NodeHTTPServerAdapterOptions {
      * public socket endpoints that must accept any client.
      */
     allowedWebSocketOrigins?: string[];
+    /**
+     * Session registry tracking open sockets (broadcast, rooms, heartbeat;
+     * AD-21). When omitted, the adapter creates a default registry with
+     * standard heartbeat defaults — heartbeats are on unless explicitly
+     * disabled.
+     */
+    socketRegistry?: NodeSocketSessionRegistry;
 }
 
 /**
@@ -114,9 +122,19 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
     readonly #allowedWebSocketOrigins: Record<string, true> | null;
     #server: Server | null;
     #websocket: WebSocketServer | null = null;
+    readonly #socketRegistry: NodeSocketSessionRegistry;
 
     get server(): unknown {
         return this.#server;
+    }
+
+    /**
+     * The session registry backing this adapter's sockets (broadcast, rooms,
+     * heartbeat). Shared with the application so any service can push to a
+     * room (AD-21 D4).
+     */
+    get socketRegistry(): NodeSocketSessionRegistry {
+        return this.#socketRegistry;
     }
 
     /**
@@ -127,6 +145,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
         this.#dispatcher = dispatcher;
         this.#limits = resolveHTTPRequestLimits(options.limits);
         this.#server = null;
+        this.#socketRegistry = options.socketRegistry ?? new NodeSocketSessionRegistry();
         const origins: Record<string, true> = {};
         for (const entry of options.allowedWebSocketOrigins ?? []) {
             const normalized = normalizeOrigin(entry);
@@ -370,7 +389,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
             try {
                 for (const param of target.parameters) {
                     if (param.type === MethodParameterType.SOCKET_SESSION) {
-                        session = nodeSocketSession(ws, path, sources);
+                        session = nodeSocketSession(ws, path, sources, this.#socketRegistry);
                         args.push(session);
                     } else {
                         const resolver = this.#findResolver(param);
@@ -390,7 +409,12 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
                 return;
             }
         }
-        if (!session) session = nodeSocketSession(ws, path, sources);
+        if (!session) session = nodeSocketSession(ws, path, sources, this.#socketRegistry);
+        // Track the session before the handler runs so broadcasts from the
+        // handler (or any service with the registry) reach it immediately;
+        // the close event drops it from the registry (AD-21 D3/D4).
+        this.#socketRegistry.register(session, path, ws);
+        ws.on('close', () => this.#socketRegistry.remove(session));
         const handlerMethod = (target.instance as Record<string, unknown>)[target.method] as unknown;
         if (typeof handlerMethod !== 'function') {
             ws.close(1011, 'socket handler is not a function');
@@ -450,6 +474,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
             const clients = wss.clients as unknown as Set<{ close(code: number, reason: string): void }> | undefined;
             clients?.forEach((client) => client.close(1001, 'server shutting down'));
         }
+        this.#socketRegistry.stop();
         await new Promise<void>((resolve) => {
             server.close(() => resolve());
         });

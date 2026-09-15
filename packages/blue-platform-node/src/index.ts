@@ -19,6 +19,7 @@ export * from './parameter-binding-error-resolver';
 export * from './last-resort-error-resolver';
 export * from './problem-details';
 export * from './node-socket-session';
+export * from './node-socket-session-registry';
 export * from './file-system-router';
 export * from './http-server';
 export * from './node-http-server-adapter';

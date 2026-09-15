@@ -80,6 +80,12 @@ client reconnects and resyncs. Tune per registry:
 `{ backpressure: { maxBufferedBytes, onOverflow: 'drop' | 'close' } }`
 (`drop` skips silently; `null` disables the guard).
 
+Socket observability ships as `WebSocketServerInstrumentation`
+(`@blue/telemetry-node`, opt-in like the HTTP instrumentation): session
+lifetime spans (`SocketSession.connect`, path/duration/close code),
+sessions opened/closed, fan-out messages/bytes (path/room), and
+backpressure-close counters — all under `blue.socket.*`.
+
 Also on the session: `session.attributes` — a per-connection state bag
 (Micronaut/Spring/Jakarta parity), and `session.close(code, reason)` for a
 server-initiated close.

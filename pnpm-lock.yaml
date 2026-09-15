@@ -352,6 +352,9 @@ importers:
       '@blue/scheduler':
         specifier: ~0.0.1
         version: link:../../packages/blue-scheduler
+      '@blue/socket':
+        specifier: ~0.0.1
+        version: link:../../packages/blue-socket
       '@blue/telemetry':
         specifier: ~0.0.1
         version: link:../../packages/blue-telemetry

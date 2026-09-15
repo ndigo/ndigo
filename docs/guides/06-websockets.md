@@ -123,7 +123,44 @@ BLUE_SOCKET_HEARTBEAT_INTERVAL_MS=0       # disable explicitly (not recommended)
 Adapters constructed by hand accept a `NodeSocketSessionRegistry` with the
 same options; `server.close()` stops the sweep (graceful shutdown).
 
-## 5. Design boundaries (AD-21)
+## 5. The client (`@blue/socket`, AD-22)
+
+`WebSocketClient` is the isomorphic client: WHATWG `WebSocket` global in
+browsers **and** Node ≥22, with signal-based status and reconnect:
+
+```ts
+import { WebSocketClient } from '@blue/socket';
+import { effect } from '@blue/signals';
+
+const chat = new WebSocketClient('ws://localhost:3000/ws/chat', {
+    reconnect: { baseMs: 1000, maxMs: 30_000, jitter: 0.2 }, // default
+    bufferWhileDisconnected: { maxMessages: 100 },            // opt-in queue
+    reconnectTrigger: createOnlineReconnectTrigger(),         // browser wiring
+});
+
+effect(() => {
+    if (chat.status.value === 'open') connectingBadge.hidden = true;
+});
+
+for await (const message of chat.messages) {
+    applyMessage(JSON.parse(String(message))); // text frames arrive as strings
+}
+chat.send({ room: 'lobby', text: 'hello' });   // strings → text frames, else JSON
+chat.close();                                   // deliberate — never reconnects
+```
+
+Semantics (AD-22 D3): `status` is a signal
+(`connecting/open/reconnecting/closed`); `messages` is an async iterable
+that **survives reconnects** and completes only on a deliberate `close()`;
+unexpected drops back off exponentially (base 1s, cap 30s, ±20% jitter,
+attempt counter reset on each successful open); messages sent while
+disconnected are queued (opt-in, overflow drops oldest) or dropped.
+
+`createOnlineReconnectTrigger()` (`blue-platform-web`, browser-only) wires
+window `online`/`offline` events into the client's immediate-retry path —
+the browser half of the story; `@blue/socket` itself has no window globals.
+
+## 6. Design boundaries (AD-21)
 
 - **No generic `Session` base class.** HTTP session state and WebSocket
   connections share only "ID + data container" — every operation past that
@@ -141,12 +178,15 @@ same options; `server.close()` stops the sweep (graceful shutdown).
   STOMP (future layer), message history — **SockJS: never** (pre-2015
   fallback-transport workaround; third-party territory, AD-22 D4).
 
-## 6. References
+## 7. References
 
-- Decision: [AD-21 — WebSocket Session Registry](../decisions/2026-09-15_AD21_WEBSOCKET_SESSION_REGISTRY.md)
-- Plan: [2026-09-15 — WebSocket Broadcast](../plans/2026-09-15_WEBSOCKET_BROADCAST.md)
+- Decision: [AD-21 — WebSocket Session Registry](../decisions/2026-09-15_AD21_WEBSOCKET_SESSION_REGISTRY.md),
+  [AD-22 — WebSocket Client & `@blue/socket`](../decisions/2026-09-15_AD22_WEBSOCKET_CLIENT.md)
+- Plans: [WebSocket Broadcast](../plans/2026-09-15_WEBSOCKET_BROADCAST.md),
+  [WebSocket Client](../plans/2026-09-15_WEBSOCKET_CLIENT.md)
 - Demo: `ChatController` in `apps/blue-api/src/chat-controller.ts`, e2e in
-  `apps/blue-api/test/chat.spec.ts`
-- Package surfaces: `@blue/dispatcher` (contracts),
+  `apps/blue-api/test/chat.spec.ts` (driven by `WebSocketClient`)
+- Package surfaces: [`@blue/socket`](../../packages/blue-socket/README.md)
+  (contracts + client), `@blue/dispatcher` (handler vocabulary),
   [`@blue/platform-node`](../../packages/blue-platform-node/README.md)
-  (registry, adapter, auto-configuration)
+  (registry, adapter, auto-configuration), `@blue/platform-web` (online trigger)

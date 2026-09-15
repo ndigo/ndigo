@@ -1058,6 +1058,9 @@ importers:
       '@blue/signals':
         specifier: ~0.0.1
         version: link:../blue-signals
+      '@blue/socket':
+        specifier: ~0.0.1
+        version: link:../blue-socket
       '@blue/util':
         specifier: ~0.0.1
         version: link:../blue-util

@@ -32,6 +32,44 @@ export interface NodeSocketSessionRegistryOptions {
 }
 
 /**
+ * Validates and resolves socket registry options from the environment,
+ * filling defaults (mirrors `resolveHTTPRequestLimits`).
+ *
+ * - `BLUE_SOCKET_HEARTBEAT_INTERVAL_MS` — ping interval; `0` disables the
+ *   heartbeat (D6), default `30000`.
+ * - `BLUE_SOCKET_IDLE_TIMEOUT_MS` — silent-session reap threshold,
+ *   default `60000`.
+ *
+ * Invalid values throw a `RangeError` (fail fast at boot).
+ *
+ * @param env - Environment to read (defaults to `process.env`).
+ * @returns Resolved registry options.
+ */
+export function resolveSocketRegistryOptions(env: Readonly<Record<string, string | undefined>> = process.env): NodeSocketSessionRegistryOptions {
+    const heartbeatRaw = env['BLUE_SOCKET_HEARTBEAT_INTERVAL_MS'];
+    const idleRaw = env['BLUE_SOCKET_IDLE_TIMEOUT_MS'];
+    const options: NodeSocketSessionRegistryOptions = {};
+    if (heartbeatRaw !== undefined && heartbeatRaw !== '') {
+        const value = Number(heartbeatRaw);
+        if (!Number.isInteger(value) || value < 0) {
+            throw new RangeError(
+                `BLUE_SOCKET_HEARTBEAT_INTERVAL_MS must be a non-negative integer (ms), got: ${heartbeatRaw}`
+            );
+        }
+        // `0` explicitly disables the heartbeat (D6).
+        options.heartbeatIntervalMs = value === 0 ? null : value;
+    }
+    if (idleRaw !== undefined && idleRaw !== '') {
+        const value = Number(idleRaw);
+        if (!Number.isInteger(value) || value <= 0) {
+            throw new RangeError(`BLUE_SOCKET_IDLE_TIMEOUT_MS must be a positive integer (ms), got: ${idleRaw}`);
+        }
+        options.idleTimeoutMs = value;
+    }
+    return options;
+}
+
+/**
  * Tracks live Node WebSocket sessions and fans out to them (AD-21 D3/D5/D6).
  *
  * Sessions are registered by the server adapter on connection and removed on

@@ -12,6 +12,10 @@ instrumentations, built on the isomorphic [`@blue/telemetry`](../blue-telemetry/
 - **Instrumentations**:
   - `RouterInstrumentation` — route-change spans for hash/feature routing
   - `DispatcherInstrumentation` — client-side dispatch spans
+  - `WebSocketClientInstrumentation` — `WebSocketClient` outbound
+    messages/bytes + close counters (`blue.socket.client.*`); status and
+    reconnect counters wire through `countSocketClientStatus()` as the
+    client's `onStatusChange` option
 
 ## Usage
 

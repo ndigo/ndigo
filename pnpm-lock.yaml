@@ -1021,6 +1021,9 @@ importers:
       '@blue/scheduler':
         specifier: ~0.0.1
         version: link:../blue-scheduler
+      '@blue/socket':
+        specifier: ~0.0.1
+        version: link:../blue-socket
       '@blue/view':
         specifier: ~0.0.1
         version: link:../blue-view

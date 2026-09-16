@@ -330,7 +330,10 @@ describe('WebSocket upgrade authentication + limits', () => {
         @parameters({ session: socketSession('session') })
         async *privateEcho(session: SocketSession) {
             for await (const message of session.messages) {
-                yield { event: 'private', principal: session.attributes['principal'], data: String(message) };
+                // Text frames arrive as strings; binary frames as bytes
+                // (AD-23 D8) — decode explicitly for the text contract.
+                const data = typeof message === 'string' ? message : new TextDecoder().decode(message as Uint8Array);
+                yield { event: 'private', principal: session.attributes['principal'], data };
             }
         }
     }
@@ -440,13 +443,14 @@ describe('WebSocket upgrade authentication + limits', () => {
         await expect(closed).resolves.toMatchObject({ code: 1009, reason: 'inbound queue overflow' });
     });
 
-    test('binary frames arrive as UTF-8 strings (contract promise, O9)', async () => {
+    test('binary frames arrive byte-exact; handlers decode explicitly (AD-23 D8)', async () => {
         const ws = new WebSocket(`${wsUrl}/authws/private?token=good`);
         await open(ws);
         const reply = waitMessage(ws);
         ws.send(Buffer.from('héllo binary'));
-        // The server decodes binary payloads as UTF-8 — handlers see one
-        // predictable text type, per the SocketSession.messages contract.
+        // The old "binary arrives as UTF-8 strings" promise is replaced:
+        // binary frames surface as Uint8Array (AD-23 D8) and the handler
+        // decodes; text frames still arrive as strings.
         await expect(reply).resolves.toEqual({ event: 'private', principal: 'alice', data: 'héllo binary' });
         ws.close(1000, 'done');
     });

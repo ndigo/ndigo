@@ -1311,6 +1311,9 @@ importers:
       '@blue/router':
         specifier: ~0.0.1
         version: link:../blue-router
+      '@blue/socket':
+        specifier: ~0.0.1
+        version: link:../blue-socket
 
   packages/blue-test:
     dependencies:

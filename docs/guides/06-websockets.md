@@ -171,6 +171,18 @@ disconnected are queued (opt-in, overflow drops oldest) or dropped.
 window `online`/`offline` events into the client's immediate-retry path —
 the browser half of the story; `@blue/socket` itself has no window globals.
 
+Client-side metrics: `WebSocketClientInstrumentation`
+(`@blue/telemetry-web`) counts outbound messages/bytes and deliberate
+closes automatically (`blue.socket.client.*`); status and **reconnect**
+counters wire through `countSocketClientStatus()` as the client's
+`onStatusChange` option:
+
+```ts
+import { countSocketClientStatus } from '@blue/telemetry-web';
+
+const chat = new WebSocketClient(url, { onStatusChange: countSocketClientStatus() });
+```
+
 ## 6. Design boundaries (AD-21)
 
 - **No generic `Session` base class.** HTTP session state and WebSocket

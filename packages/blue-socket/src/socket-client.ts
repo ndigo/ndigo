@@ -88,6 +88,13 @@ export interface WebSocketClientOptions {
     /** Immediate-retry wiring (AD-22 D3); `null` disables. */
     reconnectTrigger?: ReconnectTrigger | null;
     /**
+     * Status-transition observer: invoked on every state change
+     * (`connecting | open | reconnecting | closed`), never on construction
+     * and not twice for the same state — the telemetry seam for status and
+     * reconnect metrics (constructor-injected like `reconnectTrigger`).
+     */
+    onStatusChange?: (status: SocketStatus) => void;
+    /**
      * Transport factory for tests and non-standard environments. Defaults
      * to the WHATWG `WebSocket` global (browser + Node ≥22).
      * @internal
@@ -203,6 +210,7 @@ export class WebSocketClient implements SocketClient {
     readonly #reconnect: ReconnectPolicy | null;
     readonly #bufferLimit: number | null;
     readonly #trigger: ReconnectTrigger | null;
+    readonly #onStatusChange: ((status: SocketStatus) => void) | null;
     readonly #transportFactory: (url: string) => SocketTransport;
     readonly #inbound: AsyncReader<unknown> = new AsyncReader<unknown>();
     #transport: SocketTransport | null = null;
@@ -221,6 +229,7 @@ export class WebSocketClient implements SocketClient {
         this.#reconnect = configured === undefined ? DEFAULT_RECONNECT : configured;
         this.#bufferLimit = options.bufferWhileDisconnected?.maxMessages ?? null;
         this.#trigger = options.reconnectTrigger ?? null;
+        this.#onStatusChange = options.onStatusChange ?? null;
         this.#transportFactory = options.transportFactory ?? defaultTransportFactory;
         this.#trigger?.onChange(() => this.#retryNow());
         this.#connect();
@@ -267,7 +276,7 @@ export class WebSocketClient implements SocketClient {
             this.#timer = null;
         }
         this.#transport?.close(code, reason);
-        this.status.value = 'closed';
+        this.#transition('closed');
         this.#inbound.complete();
     }
 
@@ -280,7 +289,7 @@ export class WebSocketClient implements SocketClient {
                 return;
             }
             this.#attempt = 0;
-            this.status.value = 'open';
+            this.#transition('open');
             this.#flush();
         };
         transport.onmessage = (event) => {
@@ -291,18 +300,18 @@ export class WebSocketClient implements SocketClient {
         transport.onerror = () => undefined;
         transport.onclose = () => {
             if (this.#intentional) {
-                this.status.value = 'closed';
+                this.#transition('closed');
                 this.#inbound.complete();
                 return;
             }
-            this.status.value = 'reconnecting';
+            this.#transition('reconnecting');
             this.#scheduleRetry();
         };
     }
 
     #scheduleRetry(): void {
         if (this.#reconnect === null || this.#intentional) {
-            this.status.value = 'closed';
+            this.#transition('closed');
             this.#inbound.complete();
             return;
         }
@@ -316,7 +325,7 @@ export class WebSocketClient implements SocketClient {
         this.#timer = setTimeout(
             () => {
                 this.#timer = null;
-                this.status.value = 'connecting';
+                this.#transition('connecting');
                 this.#connect();
             },
             Math.max(0, jittered)
@@ -331,8 +340,22 @@ export class WebSocketClient implements SocketClient {
             clearTimeout(this.#timer);
             this.#timer = null;
         }
-        this.status.value = 'connecting';
+        this.#transition('connecting');
         this.#connect();
+    }
+
+    /**
+     * The single status choke point: sets the signal and notifies the
+     * `onStatusChange` observer — never twice for the same state.
+     *
+     * @param next - The next connection state.
+     */
+    #transition(next: SocketStatus): void {
+        if (this.status.value === next) {
+            return;
+        }
+        this.status.value = next;
+        this.#onStatusChange?.(next);
     }
 
     #flush(): void {

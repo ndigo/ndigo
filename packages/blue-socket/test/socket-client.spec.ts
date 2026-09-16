@@ -71,7 +71,9 @@ class FakeTrigger implements ReconnectTrigger {
 }
 
 function createHarness(
-    options: Partial<Pick<WebSocketClientOptions, 'reconnect' | 'bufferWhileDisconnected' | 'reconnectTrigger'>> = {}
+    options: Partial<
+        Pick<WebSocketClientOptions, 'reconnect' | 'bufferWhileDisconnected' | 'reconnectTrigger' | 'onStatusChange'>
+    > = {}
 ) {
     const created: FakeTransport[] = [];
     const client = new WebSocketClient('wss://test/echo', {
@@ -268,5 +270,32 @@ describe('WebSocketClient', () => {
         trigger.notify();
         expect(client.status.value).toBe('open');
         expect(created.length).toBe(1);
+    });
+
+    test('onStatusChange fires on each transition, never twice for a state', () => {
+        vi.spyOn(Math, 'random').mockReturnValue(0.5); // deterministic 1s backoff
+        const states: string[] = [];
+        const { client, created } = createHarness({
+            onStatusChange: (status) => states.push(status),
+        });
+        expect(states).toEqual([]); // construction does not notify
+
+        created[0].fireOpen();
+        created[0].fireOpen(); // repeated state → no notification
+        created[0].fireClose();
+        vi.advanceTimersByTime(1000);
+        created[1].fireOpen();
+        client.close();
+        expect(states).toEqual(['open', 'reconnecting', 'connecting', 'open', 'closed']);
+    });
+
+    test('onStatusChange with reconnect:null ends at closed', () => {
+        const states: string[] = [];
+        const { client, created } = createHarness({ reconnect: null, onStatusChange: (s) => states.push(s) });
+        created[0].fireOpen();
+        created[0].fireClose();
+        // Unexpected close lands in `reconnecting` first, then the
+        // null-policy path resolves it to terminal `closed`.
+        expect(states).toEqual(['open', 'reconnecting', 'closed']);
     });
 });

@@ -1,6 +1,13 @@
 # 2026-09-15 WebSocket Session Registry & Broadcast
 
-**Status:** Proposed (ratification pending — ADR to follow this plan)
+**Status:** Implemented (ratified by [AD-21](../decisions/2026-09-13_AD21_WEBSOCKET_SESSION_REGISTRY.md);
+shipped in `6eafdf05`, `d76eed8f`, `f5fd6d8b`, `f0a67c98`, `f0718252`; review-hardening `2026-09-15`)
+**As-built deviations (surface changed after this plan was written):**
+- Contract home moved from `blue-dispatcher` to `@blue/socket` — dispatcher re-exports the types for handler signatures (`6bda49b5`).
+- `remove(session)` → `remove(session, closeCode?)` (close-code observability for telemetry, `f0718252`); registry additions: `addOverflowObserver()` and per-session memoized overflow-close decisions (2026-09-15 review hardening).
+- Heartbeat env is `BLUE_SOCKET_HEARTBEAT_INTERVAL_MS` / `BLUE_SOCKET_IDLE_TIMEOUT_MS` (env-only; the plan's `socket.heartbeat-interval-ms` property names were not adopted — `f5fd6d8b`). The reaper pings with `ws.ping()` and closes `1001` (peers stuck in the handshake are force-reaped by ws `closeTimeout`).
+- Session `attributes` lives **as long as the session** — the plan's "cleared on close" wording was dropped in the contract (`6eafdf05`/`6bda49b5`).
+- Transport bounds added after planning: `maxPayload` (frame cap, default 1 MiB) and `maxQueuedMessages` (inbound queue, overflow close `1009`) — env `BLUE_SOCKET_MAX_PAYLOAD_BYTES` / `BLUE_SOCKET_MAX_QUEUED_MESSAGES`. Origin allowlist is env-tunable via `BLUE_SOCKET_ALLOWED_ORIGINS` (2026-09-15 review hardening).
 **Scope:** `blue-dispatcher` (type-only contracts), `blue-platform-node` (impl, auto-configuration),
 `blue-auth-core` (naming prereq), `apps/blue-api` (demo gate)
 **Companion docs:** [Framework Gap Analysis](../audits/2026-09-13_FRAMEWORK_GAP_ANALYSIS.md) §2.3 (WebSockets),

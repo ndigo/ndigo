@@ -317,3 +317,143 @@ describe('WebSocket origin enforcement', () => {
         );
     });
 });
+
+describe('WebSocket upgrade authentication + limits', () => {
+    let context: MetadataConfigApplicationContext;
+    let adapter: NodeHTTPServerAdapter;
+    let wsUrl: string;
+    const seenPaths: string[] = [];
+
+    @requestMapping('/authws')
+    class AuthedSocketController {
+        @socketMapping('/private')
+        @parameters({ session: socketSession('session') })
+        async *privateEcho(session: SocketSession) {
+            for await (const message of session.messages) {
+                yield { event: 'private', principal: session.attributes['principal'], data: String(message) };
+            }
+        }
+    }
+
+    @requestMapping('/brokenws')
+    class BrokenSocketController {
+        // Broadcast-style handler: consumes messages without yielding —
+        // returns a Promise, exercising the async-handler path. The throw
+        // inside must route to session.close(1011), not crash the process.
+        @socketMapping('/boom')
+        @parameters({ session: socketSession('session') })
+        async broken(session: SocketSession) {
+            seenPaths.push(session.path);
+            for await (const _message of session.messages) {
+                throw new Error('handler exploded');
+            }
+        }
+
+        // Never drains inbound: lets the bounded queue fill so the overflow
+        // close (1009) is observable.
+        @socketMapping('/sink')
+        async *sink() {
+            // Pends forever without consuming `session.messages`.
+            await new Promise<void>(() => undefined);
+            yield undefined; // unreachable — keeps the generator shape
+        }
+    }
+
+    const open = (ws: WebSocket): Promise<void> => {
+        const { promise, resolve, reject } = Promise.withResolvers<void>();
+        ws.once('open', resolve);
+        ws.once('error', reject);
+        return promise;
+    };
+    const waitClose = (ws: WebSocket): Promise<{ code: number; reason: string }> => {
+        const { promise, resolve } = Promise.withResolvers<{ code: number; reason: string }>();
+        ws.once('close', (code: number, reason: Buffer) => {
+            resolve({ code, reason: reason.toString() });
+        });
+        return promise;
+    };
+
+    beforeAll(async () => {
+        context = new MetadataConfigApplicationContext('ws-auth-limits');
+        context.register(NodeAutoConfiguration);
+        context.setValue(AuthedSocketController.name, new AuthedSocketController());
+        context.setValue(BrokenSocketController.name, new BrokenSocketController());
+        context.refresh();
+        const dispatcher = context.getValue<NodeDispatcher>('dispatcher');
+        adapter = new NodeHTTPServerAdapter(dispatcher, {
+            authenticate: (sources) => {
+                const token = String(sources.query['token'] ?? '');
+                if (token !== 'good') {
+                    return null;
+                }
+                return { principal: 'alice', token };
+            },
+            socketLimits: { maxQueuedMessages: 2 },
+        });
+        await adapter.listen(0, '127.0.0.1');
+        const boundAddress = adapter.server as { address: () => { port: number } | null };
+        const boundPort = boundAddress.address()?.port;
+        wsUrl = `ws://127.0.0.1:${boundPort}`;
+    });
+
+    afterAll(async () => {
+        await adapter?.close();
+    });
+
+    test('authenticate hook rejects upgrades without a valid token (1008)', async () => {
+        const ws = new WebSocket(`${wsUrl}/authws/private`);
+        const closed = waitClose(ws);
+        ws.on('error', () => undefined); // ws surfaces the 1008 as an error too
+        await expect(closed).resolves.toMatchObject({ code: 1008 });
+        expect(seenPaths).toEqual([]);
+    });
+
+    test('authenticate hook populates session.attributes before the handler runs', async () => {
+        const ws = new WebSocket(`${wsUrl}/authws/private?token=good`);
+        await open(ws);
+        const reply = waitMessage(ws);
+        ws.send('hi');
+        await expect(reply).resolves.toEqual({ event: 'private', principal: 'alice', data: 'hi' });
+        ws.close(1000, 'done');
+    });
+
+    test('an async (non-generator) handler rejection closes the session with 1011', async () => {
+        const ws = new WebSocket(`${wsUrl}/brokenws/boom?token=good`);
+        await open(ws);
+        ws.on('error', () => undefined);
+        const closed = waitClose(ws);
+        ws.send('trigger');
+        await expect(closed).resolves.toMatchObject({ code: 1011, reason: 'handler error' });
+        expect(seenPaths).toEqual(['/brokenws/boom']);
+    });
+
+    test('inbound queue overflow closes the session (1009) under a tiny cap', async () => {
+        // maxQueuedMessages: 2 — the /sink handler never drains, so the
+        // queue fills and the third message trips the overflow close.
+        const ws = new WebSocket(`${wsUrl}/brokenws/sink?token=good`);
+        await open(ws);
+        ws.on('error', () => undefined);
+        const closed = waitClose(ws);
+        ws.send('1');
+        ws.send('2');
+        ws.send('3');
+        await expect(closed).resolves.toMatchObject({ code: 1009, reason: 'inbound queue overflow' });
+    });
+
+    test('binary frames arrive as UTF-8 strings (contract promise, O9)', async () => {
+        const ws = new WebSocket(`${wsUrl}/authws/private?token=good`);
+        await open(ws);
+        const reply = waitMessage(ws);
+        ws.send(Buffer.from('héllo binary'));
+        // The server decodes binary payloads as UTF-8 — handlers see one
+        // predictable text type, per the SocketSession.messages contract.
+        await expect(reply).resolves.toEqual({ event: 'private', principal: 'alice', data: 'héllo binary' });
+        ws.close(1000, 'done');
+    });
+});
+
+const waitMessage = (ws: WebSocket): Promise<unknown> => {
+    const { promise, resolve } = Promise.withResolvers<unknown>();
+    ws.once('message', (data: unknown) => resolve(JSON.parse(String(data))));
+    return promise;
+};

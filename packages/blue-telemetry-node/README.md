@@ -16,7 +16,9 @@ instrumentations, built on the isomorphic [`@blue/telemetry`](../blue-telemetry/
     frame counts, duration, and client-disconnect flags (`sse.*` attributes)
   - `WebSocketServerInstrumentation` — socket session-lifetime spans +
     counters: sessions opened/closed (path, close code), fan-out
-    messages/bytes (path/room), backpressure overflows (`blue.socket.*`)
+    messages/bytes (path/room), backpressure decisions — `close` `1013`
+    and `drop` actions (`blue.socket.*`; wired via the registry's overflow
+    observer so drop-mode is visible too)
   - `HTTPResponseViewTargetInstrumentation` — view-commit spans
 - **`SeverityFilterLogRecordProcessor`** — drops log records below a
   configured severity so production logs stay quiet

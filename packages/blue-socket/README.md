@@ -14,6 +14,7 @@ import { effect } from '@blue/signals';
 const chat = new WebSocketClient('ws://localhost:3000/ws/chat', {
     reconnect: { baseMs: 1000, maxMs: 30_000, jitter: 0.2 }, // default policy
     bufferWhileDisconnected: { maxMessages: 100 },            // opt-in queue
+    maxInboundMessages: 1024,                                 // opt-in inbound watermark
 });
 
 effect(() => {
@@ -31,11 +32,26 @@ chat.close(); // deliberate — never reconnects
 
 - `status` — `@blue/signals` signal: `connecting | open | reconnecting | closed`.
 - `messages` — async iterable; survives reconnects; completes only on a
-  deliberate `close()`.
-- Reconnect — exponential backoff with jitter on unexpected close only;
-  attempt counter resets on each successful open.
-- Browser online/offline immediate retry: `createOnlineReconnectTrigger()`
-  from `@blue/platform-web`.
+  deliberate `close()`; bounded by `maxInboundMessages` when set (overflow
+  drops the newest frame).
+- Reconnect — exponential backoff with jitter on unexpected close only
+  (jitter never exceeds `maxMs`); attempt counter resets on each successful
+  open.
+- Browser online/offline immediate retry: pair with
+  `createOnlineReconnectTrigger()` from `@blue/platform-web`:
+
+```ts
+import { createOnlineReconnectTrigger } from '@blue/platform-web';
+
+const trigger = createOnlineReconnectTrigger();
+const chat = new WebSocketClient(url, { reconnectTrigger: trigger });
+// …teardown: chat.close() unsubscribes; trigger.dispose() releases it entirely
+```
+
+- Status observability — the telemetry seam: pass
+  `onStatusChange: countSocketClientStatus()` (from `@blue/telemetry-web`)
+  to count `connecting/open/reconnecting/closed` transitions, or any
+  observer of your own (a throwing observer cannot wedge the client).
 
 ## Contracts
 

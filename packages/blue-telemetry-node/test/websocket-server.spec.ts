@@ -34,6 +34,16 @@ class SocketTelemetryController {
 }
 
 /**
+ * Constructed at module scope — BEFORE any MeterProvider registration —
+ * matching production wiring (`configureTelemetry({ instrumentations: [
+ * new WebSocketServerInstrumentation() ] })` builds the instrumentation in
+ * the constructor, where `InstrumentationBase` already ran `enable()`).
+ * B3 regression: counters must resolve lazily on first use, or they capture
+ * the NoopMeter and every `blue.socket.*` datapoint below is silently lost.
+ */
+const instrumentation = new WebSocketServerInstrumentation();
+
+/**
  * Sums the counter's datapoints via an explicit collect (counters aggregate
  * as SUM — narrowed through `dataPointType`).
  *
@@ -80,7 +90,8 @@ describe('WebSocketServerInstrumentation', () => {
         });
         metrics.setGlobalMeterProvider(new MeterProvider({ readers: [metricReader] }));
 
-        const instrumentation = new WebSocketServerInstrumentation();
+        // Constructor already enabled the instrumentation (module scope);
+        // a second enable() is a no-op (`InstrumentationBase` latches).
         instrumentation.enable();
 
         const context = new MetadataConfigApplicationContext('ws-telemetry');

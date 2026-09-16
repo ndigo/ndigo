@@ -27,6 +27,7 @@ import {
     getInterceptorDenial,
     getMethodNotAllowed,
     isSocketMapping,
+    isStompMapping,
     type InterceptorDenial,
     type SocketRequestSources,
     type SocketSession,
@@ -35,7 +36,12 @@ import {
     MethodParameterType,
 } from '@blue/dispatcher';
 import { NodeRequest, NODE_REQUEST_ATTRIBUTE, NODE_RESPONSE_ATTRIBUTE } from './node-request';
-import { nodeSocketSession, resolveSocketLimits, type ResolvedSocketLimits, type SocketLimits } from './node-socket-session';
+import {
+    nodeSocketSession,
+    resolveSocketLimits,
+    type ResolvedSocketLimits,
+    type SocketLimits,
+} from './node-socket-session';
 import { NodeSocketSessionRegistry } from './node-socket-session-registry';
 import { ProblemTypes, writeProblem } from './problem-details';
 import { ResponseStatus } from '@blue/http';
@@ -50,6 +56,13 @@ import {
     RequestLimitError,
 } from './http-request-limits';
 import { parseCookies } from './cookie-parser';
+
+/**
+ * STOMP WebSocket subprotocols, best to worst (AD-23 D4). Spring and
+ * STOMP.js clients offer these on upgrade; the adapter selects the best
+ * mutual match.
+ */
+const STOMP_SUBPROTOCOLS: readonly string[] = ['v12.stomp', 'v11.stomp', 'v10.stomp'];
 
 /**
  * Options for {@link NodeHTTPServerAdapter}.
@@ -83,7 +96,9 @@ export interface NodeHTTPServerAdapterOptions {
      * violation). An `async` hook is awaited. Absent, sockets accept any
      * client (public endpoint posture).
      */
-    authenticate?: (sources: SocketRequestSources) => Record<string, unknown> | null | Promise<Record<string, unknown> | null>;
+    authenticate?: (
+        sources: SocketRequestSources
+    ) => Record<string, unknown> | null | Promise<Record<string, unknown> | null>;
     /**
      * Session registry tracking open sockets (broadcast, rooms, heartbeat;
      * AD-21). When omitted, the adapter creates a default registry with
@@ -232,6 +247,29 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
             const websocket = new WebSocketServer({
                 server,
                 maxPayload: this.#socketLimits.maxPayloadBytes,
+                // STOMP subprotocol negotiation (AD-23 D4): a stomp-mapped
+                // path answers `v12.stomp`/`v11.stomp`/`v10.stomp` when the
+                // client offers any of them; every other path keeps ws's
+                // stock behavior (first offered protocol echoed). A falsy
+                // return merely omits the response header — the handshake
+                // never aborts from this hook.
+                handleProtocols: (protocols: Set<string>, req: IncomingMessage): string | false => {
+                    const [path] = (req.url ?? '').split('?', 2);
+                    const target = this.#findSocketHandler(path);
+                    if (target !== null && isStompMapping(Object.getPrototypeOf(target.instance), target.method)) {
+                        for (const candidate of STOMP_SUBPROTOCOLS) {
+                            if (protocols.has(candidate)) {
+                                return candidate;
+                            }
+                        }
+                        // No mutual subprotocol: no response header (the
+                        // handshake still completes; STOMP version lives
+                        // in the CONNECT/CONNECTED frames).
+                        return false;
+                    }
+                    const first = protocols.values().next().value;
+                    return first ?? false;
+                },
                 verifyClient:
                     this.#allowedWebSocketOrigins === null
                         ? undefined
@@ -506,10 +544,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
                 typeof (result as { [Symbol.asyncIterator]?: unknown })[Symbol.asyncIterator] === 'function'
             ) {
                 await this.#pumpFunction(result as AsyncGenerator<unknown>, session);
-            } else if (
-                result &&
-                typeof (result as PromiseLike<unknown>).then === 'function'
-            ) {
+            } else if (result && typeof (result as PromiseLike<unknown>).then === 'function') {
                 // Broadcast-style handler (e.g. the chat demo's `async`
                 // handler that consumes `session.messages` without yielding):
                 // a Promise must be awaited and its rejection routed to the
@@ -532,7 +567,11 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
      */
     async #pumpFunction(
         gen: AsyncGenerator<unknown>,
-        session: { messages: AsyncIterable<unknown>; send(data: unknown): void; close(code?: number, reason?: string): void }
+        session: {
+            messages: AsyncIterable<unknown>;
+            send(data: unknown): void;
+            close(code?: number, reason?: string): void;
+        }
     ): Promise<void> {
         const iterator = gen[Symbol.asyncIterator]();
         try {

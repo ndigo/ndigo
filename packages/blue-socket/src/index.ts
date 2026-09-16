@@ -12,4 +12,7 @@
 export * from './socket-session';
 export * from './socket-session-registry';
 export * from './socket-client';
+export * from './stomp-frame';
+export * from './stomp-broker';
+export * from './stomp-client';
 export { AsyncReader } from './async-reader';

@@ -131,11 +131,16 @@ export function nodeSocketSession(
     const closed = new AsyncReader<number>();
     let isClosed = false;
 
-    const onMessage = (data: unknown): void => {
-        // ws delivers text frames as strings and binary frames as Buffers.
-        // Decode binary as UTF-8 so handlers see one predictable text type
-        // (echo/chat patterns; the contract promises strings for both).
-        inbound.push(Buffer.isBuffer(data) ? data.toString('utf-8') : data);
+    const onMessage = (data: unknown, isBinary: boolean): void => {
+        // ws delivers Buffer payloads with an `isBinary` flag for both
+        // frame types (AD-23 D8). Text frames stay strings (the contract's
+        // promise for echo/chat patterns); binary frames surface byte-exact
+        // as Uint8Array so STOMP binary bodies (content-length) survive.
+        if (isBinary) {
+            inbound.push(Buffer.isBuffer(data) ? new Uint8Array(data) : data);
+        } else {
+            inbound.push(typeof data === 'string' ? data : Buffer.isBuffer(data) ? data.toString('utf-8') : data);
+        }
     };
     const onClose = (code: number, reason: string): void => {
         isClosed = true;
@@ -186,6 +191,10 @@ export function nodeSocketSession(
         send(data: unknown) {
             if (typeof data === 'string') {
                 transport.send(data);
+            } else if (data instanceof Uint8Array || data instanceof ArrayBuffer) {
+                // Binary body/frame passthrough (AD-23 D8): Uint8Array →
+                // binary frame, byte-exact.
+                transport.send(Buffer.from(data as Uint8Array));
             } else {
                 transport.send(JSON.stringify(data));
             }

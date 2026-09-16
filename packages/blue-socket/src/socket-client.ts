@@ -39,7 +39,7 @@ export interface SocketTransport {
     onclose: ((event: { code: number; reason: string; wasClean: boolean }) => void) | null;
     onerror: ((event: unknown) => void) | null;
     /** Send a text (or binary) frame. */
-    send(data: string): void;
+    send(data: string | ArrayBuffer): void;
     /** Initiate (or coerce) a close handshake. */
     close(code?: number, reason?: string): void;
 }
@@ -182,7 +182,7 @@ export class WebSocketClient implements SocketClient {
     #intentional = false;
     #attempt = 0;
     #timer: number | NodeJS.Timeout | null = null;
-    #outbound: string[] = [];
+    #outbound: Array<string | ArrayBuffer> = [];
     #unsubscribeTrigger: (() => void) | null = null;
 
     /**
@@ -218,11 +218,18 @@ export class WebSocketClient implements SocketClient {
      * @param data - The payload.
      */
     send(data: unknown): void {
-        const payload = typeof data === 'string' ? data : JSON.stringify(data);
+        const payload =
+            typeof data === 'string'
+                ? data
+                : data instanceof ArrayBuffer
+                  ? data
+                  : data instanceof Uint8Array
+                    ? (data as Uint8Array).slice().buffer
+                    : JSON.stringify(data);
         const transport = this.#transport;
         if (transport !== null && this.status.value === 'open') {
             try {
-                transport.send(payload);
+                transport.send(payload as string | ArrayBuffer);
                 return;
             } catch {
                 // The status signal lags the wire: between the peer starting
@@ -233,7 +240,7 @@ export class WebSocketClient implements SocketClient {
             }
         }
         if (this.#bufferLimit !== null && this.status.value !== 'closed') {
-            this.#outbound.push(payload);
+            this.#outbound.push(payload as string | ArrayBuffer);
             if (this.#outbound.length > this.#bufferLimit) {
                 this.#outbound.shift();
             }
@@ -317,10 +324,7 @@ export class WebSocketClient implements SocketClient {
         const base = Math.min(policy.baseMs * Math.pow(2, this.#attempt), policy.maxMs);
         // Jitter then clamp so `maxMs` is a true ceiling (jitter outside the
         // cap would push sleeps to base×1.2 → beyond the documented max).
-        const delay = Math.min(
-            policy.maxMs,
-            base * (1 - policy.jitter + Math.random() * 2 * policy.jitter)
-        );
+        const delay = Math.min(policy.maxMs, base * (1 - policy.jitter + Math.random() * 2 * policy.jitter));
         this.#attempt += 1;
         this.#timer = setTimeout(
             () => {
@@ -374,7 +378,7 @@ export class WebSocketClient implements SocketClient {
     #flush(): void {
         const transport = this.#transport;
         while (transport !== null && this.#outbound.length > 0 && this.status.value === 'open') {
-            const message = this.#outbound.shift() as string;
+            const message = this.#outbound.shift() as string | ArrayBuffer;
             try {
                 transport.send(message);
             } catch {

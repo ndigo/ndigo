@@ -46,11 +46,15 @@ export function configureTelemetry(config: TelemetryConfig) {
         traceExporter: new OTLPTraceExporter({
             url: config.traceExporter?.url,
         }),
-        metricReader: new PeriodicExportingMetricReader({
-            exporter: new OTLPMetricExporter({
-                url: config.metricExporter?.url,
+        // OTel SDK 2.x: plural option — the singular `metricReader` is
+        // deprecated in favor of `metricReaders` (Otel 2.x sweep, 2026-09-15).
+        metricReaders: [
+            new PeriodicExportingMetricReader({
+                exporter: new OTLPMetricExporter({
+                    url: config.metricExporter?.url,
+                }),
             }),
-        }),
+        ],
         ...(filteredLogRecordProcessor ? { logRecordProcessors: [filteredLogRecordProcessor] } : {}),
         instrumentations: config.instrumentations ?? [],
     });

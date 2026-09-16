@@ -8,3 +8,7 @@ export { configureBrowserTelemetry, type BrowserTelemetryConfig } from './browse
 export { RouterInstrumentation } from './instrumentation/router/router';
 export { DispatcherInstrumentation } from './instrumentation/dispatcher/dispatcher';
 export { ContextInstrumentation } from './instrumentation/context/context';
+export {
+    WebSocketClientInstrumentation,
+    countSocketClientStatus,
+} from './instrumentation/websocket-client/websocket-client';

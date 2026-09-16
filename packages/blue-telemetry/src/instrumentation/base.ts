@@ -2,6 +2,12 @@
  * @module blue-telemetry
  * @since 1.0.0
  * @author Jeff Rose
+ * @todo Otel 2.x sweep — the 2.x SDK line removed `InMemoryMetricReader`
+ *   (replaced by `InMemoryMetricExporter` + `PeriodicExportingMetricReader`
+ *   `.collect()`); audit every `@opentelemetry/*` usage across
+ *   blue-telemetry, blue-telemetry-node/web, blue-boot, and blue-api for
+ *   remaining 1.x-era signatures (constructor options, renamed helpers) and
+ *   drop any workarounds from this base class and the config files.
  */
 import { SpanKind, SpanStatusCode, trace, metrics } from '@opentelemetry/api';
 import type { Attributes, Span } from '@opentelemetry/api';

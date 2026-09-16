@@ -60,6 +60,15 @@ function createClient() {
 }
 
 /**
+ * Constructed at module scope — BEFORE any MeterProvider registration —
+ * matching production wiring (instrumentations are built in the constructor,
+ * where `InstrumentationBase` already ran `enable()`). B3 regression:
+ * counters must resolve lazily on first use, or they capture the NoopMeter
+ * and every client `blue.socket.*` datapoint below is silently lost.
+ */
+const instrumentation = new WebSocketClientInstrumentation();
+
+/**
  * Sum counter datapoints (narrowed through `dataPointType`).
  *
  * @param reader - The metric reader.
@@ -109,7 +118,9 @@ describe('WebSocketClientInstrumentation', () => {
             exportIntervalMillis: 3_600_000, // never auto-exports; explicit collect()
         });
         metrics.setGlobalMeterProvider(new MeterProvider({ readers: [reader] }));
-        new WebSocketClientInstrumentation().enable();
+        // Constructor already enabled the instrumentation (module scope);
+        // a second enable() is a no-op (`InstrumentationBase` latches).
+        instrumentation.enable();
     });
 
     afterAll(async () => {
@@ -119,7 +130,7 @@ describe('WebSocketClientInstrumentation', () => {
     test('counts outbound messages, bytes, and deliberate closes', async () => {
         const sentBefore = await counterValue(reader, 'blue.socket.client.messages.sent');
         const bytesBefore = await counterValue(reader, 'blue.socket.client.messages.bytes');
-        const closedBefore = await counterValue(reader, 'blue.socket.client.closed');
+        const closedBefore = await counterValue(reader, 'blue.socket.client.closes');
 
         const { client, created } = createClient();
         client.send('a'); // while connecting — still an outbound attempt
@@ -132,7 +143,7 @@ describe('WebSocketClientInstrumentation', () => {
             bytesBefore + 1 + JSON.stringify({ n: 1 }).length
         );
 
-        const closed = await counterDatapoints(reader, 'blue.socket.client.closed');
+        const closed = await counterDatapoints(reader, 'blue.socket.client.closes');
         expect(closed).toHaveLength(1);
         expect(closed[0]?.value).toBe(closedBefore + 1);
         expect(closed[0]?.attributes['socket.close_code']).toBe(1000);

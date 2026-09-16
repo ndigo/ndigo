@@ -41,11 +41,39 @@ Auto-configuration for Node.js-based applications that provisions:
   registered beans are auto-discovered and auto-started with zero wiring
   (AD-20)
 - A managed `httpServer` entry (`HTTPServer`, a `SmartLifecycle` bean)
+- A `socketSessionRegistry` bean (`SocketSessionRegistry`): rooms, path
+  broadcast, heartbeat, and backpressure for `@socketMapping` endpoints
+  (AD-21) — shared with the managed server's adapter, so any service can
+  push to a socket room
 
 Applications that previously relied on no language negotiation now render
 with the header-negotiated locale (`en-US` default) — see
 [the i18n guide](../../docs/guides/04-i18n-and-content.md) to override the
 resolver bean.
+
+## WebSockets (`@socketMapping`, AD-21)
+
+The managed server serves WebSocket endpoints alongside HTTP routes with
+the same dispatcher, `@parameters` binding, and Zod validation. The
+registry bean auto-joins every session to its endpoint path and offers
+broadcast, named rooms, heartbeats, and a slow-consumer guard.
+
+Transport bounds and behavior are env-tunable:
+
+| Env var | Default | Meaning |
+| --- | --- | --- |
+| `BLUE_SOCKET_HEARTBEAT_INTERVAL_MS` | `30000` | Ping cadence; `0` disables the heartbeat |
+| `BLUE_SOCKET_IDLE_TIMEOUT_MS` | `60000` | Reap sessions silent past this (close `1001`) |
+| `BLUE_SOCKET_MAX_PAYLOAD_BYTES` | `1048576` | WS frame payload cap (violations close `1009`) |
+| `BLUE_SOCKET_MAX_QUEUED_MESSAGES` | `1024` | Inbound queue cap per session (overflow closes `1009`) |
+| `BLUE_SOCKET_ALLOWED_ORIGINS` | unset | Comma-separated bare origins for upgrade checks; unset allows any origin (public sockets) |
+
+Programmatic knobs (`NodeHTTPServerAdapter` / `HTTPServer` options):
+`backpressure` (1 MiB watermark, `close` `1013` / `drop` / disabled),
+`onOverflow` observer (`addOverflowObserver` for post-construction wiring),
+`authenticate(sources)` upgrade hook (populates `session.attributes`,
+`null` rejects with `1008`), `allowedWebSocketOrigins`, and
+`socketLimits`. See the [websockets guide](../../docs/guides/06-websockets.md).
 
 ## Managed server + graceful shutdown
 

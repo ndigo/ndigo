@@ -72,8 +72,11 @@ export class ChatController implements ApplicationContextAware {
     @parameters({ session: socketSession('session') })
     async chat(session: SocketSession) {
         session.join('room');
+        // Resolve once per connection, not per message (context lookups on
+        // the hot path).
+        const registry = this.#registry();
         for await (const message of session.messages) {
-            this.#registry()?.broadcastTo('room', { event: 'chat', data: String(message) });
+            registry?.broadcastTo('room', { event: 'chat', data: String(message) });
         }
     }
 

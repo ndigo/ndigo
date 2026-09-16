@@ -11,6 +11,7 @@
  * @author Jeff Rose
  */
 import { signal, type Signal } from '@blue/signals';
+import { AsyncReader } from './async-reader';
 
 /**
  * Connection lifecycle states.
@@ -85,6 +86,15 @@ export interface WebSocketClientOptions {
      * Default: no queue — messages sent while disconnected are dropped.
      */
     bufferWhileDisconnected?: { maxMessages: number };
+    /**
+     * Opt-in bound on the inbound `messages` stream. A consumer that stops
+     * draining (hidden tab, throttled render) otherwise lets the inbound
+     * queue grow without limit while the transport keeps delivering. On
+     * overflow the **newest** frame is dropped and the reader enters a
+     * drop-all state (mirrors the server's overflow posture) — the stream
+     * keeps draining what was queued. Default: unbounded.
+     */
+    maxInboundMessages?: number;
     /** Immediate-retry wiring (AD-22 D3); `null` disables. */
     reconnectTrigger?: ReconnectTrigger | null;
     /**
@@ -144,51 +154,6 @@ function defaultTransportFactory(url: string): SocketTransport {
 }
 
 /**
- * A minimal async iterable built from push + complete events.
- *
- * Bridges the event-driven transport to `for await` consumers without
- * buffering the whole stream: pushed values are queued; consumers await the
- * next slot. `complete()` (deliberate close) ends the stream after the
- * remaining queue has drained.
- */
-class AsyncReader<T> {
-    readonly #queue: T[] = [];
-    readonly #waiter: Array<() => void> = [];
-    #completed = false;
-
-    push(value: T): void {
-        const waiter = this.#waiter.shift();
-        if (waiter) {
-            waiter();
-        }
-        this.#queue.push(value);
-    }
-
-    complete(): void {
-        this.#completed = true;
-        while (this.#waiter.length > 0) {
-            const waiter = this.#waiter.shift();
-            if (waiter) {
-                waiter();
-            }
-        }
-    }
-
-    async *iterable(): AsyncGenerator<T> {
-        while (true) {
-            while (this.#queue.length > 0) {
-                yield this.#queue.shift() as T;
-            }
-            if (this.#completed) {
-                return;
-            }
-            // eslint-disable-next-line no-await-in-loop -- consumer-pull iterator: each iteration awaits a fresh "next value available" signal; parallelizing is impossible (single stream, ordering required).
-            await new Promise<void>((resolve) => this.#waiter.push(resolve));
-        }
-    }
-}
-
-/**
  * WHATWG-`WebSocket`-based client with reconnect (AD-22 D3).
  *
  * @example
@@ -212,12 +177,13 @@ export class WebSocketClient implements SocketClient {
     readonly #trigger: ReconnectTrigger | null;
     readonly #onStatusChange: ((status: SocketStatus) => void) | null;
     readonly #transportFactory: (url: string) => SocketTransport;
-    readonly #inbound: AsyncReader<unknown> = new AsyncReader<unknown>();
+    readonly #inbound: AsyncReader<unknown>;
     #transport: SocketTransport | null = null;
     #intentional = false;
     #attempt = 0;
     #timer: number | NodeJS.Timeout | null = null;
     #outbound: string[] = [];
+    #unsubscribeTrigger: (() => void) | null = null;
 
     /**
      * @param url - The endpoint URL (e.g. `ws://host/ws/chat`).
@@ -231,7 +197,14 @@ export class WebSocketClient implements SocketClient {
         this.#trigger = options.reconnectTrigger ?? null;
         this.#onStatusChange = options.onStatusChange ?? null;
         this.#transportFactory = options.transportFactory ?? defaultTransportFactory;
-        this.#trigger?.onChange(() => this.#retryNow());
+        // Inbound watermark (opt-in): overflow drops the newest frame and
+        // latches the reader into drop-all — the consumer keeps draining
+        // what was queued (mirrors the server's overflow posture).
+        this.#inbound = new AsyncReader<unknown>(options.maxInboundMessages ?? Number.POSITIVE_INFINITY);
+        // Keep the unsubscribe: a shared trigger (e.g. the browser global
+        // `createOnlineReconnectTrigger`) otherwise pins every closed client
+        // in its listener list forever (M6).
+        this.#unsubscribeTrigger = this.#trigger?.onChange(() => this.#retryNow()) ?? null;
         this.#connect();
     }
 
@@ -248,8 +221,16 @@ export class WebSocketClient implements SocketClient {
         const payload = typeof data === 'string' ? data : JSON.stringify(data);
         const transport = this.#transport;
         if (transport !== null && this.status.value === 'open') {
-            transport.send(payload);
-            return;
+            try {
+                transport.send(payload);
+                return;
+            } catch {
+                // The status signal lags the wire: between the peer starting
+                // the close handshake (or the TCP drop) and this transport's
+                // onclose, WHATWG `send()` throws InvalidStateError. Fall
+                // through to the disconnected path below — queue or drop
+                // per `bufferWhileDisconnected`.
+            }
         }
         if (this.#bufferLimit !== null && this.status.value !== 'closed') {
             this.#outbound.push(payload);
@@ -275,6 +256,12 @@ export class WebSocketClient implements SocketClient {
             clearTimeout(this.#timer);
             this.#timer = null;
         }
+        // Release the reconnect-trigger subscription and drop queued
+        // outbound: the client is terminal, nothing must keep it alive or
+        // send later.
+        this.#unsubscribeTrigger?.();
+        this.#unsubscribeTrigger = null;
+        this.#outbound = [];
         this.#transport?.close(code, reason);
         this.#transition('closed');
         this.#inbound.complete();
@@ -304,6 +291,14 @@ export class WebSocketClient implements SocketClient {
                 this.#inbound.complete();
                 return;
             }
+            if (this.#reconnect === null) {
+                // No retry will be scheduled — go straight to terminal
+                // 'closed' instead of publishing a transient 'reconnecting'
+                // (which would inflate reconnect metrics).
+                this.#transition('closed');
+                this.#inbound.complete();
+                return;
+            }
             this.#transition('reconnecting');
             this.#scheduleRetry();
         };
@@ -319,8 +314,13 @@ export class WebSocketClient implements SocketClient {
             return;
         }
         const policy = this.#reconnect;
-        const delay = Math.min(policy.baseMs * Math.pow(2, this.#attempt), policy.maxMs);
-        const jittered = delay * (1 - policy.jitter + Math.random() * 2 * policy.jitter);
+        const base = Math.min(policy.baseMs * Math.pow(2, this.#attempt), policy.maxMs);
+        // Jitter then clamp so `maxMs` is a true ceiling (jitter outside the
+        // cap would push sleeps to base×1.2 → beyond the documented max).
+        const delay = Math.min(
+            policy.maxMs,
+            base * (1 - policy.jitter + Math.random() * 2 * policy.jitter)
+        );
         this.#attempt += 1;
         this.#timer = setTimeout(
             () => {
@@ -328,7 +328,7 @@ export class WebSocketClient implements SocketClient {
                 this.#transition('connecting');
                 this.#connect();
             },
-            Math.max(0, jittered)
+            Math.max(0, delay)
         );
     }
 
@@ -348,20 +348,43 @@ export class WebSocketClient implements SocketClient {
      * The single status choke point: sets the signal and notifies the
      * `onStatusChange` observer — never twice for the same state.
      *
+     * App-injected observers (the telemetry seam, effect subscriptions on the
+     * status signal) must never wedge the state machine: a throw here would
+     * skip the caller's post-transition work — `#scheduleRetry`, `#connect`,
+     * or `#inbound.complete()` — leaving the client permanently stuck (and
+     * in Node, an uncaught exception in a timer callback terminates the
+     * process). Both the signal write (synchronous listener dispatch) and
+     * the observer call are isolated.
+     *
      * @param next - The next connection state.
      */
     #transition(next: SocketStatus): void {
         if (this.status.value === next) {
             return;
         }
-        this.status.value = next;
-        this.#onStatusChange?.(next);
+        try {
+            this.status.value = next;
+            this.#onStatusChange?.(next);
+        } catch {
+            // Observer/effect fault — status is already set; the state
+            // machine continues regardless.
+        }
     }
 
     #flush(): void {
         const transport = this.#transport;
         while (transport !== null && this.#outbound.length > 0 && this.status.value === 'open') {
-            transport.send(this.#outbound.shift() as string);
+            const message = this.#outbound.shift() as string;
+            try {
+                transport.send(message);
+            } catch {
+                // The wire raced to CLOSING between the status check and the
+                // send. Stop flushing; onclose will transition (reconnect →
+                // re-flush these on next open, or terminal close clears the
+                // queue).
+                this.#outbound.unshift(message);
+                return;
+            }
         }
     }
 }

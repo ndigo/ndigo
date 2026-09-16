@@ -35,7 +35,7 @@ import {
     MethodParameterType,
 } from '@blue/dispatcher';
 import { NodeRequest, NODE_REQUEST_ATTRIBUTE, NODE_RESPONSE_ATTRIBUTE } from './node-request';
-import { nodeSocketSession } from './node-socket-session';
+import { nodeSocketSession, resolveSocketLimits, type ResolvedSocketLimits, type SocketLimits } from './node-socket-session';
 import { NodeSocketSessionRegistry } from './node-socket-session-registry';
 import { ProblemTypes, writeProblem } from './problem-details';
 import { ResponseStatus } from '@blue/http';
@@ -58,6 +58,12 @@ export interface NodeHTTPServerAdapterOptions {
     /** Request pipeline limits/timeouts. Defaults are conservative and safe. */
     limits?: HTTPRequestLimits;
     /**
+     * Socket transport bounds (frame payload, inbound queue cap). Defaults
+     * are conservative and safe; env-tunable via `BLUE_SOCKET_MAX_PAYLOAD_BYTES`
+     * and `BLUE_SOCKET_MAX_QUEUED_MESSAGES`.
+     */
+    socketLimits?: SocketLimits;
+    /**
      * When set, WebSocket upgrades must carry an `Origin` (or
      * `Sec-WebSocket-Origin`) header whose scheme/host/port match one of
      * these bare origins exactly (implicit default ports compare equal).
@@ -66,6 +72,18 @@ export interface NodeHTTPServerAdapterOptions {
      * public socket endpoints that must accept any client.
      */
     allowedWebSocketOrigins?: string[];
+    /**
+     * Optional upgrade-time authentication hook. Invoked on every accepted
+     * upgrade before the socket handler runs, with the request sources
+     * (query/headers/cookies) captured from the handshake.
+     *
+     * Returning an object populates `session.attributes` — the identity
+     * binding point (e.g. `{ principal }`) REST handlers get via the auth
+     * session. Returning `null` rejects the upgrade with `1008` (policy
+     * violation). An `async` hook is awaited. Absent, sockets accept any
+     * client (public endpoint posture).
+     */
+    authenticate?: (sources: SocketRequestSources) => Record<string, unknown> | null | Promise<Record<string, unknown> | null>;
     /**
      * Session registry tracking open sockets (broadcast, rooms, heartbeat;
      * AD-21). When omitted, the adapter creates a default registry with
@@ -111,15 +129,30 @@ function normalizeOrigin(origin: string): string | null {
  */
 export class NodeHTTPServerAdapter implements HTTPServerAdapter {
     /**
-     * Pending upgrade sources, FIFO: `shouldHandle(req)` runs before
-     * `handleUpgrade`/`connection` for each upgrade, so push the parsed
-     * request sources there and the `connection` callback shifts them off.
+     * Pending upgrade sources, keyed by the upgrade `IncomingMessage`:
+     * `shouldHandle(req)` runs before `handleUpgrade`/`connection` for each
+     * upgrade, so store the parsed request sources keyed by its request and
+     * the `connection` handler (which receives the same request) consumes
+     * them. Keying — not a FIFO — means a handshake that aborts after
+     * `shouldHandle` (client FIN before the 101 write, protocol/extensions
+     * parse failures, server closing) can never misattribute its path or
+     * sources to a later connection: the stale entry is unreachable.
      */
-    #pendingUpgrades: Array<{ path: string; sources: SocketRequestSources }> = [];
+    #pendingUpgrades: Map<IncomingMessage, { path: string; sources: SocketRequestSources }> = new Map();
+    /**
+     * Path → has-socket-handler memo (probe cache). `handleRequest` runs a
+     * second full radix lookup per request to distinguish socket-only paths
+     * (404) from HTTP 405s; handler mappings are static for the lifetime of
+     * the dispatcher, so the probe result is stable — cache it and clear on
+     * close so re-listening re-resolves.
+     */
+    #socketPathMemo: Map<string, boolean> = new Map();
     #dispatcher: NodeDispatcher;
     readonly #limits: ResolvedHTTPRequestLimits;
+    readonly #socketLimits: ResolvedSocketLimits;
     /** Normalized allowed WebSocket origins, or `null` when unconstrained. */
     readonly #allowedWebSocketOrigins: Record<string, true> | null;
+    readonly #authenticate: NodeHTTPServerAdapterOptions['authenticate'];
     #server: Server | null;
     #websocket: WebSocketServer | null = null;
     readonly #socketRegistry: NodeSocketSessionRegistry;
@@ -144,6 +177,8 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
     constructor(dispatcher: NodeDispatcher, options: NodeHTTPServerAdapterOptions = {}) {
         this.#dispatcher = dispatcher;
         this.#limits = resolveHTTPRequestLimits(options.limits);
+        this.#socketLimits = resolveSocketLimits(options.socketLimits);
+        this.#authenticate = options.authenticate ?? undefined;
         this.#server = null;
         this.#socketRegistry = options.socketRegistry ?? new NodeSocketSessionRegistry();
         const origins: Record<string, true> = {};
@@ -196,6 +231,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
             // surfaced by the server `error` path above (reject).
             const websocket = new WebSocketServer({
                 server,
+                maxPayload: this.#socketLimits.maxPayloadBytes,
                 verifyClient:
                     this.#allowedWebSocketOrigins === null
                         ? undefined
@@ -206,12 +242,13 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
                                   this.#allowedWebSocketOrigins !== null &&
                                   this.#allowedWebSocketOrigins[normalized] === true;
                               if (!allowed) {
-                                  // Discard the FIFO entry `shouldHandle`
-                                  // pushed for this request: ws aborts the
+                                  // Discard the pending entry `shouldHandle`
+                                  // stored for this request: ws aborts the
                                   // handshake straight to the client, so the
-                                  // `connection` event that would shift it
-                                  // never fires.
-                                  this.#pendingUpgrades.shift();
+                                  // `connection` event that would consume it
+                                  // never fires. Keyed by the request, so
+                                  // only this upgrade's entry is dropped.
+                                  this.#pendingUpgrades.delete(info.req);
                               }
                               callback(allowed, 403, 'WebSocket origin not allowed');
                           },
@@ -240,15 +277,22 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
                 const accepts = this.#findSocketHandler(path, query) !== null;
                 // Only track accepted upgrades: when `shouldHandle` returns
                 // false, ws aborts the handshake and `connection` never fires,
-                // so pushing first would leave a stale entry that corrupts the
-                // next upgrade's FIFO dispatch.
+                // so storing first would leave a stale entry. The `connection`
+                // handler receives the same request and consumes its entry.
+                // Handshakes that abort after this point (client FIN before
+                // the 101 write, protocol/extensions parse failures, server
+                // closing) never fire `connection` — reap the entry when the
+                // underlying socket closes so aborted upgrades cannot grow
+                // the map (each holds the request's headers/cookies).
                 if (accepts) {
-                    this.#pendingUpgrades.push({ path, sources });
+                    this.#pendingUpgrades.set(req, { path, sources });
+                    req.socket.once('close', () => this.#pendingUpgrades.delete(req));
                 }
                 return accepts;
             };
-            websocket.on('connection', (ws: unknown) => {
-                const pending = this.#pendingUpgrades.shift();
+            websocket.on('connection', (ws: unknown, req: IncomingMessage) => {
+                const pending = this.#pendingUpgrades.get(req);
+                this.#pendingUpgrades.delete(req);
                 void this.#dispatchSocket(
                     ws,
                     pending?.path ?? '',
@@ -257,6 +301,22 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
             });
             this.#websocket = websocket;
         });
+    }
+
+    /**
+     * Whether a path has a socket-mapped handler. Memoized per path —
+     * handler mappings are static for the dispatcher's lifetime, and
+     * `handleRequest` needs this probe on every request (the memo turns a
+     * full second radix lookup into a Map read after the first hit).
+     *
+     * @param path - The request path.
+     * @returns Whether the path resolves to a socket handler.
+     */
+    #hasSocketHandler(path: string): boolean {
+        if (!this.#socketPathMemo.has(path)) {
+            this.#socketPathMemo.set(path, this.#findSocketHandler(path) !== null);
+        }
+        return this.#socketPathMemo.get(path) ?? false;
     }
 
     /**
@@ -389,7 +449,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
             try {
                 for (const param of target.parameters) {
                     if (param.type === MethodParameterType.SOCKET_SESSION) {
-                        session = nodeSocketSession(ws, path, sources, this.#socketRegistry);
+                        session = nodeSocketSession(ws, path, sources, this.#socketRegistry, this.#socketLimits);
                         args.push(session);
                     } else {
                         const resolver = this.#findResolver(param);
@@ -409,7 +469,22 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
                 return;
             }
         }
-        if (!session) session = nodeSocketSession(ws, path, sources, this.#socketRegistry);
+        if (!session) session = nodeSocketSession(ws, path, sources, this.#socketRegistry, this.#socketLimits);
+        // Upgrade-time authentication: the adapter-level hook binds identity
+        // before the handler runs (REST gets this via the interceptor chain;
+        // sockets are dispatched directly, so this is the auth seam). A null
+        // result rejects with 1008; an async hook is awaited. Unauthenticated
+        // upgrades are never tracked by the registry or observable to the
+        // handler.
+        const authenticate = this.#authenticate;
+        if (authenticate) {
+            const attributes = await authenticate(sources);
+            if (attributes === null) {
+                ws.close(1008, 'authentication required');
+                return;
+            }
+            Object.assign(session.attributes, attributes);
+        }
         // Track the session before the handler runs so broadcasts from the
         // handler (or any service with the registry) reach it immediately;
         // the close event drops it from the registry (AD-21 D3/D4).
@@ -424,13 +499,23 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
         }
         try {
             const result: unknown = handlerMethod.call(target.instance, ...args);
-            // The handler is an async generator: pump inbound → handler →
-            // yield outbound until the stream (connection) ends.
+            // Async-generator handler: pump inbound → yielded outbound until
+            // the stream (connection) ends.
             if (
                 result &&
                 typeof (result as { [Symbol.asyncIterator]?: unknown })[Symbol.asyncIterator] === 'function'
             ) {
                 await this.#pumpFunction(result as AsyncGenerator<unknown>, session);
+            } else if (
+                result &&
+                typeof (result as PromiseLike<unknown>).then === 'function'
+            ) {
+                // Broadcast-style handler (e.g. the chat demo's `async`
+                // handler that consumes `session.messages` without yielding):
+                // a Promise must be awaited and its rejection routed to the
+                // session-close path — otherwise it becomes an unhandled
+                // rejection and Node ≥15 terminates the process.
+                await (result as Promise<unknown>);
             }
         } catch (error) {
             console.log(`[socket] handler failed: ${(error as Error).message}`);
@@ -447,7 +532,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
      */
     async #pumpFunction(
         gen: AsyncGenerator<unknown>,
-        session: { messages: AsyncIterable<unknown>; send(data: unknown): void }
+        session: { messages: AsyncIterable<unknown>; send(data: unknown): void; close(code?: number, reason?: string): void }
     ): Promise<void> {
         const iterator = gen[Symbol.asyncIterator]();
         try {
@@ -456,7 +541,12 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
                 session.send(outbound);
             }
         } catch (error) {
+            // A stream-time failure leaves the session with a dead consumer:
+            // close it so the registry drops the session and the inbound
+            // queue stops accumulating (the per-yield send tolerance above
+            // only applies to individual sends, which send() absorbs).
             console.error('[NodeHTTPServerAdapter] socket generator error:', (error as Error).message);
+            session.close(1011, 'handler error');
         }
     }
 
@@ -472,6 +562,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
         // Stop accepting upgrades and close connected sockets.
         const wss = this.#websocket;
         this.#websocket = null;
+        this.#socketPathMemo.clear();
         if (wss) {
             const clients = wss.clients as unknown as Set<{ close(code: number, reason: string): void }> | undefined;
             clients?.forEach((client) => client.close(1001, 'server shutting down'));
@@ -536,7 +627,7 @@ export class NodeHTTPServerAdapter implements HTTPServerAdapter {
             const chain = this.#dispatcher.getHandler(route);
             const noHandler = !chain?.handler || Object.keys(chain.handler).length === 0;
 
-            if (!noHandler && this.#findSocketHandler(route.path) !== null) {
+            if (!noHandler && this.#hasSocketHandler(route.path)) {
                 // A WebSocket-only endpoint (socketMapped) reached through a
                 // plain HTTP request: the method exists but only for upgraded
                 // sockets. Respond 404 — this path is not served over HTTP.

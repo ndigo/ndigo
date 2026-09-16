@@ -5,7 +5,7 @@
  * @author Jeff Rose
  */
 import { metrics } from '@opentelemetry/api';
-import type { Counter } from '@opentelemetry/api';
+import type { Attributes, Counter } from '@opentelemetry/api';
 import { WebSocketClient, type SocketStatus } from '@blue/socket';
 import { AbstractBaseInstrumentation } from '@blue/telemetry';
 
@@ -32,22 +32,39 @@ export class WebSocketClientInstrumentation extends AbstractBaseInstrumentation 
     }
 
     enable(): void {
-        const meter = metrics.getMeter('@blue/telemetry');
-        const messagesSent = meter.createCounter('blue.socket.client.messages.sent');
-        const bytesSent = meter.createCounter('blue.socket.client.messages.bytes');
-        const closed = meter.createCounter('blue.socket.client.closed');
+        // Counters are resolved lazily on first use, not at `enable()` time:
+        // `InstrumentationBase` calls `enable()` in its constructor, before
+        // any SDK has registered a global MeterProvider — an eager
+        // `metrics.getMeter(...).createCounter(...)` would capture the
+        // NoopMeter and silently drop every datapoint. The first wrapped
+        // call runs after SDK init, so the global meter is real by then.
+        const counter = (() => {
+            const cache = new Map<string, Counter>();
+            return (name: string, attributes?: Attributes, value: number = 1): void => {
+                let instrument = cache.get(name);
+                if (instrument === undefined) {
+                    instrument = metrics.getMeter('@blue/telemetry').createCounter(name);
+                    cache.set(name, instrument);
+                }
+                instrument.add(value, attributes);
+            };
+        })();
 
         this._wrap(WebSocketClient.prototype, 'send', (original) => {
             return function (this: unknown, data: unknown): void {
-                messagesSent.add(1);
-                bytesSent.add(payloadBytes(data));
+                counter('blue.socket.client.messages.sent');
+                counter('blue.socket.client.messages.bytes', undefined, payloadBytes(data));
                 return original.apply(this, [data]);
             };
         });
 
         this._wrap(WebSocketClient.prototype, 'close', (original) => {
             return function (this: unknown, code?: number, reason?: string): void {
-                closed.add(1, { 'socket.close_code': code ?? 1000 });
+                // Deliberate-close OPERATIONS — distinct from
+                // `blue.socket.client.closed` (the STATUS transition counter
+                // `countSocketClientStatus` increments), so wiring both seams
+                // doesn't double-count a single close.
+                counter('blue.socket.client.closes', { 'socket.close_code': code ?? 1000 });
                 return original.apply(this, [code, reason]);
             };
         });
@@ -76,15 +93,27 @@ export class WebSocketClientInstrumentation extends AbstractBaseInstrumentation 
  * @returns An `onStatusChange` observer.
  */
 export function countSocketClientStatus(): (status: SocketStatus) => void {
-    const meter = metrics.getMeter('@blue/telemetry');
-    const counters: Record<SocketStatus, Counter> = {
-        connecting: meter.createCounter('blue.socket.client.connecting'),
-        open: meter.createCounter('blue.socket.client.opened'),
-        reconnecting: meter.createCounter('blue.socket.client.reconnecting'),
-        closed: meter.createCounter('blue.socket.client.closed'),
+    // Lazy per-status counters: the factory may run before
+    // `configureBrowserTelemetry` registers the global MeterProvider, so an
+    // eager `createCounter` would capture the NoopMeter and drop every
+    // datapoint. Resolve each status's instrument on first observation.
+    const NAME: Record<SocketStatus, string> = {
+        connecting: 'blue.socket.client.connecting',
+        open: 'blue.socket.client.opened',
+        reconnecting: 'blue.socket.client.reconnecting',
+        closed: 'blue.socket.client.closed',
+    };
+    const cache = new Map<SocketStatus, Counter>();
+    const counter = (status: SocketStatus): void => {
+        let instrument = cache.get(status);
+        if (instrument === undefined) {
+            instrument = metrics.getMeter('@blue/telemetry').createCounter(NAME[status]);
+            cache.set(status, instrument);
+        }
+        instrument.add(1, { 'socket.status': status });
     };
     return (status: SocketStatus): void => {
-        counters[status].add(1, { 'socket.status': status });
+        counter(status);
     };
 }
 

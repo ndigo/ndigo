@@ -11,6 +11,7 @@ import { NodeAutoConfiguration } from '../src/node-auto-configuration';
 import { NodeDispatcher } from '../src/node-dispatcher';
 import { HTTPServer } from '../src/http-server';
 import { NodeSocketSessionRegistry, resolveSocketRegistryOptions } from '../src/index';
+import { resolveSocketLimits } from '../src/node-socket-session';
 import { WebSocket } from 'ws';
 
 describe('resolveSocketRegistryOptions', () => {
@@ -39,6 +40,46 @@ describe('resolveSocketRegistryOptions', () => {
         expect(() => resolveSocketRegistryOptions({ BLUE_SOCKET_HEARTBEAT_INTERVAL_MS: 'abc' })).toThrow(RangeError);
         expect(() => resolveSocketRegistryOptions({ BLUE_SOCKET_IDLE_TIMEOUT_MS: '0' })).toThrow(RangeError);
         expect(() => resolveSocketRegistryOptions({ BLUE_SOCKET_IDLE_TIMEOUT_MS: '1.5' })).toThrow(RangeError);
+        // Non-decimal numeric forms must not silently coerce (O1).
+        expect(() => resolveSocketRegistryOptions({ BLUE_SOCKET_HEARTBEAT_INTERVAL_MS: '0x10' })).toThrow(RangeError);
+        expect(() => resolveSocketRegistryOptions({ BLUE_SOCKET_IDLE_TIMEOUT_MS: '1e3' })).toThrow(RangeError);
+    });
+});
+
+describe('resolveSocketLimits', () => {
+    test('defaults when unset', () => {
+        expect(resolveSocketLimits({}, {})).toEqual({ maxPayloadBytes: 1_048_576, maxQueuedMessages: 1024 });
+        expect(resolveSocketLimits({}, { BLUE_SOCKET_MAX_PAYLOAD_BYTES: '' })).toEqual({
+            maxPayloadBytes: 1_048_576,
+            maxQueuedMessages: 1024,
+        });
+    });
+
+    test('reads explicit values over environment', () => {
+        expect(
+            resolveSocketLimits({ maxPayloadBytes: 512, maxQueuedMessages: 8 }, { BLUE_SOCKET_MAX_PAYLOAD_BYTES: '999999' })
+        ).toEqual({ maxPayloadBytes: 512, maxQueuedMessages: 8 });
+        expect(resolveSocketLimits({}, { BLUE_SOCKET_MAX_PAYLOAD_BYTES: '2048' })).toEqual({
+            maxPayloadBytes: 2048,
+            maxQueuedMessages: 1024,
+        });
+    });
+
+    test('rejects non-decimal and non-positive values', () => {
+        expect(() => resolveSocketLimits({}, { BLUE_SOCKET_MAX_PAYLOAD_BYTES: '0x10' })).toThrow(RangeError);
+        expect(() => resolveSocketLimits({}, { BLUE_SOCKET_MAX_QUEUED_MESSAGES: '1e3' })).toThrow(RangeError);
+        expect(() => resolveSocketLimits({ maxPayloadBytes: 0 })).toThrow(RangeError);
+        expect(() => resolveSocketLimits({ maxQueuedMessages: -1 })).toThrow(RangeError);
+    });
+
+    test('HTTPServer rejects adapter + socketRegistry together (O7)', () => {
+        // A custom adapter owns its registry; silently accepting both would
+        // leave the context bean and the adapter's registry disjoint.
+        const dispatcher = {} as unknown as NodeDispatcher;
+        const adapter = {} as unknown as HTTPServer['server'];
+        expect(
+            () => new HTTPServer(dispatcher, { adapter: adapter as never, socketRegistry: new NodeSocketSessionRegistry() })
+        ).toThrow(RangeError);
     });
 });
 

@@ -294,8 +294,171 @@ describe('WebSocketClient', () => {
         const { client, created } = createHarness({ reconnect: null, onStatusChange: (s) => states.push(s) });
         created[0].fireOpen();
         created[0].fireClose();
-        // Unexpected close lands in `reconnecting` first, then the
-        // null-policy path resolves it to terminal `closed`.
-        expect(states).toEqual(['open', 'reconnecting', 'closed']);
+        // No retry will be scheduled — no transient 'reconnecting' is
+        // published (which would inflate reconnect telemetry).
+        expect(states).toEqual(['open', 'closed']);
+    });
+
+    test('a throwing onStatusChange observer cannot wedge the state machine', async () => {
+        vi.spyOn(Math, 'random').mockReturnValue(0.5);
+        const { client, created } = createHarness({
+            onStatusChange: () => {
+                throw new Error('observer blew up');
+            },
+        });
+        const received: unknown[] = [];
+        const collecting = (async () => {
+            for await (const message of client.messages) {
+                received.push(message);
+            }
+        })();
+
+        // Unexpected close → retry must still be scheduled despite the
+        // observer throw in the reconnecting transition.
+        created[0].fireOpen();
+        created[0].fireMessage('x');
+        created[0].fireClose();
+        expect(client.status.value).toBe('reconnecting');
+        vi.advanceTimersByTime(1000);
+        expect(created.length).toBe(2); // retry fired
+        created[1].fireOpen();
+        expect(client.status.value).toBe('open');
+
+        // Deliberate close → stream must still complete despite the throw.
+        client.close();
+        await collecting;
+        expect(received).toEqual(['x']);
+    });
+
+    test('transport.send failures are dropped silently, not thrown to callers', () => {
+        const { client, created } = createHarness();
+        created[0].fireOpen();
+        created[0].send = () => {
+            throw new Error('InvalidStateError: not open');
+        };
+        expect(() => client.send('late')).not.toThrow();
+        // With no buffer configured the failed send is dropped.
+        expect(created[0].sent).toEqual([]);
+    });
+
+    test('a failed flush send stops the drain without losing the remainder', () => {
+        const { client, created } = createHarness({ bufferWhileDisconnected: { maxMessages: 10 } });
+        client.send('a');
+        client.send('b');
+        created[0].fireOpen(); // flush both
+        expect(created[0].sent).toEqual(['a', 'b']);
+
+        // Second session: queue two, then fail the flush mid-way.
+        const failing = createHarness({ bufferWhileDisconnected: { maxMessages: 10 } });
+        failing.client.send('x');
+        failing.client.send('y');
+        failing.created[0].send = (data: string) => {
+            if (data === 'x') {
+                throw new Error('InvalidStateError: not open');
+            }
+            failing.created[0].sent.push(data);
+        };
+        expect(() => failing.created[0].fireOpen()).not.toThrow();
+        // 'x' failed and was re-queued; 'y' was never consumed.
+        expect(failing.created[0].sent).toEqual([]);
+    });
+
+    test('close during connecting ignores late open/close events (async-close race)', async () => {
+        const { client, created } = createHarness();
+        // Deliberate close while the handshake is in flight — the real
+        // WHATWG WebSocket does not abort CONNECTING, so onopen/onclose
+        // land asynchronously later.
+        client.close(1000, 'done');
+        expect(client.status.value).toBe('closed');
+
+        const received: unknown[] = [];
+        const collecting = (async () => {
+            for await (const message of client.messages) {
+                received.push(message);
+            }
+        })();
+
+        created[0].fireOpen();
+        created[0].fireMessage('late');
+        created[0].fireClose();
+        await drain();
+        expect(client.status.value).toBe('closed');
+        expect(created.length).toBe(1); // no reconnect
+        await collecting;
+        expect(received).toEqual([]); // late frame never delivered
+    });
+
+    test('close unsubscribes the reconnect trigger and clears the outbound queue', () => {
+        const trigger = new FakeTrigger();
+        const { client, created } = createHarness({
+            reconnectTrigger: trigger,
+            bufferWhileDisconnected: { maxMessages: 10 },
+        });
+        client.send('pending');
+        client.close();
+        // The trigger's listener list must be empty (M6 — a closed client
+        // must not stay pinned by the shared trigger).
+        trigger.notify();
+        expect(created.length).toBe(1);
+        expect(client.status.value).toBe('closed');
+    });
+
+    test('messages pushed before the consumer attaches are drained in order', async () => {
+        const { client, created } = createHarness();
+        created[0].fireOpen();
+        created[0].fireMessage('queued-1');
+        created[0].fireMessage('queued-2');
+
+        // No consumer attached yet — the AsyncReader buffers; the drain
+        // branch (push while no waiter) is exercised on attach.
+        const received: unknown[] = [];
+        const collecting = (async () => {
+            for await (const message of client.messages) {
+                received.push(message);
+            }
+        })();
+        await drain();
+        expect(received).toEqual(['queued-1', 'queued-2']);
+
+        client.close();
+        await collecting;
+        expect(received).toEqual(['queued-1', 'queued-2']);
+    });
+
+    test('maxInboundMessages bounds the inbound queue (O3)', async () => {
+        const { client, created } = createHarness({ maxInboundMessages: 2 });
+        created[0].fireOpen();
+        const received: unknown[] = [];
+        const collecting = (async () => {
+            for await (const message of client.messages) {
+                received.push(message);
+            }
+        })();
+        await drain(); // consumer is now awaiting the first slot
+
+        created[0].fireMessage('a');
+        created[0].fireMessage('b');
+        created[0].fireMessage('c'); // queue full → dropped
+        await drain();
+        expect(received).toEqual(['a', 'b']);
+
+        client.close();
+        await collecting;
+    });
+
+    test('reconnect jitter never exceeds the maxMs ceiling (O5)', () => {
+        vi.spyOn(Math, 'random').mockReturnValue(1); // maximal positive jitter
+        const { client, created } = createHarness({ reconnect: { baseMs: 1000, maxMs: 3000, jitter: 0.2 } });
+        created[0].fireOpen();
+        created[0].fireClose(); // attempt 0 → base 1s; ×1.2 = 1.2s < cap
+        vi.advanceTimersByTime(1200);
+        expect(created.length).toBe(2);
+
+        // Attempt 2's base would be 4s — but the policy caps at 3s; with
+        // +20% jitter applied BEFORE the cap it would sleep 3.6s. After the
+        // clamp, the retry must land at exactly 3s.
+        created[1].fireClose();
+        vi.advanceTimersByTime(3000);
+        expect(created.length).toBe(3);
     });
 });

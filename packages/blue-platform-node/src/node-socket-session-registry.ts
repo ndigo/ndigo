@@ -6,6 +6,7 @@
  */
 import type { SocketSession, SocketSessionRegistry } from '@blue/dispatcher';
 import type { WebSocket } from 'ws';
+import { assertCloseFrame } from './node-socket-session';
 
 /**
  * Server-side fan-out backpressure policy — the slow-consumer guard
@@ -109,21 +110,20 @@ export function resolveSocketRegistryOptions(
     const idleRaw = env['BLUE_SOCKET_IDLE_TIMEOUT_MS'];
     const options: NodeSocketSessionRegistryOptions = {};
     if (heartbeatRaw !== undefined && heartbeatRaw !== '') {
-        const value = Number(heartbeatRaw);
-        if (!Number.isInteger(value) || value < 0) {
+        if (!/^\d+$/.test(heartbeatRaw)) {
             throw new RangeError(
                 `BLUE_SOCKET_HEARTBEAT_INTERVAL_MS must be a non-negative integer (ms), got: ${heartbeatRaw}`
             );
         }
+        const value = Number(heartbeatRaw);
         // `0` explicitly disables the heartbeat (D6).
         options.heartbeatIntervalMs = value === 0 ? null : value;
     }
     if (idleRaw !== undefined && idleRaw !== '') {
-        const value = Number(idleRaw);
-        if (!Number.isInteger(value) || value <= 0) {
+        if (!/^\d+$/.test(idleRaw) || Number(idleRaw) === 0) {
             throw new RangeError(`BLUE_SOCKET_IDLE_TIMEOUT_MS must be a positive integer (ms), got: ${idleRaw}`);
         }
-        options.idleTimeoutMs = value;
+        options.idleTimeoutMs = Number(idleRaw);
     }
     return options;
 }
@@ -140,25 +140,55 @@ export function resolveSocketRegistryOptions(
  */
 export class NodeSocketSessionRegistry implements SocketSessionRegistry {
     #sessions: Map<SocketSession, string> = new Map();
+    /** Auto-join path index: path → sessions (mirror of `#sessions`, O(n)→O(set-size)). */
+    #paths: Map<string, Set<SocketSession>> = new Map();
     #rooms: Map<string, Set<SocketSession>> = new Map();
     #transports: WeakMap<SocketSession, WebSocket> = new WeakMap();
     #lastSeen: WeakMap<SocketSession, number> = new WeakMap();
     readonly #backpressure: SocketBackpressurePolicy | null;
-    readonly #onOverflow: ((event: SocketBackpressureEvent) => void) | null;
+    #onOverflow: Set<(event: SocketBackpressureEvent) => void> = new Set();
     #heartbeatIntervalMs: number | null;
     #idleTimeoutMs: number;
     #now: () => number;
     #timer: NodeJS.Timeout | null = null;
+    /** Sessions already asked to close on overflow — skip re-firing while CLOSING. */
+    #overflowClosed: Set<SocketSession> = new Set();
 
     /**
      * @param options - Heartbeat/backpressure knobs and clock.
      */
     constructor(options: NodeSocketSessionRegistryOptions = {}) {
-        this.#heartbeatIntervalMs = options.heartbeatIntervalMs === undefined ? 30_000 : options.heartbeatIntervalMs;
+        // `0` disables the heartbeat, matching `resolveSocketRegistryOptions`
+        // (env `BLUE_SOCKET_HEARTBEAT_INTERVAL_MS=0` → null). Treating 0 as
+        // a real interval would spin a busy `setInterval(fn, 0)`; an
+        // explicit `null` must also disable (not fall through `??` to the
+        // default).
+        this.#heartbeatIntervalMs =
+            options.heartbeatIntervalMs === 0 || options.heartbeatIntervalMs === null
+                ? null
+                : (options.heartbeatIntervalMs ?? 30_000);
         this.#idleTimeoutMs = options.idleTimeoutMs ?? 60_000;
         this.#now = options.now ?? Date.now;
         this.#backpressure = options.backpressure === undefined ? DEFAULT_BACKPRESSURE : options.backpressure;
-        this.#onOverflow = options.onOverflow ?? null;
+        if (options.onOverflow) {
+            this.#onOverflow.add(options.onOverflow);
+        }
+    }
+
+    /**
+     * Subscribe to backpressure decisions (close or drop) after construction.
+     * Constructor `onOverflow` is the static seam; this is the dynamic one —
+     * e.g. telemetry instrumentations that enable after the registry exists
+     * (disable-time symmetry via the returned unsubscribe).
+     *
+     * @param observer - Invoked at each backpressure decision.
+     * @returns An unsubscribe function.
+     */
+    addOverflowObserver(observer: (event: SocketBackpressureEvent) => void): () => void {
+        this.#onOverflow.add(observer);
+        return () => {
+            this.#onOverflow.delete(observer);
+        };
     }
 
     /**
@@ -169,7 +199,8 @@ export class NodeSocketSessionRegistry implements SocketSessionRegistry {
      *
      * @param session - The session to track.
      * @param path - The endpoint path the session was upgraded at.
-     * @param transport - The underlying `ws` connection (for pings/terminate).
+     * @param transport - The underlying `ws` connection (for pings and
+     *   graceful reaping).
      */
     register(session: SocketSession, path: string, transport: WebSocket): void {
         if (this.#sessions.has(session)) {
@@ -178,7 +209,17 @@ export class NodeSocketSessionRegistry implements SocketSessionRegistry {
         this.#sessions.set(session, path);
         this.#transports.set(session, transport);
         this.#lastSeen.set(session, this.#now());
+        // Maintain the auto-join path index (broadcast/sessions/count read it).
+        let pathMembers = this.#paths.get(path);
+        if (!pathMembers) {
+            pathMembers = new Set();
+            this.#paths.set(path, pathMembers);
+        }
+        pathMembers.add(session);
+        // Pongs refresh liveness; so does any inbound traffic (the option
+        // docs promise "no pong (or any traffic)" semantics).
         transport.on('pong', () => this.#lastSeen.set(session, this.#now()));
+        transport.on('message', () => this.#lastSeen.set(session, this.#now()));
         this.#ensureHeartbeat();
     }
 
@@ -189,13 +230,7 @@ export class NodeSocketSessionRegistry implements SocketSessionRegistry {
      * @returns The matching open sessions.
      */
     sessions(path: string): readonly SocketSession[] {
-        const result: SocketSession[] = [];
-        for (const [session, sessionPath] of this.#sessions) {
-            if (sessionPath === path) {
-                result.push(session);
-            }
-        }
-        return result;
+        return [...(this.#paths.get(path) ?? [])];
     }
 
     /**
@@ -205,13 +240,7 @@ export class NodeSocketSessionRegistry implements SocketSessionRegistry {
      * @returns The session count.
      */
     count(path: string): number {
-        let total = 0;
-        for (const sessionPath of this.#sessions.values()) {
-            if (sessionPath === path) {
-                total++;
-            }
-        }
-        return total;
+        return this.#paths.get(path)?.size ?? 0;
     }
 
     /**
@@ -226,10 +255,15 @@ export class NodeSocketSessionRegistry implements SocketSessionRegistry {
      * @param payload - The payload to send.
      */
     broadcast(path: string, payload: unknown): void {
-        for (const [session, sessionPath] of this.#sessions) {
-            if (sessionPath === path) {
-                this.#safeSend(session, payload);
-            }
+        const members = this.#paths.get(path);
+        if (!members) {
+            return;
+        }
+        // Serialize once per broadcast, not once per member (each session
+        // would re-`JSON.stringify` the same payload).
+        const wire = typeof payload === 'string' ? payload : (JSON.stringify(payload) ?? '');
+        for (const session of members) {
+            this.#safeSend(session, wire);
         }
     }
 
@@ -245,8 +279,9 @@ export class NodeSocketSessionRegistry implements SocketSessionRegistry {
         if (!members) {
             return;
         }
+        const wire = typeof payload === 'string' ? payload : (JSON.stringify(payload) ?? '');
         for (const session of members) {
-            this.#safeSend(session, payload);
+            this.#safeSend(session, wire);
         }
     }
 
@@ -288,12 +323,22 @@ export class NodeSocketSessionRegistry implements SocketSessionRegistry {
      * Close every open session (default `1001` going away). Removal happens
      * through each connection's close event.
      *
+     * Invalid close frames throw a `RangeError` before any session is
+     * touched; the fan-out itself is best-effort — one session whose
+     * transport rejects the close mid-handshake cannot abort the loop.
+     *
      * @param code - Close status code (default `1001`).
      * @param reason - Human-readable close reason.
      */
     closeAll(code: number = 1001, reason: string = 'server shutting down'): void {
+        assertCloseFrame(code, reason);
         for (const session of this.#sessions.keys()) {
-            session.close(code, reason);
+            try {
+                session.close(code, reason);
+            } catch {
+                // Best-effort: a session that refuses the close (e.g. its
+                // transport is already CLOSING) must not abort the sweep.
+            }
         }
     }
 
@@ -308,8 +353,19 @@ export class NodeSocketSessionRegistry implements SocketSessionRegistry {
      */
     remove(session: SocketSession, closeCode?: number): void {
         void closeCode;
-        if (!this.#sessions.delete(session)) {
+        const path = this.#sessions.get(session);
+        if (path === undefined) {
             return;
+        }
+        this.#sessions.delete(session);
+        this.#overflowClosed.delete(session);
+        // Drop the session from the auto-join path index, pruning empty sets.
+        const pathMembers = this.#paths.get(path);
+        if (pathMembers !== undefined) {
+            pathMembers.delete(session);
+            if (pathMembers.size === 0) {
+                this.#paths.delete(path);
+            }
         }
         for (const [room, members] of this.#rooms) {
             if (members.delete(session) && members.size === 0) {
@@ -346,12 +402,20 @@ export class NodeSocketSessionRegistry implements SocketSessionRegistry {
     #sweep(): void {
         const now = this.#now();
         for (const session of this.#sessions.keys()) {
+            const transport = this.#transports.get(session);
+            // Probe liveness on the cadence: a healthy peer auto-pongs
+            // (RFC 6455 requires a pong in reply to a ping), refreshing
+            // `#lastSeen`. Ping before the staleness check so a session is
+            // only judged against traffic since the previous sweep.
+            transport?.ping();
             const lastSeen = this.#lastSeen.get(session);
-            if (lastSeen !== undefined && now - lastSeen > this.#idleTimeoutMs) {
-                // `terminate` closes the TCP connection abruptly; the close
-                // event fires and `remove` drops the session from the
-                // registry (no final frames are delivered to dead peers).
-                this.#transports.get(session)?.terminate();
+            if (lastSeen !== undefined && now - lastSeen >= this.#idleTimeoutMs) {
+                // `close(1001, …)` is a graceful close frame — the peer sees
+                // 1001, matching the documented reap behavior. Peers that
+                // never finish the handshake are force-reaped by ws's own
+                // `closeTimeout` (default 30s); the eventual close event
+                // drops the session from the registry.
+                transport?.close(1001, 'session idle');
             }
         }
     }
@@ -364,16 +428,28 @@ export class NodeSocketSessionRegistry implements SocketSessionRegistry {
         if (policy !== null) {
             const transport = this.#transports.get(session);
             if (transport !== undefined && transport.bufferedAmount > policy.maxBufferedBytes) {
-                this.#onOverflow?.({
+                // Already asked to close on overflow: this session's decision
+                // was made and memoized — skip observers and re-close while
+                // the handshake is pending (~ws closeTimeout).
+                if (policy.onOverflow === 'close' && this.#overflowClosed.has(session)) {
+                    return;
+                }
+                const event: SocketBackpressureEvent = {
                     path: this.#sessions.get(session) ?? '',
                     action: policy.onOverflow,
                     bufferedBytes: transport.bufferedAmount,
-                });
+                };
+                for (const observer of this.#onOverflow) {
+                    observer(event);
+                }
                 if (policy.onOverflow === 'close') {
                     // 1013 "try again later" — bounded memory, explicit
                     // client-visible signal; the AD-22 client reconnects
                     // with backoff. Close flows through the transport's
-                    // close event → registry removal (no leaks).
+                    // close event → registry removal (no leaks). Memoized so
+                    // broadcasts while the close handshake is pending don't
+                    // re-fire the decision per message.
+                    this.#overflowClosed.add(session);
                     session.close(1013, 'consumer too slow');
                 }
                 return;

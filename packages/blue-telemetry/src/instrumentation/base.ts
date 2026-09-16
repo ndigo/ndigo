@@ -11,7 +11,7 @@
  *   Constructors here use only current option names.
  */
 import { SpanKind, SpanStatusCode, trace, metrics } from '@opentelemetry/api';
-import type { Attributes, Span } from '@opentelemetry/api';
+import type { Attributes, Counter, Span } from '@opentelemetry/api';
 import { InstrumentationBase } from '@opentelemetry/instrumentation';
 import type { InstrumentationModuleDefinition } from '@opentelemetry/instrumentation';
 
@@ -92,10 +92,16 @@ export abstract class AbstractBaseInstrumentation extends InstrumentationBase {
         return <This, Args extends unknown[], Return>(
             original: (this: This, ...args: Args) => Return
         ): ((this: This, ...args: Args) => Return) => {
-            const meter = metrics.getMeter('@blue/telemetry');
-            const counter = meter.createCounter(config.name);
+            // Lazily resolved on first patched call: `InstrumentationBase`
+            // runs `enable()` (and this factory) in its constructor, before
+            // any SDK registers a global MeterProvider — an eager
+            // `createCounter` would capture the NoopMeter and silently drop
+            // every datapoint. First call happens post-init, so the global
+            // meter is real by then.
+            let counter: Counter | null = null;
 
             return function (this: This, ...args: Args): Return {
+                counter ??= metrics.getMeter('@blue/telemetry').createCounter(config.name);
                 counter.add(1, config.attributes);
                 return original.apply(this, args);
             };

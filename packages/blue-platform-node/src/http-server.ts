@@ -7,7 +7,8 @@
 import { $aware, type SmartLifecycle } from '@blue/factory';
 import type { ApplicationContext, ApplicationContextAware } from '@blue/context';
 import type { NodeDispatcher } from './node-dispatcher';
-import { NodeHTTPServerAdapter } from './node-http-server-adapter';
+import { NodeHTTPServerAdapter, type NodeHTTPServerAdapterOptions } from './node-http-server-adapter';
+import type { SocketLimits } from './node-socket-session';
 import { NodeSocketSessionRegistry } from './node-socket-session-registry';
 
 /**
@@ -33,6 +34,24 @@ export interface HTTPServerOptions {
     host?: string;
     /** Custom adapter. Defaults to `NodeHTTPServerAdapter`. */
     adapter?: HTTPServerAdapter;
+    /**
+     * Socket transport bounds (frame payload, inbound queue cap). When
+     * omitted, env `BLUE_SOCKET_MAX_PAYLOAD_BYTES` / `BLUE_SOCKET_MAX_QUEUED_MESSAGES`
+     * are honored by the default adapter.
+     */
+    socketLimits?: SocketLimits;
+    /**
+     * WebSocket Origin allowlist handed to the default adapter. When
+     * omitted, env `BLUE_SOCKET_ALLOWED_ORIGINS` (comma-separated bare
+     * origins) is honored; absent both, any origin may upgrade (public
+     * socket endpoints).
+     */
+    allowedWebSocketOrigins?: string[];
+    /**
+     * Upgrade-time authentication hook for the default adapter — see
+     * {@link NodeHTTPServerAdapterOptions.authenticate}.
+     */
+    authenticate?: NodeHTTPServerAdapterOptions['authenticate'];
     /**
      * Socket session registry shared with the default adapter (AD-21 D4).
      * When omitted, the registry is resolved from the application context
@@ -67,6 +86,9 @@ export class HTTPServer implements SmartLifecycle, ApplicationContextAware {
     #started: boolean;
     #dispatcher: NodeDispatcher | null;
     #socketRegistry: NodeSocketSessionRegistry | null;
+    #socketLimits: SocketLimits | undefined;
+    #allowedWebSocketOrigins: string[] | undefined;
+    #authenticate: NodeHTTPServerAdapterOptions['authenticate'];
     #applicationContext: ApplicationContext | null = null;
     #startPromise: Promise<void> | null = null;
 
@@ -111,6 +133,15 @@ export class HTTPServer implements SmartLifecycle, ApplicationContextAware {
      * @param options - Server configuration.
      */
     constructor(dispatcher: NodeDispatcher | null = null, options: HTTPServerOptions = {}) {
+        if (options.adapter !== undefined && options.socketRegistry !== undefined) {
+            // The registry is passed to the DEFAULT adapter; a custom adapter
+            // owns its own registry. Accepting both silently would leave the
+            // context bean and the adapter's registry disjoint — broadcasts
+            // via the bean would reach no live sessions, with no warning.
+            throw new RangeError(
+                'HTTPServer: socketRegistry is shared with the default adapter only — pass it to your custom adapter instead'
+            );
+        }
         const rawPort = options.port ?? Number(process.env['PORT'] ?? '3000');
         if (!Number.isInteger(rawPort) || rawPort < 0 || rawPort > 65_535) {
             throw new RangeError(`HTTPServer: invalid port ${String(rawPort)} — must be an integer in [0, 65535]`);
@@ -119,6 +150,14 @@ export class HTTPServer implements SmartLifecycle, ApplicationContextAware {
         this.#host = options.host ?? '127.0.0.1';
         this.#dispatcher = dispatcher;
         this.#socketRegistry = options.socketRegistry ?? null;
+        this.#socketLimits = options.socketLimits;
+        // Env-tunable origin allowlist for the default adapter: comma-
+        // separated bare origins (`BLUE_SOCKET_ALLOWED_ORIGINS`). Absent
+        // both, any origin may upgrade — the explicit public-socket
+        // posture.
+        this.#allowedWebSocketOrigins =
+            options.allowedWebSocketOrigins ?? parseOriginEnv(process.env['BLUE_SOCKET_ALLOWED_ORIGINS']);
+        this.#authenticate = options.authenticate ?? undefined;
         this.#adapter = options.adapter ?? null;
         this.#started = false;
     }
@@ -149,7 +188,12 @@ export class HTTPServer implements SmartLifecycle, ApplicationContextAware {
         }
         if (!this.#adapter) {
             const registry = this.#socketRegistry ?? this.#resolveSocketRegistry() ?? new NodeSocketSessionRegistry();
-            this.#adapter = new NodeHTTPServerAdapter(this.#resolveDispatcher(), { socketRegistry: registry });
+            this.#adapter = new NodeHTTPServerAdapter(this.#resolveDispatcher(), {
+                socketRegistry: registry,
+                socketLimits: this.#socketLimits,
+                allowedWebSocketOrigins: this.#allowedWebSocketOrigins,
+                authenticate: this.#authenticate,
+            });
         }
         await this.#adapter.listen(this.#port, this.#host);
         this.#started = true;
@@ -201,4 +245,22 @@ export class HTTPServer implements SmartLifecycle, ApplicationContextAware {
         }
         return null;
     }
+}
+
+/**
+ * Parses `BLUE_SOCKET_ALLOWED_ORIGINS` into an origin list: comma-separated
+ * bare origins (`http://a.example,https://b.example`). Empty/whitespace
+ * entries are dropped; `undefined`/empty string → `undefined` (unconstrained,
+ * the adapter's public-socket posture). Malformed entries surface as a
+ * `RangeError` when the adapter validates them at construction.
+ */
+function parseOriginEnv(raw: string | undefined): string[] | undefined {
+    if (raw === undefined || raw.trim() === '') {
+        return undefined;
+    }
+    const origins = raw
+        .split(',')
+        .map((entry) => entry.trim())
+        .filter((entry) => entry.length > 0);
+    return origins.length > 0 ? origins : undefined;
 }

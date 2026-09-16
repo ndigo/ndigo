@@ -1,6 +1,13 @@
 # 2026-09-15 WebSocket Client & `@blue/socket` Package
 
-**Status:** Proposed (ratification pending — ADR-22 records the decisions)
+**Status:** Implemented (ratified by [AD-22](../decisions/2026-09-15_AD22_WEBSOCKET_CLIENT.md);
+shipped in `5472171a`, `6e7ddbf9`, `d2aa32d1`, `184c5ceb`, `f0718252`, `af3857ab`)
+**As-built deviations (surface changed after this plan was written):**
+- `reconnectTrigger` is a `ReconnectTrigger` object (`{ onChange(listener): () => void }`), not a `Signal<boolean>` — added in `6e7ddbf9`; browser wiring lives in `@blue/platform-web` (`createOnlineReconnectTrigger()`).
+- The injectable `now?: () => number` clock was **not** implemented; deterministic tests use `transportFactory` + fake timers instead (`5472171a`).
+- `onStatusChange` observer (telemetry seam) and `maxInboundMessages` (inbound watermark) were added after planning — `184c5ceb`, Phase-3 review (2026-09-15).
+- Inbound `messages` are raw strings/ArrayBuffers — **no** automatic JSON decode (plan §4 said "JSON-decoded").
+- `createOnlineReconnectTrigger()` returns an `OnlineReconnectTrigger` (online signal + `onChange` + `dispose`), not a bare `Signal<boolean>`.
 **Scope:** new `packages/blue-socket/` (contracts + client, isomorphic),
 `blue-dispatcher` (re-export seam), `blue-platform-web` (online trigger),
 `apps/blue-api` (demo gate)
@@ -72,24 +79,30 @@ export interface ReconnectPolicy {
 export interface WebSocketClientOptions {
     reconnect?: ReconnectPolicy | null;      // null disables auto-reconnect
     bufferWhileDisconnected?: { maxMessages: number };  // opt-in, default off
-    /** Environment wiring (e.g. browser online event) pushes an immediate retry. */
-    reconnectTrigger?: Signal<boolean> | (() => boolean);
-    /** Injectable clock for deterministic tests. @internal */
-    now?: () => number;
+    /** Boundary on the inbound messages stream (opt-in; drops on overflow). */
+    maxInboundMessages?: number;
+    /** Environment wiring: `{ onChange(listener): () => void }` (e.g. the browser online trigger). */
+    reconnectTrigger?: ReconnectTrigger | null;
+    /** Status-transition observer — the telemetry seam (never called with the same state twice). */
+    onStatusChange?: (status: SocketStatus) => void;
+    /** Transport factory for tests and non-standard environments. @internal */
+    transportFactory?: (url: string) => SocketTransport;
 }
 ```
 
 `WebSocketClient` wraps the WHATWG surface: `connecting → open`, unexpected
 `close` → `reconnecting` → backoff timer → reconnect; deliberate `close()`
 → `closed`, no reconnect. Status is a `@blue/signals` signal; messages flow
-through an async reader (the `AsyncReader` shape already used by
-`nodeSocketSession`).
+through the shared `AsyncReader` (same class server sessions use — one
+implementation, two sides of the wire, `2026-09-15`).
 
 ### `blue-platform-web`
 
-`createOnlineReconnectTrigger(): Signal<boolean>` — window `online`/`offline`
-events → signal; a truthy transition nudges a reconnecting client to retry
-immediately. The only browser-global code in the feature.
+`createOnlineReconnectTrigger(): OnlineReconnectTrigger` — window
+`online`/`offline` events → an `online` signal, an `onChange(listener)`
+subscription (an offline→online transition nudges a reconnecting client to
+retry immediately), and `dispose()`. The only browser-global code in the
+feature.
 
 ## 5. Phases
 

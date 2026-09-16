@@ -78,17 +78,36 @@ default: a session whose transport buffer exceeds 1 MiB is closed with
 `1013` ("try again later", Spring's `SESSION_NOT_RELIABLE`) — the AD-22
 client reconnects and resyncs. Tune per registry:
 `{ backpressure: { maxBufferedBytes, onOverflow: 'drop' | 'close' } }`
-(`drop` skips silently; `null` disables the guard).
+(`drop` skips silently; `null` disables the guard). The decision is
+memoized per session — a close handshake in flight never re-fires the
+decision on later broadcasts — and every decision (close and drop) is
+observable via the registry's `onOverflow` observer
+(`addOverflowObserver(event)` for post-construction wiring, e.g.
+telemetry).
+
+Inbound is bounded too: the adapter sets `ws` `maxPayload` (frame size,
+default 1 MiB) and each session's inbound queue caps at
+`maxQueuedMessages` (default 1024), closing `1009` on overflow — the
+inbound mirror of the outbound watermark. Tune per adapter or by env:
+
+```
+BLUE_SOCKET_MAX_PAYLOAD_BYTES=1048576       # frame payload cap (default 1 MiB)
+BLUE_SOCKET_MAX_QUEUED_MESSAGES=1024        # inbound queue cap per session (default 1024)
+```
 
 Socket observability ships as `WebSocketServerInstrumentation`
 (`@blue/telemetry-node`, opt-in like the HTTP instrumentation): session
 lifetime spans (`SocketSession.connect`, path/duration/close code),
 sessions opened/closed, fan-out messages/bytes (path/room), and
-backpressure-close counters — all under `blue.socket.*`.
+backpressure counters (`close` and `drop` actions) — all under
+`blue.socket.*`.
 
 Also on the session: `session.attributes` — a per-connection state bag
 (Micronaut/Spring/Jakarta parity), and `session.close(code, reason)` for a
-server-initiated close.
+server-initiated close. The adapter's optional `authenticate(sources)`
+hook runs before the handler: return an object to populate
+`session.attributes` (the identity binding — e.g. `{ principal }`), or
+`null` to reject the upgrade with `1008`.
 
 ## 3. Scheduler → room (cross-context push)
 
@@ -103,7 +122,7 @@ export class ChatController implements ApplicationContextAware {
 
     @socketMapping('/chat')
     @parameters({ session: socketSession('session') })
-    async *chat(session: SocketSession) {
+    async chat(session: SocketSession) {
         session.join('room');
         for await (const message of session.messages) {
             this.#registry()?.broadcastTo('room', { event: 'chat', data: String(message) });
@@ -120,10 +139,12 @@ export class ChatController implements ApplicationContextAware {
 ## 4. Heartbeat
 
 Heartbeats are **on by default** (fail-closed): the registry pings every
-session each `heartbeatIntervalMs` (default 30s) and reaps — terminates and
-drops — sessions silent past `idleTimeoutMs` (default 60s, ~2 missed
-pongs), closing them with `1001`. Dead peers (NAT timeouts, dropped WiFi)
-cannot accumulate. Configure via environment:
+session each `heartbeatIntervalMs` (default 30s) and reaps — closes with
+`1001` — sessions silent past `idleTimeoutMs` (default 60s, ~2 missed
+pongs). Any inbound traffic (a message) refreshes liveness, and peers that
+never finish the close handshake are force-reaped by ws's own
+`closeTimeout`. Dead peers (NAT timeouts, dropped WiFi) cannot accumulate.
+Configure via environment:
 
 ```
 BLUE_SOCKET_HEARTBEAT_INTERVAL_MS=10000   # ping every 10s
@@ -134,7 +155,25 @@ BLUE_SOCKET_HEARTBEAT_INTERVAL_MS=0       # disable explicitly (not recommended)
 Adapters constructed by hand accept a `NodeSocketSessionRegistry` with the
 same options; `server.close()` stops the sweep (graceful shutdown).
 
-## 5. The client (`@blue/socket`, AD-22)
+Socket handlers may be async generators (yield outbound) **or** plain
+async functions that consume `session.messages` and push via the registry
+(the broadcast style above). Both are awaited and their failures close the
+session with `1011` — never an unhandled rejection.
+
+## 5. WebSocket origins (CSWSH)
+
+WebSocket upgrades are plain HTTP GETs that carry cookies; CORS does not
+apply, so a malicious page can open a cross-origin socket unless origins
+are validated. The adapter's `allowedWebSocketOrigins` option rejects
+forged or missing `Origin` headers with `403` before the connection fires
+(fail-closed). The `HTTPServer` default-adapter path reads the same list
+from `BLUE_SOCKET_ALLOWED_ORIGINS` (comma-separated bare origins,
+e.g. `https://app.example,https://admin.example`). When unset, any origin
+may upgrade — the explicit public-socket posture (the demo chat room is
+intended to be open). Production deployments binding credentials to
+sockets should set it.
+
+## 6. The client (`@blue/socket`, AD-22)
 
 `WebSocketClient` is the isomorphic client: WHATWG `WebSocket` global in
 browsers **and** Node ≥22, with signal-based status and reconnect:
@@ -162,10 +201,12 @@ chat.close();                                   // deliberate — never reconnec
 
 Semantics (AD-22 D3): `status` is a signal
 (`connecting/open/reconnecting/closed`); `messages` is an async iterable
-that **survives reconnects** and completes only on a deliberate `close()`;
-unexpected drops back off exponentially (base 1s, cap 30s, ±20% jitter,
-attempt counter reset on each successful open); messages sent while
-disconnected are queued (opt-in, overflow drops oldest) or dropped.
+that **survives reconnects** and completes only on a deliberate `close()`
+(or on any close when `reconnect: null` disables retries);
+unexpected drops back off exponentially (base 1s, cap 30s, ±20% jitter
+clamped to the cap, attempt counter reset on each successful open);
+messages sent while disconnected are queued (opt-in, overflow drops
+oldest) or dropped.
 
 `createOnlineReconnectTrigger()` (`blue-platform-web`, browser-only) wires
 window `online`/`offline` events into the client's immediate-retry path —
@@ -183,7 +224,7 @@ import { countSocketClientStatus } from '@blue/telemetry-web';
 const chat = new WebSocketClient(url, { onStatusChange: countSocketClientStatus() });
 ```
 
-## 6. Design boundaries (AD-21)
+## 7. Design boundaries (AD-21)
 
 - **No generic `Session` base class.** HTTP session state and WebSocket
   connections share only "ID + data container" — every operation past that
@@ -201,7 +242,7 @@ const chat = new WebSocketClient(url, { onStatusChange: countSocketClientStatus(
   STOMP (future layer), message history — **SockJS: never** (pre-2015
   fallback-transport workaround; third-party territory, AD-22 D4).
 
-## 7. References
+## 8. References
 
 - Decision: [AD-21 — WebSocket Session Registry](../decisions/2026-09-15_AD21_WEBSOCKET_SESSION_REGISTRY.md),
   [AD-22 — WebSocket Client & `@blue/socket`](../decisions/2026-09-15_AD22_WEBSOCKET_CLIENT.md)

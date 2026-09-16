@@ -68,6 +68,10 @@ export function createOnlineReconnectTrigger(): OnlineReconnectTrigger {
         dispose(): void {
             window.removeEventListener('online', onOnline);
             window.removeEventListener('offline', onOffline);
+            // Release client closures retained by the listener list (closed
+            // clients unsubscribe individually via close(), but a disposed
+            // trigger must not pin anything either).
+            listeners.length = 0;
         },
     };
 }

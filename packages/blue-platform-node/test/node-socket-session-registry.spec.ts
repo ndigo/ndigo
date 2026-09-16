@@ -4,6 +4,7 @@
  * @author Jeff Rose
  */
 // @vitest-environment node
+import { EventEmitter } from 'node:events';
 import { describe, test, expect, beforeEach, afterEach, vi } from 'vitest';
 import { nodeSocketSession, NodeSocketSessionRegistry } from '../src/index';
 import type { WebSocket } from 'ws';
@@ -29,6 +30,7 @@ function fakeTransport() {
             }
         },
         send: vi.fn(),
+        ping: vi.fn(),
         close: vi.fn(),
         terminate: vi.fn(),
     };
@@ -208,7 +210,18 @@ describe('NodeSocketSessionRegistry', () => {
         expect(registry.sessions('/echo')[0]?.attributes).toEqual({ user: 'alice' });
     });
 
-    test('heartbeat reaps sessions silent past idleTimeoutMs and spares ponging ones', () => {
+    test('session attaches an error listener so transport errors cannot crash the process', () => {
+        const transport = new EventEmitter() as unknown as WebSocket;
+        const session = nodeSocketSession(transport, '/echo');
+        // A real EventEmitter throws when 'error' is emitted with no listener;
+        // the session must absorb protocol violations (maxPayload, bad UTF-8)
+        // and let the ws close flow complete the streams.
+        expect(() => transport.emit('error', new Error('maxPayload exceeded'))).not.toThrow();
+        transport.emit('close', 1006, '');
+        expect(session.isClosed).toBe(true);
+    });
+
+    test('heartbeat pings every session on the cadence and reaps silent ones with close 1001', () => {
         vi.useFakeTimers();
         let now = 0;
         registry = new NodeSocketSessionRegistry({ heartbeatIntervalMs: 50, idleTimeoutMs: 100, now: () => now });
@@ -216,20 +229,49 @@ describe('NodeSocketSessionRegistry', () => {
         sessionAt('/echo', transport);
         expect(vi.getTimerCount()).toBe(1);
 
-        // No pong: past idle → terminated.
-        now = 101;
+        // First sweep probes with a ping; still within idle → spared.
+        now = 60;
         vi.advanceTimersByTime(50);
-        expect(transport.terminate).toHaveBeenCalledTimes(1);
+        expect(transport.ping).toHaveBeenCalledTimes(1);
+        expect(transport.close).not.toHaveBeenCalled();
 
-        // A ponging session is spared: pong at t=101, sweep at t=160 → 59ms
-        // since last traffic.
+        // No pong (or traffic) past idle → reaped with 1001, not terminate().
+        now = 160;
+        vi.advanceTimersByTime(50);
+        expect(transport.ping).toHaveBeenCalledTimes(2);
+        expect(transport.close).toHaveBeenCalledTimes(1);
+        expect(transport.close).toHaveBeenCalledWith(1001, 'session idle');
+        expect(transport.terminate).not.toHaveBeenCalled();
+
+        // A session that pongs after the probe keeps its slot.
         const alive = fakeTransport();
         const session = nodeSocketSession(alive as unknown as WebSocket, '/echo', undefined, registry);
         registry.register(session, '/echo', alive as unknown as WebSocket);
-        alive.emit('pong');
-        now = 160;
-        vi.advanceTimersByTime(50);
-        expect(alive.terminate).not.toHaveBeenCalled();
+        alive.emit('pong'); // lastSeen = 160
+        now = 210;
+        vi.advanceTimersByTime(50); // sweep at 210: 210-160 = 50 < idle
+        expect(alive.close).not.toHaveBeenCalled();
+        expect(alive.ping).toHaveBeenCalled();
+    });
+
+    test('heartbeat treats inbound traffic as liveness (any traffic)', () => {
+        vi.useFakeTimers();
+        let now = 0;
+        registry = new NodeSocketSessionRegistry({ heartbeatIntervalMs: 50, idleTimeoutMs: 100, now: () => now });
+        const transport = fakeTransport();
+        sessionAt('/echo', transport);
+
+        now = 90;
+        vi.advanceTimersByTime(50); // sweep 1: ping
+        transport.emit('message', 'hello'); // lastSeen = 90
+        now = 170;
+        vi.advanceTimersByTime(50); // sweep 2: 170-90 = 80 < idle → spared
+        expect(transport.close).not.toHaveBeenCalled();
+
+        now = 230;
+        vi.advanceTimersByTime(50); // sweep 3: 230-90 = 140 >= idle → reaped
+        expect(transport.close).toHaveBeenCalledTimes(1);
+        expect(transport.close).toHaveBeenCalledWith(1001, 'session idle');
     });
 
     test('heartbeat stops when the last session leaves, and stop() clears the timer', () => {
@@ -256,5 +298,92 @@ describe('NodeSocketSessionRegistry', () => {
         registry = new NodeSocketSessionRegistry({ heartbeatIntervalMs: null });
         sessionAt('/echo');
         expect(vi.getTimerCount()).toBe(0);
+    });
+
+    test('heartbeatIntervalMs 0 normalizes to disabled (no busy interval)', () => {
+        vi.useFakeTimers();
+        registry = new NodeSocketSessionRegistry({ heartbeatIntervalMs: 0 });
+        sessionAt('/echo');
+        expect(vi.getTimerCount()).toBe(0);
+
+        // 1 still schedules a sweep.
+        registry = new NodeSocketSessionRegistry({ heartbeatIntervalMs: 50 });
+        sessionAt('/echo2');
+        expect(vi.getTimerCount()).toBe(1);
+    });
+
+    test('overflow close decision is memoized — no repeat observers or close(1013) per broadcast', () => {
+        const onOverflow = vi.fn();
+        registry = new NodeSocketSessionRegistry({ heartbeatIntervalMs: null, onOverflow });
+        sessionAt('/echo');
+        transports[0].bufferedAmount = 2_000_000;
+
+        // First broadcast: decision made once.
+        registry.broadcast('/echo', 'x');
+        expect(onOverflow).toHaveBeenCalledTimes(1);
+        expect(transports[0].close).toHaveBeenCalledTimes(1);
+        expect(transports[0].close).toHaveBeenCalledWith(1013, 'consumer too slow');
+
+        // Second broadcast while the close handshake is pending: no re-fire.
+        registry.broadcast('/echo', 'y');
+        expect(onOverflow).toHaveBeenCalledTimes(1);
+        expect(transports[0].close).toHaveBeenCalledTimes(1);
+
+        // Once removed (close event), a fresh registration can overflow again.
+        transports[0].emit('close', 1013, 'consumer too slow');
+        const replacement = fakeTransport();
+        sessionAt('/echo', replacement);
+        replacement.bufferedAmount = 2_000_000;
+        registry.broadcast('/echo', 'z');
+        expect(onOverflow).toHaveBeenCalledTimes(2);
+    });
+
+    test('backpressure observer list is dynamic (add/remove after construction)', () => {
+        const observer = vi.fn();
+        registry = new NodeSocketSessionRegistry({ heartbeatIntervalMs: null });
+        sessionAt('/echo');
+        transports[0].bufferedAmount = 2_000_000;
+
+        const unsubscribe = registry.addOverflowObserver(observer);
+        registry.broadcast('/echo', 'x');
+        expect(observer).toHaveBeenCalledWith({ path: '/echo', action: 'close', bufferedBytes: 2_000_000 });
+
+        unsubscribe();
+        registry.broadcast('/echo', 'y');
+        expect(observer).toHaveBeenCalledTimes(1);
+    });
+
+    test('broadcast serializes the payload once, not once per session (O2)', () => {
+        const session = sessionAt('/echo');
+        const spy = vi.spyOn(JSON, 'stringify');
+        registry.broadcast('/echo', { event: 'tick', n: 1 });
+        // One serialization for the broadcast; each session sends the
+        // pre-built wire string directly.
+        expect(spy).toHaveBeenCalledTimes(1);
+        expect(transports[0].send).toHaveBeenCalledWith(JSON.stringify({ event: 'tick', n: 1 }));
+        spy.mockRestore();
+        void session;
+    });
+
+    test('closeAll validates close frames up front and is resilient', () => {
+        sessionAt('/echo');
+        // Invalid code/reason → RangeError before any session is touched.
+        expect(() => registry.closeAll(1337 as 1000)).toThrow(RangeError);
+        expect(() => registry.closeAll(1000, 'x'.repeat(124))).toThrow(RangeError);
+        // Valid close reaches sessions; a throwing session does not abort.
+        transports[0].close.mockImplementationOnce(() => {
+            throw new Error('transport gone');
+        });
+        expect(() => registry.closeAll(1001, 'bye')).not.toThrow();
+        expect(transports[0].close).toHaveBeenCalledTimes(1);
+    });
+
+    test('session close rejects invalid codes and oversized reasons (O8)', () => {
+        const session = sessionAt('/echo');
+        expect(() => session.close(1005 as 1000)).toThrow(RangeError);
+        expect(() => session.close(3000, 'x'.repeat(124))).toThrow(RangeError);
+        // Valid application range passes through.
+        session.close(4000, 'done');
+        expect(transports[0].close).toHaveBeenCalledWith(4000, 'done');
     });
 });

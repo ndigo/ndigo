@@ -53,12 +53,11 @@ export interface SocketSession {
     /**
      * Inbound messages from the peer, as an async iterable.
      *
-     * Each value is the message payload: **a string for text frames and for
-     * binary frames** (the Node implementation decodes binary payloads as
-     * UTF-8 so handlers see one predictable type — binary frames arrive
-     * only from clients that send them, since the library sends text or
-     * JSON frames). The stream completes when the peer closes the
-     * connection.
+     * Each value is the message payload: **a string for text frames, a
+     * `Uint8Array` for binary frames** (AD-23 D8 — binary payloads surface
+     * byte-exact; handlers that expect text decode explicitly, e.g.
+     * `new TextDecoder().decode(bytes)`). The stream completes when the
+     * peer closes the connection.
      */
     readonly messages: AsyncIterable<unknown>;
 

@@ -160,12 +160,15 @@ export class DateTimeFormatter {
             timeStyle: timeStyle ?? null,
         });
 
-        this.#format = cachedFormatter(dateTimeCache, key, () =>
-            new Intl.DateTimeFormat(locale, {
-                ...(timeZone ? { timeZone } : {}),
-                ...(dateStyle ? { dateStyle } : {}),
-                ...(timeStyle ? { timeStyle } : {}),
-            })
+        this.#format = cachedFormatter(
+            dateTimeCache,
+            key,
+            () =>
+                new Intl.DateTimeFormat(locale, {
+                    ...(timeZone ? { timeZone } : {}),
+                    ...(dateStyle ? { dateStyle } : {}),
+                    ...(timeStyle ? { timeStyle } : {}),
+                })
         );
     }
 
@@ -217,15 +220,18 @@ export class NumberFormatter {
             notation: notation ?? null,
         });
 
-        this.#format = cachedFormatter(numberCache, key, () =>
-            new Intl.NumberFormat(locale, {
-                ...(style ? { style } : {}),
-                ...(currency ? { currency } : {}),
-                ...(unit ? { unit } : {}),
-                ...(minimumFractionDigits !== undefined ? { minimumFractionDigits } : {}),
-                ...(maximumFractionDigits !== undefined ? { maximumFractionDigits } : {}),
-                ...(notation ? { notation } : {}),
-            })
+        this.#format = cachedFormatter(
+            numberCache,
+            key,
+            () =>
+                new Intl.NumberFormat(locale, {
+                    ...(style ? { style } : {}),
+                    ...(currency ? { currency } : {}),
+                    ...(unit ? { unit } : {}),
+                    ...(minimumFractionDigits !== undefined ? { minimumFractionDigits } : {}),
+                    ...(maximumFractionDigits !== undefined ? { maximumFractionDigits } : {}),
+                    ...(notation ? { notation } : {}),
+                })
         );
     }
 
@@ -264,11 +270,14 @@ export class RelativeTimeFormatter {
         const { locale, numeric, style } = options;
         const key = stringifyOptions({ locale, numeric: numeric ?? null, style: style ?? null });
 
-        this.#format = cachedFormatter(relativeTimeCache, key, () =>
-            new Intl.RelativeTimeFormat(locale, {
-                ...(numeric ? { numeric } : {}),
-                ...(style ? { style } : {}),
-            })
+        this.#format = cachedFormatter(
+            relativeTimeCache,
+            key,
+            () =>
+                new Intl.RelativeTimeFormat(locale, {
+                    ...(numeric ? { numeric } : {}),
+                    ...(style ? { style } : {}),
+                })
         );
     }
 
@@ -308,11 +317,14 @@ export class ListFormatter {
         const { locale, type, style } = options;
         const key = stringifyOptions({ locale, type: type ?? null, style: style ?? null });
 
-        this.#format = cachedFormatter(listCache, key, () =>
-            new Intl.ListFormat(locale, {
-                ...(type ? { type } : {}),
-                ...(style ? { style } : {}),
-            })
+        this.#format = cachedFormatter(
+            listCache,
+            key,
+            () =>
+                new Intl.ListFormat(locale, {
+                    ...(type ? { type } : {}),
+                    ...(style ? { style } : {}),
+                })
         );
     }
 

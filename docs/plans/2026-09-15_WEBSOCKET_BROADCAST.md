@@ -3,15 +3,16 @@
 **Status:** Implemented (ratified by [AD-21](../decisions/2026-09-13_AD21_WEBSOCKET_SESSION_REGISTRY.md);
 shipped in `6eafdf05`, `d76eed8f`, `f5fd6d8b`, `f0a67c98`, `f0718252`; review-hardening `2026-09-15`)
 **As-built deviations (surface changed after this plan was written):**
+
 - Contract home moved from `blue-dispatcher` to `@blue/socket` — dispatcher re-exports the types for handler signatures (`6bda49b5`).
 - `remove(session)` → `remove(session, closeCode?)` (close-code observability for telemetry, `f0718252`); registry additions: `addOverflowObserver()` and per-session memoized overflow-close decisions (2026-09-15 review hardening).
 - Heartbeat env is `BLUE_SOCKET_HEARTBEAT_INTERVAL_MS` / `BLUE_SOCKET_IDLE_TIMEOUT_MS` (env-only; the plan's `socket.heartbeat-interval-ms` property names were not adopted — `f5fd6d8b`). The reaper pings with `ws.ping()` and closes `1001` (peers stuck in the handshake are force-reaped by ws `closeTimeout`).
 - Session `attributes` lives **as long as the session** — the plan's "cleared on close" wording was dropped in the contract (`6eafdf05`/`6bda49b5`).
 - Transport bounds added after planning: `maxPayload` (frame cap, default 1 MiB) and `maxQueuedMessages` (inbound queue, overflow close `1009`) — env `BLUE_SOCKET_MAX_PAYLOAD_BYTES` / `BLUE_SOCKET_MAX_QUEUED_MESSAGES`. Origin allowlist is env-tunable via `BLUE_SOCKET_ALLOWED_ORIGINS` (2026-09-15 review hardening).
-**Scope:** `blue-dispatcher` (type-only contracts), `blue-platform-node` (impl, auto-configuration),
-`blue-auth-core` (naming prereq), `apps/blue-api` (demo gate)
-**Companion docs:** [Framework Gap Analysis](../audits/2026-09-13_FRAMEWORK_GAP_ANALYSIS.md) §2.3 (WebSockets),
-[AD-18 Host Runtime](../decisions/2026-09-13_AD18_HOST_RUNTIME.md), [AD-20 Scheduling](../decisions/2026-09-13_AD20_SCHEDULING.md)
+  **Scope:** `blue-dispatcher` (type-only contracts), `blue-platform-node` (impl, auto-configuration),
+  `blue-auth-core` (naming prereq), `apps/blue-api` (demo gate)
+  **Companion docs:** [Framework Gap Analysis](../audits/2026-09-13_FRAMEWORK_GAP_ANALYSIS.md) §2.3 (WebSockets),
+  [AD-18 Host Runtime](../decisions/2026-09-13_AD18_HOST_RUNTIME.md), [AD-20 Scheduling](../decisions/2026-09-13_AD20_SCHEDULING.md)
 
 ---
 
@@ -34,21 +35,21 @@ messages back, but it cannot:
 
 ## 2. Current state (verified 2026-09-15)
 
-| Surface | Location | Notes |
-| --- | --- | --- |
-| `@socketMapping(route)` | `blue-dispatcher/src/socket-mapping.ts` | Method decorator on top of `routeMapping`; per-method socket marker |
-| `isSocketMapping()` | same file | `route:socket:<method>` + `route:mapping:<name>` both present |
-| `SocketSession` contract | `blue-dispatcher/src/socket-session.ts` | `path/params/query/headers/cookies`, `messages` (async iterable), `closed`, `isClosed`, `send()`, `close(code, reason)` |
-| `SocketRequestSources` | same file | `query/headers/cookies` — the upgrade-request vocabulary, shared with the HTTP path |
-| `nodeSocketSession()` | `blue-platform-node/src/node-socket-session.ts` | Wraps `ws`; `AsyncReader` bridges push events → async iterable |
-| Adapter upgrade path | `node-http-server-adapter.ts` | `shouldHandle` gates by route conditions (query params), origin allowlist fails closed, FIFO pending-upgrades, `#dispatchSocket` binds `@parameters` (incl. Zod; missing required param → close `1008`) |
-| Tests | `blue-platform-node/test/websocket.spec.ts` | Echo, unknown-path refusal, query-gated upgrade, origin enforcement |
-| Auto-configuration | `node-auto-configuration.ts` | **No socket wiring** — no registry, no options, nothing |
+| Surface                  | Location                                        | Notes                                                                                                                                                                                                   |
+| ------------------------ | ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `@socketMapping(route)`  | `blue-dispatcher/src/socket-mapping.ts`         | Method decorator on top of `routeMapping`; per-method socket marker                                                                                                                                     |
+| `isSocketMapping()`      | same file                                       | `route:socket:<method>` + `route:mapping:<name>` both present                                                                                                                                           |
+| `SocketSession` contract | `blue-dispatcher/src/socket-session.ts`         | `path/params/query/headers/cookies`, `messages` (async iterable), `closed`, `isClosed`, `send()`, `close(code, reason)`                                                                                 |
+| `SocketRequestSources`   | same file                                       | `query/headers/cookies` — the upgrade-request vocabulary, shared with the HTTP path                                                                                                                     |
+| `nodeSocketSession()`    | `blue-platform-node/src/node-socket-session.ts` | Wraps `ws`; `AsyncReader` bridges push events → async iterable                                                                                                                                          |
+| Adapter upgrade path     | `node-http-server-adapter.ts`                   | `shouldHandle` gates by route conditions (query params), origin allowlist fails closed, FIFO pending-upgrades, `#dispatchSocket` binds `@parameters` (incl. Zod; missing required param → close `1008`) |
+| Tests                    | `blue-platform-node/test/websocket.spec.ts`     | Echo, unknown-path refusal, query-gated upgrade, origin enforcement                                                                                                                                     |
+| Auto-configuration       | `node-auto-configuration.ts`                    | **No socket wiring** — no registry, no options, nothing                                                                                                                                                 |
 
 The dispatcher already treats sockets as first-class (parameter binding via the same
 machinery as HTTP: `queryValue`, `headerValue`, `cookieValue`, `validatedBy`, plus
 `socketSession()`), and the adapter already resolves the socket handler through the
-normal radix mapping. The missing layer is *session tracking and fan-out*.
+normal radix mapping. The missing layer is _session tracking and fan-out_.
 
 ## 3. Architecture: composition-root model
 
@@ -58,12 +59,12 @@ dispatcher defines the **types handlers sign against**, the platform implements 
 runs socket sessions and HTTP sessions side by side as separate beans bound through
 separate extractors — no unified "session layer" exists or is proposed.
 
-| Role | Home | Contents | Runtime coupling to dispatcher |
-| --- | --- | --- | --- |
-| Signature vocabulary | `blue-dispatcher` (type-only) | `SocketSession` (+ `attributes`), `SocketSessionRegistry` contract, extractor types | None — dispatcher execution path never references registries |
-| Implementation | `blue-platform-node` | `NodeSocketSessionRegistry` (membership, broadcast, heartbeat sweep), adapter hookup | Implements the contract |
-| Composition | `NodeAutoConfiguration` (`@entry` beans, mirroring `TaskScheduler`/`ScheduleRegistry` AD-20) | Registry bean + configuration properties (heartbeat intervals) | Through DI only |
-| Application | any app config (e.g. `NodeAppConfiguration`) | Controllers + services inject the registry; nothing to wire | Through DI only |
+| Role                 | Home                                                                                         | Contents                                                                             | Runtime coupling to dispatcher                               |
+| -------------------- | -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ | ------------------------------------------------------------ |
+| Signature vocabulary | `blue-dispatcher` (type-only)                                                                | `SocketSession` (+ `attributes`), `SocketSessionRegistry` contract, extractor types  | None — dispatcher execution path never references registries |
+| Implementation       | `blue-platform-node`                                                                         | `NodeSocketSessionRegistry` (membership, broadcast, heartbeat sweep), adapter hookup | Implements the contract                                      |
+| Composition          | `NodeAutoConfiguration` (`@entry` beans, mirroring `TaskScheduler`/`ScheduleRegistry` AD-20) | Registry bean + configuration properties (heartbeat intervals)                       | Through DI only                                              |
+| Application          | any app config (e.g. `NodeAppConfiguration`)                                                 | Controllers + services inject the registry; nothing to wire                          | Through DI only                                              |
 
 Coexistence example (the question this model answers — a Node app with both kinds):
 
@@ -71,8 +72,12 @@ Coexistence example (the question this model answers — a Node app with both ki
 // blue-api-style app config: nothing socket-specific beyond the auto-config
 @configuration
 export class NodeAppConfiguration {
-    @entry chatController() { return new ChatController(); }   // @socketMapping + socketSession()
-    @entry noteController() { return new NoteController(); }    // @getMapping + sessionValue()
+    @entry chatController() {
+        return new ChatController();
+    } // @socketMapping + socketSession()
+    @entry noteController() {
+        return new NoteController();
+    } // @getMapping + sessionValue()
 }
 ```
 
@@ -110,7 +115,7 @@ Package names remain the coarse namespace; adjectives the fine one.
 `SocketSessionRegistry` is built per-kind (industry shape: Socket.IO rooms, SignalR
 Groups, Micronaut `getOpenSessions()`, Spring `SimpUserRegistry`). No generic
 `SessionRegistry<S>` until the HTTP session store (audit M4) creates a second
-consumer; when it does, extract the *ID + attributes-bag* contract (Micronaut-style),
+consumer; when it does, extract the _ID + attributes-bag_ contract (Micronaut-style),
 not a registry base. Concession planted now: `SocketSession` gains an `attributes`
 bag (industry-universal: Micronaut, Spring, Jakarta) — per-connection state without a
 store, and the seed of the future shared contract.
@@ -161,11 +166,11 @@ interface SocketSession {
 // new: socket-session-registry.ts (contract only — nothing in the dispatcher's
 // execution path references it)
 interface SocketSessionRegistry {
-    sessions(path: string): readonly SocketSession[];   // auto-join set
+    sessions(path: string): readonly SocketSession[]; // auto-join set
     count(path: string): number;
-    broadcast(path: string, payload: unknown): void;      // auto-join set
-    broadcastTo(room: string, payload: unknown): void;    // explicit rooms
-    join(session: SocketSession, room: string): void;     // registry-backed membership
+    broadcast(path: string, payload: unknown): void; // auto-join set
+    broadcastTo(room: string, payload: unknown): void; // explicit rooms
+    join(session: SocketSession, room: string): void; // registry-backed membership
     leave(session: SocketSession, room: string): void;
     closeAll(code?: number, reason?: string): void;
     /** Removes + closes a session; called by the transport on close. */
@@ -176,9 +181,9 @@ interface SocketSessionRegistry {
 ### `blue-platform-node` — implementation
 
 - `NodeSocketSessionRegistry implements SocketSessionRegistry` — `Map<session, path>`
-  + `Map<room, Set<session>>`; register happens in the adapter's `#dispatchSocket`
-  before handler invocation, remove on `closed` completion (both paths: peer close
-  and server close), heartbeat sweep (`ws.ping()` + pong tracking + terminate).
+    - `Map<room, Set<session>>`; register happens in the adapter's `#dispatchSocket`
+      before handler invocation, remove on `closed` completion (both paths: peer close
+      and server close), heartbeat sweep (`ws.ping()` + pong tracking + terminate).
 - Adapter: construct/accept the registry (from context at server start, mirroring
   how `HTTPServer` resolves the dispatcher); wire `attributes`/`join`/`leave` through
   `nodeSocketSession`.
@@ -255,12 +260,12 @@ session-base abstractions are introduced (D1/D3 guardrails).
 
 ## 9. Risks & open questions
 
-| Risk | Mitigation |
-| --- | --- |
-| Broadcast fan-out races with close | `remove()` is idempotent; broadcast skips `isClosed`; best-effort (D5) |
+| Risk                                                        | Mitigation                                                                    |
+| ----------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| Broadcast fan-out races with close                          | `remove()` is idempotent; broadcast skips `isClosed`; best-effort (D5)        |
 | Heartbeat sweeps interfere with active low-traffic sessions | `ws` pong tracking is per-connection; pings do not consume application frames |
-| Registry bean lifetime vs server restart | Registry cleared on context close (Phase 3 graceful shutdown) |
-| `Session` → `AuthSession` rename churn | Verified single consumer + specs; isolated commit (Phase 0) |
+| Registry bean lifetime vs server restart                    | Registry cleared on context close (Phase 3 graceful shutdown)                 |
+| `Session` → `AuthSession` rename churn                      | Verified single consumer + specs; isolated commit (Phase 0)                   |
 
 Open: none blocking. Alternative considered and rejected: hosting the registry
 contract in `blue-platform-node` (rejected — `SocketSession` contract precedent in
@@ -281,14 +286,14 @@ contract in `blue-platform-node` (rejected — `SocketSession` contract preceden
 Sources: Micronaut primary API docs (read 2026-09-15), Spring Session reference,
 framework documentation via web search.
 
-| Framework | HTTP session | WebSocket | Shared base? |
-| --- | --- | --- | --- |
-| Spring | `HttpSession` (servlet) / `WebSession` (WebFlux) — cross-request **state store** | `WebSocketSession` — **connection**; Spring Session *bridges* by ID ("keep the HttpSession alive when receiving WebSocket messages") | No common supertype |
-| Micronaut | `io.micronaut.session.Session` (store-shaped: `put/get/remove/isExpired/expire`) + `SessionStore<T>` | `WebSocketSession` — verified: extends `MutableConvertibleValues<Object>` (attribute bag) + `AutoCloseable`; **not** `Session`; has `getId/getOpenSessions` | No inheritance; shared piece is a value-map mixin |
-| Java EE / Jakarta | `HttpSession` | `jakarta.websocket.Session` + `getUserProperties()` | Separate |
-| ASP.NET Core | `ISession` (middleware, cookie-backed) | SignalR — `HubCallerContext`/`Groups`/`IClientProxy` | Separate models |
-| NestJS / AdonisJS | express-session / `@adonisjs/session` | Socket.IO adapter / `@adonisjs/websocket` channels | Separate packages |
-| Rails / Django / Go / Ktor | Cookie/store sessions | ActionCable / Channels / gorilla-websocket / Ktor WS | Separate |
+| Framework                  | HTTP session                                                                                         | WebSocket                                                                                                                                                   | Shared base?                                      |
+| -------------------------- | ---------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| Spring                     | `HttpSession` (servlet) / `WebSession` (WebFlux) — cross-request **state store**                     | `WebSocketSession` — **connection**; Spring Session _bridges_ by ID ("keep the HttpSession alive when receiving WebSocket messages")                        | No common supertype                               |
+| Micronaut                  | `io.micronaut.session.Session` (store-shaped: `put/get/remove/isExpired/expire`) + `SessionStore<T>` | `WebSocketSession` — verified: extends `MutableConvertibleValues<Object>` (attribute bag) + `AutoCloseable`; **not** `Session`; has `getId/getOpenSessions` | No inheritance; shared piece is a value-map mixin |
+| Java EE / Jakarta          | `HttpSession`                                                                                        | `jakarta.websocket.Session` + `getUserProperties()`                                                                                                         | Separate                                          |
+| ASP.NET Core               | `ISession` (middleware, cookie-backed)                                                               | SignalR — `HubCallerContext`/`Groups`/`IClientProxy`                                                                                                        | Separate models                                   |
+| NestJS / AdonisJS          | express-session / `@adonisjs/session`                                                                | Socket.IO adapter / `@adonisjs/websocket` channels                                                                                                          | Separate packages                                 |
+| Rails / Django / Go / Ktor | Cookie/store sessions                                                                                | ActionCable / Channels / gorilla-websocket / Ktor WS                                                                                                        | Separate                                          |
 
 Patterns: (1) HTTP session = logical state outliving connections; (2) WebSocket
 session = connection envelope + attribute bag; (3) membership/registry is

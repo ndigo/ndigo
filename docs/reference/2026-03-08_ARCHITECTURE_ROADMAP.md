@@ -86,8 +86,8 @@ Concrete view engines are adapter packages:
 - potential `@blue/view-lit`
 
 Dispatcher integration model remains engine-agnostic: it resolves a `View` and calls `view.render()`
-  (updated: producer views return a `RenderResult` document the dispatcher writes — `renderTo` +
-  `writeRenderResult`; fragment views still render into a `ViewTarget`).
+(updated: producer views return a `RenderResult` document the dispatcher writes — `renderTo` +
+`writeRenderResult`; fragment views still render into a `ViewTarget`).
 
 ## 4) Domain/Model Reconciliation
 

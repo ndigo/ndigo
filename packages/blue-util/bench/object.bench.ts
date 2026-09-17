@@ -165,9 +165,3 @@ describe('manual deep equal', () => {
         _objectSink = accumulator;
     });
 });
-
-
-
-
-
-

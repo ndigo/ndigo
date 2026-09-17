@@ -17,26 +17,33 @@ logical view name into a rendered representation:
   targets, HTTP response targets)
 - **Resolution** — view resolvers and composites, path-based resolver with
   per-name caching, and **content negotiation**:
-  - `ContentNegotiationManager` + strategies (`PathExtensionContentNegotiationStrategy`,
-    fixed strategies)
-  - `ContentNegotiationViewResolver` — aggregates candidate views once per
-    view name (cached) and negotiates the request's accepted media types per
-    call
+    - `ContentNegotiationManager` + strategies (`PathExtensionContentNegotiationStrategy`,
+      fixed strategies)
+    - `ContentNegotiationViewResolver` — aggregates candidate views once per
+      view name (cached) and negotiates the request's accepted media types per
+      call
 - **Island support** — `IslandViewResolver`/`IslandView` for Web Component
   islands in server-rendered pages
 
 ## Usage
 
 ```ts
-import { ContentNegotiationManager, ContentNegotiationViewResolver,
-         PathExtensionContentNegotiationStrategy, JSONView, CSVView } from '@blue/view';
+import {
+    ContentNegotiationManager,
+    ContentNegotiationViewResolver,
+    PathExtensionContentNegotiationStrategy,
+    JSONView,
+    CSVView,
+} from '@blue/view';
 import { MediaTypes } from '@blue/core';
 
 const manager = new ContentNegotiationManager([
-    new PathExtensionContentNegotiationStrategy(new Map([
-        ['json', MediaTypes.APPLICATION_JSON],
-        ['csv', MediaTypes.TEXT_CSV],
-    ])),
+    new PathExtensionContentNegotiationStrategy(
+        new Map([
+            ['json', MediaTypes.APPLICATION_JSON],
+            ['csv', MediaTypes.TEXT_CSV],
+        ])
+    ),
 ]);
 const resolver = new ContentNegotiationViewResolver(manager);
 resolver.viewResolvers = [

@@ -506,6 +506,7 @@ Where:
 **Each directory has a README.md** that indexes all documents in that category.
 
 <!-- graft:start -->
+
 ## Graft — repo context graph
 
 This repo is indexed in `graft/`: small linked markdown nodes that explain each

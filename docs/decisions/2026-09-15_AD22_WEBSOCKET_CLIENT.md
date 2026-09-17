@@ -10,10 +10,10 @@ AD-21 delivered the server surface: `@socketMapping`, `SocketSession` rooms,
 broadcast, heartbeat. The framework still has **no client story** — an
 application cannot connect to a room, observe connection state, or survive
 an interrupted network. The framing question this ADR settles: where does a
-socket *client* live — a platform package (browser-only) or its own
+socket _client_ live — a platform package (browser-only) or its own
 package?
 
-The decisive fact: **WHATWG `WebSocket` is a global in browsers *and* Node
+The decisive fact: **WHATWG `WebSocket` is a global in browsers _and_ Node
 ≥22** (undici ships it) — the same interface surface on both runtimes,
 exactly like `fetch`. A client written against it is isomorphic. The repo's
 boundary rule (AD-4 / `no-browser-globals-in-isomorphic`) says browser-only

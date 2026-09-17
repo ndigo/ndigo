@@ -59,9 +59,10 @@ export class RouteHandlerMethod implements HandlerMethod, Serializable {
      * pure type check, so the first verdict never changes for the method's
      * lifetime. Rebuilt transparently if the resolvers array is replaced.
      */
-    #resolverSelection:
-        | { resolvers: HandlerMethodArgumentResolver[]; byParameter: Map<MethodParameter, HandlerMethodArgumentResolver | null> }
-        | null = null;
+    #resolverSelection: {
+        resolvers: HandlerMethodArgumentResolver[];
+        byParameter: Map<MethodParameter, HandlerMethodArgumentResolver | null>;
+    } | null = null;
 
     constructor(handler: object, method: string, ...args: unknown[]);
     constructor(factory: Factory, name: string, method: string, ...args: unknown[]);

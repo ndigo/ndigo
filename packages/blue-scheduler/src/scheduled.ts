@@ -80,7 +80,9 @@ export function resolveScheduledSpec(spec: ScheduledSpec): NormalizedScheduledSp
     }
 
     return {
-        ...(fixedRate !== undefined ? { fixedRateMs: parseDurationValue(fixedRate, 'fixedRate', { positive: true }) } : {}),
+        ...(fixedRate !== undefined
+            ? { fixedRateMs: parseDurationValue(fixedRate, 'fixedRate', { positive: true }) }
+            : {}),
         ...(fixedDelay !== undefined
             ? { fixedDelayMs: parseDurationValue(fixedDelay, 'fixedDelay', { positive: true }) }
             : {}),

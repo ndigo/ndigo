@@ -207,7 +207,7 @@ describe('EJSView locale helpers', () => {
         expect(output).toContain('<span>fr</span>');
     });
 
-test('falls back to the key and en-US without a negotiated language', async () => {
+    test('falls back to the key and en-US without a negotiated language', async () => {
         const context = new GenericApplicationContext('test');
         context.setMessageSource(fakeMessageSource);
 

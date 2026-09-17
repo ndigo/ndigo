@@ -5,11 +5,11 @@ scaffolding.
 
 ## Generators
 
-| Generator  | Purpose                                                                                          |
-| ---------- | ------------------------------------------------------------------------------------------------ |
-| `package`  | Scaffold a new `@blue/*` package: manifest, tsconfigs, empty `src/`/`test/`, and a standard-header `src/index.ts` |
-| `component`| Generate a source + test file pair in an existing package, with the standard doc header        |
-| `header`   | Add or replace the standard documentation header on an existing source file                    |
+| Generator   | Purpose                                                                                                           |
+| ----------- | ----------------------------------------------------------------------------------------------------------------- |
+| `package`   | Scaffold a new `@blue/*` package: manifest, tsconfigs, empty `src/`/`test/`, and a standard-header `src/index.ts` |
+| `component` | Generate a source + test file pair in an existing package, with the standard doc header                           |
+| `header`    | Add or replace the standard documentation header on an existing source file                                       |
 
 ## The standard documentation header
 
@@ -46,13 +46,13 @@ pnpm exec nx generate @blue/generators:header --file apps/blue-todo/src/index.ts
 
 ### Header generator options
 
-| Option     | Description                                                            |
-| ---------- | ---------------------------------------------------------------------- |
-| `--file`   | Target file (required)                                                 |
-| `--module` | `@module` value; inferred from the path (`blue-*` package / app name)  |
-| `--summary`| One-line description (omitted when not given)                          |
-| `--author` | `@author` value (default `Jeff Rose`)                                  |
-| `--force`  | Replace the existing top block instead of failing (idempotent guard)  |
+| Option      | Description                                                           |
+| ----------- | --------------------------------------------------------------------- |
+| `--file`    | Target file (required)                                                |
+| `--module`  | `@module` value; inferred from the path (`blue-*` package / app name) |
+| `--summary` | One-line description (omitted when not given)                         |
+| `--author`  | `@author` value (default `Jeff Rose`)                                 |
+| `--force`   | Replace the existing top block instead of failing (idempotent guard)  |
 
 `header` is intentionally dependency-free and does not run `formatFiles`:
 its output is canonical by construction, and the formatting hook pulls in the

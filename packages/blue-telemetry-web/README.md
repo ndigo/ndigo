@@ -10,14 +10,14 @@ instrumentations, built on the isomorphic [`@blue/telemetry`](../blue-telemetry/
 - **`configureBrowserTelemetry()`** — one-call browser setup: tracer
   provider, span exporters, and optional live metrics
 - **Instrumentations**:
-  - `RouterInstrumentation` — route-change spans for hash/feature routing
-  - `DispatcherInstrumentation` — client-side dispatch spans
-  - `WebSocketClientInstrumentation` — `WebSocketClient` outbound
-    messages/bytes + deliberate-close counters
-    (`blue.socket.client.messages.sent` / `.bytes` / `.closes`); status and
-    reconnect transition counters (`blue.socket.client.connecting` /
-    `.opened` / `.reconnecting` / `.closed`) wire through
-    `countSocketClientStatus()` as the client's `onStatusChange` option
+    - `RouterInstrumentation` — route-change spans for hash/feature routing
+    - `DispatcherInstrumentation` — client-side dispatch spans
+    - `WebSocketClientInstrumentation` — `WebSocketClient` outbound
+      messages/bytes + deliberate-close counters
+      (`blue.socket.client.messages.sent` / `.bytes` / `.closes`); status and
+      reconnect transition counters (`blue.socket.client.connecting` /
+      `.opened` / `.reconnecting` / `.closed`) wire through
+      `countSocketClientStatus()` as the client's `onStatusChange` option
 
 ## Usage
 

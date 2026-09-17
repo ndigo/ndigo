@@ -68,6 +68,29 @@ ruleTester.run('no-browser-globals-in-isomorphic', noBrowserGlobalsInIsomorphic,
             code: 'const x = 42; export const y = x + 1;',
             filename: '/packages/blue-core/src/math.ts',
         },
+        // A class method named like a browser global is a name position, not a reference
+        {
+            code: `
+                export class Queue {
+                    async history(destination: string) {
+                        return destination;
+                    }
+                    get window() {
+                        return 1;
+                    }
+                }
+            `,
+            filename: '/packages/blue-core/src/queue.ts',
+        },
+        // Object-literal keys (and member properties) named like browser globals
+        {
+            code: `
+                const names = { window: 1, history: 2, location: 3 };
+                const value = names.history;
+                export { value };
+            `,
+            filename: '/packages/blue-core/src/names.ts',
+        },
     ],
     invalid: [
         // Direct window access in isomorphic package

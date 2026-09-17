@@ -11,15 +11,16 @@ instrumentations, built on the isomorphic [`@blue/telemetry`](../blue-telemetry/
   span/live-metric exporters, and the severity-filtered log processor
 - **Instrumentations** — runtime patches that produce spans for BlueJS
   components:
-  - `HTTPServerInstrumentation` — HTTP request spans (method, route, status)
-  - `ServerSentEventViewInstrumentation` — SSE stream-lifetime spans with
-    frame counts, duration, and client-disconnect flags (`sse.*` attributes)
-  - `WebSocketServerInstrumentation` — socket session-lifetime spans +
-    counters: sessions opened/closed (path, close code), fan-out
-    messages/bytes (path/room), backpressure decisions — `close` `1013`
-    and `drop` actions (`blue.socket.*`; wired via the registry's overflow
-    observer so drop-mode is visible too)
-  - `HTTPResponseViewTargetInstrumentation` — view-commit spans
+    - `HTTPServerInstrumentation` — HTTP request spans (method, route, status)
+    - `ServerSentEventViewInstrumentation` — SSE stream-lifetime spans with
+      frame counts, duration, and client-disconnect flags (`sse.*` attributes)
+    - `WebSocketServerInstrumentation` — socket session-lifetime spans +
+      counters: sessions opened/closed (path, close code), fan-out
+      messages/bytes (per path; per room only with the `roomAttribute`
+      option, since room names are arbitrary app strings), backpressure
+      decisions — `close` `1013` and `drop` actions (`blue.socket.*`; wired
+      via the registry's overflow observer so drop-mode is visible too)
+    - `HTTPResponseViewTargetInstrumentation` — view-commit spans
 - **`SeverityFilterLogRecordProcessor`** — drops log records below a
   configured severity so production logs stay quiet
 

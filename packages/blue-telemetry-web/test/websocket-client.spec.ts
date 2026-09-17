@@ -16,7 +16,7 @@ import {
     type DataPoint,
 } from '@opentelemetry/sdk-metrics';
 import { metrics } from '@opentelemetry/api';
-import { WebSocketClient, type SocketTransport } from '@blue/socket';
+import { WebSocketClient, type SocketTransport, type WebSocketClientOptions } from '@blue/socket';
 import { countSocketClientStatus, WebSocketClientInstrumentation } from '../src/index';
 
 /**
@@ -47,9 +47,10 @@ class FakeTransport implements SocketTransport {
     }
 }
 
-function createClient() {
+function createClient(options: WebSocketClientOptions = {}) {
     const created: FakeTransport[] = [];
     const client = new WebSocketClient('wss://test/echo', {
+        ...options,
         transportFactory: () => {
             const transport = new FakeTransport();
             created.push(transport);
@@ -119,7 +120,9 @@ describe('WebSocketClientInstrumentation', () => {
         });
         metrics.setGlobalMeterProvider(new MeterProvider({ readers: [reader] }));
         // Constructor already enabled the instrumentation (module scope);
-        // a second enable() is a no-op (`InstrumentationBase` latches).
+        // a second enable() is a no-op (the ENABLED latch — the base class
+        // latch can't engage because `enable()` is called from its
+        // constructor, before SDK registration).
         instrumentation.enable();
     });
 
@@ -147,6 +150,47 @@ describe('WebSocketClientInstrumentation', () => {
         expect(closed).toHaveLength(1);
         expect(closed[0]?.value).toBe(closedBefore + 1);
         expect(closed[0]?.attributes['socket.close_code']).toBe(1000);
+    });
+
+    test('a latched no-op second close() call does not double-count closes', async () => {
+        const { client, created } = createClient();
+        const closedBefore = await counterValue(reader, 'blue.socket.client.closes');
+        created[0].fireOpen();
+        client.close(1000, 'first');
+        // Defensive teardown calls close again — latched into a no-op that
+        // must not inflate the metric (the code's own idempotency promise).
+        client.close(1000, 'second');
+        client.close(3000, 'third');
+        expect(await counterValue(reader, 'blue.socket.client.closes')).toBe(closedBefore + 1);
+    });
+
+    test('measures binary payloads by byte length, not JSON encoding', async () => {
+        const bytesBefore = await counterValue(reader, 'blue.socket.client.messages.bytes');
+        const { client } = createClient();
+        client.send('abc'); // text frame: 3 bytes
+        expect(await counterValue(reader, 'blue.socket.client.messages.bytes')).toBe(bytesBefore + 3);
+        // Binary frames: exact payload bytes. JSON-encoding them would record
+        // 31 (index-key object) and 2 (`'{}'`) instead.
+        client.send(new Uint8Array([1, 2, 3, 4, 5]));
+        expect(await counterValue(reader, 'blue.socket.client.messages.bytes')).toBe(bytesBefore + 8);
+        client.send(new ArrayBuffer(8));
+        expect(await counterValue(reader, 'blue.socket.client.messages.bytes')).toBe(bytesBefore + 16);
+    });
+
+    test('counts the terminal close that follows a terminal drop exactly once', async () => {
+        // Auto-reconnect off: the unexpected close is terminal on its own —
+        // no close() call, so nothing is counted yet.
+        const { client, created } = createClient({ reconnect: null });
+        created[0].fireOpen();
+        created[0].fireClose(1006, 'link lost');
+        expect(client.status.value).toBe('closed');
+
+        client.close(1001, 'teardown'); // the session's real terminal close
+        client.close(1001, 'teardown'); // latched no-op — must not double-count
+
+        const points = await counterDatapoints(reader, 'blue.socket.client.closes');
+        const terminal = points.find((point) => point.attributes['socket.close_code'] === 1001);
+        expect(terminal?.value).toBe(1);
     });
 
     test('countSocketClientStatus maps every transition to its counter', async () => {

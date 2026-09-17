@@ -12,14 +12,38 @@ import type { WebSocket } from 'ws';
 import { AbstractBaseInstrumentation } from '@blue/telemetry';
 
 /**
+ * Options for {@link WebSocketServerInstrumentation}.
+ */
+export interface WebSocketServerInstrumentationOptions {
+    /**
+     * Record the `socket.room` attribute on room fan-out series
+     * (`blue.socket.messages.sent` / `.bytes` for
+     * {@link NodeSocketSessionRegistry.broadcastTo}).
+     *
+     * **Off by default.** Room names are arbitrary application strings, so
+     * a per-entity room (a user id, a document id, a tenant) mints one
+     * metric series per entity — unbounded cardinality from data the
+     * application controls. Rooms are not path-scoped either (`broadcastTo`
+     * receives the room name alone, and members may span paths), so there is
+     * no bounded path dimension to attribute them with: off, room fan-out is
+     * counted on the attribute-free series, which stays bounded. The
+     * per-`broadcast` `socket.path` series remains the per-destination
+     * dimension. Enable only when the room vocabulary is a known, small set —
+     * a genuine dimension rather than an entity id.
+     */
+    roomAttribute?: boolean;
+}
+
+/**
  * Instrumentation for {@link NodeSocketSessionRegistry} (AD-21/AD-22):
  *
  * - **Session lifetime**: `register`/`remove` pair into a
  *   `SocketSession.connect` SERVER span (path, duration, close code) —
  *   the socket analog of the SSE stream-lifetime instrumentation.
  * - **Counters**: sessions opened / closed (per path + close code),
- *   fan-out messages + bytes (per path / room), backpressure closes
- *   (close code `1013`).
+ *   fan-out messages + bytes (per path; per room only with
+ *   {@link WebSocketServerInstrumentationOptions.roomAttribute}),
+ *   backpressure closes (close code `1013`).
  *
  * Backpressure envelope (`close`/`drop`, buffered bytes) also reaches the
  * registry's `onOverflow` observer when applications wire one (drop-mode
@@ -33,8 +57,24 @@ import { AbstractBaseInstrumentation } from '@blue/telemetry';
  * ```
  */
 export class WebSocketServerInstrumentation extends AbstractBaseInstrumentation {
-    constructor() {
+    /**
+     * Whether room fan-out series carry the `socket.room` attribute (see
+     * {@link WebSocketServerInstrumentationOptions.roomAttribute}).
+     *
+     * Read lazily inside the wrapped `broadcastTo`, never in `enable()`:
+     * `InstrumentationBase` runs `enable()` from its own constructor —
+     * which builds the wrappers — before this subclass's field
+     * initializers and constructor body run.
+     */
+    readonly #roomAttribute: boolean;
+
+    /**
+     * @param options - Room-attribute opt-in (see
+     *   {@link WebSocketServerInstrumentationOptions}).
+     */
+    constructor(options: WebSocketServerInstrumentationOptions = {}) {
         super('websocket-server');
+        this.#roomAttribute = options.roomAttribute ?? false;
     }
 
     enable(): void {
@@ -47,10 +87,18 @@ export class WebSocketServerInstrumentation extends AbstractBaseInstrumentation 
             return;
         }
         ENABLED.add(this);
+        // Captured for the room-gating observer: `#roomAttribute` is assigned
+        // in the constructor body, which runs *after* this `enable()` (the
+        // base constructor calls it), so the observer reads it lazily at
+        // call time through this getter rather than closing over a value
+        // that does not exist yet.
+        const roomAttribute = (): boolean => this.#roomAttribute;
         const open = OPEN_SPANS.get(this) ?? new Map<SocketSession, OpenSession>();
         OPEN_SPANS.set(this, open);
         const overflowObservers = OVERFLOW_UNSUBS.get(this) ?? [];
         OVERFLOW_UNSUBS.set(this, overflowObservers);
+        const fanoutObservers = FANOUT_UNSUBS.get(this) ?? [];
+        FANOUT_UNSUBS.set(this, fanoutObservers);
 
         // Counters are resolved lazily on first use, not at `enable()` time:
         // the constructor-time enable precedes any SDK MeterProvider
@@ -98,13 +146,31 @@ export class WebSocketServerInstrumentation extends AbstractBaseInstrumentation 
                 const registry = this as NodeSocketSessionRegistry;
                 if (!observedRegistries.has(registry)) {
                     observedRegistries.add(registry);
-                    const unsubscribe = registry.addOverflowObserver((event) => {
+                    const overflowUnsubscribe = registry.addOverflowObserver((event) => {
                         counter('blue.socket.backpressure.overflow', {
                             'socket.path': event.path,
                             'socket.action': event.action,
                         });
                     });
-                    overflowObservers.push(unsubscribe);
+                    overflowObservers.push(overflowUnsubscribe);
+                    // Fan-out metrics ride the registry's serialized-payload
+                    // event: the payload is measured where it is serialized
+                    // for the wire, so the instrumentation never
+                    // re-serializes it (that was a second JSON.stringify per
+                    // broadcast). `room` is an arbitrary application string,
+                    // so the room dimension is opt-in (TEL-3); off, room
+                    // fan-out lands on the bounded attribute-free series.
+                    const fanoutUnsubscribe = registry.addFanoutObserver((event) => {
+                        const attributes: Attributes | undefined =
+                            event.scope === 'path'
+                                ? { 'socket.path': event.key }
+                                : roomAttribute()
+                                  ? { 'socket.room': event.key }
+                                  : undefined;
+                        counter('blue.socket.messages.sent', attributes);
+                        counter('blue.socket.messages.bytes', attributes, event.bytes);
+                    });
+                    fanoutObservers.push(fanoutUnsubscribe);
                 }
                 return original.apply(this, [session, path, transport]);
             };
@@ -129,30 +195,12 @@ export class WebSocketServerInstrumentation extends AbstractBaseInstrumentation 
                 return original.apply(this, [session, closeCode]);
             };
         });
-
-        this._wrap(NodeSocketSessionRegistry.prototype, 'broadcast', (original) => {
-            return function (this: unknown, path: string, payload: unknown): void {
-                counter('blue.socket.messages.sent', { 'socket.path': path });
-                counter('blue.socket.messages.bytes', { 'socket.path': path }, payloadBytes(payload));
-                return original.apply(this, [path, payload]);
-            };
-        });
-
-        this._wrap(NodeSocketSessionRegistry.prototype, 'broadcastTo', (original) => {
-            return function (this: unknown, room: string, payload: unknown): void {
-                counter('blue.socket.messages.sent', { 'socket.room': room });
-                counter('blue.socket.messages.bytes', { 'socket.room': room }, payloadBytes(payload));
-                return original.apply(this, [room, payload]);
-            };
-        });
     }
 
     disable(): void {
         ENABLED.delete(this);
         this._unwrap(NodeSocketSessionRegistry.prototype, 'register');
         this._unwrap(NodeSocketSessionRegistry.prototype, 'remove');
-        this._unwrap(NodeSocketSessionRegistry.prototype, 'broadcast');
-        this._unwrap(NodeSocketSessionRegistry.prototype, 'broadcastTo');
         // End spans still open (sessions that never hit `remove` while
         // enabled) so disable leaves no dangling spans.
         const now = Date.now();
@@ -166,6 +214,10 @@ export class WebSocketServerInstrumentation extends AbstractBaseInstrumentation 
             unsubscribe();
         }
         OVERFLOW_UNSUBS.delete(this);
+        for (const unsubscribe of FANOUT_UNSUBS.get(this) ?? []) {
+            unsubscribe();
+        }
+        FANOUT_UNSUBS.delete(this);
         OBSERVED_REGISTRIES.delete(this);
     }
 }
@@ -182,15 +234,4 @@ type OpenSession = { span: Span; began: number; path: string };
 const OPEN_SPANS = new WeakMap<WebSocketServerInstrumentation, Map<SocketSession, OpenSession>>();
 const OBSERVED_REGISTRIES = new WeakMap<WebSocketServerInstrumentation, WeakSet<NodeSocketSessionRegistry>>();
 const OVERFLOW_UNSUBS = new WeakMap<WebSocketServerInstrumentation, Array<() => void>>();
-
-/**
- * Wire size of the payload as transmitted (strings as text frames,
- * anything else JSON-encoded — `SocketSession.send` parity).
- *
- * @param payload - The fan-out payload.
- * @returns The byte length.
- */
-function payloadBytes(payload: unknown): number {
-    const wire = typeof payload === 'string' ? payload : (JSON.stringify(payload) ?? '');
-    return Buffer.byteLength(wire);
-}
+const FANOUT_UNSUBS = new WeakMap<WebSocketServerInstrumentation, Array<() => void>>();

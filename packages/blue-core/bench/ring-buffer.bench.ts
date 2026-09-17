@@ -69,3 +69,29 @@ describe('peek front – non-destructive read', () => {
         }
     });
 });
+
+describe('bounded drop-oldest queue (socket envelope) – 1000 ops at cap', () => {
+    // Pre-fill both to the bound; each op enqueues and evicts the oldest —
+    // the exact per-message shape of the socket outbound buffers and the
+    // broker's /queue backlogs.
+    const cappedRb = new RingBuffer<number>(16);
+    const cappedArr: number[] = [];
+    for (let i = 0; i < 16; i++) {
+        cappedRb.put(i);
+        cappedArr.push(i);
+    }
+
+    bench('RingBuffer (get + put at cap)', () => {
+        for (let i = 0; i < 1000; i++) {
+            cappedRb.get();
+            cappedRb.put(i);
+        }
+    });
+
+    bench('Array (push + shift at cap)', () => {
+        for (let i = 0; i < 1000; i++) {
+            cappedArr.push(i);
+            cappedArr.shift();
+        }
+    });
+});

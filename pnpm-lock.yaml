@@ -1154,16 +1154,12 @@ importers:
 
   packages/blue-socket:
     dependencies:
+      '@blue/core':
+        specifier: ~0.0.1
+        version: link:../blue-core
       '@blue/signals':
         specifier: ~0.0.1
         version: link:../blue-signals
-    devDependencies:
-      '@types/ws':
-        specifier: ^8.18.0
-        version: 8.18.1
-      ws:
-        specifier: ^8.18.0
-        version: 8.21.3
 
   packages/blue-telemetry:
     dependencies:

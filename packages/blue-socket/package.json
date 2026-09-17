@@ -28,14 +28,11 @@
   "author": "Jeff Rose <jeff_rose@outlook.com>",
   "license": "ISC",
   "dependencies": {
+    "@blue/core": "~0.0.1",
     "@blue/signals": "~0.0.1"
   },
   "peerDependencies": {
     "@blue/signals": "~0.0.1"
-  },
-  "devDependencies": {
-    "@types/ws": "^8.18.0",
-    "ws": "^8.18.0"
   },
   "sideEffects": false
 }

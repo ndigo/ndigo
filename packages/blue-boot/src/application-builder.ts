@@ -3,7 +3,7 @@
  * @since 1.0.0
  * @author Jeff Rose
  */
-import { ApplicationContext, ConfigurableEnvironment, EventListener } from '@blue/context';
+import { ConfigurableApplicationContext, ConfigurableEnvironment, EventListener } from '@blue/context';
 import type { EnvironmentCustomizer } from '@blue/context';
 import { JSONObject } from '@blue/core';
 import { z } from 'zod';
@@ -15,7 +15,7 @@ import { StandardConfigFileLoader } from './config-file-loader';
  */
 export class ApplicationBuilder {
     #application: Application;
-    #context!: ApplicationContext;
+    #context!: ConfigurableApplicationContext;
     #environment!: ConfigurableEnvironment;
     #parent: ApplicationBuilder | null;
     #profiles: Set<string>;
@@ -37,7 +37,7 @@ export class ApplicationBuilder {
      *
      * @returns The cached application context, if the builder has already run.
      */
-    get context(): ApplicationContext {
+    get context(): ConfigurableApplicationContext {
         return this.#context;
     }
 
@@ -201,7 +201,7 @@ export class ApplicationBuilder {
      * @param args - Command-line arguments passed to the application.
      * @returns A promise resolving to the application context (file loading is async).
      */
-    async run(...args: string[]): Promise<ApplicationContext> {
+    async run(...args: string[]): Promise<ConfigurableApplicationContext> {
         if (this.#running) {
             return this.#context;
         }

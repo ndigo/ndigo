@@ -15,8 +15,8 @@ import { Route, restorePartitionPrefix, RouteDefinition, RouteRegistry } from '@
 import { HostManager } from '@blue/host';
 import { FeatureMetricAggregator, getLogger } from '@blue/telemetry';
 import { DISPATCHER, ROUTER } from './context-tokens';
-import { IndexController } from './index-controller';
-import { AccountController } from './account-controller';
+import IndexController from './index-controller';
+import AccountController from './account-controller';
 import { authClient, initAuth } from './auth-store';
 import { AuthRouterInterceptor } from './auth-router-interceptor';
 import { ClientAuthGuard } from '@blue/auth-client';

@@ -25,7 +25,7 @@ const DEFAULT_LOCALE = 'en-US';
  * Locale-aware template locals injected by {@link EJSView}.
  *
  * `t` resolves messages through the view's application context (itself a
- * {@link MessageSource}); the formatter helpers wrap `Intl` through
+ * {@link @blue/content!MessageSource}); the formatter helpers wrap `Intl` through
  * `@blue/core` formatters and use the request's negotiated language.
  */
 export interface EJSLocaleHelpers {
